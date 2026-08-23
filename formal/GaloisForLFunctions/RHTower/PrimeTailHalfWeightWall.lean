@@ -431,7 +431,9 @@ theorem hasDerivAt_neg_log_neg_log {x : ℝ} (hx : 0 < x) (hx1 : x < 1) :
     HasDerivAt (fun t : ℝ => -Real.log (-Real.log t)) ((x * Real.log x⁻¹)⁻¹) x := by
   have hlogneg : Real.log x < 0 := Real.log_neg hx hx1
   have hne : -Real.log x ≠ 0 := by linarith
-  have h := ((Real.hasDerivAt_log (ne_of_gt hx)).neg.log hne).neg
+  have hin : HasDerivAt (fun t : ℝ => -Real.log t) (-x⁻¹) x :=
+    (Real.hasDerivAt_log (ne_of_gt hx)).neg
+  have h := (hin.log hne).neg
   refine h.congr_deriv ?_
   rw [Real.log_inv]
   field_simp
@@ -440,34 +442,118 @@ theorem not_integrableOn_inv_mul_log_inv {δ : ℝ} (hδ : 0 < δ) (hδ1 : δ < 
     ¬ IntegrableOn (fun x : ℝ => (x * Real.log x⁻¹)⁻¹) (Ioo 0 δ) volume := by
   intro hint
   set f : ℝ → ℝ := fun x => (x * Real.log x⁻¹)⁻¹ with hf
+  have hlogpos : ∀ x ∈ Ioo (0 : ℝ) δ, (0 : ℝ) < Real.log x⁻¹ := by
+    intro x hx
+    refine Real.log_pos ?_
+    rw [one_lt_inv_iff₀]
+    exact ⟨hx.1, lt_trans hx.2 hδ1⟩
   have hnn : ∀ x ∈ Ioo (0 : ℝ) δ, 0 ≤ f x := by
     intro x hx
-    have hlog : (0 : ℝ) < Real.log x⁻¹ := by
-      refine Real.log_pos ?_
-      rw [one_lt_inv_iff₀]
-      exact ⟨hx.1, lt_trans hx.2 hδ1⟩
-    rw [hf]
-    positivity
+    exact inv_nonneg.mpr (mul_nonneg hx.1.le (hlogpos x hx).le)
   set M : ℝ := ∫ x in Ioo (0 : ℝ) δ, f x with hM
   have hHtendsto : Tendsto (fun a : ℝ => -Real.log (-Real.log a)) (𝓝[>] 0) atBot := by
     have h1 : Tendsto (fun a : ℝ => -Real.log a) (𝓝[>] 0) atTop :=
-      tendsto_neg_atBot_iff.mpr Real.tendsto_log_nhdsGT_zero
-    exact tendsto_neg_atBot_iff.mpr (Real.tendsto_log_atTop.comp h1)
+      tendsto_neg_atTop_iff.mpr Real.tendsto_log_nhdsGT_zero
+    refine tendsto_neg_atBot_iff.mpr ?_
+    simpa [Function.comp_def] using Real.tendsto_log_atTop.comp h1
   obtain ⟨a, ha, hasub⟩ := mem_nhdsGT_iff_exists_Ioo_subset.mp
     (hHtendsto.eventually (eventually_le_atBot (-Real.log (-Real.log δ) - M - 1)))
+  have ha0 : (0 : ℝ) < a := ha
   set b : ℝ := min (a / 2) (δ / 2) with hb
-  have hb0 : 0 < b := by rw [hb]; exact lt_min (by linarith [ha]) (by linarith)
-  have hba : b < a := lt_of_le_of_lt (min_le_left _ _) (by linarith [ha])
+  have hb0 : 0 < b := lt_min (by linarith) (by linarith)
+  have hba : b < a := lt_of_le_of_lt (min_le_left _ _) (by linarith)
   have hbδ : b < δ := lt_of_le_of_lt (min_le_right _ _) (by linarith)
-  have hbound := hasub ⟨hb0, hba⟩
+  have hbound : -Real.log (-Real.log b) ≤ -Real.log (-Real.log δ) - M - 1 :=
+    hasub ⟨hb0, hba⟩
+  have hIooSub : Ioo b δ ⊆ Ioo (0 : ℝ) δ := Ioo_subset_Ioo hb0.le le_rfl
+  have hIoo : IntegrableOn f (Ioo b δ) volume := hint.mono_set hIooSub
+  have hIoc : IntegrableOn f (Ioc b δ) volume :=
+    (integrableOn_Ioc_iff_integrableOn_Ioo).mpr hIoo
+  have hII : IntervalIntegrable f volume b δ :=
+    (intervalIntegrable_iff_integrableOn_Ioc_of_le hbδ.le).mpr hIoc
   have hderiv : ∀ x ∈ uIcc b δ, HasDerivAt (fun t : ℝ => -Real.log (-Real.log t)) (f x) x := by
     intro x hx
     rw [Set.uIcc_of_le hbδ.le] at hx
     exact hasDerivAt_neg_log_neg_log (lt_of_lt_of_le hb0 hx.1) (lt_of_le_of_lt hx.2 hδ1)
-  have hII : IntervalIntegrable f volume b δ := by
-    refine (hint.mono_set ?_).intervalIntegrable_of_Ioc ?_ |>.symm ▸ ?_
-    all_goals sorry
-  sorry
+  have hFTC : (∫ x in b..δ, f x) = -Real.log (-Real.log δ) - -Real.log (-Real.log b) :=
+    intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hII
+  have hchain : (∫ x in Ioo b δ, f x) = -Real.log (-Real.log δ) - -Real.log (-Real.log b) := by
+    rw [← hFTC, intervalIntegral.integral_of_le hbδ.le, MeasureTheory.integral_Ioc_eq_integral_Ioo]
+  have hmono : (∫ x in Ioo b δ, f x) ≤ M := by
+    rw [hM]
+    refine MeasureTheory.setIntegral_mono_set hint ?_ (Filter.Eventually.of_forall hIooSub)
+    filter_upwards [self_mem_ae_restrict measurableSet_Ioo] with x hx
+    exact hnn x hx
+  rw [hchain] at hmono
+  linarith
+
+/-- **Card equation (18), the contrast.**  The current is not integrable on the unit interval:
+the boundary profile `1/(x log(1/x))` has a divergent primitive. -/
+theorem not_integrableOn_primeTailCurrent {z : ℂ} (hz : 1 < z.re) :
+    ¬ IntegrableOn (fun x : ℝ => ‖primeTailCurrent z x‖) (Ioo 0 1) volume := by
+  intro hint
+  obtain ⟨δ, hδ, hδ1, hbd⟩ := exists_two_sided_primeTailCurrent hz
+  have hzne1 : z - (1 : ℂ) ≠ 0 := by
+    refine sub_ne_zero.mpr ?_
+    intro h; rw [h] at hz; simp at hz
+  have hz1 : (0 : ℝ) < ‖z - 1‖ := norm_pos_iff.mpr hzne1
+  have hsub : IntegrableOn (fun x : ℝ => ‖primeTailCurrent z x‖) (Ioo 0 δ) volume :=
+    hint.mono_set (Ioo_subset_Ioo le_rfl (by linarith))
+  have hscale : IntegrableOn (fun x : ℝ => 1 / (2 * ‖z - 1‖) * (x * Real.log x⁻¹)⁻¹)
+      (Ioo 0 δ) volume := by
+    refine Integrable.mono' hsub
+      ((((measurable_id.mul ((Real.measurable_log).comp measurable_inv)).inv).const_mul
+        (1 / (2 * ‖z - 1‖))).aestronglyMeasurable.restrict) ?_
+    filter_upwards [self_mem_ae_restrict measurableSet_Ioo] with x hx
+    have hlog : (0 : ℝ) < Real.log x⁻¹ := by
+      refine Real.log_pos ?_
+      rw [one_lt_inv_iff₀]
+      exact ⟨hx.1, by linarith [hx.2]⟩
+    have hnn : (0 : ℝ) ≤ 1 / (2 * ‖z - 1‖) * (x * Real.log x⁻¹)⁻¹ :=
+      mul_nonneg (by positivity) (inv_nonneg.mpr (mul_nonneg hx.1.le hlog.le))
+    rw [Real.norm_of_nonneg hnn]
+    exact (hbd x hx).1
+  refine not_integrableOn_inv_mul_log_inv hδ (by linarith) ?_
+  have h2 := hscale.const_mul (1 / (2 * ‖z - 1‖))⁻¹
+  have heq : (fun x : ℝ => (1 / (2 * ‖z - 1‖))⁻¹ * (1 / (2 * ‖z - 1‖) * (x * Real.log x⁻¹)⁻¹))
+      = fun x : ℝ => (x * Real.log x⁻¹)⁻¹ := by
+    funext x
+    field_simp
+  rwa [heq] at h2
+
+/-! ## The logarithmic half-density picture -/
+
+/-- **Card equation (19).**  The logarithmic half-density transform `(Wf)(L) = e^{-L/2}f(e^{-L})`. -/
+def logHalfDensity (f : ℝ → ℂ) (L : ℝ) : ℂ := (Real.exp (-L / 2) : ℂ) * f (Real.exp (-L))
+
+theorem tendsto_exp_neg_nhdsGT : Tendsto (fun L : ℝ => Real.exp (-L)) atTop (𝓝[>] 0) := by
+  refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within
+    (fun L : ℝ => Real.exp (-L)) ?_ ?_
+  · simpa [Function.comp_def] using Real.tendsto_exp_atBot.comp tendsto_neg_atTop_atBot
+  · filter_upwards with L
+    exact Real.exp_pos _
+
+/-- **Card equation (20).**  In the logarithmic half-density coordinate the all-prime preclosure
+grows like `e^{L/2}/((z-1)L)`: exponential cofinal type in the single boundary variable. -/
+theorem tendsto_logHalfDensity_primeTailCurrent {z : ℂ} (hz : 1 < z.re) :
+    Tendsto (fun L : ℝ => logHalfDensity (primeTailCurrent z) L * ((z - 1) * (L : ℂ))
+      * (Real.exp (-L / 2) : ℂ)) atTop (𝓝 1) := by
+  have hcomp := (tendsto_primeTailCurrent_boundary hz).comp tendsto_exp_neg_nhdsGT
+  refine Tendsto.congr ?_ hcomp
+  intro L
+  have hlog : Real.log (Real.exp (-L))⁻¹ = L := by
+    rw [Real.log_inv, Real.log_exp, neg_neg]
+  have hsq : (Real.exp (-L / 2) : ℂ) * (Real.exp (-L / 2) : ℂ) = (Real.exp (-L) : ℂ) := by
+    rw [← Complex.ofReal_mul, ← Real.exp_add]
+    congr 2
+    ring
+  simp only [Function.comp_apply, logHalfDensity, hlog]
+  calc primeTailCurrent z (Real.exp (-L)) * ((z - 1) * (Real.exp (-L) : ℂ) * (L : ℂ))
+      = primeTailCurrent z (Real.exp (-L))
+        * ((z - 1) * ((Real.exp (-L / 2) : ℂ) * (Real.exp (-L / 2) : ℂ)) * (L : ℂ)) := by
+        rw [hsq]
+    _ = (Real.exp (-L / 2) : ℂ) * primeTailCurrent z (Real.exp (-L)) * ((z - 1) * (L : ℂ))
+        * (Real.exp (-L / 2) : ℂ) := by ring
 
 end
 

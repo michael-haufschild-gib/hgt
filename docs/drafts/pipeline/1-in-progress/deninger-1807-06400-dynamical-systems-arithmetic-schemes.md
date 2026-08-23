@@ -160,7 +160,8 @@ and the relation to the Fargues–Fontaine curve) into the corpus as closed Lean
 | **Cor 13.5 support**: `Q_𝔮` is again additive on its zero set and modulo `𝔪`; the pointwise criterion turning a) 1)–3) into (`additiveOnZeros`, `additiveModMax`, two kernel identifications) and back; the `Spec R` evaluation dictionary | `RHTower/DeningerDynSysValuedPointsAffine.lean`, `RHTower/DeningerDynSysValuedLocalCriterion.lean`, `RHTower/DeningerDynSysSpecStalkDictionary.lean` | closed |
 | **(26)**: the `C`-valued points of `W_rat(X)` are the character points `X̂(C)` | `RHTower/DeningerDynSysWittCharPoints.lean` | closed |
 | **§13 hypotheses are non-vacuous**: `Spec K` for `K` algebraically closed has stalk and residue field `K` at its unique point, so the valued-point equivalence applies to it; plus the reusable `stalk (Spec R) 𝔭 ≅ R_𝔭` | `HTGeometry/SpecStalkLocalization.lean`, `RHTower/DeningerDynSysWittValuedPointSpec.lean` | closed |
-| **Prop 13.1 (`t41`) + (145)**: the `𝒪`-valued points of `W_rat(X)` in the Witt-homomorphism description (Deninger's `f̃_η^♯`, `f_s^♯`, `f̃_s^♯` with the two commuting squares) are exactly the character triples of Def 13.2, hence also the triples `(x,y,P'_y)` | `RHTower/DeningerDynSysWittValuedPoint.lean` | closed (the ringed-space computation of `f^{-1}W_rat(𝒪_X)` on `Spec 𝒪` is the residue) |
+| **Prop 13.1 (`t41`) + (145)**: the `𝒪`-valued points of `W_rat(X)` in the Witt-homomorphism description (Deninger's `f̃_η^♯`, `f_s^♯`, `f̃_s^♯` with the two commuting squares) are exactly the character triples of Def 13.2, hence also the triples `(x,y,P'_y)` | `RHTower/DeningerDynSysWittValuedPoint.lean` | closed |
+| **Prop 13.1 (`t41`) CLOSED IN FULL**: a pair of stalk maps with the square (139) and the locality data (140) **is** a morphism `Spec 𝒪 → W_rat (X)` in the sense of Def 2.5, and its stalk maps give the pair back; the `stalkHom`/`stalkHom_comp` fields of Def 2.5 carry no information once `W_rat` commutes with stalks | `RHTower/DeningerDynSysProp131.lean` | closed |
 | **Prop 1.1(b) in ring form over a domain**: `ω : ℤ[A ∖ 0] ≃+* W_rat(A)` for an integrally closed domain with algebraically closed fraction field, and the consequence `Hom_ring(W_rat(A), R) ≃ (A →*₀ R)` used for the `𝒪`-valued points | `RHTower/DeningerDynSysOmegaDomainRing.lean` | closed |
 | **Prop 1.1(b) (`t21nn`) in ring form**: `ω : ℤ[κˣ] ≃+* W_rat(κ)` for `κ` algebraically closed — the additive comparison is multiplicative because both sides are biadditive and `[a]⊙[b] = [ab]` | `RHTower/DeningerDynSysOmegaRing.lean` | closed |
 | **Cor 1.5(1) / Cor 1.7(2) algebraic core**: `Hom(W_rat(κ), C) ≃ (κˣ →* Cˣ)` for `κ` algebraically closed, via `ω` and `liftNCRingHom` | `RHTower/DeningerDynSysWittHomCharacters.lean` | closed |
@@ -870,4 +871,19 @@ Nothing in v4 is untracked by the ledger: the only apparent omission, Prop 1.4, 
   was built from.  What is left to write is the packaging as a literal `DeningerWittScheme`
   (its `local'` field, and the `Spec 𝒪` instantiation of `Vgen = {η}`, `hgen`, `hbot`, `hterm`,
   all of which are already proved).
+  Axiom audit: `[propext, Classical.choice, Quot.sound]`.
+
+- 2026-08-23 — **Proposition 13.1 is closed in full.**  `deningerProp131WittScheme` builds the
+  `DeningerWittScheme (Spec 𝒪) X` — Deninger's morphism `Spec 𝒪 → W_rat (X)` — out of the pair of
+  stalk maps, the square (139) and the locality data (140), and
+  `deningerProp131StalkHom_closed` / `_generic` recover `f_s` and `f_η` from it.
+  The construction is uniform in the point: `stalkHom p` is *defined* as
+  `inv (W_rat-stalk comparison) ≫ stalk of the sheaf map ≫ stalkPushforward`, which makes the
+  `stalkHom_comp` field `IsIso.hom_inv_id_assoc` and avoids every `eqToHom`.  That is only legal
+  because `W_rat` commutes with stalks — so Def 2.5's last two fields are in fact determined by
+  the sheaf morphism.  The `local'` field is the one place where the two points are separated, and
+  there `p` is a bound variable, so `rcases` + `subst` on `spec_eq_generic_or_closed` puts
+  `base p` in the right form with no transport.
+  `HTGeometry/SpecTwoPointBase.lean` gains `specBase_hgen`, `specBase_hbot`, `specBase_hspec`, so
+  the hypothesis package is discharged for the concrete two-point base map of a specialisation.
   Axiom audit: `[propext, Classical.choice, Quot.sound]`.

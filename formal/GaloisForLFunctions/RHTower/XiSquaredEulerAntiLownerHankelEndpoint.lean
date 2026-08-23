@@ -713,6 +713,67 @@ def xiEulerAudenaertIncreasingLoewnerJetMatrix
   fun i j => xiEulerAudenaertIncreasingLoewnerJetMoment
     ((i : ℕ) + (j : ℕ)) X
 
+/-- The Xi decreasing-parity jet matrix is the generic alternating higher-confluence limit. -/
+theorem xiEulerAudenaertDecreasingLoewnerJetMatrix_eq_alternating
+    (N : ℕ) {X : ℝ} (hX : 0 < X) :
+    xiEulerAudenaertDecreasingLoewnerJetMatrix N X =
+      HTGeometry.alternatingNormalizedLoewnerJetMatrix
+        (fun Y => -xiEulerAudenaertDecreasing Y) X N := by
+  ext i j
+  rw [xiEulerAudenaertDecreasingLoewnerJetMatrix,
+    xiEulerAudenaertDecreasingLoewnerJetMoment,
+    alternatingNormalizedLoewnerJet_eq_succ
+      (analyticAt_xiEulerAudenaertDecreasing hX).neg]
+  simp only [HTGeometry.alternatingNormalizedLoewnerJetMatrix,
+    HTGeometry.normalizedLoewnerJetMatrix]
+  ring
+
+/-- The Xi increasing-parity jet matrix is the generic alternating higher-confluence limit. -/
+theorem xiEulerAudenaertIncreasingLoewnerJetMatrix_eq_alternating
+    (N : ℕ) {X : ℝ} (hX : 0 < X) :
+    xiEulerAudenaertIncreasingLoewnerJetMatrix N X =
+      HTGeometry.alternatingNormalizedLoewnerJetMatrix
+        xiEulerAudenaertIncreasing X N := by
+  ext i j
+  rw [xiEulerAudenaertIncreasingLoewnerJetMatrix,
+    xiEulerAudenaertIncreasingLoewnerJetMoment,
+    alternatingNormalizedLoewnerJet_eq_succ
+      (analyticAt_xiEulerAudenaertIncreasing hX)]
+  simp only [HTGeometry.alternatingNormalizedLoewnerJetMatrix,
+    HTGeometry.normalizedLoewnerJetMatrix]
+  ring
+
+/-- The universal finite anti-Löwner producer supplies both all-order Xi reflection-parity jet
+towers at every positive collision center. -/
+theorem xiSquaredEulerAntiLownerProducer_imp_audenaertLoewnerJetMatrix_posSemidef
+    (hproducer : XiSquaredEulerAntiLownerProducer)
+    {X : ℝ} (hX : 0 < X) :
+    (∀ N : ℕ,
+      (xiEulerAudenaertDecreasingLoewnerJetMatrix N X).PosSemidef) ∧
+    (∀ N : ℕ,
+      (xiEulerAudenaertIncreasingLoewnerJetMatrix N X).PosSemidef) := by
+  constructor
+  · intro N
+    obtain ⟨_, hdec⟩ :=
+      xiSquaredEulerAntiLownerProducer_imp_eventually_uniform_parity
+        hproducer hX N
+    have hjet := HTGeometry.normalizedLoewnerJetMatrix_posSemidef_of_eventually_uniform
+      (analyticAt_xiEulerAudenaertDecreasing hX).neg N hdec
+    have halt := HTGeometry.alternatingNormalizedLoewnerJetMatrix_posSemidef
+      (fun Y => -xiEulerAudenaertDecreasing Y) X N hjet
+    rw [xiEulerAudenaertDecreasingLoewnerJetMatrix_eq_alternating N hX]
+    exact halt
+  · intro N
+    obtain ⟨hinc, _⟩ :=
+      xiSquaredEulerAntiLownerProducer_imp_eventually_uniform_parity
+        hproducer hX N
+    have hjet := HTGeometry.normalizedLoewnerJetMatrix_posSemidef_of_eventually_uniform
+      (analyticAt_xiEulerAudenaertIncreasing hX) N hinc
+    have halt := HTGeometry.alternatingNormalizedLoewnerJetMatrix_posSemidef
+      xiEulerAudenaertIncreasing X N hjet
+    rw [xiEulerAudenaertIncreasingLoewnerJetMatrix_eq_alternating N hX]
+    exact halt
+
 /-- **Reflection-parity jet conservation law.**  The increasing block `H₀ - X H₁` plus `X` times
 the decreasing block `H₁` is exactly the full RH-deciding resolvent Hankel matrix `H₀`. -/
 theorem xiEulerAudenaertLoewnerJetMatrix_reconstruction
@@ -745,6 +806,18 @@ theorem riemannHypothesis_of_audenaertLoewnerJetMatrix_posSemidef
   intro N
   rw [← xiEulerAudenaertLoewnerJetMatrix_reconstruction N hX]
   exact (hinc N).add ((hdec N).smul hX.le)
+
+/-- **Closed squared-Euler anti-Löwner endpoint.**  Universal finite positive-ray anti-Löwner
+positivity for the actual squared-Euler Xi response implies RH, with all collision, confluence,
+normalization, and reflection-parity steps discharged in Lean. -/
+theorem riemannHypothesis_of_xiSquaredEulerAntiLownerProducer
+    (hproducer : XiSquaredEulerAntiLownerProducer) :
+    RiemannHypothesis := by
+  obtain ⟨hdec, hinc⟩ :=
+    xiSquaredEulerAntiLownerProducer_imp_audenaertLoewnerJetMatrix_posSemidef
+      hproducer (X := 1) zero_lt_one
+  exact riemannHypothesis_of_audenaertLoewnerJetMatrix_posSemidef
+    zero_lt_one hdec hinc
 
 end
 

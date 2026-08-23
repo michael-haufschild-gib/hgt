@@ -24,7 +24,8 @@ Terms:
 ## Executive map
 
 Formal corpus supports twenty-three live producer architectures, distinguished by first source premise rather than pairwise-independent receivers: `CCM-FU, C1, D2, E, NB/BD, F2, STC, CSB, G, G-CE, L, O, P, Q, CLG/TTF, HB, SP-E, SCE, T1, T2, U, HC, SV2`.
-CLG/TTF is one architecture; T has distinct `T1` and `T2` branches. Eighteen corpus-born candidates remain: `TK, FD2, BSH, CFI, UEB, PSRC, PBM, SC, PPM, IRK, OPUC, HJ, BW, MSC, EWQ-V, PCS, SEC, BPC`.
+CLG/TTF is one architecture; T has distinct `T1` and `T2` branches. Nineteen candidates remain:
+`TK, FD2, BSH, CFI, UEB, PSRC, PBM, SC, PPM, IRK, OPUC, HJ, BW, MSC, EWQ-V, PCS, SEC, LI, BPC`.
 Finite Hilbert dispersion/fidelity recurrence, positive circle densities, abstract Deninger rational-Witt/valued-point geometry, localized half-density germ/curvature, and anharmonic moving-fibre Casimir lack an independent completed source-to-RH landing. Squared-Euler anti-Löwner/Hankel positivity and finite-`det₂` Vitali convergence are exact receivers; only the latter has a distinct candidate realization problem. R, IW, AP, scalar EWQ, DQPT, and fractional-part extraction are terminal. RH and its negation remain unproved.
 
 | Architecture | Proved chain | First open core |
@@ -60,14 +61,16 @@ Exact equivalences with RH are receivers unless the corpus supplies an independe
 required positivity, boundedness, passivity, flatness, collision exclusion, or ground selection.
 Most live routes have complete receivers and incomplete constitutive source laws.
 
-No additional architecture is justified by current declarations. Burnol's aperture-minimal
+No additional live architecture is justified by current declarations. The exact paired Li
+criterion promotes `LI` to a candidate receiver, but its pre-divisor coefficient landing and
+positivity producer are absent. Burnol's aperture-minimal
 zero-jet witnesses and Suzuki's unconditional divisor evaluations now expose a plausible
 F2-to-SP-E/SV2 comparison interface, but no theorem maps the extended Sonine witness system into
 the literal `V(0)` form or the cofinal Suzuki characteristic. The Vaughan chain reaches the
 von-Mangoldt source but loses the signed relation/current required by E and T1. Prime-tail and
 Deninger sheaf advances improve F2/L/PBM and L/C1 connectors without producing the missing
 all-moment weld, singular physical landing, or positive global cutoff. These are route advances,
-not one or two additional routes.
+not additional live routes.
 
 The main shared frontiers are: source-faithful multi-node order (`CLG/TTF`, `C1`, `Q`, `W2C`);
 singular source-to-physical comparison (`L`, `R`); whole-ground-space control (`O`); cofinal
@@ -2734,6 +2737,44 @@ infinite nonphysical candidate, not live. The compact Möbius prime/depth carrie
 supply this theorem: `XiMobiusSchurCalkinAxisSeparation.lean` proves a nonzero infinite Sonin
 corner lift is noncompact.
 
+### LI — paired Cayley--Li coefficient positivity
+
+**Architecture.** Send every Xi divisor point to `w_rho=1-1/rho`, pair functional-equation
+partners by inversion, and form the absolutely convergent multiplicity-weighted coefficients
+
+```text
+2 lambda_n = sum_rho m_rho (2 - w_rho^n - w_rho^(-n)).
+```
+
+Critical-line points are exactly unimodular Cayley points, so universal nonnegativity of these
+paired coefficients excludes every off-line divisor. A source proof would identify the same
+coefficients before divisor selection as Taylor data of the completed prime--Gamma Li generator
+and prove their order there.
+
+**Proved.** `LiTermBound.lean` gives inversion invariance, the exact square factorization, and
+unit-circle nonnegativity. `LiCoefficientXi.lean` proves Xi Cayley coordinates stay in one annulus,
+constructs every `xiLiPaired n` as an absolutely convergent divisor sum, and proves the RH-forward
+inequality. `LiPositivityFails.lean` proves the abstract hard mechanism: one member outside the unit
+circle forces some paired sum negative. Working-tree `LiCriterion.lean` performs the Xi orbit
+normalization and proves exactly
+
+```text
+RH <-> forall n, 0 <= Re(xiLiPaired n).
+```
+
+`LiBracket.lean` sums each coordinate orbit to its rational generating bracket, and the finite Li
+coefficients and reciprocal moments are inverse triangular transforms. The analytic Li generator
+is the Möbius logarithmic jet of completed Xi, but no declaration identifies its Taylor
+coefficients with `xiLiPaired` through a pre-divisor prime--Gamma expression.
+
+**Open core.** Construct that coefficient-faithful source landing across the singular chart at
+`s=1`, then prove all resulting coefficients nonnegative without importing the criterion itself.
+This is the entire producer problem. It cannot use a finite differential-algebraic recurrence:
+the Li generator is unconditionally non-holonomic and hypertranscendental. Nor can it use
+coefficientwise positivity of the reciprocal-seam kernel: its quadratic Taylor coefficient is
+`-n^2*(n^2+2)/12` for every `n>=1`. LI is a complete classical receiver and a candidate source
+architecture, not a live route.
+
 ### BPC — Bernstein--Pringsheim collar
 
 **Architecture.** Form the positive Abel susceptibility whose coefficients are the exact
@@ -2783,7 +2824,6 @@ continuation producer is absent.
 - Abstract Deninger dynamics now close locality, tilt-local morphisms, rational-Witt scheme/stalk faithfulness, Galois-invariant rational-Witt identification, twisted-norm torsion, and valued-point classification. `DeningerDynSysCor31Separable.lean` extends character-orbit classification to separably closed coefficients. `DeningerDynSysTwoPointGamma.lean` and `DeningerDynSysTwoPointSheafMap.lean` construct compatible stalk maps over one specialization and assemble the presheaf/sheaf morphism. `DeningerDynSysWittStalkIso.lean` proves rational Witt construction commutes with stalks and identifies the rational-Witt sheaf stalk with the rational Witt ring of the ordinary stalk. This closes Proposition 13.1 geometry, but no completed Xi occurrence, L singular source-to-physical comparison, or C1 positive cutoff is produced.
 - **ABHN infrastructure remains pre-route.** Cyclic/Brauer descent, Azumaya localization, continuous `H^2`, finite ramification, local invariants, completed-place transport, Hilbert 90, norm quotients, and unramified integral norm/reduction are exact. Lean proves local--global unit, division, and annihilator criteria over number and global function fields, faithful rational continuous `H^2` invariants, completion invariance, and one-place/all-place detection of ordinary and generalized left-regular eigenspace/intertwiner dimensions. No module supplies a completed prime--Gamma/Möbius Xi occurrence, global source invariant, or critical-line reader. ABHN adds neither route nor candidate.
 - Several exact interfaces close local mechanics without creating producers. `PerronUniformFlankProducer.lean` is a T1/F2/U adapter; `DeningerDynSysPointedMultiplicativeRoot.lean` is IW/L algebra; `DeningerDynSysCor15Injective.lean` strengthens injectivity. None supplies a completed Xi occurrence, C1 positive cutoff, or L singular source-to-physical comparison. Finite Hilbert dispersion, positive shifted circle states, finite-prime parametric resolvents, and one exact prime-log weak-Schatten residue close finite mechanics but not reflected orientation or cofinal tightness. The Burnol abstract Sonine chain machinery now has a concrete analytic realization: the corpus proves the exact aperture phase diagram stated in F2. This removes analytic admissibility from F2's frontier but supplies neither its all-moment arithmetic weld nor C1's positive cutoff. Suzuki's Lerch bridge and complete `V(0)` equivalence are likewise receivers, not O/SV2 ground or limit selection. Euler--Riesz dilation, memory-lag curvature, and compact orbit quotient modules contain no completed arithmetic producer. No route or candidate is added.
-- The Li interface now reaches the actual Xi divisor but not a criterion. `LiTermBound.lean` gives the exact paired-summand factorization and unit-circle positivity; `LiCoefficientXi.lean` proves the Xi Cayley coordinates lie in one annulus, constructs the multiplicity-weighted paired Li coefficient as an absolutely convergent divisor sum, and proves RH implies its real part is nonnegative. `LiBracket.lean` sums each paired coordinate's generating series to an explicit rational bracket, while `LiFiniteCriterionFrontier.lean` gives finite triangular equivalence with reciprocal moments. No declaration proves the hard Bombieri--Lagarias/Li converse or derives coefficient positivity from a pre-divisor source. This is a classical pre-route receiver, not a new live architecture.
 - **Moving-fibre and localized curvature are pre-routes, not RH routes.** `AnharmonicChebyshev{OrientationCasimir,MovingFiber}.lean` proves scalar `q^2` descent glues two reflected triples and every holomorphic quadratic invariant is isotropic. `AnharmonicChebyshevCubicDescentCriterion.lean` formalizes the Rouyea--Bourgeois literature endpoint: `q(ρ)^2` is strictly negative real at every Xi zero iff RH. Exact fibre classification plus the source-derived height gap removes the two spurious unit-circle branches; this is an RH reader, not an independent producer. `AnharmonicChebyshevNoetherCasimir.lean` proves the actual real Xi three-sheet current has sign `(+,+,-)`, the strict magnitude chamber `0 < b < -c < a`, positive descended trace, and exact Lorentz-type decomposition `E-2T²=6(b²+(-c-b)(a+b))>0`, with normalized mass gap tending to zero. The q-logarithmic derivative of the cyclic Xi product is therefore positive on the complete exterior real ray unconditionally. Thus scalar descent loses information, and real-ray positive-real/Herglotz control cannot close RH; the live obligation is transverse complex positivity, equivalently the completed Chebyshev trace bound. No route or candidate is added. `LocalizedHalfDensity{Germ,Curvature}.lean` gives the multiplicative epsilon-to-Lambda germ, finite exponential fibre modes, forced half-density, exact two-prime collision chambers, and prime-power Chebyshev fibres. It lacks completed aggregation and collision-quantum landing.
 - **Mertens corona conormal remains pre-route.** `MertensCoronaShiftConormal.lean` makes actual Euler coefficient space rank-one shift-conormal. `MertensCoronaTimeOneResidue.lean` identifies its residue with time-one Gamma--Meixner prime--Laplace source and nonzero factorial transgression. `MertensGradedCoronaTower.lean` supplies every logarithmic grade; `PrimeLogPowZetaAbelPole.lean` gives the exact graded Abel/Mertens error with bounded remainder; and `MertensGradedCoronaPolarTower.lean` identifies every time-one grade with an all-prime Laplace source having pole `sqrt(2) k! / s^(k+1)`, with clock differentiation, Euler translation, and reflection parity exact. This is an infinite source interface for G/P/MSC/BPC, not a candidate: no completed Xi landing, favorable order, or critical-line selector follows.
 - `HalfPlaneHardy.lean`, `HardyLineMass.lean`, `HardyLineIndependence.lean`, `HardyLineIsometry.lean`, `MellinHardy{Bridge,Classes}.lean`, `MellinHeadHardy{,Converse}.lean`, `ZetaHardyQuotient{,Pow}.lean`, `LPropertyStrips.lean`, `GammaStripSharpDecay.lean`, and `ZetaChiStripGrowth.lean` supply exact Paley--Wiener mass/converse, Mellin charts, Burnol Hardy/L classes and zero division, chi-reflection stability, and sharp Gamma/chi strip control. `MellinHeadHardyEquiv.lean` closes Burnol Proposition 4.1 in both directions. Analytic admissibility is closed; arithmetic moment selection, ground control, and signed amplitude balance are not.

@@ -136,9 +136,16 @@ theorem thetaCuspSourceSquareFourier_zero_re_pos :
   simp only [mul_zero, neg_zero, ofReal_zero, zero_mul, Complex.exp_zero, one_smul]
   change 0 < RCLike.re (∫ v : ℝ, ((thetaCuspFullSource v : ℂ) ^ 2))
   rw [← integral_re integrable_thetaCuspFullSource_sq_complex]
-  change 0 < ∫ v : ℝ, thetaCuspFullSource v ^ 2
+  have hrealEq : (fun v : ℝ => RCLike.re ((thetaCuspFullSource v : ℂ) ^ 2)) =
+      fun v : ℝ => thetaCuspFullSource v ^ 2 := by
+    funext v
+    change ((thetaCuspFullSource v : ℂ) ^ 2).re = thetaCuspFullSource v ^ 2
+    rw [pow_two, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im]
+    ring
+  rw [hrealEq]
   have hsqReal : Integrable (fun v : ℝ => thetaCuspFullSource v ^ 2) := by
-    simpa only [Complex.ofReal_pow] using integrable_thetaCuspFullSource_sq_complex.re
+    rw [← hrealEq]
+    exact integrable_thetaCuspFullSource_sq_complex.re
   rw [integral_pos_iff_support_of_nonneg_ae (Filter.Eventually.of_forall fun _ => sq_nonneg _)
     hsqReal]
   have hsupp : Function.support (fun v : ℝ => thetaCuspFullSource v ^ 2) = Set.univ := by
@@ -182,12 +189,19 @@ private theorem deriv_thetaCuspSourceSquare (v : ℝ) :
     deriv thetaCuspSourceSquare v =
       2 * (thetaCuspFullSource v : ℂ) *
         ((deriv thetaCuspFullSource v : ℝ) : ℂ) := by
+  unfold thetaCuspSourceSquare
   let d : ℝ := deriv thetaCuspFullSource v
   have hreal : HasDerivAt thetaCuspFullSource d v :=
     (contDiff_thetaCuspFullSource.differentiable (by simp) v).hasDerivAt
   have hcomplex : HasDerivAt (fun x : ℝ => (thetaCuspFullSource x : ℂ))
       (d : ℂ) v := hreal.ofReal_comp
-  simpa [thetaCuspSourceSquare, pow_two, d] using (hcomplex.pow 2).deriv
+  have heq : (fun x : ℝ => (thetaCuspFullSource x : ℂ) ^ 2) =
+      (fun x : ℝ => (thetaCuspFullSource x : ℂ)) *
+        (fun x : ℝ => (thetaCuspFullSource x : ℂ)) := by
+    funext x
+    simp only [Pi.mul_apply, pow_two]
+  rw [heq]
+  simpa [pow_two, d] using (hcomplex.pow 2).deriv
 
 private theorem integrable_deriv_thetaCuspSourceSquare :
     Integrable (deriv thetaCuspSourceSquare) := by
@@ -210,11 +224,8 @@ private theorem integrable_deriv_thetaCuspSourceSquare :
           (contDiff_thetaCuspFullSource.continuous_deriv (by simp)))).aestronglyMeasurable
   · filter_upwards with v
     rw [deriv_thetaCuspSourceSquare, norm_mul, norm_mul,
-      Complex.norm_real, Complex.norm_real, Real.norm_eq_abs, Real.norm_eq_abs,
-      Real.norm_eq_abs, abs_of_nonneg
-        (mul_nonneg (mul_nonneg (mul_nonneg (by norm_num) hC0) hC1)
-          (Real.exp_pos _).le)]
-    norm_num
+      Complex.norm_ofNat,
+      Complex.norm_real, Complex.norm_real, Real.norm_eq_abs, Real.norm_eq_abs]
     have hg := abs_thetaCuspFullSource_le v
     have hg' := abs_iteratedDeriv_thetaCuspFullSource_le_exp_neg_abs 1 v
     rw [iteratedDeriv_one] at hg'
@@ -222,8 +233,10 @@ private theorem integrable_deriv_thetaCuspSourceSquare :
       2 * |thetaCuspFullSource v| * |deriv thetaCuspFullSource v| ≤
           2 * (C0 * Real.exp (-|v|)) * (C1 * Real.exp (-|v|)) := by gcongr
       _ = 2 * C0 * C1 * Real.exp (-2 * |v|) := by
-        rw [← Real.exp_nat_mul]
         ring_nf
+        rw [← Real.exp_add]
+        congr 2
+        ring
       _ ≤ 2 * C0 * C1 * Real.exp (-|v|) :=
         mul_le_mul_of_nonneg_left
           (Real.exp_le_exp.mpr (by linarith [abs_nonneg v]))
@@ -273,8 +286,8 @@ theorem integral_thetaCuspMovingMirrorFullSecondJetIntegrand_zero_balanced
         rw [deriv_thetaCuspSourceSquare]
         unfold thetaCuspMovingMirrorFullSecondJetIntegrand
         dsimp only
+        simp only [neg_zero, zero_mul, ofReal_zero, Complex.exp_zero]
         push_cast
-        simp only [zero_mul, Complex.exp_zero, one_mul]
         ring
     _ = (-Complex.I * (frequency : ℂ) ^ 2) *
           FourierTransform.fourier (deriv thetaCuspSourceSquare)

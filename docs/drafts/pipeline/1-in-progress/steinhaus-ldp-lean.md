@@ -59,3 +59,27 @@ parts `1` and `2` need the LDP.  The analytic core is therefore built first.
 
 - 2026-08-23 — Opened.  Inventory above; the one-circle cumulant layer is already complete in the
   corpus, which removes the special-function half of `S2`--`S4`.
+
+## S1 and S2 closed (2026-08-23)
+
+`HTGeometry/SteinhausWeightProfile.lean`:
+
+- `weightProfile α v = (1−α)v^{−α}`, nonnegative, interval-integrable on `(0,1)` for `α < 1`
+  (`intervalIntegral.intervalIntegrable_rpow'` needs exactly `−1 < −α`);
+- **`integral_weightProfile : ∫₀¹ w_α = 1`** — the card's normalisation, from `integral_rpow` with
+  `0^{1−α} = 0`;
+- `rvCumulant α lam = ∫₀¹ log I₀(lam·w_α(v)) dv`, the card's `Λ_α`;
+- `continuous_steinhausLogLaplace` (from the corpus's `analyticOnNhd_steinhausLogLaplace`);
+- `intervalIntegrable_rvCumulant_integrand` — finiteness, from `0 ≤ log I₀(x) ≤ |x|` and the
+  integrability of `w_α`.  This is the card's `(11)`–`(12)` at the level of well-definedness;
+- `rvCumulant_zero`, `rvCumulant_nonneg`, and **`rvCumulant_le : Λ_α(λ) ≤ |λ|`**, the unit-mass
+  bound.
+
+NOTE for `S5`: finiteness of the Legendre transform for `q < 1` needs the LOWER envelope
+`log I₀(x) ≥ x − log(2π√x)`.  The corpus owns it as
+`RHTower/BesselIZeroLowerBound.exp_div_le_besselI0`, but for `besselI0` (a `(1/π)∫₀^π cosh(u sin θ)`
+integral), not for `steinhausLaplace` (an `AddCircle` Haar integral).  The two are equal — the
+bridge is `AddCircle` Haar ↔ `(1/2π)∫₀^{2π}`, plus `∫₀^{2π} e^{u cos} = ∫₀^{2π} e^{u sin}` by
+translation — and that bridge is the next module.  Searches "AddCircle Haar integral equals
+interval integral period bridge" and "steinhaus laplace equals bessel I0 cos integral" found no
+existing version.

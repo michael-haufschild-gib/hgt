@@ -1134,3 +1134,38 @@ Still open in §6: Proposition 6.5 (the shortened `Z¹` system) and Theorem 6.7 
 **Method note.** `analyticOrderAt_comp_one_sub` and `xi_orderAt_one_sub` were rebuilt by accident and
 then discarded — `RHTower/Reflection` already owned both.  Run
 `scripts/formal_tools.py research "<query>"` before every new brick.
+
+## Theorem 3.1, Proposition 4.3 at every strip point, and Lemma 7.4 — CLOSED (2026-08-23)
+
+* `RHTower/BurnolTheoremThreeOne.burnol_theorem_three_one` — **Theorem 3.1** as one statement:
+  complete for `a ≥ 1`, not complete for `a < 1`, minimal for `a ≤ 1`, not minimal for `a > 1`.
+  The predicates `IsExtendedSonineDatum` and `AnnihilatesEvaluators` package the jet dictionary
+  ("`v ⊥ Y^a_{ρ,k}` for all `k < m_ρ`" = "`ζ` divides `M(v)` at `ρ`").
+* `RHTower/MellinApertureIndependence` — the continued transform is aperture-independent
+  (`extendedMellinContinuation_eq_soninMellinIntegral` on the convergence strip, then the identity
+  theorem); this is what carries the `a = 1` minimality witness down to every `a ≤ 1`.
+* `RHTower/ExtendedSoninDivision.exists_divided_extendedSonin` — **Proposition 4.3 for `L_a` at
+  *every* point of the open critical strip**, the critical line included.  The corpus previously
+  owned it only for `1/2 < Re ρ < 1` (`BurnolSoninDividedShift`), which cannot reach the zeros.
+  The new ingredient is the **canonical Hardy representative**
+  `soninHardyRep a c d v w = -a^w·N(w+1/2)/(w+1/2)^2` (`RHTower/SoninHardyRepresentative`):
+  substituting `M(v) = N/(s(1−s))` into `((w−1/2)/(w+1/2))a^w M(v)(w+1/2)` collapses the whole
+  expression to something visibly analytic on `w ≠ −1/2`, hence analytic at `ρ − 1/2` for *every*
+  strip `ρ`.  It agrees with any `IsMellinHeadHardy` witness on `Re w > 0` (they are continuous and
+  agree off `w = 1/2`), so it is itself Hardy, and `exists_isHalfPlaneHardy_div_pow` then divides it
+  at a boundary point.  Both sides of the functional equation are divided — at `ρ` and at `1−ρ` —
+  and `SoninFromHardyData` reassembles the vector.
+* `RHTower/DivShiftRepresentative` — the generic normal-form representative `divShiftNF G ρ`.
+* `RHTower/ExtendedMellinHeadHardy` — `IsMellinHeadHardy a (M v)` for every vector of `L_a`, and
+  `χ(s)M(v)(1−s) = M(F₊v)(s)` on the whole strip `0 < Re s < 1` (the real points filled in by
+  approaching along `s + i/(n+1)`).
+* `RHTower/ExtendedSoninOrderDrop` — one division lowers the order at `ρ` by exactly one and
+  preserves every other order (`exists_order_drop`); iterating gives
+  `exists_order_eq_of_add`, which is **Burnol's Lemma 7.4** in jet form: from one vector vanishing
+  to order `k + j` at `ρ` one manufactures a vector vanishing to order *exactly* `k` at `ρ` with all
+  the other orders unchanged.  This is the "not complete ⟹ minimal" mechanism, and it is what
+  gives `a₂(Z) ≤ a₁(Z)` in Theorem 7.1.
+
+Remaining: Proposition 6.5, Theorem 6.7, the `L²`-in-`Z` half of Theorem 5.2, Lemmas 7.5/7.6 and
+Theorems 7.1–7.3 (the abstract index bookkeeping plus the smoothing argument), Theorems 7.7–7.10
+(Levin), and the capstones 3.2/3.3.

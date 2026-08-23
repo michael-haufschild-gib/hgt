@@ -1454,3 +1454,56 @@ Let `Φ(z) := Σ_ρ [2z/(1-z) - w_ρ z/(1-w_ρ z) - (z/w_ρ)/(1-z/w_ρ)]`, merom
 | `RHTower/LiGeneratingFunction.lean` | `Φ`, local uniform convergence off the poles, `G = Φ` near `0`, the residue computation |
 | `RHTower/LiCriterion.lean` | `(∀ n ≥ 1, 0 ≤ λ_n) ↔ RiemannHypothesis` |
 | `RHTower/SuzukiCorFourSix.lean` | `ĝ_n(z) = 1 - (1-1/s)^n`; `⟨g_n,g_n⟩_W = 2λ_n`; Cor 4.6 |
+
+
+## LI'S CRITERION IS CLOSED (the Bombieri--Lagarias input of Cor 4.6)
+
+`RHTower.riemannHypothesis_iff_forall_re_xiLiPaired_nonneg` :
+`RiemannHypothesis ↔ ∀ n, 0 ≤ (xiLiPaired n).re`, unconditional, axiom-clean.
+
+This removes the wall that `LiFiniteCriterionFrontier` recorded ("construct the canonical
+multiplicity-sensitive infinite sums ... and establish the Bombieri--Lagarias positivity
+equivalence").
+
+| Module | Content |
+|---|---|
+| `RHTower/LiTermBound.lean` | `liTerm w n = 2 - wⁿ - w⁻ⁿ`; `liTerm_eq_neg_mul_sq` (`= -w⁻ⁿ(wⁿ-1)²`); `liTerm_inv` (invariance under `w ↦ w⁻¹`); `liTerm_of_norm_eq_one` (`= 2 - 2Re(wⁿ)` on the circle); **`norm_liTerm_le`** (`≤ n² Mⁿ ‖w-1‖²`, `M = max(‖w‖,‖w‖⁻¹)`); `summable_liTerm`; `re_tsum_liTerm_nonneg` |
+| `RHTower/LiCoefficientXi.lean` | `xiRootW ρ = 1 - 1/ρ`; `norm_xiRootW_eq_one_iff` (unimodular ⟺ on the critical line); `xiRootW_one_sub` (`w_{1-ρ} = w_ρ⁻¹`); `im_eq_zero_of_xiRootW_im_eq_zero`; `finite_xiDivisorSupport_near_half`; **`exists_bound_xiRootW`** (the `w_ρ` live in a fixed annulus); **`xiLiPaired n`** = `2λ_n`; `summable_xiLiPairedTerm`; **`re_xiLiPaired_nonneg_of_rh`** (easy half) |
+| `RHTower/LiBracket.lean` | `liBracket w z = z(z+1)(w-1)²/((z-1)(z-w)(wz-1))` and **`hasSum_liTerm_mul_pow`** — the closed form of `Σ_n liTerm(w,n) zⁿ` |
+| `RHTower/LiPositivityFails.lean` | **`exists_pos_pow_sub_one_lt`** (simultaneous recurrence on a finite torus, by compactness); `re_ge_half_of_norm_sub_one_lt_one`; `exists_ge_pow_re_gt_half`; `summable_re_liTerm_of_one_le`; `finite_far_set`; **`exists_re_tsum_liTerm_neg`** — the abstract hard half |
+| `RHTower/LiCriterion.lean` | `xiRootV` (the modulus-`≥1` representative); **`riemannHypothesis_of_forall_re_xiLiPaired_nonneg`**; capstone **`riemannHypothesis_iff_forall_re_xiLiPaired_nonneg`** |
+
+### The proof, and why it is elementary
+
+The classical route runs through the generating function `Σ λ_n zⁿ`, Vivanti--Pringsheim, and a
+meromorphic continuation with a pole at `1/w_ρ`.  The route taken here avoids all of it.
+
+Pair the zeros: `ρ ↦ 1-ρ` sends `w = 1-1/ρ` to `w⁻¹`, and `liTerm w n = 2 - wⁿ - w⁻ⁿ` is invariant,
+so `Σ_ρ m_ρ liTerm(w_ρ, n) = 2λ_n` **converges absolutely** — the summand is
+`-w⁻ⁿ(wⁿ-1)²`, of size `O(n² Mⁿ ‖w-1‖²)`, and `w_ρ - 1 = -1/ρ` with `Σ m_ρ|ρ|⁻² < ∞`.
+
+If a zero sits off the critical line, normalise every `w` to the representative of modulus `≥ 1`.
+Only finitely many can exceed `q := (1+W)/2`, where `W = ‖w_{ρ₀}‖ > 1`, because `‖w-1‖ ≥ ‖w‖-1` and
+the weighted squares are summable.  The infinite tail contributes `O(n² qⁿ)`.  A pigeonhole on the
+finite product of unit circles (compactness ⟹ two powers are close ⟹ their difference is a power
+near `1`) gives arbitrarily large `n` with `Re(w_iⁿ) ≥ ‖w_i‖ⁿ/2 ≥ 0` for *every* `i` in the finite
+bad set at once, so the finite part is at least `m_{ρ₀} Wⁿ/2`.  Since `W > q`, the exponential beats
+the polynomial and `2λ_n < 0`.
+
+That `w_ρ` real forces `ρ` real — impossible for a Xi zero — is recorded as
+`im_eq_zero_of_xiRootW_im_eq_zero`; it is what the classical Pringsheim route uses instead.
+
+### What Corollary 4.6 still needs
+
+`⟨g_n,g_n⟩_W = 2λ_n = xiLiPaired n`, i.e. the identification of Bombieri--Lagarias's test functions.
+On paper (checked above) `ĝ_n(z) = 1 - (1-1/s)ⁿ` with `s = 1/2 - iz`, so `ĝ_n(-γ) = 1 - w_ρⁿ` and
+`(ĝ_n)^♯(-γ) = ĝ_n(γ) = 1 - w_ρ⁻ⁿ`, whose product is exactly `liTerm(w_ρ, n)`.  The one missing
+Lean brick is the **complex-rate half-line Laplace transform of a monomial**
+
+> `∫_{x>0} xʲ e^{-cx} dx = j! / c^{j+1}` for `Re c > 0`,
+
+a mathlib gap: mathlib's `integral_cpow_mul_exp_neg_mul_Ioi` and the corpus's
+`integral_pow_mul_exp_neg_mul_Ioi` both take a *real* rate; only `HTGeometry.integral_Ioi_cexp_neg`
+(`j = 0`) is complex.  The plan is the explicit antiderivative
+`A_{j+1}(x) = -x^{j+1}e^{-cx}/c + ((j+1)/c) A_j(x)`, `A_0(x) = -e^{-cx}/c`, with
+`A_j(0) = -j!/c^{j+1}` and `A_j(x) → 0`, fed to `integral_Ioi_of_hasDerivAt_of_tendsto`.
