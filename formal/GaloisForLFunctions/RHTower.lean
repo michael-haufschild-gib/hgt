@@ -2400,6 +2400,7 @@ import GaloisForLFunctions.RHTower.DeningerDynSysWittSchemeFaithful
 import GaloisForLFunctions.RHTower.DeningerDynSysTwoPointGamma
 import GaloisForLFunctions.RHTower.DeningerDynSysTwoPointSheafMap
 import GaloisForLFunctions.RHTower.DeningerDynSysWittStalkIso
+import GaloisForLFunctions.RHTower.DeningerDynSysTwoPointStalks
 import GaloisForLFunctions.RHTower.DeningerDynSysWittPerfectDescent
 import GaloisForLFunctions.RHTower.DeningerDynSysAtomDescent
 import GaloisForLFunctions.RHTower.DeningerDynSysWittAtomDescent
@@ -4092,6 +4093,8 @@ import GaloisForLFunctions.RHTower.Sieve.VonMangoldtBlockEstimate
 import GaloisForLFunctions.RHTower.Sieve.TypeIICoefficientEnergy
 import GaloisForLFunctions.RHTower.Sieve.DyadicBlockIco
 import GaloisForLFunctions.RHTower.Sieve.TypeIIDyadicBlocks
+import GaloisForLFunctions.RHTower.Sieve.PairSumSplit
+import GaloisForLFunctions.RHTower.Sieve.OffDiagonalCorrelationBounds
 import GaloisForLFunctions.RHTower.Sieve.VonMangoldtParityCorrection
 import GaloisForLFunctions.RHTower.FriableCoefficientSurjectivity
 import GaloisForLFunctions.RHTower.FriableEdgeCoefficients
@@ -5070,6 +5073,7 @@ import GaloisForLFunctions.RHTower.LiFiniteCriterionFrontier
 import GaloisForLFunctions.RHTower.LiTermBound
 import GaloisForLFunctions.RHTower.LiCoefficientXi
 import GaloisForLFunctions.RHTower.LiBracket
+import GaloisForLFunctions.RHTower.LiPositivityFails
 import GaloisForLFunctions.RHTower.LiReciprocalChebyshevKernel
 import GaloisForLFunctions.RHTower.LiReciprocalKernelCoefficientSign
 import GaloisForLFunctions.RHTower.LiftedGluingFaces
@@ -9103,6 +9107,8 @@ import GaloisForLFunctions.RHTower.MellinTwoSidedGlue
 import GaloisForLFunctions.RHTower.HeadTailVector
 import GaloisForLFunctions.RHTower.ExtendedMellinHeadHardy
 import GaloisForLFunctions.RHTower.DivShiftRepresentative
+import GaloisForLFunctions.RHTower.SoninHardyRepresentative
+import GaloisForLFunctions.RHTower.ExtendedSoninDivision
 import GaloisForLFunctions.RHTower.SoninFromHardyData
 import GaloisForLFunctions.RHTower.ZetaZeroOrderReflection
 import GaloisForLFunctions.RHTower.ZetaDivPowRepresentative

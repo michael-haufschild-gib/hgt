@@ -291,3 +291,24 @@ range union of blocks" (found and reused `Sieve/AdicBlocks.lean`'s
 Every structural step of the card is now Lean-closed.  What remains is purely quantitative:
 bounding `blockTypeIIEnergy j` by diagonal + sub-resonant + super-resonant contributions, choosing
 `U = V = W`, and summing over the blocks and over `r`.
+
+## VC6, second half: the pair split and both off-diagonal regimes (2026-08-23)
+
+Search first: "double sum split diagonal off diagonal erase pair sum finset" — the corpus owns
+`HTGeometry.sum_pair_eq_diag_add_offDiagonal`, but only in `Fintype`/sigma form; the type-II energy
+is indexed by `Finset.Icc 1 L`, so the `Finset`/`erase` form is new and is documented as such.
+
+- `PairSumSplit.lean` — `sum_pair_split` and `diag_pair_sum_le`: the diagonal of the type-II energy
+  costs only `(block length)·Σ_m |a_m|²`, because every diagonal correlation term is unimodular.
+- `OffDiagonalCorrelationBounds.lean` — both regimes for an off-diagonal pair on a dyadic block
+  `[P, Q)`.  The correlation actually runs over `[P', Q') ⊆ [P, Q)`, and one monotonicity step in
+  each variable (`curvedLambda` is antitone in the scale, `√(Q'³) ≤ √(Q³)`, `Q'² ≤ Q²`) restores
+  the block's own endpoints:
+  ```
+  second derivative:  ≤ 2500√(Y/(36πP)) + 22√(36π/Y)·√(Q³),
+  Kuzmin--Landau:     ≤ 75πQ²/(16Y) + 1,          Y = T|r/m₁ − r/m₂|.
+  ```
+  The empty-interval case is discharged separately in the sub-resonant branch.
+
+Remaining: organise the off-diagonal pairs by `h = |m₁ − m₂|` (so that
+`|r/m₁ − r/m₂| = r·h/(m₁m₂)`), choose `U = V = W`, and sum over the blocks and over `r`.

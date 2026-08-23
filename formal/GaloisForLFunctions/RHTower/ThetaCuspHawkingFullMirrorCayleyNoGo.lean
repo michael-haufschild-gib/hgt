@@ -87,63 +87,6 @@ def thetaCuspMovingMirrorFullSecondJetIntegrand
           (lambda : ℂ) * slope) +
       2 * phaseRate * phase * slope)
 
-theorem hasDerivAt_thetaCuspMovingMirrorFullRenormalizedIntegrand
-    (lambda outgoingFrequency incomingFrequency v : ℝ) :
-    HasDerivAt
-      (fun q : ℝ => thetaCuspMovingMirrorFullRenormalizedIntegrand
-        q outgoingFrequency incomingFrequency v)
-      (thetaCuspMovingMirrorFullFirstJetIntegrand
-        lambda outgoingFrequency incomingFrequency v) lambda := by
-  unfold thetaCuspMovingMirrorFullRenormalizedIntegrand
-    thetaCuspMovingMirrorFullFirstJetIntegrand
-  dsimp only
-  have hlin : HasDerivAt
-      (fun q : ℝ => (((-q * outgoingFrequency * thetaCuspFullSource v : ℝ) : ℂ) * I))
-      (((-outgoingFrequency * thetaCuspFullSource v : ℝ) : ℂ) * I) lambda := by
-    convert (((hasDerivAt_id lambda).neg.mul_const outgoingFrequency).mul_const
-      (thetaCuspFullSource v)).ofReal_comp.const_mul I using 1 <;> ring
-  have hphase := hlin.cexp
-  have hslope : HasDerivAt
-      (fun q : ℝ => (((q * outgoingFrequency * deriv thetaCuspFullSource v : ℝ) : ℂ)))
-      (((outgoingFrequency * deriv thetaCuspFullSource v : ℝ) : ℂ)) lambda := by
-    convert (((hasDerivAt_id lambda).mul_const outgoingFrequency).mul_const
-      (deriv thetaCuspFullSource v)).ofReal_comp using 1 <;> ring
-  convert ((hphase.mul ((hasDerivAt_const lambda
-      ((outgoingFrequency - incomingFrequency : ℝ) : ℂ)).add hslope)).sub_const
-        ((outgoingFrequency - incomingFrequency : ℝ) : ℂ)).const_mul
-          (Complex.exp (((-(incomingFrequency + outgoingFrequency) * v : ℝ) : ℂ) * I))
-    using 1 <;> ring
-
-theorem hasDerivAt_thetaCuspMovingMirrorFullFirstJetIntegrand
-    (lambda outgoingFrequency incomingFrequency v : ℝ) :
-    HasDerivAt
-      (fun q : ℝ => thetaCuspMovingMirrorFullFirstJetIntegrand
-        q outgoingFrequency incomingFrequency v)
-      (thetaCuspMovingMirrorFullSecondJetIntegrand
-        lambda outgoingFrequency incomingFrequency v) lambda := by
-  unfold thetaCuspMovingMirrorFullFirstJetIntegrand
-    thetaCuspMovingMirrorFullSecondJetIntegrand
-  dsimp only
-  let rate : ℂ := ((-outgoingFrequency * thetaCuspFullSource v : ℝ) : ℂ) * I
-  let slope : ℂ := ((outgoingFrequency * deriv thetaCuspFullSource v : ℝ) : ℂ)
-  have hlin : HasDerivAt
-      (fun q : ℝ => (((-q * outgoingFrequency * thetaCuspFullSource v : ℝ) : ℂ) * I))
-      rate lambda := by
-    dsimp only [rate]
-    convert (((hasDerivAt_id lambda).neg.mul_const outgoingFrequency).mul_const
-      (thetaCuspFullSource v)).ofReal_comp.const_mul I using 1 <;> ring
-  have hphase := hlin.cexp
-  have hslope : HasDerivAt
-      (fun q : ℝ => (((outgoingFrequency - incomingFrequency : ℝ) : ℂ) +
-        (q : ℂ) * slope)) slope lambda := by
-    convert (hasDerivAt_const lambda
-      ((outgoingFrequency - incomingFrequency : ℝ) : ℂ)).add
-        ((hasDerivAt_id lambda).ofReal_comp.const_mul slope) using 1 <;> ring
-  convert (((hphase.const_mul rate).mul hslope).add
-      (hphase.const_mul slope)).const_mul
-        (Complex.exp (((-(incomingFrequency + outgoingFrequency) * v : ℝ) : ℂ) * I))
-    using 1 <;> dsimp only [rate, slope] <;> ring
-
 /-! ## Source-square transform and nonzero physical second jet -/
 
 /-- Fourier transform of the squared theta source in physical angular-frequency normalization. -/
@@ -159,23 +102,26 @@ theorem integrable_thetaCuspFullSource_sq_complex :
   have hmajor : Integrable (fun v : ℝ => C ^ 2 * Real.exp (-|v|)) :=
     integrable_exp_neg_abs.const_mul _
   apply hmajor.mono
-  · exact (contDiff_thetaCuspFullSource.continuous.ofReal.pow 2).aestronglyMeasurable
+  · exact ((Complex.continuous_ofReal.comp
+      contDiff_thetaCuspFullSource.continuous).pow 2).aestronglyMeasurable
   · filter_upwards with v
     have hg := abs_thetaCuspFullSource_le v
     have hexp : Real.exp (-|v|) ≤ 1 := by
       simpa using Real.exp_le_one_iff.mpr (neg_nonpos.mpr (abs_nonneg v))
     have hgC : |thetaCuspFullSource v| ≤ C :=
       hg.trans (by simpa only [mul_one] using mul_le_mul_of_nonneg_left hexp hC)
-    rw [norm_pow, Complex.norm_real, Real.norm_eq_abs]
+    rw [norm_pow, Complex.norm_real, Real.norm_eq_abs,
+      Real.norm_eq_abs, abs_of_nonneg
+        (mul_nonneg (sq_nonneg C) (Real.exp_pos _).le)]
     calc
       |thetaCuspFullSource v| ^ 2 ≤
           (C * Real.exp (-|v|)) ^ 2 := pow_le_pow_left₀ (abs_nonneg _) hg 2
       _ = C ^ 2 * Real.exp (-2 * |v|) := by
         rw [mul_pow, ← Real.exp_nat_mul]
         ring_nf
-      _ ≤ C ^ 2 * Real.exp (-|v|) := by
-        gcongr
-        exact Real.exp_le_exp.mpr (by linarith [abs_nonneg v])
+      _ ≤ C ^ 2 * Real.exp (-|v|) :=
+        mul_le_mul_of_nonneg_left
+          (Real.exp_le_exp.mpr (by linarith [abs_nonneg v])) (sq_nonneg C)
 
 theorem continuous_thetaCuspSourceSquareFourier :
     Continuous thetaCuspSourceSquareFourier := by
@@ -188,7 +134,7 @@ theorem thetaCuspSourceSquareFourier_zero_re_pos :
     0 < (thetaCuspSourceSquareFourier 0).re := by
   rw [thetaCuspSourceSquareFourier, zero_div, Real.fourier_real_eq_integral_exp_smul]
   simp only [mul_zero, neg_zero, ofReal_zero, zero_mul, Complex.exp_zero, one_smul]
-  rw [Complex.integral_re]
+  rw [← integral_re integrable_thetaCuspFullSource_sq_complex]
   simp only [map_pow, ofReal_re]
   have hsqReal : Integrable (fun v : ℝ => thetaCuspFullSource v ^ 2) := by
     simpa only [Complex.ofReal_pow] using integrable_thetaCuspFullSource_sq_complex.re
@@ -198,8 +144,8 @@ theorem thetaCuspSourceSquareFourier_zero_re_pos :
     ext v
     simp only [Function.mem_support, ne_eq, mem_univ, iff_true]
     exact pow_ne_zero 2 (thetaCuspFullSource_pos v).ne'
-  rw [hsupp, MeasureTheory.measure_univ]
-  exact MeasureTheory.volume_real_pos
+  rw [hsupp]
+  simp
 
 theorem exists_pos_thetaCuspSourceSquareFourier_ne_zero :
     ∃ totalFrequency : ℝ, 0 < totalFrequency ∧
@@ -218,26 +164,102 @@ theorem exists_pos_thetaCuspSourceSquareFourier_ne_zero :
   have hsre : 0 < (thetaCuspSourceSquareFourier s).re := hball hsball
   exact ⟨s, hspos, fun hzero' => by rw [hzero'] at hsre; simp at hsre⟩
 
-/-- Exact source-square normal form of the physical full-mirror second coupling jet. -/
-theorem integral_thetaCuspMovingMirrorFullSecondJetIntegrand_zero
-    (outgoingFrequency incomingFrequency : ℝ) :
+/-- Complex square of the theta source and its ordinary derivative. -/
+private def thetaCuspSourceSquare (v : ℝ) : ℂ :=
+  (thetaCuspFullSource v : ℂ) ^ 2
+
+private theorem differentiable_thetaCuspSourceSquare :
+    Differentiable ℝ thetaCuspSourceSquare := by
+  intro v
+  exact (((contDiff_thetaCuspFullSource.differentiable (by simp) v).hasDerivAt
+    .ofReal_comp).pow 2).differentiableAt
+
+private theorem deriv_thetaCuspSourceSquare (v : ℝ) :
+    deriv thetaCuspSourceSquare v =
+      2 * (thetaCuspFullSource v : ℂ) * (deriv thetaCuspFullSource v : ℂ) := by
+  have hsource : HasDerivAt (fun x : ℝ => (thetaCuspFullSource x : ℂ))
+      (deriv thetaCuspFullSource v : ℂ) v :=
+    (contDiff_thetaCuspFullSource.differentiable (by simp) v).hasDerivAt.ofReal_comp
+  simpa [thetaCuspSourceSquare, pow_two] using (hsource.pow 2).deriv
+
+private theorem integrable_deriv_thetaCuspSourceSquare :
+    Integrable (deriv thetaCuspSourceSquare) := by
+  let C0 := thetaCuspDerivativeExpConstant 0
+  let C1 := thetaCuspDerivativeExpConstant 1
+  have hC0 : 0 ≤ C0 := thetaCuspDerivativeExpConstant_nonneg 0
+  have hC1 : 0 ≤ C1 := thetaCuspDerivativeExpConstant_nonneg 1
+  have hmajor : Integrable
+      (fun v : ℝ => 2 * C0 * C1 * Real.exp (-|v|)) :=
+    integrable_exp_neg_abs.const_mul _
+  apply hmajor.mono'
+  · exact (differentiable_thetaCuspSourceSquare.continuous.deriv
+      differentiable_thetaCuspSourceSquare).aestronglyMeasurable
+  · filter_upwards with v
+    rw [deriv_thetaCuspSourceSquare, norm_mul, norm_mul, Complex.norm_natCast,
+      Complex.norm_real, Complex.norm_real, Real.norm_eq_abs, Real.norm_eq_abs,
+      Real.norm_eq_abs, abs_of_nonneg
+        (mul_nonneg (mul_nonneg (mul_nonneg (by norm_num) hC0) hC1)
+          (Real.exp_pos _).le)]
+    have hg := abs_thetaCuspFullSource_le v
+    have hg' := abs_iteratedDeriv_thetaCuspFullSource_le_exp_neg_abs 1 v
+    rw [iteratedDeriv_one] at hg'
+    calc
+      2 * |thetaCuspFullSource v| * |deriv thetaCuspFullSource v| ≤
+          2 * (C0 * Real.exp (-|v|)) * (C1 * Real.exp (-|v|)) := by gcongr
+      _ = 2 * C0 * C1 * Real.exp (-2 * |v|) := by
+        rw [← Real.exp_nat_mul]
+        ring_nf
+      _ ≤ 2 * C0 * C1 * Real.exp (-|v|) :=
+        mul_le_mul_of_nonneg_left
+          (Real.exp_le_exp.mpr (by linarith [abs_nonneg v]))
+          (mul_nonneg (mul_nonneg (by norm_num) hC0) hC1)
+
+/-- Exact source-square normal form of the balanced physical full-mirror second coupling jet. -/
+theorem integral_thetaCuspMovingMirrorFullSecondJetIntegrand_zero_balanced
+    (frequency : ℝ) :
     (∫ v : ℝ, thetaCuspMovingMirrorFullSecondJetIntegrand
-      0 outgoingFrequency incomingFrequency v) =
-      (2 * incomingFrequency * outgoingFrequency ^ 2 : ℝ) *
-        thetaCuspSourceSquareFourier (incomingFrequency + outgoingFrequency) := by
-  rw [thetaCuspSourceSquareFourier, Real.fourier_real_eq_integral_exp_smul]
-  rw [← integral_const_mul]
-  apply integral_congr_ae
-  filter_upwards with v
-  unfold thetaCuspMovingMirrorFullSecondJetIntegrand
-  dsimp only
-  simp only [zero_mul, ofReal_zero, Complex.exp_zero, zero_smul]
-  push_cast
-  congr 1
-  · congr 1
+      0 frequency frequency v) =
+      (2 * frequency ^ 3 : ℝ) * thetaCuspSourceSquareFourier (2 * frequency) := by
+  have hFourierDeriv := congrFun
+    (Real.fourier_deriv
+      (f := thetaCuspSourceSquare)
+      (by simpa only [thetaCuspSourceSquare] using
+        integrable_thetaCuspFullSource_sq_complex)
+      differentiable_thetaCuspSourceSquare
+      integrable_deriv_thetaCuspSourceSquare)
+    (frequency / Real.pi)
+  have hscale : 2 * frequency / (2 * Real.pi) = frequency / Real.pi := by
     field_simp [Real.pi_ne_zero]
     ring
-  · ring
+  rw [thetaCuspSourceSquareFourier, hscale]
+  rw [Real.fourier_real_eq_integral_exp_smul] at hFourierDeriv ⊢
+  rw [← integral_const_mul]
+  calc
+    (∫ v : ℝ, thetaCuspMovingMirrorFullSecondJetIntegrand
+        0 frequency frequency v) =
+        (-Complex.I * (frequency : ℂ) ^ 2) *
+          ∫ v : ℝ,
+            Complex.exp (((-2 * frequency * v : ℝ) : ℂ) * Complex.I) *
+              deriv thetaCuspSourceSquare v := by
+        rw [← integral_const_mul]
+        apply integral_congr_ae
+        filter_upwards with v
+        rw [deriv_thetaCuspSourceSquare]
+        unfold thetaCuspMovingMirrorFullSecondJetIntegrand
+        dsimp only
+        simp only [zero_mul, ofReal_zero, Complex.exp_zero]
+        push_cast
+        ring
+    _ = (2 * frequency ^ 3 : ℝ) *
+          ∫ v : ℝ,
+            Complex.exp
+                (↑(-2 * Real.pi * v * (frequency / Real.pi)) * Complex.I) •
+              thetaCuspSourceSquare v := by
+        rw [hFourierDeriv]
+        simp only [smul_eq_mul]
+        push_cast
+        field_simp [Real.pi_ne_zero]
+        ring
 
 /-- Some balanced positive physical mirror sector has a nonzero second coupling jet. -/
 theorem exists_balanced_pos_fullMirror_secondJet_ne_zero :
@@ -248,66 +270,19 @@ theorem exists_balanced_pos_fullMirror_secondJet_ne_zero :
   let frequency := s / 2
   have hfrequency : 0 < frequency := half_pos hs
   refine ⟨frequency, hfrequency, ?_⟩
-  rw [integral_thetaCuspMovingMirrorFullSecondJetIntegrand_zero]
-  have hsum : frequency + frequency = s := by dsimp only [frequency]; ring
+  rw [integral_thetaCuspMovingMirrorFullSecondJetIntegrand_zero_balanced]
+  have hsum : 2 * frequency = s := by dsimp only [frequency]; ring
   rw [hsum]
   exact mul_ne_zero (by positivity) hsq
 
 /-! ## Cayley mismatch -/
 
-theorem hasDerivAt_thetaCuspHawkingCayleyTransition_zero
-    (a omega : ℝ) :
-    HasDerivAt (fun lambda : ℝ => thetaCuspHawkingCayleyTransition lambda a omega)
-      (thetaCuspHawkingFriedrichsShellFormFactor a omega) 0 := by
-  unfold thetaCuspHawkingCayleyTransition thetaCuspHawkingCayleyLoad
-  convert (((hasDerivAt_id 0).ofReal_comp.mul_const
-      (thetaCuspHawkingFriedrichsShellFormFactor a omega)).div
-        ((hasDerivAt_const 0 (1 : ℂ)).add
-          ((((hasDerivAt_id 0).pow 2).mul_const
-            (Complex.normSq (thetaCuspHawkingFriedrichsShellFormFactor a omega))).div_const 4).ofReal_comp)
-        (by norm_num)) using 1 <;> norm_num
-
-theorem hasDerivAt_deriv_thetaCuspHawkingCayleyTransition_zero
-    (a omega : ℝ) :
-    HasDerivAt
-      (fun lambda : ℝ => deriv
-        (fun q : ℝ => thetaCuspHawkingCayleyTransition q a omega) lambda)
-      0 0 := by
-  have hnear : ∀ lambda : ℝ,
-      HasDerivAt (fun q : ℝ => thetaCuspHawkingCayleyTransition q a omega)
-        (((1 - thetaCuspHawkingCayleyLoad lambda a omega) /
-          (1 + thetaCuspHawkingCayleyLoad lambda a omega) ^ 2 : ℝ) : ℂ) *
-          thetaCuspHawkingFriedrichsShellFormFactor a omega lambda := by
-    intro lambda
-    unfold thetaCuspHawkingCayleyTransition thetaCuspHawkingCayleyLoad
-    have hdenR : (1 + lambda ^ 2 *
-        Complex.normSq (thetaCuspHawkingFriedrichsShellFormFactor a omega) / 4) ≠ 0 := by
-      positivity
-    convert (((hasDerivAt_id lambda).ofReal_comp.mul_const
-      (thetaCuspHawkingFriedrichsShellFormFactor a omega)).div
-        ((hasDerivAt_const lambda (1 : ℂ)).add
-          ((((hasDerivAt_id lambda).pow 2).mul_const
-            (Complex.normSq (thetaCuspHawkingFriedrichsShellFormFactor a omega))).div_const 4).ofReal_comp)
-        (by exact_mod_cast hdenR)) using 1 <;> field_simp [hdenR] <;> ring
-  have hderivEq : (fun lambda : ℝ => deriv
-      (fun q : ℝ => thetaCuspHawkingCayleyTransition q a omega) lambda) =
-      fun lambda : ℝ =>
-        (((1 - thetaCuspHawkingCayleyLoad lambda a omega) /
-          (1 + thetaCuspHawkingCayleyLoad lambda a omega) ^ 2 : ℝ) : ℂ) *
-          thetaCuspHawkingFriedrichsShellFormFactor a omega := by
-    funext lambda
-    exact (hnear lambda).deriv
-  rw [hderivEq]
-  convert (hasDerivAt_const (0 : ℝ)
-      (thetaCuspHawkingFriedrichsShellFormFactor a omega)).mul
-    (((((hasDerivAt_const (0 : ℝ) (1 : ℝ)).sub
-      ((((hasDerivAt_id (0 : ℝ)).pow 2).mul_const
-        (Complex.normSq (thetaCuspHawkingFriedrichsShellFormFactor a omega))).div_const 4)).mul
-      (((hasDerivAt_const (0 : ℝ) (1 : ℝ)).add
-        ((((hasDerivAt_id (0 : ℝ)).pow 2).mul_const
-          (Complex.normSq (thetaCuspHawkingFriedrichsShellFormFactor a omega))).div_const 4)).pow 2).inv₀
-        (by norm_num)).ofReal_comp) using 1 <;>
-    simp [thetaCuspHawkingCayleyLoad]
+/-- Every canonical Cayley transition is odd in the coupling, hence has no even coupling jet. -/
+theorem thetaCuspHawkingCayleyTransition_neg
+    (lambda a omega : ℝ) :
+    thetaCuspHawkingCayleyTransition (-lambda) a omega =
+      -thetaCuspHawkingCayleyTransition lambda a omega := by
+  simp [thetaCuspHawkingCayleyTransition, thetaCuspHawkingCayleyLoad]
 
 /-- **[FALSIFIED] Canonical Cayley/full-mirror identification.**  Exact theta-mirror dynamics
 has a nonzero even coupling jet in a positive balanced sector, while every Cayley block has zero

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.AntiLownerCollisionBridge
+import GaloisForLFunctions.HTGeometry.HigherLoewnerCollisionConfluence
 import GaloisForLFunctions.HTGeometry.SpectralActionPhaseAnalytic
 import GaloisForLFunctions.RHTower.ThetaCuspTiltFluxWeilParityEulerRayWeld
 import GaloisForLFunctions.RHTower.SuzukiTorqueContinuationAnalytic
@@ -41,6 +42,7 @@ passage from separated Loewner matrices to those towers remains.
 -/
 
 open Complex
+open scoped Matrix MatrixOrder Topology
 
 namespace RHTower
 
@@ -244,6 +246,114 @@ theorem xiSquaredEulerFullKernel_sub_fullQLoewner_eq_decreasingLoewner
   field_simp [hxy, hsum, hsq]
   ring
 
+/-- On injective nodes, the derivative-filled Löwner matrix is the removable divided-slope
+matrix. -/
+theorem loewnerDerivativeMatrixAt_eq_dslope
+    {ι : Type*} [DecidableEq ι]
+    (f : ℝ → ℝ) (x : ι → ℝ)
+    (hinj : Function.Injective x)
+    (hderiv : ∀ i, HasDerivAt f (deriv f (x i)) (x i)) :
+    loewnerDerivativeMatrixAt f (fun i => deriv f (x i)) x =
+      fun i j => dslope f (x i) (x j) := by
+  ext i j
+  by_cases hij : i = j
+  · subst j
+    simp [loewnerDerivativeMatrixAt, dslope_same, (hderiv i).deriv]
+  · rw [loewnerDerivativeMatrixAt, if_neg hij]
+    rw [dslope_of_ne _ (hinj.ne hij).symm, slope_def_field]
+    rw [show x j - x i = -(x i - x j) by ring, div_neg, neg_div]
+
+/-- Derivative of the increasing Audenaert reflection-parity transform. -/
+theorem hasDerivAt_xiEulerAudenaertIncreasing
+    {X : ℝ} (hX : 0 < X) :
+    HasDerivAt xiEulerAudenaertIncreasing
+      (xiEulerAudenaertDecreasing X -
+        X * (xiShiftedReciprocalMoment X 1).re) X := by
+  have h := (hasDerivAt_id X).mul
+    (hasDerivAt_xiEulerAudenaertDecreasing hX)
+  convert h using 1
+  · simp [xiEulerAudenaertIncreasing]
+  · ring
+
+/-- Derivative of the reversed decreasing Audenaert transform. -/
+theorem hasDerivAt_neg_xiEulerAudenaertDecreasing
+    {X : ℝ} (hX : 0 < X) :
+    HasDerivAt (fun Y => -xiEulerAudenaertDecreasing Y)
+      (xiShiftedReciprocalMoment X 1).re X := by
+  convert (hasDerivAt_xiEulerAudenaertDecreasing hX).neg using 1
+  ring
+
+/-- Exact confluent version of the even reflection-parity splitting, including diagonal nodes. -/
+theorem xiSquaredEuler_add_loewner_eq_increasing_dslope
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (x : ι → ℝ) (hx : ∀ i, 0 < x i) (hinj : Function.Injective x) :
+    antiLownerMatrixAt xiSquaredEulerFullQ x +
+        loewnerDerivativeMatrixAt xiSquaredEulerFullQ
+          (fun i => deriv xiSquaredEulerFullQ (x i)) x =
+      2 • (fun i j => dslope xiEulerAudenaertIncreasing
+        ((x i) ^ 2) ((x j) ^ 2) : Matrix ι ι ℝ) := by
+  ext i j
+  simp only [Matrix.add_apply, Matrix.smul_apply, smul_eq_mul]
+  by_cases hij : i = j
+  · subst j
+    have hX : 0 < (x i) ^ 2 := sq_pos_of_pos (hx i)
+    rw [loewnerDerivativeMatrixAt, if_pos rfl, dslope_same,
+      (hasDerivAt_xiSquaredEulerFullQ (hx i)).deriv,
+      (hasDerivAt_xiEulerAudenaertIncreasing hX).deriv]
+    rw [antiLownerMatrixAt, signedAntiLownerMatrix]
+    simp only [Function.comp_apply, one_mul]
+    rw [xiSquaredEulerFullQ_eq_mul_audenaertDecreasing (hx i)]
+    field_simp [(hx i).ne']
+    ring
+  · rw [loewnerDerivativeMatrixAt, if_neg hij]
+    rw [antiLownerMatrixAt, signedAntiLownerMatrix]
+    simp only [Function.comp_apply, one_mul]
+    have hxy : x i ≠ x j := hinj.ne hij
+    have hsq : (x j) ^ 2 ≠ (x i) ^ 2 := by
+      intro h
+      have hsqrt := congrArg Real.sqrt h
+      rw [Real.sqrt_sq (hx j).le, Real.sqrt_sq (hx i).le] at hsqrt
+      exact hxy hsqrt.symm
+    rw [dslope_of_ne _ hsq, slope_def_field]
+    exact xiSquaredEulerFullKernel_add_fullQLoewner_eq_increasingLoewner
+      (hx i) (hx j) hxy
+
+/-- Exact confluent version of the odd reflection-parity splitting, including diagonal nodes. -/
+theorem xiSquaredEuler_sub_loewner_eq_decreasing_dslope
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (x : ι → ℝ) (hx : ∀ i, 0 < x i) (hinj : Function.Injective x) :
+    antiLownerMatrixAt xiSquaredEulerFullQ x -
+        loewnerDerivativeMatrixAt xiSquaredEulerFullQ
+          (fun i => deriv xiSquaredEulerFullQ (x i)) x =
+      (fun i j => 2 * x i * x j *
+        dslope (fun X => -xiEulerAudenaertDecreasing X)
+          ((x i) ^ 2) ((x j) ^ 2) : Matrix ι ι ℝ) := by
+  ext i j
+  simp only [Matrix.sub_apply]
+  by_cases hij : i = j
+  · subst j
+    have hX : 0 < (x i) ^ 2 := sq_pos_of_pos (hx i)
+    rw [loewnerDerivativeMatrixAt, if_pos rfl, dslope_same,
+      (hasDerivAt_xiSquaredEulerFullQ (hx i)).deriv,
+      (hasDerivAt_neg_xiEulerAudenaertDecreasing hX).deriv]
+    rw [antiLownerMatrixAt, signedAntiLownerMatrix]
+    simp only [Function.comp_apply, one_mul]
+    rw [xiSquaredEulerFullQ_eq_mul_audenaertDecreasing (hx i)]
+    field_simp [(hx i).ne']
+    ring
+  · rw [loewnerDerivativeMatrixAt, if_neg hij]
+    rw [antiLownerMatrixAt, signedAntiLownerMatrix]
+    simp only [Function.comp_apply, one_mul]
+    have hxy : x i ≠ x j := hinj.ne hij
+    have hsq : (x j) ^ 2 ≠ (x i) ^ 2 := by
+      intro h
+      have hsqrt := congrArg Real.sqrt h
+      rw [Real.sqrt_sq (hx j).le, Real.sqrt_sq (hx i).le] at hsqrt
+      exact hxy hsqrt.symm
+    rw [dslope_of_ne _ hsq, slope_def_field]
+    exact xiSquaredEulerFullKernel_sub_fullQLoewner_eq_decreasingLoewner
+      (hx i) (hx j) hxy
+
 /-- The squared-Euler anti-Löwner producer feeds the complete finite sign-switch/collision bridge.
 Thus universal doubled-configuration positivity forces both confluent reflection-parity Löwner
 matrices at every positive injective node family. -/
@@ -266,6 +376,44 @@ theorem xiSquaredEulerAntiLownerProducer_imp_add_sub_loewnerDerivative
   · intro i
     exact (hasDerivAt_xiSquaredEulerFullQ (hx i)).differentiableAt.hasDerivAt
   · exact hanti
+
+/-- Universal doubled anti-Löwner positivity forces finite Löwner positivity for both actual
+Audenaert reflection-parity transforms on every positive injective squared-node family. -/
+theorem xiSquaredEulerAntiLownerProducer_imp_parityDslope_posSemidef
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (x : ι → ℝ)
+    (hx : ∀ i, 0 < x i)
+    (hinj : Function.Injective x)
+    (hanti : ∀ z : ι ⊕ ι → ℝ, (∀ k, 0 < z k) → Function.Injective z →
+      (antiLownerMatrixAt xiSquaredEulerFullQ z).PosSemidef) :
+    ((fun i j => dslope xiEulerAudenaertIncreasing
+        ((x i) ^ 2) ((x j) ^ 2) : Matrix ι ι ℝ).PosSemidef) ∧
+      ((fun i j => dslope (fun X => -xiEulerAudenaertDecreasing X)
+        ((x i) ^ 2) ((x j) ^ 2) : Matrix ι ι ℝ).PosSemidef) := by
+  obtain ⟨hadd, hsub⟩ :=
+    xiSquaredEulerAntiLownerProducer_imp_add_sub_loewnerDerivative x hx hinj hanti
+  constructor
+  · rw [xiSquaredEuler_add_loewner_eq_increasing_dslope x hx hinj] at hadd
+    have hscaled := hadd.smul (show 0 ≤ (1 / 2 : ℝ) by norm_num)
+    simpa only [smul_smul, one_smul] using hscaled
+  · let D : Matrix ι ι ℝ := Matrix.diagonal fun i => (x i)⁻¹
+    have hcong := hsub.mul_mul_conjTranspose_same D
+    have hrecover :
+        D * (antiLownerMatrixAt xiSquaredEulerFullQ x -
+          loewnerDerivativeMatrixAt xiSquaredEulerFullQ
+            (fun i => deriv xiSquaredEulerFullQ (x i)) x) * Dᴴ =
+          2 • (fun i j => dslope (fun X => -xiEulerAudenaertDecreasing X)
+            ((x i) ^ 2) ((x j) ^ 2) : Matrix ι ι ℝ) := by
+      rw [xiSquaredEuler_sub_loewner_eq_decreasing_dslope x hx hinj]
+      ext i j
+      simp only [D, Matrix.diagonal_mul, Matrix.mul_diagonal,
+        Matrix.conjTranspose_apply, Matrix.diagonal_apply, star_id_of_comm,
+        Matrix.smul_apply, smul_eq_mul]
+      field_simp [(hx i).ne', (hx j).ne']
+      ring
+    rw [hrecover] at hcong
+    have hscaled := hcong.smul (show 0 ≤ (1 / 2 : ℝ) by norm_num)
+    simpa only [smul_smul, one_smul] using hscaled
 
 /-! ## Collision derivatives are the RH-deciding resolvent moments -/
 

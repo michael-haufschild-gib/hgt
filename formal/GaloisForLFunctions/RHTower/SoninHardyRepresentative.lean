@@ -135,7 +135,7 @@ theorem isMellinHeadHardy_divShiftNF (ha : 0 < a) (hev : v ∈ evenSubspace)
     have hne : analyticOrderAt (soninHardyRep a c d v) w₀ ≠ 0 := by
       intro h
       exact (hanaRep.analyticOrderAt_eq_zero.1 h) hvanRep
-    exact ENat.one_le_iff_ne_zero.2 hne
+    exact Order.one_le_iff_ne_zero.2 hne
   obtain ⟨HQ, N, hHQ, hHQeq⟩ := exists_isHalfPlaneHardy_div_pow hHardy hanaRep hord
   refine ⟨HQ, N, hHQ, ?_⟩
   have hopen : IsOpen {w : ℂ | 0 < w.re} := isOpen_lt continuous_const Complex.continuous_re
@@ -181,7 +181,8 @@ theorem isMellinHeadHardy_divShiftNF (ha : 0 < a) (hev : v ∈ evenSubspace)
         (continuous_const_cpow_ofReal ha).continuousAt
       have hc3 : ContinuousAt (fun z : ℂ => divShiftNF F ρ (z + 1 / 2)) w := by
         have hsh : ContinuousAt (fun z : ℂ => z + (1 : ℂ) / 2) w := by fun_prop
-        exact hQana.continuousAt.comp hsh
+        exact ContinuousAt.comp (g := divShiftNF F ρ) (f := fun z : ℂ => z + (1 : ℂ) / 2)
+          (x := w) hQana.continuousAt hsh
       exact hc1.mul (hc2.mul hc3)
     have hopen2 : IsOpen {z : ℂ | 0 < z.re ∧ z ≠ 1 / 2} := by
       have hset : {z : ℂ | 0 < z.re ∧ z ≠ 1 / 2} = {z : ℂ | 0 < z.re} ∩ {(1 : ℂ) / 2}ᶜ := by

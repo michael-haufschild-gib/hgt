@@ -166,6 +166,108 @@ theorem exists_two_sided_primeTailCurrent {z : ℂ} (hz : 1 < z.re) :
     rw [hEq2, le_div_iff₀ (by positivity)]
     exact le_of_lt hmem.2
 
+/-! ## The wall -/
+
+/-- The weighted square of the current. -/
+def wallIntegrand (z : ℂ) (α : ℝ) (x : ℝ) : ℝ := (x ^ α * ‖primeTailCurrent z x‖) ^ 2
+
+theorem aestronglyMeasurable_wallIntegrand (z : ℂ) (α : ℝ) {s : Set ℝ} (hs : s ⊆ Ioo (0 : ℝ) 1) :
+    AEStronglyMeasurable (wallIntegrand z α) (volume.restrict s) := by
+  have hbase : AEStronglyMeasurable (wallIntegrand z α) (volume.restrict (Ioo (0 : ℝ) 1)) := by
+    refine (AEStronglyMeasurable.mul ?_ (aestronglyMeasurable_primeTailCurrent z).norm).pow 2
+    exact ((measurable_id.pow_const α).aestronglyMeasurable).restrict
+  exact hbase.mono_measure (Measure.restrict_mono hs le_rfl)
+
+theorem integrableOn_wallIntegrand_upper {z : ℂ} (hz : 1 < z.re) {δ : ℝ} (hδ : 0 < δ)
+    (hδ1 : δ < 1) (α : ℝ) : IntegrableOn (wallIntegrand z α) (Ico δ 1) volume := by
+  set M : ℝ := (max (δ ^ α) 1 * (δ ^ (-z.re) * primeTailBound z.re)) ^ 2 with hM
+  refine Integrable.mono' (g := fun _ : ℝ => M) ?_
+    (aestronglyMeasurable_wallIntegrand z α (fun x hx => ⟨lt_of_lt_of_le hδ hx.1, hx.2⟩)) ?_
+  · refine integrableOn_const ?_ ?_
+    · exact ne_of_lt (lt_of_le_of_lt (measure_mono Set.Ico_subset_Icc_self)
+        (by simp [Real.volume_Icc]))
+    · simp [enorm_eq_nnnorm]
+  · filter_upwards [self_mem_ae_restrict measurableSet_Ico] with x hx
+    have hx0 : (0 : ℝ) < x := lt_of_lt_of_le hδ hx.1
+    have hx1 : x ≤ 1 := le_of_lt hx.2
+    have hpow : x ^ α ≤ max (δ ^ α) 1 := by
+      rcases le_or_gt 0 α with hα | hα
+      · exact le_trans (Real.rpow_le_one hx0.le hx1 hα) (le_max_right _ _)
+      · exact le_trans (Real.rpow_le_rpow_of_nonpos hδ hx.1 hα.le) (le_max_left _ _)
+    have hnorm : ‖primeTailCurrent z x‖ ≤ δ ^ (-z.re) * primeTailBound z.re := by
+      refine le_trans (norm_primeTailCurrent_le hz hx0 hx1) ?_
+      refine mul_le_mul_of_nonneg_right ?_ (primeTailBound_nonneg z.re)
+      exact Real.rpow_le_rpow_of_nonpos hδ hx.1 (by linarith)
+    have hprod : x ^ α * ‖primeTailCurrent z x‖
+        ≤ max (δ ^ α) 1 * (δ ^ (-z.re) * primeTailBound z.re) := by
+      refine mul_le_mul hpow hnorm (norm_nonneg _) ?_
+      exact le_trans zero_le_one (le_max_right _ _)
+    have hnn : 0 ≤ x ^ α * ‖primeTailCurrent z x‖ :=
+      mul_nonneg (Real.rpow_pos_of_pos hx0 α).le (norm_nonneg _)
+    rw [Real.norm_of_nonneg (by rw [wallIntegrand]; positivity), wallIntegrand, hM]
+    exact pow_le_pow_left₀ hnn hprod 2
+
+theorem integrableOn_wallIntegrand_lower {z : ℂ} (hz : 1 < z.re) {α : ℝ} (hα : 1 / 2 ≤ α)
+    {δ : ℝ} (hδ : 0 < δ) (hδ1 : δ < 1 / 4)
+    (hbd : ∀ x ∈ Ioo (0 : ℝ) δ,
+      ‖primeTailCurrent z x‖ ≤ 2 / ‖z - 1‖ * (x * Real.log x⁻¹)⁻¹) :
+    IntegrableOn (wallIntegrand z α) (Ioo 0 δ) volume := by
+  set C : ℝ := (2 / ‖z - 1‖) ^ 2 with hC
+  have hmaj : IntegrableOn (fun x : ℝ => C * (x * (Real.log x) ^ 2)⁻¹) (Ioo 0 δ) volume :=
+    ((integrableOn_inv_mul_log_sq (by linarith : δ < 1)).mono_set
+      Ioo_subset_Ioc_self).const_mul C
+  refine Integrable.mono' hmaj
+    (aestronglyMeasurable_wallIntegrand z α (fun x hx => ⟨hx.1, by linarith [hx.2]⟩)) ?_
+  filter_upwards [self_mem_ae_restrict measurableSet_Ioo] with x hx
+  have hx0 : (0 : ℝ) < x := hx.1
+  have hx1 : x < 1 := by linarith [hx.2]
+  have hlogpos : (0 : ℝ) < Real.log x⁻¹ := by
+    refine Real.log_pos ?_
+    rw [one_lt_inv_iff₀]
+    exact ⟨hx0, hx1⟩
+  have hloginv : Real.log x⁻¹ = -Real.log x := Real.log_inv x
+  have hnn : 0 ≤ x ^ α * ‖primeTailCurrent z x‖ :=
+    mul_nonneg (Real.rpow_pos_of_pos hx0 α).le (norm_nonneg _)
+  have hstep : (x ^ α * ‖primeTailCurrent z x‖) ^ 2
+      ≤ (x ^ α * (2 / ‖z - 1‖ * (x * Real.log x⁻¹)⁻¹)) ^ 2 := by
+    refine pow_le_pow_left₀ hnn ?_ 2
+    exact mul_le_mul_of_nonneg_left (hbd x hx) (Real.rpow_pos_of_pos hx0 α).le
+  have hexp : (x ^ α * (2 / ‖z - 1‖ * (x * Real.log x⁻¹)⁻¹)) ^ 2
+      = C * (x ^ (2 * α) * (x ^ (2 : ℝ) * (Real.log x) ^ 2)⁻¹) := by
+    rw [hC, hloginv]
+    have hx2 : x ^ (2 * α) = (x ^ α) ^ 2 := by
+      rw [← Real.rpow_natCast (x ^ α) 2, ← Real.rpow_mul hx0.le]
+      congr 1
+      ring
+    have hxx : x ^ (2 : ℝ) = x * x := by
+      rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]
+      ring
+    rw [hx2, hxx]
+    field_simp
+  have hcmp : x ^ (2 * α) * (x ^ (2 : ℝ) * (Real.log x) ^ 2)⁻¹
+      ≤ (x * (Real.log x) ^ 2)⁻¹ := by
+    have hxle : x ^ (2 * α) ≤ x ^ (1 : ℝ) :=
+      Real.rpow_le_rpow_of_exponent_ge hx0 hx1.le (by linarith)
+    have hlogsq : (0 : ℝ) < (Real.log x) ^ 2 := by
+      have : Real.log x ≠ 0 := ne_of_lt (Real.log_neg hx0 hx1)
+      positivity
+    have hxx : x ^ (2 : ℝ) = x * x := by
+      rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]
+      ring
+    rw [hxx, Real.rpow_one] at *
+    rw [mul_inv, mul_inv, mul_inv]
+    have hxpos : (0 : ℝ) < x⁻¹ := by positivity
+    have hlpos : (0 : ℝ) < ((Real.log x) ^ 2)⁻¹ := by positivity
+    calc x ^ (2 * α) * (x⁻¹ * x⁻¹ * ((Real.log x) ^ 2)⁻¹)
+        ≤ x * (x⁻¹ * x⁻¹ * ((Real.log x) ^ 2)⁻¹) := by
+          refine mul_le_mul_of_nonneg_right hxle ?_
+          positivity
+      _ = x⁻¹ * ((Real.log x) ^ 2)⁻¹ := by field_simp
+  rw [Real.norm_of_nonneg (by rw [wallIntegrand]; positivity), wallIntegrand]
+  refine hstep.trans ?_
+  rw [hexp]
+  exact mul_le_mul_of_nonneg_left hcmp (by positivity)
+
 end
 
 end RHTower

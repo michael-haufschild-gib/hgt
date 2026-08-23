@@ -590,6 +590,11 @@ closing Burnol Proposition 4.1's two-sided converse, not F2's arithmetic all-pow
 `MellinHeadHardyConverse.lean` and
 `MellinHeadHardyEquiv.lean` close both directions of Burnol
 Proposition 4.1 and identify continuation with the honest Mellin integral on `Re(s)<1`;
+`ExtendedMellinHeadHardy.lean` proves every extended Sonine vector's continued transform lies in
+the head Hardy class and gives the reflected identity throughout the open strip, including real
+points. Working-tree `SoninHardyRepresentative.lean` constructs its canonical analytic Hardy
+representative and proves division by a vanished strip factor remains in that class, the head-Hardy
+half of Proposition 4.3 at every strip point.
 `ZetaMellinHeadHardy.lean` places every multiplicity-correct zeta-zero quotient in that exact head
 class, closing Proposition 4.2 at this interface. Together with `MellinHardy{Bridge,Classes}.lean`,
 `LPropertyStrips.lean`, and Sonin continuation/kernel files, analytic admissibility, Fourier
@@ -605,12 +610,12 @@ unit aperture. `BurnolCompletenessUnit.lean` closes Proposition 6.1 for every
 `MellinRealVanishing.lean` adds real-axis decay of every extended Mellin continuation for `a>=1`.
 `BurnolMinimalWitness.lean` and `BurnolMinimalitySystem.lean` construct the literal dual vector
 with Mellin transform `zeta(s)/(s-rho)^l` and prove every zero jet has a minimality witness at
-aperture one. Working-tree `MellinApertureIndependence.lean` proves continued transforms agree
-across nested apertures with the same band constants; working-tree `BurnolMinimalityAperture.lean`
+aperture one. `MellinApertureIndependence.lean` proves continued transforms agree
+across nested apertures with the same band constants; `BurnolMinimalityAperture.lean`
 therefore proves minimality for every `0<a<=1`. Together with completeness for `a>=1` and
-noncompleteness for `a<1`, the corpus now gives the exact critical-aperture phase diagram: complete
-and minimal at one, incomplete but minimal below one, and complete above one with no stronger
-minimality claim. These results close the Sonine completeness/minimality/admissibility side; none selects an
+noncompleteness for `a<1`, `BurnolTheoremThreeOne.lean` gives the exact critical-aperture phase
+diagram: complete and minimal at one, incomplete but minimal below one, and complete but not minimal
+above one. These results close the Sonine completeness/minimality/admissibility side; none selects an
 aperture or identifies powers of the positive Sonin carrier with completed prime--Gamma moments.
 The all-power source weld remains open.
 
