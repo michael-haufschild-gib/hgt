@@ -1,6 +1,6 @@
 # Route U: Cayley–Chebyshev positive-root criterion
 
-**Status:** `[PAPER-PROVED] [BRIDGE] [UNCONDITIONAL] [NO COMPUTATION] [LEAN NOT STARTED] [NOT RH]`
+**Status:** `[FORMALIZED] [BRIDGE] [UNCONDITIONAL] [NO COMPUTATION] [NOT RH]`
 
 **Hostile verdict:** `REDISCOVERED/BRIDGE`. The detecting sequence is a new local reduction in
 Route U, but its Cayley mechanism and source arithmetic lie inside generalized
@@ -398,7 +398,8 @@ The identity \(T_n(x)^2=(1+T_{2n}(x))/2\) gives
 \[
   C_n=\frac12\Re(a_0+a_{2n}).
 \]
-For \(|r|<1\), set \(t=(1-r)/(1+r)\). The Chebyshev generating function yields the exact resolvent relation
+For \(|r|<1/3\), set \(t=(1-r)/(1+r)\). The Chebyshev generating function and absolute
+summability yield the exact resolvent relation
 \[
   \sum_{k\ge0}a_kr^k
   =\frac12\left(R(1)+tR(t^2)\right).
@@ -408,7 +409,11 @@ Per divisor atom, with \(u=(1+w)^{-1}\), this is
   \sum_{k\ge0}uT_k(2u-1)r^k
   =\frac12\left(\frac1{w+1}+\frac{t}{w+t^2}\right).
 \]
-These identities expose a concrete next source attack: derive the even-coefficient lower bounds from the unit-shift source recurrence or a source-side property of \(R(t^2)\).
+The formerly asserted unit disk was too broad unconditionally: off-critical Cayley modes have only
+the proved uniform bound \(|y_q|\le3\), so the closed double-series argument requires
+\(3|r|<1\).  The displayed disk is the exact unconditional domain proved here.  These identities
+expose a concrete next source attack: derive the even-coefficient lower bounds from the unit-shift
+source recurrence or a source-side property of \(R(t^2)\).
 
 ## What this corrects
 
@@ -438,4 +443,22 @@ No scientific-priority claim is made. Exact novelty of the reduced stencil itsel
 
 ## Formal status
 
-No Lean file was started. Formalization should begin only when the analytic maximal-shell lemma, Joukowski branch interface, and torus-recurrence sign lemma can be implemented as closed reusable mathematics. No theorem wrapper or premise-carrying surrogate is acceptable.
+Formalization is complete and unconditional.
+
+- `CesaroSignRecurrence.lean` proves the reusable mean-zero/positive-square sign recurrence, finite
+  exponential-pencil recurrence, and dominant-packet theorem.
+- `CayleyChebyshevSource.lean` constructs `Q_n`, proves its recurrence, explicit positive roots,
+  rational-square identity, and exact Hankel/Gamma source formula.
+- `CayleyLaguerreFourier.lean` proves the pole-power Gamma transform, finite Cayley decomposition,
+  associated-Laguerre half-line formulas, and the exact all-frequency transform of
+  `cos^2(2n arctan x)/(1+x^2)`.
+- `XiCayleyChebyshevPositiveRootCriterion.lean` proves the maximal-shell converse, the closed RH
+  equivalence, generalized-Li stencil, normalized Gamma equivalence, corrected Abel--resolvent
+  identity on `norm r < 1/3`, hostile Laguerre value, and both complete valuation-tower signs.
+
+All four modules are imported by `GaloisForLFunctions.RHTower`. Direct `lake env lean` checks and
+targeted leaf builds pass. Batched `#print axioms` checks for the public capstones report only
+`propext`, `Classical.choice`, and `Quot.sound`. No `sorry`, `admit`, project `axiom`, `opaque`, or
+`unsafe` declaration occurs in the new modules. The repository-wide lint invocation found no
+Route U violation; its nonzero exit was solely five unrelated concurrently added `HTGeometry`
+modules not yet imported by their umbrella.

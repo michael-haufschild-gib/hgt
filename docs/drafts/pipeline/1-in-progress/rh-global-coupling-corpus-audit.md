@@ -1081,3 +1081,146 @@ If this law is proved, the subquantum source bound excludes even one right-half 
 then gives RH.  If it fails, the positive survivor is equally sharp: analytic completion is an
 active law intervention, not a passive observer, and its newly created capacity is the sought
 universal anomaly.
+
+## Correction: the universal law must force the shared gauge
+
+`[SUPERSEDES THE PRECEDING LEVEL CORRECTION AND GENERIC CAPACITY CONJECTURE]` The statement that a
+fixed prime--Gamma action with one reflected gauge is merely an observer-level shadow was a level
+error.  It is not the universal law itself, but it is the law's mandatory variational realization.
+Searching for another fitted action or reporter is equally wrong: the corpus already classifies
+local repairs and proves that they exist at every horizontal rate.  The universal theorem must
+force one pre-divisor action to be insensitive to different presentations of one arithmetic
+source class.  Noether descent then forces the shared gauge.
+
+The proposed generic defect-capacity inequality is also not valid as stated.
+`SourceHorizontalSharedReservoirAmplification` constructs source-labelled, prime-injective,
+coefficient-recoverable reservoirs with zero trace and arbitrarily large Frobenius square.
+`GammaSewnMobiusXiWardSourceNonexpansiveNoGo` shows normal-cone regularity alone supplies no
+nonexpansive physical landing.  `GammaCellMobility` and `GammaCellNonrealMobility` show Gamma
+completion can carry off-wall zeros without a real-strip obstruction.  Capacity bounds can be
+consequences of a stronger source-objectivity law, but cannot be that law.
+
+## Candidate universal law: arithmetic source equivalence under pure completion
+
+`[BOLD CONJECTURE -- NOT RH PROOF]` Let the literal integral Euler--Gamma/co-Poisson source be
+formed before divisor specialization.  Prime-labelled and archimedean orientation cochains which
+represent the same retained source class are physical gauge presentations of one event.  A
+completion which introduces no new source intervention must preserve that equivalence in its
+complete bidirectional source record.  Therefore every current obtained from one fixed completed
+action factors through the retained source class and annihilates presentation-change boundaries.
+Reflection is the reverse descent of that same action, so its forward and reflected local
+Noether descents use one global gauge.
+
+In compressed form:
+
+```text
+same arithmetic source class
+  -> same complete bidirectional source record
+  -> same action value and Noether response
+  -> one reflection-overlap gauge
+  -> zero transverse character
+```
+
+This is an arithmetic equivalence principle for completion.  Its negative form describes the
+zeros as errors: an off-line divisor point is a completion anomaly which assigns different
+physical responses to homologous presentations of one source event.  Different zeros may have
+different microscopic prime histories, but all violate the same macroscopic objectivity law.
+
+### Exact RH implication already present in the corpus
+
+For every ordinary prime `p`, the explicit Calderon--Witt source complex has a Green primitive
+`G_p` with
+
+```text
+e_p - e_infinity = boundary(G_p),
+```
+
+where `e_p` and `e_infinity` are prime and archimedean presentations of the same retained top
+class.  On a horizontal rate `t`, the already-classified inverse-oriented prime--Gamma Ward law
+forces the unique positive local response to be `p^(-t)`.  If `J_t` is the current of the fixed
+source action, pure completion gives
+
+```text
+J_t(boundary(G_p)) = 0,
+```
+
+and hence `J_t(e_p) = J_t(e_infinity) = c`, with one prime-independent archimedean value `c`.
+Applying this at primes two and three gives
+
+```text
+2^(-t) = c = 3^(-t),
+```
+
+so `t = 0`.  On an Xi conormal fibre, `t = 2 * Re(rho) - 1`; therefore `Re(rho) = 1/2`.
+`SourceGammaNaturalitySharedGhostProducer.lean` formalizes every implication after boundary
+naturality is supplied.  `CompleteResolutionSharedGaugeReflectionAtlas.lean` independently proves
+that forward covariance, reflected covariance, and one overlap gauge are jointly impossible
+off-line and that every two-condition face is realizable.  Thus the proposed law lands on the
+exact sharp obstruction, not a weaker RH receiver.
+
+No action is chosen at `rho`.  The action, source complex, Green primitives, Gamma orientation,
+and prime coefficients are fixed before divisor reading; a zero only selects a retained conormal
+fibre on which the universal law is tested.
+
+### Whole-corpus quotient
+
+| Corpus family | Shadow of arithmetic source equivalence under pure completion |
+|---|---|
+| complete-resolution/shared-gauge atlas | local forward and reflected laws must descend from one overlap gauge |
+| Deninger/Calderon--Witt/ABHN | local prime and archimedean presentations belong to one global source class; reciprocity is global consistency |
+| Connes/cyclic/Noether/Bockstein | action-derived current must vanish on gauge boundaries; nonzero transgression is the completion anomaly |
+| source-record hyperrigidity | complementary dilation record prevents completion from silently splitting one source class into inequivalent physical sectors |
+| arithmetic objectivity/recovery | forward continuation and reflected descent are encoder and recovery of one logical conormal event |
+| Hawking/KMS/Bogoliubov | partner channels are two descents of one source interaction; a common clock is shared-gauge descent, while delayed onset is presentation dependence |
+| quantum recurrence/formation history | all finite histories must form one compatible bidirectional Pro--Ind record; finite agreement cannot hide a cofinal gauge split |
+| Hedenmalm/first-trace/Suzuki/Sonin | singular boundary and Hardy defects retain the presentation anomaly erased by ordinary Hilbert completion |
+| Weil/positive/Hodge/spectral routes | positivity and unitarity are consequences after source-class descent; they square or forget the unsquared orientation defect when imposed first |
+| topological-defect language | off-line charge is holonomy of the presentation groupoid, not a locally generated particle or zero |
+
+The unsquared two-prime holonomy is
+
+```text
+log(2^(-t)) - log(3^(-t)) = t * (log 3 - log 2).
+```
+
+This explains why two primes suffice, why one-prime corrections are fitted and nonselective, and
+why positive squared energies see only a shadow of the primary defect.
+
+### Hostile audit
+
+1. **Not generic homology.** The corpus proves fixed-grade evaluation and passage to source
+   homology do not commute automatically.  Factorization must occur in the source-record
+   completion before scalar evaluation.
+2. **Not generic completion.** Cofinal completion can create boundary classes from finite exact
+   gauges.  The law requires the complete complementary anomaly record and bidirectional recovery,
+   not an ordinary Hilbert closure or forward colimit.
+3. **Not generic Noether/Bianchi.** An anomalous current may fail to annihilate gauge directions,
+   and signed Bianchi cancellation can hide local defects.  The theorem must prove anomaly-free
+   descent for the literal source action, not assume Ward cancellation.
+4. **Not local repair.** At one prime, the fitted ghost `p^(-t)` exists for every `t`.  The content
+   is prime-presentation independence of one action-derived current.
+5. **Not positivity or contractivity.** Positive completion can erase orientation, and arbitrary
+   recovery channels can be fitted after divisor specialization.  Source-defined exact reverse
+   descent and fibre faithfulness are required.
+6. **Not a generic Euler product law.** Off-line generalized-prime systems and mobile Gamma cells
+   exclude any theorem using only an Euler product, functional equation, KMS law, or Gamma factor.
+   Literal integer source relations and their complete anomaly record are load-bearing.
+7. **Not finite exactness.** Every finite source gauge may be exact while a nonzero cofinal
+   anomaly survives.  Compatibility must include all prime-power, depth, Mertens-jet, and
+   exponentially flat source grades.
+
+### True open theorem
+
+Prove a source-relative completion-purity theorem, independent of Xi zeros:
+
+> For the literal pre-divisor six-channel Euler--Gamma/co-Poisson source, source minimality,
+> integral self-duality, complete complementary-record conservativity, and exact reflected
+> recovery force every fixed action current to factor through the completed retained source class.
+
+Applied to the explicit prime--archimedean Green boundaries, this theorem constructs no fitted
+producer: it forces the already-defined prime--Gamma action's forward and reflected descents to
+share one gauge.  Existing abstract Noether, quotient-factorization, source-natural shared-ghost,
+and RH-consumer theorems cover the formal consequence.  Missing mathematics is the
+source-specific proof that completion purity survives the cofinal anomaly ideal while retaining
+every Xi conormal fibre.  Formalizing another abstract wrapper before that paper proof closes
+would duplicate the corpus and hide the only hard step.

@@ -261,6 +261,27 @@ is `../../1-in-progress/bv-prime-window-decimation-boundary-contraction-rh.md`.
 - [x] fixed countable rational interval family separates every zero fibre
 - [ ] prove the right-half prime-source Laurent contraction `(16)`
 - [x] formalize compact-BV forward and inverse dilation
-- [ ] formalize reciprocal-conjugate window reflection
+- [x] formalize reciprocal-conjugate window reflection
 - [x] formalize the oriented comparison `(8a)`--`(10)`
 - [ ] compose an unconditional source contraction to RH
+
+## Lean status update (2026-08-23): reciprocal-conjugate source reflection
+
+`formal/GaloisForLFunctions/RHTower/BVPrimeWindowReciprocalReflection.lean` constructs the literal
+compact-BV involution `W#(x)=conj(W(1/x))`. It proves compact support, Bochner integrability,
+global bounded variation, pointwise involutivity, and the exact swap of argument dilation with
+reciprocal expansion. Its Mellin change of variables is the closed identity
+
+```text
+M_(W#)(s) = conj(M_W(2-conj(s))).
+```
+
+Combining this with the existing zeta functional-equation multiplicity law gives both exact
+continued-source residue reflections in `(14)`, with multiplicity preserved. The leaf is wired
+into `GaloisForLFunctions/RHTower.lean`, direct-checked with `lake env lean`, and exact-target-built
+as `GaloisForLFunctions.RHTower.BVPrimeWindowReciprocalReflection`. Every new public declaration
+audits only to `propext`, `Classical.choice`, and `Quot.sound`.
+
+Remaining stage-3 work is the explicit fixed dyadic BV indicator and countable rational-interval
+separating-family realization inside this same source class. The source contraction is the
+separate RH-bearing open construction, not part of this not-new value-relation certificate.

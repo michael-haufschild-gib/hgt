@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.TwoTimeAutonomousEndpointJacobianLaw
 import GaloisForLFunctions.HTGeometry.TwoLocalPauliGaussianEnergyCap
 import GaloisForLFunctions.HTGeometry.CStarMatrixRealCoordinateLaw
 import GaloisForLFunctions.HTGeometry.ConormNormDetLaw
+import GaloisForLFunctions.HTGeometry.TwoTimeEndpointGlobalEncodingLaw
 
 open scoped Matrix.Norms.L2Operator ComplexOrder
 open Matrix
@@ -326,6 +327,74 @@ theorem realTwoLocalPauliTwoTimeEndpointRealJacobian_normDet_lower_of_mem_box
   · positivity
   · exact realTwoLocalPauliTwoTimeEndpointRealJacobian_lower_of_mem_box
       hn hz t
+
+/-- Paired endpoints of one ordinary two-local Pauli draw. -/
+def realTwoLocalPauliTwoTimeEndpoint
+    {n : ℕ} (z : TwoLocalPauliCoefficientSpace n) (t δ : ℝ) :
+    QubitCStarMatrix n × QubitCStarMatrix n :=
+  twoTimeAutonomousEndpoint (realTwoLocalPauliCStarGeneratorCLM n z) t δ
+
+/-- **Global same-time no-folding law.**  On the ordinary system-size Pauli
+box, two endpoints separated by `1/(144 n³)` distinguish every pair of draws
+at every laboratory base time.  Hence every occupied endpoint-pair fibre has
+multiplicity at most one; no minimum spectral gap or genericity is required. -/
+theorem realTwoLocalPauliTwoTimeEndpoint_lower_of_mem_box
+    {n : ℕ} (hn : 1 ≤ n)
+    {x y : TwoLocalPauliCoefficientSpace n}
+    (hx : x ∈ twoLocalPauliCoefficientBox n)
+    (hy : y ∈ twoLocalPauliCoefficientBox n) (t : ℝ) :
+    (1 / (144 * (n : ℝ) ^ 3)) / 8 * ‖y - x‖ ≤
+      ‖realTwoLocalPauliTwoTimeEndpoint y t
+          (1 / (144 * (n : ℝ) ^ 3)) -
+        realTwoLocalPauliTwoTimeEndpoint x t
+          (1 / (144 * (n : ℝ) ^ 3))‖ := by
+  let δ : ℝ := 1 / (144 * (n : ℝ) ^ 3)
+  let G := realTwoLocalPauliCStarGeneratorCLM n
+  have hnpos : (0 : ℝ) < n := by exact_mod_cast hn
+  have hδ : 0 ≤ δ := by positivity
+  have hGx : ‖G x‖ ≤ 18 * (n : ℝ) ^ 3 := by
+    change ‖realTwoLocalPauliCStarGeneratorCLM n x‖ ≤ _
+    rw [norm_realTwoLocalPauliCStarGeneratorCLM_apply]
+    exact norm_realTwoLocalPauliCStarHamiltonian_le_eighteen_mul_cube_of_mem_box
+      hn hx
+  have hGy : ‖G y‖ ≤ 18 * (n : ℝ) ^ 3 := by
+    change ‖realTwoLocalPauliCStarGeneratorCLM n y‖ ≤ _
+    rw [norm_realTwoLocalPauliCStarGeneratorCLM_apply]
+    exact norm_realTwoLocalPauliCStarHamiltonian_le_eighteen_mul_cube_of_mem_box
+      hn hy
+  have hsmallx : 4 * δ * ‖G x‖ ≤ 1 := by
+    calc
+      4 * δ * ‖G x‖ ≤ 4 * δ * (18 * (n : ℝ) ^ 3) := by gcongr
+      _ ≤ 1 := by
+        dsimp only [δ]
+        field_simp
+        norm_num
+  have hdiff : ‖G y - G x‖ ≤ 36 * (n : ℝ) ^ 3 := by
+    calc
+      ‖G y - G x‖ ≤ ‖G y‖ + ‖G x‖ := norm_sub_le _ _
+      _ ≤ 18 * (n : ℝ) ^ 3 + 18 * (n : ℝ) ^ 3 :=
+        add_le_add hGy hGx
+      _ = 36 * (n : ℝ) ^ 3 := by ring
+  have hsmallxy : δ * ‖G y - G x‖ ≤ 1 / 4 := by
+    calc
+      δ * ‖G y - G x‖ ≤ δ * (36 * (n : ℝ) ^ 3) := by gcongr
+      _ = 1 / 4 := by
+        dsimp only [δ]
+        field_simp
+        norm_num
+  have hglobal := twoTimeAutonomousEndpoint_lower_of_skewAdjoint
+    (G x) (G y)
+    (realTwoLocalPauliCStarGeneratorCLM_mem_skewAdjoint x)
+    (realTwoLocalPauliCStarGeneratorCLM_mem_skewAdjoint y)
+    t hδ hsmallx hsmallxy
+  have hconorm : ‖y - x‖ ≤ ‖G y - G x‖ := by
+    rw [← G.map_sub]
+    exact norm_le_realTwoLocalPauliCStarGeneratorCLM (y - x)
+  change δ / 8 * ‖y - x‖ ≤
+    ‖twoTimeAutonomousEndpoint (G y) t δ -
+      twoTimeAutonomousEndpoint (G x) t δ‖
+  refine (mul_le_mul_of_nonneg_left hconorm (by positivity)).trans ?_
+  exact hglobal
 
 end
 

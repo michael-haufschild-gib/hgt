@@ -1,9 +1,9 @@
 # The full von Mangoldt source has the exact Gamma clock descent anomaly
 
 - **ID:** `von-mangoldt-gamma-clock-descent-anomaly`
-- **Stage:** 2-fully-proven / not-new
+- **Stage:** 3-formalized / not-new
 - **Type:** THEOREM (paper) / FULL PRIME-POWER AFFINE HT COLLIGATION
-- **Scientific status:** `[PROVED HERE] [BRIDGE] [FINITE ALGEBRAIC CORE FORMALIZED] [NOT AN RH PROOF]`
+- **Scientific status:** `[PROVED HERE] [BRIDGE] [FORMALIZED] [NOT AN RH PROOF]`
 - **Parents:**
   `prime-laplace-gamma-clock-descent-anomaly.md`,
   `../../1-in-progress/source-anomaly-boundary-colligation-field.md`,
@@ -282,3 +282,31 @@ path alone.
       `RHTower/VonMangoldtGammaFactorialBetaReflection.lean`
 - [ ] construct the source-rigged affine characteristic transform
 - [ ] prove its Gauss--Ward factorization and pass to the Euler boundary
+
+## Lean status — formalized 2026-08-23
+
+`formal/GaloisForLFunctions/RHTower/VonMangoldtGammaHilbertClockDescent.lean` constructs the
+literal complete prime-power carrier as an `ℓ²` Hilbert space after absorbing `sqrt(q_(p,k))`
+into coordinates. It proves summability of every jet row, holomorphy and termwise derivative
+identities on `Re s > 0`, the diagonal source-shift law with operator norm at most `1/2`, and
+Hilbert--Schmidt status of every finite Euclidean observation.
+
+The infinite reader tower is faithful: vanishing jets give analytic vanishing on the half-plane,
+and the existing absolutely convergent exponential-series uniqueness theorem recovers every
+prime-power coefficient. Taylor translation at base point `2` gives the exact omitted-tail
+anomaly, while the adjacent-resolution theorem gives the single factorial Bianchi current. The
+closed theorem `vonMangoldtGammaHilbertClockDescent_completion` packages these laws together with
+the existing pointed Ward and all-depth Cauchy positive-semidefinite Gram theorems.
+
+The same module constructs every positive radial Euler unit vector, proves coordinatewise
+convergence to the zero-damping field, proves that field cannot belong to the Hilbert source, and
+identifies its complex source transform exactly with
+`eulerLogDerivative (1 + theta + s) = -zeta'(1 + theta + s)/zeta(1 + theta + s)` throughout the
+right half-plane. Thus equations `(1)`--`(19)` and the squarefree linear specialization are
+dependency-closed in Lean; the two unchecked Ward-characteristic gates above remain explicitly
+successor research, not premises of this card's theorem.
+
+`formal/GaloisForLFunctions/RHTower.lean` imports the module. Direct source check and targeted
+`lake build GaloisForLFunctions.RHTower.VonMangoldtGammaHilbertClockDescent` pass. Consolidated
+axiom audit of new capstones reports only `propext`, `Classical.choice`, and `Quot.sound`. No
+`sorry`, `admit`, added `axiom`, `opaque`, or `unsafe` declaration occurs in the module.
