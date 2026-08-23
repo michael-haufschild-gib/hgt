@@ -73,6 +73,57 @@ theorem tendsto_rvQuadIntegrand {α : ℝ} (hα : α < 1) {v : ℝ} (hv : 0 < v)
   rw [rvQuadIntegrand, Function.comp_apply]
   field_simp
 
+theorem measurable_rvQuadIntegrand {α : ℝ} (lam : ℝ) :
+    Measurable (rvQuadIntegrand α lam) := by
+  have hwm : Measurable (weightProfile α) := by
+    have hfun : (weightProfile α) = fun v : ℝ => (1 - α) * v ^ (-α) := rfl
+    rw [hfun]
+    exact measurable_const.mul (measurable_id.pow_const (-α))
+  exact (continuous_steinhausLogLaplace.measurable.comp
+    (measurable_const.mul hwm)).div_const _
+
+/-- **The sub-critical asymptotic of the cumulant.**  This is the card's `(18)`. -/
+theorem tendsto_rvCumulant_div_sq {α : ℝ} (hα : α < 1 / 2) :
+    Tendsto (fun lam : ℝ => rvCumulant α lam / lam ^ 2) (nhdsWithin 0 (Set.Ioi (0 : ℝ)))
+      (nhds ((1 - α) ^ 2 / (4 * (1 - 2 * α)))) := by
+  have hα1 : α < 1 := by linarith
+  have hbound : IntegrableOn (fun v : ℝ => weightProfile α v ^ 2 / 2)
+      (Set.Ioc (0 : ℝ) 1) volume :=
+    ((intervalIntegrable_weightProfile_sq hα).1).div_const 2
+  have hdct := MeasureTheory.tendsto_integral_filter_of_dominated_convergence
+    (μ := volume.restrict (Set.Ioc (0 : ℝ) 1))
+    (l := nhdsWithin 0 (Set.Ioi (0 : ℝ)))
+    (F := fun lam : ℝ => rvQuadIntegrand α lam)
+    (f := fun v : ℝ => weightProfile α v ^ 2 / 4)
+    (fun v : ℝ => weightProfile α v ^ 2 / 2)
+    (Filter.Eventually.of_forall fun lam =>
+      (measurable_rvQuadIntegrand (α := α) lam).aestronglyMeasurable)
+    (by
+      filter_upwards [self_mem_nhdsWithin] with lam hlam
+      filter_upwards [ae_restrict_mem measurableSet_Ioc] with v hv
+      have hlam0 : 0 < lam := hlam
+      rw [Real.norm_eq_abs]
+      exact rvQuadIntegrand_bound hα1 hlam0.ne' v (le_of_lt hv.1))
+    hbound
+    (by
+      filter_upwards [ae_restrict_mem measurableSet_Ioc] with v hv
+      exact tendsto_rvQuadIntegrand hα1 hv.1)
+  have hleft : ∀ lam : ℝ, lam ≠ 0 →
+      (∫ v in Set.Ioc (0 : ℝ) 1, rvQuadIntegrand α lam v) = rvCumulant α lam / lam ^ 2 := by
+    intro lam hlam
+    simp only [rvQuadIntegrand]
+    rw [integral_div, rvCumulant, intervalIntegral.integral_of_le (by norm_num : (0:ℝ) ≤ 1)]
+  have hright : (∫ v in Set.Ioc (0 : ℝ) 1, weightProfile α v ^ 2 / 4)
+      = (1 - α) ^ 2 / (4 * (1 - 2 * α)) := by
+    rw [← intervalIntegral.integral_of_le (by norm_num : (0:ℝ) ≤ 1),
+      intervalIntegral.integral_div, integral_weightProfile_sq hα]
+    field_simp
+  rw [hright] at hdct
+  refine hdct.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with lam hlam
+  have hlam0 : 0 < lam := hlam
+  exact hleft lam hlam0.ne'
+
 end
 
 end HTGeometry

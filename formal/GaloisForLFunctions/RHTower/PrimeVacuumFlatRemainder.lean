@@ -517,9 +517,12 @@ theorem tendsto_pow_mul_exp_neg_sqrt (N : ℕ) {c : ℝ} (hc : 0 < c) :
   have hexp : Real.exp (-(c * Real.sqrt L)) = Real.exp (-c * Real.sqrt L) := by
     congr 1
     ring
-  rw [mul_pow, hexp, ← mul_assoc, inv_mul_cancel_left₀ hcne]
-  congr 2
-  rw [pow_mul, hsq]
+  have hpow : (c * Real.sqrt L) ^ (2 * N) = c ^ (2 * N) * L ^ N := by
+    rw [mul_pow]
+    congr 1
+    rw [pow_mul, hsq]
+  rw [hpow, hexp]
+  field_simp
 
 theorem tendsto_pow_mul_exp_neg (N : ℕ) :
     Tendsto (fun L : ℝ => L ^ N * Real.exp (-L)) atTop (𝓝 0) :=

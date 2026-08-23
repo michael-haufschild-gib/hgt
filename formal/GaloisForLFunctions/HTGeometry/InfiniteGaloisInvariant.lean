@@ -1,5 +1,7 @@
 import Mathlib.RingTheory.Invariant.Galois
 import Mathlib.FieldTheory.Galois.Infinite
+import Mathlib.FieldTheory.KrullTopology
+import GaloisForLFunctions.HTGeometry.DiscreteContinuousSMul
 
 /-!
 # Invariance of the integral closure in an infinite Galois extension
@@ -40,5 +42,38 @@ theorem isInvariant_of_isGalois_infinite [Algebra.IsAlgebraic K L] [IsGalois K L
   rw [← IsScalarTower.algebraMap_apply, IsScalarTower.algebraMap_apply A B L,
     (FaithfulSMul.algebraMap_injective B L).eq_iff] at hk
   exact ⟨a, hk⟩
+
+/-- The stabiliser of an element of the integral closure is open for the Krull topology. -/
+theorem isOpen_stabilizer_integralClosure [Algebra.IsIntegral K L] (b : B) :
+    letI := IsIntegralClosure.MulSemiringAction A K L B
+    IsOpen (MulAction.stabilizer (L ≃ₐ[K] L) b : Set (L ≃ₐ[K] L)) := by
+  letI := IsIntegralClosure.MulSemiringAction A K L B
+  have hset : (MulAction.stabilizer (L ≃ₐ[K] L) b : Set (L ≃ₐ[K] L))
+      = (MulAction.stabilizer (L ≃ₐ[K] L) (algebraMap B L b) : Set (L ≃ₐ[K] L)) := by
+    ext g
+    have key : algebraMap B L (g • b) = g (algebraMap B L b) :=
+      algebraMap_galRestrict_apply A g b
+    constructor
+    · intro hg
+      have hg' : g • b = b := hg
+      show g (algebraMap B L b) = algebraMap B L b
+      rw [← key]
+      exact congrArg (algebraMap B L) hg'
+    · intro hg
+      have hg' : g (algebraMap B L b) = algebraMap B L b := hg
+      show g • b = b
+      refine FaithfulSMul.algebraMap_injective B L ?_
+      rw [key]
+      exact hg'
+  rw [hset]
+  exact MulAction.stabilizer_isOpen_of_isIntegral (algebraMap B L b)
+
+/-- **The Galois action on the integral closure is continuous for the discrete topology.** -/
+theorem continuousSMul_integralClosure [Algebra.IsIntegral K L] [TopologicalSpace B]
+    [DiscreteTopology B] :
+    letI := IsIntegralClosure.MulSemiringAction A K L B
+    ContinuousSMul (L ≃ₐ[K] L) B := by
+  letI := IsIntegralClosure.MulSemiringAction A K L B
+  exact continuousSMul_of_isOpen_stabilizer (isOpen_stabilizer_integralClosure A K L B)
 
 end HTGeometry

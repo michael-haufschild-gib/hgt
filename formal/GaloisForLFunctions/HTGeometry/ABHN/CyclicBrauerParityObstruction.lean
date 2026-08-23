@@ -1,4 +1,4 @@
-import Mathlib
+import GaloisForLFunctions.HTGeometry.ABHN.TameMilnorInvariant
 
 /-!
 # Cubic local invariants cannot enter a parity-valued additive receiver
@@ -67,5 +67,18 @@ theorem zmod_odd_to_zmod_two_addHom_eq_zero
     exact (zsmul_one m).symm]
   rw [f.map_zsmul, hone, zsmul_zero]
   simp
+
+/-- No additive parity receiver can faithfully retain all `ℚ/ℤ` local-invariant values: its
+restriction to the order-three sector is zero.  Thus a `ZMod 2` endpoint can at most encode
+the two-primary shadow of ABHN local data. -/
+theorem not_injective_ratModInt_to_zmod_two_addHom (f : RatModInt →+ ZMod 2) :
+    ¬ Function.Injective f := by
+  intro hf
+  let g : ZMod 3 →+ RatModInt := zmodRatModIntAddHom 3 (Nat.succ_ne_zero 2)
+  have hg : f.comp g = 0 := zmod_three_to_zmod_two_addHom_eq_zero (f.comp g)
+  have hfg : Function.Injective (f.comp g) := hf.comp
+    (zmodRatModIntAddHom_injective 3 (Nat.succ_ne_zero 2))
+  have h01 : (0 : ZMod 3) = 1 := hfg (by rw [hg]; rfl)
+  exact zero_ne_one h01
 
 end GaloisForLFunctions.HTGeometry.ABHN
