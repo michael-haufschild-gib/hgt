@@ -304,6 +304,8 @@ import GaloisForLFunctions.RHTower.BesselIZeroODE
 import GaloisForLFunctions.RHTower.BesselIZeroUpperBound
 import GaloisForLFunctions.RHTower.BurnolBiorthogonalJet
 import GaloisForLFunctions.RHTower.BurnolTheoremThreeThree
+import GaloisForLFunctions.RHTower.BurnolTwoPointCompleteness
+import GaloisForLFunctions.RHTower.SoninCarrierMellinOrder
 import GaloisForLFunctions.RHTower.SteinhausBesselIdentity
 import GaloisForLFunctions.RHTower.SteinhausRateFunction
 import GaloisForLFunctions.RHTower.SteinhausProfileLogIntegral
@@ -4149,6 +4151,7 @@ import GaloisForLFunctions.RHTower.Sieve.ParityReduction
 import GaloisForLFunctions.RHTower.Sieve.FilteredSumSwap
 import GaloisForLFunctions.RHTower.Sieve.WeightedTailDef
 import GaloisForLFunctions.RHTower.Sieve.WeightedTailNorm
+import GaloisForLFunctions.RHTower.Sieve.ParityGeneralSet
 import GaloisForLFunctions.RHTower.Sieve.VonMangoldtParityCorrection
 import GaloisForLFunctions.RHTower.FriableCoefficientSurjectivity
 import GaloisForLFunctions.RHTower.FriableEdgeCoefficients
@@ -9121,6 +9124,7 @@ import GaloisForLFunctions.RHTower.SoninDilationAverage
 import GaloisForLFunctions.RHTower.SoninMellinFunctional
 import GaloisForLFunctions.RHTower.SoninMellinMultiplier
 import GaloisForLFunctions.RHTower.SoninRapidMellinDense
+import GaloisForLFunctions.RHTower.TwoPointShiftFactor
 import GaloisForLFunctions.RHTower.XiLocalZeroDensity
 import GaloisForLFunctions.RHTower.ZetaInverseHorizontal
 import GaloisForLFunctions.RHTower.ZetaInverseWideHorizontal

@@ -636,3 +636,23 @@ interval) this reduces `‖E_Λ‖` to
 i.e. to the Vaughan block estimate `norm_sum_vonMangoldt_ndPhaseExp_le` plus a harmonic log.
 
 Card 12: 52 modules.
+
+## The block estimate substituted into the `r`-sum (2026-08-23)
+
+`ParityGeneralSet.lean` restates the parity correction over an arbitrary index set (the shift
+filter the `r`-sum produces is not literally an interval):
+
+- `norm_sum_even_set_le`, `norm_sum_parity_set_le` — for any `S ⊆ [1,B]`, the parity-restricted sum
+  differs from the unrestricted one by at most `log B`;
+- **`norm_weightedTail_le_of_blockBound`** — the substitution step:
+  ```
+  ‖E_Λ‖ ≤ Σ_{r} (G(r) + log mHi)/r
+  ```
+  for ANY bound `G(r)` on the unrestricted inner sum
+  `Σ_{m : r ≤ ⌊mε⌋₊} Λ(m)e(F_{T,r}(m))`.
+
+So the whole card now reduces to supplying `G(r)` — which is exactly what
+`norm_sum_vonMangoldt_ndPhaseExp_le` (Vaughan) plus the block machinery does — and then evaluating
+the harmonic total with the two power-sum kernels.
+
+Card 12: 53 modules.

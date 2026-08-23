@@ -85,3 +85,16 @@ of pointwise cutoff gives an exact analytic window.
 Locality of negative squares on analytic uniqueness regions, density of kernel sections, and the
 identity theorem are standard.  The application removes a Route D shortcut but is not new
 scientific knowledge.
+
+## Lean status update (2026-08-23)
+
+`formal/GaloisForLFunctions/HTGeometry/AnalyticOpenCutoffNoGo.lean` now proves the exact analytic
+pointwise-cutoff obstruction: on every preconnected complex domain, an analytic scalar that
+vanishes on one nonempty open subregion vanishes globally, and therefore cannot equal one on any
+other nonempty subregion. The leaf is wired into `HTGeometry.lean`, checked with `lake env lean`,
+target-built as `GaloisForLFunctions.HTGeometry.AnalyticOpenCutoffNoGo`, and both declarations
+audit to only `propext`, `Classical.choice`, and `Quot.sound`.
+
+This formalizes the third exclusion in the statement. It does not yet formalize the
+Pontryagin-space kernel-section density argument or the shifted-Xi negative-index/divisor
+identification, so the card remains at stage 2.

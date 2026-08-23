@@ -246,3 +246,15 @@ statement `(17)` are not formalized. This complete card therefore remains at sta
 - [x] route consequences bounded to the invariant package actually preserved
 - [x] parent-theory novelty rejection
 - [ ] complete unconditional Lean formalization of the whole claim
+
+## Lean status update (2026-08-23)
+
+`formal/GaloisForLFunctions/RHTower/CoshQuartetEnvelopeMultiplicity.lean` strengthens the existing
+quartet-envelope substrate with the exact complex derivative, simplicity of every zero for nonzero
+displacement, and exclusion of every central-vertical-line zero. The leaf is wired through
+`RHTower.lean`, was checked with `lake env lean`, target-built, and its new theorem declarations
+audit to only `propext`, `Classical.choice`, and `Quot.sound`.
+
+This closes the elementary multiplicity and transverse-placement facts for the displaced envelope.
+It does not formalize the reflected-Gamma carrier, shared ordinate-divisor measure, or the
+differential-translation field identity; the complete card remains at stage 2.

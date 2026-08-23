@@ -526,6 +526,108 @@ theorem exists_polyGrowth_twoPointNF (ha : 1 ≤ a) (hev : f ∈ evenSubspace)
       mul_le_mul_of_nonneg_left hpow hCH0
     nlinarith [hz1, (by positivity : (0:ℝ) ≤ (‖z‖ + 1) ^ D)]
 
+/-! ## Proposition 6.5, completeness half -/
+
+/-- **Proposition 6.5, completeness half.**  A vector of the Sonine space `K_a`, `a ≥ 1`, whose
+continued Mellin transform is divisible by `ζ` at every nontrivial zero *after* the two zeros
+`ρ₁`, `ρ₂` have been allowed one unit of slack each, is zero.  Equivalently the evaluators still
+span `K_a` after the two top-order evaluators at `ρ₁` and `ρ₂` (possibly equal) are omitted. -/
+theorem eq_zero_of_zeta_dvd_twoPoint (ha : 1 ≤ a) (hev : f ∈ evenSubspace)
+    (hc : ∀ᵐ u ∂(volume : Measure ℝ), u ∈ centralInterval a →
+      ((fourierUnitary f : SoninL2) : ℝ → ℂ) u = 0)
+    (hd : ∀ᵐ t ∂(volume : Measure ℝ), t ∈ centralInterval a → (f : ℝ → ℂ) t = 0)
+    (hz₁ : riemannZeta ρ₁ = 0) (hz₂ : riemannZeta ρ₂ = 0)
+    (hdvd : ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.re → ρ.re < 1 →
+      meromorphicOrderAt riemannZeta ρ
+        ≤ meromorphicOrderAt (extendedMellinContinuation a 0 0 f) ρ
+          + meromorphicOrderAt (twoPointNumer ρ₁ ρ₂) ρ) :
+    f = 0 := by
+  have ha0 : (0 : ℝ) < a := lt_of_lt_of_le zero_lt_one ha
+  obtain ⟨CS, hCS0, hSb⟩ := exists_bound_twoPointShift ρ₁ ρ₂
+  obtain ⟨Mc, D, _hMc0, hgrow⟩ := exists_polyGrowth_twoPointNF ha hev hc hd hdvd
+  have hdiffθ : Differentiable ℂ (burnolQuotientNF (soninTwoPointMellin a f ρ₁ ρ₂)) :=
+    differentiable_burnolQuotientNF (fun z => meromorphicAt_soninTwoPointMellin ha0 hev hc hd z)
+      (zero_le_meromorphicOrderAt_burnolQuotient_soninTwoPointMellin ha0 hev hc hd hdvd)
+  obtain ⟨p, hp⟩ := exists_polynomial_of_polyGrowth hdiffθ hgrow
+  have hlim : Tendsto (fun σ : ℝ => p.eval ((σ : ℝ) : ℂ)) atTop (𝓝 0) := by
+    refine squeeze_zero_norm'
+      (a := fun σ : ℝ => 4 * CS * ‖extendedMellinContinuation a 0 0 f ((σ : ℝ) : ℂ)‖) ?_ ?_
+    · filter_upwards [eventually_ge_atTop (2 : ℝ)] with σ hσ
+      have hre : (((σ : ℝ) : ℂ)).re = σ := by simp
+      have hs2 : (2 : ℝ) ≤ (((σ : ℝ) : ℂ)).re := by rw [hre]; linarith
+      have hζne : riemannZeta ((σ : ℝ) : ℂ) ≠ 0 := by
+        have h := norm_riemannZeta_ge_of_two_le_re (s := ((σ : ℝ) : ℂ)) hs2
+        intro hzero
+        rw [hzero] at h
+        simp at h
+        linarith
+      have hs1 : ((σ : ℝ) : ℂ) ≠ 1 := by
+        intro h; rw [h] at hre; simp at hre; linarith
+      have hs0 : ((σ : ℝ) : ℂ) ≠ 0 := by
+        intro h; rw [h] at hre; simp at hre; linarith
+      rw [← hp ((σ : ℝ) : ℂ),
+        burnolQuotientNF_soninTwoPointMellin_eq ha0 hev hc hd hζne hs0 hs1, norm_mul, norm_mul]
+      obtain ⟨hn1, hn2⟩ := one_le_norm_of_two_le_re hs2
+      have hS := hSb ((σ : ℝ) : ℂ) hn1 hn2
+      have hz := norm_zeta_inv_le_of_two_le_re hs2
+      have hb1 : ‖extendedMellinContinuation a 0 0 f ((σ : ℝ) : ℂ)‖
+          * ‖twoPointShift ρ₁ ρ₂ ((σ : ℝ) : ℂ)‖
+          ≤ ‖extendedMellinContinuation a 0 0 f ((σ : ℝ) : ℂ)‖ * CS :=
+        mul_le_mul_of_nonneg_left hS (norm_nonneg _)
+      have hb2 := mul_le_mul hb1 hz (norm_nonneg _) (by positivity)
+      calc ‖extendedMellinContinuation a 0 0 f ((σ : ℝ) : ℂ)‖
+            * ‖twoPointShift ρ₁ ρ₂ ((σ : ℝ) : ℂ)‖ * ‖(riemannZeta ((σ : ℝ) : ℂ))⁻¹‖
+          ≤ ‖extendedMellinContinuation a 0 0 f ((σ : ℝ) : ℂ)‖ * CS * 4 := hb2
+        _ = 4 * CS * ‖extendedMellinContinuation a 0 0 f ((σ : ℝ) : ℂ)‖ := by ring
+    · have h := tendsto_extendedMellinContinuation_real_atTop ha hev hc hd
+      have hn : Tendsto
+          (fun σ : ℝ => ‖extendedMellinContinuation a 0 0 f ((σ : ℝ) : ℂ)‖) atTop (𝓝 0) := by
+        simpa using h.norm
+      simpa using hn.const_mul (4 * CS)
+  have hp0 : p = 0 := polynomial_eq_zero_of_tendsto_zero hlim
+  have hθ0 : ∀ s : ℂ, burnolQuotientNF (soninTwoPointMellin a f ρ₁ ρ₂) s = 0 := by
+    intro s
+    rw [hp s, hp0, Polynomial.eval_zero]
+  have hMzero : ∀ s : ℂ, riemannZeta s ≠ 0 → s ≠ 0 → s ≠ 1 → s ≠ ρ₁ → s ≠ ρ₂ →
+      extendedMellinContinuation a 0 0 f s = 0 := by
+    intro s hζ h0 h1 hr1 hr2
+    have hval := burnolQuotientNF_soninTwoPointMellin_eq (ρ₁ := ρ₁) (ρ₂ := ρ₂)
+      ha0 hev hc hd hζ h0 h1
+    rw [hθ0 s] at hval
+    have hshift : twoPointShift ρ₁ ρ₂ s ≠ 0 := by
+      rw [twoPointShift]
+      exact div_ne_zero (mul_ne_zero (sub_ne_zero.2 hr1) (sub_ne_zero.2 hr2))
+        (mul_ne_zero h0 (sub_ne_zero.2 h1))
+    have hinv : (riemannZeta s)⁻¹ ≠ 0 := inv_ne_zero hζ
+    rcases mul_eq_zero.1 hval.symm with h' | h'
+    · rcases mul_eq_zero.1 h' with h'' | h''
+      · exact h''
+      · exact absurd h'' hshift
+    · exact absurd h' hinv
+  obtain ⟨Z₀, hZ₀1, hZ₀2, hZ₀ne⟩ := exists_good_point
+  have hZ₀0 : Z₀ ≠ 0 := by
+    intro h; rw [h] at hZ₀1; norm_num at hZ₀1
+  have hZ₀one : Z₀ ≠ 1 := by
+    intro h; rw [h] at hZ₀2; norm_num at hZ₀2
+  have hZ₀r1 : Z₀ ≠ ρ₁ := by
+    intro h; rw [h] at hZ₀ne; exact hZ₀ne hz₁
+  have hZ₀r2 : Z₀ ≠ ρ₂ := by
+    intro h; rw [h] at hZ₀ne; exact hZ₀ne hz₂
+  have hnear : ∀ᶠ Z in 𝓝 Z₀, extendedMellinContinuation a 0 0 f Z = 0 := by
+    have hζ : ∀ᶠ Z in 𝓝 Z₀, riemannZeta Z ≠ 0 :=
+      ((differentiableAt_riemannZeta hZ₀one).continuousAt).eventually_ne hZ₀ne
+    have h0 : ∀ᶠ Z in 𝓝 Z₀, Z ≠ 0 := eventually_ne_nhds hZ₀0
+    have h1 : ∀ᶠ Z in 𝓝 Z₀, Z ≠ 1 := eventually_ne_nhds hZ₀one
+    have hr1 : ∀ᶠ Z in 𝓝 Z₀, Z ≠ ρ₁ := eventually_ne_nhds hZ₀r1
+    have hr2 : ∀ᶠ Z in 𝓝 Z₀, Z ≠ ρ₂ := eventually_ne_nhds hZ₀r2
+    filter_upwards [hζ, h0, h1, hr1, hr2] with Z hζZ hZ0 hZ1 hZr1 hZr2
+    exact hMzero Z hζZ hZ0 hZ1 hZr1 hZr2
+  have hnum : ∀ s : ℂ, extendedMellinNumerator a 0 0 f s = 0 :=
+    extendedMellinNumerator_eq_zero_of_eventually ha0 hev hc hd hnear hZ₀0 hZ₀one
+  refine eq_zero_of_extendedMellinContinuation_eq_zero ha0 hev hc hd ?_
+  intro s _ _
+  rw [extendedMellinContinuation, hnum s, zero_div]
+
 end
 
 end RHTower
