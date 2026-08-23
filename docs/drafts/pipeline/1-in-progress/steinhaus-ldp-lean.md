@@ -110,3 +110,25 @@ This identifies the abstract Haar integral with the classical Bessel integral an
 every SHARP envelope: the upper bound `log I₀(x) ≤ x − ½log x + C` (needed for `I_α(q) → ∞`, and
 for `S6`/`S7`) now reduces to `cos t ≤ 1 − 2t²/π²` on `[−π,π]` (Jordan's inequality via
 `cos t = 1 − 2sin²(t/2)`) plus mathlib's Gaussian integral.
+
+## `I₀` identified, both sharp envelopes inherited (2026-08-23)
+
+Search "cosine upper bound quadratic Jordan inequality sin half angle" turned up
+`RHTower/BesselIZeroUpperBound.lean`, which ALREADY proves
+`besselI0_le_exp_div_sqrt : besselI0 z ≤ e^z·√(π/(2z))` by exactly the Jordan + Gaussian argument I
+was about to redo, and `RHTower/BesselIZeroLowerBound.exp_div_le_besselI0` for the other side.  My
+half-written re-derivation was discarded; instead the two objects are identified.
+
+`RHTower/SteinhausBesselIdentity.lean`:
+
+- `integral_exp_cos_eq_exp_sin` — `∫₀^{2π}e^{r cos} = ∫₀^{2π}e^{r sin}`, by `sin(t+π/2) = cos t`
+  and one period shift;
+- `integral_exp_sin_fold` — `∫₀^{2π}e^{r sin} = 2∫₀^{π}cosh(r sin)`, folding `[π,2π]` onto
+  `[0,π]` with `sin(u+π) = −sin u`;
+- **`steinhausLaplace_eq_besselI0 : I₀ = besselI0`**;
+- hence, for free,
+  `steinhausLogLaplace_le : log I₀(x) ≤ x + log√(π/(2x))` for `x > 0`, and
+  `le_steinhausLogLaplace_sharp : x − log(2π√x) ≤ log I₀(x)` for `x ≥ 1`.
+
+These are the card's `(27)` in both directions, and they are what `S5`'s divergence, `S6` and `S7`
+consume.  Card 11 now stands at 4 Lean modules on top of the corpus's existing Steinhaus layer.

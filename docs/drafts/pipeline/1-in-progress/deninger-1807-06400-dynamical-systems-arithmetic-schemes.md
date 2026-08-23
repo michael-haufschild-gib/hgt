@@ -164,6 +164,8 @@ and the relation to the Fargues–Fontaine curve) into the corpus as closed Lean
 | **Prop 13.1 (`t41`) CLOSED IN FULL**: a pair of stalk maps with the square (139) and the locality data (140) **is** a morphism `Spec 𝒪 → W_rat (X)` in the sense of Def 2.5, and its stalk maps give the pair back; the `stalkHom`/`stalkHom_comp` fields of Def 2.5 carry no information once `W_rat` commutes with stalks | `RHTower/DeningerDynSysProp131.lean` | closed |
 | **Prop 3.5, affine case**: for a ring with a continuous profinite action and invariant subring, the `C`-points of `Spec B` map **onto** those of `Spec A` with fibres exactly the `G`-orbits — Kucharczyk–Scholze Lemma 4.9 transported along `Spec.preimage` | `RHTower/DeningerDynSysProp35Affine.lean` | closed |
 | **§5, equations (41)–(43)**: Deninger's `ρ (P) = |(ker P)_tors|` and its Frobenius law `ρ (F_ν P) = ν_x ρ (P)` — the `ν`-th power map is a surjection of the torsion kernel of `F_ν P` onto that of `P` with kernel `μ_ν (κ)`, whose order is the prime-to-characteristic part of `ν` | `RHTower/DeningerDynSysRhoFrobenius.lean` | closed |
+| **Prop 3.5, the covering step**: a `C`-point of a scheme has a single point as image, so it factors through any affine open containing it; hence the affine case globalises and every `C`-point of the base lifts | `RHTower/DeningerDynSysProp35Global.lean` | closed |
+| **Cor 3.3, formal content**: for a normal subgroup `N ≤ G` acting on a set, `G` acts on the `N`-orbit space and `(S / N) / G = S / G` — Deninger's iterated descent `W_rat(X₁)(C)/G₁ = W_rat(X₀)(C)` | `HTGeometry/OrbitQuotientComposition.lean` | closed |
 | **Prop 1.1(b) in ring form over a domain**: `ω : ℤ[A ∖ 0] ≃+* W_rat(A)` for an integrally closed domain with algebraically closed fraction field, and the consequence `Hom_ring(W_rat(A), R) ≃ (A →*₀ R)` used for the `𝒪`-valued points | `RHTower/DeningerDynSysOmegaDomainRing.lean` | closed |
 | **Prop 1.1(b) (`t21nn`) in ring form**: `ω : ℤ[κˣ] ≃+* W_rat(κ)` for `κ` algebraically closed — the additive comparison is multiplicative because both sides are biadditive and `[a]⊙[b] = [ab]` | `RHTower/DeningerDynSysOmegaRing.lean` | closed |
 | **Cor 1.5(1) / Cor 1.7(2) algebraic core**: `Hom(W_rat(κ), C) ≃ (κˣ →* Cˣ)` for `κ` algebraically closed, via `ω` and `liftNCRingHom` | `RHTower/DeningerDynSysWittHomCharacters.lean` | closed |
@@ -913,4 +915,17 @@ Nothing in v4 is untracked by the ledger: the only apparent omission, Prop 1.4, 
   `QuotientGroup.quotientKerEquivOfSurjective`, and the corpus's
   `deningerCard_rootsOfUnity_charP` / `_charZero` evaluate `#μ_ν (κ)` as `ordCompl[p] ν` resp. `ν`.
   Both characteristics are recorded separately, matching Deninger's `ν_x`.
+  Axiom audit: `[propext, Classical.choice, Quot.sound]`.
+
+- 2026-08-23 — **Proposition 3.5's covering step and Corollary 3.3's formal content closed.**
+  *Covering step.*  `deningerSchemePoint_surjective`: `Spec C` has one point, so a `C`-point of the
+  base factors through any affine open containing its image (`IsOpenImmersion.lift` on
+  `hU₀.fromSpec`, whose range is `U₀`).  The lifted ring homomorphism is turned back into a
+  `C`-point of the total space by `IsAffineOpen.SpecMap_appLE_fromSpec`, the naturality
+  `Spec.map (f.appLE U V i) ≫ hU.fromSpec = hV.fromSpec ≫ f`.  So the affine case of Prop 3.5,
+  which is Kucharczyk–Scholze 4.9, globalises with no further input.
+  *Cor 3.3.*  Deninger says the second assertion "follows formally"; the formal content is
+  `orbitQuotientQuotientEquiv`: for a **normal** subgroup `N ≤ G` acting on a set `S`, `G` acts on
+  the `N`-orbit space (well defined exactly by normality) and its orbits there are the `G`-orbits
+  on `S`.  Since the `G`-action factors through `G / N`, this is `(S/N)/(G/N) = S/G`.
   Axiom audit: `[propext, Classical.choice, Quot.sound]`.

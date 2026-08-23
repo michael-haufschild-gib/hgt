@@ -1,11 +1,14 @@
 import GaloisForLFunctions.HTGeometry.AntiLownerCollisionBridge
 import GaloisForLFunctions.HTGeometry.HigherLoewnerCollisionConfluence
+import GaloisForLFunctions.HTGeometry.ImaginaryPoleBezoutianGram
 import GaloisForLFunctions.HTGeometry.SpectralActionPhaseAnalytic
 import GaloisForLFunctions.RHTower.ThetaCuspTiltFluxWeilParityEulerRayWeld
 import GaloisForLFunctions.RHTower.SuzukiTorqueContinuationAnalytic
 import GaloisForLFunctions.RHTower.XiShiftedHardEdgeMomentDerivatives
 import GaloisForLFunctions.RHTower.XiResolventHankelMatrixLadder
 import GaloisForLFunctions.RHTower.XiLogDerivSymmetry
+import GaloisForLFunctions.RHTower.XiUnitEulerPoleBezoutianSufficiency
+import Mathlib.Analysis.Matrix.Order
 import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
 
 /-!
@@ -41,8 +44,8 @@ positivity of both all-order jet towers into RH.  Only the generic higher collis
 passage from separated Loewner matrices to those towers remains.
 -/
 
-open Complex
-open scoped Matrix MatrixOrder Topology
+open Complex Filter
+open scoped ComplexOrder Matrix MatrixOrder Topology
 
 namespace RHTower
 
@@ -261,7 +264,8 @@ theorem loewnerDerivativeMatrixAt_eq_dslope
     simp [loewnerDerivativeMatrixAt, dslope_same, (hderiv i).deriv]
   · rw [loewnerDerivativeMatrixAt, if_neg hij]
     rw [dslope_of_ne _ (hinj.ne hij).symm, slope_def_field]
-    rw [show x j - x i = -(x i - x j) by ring, div_neg, neg_div]
+    rw [show x j - x i = -(x i - x j) by ring, div_neg]
+    ring
 
 /-- Derivative of the increasing Audenaert reflection-parity transform. -/
 theorem hasDerivAt_xiEulerAudenaertIncreasing
@@ -272,16 +276,19 @@ theorem hasDerivAt_xiEulerAudenaertIncreasing
   have h := (hasDerivAt_id X).mul
     (hasDerivAt_xiEulerAudenaertDecreasing hX)
   convert h using 1
-  · simp [xiEulerAudenaertIncreasing]
-  · ring
+  · rfl
+  · change xiEulerAudenaertDecreasing X -
+      X * (xiShiftedReciprocalMoment X 1).re =
+        1 * xiEulerAudenaertDecreasing X +
+          X * (-(xiShiftedReciprocalMoment X 1).re)
+    ring
 
 /-- Derivative of the reversed decreasing Audenaert transform. -/
 theorem hasDerivAt_neg_xiEulerAudenaertDecreasing
     {X : ℝ} (hX : 0 < X) :
     HasDerivAt (fun Y => -xiEulerAudenaertDecreasing Y)
       (xiShiftedReciprocalMoment X 1).re X := by
-  convert (hasDerivAt_xiEulerAudenaertDecreasing hX).neg using 1
-  ring
+  simpa only [neg_neg] using (hasDerivAt_xiEulerAudenaertDecreasing hX).neg
 
 /-- Exact confluent version of the even reflection-parity splitting, including diagonal nodes. -/
 theorem xiSquaredEuler_add_loewner_eq_increasing_dslope
@@ -290,7 +297,7 @@ theorem xiSquaredEuler_add_loewner_eq_increasing_dslope
     antiLownerMatrixAt xiSquaredEulerFullQ x +
         loewnerDerivativeMatrixAt xiSquaredEulerFullQ
           (fun i => deriv xiSquaredEulerFullQ (x i)) x =
-      2 • (fun i j => dslope xiEulerAudenaertIncreasing
+      (2 : ℝ) • (fun i j => dslope xiEulerAudenaertIncreasing
         ((x i) ^ 2) ((x j) ^ 2) : Matrix ι ι ℝ) := by
   ext i j
   simp only [Matrix.add_apply, Matrix.smul_apply, smul_eq_mul]
@@ -314,7 +321,16 @@ theorem xiSquaredEuler_add_loewner_eq_increasing_dslope
       have hsqrt := congrArg Real.sqrt h
       rw [Real.sqrt_sq (hx j).le, Real.sqrt_sq (hx i).le] at hsqrt
       exact hxy hsqrt.symm
-    rw [dslope_of_ne _ hsq, slope_def_field]
+    have hds : dslope xiEulerAudenaertIncreasing
+        ((x i) ^ 2) ((x j) ^ 2) =
+        eulerOffDiagonalLoewnerKernel xiEulerAudenaertIncreasing
+          ((x i) ^ 2) ((x j) ^ 2) := by
+      rw [dslope_of_ne _ hsq, slope_def_field,
+        eulerOffDiagonalLoewnerKernel]
+      have hne : (x i) ^ 2 - (x j) ^ 2 ≠ 0 := sub_ne_zero.mpr hsq.symm
+      field_simp [hne]
+      ring
+    rw [hds]
     exact xiSquaredEulerFullKernel_add_fullQLoewner_eq_increasingLoewner
       (hx i) (hx j) hxy
 
@@ -350,7 +366,17 @@ theorem xiSquaredEuler_sub_loewner_eq_decreasing_dslope
       have hsqrt := congrArg Real.sqrt h
       rw [Real.sqrt_sq (hx j).le, Real.sqrt_sq (hx i).le] at hsqrt
       exact hxy hsqrt.symm
-    rw [dslope_of_ne _ hsq, slope_def_field]
+    have hds : dslope (fun X => -xiEulerAudenaertDecreasing X)
+        ((x i) ^ 2) ((x j) ^ 2) =
+        eulerOffDiagonalLoewnerKernel
+          (fun X => -xiEulerAudenaertDecreasing X)
+          ((x i) ^ 2) ((x j) ^ 2) := by
+      rw [dslope_of_ne _ hsq, slope_def_field,
+        eulerOffDiagonalLoewnerKernel]
+      have hne : (x i) ^ 2 - (x j) ^ 2 ≠ 0 := sub_ne_zero.mpr hsq.symm
+      field_simp [hne]
+      ring
+    rw [hds]
     exact xiSquaredEulerFullKernel_sub_fullQLoewner_eq_decreasingLoewner
       (hx i) (hx j) hxy
 
@@ -386,10 +412,10 @@ theorem xiSquaredEulerAntiLownerProducer_imp_parityDslope_posSemidef
     (hinj : Function.Injective x)
     (hanti : ∀ z : ι ⊕ ι → ℝ, (∀ k, 0 < z k) → Function.Injective z →
       (antiLownerMatrixAt xiSquaredEulerFullQ z).PosSemidef) :
-    ((fun i j => dslope xiEulerAudenaertIncreasing
-        ((x i) ^ 2) ((x j) ^ 2) : Matrix ι ι ℝ).PosSemidef) ∧
-      ((fun i j => dslope (fun X => -xiEulerAudenaertDecreasing X)
-        ((x i) ^ 2) ((x j) ^ 2) : Matrix ι ι ℝ).PosSemidef) := by
+    Matrix.PosSemidef (fun i j => dslope xiEulerAudenaertIncreasing
+        ((x i) ^ 2) ((x j) ^ 2)) ∧
+      Matrix.PosSemidef (fun i j => dslope (fun X => -xiEulerAudenaertDecreasing X)
+        ((x i) ^ 2) ((x j) ^ 2)) := by
   obtain ⟨hadd, hsub⟩ :=
     xiSquaredEulerAntiLownerProducer_imp_add_sub_loewnerDerivative x hx hinj hanti
   constructor
@@ -398,16 +424,22 @@ theorem xiSquaredEulerAntiLownerProducer_imp_parityDslope_posSemidef
     simpa only [smul_smul, one_smul] using hscaled
   · let D : Matrix ι ι ℝ := Matrix.diagonal fun i => (x i)⁻¹
     have hcong := hsub.mul_mul_conjTranspose_same D
+    have hD : Dᴴ = D := by
+      ext i j
+      by_cases hij : i = j
+      · subst j
+        simp [D, Matrix.conjTranspose_apply]
+      · simp [D, Matrix.conjTranspose_apply, hij, Ne.symm hij]
     have hrecover :
         D * (antiLownerMatrixAt xiSquaredEulerFullQ x -
           loewnerDerivativeMatrixAt xiSquaredEulerFullQ
             (fun i => deriv xiSquaredEulerFullQ (x i)) x) * Dᴴ =
-          2 • (fun i j => dslope (fun X => -xiEulerAudenaertDecreasing X)
+          (2 : ℝ) • (fun i j => dslope (fun X => -xiEulerAudenaertDecreasing X)
             ((x i) ^ 2) ((x j) ^ 2) : Matrix ι ι ℝ) := by
+      rw [hD]
       rw [xiSquaredEuler_sub_loewner_eq_decreasing_dslope x hx hinj]
       ext i j
       simp only [D, Matrix.diagonal_mul, Matrix.mul_diagonal,
-        Matrix.conjTranspose_apply, Matrix.diagonal_apply, star_id_of_comm,
         Matrix.smul_apply, smul_eq_mul]
       field_simp [(hx i).ne', (hx j).ne']
       ring
@@ -422,16 +454,109 @@ def XiSquaredEulerAntiLownerProducer : Prop :=
     (∀ i, 0 < z i) → Function.Injective z →
       (antiLownerMatrixAt xiSquaredEulerFullQ z).PosSemidef
 
+/-- A real matrix is positive semidefinite whenever its entrywise complexification is positive
+semidefinite. -/
+theorem realMatrix_posSemidef_of_complexification
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    {A : Matrix ι ι ℝ}
+    (hA : (A.map Complex.ofReal).PosSemidef) : A.PosSemidef := by
+  apply Matrix.PosSemidef.of_dotProduct_mulVec_nonneg
+  · rw [Matrix.IsHermitian]
+    ext i j
+    have hc := congrFun (congrFun hA.isHermitian.eq i) j
+    have hre := congrArg Complex.re hc
+    simpa [Matrix.conjTranspose_apply] using hre
+  · intro v
+    have hc := hA.dotProduct_mulVec_nonneg (fun i => (v i : ℂ))
+    have hre := (RCLike.nonneg_iff.mp hc).1
+    simpa [dotProduct, Matrix.mulVec] using hre
+
+/-- Under RH, the imaginary-zero Bezoutian Gram factorization makes every finite real
+squared-Euler anti-Löwner matrix positive semidefinite. -/
+theorem xiSquaredEulerAntiLownerMatrix_posSemidef_of_riemannHypothesis
+    (hRH : RiemannHypothesis) {N : ℕ}
+    (z : Fin N → ℝ) (hz : ∀ i, 0 < z i) :
+    (antiLownerMatrixAt xiSquaredEulerFullQ z).PosSemidef := by
+  let W : Fin N → ℂ := fun i => (z i : ℂ)
+  have hcrit : ∀ s : ℂ, xi s = 0 → s.re = 1 / 2 :=
+    riemannHypothesis_iff_xi_zero_re_eq_half.mp hRH
+  have hWpos : ∀ i, 0 < (W i).re := by
+    intro i
+    simpa [W] using hz i
+  have hne : ∀ i, xiCent (W i) ≠ 0 := by
+    intro i hzero
+    have hre := hcrit (1 / 2 + W i) hzero
+    simp only [Complex.add_re, Complex.div_re, Complex.one_re, Complex.one_im,
+      W, Complex.ofReal_re] at hre
+    norm_num at hre
+    linarith [hz i]
+  have hbez := posSemidef_xiTranslatedBezoutian_of_critical hcrit W hWpos
+  have hcongr := GaloisForLFunctions.HTGeometry.posSemidef_congr_diagonal
+    hbez (fun i => (xiCent (W i))⁻¹)
+  have hEq :
+      (Matrix.of fun i j : Fin N => criticalLogDerivKernel (W i) (W j)) =
+      Matrix.of fun i j : Fin N =>
+        (xiCent (W i))⁻¹ * xiTranslatedBezoutian 0 (W i) (W j) *
+          (starRingEnd ℂ) ((xiCent (W j))⁻¹) := by
+    ext i j
+    rw [Matrix.of_apply, Matrix.of_apply, criticalLogDerivKernel,
+      xiTranslatedBezoutian]
+    have h1 : xiTranslatedCentered 0 (W i) = xiCent (W i) := (xiCent_eq _).symm
+    have h2 : xiTranslatedCentered 0 (W j) = xiCent (W j) := (xiCent_eq _).symm
+    have h3 : deriv (xiTranslatedCentered 0) = deriv xiCent := by
+      congr 1
+      funext u
+      exact (xiCent_eq u).symm
+    rw [h1, h2, h3, logDeriv_apply, logDeriv_apply, map_div₀, map_inv₀]
+    have hjc : (starRingEnd ℂ) (xiCent (W j)) ≠ 0 := by
+      simpa using (map_ne_zero (starRingEnd ℂ)).mpr (hne j)
+    field_simp [hne i, hne j, hjc]
+  have hcritical :
+      (Matrix.of fun i j : Fin N =>
+        criticalLogDerivKernel (W i) (W j)).PosSemidef := by
+    rw [hEq]
+    exact hcongr
+  apply realMatrix_posSemidef_of_complexification
+  have hmap :
+      (antiLownerMatrixAt xiSquaredEulerFullQ z).map Complex.ofReal =
+        Matrix.of fun i j : Fin N => criticalLogDerivKernel (W i) (W j) := by
+    ext i j
+    rw [Matrix.map_apply, Matrix.of_apply]
+    rw [criticalLogDerivKernel_ofReal_eq_fullKernel_pos (hz i) (hz j)]
+    simp [antiLownerMatrixAt, signedAntiLownerMatrix,
+      xiSquaredEulerFullKernel, eulerRayResponseKernel]
+  rw [hmap]
+  exact hcritical
+
+/-- RH supplies the universal squared-Euler anti-Löwner producer.  Reindexing reduces an arbitrary
+finite type to the canonical `Fin` Gram matrix. -/
+theorem xiSquaredEulerAntiLownerProducer_of_riemannHypothesis
+    (hRH : RiemannHypothesis) :
+    XiSquaredEulerAntiLownerProducer := by
+  intro ι _ _ z hz hinj
+  let e : ι ≃ Fin (Fintype.card ι) := Fintype.equivFin ι
+  have hfin := xiSquaredEulerAntiLownerMatrix_posSemidef_of_riemannHypothesis
+    hRH (fun j => z (e.symm j)) (fun j => hz (e.symm j))
+  have hsub := hfin.submatrix e
+  have heq :
+      (antiLownerMatrixAt xiSquaredEulerFullQ
+        (fun j => z (e.symm j))).submatrix e e =
+          antiLownerMatrixAt xiSquaredEulerFullQ z := by
+    ext i j
+    simp [antiLownerMatrixAt, signedAntiLownerMatrix, e]
+  rw [heq] at hsub
+  exact hsub
+
 /-- A universal squared-Euler producer supplies, near every positive collision center, both
 punctured uniform Löwner PSD families required by higher confluence. -/
 theorem xiSquaredEulerAntiLownerProducer_imp_eventually_uniform_parity
     (hproducer : XiSquaredEulerAntiLownerProducer)
     {X : ℝ} (hX : 0 < X) (N : ℕ) :
     (∀ᶠ h in 𝓝[≠] (0 : ℝ),
-      (HTGeometry.uniformMovingDslopeMatrix
+      (GaloisForLFunctions.HTGeometry.uniformMovingDslopeMatrix
         xiEulerAudenaertIncreasing X N h).PosSemidef) ∧
     (∀ᶠ h in 𝓝[≠] (0 : ℝ),
-      (HTGeometry.uniformMovingDslopeMatrix
+      (GaloisForLFunctions.HTGeometry.uniformMovingDslopeMatrix
         (fun Y => -xiEulerAudenaertDecreasing Y) X N h).PosSemidef) := by
   have hnodes : ∀ᶠ h in 𝓝[≠] (0 : ℝ),
       ∀ i : Fin N, 0 < X + (i : ℝ) * h := by
@@ -445,9 +570,9 @@ theorem xiSquaredEulerAntiLownerProducer_imp_eventually_uniform_parity
       simpa using tendsto_const_nhds.add (tendsto_const_nhds.mul hid)
     exact ht.eventually (Ioi_mem_nhds hX)
   have hpair : ∀ᶠ h in 𝓝[≠] (0 : ℝ),
-      (HTGeometry.uniformMovingDslopeMatrix
+      (GaloisForLFunctions.HTGeometry.uniformMovingDslopeMatrix
         xiEulerAudenaertIncreasing X N h).PosSemidef ∧
-      (HTGeometry.uniformMovingDslopeMatrix
+      (GaloisForLFunctions.HTGeometry.uniformMovingDslopeMatrix
         (fun Y => -xiEulerAudenaertDecreasing Y) X N h).PosSemidef := by
     filter_upwards [hnodes, self_mem_nhdsWithin] with h hY hhmem
     have hh : h ≠ 0 := by
@@ -481,21 +606,21 @@ theorem xiSquaredEulerAntiLownerProducer_imp_eventually_uniform_parity
     · have heq :
           (fun i j => dslope xiEulerAudenaertIncreasing
             ((x i) ^ 2) ((x j) ^ 2) : Matrix (Fin N) (Fin N) ℝ) =
-          HTGeometry.uniformMovingDslopeMatrix
+          GaloisForLFunctions.HTGeometry.uniformMovingDslopeMatrix
             xiEulerAudenaertIncreasing X N h := by
           ext i j
-          simp only [HTGeometry.uniformMovingDslopeMatrix,
-            HTGeometry.movingDslope, hsquare, Y]
+          simp only [GaloisForLFunctions.HTGeometry.uniformMovingDslopeMatrix,
+            GaloisForLFunctions.HTGeometry.movingDslope, hsquare, Y]
       rw [← heq]
       exact hp.1
     · have heq :
           (fun i j => dslope (fun T => -xiEulerAudenaertDecreasing T)
             ((x i) ^ 2) ((x j) ^ 2) : Matrix (Fin N) (Fin N) ℝ) =
-          HTGeometry.uniformMovingDslopeMatrix
+          GaloisForLFunctions.HTGeometry.uniformMovingDslopeMatrix
             (fun T => -xiEulerAudenaertDecreasing T) X N h := by
           ext i j
-          simp only [HTGeometry.uniformMovingDslopeMatrix,
-            HTGeometry.movingDslope, hsquare, Y]
+          simp only [GaloisForLFunctions.HTGeometry.uniformMovingDslopeMatrix,
+            GaloisForLFunctions.HTGeometry.movingDslope, hsquare, Y]
       rw [← heq]
       exact hp.2
   exact ⟨hpair.mono (fun _ hp => hp.1), hpair.mono (fun _ hp => hp.2)⟩
@@ -639,7 +764,7 @@ theorem alternatingNormalizedLoewnerJet_eq_succ
       (-1 : ℝ) ^ n / ((n + 1).factorial : ℝ) *
         iteratedDeriv (n + 1) f X := by
   rw [alternatingNormalizedLoewnerJet,
-    HTGeometry.iteratedDeriv_dslope_self_eq_iteratedDeriv_succ_div hf]
+    GaloisForLFunctions.HTGeometry.iteratedDeriv_dslope_self_eq_iteratedDeriv_succ_div hf]
   push_cast [Nat.factorial_succ]
   have hn : (n.factorial : ℝ) ≠ 0 := by positivity
   have hn1 : (n + 1 : ℝ) ≠ 0 := by positivity
@@ -717,30 +842,30 @@ def xiEulerAudenaertIncreasingLoewnerJetMatrix
 theorem xiEulerAudenaertDecreasingLoewnerJetMatrix_eq_alternating
     (N : ℕ) {X : ℝ} (hX : 0 < X) :
     xiEulerAudenaertDecreasingLoewnerJetMatrix N X =
-      HTGeometry.alternatingNormalizedLoewnerJetMatrix
+      GaloisForLFunctions.HTGeometry.alternatingNormalizedLoewnerJetMatrix
         (fun Y => -xiEulerAudenaertDecreasing Y) X N := by
   ext i j
   rw [xiEulerAudenaertDecreasingLoewnerJetMatrix,
     xiEulerAudenaertDecreasingLoewnerJetMoment,
     alternatingNormalizedLoewnerJet_eq_succ
       (analyticAt_xiEulerAudenaertDecreasing hX).neg]
-  simp only [HTGeometry.alternatingNormalizedLoewnerJetMatrix,
-    HTGeometry.normalizedLoewnerJetMatrix]
+  simp only [GaloisForLFunctions.HTGeometry.alternatingNormalizedLoewnerJetMatrix,
+    GaloisForLFunctions.HTGeometry.normalizedLoewnerJetMatrix]
   ring
 
 /-- The Xi increasing-parity jet matrix is the generic alternating higher-confluence limit. -/
 theorem xiEulerAudenaertIncreasingLoewnerJetMatrix_eq_alternating
     (N : ℕ) {X : ℝ} (hX : 0 < X) :
     xiEulerAudenaertIncreasingLoewnerJetMatrix N X =
-      HTGeometry.alternatingNormalizedLoewnerJetMatrix
+      GaloisForLFunctions.HTGeometry.alternatingNormalizedLoewnerJetMatrix
         xiEulerAudenaertIncreasing X N := by
   ext i j
   rw [xiEulerAudenaertIncreasingLoewnerJetMatrix,
     xiEulerAudenaertIncreasingLoewnerJetMoment,
     alternatingNormalizedLoewnerJet_eq_succ
       (analyticAt_xiEulerAudenaertIncreasing hX)]
-  simp only [HTGeometry.alternatingNormalizedLoewnerJetMatrix,
-    HTGeometry.normalizedLoewnerJetMatrix]
+  simp only [GaloisForLFunctions.HTGeometry.alternatingNormalizedLoewnerJetMatrix,
+    GaloisForLFunctions.HTGeometry.normalizedLoewnerJetMatrix]
   ring
 
 /-- The universal finite anti-Löwner producer supplies both all-order Xi reflection-parity jet
@@ -757,9 +882,9 @@ theorem xiSquaredEulerAntiLownerProducer_imp_audenaertLoewnerJetMatrix_posSemide
     obtain ⟨_, hdec⟩ :=
       xiSquaredEulerAntiLownerProducer_imp_eventually_uniform_parity
         hproducer hX N
-    have hjet := HTGeometry.normalizedLoewnerJetMatrix_posSemidef_of_eventually_uniform
+    have hjet := GaloisForLFunctions.HTGeometry.normalizedLoewnerJetMatrix_posSemidef_of_eventually_uniform
       (analyticAt_xiEulerAudenaertDecreasing hX).neg N hdec
-    have halt := HTGeometry.alternatingNormalizedLoewnerJetMatrix_posSemidef
+    have halt := GaloisForLFunctions.HTGeometry.alternatingNormalizedLoewnerJetMatrix_posSemidef
       (fun Y => -xiEulerAudenaertDecreasing Y) X N hjet
     rw [xiEulerAudenaertDecreasingLoewnerJetMatrix_eq_alternating N hX]
     exact halt
@@ -767,9 +892,9 @@ theorem xiSquaredEulerAntiLownerProducer_imp_audenaertLoewnerJetMatrix_posSemide
     obtain ⟨hinc, _⟩ :=
       xiSquaredEulerAntiLownerProducer_imp_eventually_uniform_parity
         hproducer hX N
-    have hjet := HTGeometry.normalizedLoewnerJetMatrix_posSemidef_of_eventually_uniform
+    have hjet := GaloisForLFunctions.HTGeometry.normalizedLoewnerJetMatrix_posSemidef_of_eventually_uniform
       (analyticAt_xiEulerAudenaertIncreasing hX) N hinc
-    have halt := HTGeometry.alternatingNormalizedLoewnerJetMatrix_posSemidef
+    have halt := GaloisForLFunctions.HTGeometry.alternatingNormalizedLoewnerJetMatrix_posSemidef
       xiEulerAudenaertIncreasing X N hjet
     rw [xiEulerAudenaertIncreasingLoewnerJetMatrix_eq_alternating N hX]
     exact halt
@@ -818,6 +943,13 @@ theorem riemannHypothesis_of_xiSquaredEulerAntiLownerProducer
       hproducer (X := 1) zero_lt_one
   exact riemannHypothesis_of_audenaertLoewnerJetMatrix_posSemidef
     zero_lt_one hdec hinc
+
+/-- **Exact classification.**  Universal positive-ray anti-Löwner positivity of the actual
+squared-Euler Xi response is equivalent to RH. -/
+theorem xiSquaredEulerAntiLownerProducer_iff_riemannHypothesis :
+    XiSquaredEulerAntiLownerProducer ↔ RiemannHypothesis :=
+  ⟨riemannHypothesis_of_xiSquaredEulerAntiLownerProducer,
+    xiSquaredEulerAntiLownerProducer_of_riemannHypothesis⟩
 
 end
 

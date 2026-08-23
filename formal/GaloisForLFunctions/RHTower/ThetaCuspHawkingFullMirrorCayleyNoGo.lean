@@ -100,18 +100,30 @@ theorem hasDerivAt_thetaCuspMovingMirrorFullRenormalizedIntegrand
   unfold thetaCuspMovingMirrorFullRenormalizedIntegrand
     thetaCuspMovingMirrorFullFirstJetIntegrand
   dsimp only
+  let base := Complex.exp
+    (((-(incomingFrequency + outgoingFrequency) * v : ℝ) : ℂ) * Complex.I)
+  let rate := ((-outgoingFrequency * thetaCuspFullSource v : ℝ) : ℂ) * Complex.I
+  let slope := ((outgoingFrequency * deriv thetaCuspFullSource v : ℝ) : ℂ)
+  let offset := ((outgoingFrequency - incomingFrequency : ℝ) : ℂ)
+  let phase : ℝ → ℂ := fun coupling => Complex.exp ((coupling : ℂ) * rate)
+  let affine : ℝ → ℂ := fun coupling => offset + (coupling : ℂ) * slope
+  change HasDerivAt
+    (fun coupling => base * (phase coupling * affine coupling - offset))
+    (base * (rate * phase lambda * affine lambda + phase lambda * slope)) lambda
   have hlambda : HasDerivAt (fun coupling : ℝ => (coupling : ℂ)) 1 lambda :=
     (hasDerivAt_id lambda).ofReal_comp
-  have hphase := (hlambda.mul_const
-    (((-outgoingFrequency * thetaCuspFullSource v : ℝ) : ℂ) * Complex.I)).cexp
-  have haffine := (hlambda.mul_const
-    ((outgoingFrequency * deriv thetaCuspFullSource v : ℝ) : ℂ)).const_add
-      ((outgoingFrequency - incomingFrequency : ℝ) : ℂ)
-  convert ((hphase.mul haffine).sub_const
-      ((outgoingFrequency - incomingFrequency : ℝ) : ℂ)).const_mul
-        (Complex.exp
-          (((-(incomingFrequency + outgoingFrequency) * v : ℝ) : ℂ) * Complex.I)) using 1 <;>
-    ring
+  have hphase : HasDerivAt phase (phase lambda * rate) lambda := by
+    simpa [phase] using (hlambda.mul_const rate).cexp
+  have haffine : HasDerivAt affine slope lambda := by
+    simpa [affine] using (hlambda.mul_const slope).const_add offset
+  have hmain := ((hphase.mul haffine).sub_const offset).const_mul base
+  have hmain' : HasDerivAt
+      (fun coupling => base * (phase coupling * affine coupling - offset))
+      (base * (phase lambda * rate * affine lambda + phase lambda * slope)) lambda := by
+    simpa only [Pi.mul_apply] using hmain
+  rw [show base * (rate * phase lambda * affine lambda + phase lambda * slope) =
+      base * (phase lambda * rate * affine lambda + phase lambda * slope) by ring]
+  exact hmain'
 
 /-- The displayed second jet is the actual derivative of the first coupling jet. -/
 theorem hasDerivAt_thetaCuspMovingMirrorFullFirstJetIntegrand
@@ -132,6 +144,11 @@ theorem hasDerivAt_thetaCuspMovingMirrorFullFirstJetIntegrand
   let offset := ((outgoingFrequency - incomingFrequency : ℝ) : ℂ)
   let phase : ℝ → ℂ := fun coupling => Complex.exp ((coupling : ℂ) * rate)
   let affine : ℝ → ℂ := fun coupling => offset + (coupling : ℂ) * slope
+  change HasDerivAt
+    (fun coupling => base *
+      (rate * phase coupling * affine coupling + phase coupling * slope))
+    (base * (rate ^ 2 * phase lambda * affine lambda +
+      2 * rate * phase lambda * slope)) lambda
   have hlambda : HasDerivAt (fun coupling : ℝ => (coupling : ℂ)) 1 lambda :=
     (hasDerivAt_id lambda).ofReal_comp
   have hphase : HasDerivAt phase (phase lambda * rate) lambda := by
@@ -143,8 +160,18 @@ theorem hasDerivAt_thetaCuspMovingMirrorFullFirstJetIntegrand
       (rate * (phase lambda * rate) * affine lambda + rate * phase lambda * slope +
         (phase lambda * rate) * slope) lambda := by
     exact ((hphase.const_mul rate).mul haffine).add (hphase.mul_const slope)
-  convert hfirst.const_mul base using 1 <;>
-    simp only [base, rate, slope, offset, phase, affine] <;> ring
+  have hmain := hfirst.const_mul base
+  have hmain' : HasDerivAt
+      (fun coupling => base *
+        (rate * phase coupling * affine coupling + phase coupling * slope))
+      (base * (rate * (phase lambda * rate) * affine lambda +
+        rate * phase lambda * slope + (phase lambda * rate) * slope)) lambda := by
+    simpa only [Pi.add_apply, Pi.mul_apply] using hmain
+  rw [show base * (rate ^ 2 * phase lambda * affine lambda +
+      2 * rate * phase lambda * slope) =
+      base * (rate * (phase lambda * rate) * affine lambda +
+        rate * phase lambda * slope + (phase lambda * rate) * slope) by ring]
+  exact hmain'
 
 /-! ## Source-square transform and nonzero physical second jet -/
 

@@ -231,6 +231,155 @@ theorem hasDerivAt_vacuumAbelRHS {z : ℂ} (hz : 1 < z.re) {y : ℝ} (hy : Real.
   field_simp
   ring
 
+/-! ## Vanishing at infinity -/
+
+theorem tendsto_rpow_one_sub_div {z : ℂ} (hz : 1 < z.re) :
+    Tendsto (fun y : ℝ => y ^ (1 - z.re) / (z.re - 1)) atTop (𝓝 0) := by
+  have h := tendsto_rpow_neg_atTop (y := z.re - 1) (by linarith)
+  have heq : (fun x : ℝ => x ^ (-(z.re - 1))) = fun x : ℝ => x ^ (1 - z.re) := by
+    funext x; ring_nf
+  rw [heq] at h
+  simpa using h.div_const (z.re - 1)
+
+theorem norm_primeVacuumTail_le {z : ℂ} (hz : 1 < z.re) {y : ℝ} (hy : Real.exp 1 ≤ y) :
+    ‖primeVacuumTail z y‖ ≤ y ^ (1 - z.re) / (z.re - 1) := by
+  have hy1 : (1 : ℝ) < y := lt_of_lt_of_le one_lt_exp_one hy
+  have hy0 : (0 : ℝ) < y := by linarith
+  have hlog1 : (1 : ℝ) ≤ Real.log y := by
+    have : Real.log (Real.exp 1) ≤ Real.log y := Real.log_le_log (Real.exp_pos 1) hy
+    simpa using this
+  refine le_trans (norm_integral_logPowerTail_le hy1 hz) ?_
+  rw [pow_one]
+  refine div_le_div_of_nonneg_left (Real.rpow_pos_of_pos hy0 _).le (by linarith) ?_
+  nlinarith
+
+theorem norm_integral_vacuumAbelIntegrand_le {z : ℂ} (hz : 1 < z.re) {y : ℝ}
+    (hy : Real.exp 1 ≤ y) :
+    ‖∫ v in Ioi y, vacuumAbelIntegrand z v‖ ≤ y ^ (1 - z.re) / (z.re - 1) := by
+  have hy0 : (0 : ℝ) < y := lt_of_lt_of_le (by linarith [one_lt_exp_one]) hy
+  have hmajor : IntegrableOn (fun v : ℝ => v ^ (-z.re)) (Ioi y) volume :=
+    integrableOn_Ioi_rpow_of_lt (by linarith) hy0
+  have hbound : ‖∫ v in Ioi y, vacuumAbelIntegrand z v‖ ≤ ∫ v in Ioi y, v ^ (-z.re) := by
+    refine norm_integral_le_of_norm_le hmajor ?_
+    filter_upwards [self_mem_ae_restrict measurableSet_Ioi] with v hv
+    have hv0 : (0 : ℝ) < v := lt_trans hy0 hv
+    have hvy : Real.exp 1 ≤ v := le_trans hy hv.le
+    rw [vacuumAbelIntegrand, norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos hv0,
+      Complex.norm_real, Real.norm_of_nonneg (logIntegralCount_nonneg hvy)]
+    have hpow : v ^ (-z - 1).re = v ^ (-z.re) * v⁻¹ := by
+      rw [← Real.rpow_neg_one v, ← Real.rpow_add hv0]
+      congr 1
+    rw [hpow, mul_assoc]
+    have hsmall : v⁻¹ * logIntegralCount v ≤ 1 := by
+      rw [inv_mul_eq_div, div_le_one hv0]
+      exact logIntegralCount_le hvy
+    calc v ^ (-z.re) * (v⁻¹ * logIntegralCount v)
+        ≤ v ^ (-z.re) * 1 :=
+          mul_le_mul_of_nonneg_left hsmall (Real.rpow_pos_of_pos hv0 _).le
+      _ = v ^ (-z.re) := by ring
+  refine hbound.trans ?_
+  rw [integral_Ioi_rpow_of_lt (by linarith) hy0, show -z.re + 1 = 1 - z.re by ring,
+    show z.re - 1 = -(1 - z.re) by ring, div_neg, neg_div]
+
+theorem tendsto_primeVacuumTail {z : ℂ} (hz : 1 < z.re) :
+    Tendsto (primeVacuumTail z) atTop (𝓝 0) := by
+  refine squeeze_zero_norm' ?_ (tendsto_rpow_one_sub_div hz)
+  filter_upwards [eventually_ge_atTop (Real.exp 1)] with y hy
+  exact norm_primeVacuumTail_le hz hy
+
+theorem tendsto_vacuumAbelRHS {z : ℂ} (hz : 1 < z.re) :
+    Tendsto (vacuumAbelRHS z) atTop (𝓝 0) := by
+  have h1 : Tendsto (fun y : ℝ => z * ∫ v in Ioi y, vacuumAbelIntegrand z v) atTop (𝓝 0) := by
+    have hbase : Tendsto (fun y : ℝ => ∫ v in Ioi y, vacuumAbelIntegrand z v) atTop (𝓝 0) := by
+      refine squeeze_zero_norm' ?_ (tendsto_rpow_one_sub_div hz)
+      filter_upwards [eventually_ge_atTop (Real.exp 1)] with y hy
+      exact norm_integral_vacuumAbelIntegrand_le hz hy
+    simpa using hbase.const_mul z
+  have h2 : Tendsto (fun y : ℝ => (logIntegralCount y : ℂ) * (y : ℂ) ^ (-z)) atTop (𝓝 0) := by
+    have hmaj : Tendsto (fun y : ℝ => y ^ (1 - z.re)) atTop (𝓝 0) := by
+      have h := tendsto_rpow_neg_atTop (y := z.re - 1) (by linarith)
+      have heq : (fun x : ℝ => x ^ (-(z.re - 1))) = fun x : ℝ => x ^ (1 - z.re) := by
+        funext x; ring_nf
+      rwa [heq] at h
+    refine squeeze_zero_norm' ?_ hmaj
+    filter_upwards [eventually_ge_atTop (Real.exp 1)] with y hy
+    have hy0 : (0 : ℝ) < y := lt_of_lt_of_le (by linarith [one_lt_exp_one]) hy
+    rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg (logIntegralCount_nonneg hy),
+      Complex.norm_cpow_eq_rpow_re_of_pos hy0]
+    have hpow : y ^ (-z).re = y ^ (1 - z.re) * y⁻¹ := by
+      rw [← Real.rpow_neg_one y, ← Real.rpow_add hy0]
+      congr 1
+      simp
+      ring
+    rw [hpow]
+    have hsmall : logIntegralCount y * y⁻¹ ≤ 1 := by
+      rw [mul_inv_le_iff₀ hy0]
+      simpa using logIntegralCount_le hy
+    calc logIntegralCount y * (y ^ (1 - z.re) * y⁻¹)
+        = y ^ (1 - z.re) * (logIntegralCount y * y⁻¹) := by ring
+      _ ≤ y ^ (1 - z.re) * 1 :=
+          mul_le_mul_of_nonneg_left hsmall (Real.rpow_pos_of_pos hy0 _).le
+      _ = y ^ (1 - z.re) := by ring
+  have := h1.sub h2
+  refine Tendsto.congr ?_ (by simpa using this)
+  intro y
+  rw [vacuumAbelRHS]
+
+/-- **The vacuum Abel transform.**  The continuous logarithmic tail obeys the same Abel identity
+as the arithmetic prime tail. -/
+theorem primeVacuumTail_eq_vacuumAbelRHS {z : ℂ} (hz : 1 < z.re) {y : ℝ} (hy : Real.exp 1 < y) :
+    primeVacuumTail z y = vacuumAbelRHS z y := by
+  set D : ℝ → ℂ := fun u => primeVacuumTail z u - vacuumAbelRHS z u with hD
+  have hDderiv : ∀ u ∈ Ioi (Real.exp 1), HasDerivAt D 0 u := by
+    intro u hu
+    have h := (hasDerivAt_primeVacuumTail hz hu).sub (hasDerivAt_vacuumAbelRHS hz hu)
+    have hz0 : -logPowerTail z 1 u - -logPowerTail z 1 u = 0 := by ring
+    rw [hD]
+    exact hz0 ▸ h
+  have hconst : ∀ Y : ℝ, y ≤ Y → D Y = D y := by
+    intro Y hY
+    have hderiv : ∀ x ∈ uIcc y Y, HasDerivAt D 0 x := by
+      intro x hx
+      rw [Set.uIcc_of_le hY] at hx
+      exact hDderiv x (lt_of_lt_of_le hy hx.1)
+    have h := intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv
+      (intervalIntegrable_const (c := (0 : ℂ)))
+    simp only [intervalIntegral.integral_zero] at h
+    linear_combination -h
+  have hlim : Tendsto D atTop (𝓝 0) := by
+    simpa [hD] using (tendsto_primeVacuumTail hz).sub (tendsto_vacuumAbelRHS hz)
+  have hconstlim : Tendsto D atTop (𝓝 (D y)) := by
+    refine Tendsto.congr' ?_ tendsto_const_nhds
+    filter_upwards [eventually_ge_atTop y] with Y hY
+    exact (hconst Y hY).symm
+  have := tendsto_nhds_unique hconstlim hlim
+  rw [hD] at this
+  simpa using sub_eq_zero.mp this
+
+/-- **Card equation (20k) for the vacuum.**  The window form of the vacuum Abel transform. -/
+theorem primeVacuumTail_eq_window {z : ℂ} (hz : 1 < z.re) {y : ℝ} (hy : Real.exp 1 < y) :
+    primeVacuumTail z y
+      = z * ∫ v in Ioi y,
+          (v : ℂ) ^ (-z - 1) * ((logIntegralCount v : ℂ) - (logIntegralCount y : ℂ)) := by
+  have hz0 : (0 : ℝ) < z.re := by linarith
+  have hzne : z ≠ 0 := by intro h; rw [h] at hz0; simp at hz0
+  have hy0 : (0 : ℝ) < y := lt_trans (by linarith [one_lt_exp_one]) hy
+  have h1 : IntegrableOn (vacuumAbelIntegrand z) (Ioi y) volume :=
+    integrableOn_vacuumAbelIntegrand hz hy.le
+  have h2 : IntegrableOn (fun v : ℝ => (v : ℂ) ^ (-z - 1)) (Ioi y) volume :=
+    integrableOn_cpow_neg_sub_one hz0 hy0
+  have hsplit : (∫ v in Ioi y,
+      (v : ℂ) ^ (-z - 1) * ((logIntegralCount v : ℂ) - (logIntegralCount y : ℂ)))
+      = (∫ v in Ioi y, vacuumAbelIntegrand z v)
+        - (logIntegralCount y : ℂ) * ∫ v in Ioi y, (v : ℂ) ^ (-z - 1) := by
+    rw [← MeasureTheory.integral_const_mul, ← MeasureTheory.integral_sub h1 (h2.const_mul _)]
+    refine MeasureTheory.setIntegral_congr_fun measurableSet_Ioi (fun v _ => ?_)
+    rw [vacuumAbelIntegrand]
+    ring
+  rw [primeVacuumTail_eq_vacuumAbelRHS hz hy, vacuumAbelRHS, hsplit,
+    integral_Ioi_cpow_neg_sub_one hz0 hy0]
+  field_simp
+
 end
 
 end RHTower
