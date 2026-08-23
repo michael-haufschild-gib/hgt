@@ -1,7 +1,7 @@
 # Route B semilocal Sonin interim verdict
 
 - **ID:** route-b-semilocal-sonin-interim-verdict
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized / needs independent audit
 - **Type:** ROUTE VERDICT / BRIDGE
 - **Scope:** Route B in `docs/reports/rhtower_status_1107.md`
 
@@ -203,3 +203,31 @@ pairing cannot carry the logarithmic orbital length.
 - Alain Connes, Caterina Consani, and Henri Moscovici, *On q-series and the moment problem associated
   to local factors*, arXiv:2403.01247.
 - Jean-Francois Burnol, *The explicit formula and the conductor operator*, 1999.
+
+## Lean formalization
+
+This is a route verdict: its content is the classification of a list of already-established
+results.  Every bullet that asserts a *theorem* is now backed by Lean declarations; the bullets
+marked `[SEARCH]`, `[OPEN CORE]` and the kill/promotion conditions are explicitly open and are not
+claims of the card.
+
+| Verdict bullet | Lean declaration | Module |
+|---|---|---|
+| `[PROVED IN LEAN; OLD SCALARIZATION CLOSED]` the projection-correction pairing cannot carry `log(p^m)` | `not_soninSemilocalFluxNormalization` | `RHTower.SoninSemilocalTraceObstruction`, `RHTower.ConnesSemilocalOrbitalSourceClass` |
+| `[PROVED ON PAPER; CANDIDATE NEW]` alternating nonzero all-even ground residue in every positive even degree | `semilocalFinitePrimeEvenJacobiMoment_signed_pos`, `semilocalFinitePrimeGradingGroundDefect_signed_pos`, `semilocalFinitePrimeActualGradingGroundDefect_signed_pos` | `RHTower.SoninSemilocalAllEvenJacobiResidue`, `RHTower.SoninSemilocalJacobiResidueCorollaries` |
+| first Jacobi edge strictly contracted below `1/sqrt 2` | `semilocal_normalizedSecondMoment_lt_archimedean` | `RHTower.SemilocalProlateUnitaryTransport` |
+| `[DIRECT METRIC/FREDHOLM VARIANTS CLOSED]` every Euler metric corner, its inverse and both polar square roots are noncompact | `sonin_eulerMetricCorner_not_isCompactOperator_of_shell`, `not_isCompactOperator_eulerCorner`, `not_isCompactOperator_eulerSqrtCorner`, `not_isCompactOperator_eulerInverseSqrtCorner`, `not_isCompactOperator_corner_of_sqrt` | `RHTower.SoninEulerCornerNoncompact`, `RHTower.SoninEulerInversePolarCorner` |
+| `[RESOLVENT DOMAIN GATE SHARPENED]` two-sided linear growth of the semilocal Jacobi coefficients; Carleman cannot select a realization | `semilocalPrimeEulerFactor_bounds`, `semilocalFinitePrimeEulerDensity_bounds`, `semilocalEulerDensityLower_le_mass` | `RHTower.SemilocalJacobiLinearGrowthProlateDomainGate` |
+| `[RAW DEFECT DETERMINANTS CLOSED]` the pulled-back defect strictly lowers the filtration; truncations are nilpotent with determinant one | `StrictlyLowering`, `StrictlyLowering.pow_apply_eq_zero`, `StrictlyLowering.eigenvalue_eq_zero`, `det_one_add_smul_of_adapted`, `trace_pow_eq_zero_of_adapted` | `HTGeometry.StrictlyLoweringFiltration` |
+| `[SMALL-CUTOFF TRACE-CLASS SURVIVAL PROVED]` | `smallCutoff_groundRow_survival`, `onePrimeGroundRow_isTraceClass`, `tendsto_norm_corner_atTop` | `RHTower.SoninSmallCutoffGroundRow` |
+| `[RELATIVE-RESOLVENT CORE FACTORIZED]` the live corner is the Sylvester transform, and vanishes iff it intertwines | `sonin_sylvester_factorization`, `memSchattenClass_one_sylvester`, `sonin_corner_eq_zero_iff`, `soninCross_eq_zero_of_disjoint_spectrum` | `RHTower.SoninSylvesterFactorization` |
+| `[COFINAL TRANSPORTED CONTROL CLOSED]` | `transported_relativeResolvent_corner`, `memSchattenClass_conjOp`, `conjOp_reduces` | `RHTower.TransportedProlateResolventCorner` |
+| `[ARITHMETIC REMAINDER ISOLATED FORMALLY]` `K_p = N_p - theta N_inf theta^{-1}` and the split of the corner | `gradingDeformation`, `conj_prolate`, `cyclic_eq_transported_add_deformation`, `relativeCorner_split` | `RHTower.SemilocalProlateControlDeformation` |
+| `[UNITARY TRANSPORT CLOSED]` no unitary intertwines scaling and grading, at one or at two parameters | `norm_scaling_ground_eq_of_unitary_transport`, `not_exists_unitary_transport`, `number_transport_of_two_prolate`, `norm_scaling_ground_eq_of_unitary_prolate_transport` | `RHTower.SemilocalProlateUnitaryTransport` |
+| `[PROVED ON PAPER; CANDIDATE NEW]` sharp `k^{1/4}` ground-row order and the bounded-perturbation no-go; threshold `alpha > 3/4` | `abs_semilocalOnePrimeGroundCommutatorRow_sharp_order`, `semilocalOnePrimeGroundCommutatorRow_unbounded`, `no_semilocalOnePrime_boundedPerturbationRealization`, `summable_semilocalOnePrimeGroundRowSmoothedSquare_iff` | `RHTower.SoninSemilocalGradingBounds`, `RHTower.SoninSemilocalGradingNoGo` |
+| `[NATURAL CORES AND FORMS DISJOINT]` the cyclic and transported cores meet only at zero; ground regularity exactly below `1/4` | `semilocalPrimeWeight_polynomial_core_disjoint`, `semilocalPrimeWeight_polynomial_core_disjoint_ae`, `semilocalPrimeWeight_inv_polynomial_core_disjoint_ae`, `summable_semilocalOnePrimeTransportedGroundDomainSquare_iff` | `RHTower.SoninSemilocalGradingBounds` |
+| `[DIRECT CYCLIC FORM DOMAIN CLOSED]` uniformly equivalent measures give the same number-form domain, and the constraint has a canonical bounded self-adjoint representative | `semilocalFinitePrimeEulerDensity_bounds`, `weighted_lintegral_bounds`, `exists_isSelfAdjoint_representative` | `RHTower.SemilocalJacobiLinearGrowthProlateDomainGate`, `RHTower.SemilocalCyclicFormDomain` |
+| `[SELF-ADJOINT EXTENSION EXISTS; CANONICITY OPEN]` deficiency `(0,0)` or `(1,1)`; two choices differ by rank at most two; Schatten-stable | `jacobi_deficiency_indices`, `rank_jacobiDeficiency_le_one`, `jacobiDeficiency_eq_bot_iff_conj`, `exists_isSelfAdjoint_extension_of_deficiency_one`, `memSchattenClass_congr_of_two_block` | `RHTower.JacobiDeficiencyRankTwoAmbiguity` |
+| the concrete archimedean instance of the `(0,0)`/`(1,1)` alternative | `prolate_limit_circle_transition`, `prolateEven_deficiency_indices`, `prolate_deficiency_indices_zero` | `RHTower.ProlateJacobiLimitCircleAmplitude` |
+
+Axiom audit: every declaration above depends only on `propext`, `Classical.choice`, `Quot.sound`.

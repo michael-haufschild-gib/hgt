@@ -1256,3 +1256,47 @@ CARD 10 — the transfer layer is closed: `Sieve/ShiftedPolylogTransfer.lean`.
 composing `rpow_mul_log_pow_isBigO` with `N ↦ N + 1/2` and paying the constant `2^b` for the shift.
 Every term of the master inequality is of exactly this shape with `a ≤ 1/2 + ε/2 < 1/2 + ε = b`,
 so the final instantiation is now four applications of one lemma plus `IsBigO.add`.
+
+## CARD 10 CLOSED — `square-aperture-von-mangoldt-correlation-energy` at stage 3 (2026-08-23)
+
+Four new modules finished the chain (49 modules this session, all axiom-clean):
+
+- `Sieve/ChebyshevErrorHalfIntegerBound.lean` — `exists_chebyshev_error_halfInt_bound`.
+  The instantiation `σ₁ = 1/2 + ε/2`, `σ₀ = 1 + ε/2`, `T = N + 1/2` of the master inequality.
+  Taking the truncation height EQUAL to the cutoff is what makes the Perron error and the
+  horizontal sides both `x^{ε/2}` times a logarithm; the classical `σ₀ = 1 + 1/log x` is avoided.
+- `Sieve/ChebyshevErrorPowerBound.lean` — `exists_chebyshevPsiReal_error_power_bound`:
+  `RH → ∀ ε > 0, ∃ C > 0, ∀ t ≥ 1, |ψ(t) − t| ≤ C t^{1/2+ε}`.  Reusable:
+  `exists_bound_of_isBigO_natRpow` upgrades an eventual `IsBigO` against `N^b` (`b ≥ 0`) to a
+  bound valid for every `N ≥ 1`, by summing `|f n|` over the initial segment.
+- `Sieve/DyadicWindowErrorUnderRH.lean` — the Abel identity with a power-law remainder.
+- `Sieve/SquareWindowEnergyUnderRH.lean` —
+  `riemannHypothesis_iff_squarePrimeWindowCorrelationEnergySubpower`.
+
+Trap recorded: `abs_add` no longer exists (it is `abs_add_le`); `abs_sub a b : |a-b| ≤ |a|+|b|`
+and `MeasureTheory.setIntegral_const` now produces `μ.real s • c`, so the rewrite chain is
+`setIntegral_const, measureReal_def, Real.volume_Ioc, ENNReal.toReal_ofReal, smul_eq_mul`.
+`integrableOn_const` takes two autoParams and is applied, not `.2`-ed.
+
+REMAINING in `09-mobius-prime-sums`: card 12 (`kubalalika-parity-weighted-near-diagonal-tail`)
+and card 11 (`regular-variation-weighted-steinhaus-ldp`).
+
+## CARD 12 — the exponent-sum toolkit (2026-08-23)
+
+Eight new modules; the card's three cited external theorems turn out NOT to be needed.
+Recomputing the budget with the corpus's own tools (second-derivative test + Kuzmin--Landau +
+Cauchy--Schwarz on either variable) gives `E_Λ(T) ≪ T^{15/16}L^C`, strictly stronger than the
+card's `T^{53/54}`.  The reason is the pair of exact cancellations
+
+    F'_{s₁} − F'_{s₂} = −(T/2π)(s₁−s₂)/((u+s₁)(u+s₂)),
+    F''_{s₁} − F''_{s₂} = (T/2π)(s₁−s₂)(2u+s₁+s₂)/((u+s₁)²(u+s₂)²),
+
+which say that the difference phase created by the type-II Cauchy--Schwarz is EXACTLY a
+reciprocal phase again, at scale `T(s₁−s₂)` — the card only claims this asymptotically.
+
+New modules (all in `RHTower/Sieve/`, all axiom-clean):
+`CurvedPhaseBlockSum` (the abstract `CurvedPhase` chain), `DifferencePhaseCurvature`,
+`DifferencePhaseKuzminLandau`, `BilinearCauchySchwarz`, `TypeIICorrelation`, `TypeIIEnergyBound`,
+`TypeIBound`, `DivisorSquareMoment`, `DirichletConvolutionRearrange`.
+
+Project card: `docs/drafts/pipeline/1-in-progress/kubalalika-weighted-tail-lean.md`.

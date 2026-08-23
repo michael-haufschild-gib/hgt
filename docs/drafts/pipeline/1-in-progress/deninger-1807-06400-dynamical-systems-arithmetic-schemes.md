@@ -117,6 +117,8 @@ and the relation to the Fargues–Fontaine curve) into the corpus as closed Lean
 
 | **§3 the colimit `X̌(C) = colim_{N₀} X̂(C)`**: the colimit relation is an equivalence relation unconditionally, `F_ν` is a **bijection** on the colimit, the projection to `X` descends, and `X̂(C) ↪ X̌(C)` | `RHTower/DeningerDynSysCharacterColimit.lean` | closed |
 | **Prop 2.4 (`t27xn`) algebraic content**: `W_rat` is a faithful functor — a ring map is determined by the induced map of rational Witt rings (Teichmüller injectivity); `W_rat : CommRingCat ⥤ CommRingCat` is `Faithful` | `RHTower/DeningerDynSysWittFaithful.lean` | closed |
+| **Prop 2.4 (`t27xn`) at the level of schemes**: two morphisms of schemes with the same underlying map whose rational Witt stalk maps agree on Teichmüller germs are equal | `RHTower/DeningerDynSysWittSchemeFaithful.lean` | closed |
+| **mathlib gap**: a morphism of schemes is determined by its underlying continuous map together with its stalk maps (two sections with equal germs everywhere are equal, and germs of `f^♯ s` are stalk maps of germs) | `HTGeometry/SchemeHomStalkExt.lean` | closed |
 | **Lemma 7.1 (`t7`)**: for an affine scheme the projection `X̂(C) → Spec R` is continuous for the topology of pointwise convergence | `RHTower/DeningerDynSysAffineTopology.lean` | closed |
 | **Prop 7.5 (`t85`)**: the action map `X̂(C) × G → X̂(C)` is jointly continuous when `G` acts continuously on the discrete ring `R`; **Lemma 7.3 (`t9`) partial**: `G` acts by homeomorphisms and each `F_ν` is continuous | `RHTower/DeningerDynSysAffineTopology.lean` | closed (7.5); 7.3 partial |
 
@@ -130,10 +132,21 @@ and the relation to the Fargues–Fontaine curve) into the corpus as closed Lean
 | **Def 14.1 (`t121`)** and **Def 13.2 (`t42nn`)**: the local ring `𝒪_{closure{x},y} = 𝒪_{X,y}/𝔭` of the closure of a point (a domain, with its evaluation onto `κ(y)`), the `𝒪`-valued triples `(x,y,P_y)` of Def 14.1, the extension by zero of a character of `κ(x)ˣ`, and the character triples `(x,y,P̄^×)` of Def 13.2 with Deninger's two commuting squares | `RHTower/DeningerDynSysValuedTriples.lean` | closed |
 
 | **mathlib gap**: for a normal algebraic extension, restriction to the separable closure is a **group isomorphism** `Aut_F(E) ≅ Gal(F^sep/F)` — injectivity because an automorphism fixing `F^sep` satisfies `σ(a)^{q^n} = a^{q^n}` | `HTGeometry/AlgebraicClosureGaloisCompact.lean` | closed |
-| **Cor 1.5(1) (`t28n`), injectivity modulo `H`**: two homomorphisms of `ℤ̲κ/κ₀` into a field agreeing on `W_rat(κ₀)` are Galois-conjugate — unconditional for a Galois extension, hence always in characteristic zero | `RHTower/DeningerDynSysCor15Injective.lean` | closed |
+| **mathlib gap**: the inverse of that isomorphism is **continuous**, and hence `Aut_F(E)` is **compact** for every normal algebraic `E/F` — mathlib supplies compactness only under `IsGalois` | `HTGeometry/AlgebraicClosureGaloisCompact.lean` | closed |
+| **Prop 1.4**: `ω : W_rat (κ₀) ≅ (ℤ̲κ / κ₀)^H` — the comparison is injective, its values are `H`-invariant, and every `H`-invariant element is a value; as a `RingEquiv` onto the invariant subring | `RHTower/DeningerDynSysProp14Invariants.lean` | closed |
+| **Cor 3.1 (24)**: `Hom (W_rat (κ (x₀)) , C) ≅ Hom (κ (x)ˣ , Cˣ) / G_x` for `C` algebraically closed — surjectivity from Cor 1.6, and two characters induce the same homomorphism exactly when they differ by an element of the Galois group | `RHTower/DeningerDynSysCor31.lean` | closed |
+| **Cor 3.1 (25)**: `Hom (W_rat (κ (x₀)) , C) ≅ Hom ((κ (x₀)^sep)ˣ , Cˣ) / G_x` — restriction of characters to the separable closure is bijective and Galois-equivariant; §3's Corollary 3.1 is closed in full | `RHTower/DeningerDynSysCor31Separable.lean` | closed |
+| **mathlib gap**: for an injective `ι : A → B` of commutative groups such that every element of `B` has a `q^n`-th power in the image, restriction is a **bijection** on characters into any group where the `q`-th power map is bijective — characters extend by `q^n`-th roots, uniquely | `HTGeometry/RadicialCharacterExtension.lean` | closed |
+| **Lem 5.3**: for coprime `ν ≠ ν'`, the roots of unity killed by some `ν^i − ν'^i` are exactly those of order prime to `νν'`; and modulo the image of the twisted norm `y ↦ y^ν σ (y)^{-ν'}` every element of a divisible group with finite `σ`-orbits is represented by such a root of unity, so the quotient is prime-to-`νν'` torsion | `RHTower/DeningerDynSysTwistedNorm.lean` | closed |
+| **Cor 1.5(1) (`t28n`), injectivity modulo `H`**: two homomorphisms of `ℤ̲κ/κ₀` into a field agreeing on `W_rat(κ₀)` are Galois-conjugate — **unconditional, in every characteristic** | `RHTower/DeningerDynSysCor15Injective.lean` | closed |
 | **Cor 1.5(1) topological input**: the Galois action on `ℤ̲κ` and on `ℤ̲κ/κ₀` has open stabilizers and is continuous for the Krull topology; and an action with open stabilizers on a discrete space is continuous | `RHTower/DeningerDynSysGaloisContinuousAction.lean`, `HTGeometry/DiscreteContinuousSMul.lean` | closed |
+| **mathlib gap**: if a point has a smallest open neighbourhood `V`, the germ map on `Γ (F , V)` is an isomorphism — the indexing category of the stalk colimit has a terminal object | `HTGeometry/SmallestNeighbourhoodSections.lean` | closed |
+| **Prop 13.1 groundwork, the three section rings**: on the spectrum of a one-dimensional local domain the sections of the structure sheaf are `0` over `∅`, `Frac 𝒪` over `{η}` (its own smallest neighbourhood) and `𝒪` over `⊤`; and an open contains the closed point iff it is `⊤`, and contains the generic point iff it is nonempty | `HTGeometry/SpecDimOneSections.lean` | closed |
 | **Prop 13.1 groundwork**: for a local domain of dimension ≤ 1 that is not a field, `Spec 𝒪` has exactly the two points `η = (0)` and `s = 𝔪`, `{η}` is the basic open at any nonzero element of `𝔪`, and the only opens are `∅`, `{η}`, `⊤`; the stalk at `s` is `𝒪` and the stalk at `η` is `Frac 𝒪` | `HTGeometry/SpecDimOneLocalDomain.lean`, `HTGeometry/SpecStalkLocalization.lean` | closed |
-| **Prop 14.16 (`t1213n`), the identification**: a pointed multiplicative map `A♭ → 𝒪` is additive modulo `p` — i.e. lies in Deninger's `Y^⋄` — exactly when it comes from a homomorphism of tilts, and the two nonvanishing conditions match because the untilt vanishes only at `0` over a reduced ring; as an `Equiv` | `RHTower/DeningerDynSysTiltAdditive.lean` | closed (the locality clause of `P̂_y^♭` is the residue) |
+| **Prop 14.16 (`t1213n`), the identification**: a pointed multiplicative map `A♭ → 𝒪` is additive modulo `p` — i.e. lies in Deninger's `Y^⋄` — exactly when it comes from a homomorphism of tilts, and the two nonvanishing conditions match because the untilt vanishes only at `0` over a reduced ring; as an `Equiv` | `RHTower/DeningerDynSysTiltAdditive.lean` | closed |
+| **Prop 14.16 (`t1213n`), the locality clause**: `P̂_y^♭ : Ô^♭ → 𝒪^♭` is a **local** homomorphism.  `A ⧸ p` is local when `A` is, so `A♭` is local with maximal ideal the elements whose zeroth coefficient is a non-unit; the zeroth coefficient of `χ^♭ x` is the reduction of `χ x` mod `p`, so locality is exactly `χ (𝔪^♭) ⊆ 𝔪_𝒪` | `RHTower/DeningerDynSysTiltLocalHom.lean` | closed |
+| **Prop 14.16 (`t1213n`) + Supple 14.10 (`t106`), the right square of (179)**: the residue of `P̂_y` is computed by `P̃_y` on all of `lim_{()^p} Ô` because both sides are continuous into the discrete residue field and agree on the dense image of `lim_{()^p} 𝒪`; feeding `P̃_y (0) = 0` gives the locality of `P̂_y^♭` | `RHTower/DeningerDynSysHatLocality.lean` | closed |
+| **mathlib gap**: a set saturated for a continuous map into a discrete space is open; hence every coset of an ideal of `Â` containing `ker (Â ↠ A/I)` is open, and cosets of a maximal ideal are open as soon as cosets of a principal ideal inside it are | `HTGeometry/AdicCompletionOpenCosets.lean` | closed |
 | **mathlib gap**: `untilt 0 = 0` over any `p`-adically complete ring, and `untilt x = 0 ↔ x = 0` over a reduced one | `RHTower/DeningerDynSysTiltAdditive.lean` | closed |
 | **Def 14.9 (`t42n`) + Prop 14.11 (`t1213nn`)**: the completed `𝒪`-valued points `(x,y,P^×)` with Deninger's diagram (177) are exactly the continuous pointed multiplicative maps `P̂_y` satisfying 1) and 2); the hypotheses (ratio presentation of `lim_{()^p} κ(x)`, surjectivity of evaluation at `y`) are non-vacuous — they hold over a one-point scheme | `RHTower/DeningerDynSysCompletedTriple.lean`, `RHTower/DeningerDynSysCompletedTripleSpec.lean` | closed |
 | **Prop 14.8(a) (`t125`) in concrete form**: the projective-limit topology on an adic completion, its `ContinuousMul`, density of `R → R̂`, and hence density of `lim_{()^p} A` in `lim_{()^p} Â` | `HTGeometry/AdicCompletionTopology.lean`, `RHTower/DeningerDynSysPerfectionAdicDense.lean` | closed |
@@ -678,3 +691,122 @@ Nothing in v4 is untracked by the ledger: the only apparent omission, Prop 1.4, 
   `K.fixingSubgroup` — by `IntermediateField.forall_mem_adjoin_smul_eq_self_iff` it is enough to
   fix the generators.  Then `krullTopology_mem_nhds_one_iff` and `continuous_of_continuousAt_one`
   finish.  Closing this makes Cor 1.5(1) unconditional in every characteristic.
+
+- 2026-08-23 — **`CompactSpace Gal(E/F)` closed for every normal algebraic extension, and with it
+  Corollary 1.5(1) unconditionally.**  `continuous_restrictNormalMulEquiv_symm` proves that the
+  inverse of `Aut_F(E) ≅ Gal(F^sep/F)` is continuous, so `Aut_F(E)` is the continuous image of a
+  compact group and `compactSpace_algEquiv_of_normal` follows; this is registered as an instance
+  and strictly generalises mathlib's `IsGalois` version.
+  The continuity argument, at the identity: a basic neighbourhood of `1` in `Aut_F(E)` contains
+  `K.fixingSubgroup` for some finite-dimensional `K` (`krullTopology_mem_nhds_one_iff`).  Such a
+  `K` is `adjoin F t` for a finite `t`: `Subalgebra.fg_iff_finiteType` turns
+  `Module.Finite F K` into `Subalgebra.FG K.toSubalgebra`, and
+  `IntermediateField.fg_of_fg_toSubalgebra` transfers it — note that
+  `Subalgebra.fg_of_submodule_fg` does **not** apply here, it is stated only for `⊤`.
+  Pure inseparability of `E/F^sep` gives, for each `x`, an `n_x` and a `b_x ∈ F^sep` with
+  `b_x = x^{q^{n_x}}`; `adjoin F {b_x : x ∈ t}` is a finite-dimensional subextension of `F^sep`,
+  and any `τ` fixing it pointwise lifts to a `σ` with `σ(x)^{q^{n_x}} = σ(x^{q^{n_x}}) = x^{q^{n_x}}`
+  by `AlgEquiv.restrictNormal_commutes`, hence `σ(x) = x` since `iterateFrobenius E q n` is
+  injective.  `IntermediateField.adjoin_induction` propagates this from `t` to `K`, so
+  `σ ∈ K.fixingSubgroup`.  `continuous_of_continuousAt_one` then upgrades continuity at `1` to
+  continuity.
+  Consequence: `deningerCor15_injective` no longer carries `[CompactSpace (E ≃ₐ[F] E)]`, the
+  `IsGalois` convenience variant is deleted, and Cor 1.5(1) holds for the algebraic closure of an
+  arbitrary field.  Axiom audit: `[propext, Classical.choice, Quot.sound]`.
+
+- 2026-08-23 — **Proposition 14.16 is closed in full: the locality clause is proved.**
+  The clause splits into an algebraic and a topological half.
+  *Algebra* (`DeningerDynSysTiltLocalHom.lean`).  `ModP R p = R / p` is local whenever `R` is and
+  `p` is a non-unit (a surjection from a local ring onto a nontrivial ring), and reduction mod `p`
+  reflects the maximal ideal because it is a surjection of local rings.  `PreTilt R p` is then
+  local by `deningerPerfection_isLocalRing`, and an element lies in its maximal ideal exactly when
+  its zeroth coefficient does.  Since the zeroth coefficient of `χ^♭ x` is the reduction of
+  `χ x = ♯(χ^♭ x)` modulo `p` (`deningerTiltChar_reduction`), the local-hom criterion
+  `f '' 𝔪 ⊆ 𝔪` of `IsLocalRing.local_hom_TFAE` becomes exactly `χ (𝔪^♭) ⊆ 𝔪_𝒪`.  Both the
+  `A♭`-form and the `lim_{()^p} A`-form are recorded.
+  *Topology* (`DeningerDynSysHatLocality.lean`).  This is Deninger's right square of (179).  The
+  residue map of a local ring is continuous for the discrete topology on the residue field as soon
+  as the cosets of the maximal ideal are open, so `residue ∘ P̂_y` and `P̃_y ∘ residue ∘ pr_0` are
+  two continuous maps `lim_{()^p} Â → k`; they agree on the dense image of `lim_{()^p} A`
+  (Prop 14.8(a)), hence everywhere by `deningerPerfection_ext_of_dense`.  An element of the maximal
+  ideal has residue `0`, and `P̃_y (0) = 0`, so its image lies in `𝔪_𝒪`.
+  The two openness hypotheses are not vacuous: `HTGeometry.isOpen_maximalIdeal_coset_adicCompletion`
+  discharges the one for `Â` (the projection `Â ↠ A/I` factors through the first coordinate, which
+  is continuous with discrete target, and its kernel consists of non-units), and
+  `HTGeometry.isOpen_maximalIdeal_coset_of_span` discharges the one for a `𝒪` carrying the `p`-adic
+  topology.  Axiom audit on all six new theorems: `[propext, Classical.choice, Quot.sound]`.
+  **§14 is now closed in full.**
+
+- 2026-08-23 — **Proposition 2.4 closed at the level of schemes, and the mathlib gap behind it.**
+  `HTGeometry.scheme_hom_ext_of_stalkMap` proves that a morphism of schemes is determined by its
+  underlying continuous map together with its stalk maps.  The route avoids all `eqToHom`
+  transport: the *targets* of `f.stalkMap x` and `g.stalkMap x` are both `𝒪_{X,x}`, so the
+  hypothesis can be stated on germs, `f.stalkMap x (germ_U (f x) s) = g.stalkMap x (germ_U (g x) s)`,
+  with no dependent rewriting.  The proof feeds `Scheme.Hom.ext` with `Presheaf.section_ext` and
+  `germ_stalkMap_apply`; the one trap is that `X.sheaf.presheaf` and `X.presheaf` live over
+  syntactically different spaces, so `section_ext` has to be wrapped once
+  (`HTGeometry.scheme_section_ext`) before mathlib's germ simp-set will fire.
+  Deninger's Proposition 2.4 then follows exactly as in the source: naturality of the Teichmüller
+  map turns the hypothesis `W_rat (α^♯_y) = W_rat (β^♯_y)` on Teichmüller germs into
+  `[α^♯_y (s)] = [β^♯_y (s)]`, and the Teichmüller map is injective.  What is *not* yet built is
+  the ringed-space packaging `α ↦ W_rat (α)` as a `DeningerWittSpaceMorphism`: the sheaf component
+  is `sheafifyLift` of `whiskerRight α.c W_rat ≫ pushforward (toSheafify)` (the pushforward of a
+  sheaf being a sheaf), but its `stalkHom_comp` field is a naturality chase through
+  `deningerWittStalkToStalk`.  Axiom audit: `[propext, Classical.choice, Quot.sound]`.
+
+- 2026-08-23 — **Proposition 1.4, Corollary 3.1 (24) and Lemma 5.3 closed.**
+  *Prop 1.4.*  The card's roadmap entry claiming a residual step (e) of "Prop 1.3's lower row" was
+  stale: `deningerOmega_mem_image_iff` already is the lower isomorphism.  What was missing was only
+  the packaging, now `deningerWittInsepInvariantsEquiv : W_rat (κ₀) ≃+* (ℤ̲κ / κ₀)^H`.  The
+  invariant subring is built by hand as a `Subring` with carrier `{x | ∀ σ, σ • x = x}` — using
+  `FixedPoints.subring` on the nested subtype is what blew the heartbeat budget in the earlier
+  attempt.
+  *Cor 3.1 (24).*  A character `f` of `κˣ` induces `W_rat (κ₀) → C` by
+  `deningerCharToMonoidAlgebra f ∘ deningerWittToMonoidAlgebra`.  Surjectivity is
+  `deningerCor15_surjective` verbatim.  For the fibres: relabelling a character by `σ` composes the
+  ring homomorphism with the atom relabelling (`deningerCharToMonoidAlgebra_comp`), and the image of
+  `W_rat (κ₀)` in `ℤ̲κ` is `H`-invariant, so conjugate characters induce the same homomorphism;
+  conversely `deningerCor15_injective` produces the `σ`, and
+  `deningerInsepSubring_restrict_injective` lifts the resulting agreement from `ℤ̲κ / κ₀` to all of
+  `ℤ̲κ`, whence the characters agree.  Since Cor 1.6 is now unconditional, so is this.
+  *Lem 5.3.*  Fully elementary and formalized in the generality it needs: an abelian group `G`
+  with an automorphism `σ`.  Part one is Euler's theorem — `ζ^{ν^i} = ζ^{ν'^i}` for some `i ≥ 1`
+  iff `orderOf ζ` is prime to `νν'`, taking `i = φ (orderOf ζ)` for the hard direction.  Part two
+  is Deninger's group-ring identity `ν^i − ν'^i σ^i = ω (ν − ν' σ)` with
+  `ω = Σ_{α<i} ν^{i-1-α} ν'^α σ^α`; in Lean it is a **telescoping product**: with
+  `g β = (σ^β z)^{ν^{i-β} ν'^β}` one has `y^ν = ∏_{β<i} g β` and `σ (y)^{ν'} = ∏_{1 ≤ β ≤ i} g β`,
+  so the twisted norm of `y = z^ω` is `g 0 / g i = z^{ν^i} σ^i (z)^{-ν'^i}`.  The divisibility
+  hypothesis is discharged for `κˣ` with `κ` algebraically closed (`deningerUnits_divisible`).
+  Axiom audit on all of these: `[propext, Classical.choice, Quot.sound]`.
+
+- 2026-08-23 — **Corollary 3.1 (25) closed, so §3's Corollary 3.1 is complete.**  The content is a
+  clean mathlib gap, isolated in `HTGeometry/RadicialCharacterExtension.lean`: for an injective
+  homomorphism `ι : A → B` of commutative groups such that every `b ∈ B` has `b^{q^n} ∈ ι (A)`,
+  restriction along `ι` is a bijection on homomorphisms into any commutative group `C` whose
+  `q`-th power map is bijective.  Injectivity is immediate; for surjectivity the extension is
+  `f (b) = (g (a))^{1/q^n}` for any witness `(n, a)`, and well-definedness is the comparison of two
+  witnesses at the larger exponent, which needs `ι` injective.  Multiplicativity is proved by
+  raising both witnesses to a common exponent — the reason the construction uses `MonoidHom.mk'`
+  and a `max` of three levels.
+  Instantiated at `A = (κ₀^sep)ˣ ⊂ B = κˣ` this is (25): pure inseparability supplies the
+  witnesses, and `c ↦ c^q` is bijective on `Cˣ` for `C` algebraically closed of exponential
+  characteristic `q` (injective because it is the Frobenius of a field, surjective because `C` is
+  algebraically closed).  Galois equivariance is `AlgEquiv.restrictNormal_commutes`, so the fibres
+  of (24) and (25) match and (25) follows from (24) formally.
+  Axiom audit: `[propext, Classical.choice, Quot.sound]`.
+
+- 2026-08-23 — **The section layer for Prop 13.1's ringed-space half is built.**  Two bricks:
+  a general mathlib gap — a point with a smallest open neighbourhood `V` has `Γ (F , V) ≅ F_x`,
+  because `⟨V, hx⟩` is initial in `OpenNhds x` and hence `op ⟨V, hx⟩` is terminal in the category
+  the stalk colimit is taken over (`isIso_ι_of_isTerminal`) — and its application to
+  `Spec 𝒪` for a one-dimensional local domain, which identifies all three section rings:
+  `Γ (S , ∅) = 0` (mathlib's `Subsingleton Γ(X, ⊥)`), `Γ (S , {η}) ≅ Frac 𝒪` (the new gap plus the
+  generic stalk computation) and `Γ (S , ⊤) ≅ 𝒪` (`Scheme.ΓSpecIso`).  The membership criteria
+  `s ∈ V ↔ V = ⊤` and `η ∈ V ↔ V ≠ ⊥` turn the case split on `f^{-1} U` into the case split on
+  whether `y ∈ U`, `x ∈ U ∧ y ∉ U`, or `x ∉ U`.
+  **What is left of Prop 13.1** is the natural transformation itself: `γ.app U` is `f_s` after the
+  germ at `y` in the first case, `f_η` after the germ at `x` in the second, and the unique map into
+  the zero ring in the third; `sheafifyLift` then gives `sheafMap`, since the pushforward of a
+  sheaf is a sheaf.  Naturality has nine cases of which six are trivial (the target is the zero
+  ring, or the two opens fall in the same case and germ compatibility applies); the one case with
+  content is `y ∉ U`, `y ∈ V`, which is exactly Deninger's square (139).

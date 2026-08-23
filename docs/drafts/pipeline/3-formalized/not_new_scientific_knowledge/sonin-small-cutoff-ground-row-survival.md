@@ -1,7 +1,7 @@
 # Small-cutoff survival of the smoothed semilocal ground row
 
 - **ID:** sonin-small-cutoff-ground-row-survival
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized / needs independent audit
 - **Type:** THEOREM / BRIDGE (paper)
 - **Scientific status:** NOT NEW SCIENTIFIC KNOWLEDGE
 - **Source inputs:** Connes--Consani--Moscovici, *Zeta zeros and prolate wave operators*,
@@ -141,3 +141,39 @@ norm along the cofinal large-cutoff direction.
 The source-specific assembly is useful, but the mechanism is an elementary rank-one projection plus
 strong convergence of shrinking-cutoff Sonin projections. It fails the significance half of the
 new-knowledge gate and is classified as BRIDGE.
+
+## Lean formalization
+
+All statements are unconditional and closed.  The two archimedean strong limits `(5)` and `(7)` are
+proved on the concrete model `SoninL2 = L^2(R)` with the actual cutoff and Fourier-cutoff
+projections; the rank-one algebra of `(1)`-`(4)`, `(6)` and `(8)` is proved for arbitrary Hilbert
+spaces, so it applies verbatim to any unitary copy of the archimedean space, in particular to the
+Jacobi coefficient model in which the semilocal moments live.
+
+The one place where the card *assumes* rather than proves is the boundedness of `J_P`, which it
+takes from the source construction.  In the Jacobi model that datum is exactly the
+square-summability of the ground-row coefficients `(2k/(2k+1)) <p_0^P, J_P p_{2k}^inf>`.  For a
+single prime it is **discharged** from the corpus's sharp order `k^{-3/4}`; for a general finite
+prime family it is carried as the explicit summability hypothesis, and the nonvanishing conclusion
+is proved for every finite nonempty family.
+
+| Paper item | Lean declaration | Module |
+|---|---|---|
+| the Sonin carrier is the orthogonal complement of the two forbidden spans | `centralSoninCarrier_eq_sup_orthogonal`, `centralSoninProjection_eq_supOrthogonal` | `RHTower.SoninSmallCutoffGroundRow` |
+| the time-band angle: `norm of the forbidden block <= 2a` | `norm_centralForbidden_block_le` | `RHTower.SoninSmallCutoffGroundRow` |
+| Friedrichs deficiency of the intersection projection | `norm_sub_intersectionProjection_sq_le`, `angle_of_norm_starProjection_mul_le` | `HTGeometry.TwoProjectionDeficiency` |
+| deficiency of the Sonin projection at small aperture | `norm_sub_centralSoninProjection_sq_le` | `RHTower.SoninSmallCutoffGroundRow` |
+| shrinking-window `L^2` mass vanishes, physical and Fourier | `tendsto_norm_indicatorCutoff_of_tendsto_zero`, `tendsto_norm_fourierCutoff_of_tendsto_zero` | `RHTower.SoninSmallCutoffGroundRow` |
+| `(5)` `Q_{lambda,inf} -> 1` strongly as `lambda` decreases to zero | `tendsto_norm_sub_centralSoninProjection_of_tendsto_zero` | `RHTower.SoninSmallCutoffGroundRow` |
+| `(7)` `Q_{lambda,inf} -> 0` strongly as `lambda` tends to infinity | `norm_centralSoninProjection_le`, `tendsto_norm_centralSoninProjection_atTop` | `RHTower.SoninSmallCutoffGroundRow` |
+| `(4)` the smoothed ground row `T f = -<v,f> p_0` | `groundRow`, `groundRow_apply`, `groundRow_eq_rankOne` | `RHTower.SoninSmallCutoffGroundRow` |
+| `(1) => (2)`: `P_0^P N_P = 0` | `groundProjection_numberOperator_eq_zero` | `RHTower.SoninSmallCutoffGroundRow` |
+| `T_P` is rank one with norm the product of the two vector norms | `norm_groundRow`, `groundRow_ne_zero` | `RHTower.SoninSmallCutoffGroundRow` |
+| `(3)` the exact Sonin corner is again a ground row | `corner_eq`, `norm_corner`, `corner_ne_zero` | `RHTower.SoninSmallCutoffGroundRow` |
+| `T_P` and its Sonin corners are trace class | `onePrimeGroundRow_isTraceClass`, `groundRow_corner_isTraceClass` | `RHTower.SoninSmallCutoffGroundRow` |
+| one-prime `v_P` and its nonvanishing | `onePrimeGroundRowVector`, `semilocalOnePrimeGroundCommutatorRow_one_ne_zero`, `onePrimeGroundRowVector_ne_zero`, `onePrimeGroundRow_ne_zero` | `RHTower.SoninSmallCutoffGroundRow` |
+| finite-prime `v_P` and its nonvanishing for every nonempty family | `finitePrimeGroundRowCoefficient`, `finitePrimeGroundRowVector`, `finitePrimeGroundRowVector_ne_zero`, `finitePrimeGroundRow_ne_zero` | `RHTower.SoninSmallCutoffGroundRow` |
+| the all-even ground residue that makes `T_P` nonzero | `semilocalFinitePrimeEvenJacobiMoment_signed_pos` | `RHTower.SoninSemilocalAllEvenJacobiResidue` |
+| `(3)` + `(8)` the card's theorem | `smallCutoff_groundRow_survival` | `RHTower.SoninSmallCutoffGroundRow` |
+
+Axiom audit: every declaration above depends only on `propext`, `Classical.choice`, `Quot.sound`.

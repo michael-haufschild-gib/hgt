@@ -35,8 +35,8 @@ hypothesis (never a new hypothesis added by us); everything else is unconditiona
 | `lem_5_3` | Lem 5.4 | `H_W ≅ L²(τ)` by `[ψ] ↦ S_ψ`, `⟨ψ,ψ⟩_W = ‖S_ψ‖²` | yes | **CLOSED** `RHTower.suzukiWeilTauEquiv` (with `denseRange_suzukiSpectralMap`) |
 | `thm_5_1` | Thm 5.5 | Refined Thm 1.1: (1) the four-fold norm identity on `V(0)`; (2) the composite map | yes | **CLOSED** `RHTower.norm_sq_suzukiV0_eq_pi_mul_weil`, `suzukiWeilTauEquiv_suzukiV0` |
 | `thm_5_2` | Thm 5.6 | `H_0 = H_W`, `K_0 = K(Θ)`; `𝒫̂_D` inverts Thm 5.5(2); `V(0) = closure V°(0)` | yes | **`H_0 = H_W` and `K_0 = K(Θ)` CLOSED** `RHTower.normSq_suzukiPHat_deriv_eq_pi_mul_suzukiWeilInner`, `RHTower.suzukiKZero_eq_suzukiModelSpace`; `V(0) = closure V°(0)` is its image under `𝖥⁻¹` |
-| `thm_5_3` | Thm 5.7 | `E·F(V(t))` is a de Branges subspace of `H(E)` for all `t ≥ 0`, isomorphic to `H_W(t)` | yes | OPEN |
-| `prop_5_1` | Prop 5.8 | RH ⟺ (1) `‖ψ‖² = ½⟨ψ,ψ⟩_W` on `V(0)` and (2) the peaked-test condition | ⟺ | OPEN |
+| `thm_5_3` | Thm 5.7 | `E·F(V(t))` is a de Branges subspace of `H(E)` for all `t ≥ 0`, isomorphic to `H_W(t)` | yes | **CLOSED** `RHTower.suzuki_deBranges_subspace` (+ `suzukiWeilRay`, `norm_sq_suzukiWeilRay`) |
+| `prop_5_1` | Prop 5.8 | RH ⟺ (1) `‖ψ‖² = ½⟨ψ,ψ⟩_W` on `V(0)` and (2) the peaked-test condition | ⟺ | **CLOSED** `RHTower.suzuki_prop_5_1` (unitary normalisation: `π` in place of `½`; `δ = 1/2` in (2)) |
 | §6 | — | `(H_W, A_{W,π/2})` is a Hilbert--Pólya space; eigenvalue multiplicity one | yes | **CLOSED in the sequence model** `RHTower.isSelfAdjoint_suzukiTauDiag`, `suzukiTauDiag_basis`, `eq_smul_suzukiTauBasis_of_eigen` — a self-adjoint operator whose eigenvalues are exactly the Xi zeros, each simple, on `L²(τ) ≅ H_W` |
 | §7 (unnumbered) | Thm 7.1 | UNCONDITIONAL: `𝔓_t(0) = -g_ξ(t)` and `lim_{y→∞}[y𝔓_t(-iy) - ½ψ(¼+y/2) + ½log π] = -g_ξ'(t)` for `t ≠ log n` | no | **CLOSED** `RHTower.tendsto_suzukiFrakP_zero` (7.1) + `RHTower.tendsto_suzukiFrakP_vertical` (7.2) |
 | `thm_4` | — | inside `\comment{...}` in the source: NOT a paper statement.  Excluded. | — | N/A |
@@ -1353,3 +1353,104 @@ The whole of the paper's Theorem 5.3 is now Lean-proved, with `V(t)` defined fai
 Two corpus lemmas were generalized to allow one exceptional point, which is what the inner Blaschke
 factor needs at its own pole: `ae_eq_zero_of_laplaceRay_eq_zero_of_ne` and
 `mem_hardyL2_of_cauchyTransform_eq_zero_of_ne`.  The originals are now one-line corollaries.
+
+
+## Proposition 5.1 CLOSED (the unconditional criterion on `V(0)`)
+
+`RiemannHypothesis ↔ (SuzukiV0MassCondition ∧ SuzukiV0PeakCondition)` is Lean-proved, both
+directions, axiom-clean.  The obstruction recorded above — that `⟨ψ,ψ⟩_W` was only defined for
+`C_c^∞` test functions and only through an RH-dependent spectral formula — is removed by giving the
+point evaluation `ψ̂(γ)` its correct unconditional meaning: the pairing against the reproducing
+kernel of the model space.
+
+| Module | Content |
+|---|---|
+| `RHTower/SuzukiHalfInnerRealAxis.lean` | `XiC_eq_zero_of_xiHedenmalmDeBrangesE_eq_zero_ofReal` (on `ℝ` the Hermite--Biehler function `E` vanishes only at zeros of `A`, since `A` and `A'` are real there); `eventually_differentiableAt_suzukiHalfInner_ofReal`; `continuous_dslope_suzukiHalfInner_ofReal`; **`memLp_dslope_suzukiHalfInner`** — the divided slope of `A/E` at *any* zero of `A` is in `L²(ℝ)`, unconditionally |
+| `RHTower/SuzukiModelPointEval.lean` | `suzukiThetaMero_eq_neg_one_of_XiC_zero` (`Θ = -1` at every zero of `A`, multiple zeros included); **`suzukiModelKernel_of_XiC_zero`** — there the reproducing kernel is `(i/π)·dslope(A/E)`; `memLp_suzukiModelKernel_of_XiC_zero`; `suzukiModelKernelLp`; **`suzukiModelEval`**; **`suzukiModelEval_xiSpectralPointSupport`** — under RH the evaluation is the corpus's `suzukiRestriction` |
+| `RHTower/SuzukiV0WeilForm.lean` | `summable_sq_of_summable_nonneg`; `finite_xiSpectralPoint_norm_le`; **`summable_xiSpectralPoint_shift_three_halves`**; `hasSum_xiZeroCopy_of_support`; **`riemannHypothesis_iff_forall_XiC_zero_im_eq_zero`**; `exists_xiSpectralPointSupport_eq`; `suzukiV0Eval`, **`suzukiV0WeilForm`**; **`norm_sq_eq_pi_mul_suzukiV0WeilForm`** (Prop 5.1 (1) forward); **`exists_peaked_suzukiV0`** (Prop 5.1 (2) forward) |
+| `RHTower/SuzukiPropFiveOne.lean` | `re_peak_term_le`, `peak_term_swap`; `SuzukiV0MassCondition`, `SuzukiV0PeakCondition`; **`riemannHypothesis_of_suzukiV0_conditions`** (the converse); capstone **`suzuki_prop_5_1`** |
+
+### What made it unconditional
+
+`Θ_ξ` written as `2(A/E) - 1` takes the *correct* value `-1` at every zero of `A`, so the
+reproducing kernel `k_γ(x) = (i/2π)(1 - conj(Θ(γ))Θ(x))/(x - conj γ)` collapses there to
+`(i/π)·dslope(A/E)(conj γ)`.  That divided slope is holomorphic on a neighbourhood of the real axis
+with no RH input — at a real point either `E ≠ 0`, or `E = 0` and then `A = A' = 0` because both are
+real on the line, and the local factorisation of `SuzukiHalfInnerLocalFactor` applies.  Its `L²`
+bound is `|A/E| ≤ 1` on the line plus compactness near the centre.  So `⟪k_γ, 𝖥ψ⟫` is defined for
+every zero `γ ∈ Γ`, real or not, and it is the analytic continuation Suzuki writes as `ψ̂(γ)`.
+
+Under RH the kernel at a spectral point is the normalised basis vector `F_γ/√(π m_γ)`, so the
+evaluation *is* `suzukiRestriction`, and Makarov--Poltoratski gives (1) while orthonormality of
+`{F_γ}` gives (2) in the sharp form (exact zeros at the other spectral points, so any `δ > 0`
+works).
+
+### Deviations from the source, stated
+
+* The source leaves `δ > 0` unspecified in (2) and only uses `Σ_γ m_γ|γ|^{-1-δ} < ∞`; the corpus
+  fixes `δ = 1/2`, the exponent it owns (`xiSpectralPoint_inv_three_halves_summable`).  The forward
+  direction produces the sharp form, so nothing is lost there.
+* The unitary Fourier normalisation turns the source's `‖ψ‖² = 2^{-1}⟨ψ,ψ⟩_W` into
+  `‖ψ‖² = π⟨ψ,ψ⟩_W`.
+* The Weil sum is indexed by the spectral points `γ_q` rather than `-γ_q`.  `Γ` is stable under
+  `γ ↦ -γ` with equal multiplicities (`A` is even, `XiC_neg`), so this is the same hermitian form
+  written with the opposite sign convention for the Fourier kernel.
+
+Remaining from the paper: **Corollary 4.6** (Bombieri--Lagarias §4).
+
+
+## Corollary 4.6 — the plan (Bombieri--Lagarias / Li's criterion)
+
+Suzuki contributes nothing to Cor 4.6 beyond the citation: `‖g_n‖₀² ≥ 0` turns (EQ_411) into
+`⟨g_n,g_n⟩_W ≥ 0`, and [BoLa99, §4] turns that into RH.  So the whole item is **Li's criterion,
+hard direction**, which the corpus does not own (`LiFiniteCriterionFrontier` says so explicitly).
+
+### The arithmetic identity (checked on paper)
+
+`g_n(x) = e^{-x/2} Σ_{j=1}^n C(n,j)(-x)^{j-1}/(j-1)!` on `x > 0` has
+
+`ĝ_n(z) = ∫_0^∞ g_n(x)e^{izx}dx = 1 - (1 - 1/s)^n`,  `s := 1/2 - iz`,
+
+because `∫_0^∞ x^{j-1}e^{-sx}dx = (j-1)!/s^j`.  At `z = -γ`, `s = 1/2 + iγ = ρ`, so
+`ĝ_n(-γ) = 1 - (1-1/ρ)^n` — Li's summand.  Since `g_n` is real, `(ĝ_n)^♯(z) = ĝ_n(-z)`, and with
+`w_ρ := 1 - 1/ρ` one has `w_{1-ρ} = w_ρ^{-1}`, so
+
+`⟨g_n,g_n⟩_W = Σ_ρ m_ρ (1 - w_ρ^n)(1 - w_ρ^{-n}) = Σ_ρ m_ρ (2 - w_ρ^n - w_ρ^{-n}) = 2 λ_n`
+
+(the last step by the `ρ ↦ 1-ρ` symmetry of the divisor).  **This is the form to formalise**: the
+paired sum `Σ_ρ (2 - w^n - w^{-n})` converges *absolutely*, unlike Li's `Σ_ρ (1 - w^n)`.
+
+### The pointwise bound that makes everything absolute
+
+`2 - w^n - w^{-n} = -w^{-n}(w^n - 1)^2`, and `|w^n - 1| ≤ n |w-1| max(1,|w|)^{n-1}`, so with
+`M := max(‖w‖, ‖w‖⁻¹) ≥ 1`
+
+> `‖2 - w^n - w^{-n}‖ ≤ n² Mⁿ ‖w - 1‖²`.
+
+Since `w_ρ - 1 = -1/ρ` and `Σ_ρ |ρ|^{-2} < ∞` (`xiSpectralPoint_inv_sq_summable`), every `λ_n` is an
+absolutely convergent sum, and the double series `Σ_n Σ_ρ (…) z^n` converges absolutely for
+`|z| < 1/M`.
+
+### The contradiction (no Dirichlet/Kronecker needed)
+
+Let `Φ(z) := Σ_ρ [2z/(1-z) - w_ρ z/(1-w_ρ z) - (z/w_ρ)/(1-z/w_ρ)]`, meromorphic with poles exactly at
+`w_ρ` and `1/w_ρ`, and let `G(z) := Σ_{n≥1} 2λ_n z^n` with radius `R`.
+
+1. `w_ρ ∈ (0,1)` forces `ρ = 1/(1-w) > 1` and `w_ρ > 1` forces `ρ < 0`: **no pole of `Φ` lies in the
+   real interval `(0,1)`**, because `ξ` has no zeros with `Re s ≤ 0` or `Re s ≥ 1`, and none real in
+   `(0,1)` (there `s(s-1) < 0`, `Γ(s/2) > 0`, `ζ(s) < 0`).
+2. If RH fails there is `ρ₀` with `|w_{ρ₀}| = W > 1`; `Φ` has a genuine pole at `z₀ = 1/w_{ρ₀}`
+   (all `ρ` contributing to that pole have residue `1/w_{ρ₀}`, so nothing cancels), hence `R ≤ |z₀| < 1`.
+3. `λ_n ≥ 0` makes `G` a power series with nonnegative coefficients, so **Vivanti--Pringsheim**
+   (`HTGeometry.VivantiPringsheim.not_continuesAcross_of_nonneg`) says `z = R` is a singular point.
+4. But `R ∈ (0,1)` and `Φ` is analytic there and continues `G`.  Contradiction.
+
+### Module plan
+
+| Planned module | Content |
+|---|---|
+| `RHTower/LiTermBound.lean` | `liTerm w n = 2 - w^n - w⁻ⁿ`; the factorisation `-w⁻ⁿ(wⁿ-1)²`; the bound `n² Mⁿ‖w-1‖²`; summability of `liTerm ∘ w` for a family with `Σ‖w_i-1‖² < ∞` and bounded `M` |
+| `RHTower/LiCoefficientXi.lean` | `w_ρ := 1 - 1/ρ`, `w_{1-ρ} = w_ρ⁻¹`, the bounds `inf|ρ| > 0`, `inf|ρ-1| > 0`, `Σ|ρ|⁻² < ∞`; definition of `λ_n` as the paired sum |
+| `RHTower/LiGeneratingFunction.lean` | `Φ`, local uniform convergence off the poles, `G = Φ` near `0`, the residue computation |
+| `RHTower/LiCriterion.lean` | `(∀ n ≥ 1, 0 ≤ λ_n) ↔ RiemannHypothesis` |
+| `RHTower/SuzukiCorFourSix.lean` | `ĝ_n(z) = 1 - (1-1/s)^n`; `⟨g_n,g_n⟩_W = 2λ_n`; Cor 4.6 |

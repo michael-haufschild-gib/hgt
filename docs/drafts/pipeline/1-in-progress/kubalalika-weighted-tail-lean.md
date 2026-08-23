@@ -1,0 +1,203 @@
+# Kubalalika weighted near-diagonal tail: the Lean build
+
+- **ID:** `kubalalika-weighted-tail-lean`
+- **Stage:** 1-in-progress
+- **Type:** LEAN INFRASTRUCTURE
+- **Opened:** 2026-08-23
+- **Blocks:** `docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/09-mobius-prime-sums/kubalalika-parity-weighted-near-diagonal-tail.md`
+
+## Target
+
+```lean
+theorem weighted_near_diagonal_tail_isBigO :
+    ∃ C : ℕ, (fun T : ℝ => ‖E_Λ T‖) =O[atTop] fun T => T ^ (53/54 : ℝ) * (Real.log T) ^ C
+```
+with `E_Λ(T) = Σ_{V ≤ m ≤ T(1+ε)} Λ(m) Σ_{R ≤ r ≤ εm, r ≡ m (2)} e(T log(1+r/m))/r`,
+`ε = T^{-1/4}`, `V = T/((1+ε)log²T)`, `R = T^{1/4}`.
+
+## Why the sources cannot simply be cited
+
+The card's `(2)`, `(3)`, `(4)` are Granville--Ramaré Thm 9/9' and Babu--Sankaranarayanan Thm 1,
+transferred to the reciprocal phase by the card's stability lemma.  Formalising means REPROVING
+them: Vaughan's identity, then derivative tests on each one-variable descendant phase.  The corpus
+already owns the derivative test and, crucially, the exact algebra that makes every descendant
+phase reciprocal.
+
+## What is already Lean-closed (2026-08-23)
+
+- `RHTower/Sieve/SecondDerivativeTest.lean` — `second_derivative_test'`:
+  `‖Σ_{n<N} e(g(x₀+n))‖ ≤ 8Nh√λ + 12/√λ` when `λ ≤ g'' ≤ hλ`.  (Corpus, pre-existing.)
+- `RHTower/NearDiagonalPhaseCurvature.lean` … `NearDiagonalInnerSum.lean` — the whole dyadic chain
+  for `F_{T,r}`, ending in
+  `‖Σ_{A≤m<B} e(F_{T,r}(m))‖ ≤ 2500√(Tr/(36πA)) + 22√(36π/(Tr))·√(B³)`.  (Corpus, pre-existing.)
+- `RHTower/Sieve/VaughanIdentity.lean` — Vaughan's identity as a ring identity in
+  `ArithmeticFunction ℝ`, plus the vanishing of the type-II second factor below `V`.
+- `RHTower/Sieve/DilatedNearDiagonalSum.lean` — `F_{T,r}(d·u) = F_{T,r/d}(u)`, so every TYPE-I
+  inner sum is a near-diagonal sum at the scaled offset.  Type I needs no new derivative test.
+- `RHTower/Sieve/ReciprocalPhaseStability.lean`, `VonMangoldtParityCorrection.lean`,
+  `PSeriesTailAboveCutoff.lean`, `NearDiagonalOffsetBookkeeping.lean` — the stability lemma, the
+  parity correction `Σ_{m ≤ N, 2|m} Λ(m) ≤ log N`, and the `r`-tail bookkeeping.
+
+### New this session
+
+- `RHTower/Sieve/CurvedPhaseBlockSum.lean` — **the chain, abstracted**.  `CurvedPhase φ φ' φ'' Y M₀`
+  asks only for `Y/(36πM³) ≤ φ'' ≤ 90·Y/(36πM³)` on every dyadic block `[M,2M]` with `M ≥ M₀`, and
+  yields
+  ```
+  ‖curvedSum φ A B‖ ≤ 2500√(Y/(36πA)) + 22√(36π/Y)·√(B³).
+  ```
+  The geometric collapse and the dyadic cover are phase-independent and are reused from the
+  near-diagonal modules.
+- `RHTower/Sieve/DifferencePhaseCurvature.lean` — **the algebraic identity that makes type II work**:
+  ```
+  F''_{s₁}(u) − F''_{s₂}(u) = (T/2π)·(s₁−s₂)(2u+s₁+s₂)/((u+s₁)²(u+s₂)²),
+  ```
+  because `s(2u+s) = (u+s)² − u²` makes the cross terms cancel exactly.  Hence
+  `CurvedPhase (F_{s₁} − F_{s₂}) … (T(s₁−s₂)) (4s₁)`: the difference phase has the SAME reciprocal
+  curvature profile, at scale `T(s₁−s₂)`.  The constant `4s₁ ≤ M` is what keeps the curvature ratio
+  under the `90` that `block_algebra` is calibrated for — `(2+1/4)⁵ = 57.7 ≤ 90`.
+  The near-diagonal phase itself is registered as a `CurvedPhase` too.
+- `RHTower/Sieve/BilinearCauchySchwarz.lean` — Cauchy--Schwarz on the outer variable and the exact
+  correlation expansion `Σ_d ‖Σ_m b_m z_{d,m}‖² = Σ_{m₁,m₂} b_{m₁} \bar b_{m₂} Σ_d z_{d,m₁}\bar z_{d,m₂}`,
+  plus its norm form.
+- `RHTower/Sieve/TypeIICorrelation.lean` — the two identities are glued:
+  `Σ_{d} e(F_{T,r}(m₁d)) \overline{e(F_{T,r}(m₂d))} = curvedSum (F_{r/m₁} − F_{r/m₂}) A B`,
+  and the resulting bound
+  ```
+  ≤ 2500√(T(r/m₁ − r/m₂)/(36πA)) + 22√(36π/(T(r/m₁−r/m₂)))·√(B³).
+  ```
+
+## Remaining layers
+
+- `VC3` assemble the type-II bound: diagonal `m₁ = m₂`, off-diagonal via `norm_sum_correlation_le`,
+  divisor-bounded coefficients, and the sum over pairs.
+- `VC4` assemble the type-I bound from `norm_dilated_nearDiagonalSum_le` and a divisor-sum bound.
+- `VC5` combine through Vaughan into `S_r(I)` for a dyadic block `I ⊂ [M,2M]`.
+- `VC6` dyadic assembly over `M` and summation over `r` to the card's `T^{53/54}`.
+
+## Log
+
+- 2026-08-23 — Opened.  Five new modules; the type-II difference phase is now known to be a curved
+  phase, which is the step the card's stability lemma only asserts asymptotically.
+
+## The exponent budget, computed (2026-08-23) — the target is reachable, and better than `53/54`
+
+Before building the Vaughan bookkeeping I checked what the corpus's OWN tools deliver, so that the
+target is not chased with insufficient technology.  Write `X = Tr/2π`, `M` for the dyadic block of
+the `m`-sum, `D` for the dyadic block of the long Vaughan variable, `H = M/D`, `h = |m₁−m₂|`.
+
+**Available inner estimates.**
+- Second-derivative test (curved-phase chain): `‖Σ_{[A,B)} e(φ)‖ ≪ √(Y/A) + √(B³/Y)`.
+- Kuzmin--Landau (`Sieve/KuzminLandauInterval.lean`, now instantiated for the difference phase):
+  when `|φ'| ≤ 1/2` on the whole range, `‖Σ‖ ≪ B²/Y + 1`.
+
+**Type I.**  Inner sum at offset `r/d` over `k ∈ [M/d, 2M/d)` gives `√(Tr/M) + M^{3/2}/(√(Tr)·d)`;
+summing over `d ≤ D₀ = UV` with logarithmic weights,
+
+    type I ≪ L^C [ D₀·√(X/M) + M^{3/2}/√X ].
+
+**Type II.**  After Cauchy--Schwarz on the long variable and the correlation expansion,
+`Y = T|s₁−s₂| ≍ X h D²/M²`.  Kuzmin--Landau applies exactly when `h ≲ M²/X`; beyond that the
+second-derivative test does.  Summing over `h ≤ H` and the `H` pairs at each `h`,
+
+    |S₄|² ≪ L^C [ DM + M³/X + √X·M^{3/2}/D + M^{5/2}/√X ].
+
+Cauchy--Schwarz may be taken on EITHER variable (the phase is `F(dm) = F(md)`, so the same lemma
+serves both), which replaces `D` by `M/D`.  Taking the better of the two for each `D` gives
+`min(A(D), B(D))` with `A ≤ B` exactly when `D ≥ √M`, so the maximum of the minimum over the whole
+dyadic range `D ∈ (W, M/W]` is attained at BOTH endpoints and equals
+
+    |S₄| ≪ L^C [ M/√W + X^{1/4}M^{1/4}√W + M^{5/4}X^{-1/4} ].
+
+**Optimisation.**  With `U = V = W`, balancing `W²√(X/M)` against `M/√W` gives
+`W = M^{3/5}X^{-1/5}` and
+
+    S_r(I) ≪ L^C [ M^{7/10}X^{1/10} + M^{5/4}X^{-1/4} + M^{3/2}X^{-1/2} ].
+
+**Assembly.**  With `M ≪ T`, `X = Tr/2π`, `R = T^{1/4} ≤ r ≤ εT = T^{3/4}`:
+
+    Σ_r (1/r)·T^{4/5}r^{1/10}  ≪ T^{4/5}·(T^{3/4})^{1/10} = T^{7/8},
+    Σ_r (1/r)·T·r^{-1/4}       ≪ T·(T^{1/4})^{-1/4}      = T^{15/16},
+    Σ_r (1/r)·T·r^{-1/2}       ≪ T·(T^{1/4})^{-1/2}      = T^{7/8}.
+
+    E_Λ(T) ≪ T^{15/16}·L^C.
+
+`15/16 = 0.9375 < 53/54 = 0.98148…`, so the corpus's own toolkit proves a STRICTLY STRONGER bound
+than the card claims, and the card's `(5)` follows.  Granville--Ramaré and
+Babu--Sankaranarayanan are therefore not needed as inputs at all: what the card's stability lemma
+transfers asymptotically, `DifferencePhaseCurvature.lean` and `DifferencePhaseKuzminLandau.lean`
+prove EXACTLY, by the two cancellations
+
+    F'_{s₁} − F'_{s₂} = −(T/2π)(s₁−s₂)/((u+s₁)(u+s₂)),
+    F''_{s₁} − F''_{s₂} = (T/2π)(s₁−s₂)(2u+s₁+s₂)/((u+s₁)²(u+s₂)²).
+
+Two side conditions must be carried through the formal proof and are satisfied in the whole range:
+`r ≤ M` (offset below the block), and `λ = T r d²/(36π M³) ≤ 1` for the type-I inner sums, which at
+the optimal `D₀ = W² = M^{6/5}X^{-2/5}` reads `T^{1/2} ≪ T^{5/8}`.
+
+### New module
+
+- `RHTower/Sieve/DifferencePhaseKuzminLandau.lean` — the first-derivative identity, its
+  monotonicity and two-sided size bounds, and
+  `norm_curvedSum_diffPhase_kuzminLandau : ‖curvedSum (F_{s₁} − F_{s₂}) A B‖ ≤ 75πB²/(16T(s₁−s₂)) + 1`
+  whenever `4s₁ ≤ A` and `T(s₁−s₂)/(2πA²) ≤ 1/2`.  The band index is `m = −1`: the derivative is
+  negative, monotone increasing, and confined to `[−1+δ, −δ]` with `δ = 8T(s₁−s₂)/(25πB²)`.
+- `RHTower/Sieve/TypeIIEnergyBound.lean` — `norm_typeII_sq_le`, and the off-diagonal correlation
+  bound in either order of the pair.
+- `RHTower/Sieve/TypeIBound.lean` — `norm_typeI_le`, term by term through the dilation identity.
+
+### Remaining
+
+- `VC5a` divisor-square moment `Σ_{d ≤ D} d(d)² ≪ D L³` (for `Σ_d |a_d|²`).
+- `VC5b` Abel summation to remove the `log k` weight from the `log ∗ μ_V` term.
+- `VC5c` the convolution-to-double-sum rearrangement for the three Vaughan pieces.
+- `VC6` the dyadic and `r` assembly with the optimisation above.
+
+## VC5a and VC5c closed (2026-08-23)
+
+- `RHTower/Sieve/DivisorSquareMoment.lean` — **`sum_card_divisors_sq_le : Σ_{n ≤ N} d(n)² ≤ N·H_N³`**,
+  the coefficient moment the type-II Cauchy--Schwarz needs (`|a_d| ≤ 1 + d(d)`).  Elementary and
+  fully reusable:
+  - `d(n)² = Σ_{a,b ≤ N} 1_{a∣n}1_{b∣n}`, so the sum counts pairs;
+  - `#{n ≤ N : a∣n ∧ b∣n} = N / lcm(a,b) ≤ N·gcd(a,b)/(ab)` (`Nat.Ioc_filter_dvd_card_eq_div`
+    plus `Nat.gcd_mul_lcm`);
+  - Gauss's identity `Σ_{g ∣ m} φ(g) = m` (`Nat.sum_totient`) as an indicator sum over `[1,N]`
+    turns the `gcd` into a third factor: `Σ_g φ(g)·(Σ_{g∣a} 1/a)² = Σ_g φ(g)H_{N/g}²/g² ≤ H_N³`.
+  Also lands `invSum`, `sum_inv_multiples_real` (`Σ_{n ≤ N, g∣n} 1/n = H_{N/g}/g`) and
+  `divisors_eq_filter_Icc`.
+- `RHTower/Sieve/DirichletConvolutionRearrange.lean` — **`sum_conv_mul_eq`**: for a block
+  `I ⊆ [1, L]`,
+  ```
+  Σ_{n ∈ I} (f ∗ g)(n)·w(n) = Σ_{(d,k) ∈ [1,L]² , dk ∈ I} f(d)·g(k)·w(dk).
+  ```
+  The bijection is `⟨n,(d,k)⟩ ↦ (d,k)` between `I.sigma (·.divisorsAntidiagonal)` and the filtered
+  product.  This is the single rearrangement all three Vaughan pieces go through.
+
+Remaining: `VC5b` (Abel summation to strip the `log k` weight of the `log ∗ μ_V` term) and `VC6`
+(the dyadic and `r` assembly).
+
+## VC5b and the first Vaughan piece (2026-08-23)
+
+- `RHTower/Sieve/AbelIcoWeight.lean` — `norm_sum_Ico_mul_le_of_bounded_partial_mono`: the corpus's
+  `range`-form Abel inequality (`AbelIncreasingWeight.lean`, already owned) shifted to `[A, B)`.
+  This is all `VC5b` needs; the weight `log k` is nonnegative and nondecreasing there.
+- `RHTower/Sieve/TypeILogWeight.lean` — `norm_sum_log_ndExp_le`: the type-I inner sum WITH the
+  logarithmic weight,
+  ```
+  ‖Σ_{k∈[A,B)} log k · e(F_{T,r}(k·d))‖ ≤ 2·(block bound at (A,B))·log(B−1),
+  ```
+  using that the block bound is increasing in the right endpoint (`ndBlockBound_mono`), so the
+  supremum over prefixes is attained at `B`.
+- `RHTower/Sieve/DivisorFibreInterval.lean` — `filter_mul_mem_Ico`: for `b ≥ 1` the fibre
+  `{a : a·b ∈ [A,B)}` is the interval `[(A−1)/b + 1, (B−1)/b + 1)`.
+- `RHTower/Sieve/ConvolutionBlockTypeI.lean` — `sum_conv_mul_Ico_eq`: the two previous facts
+  combined,
+  ```
+  Σ_{n∈[A,B)} (f ∗ g)(n)·w(n) = Σ_{b≤L} g(b)·Σ_{a ∈ [(A−1)/b+1, (B−1)/b+1)} f(a)·w(ab).
+  ```
+- `RHTower/Sieve/ZetaConvolutionTypeI.lean` — `ndPhaseExp`, `ndPhaseExp_mul`, `fibreBound`, and
+  `norm_sum_zeta_conv_ndPhaseExp_le`: the FIRST Vaughan piece `(ζ ∗ c)` is estimated term by term
+  by the near-diagonal block bound at the scaled offset `r/b` over the fibre interval.
+
+Remaining: the `log ∗ μ_V` piece (same shape, with `TypeILogWeight`), the type-II piece (range
+restriction to `k > U`, `m > V`, then `TypeIIEnergyBound`), and `VC6`.

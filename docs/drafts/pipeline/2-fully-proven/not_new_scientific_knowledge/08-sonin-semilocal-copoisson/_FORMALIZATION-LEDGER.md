@@ -751,3 +751,108 @@ Design notes worth keeping:
   `summable_of_sum_range_le` needs its bound `c` given explicitly.
 
 Remaining in this folder: cards 5, 7, 11, 14, 17.
+
+## Cards 14, 17, 7 CLOSED (2026-08-23)
+
+* **14** `sonin-small-cutoff-ground-row-survival` → stage 3.
+  New module `RHTower/SoninSmallCutoffGroundRow.lean`: the two archimedean strong limits
+  (`tendsto_norm_sub_centralSoninProjection_of_tendsto_zero` for `λ↓0` via the Friedrichs angle
+  and the exact time-band area `‖A_a F_a‖ ≤ 2a`; `tendsto_norm_centralSoninProjection_atTop` for
+  `λ→∞` via `‖Q g‖ ≤ ‖g − A_a g‖`), the rank-one ground-row algebra (`groundRow`, `corner_eq`,
+  `norm_corner`, `corner_ne_zero`, `groundRow_eq_rankOne`), trace class, and the concrete
+  one-prime and finite-prime ground-row vectors with their nonvanishing.
+  The one-prime `v_P` is the corpus's own `semilocalOnePrimeGroundRowVector p 1` — the
+  `alpha = 1` case of the already-proved `3/4 < alpha` summability, whose coefficients are exactly
+  `2k/(2k+1)` times the ground moment.
+* **17** `transported-prolate-relative-resolvent-corner` → stage 3.
+  The corpus already owned `SoninSylvesterFactorization` (factorization, Schatten bound, vanishing
+  criterion, cfc intertwining) and `HTGeometry/DisjointSpectrumIntertwiner`.  New module
+  `RHTower/TransportedProlateResolventCorner.lean` adds `conjOp`, `memSchattenClass_conjOp`,
+  `conjOp_mul`, `conjOp_reduces`, `conjOp_idem`, `mul_ne_zero_of_not_isCompactOperator` (a
+  noncompact crossing survives a compact complement — the card's `H_P E_- ≠ 0` step),
+  `sylvester_ne_zero_of_compressed`, and the assembled `transported_relativeResolvent_corner`.
+* **7** `route-b-semilocal-sonin-interim-verdict` → stage 3.  Every theorem-bearing bullet is now
+  Lean-backed; the table in the card lists the declaration for each.  The one bullet that had no
+  Lean support, `[DIRECT CYCLIC FORM DOMAIN CLOSED]`, is closed by the new module
+  `RHTower/SemilocalCyclicFormDomain.lean` (`weighted_lintegral_bounds`,
+  `exists_isSelfAdjoint_representative`) on top of the corpus's
+  `semilocalFinitePrimeEulerDensity_bounds`.
+
+Remaining: **5** `prime-tail-copoisson-essential-boundary-bockstein` and
+**11** `sonin-burnol-conductor-cutoff-bounded-graph-law`.
+
+### Card 5 in progress: `RHTower/PrimeTailCoPoissonBoundary.lean`
+
+Landed and wired (axiom-clean):
+
+* `primeTailSeed n z x = n^{-z} x^{-z} 1_{[1/n,1]}(x)` and Burnol's centred cell `burnolCell`;
+  **`primeTailSeed_eq_burnolCell`** is card `(7)`.
+* **`integral_primeTailSeed`** is card `(5)`: `∫_{1/n}^1 g_{n,z}(x) x^{w-1} dx =
+  (n^{-w} − n^{-z})/(z−w)`, via `integral_cpow` on a branch-cut-free interval plus
+  `Complex.inv_cpow`.
+* `monodromyGerm`, `monodromyGermJet` (cards `(23)`, `(24)`), `reflectedGerm` `(29)`,
+  `normalizedDilation` `(25)`, `multiplicativeInversion` `(28)`, `conj_ofReal_cpow`,
+  `ofReal_sqrt_eq_cpow`, `ofReal_mul_cpow`;
+  **`normalizedDilation_monodromyGerm`** `(26)`–`(27)`,
+  **`normalizedDilation_reflectedGerm`** `(30)`–`(31)`,
+  **`multiplicativeInversion_conj_monodromyGerm`** `(29)`,
+  `dilation_characters_eq_iff` (the two characters agree in radial type iff `Re ρ = 1/2`).
+* `primeTailCurrent` is card `(3)`; `norm_primeTailSeed` and **`norm_primeTailSeed_mul_le`**
+  give the pointwise majorant `‖g_{n,z}(x) x^{w−1}‖ ≤ (n^{−σ}+n^{−τ}) x^{−1}` on `(0,1]`,
+  uniform in the sign of `τ−σ` (the case `τ<σ` uses `x^{τ−σ} ≤ n^{σ−τ}` on `[1/n,1]`).
+
+The corpus already owns `P(z)`: `eulerLogDirichletCoeff n = Λ(n)/log n`,
+`canonicalEulerLogZeta = LSeries eulerLogDirichletCoeff`, `canonicalEulerLogZeta_summable`,
+`exp_canonicalEulerLogZeta_eq_riemannZeta` in `HTGeometry/CanonicalEulerLog.lean`, and
+`logDeriv_riemannZeta_eq_neg_LSeries` for the diagonal `(9)`.
+
+Next for card 5: the `∫ ∑ = ∑ ∫` interchange (`MeasureTheory.integral_tsum` with the majorant
+above and `∑ n^{-σ} log n < ∞`), giving `(8)`; then `(16)`/`(17)` from PNT, `(20a)`–`(20n)` from
+PNT with error, and the `log ζ` monodromy `(22)`–`(24)`.
+
+### Card 5: gates 1, 2, 3, 5, 6 CLOSED (2026-08-23)
+
+`RHTower/PrimeTailCoPoissonBoundary.lean` now proves, unconditionally and axiom-clean:
+
+| card item | declaration |
+|---|---|
+| `(2)` seed, `(6)` Burnol cell, `(7)` their identity | `primeTailSeed`, `burnolCell`, `primeTailSeed_eq_burnolCell` |
+| `(5)` seed right Mellin transform | `integral_primeTailSeed` |
+| `(3)` all-prime condensation | `primeTailCurrent` |
+| pointwise majorant, uniform in `sign(τ−σ)` | `norm_primeTailSeed`, `norm_primeTailSeed_mul_le` |
+| `∑ n^{-σ} log n < ∞` and the full majorant | `summable_rpow_neg`, `summable_rpow_neg_mul_log`, `summable_primeTail_majorant` |
+| term integrability and its `L¹` mass | `integrableOn_primeTailTerm`, `integral_norm_primeTailTerm_le`, `integrableOn_primeTailFullTerm`, `integral_norm_primeTailFullTerm_le` |
+| **`(8)` the divided-log Mellin scalarization** | `primeTailCurrent_mellin` |
+| **`(9)` the diagonal `= L(Λ, z) = −ζ'/ζ`** | `primeTailCurrent_mellin_diag`, `eulerLogDirichletCoeff_mul_log`, `integral_primeTailSeed_diag` |
+| `(21)` the single-valued finite part and the decomposition | `primeTailFinitePart`, `primeTailCurrent_eq_finitePart`, `differentiable_primeTailFinitePart` |
+| **`(22)` the divisor Bockstein** | `primeTailCurrent_monodromy` |
+| `(23)` the nonzero germ | `monodromyGerm`, `monodromyGerm_ne_zero` |
+| **`(24)` every logarithmic jet** | `monodromyGermJet`, `iteratedDeriv_monodromyGerm` |
+| `(25)`, `(28)` the two actions | `normalizedDilation`, `multiplicativeInversion` |
+| **`(26)`–`(27)`, `(29)`, `(30)`–`(31)`** | `normalizedDilation_monodromyGerm`, `multiplicativeInversion_conj_monodromyGerm`, `normalizedDilation_reflectedGerm` |
+| the two characters agree in radial type iff `Re ρ = 1/2` | `dilation_characters_eq_iff` |
+
+Reusable helpers: `conj_ofReal_cpow`, `ofReal_sqrt_eq_cpow`, `ofReal_mul_cpow`,
+`setIntegral_Ioc_indicator`, `integral_indicator_inv`, `integrableOn_indicator_inv`,
+`measurable_ofReal_cpow`, `aestronglyMeasurable_primeTailTerm`.
+
+**Still open on card 5** (gate 4 and section 3A):
+
+* `(11)`–`(16)`: `J(X) = ∑_{2≤n≤X} a_n ~ X/log X` from PNT, Abel summation `(13)`, the integral
+  asymptotic `(14)`, hence `G_z(x) ~ 1/((z−1) x log(1/x))`.
+* `(17)`: the half-weight `L²` wall, and `(18)`, `(20)`.
+* `(20a)`–`(20n)`: the pole vacuum `V_z`, `V = E_1(z−1)`, `(20d)`, the holomorphy of `P − V` at
+  `z = 1`, and the all-orders flatness of the vacuum-normalized remainder from PNT with error.
+
+Available corpus inputs for these: `chebyshevPsi_sub_id_isBigO` (PNT with `exp(−c√log x)` error),
+`tendsto_chebyshevPsiReal_div`, `exists_psi_error_eventually`, and the vendored `PNTPlus`.
+The remaining work is the Abel-summation transfer from `ψ` to `J`, and the two integral
+asymptotics.
+
+### Card 11 remains
+
+`sonin-burnol-conductor-cutoff-bounded-graph-law` still needs its own unchecked gate:
+Burnol's Mellin spectral law (`H_∞ = M + JMJ` is multiplication by the log-derivative of the even
+Tate Gamma factor), `h_∞ ∈ BMO`, and the Coifman–Rochberg–Weiss / Nehari BMO commutator theorem.
+The algebraic reflection layer is already Lean (`SoninBurnolConductorReflection`,
+`SoninBurnolConductorConcrete`).

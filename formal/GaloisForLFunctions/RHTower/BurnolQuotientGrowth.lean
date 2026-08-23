@@ -306,6 +306,99 @@ theorem exists_bound_burnolQuotientNF_horizontal (ha : 1 ≤ a) (hev : f ∈ eve
     _ ≤ CL * Cz * (1 + T k) ^ (⌈ν + A⌉₊ : ℕ) := by
         refine mul_le_mul_of_nonneg_left hpow (by positivity)
 
+/-! ## Polynomial growth on the whole plane -/
+
+/-- **Polynomial growth of the entire quotient.**  The two half-plane bounds plus the polynomial
+bound on the selected horizontal lines close every rectangle `[−1,2] × [−T_n, T_n]`; the maximum
+modulus principle then propagates the bound into the interior.  This is the elementary substitute
+for Krein's theorem in Burnol's Proposition 6.1. -/
+theorem exists_polyGrowth_burnolQuotientNF (ha : 1 ≤ a) (hev : f ∈ evenSubspace)
+    (hc : ∀ᵐ u ∂(volume : Measure ℝ), u ∈ centralInterval a →
+      ((fourierUnitary f : SoninL2) : ℝ → ℂ) u = c)
+    (hd : ∀ᵐ t ∂(volume : Measure ℝ), t ∈ centralInterval a → (f : ℝ → ℂ) t = d)
+    (hdvd : ∀ z : ℂ, 0 ≤ meromorphicOrderAt
+      (burnolQuotient (extendedMellinContinuation a c d f)) z) :
+    ∃ (M : ℝ) (D : ℕ), 0 ≤ M ∧ ∀ z : ℂ,
+      ‖burnolQuotientNF (extendedMellinContinuation a c d f) z‖ ≤ M * (‖z‖ + 1) ^ D := by
+  have ha0 : (0 : ℝ) < a := lt_of_lt_of_le zero_lt_one ha
+  obtain ⟨T, _hmono, htop, hT1, hspace, hTne, hzeta⟩ := exists_seq_zeta_inv_horizontal
+  obtain ⟨CR, hCR0, hR⟩ := exists_bound_burnolQuotientNF_right ha hev hc hd
+  obtain ⟨CL, hCL0, hLb⟩ := exists_bound_burnolQuotientNF_left ha hev hc hd hdvd
+  obtain ⟨CH, D, k₀, hCH0, hH⟩ :=
+    exists_bound_burnolQuotientNF_horizontal ha hev hc hd htop hT1 hTne hzeta
+  have hdiff : Differentiable ℂ (burnolQuotientNF (extendedMellinContinuation a c d f)) :=
+    differentiable_burnolQuotientNF (meromorphicAt_extendedMellin_all ha0 hev hc hd) hdvd
+  -- the shifted height sequence, so that every selected height is beyond `k₀`
+  have hStop : Tendsto (fun n : ℕ => T (n + k₀)) atTop atTop :=
+    htop.comp (tendsto_add_atTop_nat k₀)
+  have hSspace : ∀ n : ℕ, T (n + 1 + k₀) ≤ T (n + k₀) + 3 := by
+    intro n
+    rw [show n + 1 + k₀ = (n + k₀) + 1 from by omega]
+    exact hspace (n + k₀)
+  have hS0 : (1 : ℝ) ≤ T k₀ := hT1 k₀
+  refine ⟨CR + CL + CH * (T k₀ + 4) ^ D, D, by positivity, ?_⟩
+  intro z
+  have hz1 : (1 : ℝ) ≤ (‖z‖ + 1) ^ D := one_le_pow₀ (by linarith [norm_nonneg z])
+  have hbig : (0 : ℝ) ≤ CR + CL + CH * (T k₀ + 4) ^ D := by positivity
+  by_cases hzr : 2 ≤ z.re
+  · calc ‖burnolQuotientNF (extendedMellinContinuation a c d f) z‖ ≤ CR := hR z hzr
+      _ ≤ (CR + CL + CH * (T k₀ + 4) ^ D) * 1 := by
+          have : (0:ℝ) ≤ CH * (T k₀ + 4) ^ D := by positivity
+          nlinarith
+      _ ≤ (CR + CL + CH * (T k₀ + 4) ^ D) * (‖z‖ + 1) ^ D := by
+          exact mul_le_mul_of_nonneg_left hz1 hbig
+  by_cases hzl : z.re ≤ -1
+  · calc ‖burnolQuotientNF (extendedMellinContinuation a c d f) z‖ ≤ CL := hLb z hzl
+      _ ≤ (CR + CL + CH * (T k₀ + 4) ^ D) * 1 := by
+          have : (0:ℝ) ≤ CH * (T k₀ + 4) ^ D := by positivity
+          nlinarith
+      _ ≤ (CR + CL + CH * (T k₀ + 4) ^ D) * (‖z‖ + 1) ^ D := by
+          exact mul_le_mul_of_nonneg_left hz1 hbig
+  push Not at hzr hzl
+  -- inside the strip: pick a selected height above `|Im z|`
+  obtain ⟨n, hn1, hn2⟩ := exists_height_between hStop hSspace |z.im|
+  set k : ℕ := n + k₀ with hkdef
+  have hkk₀ : k₀ ≤ k := Nat.le_add_left _ _
+  have hTk1 : (1 : ℝ) ≤ T k := hT1 k
+  have hTk0 : (0 : ℝ) < T k := by linarith
+  have hedge : ∀ w : ℂ, (-1 : ℝ) ≤ w.re → w.re ≤ 2 → -(T k) ≤ w.im → w.im ≤ T k →
+      (w.re = -1 ∨ w.re = 2 ∨ w.im = -(T k) ∨ w.im = T k) →
+      ‖burnolQuotientNF (extendedMellinContinuation a c d f) w‖
+        ≤ max CR (max CL (CH * (1 + T k) ^ D)) := by
+    intro w hw1 hw2 _ _ hcase
+    rcases hcase with h | h | h | h
+    · exact le_trans (hLb w (by rw [h])) (le_trans (le_max_left _ _) (le_max_right _ _))
+    · exact le_trans (hR w (by rw [h])) (le_max_left _ _)
+    · exact le_trans (hH k hkk₀ w hw1 hw2 (Or.inr h))
+        (le_trans (le_max_right _ _) (le_max_right _ _))
+    · exact le_trans (hH k hkk₀ w hw1 hw2 (Or.inl h))
+        (le_trans (le_max_right _ _) (le_max_right _ _))
+  have him1 : -(T k) ≤ z.im := (abs_le.1 hn1).1
+  have him2 : z.im ≤ T k := (abs_le.1 hn1).2
+  have hbound := norm_le_of_mem_rectangle hdiff (by norm_num : (-1:ℝ) < 2) hTk0 hedge
+    (le_of_lt hzl) (le_of_lt hzr) him1 him2
+  -- convert the height into a bound in `‖z‖`
+  have hzim : |z.im| ≤ ‖z‖ := Complex.abs_im_le_norm z
+  have hTkle : 1 + T k ≤ (T k₀ + 4) * (‖z‖ + 1) := by
+    have h1 : T k ≤ max (T k₀) (|z.im| + 3) := by
+      simpa using hn2
+    have h2 : max (T k₀) (|z.im| + 3) ≤ T k₀ + (|z.im| + 3) := by
+      refine max_le (by nlinarith [abs_nonneg z.im]) (by linarith)
+    have h3 : (T k₀ + 4) * (‖z‖ + 1) = (T k₀ + 4) * ‖z‖ + (T k₀ + 4) := by ring
+    have h4 : (1:ℝ) * ‖z‖ ≤ (T k₀ + 4) * ‖z‖ :=
+      mul_le_mul_of_nonneg_right (by linarith) (norm_nonneg z)
+    nlinarith [norm_nonneg z]
+  have hpow : (1 + T k) ^ D ≤ (T k₀ + 4) ^ D * (‖z‖ + 1) ^ D := by
+    rw [← mul_pow]
+    exact pow_le_pow_left₀ (by linarith) hTkle D
+  refine le_trans hbound ?_
+  refine max_le ?_ (max_le ?_ ?_)
+  · nlinarith [hz1, (by positivity : (0:ℝ) ≤ CH * (T k₀ + 4) ^ D)]
+  · nlinarith [hz1, (by positivity : (0:ℝ) ≤ CH * (T k₀ + 4) ^ D)]
+  · have : CH * (1 + T k) ^ D ≤ CH * ((T k₀ + 4) ^ D * (‖z‖ + 1) ^ D) :=
+      mul_le_mul_of_nonneg_left hpow hCH0
+    nlinarith [hz1, (by positivity : (0:ℝ) ≤ (‖z‖ + 1) ^ D)]
+
 end
 
 end RHTower

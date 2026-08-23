@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HTGeometry.AlgebraicClosureGaloisCompact
 import GaloisForLFunctions.RHTower.DeningerDynSysGaloisContinuousAction
 import GaloisForLFunctions.RHTower.DeningerDynSysOmegaEquivariant
 
@@ -58,8 +59,10 @@ instance deningerInsepWitt_isInvariant :
   exact hw₀
 
 /-- **Deninger, Corollary 1.5(1) (`t28n`), injectivity modulo `H`.**  Two homomorphisms of
-`ℤ̲κ / κ₀` into a field which agree on `W_rat (κ₀)` are conjugate under the Galois group. -/
-theorem deningerCor15_injective [CompactSpace (E ≃ₐ[F] E)] {C : Type*} [Field C]
+`ℤ̲κ / κ₀` into a field which agree on `W_rat (κ₀)` are conjugate under the Galois group.  No
+separability hypothesis is needed: the Galois group of an algebraic closure is compact in every
+characteristic. -/
+theorem deningerCor15_injective {C : Type*} [Field C]
     (ψ₁ ψ₂ : ↥(deningerInsepSubring F E q) →+* C)
     (hres : ∀ w : DeningerCanonicalRationalWittRing F,
       ψ₁ (deningerWittToInsep q w) = ψ₂ (deningerWittToInsep q w)) :
@@ -88,16 +91,6 @@ theorem deningerCor15_injective [CompactSpace (E ≃ₐ[F] E)] {C : Type*} [Fiel
       ← deningerCanonicalRationalWittMap_comp, hcomm]
   exact deningerHom_exists_smul (A := DeningerCanonicalRationalWittRing F)
     (G := E ≃ₐ[F] E) ψ₁ ψ₂ hres
-
-/-- **Deninger, Corollary 1.5(1) (`t28n`), injectivity modulo `H`, with no topological
-hypothesis** — for a Galois extension, in particular for the algebraic closure of a perfect field
-and so always in characteristic zero. -/
-theorem deningerCor15_injective_of_isGalois [IsGalois F E] {C : Type*} [Field C]
-    (ψ₁ ψ₂ : ↥(deningerInsepSubring F E q) →+* C)
-    (hres : ∀ w : DeningerCanonicalRationalWittRing F,
-      ψ₁ (deningerWittToInsep q w) = ψ₂ (deningerWittToInsep q w)) :
-    ∃ σ : E ≃ₐ[F] E, ∀ x : ↥(deningerInsepSubring F E q), ψ₂ x = ψ₁ (σ • x) :=
-  deningerCor15_injective q ψ₁ ψ₂ hres
 
 end
 

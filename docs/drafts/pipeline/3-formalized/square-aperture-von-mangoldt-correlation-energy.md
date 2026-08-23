@@ -1,7 +1,7 @@
 # Square-aperture von Mangoldt correlation energy
 
 - **ID:** `square-aperture-von-mangoldt-correlation-energy`
-- **Stage:** `2-fully-proven`
+- **Stage:** `3-formalized`
 - **Type:** `THEOREM (paper) / EXACT RH EQUIVALENCE`
 - **Scientific status:** `[PAPER-PROVED] [BRIDGE] [CIRCULAR AS SOURCE PRODUCER] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Route:** Route I, coefficient-nonlocal square-aperture pivot
@@ -183,4 +183,38 @@ as circular.
 - [x] exact paper equivalence and circularity classification
 - [x] anti-theatre and route-collision audit
 - [x] exact identity and forward implication formalized unconditionally in Lean
-- [ ] reverse implication formalized in Lean (requires a formal von Koch--Schoenfeld theorem)
+- [x] reverse implication formalized in Lean (unconditional von Koch under RH, built in this repo)
+
+## Lean formalisation (2026-08-23) — COMPLETE
+
+The reverse implication is Lean-closed unconditionally, with no added axiom
+(`[propext, Classical.choice, Quot.sound]` throughout).  The sharp Schoenfeld constant `1/(8π)` is
+NOT used and NOT needed: the card only consumes the subpower form, and the corpus now proves the
+stronger-than-needed `|ψ(x) − x| ≪_ε x^{1/2+ε}` for every `ε > 0` directly from RH.
+
+Chain, all in `formal/GaloisForLFunctions/RHTower/Sieve/`:
+
+1. `ZetaLandauCriticalDisc.lean`, `ZetaLogDerivCriticalBound.lean` —
+   `exists_logDeriv_zeta_bound_rh : RH → ∃ C > 0, ∀ σ γ, 7 ≤ |γ| → 1/2 < σ ≤ 9/8 →
+   ‖ζ'/ζ(σ+iγ)‖ ≤ C log|γ|/(σ − 1/2)`.  Landau's lemma at radius `R = 5` inside `R₀ = 6`, whose
+   identity radius `5/8` reaches `9/8 − 5/8 = 1/2` exactly.
+2. `PerronInfiniteSeries.lean` — truncated Perron for an infinite Dirichlet series.
+3. `PerronErrorTotalChebyshev.lean` — the truncation error in closed form at `x = N + 1/2`.
+4. `ContourShiftIdentity.lean`, `PerronRectangleResidueUnderRH.lean`,
+   `PerronVerticalSide.lean`, `PerronHorizontalSide.lean`, `PerronContourAssembly.lean` — the
+   contour shift, the residue `x` at `s = 1`, and all four sides.
+5. `ChebyshevMasterInequality.lean` — `norm_chebyshev_sub_halfInt_le`.
+6. `ChebyshevErrorHalfIntegerBound.lean` — `exists_chebyshev_error_halfInt_bound`:
+   `|ψ(N) − N| ≤ C (N+1/2)^{1/2+ε/2}(1 + log(N+1/2))²` for `N ≥ 7`, at
+   `σ₁ = 1/2 + ε/2`, `σ₀ = 1 + ε/2`, `T = N + 1/2`.
+7. `ChebyshevErrorPowerBound.lean` — `exists_chebyshevPsiReal_error_power_bound`:
+   `RH → ∀ ε > 0, ∃ C > 0, ∀ t ≥ 1, |ψ(t) − t| ≤ C t^{1/2+ε}`.
+8. `DyadicWindowErrorUnderRH.lean` — `exists_dyadicSqrtVonMangoldtMass_error_bound`: the Abel
+   identity `(5)` with a power-law remainder, giving
+   `|Σ_{X<n≤2X} Λ(n)/√n − 2(√2−1)√X| ≤ C X^a` for every `a ∈ (0,1]`.
+9. `SquareWindowEnergyUnderRH.lean` —
+   `squarePrimeWindowCorrelationEnergySubpower_of_riemannHypothesis`, and hence
+   `riemannHypothesis_iff_squarePrimeWindowCorrelationEnergySubpower`, the exact equivalence `(8)`.
+
+The forward implication was already Lean-closed in
+`RHTower.CCMSharpPrimeWindowSquareCorrelationEnergy`.

@@ -375,3 +375,52 @@ polylogarithmic, hence `≪_ε x^{ε}`.  Note this makes `σ₀ = 1 + ε/2` pref
 This is the layer that turns the explicit bounds into the card's `O_δ` statement: every term of the
 master inequality has the shape `x^a·(log x)^k` with `a ≤ 1/2 + ε/2 < 1/2 + ε`, so the whole bound
 is `O(x^{1/2+ε})`, and `x = N + 1/2 ≍ N`.
+
+## CLOSED (2026-08-23)
+
+`VK4` is complete and the consumer card is at stage 3.
+
+`RHTower/Sieve/ChebyshevErrorHalfIntegerBound.lean`
+- `exists_chebyshev_error_halfInt_bound`: under RH, for every `ε ∈ (0, 1/4]` there is `C > 0` with
+  ```
+  |ψ(N) − N| ≤ C·(N+1/2)^{1/2+ε/2}·(1 + log(N+1/2))²   for every N ≥ 7.
+  ```
+  The instantiation is `σ₁ = 1/2 + ε/2`, `σ₀ = 1 + ε/2`, `T = N + 1/2`.  With that choice each of
+  the four terms of the master inequality collapses:
+  - Perron far half: `(1/(πT log2))·x^{σ₀}·8/(σ₀−1)²  =  32/(π log2 ε²)·x^{ε/2}` — the height
+    cancels a whole power because `T = x`;
+  - Perron near half: `(16 log(2x)·x/(πT))·4(1+log(2N+2))  ≤  (192/π)(1+log x)²`;
+  - shifted vertical: `(K x^{σ₁})(2(1+log3)/σ₁ + 2(1+log(2+x))log x) ≤ 14K·x^{σ₁}(1+log x)²`;
+  - each horizontal: `(C log x/(σ₁−1/2))(x^{σ₀}/x)|σ₀−σ₁| = (C/ε)·log x·x^{ε/2}`.
+  Every logarithm is tamed by `log 4 ≤ log x` (valid because `x ≥ 7`), so the only numeric input is
+  `Real.log_two_lt_d9`.
+
+`RHTower/Sieve/ChebyshevErrorPowerBound.lean`
+- `isBigO_shift_rpow_one_add_log`: `(N+1/2)^a(1+log(N+1/2))^k =O[atTop] N^b` for `a < b`, by
+  `1 + log y ≤ 2 log y` past `y = e` and then `ShiftedPolylogTransfer`.
+- `chebyshev_error_isBigO_of_riemannHypothesis`, and the explicit forms
+  `exists_chebyshev_error_power_bound` (`∀ N ≥ 1`) and
+  `exists_chebyshevPsiReal_error_power_bound` (`∀ t ≥ 1`, real variable).
+  The step from an eventual `IsBigO` to a bound valid from `1` on is the reusable
+  `exists_bound_of_isBigO_natRpow`.
+
+`RHTower/Sieve/DyadicWindowErrorUnderRH.lean`
+- `abs_integral_psiWeight_sub_le_power`: the integral term of the Abel identity with a power-law
+  error.  The integrand `|ψ(t)−t|/(2t√t)` is `≤ C t^{a−1}/2`, majorised by the CONSTANT
+  `C(2X)^a/(2X)` on `[X,2X]`, so the whole integral costs one measure factor `X` — no antitone
+  rpow lemma is needed.
+- `exists_dyadicSqrtVonMangoldtMass_error_bound`: `|mass(X) − 2(√2−1)√X| ≤ 4C X^a` for `X ≥ 1`.
+  The decomposition is exactly `(5)`: two endpoint remainders `(ψ(2X)−2X)/√(2X)`,
+  `(ψ(X)−X)/√X`, and the integral remainder.
+
+`RHTower/Sieve/SquareWindowEnergyUnderRH.lean`
+- `dyadicSqrtVonMangoldtMass_square_eq`: at `X = m²/2` the dyadic mass IS
+  `dyadicWeightedPrimeWindow (m²)` — both floors are exact.
+- `sqrt_square_half_centring`: `2(√2−1)√(m²/2) = 2(1−1/√2)m`, the card's constant `c`.
+- `exists_squarePrimeWindowCenteredDeviation_bound`: `|W(m²) − c m| ≤ C m^{2a}` for all `m ≥ 1`
+  (the aperture `m = 1` is the empty window, `W(1) = 0`, handled separately since `X = 1/2 < 1`).
+- `squarePrimeWindowCorrelationEnergySubpower_of_riemannHypothesis` and the equivalence
+  `riemannHypothesis_iff_squarePrimeWindowCorrelationEnergySubpower`.  Taking `a = min(δ,1)/4`
+  gives `C_M ≤ C²M^{1+4a} ≤ C²M^{1+δ}`.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.

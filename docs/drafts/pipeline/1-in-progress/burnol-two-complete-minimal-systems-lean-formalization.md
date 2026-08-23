@@ -1012,3 +1012,94 @@ The value `a = 1` itself remains gated on Krein's theorem.
 the copy introduced here was renamed `ofReal_one_div_cpow_eq_neg`.  `lean_dupcheck.py` did not catch
 it because the two modules were not in each other's import closure at the time — a global grep over
 the theorem area is the reliable check.
+
+## Proposition 6.1 at the critical aperture `a = 1` — CLOSED (2026-08-23), Krein eliminated
+
+`RHTower/BurnolCompletenessUnit.eq_zero_of_zeta_dvd_extendedMellin_one_le`, axiom-clean:
+
+> for **every** `b ≥ 1`, a vector of `L_b` whose continued Mellin transform is divisible by `ζ` at
+> every nontrivial zero is `0`.
+
+This closes the last gate of §6's completeness half, and with it the completeness half of
+Theorem 6.3.  Burnol's Krein input ("an entire function of bounded characteristic in two
+complementary half-planes has finite exponential type") is **not used**.  The replacement is a
+Phragmén–Lindelöf-free rectangle argument:
+
+| step | module | content |
+|---|---|---|
+| 1 | `RHTower/MellinHalfPlaneBound` | `‖M(g)(s)‖ ≤ C·b^{-Re s}` on `Re s ≥ 2`; at `b = 1` this is *boundedness*, which is all that is needed. |
+| 2 | `RHTower/BurnolQuotientGrowth.exists_bound_burnolQuotientNF_right` | `θ = M/ζ` is bounded on `Re s ≥ 2` (step 1 plus `‖1/ζ‖ ≤ 4`). |
+| 3 | `…exists_bound_burnolQuotientNF_left` | `θ` is bounded on `Re s ≤ −1`: off the real axis by the functional equation `θ(s) = θ_{F₊g}(1−s)` (`burnolQuotient_reflect_of_im_ne`), on the axis by continuity along `s + i/(n+1)`. |
+| 4 | `…exists_bound_burnolQuotientNF_horizontal` | `‖θ‖ ≤ C(1+T_k)^D` on the selected heights `Im s = ±T_k`, `−1 ≤ Re s ≤ 2`: Theorem 4.8's L-property for `M` times Proposition 5.1 for `1/ζ`. |
+| 5 | `HTGeometry/RectangleMaxModulus.norm_le_of_mem_rectangle` | maximum modulus on `[−1,2]×[−T_k,T_k]`; `exists_height_between` supplies a selected height just above `|Im z|` (this is why `ZetaInverseWideHorizontal` was strengthened with `T(k+1) ≤ T k + 3`). |
+| 6 | `…exists_polyGrowth_burnolQuotientNF` | hence `‖θ(z)‖ ≤ M(‖z‖+1)^D` on all of `ℂ`. |
+| 7 | `RHTower/EntireAutomorphism.exists_polynomial_of_polyGrowth` | `θ` **is** a polynomial. |
+| 8 | `RHTower/MellinRealVanishing` | `M(g)(σ) → 0` as `σ → +∞` for every aperture `b ≥ 1` — the tail is paired by Cauchy–Schwarz against *itself*, giving `‖g‖/√(2σ−1)` instead of the lossy `b^{1-σ}·b^{-1/2}‖g‖`; the head is `‖d‖/(σ−1)`. |
+| 9 | `HTGeometry/PrincipalPartPolynomial.polynomial_eq_zero_of_tendsto_zero` | a polynomial vanishing at `+∞` along `ℝ` is `0`, so `θ ≡ 0`, so `M ≡ 0`, so `g = 0`. |
+
+Two supporting bridges landed with it:
+
+* `meromorphicOrderAt_riemannZeta_le_extendedMellin` — divisibility at the *nontrivial* zeros
+  upgrades to divisibility at **every** point: at a trivial zero because `χ` vanishes there
+  (`MellinTrivialZeros`), at `s = 1` because `M` has at worst a simple pole, at `s = 0` because the
+  numerator vanishes.
+* `zero_le_meromorphicOrderAt_burnolQuotient_extendedMellin` — hence `M/ζ` has nonnegative order
+  everywhere, which is exactly the hypothesis of `differentiable_burnolQuotientNF`.
+
+Note that Proposition 6.2 genuinely **cannot** be extended to `a = 1` by this route: multiplying
+`θ` by `∏(s−ρ)^{m_ρ}` costs a polynomial factor, while step 8 only gives `σ^{-1/2}` — consistent
+with Theorem 6.3, which asserts that at `a = 1` the system *is* minimal.
+
+## LAYER H — the two-sided Hardy gateway (needed for every *minimality* statement)
+
+Every remaining minimality item (Thm 6.3's second half, Prop 6.4's first half, Prop 6.5, Thm 6.7,
+and §7's Thms 7.1–7.3) needs one and the same missing brick: **realise a prescribed element of
+`L̂_a` as an actual vector of `L_a`** — the two-sided converse of Proposition 4.1.  Completeness
+never needed it (it is phrased as "the jets vanish ⟹ the vector is 0"), minimality does.
+
+Why a *witness* is unavoidable: minimality at `(ρ,k)` asks for `h ∈ L_1` whose continued Mellin
+transform vanishes to order `m_{ρ'}` at every other nontrivial zero and to order exactly `k` at `ρ`,
+i.e. `M(h) = ζ(s)/(s−ρ)^{m_ρ−k}`.  Proposition 4.2 (`ZetaMellinHeadHardy.isMellinHeadHardy_zetaQuotient`,
+already owned) says that function is in the *head* Hardy class; its reflection
+`χ(s)·ζ(1−s)/(1−s−ρ)^l = (−1)^l ζ(s)/(s−(1−ρ))^l` is again of the same shape, so Proposition 4.2 at
+`1−ρ` supplies the second half.  What is missing is the passage back to a vector.
+
+### H1 — CLOSED (2026-08-23): `HTGeometry/TwoSidedLaplaceVanishing.eq_zero_of_two_sided_laplace`
+
+> Let `ψ₁, ψ₂ ∈ L²(0,∞)` and let `G` be **continuous** on a strip `|Re w| < r` with
+> `G w = 𝓛(ψ₁)(w)` for `0 < Re w < r` and `G w = 𝓛(ψ₂)(−w)` for `−r < Re w < 0`.  Then `ψ₁ = ψ₂ = 0`.
+
+This is the elementary replacement for "an entire function of bounded characteristic in two
+complementary half-planes"; it says the two half-plane Hardy spaces meet only in `0`, and it needs
+no analyticity at all — only continuity across the axis.  Proof: on `Re w = σ > 0` the Laplace
+transform is the Fourier transform of the damped datum `1_{x>0}ψ₁(x)e^{-σx}`
+(corpus `HalfLineLaplaceFourier.fourierIntegral_rayDamp`); the damped datum converges in `L²` to
+`1_{x>0}ψ₁` as `σ ↓ 0`, so along a subsequence the `L²` Fourier transforms converge a.e., while the
+values `G(σ_n + 2πiξ)` converge to `G(2πiξ)` by continuity.  Hence `𝓕(1_{x>0}ψ₁)` is the restriction
+of `G` to the axis.  The same computation on the left, run on the *reflected* damped datum
+`x ↦ 1_{x<0}ψ₂(−x)e^{σx}` (new `rayDampRefl`, with `fourierIntegral_rayDampRefl`), gives
+`𝓕(1_{x<0}ψ₂(−·))` = the same restriction.  Fourier injectivity then identifies two data with
+disjoint supports.
+
+New reusable lemmas in that module: `rayDampRefl`, `memLp_two_rayDampRefl`,
+`integrable_rayDampRefl`, `fourierIntegral_rayDampRefl`, `coeFn_fourierTransform_toLp`,
+`tendsto_integral_norm_sq_rayDamp_sub`, `tendsto_toLp_of_integral_norm_sq`, `tendsto_toLp_rayDamp`,
+`tendsto_toLp_rayDampRefl`.
+
+### H2 — TODO: the Mellin instance
+
+With `u := F₊v`, `Tail(s) := extendedTailMellin a c₁ u s` (analytic on `Re s > 0`) and
+`Head(s) := ∫_{(0,a)} t^{-s}u` (analytic on `Re s < 1/2`), Burnol's functional equation
+(`SoninExtendedFunctionalEquation.extendedFullMellin_functional_equation`, whose only hypotheses are
+evenness and *one* constant head) gives `Tail + Head = χ(s)F(1−s)` on `0 < Re s < 1/2`, while the
+second Hardy hypothesis gives `χ(s)F(1−s) = c₂a^{1-s}/(1−s) + ∫_{(a,∞)}t^{-s}g₂` on `1/2 < Re s < 1`.
+Set `w := s − 1/2` and
+
+  `G(w) := a^{w-1/2}·(χ(1/2+w)F(1/2−w) − Tail(1/2+w)) − c₂/(1/2−w)`.
+
+Then `G = 𝓛(ψ₁)` on the right with `ψ₁(x) = e^{-x/2}(g₂−u)(ae^{x})`, and `G = 𝓛(ψ₂)(−w)` on the left
+with `ψ₂(x) = e^{-x/2}u(ae^{-x}) − c₂e^{-x/2}`.  H1 kills both: `u = c₂` a.e. on `(0,a)` — the head
+constancy that puts `v` in `L_a` — and `u = g₂` a.e. on `(a,∞)` as a bonus.
+
+### H3 — TODO: Proposition 4.1, two-sided converse, and the `ζ(s)/(s−ρ)^l` witnesses.
+### H4 — TODO: Theorem 6.3 minimality, then Props 6.4/6.5 and Theorem 6.7.

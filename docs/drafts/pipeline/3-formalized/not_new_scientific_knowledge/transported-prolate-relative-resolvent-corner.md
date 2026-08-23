@@ -1,7 +1,7 @@
 # Transported prolate relative-resolvent corner
 
 - **ID:** transported-prolate-relative-resolvent-corner
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized / needs independent audit
 - **Type:** THEOREM / CONTROL MODEL (paper)
 - **Scientific status:** BRIDGE / NOT NEW SCIENTIFIC KNOWLEDGE
 - **Sources:** Connes--Moscovici, *Prolate spheroidal operator and Zeta*, arXiv:2112.05500;
@@ -118,3 +118,37 @@ The source-specific theorem does not appear in the cited papers, but it follows 
 spectral results, the source `theta_P/eta_P` relation, and standard Sylvester/trace-ideal theory. More
 importantly, the operator is an isospectral transported control rather than the arithmetic semilocal
 candidate. It fails the significance gate for new scientific knowledge and is classified as BRIDGE.
+
+## Lean formalization
+
+Every step of the card's own proof is operator algebra and is proved unconditionally.  The two
+spectral facts the card imports from the literature -- Connes--Moscovici's uniqueness of the
+cutoff-commuting self-adjoint extension, and the order-`1/2` Ramis--Richard-Jung--Thomann
+determinants giving `(3)` -- enter as the quantified data of the theorem (`MemSchattenClass 1` of
+the restricted resolvents, self-adjointness, and disjointness of the compressed spectra), exactly
+as the card states them.  Nothing else is assumed.
+
+The card's nonvanishing route is formalized in the sharpened form the card uses: one does not need
+the whole Sonin restriction, only its negative spectral part `E_-`, whose complement inside the
+Sonin space is finite dimensional.  A noncompact crossing cannot be carried by a compact -- in
+particular finite-rank -- complement, so `H_P E_-` is nonzero; disjoint compressed spectra then
+force the corner to be nonzero.
+
+| Paper item | Lean declaration | Module |
+|---|---|---|
+| item 1: similarity preserves the Schatten ideals | `conjOp`, `memSchattenClass_conjOp` | `RHTower.TransportedProlateResolventCorner` |
+| conjugation is an algebra homomorphism (transport of the resolvent identity) | `conjOp_mul`, `conjOp_idem` | `RHTower.TransportedProlateResolventCorner` |
+| item 2: the transported Sonin space reduces the transported resolvent | `conjOp_reduces` | `RHTower.TransportedProlateResolventCorner` |
+| compactness and Schatten membership invariant under invertibles | `isCompactOperator_equiv_comp_iff`, `memSchattenClass_equiv_comp_iff` | `RHTower.SoninSylvesterFactorization` |
+| the transport step through `theta_P` | `sonin_transport` | `RHTower.SoninSylvesterFactorization` |
+| `(4)` the Sylvester factorization of the relative-resolvent corner | `soninCross`, `soninOuter`, `soninInner`, `sonin_sylvester_factorization` | `RHTower.SoninSylvesterFactorization` |
+| item 3, trace class: trace-class restricted resolvents give a trace-class corner | `memSchattenClass_one_sylvester` | `RHTower.SoninSylvesterFactorization` |
+| a vanishing corner is exactly an intertwining | `sonin_corner_eq_zero_iff` | `RHTower.SoninSylvesterFactorization` |
+| a vanishing corner intertwines the whole continuous functional calculus | `sonin_cfc_intertwine`, `cfc_mul_eq_mul_cfc_of_intertwine` | `RHTower.SoninSylvesterFactorization`, `HTGeometry.DisjointSpectrumIntertwiner` |
+| disjoint self-adjoint spectra force the intertwiner to vanish | `eq_zero_of_intertwine_of_disjoint_spectrum` | `HTGeometry.DisjointSpectrumIntertwiner` |
+| `H_P E_- != 0`: a noncompact crossing survives a compact complement | `mul_ne_zero_of_not_isCompactOperator` | `RHTower.TransportedProlateResolventCorner` |
+| the compressed Sylvester nonvanishing criterion | `sylvester_ne_zero_of_compressed` | `RHTower.TransportedProlateResolventCorner` |
+| items 1--3 assembled | `transported_relativeResolvent_corner` | `RHTower.TransportedProlateResolventCorner` |
+| noncompactness of the actual Euler corner (the hypothesis `hnoncomp` is not vacuous) | `SoninEulerCornerNoncompact` | `RHTower.SoninEulerCornerNoncompact` |
+
+Axiom audit: every declaration above depends only on `propext`, `Classical.choice`, `Quot.sound`.
