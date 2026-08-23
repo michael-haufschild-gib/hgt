@@ -528,3 +528,19 @@ This is the per-block bound in full.  What is left is the two outer summations �
 `U = V = W`.
 
 Card 12: 46 modules.
+
+## The block-count summation (2026-08-23)
+
+`BlockCountAssembly.lean`:
+
+- `sum_sqrt_blocks_le` — a uniform per-block bound `Mb` costs only the block count:
+  `Σ_{j ≤ log₂L} √(blockTypeIIEnergy j) ≤ (log₂L + 1)√Mb`;
+- **`norm_typeII_piece_le_of_uniform`** — hence
+  ```
+  ‖type-II piece‖ ≤ (log₂L + 1)·√Mb
+  ```
+  for any uniform per-block energy bound.  This is the first of the two outer summations, and it
+  costs exactly one logarithm — inside the card's `L^C`.
+
+Card 12: 47 modules.  The remaining outer summation is the one over `r`, and the remaining choice
+is `U = V = W`.

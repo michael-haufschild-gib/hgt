@@ -64,4 +64,70 @@ theorem finsuppRatModIntNTorsionSum_zeroSum_exact
     rw [← hy]
     exact y.property
 
+/-- The finite-level global additive character: first sum all local invariant values, then
+apply the faithful standard character of `ℚ/ℤ[n]`. -/
+noncomputable def finsuppRatModIntNTorsionStdAddChar
+    (ι : Type u) (n : ℕ) (hn : n ≠ 0) :
+    AddChar (ι →₀ ratModIntNTorsion n) ℂ :=
+  (ratModIntNTorsionStdAddChar n hn).compAddMonoidHom
+    (finsuppRatModIntNTorsionSumAddHom ι n)
+
+/-- Finite-level additive reciprocity is exactly the product-one condition for the global
+character.  This is target-side ABHN reciprocity; it does not identify the finite profile with
+local Brauer classes. -/
+theorem finsuppRatModIntNTorsionStdAddChar_eq_one_iff_sum_eq_zero
+    (ι : Type u) (n : ℕ) (hn : n ≠ 0) (f : ι →₀ ratModIntNTorsion n) :
+    finsuppRatModIntNTorsionStdAddChar ι n hn f = 1 ↔
+      finsuppRatModIntNTorsionSumAddHom ι n f = 0 := by
+  constructor
+  · intro hf
+    apply ratModIntNTorsionStdAddChar_injective n hn
+    simpa [finsuppRatModIntNTorsionStdAddChar] using hf
+  · intro hf
+    rw [finsuppRatModIntNTorsionStdAddChar, AddChar.compAddMonoidHom_apply, hf]
+    exact (ratModIntNTorsionStdAddChar n hn).map_zero_eq_one
+
+/-- The global finite-level character is the product of its local character values. -/
+theorem finsuppRatModIntNTorsionStdAddChar_eq_finsupp_prod
+    (ι : Type u) (n : ℕ) (hn : n ≠ 0) (f : ι →₀ ratModIntNTorsion n) :
+    finsuppRatModIntNTorsionStdAddChar ι n hn f =
+      f.prod fun _ x ↦ ratModIntNTorsionStdAddChar n hn x := by
+  classical
+  induction f using Finsupp.induction with
+  | zero =>
+      simp [finsuppRatModIntNTorsionStdAddChar,
+        finsuppRatModIntNTorsionSumAddHom]
+  | single_add i x f hif hx ih =>
+      rw [(finsuppRatModIntNTorsionStdAddChar ι n hn).map_add_eq_mul, ih,
+        Finsupp.prod_add_index']
+      · rw [finsuppRatModIntNTorsionStdAddChar,
+          AddChar.compAddMonoidHom_apply,
+          finsuppRatModIntNTorsionSumAddHom_apply_single,
+          Finsupp.prod_single_index]
+        exact (ratModIntNTorsionStdAddChar n hn).map_zero_eq_one
+      · intro _
+        exact (ratModIntNTorsionStdAddChar n hn).map_zero_eq_one
+      · intro _ a b
+        exact (ratModIntNTorsionStdAddChar n hn).map_add_eq_mul a b
+
+/-- Finite-level reciprocity in its explicit local product form. -/
+theorem finsuppRatModIntNTorsionStdAddChar_product_eq_one_iff_sum_eq_zero
+    (ι : Type u) (n : ℕ) (hn : n ≠ 0) (f : ι →₀ ratModIntNTorsion n) :
+    f.prod (fun _ x ↦ ratModIntNTorsionStdAddChar n hn x) = 1 ↔
+      finsuppRatModIntNTorsionSumAddHom ι n f = 0 := by
+  rw [← finsuppRatModIntNTorsionStdAddChar_eq_finsupp_prod,
+    finsuppRatModIntNTorsionStdAddChar_eq_one_iff_sum_eq_zero]
+
+/-- The global finite-level reciprocity character still has values among `n`th roots of unity. -/
+theorem finsuppRatModIntNTorsionStdAddChar_pow_eq_one
+    (ι : Type u) (n : ℕ) (hn : n ≠ 0) (f : ι →₀ ratModIntNTorsion n) :
+    (finsuppRatModIntNTorsionStdAddChar ι n hn f) ^ n = 1 := by
+  rw [← (finsuppRatModIntNTorsionStdAddChar ι n hn).map_nsmul_eq_pow]
+  have hf : n • f = 0 := by
+    ext i
+    change n • (f i : RatModInt) = 0
+    exact (f i).property
+  rw [hf]
+  exact (finsuppRatModIntNTorsionStdAddChar ι n hn).map_zero_eq_one
+
 end GaloisForLFunctions.HTGeometry.ABHN

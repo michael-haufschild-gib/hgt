@@ -145,3 +145,17 @@ count.
 The proof is the completed functional equation plus standard facts about Euler products and
 multiplication operators.  It is a useful source-specific no-go, but it is a direct parent-theory
 bridge and not new scientific knowledge.
+
+## Lean status
+
+`formal/GaloisForLFunctions/RHTower/CompletedLocalRatioAllPlaceCollapse.lean`
+already proves the unconditional globally regularized completed ratio is the
+constant unit symbol.  On 2026-08-23,
+`formal/GaloisForLFunctions/RHTower/FiniteEulerLocalRatio.lean` added the
+exact one-prime Euler-power formula, reflection-inverse identity, and the
+fixed-point identity `rho_p(1/2)=1`; its targeted source check, module build,
+and axiom audit pass with only `propext`, `Classical.choice`, and `Quot.sound`.
+
+The no-open-domain absolute-convergence theorem for the ordinary infinite
+finite-place product, and the formal Hardy-compression/Fredholm consequences,
+are not yet formalized. The card therefore remains in stage 2.

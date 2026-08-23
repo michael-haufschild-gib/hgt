@@ -3878,6 +3878,7 @@ import GaloisForLFunctions.RHTower.FiniteEulerGammaConnection
 import GaloisForLFunctions.RHTower.FiniteEulerGammaReflectionWeld
 import GaloisForLFunctions.RHTower.FiniteEulerInert
 import GaloisForLFunctions.RHTower.FiniteEulerLocalQuartet
+import GaloisForLFunctions.RHTower.FiniteEulerLocalRatio
 import GaloisForLFunctions.RHTower.FiniteExponentialPencilDominantConstant
 import GaloisForLFunctions.RHTower.FiniteExponentialPencilMeanSquare
 import GaloisForLFunctions.RHTower.FiniteExponentialSumMellin
@@ -4138,6 +4139,7 @@ import GaloisForLFunctions.RHTower.Sieve.EffectiveSetHypotheses
 import GaloisForLFunctions.RHTower.Sieve.MaskedSymmetry
 import GaloisForLFunctions.RHTower.Sieve.BlockLongEnergy
 import GaloisForLFunctions.RHTower.Sieve.BlockEnergyBound
+import GaloisForLFunctions.RHTower.Sieve.BlockCountAssembly
 import GaloisForLFunctions.RHTower.Sieve.VonMangoldtParityCorrection
 import GaloisForLFunctions.RHTower.FriableCoefficientSurjectivity
 import GaloisForLFunctions.RHTower.FriableEdgeCoefficients
