@@ -195,3 +195,22 @@ directly.
 Card 11 is now at 8 modules.  Part `3` still needs strict monotonicity (which follows from
 `rvRate_pos` plus the observation that any tilt with value `> I − ε` must have `λ > I − ε`, since
 `λq − Λ ≤ λ`) and continuity.
+
+## PART 3 CLOSED (2026-08-23)
+
+`RHTower/SteinhausRateStrictMono.lean`:
+
+- **`rvRate_strictMono`** — `I_α` is strictly increasing on `[0,1)`.  The mechanism: any tilt whose
+  value exceeds `I − ε` satisfies `λ ≥ λq − Λ_α(λ) > I − ε` (because `Λ_α ≥ 0` and `q ≤ 1`), so
+  moving `q` up by `d` gains at least `(I−ε)d`; taking `ε = I·d/4` makes
+  `(I−ε)(1+d) = I(1 + d(3−d)/4) > I`.
+- `rvRate_convex`, `convexOn_rvRate` — the rate is a supremum of affine functions of `q`, hence
+  convex on `Iio 1`;
+- **`continuousOn_rvRate`** — continuity on `Iio 1`, from `ConvexOn.continuousOn` on the open set.
+
+Together with `rvRate_zero`, `rvRate_pos` and `tendsto_rvRate_atTop`, **part `3` of the card's
+theorem is now completely Lean-proved**: `I_α` is continuous and strictly increasing on `[0,1)`,
+`I_α(0) = 0`, and `I_α(q) → ∞` as `q → 1⁻`.
+
+Card 11: 9 modules.  Remaining: parts `4` (the small-`q` trichotomy), `5` (the high-coherence
+expansion), `S8` (the LDP and Gärtner--Ellis), `S9` (prime Karamata).

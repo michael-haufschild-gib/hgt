@@ -307,6 +307,7 @@ import GaloisForLFunctions.RHTower.SteinhausRateFunction
 import GaloisForLFunctions.RHTower.SteinhausProfileLogIntegral
 import GaloisForLFunctions.RHTower.SteinhausSubgaussian
 import GaloisForLFunctions.RHTower.SteinhausRatePositive
+import GaloisForLFunctions.RHTower.SteinhausRateStrictMono
 import GaloisForLFunctions.RHTower.BesselJOneEnvelope
 import GaloisForLFunctions.RHTower.BesselJOneRecurrence
 import GaloisForLFunctions.RHTower.BesselJZeroConstant
@@ -2328,6 +2329,7 @@ import GaloisForLFunctions.RHTower.DeningerDynSysTiltAdditive
 import GaloisForLFunctions.RHTower.DeningerDynSysTiltLocalHom
 import GaloisForLFunctions.RHTower.DeningerDynSysHatLocality
 import GaloisForLFunctions.RHTower.DeningerDynSysTwistedNorm
+import GaloisForLFunctions.RHTower.DeningerDynSysIsotropyCondition
 import GaloisForLFunctions.RHTower.DeningerDynSysAtomMultiplicity
 import GaloisForLFunctions.RHTower.DeningerDynSysBigWittSheaf
 import GaloisForLFunctions.RHTower.DeningerDynSysCharacterExtension
@@ -9130,6 +9132,7 @@ import GaloisForLFunctions.RHTower.SoninDilationMellin
 import GaloisForLFunctions.RHTower.BurnolLemmaSevenFive
 import GaloisForLFunctions.RHTower.BurnolTheoremSevenOne
 import GaloisForLFunctions.RHTower.BurnolTheoremSevenTwoThree
+import GaloisForLFunctions.RHTower.SoninCarrierFromExtended
 import GaloisForLFunctions.RHTower.SoninFromHardyData
 import GaloisForLFunctions.RHTower.ZetaZeroOrderReflection
 import GaloisForLFunctions.RHTower.ZetaDivPowRepresentative

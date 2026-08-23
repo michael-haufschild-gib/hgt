@@ -579,6 +579,131 @@ theorem xiSquaredEulerFiniteKernel_twoPoint_det_pos
     eulerRayResponseKernel_twoPoint_det_pos
       (xiSquaredEulerFiniteQ S) hx hxy hdecrease hincrease
 
+/-! ## Exact finite-packet charge/interference decomposition -/
+
+/-- Polarized determinant interaction between two squared-orbit reversed-Löwner jet triples. -/
+def squaredEulerOrbitReversedLoewnerCross
+    (t c t' c' X : ℝ) : ℝ :=
+  squaredEulerOrbitReversedLoewnerMoment0 t c X *
+      squaredEulerOrbitReversedLoewnerMoment2 t' c' X +
+    squaredEulerOrbitReversedLoewnerMoment0 t' c' X *
+      squaredEulerOrbitReversedLoewnerMoment2 t c X -
+    2 * squaredEulerOrbitReversedLoewnerMoment1 t c X *
+      squaredEulerOrbitReversedLoewnerMoment1 t' c' X
+
+/-- First reversed-Löwner determinant of a finite packet of squared orbits. -/
+def squaredEulerPacketReversedLoewnerJetDet
+    {ι : Type*} (S : Finset ι) (t c : ι → ℝ) (X : ℝ) : ℝ :=
+  (∑ i ∈ S, squaredEulerOrbitReversedLoewnerMoment0 (t i) (c i) X) *
+      (∑ i ∈ S, squaredEulerOrbitReversedLoewnerMoment2 (t i) (c i) X) -
+    (∑ i ∈ S, squaredEulerOrbitReversedLoewnerMoment1 (t i) (c i) X) ^ 2
+
+/-- Ordered off-diagonal interference between distinct squared orbits.  Each unordered pair is
+counted twice, matching determinant polarization. -/
+def squaredEulerPacketReversedLoewnerInterference
+    {ι : Type*} [DecidableEq ι]
+    (S : Finset ι) (t c : ι → ℝ) (X : ℝ) : ℝ :=
+  ∑ i ∈ S, ∑ j ∈ S.erase i,
+    squaredEulerOrbitReversedLoewnerCross (t i) (c i) (t j) (c j) X
+
+/-- Total transverse-charge debt of a finite squared-orbit packet at one collision center. -/
+def squaredEulerPacketReversedLoewnerCharge
+    {ι : Type*} (S : Finset ι) (t c : ι → ℝ) (X : ℝ) : ℝ :=
+  ∑ i ∈ S, c i / (((t i + X) ^ 2 + c i) ^ 4)
+
+/-- Determinant polarization: twice the packet determinant is the ordered sum of every self and
+cross interaction. -/
+theorem two_mul_squaredEulerPacketReversedLoewnerJetDet_eq_cross_sum
+    {ι : Type*} (S : Finset ι) (t c : ι → ℝ) (X : ℝ) :
+    2 * squaredEulerPacketReversedLoewnerJetDet S t c X =
+      ∑ i ∈ S, ∑ j ∈ S,
+        squaredEulerOrbitReversedLoewnerCross (t i) (c i) (t j) (c j) X := by
+  unfold squaredEulerPacketReversedLoewnerJetDet
+    squaredEulerOrbitReversedLoewnerCross
+  rw [show (∑ i ∈ S, squaredEulerOrbitReversedLoewnerMoment1 (t i) (c i) X) ^ 2 =
+      (∑ i ∈ S, squaredEulerOrbitReversedLoewnerMoment1 (t i) (c i) X) *
+        (∑ j ∈ S, squaredEulerOrbitReversedLoewnerMoment1 (t j) (c j) X) by ring]
+  simp_rw [Finset.sum_mul, Finset.mul_sum]
+  rw [← Finset.sum_add_distrib, ← Finset.sum_sub_distrib]
+  apply Finset.sum_congr rfl
+  intro i hi
+  rw [← Finset.sum_add_distrib, ← Finset.sum_sub_distrib]
+  apply Finset.sum_congr rfl
+  intro j hj
+  ring
+
+/-- The full ordered interaction sum splits exactly into self interactions and distinct-orbit
+interference. -/
+theorem squaredEulerPacketReversedLoewner_cross_sum_eq_self_add_interference
+    {ι : Type*} [DecidableEq ι]
+    (S : Finset ι) (t c : ι → ℝ) (X : ℝ) :
+    (∑ i ∈ S, ∑ j ∈ S,
+        squaredEulerOrbitReversedLoewnerCross (t i) (c i) (t j) (c j) X) =
+      (∑ i ∈ S,
+        squaredEulerOrbitReversedLoewnerCross (t i) (c i) (t i) (c i) X) +
+        squaredEulerPacketReversedLoewnerInterference S t c X := by
+  rw [squaredEulerPacketReversedLoewnerInterference, ← Finset.sum_add_distrib]
+  apply Finset.sum_congr rfl
+  intro i hi
+  rw [← Finset.sum_erase_add _ _ hi]
+  ring
+
+/-- A self interaction is exactly twice the negative transverse charge. -/
+theorem squaredEulerOrbitReversedLoewnerCross_self_eq
+    {t c X : ℝ} (hch : SquaredEulerOrbitChamber t c) (hX : 0 ≤ X) :
+    squaredEulerOrbitReversedLoewnerCross t c t c X =
+      -2 * (c / (((t + X) ^ 2 + c) ^ 4)) := by
+  unfold squaredEulerOrbitReversedLoewnerCross
+  rw [show squaredEulerOrbitReversedLoewnerMoment0 t c X *
+          squaredEulerOrbitReversedLoewnerMoment2 t c X +
+        squaredEulerOrbitReversedLoewnerMoment0 t c X *
+          squaredEulerOrbitReversedLoewnerMoment2 t c X -
+        2 * squaredEulerOrbitReversedLoewnerMoment1 t c X *
+          squaredEulerOrbitReversedLoewnerMoment1 t c X =
+      2 * (squaredEulerOrbitReversedLoewnerMoment0 t c X *
+          squaredEulerOrbitReversedLoewnerMoment2 t c X -
+        squaredEulerOrbitReversedLoewnerMoment1 t c X ^ 2) by ring]
+  rw [squaredEulerOrbit_reversedLoewnerJet_det_eq hch hX]
+  ring
+
+/-- **Exact finite-packet masking law.**  Twice the global confluent determinant is distinct-orbit
+interference minus twice the sum of transverse self-charges.  This is the sharp boundary between
+local off-critical detection and global masking. -/
+theorem two_mul_squaredEulerPacketReversedLoewnerJetDet_eq_interference_sub_charge
+    {ι : Type*} [DecidableEq ι]
+    (S : Finset ι) (t c : ι → ℝ) {X : ℝ}
+    (hch : ∀ i ∈ S, SquaredEulerOrbitChamber (t i) (c i))
+    (hX : 0 ≤ X) :
+    2 * squaredEulerPacketReversedLoewnerJetDet S t c X =
+      squaredEulerPacketReversedLoewnerInterference S t c X -
+        2 * squaredEulerPacketReversedLoewnerCharge S t c X := by
+  rw [two_mul_squaredEulerPacketReversedLoewnerJetDet_eq_cross_sum,
+    squaredEulerPacketReversedLoewner_cross_sum_eq_self_add_interference]
+  have hself :
+      (∑ i ∈ S,
+          squaredEulerOrbitReversedLoewnerCross (t i) (c i) (t i) (c i) X) =
+        -2 * squaredEulerPacketReversedLoewnerCharge S t c X := by
+    rw [squaredEulerPacketReversedLoewnerCharge, Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro i hi
+    rw [squaredEulerOrbitReversedLoewnerCross_self_eq (hch i hi) hX]
+  rw [hself]
+  ring
+
+/-- Packet determinant is nonnegative exactly when cross-orbit interference pays the complete
+transverse-charge debt. -/
+theorem squaredEulerPacketReversedLoewnerJetDet_nonneg_iff_interference_ge_charge
+    {ι : Type*} [DecidableEq ι]
+    (S : Finset ι) (t c : ι → ℝ) {X : ℝ}
+    (hch : ∀ i ∈ S, SquaredEulerOrbitChamber (t i) (c i))
+    (hX : 0 ≤ X) :
+    0 ≤ squaredEulerPacketReversedLoewnerJetDet S t c X ↔
+      2 * squaredEulerPacketReversedLoewnerCharge S t c X ≤
+        squaredEulerPacketReversedLoewnerInterference S t c X := by
+  have hmask := two_mul_squaredEulerPacketReversedLoewnerJetDet_eq_interference_sub_charge
+    S t c hch hX
+  constructor <;> intro h <;> nlinarith
+
 end
 
 end RHTower
