@@ -1,7 +1,7 @@
 # Critical theta tilt flux is the exact Euler--archimedean Hilbert--Polya carrier
 
 - **ID:** `critical-theta-tilt-flux-carrier-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / DIRECT HILBERT--POLYA SOURCE LAW / BRIDGE
 - **Scientific status:** `[PROVED HERE] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Statement:** The Xi Bezoutian quadratic form is the first variation at the critical point of a
@@ -542,3 +542,31 @@ the Lean tree.  No wrapper is added while their decisive sign remains open.
 - [ ] construct the source-defined contraction
 - [ ] prove the sub-log-square zero-fibre energy estimate
 - [ ] invoke and verify the existing Lean RH transfer theorem
+
+## 2026-08-23 Stage 2 -> 3 formalization audit
+
+- [x] `ThetaTiltFluxCarrier.lean` formalizes equations `(1)`--`(18c)`: tilt correlation,
+  critical first variation, Xi Bezoutian specialization, contraction coordinate, and exact
+  reflection--continuation laws.
+- [x] `ThetaCuspFinitePrimeFluxSplit.lean` formalizes equations `(19)`--`(24)`, including the
+  smooth-monoid resolvent, the complete von Mangoldt generator, and exact pointwise
+  archimedean-minus-prime-power source split.
+- [x] `ThetaCuspFinitePrimeFluxWindow.lean` proves bilateral Laplace integrability of the actual
+  finite-prime source, its first moment, its archimedean response, and its complete generator for
+  every positive-half-plane frequency.  No convergence premise is exposed by the capstones.
+- [x] `RHTower.finitePrimeThetaCuspPacketWindow_eq_halfLineExpSum` is equation `(25)` for the
+  concrete integral window and a closed positive-frequency packet type.
+- [x] All four concrete windows satisfy `MemLp ... 2 (volume.restrict (Ioi 0))`; the source-window
+  norm has the exact finite Cauchy Gram formula.
+- [x] `RHTower.finitePrimeThetaCuspPacketCriticalFlux_eq_arch_sub_generator` is equation `(26)` in
+  the genuine half-line `L²` pairing, with the complete generator term retained.
+- [x] Direct `lake env lean` and targeted
+  `lake build GaloisForLFunctions.RHTower.ThetaCuspFinitePrimeFluxWindow` passed.  No umbrella build
+  was run.
+- [x] `#print axioms` for all 42 new theorems reports only `propext`, `Classical.choice`, and
+  `Quot.sound`.
+- [x] New leaf is wired into `GaloisForLFunctions.RHTower`.
+
+No Lean proof obligation remains for the theorem claimed by this card.  The three unchecked RH
+programme gates are explicitly unclaimed downstream research obligations and are not premises of
+any formalized result above.

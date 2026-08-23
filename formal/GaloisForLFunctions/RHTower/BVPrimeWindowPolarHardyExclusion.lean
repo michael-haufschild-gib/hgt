@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.BVPrimeWindowCoPoissonNormalConnection
 import GaloisForLFunctions.RHTower.BVPrimeWindowDivisorTomography
+import GaloisForLFunctions.RHTower.BVPrimeWindowIntervalSource
 import GaloisForLFunctions.RHTower.CoefficientHardyLSeries
 
 /-!
@@ -272,6 +273,25 @@ theorem not_summable_polarCoefficient_norm_sq_of_uncensored_zero
     norm_num [Complex.add_re]
     linarith
   exact (not_lt_of_ge hbound) hpole
+
+/-- The fixed literal dyadic and triadic rational-interval windows jointly exclude ordinary
+`H₀`: at every positive-real-part completed-zeta zero, at least one exact polar coefficient is not
+square summable.  No window is selected from the zero divisor. -/
+theorem dyadic_or_triadic_polarCoefficient_not_squareSummable_at_zero
+    {rho : ℂ} (hrho : 0 < rho.re)
+    (hzero : regularizedRiemannZeta rho = 0) :
+    (¬ Summable (fun n : ℕ+ =>
+      ‖dyadicSharpInterval.polarCoefficient n‖ ^ 2)) ∨
+    (¬ Summable (fun n : ℕ+ =>
+      ‖triadicSharpInterval.polarCoefficient n‖ ^ 2)) := by
+  rcases mellinTransform_dyadicSharpInterval_or_triadicSharpInterval_ne_zero
+      (rho + 1 / 2) with hdyadic | htriadic
+  · exact Or.inl
+      (dyadicSharpInterval.not_summable_polarCoefficient_norm_sq_of_uncensored_zero
+        hrho hzero hdyadic)
+  · exact Or.inr
+      (triadicSharpInterval.not_summable_polarCoefficient_norm_sq_of_uncensored_zero
+        hrho hzero htriadic)
 
 end CompactBVPrimeWindow
 end RHTower

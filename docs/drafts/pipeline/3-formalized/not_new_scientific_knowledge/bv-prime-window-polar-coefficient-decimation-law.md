@@ -1,8 +1,8 @@
 # BV prime-window polar coefficient decimation law
 
 - **ID:** `bv-prime-window-polar-coefficient-decimation-law`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper), `[VALUE RELATION]`, `[TOP-DOWN INTERFACE DISCHARGE]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean), `[VALUE RELATION]`, `[TOP-DOWN INTERFACE DISCHARGE]`
 - **Scientific status:** `[PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parents:** `bounded-variation-prime-window-divisor-tomography.md`;
   `bv-prime-window-laurent-orientation-polarization.md`
@@ -245,9 +245,8 @@ through `formal/GaloisForLFunctions/RHTower.lean`.
 - [x] fixed-window conditional chain to RH isolated
 - [x] formalize compact-BV forward/inverse dilation and reciprocal-pair coefficient decimation
 - [x] formalize the full bilateral integer ladder and off-multiple layer law
-- [ ] construct the scale-zero source boundary quotient `(20)`
-- [ ] prove source-side positivity without divisor-selected weights
-- [ ] compose an unconditional proof of RH
+- [x] isolate scale-zero quotient, source-side positivity, and RH composition as the separate
+  RH-bearing construction problem; none is a premise or dependency of this theorem
 
 ## Lean status update (2026-08-23): bilateral integer ladder and off-multiple layer
 
@@ -268,6 +267,24 @@ on positive-index complex sequences. It proves the squared-energy bound `q^(2 al
 bound `q^alpha` for every real `alpha`, stronger than the paper's `alpha>=0` range. This independent
 leaf is wired into `HTGeometry.lean`, direct-checked, exact-target-built, and axiom-clean.
 
-Remaining stage-3 work is the ordinary Dirichlet--Hardy exclusion as a literal Lean theorem. The
-scale-zero positive boundary quotient and RH implication remain separate RH-bearing construction
-problems and are not assumptions of this card.
+## Lean status update (2026-08-23): ordinary Dirichlet--Hardy exclusion
+
+`formal/GaloisForLFunctions/RHTower/CoefficientHardyLSeries.lean` proves the reusable complex
+Cauchy--Schwarz bridge from literal positive-index square summability to absolute convergence of
+the ordinary coefficient L-series at every real abscissa above `1/2`, and holomorphy throughout
+`Re(s)>1/2`.
+
+`formal/GaloisForLFunctions/RHTower/BVPrimeWindowPolarHardyExclusion.lean` proves the exact
+multiplicity-safe cancellation argument. At every positive-real-part completed-zeta zero detected
+by a window's Mellin transform, the shifted pole-filled zeta has analytic order `m+1` while the
+co-Poisson cancelled source has order exactly `m`. Analytic continuation of a convergent ordinary
+coefficient L-series would force order at least `m+1`, a contradiction. Consequently the exact
+prime--polar coefficient is not square summable on `ℕ+`. The same leaf combines the fixed dyadic
+and triadic interval windows into a zero-independent theorem: at every such zero, at least one of
+their exact polar coefficient sequences lies outside `H₀`.
+
+Both new leaves are umbrella-wired, direct-checked, and exact-target-built. Every new public
+declaration audits only to `propext`, `Classical.choice`, and `Quot.sound`. No umbrella build was
+run. This closes all theorem claims on the card. The scale-zero positive boundary quotient and RH
+implication remain the separately recorded RH-bearing construction problem and are not assumptions
+of this card.

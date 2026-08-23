@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.DifferentialAdjoinFiniteSupport
-import GaloisForLFunctions.HTGeometry.TorusScaleAction
+import GaloisForLFunctions.HTGeometry.TorusInvariantField
 
 /-!
 # Coordinatewise scaling on differential adjunctions
@@ -105,6 +105,83 @@ theorem torusScaleEquiv_restrict_differentialAdjoin
       (differentialAdjoin_range_differentialAdjoinGenerator_eq_top y)
       f g hfderiv hgderiv hfgenerator
   exact AlgHom.congr_fun hfg z
+
+omit [CharZero E] in
+/-- Coordinate scaling packaged directly on the differential field of a selected subpalette. -/
+def subpaletteTorusScaleEquiv
+    {k : Type u} (x : ι → E) (hx : DifferentialIndependent F x)
+    (e : k → ι) (he : Function.Injective e) (u : k → Fˣ) :
+    differentialAdjoin F (Set.range (x ∘ e)) ≃ₐ[F]
+      differentialAdjoin F (Set.range (x ∘ e)) :=
+  torusScaleEquiv
+    (differentialIndependent_differentialAdjoinGenerator (x ∘ e) (hx.comp e he))
+    (differentialAdjoin_range_differentialAdjoinGenerator_eq_top (x ∘ e)) u
+
+/-- Velocity field internal to a selected subpalette differential adjunction. -/
+def subpaletteTorusVelocityField
+    {k : Type u} (x : ι → E) (e : k → ι) :
+    IntermediateField F (differentialAdjoin F (Set.range (x ∘ e))) :=
+  differentialAdjoin F
+    (Set.range fun j ↦ Differential.logDeriv
+      (differentialAdjoinGenerator (F := F) (x ∘ e) j))
+
+/-- Separating coordinate scalings characterize the internal velocity field of a selected
+subpalette. -/
+theorem subpaletteTorusScale_invariant_iff_mem_velocity
+    [CharZero F] {r : ℕ}
+    (hconst : ∀ c : F, c′ = 0)
+    (x : ι → E) (hx : DifferentialIndependent F x)
+    (e : Fin r → ι) (he : Function.Injective e)
+    {S : Set (Fin r → Fˣ)}
+    (hsep : ∀ a b : Fin r →₀ ℕ,
+      (∀ u ∈ S, (∏ i, ((u i : F)) ^ a i) = ∏ i, ((u i : F)) ^ b i) → a = b)
+    {z : differentialAdjoin F (Set.range (x ∘ e))} :
+    (∀ u ∈ S, subpaletteTorusScaleEquiv x hx e he u z = z) ↔
+      z ∈ subpaletteTorusVelocityField (F := F) x e := by
+  change (∀ u ∈ S,
+      torusScaleEquiv
+        (differentialIndependent_differentialAdjoinGenerator (x ∘ e) (hx.comp e he))
+        (differentialAdjoin_range_differentialAdjoinGenerator_eq_top (x ∘ e)) u z = z) ↔
+    z ∈ torusVelocityField F (differentialAdjoinGenerator (F := F) (x ∘ e))
+  exact torusScale_invariant_iff_mem_torusVelocityField
+    (differentialIndependent_differentialAdjoinGenerator (x ∘ e) (hx.comp e he))
+    (differentialAdjoin_range_differentialAdjoinGenerator_eq_top (x ∘ e)) hconst hsep
+
+/-- The internal velocity field of a selected subpalette maps into the velocity field of the full
+palette. -/
+theorem subpaletteTorusVelocityField_le_global
+    {k : Type u} (x : ι → E) (e : k → ι) :
+    subpaletteTorusVelocityField (F := F) x e ≤
+      (differentialAdjoin F
+        (Set.range fun i ↦ Differential.logDeriv (x i))).comap
+          (differentialAdjoin F (Set.range (x ∘ e))).val := by
+  let V : IntermediateField F E :=
+    differentialAdjoin F (Set.range fun i ↦ Differential.logDeriv (x i))
+  let M : IntermediateField F (differentialAdjoin F (Set.range (x ∘ e))) :=
+    V.comap (differentialAdjoin F (Set.range (x ∘ e))).val
+  apply differentialAdjoin_le F
+  · rintro w ⟨j, rfl⟩
+    change Differential.logDeriv (x (e j)) ∈ V
+    exact subset_differentialAdjoin F _ ⟨e j, rfl⟩
+  · intro w hw
+    change Differential.deriv (w : E) ∈ V
+    exact derivationClosed_differentialAdjoin F _ hw
+
+omit [CharZero E] in
+/-- Fixedness descends from a global coordinate scaling to its restriction on a generated
+subpalette field. -/
+theorem torusScaleEquiv_subpalette_fixed_of_fixed
+    {k : Type u} (x : ι → E) (hx : DifferentialIndependent F x)
+    (hgen : differentialAdjoin F (Set.range x) = ⊤)
+    (e : k → ι) (he : Function.Injective e)
+    (U : ι → Fˣ) (u : k → Fˣ) (hU : ∀ j, U (e j) = u j)
+    (z : differentialAdjoin F (Set.range (x ∘ e)))
+    (hz : torusScaleEquiv hx hgen U z.1 = z.1) :
+    subpaletteTorusScaleEquiv x hx e he u z = z := by
+  have hrestrict := torusScaleEquiv_restrict_differentialAdjoin
+    (F := F) (E := E) (x := x) hx hgen e he U u hU z
+  apply Subtype.ext
+  exact hrestrict.symm.trans hz
 
 end
 
