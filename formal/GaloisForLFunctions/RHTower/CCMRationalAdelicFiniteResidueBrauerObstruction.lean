@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.CCMRationalAdelicAzumayaResidue
 import GaloisForLFunctions.RHTower.ConnesTateLocalZeta
+import GaloisForLFunctions.RHTower.ConnesWeilPrimeSide
 import GaloisForLFunctions.HTGeometry.ABHN.RatModIntTorsion
 
 /-!
@@ -88,6 +89,18 @@ theorem ccmRationalLocalBrauerAddHom_apply_ne_connesPadicTateLocalZeta_of_invari
   rw [ccmRationalLocalBrauerAddHom_eq_zero_of_invariant v invariant g]
   exact (connes_padic_tate_local_zeta_ne_zero
     (Rat.HeightOneSpectrum.primesEquiv v) hs).symm
+
+/-- The full additive-Brauer obstruction reaches the actual finite local term in Connes's Weil
+explicit formula.  A future ABHN-to-Connes/Tate comparison must be nonlinear before the local
+Weil term is formed. -/
+theorem ccmRationalLocalBrauerAddHom_apply_ne_connesLocalWeilTerm_of_invariant
+    (v : HeightOneSpectrum ℤ)
+    (invariant : BrauerGroup ℚ_[Rat.HeightOneSpectrum.primesEquiv v] ≃+ RatModInt)
+    (g : BrauerGroup (CCMRationalLocalField v) →+ ℂ)
+    (x : BrauerGroup (CCMRationalLocalField v)) {s : ℂ} (hs : 0 < s.re) :
+    g x ≠ connesLocalWeilTerm (Rat.HeightOneSpectrum.primesEquiv v) s := by
+  rw [ccmRationalLocalBrauerAddHom_eq_zero_of_invariant v invariant g]
+  exact (connesLocalWeilTerm_ne_zero (Rat.HeightOneSpectrum.primesEquiv v) hs).symm
 
 end
 

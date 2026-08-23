@@ -38,6 +38,20 @@ theorem connesLocalWeilTerm_eq (p : Nat.Primes) {s : ℂ} (hs : 0 < s.re) :
     connesLocalWeilTerm p s = ((((p : ℕ)) : ℂ) ^ s - 1)⁻¹ :=
   connes_padic_weil_eulerFactor (p : ℕ) hs
 
+/-- Every finite-place local Weil term is nonzero in the open right half-plane. -/
+theorem connesLocalWeilTerm_ne_zero (p : Nat.Primes) {s : ℂ} (hs : 0 < s.re) :
+    connesLocalWeilTerm p s ≠ 0 := by
+  rw [connesLocalWeilTerm_eq p hs]
+  apply inv_ne_zero
+  apply sub_ne_zero.mpr
+  intro h
+  have hpow : (((p : ℕ) : ℂ) ^ s) = 1 := h
+  have hpowneg : (((p : ℕ) : ℂ) ^ (-s)) = 1 := by
+    rw [Complex.cpow_neg, hpow, inv_one]
+  have hnorm := connes_padic_norm_cpow_neg_lt_one (p : ℕ) hs
+  rw [hpowneg, norm_one] at hnorm
+  exact (lt_irrefl 1 hnorm)
+
 /-- Real form of the local Euler factor. -/
 theorem connesLocalWeilTerm_ofReal (p : Nat.Primes) {σ : ℝ} (hσ : 0 < σ) :
     connesLocalWeilTerm p (σ : ℂ) = ((((((p : ℕ) : ℝ)) ^ σ - 1)⁻¹ : ℝ) : ℂ) := by

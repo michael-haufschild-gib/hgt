@@ -4125,6 +4125,7 @@ import GaloisForLFunctions.RHTower.Sieve.GapGroupedPairSum
 import GaloisForLFunctions.RHTower.Sieve.GapWeightedPairSum
 import GaloisForLFunctions.RHTower.Sieve.GapSums
 import GaloisForLFunctions.RHTower.Sieve.CorrelationGapBound
+import GaloisForLFunctions.RHTower.Sieve.OffDiagonalTotal
 import GaloisForLFunctions.RHTower.Sieve.VonMangoldtParityCorrection
 import GaloisForLFunctions.RHTower.FriableCoefficientSurjectivity
 import GaloisForLFunctions.RHTower.FriableEdgeCoefficients
@@ -5988,6 +5989,7 @@ import GaloisForLFunctions.RHTower.PrimeVacuumCurrent
 import GaloisForLFunctions.RHTower.PrimeVacuumErrorTransfer
 import GaloisForLFunctions.RHTower.PrimeVacuumFlatRemainder
 import GaloisForLFunctions.RHTower.PrimeVacuumExponentialIntegral
+import GaloisForLFunctions.RHTower.PrimeVacuumMellin
 import GaloisForLFunctions.RHTower.PrimeTailCoPoissonBoundary
 import GaloisForLFunctions.RHTower.PrimeTailReflectionFoldedSecondOrderResolvent
 import GaloisForLFunctions.RHTower.PrimeTorsionAutonomousCircuitPolygon

@@ -388,3 +388,24 @@ DUPLICATION FOUND AND RECORDED: `invSum` (introduced in `DivisorSquareMoment.lea
   `sum_offdiag_weighted_le` consumes.
 
 Card 12: 39 modules.
+
+## The off-diagonal total, in closed form (2026-08-23)
+
+`OffDiagonalTotal.lean`:
+
+- `gapCorrBound_split` — the gap-only bound factors as `C₁√h + C₂/√h` with
+  `C₁ = 2500√(Tr/(M₀²·36πP))` and `C₂ = 22√(36πM₁²/(Tr))·√(Q³)`;
+- **`sum_gapCorrBound_le`** — its gap sum is at most `C₁·H√H + 2C₂√H`, using the three gap sums;
+- **`offdiag_correlation_total_le`** — the off-diagonal half of the type-II energy on one dyadic
+  block:
+  ```
+  Σ_{m₁}Σ_{m₂≠m₁} |b(m₁)||b(m₂)|·‖corr(m₁,m₂)‖
+      ≤ (Σ_m |b(m)|²)·(2 Σ_{h≤H} gapCorrBound h).
+  ```
+
+Every ingredient of the type-II energy is now in closed form: the diagonal (`diag_pair_sum_le`),
+the off-diagonal (above), and both coefficient energies.  What is left for `VC6` is the numerical
+optimisation — substituting `A ≍ M`, `B ≍ 2M`, `P ≍ D`, `Q ≍ 2D`, `M₀ ≍ M/(2D)`, `M₁ ≍ 2M/D`,
+`H ≍ M/D`, choosing `U = V = W = M^{3/5}X^{-1/5}`, and summing over the dyadic blocks and over `r`.
+
+Card 12: 40 modules.

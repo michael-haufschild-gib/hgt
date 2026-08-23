@@ -353,6 +353,90 @@ theorem integrableOn_vacuumMellin_upper {z w : ℂ} :
     · rw [primeVacuumCurrent_eq_const hx.1]
   exact (hcont.integrableOn_Icc).mono_set Ioc_subset_Icc_self
 
+/-- **Card equation (20d).**  The interval suspension of the continuous vacuum has the divided
+difference of `V` as its right Mellin transform. -/
+theorem integral_vacuumMellin {z w : ℂ} (hz : 1 < z.re) (hw : 1 < w.re) (hzw : z ≠ w) :
+    (∫ x in Ioc (0 : ℝ) 1, primeVacuumCurrent z x * (x : ℂ) ^ (w - 1))
+      = (primeVacuumValue z - primeVacuumValue w) / (w - z) := by
+  have he : (0 : ℝ) < Real.exp 1 := Real.exp_pos 1
+  have hinvpos : (0 : ℝ) < (Real.exp 1)⁻¹ := by positivity
+  have hinvlt : (Real.exp 1)⁻¹ < 1 := by
+    rw [inv_lt_one₀ he]
+    exact one_lt_exp_one
+  have hzwne : z - w ≠ 0 := sub_ne_zero.mpr hzw
+  have hwzne : w - z ≠ 0 := sub_ne_zero.mpr (Ne.symm hzw)
+  set f : ℝ → ℂ := fun x => primeVacuumCurrent z x * (x : ℂ) ^ (w - 1) with hf
+  set a : ℕ → ℝ := fun n => (Real.exp 1)⁻¹ / (n + 2) with ha
+  have ha0 : ∀ n, 0 < a n := by
+    intro n
+    rw [ha]
+    positivity
+  have hale : ∀ n, a n ≤ (Real.exp 1)⁻¹ := by
+    intro n
+    rw [ha]
+    rw [div_le_iff₀ (by positivity)]
+    nlinarith [hinvpos, Nat.cast_nonneg (α := ℝ) n]
+  have hunion : ⋃ n : ℕ, Ioc (a n) ((Real.exp 1)⁻¹) = Ioc 0 ((Real.exp 1)⁻¹) := by
+    ext t
+    simp only [Set.mem_iUnion, Set.mem_Ioc]
+    constructor
+    · rintro ⟨n, h1, h2⟩
+      exact ⟨lt_trans (ha0 n) h1, h2⟩
+    · rintro ⟨h1, h2⟩
+      obtain ⟨n, hn⟩ := exists_nat_gt ((Real.exp 1)⁻¹ / t)
+      refine ⟨n, ?_, h2⟩
+      rw [ha]
+      rw [div_lt_iff₀ (by positivity)]
+      rw [div_lt_iff₀ h1] at hn
+      nlinarith [h1, hn]
+  have hmono : Monotone (fun n : ℕ => Ioc (a n) ((Real.exp 1)⁻¹)) := by
+    intro m n hmn
+    refine Ioc_subset_Ioc_left ?_
+    rw [ha]
+    refine div_le_div_of_nonneg_left hinvpos.le (by positivity) ?_
+    have : (m : ℝ) ≤ n := by exact_mod_cast hmn
+    linarith
+  have hlowint : IntegrableOn f (Ioc 0 ((Real.exp 1)⁻¹)) volume :=
+    integrableOn_vacuumMellin_lower hz hw
+  have hseq := MeasureTheory.tendsto_setIntegral_of_monotone
+    (fun n => measurableSet_Ioc) hmono (by rw [hunion]; exact hlowint)
+  rw [hunion] at hseq
+  have hval : ∀ n, (∫ x in Ioc (a n) ((Real.exp 1)⁻¹), f x) = vacuumMellinPrimitive z w (a n) :=
+    fun n => integral_vacuumMellin_lower hz hw hzw (ha0 n) (hale n)
+  have hseq' : Tendsto (fun n : ℕ => vacuumMellinPrimitive z w (a n)) atTop
+      (𝓝 (∫ x in Ioc 0 ((Real.exp 1)⁻¹), f x)) := by
+    refine Tendsto.congr ?_ hseq
+    intro n
+    exact hval n
+  have hato : Tendsto a atTop (𝓝[>] 0) := by
+    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within a ?_ ?_
+    · have hden : Tendsto (fun n : ℕ => ((n : ℝ) + 2)) atTop atTop :=
+        tendsto_atTop_add_const_right _ 2 tendsto_natCast_atTop_atTop
+      have hb := hden.inv_tendsto_atTop.const_mul ((Real.exp 1)⁻¹)
+      rw [mul_zero] at hb
+      refine Tendsto.congr ?_ hb
+      intro n
+      rw [ha]
+      simp [div_eq_mul_inv]
+    · filter_upwards with n
+      exact ha0 n
+  have hlim2 := (tendsto_vacuumMellinPrimitive hz hw).comp hato
+  have hunique := tendsto_nhds_unique hseq' hlim2
+  have hsplit : (∫ x in Ioc (0 : ℝ) 1, f x)
+      = (∫ x in Ioc (0 : ℝ) ((Real.exp 1)⁻¹), f x) + ∫ x in Ioc ((Real.exp 1)⁻¹) 1, f x := by
+    have hun : Ioc (0 : ℝ) 1 = Ioc 0 ((Real.exp 1)⁻¹) ∪ Ioc ((Real.exp 1)⁻¹) 1 :=
+      (Set.Ioc_union_Ioc_eq_Ioc hinvpos.le hinvlt.le).symm
+    have hdisj : Disjoint (Ioc (0 : ℝ) ((Real.exp 1)⁻¹)) (Ioc ((Real.exp 1)⁻¹) 1) := by
+      rw [Set.disjoint_left]
+      rintro t ⟨_, h2⟩ ⟨h3, _⟩
+      exact absurd h3 (not_lt.mpr h2)
+    rw [hun]
+    exact MeasureTheory.setIntegral_union hdisj measurableSet_Ioc hlowint
+      integrableOn_vacuumMellin_upper
+  rw [hsplit, hunique, integral_vacuumMellin_upper hzw]
+  field_simp
+  ring
+
 end
 
 end RHTower
