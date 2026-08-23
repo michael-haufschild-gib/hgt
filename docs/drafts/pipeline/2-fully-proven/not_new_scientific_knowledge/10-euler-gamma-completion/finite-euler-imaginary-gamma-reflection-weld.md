@@ -234,9 +234,15 @@ complement required by the boundary theorem.
 - `RHTower/XiWeilOneCauchyGate.lean` is the completed one-Cauchy RH consumer, but `(15)` does not
   discharge its source sign.
 
-No Lean file is added.  Formalizing `(3)` requires the complex Gamma reflection formula and the
-entire reciprocal-Gamma packaging; formalizing `(15)` additionally requires the two-prime
-log-ratio irrationality interface.  The present result is paper-level and uses no numerical input.
+`RHTower/FiniteEulerGammaReflectionWeld.lean` now formalizes the entire reciprocal-Gamma
+packaging, the exact one-prime Gamma factorization, and its finite semilocal product and quartet
+forms. `RHTower/FiniteEulerLocalQuartet.lean` formalizes the two-prime reality/positive-real
+selector, while `RHTower/FiniteEulerGammaConnection.lean` supplies the exact finite derivative
+identities. Their targeted checks and axiom audits use only `propext`, `Classical.choice`, and
+`Quot.sound`.
+
+The remaining implication `(15)` is not discharged: no independent unconditional source theorem
+has yet forced the two selected local values real on arbitrary Xi fibres. The card remains stage 2.
 
 ## Literature
 
@@ -256,6 +262,6 @@ log-ratio irrationality interface.  The present result is paper-level and uses n
 - [x] FE-symmetric Gamma quartet and logarithmic derivative
 - [x] critical-line positive-real chamber
 - [x] two-prime reality selector away from height zero
-- [ ] formalize the Gamma-reflection factorization
+- [x] formalize the Gamma-reflection factorization and finite two-prime selector
 - [ ] find an independent source theorem forcing the two selected values real on Xi fibres
 - [ ] conclude RH

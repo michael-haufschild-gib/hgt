@@ -153,8 +153,10 @@ already proves the unconditional globally regularized completed ratio is the
 constant unit symbol.  On 2026-08-23,
 `formal/GaloisForLFunctions/RHTower/FiniteEulerLocalRatio.lean` added the
 exact one-prime Euler-power formula, reflection-inverse identity, and the
-fixed-point identity `rho_p(1/2)=1`; its targeted source check, module build,
-and axiom audit pass with only `propext`, `Classical.choice`, and `Quot.sound`.
+fixed-point identity `rho_p(1/2)=1`. It also proves `rho_p(0)=rho_p(1)=0`
+and the resulting endpoint failures of absolute convergence. Its targeted
+source check, module build, and axiom audit pass with only `propext`,
+`Classical.choice`, and `Quot.sound`.
 
 The no-open-domain absolute-convergence theorem for the ordinary infinite
 finite-place product, and the formal Hardy-compression/Fredholm consequences,

@@ -204,6 +204,7 @@ import GaloisForLFunctions.HTGeometry.ABHN.HasseMatrixSingularity
 import GaloisForLFunctions.HTGeometry.ABHN.HasseMatrixInvariants
 import GaloisForLFunctions.HTGeometry.ABHN.HasseMatrixCharpolySeparable
 import GaloisForLFunctions.HTGeometry.ABHN.HasseMatrixRanks
+import GaloisForLFunctions.HTGeometry.ABHN.HasseRectangularMatrixRanks
 import GaloisForLFunctions.HTGeometry.ABHN.HasseMatrixTriangular
 import GaloisForLFunctions.HTGeometry.ABHN.HasseAlgebraDiscriminant
 import GaloisForLFunctions.HTGeometry.ABHN.HasseAlgebraTraceForm
@@ -1383,6 +1384,7 @@ import GaloisForLFunctions.HTGeometry.CaratheodoryFejerStrictAtomicFactorization
 import GaloisForLFunctions.HTGeometry.CaratheodoryNevanlinnaPick
 import GaloisForLFunctions.HTGeometry.CarlemanOperatorBound
 import GaloisForLFunctions.HTGeometry.ConductorHankelBound
+import GaloisForLFunctions.HTGeometry.ConductorKernelFubini
 import GaloisForLFunctions.HTGeometry.ConductorSymbolAnalytic
 import GaloisForLFunctions.HTGeometry.CarlemanSchurWeight
 import GaloisForLFunctions.HTGeometry.CarlemanWeightedStrip

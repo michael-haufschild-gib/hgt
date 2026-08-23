@@ -1066,3 +1066,50 @@ multi-hundred-line build.
    Identify `[M_b, P]` with the Hankel operator of the kernel above.
 3. Translation conjugation for `(3)`, then feed `RHTower/SoninBurnolConductorReflection.lean`'s
    algebraic identities to obtain `(5)`.
+
+### Card 11: resolvent representation, bilinear form and translation covariance landed
+
+Added since the last entry, all axiom-clean and wired:
+
+`HTGeometry/ConductorSymbolAnalytic.lean`
+
+| item | declaration |
+|---|---|
+| `Log(λ+2) - Log(λ+2+iξ) → 0` | **`tendsto_conductorResolventPrimitive`** |
+| **the resolvent representation of the symbol** | **`conductorAnalytic_eq_resolvent`** |
+
+The limit is proved componentwise: `Complex.log_re` turns the real part into
+`log((λ+2)/‖λ+2+iξ‖) → log 1 = 0`, and on the `0 ≤ re` branch `Complex.arg` is
+`Real.arcsin (im/‖·‖)`, which tends to `arcsin 0 = 0`.  Then
+`integral_Ioi_of_hasDerivAt_of_tendsto` gives
+`Log(2+iξ) - log 2 = ∫_0^∞ (1/(λ+2) - 1/(λ+2+iξ)) dλ`.
+
+`HTGeometry/ConductorHankelBound.lean`
+
+| item | declaration |
+|---|---|
+| measurability of the Hankel transform | `measurable_conductorHankelTransform` |
+| **the bounded bilinear form**, constant `2π²` | **`lintegral_conductorHankel_form_le`** |
+
+`RHTower/SoninBurnolConductorTranslation.lean` — **card equation (3)**
+
+| item | declaration |
+|---|---|
+| commutators are translation covariant | **`ccmCommutator_conjBy`** |
+| the conductor commutes with what `M` and `J` both commute with | `burnolConductor_commute` |
+| **`(3)` algebraic form** | **`ccmCommutator_burnolConductor_translated`** |
+| conjugation by a surjective isometry preserves the norm | **`norm_conjBy_isometry`** |
+
+**Card 11 status.**  Of its four unchecked gates, three (`construct the genuine semilocal relative
+trace`, `prove the completed source comparison`, `prove RH`) are explicitly *not* claims of this
+card — the card's own "What remains open" section states them as the follow-on programme `(11)`.
+The card's own theorem is `(2)`, `(3)`, `(5)`, `(6)`, `(7)`, `(8)` plus the boundedness of
+`[H_∞, P_τ]`, so the only gate belonging to it is
+`formalize the unbounded multiplier/common core and BMO-bounded commutator in Lean`.
+
+What is left of that gate: the `L²(ℝ)` Fourier/Hardy bridge identifying the sesquilinear form of
+`[H_∞, P_0]` on a dense core with the Hankel form already bounded above.  The corpus supplies
+`fourierUnitary` with `l2_fourier_fourier` and `l2_fourier_reflection`
+(`RHTower/L2FourierReflection.lean`, `RHTower/SoninEvenCarrier.lean`).  Everything else on the
+card — the symbol split, the kernel, its bound, the form bound, and translation covariance — is
+now Lean.

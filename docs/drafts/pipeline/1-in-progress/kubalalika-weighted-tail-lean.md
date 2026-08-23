@@ -588,3 +588,28 @@ entirely to powers of two") at the level of a single block.
 is the fix.)
 
 Card 12: 49 modules.
+
+## The card's `E_Λ(T)`, defined (2026-08-23)
+
+Search "weighted tail definition epsilon V R Kubalalika near diagonal" turned up a MAJOR existing
+asset that I was about to duplicate: `RHTower/NearDiagonalTailBound.lean` already contains
+
+- `nearDiagonalTail T ε mLo mHi rLo` — the harmonically weighted double sum (UNWEIGHTED by `Λ`),
+- `shiftCeil_mono`, `nearDiagonalTail_swap`, `filter_shiftCeil_eq_Ico`, `norm_nearDiagonalTail_le`,
+- `kubalalikaEps T = 1/√√T`, `kubalalikaTailSum`, and
+  `norm_kubalalikaTailSum_le_pow` / `norm_kubalalikaTailSum_le` — the card's `(5)` for the
+  UNWEIGHTED tail, `O(T^{7/8} + T^{3/8}log T)`.
+
+My first draft redefined `ε`, `V`, `R`, the shift ceiling and its monotonicity from scratch; it was
+discarded.  `WeightedTailDef.lean` now REUSES all of them:
+
+- `weightedNearDiagonalTail T ε mLo mHi rLo` — the same double sum with the arithmetic weight
+  `Λ(m)` and the parity condition `r ≡ m (mod 2)` retained, which is exactly the card's content
+  (the card explicitly says the unweighted `7/8` argument was not promoted);
+- `kubalalikaWeightedTail T` — **the card's `E_Λ(T)`**, at `ε = kubalalikaEps T`, the same three
+  cutoffs as `kubalalikaTailSum`;
+- **`weightedNearDiagonalTail_swap`** — the tail as an `r`-sum, via `sum_filter_swap` and the
+  corpus's `shiftCeil_mono`.
+
+Card 12: 51 modules.  `E_Λ(T)` is now a defined object with its `r`-sum form; what remains is to
+feed the per-block bounds through it.

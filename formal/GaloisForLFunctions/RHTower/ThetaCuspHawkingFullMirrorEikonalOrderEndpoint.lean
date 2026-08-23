@@ -69,7 +69,7 @@ private theorem hasDerivAt_thetaCuspHawkingEikonalPhaseDefect (a t v : ℝ) :
   change HasDerivAt
     (fun x : ℝ => Complex.exp
       (Complex.I * ((-t * thetaCuspTiltedSource a x : ℝ) : ℂ)) - 1) _ v
-  convert hphase.sub_const 1 using 1 <;> ring
+  convert hphase.sub_const 1 using 1
 
 private theorem thetaCuspHawkingEikonalPhaseDefect_differentiable (a t : ℝ) :
     Differentiable ℝ (thetaCuspHawkingEikonalPhaseDefect a t) :=
@@ -440,7 +440,7 @@ private theorem integrable_tiltedPowerMoment_integrand
     simp
 
 private theorem cos_phase_ge_half
-    {w x0 r x : ℝ} (hr : 0 ≤ r) (hwr : |w| * r ≤ 1 / 2)
+    {w x0 r x : ℝ} (hwr : |w| * r ≤ 1 / 2)
     (hx : x ∈ Set.Icc (x0 - r) (x0 + r)) :
     (1 / 2 : ℝ) ≤ Real.cos (w * (x0 - x)) := by
   have hdx : |x0 - x| ≤ r := by
@@ -590,7 +590,7 @@ private theorem eventually_pos_tiltedRotatedPowerIntegral
     · have hxA : x ∈ Set.Icc (x0 - r) (x0 + r) := by
         dsimp [core] at hxcore
         constructor <;> linarith [hxcore.1, hxcore.2, hdr]
-      have hphase := cos_phase_ge_half hr.le hwr hxA
+      have hphase := cos_phase_ge_half hwr hxA
       have hpower : m ^ (n + 1) ≤ thetaCuspTiltedSource a x ^ (n + 1) :=
         pow_le_pow_left₀ hmpos.le (hinner x (by simpa [core] using hxcore)) _
       have hcoherent : c ≤
@@ -602,7 +602,7 @@ private theorem eventually_pos_tiltedRotatedPowerIntegral
       exact (sub_le_self c (mul_nonneg (pow_nonneg hqpos.le _) hkpos.le)).trans hcoherent
     · rw [Set.indicator_of_notMem hxcore, zero_sub]
       by_cases hxA : x ∈ Set.Icc (x0 - r) (x0 + r)
-      · have hphase := cos_phase_ge_half hr.le hwr hxA
+      · have hphase := cos_phase_ge_half hwr hxA
         exact (neg_nonpos.mpr (mul_nonneg (pow_nonneg hqpos.le _) hkpos.le)).trans
           (mul_nonneg (by linarith) (pow_nonneg hkpos.le _))
       · have hkq := tiltedSource_tail_le_boundaryMax hr hmono hanti hxA

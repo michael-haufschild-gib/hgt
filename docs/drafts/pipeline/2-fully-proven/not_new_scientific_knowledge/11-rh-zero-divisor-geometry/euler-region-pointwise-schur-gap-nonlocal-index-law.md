@@ -210,3 +210,15 @@ kernel. Formalizing only `(15)` would be a scalar algebra wrapper, so no Lean fi
 - [x] every prime-local anchor contribution shown negative
 - [ ] prove complete positivity of the infinite prime--archimedean cascade
 
+
+## Lean status update (2026-08-23)
+
+`formal/GaloisForLFunctions/HTGeometry/PickKernelProduct.lean` and
+`formal/GaloisForLFunctions/HTGeometry/PickKernelFiniteProduct.lean` now formalize the exact
+one-factor and ordered finite-product Nevanlinna--Pick identities. The latter records the finite
+Euler-factor telescoping recursion without analytic assumptions. Both leaves are wired into
+`HTGeometry.lean`, leaf-checked with `lake env lean`, target-built, and their new theorem
+declarations audit to only `propext`, `Classical.choice`, and `Quot.sound`.
+
+This closes finite algebraic kernel assembly only. It neither proves horizontal Xi monotonicity nor
+constructs the analytic generalized Pick kernel, so the card remains at stage 2.

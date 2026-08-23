@@ -207,6 +207,8 @@ exact failure boundary.
 - [x] log-position derivative identified with `-zeta'/zeta(1+s)`
 - [x] every positive exponential transport of Cauchy features proved divergent, uniformly after
   every finite prime-log cancellation order
+- [x] exact positive prime-power atom/time/residue algebra formalized in
+      `formal/GaloisForLFunctions/RHTower/EulerLogPrimePowerHerglotz.lean`
 - [ ] formalize the full normalized prime-power carrier in Lean; the positive-transport wall is
   formalized at all finite orders as
   `not_summable_primeLogHerglotzTransportMassOrder_of_pos`
@@ -218,3 +220,8 @@ exact failure boundary.
 
 - 2026-07-11 -- extracted from `PrimeLogHerglotz.lean:211` and the existing position-commutator
   pipeline; paper proof completed and the half-weight obstruction isolated.
+- 2026-08-23 (Codex) — `EulerLogPrimePowerHerglotz.lean` now proves the exact normalized
+  prime-power support time, positive weight, and `t_(p,k)a_(p,k)=log(p)/p^(k+1)` residue
+  identity. Targeted source check, module build, and axiom audit pass with only `propext`,
+  `Classical.choice`, and `Quot.sound`. The full Herglotz sum and its Laplace transform remain
+  unformalized; this card stays at stage 2.

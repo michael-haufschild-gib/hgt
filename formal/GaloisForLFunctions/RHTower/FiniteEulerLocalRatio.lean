@@ -44,6 +44,35 @@ theorem finiteEulerLocalRatio_half (p : Nat.Primes) :
   convert finiteEulerLocalFactor_criticalLine_ne_zero p 0 using 1
   norm_num
 
+/-- At the left endpoint the finite local ratio is zero. -/
+theorem finiteEulerLocalRatio_zero (p : Nat.Primes) :
+    finiteEulerLocalRatio p 0 = 0 := by
+  simp [finiteEulerLocalRatio, finiteEulerLocalFactor]
+
+/-- At the right endpoint the finite local ratio is zero. -/
+theorem finiteEulerLocalRatio_one (p : Nat.Primes) :
+    finiteEulerLocalRatio p 1 = 0 := by
+  simp [finiteEulerLocalRatio, finiteEulerLocalFactor]
+
+/-- The constant unit family is not summable on the prime index type. -/
+theorem not_summable_constant_one_on_primes :
+    ¬ Summable (fun _ : Nat.Primes => (1 : ℝ)) := by
+  intro h
+  have hpow : Summable (fun p : Nat.Primes => (p : ℝ) ^ (0 : ℝ)) := by
+    simpa using h
+  rw [Nat.Primes.summable_rpow] at hpow
+  norm_num at hpow
+
+/-- The finite local ratios do not approach one absolutely at the left endpoint. -/
+theorem not_summable_norm_finiteEulerLocalRatio_sub_one_zero :
+    ¬ Summable (fun p : Nat.Primes => ‖finiteEulerLocalRatio p 0 - 1‖) := by
+  simpa [finiteEulerLocalRatio_zero] using not_summable_constant_one_on_primes
+
+/-- The finite local ratios do not approach one absolutely at the right endpoint. -/
+theorem not_summable_norm_finiteEulerLocalRatio_sub_one_one :
+    ¬ Summable (fun p : Nat.Primes => ‖finiteEulerLocalRatio p 1 - 1‖) := by
+  simpa [finiteEulerLocalRatio_one] using not_summable_constant_one_on_primes
+
 end GaloisForLFunctions.RHTower
 
 end

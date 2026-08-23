@@ -95,9 +95,7 @@ theorem zero_le_meromorphicOrderAt_twoPointNumer (ρ₁ ρ₂ z : ℂ) :
   rw [(analyticAt_twoPointNumer ρ₁ ρ₂ z).meromorphicOrderAt_eq]
   induction analyticOrderAt (twoPointNumer ρ₁ ρ₂) z with
   | top => simp
-  | coe n =>
-      have : (0 : ℤ) ≤ (n : ℤ) := Int.natCast_nonneg n
-      simpa using this
+  | coe n => simp
 
 /-- **The rational factor is bounded off the unit discs around `0` and `1`**: it tends to `1` at
 infinity, and the two excluded discs contain both poles. -/
@@ -126,9 +124,18 @@ theorem exists_bound_twoPointShift (ρ₁ ρ₂ : ℂ) :
       have := norm_sub_norm_le s 1
       simpa using this
     have hbig : (2 / 3 : ℝ) * ‖s‖ ≤ ‖s - 1‖ := by linarith
-    have hnum : (‖s‖ + r) ^ 2 ≤ ‖s‖ ^ 2 * (1 + r) ^ 2 := by nlinarith
+    have hlin : ‖s‖ + r ≤ ‖s‖ * (1 + r) := by nlinarith
+    have hnum : (‖s‖ + r) ^ 2 ≤ ‖s‖ ^ 2 * (1 + r) ^ 2 := by
+      have h := pow_le_pow_left₀ (by positivity : (0:ℝ) ≤ ‖s‖ + r) hlin 2
+      rw [mul_pow] at h
+      exact h
     have hden : (2 / 3 : ℝ) * ‖s‖ ^ 2 ≤ ‖s‖ * ‖s - 1‖ := by nlinarith
-    nlinarith [sq_nonneg (3 + r), sq_nonneg ‖s‖, hr0]
+    have hC : (0:ℝ) ≤ (3 + r) ^ 2 := by positivity
+    calc ‖s - ρ₁‖ * ‖s - ρ₂‖ ≤ ‖s‖ ^ 2 * (1 + r) ^ 2 := le_trans hprod hnum
+      _ ≤ ((3 + r) ^ 2 + 2 * (1 + r) ^ 2) * ((2 / 3 : ℝ) * ‖s‖ ^ 2) := by
+          nlinarith [sq_nonneg ‖s‖, sq_nonneg (1 + r), mul_nonneg hC (sq_nonneg ‖s‖)]
+      _ ≤ ((3 + r) ^ 2 + 2 * (1 + r) ^ 2) * (‖s‖ * ‖s - 1‖) :=
+          mul_le_mul_of_nonneg_left hden (by positivity)
 
 end
 
