@@ -144,3 +144,26 @@ consume.  Card 11 now stands at 4 Lean modules on top of the corpus's existing S
 Remaining in `S5`: strict monotonicity and `I_α(q) → ∞` as `q → 1⁻`.  The latter now follows from
 `steinhausLogLaplace_le` once `∫₀¹ log w_α = log(1−α) + α` is available (the card's `(28)`), giving
 `Λ_α(λ) ≤ λ − ½log λ + C_α` and hence `I_α(q) ≥ ½log(1/(2(1−q))) − C_α`.
+
+## Part 3's divergence closed (2026-08-23)
+
+`RHTower/SteinhausProfileLogIntegral.lean`:
+
+- `integral_log_unit : ∫₀¹ log v = −1` (mathlib's `integral_log` is unconditional, and
+  `0·log 0 = 0`);
+- `weightProfile_pos`, `log_weightProfile : log w_α(v) = log(1−α) − α log v` for `v > 0`,
+  `intervalIntegrable_log_weightProfile` (the `v = 0` endpoint is discarded a.e.);
+- **`integral_log_weightProfile : ∫₀¹ log w_α = log(1−α) + α`** — the card's `(28)`;
+- `log_sqrt_pi_div`, and **`rvCumulant_le_sub_half_log`**:
+  ```
+  Λ_α(λ) ≤ λ − ½log λ + (log π − log 2 − log(1−α) − α)/2      (λ > 0),
+  ```
+  the deficit, obtained by integrating the sharp upper envelope of `log I₀` against the profile.
+  The pointwise inequality fails at the single point `v = 0`, so the comparison is done with
+  `integral_mono_ae_restrict` after rewriting `restrict (Icc 0 1) = restrict (Ioc 0 1)`;
+- `le_rvRate_log : ½log(1/(1−q)) − 1 − C_α ≤ I_α(q)` (take `λ = 1/(1−q)`);
+- **`tendsto_rvRate_atTop : I_α(q) → ∞` as `q → 1⁻`** — part `3`'s divergence claim.
+
+Card 11 now has 6 modules.  Remaining in part `3`: continuity and STRICT monotonicity, both of
+which reduce to `Λ_α(λ)/λ → 0` as `λ → 0⁺` (dominated convergence against the integrable `w_α`,
+using `(log I₀)'(0) = 0`).  Then parts `4`, `5`, and the LDP (`S8`) and Karamata (`S9`) layers.

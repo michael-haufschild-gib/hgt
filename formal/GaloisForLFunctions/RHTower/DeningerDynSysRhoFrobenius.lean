@@ -113,4 +113,27 @@ theorem deningerTorsionKernel_card_pow_charZero [CharZero K]
   rw [deningerTorsionKernel_card_pow P hν,
     deningerCard_rootsOfUnity_charZero (K := K) (N := ν) hν.ne']
 
+omit [IsAlgClosed K] in
+/-- **Deninger, Proposition 5.1, the pointwise criterion.**  `ρ (P) = 1` exactly when `P` is
+injective on the roots of unity. -/
+theorem deningerTorsionKernel_eq_bot_iff (P : Kˣ →* Cˣ) :
+    deningerTorsionKernel P = ⊥ ↔ ∀ y : Kˣ, IsOfFinOrder y → P y = 1 → y = 1 := by
+  constructor
+  · intro h y hy hPy
+    have hmem : y ∈ deningerTorsionKernel P := ⟨hPy, hy⟩
+    rw [h] at hmem
+    exact hmem
+  · intro h
+    refine le_antisymm ?_ bot_le
+    intro y hy
+    exact h y hy.2 hy.1
+
+omit [IsAlgClosed K] in
+/-- **Deninger, Proposition 5.1.**  `ρ (P) = 1` exactly when `P` is injective on the roots of
+unity, provided the torsion kernel is finite. -/
+theorem deningerTorsionKernel_card_eq_one_iff (P : Kˣ →* Cˣ)
+    [Finite ↥(deningerTorsionKernel P)] :
+    Nat.card ↥(deningerTorsionKernel P) = 1 ↔ ∀ y : Kˣ, IsOfFinOrder y → P y = 1 → y = 1 := by
+  rw [← deningerTorsionKernel_eq_bot_iff, Subgroup.card_eq_one]
+
 end RHTower

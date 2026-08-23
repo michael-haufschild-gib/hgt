@@ -34,14 +34,15 @@ Consequently the derivative Hankel matrix of the decreasing Audenaert transform 
 existing resolvent Hankel matrix, whose all-degree positive-semidefinite hierarchy is equivalent to
 RH at every one fixed positive shift.
 
-This is not an RH proof.  It identifies the remaining producer precisely: universal finite
-anti-Lowner positivity for the squared-Euler `Q`.  The imported bridge formalizes Audenaert's
-Schur-complement sign switch, its finite arbitrary-sign iteration, and the doubled-node confluent
-collision passage to the `K ± L` Loewner matrices.  The final section proves that both actual
-Audenaert transforms are real analytic and that their normalized diagonal Loewner jets are exactly
-`H₁` and `H₀ - X H₁`.  Reflection-parity recombination `H₀ = (H₀ - X H₁) + X H₁` therefore turns
-positivity of both all-order jet towers into RH.  Only the generic higher collision-confluence
-passage from separated Loewner matrices to those towers remains.
+This is not an RH proof.  The imported bridges formalize Audenaert's Schur-complement sign switch,
+its finite arbitrary-sign iteration, the doubled-node collision passage to the `K ± L` Loewner
+matrices, and the all-order collision-confluence passage from separated matrices to derivative
+jets.  Both actual Audenaert transforms are real analytic and their normalized diagonal Loewner
+jets are exactly `H₁` and `H₀ - X H₁`.  Reflection-parity recombination
+`H₀ = (H₀ - X H₁) + X H₁` turns positivity of both towers into RH.  Conversely, RH gives
+the universal finite anti-Lowner producer through the critical-kernel Bezoutian Gram factorization.
+Thus this file classifies that producer exactly: it is equivalent to RH, not an independent weaker
+positivity target.
 -/
 
 open Complex Filter

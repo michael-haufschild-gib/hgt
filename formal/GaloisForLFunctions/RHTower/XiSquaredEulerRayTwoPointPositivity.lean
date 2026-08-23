@@ -456,6 +456,67 @@ theorem xiSquaredEulerOrbitCharge_pos_of_ne_half
   unfold xiSquaredEulerOrbitCharge
   positivity
 
+/-! ## Confluent parity-jet charge law -/
+
+/-- Zeroth reversed-Löwner jet moment of one squared orbit. -/
+def squaredEulerOrbitReversedLoewnerMoment0 (t c X : ℝ) : ℝ :=
+  ((t + X) ^ 2 - c) / (((t + X) ^ 2 + c) ^ 2)
+
+/-- First reversed-Löwner jet moment of one squared orbit. -/
+def squaredEulerOrbitReversedLoewnerMoment1 (t c X : ℝ) : ℝ :=
+  (t + X) * ((t + X) ^ 2 - 3 * c) / (((t + X) ^ 2 + c) ^ 3)
+
+/-- Second reversed-Löwner jet moment of one squared orbit. -/
+def squaredEulerOrbitReversedLoewnerMoment2 (t c X : ℝ) : ℝ :=
+  ((t + X) ^ 4 - 6 * (t + X) ^ 2 * c + c ^ 2) /
+    (((t + X) ^ 2 + c) ^ 4)
+
+/-- **Exact confluent transverse-charge law.**  The first nonconstant `2 × 2` reversed-Löwner
+jet determinant of one orbit is precisely its negative transverse charge divided by the fourth
+power of the radial denominator. -/
+theorem squaredEulerOrbit_reversedLoewnerJet_det_eq
+    {t c X : ℝ} (hch : SquaredEulerOrbitChamber t c) (hX : 0 ≤ X) :
+    squaredEulerOrbitReversedLoewnerMoment0 t c X *
+        squaredEulerOrbitReversedLoewnerMoment2 t c X -
+      squaredEulerOrbitReversedLoewnerMoment1 t c X ^ 2 =
+        -c / (((t + X) ^ 2 + c) ^ 4) := by
+  have hden : 0 < (t + X) ^ 2 + c := by
+    have htx : 0 < t + X := by linarith [hch.1]
+    nlinarith [sq_pos_of_pos htx, hch.2.1]
+  unfold squaredEulerOrbitReversedLoewnerMoment0
+    squaredEulerOrbitReversedLoewnerMoment1
+    squaredEulerOrbitReversedLoewnerMoment2
+  field_simp [hden.ne']
+  ring
+
+/-- Positive transverse charge makes the confluent reversed-Löwner jet determinant strictly
+negative at every nonnegative collision center. -/
+theorem squaredEulerOrbit_reversedLoewnerJet_det_neg
+    {t c X : ℝ} (hch : SquaredEulerOrbitChamber t c) (hc : 0 < c) (hX : 0 ≤ X) :
+    squaredEulerOrbitReversedLoewnerMoment0 t c X *
+        squaredEulerOrbitReversedLoewnerMoment2 t c X -
+      squaredEulerOrbitReversedLoewnerMoment1 t c X ^ 2 < 0 := by
+  rw [squaredEulerOrbit_reversedLoewnerJet_det_eq hch hX]
+  have hden : 0 < (t + X) ^ 2 + c := by
+    have htx : 0 < t + X := by linarith [hch.1]
+    nlinarith [sq_pos_of_pos htx, hch.2.1]
+  exact div_neg_of_neg_of_pos (neg_neg_of_pos hc) (pow_pos hden 4)
+
+/-- Every off-critical actual Xi orbit is already detected by the first `2 × 2` confluent
+reflection-parity jet determinant, at every nonnegative collision center. -/
+theorem xiSquaredEulerOrbit_reversedLoewnerJet_det_neg
+    (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2)
+    {X : ℝ} (hX : 0 ≤ X) :
+    squaredEulerOrbitReversedLoewnerMoment0
+          (xiSquaredEulerOrbitT q) (xiSquaredEulerOrbitCharge q) X *
+        squaredEulerOrbitReversedLoewnerMoment2
+          (xiSquaredEulerOrbitT q) (xiSquaredEulerOrbitCharge q) X -
+      squaredEulerOrbitReversedLoewnerMoment1
+          (xiSquaredEulerOrbitT q) (xiSquaredEulerOrbitCharge q) X ^ 2 < 0 :=
+  squaredEulerOrbit_reversedLoewnerJet_det_neg
+    (xiSquaredEulerOrbit_mem_chamber q)
+    (xiSquaredEulerOrbitCharge_pos_of_ne_half q hoff) hX
+
 /-- **Actual-Xi sharpness theorem.**  Every off-critical Xi divisor orbit has negative response
 determinant on every three ordered positive Euler nodes. -/
 theorem xiSquaredEulerOrbitKernel_threePointDet_neg

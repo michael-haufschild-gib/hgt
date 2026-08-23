@@ -123,4 +123,48 @@ theorem orbit_slice_eq_iff
 
 end Slice
 
+/-! ## Fibres of an equivariant map -/
+
+section Fibre
+
+variable {G S I : Type*} [Group G] [MulAction G S] [MulAction G I]
+variable (p : S → I) (hp : ∀ (g : G) (s : S), p (g • s) = g • p s)
+
+include hp
+
+/-- Every point whose image lies in the orbit of `i` is `G`-equivalent to a point of the fibre
+over `i`. -/
+theorem orbit_fiber_exists {i : I} (s : S) (h : p s ∈ MulAction.orbit G i) :
+    ∃ (g : G) (t : S), p t = i ∧ g • t = s := by
+  obtain ⟨g, hg⟩ := h
+  refine ⟨g, g⁻¹ • s, ?_, ?_⟩
+  · rw [hp, ← hg, ← mul_smul, inv_mul_cancel, one_smul]
+  · rw [← mul_smul, mul_inv_cancel, one_smul]
+
+/-- Two points of the fibre over `i` are `G`-equivalent exactly when they are equivalent under the
+stabiliser of `i`. -/
+theorem orbit_fiber_eq_iff {i : I} (s t : S) (hs : p s = i) (ht : p t = i) :
+    (Quotient.mk _ s : MulAction.orbitRel.Quotient G S) = Quotient.mk _ t
+      ↔ ∃ h : MulAction.stabilizer G i, (h : G) • s = t := by
+  constructor
+  · intro hst
+    obtain ⟨g, hg⟩ := Quotient.exact hst
+    have hg' : g • t = s := hg
+    have hgi : g • i = i := by
+      calc g • i = g • p t := by rw [ht]
+        _ = p (g • t) := (hp g t).symm
+        _ = p s := by rw [hg']
+        _ = i := hs
+    refine ⟨⟨g⁻¹, ?_⟩, ?_⟩
+    · refine MulAction.mem_stabilizer_iff.2 ?_
+      rw [inv_smul_eq_iff, hgi]
+    · show g⁻¹ • s = t
+      rw [← hg', ← mul_smul, inv_mul_cancel, one_smul]
+  · rintro ⟨h, hh⟩
+    refine Quotient.sound ⟨(h : G)⁻¹, ?_⟩
+    show ((h : G))⁻¹ • t = s
+    rw [← hh, ← mul_smul, inv_mul_cancel, one_smul]
+
+end Fibre
+
 end HTGeometry

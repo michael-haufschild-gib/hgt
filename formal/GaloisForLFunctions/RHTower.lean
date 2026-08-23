@@ -304,6 +304,7 @@ import GaloisForLFunctions.RHTower.BesselIZeroODE
 import GaloisForLFunctions.RHTower.BesselIZeroUpperBound
 import GaloisForLFunctions.RHTower.SteinhausBesselIdentity
 import GaloisForLFunctions.RHTower.SteinhausRateFunction
+import GaloisForLFunctions.RHTower.SteinhausProfileLogIntegral
 import GaloisForLFunctions.RHTower.BesselJOneEnvelope
 import GaloisForLFunctions.RHTower.BesselJOneRecurrence
 import GaloisForLFunctions.RHTower.BesselJZeroConstant
@@ -9125,6 +9126,7 @@ import GaloisForLFunctions.RHTower.BurnolEvaluatorSystemZ
 import GaloisForLFunctions.RHTower.SoninDilationMellin
 import GaloisForLFunctions.RHTower.BurnolLemmaSevenFive
 import GaloisForLFunctions.RHTower.BurnolTheoremSevenOne
+import GaloisForLFunctions.RHTower.BurnolTheoremSevenTwoThree
 import GaloisForLFunctions.RHTower.SoninFromHardyData
 import GaloisForLFunctions.RHTower.ZetaZeroOrderReflection
 import GaloisForLFunctions.RHTower.ZetaDivPowRepresentative

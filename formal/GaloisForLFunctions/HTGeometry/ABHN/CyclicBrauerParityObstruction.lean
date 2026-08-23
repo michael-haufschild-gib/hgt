@@ -38,4 +38,34 @@ theorem zmod_three_to_zmod_two_addHom_eq_zero (f : ZMod 3 →+ ZMod 2) : f = 0 :
   rw [f.map_zsmul, hone, zsmul_zero]
   simp
 
+/-- An additive parity-valued receiver annihilates every finite cyclic invariant of odd order.
+Consequently an odd-primary local Brauer sector cannot feed the current parity-valued
+Reflection--Tate endpoint without first changing its target. -/
+theorem zmod_odd_to_zmod_two_addHom_eq_zero
+    {n : ℕ} (hn : Odd n) (f : ZMod n →+ ZMod 2) : f = 0 := by
+  rcases hn with ⟨k, rfl⟩
+  have hnsmul : (2 * k + 1) • f 1 = 0 := by
+    calc
+      (2 * k + 1) • f 1 = f ((2 * k + 1) • (1 : ZMod (2 * k + 1))) :=
+        (f.map_nsmul (2 * k + 1) (1 : ZMod (2 * k + 1))).symm
+      _ = f 0 := by congr; rw [nsmul_eq_mul, ZMod.natCast_self, zero_mul]
+      _ = 0 := f.map_zero
+  have hEven : (2 * k) • f 1 = 0 := by
+    rw [nsmul_eq_mul, Nat.cast_mul, ZMod.natCast_self]
+    simp
+  have hone : f 1 = 0 := by
+    calc
+      f 1 = 1 • f 1 := (one_nsmul _).symm
+      _ = 0 + 1 • f 1 := by simp
+      _ = (2 * k) • f 1 + 1 • f 1 := by rw [hEven]
+      _ = (2 * k + 1) • f 1 := (add_nsmul _ _ _).symm
+      _ = 0 := hnsmul
+  apply AddMonoidHom.ext
+  intro z
+  obtain ⟨m, rfl⟩ := ZMod.intCast_surjective z
+  rw [show (m : ZMod (2 * k + 1)) = m • (1 : ZMod (2 * k + 1)) by
+    exact (zsmul_one m).symm]
+  rw [f.map_zsmul, hone, zsmul_zero]
+  simp
+
 end GaloisForLFunctions.HTGeometry.ABHN

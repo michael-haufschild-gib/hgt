@@ -1169,3 +1169,37 @@ then discarded — `RHTower/Reflection` already owned both.  Run
 Remaining: Proposition 6.5, Theorem 6.7, the `L²`-in-`Z` half of Theorem 5.2, Lemmas 7.5/7.6 and
 Theorems 7.1–7.3 (the abstract index bookkeeping plus the smoothing argument), Theorems 7.7–7.10
 (Levin), and the capstones 3.2/3.3.
+
+## §7 Lemmas 7.4–7.6 and Theorems 7.1–7.3 — CLOSED (2026-08-23)
+
+The whole first half of §7 is Lean-closed, in the jet dictionary
+(`IsCompleteEvaluatorSystem`, `IsMinimalEvaluatorSystem` in `RHTower/BurnolEvaluatorSystemZ`).
+
+| item | module / name |
+|---|---|
+| **Lemma 7.4** (not complete ⟹ minimal) | `BurnolEvaluatorSystemZ.isMinimal_of_not_isComplete` |
+| **Lemma 7.5** (minimal at `a` ⟹ not complete below `a`) | `BurnolLemmaSevenFive.exists_nonzero_annihilating_of_lt` |
+| **Theorem 7.1** (`a₁(Z) = a₂(Z)`) | `BurnolTheoremSevenOne.burnol_theorem_seven_one` |
+| **Lemma 7.6** (iterate along a finite list) | `BurnolTheoremSevenTwoThree.exists_nonzero_annihilating_list` |
+| **Theorem 7.2** (add finitely many) | `BurnolTheoremSevenTwoThree.not_isComplete_add_of_lt` |
+| **Theorem 7.3** (omit finitely many) | `BurnolTheoremSevenTwoThree.isComplete_omit_of_lt` |
+
+**The dilation replaces Burnol's bump.**  Burnol multiplies a Sonine transform by the Mellin
+transform `θ(s)` of a smooth bump supported near `1`, then by `(s−ρ)` to force `θ(ρ)=0`.  Here the
+same effect comes from a single dilation: `rayDilate v f (t) = √v f(vt)` has Mellin transform
+`v^{s-1/2}·M(f)(s)` (`SoninDilationMellin.soninMellinIntegral_rayDilate`), so
+
+  `U_r v − r^{ρ-1/2} v`   has transform   `(r^{s-1/2} − r^{ρ-1/2})·M(v)(s)`,
+
+an entire multiplier vanishing at `ρ` and not identically zero (`dilationDifferenceMultiplier`);
+and dilating by `r > 1` carries `L_a` into `L_{a/r}`.  Taking `r = a/b` lands exactly in `L_b`.
+`BurnolLemmaSevenFive.exists_dilationShift` is this step in isolation; Lemma 7.6 iterates it along a
+list of points, halving the remaining aperture gap at each step, so the multiplier becomes the
+*product* of the dilation-difference factors — Burnol's `P(s)θ(s)`.
+
+Theorem 7.1's content in this form: completeness is an up-set in the aperture
+(`isComplete_of_lt`), minimality is a down-set (`isMinimal_of_lt`), and the two cover every positive
+aperture (Lemma 7.4) — i.e. the two thresholds coincide.
+
+Remaining: Proposition 6.5, Theorem 6.7, the `L²`-in-`Z` half of Theorem 5.2, Theorems 7.7–7.10
+(Levin's completely-regular-growth theory), and the capstones 3.2/3.3.

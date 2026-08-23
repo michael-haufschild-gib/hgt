@@ -165,6 +165,8 @@ and the relation to the Fargues–Fontaine curve) into the corpus as closed Lean
 | **Prop 3.5, affine case**: for a ring with a continuous profinite action and invariant subring, the `C`-points of `Spec B` map **onto** those of `Spec A` with fibres exactly the `G`-orbits — Kucharczyk–Scholze Lemma 4.9 transported along `Spec.preimage` | `RHTower/DeningerDynSysProp35Affine.lean` | closed |
 | **§5, equations (41)–(43)**: Deninger's `ρ (P) = |(ker P)_tors|` and its Frobenius law `ρ (F_ν P) = ν_x ρ (P)` — the `ν`-th power map is a surjection of the torsion kernel of `F_ν P` onto that of `P` with kernel `μ_ν (κ)`, whose order is the prime-to-characteristic part of `ν` | `RHTower/DeningerDynSysRhoFrobenius.lean` | closed |
 | **Prop 3.5, the covering step**: a `C`-point of a scheme has a single point as image, so it factors through any affine open containing it; hence the affine case globalises and every `C`-point of the base lifts | `RHTower/DeningerDynSysProp35Global.lean` | closed |
+| **Prop 3.5, the fibres, globalised**: two `C`-points of the total space over the same point of the base already lie over a common affine open, so the local conjugacy statement globalises | `RHTower/DeningerDynSysProp35Global.lean` | closed |
+| **Cor 3.2, assembly content — the slice theorem**: if every point is `G`-equivalent to a point of a slice `T` and two points of `T` are `G`-equivalent only through `H`, then `T` maps onto the orbit space with fibres the `H`-orbits | `HTGeometry/OrbitQuotientComposition.lean` | closed |
 | **Cor 3.3, formal content**: for a normal subgroup `N ≤ G` acting on a set, `G` acts on the `N`-orbit space and `(S / N) / G = S / G` — Deninger's iterated descent `W_rat(X₁)(C)/G₁ = W_rat(X₀)(C)` | `HTGeometry/OrbitQuotientComposition.lean` | closed |
 | **Prop 1.1(b) in ring form over a domain**: `ω : ℤ[A ∖ 0] ≃+* W_rat(A)` for an integrally closed domain with algebraically closed fraction field, and the consequence `Hom_ring(W_rat(A), R) ≃ (A →*₀ R)` used for the `𝒪`-valued points | `RHTower/DeningerDynSysOmegaDomainRing.lean` | closed |
 | **Prop 1.1(b) (`t21nn`) in ring form**: `ω : ℤ[κˣ] ≃+* W_rat(κ)` for `κ` algebraically closed — the additive comparison is multiplicative because both sides are biadditive and `[a]⊙[b] = [ab]` | `RHTower/DeningerDynSysOmegaRing.lean` | closed |
@@ -928,4 +930,18 @@ Nothing in v4 is untracked by the ledger: the only apparent omission, Prop 1.4, 
   `orbitQuotientQuotientEquiv`: for a **normal** subgroup `N ≤ G` acting on a set `S`, `G` acts on
   the `N`-orbit space (well defined exactly by normality) and its orbits there are the `G`-orbits
   on `S`.  Since the `G`-action factors through `G / N`, this is `(S/N)/(G/N) = S/G`.
+  Axiom audit: `[propext, Classical.choice, Quot.sound]`.
+
+- 2026-08-23 — **Both halves of Proposition 3.5 globalise, and Corollary 3.2's assembly step is
+  isolated.**  `deningerSchemePoint_conjugate` is the fibre half: since `Spec C` has one point,
+  two `C`-points of `X` inducing the same `C`-point of `X₀` automatically lie over a common affine
+  open of `X₀`, so the local conjugacy statement is all that is needed.
+  For Corollary 3.2 the missing ingredient is not Corollary 3.1 (closed) but the *bookkeeping*
+  that `G` permutes the points over a given `x₀` transitively.  That bookkeeping is exactly the
+  **slice theorem** `orbit_slice_surjective` / `orbit_slice_eq_iff`: a slice `T` meeting every
+  orbit, on which `G`-equivalence is `H`-equivalence, maps onto the orbit space with fibres the
+  `H`-orbits.  Applied with `T = {x} × Hom (κ(x)ˣ, Cˣ)` and `H = G_x` it turns
+  `X̂ (C) / G` into `Σ_{x₀} Hom (κ(x)ˣ , Cˣ) / G_x`, which Corollary 3.1 identifies with
+  `Σ_{x₀} Hom (W_rat (κ(x₀)) , C)`.  Transitivity of `G` on the fibres of `π` is mathlib's
+  `Algebra.IsInvariant.exists_smul_of_under_eq_of_profinite`, already used in the corpus.
   Axiom audit: `[propext, Classical.choice, Quot.sound]`.
