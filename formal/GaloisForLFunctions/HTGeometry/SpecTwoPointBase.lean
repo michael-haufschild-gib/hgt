@@ -127,4 +127,19 @@ theorem specBase_preimage_eq_bot (U : X.Opens) (hx : x ∉ U) :
   · rw [h, specBaseFun_generic]; exact hx
   · rw [h, specBaseFun_closed x y R hfield]; exact hy
 
+include hdim hfield in
+theorem specBase_preimage_le_generic (U : X.Opens) (hy : y ∉ U) :
+    (Opens.map (specBase x y R hdim hfield hspec)).obj U ≤ specGenericOpen R hdim hfield := by
+  intro q hq
+  have hq' : specBaseFun x y R q ∈ (U : Set X) := hq
+  rcases spec_eq_generic_or_closed hdim q with h | h
+  · exact h
+  · rw [h, specBaseFun_closed x y R hfield] at hq'
+    exact absurd hq' hy
+
+include hdim hfield in
+theorem specBase_preimage_le_bot (U : X.Opens) (hx : x ∉ U) :
+    (Opens.map (specBase x y R hdim hfield hspec)).obj U ≤ ⊥ :=
+  le_of_eq (specBase_preimage_eq_bot x y R hdim hfield hspec U hx)
+
 end HTGeometry

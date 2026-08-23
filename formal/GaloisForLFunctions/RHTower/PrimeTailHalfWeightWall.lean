@@ -207,7 +207,7 @@ theorem integrableOn_wallIntegrand_upper {z : ℂ} (hz : 1 < z.re) {δ : ℝ} (h
     rw [Real.norm_of_nonneg (by rw [wallIntegrand]; positivity), wallIntegrand, hM]
     exact pow_le_pow_left₀ hnn hprod 2
 
-theorem integrableOn_wallIntegrand_lower {z : ℂ} (hz : 1 < z.re) {α : ℝ} (hα : 1 / 2 ≤ α)
+theorem integrableOn_wallIntegrand_lower {z : ℂ} {α : ℝ} (hα : 1 / 2 ≤ α)
     {δ : ℝ} (hδ : 0 < δ) (hδ1 : δ < 1 / 4)
     (hbd : ∀ x ∈ Ioo (0 : ℝ) δ,
       ‖primeTailCurrent z x‖ ≤ 2 / ‖z - 1‖ * (x * Real.log x⁻¹)⁻¹) :
@@ -267,6 +267,156 @@ theorem integrableOn_wallIntegrand_lower {z : ℂ} (hz : 1 < z.re) {α : ℝ} (h
   refine hstep.trans ?_
   rw [hexp]
   exact mul_le_mul_of_nonneg_left hcmp (by positivity)
+
+/-- Below the critical weight the profile dominates a non-integrable power: the logarithm can
+be absorbed into an arbitrarily small power. -/
+theorem log_inv_sq_le {η x : ℝ} (hη : 0 < η) (hx : 0 < x) (hx1 : x ≤ 1) :
+    (Real.log x⁻¹) ^ 2 ≤ 4 / η ^ 2 * x ^ (-η) := by
+  have hlog : Real.log x⁻¹ ≤ 2 / η * x ^ (-(η / 2)) := by
+    have h := Real.log_le_rpow_div (le_of_lt (inv_pos.mpr hx)) (by linarith : (0:ℝ) < η / 2)
+    have hrw : (x⁻¹) ^ (η / 2) = x ^ (-(η / 2)) := by
+      rw [← Real.rpow_neg_one x, ← Real.rpow_mul hx.le]
+      congr 1
+      ring
+    rw [hrw] at h
+    calc Real.log x⁻¹ ≤ x ^ (-(η / 2)) / (η / 2) := h
+      _ = 2 / η * x ^ (-(η / 2)) := by field_simp
+  have hnn : 0 ≤ Real.log x⁻¹ := by
+    rw [Real.log_inv, neg_nonneg]
+    exact Real.log_nonpos hx.le hx1
+  have hsq : (2 / η * x ^ (-(η / 2))) ^ 2 = 4 / η ^ 2 * x ^ (-η) := by
+    have hpow : (x ^ (-(η / 2))) ^ 2 = x ^ (-η) := by
+      rw [← Real.rpow_natCast (x ^ (-(η / 2))) 2, ← Real.rpow_mul hx.le]
+      congr 1
+      push_cast
+      ring
+    rw [mul_pow, hpow]
+    congr 1
+    field_simp
+    norm_num
+  calc (Real.log x⁻¹) ^ 2 ≤ (2 / η * x ^ (-(η / 2))) ^ 2 := pow_le_pow_left₀ hnn hlog 2
+    _ = 4 / η ^ 2 * x ^ (-η) := hsq
+
+theorem not_integrableOn_wallIntegrand {z : ℂ} {α : ℝ} (hα : α < 1 / 2)
+    {δ : ℝ} (hδ : 0 < δ) (hδ1 : δ < 1 / 4) (hz1 : (0 : ℝ) < ‖z - 1‖)
+    (hbd : ∀ x ∈ Ioo (0 : ℝ) δ,
+      1 / (2 * ‖z - 1‖) * (x * Real.log x⁻¹)⁻¹ ≤ ‖primeTailCurrent z x‖) :
+    ¬ IntegrableOn (wallIntegrand z α) (Ioo 0 δ) volume := by
+  intro hint
+  set η : ℝ := (1 - 2 * α) / 2 with hη
+  have hη0 : 0 < η := by rw [hη]; linarith
+  set p : ℝ := 2 * α - 2 + η with hp
+  have hplt : p < -1 := by rw [hp, hη]; linarith
+  set c : ℝ := (1 / (2 * ‖z - 1‖)) ^ 2 * (η ^ 2 / 4) with hc
+  have hc0 : 0 < c := by rw [hc]; positivity
+  have hmin : ∀ x ∈ Ioo (0 : ℝ) δ, c * x ^ p ≤ wallIntegrand z α x := by
+    intro x hx
+    have hx0 : (0 : ℝ) < x := hx.1
+    have hx1 : x < 1 := by linarith [hx.2]
+    have hlogpos : (0 : ℝ) < Real.log x⁻¹ := by
+      refine Real.log_pos ?_
+      rw [one_lt_inv_iff₀]
+      exact ⟨hx0, hx1⟩
+    have hstep : ((1 / (2 * ‖z - 1‖)) * (x * Real.log x⁻¹)⁻¹) ^ 2
+        ≤ ‖primeTailCurrent z x‖ ^ 2 := by
+      refine pow_le_pow_left₀ (by positivity) (hbd x hx) 2
+    have hlogbd : (Real.log x⁻¹) ^ 2 ≤ 4 / η ^ 2 * x ^ (-η) := log_inv_sq_le hη0 hx0 hx1.le
+    have hinv : (η ^ 2 / 4) * x ^ η ≤ ((Real.log x⁻¹) ^ 2)⁻¹ := by
+      have hlsq : (0 : ℝ) < (Real.log x⁻¹) ^ 2 := by positivity
+      rw [le_inv_comm₀ (by positivity) hlsq]
+      have hxη : (x ^ η)⁻¹ = x ^ (-η) := by
+        rw [← Real.rpow_neg hx0.le]
+      calc (Real.log x⁻¹) ^ 2 ≤ 4 / η ^ 2 * x ^ (-η) := hlogbd
+        _ = (η ^ 2 / 4 * x ^ η)⁻¹ := by
+            rw [mul_inv, hxη]
+            congr 1
+            field_simp
+    have hxsplit : x ^ (2 * α) * ((x ^ η) * ((x : ℝ) ^ (2 : ℝ))⁻¹) = x ^ p := by
+      rw [hp]
+      rw [← Real.rpow_neg hx0.le, ← Real.rpow_add hx0, ← Real.rpow_add hx0]
+      congr 1
+      ring
+    have hxa : (x ^ α) ^ 2 = x ^ (2 * α) := by
+      rw [← Real.rpow_natCast (x ^ α) 2, ← Real.rpow_mul hx0.le]
+      congr 1
+      push_cast
+      ring
+    have hx2 : x ^ (2 : ℝ) = x * x := by
+      rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]
+      ring
+    have hlow : c * x ^ p
+        ≤ (x ^ α) ^ 2 * ((1 / (2 * ‖z - 1‖)) * (x * Real.log x⁻¹)⁻¹) ^ 2 := by
+      rw [← hxsplit, hxa, hc]
+      have hexp : ((1 / (2 * ‖z - 1‖)) * (x * Real.log x⁻¹)⁻¹) ^ 2
+          = (1 / (2 * ‖z - 1‖)) ^ 2 * (((x : ℝ) ^ (2 : ℝ))⁻¹ * ((Real.log x⁻¹) ^ 2)⁻¹) := by
+        rw [hx2]
+        field_simp
+      rw [hexp]
+      have hbase : (η ^ 2 / 4) * x ^ η * ((x : ℝ) ^ (2 : ℝ))⁻¹
+          ≤ ((x : ℝ) ^ (2 : ℝ))⁻¹ * ((Real.log x⁻¹) ^ 2)⁻¹ := by
+        have hx2pos : (0 : ℝ) < ((x : ℝ) ^ (2 : ℝ))⁻¹ := by positivity
+        calc (η ^ 2 / 4) * x ^ η * ((x : ℝ) ^ (2 : ℝ))⁻¹
+            ≤ ((Real.log x⁻¹) ^ 2)⁻¹ * ((x : ℝ) ^ (2 : ℝ))⁻¹ :=
+              mul_le_mul_of_nonneg_right hinv hx2pos.le
+          _ = ((x : ℝ) ^ (2 : ℝ))⁻¹ * ((Real.log x⁻¹) ^ 2)⁻¹ := by ring
+      calc (1 / (2 * ‖z - 1‖)) ^ 2 * (η ^ 2 / 4) * (x ^ (2 * α) * (x ^ η * ((x:ℝ) ^ (2:ℝ))⁻¹))
+          = x ^ (2 * α) * ((1 / (2 * ‖z - 1‖)) ^ 2
+              * ((η ^ 2 / 4) * x ^ η * ((x : ℝ) ^ (2 : ℝ))⁻¹)) := by ring
+        _ ≤ x ^ (2 * α) * ((1 / (2 * ‖z - 1‖)) ^ 2
+              * (((x : ℝ) ^ (2 : ℝ))⁻¹ * ((Real.log x⁻¹) ^ 2)⁻¹)) := by
+            refine mul_le_mul_of_nonneg_left ?_ (by positivity)
+            exact mul_le_mul_of_nonneg_left hbase (by positivity)
+    refine hlow.trans ?_
+    rw [wallIntegrand, mul_pow (x ^ α) ‖primeTailCurrent z x‖ 2]
+    exact mul_le_mul_of_nonneg_left hstep (sq_nonneg _)
+  have hxp : IntegrableOn (fun x : ℝ => c * x ^ p) (Ioo 0 δ) volume := by
+    refine Integrable.mono' hint
+      (((measurable_id.pow_const p).const_mul c).aestronglyMeasurable.restrict) ?_
+    filter_upwards [self_mem_ae_restrict measurableSet_Ioo] with x hx
+    rw [Real.norm_of_nonneg (by have := hx.1; positivity)]
+    exact hmin x hx
+  have hfinal : IntegrableOn (fun x : ℝ => x ^ p) (Ioo 0 δ) volume := by
+    have h2 : IntegrableOn (fun x : ℝ => c⁻¹ * (c * x ^ p)) (Ioo 0 δ) volume := hxp.const_mul c⁻¹
+    have heq : (fun x : ℝ => c⁻¹ * (c * x ^ p)) = fun x : ℝ => x ^ p := by
+      funext x
+      field_simp
+    rwa [heq] at h2
+  rw [intervalIntegral.integrableOn_Ioo_rpow_iff hδ] at hfinal
+  linarith
+
+/-- **Card equation (17).**  The half-weight wall: `x^α G_z` is square integrable on the unit
+interval exactly when `α ≥ 1/2`.  The critical weight is included, because the inverse-square
+logarithm of the boundary law rescues the endpoint. -/
+theorem primeTailCurrent_halfWeight_wall {z : ℂ} (hz : 1 < z.re) (α : ℝ) :
+    IntegrableOn (fun x : ℝ => (x ^ α * ‖primeTailCurrent z x‖) ^ 2) (Ioo 0 1) volume
+      ↔ 1 / 2 ≤ α := by
+  obtain ⟨δ, hδ, hδ1, hbd⟩ := exists_two_sided_primeTailCurrent hz
+  have hzne1 : z - (1 : ℂ) ≠ 0 := by
+    refine sub_ne_zero.mpr ?_
+    intro h; rw [h] at hz; simp at hz
+  have hz1 : (0 : ℝ) < ‖z - 1‖ := norm_pos_iff.mpr hzne1
+  have hunion : Ioo (0 : ℝ) 1 = Ioo 0 δ ∪ Ico δ 1 := by
+    ext t
+    constructor
+    · rintro ⟨ht0, ht1⟩
+      rcases lt_or_ge t δ with h | h
+      · exact Or.inl ⟨ht0, h⟩
+      · exact Or.inr ⟨h, ht1⟩
+    · rintro (⟨ht0, ht1⟩ | ⟨ht0, ht1⟩)
+      · exact ⟨ht0, by linarith⟩
+      · exact ⟨by linarith, ht1⟩
+  have hfun : (fun x : ℝ => (x ^ α * ‖primeTailCurrent z x‖) ^ 2) = wallIntegrand z α := rfl
+  rw [hfun]
+  constructor
+  · intro hint
+    by_contra hcon
+    exact not_integrableOn_wallIntegrand (not_le.mp hcon) hδ hδ1 hz1
+      (fun x hx => (hbd x hx).1)
+      (hint.mono_set (by rw [hunion]; exact Set.subset_union_left))
+  · intro hα
+    rw [hunion]
+    exact (integrableOn_wallIntegrand_lower hα hδ hδ1 (fun x hx => (hbd x hx).2)).union
+      (integrableOn_wallIntegrand_upper hz hδ (by linarith) α)
 
 end
 

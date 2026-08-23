@@ -145,6 +145,7 @@ and the relation to the Fargues–Fontaine curve) into the corpus as closed Lean
 | **Prop 13.1 groundwork, the base map**: a specialisation `x ⤳ y` and a one-dimensional local domain give the continuous `Spec 𝒪 → X` with `η ↦ x`, `s ↦ y`; the preimage of an open is `⊤` if it contains `y`, `{η}` if it contains `x` only, and `∅` otherwise | `HTGeometry/SpecTwoPointBase.lean` | closed |
 | **Prop 13.1 (`t41`), diagram (139), the sheaf morphism**: a homomorphism `f_s` on `W_rat (𝒪_{X,y})` into `Γ (S , ⊤)` and one `f_η` on `W_rat (𝒪_{X,x})` into `Γ (S , V)` agreeing after restriction assemble into a morphism of presheaves `W_rat (𝒪_X) ⟶ f_* 𝒪_S`, with naturality in all nine cases | `RHTower/DeningerDynSysTwoPointGamma.lean` | closed |
 | **Prop 13.1 (`t41`), the sheaf level**: the presheaf morphism extends over the sheafification, since the direct image of a sheaf is a sheaf | `RHTower/DeningerDynSysTwoPointSheafMap.lean` | closed |
+| **Prop 13.1 (`t41`), the two stalk maps**: the stalk of the sheaf morphism at the closed point of `Spec 𝒪` is `f_s` followed by the germ over `⊤`, and at the generic point it is `f_η` followed by the germ over `{η}` — the second computation is where Deninger's square (139) is used | `RHTower/DeningerDynSysTwoPointStalks.lean` | closed |
 | **Prop 13.1 groundwork**: for a local domain of dimension ≤ 1 that is not a field, `Spec 𝒪` has exactly the two points `η = (0)` and `s = 𝔪`, `{η}` is the basic open at any nonzero element of `𝔪`, and the only opens are `∅`, `{η}`, `⊤`; the stalk at `s` is `𝒪` and the stalk at `η` is `Frac 𝒪` | `HTGeometry/SpecDimOneLocalDomain.lean`, `HTGeometry/SpecStalkLocalization.lean` | closed |
 | **Prop 14.16 (`t1213n`), the identification**: a pointed multiplicative map `A♭ → 𝒪` is additive modulo `p` — i.e. lies in Deninger's `Y^⋄` — exactly when it comes from a homomorphism of tilts, and the two nonvanishing conditions match because the untilt vanishes only at `0` over a reduced ring; as an `Equiv` | `RHTower/DeningerDynSysTiltAdditive.lean` | closed |
 | **Prop 14.16 (`t1213n`), the locality clause**: `P̂_y^♭ : Ô^♭ → 𝒪^♭` is a **local** homomorphism.  `A ⧸ p` is local when `A` is, so `A♭` is local with maximal ideal the elements whose zeroth coefficient is a non-unit; the zeroth coefficient of `χ^♭ x` is the reduction of `χ x` mod `p`, so locality is exactly `χ (𝔪^♭) ⊆ 𝔪_𝒪` | `RHTower/DeningerDynSysTiltLocalHom.lean` | closed |
@@ -853,4 +854,20 @@ Nothing in v4 is untracked by the ledger: the only apparent omission, Prop 1.4, 
   and `deningerCanonicalRationalWittNormalizedFraction_eq_zero_iff` — were already there; the
   search tool finds them under "denominators non zero divisors" and "normalized fraction equals
   zero iff".  Search before building.
+  Axiom audit: `[propext, Classical.choice, Quot.sound]`.
+
+- 2026-08-23 — **Proposition 13.1's stalk computations closed**, so the tuple and the morphism
+  determine each other.  `deningerTwoPointGamma_stalk_closed` and
+  `deningerTwoPointGamma_stalk_generic` compute the two stalks of the sheaf morphism.  Both are
+  `Presheaf.stalk_hom_ext` on germs: `stalkFunctor_map_germ` turns the germ of the stalk map into
+  the component `γ.app U`, `stalkPushforward_germ` turns the pushforward part into the germ over
+  `f^{-1} U`, and `deningerWittStalkToStalk_germ` does the same on the other side.  In the closed
+  case all three components of the case split are irrelevant because `y ∈ U`; in the generic case
+  the branch `y ∈ U` is exactly diagram (139) once more, via `germ_stalkSpecializes` and the
+  hypothesis.
+  With `W_rat` commuting with stalks, this says: a morphism `Spec 𝒪 → W_rat (X)` in the sense of
+  Def 2.5 gives back `f_s` and `f_η`, and the morphism built from a tuple gives back the tuple it
+  was built from.  What is left to write is the packaging as a literal `DeningerWittScheme`
+  (its `local'` field, and the `Spec 𝒪` instantiation of `Vgen = {η}`, `hgen`, `hbot`, `hterm`,
+  all of which are already proved).
   Axiom audit: `[propext, Classical.choice, Quot.sound]`.

@@ -415,6 +415,91 @@ theorem xiSquaredEulerAntiLownerProducer_imp_parityDslope_posSemidef
     have hscaled := hcong.smul (show 0 ≤ (1 / 2 : ℝ) by norm_num)
     simpa only [smul_smul, one_smul] using hscaled
 
+/-- Remaining squared-Euler producer: positive semidefiniteness of every finite anti-Löwner
+matrix on positive injective configurations. -/
+def XiSquaredEulerAntiLownerProducer : Prop :=
+  ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (z : ι → ℝ),
+    (∀ i, 0 < z i) → Function.Injective z →
+      (antiLownerMatrixAt xiSquaredEulerFullQ z).PosSemidef
+
+/-- A universal squared-Euler producer supplies, near every positive collision center, both
+punctured uniform Löwner PSD families required by higher confluence. -/
+theorem xiSquaredEulerAntiLownerProducer_imp_eventually_uniform_parity
+    (hproducer : XiSquaredEulerAntiLownerProducer)
+    {X : ℝ} (hX : 0 < X) (N : ℕ) :
+    (∀ᶠ h in 𝓝[≠] (0 : ℝ),
+      (HTGeometry.uniformMovingDslopeMatrix
+        xiEulerAudenaertIncreasing X N h).PosSemidef) ∧
+    (∀ᶠ h in 𝓝[≠] (0 : ℝ),
+      (HTGeometry.uniformMovingDslopeMatrix
+        (fun Y => -xiEulerAudenaertDecreasing Y) X N h).PosSemidef) := by
+  have hnodes : ∀ᶠ h in 𝓝[≠] (0 : ℝ),
+      ∀ i : Fin N, 0 < X + (i : ℝ) * h := by
+    rw [Filter.eventually_all]
+    intro i
+    have hid : Tendsto (fun h : ℝ => h) (𝓝[≠] (0 : ℝ)) (𝓝 0) :=
+      (tendsto_id : Tendsto (fun h : ℝ => h) (𝓝 0) (𝓝 0)).mono_left
+        nhdsWithin_le_nhds
+    have ht : Tendsto (fun h : ℝ => X + (i : ℝ) * h)
+        (𝓝[≠] (0 : ℝ)) (𝓝 X) := by
+      simpa using tendsto_const_nhds.add (tendsto_const_nhds.mul hid)
+    exact ht.eventually (Ioi_mem_nhds hX)
+  have hpair : ∀ᶠ h in 𝓝[≠] (0 : ℝ),
+      (HTGeometry.uniformMovingDslopeMatrix
+        xiEulerAudenaertIncreasing X N h).PosSemidef ∧
+      (HTGeometry.uniformMovingDslopeMatrix
+        (fun Y => -xiEulerAudenaertDecreasing Y) X N h).PosSemidef := by
+    filter_upwards [hnodes, self_mem_nhdsWithin] with h hY hhmem
+    have hh : h ≠ 0 := by
+      simpa only [Set.mem_compl_iff, Set.mem_singleton_iff] using hhmem
+    let Y : Fin N → ℝ := fun i => X + (i : ℝ) * h
+    let x : Fin N → ℝ := fun i => Real.sqrt (Y i)
+    have hYpos : ∀ i, 0 < Y i := by
+      intro i
+      exact hY i
+    have hYinj : Function.Injective Y := by
+      intro i j hij
+      have hm : ((i : ℝ) - (j : ℝ)) * h = 0 := by
+        dsimp only [Y] at hij
+        linarith
+      have hc : (i : ℝ) = (j : ℝ) :=
+        sub_eq_zero.mp ((mul_eq_zero.mp hm).resolve_right hh)
+      exact Fin.ext (by exact_mod_cast hc)
+    have hxpos : ∀ i, 0 < x i := fun i => Real.sqrt_pos.mpr (hYpos i)
+    have hxinj : Function.Injective x := by
+      intro i j hij
+      apply hYinj
+      have hsquare := congrArg (fun t : ℝ => t ^ 2) hij
+      simpa only [x, Real.sq_sqrt (hYpos i).le,
+        Real.sq_sqrt (hYpos j).le] using hsquare
+    have hp := xiSquaredEulerAntiLownerProducer_imp_parityDslope_posSemidef
+      x hxpos hxinj
+      (fun z hz hzinj => hproducer (Fin N ⊕ Fin N) z hz hzinj)
+    have hsquare : ∀ i, (x i) ^ 2 = Y i :=
+      fun i => Real.sq_sqrt (hYpos i).le
+    constructor
+    · have heq :
+          (fun i j => dslope xiEulerAudenaertIncreasing
+            ((x i) ^ 2) ((x j) ^ 2) : Matrix (Fin N) (Fin N) ℝ) =
+          HTGeometry.uniformMovingDslopeMatrix
+            xiEulerAudenaertIncreasing X N h := by
+          ext i j
+          simp only [HTGeometry.uniformMovingDslopeMatrix,
+            HTGeometry.movingDslope, hsquare, Y]
+      rw [← heq]
+      exact hp.1
+    · have heq :
+          (fun i j => dslope (fun T => -xiEulerAudenaertDecreasing T)
+            ((x i) ^ 2) ((x j) ^ 2) : Matrix (Fin N) (Fin N) ℝ) =
+          HTGeometry.uniformMovingDslopeMatrix
+            (fun T => -xiEulerAudenaertDecreasing T) X N h := by
+          ext i j
+          simp only [HTGeometry.uniformMovingDslopeMatrix,
+            HTGeometry.movingDslope, hsquare, Y]
+      rw [← heq]
+      exact hp.2
+  exact ⟨hpair.mono (fun _ hp => hp.1), hpair.mono (fun _ hp => hp.2)⟩
+
 /-! ## Collision derivatives are the RH-deciding resolvent moments -/
 
 /-- Every derivative of the decreasing Audenaert transform is the corresponding resolvent moment,

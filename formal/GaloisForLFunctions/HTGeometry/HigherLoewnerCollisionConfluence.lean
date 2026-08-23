@@ -615,6 +615,38 @@ theorem normalizedLoewnerJetMatrix_posSemidef_of_eventually_uniform
   exact normalizedMovingDslopeMatrix_posSemidef_of_uniform f X N
     (by simpa only [Set.mem_compl_iff, Set.mem_singleton_iff] using hh) hmatrix
 
+/-- Alternating row/column sign normalization of the Löwner jet matrix. -/
+def alternatingNormalizedLoewnerJetMatrix
+    (f : ℝ → ℝ) (X : ℝ) (N : ℕ) : Matrix (Fin N) (Fin N) ℝ :=
+  fun i j => (-1 : ℝ) ^ ((i : ℕ) + (j : ℕ)) *
+    normalizedLoewnerJetMatrix f X N i j
+
+/-- Alternating factorial normalization is a diagonal sign congruence, so it preserves positive
+semidefiniteness. -/
+theorem alternatingNormalizedLoewnerJetMatrix_posSemidef
+    (f : ℝ → ℝ) (X : ℝ) (N : ℕ)
+    (hpos : (normalizedLoewnerJetMatrix f X N).PosSemidef) :
+    (alternatingNormalizedLoewnerJetMatrix f X N).PosSemidef := by
+  let S : Matrix (Fin N) (Fin N) ℝ :=
+    Matrix.diagonal fun i => (-1 : ℝ) ^ (i : ℕ)
+  have hcong := hpos.mul_mul_conjTranspose_same S
+  have hS : Sᴴ = S := by
+    ext i j
+    by_cases hij : i = j
+    · subst j
+      simp [S, Matrix.conjTranspose_apply]
+    · simp [S, Matrix.conjTranspose_apply, hij, Ne.symm hij]
+  have heq : S * normalizedLoewnerJetMatrix f X N * Sᴴ =
+      alternatingNormalizedLoewnerJetMatrix f X N := by
+    rw [hS]
+    ext i j
+    simp only [S, Matrix.diagonal_mul, Matrix.mul_diagonal,
+      alternatingNormalizedLoewnerJetMatrix]
+    rw [pow_add]
+    ring
+  rw [heq] at hcong
+  exact hcong
+
 end
 
 

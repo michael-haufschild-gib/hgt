@@ -312,3 +312,18 @@ is indexed by `Finset.Icc 1 L`, so the `Finset`/`erase` form is new and is docum
 
 Remaining: organise the off-diagonal pairs by `h = |m₁ − m₂|` (so that
 `|r/m₁ − r/m₂| = r·h/(m₁m₂)`), choose `U = V = W`, and sum over the blocks and over `r`.
+
+## The effective short range (2026-08-23)
+
+`EffectiveShortRange.lean` supplies the fact that makes the type-II diagonal proportional to the
+BLOCK length rather than to `L`:
+
+- `masked_correlation_eq_zero_of_large` / `_of_small` — on the block `[P,Q)` the masked correlation
+  vanishes identically unless the fibre of the short value meets the block;
+- `sum_masked_correlation_conj` — the masked correlation is conjugate-symmetric, so the same holds
+  in the second coordinate;
+- **`effective_short_range`** — the surviving short values lie in
+  `[(A−1)/(Q−1) + 1, (B−1)/P + 1)`, an interval of length `≍ M/P`.
+
+At `A ≍ M`, `B ≍ 2M`, `P ≍ D`, `Q ≍ 2D` this is `≍ 1.5·M/D`, exactly the count the exponent budget
+assumes.  Card 12 now stands at 32 Lean modules, all axiom-clean.
