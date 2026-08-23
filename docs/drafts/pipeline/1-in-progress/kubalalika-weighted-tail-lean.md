@@ -423,3 +423,29 @@ Card 12: 40 modules.
 
 This closes the gap between the pair sum as it appears in `blockTypeIIEnergy` (indexed by all of
 `Icc 1 L`) and the off-diagonal total (which needs the pair confined).  Card 12: 41 modules.
+
+## The type-II pair sum, in closed form (2026-08-23)
+
+`PairSumClosedForm.lean` — **`pairSum_closed_le`**:
+```
+Σ_{m₁,m₂ ≤ L} |b(m₁)||b(m₂)|·‖corr(m₁,m₂)‖
+    ≤ (Q−P)·Σ_{m ∈ effSet}|b(m)|²
+      + (Σ_{m ∈ effSet}|b(m)|²)·(2 Σ_{h ≤ H} gapCorrBound h).
+```
+Restriction to the effective set, then `sum_pair_split`, then the diagonal bound
+(`diag_pair_sum_le'`, generic in the index set) and `offdiag_correlation_total_le`.
+
+Every structural step of `VC6` is now Lean-closed.  The whole type-II energy of a dyadic block is
+bounded by
+```
+(long coefficient energy) × [ (block length)·(short energy) + (short energy)·2Σ gapCorrBound ],
+```
+with all four factors already estimated:
+`exists_sum_typeIILong_sq_le` (`≪ L log L`), `sum_typeIIShort_sq_le` (`≪ L + L·H_L³`),
+`Nat.card_Ico`, and `sum_gapCorrBound_le` (`C₁H√H + 2C₂√H`).
+
+What is left is arithmetic only: substituting `A ≍ M`, `B ≍ 2M`, `P = 2^j`, `Q = 2^{j+1}`,
+`M₀ ≍ M/(2P)`, `M₁ ≍ 2M/P`, `H ≍ M/P`, choosing `U = V = W = M^{3/5}X^{-1/5}`, and summing over
+`j ≤ log₂L` and over `r`.
+
+Card 12: 42 modules.

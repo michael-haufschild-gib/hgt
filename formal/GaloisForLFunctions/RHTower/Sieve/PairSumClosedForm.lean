@@ -50,7 +50,7 @@ theorem pairSum_closed_le {T r : ℝ} (hT : 0 < T) (hr : 0 < r)
       (fun m₁ m₂ => |b m₁| * |b m₂| * ‖∑ d ∈ Finset.Ico P Q,
         maskedNdExp T r A B d m₁ * (starRingEnd ℂ) (maskedNdExp T r A B d m₂)‖)]
   have hdiag := diag_pair_sum_le' T r A B P Q (effSet A B P Q L) b
-  have hoff := offdiag_correlation_total_le hT hr hA hB hP hM₀ (effSet A B P Q L) b hS hH
+  have hoff := offdiag_correlation_total_le (Q := Q) hT hr hA hB hP hM₀ (effSet A B P Q L) b hS hH
     hfour hlam
   linarith [hdiag, hoff]
 

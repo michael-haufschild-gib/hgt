@@ -84,12 +84,7 @@ theorem exists_zetaJetFunctional {ρ : ℂ} (hρ0 : 0 < ρ.re) (hρ1 : ρ.re < 1
     exact_mod_cast Nat.factorial_ne_zero (m - l)
   refine ⟨(((Nat.factorial (m - l) : ℕ) : ℂ))⁻¹ • Λ₀, ?_⟩
   intro f ρ' l' hρ'0 hρ'1 hl'1 hl'ord hf
-  have hval : (((Nat.factorial (m - l) : ℕ) : ℂ))⁻¹ • Λ₀ f
-      = (((Nat.factorial (m - l) : ℕ) : ℂ))⁻¹
-        * iteratedDeriv (m - l) (fun s : ℂ => soninEval 1 ((f : SoninL2)) s * h s) ρ := by
-    show (((Nat.factorial (m - l) : ℕ) : ℂ))⁻¹ * Λ₀ f = _
-    rw [hΛ₀ f]
-  rw [hval]
+  rw [smul_apply, smul_eq_mul, hΛ₀ f]
   -- the transform, multiplied, computed on the punctured neighbourhood
   have hbase : ∀ᶠ s in 𝓝 ρ, s ≠ ρ' →
       soninEval 1 ((f : SoninL2)) s * h s = (s - ρ) ^ m * ((s - ρ') ^ l')⁻¹ := by
