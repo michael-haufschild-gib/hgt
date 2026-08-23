@@ -3233,3 +3233,207 @@ Lean file is justified. Strongest advance is conceptual compression plus one exp
 witness: the unknown principle must make literal arithmetic completion a recurrent source-local
 process, not merely assert a zero-side vanishing. Status:
 **[CONJECTURAL/PRE-ROUTE; CORPUS-INDUCED; PRODUCER NOT CONSTRUCTED; NOVELTY NOT ESTABLISHED]**.
+
+## 2026-08-23 — Tenth revision: recurrent transgression and closed-history unitarity
+
+### Corpus-first junction
+
+The ninth revision still described the missing source potential too abstractly. A wider corpus
+audit now identifies what the potential must retain and why a positive completion can appear to
+lose it.
+
+* `DeningerRelationKernelTransgression.lean` proves that exactifying an alternating degree-two
+  cocycle on a free rational cover does not remove its obstruction. The obstruction reappears as a
+  canonical degree-one character on the relation kernel. For the actual Calderón--Witt cup this
+  character is nonzero.
+* `DeningerMeyerRelationKernelBoundarySeparation.lean` points the character by a concrete
+  commutator. Its value is the nonzero source calibrator `tau_p`. Completed Green fracture scales
+  it by exactly the unsquared transverse scalar
+
+  ```text
+  D_rho = 2 Re(rho) - 1.
+  ```
+
+  Literal Meyer boundaries map to zero, so identifying them with `D_rho tau_p` is already
+  equivalent to critical-line placement. The class must not be globally annihilated.
+* `RouteRFixedTraceTailRoos.lean` identifies the fixed-trace prime Bockstein with a nowhere-zero
+  transfer of the same Green-scaled relation-kernel ray. The tail, cohomological, paracyclic, and
+  Green descriptions are therefore coefficient-level presentations of one retained defect, not
+  merely receivers sharing a zero set.
+* `ConstitutiveCoefficientLiftTransgression.lean` gives the higher-degree analogue: refinement can
+  move a coarse defect into a coefficient kernel and raise its degree. It cannot be treated as
+  disappearance. `EventComplementaryRecord.lean` proves any faithful noninvertible event needs a
+  record at least as large as the erased kernel, but no nonzero linear record is canonical under
+  all kernel rescalings. Internal defect data must be event-pointed, not one globally chosen label.
+* The ABHN files supply an independent arithmetic model of the same design. Norm-defined finite
+  `H^2` transitions compose, are injective in split valuation coordinates, and preserve the
+  standard circle character under refinement. Crucially,
+  `ContinuousGaloisH2NormQuotientTransition.lean` does **not** identify actual inflation with that
+  transition: equality is isolated as a missing base-unit power formula. Thus ABHN supports the
+  form of a law but cannot be imported as its Euler--Gamma proof.
+* `CountableRelationHullRecurrenceLaw.lean` proves full compact recurrence for countable phase
+  families with arbitrary finite integer relations. It reinforces that recurrence belongs to the
+  relation hull, not to a local scalar observer. `NomogenicFixedPointCalibration.lean` remains the
+  hostile counterexample: a recurrent quotient may coexist with nonzero lifted holonomy.
+* `DeningerBigWittFrobeniusPrimeSeamTransgression.lean` supplies an exact positive arithmetic
+  quantity. Frobenius two moves the full prime-seam Dirichlet energy from ghost degree two to ghost
+  degree one, and the cofinal first ghost is its negative multiple. The energy is positive and
+  coercive off center by `XiPrimeSeamPairAsymptotics.lean`. This is a literal source action, but no
+  theorem yet makes it the drop of a recurrent source potential.
+* `EulerSquarefreeWickGammaSixReflectionPairAverage.lean` shows the canonical positive reflected
+  completion is exactly a qubit dephasing channel with coherence factor
+
+  ```text
+  kappa(a) = sech(a),    a = log(p) D_rho.
+  ```
+
+  Prime five supplies a literal period-two arithmetic depth clock.
+  `EulerSquarefreeWickGammaSixBistochasticRecurrence.lean` previously proved exact two-step return
+  of one coefficient-faithful pure projector iff `a = 0`.
+* `MarkovianExactReturn.lean` and `UniversalOperationalMemoryFloor.lean` prove the general
+  irreversibility boundary: exact return of the same full CP-divisible channel makes every
+  intermediate channel reversible/unitary; cofinal return of the same operational
+  distinguishability ledger forces zero information loss at every finite depth.
+  `FiniteKrausRecurrenceFutureFanLaw.lean` proves why finite evidence cannot select this future: a
+  reset channel can shadow a unitary orbit for every prescribed finite horizon and later forget
+  everything.
+* The new theorem
+  `eulerWickGammaSixBalancedDepthStep_two_fullReturn_iff` in
+  `EulerSquarefreeWickGammaSixConditionalExpectationRigidity.lean` closes the concrete
+  channel-level receiver. Two applications of the Gamma-six depth step return **every** matrix iff
+  `a = 0`. This is stronger than a selected-state endpoint and avoids pretending that
+  `sech(a)` itself is an additive-time semigroup. It does not assert that arithmetic completion
+  obeys full-channel return.
+
+This changes the interpretation of the zero/soliton split. The nonzero `tau_p` is not the error to
+remove. It is the persistent internal topological defect or soliton calibrator. The alleged
+off-line error is the coupling `D_rho` that makes this internal class leak into a transverse,
+irreversible observer channel. Critical-line placement means zero transverse coupling, not zero
+internal defect. Different zeros may therefore carry different pointed relation characters,
+multiplicity, winding, and ancestry while obeying one universal no-leakage law.
+
+### Hard no-gos added
+
+110. **NO BIG-WITT MULTIPLICATION CANONICITY AS GAMMA NATURALITY.** Lenstra-style naturality
+     uniquely selects Big-Witt multiplication, not a Gamma reporter or source/completion square.
+111. **NO SINGULAR GRAPH AS THE FULL ANCESTRY COMPLETION.** The existing singular graph makes all
+     normalized fixed-left prime histories converge to one vertical vector. It is a useful
+     transverse quotient but erases exactly the prime ancestry needed for distinct soliton data.
+112. **NO FINITE-STAGE TOPOLOGY SELECTION.** One finite augmentation tower has nonzero quotient in
+     `ell^1` and zero quotient in every `ell^p`, `p > 1`. Finite formation data do not choose their
+     completion topology.
+113. **NO ARBITRARY SINGULAR AVERAGING AS SOURCE.** Complete coherent Frobenius right-leg fibres
+     have zero singular trace and cannot approach the vertical generator. The prime-harmonic
+     source that does approach it is an additional arithmetic selection, not generic density.
+114. **NO GLOBAL ANNIHILATION OF THE RELATION-KERNEL CLASS.** Free-cover exactness moves the actual
+     nonzero Calderón--Witt obstruction into the relation kernel. A valid proof must kill only its
+     transverse coefficient, not `tau_p`.
+115. **NO LITERAL MEYER BOUNDARY LANDING.** Literal boundaries are zero in the common coefficient
+     space; equality with the nonzero Green ray is already the local critical-line statement.
+116. **NO OBSERVER RECURRENCE AS LIFTED RECURRENCE.** Quotient recurrence can coexist with open
+     lifted prefix and nonzero holonomy. Return must include the complementary ancestry record.
+117. **NO RECURRENCE WITHOUT A LOSS LEDGER.** Unitary phase packets recur with nonzero static
+     energy. Recurrence becomes selective only for an irreversible quantity whose loss is
+     monotone or appears in an exact nonnegative action telescope.
+118. **NO ONE-STEP DILATION OBJECTION TO REPEATED-COMPLETION RIGIDITY.** One CP map may hide
+     arbitrary memory in an environment. This does not refute a time-homogeneous law for the same
+     full closed history; it shows that the environment must be included in event identity.
+119. **NO FRESH-ENVIRONMENT COMPLETION AS ANCESTRAL COMPLETION.** Iterated dephasing is physically
+     realizable by fresh probes, but every reset creates a new source ancestry. Such an iteration
+     cannot represent repeated observation of one irreducible arithmetic event without proving a
+     source reset law.
+120. **NO TEMPORAL MARKOVITY AS COUPLING-ORDER SELECTION.** The Hawking quadratic-onset model is a
+     genuine time-homogeneous relaxing semigroup with exact KMS and losslessness, yet has zero
+     first coupling jet. Physical-time composition does not determine the map from horizontal
+     defect to generator.
+121. **NO `sech(a)` ADDITIVE-TIME SEMIGROUP BY PARAMETER ADDITION.** `sech(a+b)` is not
+     `sech(a) sech(b)`. The exact discrete completion uses powers of one fixed channel; a continuous
+     embedding would use rate `log cosh(a)`, which remains zero exactly at `a = 0`.
+122. **NO FULL-CHANNEL RETURN FROM FINITE-HORIZON AGREEMENT.** Arbitrarily accurate finite
+     unitary shadowing is compatible with eventual total forgetting. Source recurrence must be a
+     theorem about the complete history, not extrapolation from any finite collection of stages.
+123. **NO ABHN ANALOGY AS EULER--GAMMA FUNCTORIALITY.** ABHN norm transitions preserve their
+     character, but actual inflation equality still has a stated naturality gap even there. The
+     Euler--Gamma transition needs its own source proof.
+124. **NO GLOBAL CANONICAL INTERNAL SOLITON LABEL.** Invariance under all automorphisms of an
+     erased kernel forces a linear complementary record to vanish. Internal causes must be
+     pointed by each event; only the transverse coupling can be universal.
+
+### Big-picture reinterpretation — RECURRENT TRANSGRESSION CONSERVATION
+
+The proposed field **Arithmetic Defect Cohomodynamics** can now be stated more sharply. Its objects
+are pointed arithmetic formation histories. Its morphisms are legal refinements/completions that
+carry both public shadow and complementary relation-kernel record. Its defects form a filtered
+cohomology: completion may change their degree or presentation, but a legal faithful refinement
+cannot destroy their standard character. Reflection couples the internal class to one transverse
+real coordinate. Positive scalarization sees that coupling as irreversible decoherence.
+
+> **[CONJECTURE: RECURRENT TRANSGRESSION CONSERVATION]** Every irreducible Euler--Gamma completion
+> event has a pointed full-history lift on which legal refinement is functorial and
+> character-faithful, and whose literal arithmetic period recurs on the same full history. For an
+> event `e`, completion splits its defect as
+>
+> ```text
+> internal relation character: tau_e       (nonzero and event-dependent),
+> transverse coupling:         D_e         (real and reflection-odd),
+> observed defect:             D_e tau_e.
+> ```
+>
+> Positive reflected completion is the reduced shadow of this same closed evolution, not a fresh
+> environment at each depth. Therefore it cannot strictly reduce the character of `tau_e` over a
+> recurrent arithmetic period. Equivalently, its coherence factor must be `1`, or its exact
+> nonnegative information/action loss must vanish.
+
+For the proved Gamma-six receiver this forces
+
+```text
+sech(log(p) D_e) = 1
+  -> D_e = 0
+  -> Re(rho) = 1/2.
+```
+
+The relation-kernel class survives. Hence this is a prohibition against transverse leakage, not a
+mechanism producing zeros and not a zero-free theorem.
+
+### Exact open producer
+
+The preceding implication is formal. The unresolved theorem is now one source statement rather
+than a vague search for a producer:
+
+> Construct the Euler--Gamma completion as a **single repeatable full-history morphism**, including
+> its complementary relation-kernel/environment record, and prove that the literal prime-depth
+> period acts by exact return or cofinal recurrence on that full history.
+
+This must be established before Xi specialization and must imply all of the following without
+assuming them:
+
+1. finite prime refinements and Gamma completion act on one pointed relation-kernel object;
+2. the transition preserves a source-defined faithful character under composition;
+3. reduction to the public two-state shadow is the proved Gamma-six dephasing channel;
+4. consecutive arithmetic depth steps reuse one history rather than independent reset probes;
+5. the period-two source action returns the full completion morphism, not only one selected state;
+6. the transverse coordinate is the already proved Green/Bockstein scalar `D_rho`, while the
+   internal pointed class remains nonzero;
+7. every Xi divisor copy is exhausted by such an event with multiplicity retained.
+
+Item 5 now has a complete Lean receiver once items 1--4 produce it. Items 1--4 and 7 are not
+dependency-closed on paper. No wrapper asserting them should be formalized.
+
+### External boundary audit
+
+Repeated-interaction quantum systems explicitly obtain reduced semigroups by repeated interaction
+with probes (`https://arxiv.org/abs/2202.05321`), and collision models with factorized environment
+particles realize CP-divisible dynamics (`https://arxiv.org/abs/1708.04994`). These support the
+fresh-probe/full-history distinction but provide no arithmetic identification. CPTP maps with CPTP
+inverses have rigid reversible form (`https://arxiv.org/abs/quant-ph/0605041`), matching the corpus's
+exact-return theorem. LHS transgression sends an invariant normal-subgroup character to an
+extension class (`https://arxiv.org/abs/1803.04645`), matching the relation-kernel migration
+mechanism. None proves Euler--Gamma functoriality, recurrence, or Xi exhaustion.
+
+### Status and Lean discipline
+
+`eulerWickGammaSixBalancedDepthStep_two_fullReturn_iff` is paper-closed and Lean-checked. It adds
+the missing full-channel receiver, not the source producer. Targeted compilation passed; scratch
+axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`. Current route remains:
+**[CONJECTURAL/PRE-ROUTE; CORPUS-INDUCED; FULL-CHANNEL RECEIVER PROVED; SOURCE FUNCTORIALITY AND
+EVENT EXHAUSTION OPEN; NOVELTY NOT ESTABLISHED]**.

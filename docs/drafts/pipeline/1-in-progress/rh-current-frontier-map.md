@@ -114,6 +114,26 @@ copies as event shadows. Tail balance, finite-Rees locality, recurrence on anoth
 conservation, common recovery, and reflection-orbit quotienting remain no-gos or RH-equivalent
 endpoints.
 
+**Tenth-revision sharpening.** The defect is no longer modeled as a charge that completion should
+annihilate. `DeningerRelationKernelTransgression.lean` proves that free-cover exactification moves
+the actual nonzero Calderón--Witt cup into a relation-kernel character;
+`DeningerMeyerRelationKernelBoundarySeparation.lean` points its nonzero calibrator `tau_p` and shows
+the completed Green fracture scales it by `D_rho = 2 Re(rho)-1`.
+`RouteRFixedTraceTailRoos.lean` identifies the prime Bockstein with a nowhere-zero transfer of that
+same ray. Thus `tau_p` is candidate internal soliton data and `D_rho` is transverse leakage.
+ABHN norm transitions, coefficient-lift transgression, complementary-event records, and countable
+relation-hull recurrence support a new conjectural law, **recurrent transgression conservation**:
+legal Euler--Gamma refinement must retain a pointed complementary relation record, compose
+faithfully, and recur on the same full history. Reduced positive completion is the proved Gamma-six
+dephasing with coherence `sech(log(p) D_rho)`; strict loss requires a fresh/reset environment and
+cannot occur in an exactly recurrent closed history. Working-tree theorem
+`eulerWickGammaSixBalancedDepthStep_two_fullReturn_iff` now proves two completed depth steps return
+every matrix exactly iff the grade is neutral. Open producer is source-only: construct one
+repeatable full-history Euler--Gamma morphism, prove arithmetic depth recurrence without reset,
+identify its reduced shadow with Gamma-six dephasing, and exhaust Xi copies multiplicity-exactly.
+ABHN analogy, finite-horizon unitary shadowing, temporal Markovity, singular-graph ancestry
+collapse, and literal Meyer boundary landing do not supply that theorem.
+
 ## Live architectures
 
 ### CCM-FU — four-unit source-codiagonal incidence

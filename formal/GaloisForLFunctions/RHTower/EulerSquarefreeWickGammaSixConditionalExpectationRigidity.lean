@@ -133,6 +133,37 @@ theorem eulerWickGammaSixBalancedDephasing_idempotent_iff (a : ℝ) :
       simp [eulerWickGammaSixBalancedDephasing_apply,
         eulerWickGammaSixDephasingFactor]
 
+/-- Full-channel recurrence is stronger than return of one selected arithmetic state.  Two
+applications of the completed depth step return every matrix exactly if and only if the horizontal
+Gamma-six grade is neutral.  Thus any source theorem identifying the literal period-two depth clock
+with one repeatedly used completion channel cannot hide coherence loss in an unobserved state. -/
+theorem eulerWickGammaSixBalancedDepthStep_two_fullReturn_iff (a : ℝ) :
+    (∀ M : Matrix (Fin 2) (Fin 2) ℂ,
+      eulerWickGammaSixBalancedDepthStep a
+          (eulerWickGammaSixBalancedDepthStep a M) = M) ↔
+      a = 0 := by
+  constructor
+  · intro hreturn
+    exact (eulerWickGammaSixBalancedDepthStep_two_exactReturn_iff a).1
+      (hreturn (eulerWickReplicaPureProjector eulerWickPrimeFiveOddDepth))
+  · rintro rfl M
+    have hdephase (X : Matrix (Fin 2) (Fin 2) ℂ) :
+        eulerWickGammaSixBalancedDephasing 0 X = X := by
+      ext i j
+      fin_cases i <;> fin_cases j <;>
+        simp [eulerWickGammaSixBalancedDephasing_apply,
+          eulerWickGammaSixDephasingFactor]
+    rw [eulerWickGammaSixBalancedDepthStep, hdephase,
+      eulerWickGammaSixBalancedDepthStep, hdephase]
+    calc
+      eulerWickReplicaPauliZ *
+            (eulerWickReplicaPauliZ * M * eulerWickReplicaPauliZ) *
+          eulerWickReplicaPauliZ =
+          (eulerWickReplicaPauliZ * eulerWickReplicaPauliZ) * M *
+            (eulerWickReplicaPauliZ * eulerWickReplicaPauliZ) := by
+              simp only [mul_assoc]
+      _ = M := by rw [eulerWickReplicaPauliZ_sq]; simp
+
 end
 
 end GaloisForLFunctions.RHTower
