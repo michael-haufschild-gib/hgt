@@ -470,17 +470,75 @@ theorem exists_norm_remainder_at_cut_bound {z : ℂ} (hz : 1 < z.re) :
     have hminpos : (0 : ℝ) < (min (cutOf y) y) ^ (-z.re) :=
       Real.rpow_pos_of_pos (lt_of_lt_of_le (by linarith) hminge) _
     have hval : (y / 2) ^ (-z.re) = 2 ^ z.re * y ^ (-z.re) := by
-      rw [Real.div_rpow hy0.le (by norm_num), show z.re = -(-z.re) by ring,
-        Real.rpow_neg (by norm_num)]
-      field_simp
+      rw [Real.div_rpow hy0.le (by norm_num),
+        Real.rpow_neg (by norm_num : (0:ℝ) ≤ 2) z.re]
+      rw [div_eq_mul_inv, inv_inv]
+      ring
     calc |y - cutOf y| * (min (cutOf y) y) ^ (-z.re)
         ≤ 1 * (y / 2) ^ (-z.re) := mul_le_mul habs hminpow hminpos.le (by norm_num)
       _ = 2 ^ z.re * y ^ (-z.re) := by rw [one_mul, hval]
   have hnn : (0 : ℝ) ≤ y ^ (1 - z.re) * Real.exp (-c * Real.sqrt (Real.log y)) := by
     positivity
   have hnn2 : (0 : ℝ) ≤ y ^ (-z.re) := (Real.rpow_pos_of_pos hy0 _).le
-  rw [hK]
-  nlinarith [hfirst, hsecond, hnn, hnn2]
+  rw [hK, add_mul]
+  have hstep : K₁ * (2 ^ (z.re - 1) * Real.exp (c * Real.sqrt (Real.log 2)))
+      * (y ^ (1 - z.re) * Real.exp (-c * Real.sqrt (Real.log y)) + y ^ (-z.re))
+      ≥ K₁ * (2 ^ (z.re - 1) * Real.exp (c * Real.sqrt (Real.log 2)))
+        * (y ^ (1 - z.re) * Real.exp (-c * Real.sqrt (Real.log y))) := by
+    have hc0 : (0 : ℝ) ≤ K₁ * (2 ^ (z.re - 1) * Real.exp (c * Real.sqrt (Real.log 2))) := by
+      have : (0 : ℝ) < (2 : ℝ) ^ (z.re - 1) := Real.rpow_pos_of_pos (by norm_num) _
+      positivity
+    nlinarith [hnn2, hc0]
+  have hstep2 : 2 ^ z.re
+      * (y ^ (1 - z.re) * Real.exp (-c * Real.sqrt (Real.log y)) + y ^ (-z.re))
+      ≥ 2 ^ z.re * y ^ (-z.re) := by
+    have h2 : (0 : ℝ) < (2 : ℝ) ^ z.re := Real.rpow_pos_of_pos (by norm_num) _
+    nlinarith [hnn, h2]
+  linarith [hfirst, hsecond, hstep, hstep2]
+
+/-! ## All-orders flatness -/
+
+theorem tendsto_pow_mul_exp_neg_sqrt (N : ℕ) {c : ℝ} (hc : 0 < c) :
+    Tendsto (fun L : ℝ => L ^ N * Real.exp (-c * Real.sqrt L)) atTop (𝓝 0) := by
+  have hbase : Tendsto (fun s : ℝ => s ^ (2 * N) * Real.exp (-s)) atTop (𝓝 0) :=
+    Real.tendsto_pow_mul_exp_neg_atTop_nhds_zero (2 * N)
+  have hscale : Tendsto (fun s : ℝ => c * s) atTop atTop :=
+    Filter.tendsto_id.const_mul_atTop hc
+  have hsqrt : Tendsto (fun L : ℝ => Real.sqrt L) atTop atTop := Real.tendsto_sqrt_atTop
+  have hcomp : Tendsto (fun L : ℝ => (c * Real.sqrt L) ^ (2 * N)
+      * Real.exp (-(c * Real.sqrt L))) atTop (𝓝 0) :=
+    hbase.comp (hscale.comp hsqrt)
+  have hfinal := hcomp.const_mul (c ^ (2 * N))⁻¹
+  rw [mul_zero] at hfinal
+  refine Tendsto.congr' ?_ hfinal
+  filter_upwards [eventually_ge_atTop (0 : ℝ)] with L hL
+  have hsq : Real.sqrt L ^ 2 = L := Real.sq_sqrt hL
+  have hcne : (c : ℝ) ^ (2 * N) ≠ 0 := by positivity
+  have hexp : Real.exp (-(c * Real.sqrt L)) = Real.exp (-c * Real.sqrt L) := by
+    congr 1
+    ring
+  rw [mul_pow, hexp, ← mul_assoc, inv_mul_cancel_left₀ hcne]
+  congr 2
+  rw [pow_mul, hsq]
+
+theorem tendsto_pow_mul_exp_neg (N : ℕ) :
+    Tendsto (fun L : ℝ => L ^ N * Real.exp (-L)) atTop (𝓝 0) :=
+  Real.tendsto_pow_mul_exp_neg_atTop_nhds_zero N
+
+theorem primeRemainderCurrent_exp_eq {z : ℂ} {L : ℝ} (hL : 1 ≤ L) :
+    primeRemainderCurrent z (Real.exp (-L))
+      = ((Real.exp (-L) : ℝ) : ℂ) ^ (-z)
+        * (primeTailSum z (cutOf (Real.exp L)) - primeVacuumTail z (Real.exp L)) := by
+  have hx : (0 : ℝ) < Real.exp (-L) := Real.exp_pos _
+  have hx1 : Real.exp (-L) ≤ 1 := by
+    refine Real.exp_le_one_iff.mpr ?_
+    linarith
+  have hinv : (Real.exp (-L))⁻¹ = Real.exp L := by
+    rw [Real.exp_neg, inv_inv]
+  have hmax : max (Real.exp 1) (Real.exp (-L))⁻¹ = Real.exp L := by
+    rw [hinv]
+    exact max_eq_right (Real.exp_le_exp.mpr hL)
+  rw [primeRemainderCurrent_eq hx hx1, hmax, ceilCut_inv, hinv]
 
 end
 

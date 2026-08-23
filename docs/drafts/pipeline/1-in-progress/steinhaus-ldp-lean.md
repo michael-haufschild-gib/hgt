@@ -246,3 +246,22 @@ which is `Var/2` with `Var = 1/2` now available.
 Card 11: 11 modules.  The sub-critical regime of part `4` now needs only the dominated-convergence
 step `Λ_α(λ)/λ² → (1/4)∫w_α²` (dominating function `w_α²/2`, integrable exactly for `α < 1/2`) and
 the Legendre asymptotic `Λ ∼ Aλ² ⟹ I ∼ q²/(4A)`.
+
+## The sub-critical integrand (2026-08-23)
+
+`RHTower/SteinhausSubcritical.lean`:
+
+- `weightProfile_sq_eq : w_α(v)² = (1−α)²v^{−2α}` and
+  `intervalIntegrable_weightProfile_sq` — square integrability, valid exactly for `α < 1/2`;
+- `rvQuadIntegrand α lam v = log I₀(lam·w_α(v))/lam²`, with
+  **`rvQuadIntegrand_bound : |·| ≤ w_α(v)²/2`** (the dominating function, integrable precisely in
+  the sub-critical range) and
+  **`tendsto_rvQuadIntegrand : rvQuadIntegrand α lam v → w_α(v)²/4`** as `lam → 0⁺`, obtained by
+  composing `log I₀(x)/x² → 1/4` with `lam ↦ lam·w_α(v)` (which maps `𝓝[>]0` into `𝓝[≠]0` because
+  `w_α(v) > 0`).
+
+Both hypotheses of dominated convergence are therefore in place; the remaining step of `(18)` is
+the application of `tendsto_integral_filter_of_dominated_convergence` on `volume.restrict (Ioc 0 1)`
+and the identification of the limit with `(1/4)∫₀¹ w_α² = (1−α)²/(4(1−2α))`.
+
+Card 11: 12 modules.

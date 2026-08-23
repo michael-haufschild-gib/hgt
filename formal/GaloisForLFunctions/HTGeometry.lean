@@ -4116,6 +4116,7 @@ import GaloisForLFunctions.HTGeometry.TorsionUnitsField
 import GaloisForLFunctions.HTGeometry.FiniteDivisibleImage
 import GaloisForLFunctions.HTGeometry.AlgClosedPowerExponent
 import GaloisForLFunctions.HTGeometry.SuspensionAction
+import GaloisForLFunctions.HTGeometry.InfiniteGaloisInvariant
 import GaloisForLFunctions.HTGeometry.SpecDimOneSections
 import GaloisForLFunctions.HTGeometry.SpecTwoPointBase
 import GaloisForLFunctions.HTGeometry.PerfectionMonoidWithZero
