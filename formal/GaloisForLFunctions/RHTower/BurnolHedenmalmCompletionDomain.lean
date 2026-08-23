@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.XiThetaL2Cyclicity
 import GaloisForLFunctions.RHTower.XiFirstDividedSourceNumericalSector
 import GaloisForLFunctions.RHTower.DeningerEulerStirling
+import GaloisForLFunctions.HTGeometry.MaximalRealL2Multiplication
 
 /-!
 # Burnol--Hedenmalm archimedean completion and maximal coordinate domain
@@ -181,6 +182,30 @@ theorem maximalRealCoordinate_formalSelfAdjoint :
   rw [hf, hg]
   simp only [RCLike.inner_apply, map_mul, Complex.conj_ofReal]
   ring
+
+/-- The Burnol spectral-coordinate operator is the general maximal real `L²` multiplier at the
+identity energy. -/
+theorem maximalRealCoordinate_eq_maximalRealL2Mul :
+    maximalRealCoordinate =
+      GaloisForLFunctions.HTGeometry.maximalRealL2Mul
+        (volume : Measure ℝ) (fun x : ℝ => x) := by
+  apply LinearPMap.ext
+  · ext f
+    rfl
+  · intro f hf hfgeneric
+    apply Lp.ext
+    filter_upwards [maximalRealCoordinate_apply_ae ⟨f, hf⟩,
+      GaloisForLFunctions.HTGeometry.maximalRealL2Mul_apply_ae
+        (volume : Measure ℝ) (fun x : ℝ => x) ⟨f, hfgeneric⟩] with x hcoordinate hgeneric
+    rw [hcoordinate, hgeneric]
+
+/-- Multiplication by the real spectral coordinate on its maximal Burnol `L²` domain is
+self-adjoint. -/
+theorem maximalRealCoordinate_isSelfAdjoint :
+    IsSelfAdjoint maximalRealCoordinate := by
+  rw [maximalRealCoordinate_eq_maximalRealL2Mul]
+  exact GaloisForLFunctions.HTGeometry.maximalRealL2Mul_isSelfAdjoint
+    (volume : Measure ℝ) measurable_id
 
 /-- The actual first completed Xi quotient as an `L²(ℝ)` vector. -/
 def completedXiFirstDividedL2 (rho : XiDivisorSupport) : BurnolCompletedSpectralL2 :=

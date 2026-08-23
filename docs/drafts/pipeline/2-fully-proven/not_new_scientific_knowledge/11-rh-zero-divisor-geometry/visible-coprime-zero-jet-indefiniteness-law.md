@@ -326,3 +326,86 @@ The next precise finite task is the congruence/inertia extraction from this fact
 The same factorization leaf now proves that the divisor-incidence matrix is lower triangular in its natural positive-coordinate order, has unit diagonal and determinant exactly one, and is therefore a unit over the integers.  This closes the algebraic congruence prerequisite for transporting the Möbius diagonal’s sign data to the coprimality matrix; it is not merely an entrywise factorization.
 
 The changed leaf was direct-checked and exact-target-built again as `GaloisForLFunctions.RHTower.MobiusCoprimeMatrixFactorization`.  Its new triangularity, determinant, and invertibility declarations audit only to `[propext, Classical.choice, Quot.sound]`.  The exact positive/null/negative inertia cardinalities and unbounded-negative-index conclusion remain the next finite-dimensional layer.
+
+## Lean status update (2026-08-23): exact finite Möbius inertia
+
+`formal/GaloisForLFunctions/RHTower/MobiusCoprimeInertia.lean` now closes the exact finite inertia law `(V15)`.  It complexifies the integral factorization, proves the complex incidence matrix and its transpose are units, identifies the coprimality matrix as an invertible Hermitian congruence of the real Möbius diagonal, and applies the corpus's proved Sylvester law.  The resulting unconditional declarations are exactly
+
+```text
+hermPosIndex C_N  = #{d in {1,...,N} : mu(d)= 1},
+hermNullIndex C_N = #{d in {1,...,N} : mu(d)= 0},
+hermNegIndex C_N  = #{d in {1,...,N} : mu(d)=-1}.
+```
+
+The leaf is wired into `GaloisForLFunctions/RHTower.lean`, direct-checked with `lake env lean`, and exact-target-built with `lake build GaloisForLFunctions.RHTower.MobiusCoprimeInertia`.  Its complex factorization, congruence, Hermitian, and three exact inertia declarations audit only to `[propext, Classical.choice, Quot.sound]`.
+
+This completes the card's finite inertia identity, without a matrix-size computation or a spectral hypothesis.  Still required for stage 3: the visible-addition analytic identity, zeta/Dirichlet mixed zero-jet orientation, positive-kernel obstruction, diagonal-completion obstruction, and the unbounded-negative-index corollary.
+
+## Lean status update (2026-08-23): unbounded negative index
+
+`formal/GaloisForLFunctions/RHTower/MobiusCoprimeInertiaUnbounded.lean` now closes the final conclusion of `(V15)`: negative inertia is unbounded.  For every `k`, the first `k` primes are injected into the negative Möbius coordinates below the `k`th prime; `mu(p)=-1` then combines with the exact inertia theorem to produce a cutoff `N` whose coprimality matrix has negative index at least `k`.  The construction is symbolic and uses the corpus's proved ordered-prime equivalence, not finite prime enumeration.
+
+The leaf is umbrella-wired, direct-checked, and exact-target-built with `lake build GaloisForLFunctions.RHTower.MobiusCoprimeInertiaUnbounded`.  Both declarations audit only to `[propext, Classical.choice, Quot.sound]`.
+
+The entire finite incidence/inertia portion `(V13)`--`(V15)` is now Lean-complete.  Remaining stage-3 blockers are the analytic visible-addition/Mellin and mixed-zero-jet laws plus the two positive-kernel obstruction arguments.
+
+## Lean status update (2026-08-23): exact Mertens signature flow
+
+`formal/GaloisForLFunctions/RHTower/MobiusCoprimeSignatureFlow.lean` now closes `(V15a)`--`(V15b)`.  It defines the spectral signature as the integer difference of the already-proved Hermitian positive and negative indices, transports those subtype counts to the natural interval `Icc 1 N`, and reuses the corpus's Möbius sign-balance theorem.  The resulting unconditional identities are
+
+```text
+finiteMobiusCoprimeSignature N = sum_{1 <= d <= N} mu(d),
+((finiteMobiusCoprimeSignature N : Int) : Real) = mertensM N,
+finiteMobiusCoprimeSignature (N+1) - finiteMobiusCoprimeSignature N = mu(N+1).
+```
+
+The leaf is wired into `GaloisForLFunctions/RHTower.lean`, direct-checked with `lake env lean`, and exact-target-built with `lake build GaloisForLFunctions.RHTower.MobiusCoprimeSignatureFlow`.  All four new public theorem declarations audit only to `[propext, Classical.choice, Quot.sound]`.
+
+This completes exact finite spectral flow without computation.  The card remains at stage 2: `(V15c)` still needs its exact RH-growth formulation, and the analytic visible-addition/Mellin, mixed-zero-jet, positive-kernel, and diagonal-completion parts remain required.
+
+## Lean status update (2026-08-23): Littlewood signature criterion
+
+`formal/GaloisForLFunctions/RHTower/MobiusCoprimeSignatureRH.lean` now closes `(V15c)` exactly.  It proves that the corpus's complex Mertens partial sum is the real Mertens function embedded in `Complex`, identifies its norm with the absolute coprimality-matrix signature, and transports the already-closed Littlewood criterion to the matrix statement
+
+```text
+(forall delta > 0, exists C >= 0, forall N,
+  |sig(C_N)| <= C * (N+1)^(1/2+delta))
+  iff RiemannHypothesis.
+```
+
+This equivalence is a closed theorem, not a theorem under RH or under an added Mertens premise.  The leaf is umbrella-wired, direct-checked, and exact-target-built with `lake build GaloisForLFunctions.RHTower.MobiusCoprimeSignatureRH`.  Its four public theorem declarations audit only to `[propext, Classical.choice, Quot.sound]`.
+
+Thus `(V13)`--`(V15c)` are Lean-complete.  The card remains at stage 2 pending its analytic visible-addition/Mellin, mixed-zero-jet, universal positive-kernel, and diagonal-completion obstruction theorems.
+
+## Lean status update (2026-08-23): universal divisor-stationary positivity
+
+`formal/GaloisForLFunctions/RHTower/DivisorStationaryKernelPositivity.lean` now closes the finite-algebraic content of `(V16)`--`(V17)` for an arbitrary real arithmetic sequence `c`.  It defines the literal kernel
+
+```text
+H_c,N(a,b) = sum_{1 <= d <= N} if d|a and d|b then c(d) else 0,
+```
+
+proves its exact factorization `H_c,N = E_N diag(c) E_N.transpose`, transports integral incidence invertibility to `Real`, and proves both the fixed-cutoff and all-cutoff order laws
+
+```text
+H_c,N is PSD iff every c(d) on {1,...,N} is nonnegative,
+(forall N, H_c,N is PSD) iff (forall d>0, c(d)>=0).
+```
+
+The leaf is umbrella-wired, direct-checked, and exact-target-built with `lake build GaloisForLFunctions.RHTower.DivisorStationaryKernelPositivity`.  Its five public theorem declarations audit only to `[propext, Classical.choice, Quot.sound]`.
+
+The finite incidence/positivity obstruction is complete.  The card stays at stage 2 because the infinite Mellin-symbol identity and critical-energy conclusion `(V18)`, diagonal-completion jet `(V19)`--`(V21)`, and the earlier visible-addition/mixed-zero-jet analytic laws remain.
+
+## Lean status update (2026-08-23): sharp diagonal-completion edge cost
+
+`formal/GaloisForLFunctions/RHTower/PositiveDiagonalCompletionEdge.lean` now closes `(V19)` in a form stronger than the card's final existence statement.  For an arbitrary finite Hermitian matrix `W`, any two distinct zero-diagonal coordinates `a,b`, and any real diagonal correction `d`, positivity of `W + diag(d)` implies
+
+```text
+0 <= d(a),  0 <= d(b),  ‖W(a,b)‖^2 <= d(a)*d(b).
+```
+
+If `W(a,b) != 0`, both `d(a)` and `d(b)` are strictly positive.  The proof takes the exact two-coordinate principal submatrix, applies nonnegativity of its determinant, and uses Hermitian symmetry to identify the off-diagonal product with the squared complex norm.
+
+The leaf is umbrella-wired, direct-checked, and exact-target-built with `lake build GaloisForLFunctions.RHTower.PositiveDiagonalCompletionEdge`.  Both public declarations audit only to `[propext, Classical.choice, Quot.sound]`.
+
+The card remains at stage 2 pending `(V18)`, the infinite derivative/strict-positivity statement `(V20)`--`(V21)`, and the visible-addition/mixed-zero-jet analytic laws.

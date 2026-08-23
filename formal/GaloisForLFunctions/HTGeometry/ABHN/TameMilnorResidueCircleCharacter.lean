@@ -10,12 +10,13 @@ import GaloisForLFunctions.HTGeometry.ABHN.ConcreteTameMilnorInvariant
 # Residue-normalized circle characters for local tame Milnor `K₂`
 
 The tame residue of a nonarchimedean local field lands in the first Milnor `K` group of its finite
-residue field.  Applying the canonical finite-field character to that residue gives a local phase.
-Unlike a phase chosen directly on a finite quotient, this construction uses exactly the finite-field
-character that occurs in the global projective-line Milnor reciprocity theorem.
+residue field.  Applying that residue field's canonical finite-field character gives an intrinsic
+local phase.  This character is faithful, but it is not automatically the norm-normalized character
+used by global projective-line reciprocity: independent cyclic-coordinate choices need not commute
+with finite-field norms.
 
-It does not identify a completion's residue field with the residue field of a global place; that
-completion comparison remains explicit infrastructure.  It also makes no Milnor--Brauer claim.
+`RationalFunctionAdicNormTameCharacter` constructs the globally normalized completed-local phase.
+This module makes no Milnor--Brauer claim.
 -/
 
 namespace GaloisForLFunctions.HTGeometry.ABHN
