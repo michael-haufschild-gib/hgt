@@ -409,3 +409,17 @@ optimisation — substituting `A ≍ M`, `B ≍ 2M`, `P ≍ D`, `Q ≍ 2D`, `M�
 `H ≍ M/D`, choosing `U = V = W = M^{3/5}X^{-1/5}`, and summing over the dyadic blocks and over `r`.
 
 Card 12: 40 modules.
+
+## Restricting the pair sum to the effective set (2026-08-23)
+
+`EffectivePairRestriction.lean`:
+
+- `effShort`, `effSet` — the short values whose fibre meets the block; `effSet_mem_Ico` puts them
+  inside `[(A−1)/(Q−1)+1, (B−1)/P+1)`, an interval of length `≍ M/D`;
+- `correlation_eq_zero_of_not_effShort` — outside that set the masked correlation vanishes;
+- **`pair_sum_restrict_eff`** — hence the whole type-II pair sum over `Icc 1 L` EQUALS the pair sum
+  over `effSet`, where the confinement hypotheses `M₀ ≤ m ≤ M₁` of `offdiag_correlation_total_le`
+  hold.  The second coordinate is handled through `sum_masked_correlation_conj`.
+
+This closes the gap between the pair sum as it appears in `blockTypeIIEnergy` (indexed by all of
+`Icc 1 L`) and the off-diagonal total (which needs the pair confined).  Card 12: 41 modules.

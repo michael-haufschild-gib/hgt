@@ -4126,6 +4126,7 @@ import GaloisForLFunctions.RHTower.Sieve.GapWeightedPairSum
 import GaloisForLFunctions.RHTower.Sieve.GapSums
 import GaloisForLFunctions.RHTower.Sieve.CorrelationGapBound
 import GaloisForLFunctions.RHTower.Sieve.OffDiagonalTotal
+import GaloisForLFunctions.RHTower.Sieve.EffectivePairRestriction
 import GaloisForLFunctions.RHTower.Sieve.VonMangoldtParityCorrection
 import GaloisForLFunctions.RHTower.FriableCoefficientSurjectivity
 import GaloisForLFunctions.RHTower.FriableEdgeCoefficients

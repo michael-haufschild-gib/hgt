@@ -1,5 +1,7 @@
 import Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas
 import Mathlib.Analysis.Analytic.Order
+import Mathlib.Analysis.Complex.Basic
+import Mathlib.Analysis.Calculus.FDeriv.Analytic
 
 /-!
 # Jets of a shifted monomial and of a germ with a flat factor
@@ -52,13 +54,11 @@ theorem iterate_deriv_const_mul_sub_pow (ρ : ℂ) :
       | succ p =>
           rw [Nat.succ_descFactorial_succ]
           push_cast
-          rw [Nat.succ_sub_succ]
-          simp only [Nat.add_sub_cancel]
           ring
 
 /-- The jets of `(s − ρ)^n` at `ρ`: all vanish except the `n`-th, which is `n!`. -/
 theorem iteratedDeriv_sub_const_pow (ρ : ℂ) (k n : ℕ) :
-    iteratedDeriv k (fun s : ℂ => (s - ρ) ^ n) ρ = if k = n then (n ! : ℂ) else 0 := by
+    iteratedDeriv k (fun s : ℂ => (s - ρ) ^ n) ρ = if k = n then ((Nat.factorial n : ℕ) : ℂ) else 0 := by
   have h := iterate_deriv_const_mul_sub_pow ρ k 1 n
   simp only [one_mul] at h
   rw [iteratedDeriv_eq_iterate, h]

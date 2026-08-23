@@ -22,19 +22,19 @@ def finiteEulerGammaSlope (p : Nat.Primes) : ℂ :=
 /-- The Euler--Gamma slope has no real component. -/
 theorem finiteEulerGammaSlope_re (p : Nat.Primes) :
     (finiteEulerGammaSlope p).re = 0 := by
-  rw [finiteEulerGammaSlope]
-  generalize (Real.log ((p : ℕ) : ℝ)) = L
+  set L : ℝ := Real.log (p : ℝ)
+  change (Complex.I * (L : ℂ) / (2 * (Real.pi : ℂ))).re = 0
   simp [Complex.div_re]
 
 /-- Every prime produces a genuinely upper-imaginary Gamma slope. -/
 theorem finiteEulerGammaSlope_im_pos (p : Nat.Primes) :
     0 < (finiteEulerGammaSlope p).im := by
+  set L : ℝ := Real.log (p : ℝ)
   have hlog : 0 < Real.log ((p : ℕ) : ℝ) :=
     Real.log_pos (by exact_mod_cast p.property.one_lt)
-  rw [finiteEulerGammaSlope]
-  generalize hgen : (Real.log ((p : ℕ) : ℝ)) = L at hlog ⊢
-  simp [Complex.div_im]
-  positivity
+  change 0 < (Complex.I * (L : ℂ) / (2 * (Real.pi : ℂ))).im
+  have hL : 0 < L := hlog
+  simp [Complex.div_im, hL, Real.pi_pos]
 
 /-- The reciprocal Gamma pair associated with one finite Euler factor. -/
 def finiteEulerGammaReciprocalPair (p : Nat.Primes) (s : ℂ) : ℂ :=
@@ -123,8 +123,23 @@ theorem finiteEulerLocalQuartet_eq_gammaReciprocalQuartet
     rw [← Complex.exp_add]
     congr 1
     ring
-  linear_combination ((-2 * Complex.I * (Real.pi : ℂ)) ^ 2 *
-    finiteEulerGammaReciprocalPair p s * finiteEulerGammaReciprocalPair p (1 - s)) * hexp
+  calc
+    -2 * Complex.I * (Real.pi : ℂ) * Complex.exp (-((Real.log p : ℂ) * s) / 2) *
+          finiteEulerGammaReciprocalPair p s *
+        (-2 * Complex.I * (Real.pi : ℂ) *
+          Complex.exp (-((Real.log p : ℂ) * (1 - s)) / 2) *
+          finiteEulerGammaReciprocalPair p (1 - s)) =
+        ((-2 * Complex.I * (Real.pi : ℂ)) * (-2 * Complex.I * (Real.pi : ℂ))) *
+          (Complex.exp (-((Real.log p : ℂ) * s) / 2) *
+            Complex.exp (-((Real.log p : ℂ) * (1 - s)) / 2)) *
+          (finiteEulerGammaReciprocalPair p s *
+            finiteEulerGammaReciprocalPair p (1 - s)) := by ring
+    _ = (-2 * Complex.I * (Real.pi : ℂ)) ^ 2 *
+          Complex.exp (-((Real.log p : ℂ) / 2)) *
+          (finiteEulerGammaReciprocalPair p s *
+            finiteEulerGammaReciprocalPair p (1 - s)) := by
+      rw [hexp]
+      ring
 
 /-- A finite semilocal Euler multiplier is the product of its reciprocal Gamma pairs with the
 combined cardinality and logarithmic-exponential gauge. -/
