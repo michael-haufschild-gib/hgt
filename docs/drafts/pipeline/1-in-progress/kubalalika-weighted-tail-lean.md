@@ -613,3 +613,26 @@ discarded.  `WeightedTailDef.lean` now REUSES all of them:
 
 Card 12: 51 modules.  `E_Λ(T)` is now a defined object with its `r`-sum form; what remains is to
 feed the per-block bounds through it.
+
+## The tail reduced to its inner sums (2026-08-23)
+
+`WeightedTailNorm.lean`:
+
+- **`norm_weightedNearDiagonalTail_le`** — the triangle inequality over the `r`-sum:
+  ```
+  ‖E_Λ‖ ≤ Σ_{r} ‖Σ_{m ∈ filter_r} Λ(m)e(F_{T,r}(m))‖ / r,
+  ```
+  the harmonically weighted total of the inner prime sums, which is the form the exponent budget
+  adds up;
+- **`norm_sum_parity_le`** — whichever parity class `r` selects (`r ≡ m (mod 2)`), the restricted
+  block sum differs from the unrestricted one by at most `log B`.  Even `r` selects the even class
+  and is bounded outright; odd `r` selects the odd class and goes through `norm_sum_odd_le`.
+
+Combined with the corpus's `filter_shiftCeil_eq_Ico` (the moduli admitting a fixed shift form an
+interval) this reduces `‖E_Λ‖` to
+```
+Σ_r ( ‖Σ_{m ∈ [m₀(r), mHi]} Λ(m)e(F_{T,r}(m))‖ + log(mHi+1) ) / r,
+```
+i.e. to the Vaughan block estimate `norm_sum_vonMangoldt_ndPhaseExp_le` plus a harmonic log.
+
+Card 12: 52 modules.
