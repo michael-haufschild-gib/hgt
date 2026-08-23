@@ -197,6 +197,8 @@ and the relation to the Fargues–Fontaine curve) into the corpus as closed Lean
 
 | **Cor 1.5(1) (`t28n`) surjectivity**: every ring homomorphism `W_rat(κ₀) → C` into an algebraically closed field is induced by a character of `κˣ`.  `ℤ̲κ/κ₀` is integral over `W_rat(κ₀)` because the orbit polynomial has invariant coefficients lying in `ℤ̲κ/κ₀`, hence coming from `W_rat(κ₀)` by Prop 1.3; the lifting theorem then extends along `W_rat(κ₀) → ℤ̲κ/κ₀`, and the already-proved bijection extends further to `ℤ̲κ` | `RHTower/DeningerDynSysCor15.lean` | closed |
 
+| **§2 / §13, the key brick**: `W_rat` **commutes with stalks** — the comparison `stalk (W_rat 𝒪_X) → W_rat (𝒪_x)` is an isomorphism, and so is its sheaf-level version.  Surjectivity: a normalised fraction over the stalk has finitely many coefficients, which lift to a common neighbourhood.  Injectivity: a normalised fraction is zero exactly when numerator and denominator agree, which is finitely many equalities of germs | `RHTower/DeningerDynSysWittStalkIso.lean` | closed |
+| **mathlib gap**: finitely many germs lift to a common open neighbourhood; a polynomial over a stalk is the image of a polynomial over sections (with the constant term normalised after shrinking); and finitely many germ equalities hold already over a smaller neighbourhood | `HTGeometry/GermPolynomialLift.lean` | closed |
 | **§2 stalks**: sheafification does not change the stalks of the rational Witt presheaf, and the canonical comparison `stalk (𝒪 ⋙ W_rat) → W_rat (𝒪_x)` — the infrastructure for Def 2.4/2.5 | `RHTower/DeningerDynSysWittStalk.lean` | closed |
 
 | **Def 2.5 (`t25n`)**: a morphism `S → W_rat(X)` — a morphism of ringed spaces whose stalk maps `W_rat(𝒪_{X,f(s)}) → 𝒪_{S,s}` are compatible with the sheaf morphism through the stalk comparison and descend to the residue data | `RHTower/DeningerDynSysWittStalk.lean` | closed |
@@ -833,3 +835,22 @@ Nothing in v4 is untracked by the ledger: the only apparent omission, Prop 1.4, 
   Axiom audit on all of these: `[propext, Classical.choice, Quot.sound]`.
   **What is left of Prop 13.1** is only the bijection statement: reading the tuple back off a
   morphism (the stalk maps of `sheafMap` at `η` and `s`) and the round trips.
+
+- 2026-08-23 — **`W_rat` commutes with stalks — the brick §2 and §13 were waiting for.**
+  `deningerWittStalkToStalk_isIso` and its sheaf-level companion
+  `deningerWittSheafStalkToStalk_isIso` close the comparison that Deninger uses implicitly when he
+  computes `F (S) = colim_{U ∋ y} W_rat (𝒪_X) (U) = W_rat (𝒪_{X,y})` in §13 and that Def 2.5 needs
+  to be written literally.  It is exactly the "a rational Witt vector has finitely many
+  coefficients" argument: every element is a normalised fraction `P / Q`
+  (`deningerCanonicalRationalWitt_eq_normalizedFraction`), its finitely many coefficients lift to a
+  common neighbourhood, and after one more shrinking the constant terms are literally `1`; and a
+  normalised fraction vanishes exactly when `P = Q`
+  (`deningerCanonicalRationalWittNormalizedFraction_eq_zero_iff`, already in the corpus), which is
+  finitely many equalities of germs.
+  The reusable half is `HTGeometry/GermPolynomialLift.lean`: germ lifting for a finite family, for
+  a polynomial, for a *normalised* polynomial, and the converse shrinking lemma.
+  Two corpus lemmas that a first pass duplicated — `deningerRationalWittDenominators_le_nonZeroDivisors`
+  and `deningerCanonicalRationalWittNormalizedFraction_eq_zero_iff` — were already there; the
+  search tool finds them under "denominators non zero divisors" and "normalized fraction equals
+  zero iff".  Search before building.
+  Axiom audit: `[propext, Classical.choice, Quot.sound]`.

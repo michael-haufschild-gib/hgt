@@ -96,4 +96,62 @@ theorem exists_germ_lift_normalized_polynomial (P : Polynomial (F.stalk x : Type
     rw [TopCat.Presheaf.germ_res F iWU x hxW]
     exact hQ
 
+set_option backward.isDefEq.respectTransparency false in
+/-- Finitely many equalities of germs hold already on a common smaller neighbourhood. -/
+theorem exists_res_eq_of_germ_eq_range (U : Opens X) (hx : x ∈ U) (n : ℕ)
+    (a b : ℕ → (F.obj (op U) : Type u))
+    (h : ∀ i < n, F.germ U x hx (a i) = F.germ U x hx (b i)) :
+    ∃ (V : Opens X) (_ : x ∈ V) (i : V ⟶ U),
+      ∀ k < n, F.map i.op (a k) = F.map i.op (b k) := by
+  induction n with
+  | zero => exact ⟨U, hx, 𝟙 U, fun k hk => absurd hk (Nat.not_lt_zero k)⟩
+  | succ n ih =>
+      obtain ⟨V₀, hxV₀, i₀, hi₀⟩ := ih (fun i hi => h i (by omega))
+      obtain ⟨W, hxW, iW, iW', hW⟩ := F.germ_eq x hx hx (a n) (b n) (h n (by omega))
+      rw [Subsingleton.elim iW' iW] at hW
+      refine ⟨V₀ ⊓ W, ⟨hxV₀, hxW⟩, homOfLE (le_trans inf_le_left i₀.le), ?_⟩
+      intro k hk
+      have hfac : ∀ c : (F.obj (op U) : Type u),
+          F.map (homOfLE (le_trans (inf_le_left : V₀ ⊓ W ≤ V₀) i₀.le)).op c
+            = F.map (homOfLE (inf_le_left : V₀ ⊓ W ≤ V₀)).op (F.map i₀.op c) := by
+        intro c
+        rw [← ConcreteCategory.comp_apply, ← Functor.map_comp]
+        congr 2
+      have hfacW : ∀ c : (F.obj (op U) : Type u),
+          F.map (homOfLE (le_trans (inf_le_left : V₀ ⊓ W ≤ V₀) i₀.le)).op c
+            = F.map (homOfLE (inf_le_right : V₀ ⊓ W ≤ W)).op (F.map iW.op c) := by
+        intro c
+        rw [← ConcreteCategory.comp_apply, ← Functor.map_comp]
+        congr 2
+      by_cases hkn : k = n
+      · subst hkn
+        rw [hfacW (a k), hfacW (b k), hW]
+      · have hk' : k < n := by omega
+        rw [hfac (a k), hfac (b k), hi₀ k hk']
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Two polynomials with the same image in the stalk already agree over a smaller
+neighbourhood. -/
+theorem exists_res_eq_of_germ_eq_polynomial (U : Opens X) (hx : x ∈ U)
+    (P Q : Polynomial (F.obj (op U) : Type u))
+    (h : P.map (F.germ U x hx).hom = Q.map (F.germ U x hx).hom) :
+    ∃ (V : Opens X) (_ : x ∈ V) (i : V ⟶ U),
+      P.map (F.map i.op).hom = Q.map (F.map i.op).hom := by
+  set n := max P.natDegree Q.natDegree + 1 with hn
+  have hcoeff : ∀ i < n, F.germ U x hx (P.coeff i) = F.germ U x hx (Q.coeff i) := by
+    intro i _
+    have := congrArg (fun R : Polynomial (F.stalk x : Type u) => R.coeff i) h
+    simpa [Polynomial.coeff_map] using this
+  obtain ⟨V, hxV, i, hi⟩ := exists_res_eq_of_germ_eq_range F x U hx n _ _ hcoeff
+  refine ⟨V, hxV, i, ?_⟩
+  ext m
+  rw [Polynomial.coeff_map, Polynomial.coeff_map]
+  by_cases hm : m < n
+  · exact hi m hm
+  · have hP : P.coeff m = 0 :=
+      Polynomial.coeff_eq_zero_of_natDegree_lt (by omega)
+    have hQ : Q.coeff m = 0 :=
+      Polynomial.coeff_eq_zero_of_natDegree_lt (by omega)
+    rw [hP, hQ]
+
 end HTGeometry

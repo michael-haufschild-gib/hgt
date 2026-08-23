@@ -2399,6 +2399,7 @@ import GaloisForLFunctions.RHTower.DeningerDynSysWittFaithful
 import GaloisForLFunctions.RHTower.DeningerDynSysWittSchemeFaithful
 import GaloisForLFunctions.RHTower.DeningerDynSysTwoPointGamma
 import GaloisForLFunctions.RHTower.DeningerDynSysTwoPointSheafMap
+import GaloisForLFunctions.RHTower.DeningerDynSysWittStalkIso
 import GaloisForLFunctions.RHTower.DeningerDynSysWittPerfectDescent
 import GaloisForLFunctions.RHTower.DeningerDynSysAtomDescent
 import GaloisForLFunctions.RHTower.DeningerDynSysWittAtomDescent
@@ -4088,6 +4089,9 @@ import GaloisForLFunctions.RHTower.Sieve.VaughanTypeIEstimates
 import GaloisForLFunctions.RHTower.Sieve.VaughanTypeIICoefficients
 import GaloisForLFunctions.RHTower.Sieve.VaughanTypeIIEstimate
 import GaloisForLFunctions.RHTower.Sieve.VonMangoldtBlockEstimate
+import GaloisForLFunctions.RHTower.Sieve.TypeIICoefficientEnergy
+import GaloisForLFunctions.RHTower.Sieve.DyadicBlockIco
+import GaloisForLFunctions.RHTower.Sieve.TypeIIDyadicBlocks
 import GaloisForLFunctions.RHTower.Sieve.VonMangoldtParityCorrection
 import GaloisForLFunctions.RHTower.FriableCoefficientSurjectivity
 import GaloisForLFunctions.RHTower.FriableEdgeCoefficients
@@ -9098,6 +9102,7 @@ import GaloisForLFunctions.RHTower.MellinHeadChart
 import GaloisForLFunctions.RHTower.MellinTwoSidedGlue
 import GaloisForLFunctions.RHTower.HeadTailVector
 import GaloisForLFunctions.RHTower.ExtendedMellinHeadHardy
+import GaloisForLFunctions.RHTower.DivShiftRepresentative
 import GaloisForLFunctions.RHTower.SoninFromHardyData
 import GaloisForLFunctions.RHTower.ZetaZeroOrderReflection
 import GaloisForLFunctions.RHTower.ZetaDivPowRepresentative

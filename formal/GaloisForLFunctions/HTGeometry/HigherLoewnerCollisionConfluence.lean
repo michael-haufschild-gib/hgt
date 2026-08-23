@@ -19,6 +19,7 @@ This file does not assert positivity of any particular Löwner kernel.
 -/
 
 open Filter Finset Set Topology Asymptotics
+open scoped Matrix MatrixOrder
 
 namespace GaloisForLFunctions.HTGeometry
 
@@ -491,6 +492,128 @@ theorem normalizedLoewnerJetMatrix_posSemidef_of_eventually_collision
     (normalizedLoewnerJetMatrix f X N).PosSemidef := by
   exact GaloisForLFunctions.HilbertMetric.Matrix.PosSemidef.of_tendsto hpos
     (tendsto_normalizedMovingDslopeMatrix hf N)
+
+/-! ## Finite-difference congruence -/
+
+private lemma sum_fin_prefix {N : ℕ} (p : Fin N) (F : ℕ → ℝ) :
+    (∑ k : Fin N, if (k : ℕ) ≤ (p : ℕ) then F k else 0) =
+      ∑ k ∈ Finset.range ((p : ℕ) + 1), F k := by
+  change (∑ k : Fin N,
+    (fun m : ℕ => if m ≤ (p : ℕ) then F m else 0) k) = _
+  rw [Fin.sum_univ_eq_sum_range
+    (fun m : ℕ => if m ≤ (p : ℕ) then F m else 0) N]
+  rw [← Finset.sum_filter]
+  congr 1
+  ext k
+  simp only [Finset.mem_filter, Finset.mem_range]
+  omega
+
+/-- Löwner divided-slope matrix on the uniform collision nodes `X + i h`. -/
+def uniformMovingDslopeMatrix
+    (f : ℝ → ℝ) (X : ℝ) (N : ℕ) (h : ℝ) : Matrix (Fin N) (Fin N) ℝ :=
+  fun i j => movingDslope f X i j h
+
+/-- Lower-triangular normalized finite-difference transform. -/
+def normalizedDifferenceTransform (N : ℕ) (h : ℝ) : Matrix (Fin N) (Fin N) ℝ :=
+  fun p k => if (k : ℕ) ≤ (p : ℕ) then
+    finiteDifferenceWeight p k / ((((p : ℕ).factorial : ℕ) : ℝ) * h ^ (p : ℕ))
+  else 0
+
+/-- The mixed finite-difference matrix is exactly a congruence of the original Löwner matrix.
+This algebraic identity is the positivity-preserving core of arbitrary-order confluence. -/
+theorem normalizedMovingDslopeMatrix_eq_congruence
+    (f : ℝ → ℝ) (X : ℝ) (N : ℕ) {h : ℝ} (hh : h ≠ 0) :
+    normalizedMovingDslopeMatrix f X N h =
+      normalizedDifferenceTransform N h * uniformMovingDslopeMatrix f X N h *
+        (normalizedDifferenceTransform N h)ᴴ := by
+  ext p q
+  simp only [normalizedMovingDslopeMatrix, normalizedMixedMovingDslopeDifference,
+    mixedMovingDslopeDifference, Matrix.mul_apply, Matrix.conjTranspose_apply,
+    star_id_of_comm, normalizedDifferenceTransform, uniformMovingDslopeMatrix]
+  have hinner (l : Fin N) :
+      (∑ k : Fin N,
+        (if (k : ℕ) ≤ (p : ℕ) then
+          finiteDifferenceWeight p k /
+            (((p : ℕ).factorial : ℝ) * h ^ (p : ℕ))
+        else 0) * movingDslope f X k l h) =
+      ∑ k ∈ Finset.range ((p : ℕ) + 1),
+        (finiteDifferenceWeight p k /
+          (((p : ℕ).factorial : ℝ) * h ^ (p : ℕ))) *
+            movingDslope f X k l h := by
+    rw [show (∑ k : Fin N,
+        (if (k : ℕ) ≤ (p : ℕ) then
+          finiteDifferenceWeight p k /
+            (((p : ℕ).factorial : ℝ) * h ^ (p : ℕ))
+        else 0) * movingDslope f X k l h) =
+      ∑ k : Fin N, if (k : ℕ) ≤ (p : ℕ) then
+        (finiteDifferenceWeight p k /
+          (((p : ℕ).factorial : ℝ) * h ^ (p : ℕ))) *
+            movingDslope f X k l h else 0 by
+          apply Finset.sum_congr rfl
+          intro k hk
+          split <;> simp_all]
+    exact sum_fin_prefix p (fun k =>
+      (finiteDifferenceWeight p k /
+        (((p : ℕ).factorial : ℝ) * h ^ (p : ℕ))) *
+          movingDslope f X k l h)
+  simp_rw [hinner]
+  rw [show (∑ l : Fin N,
+      (∑ k ∈ Finset.range ((p : ℕ) + 1),
+        finiteDifferenceWeight p k /
+          (((p : ℕ).factorial : ℝ) * h ^ (p : ℕ)) *
+            movingDslope f X (k : ℝ) l h) *
+        (if (l : ℕ) ≤ (q : ℕ) then
+          finiteDifferenceWeight q l /
+            (((q : ℕ).factorial : ℝ) * h ^ (q : ℕ)) else 0)) =
+      ∑ l : Fin N, if (l : ℕ) ≤ (q : ℕ) then
+        (∑ k ∈ Finset.range ((p : ℕ) + 1),
+          finiteDifferenceWeight p k /
+            (((p : ℕ).factorial : ℝ) * h ^ (p : ℕ)) *
+              movingDslope f X (k : ℝ) l h) *
+          (finiteDifferenceWeight q l /
+            (((q : ℕ).factorial : ℝ) * h ^ (q : ℕ))) else 0 by
+        apply Finset.sum_congr rfl
+        intro l hl
+        split <;> simp_all]
+  rw [sum_fin_prefix q (fun l =>
+    (∑ k ∈ Finset.range ((p : ℕ) + 1),
+      finiteDifferenceWeight p k /
+        (((p : ℕ).factorial : ℝ) * h ^ (p : ℕ)) *
+          movingDslope f X (k : ℝ) (l : ℝ) h) *
+      (finiteDifferenceWeight q l /
+        (((q : ℕ).factorial : ℝ) * h ^ (q : ℕ))))]
+  rw [Finset.sum_comm]
+  rw [Finset.sum_div]
+  apply Finset.sum_congr rfl
+  intro i hi
+  rw [Finset.sum_div]
+  rw [Finset.sum_mul]
+  apply Finset.sum_congr rfl
+  intro j hj
+  have hfacp : ((p : ℕ).factorial : ℝ) ≠ 0 := by positivity
+  have hfacq : ((q : ℕ).factorial : ℝ) ≠ 0 := by positivity
+  field_simp [hfacp, hfacq, hh, pow_add]
+  ring
+
+/-- Finite-difference confluence preserves positive semidefiniteness at every nonzero scale. -/
+theorem normalizedMovingDslopeMatrix_posSemidef_of_uniform
+    (f : ℝ → ℝ) (X : ℝ) (N : ℕ) {h : ℝ} (hh : h ≠ 0)
+    (hpos : (uniformMovingDslopeMatrix f X N h).PosSemidef) :
+    (normalizedMovingDslopeMatrix f X N h).PosSemidef := by
+  rw [normalizedMovingDslopeMatrix_eq_congruence f X N hh]
+  exact hpos.mul_mul_conjTranspose_same (normalizedDifferenceTransform N h)
+
+/-- Eventual positivity of uniform finite Löwner matrices forces positivity of the full diagonal
+jet matrix.  No invertibility or condition-number bound for the difference transform is needed. -/
+theorem normalizedLoewnerJetMatrix_posSemidef_of_eventually_uniform
+    {f : ℝ → ℝ} {X : ℝ} (hf : AnalyticAt ℝ f X) (N : ℕ)
+    (hpos : ∀ᶠ h in nhdsWithin 0 {0}ᶜ,
+      (uniformMovingDslopeMatrix f X N h).PosSemidef) :
+    (normalizedLoewnerJetMatrix f X N).PosSemidef := by
+  apply normalizedLoewnerJetMatrix_posSemidef_of_eventually_collision hf N
+  filter_upwards [hpos, self_mem_nhdsWithin] with h hmatrix hh
+  exact normalizedMovingDslopeMatrix_posSemidef_of_uniform f X N
+    (by simpa only [Set.mem_compl_iff, Set.mem_singleton_iff] using hh) hmatrix
 
 end
 

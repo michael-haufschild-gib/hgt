@@ -265,3 +265,29 @@ coefficient bound", "one minus zeta moebius truncated coefficient divisor bound"
 Everything remaining (`VC6`) is optimisation: choosing `U = V = W = M^{3/5}X^{-1/5}`, bounding the
 coefficient energy by `DivisorSquareMoment`, splitting the correlation sum into diagonal /
 sub-resonant / super-resonant, and summing over the dyadic blocks and over `r`.
+
+## VC6, first half: energies and the dyadic split (2026-08-23)
+
+Searches first: "Chebyshev psi upper bound linear explicit constant" (found and reused
+`exists_chebyshevPsiReal_le_linear`), "sum of von Mangoldt squared", "dyadic decomposition finite
+range union of blocks" (found and reused `Sieve/AdicBlocks.lean`'s
+`norm_sum_Icc_le_sum_dyadic_blocks`), "dyadic block filter equals Ico".
+
+- `TypeIICoefficientEnergy.lean` —
+  `exists_sum_typeIILong_sq_le : Σ_{d ≤ L} |(Λ−Λ_U)(d)|² ≤ C·L·log L`
+  (`|Λ−Λ_U| ≤ Λ ≤ log L` and `Σ Λ = ψ(L) ≤ C L`), and
+  `sum_typeIIShort_sq_le : Σ_{m ≤ L} |(1−ζμ_V)(m)|² ≤ 2L + 2L·H_L³`
+  (`(1+x)² ≤ 2 + 2x²`, then the divisor second moment).
+- `DyadicBlockIco.lean` — `dyadic_block_eq_Ico`: the corpus's `⌊log₂ n⌋`-indexed block of `[1,M]`
+  IS `[2^j, min(2^{j+1}, M+1))`, so the interval-shaped block estimates apply to it.
+- `TypeIIDyadicBlocks.lean` — `blockTypeIIEnergy` and **`norm_typeII_piece_le_sum_blocks`**:
+  ```
+  ‖type-II piece‖ ≤ Σ_{j ≤ log₂ L} √(blockTypeIIEnergy j).
+  ```
+  Splitting the long variable dyadically BEFORE Cauchy--Schwarz is what makes the estimate
+  nontrivial: on the whole range the coefficient energy is proportional to `L` while the diagonal
+  is proportional to the block length, and the two only balance blockwise.
+
+Every structural step of the card is now Lean-closed.  What remains is purely quantitative:
+bounding `blockTypeIIEnergy j` by diagonal + sub-resonant + super-resonant contributions, choosing
+`U = V = W`, and summing over the blocks and over `r`.

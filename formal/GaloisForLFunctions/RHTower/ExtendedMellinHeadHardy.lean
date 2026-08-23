@@ -60,7 +60,7 @@ theorem chi_mul_extendedMellinContinuation_one_sub (ha : 0 < a) (hev : v ∈ eve
     (hc : ∀ᵐ u ∂(volume : Measure ℝ), u ∈ centralInterval a →
       ((fourierUnitary v : SoninL2) : ℝ → ℂ) u = c)
     (hd : ∀ᵐ t ∂(volume : Measure ℝ), t ∈ centralInterval a → (v : ℝ → ℂ) t = d)
-    {s : ℂ} (hs1 : 1 / 2 < s.re) (hs2 : s.re < 1) :
+    {s : ℂ} (hs1 : 0 < s.re) (hs2 : s.re < 1) :
     burnolChiFactor s * extendedMellinContinuation a c d v (1 - s)
       = extendedMellinContinuation a d c (fourierUnitary v) s := by
   have hev' : fourierUnitary v ∈ evenSubspace := fourierUnitary_mem_evenSubspace hev
@@ -95,7 +95,7 @@ theorem chi_mul_extendedMellinContinuation_one_sub (ha : 0 < a) (hev : v ∈ eve
       have h2 := tendsto_const_nhds (x := s) (f := atTop (α := ℕ)) |>.add h1
       simpa [hu] using h2
     have hs0 : s ≠ 0 := by
-      intro h; rw [h] at hs1; simp at hs1; linarith
+      intro h; rw [h] at hs1; simp at hs1
     have hsne1 : s ≠ 1 := by
       intro h; rw [h] at hs2; simp at hs2
     have hL : ContinuousAt
