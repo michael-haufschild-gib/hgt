@@ -1203,3 +1203,31 @@ aperture (Lemma 7.4) — i.e. the two thresholds coincide.
 
 Remaining: Proposition 6.5, Theorem 6.7, the `L²`-in-`Z` half of Theorem 5.2, Theorems 7.7–7.10
 (Levin's completely-regular-growth theory), and the capstones 3.2/3.3.
+
+## Theorem 6.7 and Theorem 3.2 — CLOSED (2026-08-23); the `L → K` bridge
+
+`RHTower/SoninCarrierFromExtended.exists_soninCarrier_of_extended`: **two dilation shifts carry any
+vector of `L_a` to a vector of `K_b` (`b < a`) with exactly the same Mellin orders on the open
+critical strip.**
+
+The shift `soninShift r lam v = U_r v − λ v` multiplies the two aperture constants by explicit
+scalars: the physical one by `√r − λ` and the cosine one by `1/√r − λ`
+(`soninShift_ae_phys`, `soninShift_ae_fourier`, from the corpus's `ae_const_dilation` and
+`fourierUnitary_dilation`).  Taking `λ = √r` kills the physical constant, and a second shift with
+`λ = 1/√r` kills the cosine one while — by linearity — leaving the physical one `0`.  Both Mellin
+multipliers `r^{s-1/2} − √r` and `r^{s-1/2} − 1/√r` have all their zeros on `Re s = 1` and
+`Re s = 0` respectively, i.e. **outside the open critical strip**, so no order in the strip moves.
+With `r = √(a/b)` the two shifts land exactly at aperture `b`.
+`mem_centralSoninCarrier_of_ae_zero` (both constants zero ⟺ Sonine) closes the loop.
+
+Consequences:
+
+* `RHTower/BurnolSonineMinimality.exists_soninCarrier_minimality_witness` — **Theorem 6.7**: for
+  `a < 1` the evaluators are minimal in `K_a`.
+* `…exists_nonzero_soninCarrier_zeta_dvd` — the `K_a` half of Proposition 6.4: not complete for `a < 1`.
+* `RHTower/BurnolTheoremThreeTwo.burnol_theorem_three_two` — **Theorem 3.2** (all parts except the
+  `a = 1` "omit two" statement, which is Proposition 6.5): complete for `a ≥ 1`, complete after
+  arbitrary finite omission for `a > 1` (hence not minimal), not complete and minimal for `a < 1`.
+
+Remaining: Proposition 6.5 (the `a = 1` shortened `Z¹` system), the `L²`-in-`Z` half of Theorem 5.2,
+Theorems 7.7–7.10 (Levin), and capstone 3.3's minimality half.

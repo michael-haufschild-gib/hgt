@@ -175,6 +175,9 @@ and the relation to the Fargues–Fontaine curve) into the corpus as closed Lean
 | **Thm 5.2, equation (48)**: the isotropy condition `F_ν (x, P) = F_{ν'} (x, P ∘ σ)` on character points is exactly `range (twisted norm) ≤ ker P` | `RHTower/DeningerDynSysIsotropyCondition.lean`, `RHTower/DeningerDynSysTwistedNorm.lean` | closed |
 | **Thm 5.2, the local computation**: for an algebraically closed `κ`, a `c`-th power automorphism `σ` and a character `P` with finite kernel, the isotropy condition forces `ν = ν' c` — Deninger's `q = p^a` | `RHTower/DeningerDynSysTwistedNorm.lean` | closed |
 | **§3 / §5, the `Q^{>0}_0`-action on `X̌ (C)`**: every `F_ν` with `ν ∈ N₀` is a bijection of the colimit, so `F_{ν/ν'} = F_ν ∘ F_{ν'}^{-1}` is defined; it depends only on the rational `ν/ν'`, is multiplicative, is the identity for `ν = ν'`, and fixes a point exactly when `F_ν` and `F_{ν'}` agree on it | `RHTower/DeningerDynSysColimFraction.lean` | closed |
+| **Thm 5.2, the isotropy condition on `X̌ (C)`**: `F_{ν/ν'}` fixes a class `F_μ^{-1} (x, P)` exactly when `P^{νa} = P^{ν'b}` for some `a, b ∈ N₀` with `μa = μb`; and over an algebraically closed residue field a character with finite kernel has **trivial isotropy** | `RHTower/DeningerDynSysColimIsotropy.lean` | closed |
+| **Thm 5.2, the Galois-twisted conclusion**: with the twist `σ` the `c`-th power map, the isotropy condition forces `ν = ν' c`, i.e. `q = p^a` | `RHTower/DeningerDynSysColimIsotropy.lean` | closed |
+| **§6, the suspension `S ×_Q R` and Thm 6.1's isotropy**: the quotient of `S × R` by `(s,u) q = (q • s, ι(q)^{-1} u)`, its `R`-action through the second factor, and the isotropy law `(R)_{[s,u]} = ι ((Q)_s)`; in particular trivial isotropy in `Q` gives trivial isotropy in `R` | `HTGeometry/SuspensionAction.lean` | closed |
 | **Cor 3.3, formal content**: for a normal subgroup `N ≤ G` acting on a set, `G` acts on the `N`-orbit space and `(S / N) / G = S / G` — Deninger's iterated descent `W_rat(X₁)(C)/G₁ = W_rat(X₀)(C)` | `HTGeometry/OrbitQuotientComposition.lean` | closed |
 | **Prop 1.1(b) in ring form over a domain**: `ω : ℤ[A ∖ 0] ≃+* W_rat(A)` for an integrally closed domain with algebraically closed fraction field, and the consequence `Hom_ring(W_rat(A), R) ≃ (A →*₀ R)` used for the `𝒪`-valued points | `RHTower/DeningerDynSysOmegaDomainRing.lean` | closed |
 | **Prop 1.1(b) (`t21nn`) in ring form**: `ω : ℤ[κˣ] ≃+* W_rat(κ)` for `κ` algebraically closed — the additive comparison is multiplicative because both sides are biadditive and `[a]⊙[b] = [ab]` | `RHTower/DeningerDynSysOmegaRing.lean` | closed |
@@ -1006,3 +1009,28 @@ Nothing in v4 is untracked by the ledger: the only apparent omission, Prop 1.4, 
   Frobenius operators past each other with `deningerColimFrobenius_commute`, which is new here
   along with `deningerColimFrobenius_comp` and `F_1 = id`.
   Axiom audit: `[propext, Classical.choice, Quot.sound]`.
+
+- 2026-08-23 — **Theorem 5.2's isotropy analysis is closed on the colimit itself.**
+  `deningerColimFrac_eq_self_iff_char` unwinds `F_{ν/ν'} z = z` for `z = F_μ^{-1} (x, P)` into the
+  character identity `P^{νa} = P^{ν'b}` with `μa = μb`; `deningerColimFrac_isotropy_trivial` then
+  shows that for an algebraically closed residue field and a character of finite kernel the
+  isotropy is **trivial** — Deninger's remark that without points of finite residue field all
+  isotropy groups of the `Q^{>0}_0`-action are trivial.  `deningerColimFracTwisted_exponent` is the
+  Galois-twisted version, i.e. the situation on `X̌₀ (C) = X̌ (C) / G`: if the twist is the `c`-th
+  power automorphism then `ν = ν' c`, which for `σ = Frobenius^a` is `q = p^a`, Deninger's
+  conclusion.
+  Axiom audit: `[propext, Classical.choice, Quot.sound]`.
+
+- 2026-08-23 — **§6's suspension is built and Theorem 6.1's isotropy law is proved in general.**
+  `HTGeometry/SuspensionAction.lean` constructs `S ×_Q R` for a group `Q` acting on `S` and a
+  homomorphism `ι : Q → R` into a commutative group: the quotient of `S × R` by
+  `(s , u) q = (q • s , ι (q)^{-1} u)`, with the `R`-action through the second factor
+  (`suspensionSMul_one`, `suspensionSMul_mul`).  The point of Theorem 6.1 is
+  `suspension_isotropy`: `v` fixes `[s , u]` exactly when `v = ι (q)` for some `q` fixing `s`, so
+  the isotropy group of a class is the image of the isotropy group of the underlying point
+  (`suspension_isotropy_eq_map`), and trivial isotropy downstairs gives trivial isotropy upstairs
+  (`suspension_isotropy_trivial`).
+  With `Q = Q^{>0}_0`, `R = R^{>0}` and `S = X̌₀ (C)_E` this is exactly Deninger's
+  `(R^{>0})_{x₀} = N_{x₀}^ℤ` once Theorem 5.2 identifies `(Q^{>0}_0)_{P₀}`; and the previous batch
+  proved that identification.
+  Axiom audit: `[propext, Quot.sound]`.

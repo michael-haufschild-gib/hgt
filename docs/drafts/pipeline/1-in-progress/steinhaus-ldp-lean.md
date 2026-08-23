@@ -228,3 +228,21 @@ expansion), `S8` (the LDP and Gärtner--Ellis), `S9` (prime Karamata).
 Card 11: 10 modules.  The remaining input for part `4`'s sub-critical regime is
 `log I₀(x)/x² → 1/4`, i.e. the second-order Taylor coefficient of the cumulant at the origin,
 which is `Var/2` with `Var = 1/2` now available.
+
+## The cumulant's Taylor data at the origin (2026-08-23)
+
+`RHTower/SteinhausCumulantTaylor.lean`:
+
+- `mem_interior_integrableExpSet` — the exponential-integrability set is all of `ℝ`, so every
+  mathlib `cgf` derivative formula applies at every tilt;
+- `deriv_steinhausLogLaplace_zero : (log I₀)'(0) = 0` (from `deriv_cgf` and `∫ proj = 0`);
+- **`iteratedDeriv_two_steinhausLogLaplace_zero : (log I₀)''(0) = 1/2`** (from
+  `iteratedDeriv_two_cgf_eq_integral` at `0`, `mgf 0 = 1`, and `∫ proj² = 1/2`);
+- **`tendsto_steinhausLogLaplace_div_sq : log I₀(x)/x² → 1/4`** as `x → 0` — the card's `(17)`.
+  Proved by l'Hôpital (`HasDerivAt.lhopital_zero_nhdsNE`): the ratio of derivatives is
+  `(log I₀)'(x)/(2x) = slope((log I₀)', 0, x)/2 → (log I₀)''(0)/2 = 1/4`, using that the first
+  derivative vanishes at the origin.
+
+Card 11: 11 modules.  The sub-critical regime of part `4` now needs only the dominated-convergence
+step `Λ_α(λ)/λ² → (1/4)∫w_α²` (dominating function `w_α²/2`, integrable exactly for `α < 1/2`) and
+the Legendre asymptotic `Λ ∼ Aλ² ⟹ I ∼ q²/(4A)`.
