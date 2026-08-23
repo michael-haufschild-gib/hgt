@@ -562,13 +562,15 @@ aperture section, and either the section or a uniform growing-block approximatio
 `SoninForbiddenClosedSum.lean`, `SoninCarrierAperture{Chain,Limits}.lean`, and `SoninExtendedApertureChain.lean` prove closed forbidden-band sums, dense aperture unions, and trivial cofinal intersections. `SoninApertureStrict.lean` strengthens density to strict antitonicity and proves Burnol Proposition 4.7: the union of all strictly smaller carriers is dense but proper. `SoninApertureStrictEigen.lean` proves same properness separately on cosine-invariant and cosine-skew Fourier eigenspaces. `SoninExtendedCodimensionTwo.lean` identifies orthogonal complement of `K_a` in extended `L_a` as exactly two-dimensional.
 
 `HardyLineIsometry.lean` supplies exact `2*pi` vertical-line Paley--Wiener norm and boundary limit.
-Working-tree `MellinHeadChart.lean` supplies the reflected exponential change of variables on
+`MellinHeadChart.lean` supplies the reflected exponential change of variables on
 `(0,a)`, exact `L2` mass preservation, and the identity sending the head Mellin transform to a
 half-line Laplace transform at `1/2-s`; together with the tail chart it realizes both half-planes
-used by two-sided Laplace uniqueness. Working-tree `MellinTwoSidedGlue.lean` applies that uniqueness
+used by two-sided Laplace uniqueness. `MellinTwoSidedGlue.lean` applies that uniqueness
 to one strip function with head and tail representations and forces the head datum to be constant
 and the tail datum to equal its source almost everywhere. This closes the analytic two-sided gluing
-engine, not F2's arithmetic all-power moment selection. `MellinHeadHardyConverse.lean` and
+engine. `SoninFromHardyData.lean` turns the resulting pair into an actual extended Sonine vector,
+closing Burnol Proposition 4.1's two-sided converse, not F2's arithmetic all-power moment selection.
+`MellinHeadHardyConverse.lean` and
 `MellinHeadHardyEquiv.lean` close both directions of Burnol
 Proposition 4.1 and identify continuation with the honest Mellin integral on `Re(s)<1`;
 `ZetaMellinHeadHardy.lean` places every multiplicity-correct zeta-zero quotient in that exact head
@@ -580,11 +582,18 @@ The completeness layer is now formal too. `BurnolSonineCompleteness.lean` and
 `BurnolSonineCompletenessUnit.lean` prove the zeta-divisibility completeness law inside `K_a`;
 `BurnolCompletenessLarge.lean` and `BurnolCompletenessOmit.lean` prove the large-aperture and
 finite-omission forms, while `BurnolCoPoissonNotComplete.lean` gives the sharp counterregime below
-unit aperture. Working-tree `BurnolCompletenessUnit.lean` closes Proposition 6.1 for every
+unit aperture. `BurnolCompletenessUnit.lean` closes Proposition 6.1 for every
 `a>=1`, including aperture one, by polynomial-growth rigidity and real-axis Mellin vanishing.
 `BurnolPropFiveFour.lean` closes the selected-height residue quotient limit.
-Working-tree `MellinRealVanishing.lean` adds real-axis decay of every extended Mellin continuation
-for `a>=1`. These results close the Sonine completeness/admissibility side; none selects an
+`MellinRealVanishing.lean` adds real-axis decay of every extended Mellin continuation for `a>=1`.
+`BurnolMinimalWitness.lean` and `BurnolMinimalitySystem.lean` construct the literal dual vector
+with Mellin transform `zeta(s)/(s-rho)^l` and prove every zero jet has a minimality witness at
+aperture one. Working-tree `MellinApertureIndependence.lean` proves continued transforms agree
+across nested apertures with the same band constants; working-tree `BurnolMinimalityAperture.lean`
+therefore proves minimality for every `0<a<=1`. Together with completeness for `a>=1` and
+noncompleteness for `a<1`, the corpus now gives the exact critical-aperture phase diagram: complete
+and minimal at one, incomplete but minimal below one, and complete above one with no stronger
+minimality claim. These results close the Sonine completeness/minimality/admissibility side; none selects an
 aperture or identifies powers of the positive Sonin carrier with completed prime--Gamma moments.
 The all-power source weld remains open.
 
@@ -621,15 +630,15 @@ orthogonal projection, and projection tangent. `LocalEulerHankelSingularLimit.le
 uncompleted local Blaschke degeneration is singular rather than identity. The completed full-pair
 version belongs to live STC, but compact repair still cannot supply F2's all-power weld.
 
-Working-tree `SoninSmallCutoffGroundRow.lean` proves exact aperture behavior of the smoothed
+`SoninSmallCutoffGroundRow.lean` proves exact aperture behavior of the smoothed
 semilocal rank-one ground corner: it is trace class and nonzero for all sufficiently small cutoffs,
-but its trace norm tends to zero cofinally at large aperture. Working-tree
+but its trace norm tends to zero cofinally at large aperture.
 `TransportedProlateResolventCorner.lean` proves a conditional transported corner is trace class and
 nonzero under bounded invertible transport, reduction, noncompact crossing, finite-dimensional
 exceptional complement, and spectral disjointness. These close local survival/decay and abstract
 Sylvester transport. They do not instantiate all hypotheses on one literal completed source or
 identify power moments, so F2 and STC open cores remain.
-Working-tree `SemilocalCyclicFormDomain.lean` also proves uniform weight equivalence of form
+`SemilocalCyclicFormDomain.lean` also proves uniform weight equivalence of form
 domains and the bounded self-adjoint representative theorem; it is domain infrastructure, not the
 missing cyclic source identification.
 

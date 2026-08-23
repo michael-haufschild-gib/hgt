@@ -229,3 +229,39 @@ the whole `NearDiagonal*` chain, `HTGeometry/VanDerCorputInequality.lean`, `harm
 
 Remaining: the type-II assembly (masking + `sum_normSq_inner_le` + the two correlation regimes),
 the third Vaughan piece's coefficient bounds, and `VC6`.
+
+## VC5 CLOSED — the whole Vaughan decomposition of `S_r(I)` is Lean-proved (2026-08-23)
+
+Searches run first each time (`formal_tools.py research`): "masked type II energy Cauchy Schwarz
+coupled range", "correlation Kuzmin Landau regime off diagonal pair", "diagonal correlation
+unimodular sum card interval", "Vaughan decomposition block sum three pieces", "arithmetic function
+mul_apply divisorsAntidiagonal zeta coercion", "truncated von Mangoldt Moebius convolution
+coefficient bound", "one minus zeta moebius truncated coefficient divisor bound".  No duplicates.
+
+- `TypeIIMaskedEnergy.lean` — `sum_typeII_masked_eq` (the coupled double sum IS a masked bilinear
+  form) and `norm_typeII_masked_sq_le`.
+- `TypeIICorrelationRegimes.lean` — `norm_masked_correlation_diag_le` (the diagonal costs the
+  length of the outer range), and `norm_sum_ndExp_corr_kuzminLandau_abs_le` (the sub-resonant
+  regime, either order of the pair).
+- `VaughanBlockDecomposition.lean` — **`sum_vonMangoldt_block_decomp`**: on a block above `U`,
+  `Σ Λ(n)w(n)` is exactly `−(ζ∗Λ_U∗μ_V) + (log∗μ_V) + ((Λ−Λ_U)∗(1−ζμ_V))` summed against `w`.
+- `ConvolutionCoercion.lean` — `coe_mul_apply`, `coe_zeta_mul_apply'`, `coe_log_mul_apply'`.
+- `VaughanTypeIPieces.lean` — `abs_truncAF_moebius_le_one`, and
+  `abs_truncAF_conv_le_log : |(Λ_U ∗ μ_V)(b)| ≤ log b` (from `Λ ∗ ζ = log`).
+- `VaughanTypeIEstimates.lean` — `norm_zeta_piece_le`, `norm_log_piece_le`.
+- `VaughanTypeIICoefficients.lean` — `card_divisorsAntidiagonal`,
+  `vonMangoldt_sub_truncAF_eq_zero`, `abs_vonMangoldt_sub_truncAF_le`,
+  `abs_one_sub_zeta_mul_moebius_le : |(1 − ζμ_V)(m)| ≤ 1 + d(m)`.
+- `VaughanTypeIIEstimate.lean` — `typeIILong`, `typeIIShort`, `sum_typeII_piece_eq`,
+  `norm_typeII_piece_sq_le`.
+- `VonMangoldtBlockEstimate.lean` — **the milestone**:
+  ```
+  ‖Σ_{n ∈ [A,B)} Λ(n)·e(F_{T,r}(n))‖
+      ≤ Σ_{b ≤ L} log b · fibreBound(b)
+        + Σ_{b ≤ L} 2·fibreBound(b)·log(fibre endpoint)
+        + √(typeIIEnergy).
+  ```
+
+Everything remaining (`VC6`) is optimisation: choosing `U = V = W = M^{3/5}X^{-1/5}`, bounding the
+coefficient energy by `DivisorSquareMoment`, splitting the correlation sum into diagonal /
+sub-resonant / super-resonant, and summing over the dyadic blocks and over `r`.

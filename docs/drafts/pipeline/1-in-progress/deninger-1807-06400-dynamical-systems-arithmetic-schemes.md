@@ -142,6 +142,9 @@ and the relation to the Fargues–Fontaine curve) into the corpus as closed Lean
 | **Cor 1.5(1) topological input**: the Galois action on `ℤ̲κ` and on `ℤ̲κ/κ₀` has open stabilizers and is continuous for the Krull topology; and an action with open stabilizers on a discrete space is continuous | `RHTower/DeningerDynSysGaloisContinuousAction.lean`, `HTGeometry/DiscreteContinuousSMul.lean` | closed |
 | **mathlib gap**: if a point has a smallest open neighbourhood `V`, the germ map on `Γ (F , V)` is an isomorphism — the indexing category of the stalk colimit has a terminal object | `HTGeometry/SmallestNeighbourhoodSections.lean` | closed |
 | **Prop 13.1 groundwork, the three section rings**: on the spectrum of a one-dimensional local domain the sections of the structure sheaf are `0` over `∅`, `Frac 𝒪` over `{η}` (its own smallest neighbourhood) and `𝒪` over `⊤`; and an open contains the closed point iff it is `⊤`, and contains the generic point iff it is nonempty | `HTGeometry/SpecDimOneSections.lean` | closed |
+| **Prop 13.1 groundwork, the base map**: a specialisation `x ⤳ y` and a one-dimensional local domain give the continuous `Spec 𝒪 → X` with `η ↦ x`, `s ↦ y`; the preimage of an open is `⊤` if it contains `y`, `{η}` if it contains `x` only, and `∅` otherwise | `HTGeometry/SpecTwoPointBase.lean` | closed |
+| **Prop 13.1 (`t41`), diagram (139), the sheaf morphism**: a homomorphism `f_s` on `W_rat (𝒪_{X,y})` into `Γ (S , ⊤)` and one `f_η` on `W_rat (𝒪_{X,x})` into `Γ (S , V)` agreeing after restriction assemble into a morphism of presheaves `W_rat (𝒪_X) ⟶ f_* 𝒪_S`, with naturality in all nine cases | `RHTower/DeningerDynSysTwoPointGamma.lean` | closed |
+| **Prop 13.1 (`t41`), the sheaf level**: the presheaf morphism extends over the sheafification, since the direct image of a sheaf is a sheaf | `RHTower/DeningerDynSysTwoPointSheafMap.lean` | closed |
 | **Prop 13.1 groundwork**: for a local domain of dimension ≤ 1 that is not a field, `Spec 𝒪` has exactly the two points `η = (0)` and `s = 𝔪`, `{η}` is the basic open at any nonzero element of `𝔪`, and the only opens are `∅`, `{η}`, `⊤`; the stalk at `s` is `𝒪` and the stalk at `η` is `Frac 𝒪` | `HTGeometry/SpecDimOneLocalDomain.lean`, `HTGeometry/SpecStalkLocalization.lean` | closed |
 | **Prop 14.16 (`t1213n`), the identification**: a pointed multiplicative map `A♭ → 𝒪` is additive modulo `p` — i.e. lies in Deninger's `Y^⋄` — exactly when it comes from a homomorphism of tilts, and the two nonvanishing conditions match because the untilt vanishes only at `0` over a reduced ring; as an `Equiv` | `RHTower/DeningerDynSysTiltAdditive.lean` | closed |
 | **Prop 14.16 (`t1213n`), the locality clause**: `P̂_y^♭ : Ô^♭ → 𝒪^♭` is a **local** homomorphism.  `A ⧸ p` is local when `A` is, so `A♭` is local with maximal ideal the elements whose zeroth coefficient is a non-unit; the zeroth coefficient of `χ^♭ x` is the reduction of `χ x` mod `p`, so locality is exactly `χ (𝔪^♭) ⊆ 𝔪_𝒪` | `RHTower/DeningerDynSysTiltLocalHom.lean` | closed |
@@ -810,3 +813,23 @@ Nothing in v4 is untracked by the ledger: the only apparent omission, Prop 1.4, 
   sheaf is a sheaf.  Naturality has nine cases of which six are trivial (the target is the zero
   ring, or the two opens fall in the same case and germ compatibility applies); the one case with
   content is `y ∉ U`, `y ∈ V`, which is exactly Deninger's square (139).
+
+- 2026-08-23 — **Proposition 13.1's sheaf morphism is built.**  `deningerTwoPointGamma` is the
+  natural transformation `W_rat (𝒪_X) ⟶ f_* 𝒪_S` of diagram (139) and
+  `deningerTwoPointSheafMap` is its extension over the sheafification (`sheafifyLift`, the direct
+  image of a sheaf being a sheaf).
+  Two design choices made this tractable.  First, the tuple carries `f_s` with values in
+  `Γ (S , ⊤)` and `f_η` with values in `Γ (S , V)` rather than in `𝒪` and `C`; the identifications
+  `Γ (S , ⊤) ≅ 𝒪` and `Γ (S , {η}) ≅ Frac 𝒪` are then a separate, already-closed layer, and every
+  component of `γ` is a *restriction map* `Γ (S , W) ⟶ Γ (S , f^{-1} U)` — so the construction uses
+  no `eqToHom` at all, and naturality is functoriality of the presheaf on a poset plus
+  `Subsingleton.elim` on the hom-sets.  Second, the statement is made for plain
+  `TopCat.Presheaf`es rather than for `Scheme.presheaf`, because `rw` cannot build motives through
+  `Scheme.presheaf`'s type; where that is unavoidable, `set_option backward.isDefEq.respectTransparency false`
+  is the switch that makes rewriting go through (the corpus already used it in
+  `DeningerSkyscraperComparison`).
+  The one case of naturality with content is `y ∉ U`, `y ∈ V`, and it is exactly diagram (139):
+  `germ_x = germ_y ≫ stalkSpecializes`, then the hypothesis.
+  Axiom audit on all of these: `[propext, Classical.choice, Quot.sound]`.
+  **What is left of Prop 13.1** is only the bijection statement: reading the tuple back off a
+  morphism (the stalk maps of `sheafMap` at `η` and `s`) and the round trips.

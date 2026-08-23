@@ -1103,3 +1103,34 @@ constancy that puts `v` in `L_a` — and `u = g₂` a.e. on `(a,∞)` as a bonus
 
 ### H3 — TODO: Proposition 4.1, two-sided converse, and the `ζ(s)/(s−ρ)^l` witnesses.
 ### H4 — TODO: Theorem 6.3 minimality, then Props 6.4/6.5 and Theorem 6.7.
+
+### H2/H3/H4 — CLOSED (2026-08-23): Theorem 6.3 and Proposition 6.4 in full
+
+| brick | module | statement |
+|---|---|---|
+| H2 | `RHTower/MellinHeadChart` | `logChartHead`, `mellinHead_eq_laplaceRay`: the head `(0,a)` Mellin transform is `a^{1/2−s}·𝓛(√a e^{-x/2}f(ae^{-x}))(1/2−s)` — a Laplace transform on the *opposite* half-plane from the tail chart. |
+| H2 | `RHTower/MellinTwoSidedGlue.ae_eq_of_two_sided_mellin` | one continuous `Ψ` on `0 < Re s < 1` equal to the head transform of `u` on the left and to `c·a^{1−s}/(1−s) + ` tail of `g−u` on the right forces `u = c` on `(0,a)` and `u = g` on `(a,∞)`. |
+| H3 | `RHTower/HeadTailVector` | the even vector attached to a head constant and an `L²` tail, and its Mellin transform. |
+| H3 | `RHTower/SoninFromHardyData.headTailVector_mem_centralSoninExtendedCarrier` | **Proposition 4.1, two-sided converse**: `F ∈ L̂_a` and `χ(s)F(1−s) ∈ L̂_a` ⟹ the head/tail vector lies in `L_a`, with the reflected head constant as its cosine-transform aperture constant. |
+| H4 | `RHTower/ZetaZeroOrderReflection` | `analyticOrderAt ζ (1−ρ) = analyticOrderAt ζ ρ` in the strip (via the corpus's `xi_orderAt_one_sub` and `xi_analyticOrderAt_eq_riemannZeta_of_mem_strip`). |
+| H4 | `RHTower/ZetaDivPowRepresentative` | `zetaDivPowNF ρ l` — the meromorphic-normal-form representative of `ζ(s)/(s−ρ)^l`, analytic off `s = 1` once `l ≤ m_ρ`. |
+| H4 | `RHTower/HeadTailMellinAnalytic` | `headTailMellin` is holomorphic on `Re s > 1/2`, `s ≠ 1`; plus "two functions continuous at a point and equal off it are equal at it". |
+| H4 | `RHTower/ZetaDivPowHeadTail` | head/tail descriptions of `zetaDivPowNF ρ l` **and** of its reflection `χ(s)·(·)(1−s) = (−1)^l zetaDivPowNF (1−ρ) l`. |
+| H4 | `RHTower/BurnolMinimalWitness.exists_extendedSonin_zetaDivPow` | the vector of `L₁` whose continued Mellin transform is `ζ(s)/(s−ρ)^l` on the whole open strip. |
+| H4 | `RHTower/BurnolMinimalitySystem.exists_minimality_witness` | **Theorem 6.3, minimality half**: for `k < m_ρ` a vector of `L₁` whose transform has order `m_{ρ'}` at every other nontrivial zero and order **exactly `k`** at `ρ`. |
+| H4 | `RHTower/MellinApertureIndependence` | the continued transform does not depend on the aperture (same band constants), on the whole open strip. |
+| H4 | `RHTower/BurnolMinimalityAperture.exists_minimality_witness_aperture` | **Proposition 6.4, minimality half**: the same witness works at every aperture `a ≤ 1`. |
+
+With these:
+
+* **Theorem 6.3 is closed** — completeness at `a = 1` from `eq_zero_of_zeta_dvd_extendedMellin_one_le`,
+  minimality from `exists_minimality_witness`.
+* **Proposition 6.4 is closed** — minimality from `exists_minimality_witness_aperture`, non-completeness
+  from `exists_nonzero_zeta_dvd_of_aperture_lt_one`.
+
+Still open in §6: Proposition 6.5 (the shortened `Z¹` system) and Theorem 6.7 (`Z^a` minimal for
+`a < 1`); in §5, the `L²`-in-`Z` half of Theorem 5.2; and all of §7.
+
+**Method note.** `analyticOrderAt_comp_one_sub` and `xi_orderAt_one_sub` were rebuilt by accident and
+then discarded — `RHTower/Reflection` already owned both.  Run
+`scripts/formal_tools.py research "<query>"` before every new brick.

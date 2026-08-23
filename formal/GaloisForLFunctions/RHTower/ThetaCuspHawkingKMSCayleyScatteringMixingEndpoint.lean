@@ -43,6 +43,7 @@ ancillas model the equilibrium horizon channel; they are not the global Unruh ev
 -/
 
 open Complex Real Filter Topology Set
+open scoped ComplexConjugate
 
 noncomputable section
 
@@ -68,7 +69,11 @@ def thetaCuspHawkingCayleyTransition (lambda a omega : ℝ) : ℂ :=
 theorem thetaCuspHawkingCayleyLoad_nonneg (lambda a omega : ℝ) :
     0 ≤ thetaCuspHawkingCayleyLoad lambda a omega := by
   unfold thetaCuspHawkingCayleyLoad
-  positivity
+  exact div_nonneg
+    (mul_nonneg (sq_nonneg lambda)
+      (Complex.normSq_nonneg
+        (thetaCuspHawkingFriedrichsShellFormFactor a omega)))
+    (by norm_num)
 
 theorem thetaCuspHawkingCayley_denominator_pos (lambda a omega : ℝ) :
     0 < 1 + thetaCuspHawkingCayleyLoad lambda a omega := by
@@ -85,8 +90,11 @@ theorem thetaCuspHawkingCayleyTransition_sub_born
         thetaCuspHawkingFriedrichsShellFormFactor a omega) := by
   rw [thetaCuspHawkingCayleyTransition]
   have hden := (thetaCuspHawkingCayley_denominator_pos lambda a omega).ne'
+  have hdenC :
+      (1 : ℂ) + (thetaCuspHawkingCayleyLoad lambda a omega : ℂ) ≠ 0 := by
+    exact_mod_cast hden
   push_cast
-  field_simp [hden]
+  field_simp [hdenC]
   ring
 
 /-- Lossless two-port law for the exact Cayley scattering amplitudes. -/
@@ -97,6 +105,9 @@ theorem thetaCuspHawkingCayleyRetention_sq_add_transition_normSq
   let F : ℂ := thetaCuspHawkingFriedrichsShellFormFactor a omega
   let j : ℝ := thetaCuspHawkingCayleyLoad lambda a omega
   have hj : j = lambda ^ 2 * Complex.normSq F / 4 := rfl
+  have hfour : lambda ^ 2 * Complex.normSq F = 4 * j := by
+    rw [hj]
+    ring
   have hden : 1 + j ≠ 0 :=
     (thetaCuspHawkingCayley_denominator_pos lambda a omega).ne'
   rw [thetaCuspHawkingCayleyRetention, thetaCuspHawkingCayleyTransition]
@@ -104,8 +115,8 @@ theorem thetaCuspHawkingCayleyRetention_sq_add_transition_normSq
       Complex.normSq (((lambda : ℂ) * F) / ((1 + j : ℝ) : ℂ)) = 1
   rw [Complex.normSq_div, Complex.normSq_mul, Complex.normSq_ofReal,
     Complex.normSq_ofReal]
-  rw [hj]
   field_simp [hden]
+  rw [hfour]
   ring
 
 /-- Incoming exterior output of the Cayley two-port scattering map. -/
@@ -136,7 +147,6 @@ theorem thetaCuspHawkingCayley_preserves_hermitian
   push_cast at hunitC
   have hnorm : (Complex.normSq t : ℂ) = conj t * t := by
     rw [Complex.normSq_eq_conj_mul_self]
-    rfl
   rw [hnorm] at hunitC
   change conj ((r : ℂ) * x - conj t * h) * ((r : ℂ) * x - conj t * h) +
       conj (t * x + (r : ℂ) * h) * (t * x + (r : ℂ) * h) =
@@ -174,7 +184,6 @@ theorem thetaCuspHawkingCayley_adjoint_after_scattering
   push_cast at hunitC
   have hnorm : (Complex.normSq t : ℂ) = conj t * t := by
     rw [Complex.normSq_eq_conj_mul_self]
-    rfl
   rw [hnorm] at hunitC
   change ((r : ℂ) * ((r : ℂ) * x - conj t * h) +
         conj t * (t * x + (r : ℂ) * h) = x) ∧
@@ -216,8 +225,13 @@ theorem thetaCuspHawkingCayleyReducedExcitedPopulation_eq
         Complex.normSq (thetaCuspHawkingCayleyTransition lambda a omega) * e := by
   have hunit := thetaCuspHawkingCayleyRetention_sq_add_transition_normSq
     lambda a omega
+  have htransition :
+      Complex.normSq (thetaCuspHawkingCayleyTransition lambda a omega) =
+        1 - thetaCuspHawkingCayleyRetention lambda a omega ^ 2 := by
+    linarith
   unfold thetaCuspHawkingCayleyReducedExcitedPopulation
-  linear_combination p * e * hunit
+  rw [htransition]
+  ring
 
 /-- One exact collision with a fresh Hawking Gibbs horizon mode. -/
 def thetaCuspHawkingKMSCayleyPopulationChannel
@@ -236,8 +250,12 @@ theorem thetaCuspHawkingKMSCayleyPopulationChannel_sub_gibbs
     thetaCuspHawkingCayleyReducedExcitedPopulation_eq]
   have hunit := thetaCuspHawkingCayleyRetention_sq_add_transition_normSq
     lambda a omega
-  linear_combination
-    (thetaCuspHawkingKMSExcitedPopulation kappa omega) * hunit
+  have htransition :
+      Complex.normSq (thetaCuspHawkingCayleyTransition lambda a omega) =
+        1 - thetaCuspHawkingCayleyRetention lambda a omega ^ 2 := by
+    linarith
+  rw [htransition]
+  ring
 
 theorem thetaCuspHawkingKMSCayleyPopulationChannel_gibbs
     (lambda kappa a omega : ℝ) :
@@ -246,7 +264,7 @@ theorem thetaCuspHawkingKMSCayleyPopulationChannel_gibbs
       thetaCuspHawkingKMSExcitedPopulation kappa omega := by
   have h := thetaCuspHawkingKMSCayleyPopulationChannel_sub_gibbs
     lambda kappa a omega (thetaCuspHawkingKMSExcitedPopulation kappa omega)
-  simpa using h
+  linarith
 
 /-- Exact upward one-collision probability from a ground exterior mode. -/
 def thetaCuspHawkingKMSCayleyUpProbability
@@ -298,10 +316,18 @@ theorem thetaCuspHawkingKMSCayleyPopulationAfter_succ
         (thetaCuspHawkingKMSCayleyPopulationAfter lambda kappa a omega n p) := by
   have hdev := thetaCuspHawkingKMSCayleyPopulationChannel_sub_gibbs lambda kappa
     a omega (thetaCuspHawkingKMSCayleyPopulationAfter lambda kappa a omega n p)
-  rw [thetaCuspHawkingKMSCayleyPopulationAfter,
-    thetaCuspHawkingKMSCayleyPopulationAfter] at hdev ⊢
+  have hchannel :
+      thetaCuspHawkingKMSCayleyPopulationChannel lambda kappa a omega
+          (thetaCuspHawkingKMSCayleyPopulationAfter lambda kappa a omega n p) =
+        thetaCuspHawkingKMSExcitedPopulation kappa omega +
+          thetaCuspHawkingCayleyRetention lambda a omega ^ 2 *
+            (thetaCuspHawkingKMSCayleyPopulationAfter lambda kappa a omega n p -
+              thetaCuspHawkingKMSExcitedPopulation kappa omega) := by
+    linarith
+  rw [hchannel]
+  simp only [thetaCuspHawkingKMSCayleyPopulationAfter]
   rw [pow_succ]
-  nlinarith
+  ring
 
 /-- Mixing of the exact repeated-scattering dilation on all physical initial populations. -/
 def ThetaCuspHawkingKMSCayleySectorMixes
@@ -330,7 +356,16 @@ theorem thetaCuspHawkingCayleyTransition_one_ne_zero_iff
     thetaCuspHawkingCayleyTransition 1 a omega ≠ 0 ↔
       thetaCuspHawkingFriedrichsShellFormFactor a omega ≠ 0 := by
   have hden := (thetaCuspHawkingCayley_denominator_pos 1 a omega).ne'
-  simp [thetaCuspHawkingCayleyTransition, hden]
+  have hdenC :
+      (((1 + thetaCuspHawkingCayleyLoad 1 a omega : ℝ) : ℂ)) ≠ 0 :=
+    Complex.ofReal_ne_zero.mpr hden
+  constructor
+  · intro ht hF
+    apply ht
+    simp [thetaCuspHawkingCayleyTransition, hF]
+  · intro hF
+    rw [thetaCuspHawkingCayleyTransition]
+    exact div_ne_zero (by simpa using hF) hdenC
 
 /-- Exact mixing criterion derived from the unitary thermal scattering dilation. -/
 theorem thetaCuspHawkingKMSCayleySectorMixes_iff_formFactor_ne_zero
@@ -360,7 +395,14 @@ theorem thetaCuspHawkingKMSCayleySectorMixes_iff_formFactor_ne_zero
     have hpow := tendsto_pow_atTop_nhds_zero_of_lt_one hr0 hr1
     have hdev := hpow.mul_const
       (p - thetaCuspHawkingKMSExcitedPopulation kappa omega)
-    have hsum := tendsto_const_nhds.add hdev
+    have hsum :
+        Tendsto
+          (fun n : ℕ => thetaCuspHawkingKMSExcitedPopulation kappa omega +
+            (thetaCuspHawkingCayleyRetention 1 a omega ^ 2) ^ n *
+              (p - thetaCuspHawkingKMSExcitedPopulation kappa omega))
+          atTop
+          (𝓝 (thetaCuspHawkingKMSExcitedPopulation kappa omega + 0)) :=
+      tendsto_const_nhds.add (by simpa using hdev)
     simpa [thetaCuspHawkingKMSCayleyPopulationAfter] using hsum
 
 /-- The exact scattering sector mixes precisely away from a theta/Xi dark shell. -/

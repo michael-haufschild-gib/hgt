@@ -856,3 +856,38 @@ Burnol's Mellin spectral law (`H_∞ = M + JMJ` is multiplication by the log-der
 Tate Gamma factor), `h_∞ ∈ BMO`, and the Coifman–Rochberg–Weiss / Nehari BMO commutator theorem.
 The algebraic reflection layer is already Lean (`SoninBurnolConductorReflection`,
 `SoninBurnolConductorConcrete`).
+
+### Card 5, gate 4: equations (11)–(16) CLOSED
+
+New module `RHTower/PrimeTailBoundaryAsymptotic.lean` (axiom-clean, wired into `RHTower.lean`).
+
+| card item | declaration |
+|---|---|
+| `(11)` `J(X) = ∑_{n ≤ X} Λ(n)/log n` | `primeTailCount` (in `PrimeTailCoPoissonBoundary`), `primeTailCount_split`, `primeTailCount_low_le`, `primeTailCount_high_lower/_upper` |
+| **`(12)` `J(X) ∼ X/log X`** | `tendsto_primeTailCount`, via `primeTailCount_window` |
+| `(13)` Abel transform | `primeTailSum`, `abelTerm`, `tsum_abelTerm`, **`primeTailSum_eq_integral`** |
+| `(14)` tail integrals | `logPowerTail`, `norm_integral_logPowerTail_le`, **`integral_logPowerTail_one`** (integration by parts), `integral_Ioi_cpow_neg_sub_one` |
+| `(15)` decomposition and remainder | `primeTailError`, `integral_abel_split`, **`primeTailSum_eq_main_add_remainder`**, `norm_primeTailRemainder_le`, `eventually_abs_primeTailError_le` |
+| **`(15)` the tail asymptotic** | **`tendsto_primeTailSum_div`** |
+| **`(16)` the boundary law** | `ceilCut`, `tendsto_ceilCut_atTop`, `tendsto_mul_ceilCut`, `tendsto_log_ceilCut_ratio`, `primeTailCurrent_eq_primeTailSum`, **`tendsto_primeTailCurrent_boundary`** |
+
+Method notes worth keeping.
+
+* `(12)` avoids Abel summation entirely: cutting at `X^{1-ε}` bounds `J` two-sidedly by `ψ`
+  divided by `log X` (low block `≤ ψ(X^{1-ε})/log 2`, high block between `(ψ(X)-ψ(X^{1-ε}))/log X`
+  and `ψ(X)/((1-ε) log X)`), then `tendsto_order` and `ε = (b-1)/(2b)` give the sharp limit.
+* `(13)` is Fubini, not integration by parts: `u^{-z} = z ∫_u^∞ v^{-z-1} dv` makes each Dirichlet
+  term an indicator integral, and `integral_tsum_of_summable_integral_norm` does the interchange
+  with majorant `n^{-σ}/σ`.  This is far cheaper in Lean than a Stieltjes integration by parts.
+* `(15)`'s remainder needs only crude bounds: the sharp input is `tendsto_primeTailCount`, and
+  everything else is `‖∫ tail‖ ≤ y^{1-σ}/((σ-1) log^k y)`.
+* `(16)` uses the half-integer cut `ceilCut x = ⌈1/x⌉₊ - 1/2`, which turns the non-strict
+  condition `n ≥ 1/x` in the seed's support into the strict condition `n > ceilCut x` of
+  `primeTailSum`, so no boundary term ever appears.
+
+**Still open on card 5:** `(17)` the half-weight `L²` wall, `(18)`, `(20)`, and §3A
+(`(20a)`–`(20n)`).  For `(17)` the ingredients are `tendsto_primeTailCurrent_boundary` (giving
+two-sided `c/(x log(1/x)) ≤ |G_z| ≤ C/(x log(1/x))` near `0`) plus the elementary integral
+`∫_0^δ x^{2α-2} log(1/x)^{-2} dx`, finite exactly when `α ≥ 1/2`.  For §3A the corpus already owns
+`RHTower/ExponentialIntegralE1.lean` (`integral_exp_neg_mul_log_div_Ioi`), which is the `V(z) =
+E₁(z-1)` vacuum, and `chebyshevPsi_sub_id_isBigO` for the PNT-with-error flatness.
