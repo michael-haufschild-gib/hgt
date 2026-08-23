@@ -437,7 +437,6 @@ theorem integrableOn_cpow_mul_primeTailCount {z : ℂ} (hz : 1 < z.re) {y : ℝ}
     have hpow : u ^ (-z - 1).re = u ^ (-z.re) * u⁻¹ := by
       rw [← Real.rpow_neg_one u, ← Real.rpow_add hu0]
       congr 1
-      simp
     rw [hpow]
     have hsmall : u⁻¹ * primeTailCount u ≤ C := by
       rw [inv_mul_eq_div, div_le_iff₀ hu0]

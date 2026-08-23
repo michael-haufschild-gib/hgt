@@ -5,6 +5,7 @@ Authors: Michael Barenbaum
 -/
 import GaloisForLFunctions.HTGeometry.ABHN.NonarchimedeanLocalFieldNormQuotientBrauer
 import GaloisForLFunctions.HTGeometry.ABHN.QuadraticCyclicGaloisH2BrauerAdditive
+import GaloisForLFunctions.HTGeometry.ABHN.RatModIntTorsion
 
 /-!
 # Additivity of quadratic unramified local Brauer parameters
@@ -97,6 +98,42 @@ theorem nonarchimedeanLocalFieldAdjoinRootFractionField_quadraticNormQuotientBra
         apply h
         simpa using hxy
       · rfl
+
+/-- The unramified quadratic local Brauer parameter map indexed by the two-torsion subgroup of
+`ℚ/ℤ`.  It has the same source format as the real quaternionic local slice. -/
+noncomputable def nonarchimedeanLocalFieldAdjoinRootFractionField_quadraticNormQuotientBrauerRatModIntTwoTorsionAddHom
+    (K : Type) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g)
+    (hdegree : f.natDegree = 2) :
+    ratModIntNTorsion 2 →+ BrauerGroup (FractionRing 𝒪[K]) :=
+  (nonarchimedeanLocalFieldAdjoinRootFractionField_quadraticNormQuotientBrauerAddHom
+    K f hf g hgmonic hfg hg hdegree).comp
+    (zmodRatModIntAddEquivNTorsion 2 (by norm_num)).symm.toAddMonoidHom
+
+/-- The torsion parameter corresponding to one half maps to the nonzero `ZMod 2` parameter of
+the quadratic unramified local Brauer map. -/
+theorem nonarchimedeanLocalFieldAdjoinRootFractionField_quadraticNormQuotientBrauerRatModIntTwoTorsionAddHom_apply_generator
+    (K : Type) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g)
+    (hdegree : f.natDegree = 2) :
+    nonarchimedeanLocalFieldAdjoinRootFractionField_quadraticNormQuotientBrauerRatModIntTwoTorsionAddHom
+      K f hf g hgmonic hfg hg hdegree
+      (zmodRatModIntAddEquivNTorsion 2 (by norm_num) (1 : ZMod 2)) =
+    nonarchimedeanLocalFieldAdjoinRootFractionField_quadraticNormQuotientBrauerMap
+      K f hf g hgmonic hfg hg hdegree 1 := by
+  let htwo : 2 ≠ 0 := by norm_num
+  change nonarchimedeanLocalFieldAdjoinRootFractionField_quadraticNormQuotientBrauerAddHom
+      K f hf g hgmonic hfg hg hdegree
+      ((zmodRatModIntAddEquivNTorsion 2 htwo).symm
+        (zmodRatModIntAddEquivNTorsion 2 htwo (1 : ZMod 2))) =
+    nonarchimedeanLocalFieldAdjoinRootFractionField_quadraticNormQuotientBrauerMap
+      K f hf g hgmonic hfg hg hdegree 1
+  rw [AddEquiv.symm_apply_apply]
+  rfl
 
 /-- The original concrete quadratic unramified local parameter function is evaluation of its
 additive refinement. -/

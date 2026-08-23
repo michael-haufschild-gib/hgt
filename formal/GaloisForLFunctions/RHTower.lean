@@ -4076,6 +4076,7 @@ import GaloisForLFunctions.RHTower.Sieve.DivisorFibreInterval
 import GaloisForLFunctions.RHTower.Sieve.ConvolutionBlockTypeI
 import GaloisForLFunctions.RHTower.Sieve.ZetaConvolutionTypeI
 import GaloisForLFunctions.RHTower.Sieve.LogConvolutionTypeI
+import GaloisForLFunctions.RHTower.Sieve.TypeIIFibreCorrelation
 import GaloisForLFunctions.RHTower.Sieve.VonMangoldtParityCorrection
 import GaloisForLFunctions.RHTower.FriableCoefficientSurjectivity
 import GaloisForLFunctions.RHTower.FriableEdgeCoefficients
@@ -5051,6 +5052,7 @@ import GaloisForLFunctions.RHTower.LevinsonWindowBound
 import GaloisForLFunctions.RHTower.LevinsonWindowUnconditional
 import GaloisForLFunctions.RHTower.LevinsonWindowEdgeUnconditional
 import GaloisForLFunctions.RHTower.LiFiniteCriterionFrontier
+import GaloisForLFunctions.RHTower.LiTermBound
 import GaloisForLFunctions.RHTower.LiReciprocalChebyshevKernel
 import GaloisForLFunctions.RHTower.LiReciprocalKernelCoefficientSign
 import GaloisForLFunctions.RHTower.LiftedGluingFaces
