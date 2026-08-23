@@ -48,7 +48,7 @@ theorem soninMellinTailConstant_nonneg {a : ℝ} (f : SoninL2) {s : ℂ} (hs : 0
 
 /-- The Cauchy estimate in factored form. -/
 theorem norm_soninTruncMellin_sub_le' {a : ℝ} (ha : 0 < a) {f : SoninL2}
-    (hf : f ∈ centralSoninCarrier a) {T T' : ℝ} (haT : a ≤ T) (hTT' : T ≤ T') {s : ℂ}
+    (hf : f ∈ (centralFourierForbidden a)ᗮ) {T T' : ℝ} (haT : a ≤ T) (hTT' : T ≤ T') {s : ℂ}
     (hs : 0 < s.re) :
     ‖soninTruncMellin f a T' s - soninTruncMellin f a T s‖
       ≤ T ^ (-s.re) * soninMellinTailConstant a f s := by
@@ -67,7 +67,7 @@ theorem differentiable_soninMellinSeq {a : ℝ} (ha : 0 < a) (f : SoninL2) (n : 
   linarith
 
 theorem cauchySeq_soninMellinSeq {a : ℝ} (ha : 0 < a) {f : SoninL2}
-    (hf : f ∈ centralSoninCarrier a) {s : ℂ} (hs : 0 < s.re) :
+    (hf : f ∈ (centralFourierForbidden a)ᗮ) {s : ℂ} (hs : 0 < s.re) :
     CauchySeq fun n : ℕ => soninMellinSeq f a n s := by
   refine cauchySeq_of_le_tendsto_0
     (fun N : ℕ => (a + N) ^ (-s.re) * soninMellinTailConstant a f s) ?_ ?_
@@ -106,12 +106,12 @@ def soninMellinExtension (f : SoninL2) (a : ℝ) (s : ℂ) : ℂ :=
   limUnder atTop fun n : ℕ => soninMellinSeq f a n s
 
 theorem tendsto_soninMellinSeq {a : ℝ} (ha : 0 < a) {f : SoninL2}
-    (hf : f ∈ centralSoninCarrier a) {s : ℂ} (hs : 0 < s.re) :
+    (hf : f ∈ (centralFourierForbidden a)ᗮ) {s : ℂ} (hs : 0 < s.re) :
     Tendsto (fun n : ℕ => soninMellinSeq f a n s) atTop (𝓝 (soninMellinExtension f a s)) :=
   (cauchySeq_soninMellinSeq ha hf hs).tendsto_limUnder
 
 theorem norm_soninMellinExtension_sub_le {a : ℝ} (ha : 0 < a) {f : SoninL2}
-    (hf : f ∈ centralSoninCarrier a) {s : ℂ} (hs : 0 < s.re) (n : ℕ) :
+    (hf : f ∈ (centralFourierForbidden a)ᗮ) {s : ℂ} (hs : 0 < s.re) (n : ℕ) :
     ‖soninMellinExtension f a s - soninMellinSeq f a n s‖
       ≤ (a + n) ^ (-s.re) * soninMellinTailConstant a f s := by
   have hlim : Tendsto (fun m : ℕ => ‖soninMellinSeq f a m s - soninMellinSeq f a n s‖) atTop
@@ -127,7 +127,7 @@ theorem norm_soninMellinExtension_sub_le {a : ℝ} (ha : 0 < a) {f : SoninL2}
 
 /-- The truncations converge locally uniformly on the right half plane `Re s > 0`. -/
 theorem tendstoLocallyUniformlyOn_soninMellinSeq {a : ℝ} (ha : 0 < a) {f : SoninL2}
-    (hf : f ∈ centralSoninCarrier a) :
+    (hf : f ∈ (centralFourierForbidden a)ᗮ) :
     TendstoLocallyUniformlyOn (fun n : ℕ => soninMellinSeq f a n)
       (soninMellinExtension f a) atTop {s : ℂ | 0 < s.re} := by
   rw [Metric.tendstoLocallyUniformlyOn_iff]
@@ -187,7 +187,7 @@ theorem tendstoLocallyUniformlyOn_soninMellinSeq {a : ℝ} (ha : 0 < a) {f : Son
 
 /-- **The Mellin transform of a Sonine vector is holomorphic on `Re s > 0`.** -/
 theorem differentiableOn_soninMellinExtension {a : ℝ} (ha : 0 < a) {f : SoninL2}
-    (hf : f ∈ centralSoninCarrier a) :
+    (hf : f ∈ (centralFourierForbidden a)ᗮ) :
     DifferentiableOn ℂ (soninMellinExtension f a) {s : ℂ | 0 < s.re} := by
   refine TendstoLocallyUniformlyOn.differentiableOn
     (tendstoLocallyUniformlyOn_soninMellinSeq ha hf) ?_
@@ -253,7 +253,7 @@ theorem soninMellinExtension_eq_soninMellinIntegral {a : ℝ} (ha : 0 < a) {f : 
       ((t : ℝ) : ℂ) ^ (-s) * (f : ℝ → ℂ) t) = fun n : ℕ => soninMellinSeq f a n s := rfl
   rw [hseq] at htend
   have hs0 : 0 < s.re := by linarith
-  have := tendsto_nhds_unique (tendsto_soninMellinSeq ha hf hs0) htend
+  have := tendsto_nhds_unique (tendsto_soninMellinSeq ha hf.2 hs0) htend
   rw [this, soninMellinIntegral, ← hsplit]
 
 /-- The empty truncation contributes nothing. -/
@@ -266,7 +266,7 @@ theorem soninMellinExtension_eq_soninMellinIntegral {a : ℝ} (ha : 0 < a) {f : 
 continuity half of de Branges' Theorem 2.1 (Burnol, arXiv:math/0203120, Thm. 2.1), and it holds on
 the whole half plane `Re s > 0`, past the critical line. -/
 theorem norm_soninMellinExtension_le {a : ℝ} (ha : 0 < a) {f : SoninL2}
-    (hf : f ∈ centralSoninCarrier a) {s : ℂ} (hs : 0 < s.re) :
+    (hf : f ∈ (centralFourierForbidden a)ᗮ) {s : ℂ} (hs : 0 < s.re) :
     ‖soninMellinExtension f a s‖
       ≤ a ^ (-s.re) * (((2 + ‖s‖ / s.re) / (2 * Real.pi)) * invAbsTailNorm a) * ‖f‖ := by
   have h := norm_soninMellinExtension_sub_le ha hf hs 0

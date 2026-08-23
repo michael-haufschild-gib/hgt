@@ -48,13 +48,13 @@ theorem physical_indicator_ae_zero_of_mem_centralSoninCarrier
     (centralInterval a).indicator (⇑f) =ᵐ[volume] 0 :=
   indicator_ae_zero_of_mem_physicalForbidden_orthogonal hf.1
 
-theorem fourier_indicator_ae_zero_of_mem_centralSoninCarrier
-    {a : ℝ} {f : SoninL2} (hf : f ∈ centralSoninCarrier a) :
+theorem fourier_indicator_ae_zero_of_mem_fourierOrthogonal
+    {a : ℝ} {f : SoninL2} (hf : f ∈ (centralFourierForbidden a)ᗮ) :
     (centralInterval a).indicator (⇑(fourierUnitary f)) =ᵐ[volume] 0 := by
   have h0 : fourierCutoff (centralInterval a) (measurableSet_centralInterval a) f = 0 := by
     rw [fourierCutoff_eq_fourierForbidden_starProjection]
     exact (Submodule.starProjection_apply_eq_zero_iff
-      (K := fourierForbidden (centralInterval a) (measurableSet_centralInterval a))).mpr hf.2
+      (K := fourierForbidden (centralInterval a) (measurableSet_centralInterval a))).mpr hf
   have hcut : indicatorCutoff (centralInterval a) (measurableSet_centralInterval a)
       (fourierUnitary f) = 0 := by
     have h1 := congrArg fourierUnitary h0
@@ -397,7 +397,7 @@ theorem soninCarrier_deBranges_bricks {a : ℝ} (ha : 0 < a) {f : SoninL2}
   ⟨soninDeBrangesTransform_differentiableOn ha
       (physical_indicator_ae_zero_of_mem_centralSoninCarrier hf),
     soninDeBrangesDualTransform_differentiableOn ha
-      (fourier_indicator_ae_zero_of_mem_centralSoninCarrier hf)⟩
+      (fourier_indicator_ae_zero_of_mem_fourierOrthogonal hf.2)⟩
 
 /-- The bricks on the actual even Sonin carrier. -/
 theorem evenSoninCarrier_deBranges_bricks {a : ℝ} (ha : 0 < a) {f : evenSubspace}

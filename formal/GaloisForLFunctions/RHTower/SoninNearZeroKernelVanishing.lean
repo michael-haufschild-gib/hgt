@@ -79,33 +79,44 @@ theorem coeFn_fourierUnitary_nearZeroPowerVector {a : ℝ} (ha : 0 ≤ a) {s : �
   rw [h1, hu, fourierTransform_toLp]
   exact (Real.fourier_congr_ae hae) u
 
+/-- **The near-zero kernel pairs against the Fourier transform as the near-zero Mellin
+integral.**  No Sonine hypothesis: this is Plancherel for the truncated power on `(0,a)`. -/
+theorem integral_nearZeroKernel_mul_fourier_eq {a : ℝ} (ha : 0 < a) (f : SoninL2)
+    {s : ℂ} (hs : s.re < 1 / 2) :
+    ∫ u : ℝ, (∫ t in (0 : ℝ)..a, ((t : ℝ) : ℂ) ^ (-s)
+        * Complex.exp ((t * (2 * Real.pi * u) : ℝ) * Complex.I))
+      * ((fourierUnitary f : SoninL2) : ℝ → ℂ) u
+      = ∫ t in Set.Ioo (0 : ℝ) a, ((t : ℝ) : ℂ) ^ (-s) * (f : ℝ → ℂ) t := by
+  set W : SoninL2 := nearZeroPowerVector a hs with hW
+  have hplanch : ⟪W, f⟫_ℂ = ⟪fourierUnitary W, fourierUnitary f⟫_ℂ :=
+    (fourierUnitary.inner_map_map W f).symm
+  have hval : ⟪W, f⟫_ℂ
+      = ∫ t in Set.Ioo (0 : ℝ) a, ((t : ℝ) : ℂ) ^ (-s) * (f : ℝ → ℂ) t := by
+    rw [hW, inner_nearZeroPowerVector a hs f]
+  rw [hplanch, MeasureTheory.L2.inner_def] at hval
+  rw [← hval]
+  refine integral_congr_ae ?_
+  filter_upwards [coeFn_fourierUnitary_nearZeroPowerVector (a := a) ha.le hs] with u hu
+  rw [RCLike.inner_apply, hu, ← conj_fourierIntegral_truncPower (le_refl (0 : ℝ)) ha.le s u]
+  ring
+
 /-- **The correction term pairs to zero.** -/
 theorem integral_nearZeroKernel_mul_fourier_eq_zero {a : ℝ} (ha : 0 < a) {f : SoninL2}
     (hf : f ∈ centralSoninCarrier a) {s : ℂ} (hs : s.re < 1 / 2) :
     ∫ u : ℝ, (∫ t in (0 : ℝ)..a, ((t : ℝ) : ℂ) ^ (-s)
         * Complex.exp ((t * (2 * Real.pi * u) : ℝ) * Complex.I))
       * ((fourierUnitary f : SoninL2) : ℝ → ℂ) u = 0 := by
-  set W : SoninL2 := nearZeroPowerVector a hs with hW
-  have hplanch : ⟪W, f⟫_ℂ = ⟪fourierUnitary W, fourierUnitary f⟫_ℂ :=
-    (fourierUnitary.inner_map_map W f).symm
-  have hzero : ⟪W, f⟫_ℂ = 0 := by
-    rw [hW, inner_nearZeroPowerVector a hs f]
-    have hsupp := physical_indicator_ae_zero_of_mem_centralSoninCarrier hf
-    have hae : ∀ᵐ t ∂(volume : Measure ℝ), t ∈ centralInterval a → (f : ℝ → ℂ) t = 0 := by
-      filter_upwards [hsupp] with t ht hmem
-      simpa [Set.indicator_of_mem hmem] using ht
-    refine MeasureTheory.integral_eq_zero_of_ae ?_
-    filter_upwards [ae_restrict_of_ae hae, ae_restrict_mem measurableSet_Ioo] with t ht hmem
-    have hband : t ∈ centralInterval a := by
-      rw [centralInterval, Set.mem_Icc]
-      exact ⟨by linarith [hmem.1, ha], le_of_lt hmem.2⟩
-    rw [ht hband, mul_zero]
-    rfl
-  rw [hplanch, MeasureTheory.L2.inner_def] at hzero
-  rw [← hzero]
-  refine integral_congr_ae ?_
-  filter_upwards [coeFn_fourierUnitary_nearZeroPowerVector (a := a) ha.le hs] with u hu
-  rw [RCLike.inner_apply, hu, ← conj_fourierIntegral_truncPower (le_refl (0 : ℝ)) ha.le s u]
-  ring
+  rw [integral_nearZeroKernel_mul_fourier_eq ha f hs]
+  have hsupp := physical_indicator_ae_zero_of_mem_centralSoninCarrier hf
+  have hae : ∀ᵐ t ∂(volume : Measure ℝ), t ∈ centralInterval a → (f : ℝ → ℂ) t = 0 := by
+    filter_upwards [hsupp] with t ht hmem
+    simpa [Set.indicator_of_mem hmem] using ht
+  refine MeasureTheory.integral_eq_zero_of_ae ?_
+  filter_upwards [ae_restrict_of_ae hae, ae_restrict_mem measurableSet_Ioo] with t ht hmem
+  have hband : t ∈ centralInterval a := by
+    rw [centralInterval, Set.mem_Icc]
+    exact ⟨by linarith [hmem.1, ha], le_of_lt hmem.2⟩
+  rw [ht hband, mul_zero]
+  rfl
 
 end RHTower

@@ -80,7 +80,8 @@ theorem inner_truncPowerVector_eq_truncMellin {T T' : ℝ} (hT : 0 < T) {s : ℂ
     ring
 
 /-- **The uniform Cauchy estimate.** -/
-theorem norm_truncMellin_le {a : ℝ} (ha : 0 < a) {f : SoninL2} (hf : f ∈ centralSoninCarrier a)
+theorem norm_truncMellin_le {a : ℝ} (ha : 0 < a) {f : SoninL2}
+    (hf : f ∈ (centralFourierForbidden a)ᗮ)
     {T T' : ℝ} (haT : a ≤ T) (hTT' : T ≤ T') {s : ℂ} (hs : 0 < s.re) :
     ‖∫ t in Set.Ioo T T', ((t : ℝ) : ℂ) ^ (-s) * (f : ℝ → ℂ) t‖
       ≤ ((2 * T ^ (-s.re) + ‖s‖ * T ^ (-s.re) / s.re) / (2 * Real.pi)) *
@@ -104,7 +105,7 @@ theorem norm_truncMellin_le {a : ℝ} (ha : 0 < a) {f : SoninL2} (hf : f ∈ cen
   have hAmem : MemLp A 2 volume := by
     refine MemLp.indicator ?_ (Lp.memLp (fourierUnitary W))
     exact measurableSet_lt measurable_const continuous_abs.measurable
-  have hband := fourier_indicator_ae_zero_of_mem_centralSoninCarrier hf
+  have hband := fourier_indicator_ae_zero_of_mem_fourierOrthogonal hf
   have hbandpt : ∀ᵐ u ∂(volume : Measure ℝ),
       u ∈ centralInterval a → ((fourierUnitary f : SoninL2) : ℝ → ℂ) u = 0 := by
     filter_upwards [hband] with u hu hmem

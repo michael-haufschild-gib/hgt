@@ -45,7 +45,7 @@ theorem tendsto_freeStart_zero (K₀ : ℕ) :
   exact hlin.congr fun u => (hval u).symm
 
 /-- **The exceptional starts of a free-scale construction are below any fraction of `m`.** -/
-theorem eventually_card_freeBadStartUnion_le {β : ℝ} (hβ0 : 9 / 10 < β) (hβ1 : β < 1) (K₀ : ℕ)
+theorem eventually_card_freeBadStartUnion_le {β : ℝ} (hβ0 : 0 < β) (hβ1 : β < 1) (K₀ : ℕ)
     {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ u : ℕ in atTop,
       (((freeBadStartUnion β (2 ^ (K₀ + 1) * u) K₀).card : ℕ) : ℝ)

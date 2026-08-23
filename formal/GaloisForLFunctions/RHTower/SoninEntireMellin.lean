@@ -76,7 +76,7 @@ theorem differentiableOn_soninChiSide {a : ℝ} (ha : 0 < a) {f : SoninL2}
     simp only [Complex.sub_re, Complex.one_re]
     linarith
   have hd : DifferentiableAt ℂ (soninMellinExtension (fourierUnitary f) a) (1 - s) :=
-    (differentiableOn_soninMellinExtension ha hgcar).differentiableAt (hopen.mem_nhds hre)
+    (differentiableOn_soninMellinExtension ha hgcar.2).differentiableAt (hopen.mem_nhds hre)
   have hsub : DifferentiableAt ℂ (fun z : ℂ => 1 - z) s :=
     (differentiableAt_const (1 : ℂ)).sub differentiableAt_id
   have hcomp : DifferentiableAt ℂ
@@ -94,7 +94,7 @@ theorem differentiable_soninEntireMellin {a : ℝ} (ha : 0 < a) {f : SoninL2}
     Differentiable ℂ (soninEntireMellin f a) := by
   refine differentiable_glueVert (c₁ := 0) (c₂ := 1 / 2) (by norm_num)
     ((differentiableOn_soninChiSide ha hev hf).mono ?_)
-    (differentiableOn_soninMellinExtension ha hf) ?_
+    (differentiableOn_soninMellinExtension ha hf.2) ?_
   · intro v hv
     have : v.re < 1 / 2 := hv
     exact lt_trans this (by norm_num)

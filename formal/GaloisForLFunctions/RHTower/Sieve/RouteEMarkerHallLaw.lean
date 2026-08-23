@@ -222,7 +222,7 @@ set_option maxHeartbeats 1600000 in
 `σ ∈ {±1}` and every constant `C`, the interval `(Z, Z + H(Z)]` with
 `H(Z) = ⌈√Z·exp((log Z)^β)⌉` contains at least `C·H(Z)/log Z` integers `n` with `μ(n) = σ`, for all
 sufficiently large `Z`. -/
-theorem route_e_marker_hall_law {β' : ℝ} (hβ'0 : 9 / 10 < β') (hβ'1 : β' < 1) {σ : ℤ}
+theorem route_e_marker_hall_law {β' : ℝ} (hβ'0 : 1 / 2 < β') (hβ'1 : β' < 1) {σ : ℤ}
     (hσ : σ = 1 ∨ σ = -1) (C : ℝ) :
     ∀ᶠ Z : ℕ in atTop,
       C * (((⌈Real.sqrt (Z : ℝ) * cardLength β' (Z : ℝ)⌉₊ : ℕ) : ℝ) / Real.log ((Z : ℕ) : ℝ))
@@ -231,8 +231,8 @@ theorem route_e_marker_hall_law {β' : ℝ} (hβ'0 : 9 / 10 < β') (hβ'1 : β' 
   classical
   have hD : (0 : ℝ) < squarefreeDensity := squarefreeDensity_pos
   -- the auxiliary exponent, strictly between `9/10` and `β'`
-  set β : ℝ := (9 / 10 + β') / 2 with hβdef
-  have hβ0 : 9 / 10 < β := by rw [hβdef]; linarith
+  set β : ℝ := (1 / 2 + β') / 2 with hβdef
+  have hβ0 : 0 < β := by rw [hβdef]; linarith
   have hββ' : β < β' := by rw [hβdef]; linarith
   have hβ1 : β < 1 := by linarith
   have hβhalf : 1 / 2 < β := by linarith
@@ -370,7 +370,7 @@ theorem eventually_card_primes_le_window (β' : ℝ) :
 /-- **The window carries at least as many positive-Möbius integers as primes.**  This is the
 card's consequence `(5)`: the Hall injection from the source primes of a dyadic shell to
 positive-Möbius integers at displacement at most `H(X) = X^{1/2+o(1)}`. -/
-theorem route_e_marker_hall_injection {β' : ℝ} (hβ'0 : 9 / 10 < β') (hβ'1 : β' < 1) :
+theorem route_e_marker_hall_injection {β' : ℝ} (hβ'0 : 1 / 2 < β') (hβ'1 : β' < 1) :
     ∀ᶠ Z : ℕ in atTop,
       #{p ∈ Finset.Ioc Z (Z + ⌈Real.sqrt (Z : ℝ) * cardLength β' (Z : ℝ)⌉₊) | p.Prime}
         ≤ #{n ∈ Finset.Ioc Z (Z + ⌈Real.sqrt (Z : ℝ) * cardLength β' (Z : ℝ)⌉₊) |

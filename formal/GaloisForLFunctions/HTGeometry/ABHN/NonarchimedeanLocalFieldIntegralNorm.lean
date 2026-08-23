@@ -2654,6 +2654,71 @@ theorem nonarchimedeanLocalFieldAdjoinRoot_fractionField_norm_surjective_on_inte
     (ValuativeRel.valuation K).integer (AdjoinRoot f) b]
   rw [integralNormUnits_toMul_apply (ValuativeRel.valuation K).integer (AdjoinRoot f) b, hb]
 
+/-- Every fraction-field unit of valuation zero is a field norm from a finite unramified root
+lift.  This upgrades integral-unit norm surjectivity to the kernel of the local valuation, so
+the unit contribution to the unramified norm quotient vanishes. -/
+theorem nonarchimedeanLocalFieldAdjoinRoot_fractionField_norm_surjective_on_tameValKer
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K]
+    (f : Polynomial (ValuativeRel.valuation K).integer) (hf : f.Monic)
+    (g : Polynomial (IsLocalRing.ResidueField (ValuativeRel.valuation K).integer))
+    (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk (IsLocalRing.maximalIdeal
+      (ValuativeRel.valuation K).integer)) = g)
+    (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsLocalRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+    letI : IsLocalHom (algebraMap (ValuativeRel.valuation K).integer (AdjoinRoot f)) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+    letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+    letI : Module.Free (ValuativeRel.valuation K).integer (AdjoinRoot f) := hf.free_adjoinRoot
+    letI : Module.Finite (ValuativeRel.valuation K).integer (AdjoinRoot f) := hf.finite_adjoinRoot
+    letI : Module.IsTorsionFree (ValuativeRel.valuation K).integer (AdjoinRoot f) :=
+      AdjoinRoot.noZeroSMulDivisors_of_prime_of_degree_ne_zero
+        (nonarchimedeanLocalFieldAdjoinRoot_isPrime K f hf g hfg hg)
+        (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg)
+    letI : Algebra (FractionRing (ValuativeRel.valuation K).integer)
+        (FractionRing (AdjoinRoot f)) :=
+      FractionRing.liftAlgebra (ValuativeRel.valuation K).integer (FractionRing (AdjoinRoot f))
+    ∀ a : (FractionRing (ValuativeRel.valuation K).integer)ˣ,
+      a ∈ (tameValHom ((IsDiscreteValuationRing.maximalIdeal
+        (ValuativeRel.valuation K).integer).valuation
+          (FractionRing (ValuativeRel.valuation K).integer))).ker →
+      ∃ b : (AdjoinRoot f)ˣ,
+        Algebra.norm (FractionRing (ValuativeRel.valuation K).integer)
+          (algebraMap (AdjoinRoot f) (FractionRing (AdjoinRoot f)) (b : AdjoinRoot f)) =
+        (a : FractionRing (ValuativeRel.valuation K).integer) := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsLocalRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  letI : IsLocalHom (algebraMap (ValuativeRel.valuation K).integer (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+  letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+  letI : Module.Free (ValuativeRel.valuation K).integer (AdjoinRoot f) := hf.free_adjoinRoot
+  letI : Module.Finite (ValuativeRel.valuation K).integer (AdjoinRoot f) := hf.finite_adjoinRoot
+  letI : Module.IsTorsionFree (ValuativeRel.valuation K).integer (AdjoinRoot f) :=
+    AdjoinRoot.noZeroSMulDivisors_of_prime_of_degree_ne_zero
+      (nonarchimedeanLocalFieldAdjoinRoot_isPrime K f hf g hfg hg)
+      (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg)
+  letI : Algebra (FractionRing (ValuativeRel.valuation K).integer)
+      (FractionRing (AdjoinRoot f)) :=
+    FractionRing.liftAlgebra (ValuativeRel.valuation K).integer (FractionRing (AdjoinRoot f))
+  intro a ha
+  obtain ⟨c, hc⟩ :=
+    discreteValuationRingFractionField_tameValHom_ker_unitsMap_surjective
+      (ValuativeRel.valuation K).integer
+      (FractionRing (ValuativeRel.valuation K).integer) a ha
+  obtain ⟨b, hb⟩ :=
+    nonarchimedeanLocalFieldAdjoinRoot_fractionField_norm_surjective_on_integralUnits
+      K f hf g hgmonic hfg hg c
+  refine ⟨b, ?_⟩
+  exact hb.trans (congrArg Units.val hc)
+
 /-- On base scalars, the fraction-field norm of a finite unramified root lift is the power by
 the unramified degree.  This is the valuation-lattice contribution to unramified reciprocity. -/
 theorem nonarchimedeanLocalFieldAdjoinRoot_fractionField_norm_algebraMap

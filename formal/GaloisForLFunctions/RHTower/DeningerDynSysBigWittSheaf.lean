@@ -28,14 +28,14 @@ variable {A B : Type*} [CommRing A] [CommRing B]
 def deningerDynSysBigWittSeries (w : DeningerBigWittRing A) : PowerSeries A :=
   deningerBigWittSeries (Additive.toMul w.additiveVal)
 
-theorem deningerBigWittRingSeries_injective :
+theorem deningerDynSysBigWittSeries_injective :
     Function.Injective (deningerDynSysBigWittSeries (A := A)) := by
   intro x y h
   apply DeningerBigWittRing.ext
   apply Additive.toMul.injective
   exact deningerBigWittSeries_injective h
 
-@[simp] theorem deningerBigWittRingSeries_constantCoeff (w : DeningerBigWittRing A) :
+@[simp] theorem deningerDynSysBigWittSeries_constantCoeff (w : DeningerBigWittRing A) :
     PowerSeries.constantCoeff (deningerDynSysBigWittSeries w) = 1 :=
   deningerBigWittSeries_constantCoeff _
 
@@ -44,11 +44,11 @@ noncomputable def deningerDynSysBigWittOfSeries (f : PowerSeries A)
     (hf : PowerSeries.constantCoeff f = 1) : DeningerBigWittRing A :=
   ⟨Additive.ofMul (deningerBigWittOfSeries f hf)⟩
 
-@[simp] theorem deningerBigWittRingSeries_ofSeries (f : PowerSeries A)
+@[simp] theorem deningerDynSysBigWittSeries_ofSeries (f : PowerSeries A)
     (hf : PowerSeries.constantCoeff f = 1) :
     deningerDynSysBigWittSeries (deningerDynSysBigWittOfSeries f hf) = f := rfl
 
-theorem deningerBigWittRingSeries_map (f : A →+* B) (w : DeningerBigWittRing A) :
+theorem deningerDynSysBigWittSeries_map (f : A →+* B) (w : DeningerBigWittRing A) :
     deningerDynSysBigWittSeries (deningerBigWittRingMap f w)
       = PowerSeries.map f (deningerDynSysBigWittSeries w) := by
   show deningerBigWittSeries (Additive.toMul
@@ -86,7 +86,7 @@ theorem deningerBigWittPresheaf_map_series {X : TopCat.{u}} (F : TopCat.Presheaf
     {V W : Opens X} (h : V ⟶ W) (w : DeningerBigWittRing (F.obj (op W))) :
     deningerDynSysBigWittSeries ((deningerBigWittPresheaf F).map h.op w)
       = PowerSeries.map (F.map h.op).hom (deningerDynSysBigWittSeries w) :=
-  deningerBigWittRingSeries_map _ _
+  deningerDynSysBigWittSeries_map _ _
 
 /-- **The big Witt presheaf of a sheaf of commutative rings is a sheaf.**  A big Witt vector is a
 power series with constant term `1`, so gluing is gluing of each coefficient. -/
@@ -105,7 +105,7 @@ theorem deningerBigWittPresheaf_isSheaf {X : TopCat.{u}} (F : TopCat.Sheaf CommR
     refine (hauniq 0 1 ?_).symm
     intro i
     have hone : PowerSeries.coeff 0 (deningerDynSysBigWittSeries (sf i)) = 1 := by
-      rw [PowerSeries.coeff_zero_eq_constantCoeff, deningerBigWittRingSeries_constantCoeff]
+      rw [PowerSeries.coeff_zero_eq_constantCoeff, deningerDynSysBigWittSeries_constantCoeff]
     show (F.1.map _).hom 1 = _
     rw [map_one]
     exact hone.symm
@@ -113,17 +113,17 @@ theorem deningerBigWittPresheaf_isSheaf {X : TopCat.{u}} (F : TopCat.Sheaf CommR
     rw [← PowerSeries.coeff_zero_eq_constantCoeff, PowerSeries.coeff_mk, ha0]
   refine ⟨deningerDynSysBigWittOfSeries (PowerSeries.mk a) hconst, ?_, ?_⟩
   · intro i
-    apply deningerBigWittRingSeries_injective
-    rw [deningerBigWittPresheaf_map_series, deningerBigWittRingSeries_ofSeries]
+    apply deningerDynSysBigWittSeries_injective
+    rw [deningerBigWittPresheaf_map_series, deningerDynSysBigWittSeries_ofSeries]
     apply PowerSeries.ext
     intro n
     rw [PowerSeries.coeff_map, PowerSeries.coeff_mk]
     exact ha n i
   · intro y hy
-    apply deningerBigWittRingSeries_injective
+    apply deningerDynSysBigWittSeries_injective
     apply PowerSeries.ext
     intro n
-    rw [deningerBigWittRingSeries_ofSeries, PowerSeries.coeff_mk]
+    rw [deningerDynSysBigWittSeries_ofSeries, PowerSeries.coeff_mk]
     refine hauniq n _ ?_
     intro i
     have h1 := congrArg (fun w => PowerSeries.coeff n (deningerDynSysBigWittSeries w)) (hy i)

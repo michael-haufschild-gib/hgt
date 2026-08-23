@@ -128,7 +128,7 @@ theorem multiEps_pos {K₀ : ℕ} (hH : 0 < multiHarmConst K₀) : 0 < multiEps 
   positivity
 
 /-- **The sign count of the physical window, eventually.** -/
-theorem eventually_card_sign_window_ge {β : ℝ} (hβ0 : 9 / 10 < β) (hβ1 : β < 1) (K₀ : ℕ)
+theorem eventually_card_sign_window_ge {β : ℝ} (hβ0 : 0 < β) (hβ1 : β < 1) (K₀ : ℕ)
     (hH : 0 < multiHarmConst K₀) {σ : ℤ} (hσ : σ = 1 ∨ σ = -1) :
     ∀ᶠ v : ℕ in atTop,
       (squarefreeDensity / 256)
@@ -284,7 +284,7 @@ theorem tendsto_multiCell {β : ℝ} (hβ0 : 0 < β) (K₀ : ℕ) :
   exact tendsto_atTop.2 hev
 
 /-- **The sign count in the card's normalisation.** -/
-theorem eventually_card_sign_window_ge_const {β : ℝ} (hβ0 : 9 / 10 < β) (hβ1 : β < 1) (K₀ : ℕ)
+theorem eventually_card_sign_window_ge_const {β : ℝ} (hβ0 : 0 < β) (hβ1 : β < 1) (K₀ : ℕ)
     (hH : 0 < multiHarmConst K₀) {σ : ℤ} (hσ : σ = 1 ∨ σ = -1) :
     ∀ᶠ v : ℕ in atTop,
       squarefreeDensity * multiHarmConst K₀ / 1024
@@ -407,7 +407,7 @@ theorem exists_multiHarmConst_ge (C : ℝ) : ∃ K₀ : ℕ, C ≤ multiHarmCons
 /-- **For every constant there is a block count realising it.**  This is statement (3) of the
 reciprocal-marker Hall card at the constructed scales: the window `(X, X+H]` contains at least
 `C·H/log X` integers of either prescribed Möbius sign, for every fixed `C`. -/
-theorem exists_eventually_card_sign_window_ge {β : ℝ} (hβ0 : 9 / 10 < β) (hβ1 : β < 1)
+theorem exists_eventually_card_sign_window_ge {β : ℝ} (hβ0 : 0 < β) (hβ1 : β < 1)
     (C : ℝ) {σ : ℤ} (hσ : σ = 1 ∨ σ = -1) :
     ∃ K₀ : ℕ, ∀ᶠ v : ℕ in atTop,
       C * (((multiWindow β K₀ v : ℕ) : ℝ) / Real.log ((multiPhys K₀ v : ℕ) : ℝ))

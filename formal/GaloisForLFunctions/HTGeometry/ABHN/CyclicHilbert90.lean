@@ -3,6 +3,7 @@ Copyright (c) 2026 Michael Barenbaum. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Michael Barenbaum
 -/
+import GaloisForLFunctions.HTGeometry.MilnorKTameValuation
 import Mathlib.RepresentationTheory.Homological.GroupCohomology.Hilbert90
 
 /-!
@@ -25,6 +26,68 @@ theorem cyclicGalois_norm_gal_apply {K L : Type} [Field K] [Field L] [Algebra K 
   rw [Algebra.norm_eq_prod_automorphisms, Algebra.norm_eq_prod_automorphisms]
   exact Fintype.prod_bijective (fun sigma : Gal(L/K) => sigma * g) (Group.mulRight_bijective g)
     (fun sigma => sigma (g y)) (fun tau => tau y) (by intro sigma; rfl)
+
+/-- If every Galois automorphism preserves a valuation, the valuation of the field norm is the
+extension degree times that valuation (multiplicatively: its degree-th power). -/
+theorem valuation_algebraMap_norm_eq_pow_of_gal_invariant
+    {K L Γ₀ : Type*} [Field K] [Field L] [Algebra K L]
+    [FiniteDimensional K L] [IsGalois K L] [LinearOrderedCommGroupWithZero Γ₀]
+    (v : Valuation L Γ₀)
+    (h : ∀ (σ : Gal(L / K)) (x : L), v (σ x) = v x) (x : L) :
+    v (algebraMap K L (Algebra.norm K x)) = v x ^ Module.finrank K L := by
+  classical
+  rw [Algebra.norm_eq_prod_automorphisms, map_prod]
+  simp_rw [h]
+  rw [Finset.prod_const, Finset.card_univ]
+  rw [Fintype.card_eq_nat_card, IsGalois.card_aut_eq_finrank]
+
+/-- A valuation equality for a norm transfers to the additive integer valuation on field units.
+This turns the multiplicative degree-th-power law into divisibility of norm valuations. -/
+theorem tameValHom_norm_eq_pow_of_valuation
+    {K L : Type*} [Field K] [Field L] [Algebra K L]
+    (vK : Valuation K (WithZero (Multiplicative ℤ)))
+    (vL : Valuation L (WithZero (Multiplicative ℤ))) (n : ℕ) (x : Lˣ)
+    (hval : vK (Algebra.norm K (x : L)) = vL (x : L) ^ n) :
+    tameValHom vK (Units.map (Algebra.norm K) x) = (tameValHom vL x) ^ n := by
+  rw [tameValHom_eq, tameValHom_eq]
+  have hunzero : tameUnzero vK (Units.map (Algebra.norm K) x) =
+      tameUnzero vL x ^ n := by
+    apply WithZero.coe_inj.mp
+    have hleft : ((tameUnzero vK (Units.map (Algebra.norm K) x) : Multiplicative ℤ) :
+        WithZero (Multiplicative ℤ)) = vK (Algebra.norm K (x : L)) := by
+      simpa only [Units.coe_map] using coe_tameUnzero vK (Units.map (Algebra.norm K) x)
+    rw [hleft, WithZero.coe_pow, coe_tameUnzero]
+    exact hval
+  rw [hunzero, inv_pow]
+
+/-- The integer valuation of field units, reduced modulo a prescribed degree. -/
+noncomputable def tameValModNat {K : Type*} [Field K]
+    (v : Valuation K (WithZero (Multiplicative ℤ))) (n : ℕ) :
+    Additive Kˣ →+ ZMod n :=
+  (Int.castAddHom (ZMod n)).comp
+    ((AddEquiv.additiveMultiplicative ℤ).toAddMonoidHom.comp (tameValHom v).toAdditive)
+
+/-- Evaluation of the degree-reduced valuation on a field unit. -/
+theorem tameValModNat_apply {K : Type*} [Field K]
+    (v : Valuation K (WithZero (Multiplicative ℤ))) (n : ℕ) (a : Kˣ) :
+    tameValModNat v n (Additive.ofMul a) =
+      ((Multiplicative.toAdd (tameValHom v a) : ℤ) : ZMod n) := rfl
+
+/-- A norm satisfying the degree-power valuation law has trivial reduced valuation modulo that
+degree.  This is the well-definedness calculation for the unramified local invariant. -/
+theorem tameValModNat_norm_eq_zero_of_tameValHom
+    {K L : Type*} [Field K] [Field L] [Algebra K L]
+    (vK : Valuation K (WithZero (Multiplicative ℤ)))
+    (vL : Valuation L (WithZero (Multiplicative ℤ))) (n : ℕ) (x : Lˣ)
+    (hval : tameValHom vK (Units.map (Algebra.norm K) x) = (tameValHom vL x) ^ n) :
+    tameValModNat vK n (Additive.ofMul (Units.map (Algebra.norm K) x)) = 0 := by
+  change ((Multiplicative.toAdd
+    (tameValHom vK (Units.map (Algebra.norm K) x)) : ℤ) : ZMod n) = 0
+  rw [hval]
+  change ((n • (Multiplicative.toAdd (tameValHom vL x) : ℤ) : ℤ) : ZMod n) = 0
+  rw [nsmul_eq_mul, Int.cast_mul]
+  have hn : (n : ZMod n) = 0 := ZMod.natCast_self n
+  rw [Int.cast_natCast, hn, zero_mul]
 
 /-- A multiplicative Galois coboundary has norm one. -/
 theorem cyclicGalois_norm_div_apply {K L : Type} [Field K] [Field L] [Algebra K L]
@@ -62,6 +125,26 @@ noncomputable def cyclicGaloisCoboundaryHom {K L : Type} [Field K] [Field L] [Al
 /-- The field norm restricted to units. -/
 noncomputable def cyclicGaloisNormUnits (K L : Type) [Field K] [Field L] [Algebra K L] :
     Lˣ →* Kˣ := Units.map (Algebra.norm K)
+
+/-- On base units, the field norm is the power by the extension degree.  This gives the
+valuation-lattice action used when a local norm quotient is formed. -/
+theorem cyclicGaloisNormUnits_algebraMap {K L : Type} [Field K] [Field L] [Algebra K L]
+    [Module.Free K L] (x : Kˣ) :
+    cyclicGaloisNormUnits K L (Units.map (algebraMap K L) x) =
+      x ^ Module.finrank K L := by
+  apply Units.ext
+  change Algebra.norm K (algebraMap K L (x : K)) = (x : K) ^ Module.finrank K L
+  exact Algebra.norm_algebraMap (x : K)
+
+/-- The additive valuation of a normed base scalar is multiplied by the extension degree.
+This is the lattice calculation underlying the unramified local norm quotient. -/
+theorem tameVal_cyclicGaloisNormUnits_algebraMap {K L : Type} [Field K] [Field L] [Algebra K L]
+    [Module.Free K L] (v : Valuation K (WithZero (Multiplicative ℤ))) (x : Kˣ) :
+    Multiplicative.toAdd (tameValHom v
+      (cyclicGaloisNormUnits K L (Units.map (algebraMap K L) x))) =
+      Module.finrank K L • Multiplicative.toAdd (tameValHom v x) := by
+  rw [cyclicGaloisNormUnits_algebraMap]
+  simp
 
 /-- Additive presentation of the cyclic coboundary. -/
 noncomputable def cyclicGaloisAdditiveCoboundary {K L : Type} [Field K] [Field L] [Algebra K L]

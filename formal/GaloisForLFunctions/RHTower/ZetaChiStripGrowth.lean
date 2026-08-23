@@ -30,6 +30,38 @@ theorem norm_Gammaℝ_eq (w : ℂ) :
   congr 2
   simp
 
+/-- **The modulus of the functional-equation factor.**  Off the real axis the `Γ_ℝ` quotient
+splits into a power of `π` and a ratio of `Γ` moduli. -/
+theorem norm_zetaChi_eq {s : ℂ} (hsim : s.im ≠ 0) :
+    ‖zetaChi s‖ = Real.pi ^ (s.re - 1 / 2)
+      * (‖Complex.Gamma ((1 - s) / 2)‖ * ‖(Complex.Gamma (s / 2))⁻¹‖) := by
+  have hGne : Complex.Gamma (s / 2) ≠ 0 := by
+    refine Complex.Gamma_ne_zero (fun m => ?_)
+    intro hm
+    have him0 : (s / 2).im = 0 := by
+      rw [hm]
+      simp
+    have hh : (s / 2).im = s.im / 2 := by simp
+    rw [hh] at him0
+    exact hsim (by linarith)
+  have hGpos : (0 : ℝ) < ‖Complex.Gamma (s / 2)‖ := norm_pos_iff.2 hGne
+  have hppos : (0 : ℝ) < Real.pi ^ (-s.re / 2) := Real.rpow_pos_of_pos Real.pi_pos _
+  have hpow : Real.pi ^ (-(1 - s.re) / 2) / Real.pi ^ (-s.re / 2)
+      = Real.pi ^ (s.re - 1 / 2) := by
+    rw [← Real.rpow_sub Real.pi_pos]
+    congr 1
+    ring
+  rw [zetaChi, norm_div, norm_Gammaℝ_eq, norm_Gammaℝ_eq, norm_inv]
+  have hsre : (1 - s).re = 1 - s.re := by simp
+  rw [hsre]
+  calc Real.pi ^ (-(1 - s.re) / 2) * ‖Complex.Gamma ((1 - s) / 2)‖
+        / (Real.pi ^ (-s.re / 2) * ‖Complex.Gamma (s / 2)‖)
+      = (Real.pi ^ (-(1 - s.re) / 2) / Real.pi ^ (-s.re / 2))
+        * (‖Complex.Gamma ((1 - s) / 2)‖ * ‖Complex.Gamma (s / 2)‖⁻¹) := by
+        field_simp
+    _ = Real.pi ^ (s.re - 1 / 2)
+        * (‖Complex.Gamma ((1 - s) / 2)‖ * ‖Complex.Gamma (s / 2)‖⁻¹) := by rw [hpow]
+
 /-- **Polynomial vertical growth of `χ` on every strip, above height two.** -/
 theorem hasStripPolyGrowthOffReal_zetaChi : HasStripPolyGrowthOffReal zetaChi := by
   intro a b
@@ -59,38 +91,11 @@ theorem hasStripPolyGrowthOffReal_zetaChi : HasStripPolyGrowthOffReal zetaChi :=
     (by rw [him2]; exact hhalf)
   rw [him2] at hG2
   -- the modulus of chi
-  have hchi : ‖zetaChi s‖ = Real.pi ^ (s.re - 1 / 2)
-      * (‖Complex.Gamma ((1 - s) / 2)‖ * ‖(Complex.Gamma (s / 2))⁻¹‖) := by
-    have hsim : s.im ≠ 0 := by
-      intro h
-      rw [h] at hτ
-      norm_num at hτ
-    have hGne : Complex.Gamma (s / 2) ≠ 0 := by
-      refine Complex.Gamma_ne_zero (fun m => ?_)
-      intro hm
-      have him0 : (s / 2).im = 0 := by
-        rw [hm]
-        simp
-      have hh : (s / 2).im = s.im / 2 := by simp
-      rw [hh] at him0
-      exact hsim (by linarith)
-    have hGpos : (0 : ℝ) < ‖Complex.Gamma (s / 2)‖ := norm_pos_iff.2 hGne
-    have hppos : (0 : ℝ) < Real.pi ^ (-s.re / 2) := Real.rpow_pos_of_pos Real.pi_pos _
-    have hpow : Real.pi ^ (-(1 - s.re) / 2) / Real.pi ^ (-s.re / 2)
-        = Real.pi ^ (s.re - 1 / 2) := by
-      rw [← Real.rpow_sub Real.pi_pos]
-      congr 1
-      ring
-    rw [zetaChi, norm_div, norm_Gammaℝ_eq, norm_Gammaℝ_eq, norm_inv]
-    have hsre : (1 - s).re = 1 - s.re := by simp
-    rw [hsre]
-    calc Real.pi ^ (-(1 - s.re) / 2) * ‖Complex.Gamma ((1 - s) / 2)‖
-          / (Real.pi ^ (-s.re / 2) * ‖Complex.Gamma (s / 2)‖)
-        = (Real.pi ^ (-(1 - s.re) / 2) / Real.pi ^ (-s.re / 2))
-          * (‖Complex.Gamma ((1 - s) / 2)‖ * ‖Complex.Gamma (s / 2)‖⁻¹) := by
-          field_simp
-      _ = Real.pi ^ (s.re - 1 / 2)
-          * (‖Complex.Gamma ((1 - s) / 2)‖ * ‖Complex.Gamma (s / 2)‖⁻¹) := by rw [hpow]
+  have hsim : s.im ≠ 0 := by
+    intro h
+    rw [h] at hτ
+    norm_num at hτ
+  have hchi := norm_zetaChi_eq hsim
   rw [hchi]
   -- assemble
   have hexp : Real.exp (-(Real.pi * (|s.im| / 2) / 2)) * Real.exp (Real.pi * (|s.im| / 2) / 2)

@@ -154,3 +154,52 @@ Everything analytic or transcendence-theoretic beyond clause 1:
 - clause 4, Kirby's exponential-algebraicity theorem;
 - the identification of `(L(p)-L(q)) - (X(p)-X(q))` with the path integral `∫_q^p ε_i`, which needs
   a contour-integration layer for `d log Y - dX` on the normalized projective curve.
+
+## Two of the four remaining items are closed (2026-08-23)
+
+**Stale item.** "One-dimensionality of `Ω_{K/Q̄}` for a transcendence-degree-one extension" was
+already corpus-owned when that list was written:
+
+```text
+RHTower.finrank_kaehlerDifferential_eq_one_of_trdeg_eq_one
+    {A : Type u} {K : Type v} [Field A] [Field K] [Algebra A K] [CharZero A]
+    (htrdeg : Algebra.trdeg A K = 1) : Module.finrank K Ω[K⁄A] = 1
+```
+
+in `formal/GaloisForLFunctions/RHTower/SchanuelKaehlerDimension.lean`, together with the separable
+base change and the simple-transcendental case it is built from.
+
+**New, and general.**  `formal/GaloisForLFunctions/HTGeometry/KaehlerRankTranscendenceDegree.lean`
+(axiom-clean, umbrella-wired) proves the identity at *every* transcendence degree — a genuine
+mathlib gap, not only the degree-one case:
+
+```text
+rank_kaehlerDifferential_eq_trdeg (k K : Type u) [Field k] [Field K] [Algebra k K] [CharZero k] :
+    Module.rank K Ω[K⁄k] = Algebra.trdeg k K
+```
+
+A transcendence basis splits the extension: over the purely transcendental part the differentials
+are free on the basis (a rational function field is a localization of a polynomial ring, and
+localization is formally étale, via `AlgebraicIndependent.aevalEquivField`), and the remaining part
+is algebraic hence separable hence formally étale, so it only extends scalars.
+
+Together with
+
+```text
+exists_unique_smul_of_trdeg_eq_one : trdeg k K = 1 → e ≠ 0 → ∀ f, ∃! c : K, f = c • e
+```
+
+the geometric input `existsUnique_defectSlope` consumes is now unconditional: in a
+transcendence-degree-one extension every nonzero differential is a basis and every other
+differential is a unique multiple of it.
+
+### What remains, restated
+
+- the instantiation bookkeeping identifying the abstract base/value-field pair with `Q̄` and
+  `Q̄(x₁,x₂,y₁,y₂)` inside `ℂ`;
+- clause 3, transcendence of `ρ`, still through
+  `schanuel-defects-algebraic-coefficient-independent` — whose own Baker gate is **closed**
+  (`RHTower.baker_linearForm_transcendental`), leaving only its algebraic-group/character-lattice
+  step;
+- clause 4, Kirby's exponential-algebraicity theorem;
+- the contour-integration layer for `d log Y − dX` on the normalized projective curve.

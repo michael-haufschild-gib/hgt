@@ -83,7 +83,7 @@ theorem norm_truncKernel_le {a T : ℝ} (ha : 0 < a) (haT : a ≤ T) {s : ℂ} (
 
 /-- **Burnol's kernel represents the analytic continuation.** -/
 theorem soninMellinExtension_eq_kernel_pairing {a : ℝ} (ha : 0 < a) {f : SoninL2}
-    (hf : f ∈ centralSoninCarrier a) {s : ℂ} (hs0 : 0 < s.re) (hs1 : s.re < 1) :
+    (hf : f ∈ (centralFourierForbidden a)ᗮ) {s : ℂ} (hs0 : 0 < s.re) (hs1 : s.re < 1) :
     soninMellinExtension f a s
       = ∫ u : ℝ, burnolKernel a s u * ((fourierUnitary f : SoninL2) : ℝ → ℂ) u := by
   set g : ℝ → ℂ := ((fourierUnitary f : SoninL2) : ℝ → ℂ) with hg
@@ -93,7 +93,7 @@ theorem soninMellinExtension_eq_kernel_pairing {a : ℝ} (ha : 0 < a) {f : Sonin
     have h2 : (0:ℝ) < 2 * Real.pi := by positivity
     rw [hCst]
     positivity
-  have hband := fourier_indicator_ae_zero_of_mem_centralSoninCarrier hf
+  have hband := fourier_indicator_ae_zero_of_mem_fourierOrthogonal hf
   have hgzero : ∀ᵐ u ∂(volume : Measure ℝ), u ∈ centralInterval a → g u = 0 := by
     filter_upwards [hband] with u hu hmem
     simpa [Set.indicator_of_mem hmem] using hu

@@ -44,6 +44,18 @@ open IsDiscreteValuationRing
 variable {W : Type*} [CommRing W] [IsDomain W] [IsDiscreteValuationRing W]
 variable {Γ : Type*} [Group Γ] [MulSemiringAction Γ W]
 
+/-- A ring automorphism of a discrete valuation ring preserves its additive valuation. -/
+theorem addVal_ringEquiv (e : W ≃+* W) (x : W) : addVal W (e x) = addVal W x := by
+  classical
+  rcases eq_or_ne x 0 with rfl | hx
+  · simp
+  obtain ⟨ϖ, hϖ⟩ := exists_irreducible W
+  obtain ⟨n, u, rfl⟩ := eq_unit_mul_pow_irreducible hx hϖ
+  have heϖ : Irreducible (e ϖ) := hϖ.map e
+  have heu : IsUnit (e (u : W)) := u.isUnit.map e
+  obtain ⟨u', hu'⟩ := heu
+  rw [map_mul, map_pow, addVal_def' u hϖ n, ← hu', addVal_def' u' heϖ n]
+
 /-- A ring automorphism preserves the additive valuation. -/
 theorem addVal_smul (g : Γ) (x : W) : addVal W (g • x) = addVal W x := by
   classical

@@ -58,7 +58,7 @@ theorem integrable_nearZeroKernel_mul_fourier {a : ℝ} (ha : 0 < a) (f : SoninL
 
 /-- The `χ`-kernel pairs integrably against the Fourier transform of a Sonine vector. -/
 theorem integrable_chiKernel_mul_fourier {a : ℝ} (ha : 0 < a) {f : SoninL2}
-    (hf : f ∈ centralSoninCarrier a) {s : ℂ} (hs : s.re < 1 / 2) :
+    (hf : f ∈ (centralFourierForbidden a)ᗮ) {s : ℂ} (hs : s.re < 1 / 2) :
     Integrable (fun u : ℝ => Complex.Gamma (1 - s) * chiKernel s u
       * ((fourierUnitary f : SoninL2) : ℝ → ℂ) u) volume := by
   set g : ℝ → ℂ := ((fourierUnitary f : SoninL2) : ℝ → ℂ) with hg
@@ -116,7 +116,7 @@ theorem integrable_chiKernel_mul_fourier {a : ℝ} (ha : 0 < a) {f : SoninL2}
         ≤ (2 * Real.pi) ^ (s.re - 1) * |u| ^ (s.re - 1) * Real.exp (Real.pi * |s.im|) := by
           exact mul_le_mul_of_nonneg_left hexpb hnn
       _ = Real.exp (Real.pi * |s.im|) * (2 * Real.pi) ^ (s.re - 1) * |u| ^ (s.re - 1) := by ring
-  have hband := fourier_indicator_ae_zero_of_mem_centralSoninCarrier hf
+  have hband := fourier_indicator_ae_zero_of_mem_fourierOrthogonal hf
   have hgzero : ∀ᵐ u ∂(volume : Measure ℝ), u ∈ centralInterval a → g u = 0 := by
     filter_upwards [hband] with u hu hmem
     simpa [Set.indicator_of_mem hmem] using hu
@@ -162,10 +162,12 @@ theorem integrable_chiKernel_mul_fourier {a : ℝ} (ha : 0 < a) {f : SoninL2}
       simp
   exact hchiint
 
-/-- **The pure `χ`-kernel identity.** -/
-theorem soninMellinExtension_eq_chi_pairing {a : ℝ} (ha : 0 < a) {f : SoninL2}
-    (hf : f ∈ centralSoninCarrier a) {s : ℂ} (hs0 : 0 < s.re) (hs : s.re < 1 / 2) :
+/-- **The pure `χ`-kernel identity, with the near-zero head kept.**  Only the vanishing of the
+Fourier transform on the band is used. -/
+theorem soninMellinExtension_add_head_eq_chi_pairing {a : ℝ} (ha : 0 < a) {f : SoninL2}
+    (hf : f ∈ (centralFourierForbidden a)ᗮ) {s : ℂ} (hs0 : 0 < s.re) (hs : s.re < 1 / 2) :
     soninMellinExtension f a s
+        + ∫ t in Set.Ioo (0 : ℝ) a, ((t : ℝ) : ℂ) ^ (-s) * (f : ℝ → ℂ) t
       = ∫ u : ℝ, Complex.Gamma (1 - s) * chiKernel s u
           * ((fourierUnitary f : SoninL2) : ℝ → ℂ) u := by
   have hs1 : s.re < 1 := by linarith
@@ -174,10 +176,10 @@ theorem soninMellinExtension_eq_chi_pairing {a : ℝ} (ha : 0 < a) {f : SoninL2}
       * Complex.exp ((t * (2 * Real.pi * u) : ℝ) * Complex.I) with hE
   have hEint : Integrable (fun u : ℝ => E u * g u) volume :=
     integrable_nearZeroKernel_mul_fourier ha f hs
-  have hEzero : (∫ u : ℝ, E u * g u) = 0 :=
-    integral_nearZeroKernel_mul_fourier_eq_zero ha hf hs
+  have hEval : (∫ u : ℝ, E u * g u)
+      = ∫ t in Set.Ioo (0 : ℝ) a, ((t : ℝ) : ℂ) ^ (-s) * (f : ℝ → ℂ) t :=
+    integral_nearZeroKernel_mul_fourier_eq ha f hs
   have hker := soninMellinExtension_eq_kernel_pairing ha hf hs0 hs1
-  -- the χ-part is integrable because the kernel part and the correction part are
   have hAeq : ∀ u : ℝ, Complex.Gamma (1 - s) * chiKernel s u * g u
       = burnolKernel a s u * g u + E u * g u := by
     intro u
@@ -193,12 +195,38 @@ theorem soninMellinExtension_eq_chi_pairing {a : ℝ} (ha : 0 < a) {f : SoninL2}
     rw [heq]
     exact hchiint.sub hEint
   calc soninMellinExtension f a s
-      = ∫ u : ℝ, burnolKernel a s u * g u := hker
-    _ = (∫ u : ℝ, burnolKernel a s u * g u) + ∫ u : ℝ, E u * g u := by rw [hEzero, add_zero]
+        + ∫ t in Set.Ioo (0 : ℝ) a, ((t : ℝ) : ℂ) ^ (-s) * (f : ℝ → ℂ) t
+      = (∫ u : ℝ, burnolKernel a s u * g u) + ∫ u : ℝ, E u * g u := by rw [hker, hEval]
     _ = ∫ u : ℝ, (burnolKernel a s u * g u + E u * g u) :=
         (MeasureTheory.integral_add hburnolint hEint).symm
     _ = ∫ u : ℝ, Complex.Gamma (1 - s) * chiKernel s u * g u := by
         refine integral_congr_ae (Filter.Eventually.of_forall fun u => ?_)
         exact (hAeq u).symm
+
+/-- The near-zero head of a Sonine vector vanishes. -/
+theorem integral_nearZeroHead_eq_zero {a : ℝ} (ha : 0 < a) {f : SoninL2}
+    (hf : f ∈ centralSoninCarrier a) (s : ℂ) :
+    (∫ t in Set.Ioo (0 : ℝ) a, ((t : ℝ) : ℂ) ^ (-s) * (f : ℝ → ℂ) t) = 0 := by
+  have hsupp := physical_indicator_ae_zero_of_mem_centralSoninCarrier hf
+  have hae : ∀ᵐ t ∂(volume : Measure ℝ), t ∈ centralInterval a → (f : ℝ → ℂ) t = 0 := by
+    filter_upwards [hsupp] with t ht hmem
+    simpa [Set.indicator_of_mem hmem] using ht
+  refine MeasureTheory.integral_eq_zero_of_ae ?_
+  filter_upwards [ae_restrict_of_ae hae, ae_restrict_mem measurableSet_Ioo] with t ht hmem
+  have hband : t ∈ centralInterval a := by
+    rw [centralInterval, Set.mem_Icc]
+    exact ⟨by linarith [hmem.1, ha], le_of_lt hmem.2⟩
+  rw [ht hband, mul_zero]
+  rfl
+
+/-- **The pure `χ`-kernel identity.** -/
+theorem soninMellinExtension_eq_chi_pairing {a : ℝ} (ha : 0 < a) {f : SoninL2}
+    (hf : f ∈ centralSoninCarrier a) {s : ℂ} (hs0 : 0 < s.re) (hs : s.re < 1 / 2) :
+    soninMellinExtension f a s
+      = ∫ u : ℝ, Complex.Gamma (1 - s) * chiKernel s u
+          * ((fourierUnitary f : SoninL2) : ℝ → ℂ) u := by
+  have h := soninMellinExtension_add_head_eq_chi_pairing ha hf.2 hs0 hs
+  rw [integral_nearZeroHead_eq_zero ha hf s, add_zero] at h
+  exact h
 
 end RHTower

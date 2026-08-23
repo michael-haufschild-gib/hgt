@@ -68,14 +68,15 @@ theorem neg_I_cpow_add_I_cpow (w : ℂ) :
   rw [add_comm]
   exact I_cpow_add_neg_I_cpow w
 
-/-- **The functional equation of the Mellin transform of an even Sonine vector.** -/
-theorem soninMellinExtension_functional_equation {a : ℝ} (ha : 0 < a) {f : SoninL2}
-    (hev : f ∈ evenSubspace) (hf : f ∈ centralSoninCarrier a) {s : ℂ}
+/-- **The functional equation with the near-zero head kept.**  Only the vanishing of the Fourier
+transform on the band is used, so this covers the extended Sonine space after the band constant is
+subtracted. -/
+theorem soninMellinExtension_add_head_functional_equation {a : ℝ} (ha : 0 < a) {f : SoninL2}
+    (hev : f ∈ evenSubspace) (hf : f ∈ (centralFourierForbidden a)ᗮ) {s : ℂ}
     (hs0 : 0 < s.re) (hs : s.re < 1 / 2) :
     soninMellinExtension f a s
-      = burnolChiFactor s * soninMellinExtension (fourierUnitary f) a (1 - s) := by
-  have hgcar : fourierUnitary f ∈ centralSoninCarrier a :=
-    fourierUnitary_mem_centralSoninCarrier hev hf
+        + ∫ t in Set.Ioo (0 : ℝ) a, ((t : ℝ) : ℂ) ^ (-s) * (f : ℝ → ℂ) t
+      = burnolChiFactor s * soninMellinIntegral (fourierUnitary f) (1 - s) := by
   have hgev : fourierUnitary f ∈ evenSubspace := fourierUnitary_mem_evenSubspace hev
   have hgeven : (fun u : ℝ => ((fourierUnitary f : SoninL2) : ℝ → ℂ) (-u))
       =ᵐ[volume] ((fourierUnitary f : SoninL2) : ℝ → ℂ) := by
@@ -115,15 +116,28 @@ theorem soninMellinExtension_functional_equation {a : ℝ} (ha : 0 < a) {f : Son
         * ((fourierUnitary f : SoninL2) : ℝ → ℂ) u)
       = soninMellinIntegral (fourierUnitary f) (1 - s) := by
     simp only [soninMellinIntegral, neg_sub]
+  rw [soninMellinExtension_add_head_eq_chi_pairing ha hf hs0 hs, hsplit, h1, h2, hM, ← add_mul]
+  congr 1
+  rw [burnolChiFactor, ← neg_I_cpow_add_I_cpow (s - 1)]
+  ring
+
+/-- **The functional equation of the Mellin transform of an even Sonine vector.** -/
+theorem soninMellinExtension_functional_equation {a : ℝ} (ha : 0 < a) {f : SoninL2}
+    (hev : f ∈ evenSubspace) (hf : f ∈ centralSoninCarrier a) {s : ℂ}
+    (hs0 : 0 < s.re) (hs : s.re < 1 / 2) :
+    soninMellinExtension f a s
+      = burnolChiFactor s * soninMellinExtension (fourierUnitary f) a (1 - s) := by
+  have hgcar : fourierUnitary f ∈ centralSoninCarrier a :=
+    fourierUnitary_mem_centralSoninCarrier hev hf
   have hext : soninMellinExtension (fourierUnitary f) a (1 - s)
       = soninMellinIntegral (fourierUnitary f) (1 - s) := by
     refine soninMellinExtension_eq_soninMellinIntegral ha hgcar ?_
     simp only [Complex.sub_re, Complex.one_re]
     linarith
-  rw [soninMellinExtension_eq_chi_pairing ha hf hs0 hs, hsplit, h1, h2, hM, ← hext, ← add_mul]
-  congr 1
-  rw [burnolChiFactor, ← neg_I_cpow_add_I_cpow (s - 1)]
-  ring
+  have h := soninMellinExtension_add_head_functional_equation ha hev hf.2 hs0 hs
+  rw [integral_nearZeroHead_eq_zero ha hf s, add_zero] at h
+  rw [hext]
+  exact h
 
 end RHTower
 

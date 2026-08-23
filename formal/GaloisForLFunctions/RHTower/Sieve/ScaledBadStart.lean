@@ -42,7 +42,7 @@ theorem card_badStart_le_card_badOuter (y hy : ℝ) :
 open Classical in
 /-- **The exceptional outer factors are `o(√y)` at a shrunk window.** -/
 theorem eventually_card_badOuter_le {c β : ℝ} (hc0 : 0 < c) (hc1 : c ≤ 1)
-    (hβ0 : 9 / 10 < β) (hβ1 : β < 1) {ε : ℝ} (hε : 0 < ε) :
+    (hβ0 : 0 < β) (hβ1 : β < 1) {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ y : ℝ in atTop,
       ((badOuter y (scaledLength c β y)).card : ℝ)
         ≤ 1024 * ε * Real.sqrt y / squarefreeDensity ^ 2 + Real.sqrt y / (Real.log y) ^ 2 := by

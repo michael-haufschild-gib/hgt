@@ -10,6 +10,7 @@ import Mathlib.RepresentationTheory.Homological.ContCohomology.Basic
 import Mathlib.RepresentationTheory.Homological.ContCohomology.LowDegree
 import Mathlib.RepresentationTheory.Homological.GroupCohomology.LowDegree
 import Mathlib.RepresentationTheory.Rep.Basic
+import GaloisForLFunctions.HTGeometry.ABHN.CyclicGaloisH2NormQuotient
 import GaloisForLFunctions.HTGeometry.ABHN.FiniteFieldCohomology
 
 /-!
@@ -23,6 +24,8 @@ map or a Brauer comparison.
 -/
 
 namespace GaloisForLFunctions.HTGeometry.ABHN
+
+attribute [local instance] IsCyclic.commGroup
 
 /-- The unit group of a field, viewed additively and with the discrete topology used in continuous
 Galois cohomology. -/
@@ -703,6 +706,19 @@ noncomputable def finiteGaloisContinuousH2ToOrdinaryH2AddEquiv
     continuousGaloisUnitCohomology 2 K L ≃+
       groupCohomology (Rep.ofAlgebraAutOnUnits K L) 2 :=
   (finiteGaloisContinuousH2ToOrdinaryH2ModuleIso K L).toLinearEquiv.toAddEquiv
+
+/-- Continuous degree-two unit Galois cohomology of a finite cyclic Galois extension is
+annihilated by the extension degree.  This is the continuous counterpart of the cyclic norm
+quotient denominator bound, before any Brauer--cohomology comparison. -/
+theorem finiteGaloisContinuousH2_finrank_nsmul_eq_zero
+    (K L : Type) [Field K] [Field L] [Algebra K L] [IsCyclic Gal(L/K)]
+    [FiniteDimensional K L] [IsGalois K L]
+    (z : continuousGaloisUnitCohomology 2 K L) :
+    Module.finrank K L • z = 0 := by
+  apply (finiteGaloisContinuousH2ToOrdinaryH2AddEquiv K L).injective
+  rw [map_nsmul, map_zero]
+  exact cyclicGaloisH2_finrank_nsmul_eq_zero K L
+    (finiteGaloisContinuousH2ToOrdinaryH2AddEquiv K L z)
 
 /-- Continuous degree-two unit cohomology of every finite-field extension vanishes.  This is the
 finite-residue term of the local class-field-theory sequence, before any lifting through a

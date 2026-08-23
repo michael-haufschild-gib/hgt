@@ -195,3 +195,33 @@ The upgrade from integral to algebraic coefficients, which is where Baker enters
 layer is the distinct-prime specialization (`RHTower.bakerLinearIndependence_holds`) plus full
 Gelfond--Schneider (`RHTower.gelfondSchneider_holds`); the general-logarithm form needed here is
 exactly the open target of `baker-general-logarithms-inhomogeneous-extension`.
+
+## Correction — the Baker gate is closed (2026-08-23)
+
+The "What remains" note above says the general-logarithm Baker form "is exactly the open target of
+`baker-general-logarithms-inhomogeneous-extension`".  That card is **closed** and sits in
+`3-formalized`.  The corpus carries
+
+```text
+RHTower.bakerTheorem_holds : BakerTheorem
+RHTower.baker_linearForm_transcendental
+    (lambda : Fin n → ℂ) (beta : Fin n → ℂ)
+    (halg : ∀ i, IsLogarithmOfAlgebraic (lambda i))
+    (hind : LinearIndependent ℚ lambda)
+    (hbeta : ∀ i, IsAlgebraic ℚ (beta i)) (hne : ∃ i, beta i ≠ 0) :
+  ¬ IsAlgebraic ℚ (∑ i, beta i * lambda i)
+```
+
+axiom-clean, with arbitrary chosen logarithms and no principal-branch restriction — exactly the
+final step of this card's proof.
+
+So the remaining gate is **not** Baker.  It is the algebraic-group half: from a nonzero `Q̄`-relation,
+produce the character lattice `L ≤ ℤⁿ` with `c ∈ Q̄ ⊗_ℤ L` and the algebraicity of the character
+values `α_j = y^{m_j}`.  The corpus already has the Hopf-coordinate layer that step needs
+(cross-Hom rigidity in all dimensions, Hopf kernels, and the classification of primitives on
+`G_a^n × G_m^n` as additive-linear); what is left is the classification of the remaining mixed Hopf
+ideal above its two factor contractions.
+
+Note also that the *rational*-coefficient case needs none of this: clearing denominators reduces it
+to `schanuelDefect_integer_relation`, which is already proved.
+

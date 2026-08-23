@@ -32,7 +32,7 @@ variable {X Y : Scheme.{u}} {C : Type u} [Field C] (N₀ : Submonoid ℕ)
 /-- The colimit relation on pairs `(ν , P)` describing the formal point `F_ν⁻¹ P`. -/
 def DeningerColimRel (P Q : N₀ × DeningerCharPoints X C) : Prop :=
   ∃ a b : N₀, (P.1 : ℕ) * (a : ℕ) = (Q.1 : ℕ) * (b : ℕ) ∧
-    deningerFrobenius (a : ℕ) P.2 = deningerFrobenius (b : ℕ) Q.2
+    deningerCharFrobenius (a : ℕ) P.2 = deningerCharFrobenius (b : ℕ) Q.2
 
 variable {N₀}
 
@@ -56,15 +56,15 @@ theorem deningerColimRel_trans {P Q R : N₀ × DeningerCharPoints X C}
       _ = ((Q.1 : ℕ) * (c : ℕ)) * (b : ℕ) := by ring
       _ = ((R.1 : ℕ) * (d : ℕ)) * (b : ℕ) := by rw [h3]
       _ = (R.1 : ℕ) * ((b : ℕ) * (d : ℕ)) := by ring
-  · have e1 : deningerFrobenius ((a : ℕ) * (c : ℕ)) P.2
-        = deningerFrobenius (c : ℕ) (deningerFrobenius (a : ℕ) P.2) :=
-      (deningerFrobenius_comp _ _ _).symm
-    have e2 : deningerFrobenius ((b : ℕ) * (d : ℕ)) R.2
-        = deningerFrobenius (b : ℕ) (deningerFrobenius (d : ℕ) R.2) := by
-      rw [deningerFrobenius_comp, Nat.mul_comm]
-    have e3 : deningerFrobenius (c : ℕ) (deningerFrobenius (b : ℕ) Q.2)
-        = deningerFrobenius (b : ℕ) (deningerFrobenius (c : ℕ) Q.2) := by
-      rw [deningerFrobenius_comp, deningerFrobenius_comp, Nat.mul_comm]
+  · have e1 : deningerCharFrobenius ((a : ℕ) * (c : ℕ)) P.2
+        = deningerCharFrobenius (c : ℕ) (deningerCharFrobenius (a : ℕ) P.2) :=
+      (deningerCharFrobenius_comp _ _ _).symm
+    have e2 : deningerCharFrobenius ((b : ℕ) * (d : ℕ)) R.2
+        = deningerCharFrobenius (b : ℕ) (deningerCharFrobenius (d : ℕ) R.2) := by
+      rw [deningerCharFrobenius_comp, Nat.mul_comm]
+    have e3 : deningerCharFrobenius (c : ℕ) (deningerCharFrobenius (b : ℕ) Q.2)
+        = deningerCharFrobenius (b : ℕ) (deningerCharFrobenius (c : ℕ) Q.2) := by
+      rw [deningerCharFrobenius_comp, deningerCharFrobenius_comp, Nat.mul_comm]
     push_cast
     rw [e1, h2, e3, h4, e2]
 
@@ -88,7 +88,7 @@ def deningerColimMk (ν : N₀) (P : DeningerCharPoints X C) : DeningerColimPoin
 theorem deningerColimMk_eq_iff {ν μ : N₀} {P Q : DeningerCharPoints X C} :
     deningerColimMk N₀ ν P = deningerColimMk N₀ μ Q ↔
       ∃ a b : N₀, (ν : ℕ) * (a : ℕ) = (μ : ℕ) * (b : ℕ) ∧
-        deningerFrobenius (a : ℕ) P = deningerFrobenius (b : ℕ) Q :=
+        deningerCharFrobenius (a : ℕ) P = deningerCharFrobenius (b : ℕ) Q :=
   Quotient.eq (r := deningerColimSetoid N₀ X C)
 
 theorem deningerColimMk_surjective (z : DeningerColimPoints N₀ X C) :
@@ -115,20 +115,20 @@ variable (N₀) in
 /-- The Frobenius operator `F_ν` on the colimit. -/
 noncomputable def deningerColimFrobenius (ν : ℕ) (z : DeningerColimPoints N₀ X C) :
     DeningerColimPoints N₀ X C := by
-  refine Quotient.liftOn z (fun P => deningerColimMk N₀ P.1 (deningerFrobenius ν P.2)) ?_
+  refine Quotient.liftOn z (fun P => deningerColimMk N₀ P.1 (deningerCharFrobenius ν P.2)) ?_
   rintro ⟨μ, P⟩ ⟨μ', Q⟩ ⟨a, b, h1, h2⟩
   refine deningerColimMk_eq_iff.2 ⟨a, b, h1, ?_⟩
-  have e1 : deningerFrobenius (a : ℕ) (deningerFrobenius ν P)
-      = deningerFrobenius ν (deningerFrobenius (a : ℕ) P) := by
-    rw [deningerFrobenius_comp, deningerFrobenius_comp, Nat.mul_comm]
-  have e2 : deningerFrobenius (b : ℕ) (deningerFrobenius ν Q)
-      = deningerFrobenius ν (deningerFrobenius (b : ℕ) Q) := by
-    rw [deningerFrobenius_comp, deningerFrobenius_comp, Nat.mul_comm]
+  have e1 : deningerCharFrobenius (a : ℕ) (deningerCharFrobenius ν P)
+      = deningerCharFrobenius ν (deningerCharFrobenius (a : ℕ) P) := by
+    rw [deningerCharFrobenius_comp, deningerCharFrobenius_comp, Nat.mul_comm]
+  have e2 : deningerCharFrobenius (b : ℕ) (deningerCharFrobenius ν Q)
+      = deningerCharFrobenius ν (deningerCharFrobenius (b : ℕ) Q) := by
+    rw [deningerCharFrobenius_comp, deningerCharFrobenius_comp, Nat.mul_comm]
   rw [e1, e2, h2]
 
 @[simp] theorem deningerColimFrobenius_mk (ν : ℕ) (μ : N₀) (P : DeningerCharPoints X C) :
     deningerColimFrobenius N₀ ν (deningerColimMk N₀ μ P)
-      = deningerColimMk N₀ μ (deningerFrobenius ν P) := rfl
+      = deningerColimMk N₀ μ (deningerCharFrobenius ν P) := rfl
 
 /-- **Deninger, §3.**  The Frobenius operators are surjective on the colimit. -/
 theorem deningerColimFrobenius_surjective {ν : ℕ} (hν : ν ∈ N₀) :
@@ -156,7 +156,7 @@ theorem deningerColimFrobenius_injective {ν : ℕ} (hν : ν ∈ N₀) :
       _ = (μ' : ℕ) * ((b : ℕ) * ν) := by ring
   · push_cast
     rw [Nat.mul_comm (a : ℕ) ν, Nat.mul_comm (b : ℕ) ν,
-      ← deningerFrobenius_comp (a : ℕ) ν P, ← deningerFrobenius_comp (b : ℕ) ν Q]
+      ← deningerCharFrobenius_comp (a : ℕ) ν P, ← deningerCharFrobenius_comp (b : ℕ) ν Q]
     exact h2
 
 /-- **Deninger, §3.**  The Frobenius operators are bijections on the colimit. -/
@@ -181,6 +181,6 @@ theorem deningerColimUnit_injective (halg : ∀ x : X, IsAlgClosed (X.residueFie
   obtain ⟨a, b, h1, h2⟩ := h
   have hab : (a : ℕ) = (b : ℕ) := by simpa using h1
   rw [hab] at h2
-  exact deningerFrobenius_injective halg (hN₀ b b.2) h2
+  exact deningerCharFrobenius_injective halg (hN₀ b b.2) h2
 
 end RHTower

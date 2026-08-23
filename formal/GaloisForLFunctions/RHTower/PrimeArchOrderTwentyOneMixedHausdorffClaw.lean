@@ -192,7 +192,7 @@ private theorem endpointComplement_abs_arg_lower_of_orderTwentyOneResidual
   rw [arg_eq_arctan_of_re_pos hwre, hargabs]
   exact arctan_one_over_oneHundredThirty_cubic_lower.trans_lt hatan
 
-private theorem re_twentyOne_pow_mul_pow_nonneg_of_opposite_phase_of_pow_pos
+theorem re_twentyOne_pow_mul_pow_nonneg_of_opposite_phase_of_pow_pos
     (z w : ℂ) (r : ℕ)
     (hzre : 0 < z.re) (hwre : 0 < w.re)
     (hwim : w.im = -z.im)

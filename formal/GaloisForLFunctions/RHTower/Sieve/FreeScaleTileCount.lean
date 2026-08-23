@@ -58,7 +58,7 @@ theorem multiHarmConst_harmBlocks_pos : 0 < multiHarmConst harmBlocks := by
 
 set_option maxHeartbeats 1600000 in
 /-- **The sign count on one tile.** -/
-theorem exists_tile_count {β : ℝ} (hβ0 : 9 / 10 < β) (hβ1 : β < 1) {σ : ℤ}
+theorem exists_tile_count {β : ℝ} (hβ0 : 0 < β) (hβ1 : β < 1) {σ : ℤ}
     (hσ : σ = 1 ∨ σ = -1) (K₀ : ℕ) (hharm : 0 < multiHarmConst K₀) :
     ∀ᶠ u : ℕ in atTop, ∀ X : ℕ, tileBase K₀ u ≤ X → X ≤ 2 * tileBase K₀ u →
       (squarefreeDensity / 256)
@@ -300,7 +300,7 @@ theorem tileConst_pos (K₀ : ℕ) (h : 0 < multiHarmConst K₀) : 0 < tileConst
 
 set_option maxHeartbeats 1600000 in
 /-- **The sign count on one tile, in the card's normalization.** -/
-theorem tile_count_clean {β : ℝ} (hβ0 : 9 / 10 < β) (hβ1 : β < 1) {σ : ℤ}
+theorem tile_count_clean {β : ℝ} (hβ0 : 0 < β) (hβ1 : β < 1) {σ : ℤ}
     (hσ : σ = 1 ∨ σ = -1) (K₀ : ℕ) (hharm : 0 < multiHarmConst K₀) :
     ∀ᶠ u : ℕ in atTop, ∀ X : ℕ, tileBase K₀ u ≤ X → X ≤ 2 * tileBase K₀ u →
       tileConst K₀ * (((tileLen β K₀ u : ℕ) : ℝ) / Real.log (X : ℝ))

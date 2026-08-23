@@ -13,10 +13,11 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 |---:|---|
 | 67381 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/ModularInversion/MontgomeryKaliski.lean` |
 | 12440 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean` |
-| 11810 | `formal/GaloisForLFunctions/RHTower.lean` |
-| 11033 | `formal/GaloisForLFunctions/HTGeometry.lean` |
+| 11994 | `formal/GaloisForLFunctions/RHTower.lean` |
+| 11091 | `formal/GaloisForLFunctions/HTGeometry.lean` |
 | 9881 | `formal/GaloisForLFunctions/RHTower/ThetaCuspShellIncompleteGammaCoordinate.lean` |
 | 8232 | `formal/GaloisForLFunctions/QuantumAlg/Util/Polynomial/Complement/Interval/Witness.lean` |
+| 6343 | `formal/GaloisForLFunctions/HTGeometry/ABHN/NonarchimedeanLocalFieldValuationSequence.lean` |
 | 6316 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/ModularDivision/StructuredCircuit.lean` |
 | 6194 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/QSP/MultiQubit/QSVT/Decomposition.lean` |
 | 5058 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
@@ -24,7 +25,6 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 4763 | `formal/GaloisForLFunctions/HTGeometry/GaussianTorsionLanguageTailLock.lean` |
 | 4479 | `formal/GaloisForLFunctions/QuantumAlg/Core/Components/EncodedBitGates.lean` |
 | 4251 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/ModularInversion/StructuredCircuit.lean` |
-| 4192 | `formal/GaloisForLFunctions/HTGeometry/ABHN/NonarchimedeanLocalFieldValuationSequence.lean` |
 | 3980 | `formal/GaloisForLFunctions/Bottcher/RelativeTranscendenceBridge.lean` |
 | 3871 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/Arithmetic/PlainAdder/Schedule.lean` |
 | 3726 | `formal/GaloisForLFunctions/PNTPlus/MediumPNT.lean` |

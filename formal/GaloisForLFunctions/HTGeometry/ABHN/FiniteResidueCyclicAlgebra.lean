@@ -7,6 +7,8 @@ import GaloisForLFunctions.HTGeometry.ABHN.LocalFrobenius
 import GaloisForLFunctions.HTGeometry.ABHN.FiniteFieldCyclicGaloisAlgebra
 import GaloisForLFunctions.HTGeometry.ABHN.FiniteFieldQuadraticCyclicBrauer
 import GaloisForLFunctions.HTGeometry.ABHN.ContinuousQuadraticGaloisH2Brauer
+import GaloisForLFunctions.HTGeometry.ABHN.FiniteFieldCubicCyclicBrauer
+import GaloisForLFunctions.HTGeometry.ABHN.ContinuousCubicGaloisH2Brauer
 
 /-!
 # Cyclic algebras at finite residue extensions
@@ -64,6 +66,24 @@ theorem residue_finiteGaloisContinuousQuadraticCyclicGaloisH2BrauerMap_eq_split
     finiteGaloisContinuousQuadraticCyclicGaloisH2BrauerMap (A ⧸ P) (B ⧸ Q) hdeg z =
       brauerSplitClass (A ⧸ P) :=
   finiteField_finiteGaloisContinuousQuadraticCyclicGaloisH2BrauerMap_eq_split
+    (A ⧸ P) (B ⧸ Q) hdeg z
+
+/-- Every cubic cyclic degree-two class at a finite residue extension selects the split residue
+Brauer class. -/
+theorem residue_cubicCyclicGaloisH2BrauerMap_eq_split
+    (hdeg : Module.finrank (A ⧸ P) (B ⧸ Q) = 3)
+    (z : cyclicGaloisH2 (A ⧸ P) (B ⧸ Q)) :
+    cubicCyclicGaloisH2BrauerMap (A ⧸ P) (B ⧸ Q) hdeg z = brauerSplitClass (A ⧸ P) :=
+  finiteField_cubicCyclicGaloisH2BrauerMap_eq_split (A ⧸ P) (B ⧸ Q) hdeg z
+
+/-- Every continuous cubic cyclic degree-two class at a finite residue extension selects the
+split residue Brauer class. -/
+theorem residue_finiteGaloisContinuousCubicCyclicGaloisH2BrauerMap_eq_split
+    (hdeg : Module.finrank (A ⧸ P) (B ⧸ Q) = 3)
+    (z : continuousGaloisUnitCohomology 2 (A ⧸ P) (B ⧸ Q)) :
+    finiteGaloisContinuousCubicCyclicGaloisH2BrauerMap (A ⧸ P) (B ⧸ Q) hdeg z =
+      brauerSplitClass (A ⧸ P) :=
+  finiteField_finiteGaloisContinuousCubicCyclicGaloisH2BrauerMap_eq_split
     (A ⧸ P) (B ⧸ Q) hdeg z
 
 end GaloisForLFunctions.HTGeometry.ABHN

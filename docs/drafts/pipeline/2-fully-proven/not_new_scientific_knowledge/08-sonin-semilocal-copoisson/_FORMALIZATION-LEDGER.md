@@ -476,3 +476,278 @@ instance and every later `rw` fails; pin the argument (`crossingJ (ι := ι)`) �
 `attribute [-instance]` do not help.
 
 Remaining cards: 1, 5, 7, 11, 14, 17.
+
+### Card 14 survey (2026-08-23)
+
+`sonin-small-cutoff-ground-row-survival` needs, beyond what exists:
+
+- the **scalar** side is already in the corpus: `semilocalFinitePrimeActualEvenJacobiMoment`,
+  `semilocalFinitePrimeEvenJacobiMoment_signed_pos`, `semilocalFinitePrimeGradingGroundDefect`,
+  `semilocalFinitePrimeActualGradingGroundDefect(_signed_pos, _one_eq_explicitResidue)` in
+  `SoninSemilocalAllEvenJacobiResidue.lean` and `SoninSemilocalJacobiResidueCorollaries.lean`;
+  the rank-one trace-class machinery is in `SoninSemilocalGradingNoGo.lean`
+  (`isTraceClass_rankOne_lp`, `semilocalOnePrimeGroundRowOperator_isTraceClass`).
+- **missing**: the semilocal *operator* framework — `H_P`, the bounded identity `J_P`, the number
+  operators `N_P`, `N_∞`, and the semilocal Sonin projections `Q_{λ,P}`.  Only scalar moments and
+  the one-prime `α`-smoothed row exist.  `T_P = −P_0^P J_P N_∞(N_∞+1)⁻¹` needs `J_P^* p_0^P ∈ ℓ²`,
+  i.e. `∑_k |⟨p_0^P, J_P p_{2k}^∞⟩|² < ∞` — automatic once `J_P` is a bounded operator, but the
+  corpus has no such `J_P`.
+- `(5)` `Q_{λ,∞} → 1` strongly as `λ ↓ 0` reduces to a clean reusable lemma to build:
+  **two-projection deficiency bound** — if `P, R` are orthogonal projections with `‖P R‖ ≤ c < 1`
+  and `Q` projects onto `ker P ∩ ker R`, then `‖(1−Q)v‖² ≤ (‖P v‖² + ‖R v‖²)/(1−c)`.
+  Proof: for `w ∈ (ker P ∩ ker R)ᗮ` approximate `w` by `a + r`; `‖w‖² = ⟨P w, a⟩ + ⟨R w, r⟩`,
+  `P w = P v`, `R w = R v`, and `‖a‖² + ‖r‖² ≤ ‖a + r‖²/(1−c)`.  The corpus already owns
+  `centralSoninProjection = soninIntersectionProjection (physical) (fourier)` and
+  `isCompactOperator_centralFourierPhysicalBlock`, so `‖A_λ R_λ‖ → 0` is within reach.
+
+### Card 14 brick landed (2026-08-23)
+
+`formal/GaloisForLFunctions/HTGeometry/TwoProjectionDeficiency.lean` (wired, axiom-clean):
+
+- `norm_sq_add_le_of_angle` — `(1−c)(‖a‖² + ‖r‖²) ≤ ‖a+r‖²` from the angle bound;
+- `two_cauchy_schwarz`;
+- `norm_sq_le_of_mem_closure` — the **Friedrichs angle deficiency bound**: for `w` in the closure
+  of `U ⊔ V`, `‖w‖² ≤ (‖P_U w‖² + ‖P_V w‖²)/(1−c)`;
+- `norm_sub_intersectionProjection_sq_le` — the form card 14 `(5)` needs:
+  `‖v − P_{(U⊔V)ᗮ} v‖² ≤ (‖P_U v‖² + ‖P_V v‖²)/(1−c)`;
+- `angle_of_norm_starProjection_mul_le` — the angle hypothesis from `‖P_U P_V‖ ≤ c`.
+
+With `U = physicalForbidden`, `V = fourierForbidden` this gives `Q_{λ,∞} v → v` as soon as
+`‖A_λ v‖, ‖R_λ v‖ → 0` and `‖A_λ R_λ‖ → 0`; the corpus already owns
+`centralSoninProjection = soninIntersectionProjection …` and
+`isCompactOperator_centralFourierPhysicalBlock`.
+
+**Still missing for card 14**: the semilocal operator framework `H_P`, `J_P`, `N_P`, `Q_{λ,P}`
+(the corpus has only scalar moments).  That is the same framework cards 7 and 17 need.
+
+## Card 1: discrete Liouville–Green, layer 1 landed (2026-08-23)
+
+`formal/GaloisForLFunctions/HTGeometry/DiscreteLiouvilleGreen.lean` (wired, axiom-clean) now has
+the whole *exact* algebra of the argument, for the unimodular recurrence
+`IsLGSolution p v : ∀ n, lgDiff v (n+1) − lgDiff v n = −p (n+1) · v (n+1)`:
+
+- `lgDiff`, `lgProd`, `lgEnergy p v n = lgDiff v n ² + p n · lgProd v n`;
+- `lgEnergy_succ_sub` — the exact drift `E (n+1) − E n = (p (n+1) − p n) · lgProd v n`;
+- `lgVirial`, `lgVirialTerm`, `lgVirialPrimitive`, `lgVirialTerm_succ` — the virial expression
+  `d² − p v²` is the exact discrete derivative of `v (n+1) · lgDiff v n`;
+- `lgEnergy_nonneg` (for `p n ≤ 4`), `sq_le_two_mul_lgEnergy_div` (`p v² ≤ 2E` for `p ≤ 2`),
+  `sq_lgDiff_le` (`d² ≤ 2E` for `p ≤ 2`);
+- `lgDrift p n = (p n − p (n+1))/(p n √(p (n+1)))`, `lgWeightRatio`, `lgRatioDefect`,
+  `lgNormalizedEnergy p v n = E n / √(p n)`;
+- `lg_increment_algebra` and `lgNormalizedEnergy_succ_sub` — the **exact** increment
+  `F (n+1) − F n = lgDrift p n · (d n ² − lgWeightRatio p n · E n)`;
+- `lgNormalizedEnergy_succ_sub_split` — the three-term split
+  `F (n+1) − F n = lgDrift·lgVirialTerm/2 − lgDrift·(p v d)/2 + lgDrift·lgRatioDefect·E`.
+
+**Remaining for the discrete Liouville–Green theorem (layer 2):**
+
+1. size bounds `|lgVirialPrimitive v n| ≤ 3 · F n` and `|p n v n · lgDiff v n| ≤ 2 p n · F n`
+   (from `sq_le_two_mul_lgEnergy_div` and `sq_lgDiff_le` plus Cauchy–Schwarz);
+2. `|lgRatioDefect p n| = |p n − p (n+1)| / (2 (√(p n)+√(p (n+1)))²)`;
+3. discrete Abel summation (`Finset.sum_range_by_parts`) of `∑ lgDrift p (n+1)/2 · Δ P` against
+   `Δ (lgDrift)`, which for `p n ≍ c/n` is `O(n^{-3/2})` and summable;
+4. the Gronwall bootstrap `sup_{n≤N} F ≤ 2 F_{N₀}` once the tail sums are `< 1/2`;
+5. conclusion `v n ² ≤ 2 F n / √(p n)`, i.e. the amplitude `p^{-1/4}`.
+
+**Then card 1 proper:**
+
+6. symmetrization `u n = γ n · v n` with `γ (n+1) = γ (n−1) ρ (n−1)/ρ n`, turning the prolate
+   Jacobi recurrence into `IsLGSolution` with `p n = 4πλ²/n + O(n⁻²)` (even and odd blocks alike);
+7. explicit expansions of `ρ_n^±` and `q_n^±` with real (not `O`) error bounds;
+8. λ > 0: `∑ |u n|² < ∞` for **every** solution ⟹ `jacobiDeficiency ≠ ⊥` ⟹ indices `(1,1)`
+   via the corpus's `jacobi_deficiency_indices`;
+9. λ = 0: indicial exponents `−1/4, −3/4` (the card's `−1 ± √13/4` is **wrong**: the exact
+   discrete Wronskian forces the exponent sum `−1`).  Limit point needs, in addition, the classical
+   "indeterminate ⟹ ℓ² for every `z`" lemma, since the deficiency space carries the `n = 0`
+   boundary row.  That lemma is the one genuinely missing classical input for card 1.
+
+## Card 1 — corrected mathematics and the four-module plan (session continuation)
+
+The card's own "Lean route" section contains two errors that must NOT be formalised:
+
+* `|u_n| ≍ C/n` for `λ>0` is **wrong**.  The frozen transfer matrices are asymptotically
+  parabolic (discriminant `→0`), so the diagonalising basis degenerates like `n^{1/4}` and the
+  card's "uniformly bounded condition number" (its item 2) is false.  The exact Wronskian
+  `ρ_n(u_nw_{n+1}-u_{n+1}w_n) = const` forces the two amplitude exponents to sum to `−1`; with a
+  conjugate pair this gives `|u_n| ≍ n^{-3/4}`.  Still `ℓ²`, so the limit-circle conclusion stands.
+* The `λ=0` discriminant `13/(4n²)` and exponents `−1±√13/4` are **wrong** (they violate the same
+  Wronskian identity).  The correct statement is exponent sum `−1`.
+
+Correct normal form.  Writing the recurrence as a discrete Sturm–Liouville equation
+`Δ(ρ_{n-1} Δu_{n-1}) + Q_n u_n = 0` with `Q_n = ρ_n + ρ_{n-1} + q_n − z` gives
+`Q_n = 16πλ²n + O(1)`, `ρ_n = 4n² + O(n)`.  Liouville–Green amplitude `(ρQ)^{-1/4} ≍ n^{-3/4}`
+for `λ>0`; for `λ=0` the potential is `Q_n = O(1)` and the solutions are `u_n → const` (dominant,
+not `ℓ²`) and `u_n ≍ c/n` (recessive, `ℓ²`).
+
+The one-step gauge `u_n = g_n v_n` with `g_n g_{n+1} ρ_n = 1` (equivalently `g_{n+1}ρ_n =
+g_{n-1}ρ_{n-1}`) is **not usable**: the recursion `h_{n+1}h_n = ρ_{n+1}/ρ_n` for `h_n = g_n²ρ_n`
+has a marginal `(-1)^n` mode which no explicit initial value kills.  So the Liouville–Green engine
+must be built directly in Sturm–Liouville form.
+
+### Module plan
+
+1. `RHTower/JacobiWeylAlternative.lean` — the Weyl alternative, elementary and reusable.
+   Core: the cross-Wronskian `X n = a n (f(n+1) g n − f n g(n+1))` for `f` a solution at `z` and
+   `g` a solution at `ζ` obeys the exact increment law `X (n+1) = X n + (z−ζ) f(n+1) g(n+1)`.
+   * **P1** (transfer): a fundamental system at `z₀` that is `ℓ²` forces every solution at every
+     `z` to be `ℓ²`.  Cramer gives `u_n = A_nφ_n + B_nψ_n` with `A,B` built from cross-Wronskians;
+     the increment law plus a discrete Gronwall product bound closes it.
+   * **P2** (rigidity): a single nonzero `ℓ²` solution at non-real `z` **satisfying row 0** forces
+     every solution at that `z` to be `ℓ²`.  Here `X n = (z−z̄)∑_{k≤n}|u_k|²` is bounded below by
+     `2|Im z||u_0|² > 0`, and Cramer expresses any `w_n` as `(u_n V_n − ū_n W)/X_n`.
+   Consequences: limit circle ⟸ two `ℓ²` solutions at one `z₀`;
+   `jacobiDeficiency a b z = ⊥` ⟸ no two independent `ℓ²` solutions at `z`.
+2. `λ=0` non-`ℓ²`: with `|Q_n| ≤ C` and `ρ_n ≥ c n²`, two independent `ℓ²` solutions are
+   impossible.  Proof: `|D^u_N| ≤ |D^u_M| + C√N ε_M` with `D^u_n = ρ_nΔu_n` and
+   `ε_M² = ∑_{n>M}|u_n|²`; hence `u_N → u_∞ = 0` with `|u_N| ≲ (|D^u_M| + C√N ε_M)/N`; the
+   Wronskian `u_N D^w_N − w_N D^u_N = 1` then gives `1 ≲ 2C²ε_Mε'_M + O(N^{-1/2}) → 0`.
+   Runs directly at `z = i`, so P1 is not needed for the `λ=0` half.
+3. `HTGeometry/DiscreteSturmLiouvilleGreen.lean` — the variable-`ρ` Liouville–Green engine.
+   `D_n = ρ_nΔu_n`, `W_n = ρ_nQ_n`, `E_n = D_n² + W_{n+1}u_nu_{n+1}`,
+   `E_{n+1} − E_n = u_{n+1}u_{n+2}ΔW_{n+1} + Q_{n+1}Δρ_n·u_{n+1}Δu_n`, `F_n = E_n/√(W_n)`.
+   Same architecture as `HTGeometry/DiscreteLiouvilleGreen.lean` (already complete for `ρ≡1`):
+   virial primitive, one Abel summation, Gronwall bootstrap; the extra `QΔρ uΔu` term is
+   pointwise `O(n^{-3/2})` relative and needs no Abel step.
+4. Explicit prolate coefficients `ρ_n^±, q_n^±` with real error bounds, discharging the engine's
+   hypotheses, and assembly against `jacobiDeficiency`.
+
+### Layer 1 complete: `HTGeometry/DiscreteLiouvilleGreen.lean` (`ρ ≡ 1`)
+
+Now closed end to end: `lg_abel_sum`, `lg_sum_telescope`, `lgEnergy_eq_normalized`,
+`abs_mul_lgDiff_le`, `abs_weighted_mul_lgDiff_le`, `abs_lgVirialPrimitive_le`,
+`lg_increment_tail_bound`, `lgControl`, `lg_window_estimate`,
+`lgNormalizedEnergy_le_of_control` (the bootstrap `F ≤ 2·max(F_{N₀}, F_{N₀+1})`), and
+`sq_le_of_lgControl` (`v_m² ≤ 4C/√(p_m)`, the amplitude `p^{-1/4}`).
+
+### Card 1 modules 1–3 complete
+
+* `HTGeometry/JacobiWeylAlternative.lean` — `IsJacobiRec`, `crossWronskian`, `crossWronskian_succ`
+  (the increment law), `crossWronskian_const`, `crossWronskian_eq_zero_of_const`,
+  `crossWronskian_cramer`, `gronwall_exp_bound`, `summable_sq_of_gronwall`,
+  **`summable_sq_of_fundamental`** (P1, Weyl transfer), `IsJacobiRec.conj`,
+  `crossWronskian_self_conj`, **`summable_sq_of_boundary_solution`** (P2, Weyl rigidity).
+* `HTGeometry/JacobiLimitPointBoundedPotential.lean` — `slFlux`, `slPotential`, `slFlux_succ_sub`,
+  telescoping tail estimates (`sum_Ico_inv_sq_le`, `sum_Ico_sqrt_div_sq_le`),
+  `sum_range_le_sqrt_mul` (Cauchy–Schwarz), `norm_slFlux_le` (flux grows at most like `√n` times
+  the `ℓ²` tail), `norm_le_tail_decay`, `le_of_le_add_div_sqrt`, `crossWronskian_eq_flux`, and
+  **`crossWronskian_eq_zero_of_both_summable`** — the `λ=0` half: with `a_n ≥ c₀n²` and bounded
+  potential, two square-summable solutions have zero Wronskian.
+* `HTGeometry/DiscreteEnergyBootstrap.lean` — `abel_sum_Ico`, `telescope_Ico`,
+  `abstract_window_estimate`, `abstract_energy_bootstrap`: an abstract normalized-energy
+  bootstrap taking `F, P, Dr, ctrl` with `|P| ≤ 4F`, a controlled step, small drift and small
+  total control, and concluding `F m ≤ 2·max(F_{N₀}, F_{N₀+1})`.
+* `HTGeometry/DiscreteSturmLiouvilleGreen.lean` — `slgFlux`, `slgWeight`, `IsSLGSolution`,
+  `slgEnergy`, `slgVirial`, `slgPrimitive`, `slgEnergy_succ_sub` (exact drift law),
+  `slgVirial_succ`, `two_mul_sq_slgFlux_sub_energy`, the three positivity bounds,
+  `slgNormalizedEnergy`, `slgDrift`, `slgWeightRatio`, `slgRatioDefect`, `slgExtra`,
+  `slgNormalizedEnergy_succ_sub(_split)`, `abs_mul_slgFlux_le`, `abs_slgPrimitive_le`,
+  `slgAbelDrift`, `slgControl`, `slg_increment_tail_bound`, **`slg_bootstrap`**, and
+  **`sq_le_of_slgControl`**: `u_m² ≤ 4C/√(ρ_m Q_m)`.
+
+Remaining for card 1: module 4 — the explicit prolate coefficients `ρ_n^±`, `q_n^±`, their real
+error bounds, discharge of `hbdry`/`hsum`, and assembly against `jacobiDeficiency`.
+
+### Card 1 module 4 — the plan that makes the asymptotics tractable
+
+`slg_bootstrap` was generalised so that the Abel drift may be replaced by **any** approximation
+`Dr` with a summable deviation `dev`; `abstract_energy_bootstrap`'s step hypothesis now reads
+`≤ ctrl k * (F k + F (k+1))`.  This is what makes the prolate estimates feasible: only ONE sharp
+estimate is needed, and every other bound may be crude.
+
+Exact algebra of the prolate coefficients (both parities):
+
+* `(4n+1)(4n+2)(4n+3)(4n+4) = t_n² − 1` with `t_n = 16n²+20n+5`
+  (because `(4n+1)(4n+4) = t_n − 1` and `(4n+2)(4n+3) = t_n + 1`);
+* `(4n+3)(4n+4)(4n+5)(4n+6) = s_n² − 1` with `s_n = 16n²+36n+19`.
+
+So `ρ_n = ¼√(t_n²−1) = t_n/4 − δ_n` with `0 < δ_n = 1/(4(t_n + 4ρ_n)) ≤ 1/(4t_n)`, and the
+Sturm–Liouville potential is **exact**:
+
+`Q_n = ρ_n + ρ_{n−1} + q_n − z = 3/4 + 2πλ²(8n + c) − z − δ_n − δ_{n−1}`,  `c = 1` (even), `5` (odd),
+
+since `(t_n + t_{n−1})/4 + q_n = 3/4 + 2πλ²(8n+1)` and `(s_n+s_{n−1})/4 + q_n^- = 3/4 + 2πλ²(8n+5)`
+are polynomial identities.  In particular `Q_n` is **bounded** at `λ = 0` — exactly the hypothesis
+of `crossWronskian_eq_zero_of_both_summable` — and `Q_n = An + B + O(n^{-2})` for `λ>0` with
+`A = 16πλ²`, `B = 2πλ² + 3/4 − z`.
+
+Sharp estimate (the only one): with `Dr n = −6/(√A √n)`,
+`|slgAbelDrift n − Dr n| ≤ C n^{-3/2}`.  Proof route: a relative-approximation calculus
+(`|x − y| ≤ e·y`, closed under `*`, `/`, and `√` with the error halving trivially since
+`|√x − √y| = |x−y|/(√x+√y) ≤ e√y`), applied to the four ingredients
+`ΔW_n ≈ 12An²`, `ρ_n ≈ 4n²`, `W_n ≈ 4An³`, `W_{n+1} ≈ 4An³`, each with relative error `O(1/n)`,
+and then `slgAbelDrift n = −ΔW_n ρ_n/(W_n √(W_{n+1})) ≈ −6/(√A √n)`.
+`∑|ΔDr|` telescopes because `n^{-1/2}` is decreasing; `∑ dev` and `∑ slgControl` are `O(n^{-3/2})`
+and are summed by the already-proved `sum_Ico_sqrt_div_sq_le` (`√k/k² = k^{-3/2}`).
+
+### Card 1: the `λ = 0` half is CLOSED
+
+`HTGeometry/RelativeApproximation.lean` — `RelApprox x y e := |x − y| ≤ e·y`, with
+`nonneg_error`, `lower`, `upper`, `pos`, `abs_le_of_lt_one`, `mul`, `div`, `sqrt`, `mono`,
+`of_abs_le`.
+
+`HTGeometry/JacobiSolutionConstruction.lean` — `jacobiPair`, `jacobiSol` (two-step recursion over
+any field), `jacobiSol_succ_succ`, `jacobiSol_rec`, `IsJacobiRecR`, `isJacobiRecR_jacobiSol`,
+`isJacobiRec_ofReal`, `isSLGSolution_of_jacobi`, `crossWronskian_standard`.
+
+`RHTower/ProlateJacobiLimitCircle.lean` — `prolateBase`, `prolateRho`, `prolateDefect`,
+`prolateBase_ge`, `prolateRho_eq_sub`, `prolateDefect_mul` (the exact identity
+`4δ(t + √(t²−1)) = 1`), `prolateDefect_pos`, `prolateDefect_le`, `prolateDefect_lt_quarter`,
+`four_sq_le_prolateRho` (`4n² ≤ ρ_n`), `prolateRho_pos`, `prolatePotential`,
+`prolatePotential_eq`, `prolate_diag_sum_bound`, and
+
+**`prolate_jacobiDeficiency_eq_bot`** — for any `β ≥ 0`, `γ ≥ 2` and any diagonal `q` satisfying
+`(t_{n+1}+t_n)/4 + q_{n+1} = 3/4`, the deficiency space at every non-real spectral parameter is
+trivial.  Instantiated as `prolateEven_jacobiDeficiency_eq_bot` and
+`prolateOdd_jacobiDeficiency_eq_bot` for `(β,γ) = (20,5)` and `(36,19)` with
+`prolateDiagEven 0`, `prolateDiagOdd 0`.  `prolateRho_even` / `prolateRho_odd` certify that these
+are literally the parent paper's `ρ_n^±`.
+
+This is the card's statement "At `λ=0`, both parity blocks are in the limit-point case".
+
+Remaining: the `λ>0` half (limit circle) via `slg_bootstrap`.  Needed estimates, all with `n ≥ N₀`:
+`RelApprox (ρ n) (4n²) (K₁/n)`, `RelApprox (Q n) (A n) (K₂/n)` with `A = 16πλ²`,
+`RelApprox (W n) (4An³) (K₃/n)`, `RelApprox (W (n+1)) (4An³) (K₄/n)`,
+`RelApprox (Q(n+1)−Q n) A (K₅/n)`, `RelApprox (ρ(n+1)−ρ n) (8n) (K₆/n)`,
+`RelApprox (ΔW n) (12An²) (K₇/n)`, `RelApprox (√(W(n+1))) (2√A·n√n) (K₄/n)`, and finally
+`RelApprox (−slgAbelDrift n) (6/(√A √n)) (K₈/n)`; plus crude `O(n^{-3/2})` bounds on the three
+`slgControl` terms.  `RelApprox.add` and `RelApprox.trans` still need to be added.
+
+## CARD 1 CLOSED — `archimedean-prolate-jacobi-limit-circle-transition` promoted to stage 3
+
+Both halves are proved, unconditionally, without Pruckner's Theorem 2.
+
+`RHTower/ProlateJacobiLimitCircleAmplitude.lean` (the `λ>0` half) contains, in order:
+`forall_ge_succ`, `prolateDefect_le_sq`, `relApprox_prolateRho`, `prolatePotential_succ_linear`,
+`relApprox_prolatePotential`, `prolateErr` + `seven_le_prolateErr` + `prolateErr_pos`,
+`relApprox_rho_err`, `relApprox_Q_err`, `relApprox_shift_sq`, `relApprox_shift_cube`,
+`prolateWeight` + `prolateWeight_succ_sub`, `prolateRho_succ_sub_eq`,
+`prolatePotential_succ_sub_eq`, `relApprox_drho`, `relApprox_dQ`, `relApprox_weight_succ`,
+`relApprox_rho_succ2`, `relApprox_weight_succ2`, `relApprox_sqrt_weight_succ2`, `relApprox_dW`,
+`neg_drift_form`, `sqrt_weight_ref`, **`relApprox_slgAbelDrift`**, `relApprox_sqrt_weight_succ`,
+**`slgControl_le`**, `prolateDrift`, `prolateDev`, `prolate_dev_bound`, `prolateDrift_bdry`,
+`prolateDrift_diff`, `inv_succ_le_sqrt_div_sq`, `prolateTotalConst`, **`prolate_sum_le`**,
+`prolate_e_le`, `prolatePotential_pos`, `prolatePotential_le_rho`, `sqrt_weight_lower`,
+**`prolate_summable_of_pos`**, **`prolate_jacobiDeficiency_ne_bot`**, `prolate_A_pos`,
+`prolateEven_jacobiDeficiency_ne_bot`, `prolateOdd_jacobiDeficiency_ne_bot`,
+**`prolate_limit_circle_transition`**, `rank_jacobiDeficiency_eq_one`,
+`prolateEven_deficiency_indices`, `prolateOdd_deficiency_indices`,
+`prolate_deficiency_indices_zero`.
+
+Design notes worth keeping:
+
+* `slg_bootstrap` was generalised to accept **any** approximation `Dr` of the Abel drift with a
+  summable deviation `dev`; `abstract_energy_bootstrap`'s step hypothesis is
+  `≤ ctrl k * (F k + F (k+1))`.  This is what reduces the whole `λ>0` analysis to ONE sharp
+  estimate (`relApprox_slgAbelDrift`) with everything else crude — the explicit drift
+  `Dr n = −6/(√A √n)` has a telescoping total variation, so `∑|ΔDr|` is free.
+* `RelApprox` bookkeeping (relative error `|x−y| ≤ e·y`) is what makes the composite
+  `slgAbelDrift = −ΔW·ρ/(W√(W'))` estimate a five-line composition instead of a page of
+  interval arithmetic.  Normalise every error to `m·K/x` with `K = prolateErr` and small integers
+  `m` via `RelApprox.mono` at each step; `100K ≤ x` keeps every error below `1/100`.
+* Traps hit: `set` does not fold occurrences created *after* it (gather all `RelApprox` facts
+  first, then `set`); `positivity` never uses hypotheses, so `0 ≤ prolateErr …` must be supplied by
+  `prolateErr_pos`; `ring` will not prove `a/(b*c) = a/b * (1/c)` (use `div_mul_div_comm` then
+  `div_eq_div_iff` with **explicit** `≠ 0` arguments, then `linear_combination … * hsA2`);
+  `summable_of_sum_range_le` needs its bound `c` given explicitly.
+
+Remaining in this folder: cards 5, 7, 11, 14, 17.

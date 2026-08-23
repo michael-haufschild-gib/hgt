@@ -428,3 +428,112 @@ cusp-spectrum-radius-law,
 onset-recurrence-dimension-independence-law,
 route-e-cofactor-amplified-e3-token-supply, route-e-forbidden-support-e3-stability,
 schanuel-defects-algebraic-coefficient-independent, schanuel-stage-two-defect-slope-normal-form
+
+## Promotion — onset-recurrence-dimension-independence-law (2026-08-23)
+
+Moved to `3-formalized`. Capstone
+`GaloisForLFunctions.HTGeometry.exists_onsetRecurrence_dimension_independence`, axiom-clean.
+
+The declared blocker ("the card's own construction … clauses 1, 3, 4, 6, 7, 8") was wrong in two
+directions. Clauses 1, 3, 4, 6 and 8 and the measure bound `(3)` were *already* delivered by
+`exists_incubating_cubicSeed_compiled`. What was genuinely missing was clause 5 — the continuous
+fidelity recurrence dimension — for which the whole `fidelityReturnTime` stack had to be built, and
+generic cyclicity of the seed, which the card silently assumes in clause 2.
+
+Reusable assets left behind (all in `HTGeometry`):
+
+* `tendsto_log_fidelityReturnTime` — reading a first return in fidelity rather than phase halves the
+  logarithmic exponent. Applies to any weighted spectral packet with strictly positive weights and a
+  non-VWA projective gap vector.
+* `chainPauliFin_spectrumEscapesRealRelations` — the escape hypothesis of the Kleinbock–Margulis
+  extremality machinery for the nearest-neighbour Pauli chain. This unlocks *every* metric-Diophantine
+  statement for the chain shell, not just this card's.
+* `volume_vwa_sortedGapRatio_eq_zero` — the chart form of extremality globalised to the whole simple
+  locus.
+* `KleinbockMargulis.measurableSet_vwa` — the VWA set is Borel.
+* `EnsembleKrylovGenericity` — cyclicity of a fixed seed is generic in the coefficients of any linear
+  Hermitian family, from one witness.
+* `hasPauliWeightAtMost_pathHamiltonian` — the shell Hamiltonian is two-local in Pauli support.
+
+## Promotion — route-e-reciprocal-marker-mobius-hall-law (2026-08-23)
+
+Moved to `3-formalized`. Both boxed statements, `route_e_marker_hall_law` and
+`route_e_marker_hall_injection`, hold at exactly the card's own hypothesis `1/2 < β < 1` and are
+axiom-clean.
+
+The gate was the Möbius short-interval mean square at a *shrunk* window. It is now
+`RHTower.Sieve.averagedMeanSquare_moebius_scaledLength_all` — at **every** `0 < β < 1` and every
+`0 < c ≤ 1`, in `Sieve/ScaledTwoRangeWindow.lean`, built on the corpus's own two-range assembly by
+truncating the Dirichlet polynomial and rescaling the free height parameter of the Route E gate. No
+re-parameterisation of the two-range schedule was needed.
+
+`9/10 → 1/2` forwarded through `ScaledFibreStepOne`, `ScaledBadStart`, `MultiBadStart`,
+`FreeScaleBadStart`, `FreeScaleTileCount`, `FreeScaleCover`, `MultiDevice` (all at `0 < β`) and
+`RouteEMarkerHallLaw` (at `1/2 < β'`, where the floor is the marker tile fitting the window, not the
+mean square).
+
+The two sibling cards are **not** closed by this:
+
+* `route-e-coprime-square-root-mobius-product-sign-law` needs `(1)`, `h/log log(3x) → ∞`, i.e. the
+  full Matomäki–Radziwiłł range, far shorter than `exp((log x)^β)`;
+* `route-e-growing-reciprocal-marker-low-breadth-transport` needs the scaled window at
+  `c = 2^{-(k+2)}` uniformly in `k ≤ K ≍ log h`, whereas `FreeScale*`/`MultiBadStart` handle a fixed
+  block count `K₀`.
+
+## projective-horizon-full-symmetric-monodromy — `(D)` closed, `(3)` unconditional (2026-08-23)
+
+The obligation the card had been reduced to, `f(w_std/p) = 1`, turned out **not to be needed**: the
+residue degree cancels between the two levels of the tower once the correcting Galois element is
+chosen inside `Gal(L/σ(E))`.  Four new modules, all axiom-clean and umbrella-wired:
+
+```text
+HTGeometry/ValuationInertiaIntermediateResidueLift.lean   general, mathlib gap
+HTGeometry/ValuationInertiaSheetInertiaOrbit.lean         general, mathlib gap
+HTGeometry/CriticalSheetLabelInertiaOrbit.lean            horizon instantiation
+HTGeometry/CriticalSchurCollisionSupportBound.lean        `(D)`, and the transposition
+    criticalSchur_collisionSupport_ncard_le_two
+    exists_criticalGeometricMonodromy_isSwap              ** no hypotheses **
+    criticalGeometricMonodromy_eq_top_of_isPreprimitive
+```
+
+plus `HTGeometry/MarkedCoordinateLinearDivisor.lean` and
+`HTGeometry/LinearDivisorResidueField.lean`, which prove the *other* route (`f = 1` from linearity
+in the marked coordinate) as general theorems worth keeping.
+
+The card now needs exactly one thing: **primitivity of the monodromy action on sheets** (§4).  With
+it, `criticalGeometricMonodromy_eq_top_of_isPreprimitive` is the whole of `(4)`.
+
+## Stale-gate audit of the thirteen non-horizon cards (2026-08-23)
+
+Extracted every backtick-quoted declaration name from the closing sections of
+`all-replica-static-centralizer-planar-separation-law`, `bessel-order-intensity-hypertranscendence`,
+`cusp-spectrum-radius-law`, `deninger-algebraic-cyclotomic-milnor-amplitude`,
+`differential-variational-building-balance-law`, `isogeny-tail-maurer-cartan-holography`,
+`route-e-cofactor-amplified-e3-token-supply`, `route-e-forbidden-support-e3-stability`,
+`universal-first-order-entire-cascade-unit-cost` and
+`schanuel-stage-two-defect-slope-normal-form`, and checked each against the tree.
+
+**59 names, 58 present, 1 not a corpus name at all** (`Submodule.finrank_add_inf_finrank_orthogonal`
+is mathlib's, and it exists).  So every asset those cards claim is delivered *is* delivered, and —
+unlike the three stale gates corrected earlier today — none of their Lean-status sections
+overstates.  Their open items are the prose-described external inputs, not missing wiring:
+
+```text
+all-replica …                     Kargin's matrix Dyson equation at r > 1
+bessel-order-intensity …          the parameterised Picard–Vessiot correspondence
+cusp-spectrum-radius-law          Kaczorowski–Perelli standard-twist theory
+deninger-algebraic-cyclotomic …   motivic cohomology + Borel's rational K-theory
+differential-variational …        Ore localization, affine buildings
+isogeny-tail-maurer-cartan …      the jet-scheme layer for higher-dimensional groups
+route-e-cofactor-amplified …      Matomäki–Teräväinen Theorem 1.2 (all-interval E₃)
+route-e-forbidden-support …       the same
+universal-first-order-entire …    observability `helim` for unsolved-form derivative laws
+schanuel-stage-two …              Kirby's exponential-algebraic closure; contour layer
+schanuel-defects-algebraic …      the algebraic-group / character-lattice step (Baker is CLOSED)
+route-e-coprime-square-root …     the full MR range h / log log 3x → ∞
+route-e-growing-reciprocal …      the scaled window uniformly in k ≤ K ≍ log h
+```
+
+Recorded so no session repeats this sweep: **there are no cheap wins left among these thirteen.**
+The two horizon cards are the only ones whose remaining work is assembly rather than new
+mathematics.

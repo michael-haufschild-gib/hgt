@@ -41,6 +41,16 @@ noncomputable def quadraticCyclicGaloisH2BrauerMap [FiniteDimensional K L] [IsGa
     (hdeg : Module.finrank K L = 2) : cyclicGaloisH2 K L → BrauerGroup K :=
   fun z ↦ brauerClass (quadraticCyclicGaloisH2ClassCSA K L hdeg z)
 
+/-- A degree-two cyclic norm quotient presented as `ℤ/2ℤ` supplies a concrete Brauer parameter
+map.  The map is a finite local-invariant bridge; its injectivity and surjectivity are not
+asserted here. -/
+noncomputable def quadraticCyclicNormQuotientBrauerMap [FiniteDimensional K L] [IsGalois K L]
+    (hdeg : Module.finrank K L = 2)
+    (e : Additive Kˣ ⧸ cyclicGaloisH2BaseNormImage K L ≃+ ZMod 2) :
+    ZMod 2 → BrauerGroup K :=
+  fun z ↦ quadraticCyclicGaloisH2BrauerMap K L hdeg
+    (cyclicGaloisH2BaseNormQuotientEquiv K L (e.symm z))
+
 /-- Norm-equivalent quadratic cyclic parameters have equal Brauer classes. -/
 theorem quadraticCyclicGaloisH2Parameter_brauerClass_eq_of_baseProjection_eq
     [FiniteDimensional K L] [IsGalois K L]
@@ -81,6 +91,17 @@ theorem quadraticCyclicGaloisH2BrauerMap_zero_eq_split
   apply quadraticCyclicGaloisH2Parameter_brauerClass_eq_split_of_baseProjection_eq_zero K L hdeg
   exact cyclicGaloisH2ClassCyclicAlgebra_baseParameter_projection K L 0
 
+/-- The zero residue class in the finite quadratic norm-quotient parameterization is split. -/
+theorem quadraticCyclicNormQuotientBrauerMap_zero_eq_split
+    [FiniteDimensional K L] [IsGalois K L]
+    (hdeg : Module.finrank K L = 2)
+    (e : Additive Kˣ ⧸ cyclicGaloisH2BaseNormImage K L ≃+ ZMod 2) :
+    quadraticCyclicNormQuotientBrauerMap K L hdeg e 0 = brauerSplitClass K := by
+  change quadraticCyclicGaloisH2BrauerMap K L hdeg
+    (cyclicGaloisH2BaseNormQuotientEquiv K L (e.symm 0)) = brauerSplitClass K
+  rw [map_zero, map_zero]
+  exact quadraticCyclicGaloisH2BrauerMap_zero_eq_split K L hdeg
+
 /-- Every quadratic cyclic degree-two class is split by its defining quadratic Galois
 extension. -/
 theorem scalarExtensionBrauerMap_quadraticCyclicGaloisH2BrauerMap_eq_split
@@ -93,6 +114,19 @@ theorem scalarExtensionBrauerMap_quadraticCyclicGaloisH2BrauerMap_eq_split
         (Additive.ofMul (cyclicGaloisH2FixedBaseUnit K L
           (cyclicGaloisH2Representative K L z))))) = brauerSplitClass L
   apply scalarExtensionBrauerMap_quadraticCyclicGaloisAlgebraCSA_eq_split K L hdeg
+
+/-- Every finite quadratic norm-quotient Brauer parameter is split by its defining quadratic
+extension.  Thus this finite local parameter map lands in the relative Brauer kernel. -/
+theorem scalarExtensionBrauerMap_quadraticCyclicNormQuotientBrauerMap_eq_split
+    [FiniteDimensional K L] [IsGalois K L]
+    (hdeg : Module.finrank K L = 2)
+    (e : Additive Kˣ ⧸ cyclicGaloisH2BaseNormImage K L ≃+ ZMod 2) (z : ZMod 2) :
+    scalarExtensionBrauerMap K L (quadraticCyclicNormQuotientBrauerMap K L hdeg e z) =
+      brauerSplitClass L := by
+  change scalarExtensionBrauerMap K L
+    (quadraticCyclicGaloisH2BrauerMap K L hdeg
+      (cyclicGaloisH2BaseNormQuotientEquiv K L (e.symm z))) = brauerSplitClass L
+  exact scalarExtensionBrauerMap_quadraticCyclicGaloisH2BrauerMap_eq_split K L hdeg _
 
 /-- Every scalar extension through the defining quadratic Galois field kills the Brauer class of
 a quadratic cyclic degree-two cohomology class. -/

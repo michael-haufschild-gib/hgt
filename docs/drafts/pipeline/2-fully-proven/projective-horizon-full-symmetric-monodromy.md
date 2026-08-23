@@ -5672,3 +5672,688 @@ Given (i) and (ii): a sheet `τ` with the canonical label cuts out `w_std`, so `
 `D_{W/σ₀F} → Aut(k_W / k_{w_std})` is injective between sets of the same size `f(W/w_std)`, hence
 surjective, so `g` can be corrected by an element of `Gal(L/σ₀F)` into the inertia group.  Then the
 label fibre is the inertia orbit of `σ₀`, of size `|I| = 2`, which is `(D)` and hence `hdeg`.
+
+## The two named missing general theorems now exist (2026-08-23)
+
+The previous entry identified `(D)` as needing two theorems "neither in mathlib, both worth having".
+Both are now in the tree, axiom-clean and umbrella-wired, in
+`formal/GaloisForLFunctions/HTGeometry/ValuationSubringDecompositionOrder.lean`:
+
+```text
+ValuationInertia.exists_smul_valuationSubring_eq
+    (p : Ideal R) [p.IsMaximal] (W₁ W₂ : ValuationSubring L) (hW₁ hW₂ : · ≠ ⊤)
+    (hRW₁ hRW₂) (hcent₁ hcent₂ : the nonunits of Wᵢ meet R exactly in p) :
+  ∃ g : L ≃ₐ[F] L, g • W₁ = W₂                                              -- (i)
+
+ValuationInertia.natCard_decompositionSubgroup_eq_natCard_inertiaSubgroup_mul_inertiaDegIn
+    (p : Ideal R) [p.IsMaximal] [PerfectField p.ResidueField] (W) (hW) (hRW) (hcent) :
+  Nat.card (W.decompositionSubgroup F)
+    = Nat.card (W.inertiaSubgroup F) * Ideal.inertiaDegIn p T                -- (ii)
+```
+
+with the hinge
+
+```text
+ValuationInertia.smul_valuationSubring_eq_iff_smul_centerPrime_eq
+  g • W = W  ↔  g • centerPrime W = centerPrime W
+```
+
+— the decomposition subgroup of a valuation subring *is* the stabiliser of its centre, so mathlib's
+`Ideal.exists_smul_eq_of_isGaloisGroup` and `Ideal.card_stabilizer_eq_card_inertia_mul_finrank`
+transport verbatim through `ValuationSubringInertiaDictionary` /
+`ValuationSubringGaloisTransport`.  The base field `F` is arbitrary among those over which `L` is
+Galois, so both hold at every intermediate field of the tower, which is what the sheet count needs.
+
+The only new argument is the stabiliser identity: a Galois element carrying `W` to itself carries
+its nonunits to its nonunits, because an inverse produced inside `W` after transport comes back
+inside `W`.
+
+**What `(D)` still needs.** With (i) and (ii) in hand the card's own chase goes through: a sheet `τ`
+with the canonical label cuts out `w_std`, (i) puts the correcting element in the decomposition
+group, and (ii) plus `|I_{W/σ₀F}| = 1` makes `D → Aut(k_W/k_{w_std})` injective between sets of size
+`f(W/w_std)`, hence surjective — so the label fibre is the inertia orbit of `σ₀`, of size `|I| = 2`.
+The remaining input is `f(w_std / p) = 1`, i.e. §3's birationality of the ramification divisor onto
+the branch divisor, in the form the `criticalSchur` place data can consume.
+
+## `f = 1`: the algebraic heart is now in the tree (2026-08-23)
+
+The remaining input for `(D)` is `f(w_std/p) = 1` — "the ramification divisor maps birationally onto
+the branch divisor".  Its algebraic content is that the Schur ramification polynomial is **linear in
+its marked ramification coordinate**, and that fact is *already* a corpus theorem:
+
+```text
+degreeOf_ramificationCoordinate_criticalSourceSchurRamificationPolynomial
+    (hm : 1 < m) (hn : 1 < n) :
+  MvPolynomial.degreeOf (criticalSchurRamificationCoordinateIndex _ _)
+    (criticalSourceSchurRamificationPolynomial K m n) = 1
+```
+
+(`HTGeometry/CriticalSchurMarkedUnits.lean`).
+
+What that degree-one fact *buys* is now general and proved, in
+`formal/GaloisForLFunctions/HTGeometry/LinearDivisorResidueField.lean` (axiom-clean, wired):
+
+```text
+ker_aeval_linearRoot (F) [IsFractionRing S F] {a b : S} (ha : a ≠ 0)
+    (hprim : (C a * X + C b).IsPrimitive) :
+  RingHom.ker (aeval (linearRoot F a b) : S[X] →ₐ[S] F) = Ideal.span {C a * X + C b}
+
+injective_quotient_lift_aeval_linearRoot :
+  the residue ring S[X] ⧸ (C a * X + C b) embeds in F
+```
+
+Gauss's lemma (`Polynomial.IsPrimitive.dvd_iff_fraction_map_dvd_fraction_map`) turns divisibility in
+`F[X]` into divisibility in `S[X]`, so the kernel is exactly the principal ideal, and the residue
+ring of the divisor sits inside `Frac S` — which `S` already generates.  That is residue degree one.
+
+### What is left for `(D)`
+
+Only the card-specific bookkeeping: split `criticalSchurSourceRing K m n = MvPolynomial (Fin (m+n)) K`
+as `S[X]` with `X` the marked ramification coordinate and `S` the polynomial ring in the remaining
+coordinates (`MvPolynomial.optionEquivLeft` along `Equiv.optionSubtypeNe`), read the degree-one fact
+as `g = C a * X + C b`, note that `g` is primitive because it is irreducible of positive degree
+(`irreducible_criticalSourceSchurRamificationPolynomial`), and identify `Frac S` with the residue
+field of the restricted place on the observation field.  Then `f = 1`, the label fibre is the inertia
+orbit of size `|I| = 2`, and `hdeg` follows through
+`exists_criticalGeometricMonodromy_isSwap_of_reducedFibre_degree`.
+
+## `f = 1` IS NOT NEEDED — the residue degree cancels (2026-08-23)
+
+The previous entries reduced `(D)` to `f(w_std / p) = 1`, following the card's own chase: the label
+fibre of a sheet was to be identified with the inertia orbit by making `D_{W/σ₀F} → Aut(k_W/k_{w_std})`
+*injective between sets of the same size*, which needs `|I_{W/σ₀F}| = 1` and therefore
+`e(w_std/p) = e(W/p)`, and then the fibre size `e·f = 2f` forces `f = 1`.
+
+**That detour is unnecessary, and `f` never has to be computed.**  Write `M := σ(E)` for the
+intermediate field a sheet generates, `Q_M` for the centre of `W` on the integral closure of the
+observation Schur DVR in `M`.  A sheet `τ` with the same reduced label as `σ`
+
+* cuts out the same place, so `τ = g ∘ σ` with `g` in the decomposition group of `W` over `F`
+  (normality of `L/F`, then `exists_smul_valuationSubring_eq` over `M` to move `g` into `D_W(F)`);
+* has the same residue map, so the induced `ḡ` fixes the residue field of `Q_M` pointwise.
+
+Now correct `g` *inside* `Gal(L/M)`: because the decomposition group of `W` over `M` realises
+**every** automorphism of `k_W` over `k_{Q_M}`, there is `h ∈ D_W(M)` with `h̄ = ḡ`, and
+`i := g h^{-1}` lies in inertia while `i|_M = g|_M` — so `τ = i ∘ σ`.  The label fibre is inside one
+inertia orbit and has at most `|I| = 2` elements.  The residue degree `f(W/w_std)` appears on both
+sides of the correction and cancels; nothing about `f(w_std/p)` is used.
+
+The surjectivity is mathlib's `Ideal.Quotient.stabilizerHom_surjective` — no counting, no
+`PerfectField` hypothesis, no `|I_{W/M}| = 1`.
+
+**The general theorem is now in the tree**, axiom-clean and umbrella-wired, in
+`formal/GaloisForLFunctions/HTGeometry/ValuationInertiaIntermediateResidueLift.lean`:
+
+```text
+ValuationInertia.exists_mem_inertia_eq_on_intermediateField
+    (M : IntermediateField F L) (W : ValuationSubring L) (hAW) (hW : W ≠ ⊤)
+    (hgW : g • W = W)
+    (hres : ∀ b : integralClosure A M, g • algebraMap b - algebraMap b ∈ centerPrime W) :
+  ∃ i : L ≃ₐ[F] L, i ∈ (centerPrime W).inertia (L ≃ₐ[F] L) ∧ ∀ x : M, g x = i x
+
+ValuationInertia.exists_mem_inertiaSubgroup_eq_on_intermediateField
+  the same with `i` produced inside `W.inertiaSubgroup F`
+```
+
+with the supporting instances `smulCommClass_intermediate`
+(`SMulCommClass Gal(L/M) (integralClosure A M) (integralClosure A L)`),
+`comap_centerPrime_eq_intermediateCentre` and `liesOverCentre`
+(`(centerPrime W).LiesOver (intermediateCentre M W)`), which is what lets mathlib's ideal-theoretic
+Hilbert theory run at an intermediate field of a *non-normal* step.
+
+### What `(D)` needs now
+
+Only the horizon-side instantiation, in three pieces:
+
+```text
+(a)  same label ⟹ same place                      criticalSheetPullbackValuation_eq   (Lean)
+(b)  same label ⟹ same residue on the integral closure of the observation Schur DVR in σ(E).
+     criticalSheetSchurCoordinates_residue_congr already gives it on the Schur coordinates,
+     and the Schur coordinate ring generates that integral closure up to the centre, because
+     the source Schur valuation ring IS the localization of the Schur coordinate ring at the
+     ramification prime (criticalSchurCoordinateValuationSubring, valuationSubringAtPrime_eq).
+(c)  τ = g ∘ σ with g ∈ D_W(F):  normality of L/F gives g ∈ Gal(L/F); (a) plus
+     exists_smul_valuationSubring_eq over σ(E) moves it into the decomposition group.
+```
+
+Then `exists_mem_inertia_eq_on_intermediateField` gives `τ = i ∘ σ` with `i` in inertia, the label
+fibre has at most `Nat.card (criticalSchurInertiaGroup) = 2` elements, and
+`criticalSchur_collisionSupport_ncard_le_two_of_fibre` closes `(D)`.
+
+## `(D)` IS CLOSED — the monodromy contains a transposition, unconditionally (2026-08-23)
+
+The bypass of the previous entry is now carried out in full.  Five modules, all axiom-clean and
+umbrella-wired:
+
+```text
+HTGeometry/ValuationInertiaIntermediateResidueLift.lean
+    smulCommClass_intermediate, comap_centerPrime_eq_intermediateCentre, liesOverCentre
+    exists_mem_inertia_eq_on_intermediateField
+        ** g stabilises W and fixes the residues of the intermediate base
+             ⟹ g agrees on M with an inertia element **
+    exists_mem_inertiaSubgroup_eq_on_intermediateField
+
+HTGeometry/ValuationInertiaSheetInertiaOrbit.lean
+    isUnit_valuationSubring_iff, isUnit_congr, comap_eq_inv_smul, comapRingEquiv,
+    isUnit_comap_iff, comap_ne_top, restrictScalars_smul_valuationSubring
+    exists_algEquiv_comp_eq        two embeddings into a Galois extension differ by a Galois element
+    exists_mem_inertia_comp_eq
+        ** σ, τ : E →ₐ[F] L with the same place and the same residue map ⟹ τ = i ∘ σ, i ∈ inertia **
+    exists_mem_inertiaSubgroup_comp_eq
+
+HTGeometry/CriticalSheetLabelInertiaOrbit.lean
+    criticalSheet_residue_eq_of_canonical_label
+        ** equal canonical labels ⟹ equal residues at EVERY element of the source Schur place **
+    criticalSchur_exists_inertiaSubgroup_comp_eq
+
+HTGeometry/CriticalSchurCollisionSupportBound.lean
+    Set.ncard_range_le_natCard
+    criticalSchur_collisionSupport_ncard_le_two      ** `(D)` **
+    exists_criticalGeometricMonodromy_isSwap        ** `(3)`, UNCONDITIONAL **
+    criticalGeometricMonodromy_eq_top_of_isPreprimitive
+```
+
+The residue statement is lifted from the Schur coordinates to the whole place by
+`IsLocalization.surj` on the source Schur valuation ring: an element is `aeval a / aeval b` with `b`
+off the Schur prime, the two labels give `coordResidue σ = coordResidue τ`, and
+`isUnit_criticalSheetAeval` makes the denominator's residue invertible.
+
+`exists_criticalGeometricMonodromy_isSwap` needs no hypotheses at all: `natCard_criticalSchurInertiaGroup_eq_two`
+supplies the nontriviality and `criticalSchur_collisionSupport_ncard_le_two` the collision count.
+
+### Elaboration notes, so no session re-derives them
+
+* The subtype `⟨i, hi⟩ : criticalSchurInertiaGroup K hm hn` from a proof `hi` of membership in
+  `(criticalNormalClosureSchurValuationSubring …).inertiaSubgroup …` is a **defeq check the unifier
+  cannot afford** in a context carrying the horizon's field tower — it exhausts 8M heartbeats.
+  Working with `.inertiaSubgroup` directly costs nothing.  `Nat.card` of the two is interchangeable
+  cheaply, so `natCard_criticalSchurInertiaGroup_le_two` applies verbatim to the subgroup form.
+* A hypothesis term passed inline to a lemma with several implicit arguments (here the residue
+  congruence) blows up; binding it first with `have hres0 := …` and passing the local name does not.
+
+### What the card still needs
+
+Only `(4)`'s **primitivity**, i.e. §4: the monodromy action on sheets is preprimitive.  The corpus
+has the conditional form `criticalMonodromy_isPreprimitive_of_rootAction_le`
+(`HTGeometry/OccupationSubsetPrimitivity.lean`) — any monodromy subgroup containing the full
+unbalanced root-permutation action is primitive — together with
+`criticalOccupationRootAction_isPreprimitive`.  Everything else on the card is Lean-closed.
+
+## Primitivity: the E-chain after `(D)`, and its group-theoretic core (2026-08-23)
+
+With `(D)` closed, the card's remaining obligation is `(iii)` primitivity, which the 2026-08-18
+programme resolves into `E1`–`E7`.  Current state:
+
+```text
+E1  branch locus in the chart = the Schur divisor     DONE  UnramifiedAwayFromDerivative
+                                                            isUnramifiedAt_of_aeval_derivative_notMem
+E2  the Schur meridian is one transposition           DONE  this session — exists_criticalGeometricMonodromy_isSwap
+E3  the block field is unramified at every height-one prime of the chart
+        group-theoretic half                          DONE  this session — see below
+        Galois-correspondence half                    OPEN  (block ↔ intermediate field of L/F)
+E4  T-equivariance to the slice                       OPEN  (bookkeeping)
+E5  SCE_k                                             DONE  rank_eq_one_of_isUnit_discr_mvPolynomial
+E6  M ⊆ O(c^{1/L}) cyclic and v_m(c) = 1 ⟹ M = O      OPEN  (one valuation)
+E7  trivial block system ⟹ primitive                  DONE  this session — see below
+```
+
+The group-theoretic core of `E3` and `E7` is now a general theorem, axiom-clean and umbrella-wired,
+in `formal/GaloisForLFunctions/HTGeometry/TranspositionBlockInvariance.lean`:
+
+```text
+isBlock_smul_eq_of_swapLike, isBlock_smul_eq_of_isSwap, isBlock_smul_eq_of_eq_one_or_isSwap
+    ** an element acting as a transposition preserves every block with two or more elements **
+exists_block_of_not_isPreprimitive
+```
+
+The proof is the right one: a block is preserved or moved off itself, and moving it off itself would
+require moving *every* one of its points, which a transposition cannot do to a set of size ≥ 2
+unless that set is the transposed pair — which it preserves.  So the inertia generated by the Schur
+meridian lies in the stabiliser of every block, which is exactly what makes the block field
+unramified at the Schur place.
+
+**Elaboration warning.**  Instantiating this on the horizon —
+`criticalSchurInertiaAction_eq_one_or_isSwap_of_collisionSupport_ncard_le_two` fed into
+`isBlock_smul_eq_of_eq_one_or_isSwap` — runs into the same wall recorded above: building the
+`criticalGeometricMonodromy` subtype from `criticalSchurInertiaAction_range_le_monodromy` did not
+finish in ten minutes.  Route it through a statement quantified over a *given*
+`t : criticalGeometricMonodromy K m n` with `(t : Equiv.Perm _) = 1 ∨ (t : Equiv.Perm _).IsSwap`,
+which is what `isBlock_smul_eq_of_eq_one_or_isSwap` already takes.
+
+## `E3`'s ramification half is now a general theorem (2026-08-23)
+
+`formal/GaloisForLFunctions/HTGeometry/ValuationInertiaIntermediateUnramified.lean`, axiom-clean and
+umbrella-wired:
+
+```text
+ValuationInertia.toIntermediateAlgEquiv          an F-automorphism fixing M is an M-automorphism
+ValuationInertia.smul_valuationSubring_intermediate
+ValuationInertia.mem_inertiaSubgroup_intermediate
+    ** inertia membership does not depend on the base field **
+ValuationInertia.natCard_inertiaSubgroup_le_intermediate
+ValuationInertia.ramificationIdx_intermediateCentre_eq_one_of_inertia_fixes
+    ** if inertia fixes M pointwise then e(Q_M / p) = 1 **
+```
+
+The proof is the orbit formula run backwards: `natCard_inertiaSubgroup_eq_intermediate_mul` gives
+`|I_F| = e · |I_M|`, and if every inertia element fixes `M` pointwise then `I_F` injects into `I_M`,
+so `e · |I_M| ≤ |I_M|` with `|I_M| > 0`, i.e. `e = 1`.  Nothing assumes `M/F` normal.
+
+Together with `TranspositionBlockInvariance` this is the whole of `E3`: the Schur meridian acts as a
+transposition (`exists_criticalGeometricMonodromy_isSwap`), a transposition preserves every block
+with two or more elements, so the inertia fixes the block field, so the block field is unramified at
+the Schur place; and `isUnramifiedAt_of_aeval_derivative_notMem` (`E1`) handles every other
+height-one prime of the chart.
+
+Remaining for the card: the Galois-correspondence bookkeeping "block ↦ intermediate field" on the
+horizon's own sheet action, `E4` (T-equivariance to the slice) and `E6` (the Kummer valuation).
+`E5` is `rank_eq_one_of_isUnit_discr_mvPolynomial`.
+
+## `E3` in block form and `E6`'s core (2026-08-23)
+
+Two more general theorems, axiom-clean and umbrella-wired.
+
+```text
+HTGeometry/ValuationInertiaIntermediateUnramified.lean
+    ValuationInertia.ramificationIdx_fixedField_eq_one_of_inertia_le
+        ** the field fixed by ANY subgroup containing inertia is unramified at the place **
+
+HTGeometry/KummerRootValuationOrder.lean
+    eq_one_of_pow_eq_of_addVal_eq_one            (discrete valuation ring)
+    eq_one_of_pow_eq_of_addValuation_eq_one      (integer-valued valuation on a field)
+        ** z^k = c with v(c) = 1  ⟹  k = 1 **
+```
+
+The first is `E3` in exactly the form a block system consumes: take `H` to be the stabiliser of a
+block, which contains the inertia because a meridian transposition preserves every block of size ≥ 2
+(`TranspositionBlockInvariance`).  The second is `E6`'s only mathematical content — an intermediate
+field of the cyclic `O(c^{1/L})/O` is `O(c^{1/k})` with `k ∣ L`, and the marked coordinate divisor
+gives `v_m(c) = 1`, so `k = 1`.
+
+**Card status.**  `E1`, `E2`, `E3`, `E5`, `E7` are Lean-closed, and `E6`'s valuation step is closed.
+Open: (a) `E4`, the torus/slice equivariance moving unramifiedness from the chart to
+`K[w₁,…,w_{L-2}]`; (b) the Kummer-theoretic half of `E6`, that an intermediate field of the cyclic
+`O'/O` has the form `O(c^{1/k})`; (c) the horizon bookkeeping that assembles them.  Everything else
+on the card is Lean-closed.
+
+## `E6`'s structural half is now a general theorem (2026-08-23)
+
+Appended to `HTGeometry/ValuationInertiaIntermediateUnramified.lean`, axiom-clean and wired:
+
+```text
+ValuationInertia.intermediateField_eq_bot_of_unramified_of_totallyRamified
+    ** a totally ramified place has no unramified subextension **
+ValuationInertia.fixedField_eq_bot_of_inertia_le_of_totallyRamified
+    ** at a totally ramified place, a subgroup containing inertia has trivial fixed field **
+```
+
+The proof is the orbit formula plus a degree count: `|I_F| = e(Q_M/p)·|I_M| = |I_M|` when `M` is
+unramified, `I_M` embeds in `Gal(L/M)` so `|I_M| ≤ [L:M]`, and total ramification gives
+`[L:F] ≤ |I_F|`; hence `[M:F]·[L:M] ≤ [L:M]`, so `[M:F] = 1`.
+
+This is exactly `E6` in structural form.  The cyclic extension `O' = O(c^{1/L})` is **totally
+ramified** at the marked divisor where `v_m(c) = 1` — `w(z) = 1` and `w(c) = L` — so any block field
+inside it that is unramified there is trivial.  No Kummer classification of subextensions is needed:
+the degree count does the work, and `KummerRootValuationOrder` supplies the valuation computation
+that makes the place totally ramified.
+
+**What `E6` still needs**: the statement `Module.finrank O O' ≤ Nat.card (W.inertiaSubgroup O)` for
+the horizon's `O' = O(c^{1/L})` — i.e. `e ≥ L` at the marked divisor, from `w(z) ≥ 1` and
+`w(z^L) = w(c) = e·v_m(c) = e`.  Together with `E4` (the torus/slice equivariance) and the horizon
+bookkeeping, that is all that is left of `(4)`, and therefore of this card and of
+`projective-horizon-one-step-postcritical-rigidity`, which is reduced to `(4)` alone.
+
+## The total-ramification criterion (2026-08-23)
+
+`formal/GaloisForLFunctions/HTGeometry/RamificationIndexLowerBound.lean`, axiom-clean and wired —
+a mathlib gap:
+
+```text
+le_ramificationIdx'_of_map_le_pow          map p ≤ P^k  ⟹  k ≤ ramificationIdx' p P
+le_ramificationIdx'_of_map_le_span_pow     map p ≤ (z^k) with z ∈ P  ⟹  k ≤ ramificationIdx' p P
+```
+
+mathlib carries only the upper half of `ramificationIdx'`'s defining property
+(`le_pow_of_le_ramificationIdx'`); the lower half is the factorisation count over a Dedekind domain,
+which is what an Eisenstein-type root needs.
+
+This is the missing inequality for `E6`: the marked divisor of `O' = O(c^{1/L})` has `c = z^L` with
+`z` in the prime above, so `e ≥ L = [O':O]`, i.e. the place is **totally ramified**, and
+`ValuationInertia.fixedField_eq_bot_of_inertia_le_of_totallyRamified` then kills the block field.
+
+`E6` is therefore complete as a chain of general theorems.  What remains of `(4)` is `E4` — the
+torus/slice equivariance that moves the everywhere-unramifiedness from the chart to the slice ring
+`K[w₁,…,w_{L-2}]`, where `E5` (`rank_eq_one_of_isUnit_discr_mvPolynomial`) applies — and the horizon
+bookkeeping that instantiates the chain.  The corpus already owns the torus-chart objects
+(`LocalizationTwoPrimeUnits.TorusChart`, `TorusChartFundamentalGroup`,
+`CriticalObservationChartRing`), so `E4` is assembly on existing types rather than new mathematics.
+
+## `(4)`: the complete assembly, with every general theorem now in the tree (2026-08-23)
+
+Every step of the endgame is a Lean theorem; what is left is horizon instantiation.  The chain, in
+the order a session should build it:
+
+```text
+1.  a nontrivial block B of the monodromy action on sheets
+        exists_block_of_not_isPreprimitive                  (TranspositionBlockInvariance)  DONE
+    ⟹ the block field M := fixedField (stabilizer B),  F ⊊ M ⊆ σ₀(E)
+
+2.  M/O is unramified at EVERY height-one prime of the chart ring
+      • at the Schur prime: the meridian is a transposition (exists_criticalGeometricMonodromy_isSwap,
+        DONE) and a transposition preserves every block of size ≥ 2
+        (isBlock_smul_eq_of_eq_one_or_isSwap, DONE), so inertia ⊆ stabilizer B, and
+        ValuationInertia.ramificationIdx_fixedField_eq_one_of_inertia_le (DONE) gives e = 1;
+      • elsewhere: isUnramifiedAt_of_aeval_derivative_notMem  (E1, already in the tree)
+    ** needs: the horizon instantiation of these two, on criticalObservationChartRing **
+
+3.  the torus slice.  T = 𝔾ₘ² acts, S = {x_m = 1, y_n = 1} ≅ 𝔸^{L-2}, c = x_m y_n,
+    O' = O(c^{1/L}) = O_S(λ, μ) purely transcendental of degree 2 over the slice field.
+      • freeParameterBaseChange / freeParameterPermEquiv   (FreeParameterBaseChange)  ALREADY IN TREE
+      • rank_eq_one_of_isUnit_discr_mvPolynomial            (SCE_k)                   ALREADY IN TREE
+    ⟹ M_S = O_S, hence M ⊆ O'
+    ** needs: the slice presentation of O' on the horizon's own fields **
+
+4.  the marked divisor is TOTALLY RAMIFIED in O':  c = z^L with z in the prime above, so
+        le_ramificationIdx'_of_map_le_span_pow             (RamificationIndexLowerBound)  DONE
+    and step 2 says M is unramified there, so
+        ValuationInertia.fixedField_eq_bot_of_inertia_le_of_totallyRamified            DONE
+    gives M = ⊥ — contradicting F ⊊ M.
+
+5.  hence no nontrivial block: the action is preprimitive, and
+        criticalGeometricMonodromy_eq_top_of_isPreprimitive (DONE, this session)
+    is `(4)`.
+```
+
+Note that step 4 makes the Kummer-relation endpoint (`criticalSource_not_exists_kummer_relation`,
+`dvd_exponents_of_eq_pow_torusChart`) **unnecessary**: step 3 only has to deliver `M ⊆ O'`, and the
+total-ramification count finishes.  Those modules remain as an independent second route.
+
+So the two open items are both instantiation: `(2)` on the chart ring and `(3)`'s slice presentation.
+No general mathematics is missing.  `projective-horizon-one-step-postcritical-rigidity` is reduced to
+this same `(4)` and needs nothing of its own.
+
+## Step 2's Schur half is INSTANTIATED on the horizon (2026-08-23)
+
+`formal/GaloisForLFunctions/HTGeometry/CriticalBlockFieldUnramified.lean`, axiom-clean, wired:
+
+```text
+criticalBlockStabilizer B                     the stabiliser of a block inside Gal(L/F)
+criticalSchurInertia_smul_block_eq            inertia preserves every block of size ≥ 2
+criticalSchurInertia_le_blockStabilizer
+criticalSchurInertia_ramificationIdx_blockField_eq_one
+    ** e(Q_M / p) = 1 for M = fixedField (criticalBlockStabilizer B) **
+```
+
+The elaboration wall recorded earlier is **avoidable**: it came from *constructing* the subtype
+`⟨t, htG⟩` of a horizon-sized subgroup.  Restating the general lemma to take the permutation together
+with a membership proof (`isBlock_perm_smul_eq_of_eq_one_or_isSwap`) moves that construction into a
+context where the group is a variable, and the horizon instantiation then takes **ten seconds**.  The
+converse direction — using an element of `W.inertiaSubgroup F` where `criticalSchurInertiaGroup` is
+expected — was always free; only the construction was expensive.
+
+Remaining for `(4)`: step 2's non-Schur half (`isUnramifiedAt_of_aeval_derivative_notMem` on the
+chart ring) and step 3's slice presentation.
+
+## The unramified-to-unit-discriminant glue (2026-08-23)
+
+Added to `HTGeometry/RamificationIndexLowerBound.lean`, axiom-clean:
+
+```text
+isUnit_of_forall_notMem_isPrime
+    ** over a UFD, a nonzero element in no nonzero prime is a unit **
+```
+
+`SCE_k` (`rank_eq_one_of_isUnit_discr_mvPolynomial`) consumes `IsUnit (Algebra.discr R e)`, a global
+condition; step 2 delivers unramifiedness prime by prime.  This is the bridge: over the slice
+polynomial ring, a discriminant lying in no height-one prime is a unit.
+
+The remaining link on that side is `differentIdeal = 1 ⟹ IsUnit disc`, for which the tree already
+owns the monogenic case (`DifferentIdealMonogenic.differentIdeal_eq_span_aeval_derivative`: with
+trivial conductor the different is generated by `p'(x)`), and `Algebra.discr_powerBasis_eq_norm`
+converts `p'(x)` to the discriminant.  Recorded so the next session does not re-derive the route.
+
+## Step 2 is COMPLETE in general form (2026-08-23)
+
+The second half is now a theorem too, in
+`HTGeometry/ValuationInertiaIntermediateUnramified.lean`:
+
+```text
+ramificationIdx_intermediateCentre_eq_one_of_inertia_trivial
+    ** an unramified place stays unramified in every intermediate field **
+```
+
+`|I_F| = e · |I_M|` with `|I_F| = 1` leaves `e = 1`.  So both halves of step 2 are general:
+
+* at the branch place, inertia sits inside the block stabiliser (transposition argument), and
+  `ramificationIdx_fixedField_eq_one_of_inertia_le` gives `e = 1`;
+* away from the branch locus, inertia is trivial, and the new theorem gives `e = 1`.
+
+The horizon side of the first half is instantiated (`CriticalBlockFieldUnramified`).  The horizon
+side of the second needs only `Nat.card (W.inertiaSubgroup F) = 1` at the non-Schur height-one
+primes of the chart ring — which is `E1`
+(`isUnramifiedAt_of_aeval_derivative_notMem`) read through
+`natCard_inertiaSubgroup_eq_ramificationIdxIn`, plus the localization of the chart ring at an
+arbitrary height-one prime.
+
+### Recorded obstruction for step 3's discriminant input
+
+`SCE_k` consumes `IsUnit (Algebra.discr R e)`.  The natural bridge from "unramified everywhere" is
+`disc = ± N(p'(x))`, but **mathlib's `Algebra.discr_powerBasis_eq_norm` is stated only for a FIELD
+base** (`[Field K] [Field L]`), so it does not apply to the slice polynomial ring.  The ring-level
+route is the trace-form one: `differentIdeal = ⊤` says the dual lattice is the ring itself, i.e. the
+trace form is unimodular, i.e. the discriminant is a unit.  The corpus's
+`SplitFiniteAlgebraDiscriminant.discr_ne_zero_iff_traceForm_nondegenerate` is the field-level half of
+that dictionary; the ring-level statement is the piece to build.
+
+Together with `isUnit_of_forall_notMem_isPrime` (which turns "no height-one prime contains the
+discriminant" into "the discriminant is a unit" over a UFD), that is the whole of step 3's input.
+Recorded so no session assumes mathlib supplies the ring-level identity.
+
+## CORRECTION — step 3 must use the FIELD form of `SC_k`, not the ring form (2026-08-23)
+
+`rank_eq_one_of_isUnit_discr_mvPolynomial` (`SCE_k`) takes `[Module.Free (MvPolynomial (Fin k) K) B]`
+together with a basis.  Applying it to the slice means producing a **basis of the integral closure of
+`K[w₁,…,w_{L-2}]` in the block field**.  For `k ≥ 2` that is Quillen–Suslin (projective modules over
+a polynomial ring are free) — not in mathlib, and not something to walk into by accident.
+
+The card's own 2026-08-18 programme already avoids this, and the next session should follow it:
+
+```text
+SC_k, FIELD form:  𝔽 = K(u_1,…,u_{k-1});  a finite extension of 𝔽(u_k) unramified at every
+                   height-one prime of 𝔽[u_k] is a CONSTANT extension 𝔽'(u_k);  the Gauss
+                   valuation transports unramifiedness of 𝔽'/𝔽 to every height-one prime of
+                   K[u_1,…,u_{k-1}];  induct.
+```
+
+Every step there works over `𝔽[u_k]`, a **PID**, where finite torsion-free modules are free
+automatically — so no Quillen–Suslin is needed, and the ring form of `SC_1`
+(`rank_eq_one_of_isUnit_discr_algClosed`, already Lean) applies after base change to `𝔽`'s algebraic
+closure.  What the tree does not yet have is the field-form statement and the Gauss-valuation
+transport between induction steps.
+
+So step 3's remaining work is, precisely:
+
+```text
+(a)  SC_1 field form over a general char-0 base field: unramified over 𝔽[u] ⟹ constant extension
+(b)  Gauss-valuation transport: unramifiedness of the constant part over K[u_1,…,u_{k-1}]
+(c)  the induction assembling (a) and (b) into the field form of SC_k
+(d)  the horizon's slice presentation feeding it
+```
+
+and the ring-level trace-form identity recorded in the previous entry is then **not needed** — over a
+PID the discriminant question is the classical one that `rank_eq_one_of_isUnit_discr_algClosed`
+already answers.
+
+## `(b)`'s first brick: the Gauss prime is unramified (2026-08-23)
+
+`formal/GaloisForLFunctions/HTGeometry/GaussPrimeUnramified.lean`, axiom-clean and wired:
+
+```text
+ramificationIdx'_map_C_eq_one
+    ** q ∋ π ∉ q²  ⟹  ramificationIdx' q (q · R[X]) = 1 **
+```
+
+Membership in an extended ideal `I · R[X]` is coefficientwise (`Ideal.mem_map_C_iff`), so contracting
+the constant coefficient returns the base statement.  Two neighbouring facts are already mathlib:
+`Ideal.isPrime_map_C_of_isPrime` (the Gauss prime is prime) and
+`Ideal.polynomialQuotientEquivQuotientPolynomial` (its residue ring is `(R ⧸ q)[X]`).
+
+This is the algebraic form of "the Gauss valuation has ramification index one" — the transport step
+of the field-form induction for `SC_k`, and the reason that induction never needs freeness of an
+integral closure over a multivariable polynomial ring.
+
+## `(a)`'s mechanism: split roots differ by constants (2026-08-23)
+
+`formal/GaloisForLFunctions/HTGeometry/SplitRootUnitDifference.lean`, axiom-clean and wired:
+
+```text
+isUnit_sub_of_isUnit_eval_derivative    r - a is a unit whenever p'(r) is
+exists_C_of_isUnit_sub                  over F[u] those differences are CONSTANTS
+```
+
+Each root difference is a factor of `p'(r) = ∏_{a ≠ r} (r - a)`
+(`Polynomial.eval_multiset_prod_X_sub_C_derivative`), so it divides a unit; over a polynomial ring
+the units are the nonzero constants (`Polynomial.isUnit_iff`).
+
+This is the mechanism of `SC_1`'s **field** form.  With `𝔽̄` the algebraic closure of the base field,
+an everywhere-unramified cover splits over `𝔽̄(u)`, its roots lie in `𝔽̄[u]` and — by the above —
+differ by constants; in characteristic zero, `n·r₁ = Σ rᵢ − Σ cᵢ` with `Σ rᵢ ∈ 𝔽(u)` exhibits
+`r₁ ∈ 𝔽(u) + 𝔽̄`, so `E = 𝔽(u)(r₁) = 𝔽(γ)(u)` is a **constant** extension.  That is `(a)`, and its
+only remaining pieces are the splitting/integrality of the roots and the characteristic-zero average.
+
+### `(a)`'s averaging step
+
+Added to the same module, axiom-clean:
+
+```text
+exists_mem_add_mem_of_sum_mem
+    ** sum in B, spread in C, characteristic zero  ⟹  a member lies in B + C **
+```
+
+With `B` the base rational function field and `C` the constants, this is exactly the passage from
+"the roots differ by constants" to "one root is (base) + (constant)", hence `E = 𝔽(γ)(u)`.
+
+`(a)` now needs only its two analytic-free inputs: that an everywhere-unramified cover splits after
+base change to `𝔽̄` (this is `rank_eq_one_of_isUnit_discr_algClosed`, already Lean) and that the
+roots are integral over `𝔽̄[u]` (normality of the polynomial ring).  The algebraic skeleton —
+unit differences, constancy, averaging — is complete.
+
+## `(b)` IS COMPLETE: ramification is unchanged by a free variable (2026-08-23)
+
+`HTGeometry/GaussPrimeUnramified.lean`, axiom-clean and wired:
+
+```text
+map_C_le_map_C_iff        I·R[X] ≤ J·R[X]  ↔  I ≤ J
+ramificationIdx'_map_C
+    ** ramificationIdx' (q·R[X]) (Q·S[X]) = ramificationIdx' q Q **
+```
+
+`ramificationIdx'` is `sSup {n | map p ≤ P^n}`, and adjoining a free variable carries that set
+bijectively: extension commutes with the algebra map (`Ideal.map_map`), commutes with powers
+(`Ideal.map_pow`), and reflects inclusion (`map_C_le_map_C_iff`, from the coefficientwise
+description `Ideal.mem_map_C_iff`).  So the two suprema are suprema of the *same* set.
+
+This is `(b)` in full generality — the Gauss transport step of the `SC_k` field-form induction:
+unramifiedness of `𝔽'(u_k)/𝔽(u_k)` at the Gauss prime of `q` **is** unramifiedness of `𝔽'/𝔽` at `q`.
+Nothing about valuations or completions is needed; it is an identity of two suprema.
+
+Step 3's ledger is now: `(a)` mechanism complete (unit differences, constancy, averaging) with two
+structural inputs left; `(b)` **COMPLETE**; `(c)` the induction assembling them; `(d)` the horizon
+slice presentation.
+
+## The exact bridge between `SCE_k` and the ramification statements (2026-08-23)
+
+`SCE_k` is stated in **discriminant** form (`HasEtaleRankOne R`: every domain finite free over `R`
+with unit discriminant has rank one) while steps 1–2 and `(b)` are in **ramification** form.  The
+bridge is one direction of the classical Dedekind discriminant theorem:
+
+```text
+q unramified in B  ⟹  disc(B/A) ∉ q          (hence, over a UFD, disc is a unit)
+```
+
+and its proof needs one further lemma, also absent from mathlib:
+
+```text
+discriminant base change:  (disc_A b)  mod p  =  disc_{A/p} (b mod pB)
+```
+
+after which the corpus's own field-level dictionary finishes it:
+`SplitFiniteAlgebraDiscriminant.discr_ne_zero_iff_traceForm_nondegenerate` — a finite étale algebra
+over a field has nondegenerate trace form, hence nonzero discriminant — and
+`isUnit_of_forall_notMem_isPrime` (built this session) converts "in no height-one prime" to "unit".
+
+Searched and confirmed absent: mathlib has no Dedekind discriminant theorem
+(`Mathlib/NumberTheory/RamificationInertia/*` and `DedekindDomain/Different.lean` mention `discr`
+only in `isIntegral_discr_mul_of_mem_traceDual`) and no `discr` base-change lemma
+(`RingTheory/Discriminant.lean`).
+
+**Consequence for the plan.**  `Module.Free` for the integral closure over a multivariable polynomial
+ring is Quillen–Suslin and must be avoided; the field-form induction avoids it because each level's
+base `𝔽[u_k]` is a PID, where finite torsion-free modules are free.  With `(b)` complete
+(`ramificationIdx'_map_C`) and `(a)`'s mechanism complete
+(`isUnit_sub_of_isUnit_eval_derivative`, `exists_C_of_isUnit_sub`, `exists_mem_add_mem_of_sum_mem`),
+the two named builds above are what remain before `(c)` can be assembled.
+
+## One of the two named gaps is CLOSED: discriminant base change (2026-08-23)
+
+`formal/GaloisForLFunctions/HTGeometry/DiscriminantBaseChange.lean`, axiom-clean and wired:
+
+```text
+algebra_trace_baseChange   trace_S (S ⊗ B) (1 ⊗ x) = algebraMap A S (trace_A B x)
+discr_baseChange           discr_S (b.baseChange S) = algebraMap A S (discr_A b)
+```
+
+mathlib has `LinearMap.trace_baseChange` for the *linear* trace and neither statement for the algebra
+trace or the discriminant.  Both follow at once: multiplication by `1 ⊗ x` **is** the base change of
+multiplication by `x` (`Algebra.TensorProduct.tmul_mul_tmul`), so the trace matrix in the
+base-changed basis is the entrywise image of the trace matrix, and the structure map carries its
+determinant.
+
+So the Dedekind discriminant criterion now needs only its second half: reducing modulo `p` gives the
+discriminant of the fibre `B ⊗ κ(p)`, and the corpus's
+`SplitFiniteAlgebraDiscriminant.discr_ne_zero_iff_traceForm_nondegenerate` says that vanishes exactly
+when the fibre's trace form degenerates — i.e. when `p` ramifies.  With
+`isUnit_of_forall_notMem_isPrime` that yields "unramified everywhere ⟹ unit discriminant", which is
+the last input `SCE_k` needs from the ramification side.
+
+### The Dedekind criterion's interface, in one line
+
+Added to the same module, axiom-clean:
+
+```text
+discr_mem_iff_discr_quotient_eq_zero
+    ** p contains disc_A b  ↔  disc_{A/p} (b.baseChange (A/p)) = 0 **
+```
+
+so the criterion is now purely a **field-level** question about the fibre: over a maximal `p`, the
+fibre `B ⊗ (A/p)` is an algebra over a field, and the corpus's
+`SplitFiniteAlgebraDiscriminant.discr_ne_zero_iff_traceForm_nondegenerate` turns the vanishing of its
+discriminant into degeneracy of its trace form.  Everything below the field level — base change of
+the trace, of the discriminant, and the passage from "in no height-one prime" to "unit"
+(`isUnit_of_forall_notMem_isPrime`) — is now Lean.
+
+## BOTH named gaps are closed: the Dedekind discriminant criterion (2026-08-23)
+
+`HTGeometry/DiscriminantBaseChange.lean` now carries the whole criterion, axiom-clean and wired:
+
+```text
+algebra_trace_baseChange              trace commutes with base change
+discr_baseChange                      discriminant commutes with base change
+discr_mem_iff_discr_quotient_eq_zero  p ∋ disc  ↔  the fibre discriminant vanishes
+discr_notMem_ker_of_split_fibre       a SPLIT fibre forces algebraMap (disc) ≠ 0
+discr_notMem_of_split_fibre           ** hence p ∤ disc **
+```
+
+The last two are stated with an **abstract residue field** `κ` and a kernel hypothesis rather than
+with `A ⧸ p`: phrasing them over the quotient makes the instance search for
+`Algebra (A⧸p) ((A⧸p) ⊗[A] B)` exhaust 2M heartbeats, while the abstract form elaborates in seconds.
+Recorded as the rule for this lane.
+
+The proof composes the two base-change theorems with the corpus's own
+`SplitFiniteAlgebraDiscriminant.discr_ne_zero_of_algHom_family` — a split finite algebra over a field
+has discriminant a unit, because it is isomorphic to `κⁿ`, whose discriminant is `1`.
+
+**Step 3's ramification-side input is therefore complete**: unramified (split fibres) at every
+height-one prime ⟹ the discriminant lies in no height-one prime (`discr_notMem_of_split_fibre`) ⟹ the
+discriminant is a unit (`isUnit_of_forall_notMem_isPrime`) ⟹ `SCE_k` applies.  What remains of `(4)`
+is `(a)`'s two structural inputs, `(c)`'s induction and `(d)`'s horizon slice presentation.

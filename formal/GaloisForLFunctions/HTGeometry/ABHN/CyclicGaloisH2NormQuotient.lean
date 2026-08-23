@@ -91,6 +91,130 @@ noncomputable def cyclicGaloisH2BaseNormImage [FiniteDimensional K L] :
     AddSubgroup (Additive Kˣ) :=
   (cyclicGaloisAdditiveNormUnits K L).range
 
+/-- A degree-reduced valuation descends through the cyclic norm quotient whenever the valuation
+of every norm is a degree-th power.  This is the generic construction behind an unramified local
+`H²` invariant with values in `ℤ/nℤ`. -/
+noncomputable def cyclicGaloisH2BaseNormQuotient_tameValModNat
+    [FiniteDimensional K L]
+    (vK : Valuation K (WithZero (Multiplicative ℤ)))
+    (vL : Valuation L (WithZero (Multiplicative ℤ))) (n : ℕ)
+    (hval : ∀ x : Lˣ,
+      tameValHom vK (Units.map (Algebra.norm K) x) = (tameValHom vL x) ^ n) :
+    Additive Kˣ ⧸ cyclicGaloisH2BaseNormImage K L →+ ZMod n :=
+  QuotientAddGroup.lift (cyclicGaloisH2BaseNormImage K L) (tameValModNat vK n) (by
+    intro a ha
+    rw [AddMonoidHom.mem_ker]
+    rcases ha with ⟨x, hx⟩
+    rw [← hx]
+    change tameValModNat vK n
+      (Additive.ofMul (Units.map (Algebra.norm K) (Additive.toMul x))) = 0
+    exact tameValModNat_norm_eq_zero_of_tameValHom vK vL n (Additive.toMul x)
+      (hval (Additive.toMul x)))
+
+/-- Reduction of a split integer valuation modulo `n`, in additive presentation. -/
+noncomputable def splitValuationModNat {M : Type*} [CommGroup M]
+    (v : M →* Multiplicative ℤ) (n : ℕ) : Additive M →+ ZMod n :=
+  (Int.castAddHom (ZMod n)).comp
+    ((AddEquiv.additiveMultiplicative ℤ).toAddMonoidHom.comp v.toAdditive)
+
+/-- Evaluation formula for the degree-reduced split valuation. -/
+theorem splitValuationModNat_apply {M : Type*} [CommGroup M]
+    (v : M →* Multiplicative ℤ) (n : ℕ) (x : M) :
+    splitValuationModNat v n (Additive.ofMul x) =
+      ((Multiplicative.toAdd (v x) : ℤ) : ZMod n) := rfl
+
+/-- A unit of valuation one makes reduction of a split integer valuation onto. -/
+theorem splitValuationModNat_surjective {M : Type*} [CommGroup M]
+    (v : M →* Multiplicative ℤ) (n : ℕ) (u : M)
+    (hu : Multiplicative.toAdd (v u) = 1) :
+    Function.Surjective (splitValuationModNat v n) := by
+  intro z
+  obtain ⟨m, rfl⟩ := ZMod.intCast_surjective z
+  refine ⟨Additive.ofMul (u ^ m), ?_⟩
+  rw [splitValuationModNat_apply, map_zpow]
+  have huv : v u = Multiplicative.ofAdd (1 : ℤ) := by
+    apply Multiplicative.toAdd.injective
+    simpa using hu
+  rw [huv]
+  simp
+
+/-- If norms contain exactly valuation-zero units and a lift of the uniformizer to the `n`th
+power, their image is precisely the kernel of valuation modulo `n`. -/
+theorem normImage_eq_splitValuationModNat_ker
+    {M N : Type*} [CommGroup M] [CommGroup N]
+    (v : M →* Multiplicative ℤ) (n : ℕ) (u : M) (Nmap : N →* M)
+    (hu : Multiplicative.toAdd (v u) = 1)
+    (hnorm : ∀ b : N, splitValuationModNat v n (Additive.ofMul (Nmap b)) = 0)
+    (hzero : ∀ a : M, v a = 1 → ∃ b : N, Nmap b = a)
+    (huni : ∃ b : N, Nmap b = u ^ (n : ℤ)) :
+    Nmap.toAdditive.range = (splitValuationModNat v n).ker := by
+  apply le_antisymm
+  · rintro a ⟨b, rfl⟩
+    exact hnorm b
+  · intro a ha
+    change ((Multiplicative.toAdd (v a.toMul) : ℤ) : ZMod n) = 0 at ha
+    rw [ZMod.intCast_zmod_eq_zero_iff_dvd] at ha
+    obtain ⟨q, hq⟩ := ha
+    let m : ℤ := Multiplicative.toAdd (v a.toMul)
+    have huv : v u = Multiplicative.ofAdd (1 : ℤ) := by
+      apply Multiplicative.toAdd.injective
+      simpa using hu
+    have hunit : v (a.toMul * u ^ (-m)) = 1 := by
+      rw [map_mul, map_zpow, huv]
+      apply Multiplicative.toAdd.injective
+      change m + (-m) * 1 = 0
+      ring
+    obtain ⟨b₀, hb₀⟩ := hzero (a.toMul * u ^ (-m)) hunit
+    obtain ⟨bπ, hbπ⟩ := huni
+    refine ⟨Additive.ofMul (b₀ * bπ ^ q), ?_⟩
+    apply Additive.toMul.injective
+    change Nmap (b₀ * bπ ^ q) = a.toMul
+    rw [map_mul, map_zpow, hb₀, hbπ, ← zpow_mul]
+    change (a.toMul * u ^ (-m)) * u ^ ((n : ℤ) * q) = a.toMul
+    rw [show (n : ℤ) * q = m from hq.symm, mul_assoc, ← zpow_add,
+      neg_add_cancel, zpow_zero, mul_one]
+
+/-- The finite cyclic norm quotient of a split discrete valuation field is `ℤ/nℤ` whenever
+valuation-zero units are norms, every norm has valuation divisible by `n`, and a uniformizer
+has norm its `n`th power. -/
+noncomputable def splitValuationNormQuotientEquiv
+    {M N : Type*} [CommGroup M] [CommGroup N]
+    (v : M →* Multiplicative ℤ) (n : ℕ) (u : M) (Nmap : N →* M)
+    (hu : Multiplicative.toAdd (v u) = 1)
+    (hnorm : ∀ b : N, splitValuationModNat v n (Additive.ofMul (Nmap b)) = 0)
+    (hzero : ∀ a : M, v a = 1 → ∃ b : N, Nmap b = a)
+    (huni : ∃ b : N, Nmap b = u ^ (n : ℤ)) :
+    Additive M ⧸ Nmap.toAdditive.range ≃+ ZMod n :=
+  (QuotientAddGroup.quotientAddEquivOfEq
+    (normImage_eq_splitValuationModNat_ker v n u Nmap hu hnorm hzero huni)).trans
+    (QuotientAddGroup.quotientKerEquivOfSurjective (splitValuationModNat v n)
+      (splitValuationModNat_surjective v n u hu))
+
+/-- A finite field-norm quotient is `ℤ/nℤ` when its valuation is split, its valuation-zero units
+are norms, and the valuation of every norm is multiplied by its degree. -/
+noncomputable def cyclicGaloisH2BaseNormQuotientSplitValuationEquiv
+    (K L : Type) [Field K] [Field L] [Algebra K L] [FiniteDimensional K L]
+    (vK : Valuation K (WithZero (Multiplicative ℤ)))
+    (vL : Valuation L (WithZero (Multiplicative ℤ))) (n : ℕ) (u : Kˣ)
+    (hu : Multiplicative.toAdd (tameValHom vK u) = 1)
+    (hfinrank : Module.finrank K L = n)
+    (hval : ∀ x : Lˣ,
+      tameValHom vK (Units.map (Algebra.norm K) x) = (tameValHom vL x) ^ n)
+    (hzero : ∀ a : Kˣ, tameValHom vK a = 1 →
+      ∃ b : Lˣ, Units.map (Algebra.norm K) b = a) :
+    Additive Kˣ ⧸ cyclicGaloisH2BaseNormImage K L ≃+ ZMod n := by
+  apply splitValuationNormQuotientEquiv (tameValHom vK) n u
+    (cyclicGaloisNormUnits K L) hu
+  · intro b
+    change tameValModNat vK n
+      (Additive.ofMul (Units.map (Algebra.norm K) b)) = 0
+    exact tameValModNat_norm_eq_zero_of_tameValHom vK vL n b (hval b)
+  · intro a ha
+    exact hzero a ha
+  · refine ⟨Units.map (algebraMap K L) u, ?_⟩
+    rw [cyclicGaloisNormUnits_algebraMap, hfinrank]
+    simp
+
 /-- Norms are exactly the base-field units representing zero in cyclic degree-two cohomology. -/
 theorem cyclicGaloisH2BaseNormImage_eq_ker [FiniteDimensional K L] [IsGalois K L] :
     cyclicGaloisH2BaseNormImage K L = (cyclicGaloisH2BaseProjection K L).ker := by
@@ -135,5 +259,56 @@ noncomputable def cyclicGaloisH2BaseNormQuotientEquiv [FiniteDimensional K L] [I
   (QuotientAddGroup.quotientAddEquivOfEq (cyclicGaloisH2BaseNormImage_eq_ker K L)).trans
     (QuotientAddGroup.quotientKerEquivOfSurjective (cyclicGaloisH2BaseProjection K L)
       (cyclicGaloisH2BaseProjection_surjective K L))
+
+/-- A split valuation identifies the cyclic degree-two cohomology of a finite Galois extension
+with `ℤ/nℤ` once the corresponding norm quotient has been classified.  This is a finite-level
+local `H²` invariant isomorphism; a Brauer-group comparison is separate infrastructure. -/
+noncomputable def cyclicGaloisH2SplitValuationEquiv [FiniteDimensional K L] [IsGalois K L]
+    (vK : Valuation K (WithZero (Multiplicative ℤ)))
+    (vL : Valuation L (WithZero (Multiplicative ℤ))) (n : ℕ) (u : Kˣ)
+    (hu : Multiplicative.toAdd (tameValHom vK u) = 1)
+    (hfinrank : Module.finrank K L = n)
+    (hval : ∀ x : Lˣ,
+      tameValHom vK (Units.map (Algebra.norm K) x) = (tameValHom vL x) ^ n)
+    (hzero : ∀ a : Kˣ, tameValHom vK a = 1 →
+      ∃ b : Lˣ, Units.map (Algebra.norm K) b = a) :
+    cyclicGaloisH2 K L ≃+ ZMod n :=
+  (cyclicGaloisH2BaseNormQuotientEquiv K L).symm.trans
+    (cyclicGaloisH2BaseNormQuotientSplitValuationEquiv K L vK vL n u hu hfinrank hval hzero)
+
+/-- Every cyclic degree-two norm-quotient class is killed by the extension degree.  In the
+Brauer interpretation, this is the denominator bound for a degree-`n` cyclic parameter. -/
+theorem cyclicGaloisH2BaseProjection_finrank_nsmul_eq_zero [FiniteDimensional K L]
+    [IsGalois K L] (x : Additive Kˣ) :
+    Module.finrank K L • cyclicGaloisH2BaseProjection K L x = 0 := by
+  rw [← (cyclicGaloisH2BaseProjection K L).map_nsmul]
+  rw [← AddMonoidHom.mem_ker]
+  rw [← cyclicGaloisH2BaseNormImage_eq_ker]
+  refine ⟨Additive.ofMul (Units.map (algebraMap K L) (Additive.toMul x)), ?_⟩
+  apply Additive.toMul.injective
+  change cyclicGaloisNormUnits K L
+      (Units.map (algebraMap K L) (Additive.toMul x)) =
+    Additive.toMul (Module.finrank K L • x)
+  rw [cyclicGaloisNormUnits_algebraMap]
+  simp
+
+/-- The entire cyclic degree-two cohomology group is annihilated by the extension degree.
+This is the cohomological torsion bound carried by degree-`n` cyclic Brauer parameters. -/
+theorem cyclicGaloisH2_finrank_nsmul_eq_zero [FiniteDimensional K L] [IsGalois K L]
+    (z : cyclicGaloisH2 K L) : Module.finrank K L • z = 0 := by
+  obtain ⟨x, hx⟩ := cyclicGaloisH2BaseProjection_surjective K L z
+  rw [← hx]
+  exact cyclicGaloisH2BaseProjection_finrank_nsmul_eq_zero K L x
+
+/-- The explicit base-unit quotient by field norms is annihilated by the extension degree.
+This is the quotient-level form needed to compare cyclic local parameters with rational local
+invariants. -/
+theorem cyclicGaloisH2BaseNormQuotient_finrank_nsmul_eq_zero [FiniteDimensional K L]
+    [IsGalois K L] (z : Additive Kˣ ⧸ cyclicGaloisH2BaseNormImage K L) :
+    Module.finrank K L • z = 0 := by
+  apply (cyclicGaloisH2BaseNormQuotientEquiv K L).injective
+  rw [map_nsmul, map_zero]
+  exact cyclicGaloisH2_finrank_nsmul_eq_zero K L
+    (cyclicGaloisH2BaseNormQuotientEquiv K L z)
 
 end GaloisForLFunctions.HTGeometry.ABHN

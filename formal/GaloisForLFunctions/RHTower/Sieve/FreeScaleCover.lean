@@ -169,7 +169,7 @@ theorem tileLen_pos {β : ℝ} {K₀ u : ℕ} (hu : 0 < u) (hT : 0 < tileLog K�
 set_option maxHeartbeats 1600000 in
 /-- **The tiled sign count.**  Every large scale `Z` admits a start modulus whose tile length
 divides every admissible window into blocks on each of which the marker construction applies. -/
-theorem tiled_count {β : ℝ} (hβ0 : 9 / 10 < β) (hβ1 : β < 1) {σ : ℤ} (hσ : σ = 1 ∨ σ = -1)
+theorem tiled_count {β : ℝ} (hβ0 : 0 < β) (hβ1 : β < 1) {σ : ℤ} (hσ : σ = 1 ∨ σ = -1)
     (K₀ : ℕ) (hharm : 0 < multiHarmConst K₀) :
     ∀ᶠ Z : ℕ in atTop, ∃ u : ℕ, tileBase K₀ u ≤ Z ∧ 2 * Z < 3 * tileBase K₀ u ∧
       ∀ H : ℕ, 3 * H ≤ Z → 2 * tileLen β K₀ u ≤ H →

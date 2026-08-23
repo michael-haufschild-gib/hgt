@@ -269,4 +269,64 @@ theorem deningerLocalQ_mem_maximalIdeal_iff (Q : R →*₀ O) (hb : DeningerAddi
   · intro h
     exact Ideal.mul_mem_right _ _ h
 
+/-- The value of the extension on `s' a / (s s')` is its value on `a / s`. -/
+theorem deningerLocalQ_shift (Q : R →*₀ O) (hb : DeningerAdditiveModMax Q) (a : R)
+    (s s' : (deningerMaxIdeal Q hb).primeCompl) :
+    Q ((s' : R) * a) * Ring.inverse (Q (((s * s' : (deningerMaxIdeal Q hb).primeCompl)) : R))
+      = Q a * Ring.inverse (Q (s : R)) := by
+  have hQs' : IsUnit (Q (s' : R)) := deningerIsUnit_of_notMem_maxIdeal Q hb s'.2
+  have hrev : Ring.inverse (Q (((s * s' : (deningerMaxIdeal Q hb).primeCompl)) : R))
+      = Ring.inverse (Q (s' : R)) * Ring.inverse (Q (s : R)) := by
+    rw [Submonoid.coe_mul, map_mul,
+      Ring.mul_inverse_rev' (Commute.all (Q (s : R)) (Q (s' : R)))]
+  rw [hrev, map_mul]
+  calc Q (s' : R) * Q a * (Ring.inverse (Q (s' : R)) * Ring.inverse (Q (s : R)))
+      = (Q (s' : R) * Ring.inverse (Q (s' : R))) * (Q a * Ring.inverse (Q (s : R))) := by ring
+    _ = Q a * Ring.inverse (Q (s : R)) := by
+        rw [Ring.mul_inverse_cancel _ hQs', one_mul]
+
+/-- **Deninger, Corollary 13.5 (`t45`), condition 2) for the extension.**  The extension `Q_𝔮` is
+again unchanged by adding an element of its zero set: clearing the denominator turns the assertion
+into condition a') for `Q`. -/
+theorem deningerLocalQ_additiveOnZeros (Q : R →*₀ O) (ha : DeningerAdditiveOnZeros Q)
+    (hb : DeningerAdditiveModMax Q) :
+    DeningerAdditiveOnZeros (deningerLocalQ Q hb) := by
+  intro z z'
+  refine Localization.induction_on₂ z z' ?_
+  rintro ⟨a, s⟩ ⟨a', s'⟩ hz'
+  have ha' : Q a' = 0 := (deningerLocalQ_eq_zero_iff Q hb a' s').1 hz'
+  rw [Localization.add_mk, deningerLocalQ_mk, deningerLocalQ_mk]
+  have hsum : Q ((s : R) * a' + (s' : R) * a) = Q ((s' : R) * a) := by
+    have h := ha ((s' : R) * a) ((s : R) * a') (by rw [map_mul, ha', mul_zero])
+    rw [add_comm] at h
+    exact h
+  rw [hsum, deningerLocalQ_shift Q hb a s s']
+
+/-- **Deninger, Corollary 13.5 (`t45`), condition 3) for the extension.**  The extension `Q_𝔮` is
+again additive modulo the maximal ideal. -/
+theorem deningerLocalQ_additiveModMax (Q : R →*₀ O) (hb : DeningerAdditiveModMax Q) :
+    DeningerAdditiveModMax (deningerLocalQ Q hb) := by
+  intro z z'
+  refine Localization.induction_on₂ z z' ?_
+  rintro ⟨a, s⟩ ⟨a', s'⟩ hz'
+  have ha' : Q a' ∈ maximalIdeal O :=
+    (deningerLocalQ_mem_maximalIdeal_iff Q hb a' s').1 hz'
+  rw [Localization.add_mk, deningerLocalQ_mk, deningerLocalQ_mk,
+    ← deningerLocalQ_shift Q hb a s s']
+  have hmem : Q ((s : R) * a' + (s' : R) * a) - Q ((s' : R) * a) ∈ maximalIdeal O := by
+    have h := hb ((s' : R) * a) ((s : R) * a') (by
+      rw [map_mul]
+      exact Ideal.mul_mem_left _ _ ha')
+    rw [add_comm ((s' : R) * a) ((s : R) * a')] at h
+    exact h
+  have hfac : Q ((s : R) * a' + (s' : R) * a)
+        * Ring.inverse (Q (((s * s' : (deningerMaxIdeal Q hb).primeCompl)) : R))
+      - Q ((s' : R) * a)
+        * Ring.inverse (Q (((s * s' : (deningerMaxIdeal Q hb).primeCompl)) : R))
+      = (Q ((s : R) * a' + (s' : R) * a) - Q ((s' : R) * a))
+        * Ring.inverse (Q (((s * s' : (deningerMaxIdeal Q hb).primeCompl)) : R)) := by
+    ring
+  rw [hfac]
+  exact Ideal.mul_mem_right _ _ hmem
+
 end RHTower

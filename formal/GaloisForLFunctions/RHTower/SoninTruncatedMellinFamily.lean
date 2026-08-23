@@ -79,7 +79,7 @@ theorem soninTruncMellin_sub {a T T' : ℝ} (ha : 0 < a) (haT : a ≤ T) (hTT' :
 
 /-- **The uniform Cauchy estimate for the truncated Mellin family of a Sonine vector.** -/
 theorem norm_soninTruncMellin_sub_le {a : ℝ} (ha : 0 < a) {f : SoninL2}
-    (hf : f ∈ centralSoninCarrier a) {T T' : ℝ} (haT : a ≤ T) (hTT' : T ≤ T') {s : ℂ}
+    (hf : f ∈ (centralFourierForbidden a)ᗮ) {T T' : ℝ} (haT : a ≤ T) (hTT' : T ≤ T') {s : ℂ}
     (hs : 0 < s.re) :
     ‖soninTruncMellin f a T' s - soninTruncMellin f a T s‖
       ≤ ((2 * T ^ (-s.re) + ‖s‖ * T ^ (-s.re) / s.re) / (2 * Real.pi)) *

@@ -23,7 +23,7 @@ theorem tendsto_multiBlockScale_block (K₀ : ℕ) {k : ℕ} (hk : k ≤ K₀) :
   exact h.congr fun v => (multiBlockScale_div K₀ v hk).symm
 
 /-- **The exceptional starts of the family are below any fraction of `m`.** -/
-theorem eventually_card_badStartUnion_le {β : ℝ} (hβ0 : 9 / 10 < β) (hβ1 : β < 1) (K₀ : ℕ)
+theorem eventually_card_badStartUnion_le {β : ℝ} (hβ0 : 0 < β) (hβ1 : β < 1) (K₀ : ℕ)
     {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ v : ℕ in atTop,
       (((badStartUnion β K₀ v).card : ℕ) : ℝ) ≤ ε * ((multiScale K₀ v : ℕ) : ℝ) := by

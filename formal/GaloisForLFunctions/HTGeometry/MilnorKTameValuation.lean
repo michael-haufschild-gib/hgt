@@ -124,6 +124,15 @@ theorem tameUnit_val {a : Kˣ} (h : a ∈ (tameValHom v).ker) :
     ((tameUnit v h : (v.valuationSubring)ˣ) : v.valuationSubring)
       = ⟨(a : K), tame_mem_valuationSubring v h⟩ := rfl
 
+/-- Every field unit of valuation zero is the image of a unit of the valuation subring.
+This is the exact bridge from the valuation kernel to integral units, used when an integral
+norm-surjectivity theorem is promoted to a statement about valuation-zero field units. -/
+theorem tameValHom_ker_unitsMap_surjective (a : Kˣ) (h : a ∈ (tameValHom v).ker) :
+    ∃ b : v.valuationSubringˣ, Units.map (algebraMap v.valuationSubring K) b = a := by
+  refine ⟨tameUnit v h, ?_⟩
+  apply Units.ext
+  rfl
+
 /-! ## The residue homomorphism -/
 
 theorem tameUnit_one (h : (1 : Kˣ) ∈ (tameValHom v).ker) : tameUnit v h = 1 :=

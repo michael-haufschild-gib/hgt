@@ -37,24 +37,24 @@ abbrev DeningerCharPoints (X : Scheme.{u}) (C : Type u) [Field C] : Type u :=
   Σ x : X, ((X.residueField x)ˣ →* Cˣ)
 
 /-- **Deninger, §3.**  The Frobenius operator `F_ν` on character points. -/
-noncomputable def deningerFrobenius (ν : ℕ) (P : DeningerCharPoints X C) :
+noncomputable def deningerCharFrobenius (ν : ℕ) (P : DeningerCharPoints X C) :
     DeningerCharPoints X C :=
   ⟨P.1, P.2 ^ ν⟩
 
-@[simp] theorem deningerFrobenius_fst (ν : ℕ) (P : DeningerCharPoints X C) :
-    (deningerFrobenius ν P).1 = P.1 := rfl
+@[simp] theorem deningerCharFrobenius_fst (ν : ℕ) (P : DeningerCharPoints X C) :
+    (deningerCharFrobenius ν P).1 = P.1 := rfl
 
-@[simp] theorem deningerFrobenius_snd (ν : ℕ) (P : DeningerCharPoints X C) :
-    (deningerFrobenius ν P).2 = P.2 ^ ν := rfl
+@[simp] theorem deningerCharFrobenius_snd (ν : ℕ) (P : DeningerCharPoints X C) :
+    (deningerCharFrobenius ν P).2 = P.2 ^ ν := rfl
 
-@[simp] theorem deningerFrobenius_one (P : DeningerCharPoints X C) :
-    deningerFrobenius 1 P = P := by
+@[simp] theorem deningerCharFrobenius_one (P : DeningerCharPoints X C) :
+    deningerCharFrobenius 1 P = P := by
   obtain ⟨x, χ⟩ := P
   exact congrArg (Sigma.mk x) (pow_one χ)
 
 /-- The Frobenius operators compose multiplicatively. -/
-theorem deningerFrobenius_comp (ν μ : ℕ) (P : DeningerCharPoints X C) :
-    deningerFrobenius ν (deningerFrobenius μ P) = deningerFrobenius (μ * ν) P := by
+theorem deningerCharFrobenius_comp (ν μ : ℕ) (P : DeningerCharPoints X C) :
+    deningerCharFrobenius ν (deningerCharFrobenius μ P) = deningerCharFrobenius (μ * ν) P := by
   obtain ⟨x, χ⟩ := P
   exact congrArg (Sigma.mk x) (pow_mul χ μ ν).symm
 
@@ -70,10 +70,10 @@ theorem deningerChar_pow_injective {k : Type*} [Field k] [IsAlgClosed k] {ν : �
 
 /-- **Deninger, Proposition 4.2, last assertion.**  The Frobenius operators act by injections on
 the character points of a scheme with algebraically closed residue fields. -/
-theorem deningerFrobenius_injective (halg : ∀ x : X, IsAlgClosed (X.residueField x)) {ν : ℕ}
-    (hν : 0 < ν) : Function.Injective (deningerFrobenius (X := X) (C := C) ν) := by
+theorem deningerCharFrobenius_injective (halg : ∀ x : X, IsAlgClosed (X.residueField x)) {ν : ℕ}
+    (hν : 0 < ν) : Function.Injective (deningerCharFrobenius (X := X) (C := C) ν) := by
   rintro ⟨x, χ⟩ ⟨y, ψ⟩ h
-  simp only [deningerFrobenius, Sigma.mk.injEq] at h
+  simp only [deningerCharFrobenius, Sigma.mk.injEq] at h
   obtain ⟨h1, h2⟩ := h
   subst h1
   haveI := halg x
@@ -110,8 +110,8 @@ theorem deningerCharPointsMap_comp (f : X ⟶ Y) (g : Y ⟶ Z) (P : DeningerChar
 
 /-- Frobenius commutes with the functorial maps. -/
 theorem deningerCharPointsMap_frobenius (f : X ⟶ Y) (ν : ℕ) (P : DeningerCharPoints X C) :
-    deningerCharPointsMap f (deningerFrobenius ν P)
-      = deningerFrobenius ν (deningerCharPointsMap f P) := by
+    deningerCharPointsMap f (deningerCharFrobenius ν P)
+      = deningerCharFrobenius ν (deningerCharPointsMap f P) := by
   obtain ⟨x, χ⟩ := P
   refine Sigma.ext rfl (heq_of_eq ?_)
   ext a
@@ -141,7 +141,7 @@ def deningerCharPointsIn {N₀ : Submonoid ℕ} (E : DeningerAdmissibleClass C N
 backward invariant under the Frobenius operators. -/
 theorem deningerCharPointsIn_frobenius_iff {N₀ : Submonoid ℕ} (E : DeningerAdmissibleClass C N₀)
     {ν : ℕ} (hν : ν ∈ N₀) (hν0 : 0 < ν) (P : DeningerCharPoints X C) :
-    P ∈ deningerCharPointsIn E X ↔ deningerFrobenius ν P ∈ deningerCharPointsIn E X :=
+    P ∈ deningerCharPointsIn E X ↔ deningerCharFrobenius ν P ∈ deningerCharPointsIn E X :=
   E.pow_iff P.2 hν hν0
 
 /-- **Deninger, Proposition 4.2.**  The subset cut out by an admissible class is invariant under

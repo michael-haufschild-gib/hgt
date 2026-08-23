@@ -7766,3 +7766,59 @@ moment method at the growing order delivers `|𝒰| = x^{o(1)}`, and `FCmax ≍ 
 `RouteEMarkerHallLaw`, `ScaledBudgetLimit`) to reach
 `averagedMeanSquare_moebius_scaledLength` at every `0 < β < 1`; cards 1–2 stay gated on
 Matomäki–Teräväinen Theorem 1.2.
+
+## The window gate is closed (2026-08-23)
+
+`RHTower.Sieve.averagedMeanSquare_moebius_scaledLength_all`
+(`formal/GaloisForLFunctions/RHTower/Sieve/ScaledTwoRangeWindow.lean`, axiom-clean):
+
+```text
+averagedMeanSquare_moebius_scaledLength_all {c β} (0 < c) (c ≤ 1) (0 < β) (β < 1) :
+    AveragedMeanSquare (fun n => ((moebius n : ℤ) : ℝ)) (scaledLength c β)
+```
+
+Stronger than the `1/2 < β` the five Route-E cards need: it holds at **every** `0 < β < 1`.
+
+**The previous plan was wrong about the mechanism.**  The note above says "forward
+`averagedMeanSquare_moebius_cardLength_all` through the six sites"; that reads as if
+`AveragedMeanSquare` were monotone in the window.  It is not — shrinking `h` to `c·h` shrinks each
+fibre's *range*, and `(∑_{S'} f)² ≤ K (∑_S f)²` is false.  What actually works is that
+`averagedMeanSquare_moebius_of_headSmall` is fully parametric in the window, so only two things
+change when `h` becomes `c·h`:
+
+1. the Dirichlet polynomial shortens from `M = ⌊√x + h⌋` to `M' = ⌊√x + c h⌋`.  A Dirichlet
+   polynomial with coefficients bounded by one changes by at most the number of dropped terms
+   (`norm_logPoly_le_of_subset`), so the head integral grows by at most `4 W (M − M')² ≤ 16 M h L`,
+   which is `O(√x · h · log log x)` against a length² of `≍ x` — negligible
+   (`setIntegral_normSq_logPoly_le_of_subset`);
+2. the height `headT₀ x h ω = (⌊√x+h⌋/h)·ω` rescales by `1/c`.  The gate's free parameter `ω` absorbs
+   that exactly: taking `ω := c · (M/M') · log log x` gives `headT₀ x (c h) ω = twoRangeTop β x`
+   on the nose, and `ω → ∞` because `M/M' → 1`.
+
+No re-parameterisation of `TwoRangeSchedule`/`TwoRangeAssembly` was needed; `exists_twoRange_head_budget`
+just packages the existing `twoRangeBudget_bound` and `tendsto_twoRangeBudget_div_sq`.
+
+### The forwarding, done
+
+`9/10 → 1/2` at every site, all rebuilt and axiom-clean:
+
+```text
+Sieve/ScaledFibreStepOne       averagedMeanSquare_moebius_scaled, and both step-one
+                                conclusions, now at every 0 < β < 1
+Sieve/ScaledBadStart           eventually_card_badOuter_le            0 < β
+Sieve/MultiBadStart            eventually_card_badStartUnion_le       0 < β
+Sieve/FreeScaleBadStart        eventually_card_freeBadStartUnion_le   0 < β
+Sieve/FreeScaleTileCount       exists_tile_count, tile_count_clean    0 < β
+Sieve/FreeScaleCover           tiled_count                            0 < β
+Sieve/MultiDevice              the three sign-window counts           0 < β
+Sieve/RouteEMarkerHallLaw      route_e_marker_hall_law,
+                                route_e_marker_hall_injection         1/2 < β'
+```
+
+`1/2` is the floor for the last two, and it is *not* the mean square any more: the marker
+construction needs its tile to fit inside the window, i.e. `1/2 < β` in
+`eventually_two_tileLen_le`/`eventually_cardLength_gap`.  Everything upstream of that is now
+unconditional in `0 < β < 1`.
+
+The old `ScaledBudgetLimit.averagedMeanSquare_moebius_scaledLength` route through
+`tendsto_normalised_omegaBudgetS` is left in place; it is no longer on the critical path.

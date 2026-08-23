@@ -23,28 +23,28 @@ completely-regular-growth theory.  These are the real gaps.
 | (1)(2) | Poisson summation | classical | mathlib/corpus |
 | (3)(8) | functional equation of ζ | classical | corpus |
 | (4)(9) | co-Poisson intertwining | Duffin–Weinberger | corpus `BurnolCoPoissonIntertwining*` |
-| (5) | Müntz formula | ζ(s)∫φ tˢ⁻¹ = ∫(modified Poisson sum)tˢ⁻¹ | **TODO** |
-| (6) | Müntz applied to g(1/t)/t | co-Poisson Mellin | **TODO** |
-| (7) | `F₊(f)^(s) = χ(s) f^(1-s)`; χ = ζ(s)/ζ(1−s) | Mellin diagonalization | **TODO** (needs Mellin unitary) |
+| (5) | Müntz formula | ζ(s)∫φ tˢ⁻¹ = ∫(modified Poisson sum)tˢ⁻¹ | **corpus-owned**: zero-mean case on `Re s > 1` `CCMBVMuntzSummation.mellin_arithmeticSum_eq_zeta_mul`, continued to `{Re s>0}\{1}` by `CCMConnesConsaniRapidMuntz.mellin_ccmFourierTruncatedPoissonValue_eq_zeta_mul_of_re_pos`; the `∫φ ≠ 0` correction is the co-Poisson chart, row (6) |
+| (6) | Müntz applied to g(1/t)/t | co-Poisson Mellin | **corpus-owned**: `BurnolCoPoissonGeneralSeedMellin.soninMellinEvaluation_burnolCoPoissonSource` — `M(coPoisson seed)(w) = Γ-factor · ζ(w) · M(seed)(w)` on `1/2 < Re w < 1`, where `burnolCoPoissonRightSum g t = Σ_n g(t/n)/n − ∫g(1/y)/y dy` is exactly `t·(Σφ(nt) − (1/t)∫φ)` under `φ(t) = g(1/t)/t` |
+| (7) | `F₊(f)^(s) = χ(s) f^(1-s)`; χ = ζ(s)/ζ(1−s) | Mellin diagonalization | **corpus-owned**: `CCMArchimedeanFourierMellinScattering.archimedeanMellinUnitary_evenFourierTransform` — for *every* even `f`, `M(F₊f) = R(χ · M f)` with the archimedean scattering phase |
 | Thm 2.1 | de Branges: `M(f)` entire on `K_a`, evaluations continuous | **DONE**: `RHTower/SoninEntireMellin.differentiable_soninEntireMellin` (+ the functional equation `soninEntireMellin_eq_soninChiSide` on `Re s < 1`, and `soninMellinExtension_functional_equation` on the strip) | |
-| Prop 2.2 | `M(f)` meromorphic (poles ⊂ {0,1}) on `L_a`; `M(F₊f)(s)=M(f)(1−s)` | | **TODO** |
+| Prop 2.2 | `M(f)` meromorphic (poles ⊂ {0,1}) on `L_a`; `M(F₊f)(s)=M(f)(1−s)` | **DONE**: `RHTower/SoninExtendedMeromorphic.exists_entire_extendedMellin` (`s(1−s)·M(f)(s)` is entire) and `RHTower/SoninExtendedFunctionalEquation.extendedFullMellin_functional_equation` | |
 | Def 3,4 | `Y_a` (zero span), co-Poisson subspace `P_a` | | corpus (`burnolCoPoissonSourceSpace`) |
 | Thm 3.1 | `Y^a_{ρ,k}` minimal iff a ≤ 1, complete iff a ≥ 1; `Y_a^⊥ = P_a` (a<1) | capstone | **TODO** |
 | Thm 3.2 | `Z^a_{ρ,k}` minimal not complete a<1; a=1 not minimal, omit 2 → minimal+complete; a>1 complete after finite omission | capstone | **TODO** |
 | Thm 3.3 | `ζ(s)/(s−ρ)^l` minimal and complete in `L̂₁`; dual system | capstone | **TODO** |
-| Prop 4.1 | characterization of `L̂_a` inside `s/(s−1)·A^s H²` | | **TODO** (Hardy) |
-| Prop 4.2 | `ζ(s)/(s−ρ)^l ∈ L̂₁` | | **TODO** |
+| Prop 4.1 | characterization of `L̂_a` inside `s/(s−1)·A^s H²` | **DONE**: `RHTower/MellinHeadHardyEquiv.isMellinHeadHardy_iff` (`IsMellinHeadHardy a F ↔ F = headTailMellin a c g` on `Re s > 1/2`, `s ≠ 1`), with the `K_a` companion `isMellinTailHardy_iff`; converse direction in `RHTower/MellinHeadHardyConverse.exists_head_tail_of_isMellinHeadHardy` | |
+| Prop 4.2 | `ζ(s)/(s−ρ)^l ∈ L̂₁` | **DONE**: `RHTower/ZetaMellinHeadHardy.isMellinHeadHardy_zetaQuotient` (for any `ρ ≠ 0, 1` with `analyticOrderAt ζ ρ ≥ l ≥ 1`) | |
 | Prop 4.3 | division by `(s−w)` stays in `L̂_a` / `K̂_a` | **corpus-owned for `L_a`**: `BurnolSoninDividedShift.burnolShift_mem_soninExtendedSpace`; `K_a` half **DONE**: `RHTower/MellinHardyClasses.IsMellinTailHardy.div_sub` | |
 | Lem 4.4 | `F ∈ K̂_a ⇒ F/s ∈ L̂_a` | **DONE**: `RHTower/MellinHardyClasses.IsMellinTailHardy.div_id` and `.div_one_sub` | |
 | Prop 4.5 | `dim(L_a/K_a) = 2` | **DONE, literal**: `RHTower/SoninExtendedCodimensionTwo.finrank_centralSoninExtendedCarrier_inf_orthogonal_carrier` (`finrank (L_a ⊓ K_aᗮ) = 2`), dualising `SoninBandCodimensionTwo.finrank_soninBandComplement_eq_two` | |
 | Prop 4.6 | `∪_{b>a}K_b` dense in `K_a` (same for `L`) — via the general lattice identity | **DONE**: `RHTower.topologicalClosure_iSup_centralSoninCarrier` (K) and `RHTower/SoninExtendedApertureChain.topologicalClosure_iSup_centralSoninExtendedCarrier` (L) | |
 | Prop 4.7 | `∪_{b>a}K_b ⊊ K_a`, also for Fourier-(skew-)invariant parts | **DONE**: `RHTower/SoninApertureStrict.iSup_centralSoninCarrier_lt` and `RHTower/SoninApertureStrictEigen.iSup_centralSoninCarrier_inf_eigen_lt` (+ the `ε = ±1` corollaries) | |
 | Def 10 | L-Property | **DONE**: `RHTower/LPropertyStrips.HasLProperty` (+ `.add`, `.const_mul`) | |
-| Thm 4.8 | functions of `L̂_a` have the L-Property | | **TODO** |
+| Thm 4.8 | functions of `L̂_a` have the L-Property | **DONE**: `RHTower/SoninLPropertyTheorem.hasLProperty_extendedMellinContinuation` (+ the packaged `exists_hasLProperty_extendedMellin`) | |
 | Def 12 | `𝓛¹` (quick decrease in vertical strips) | **DONE**: `RHTower/LPropertyStrips.HasStripRapidDecrease` (+ `.add`, `.hasLProperty`) | |
-| Thm 4.9 | `𝓛¹` dense in `L¹` | | **TODO** |
+| Thm 4.9 | `𝓛¹` dense in `L¹` | **DONE**: `RHTower/SoninRapidMellinDense.mem_closure_hasRapidMellin` (with `HasRapidMellin` = Def 12 in `SoninMellinMultiplier`) | |
 | Lem 4.10 | rapid-decrease class stable under `F₊` | **DONE, unconditional**: `RHTower/ZetaChiStripGrowth.hasStripRapidDecrease_zetaChi_mul_reflect`, from `LPropertyStrips.hasStripRapidDecrease_chi_mul_reflect` + `hasStripPolyGrowthOffReal_zetaChi` | |
-| Prop 5.1 | Titchmarsh IX.7: `|ζ(s)|⁻¹ < |s|^A` on `|Im s| = T_n`, `−1≤Re s≤2` | classical | **TODO** |
+| Prop 5.1 | Titchmarsh IX.7: `|ζ(s)|⁻¹ < |s|^A` on `|Im s| = T_n`, `−1≤Re s≤2` | **DONE**: `RHTower/ZetaInverseHorizontal.exists_zeta_inv_horizontal_bound` | |
 | Thm 5.2 | residue series `Σ_ρ G(ρ)/ζ'(ρ) · ζ(Z)/(Z−ρ) = G(Z)` | | **TODO** |
 | Cor 5.3 | `ζ(s)/(s−ρ)^l` complete in `L̂₁` | | **TODO** |
 | Prop 5.4 | `Σ_ρ G(ρ)/ζ'(ρ) = 0` | | **TODO** |
@@ -379,6 +379,212 @@ order of vanishing of `ζ` at `ρ` (mathlib `natCast_le_analyticOrderAt` gives t
   so the corpus's `GaloisForLFunctions.HasStripPolyGrowth χ` is false while the off-real version is
   true.  `HasStripPolyGrowth.offReal` records the implication.
 
+### Thm 4.8 - the sharp `χ` input, CLOSED (2026-08-23)
+
+`RHTower/ZetaChiLineSharp`.  `ZetaChiStripGrowth` only gives `‖χ(s)‖ ≤ C(1+|t|)^N` with an `N` coming
+from the Gamma recurrence; Theorem 4.8 needs Titchmarsh's *sharp* exponent
+`‖χ(σ+it)‖ ≤ C|t|^{1/2-σ}` on the vertical lines bounding the Phragmen-Lindelof strip.
+
+The corpus already owns the parameter-uniform vertical Gamma law
+`GaloisForLFunctions.RHTower.exists_twoSided_gamma_vertical_ratio` (in `GammaVerticalRatioUniform` —
+a module that ALREADY EXISTED; a first draft of it was written here and discarded once the search
+tool surfaced it).  `exists_norm_Gamma_quotient_line` shifts the two abscissae `σ/2` and `(1-σ)/2`
+into its parameter box with `n = ⌈|σ|⌉ + 1` Gamma recurrences — large enough that the shifted
+abscissa always sits to the right of `(1-σ)/2`, so the *upper* half of the two-sided law applies —
+and the `n` shift factors contribute exactly the `τ^n` the recurrence removed.  Combining with the
+extracted `norm_zetaChi_eq` (the `Γ_ℝ` quotient modulus, pulled out of `ZetaChiStripGrowth`) and the
+conjugate symmetry `norm_Gamma_line_abs` gives `exists_norm_zetaChi_line_le`.
+
+### Thm 4.8 - the crude interior bound, CLOSED (2026-08-23)
+`RHTower/SoninExtendedMellinCrude`.  `extendedMellinRight a c d f s = extendedTailMellin + d·a^{1-s}/(1-s)`
+is the continued Mellin transform right of the imaginary axis; it agrees with the honest integral on
+`1/2 < Re s < 1` (`extendedMellinRight_eq`) and is holomorphic on `{Re s > 0} \ {1}`.  The corpus's
+uniform Cauchy estimate `norm_soninMellinExtension_le` bounds the Sonine part by
+`a^{-σ}((2+‖s‖/σ)/2π)N(a)‖g‖`, the sinc part by `norm_sincTail_le`, and the head by `‖d‖a^{1-σ}`
+once `|t| ≥ 1`, giving `exists_norm_extendedMellinRight_le`: `O(1+‖s‖)` on every closed substrip of
+the open right half-plane — *including the critical line*, which is exactly where the two Hardy
+representatives fail and where Phragmen-Lindelof needs a growth hypothesis.
+
+### Thm 4.8 - the Phragmen-Lindelof machinery, CLOSED (2026-08-23)
+* `HTGeometry/StripLineBound` — `exists_line_bound_of_high`, `exists_line_bound_weighted`,
+  `exists_strip_bound_of_high`: a continuous function bounded above a fixed height on a line (or a
+  strip) is bounded on the whole line (strip), by compactness of the remaining segment.  PL demands
+  the edge bounds for *every* height, while the analytic estimates only reach large heights.
+* `HTGeometry/PhragmenLindelofPower` — `norm_le_mul_rpow_of_vertical_strip`: an entire function
+  bounded by `C‖s-c₀‖^ν` on the two edges of a strip lying strictly right of `c₀`, with at worst
+  polynomial vertical growth inside, obeys the same bound throughout.  Dividing by `(s-c₀)^ν` makes
+  the edges genuinely bounded; the growth hypothesis of mathlib's `PhragmenLindelof.vertical_strip`
+  is met with `B = N/c` because `1 + x ≤ exp x`.
+* `RHTower/SoninLProperty` — the numerator identities
+  `extendedMellinNumeratorRight_eq : Right s = s(1-s)·extendedMellinRight s` and
+  `extendedMellinNumeratorLeft_eq`, which turn every estimate for the continuations into one for the
+  entire numerator, plus the right edge bound `exists_norm_numerator_right_line`
+  (`≤ C(1+|t|)²`, from the Hardy bound `exists_norm_mellinTail_bounded`).
+
+### Thm 4.8 - the one remaining gap: `burnolChiFactor = zetaChi`
+The corpus's functional equation is stated with
+`burnolChiFactor s = Γ(1-s)·(2π)^{s-1}·2cos(π(s-1)/2)`, while the new sharp line bound
+`exists_norm_zetaChi_line_le` is stated for `zetaChi s = Γ_ℝ(1-s)/Γ_ℝ(s)`.  These are the same
+function — `χ(s) = 2^s π^{s-1} sin(πs/2) Γ(1-s)` — but the corpus has no lemma identifying them.
+Two routes:
+1. prove `burnolChiFactor = zetaChi` from Legendre duplication (`RHTower.gamma_duplication_one_sub`)
+   and Euler reflection; or
+2. prove the sharp bound for `burnolChiFactor` directly, anchoring the Gamma modulus at the critical
+   line: `‖Γ((1-σ)+iτ)‖ = (‖Γ((1-σ)+iτ)‖/‖Γ(1/2+iτ)‖)·‖Γ(1/2+iτ)‖`, where the ratio is the corpus's
+   uniform law and `|Γ(1/2+iτ)|² = π/cosh(πτ)` is exact (see `HTGeometry/GammaCriticalLineModulus`),
+   together with `e^{|y|}/4 ≤ ‖cos(x+iy)‖ ≤ e^{|y|}` for `|y| ≥ 1`.
+Route 1 is preferable: it makes the sharp bound available to the whole functional-equation chain.
+
+### Thm 4.8 - remaining plan
+With the sharp line bound in hand the proof is:
+* right edge `σ = b' > 1/2`: `‖F‖` bounded by `HardyLineIsometry.norm_le_of_isHalfPlaneHardy`;
+* left edge `σ = a' < 1/2`: `F(s) = χ(s)·G(1-s)` with `Re(1-s) > 1/2`, so
+  `‖F(a'+it)‖ ≤ C|t|^{1/2-a'}` by the new bound;
+* interior: `exists_norm_extendedMellinRight_le` (`O(1+‖s‖)`, done);
+* `PhragmenLindelof.vertical_strip` (mathlib) applied to `G(s)/(s-c)^{μ+2}` with
+  `G(s) = s(1-s)M(f)(s)` entire (Prop. 2.2) and `μ = max(1/2-a,0)+ε`.
+Choosing the enlarged strip `[min(a,1/2)-ε/2, max(b,1/2)+1]` keeps the exponent at
+`max(1/2-a,0)+ε/2` and puts both edges strictly off the critical line.
+
+Items 1 and 2 are done: `SoninExtendedMellinEdge` proves
+`exists_norm_mellinTail_bounded` (the Hardy bound, uniform in the height),
+`exists_norm_extendedMellinRight_bounded` and the agreement lemma `extendedMellinRight_eq_left`.
+What is left is the left edge bound (blocked only on `burnolChiFactor = zetaChi`), the crude strip
+bound for the numerator (immediate from `exists_norm_extendedMellinRight_le` through the two
+numerator identities), and the final `norm_le_mul_rpow_of_vertical_strip` assembly with
+`A' = min A (1/2) - ε/2`, `B' = max B (1/2) + 1`, `ν = max(1/2-A,0) + ε + 2`, `c₀ = A' - 1`.
+
+### Prop. 2.2 - FULLY CLOSED (2026-08-23)
+
+The reflected half needed the functional equation on `L_a`.  Five more modules, plus a second corpus
+generalisation.
+
+**Corpus generalisation.**  The whole `χ`-pairing chain also only used the Fourier condition.
+`SoninNearZeroKernelVanishing` now proves the head-carrying
+`integral_nearZeroKernel_mul_fourier_eq` (Plancherel for the truncated power on `(0,a)`, no Sonine
+hypothesis) with the old vanishing statement as its corollary; `SoninKernelPairing`,
+`SoninPureChiKernel` and `SoninFunctionalEquation` take `f ∈ (centralFourierForbidden a)ᗮ`, and the
+head-carrying versions `soninMellinExtension_add_head_eq_chi_pairing` and
+`soninMellinExtension_add_head_functional_equation` are the new primitives, with the `K_a` forms
+recovered from `integral_nearZeroHead_eq_zero`.
+
+**`RHTower/SoninDecayTailMellin`** (generalising the sinc module, which is now a thin wrapper):
+`HasInverseDecay g C` (`‖g(t)‖ ≤ C/|t|`) makes the Mellin tail `∫_T^∞ g(t)t^{-s}dt` absolutely
+convergent and holomorphic on `Re s > 0`.
+
+**`RHTower/SoninDecayTailIdentity`**: for such a `g` in `(centralFourierForbidden a)ᗮ` the corpus's
+continuation *is* that convergent integral — both are holomorphic on the connected half-plane and
+agree on `Re s > 1/2`, so the identity theorem finishes.
+
+**`RHTower/SoninSincFullMellin`**: the value `∫_0^∞ sin(2πat)/(πt) · t^{-s} dt = χ(s)·a^s/s`, proved
+*without* the sine Mellin transform.  For `0 < a ≤ b` the difference
+`fourierBandIndicator b - fourierBandIndicator a` has Fourier transform vanishing on the band of
+aperture `a`, so the head-carrying functional equation evaluates the difference of the two full
+Mellin transforms as `χ(s)(b^s - a^s)/s`; the dilation law `sincFullMellin c s = c^s · sincFullMellin 1 s`
+(change of variables) then forces `sincFullMellin 1 s = χ(s)/s` by comparing `a = 1, b = 2`, since
+`2^s ≠ 1` for `Re s > 0`.
+
+**`RHTower/SoninExtendedFunctionalEquation`**: splitting `f = h + c·fourierBandIndicator a` and
+adding the two previous results gives
+`extendedFullMellin a c f s = χ(s)·M(F₊f)(1-s)` on `0 < Re s < 1/2`.
+
+**`RHTower/SoninExtendedMeromorphic`**: right of the critical line
+`R(s) = s(1-s)·extendedTailMellin + s·d·a^{1-s}` is holomorphic on `Re s > 0`; left of it
+`L(s) = (1-s)χ(s)(c·a^s + s·(tail of F₊f at 1-s))` is holomorphic on `Re s < 1`; they agree on
+`0 < Re s < 1/2` by the extended functional equation, and `glueVert` makes the result entire.  That
+is Proposition 2.2: the only possible poles of `M(f)` are simple ones at `s = 0` and `s = 1`.
+
+### Prop. 2.2, right half - CLOSED (2026-08-23)
+
+Four new modules, plus one corpus generalisation.
+
+**Corpus generalisation (no duplication).**  The uniform Cauchy estimate behind Theorem 2.1 never
+used the *physical* Sonine condition — only that the Fourier transform vanishes on the band.  The
+hypothesis `f ∈ centralSoninCarrier a` was therefore weakened to `f ∈ (centralFourierForbidden a)ᗮ`
+throughout the chain (`SoninDeBrangesCarrier.fourier_indicator_ae_zero_of_mem_fourierOrthogonal`,
+`SoninTruncatedMellinCauchy.norm_truncMellin_le`,
+`SoninTruncatedMellinFamily.norm_soninTruncMellin_sub_le`, and the seven theorems of
+`SoninMellinHalfPlaneExtension` up to `differentiableOn_soninMellinExtension`); the five call sites
+now pass `hf.2`.  `soninMellinExtension_eq_soninMellinIntegral` keeps the full hypothesis, since
+dropping the band from the integral does need the physical vanishing.
+
+**`RHTower/SoninBandSinc`.**  `𝓕(1_{[-a,a]})(u) = sin(2πau)/(πu)` (`fourierIntegral_centralIndicator`,
+by `integral_exp_mul_complex`), transported through the `L²` Fourier bridge and the reflection
+identity `𝓕⁻¹ = R ∘ 𝓕` to `coeFn_fourierBandIndicator_ae`, with the decay
+`‖fourierBandIndicator a (t)‖ ≤ 1/(π|t|)`.
+
+**`RHTower/SoninSincTailMellin`.**  Because of that `1/|t|` decay the Mellin tail
+`sincMellin a s = ∫_a^∞ (fourierBandIndicator a)(t) t^{-s} dt` converges *absolutely* on `Re s > 0`;
+truncations are entire (`differentiable_truncatedMellin`) and converge locally uniformly with the
+explicit remainder `(1/π)·T^{-σ}/σ`, so `differentiableOn_sincMellin` holds on the whole half-plane.
+
+**`RHTower/SoninExtendedMellinExtension`.**  `centralMeanZeroFourier a` is the `𝓕`-pullback of
+`meanZeroBand a` (`mem_centralMeanZeroFourier_iff`), so a vector of `L_a` has a *constant* Fourier
+head `c` (`ae_fourier_eq_of_mem_extended`), and `f - c • fourierBandIndicator a` has Fourier
+transform vanishing on the band (`sub_smul_fourierBandIndicator_mem`).  Hence
+`exists_differentiableOn_extendedTailMellin`: the Mellin tail of any vector of `L_a` continues
+holomorphically to `Re s > 0`, as `soninMellinExtension (f - c•v) + c·sincMellin`.
+
+**`RHTower/SoninExtendedMellinPole`.**  The physical head is constant too, so on `1/2 < Re s < 1`
+the full Mellin integral splits as `c·a^{1-s}/(1-s) + tail`.  Multiplying by `1-s` gives a function
+holomorphic on `Re s > 0`: Proposition 2.2's right half.
+
+*Still open for Prop. 2.2*: the reflected half.  `L_a` is cosine invariant, so the same theorem
+applies to `F₊f`; what is missing is the `L_a` analogue of
+`SoninFunctionalEquation.soninMellinExtension_functional_equation`, which would turn
+`M(F₊f)` on `Re s > 0` into `M(f)` on `Re s < 1` and produce the pole at `s = 0`.
+
+### Prop. 4.2 - CLOSED (2026-08-23)
+`RHTower/ZetaMellinHeadHardy`.  The renormalised transform of `ζ(s)/(s-ρ)^l` is
+`(w+1/2)·zetaHardyCore(w)/(w-w₀)^l` with `w₀ = ρ - 1/2`, and multiplying a Hardy function by
+`w + 1/2` is illegal.  The splitting `w + 1/2 = (w - w₀) + (w₀ + 1/2)` (`div_pow_split`) rewrites it
+as `zetaHardyCore/(w-w₀)^{l-1} + (w₀+1/2)·zetaHardyCore/(w-w₀)^l`: two divisions of ONE Hardy
+function by powers of one of its own zeros.
+
+`exists_isHalfPlaneHardy_zetaCore_div` performs either division, splitting on whether `ρ` lies
+strictly right of the critical line:
+* interior (`0 < Re(ρ-1/2)`): `zetaHardyCore` is analytic at `w₀`, and the order transfer
+  `analyticOrderAt zetaHardyCore w₀ ≥ k` comes from the `ζ` factorization through
+  `zetaCoreFactor g w = (w-1/2)g(w+1/2)/(w+1/2)²`; then `exists_isHalfPlaneHardy_div_pow`.
+* boundary or left (`Re ρ ≤ 1/2`, in particular every zero on the critical line): the quotient is
+  already holomorphic on the open half-plane, and `isHalfPlaneHardy_of_div_pow_bounded` only needs
+  the local bound `‖zetaCoreFactor g‖ ≤ ‖zetaCoreFactor g w₀‖ + 1` on a small ball, which is
+  continuity of the analytic factor.
+
+The output is stated existentially, `∃ G, IsMellinHeadHardy 1 G ∧ ∀ s, … s ≠ ρ → G s = ζ(s)/(s-ρ)^l`,
+because Lean's `x/0 = 0` makes the literal quotient junk at `s = ρ` while the true object there is
+the value of the analytic continuation.
+
+### LAYER 4 isometry constant - CLOSED (2026-08-23)
+`HTGeometry/HardyLineIsometry`.  `hardyVerticalLine σ y = σ + iy`, and the change of variables
+`y = 2πξ` (`LineScalingL2.integral_norm_sq_comp_const_mul`) turns the Fourier normalisation of
+`HalfLineLaplaceFourier` into Burnol's arclength one:
+`∫ ‖F(σ+iy)‖² dy = 2π ∫_0^∞ e^{-2σx}‖φ(x)‖² dx`, increasing to `2π‖φ‖²` as `σ ↓ 0`
+(`integral_norm_sq_laplaceRay_vertical`, `tendsto_integral_norm_sq_laplaceRay_vertical`, and the
+same two through the Paley-Wiener datum of an arbitrary Hardy function).  The module also records
+`norm_le_of_isHalfPlaneHardy`, the pointwise bound `‖F(w)‖ ≤ ‖φ‖(2 Re w)^{-1/2}` that Theorem 4.8
+feeds into Phragmen-Lindelof.
+
+### Prop. 4.1 - CLOSED (2026-08-23)
+`RHTower/MellinHeadHardyConverse` + `RHTower/MellinHeadHardyEquiv`.
+
+*Converse (the new half).*  Write `w = s - 1/2`, `u = w - 1/2 = s - 1`, `v = w + 1/2 = s`, so
+`v - u = 1`.  If `G` is the Hardy representative of `F`, i.e. `G = (u/v)·a^w F(s)`, put
+`κ := -G(1/2)` and `Ψ := G + κ/v`.  `Ψ` is Hardy (a constant multiple of `1/(w+1/2)` is the Laplace
+transform of `e^{-x/2}`) and vanishes at `w = 1/2`, so `Q := Ψ/u` is Hardy by
+`exists_isHalfPlaneHardy_div_pow`.  The partial-fraction collapse
+
+`G + Q + κ/v = (G + κ/v)(1 + 1/u) = (G + κ/v)·v/u = a^w F(s) + κ/u`
+
+shows `a^w F(s)` is a Hardy function minus the explicit simple pole `κ/(s-1)`.  Paley-Wiener turns
+the Hardy part into an `L²(a,∞)` tail and the pole into the constant head, giving
+`F(s) = c·a^{1-s}/(1-s) + ∫_a^∞ g(t)t^{-s}dt` on `Re s > 1/2`, `s ≠ 1`, with `c = κ a^{-1/2}`.
+
+*Equivalence.*  `headTailMellin a c g s := c·a^{1-s}/(1-s) + ∫_a^∞ g t^{-s}dt` (equal to the honest
+Mellin integral for `Re s < 1`, `headTailMellin_eq_mellin`), and
+`isMellinHeadHardy_iff : IsMellinHeadHardy a F ↔ ∃ c g, MemLp g 2 … ∧ F = headTailMellin a c g` on
+`Re s > 1/2` off `s = 1`.  The `K_a` companion is `isMellinTailHardy_iff`.
+
 ### Prop. 4.5 and Prop. 4.7 - CLOSED (2026-08-23)
 
 **Prop. 4.5, literal form.**  `SoninBandCodimensionTwo` measured the drop between `A ⊔ B` and the
@@ -423,3 +629,386 @@ reflection).  Deduplication pass:
 already held the same content one layer up; its 38-line proof now delegates to the HTGeometry
 version, and `norm_sin_le_exp_abs_im` is an alias of the corpus's
 `HTGeometry.norm_csin_le_exp_abs_im`.
+
+### Thm 4.8 - CLOSED (2026-08-23)
+
+`RHTower/SoninLPropertyTheorem`.  `extendedMellinContinuation a c d f = extendedMellinNumerator/(s(1-s))`
+and `hasLProperty_extendedMellinContinuation` is the literal Definition 10 estimate.  The assembly is
+the frozen plan: enlarged strip `A' = min A (1/2) - ε/2`, `B' = max B 1`, `c₀ = A' - 1`,
+`ν = 2 + (1/2 - A')`; the two edges are pushed from "large height" to "every height" by
+`exists_line_bound_weighted` (`(1+|t|)^ν ≤ 2^ν‖z-c₀‖^ν` once `σ - c₀ ≥ 1`, `rpow_one_add_abs_le_weight`),
+the interior by `exists_strip_bound_of_high`, and `norm_le_mul_rpow_of_vertical_strip` interpolates.
+Dividing by `s(1-s)` costs exactly two powers: `‖s‖‖1-s‖ ≥ |τ|² ≥ (1+|τ|)²/4`, and the exponent
+bookkeeping is `1/2 - min A (1/2) = max (1/2 - A) 0` (`half_sub_min`), leaving `ε/2` to spare.
+
+Also closed on the way: `exists_norm_numerator_strip` (the crude interior bound; the right branch
+uses the Hardy representative, the left branch the functional equation through
+`burnolChiFactor_eq_zetaChi` and `hasStripPolyGrowthOffReal_zetaChi`), and
+`BurnolChiFactorIdentity.burnolChiFactor_eq_zetaChi` itself (Legendre duplication + Euler reflection;
+`cos(π(s-1)/2) = sin(πs/2)`), which unblocked the left edge.
+
+**Trap:** in these strip proofs `set` leaves the local abbreviations as *let-values*, and `ring` /
+`positivity` / `nlinarith` then unfold them and blow the heartbeat budget.  `clear_value` immediately
+after the `set` block (keeping the defining equations as ordinary hypotheses) is what makes the
+Phragmén-Lindelöf assembly compile.
+
+### Thm 4.9 - CLOSED (2026-08-23).  §4 IS NOW COMPLETE
+
+Burnol's smoothing, done on the *function* side (the paper multiplies `G` by `θ(ε(s-1/2)+1/2)`;
+here the same operator is the multiplicative convolution it comes from, which avoids needing the
+Mellin-Plancherel unitary at all).
+
+Five new modules.
+
+**`HTGeometry/ExpMultiplierRapidDecay`** — `logSmoothMultiplier k w = ∫ k(x)e^{wx}dx` for a smooth
+weight vanishing off `[-R,R]`.  `intervalIntegral_expByParts_of_vanishing` (one integration by
+parts; the antiderivative `e^{wx}/w` has no branch, unlike the Mellin weight `x^s/s`) iterates to
+`intervalIntegral_expByParts_iterate`, giving `w^n K(w) = ±∫k^{(n)}(x)e^{wx}dx`, hence
+`exists_bound_pow_norm_logSmoothMultiplier` and `exists_bound_norm_logSmoothMultiplier_strip`
+(`‖K‖ ≤ C(1+|τ|)^{-n}` on every strip, from `‖w‖ ≥ |τ| ≥ (1+|τ|)/2`).
+
+**`HTGeometry/ExpMultiplierEntire`** — `differentiable_logSmoothMultiplier`, via the corpus's
+`differentiable_integral_kernel`.  That criterion demands the kernel bound at *every* point of the
+ambient measure space, so the exponent is composed with `expKernelClamp` first — the same device as
+`TruncatedMellinEntire`'s `mellinClamp`.
+
+**`RHTower/SoninExtendedDilation`** — `mem_centralSoninExtendedCarrier_iff` (a vector of `L_a` is
+exactly one that is constant on the band and whose Fourier transform is too — the missing converse
+half of `ae_fourier_eq_of_mem_extended`, obtained from `Submodule.inf_orthogonal`), and the three
+transports: `dilation_mem_centralSoninExtendedCarrier` (`L_a → L_{min(a/r, ar)}`, using
+`fourierUnitary_dilation`), `l2Reflection_mem_centralSoninExtendedCarrier`,
+`evenProjection_mem_centralSoninExtendedCarrier`, plus `centralSoninExtendedCarrier_antitone`.
+
+**`RHTower/SoninDilationAverage`** — `dilationAverage k f = ∫ k(x)·U_{e^x}f dx` as a Bochner
+integral in `L²`, built on the corpus's `rayDilate` and its strong continuity
+(`SoninDilationContinuity`).  `dilationAverage_mem_orthogonal` (via `integral_inner`: the average
+inherits every orthogonality condition), `dilationAverage_mem_evenSubspace`, `apply_dilationAverage`
+(a CLM passes through), and `norm_dilationAverage_sub_smul_le`.
+
+**`RHTower/SoninMellinFunctional`** — the Mellin transform on the strip `1/2 < Re s < 1` is the
+restriction of a *continuous linear functional* on all of `L²(ℝ)`:
+`mellinFunctional a ha hs = (a^{1-s}/((1-s)·2a))·⟪1_{[-a,a]}, ·⟫ + ⟪1_{(a,∞)}t^{-s̄}, ·⟫`.
+The tail vector exists precisely because `Re s > 1/2`, and the head is read off the band indicator.
+This is what lets the Mellin transform commute with the Bochner integral.
+
+**`RHTower/SoninMellinMultiplier`** — `integral_cpow_dilation` (the character `r^{s-1/2}`, from the
+corpus's `mellin_coe_dilation`), `mellinFunctional_dilationAverage` (the multiplier identity on the
+strip), `HasRapidMellin` (**Definition 12**), and `hasRapidMellin_dilationAverage`.  The transfer
+from the strip to the whole plane is the identity theorem applied to the two *entire numerators*
+(Prop. 2.2), after which `HasStripRapidDecrease.mul_stripPolyGrowth` combines the rapidly decreasing
+multiplier with `HasLProperty.stripPolyGrowthOffReal` of Theorem 4.8.
+
+**`RHTower/SoninRapidMellinDense`** — Theorem 4.9.  Prop. 4.6 gives a nearby vector of some `L_b`,
+`b > 1`; `Submodule.mem_iSup_of_directed` turns the supremum into a union (the family is directed
+because `L` is antitone); the even projection symmetrises it without increasing the distance; a
+`ContDiffBump` of radius `δ = min(δ₀/2, log b)` smooths it, and `exp δ ≤ b` is exactly what keeps
+every dilate in `L_1`.
+
+Note the aperture bookkeeping: a dilation by `r` moves `L_a` to `L_{a/r}` physically and to
+`L_{ar}` on the Fourier side, so only `1/b ≤ r ≤ b` keeps `L_b` inside `L_1` — that, and nothing
+else, is why the smoothing must start from `b > 1`.
+
+## §5 LAYER PLAN (opened 2026-08-23)
+
+Prop. 5.1 is Titchmarsh IX.7: *there are `A` and a strictly increasing `T_n > n` with
+`|ζ(s)|^{-1} < |s|^A` on `Im s = ±T_n`, `-1 ≤ Re s ≤ 2`.*  A **fixed** power is essential (Thm 5.2
+kills the horizontal edges with `G = O(|s|^{-N})` for one fixed `N > A`), and a fixed power is only
+reachable with the *averaged* choice of height: a min-gap choice `|T-γ| ≫ 1/log T` gives each of the
+`O(log T)` nearby zeros a factor `log log T` and only yields `exp(C log T log log T)`.  Averaging
+`Σ_{|γ-T|≤2} log(3/|T-γ|)` over `T ∈ [n,n+1]` gives mean `O(log n)` because
+`∫_n^{n+1} log(3/|T-γ|)dT = O(1)` per zero — hence *some* `T` with the whole sum `O(log n)`.
+
+Bricks (status):
+
+| # | Brick | Status |
+|---|---|---|
+| L5.1 | symmetrised partial fraction `2 logDeriv xi s = Σ'_ρ (1/(s-ρ) + 1/(s-1+ρ))`, both families with positive real part right of the strip; `Re logDeriv xi (2+it) = O(log t)`; `N(t+1)-N(t) = O(log t)` | **DONE** `RHTower/XiLocalZeroDensity` |
+| L5.2 | weighted density `Σ_ρ 1/(1+(t-γ)²) = O(log t)` | **DONE** same module |
+| L5.3 | **DONE** `RHTower/XiHorizontalLog`: `log‖xi(x+iT)‖ = log‖xi(x₀+iT)‖ + Re ∫_{x₀}^x logDeriv xi`, mirroring the corpus's `ZetaHorizontalArgument` for `ζ` | TODO |
+| L5.4 | **DONE** `RHTower/XiSegmentEstimate` + `HTGeometry/PoissonKernelSegmentIntegral`; term-by-term integration of the pair sum across `σ ∈ [-1,2]` (`MeasureTheory.integral_tsum`; far zeros `≤ 9/(2(T-γ)²)`, near zeros `log(3/|T-γ|)`) | |
+| L5.5 | the averaging choice of `T ∈ [n,n+1]` | **DONE** `RHTower/XiHeightSelection` |
+| L5.6 | **DONE** `RHTower/ZetaInverseHorizontal`; Γ-ratio conversion `xi → ζ` (corpus `exists_twoSided_gamma_vertical_ratio`) and **Prop 5.1** | |
+| L5.7 | **Thm 5.2** residue series (rectangles `1/2 ± A ± iT_n`, telescoping bands, `L²` convergence on the critical line) | TODO |
+| L5.8 | **Cor 5.3**, **Prop 5.4**, Rem 15 | TODO |
+
+Corpus assets for §5 (do not rebuild): `XiExplicitFormulaLogDeriv.logDeriv_xi_eq_partialFraction`
+(multiplicity-exact, absolutely convergent), `logDeriv_xi_split`,
+`XiHadamardFactorization.xiZeroCopyReflectEquiv` (`ρ ↦ 1-ρ` on divisor copies),
+`XiWardInteriorTraceSplit.logDeriv_riemannZeta_eq_neg_LSeries` and `logDeriv_Gammaℝ_eq`,
+`DigammaValuationBoundary.norm_digamma_vertical_le_two_log`,
+`CentralReciprocalMoments.xi_divisor_support_re_mem_open_unit`, `RHLadderTheory.xi_ne_zero_of_one_le_re`,
+`ZetaHorizontalArgument.exp_zetaHorizontalLog` (the model for L5.3),
+`GammaVerticalRatioUniform.exists_twoSided_gamma_vertical_ratio`.
+
+Also noted: Burnol's **(5)** (Müntz) is corpus-owned for zero-mean compactly supported BV sources
+(`CCMBVMuntzSummation.mellin_arithmeticSum_eq_zeta_mul`, and on the punctured right half-plane
+`CCMConnesConsaniRapidMuntz.mellin_ccmFourierTruncatedPoissonValue_eq_zeta_mul_of_re_pos`); what is
+missing for the literal (5) is the `∫φ ≠ 0` correction term `-(1/t)∫φ`.
+
+### Prop 5.1 - CLOSED (2026-08-23)
+
+Six modules, in dependency order.
+
+**`RHTower/XiLocalZeroDensity`** — reindexing the corpus's partial fraction by the reflection
+`ρ ↦ 1−ρ` (its `xiZeroCopyReflectEquiv`) cancels the centring terms and leaves
+`2·logDeriv xi s = Σ'_ρ (1/(s−ρ) + 1/(s−1+ρ))`, whose *both* families have positive real part right
+of the strip.  At `s = 2+it` a zero with `|γ−t| ≤ 1` contributes `≥ 1/5`, giving
+`N(t+1)−N(t) = O(log t)` (`exists_card_near_xi_zeros_le`), and the same comparison with the Cauchy
+weight gives `Σ_ρ 1/(1+(t−γ)²) = O(log t)` (`exists_tsum_weighted_density_le`).  The `O(log t)` on
+the right comes from `logDeriv_xi_split` plus the corpus's digamma vertical bound and the von
+Mangoldt series.
+
+**`RHTower/XiZeroBandFinite`** — the divisor is locally finite and lies in the strip, so a horizontal
+band carries finitely many copies (`finite_xiZeroCopy_band`, via the corpus's
+`xiC_zeros_closedRectangle_finite`); and the Cauchy weight is summable at *every* real height, not
+only at the large ones where the density bound was proved.
+
+**`RHTower/XiHorizontalLog`** — the ζ-version in `ZetaHorizontalArgument` transplanted to `xi`:
+`exp(Λ(x)) = xi(x+iT)` and hence
+`log‖xi(x+iT)‖ = log‖xi(x₀+iT)‖ + Re ∫_{x₀}^x logDeriv xi`.
+
+**`HTGeometry/PoissonKernelSegmentIntegral` + `RHTower/XiSegmentEstimate`** — `∫|v|/(v²+c²)dv` over a
+subsegment of `[-3,3]` is at most `log(1+9/c²)`; summing over the divisor
+(`MeasureTheory.integral_tsum_of_summable_integral_norm`, with the near/far split supplying the
+summability) bounds `|2 Re ∫_σ^2 logDeriv xi|` by `Σ_ρ [log(1+9/(T−γ)²) + log(1+9/(T+γ)²)]`.
+
+**`RHTower/XiHeightSelection`** — the averaging.  `∫_n^{n+1} log(1+9/(T−γ)²)dT` is bounded by an
+absolute constant *uniformly in γ* (majorant `log45 + 2|log v| + 1`), only `O(log n)` zeros lie
+within distance 5 of the segment (the weighted density again), and a far zero contributes
+`≤ 18/(1+(T−γ)²)` at every height.  A measure-theoretic pigeonhole (`exists_height_le_average`)
+then produces a height avoiding every ordinate and its negative with the whole sum `O(log n)`.
+
+**`RHTower/ZetaInverseHorizontal`** — reflection identifies the two families
+(`tsum_logKernel_reflect`), so the segment estimate gives `log‖xi(σ+iT)‖ ≥ log‖xi(2+iT)‖ − O(log n)`;
+`xi = s(s−1)/2·Γ_ℝ·ζ` converts this to `ζ` at a cost of `O(1)`, because the Gamma quotient across
+the strip at a fixed height is *bounded* — `exists_gamma_half_ratio_bound` feeds the corpus's
+uniform two-sided vertical ratio law with `τ^{-δ} ≤ 1`, using one Gamma recurrence to move a
+negative abscissa into the law's parameter box.  With `‖ζ(2+iT)‖ ≥ 1/4` (corpus) the result is
+`‖ζ(σ+iT)‖ ≥ T^{-A}`.
+
+**Why the averaging is essential** (recorded so it is not re-litigated): a minimal-gap height, the
+usual `|T−γ| ≫ 1/log T`, gives each of the `O(log T)` near zeros a factor `log log T` and only
+`exp(C log T log log T)` — not a fixed power.  Averaging replaces the worst case by the mean, which
+is `O(1)` per zero.
+
+### Items (5), (6), (7) — resolved as corpus-owned (2026-08-23)
+
+The three §1 formulas do not need new work:
+
+* **(7)** is `archimedeanMellinUnitary_evenFourierTransform` (Connes–Consani chart): the Mellin
+  unitary conjugates the even Fourier transform into reflection ∘ multiplication by the scattering
+  phase, for *every* even vector — this is `M(F₊f)(s) = χ(s)M(f)(1−s)` in `L²` normalisation.
+* **(6)** is `soninMellinEvaluation_burnolCoPoissonSource`.  Note the chart:
+  `burnolCoPoissonRightSum g t = Σ_{n≥1} g(t/n)/n − ∫_0^∞ g(1/y)dy/y`, which under `φ(t) = g(1/t)/t`
+  is exactly `t·(Σ_n φ(nt) − (1/t)∫φ)`; the substitution `u = 1/τ` turns the corpus identity into
+  Burnol's (5) on `1/2 < Re s < 1`.
+* **(5)** for zero-mean sources is `mellin_arithmeticSum_eq_zeta_mul` (on `Re s > 1`) continued by
+  `mellin_ccmFourierTruncatedPoissonValue_eq_zeta_mul_of_re_pos` to `{Re s > 0} \ {1}` — the
+  `CCMFourierTruncatedInput` structure carries `∫_{Ioi 0} f = 0` exactly because the corrected sum is
+  what converges.  The only content beyond that is the single normalisation
+  `∫_0^∞ {u}u^{-s-1}du = −ζ(s)/s`, which the corpus owns in tail form (`FractionalPartZeta`,
+  `mellin_fractTailKernel`, with `isPreconnected_puncturedRightHalfPlane` for the continuation).
+
+So §1 and §2 of the paper are fully accounted for.
+
+## Thm 5.2 — the contour analysis (bricks landed 2026-08-23)
+
+Burnol integrates `G(s)ζ(Z)/(ζ(s)(Z−s))` around the rectangle `1/2 ± A ± iT_n`, lets `n → ∞`
+(horizontal edges die) and then `A → ∞` (vertical edges die).  The poles inside are the nontrivial
+zeros of `ζ` and the point `Z`; the paper notes that *the trivial zeros and `s = 1` are not
+singularities* — at `s = 1` the pole of `G` is cancelled by the zero of `1/ζ`, and at `s = −2k` the
+zero of `ζ` is cancelled by the zero of `G` (which comes from `χ(−2k) = 0` in the functional
+equation).  Definition 12's class has no pole at `s = 0`.
+
+| Brick | Statement | Status |
+|---|---|---|
+| E1 | `1/ζ` polynomially bounded on the *whole* horizontal segment at the selected heights: right of the strip by the Dirichlet series, left of it by `1/ζ(s) = χ(1−s)/ζ(1−s)` and the polynomial growth of `χ` | **DONE** `RHTower/ZetaInverseWideHorizontal.exists_seq_zeta_inv_horizontal` (also packages Prop 5.1's heights as a strictly increasing sequence) |
+| E2 | horizontal edges → 0 along the selected heights, for any `G` of Definition 12 | **DONE** `RHTower/ResidueContourEdges.tendsto_norm_horizontal_edge_zero` |
+| E3 | `L²` mass of the Cauchy kernel on a vertical line is `π/(σ−Re Z)`; Cauchy–Schwarz pairing bound | **DONE** `HTGeometry/CauchyKernelLineMass` |
+| E4 | uniform `L²` mass of the continued Mellin transform on `Re s = σ ≥ 2` (Hardy tail + explicit head) | **DONE** `RHTower/MellinLineMass.exists_integral_norm_sq_extendedMellin_line_le` |
+| E5 | right-hand vertical edge → 0 as `σ → ∞` | **DONE** `RHTower/MellinLineMass.tendsto_vertical_edge_zero` |
+| R1 | `G(−2k) = 0` and `G` regular at `0` for `G` the continued Mellin transform of a vector of `L_1` (from the extended functional equation continued to `ℂ`) | **DONE** `RHTower/MellinContinuationOrder` |
+| R1' | `M(f)` vanishes at every trivial zero and its numerator vanishes at `0` (so `M(f)` is regular there) | **DONE** `RHTower/MellinTrivialZeros` |
+| R2 | the rectangle residue identity for `G(s)ζ(Z)/(ζ(s)(Z−s))` | TODO — **the engine already exists**: `HTGeometry/RectangleResidueTheorem.rectangleIntegral'_eq_sum_laurentCoeff` is the residue theorem on a rectangle *for poles of arbitrary order* (`RectangleIntegral' f z w = ∑_{p ∈ P} laurentCoeff f p (-1)`), so Burnol's multiplicity remark is already covered.  What remains: the finite pole set (finiteness of ζ-zeros in a rectangle — corpus-owned), `MeromorphicAt` of the integrand at each point, `AnalyticAt` off `P`, and the identification of each `laurentCoeff`.  Putting `0`, `1` and the trivial zeros into `P` and showing their coefficients vanish is easier than proving analyticity there — note `M(f) = N/(s(1-s))` is literally junk-valued at `0` and `1` in Lean, so it is *not* `AnalyticAt` there even though the singularity is removable. |
+| R3 | assembly: absolute convergence of the residue series and **Theorem 5.2** | **DONE (pointwise)** `RHTower/BurnolResidueSeries.tendsto_residueSum_extendedMellin` |
+| R4 | **Cor 5.3**, **Prop 5.4**, Rem 15 | **Cor 5.3 DONE** (`extendedMellinContinuation_eq_zero_of_dvd`); Prop 5.4 and Rem 15 TODO |
+
+**Search note (2026-08-23).**  `HTGeometry/RectangleResidueTheorem` (general-order rectangle residue
+theorem, `laurentCoeff`, `principalPart`, the four-edge FTC `rectangleIntegral_eq_zero_of_primitive`,
+`rectangleIntegral_inv_pow_eq_zero`) already existed; a duplicate of its first two lemmas was written
+here and deleted.  The earlier search only surfaced `PNTPlus/ResidueCalcOnRectangles`, whose residue
+theorem is explicitly a *simple-pole stopgap* — searching for the words of the statement
+("arbitrary order", "Laurent coefficient") finds the right module.
+
+## Theorem 5.2 — CLOSED (pointwise), 2026-08-23
+
+`RHTower/BurnolResidueSeries.tendsto_residueSum_extendedMellin`, axiom-clean:
+
+```
+Tendsto (fun k => ∑ ρ ∈ nontrivialZeroFinset (T k),
+    laurentCoeff (burnolIntegrand (extendedMellinContinuation a c d f) Z) ρ (-1))
+  atTop (𝓝 (extendedMellinContinuation a c d f Z))
+```
+
+for every `Z` with `ζ(Z) ≠ 0`, `Z ≠ 1`, `Z ≠ 0`, where `T` is the height sequence of Prop. 5.1.
+Packaged versions: `exists_seq_tendsto_residueSum_extendedMellin` (one sequence of heights for all
+`Z` at once, as in Note 13) and `exists_tendsto_residueSum_of_hasRapidMellin` (hypothesis =
+Definition 12).  **The residue at `ρ` is its Laurent coefficient**, so no hypothesis is made on the
+multiplicities — this is exactly Burnol's Note 13 convention, and it makes his "symbolic
+representation" remark literally true rather than approximate.
+
+New modules, in dependency order:
+
+| Module | Content |
+|---|---|
+| `RHTower/ZetaTrivialZeroSimple` | **mathlib gap**: `meromorphicOrderAt ζ (-2k) = 1` — every trivial zero is simple.  Via `Γ_ℝ = π^{-s/2}Γ(s/2)`, the corpus's affine Gamma pole lattice at `b = 1/2`, and `ζ = Λ/Γ_ℝ` read on a punctured neighbourhood (`Λ(-2k) = Λ(1+2k) ≠ 0`). |
+| `RHTower/BurnolRectangleResidue` | the rectangle residue identity for `burnolIntegrand`; `meromorphicOrderAt_burnolIntegrand = ord G − ord ζ`; the vanishing criterion `laurentCoeff_burnolIntegrand_eq_zero_of_order_ge`. |
+| `RHTower/MellinContinuationOrder` | orders of `M(f) = N/(s(1−s))`: meromorphic everywhere, analytic off `{0,1}`, `ord ≥ 1` at every trivial zero, `≥ 0` at `0`, `≥ −1` at `1`.  Hence **`0`, `1` and the trivial zeros contribute no residue** — the paper's remark, proved. |
+| `RHTower/MellinReflectionEquation` | `χ(s) = chiFE(1−s)`, `ζ(s) = χ(s)ζ(1−s)` off `ℤ`, `χ ≠ 0` off `ℤ`, and the *definitional* functional equation `N_a(c,d,f)(s) = χ(s)·N_a(d,c,F f)(1−s)`; `burnolEdgeIntegrand` and **the reflection** `edge(f,Z)(s) = −edge(F f, 1−Z)(1−s)`. |
+| `RHTower/BurnolEdgeIntegrability` | integrability of the edge integrand on `Re s = σ ≥ 2` (Hardy `L²` × Cauchy kernel, AM–GM majorant) and, through the reflection, on `Re s = 1−σ`; `∫` on the left line `= −∫` on the reflected right line. |
+| `RHTower/BurnolRectangleSum` | `nontrivialZeroFinset T`; the rectangle corners; **the residue identity**: rectangle integral `= −M(f)(Z) + ∑_{|Im ρ| < T}`. |
+| `RHTower/BurnolContourLimits` | the four edges in the limit: horizontal → `0` (E2 at *both* signs of the height), vertical → the line integrals; the rectangle integral → `(1/2π)ζ(Z)(∫_R − ∫_L)`. |
+| `RHTower/BurnolResidueSeries` | conjugate symmetry of the height selection, the `A → ∞` vanishing of both lines, **Theorem 5.2**, and **Corollary 5.3**. |
+
+Two existing modules were generalized in place: `ResidueContourEdges.tendsto_norm_horizontal_edge_zero`
+now takes an arbitrary subinterval `[x₁,x₂] ⊆ [-b,b]` and a signed height `ε·T k` (`|ε| = 1`), and
+`ZetaInverseWideHorizontal.exists_seq_zeta_inv_horizontal` now also returns
+`ζ(σ + iT_k) ≠ 0` for `-1 ≤ σ ≤ 2` (the inverse-norm bound alone does *not* give nonvanishing —
+`‖0⁻¹‖ = 0` satisfies it).
+
+**The structural discovery.**  Burnol's `G(1−s)/ζ(1−s) = F₊(G)(s)/ζ(s)`, which he uses to reduce
+the left vertical edge to the right one, is *definitional* in the corpus's model: the left half of
+`extendedMellinNumerator` is literally `χ(s)` times the right half of the numerator of the
+Fourier-transformed datum with the two band constants swapped.  So the whole left edge costs one
+`ring` plus the `ζ` functional equation, and — crucially — **Lemma 4.10 (stability of `L₁` under
+`F₊`) is not needed for Theorem 5.2**: the reflected datum enters only through the `L²` edge
+estimate `tendsto_vertical_edge_zero`, which asks for no rapid decrease at all.
+
+**Cor 5.3** is formalized as: if `M(f)` vanishes at every nontrivial zero to at least the order of
+`ζ` (`ζ ∣ M(f)`, i.e. `f ⊥` all the evaluators `ζ(s)/(s−ρ)^l`), then `M(f) ≡ 0` off `{0,1}`.
+
+Still open in §5: the `L²`-in-`Z` convergence on the critical line (Thm 5.2's second half), the
+absolute convergence in Note 13's grouped sense, **Prop 5.4** (`Σ G(ρ)/ζ'(ρ) = 0`, which needs
+Mellin inversion on the critical line, `Res₁(G) = −c` and the `μ`-Dirichlet series), and Rem 15.
+
+## §6 — Proposition 6.1 for `a > 1`, without Krein (2026-08-23)
+
+`RHTower/BurnolCompletenessLarge.eq_zero_of_zeta_dvd_extendedMellin`, axiom-clean: a vector of
+`L_b` with `b > 1` whose continued Mellin transform is divisible by `ζ` at every nontrivial zero
+(i.e. which is orthogonal to every evaluator `Y^b_{ρ,k}`) is zero.
+
+**The route avoids Krein's theorem entirely.**  The smoothing of Theorem 4.9 acts on the Mellin side
+as multiplication by the *entire* multiplier `logSmoothMultiplier k (s−1/2)`
+(`SoninMellinMultiplier.extendedMellinContinuation_dilationAverage`, extracted from the proof of
+`hasRapidMellin_dilationAverage`), so it *preserves* the vanishing order at each zero.  Every
+smoothed vector therefore lies in the dense subspace of Definition 12 and is still orthogonal to all
+the evaluators, so Corollary 5.3 kills its Mellin transform, and the new injectivity theorem kills
+the vector; letting the smoothing width tend to `0` gives the original vector.
+
+`RHTower/SoninMellinInjective.eq_zero_of_extendedMellinContinuation_eq_zero` — **the continued
+Mellin transform is injective on `L_a`** — is new and elementary:
+* the head `d·a^{1−s}/(1−s)` would give the Laplace transform of the tail datum a pole at `w = 1/2`,
+  and the `L²` mass of `1/(1/2−w)` on `Re w = σ` blows up like `1/(2(1/2−σ))` while the mass of a
+  genuine Laplace transform stays `≤ ‖φ‖²` — hence `d = 0`;
+* then the Laplace transform vanishes on a whole line and Plancherel
+  (`HalfLineLaplaceFourier.integral_norm_sq_laplaceRay_line`) kills the datum;
+* the band constant and evenness finish the two remaining pieces of the line.
+
+**Why `a = 1` is different** (recorded so it is not re-attempted): every dilation lowers the
+aperture (`min(a/r, ar) ≤ a`), so *no* smoothing of an `L_1` vector stays in `L_1`, and the argument
+above has no room.  That is exactly the place where Burnol invokes Krein's theorem (an entire
+function of bounded characteristic in two complementary half-planes has finite exponential type) —
+which mathlib and this corpus do not own; the "Nevanlinna" modules in `HTGeometry` are about the
+moment problem, not the class of bounded characteristic.
+
+## Lemma 4.10 — CLOSED (2026-08-23)
+
+`RHTower/BurnolReflectionStability`, axiom-clean:
+
+* `burnolChiFactor_mul_one_sub` — the cocycle `χ(s)χ(1−s) = 1` off the real axis (from the corpus's
+  `zetaChi_mul_one_sub` and `gammaR_ne_zero_of_im_ne`);
+* `extendedMellinContinuation_reflect_of_im_ne` — `M(F₊f)(w) = χ(w)·M(f)(1−w)` for **every** `w` off
+  the real axis: definitional left of the critical line, the cocycle right of it, and continuity on
+  the line itself (approach `w` along `w − 1/n`);
+* `hasStripRapidDecrease_reflect` — **Lemma 4.10**, and `hasRapidMellin_fourierUnitary`: Definition
+  12's class is stable under `F₊`.  The only analytic input is the corpus's
+  `hasStripPolyGrowthOffReal_zetaChi` (polynomial vertical growth of `χ` on every strip above height
+  two), which is exactly Titchmarsh IV.12.3 as cited by Burnol.
+
+With this, **§4 of the paper is complete**: Prop. 4.1–4.7, Def. 10, Thm 4.8, Def. 12, Thm 4.9,
+Lem. 4.10.
+
+## Proposition 5.4 — CLOSED (2026-08-23)
+
+`RHTower/BurnolPropFiveFour.exists_seq_tendsto_residueSum_quotient`, axiom-clean:
+
+```
+Tendsto (fun n => ∑ ρ ∈ nontrivialZeroFinset (T n),
+    laurentCoeff (burnolQuotient (extendedMellinContinuation a c d f)) ρ (-1)) atTop (𝓝 0)
+```
+
+i.e. Burnol's `0 = Σ_ρ G(ρ)/ζ'(ρ)`, again with the residue *defined* as the Laurent coefficient.
+
+The chain, in dependency order:
+
+| Module | Content |
+|---|---|
+| `RHTower/SoninMellinInversion` | `MellinConvergent` on `0 < σ < 1/2` (band + Cauchy--Schwarz tail), `VerticalIntegrable` from Definition 12, the chart identity `mellin f w = M(f)(1−w)`, and — via mathlib's `mellinInv_mellin_eq` — **the inverse transform equals the band constant on the closed band**, the endpoint by continuity of `mellinInv` (dominated convergence). |
+| `RHTower/BurnolPowerLineIntegral` | `(1/2π)∫ M(f)(σ+iτ)k^{-(σ+iτ)}dτ = d/k` for `1/2 < σ < 1`: the line integral *is* the inverse Mellin transform at `1/k`, after `y ↦ −y` and `(1/k)^z = k^{-z}`. |
+| `RHTower/BurnolPowerLineShift` | the rectangle `[σ,2]×[−T,T]` for `M(f)(s)k^{-s}`: one simple pole at `s = 1` with residue `−d/k` (because `N(1) = d`), horizontal sides killed by quick decrease, hence **the `Re s = 2` integral vanishes**.  Also the reusable `integrable_line_of_stripRapidDecrease`. |
+| `RHTower/BurnolMoebiusLine` | `1/ζ = Σ μ(k)k^{-s}` on `Re s = 2` (mathlib's `LSeries_zeta_mul_Lseries_moebius`) and the term-by-term integration (`integral_tsum_of_summable_integral_norm`, majorant `k^{-2}·∫‖M‖`): **`∫_{Re s = 2} M/ζ = 0`**. |
+| `RHTower/BurnolQuotientContour` | the integrand `M/ζ`, its order (`ord M − ord ζ`), the rectangle `[−1,2]×[−T,T]` — which meets **no trivial zero at all** — and the horizontal-edge estimate without the Cauchy factor. |
+| `RHTower/BurnolPropFiveFour` | the reflection `M(s)/ζ(s) = M(F₊f)(1−s)/ζ(1−s)` on `Re s = −1` (**this is where Lemma 4.10 is needed**), integrability on both lines, and the assembly. |
+
+With this, **§5 is complete** except for the `L²`-in-`Z` half of Theorem 5.2.  Remark 15 is a
+citation of Ramanujan's formula, not a claim proved in the paper.
+
+## Proposition 6.2 for `a > 1` — CLOSED (2026-08-23), again without Krein
+
+`RHTower/BurnolCompletenessOmit.eq_zero_of_zeta_dvd_off_finite`, axiom-clean: a vector of `L_b`
+(`b > 1`) whose continued Mellin transform is divisible by `ζ` at every nontrivial zero **outside an
+arbitrary finite set `R`** is zero.  So the evaluators stay complete after omitting arbitrarily
+finitely many — Burnol's Proposition 6.2, and with it the "not minimal" half of the `a > 1` picture.
+
+Where Burnol invokes Krein's theorem (an entire function of bounded characteristic in two
+half-planes has finite exponential type, and its type is `log A < 0`, so it vanishes), the route
+here is elementary:
+
+1. `BurnolResidueShape` — the residue of Burnol's integrand at `ρ` is `ζ(Z)` times the **principal
+   part of `M(f)/ζ` at `ρ`, evaluated at `Z`** (this is Burnol's own parenthetical remark in
+   Theorem 5.2, now a theorem).  It rests on the new `HTGeometry/CauchyKernelResidue`:
+   `Res_{s=ρ} H(s)/(Z−s) = (principal part of H at ρ)(Z)`.
+2. `BurnolFiniteExceptional` — with only finitely many exceptional zeros, Theorem 5.2's series is
+   eventually a *fixed finite sum*, so `M(f)(Z) = ζ(Z)·(sum of principal parts)(Z)`: the transform
+   is `ζ` times a **rational** function.
+3. `HTGeometry/PrincipalPartPolynomial` — clearing denominators turns that rational function into a
+   genuine `Polynomial ℂ`; a polynomial whose values along the real axis tend to `0` is `0`.
+4. `RHTower/MellinRealDecay` — `‖M(g)(σ)‖ ≤ C·b^{-σ}` for `σ ≥ 2` (head plus Cauchy--Schwarz tail),
+   and `RHTower/MultiplierRealBound` — the smoothing multiplier costs at most `e^{Rσ}`, so choosing
+   the smoothing width `R < log b` keeps the decay: base `e^R/b < 1`.
+5. `HTGeometry/PolyTimesGeometricDecay` — `(σ+M)^N A^σ → 0` for `A < 1`.
+
+**This is the reason the `a = 1` case is genuinely different**: there the aperture decay base is
+`1`, so step 4 gives nothing, and no amount of contour work replaces Krein.
+
+## §6 further — Prop 6.6 and the second half of Prop 6.4 (2026-08-23)
+
+* `RHTower/BurnolSonineCompleteness` — `K_a ⊆ L_a` restricts Props 6.1/6.2 to the Sonine space, so
+  for `a > 1` the evaluators span `K_a`, and still do after omitting finitely many: **Proposition
+  6.6** (`eq_zero_of_zeta_dvd_off_finite_soninCarrier`).
+* `RHTower/SoninModelBridge` — the two models of `L_a` agree: an *even* vector with constant head on
+  `(0,a)` for itself and its cosine transform lies in `centralSoninExtendedCarrier a`.  This is what
+  lets the co-Poisson machinery (stated in `soninExtendedSpace`) feed the residue machinery (stated
+  in `centralSoninExtendedCarrier`).
+* `RHTower/BurnolCoPoissonNotComplete.exists_nonzero_zeta_dvd_of_aperture_lt_one` — **Proposition
+  6.4, second half**: for `0 < a < 1` the explicit co-Poisson vector is nonzero, lies in `L_a`, and
+  its continued Mellin transform is `(a^{-w} − a^{w})·ζ(w)/w`, hence divisible by `ζ` at every
+  nontrivial zero.  So the evaluators are **not** complete below aperture one.
+
+Together with Prop 6.1/6.2 this pins the threshold: complete for `a > 1`, not complete for `a < 1`.
+The value `a = 1` itself remains gated on Krein's theorem.
+
+**Name-collision note.**  `ofReal_inv_cpow` already existed in `RHTower/ArchimedeanMellinFourier`;
+the copy introduced here was renamed `ofReal_one_div_cpow_eq_neg`.  `lean_dupcheck.py` did not catch
+it because the two modules were not in each other's import closure at the time — a global grep over
+the theorem area is the reliable check.
