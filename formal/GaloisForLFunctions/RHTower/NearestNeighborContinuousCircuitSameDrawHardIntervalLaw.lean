@@ -31,6 +31,9 @@ Gaussian ensemble has:
 
 * the fixed-error laboratory-time linear circuit lower bound throughout its
   full nonempty certified window; and
+* for every gate cutoff, the corresponding post-onset laboratory window has
+  no return to the complete continuous two-qubit circuit set, rather than
+  merely no return to the initial channel; and
 * one fixed positive error and one fixed positive width such that every
   bounded-gap time window contains an interval excluding all arbitrary
   continuous two-qubit circuits of depth at most
@@ -56,6 +59,12 @@ theorem eventually_exists_nearestNeighborPath_sameDraw_growth_continuousCircuitH
           operatorTwoGateComplexityTo L (1 / 10000 : ℝ)
             (unitaryEvolution (nearestNeighborPathLocalHamiltonian L p)
               ((1 / 10000 : ℝ) * L)) ∧
+        (∀ s : ℕ, ¬ ∃ t : ℝ,
+          2048 * Real.pi * (1 / 10000 : ℝ) ≤ t ∧
+          256 * Real.pi * (1 / 10000 : ℝ) * (s + 1) ≤ t ∧
+          t ≤ (1 / 10000 : ℝ) * L ∧
+          InTwoGateCircuitSetAtMost (1 / 10000 : ℝ)
+            (unitaryEvolution (nearestNeighborPathLocalHamiltonian L p) t) s) ∧
         (∃ ε : ℝ, 0 < ε ∧ ∃ W : ℝ, 0 < W ∧ ∃ gap : ℝ, 0 ≤ gap ∧
           ∀ a : ℝ, ∃ u ∈ Set.Icc a (a + gap),
             ∀ t ∈ Set.Icc u (u + W),
@@ -107,8 +116,18 @@ theorem eventually_exists_nearestNeighborPath_sameDraw_growth_continuousCircuitH
     intro t htMin htLab
     exact hp.2 t htMin htLab htLab
   have hend := hgrowth ((1 / 10000 : ℝ) * L)
-    (by nlinarith : 2048 * Real.pi * (1 / 10000 : ℝ) ≤
+      (by nlinarith : 2048 * Real.pi * (1 / 10000 : ℝ) ≤
       (1 / 10000 : ℝ) * L) le_rfl
+  have hfirstReturn : ∀ s : ℕ, ¬ ∃ t : ℝ,
+      2048 * Real.pi * (1 / 10000 : ℝ) ≤ t ∧
+      256 * Real.pi * (1 / 10000 : ℝ) * (s + 1) ≤ t ∧
+      t ≤ (1 / 10000 : ℝ) * L ∧
+      InTwoGateCircuitSetAtMost (1 / 10000 : ℝ)
+        (unitaryEvolution (nearestNeighborPathLocalHamiltonian L p) t) s := by
+    intro s
+    rintro ⟨t, htMin, htCircuit, htLab, hreturn⟩
+    exact nearestNeighborPathGaussianGrowthMaximalEvent_uniform_circuitSet_avoidance
+      hp (by norm_num : (0 : ℝ) < 1 / 10000) t htMin htCircuit htLab htLab hreturn
   let d := nearestNeighborPathProjectiveDimension L
   let e : (Fin (L * 2) → Bool) ≃ Fin (d + 1) :=
     (pairQubitPathConfigurationEquiv L).symm.trans
@@ -130,6 +149,6 @@ theorem eventually_exists_nearestNeighborPath_sameDraw_growth_continuousCircuitH
       e (pairQubitProjectivePauliSeed_isHermitian L p) hmax hs
   have hnonHaar : NearestNeighborPathPermanentLocalityHaarSeparation L p :=
     nearestNeighborPath_permanentLocalityHaarSeparation hLpos hp.1 hsep
-  exact ⟨p, hgrowth, hend, hhard, hnonHaar⟩
+  exact ⟨p, hgrowth, hend, hfirstReturn, hhard, hnonHaar⟩
 
 end RHTower

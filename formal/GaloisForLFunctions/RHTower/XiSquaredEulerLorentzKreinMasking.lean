@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.HiggsSpinorNullCone
 import GaloisForLFunctions.HTGeometry.RectangularKreinInertia
 import GaloisForLFunctions.RHTower.ThetaCuspCenterMixedFourPointParityWall
+import GaloisForLFunctions.RHTower.XiShiftedHankelBoundaryPadeContactParity
 import GaloisForLFunctions.RHTower.XiSquaredEulerRayTwoPointPositivity
 
 /-!
@@ -443,6 +444,167 @@ theorem squaredEulerReciprocalPacketJetMatrix_exact_negativeInertia
   exact rectangular_exact_neg_inertia
     (squaredEulerReciprocalPositiveFeature (N := N) t b X)
     (squaredEulerReciprocalNegativeFeature (N := N) t b X) hT
+
+/-! ## Exact inertia of actual finite shifted-Xi packets -/
+
+/-- The reciprocal atom built from the real and imaginary coordinates of a squared Xi node is
+the actual shifted reciprocal-square atom. -/
+theorem squaredEulerReciprocalAtom_xiSquaredNode_eq_shifted
+    {y : ℝ} (hy : 0 ≤ y) (q : XiZeroCopy) :
+    squaredEulerReciprocalAtom (xiSquaredNode q).re (xiSquaredNode q).im y =
+      xiShiftedReciprocalSquare y q := by
+  rw [squaredEulerReciprocalAtom, xiShiftedReciprocalSquare_eq_inv hy]
+  congr 1
+  apply Complex.ext <;> simp [add_comm]
+
+/-- A fold-distinct family of nonreal nodes remains distinct after adjoining every conjugate. -/
+theorem conjugateFoldPair_injective
+    {k : ℕ} (z : Fin k → ℂ)
+    (hfold : Function.Injective (fun i => complexConjugationFold (z i)))
+    (him : ∀ i, (z i).im ≠ 0) :
+    Function.Injective
+      (Sum.elim z (fun i => star (z i)) : Fin k ⊕ Fin k → ℂ) := by
+  rw [Sum.elim_injective]
+  refine ⟨?_, ?_, ?_⟩
+  · intro i j hij
+    apply hfold
+    change complexConjugationFold (z i) = complexConjugationFold (z j)
+    rw [hij]
+  · exact star_injective.comp (by
+      intro i j hij
+      apply hfold
+      change complexConjugationFold (z i) = complexConjugationFold (z j)
+      rw [hij])
+  · intro i j hij
+    have hfj : complexConjugationFold (z i) = complexConjugationFold (z j) := by
+      rw [hij]
+      exact complexConjugationFold_conj (z j)
+    have hij' : i = j := hfold hfj
+    subst j
+    have hi := congrArg Complex.im hij
+    apply him i
+    simp only [Complex.star_def, Complex.conj_im] at hi
+    linarith
+
+/-- Distinct folded off-critical Xi orbits give a collision-free atom/conjugate family. -/
+theorem xiShiftedReciprocalConjugateNodes_injective
+    {k : ℕ} (q : Fin k → XiZeroCopy) {y : ℝ} (hy : 0 ≤ y)
+    (hoff : ∀ i, ((q i).1 : ℂ).re ≠ 1 / 2)
+    (hfold : Function.Injective (fun i =>
+      complexConjugationFold (xiShiftedReciprocalSquare y (q i)))) :
+    Function.Injective
+      (squaredEulerReciprocalConjugateNodes
+        (fun i => (xiSquaredNode (q i)).re)
+        (fun i => (xiSquaredNode (q i)).im) y) := by
+  let z : Fin k → ℂ := fun i => xiShiftedReciprocalSquare y (q i)
+  have hzim : ∀ i, (z i).im ≠ 0 := by
+    intro i hzero
+    have hcentral : (xiZeroCopyReciprocalSquare (q i)).im = 0 :=
+      (xiShiftedReciprocalSquare_im_eq_zero_iff hy (q i)).mp hzero
+    have hline : ((q i).1 : ℂ).re = 1 / 2 :=
+      (xiCentralReciprocalSquare_im_eq_zero_iff (q i).1).mp (by
+        simpa only [xiZeroCopyReciprocalSquare_eq] using hcentral)
+    exact hoff i hline
+  have hpair : Function.Injective
+      (Sum.elim z (fun i => star (z i)) : Fin k ⊕ Fin k → ℂ) :=
+    conjugateFoldPair_injective z hfold hzim
+  have hcomp := hpair.comp finSumFinEquiv.symm.injective
+  intro a b hab
+  apply hcomp
+  change Sum.elim z (fun i => star (z i)) (finSumFinEquiv.symm a) =
+    Sum.elim z (fun i => star (z i)) (finSumFinEquiv.symm b)
+  simpa only [squaredEulerReciprocalConjugateNodes, z,
+    squaredEulerReciprocalAtom_xiSquaredNode_eq_shifted hy] using hab
+
+/-- Finite shifted-Xi reciprocal-power jet matrix. -/
+def xiShiftedReciprocalFinitePacketJetMatrix
+    {k N : ℕ} (q : Fin k → XiZeroCopy) (y : ℝ) : Matrix (Fin N) (Fin N) ℝ :=
+  fun p r => ∑ i,
+    (xiShiftedReciprocalSquare y (q i) ^ ((p : ℕ) + (r : ℕ) + 2)).re
+
+/-- The actual finite shifted-Xi jet is the squared-Euler reciprocal packet jet. -/
+theorem xiShiftedReciprocalFinitePacketJetMatrix_eq_squaredEuler
+    {k N : ℕ} (q : Fin k → XiZeroCopy) {y : ℝ} (hy : 0 ≤ y) :
+    xiShiftedReciprocalFinitePacketJetMatrix (N := N) q y =
+      squaredEulerReciprocalPacketJetMatrix
+        (N := N) (fun i => (xiSquaredNode (q i)).re)
+          (fun i => (xiSquaredNode (q i)).im) y := by
+  ext p r
+  simp only [xiShiftedReciprocalFinitePacketJetMatrix,
+    squaredEulerReciprocalPacketJetMatrix, squaredEulerReciprocalPowerMoment]
+  apply Finset.sum_congr rfl
+  intro i _
+  rw [squaredEulerReciprocalAtom_xiSquaredNode_eq_shifted hy]
+
+/-- Fold-distinct off-critical shifted-Xi atoms jointly interpolate all real and imaginary power
+features at the sharp order `2k`. -/
+theorem xiShiftedReciprocalFeaturesSurjective_of_fold_injective
+    {k : ℕ} (q : Fin k → XiZeroCopy) {y : ℝ} (hy : 0 ≤ y)
+    (hoff : ∀ i, ((q i).1 : ℂ).re ≠ 1 / 2)
+    (hfold : Function.Injective (fun i =>
+      complexConjugationFold (xiShiftedReciprocalSquare y (q i)))) :
+    SquaredEulerReciprocalFeaturesSurjective (N := k + k)
+      (fun i => (xiSquaredNode (q i)).re)
+      (fun i => (xiSquaredNode (q i)).im) y := by
+  apply squaredEulerReciprocalFeaturesSurjective_of_conjugateNodes_injective
+  · exact xiShiftedReciprocalConjugateNodes_injective q hy hoff hfold
+  · intro j
+    unfold squaredEulerReciprocalConjugateNodes
+    generalize hs : finSumFinEquiv.symm j = s
+    cases s with
+    | inl i =>
+        simp only [Sum.elim_inl]
+        rw [squaredEulerReciprocalAtom_xiSquaredNode_eq_shifted hy]
+        exact xiShiftedReciprocalSquare_ne_zero hy (q i)
+    | inr i =>
+        simp only [Sum.elim_inr]
+        apply star_ne_zero.mpr
+        rw [squaredEulerReciprocalAtom_xiSquaredNode_eq_shifted hy]
+        exact xiShiftedReciprocalSquare_ne_zero hy (q i)
+
+/-- **Exact finite shifted-Xi inertia.**  A packet of `k` distinct folded off-critical Xi orbits
+has exactly `k` negative directions at reciprocal-jet order `2k`.  Cross-orbit masking can hide
+low-order minors, but cannot remove any orbit's negative charge at full interpolation depth. -/
+theorem xiShiftedReciprocalFinitePacketJetMatrix_exact_negativeInertia
+    {k : ℕ} (q : Fin k → XiZeroCopy) {y : ℝ} (hy : 0 ≤ y)
+    (hoff : ∀ i, ((q i).1 : ℂ).re ≠ 1 / 2)
+    (hfold : Function.Injective (fun i =>
+      complexConjugationFold (xiShiftedReciprocalSquare y (q i)))) :
+    (∀ W : Submodule ℂ (Fin (k + k) → ℂ),
+        (∀ x ∈ W, x ≠ 0 →
+          (star x ⬝ᵥ
+            ((xiShiftedReciprocalFinitePacketJetMatrix (N := k + k) q y).map
+              Complex.ofReal).mulVec x).re < 0) →
+        Module.finrank ℂ W ≤ k) ∧
+      (∃ W : Submodule ℂ (Fin (k + k) → ℂ),
+        Module.finrank ℂ W = k ∧
+          ∀ x ∈ W, x ≠ 0 →
+            (star x ⬝ᵥ
+              ((xiShiftedReciprocalFinitePacketJetMatrix (N := k + k) q y).map
+                Complex.ofReal).mulVec x).re < 0) := by
+  rw [xiShiftedReciprocalFinitePacketJetMatrix_eq_squaredEuler q hy]
+  exact squaredEulerReciprocalPacketJetMatrix_exact_negativeInertia
+    (fun i => (xiSquaredNode (q i)).re)
+    (fun i => (xiSquaredNode (q i)).im) y
+    (xiShiftedReciprocalFeaturesSurjective_of_fold_injective q hy hoff hfold)
+
+/-- Fold injectivity of a finite Xi family is invariant under every nonnegative reciprocal mass
+shift.  Therefore the exact negative charge above is a conserved orbit count along the shift. -/
+theorem xiShiftedReciprocal_conjugationFold_injective_iff_shift
+    {k : ℕ} (q : Fin k → XiZeroCopy) {y v : ℝ} (hy : 0 ≤ y) (hv : 0 ≤ v) :
+    Function.Injective (fun i =>
+        complexConjugationFold (xiShiftedReciprocalSquare y (q i))) ↔
+      Function.Injective (fun i =>
+        complexConjugationFold (xiShiftedReciprocalSquare v (q i))) := by
+  constructor
+  · intro h i j hij
+    apply h
+    exact (conjugationFold_xiShiftedReciprocalSquare_eq_iff_shift
+      hy hv (q i) (q j)).mpr hij
+  · intro h i j hij
+    apply h
+    exact (conjugationFold_xiShiftedReciprocalSquare_eq_iff_shift
+      hy hv (q i) (q j)).mp hij
 
 end
 

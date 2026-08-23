@@ -98,9 +98,10 @@ theorem tendsto_primePoleCancellation :
   have hein : Tendsto (fun β : ℝ => ein (β - 1)) (𝓝[>] 1) (𝓝 0) := by
     refine tendsto_ein_nhdsWithin_zero.comp ?_
     refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
-    · have : Tendsto (fun β : ℝ => β - 1) (𝓝 1) (𝓝 0) := by
-        simpa using (continuous_id.sub continuous_const).tendsto (1 : ℝ)
-      exact this.mono_left nhdsWithin_le_nhds
+    · have h0 : Tendsto (fun β : ℝ => β - 1) (𝓝 1) (𝓝 0) := by
+        have hb : Tendsto (fun β : ℝ => β) (𝓝 (1 : ℝ)) (𝓝 1) := tendsto_id
+        simpa using hb.sub_const (1 : ℝ)
+      exact h0.mono_left nhdsWithin_le_nhds
     · filter_upwards [self_mem_nhdsWithin] with β hβ
       exact sub_pos.mpr (Set.mem_Ioi.mp hβ)
   have hcomb := ((hreg.add_const Real.eulerMascheroniConstant).sub hein)
