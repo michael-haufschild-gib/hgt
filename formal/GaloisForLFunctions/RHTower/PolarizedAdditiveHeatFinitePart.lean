@@ -53,6 +53,15 @@ theorem finite_riemannZeta_value_rankOne_gram
       ((‖∑ i ∈ S, c i * riemannZeta (s i)‖ ^ 2 : ℝ) : ℂ) := by
   simpa using finite_complex_rankOne_gram S c (fun i => riemannZeta (s i))
 
+/-- The real part of every finite zeta-value outer-product Gram is nonnegative. -/
+theorem finite_riemannZeta_value_rankOne_gram_re_nonneg
+    {ι : Type*} (S : Finset ι) (c s : ι → ℂ) :
+    0 ≤ (∑ i ∈ S, ∑ j ∈ S,
+      star (c i) * c j * riemannZeta (s j) * star (riemannZeta (s i))).re := by
+  rw [finite_riemannZeta_value_rankOne_gram]
+  simp only [Complex.ofReal_re]
+  exact sq_nonneg _
+
 end GaloisForLFunctions.RHTower
 
 end

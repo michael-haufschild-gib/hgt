@@ -1113,3 +1113,39 @@ What is left of that gate: the `L²(ℝ)` Fourier/Hardy bridge identifying the s
 (`RHTower/L2FourierReflection.lean`, `RHTower/SoninEvenCarrier.lean`).  Everything else on the
 card — the symbol split, the kernel, its bound, the form bound, and translation covariance — is
 now Lean.
+
+### Card 11: the causal superposition bridge
+
+`HTGeometry/ConductorKernelFubini.lean` (axiom-clean, wired)
+
+| item | declaration |
+|---|---|
+| the bare kernel `e^{-2r}/r` and its relation to the Hankel kernel | `conductorKernelBase`, `conductorHankelKernel_eq`, `conductorKernelBase_le` |
+| **the `λ`-integral of the rank-one kernels** | **`integral_lam_rankOne`** |
+| integrability of the rank-one family | `integrableOn_rankOne`, `lintegral_lam_rankOne` |
+| **the interchange inside a nonnegative form** | **`lintegral_rankOne_swap`** |
+
+`HTGeometry/ConductorCausalSuperposition.lean` (axiom-clean, wired)
+
+| item | declaration |
+|---|---|
+| the symbol in the causal Fourier normalization | `conductorAnalyticTwo`, `conductorAnalyticTwo_eq` |
+| its resolvent representation | `conductorAnalyticTwo_eq_resolvent` |
+| **the symbol is a superposition of transforms of causal exponentials** | **`conductorAnalyticTwo_eq_fourier_superposition`** |
+| the bounded difference in this normalization | `conductorAnalyticTwo_re`, **`abs_conductorSymbol_sub_analyticTwo_le`** |
+
+**Corpus reuse (fifth time).**  `HTGeometry/CausalFourierBridge.lean` already owns the Fourier
+convolution theorem for arbitrary integrable functions
+(`fourier_mul_convolution_eq_of_integrable`), the one-sided exponential
+`causalFourierExponential a` with `𝓕 (causalFourierExponential a) ξ = (a + 2iξ)⁻¹`
+(`fourier_causalFourierExponential`), its integrability, and the causality lemmas
+(`causalFourierExponential_eq_zero_of_neg`, `convolution_eq_zero_of_neg`).  That is exactly the
+Fourier layer this bridge needs; the corpus convention `(a + 2iξ)⁻¹` is matched by reading the
+earlier symbol at the doubled frequency, which is `conductorAnalyticTwo_eq`.
+
+**What is left of card 11's own gate.**  Identify the sesquilinear form of `[H_∞, P_0]` on a core
+of causal/anticausal functions with the Hankel form of `conductorKernelBase`, using
+`fourier_mul_convolution_eq_of_integrable` and the causality lemmas, then quote
+`lintegral_conductorHankel_form_le`.  Every other ingredient — the symbol split, the superposition,
+the kernel, the interchange, the form bound, translation covariance, and the algebraic identities
+`(2)`, `(5)`, `(6)`, `(7)`, `(8)` — is now Lean.

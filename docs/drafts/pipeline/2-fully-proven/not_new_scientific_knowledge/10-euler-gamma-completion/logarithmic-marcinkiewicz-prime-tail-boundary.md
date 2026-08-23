@@ -184,3 +184,17 @@ nonlocal coupling of Q_log to the M_0 residue graph: missing.               (15)
 The next scientifically admissible move is to construct or obstruct a canonical coupling between
 the quotient source tail and the vanishing-tail residue graph, without a chosen Banach limit,
 spectral operator, positivity criterion, or the desired critical-line membership condition.
+
+## Lean status
+
+`formal/GaloisForLFunctions/RHTower/PrimeShiftMarcinkiewiczBoundary.lean`
+now proves the exact critical-line absolute field equality to the unit field,
+equality of every finite Marcinkiewicz mass and tail mass, critical-line
+membership in the logarithmic layer, failure of the vanishing-tail layer, and
+right-half-plane vanishing-tail membership. The direct source check and
+self-contained axiom audit pass with only `propext`, `Classical.choice`, and
+`Quot.sound`.
+
+The left-half-plane exclusion, full quotient construction and norm statement,
+and Hahn–Banach/residue-graph portion are still unformalized. The card remains
+at stage 2.
