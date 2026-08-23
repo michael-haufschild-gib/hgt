@@ -280,3 +280,28 @@ This is the card's `(18)`, the sub-critical leading term.  What part `4`'s first
 is the Legendre step `Λ ∼ Aλ² ⟹ I ∼ q²/(4A)`, i.e. `I_α(q) ∼ [(1−2α)/(1−α)²]q²`.
 
 Card 11: 13 modules.
+
+## PART 4, FIRST REGIME CLOSED (2026-08-23)
+
+**`tendsto_rvRate_div_sq`**: for `0 ≤ α < 1/2`,
+```
+I_α(q)/q² → (1 − 2α)/(1 − α)²   as q → 0⁺,
+```
+which is the first line of the card's `(6)`.
+
+Chain:
+
+- `SteinhausCumulantPositive.lean` — `steinhausLogLaplace_pos` (strict convexity plus evenness:
+  `f(0) < (f(x)+f(−x))/2 = f(x)`) and `rvCumulant_pos`;
+- `SteinhausCumulantSlope.lean` — `steinhausLogLaplace_scale_le : log I₀(tx) ≤ t·log I₀(x)` for
+  `0 ≤ t ≤ 1` (convexity through the origin), hence
+  **`rvCumulant_slope_mono : (λ/δ)Λ_α(δ) ≤ Λ_α(λ)`** for `δ ≤ λ`;
+- `SteinhausSubcriticalRate.lean` — `eventually_le_rvRate_quad`: the tilt `λ = q/(2A′)` gives
+  `I_α(q) ≥ q²/(4A′)` for every `A′` above the true constant;
+- `SteinhausSubcriticalUpper.lean` — `eventually_rvRate_le_quad`: below `δ` the quadratic lower
+  bound caps every tilt at `q²/(4A″)`, and beyond `δ` the nondecreasing slope makes the tilt value
+  NEGATIVE once `q < Λ_α(δ)/δ`, which is where `rvCumulant_pos` is used;
+- `SteinhausSubcriticalLimit.lean` — the two halves assembled through `tendsto_order`.
+
+Card 11: 18 modules.  Remaining: the critical (`α = 1/2`) and super-critical (`α > 1/2`) lines of
+part `4`, part `5`, the LDP (`S8`), and Karamata (`S9`).

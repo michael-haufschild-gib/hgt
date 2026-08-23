@@ -927,3 +927,52 @@ subtracting the two Abel identities and using `|E(t)| ≤ C t e^{-c√log t}` wi
 logarithmic singularity; the corpus owns the real `expIntegralOne` in
 `RHTower/ExponentialIntegralE1.lean` and the `ζ`-pole layer in `RHTower/ZetaLogDerivResidue.lean`
 and `RHTower/ZetaResidueFactorDerivative.lean`.
+
+### Card 5, §3A: (20a)–(20b), (20h)–(20n) CLOSED
+
+Three new axiom-clean modules, all wired into `RHTower.lean`.
+
+`RHTower/PrimeVacuumCurrent.lean`
+
+| item | declaration |
+|---|---|
+| `(20a)` `J₀(X) = ∫_e^X dt/log t` | `logIntegralCount`, `hasDerivAt_logIntegralCount` |
+| `(20b)` the interval suspension | `primeVacuumTail`, `primeVacuumValue`, `primeVacuumCurrent` |
+| tail-integral differentiation | `integral_Ioi_eq_sub`, **`hasDerivAt_integral_Ioi`** |
+| the vacuum Abel transform | `vacuumAbelRHS`, `primeVacuumTail_eq_vacuumAbelRHS`, **`primeVacuumTail_eq_window`** |
+
+`RHTower/PrimeVacuumErrorTransfer.lean`
+
+| item | declaration |
+|---|---|
+| the undo-a-logarithm kernel | `logSqKernel`, **`inv_log_eq_add_integral`** |
+| arithmetic summatory identity | **`primeTailCount_eq_psi_integral`** |
+| continuous summatory identity | `logIntegralAux`, **`logIntegralCount_eq_aux`** |
+| envelope facts | `tendsto_mul_exp_neg_sqrt_log`, `eventually_sqrt_le_envelope`, `integral_exp_neg_sqrt_log_le` |
+| **`(20i)`** | **`exists_primeTailCount_sub_logIntegralCount_bound`** |
+
+`RHTower/PrimeVacuumFlatRemainder.lean`
+
+| item | declaration |
+|---|---|
+| `(20h)` | `primeRemainderTail`, `primeRemainderCurrent`, `primeRemainderTail_eq` |
+| the remainder norm bound | **`norm_primeRemainderTail_le`** |
+| changing the cut | `cutOf`, `norm_primeVacuumTail_sub'`, `sqrt_log_div_two_ge` |
+| the vacuum lower bound | **`norm_primeVacuumTail_ge`**, `norm_primeVacuumCurrent_exp_ge` |
+| **`(20j)`** | `exists_norm_remainder_at_cut_bound`, **`exists_norm_primeRemainderCurrent_bound`** |
+| **`(20l)`, `(20m)`** | `tendsto_pow_mul_exp_neg_sqrt`, **`tendsto_pow_mul_flatRatio`** |
+| **`(20n)`** | **`exists_norm_logHalfDensity_primeRemainderCurrent_bound`** |
+
+The decisive design choice: **the vacuum Abel transform is proved by differentiation, not by
+Fubini.**  Both sides have derivative `-y^{-z}/log y` in the cut and vanish at infinity, so a single
+FTC step on `[y, Y]` plus a limit identifies them; this avoids product-measure Fubini entirely.
+The same trick proves `(20a)`'s kernel representation `J₀(X) = (X-e)/log X + ∫_e^X (u-e)/(u log²u)`.
+
+`(20i)` avoids Stieltjes integration by parts.  Writing `1/log n = 1/log X + ∫_n^X dt/(t log² t)`
+and summing against the von Mangoldt weights turns `J` into `ψ(X)/log X + ∫_1^X ψ(t)/(t log² t) dt`
+by a **finite** sum–integral interchange; the same identity for the continuous density gives
+`J₀`, and the two differ only through `ψ(t) - t`.  Splitting the resulting integral at `√X` and
+using `e^{-c√log t} ≤ e^{-c√log √X}` on the upper half yields the exponent `c/√2`.
+
+**Card 5 remaining: `(20c)`–`(20g)` only** — the identification `V(z) = E₁(z-1)`, the Mellin
+identity `(20d)`, and the holomorphy of `P - V` at `z = 1`.

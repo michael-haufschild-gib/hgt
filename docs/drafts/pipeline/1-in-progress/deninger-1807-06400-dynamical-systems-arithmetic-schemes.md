@@ -178,6 +178,8 @@ and the relation to the Fargues–Fontaine curve) into the corpus as closed Lean
 | **Thm 5.2, the isotropy condition on `X̌ (C)`**: `F_{ν/ν'}` fixes a class `F_μ^{-1} (x, P)` exactly when `P^{νa} = P^{ν'b}` for some `a, b ∈ N₀` with `μa = μb`; and over an algebraically closed residue field a character with finite kernel has **trivial isotropy** | `RHTower/DeningerDynSysColimIsotropy.lean` | closed |
 | **Thm 5.2, the Galois-twisted conclusion**: with the twist `σ` the `c`-th power map, the isotropy condition forces `ν = ν' c`, i.e. `q = p^a` | `RHTower/DeningerDynSysColimIsotropy.lean` | closed |
 | **§6, the suspension `S ×_Q R` and Thm 6.1's isotropy**: the quotient of `S × R` by `(s,u) q = (q • s, ι(q)^{-1} u)`, its `R`-action through the second factor, and the isotropy law `(R)_{[s,u]} = ι ((Q)_s)`; in particular trivial isotropy in `Q` gives trivial isotropy in `R` | `HTGeometry/SuspensionAction.lean` | closed |
+| **mathlib gap**: in the AKLB setup with `L/K` Galois **but not necessarily finite**, the integral closure `B` of `A` in `L` is an invariant extension of `A`; and the Galois action on `B` is continuous for the discrete topology, because stabilisers are open | `HTGeometry/InfiniteGaloisInvariant.lean` | closed |
+| **Prop 3.5, the affine input in Deninger's own setting**: for a normal domain `A` with fraction field `K`, an arbitrary Galois `L/K` and the integral closure `B`, homomorphisms of `B` into an algebraically closed field restrict **onto** those of `A`, with fibres exactly the Galois orbits | `RHTower/DeningerDynSysAKLBPoints.lean` | closed |
 | **Cor 3.3, formal content**: for a normal subgroup `N ≤ G` acting on a set, `G` acts on the `N`-orbit space and `(S / N) / G = S / G` — Deninger's iterated descent `W_rat(X₁)(C)/G₁ = W_rat(X₀)(C)` | `HTGeometry/OrbitQuotientComposition.lean` | closed |
 | **Prop 1.1(b) in ring form over a domain**: `ω : ℤ[A ∖ 0] ≃+* W_rat(A)` for an integrally closed domain with algebraically closed fraction field, and the consequence `Hom_ring(W_rat(A), R) ≃ (A →*₀ R)` used for the `𝒪`-valued points | `RHTower/DeningerDynSysOmegaDomainRing.lean` | closed |
 | **Prop 1.1(b) (`t21nn`) in ring form**: `ω : ℤ[κˣ] ≃+* W_rat(κ)` for `κ` algebraically closed — the additive comparison is multiplicative because both sides are biadditive and `[a]⊙[b] = [ab]` | `RHTower/DeningerDynSysOmegaRing.lean` | closed |
@@ -1034,3 +1036,32 @@ Nothing in v4 is untracked by the ledger: the only apparent omission, Prop 1.4, 
   `(R^{>0})_{x₀} = N_{x₀}^ℤ` once Theorem 5.2 identifies `(Q^{>0}_0)_{P₀}`; and the previous batch
   proved that identification.
   Axiom audit: `[propext, Quot.sound]`.
+
+- 2026-08-23 — **The normalization gate's ring-level input is closed: infinite AKLB invariance.**
+  mathlib's `Algebra.isInvariant_of_isGalois` carries `[FiniteDimensional K L]`, which Deninger's
+  setting violates — there `L` is an algebraic closure of the function field.
+  `isInvariant_of_isGalois_infinite` removes it: a fixed element of the integral closure lies in
+  `K` by `InfiniteGalois.mem_range_algebraMap_iff_fixed` (which holds for arbitrary Galois
+  extensions), and being integral over the integrally closed `A` it lies in `A`.
+  Alongside it, `continuousSMul_integralClosure`: the Galois action on the integral closure is
+  continuous for the discrete topology, because the stabiliser of `b` is the stabiliser of its
+  image in `L`, which is open by mathlib's `stabilizer_isOpen_of_isIntegral`.
+  These are exactly the two hypotheses that `deningerHom_restrict_surjective` and
+  `deningerHom_restrict_eq_iff` — the corpus's Kucharczyk–Scholze Lemma 4.9 — need, so the affine
+  input of Proposition 3.5 is now available in Deninger's own setting rather than only abstractly.
+  Axiom audit: `[propext, Classical.choice, Quot.sound]`.
+
+- 2026-08-23 — **Proposition 3.5's affine input is now instantiated in Deninger's own setting.**
+  `deningerAKLB_restrict_surjective` and `deningerAKLB_restrict_eq_iff` are Kucharczyk–Scholze
+  Lemma 4.9 for the concrete AKLB datum `A` normal with fraction field `K`, `L / K` Galois of
+  arbitrary degree, `B` the integral closure of `A` in `L`.  All four hypotheses of the corpus's
+  abstract version are discharged there: the Galois group is compact by
+  `compactSpace_algEquiv_of_normal` (the instance proved earlier this session, which is what makes
+  the infinite case legal), totally disconnected and a topological group by the Krull topology;
+  the action on `B` is continuous by `continuousSMul_integralClosure`; `A` is the invariant subring
+  by `isInvariant_of_isGalois_infinite`; and the action is `A`-linear because `galRestrict` lands
+  in `A`-algebra automorphisms.
+  Together with `deningerSchemePoint_surjective` and `deningerSchemePoint_conjugate` this is
+  Proposition 3.5 with every input proved rather than assumed — the affine case in Deninger's
+  setting, and the passage from affine opens to a general base.
+  Axiom audit: `[propext, Classical.choice, Quot.sound]`.

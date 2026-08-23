@@ -1231,3 +1231,34 @@ Consequences:
 
 Remaining: Proposition 6.5 (the `a = 1` shortened `Z¹` system), the `L²`-in-`Z` half of Theorem 5.2,
 Theorems 7.7–7.10 (Levin), and capstone 3.3's minimality half.
+
+## The evaluator layer — started (2026-08-23): `RHTower/SoninStripEvaluator`
+
+Burnol's evaluators are the Riesz vectors of `f ↦ M(f)^{(k)}(w)` on `L_a`.  Everything so far has
+been phrased in the *jet* dictionary precisely because those vectors were missing; they are what
+Theorem 3.3's minimality half (and the abstract `IsMinimalSystem`/`IsCompleteSystem` restatements)
+still need.
+
+**The plan that makes them cheap.**  The head/tail estimate bounds `|M(f)(w)|` by `C(w)‖f‖` with
+`C(w) ∼ (2 Re w − 1)^{-1/2}` — fine for `Re w > 1/2`, useless on the critical line, which is exactly
+where the zeros sit.  Instead of the circle-average argument (which needs the integrability of
+`|cos θ|^{-1/2}`), use **Banach–Steinhaus**: `L_a` is a closed subspace of `L²`, hence complete; the
+functionals `Λ_{w+1/n}` are bounded; and `Λ_{w+1/n} f = M(f)(w + 1/n) → M(f)(w)` for every fixed `f`
+because `M(f)` is analytic.  `continuousLinearMapOfTendsto` then hands over boundedness of the limit
+functional for free.  Left of the line, `Λ_w = χ(1−w)^{-1}·Λ_{1−w} ∘ F₊` by
+`chi_mul_extendedMellinContinuation_one_sub`.  Jets follow by the same trick from difference
+quotients.
+
+Landed so far (all axiom-clean):
+
+* `soninEvenExtended a` — the even part of `L_a` as a submodule, with `isClosed_soninEvenExtended`
+  and the `CompleteSpace` instance (the Banach–Steinhaus prerequisite);
+* `soninBandConst a f` — the band average, `= d` on `L_a` (`soninBandConst_eq`), with
+  `norm_soninBandConst_le`;
+* `norm_tail_cpow_le` — the complex-exponent tail Cauchy–Schwarz bound
+  `‖∫_b^∞ t^{-w}g‖ ≤ (b^{1−2Re w}/(2Re w−1))^{1/2}‖g‖` for `Re w > 1/2`;
+* `soninMellinIntegral_split`, `norm_soninMellinIntegral_le` — the head/tail split and the explicit
+  bound `|M(f)(w)| ≤ C(a,w)·‖f‖` on `1/2 < Re w < 1`.
+
+Next: package it as a `→L[ℂ] ℂ`, extend across the critical line by Banach–Steinhaus and to the left
+by the functional equation, differentiate for the jets, take Riesz vectors, and prove Theorem 3.3.

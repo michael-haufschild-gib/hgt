@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.ABHN.RestrictedBrauerGroup
 import GaloisForLFunctions.HTGeometry.ABHN.Specification
+import GaloisForLFunctions.HTGeometry.ABHN.RatModIntTorsion
 
 /-!
 # Summing local invariants on restricted Brauer families
@@ -24,6 +25,21 @@ noncomputable def finsuppRatModIntSumAddHom (ι : Type u) :
       map_zero' := Finsupp.sum_zero_index
       map_add' := fun f g ↦ Finsupp.sum_add_index (by intros; rfl) (by intros; rfl) }
 
+/-- Summing a finite profile whose values are all `n`-torsion remains in that torsion layer. -/
+theorem finsuppRatModIntSum_mem_ratModIntNTorsion
+    {ι : Type*} (n : ℕ) (x : ι →₀ RatModInt)
+    (hx : ∀ i, x i ∈ ratModIntNTorsion n) :
+    finsuppRatModIntSumAddHom ι x ∈ ratModIntNTorsion n := by
+  have hnx : n • x = 0 := by
+    ext i
+    change n • x i = 0
+    exact hx i
+  change n • finsuppRatModIntSumAddHom ι x = 0
+  calc
+    n • finsuppRatModIntSumAddHom ι x = finsuppRatModIntSumAddHom ι (n • x) :=
+      ((finsuppRatModIntSumAddHom ι).map_nsmul n x).symm
+    _ = 0 := by rw [hnx]; exact (finsuppRatModIntSumAddHom ι).map_zero
+
 /-- Evaluate a number-field restricted local Brauer family under local invariant maps and retain
 the resulting finite support. -/
 noncomputable def numberFieldLocalInvariantFinsupp
@@ -47,6 +63,18 @@ theorem numberFieldLocalInvariantFinsupp_apply
     (x : RestrictedLocalBrauerClasses K) (v : NumberFieldPlace K) :
     numberFieldLocalInvariantFinsupp K invariant x v = invariant v (x.toLocalBrauerClasses v) :=
   Finsupp.onFinset_apply
+
+/-- Every number-field restricted local-invariant profile has one positive common torsion
+denominator.  This is the finite-level reduction of the ABHN target, independent of the missing
+local invariant classification. -/
+theorem numberFieldLocalInvariantFinsupp_exists_nonzero_common_ratModIntTorsion
+    (K : Type u) [Field K] [NumberField K]
+    (invariant : ∀ v : NumberFieldPlace K, BrauerGroup (completion K v) →+ RatModInt)
+    (x : RestrictedLocalBrauerClasses K) :
+    ∃ n : ℕ, n ≠ 0 ∧ ∀ v,
+      numberFieldLocalInvariantFinsupp K invariant x v ∈ ratModIntNTorsion n :=
+  finsupp_exists_nonzero_common_ratModIntTorsion
+    (numberFieldLocalInvariantFinsupp K invariant x)
 
 /-- Evaluation by a family of number-field local invariants is additive on restricted families. -/
 noncomputable def numberFieldLocalInvariantFinsuppAddHom
@@ -74,6 +102,30 @@ noncomputable def numberFieldRestrictedInvariantSum
     RestrictedLocalBrauerClasses K →+ RatModInt :=
   (finsuppRatModIntSumAddHom (NumberFieldPlace K)).comp
     (numberFieldLocalInvariantFinsuppAddHom K invariant)
+
+/-- A number-field restricted invariant sum stays in every common torsion layer of its local
+profile. -/
+theorem numberFieldRestrictedInvariantSum_mem_ratModIntNTorsion
+    (K : Type u) [Field K] [NumberField K]
+    (invariant : ∀ v : NumberFieldPlace K, BrauerGroup (completion K v) →+ RatModInt)
+    (n : ℕ) (x : RestrictedLocalBrauerClasses K)
+    (hx : ∀ v, numberFieldLocalInvariantFinsupp K invariant x v ∈ ratModIntNTorsion n) :
+    numberFieldRestrictedInvariantSum K invariant x ∈ ratModIntNTorsion n := by
+  change finsuppRatModIntSumAddHom (NumberFieldPlace K)
+    (numberFieldLocalInvariantFinsupp K invariant x) ∈ ratModIntNTorsion n
+  exact finsuppRatModIntSum_mem_ratModIntNTorsion n
+    (numberFieldLocalInvariantFinsupp K invariant x) hx
+
+/-- Every number-field restricted invariant sum has a positive finite torsion denominator coming
+from its entire local profile. -/
+theorem numberFieldRestrictedInvariantSum_exists_nonzero_ratModIntTorsion
+    (K : Type u) [Field K] [NumberField K]
+    (invariant : ∀ v : NumberFieldPlace K, BrauerGroup (completion K v) →+ RatModInt)
+    (x : RestrictedLocalBrauerClasses K) :
+    ∃ n : ℕ, n ≠ 0 ∧ numberFieldRestrictedInvariantSum K invariant x ∈ ratModIntNTorsion n := by
+  obtain ⟨n, hn, hx⟩ :=
+    numberFieldLocalInvariantFinsupp_exists_nonzero_common_ratModIntTorsion K invariant x
+  exact ⟨n, hn, numberFieldRestrictedInvariantSum_mem_ratModIntNTorsion K invariant n x hx⟩
 
 /-- The genuine global-reciprocity assertion once a localization map and all local invariants are
 available. -/
@@ -109,6 +161,18 @@ theorem rationalFunctionLocalInvariantFinsupp_apply
     rationalFunctionLocalInvariantFinsupp F invariant x v = invariant v (x.toLocalBrauerClasses v) :=
   Finsupp.onFinset_apply
 
+/-- Every rational-function-field restricted local-invariant profile has one positive common
+torsion denominator.  This is the finite-level reduction of its ABHN target. -/
+theorem rationalFunctionLocalInvariantFinsupp_exists_nonzero_common_ratModIntTorsion
+    (F : Type u) [Field F] [Finite F]
+    (invariant : ∀ v : RationalFunctionPlace F,
+      BrauerGroup (rationalFunctionCompletion F v) →+ RatModInt)
+    (x : RationalFunctionRestrictedLocalBrauerClasses F) :
+    ∃ n : ℕ, n ≠ 0 ∧ ∀ v,
+      rationalFunctionLocalInvariantFinsupp F invariant x v ∈ ratModIntNTorsion n :=
+  finsupp_exists_nonzero_common_ratModIntTorsion
+    (rationalFunctionLocalInvariantFinsupp F invariant x)
+
 /-- Evaluation by rational-function-field local invariants is additive on restricted families. -/
 noncomputable def rationalFunctionLocalInvariantFinsuppAddHom
     (F : Type u) [Field F] [Finite F]
@@ -137,6 +201,34 @@ noncomputable def rationalFunctionRestrictedInvariantSum
     RationalFunctionRestrictedLocalBrauerClasses F →+ RatModInt :=
   (finsuppRatModIntSumAddHom (RationalFunctionPlace F)).comp
     (rationalFunctionLocalInvariantFinsuppAddHom F invariant)
+
+/-- A rational-function-field restricted invariant sum stays in every common torsion layer of
+its local profile. -/
+theorem rationalFunctionRestrictedInvariantSum_mem_ratModIntNTorsion
+    (F : Type u) [Field F] [Finite F]
+    (invariant : ∀ v : RationalFunctionPlace F,
+      BrauerGroup (rationalFunctionCompletion F v) →+ RatModInt)
+    (n : ℕ) (x : RationalFunctionRestrictedLocalBrauerClasses F)
+    (hx : ∀ v, rationalFunctionLocalInvariantFinsupp F invariant x v ∈ ratModIntNTorsion n) :
+    rationalFunctionRestrictedInvariantSum F invariant x ∈ ratModIntNTorsion n := by
+  change finsuppRatModIntSumAddHom (RationalFunctionPlace F)
+    (rationalFunctionLocalInvariantFinsupp F invariant x) ∈ ratModIntNTorsion n
+  exact finsuppRatModIntSum_mem_ratModIntNTorsion n
+    (rationalFunctionLocalInvariantFinsupp F invariant x) hx
+
+/-- Every rational-function-field restricted invariant sum has a positive finite torsion
+denominator coming from its entire local profile. -/
+theorem rationalFunctionRestrictedInvariantSum_exists_nonzero_ratModIntTorsion
+    (F : Type u) [Field F] [Finite F]
+    (invariant : ∀ v : RationalFunctionPlace F,
+      BrauerGroup (rationalFunctionCompletion F v) →+ RatModInt)
+    (x : RationalFunctionRestrictedLocalBrauerClasses F) :
+    ∃ n : ℕ, n ≠ 0 ∧ rationalFunctionRestrictedInvariantSum F invariant x ∈
+      ratModIntNTorsion n := by
+  obtain ⟨n, hn, hx⟩ :=
+    rationalFunctionLocalInvariantFinsupp_exists_nonzero_common_ratModIntTorsion F invariant x
+  exact ⟨n, hn,
+    rationalFunctionRestrictedInvariantSum_mem_ratModIntNTorsion F invariant n x hx⟩
 
 /-- The genuine function-field global-reciprocity assertion once a localization map and all
 local invariants are available. -/

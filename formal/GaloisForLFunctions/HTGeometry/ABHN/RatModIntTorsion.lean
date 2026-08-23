@@ -96,6 +96,77 @@ noncomputable def zmodRatModIntAddEquivNTorsion (n : ℕ) (hn : n ≠ 0) :
       obtain ⟨y, hy⟩ := hx
       exact ⟨y, Subtype.ext hy⟩⟩
 
+/-- Every `ℚ/ℤ` class is killed by a positive finite denominator.  Thus the finite torsion
+levels exhaust the local-invariant target before any local Brauer comparison is imposed. -/
+theorem ratModInt_exists_nonzero_nsmul_eq_zero (x : RatModInt) :
+    ∃ n : ℕ, n ≠ 0 ∧ x ∈ ratModIntNTorsion n := by
+  obtain ⟨q, rfl⟩ := QuotientAddGroup.mk_surjective x
+  refine ⟨q.den, q.den_nz, ?_⟩
+  change q.den • (QuotientAddGroup.mk q : RatModInt) = 0
+  rw [← QuotientAddGroup.mk_nsmul]
+  apply (QuotientAddGroup.eq_zero_iff _).mpr
+  change q.den • q ∈ AddSubgroup.zmultiples (1 : ℚ)
+  have hden : (q.den : ℚ) ≠ 0 := Nat.cast_ne_zero.mpr q.den_nz
+  refine ⟨q.num, ?_⟩
+  change q.num • (1 : ℚ) = q.den • q
+  rw [zsmul_one, nsmul_eq_mul]
+  change (q.num : ℚ) = (q.den : ℚ) * q
+  have hq : q = (q.num : ℚ) / (q.den : ℚ) := q.num_div_den.symm
+  conv_rhs => arg 2; rw [hq]
+  exact (mul_div_cancel₀ _ hden).symm
+
+/-- `ℚ/ℤ` is the union of its finite torsion levels. -/
+theorem iUnion_ratModIntNTorsion :
+    ⋃ n : ℕ, (ratModIntNTorsion n : Set RatModInt) = Set.univ := by
+  ext x
+  constructor
+  · intro _
+    exact Set.mem_univ x
+  · intro _
+    obtain ⟨n, _, hx⟩ := ratModInt_exists_nonzero_nsmul_eq_zero x
+    exact Set.mem_iUnion.mpr ⟨n, hx⟩
+
+/-- Torsion-level inclusion follows divisibility of denominators. -/
+theorem ratModIntNTorsion_mono {m n : ℕ} (hmn : m ∣ n) :
+    ratModIntNTorsion m ≤ ratModIntNTorsion n := by
+  rintro x hx
+  rcases hmn with ⟨k, rfl⟩
+  change (m * k) • x = 0
+  rw [mul_nsmul, hx, nsmul_zero]
+
+/-- A finite collection of `ℚ/ℤ` values has one positive common torsion denominator. -/
+theorem finset_exists_nonzero_common_ratModIntTorsion (s : Finset RatModInt) :
+    ∃ n : ℕ, n ≠ 0 ∧ ∀ x ∈ s, x ∈ ratModIntNTorsion n := by
+  classical
+  choose d hdne hdmem using (fun x : RatModInt => ratModInt_exists_nonzero_nsmul_eq_zero x)
+  refine ⟨∏ x ∈ s, d x, ?_, ?_⟩
+  · rw [Finset.prod_ne_zero_iff]
+    intro x hx
+    exact hdne x
+  · intro x hx
+    apply ratModIntNTorsion_mono (Finset.dvd_prod_of_mem d hx)
+    exact hdmem x
+
+/-- Every finite-support `ℚ/ℤ` profile lands in one positive torsion layer.  This reduces a
+restricted ABHN invariant profile to a single finite denominator, while leaving the local
+Brauer realization at that denominator as a separate question. -/
+theorem finsupp_exists_nonzero_common_ratModIntTorsion
+    {ι : Type*} (x : ι →₀ RatModInt) :
+    ∃ n : ℕ, n ≠ 0 ∧ ∀ i, x i ∈ ratModIntNTorsion n := by
+  classical
+  obtain ⟨n, hn, htorsion⟩ :=
+    finset_exists_nonzero_common_ratModIntTorsion (x.support.image fun i => x i)
+  refine ⟨n, hn, ?_⟩
+  intro i
+  by_cases hi : i ∈ x.support
+  · apply htorsion (x i)
+    exact Finset.mem_image.mpr ⟨i, hi, rfl⟩
+  · have hzero : x i = 0 := by
+      by_contra hne
+      exact hi (Finsupp.mem_support_iff.mpr hne)
+    rw [hzero]
+    exact (ratModIntNTorsion n).zero_mem
+
 end
 
 end GaloisForLFunctions.HTGeometry.ABHN

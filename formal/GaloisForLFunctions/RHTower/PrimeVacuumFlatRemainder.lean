@@ -543,6 +543,175 @@ theorem primeRemainderCurrent_exp_eq {z : ℂ} {L : ℝ} (hL : 1 ≤ L) :
     exact max_eq_right (Real.exp_le_exp.mpr hL)
   rw [primeRemainderCurrent_eq hx hx1, hmax, ceilCut_inv, hinv]
 
+theorem exp_rpow (L a : ℝ) : (Real.exp L) ^ a = Real.exp (L * a) := by
+  rw [Real.rpow_def_of_pos (Real.exp_pos L), Real.log_exp]
+
+/-- **Card equation (20j).**  The vacuum-normalized arithmetic remainder obeys the
+prime-number-theorem envelope. -/
+theorem exists_norm_primeRemainderCurrent_bound {z : ℂ} (hz : 1 < z.re) :
+    ∃ K c : ℝ, 0 < c ∧ 0 ≤ K ∧ ∀ᶠ L : ℝ in atTop,
+      ‖primeRemainderCurrent z (Real.exp (-L))‖
+        ≤ K * (Real.exp L * Real.exp (-c * Real.sqrt L) + 1) := by
+  obtain ⟨K, c, hc, hK, hbound⟩ := exists_norm_remainder_at_cut_bound hz
+  obtain ⟨Y, hY⟩ := Filter.eventually_atTop.mp hbound
+  refine ⟨K, c, hc, hK, ?_⟩
+  filter_upwards [eventually_ge_atTop (1 : ℝ),
+    (Real.tendsto_exp_atTop.eventually_ge_atTop Y)] with L hL hYL
+  have hx : (0 : ℝ) < Real.exp (-L) := Real.exp_pos _
+  have hy : (0 : ℝ) < Real.exp L := Real.exp_pos _
+  have hcut := hY (Real.exp L) hYL
+  rw [primeRemainderCurrent_exp_eq hL, norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos hx]
+  have hnormpow : (Real.exp (-L)) ^ (-z).re = Real.exp (L * z.re) := by
+    rw [exp_rpow]
+    congr 1
+    simp
+  rw [hnormpow]
+  have hval : Real.exp L ^ (1 - z.re) * Real.exp (-c * Real.sqrt (Real.log (Real.exp L)))
+      + Real.exp L ^ (-z.re)
+      = Real.exp (L * (1 - z.re)) * Real.exp (-c * Real.sqrt L) + Real.exp (L * -z.re) := by
+    rw [exp_rpow, exp_rpow, Real.log_exp]
+  rw [hval] at hcut
+  have hstep : Real.exp (L * z.re)
+      * ‖primeTailSum z (cutOf (Real.exp L)) - primeVacuumTail z (Real.exp L)‖
+      ≤ Real.exp (L * z.re)
+        * (K * (Real.exp (L * (1 - z.re)) * Real.exp (-c * Real.sqrt L)
+          + Real.exp (L * -z.re))) :=
+    mul_le_mul_of_nonneg_left hcut (Real.exp_pos _).le
+  refine hstep.trans ?_
+  have hid1 : Real.exp (L * z.re) * Real.exp (L * (1 - z.re)) = Real.exp L := by
+    rw [← Real.exp_add]
+    congr 1
+    ring
+  have hid2 : Real.exp (L * z.re) * Real.exp (L * -z.re) = 1 := by
+    rw [← Real.exp_add]
+    simp
+  refine le_of_eq ?_
+  calc Real.exp (L * z.re) * (K * (Real.exp (L * (1 - z.re)) * Real.exp (-c * Real.sqrt L)
+        + Real.exp (L * -z.re)))
+      = K * ((Real.exp (L * z.re) * Real.exp (L * (1 - z.re))) * Real.exp (-c * Real.sqrt L)
+        + Real.exp (L * z.re) * Real.exp (L * -z.re)) := by ring
+    _ = K * (Real.exp L * Real.exp (-c * Real.sqrt L) + 1) := by rw [hid1, hid2]
+
+/-- **Card equation (20n).**  The absolute half-density envelope of the remainder. -/
+theorem exists_norm_logHalfDensity_primeRemainderCurrent_bound {z : ℂ} (hz : 1 < z.re) :
+    ∃ K c : ℝ, 0 < c ∧ 0 ≤ K ∧ ∀ᶠ L : ℝ in atTop,
+      ‖logHalfDensity (primeRemainderCurrent z) L‖
+        ≤ K * Real.exp (L / 2 - c * Real.sqrt L) := by
+  obtain ⟨K, c, hc, hK, hbound⟩ := exists_norm_primeRemainderCurrent_bound hz
+  refine ⟨2 * K, c, hc, by linarith, ?_⟩
+  filter_upwards [hbound, (Real.tendsto_sqrt_atTop.eventually_ge_atTop c),
+    eventually_ge_atTop (0 : ℝ)] with L hL hsq hL0
+  have hhalf : Real.exp (-L / 2) ≤ Real.exp (L / 2 - c * Real.sqrt L) := by
+    refine Real.exp_le_exp.mpr ?_
+    have hs : (0 : ℝ) ≤ Real.sqrt L := Real.sqrt_nonneg L
+    have hsL : Real.sqrt L * Real.sqrt L = L := Real.mul_self_sqrt hL0
+    nlinarith [hsq, hs, hsL, hc]
+  rw [logHalfDensity, norm_mul, Complex.norm_real, Real.norm_of_nonneg (Real.exp_pos _).le]
+  have hstep : Real.exp (-L / 2) * ‖primeRemainderCurrent z (Real.exp (-L))‖
+      ≤ Real.exp (-L / 2) * (K * (Real.exp L * Real.exp (-c * Real.sqrt L) + 1)) :=
+    mul_le_mul_of_nonneg_left hL (Real.exp_pos _).le
+  refine hstep.trans ?_
+  have hid : Real.exp (-L / 2) * (Real.exp L * Real.exp (-c * Real.sqrt L))
+      = Real.exp (L / 2 - c * Real.sqrt L) := by
+    rw [← Real.exp_add, ← Real.exp_add]
+    congr 1
+    ring
+  calc Real.exp (-L / 2) * (K * (Real.exp L * Real.exp (-c * Real.sqrt L) + 1))
+      = K * (Real.exp (-L / 2) * (Real.exp L * Real.exp (-c * Real.sqrt L)))
+        + K * Real.exp (-L / 2) := by ring
+    _ = K * Real.exp (L / 2 - c * Real.sqrt L) + K * Real.exp (-L / 2) := by rw [hid]
+    _ ≤ K * Real.exp (L / 2 - c * Real.sqrt L) + K * Real.exp (L / 2 - c * Real.sqrt L) := by
+        have := mul_le_mul_of_nonneg_left hhalf hK
+        linarith
+    _ = 2 * K * Real.exp (L / 2 - c * Real.sqrt L) := by ring
+
+theorem norm_primeVacuumCurrent_exp_ge {z : ℂ} (hz : 1 < z.re) {L : ℝ} (hL : 1 < L)
+    (hlog : 2 / (z.re - 1) ≤ L) :
+    Real.exp L / (2 * ‖z - 1‖ * L) ≤ ‖primeVacuumCurrent z (Real.exp (-L))‖ := by
+  have hx : (0 : ℝ) < Real.exp (-L) := Real.exp_pos _
+  have hinv : (Real.exp (-L))⁻¹ = Real.exp L := by rw [Real.exp_neg, inv_inv]
+  have hmax : max (Real.exp 1) (Real.exp (-L))⁻¹ = Real.exp L := by
+    rw [hinv]
+    exact max_eq_right (Real.exp_le_exp.mpr hL.le)
+  have hye : Real.exp 1 < Real.exp L := Real.exp_lt_exp.mpr hL
+  have hlogy : Real.log (Real.exp L) = L := Real.log_exp L
+  have hlow := norm_primeVacuumTail_ge hz hye (by rw [hlogy]; exact hlog)
+  rw [hlogy] at hlow
+  rw [primeVacuumCurrent, hmax, norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos hx]
+  have hnormpow : (Real.exp (-L)) ^ (-z).re = Real.exp (L * z.re) := by
+    rw [exp_rpow]
+    congr 1
+    simp
+  rw [hnormpow]
+  have hstep : Real.exp (L * z.re) * (Real.exp L ^ (1 - z.re) / (2 * ‖z - 1‖ * L))
+      ≤ Real.exp (L * z.re) * ‖primeVacuumTail z (Real.exp L)‖ :=
+    mul_le_mul_of_nonneg_left hlow (Real.exp_pos _).le
+  refine le_trans ?_ hstep
+  refine le_of_eq ?_
+  rw [exp_rpow]
+  have hid : Real.exp (L * z.re) * Real.exp (L * (1 - z.re)) = Real.exp L := by
+    rw [← Real.exp_add]
+    congr 1
+    ring
+  rw [← hid]
+  field_simp
+
+/-- **Card equations (20l) and (20m).**  The vacuum-normalized arithmetic remainder is
+all-orders flat in the logarithmic boundary coordinate. -/
+theorem tendsto_pow_mul_flatRatio {z : ℂ} (hz : 1 < z.re) (N : ℕ) :
+    Tendsto (fun L : ℝ => L ^ N * (‖primeRemainderCurrent z (Real.exp (-L))‖
+      / ‖primeVacuumCurrent z (Real.exp (-L))‖)) atTop (𝓝 0) := by
+  obtain ⟨K, c, hc, hK, hbound⟩ := exists_norm_primeRemainderCurrent_bound hz
+  have hzne1 : z - (1 : ℂ) ≠ 0 := by
+    refine sub_ne_zero.mpr ?_
+    intro h; rw [h] at hz; simp at hz
+  have hnz1 : (0 : ℝ) < ‖z - 1‖ := norm_pos_iff.mpr hzne1
+  have hmaj : Tendsto (fun L : ℝ => 2 * K * ‖z - 1‖
+      * (L ^ (N + 1) * Real.exp (-c * Real.sqrt L) + L ^ (N + 1) * Real.exp (-L)))
+      atTop (𝓝 0) := by
+    have h1 := tendsto_pow_mul_exp_neg_sqrt (N + 1) hc
+    have h2 := tendsto_pow_mul_exp_neg (N + 1)
+    simpa using (h1.add h2).const_mul (2 * K * ‖z - 1‖)
+  refine squeeze_zero_norm' ?_ hmaj
+  filter_upwards [hbound, eventually_gt_atTop (1 : ℝ),
+    eventually_ge_atTop (2 / (z.re - 1)), eventually_ge_atTop (0 : ℝ)] with L hL hL1 hLlog hL0
+  have hden := norm_primeVacuumCurrent_exp_ge hz hL1 hLlog
+  have hdenpos : (0 : ℝ) < Real.exp L / (2 * ‖z - 1‖ * L) := by
+    have : (0 : ℝ) < L := by linarith
+    positivity
+  have hdenpos' : (0 : ℝ) < ‖primeVacuumCurrent z (Real.exp (-L))‖ :=
+    lt_of_lt_of_le hdenpos hden
+  have hnn : (0 : ℝ) ≤ ‖primeRemainderCurrent z (Real.exp (-L))‖ := norm_nonneg _
+  have hratio : ‖primeRemainderCurrent z (Real.exp (-L))‖
+      / ‖primeVacuumCurrent z (Real.exp (-L))‖
+      ≤ (K * (Real.exp L * Real.exp (-c * Real.sqrt L) + 1))
+        / (Real.exp L / (2 * ‖z - 1‖ * L)) := by
+    have hnnK : (0 : ℝ) ≤ K * (Real.exp L * Real.exp (-c * Real.sqrt L) + 1) :=
+      le_trans hnn hL
+    calc ‖primeRemainderCurrent z (Real.exp (-L))‖ / ‖primeVacuumCurrent z (Real.exp (-L))‖
+        ≤ (K * (Real.exp L * Real.exp (-c * Real.sqrt L) + 1))
+            / ‖primeVacuumCurrent z (Real.exp (-L))‖ := by gcongr
+      _ ≤ (K * (Real.exp L * Real.exp (-c * Real.sqrt L) + 1))
+            / (Real.exp L / (2 * ‖z - 1‖ * L)) := by gcongr
+  have hval : (K * (Real.exp L * Real.exp (-c * Real.sqrt L) + 1))
+      / (Real.exp L / (2 * ‖z - 1‖ * L))
+      = 2 * K * ‖z - 1‖ * (L * Real.exp (-c * Real.sqrt L) + L * Real.exp (-L)) := by
+    have hexpne : Real.exp L ≠ 0 := ne_of_gt (Real.exp_pos L)
+    have hinvexp : Real.exp (-L) = (Real.exp L)⁻¹ := by rw [Real.exp_neg]
+    rw [hinvexp]
+    field_simp
+  rw [Real.norm_of_nonneg (by positivity)]
+  have hLpow : (0 : ℝ) ≤ L ^ N := by positivity
+  calc L ^ N * (‖primeRemainderCurrent z (Real.exp (-L))‖
+        / ‖primeVacuumCurrent z (Real.exp (-L))‖)
+      ≤ L ^ N * (2 * K * ‖z - 1‖ * (L * Real.exp (-c * Real.sqrt L) + L * Real.exp (-L))) := by
+        rw [← hval]
+        exact mul_le_mul_of_nonneg_left hratio hLpow
+    _ = 2 * K * ‖z - 1‖
+        * (L ^ (N + 1) * Real.exp (-c * Real.sqrt L) + L ^ (N + 1) * Real.exp (-L)) := by
+        rw [pow_succ]
+        ring
+
 end
 
 end RHTower
