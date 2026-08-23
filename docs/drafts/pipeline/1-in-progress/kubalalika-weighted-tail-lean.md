@@ -510,3 +510,21 @@ Card 12: 45 modules.  Every factor of `blockTypeIIEnergy` is now bounded by an e
 in `T, r, P, Q, L`:
 `C·Q·log L` (long energy), `(Q−P)` (diagonal length), `2L + 2L·H_L³` (short energy),
 `C₁·H√H + 2C₂√H` (gap sum).
+
+## The per-block type-II energy, assembled (2026-08-23)
+
+`BlockEnergyBound.lean` — **`blockTypeIIEnergy_le`**: at `P = 2^j`, `Q = min(2^{j+1}, L+1)`,
+```
+blockTypeIIEnergy T r A B L U V j
+    ≤ (C·Q·log L) · [ (Q−P)·E + E·2Σ_{h ≤ effGap} gapCorrBound … ],
+    E := Σ_{m ∈ effSet} |typeIIShort V m|².
+```
+The long-side factor comes from `exists_sum_typeIILong_sq_block_le` and the bracket from
+`pairSum_block_le`; the two are multiplied with `mul_le_mul` after rewriting
+`‖((x : ℝ) : ℂ)‖ = |x|`.
+
+This is the per-block bound in full.  What is left is the two outer summations —
+`Σ_{j ≤ log₂ L} √(blockTypeIIEnergy j)` and the sum over `r` — together with the choice of
+`U = V = W`.
+
+Card 12: 46 modules.

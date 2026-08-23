@@ -1281,3 +1281,43 @@ the Laurent coefficient of `M(f)/ζ` at `ρ`: writing `ζ(s) = (s−ρ)^m u(s)`,
 `(s−ρ)^{-l}` is the `(m−l)`-th Taylor coefficient of `M(f)·h` with `h = (s−ρ)^m/ζ`, a *finite*
 combination of the jet functionals — and on the witnesses `M(v_{ρ,l'})·h = (s−ρ)^{m−l'}` exactly, so
 the pairing is `δ_{l,l'}` on the nose.
+
+## Session log — Theorem 3.3, minimality half CLOSED
+
+New modules (all built, wired, dupcheck-clean, `#print axioms` = `[propext, Classical.choice, Quot.sound]`):
+
+* `HTGeometry/ShiftedMonomialJet.lean`
+  - `iterate_deriv_const_mul_sub_pow` — `deriv^[k] (c·(s−ρ)^n) = c·(n descFactorial k)·(s−ρ)^{n−k}`.
+  - `iteratedDeriv_sub_const_pow` — the jets of `(s−ρ)^n` at `ρ`: `n!` at `k = n`, else `0`.
+  - `iteratedDeriv_eq_zero_of_eventuallyEq_sub_pow_mul` — flat factor of order `m` kills jets below `m`
+    (centred at an arbitrary `ρ`, unlike the corpus versions which sit at `0`).
+* `RHTower/SoninStripEvaluator.lean` (appended)
+  - `analyticOnNhd_iteratedDeriv_mul`
+  - `exists_soninEvaluatorJetMul` — for any multiplier `h` analytic on an open `U ⊆` strip, the map
+    `f ↦ (M(f)·h)^{(k)}(w)` is a bounded functional at every `w ∈ U`.  Same Banach–Steinhaus
+    induction as `exists_soninEvaluatorJet`, with the multiplier carried through.
+* `RHTower/BurnolBiorthogonalJet.lean`
+  - `eventuallyEq_of_eventuallyEq_punctured`
+  - `exists_zetaLocalUnit` — on a neighbourhood of a zero `ρ` of order `m` inside the strip there is
+    an analytic `h` with `ζ·h = (s−ρ)^m` (take `h = 1/g` from the factorisation of `ζ`).
+  - `exists_zetaJetFunctional` — **the biorthogonal functional**: `Λ f = ((m−l)!)⁻¹·(M(f)·h)^{(m−l)}(ρ)`
+    returns `1` on the vector with transform `ζ/(s−ρ)^l` and `0` on every other `ζ/(s−ρ')^{l'}`.
+    Same zero: the germ is exactly the monomial `(s−ρ)^{m−l'}`, so the jet is `(m−l)!·δ_{l,l'}`.
+    Other zero: the germ carries the flat factor `(s−ρ)^m` and `m−l < m`.
+* `RHTower/BurnolTheoremThreeThree.lean`
+  - `isMinimalSystem_of_exists_functional` — separating bounded functionals give minimality.
+  - `IsZetaQuotientSystem`, `IsZetaQuotientSystem.isMinimalSystem`, `exists_zetaQuotientSystem`
+  - `burnol_theorem_three_three_minimal` — **Theorem 3.3, minimality half.**
+
+The functional is literally Burnol's "triangular linear combination of the evaluators `Y_{ρ,k}`,
+`0 ≤ k < m_ρ`": the Taylor coefficients of the local unit `h` supply the triangular coefficients.
+
+### Remaining
+1. Theorem 5.2's `L²`-in-`Z` half → Corollary 5.3 → Theorem 3.3's completeness half.
+2. Proposition 6.5 (a = 1, omit two top-order evaluators).  Route settled:
+   `θ = (M f/ζ)·(s−ρ₁)(s−ρ₂)/(s(s−1))` is entire once `order(M f/ζ) ≥ 1` at `0` and at `1`
+   (both hold when the two aperture constants vanish, i.e. on `K₁`), polynomially bounded by the
+   same three boundary estimates of `BurnolQuotientGrowth` times a bounded rational factor, and
+   `θ(σ) → 0` because the rational factor tends to `1`.  Minimality half needs `K₁` realisations of
+   `s(s−1)ζ(s)/((s−ρ₁)(s−ρ₂)(s−ρ)^l)`.
+3. Theorems 7.7–7.10 (Levin completely-regular growth).

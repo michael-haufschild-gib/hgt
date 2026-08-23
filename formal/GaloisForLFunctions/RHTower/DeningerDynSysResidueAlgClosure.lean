@@ -21,6 +21,8 @@ namespace RHTower
 
 open HTGeometry
 
+section General
+
 variable {A B : Type*} [CommRing A] [CommRing B] [Algebra A B]
 variable (P : Ideal A) (Q : Ideal B) [P.IsPrime] [Q.IsPrime] [Q.LiesOver P]
 variable (K L : Type*) [Field K] [Field L]
@@ -50,6 +52,8 @@ theorem deningerResidue_isAlgClosure [Algebra.IsIntegral A B] (h : IsMonicRootCl
   haveI := deningerResidue_isAlgClosed Q L h
   haveI := deningerResidue_isAlgebraic P Q K L
   exact ⟨‹_›, ‹_›⟩
+
+end General
 
 section IntegralClosure
 

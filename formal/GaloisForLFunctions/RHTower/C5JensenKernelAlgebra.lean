@@ -55,6 +55,20 @@ theorem c5JensenFirstOrderSection_singleFrequency
   refine Finset.sum_congr rfl fun i hi => ?_
   ring
 
+/-- A logarithmic prime perturbation has no zero-order contribution, so its
+finite Jensen kernel starts at positive derivative order. -/
+theorem c5JensenFirstOrderSection_singleFrequency_noConstant
+    (d : ℕ) (arch : ℕ → ℂ) (amplitude frequency X : ℂ) :
+    c5JensenFirstOrderSection d arch
+        (fun i => if i = 0 then 0 else amplitude * (-Complex.I * frequency) ^ i) X =
+      amplitude * ∑ i ∈ Finset.range (d + 1),
+        if i = 0 then 0 else
+          (-Complex.I * frequency) ^ i * c5JensenLeibnizCoefficient d arch i X := by
+  rw [c5JensenFirstOrderSection_eq_sum_coefficients]
+  rw [Finset.mul_sum]
+  refine Finset.sum_congr rfl fun i hi => ?_
+  split_ifs with h <;> ring
+
 end GaloisForLFunctions.RHTower
 
 end

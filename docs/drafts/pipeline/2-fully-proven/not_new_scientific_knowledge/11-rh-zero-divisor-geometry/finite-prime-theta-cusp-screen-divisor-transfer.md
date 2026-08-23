@@ -592,3 +592,9 @@ RH-bearing open theorem.
 - [x] novelty claim rejected as a bridge
 - [ ] sub-log-square reflected energy on every zero
 - [ ] RH
+
+## Lean status update (2026-08-23)
+
+`formal/GaloisForLFunctions/RHTower/ThetaCuspFinitePrimeParametricDerivatives.lean` now proves, on the actual even Hilbert carrier, the exact complex derivative of the ordered finite-prime Euler product and the left logarithmic-derivative reconstruction identity `F_N(s) · (F_N(s)⁻¹ F_N' (s)) = F_N' (s)` throughout the open right half-plane. It is wired into `RHTower.lean`; the leaf was checked with `lake env lean`, target-built as `GaloisForLFunctions.RHTower.ThetaCuspFinitePrimeParametricDerivatives`, and all new theorem declarations audit to only `propext`, `Classical.choice`, and `Quot.sound`.
+
+This advances the finite-product half of `(17j)`. It does not prove differentiability of the proof-relevant inverse family, the analytic source/operator identification, or any remaining screen, convergence, divisor-transfer, or energy gate; the card therefore remains at stage 2.

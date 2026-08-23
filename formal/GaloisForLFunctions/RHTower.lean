@@ -2427,6 +2427,7 @@ import GaloisForLFunctions.RHTower.DeningerDynSysProp131
 import GaloisForLFunctions.RHTower.DeningerDynSysProp35Affine
 import GaloisForLFunctions.RHTower.DeningerDynSysProp35Global
 import GaloisForLFunctions.RHTower.DeningerDynSysProp35Integral
+import GaloisForLFunctions.RHTower.DeningerDynSysResidueAlgClosure
 import GaloisForLFunctions.RHTower.DeningerDynSysResiduePoints
 import GaloisForLFunctions.RHTower.DeningerDynSysAKLBPoints
 import GaloisForLFunctions.RHTower.DeningerDynSysRhoFrobenius
@@ -4136,6 +4137,7 @@ import GaloisForLFunctions.RHTower.Sieve.PairSumClosedForm
 import GaloisForLFunctions.RHTower.Sieve.EffectiveSetHypotheses
 import GaloisForLFunctions.RHTower.Sieve.MaskedSymmetry
 import GaloisForLFunctions.RHTower.Sieve.BlockLongEnergy
+import GaloisForLFunctions.RHTower.Sieve.BlockEnergyBound
 import GaloisForLFunctions.RHTower.Sieve.VonMangoldtParityCorrection
 import GaloisForLFunctions.RHTower.FriableCoefficientSurjectivity
 import GaloisForLFunctions.RHTower.FriableEdgeCoefficients

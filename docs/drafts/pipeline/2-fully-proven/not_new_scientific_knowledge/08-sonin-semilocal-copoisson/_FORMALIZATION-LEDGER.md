@@ -1026,3 +1026,43 @@ Corpus state for card 11: `RHTower/SoninBurnolConductorReflection.lean` and
 `RHTower/SoninBurnolConductorConcrete.lean` already hold the algebraic layer; the corpus has no
 BMO, Hankel–Nehari or Hardy-projection theory, and `HTGeometry/GammaStirlingCubicLog.lean` plus
 `RHTower/HardyZ.lean` hold the digamma/Stirling assets for `(9)`.
+
+### Card 11: first analytic modules landed
+
+`HTGeometry/ConductorHankelBound.lean` (axiom-clean, wired):
+
+| item | declaration |
+|---|---|
+| the conductor Hankel kernel `2π e^{-2r}/r` | `conductorHankelKernel`, `conductorHankelKernel_nonneg` |
+| domination by the Carleman kernel | **`conductorHankelKernel_le`** |
+| **the boundedness** | **`lintegral_conductorHankel_sq_le`** (constant `4π⁴`) |
+| the kernel is the resolvent family integrated | **`integral_resolventHankel`** |
+
+`HTGeometry/ConductorSymbolAnalytic.lean` (axiom-clean, wired):
+
+| item | declaration |
+|---|---|
+| the symbol and its analytic companion | `conductorSymbol`, `conductorAnalytic` |
+| `Re Log(2+iξ) = log √(4+ξ²)` | `conductorAnalytic_re`, `norm_two_add_I_mul` |
+| `4+ξ² ≤ (2+|ξ|)² ≤ 2(4+ξ²)` | `sq_bounds` |
+| **the bounded difference** | **`abs_conductorSymbol_sub_analytic_le`** (bound `½ log 2`) |
+| the resolvent primitive and its derivative | `conductorResolventPrimitive`, `hasDerivAt_conductorResolventPrimitive` |
+
+**Corpus reuse.**  `HTGeometry/CarlemanOperatorBound.lean` already proves Schur's test for the
+Carleman kernel (`lintegral_carleman_sq_le`, constant `π`) on top of
+`HTGeometry/CarlemanSchurWeight.lean`'s `∫_0^∞ dt/((s+t)√t) = π/√s`.  So the whole Hilbert-inequality
+layer was already owned and the conductor bound is three lines of domination on top of it.  This is
+the fourth time in this card sequence that `formal_tools.py research` removed a planned
+multi-hundred-line build.
+
+**Next for card 11**, in order:
+
+1. `tendsto_conductorResolventPrimitive`: `Log(λ+2) - Log(λ+2+iξ) → 0`.  Do it componentwise —
+   `Complex.log_re` gives `log((λ+2)/‖·‖) → 0`, and `Complex.arg` on the `0 ≤ re` branch is
+   `Real.arcsin (im/‖·‖)`, which tends to `arcsin 0 = 0`.  Then
+   `integral_Ioi_of_hasDerivAt_of_tendsto` gives the resolvent representation of the symbol.
+2. The `L²(ℝ)` Fourier/Hardy layer: the corpus owns `fourierUnitary` with `l2_fourier_fourier` and
+   `l2_fourier_reflection` in `RHTower/L2FourierReflection.lean` and `RHTower/SoninEvenCarrier.lean`.
+   Identify `[M_b, P]` with the Hankel operator of the kernel above.
+3. Translation conjugation for `(3)`, then feed `RHTower/SoninBurnolConductorReflection.lean`'s
+   algebraic identities to obtain `(5)`.

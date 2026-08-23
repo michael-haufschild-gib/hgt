@@ -189,7 +189,7 @@ A rigorous check (using the kernel) of Wheeler's PSD-resonance conjecture (`fini
 
 ## Lean return note — 2026-06-19 (Leaner)
 
-Returned from `2-fully-proven`: the Lean anchors prove only the von-Mangoldt coefficient identities. The ticket's kernel theorem uses Pólya-LP/Jensen-section analysis, simple-root perturbation, explicit-formula regularization on the critical line, and later large-value/PSD conclusions. Those analytic objects and regularization steps are not present as Lean theorems.
+The Lean anchors now prove the von-Mangoldt coefficient identities and the exact finite Leibniz collection that makes one exponential jet contribution its amplitude times a degree-`≤d` frequency polynomial. The ticket still needs the unconditional bridge from completed Xi derivative jets to the regularized prime jet, plus simple-root perturbation and explicit-formula regularization on the critical line. Those analytic objects are not yet Lean theorems.
 
 ## Triage note — 2026-06-19 (Professor): returned to 2-fully-proven (user-directed; Leaner over-return)
 
@@ -205,3 +205,10 @@ reject the paper proof. The card's stated theorem is proved at its 1→2 gate; a
 `hankel-atom-displacement-tangent-indefinite.md` extracts the invariant algebra behind §8. For a moment atom at `r`, the first-order displacement tangent has quadratic form `2m q(r)q'(r)`, hence takes both signs as `q` varies. Thus the term `2V(r_l)V'(r_l)` is not a positive source kernel.
 
 Consequently the prime amplitudes in the Jensen kernel cannot prove Hankel positivity by positive-weight summation. Any viable use of this chart must be nonlinear, completed-source, or index/sign-correlated rather than a pointwise PSD-kernel transfer.
+
+- 2026-08-23 (Codex) — added and audited
+  `formal/GaloisForLFunctions/RHTower/C5JensenKernelAlgebra.lean`. It proves, without assumptions,
+  the exact finite double-sum Leibniz collection and the single-frequency amplitude factorization.
+  Targeted source check, module build, and axiom audit pass; only `propext`, `Classical.choice`, and
+  `Quot.sound` occur. This closes the finite `B_i`/degree bound algebra but not the analytic
+  regularization or root-displacement bridge, so the card remains at stage 2.
