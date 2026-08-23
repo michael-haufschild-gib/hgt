@@ -83,7 +83,7 @@ theorem chebyshevPsi_eq_sum_Ioc_one {N : ℕ} (hN : 1 ≤ N) :
   rw [chebyshevPsi_eq_sum_Ioc]
   exact sum_Ioc_one_eq _ (by simp [ArithmeticFunction.vonMangoldt_apply_one]) hN
 
-theorem integral_indicator_Ici_logSqKernel {n : ℕ} {X : ℝ} (hn : 2 ≤ n) (hnX : (n : ℝ) ≤ X) :
+theorem integral_indicator_Ici_logSqKernel {n : ℕ} {X : ℝ} (hn : 2 ≤ n) (_hnX : (n : ℝ) ≤ X) :
     (∫ t in Ioc (1 : ℝ) X, Set.indicator (Ici (n : ℝ)) logSqKernel t)
       = ∫ t in Ioc (n : ℝ) X, logSqKernel t := by
   have hn1 : (1 : ℝ) < (n : ℝ) := by exact_mod_cast hn
@@ -123,39 +123,60 @@ theorem primeTailCount_eq_psi_integral {X : ℝ} (hX : 2 ≤ X) :
   rw [primeTailCount_eq_sum_Ioc_one hX, Finset.sum_congr rfl hterm, Finset.sum_add_distrib,
     ← Finset.sum_mul, ← chebyshevPsi_eq_sum_Ioc_one hN]
   congr 1
-  · rfl
-  · rw [← MeasureTheory.integral_finset_sum]
-    · refine MeasureTheory.setIntegral_congr_fun measurableSet_Ioc (fun t ht => ?_)
-      have hpsi : ∑ n ∈ Finset.Ioc 1 ⌊X⌋₊,
-          (ArithmeticFunction.vonMangoldt n : ℝ) * Set.indicator (Ici (n : ℝ)) logSqKernel t
-          = logSqKernel t * chebyshevPsiReal t := by
-        have hsplit : ∀ n ∈ Finset.Ioc 1 ⌊X⌋₊,
-            (ArithmeticFunction.vonMangoldt n : ℝ) * Set.indicator (Ici (n : ℝ)) logSqKernel t
-              = if n ≤ ⌊t⌋₊ then logSqKernel t * (ArithmeticFunction.vonMangoldt n : ℝ) else 0 := by
-          intro n _
-          by_cases hmem : (n : ℝ) ≤ t
-          · rw [Set.indicator_of_mem (by simpa using hmem), if_pos (Nat.le_floor hmem)]
-            ring
-          · rw [Set.indicator_of_notMem (by simpa using hmem), if_neg ?_]
-            · ring
-            · intro hcon
-              exact hmem (le_trans (by exact_mod_cast hcon) (Nat.floor_le (by linarith [ht.1])))
-        rw [Finset.sum_congr rfl hsplit, Finset.sum_ite_eq_sum_filter]
-        have hfilter : (Finset.Ioc 1 ⌊X⌋₊).filter (fun n => n ≤ ⌊t⌋₊) = Finset.Ioc 1 ⌊t⌋₊ := by
-          ext n
-          simp only [Finset.mem_filter, Finset.mem_Ioc]
-          constructor
-          · rintro ⟨⟨h1, _⟩, h3⟩
-            exact ⟨h1, h3⟩
-          · rintro ⟨h1, h2⟩
-            exact ⟨⟨h1, le_trans h2 (Nat.floor_mono ht.2)⟩, h2⟩
-        rw [hfilter, ← Finset.mul_sum, ← chebyshevPsi_eq_sum_Ioc_one]
-        · rfl
-        · exact Nat.le_floor (by exact_mod_cast le_of_lt ht.1)
-      exact hpsi.symm
-    · intro n _
-      refine (MeasureTheory.Integrable.const_mul ?_ _)
-      sorry
+  have hmove : ∀ n ∈ Finset.Ioc 1 ⌊X⌋₊,
+      (ArithmeticFunction.vonMangoldt n : ℝ)
+          * ∫ t in Ioc (1 : ℝ) X, Set.indicator (Ici (n : ℝ)) logSqKernel t
+        = ∫ t in Ioc (1 : ℝ) X,
+            (ArithmeticFunction.vonMangoldt n : ℝ) * Set.indicator (Ici (n : ℝ)) logSqKernel t :=
+    fun n _ => (MeasureTheory.integral_const_mul _ _).symm
+  rw [Finset.sum_congr rfl hmove, ← MeasureTheory.integral_finsetSum]
+  · refine MeasureTheory.setIntegral_congr_fun measurableSet_Ioc (fun t ht => ?_)
+    have hsplit : ∀ n ∈ Finset.Ioc 1 ⌊X⌋₊,
+        (ArithmeticFunction.vonMangoldt n : ℝ) * Set.indicator (Ici (n : ℝ)) logSqKernel t
+          = if n ≤ ⌊t⌋₊ then logSqKernel t * (ArithmeticFunction.vonMangoldt n : ℝ) else 0 := by
+      intro n _
+      by_cases hmem : (n : ℝ) ≤ t
+      · rw [Set.indicator_of_mem (by simpa using hmem), if_pos (Nat.le_floor hmem)]
+        ring
+      · rw [Set.indicator_of_notMem (by simpa using hmem), if_neg ?_]
+        · ring
+        · intro hcon
+          exact hmem (le_trans (by exact_mod_cast hcon) (Nat.floor_le (by linarith [ht.1])))
+    rw [Finset.sum_congr rfl hsplit, Finset.sum_ite_eq_sum_filter]
+    have hfilter : (Finset.Ioc 1 ⌊X⌋₊).filter (fun n => n ≤ ⌊t⌋₊) = Finset.Ioc 1 ⌊t⌋₊ := by
+      ext n
+      simp only [Finset.mem_filter, Finset.mem_Ioc]
+      constructor
+      · rintro ⟨⟨h1, _⟩, h3⟩
+        exact ⟨h1, h3⟩
+      · rintro ⟨h1, h2⟩
+        exact ⟨⟨h1, le_trans h2 (Nat.floor_mono ht.2)⟩, h2⟩
+    rw [hfilter, ← Finset.mul_sum,
+      ← chebyshevPsi_eq_sum_Ioc_one (Nat.le_floor (by exact_mod_cast le_of_lt ht.1))]
+    rfl
+  · intro n hn
+    rw [Finset.mem_Ioc] at hn
+    have hn2 : 2 ≤ n := hn.1
+    have hn1 : (1 : ℝ) < (n : ℝ) := by exact_mod_cast hn2
+    refine MeasureTheory.Integrable.const_mul ?_ _
+    refine Integrable.mono' (g := fun _ : ℝ => logSqKernel (n : ℝ)) ?_ ?_ ?_
+    · refine integrableOn_const ?_ ?_
+      · exact ne_of_lt (lt_of_le_of_lt (measure_mono Ioc_subset_Icc_self)
+          (by simp [Real.volume_Icc]))
+      · simp [enorm_eq_nnnorm]
+    · exact (((measurable_id.mul ((Real.measurable_log).pow_const 2)).inv).indicator
+        measurableSet_Ici).aestronglyMeasurable.restrict
+    · filter_upwards [self_mem_ae_restrict measurableSet_Ioc] with t ht
+      by_cases hmem : (n : ℝ) ≤ t
+      · rw [Set.indicator_of_mem (by simpa using hmem),
+          Real.norm_of_nonneg (logSqKernel_nonneg (by linarith))]
+        have hlog : Real.log (n : ℝ) ≤ Real.log t := Real.log_le_log (by linarith) hmem
+        have hlogn : (0 : ℝ) < Real.log (n : ℝ) := Real.log_pos hn1
+        rw [logSqKernel, logSqKernel]
+        refine inv_le_inv_of_le (by positivity) ?_
+        exact mul_le_mul hmem (by nlinarith) (by positivity) (by linarith)
+      · rw [Set.indicator_of_notMem (by simpa using hmem), norm_zero]
+        exact logSqKernel_nonneg (by linarith)
 
 end
 

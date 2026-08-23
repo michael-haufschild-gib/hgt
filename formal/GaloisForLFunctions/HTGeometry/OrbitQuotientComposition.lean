@@ -83,4 +83,44 @@ def orbitQuotientQuotientEquiv :
         (Quotient.mk _ (Quotient.mk _ s : orbitRel.Quotient N S))
       = (Quotient.mk _ s : orbitRel.Quotient G S) := rfl
 
+/-! ## The slice theorem -/
+
+section Slice
+
+variable {G S : Type*} [Group G] [MulAction G S] (T : Set S) (H : Subgroup G)
+
+/-- **Slice theorem, surjectivity.**  If every point is `G`-equivalent to a point of the slice,
+the slice maps onto the orbit space. -/
+theorem orbit_slice_surjective
+    (hmeet : ∀ s : S, ∃ (g : G) (t : T), g • (t : S) = s) :
+    Function.Surjective
+      (fun t : T => (Quotient.mk _ (t : S) : orbitRel.Quotient G S)) := by
+  rintro ⟨s⟩
+  obtain ⟨g, t, hgt⟩ := hmeet s
+  refine ⟨t, Quotient.sound ⟨g⁻¹, ?_⟩⟩
+  show g⁻¹ • s = (t : S)
+  rw [← hgt, ← mul_smul, inv_mul_cancel, one_smul]
+
+/-- **Slice theorem, the fibres.**  If two points of the slice are `G`-equivalent only through
+`H`, the fibres of the slice map are the `H`-orbits. -/
+theorem orbit_slice_eq_iff
+    (hsep : ∀ s t : T, (∃ g : G, g • (s : S) = (t : S)) → ∃ h : H, (h : G) • (s : S) = (t : S))
+    (s t : T) :
+    (Quotient.mk _ (s : S) : orbitRel.Quotient G S) = Quotient.mk _ (t : S)
+      ↔ ∃ h : H, (h : G) • (s : S) = (t : S) := by
+  constructor
+  · intro hst
+    obtain ⟨g, hg⟩ := Quotient.exact hst
+    have hg' : g • (t : S) = (s : S) := hg
+    obtain ⟨h, hh⟩ := hsep t s ⟨g, hg'⟩
+    refine ⟨h⁻¹, ?_⟩
+    show ((h : G))⁻¹ • (s : S) = (t : S)
+    rw [← hh, ← mul_smul, inv_mul_cancel, one_smul]
+  · rintro ⟨h, hh⟩
+    refine Quotient.sound ⟨(h : G)⁻¹, ?_⟩
+    show ((h : G))⁻¹ • (t : S) = (s : S)
+    rw [← hh, ← mul_smul, inv_mul_cancel, one_smul]
+
+end Slice
+
 end HTGeometry

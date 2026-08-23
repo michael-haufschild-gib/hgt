@@ -50,6 +50,31 @@ theorem cyclicGaloisH2BrauerMap_brauerTensorNeg
       apply cyclicGaloisH2Parameter_brauerClass_eq_brauerMap_of_baseProjection K L (-a) (-z)
       rw [map_neg, ha]
 
+/-- Any finite coordinate system on the ordinary cyclic `H²` layer carries parameter negation
+to Brauer inversion. -/
+theorem cyclicGaloisH2InvariantBrauerMap_brauerTensorNeg
+    (n : ℕ) (e : cyclicGaloisH2 K L ≃+ ZMod n) (z : ZMod n) :
+    brauerTensorNeg K (cyclicGaloisH2InvariantBrauerMap K L n e z) =
+      cyclicGaloisH2InvariantBrauerMap K L n e (-z) := by
+  change brauerTensorNeg K (cyclicGaloisH2BrauerMap K L (e.symm z)) =
+    cyclicGaloisH2BrauerMap K L (e.symm (-z))
+  rw [map_neg]
+  exact cyclicGaloisH2BrauerMap_brauerTensorNeg K L (e.symm z)
+
+/-- A finite coordinate system on the base-unit norm quotient carries parameter negation to
+Brauer inversion. -/
+theorem cyclicGaloisNormQuotientBrauerMap_brauerTensorNeg
+    (n : ℕ) (e : Additive Kˣ ⧸ cyclicGaloisH2BaseNormImage K L ≃+ ZMod n) (z : ZMod n) :
+    brauerTensorNeg K (cyclicGaloisNormQuotientBrauerMap K L n e z) =
+      cyclicGaloisNormQuotientBrauerMap K L n e (-z) := by
+  change brauerTensorNeg K (cyclicGaloisH2BrauerMap K L
+      (cyclicGaloisH2BaseNormQuotientEquiv K L (e.symm z))) =
+    cyclicGaloisH2BrauerMap K L
+      (cyclicGaloisH2BaseNormQuotientEquiv K L (e.symm (-z)))
+  rw [map_neg, map_neg]
+  exact cyclicGaloisH2BrauerMap_brauerTensorNeg K L
+    (cyclicGaloisH2BaseNormQuotientEquiv K L (e.symm z))
+
 /-- The finite continuous cyclic `H²` bridge carries cohomological negation to Brauer
 inversion. -/
 theorem finiteGaloisContinuousCyclicH2BrauerMap_brauerTensorNeg

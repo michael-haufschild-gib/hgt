@@ -635,7 +635,10 @@ noncompleteness producer and not the missing all-moment weld. `SoninDilationMell
 the exact dilation multiplier used to move such witnesses between apertures. Working-tree
 `BurnolLemmaSevenFive.lean` closes Lemma 7.5: one top-jet witness at aperture `a` produces a nonzero
 all-evaluator annihilator at every smaller aperture, hence destroys completeness there. This
-sharpens aperture propagation only; it still does not select F2's arithmetic moment section.
+sharpens aperture propagation only. Working-tree `BurnolTheoremSevenOne.lean` closes Theorem 7.1
+for every nonempty open-strip multiset: completeness apertures form an up-set, minimality apertures
+form a down-set, and the two cover all positive apertures. It still does not select F2's arithmetic
+moment section.
 
 The two sides are literal without being joined.
 `SoninSemilocalCorrectedSource.lean` constructs an actual trace-class finite cyclic prime-power
@@ -2375,7 +2378,11 @@ or source-selected limit identity. `SuzukiV0WeilForm.lean` uses these evaluation
 literal divisor form, and `SuzukiPropFiveOne.lean` proves Suzuki's mass and peaked-function
 conditions jointly equivalent to RH. This completes another global receiver but supplies no
 producer selecting those conditions or identifying the cofinal finite characteristic with the
-global de Branges target. `SuzukiNaturalApertureWardScalingNoGo.lean` additionally proves the
+global de Branges target. Working-tree `SuzukiCorFourSix.lean` constructs the literal
+Bombieri--Lagarias test functions, evaluates their Fourier transforms, and proves their Suzuki Weil
+forms equal the paired Li coefficients; universal nonnegativity and the source's norm-square
+identity each imply RH. This is an exact shared SV2/C1/LI receiver, not the missing characteristic
+limit or a positivity producer. `SuzukiNaturalApertureWardScalingNoGo.lean` additionally proves the
 unrenormalized natural Cauchy energy has wrong scale: its rectangular Ward defect tends to `-infinity`
 along `8n`. Any viable assembly must remove its anchor-visible linear mass before a Gram/cofinal limit.
 
@@ -2779,8 +2786,11 @@ RH <-> forall n, 0 <= Re(xiLiPaired n).
 
 `LiBracket.lean` sums each coordinate orbit to its rational generating bracket, and the finite Li
 coefficients and reciprocal moments are inverse triangular transforms. The analytic Li generator
-is the Möbius logarithmic jet of completed Xi, but no declaration identifies its Taylor
-coefficients with `xiLiPaired` through a pre-divisor prime--Gamma expression.
+is the Möbius logarithmic jet of completed Xi. Working-tree `SuzukiCorFourSix.lean` gives a second
+exact receiver realization: the Suzuki Weil form of every explicit Bombieri--Lagarias test function
+is `xiLiPaired n`, and its universal nonnegativity is equivalent to RH. No declaration identifies
+these coefficients with a pre-divisor prime--Gamma Taylor expression or proves their source-side
+order.
 
 **Open core.** Construct that coefficient-faithful source landing across the singular chart at
 `s=1`, then prove all resulting coefficients nonnegative without importing the criterion itself.

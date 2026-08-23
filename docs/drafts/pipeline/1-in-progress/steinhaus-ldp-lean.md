@@ -132,3 +132,15 @@ half-written re-derivation was discarded; instead the two objects are identified
 
 These are the card's `(27)` in both directions, and they are what `S5`'s divergence, `S6` and `S7`
 consume.  Card 11 now stands at 4 Lean modules on top of the corpus's existing Steinhaus layer.
+
+## S5, first half (2026-08-23)
+
+`RHTower/SteinhausRateFunction.lean` — `rvLegendreSet`, `rvRate α q = sup_{λ≥0}(λq − Λ_α(λ))`, and:
+
+- `bddAbove_rvLegendreSet` — **finiteness for every `q < 1`**: pick `q < c < 1`; the lower bound
+  `Λ_α(λ) ≥ cλ + log μ_c` makes every element at most `λ(q−c) − log μ_c ≤ −log μ_c`;
+- `rvRate_nonneg`, `le_rvRate` (every tilt is a lower bound), `rvRate_zero`, `rvRate_mono`.
+
+Remaining in `S5`: strict monotonicity and `I_α(q) → ∞` as `q → 1⁻`.  The latter now follows from
+`steinhausLogLaplace_le` once `∫₀¹ log w_α = log(1−α) + α` is available (the card's `(28)`), giving
+`Λ_α(λ) ≤ λ − ½log λ + C_α` and hence `I_α(q) ≥ ½log(1/(2(1−q))) − C_α`.

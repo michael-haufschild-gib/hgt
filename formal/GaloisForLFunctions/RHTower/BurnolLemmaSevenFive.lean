@@ -50,28 +50,26 @@ theorem integrableOn_cpow_mul_Ioi_zero {a : ℝ} (ha : 0 < a) {f : SoninL2} {d :
   have hunion := hint1.union hint2
   rwa [Ioc_union_Ioi_eq_Ioi ha.le] at hunion
 
-/-- **Burnol's Lemma 7.5.** -/
-theorem exists_nonzero_annihilating_of_lt {a b : ℝ} (ha : 0 < a) (hb : 0 < b) (hab : b < a)
-    {Z : Set ℂ} {m : ℂ → ℕ} (hZ : ∀ w ∈ Z, 0 < w.re ∧ w.re < 1)
+/-- **The dilation shift.**  Passing from aperture `a` to any smaller aperture `b` one may multiply
+the continued Mellin transform by the entire multiplier `(a/b)^{s-1/2} - (a/b)^{ρ-1/2}`, which
+vanishes at the prescribed point `ρ`. -/
+theorem exists_dilationShift {a b : ℝ} (ha : 0 < a) (hb : 0 < b) (hab : b < a)
     {ρ : ℂ} (hρ0 : 0 < ρ.re) (hρ1 : ρ.re < 1)
     {v : SoninL2} {c d : ℂ} (hev : v ∈ evenSubspace)
     (hmem : v ∈ centralSoninExtendedCarrier a)
     (hc : ∀ᵐ x ∂(volume : Measure ℝ), x ∈ centralInterval a →
       ((fourierUnitary v : SoninL2) : ℝ → ℂ) x = c)
     (hd : ∀ᵐ t ∂(volume : Measure ℝ), t ∈ centralInterval a → (v : ℝ → ℂ) t = d)
-    (hv : v ≠ 0)
-    (hother : ∀ w ∈ Z, w ≠ ρ →
-      ((m w : ℤ) : WithTop ℤ) ≤ meromorphicOrderAt (extendedMellinContinuation a c d v) w)
-    (hself : (((m ρ : ℤ) - 1 : ℤ) : WithTop ℤ)
-      ≤ meromorphicOrderAt (extendedMellinContinuation a c d v) ρ)
-    (hρZ : ρ ∈ Z) :
+    (hv : v ≠ 0) :
     ∃ (V : SoninL2) (c' d' : ℂ), V ≠ 0 ∧ V ∈ evenSubspace ∧
       V ∈ centralSoninExtendedCarrier b ∧
       (∀ᵐ x ∂(volume : Measure ℝ), x ∈ centralInterval b →
         ((fourierUnitary V : SoninL2) : ℝ → ℂ) x = c') ∧
       (∀ᵐ t ∂(volume : Measure ℝ), t ∈ centralInterval b → (V : ℝ → ℂ) t = d') ∧
-      ∀ w ∈ Z, ((m w : ℤ) : WithTop ℤ)
-        ≤ meromorphicOrderAt (extendedMellinContinuation b c' d' V) w := by
+      ∀ w : ℂ, 0 < w.re → w.re < 1 →
+        meromorphicOrderAt (extendedMellinContinuation b c' d' V) w
+          = meromorphicOrderAt (dilationDifferenceMultiplier (a / b) ρ) w
+            + meromorphicOrderAt (extendedMellinContinuation a c d v) w := by
   classical
   set r : ℝ := a / b with hr
   have hr0 : 0 < r := div_pos ha hb
@@ -257,21 +255,55 @@ theorem exists_nonzero_annihilating_of_lt {a b : ℝ} (ha : 0 < a) (hb : 0 < b) 
         | coe k =>
             rw [h1, h2, ← WithTop.coe_add] at hordV
             exact absurd hordV.symm WithTop.coe_ne_top
+  exact ⟨V, c', d', hVne, hVev, hVmem, hc', hd', hordfun⟩
+
+/-- **Burnol's Lemma 7.5.** -/
+theorem exists_nonzero_annihilating_of_lt {a b : ℝ} (ha : 0 < a) (hb : 0 < b) (hab : b < a)
+    {Z : Set ℂ} {m : ℂ → ℕ} (hZ : ∀ w ∈ Z, 0 < w.re ∧ w.re < 1)
+    {ρ : ℂ} (hρ0 : 0 < ρ.re) (hρ1 : ρ.re < 1)
+    {v : SoninL2} {c d : ℂ} (hev : v ∈ evenSubspace)
+    (hmem : v ∈ centralSoninExtendedCarrier a)
+    (hc : ∀ᵐ x ∂(volume : Measure ℝ), x ∈ centralInterval a →
+      ((fourierUnitary v : SoninL2) : ℝ → ℂ) x = c)
+    (hd : ∀ᵐ t ∂(volume : Measure ℝ), t ∈ centralInterval a → (v : ℝ → ℂ) t = d)
+    (hv : v ≠ 0)
+    (hother : ∀ w ∈ Z, w ≠ ρ →
+      ((m w : ℤ) : WithTop ℤ) ≤ meromorphicOrderAt (extendedMellinContinuation a c d v) w)
+    (hself : (((m ρ : ℤ) - 1 : ℤ) : WithTop ℤ)
+      ≤ meromorphicOrderAt (extendedMellinContinuation a c d v) ρ)
+    (hρZ : ρ ∈ Z) :
+    ∃ (V : SoninL2) (c' d' : ℂ), V ≠ 0 ∧ V ∈ evenSubspace ∧
+      V ∈ centralSoninExtendedCarrier b ∧
+      (∀ᵐ x ∂(volume : Measure ℝ), x ∈ centralInterval b →
+        ((fourierUnitary V : SoninL2) : ℝ → ℂ) x = c') ∧
+      (∀ᵐ t ∂(volume : Measure ℝ), t ∈ centralInterval b → (V : ℝ → ℂ) t = d') ∧
+      ∀ w ∈ Z, ((m w : ℤ) : WithTop ℤ)
+        ≤ meromorphicOrderAt (extendedMellinContinuation b c' d' V) w := by
+  have hr0 : 0 < a / b := div_pos ha hb
+  obtain ⟨V, c', d', hVne, hVev, hVmem, hc', hd', hordfun⟩ :=
+    exists_dilationShift ha hb hab hρ0 hρ1 hev hmem hc hd hv
+  have hmultρ : ((1 : ℤ) : WithTop ℤ)
+      ≤ meromorphicOrderAt (dilationDifferenceMultiplier (a / b) ρ) ρ :=
+    one_le_meromorphicOrderAt_of_eq_zero
+      ((differentiable_dilationDifferenceMultiplier hr0 ρ).analyticAt ρ)
+      (dilationDifferenceMultiplier_self (a / b) ρ)
+  have hmultnn : ∀ y : ℂ, (0 : WithTop ℤ)
+      ≤ meromorphicOrderAt (dilationDifferenceMultiplier (a / b) ρ) y := fun y =>
+    meromorphicOrderAt_nonneg_of_analyticAt
+      ((differentiable_dilationDifferenceMultiplier hr0 ρ).analyticAt y)
   refine ⟨V, c', d', hVne, hVev, hVmem, hc', hd', ?_⟩
   intro w hw
   obtain ⟨hw0, hw1⟩ := hZ w hw
   rw [hordfun w hw0 hw1]
   by_cases hwρ : w = ρ
   · subst hwρ
-    have hmρ : ((m w : ℤ) : WithTop ℤ)
-        ≤ ((1 : ℤ) : WithTop ℤ) + (((m w : ℤ) - 1 : ℤ) : WithTop ℤ) := by
-      have : ((1 : ℤ) : WithTop ℤ) + (((m w : ℤ) - 1 : ℤ) : WithTop ℤ)
-          = ((m w : ℤ) : WithTop ℤ) := by
-        rw [← WithTop.coe_add]
-        congr 1
-        ring
-      rw [this]
-    exact le_trans hmρ (add_le_add hmultρ hself)
+    have hmw : ((m w : ℤ) : WithTop ℤ)
+        = ((1 : ℤ) : WithTop ℤ) + (((m w : ℤ) - 1 : ℤ) : WithTop ℤ) := by
+      rw [← WithTop.coe_add]
+      congr 1
+      ring
+    rw [hmw]
+    exact add_le_add hmultρ hself
   · have h0 : (0 : WithTop ℤ) + ((m w : ℤ) : WithTop ℤ) = ((m w : ℤ) : WithTop ℤ) := zero_add _
     rw [← h0]
     exact add_le_add (hmultnn w) (hother w hw hwρ)

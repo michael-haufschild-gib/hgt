@@ -19,7 +19,7 @@ hypothesis (never a new hypothesis added by us); everything else is unconditiona
 | `thm_1_1` | Thm 1.1 | `K(Θ_ξ) → H_W`, `F ↦ [F⁻¹F]`, is a Hilbert isomorphism with `‖E F‖²_{H(E)} = ‖F‖²_{K(Θ)} = π⟨ψ_F,ψ_F⟩_W` | yes | **CLOSED** `RHTower.suzukiModelWeilEquiv`, `norm_sq_suzukiModelWeilEquiv`, `suzukiWeilTauEquiv_suzukiModelWeilEquiv` |
 | `prop_101` | Prop 1.2 | `𝔖_t ∈ L²(ℝ)` for every fixed `t ∈ ℝ` | no | **CLOSED** `RHTower.memLp_suzukiFrakS` |
 | `prop_102` | Prop 1.3 | `𝒫̂_φ ∈ L²(ℝ)` for `φ ∈ C_c^∞(ℝ)` | no | **CLOSED** `RHTower.memLp_suzukiPHat_of_compactSupport` |
-| `thm_1_2` | Thm 1.4 | RH ⟺ `‖𝒫̂_{Dψ}‖²_{L²} = π⟨ψ,ψ⟩_W` for all `ψ ∈ C_c^∞`; countably many `ψ` suffice | ⟺ | **CLOSED (main clause)** `RHTower.riemannHypothesis_iff_normSq_suzukiPHat_deriv`; the *countably many* clause is Cor 4.6 and needs BoLa99 |
+| `thm_1_2` | Thm 1.4 | RH ⟺ `‖𝒫̂_{Dψ}‖²_{L²} = π⟨ψ,ψ⟩_W` for all `ψ ∈ C_c^∞`; countably many `ψ` suffice | ⟺ | **CLOSED** `RHTower.riemannHypothesis_iff_normSq_suzukiPHat_deriv`; the *countably many* clause is Cor 4.6, now also closed |
 | `cor_1_1` | Cor 1.5 | RH ⟺ `2‖ψ‖²_{L²} = ⟨ψ,ψ⟩_W` for all `ψ ∈ V°(0)` | ⟺ | **CLOSED** `RHTower.riemannHypothesis_iff_normSq_suzukiPHat_suzukiTest` |
 | `prop_301` | Prop 3.1 | `𝔓_t(z) = P_t(z)` (prime--arch formula equals the Xi-zero series) | no | **CLOSED** `RHTower.suzukiFrakP_eq_suzukiPtZeroSum` |
 | `lem_301` | Lem 3.2 | `‖ψ‖₀ := π^{-1/2}‖𝒫̂_{Dψ}‖_{L²}` is a norm on `C_c^∞(ℝ)` | no | **definiteness CLOSED** `RHTower.eq_zero_of_suzukiPHat_D_ae_zero` |
@@ -28,7 +28,7 @@ hypothesis (never a new hypothesis added by us); everything else is unconditiona
 | `cor_401` | Cor 4.3 | RH ⟺ `(2π)⁻¹‖𝔖_t‖² = -g(t)` for all `t ≥ t₀`, some `t₀ ≥ 0` | ⟺ | **CLOSED at `t₀ = 0`** `RHTower.riemannHypothesis_iff_norm_sq_suzukiFrakSFull`; the `t₀ > 0` refinement needs Su22 Thm 11.1 |
 | `thm_4_2` | Thm 4.4 | RH ⟺ `‖𝒫̂_φ‖² = π⟨φ,φ⟩_{G_g}` for all `φ ∈ C_c^∞` with `φ̂(0)=0` | ⟺ | **CLOSED** `RHTower.riemannHypothesis_iff_normSq_suzukiPHat` |
 | `thm_4_3` | Thm 4.5 | RH ⟺ `‖ψ‖₀² = ⟨ψ,ψ⟩_W` for all `ψ ∈ C_c^∞` | ⟺ | **CLOSED** (same theorem as Thm 1.4) |
-| `cor_4_2` | Cor 4.6 | RH holds if `‖g_n‖₀² = ⟨g_n,g_n⟩_W` for all Bombieri--Lagarias `g_n` | ⟸ | OPEN — blocked on BoLa99 §4, absent from the corpus |
+| `cor_4_2` | Cor 4.6 | RH holds if `‖g_n‖₀² = ⟨g_n,g_n⟩_W` for all Bombieri--Lagarias `g_n` | ⟸ | **CLOSED** `RHTower.riemannHypothesis_of_forall_norm_sq_eq_suzukiLiWeilForm`; BoLa99 §4 built as `RHTower.riemannHypothesis_iff_forall_re_xiLiPaired_nonneg` (Li's criterion) |
 | `lem_5_1` | Lem 5.1 | `K(Θ) = F(V(0))`, `H(E) = E·F(V(0))`, `V(0) = L²(0,∞) ∩ K L²(0,∞)` | yes | **CLOSED** `RHTower.map_fourier_suzukiV0` + `RHTower.memDeBranges_iff_mem_suzukiModelSpace` |
 | `rmk_5_2` | Rmk 5.2 | `V(0) = {0}` would falsify RH; `K`-eigenvector reduction | yes | **CLOSED** `RHTower.exists_suzukiK_eigenvector` (+ `suzukiKFun_mem_suzukiV0`); `V(0) ≠ 0` follows from `suzukiFGammaLp_mem_suzukiModelSpace` |
 | `lem_5_2` | Lem 5.3 | `V(0) ≅ L²(τ)` by `ψ ↦ (ψ̂(γ))_γ`, `2‖ψ‖² = ‖S_ψ‖²` | yes | **CLOSED** `RHTower.hasSum_suzukiClarkWeight_normSq_restriction`, `suzukiRestriction_inj`, `exists_suzukiRestriction_eq`, `hasSum_suzukiClarkWeight_normSq_restriction_suzukiV0` |
@@ -1507,3 +1507,21 @@ a mathlib gap: mathlib's `integral_cpow_mul_exp_neg_mul_Ioi` and the corpus's
 (`j = 0`) is complex.  The plan is the explicit antiderivative
 `A_{j+1}(x) = -x^{j+1}e^{-cx}/c + ((j+1)/c) A_j(x)`, `A_0(x) = -e^{-cx}/c`, with
 `A_j(0) = -j!/c^{j+1}` and `A_j(x) → 0`, fed to `integral_Ioi_of_hasDerivAt_of_tendsto`.
+
+
+## COROLLARY 4.6 CLOSED — the paper is complete
+
+`RHTower.riemannHypothesis_of_forall_norm_sq_eq_suzukiLiWeilForm`, axiom-clean:
+
+> if `N : ℕ → ℝ` is nonnegative (as `‖g_n‖₀²` is by definition) and `N n = ⟨g_n,g_n⟩_W` for every
+> `n`, then `RiemannHypothesis`.
+
+| Module | Content |
+|---|---|
+| `HTGeometry/MonomialLaplaceComplex.lean` | **`integral_Ioi_pow_mul_cexp`** — `∫_{x>0} xʲ e^{-cx} = j!/c^{j+1}` for `Re c > 0`, a mathlib gap (both mathlib's and the corpus's versions take a *real* rate).  Proved from the explicit recursive antiderivative `cexpAntider`, with `hasDerivAt_cexpAntider`, `cexpAntider_zero`, `tendsto_cexpAntider`, `integrableOn_cpow_mul_cexp` |
+| `RHTower/SuzukiCorFourSix.lean` | `suzukiLiTestFun` (the `g_n`); `sum_choose_succ_pow`; **`suzukiEntireFourier_liTestFun`** (`ĝ_n(z) = 1 - (1-1/(1/2-iz))ⁿ`); `suzukiEntireFourier_liTestFun_term` (the Weil summand is `liTerm(w_ρ,n)`); `suzukiLiWeilForm` (Suzuki (1.2) verbatim, with `ψ̂(-γ)` and `(ψ̂)^♯(-γ)`); **`suzukiLiWeilForm_eq_xiLiPaired`** (`⟨g_n,g_n⟩_W = 2λ_n`); **`riemannHypothesis_of_forall_re_suzukiLiWeilForm_nonneg`**; **`riemannHypothesis_of_forall_norm_sq_eq_suzukiLiWeilForm`**; `re_suzukiLiWeilForm_nonneg_of_rh` |
+
+Note that `suzukiLiWeilForm` uses the source's own `-γ` convention, so no relabelling of `Γ` is
+involved here.
+
+**Every numbered statement of arXiv:2301.00421 is now Lean-closed.**

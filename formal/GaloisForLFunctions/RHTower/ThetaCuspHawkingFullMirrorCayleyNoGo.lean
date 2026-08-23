@@ -193,7 +193,7 @@ theorem integrable_thetaCuspFullSource_sq_complex :
   · filter_upwards with v
     have hg := abs_thetaCuspFullSource_le v
     have hexp : Real.exp (-|v|) ≤ 1 := by
-      simpa using Real.exp_le_one_iff.mpr (neg_nonpos.mpr (abs_nonneg v))
+      exact Real.exp_le_one_iff.mpr (neg_nonpos.mpr (abs_nonneg v))
     have hgC : |thetaCuspFullSource v| ≤ C :=
       hg.trans (by simpa only [mul_one] using mul_le_mul_of_nonneg_left hexp hC)
     rw [norm_pow, Complex.norm_real, Real.norm_eq_abs,
@@ -219,7 +219,7 @@ theorem continuous_thetaCuspSourceSquareFourier :
 theorem thetaCuspSourceSquareFourier_zero_re_pos :
     0 < (thetaCuspSourceSquareFourier 0).re := by
   rw [thetaCuspSourceSquareFourier, zero_div, Real.fourier_real_eq_integral_exp_smul]
-  simp only [mul_zero, neg_zero, ofReal_zero, zero_mul, Complex.exp_zero, one_smul]
+  simp only [mul_zero, ofReal_zero, zero_mul, Complex.exp_zero, one_smul]
   change 0 < RCLike.re (∫ v : ℝ, ((thetaCuspFullSource v : ℂ) ^ 2))
   rw [← integral_re integrable_thetaCuspFullSource_sq_complex]
   have hrealEq : (fun v : ℝ => RCLike.re ((thetaCuspFullSource v : ℂ) ^ 2)) =
@@ -371,7 +371,7 @@ theorem integral_thetaCuspMovingMirrorFullSecondJetIntegrand_zero_balanced
         rw [deriv_thetaCuspSourceSquare]
         unfold thetaCuspMovingMirrorFullSecondJetIntegrand
         dsimp only
-        simp only [neg_zero, zero_mul, ofReal_zero, Complex.exp_zero]
+        simp only [zero_mul, ofReal_zero, Complex.exp_zero]
         push_cast
         ring
     _ = (-Complex.I * (frequency : ℂ) ^ 2) *
@@ -418,6 +418,15 @@ theorem thetaCuspHawkingCayleyTransition_neg
   push_cast
   rw [neg_sq]
   ring
+
+/-- Every finite central second difference of a canonical Cayley transition vanishes exactly. -/
+theorem thetaCuspHawkingCayleyTransition_centralSecondDifference_zero
+    (lambda a omega : ℝ) :
+    thetaCuspHawkingCayleyTransition lambda a omega +
+        thetaCuspHawkingCayleyTransition (-lambda) a omega -
+      2 * thetaCuspHawkingCayleyTransition 0 a omega = 0 := by
+  rw [thetaCuspHawkingCayleyTransition_neg]
+  simp [thetaCuspHawkingCayleyTransition]
 
 /-- **[FALSIFIED] Canonical Cayley/full-mirror identification.**  Exact theta-mirror dynamics
 has a nonzero even coupling jet in a positive balanced sector, while every Cayley block has zero
