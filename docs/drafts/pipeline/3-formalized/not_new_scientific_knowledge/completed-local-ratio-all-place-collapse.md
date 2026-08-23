@@ -1,7 +1,7 @@
 # Completed local-ratio all-place collapse
 
 - **ID:** `completed-local-ratio-all-place-collapse`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / ROUTE-D NO-GO (paper)
 - **Scientific status:** BRIDGE / NOT NEW SCIENTIFIC KNOWLEDGE
 - **Parent source:** Connes--Consani, *Quasi-inner functions and local factors*,
@@ -148,27 +148,36 @@ bridge and not new scientific knowledge.
 
 ## Lean status
 
-`formal/GaloisForLFunctions/RHTower/CompletedLocalRatioAllPlaceCollapse.lean`
-already proves the unconditional globally regularized completed ratio is the
-constant unit symbol.  On 2026-08-23,
-`formal/GaloisForLFunctions/RHTower/FiniteEulerLocalRatio.lean` added the
-exact one-prime Euler-power formula, reflection-inverse identity, and the
-fixed-point identity `rho_p(1/2)=1`. It also proves `rho_p(0)=rho_p(1)=0`
-and the resulting endpoint failures of absolute convergence. Its targeted
-source check, module build, and axiom audit pass with only `propext`,
+Fully formalized unconditionally in:
+
+- `formal/GaloisForLFunctions/RHTower/CompletedLocalRatioAllPlaceCollapse.lean`;
+- `formal/GaloisForLFunctions/RHTower/FiniteEulerLocalRatio.lean`;
+- `formal/GaloisForLFunctions/RHTower/FiniteEulerLocalRatioAbsoluteDivergence.lean`;
+- `formal/GaloisForLFunctions/RHTower/CompletedLocalRatioAllPlaceClosure.lean`.
+
+The formal development proves the exact finite local-ratio identities and uniform lower bounds in
+all four regions `Re(s)<1/2`, `Re(s)>1/2`, `Re(s)<=0`, and `Re(s)>=1`.  Prime-power
+non-summability then gives
+`not_finiteEulerLocalRatioAbsolutelySummableAt_of_re_ne_half`.  Density of the complement of the
+critical line upgrades this pointwise theorem to
+`not_exists_nonempty_open_finiteEulerLocalRatio_absoluteConvergenceDomain`.
+
+The completed functional equation gives
+`regularizedCompletedLocalRatio_eq_const_one`.  Multiplication by this symbol is formally equal to
+the identity.  For every idempotent complex-linear polarization `P`, Lean proves
+
+```text
+regularizedCompletedLocalRatioOffDiagonal P = 0,
+regularizedCompletedLocalRatioDiagonal P = P.
+```
+
+Thus the diagonal corner is literally the identity on `range P`; this exact operator equality is
+stronger than the asserted zero-index consequence and avoids introducing an unnecessary abstract
+Fredholm-index wrapper.  The capstone theorem `completedLocalRatio_allPlace_noGo` packages ordinary
+all-place divergence, constant-unit regularization, and universal polarized-window collapse.
+
+The closure module is wired into `formal/GaloisForLFunctions/RHTower.lean`.  On 2026-08-23,
+targeted source checks and
+`lake build GaloisForLFunctions.RHTower.CompletedLocalRatioAllPlaceClosure` passed.  Axiom audits of
+the two divergence capstones and three operator/capstone theorems report only `propext`,
 `Classical.choice`, and `Quot.sound`.
-
-The same module now proves the exact off-line quarter-point identity
-`rho_p(1/4)-1=p^(-1/4)+p^(-1/2)` and derives non-summability of its norm
-deviations from the prime-power abscissa theorem. This is a certified
-interior obstruction, but it is not yet the required arbitrary complex
-off-critical-line asymptotic.
-
-By reflection it now also proves the exact `s=3/4` formula and a uniform
-`p^(-1/4)/3` lower bound for its norm deviation, hence the corresponding
-prime-series non-summability. The all-open-domain theorem still requires a
-uniform arbitrary-point comparison.
-
-The no-open-domain absolute-convergence theorem for the ordinary infinite
-finite-place product, and the formal Hardy-compression/Fredholm consequences,
-are not yet formalized. The card therefore remains in stage 2.

@@ -32,8 +32,18 @@ exact modes created when the Euler-contour is transported to the critical bounda
 - [x] Punctured-neighborhood residue limit and explicit contour coefficient `(7)` for every
   certified simple xi zero and positive shift, in
   `RHTower/ShiftedXiResidueMode.lean`.
-- [x] Exact leaf build and axiom audit: only `propext`, `Classical.choice`, `Quot.sound`.
-- [ ] Finite-pole contour transport, higher-order Laurent blocks, and exact rank `sum_j m_j`.
+- [x] Literal expansion of `sum_k a_k (t-s)^k`, exact bivariate coefficient matrix, and exact
+  rank `m` for a multiplicity-`m` block whenever its top Laurent coefficient is nonzero, in
+  `RHTower/ResidueModeMultiplicityBlock.lean`.
+- [x] Linear independence of all `t^q exp(lambda_j t)` at pairwise distinct complex nodes, with
+  arbitrary multiplicities, via the corpus confluent-Vandermonde determinant, in
+  `RHTower/ExponentialPolynomialModeIndependence.lean`.
+- [x] Arbitrary-order Laurent extraction: a finite principal part times `exp(-i s u)` has exactly
+  the asserted exponential-polynomial residue; its leading Laurent coefficient gives nonzero top
+  polynomial coefficient and exact block rank, in `RHTower/HigherPoleResidueMode.lean`.
+- [x] All four new leaves built exactly and axiom-audited: only `propext`, `Classical.choice`,
+  `Quot.sound`.
+- [ ] Finite-pole contour transport and operator-level assembly of total rank `sum_j m_j`.
 
 ## Setup
 
@@ -240,3 +250,11 @@ scientific knowledge.
   scientific novelty audit open.
 - 2026-08-23 -- equation `(7)` and its underlying simple-pole residue limit formalized and audited;
   finite-pole contour transport and multiplicity/rank blocks remain before stage 3.
+- 2026-08-23 -- multiplicity-block polynomial expansion and exact anti-triangular matrix rank
+  formalized and audited; contour transport, higher-order residue extraction, and distinct-pole
+  assembly remain.
+- 2026-08-23 -- distinct-node exponential-polynomial independence formalized through the existing
+  confluent polynomial-jet determinant; contour transport, Laurent extraction, and final operator
+  rank assembly remain.
+- 2026-08-23 -- arbitrary-order principal-part residue extraction and exact block-rank consequence
+  formalized; finite contour transport and operator-level total-rank assembly remain.

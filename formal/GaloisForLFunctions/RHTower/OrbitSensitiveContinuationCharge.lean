@@ -1,6 +1,9 @@
 import GaloisForLFunctions.RHTower.FiniteOfflineCauchyL2
 import GaloisForLFunctions.RHTower.XiThetaSquareRateBoundary
 import GaloisForLFunctions.RHTower.XiRationalQuartetGauge
+import GaloisForLFunctions.HTGeometry.WeightedHolder
+import GaloisForLFunctions.HTGeometry.PoissonKernelIntegrals
+import GaloisForLFunctions.HTGeometry.AnalyticBallFinsetFactorization
 
 open Complex MeasureTheory Set
 open scoped BigOperators
@@ -43,6 +46,163 @@ theorem integral_norm_sq_fixedLinePoleProfile
   simp_rw [norm_fixedLinePoleProfile_sq]
   rw [integral_const_mul, hshift, integral_inv_sq_add_sq_univ hpos]
   field_simp [ne_of_gt hpos]
+
+/-- A pole strictly below the sampling line gives a continuous boundary profile. -/
+theorem continuous_fixedLinePoleProfile
+    {Y a : ℝ} (hYa : a < Y) (gamma : ℝ) (c : ℂ) :
+    Continuous (fixedLinePoleProfile Y a gamma c) := by
+  unfold fixedLinePoleProfile
+  refine continuous_const.div (by fun_prop) ?_
+  intro x hx
+  have him := congrArg Complex.im hx
+  simp at him
+  linarith
+
+/-- The squared boundary profile of a pole below the sampling line is integrable. -/
+theorem integrable_norm_sq_fixedLinePoleProfile
+    {Y a : ℝ} (hYa : a < Y) (gamma : ℝ) (c : ℂ) :
+    Integrable (fun x : ℝ => ‖fixedLinePoleProfile Y a gamma c x‖ ^ 2) := by
+  have hpos : 0 < Y - a := sub_pos.mpr hYa
+  have hbase : Integrable (fun x : ℝ => (((Y - a) ^ 2 + (x + gamma) ^ 2)⁻¹)) :=
+    (GaloisForLFunctions.HTGeometry.integrable_inv_sq_add_sq hpos).comp_add_right gamma
+  simpa only [norm_fixedLinePoleProfile_sq] using hbase.const_mul (‖c‖ ^ 2)
+
+/-- One of the four fixed-line Cauchy terms of the multiplicity-`m` symmetric quartet
+logarithmic-source correction. The common residue is `-2mi`. -/
+def symmetricQuartetFixedLineTerm
+    (Y a gamma : ℝ) (m : ℕ) (j : Fin 4) (x : ℝ) : ℂ :=
+  ![fixedLinePoleProfile Y a gamma (-(2 : ℂ) * (m : ℂ) * I) x,
+    fixedLinePoleProfile Y a (-gamma) (-(2 : ℂ) * (m : ℂ) * I) x,
+    fixedLinePoleProfile Y (-a) gamma (-(2 : ℂ) * (m : ℂ) * I) x,
+    fixedLinePoleProfile Y (-a) (-gamma) (-(2 : ℂ) * (m : ℂ) * I) x] j
+
+/-- The actual four-pole symmetric logarithmic-source correction sampled on `Im z = Y`. -/
+def symmetricQuartetFixedLineProfile
+    (Y a gamma : ℝ) (m : ℕ) (x : ℝ) : ℂ :=
+  ∑ j : Fin 4, symmetricQuartetFixedLineTerm Y a gamma m j x
+
+/-- The four zeros of the centered quartet gauge, with repetitions retained when `gamma = 0`. -/
+def symmetricQuartetRoot (a gamma : ℝ) (j : Fin 4) : ℂ :=
+  ![(1 / 2 : ℂ) + a + gamma * I,
+    (1 / 2 : ℂ) + a - gamma * I,
+    (1 / 2 : ℂ) - a + gamma * I,
+    (1 / 2 : ℂ) - a - gamma * I] j
+
+/-- The paper's completed logarithmic-source correction
+`-2 Dlog(centeredQuartetGauge(a,gamma)^m)(1/2-iz)`. -/
+def symmetricQuartetLogSourceCorrection
+    (a gamma : ℝ) (m : ℕ) (z : ℂ) : ℂ :=
+  -2 * logDeriv (fun s => centeredQuartetGauge a gamma s ^ m) ((1 / 2 : ℂ) - I * z)
+
+/-- Exact four-pole partial fraction of the symmetric logarithmic-source correction on a line
+strictly above the quartet. This identifies the fixed-line profile with the actual rational gauge,
+including its common residue `-2mi`. -/
+theorem symmetricQuartetLogSourceCorrection_fixedLine
+    {Y a : ℝ} (ha : 0 < a) (hYa : a < Y) (gamma : ℝ) (m : ℕ) (x : ℝ) :
+    symmetricQuartetLogSourceCorrection a gamma m ((x : ℂ) + (Y : ℂ) * I) =
+      symmetricQuartetFixedLineProfile Y a gamma m x := by
+  let s : ℂ := (1 / 2 : ℂ) - I * ((x : ℂ) + (Y : ℂ) * I)
+  have hne : ∀ j : Fin 4, s ≠ symmetricQuartetRoot a gamma j := by
+    intro j
+    fin_cases j <;> intro h <;>
+      have hre := congrArg Complex.re h <;>
+      simp [s, symmetricQuartetRoot] at hre <;> linarith
+  have hfactor :
+      (fun w : ℂ => centeredQuartetGauge a gamma w ^ m) =
+        fun w => ∏ j : Fin 4, (w - symmetricQuartetRoot a gamma j) ^ m := by
+    funext w
+    rw [Finset.prod_pow]
+    congr 1
+    rw [Fin.prod_univ_four]
+    simp [symmetricQuartetRoot, centeredQuartetGauge]
+    ring_nf
+    rw [Complex.I_sq]
+    have hI4 : (I : ℂ) ^ 4 = 1 := by
+      calc
+        (I : ℂ) ^ 4 = ((I : ℂ) ^ 2) ^ 2 := by ring
+        _ = 1 := by rw [Complex.I_sq]; norm_num
+    rw [hI4]
+    ring
+  rw [symmetricQuartetLogSourceCorrection, hfactor]
+  change -2 * logDeriv
+      (fun w => ∏ j : Fin 4, (w - symmetricQuartetRoot a gamma j) ^ m) s = _
+  rw [logDeriv_prod (𝕜 := ℂ) (𝕜' := ℂ) (s := Finset.univ)
+    (f := fun j w => (w - symmetricQuartetRoot a gamma j) ^ m)
+    (fun j _ => pow_ne_zero _ (sub_ne_zero.mpr (hne j)))
+    (fun _ _ => by fun_prop)]
+  simp_rw [HTGeometry.logDeriv_sub_const_pow m (hne _)]
+  have hd0 : (x : ℂ) + (Y : ℂ) * I + gamma - a * I ≠ 0 := by
+    intro h
+    have him := congrArg Complex.im h
+    simp at him
+    linarith
+  have hd1 : (x : ℂ) + (Y : ℂ) * I - gamma - a * I ≠ 0 := by
+    intro h
+    have him := congrArg Complex.im h
+    simp at him
+    linarith
+  have hd2 : (x : ℂ) + (Y : ℂ) * I + gamma + a * I ≠ 0 := by
+    intro h
+    have him := congrArg Complex.im h
+    simp at him
+    linarith
+  have hd3 : (x : ℂ) + (Y : ℂ) * I - gamma + a * I ≠ 0 := by
+    intro h
+    have him := congrArg Complex.im h
+    simp at him
+    linarith
+  have hq0 : (m : ℂ) / (s - symmetricQuartetRoot a gamma 0) =
+      (m : ℂ) * I / ((x : ℂ) + (Y : ℂ) * I + gamma - a * I) := by
+    have heq : s - symmetricQuartetRoot a gamma 0 =
+        -I * ((x : ℂ) + (Y : ℂ) * I + gamma - a * I) := by
+      simp [s, symmetricQuartetRoot]
+      ring_nf
+      rw [Complex.I_sq]
+      ring
+    rw [heq]
+    field_simp [hd0]
+    rw [Complex.I_sq]
+    ring
+  have hq1 : (m : ℂ) / (s - symmetricQuartetRoot a gamma 1) =
+      (m : ℂ) * I / ((x : ℂ) + (Y : ℂ) * I - gamma - a * I) := by
+    have heq : s - symmetricQuartetRoot a gamma 1 =
+        -I * ((x : ℂ) + (Y : ℂ) * I - gamma - a * I) := by
+      simp [s, symmetricQuartetRoot]
+      ring_nf
+      rw [Complex.I_sq]
+      ring
+    rw [heq]
+    field_simp [hd1]
+    rw [Complex.I_sq]
+    ring
+  have hq2 : (m : ℂ) / (s - symmetricQuartetRoot a gamma 2) =
+      (m : ℂ) * I / ((x : ℂ) + (Y : ℂ) * I + gamma + a * I) := by
+    have heq : s - symmetricQuartetRoot a gamma 2 =
+        -I * ((x : ℂ) + (Y : ℂ) * I + gamma + a * I) := by
+      simp [s, symmetricQuartetRoot]
+      ring_nf
+      rw [Complex.I_sq]
+      ring
+    rw [heq]
+    field_simp [hd2]
+    rw [Complex.I_sq]
+    ring
+  have hq3 : (m : ℂ) / (s - symmetricQuartetRoot a gamma 3) =
+      (m : ℂ) * I / ((x : ℂ) + (Y : ℂ) * I - gamma + a * I) := by
+    have heq : s - symmetricQuartetRoot a gamma 3 =
+        -I * ((x : ℂ) + (Y : ℂ) * I - gamma + a * I) := by
+      simp [s, symmetricQuartetRoot]
+      ring_nf
+      rw [Complex.I_sq]
+      ring
+    rw [heq]
+    field_simp [hd3]
+    rw [Complex.I_sq]
+    ring
+  rw [Fin.sum_univ_four, hq0, hq1, hq2, hq3]
+  simp [symmetricQuartetFixedLineProfile, symmetricQuartetFixedLineTerm,
+    fixedLinePoleProfile, Fin.sum_univ_four]
+  ring
 
 theorem norm_crossedPoleResidueProfile_sq
     (a gamma : ℝ) (c : ℂ) (t : ℝ) :
@@ -201,5 +361,193 @@ theorem symmetricQuartet_cauchyEnergy_ge_inverseHorizontal
         (symmetricQuartetHeight gamma) (symmetricQuartetMultiplicity m) := by
   rw [symmetricQuartet_cauchyEnergy ha]
   exact le_add_of_nonneg_right (by positivity)
+
+/-- Exact four-pole fixed-line triangle estimate. This is equation (16) of the paper card. -/
+theorem sqrt_integral_norm_sq_symmetricQuartetFixedLineProfile_le
+    {Y a : ℝ} (ha : 0 < a) (hYa : a < Y) (gamma : ℝ) (m : ℕ) :
+    Real.sqrt (∫ x : ℝ, ‖symmetricQuartetFixedLineProfile Y a gamma m x‖ ^ 2) ≤
+      4 * (m : ℝ) * Real.sqrt Real.pi *
+        (1 / Real.sqrt (Y - a) + 1 / Real.sqrt (Y + a)) := by
+  have hYna : -a < Y := by linarith
+  let g : Fin 4 → ℝ → ℂ := symmetricQuartetFixedLineTerm Y a gamma m
+  have hm : ∀ j ∈ (Finset.univ : Finset (Fin 4)),
+      AEStronglyMeasurable (g j) := by
+    intro j _
+    fin_cases j
+    · change AEStronglyMeasurable
+        (fixedLinePoleProfile Y a gamma (-(2 : ℂ) * (m : ℂ) * I)) volume
+      exact (continuous_fixedLinePoleProfile hYa _ _).aestronglyMeasurable
+    · change AEStronglyMeasurable
+        (fixedLinePoleProfile Y a (-gamma) (-(2 : ℂ) * (m : ℂ) * I)) volume
+      exact (continuous_fixedLinePoleProfile hYa _ _).aestronglyMeasurable
+    · change AEStronglyMeasurable
+        (fixedLinePoleProfile Y (-a) gamma (-(2 : ℂ) * (m : ℂ) * I)) volume
+      exact (continuous_fixedLinePoleProfile hYna _ _).aestronglyMeasurable
+    · change AEStronglyMeasurable
+        (fixedLinePoleProfile Y (-a) (-gamma) (-(2 : ℂ) * (m : ℂ) * I)) volume
+      exact (continuous_fixedLinePoleProfile hYna _ _).aestronglyMeasurable
+  have hi : ∀ j ∈ (Finset.univ : Finset (Fin 4)),
+      Integrable (fun x : ℝ => ‖g j x‖ ^ 2) := by
+    intro j _
+    fin_cases j
+    · change Integrable (fun x : ℝ =>
+        ‖fixedLinePoleProfile Y a gamma (-(2 : ℂ) * (m : ℂ) * I) x‖ ^ 2)
+      exact integrable_norm_sq_fixedLinePoleProfile hYa _ _
+    · change Integrable (fun x : ℝ =>
+        ‖fixedLinePoleProfile Y a (-gamma) (-(2 : ℂ) * (m : ℂ) * I) x‖ ^ 2)
+      exact integrable_norm_sq_fixedLinePoleProfile hYa _ _
+    · change Integrable (fun x : ℝ =>
+        ‖fixedLinePoleProfile Y (-a) gamma (-(2 : ℂ) * (m : ℂ) * I) x‖ ^ 2)
+      exact integrable_norm_sq_fixedLinePoleProfile hYna _ _
+    · change Integrable (fun x : ℝ =>
+        ‖fixedLinePoleProfile Y (-a) (-gamma) (-(2 : ℂ) * (m : ℂ) * I) x‖ ^ 2)
+      exact integrable_norm_sq_fixedLinePoleProfile hYna _ _
+  have hM := GaloisForLFunctions.HTGeometry.sqrt_integral_normSq_sum_le_measure
+    (Finset.univ : Finset (Fin 4)) g hm hi
+  change Real.sqrt (∫ x : ℝ,
+      ‖∑ j : Fin 4, symmetricQuartetFixedLineTerm Y a gamma m j x‖ ^ 2) ≤ _
+  have hM' : Real.sqrt (∫ x : ℝ,
+      ‖∑ j : Fin 4, symmetricQuartetFixedLineTerm Y a gamma m j x‖ ^ 2) ≤
+      ∑ j : Fin 4, Real.sqrt (∫ x : ℝ,
+        ‖symmetricQuartetFixedLineTerm Y a gamma m j x‖ ^ 2) := by
+    simpa [g] using hM
+  rw [Fin.sum_univ_four] at hM'
+  simp [symmetricQuartetFixedLineTerm,
+    integral_norm_sq_fixedLinePoleProfile hYa,
+    integral_norm_sq_fixedLinePoleProfile hYna] at hM'
+  have hpi : 0 ≤ Real.pi := Real.pi_pos.le
+  have hma : 0 ≤ (2 : ℝ) * m := by positivity
+  have hsqrt (b : ℝ) (hb : 0 < b) :
+      Real.sqrt (Real.pi * ((2 : ℝ) * m) ^ 2 / b) =
+        2 * (m : ℝ) * Real.sqrt Real.pi / Real.sqrt b := by
+    rw [Real.sqrt_div (mul_nonneg hpi (sq_nonneg _)),
+      Real.sqrt_mul hpi, Real.sqrt_sq_eq_abs, abs_of_nonneg hma]
+    ring
+  rw [hsqrt (Y - a) (sub_pos.mpr hYa), hsqrt (Y + a) (by linarith)] at hM'
+  calc
+    Real.sqrt (∫ x : ℝ,
+        ‖∑ j : Fin 4, symmetricQuartetFixedLineTerm Y a gamma m j x‖ ^ 2) ≤
+        2 * (m : ℝ) * Real.sqrt Real.pi / Real.sqrt (Y - a) +
+          2 * (m : ℝ) * Real.sqrt Real.pi / Real.sqrt (Y - a) +
+          2 * (m : ℝ) * Real.sqrt Real.pi / Real.sqrt (Y + a) +
+          2 * (m : ℝ) * Real.sqrt Real.pi / Real.sqrt (Y + a) := by
+      simpa [symmetricQuartetFixedLineTerm] using hM'
+    _ = 4 * (m : ℝ) * Real.sqrt Real.pi *
+        (1 / Real.sqrt (Y - a) + 1 / Real.sqrt (Y + a)) := by ring
+
+/-- Uniform four-pole fixed-line energy bound for `0 < a ≤ Y/2`. This is equation (17). -/
+theorem integral_norm_sq_symmetricQuartetFixedLineProfile_le
+    {Y a : ℝ} (ha : 0 < a) (haY : a ≤ Y / 2) (gamma : ℝ) (m : ℕ) :
+    (∫ x : ℝ, ‖symmetricQuartetFixedLineProfile Y a gamma m x‖ ^ 2) ≤
+      16 * (m : ℝ) ^ 2 * Real.pi * (3 + 2 * Real.sqrt 2) / Y := by
+  have hY : 0 < Y := by linarith
+  have hYa : a < Y := by linarith
+  have hYpa : 0 < Y + a := by linarith
+  have hYma : 0 < Y - a := by linarith
+  have hfracA : 1 / (Y - a) ≤ 2 / Y := by
+    exact (div_le_div_iff₀ hYma hY).2 (by linarith)
+  have hA : 1 / Real.sqrt (Y - a) ≤ Real.sqrt 2 / Real.sqrt Y := by
+    rw [show 1 / Real.sqrt (Y - a) = Real.sqrt (1 / (Y - a)) by
+        rw [Real.sqrt_div (show 0 ≤ (1 : ℝ) by positivity), Real.sqrt_one],
+      show Real.sqrt 2 / Real.sqrt Y = Real.sqrt (2 / Y) by
+        rw [Real.sqrt_div (show 0 ≤ (2 : ℝ) by positivity)]]
+    simpa using Real.sqrt_le_sqrt hfracA
+  have hfracB : 1 / (Y + a) ≤ 1 / Y := by
+    exact (div_le_div_iff₀ hYpa hY).2 (by linarith)
+  have hB : 1 / Real.sqrt (Y + a) ≤ 1 / Real.sqrt Y := by
+    rw [show 1 / Real.sqrt (Y + a) = Real.sqrt (1 / (Y + a)) by
+        rw [Real.sqrt_div (show 0 ≤ (1 : ℝ) by positivity), Real.sqrt_one],
+      show 1 / Real.sqrt Y = Real.sqrt (1 / Y) by
+        rw [Real.sqrt_div (show 0 ≤ (1 : ℝ) by positivity), Real.sqrt_one]]
+    simpa using Real.sqrt_le_sqrt hfracB
+  have hsum :
+      1 / Real.sqrt (Y - a) + 1 / Real.sqrt (Y + a) ≤
+        (Real.sqrt 2 + 1) / Real.sqrt Y := by
+    calc
+      1 / Real.sqrt (Y - a) + 1 / Real.sqrt (Y + a) ≤
+          Real.sqrt 2 / Real.sqrt Y + 1 / Real.sqrt Y := add_le_add hA hB
+      _ = (Real.sqrt 2 + 1) / Real.sqrt Y := by ring
+  have hK : 0 ≤ 4 * (m : ℝ) * Real.sqrt Real.pi := by positivity
+  have hroot :
+      Real.sqrt (∫ x : ℝ,
+          ‖symmetricQuartetFixedLineProfile Y a gamma m x‖ ^ 2) ≤
+        4 * (m : ℝ) * Real.sqrt Real.pi *
+          ((Real.sqrt 2 + 1) / Real.sqrt Y) :=
+    le_trans
+      (sqrt_integral_norm_sq_symmetricQuartetFixedLineProfile_le ha hYa gamma m)
+      (mul_le_mul_of_nonneg_left hsum hK)
+  have hInt : 0 ≤ ∫ x : ℝ,
+      ‖symmetricQuartetFixedLineProfile Y a gamma m x‖ ^ 2 :=
+    integral_nonneg fun _ => sq_nonneg _
+  have hsq := (sq_le_sq₀ (Real.sqrt_nonneg _) (by positivity)).2 hroot
+  rw [Real.sq_sqrt hInt] at hsq
+  calc
+    (∫ x : ℝ, ‖symmetricQuartetFixedLineProfile Y a gamma m x‖ ^ 2) ≤
+        (4 * (m : ℝ) * Real.sqrt Real.pi *
+          ((Real.sqrt 2 + 1) / Real.sqrt Y)) ^ 2 := hsq
+    _ = 16 * (m : ℝ) ^ 2 * Real.pi * (3 + 2 * Real.sqrt 2) / Y := by
+      rw [mul_pow, mul_pow, div_pow, Real.sq_sqrt Real.pi_pos.le,
+        Real.sq_sqrt hY.le]
+      have h2 : Real.sqrt 2 ^ 2 = 2 :=
+        Real.sq_sqrt (show (0 : ℝ) ≤ 2 by positivity)
+      field_simp [ne_of_gt hY]
+      nlinarith
+
+/-- Any linear energy estimate carrying the symmetric quartet from the fixed line to its crossed
+residue profile has the inverse-horizontal squared operator-norm lower bound of equation (18). -/
+theorem symmetricQuartet_operatorNorm_sq_ge
+    {Y a M : ℝ} (ha : 0 < a) (haY : a ≤ Y / 2) (gamma : ℝ) (m : ℕ)
+    (hm : 0 < m)
+    (hbound :
+      (∫ t in Ioi (0 : ℝ),
+          ‖finiteOfflineProfile (symmetricQuartetDepth a)
+            (symmetricQuartetHeight gamma) (symmetricQuartetMultiplicity m) t‖ ^ 2) ≤
+        M ^ 2 *
+          (∫ x : ℝ,
+            ‖symmetricQuartetFixedLineProfile Y a gamma m x‖ ^ 2)) :
+    Y / (4 * Real.pi * (3 + 2 * Real.sqrt 2) * a) ≤ M ^ 2 := by
+  have hY : 0 < Y := by linarith
+  have hc : 0 < 3 + 2 * Real.sqrt 2 := by positivity
+  have hinput :=
+    integral_norm_sq_symmetricQuartetFixedLineProfile_le ha haY gamma m
+  have hcharge :
+      4 * (m : ℝ) ^ 2 / a ≤
+        (∫ t in Ioi (0 : ℝ),
+          ‖finiteOfflineProfile (symmetricQuartetDepth a)
+            (symmetricQuartetHeight gamma) (symmetricQuartetMultiplicity m) t‖ ^ 2) := by
+    rw [integral_norm_sq_symmetricQuartetProfile ha]
+    exact le_add_of_nonneg_right (by positivity)
+  have hchain :
+      4 * (m : ℝ) ^ 2 / a ≤
+        M ^ 2 * (16 * (m : ℝ) ^ 2 * Real.pi *
+          (3 + 2 * Real.sqrt 2) / Y) :=
+    le_trans hcharge (le_trans hbound
+      (mul_le_mul_of_nonneg_left hinput (sq_nonneg M)))
+  have hcross :
+      (4 * (m : ℝ) ^ 2) * Y ≤
+        (M ^ 2 * (16 * (m : ℝ) ^ 2 * Real.pi *
+          (3 + 2 * Real.sqrt 2))) * a := by
+    apply (div_le_div_iff₀ ha hY).1
+    calc
+      4 * (m : ℝ) ^ 2 / a ≤
+          M ^ 2 * (16 * (m : ℝ) ^ 2 * Real.pi *
+            (3 + 2 * Real.sqrt 2) / Y) := hchain
+      _ = (M ^ 2 * (16 * (m : ℝ) ^ 2 * Real.pi *
+            (3 + 2 * Real.sqrt 2))) / Y := by ring
+  have hmR : 0 < (4 : ℝ) * (m : ℝ) ^ 2 := by positivity
+  have hcancel :
+      (4 * (m : ℝ) ^ 2) * Y ≤
+        (4 * (m : ℝ) ^ 2) *
+          (M ^ 2 * (4 * Real.pi * (3 + 2 * Real.sqrt 2) * a)) := by
+    calc
+      (4 * (m : ℝ) ^ 2) * Y ≤
+          (M ^ 2 * (16 * (m : ℝ) ^ 2 * Real.pi *
+            (3 + 2 * Real.sqrt 2))) * a := hcross
+      _ = (4 * (m : ℝ) ^ 2) *
+          (M ^ 2 * (4 * Real.pi * (3 + 2 * Real.sqrt 2) * a)) := by ring
+  have hYle : Y ≤ M ^ 2 * (4 * Real.pi * (3 + 2 * Real.sqrt 2) * a) :=
+    by nlinarith
+  exact (div_le_iff₀ (by positivity : 0 < 4 * Real.pi *
+    (3 + 2 * Real.sqrt 2) * a)).2 hYle
 
 end RHTower

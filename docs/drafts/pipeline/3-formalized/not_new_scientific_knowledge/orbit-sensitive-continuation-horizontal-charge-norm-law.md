@@ -1,7 +1,7 @@
 # Orbit-sensitive continuation forces inverse-horizontal residue charge
 
 - **ID:** `orbit-sensitive-continuation-horizontal-charge-norm-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized (promoted 2026-08-23)
 - **Type:** THEOREM (paper), `[BRIDGE]`
 - **Scientific status:** `[PROVED] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parent results:** Cauchy-kernel boundary norms, Laplace transforms of exponential modes, and
@@ -269,13 +269,35 @@ The proof is an elementary specialization of Cauchy-kernel and exponential-mode 
 It is a route bridge, not new scientific knowledge. Its value is to convert a failed bounded-map
 proposal into the positive inverse-horizontal carrier law `(21)`.
 
-`OrbitSensitiveContinuationCharge.lean` now formalizes the actual one-pole Hardy-line integral,
-the actual crossed-residue integral, their exact ratio `(6)`, the quantified failure of every
-uniform finite energy bound, and the positive domain-budget law `(21)`. It also identifies the two
-right-half Cauchy modes with actual zeros of `centeredQuartetGauge` and proves their exact
-`L^2` residue energy `(15)` and inverse-horizontal lower charge. The remaining paper-only analytic
-piece is the four-pole fixed-line triangle estimate `(16)`--`(18)` for the complete symmetric
-logarithmic correction. No pointed Xi graph or four-unit source-specific upper bound is asserted.
+`OrbitSensitiveContinuationCharge.lean` formalizes the actual one-pole Hardy-line integral, the
+actual crossed-residue integral, their exact ratio `(6)`, quantified failure of every uniform finite
+energy bound, and positive domain-budget law `(21)`. It also identifies the two right-half Cauchy
+modes with actual zeros of `centeredQuartetGauge`, proves their exact `L^2` residue energy `(15)`,
+and proves the inverse-horizontal lower charge.
+
+The complete symmetric correction is now closed too. The declaration
+`symmetricQuartetLogSourceCorrection_fixedLine` proves that the four-pole line profile is exactly
+
+```text
+-2 Dlog(centeredQuartetGauge(a,gamma)^m)(1/2-i z),
+```
+
+including the common residue `-2mi`. The declarations
+`sqrt_integral_norm_sq_symmetricQuartetFixedLineProfile_le`,
+`integral_norm_sq_symmetricQuartetFixedLineProfile_le`, and
+`symmetricQuartet_operatorNorm_sq_ge` prove `(16)`, `(17)`, and `(18)` with the displayed constants.
+No pointed Xi graph or four-unit source-specific upper bound is asserted by this card.
+
+### Lean audit — 2026-08-23
+
+- Source check: `lake env lean GaloisForLFunctions/RHTower/OrbitSensitiveContinuationCharge.lean`
+  passed.
+- Targeted final build:
+  `lake build GaloisForLFunctions.RHTower.OrbitSensitiveContinuationCharge` passed.
+- `#print axioms` for the exact logarithmic-source identity and `(16)`--`(18)` reports only
+  `[propext, Classical.choice, Quot.sound]`.
+- Module contains no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration.
+- `GaloisForLFunctions.RHTower` already imports the leaf module; no umbrella build was run.
 
 ## Gates
 
@@ -285,7 +307,8 @@ logarithmic correction. No pointed Xi graph or four-unit source-specific upper b
 - [x] positive inverse-horizontal graph-charge law
 - [x] consequence for the CCM continuation seam
 - [x] exact one-pole obstruction and right-half quartet residue charge formalized in Lean
-- [ ] full symmetric four-pole fixed-line estimate formalized in Lean
-- [ ] construct the pointed Xi residue graph
-- [ ] prove source-specific four-unit nonexpansive renormalization
-- [ ] RH
+- [x] exact symmetric gauge logarithmic-source partial fraction formalized in Lean
+- [x] full symmetric four-pole fixed-line estimates `(16)`--`(18)` formalized in Lean
+
+Downstream non-gates, not claimed by this theorem: construct pointed Xi residue graph; prove a
+source-specific four-unit nonexpansive renormalization; prove RH.

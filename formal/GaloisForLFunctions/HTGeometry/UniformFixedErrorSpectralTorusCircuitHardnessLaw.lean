@@ -566,6 +566,62 @@ theorem eventually_exists_qubitSpectralBooleanReflection_polynomialCircuit_fixed
   intro V
   exact exists_qubitSpectralBooleanReflection_atMostCircuit_fixedError V hn
 
+/-- Polynomial continuous-circuit entropy is eventually smaller than the
+projective Boolean carrier, where one anchor sign has been fixed.  The lost
+factor two is exactly the quotient by global sign. -/
+theorem eventually_atMostQuarterCircuitEntropyBound_lt_projectiveBooleanCarrier
+    (q : ℕ) :
+    ∀ᶠ n : ℕ in Filter.atTop,
+      atMostQuarterCircuitEntropyBound n (n ^ q) <
+        ((2 ^ (2 ^ n - 1) : ℕ) : ℝ) := by
+  let A : ℝ := ((2 * (6 * (64 * (q + 1)) ^ 2) : ℕ) : ℝ)
+  let E : ℕ := 2 * (q + 1)
+  have hlower : ∀ m : ℕ, m ≥ 0 →
+      (2 : ℝ) * (2 : ℝ) ^ m ≤ (2 : ℝ) ^ (m + 1) := by
+    intro m _hm
+    rw [pow_succ]
+    simp [mul_comm]
+  obtain ⟨N, hN⟩ :=
+    GaloisForLFunctions.exists_const_mul_pow_lt_of_geometric_lower
+      (b := fun n : ℕ ↦ (2 : ℝ) ^ n)
+      (fun _ ↦ by positivity)
+      (r := (2 : ℝ)) (by norm_num)
+      (N := 0) hlower
+      A (by dsimp [A]; positivity) 1 E (by norm_num)
+  filter_upwards [Filter.eventually_ge_atTop (max N 1)] with n hn
+  have hn1 : 1 ≤ n := (le_max_right N 1).trans hn
+  have hnN : N ≤ n := (le_max_left N 1).trans hn
+  have hpoly := hN n hnN
+  let M : ℕ := 6 * (64 * (q + 1) * (n + 1) ^ (q + 1)) ^ 2
+  have hEcast :
+      (((2 * M : ℕ) : ℝ)) =
+        A * (((1 * (n + 1)) ^ E : ℕ) : ℝ) := by
+    dsimp [A, E, M]
+    push_cast
+    simp only [one_mul]
+    rw [show 2 * (q + 1) = (q + 1) * 2 by omega]
+    have hpow :
+        ((n : ℝ) + 1) ^ ((q + 1) * 2) =
+          (((n : ℝ) + 1) ^ (q + 1)) ^ 2 := by
+      rw [pow_mul]
+    rw [hpow]
+    ring
+  rw [← hEcast] at hpoly
+  have htwoCast : (((2 ^ n : ℕ) : ℝ)) = (2 : ℝ) ^ n := by norm_num
+  rw [← htwoCast] at hpoly
+  have hdouble : 2 * M < 2 ^ n := by
+    exact_mod_cast hpoly
+  have hM : M < 2 ^ n - 1 := by
+    have hpow : 2 ≤ 2 ^ n := by
+      simpa using Nat.pow_le_pow_right (by norm_num : 0 < 2) hn1
+    omega
+  calc
+    atMostQuarterCircuitEntropyBound n (n ^ q) ≤ (2 : ℝ) ^ M := by
+      simpa [M] using atMostQuarterCircuitEntropyBound_polynomial_majorant q n hn1
+    _ < (2 : ℝ) ^ (2 ^ n - 1) :=
+      pow_lt_pow_right₀ (by norm_num) hM
+    _ = ((2 ^ (2 ^ n - 1) : ℕ) : ℝ) := by norm_num
+
 end
 
 end GaloisForLFunctions.HTGeometry

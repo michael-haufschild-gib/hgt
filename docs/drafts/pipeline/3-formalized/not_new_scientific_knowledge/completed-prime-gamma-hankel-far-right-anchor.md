@@ -1,13 +1,13 @@
 # Completed prime--Gamma Hankel far-right anchor
 
 - **ID:** `completed-prime-gamma-hankel-far-right-anchor`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / `[BRIDGE]`
 - **Scientific status:** `[PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
-- **Lean status:** The all-order scalar asymptotic `(7)` is formalized as
-  `completedOddLogDerivMomentFarRightAsymptotic`; the finite polynomial-square consequence and the
-  RH capstone with even factorization are also formalized.  The determinant limit `(9)` remains a
-  paper theorem because the sharper countable polynomial consumer no longer requires it.
+- **Lean status:** Fully formalized unconditionally.  The scalar asymptotic `(7)`, signed Hilbert
+  limit positivity, determinant limit `(9)`, exact exponent `2n^2-n`, and eventual strict
+  positivity are closed in Lean.  No RH, zero-location, nonvanishing, or winding hypothesis enters
+  the far-right theorem.
 - **Statement:** Every fixed leading determinant of the moving completed
   prime--Gamma odd-derivative moment matrix is strictly positive sufficiently far to the right,
   with an explicit Hilbert-moment asymptotic.  At the centre the same determinant is the existing
@@ -197,7 +197,7 @@ the exact source interaction that strict Euler Laplace positivity alone cannot s
 Every degree now has a canonical positive source endpoint on paper.  The remaining chain is
 
 ```text
-completed prime--Gamma far-right determinant anchor                         [PAPER]
+completed prime--Gamma far-right determinant anchor                         [Lean]
   + exact reflection, holomorphy off Xi, and Schwarz reality                 [Lean]
   + source exclusion of noncentral odd-order real zeros                      [OPEN CORE]
   + nonvanishing at s=1/2                                                     [OPEN CORE]
@@ -234,15 +234,17 @@ theorem is needed.  This route is tracked in
 - [x] prove exact base reflection of the moving germ, matrices, and determinants
 - [x] retain the full complex coefficient determinant and prove its exact reflection
 - [x] define the explicit odd-logarithmic-derivative determinant and prove holomorphy off Xi zeros
-- [ ] prove the all-order positive-real polygamma asymptotic
-- [ ] prove polar derivatives are one power smaller
-- [ ] reuse von Mangoldt first-coefficient decay for the Euler derivative channel
-- [ ] prove the determinant limit `(1)` and eventual positivity
+- [x] prove the all-order positive-real polygamma asymptotic
+- [x] prove polar derivatives are one power smaller
+- [x] reuse von Mangoldt first-coefficient decay for the Euler derivative channel
+- [x] prove the determinant limit `(1)` and eventual positivity
 - [x] formalize the finite polynomial passage from `(7)` to every scalar far-right anchor
 - [x] prove the affine chain-rule center bridge for the explicit determinant in Lean
 - [x] prove that finite analytic order at the reflection center is even
-- [ ] exclude noncentral odd-order real determinant zeros by a source-side theorem
-- [ ] prove central nonvanishing
+- [ ] exclude noncentral odd-order real determinant zeros by a source-side theorem *(downstream
+      RH sign-transfer producer, not part of the far-right-anchor theorem)*
+- [ ] prove central nonvanishing *(downstream RH sign-transfer producer, not part of the
+      far-right-anchor theorem)*
 - [x] formalize finite even-factor sign transfer, including a possible central zero
 
 ## Gates
@@ -252,5 +254,32 @@ theorem is needed.  This route is tracked in
 - [x] non-circular far-right mechanism isolated
 - [x] complete paper proof of `(1)`
 - [x] unconditional Lean proof of the centre identity
-- [ ] unconditional Lean proof of the scalar moment asymptotic `(7)`
-- [ ] non-circular winding producer
+- [x] unconditional Lean proof of the scalar moment asymptotic `(7)`
+- [ ] non-circular winding producer *(downstream research gate; not a premise or conclusion of this
+      card's proved far-right theorem)*
+
+## Lean realization
+
+Formal carrier:
+
+- `formal/GaloisForLFunctions/RHTower/CompletedPrimeGammaMomentFarRightAsymptotic.lean` proves the
+  unconditional scalar Gamma/polar/Euler asymptotic `(7)`.
+- `formal/GaloisForLFunctions/RHTower/CompletedPrimeGammaHankelFarRightAnchor.lean` proves strict
+  positivity of the signed Hilbert limit through the exact representation
+  `(-1)^k/(2(2k+1)) = (1/2) integral_0^1 (-t^2)^k dt`, entrywise normalized matrix convergence,
+  exact diagonal determinant scaling, `(9)`, and eventual positivity of the real part of
+  `completedOddLogDerivHankelDet`.
+
+Principal final theorems:
+
+- `completedPrimeGammaFarRightHankelMatrix_posDef`;
+- `det_completedOddLogDerivFarRightNormalizedHankelMatrix`;
+- `completedOddLogDerivHankelDetFarRightAsymptotic`;
+- `completedOddLogDerivHankelDet_ofReal_re_pos_eventually`.
+
+Verification on 2026-08-23:
+
+- `lake build GaloisForLFunctions.RHTower.CompletedPrimeGammaHankelFarRightAnchor` passed;
+- `#print axioms` on the new positive-moment, scaling, asymptotic, and eventual-positivity theorems
+  reports only `propext`, `Classical.choice`, and `Quot.sound`;
+- module is wired into `GaloisForLFunctions.RHTower` without building that umbrella.

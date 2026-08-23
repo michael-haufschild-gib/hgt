@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.LinearPMapBoundedUnitaryTransport
+import GaloisForLFunctions.RHTower.FourierL2SobolevDomain
 import GaloisForLFunctions.RHTower.SoninEvenCarrier
 
 /-!
@@ -183,6 +184,15 @@ private theorem memLp_energy_of_memLp_squareCoordinate (a : ℝ) (f : SoninL2)
   push_cast
   ring
 
+/-- The maximal quadratic-energy domain is exactly the square-coordinate weighted `L²` domain.
+The additive constant `a²` and nonzero scale `(2π)²` do not alter the domain. -/
+theorem weightOneSpectralSquare_domain_iff_squareCoordinate (a : ℝ) (f : SoninL2) :
+    f ∈ (weightOneSpectralSquare a).domain ↔
+      MemLp (fun ξ : ℝ => ((ξ ^ 2 : ℝ) : ℂ) * (f : ℝ → ℂ) ξ) 2 volume := by
+  constructor
+  · exact memLp_squareCoordinate_of_memLp_energy a f
+  · exact memLp_energy_of_memLp_squareCoordinate a f
+
 theorem weightOneSpectralSquare_domain_iff_secondCoordinate (a : ℝ) (f : SoninL2) :
     f ∈ (weightOneSpectralSquare a).domain ↔
       ∃ hf : f ∈ weightOneSpectralCoordinate.domain,
@@ -363,4 +373,3 @@ theorem weightOneSpectralDirac_sq_apply (a : ℝ)
   ring
 
 end RHTower
-

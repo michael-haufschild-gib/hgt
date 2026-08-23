@@ -1,7 +1,7 @@
 # Singular corona--residue incidence trilemma
 
 - **ID:** `singular-corona-residue-incidence-trilemma`
-- **Stage:** 2-fully-proven / not-new
+- **Stage:** 3-formalized (promoted 2026-08-23)
 - **Type:** THEOREM (paper), `[BRIDGE]`
 - **Statement:** Multiplying the actual unit tail by a right-strip prime character gives a canonical
   source-defined residue incidence, but it cannot produce a protected corona charge.  If the
@@ -31,8 +31,9 @@ cannot carry such an integer.
 - [x] 1 -> 2: complete paper proof; no open dependency
 - [x] parent-theory attack: bounded diagonal multipliers, the dense-kernel graph lemma, and the
   vertical-fibre dichotomy are standard functional analysis, so the result is `[BRIDGE]`
-- [ ] 2 -> 3: no isolated Lean formalization selected; the abstract graph-fibre lemma is routine,
-  while the prime-tail analytic continuation is already the paper-level bottleneck
+- [x] 2 -> 3: exact prime-shift, quotient-annihilation, residue-translation,
+  finite-gauge-invariance, scalar vertical-fibre, RH dichotomy, and fixed-shift zero-free
+  filtration theorems formalized and audited in Lean
 
 ## 1. Tail spaces and the canonical residue graph
 
@@ -280,6 +281,43 @@ Together with `fe-schwarz-prime-corona-horizontal-grade-collapse.md`, this exclu
 higher-dimensional singular object whose defect retains quantized multiplicity before graph
 closure, while not reconstructing the divisor and then applying an RH-equivalent sign test.  No
 such object is present in the current source, corona, or Lean interfaces.
+
+## Lean formalization
+
+`GaloisForLFunctions.RHTower.SingularCoronaResidueIncidenceTrilemma` formalizes the exact
+complex prime-shift multiplier and seminorm bound, the map from `M_log` into `M_0`, annihilation by
+every quotient-linear incidence, the translated residue identity, and finite Euler correction
+invariance. It also constructs the actual Marcinkiewicz sequential graph vertical fibre and proves
+its zero/full-scalar-line dichotomy.
+
+The fixed-shift pulled-back graph is represented by `IsClosableShiftedCorona`. The theorem
+`isClosableShiftedCorona_iff_zeroFree_above` proves exactly that, for each pole-excised right-strip
+shift `z`, closability is equivalent to absence of zeta zeros strictly to the right of `Re z`.
+The closed capstone `singularCoronaResidueIncidenceTrilemma` packages all paper conclusions,
+including the RH/bottom-fibre and non-RH/top-fibre equivalences, without theorem premises.
+
+Reusable topological infrastructure lives in
+`GaloisForLFunctions.HTGeometry.ScalarLinearPMapVerticalFibre`: for any scalar-valued complex
+partial linear map, its closed-graph vertical fibre is bottom exactly when the map is closable and
+top exactly when it is not closable.
+
+The downstream nonlinear or higher-dimensional object mentioned under `[OPEN CORE]` is a proposed
+new route, not a theorem asserted by this card, so it is not a stage-3 gate.
+
+### Lean audit — 2026-08-23
+
+- Source checks passed:
+  `lake env lean GaloisForLFunctions/HTGeometry/ScalarLinearPMapVerticalFibre.lean` and
+  `lake env lean GaloisForLFunctions/RHTower/SingularCoronaResidueIncidenceTrilemma.lean`.
+- Targeted leaf builds passed:
+  `lake build GaloisForLFunctions.HTGeometry.ScalarLinearPMapVerticalFibre` and
+  `lake build GaloisForLFunctions.RHTower.SingularCoronaResidueIncidenceTrilemma`.
+- `#print axioms` for the new generic graph dichotomy, shift-to-vanishing theorem, translated
+  residue identity, fixed-shift zero-free equivalence, RH/top-fibre equivalence, and closed
+  trilemma reports only `[propext, Classical.choice, Quot.sound]`.
+- Both new modules contain no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration.
+- `GaloisForLFunctions.HTGeometry` and `GaloisForLFunctions.RHTower` import their new leaf modules.
+  No umbrella build was run.
 
 ## Scientific status
 
