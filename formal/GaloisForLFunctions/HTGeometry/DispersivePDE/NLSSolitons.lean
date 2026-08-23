@@ -208,4 +208,19 @@ theorem nlsPlaneWave_solves : SolvesFocusingNLS nlsPlaneWaveJet := by
   rw [Complex.I_sq]
   ring
 
+/-! ## Closed Schrödinger and core-profile identities -/
+
+theorem solitonA_schrodinger (x : ℝ) :
+    solitonA2 x + 2 * solitonQ x * solitonA x = solitonA x := by
+  rw [solitonA2]
+  have hsq : solitonA x ^ 2 = solitonQ x := solitonA_sq x
+  nlinarith
+
+theorem nlsBrightSoliton_center_norm (t : ℝ) : ‖nlsBrightSoliton t 0‖ = 1 := by
+  rw [norm_nlsBrightSoliton]
+  simp [solitonA]
+
+theorem nlsDarkSoliton_center_zero (t : ℝ) : nlsDarkSoliton t 0 = 0 := by
+  simp [nlsDarkSoliton, solitonT]
+
 end GaloisForLFunctions.HTGeometry.DispersivePDE

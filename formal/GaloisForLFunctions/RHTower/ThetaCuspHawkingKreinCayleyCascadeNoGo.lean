@@ -47,14 +47,14 @@ theorem primitiveHawkingKreinCayleyGain_eq_twoModeBosonicKreinCayleyGain
     (lambda : ℝ) :
     primitiveHawkingKreinCayleyGain lambda =
       twoModeBosonicKreinCayleyGain (lambda : ℂ) := by
-  simp [primitiveHawkingKreinCayleyGain, twoModeBosonicKreinCayleyGain]
+  simp [primitiveHawkingKreinCayleyGain, twoModeBosonicKreinCayleyGain, pow_two]
 
 /-- The primitive pair coefficient is exactly the real slice of the canonical chart. -/
 theorem ofReal_primitiveHawkingKreinCayleyPair_eq_twoModeBosonicKreinCayleyPair
     (lambda : ℝ) :
     (primitiveHawkingKreinCayleyPair lambda : ℂ) =
       twoModeBosonicKreinCayleyPair (lambda : ℂ) := by
-  simp [primitiveHawkingKreinCayleyPair, twoModeBosonicKreinCayleyPair]
+  simp [primitiveHawkingKreinCayleyPair, twoModeBosonicKreinCayleyPair, pow_two]
 
 /-- Every primitive disk cell lies on the positive bosonic `SU(1,1)` sheet. -/
 theorem primitiveHawkingKreinCayleyGain_sq_sub_pair_sq
@@ -102,7 +102,7 @@ theorem primitiveHawkingKreinCayley_preserves_signedHermitian
 /-- A primitive canonical cell has a nonzero first pair-amplitude coupling jet. -/
 theorem hasDerivAt_primitiveHawkingKreinCayleyPair_zero :
     HasDerivAt primitiveHawkingKreinCayleyPair 2 0 := by
-  rw [primitiveHawkingKreinCayleyPair]
+  change HasDerivAt (fun lambda : ℝ => 2 * lambda / (1 - lambda ^ 2)) 2 0
   convert
     ((hasDerivAt_const (x := (0 : ℝ)) (c := (2 : ℝ))).mul
       (hasDerivAt_id (𝕜 := ℝ) 0)).div
@@ -114,7 +114,7 @@ theorem hasDerivAt_primitiveHawkingKreinCayleyPair_zero :
 
 /-- Source-side positive output after the first cell. -/
 def primitiveHawkingKreinCayleyCascadeSourceOutput
-    (lambda : ℝ) (x₀ x₁ x₂ : ℂ) : ℂ :=
+    (lambda : ℝ) (x₀ x₁ _x₂ : ℂ) : ℂ :=
   primitiveHawkingKreinCayleyPositiveOutput lambda x₀ x₁
 
 /-- Negative intermediate output after the second cell. -/
@@ -164,6 +164,7 @@ theorem primitiveHawkingKreinCayleyCascadeTerminal_source_eq
       ((4 * lambda ^ 2 / (1 - lambda ^ 2) ^ 2 : ℝ) : ℂ) := by
   rw [primitiveHawkingKreinCayleyCascadeTerminal_source_eq_pair_sq,
     primitiveHawkingKreinCayleyPair]
+  rw [div_pow]
   push_cast
   ring
 
@@ -181,8 +182,14 @@ theorem hasDerivAt_primitiveHawkingKreinCayleyCascadeTerminal_source_zero :
     HasDerivAt
       (fun lambda : ℝ =>
         primitiveHawkingKreinCayleyPair lambda ^ 2) 0 0 := by
-  convert hasDerivAt_primitiveHawkingKreinCayleyPair_zero.pow 2 using 1 <;>
-    norm_num [primitiveHawkingKreinCayleyPair]
+  change HasDerivAt
+    (fun lambda : ℝ => (2 * lambda / (1 - lambda ^ 2)) ^ 2) 0 0
+  convert
+    (((hasDerivAt_const (x := (0 : ℝ)) (c := (2 : ℝ))).mul
+      (hasDerivAt_id (𝕜 := ℝ) 0)).div
+        (((hasDerivAt_const (x := (0 : ℝ)) (c := (1 : ℝ))).sub
+          ((hasDerivAt_id (𝕜 := ℝ) 0).pow 2))) (by norm_num)).pow 2 using 1 <;>
+    norm_num
 
 /-! ## Exact Hawking KMS dressing of the terminal transition -/
 

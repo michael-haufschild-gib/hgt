@@ -1,7 +1,7 @@
 # Off-line zeros are the residue modes of the anti-causal Euler leakage
 
 - **ID:** euler-leakage-residue-mode-expansion
-- **Stage:** 2-fully-proven/not_new_scientific_knowledge
+- **Stage:** 3-formalized/not_new_scientific_knowledge
 - **Type:** THEOREM (paper) -- scientifically non-new bridge
 - **Source:** Suzuki's shifted xi Mellin operator; contour transport from the Euler half-plane
 - **Statement:** `[PROVED HERE; BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]` If the
@@ -21,7 +21,7 @@ exact modes created when the Euler-contour is transported to the critical bounda
 
 - [x] 0 -> 1 in-progress: source-pure statement and contour route
 - [x] 1 -> 2 fully-proven: complete finite-divisor paper proof, `[PROVED HERE]`
-- [ ] 2 -> 3 formalized: Lean theorem and axiom check
+- [x] 2 -> 3 formalized: Lean theorem and axiom check
 - [ ] 3 -> 4 publication-ready: infinite-divisor topology and external novelty review
 
 ### Lean status
@@ -51,7 +51,16 @@ exact modes created when the Euler-contour is transported to the critical bounda
   `RHTower/FiniteResidueModeOperatorRank.lean`.
 - [x] Both assembly leaves built exactly and axiom-audited: only `propext`, `Classical.choice`,
   `Quot.sound`.
-- [ ] Finite-pole contour transport from the Euler half-plane to the boundary pairing.
+- [x] Finite-pole contour transport from the Euler half-plane to the boundary pairing: canonical
+  removable normalization, selected horizontal sides, line integrability, and exact finite-pole
+  residue transport in `RHTower/SuzukiFinitePoleContourTransport.lean`,
+  `RHTower/SuzukiSelectedContourSides.lean`, `RHTower/SuzukiContourLineIntegrability.lean`, and
+  `RHTower/SuzukiFinitePoleResidueTransport.lean`.
+- [x] Fixed Euler-line inversion, causal high-line vanishing on the reflected wrong-support core,
+  and the resulting residue-only normalized boundary formula in
+  `RHTower/SuzukiFinitePoleLeakage.lean`.
+- [x] Final leakage leaf built exactly; its four new declarations axiom-audited with only
+  `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Setup
 
@@ -258,6 +267,11 @@ scientific knowledge.
   scientific novelty audit open.
 - 2026-08-23 -- equation `(7)` and its underlying simple-pole residue limit formalized and audited;
   finite-pole contour transport and multiplicity/rank blocks remain before stage 3.
+- 2026-08-23 -- completed finite-pole contour bridge: canonical removable normalization, selected
+  side limits, boundary/high-line integrability, exact residue transport, fixed Euler-line Fourier
+  inversion, causal high-line vanishing, and residue-only wrong-support formula. Combined with the
+  already formalized arbitrary-multiplicity residue blocks and exact finite-mode operator rank, this
+  closes the finite-divisor theorem. Exact leaf build and new-declaration axiom audit passed.
 - 2026-08-23 -- multiplicity-block polynomial expansion and exact anti-triangular matrix rank
   formalized and audited; contour transport, higher-order residue extraction, and distinct-pole
   assembly remain.

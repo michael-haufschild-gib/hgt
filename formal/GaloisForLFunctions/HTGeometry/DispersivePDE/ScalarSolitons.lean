@@ -427,4 +427,27 @@ theorem shriraPesensonTilt_solves :
   intro T Y
   simp [shriraPesensonTiltJet]
 
+theorem shriraPesensonTilt_solves_all (α β γ₁ γ₂ ε : ℝ) :
+    SolvesShriraPesenson α β γ₁ γ₂ ε shriraPesensonTiltJet := by
+  intro T Y
+  simp [shriraPesensonTiltJet]
+
+/-! ## Closed profile identities and Miura images -/
+
+theorem kdvSoliton_peak (t : ℝ) : kdvSoliton t (4 * t) = 2 := by
+  simp [kdvSoliton, solitonQ, solitonT]
+
+theorem kawaharaSoliton_peak (t : ℝ) : kawaharaSoliton t (576 * t) = 1680 := by
+  simp [kawaharaSoliton, solitonR, solitonQ, solitonT]
+
+theorem modifiedKdVKink_miura_plus (t x : ℝ) :
+    modifiedKdVKinkJet.ux t x + modifiedKdVKink t x ^ 2 = 1 := by
+  simp [modifiedKdVKinkJet, modifiedKdVKink, solitonQ]
+
+theorem modifiedKdVKink_miura_minus (t x : ℝ) :
+    modifiedKdVKink t x ^ 2 - modifiedKdVKinkJet.ux t x =
+      1 - 2 * solitonQ (x + 2 * t) := by
+  simp [modifiedKdVKinkJet, modifiedKdVKink, solitonQ]
+  ring
+
 end GaloisForLFunctions.HTGeometry.DispersivePDE
