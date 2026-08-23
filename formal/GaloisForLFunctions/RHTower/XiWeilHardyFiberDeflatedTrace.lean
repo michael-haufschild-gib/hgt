@@ -44,6 +44,41 @@ def ccmFixedFiberDeflatedCauchyKernel
       ccmFixedFiberDeflatedRelativeTrace ρ z) /
     (z - (starRingEnd ℂ) w)
 
+/-- The relative-resolvent contribution of a complete multiplicity fiber. -/
+theorem sum_xiRelativeResolventTerm_xiZeroCopyFiber
+    (ρ : XiDivisorSupport) (z : ℂ) :
+    ∑ q ∈ xiZeroCopyFiber ρ, xiRelativeResolventTerm z q =
+      ((xiZeroCopyFiber ρ).card : ℂ) *
+        ((xiSpectralPointSupport ρ)⁻¹ -
+          (xiSpectralPointSupport ρ - z)⁻¹) := by
+  calc
+    ∑ q ∈ xiZeroCopyFiber ρ, xiRelativeResolventTerm z q =
+        ∑ _q ∈ xiZeroCopyFiber ρ,
+          ((xiSpectralPointSupport ρ)⁻¹ -
+            (xiSpectralPointSupport ρ - z)⁻¹) := by
+      apply Finset.sum_congr rfl
+      intro q hq
+      rw [xiRelativeResolventTerm]
+      have hρ : q.1 = ρ := mem_xiZeroCopyFiber.mp hq
+      simp only [xiSpectralPoint_eq_support, hρ]
+    _ = _ := by simp; ring
+
+/-- On the source/Xi comparison domain, the corrected trace is literally the full Xi relative
+resolvent trace with the complete `ρ` fiber removed. -/
+theorem ccmFixedFiberDeflatedRelativeTrace_eq_xiTrace_sub_fiber
+    (ρ : XiDivisorSupport) {z : ℂ}
+    (hspos : 0 < (1 / 2 + z * Complex.I).re)
+    (hs1 : 1 / 2 + z * Complex.I ≠ 1)
+    (hzeta : riemannZeta (1 / 2 + z * Complex.I) ≠ 0) :
+    ccmFixedFiberDeflatedRelativeTrace ρ z =
+      xiRelativeResolventTrace z -
+        ∑ q ∈ xiZeroCopyFiber ρ, xiRelativeResolventTerm z q := by
+  rw [ccmFixedFiberDeflatedRelativeTrace,
+    continuedPrimeArchSourceRelativeTrace_eq_xiRelativeResolventTrace
+      hspos hs1 hzeta,
+    sum_xiRelativeResolventTerm_xiZeroCopyFiber]
+  ring
+
 /-- Zero deflation subtracts exactly the selected fiber's rank-one Cauchy kernel. -/
 theorem ccmFixedFiberDeflatedCauchyKernel_eq_sub_rankOne
     (ρ : XiDivisorSupport) {z w : ℂ}

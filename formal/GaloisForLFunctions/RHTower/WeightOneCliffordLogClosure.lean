@@ -55,6 +55,30 @@ theorem weightOneLogSquare_domain_eq_fourierL2H2 (a : ℝ) :
   ext f
   exact weightOneSpectralSquare_domain_iff_squareCoordinate a (fourierUnitary f)
 
+/-- The log-line square domain is independent of the real Clifford mass. -/
+theorem weightOneLogSquare_domain_eq_zero (a : ℝ) :
+    (weightOneLogSquare a).domain = (weightOneLogSquare 0).domain := by
+  rw [weightOneLogSquare_domain_eq_fourierL2H2,
+    weightOneLogSquare_domain_eq_fourierL2H2]
+
+/-- Exact log-line mass shift: `Q_a² = Q_0² + a²` on the common `H²` domain. -/
+theorem weightOneLogSquare_apply_eq_zero_add_mass (a : ℝ)
+    (f : (weightOneLogSquare a).domain) :
+    let hf₀ : (f : SoninL2) ∈ (weightOneLogSquare 0).domain := by
+      rw [← weightOneLogSquare_domain_eq_zero a]
+      exact f.property
+    weightOneLogSquare a f =
+      weightOneLogSquare 0 ⟨(f : SoninL2), hf₀⟩ +
+        (a ^ 2 : ℂ) • (f : SoninL2) := by
+  dsimp only
+  apply fourierUnitary.injective
+  rw [map_add, map_smul]
+  simp only [weightOneLogSquare,
+    GaloisForLFunctions.HTGeometry.unitaryConjugateLinearPMap_apply,
+    LinearIsometryEquiv.apply_symm_apply]
+  exact weightOneSpectralSquare_apply_eq_zero_add_mass a
+    ⟨fourierUnitary (f : SoninL2), f.property⟩
+
 theorem weightOneLogDirac_isClosed (a : ℝ) : (weightOneLogDirac a).IsClosed :=
   GaloisForLFunctions.HTGeometry.LinearPMap.IsClosed.unitaryConjugate
     (weightOneSpectralDirac_isClosed a)

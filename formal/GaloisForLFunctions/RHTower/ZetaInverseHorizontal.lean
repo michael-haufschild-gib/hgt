@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.XiHeightSelection
+import GaloisForLFunctions.RHTower.XiHorizontalRatioSelection
 import GaloisForLFunctions.RHTower.GammaVerticalRatioUniform
 import GaloisForLFunctions.RHTower.DeningerZetaLowerBound
 
@@ -25,19 +25,6 @@ open Complex Filter Topology
 namespace RHTower
 
 noncomputable section
-
-/-- Reflection `ρ ↦ 1 − ρ` identifies the two one-zero families. -/
-theorem tsum_logKernel_reflect (T : ℝ) :
-    (∑' q : XiZeroCopy, Real.log (1 + 9 / (T + (q.1 : ℂ).im) ^ 2))
-      = ∑' q : XiZeroCopy, Real.log (1 + 9 / (T - (q.1 : ℂ).im) ^ 2) := by
-  rw [← (xiZeroCopyReflectEquiv).tsum_eq
-    (fun q : XiZeroCopy => Real.log (1 + 9 / (T + (q.1 : ℂ).im) ^ 2))]
-  refine tsum_congr fun q => ?_
-  have him : ((xiZeroCopyReflectEquiv q).1 : ℂ).im = -((q.1 : ℂ).im) := by
-    rw [xiZeroCopyReflect_coe]
-    simp
-  rw [him]
-  congr 2
 
 /-! ## The Gamma quotient across the strip -/
 
@@ -430,5 +417,4 @@ theorem exists_zeta_inv_horizontal_bound :
 end
 
 end RHTower
-
 

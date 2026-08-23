@@ -43,7 +43,15 @@ exact modes created when the Euler-contour is transported to the critical bounda
   polynomial coefficient and exact block rank, in `RHTower/HigherPoleResidueMode.lean`.
 - [x] All four new leaves built exactly and axiom-audited: only `propext`, `Classical.choice`,
   `Quot.sound`.
-- [ ] Finite-pole contour transport and operator-level assembly of total rank `sum_j m_j`.
+- [x] Strict interval Gram and compact positive-half-line synthesis realize every complete input
+  moment vector, in `RHTower/ExponentialPolynomialIntervalMoments.lean`.
+- [x] Exact dependent-block assembly on the actual negative output half-line: local nonzero top
+  coefficients give a globally surjective coefficient map, restricted exponential-polynomial modes
+  remain independent, and the operator rank is exactly `sum_j m_j`, in
+  `RHTower/FiniteResidueModeOperatorRank.lean`.
+- [x] Both assembly leaves built exactly and axiom-audited: only `propext`, `Classical.choice`,
+  `Quot.sound`.
+- [ ] Finite-pole contour transport from the Euler half-plane to the boundary pairing.
 
 ## Setup
 
@@ -258,3 +266,6 @@ scientific knowledge.
   rank assembly remain.
 - 2026-08-23 -- arbitrary-order principal-part residue extraction and exact block-rank consequence
   formalized; finite contour transport and operator-level total-rank assembly remain.
+- 2026-08-23 -- compact positive-half-line moment surjectivity, dependent residue-block assembly,
+  negative-half-line mode independence, and exact total operator rank formalized and audited;
+  finite-pole contour transport remains.

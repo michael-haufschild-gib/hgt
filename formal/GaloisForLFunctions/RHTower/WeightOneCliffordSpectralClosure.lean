@@ -193,6 +193,46 @@ theorem weightOneSpectralSquare_domain_iff_squareCoordinate (a : ℝ) (f : Sonin
   · exact memLp_squareCoordinate_of_memLp_energy a f
   · exact memLp_energy_of_memLp_squareCoordinate a f
 
+/-- The quadratic square domain is independent of the real Clifford mass. -/
+theorem weightOneSpectralSquare_domain_eq_zero (a : ℝ) :
+    (weightOneSpectralSquare a).domain = (weightOneSpectralSquare 0).domain := by
+  ext f
+  rw [weightOneSpectralSquare_domain_iff_squareCoordinate,
+    weightOneSpectralSquare_domain_iff_squareCoordinate]
+
+/-- Exact spectral mass shift: the square at mass `a` is the mass-zero square plus `a²`. -/
+theorem weightOneSpectralSquare_apply_eq_zero_add_mass (a : ℝ)
+    (f : (weightOneSpectralSquare a).domain) :
+    let hf₀ : (f : SoninL2) ∈ (weightOneSpectralSquare 0).domain := by
+      rw [← weightOneSpectralSquare_domain_eq_zero a]
+      exact f.property
+    weightOneSpectralSquare a f =
+      weightOneSpectralSquare 0 ⟨(f : SoninL2), hf₀⟩ +
+        (a ^ 2 : ℂ) • (f : SoninL2) := by
+  dsimp only
+  let f₀ : (weightOneSpectralSquare 0).domain :=
+    ⟨(f : SoninL2), by
+      rw [← weightOneSpectralSquare_domain_eq_zero a]
+      exact f.property⟩
+  apply Lp.ext
+  filter_upwards [GaloisForLFunctions.HTGeometry.maximalRealL2Mul_apply_ae volume
+      (weightOneSpectralSquareEnergy a) f,
+    GaloisForLFunctions.HTGeometry.maximalRealL2Mul_apply_ae volume
+      (weightOneSpectralSquareEnergy 0) f₀,
+    Lp.coeFn_add (weightOneSpectralSquare 0 f₀)
+      ((a ^ 2 : ℂ) • (f : SoninL2)),
+    Lp.coeFn_smul (a ^ 2 : ℂ) (f : SoninL2)] with ξ ha h₀ hadd hmass
+  have ha' : (weightOneSpectralSquare a f : ℝ → ℂ) ξ =
+      (weightOneSpectralSquareEnergy a ξ : ℂ) * (f : ℝ → ℂ) ξ := by
+    simpa only [weightOneSpectralSquare] using ha
+  have h₀' : (weightOneSpectralSquare 0 f₀ : ℝ → ℂ) ξ =
+      (weightOneSpectralSquareEnergy 0 ξ : ℂ) * (f : ℝ → ℂ) ξ := by
+    simpa only [weightOneSpectralSquare, f₀] using h₀
+  rw [ha', hadd, Pi.add_apply, h₀', hmass, Pi.smul_apply]
+  unfold weightOneSpectralSquareEnergy
+  push_cast
+  ring
+
 theorem weightOneSpectralSquare_domain_iff_secondCoordinate (a : ℝ) (f : SoninL2) :
     f ∈ (weightOneSpectralSquare a).domain ↔
       ∃ hf : f ∈ weightOneSpectralCoordinate.domain,

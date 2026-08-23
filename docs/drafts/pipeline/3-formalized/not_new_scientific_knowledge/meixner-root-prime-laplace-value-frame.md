@@ -1,7 +1,7 @@
 # A common prime-Laplace value frame for every Gamma--Meixner root domain
 
 - **ID:** `meixner-root-prime-laplace-value-frame`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / BRIDGE / NOT NEW SCIENTIFIC KNOWLEDGE
 - **Parents:** `archimedean-meixner-root-seam-scale.md`, uniqueness of Dirichlet series, and the
   finite Gram/Riesz criterion
@@ -269,6 +269,39 @@ Hilbert interpolation cannot do it.
 - [x] reduce root-domain membership to finite source-value Gram inequalities
 - [x] prove the regular-Cauchy phase transition and exclude direct downward interpolation of the
       existing closure theorem
+- [x] formalize the ordinary-prime-zeta binomial expansion `(14)` and its differentiated
+      prime-zeta-derivative companion
 - [ ] derive the Gram bounds `(16)` from a completed Euler--Gamma value relation or relative trace
-- [ ] formalize the common frame, phase transition, and finite Gram consumer in Lean
+- [x] formalize the common frame, phase transition, and finite Gram consumer in Lean
+- [x] formalize the countable top-down RH equivalence `(19)` without assuming RH
 - [ ] RH
+
+## Lean formalization
+
+Completed 2026-08-23 in
+`formal/GaloisForLFunctions/RHTower/MeixnerRootPrimeLaplaceValueFrame.lean`.
+
+Key declarations:
+
+- `isCompleteSystem_meixnerPrimeLaplaceFrame`: countable common-frame density for every
+  nonnegative Meixner time;
+- `inner_meixnerPrimeLaplaceFrame_eq_weightedPrimeZeta`: exact Gram kernel `(15)`;
+- `meixnerWeightedPrimeZeta_eq_binomialPrimeZeta` and
+  `primeSeamTransform_eq_binomialPrimeZetaDeriv`: exact absolutely convergent expansions `(14)`
+  and its differentiated companion;
+- `meixnerPrimeSeamValue_eq_reflected_transform`: exact reflected seam value `(12)`;
+- `finiteValueGramBoundSq_iff_exists_riesz`,
+  `summable_meixnerSeamEnergy_iff_exists_finiteGramBound`, and
+  `isLeast_meixnerPrimeSeamFiniteGramBound`: finite Gram/Riesz criterion `(16)` and sharp least
+  constant `(17)`;
+- `riemannHypothesis_iff_meixnerPrimeSeamFiniteGramBounds`: unconditional countable RH
+  equivalence `(19)`;
+- `meixnerPrimeLogCauchyPacket_sharp_phaseTransition`: exclusion below time one and admission at
+  time one.
+
+Verification:
+
+- `lake env lean GaloisForLFunctions/RHTower/MeixnerRootPrimeLaplaceValueFrame.lean` — passed;
+- `lake build GaloisForLFunctions.RHTower.MeixnerRootPrimeLaplaceValueFrame` — passed;
+- capstone `#print axioms` audit — only `propext`, `Classical.choice`, and `Quot.sound`;
+- module imported by `GaloisForLFunctions/RHTower.lean`; umbrella build intentionally not run.

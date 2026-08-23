@@ -183,6 +183,31 @@ theorem weightOnePositiveSquare_domain_eq_H2 (a : ℝ) :
   rw [weightOnePositiveSquare_domain, weightOneLogSquare_domain_eq_fourierL2H2]
   rfl
 
+/-- The positive-ray square domain is independent of the real Clifford mass. -/
+theorem weightOnePositiveSquare_domain_eq_zero (a : ℝ) :
+    (weightOnePositiveSquare a).domain = (weightOnePositiveSquare 0).domain := by
+  rw [weightOnePositiveSquare_domain, weightOnePositiveSquare_domain,
+    weightOneLogSquare_domain_eq_zero]
+
+/-- Exact positive-ray mass shift: `Q_a² = Q_0² + a²` on the common transported `H²`
+domain. -/
+theorem weightOnePositiveSquare_apply_eq_zero_add_mass (a : ℝ)
+    (f : (weightOnePositiveSquare a).domain) :
+    let hf₀ : (f : SuzukiPositiveL2) ∈ (weightOnePositiveSquare 0).domain := by
+      rw [← weightOnePositiveSquare_domain_eq_zero a]
+      exact f.property
+    weightOnePositiveSquare a f =
+      weightOnePositiveSquare 0 ⟨(f : SuzukiPositiveL2), hf₀⟩ +
+        (a ^ 2 : ℂ) • (f : SuzukiPositiveL2) := by
+  dsimp only
+  apply suzukiPositiveLogUnitary.injective
+  rw [map_add, map_smul]
+  simp only [weightOnePositiveSquare,
+    GaloisForLFunctions.HTGeometry.unitaryConjugateLinearPMap_apply,
+    LinearIsometryEquiv.apply_symm_apply]
+  exact weightOneLogSquare_apply_eq_zero_add_mass a
+    ⟨suzukiPositiveLogUnitary (f : SuzukiPositiveL2), f.property⟩
+
 /-- The centered scale generator has exactly the transported `H¹` domain. -/
 theorem weightOnePositiveCenteredGenerator_domain_eq_H1 :
     weightOnePositiveCenteredGenerator.domain = weightOnePositiveH1 := by
@@ -229,6 +254,15 @@ theorem weightOnePositiveDirac_apply_eq_inversion_add_centeredGenerator (a : ℝ
   rw [weightOneLogDirac_apply_eq_derivative_add_reflection]
   congr 2
 
+/-- At Clifford mass `a = 0`, the positive-ray Dirac operator is exactly the centered scale
+generator. -/
+theorem weightOnePositiveDirac_zero_apply
+    (f : (weightOnePositiveDirac 0).domain) :
+    weightOnePositiveDirac 0 f =
+      weightOnePositiveCenteredGenerator ⟨(f : SuzukiPositiveL2), f.property⟩ := by
+  simpa using
+    (weightOnePositiveDirac_apply_eq_inversion_add_centeredGenerator 0 f)
+
 theorem weightOnePositiveSquare_domain_le_dirac (a : ℝ) :
     (weightOnePositiveSquare a).domain ≤ (weightOnePositiveDirac a).domain := by
   exact GaloisForLFunctions.HTGeometry.unitaryConjugate_domain_le_of_domain_le
@@ -256,5 +290,70 @@ theorem weightOnePositiveDirac_sq_apply (a : ℝ)
   exact GaloisForLFunctions.HTGeometry.unitaryConjugate_square_apply
     suzukiPositiveLogUnitary
     (fun x hx hQ => weightOneLogDirac_sq_apply a x hx hQ) f hf hQ
+
+/-- The mass-zero square is exactly the natural second composition of the centered scale
+generator on the transported `H²` domain. -/
+theorem weightOnePositiveCenteredGenerator_sq_apply
+    (f : (weightOnePositiveSquare 0).domain) :
+    let hfC : (f : SuzukiPositiveL2) ∈ weightOnePositiveCenteredGenerator.domain := by
+      rw [weightOnePositiveCenteredGenerator_domain_eq_H1,
+        ← weightOnePositiveDirac_domain_eq_H1 0]
+      exact weightOnePositiveSquare_domain_le_dirac 0 f.property
+    let hC : weightOnePositiveCenteredGenerator
+        ⟨(f : SuzukiPositiveL2), hfC⟩ ∈
+          weightOnePositiveCenteredGenerator.domain := by
+      have hfQ : (f : SuzukiPositiveL2) ∈ (weightOnePositiveDirac 0).domain :=
+        weightOnePositiveSquare_domain_le_dirac 0 f.property
+      have hQ := (weightOnePositiveSquare_mem_iff_dirac_apply_mem 0
+        (f : SuzukiPositiveL2) hfQ).1 f.property
+      rw [weightOnePositiveDirac_zero_apply] at hQ
+      exact hQ
+    weightOnePositiveCenteredGenerator
+        ⟨weightOnePositiveCenteredGenerator ⟨(f : SuzukiPositiveL2), hfC⟩, hC⟩ =
+      weightOnePositiveSquare 0 f := by
+  dsimp only
+  have hfQ : (f : SuzukiPositiveL2) ∈ (weightOnePositiveDirac 0).domain :=
+    weightOnePositiveSquare_domain_le_dirac 0 f.property
+  have hQ := (weightOnePositiveSquare_mem_iff_dirac_apply_mem 0
+    (f : SuzukiPositiveL2) hfQ).1 f.property
+  have hsq := weightOnePositiveDirac_sq_apply 0 f hfQ hQ
+  simpa only [weightOnePositiveDirac_zero_apply] using hsq
+
+/-- **Closed positive-ray Clifford square.** On the exact transported `H²` domain, the natural
+composition of `Q_a = C + aJ` is `C² + a²`, with all first- and second-composition membership
+proofs obtained from the domain itself. -/
+theorem weightOnePositiveCliffordSquare_eq_centeredSquare_add_mass
+    (a : ℝ) (f : (weightOnePositiveSquare a).domain) :
+    let hfQ : (f : SuzukiPositiveL2) ∈ (weightOnePositiveDirac a).domain :=
+      weightOnePositiveSquare_domain_le_dirac a f.property
+    let hQ : weightOnePositiveDirac a ⟨(f : SuzukiPositiveL2), hfQ⟩ ∈
+        (weightOnePositiveDirac a).domain :=
+      (weightOnePositiveSquare_mem_iff_dirac_apply_mem a
+        (f : SuzukiPositiveL2) hfQ).1 f.property
+    let hf₀ : (f : SuzukiPositiveL2) ∈ (weightOnePositiveSquare 0).domain := by
+      rw [← weightOnePositiveSquare_domain_eq_zero a]
+      exact f.property
+    let hfC : (f : SuzukiPositiveL2) ∈ weightOnePositiveCenteredGenerator.domain := by
+      rw [weightOnePositiveCenteredGenerator_domain_eq_H1,
+        ← weightOnePositiveDirac_domain_eq_H1 0]
+      exact weightOnePositiveSquare_domain_le_dirac 0 hf₀
+    let hC : weightOnePositiveCenteredGenerator
+        ⟨(f : SuzukiPositiveL2), hfC⟩ ∈
+          weightOnePositiveCenteredGenerator.domain := by
+      have hfQ₀ : (f : SuzukiPositiveL2) ∈ (weightOnePositiveDirac 0).domain :=
+        weightOnePositiveSquare_domain_le_dirac 0 hf₀
+      have hQ₀ := (weightOnePositiveSquare_mem_iff_dirac_apply_mem 0
+        (f : SuzukiPositiveL2) hfQ₀).1 hf₀
+      rw [weightOnePositiveDirac_zero_apply] at hQ₀
+      exact hQ₀
+    weightOnePositiveDirac a
+        ⟨weightOnePositiveDirac a ⟨(f : SuzukiPositiveL2), hfQ⟩, hQ⟩ =
+      weightOnePositiveCenteredGenerator
+          ⟨weightOnePositiveCenteredGenerator ⟨(f : SuzukiPositiveL2), hfC⟩, hC⟩ +
+        (a ^ 2 : ℂ) • (f : SuzukiPositiveL2) := by
+  dsimp only
+  rw [weightOnePositiveDirac_sq_apply a f]
+  rw [weightOnePositiveSquare_apply_eq_zero_add_mass]
+  rw [← weightOnePositiveCenteredGenerator_sq_apply]
 
 end RHTower

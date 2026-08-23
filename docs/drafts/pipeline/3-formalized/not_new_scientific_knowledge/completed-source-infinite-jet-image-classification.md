@@ -1,7 +1,7 @@
 # Exact completed Euler-source image in infinite flux-jet space
 
 - **ID:** `completed-source-infinite-jet-image-classification`
-- **Stage:** 2-fully-proven / not-new
+- **Stage:** 3-formalized
 - **Type:** theorem (paper), `[BRIDGE]`
 - **Statement:** After subtracting the fixed archimedean channel, a residue-filled infinite
   completed-flux jet belongs to the degree-one Euler-source image exactly when its uniquely
@@ -242,16 +242,39 @@ not a condition on either projection and not a continuous condition on the inter
 flux.  The candidate new completeness theorem supplies the significant negative boundary; this
 card supplies the exact positive image classifier on the other side of that boundary.
 
-## Formal interface
+## Lean status
 
-The current Lean tree already proves the algebraic and local analytic components:
+Fully formalized unconditionally in:
 
-- `completedFluxGermAt_eq_prime_add_archimedean_eventually`;
-- `completedFluxTaylorCoeff_eq_prime_add_archimedean`;
-- `degreeOneEulerQuadraticCompatible_iff_existsUnique_primeParameter`;
-- `vonMangoldt_existsUnique_degreeOneEulerPrimeParameter`;
-- `vonMangoldt_primeParameter_eq_one`.
+- `formal/GaloisForLFunctions/RHTower/CompletedSourceInfiniteJetClassification.lean`;
+- `formal/GaloisForLFunctions/RHTower/EulerSourceJetJacobian.lean`;
+- `formal/GaloisForLFunctions/RHTower/CompletedFluxPrimeArchDecomposition.lean`.
 
-The recursive limits (3), normal convergence (4), and analytic-continuation packaging are not yet
-formalized.  They are not selected for isolated Lean work because the theorem is a classical bridge
-and the remaining RH content begins only after this classifier.
+`CompletedSourceJetDatum` packages connected open meromorphic continuation, inclusion of the whole
+Euler half-plane, an analytic residue-filled punctured germ, and equality of every Taylor
+coefficient with the supplied infinite jet.  In particular, the formalization does not replace the
+infinite jet by a finite projection and does not force its residue coordinate to zero.
+
+`DirichletRepresentsAboveOne` expresses absolute convergence at every real exponent `sigma > 1`
+and equality on all of `Re(s) > 1`.  Lean proves analyticity there, uniqueness of the complete
+coefficient stream, exact finite-prefix subtraction, and the literal recursive limit
+
+```text
+N^x (f(x) - sum_(2 <= n < N) c(n)n^(-x)) -> c(N)
+```
+
+for every `N >= 2`.  Hence `canonicalDirichletCoeff` removes coefficient representation from the
+compatibility predicate.
+
+The capstone theorem
+`completedSourceEulerCompatible_iff_existsUnique_primeParameter` proves the exact equivalence with
+one unique prime-indexed degree-one Euler parameter field.  Theorems
+`completedSourceZetaSublocus_iff_unitPrimeParameter` and
+`completedSourceZetaSublocus_canonicalCoeff` identify the von Mangoldt source exactly with the unit
+parameter field.
+
+The module is wired into `formal/GaloisForLFunctions/RHTower.lean`.  On 2026-08-23, source check and
+`lake build GaloisForLFunctions.RHTower.CompletedSourceInfiniteJetClassification` passed.  Axiom
+audits of representation uniqueness, half-plane analyticity, recursive extraction, the image
+classifier, and both zeta-sublocus capstones report only `propext`, `Classical.choice`, and
+`Quot.sound`.

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.QuadraticScaleSpectralRH
+import GaloisForLFunctions.RHTower.WeightOneCliffordPositiveClosure
 
 /-!
 # The weight-one inversion produces a source Clifford--Dirac square
@@ -14,9 +15,10 @@ smooth real scale profiles without referring to Xi zeros.  It also records the M
 `a^2 + (w-1/2)^2`; reality of this symbol at every Xi zero is exactly the existing quadratic-scale
 RH criterion.
 
-The remaining analytic problem is not the Clifford algebra.  It is to close `Q_a` on the source
-Hilbert space and identify a source spectral determinant or scattering denominator with Xi in this
-quadratic parameter.
+The closed positive-ray realization, exact transported `H¹/H²` domains, physical inversion
+formula, natural square, and self-adjoint square are supplied by
+`WeightOneCliffordPositiveClosure`. The remaining arithmetic problem is to identify a source
+spectral determinant or scattering denominator with Xi in this quadratic parameter.
 -/
 
 namespace RHTower

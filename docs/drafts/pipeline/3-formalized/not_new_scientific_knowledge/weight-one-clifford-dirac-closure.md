@@ -1,9 +1,10 @@
 # Weight-one Clifford--Dirac closure
 
 - **ID:** `weight-one-clifford-dirac-closure`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper) / LEAN SOURCE CORE / NOT NEW SCIENTIFIC KNOWLEDGE
-- **Lean:** `formal/GaloisForLFunctions/RHTower/WeightOneCliffordDirac.lean`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean) / NOT NEW SCIENTIFIC KNOWLEDGE
+- **Lean:** `formal/GaloisForLFunctions/RHTower/WeightOneCliffordDirac.lean`;
+  `formal/GaloisForLFunctions/RHTower/WeightOneCliffordPositiveClosure.lean`
 - **Statement:** On `L²(R_+,dt)`, the closed weight-one Dirac operator
   `Q_a=(t d/dt+1/2)+aJ`, with `Jf(t)=t^(-1)f(t^(-1))`, has domain transported from `H¹(R)` and
   self-adjoint square `Q_a²=C²+a²` on the transported `H²(R)` domain.
@@ -100,19 +101,30 @@ P_a²
 The Fourier transform identifies `partial_x²+a²` with its maximal real multiplication operator,
 which is self-adjoint.  This completes the proof. `[PROVED HERE]`
 
-## Lean boundary
+## Lean formalization
 
-Lean proves the source identities on smooth profiles:
+Lean proves the complete operator theorem unconditionally:
 
-- `centeredScaleGenerator_weightOneInversion`: `CJ=-JC`;
-- `weightOneCliffordDirac_sq`: `(C+aJ)²f=C²f+a²f`;
-- `weightOneCliffordEnergy_eq_quadraticScaleEnergy`: the Mellin symbol
-  `a²+(w-1/2)²` is a real affine transform of `-w(w-1)`;
-- `xiWeightOneCliffordSpectralReality_iff_riemannHypothesis`: reality of this symbol at every Xi
-  zero is equivalent to RH.
+- `fourierL2SobolevDomain`, `mem_fourierL2H1_iff_exists_weakDerivative`, and
+  `mem_fourierL2H2_iff_exists_two_weakDerivatives` give non-circular Fourier and distributional
+  characterizations of `H¹(ℝ)` and `H²(ℝ)`;
+- `weightOnePositiveInversion_ae` proves `Jf(t)=t⁻¹f(t⁻¹)` almost everywhere, while
+  `weightOnePositiveInversion_involutive`, `weightOnePositiveInversion_norm`, and
+  `weightOnePositiveInversion_symmetric` prove the bounded self-adjoint unitary properties;
+- `weightOnePositiveDirac_domain_eq_H1` and `weightOnePositiveDirac_isClosed` give the exact
+  transported `H¹` domain and closedness of `Q_a=C+aJ`;
+- `weightOnePositiveSquare_domain_eq_H2` and `weightOnePositiveSquare_isSelfAdjoint` give the exact
+  transported `H²` domain and self-adjoint square;
+- `weightOnePositiveSquare_mem_iff_dirac_apply_mem` identifies that `H²` domain with the natural
+  composition domain;
+- `weightOnePositiveCliffordSquare_eq_centeredSquare_add_mass` proves the full closed-operator
+  identity `Q_a²=C²+a²` on that domain.
 
-The unbounded-operator closure is proved on paper because the current formal corpus does not yet
-provide the required Sobolev-domain and self-adjoint multiplication-operator library surface.
+The source-profile identities remain available as
+`centeredScaleGenerator_weightOneInversion` and `weightOneCliffordDirac_sq`. Targeted builds of
+`WeightOneCliffordSpectralClosure`, `WeightOneCliffordLogClosure`,
+`WeightOneCliffordPositiveClosure`, and `WeightOneCliffordDirac` pass. Batched `#print axioms`
+reports only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Positive and negative consequences
 
@@ -137,5 +149,10 @@ circular.
 
 - [x] 0 -> 1: source operator, domains, attack, and RH endpoint explicit
 - [x] 1 -> 2: complete unitary, closure, square-domain, and self-adjointness proof
-- [ ] 2 -> 3: formalize the Sobolev closed-operator theorem when the required library surface exists
+- [x] 2 -> 3: exact Sobolev domains, closed realization, natural square, and self-adjointness in Lean
 - [ ] 3 -> 4: only as a lemma inside a source determinant/scattering construction
+
+## Log
+
+- 2026-08-23 — completed Fourier--Sobolev and unitary-transport infrastructure; formalized the
+  positive-ray closure and moved card to Stage 3.

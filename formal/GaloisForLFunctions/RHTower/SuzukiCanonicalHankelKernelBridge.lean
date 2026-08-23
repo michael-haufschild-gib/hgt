@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.MellinQuadraticStripDecay
 import GaloisForLFunctions.RHTower.SuzukiCanonicalArithmeticMellin
+import GaloisForLFunctions.RHTower.SuzukiCanonicalHankelContourIntegrand
 import GaloisForLFunctions.RHTower.SuzukiCanonicalHankelOperator
 
 /-!
@@ -23,14 +24,6 @@ open Complex Real MeasureTheory Set Filter Topology
 namespace RHTower
 
 noncomputable section
-
-/-- Exact contour integrand in Suzuki's logarithmic inverse-Mellin proof. -/
-def suzukiCanonicalHankelContourIntegrand
-    (omega : ℝ) (g : DeningerMeyerStrongLogTarget)
-    (r : ℝ) (z : ℂ) : ℂ :=
-  suzukiCanonicalTheta omega z *
-    deningerMeyerStrongLogMellin g (-Complex.I * z) *
-    Complex.exp (-Complex.I * z * (r : ℂ))
 
 theorem norm_suzukiCanonicalTheta_le_one_of_im_nonneg
     {omega : ℝ} (hinner : SuzukiCanonicalThetaMeromorphicInner omega)

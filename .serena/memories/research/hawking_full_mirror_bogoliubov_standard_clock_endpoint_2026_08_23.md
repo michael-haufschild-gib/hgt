@@ -1,0 +1,10 @@
+# Hawking full-mirror Bogoliubov standard-clock endpoint (2026-08-23)
+
+- Exact full theta-mirror amplitude cannot equal canonical sectorwise Cayley nonperturbatively: full mirror has a nonzero even second coupling jet, whereas Cayley transition is odd. The same nontrivial pair block also cannot simultaneously obey lossless SU(2) and bosonic SU(1,1) signatures.
+- Source-faithful Hawking completion is a two-mode bosonic Bogoliubov/Nambu block with gain sqrt(1+|beta|^2), preserving the signed Hermitian form. Against a Bose-KMS partner it strictly produces particles when beta != 0; it does not Gibbs-relax as the Cayley collision does.
+- Exact full-mirror analyticity implies one common arbitrarily weak nonzero coupling can activate every sector in a countable tilted family. Thus generic all-sector finite-coupling mixing is unconditional and not RH-bearing.
+- RH sensitivity survives in the standard lambda^-2 Davies/van-Hove clock: it filters nonlinear delayed channels and retains the normalized Xi/Born first-order pair-production rate. New no-Cayley endpoint: riemannHypothesis_iff_thetaCuspHawkingFullMirrorBogoliubovStandardClockPairProduction.
+- Added formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingFullMirrorBogoliubovEndpoint.lean; wired formal/GaloisForLFunctions/RHTower.lean; documented docs/reports/endpoints.md.
+- Renamed misleading Lax-Phillips endpoint from AsymptoticComplete to NoInnerDefect because ordinary asymptotic completeness does not exclude inner resonance spaces.
+- Verification: target Lean module compiles; axiom audit reports only propext, Classical.choice, Quot.sound; no sorry/admit/axiom/opaque/unsafe. Corpus research tool discovers new declarations. Full lint has one unrelated pre-existing HTGeometry umbrella reachability error.
+- Remaining RH-bearing producer: derive universal first-order standard-clock nondegeneracy from actual theta-mirror backreaction/KMS scattering dynamics, rather than assume it sectorwise.
