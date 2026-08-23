@@ -363,11 +363,11 @@ Primary comparisons:
 
 ## Lean status
 
-The formal tree contains the finite Li/secular change of basis, polynomial quartet gauges, real
-hyperbolic identities, and asymptotic infrastructure.  It does not contain the reflected-gamma HT
-carrier, its divisor-summed Li series with two-sided linear bounds, or the phase-alignment selection
-as one unconditional theorem.  Formalizing only (8) would be a partial algebraic anchor and would
-not justify stage 3.
+The formal tree now contains the exact quartet profile, uniform coordinate asymptotics, and the
+constructive phase-alignment selection as unconditional theorems.  It does not yet contain the
+reflected-gamma HT carrier, its divisor-summed Li series with two-sided linear bounds, or the final
+same-field total-coefficient domination.  The completed profile-and-alignment layer alone does not
+justify stage 3.
 
 ## Gates
 
@@ -403,9 +403,17 @@ asymptotics `(5)` for arbitrary filters, cofinal height families, and varying di
 `(0,1/2)`: `ell*T²/a -> 1`, `theta*T -> 1`, and `ell/theta -> 0`.  It also formalizes convergence
 modulo `2*pi` and proves the universal two-scale limit `(27)`--`(28)`.
 
-Both exact leaf targets build successfully and every new theorem audits to only `propext`,
-`Classical.choice`, and `Quot.sound`.  Remaining stage-3 gates are the reflected-Gamma carrier's
-divisor-summed two-sided linear Li bounds `(20)`--`(24)`, the same-differential-translation-field
-assembly `(16)`--`(17)`, the constructive phase-alignment selection `(29)`--`(33)`, and final
-total-coefficient domination `(34)`--`(37)`.  No hypothesis wrapper has been introduced; card
-remains at stage 2.
+`formal/GaloisForLFunctions/RHTower/LiRemoteQuartetPhaseAlignment.lean` now supplies an explicit
+floor-based nearest-integer selector and closes `(29)`--`(31)`.  It proves both exact eventual
+selection bounds, `n*ell -> c`, phase convergence to zero modulo `2*pi`, the sharp transverse scale
+`n*a/T² -> c`, and convergence of the quartet profile to the strictly negative value
+`4*(1-cosh c)` for every `c>0`.  No recurrence theorem, subsequence extraction, or hidden choice
+hypothesis is used.
+
+All three exact leaf targets build successfully.  Every theorem newly introduced by the
+phase-alignment leaf audits to only `propext`, `Classical.choice`, and `Quot.sound`, and the module
+is wired into `GaloisForLFunctions.RHTower`.  Remaining stage-3 gates are the reflected-Gamma
+carrier's divisor-summed two-sided linear Li bounds `(20)`--`(24)`, the
+same-differential-translation-field assembly `(16)`--`(17)`, the growing-target logarithmic
+alignment `(32)`--`(33)`, and final total-coefficient domination `(34)`--`(37)`.  No hypothesis
+wrapper has been introduced; card remains at stage 2.

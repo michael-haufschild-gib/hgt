@@ -12548,4 +12548,5 @@ import GaloisForLFunctions.RHTower.DeningerMeyerPaugamHasse
 import GaloisForLFunctions.RHTower.DeningerFiniteCoverHasse
 import GaloisForLFunctions.RHTower.LiRemoteQuartetProfile
 import GaloisForLFunctions.RHTower.LiRemoteQuartetAsymptotics
+import GaloisForLFunctions.RHTower.LiRemoteQuartetPhaseAlignment
 import GaloisForLFunctions.RHTower.XiCausalCollisionRecurrenceLaw

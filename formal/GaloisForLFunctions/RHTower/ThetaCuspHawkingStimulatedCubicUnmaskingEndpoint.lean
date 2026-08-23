@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingModularBoostEndpoint
+import GaloisForLFunctions.RHTower.ThetaCuspHawkingCausalHardyIndexEndpoint
 import GaloisForLFunctions.RHTower.XiSquaredEulerRayCubicAmplification
 import GaloisForLFunctions.RHTower.XiSquaredEulerDiagonalCorrelationUniversalityLaw
 
@@ -20,6 +21,9 @@ Two sharply different laws result.
   divisor orbit, the family begins at the unmodified full kernel at `r = 0`.
   The gain is unbounded, and every off-critical orbit eventually forces a
   strictly negative determinant on every fixed ordered positive triple.
+* `[PROVED BRIDGE]` The selector is not merely a label: every off-critical
+  divisor orbit canonically gives an upper theta-Hawking resonance, up to the
+  physical reflection, whose causal Hardy scattering defect has rank one.
 * `[PROVED REDUCTION]` Stability of all such source-pure selective stimulated
   families implies RH.
 
@@ -31,9 +35,10 @@ Those works do not provide the arithmetic orbit selector used here.
 `[LOCAL-RESEARCH] [NOVELTY UNVERIFIED]` This endpoint does not claim exact
 theta-mirror dynamics already implements the selective kernel.  It proves the
 mathematical target that such dynamics would need to select.  The remaining
-RH-bearing producer is now narrower: derive source-pure resonance selectivity
-from full Hawking backreaction/KMS scattering.  A common modular boost, even
-with arbitrarily large gain, is formally insufficient.
+RH-bearing producer is now narrower: derive the coupling of modular gain to
+the canonical rank-one causal Hardy defect with the squared-Euler reweighting
+law.  A common modular boost, even with arbitrarily large gain, is formally
+insufficient.
 -/
 
 open Complex Real Filter Topology Set
@@ -109,6 +114,55 @@ theorem thetaCuspHawkingSelectiveModularGainKernel_zero
   simp [thetaCuspHawkingSelectiveModularGainKernel,
     xiSquaredEulerReweightedFullKernel, thetaCuspHawkingModularGain]
 
+/-- Canonical backreaction resonance carried by one multiplicity-exact Xi
+divisor copy. -/
+def thetaCuspHawkingXiOrbitResonantMode (q : XiZeroCopy) :
+    ThetaCuspHawkingBackreactionResonantMode :=
+  ⟨xiSpectralPoint q,
+    (xiC_eq_zero_iff_thetaCuspHawkingBackreactionResonance
+      (xiSpectralPoint q)).mp (XiC_xiSpectralPoint_eq_zero q)⟩
+
+theorem thetaCuspHawkingXiOrbitResonantMode_value (q : XiZeroCopy) :
+    (thetaCuspHawkingXiOrbitResonantMode q).1 = xiSpectralPoint q := rfl
+
+/-- Every off-critical divisor orbit has a canonically associated upper
+Hawking resonance, choosing only the physical reflected orientation when
+necessary. -/
+theorem exists_upper_thetaCuspHawkingXiOrbitResonantMode
+    (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2) :
+    ∃ (r : ThetaCuspHawkingBackreactionResonantMode),
+      0 < r.1.im ∧
+        (r = thetaCuspHawkingXiOrbitResonantMode q ∨
+          r = thetaCuspHawkingBackreactionReflectedResonantMode
+            (thetaCuspHawkingXiOrbitResonantMode q)) := by
+  have him : (xiSpectralPoint q).im ≠ 0 := by
+    rw [xiSpectralPoint]
+    simpa using sub_ne_zero.mpr hoff.symm
+  rcases lt_or_gt_of_ne him with hneg | hpos
+  · refine ⟨thetaCuspHawkingBackreactionReflectedResonantMode
+      (thetaCuspHawkingXiOrbitResonantMode q), ?_, Or.inr rfl⟩
+    rw [thetaCuspHawkingBackreactionReflectedResonantMode_im,
+      thetaCuspHawkingXiOrbitResonantMode_value]
+    linarith
+  · have hr : 0 < (thetaCuspHawkingXiOrbitResonantMode q).1.im := by
+      rw [thetaCuspHawkingXiOrbitResonantMode_value]
+      exact hpos
+    exact ⟨thetaCuspHawkingXiOrbitResonantMode q, hr, Or.inl rfl⟩
+
+/-- The source-selected upper resonance carries an exact one-dimensional
+causal Hardy defect: a canonical resonance selector candidate. -/
+theorem exists_rankOne_causalHardySelector_of_offCriticalXiOrbit
+    (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2) :
+    ∃ (r : ThetaCuspHawkingBackreactionResonantMode) (hr : 0 < r.1.im),
+      (r = thetaCuspHawkingXiOrbitResonantMode q ∨
+          r = thetaCuspHawkingBackreactionReflectedResonantMode
+            (thetaCuspHawkingXiOrbitResonantMode q)) ∧
+        Module.finrank ℂ ((thetaCuspHawkingCausalHardyRange r hr)ᗮ) = 1 := by
+  obtain ⟨r, hr, horient⟩ :=
+    exists_upper_thetaCuspHawkingXiOrbitResonantMode q hoff
+  exact ⟨r, hr, horient,
+    finrank_thetaCuspHawkingCausalHardyDefect_eq_one r hr⟩
+
 /-- **Selective stimulated-unmasking law.** Every off-critical resonance
 eventually makes every fixed ordered three-shell response determinant
 negative under genuine unbounded Hawking modular gain. -/
@@ -135,6 +189,29 @@ theorem exists_eventually_negative_thetaCuspHawkingSelectiveModularGainKernel_th
     (xiSquaredEulerReweightedFullKernel q
       (thetaCuspHawkingModularGain r)) x y z < 0
   exact hneg
+
+/-- Each off-critical orbit simultaneously carries a canonical rank-one
+causal scattering selector and an eventually negative selectively stimulated
+three-shell response.  The unproved dynamics must identify these two pieces. -/
+theorem exists_rankOne_causalHardySelector_and_eventually_negative_stimulatedCubic
+    (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2)
+    {x y z : ℝ} (hx : 0 < x) (hxy : x < y) (hyz : y < z) :
+    ∃ (mode : ThetaCuspHawkingBackreactionResonantMode)
+        (hmode : 0 < mode.1.im),
+      (mode = thetaCuspHawkingXiOrbitResonantMode q ∨
+          mode = thetaCuspHawkingBackreactionReflectedResonantMode
+            (thetaCuspHawkingXiOrbitResonantMode q)) ∧
+        Module.finrank ℂ
+          ((thetaCuspHawkingCausalHardyRange mode hmode)ᗮ) = 1 ∧
+        ∃ R : ℝ, ∀ r : ℝ, R ≤ r →
+          symmetricThreePointDet
+            (thetaCuspHawkingSelectiveModularGainKernel q r) x y z < 0 := by
+  obtain ⟨mode, hmode, horient, hfinrank⟩ :=
+    exists_rankOne_causalHardySelector_of_offCriticalXiOrbit q hoff
+  refine ⟨mode, hmode, horient, hfinrank, ?_⟩
+  exact
+    exists_eventually_negative_thetaCuspHawkingSelectiveModularGainKernel_threePointDet
+      q hoff hx hxy hyz
 
 /-- Every source-pure selectively stimulated Xi resonance remains on the
 nonnegative side of every ordered three-shell determinant wall. -/

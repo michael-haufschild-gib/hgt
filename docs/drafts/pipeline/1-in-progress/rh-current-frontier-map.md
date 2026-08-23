@@ -42,16 +42,16 @@ Finite Hilbert dispersion/fidelity recurrence, positive circle densities, abstra
 | G-CE | prime-free divisor defect -> signed Mobius floor-dilation action -> half-order Abel moment -> coherent unit-Riesz/Green/Chebyshev boundary -> RH | Prove a uniform bound for the normalized signed Mobius--divisor half-order Abel moment. The prime-free defect is unconditionally `O(sqrt N)`, and the coefficient-faithful weld to the coherent Selberg moment is exact; absolute channel estimates destroy the dilation cancellation. |
 | L | completed Green/BV/co-Poisson source -> strict resolved Xi boundary with prime/depth/multiplicity provenance -> singular source-to-physical comparison -> coefficient-faithful Burnol/Deninger reader -> RH | Construct one source-derived singular comparison, before divisor specialization, which sends the already resolved boundary to the existing physical landing and makes its physical reader annihilate that boundary. The comparison must preserve the nonzero Xi coefficient and cannot assume the conormal defect vanishes. |
 | O | exact restricted-Weil operator -> canonical true-ground heads -> rank-two PSD/chiral carrier -> complex Dirac plane -> source-self-polarized determinant -> restricted-Weil landing -> nonnegative floor -> RH | Self-polarization makes every nonempty prime-power packet determinant strictly negative off center and zero only at center. Prove this quadratic source-selected scalar lands coefficient-faithfully in the linear actual-head matched block/restricted-Weil floor, including spectral integration and physical collar; the sign law itself is closed. |
-| P | primitive Gamma/Julia Stokes wall -> source-horizontal second-Cartier orbit -> Route-N capacity/radial-work bridge -> radial Krein energy -> endpoint moderation -> RH | The exponential wall has exact source-native signed Fredholm quadratic jet `-16/35`, but Lean proves it is not the canonical completed-theta/Xi quadratic jet. Produce endpoint order globally before divisor selection through a separately source-derived rescaling/correction or another singular landing; fixed canonical matching, regular reflection-pair extraction, finite circle measure, and literal scalar short are ruled out. |
+| P | literal von-Mangoldt prime--Gamma cubic carrier -> subquantum collision budget -> coefficient-faithful source-to-zero contraction -> second-Cartier radial moderation -> RH | The complete non-diagonal collision Gram, global trace budget, and arbitrarily-late source recurrence are source-faithful and unconditional. Construct the missing pre-divisor contraction/landing from this source packet to actual strict-right zero collision trace; taking trace capacity as premise is exactly RH. Regular endpoint extraction, finite positive measure, fixed wall/theta matching, and common-modulus nonlinear repair are terminal. |
 | Q | continued Hurwitz/Cauchy source -> countable Gaussian-rational Euler-pole paired kernel -> orientation zero -> RH | Prove source nonnegativity of the explicit exterior paired diagonal, equivalently passivity of every finite paired-value matrix. Lean proves this scalar collapse only through Xi-specific RH capstones, so it is a smaller receiver, not a source proof. |
 | CLG/TTF | literal completed theta source -> neutral correlation flux = Xi Bezoutian -> invertible diagonal congruence -> Euler-safe observability deficit = reflection-even minus reflection-odd two-channel Weil energy -> RH | Exclude, directly from the completed source, every admissible cofinal regular two-pole Cauchy sequence with reflection-even energy tending to zero and reflection-odd energy tending to its positive fibre multiplicity. This moving rank-two no-escape law is exact: any off-line fibre produces source energy tending to the negative multiplicity. |
-| HB | literal theta-cusp moving-mirror pair source -> nonlinear eikonal/Bogoliubov/Krein--Cayley hierarchy -> adaptive scattering clock or causal Hardy defect -> RH | Prove every source-labelled sector synchronizes to the standard quadratic clock, or exclude the causal inner defect, before divisor selection. Every sector has an unconditional positive adaptive clock; universal quadratic synchronization is exactly RH. Ordinary global `L2` scattering is point-shell blind. |
+| HB | literal theta-cusp mirror source -> rank-one causal Hardy resonance selector + selective modular gain -> three-shell cubic stability -> RH | Off-critical Xi orbits have canonical upper resonances, rank-one causal defects, and eventual negative selectively stimulated cubic determinants. Derive from literal backreaction/KMS dynamics the coupling of modular gain to that defect with the squared-Euler reweighting law. Common gain, one-sided velocity passivity, ordinary `L2`, and universal quadratic synchronization are terminal receivers or no-gos. |
 | SP-E | natural Suzuki reporter -> coherent prime outgoing amplitude minus regular-screw continuum -> completed Green/Ward wall -> RH; prime increments equal quarter-dilation gain minus debt | Compare this exact signed prime dilation flux with the continuum increment and deduce a uniform amplitude imbalance. Separate positive estimates lose the required cross-scale cancellation; raw Cauchy energy diverges, and its rectangular Ward defect tends to `-infinity` along apertures `8n`. |
 | SCE | Mangoldt event history plus archimedean reservoir -> unique strict-convex checkpoint -> restricted Legendre conjugate -> nonnegative checkpoint floors -> RH | Prove source-first `suzukiCheckpointConjugate N <= suzukiCheckpointMoment N` for every `N>=2`, or an event-recursion law forcing it. Bregman drawdown controls displacement from the minimum, not its absolute sign; universal checkpoint nonnegativity is already exactly RH. |
 | T1 | finite Xi-Taylor/theta-tail source -> exact reflection bridge -> zero-free full-density channel plus canonical transfer current -> raw core-current bound -> RH | Produce signed short Möbius-block cancellation preserving the combined top-row/finite-translation current. Support-restricted Vaughan Type-I totals, both Type-II block orientations, gap collapse, and explicit fibre-power bounds are formal under geometric phase hypotheses; they remain unsigned and do not discharge the current estimate, whose universal sublinearity is RH. |
 | T2 | ordered-prime Wold source -> inverse-log adjacent defect -> literal physical von-Mangoldt slice -> forced second Maynard count -> critical gap energy -> residual Hardy continuation/ODE -> RH | Arbitrary-order localization sends an inverse-log defect to the second alternative on every strict base-phase margin; shell cap and exact base-or-second dichotomy are closed. Prove that actual ordered-prime shells supply this defect and remaining scale envelope, sum at critical weight, and separately prove signed/renormalized subhalf continuation. |
 | U | shifted hard-edge source -> explicit Cayley--Chebyshev/Laguerre Hankel packets or first-contact exclusion -> RH | Prove source nonnegativity of every explicit normalized filtered-Gamma packet, equivalently uniform order on the selected Hankel family, or exclude the nonintegrable strict frontier. Positive polynomial roots do not supply sign: literal prime-valuation towers already have opposite signs at `7` and `19`. |
-| HC | two-prime/Cayley/Gauss--Hodge source -> quantized horizontal collision charge -> strict sub-two or prime-summability law -> RH | Proposition 4.6, full `S1`, raw Poisson, both nonprincipal reassemblies, principal reflection/residue/split, conductor-uniform high-ordinate residue decay, exact source-scale smoothed coefficient truncation, pole-avoiding conductor-uniform primitive `L` strip, and actual safe-line exterior tail are closed. Construct selected rows, control `S2/S3`, close the nonprincipal finite head and bounded principal census, then aggregate globally; or prove absolute subquantum loss. |
+| HC | two-prime/Cayley/Gauss--Hodge source -> quantized horizontal collision charge -> strict sub-two or prime-summability law -> RH | Proposition 4.6, full `S1`, both nonprincipal reassemblies, principal contour/residue/split, safe-line tail, source-scale truncation, principal zero census, and hybrid character mean square are closed. Construct actual selected rows, control `S2/S3`, specialize the hybrid estimate to the isolated nonprincipal finite head, and aggregate globally below quantum two; or prove absolute source subquantum loss. |
 | SV2 | literal Suzuki energy space -> paired self-adjoint characteristics -> bounded projective normal family -> global Xi projective target -> corrected two-chart spherical limit -> RH | A canonical subsequence carries the actual first defect angle to `2 i theta'(i)` for its whole-upper-half-plane Schur limit. Point evaluation at every Xi zero is unconditional, and Suzuki's `V(0)` mass-plus-peak condition is exactly equivalent to RH; both are receivers and do not select the limit. Identify the actual first and strictly negative second target coordinates, then prove full target identity, reciprocal-chart convergence, and pole zero-freeness. |
 
 ### Cross-route reading
@@ -80,7 +80,7 @@ The main shared frontiers are: source-faithful multi-node order (`CLG/TTF`, `C1`
 singular source-to-physical comparison (`L`); whole-ground-space control (`O`); cofinal
 all-moment source welding (`F2`); pre-energy atomic--continuous cancellation (`SP-E`); source-fixed
 central transport (`E`); direct source approximation (`NB/BD`); theta-specific adaptive-clock
-synchronization with analytic shell retention (`HB`); and global aggregation of exact local collision laws (`HC`). `STC` is live
+synchronization or source-dynamic selective resonance coupling (`HB`); and global aggregation of exact local collision laws (`HC`). `STC` is live
 because its finite Euler/Sonin pair sections, exterior factorization, essential-norm lower bound,
 submass implication, and RH endpoint form one explicit chain; only its source-first sub-root
 essential-norm producer is missing.
@@ -93,58 +93,9 @@ theorem. Schwarz-pair renewal, finite completed-flux passports, all-grade Marcin
 regular one-entry cocycles, and bare reciprocal-Xi Clifford splits are terminal in their stated
 interfaces.
 
-### Cross-route reframing candidate — chain-recurrent causal collisions
+### Shared interface — recurrent causal collision
 
-This is not a twenty-fourth architecture. It changes ontology used to compare all architectures.
-Primitive object is an observer collision between two completed infinite source histories, not a
-zero or spectrum. Common infinite ancestry is unrestricted; finite-action relative differences
-remain charged arrows and are never collapsed into a homoclinic/tail quotient. Critical zeros are
-intended to be transverse-neutral recurrent errors with zero-specific kernel classes carrying
-winding or multiplicity. Off-line zeros would be dissipative transverse errors inside a recurrent
-completion sector.
-
-Two route-independent layers are now formalized:
-
-1. `RelativeWeightedHistoryCompletion.lean`: finite relaxed relative action is exactly
-   finite-support transverse admission; common infinite history costs zero; static successor
-   invariance then forces transverse equality.
-2. `CausalCollisionRecurrenceLaw.lean`: if one source potential satisfies exact step accounting
-   `P(c_n)=P(c_(n+1))+D_tau(c_n)` with `D_tau >= 0` and returns cofinally to its initial value, every
-   transverse collision charge vanishes while arbitrary `ker(tau)` difference survives.
-
-The second law replaces pointwise successor fixing as preferred universal mechanism: localized
-solitons may move, but recurrent dynamics cannot retain positive dissipative charge. It is a
-reversible-dilation/irreversible-compression principle rather than an ordinary Noether charge.
-Conley recurrence, quantum-Markov decoherence-free sectors, KMS, Hawking scattering, Suzuki order,
-and Hedenmalm norms are possible shadows, not ontology.
-
-`XiCausalCollisionRecurrenceLaw.lean` records an exact late endpoint: a divisor-free recurrent
-source-action ledger whose initial action lands as `xiGlobalReflectionDefectEnergy` implies RH.
-This is an interface, not a proof. Six independent source obligations remain:
-
-1. construct divisor-free prime--Gamma history objects and completion transition;
-2. construct finite-action relative arrows without quotienting finite differences;
-3. derive one fixed source potential and exact nonnegative action ledger;
-4. prove recurrence of same unprojected source process, not a scalar or fitted aperture;
-5. land Xi errors only afterward and identify total transverse action with global defect energy;
-6. classify surviving kernel arrows as zero-specific multiplicity/winding sectors.
-
-Concrete source intersection now exists at finite aperture: Gamma-sewn Möbius contraction has a
-unique minimal two-channel Julia isometric lift whose environment tangent is `log p`, and finite
-prime phase packets recur arbitrarily late. `CausalCollisionRecurrenceLaw.lean` additionally proves
-**cofinal collision-replication rigidity**: summable total relative squared action plus arbitrarily
-late approximate replay of one transverse charge forces that charge to vanish. This permits moving
-solitons and needs no monotone potential. Remaining global gap is extending finite-prime recurrence
-through infinite prime tail and renormalized Gamma clock while keeping replay events distinct in
-relative action coordinates.
-
-Hard no-gos now also include: bilateral selector equivalences do not construct admission;
-coordinatewise renewal is not universal; dissipation without recurrence permits decay; recurrence
-without dissipation permits nonzero periodic charge; finite-modification quotient topology is
-indiscrete; projected recurrence is blind; idempotent completion has arbitrary fixed points; and a
-potential defined recursively from desired defect merely smuggles in conclusion. External audit
-shows Lyapunov recurrence, decoherence-free algebras, and homoclinic relations are individually
-known. Novelty can only be full source-weighted arrow/action/dilation/Xi synthesis.
+`RelativeWeightedHistoryCompletion.lean` classifies finite relaxed action as finite-support transverse admission. `CausalCollisionRecurrenceLaw.lean` proves exact nonnegative action accounting plus cofinal return kills transverse charge but preserves reporter-kernel data; summable replay gives the same rigidity. `SummablePurePointPhaseRecurrence.lean` supplies arbitrarily-late recurrence for every nonnegative summable countable phase packet, and Route P's literal cubic prime--Gamma packet satisfies it. `XiCausalCollisionRecurrenceLaw.lean` proves that a divisor-free source ledger landing its initial action as global Xi reflection-defect energy implies RH. No declaration constructs that irreversible ledger or coefficient-faithful Xi landing. This is a shared endpoint/interface, not a live route or candidate.
 
 ## Live architectures
 

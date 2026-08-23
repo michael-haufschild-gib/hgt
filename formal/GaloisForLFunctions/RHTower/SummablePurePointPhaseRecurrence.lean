@@ -209,4 +209,30 @@ theorem exists_summablePhaseEnergy_recurrence
       henergy
     _ < ε := by linarith
 
+/-- Every nonnegative summable countable phase packet returns below every
+positive resolution at arbitrarily late integer times.  Cofinality is not a
+new compactness input: dilating every frequency by `max 1 N` turns any
+positive recurrence time into one beyond the prescribed horizon `N`. -/
+theorem exists_arbitrarilyLate_summablePhaseEnergy_recurrence
+    (a omega : ℕ → ℝ) (ha : ∀ p, 0 ≤ a p)
+    (hsum : Summable a) {ε : ℝ} (hε : 0 < ε) (N : ℕ) :
+    ∃ t : ℕ, N ≤ t ∧ summablePhaseEnergy a omega t < ε := by
+  let M : ℕ := max 1 N
+  let scaledOmega : ℕ → ℝ := fun p => (M : ℝ) * omega p
+  obtain ⟨n, hn, hreturn⟩ :=
+    exists_summablePhaseEnergy_recurrence
+      a scaledOmega ha hsum hε
+  refine ⟨M * n, ?_, ?_⟩
+  · have hNM : N ≤ M := le_max_right 1 N
+    have hn1 : 1 ≤ n := hn
+    exact hNM.trans (by nlinarith)
+  · rw [summablePhaseEnergy] at hreturn ⊢
+    convert hreturn using 1
+    apply tsum_congr
+    intro p
+    dsimp only [scaledOmega]
+    congr 4
+    push_cast
+    ring
+
 end RHTower

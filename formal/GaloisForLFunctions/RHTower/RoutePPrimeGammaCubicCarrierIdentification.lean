@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.RoutePPrimitiveCollisionSubquantum
 import GaloisForLFunctions.RHTower.VonMangoldtGammaJetBoundaryConvergence
+import GaloisForLFunctions.RHTower.SummablePurePointPhaseRecurrence
 
 /-!
 # Route P / prime--Gamma cubic carrier identification
@@ -125,6 +126,30 @@ theorem routePPrimeGammaCubicKernelMatrix_diagonal
 theorem summable_routePPrimeGammaCubicWeight :
     Summable routePPrimeGammaCubicWeight := by
   exact (summable_vonMangoldtInverseLogPowerWeight 0).mul_left (115 / 864 : ℝ)
+
+theorem routePPrimeGammaCubicWeight_nonneg (n : ℕ) :
+    0 ≤ routePPrimeGammaCubicWeight n := by
+  exact mul_nonneg (by norm_num)
+    (vonMangoldtInverseLogPowerWeight_nonneg 0 n)
+
+/-- Reversible source-clock displacement of the fixed coefficient-faithful
+prime--Gamma cubic packet.  This definition contains no Xi divisor data. -/
+def routePPrimeGammaCubicPhaseEnergy (t : ℕ) : ℝ :=
+  summablePhaseEnergy routePPrimeGammaCubicWeight
+    (fun n => Real.log (n : ℝ)) t
+
+/-- The complete fixed cubic prime--Gamma packet returns arbitrarily close
+to its initial source state after every prescribed integer horizon.  This
+closes the countable source-recurrence obligation; it does not identify a
+source return with an Xi collision or supply irreversible action. -/
+theorem exists_arbitrarilyLate_routePPrimeGammaCubicPhaseEnergy_lt
+    {ε : ℝ} (hε : 0 < ε) (N : ℕ) :
+    ∃ t : ℕ, N ≤ t ∧ routePPrimeGammaCubicPhaseEnergy t < ε := by
+  simpa only [routePPrimeGammaCubicPhaseEnergy] using
+    exists_arbitrarilyLate_summablePhaseEnergy_recurrence
+      routePPrimeGammaCubicWeight (fun n => Real.log (n : ℝ))
+      routePPrimeGammaCubicWeight_nonneg
+      summable_routePPrimeGammaCubicWeight hε N
 
 /-- The P-G175 budget is exactly the cubic moment of the full natural-number von Mangoldt
 prime--Gamma carrier. -/
