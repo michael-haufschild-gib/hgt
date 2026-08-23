@@ -4133,6 +4133,7 @@ import GaloisForLFunctions.RHTower.Sieve.OffDiagonalTotal
 import GaloisForLFunctions.RHTower.Sieve.EffectivePairRestriction
 import GaloisForLFunctions.RHTower.Sieve.PairSumClosedForm
 import GaloisForLFunctions.RHTower.Sieve.EffectiveSetHypotheses
+import GaloisForLFunctions.RHTower.Sieve.MaskedSymmetry
 import GaloisForLFunctions.RHTower.Sieve.VonMangoldtParityCorrection
 import GaloisForLFunctions.RHTower.FriableCoefficientSurjectivity
 import GaloisForLFunctions.RHTower.FriableEdgeCoefficients

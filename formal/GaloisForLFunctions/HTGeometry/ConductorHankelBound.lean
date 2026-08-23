@@ -62,8 +62,7 @@ theorem lintegral_conductorHankel_sq_le {F : ℝ → ℝ≥0∞} (hF : Measurabl
         have ht0 : (0 : ℝ) < t := ht
         have hst : (0 : ℝ) < s + t := by linarith
         rw [← mul_assoc, ← ENNReal.ofReal_mul (by positivity)]
-        refine mul_le_mul_right' (ENNReal.ofReal_le_ofReal ?_) (F t)
-        exact conductorHankelKernel_le hst
+        exact mul_le_mul' (ENNReal.ofReal_le_ofReal (conductorHankelKernel_le hst)) le_rfl
       · exact ENNReal.ofReal_ne_top
     calc (∫⁻ t in Ioi (0:ℝ), ENNReal.ofReal (conductorHankelKernel (s + t)) * F t) ^ 2
         ≤ (ENNReal.ofReal (2 * Real.pi)
@@ -85,9 +84,9 @@ theorem lintegral_conductorHankel_sq_le {F : ℝ → ℝ≥0∞} (hF : Measurabl
     exact pow_ne_top ENNReal.ofReal_ne_top
   refine le_trans houter ?_
   rw [hconst]
-  refine le_trans (mul_le_mul_left' (lintegral_carleman_sq_le hF) _) ?_
+  refine le_trans (mul_le_mul' le_rfl (lintegral_carleman_sq_le hF)) ?_
   rw [← mul_assoc]
-  refine mul_le_mul_right' ?_ _
+  refine mul_le_mul' ?_ le_rfl
   rw [← ENNReal.ofReal_pow (by positivity), ← ENNReal.ofReal_mul (by positivity)]
   refine ENNReal.ofReal_le_ofReal ?_
   nlinarith [Real.pi_pos, sq_nonneg Real.pi]

@@ -468,3 +468,27 @@ Card 12: 42 modules.
   parameters: `4(r/m) ≤ P` and `curvedLambda(T|Δ|, P) ≤ 1`.
 
 Card 12: 43 modules.
+
+## The two orientations (2026-08-23)
+
+Working out the two size hypotheses of `pairSum_block_le` at the dyadic parameters
+`P = 2^j`, `Q = 2^{j+1}`, `A ≍ M`, `B ≍ 2M` shows:
+
+- `4(r/m) ≤ P` holds whenever `8r ≲ A`, i.e. exactly the card's `r ≤ εm` with `ε ≤ 1/4` — no
+  constraint on the block;
+- `curvedLambda(T|Δ|, P) ≤ 1` is `Y ≤ 36πP³` with `Y ≤ 8TrP/M`, i.e. `P ≳ (2/3)√(X/M)`.
+
+So the second-derivative regime covers the LARGE blocks of the long variable, and the small ones
+must be handled by exchanging the roles of the two variables — which is precisely the
+`min(A(D), B(D))` step of the exponent budget (the crossover is at `D = √M`).
+
+`MaskedSymmetry.lean` makes that exchange free:
+
+- `ndExp_symm` and **`maskedNdExp_symm : maskedNdExp T r A B d m = maskedNdExp T r A B m d`**
+  for `d, m ≥ 1` — the fibre relation is symmetric (`mem_fibre_symm`) and `F(d·m) = F(m·d)`;
+- **`sum_typeII_masked_swap`** — the bilinear form with the roles of the variables exchanged.
+
+Every type-II lemma therefore applies in both orientations with no new analysis; the assembly picks
+whichever is better for the block at hand.
+
+Card 12: 44 modules.
