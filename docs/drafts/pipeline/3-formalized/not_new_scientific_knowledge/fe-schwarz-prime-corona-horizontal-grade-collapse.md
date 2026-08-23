@@ -1,7 +1,7 @@
 # FE--Schwarz prime-corona horizontal-grade collapse
 
 - **ID:** `fe-schwarz-prime-corona-horizontal-grade-collapse`
-- **Stage:** 2-fully-proven / not-new
+- **Stage:** 3-formalized / not-new
 - **Type:** THEOREM (paper), `[BRIDGE]`
 - **Statement:** For an off-line FE--Schwarz quartet, every finite algebraic expression in its
   normalized prime characters that belongs to the logarithmic Marcinkiewicz space has corona class
@@ -32,8 +32,9 @@ surviving balanced grade forgets the horizontal displacement.
   profile; no open dependency
 - [x] parent-theory attack: the mechanism is finite exponential-polynomial asymptotics plus a
   quotient projection, so it is `[BRIDGE]`, not new scientific knowledge
-- [ ] 2 -> 3: not selected for Lean; the algebraic exponent bookkeeping is elementary, while the
-  Marcinkiewicz/PNT layer is not currently a Route A formalization bottleneck
+- [x] 2 -> 3: full Lean formalization, including unconditional PNT transfer, positive-leading-grade
+  exclusion, finite algebraic corona projection, Laurent-monomial bookkeeping, quartet collapse,
+  and exact phase-orbit norm separation
 
 ## 1. Prime exponential fields
 
@@ -292,3 +293,31 @@ Theorem A is the leading-real-exponent classification of a finite exponential po
 the classical mean absolute distance between two characters, and the quartet statements are
 integer weight bookkeeping.  Their value is route control: together they close the complete finite
 algebraic and norm-holomorphic corona escape without claiming a new parent mechanism.
+
+## 2026-08-23 Stage 2 -> 3 formalization audit
+
+- [x] `FESchwarzPrimeCoronaHorizontalGradeCollapse.lean` formalizes the prime exponential fields,
+  horizontal profiles, quotient classes, and FE--Schwarz quartet character algebra.
+- [x] `RHTower.horizontalLeadingGradeClassification` is Theorem A: negative leading grade lies in
+  the vanishing-tail layer, grade zero lands in the logarithmic Marcinkiewicz layer with exact
+  grade-zero corona class, and positive leading grade is excluded from that layer.
+- [x] Positive-grade exclusion is unconditional: normalized PNT discrepancy, moving-window
+  quadrature, periodic leading energy, lower-grade decay, and the Marcinkiewicz contradiction are
+  all proved inside Lean with no analytic premise exposed by the capstone.
+- [x] `RHTower.horizontalFiniteAlgebraicCoronaBlindness` is Theorem B in canonical grouped
+  exponential-polynomial normal form.  Its surviving class is `horizontalGradeZeroPartClass`,
+  whose definition contains no horizontal displacement parameter.
+- [x] `RHTower.feSchwarzQuartetLaurentMonomial_on_prime` proves every polynomial or Laurent
+  monomial in the ordered quartet has the claimed integral horizontal/vertical lattice exponent.
+- [x] Exact FE pair, Schwarz pair, complete quartet, unit-class, critical-phase norm-one, and
+  pairwise `4 / pi` quotient-distance laws are formalized.
+- [x] `RHTower.criticalPrimePhaseClass_not_continuousAt` proves the boundary phase orbit is nowhere
+  norm-continuous.
+- [x] Direct `lake env lean` and targeted
+  `lake build GaloisForLFunctions.RHTower.FESchwarzPrimeCoronaHorizontalGradeCollapse` passed.  No
+  umbrella build was run.
+- [x] `#print axioms` for all new theorem declarations reports only `propext`,
+  `Classical.choice`, and `Quot.sound`.
+- [x] Leaf module is wired into `GaloisForLFunctions.RHTower`.
+
+No Lean proof obligation remains for the theorems claimed by this card.

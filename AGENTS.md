@@ -8,17 +8,12 @@ Card template: docs/drafts/pipeline/_card-template.md
 3. Fully proven on paper → docs/drafts/pipeline/2-fully-proven
 4. Formalised in Lean 4 → docs/drafts/pipeline/3-formalized
 5. Publication-ready pre-prints → docs/drafts/pipeline/4-publication-ready
-Failed/retired → docs/drafts/pipeline/5-failed (read it before re-attempting a dead route).
+6. Failed/retired → docs/drafts/pipeline/5-failed
 
 ## Check prior research before any new topic
-Extensive work already exists. Search first; do not re-derive or re-fail existing lean code or math:
-- formal/
-- docs/drafts/pipeline/3-formalized
-- docs/support-extraction-log.md
-- docs/drafts/pipeline/2-fully-proven
-- docs/drafts/pipeline/5-failed
-(Standalone repo: keep prior-research paths inside this tree. In nested development the parent
-workspace's own root file supplies its broader corpus; do not hard-code parent paths here.)
+- Current ledger of the major routes and route candidates: docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md
+- Current ledger of possible RH endpoints and their proof obligations: docs/reports/endpoints.md
+- Always use `scripts/formal_tools.py research "<query>"` to search in the lean corpus.
 
 ## Lean discipline
 - Verify every mathlib name against THIS toolchain in a /tmp scratch file
@@ -26,9 +21,7 @@ workspace's own root file supplies its broader corpus; do not hard-code parent p
 - `#print axioms` via a /tmp scratch file, never by editing the tree.
 - The formal lint gate is authoritative: run `scripts/formal_tools.py lint`; currently no active
   `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration is allowed.
-- For formal project navigation, read `formal/README.md` and use
-  `scripts/formal_tools.py research "<query>"` before proving a reusable lemma.
-- Numerically pre-certify a formalisation plan (mpmath) before writing Lean.
+- Always use `scripts/formal_tools.py research "<query>"` for reusable lean code and avoiding duplicating existing work.
 
 ## No-go closure discipline
 - A no-go is not finished when only its negative statement is proved.

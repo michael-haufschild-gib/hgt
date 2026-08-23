@@ -1,7 +1,7 @@
 # Poisson--Euler Sobolev natural-cone bipolarity
 
 - **ID:** `poisson-euler-sobolev-natural-cone-bipolarity`
-- **Stage:** 2-fully-proven / not new scientific knowledge
+- **Stage:** 3-formalized
 - **Type:** EXACT ADDITIVE--MULTIPLICATIVE IDENTIFICATION / RH MECHANISM BASE
 - **Scientific status:** `[PAPER PROOF COMPLETE] [NOT RH]`
   `[BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE] [INTERPRETIVE SIGNIFICANCE PASS]`
@@ -370,3 +370,26 @@ therefore classified as a corpus bridge, not external novelty.
 - [ ] prove source-first Xi conormal and multiplicity landing
 - [ ] prove reflection strictness for prime-scale defect measure
 - [ ] RH
+
+## Lean status
+
+On 2026-08-23, `PoissonEulerSobolevNaturalCone.lean` formalized the complete unconditional
+theorem layer. It proves:
+
+- the literal Fourier coefficients of `δ₀-1`, exact `H^{-r}` summability iff `r>1/2`,
+  norm `2ζ(2r)`, and boundary residue `2`;
+- the honest normalized positive-frequency `ℓ²` vector, exact zeta overlap, fixed-coordinate
+  escape, and weak convergence to zero against every continuous linear functional;
+- the unique-factorization unitary to finite-support prime occupations, exact natural-cone
+  identification, and normalized geometric prime-valuation laws;
+- the squarefree-times-regular-dyadic vector factorization and exact mass identity;
+- the literal identity between the nonconstant Jacobi theta tail and the Gaussian ray sum,
+  equation `(23)` with `π^{-s/2}Γ(s/2)ζ(s)`, and positive-real Jacobi--Poisson inversion `(24)`;
+  and
+- the exact radial/Sobolev zero-coordinate identity `(26)`.
+
+Previously formalized squarefree-log transport supplies the card's finite-aperture Fock kernel
+`(20)`--`(21)`. The new module is wired into `GaloisForLFunctions.RHTower`; exact source check and
+targeted module build pass. Axiom audits of all new capstones report only `propext`,
+`Classical.choice`, and `Quot.sound`. Frozen RH-bearing statements in sections 5--6 remain
+explicit conjectures and are not asserted by any Lean theorem.

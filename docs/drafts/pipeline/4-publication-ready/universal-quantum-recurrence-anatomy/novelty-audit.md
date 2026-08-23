@@ -1,241 +1,86 @@
 # Novelty audit
 
-Date: 20 August 2026. Priority status: provisional pending independent search.
-No absolute “first” claim is authorized.
+Date: 2026-08-23
 
-## Closest current literature
+Status: submission-facing scope fixed. No absolute priority claim is authorized.
 
-1. Bocchieri--Loinger establishes finite-dimensional quantum recurrence
-   existence, not interaction-induced rank singularity, local-network rank or
-   target-capacity laws.
-2. Kotowski--Oszmaniec and Gupta--Short study recurrence-time bounds for finite
-   quantum systems. Current paper studies completed orbit geometry and
-   completed-time occupation and explicitly does not infer first-return times.
-3. Riddell--Pagliaroli--Alhambra study recurrence and concentration; Riddell--
-   Bertini study rationally independent free-fermion spectra and form-factor
-   moments. Campos Venuti--Odavic--Hamma derive all-order spectral-form-factor
-   moments and exponential limits under spectral arithmetic assumptions.
-   Present candidate novelty is discharging maximal projective independence
-   generically for interacting local-network families and joining it to exact
-   graph, interaction and countable-spectrum laws.
-4. Huang proves generic nondegenerate gaps for geometrically local
-   Hamiltonians. Current graph theorem removes every nonconstant balanced
-   rational spectral relation, simultaneously for all induced subsystems, and
-   reads supplied adjacency from temporal curvature.
-5. Oszmaniec et al. prove complexity saturation and recurrence for random
-   circuits and stochastic local Hamiltonian evolution. Kotowski--Oszmaniec--
-   Horodecki prove complexity jumps for unitarily invariant random
-   Hamiltonians. Brown--Susskind's second law is an argued typical growth
-   picture, not deterministic pointwise theorem. Current Choi law concerns deterministic static
-   onsite-plus-edge Hamiltonians after generic spectral discharge and gives
-   completed-time occupation, not stochastic mixing time. Nested path result
-   additionally gives explicit deterministic backtracking between two nearby
-   increasing times inside a certified linear-envelope window.
-6. Cui--Schuster--Mao--Huang--Brandao show constant-local static Hamiltonian
-   ensembles need not approach Haar randomness. Permanent non-Haar separation
-   is not claimed new; candidate contribution is its exact coexistence with
-   recurrent finite-dictionary hard epochs for one static Pauli Hamiltonian.
-7. Ippoliti proves a static geometrically local spectral-form-factor ramp
-   through clock embedding. Current work proves completed-time rank,
-   collision and thermodynamic-density laws and asserts no finite-time ramp.
-8. Haah--Hastings--Kothari--Low prove near-linear simulation and matching
-   worst-case gate lower bounds for one-dimensional piecewise local dynamics.
-   Low--Su--Tong--Tran prove quadratic short-time lower bounds for generic
-   commuting two-local Hamiltonians. Zlokapa--Allen--Harrow prove
-   coefficient-sensitive optimal simulation lower bounds using bounded-degree
-   classical hard instances, with static unit-time and piecewise-constant
-   late-time constructions. These results are closer than random-complexity
-   work to candidate G below and substantially narrow its priority residue.
-9. Nayak--Sen characterize CPTP maps with CPTP inverses; on equal input and
-   output dimension this gives unitary conjugation. This is prior art for
-   exact channel-inverse rigidity, not for the joined semigroup return-defect,
-   intermediate recovery and circuit-incidence statement below.
+## Central result
 
-## Candidate novelty residues
+The manuscript proves one conjunction for the full deterministic traceless
+onsite-plus-nearest-neighbour Pauli family on an open qubit path. In every
+nonempty connected open simple-spectrum coefficient chart, almost every
+single Hamiltonian simultaneously has:
 
-### A. Weak rank-one interaction singularity
+1. maximal projective spectral rank `D - 1`;
+2. sharp stroboscopic first-hit exponent `D - 1`;
+3. sharp first-gap-clock winding exponent `D - 2`;
+4. the permutation floor for every positive-weight survival-fidelity
+   collision mass and every replica order;
+5. convergence of every corresponding long-time moment to that floor.
 
-Exact residue: for every pair of nonempty finite spectra and every positive
-norm budget, one diagonal operator-Schmidt-rank-one interaction produces full
-product-space projective rank, creates at least `mn` new temporal directions,
-obeys `2|t|delta||O||` for every bounded fixed-time Heisenberg probe, and
-attains every positive-weight replica collision floor.
+The same projective-rank invariant also yields exact completed return density
+and, for homogeneous qudit paths, its thermodynamic extinction law.
 
-Preliminary verdict: strongest central candidate. Search found no exact match
-combining all four clauses. This is not proof of priority.
+## What prior literature supplies
 
-### B. Arbitrary-graph temporal curvature
+- Bocchieri--Loinger: qualitative finite-dimensional recurrence.
+- Weyl: compact-torus equidistribution.
+- Dirichlet approximation and Kleinbock--Margulis: universal upper bounds and
+  metric extremality once an appropriate torus vector or nondegenerate
+  manifold is already available.
+- Riddell--Pagliaroli--Alhambra, Kotowski--Oszmaniec, and Gupta--Short:
+  quantitative recurrence bounds, including random-Hamiltonian generic
+  saturation and all-state bounds.
+- Huang: nondegenerate gaps almost everywhere in geometrically local
+  Hamiltonian families.
+- Riddell--Bertini: rationally independent single-particle spectra in a local
+  free-fermion model.
+- Campos Venuti--Odavić--Hamma: exact spectral-form-factor moments under
+  spectral arithmetic hypotheses.
+- Anand--Valluri--Davis--Ghose: arithmetic classification of exact
+  state-independent Floquet recurrences.
 
-Exact residue:
-`tau(H_S)=sum_C(prod_{v in C}q_v-1)` simultaneously for all induced
-subsystems of a generic onsite-plus-edge Hamiltonian, with
-`edge iff kappa(u,v)>0` and exact partition-curvature zero classification.
+These results do not establish the manuscript's every-chart, same-static-
+Hamiltonian conjunction for a full interacting bounded-degree one-dimensional
+family.
 
-Preliminary verdict: survives current search. Stronger than generic
-nondegenerate-gap results; requires inverse-spectral and quantum-control
-specialist audit.
+## Defensible novelty residue
 
-### C. Static bounded-degree all-replica recurrence
+The new step is not recurrence theory after rational independence is assumed.
+It is the discharge of the full balanced real affine spectral-relation
+obstruction inside a canonical static interacting nearest-neighbour family,
+and the use of that one discharge to obtain all metric and collision laws for
+the same Hamiltonian draw.
 
-Exact residue: generic open nearest-neighbour qudit paths attain the exact
-positive-weight permutation floor at every replica order, and strict anchored
-return density has exact Hilbert-dimension and site double-log extinction
-rates.
+This answers a focused structural question: does one-dimensional bounded-
+degree locality force a discount in projective recurrence codimension? For
+this canonical full family, generically it does not. Only linearly many local
+coefficients are present, yet the spectrum attains the maximal `D - 1`
+rational projective phase rank, exponential in system size.
 
-Preliminary verdict: abstract rational-independence consequences are known;
-candidate novelty is generic realization in ordinary static bounded-degree
-interacting many-body family plus exact thermodynamic completed-density law.
+## Why this is one paper rather than a collage
 
-### D. Countable complete recurrence under weak perturbation
+Every headline law factors through one invariant: the balanced spectral
+relation lattice. It controls projective hull dimension, first-hit exponent,
+replica collision excess, completed return density, and the thermodynamic
+limit. Local spectral escape is the single model-specific theorem that makes
+all universal consequences sharp.
 
-Exact residue: arbitrary countable pure-point spectra admit arbitrarily small
-domain-preserving self-adjoint trace-class perturbations with full future
-projective hull, zero-only exact return, unbounded finite-window rank and
-syndetic traversal of every positive summable probe. Product spectra admit one
-separable trace-class direction with countable exceptional coupling set.
+## Excluded claims
 
-Preliminary verdict: survives current search; needs operator-theory priority
-audit focused on almost-periodic diagonal flows and trace-class perturbations.
+- novelty of recurrence, equidistribution, Diophantine extremality, or moment
+  expansion as abstract tools;
+- unrestricted continuous-time first-return distribution;
+- a quantitative finite-time convergence rate;
+- infinite-volume global orbit recurrence;
+- maximality for every local Hamiltonian;
+- random-matrix behavior, chaos, circuit complexity, loss, channels, black
+  holes, or finite-record inference;
+- an absolute claim of being first in the literature.
 
-### E. Static graph-local Choi occupation
+## Submission control
 
-Exact residue: generic connected finite onsite-plus-edge Hamiltonians have
-upper completed-time occupation of padded circuit-target balls bounded by
-projective Haar volume and an explicit `M^(s+1)B_D(delta)` cap, independent
-of eigenbasis.
-
-Preliminary verdict: survives current search as deterministic completed-time
-law. It is not a first-hard-time or mixing theorem.
-
-### F. Recurrent Pauli hardness without Haar behavior
-
-Exact residue: one generic bounded-weight Pauli Hamiltonian alternates
-syndetically between Choi returns and finite-dictionary hard epochs while an
-exact local two-query signal remains above Haar benchmark at every time;
-prime-torsion version gives complete hard polygons and terminal return.
-
-Preliminary verdict: hard-epoch/return coexistence is candidate novelty.
-Permanent separator mechanism is literature-grounded and not independently
-claimed.
-
-### G. One nested static path from ramp to exact return
-
-Exact residue: one explicit diagonal nearest-neighbour qubit path, nested
-under increasing volume and with bounded infinite-chain energy, has an
-operator-norm two-qubit-gate lower and upper envelope linear in laboratory
-time, a factorial-four exact return and exact complexity reflection carrying
-same bounds onto return side.  A general tree-cut phase-tail obstruction
-handles arbitrary nonlocal and non-diagonal approximating gates.  At
-$L=16384$, $\varepsilon=2^{-10}$, $s=2\pi-10^{-6}<t=2\pi$, exact integer
-bounds give $C(s)\ge1514>C(t)$ with $C(t)\le1513$, disproving all-pairs
-monotonicity inside same laboratory window.
-
-Preliminary verdict: survives exact-object search only as a joined
-ramp--thermodynamic-completion--return statement. Simulation lower bounds for
-local classical Hamiltonians now exist, so neither locality nor gate hardness
-alone is candidate novelty. Targeted primary-source search found random and
-stochastic complexity recurrence/jump results, typical second-law arguments,
-and worst-case simulation lower bounds, but no matching deterministic
-nearby-time backtracking theorem for one explicit static nearest-neighbour
-Hamiltonian. This is provisional absence evidence, not proof of priority; no
-absolute first claim is authorized without specialist comparison to
-arXiv:2303.17538, arXiv:2607.19852 and their ancestry.
-
-### H. Same-record Born escape and return
-
-Exact residue: for every finite Hermitian Hamiltonian, every finite family of
-density matrices and quantum effects, nonnegative weights, positive tolerance
-and positive guard, either weighted Born record never exits tolerance or same
-record has a witnessed exit followed strictly later by a return. Deadline is
-least member of explicitly proved graph--resolution certificate family built
-from visible energy-basis coefficients.
-
-Closest sources: Kotowski--Oszmaniec prove metric-packing post-exit recurrence
-for pure states and explicitly identify expectation values among further
-directions; Gimeno--Sotoca prove mixed-state recurrence bounds in state-space
-metrics; Gupta--Short prove simultaneous state recurrence. Those results imply
-coarse observable recurrence by continuity but do not appear to contain
-conjunction of prescribed Born records, same-record exit witness and
-observer-compressed least certificate.
-
-Preliminary verdict: strongest newly added candidate. Claim only conjunction,
-not existence of expectation-value recurrence. No absolute priority claim is
-authorized.
-
-### I. Thermodynamic l-bit Hilbert cascade
-
-Exact residue: one explicitly engineered absolutely summable diagonal l-bit
-field simultaneously has uniform finite-window thermodynamic convergence,
-bounded self-adjoint multiplication Hamiltonians and strongly continuous
-unitary `L²` dynamics, one exact phase reporter at every diameter birth order,
-maximal local-flip rational rank in every finite environment and a
-volume-independent exponential commutator bound.
-
-Preliminary verdict: bridge. Logarithmic light cones, exponentially branching
-local spectra and interaction-suppressed revivals are established. Exact
-rational-rank/cascade/Hilbert conjunction may be technically new but is not
-headline novelty and is not a microscopic random-field MBL theorem.
-
-### J. Fixed-shell local spectral-action dephasing
-
-Exact residue: on one recursive family of ordinary open nearest-neighbour
-qubit paths, every nonzero balanced real spectral action has vanishing
-oscillatory integral against every bounded measurable amplitude on fixed
-Hilbert--Schmidt coefficient sphere as absolute time diverges. Same local
-family supplies simple spectrum and two Hamiltonians whose normalized squared
-labelled action sets are disjoint under all spectral permutations.
-
-Closest sources: generic local spectral simplicity and nondegenerate-gap
-results, no-resonance analyses, and disorder-averaged spectral-form-factor
-theorems. Targeted primary-source search found no theorem matching all of:
-real rather than only integer balanced characters, angular-only averaging at
-fixed interaction rate, full Hermitian nearest-neighbour path locality, and
-an explicit two-Hamiltonian nonflatness certificate at every size.
-
-Preliminary verdict: strong new candidate. It is qualitative and asymptotic;
-no finite-time decay rate, single-Hamiltonian mixing, or all-local-family
-claim is authorized.
-
-### K. Markovian return as recovery and rigidity
-
-Exact residue: for every finite-dimensional CPTP semigroup, diamond defect of
-one full-channel return equals defect of remaining-time recovery at every
-intermediate time and bounds all ancilla-assisted trace-norm loss. Inverse
-words inject exact-length circuit incidences across return at radius shifted
-by same defect. Exact return forces unitary conjugation throughout, periodicity
-and exact incidence palindrome.
-
-Preliminary verdict: structural synthesis, not headline priority claim.
-Semigroup recovery identity is algebraic and CPTP inverse rigidity is known
-from Nayak--Sen. Candidate residue is exact conjunction and common defect
-control, not either ingredient alone.
-
-## Novelty explicitly disclaimed
-
-- Compact-hull equidistribution and Kronecker--Weyl theory.
-- Rank--nullity itself.
-- Abstract all-order form-factor formulas under rational independence.
-- Reversible-channel classification and semigroup composition identity.
-- Elementary finite target union bound.
-- Permanent non-Haar behavior of constant-local static ensembles.
-- First-return estimates, any literal monotone complexity trajectory,
-  saturation plateaus and random-matrix ramps.
-- Infinite-volume recurrence.
-
-## Priority controls used in paper
-
-- “Principal new results” is limited to joined statements above.
-- Literature section distinguishes premises from their local-network
-  realization.
-- Scope section separates nested bounded-degree path ramp from all-to-all
-  bounded-weight Pauli alternation and states path's decaying-coupling limits.
-- No “first,” “unprecedented,” “solves,” or “open problem” language appears.
-
-## Required before submission
-
-1. Independent MathSciNet/zbMATH/INSPIRE/Google Scholar ancestry and citation
-   search for candidates A--K, especially exact comparison of G with
-   arXiv:2607.19852.
-2. Specialist review of interaction and arbitrary-graph proofs.
-3. Metadata check for 2026 preprints and later versions.
-4. Calibrate journal claim language after external priority result.
+Reference metadata and comparison statements were checked against primary
+publisher or arXiv records on 2026-08-23. Independent specialist priority
+review remains appropriate before journal submission, especially for ancestry
+of generic local spectral rational-independence results.

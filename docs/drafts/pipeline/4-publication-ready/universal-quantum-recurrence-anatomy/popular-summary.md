@@ -1,90 +1,26 @@
-# What this paper says in plain language
+# What this paper says, without the mathematics
 
-Quantum systems do not simply “forget” their beginnings. In a finite isolated
-system, motion can eventually return close to an earlier state. What controls
-those returns is not only energy scale or system size, but exact arithmetic
-relations among energy levels.
+A finite, perfectly isolated quantum system never forgets forever. Given enough time, its many internal phases can line up again and bring it close to an earlier state. Classic recurrence theorems guarantee this return but do not tell us how severe the waiting problem becomes in a real many-body system.
 
-Paper identifies one common structure behind several apparently different
-questions:
+Paper identifies what controls that problem: exact arithmetic relationships among energy levels. Each independent relationship removes one phase direction that would otherwise need to line up. No hidden relationships means hardest possible alignment problem for that Hilbert-space size.
 
-- Loss decides which part of a system survives long enough to recur.
-- Exact spectral relations decide how many independent phases govern its
-  long-time motion.
-- Measurement decides which of those phases are visible.
-- Finite observations cannot, in general, determine complete long-time
-  recurrence geometry.
+Surprising part concerns locality. A chain with only nearest-neighbour interactions looks highly constrained: number of tunable couplings grows only with chain length, while number of quantum energy levels grows exponentially. One might therefore expect locality to force many hidden energy relationships and make recurrence lower-dimensional.
 
-This explains a counterintuitive effect. An interaction can be so weak that no
-bounded-duration experiment can distinguish it from zero, yet it can remove
-exact energy relations and completely reorganize system's infinite-time
-behavior.
+Paper proves opposite for ordinary static one-dimensional chains. For almost every choice of coefficients in full nearest-neighbour qubit Hamiltonian family, energy levels have maximum possible projective independence. Same Hamiltonian then has:
 
-Paper also separates two meanings of “coming back” in open systems. If a
-memoryless noisy evolution returns as a complete quantum channel, then later
-part of evolution must undo everything earlier part did, including information
-stored jointly with an external ancilla. A nearly exact return gives a
-quantitative recovery guarantee. A perfectly exact return means dynamics
-could not have been genuinely dissipative at all: every intermediate step was
-unitary and whole motion repeats periodically.
+- sharp return exponent using all relative energy phases;
+- sharp clock-normalized winding exponent;
+- no exact nonzero global return, only arbitrarily close returns;
+- smallest possible value of every long-time full-support return moment, at every order.
 
-## Main new results
+This is one result, not collection of examples. All conclusions come from one invariant: balanced spectral relation lattice.
 
-For generic static one-dimensional nearest-neighbour qudit chains, paper proves
-all projective phase directions allowed by Hilbert space are present. Their
-global return density is then known exactly and vanishes doubly exponentially
-with chain length when long-time averaging is completed at each finite size
-before size is increased.
+Thermodynamic consequence is exact. At any fixed tolerance, long-time fraction spent near a global return is
 
-For a fixed-strength sphere of ordinary nearest-neighbour qubit Hamiltonians,
-paper proves that every nontrivial relative combination of energy levels
-cancels under late-time averaging over interaction directions. Two concrete
-Hamiltonians inside same local family certify that none of these spectral
-phases is secretly constant. No randomness in interaction strength or time is
-used.
+\[
+\left(\frac{2\arcsin(\varepsilon/2)}{\pi}\right)^{q^n-1}.
+\]
 
-For any finite Hermitian Hamiltonian and any chosen finite collection of
-physical measurement probabilities, paper proves a direct observed-record
-law. Either record never leaves chosen tolerance band, or same record later
-returns after a witnessed exit. Deadline is compressed according to
-coherences measurements can actually see.
+Since Hilbert dimension is `q^n`, this fraction falls doubly exponentially with number of sites.
 
-Paper also gives one explicit static nearest-neighbour qubit chain whose
-two-qubit-gate complexity lies between linear bounds over a controlled time
-window, returns exactly to identity, and has a reflected complexity history.
-It disproves literal point-by-point monotonicity: complexity can drop between
-two nearby increasing times even inside linear-envelope window.
-
-Finally, one explicit infinite diagonal l-bit field has a well-defined
-self-adjoint Hilbert-space Hamiltonian, strongly continuous unitary dynamics,
-uniform finite-volume completion, and phase structures appearing at every
-spatial scale.
-
-## Scientific contribution
-
-Known recurrence theorems establish that returns occur and recent work bounds
-state recurrence times. This paper adds structural laws connecting recurrence
-to loss, interaction topology, chosen observers, circuit targets,
-thermodynamic scaling and limits of prediction. Its most defensible new
-contributions are joined theorems:
-
-1. full projective recurrence rank inside ordinary static bounded-degree local
-   many-body Hamiltonian families;
-2. same-observer Born-record escape and return with an observer-specific
-   certified deadline;
-3. exact finite-size-to-thermodynamic return-density law;
-4. explicit static local complexity ramp, return, reflection and certified
-   nonmonotonicity;
-5. fixed-strength local spectral-phase dephasing with all spectral premises
-   discharged inside same nearest-neighbour family;
-6. full-channel Markovian recurrence as quantitative recovery, with exact
-   recurrence forcing reversible periodic dynamics.
-
-## What paper does not claim
-
-It does not give first-return time from inverse return density. It does not
-claim Haar randomness, universal monotone complexity, microscopic
-many-body localization, or global recurrence of an infinite system.
-Thermodynamic density result takes long-time limit first at each finite size.
-Angular dephasing is an ensemble statement with no finite-time rate, and
-Markovian rigidity requires return of complete channel, not one state.
+Novel scientific contribution is not recurrence itself, torus equidistribution, or moment algebra. Those are known. New result proves that a full deterministic, interacting, static, bounded-degree one-dimensional local family generically reaches maximum recurrence dimension, and that same local Hamiltonian simultaneously saturates sharp return and all-order collision laws. It answers a concrete question experts care about: whether spatial locality necessarily discounts recurrence complexity. For this canonical family, it does not.

@@ -164,6 +164,34 @@ theorem OperationalTheory.Channel.informationLossAt_monotone
   exact tsub_le_tsub_left (Φ.distanceAt_antitone ρ σ hnm)
     (Φ.distanceAt ρ σ 0)
 
+/-- A contractive observer whose operational distinguishability returns to
+its initial value along a cofinal subsequence loses no distinguishability at
+any finite depth.  Recurrence and data processing must use this same
+operational clock; recurrence of a separate scalar observable is insufficient. -/
+theorem OperationalTheory.Channel.distanceAt_eq_initial_of_subseq_return
+    {Q : OperationalTheory} (Φ : Q.Channel) (ρ σ : Q.State)
+    {φ : ℕ → ℕ} (hφ : StrictMono φ)
+    (hreturn : Tendsto (fun j => Φ.distanceAt ρ σ (φ j)) atTop
+      (𝓝 (Φ.distanceAt ρ σ 0))) (n : ℕ) :
+    Φ.distanceAt ρ σ n = Φ.distanceAt ρ σ 0 := by
+  refine le_antisymm (Φ.distanceAt_antitone ρ σ (Nat.zero_le n)) ?_
+  refine le_of_tendsto hreturn ?_
+  filter_upwards [eventually_ge_atTop n] with j hj
+  exact Φ.distanceAt_antitone ρ σ (le_trans hj hφ.le_apply)
+
+/-- Clock-locked recurrent dilation rigidity in operational form: once the
+same observer trajectory returns cofinally to its initial distinguishability,
+its monotone information-loss ledger is identically zero. -/
+theorem OperationalTheory.Channel.informationLossAt_eq_zero_of_subseq_return
+    {Q : OperationalTheory} (Φ : Q.Channel) (ρ σ : Q.State)
+    {φ : ℕ → ℕ} (hφ : StrictMono φ)
+    (hreturn : Tendsto (fun j => Φ.distanceAt ρ σ (φ j)) atTop
+      (𝓝 (Φ.distanceAt ρ σ 0))) (n : ℕ) :
+    Φ.informationLossAt ρ σ n = 0 := by
+  rw [OperationalTheory.Channel.informationLossAt,
+    Φ.distanceAt_eq_initial_of_subseq_return ρ σ hφ hreturn n,
+    tsub_self]
+
 /-- Exact two-phase law for every pair of trajectories: either the channel
 forgets them completely, or a positive amount of operational
 distinguishability survives at every future time. -/

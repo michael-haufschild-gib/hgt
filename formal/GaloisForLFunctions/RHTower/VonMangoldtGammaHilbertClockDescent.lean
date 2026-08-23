@@ -6,6 +6,7 @@ import GaloisForLFunctions.HTGeometry.BalancedHilbertDefectPolarization
 import GaloisForLFunctions.HTGeometry.SeparableBuresAlbertiApproximationLaw
 import GaloisForLFunctions.HTGeometry.AllJetLevelSet
 import GaloisForLFunctions.HTGeometry.ExponentialSeriesUniqueness
+import GaloisForLFunctions.HTGeometry.StrictContractionRecurrenceNoGo
 import GaloisForLFunctions.RHTower.VonMangoldtGammaBoundaryDisplacementThreshold
 import GaloisForLFunctions.RHTower.EulerTranslationAnalyticFaithful
 import GaloisForLFunctions.RHTower.VonMangoldtGammaAllDepthCauchy
@@ -177,6 +178,25 @@ def vonMangoldtGammaSourceShift :
 theorem norm_vonMangoldtGammaSourceShift_le :
     ‖vonMangoldtGammaSourceShift‖ ≤ 1 / 2 :=
   norm_lpDiagonalCLM_le _ (by positivity) _
+
+/-- **The radial source shift is not the recurrent prime clock.**  A cofinal return of the
+iterated von-Mangoldt/Gamma shift to its initial source vector forces that vector to vanish.  Thus
+radial completion and vertical phase recurrence cannot be identified on this fixed Hilbert
+carrier; any common completion law must compare distinct clock directions or varying positive
+topologies. -/
+theorem vonMangoldtGammaSource_eq_zero_of_sourceShift_cofinal_return
+    (a : VonMangoldtGammaSource) {phi : ℕ → ℕ}
+    (hphi : Tendsto phi atTop atTop)
+    (hreturn : Tendsto
+      (fun j => (fun x => vonMangoldtGammaSourceShift x)^[phi j] a)
+      atTop (𝓝 a)) :
+    a = 0 := by
+  apply eq_zero_of_strictContraction_of_cofinal_iterate_return
+    (fun x => vonMangoldtGammaSourceShift x) a (1 / 2 : ℝ)
+    (by norm_num) (by norm_num) _ hphi hreturn
+  intro x
+  exact (vonMangoldtGammaSourceShift.le_opNorm x).trans
+    (mul_le_mul_of_nonneg_right norm_vonMangoldtGammaSourceShift_le (norm_nonneg x))
 
 theorem sqrt_vonMangoldtGammaDensity_eq
     (x : ℝ) (pe : Nat.Primes × ℕ) :

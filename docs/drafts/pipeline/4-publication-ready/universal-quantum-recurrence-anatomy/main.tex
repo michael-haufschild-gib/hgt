@@ -1,13 +1,13 @@
 \documentclass[10pt]{article}
 
-\usepackage[a4paper,margin=0.78in]{geometry}
+\usepackage[a4paper,margin=0.82in]{geometry}
 \usepackage{amsmath,amssymb,amsthm,mathtools,bm,mathrsfs}
-\usepackage{booktabs,tabularx,longtable,microtype,enumitem,multicol,float}
-\usepackage{xcolor,tikz}
-\usetikzlibrary{arrows.meta,positioning,fit,calc}
-\usepackage[colorlinks=true,linkcolor=blue!50!black,
-  citecolor=blue!50!black,urlcolor=blue!50!black]{hyperref}
+\usepackage{booktabs,tabularx,microtype,enumitem}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!45!black,
+  citecolor=blue!45!black,urlcolor=blue!45!black]{hyperref}
 \setlength{\emergencystretch}{2em}
+\setlist{nosep,leftmargin=*}
 
 \newtheorem{theorem}{Theorem}
 \newtheorem{corollary}[theorem]{Corollary}
@@ -27,106 +27,68 @@
 \newcommand{\ii}{\mathrm i}
 \newcommand{\rank}{\operatorname{rank}}
 \newcommand{\Rel}{\mathcal L}
-\newcommand{\Hull}{\mathcal K}
-\newcommand{\Carrier}{\mathcal C}
-\newcommand{\Hwater}{\mathcal H}
-\newcommand{\Fid}{\mathcal F}
+\newcommand{\dist}{\operatorname{dist}}
 \newcommand{\dens}{\operatorname{dens}}
-\newcommand{\sinc}{\operatorname{sinc}}
+\newcommand{\supp}{\operatorname{supp}}
 
 \title{\textbf{Persistent phase geometry of quantum recurrence}\\
-\large\itshape Four structural laws for loss, spectral constraints, observability, and finite-horizon inference}
+\large\itshape Maximal return exponents and all-order collision laws in static one-dimensional local systems}
 \author{GPT 5.6 Sol \and Opus 5 \and Fable 5 \and Michael Haufschild}
-\date{20 August 2026}
+\date{23 August 2026}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-Quantum recurrence is controlled by exact spectral relations, whereas every
-finite-time experiment is continuous under small changes of the Hamiltonian.
-We show that this mismatch produces a sharp singularity: one arbitrarily weak
-diagonal operator-Schmidt-rank-one interaction can convert the completed
-recurrence geometry of two finite systems from at most additive temporal
-dimension to the full product-space dimension, create at least the product of
-their non-global spectral capacities in new independent phase directions,
-and simultaneously drive every full-support replica moment to its minimum
-collision value.  Nevertheless every
-operator-normalized Heisenberg observable changes by at most the explicit
-dimension-free Duhamel bound $2|t|\delta$ on a perturbation of norm at most
-$\delta$.
+What determines the severity of recurrence in a finite quantum many-body
+system: spatial interaction geometry, or arithmetic relations among its
+energy levels?  We prove that the decisive object is the balanced spectral
+relation lattice.  For every finite spectrum with $D$ levels, its relation
+rank and its independent projective phase rank add exactly to $D-1$.  This
+single conservation law controls three operational signatures: sharp
+simultaneous first-return exponents, every finite-order replica collision,
+and every long-time survival-fidelity moment.
 
-This singular principle organizes four structural laws.  Loss selects the
-persistent carrier and fixes the exact asymptotic return ceiling; at channel
-level, a Markovian return within diamond defect $\delta$ supplies the
-remaining evolution as a $\delta$-recovery at every intermediate time, while
-an exact full-channel return forces unitary, periodic evolution.  Spectral
-constraints determine completed temporal dimension: for any finite
-interaction graph, generic onsite-plus-edge Hamiltonians have an exact
-component formula, subsystem temporal curvature reconstructs the supplied
-graph, and homogeneous nearest-neighbour qudit paths have strict return
-density doubly exponential in their length.  On a fixed Hilbert--Schmidt
-sphere of ordinary nearest-neighbour qubit Hamiltonians, every nonzero
-balanced spectral action dephases under angular averaging, with its
-nonflatness certified by two local Hamiltonians.  Observability is governed by
-target capacity: coherence-graph rank gives the visible exponent, every
-finite family of Born histories either never exits a prescribed tolerance
-or returns after a same-record exit within a least graph--resolution
-certificate, while
-static connected networks and bounded-weight Pauli Hamiltonians obey exact
-completed-time circuit-target bounds and recurrent hard-epoch laws without
-becoming Haar random.  An explicit nested family of static diagonal
-nearest-neighbour qubit paths has a bounded infinite-chain completion, a
-two-sided linear operator-norm circuit-complexity envelope throughout a
-finite laboratory-time window, an exact factorial-four return, and exact
-complexity reflection about that return.  Its actual complexity rises
-strictly above the zero-complexity endpoints at every ramp point and cannot
-backtrack across sufficiently scale-separated laboratory times.  Yet an
-explicit pair of increasing times inside the same window has exact
-complexities at least $1514$ and at most $1513$, respectively.  Thus a
-linear ramp envelope does not imply literal pointwise monotonicity, even for
-one fixed static nearest-neighbour Hamiltonian.  Finite-horizon information remains
-incomplete: one common earlier record, common finite moments and one common
-spectrum are compatible with every later return probability.
+We then resolve the locality question for a concrete bounded-degree family.
+Consider the full real space of traceless one-site and nearest-neighbour
+two-site Pauli Hamiltonians on an open chain of $n\geq3$ qubits.  On every
+nonempty connected open chart with simple spectrum, almost every coefficient
+choice gives one and the same static Hamiltonian with maximal projective rank
+$2^n-1$.  Its stroboscopic anchored-gap first hit obeys
+$T(r)=r^{-(2^n-1)+o(1)}$, while its first-gap-clock-normalized winding hit
+obeys $Q(r)=r^{-(2^n-2)+o(1)}$.  For every full-support initial state and
+every replica order, the long-time survival-fidelity moment simultaneously
+attains the unavoidable permutation floor.  These are same-Hamiltonian
+conclusions, not separately chosen witnesses.
 
-The finite theory extends to countable pure-point spectra.  Arbitrarily small
-domain-preserving trace-class perturbations can produce unbounded
-finite-window temporal rank, dense future projective orbits, no nonzero exact
-global return, and recurrent traversal of the full range of every positive
-summable phase-defect probe.  Separately, one absolutely summable diagonal
-l-bit field has uniform finite-volume completion, bounded self-adjoint
-$L^2$ Hamiltonians, strongly continuous unitary dynamics, and a
-nonterminating diameter-resolved phase cascade.  Completed-time
-thermodynamic densities take long-time limit at fixed finite volume before
-system size; nested path has a uniformly convergent static-energy
-completion.  We assert no first-return scale, pointwise monotonicity of complexity,
-infinite-volume orbit recurrence, or Haar randomization.
+The result extends the exact rank and completed-density laws to open paths of
+$q$-level sites.  At fixed chordal tolerance $0<\varepsilon<2$, generic
+projective-return density is exactly
+$[2\arcsin(\varepsilon/2)/\pi]^{q^n-1}$; hence it vanishes doubly
+exponentially with chain length, with a closed Hilbert-dimension rate.  Thus
+one-dimensional nearest-neighbour locality does not force a reduced
+recurrence codimension.  It coexists generically with the maximal phase
+geometry allowed by Hilbert-space dimension.
 \end{abstract}
 
-\noindent\textbf{Public summary.}
-A tiny interaction can be invisible at any fixed time yet reorganize a
-system's entire long-time recurrence because exact relations among energies
-can disappear under arbitrarily small perturbations.  We turn this arithmetic
-fact into laws for loss, local many-body systems, measurement, complexity and
-inference.  A finite collection of measurement probabilities either stays
-inside its tolerance band or, after leaving, is guaranteed to re-enter it.
-For memoryless open dynamics, near-return of complete channel certifies
-recovery of what earlier evolution could erase; exact return forces reversible
-unitary motion.  At fixed interaction strength, averaging directions of
-one-dimensional local Hamiltonians cancels every nontrivial relative spectral
-phase at late times.  One concrete local chain has explicit linear complexity
-bounds yet drops between nearby increasing times, separating large-scale
-growth from literal increase at every instant.
+\noindent\textbf{Significance statement.}
+A finite quantum system must eventually come close to where it started, but
+the theorem alone says little about how rare that event is.  This paper
+identifies a complete arithmetic obstruction: exact balanced relations among
+energies remove independent recurrence directions, one for one.  The main
+advance is proving that ordinary static nearest-neighbour chains generically
+have no such hidden relations.  Their return problem is therefore as
+high-dimensional as that of an unconstrained $2^n$-level system, even though
+their interactions live on a one-dimensional path.  The same invariant also
+explains when higher return moments contain extra resonances and gives an
+exact double-exponential thermodynamic law for the fraction of time spent
+near a global projective return.
 
 \input{body}
 
-\appendix
-\input{new-appendices}
-\input{prior-results-appendices}
-
 \section*{Author contributions}
-All authors contributed to the conception, mathematical development,
-analysis, verification and writing of the manuscript.
+All authors contributed to conception, mathematical development, analysis,
+verification, and writing.
 
 \input{references}
 

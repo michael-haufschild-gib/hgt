@@ -1,7 +1,7 @@
 # FCRJ corrected-response saturation law
 
 - **ID:** `fcrj-corrected-response-saturation-law`
-- **Stage:** `2-fully-proven`
+- **Stage:** `3-formalized`
 - **Type:** `THEOREM (paper) [POSITIVE SURVIVOR] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Source:** `critical-multiplicative-compensated-cancellation-rh.md` `(AC18)`--`(AC25)` and
   `high-grade-sieve-survivor-one-mode-reduction.md` `(HGS23)`--`(HGS29)`
@@ -165,13 +165,19 @@ the required `M^(-1)` scale.
 
 ## Lean status
 
-The finite low/high joining and counterflow identities are already formalized in
-`PhysicalCutoffAliasResponseJoining.lean` and `BooleanGradeCoprimePlateau.lean`.  The actual
-arithmetic scalars `D_M,R_M,E_M` and the full identity `(HGS29)` are not yet definitions in Lean.
-Therefore a theorem which merely assumes `(RS1)` and invokes order arithmetic would not count as
-formalizing the source theorem.  Stage 3 requires an honest source-linked finite saturation theorem
-whose norm square is obtained from the joined low/high carrier identity; it must state explicitly
-that the analytic identification with `(AC25)` remains paper-only.
+`RHTower.XiPhysicalPrimeCorrectedResponseSaturation` formalizes the source-linked finite theorem,
+not an abstract order-arithmetic wrapper.  It defines the corrected and uncorrected physical
+responses from the actual clipped ordinary-prime aperture carrier and proves `(RS1)`--`(RS10)`,
+including exact saturation, strictness for every nonempty active packet, automatic lower deficit,
+one-sided reformulation, and both quantitative budget transfers.  Its fusion energy is linked to
+the literal squared Hilbert norm by `XiPhysicalPrimeLogApertureHilbertMetric` and strict positivity
+by `XiPhysicalPrimeEndpointRadical`.
+
+Direct source checking and targeted
+`lake build GaloisForLFunctions.RHTower.XiPhysicalPrimeCorrectedResponseSaturation` pass.  Delta
+axiom audits of the capstone declarations report only `propext`, `Classical.choice`, and
+`Quot.sound`.  As stated in the module documentation, identifying an external analytic `AC25` sum
+with this finite response remains a separate interface and is not assumed by these theorems.
 
 ## Gates
 
@@ -179,10 +185,13 @@ that the analytic identification with `(AC25)` remains paper-only.
 - [x] 1 -> 2: dependency-closed proof of `(RS2)`--`(RS10)`
 - [x] hostile audit: correlation sign, parity, crossing-color, and PSD shortcuts rejected
 - [x] novelty audit: corpus-absent frontier correction; parent Hilbert step is standard
-- [ ] 2 -> 3: source-linked finite Lean theorem, targeted leaf check, and axiom audit
+- [x] 2 -> 3: source-linked finite Lean theorem, targeted leaf check, and axiom audit
 - [ ] analytic Lean definitions connecting that finite theorem to `D_M,R_M,E_M`
 
 ## Log
 
 - 2026-07-18 — extracted from the signed-Jordan and low/high-correlation no-gos; paper proof and
   hostile audit completed without numerical computation.
+- 2026-08-23 — Audited existing source-linked module
+  `XiPhysicalPrimeCorrectedResponseSaturation`: all `(RS1)`--`(RS10)` declarations pass direct
+  source, targeted `.olean`, and delta axiom checks.  Moved card to stage 3.

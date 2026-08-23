@@ -1,7 +1,7 @@
 # Multiplicative power-quotient logarithmic residue
 
 - **ID:** `multiplicative-power-quotient-logarithmic-residue`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) — `[PROVED HERE] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Lane:** general hypertranscendence; multiplicative quotients; invariant differential fields
 - **Statement:** An infinite tower of algebraic power quotients of a generic multiplicative HT
@@ -202,17 +202,28 @@ not new scientific knowledge.  The nontrivial candidate application is separated
 
 ## Lean status
 
-Mathlib already proves `Differential.logDeriv_pow`, the exact finite-level identity behind (3), and
-the project defines `DifferentialIndependent`, `differentialAdjoin`, and derivation-closure of that
-adjoin.  It has no differential-rational free-field realization with coordinatewise Kummer
-automorphisms, power-subfield fixed-field theorem, or infinite-intersection theorem matching (6).
-Those missing layers carry the claim, so no partial stage-3 promotion is justified.
+On 2026-08-23, the complete theorem was formalized in
+`formal/GaloisForLFunctions/HTGeometry/ArbitraryFamilyPowerQuotientResidue.lean` and
+`formal/GaloisForLFunctions/HTGeometry/TranslationPowerQuotientResidue.lean`.
+
+`arbitraryFamily_powerQuotientResidue` proves in one unconditional theorem that every level is the
+ordinary rational extension of the common logarithmic-residue field, the powered coordinates are
+algebraically independent over that field, the infinite intersection is exactly the residue,
+every strict divisibility step is a strict field descent, and logarithmic residues retain full
+differential independence. The translation module specializes this result to both arbitrary
+meromorphic translation families and the existing entire-function `translationPowerProfield`
+interface, including exact intersection and residual differential-independence theorems.
+
+Both modules are wired into `GaloisForLFunctions.HTGeometry`. Exact source checks and targeted
+build of the translation capstone pass. Axiom audits of generic intersection, strictness,
+differential-independence, meromorphic specialization, and entire specialization report only
+`propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Gates
 
 - [x] 0 -> 1: exact intersection candidate, proof mechanism, and RH boundary isolated
 - [x] 1 -> 2: complete unconditional paper proof
-- [ ] 2 -> 3: complete unconditional theorem formalized in Lean
+- [x] 2 -> 3: complete unconditional theorem formalized in Lean
 - [ ] 3 -> 4: optional formal bridge documentation
 
 ## Log

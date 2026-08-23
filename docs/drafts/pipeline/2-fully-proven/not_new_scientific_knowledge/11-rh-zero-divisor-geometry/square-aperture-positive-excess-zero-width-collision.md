@@ -258,15 +258,45 @@ Unconditional theorems:
 - `squarePrimeWindowPositiveExcessSquare_coefficient_norm_le`
 - `squarePrimeWindowPositiveExcessSquare_abscissa_le_of_chebyshevErrorPowerSpectrum`
 - `xiZeroHalfPlaneBound_of_chebyshevErrorPowerSpectrum`
+
+Endpoint module:
+
+```text
+formal/GaloisForLFunctions/RHTower/
+  CCMSharpPrimeWindowSquareEnergyZeroWidthEquivalence.lean
+```
+
+Closed endpoint theorems:
+
+- `squarePrimeWindowPositiveExcessSquare_abscissa_le_one_of_riemannHypothesis`
+- `riemannHypothesis_iff_squarePrimeWindowPositiveExcessSquare_abscissa_le_one`
+- `riemannHypothesis_iff_squarePrimeWindowPositiveExcessSquare_summatory_subpower`
+- `squarePrimeWindowPositiveExcessSquare_abscissa_le_one_iff_summatory_subpower`
+- `squarePrimeWindowPositiveExcessSquare_zeroWidthCollision`
+
+These declarations close the exact RH endpoint and literal all-supercritical summatory-growth
+equivalence. Together with the existing conditional declaration
+`squarePrimeWindowPositiveExcessSquare_abscissa_eq_intrinsicXiWidth`, they isolate generalized von
+Koch as the sole remaining dependency for the intrinsic positive-width equality. Both current
+leaves are imported by `GaloisForLFunctions.RHTower`.
+
+Verification:
+
+- exact source check:
+  `lake env lean GaloisForLFunctions/RHTower/CCMSharpPrimeWindowSquareEnergyZeroWidthEquivalence.lean`
+- exact leaf build:
+  `lake build GaloisForLFunctions.RHTower.CCMSharpPrimeWindowSquareEnergyZeroWidthEquivalence`
+- axiom audit of all five new endpoint declarations: only `propext`, `Classical.choice`, and
+  `Quot.sound`; no project axiom and no `sorryAx`.
 - `squarePrimeWindowPositiveExcessSquare_abscissa_eq_intrinsicXiWidth`
 - `riemannHypothesis_of_chebyshevErrorPowerSpectrum_zero`
 
 Lean represents the classical source estimate by the transparent proposition
 `ChebyshevErrorPowerSpectrum alpha`; it is a theorem hypothesis, not an `axiom`, `opaque`
-declaration, or computational oracle. The new contribution formalizes every downstream step.
-Formalizing generalized von Koch itself remains a project-wide analytic-number-theory library
-gap already recorded on the earlier correlation and critical-Mellin-defect cards; it is not an
-open dependency in this paper proof.
+declaration, or computational oracle. Because the card's intrinsic-width equality derives this
+source estimate rather than assuming it, generalized von Koch is an open Lean dependency. The
+card remains at stage 2 until that implication is formalized and the conditional declaration is
+wrapped by a closed theorem.
 
 ## Gates
 
@@ -277,9 +307,9 @@ open dependency in this paper proof.
 - [x] zero-by-zero reverse lower bound
 - [x] intrinsic-width equality on paper
 - [x] exact collision with C2 width invariant
-- [x] all new downstream implications formalized unconditionally in Lean
-- [ ] generalized von Koch formalized in Lean (shared library gap; not required to classify route
-  collision, but required for a single closed Lean equivalence theorem)
+- [x] all downstream implications after `ChebyshevErrorPowerSpectrum` formalized in Lean
+- [ ] generalized von Koch formalized in Lean
+- [ ] closed intrinsic-width equality theorem with no source-estimate premise
 
 ## Log
 

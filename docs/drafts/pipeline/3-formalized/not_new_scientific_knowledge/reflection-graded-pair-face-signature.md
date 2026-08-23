@@ -1,17 +1,17 @@
 # Reflection grades the complete pair-face signature by a twisted fixed submodule
 
 - **ID:** `reflection-graded-pair-face-signature`
-- **Stage:** 2-fully-proven / needs independent audit
-- **Type:** THEOREM (paper), conditional on pair-face completeness
-- **Scientific status:** `[NOVELTY UNVERIFIED]` -- the fixed-point algebra is standard in
-  characteristic zero, but no parent theorem has yet been checked for the reflection-equivariant
-  classification of the complete triptic pair-face invariant.
+- **Stage:** 3-formalized / not-new
+- **Type:** THEOREM, `[BRIDGE]`
+- **Scientific status:** `[BRIDGE]` -- finite-group averaging and affine principal-part transport
+  are standard; Lean audit corrected the orbital-orientation sign and completed the exact
+  reflection-fixed classification against the proved all-depth parent theorem.
 - **Parent:** `all-depth-pair-face-signature-completeness`
 - **Statement:** For a reflection-symmetric meromorphic function with constant full mixed
   difference, the complete pair-face signature lies in a canonically twisted reflection-fixed
-  submodule. Conditional on the parent pair-face completeness theorem, every compatible signature
-  in that fixed submodule is realized by a reflection-symmetric constrained function, and the
-  kernel is exactly the reflection-symmetric differentially algebraic class.
+  submodule. Every compatible signature in that fixed submodule is realized by a
+  reflection-symmetric constrained function, and the kernel is exactly the reflection-symmetric
+  differentially algebraic class.
 
 ## Setup
 
@@ -117,9 +117,24 @@ This definition is independent of the representative: if two depth-two functions
 residue, their difference is DA; affine reflection preserves DA, so their reflected residues also
 agree. Since `r_ij^2=id`, `J_ij^2=id`.
 
-For an explicit principal part `a_(u,k)(z-u)^(-k)`, the affine reflection sends the label `u` to
-`r_ij(u)` and multiplies the order-`k` coefficient by `(-1)^k`. Thus (4) is the ordinary reflected
-principal-part involution, not a newly imposed quotient.
+The pair-face signature is the orbital sum of the boundary
+`U(z+tau_i)-U(z)`. Reflection both sends a principal part of order `k` to its affine reflected
+principal part with coefficient `(-1)^k` **and reverses this oriented boundary**. Consequently the
+actual component action on the order `ell=-k<0` signature is
+
+```text
+(J_ij D)(ell,p)=-(-1)^k D(ell,r_ij(p)).                (4')
+```
+
+The extra minus sign is forced by
+
+```text
+(U o r_ij)(z+tau_i)-(U o r_ij)(z)
+  =-[U(y+tau_i)-U(y)],  y=r_ij(z)-tau_i,
+```
+
+followed by reindexing the bilateral orbit sum. The earlier draft omitted this orientation sign;
+the independent Lean audit detected and corrected it. Formula (4') is involutive.
 
 Put
 
@@ -147,7 +162,7 @@ PairFace_d(R F)=K PairFace_d(F).                        (7)
 Reflection preserves `Q_d`: periodicity follows from period one, and the full `d`-fold difference
 is sent to its constant value multiplied by `(-1)^d`. Reflection also preserves the DA subfield.
 
-## Fixed-submodule classification `[PROVED HERE, CONDITIONAL ON THE PARENT]`
+## Fixed-submodule classification `[PROVED + Lean]`
 
 Define
 
@@ -206,10 +221,11 @@ and retains exactly its fixed submodule. The correct completed constraint object
 an ordinary differential matroid and not an ungraded pair-divisor module; it is the
 reflection-graded pair-face module `(Comp_d,K)`.
 
-At depth two, nonzero fixed signatures exist: start with a finite principal-part divisor supported
-away from its reflected orbit and add its `J`-image. Depth-two realization produces a constrained
-meromorphic function, and reflection averaging produces a reflection-symmetric realization with
-that nonzero signature. Thus FE symmetry alone permits hypertranscendental pair-face charge.
+At depth two, nonzero fixed signatures exist. In the corrected convention, an order-one class
+divisor supported on the reflection-fixed class of `1/2` is fixed: principal-part parity and orbital
+orientation contribute two minus signs. Depth-two realization and reflection averaging produce a
+reflection-symmetric constrained meromorphic function with signature value `1` on that class. Thus
+FE symmetry alone permits hypertranscendental pair-face charge.
 
 For the RH program this is a route-sharpening theorem, not an RH implication. It proves that the
 missing Euler input must do more than supply the FE involution: the exact Euler multiplicativity
@@ -237,10 +253,36 @@ atomicity and all-depth completeness proofs.
 - [x] all-order face-jet parity proved;
 - [x] analytic-order parity proved;
 - [x] unconditional core formalized and axiom-audited in Lean;
-- [x] component reflection involution defined;
+- [x] component reflection involution defined and orbital-orientation sign independently audited;
 - [x] pair-face equivariance proved on paper;
 - [x] fixed-submodule kernel and realization proved on paper;
-- [ ] independent audit of the reflection action on the differential principal-part convention;
-- [ ] independent audit of parent depth-two atomicity and all-depth completeness;
-- [ ] formalization of meromorphic pair-face residues and the exact fixed-submodule theorem;
-- [ ] scientific literature and priority audit.
+- [x] independent audit of the reflection action on the differential principal-part convention;
+- [x] parent depth-two atomicity, all-depth completeness, and exact image reused as proved Lean
+  theorems rather than exposed assumptions;
+- [x] meromorphic pair-face residues and exact fixed-submodule theorem formalized;
+- [x] explicit nonzero fixed signature and symmetric realization formalized;
+- [x] classified `[BRIDGE]`; no scientific-priority claim is made.
+
+## 2026-08-23 Stage 2 -> 3 formalization audit
+
+- [x] `HTGeometry/ReflectionGradedPairFaceSignature.lean` proves affine Laurent-coefficient
+  reflection, orbital-divisor transport, finite-difference reflection, and pair-signature
+  equivariance.
+- [x] `pairSigReflection` includes both principal-part parity and the independently audited orbital
+  orientation sign; `pairSigReflection_involutive` proves it is an involution.
+- [x] `reflectionSymmetricPairSigRealizable_iff` proves exact image equals admissible signatures
+  fixed by this involution. Surjectivity uses the literal characteristic-zero reflection average
+  and the existing unconditional all-depth exact-image theorem.
+- [x] `differentialAlgebraicOver_iff_pairSig_zero_of_reflectionSymmetric` identifies the kernel with
+  the reflection-symmetric differentially algebraic class using proved all-depth completeness.
+- [x] `exists_reflectionSymmetric_depthTwo_nonzero_pairSig` gives a closed concrete realization at
+  the distinct prime-log periods for `2` and `3`, with signature value `1` at order `-1` on the
+  class of `1/2`.
+- [x] Direct `lake env lean` and targeted
+  `lake build GaloisForLFunctions.HTGeometry.ReflectionGradedPairFaceSignature` passed. No umbrella
+  build was run.
+- [x] `#print axioms` for all 24 new theorem declarations reports only `propext`,
+  `Classical.choice`, and `Quot.sound`.
+- [x] Leaf module is wired into `GaloisForLFunctions.HTGeometry`.
+
+No Lean proof obligation remains for the theorems claimed by this card.
