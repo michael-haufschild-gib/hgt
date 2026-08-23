@@ -3,6 +3,9 @@ import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.Data.Nat.Totient
 import Mathlib.Algebra.BigOperators.Intervals
 import Mathlib.FieldTheory.IsAlgClosed.Basic
+import GaloisForLFunctions.HTGeometry.FiniteDivisibleImage
+import GaloisForLFunctions.HTGeometry.AlgClosedPowerExponent
+import GaloisForLFunctions.RHTower.DeningerDynSysDivisibleExtension
 
 /-!
 # Lemma 5.3: the twisted norm quotient is a prime-to-`νν'` torsion group
@@ -212,5 +215,72 @@ theorem deningerUnits_divisible {κ : Type*} [Field κ] [IsAlgClosed κ] (c : κ
   refine ⟨Units.mk0 w hw0, ?_⟩
   ext
   simpa using hw
+
+/-- **Deninger, Theorem 5.2.**  If the twisted norm has finite image on the units of an
+algebraically closed field, that image is trivial: the image of a divisible group is divisible,
+and a finite divisible group is trivial. -/
+theorem deningerTwistHom_range_eq_bot {κ : Type*} [Field κ] [IsAlgClosed κ] (σ : κˣ ≃* κˣ)
+    (ν ν' : ℕ) [Finite ↥(deningerTwistHom σ ν ν').range] :
+    (deningerTwistHom σ ν ν').range = ⊥ :=
+  HTGeometry.range_eq_bot_of_finite_of_rootableBy _
+
+/-- **Deninger, Theorem 5.2.**  A trivial twisted norm means `y^ν = σ (y)^{ν'}` for every
+element. -/
+theorem deningerTwistHom_pow_eq_of_range_eq_bot (σ : G ≃* G) (ν ν' : ℕ)
+    (h : (deningerTwistHom σ ν ν').range = ⊥) (y : G) : y ^ ν = (σ y) ^ ν' := by
+  have hmem : deningerTwistHom σ ν ν' y ∈ (deningerTwistHom σ ν ν').range := ⟨y, rfl⟩
+  rw [h, Subgroup.mem_bot] at hmem
+  have hval : y ^ ν * ((σ y) ^ ν')⁻¹ = 1 := hmem
+  exact mul_inv_eq_one.1 hval
+
+/-- **Deninger, Theorem 5.2.**  If the twisting automorphism of the units of an algebraically
+closed field is the `c`-th power map and the twisted norm is trivial, then `ν = ν' c`.  With
+`σ = Frobenius^a` this is Deninger's `q = ν / ν' = p^a`. -/
+theorem deningerTwistExponent_eq {κ : Type*} [Field κ] [IsAlgClosed κ] (σ : κˣ ≃* κˣ)
+    (c : ℕ) (hσ : ∀ y : κˣ, σ y = y ^ c) (ν ν' : ℕ)
+    (h : (deningerTwistHom σ ν ν').range = ⊥) : ν = ν' * c := by
+  refine HTGeometry.pow_eq_pow_exponent_eq (κ := κ) (m := ν) (k := ν' * c) ?_
+  intro y
+  rw [deningerTwistHom_pow_eq_of_range_eq_bot σ ν ν' h y, hσ y, ← pow_mul, mul_comm]
+
+/-- **Deninger, Theorem 5.2, equation (48).**  For a character `P` and an automorphism `σ`, the
+Frobenius identity `F_ν P = F_{ν'} (P ∘ σ)` says exactly that the image of the twisted norm lies
+in the kernel of `P`. -/
+theorem deningerTwistHom_range_le_ker_iff {C : Type*} [CommGroup C] (σ : G ≃* G) (ν ν' : ℕ)
+    (P : G →* C) :
+    P ^ ν = (P.comp σ.toMonoidHom) ^ ν' ↔ (deningerTwistHom σ ν ν').range ≤ P.ker := by
+  constructor
+  · intro h
+    rintro _ ⟨y, rfl⟩
+    have hy := congrArg (fun F : G →* C => F y) h
+    have hy' : (P y) ^ ν = (P (σ y)) ^ ν' := hy
+    show P (y ^ ν * ((σ y) ^ ν')⁻¹) = 1
+    rw [map_mul, map_pow, map_inv, map_pow, hy', mul_inv_cancel]
+  · intro h
+    refine MonoidHom.ext fun y => ?_
+    have hmem : deningerTwistHom σ ν ν' y ∈ (deningerTwistHom σ ν ν').range := ⟨y, rfl⟩
+    have hker := h hmem
+    have hval : P (y ^ ν * ((σ y) ^ ν')⁻¹) = 1 := hker
+    rw [map_mul, map_pow, map_inv, map_pow] at hval
+    show (P y) ^ ν = (P (σ y)) ^ ν'
+    exact mul_inv_eq_one.1 hval
+
+/-- **Deninger, Theorem 5.2, the local computation.**  Let `κ` be algebraically closed, `σ` the
+`c`-th power automorphism of its units, and `P` a character with finite kernel.  If `P` satisfies
+the isotropy condition `F_ν P = F_{ν'} (P ∘ σ)` then `ν = ν' c`.  With `σ = Frobenius^a` this is
+`q = ν / ν' = p^a`. -/
+theorem deningerTwistExponent_eq_of_isotropy {κ : Type*} [Field κ] [IsAlgClosed κ]
+    {C : Type*} [CommGroup C] (σ : κˣ ≃* κˣ) (c : ℕ) (hσ : ∀ y : κˣ, σ y = y ^ c)
+    (ν ν' : ℕ) (P : κˣ →* C) [Finite ↥P.ker]
+    (h : P ^ ν = (P.comp σ.toMonoidHom) ^ ν') : ν = ν' * c := by
+  have hle := (deningerTwistHom_range_le_ker_iff σ ν ν' P).1 h
+  haveI : Finite ↥(deningerTwistHom σ ν ν').range :=
+    Finite.of_injective (fun z : ↥(deningerTwistHom σ ν ν').range => (⟨(z : κˣ), hle z.2⟩ : ↥P.ker))
+      (fun a b hab => by
+        refine Subtype.ext ?_
+        have h1 : ((⟨(a : κˣ), hle a.2⟩ : ↥P.ker) : κˣ) = ((⟨(b : κˣ), hle b.2⟩ : ↥P.ker) : κˣ) :=
+          congrArg Subtype.val hab
+        exact h1)
+  exact deningerTwistExponent_eq σ c hσ ν ν' (deningerTwistHom_range_eq_bot σ ν ν')
 
 end RHTower

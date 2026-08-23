@@ -167,6 +167,11 @@ and the relation to the Fargues–Fontaine curve) into the corpus as closed Lean
 | **Prop 3.5, the covering step**: a `C`-point of a scheme has a single point as image, so it factors through any affine open containing it; hence the affine case globalises and every `C`-point of the base lifts | `RHTower/DeningerDynSysProp35Global.lean` | closed |
 | **Prop 3.5, the fibres, globalised**: two `C`-points of the total space over the same point of the base already lie over a common affine open, so the local conjugacy statement globalises | `RHTower/DeningerDynSysProp35Global.lean` | closed |
 | **Cor 3.2, assembly content — the slice theorem**: if every point is `G`-equivalent to a point of a slice `T` and two points of `T` are `G`-equivalent only through `H`, then `T` maps onto the orbit space with fibres the `H`-orbits | `HTGeometry/OrbitQuotientComposition.lean` | closed |
+| **Cor 3.2, the fibres of an equivariant map**: a point whose image lies in the orbit of `i` is `G`-equivalent to one in the fibre over `i`, and two points of that fibre are `G`-equivalent exactly when they are `Stab (i)`-equivalent — the slice hypotheses hold automatically for `X̂ (C) → X` | `HTGeometry/OrbitQuotientComposition.lean` | closed |
+| **Prop 5.1, the pointwise criterion**: `ρ (P) = 1` exactly when `P` is injective on the roots of unity | `RHTower/DeningerDynSysRhoFrobenius.lean` | closed |
+| **Thm 5.2, the structure-theory input**: a field whose units are all torsion has positive characteristic and is algebraic over its prime field — Deninger's `κ(x) ⊆ F̄_p` | `HTGeometry/TorsionUnitsField.lean` | closed |
+| **Thm 5.2, the divisibility step**: a finite divisible group is trivial, so the image of the twisted norm on the units of an algebraically closed field is trivial as soon as it is finite | `HTGeometry/FiniteDivisibleImage.lean`, `RHTower/DeningerDynSysTwistedNorm.lean` | closed |
+| **Thm 5.2, the exponent step**: two exponents agreeing on the units of an algebraically closed field are equal (the units are infinite, the `d`-th roots of unity finite); with a trivial twisted norm and `σ = ( )^c` this gives `ν = ν' c`, Deninger's `q = p^a` | `HTGeometry/AlgClosedPowerExponent.lean`, `RHTower/DeningerDynSysTwistedNorm.lean` | closed |
 | **Cor 3.3, formal content**: for a normal subgroup `N ≤ G` acting on a set, `G` acts on the `N`-orbit space and `(S / N) / G = S / G` — Deninger's iterated descent `W_rat(X₁)(C)/G₁ = W_rat(X₀)(C)` | `HTGeometry/OrbitQuotientComposition.lean` | closed |
 | **Prop 1.1(b) in ring form over a domain**: `ω : ℤ[A ∖ 0] ≃+* W_rat(A)` for an integrally closed domain with algebraically closed fraction field, and the consequence `Hom_ring(W_rat(A), R) ≃ (A →*₀ R)` used for the `𝒪`-valued points | `RHTower/DeningerDynSysOmegaDomainRing.lean` | closed |
 | **Prop 1.1(b) (`t21nn`) in ring form**: `ω : ℤ[κˣ] ≃+* W_rat(κ)` for `κ` algebraically closed — the additive comparison is multiplicative because both sides are biadditive and `[a]⊙[b] = [ab]` | `RHTower/DeningerDynSysOmegaRing.lean` | closed |
@@ -944,4 +949,30 @@ Nothing in v4 is untracked by the ledger: the only apparent omission, Prop 1.4, 
   `X̂ (C) / G` into `Σ_{x₀} Hom (κ(x)ˣ , Cˣ) / G_x`, which Corollary 3.1 identifies with
   `Σ_{x₀} Hom (W_rat (κ(x₀)) , C)`.  Transitivity of `G` on the fibres of `π` is mathlib's
   `Algebra.IsInvariant.exists_smul_of_under_eq_of_profinite`, already used in the corpus.
+  Axiom audit: `[propext, Classical.choice, Quot.sound]`.
+
+- 2026-08-23 — **Three more §3/§5 bricks.**
+  *Cor 3.2.*  The slice hypotheses are automatic for the projection `X̂ (C) → X`: a character point
+  over `g • x` is moved by `g⁻¹` to one over `x`, and two character points over `x` that are
+  `G`-equivalent are equivalent under `Stab (x)`.  `orbit_fiber_exists` / `orbit_fiber_eq_iff`
+  record this for an arbitrary equivariant map, so the only remaining input to Corollary 3.2 is
+  the surjection `G_x ↠ Aut_{κ(x₀)} κ(x)` — Deninger's citation to Bourbaki.
+  *Prop 5.1.*  `ρ (P) = 1` iff the torsion kernel is trivial iff `P` is injective on roots of
+  unity; recorded both as a subgroup equality and, under finiteness, as `Nat.card = 1`.
+  *Thm 5.2.*  The step "since `κ(x)ˣ` is torsion, by the structure theory of fields
+  `κ(x) ⊆ F̄_p`" is now proved: in characteristic zero the unit `2` has infinite order (pull the
+  relation back to `ℕ` along the injective `ℕ → K`), and in characteristic `p` every nonzero
+  element satisfies `a^n = 1`, so `X^n − 1` is a nonzero annihilating polynomial over `ZMod p`.
+  Axiom audit: `[propext, Classical.choice, Quot.sound]`.
+
+- 2026-08-23 — **Theorem 5.2's two group-theoretic steps closed.**
+  *Divisibility.*  `H = {y^ν σ(y)^{-ν'}}` is the image of the twisted norm, hence divisible because
+  the units of an algebraically closed field are (`deningerUnitsRootableBy`, already in the
+  corpus); and a finite divisible group is trivial — every element is an `m`-th power for `m` the
+  order of the group, and `m`-th powers vanish by Lagrange.  So `(Tors)` forces `H = 1`.
+  *The exponent.*  From `H = 1` one gets `y^ν = σ (y)^{ν'}` for every unit, and if `σ` is the
+  `c`-th power map this reads `y^ν = y^{ν' c}` for every unit.  Two exponents that agree on the
+  units of an algebraically closed field are equal, because the units are infinite while the
+  `d`-th roots of unity are finite.  Hence `ν = ν' c`, which for `σ = Frobenius^a` is Deninger's
+  `q = ν / ν' = p^a`.
   Axiom audit: `[propext, Classical.choice, Quot.sound]`.

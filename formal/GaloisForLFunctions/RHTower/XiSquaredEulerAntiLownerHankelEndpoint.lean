@@ -279,7 +279,14 @@ theorem hasDerivAt_xiEulerAudenaertIncreasing
   have h' : HasDerivAt (fun Y : ℝ => Y * xiEulerAudenaertDecreasing Y)
       (xiEulerAudenaertDecreasing X +
         X * (-(xiShiftedReciprocalMoment X 1).re)) X := by
-    simpa only [Pi.mul_apply, id_eq, one_mul] using h
+    have hs : HasDerivAt (id * xiEulerAudenaertDecreasing)
+        (xiEulerAudenaertDecreasing X +
+          X * (-(xiShiftedReciprocalMoment X 1).re)) X := by
+      simpa only [one_mul, id_eq] using h
+    have hfun : (id * xiEulerAudenaertDecreasing) =ᶠ[nhds X]
+        (fun Y : ℝ => Y * xiEulerAudenaertDecreasing Y) :=
+      Filter.Eventually.of_forall fun Y => by rfl
+    exact hfun.hasDerivAt_iff.mp hs
   change HasDerivAt (fun Y : ℝ => Y * xiEulerAudenaertDecreasing Y) _ X
   convert h' using 1
   ring
@@ -292,7 +299,9 @@ theorem hasDerivAt_neg_xiEulerAudenaertDecreasing
   have h := (hasDerivAt_xiEulerAudenaertDecreasing hX).neg
   have h' : HasDerivAt (fun Y : ℝ => -xiEulerAudenaertDecreasing Y)
       (-(-(xiShiftedReciprocalMoment X 1).re)) X := by
-    simpa only [Pi.neg_apply] using h
+    apply (Filter.EventuallyEq.hasDerivAt_iff
+      (Filter.Eventually.of_forall fun Y : ℝ => by rfl)).mp
+    exact h
   simpa only [neg_neg] using h'
 
 /-- Exact confluent version of the even reflection-parity splitting, including diagonal nodes. -/
@@ -433,8 +442,7 @@ theorem xiSquaredEulerAntiLownerProducer_imp_parityDslope_posSemidef
           ((x i) ^ 2) ((x j) ^ 2) : Matrix ι ι ℝ) := by
       ext i j
       simp
-    rw [heq] at hscaled
-    exact hscaled
+    exact Eq.mp (congrArg Matrix.PosSemidef heq) hscaled
   · let D : Matrix ι ι ℝ := Matrix.diagonal fun i => (x i)⁻¹
     have hcong := hsub.mul_mul_conjTranspose_same D
     have hD : Dᴴ = D := by
@@ -454,7 +462,6 @@ theorem xiSquaredEulerAntiLownerProducer_imp_parityDslope_posSemidef
       ext i j
       simp only [D, Matrix.diagonal_mul, Matrix.mul_diagonal]
       field_simp [(hx i).ne', (hx j).ne']
-      ring
     rw [hrecover] at hcong
     have hscaled := hcong.smul (show 0 ≤ (1 / 2 : ℝ) by norm_num)
     have heq : (1 / 2 : ℝ) •
@@ -464,8 +471,7 @@ theorem xiSquaredEulerAntiLownerProducer_imp_parityDslope_posSemidef
           ((x i) ^ 2) ((x j) ^ 2) : Matrix ι ι ℝ) := by
       ext i j
       simp
-    rw [heq] at hscaled
-    exact hscaled
+    exact Eq.mp (congrArg Matrix.PosSemidef heq) hscaled
 
 /-- Remaining squared-Euler producer: positive semidefiniteness of every finite anti-Löwner
 matrix on positive injective configurations. -/
@@ -866,10 +872,10 @@ theorem xiEulerAudenaertDecreasingLoewnerJetMatrix_eq_alternating
         (fun Y => -xiEulerAudenaertDecreasing Y) X N := by
   ext i j
   change alternatingNormalizedLoewnerJet
-      (fun Y => -xiEulerAudenaertDecreasing Y) ((i : ℕ) + (j : ℕ)) X =
+      (-xiEulerAudenaertDecreasing) ((i : ℕ) + (j : ℕ)) X =
     (-1 : ℝ) ^ ((i : ℕ) + (j : ℕ)) *
       (iteratedDeriv ((i : ℕ) + (j : ℕ) + 1)
-        (fun Y => -xiEulerAudenaertDecreasing Y) X /
+        (-xiEulerAudenaertDecreasing) X /
           (((i : ℕ) + (j : ℕ) + 1).factorial : ℝ))
   rw [alternatingNormalizedLoewnerJet_eq_succ
     (analyticAt_xiEulerAudenaertDecreasing hX).neg]

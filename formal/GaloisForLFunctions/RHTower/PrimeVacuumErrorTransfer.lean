@@ -346,18 +346,18 @@ theorem primeTailCount_sub_logIntegralCount {X : ℝ} (hX : Real.exp 1 ≤ X) :
 theorem mul_exp_neg_sqrt_log_eq {c X : ℝ} (hX : 0 < X) :
     X * Real.exp (-c * Real.sqrt (Real.log X))
       = Real.exp (Real.log X - c * Real.sqrt (Real.log X)) := by
-  rw [Real.exp_sub, Real.exp_log hX, Real.exp_neg]
+  rw [Real.exp_sub, Real.exp_log hX, show -c * Real.sqrt (Real.log X)
+    = -(c * Real.sqrt (Real.log X)) by ring, Real.exp_neg]
   field_simp
-  rw [Real.exp_neg]
-  ring
 
 theorem tendsto_mul_exp_neg_sqrt_log {c : ℝ} :
     Tendsto (fun X : ℝ => X * Real.exp (-c * Real.sqrt (Real.log X))) atTop atTop := by
   have hpoly : Tendsto (fun u : ℝ => u ^ 2 - c * u) atTop atTop := by
     have : ∀ᶠ u : ℝ in atTop, u ^ 2 - c * u = u * (u - c) := by
       filter_upwards with u; ring
-    refine Tendsto.congr' this.symm ?_
-    exact tendsto_atTop_mul_atTop₀ tendsto_id (tendsto_atTop_add_const_right _ (-c) tendsto_id)
+    refine Tendsto.congr' (Filter.EventuallyEq.symm this) ?_
+    exact Filter.Tendsto.atTop_mul_atTop₀ tendsto_id
+      (tendsto_atTop_add_const_right _ (-c) tendsto_id)
   have hsqrt : Tendsto (fun X : ℝ => Real.sqrt (Real.log X)) atTop atTop :=
     Real.tendsto_sqrt_atTop.comp Real.tendsto_log_atTop
   have hcomp : Tendsto (fun X : ℝ => Real.log X - c * Real.sqrt (Real.log X)) atTop atTop := by
@@ -382,10 +382,331 @@ theorem eventually_sqrt_le_envelope {c : ℝ} (hc : 0 < c) :
   have hX0 : (0 : ℝ) < X := by linarith
   have hlog : 0 ≤ Real.log X := Real.log_nonneg hX.le
   have hsqrtX : Real.sqrt X = Real.exp (Real.log X / 2) := by
-    rw [← Real.exp_log hX0, ← Real.exp_mul_self_sqrt] <;> try positivity
-    rw [Real.exp_log hX0, ← Real.sqrt_mul_self (le_of_lt (Real.sqrt_pos.mpr hX0))]
-    sorry
-  sorry
+    rw [Real.sqrt_eq_rpow, Real.rpow_def_of_pos hX0]
+    congr 1
+    ring
+  rw [hsqrtX, mul_exp_neg_sqrt_log_eq hX0, Real.exp_le_exp]
+  have hs : Real.sqrt (Real.log X) ^ 2 = Real.log X := Real.sq_sqrt hlog
+  nlinarith [hbig, Real.sqrt_nonneg (Real.log X), hs]
+
+/-! ## The exponential envelope integral -/
+
+theorem continuousOn_exp_neg_sqrt_log {c : ℝ} {s : Set ℝ} (hs : s ⊆ Ioi (0 : ℝ)) :
+    ContinuousOn (fun u : ℝ => Real.exp (-c * Real.sqrt (Real.log u))) s := by
+  intro t ht
+  refine ContinuousAt.continuousWithinAt ?_
+  exact Real.continuous_exp.continuousAt.comp
+    (((Real.continuous_sqrt.continuousAt).comp
+      (Real.continuousAt_log (ne_of_gt (hs ht)))).const_smul (-c) |>.congr (by
+        filter_upwards with u
+        simp [smul_eq_mul]))
+
+theorem integrableOn_exp_neg_sqrt_log {c a b : ℝ} (ha : 0 < a) :
+    IntegrableOn (fun u : ℝ => Real.exp (-c * Real.sqrt (Real.log u))) (Ioc a b) volume := by
+  rcases le_or_gt b a with hba | hab
+  · rw [Set.Ioc_eq_empty (by exact fun h => absurd hba (not_le.mpr h))]
+    exact integrableOn_empty
+  · refine ContinuousOn.integrableOn_Icc
+      (continuousOn_exp_neg_sqrt_log (fun t ht => lt_of_lt_of_le ha ht.1))
+      |>.mono_set Ioc_subset_Icc_self
+
+theorem exp_neg_sqrt_log_le_one {c u : ℝ} (hc : 0 ≤ c) (_hu : 1 ≤ u) :
+    Real.exp (-c * Real.sqrt (Real.log u)) ≤ 1 := by
+  refine Real.exp_le_one_iff.mpr ?_
+  have : 0 ≤ Real.sqrt (Real.log u) := Real.sqrt_nonneg _
+  nlinarith
+
+theorem integral_exp_neg_sqrt_log_le {c : ℝ} (hc : 0 < c) {U X : ℝ}
+    (hU : Real.exp 1 ≤ U) (hUs : U ≤ Real.sqrt X) (hsX : Real.sqrt X ≤ X) :
+    (∫ u in Ioc U X, Real.exp (-c * Real.sqrt (Real.log u)))
+      ≤ Real.sqrt X + X * Real.exp (-(c / Real.sqrt 2) * Real.sqrt (Real.log X)) := by
+  have hU0 : (0 : ℝ) < U := lt_of_lt_of_le (by linarith [one_lt_exp_one]) hU
+  have hU1 : (1 : ℝ) ≤ U := le_trans one_lt_exp_one.le hU
+  have hsX0 : (0 : ℝ) < Real.sqrt X := lt_of_lt_of_le hU0 hUs
+  have hX0 : (0 : ℝ) < X := lt_of_lt_of_le hsX0 hsX
+  have hsX1 : (1 : ℝ) ≤ Real.sqrt X := le_trans hU1 hUs
+  have hunion : Ioc U X = Ioc U (Real.sqrt X) ∪ Ioc (Real.sqrt X) X :=
+    (Set.Ioc_union_Ioc_eq_Ioc hUs hsX).symm
+  have hdisj : Disjoint (Ioc U (Real.sqrt X)) (Ioc (Real.sqrt X) X) := by
+    rw [Set.disjoint_left]
+    rintro t ⟨_, h2⟩ ⟨h3, _⟩
+    exact absurd h3 (not_lt.mpr h2)
+  have hint := integrableOn_exp_neg_sqrt_log (c := c) (a := U) (b := X) hU0
+  rw [hunion] at hint
+  rw [hunion, MeasureTheory.setIntegral_union hdisj measurableSet_Ioc
+    (hint.mono_set Set.subset_union_left) (hint.mono_set Set.subset_union_right)]
+  have hpiece1 : (∫ u in Ioc U (Real.sqrt X), Real.exp (-c * Real.sqrt (Real.log u)))
+      ≤ Real.sqrt X := by
+    have hbound : (∫ u in Ioc U (Real.sqrt X), Real.exp (-c * Real.sqrt (Real.log u)))
+        ≤ ∫ _u in Ioc U (Real.sqrt X), (1 : ℝ) := by
+      refine MeasureTheory.setIntegral_mono_on (hint.mono_set Set.subset_union_left)
+        (integrableOn_const (by
+          exact ne_of_lt (lt_of_le_of_lt (measure_mono Ioc_subset_Icc_self)
+            (by simp [Real.volume_Icc]))) (by simp)) measurableSet_Ioc (fun u hu => ?_)
+      exact exp_neg_sqrt_log_le_one hc.le (le_trans hU1 hu.1.le)
+    refine hbound.trans ?_
+    rw [MeasureTheory.setIntegral_const]
+    have hvol : (volume.real (Ioc U (Real.sqrt X))) • (1 : ℝ) = Real.sqrt X - U := by
+      simp [MeasureTheory.measureReal_def, Real.volume_Ioc,
+        ENNReal.toReal_ofReal (by linarith : (0:ℝ) ≤ Real.sqrt X - U)]
+    rw [hvol]
+    linarith
+  have hpiece2 : (∫ u in Ioc (Real.sqrt X) X, Real.exp (-c * Real.sqrt (Real.log u)))
+      ≤ X * Real.exp (-(c / Real.sqrt 2) * Real.sqrt (Real.log X)) := by
+    have hval : Real.exp (-(c / Real.sqrt 2) * Real.sqrt (Real.log X))
+        = Real.exp (-c * Real.sqrt (Real.log (Real.sqrt X))) := by
+      congr 1
+      have hlogs : Real.log (Real.sqrt X) = Real.log X / 2 := by
+        rw [Real.sqrt_eq_rpow, Real.log_rpow hX0]
+        ring
+      rw [hlogs]
+      have hlognn : 0 ≤ Real.log X := Real.log_nonneg (by nlinarith [hsX1, hsX])
+      rw [Real.sqrt_div hlognn 2]
+      ring
+    rw [hval]
+    have hbound : (∫ u in Ioc (Real.sqrt X) X, Real.exp (-c * Real.sqrt (Real.log u)))
+        ≤ ∫ _u in Ioc (Real.sqrt X) X, Real.exp (-c * Real.sqrt (Real.log (Real.sqrt X))) := by
+      refine MeasureTheory.setIntegral_mono_on (hint.mono_set Set.subset_union_right)
+        (integrableOn_const (by
+          exact ne_of_lt (lt_of_le_of_lt (measure_mono Ioc_subset_Icc_self)
+            (by simp [Real.volume_Icc]))) (by simp)) measurableSet_Ioc (fun u hu => ?_)
+      refine Real.exp_le_exp.mpr ?_
+      have hle : Real.sqrt (Real.log (Real.sqrt X)) ≤ Real.sqrt (Real.log u) :=
+        Real.sqrt_le_sqrt (Real.log_le_log hsX0 hu.1.le)
+      nlinarith [hle, hc]
+    refine hbound.trans ?_
+    rw [MeasureTheory.setIntegral_const]
+    have hvol : (volume.real (Ioc (Real.sqrt X) X))
+        • Real.exp (-c * Real.sqrt (Real.log (Real.sqrt X)))
+        = (X - Real.sqrt X) * Real.exp (-c * Real.sqrt (Real.log (Real.sqrt X))) := by
+      simp [MeasureTheory.measureReal_def, Real.volume_Ioc,
+        ENNReal.toReal_ofReal (by linarith : (0:ℝ) ≤ X - Real.sqrt X)]
+    rw [hvol]
+    refine mul_le_mul_of_nonneg_right (by linarith) (Real.exp_pos _).le
+  linarith
+
+/-! ## The Chebyshev error against the kernel -/
+
+/-- The Chebyshev error. -/
+def psiErr (u : ℝ) : ℝ := chebyshevPsiReal u - u
+
+theorem abs_psiErr_le {u X : ℝ} (hu : 0 ≤ u) (huX : u ≤ X) :
+    |psiErr u| ≤ chebyshevPsiReal X + X := by
+  rw [psiErr, abs_le]
+  have h1 : chebyshevPsiReal u ≤ chebyshevPsiReal X := chebyshevPsiReal_mono huX
+  have h2 : (0 : ℝ) ≤ chebyshevPsiReal u := chebyshevPsiReal_nonneg u
+  have h3 : (0 : ℝ) ≤ chebyshevPsiReal X := chebyshevPsiReal_nonneg X
+  constructor <;> linarith
+
+theorem integrableOn_logSqKernel_mul_psiErr {a X : ℝ} (ha : Real.exp 1 ≤ a) :
+    IntegrableOn (fun u : ℝ => logSqKernel u * psiErr u) (Ioc a X) volume := by
+  have ha1 : (1 : ℝ) < a := lt_of_lt_of_le one_lt_exp_one ha
+  have ha0 : (0 : ℝ) ≤ a := by linarith
+  refine Integrable.mono' (g := fun _ : ℝ => logSqKernel a * (chebyshevPsiReal X + X + |X| + 1))
+    ?_ ?_ ?_
+  · refine integrableOn_const ?_ ?_
+    · exact ne_of_lt (lt_of_le_of_lt (measure_mono Ioc_subset_Icc_self)
+        (by simp [Real.volume_Icc]))
+    · simp only [enorm_eq_nnnorm]
+      exact ENNReal.coe_ne_top
+  · exact (measurable_logSqKernel.mul
+      (chebyshevPsiReal_mono.measurable.sub measurable_id)).aestronglyMeasurable.restrict
+  · filter_upwards [self_mem_ae_restrict measurableSet_Ioc] with u hu
+    have hu1 : a < u := hu.1
+    have hknn : (0 : ℝ) ≤ logSqKernel u := logSqKernel_nonneg (by linarith)
+    rw [norm_mul, Real.norm_of_nonneg hknn, Real.norm_eq_abs]
+    have hk : logSqKernel u ≤ logSqKernel a := logSqKernel_antitone ha1 hu1.le
+    have hbd : |psiErr u| ≤ chebyshevPsiReal X + X + |X| + 1 := by
+      have := abs_psiErr_le (by linarith) hu.2
+      have hX : X ≤ |X| := le_abs_self X
+      have hX0 : (0 : ℝ) ≤ |X| := abs_nonneg X
+      linarith
+    refine mul_le_mul hk hbd (abs_nonneg _) (logSqKernel_nonneg (by linarith))
+
+theorem integral_logSqKernel_Ioc {X : ℝ} (hX : Real.exp 1 ≤ X) :
+    (∫ u in Ioc (Real.exp 1) X, logSqKernel u) = 1 - (Real.log X)⁻¹ := by
+  have h := inv_log_eq_add_integral one_lt_exp_one hX
+  rw [intervalIntegral.integral_of_le hX] at h
+  rw [show Real.log (Real.exp 1) = 1 from Real.log_exp 1] at h
+  simp only [inv_one] at h
+  linarith
+
+theorem chebyshevPsiReal_eq_psi (x : ℝ) : chebyshevPsiReal x = Chebyshev.psi x := by
+  rw [chebyshevPsiReal_eq_sum_range, Chebyshev.psi_eq_sum_range]
+
+/-- The core estimate: the difference of the two counting functions is bounded by the Chebyshev
+error plus fixed constants. -/
+theorem abs_primeTailCount_sub_logIntegralCount_le {C₀ c₀ U X : ℝ} (hc₀ : 0 < c₀) (hC₀ : 0 ≤ C₀)
+    (hUe : Real.exp 1 ≤ U)
+    (hErr : ∀ u : ℝ, U ≤ u → |psiErr u| ≤ C₀ * (u * Real.exp (-c₀ * Real.sqrt (Real.log u))))
+    (hX : Real.exp 1 ≤ X) (hUX : U ≤ Real.sqrt X) (hsX : Real.sqrt X ≤ X) :
+    |primeTailCount X - logIntegralCount X|
+      ≤ C₀ * (X * Real.exp (-c₀ * Real.sqrt (Real.log X)))
+        + (2 * Real.exp 1
+          + |∫ t in Ioc (1 : ℝ) (Real.exp 1), logSqKernel t * chebyshevPsiReal t|
+          + ∫ u in Ioc (Real.exp 1) U, |logSqKernel u * psiErr u|)
+        + C₀ * (Real.sqrt X
+            + X * Real.exp (-(c₀ / Real.sqrt 2) * Real.sqrt (Real.log X))) := by
+  have hUX' : U ≤ X := le_trans hUX hsX
+  have hX1 : (1 : ℝ) < X := lt_of_lt_of_le one_lt_exp_one hX
+  have hlogX : (1 : ℝ) ≤ Real.log X := by
+    have : Real.log (Real.exp 1) ≤ Real.log X := Real.log_le_log (Real.exp_pos 1) hX
+    simpa using this
+  have hlogXinv : (Real.log X)⁻¹ ≤ 1 := by
+    rw [inv_le_one₀ (by linarith)]
+    exact hlogX
+  have hlogXinv0 : (0 : ℝ) < (Real.log X)⁻¹ := by positivity
+  have hid := primeTailCount_sub_logIntegralCount hX
+  have hintPsiErr := integrableOn_logSqKernel_mul_psiErr (a := Real.exp 1) (X := X) le_rfl
+  have hintK : IntegrableOn logSqKernel (Ioc (Real.exp 1) X) volume := by
+    rw [← intervalIntegrable_iff_integrableOn_Ioc_of_le hX]
+    exact intervalIntegrable_logSqKernel one_lt_exp_one hX1
+  have hsplit : (∫ u in Ioc (Real.exp 1) X,
+      logSqKernel u * (chebyshevPsiReal u - u + Real.exp 1))
+      = (∫ u in Ioc (Real.exp 1) X, logSqKernel u * psiErr u)
+        + Real.exp 1 * ∫ u in Ioc (Real.exp 1) X, logSqKernel u := by
+    rw [← MeasureTheory.integral_const_mul,
+      ← MeasureTheory.integral_add hintPsiErr (hintK.const_mul _)]
+    refine MeasureTheory.setIntegral_congr_fun measurableSet_Ioc (fun u _ => ?_)
+    rw [psiErr]
+    ring
+  have hKval := integral_logSqKernel_Ioc hX
+  -- the boundary term
+  have hbdry : |(chebyshevPsiReal X - X + Real.exp 1) * (Real.log X)⁻¹|
+      ≤ C₀ * (X * Real.exp (-c₀ * Real.sqrt (Real.log X))) + Real.exp 1 := by
+    rw [abs_mul, abs_of_pos hlogXinv0]
+    have hpsiX : |psiErr X| ≤ C₀ * (X * Real.exp (-c₀ * Real.sqrt (Real.log X))) :=
+      hErr X hUX'
+    have habs : |chebyshevPsiReal X - X + Real.exp 1| ≤ |psiErr X| + Real.exp 1 := by
+      rw [psiErr]
+      exact le_trans (abs_add_le _ _) (by rw [abs_of_pos (Real.exp_pos 1)])
+    have hnn : (0 : ℝ) ≤ |chebyshevPsiReal X - X + Real.exp 1| := abs_nonneg _
+    nlinarith [hlogXinv, hlogXinv0, habs, hpsiX, hnn, Real.exp_pos (1:ℝ)]
+  -- the error integral
+  have herrint : |∫ u in Ioc (Real.exp 1) X, logSqKernel u * psiErr u|
+      ≤ (∫ u in Ioc (Real.exp 1) U, |logSqKernel u * psiErr u|)
+        + C₀ * (Real.sqrt X + X * Real.exp (-(c₀ / Real.sqrt 2) * Real.sqrt (Real.log X))) := by
+    have habs : |∫ u in Ioc (Real.exp 1) X, logSqKernel u * psiErr u|
+        ≤ ∫ u in Ioc (Real.exp 1) X, |logSqKernel u * psiErr u| := by
+      exact MeasureTheory.abs_integral_le_integral_abs
+    refine habs.trans ?_
+    have hunion : Ioc (Real.exp 1) X = Ioc (Real.exp 1) U ∪ Ioc U X :=
+      (Set.Ioc_union_Ioc_eq_Ioc hUe hUX').symm
+    have hdisj : Disjoint (Ioc (Real.exp 1) U) (Ioc U X) := by
+      rw [Set.disjoint_left]
+      rintro t ⟨_, h2⟩ ⟨h3, _⟩
+      exact absurd h3 (not_lt.mpr h2)
+    have hintAbs : IntegrableOn (fun u : ℝ => |logSqKernel u * psiErr u|)
+        (Ioc (Real.exp 1) X) volume := hintPsiErr.abs
+    rw [hunion] at hintAbs
+    rw [hunion, MeasureTheory.setIntegral_union hdisj measurableSet_Ioc
+      (hintAbs.mono_set Set.subset_union_left) (hintAbs.mono_set Set.subset_union_right)]
+    have htail : (∫ u in Ioc U X, |logSqKernel u * psiErr u|)
+        ≤ C₀ * (Real.sqrt X + X * Real.exp (-(c₀ / Real.sqrt 2) * Real.sqrt (Real.log X))) := by
+      have hmaj : IntegrableOn (fun u : ℝ => C₀ * Real.exp (-c₀ * Real.sqrt (Real.log u)))
+          (Ioc U X) volume :=
+        (integrableOn_exp_neg_sqrt_log (c := c₀)
+          (lt_of_lt_of_le (by linarith [one_lt_exp_one]) hUe)).const_mul C₀
+      have hmono : (∫ u in Ioc U X, |logSqKernel u * psiErr u|)
+          ≤ ∫ u in Ioc U X, C₀ * Real.exp (-c₀ * Real.sqrt (Real.log u)) := by
+        refine MeasureTheory.setIntegral_mono_on
+          (hintAbs.mono_set Set.subset_union_right) hmaj measurableSet_Ioc (fun u hu => ?_)
+        have hu0 : (0 : ℝ) < u := lt_of_lt_of_le
+          (lt_of_lt_of_le (by linarith [one_lt_exp_one]) hUe) hu.1.le
+        have hue : Real.exp 1 ≤ u := le_trans hUe hu.1.le
+        have hlogu : (1 : ℝ) ≤ Real.log u := by
+          have : Real.log (Real.exp 1) ≤ Real.log u := Real.log_le_log (Real.exp_pos 1) hue
+          simpa using this
+        have hknn : (0 : ℝ) ≤ logSqKernel u := logSqKernel_nonneg hu0
+        rw [abs_mul, abs_of_nonneg hknn]
+        have hbd := hErr u hu.1.le
+        have hkey : logSqKernel u * |psiErr u|
+            ≤ logSqKernel u * (C₀ * (u * Real.exp (-c₀ * Real.sqrt (Real.log u)))) :=
+          mul_le_mul_of_nonneg_left hbd hknn
+        refine hkey.trans ?_
+        have hk : logSqKernel u * u = ((Real.log u) ^ 2)⁻¹ := by
+          rw [logSqKernel]
+          field_simp
+        have hle1 : ((Real.log u) ^ 2)⁻¹ ≤ 1 := by
+          rw [inv_le_one₀ (by nlinarith)]
+          nlinarith
+        calc logSqKernel u * (C₀ * (u * Real.exp (-c₀ * Real.sqrt (Real.log u))))
+            = (logSqKernel u * u) * (C₀ * Real.exp (-c₀ * Real.sqrt (Real.log u))) := by ring
+          _ = ((Real.log u) ^ 2)⁻¹ * (C₀ * Real.exp (-c₀ * Real.sqrt (Real.log u))) := by rw [hk]
+          _ ≤ 1 * (C₀ * Real.exp (-c₀ * Real.sqrt (Real.log u))) := by
+              refine mul_le_mul_of_nonneg_right hle1 ?_
+              positivity
+          _ = C₀ * Real.exp (-c₀ * Real.sqrt (Real.log u)) := by ring
+      refine hmono.trans ?_
+      rw [MeasureTheory.integral_const_mul]
+      exact mul_le_mul_of_nonneg_left (integral_exp_neg_sqrt_log_le hc₀ hUe hUX hsX) hC₀
+    linarith
+  -- assemble
+  have hKle : |Real.exp 1 * ∫ u in Ioc (Real.exp 1) X, logSqKernel u| ≤ Real.exp 1 := by
+    rw [hKval, abs_mul, abs_of_pos (Real.exp_pos 1), abs_of_nonneg (by linarith)]
+    nlinarith [Real.exp_pos (1:ℝ), hlogXinv0, hlogXinv]
+  rw [hid, hsplit]
+  have hstep : |(chebyshevPsiReal X - X + Real.exp 1) * (Real.log X)⁻¹
+      + (∫ t in Ioc (1 : ℝ) (Real.exp 1), logSqKernel t * chebyshevPsiReal t)
+      + ((∫ u in Ioc (Real.exp 1) X, logSqKernel u * psiErr u)
+        + Real.exp 1 * ∫ u in Ioc (Real.exp 1) X, logSqKernel u)|
+      ≤ |(chebyshevPsiReal X - X + Real.exp 1) * (Real.log X)⁻¹|
+        + |∫ t in Ioc (1 : ℝ) (Real.exp 1), logSqKernel t * chebyshevPsiReal t|
+        + (|∫ u in Ioc (Real.exp 1) X, logSqKernel u * psiErr u|
+          + |Real.exp 1 * ∫ u in Ioc (Real.exp 1) X, logSqKernel u|) := by
+    refine le_trans (abs_add_le _ _) ?_
+    refine add_le_add (le_trans (abs_add_le _ _) (by rfl)) (abs_add_le _ _)
+  refine hstep.trans ?_
+  linarith [hbdry, herrint, hKle]
+
+/-- **Card equation (20i).**  The quantitative prime number theorem transfers to the log-divided
+counting function: `J(X) - J₀(X) = O(X e^{-c √log X})`. -/
+theorem exists_primeTailCount_sub_logIntegralCount_bound :
+    ∃ C c : ℝ, 0 < c ∧ 0 ≤ C ∧ ∀ᶠ X : ℝ in atTop,
+      |primeTailCount X - logIntegralCount X|
+        ≤ C * (X * Real.exp (-c * Real.sqrt (Real.log X))) := by
+  obtain ⟨C₀, c₀, hc₀, hC₀, hpsiev⟩ := exists_psi_error_eventually
+  obtain ⟨U₀, hU₀⟩ := Filter.eventually_atTop.mp hpsiev
+  set U : ℝ := max U₀ (Real.exp 1) with hUdef
+  have hUe : Real.exp 1 ≤ U := le_max_right _ _
+  have hErr : ∀ u : ℝ, U ≤ u →
+      |psiErr u| ≤ C₀ * (u * Real.exp (-c₀ * Real.sqrt (Real.log u))) := by
+    intro u hu
+    rw [psiErr, chebyshevPsiReal_eq_psi]
+    exact hU₀ u (le_trans (le_max_left _ _) hu)
+  have hsqrt2 : (0 : ℝ) < Real.sqrt 2 := Real.sqrt_pos.mpr (by norm_num)
+  have hsqrt2le : (1 : ℝ) ≤ Real.sqrt 2 := by
+    rw [show (1 : ℝ) = Real.sqrt 1 from (Real.sqrt_one).symm]
+    exact Real.sqrt_le_sqrt (by norm_num)
+  set c : ℝ := c₀ / Real.sqrt 2 with hcdef
+  have hc : 0 < c := by rw [hcdef]; positivity
+  have hcc₀ : c ≤ c₀ := by
+    rw [hcdef, div_le_iff₀ hsqrt2]
+    nlinarith
+  set K : ℝ := 2 * Real.exp 1
+    + |∫ t in Ioc (1 : ℝ) (Real.exp 1), logSqKernel t * chebyshevPsiReal t|
+    + ∫ u in Ioc (Real.exp 1) U, |logSqKernel u * psiErr u| with hK
+  refine ⟨3 * C₀ + 1, c, hc, by linarith, ?_⟩
+  filter_upwards [eventually_ge_atTop (Real.exp 1), eventually_ge_atTop (1 : ℝ),
+    Real.tendsto_sqrt_atTop.eventually_ge_atTop U,
+    eventually_sqrt_le_envelope hc, eventually_const_le_envelope (c := c) (K := K)]
+    with X hX hX1 hUX hsq hKle
+  have hsX : Real.sqrt X ≤ X := by
+    nlinarith [Real.sq_sqrt (by linarith : (0:ℝ) ≤ X), Real.sqrt_nonneg X,
+      Real.one_le_sqrt.mpr hX1]
+  have hmain := abs_primeTailCount_sub_logIntegralCount_le hc₀ hC₀ hUe hErr hX hUX hsX
+  have hexp1 : C₀ * (X * Real.exp (-c₀ * Real.sqrt (Real.log X)))
+      ≤ C₀ * (X * Real.exp (-c * Real.sqrt (Real.log X))) := by
+    refine mul_le_mul_of_nonneg_left ?_ hC₀
+    refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) (by linarith)
+    have : (0 : ℝ) ≤ Real.sqrt (Real.log X) := Real.sqrt_nonneg _
+    nlinarith
+  have hexp2 : C₀ * (Real.sqrt X + X * Real.exp (-(c₀ / Real.sqrt 2) * Real.sqrt (Real.log X)))
+      ≤ 2 * C₀ * (X * Real.exp (-c * Real.sqrt (Real.log X))) := by
+    have hrw : -(c₀ / Real.sqrt 2) = -c := by rw [hcdef]
+    rw [hrw]
+    nlinarith [hsq, hC₀]
+  linarith [hmain, hexp1, hexp2, hKle]
 
 end
 

@@ -167,3 +167,31 @@ Remaining in `S5`: strict monotonicity and `I_α(q) → ∞` as `q → 1⁻`.  T
 Card 11 now has 6 modules.  Remaining in part `3`: continuity and STRICT monotonicity, both of
 which reduce to `Λ_α(λ)/λ → 0` as `λ → 0⁺` (dominated convergence against the integrable `w_α`,
 using `(log I₀)'(0) = 0`).  Then parts `4`, `5`, and the LDP (`S8`) and Karamata (`S9`) layers.
+
+## Sub-Gaussianity and strict positivity (2026-08-23)
+
+Search "Hoeffding lemma bounded random variable sub gaussian mgf quadratic bound" found mathlib's
+`hasSubgaussianMGF_of_mem_Icc_of_integral_eq_zero` and the corpus's
+`HTGeometry/BoundedSumConcentration.hasSubgaussianMGF_of_centred_bounded`; the mathlib form is used
+directly.
+
+`RHTower/SteinhausSubgaussian.lean`:
+- `integral_haar_eq_intervalIntegral` — the bridge, for an arbitrary integrand;
+- `integral_steinhausProjection_eq_zero` — the projection is centred (`∫₀^{2π} cos = 0`);
+- **`steinhausLogLaplace_le_sq : log I₀(x) ≤ x²/2`** — Hoeffding's lemma, since the projection lies
+  in `[−1,1]` and is centred, so it is sub-Gaussian with proxy one.
+
+`RHTower/SteinhausRatePositive.lean`:
+- `integral_weightProfile_Icc : ∫₀^δ w_α = δ^{1−α}`;
+- **`rvCumulant_le_split`** — splitting at `δ` and using `log I₀ ≤ x` below, `log I₀ ≤ x²/2` above:
+  ```
+  Λ_α(λ) ≤ λδ^{1−α} + (λ²/2)(1−α)²δ^{−2α}.
+  ```
+  So `Λ_α(λ)/λ → 0` as `λ → 0⁺`, with an explicit two-parameter bound rather than dominated
+  convergence.
+- **`rvRate_pos : 0 < I_α(q)` for `0 < q < 1`** — choose `δ = (q/2)^{1/(1−α)}` so that
+  `δ^{1−α} = q/2`, then `λ = min(1, q/(2K))`; the tilt value is at least `λq/4 > 0`.
+
+Card 11 is now at 8 modules.  Part `3` still needs strict monotonicity (which follows from
+`rvRate_pos` plus the observation that any tilt with value `> I − ε` must have `λ > I − ε`, since
+`λq − Λ ≤ λ`) and continuity.
