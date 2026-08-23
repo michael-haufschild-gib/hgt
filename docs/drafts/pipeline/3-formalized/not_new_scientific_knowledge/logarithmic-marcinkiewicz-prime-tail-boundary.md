@@ -1,7 +1,7 @@
 # The first source-containing prime tail is logarithmic Marcinkiewicz
 
 - **ID:** `logarithmic-marcinkiewicz-prime-tail-boundary`
-- **Stage:** 2-fully-proven / not-new
+- **Stage:** 3-formalized / not-new
 - **Type:** theorem (paper), `[BRIDGE]`
 - **Statement:** The logarithmic Marcinkiewicz quotient is the first natural weighted prime-tail
   model in this program that contains the unit Euler field while keeping finite prime changes
@@ -185,39 +185,25 @@ The next scientifically admissible move is to construct or obstruct a canonical 
 the quotient source tail and the vanishing-tail residue graph, without a chosen Banach limit,
 spectral operator, positivity criterion, or the desired critical-line membership condition.
 
-## Lean status
+## Lean status — formalized 2026-08-23
 
-`formal/GaloisForLFunctions/RHTower/PrimeShiftMarcinkiewiczBoundary.lean`
-now proves the exact critical-line absolute field equality to the unit field,
-equality of every finite Marcinkiewicz mass and tail mass, critical-line
-membership in the logarithmic layer, failure of the vanishing-tail layer, and
-right-half-plane vanishing-tail membership. The direct source check and
-self-contained axiom audit pass with only `propext`, `Classical.choice`, and
-`Quot.sound`.
+`formal/GaloisForLFunctions/RHTower/MarcinkiewiczPrimeTailBanach.lean` constructs the genuine
+Hausdorff Banach space `MarcinkiewiczLog`, its closed finite-support closure `MarcinkiewiczZero`,
+and the complete quotient `MarcinkiewiczLogQuotient`. It proves the exact cutoff seminorm,
+finite-support closure criterion, unit quotient norm `‖[one]‖ = 1`, nonvanishing of `[one]`, and
+existence of a norm-one Hahn--Banach reader detecting that class.
 
-The left-half-plane exclusion, full quotient construction and norm statement,
-and Hahn–Banach/residue-graph portion are still unformalized. The card remains
-at stage 2.
+The same module packages the full prime-shift boundary without hypotheses:
 
-### Added Lean boundary closure
+- logarithmic-layer membership iff `1 / 2 ≤ Re z`;
+- vanishing-tail membership iff `1 / 2 < Re z`;
+- critical-line quotient norm exactly one;
+- bounded-half-plane quotient class vanishes iff `1 / 2 < Re z`;
+- simultaneous boundedness of `z` and `1 - conj z` iff `Re z = 1 / 2`;
+- canonical residue graph closability iff RH, with zero graph under RH and nonclosability off RH.
 
-`MertensPrimeSqrtWindow.lean` now proves the unconditional square-root-window
-Mertens estimate, its normalized limit `1 / 2`, and divergence of the
-logarithmic Marcinkiewicz quotient of every positive real prime-power field.
-`PrimeShiftMarcinkiewiczLeftBoundary.lean` transports that result exactly to
-`absField (primeShiftCharacter z)`, proving
-`Re z < 1 / 2 -> ¬ MemMarcinkiewiczLogLayer ...`.  The complete pointwise
-membership trichotomy in (12) is therefore Lean-proved: left exclusion, the
-critical-line unit-tail result, and right-half vanishing tails.  The left
-module proof and its axiom audit close using only `propext`,
-`Classical.choice`, and `Quot.sound`; it is wired into the RHTower umbrella.
-The quotient/Hahn–Banach/residue-graph claims remain open, so this card stays
-at stage 2.
-
-`PrimeShiftMarcinkiewiczTrichotomy.lean` packages the exact unconditional
-classification as
-`MemMarcinkiewiczLogLayer (absField (primeShiftCharacter z)) ↔ 1/2 ≤ Re z`
-and
-`MemVanishingTailLayer (absField (primeShiftCharacter z)) ↔ 1/2 < Re z`.
-Both target builds and the combined axiom audit pass with only the standard
-Lean axioms.
+`formal/GaloisForLFunctions/RHTower.lean` imports the module. Direct source check and targeted
+`lake build GaloisForLFunctions.RHTower.MarcinkiewiczPrimeTailBanach` pass. Consolidated
+`#print axioms` checks report only `propext`, `Classical.choice`, and `Quot.sound`; the generic
+exactness lemma uses only `propext`. No `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`
+declaration occurs in the module.

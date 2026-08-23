@@ -1,7 +1,7 @@
 # Theta convolution faces a Hilbert--analytic defect trilemma
 
 - **ID:** `theta-convolution-hilbert-analytic-defect-trilemma`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper); Route-A category gate
 - **Scientific status:** `[BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Source:** Riemann's theta Fourier kernel, Fourier multiplication, and finite-dimensional
@@ -133,6 +133,22 @@ Pointwise positivity of the physical theta kernel does not resolve the trilemma:
 positive on `L2` only if its Fourier multiplier is nonnegative, whereas `XiC` changes sign across
 its real zeros.
 
+## Formal status
+
+- `formal/GaloisForLFunctions/RHTower/XiThetaConvolutionDefectTrilemma.lean` constructs the
+  bounded Hilbert convolution operator from the literal Schwartz theta source, proves its exact
+  Fourier-multiplier intertwining, self-adjointness, zero kernel, dense nonclosed range, zero
+  reduced kernel bottom, and full closure of the range.
+- `formal/GaloisForLFunctions/RHTower/EntireMultiplierDefectUniversality.lean` supplies the
+  analytic divisor defect and the exact real-support criterion for unitary translation characters.
+- `formal/GaloisForLFunctions/RHTower/XiHedenmalmJordanMatrix.lean` supplies the local Xi Jordan
+  generator.  `nonempty_xiThetaPositiveJetHilbertization_iff` strengthens its canonical-metric
+  calculation to an arbitrary faithful positive Hermitian form and proves that such a full-jet
+  Hilbertization exists exactly for a real simple divisor point.
+- The leaf module passes `lake env lean` and its targeted `lake build`; axiom checks for declarations
+  introduced by this formalization report only `propext`, `Classical.choice`, and `Quot.sound`.
+  No umbrella or full build is claimed.
+
 ## Gates
 
 - [x] Hilbert kernel and reduced cokernel proved zero
@@ -140,4 +156,4 @@ its real zeros.
 - [x] analytic local defect and translation character computed
 - [x] semisimple unitarity proved equivalent to real support
 - [x] full jet unitarity proved to force simplicity
-- [ ] no Lean formalization planned before a live positive defect construction exists
+- [x] literal source convolution and arbitrary-positive-metric full-jet obstruction formalized in Lean

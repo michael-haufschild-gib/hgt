@@ -1,7 +1,7 @@
 # Marcinkiewicz tail--residue Yoneda pairing splits
 
 - **ID:** `marcinkiewicz-tail-residue-yoneda-splitting`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized / not-new
 - **Type:** THEOREM / ROUTE-D NO-GO (paper)
 - **Scientific status:** BRIDGE / NOT NEW SCIENTIFIC KNOWLEDGE
 - **Inputs:** `logarithmic-marcinkiewicz-prime-tail-boundary.md`;
@@ -165,27 +165,24 @@ One-dimensional pullbacks of Banach quotients split after choosing a lift, scala
 Hahn--Banach, and closedness is required for unbounded Fredholm theory.  The theorem is a direct
 functional-analytic audit of the project interface and is not new scientific knowledge.
 
-## Lean status — 2026-08-23
+## Lean status — formalized 2026-08-23
 
-`HTGeometry/ConstraintRelativity/UnitQuotientPullbackSplitting.lean` now formalizes the exact
-reusable pullback fact: for every normed quotient and every actual lift `e`, the scalar-line
-pullback of `[e]` has a canonical bounded section `c ↦ (c • e, c)`.  Its target build and axiom
-audit use only `propext`, `Classical.choice`, and `Quot.sound`.
+`formal/GaloisForLFunctions/RHTower/MarcinkiewiczPrimeTailBanach.lean` instantiates all three
+spaces from the card: complete `MarcinkiewiczLog`, closed `MarcinkiewiczZero`, and complete
+Hausdorff quotient `MarcinkiewiczLogQuotient`. The actual Euler-unit pullback has an explicit
+bounded section.
 
-This does **not** instantiate the card's `M_log / M_0`: the existing prime-tail corpus supplies
-membership predicates, not a closed normed/Banach Marcinkiewicz quotient.  The pushout and
-Yoneda conclusions therefore remain unformalized, and this card stays at stage 2.
+For every bounded reader `ℓ : MarcinkiewiczZero →L[ℂ] ℂ`, the module identifies its graph
+relation with the kernel of the Hahn--Banach-extended forward map. Hence the relation is closed,
+the graph quotient is a genuine Banach space, and
+`graphPushout MarcinkiewiczZero ℓ ≃L[ℂ] MarcinkiewiczLogQuotient × ℂ`. The combined theorem
+`marcinkiewicz_bounded_yoneda_splitting` records the pullback section, completeness of every
+reader pushout, and its continuous-linear product splitting. The exactness theorem
+`connectingMap_eq_zero_on_actual_lift` proves every connecting morphism annihilates an actual
+lift. The canonical unbounded residue graph is classified separately: closable exactly under RH,
+zero under RH, and nonclosable off RH.
 
-### Pushout infrastructure update — 2026-08-23
-
-`HTGeometry/ConstraintRelativity/GraphPushoutSplitting.lean`, wired into
-`HTGeometry.lean`, now formalizes the precise scalar pushout calculation.  For every normed
-`𝕜`-space, submodule `N`, and continuous reader `ℓ : N →L[𝕜] 𝕜`, its quotient by the actual graph
-relation `(n, -ℓ n)` is continuously linearly equivalent to `(E ⧸ N) × 𝕜`.  The inverse is built
-from a Hahn--Banach extension, and both compositions are proved by quotient induction.  Its
-focused target build passes; its theorem-level axiom audit has only `propext`, `Classical.choice`,
-and `Quot.sound`.
-
-This proves the reusable topological linear-algebra statement, but it still does not create the
-card's genuine closed Banach spaces `M_0`, `M_log`, and `Q_log`.  No Banach or Yoneda conclusion
-has been promoted on that basis; card remains at stage 2.
+`formal/GaloisForLFunctions/RHTower.lean` imports the module. Direct source check and targeted
+`lake build GaloisForLFunctions.RHTower.MarcinkiewiczPrimeTailBanach` pass. Consolidated axiom
+audit reports only `propext`, `Classical.choice`, and `Quot.sound` (generic exactness: only
+`propext`). No forbidden declaration occurs in the module.

@@ -937,3 +937,147 @@ asserted by the atlas theorem.
   nonzero only because the concurrent unrelated leaves `CayleyChebyshevSource` and
   `CesaroSignRecurrence` are not yet wired into the RHTower umbrella; they were not modified.
 - No numerical or divisor computation was run. No Lean process from this work remains active.
+
+## Level correction: shared gauge is a shadow, not the universal open core
+
+`[RETIRED AS UNIVERSAL TARGET]` The preceding final sentence named construction of one fixed
+prime/Gamma action with a shared reflection gauge as the scientific open core.  That is one valid
+atlas test after choosing an observer, but it is not the containing law.  Action, Noether current,
+gauge, passivity, topology, spectrality, and positivity are different representations of a defect
+which exists before any of those choices.
+
+The useful statement survives in corrected form:
+
+> Off-line divisor points are failures of globally consistent reflection descent, not locally
+> generated objects.
+
+The corpus now separates two superficially similar dagger statements which must not be conflated.
+The pre-divisor prime phase has unit modulus and its scalar dagger defect vanishes unconditionally.
+The completed source-dagger identity, however, asks the resolved source shear to commute with the
+completed-Xi Hodge rotation on one retained coefficient fibre; at any fixed ordinary prime this is
+equivalent to the critical line.  Source reversal exists.  Completion/landing can fail to transport
+it conservatively.
+
+## Whole-corpus quotient: one defect, many observers
+
+For a divisor point `rho` of order `m`, the signed affine quantity
+
+```text
+-(rho - 1/2) * m
+```
+
+is already carried, without RH, by multiple independently constructed organs:
+
+| Organ | Exact shadow |
+|---|---|
+| bounded-exponent normal cone | residue of exceptional section `1 / Xi` |
+| depth nearby cycle | outer depth-successor charge |
+| reflected prime tail | source entropy / transverse horizon rate |
+| Hurwitz chart | principal monodromy phase |
+| Gamma first-trace chart | signed cofinal Bockstein / determinant transgression |
+| source-dagger cyclic chart | paracyclic monodromy gain |
+| Hawking / recurrence charts | horizon Lyapunov mode / collision hierarchy |
+| positive spectral charts | squared orientation, Hodge, or Fisher energy |
+
+Thus these routes do not describe different candidate causes.  They read one completion defect
+after different information-erasing operations.  Even/positive observers erase orientation;
+bounded observers erase cofinal escape; ordinary completion collapses source points; finite Rees
+operators erase essential sewing type; scalar total charge lets reflected pairs cancel.
+
+The canonical geometric carrier is the projectivized normal cone / exceptional boundary of
+arithmetic completion.  Every Xi zero is a pole of the exceptional reciprocal section and hence a
+completion defect in a literal sense.  The whole exceptional boundary is not confined to the
+critical line: the two-prime blow-up chart faithfully parametrizes arbitrary spectral points.
+Only singular defect support, not the ambient boundary, can be confined.
+
+## Hostile audit of generic higher-coherence explanations
+
+`[FAILED]` Generic Segal, 2-Segal, decomposition-space, Hopf-antipode, Bianchi, anomaly-cocycle,
+or topological language does not force confinement.
+
+1. Finite prime-factorization nerves are contractible and their gauges are exact.
+2. Cofinal completion can create a genuine boundary class from those finite exact gauges.
+3. A Hopf envelope can erase the one-sided antipode defect.
+4. Bianchi/Wess--Zumino consistency constrains migration but permits nonzero local anomaly.
+5. Functional-equation pairs cancel every additive odd total charge.
+6. Generic cyclic completion can adjoin the desired filler; requiring its survival at Xi fibres is
+   already RH-equivalent.
+7. Normal-cone regularity alone is not contractive in the physical source norm.
+
+The surviving universal law must therefore be source-generated, completion-sensitive, unsquared
+before observation, and strong enough to compare an absolute defect quantum with an endogenous
+source capacity.  It cannot merely package the defect in a larger category.
+
+## Sharper candidate: subquantum arithmetic defect confinement
+
+`[CONJECTURE -- NOT RH PROOF]` A completed arithmetic doctrine change which contains no new source
+intervention cannot amplify intervention-generated defect capacity.  Equivalently, the singular
+completion comparison is nonamplifying for the source's integral collision/BPS index even when it
+is unbounded, nonclosable, or only defined on a projective/derived normal-cone graph.
+
+This law is about errors, not producers:
+
+```text
+different microscopic prime histories
+    -> different exceptional-boundary defects
+    -> one universal off-wall capacity quantum
+    -> source completion has less than one quantum available
+    -> no defect can leave the reflection fixed wall.
+```
+
+The quantization is exact but subtler than quantizing horizontal displacement.  The displacement
+`Re rho - 1/2` is continuous.  Off-line existence is quantized because functional-equation
+reflection creates a distinct same-height partner with the same positive integral multiplicity.
+Consequently every nonempty off-line window has horizontal collision charge at least `2`.
+Critical-line zeros remain exceptional-boundary defects but carry zero transverse collision
+charge.
+
+The corpus already proves three sides of a subquantum exclusion pattern in several normalizations:
+
+1. **Integral endpoint:** `xiHorizontalCollisionCharge` is monotone, integer-valued, and any
+   off-line zero forces at least the two-unit reflected-pair quantum.
+2. **BPS/exterior endpoint:** every off-line support point carries a uniform two-orientation
+   Ward--Green exterior quantum, with multiplicity-square packet lower bound.
+3. **Source capacity:** the complete natural-number von-Mangoldt prime--Gamma cubic trace equals
+   `routePPrimitiveCollisionCubicTraceBudget`, and a symbolic proof gives
+   `routePPrimitiveCollisionCubicTraceBudget < 115 / 108`, below the least cubic charge of one
+   strict-right zero.
+
+The missing statement is not another detector and not a mechanism creating zeros.  It is the
+universal middle inequality: the completed physical residue/collision capacity cannot exceed the
+literal pre-divisor prime--Gamma capacity.  In one exact cubic chart this is the still-unproved
+global contraction from the total reflection-Loewner residue trace to the primitive Euler source
+trace.  Other routes seek shadows of the same inequality as passivity, source-dagger survival,
+nonexpansive Green landing, subunit Hodge curvature, shared gauge, finite-grade recovery, or
+bounded collision history.
+
+The proposed containing principle is therefore:
+
+> **Arithmetic defect-capacity confinement.** Source completion may move, hide, or singularize an
+> integral defect class, but a doctrine change without a new source intervention cannot increase
+> its absolute capacity across the first nonzero topological quantum.
+
+This is compatible with every zero having a different microscopic reason.  RH needs no common
+microscopic cause.  It needs only the global rule that none of those errors can pay the cost of a
+transverse reflected pair.
+
+## First non-theatrical construction target
+
+Construct one pre-divisor constitutive response square, not a zero-indexed action:
+
+1. horizontal operation: insert/refine a literal prime or exponent-depth source cell;
+2. vertical operation: Möbius/Gamma completion and reflection doctrine change;
+3. exchange response: the unsquared prime--Gamma Bockstein / cubic Loewner current on the source
+   normal cone;
+4. source capacity: its natural-number von-Mangoldt cubic trace;
+5. physical capacity: its coefficient-faithful residue trace before scalar fusion.
+
+Prove that the comparison is capacity-nonincreasing for a source-generated reason which survives
+cofinal graph completion.  Finite positivity, ordinary bounded-map contractivity, and a fitted
+completely positive channel are forbidden substitutes: faithful recovery is already known to be
+singular, and choosing the comparison after divisor specialization is RH in disguise.
+
+If this law is proved, the subquantum source bound excludes even one right-half defect; reflection
+then gives RH.  If it fails, the positive survivor is equally sharp: analytic completion is an
+active law intervention, not a passive observer, and its newly created capacity is the sought
+universal anomaly.

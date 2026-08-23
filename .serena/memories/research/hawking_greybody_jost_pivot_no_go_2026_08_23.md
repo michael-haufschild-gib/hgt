@@ -1,0 +1,11 @@
+# Hawking greybody/Jost pivot audit (2026-08-23)
+
+After canonical Krein–Cayley cascade no-go, tested a stronger source-faithful idea: realize each tilted carrier `XiC(w + i a)` as 1D greybody transmission, or realize reflected pair `XiC(w ± i a)` as two Jost boundary coefficients. Regular self-adjoint short-range 1D transmission is nonzero at nonzero real momentum by Wronskian flux, so such a realization would force tilted sectors bright.
+
+Hostile failure:
+- Literal Xi transmission is impossible: corpus Hardy theorem `exists_two_distinct_positive_real_XiC_zeros` gives unconditional positive real Xi zeros at neutral tilt, while ordinary transmission is nonzero; transmission also tends to 1 at high frequency, whereas Xi decays exponentially.
+- Zero-free outer normalization cannot remove the real zeros. Allowing a singular/degenerate neutral-tilt model is artificial and not actual smooth tilted-mirror dynamics.
+- Reflected Jost pair is more subtle, but moving-mirror Born coefficient is a frequency-conversion form factor, not a Jost determinant. Promoting it to common Jost data installs missing self-adjoint spectral realization. Corpus already identifies a tilted dark mode with a two-ended backreaction resonance (`thetaCuspHawkingTiltedPairCarrier_eq_zero_iff_backreactionResonance`); relative passivity is saturated, so generic stability does not exclude it.
+- Black-hole KdV moment literature (Lenzi–Sopuerta arXiv:2212.03732, 2301.01096) shows KdV integrals determine greybody transmission probability via a Hamburger moment problem. This reconstructs positive intensity/action data, not coherent Xi phase/cancellation. Treating theta Morse/Witten atoms as independent channels removes cancellations and loses source-faithful Xi amplitude.
+
+No significant dependency-closed new Lean theorem was added for this pivot. The sharp live core remains theta-specific direct one-step observability / first-jet transversality, as recorded in `mem:research/hawking_krein_cayley_cascade_no_go_2026_08_23`.

@@ -1,7 +1,7 @@
 # The oriented physical-aperture Hilbert metric and exact response-dispersion law
 
 - **ID:** `physical-aperture-hilbert-dispersion-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / NO-GO CLOSURE / FCRJ FRONTIER RECUT
 - **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED PHYSICAL CORE]`
   `[SOURCE-SPECIFIC ASSEMBLY] [UNCONDITIONAL]`
@@ -347,6 +347,7 @@ audit of the Gram, distance, energy, and cross-floor theorems reports only `prop
 
 - [x] 0 -> 1: exact source-pure object and wrong-metric hostile tests
 - [x] 1 -> 2: dependency-closed paper proof `(AH1)`--`(AH18)`
+- [x] 2 -> 3: unconditional Lean formalization, targeted leaf builds, and declaration-local axiom audits
 - [x] formalize the centered-indicator carrier, true Hilbert distance, Gram identity, and full
       finite fusion-energy positivity
 - [x] connect the Hilbert metric to the concrete clipped-prime endpoint definitions
@@ -362,7 +363,8 @@ audit of the Gram, distance, energy, and cross-floor theorems reports only `prop
 - [x] formalize generic conditional negative type and its equality classification for
       zero-total-weight finite packets
 - [x] formalize the generic completeness statement
-- [ ] prove a genuinely new arithmetic upper bound on `Disp_M`
+- **Follow-on open core (outside this theorem):** prove a genuinely new arithmetic upper bound on
+  `Disp_M`.
 
 ## Log
 
