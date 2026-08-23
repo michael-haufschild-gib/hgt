@@ -24,7 +24,7 @@ noncomputable section
 /-- The naive quotient by a simple linear factor. -/
 def divShift (G : ℂ → ℂ) (ρ : ℂ) : ℂ → ℂ := fun s => G s / (s - ρ)
 
-theorem analyticAt_sub_const (ρ : ℂ) (s : ℂ) : AnalyticAt ℂ (fun z : ℂ => z - ρ) s :=
+theorem analyticAt_id_sub_const (ρ : ℂ) (s : ℂ) : AnalyticAt ℂ (fun z : ℂ => z - ρ) s :=
   analyticAt_id.sub analyticAt_const
 
 theorem meromorphicAt_divShift {G : ℂ → ℂ} (hG : ∀ s : ℂ, MeromorphicAt G s) (ρ : ℂ) (s : ℂ) :
@@ -33,26 +33,26 @@ theorem meromorphicAt_divShift {G : ℂ → ℂ} (hG : ∀ s : ℂ, MeromorphicA
     funext z
     rw [divShift, Pi.div_apply]
   rw [h]
-  exact (hG s).div (analyticAt_sub_const ρ s).meromorphicAt
+  exact (hG s).div (analyticAt_id_sub_const ρ s).meromorphicAt
 
 theorem analyticAt_divShift_of_ne {G : ℂ → ℂ} {ρ s : ℂ} (hG : AnalyticAt ℂ G s) (hsρ : s ≠ ρ) :
     AnalyticAt ℂ (divShift G ρ) s :=
-  hG.div (analyticAt_sub_const ρ s) (sub_ne_zero.2 hsρ)
+  hG.div (analyticAt_id_sub_const ρ s) (sub_ne_zero.2 hsρ)
 
 theorem meromorphicOrderAt_sub_const_self (ρ : ℂ) :
     meromorphicOrderAt (fun z : ℂ => z - ρ) ρ = ((1 : ℤ) : WithTop ℤ) := by
   have hord : analyticOrderAt (fun z : ℂ => z - ρ) ρ = ((1 : ℕ) : ℕ∞) := by
-    refine ((analyticAt_sub_const ρ ρ).analyticOrderAt_eq_natCast).2
+    refine ((analyticAt_id_sub_const ρ ρ).analyticOrderAt_eq_natCast).2
       ⟨fun _ : ℂ => (1 : ℂ), analyticAt_const, one_ne_zero, ?_⟩
     filter_upwards with z
     simp
-  rw [(analyticAt_sub_const ρ ρ).meromorphicOrderAt_eq, hord]
+  rw [(analyticAt_id_sub_const ρ ρ).meromorphicOrderAt_eq, hord]
   simp
 
 theorem meromorphicOrderAt_sub_const_of_ne {ρ s : ℂ} (hsρ : s ≠ ρ) :
     meromorphicOrderAt (fun z : ℂ => z - ρ) s = (0 : WithTop ℤ) := by
-  rw [(analyticAt_sub_const ρ s).meromorphicOrderAt_eq,
-    (analyticAt_sub_const ρ s).analyticOrderAt_eq_zero.2 (sub_ne_zero.2 hsρ)]
+  rw [(analyticAt_id_sub_const ρ s).meromorphicOrderAt_eq,
+    (analyticAt_id_sub_const ρ s).analyticOrderAt_eq_zero.2 (sub_ne_zero.2 hsρ)]
   simp
 
 /-- The analytic representative of `G(s)/(s-ρ)`. -/
@@ -88,7 +88,7 @@ theorem analyticAt_divShiftNF {G : ℂ → ℂ} (hG : ∀ s : ℂ, MeromorphicAt
   have hfun : divShift G ρ = G / fun z : ℂ => z - ρ := by
     funext z
     rw [divShift, Pi.div_apply]
-  rw [hfun, meromorphicOrderAt_div (hG s) (analyticAt_sub_const ρ s).meromorphicAt]
+  rw [hfun, meromorphicOrderAt_div (hG s) (analyticAt_id_sub_const ρ s).meromorphicAt]
   by_cases hsρ : s = ρ
   · subst hsρ
     rw [meromorphicOrderAt_sub_const_self]

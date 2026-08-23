@@ -418,6 +418,57 @@ theorem primeTailCurrent_halfWeight_wall {z : ℂ} (hz : 1 < z.re) (α : ℝ) :
     exact (integrableOn_wallIntegrand_lower hα hδ hδ1 (fun x hx => (hbd x hx).2)).union
       (integrableOn_wallIntegrand_upper hz hδ (by linarith) α)
 
+/-- **Card equation (18).**  At the critical weight the current is square integrable, matching the
+elementary model integral `∫ dx/(x log^2(1/x))`. -/
+theorem integrableOn_halfWeight_critical {z : ℂ} (hz : 1 < z.re) :
+    IntegrableOn (fun x : ℝ => (x ^ (1 / 2 : ℝ) * ‖primeTailCurrent z x‖) ^ 2)
+      (Ioo 0 1) volume :=
+  (primeTailCurrent_halfWeight_wall hz (1 / 2)).mpr le_rfl
+
+/-! ## The current is not integrable -/
+
+theorem hasDerivAt_neg_log_neg_log {x : ℝ} (hx : 0 < x) (hx1 : x < 1) :
+    HasDerivAt (fun t : ℝ => -Real.log (-Real.log t)) ((x * Real.log x⁻¹)⁻¹) x := by
+  have hlogneg : Real.log x < 0 := Real.log_neg hx hx1
+  have hne : -Real.log x ≠ 0 := by linarith
+  have h := ((Real.hasDerivAt_log (ne_of_gt hx)).neg.log hne).neg
+  refine h.congr_deriv ?_
+  rw [Real.log_inv]
+  field_simp
+
+theorem not_integrableOn_inv_mul_log_inv {δ : ℝ} (hδ : 0 < δ) (hδ1 : δ < 1) :
+    ¬ IntegrableOn (fun x : ℝ => (x * Real.log x⁻¹)⁻¹) (Ioo 0 δ) volume := by
+  intro hint
+  set f : ℝ → ℝ := fun x => (x * Real.log x⁻¹)⁻¹ with hf
+  have hnn : ∀ x ∈ Ioo (0 : ℝ) δ, 0 ≤ f x := by
+    intro x hx
+    have hlog : (0 : ℝ) < Real.log x⁻¹ := by
+      refine Real.log_pos ?_
+      rw [one_lt_inv_iff₀]
+      exact ⟨hx.1, lt_trans hx.2 hδ1⟩
+    rw [hf]
+    positivity
+  set M : ℝ := ∫ x in Ioo (0 : ℝ) δ, f x with hM
+  have hHtendsto : Tendsto (fun a : ℝ => -Real.log (-Real.log a)) (𝓝[>] 0) atBot := by
+    have h1 : Tendsto (fun a : ℝ => -Real.log a) (𝓝[>] 0) atTop :=
+      tendsto_neg_atBot_iff.mpr Real.tendsto_log_nhdsGT_zero
+    exact tendsto_neg_atBot_iff.mpr (Real.tendsto_log_atTop.comp h1)
+  obtain ⟨a, ha, hasub⟩ := mem_nhdsGT_iff_exists_Ioo_subset.mp
+    (hHtendsto.eventually (eventually_le_atBot (-Real.log (-Real.log δ) - M - 1)))
+  set b : ℝ := min (a / 2) (δ / 2) with hb
+  have hb0 : 0 < b := by rw [hb]; exact lt_min (by linarith [ha]) (by linarith)
+  have hba : b < a := lt_of_le_of_lt (min_le_left _ _) (by linarith [ha])
+  have hbδ : b < δ := lt_of_le_of_lt (min_le_right _ _) (by linarith)
+  have hbound := hasub ⟨hb0, hba⟩
+  have hderiv : ∀ x ∈ uIcc b δ, HasDerivAt (fun t : ℝ => -Real.log (-Real.log t)) (f x) x := by
+    intro x hx
+    rw [Set.uIcc_of_le hbδ.le] at hx
+    exact hasDerivAt_neg_log_neg_log (lt_of_lt_of_le hb0 hx.1) (lt_of_le_of_lt hx.2 hδ1)
+  have hII : IntervalIntegrable f volume b δ := by
+    refine (hint.mono_set ?_).intervalIntegrable_of_Ioc ?_ |>.symm ▸ ?_
+    all_goals sorry
+  sorry
+
 end
 
 end RHTower

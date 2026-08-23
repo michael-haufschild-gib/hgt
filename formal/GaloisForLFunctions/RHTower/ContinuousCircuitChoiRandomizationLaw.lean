@@ -86,6 +86,18 @@ theorem continuous_choiDist_left
   rw [hfEq]
   fun_prop
 
+/-- Normalized Choi trace distance is blind to a global phase on its first
+unitary argument. -/
+theorem choiDist_smul_left
+    {n : Type*} [Fintype n] [DecidableEq n]
+    (c : ℂ) (hc : ‖c‖ = 1) (U V : Matrix n n ℂ) :
+    choiDist (c • U) V = choiDist U V := by
+  have hchoi : choiVector (c • U) = c • choiVector U := by
+    ext p
+    simp [choiVector, smul_eq_mul, div_eq_mul_inv, mul_assoc]
+  rw [choiDist, choiDist, hchoi,
+    _root_.HTGeometry.pureStateTraceDistance_smul_left c hc]
+
 /-- **Compact projective exclusion is operationally robust.**  If no
 continuous two-qubit circuit in a gate budget agrees with `U` up to global
 phase, then one positive normalized Choi trace distance excludes the whole

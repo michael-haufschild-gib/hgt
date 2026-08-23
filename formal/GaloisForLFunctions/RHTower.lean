@@ -2401,6 +2401,7 @@ import GaloisForLFunctions.RHTower.DeningerDynSysTwoPointGamma
 import GaloisForLFunctions.RHTower.DeningerDynSysTwoPointSheafMap
 import GaloisForLFunctions.RHTower.DeningerDynSysWittStalkIso
 import GaloisForLFunctions.RHTower.DeningerDynSysTwoPointStalks
+import GaloisForLFunctions.RHTower.DeningerDynSysProp131
 import GaloisForLFunctions.RHTower.DeningerDynSysWittPerfectDescent
 import GaloisForLFunctions.RHTower.DeningerDynSysAtomDescent
 import GaloisForLFunctions.RHTower.DeningerDynSysWittAtomDescent
@@ -5075,6 +5076,7 @@ import GaloisForLFunctions.RHTower.LiTermBound
 import GaloisForLFunctions.RHTower.LiCoefficientXi
 import GaloisForLFunctions.RHTower.LiBracket
 import GaloisForLFunctions.RHTower.LiPositivityFails
+import GaloisForLFunctions.RHTower.LiCriterion
 import GaloisForLFunctions.RHTower.LiReciprocalChebyshevKernel
 import GaloisForLFunctions.RHTower.LiReciprocalKernelCoefficientSign
 import GaloisForLFunctions.RHTower.LiftedGluingFaces
@@ -9111,6 +9113,7 @@ import GaloisForLFunctions.RHTower.ExtendedMellinHeadHardy
 import GaloisForLFunctions.RHTower.DivShiftRepresentative
 import GaloisForLFunctions.RHTower.SoninHardyRepresentative
 import GaloisForLFunctions.RHTower.ExtendedSoninDivision
+import GaloisForLFunctions.RHTower.ExtendedSoninOrderDrop
 import GaloisForLFunctions.RHTower.SoninFromHardyData
 import GaloisForLFunctions.RHTower.ZetaZeroOrderReflection
 import GaloisForLFunctions.RHTower.ZetaDivPowRepresentative

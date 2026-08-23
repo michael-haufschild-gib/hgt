@@ -142,4 +142,38 @@ theorem specBase_preimage_le_bot (U : X.Opens) (hx : x ∉ U) :
     (Opens.map (specBase x y R hdim hfield hspec)).obj U ≤ ⊥ :=
   le_of_eq (specBase_preimage_eq_bot x y R hdim hfield hspec U hx)
 
+theorem specBase_apply_generic :
+    (specBase x y R hdim hfield hspec) (specGeneric (R : Type u)) = x :=
+  specBaseFun_generic x y R
+
+include hfield in
+theorem specBase_apply_closed :
+    (specBase x y R hdim hfield hspec) (specClosed (R : Type u)) = y :=
+  specBaseFun_closed x y R hfield
+
+include hdim hfield in
+/-- The hypothesis `hgen` of Proposition 13.1 holds for the two-point base map. -/
+theorem specBase_hgen (U : X.Opens)
+    (hU : (specBase x y R hdim hfield hspec) (specClosed (R : Type u)) ∉ U) :
+    (Opens.map (specBase x y R hdim hfield hspec)).obj U ≤ specGenericOpen R hdim hfield := by
+  rw [specBase_apply_closed x y R hdim hfield hspec] at hU
+  exact specBase_preimage_le_generic x y R hdim hfield hspec U hU
+
+include hdim hfield in
+/-- The hypothesis `hbot` of Proposition 13.1 holds for the two-point base map. -/
+theorem specBase_hbot (U : X.Opens)
+    (hU : (specBase x y R hdim hfield hspec) (specGeneric (R : Type u)) ∉ U) :
+    (Opens.map (specBase x y R hdim hfield hspec)).obj U = ⊥ := by
+  rw [specBase_apply_generic x y R hdim hfield hspec] at hU
+  exact specBase_preimage_eq_bot x y R hdim hfield hspec U hU
+
+include hdim hfield in
+/-- The specialisation hypothesis of Proposition 13.1 holds for the two-point base map. -/
+theorem specBase_hspec :
+    (specBase x y R hdim hfield hspec) (specGeneric (R : Type u)) ⤳
+      (specBase x y R hdim hfield hspec) (specClosed (R : Type u)) := by
+  rw [specBase_apply_generic x y R hdim hfield hspec,
+    specBase_apply_closed x y R hdim hfield hspec]
+  exact hspec
+
 end HTGeometry

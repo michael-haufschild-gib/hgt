@@ -25,7 +25,7 @@ open GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-theorem isOpen_criticalStrip : IsOpen {z : ℂ | 0 < z.re ∧ z.re < 1} :=
+theorem isOpen_criticalOpenStrip : IsOpen {z : ℂ | 0 < z.re ∧ z.re < 1} :=
   (isOpen_lt continuous_const Complex.continuous_re).inter
     (isOpen_lt Complex.continuous_re continuous_const)
 
@@ -107,7 +107,7 @@ theorem exists_order_drop {a : ℝ} (ha : 0 < a) {v : SoninL2} {c d : ℂ}
     have heq : (fun s : ℂ => extendedMellinContinuation a c' d' w s * (s - ρ))
         =ᶠ[𝓝[≠] z] extendedMellinContinuation a c d v := by
       refine EventuallyEq.filter_mono ?_ nhdsWithin_le_nhds
-      filter_upwards [isOpen_criticalStrip.mem_nhds (⟨hz0, hz1⟩ :
+      filter_upwards [isOpen_criticalOpenStrip.mem_nhds (⟨hz0, hz1⟩ :
         z ∈ {y : ℂ | 0 < y.re ∧ y.re < 1})] with y hy
       exact hall y hy.1 hy.2
     rw [← meromorphicOrderAt_congr heq]
@@ -115,7 +115,7 @@ theorem exists_order_drop {a : ℝ} (ha : 0 < a) {v : SoninL2} {c d : ℂ}
         = extendedMellinContinuation a c' d' w * fun s : ℂ => s - ρ := by
       funext s
       rw [Pi.mul_apply]
-    rw [hfun, meromorphicOrderAt_mul hmero1 (analyticAt_sub_const ρ z).meromorphicAt]
+    rw [hfun, meromorphicOrderAt_mul hmero1 (analyticAt_id_sub_const ρ z).meromorphicAt]
   refine ⟨w, c', d', hev', hmem', hc', hd', ?_, ?_⟩
   · have h := hord ρ h0 h1
     rw [meromorphicOrderAt_sub_const_self, hn] at h
