@@ -1,0 +1,10 @@
+# RH frontier map Lean-only audit — 2026-08-23 17:54 CEST
+
+- Target: `docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md`.
+- Cutoff: HEAD `30e735c775c50309fcffd6cbbe9a8cbd06302548` (17:32:01 CEST) plus material working-tree Lean files present at 17:54:07 CEST.
+- Evidence: Lean declarations/dependencies/docstrings/gap markers only, queried with `scripts/formal_tools.py research`; no cards, papers, literature, or builds.
+- Topology: 23 live routes; 22 candidates. New candidate TCD. No new live route from latest working-tree Hasse/Pauli modules.
+- Route advances: G has exact compact-BV reciprocal reflection plus fixed dyadic/triadic/reflected four-window Mellin separation, so reflection and detector-cover selection are closed; signed orientation remains. HC has uniform principal high-ordinate residue decay and source-scale smoothed coefficient-tail truncation closed; remaining CGL core is selected rows, S2/S3, nonprincipal finite head, bounded principal census, safe-line integral tail, global strict-sub-two aggregation. HB has exact finite-prime archimedean-minus-von-Mangoldt flux split, but cofinal sign/adaptive-clock synchronization remains. L has cofinite divisor Hasse and finite Frobenius packet reconstruction closed, but singular source-to-physical comparison remains. Wold-Xi amplification no-go is compact-uniform and defeats every finite Rees power.
+- Generic/pre-route: Pauli singleton endpoint fibres; facet/orbit/projective/Omega/Shilov Hasse exactness; Field-One finite-torsion Hasse; tail-quotient anti-Hasse no-go. None has completed arithmetic occurrence and Xi reader.
+- Document validation: 3997 lines, 102 code fences, 23 live headings, 22 candidate headings, `git diff --check` clean. Present-tense map, not diary.
+- Preserve other users/agents' dirty files. Only frontier map was edited by this audit. No Lean build or process started.

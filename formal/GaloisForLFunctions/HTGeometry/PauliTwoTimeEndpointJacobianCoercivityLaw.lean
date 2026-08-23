@@ -396,6 +396,33 @@ theorem realTwoLocalPauliTwoTimeEndpoint_lower_of_mem_box
   refine (mul_le_mul_of_nonneg_left hconorm (by positivity)).trans ?_
   exact hglobal
 
+/-- Every occupied short two-time endpoint fibre in the ordinary Pauli box is
+a singleton.  Thus incidence counting loses no unrecorded sheet multiplicity. -/
+theorem realTwoLocalPauliTwoTimeEndpoint_injOn_box
+    {n : ℕ} (hn : 1 ≤ n) (t : ℝ) :
+    Set.InjOn
+      (fun z : TwoLocalPauliCoefficientSpace n =>
+        realTwoLocalPauliTwoTimeEndpoint z t
+          (1 / (144 * (n : ℝ) ^ 3)))
+      (twoLocalPauliCoefficientBox n) := by
+  intro x hx y hy hxy
+  have h := realTwoLocalPauliTwoTimeEndpoint_lower_of_mem_box
+    hn hx hy t
+  change realTwoLocalPauliTwoTimeEndpoint x t
+      (1 / (144 * (n : ℝ) ^ 3)) =
+    realTwoLocalPauliTwoTimeEndpoint y t
+      (1 / (144 * (n : ℝ) ^ 3)) at hxy
+  rw [← hxy, sub_self, norm_zero] at h
+  have hnpos : (0 : ℝ) < n := by exact_mod_cast hn
+  have hscale : 0 < (1 / (144 * (n : ℝ) ^ 3)) / 8 := by positivity
+  have hproduct : (1 / (144 * (n : ℝ) ^ 3)) / 8 * ‖y - x‖ = 0 :=
+    le_antisymm h (mul_nonneg hscale.le (norm_nonneg _))
+  have hnorm : ‖y - x‖ = 0 := by
+    rcases mul_eq_zero.mp hproduct with hscalezero | hnorm
+    · exact (ne_of_gt hscale hscalezero).elim
+    · exact hnorm
+  exact (sub_eq_zero.mp (norm_eq_zero.mp hnorm)).symm
+
 end
 
 end GaloisForLFunctions.HTGeometry

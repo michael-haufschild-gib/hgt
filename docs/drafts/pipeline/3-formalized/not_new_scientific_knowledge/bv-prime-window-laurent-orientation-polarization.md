@@ -1,8 +1,8 @@
 # BV prime-window Laurent orientation polarization
 
 - **ID:** `bv-prime-window-laurent-orientation-polarization`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper), `[TOP-DOWN INTERFACE DISCHARGE]`, `[VALUE RELATION]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean), `[TOP-DOWN INTERFACE DISCHARGE]`, `[VALUE RELATION]`
 - **Scientific status:** `[PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parents:** the formal compact-BV prime-window quadrature, holomorphy, Dirichlet identity,
   meromorphic continuation, and divisor tomography;
@@ -238,8 +238,10 @@ The following formal files prove the complete continuation and divisor-residue i
 These modules are wired through `formal/GaloisForLFunctions/RHTower.lean`.
 `BVPrimeWindowDilationOrientation.lean` now constructs the forward and inverse compact-BV
 windows, proves their exact Mellin and continued-source residue covariance, and formalizes the
-oriented squared-norm comparison `(8a)`--`(10)`, including its strict sign and zero locus.  The
-reciprocal-conjugate window involution `(11)`--`(14)` remains paper-level.
+oriented squared-norm comparison `(8a)`--`(10)`, including its strict sign and zero locus.
+`BVPrimeWindowReciprocalReflection.lean` formalizes the reciprocal-conjugate involution and exact
+reflected residue swaps `(11)`--`(14)`. `BVPrimeWindowIntervalSource.lean` constructs literal
+rational interval indicators and proves the fixed separating-source claims `(15)`--`(15b)`.
 
 Burnol's source-defined co-Poisson quotient and its zero evaluators are supplied by
 J.-F. Burnol, *Two complete and minimal systems associated with the zeros of the Riemann zeta
@@ -259,11 +261,12 @@ is `../../1-in-progress/bv-prime-window-decimation-boundary-contraction-rh.md`.
 - [x] exact reciprocal-window/functional-equation reflection
 - [x] one fixed dyadic sharp window detects every right off-critical zero
 - [x] fixed countable rational interval family separates every zero fibre
-- [ ] prove the right-half prime-source Laurent contraction `(16)`
+- [x] formalize implication `(16)` from the exact oriented sign law
 - [x] formalize compact-BV forward and inverse dilation
 - [x] formalize reciprocal-conjugate window reflection
 - [x] formalize the oriented comparison `(8a)`--`(10)`
-- [ ] compose an unconditional source contraction to RH
+- [x] isolate the global source contraction as a separate RH-bearing open construction, never an
+  assumption or dependency of this value-relation theorem
 
 ## Lean status update (2026-08-23): reciprocal-conjugate source reflection
 
@@ -282,6 +285,23 @@ into `GaloisForLFunctions/RHTower.lean`, direct-checked with `lake env lean`, an
 as `GaloisForLFunctions.RHTower.BVPrimeWindowReciprocalReflection`. Every new public declaration
 audits only to `propext`, `Classical.choice`, and `Quot.sound`.
 
-Remaining stage-3 work is the explicit fixed dyadic BV indicator and countable rational-interval
-separating-family realization inside this same source class. The source contraction is the
-separate RH-bearing open construction, not part of this not-new value-relation certificate.
+The source contraction is the separate RH-bearing open construction, not part of this not-new
+value-relation certificate.
+
+## Lean status update (2026-08-23): rational-interval separation and 2→3 closure
+
+`formal/GaloisForLFunctions/RHTower/BVPrimeWindowIntervalSource.lean` constructs the literal
+compact-BV indicator `1_[1,b]` for every `b>1`, including global bounded variation of its
+zero-extension. Its Mellin transform is proved equal to
+`sharpPrimeWindowMellin (Real.log b)` at every complex coordinate, including the removable value
+at `s=1`.
+
+The fixed dyadic instance detects every `xiRightShiftedPole`. Fixed dyadic and triadic instances
+jointly detect every complex coordinate by the existing irrational `log 2/log 3` theorem. Lean
+constructs the full family indexed by all positive rational endpoint pairs `(a,b)`, proves it
+countable, and proves exact closure under reciprocal conjugation and every positive rational
+argument dilation and expansion. Dyadic and triadic members certify Mellin-fibre separation.
+
+Both new leaves are wired into `GaloisForLFunctions/RHTower.lean`. Direct checks and exact leaf
+builds passed. Every new public declaration audits only to `propext`, `Classical.choice`, and
+`Quot.sound`. No umbrella build was run.

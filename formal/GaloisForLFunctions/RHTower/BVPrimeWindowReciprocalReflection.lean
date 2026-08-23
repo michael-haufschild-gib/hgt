@@ -17,7 +17,9 @@ noncomputable section
 namespace RHTower
 namespace CompactBVPrimeWindow
 
-private theorem boundedVariationOn_univ_of_eq_zero_off_Icc
+/-- Extending a BV map on a closed interval by zero on both complementary rays preserves bounded
+variation globally.  Endpoint jumps contribute only finite `edist` terms. -/
+theorem boundedVariationOn_univ_of_eq_zero_off_Icc
     {f : ℝ → ℂ} {a b : ℝ} (hab : a ≤ b)
     (hf : BoundedVariationOn f (Set.Icc a b))
     (hzero : ∀ x, x ∉ Set.Icc a b → f x = 0) :

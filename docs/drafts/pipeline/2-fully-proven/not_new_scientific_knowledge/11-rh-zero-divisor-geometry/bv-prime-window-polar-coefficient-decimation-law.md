@@ -233,8 +233,7 @@ The continuation and residue laws used in `(9)` are formalized in:
 forward and inverse compact-BV windows, proves the reciprocal-pair coefficient decimation `(12)`
 for both the finite von-Mangoldt window and the complete prime--polar coefficient, and proves the
 continued Laurent character and its oriented squared-norm factorization.  These modules are wired
-through `formal/GaloisForLFunctions/RHTower.lean`.  The full bilateral integer ladder and the
-off-multiple layer law `(15)` remain paper theorems.
+through `formal/GaloisForLFunctions/RHTower.lean`.
 
 ## Gates
 
@@ -245,7 +244,30 @@ off-multiple layer law `(15)` remain paper theorems.
 - [x] ordinary Dirichlet--Hardy completion excluded for every uncensored source
 - [x] fixed-window conditional chain to RH isolated
 - [x] formalize compact-BV forward/inverse dilation and reciprocal-pair coefficient decimation
-- [ ] formalize the full bilateral integer ladder and off-multiple layer law
+- [x] formalize the full bilateral integer ladder and off-multiple layer law
 - [ ] construct the scale-zero source boundary quotient `(20)`
 - [ ] prove source-side positivity without divisor-selected weights
 - [ ] compose an unconditional proof of RH
+
+## Lean status update (2026-08-23): bilateral integer ladder and off-multiple layer
+
+`formal/GaloisForLFunctions/RHTower/BVPrimeWindowIntegerDilationLadder.lean` constructs
+`W_j(x)=W(r^j x)` for every `j : ℤ` inside the literal compact-BV source class. It proves the exact
+Mellin character `(3)`, object-level two-rung composition by dilation `r²`, finite-prime and full
+prime--polar coefficient laws `(4)`--`(8)`, and the coefficient-operator identity
+`D_(r²) p_(j-2)=p_j`.
+
+On every continued Laurent fibre the same leaf proves the exact character `(10)`. Its literal
+off-multiple coefficient layer is supported away from indices divisible by `r²`, and its residue
+is exactly `(1-r⁻²)R_(j-2)`, closing `(13)`--`(16)` without a zero-location assumption. The module
+is umbrella-wired, direct-checked, and exact-target-built. Every new public declaration audits
+only to `propext`, `Classical.choice`, and `Quot.sound`; no umbrella build was run.
+
+`formal/GaloisForLFunctions/HTGeometry/CoefficientWeightedDecimation.lean` formalizes `(17)`--`(18)`
+on positive-index complex sequences. It proves the squared-energy bound `q^(2 alpha)` and the norm
+bound `q^alpha` for every real `alpha`, stronger than the paper's `alpha>=0` range. This independent
+leaf is wired into `HTGeometry.lean`, direct-checked, exact-target-built, and axiom-clean.
+
+Remaining stage-3 work is the ordinary Dirichlet--Hardy exclusion as a literal Lean theorem. The
+scale-zero positive boundary quotient and RH implication remain separate RH-bearing construction
+problems and are not assumptions of this card.

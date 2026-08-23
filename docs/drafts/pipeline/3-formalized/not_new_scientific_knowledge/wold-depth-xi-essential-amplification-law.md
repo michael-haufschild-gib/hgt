@@ -1,7 +1,7 @@
 # Wold-depth--Xi essential amplification law
 
 - **ID:** `wold-depth-xi-essential-amplification-law`
-- **Stage:** 2-fully-proven / not new scientific knowledge
+- **Stage:** 3-formalized / not new scientific knowledge
 - **Type:** EXACT SOURCE-REPORTER LOWER BOUND / IRREGULAR-SCALE IDENTIFICATION
 - **Scientific status:** `[PAPER-PROVED] [CORPUS-NEW SYNTHESIS] [NOT RH]`
   `[NO EXTERNAL NOVELTY CLAIM]`
@@ -311,17 +311,24 @@ corpus-new synthesis of already proved source laws.
 
 ## Lean decision
 
-`RHTower.WoldDepthXiEssentialAmplification` now joins two literal source definitions already in
-the tree: `shellSourceMass` and `xiDepthSuccessorDefect`.  It constructs canonical orthogonal
-`ℓ²` shell-coordinate vectors with squared norm `shellSourceMass (M+1)`, proves the exact least
-operator amplification, proves its rescaled Xi-connection limit, and closes the exponent-normal
-action `Real.log 2 / 2`.  Every realizing operator family is proved to dominate every smaller
-exponential rate eventually.
+`RHTower.WoldDepthXiEssentialAmplification` joins the literal source definitions
+`shellSourceMass` and `xiDepthSuccessorDefect`.  It constructs the canonical orthogonal `ℓ²`
+shell-coordinate carrier with squared shell norm `shellSourceMass (M+1)` and proves the exact
+pointwise minimal amplification.
 
-This is the exact singleton-compact specialization of `(13)`--`(15)`, not a replacement for the
-full compact-uniform theorem.  The tree still lacks the infinite Wold standard-form shell
-projections, uniform `C(K)` Xi-successor convergence, and the literal Gamma/co-Poisson/Sonin
-carrier.  Those interfaces remain necessary before moving the whole card to Stage 3.
+`HTGeometry.CompactUniformDilation` supplies reusable compact-uniform dilation difference
+quotients, compact-uniform dilation continuity, quotient stability away from zero, and filter
+reindexing.  `RHTower.WoldDepthXiCompactUniformAmplification` then proves `(8)` in full compact
+uniformity, realizes literal successors in `BoundedContinuousFunction K ℂ` (the standard normed
+model of `C(K)`), and proves exact operator lower bound `(13)`, action `(14)`, and every
+finite-Rees divergence statement `(15)`.  Zero patch affects only finite prefix before dilated
+denominators are uniformly nonzero; eventual identity theorem proves each asymptotic packet is
+literal `xiDepthSuccessorDefect` at every point of `K`.
+
+Both new leaves pass direct source checks and targeted `.olean` builds.  Delta axiom audits of
+every new definition and theorem report only `propext`, `Classical.choice`, and `Quot.sound`.
+Source-global alien connection and Gamma/co-Poisson/Sonin compatibility remain later research
+targets, not missing parts of theorem `(13)`--`(15)`.
 
 ## Gates
 
@@ -333,8 +340,9 @@ carrier.  Those interfaces remain necessary before moving the whole card to Stag
 - [x] preliminary literature noncollision
 - [x] literal shell-coordinate norm, exact pointwise amplification, action, and eventual
   exponential lower bound formalized in Lean
-- [ ] extend Xi depth-successor convergence uniformly to arbitrary compact `K`
-- [ ] formalize the full `C(K)` operator statement `(13)`--`(15)`
+- [x] extend Xi depth-successor convergence uniformly to arbitrary compact `K`
+- [x] formalize the full `C(K)` operator statement `(13)`--`(15)`
+- **Post-card research frontier (not part of proved theorem):**
 - [ ] construct source-global irregular connection
 - [ ] prove compatibility with prime cofinalization and depth cocycle
 - [ ] identify literal Gamma/co-Poisson/Sonin boundary value
@@ -344,8 +352,10 @@ carrier.  Those interfaces remain necessary before moving the whole card to Stag
 
 ## Log
 
-- 2026-08-23 -- Added `RHTower.WoldDepthXiEssentialAmplification`.  The leaf uses the actual Wold
-  shell masses and actual Xi depth successors, proves the exact singleton-compact minimal
-  amplification and action `Real.log 2 / 2`, and is wired into `RHTower`.  Targeted source and
-  `.olean` checks pass.  Batched axiom audits of all principal new theorems report only `propext`,
+- 2026-08-23 -- Added `RHTower.WoldDepthXiEssentialAmplification`,
+  `HTGeometry.CompactUniformDilation`, and
+  `RHTower.WoldDepthXiCompactUniformAmplification`.  Actual Wold shell masses and Xi successors now
+  yield compact-uniform `C(K)` convergence, exact operator amplification, action `Real.log 2 / 2`,
+  and divergence after every finite-Rees rescaling.  Leaves are wired into their umbrellas;
+  targeted source/`.olean` checks pass.  Batched delta axiom audits report only `propext`,
   `Classical.choice`, and `Quot.sound`.

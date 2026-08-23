@@ -1224,3 +1224,143 @@ and RH-consumer theorems cover the formal consequence.  Missing mathematics is t
 source-specific proof that completion purity survives the cofinal anomaly ideal while retaining
 every Xi conormal fibre.  Formalizing another abstract wrapper before that paper proof closes
 would duplicate the corpus and hide the only hard step.
+
+## Falsification: presentation equality is not arithmetic objectivity
+
+`[FALSIFIED — SUPERSEDES "Candidate universal law: arithmetic source equivalence under pure
+completion"]` The preceding two-prime argument made a categorical mistake.  The values
+`p^(-t)` at different ordinary primes need not be equal in order to arise from one global law.
+They are the prime restrictions of the single completely multiplicative character
+
+```text
+n |-> n^(-t).
+```
+
+Thus `2^(-t) = 3^(-t)` is not forced merely because the two local responses belong to one source
+class or one fixed action.  It is already an RH-strength extra condition.  The Meyer prime-time
+formalization makes the correct structure explicit: the fixed arithmetic flow has character
+`p^(rho - 1/2)` at prime `p`, and the prime dependence is coherent rather than anomalous.
+Presentation independence must preserve this global character, not collapse its local values.
+
+The useful survivor of the rejected candidate is narrower.  Prime and reflected presentations
+must be related by one source-defined recovery law, fixed before any zero is read.  What is
+forbidden is not prime-dependent value, but irreversible norm change of the retained logical
+source event under a purportedly exact forward/reflected passage.
+
+## Replacement candidate: dagger-conservative arithmetic objectivity
+
+`[BOLD CONJECTURE — NOT RH PROOF]` The literal pre-divisor Euler--Gamma/co-Poisson source admits a
+completed source-record representation with normalized prime transports `T_p` and reflected
+recoveries `R_p`, defined without reference to a divisor point, such that:
+
+1. each actual Xi principal conormal maps to a nonzero logical source section;
+2. `T_p` and `R_p` preserve the source order/unit structure and are dagger compatible;
+3. on the retained logical source sector, `R_p T_p = id` and `T_p R_p = id`;
+4. finite-prime/depth realizations form one compatible cofinal system, and the inverse-limit map
+   remains faithful on every actual Xi conormal;
+5. the existing source-normal transport law acts on the conormal selected by `rho` through the
+   already-proved eigencharacter `p^(rho - 1/2)` (up to the corpus's chosen reciprocal
+   orientation).
+
+This law does not produce a zero and does not identify different primes.  It says an actual zero
+is a retained source event, while completion plus reflection is exact reversible transport of
+that event.  Exact positive reversible transport is an order isomorphism; in a C*-realization,
+mutually inverse unital completely positive maps are multiplicative on the recovered sector.
+Dagger conservation then makes the scalar eigencharacter unitary:
+
+```text
+|p^(rho - 1/2)| = 1.
+```
+
+For any ordinary prime `p > 1`, this gives `Re(rho) = 1/2`.  Different zeros may have completely
+different formation histories; all that is universal is that an actual, recoverable arithmetic
+event cannot acquire or lose norm when carried around the completion/reflection loop.  Off-line
+zeros are therefore global completion errors: retained source events whose reflected recovery
+would have nonunit holonomy.
+
+### Why this is not another classic producer search
+
+Prime character, Gamma/reflection transfer, actual Xi conormal, and abstract inverse-UCP rigidity
+already exist in the formal corpus.  Unknown is not an operator with prescribed spectrum and not
+a positivity criterion fitted at `rho`.  It is a source theorem saying literal arithmetic
+completion is an exact reversible channel on the logical conormal sector it itself declares
+actual.  Spectral, Hodge, Hawking, recurrence, BV, ABHN, and shared-gauge routes become different
+observations of the same reversibility constraint:
+
+| Corpus shadow | Universal content |
+|---|---|
+| shared forward/reflected gauge | one transport and its dagger inverse |
+| Hawking partner recovery | no information loss across arithmetic horizon completion |
+| recurrence / complete formation history | cofinal recovery, not merely finite-stage return |
+| ABHN / reciprocity | global source record; insufficient without local-event faithfulness |
+| Bockstein / BV anomaly | obstruction to exact recovery on retained conormal |
+| modular superselection | nonunit character changes sector type and cannot be finitely sewn |
+| positive/Hodge/spectral endpoints | norm conservation after exact recovery, not an assumed producer |
+| topological soliton language | off-wall point is nonunit holonomy of a completion loop |
+
+### Existing formal consumer chain
+
+- `FrankensteinMeyerPrimeKoszulGammaReporter` identifies actual Xi prime-time character with
+  `p^(rho - 1/2)` and proves its Koszul/source incidence.
+- `CompleteResolutionCofinalConditioningLaw` and
+  `CompleteResolutionReflectedShellSecondCartierDescent` construct forward and reflected
+  source-normal transfers and their exact limiting characters.
+- `HTGeometry.UnitalCPInverseRigidity` proves abstract multiplicative rigidity supplied by
+  mutually inverse UCP maps.
+- `XiSelectedBilateralPositiveSourceReceiver` identifies bilateral positive recovery with unit
+  character and with the integral Gamma reporter endpoint.
+- `SourceHorizontalGammaSixMeyerModularUntwisting` identifies fixed Gamma-six source covariance
+  with unitarity of the Meyer character.
+- `CCMRationalAdelicCompletedXiFixedCoronaPolarization` identifies completed source-dagger
+  identity with critical line.
+
+These are consumers and consistency checks.  None constructs source-defined completed recovery
+independently of `rho`.
+
+### Hostile audit of the replacement
+
+1. **Pre-divisor dagger is too weak.** `RouteRPrimeLogEssentialCapFixedGradePhaseDagger` proves a
+   pre-divisor phase-dagger defect vanishes unconditionally, while completed same-fibre landing
+   remains RH-equivalent.  Law must retain actual conormal through completion.
+2. **Scalar derived completion is destructive.** Ordinary nonneutral Cartier specialization is
+   contractible and erases prime atom; full second-Cartier lattice retains a nonzero quadratic
+   ghost.  Neither erasure nor mere retention proves reversible recovery.
+3. **Finite-stage inverses are insufficient.** A nonzero anomaly can enter through cofinal
+   boundary.  Recovery maps and norms must be compatible and uniformly controlled through every
+   prime-power/depth refinement.
+4. **A fitted channel is circular.** `T_p`, `R_p`, operator systems, and dagger must be constructed
+   from literal source before selecting `rho`.  Choosing recovery on an Xi fibre after seeing its
+   character simply assumes desired unit norm.
+5. **Actuality-to-correctability is hard claim.** Nonzero source incidence does not generally
+   imply exact recovery.  This implication needs a new arithmetic reason; it cannot be promoted
+   from a QEC analogy.
+6. **Cofinal bounded recovery may be false.** Existing arithmetic-clock results show norms of
+   bounded recoveries can diverge.  Correct category may require a closed unbounded source-dagger
+   correspondence rather than a bounded Hilbert-space channel, but it must still yield an
+   isometry on each actual logical conormal.
+7. **Generalized-prime falsifier.** If an off-line generalized-prime system satisfies same source
+   axioms and admits same recovery, conjecture is false.  Literal integer divisibility, integral
+   Cartier structure, and archimedean self-dual record must be shown load-bearing rather than
+   listed decoratively.
+
+### Exact open core after correction
+
+Construct, before divisor specialization, a cofinal source correspondence
+
+```text
+literal Euler--Gamma source  --T_p-->  completed/reflected source record
+literal Euler--Gamma source  <--R_p--  completed/reflected source record
+```
+
+and prove all three non-circular facts:
+
+1. **source reversibility:** `R_p T_p = id` on the integral logical conormal module;
+2. **cofinal faithfulness:** the map from every actual Xi principal conormal into that module is
+   nonzero and survives inverse-limit completion;
+3. **dagger compatibility:** reflected transport is adjoint recovery for source norm/order coming
+   from literal arithmetic action.
+
+Then formal consumer is short: actual Xi conormal `x_rho != 0`,
+`T_p x_rho = p^(rho-1/2) x_rho`, exact dagger recovery makes `T_p` isometric on `x_rho`, hence
+`|p^(rho-1/2)| = 1`, hence `Re(rho)=1/2`.  Until three source statements are proved without Xi
+line information, RH is not proved.
