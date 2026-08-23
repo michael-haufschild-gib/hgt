@@ -46,10 +46,11 @@ def thetaCuspMovingMirrorFullRenormalizedIntegrand
   let g := thetaCuspFullSource v
   let g' := deriv thetaCuspFullSource v
   let totalFrequency := incomingFrequency + outgoingFrequency
+  let phaseRate := ((-outgoingFrequency * g : ℝ) : ℂ) * Complex.I
+  let slope := ((outgoingFrequency * g' : ℝ) : ℂ)
   Complex.exp (((-totalFrequency * v : ℝ) : ℂ) * Complex.I) *
-    (Complex.exp (((-lambda * outgoingFrequency * g : ℝ) : ℂ) * Complex.I) *
-        (((outgoingFrequency - incomingFrequency : ℝ) : ℂ) +
-          ((lambda * outgoingFrequency * g' : ℝ) : ℂ)) -
+    (Complex.exp ((lambda : ℂ) * phaseRate) *
+        (((outgoingFrequency - incomingFrequency : ℝ) : ℂ) + (lambda : ℂ) * slope) -
       ((outgoingFrequency - incomingFrequency : ℝ) : ℂ))
 
 /-- Exact inertial-subtracted Davies--Fulling pair numerator for the theta mirror family. -/
@@ -64,8 +65,8 @@ def thetaCuspMovingMirrorFullFirstJetIntegrand
   let g := thetaCuspFullSource v
   let g' := deriv thetaCuspFullSource v
   let totalFrequency := incomingFrequency + outgoingFrequency
-  let phase := Complex.exp (((-lambda * outgoingFrequency * g : ℝ) : ℂ) * Complex.I)
   let phaseRate := ((-outgoingFrequency * g : ℝ) : ℂ) * Complex.I
+  let phase := Complex.exp ((lambda : ℂ) * phaseRate)
   let slope := ((outgoingFrequency * g' : ℝ) : ℂ)
   Complex.exp (((-totalFrequency * v : ℝ) : ℂ) * Complex.I) *
     (phaseRate * phase *
@@ -78,14 +79,72 @@ def thetaCuspMovingMirrorFullSecondJetIntegrand
   let g := thetaCuspFullSource v
   let g' := deriv thetaCuspFullSource v
   let totalFrequency := incomingFrequency + outgoingFrequency
-  let phase := Complex.exp (((-lambda * outgoingFrequency * g : ℝ) : ℂ) * Complex.I)
   let phaseRate := ((-outgoingFrequency * g : ℝ) : ℂ) * Complex.I
+  let phase := Complex.exp ((lambda : ℂ) * phaseRate)
   let slope := ((outgoingFrequency * g' : ℝ) : ℂ)
   Complex.exp (((-totalFrequency * v : ℝ) : ℂ) * Complex.I) *
     (phaseRate ^ 2 * phase *
         (((outgoingFrequency - incomingFrequency : ℝ) : ℂ) +
           (lambda : ℂ) * slope) +
       2 * phaseRate * phase * slope)
+
+/-- The displayed first jet is the actual pointwise coupling derivative of the exact integrand. -/
+theorem hasDerivAt_thetaCuspMovingMirrorFullRenormalizedIntegrand
+    (lambda outgoingFrequency incomingFrequency v : ℝ) :
+    HasDerivAt
+      (fun coupling : ℝ => thetaCuspMovingMirrorFullRenormalizedIntegrand
+        coupling outgoingFrequency incomingFrequency v)
+      (thetaCuspMovingMirrorFullFirstJetIntegrand
+        lambda outgoingFrequency incomingFrequency v)
+      lambda := by
+  unfold thetaCuspMovingMirrorFullRenormalizedIntegrand
+    thetaCuspMovingMirrorFullFirstJetIntegrand
+  dsimp only
+  have hlambda : HasDerivAt (fun coupling : ℝ => (coupling : ℂ)) 1 lambda :=
+    (hasDerivAt_id lambda).ofReal_comp
+  have hphase := (hlambda.mul_const
+    (((-outgoingFrequency * thetaCuspFullSource v : ℝ) : ℂ) * Complex.I)).cexp
+  have haffine := (hlambda.mul_const
+    ((outgoingFrequency * deriv thetaCuspFullSource v : ℝ) : ℂ)).const_add
+      ((outgoingFrequency - incomingFrequency : ℝ) : ℂ)
+  convert ((hphase.mul haffine).sub_const
+      ((outgoingFrequency - incomingFrequency : ℝ) : ℂ)).const_mul
+        (Complex.exp
+          (((-(incomingFrequency + outgoingFrequency) * v : ℝ) : ℂ) * Complex.I)) using 1 <;>
+    ring
+
+/-- The displayed second jet is the actual derivative of the first coupling jet. -/
+theorem hasDerivAt_thetaCuspMovingMirrorFullFirstJetIntegrand
+    (lambda outgoingFrequency incomingFrequency v : ℝ) :
+    HasDerivAt
+      (fun coupling : ℝ => thetaCuspMovingMirrorFullFirstJetIntegrand
+        coupling outgoingFrequency incomingFrequency v)
+      (thetaCuspMovingMirrorFullSecondJetIntegrand
+        lambda outgoingFrequency incomingFrequency v)
+      lambda := by
+  unfold thetaCuspMovingMirrorFullFirstJetIntegrand
+    thetaCuspMovingMirrorFullSecondJetIntegrand
+  dsimp only
+  let base := Complex.exp
+    (((-(incomingFrequency + outgoingFrequency) * v : ℝ) : ℂ) * Complex.I)
+  let rate := ((-outgoingFrequency * thetaCuspFullSource v : ℝ) : ℂ) * Complex.I
+  let slope := ((outgoingFrequency * deriv thetaCuspFullSource v : ℝ) : ℂ)
+  let offset := ((outgoingFrequency - incomingFrequency : ℝ) : ℂ)
+  let phase : ℝ → ℂ := fun coupling => Complex.exp ((coupling : ℂ) * rate)
+  let affine : ℝ → ℂ := fun coupling => offset + (coupling : ℂ) * slope
+  have hlambda : HasDerivAt (fun coupling : ℝ => (coupling : ℂ)) 1 lambda :=
+    (hasDerivAt_id lambda).ofReal_comp
+  have hphase : HasDerivAt phase (phase lambda * rate) lambda := by
+    simpa [phase] using (hlambda.mul_const rate).cexp
+  have haffine : HasDerivAt affine slope lambda := by
+    simpa [affine] using (hlambda.mul_const slope).const_add offset
+  have hfirst : HasDerivAt
+      (fun coupling => rate * phase coupling * affine coupling + phase coupling * slope)
+      (rate * (phase lambda * rate) * affine lambda + rate * phase lambda * slope +
+        (phase lambda * rate) * slope) lambda := by
+    exact ((hphase.const_mul rate).mul haffine).add (hphase.mul_const slope)
+  convert hfirst.const_mul base using 1 <;>
+    simp only [base, rate, slope, offset, phase, affine] <;> ring
 
 /-! ## Source-square transform and nonzero physical second jet -/
 
@@ -234,9 +293,8 @@ private theorem integrable_deriv_thetaCuspSourceSquare :
           2 * (C0 * Real.exp (-|v|)) * (C1 * Real.exp (-|v|)) := by gcongr
       _ = 2 * C0 * C1 * Real.exp (-2 * |v|) := by
         ring_nf
-        rw [← Real.exp_add]
-        congr 2
-        ring
+        rw [← Real.exp_nat_mul]
+        ring_nf
       _ ≤ 2 * C0 * C1 * Real.exp (-|v|) :=
         mul_le_mul_of_nonneg_left
           (Real.exp_le_exp.mpr (by linarith [abs_nonneg v]))

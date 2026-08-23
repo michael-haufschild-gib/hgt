@@ -162,6 +162,8 @@ and the relation to the Fargues–Fontaine curve) into the corpus as closed Lean
 | **§13 hypotheses are non-vacuous**: `Spec K` for `K` algebraically closed has stalk and residue field `K` at its unique point, so the valued-point equivalence applies to it; plus the reusable `stalk (Spec R) 𝔭 ≅ R_𝔭` | `HTGeometry/SpecStalkLocalization.lean`, `RHTower/DeningerDynSysWittValuedPointSpec.lean` | closed |
 | **Prop 13.1 (`t41`) + (145)**: the `𝒪`-valued points of `W_rat(X)` in the Witt-homomorphism description (Deninger's `f̃_η^♯`, `f_s^♯`, `f̃_s^♯` with the two commuting squares) are exactly the character triples of Def 13.2, hence also the triples `(x,y,P'_y)` | `RHTower/DeningerDynSysWittValuedPoint.lean` | closed |
 | **Prop 13.1 (`t41`) CLOSED IN FULL**: a pair of stalk maps with the square (139) and the locality data (140) **is** a morphism `Spec 𝒪 → W_rat (X)` in the sense of Def 2.5, and its stalk maps give the pair back; the `stalkHom`/`stalkHom_comp` fields of Def 2.5 carry no information once `W_rat` commutes with stalks | `RHTower/DeningerDynSysProp131.lean` | closed |
+| **Prop 3.5, affine case**: for a ring with a continuous profinite action and invariant subring, the `C`-points of `Spec B` map **onto** those of `Spec A` with fibres exactly the `G`-orbits — Kucharczyk–Scholze Lemma 4.9 transported along `Spec.preimage` | `RHTower/DeningerDynSysProp35Affine.lean` | closed |
+| **§5, equations (41)–(43)**: Deninger's `ρ (P) = |(ker P)_tors|` and its Frobenius law `ρ (F_ν P) = ν_x ρ (P)` — the `ν`-th power map is a surjection of the torsion kernel of `F_ν P` onto that of `P` with kernel `μ_ν (κ)`, whose order is the prime-to-characteristic part of `ν` | `RHTower/DeningerDynSysRhoFrobenius.lean` | closed |
 | **Prop 1.1(b) in ring form over a domain**: `ω : ℤ[A ∖ 0] ≃+* W_rat(A)` for an integrally closed domain with algebraically closed fraction field, and the consequence `Hom_ring(W_rat(A), R) ≃ (A →*₀ R)` used for the `𝒪`-valued points | `RHTower/DeningerDynSysOmegaDomainRing.lean` | closed |
 | **Prop 1.1(b) (`t21nn`) in ring form**: `ω : ℤ[κˣ] ≃+* W_rat(κ)` for `κ` algebraically closed — the additive comparison is multiplicative because both sides are biadditive and `[a]⊙[b] = [ab]` | `RHTower/DeningerDynSysOmegaRing.lean` | closed |
 | **Cor 1.5(1) / Cor 1.7(2) algebraic core**: `Hom(W_rat(κ), C) ≃ (κˣ →* Cˣ)` for `κ` algebraically closed, via `ω` and `liftNCRingHom` | `RHTower/DeningerDynSysWittHomCharacters.lean` | closed |
@@ -886,4 +888,29 @@ Nothing in v4 is untracked by the ledger: the only apparent omission, Prop 1.4, 
   `base p` in the right form with no transport.
   `HTGeometry/SpecTwoPointBase.lean` gains `specBase_hgen`, `specBase_hbot`, `specBase_hspec`, so
   the hypothesis package is discharged for the concrete two-point base map of a specialisation.
+  Axiom audit: `[propext, Classical.choice, Quot.sound]`.
+
+- 2026-08-23 — **Proposition 3.5 closed in the affine case, at the level of schemes.**  The ring
+  statement was already in the corpus (`deningerHom_restrict_surjective` and
+  `deningerHom_restrict_eq_iff` — Kucharczyk–Scholze Lemma 4.9); what is new is the translation
+  through `Spec.preimage` / `Spec.map_preimage` / `Spec.map_injective`, which turns
+  `Hom (Spec C , Spec B) → Hom (Spec C , Spec A)` into `Hom (B , C) → Hom (A , C)` and so gives
+  `X (C) / G = X₀ (C)` for `X₀ = Spec A`, `X = Spec B`.  This is exactly the case Deninger's proof
+  reduces to.
+  **Route for the general case.**  mathlib has *relative normalization of schemes*:
+  `AlgebraicGeometry.Scheme.Hom.normalization` for a qcqs `f : X ⟶ Y`, with `fromNormalization`
+  integral and `normalizationObjIso` computing `Γ (f.normalization , U) = integralClosure Γ(Y,U) Γ(X, f⁻¹U)`
+  on affine opens.  Deninger's `X` is `f.normalization` for `f : Spec K ⟶ X₀`.  What the general
+  Prop 3.5 then needs on top of the affine case is (i) `Algebra.IsInvariant Γ(X₀,U₀) Γ(X,π⁻¹U₀) G`
+  on each affine open and (ii) the covering step: a `C`-point of `X₀` has a single point as image,
+  so it factors through any affine open containing it (`IsOpenImmersion.lift`).
+
+- 2026-08-23 — **Deninger's `ρ` and its Frobenius law (41)–(43) closed.**  `ρ (P)` is the order of
+  the torsion part of `ker P`, and the content of (42) is that the `ν`-th power map
+  `(ker (P ∘ ( )^ν))_tors → (ker P)_tors` is *surjective* — because an algebraically closed field
+  has `ν`-th roots and a root of a torsion element is torsion — with kernel `μ_ν (κ)`.  The order
+  formula is then `Subgroup.card_eq_card_quotient_mul_card_subgroup` plus
+  `QuotientGroup.quotientKerEquivOfSurjective`, and the corpus's
+  `deningerCard_rootsOfUnity_charP` / `_charZero` evaluate `#μ_ν (κ)` as `ordCompl[p] ν` resp. `ν`.
+  Both characteristics are recorded separately, matching Deninger's `ν_x`.
   Axiom audit: `[propext, Classical.choice, Quot.sound]`.

@@ -891,3 +891,39 @@ two-sided `c/(x log(1/x)) ≤ |G_z| ≤ C/(x log(1/x))` near `0`) plus the eleme
 `∫_0^δ x^{2α-2} log(1/x)^{-2} dx`, finite exactly when `α ≥ 1/2`.  For §3A the corpus already owns
 `RHTower/ExponentialIntegralE1.lean` (`integral_exp_neg_mul_log_div_Ioi`), which is the `V(z) =
 E₁(z-1)` vacuum, and `chebyshevPsi_sub_id_isBigO` for the PNT-with-error flatness.
+
+### Card 5, gate 4 COMPLETE: equations (17)–(20)
+
+New module `RHTower/PrimeTailHalfWeightWall.lean` (axiom-clean, wired).
+
+| card item | declaration |
+|---|---|
+| crude Dirichlet bound and measurability | `primeTailBound`, `norm_primeTailSum_le`, `norm_primeTailCurrent_le`, `measurable_primeTailStep`, `aestronglyMeasurable_primeTailCurrent` |
+| the critical model integral | `hasDerivAt_neg_inv_log`, **`integrableOn_inv_mul_log_sq`** |
+| two-sided boundary control | **`exists_two_sided_primeTailCurrent`** |
+| **`(17)` the half-weight wall** | `wallIntegrand`, `integrableOn_wallIntegrand_upper/_lower`, `log_inv_sq_le`, `not_integrableOn_wallIntegrand`, **`primeTailCurrent_halfWeight_wall`** |
+| **`(18)`** endpoint and the `L¹` contrast | `integrableOn_halfWeight_critical`, `hasDerivAt_neg_log_neg_log`, `not_integrableOn_inv_mul_log_inv`, **`not_integrableOn_primeTailCurrent`** |
+| **`(19)`, `(20)`** | `logHalfDensity`, `tendsto_exp_neg_nhdsGT`, **`tendsto_logHalfDensity_primeTailCurrent`** |
+
+Method notes.
+
+* The whole positive half of `(17)` reduces to ONE integrability statement, `1/(x log^2 x)` on
+  `(0, δ]`: for every `α ≥ 1/2` one has `x^{2α-2} ≤ x^{-1}` on `(0,1]`, so the single critical
+  profile dominates the entire range.  That statement is proved from the primitive `-1/log x`,
+  which Lean evaluates to `0` at `x = 0` on the nose, so the endpoint continuity needed by
+  `intervalIntegral.integrableOn_deriv_of_nonneg` is genuine, not an extension by hand.
+* The negative half absorbs the logarithm into a power: `log(1/x)^2 ≤ (4/η^2) x^{-η}` with
+  `η = (1-2α)/2` pushes the exponent to `(2α-3)/2 < -1`, and
+  `intervalIntegral.integrableOn_Ioo_rpow_iff` finishes.
+* `G_z ∉ L¹` needs a real divergence, not a power comparison: the primitive
+  `-log(-log x)` tends to `-∞`, so the truncated integrals are unbounded while a hypothetical
+  `L¹` bound would cap them.
+
+**Card 5 remaining: only §3A** (`(20a)`–`(20n)`).  The route is now fixed:
+`V_z` is `x^{-z}` times `∫_{Ioi (max e (1/x))} logPowerTail z 1`, so `(20d)` is the same Fubini as
+`(8)`; the continuous Abel identity for `J₀` is the same Fubini as `(13)`; and `(20j)` follows by
+subtracting the two Abel identities and using `|E(t)| ≤ C t e^{-c√log t}` with the monotone bound
+`e^{-c√log t} ≤ e^{-c√log y}` for `t ≥ y`.  `(20c)`/`(20e)`/`(20g)` need a complex `E₁` and its
+logarithmic singularity; the corpus owns the real `expIntegralOne` in
+`RHTower/ExponentialIntegralE1.lean` and the `ζ`-pole layer in `RHTower/ZetaLogDerivResidue.lean`
+and `RHTower/ZetaResidueFactorDerivative.lean`.

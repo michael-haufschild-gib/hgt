@@ -83,3 +83,30 @@ bridge is `AddCircle` Haar ↔ `(1/2π)∫₀^{2π}`, plus `∫₀^{2π} e^{u co
 translation — and that bridge is the next module.  Searches "AddCircle Haar integral equals
 interval integral period bridge" and "steinhaus laplace equals bessel I0 cos integral" found no
 existing version.
+
+## The linear lower bound and the interval bridge (2026-08-23)
+
+`HTGeometry/SteinhausCumulantLower.lean` — the finiteness input for `S5`, obtained WITHOUT any
+quantitative measure computation:
+
+- `projArc c = {x : c < proj x}` is open and contains `0` (where `proj = 1`), so its Haar mass
+  `arcMass c` is positive for every `c < 1` (`arcMass_pos`);
+- restricting the Haar integral to that arc gives `I₀(x) ≥ μ_c·e^{cx}` for `x ≥ 0`
+  (`arcMass_mul_exp_le_steinhausLaplace`), hence
+  `le_steinhausLogLaplace : cx + log μ_c ≤ log I₀(x)`;
+- integrated against the unit-mass profile,
+  **`le_rvCumulant : cλ + log μ_c ≤ Λ_α(λ)`** for `λ ≥ 0`.
+  Since `c < 1` is arbitrary this already forces `Λ_α(λ)/λ → 1`, which is exactly what makes
+  `I_α(q) = sup_{λ≥0}(λq − Λ_α(λ))` FINITE for every `q < 1`: take `q < c < 1` and the supremum is
+  at most `−log μ_c`.
+
+`HTGeometry/SteinhausIntervalBridge.lean` — **the bridge**:
+
+- `steinhausProjection_coe : proj ↑t = cos t` (from `fourier_coe_apply` at `T = 2π`);
+- **`steinhausLaplace_eq_intervalIntegral : I₀(r) = (1/2π)∫₀^{2π} e^{r cos t} dt`**, via
+  `AddCircle.integral_preimage` and `AddCircle.volume_eq_smul_haarAddCircle`.
+
+This identifies the abstract Haar integral with the classical Bessel integral and is the gate to
+every SHARP envelope: the upper bound `log I₀(x) ≤ x − ½log x + C` (needed for `I_α(q) → ∞`, and
+for `S6`/`S7`) now reduces to `cos t ≤ 1 − 2t²/π²` on `[−π,π]` (Jordan's inequality via
+`cos t = 1 − 2sin²(t/2)`) plus mathlib's Gaussian integral.
