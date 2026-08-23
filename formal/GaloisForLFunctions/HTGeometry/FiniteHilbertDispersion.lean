@@ -108,6 +108,53 @@ theorem finite_weighted_hilbert_dispersion
   rw [finite_pairwise_hilbert_dispersion]
   ring
 
+/-- Normalized finite weighted Hilbert variance `(AH8)` when total weight is nonzero. -/
+theorem finite_normalized_weighted_hilbert_dispersion
+    (s : Finset ι) (w : ι → ℝ) (v : ι → E)
+    (hw : ∑ i ∈ s, w i ≠ 0) :
+    ‖∑ i ∈ s, w i • v i‖ ^ 2 / (∑ i ∈ s, w i) ^ 2 =
+      (∑ i ∈ s, (w i / ∑ j ∈ s, w j) * ‖v i‖ ^ 2) -
+        (1 / 2 : ℝ) * ∑ i ∈ s, ∑ j ∈ s,
+          (w i / ∑ k ∈ s, w k) * (w j / ∑ k ∈ s, w k) *
+            ‖v i - v j‖ ^ 2 := by
+  let W : ℝ := ∑ i ∈ s, w i
+  let M : ℝ := ∑ i ∈ s, w i * ‖v i‖ ^ 2
+  let D : ℝ := ∑ i ∈ s, ∑ j ∈ s, w i * w j * ‖v i - v j‖ ^ 2
+  have hW : W ≠ 0 := hw
+  have hmoment :
+      (∑ i ∈ s, (w i / W) * ‖v i‖ ^ 2) = M / W := by
+    calc
+      ∑ i ∈ s, (w i / W) * ‖v i‖ ^ 2 =
+          ∑ i ∈ s, (w i * ‖v i‖ ^ 2) / W := by
+            apply Finset.sum_congr rfl
+            intro i hi
+            ring
+      _ = M / W := by
+            simp only [M, Finset.sum_div]
+  have hpair :
+      (∑ i ∈ s, ∑ j ∈ s,
+        (w i / W) * (w j / W) * ‖v i - v j‖ ^ 2) = D / W ^ 2 := by
+    calc
+      ∑ i ∈ s, ∑ j ∈ s,
+          (w i / W) * (w j / W) * ‖v i - v j‖ ^ 2 =
+          ∑ i ∈ s, ∑ j ∈ s,
+            (w i * w j * ‖v i - v j‖ ^ 2) / W ^ 2 := by
+              apply Finset.sum_congr rfl
+              intro i hi
+              apply Finset.sum_congr rfl
+              intro j hj
+              ring
+      _ = D / W ^ 2 := by
+            simp only [D, Finset.sum_div]
+  change ‖∑ i ∈ s, w i • v i‖ ^ 2 / W ^ 2 =
+    (∑ i ∈ s, (w i / W) * ‖v i‖ ^ 2) -
+      (1 / 2 : ℝ) * ∑ i ∈ s, ∑ j ∈ s,
+        (w i / W) * (w j / W) * ‖v i - v j‖ ^ 2
+  rw [hmoment, hpair]
+  rw [finite_weighted_hilbert_dispersion]
+  field_simp [hW]
+  ring
+
 /-- On a zero-total-weight packet, squared Hilbert distance is conditionally negative. -/
 theorem finite_pairwise_hilbert_dispersion_of_sum_eq_zero
     (s : Finset ι) (w : ι → ℝ) (v : ι → E) (hw : ∑ i ∈ s, w i = 0) :

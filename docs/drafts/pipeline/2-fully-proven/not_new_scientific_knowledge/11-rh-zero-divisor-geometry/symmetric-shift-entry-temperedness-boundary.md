@@ -234,3 +234,28 @@ new endpoint declarations likewise have only standard Lean foundations.
 The leaf is imported by `GaloisForLFunctions/RHTower.lean`, direct-checked with `lake env lean`, and exact-target-built with `lake build GaloisForLFunctions.RHTower.SymmetricShiftEulerSlopes`.  The four new declarations audit only to `[propext, Classical.choice, Quot.sound]`.
 
 This is not yet an actual completed Euler-product realization of the shifted Xi/Dirichlet family, nor the global Euler-discrepancy abscissa proof.  Those remaining analytic constructions still prevent moving the complete card to stage 3.
+
+## Lean status update (2026-08-23): actual finite Euler factors
+
+`formal/GaloisForLFunctions/RHTower/SymmetricShiftFiniteEuler.lean` now connects the preceding local-root algebra to the project’s actual finite Euler factor `1 - exp(-s log p)`.  It proves exactly that the `s+a` factor has reciprocal root `p^{-a}`, the `s-a` factor has reciprocal root `p^a`, and every finite semilocal product transports factorwise to these two packets.  The two roots are identified with `SymmetricShiftEulerSlopes`’ unitary-root packet, so the slope and exact-temperedness laws apply directly to the existing finite Euler product rather than to an auxiliary model.
+
+The leaf is wired into `GaloisForLFunctions/RHTower.lean`, direct-checked with `lake env lean`, and exact-target-built with `lake build GaloisForLFunctions.RHTower.SymmetricShiftFiniteEuler`.  All five declarations audit only to `[propext, Classical.choice, Quot.sound]`.
+
+The unresolved part is specifically passage from all finite semilocal products to the completed infinite Euler product and its discrepancy abscissa.  No finite-product statement is being substituted for that global claim, so the card remains stage 2.
+
+## Lean status update (2026-08-23): global dominant Euler branch
+
+`formal/GaloisForLFunctions/RHTower/SymmetricShiftPrimeEulerAbscissa.lean` now gives the exact all-prime absolute-convergence law for the dominant `p^a` branch created by the finite Euler translation:
+`∑_p ‖p^a p^{-s}‖` is summable if and only if `Re s > 1+a`.  This is an unconditional theorem over the actual prime type, not a finite-prime approximation, and directly formalizes the global source scale responsible for the discontinuity at every nonzero shift.  It was wired into `GaloisForLFunctions/RHTower.lean`, direct-checked with `lake env lean`, exact-target-built with `lake build GaloisForLFunctions.RHTower.SymmetricShiftPrimeEulerAbscissa`, and both declarations audit only to `[propext, Classical.choice, Quot.sound]`.
+
+The exact comparison of this dominant branch with the full coefficient `p^a+p^{-a}-2` (and then all prime-power layers `k`) remains to prove before the card's stated global Euler-discrepancy abscissa is fully closed.  This update does not claim that stronger result, so the card remains stage 2.
+
+## Lean status update (2026-08-23): exact first-prime discrepancy abscissa
+
+`formal/GaloisForLFunctions/RHTower/SymmetricShiftEulerDiscrepancy.lean` now formalizes the actual first-prime logarithmic discrepancy
+`c_a(p,1)=p^a+p^{-a}-2` for every positive shift encoded in the data.  It proves the positive-square identity, a uniform two-sided comparison with the dominant `p^a` branch, and the exact all-prime theorem
+`∑_p c_a(p,1)p^{-σ}` is summable if and only if `σ>1+a`.
+
+This is stronger than the preceding dominant-branch lower-bound anchor: there is no uncancelled-leading-term assumption.  The leaf is wired into `GaloisForLFunctions/RHTower.lean`, direct-checked with `lake env lean`, and exact-target-built with `lake build GaloisForLFunctions.RHTower.SymmetricShiftEulerDiscrepancy`.  All seven new declarations audit only to `[propext, Classical.choice, Quot.sound]`.
+
+The remaining global-discrepancy work is now sharply limited to assembling every prime-power layer `k≥2` with the harmonic `1/k` weight and identifying the resulting two-index series with the shifted completed Euler-product discrepancy.  The card is not moved before that assembly is formalized.

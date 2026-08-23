@@ -50,7 +50,7 @@ namespace RHTower
 /-! ## The four points of a quartet -/
 
 /-- The four points `α, -α, conj α, -conj α` of a quartet. -/
-private def quartetPoint (α : ℂ) : Fin 4 → ℂ
+def quartetPoint (α : ℂ) : Fin 4 → ℂ
   | 0 => α
   | 1 => -α
   | 2 => (starRingEnd ℂ) α
@@ -406,6 +406,65 @@ theorem exists_quartet_passport_realizer_of_base {J : Type} [Fintype J] [Decidab
     quartetRealizer_ne_zero_on_imaginaryAxis ha₀ hBpos, ?_, hjet⟩
   intro h hper
   exact (quartetRealizer_periodic_iff ha₀ hdeg h).mp hper
+
+/-- The local Taylor representative of an arbitrary analytic target divided by the envelope. -/
+def quartetAnalyticBasePoly (a : ℝ) (α : ℂ) (N : ℕ) (target : ℂ → ℂ) : Polynomial ℂ :=
+  deningerLocalJetPolynomial α
+    (fun k : Fin (N + 2) =>
+      iteratedDeriv k.val (fun z => target z / coshQuartetEnvelope a z) α)
+
+theorem quartetAnalyticBasePoly_jets (a : ℝ) (α : ℂ) (N : ℕ) (target : ℂ → ℂ)
+    {n : ℕ} (hn : n < N + 2) :
+    (Polynomial.derivative^[n] (quartetAnalyticBasePoly a α N target)).eval α =
+      iteratedDeriv n (fun z => target z / coshQuartetEnvelope a z) α := by
+  rw [quartetAnalyticBasePoly,
+    deningerLocalJetPolynomial_iterateDerivative_eval α _ hn]
+
+/-- Every finite packet of analytic simple-zero targets is globally realized through its prescribed
+jet depth, while retaining all quartet-realizer guards. -/
+theorem exists_quartet_passport_realizer_of_target {J : Type} [Fintype J] [DecidableEq J]
+    [Nonempty J] (a₀ : ℝ) (ha₀ : a₀ ≠ 0) (α : J → ℂ) (N : J → ℕ)
+    (target : J → ℂ → ℂ) (hαre : ∀ j, (α j).re ≠ 0)
+    (hAne : ∀ j, coshQuartetEnvelope a₀ (α j) ≠ 0)
+    (htarget : ∀ j, AnalyticAt ℂ (target j) (α j))
+    (htargetzero : ∀ j, target j (α j) = 0)
+    (hinj : Function.Injective (fun i : J × Fin 4 => quartetPoint (α i.1) i.2)) :
+    ∃ B : Polynomial ℂ,
+      0 < B.degree ∧
+      (∀ z : ℂ, quartetRealizer a₀ B (-z) = quartetRealizer a₀ B z) ∧
+      (∀ z : ℂ, quartetRealizer a₀ B ((starRingEnd ℂ) z) =
+        (starRingEnd ℂ) (quartetRealizer a₀ B z)) ∧
+      (∀ y : ℝ, quartetRealizer a₀ B ((y : ℂ) * I) ≠ 0) ∧
+      (∀ h : ℂ, Function.Periodic (quartetRealizer a₀ B) h → h = 0) ∧
+      (∀ (j : J) (n : ℕ), n < N j + 2 →
+        iteratedDeriv n (quartetRealizer a₀ B) (α j) =
+          iteratedDeriv n (target j) (α j)) := by
+  let base : J → Polynomial ℂ := fun j => quartetAnalyticBasePoly a₀ (α j) (N j) (target j)
+  have hbase0 : ∀ j, (base j).eval (α j) = 0 := by
+    intro j
+    have hbase := quartetAnalyticBasePoly_jets a₀ (α j) (N j) (target j) (n := 0) (by omega)
+    change (base j).eval (α j) = 0
+    rw [show (base j).eval (α j) =
+        (Polynomial.derivative^[0] (base j)).eval (α j) by simp]
+    rw [show base j = quartetAnalyticBasePoly a₀ (α j) (N j) (target j) by rfl,
+      hbase]
+    simp [htargetzero j]
+  obtain ⟨B, hdeg, heven, hreal, hpos, hperiod, hbasejets⟩ :=
+    exists_quartet_passport_realizer_of_base a₀ ha₀ α N base hbase0 hαre hinj
+  refine ⟨B, hdeg, heven, hreal, hpos, hperiod, ?_⟩
+  intro j n hn
+  calc
+    iteratedDeriv n (quartetRealizer a₀ B) (α j) =
+        iteratedDeriv n (fun z => coshQuartetEnvelope a₀ z * (base j).eval z) (α j) :=
+      hbasejets j n hn
+    _ = iteratedDeriv n (target j) (α j) := by
+      refine iteratedDeriv_envelopeProduct_eq_target (N := N j + 1)
+        (coshQuartetEnvelope_analyticAt a₀ (α j)) (hAne j) (htarget j) ?_ n (by omega)
+      intro m hm
+      rw [GaloisForLFunctions.HTGeometry.iteratedDeriv_polynomial_eval]
+      change (Polynomial.derivative^[m]
+        (quartetAnalyticBasePoly a₀ (α j) (N j) (target j))).eval (α j) = _
+      exact quartetAnalyticBasePoly_jets a₀ (α j) (N j) (target j) (by omega)
 
 /-- The original linear-germ quartet passport theorem, recovered from the reusable arbitrary-base
 Hermite realization by choosing the local envelope-normalized linear target. -/

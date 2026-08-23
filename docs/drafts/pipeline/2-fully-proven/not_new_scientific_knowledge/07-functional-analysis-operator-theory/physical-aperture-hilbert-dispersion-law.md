@@ -359,7 +359,7 @@ audit of the Gram, distance, energy, and cross-floor theorems reports only `prop
       specialization
 - [x] formalize generic conditional negative type and its equality classification for
       zero-total-weight finite packets
-- [ ] formalize the remaining generic completeness statement
+- [x] formalize the generic completeness statement
 - [ ] prove a genuinely new arithmetic upper bound on `Disp_M`
 
 ## Log
@@ -374,3 +374,13 @@ audit of the Gram, distance, energy, and cross-floor theorems reports only `prop
   including the literal quotient infimum `(AH3)`, are kernel-closed.  Completeness work is
   reduced to the remaining compact scalar-subsequence assembly; its Boolean-limit,
   fixed-aperture-support, and measurable-indicator reconstruction infrastructure is in place.
+- 2026-08-23 -- Closed the generic completeness assembly in
+  `HTGeometry.isClosed_centeredIndicatorOn_range`: every `L²` limit of centered measurable
+  aperture indicators is again a centered measurable aperture indicator.  The proof takes a
+  compact subsequence of aperture measures, reconstructs the uncentered indicator limit, and
+  identifies its recovered measure by continuous pairing with the aperture constant.  Targeted
+  source and `.olean` checks pass; the new theorem's axiom audit reports only `propext`,
+  `Classical.choice`, and `Quot.sound`.
+- 2026-08-23 -- Added the exact inherited-metric completeness corollary
+  `HTGeometry.isComplete_centeredIndicatorOn_range`; its targeted audit reports only the same
+  standard Lean axioms.

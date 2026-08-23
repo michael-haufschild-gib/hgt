@@ -74,6 +74,28 @@ theorem iteratedDeriv_envelopeProduct_eq_linear {A : ℂ → ℂ} {B : Polynomia
   rw [hev.iteratedDeriv_eq] at h1
   exact h1
 
+/-- The envelope-weighted jet target for an arbitrary analytic germ. -/
+theorem iteratedDeriv_envelopeProduct_eq_target {A : ℂ → ℂ} {B : Polynomial ℂ}
+    {w : ℂ} {target : ℂ → ℂ} {N : ℕ}
+    (hA : AnalyticAt ℂ A w) (hAw : A w ≠ 0) (htarget : AnalyticAt ℂ target w)
+    (h : ∀ n ≤ N, iteratedDeriv n (fun z => B.eval z) w =
+      iteratedDeriv n (fun z => target z / A z) w) :
+    ∀ n ≤ N, iteratedDeriv n (fun z => A z * B.eval z) w =
+      iteratedDeriv n target w := by
+  have hquot : AnalyticAt ℂ (fun z => target z / A z) w := htarget.div hA hAw
+  have hB : AnalyticAt ℂ (fun z : ℂ => B.eval z) w :=
+    (Polynomial.differentiable B).analyticAt w
+  have hstep := iteratedDeriv_mul_congr hA hB hquot h
+  intro n hn
+  have h1 : iteratedDeriv n (A * fun z : ℂ => B.eval z) w =
+      iteratedDeriv n (A * fun z : ℂ => target z / A z) w := hstep n hn
+  have hev : (A * fun z : ℂ => target z / A z) =ᶠ[𝓝 w] target := by
+    filter_upwards [hA.continuousAt.eventually_ne hAw] with z hz
+    simp only [Pi.mul_apply]
+    field_simp
+  rw [hev.iteratedDeriv_eq] at h1
+  exact h1
+
 /-- A jet match with the linear germ makes `w` a simple zero of the product. -/
 theorem simpleZero_of_envelopeProduct_jets {A : ℂ → ℂ} {B : Polynomial ℂ} {w ε : ℂ}
     (_hε : ε ≠ 0)

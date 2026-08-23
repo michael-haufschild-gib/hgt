@@ -100,6 +100,16 @@ def thetaCuspHawkingFullMirrorCouplingJetIntegral
     (a total : ℝ) (n : ℕ) (t : ℝ) : ℂ :=
   ∫ v : ℝ, fullMirrorCouplingJetIntegrand a total n t v
 
+/-- Public pointwise integral form of the exact coupling jet. -/
+theorem thetaCuspHawkingFullMirrorCouplingJetIntegral_eq_integral
+    (a total : ℝ) (n : ℕ) (t : ℝ) :
+    thetaCuspHawkingFullMirrorCouplingJetIntegral a total n t =
+      ∫ v : ℝ,
+        Complex.exp (((-total * v : ℝ) : ℂ) * Complex.I) *
+          (Complex.exp
+              (Complex.I * ((-t * thetaCuspTiltedSource a v : ℝ) : ℂ)) *
+            (-Complex.I * (thetaCuspTiltedSource a v : ℂ)) ^ n) := rfl
+
 private theorem hasDerivAt_fullMirrorCouplingJetIntegral
     (a : ℝ) (ha : |a| < 1) (total : ℝ) (n : ℕ) (hn : 1 ≤ n) (t : ℝ) :
     HasDerivAt (thetaCuspHawkingFullMirrorCouplingJetIntegral a total n)
@@ -207,7 +217,8 @@ private theorem hasDerivAt_fullMirrorCouplingDefectIntegrand
     (base * (Complex.exp ((t : ℂ) * rate) * rate ^ 1)) t
   simpa only [pow_one] using hmain
 
-private theorem hasDerivAt_thetaCuspHawkingEikonalFourier_all
+/-- Exact first coupling derivative of the full eikonal Fourier response at every real coupling. -/
+theorem hasDerivAt_thetaCuspHawkingEikonalFourier_all
     (a : ℝ) (ha : |a| < 1) (total t : ℝ) :
     HasDerivAt (fun q : ℝ => thetaCuspHawkingEikonalFourier a q total)
       (thetaCuspHawkingFullMirrorCouplingJetIntegral a total 1 t) t := by

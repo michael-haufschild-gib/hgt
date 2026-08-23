@@ -175,3 +175,17 @@ audit use only `propext`, `Classical.choice`, and `Quot.sound`.
 This does **not** instantiate the card's `M_log / M_0`: the existing prime-tail corpus supplies
 membership predicates, not a closed normed/Banach Marcinkiewicz quotient.  The pushout and
 Yoneda conclusions therefore remain unformalized, and this card stays at stage 2.
+
+### Pushout infrastructure update — 2026-08-23
+
+`HTGeometry/ConstraintRelativity/GraphPushoutSplitting.lean`, wired into
+`HTGeometry.lean`, now formalizes the precise scalar pushout calculation.  For every normed
+`𝕜`-space, submodule `N`, and continuous reader `ℓ : N →L[𝕜] 𝕜`, its quotient by the actual graph
+relation `(n, -ℓ n)` is continuously linearly equivalent to `(E ⧸ N) × 𝕜`.  The inverse is built
+from a Hahn--Banach extension, and both compositions are proved by quotient induction.  Its
+focused target build passes; its theorem-level axiom audit has only `propext`, `Classical.choice`,
+and `Quot.sound`.
+
+This proves the reusable topological linear-algebra statement, but it still does not create the
+card's genuine closed Banach spaces `M_0`, `M_log`, and `Q_log`.  No Banach or Yoneda conclusion
+has been promoted on that basis; card remains at stage 2.

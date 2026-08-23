@@ -167,6 +167,78 @@ theorem tendsto_indicatorConstLp_of_tendsto_centeredIndicatorOn_of_tendsto_measu
     hcentered.add ((hmeasure.div_const (μ.real Ω)).smul_const
       (indicatorConstLp 2 hΩ hΩfin (1 : ℝ)))
 
+/-- The centered indicators of measurable subsets of a fixed finite aperture form a closed
+subset of `L²`, hence a complete metric subspace. -/
+theorem isClosed_centeredIndicatorOn_range
+    {X : Type*} [MeasurableSpace X] (μ : Measure X) (Ω : Set X)
+    (hΩ : MeasurableSet Ω) (hΩfin : μ Ω ≠ ⊤) :
+    IsClosed {u : Lp ℝ 2 μ | ∃ (E : Set X) (hE : MeasurableSet E) (hEfin : μ E ≠ ⊤),
+      E ⊆ Ω ∧ centeredIndicatorOn μ Ω E hΩ hΩfin hE hEfin = u} := by
+  apply IsSeqClosed.isClosed
+  intro f g hf hfg
+  choose E hE hEfin hEΩ hcentered using hf
+  obtain ⟨a, ha, φ, hφmono, hmeasure⟩ :=
+    exists_subseq_tendsto_measureReal_of_subset μ Ω E hΩfin hEΩ
+  have hφ : Tendsto φ atTop atTop := hφmono.tendsto_atTop
+  have hcentered_tendsto : Tendsto (fun n => centeredIndicatorOn μ Ω (E (φ n)) hΩ hΩfin
+      (hE (φ n)) (hEfin (φ n))) atTop (𝓝 g) := by
+    have hrewrite : (fun n => centeredIndicatorOn μ Ω (E (φ n)) hΩ hΩfin
+        (hE (φ n)) (hEfin (φ n))) = f ∘ φ := by
+      funext n
+      exact hcentered (φ n)
+    rw [hrewrite]
+    exact hfg.comp hφ
+  have hindicator_tendsto :
+      Tendsto (fun n => indicatorConstLp 2 (hE (φ n)) (hEfin (φ n)) (1 : ℝ)) atTop
+        (𝓝 (g + (a / μ.real Ω) • indicatorConstLp 2 hΩ hΩfin (1 : ℝ))) := by
+    exact tendsto_indicatorConstLp_of_tendsto_centeredIndicatorOn_of_tendsto_measureReal μ Ω
+      (E ∘ φ) hΩ hΩfin (fun n => hE (φ n)) (fun n => hEfin (φ n))
+      (by simpa only [Function.comp_apply] using hcentered_tendsto)
+      (by simpa only [Function.comp_apply] using hmeasure)
+  have hlimit_mem :=
+    (isClosed_indicatorConstLp_one_of_subset μ Ω hΩ hΩfin).mem_of_tendsto hindicator_tendsto
+      (Eventually.of_forall fun n => ⟨E (φ n), hE (φ n), hEfin (φ n), hEΩ (φ n), rfl⟩)
+  rcases hlimit_mem with ⟨F, hF, hFfin, hFΩ, hFindicator⟩
+  have hinner_measure :
+      Tendsto (fun n => inner ℝ (indicatorConstLp 2 (hE (φ n)) (hEfin (φ n)) (1 : ℝ))
+        (indicatorConstLp 2 hΩ hΩfin (1 : ℝ))) atTop (𝓝 a) := by
+    convert hmeasure using 1
+    funext n
+    symm
+    simp only [MeasureTheory.L2.real_inner_indicatorConstLp_one_indicatorConstLp_one,
+      Set.inter_eq_left.mpr (hEΩ (φ n))]
+  have hinner_limit :
+      Tendsto (fun n => inner ℝ (indicatorConstLp 2 (hE (φ n)) (hEfin (φ n)) (1 : ℝ))
+        (indicatorConstLp 2 hΩ hΩfin (1 : ℝ))) atTop
+        (𝓝 (inner ℝ (g + (a / μ.real Ω) • indicatorConstLp 2 hΩ hΩfin (1 : ℝ))
+          (indicatorConstLp 2 hΩ hΩfin (1 : ℝ)))) :=
+    Filter.Tendsto.inner hindicator_tendsto tendsto_const_nhds
+  have hinner_eq :
+      inner ℝ (g + (a / μ.real Ω) • indicatorConstLp 2 hΩ hΩfin (1 : ℝ))
+        (indicatorConstLp 2 hΩ hΩfin (1 : ℝ)) = a :=
+    tendsto_nhds_unique hinner_limit hinner_measure
+  have hFmeasure : μ.real F = a := by
+    calc
+      μ.real F = inner ℝ (indicatorConstLp 2 hF hFfin (1 : ℝ))
+          (indicatorConstLp 2 hΩ hΩfin (1 : ℝ)) := by
+            symm
+            simp only [MeasureTheory.L2.real_inner_indicatorConstLp_one_indicatorConstLp_one,
+              Set.inter_eq_left.mpr hFΩ]
+      _ = inner ℝ (g + (a / μ.real Ω) • indicatorConstLp 2 hΩ hΩfin (1 : ℝ))
+          (indicatorConstLp 2 hΩ hΩfin (1 : ℝ)) := by rw [hFindicator]
+      _ = a := hinner_eq
+  refine ⟨F, hF, hFfin, hFΩ, ?_⟩
+  rw [centeredIndicatorOn, hFindicator, hFmeasure]
+  module
+
+/-- The centered-indicator aperture image is complete in its inherited `L²` metric. -/
+theorem isComplete_centeredIndicatorOn_range
+    {X : Type*} [MeasurableSpace X] (μ : Measure X) (Ω : Set X)
+    (hΩ : MeasurableSet Ω) (hΩfin : μ Ω ≠ ⊤) :
+    IsComplete {u : Lp ℝ 2 μ | ∃ (E : Set X) (hE : MeasurableSet E) (hEfin : μ E ≠ ⊤),
+      E ⊆ Ω ∧ centeredIndicatorOn μ Ω E hΩ hΩfin hE hEfin = u} :=
+  (isClosed_centeredIndicatorOn_range μ Ω hΩ hΩfin).isComplete
+
 /-- Exact Gram formula for centered indicators in a finite positive-measure aperture. -/
 theorem real_inner_centeredIndicatorOn
     {X : Type*} [MeasurableSpace X] (μ : Measure X) (Ω E F : Set X)
