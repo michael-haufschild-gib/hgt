@@ -492,3 +492,21 @@ Every type-II lemma therefore applies in both orientations with no new analysis;
 whichever is better for the block at hand.
 
 Card 12: 44 modules.
+
+## The block long-side energy (2026-08-23)
+
+`BlockLongEnergy.lean` — **`exists_sum_typeIILong_sq_block_le`**:
+```
+Σ_{d ∈ [P,Q)} |(Λ − Λ_U)(d)|² ≤ C·Q·log L      whenever Q ≤ L+1.
+```
+`|Λ − Λ_U| ≤ Λ ≤ log L` on the block, and `Σ_{d ∈ [P,Q)} Λ(d) ≤ ψ(Q) ≤ CQ` by the corpus's linear
+Chebyshev bound.  For a dyadic block `Q ≍ 2P`, so the energy is proportional to the BLOCK length —
+which is exactly why the dyadic split was needed in the first place.
+
+(Trap: `Ico P Q ⊆ Icc 1 Q` fails at `d = 0` when `P = 0`; the fix is `Finset.sum_erase` on the
+`Λ(0) = 0` term.)
+
+Card 12: 45 modules.  Every factor of `blockTypeIIEnergy` is now bounded by an explicit expression
+in `T, r, P, Q, L`:
+`C·Q·log L` (long energy), `(Q−P)` (diagonal length), `2L + 2L·H_L³` (short energy),
+`C₁·H√H + 2C₂√H` (gap sum).

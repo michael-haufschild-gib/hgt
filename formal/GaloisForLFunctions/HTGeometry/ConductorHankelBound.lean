@@ -91,6 +91,59 @@ theorem lintegral_conductorHankel_sq_le {F : ℝ → ℝ≥0∞} (hF : Measurabl
   refine ENNReal.ofReal_le_ofReal ?_
   nlinarith [Real.pi_pos, sq_nonneg Real.pi]
 
+/-! ## The kernel is the resolvent family integrated -/
+
+/-- The Hankel kernel of the resolvent `1/(λ + 2 + iξ)` is the rank-one kernel
+`2π e^{-(λ+2)(u+v)}`; integrating over `λ` produces the conductor kernel. -/
+theorem integral_resolventHankel {r : ℝ} (hr : 0 < r) :
+    (∫ lam in Ioi (0:ℝ), 2 * Real.pi * Real.exp (-(lam + 2) * r)) = conductorHankelKernel r := by
+  have hderiv : ∀ lam ∈ Ioi (0:ℝ),
+      HasDerivAt (fun m : ℝ => -(2 * Real.pi / r) * Real.exp (-(m + 2) * r))
+        (2 * Real.pi * Real.exp (-(lam + 2) * r)) lam := by
+    intro lam _
+    have hinner : HasDerivAt (fun m : ℝ => -(m + 2) * r) (-r) lam := by
+      have h := ((hasDerivAt_id lam).add_const (2 : ℝ)).neg.mul_const r
+      refine h.congr_deriv ?_
+      ring
+    have h := (Real.hasDerivAt_exp (-(lam + 2) * r)).comp lam hinner
+    have h2 := h.const_mul (-(2 * Real.pi / r))
+    refine h2.congr_deriv ?_
+    field_simp
+  have hlim : Tendsto (fun m : ℝ => -(2 * Real.pi / r) * Real.exp (-(m + 2) * r)) atTop (𝓝 0) := by
+    have hexp : Tendsto (fun m : ℝ => Real.exp (-(m + 2) * r)) atTop (𝓝 0) := by
+      have harg : Tendsto (fun m : ℝ => -(m + 2) * r) atTop atBot := by
+        have hb : Tendsto (fun m : ℝ => -(m + 2)) atTop atBot := by
+          have := tendsto_neg_atTop_atBot.comp (tendsto_atTop_add_const_right atTop (2:ℝ) tendsto_id)
+          simpa [Function.comp_def] using this
+        exact hb.atBot_mul_const hr
+      simpa [Function.comp_def] using Real.tendsto_exp_atBot.comp harg
+    simpa using hexp.const_mul (-(2 * Real.pi / r))
+  have hint : IntegrableOn (fun lam : ℝ => 2 * Real.pi * Real.exp (-(lam + 2) * r))
+      (Ioi 0) volume := by
+    refine integrableOn_Ioi_deriv_of_nonneg
+      (g := fun m : ℝ => -(2 * Real.pi / r) * Real.exp (-(m + 2) * r))
+      (l := 0) ?_ hderiv ?_ hlim
+    · refine ContinuousAt.continuousWithinAt ?_
+      exact (Real.continuous_exp.continuousAt.comp
+        (((continuous_id.add continuous_const).neg.mul continuous_const).continuousAt)).const_mul _
+    · intro lam _
+      positivity
+  have hval := integral_Ioi_of_hasDerivAt_of_tendsto
+    (f := fun m : ℝ => -(2 * Real.pi / r) * Real.exp (-(m + 2) * r))
+    (f' := fun lam : ℝ => 2 * Real.pi * Real.exp (-(lam + 2) * r))
+    (by
+      refine ContinuousAt.continuousWithinAt ?_
+      exact (Real.continuous_exp.continuousAt.comp
+        (((continuous_id.add continuous_const).neg.mul continuous_const).continuousAt)).const_mul _)
+    hderiv hint hlim
+  rw [hval, conductorHankelKernel]
+  have hexp0 : Real.exp (-((0 : ℝ) + 2) * r) = Real.exp (-2 * r) := by
+    congr 1
+    ring
+  rw [hexp0]
+  field_simp
+  ring
+
 end
 
 end GaloisForLFunctions.HTGeometry

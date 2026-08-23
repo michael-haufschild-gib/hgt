@@ -1,5 +1,7 @@
 import Mathlib.Analysis.SpecialFunctions.Complex.Log
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
+import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
+import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 
 /-!
 # The conductor symbol is an analytic symbol up to a bounded error
@@ -17,6 +19,8 @@ is analytic on a half plane containing the real axis.
 A bounded symbol has a bounded commutator with any projection, so only the analytic part carries
 the commutator, and its Hankel kernel is the one bounded in `ConductorHankelBound`.
 -/
+
+open MeasureTheory Set Filter Topology
 
 namespace GaloisForLFunctions.HTGeometry
 
@@ -97,6 +101,79 @@ theorem abs_conductorSymbol_sub_analytic_le (ξ : ℝ) :
   have h2 := conductorSymbol_sub_analytic_le ξ
   have hlog2 : (0 : ℝ) ≤ Real.log 2 := Real.log_nonneg (by norm_num)
   constructor <;> linarith
+
+/-! ## The resolvent representation -/
+
+theorem mem_slitPlane_of_re_pos {z : ℂ} (hz : 0 < z.re) : z ∈ Complex.slitPlane :=
+  Complex.mem_slitPlane_iff.mpr (Or.inl hz)
+
+/-- The resolvent primitive of the conductor symbol. -/
+def conductorResolventPrimitive (ξ : ℝ) (lam : ℝ) : ℂ :=
+  Complex.log ((lam : ℂ) + 2) - Complex.log ((lam : ℂ) + 2 + Complex.I * ξ)
+
+theorem hasDerivAt_conductorResolventPrimitive (ξ : ℝ) {lam : ℝ} (hlam : 0 ≤ lam) :
+    HasDerivAt (conductorResolventPrimitive ξ)
+      (1 / ((lam : ℂ) + 2) - 1 / ((lam : ℂ) + 2 + Complex.I * ξ)) lam := by
+  have hre1 : (0 : ℝ) < ((lam : ℂ) + 2).re := by simp; linarith
+  have hre2 : (0 : ℝ) < ((lam : ℂ) + 2 + Complex.I * ξ).re := by simp; linarith
+  have hd1 : HasDerivAt (fun m : ℝ => Complex.log ((m : ℂ) + 2))
+      (((lam : ℂ) + 2)⁻¹) lam := by
+    have hz := (Complex.hasDerivAt_log (mem_slitPlane_of_re_pos hre1))
+    have hin : HasDerivAt (fun z : ℂ => z + 2) 1 ((lam : ℂ)) := (hasDerivAt_id _).add_const 2
+    have := (hz.comp (lam : ℂ) hin)
+    simpa using this.comp_ofReal
+  have hd2 : HasDerivAt (fun m : ℝ => Complex.log ((m : ℂ) + 2 + Complex.I * ξ))
+      (((lam : ℂ) + 2 + Complex.I * ξ)⁻¹) lam := by
+    have hz := (Complex.hasDerivAt_log (mem_slitPlane_of_re_pos hre2))
+    have hin : HasDerivAt (fun z : ℂ => z + 2 + Complex.I * ξ) 1 ((lam : ℂ)) :=
+      ((hasDerivAt_id _).add_const 2).add_const _
+    have := (hz.comp (lam : ℂ) hin)
+    simpa using this.comp_ofReal
+  have := hd1.sub hd2
+  refine this.congr_deriv ?_
+  rw [one_div, one_div]
+
+theorem tendsto_conductorResolventPrimitive (ξ : ℝ) :
+    Tendsto (conductorResolventPrimitive ξ) atTop (𝓝 0) := by
+  have hquot : Tendsto (fun lam : ℝ => ((lam : ℂ) + 2) / ((lam : ℂ) + 2 + Complex.I * ξ))
+      atTop (𝓝 1) := by
+    have hrw : ∀ᶠ lam : ℝ in atTop,
+        ((lam : ℂ) + 2) / ((lam : ℂ) + 2 + Complex.I * ξ)
+          = 1 - (Complex.I * ξ) / ((lam : ℂ) + 2 + Complex.I * ξ) := by
+      filter_upwards [eventually_gt_atTop (0 : ℝ)] with lam hlam
+      have hne : ((lam : ℂ) + 2 + Complex.I * ξ) ≠ 0 := by
+        intro h
+        have : ((lam : ℂ) + 2 + Complex.I * ξ).re = 0 := by rw [h]; simp
+        simp at this
+        linarith
+      field_simp
+    refine Tendsto.congr' (Filter.EventuallyEq.symm hrw) ?_
+    have hden : Tendsto (fun lam : ℝ => ‖(lam : ℂ) + 2 + Complex.I * ξ‖) atTop atTop := by
+      refine tendsto_atTop_mono' _ ?_ (tendsto_atTop_add_const_right atTop (2 : ℝ) tendsto_id)
+      filter_upwards [eventually_gt_atTop (0 : ℝ)] with lam hlam
+      have hre : ((lam : ℂ) + 2 + Complex.I * ξ).re = lam + 2 := by simp
+      calc lam + 2 = ((lam : ℂ) + 2 + Complex.I * ξ).re := hre.symm
+        _ ≤ ‖(lam : ℂ) + 2 + Complex.I * ξ‖ := Complex.re_le_norm _
+    have hsmall : Tendsto (fun lam : ℝ => (Complex.I * ξ) / ((lam : ℂ) + 2 + Complex.I * ξ))
+        atTop (𝓝 0) := by
+      refine squeeze_zero_norm' ?_ (?_ : Tendsto (fun lam : ℝ => ‖Complex.I * (ξ : ℂ)‖
+        / ‖(lam : ℂ) + 2 + Complex.I * ξ‖) atTop (𝓝 0))
+      · filter_upwards with lam
+        rw [norm_div]
+      · exact Tendsto.div_atTop tendsto_const_nhds hden
+    simpa using (tendsto_const_nhds (x := (1 : ℂ))).sub hsmall
+  have hlog : Tendsto (fun lam : ℝ =>
+      Complex.log (((lam : ℂ) + 2) / ((lam : ℂ) + 2 + Complex.I * ξ))) atTop (𝓝 0) := by
+    have hcont : ContinuousAt Complex.log 1 :=
+      Complex.continuousAt_log (mem_slitPlane_of_re_pos (by simp))
+    have := hcont.tendsto.comp hquot
+    simpa [Function.comp_def] using this
+  refine Tendsto.congr' ?_ hlog
+  filter_upwards [eventually_gt_atTop (0 : ℝ)] with lam hlam
+  have hre1 : (0 : ℝ) < ((lam : ℂ) + 2).re := by simp; linarith
+  have hre2 : (0 : ℝ) < ((lam : ℂ) + 2 + Complex.I * ξ).re := by simp; linarith
+  rw [conductorResolventPrimitive, ← Complex.log_div_eq_sub_log_iff] <;> try skip
+  all_goals sorry
 
 end
 
