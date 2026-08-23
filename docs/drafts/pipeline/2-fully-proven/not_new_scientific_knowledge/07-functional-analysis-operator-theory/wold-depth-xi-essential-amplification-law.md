@@ -311,10 +311,17 @@ corpus-new synthesis of already proved source laws.
 
 ## Lean decision
 
-The formal tree contains the abstract all-orders-flat/finite-Rees operator theorem, but not the
-infinite Wold maximum statistic, its standard-form shell projections, uniform compact
-Xi-successor convergence, or the literal Gamma/co-Poisson/Sonin carrier.  Formalizing only
-\(\|T v\|\leq\|T\|\|v\|\) would be theatre.  No Lean wrapper is added.
+`RHTower.WoldDepthXiEssentialAmplification` now joins two literal source definitions already in
+the tree: `shellSourceMass` and `xiDepthSuccessorDefect`.  It constructs canonical orthogonal
+`ℓ²` shell-coordinate vectors with squared norm `shellSourceMass (M+1)`, proves the exact least
+operator amplification, proves its rescaled Xi-connection limit, and closes the exponent-normal
+action `Real.log 2 / 2`.  Every realizing operator family is proved to dominate every smaller
+exponential rate eventually.
+
+This is the exact singleton-compact specialization of `(13)`--`(15)`, not a replacement for the
+full compact-uniform theorem.  The tree still lacks the infinite Wold standard-form shell
+projections, uniform `C(K)` Xi-successor convergence, and the literal Gamma/co-Poisson/Sonin
+carrier.  Those interfaces remain necessary before moving the whole card to Stage 3.
 
 ## Gates
 
@@ -324,9 +331,21 @@ Xi-successor convergence, or the literal Gamma/co-Poisson/Sonin carrier.  Formal
 - [x] exponent-normal irregular action \((\log2)/2\) identified
 - [x] fitted rank-one falsifier and coordinate dependence audited
 - [x] preliminary literature noncollision
+- [x] literal shell-coordinate norm, exact pointwise amplification, action, and eventual
+  exponential lower bound formalized in Lean
+- [ ] extend Xi depth-successor convergence uniformly to arbitrary compact `K`
+- [ ] formalize the full `C(K)` operator statement `(13)`--`(15)`
 - [ ] construct source-global irregular connection
 - [ ] prove compatibility with prime cofinalization and depth cocycle
 - [ ] identify literal Gamma/co-Poisson/Sonin boundary value
 - [ ] prove independent-quadrant subexponential control
 - [ ] formalize analytic interfaces in Lean
 - [ ] RH
+
+## Log
+
+- 2026-08-23 -- Added `RHTower.WoldDepthXiEssentialAmplification`.  The leaf uses the actual Wold
+  shell masses and actual Xi depth successors, proves the exact singleton-compact minimal
+  amplification and action `Real.log 2 / 2`, and is wired into `RHTower`.  Targeted source and
+  `.olean` checks pass.  Batched axiom audits of all principal new theorems report only `propext`,
+  `Classical.choice`, and `Quot.sound`.

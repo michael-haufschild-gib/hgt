@@ -259,3 +259,21 @@ The exact comparison of this dominant branch with the full coefficient `p^a+p^{-
 This is stronger than the preceding dominant-branch lower-bound anchor: there is no uncancelled-leading-term assumption.  The leaf is wired into `GaloisForLFunctions/RHTower.lean`, direct-checked with `lake env lean`, and exact-target-built with `lake build GaloisForLFunctions.RHTower.SymmetricShiftEulerDiscrepancy`.  All seven new declarations audit only to `[propext, Classical.choice, Quot.sound]`.
 
 The remaining global-discrepancy work is now sharply limited to assembling every prime-power layer `k≥2` with the harmonic `1/k` weight and identifying the resulting two-index series with the shifted completed Euler-product discrepancy.  The card is not moved before that assembly is formalized.
+
+## Lean status update (2026-08-23): higher prime-power tail
+
+`formal/GaloisForLFunctions/RHTower/SymmetricShiftEulerPrimePowers.lean` now supplies the reusable tail estimate for every prime support `S`.  It defines the actual shifted discrepancy at a prime power with the harmonic `1/(n+1)` weight and proves its nonnegativity, domination by the already-banked prime-power support kernel, and unconditional forward summability whenever the shifted base prime series is summable.  Thus every layer `k>=2` is now controlled without a truncation or an analytic premise hidden in a theorem hypothesis; positivity of the shift is carried by the data type.
+
+The leaf is wired into `GaloisForLFunctions/RHTower.lean`, direct-checked with `lake env lean`, and exact-target-built with `lake build GaloisForLFunctions.RHTower.SymmetricShiftEulerPrimePowers`.  The three added declarations audit only to `[propext, Classical.choice, Quot.sound]`.
+
+What remains is the explicit all-primes reindexing and the equality between this two-index coefficient series and the card's completed Euler-product discrepancy.  The first-prime layer already gives the sharp necessary boundary; this tail gives the sufficient bound once that final assembly is formalized.  The card remains stage 2 until those exact identifications are closed.
+
+## Lean status update (2026-08-23): exact all-prime-power abscissa
+
+`formal/GaloisForLFunctions/RHTower/SymmetricShiftEulerGlobalDiscrepancy.lean` now closes the coefficient-series statement in the card exactly.  It gives an explicit equivalence between direct `Nat.Primes × Nat` coordinates and the universal prime support, defines the full weighted prime-power coefficient
+`(p^(a k)+p^(-a k)-2) p^(-k sigma)/k`, proves that its `k=1` restriction is exactly the already-formalized first-prime discrepancy, and proves the unconditional equivalence
+`Summable c_a(p,k)p^(-k sigma)/k <-> 1+a < sigma` for every positive shift carried in the data.
+
+The leaf is wired into `GaloisForLFunctions/RHTower.lean`, direct-checked with `lake env lean`, and exact-target-built with `lake build GaloisForLFunctions.RHTower.SymmetricShiftEulerGlobalDiscrepancy`.  Its three theorem declarations audit only to `[propext, Classical.choice, Quot.sound]`.  This resolves the all-prime and all-prime-power assembly; no finite-support surrogate remains.
+
+The card still cannot move: Lean has not yet connected this coefficient series to a formal infinite completed Euler product for zeta/Dirichlet `L`, nor formalized the generic finite-order and standard-gamma assertions.  Those are the remaining stated components, not waived by the closed abscissa theorem.

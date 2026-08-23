@@ -230,3 +230,12 @@ exact failure boundary.
   local finiteness on every left-bounded real interval. Its targeted build and new-theorem axiom
   audit use only `propext`, `Classical.choice`, and `Quot.sound`. The weighted infinite-series
   convergence and transform identities remain open in Lean; this card stays at stage 2.
+- 2026-08-23 (Codex) — `EulerLogPrimePowerHerglotzMass.lean` now proves the exact Nevanlinna
+  summability `Σ a_(p,k)/(1+t_(p,k)^2) < ∞` by majorizing every atom with the existing summable
+  prime `1/(p log(p)^2)` series times a geometric depth factor. It defines the literal normalized
+  carrier with kernel `1/(t-z)-t/(1+t^2)`, proves absolute and locally uniform convergence on the
+  upper half-plane, holomorphy there, and strict positive imaginary part. The focused target build
+  and axiom audit pass with only `propext`, `Classical.choice`, and `Quot.sound`. This closes the
+  formal integrability/upper-half-plane Herglotz portion, but the exact complex Laplace and
+  logarithmic-derivative transforms still need a public reindexing bridge to the canonical Euler
+  logarithm; card remains stage 2.

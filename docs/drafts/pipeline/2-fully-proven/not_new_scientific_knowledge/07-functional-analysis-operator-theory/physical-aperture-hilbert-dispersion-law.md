@@ -357,6 +357,8 @@ audit of the Gram, distance, energy, and cross-floor theorems reports only `prop
 - [x] formalize the generic finite weighted-dispersion identity `(AH7)` as
       `HTGeometry.finite_weighted_hilbert_dispersion`, and its concrete physical-aperture
       specialization
+- [x] formalize normalized finite weighted-dispersion identity `(AH8)` as
+      `HTGeometry.finite_normalized_weighted_hilbert_dispersion`
 - [x] formalize generic conditional negative type and its equality classification for
       zero-total-weight finite packets
 - [x] formalize the generic completeness statement
@@ -384,3 +386,7 @@ audit of the Gram, distance, energy, and cross-floor theorems reports only `prop
 - 2026-08-23 -- Added the exact inherited-metric completeness corollary
   `HTGeometry.isComplete_centeredIndicatorOn_range`; its targeted audit reports only the same
   standard Lean axioms.
+- 2026-08-23 -- Added the exact normalized finite Hilbert variance `(AH8)` as
+  `HTGeometry.finite_normalized_weighted_hilbert_dispersion`.  Its necessary nonzero-total-weight
+  condition is explicit; targeted source and `.olean` checks pass, and its axiom audit reports
+  only `propext`, `Classical.choice`, and `Quot.sound`.

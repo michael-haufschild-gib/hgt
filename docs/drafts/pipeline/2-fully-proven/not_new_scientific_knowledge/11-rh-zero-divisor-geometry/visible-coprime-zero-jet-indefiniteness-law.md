@@ -303,3 +303,26 @@ attempted.
   inversion, and rejected as a source because zeta-zero modes lie in its radical.
 - 2026-07-22 — strongest survivor extracted: exact zero-jet orientation, Möbius inertia, and
   positive divisor-kernel impossibility.
+
+## Lean status update (2026-08-23): Möbius incidence entry
+
+`formal/GaloisForLFunctions/RHTower/MobiusCoprimeIncidence.lean` now formalizes the exact arithmetic entry behind the claimed incidence factorization: the Möbius sum over all common divisors of `a` and `b` is the integral `0`--`1` indicator of `Nat.Coprime a b`.  The positive-coordinate specialization is supplied in the same leaf, matching the natural indexing of a finite coprimality matrix.  This is derived directly from Mathlib's proved Möbius--zeta convolution identity, with no arithmetic hypothesis, axiom, or finite computation.
+
+The leaf is wired into `GaloisForLFunctions/RHTower.lean`, direct-checked with `lake env lean`, and exact-target-built with `lake build GaloisForLFunctions.RHTower.MobiusCoprimeIncidence`.  Both declarations audit only to `[propext, Classical.choice, Quot.sound]`.
+
+This closes the scalar incidence entry only.  The finite matrix congruence/inertia count, visible-addition summability, and the completed zeta/Dirichlet mixed-jet calculation remain to be formalized before this card can move to stage 3.
+
+## Lean status update (2026-08-23): finite incidence factorization
+
+`formal/GaloisForLFunctions/RHTower/MobiusCoprimeMatrixFactorization.lean` now promotes that entry identity to the literal finite matrix statement from `(V14)`.  On the exact coordinate type `{1,...,N}`, it defines the coprimality matrix, divisor-incidence matrix, and Möbius diagonal, then proves
+`C_N = E_N * diagonal(mu) * E_N.transpose` entrywise.  Coordinate positivity and the bound by `N` are encoded in the finite index type, so the public factorization has no theorem hypotheses.
+
+The leaf is wired into `GaloisForLFunctions/RHTower.lean`, direct-checked with `lake env lean`, and exact-target-built with `lake build GaloisForLFunctions.RHTower.MobiusCoprimeMatrixFactorization`.  The entry, product-entry, and full factorization declarations audit only to `[propext, Classical.choice, Quot.sound]`.
+
+The next precise finite task is the congruence/inertia extraction from this factorization.  The analytic visible-addition and zeta/Dirichlet mixed-jet parts remain separate required work; the card stays at stage 2.
+
+## Lean status update (2026-08-23): incidence invertibility
+
+The same factorization leaf now proves that the divisor-incidence matrix is lower triangular in its natural positive-coordinate order, has unit diagonal and determinant exactly one, and is therefore a unit over the integers.  This closes the algebraic congruence prerequisite for transporting the Möbius diagonal’s sign data to the coprimality matrix; it is not merely an entrywise factorization.
+
+The changed leaf was direct-checked and exact-target-built again as `GaloisForLFunctions.RHTower.MobiusCoprimeMatrixFactorization`.  Its new triangularity, determinant, and invertibility declarations audit only to `[propext, Classical.choice, Quot.sound]`.  The exact positive/null/negative inertia cardinalities and unbounded-negative-index conclusion remain the next finite-dimensional layer.

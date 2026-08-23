@@ -18,7 +18,8 @@ open scoped BigOperators
 
 noncomputable section
 
-private theorem canonicalEulerLogZeta_ofReal_eq_primePower_tsum
+/-- The real canonical Euler logarithm is its exact positive prime-power expansion. -/
+theorem canonicalEulerLogZeta_ofReal_eq_primePower_tsum
     {β : ℝ} (hβ : 1 < β) :
     RHTower.canonicalEulerLogZeta (β : ℂ) =
       ((∑' z : Nat.Primes × ℕ, RHTower.eulerPrimePowerWeight β z : ℝ) : ℂ) := by
