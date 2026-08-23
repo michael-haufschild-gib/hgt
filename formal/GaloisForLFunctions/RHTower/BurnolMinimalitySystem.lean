@@ -32,7 +32,7 @@ theorem meromorphicOrderAt_zetaDivPow_of_ne {ρ : ℂ} (l : ℕ) {z : ℂ} (hz1 
     funext w
     rw [zetaDivPow, Pi.div_apply]
   have hζ : AnalyticAt ℂ riemannZeta z := analyticOn_riemannZeta z (by simpa using hz1)
-  rw [hfun, meromorphicOrderAt_div hζ.meromorphicAt (analyticAt_sub_pow ρ l z).meromorphicAt,
+  rw [hfun, meromorphicOrderAt_div hζ.meromorphicAt (analyticAt_sub_const_pow ρ l z).meromorphicAt,
     meromorphicOrderAt_sub_pow_of_ne l hzρ, sub_zero]
 
 theorem meromorphicOrderAt_zetaDivPow_self {ρ : ℂ} (l : ℕ) (hρ1 : ρ ≠ 1) :
@@ -42,7 +42,7 @@ theorem meromorphicOrderAt_zetaDivPow_self {ρ : ℂ} (l : ℕ) (hρ1 : ρ ≠ 1
     funext w
     rw [zetaDivPow, Pi.div_apply]
   have hζ : AnalyticAt ℂ riemannZeta ρ := analyticOn_riemannZeta ρ (by simpa using hρ1)
-  rw [hfun, meromorphicOrderAt_div hζ.meromorphicAt (analyticAt_sub_pow ρ l ρ).meromorphicAt,
+  rw [hfun, meromorphicOrderAt_div hζ.meromorphicAt (analyticAt_sub_const_pow ρ l ρ).meromorphicAt,
     meromorphicOrderAt_sub_pow]
 
 theorem analyticOrderAt_riemannZeta_ne_top_of_strip {ρ : ℂ} (h0 : 0 < ρ.re) (h1 : ρ.re < 1) :

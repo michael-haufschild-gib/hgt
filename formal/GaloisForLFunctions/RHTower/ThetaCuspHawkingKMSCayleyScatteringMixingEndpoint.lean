@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingArakiWoodsDaviesMixingEndpoint
+import GaloisForLFunctions.RHTower.ThetaCuspHawkingKMSFriedrichsMixingEndpoint
 
 /-!
 # Exact Hawking--KMS Cayley scattering dilation of a theta resonance sector
@@ -381,15 +381,43 @@ def ThetaCuspHawkingKMSCayleyScatteringMixing : Prop :=
 noncentral tilted resonance sector in the source-faithful Cayley scattering dilation. -/
 theorem riemannHypothesis_iff_thetaCuspHawkingKMSCayleyScatteringMixing :
     RiemannHypothesis ↔ ThetaCuspHawkingKMSCayleyScatteringMixing := by
-  rw [riemannHypothesis_iff_thetaCuspHawkingArakiWoodsDaviesMixing]
+  rw [riemannHypothesis_iff_XiC_zeros_real]
   constructor
-  · intro hmix kappa a omega hkappa homega ha hane
+  · intro hreal kappa a omega _hkappa homega _ha hane
     rw [thetaCuspHawkingKMSCayleySectorMixes_iff_XiC_ne_zero homega]
-    exact (thetaCuspHawkingDaviesSectorMixes_iff_XiC_ne_zero hkappa homega).1
-      (hmix kappa a omega hkappa homega ha hane)
-  · intro hmix kappa a omega hkappa homega ha hane
-    rw [thetaCuspHawkingDaviesSectorMixes_iff_XiC_ne_zero hkappa homega]
-    exact (thetaCuspHawkingKMSCayleySectorMixes_iff_XiC_ne_zero homega).1
-      (hmix kappa a omega hkappa homega ha hane)
+    intro hXi
+    have him := hreal ((omega : ℂ) + (a : ℂ) * I) hXi
+    exact hane (by simpa using him)
+  · intro hmix z hz
+    by_contra hzim
+    have hzre : z.re ≠ 0 := by
+      intro hre
+      have hform : z = (z.im : ℂ) * I := by
+        apply Complex.ext <;> simp [hre]
+      rw [hform] at hz
+      exact XiC_ne_zero_of_imaginary z.im hz
+    have hstrip := xiC_zero_im_mem_openHalf hz
+    have ha : |z.im| < 1 := by
+      rw [abs_lt]
+      constructor <;> linarith
+    rcases lt_or_gt_of_ne hzre with hneg | hpos
+    · have hsector := hmix 1 (-z.im) (-z.re) (by norm_num) (by linarith)
+          (by simpa using ha) (neg_ne_zero.mpr hzim)
+      have hXiNe :=
+        (thetaCuspHawkingKMSCayleySectorMixes_iff_XiC_ne_zero
+          (by linarith)).1 hsector
+      apply hXiNe
+      have harg :
+          (((-z.re : ℝ) : ℂ) + ((-z.im : ℝ) : ℂ) * I) = -z := by
+        apply Complex.ext <;> simp
+      rw [harg, XiC_even]
+      exact hz
+    · have hsector := hmix 1 z.im z.re (by norm_num) hpos ha hzim
+      have hXiNe :=
+        (thetaCuspHawkingKMSCayleySectorMixes_iff_XiC_ne_zero hpos).1 hsector
+      apply hXiNe
+      have harg : ((z.re : ℂ) + (z.im : ℂ) * I) = z := by
+        apply Complex.ext <;> simp
+      rwa [harg]
 
 end RHTower

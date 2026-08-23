@@ -25,7 +25,7 @@ noncomputable section
 /-- The naive quotient. -/
 def zetaDivPow (ρ : ℂ) (l : ℕ) : ℂ → ℂ := fun s => riemannZeta s / (s - ρ) ^ l
 
-theorem analyticAt_sub_pow (ρ : ℂ) (l : ℕ) (s : ℂ) :
+theorem analyticAt_sub_const_pow (ρ : ℂ) (l : ℕ) (s : ℂ) :
     AnalyticAt ℂ (fun z : ℂ => (z - ρ) ^ l) s :=
   (analyticAt_id.sub analyticAt_const).pow l
 
@@ -35,29 +35,29 @@ theorem meromorphicAt_zetaDivPow (ρ : ℂ) (l : ℕ) (s : ℂ) :
     funext z
     rw [zetaDivPow, Pi.div_apply]
   rw [h]
-  exact (meromorphicAt_riemannZeta_everywhere s).div (analyticAt_sub_pow ρ l s).meromorphicAt
+  exact (meromorphicAt_riemannZeta_everywhere s).div (analyticAt_sub_const_pow ρ l s).meromorphicAt
 
 theorem analyticAt_zetaDivPow_of_ne {ρ : ℂ} {l : ℕ} {s : ℂ} (hs1 : s ≠ 1) (hsρ : s ≠ ρ) :
     AnalyticAt ℂ (zetaDivPow ρ l) s := by
   have hζ : AnalyticAt ℂ riemannZeta s := analyticOn_riemannZeta s (by simpa using hs1)
   have hne : ((s : ℂ) - ρ) ^ l ≠ 0 := pow_ne_zero _ (sub_ne_zero.2 hsρ)
-  exact hζ.div (analyticAt_sub_pow ρ l s) hne
+  exact hζ.div (analyticAt_sub_const_pow ρ l s) hne
 
 theorem meromorphicOrderAt_sub_pow (ρ : ℂ) (l : ℕ) :
     meromorphicOrderAt (fun z : ℂ => (z - ρ) ^ l) ρ = ((l : ℤ) : WithTop ℤ) := by
   have hord : analyticOrderAt (fun z : ℂ => (z - ρ) ^ l) ρ = ((l : ℕ) : ℕ∞) := by
-    refine ((analyticAt_sub_pow ρ l ρ).analyticOrderAt_eq_natCast).2
+    refine ((analyticAt_sub_const_pow ρ l ρ).analyticOrderAt_eq_natCast).2
       ⟨fun _ : ℂ => (1 : ℂ), analyticAt_const, one_ne_zero, ?_⟩
     filter_upwards with z
     simp
-  rw [(analyticAt_sub_pow ρ l ρ).meromorphicOrderAt_eq, hord]
+  rw [(analyticAt_sub_const_pow ρ l ρ).meromorphicOrderAt_eq, hord]
   simp
 
 theorem meromorphicOrderAt_sub_pow_of_ne {ρ : ℂ} (l : ℕ) {s : ℂ} (hsρ : s ≠ ρ) :
     meromorphicOrderAt (fun z : ℂ => (z - ρ) ^ l) s = (0 : WithTop ℤ) := by
   have hne : ((s : ℂ) - ρ) ^ l ≠ 0 := pow_ne_zero _ (sub_ne_zero.2 hsρ)
-  rw [(analyticAt_sub_pow ρ l s).meromorphicOrderAt_eq,
-    (analyticAt_sub_pow ρ l s).analyticOrderAt_eq_zero.2 hne]
+  rw [(analyticAt_sub_const_pow ρ l s).meromorphicOrderAt_eq,
+    (analyticAt_sub_const_pow ρ l s).analyticOrderAt_eq_zero.2 hne]
   simp
 
 theorem le_meromorphicOrderAt_of_le_analyticOrderAt {f : ℂ → ℂ} {z : ℂ} {n : ℕ}
@@ -79,7 +79,7 @@ theorem zero_le_meromorphicOrderAt_zetaDivPow {ρ : ℂ} {l : ℕ} (hρ1 : ρ �
     funext z
     rw [zetaDivPow, Pi.div_apply]
   have hζ : AnalyticAt ℂ riemannZeta s := analyticOn_riemannZeta s (by simpa using hs1)
-  rw [hfun, meromorphicOrderAt_div hζ.meromorphicAt (analyticAt_sub_pow ρ l s).meromorphicAt]
+  rw [hfun, meromorphicOrderAt_div hζ.meromorphicAt (analyticAt_sub_const_pow ρ l s).meromorphicAt]
   by_cases hsρ : s = ρ
   · subst hsρ
     rw [meromorphicOrderAt_sub_pow]

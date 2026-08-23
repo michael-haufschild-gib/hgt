@@ -446,6 +446,99 @@ theorem integrableOn_cpow_mul_primeTailCount {z : ℂ} (hz : 1 < z.re) {y : ℝ}
           exact mul_le_mul_of_nonneg_left hsmall (Real.rpow_pos_of_pos hu0 _).le
       _ = C * u ^ (-z.re) := by ring
 
+theorem cpow_mul_primeTailCount_eq {z : ℂ} {u : ℝ} (hu : 1 < u) :
+    (u : ℂ) ^ (-z - 1) * (primeTailCount u : ℂ)
+      = logPowerTail z 1 u + (u : ℂ) ^ (-z - 1) * (primeTailError u : ℂ) := by
+  have hu0 : (0 : ℝ) < u := by linarith
+  have huc : (u : ℂ) ≠ 0 := by simpa using ne_of_gt hu0
+  have hmain : (u : ℂ) ^ (-z - 1) * (((u / Real.log u : ℝ)) : ℂ) = logPowerTail z 1 u := by
+    rw [Complex.ofReal_div, logPowerTail, pow_one]
+    rw [show (u : ℂ) ^ (-z - 1) * ((u : ℂ) / (Real.log u : ℂ))
+        = ((u : ℂ) ^ (-z - 1) * (u : ℂ)) / (Real.log u : ℂ) by ring]
+    congr 1
+    rw [show (u : ℂ) = (u : ℂ) ^ (1 : ℂ) by simp, ← Complex.cpow_add _ _ huc]
+    · congr 1
+      · ring
+  have hsplit : (primeTailCount u : ℂ)
+      = (primeTailError u : ℂ) + (((u / Real.log u : ℝ)) : ℂ) := by
+    rw [primeTailError]
+    push_cast
+    ring
+  rw [hsplit, mul_add, hmain]
+  ring
+
+theorem integrableOn_cpow_mul_primeTailError {z : ℂ} (hz : 1 < z.re) {y : ℝ} (hy : 1 < y) :
+    IntegrableOn (fun u : ℝ => (u : ℂ) ^ (-z - 1) * (primeTailError u : ℂ)) (Ioi y) volume := by
+  have h1 := integrableOn_cpow_mul_primeTailCount hz hy.le
+  have h2 := integrableOn_logPowerTail (k := 1) hy hz
+  have hcongr : ∀ u ∈ Ioi y, (u : ℂ) ^ (-z - 1) * (primeTailError u : ℂ)
+      = (u : ℂ) ^ (-z - 1) * (primeTailCount u : ℂ) - logPowerTail z 1 u := by
+    intro u hu
+    rw [cpow_mul_primeTailCount_eq (lt_trans hy hu)]
+    ring
+  refine (h1.sub h2).congr_fun_ae ?_
+  filter_upwards [self_mem_ae_restrict measurableSet_Ioi] with u hu
+  exact (hcongr u hu).symm
+
+/-- **Splitting the Abel integral.**  The window integral separates into the principal tail, the
+error tail and the boundary value of the counting function. -/
+theorem integral_abel_split {z : ℂ} (hz : 1 < z.re) {y : ℝ} (hy : 1 < y) :
+    (∫ u in Ioi y, (u : ℂ) ^ (-z - 1) * ((primeTailCount u : ℂ) - (primeTailCount y : ℂ)))
+      = (∫ u in Ioi y, logPowerTail z 1 u)
+        + (∫ u in Ioi y, (u : ℂ) ^ (-z - 1) * (primeTailError u : ℂ))
+        - (primeTailCount y : ℂ) * ((y : ℂ) ^ (-z) / z) := by
+  have hz0 : (0 : ℝ) < z.re := by linarith
+  have hy0 : (0 : ℝ) < y := by linarith
+  have h1 := integrableOn_logPowerTail (k := 1) hy hz
+  have h2 := integrableOn_cpow_mul_primeTailError hz hy
+  have h3 := integrableOn_cpow_neg_sub_one hz0 hy0
+  have hcongr : ∀ᵐ u : ℝ ∂(volume.restrict (Ioi y)),
+      (u : ℂ) ^ (-z - 1) * ((primeTailCount u : ℂ) - (primeTailCount y : ℂ))
+        = (logPowerTail z 1 u + (u : ℂ) ^ (-z - 1) * (primeTailError u : ℂ))
+          - (primeTailCount y : ℂ) * (u : ℂ) ^ (-z - 1) := by
+    filter_upwards [self_mem_ae_restrict measurableSet_Ioi] with u hu
+    rw [mul_sub, cpow_mul_primeTailCount_eq (lt_trans hy hu)]
+    ring
+  rw [MeasureTheory.integral_congr_ae hcongr,
+    MeasureTheory.integral_sub (h1.add h2) (h3.const_mul _),
+    MeasureTheory.integral_add h1 h2, MeasureTheory.integral_const_mul,
+    integral_Ioi_cpow_neg_sub_one hz0 hy0]
+
+/-- The remainder in the boundary asymptotic. -/
+def primeTailRemainder (z : ℂ) (y : ℝ) : ℂ :=
+  -(z / (z - 1)) * (∫ u in Ioi y, logPowerTail z 2 u)
+    + z * (∫ u in Ioi y, (u : ℂ) ^ (-z - 1) * (primeTailError u : ℂ))
+    - (primeTailError y : ℂ) * (y : ℂ) ^ (-z)
+
+/-- **The boundary decomposition.**  The strict prime tail is the principal term plus the
+remainder. -/
+theorem primeTailSum_eq_main_add_remainder {z : ℂ} (hz : 1 < z.re) {y : ℝ} (hy : 1 < y) :
+    primeTailSum z y
+      = (y : ℂ) ^ (1 - z) / ((z - 1) * (Real.log y : ℂ)) + primeTailRemainder z y := by
+  have hz0 : (0 : ℝ) < z.re := by linarith
+  have hy0 : (0 : ℝ) < y := by linarith
+  have hzne : z ≠ 0 := by intro h; rw [h] at hz0; simp at hz0
+  have hzne1 : z - (1 : ℂ) ≠ 0 := by
+    refine sub_ne_zero.mpr ?_
+    intro h; rw [h] at hz; simp at hz
+  have hlogy : (0 : ℝ) < Real.log y := Real.log_pos hy
+  have hlogyc : (Real.log y : ℂ) ≠ 0 := by simpa using ne_of_gt hlogy
+  have hyc : (y : ℂ) ≠ 0 := by simpa using ne_of_gt hy0
+  rw [primeTailSum_eq_integral hz hy.le, integral_abel_split hz hy,
+    integral_logPowerTail_one hz hy, primeTailRemainder]
+  have hJy : (primeTailCount y : ℂ)
+      = (primeTailError y : ℂ) + (y : ℂ) / (Real.log y : ℂ) := by
+    rw [primeTailError]
+    push_cast
+    ring
+  rw [hJy]
+  have hpow : (y : ℂ) ^ (1 - z) = (y : ℂ) ^ (-z) * (y : ℂ) := by
+    rw [show (1 : ℂ) - z = -z + 1 by ring, Complex.cpow_add _ _ hyc]
+    simp
+  field_simp
+  rw [hpow]
+  ring
+
 end
 
 end RHTower

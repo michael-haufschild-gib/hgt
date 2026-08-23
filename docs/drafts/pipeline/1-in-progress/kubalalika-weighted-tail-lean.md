@@ -201,3 +201,31 @@ Remaining: `VC5b` (Abel summation to strip the `log k` weight of the `log ∗ μ
 
 Remaining: the `log ∗ μ_V` piece (same shape, with `TypeILogWeight`), the type-II piece (range
 restriction to `k > U`, `m > V`, then `TypeIIEnergyBound`), and `VC6`.
+
+## The second Vaughan piece, and the coupled type-II range (2026-08-23)
+
+Corpus searches run before each module (`scripts/formal_tools.py research`): "Kusmin Landau first
+derivative test", "exponent pair van der Corput second derivative test", "type I type II bilinear
+Vaughan", "sum of divisor function squared", "convolution rearrangement divisorsAntidiagonal",
+"masked fibre correlation type II coupled block".  Assets found and REUSED rather than rebuilt:
+`Sieve/SecondDerivativeTest.lean`, `Sieve/KuzminLandauInterval.lean`, `Sieve/AbelIncreasingWeight.lean`,
+the whole `NearDiagonal*` chain, `HTGeometry/VanDerCorputInequality.lean`, `harmonicSum_le_one_add_log`.
+
+- `RHTower/Sieve/LogConvolutionTypeI.lean` — `norm_sum_log_conv_ndPhaseExp_le`: the SECOND Vaughan
+  piece `log ∗ μ_V`, estimated fibre by fibre with the Abel factor `2 log` of the fibre endpoint.
+  The empty-fibre case is discharged separately (`Real.log 0 = 0`).
+- `RHTower/Sieve/DivisorFibreInterval.lean` — refactored to export the pointwise
+  `mem_fibre_iff : a·b ∈ [A,B) ↔ a ∈ [(A−1)/b+1, (B−1)/b+1)`.
+- `RHTower/Sieve/TypeIIFibreCorrelation.lean` — the structural fact that makes the type-II half
+  work despite the coupling `d·m ∈ I`:
+  - `mem_fibre_symm : m ∈ fibre(d) ↔ d ∈ fibre(m)` (the constraint is symmetric);
+  - `maskedNdExp`, whose masking restores the product structure the correlation expansion needs;
+  - **`sum_masked_correlation_eq`**: the correlation attached to a pair `(m₁, m₂)` equals
+    ```
+    Σ_{d ∈ [max(P, A_{m₁}, A_{m₂}), min(Q, B_{m₁}, B_{m₂}))} e(F(m₁d))·conj e(F(m₂d)),
+    ```
+    an honest INTERVAL — exactly the input of `norm_sum_corr_le` and
+    `norm_curvedSum_diffPhase_kuzminLandau`.
+
+Remaining: the type-II assembly (masking + `sum_normSq_inner_le` + the two correlation regimes),
+the third Vaughan piece's coefficient bounds, and `VC6`.
