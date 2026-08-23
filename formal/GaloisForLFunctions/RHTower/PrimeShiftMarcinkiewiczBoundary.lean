@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.PrimeShiftResidueClosability
+import GaloisForLFunctions.RHTower.PrimeShiftCriticalSummability
 
 /-!
 # Marcinkiewicz boundary of normalized prime-shift characters

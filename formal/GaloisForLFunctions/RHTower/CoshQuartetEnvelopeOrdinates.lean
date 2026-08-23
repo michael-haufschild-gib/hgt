@@ -54,4 +54,30 @@ theorem coshQuartetEnvelope_zero_im_iff_zero_im (a b y : ℝ) :
   (coshQuartetEnvelope_zero_im_iff_zero_im_zero a y).trans
     (coshQuartetEnvelope_zero_im_iff_zero_im_zero b y).symm
 
+/-- Each odd half-integer lattice ordinate carries two distinct simple shifted zeros. -/
+theorem coshQuartetEnvelope_two_distinct_zeroes_same_im
+    (a : ℝ) (ha : a ≠ 0) (k : ℤ) :
+    ∃ zPlus zMinus : ℂ,
+      coshQuartetEnvelope a zPlus = 0 ∧
+        coshQuartetEnvelope a zMinus = 0 ∧
+        deriv (coshQuartetEnvelope a) zPlus ≠ 0 ∧
+        deriv (coshQuartetEnvelope a) zMinus ≠ 0 ∧
+        zPlus.im = zMinus.im ∧ zPlus ≠ zMinus := by
+  let q : ℂ := ((2 * k + 1 : ℂ) * Real.pi / 2) * I
+  have hplus : coshQuartetEnvelope a ((a : ℂ) - q) = 0 := by
+    apply coshQuartetEnvelope_eq_zero_iff.mpr
+    exact Or.inl ⟨k, rfl⟩
+  have hminus : coshQuartetEnvelope a (-(a : ℂ) - q) = 0 := by
+    apply coshQuartetEnvelope_eq_zero_iff.mpr
+    exact Or.inr ⟨k, rfl⟩
+  refine ⟨(a : ℂ) - q, -(a : ℂ) - q, hplus, hminus,
+    deriv_coshQuartetEnvelope_ne_zero_of_eq_zero ha hplus,
+    deriv_coshQuartetEnvelope_ne_zero_of_eq_zero ha hminus, ?_, ?_⟩
+  · simp [q]
+  · intro h
+    have hre := congrArg Complex.re h
+    simp [q] at hre
+    apply ha
+    linarith
+
 end RHTower

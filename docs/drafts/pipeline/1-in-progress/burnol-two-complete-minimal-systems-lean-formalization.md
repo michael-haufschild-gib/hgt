@@ -1362,3 +1362,37 @@ existential quotient by the concrete normal form `divShiftNF`, so that the next 
 `AnalyticAt`.  Then `isMellinTailHardy_iff` gives the pure tail datum (head constant `0`), and
 `headTailVector_mem_centralSoninExtendedCarrier` with `c₁ = c₂ = 0` plus
 `mem_centralSoninCarrier_of_ae_zero` lands the vector in `K₁`.
+
+## Session log — Hardy machinery for Proposition 6.5's minimality half
+
+Reusable modules built (all compile, wired, no `sorry`):
+
+* `HTGeometry/HalfPlaneHardyCongr.lean` — `IsHalfPlaneHardy.congr_right`: Hardy membership sees only
+  the values on `Re w > 0`.  This is what lets the anonymous quotient produced by a division lemma
+  be replaced by a concrete analytic representative, which the *next* division step can then
+  differentiate.
+* `RHTower/DivPowRepresentative.lean` — `divPowNF G ρ k` (the meromorphic normal form of
+  `G/(w−ρ)^k`), its analyticity, its order, and `exists_isHalfPlaneHardy_divPowNF`.
+* `RHTower/ZetaShiftCore.lean` — `zetaShiftCoreNF`, the normal form of `(s−1)ζ(s)/s²` in the
+  half-plane variable.  Unlike `zetaHardyCore` (a Laplace transform, holomorphic only on `Re w > 0`)
+  it is analytic on all of `ℂ ∖ {−1/2}`, and it agrees with `zetaHardyCore` on the half-plane, so it
+  is Hardy.  This is the object one may divide by zeros lying left of the critical line.
+* `RHTower/HardyListDivision.lean` — **`exists_isHalfPlaneHardy_listDiv`**: for a list `L` of zeros
+  of a Hardy `C` (counted with multiplicity) and any `j ≤ L.length`,
+  `(w+1/2)^j·C(w)/∏(w−z_i)` is Hardy, analytic wherever `C` is, and has order
+  `ord C z − L.count z` at every `z ≠ −1/2`.  The induction absorbs one `w + 1/2` per divisor via
+  `(w+1/2)G/(w−z) = G + (z+1/2)G/(w−z)`, or none when `j` is exhausted.
+* `RHTower/ZetaTripleTail.lean` — `exists_isHalfPlaneHardy_zetaTriple`: the instance
+  `L = [ρ₁−1/2, ρ₂−1/2] ++ replicate l (ρ−1/2)`, `j = 3`, giving the Hardy function behind
+  `s(s−1)ζ(s)/((s−ρ₁)(s−ρ₂)(s−ρ)^l)`.  The three hypotheses `hb₀, hb₁, hb₂` are exactly
+  "list count ≤ order of `ζ`" at the three points, i.e. the remaining multiplicities.
+
+### Still to do for 6.5's minimality half
+1. `soninTripleNF` — the analytic representative of `s(s−1)ζ(s)/((s−ρ₁)(s−ρ₂)(s−ρ)^l)` on the
+   strip, and its identification with `K(s−1/2)` there (`isMellinTailHardy_iff` gives the pure tail
+   datum, head constant `0`).
+2. The reflection: `χ(s)·(that)(1−s) = (−1)^{l+1}·(same at the mirror zeros)`, exactly as in
+   `exists_headTail_zetaDivPowNF_reflect`.
+3. `headTailVector_mem_centralSoninExtendedCarrier` with `c₁ = c₂ = 0`, then
+   `mem_centralSoninCarrier_of_ae_zero` to land in `K₁`.
+4. The order computation on the strip and the `IsMinimalEvaluatorSystem`-style conclusion.

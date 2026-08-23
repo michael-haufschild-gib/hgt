@@ -91,3 +91,38 @@ theorem homRetraction_apply (χ : A →* T) (a : A) :
   rw [← map_mul, mul_comm, inv_mul_cancel_right]
 
 end HTGeometry
+
+namespace HTGeometry
+
+
+variable {A M : Type*} [CommGroup A] [CommGroup M]
+variable (ι : M →* A) (r : A →* M) (hr : ∀ m, r (ι m) = m)
+variable (T : Type*) [CommGroup T]
+
+theorem homRetractionEquiv_fst (χ : A →* T) :
+    (homRetractionEquiv ι r hr T χ).1 = χ.comp ι := rfl
+
+/-- **Deninger, equation (90).**  The fibre of restriction to the retracted subgroup over a fixed
+character is in bijection with the characters of the kernel of the retraction. -/
+def homRetractionFibreEquiv (χM : M →* T) :
+    {χ : A →* T // χ.comp ι = χM} ≃ ((MonoidHom.ker r) →* T) where
+  toFun χ := (homRetractionEquiv ι r hr T χ.1).2
+  invFun ψ := ⟨(homRetractionEquiv ι r hr T).symm (χM, ψ), by
+    have h := (homRetractionEquiv ι r hr T).apply_symm_apply (χM, ψ)
+    have h1 := congrArg Prod.fst h
+    rw [homRetractionEquiv_fst] at h1
+    exact h1⟩
+  left_inv := by
+    rintro ⟨χ, hχ⟩
+    refine Subtype.ext ?_
+    have hpair : ((χM : M →* T), (homRetractionEquiv ι r hr T χ).2)
+        = homRetractionEquiv ι r hr T χ := by
+      refine Prod.ext ?_ rfl
+      rw [homRetractionEquiv_fst, hχ]
+    show (homRetractionEquiv ι r hr T).symm (χM, (homRetractionEquiv ι r hr T χ).2) = χ
+    rw [hpair, Equiv.symm_apply_apply]
+  right_inv ψ := by
+    show (homRetractionEquiv ι r hr T ((homRetractionEquiv ι r hr T).symm (χM, ψ))).2 = ψ
+    rw [Equiv.apply_symm_apply]
+
+end HTGeometry

@@ -266,6 +266,20 @@ and the relation to the Fargues–Fontaine curve) into the corpus as closed Lean
 
 | **Remark after Thm 15.1**: a ring homomorphism from a local ring with only the two primes `0` and `𝔪`, into a domain, is either injective or factors through the residue field | `RHTower/DeningerDynSysRankOneHom.lean` | closed |
 
+| **Prop 10.3, the reduction step**: a topological group is irreducible as soon as every neighbourhood of the identity meets each of its translates — left translation carries any nonempty open set onto a neighbourhood of the identity | `HTGeometry/TopologicalGroupIrreducible.lean` | closed |
+
+| **Prop 9.1, the closedness step** (a net converging to an isolated point is eventually equal to it) and the **Remark after Prop 10.3** (a space on which every locally constant Boolean function is constant is preconnected) | `HTGeometry/LocallyConstantConnected.lean` | closed |
+
+| **Equation (90)** (Thm 9.6): the fibre of restriction to the retracted subgroup over a fixed character is in bijection with the characters of the kernel of the retraction | `HTGeometry/RetractionSplitting.lean` | closed |
+
+| **Prop 13.9, uniqueness of `P_y`**: a pointed multiplicative map on a localization is determined by its restriction to the ring once the inverted elements have unit image; existence is the corpus's `deningerLocalQ` | `HTGeometry/MultiplicativeFractionLift.lean` | closed |
+
+| **Prop 10.3, the arithmetic and limit steps**: `ν₀ + A·Q` has no prime factor dividing `Q` but not `ν₀`, and is congruent to `ν₀` mod `Q`; and for any `v > 0` two sequences of positive integers tending to infinity have ratio tending to `v` | `RHTower/DeningerDynSysProp103Arith.lean` | closed |
+
+| **§13.3, the relative local ring `𝒪_{X,y₀}`**: the stalk of `π_*𝒪_X` at `y₀`, with the map from `𝒪_{X₀,y₀}`, the maps to `𝒪_{X,y}` for `y` above `y₀` and to `κ(x)` for `y₀` in the closure of `π(x)`, and the factorisation of `π`'s stalk map through it | `RHTower/DeningerDynSysRelativeStalk.lean` | closed |
+
+| **Def 13.6 / Prop 13.8 at the scheme level**, together with **Supplement 13.7's equation (149)**: the structure of an `o`-valued point of `X` over `X₀`, the equivalence of conditions 1) and 2) with "vanishes exactly where evaluation at `x` does", and `P_{y₀}⁻¹(𝔪) = ` the sections vanishing at `y` | `RHTower/DeningerDynSysDef136.lean` | closed |
+
 Axiom audit: every capstone above depends only on `propext`, `Classical.choice`, `Quot.sound`.
 
 ### Duplication audit (2026-08-22)
@@ -450,6 +464,25 @@ AIC-domain comparison.
   irreducible, which is Proposition 10.3 (adelic).
   Theorem 7.10's set-theoretic core — a set meeting every orbit exactly once maps bijectively onto
   the orbit space — is closed.  So is the Remark after Theorem 15.1.
+- 2026-08-23 — **Prop 10.3's reduction, Prop 9.1's closedness, (90) and Prop 13.9's uniqueness.**
+  The irreducibility criterion for a topological group — every identity neighbourhood meets each of
+  its translates — is Lean-closed, which is the whole structural half of Proposition 10.3; what
+  is left there is the explicit adelic approximation.  Proposition 9.1's closedness step (a net
+  converging to an isolated point is eventually equal to it) and the Remark after 10.3 (a space on
+  which every locally constant Boolean function is constant is preconnected) are closed.  Equation
+  (90) of Theorem 9.6 follows from the retraction splitting.  Proposition 13.9's `β` is completed:
+  existence of the multiplicative extension to the localization was the corpus's `deningerLocalQ`,
+  and uniqueness is now proved from `Q(a/s)·Q(s) = Q(a)` with `Q(s)` a unit.
+- 2026-08-23 — **§13.3's scheme layer built.**  Deninger's `𝒪_{X , y₀}` is realized as the stalk of
+  `π_* 𝒪_X` at `y₀`; the map from `𝒪_{X₀ , y₀}`, the map to `𝒪_{X , y}` for `y` above `y₀`, and the
+  evaluation `f ↦ f(x)` for `y₀` in the closure of `π(x)` are all in place, and the stalk map of
+  `π` factors through it definitionally.  On that layer Definition 13.6 and Proposition 13.8 are
+  stated as a structure, and two of their consequences proved: conditions 1)+2) say exactly that
+  `P_{y₀}` vanishes where evaluation at `x` does, and equation (149) of Supplement 13.7 —
+  `P_{y₀}⁻¹(𝔪)` is the set of relative sections vanishing at `y` — holds, using that a
+  multiplicative map from a field into a nontrivial ring vanishes only at zero.
+  Proposition 10.3's arithmetic and limit steps are also closed, leaving only the adelic
+  neighbourhood basis between the structural criterion and the full statement.
 - 2026-08-23 — **Prop 14.13's correspondence `χ = ♯ ∘ χ♭` is built and shown injective**: the
   zeroth coefficient of `χ♭ x` is the reduction of `(χ♭ x)^♯` modulo `p`
   (`PreTilt.mk_untilt_eq_coeff_zero`), and `Perfection.hom_ext` says a homomorphism into a

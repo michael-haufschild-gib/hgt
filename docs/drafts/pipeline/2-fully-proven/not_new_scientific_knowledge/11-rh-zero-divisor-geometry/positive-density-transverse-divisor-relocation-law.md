@@ -258,3 +258,53 @@ audit to only `propext`, `Classical.choice`, and `Quot.sound`.
 This closes the elementary multiplicity and transverse-placement facts for the displaced envelope.
 It does not formalize the reflected-Gamma carrier, shared ordinate-divisor measure, or the
 differential-translation field identity; the complete card remains at stage 2.
+
+`formal/GaloisForLFunctions/RHTower/CoshQuartetEnvelopeOrdinates.lean` now
+formalizes the exact support-level ordinate invariance of the elementary
+quartet witness: for every pair of real displacements and every ordinate `y`,
+there is an envelope zero with imaginary part `y` for one displacement iff
+there is one for the other. The leaf is wired into `RHTower.lean`, direct
+checked, target-built as
+`GaloisForLFunctions.RHTower.CoshQuartetEnvelopeOrdinates`, and both new
+theorems audit only to `propext`, `Classical.choice`, and `Quot.sound`.
+
+This establishes the full ordinate-support component, not the divisor measure
+with analytic multiplicities or the reflected-Gamma/differential-field parts;
+the card remains at stage 2.
+
+The same ordinate leaf now proves the local multiplicity-pairing witness: at
+every odd half-integer lattice ordinate, every nonzero displacement has two
+distinct envelope zeros with that common imaginary part, and both are simple.
+This new declaration was direct-checked, target-built, and axiom-audited to
+standard Lean foundations. It supplies the finite elementary pairing behind the
+common ordinate count, but does not replace the missing analytic divisor
+pushforward equality for the Gamma-multiplied carriers.
+
+`formal/GaloisForLFunctions/RHTower/ReflectedGammaCarrier.lean` now
+formalizes the centered carrier
+`1/(Gamma(beta + i z) Gamma(beta - i z))` itself: global analyticity,
+its exact two critical-axis zero lattices, central-line confinement of every
+zero, evenness, and Schwarz reality. The leaf is wired into `RHTower.lean`,
+direct-checked, target-built as
+`GaloisForLFunctions.RHTower.ReflectedGammaCarrier`, and all five declarations
+audit only to `propext`, `Classical.choice`, and `Quot.sound`.
+
+The remaining carrier work is the product/divisor analysis with the Cosh
+envelopes, including exact multiplicity pushforward and the HT/differential
+translation field. This card therefore remains stage 2.
+
+`formal/GaloisForLFunctions/RHTower/ReflectedGammaQuartetRelocation.lean`
+now combines the reflected-Gamma carrier with the actual Cosh quartet. It
+formally proves global analyticity, evenness, Schwarz reality, centrality of
+the undisplaced product divisor, exact identification of all off-central zeros
+with the Cosh zeros, production of off-central full-carrier zeros for every
+nonzero displacement, and equality of the complete zero-ordinate *support*
+for all displacements. The leaf is wired into `RHTower.lean`, direct-checked,
+target-built as
+`GaloisForLFunctions.RHTower.ReflectedGammaQuartetRelocation`, and all seven
+new declarations audit only to `propext`, `Classical.choice`, and `Quot.sound`.
+
+This is a substantial closure of `(4)`, `(8)`, `(10)`, and `(12)` at the
+support level. Exact analytic-order/multiplicity pushforward, order-one and
+hypertranscendence of the complete products, and their differential-translation
+field identity remain necessary before stage 3.

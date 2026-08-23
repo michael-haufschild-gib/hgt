@@ -1,4 +1,6 @@
 import GaloisForLFunctions.RHTower.PrimeCharacterTailIndependence
+import GaloisForLFunctions.RHTower.PrimeShiftCharacterBasic
+import GaloisForLFunctions.RHTower.PrimeShiftCriticalSummability
 import GaloisForLFunctions.RHTower.WeightedEulerCoefficientSpaces
 import GaloisForLFunctions.HTGeometry.ZetaVerticalAlmostPeriodic
 import GaloisForLFunctions.RHTower.XiHeatCassiniWoldZetaPoleCarrier
@@ -21,48 +23,6 @@ open Filter Complex
 open scoped Topology BigOperators
 
 /-! ## Characters and the critical summable layer -/
-
-/-- The normalized prime shift character of a complex point, as a prime coefficient field. -/
-noncomputable def primeShiftCharacter (z : ℂ) : ℕ → ℂ :=
-  fun n => if n.Prime then (n : ℂ) ^ ((1 : ℂ) / 2 - z) else 0
-
-/-- The absolute-value field of a complex coefficient field. -/
-noncomputable def absField (b : ℕ → ℂ) : ℕ → ℝ := fun n => ‖b n‖
-
-theorem absField_nonneg (b : ℕ → ℂ) (n : ℕ) : 0 ≤ absField b n := norm_nonneg _
-
-theorem memCriticalSummableLayer_absField_primeShiftCharacter {z : ℂ} (hz : 1 / 2 < z.re) :
-    MemCriticalSummableLayer (absField (primeShiftCharacter z)) := by
-  have hsigma : (1 : ℝ) < 1 / 2 + z.re := by linarith
-  have hbase := HTGeometry.summable_log_pow_div_nat_rpow 1 hsigma
-  refine Summable.of_nonneg_of_le (fun n => ?_) (fun n => ?_) hbase
-  · refine Set.indicator_nonneg (fun m _ => ?_) n
-    have : (0 : ℝ) ≤ Real.log m / (m : ℝ) :=
-      div_nonneg (Real.log_natCast_nonneg m) (Nat.cast_nonneg m)
-    positivity
-  · by_cases hp : n.Prime
-    · rw [Set.indicator_of_mem (show n ∈ {p : ℕ | p.Prime} from hp)]
-      have hnpos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hp.pos
-      have hnorm : absField (primeShiftCharacter z) n = (n : ℝ) ^ ((1 : ℝ) / 2 - z.re) := by
-        rw [absField, primeShiftCharacter, if_pos hp, Complex.norm_natCast_cpow_of_pos hp.pos]
-        congr 1
-        simp
-      rw [hnorm, abs_of_nonneg (Real.rpow_nonneg hnpos.le _), pow_one]
-      have h1 : ((n : ℝ)) ^ (-(1 : ℝ)) = ((n : ℝ))⁻¹ := by
-        rw [Real.rpow_neg hnpos.le, Real.rpow_one]
-      calc Real.log n / (n : ℝ) * ((n : ℝ)) ^ ((1 : ℝ) / 2 - z.re)
-          = Real.log n * (((n : ℝ)) ^ (-(1 : ℝ)) * ((n : ℝ)) ^ ((1 : ℝ) / 2 - z.re)) := by
-            rw [h1]; ring
-        _ = Real.log n * ((n : ℝ)) ^ (-(1 : ℝ) + ((1 : ℝ) / 2 - z.re)) := by
-            rw [← Real.rpow_add hnpos]
-        _ = Real.log n * ((n : ℝ)) ^ (-((1 : ℝ) / 2 + z.re)) := by
-            congr 1; ring_nf
-        _ = Real.log n / ((n : ℝ)) ^ ((1 : ℝ) / 2 + z.re) := by
-            rw [Real.rpow_neg hnpos.le, div_eq_mul_inv]
-            ring_nf
-        _ ≤ Real.log n / ((n : ℝ)) ^ ((1 : ℝ) / 2 + z.re) := le_rfl
-    · rw [Set.indicator_of_notMem (show n ∉ {p : ℕ | p.Prime} from hp)]
-      positivity
 
 /-- **The exact shift law.**  The prime-log Dirichlet series weighted by a shift character is the
 grade-one prime source translated by that shift. -/

@@ -87,6 +87,84 @@ theorem primeLogMass_rpow_lower_mertensPrimeSqrtWindow {δ : ℝ} (hδ : 0 ≤ �
           exact mul_nonneg (div_nonneg (Real.log_natCast_nonneg n) (Nat.cast_nonneg n))
             (abs_nonneg _)
 
+/-- The square-root window differs from half a logarithm by a fixed explicit
+error. -/
+theorem abs_mertensPrimeSqrtWindow_sub_half_log_le (N : ℕ) (hN : 4 ≤ N) :
+    |mertensPrimeSqrtWindow N - Real.log N / 2| ≤ 2 * mertensPrimeWindowBound + 1 := by
+  have hsqrt : (2 : ℝ) ≤ Real.sqrt (N : ℝ) := by
+    apply (Real.le_sqrt (by norm_num : (0 : ℝ) ≤ 2)
+      (by exact_mod_cast Nat.zero_le N)).2
+    norm_num
+    exact hN
+  have hNerr := abs_mertensPrimeWeightSum_sub_log_le N (by omega)
+  have hQerr := abs_mertensPrimeWeightSum_floor_sub_log_le hsqrt
+  rw [Real.log_sqrt (by exact_mod_cast Nat.zero_le N)] at hQerr
+  calc
+    |mertensPrimeSqrtWindow N - Real.log N / 2| =
+        |(mertensPrimeWeightSum N - Real.log N) -
+          (mertensPrimeWeightSum ⌊Real.sqrt (N : ℝ)⌋₊ - Real.log N / 2)| := by
+            unfold mertensPrimeSqrtWindow
+            ring_nf
+    _ ≤ |mertensPrimeWeightSum N - Real.log N| +
+          |mertensPrimeWeightSum ⌊Real.sqrt (N : ℝ)⌋₊ - Real.log N / 2| := abs_sub _ _
+    _ ≤ mertensPrimeWindowBound + (mertensPrimeWindowBound + 1) :=
+      add_le_add hNerr hQerr
+    _ = 2 * mertensPrimeWindowBound + 1 := by ring
+
+/-- The normalized square-root prime window converges to its Lebesgue mass
+`1 / 2`. -/
+theorem tendsto_mertensPrimeSqrtWindow_div_log :
+    Tendsto (fun N : ℕ => mertensPrimeSqrtWindow N / Real.log N) atTop (nhds (1 / 2)) := by
+  have hlogtop : Tendsto (fun N : ℕ => Real.log N) atTop atTop :=
+    Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
+  have hbound : Tendsto (fun N : ℕ => (2 * mertensPrimeWindowBound + 1) / Real.log N)
+      atTop (nhds 0) := tendsto_const_nhds.div_atTop hlogtop
+  have hzero : Tendsto (fun N : ℕ =>
+      (mertensPrimeSqrtWindow N - Real.log N / 2) / Real.log N) atTop (nhds 0) := by
+    refine squeeze_zero_norm' ?_ hbound
+    filter_upwards [Filter.eventually_ge_atTop 4] with N hN
+    have hlog : 0 < Real.log N := log_cutoff_pos (by omega)
+    rw [Real.norm_eq_abs, abs_div, abs_of_pos hlog]
+    exact div_le_div_of_nonneg_right
+      (abs_mertensPrimeSqrtWindow_sub_half_log_le N hN) hlog.le
+  have hsum := hzero.add
+    (tendsto_const_nhds : Tendsto (fun _ : ℕ => (1 / 2 : ℝ)) atTop (nhds (1 / 2)))
+  rw [zero_add] at hsum
+  refine hsum.congr' ?_
+  filter_upwards [Filter.eventually_ge_atTop 2] with N hN
+  have hlog : Real.log N ≠ 0 := (log_cutoff_pos hN).ne'
+  field_simp
+  ring
+
+/-- Positive prime-power coefficient fields escape every logarithmic
+Marcinkiewicz bound. -/
+theorem tendsto_marcinkiewiczLogQuotient_rpow_atTop {δ : ℝ} (hδ : 0 < δ) :
+    Tendsto (fun N : ℕ => marcinkiewiczLogQuotient (fun n => (n : ℝ) ^ δ) N) atTop atTop := by
+  have hsqrt : Tendsto (fun N : ℕ => Real.sqrt (N : ℝ)) atTop atTop :=
+    Real.tendsto_sqrt_atTop.comp tendsto_natCast_atTop_atTop
+  have hrpow : Tendsto (fun N : ℕ => (Real.sqrt (N : ℝ)) ^ δ) atTop atTop :=
+    (tendsto_rpow_atTop hδ).comp hsqrt
+  have hbase : Tendsto (fun N : ℕ => (1 / 4 : ℝ) * (Real.sqrt (N : ℝ)) ^ δ)
+      atTop atTop := hrpow.const_mul_atTop (by norm_num)
+  refine Filter.tendsto_atTop_mono' atTop ?_ hbase
+  have hwindow : ∀ᶠ N : ℕ in atTop,
+      (1 / 4 : ℝ) ≤ mertensPrimeSqrtWindow N / Real.log N :=
+    tendsto_mertensPrimeSqrtWindow_div_log.eventually
+      (eventually_ge_nhds (by norm_num : (1 / 4 : ℝ) < 1 / 2))
+  filter_upwards [Filter.eventually_ge_atTop 4, hwindow] with N hN hwindow
+  have hlog : 0 < Real.log N := log_cutoff_pos (by omega)
+  have hmass := primeLogMass_rpow_lower_mertensPrimeSqrtWindow hδ.le N hN
+  unfold marcinkiewiczLogQuotient
+  calc
+    (1 / 4 : ℝ) * (Real.sqrt (N : ℝ)) ^ δ
+      ≤ (Real.sqrt (N : ℝ)) ^ δ * (mertensPrimeSqrtWindow N / Real.log N) := by
+        simpa [mul_comm] using
+          mul_le_mul_of_nonneg_left hwindow
+            (Real.rpow_nonneg (Real.sqrt_nonneg _) _)
+    _ = ((Real.sqrt (N : ℝ)) ^ δ * mertensPrimeSqrtWindow N) / Real.log N := by ring
+    _ ≤ primeLogMass (fun n => (n : ℝ) ^ δ) N / Real.log N :=
+      div_le_div_of_nonneg_right hmass hlog.le
+
 end RHTower
 
 end

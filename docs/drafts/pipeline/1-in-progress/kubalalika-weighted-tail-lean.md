@@ -656,3 +656,74 @@ So the whole card now reduces to supplying `G(r)` — which is exactly what
 the harmonic total with the two power-sum kernels.
 
 Card 12: 53 modules.
+
+## The exponent budget, recomputed: `U = V = T^{1/4}` and a bound uniform in `r` (2026-08-23)
+
+Working the budget out again with BOTH orientations available showed two simplifications that
+remove most of the remaining arithmetic:
+
+1. **The maximum of `min(A(D), B(D))` is NOT attained only at the endpoints.**  With
+   `A(D) = DM + √X M^{3/2}/D` (Cauchy--Schwarz on the long variable) and `B(D) = M²/D + √X M^{1/2}D`
+   (on the short one), `A − B = (D − M/D)·√M(√M − √X)`, so `A ≤ B` exactly for `D ≥ √M`.  The
+   interior point `D = √M` therefore contributes `M^{3/2} + √X M`, i.e. `|S₄| ≫ X^{1/4}√M`.  That is
+   `T^{3/4}r^{1/4}`, whose harmonic total is `T^{15/16}` — harmless, but it must be carried.
+2. **A single round choice `U = V = W = ⌈T^{1/4}⌉` works**, and gives a bound UNIFORM in `r`:
+   ```
+   G(r) ≪ T^{15/16}·L^C   for every  T^{1/4} ≤ r ≤ T^{3/4}.
+   ```
+   The `r`-sum is then just `Σ_r 1/r ≤ 1 + log T`, so the power-sum kernels are not needed at all.
+   Since the `m`-range is `[T/L², T(1+ε)]`, every block has `M ≍ T` up to `L²`, and NO dyadic
+   decomposition in `M` is needed either: the whole `m`-range is one block.
+
+With `T = u^{16}` every quantity is a monomial in `u`: `ε = u^{-4}`, `U = V = ⌈u^4⌉`, `UV ≍ u^8`,
+`√(Tr) ∈ [u^{10}, 2u^{14}]`, and the target `T^{15/16} = u^{15}`.
+
+### Orientation, per block
+
+The dyadic decomposition bounds `‖S₄‖ ≤ Σ_j ‖S_j‖` with each `S_j` INDEPENDENT, so the orientation
+may be chosen block by block — no re-splitting of the sum is needed.  Blocks with `P ≥ √B` use the
+long orientation, blocks with `P < √B` the short one.
+
+### New modules
+
+- `Sieve/TypeIIBlockSum.lean` — `maskedBlockSum`, `norm_typeII_piece_le_sum_blockSums`
+  (`‖type-II piece‖ ≤ Σ_j ‖S_j‖`), `norm_maskedBlockSum_sq_le` (Cauchy--Schwarz on the long
+  variable), `maskedBlockSum_eq_swap` (the inner sum restricted to the effective interval and the
+  order exchanged, through `maskedNdExp_symm`), and `norm_maskedBlockSum_sq_le_swap`.
+- `Sieve/TypeIIBlockSwapBound.lean` — `swap_pairSum_le` and `norm_maskedBlockSum_sq_le_swap_bound`:
+  in the exchanged orientation the pair runs over the block itself, so the confinement hypotheses
+  (`M₀ = P`, `M₁ = Q−1`, `H = Q−1−P`) are discharged by `omega`.
+- `Sieve/TypeIIBlockBounds.lean` — the long-orientation companion, plus the coefficient-energy
+  restrictions `effSet ⊆ [1, effHigh]`, `[effLow, effHigh+1) ⊆ [1, effHigh]`, and
+  `sum_typeIIShort_sq_subset_le`.
+- `Sieve/VaughanTypeIRestricted.lean` — **the sharpening the milestone needed**:
+  `truncAF_conv_apply_of_gt` (`Λ_U ∗ μ_V` vanishes above `UV`) and the two type-I estimates summed
+  only over the coefficient's support.  This is not cosmetic: for `b ≍ L` the curvature hypothesis
+  `nearDiagonalLambda T (r/b) ((A−1)/b+1) ≤ 1` is FALSE (it reads `Trb² ≤ 36πA³`), so the original
+  statement, which demanded it for every `b ≤ L`, was unusable.  On `b ≤ UV = √T` it holds.
+- `Sieve/VonMangoldtBlockEstimateSharp.lean` — `norm_zeta_piece_le'`, `norm_log_piece_le'`,
+  **`norm_sum_vonMangoldt_ndPhaseExp_le'`**: the block estimate with the two type-I totals over
+  `[1, UV]` and `[1, V]`.
+- `Sieve/FibrePowerBound.lean` — `fibreKernel`, `fibreTail`, and **`fibreBound_le`**:
+  ```
+  fibreBound T r A B b ≤ 2500√(Tr/(36πA)) + 22√(36π(2B)³/(Tr))/b,
+  ```
+  because the curvature scale `Tr/A` is invariant under `u ↦ bu` while the fibre shrinks like
+  `1/b`.  Hence `sum_log_fibreBound_le` and `sum_two_fibreBound_log_le`: the two type-I totals are
+  `≤ log K·(K·fibreKernel + fibreTail·H_K)`.
+- `Sieve/GapSumSingleSqrt.lean` — `gapSumBound`, `sum_gapCorrBound_le'`: both halves of the gap sum
+  collapse to a single square root, so substituting the dyadic values becomes one inequality
+  between radicands.
+- `Sieve/GapSumDyadic.lean` — `cast_effLow_ge` (`effLow ≥ A/Q`), `cast_effHigh_le`,
+  `cast_effGap_le`, and the two substitutions:
+  ```
+  long  : gapSum ≤ 500·√(Tr)·B√B/(AP) + 1500·B√B/√(Tr),
+  short : gapSum ≤ 350·P·√(Tr)/√A   + 3000·B√B/√(Tr).
+  ```
+  The constants come from `36π ≥ 108` and `π ≤ 4` only.
+
+Card 12: 62 modules, all axiom-clean, all wired into `RHTower.lean`.
+
+Remaining: multiply the per-block factors together (`EA ≤ 2CP log L`, `EB ≤ 2(B/P)(2+log B)³`,
+the two gap sums above), take the better orientation per block, sum over the `log₂ L + 1` blocks,
+and instantiate at `T = u^{16}`, `A ≍ u^{16}/L²`, `B ≍ 2u^{16}`, `U = V = ⌈u^4⌉`.

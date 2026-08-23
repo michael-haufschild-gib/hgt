@@ -198,3 +198,18 @@ self-contained axiom audit pass with only `propext`, `Classical.choice`, and
 The left-half-plane exclusion, full quotient construction and norm statement,
 and Hahn–Banach/residue-graph portion are still unformalized. The card remains
 at stage 2.
+
+### Added Lean boundary closure
+
+`MertensPrimeSqrtWindow.lean` now proves the unconditional square-root-window
+Mertens estimate, its normalized limit `1 / 2`, and divergence of the
+logarithmic Marcinkiewicz quotient of every positive real prime-power field.
+`PrimeShiftMarcinkiewiczLeftBoundary.lean` transports that result exactly to
+`absField (primeShiftCharacter z)`, proving
+`Re z < 1 / 2 -> ¬ MemMarcinkiewiczLogLayer ...`.  The complete pointwise
+membership trichotomy in (12) is therefore Lean-proved: left exclusion, the
+critical-line unit-tail result, and right-half vanishing tails.  The left
+module proof and its axiom audit close using only `propext`,
+`Classical.choice`, and `Quot.sound`; it is wired into the RHTower umbrella.
+The quotient/Hahn–Banach/residue-graph claims remain open, so this card stays
+at stage 2.

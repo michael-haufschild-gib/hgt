@@ -1,4 +1,5 @@
 import Mathlib.RingTheory.Localization.FractionRing
+import Mathlib.RingTheory.Localization.Basic
 
 /-!
 # Extending a pointed multiplicative map to the fraction field
@@ -93,5 +94,32 @@ theorem multiplicativeFrac_ext (F₁ F₂ : κ →*₀ O)
   have hF₁b : F₁ (algebraMap D κ b) ≠ 0 := fun hz => hbz (h₁ _ hz)
   have hF₂b : F₂ (algebraMap D κ b) ≠ 0 := by rw [← h b]; exact hF₁b
   rw [map_div₀, map_div₀, h a, h b]
+
+end HTGeometry
+
+namespace HTGeometry
+
+
+/-- **Deninger, Proposition 13.9, the uniqueness of `P_y`.**  A pointed multiplicative map on a
+localization is determined by its restriction to the ring, as soon as the inverted elements have
+unit image: `Q (a / s) · Q (s) = Q (a)`. -/
+theorem localization_monoidWithZeroHom_ext {R O : Type*} [CommRing R] [CommRing O]
+    (M : Submonoid R) (Rₘ : Type*) [CommRing Rₘ] [Algebra R Rₘ] [IsLocalization M Rₘ]
+    (Q₁ Q₂ : Rₘ →*₀ O)
+    (h : ∀ a : R, Q₁ (algebraMap R Rₘ a) = Q₂ (algebraMap R Rₘ a))
+    (hunit : ∀ s : M, IsUnit (Q₁ (algebraMap R Rₘ (s : R)))) :
+    Q₁ = Q₂ := by
+  refine DFunLike.ext _ _ fun x => ?_
+  obtain ⟨⟨a, s⟩, rfl⟩ := IsLocalization.mk'_surjective (S := Rₘ) M x
+  have hspec : IsLocalization.mk' Rₘ a s * algebraMap R Rₘ (s : R) = algebraMap R Rₘ a :=
+    IsLocalization.mk'_spec Rₘ a s
+  have h1 : Q₁ (IsLocalization.mk' Rₘ a s) * Q₁ (algebraMap R Rₘ (s : R))
+      = Q₁ (algebraMap R Rₘ a) := by rw [← map_mul, hspec]
+  have h2 : Q₂ (IsLocalization.mk' Rₘ a s) * Q₂ (algebraMap R Rₘ (s : R))
+      = Q₂ (algebraMap R Rₘ a) := by rw [← map_mul, hspec]
+  have hs := hunit s
+  refine hs.mul_left_cancel ?_
+  rw [mul_comm _ (Q₁ (IsLocalization.mk' Rₘ a s)), h1, h a, ← h2, h (s : R)]
+  ring
 
 end HTGeometry
