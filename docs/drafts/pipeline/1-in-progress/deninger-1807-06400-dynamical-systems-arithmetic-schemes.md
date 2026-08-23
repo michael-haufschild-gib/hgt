@@ -226,6 +226,20 @@ and the relation to the Fargues–Fontaine curve) into the corpus as closed Lean
 
 | **Def 2.3 (`t24n`)**: a morphism `W_rat(Y) → W_rat(X)` of rational Witt spaces, with the stalk maps `W_rat(𝒪_{X,f(y)}) → W_rat(𝒪_{Y,y})` compatible with the sheaf morphism and local on residue fields; §2's definitions are now complete | `RHTower/DeningerDynSysWittStalk.lean` | closed |
 
+| **Lifting along an integral extension, unbundled form**: a homomorphism into an algebraically closed field extends along an injective integral ring homomorphism | `RHTower/DeningerDynSysIntegralLift.lean` | closed |
+
+| **Prop 3.5, surjectivity, unconditional**: along an integral morphism of schemes with injective section maps, every point of the base with values in an algebraically closed field lifts — no group action enters | `RHTower/DeningerDynSysProp35Integral.lean` | closed |
+
+| **Prop 3.5, surjectivity for the relative normalization**: the section maps of `fromNormalization` are injective whenever the given morphism is scheme-theoretically dominant, so every `C`-point of the base lifts to the normalization | `RHTower/DeningerDynSysProp35Integral.lean` | closed |
+
+| **§3, the action of `Aut_{K₀}(K)` on the normalization**: an endomorphism of the source over the base induces one of the relative normalization, functorially, lying over the base; automorphisms induce automorphisms | `RHTower/DeningerDynSysNormalizationAction.lean` | closed |
+
+| **§3, after Prop 3.5**: a point of `X₀` contributes to `X₀(C)` only if its residue field has the characteristic of `C` | `RHTower/DeningerDynSysResiduePoints.lean` | closed |
+
+| **Prop 3.5, surjectivity in residue-field form**: every pair `(x₀ , κ(x₀) ↪ C)` is induced by a pair `(x , κ(x) ↪ C)` with `x` over `x₀`; and the same for the relative normalization | `RHTower/DeningerDynSysResiduePoints.lean` | closed |
+
+| **(23) = Bourbaki V §2 no 3 Prop 6, for a profinite group** (mathlib gap): the stabilizer of a prime `Q` of `B` surjects onto `Aut(κ(Q)/κ(P))`.  Mathlib has this only for the quotients `(B ⧸ Q)/(A ⧸ P)` in the profinite case, and for the residue fields only when `G` is finite.  Route: the orbit polynomial has invariant coefficients, so a `K`-automorphism of `L` permutes the orbit and therefore restricts to `B ⧸ Q` | `RHTower/DeningerDynSysStabilizerResidueField.lean` | closed |
+
 Axiom audit: every capstone above depends only on `propext`, `Classical.choice`, `Quot.sound`.
 
 ### Duplication audit (2026-08-22)
@@ -356,6 +370,23 @@ AIC-domain comparison.
 - [ ] 2 → 3  Lean theorems, `lake build` green per module, axiom audit PASS
 
 ## Log
+- 2026-08-23 — **§3 advanced on three fronts.**  (i) Proposition 3.5's *surjectivity* is now
+  unconditional and group-free: along an integral morphism of schemes whose section maps are
+  injective, every `C`-point of the base lifts (`deningerSchemePoint_surjective_of_isIntegralHom`).
+  Applied to a relative normalization the two hypotheses are automatic — `fromNormalization` is
+  integral, and its section maps are injective because the given morphism factors through it — so
+  `deningerNormalizationPoint_surjective` needs only that the morphism be qcqs and
+  scheme-theoretically dominant.  (ii) The `G`-action on the normalization is built from the
+  universal property (`deningerNormalizationMap`, functorial, lying over the base, sending
+  automorphisms to automorphisms).  (iii) Everything is restated in Deninger's own language of
+  pairs `(x , κ(x) ↪ C)` through mathlib's `SpecToEquivOfField`, together with the paper's remark
+  that `X₀(C)` sees only the points whose residue characteristic is that of `C`.
+  Also closed: the **profinite residue-field form of (23)** — mathlib's
+  `Ideal.Quotient.stabilizerHom_surjective_of_profinite` covers `(B ⧸ Q)/(A ⧸ P)` but the residue
+  fields only for finite `G`.  The bridge is that a `K`-automorphism of `L` restricts to `B ⧸ Q`,
+  proved from the orbit polynomial: its coefficients are `G`-invariant, hence lie in `A`, hence are
+  fixed, so the automorphism permutes the roots, which are exactly the images of the `G`-orbit.
+  This is the input Deninger quotes from Bourbaki for Corollaries 3.1–3.3.
 - 2026-08-23 — **Prop 14.13's correspondence `χ = ♯ ∘ χ♭` is built and shown injective**: the
   zeroth coefficient of `χ♭ x` is the reduction of `(χ♭ x)^♯` modulo `p`
   (`PreTilt.mk_untilt_eq_coeff_zero`), and `Perfection.hom_ext` says a homomorphism into a

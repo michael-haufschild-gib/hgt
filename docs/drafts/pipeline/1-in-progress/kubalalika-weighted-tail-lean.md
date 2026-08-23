@@ -449,3 +449,22 @@ What is left is arithmetic only: substituting `A ≍ M`, `B ≍ 2M`, `P = 2^j`, 
 `j ≤ log₂L` and over `r`.
 
 Card 12: 42 modules.
+
+## The confinement hypotheses discharged (2026-08-23)
+
+`EffectiveSetHypotheses.lean` reads `M₀`, `M₁`, `H` off the effective interval itself:
+
+- `effLow A Q = (A−1)/(Q−1) + 1`, `effHigh B P = (B−1)/P`, `effGap A B P Q = effHigh − effLow`;
+- `effSet_confined`, `effSet_gap` — the confinement and gap hypotheses of the closed-form pair
+  bound hold automatically for those values (`Nat.dist` bounds are pure `omega` once both members
+  are in the interval);
+- **`pairSum_block_le`** — the pair sum of a dyadic block with those hypotheses discharged:
+  ```
+  Σ_{m₁,m₂ ≤ L}|b(m₁)||b(m₂)|·‖corr‖
+      ≤ (Q−P)·E + E·2Σ_{h ≤ effGap} gapCorrBound T r (effLow A Q) (effHigh B P) P Q h,
+      E := Σ_{m ∈ effSet}|b(m)|².
+  ```
+  Only two hypotheses remain to be supplied by the caller, and both are size conditions on the
+  parameters: `4(r/m) ≤ P` and `curvedLambda(T|Δ|, P) ≤ 1`.
+
+Card 12: 43 modules.

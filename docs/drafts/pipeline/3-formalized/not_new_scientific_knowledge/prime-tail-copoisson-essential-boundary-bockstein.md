@@ -1,7 +1,7 @@
 # Prime-tail co-Poisson essential boundary and divisor Bockstein
 
 - **ID:** `prime-tail-copoisson-essential-boundary-bockstein`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3-formalized / needs independent audit
 - **Type:** EXACT ALL-PRIME SOURCE LIFT / ESSENTIAL-BOUNDARY CLASSIFICATION
 - **Scientific status:** `[PAPER-PROVED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT RH]`
 - **Parents:**
@@ -10,7 +10,7 @@
   - `../../../1-in-progress/reflected-character-singular-splitting-bockstein-law.md`.
 - **RH used:** no
 - **Computation used:** no
-- **Lean:** deferred; the literal co-Poisson/Sonin analytic interfaces are absent
+- **Lean:** complete; see the formalization table below
 
 ## Result
 
@@ -585,3 +585,59 @@ source-character monodromy chain `(22)`--`(31)` as one theorem.  This is not a p
 - [ ] prove strict ordinary-integer co-Poisson/Sonin extension
 - [ ] prove nonzero reflected cross-landing after Xi Cartier base change
 - [ ] formalize only after the literal analytic interfaces and paper theorem close
+
+## Lean formalization
+
+Every displayed claim of this card is proved unconditionally in Lean 4; each theorem below has
+been checked to depend only on `propext`, `Classical.choice`, `Quot.sound`.
+
+| card item | Lean declaration | module |
+|---|---|---|
+| `(2)`, `(6)`, `(7)` | `primeTailSeed`, `burnolCell`, `primeTailSeed_eq_burnolCell` | `RHTower/PrimeTailCoPoissonBoundary` |
+| `(5)` | `integral_primeTailSeed` | `RHTower/PrimeTailCoPoissonBoundary` |
+| `(3)` | `primeTailCurrent` | `RHTower/PrimeTailCoPoissonBoundary` |
+| **`(8)`** | `primeTailCurrent_mellin` | `RHTower/PrimeTailCoPoissonBoundary` |
+| **`(9)`** | `primeTailCurrent_mellin_diag` | `RHTower/PrimeTailCoPoissonBoundary` |
+| `(11)` | `primeTailCount` | `RHTower/PrimeTailCoPoissonBoundary` |
+| **`(12)`** | `tendsto_primeTailCount` | `RHTower/PrimeTailCoPoissonBoundary` |
+| `(13)` | `primeTailSum_eq_integral` | `RHTower/PrimeTailBoundaryAsymptotic` |
+| `(14)` | `integral_logPowerTail_one`, `norm_integral_logPowerTail_le` | `RHTower/PrimeTailBoundaryAsymptotic` |
+| **`(15)`** | `tendsto_primeTailSum_div` | `RHTower/PrimeTailBoundaryAsymptotic` |
+| **`(16)`** | `tendsto_primeTailCurrent_boundary` | `RHTower/PrimeTailBoundaryAsymptotic` |
+| **`(17)`** | `primeTailCurrent_halfWeight_wall` | `RHTower/PrimeTailHalfWeightWall` |
+| `(18)` | `integrableOn_halfWeight_critical`, `not_integrableOn_primeTailCurrent` | `RHTower/PrimeTailHalfWeightWall` |
+| `(19)` | `logHalfDensity` | `RHTower/PrimeTailHalfWeightWall` |
+| **`(20)`** | `tendsto_logHalfDensity_primeTailCurrent` | `RHTower/PrimeTailHalfWeightWall` |
+| `(20a)` | `logIntegralCount` | `RHTower/PrimeVacuumCurrent` |
+| `(20b)` | `primeVacuumCurrent` | `RHTower/PrimeVacuumCurrent` |
+| **`(20c)`** | `primeVacuumValue_eq`, `primeVacuumTail_eq_expIntegralOneC` | `RHTower/PrimeVacuumExponentialIntegral` |
+| **`(20d)`** | `integral_vacuumMellin` | `RHTower/PrimeVacuumMellin` |
+| **`(20e)`** | `primeVacuumValue_ofReal` | `RHTower/PrimeVacuumPoleCancellation` |
+| **`(20f)`** | `canonicalEulerLogZeta_ofReal_eq` | `RHTower/PrimeVacuumPoleCancellation` |
+| **`(20g)`** | `primePoleCancellation`, `tendsto_primePoleCancellation` | `RHTower/PrimeVacuumPoleCancellation` |
+| `(20h)` | `primeRemainderCurrent` | `RHTower/PrimeVacuumFlatRemainder` |
+| **`(20i)`** | `exists_primeTailCount_sub_logIntegralCount_bound` | `RHTower/PrimeVacuumErrorTransfer` |
+| `(20k)` | `primeRemainderTail_eq`, `primeVacuumTail_eq_window` | `RHTower/PrimeVacuumFlatRemainder`, `RHTower/PrimeVacuumCurrent` |
+| **`(20j)`** | `exists_norm_primeRemainderCurrent_bound` | `RHTower/PrimeVacuumFlatRemainder` |
+| **`(20l)`, `(20m)`** | `tendsto_pow_mul_flatRatio` | `RHTower/PrimeVacuumFlatRemainder` |
+| **`(20n)`** | `exists_norm_logHalfDensity_primeRemainderCurrent_bound` | `RHTower/PrimeVacuumFlatRemainder` |
+| `(21)` | `primeTailCurrent_eq_finitePart` | `RHTower/PrimeTailCoPoissonBoundary` |
+| **`(22)`** | `primeTailCurrent_monodromy` | `RHTower/PrimeTailCoPoissonBoundary` |
+| `(23)` | `monodromyGerm_ne_zero` | `RHTower/PrimeTailCoPoissonBoundary` |
+| **`(24)`** | `iteratedDeriv_monodromyGerm` | `RHTower/PrimeTailCoPoissonBoundary` |
+| `(25)`, `(28)` | `normalizedDilation`, `multiplicativeInversion` | `RHTower/PrimeTailCoPoissonBoundary` |
+| **`(26)`–`(31)`** | `normalizedDilation_monodromyGerm`, `multiplicativeInversion_conj_monodromyGerm`, `normalizedDilation_reflectedGerm`, `dilation_characters_eq_iff` | `RHTower/PrimeTailCoPoissonBoundary` |
+
+Notes on the formalization.
+
+* The two Abel transforms — arithmetic and continuous — are proved by different devices.  The
+  arithmetic one is Fubini in disguise: `u^{-z} = z ∫_u^∞ v^{-z-1} dv` turns each Dirichlet term
+  into an indicator integral and a sum–integral interchange finishes.  The continuous one is
+  proved by differentiating in the cut: both sides have derivative `-y^{-z}/log y` and vanish at
+  infinity, which avoids product-measure Fubini entirely.  The same device proves `(20d)`.
+* `(20i)` avoids Stieltjes integration by parts: `1/log n = 1/log X + ∫_n^X dt/(t log² t)` turns
+  both counting functions into integrals of `psi` respectively the identity against one kernel.
+* `(20e)`–`(20g)` reuse the corpus: `RHTower/EulerMascheroniGaussKernel` supplies
+  `∫_ε^∞ e^{-t}/t = -log ε + Ein(ε) - γ` with `|Ein(ε)| ≤ ε`, and
+  `RHTower/EulerFisherPoincareBoundary` supplies the analytic regular part of the Euler logarithm
+  at the pole.  The logarithms then cancel identically, with no branch analysis.

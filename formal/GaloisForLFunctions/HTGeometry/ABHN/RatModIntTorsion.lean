@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Michael Barenbaum
 -/
 import GaloisForLFunctions.HTGeometry.ABHN.TameMilnorInvariant
+import Mathlib.Analysis.SpecialFunctions.Complex.CircleAddChar
 
 /-!
 # Finite torsion levels in `ℚ/ℤ`
@@ -125,6 +126,29 @@ theorem ratModInt_addHom_complex_eq_zero (f : RatModInt →+ ℂ) : f = 0 := by
   have hnx : n • f x = 0 := by
     rw [← f.map_nsmul, hx, f.map_zero]
   exact (nsmul_eq_zero_iff_right hn).mp hnx
+
+/-- The standard finite-level `ℚ/ℤ` character.  It is multiplicative in the target rather than
+additive in `ℂ`, so it retains torsion data that every additive complex observable loses. -/
+noncomputable def ratModIntNTorsionStdAddChar (n : ℕ) (hn : n ≠ 0) :
+    AddChar (ratModIntNTorsion n) ℂ := by
+  letI : NeZero n := ⟨hn⟩
+  exact (ZMod.stdAddChar (N := n)).compAddMonoidHom
+    (zmodRatModIntAddEquivNTorsion n hn).symm.toAddMonoidHom
+
+/-- The finite-level standard character is faithful: it distinguishes every `n`-torsion local
+invariant value. -/
+theorem ratModIntNTorsionStdAddChar_injective (n : ℕ) (hn : n ≠ 0) :
+    Function.Injective (ratModIntNTorsionStdAddChar n hn) := by
+  letI : NeZero n := ⟨hn⟩
+  exact ZMod.injective_stdAddChar.comp (zmodRatModIntAddEquivNTorsion n hn).symm.injective
+
+/-- Every value of the standard finite-level character is an `n`th root of unity. -/
+theorem ratModIntNTorsionStdAddChar_pow_eq_one (n : ℕ) (hn : n ≠ 0)
+    (x : ratModIntNTorsion n) : (ratModIntNTorsionStdAddChar n hn x) ^ n = 1 := by
+  rw [← (ratModIntNTorsionStdAddChar n hn).map_nsmul_eq_pow]
+  change (ratModIntNTorsionStdAddChar n hn) (n • x) = 1
+  rw [show n • x = 0 by exact Subtype.ext x.property]
+  exact (ratModIntNTorsionStdAddChar n hn).map_zero_eq_one
 
 /-- `ℚ/ℤ` is the union of its finite torsion levels. -/
 theorem iUnion_ratModIntNTorsion :

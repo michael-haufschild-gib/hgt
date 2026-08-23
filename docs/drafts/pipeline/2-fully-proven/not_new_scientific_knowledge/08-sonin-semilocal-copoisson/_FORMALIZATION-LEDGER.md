@@ -976,3 +976,53 @@ using `e^{-c√log t} ≤ e^{-c√log √X}` on the upper half yields the expone
 
 **Card 5 remaining: `(20c)`–`(20g)` only** — the identification `V(z) = E₁(z-1)`, the Mellin
 identity `(20d)`, and the holomorphy of `P - V` at `z = 1`.
+
+## Card 5 CLOSED — promoted to stage 3 (2026-08-23)
+
+`(20c)`–`(20g)` closed by two further modules:
+
+* `RHTower/PrimeVacuumExponentialIntegral.lean` — `expIntegralOneC`, `primeVacuumValue_eq`,
+  `primeVacuumTail_eq_expIntegralOneC`.  The identification `V(z) = E₁(z-1)` is again proved by
+  differentiating in the cut: `y ↦ ∫_{Ioi y} logPowerTail z 1` and
+  `y ↦ ∫_{Ioi (log y)} e^{-(z-1)u}/u du` have the same derivative and the same limit.  This avoids
+  the contour deformation that the substitution `v = (z-1)u` would need for complex `z`.
+* `RHTower/PrimeVacuumMellin.lean` — `(20d)` via the explicit antiderivative
+  `vacuumMellinPrimitive` in the lower cut, which exists because the `z`- and `w`-tails
+  differentiate to the same kernel up to the two powers.  No product-measure Fubini.
+* `RHTower/PrimeVacuumPoleCancellation.lean` — `(20e)`, `(20f)`, `(20g)`.
+
+**Corpus reuse that saved the most work.**  `scripts/formal_tools.py research` found that
+`RHTower/EulerMascheroniGaussKernel.lean` already proves
+`∫_ε^∞ e^{-t}/t = -log ε + Ein(ε) - γ` with `|Ein(ε)| ≤ ε` and `Ein(ε) → 0`, which is exactly
+`(20e)` once the vacuum is identified with `expIntegralOne`; and
+`RHTower/EulerFisherPoincareBoundary.lean` already proves
+`eulerLogRegular β = log(β-1) + eulerLogMoment β` with `analyticAt_eulerLogRegular`, which is
+exactly `(20f)`.  The planned route — differentiating `E₁` under the integral sign and building an
+entire primitive of `(1-e^{-s})/s` — was unnecessary.
+
+## Card 11: the CRW theorem is AVOIDABLE
+
+The card cites Coifman–Rochberg–Weiss for the boundedness of `[H_∞, P_0]`.  For the actual symbol
+that is not needed, and the following elementary route works.
+
+1. `log(2+|ξ|) - ½ log(4+ξ²)` is **bounded**: the ratio `(2+|ξ|)²/(4+ξ²) = 1 + 4|ξ|/(4+ξ²)` lies in
+   `[1,2]` because `4 + ξ² ≥ 4|ξ|`.  A bounded symbol has a bounded commutator with any projection,
+   so only `½ log(4+ξ²)` matters.
+2. `½ log(4+ξ²) = Re Log(2 + iξ)`, and `2 + iξ` has positive real part, so the principal branch is
+   analytic with no cut crossing.  Write `G(ξ) = Log(2+iξ)`, so the symbol is `(G + Ḡ)/2`.
+3. `G` extends analytically to the upper half plane (`2 + iz` has positive real part for
+   `Im z > -2`), so `Ĝ` is supported on a half line and one of the two Hankel pieces of
+   `[M_{Re G}, P]` vanishes identically.
+4. The surviving Hankel has kernel `k(u+v)` with `Ĝ'(r) ∝ e^{-2r}` and hence `|k(r)| ≲ e^{-2r}/r`
+   on `r > 0`.  **A Schur test with the weight `u^{-1/4}` then closes it**: the `v < u` half gives
+   `e^{-2u}u^{-1}·u^{3/4}`, and the `v > u` half gives `∫_u^∞ e^{-2v}v^{-5/4} dv ≲ u^{-1/4}`.
+
+The physical-side Schur test fails (the kernel `(b(x)-b(y))/(x-y)` has divergent row integrals) —
+the point is that the **Fourier-side** Hankel kernel carries the exponential factor `e^{-2r}`,
+which is what makes the elementary test succeed.  This replaces a full Coifman–Rochberg–Weiss /
+Nehari formalization by an explicit kernel estimate.
+
+Corpus state for card 11: `RHTower/SoninBurnolConductorReflection.lean` and
+`RHTower/SoninBurnolConductorConcrete.lean` already hold the algebraic layer; the corpus has no
+BMO, Hankel–Nehari or Hardy-projection theory, and `HTGeometry/GammaStirlingCubicLog.lean` plus
+`RHTower/HardyZ.lean` hold the digamma/Stirling assets for `(9)`.
