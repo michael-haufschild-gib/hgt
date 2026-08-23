@@ -82,3 +82,19 @@ theorem deningerHom_restrict_surjective_of_isIntegral [Algebra.IsIntegral A B] [
   exact ⟨ψ, RingHom.ext hψ⟩
 
 end RHTower
+
+namespace RHTower
+
+/-- **Lifting along an integral extension, unbundled form.**  A homomorphism into an algebraically
+closed field extends along an injective integral ring homomorphism. -/
+theorem deningerHom_exists_extension_of_ringHom_isIntegral {A B C : Type*} [CommRing A]
+    [CommRing B] [Field C] [IsAlgClosed C] (f : A →+* B) (hf : f.IsIntegral)
+    (hinj : Function.Injective f) (φ : A →+* C) :
+    ∃ ψ : B →+* C, ψ.comp f = φ := by
+  letI := f.toAlgebra
+  haveI : Algebra.IsIntegral A B := ⟨fun x => hf x⟩
+  haveI : FaithfulSMul A B := (faithfulSMul_iff_algebraMap_injective A B).mpr hinj
+  obtain ⟨ψ, hψ⟩ := deningerHom_exists_extension_of_isIntegral (A := A) (B := B) (C := C) φ
+  exact ⟨ψ, RingHom.ext hψ⟩
+
+end RHTower

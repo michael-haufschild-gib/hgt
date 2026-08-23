@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.MaximallyProjectivePhysicalCircuitHardIntervalLaw
 import GaloisForLFunctions.RHTower.PairQubitProjectiveSeedWeakTwoLocalSameDrawLaw
 import GaloisForLFunctions.RHTower.NearestNeighborPolynomialCircuitSameDrawLaw
+import GaloisForLFunctions.RHTower.NearestNeighborPolynomialCircuitPermanentHaarSeparationLaw
 
 /-!
 # Same-draw local growth and continuous-circuit hard intervals
@@ -33,10 +34,14 @@ Gaussian ensemble has:
 * one fixed positive error and one fixed positive width such that every
   bounded-gap time window contains an interval excluding all arbitrary
   continuous two-qubit circuits of depth at most
-  `nearestNeighborPathProjectiveDimension L / 32`.
+  `nearestNeighborPathProjectiveDimension L / 32`; and
+* one fixed two-query product-stabilizer experiment which distinguishes that
+  same evolution from exact Haar randomness at every real time.
 
 Since `nearestNeighborPathProjectiveDimension L + 1 = 4 ^ L`, the late-time
-gate lower bound is exponential in path length. -/
+gate lower bound is exponential in path length.  Thus robust exponential
+circuit complexity and efficient non-Haar distinguishability coexist for one
+ordinary autonomous local Hamiltonian. -/
 theorem eventually_exists_nearestNeighborPath_sameDraw_growth_continuousCircuitHardIntervals :
     ∀ᶠ L : ℕ in atTop,
       ∃ p : Fin (nearestNeighborPathLocalParameterCount L) → ℝ,
@@ -51,16 +56,18 @@ theorem eventually_exists_nearestNeighborPath_sameDraw_growth_continuousCircuitH
           operatorTwoGateComplexityTo L (1 / 10000 : ℝ)
             (unitaryEvolution (nearestNeighborPathLocalHamiltonian L p)
               ((1 / 10000 : ℝ) * L)) ∧
-        ∃ ε : ℝ, 0 < ε ∧ ∃ W : ℝ, 0 < W ∧ ∃ gap : ℝ, 0 ≤ gap ∧
+        (∃ ε : ℝ, 0 < ε ∧ ∃ W : ℝ, 0 < W ∧ ∃ gap : ℝ, 0 ≤ gap ∧
           ∀ a : ℝ, ∃ u ∈ Set.Icc a (a + gap),
             ∀ t ∈ Set.Icc u (u + W),
               ∀ C : TwoQubitCircuit (L * 2),
                 C.gateCount ≤ nearestNeighborPathProjectiveDimension L / 32 →
                   ε ≤ ‖unitaryEvolution (pairQubitProjectivePauliSeed L p) t -
-                    (C.eval : Matrix (Fin (L * 2) → Bool) (Fin (L * 2) → Bool) ℂ)‖ := by
+                    (C.eval : Matrix (Fin (L * 2) → Bool) (Fin (L * 2) → Bool) ℂ)‖) ∧
+        NearestNeighborPathPermanentLocalityHaarSeparation L p := by
   filter_upwards [Filter.eventually_ge_atTop 1,
-    tendsto_natCast_atTop_atTop.eventually_ge_atTop (2048 * Real.pi)] with
-      L hL hLlarge
+    tendsto_natCast_atTop_atTop.eventually_ge_atTop (2048 * Real.pi),
+    eventually_pairQubit_twoLocalPauli_separator] with
+      L hL hLlarge hsep
   have hLpos : 0 < L := by omega
   letI : NormedRing
       (Matrix (Config (PairQubit L)) (Config (PairQubit L)) ℂ) :=
@@ -121,6 +128,8 @@ theorem eventually_exists_nearestNeighborPath_sameDraw_growth_continuousCircuitH
   have hhard :=
     maximallyProjective_unitaryEvolution_continuousCircuitHardIntervals_syndetic
       e (pairQubitProjectivePauliSeed_isHermitian L p) hmax hs
-  exact ⟨p, hgrowth, hend, hhard⟩
+  have hnonHaar : NearestNeighborPathPermanentLocalityHaarSeparation L p :=
+    nearestNeighborPath_permanentLocalityHaarSeparation hLpos hp.1 hsep
+  exact ⟨p, hgrowth, hend, hhard, hnonHaar⟩
 
 end RHTower

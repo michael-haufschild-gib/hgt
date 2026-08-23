@@ -636,7 +636,10 @@ theorem analyticOnNhd_iteratedDeriv_mul {a : ℝ} (ha : 0 < a) {U : Set ℂ}
   | zero =>
       intro z hz
       have hz' := hUsub hz
-      simpa using (soninEval_analyticAt ha hmem hev hz'.1 hz'.2).mul (hh z hz)
+      have hprod : AnalyticAt ℂ (fun s : ℂ => soninEval a f s * h s) z :=
+        AnalyticAt.mul (soninEval_analyticAt ha hmem hev hz'.1 hz'.2) (hh z hz)
+      rw [iteratedDeriv_zero]
+      exact hprod
   | succ k ih =>
       rw [iteratedDeriv_succ]
       exact ih.deriv

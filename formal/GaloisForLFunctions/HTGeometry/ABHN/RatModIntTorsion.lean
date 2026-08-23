@@ -115,6 +115,17 @@ theorem ratModInt_exists_nonzero_nsmul_eq_zero (x : RatModInt) :
   conv_rhs => arg 2; rw [hq]
   exact (mul_div_cancel₀ _ hden).symm
 
+/-- Every additive complex-valued observable of `ℚ/ℤ` vanishes.  Thus a local Brauer invariant
+cannot enter a nonzero complex local factor through an additive map; a character, pairing, or
+other nonlinear construction is required. -/
+theorem ratModInt_addHom_complex_eq_zero (f : RatModInt →+ ℂ) : f = 0 := by
+  ext x
+  obtain ⟨n, hn, hx⟩ := ratModInt_exists_nonzero_nsmul_eq_zero x
+  change n • (x : RatModInt) = 0 at hx
+  have hnx : n • f x = 0 := by
+    rw [← f.map_nsmul, hx, f.map_zero]
+  exact (nsmul_eq_zero_iff_right hn).mp hnx
+
 /-- `ℚ/ℤ` is the union of its finite torsion levels. -/
 theorem iUnion_ratModIntNTorsion :
     ⋃ n : ℕ, (ratModIntNTorsion n : Set RatModInt) = Set.univ := by

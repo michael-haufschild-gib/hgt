@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.CCMRationalAdelicAzumayaResidue
 import GaloisForLFunctions.RHTower.ConnesTateLocalZeta
+import GaloisForLFunctions.HTGeometry.ABHN.RatModIntTorsion
 
 /-!
 # Finite-residue Brauer obstruction for the local Tate source
@@ -32,6 +33,27 @@ theorem ccmRationalLocalResidueBrauerAddHom_eq_zero
   rw [Subsingleton.elim x 0, f.map_zero]
   rfl
 
+/-- If the missing `p`-adic ABHN invariant is supplied, every additive complex-valued observable
+of the full local Brauer group at a rational adelic factor is still zero.  This strengthens the
+finite-residue obstruction: a nonzero Tate local term cannot arise from an additive complex
+functional of the full Brauer invariant either. -/
+theorem ccmRationalLocalBrauerAddHom_eq_zero_of_invariant
+    (v : HeightOneSpectrum ℤ)
+    (invariant : BrauerGroup ℚ_[Rat.HeightOneSpectrum.primesEquiv v] ≃+ RatModInt)
+    (g : BrauerGroup (CCMRationalLocalField v) →+ ℂ) :
+    g = 0 := by
+  let e := ccmRationalLocalInvariantAddEquivOfPadic v invariant
+  ext x
+  obtain ⟨n, hn, hx⟩ := ratModInt_exists_nonzero_nsmul_eq_zero (e x)
+  have hex : n • x = 0 := by
+    apply e.injective
+    rw [map_nsmul]
+    change n • e x = 0 at hx
+    simpa using hx
+  have hnx : n • g x = 0 := by
+    rw [← g.map_nsmul, hex, g.map_zero]
+  exact (nsmul_eq_zero_iff_right hn).mp hnx
+
 /-- A finite-residue Brauer observable cannot equal the nonzero local Tate source term.
 This is the precise obstruction to a direct residue-invariant specialization of the Connes/Tate
 local factor. -/
@@ -47,6 +69,23 @@ theorem ccmRationalLocalResidueBrauerAddHom_apply_ne_connesPadicTateLocalZeta
           ((‖(b : ℚ_[Rat.HeightOneSpectrum.primesEquiv v])‖ : ℝ) : ℂ) ^ s) a
         ∂fieldOnePadicMultiplicativeHaar (Rat.HeightOneSpectrum.primesEquiv v) := by
   rw [ccmRationalLocalResidueBrauerAddHom_eq_zero v f]
+  exact (connes_padic_tate_local_zeta_ne_zero
+    (Rat.HeightOneSpectrum.primesEquiv v) hs).symm
+
+/-- Even after full local ABHN is available, no additive complex-valued Brauer observable can
+equal the nonzero local Tate factor in the open right half-plane. -/
+theorem ccmRationalLocalBrauerAddHom_apply_ne_connesPadicTateLocalZeta_of_invariant
+    (v : HeightOneSpectrum ℤ)
+    (invariant : BrauerGroup ℚ_[Rat.HeightOneSpectrum.primesEquiv v] ≃+ RatModInt)
+    (g : BrauerGroup (CCMRationalLocalField v) →+ ℂ)
+    (x : BrauerGroup (CCMRationalLocalField v)) {s : ℂ} (hs : 0 < s.re) :
+    g x ≠ ∫ a : ℚ_[Rat.HeightOneSpectrum.primesEquiv v]ˣ,
+      Set.indicator {b : ℚ_[Rat.HeightOneSpectrum.primesEquiv v]ˣ |
+        ‖(b : ℚ_[Rat.HeightOneSpectrum.primesEquiv v])‖ ≤ 1}
+        (fun b : ℚ_[Rat.HeightOneSpectrum.primesEquiv v]ˣ =>
+          ((‖(b : ℚ_[Rat.HeightOneSpectrum.primesEquiv v])‖ : ℝ) : ℂ) ^ s) a
+        ∂fieldOnePadicMultiplicativeHaar (Rat.HeightOneSpectrum.primesEquiv v) := by
+  rw [ccmRationalLocalBrauerAddHom_eq_zero_of_invariant v invariant g]
   exact (connes_padic_tate_local_zeta_ne_zero
     (Rat.HeightOneSpectrum.primesEquiv v) hs).symm
 

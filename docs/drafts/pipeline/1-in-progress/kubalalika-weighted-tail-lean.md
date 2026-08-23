@@ -364,3 +364,27 @@ already available: `Σ_{h≤H}√h ≤ H^{3/2}` (trivial), `Σ_{h≤H}h^{-1/2} �
 (`invSum` / `harmonicSum_le_one_add_log`).
 
 Card 12: 37 modules.
+
+## The gap-only correlation bound (2026-08-23)
+
+Searches: "sum of square roots over interval bound H to the three halves", "monotonicity of two
+term block bound in curvature scale Y", "Nat.dist cast to real absolute value difference".
+
+DUPLICATION FOUND AND RECORDED: `invSum` (introduced in `DivisorSquareMoment.lean`) is literally
+`RHTower.harmonicSum` of `HarmonicTriangularProjection.lean`.  `GapSums.lean` now records
+`invSum_eq_harmonicSum := rfl` and derives `invSum_le_one_add_log` from the corpus's
+`harmonicSum_le_one_add_log` rather than reproving it.
+
+- `GapSums.lean` — the three gap sums: `Σ_{h≤H}√h ≤ H√H` (new, trivial),
+  `Σ_{h≤H}h^{-1/2} ≤ 2√H` (corpus `SqrtTelescopeSums.sum_inv_sqrt_le`), and
+  `Σ_{h≤H}h^{-1} ≤ 1 + log H` (corpus, via the identification above).
+- `CorrelationGapBound.lean` — `blockPairBound`, its monotonicity in the curvature scale
+  (increasing through the first term, decreasing through the second), `cast_natDist`, and
+  **`norm_masked_correlation_gap_le`**: for a pair confined to `[M₀, M₁]`,
+  ```
+  ‖correlation‖ ≤ 2500√(T r h/(M₀²·36πP)) + 22√(36π M₁²/(T r h))·√(Q³) =: gapCorrBound h,
+  ```
+  a function of the gap `h = dist(m₁,m₂)` alone.  This is exactly the `G(h)` that
+  `sum_offdiag_weighted_le` consumes.
+
+Card 12: 39 modules.
