@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.MellinApertureIndependence
+import GaloisForLFunctions.RHTower.MellinRealDecay
 import GaloisForLFunctions.RHTower.ExtendedMellinHeadHardy
 import GaloisForLFunctions.RHTower.BurnolLemmaSevenFive
 import Mathlib.Analysis.Normed.Operator.BanachSteinhaus
@@ -36,8 +37,9 @@ def soninEvenExtended (a : ℝ) : Submodule ℂ SoninL2 :=
 theorem isClosed_soninEvenExtended (a : ℝ) :
     IsClosed (soninEvenExtended a : Set SoninL2) := by
   have h1 : IsClosed (centralSoninExtendedCarrier a : Set SoninL2) := by
-    rw [centralSoninExtendedCarrier]
-    exact Submodule.isClosed_orthogonal
+    show IsClosed (((meanZeroBand a ⊔ centralMeanZeroFourier a)ᗮ : Submodule ℂ SoninL2) :
+      Set SoninL2)
+    exact (meanZeroBand a ⊔ centralMeanZeroFourier a).isClosed_orthogonal
   have h2 : IsClosed (evenSubspace : Set SoninL2) := by
     have := (ContinuousLinearMap.IsIdempotentElem.isClosed_range evenProjection_idempotent)
     exact this
@@ -71,70 +73,70 @@ theorem soninBandConst_eq {a : ℝ} (ha : 0 < a) {f : SoninL2} {d : ℂ}
       refine setIntegral_congr_ae (measurableSet_centralInterval a) ?_
       filter_upwards [hd] with t ht hmem
       exact ht hmem
-    rw [hcongr, setIntegral_const, centralInterval, Real.volume_Icc]
+    rw [hcongr, setIntegral_const, centralInterval, Real.volume_real_Icc,
+      max_eq_left (by linarith : (0:ℝ) ≤ a - -a)]
     congr 1
-    rw [show a - -a = 2 * a from by ring]
-    rw [ENNReal.toReal_ofReal (by linarith)]
-  rw [soninBandConst, hval]
+    ring
+  rw [soninBandConst, hval, Complex.real_smul]
   have hane : ((2 * a : ℝ) : ℂ) ≠ 0 := by
-    have : (0 : ℝ) < 2 * a := by linarith
-    exact_mod_cast ne_of_gt this
-  rw [Complex.real_smul]
+    have h2a : (0 : ℝ) < 2 * a := by linarith
+    exact_mod_cast ne_of_gt h2a
+  have hac : ((a : ℝ) : ℂ) ≠ 0 := by exact_mod_cast ne_of_gt ha
+  push_cast at hane ⊢
   field_simp
 
-theorem norm_soninBandConst_le {a : ℝ} (ha : 0 < a) (f : SoninL2) :
-    ‖soninBandConst a f‖ ≤ ‖f‖ / Real.sqrt (2 * a) := by
+theorem integral_norm_le_sqrt_measure {a : ℝ} (ha : 0 < a) (f : SoninL2) :
+    (∫ t in centralInterval a, ‖(f : ℝ → ℂ) t‖) ≤ Real.sqrt (2 * a) * ‖f‖ := by
   have h2a : (0 : ℝ) < 2 * a := by linarith
-  have hCS : ‖∫ t in centralInterval a, (f : ℝ → ℂ) t‖
-      ≤ Real.sqrt (2 * a) * ‖f‖ := by
-    have hmem : MemLp ((f : ℝ → ℂ)) 2 (volume.restrict (centralInterval a)) :=
-      (Lp.memLp f).restrict (centralInterval a)
-    have hsq : (∫ t in centralInterval a, ‖(f : ℝ → ℂ) t‖ ^ 2) ≤ ‖f‖ ^ 2 :=
-      integral_norm_sq_le_norm_sq f (centralInterval a)
-    have hone : MemLp (fun _ : ℝ => (1 : ℝ)) 2 (volume.restrict (centralInterval a)) := by
-      haveI : IsFiniteMeasure (volume.restrict (centralInterval a)) := by
-        refine ⟨?_⟩
-        rw [Measure.restrict_apply_univ, centralInterval]
-        exact measure_Icc_lt_top
-      exact memLp_const 1
-    have hbound : ‖∫ t in centralInterval a, (f : ℝ → ℂ) t‖
-        ≤ ∫ t in centralInterval a, ‖(f : ℝ → ℂ) t‖ :=
-      norm_integral_le_integral_norm _
-    have hcs2 : (∫ t in centralInterval a, ‖(f : ℝ → ℂ) t‖) ^ 2
-        ≤ (∫ _t in centralInterval a, (1 : ℝ) ^ 2)
-          * ∫ t in centralInterval a, ‖(f : ℝ → ℂ) t‖ ^ 2 := by
-      refine sq_integral_mul_le aestronglyMeasurable_const (hmem.1.norm) ?_ ?_
-      · haveI : IsFiniteMeasure (volume.restrict (centralInterval a)) := by
-          refine ⟨?_⟩
-          rw [Measure.restrict_apply_univ, centralInterval]
-          exact measure_Icc_lt_top
-        exact (integrable_const (1 : ℝ)).congr
-          (Filter.Eventually.of_forall fun _ => by norm_num)
-      · exact (memLp_two_iff_integrable_sq_norm hmem.1).1 hmem
-    have hmeas : (∫ _t in centralInterval a, (1 : ℝ) ^ 2) = 2 * a := by
-      simp only [one_pow]
-      rw [setIntegral_const, centralInterval, Real.volume_Icc]
-      rw [show a - -a = 2 * a from by ring, ENNReal.toReal_ofReal (by linarith)]
-      simp
-    rw [hmeas] at hcs2
-    have hnn : (0 : ℝ) ≤ ∫ t in centralInterval a, ‖(f : ℝ → ℂ) t‖ := by
-      refine setIntegral_nonneg (measurableSet_centralInterval a) fun t _ => norm_nonneg _
-    have hfin : (∫ t in centralInterval a, ‖(f : ℝ → ℂ) t‖) ≤ Real.sqrt (2 * a) * ‖f‖ := by
-      have hrhs : (Real.sqrt (2 * a) * ‖f‖) ^ 2 = (2 * a) * ‖f‖ ^ 2 := by
-        rw [mul_pow, Real.sq_sqrt h2a.le]
-      nlinarith [hcs2, hsq, hnn, Real.sqrt_nonneg (2 * a), norm_nonneg f,
-        mul_le_mul_of_nonneg_left hsq h2a.le]
-    linarith
-  rw [soninBandConst, norm_mul]
+  haveI : IsFiniteMeasure (volume.restrict (centralInterval a)) := by
+    refine ⟨?_⟩
+    rw [Measure.restrict_apply_univ, centralInterval]
+    exact measure_Icc_lt_top
+  have hmem : MemLp ((f : ℝ → ℂ)) 2 (volume.restrict (centralInterval a)) :=
+    (Lp.memLp f).restrict (centralInterval a)
+  have hsq : (∫ t in centralInterval a, ‖(f : ℝ → ℂ) t‖ ^ 2) ≤ ‖f‖ ^ 2 :=
+    integral_norm_sq_le_norm_sq f (centralInterval a)
+  have hone : Integrable (fun _ : ℝ => ((1 : ℝ)) ^ 2) (volume.restrict (centralInterval a)) := by
+    simpa using (integrable_const (1 : ℝ) (μ := volume.restrict (centralInterval a)))
+  have hcs : (∫ t in centralInterval a, (1 : ℝ) * ‖(f : ℝ → ℂ) t‖) ^ 2
+      ≤ (∫ _t in centralInterval a, ((1 : ℝ)) ^ 2)
+        * ∫ t in centralInterval a, ‖(f : ℝ → ℂ) t‖ ^ 2 :=
+    sq_integral_mul_le aestronglyMeasurable_const hmem.1.norm hone
+      ((memLp_two_iff_integrable_sq_norm hmem.1).1 hmem)
+  have hmeas : (∫ _t in centralInterval a, ((1 : ℝ)) ^ 2) = 2 * a := by
+    simp only [one_pow]
+    rw [setIntegral_const, centralInterval, Real.volume_real_Icc,
+      max_eq_left (by linarith : (0:ℝ) ≤ a - -a)]
+    simp
+    ring
+  have hone_mul : (∫ t in centralInterval a, (1 : ℝ) * ‖(f : ℝ → ℂ) t‖)
+      = ∫ t in centralInterval a, ‖(f : ℝ → ℂ) t‖ := by
+    refine setIntegral_congr_fun (measurableSet_centralInterval a) fun t _ => ?_
+    ring
+  rw [hone_mul, hmeas] at hcs
+  have hnn : (0 : ℝ) ≤ ∫ t in centralInterval a, ‖(f : ℝ → ℂ) t‖ :=
+    setIntegral_nonneg (measurableSet_centralInterval a) fun t _ => norm_nonneg _
+  have hrhs : (Real.sqrt (2 * a) * ‖f‖) ^ 2 = (2 * a) * ‖f‖ ^ 2 := by
+    rw [mul_pow, Real.sq_sqrt h2a.le]
+  have hX2 : (∫ t in centralInterval a, ‖(f : ℝ → ℂ) t‖) ^ 2
+      ≤ (Real.sqrt (2 * a) * ‖f‖) ^ 2 := by
+    rw [hrhs]
+    calc (∫ t in centralInterval a, ‖(f : ℝ → ℂ) t‖) ^ 2
+        ≤ (2 * a) * ∫ t in centralInterval a, ‖(f : ℝ → ℂ) t‖ ^ 2 := hcs
+      _ ≤ (2 * a) * ‖f‖ ^ 2 := mul_le_mul_of_nonneg_left hsq h2a.le
+  have hR0 : (0 : ℝ) ≤ Real.sqrt (2 * a) * ‖f‖ := by positivity
+  nlinarith [hX2, hnn, hR0]
+
+theorem norm_soninBandConst_le {a : ℝ} (ha : 0 < a) (f : SoninL2) :
+    ‖soninBandConst a f‖ ≤ (1 / (2 * a)) * (Real.sqrt (2 * a) * ‖f‖) := by
+  have h2a : (0 : ℝ) < 2 * a := by linarith
   have hnorm : ‖(1 / (2 * a) : ℂ)‖ = 1 / (2 * a) := by
     rw [show ((1 : ℂ) / (2 * a)) = (((1 / (2 * a) : ℝ)) : ℂ) by push_cast; ring,
       Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by positivity)]
-  rw [hnorm]
-  have hsq : Real.sqrt (2 * a) * Real.sqrt (2 * a) = 2 * a := Real.mul_self_sqrt h2a.le
-  have hs0 : 0 < Real.sqrt (2 * a) := Real.sqrt_pos.2 h2a
-  rw [div_eq_mul_inv, ← div_eq_mul_inv (‖f‖)]
-  rw [div_le_div_iff (by positivity) hs0] at *
-  nlinarith [hCS, norm_nonneg f, hs0]
+  rw [soninBandConst, norm_mul, hnorm]
+  refine mul_le_mul_of_nonneg_left ?_ (by positivity)
+  refine le_trans (norm_integral_le_integral_norm _) ?_
+  exact integral_norm_le_sqrt_measure ha f
 
 end
 

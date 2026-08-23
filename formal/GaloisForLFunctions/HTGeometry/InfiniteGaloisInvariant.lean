@@ -18,6 +18,8 @@ namespace HTGeometry
 
 open scoped Pointwise
 
+open MulAction
+
 variable (A K L B : Type*) [CommRing A] [CommRing B] [Field K] [Field L]
   [Algebra A K] [Algebra B L] [IsFractionRing A K] [IsFractionRing B L]
   [Algebra A B] [Algebra K L] [Algebra A L] [IsScalarTower A K L] [IsScalarTower A B L]
@@ -43,6 +45,7 @@ theorem isInvariant_of_isGalois_infinite [Algebra.IsAlgebraic K L] [IsGalois K L
     (FaithfulSMul.algebraMap_injective B L).eq_iff] at hk
   exact ⟨a, hk⟩
 
+omit [IsIntegrallyClosed A] in
 /-- The stabiliser of an element of the integral closure is open for the Krull topology. -/
 theorem isOpen_stabilizer_integralClosure [Algebra.IsIntegral K L] (b : B) :
     letI := IsIntegralClosure.MulSemiringAction A K L B
@@ -66,8 +69,9 @@ theorem isOpen_stabilizer_integralClosure [Algebra.IsIntegral K L] (b : B) :
       rw [key]
       exact hg'
   rw [hset]
-  exact MulAction.stabilizer_isOpen_of_isIntegral (algebraMap B L b)
+  exact stabilizer_isOpen_of_isIntegral (algebraMap B L b)
 
+omit [IsIntegrallyClosed A] in
 /-- **The Galois action on the integral closure is continuous for the discrete topology.** -/
 theorem continuousSMul_integralClosure [Algebra.IsIntegral K L] [TopologicalSpace B]
     [DiscreteTopology B] :

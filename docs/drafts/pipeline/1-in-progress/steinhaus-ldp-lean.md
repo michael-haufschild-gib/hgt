@@ -265,3 +265,18 @@ the application of `tendsto_integral_filter_of_dominated_convergence` on `volume
 and the identification of the limit with `(1/4)∫₀¹ w_α² = (1−α)²/(4(1−2α))`.
 
 Card 11: 12 modules.
+
+## Equation (18) CLOSED (2026-08-23)
+
+**`tendsto_rvCumulant_div_sq`**: for `α < 1/2`,
+```
+Λ_α(λ)/λ² → (1−α)²/(4(1−2α))   as λ → 0⁺,
+```
+by `tendsto_integral_filter_of_dominated_convergence` on `volume.restrict (Ioc 0 1)` with
+dominating function `w_α²/2`.  The filter `𝓝[>]0` is countably generated, so the filter form of
+dominated convergence applies directly; the limit integral is `(1/4)∫₀¹ w_α²`.
+
+This is the card's `(18)`, the sub-critical leading term.  What part `4`'s first line still needs
+is the Legendre step `Λ ∼ Aλ² ⟹ I ∼ q²/(4A)`, i.e. `I_α(q) ∼ [(1−2α)/(1−α)²]q²`.
+
+Card 11: 13 modules.
