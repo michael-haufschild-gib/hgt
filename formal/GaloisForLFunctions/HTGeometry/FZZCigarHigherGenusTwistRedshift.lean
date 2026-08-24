@@ -114,7 +114,50 @@ theorem higherGenusBetaTwist_contractive_of_im_pos
   refine ⟨hshift, ?_⟩
   rw [norm_higherGenusBetaTwistMultiplier_eq_exp_neg_radialMonodromy hb.ne' n twist,
     Real.exp_lt_one_iff]
-  exact neg_mul_neg_of_neg_of_pos (neg_neg_of_pos hb) hshift
+  exact mul_neg_of_neg_of_pos (neg_neg_of_pos hb) hshift
+
+/-- Genus-one gauge holonomy written in Jacobian coordinates `twist = s₁ τ + s₂`. -/
+def torusJacobianTwist (s₁ s₂ : ℝ) (τ : ℂ) : ℂ :=
+  (s₁ : ℂ) * τ + (s₂ : ℂ)
+
+/-- The imaginary gauge twist is exactly the `β`-cycle coordinate times worldsheet Schwinger
+time `τ₂`. -/
+theorem torusJacobianTwist_im (s₁ s₂ : ℝ) (τ : ℂ) :
+    (torusJacobianTwist s₁ s₂ τ).im = s₁ * τ.im := by
+  rw [torusJacobianTwist]
+  simp only [Complex.add_im, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im]
+  ring
+
+/-- Exact genus-one modular/radial lock.  At fixed holonomy fraction `s₁`, torus Schwinger
+time is proportional to physical displacement along the cigar throat. -/
+theorem higherGenusRadialMonodromy_torusJacobian
+    (b : ℝ) (n : ℤ) (s₁ s₂ : ℝ) (τ : ℂ) :
+    higherGenusRadialMonodromy b n (torusJacobianTwist s₁ s₂ τ) =
+      2 * Real.pi * (n : ℝ) * s₁ * τ.im / b := by
+  rw [higherGenusRadialMonodromy, torusJacobianTwist_im]
+  ring
+
+/-- The torus `β`-holonomy damping exponent is the literal product of quantized cycle number,
+holonomy fraction, and worldsheet Schwinger time. -/
+theorem norm_higherGenusBetaTwistMultiplier_torusJacobian
+    {b : ℝ} (hb : b ≠ 0) (n : ℤ) (s₁ s₂ : ℝ) (τ : ℂ) :
+    ‖higherGenusBetaTwistMultiplier n (torusJacobianTwist s₁ s₂ τ)‖ =
+      Real.exp (-2 * Real.pi * (n : ℝ) * s₁ * τ.im) := by
+  rw [norm_higherGenusBetaTwistMultiplier_eq_exp_neg_radialMonodromy hb n,
+    higherGenusRadialMonodromy_torusJacobian]
+  congr 1
+  field_simp [hb]
+
+/-- Positive Schwinger time and positive torus holonomy fraction force outward throat translation
+and strict damping in every positive cycle sector. -/
+theorem torusJacobianTwist_contractive
+    {b : ℝ} (hb : 0 < b) {n : ℤ} (hn : 0 < n) {s₁ : ℝ} (hs₁ : 0 < s₁)
+    (s₂ : ℝ) {τ : ℂ} (hτ : 0 < τ.im) :
+    0 < higherGenusRadialMonodromy b n (torusJacobianTwist s₁ s₂ τ) ∧
+      ‖higherGenusBetaTwistMultiplier n (torusJacobianTwist s₁ s₂ τ)‖ < 1 := by
+  apply higherGenusBetaTwist_contractive_of_im_pos hb hn
+  rw [torusJacobianTwist_im]
+  exact mul_pos hs₁ hτ
 
 end FZZCigar
 

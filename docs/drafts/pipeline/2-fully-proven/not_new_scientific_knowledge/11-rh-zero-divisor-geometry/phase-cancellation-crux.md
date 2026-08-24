@@ -146,3 +146,16 @@ pointwise inequality. The only clean local fact is NEGATIVE: near-zero (high-|K|
 transversal pinned root + strong concavity); the danger is purely bulk. **Closes the "local-controller shortcut"
 hope** — the uniform-in-d hierarchy genuinely needs the collective object / joint-σ_p (confirms the Door-2 native
 conjecture). (novelty-loop R31.)
+
+## Lean status update — 2026-08-24
+
+`RHTower/PhaseCancellationAffineCurvature.lean` now formalizes the card's exact algebraic core,
+unconditionally and without a numerical certificate: affine gap scaling, the constant normalized
+displacement difference `-δa`, preservation of strict order and noncollision by positive-slope affine
+maps, the complex reciprocal-square identity for a reflected off-line pair, the doubled full-quartet
+formula, and its sharp positive-curvature window `|τ| < a`.
+
+This does not formalize the card's broader methodological assertions that all large-value content lies
+in the affine modes or that every flow/positivity/Laguerre method is affine-confined. Those assertions do
+not follow from the proved affine and quartet identities and currently have no precise quantified model
+in the card. The card therefore remains at stage 2; promotion would otherwise overstate the Lean result.

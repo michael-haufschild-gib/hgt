@@ -1,26 +1,36 @@
 # What this paper says, without the mathematics
 
-A finite, perfectly isolated quantum system never forgets forever. Given enough time, its many internal phases can line up again and bring it close to an earlier state. Classic recurrence theorems guarantee this return but do not tell us how severe the waiting problem becomes in a real many-body system.
+A quantum system does not have one recurrence problem. It has four.
 
-Paper identifies what controls that problem: exact arithmetic relationships among energy levels. Each independent relationship removes one phase direction that would otherwise need to line up. No hidden relationships means hardest possible alignment problem for that Hilbert-space size.
+First, some information may decay while some survives. Second, exact relationships among energy levels can force phases to move together. Third, a state may put most of its weight on only a few energies, so not every phase needs equal accuracy. Fourth, an experiment sees only phase differences connected to its chosen measurements.
 
-Surprising part concerns locality. A chain with only nearest-neighbour interactions looks highly constrained: number of tunable couplings grows only with chain length, while number of quantum energy levels grows exponentially. One might therefore expect locality to force many hidden energy relationships and make recurrence lower-dimensional.
+Paper proves these are successive reductions of one object: persistent phase geometry.
 
-Paper proves opposite for ordinary static one-dimensional chains. For almost every choice of coefficients in full nearest-neighbour qubit Hamiltonian family, energy levels have maximum possible projective independence. Same Hamiltonian then has:
+1. **What survives:** For any finite contractive evolution, weight on lossless modes is exact ceiling for late return. Every smaller target is reached again after arbitrarily long delays; every larger target eventually becomes impossible.
+2. **What can move independently:** Exact balanced relationships among energies cut down phase orbit. Number of independent phase directions plus number of independent constraints always equals number of energy levels minus one.
+3. **How hard a return is at finite accuracy:** State weights define which phases need fine alignment. One reverse-water quantity controls both size of true return target and worst-case waiting deadline, within explicit constants.
+4. **What an observer can see:** States and observables define a coherence graph. Number of visible phase directions is exactly number of energy sectors minus number of graph components.
 
-- sharp return exponent using all relative energy phases;
-- sharp clock-normalized winding exponent;
-- no exact nonzero global return, only arbitrarily close returns;
-- smallest possible value of every long-time full-support return moment, at every order.
+These laws also explain why finite observations cannot determine exact completed recurrence arithmetic. Tiny changes to energy coefficients can remove every exact relation while leaving all dynamics on any fixed finite time window arbitrarily close. Stable finite-resolution predictions remain possible; exact rational rank is different kind of information.
 
-This is one result, not collection of examples. All conclusions come from one invariant: balanced spectral relation lattice.
+Main new many-body result asks whether spatial locality itself makes recurrence simpler. One-dimensional nearest-neighbour Hamiltonian uses only local terms, while number of energy levels grows exponentially with chain length. It was plausible that such restricted interactions must force hidden spectral relationships.
 
-Thermodynamic consequence is exact. At any fixed tolerance, long-time fraction spent near a global return is
+Paper proves opposite for full static nearest-neighbour qudit family. For almost every Hamiltonian in every simple-spectrum chart, energies have maximum possible projective independence. Same Hamiltonian then has:
+
+- maximum phase rank `q^n - 1`;
+- sharp stroboscopic return exponent `q^n - 1`;
+- sharp first-gap-clock exponent `q^n - 2`;
+- no nonzero exact global projective return;
+- smallest possible value of every positive-weight long-time return moment, at every order.
+
+Exact long-time fraction spent near global return is
 
 \[
 \left(\frac{2\arcsin(\varepsilon/2)}{\pi}\right)^{q^n-1}.
 \]
 
-Since Hilbert dimension is `q^n`, this fraction falls doubly exponentially with number of sites.
+At fixed tolerance this falls doubly exponentially with chain length.
 
-Novel scientific contribution is not recurrence itself, torus equidistribution, or moment algebra. Those are known. New result proves that a full deterministic, interacting, static, bounded-degree one-dimensional local family generically reaches maximum recurrence dimension, and that same local Hamiltonian simultaneously saturates sharp return and all-order collision laws. It answers a concrete question experts care about: whether spatial locality necessarily discounts recurrence complexity. For this canonical family, it does not.
+Paper also identifies exact contrast. In commuting l-bit systems, phase rank equals rational span of interaction coefficients. Fixed interaction range then gives only linearly many directions at fixed range. Locality does not automatically shorten recurrence; additional commuting algebraic structure can.
+
+Novel core is not qualitative recurrence, torus geometry, water filling, or graph rank separately. It is joined phase-factorization law together with proof that canonical static interacting bounded-degree one-dimensional systems generically saturate its maximal spectral regime. This answers hidden-resonance question for full path family and explains, in same framework, effects of loss, exact resonances, unequal weights, incomplete observation, finite precision, commuting structure, and thermodynamic growth.

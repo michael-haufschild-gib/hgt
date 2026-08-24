@@ -317,3 +317,40 @@ The substantive digamma core is now formalized in
 `formal/GaloisForLFunctions/HTGeometry/ReflectedDigammaAnomaly.lean`: strict horizontal monotonicity,
 conjugation, and the anomaly-reality equivalence are checked without new axioms.  The full expansion
 `(3)` and tomography theorem `(13)` remain paper-only.
+
+## Lean progress — asymmetric convergence core (2026-08-24)
+
+`formal/GaloisForLFunctions/RHTower/AsymmetricHeatDoubleSum.lean` now proves the paper's first
+analytic gate without placeholder interfaces.  The lattice is reindexed exactly into upper and
+strict-lower triangular halves.  Each half is dominated by the product of the shifted p-series of
+exponent `Re(a)+Re(b)>1` and the Gaussian difference series.  Consequently the asymmetric pair is
+absolutely summable under the sharp conditions `0 ≤ Re(a)`, `0 ≤ Re(b)`, and
+`1 < Re(a)+Re(b)`; neither factor separately needs the former `L²` bound `Re > 1/2`.
+
+The premise-free capstone `RHTower.reflectedBiHeatPairTerm_summable` packages
+`a=z+epsilon/2`, `b=1-z+epsilon/2` over the closed admissible-regulator parameter space and proves
+absolute convergence for every `0<Re(z)<1`, `0<Re(epsilon)`, and `x>0`. Targeted Lean check,
+module build, and axiom audit pass; dependencies are only `[propext, Classical.choice, Quot.sound]`.
+Module is wired into `GaloisForLFunctions.RHTower`; umbrella was not built.
+
+Remaining Lean gate is substantive: exact meromorphic pole/theta residue, canonical finite part,
+small-aperture expansion, completed-channel coefficient equality, and multiplicity tomography.
+
+`formal/GaloisForLFunctions/RHTower/ReflectedBiHeatGammaCoefficient.lean` additionally closes the
+singular--singular coefficient algebra in `(5)`: Euler reflection proves the exact universal value
+`G_z(0)=π`, and a genuine complex derivative calculation proves
+`G_z'(0)=-(π/2)(ψ(1-z)+ψ(z))`. Both theorems are closed over the admissible regulator structure,
+target-built, and axiom-audited with only `[propext, Classical.choice, Quot.sound]`.
+
+The same module now fills the half-Gamma pole by the analytic unit
+`2 Gamma(1+epsilon/2)`, proves its off-pole identity with
+`epsilon Gamma(epsilon/2)`, its value `2`, and derivative `-EulerGamma`. Combining this with the
+exact Gaussian scale derivative proves the complete singular--singular finite-part bracket:
+the derivative of the pole-filled moment is half its residue times
+`log(4πx)-EulerGamma-ψ(1-z)-ψ(z)`. This is exact coefficient algebra of `(7)`, not an assumed
+asymptotic interface. Targeted build and new theorem axiom audits pass with baseline axioms only.
+
+The residue normalization is now also fully simplified: the pole-filled moment has value
+`x^(-1/2)` at the regulator origin, and
+`RHTower.deriv_reflectedSingularPoleUnit_zero_eq_anomaly` is the literal Lean form of `(7)`, with
+coefficient `1/(2 sqrt x)`. Both final normalization theorems are targeted-built and axiom-audited.

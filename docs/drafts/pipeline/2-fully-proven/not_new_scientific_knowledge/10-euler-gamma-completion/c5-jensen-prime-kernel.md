@@ -214,3 +214,12 @@ Consequently the prime amplitudes in the Jensen kernel cannot prove Hankel posit
   Targeted source check, module build, and axiom audit pass; only `propext`, `Classical.choice`, and
   `Quot.sound` occur. This closes the finite `B_i`/degree bound algebra but not the analytic
   regularization or root-displacement bridge, so the card remains at stage 2.
+
+- 2026-08-24 (Codex) — added and audited
+  `formal/GaloisForLFunctions/RHTower/C5JensenRootPerturbation.lean`. It constructs the local analytic
+  branch of every simple polynomial root under a linear perturbation, proves the exact velocity
+  `-K(r)/J'(r)`, realizes both C5 Jensen sections as literal polynomials, and specializes the velocity
+  to the positive-order single-log-frequency kernel. Targeted source check and module build pass;
+  endpoint audits use only `propext`, `Classical.choice`, and `Quot.sound`. Remaining stage-3 gate is
+  the unconditional completed-Xi/explicit-formula regularization that identifies the actual critical-line
+  perturbation jets with this finite kernel.

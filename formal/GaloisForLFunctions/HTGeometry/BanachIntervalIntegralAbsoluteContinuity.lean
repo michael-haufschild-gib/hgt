@@ -62,4 +62,36 @@ theorem IntervalIntegrable.absolutelyContinuousOnInterval_intervalIntegral_norme
     rw [Measure.restrict_restrict_of_subset hsubset]
     exact IntegrableOn.mono_set h.def'.norm hsubset |>.integrable
 
+/-- Composition with a Lipschitz map preserves absolute continuity on a real interval. -/
+theorem LipschitzWith.comp_absolutelyContinuousOnInterval
+    {X Y : Type*} [PseudoMetricSpace X] [PseudoMetricSpace Y]
+    {K : NNReal} {g : X → Y} {f : ℝ → X} {a b : ℝ}
+    (hg : LipschitzWith K g) (hf : AbsolutelyContinuousOnInterval f a b) :
+    AbsolutelyContinuousOnInterval (fun x ↦ g (f x)) a b := by
+  unfold AbsolutelyContinuousOnInterval at hf ⊢
+  have hlim : Tendsto
+      (fun E : ℕ × (ℕ → ℝ × ℝ) ↦
+        (K : ℝ) * ∑ i ∈ Finset.range E.1, dist (f (E.2 i).1) (f (E.2 i).2))
+      (AbsolutelyContinuousOnInterval.totalLengthFilter ⊓
+        𝓟 (AbsolutelyContinuousOnInterval.disjWithin a b)) (𝓝 0) := by
+    simpa using (tendsto_const_nhds.mul hf)
+  refine squeeze_zero' ?_ ?_ hlim
+  · filter_upwards with E
+    exact Finset.sum_nonneg fun _ _ ↦ dist_nonneg
+  · filter_upwards with E
+    rw [Finset.mul_sum]
+    exact Finset.sum_le_sum fun i hi ↦ hg.dist_le_mul _ _
+
+/-- Applying a continuous linear map to an absolutely continuous Banach-valued path preserves
+absolute continuity. -/
+theorem ContinuousLinearMap.comp_absolutelyContinuousOnInterval
+    {𝕜 E F : Type*} [NontriviallyNormedField 𝕜]
+    [SeminormedAddCommGroup E] [SeminormedAddCommGroup F]
+    [NormedSpace 𝕜 E] [NormedSpace 𝕜 F]
+    (L : E →L[𝕜] F) {f : ℝ → E} {a b : ℝ}
+    (hf : AbsolutelyContinuousOnInterval f a b) :
+    AbsolutelyContinuousOnInterval (fun x ↦ L (f x)) a b :=
+  GaloisForLFunctions.HTGeometry.LipschitzWith.comp_absolutelyContinuousOnInterval
+    L.lipschitz hf
+
 end GaloisForLFunctions.HTGeometry

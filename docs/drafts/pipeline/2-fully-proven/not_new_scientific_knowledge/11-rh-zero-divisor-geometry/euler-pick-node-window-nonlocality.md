@@ -98,3 +98,18 @@ audit to only `propext`, `Classical.choice`, and `Quot.sound`.
 This formalizes the third exclusion in the statement. It does not yet formalize the
 Pontryagin-space kernel-section density argument or the shifted-Xi negative-index/divisor
 identification, so the card remains at stage 2.
+
+## Lean status update (2026-08-24)
+
+`formal/GaloisForLFunctions/RHTower/AnalyticKernelUniquenessRegion.lean` now formalizes the complete
+abstract locality-of-negative-squares argument. It proves analytic uniqueness for kernel-section
+spans on every nonempty open subregion and every node set with an interior accumulation point,
+proves openness and density stability of arbitrary finite negative dimensions, and identifies those
+dimensions with literal finitely supported double kernel-Gram sums. Thus both finite and unbounded
+negative-index profiles are preserved without a finite-index assumption.
+
+The leaf is wired into `RHTower.lean`; exact source check and targeted leaf build pass. Every new
+public declaration audits to only `propext`, `Classical.choice`, and `Quot.sound`. Remaining card
+dependency is now exact: construct the analytic Pontryagin realization of the actual
+`xiShiftPick` kernel and prove its global index/divisor identification. Until that arithmetic
+realization is closed, the shifted-Xi application is not promoted.

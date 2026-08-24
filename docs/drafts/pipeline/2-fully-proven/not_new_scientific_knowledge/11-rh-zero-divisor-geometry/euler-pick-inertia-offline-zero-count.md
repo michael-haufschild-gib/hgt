@@ -273,3 +273,7 @@ information. Even the case `nu_-=0` for one `0<omega<1/2` would be a new zero-fr
 
 - 2026-07-10 -- exact high-half-plane Euler Pick-inertia formula proved from shifted-kernel index
   plus locality of negative squares; novelty audit open.
+- 2026-08-24 -- `RHTower/AnalyticKernelUniquenessRegion.lean` closes the full abstract
+  locality/dense-node/finite-Gram passage, including infinite index. Remaining Lean dependency is
+  the actual `xiShiftPick` analytic Pontryagin realization plus its global divisor-index theorem;
+  no promotion until those source-specific obligations are discharged.

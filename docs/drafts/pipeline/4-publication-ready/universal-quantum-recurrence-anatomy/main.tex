@@ -2,7 +2,7 @@
 
 \usepackage[a4paper,margin=0.82in]{geometry}
 \usepackage{amsmath,amssymb,amsthm,mathtools,bm,mathrsfs}
-\usepackage{booktabs,tabularx,microtype,enumitem}
+\usepackage{booktabs,tabularx,microtype,enumitem,float}
 \usepackage{xcolor}
 \usepackage[colorlinks=true,linkcolor=blue!45!black,
   citecolor=blue!45!black,urlcolor=blue!45!black]{hyperref}
@@ -30,59 +30,64 @@
 \newcommand{\dist}{\operatorname{dist}}
 \newcommand{\dens}{\operatorname{dens}}
 \newcommand{\supp}{\operatorname{supp}}
+\newcommand{\HS}{\mathrm{HS}}
+\newcommand{\Hwater}{\mathcal H}
+\newcommand{\proj}{\mathrm{proj}}
 
 \title{\textbf{Persistent phase geometry of quantum recurrence}\\
-\large\itshape Maximal return exponents and all-order collision laws in static one-dimensional local systems}
+\large\itshape Four structural laws for loss, spectral constraints, observability, and finite-horizon inference}
 \author{GPT 5.6 Sol \and Opus 5 \and Fable 5 \and Michael Haufschild}
-\date{23 August 2026}
+\date{24 August 2026}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-What determines the severity of recurrence in a finite quantum many-body
-system: spatial interaction geometry, or arithmetic relations among its
-energy levels?  We prove that the decisive object is the balanced spectral
-relation lattice.  For every finite spectrum with $D$ levels, its relation
-rank and its independent projective phase rank add exactly to $D-1$.  This
-single conservation law controls three operational signatures: sharp
-simultaneous first-return exponents, every finite-order replica collision,
-and every long-time survival-fidelity moment.
+Quantum recurrence is often described by one statement---finite isolated
+systems eventually return---although loss, exact spectral resonances,
+unequal state weights, restricted observables, and finite records answer
+different questions.  We prove that these questions factor through one
+persistent phase geometry.  First, for every finite-dimensional contraction,
+peripheral spectral mass is the exact late-return ceiling: every lower
+threshold recurs after every delay and every higher threshold eventually
+fails.  Second, on the surviving phase carrier, balanced relation rank plus
+independent projective phase rank is exactly $D-1$; the same lattice
+determines the orbit hull, sharp generic first-hit exponents, and all excess
+replica collisions.  Third, spectral weights pull a metric onto that hull.
+A reverse-water functional controls both exact return-target information and
+the least spectrum-uniform deadline within explicit constants, while any
+finite probe family induces a coherence graph whose rank $D-c$ is the exact
+observable phase capacity and the optimal universal recurrence exponent.
+Fourth, completed rational rank is not identifiable from uniformly finite-
+precision, finite-horizon data: arbitrarily close static l-bit Hamiltonians
+can have maximal rank while their observed dynamics remain uniformly close
+through the prescribed horizon.  The relation-hull and metric laws extend to
+arbitrary countable pure-point packets with summable weights.
 
-We then resolve the locality question for a concrete bounded-degree family.
-Consider the full real space of traceless one-site and nearest-neighbour
-two-site Pauli Hamiltonians on an open chain of $n\geq3$ qubits.  On every
-nonempty connected open chart with simple spectrum, almost every coefficient
-choice gives one and the same static Hamiltonian with maximal projective rank
-$2^n-1$.  Its stroboscopic anchored-gap first hit obeys
-$T(r)=r^{-(2^n-1)+o(1)}$, while its first-gap-clock-normalized winding hit
-obeys $Q(r)=r^{-(2^n-2)+o(1)}$.  For every full-support initial state and
-every replica order, the long-time survival-fidelity moment simultaneously
-attains the unavoidable permutation floor.  These are same-Hamiltonian
-conclusions, not separately chosen witnesses.
-
-The result extends the exact rank and completed-density laws to open paths of
-$q$-level sites.  At fixed chordal tolerance $0<\varepsilon<2$, generic
-projective-return density is exactly
-$[2\arcsin(\varepsilon/2)/\pi]^{q^n-1}$; hence it vanishes doubly
-exponentially with chain length, with a closed Hilbert-dimension rate.  Thus
-one-dimensional nearest-neighbour locality does not force a reduced
-recurrence codimension.  It coexists generically with the maximal phase
-geometry allowed by Hilbert-space dimension.
+We then prove a physical saturation theorem absent from these abstract laws.
+For every $n,q\geq2$, almost every static Hermitian onsite-plus-nearest-
+neighbour Hamiltonian on every open simple-spectrum chart of a $q$-level
+path has the maximum $q^n-1$ projective phase rank.  The same Hamiltonian has
+sharp stroboscopic and first-gap-clock exponents $q^n-1$ and $q^n-2$, all-
+order permutation-floor moments, and no nonzero exact projective return.
+Its completed return density at chord tolerance $\varepsilon$ is exactly
+$[2\arcsin(\varepsilon/2)/\pi]^{q^n-1}$ and therefore vanishes doubly
+exponentially in chain length.  An exact commuting l-bit classification
+identifies the contrasting boundary: finite interaction range can compress
+phase rank, whereas spatial locality by itself cannot.
 \end{abstract}
 
 \noindent\textbf{Significance statement.}
-A finite quantum system must eventually come close to where it started, but
-the theorem alone says little about how rare that event is.  This paper
-identifies a complete arithmetic obstruction: exact balanced relations among
-energies remove independent recurrence directions, one for one.  The main
-advance is proving that ordinary static nearest-neighbour chains generically
-have no such hidden relations.  Their return problem is therefore as
-high-dimensional as that of an unconstrained $2^n$-level system, even though
-their interactions live on a one-dimensional path.  The same invariant also
-explains when higher return moments contain extra resonances and gives an
-exact double-exponential thermodynamic law for the fraction of time spent
-near a global projective return.
+Recurrence is governed neither by Hilbert-space dimension alone nor by a
+single ``recurrence time.''  Loss first selects what survives; spectral
+relations determine how many phases can move independently; state weights
+set the accuracy demanded from each phase; probes decide which phase
+differences are visible.  We give exact laws for all four reductions and
+then show that ordinary static one-dimensional nearest-neighbour systems
+generically saturate the largest possible phase carrier.  This turns a
+qualitative inevitability into a structural and quantitative theory that
+also explains when commuting locality, incomplete observation, or finite
+precision makes the apparent recurrence problem smaller.
 
 \input{body}
 

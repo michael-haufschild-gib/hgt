@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.DeningerMeyerRadialParityCorrection
+import GaloisForLFunctions.HTGeometry.NomologicalHomotopyGeometry.ObserverPhantomDescent
 
 /-!
 # Prime sampling does not impose the global Meyer--Poisson relation
@@ -292,6 +293,41 @@ theorem deningerMeyerPrimeInvisibleUnitMass_H1_ne_zero :
 
 /-- Positive real radii, the natural domain of Meyer--Poisson reflection. -/
 abbrev DeningerMeyerPositiveRadius := {x : ℝ // 0 < x}
+
+/-- Positive-prime point observers inside the full positive-radius collar. -/
+def deningerMeyerPositivePrimePointObserver
+    (p : Nat.Primes) : Unit → DeningerMeyerPositiveRadius :=
+  fun _ => ⟨(p : ℝ), by exact_mod_cast p.2.pos⟩
+
+/-- The explicit nonsampled unit mass as a section on the positive-radius collar. -/
+def deningerMeyerPrimeInvisibleUnitMassSection :
+    DeningerMeyerPositiveRadius → ℂ :=
+  fun x => (deningerMeyerPrimeInvisibleUnitMass : ℝ → ℂ) (x : ℝ)
+
+/-- The unit-mass class is a literal section phantom for positive-prime point observers. -/
+theorem deningerMeyerPositivePrimeObservers_unitMass_sectionPhantom :
+    _root_.HTGeometry.NomologicalHomotopyGeometry.SectionObserverDescent.SectionObserverPhantom
+      (fun p => deningerMeyerPositivePrimePointObserver p)
+      (0 : ℂ) deningerMeyerPrimeInvisibleUnitMassSection := by
+  constructor
+  · intro hzero
+    have h := congrFun hzero ⟨1, by positivity⟩
+    norm_num [deningerMeyerPrimeInvisibleUnitMassSection,
+      deningerMeyerPrimeInvisibleUnitMass] at h
+  · intro p x
+    change (deningerMeyerPrimeInvisibleUnitMass : ℝ → ℂ) (p : ℝ) = 0
+    exact deningerMeyerPrimeInvisibleUnitMass.property.2.2 p
+
+/-- Positive-prime points are not a jointly covering observer family for the all-radius collar. -/
+theorem deningerMeyerPositivePrimeObservers_not_jointlySurjective :
+    ¬ ∀ x : DeningerMeyerPositiveRadius,
+      ∃ p : Nat.Primes, ∃ u : Unit,
+        deningerMeyerPositivePrimePointObserver p u = x := by
+  exact
+    _root_.HTGeometry.NomologicalHomotopyGeometry.SectionObserverDescent.sectionObserverPhantom_not_jointlySurjective
+        (fun p => deningerMeyerPositivePrimePointObserver p)
+        (0 : ℂ) deningerMeyerPrimeInvisibleUnitMassSection
+        deningerMeyerPositivePrimeObservers_unitMass_sectionPhantom
 
 /-- All-radius Calderón defect, before sparse prime sampling. -/
 def deningerMeyerGlobalPoissonDefectLM :

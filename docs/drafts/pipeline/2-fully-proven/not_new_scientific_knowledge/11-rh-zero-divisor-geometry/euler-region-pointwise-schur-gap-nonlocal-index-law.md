@@ -222,3 +222,23 @@ declarations audit to only `propext`, `Classical.choice`, and `Quot.sound`.
 
 This closes finite algebraic kernel assembly only. It neither proves horizontal Xi monotonicity nor
 constructs the analytic generalized Pick kernel, so the card remains at stage 2.
+
+## Lean status update (2026-08-24)
+
+`formal/GaloisForLFunctions/RHTower/XiShiftEulerPointwiseContractivity.lean` now closes the complete
+pointwise half of the card for the actual completed-Xi quotient. Reusing the already formalized
+unconditional half-strip zero bound and Sondow--Dumitrescu strict horizontal monotonicity, it proves
+
+```text
+Im z > 1/2+omega, omega>0 -> |Theta_omega(z)|<1
+                              and Re S_omega(z,z)>0.
+```
+
+The leaf includes the exact rotation between the centered right-half-plane kernel and the literal
+upper-half-plane formulas `(1)`--`(3)`. Exact source check and targeted leaf build pass; all eight
+public declarations audit to only `propext`, `Classical.choice`, and `Quot.sound`. It is wired into
+`RHTower.lean` without an umbrella build.
+
+Remaining dependency is the full analytic generalized-Pick divisor-index theorem for the actual
+shifted-Xi kernel. The new abstract locality/finite-Gram leaf closes locality after such a realization
+exists, but does not construct that realization. Card therefore remains stage 2.

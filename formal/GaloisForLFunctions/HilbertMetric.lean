@@ -59,6 +59,7 @@ import GaloisForLFunctions.HilbertMetric.CCRFullTupleCorollaries
 import GaloisForLFunctions.HilbertMetric.NomologicalCrossGram
 import GaloisForLFunctions.HilbertMetric.NoetherCorpusApplications
 import GaloisForLFunctions.HilbertMetric.FullCCRInterfaceClassification
+import GaloisForLFunctions.HilbertMetric.PolynomialEvaluationHasse
 
 /-!
 # Hilbert-metric theorem area

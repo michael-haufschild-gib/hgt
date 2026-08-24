@@ -325,3 +325,22 @@ Scientific novelty would begin with the unconditional Euler-source estimate in t
 - [ ] Complete Lean formalization: derive the explicit finite profile from the differentiated Xi
   leakage quotient and formalize the source-side construction.
 - [ ] 3 -> 4: no unconditional RH proof.
+
+## Lean progress: literal rank-one source curvature
+
+The one-zero induction atom of Theorem D is now formalized without a convergence premise in
+`formal/GaloisForLFunctions/HTGeometry/HardyDiskKernelContinuity.lean` and
+`formal/GaloisForLFunctions/HTGeometry/HardyLeakageCayleyCurvature.lean`.
+
+- Szegő kernels and their one-dimensional model-space projections vary in norm and operator norm.
+- The Cayley Blaschke separation is exactly `-omega/a`.
+- On `0 < omega < a/2`, `scaledCayleyLeakageFamily` is literally
+  `omega⁻¹ * cayleyLeakage` for the shifted quotient pair.
+- This normalized family converges in operator norm to the explicit rank-one operator
+  `infinitesimalCayleyLeakage`.
+- The corresponding compression defect divided by `omega²` is exact at every positive scale.
+
+Targeted source checks and module builds pass.  New endpoints have only the project baseline
+axioms `[propext, Classical.choice, Quot.sound]`.  Remaining source-side work is the finite-product
+assembly over every right-half divisor copy and its Paley--Wiener identification with `profile`;
+the single-layer operator-norm limit itself is no longer assumed.

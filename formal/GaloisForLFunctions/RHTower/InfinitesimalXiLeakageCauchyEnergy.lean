@@ -3,6 +3,7 @@ import GaloisForLFunctions.RHTower.XiShiftLoewnerFlow
 import GaloisForLFunctions.RHTower.GammaSewnMobiusXiWardHardyTransport
 import GaloisForLFunctions.RHTower.CCMRectangularDirichletLandau
 import GaloisForLFunctions.RHTower.XiShiftDivisorPrimeSymbol
+import GaloisForLFunctions.RHTower.CCMFUSuzukiCriticalChordMeasure
 
 open MeasureTheory Set Complex Filter
 open scoped BigOperators
@@ -241,6 +242,19 @@ theorem FiniteXiRightDivisor.profileLaplace_eq_ward_add_boundary
     xiCenteredAntiCausalWardModeResponse]
   ring
 
+/-- The first two infinitesimal Suzuki Euler grades are exactly `2Λ` and
+`4(Λ * Λ)` at every arithmetic label. -/
+theorem finiteXiSuzukiEulerTangents :
+    ∀ n : ℕ,
+      suzukiShiftedCoefficientComplexFirstJet n 0 =
+        2 * ArithmeticFunction.vonMangoldt n ∧
+      HasDerivAt (suzukiShiftedCoefficientComplexFirstJet n)
+        (4 * ((ArithmeticFunction.vonMangoldt *
+          ArithmeticFunction.vonMangoldt) n)) 0 := by
+  intro n
+  exact ⟨suzukiShiftedCoefficientComplexFirstJet_zero n,
+    hasDerivAt_suzukiShiftedCoefficientComplexFirstJet_zero n⟩
+
 theorem finiteXiRightDivisor_capstone :
     ∀ D : FiniteXiRightDivisor,
       (∀ j, 0 < D.depth j ∧ D.depth j < (1 / 2 : ℝ)) ∧
@@ -262,7 +276,13 @@ theorem finiteXiRightDivisor_capstone :
           continuedXiCenteredAntiCausalWardResponse w + D.boundaryContact) ∧
       (∀ w : ℂ, 0 < w.re →
         continuedXiCenteredAntiCausalWardResponse w =
-          ∑ j, D.modeResponse j w) := by
+          ∑ j, D.modeResponse j w) ∧
+      (∀ n : ℕ,
+        suzukiShiftedCoefficientComplexFirstJet n 0 =
+          2 * ArithmeticFunction.vonMangoldt n ∧
+        HasDerivAt (suzukiShiftedCoefficientComplexFirstJet n)
+          (4 * ((ArithmeticFunction.vonMangoldt *
+            ArithmeticFunction.vonMangoldt) n)) 0) := by
   intro D
   exact ⟨fun j => ⟨D.depth_pos j, D.depth_lt_half j⟩,
     D.profile_eq, D.energy_eq_integral,
@@ -271,6 +291,7 @@ theorem finiteXiRightDivisor_capstone :
     fun W hW => hasDerivAt_xiShiftTheta_zero_logDeriv hW,
     fun s hs => logDeriv_xi_sub_archFactor_eq_neg_vonMangoldtLSeries hs,
     fun w hw => D.profileLaplace_eq_ward_add_boundary hw,
-    fun w hw => D.wardResponse_eq_sum_modes hw⟩
+    fun w hw => D.wardResponse_eq_sum_modes hw,
+    finiteXiSuzukiEulerTangents⟩
 
 end RHTower

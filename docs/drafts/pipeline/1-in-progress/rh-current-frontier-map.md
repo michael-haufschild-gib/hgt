@@ -134,6 +134,282 @@ identify its reduced shadow with Gamma-six dephasing, and exhaust Xi copies mult
 ABHN analogy, finite-horizon unitary shadowing, temporal Markovity, singular-graph ancestry
 collapse, and literal Meyer boundary landing do not supply that theorem.
 
+**Twelfth-revision correction — eventwise chain-map anomaly.** Corpus-wide hostile audit kills the
+generic protected-sector formulation. `DeningerCalderonWittResolvedCrossEffectBoundary.lean`
+constructs a canonical nonzero resolved Calderón--Witt self-boundary whose codiagonal is zero and
+proves that no observer after ordinary cup is conservative on its span. Conversely,
+`MobiusThetaAdaptivePrimeNormalResolvedSector.lean` constructs a closed codiagonal-conservative
+sector, but the actual Green line has zero codiagonal there exactly on the critical line; support or
+annihilation is not an independent producer. Reflection oddness, integral bidirectional descent,
+and a two-prime shared Gamma ghost are likewise already RH-equivalent, while normalized Gamma-six
+has no integral Big-Witt scalar lift.
+
+The positive survivor is sharper. `DeningerMeyerRelationKernelBoundarySeparation.lean` proves that
+the completed Green fracture multiplies one nonzero pointed relation character:
+`D_rho * tau_p`. `SourceHorizontalGammaSixTameReaderTransgression.lean` and
+`FrankensteinXiGreenStokesQuadraticGhostNormalForm.lean` prove that a literal cyclic source boundary
+can be regulator-null yet have nonzero nonlinear physical readout; its failure to be a cyclic chain
+map is exactly the positive paired Gamma curvature, with prime label and Xi multiplicity retained.
+`SourceHorizontalGammaSixCovariantStokesFlat.lean` proves every horizontal character is flat only
+after retuning the coefficient system to event holonomy `exp(a)`; that covariant boundary untwists
+to the fixed Deninger boundary exactly at neutral grade. Thus flatness, exactness, and topological
+protection are not the law. The conjectural universal law is **eventwise completion-anomaly
+cancellation**: one zero-independent arithmetic completion must make forward and reflected
+physical characters a single coefficient-faithful chain map on the fixed source, rather than
+retuning local coefficients per divisor. Internal `tau_e` may differ and remain nonzero for every
+critical zero; only its completion coupling may vanish.
+
+First non-RH-equivalent construction target is an oriented event-completion bridge, not another RH
+receiver: realize the actual Green-scaled relation-kernel passage in the source/record complex-
+orientation carrier, prove its two reversal actions from literal Euler--Gamma refinement before Xi
+selection, and identify its linear transgression and quadratic chain-map curvature as two shadows of
+one passage. `ComplexEventOrientationSewingNoGo.lean` already proves one-sided orientation sewing
+kills any such nonzero complex passage, while joint reversal preserves it;
+`SourceReversalNoSpectatorSelector.lean` proves joint reversal is uniquely idempotent-indecomposable
+in the finite source-pair model. What remains unproved is the arithmetic theorem selecting the
+one-sided fixed-source sewing or, equivalently, forbidding event-dependent holonomy. Primitive-event
+indecomposability is a possible source axiom, not yet a theorem and not permission to assume RH.
+
+**Thirteenth-revision correction — cotangent action is generic; arithmetic completion functoriality
+is the law.** Corpus search found that the fixed source requested above already exists at the
+algebraic level. `DeningerCalderonWittKoszulSource.lean` constructs a zero-independent all-prime
+oriented Koszul--Arakelov three-term complex with exact middle and one top orientation line.
+`CyclicCotangentNoether.lean` proves that every square-zero linear source has a canonical
+cotangent cyclic Maurer--Cartan law and annihilates its own gauge boundaries.
+`DeningerCalderonWittCotangentNoether.lean` now totalizes the actual all-prime complex and
+instantiates that law. Consequently cyclic action, Bianchi, Ward, and boundary annihilation are
+generic infrastructure, not an RH producer.
+
+The remaining wall is a relative inverse-variational problem.
+`DeningerGammaSixCofinalMeyerTateXiGreenBoundary.lean` already builds the concrete divisor- and
+multiplicity-faithful completed arithmetic boundary and proves its strict Gamma/Sonin physical
+image vanishes exactly on the critical line. Its boundary range is dense, so universal continuous
+Stokes blindness would make the physical reader zero. Moreover the absolute oriented source has
+`H0=H1=0` and `H2≅ℂ`, so individual zero events cannot be declared ordinary source cohomology
+classes. They must be relative/completed defect states of one fixed source-to-observer passage.
+
+The corpus-induced conjecture is now **relative cotangent completion functoriality**: one
+zero-independent topological cotangent completion and one fixed Euler--Gamma/Sonin observation
+morphism preserve differential, pairing, orientation, and refinement composition. A divisor copy
+may select a relative defect state and distinguished completed chain but may not retune action,
+dual coefficients, counterterms, or holonomy. The physical Gamma-six reporter must be the
+pushforward of the source variational covector, and the completed Meyer--Tate Xi Green event must be
+the pushforward of its distinguished gauge variation. Fixed-source Noether then kills the physical
+anomaly; existing relation-kernel and Gamma/EWQ theorems identify it as `D_rho tau_p` with
+`tau_p ≠ 0`, forcing `D_rho=0`. Different zeros may retain different internal soliton words,
+multiplicities, windings, and histories.
+
+Exact open core: construct the source-derived topology and continuous cotangent dual; construct the
+Xi-free completion morphism; construct multiplicity-faithful relative event states using Xi
+vanishing only as incidence; prove the variational/gauge identification and cofinal gluing law; then
+exhaust all Xi copies. All-cross-prime compatibility, closed-relation extension, one-port positive
+BV bulk, reflection-even counterterms, scalar trace, dense closed admission, coface telescoping,
+generic Noether charge, and BV--BFV terminology alone are explicit no-gos. Status:
+**[CONJECTURAL/PRE-ROUTE; GENERIC AND ACTUAL-SOURCE COTANGENT NOETHER LAWS FORMALIZED;
+ARITHMETIC COTANGENT COMPLETION AND XI EXHAUSTION OPEN; NOVELTY NOT ESTABLISHED]**.
+
+**Topology addendum — arithmetic Tate-cotangent exactness.** The completion cannot be an ordinary
+Hilbert cotangent space. `DeningerCalderonWittAllCrossPrimeArithmeticSourceCompletion.lean` proves
+the finite actual-witness core is norm-dense in the packet Hilbert carrier;
+`DeningerCalderonWittCrossPrimeSingularCorona.lean` proves the full-support horizon survives only
+modulo that algebraic core, not its closure. `RouteRSourceTopologyObserverDichotomy.lean` therefore
+rules out every Hausdorff continuous reporter that kills the core but retains the horizon, while an
+arbitrary algebraic marked splitting realizes every target unconditionally.
+`RouteRCrossPrimeStokesCalkinPrequotientNoGo.lean` further proves the singular corona alone cannot
+recover the prequotient physical comparison off neutral grade, even modulo compact operators.
+
+The positive survivor is an exact three-layer completion diagram, not a chosen quotient. Existing
+Tate-clock infrastructure supplies dual Ind and Pro exact sequences and their restricted pairing.
+New `TateClockCotangentDuality.lean` proves that the Pro clock is literally the algebraic dual of
+the finite-support Ind clock, cotangent evaluation is exactly the existing Ind/Pro pairing, and the
+dual of forward shift is backward shift. Refined conjecture: Euler--Gamma completion is one
+self-dual arithmetic Tate object retaining finite core, Hilbert bulk, and singular relative corona;
+source orientation/reflection trivializes its determinant/index anomaly. Xi copies select relative
+boundary states, and the already-proved `D_rho tau_p` is their connecting/index class. Exact
+functoriality must kill that class without erasing `tau_p`.
+
+Next construction target is Xi-free: build this all-prime Ind--Pro completion diagram and its fixed
+self-dual determinant/index trivialization; identify Meyer--Tate naturality and the cross-prime
+relation kernel as its dual boundary faces. Only afterward construct divisor event states and prove
+the connecting class equals the physical Gamma/Sonin anomaly. Ordinary Hilbert completion,
+Hausdorff core-killing observers, marked algebraic splittings, pre-divisor gauge-invariant corona
+observers, singular-corona factorization, and declaring a Gelfand-triple endpoint are closed no-gos.
+Status: **[ALGEBRAIC COTANGENT, ACTUAL-SOURCE NOETHER, AND TATE-CLOCK IND--PRO DUALITY FORMALIZED;
+SELF-DUAL ARITHMETIC TATE COMPLETION, INDEX TRIVIALIZATION, AND XI EXHAUSTION OPEN]**.
+
+**Fourteenth-revision correction — determinant/index cancellation and raw completion functoriality
+are dead.** `PrimeDepthBVWoldGradedDet2StokesCartierTrivialization.lean` and
+`HedenmalmThetaKakutaniBalancedIndexNoGo.lean` prove reflection determinant/index cancellation at
+every grade, including off center. `AcyclicFiniteFibersDerivedLimit.lean` proves already-specialized
+finite Euler fibres have no derived-limit class. `RouteRFixedTraceTailRoos.lean` and
+`RouteRCompletionMigrationDefect.lean` instead locate the defect in the noncommutation of source
+homology with fixed-grade tail completion: one literal source boundary migrates to a Roos class,
+equal to the relation-kernel/Gamma/Hodge defect and zero exactly at neutral grade.
+
+Neither ordinary convergence nor a uniform pre-divisor functor repairs this.
+`RouteRSourceMarkedFiniteCompletion.lean` proves finite exact stages converge coordinatewise but
+source-marked convergence is itself RH-equivalent.
+`RouteRPreDivisorGammaCoronaGlobalizationNoGo.lean` explicitly refutes a uniform pre-divisor
+globalizer, and `RouteRTerminalProducerClassification.lean` proves the audited intrinsic Route-R
+producer category empty. Noether conservation is also insufficient: the nonzero horizontal charge
+is conserved through every chart, while source Ward budgets may diverge.
+
+Positive survivor is **Noether-complete null-provenance exclusion**. One zero-independent
+arithmetic action should live on one barrelled or derived-bornological source completion. Divisor
+states may select cofinal histories but not retune topology, action, currents, or holonomy. Deep
+Wold histories already converge to zero in source `ell^1`; their exact inverse-depth physical
+readout is a fixed multiple of `D_rho`. If fixed-action Noether covectors extend to a
+pointwise-bounded family on the whole completion, Banach--Steinhaus forces that conserved charge,
+and hence `D_rho`, to vanish. This is not an assumed completion-exactness law: missing producer is
+construction of the Xi-free finite-action source and derivation of pointwise boundedness from its
+arithmetic dynamics. Cofinal equicontinuity itself is already the RH classifier and cannot be used
+as premise.
+
+`BarrelledNoetherReesSuperselection.lean` now proves the exact abstract bridge: pointwise-bounded
+currents on a barrelled source are uniformly operator bounded, have Rees grade zero on every
+contracting scale, and cannot sew an all-orders-flat source history to a nonflat charge history.
+The Hawking, Hellinger, modular, and Wold obstructions are therefore instances of one formal law;
+only construction and boundedness of the actual arithmetic current family remain open.
+
+This suggests a new framework, **nomological completion geometry**: classify completions by which
+finite laws, source relations, and conserved currents survive, not only by convergent vectors.
+Hypothetical off-line zeros are charged completion ghosts--source boundaries resurrected after
+provenance loss. Critical zeros may retain distinct soliton words, multiplicities, windings, and
+recurrence histories while having zero transverse charge. Status:
+**[CONJECTURAL/PRE-ROUTE; NULL-ORBIT ANNIHILATION, BARRELLED-TO-REES SUPERSELECTION, AND ARITHMETIC
+CHARGE CALIBRATION FORMALIZED; XI-INDEPENDENT FINITE-ACTION COMPLETION AND POINTWISE-BOUNDED ACTUAL
+NOETHER CURRENT OPEN]**.
+
+**Fifteenth-revision correction — preferred completion is too narrow; observer effectivity is the
+candidate universal law.** The completion corpus rules out choosing one familiar topology and
+asking it to do all work. Exact provenance ultrametrics are discrete; non-discrete summable shell
+topologies let cofinal private labels disappear. `ell^1` codiagonal fusion kills the transverse
+zero-mass radical, the `ell^2` analogue is nonclosable, and the actual cross-prime half-density is
+not Hilbert-summable. Complete nuclear Köthe sources exist and can retain witnesses erased by
+Hardy compression, but nuclearity alone does not make finite observers effective. The same finite
+augmentation tower can have different Hausdorff completions.
+
+`RouteRCompletionPhantomNoether.lean` gives the exact replacement normal form. The canonical
+finite Route R stages are all source-exact and every fixed coordinate eventually agrees with the
+physical landing, yet the marked histories fail to converge exactly off neutral grade. At an Xi
+support point this **completion phantom** exists iff `Re rho != 1/2`, iff the conserved Noether
+orientation charge is nonzero; global phantom-freedom is equivalent to RH. Thus the charge is a
+measurement of failed global descent, not a mechanism producing zeros.
+
+New candidate framework is **arithmetic phantom-descent geometry**. The finite-prime-only form is
+false: `DeningerMeyerPrimeSamplingCohomologyObstruction.lean` constructs an entire subspace of
+prime-invisible even functions in corrected `H^1`; its explicit mass at `±1` is missed by every
+positive-prime sample but detected by the all-radius Calderón defect. New formal section-phantom
+theorems package this as failure of joint point coverage. Also,
+`DeningerPrimeFiniteCyclotomicReductionSystem.lean` gives outgoing finite quotients that jointly
+separate packet points, while `DeningerRationalWittCoherentCyclotomicDescent.lean` gives incoming
+stages exhausting only the algebraic finite source. Outgoing detection, incoming descent, and
+completed-source coverage are distinct obligations.
+
+The additive form of the preceding conjecture is now formally ruled out.
+`CompleteResolutionCofinalConditioningLaw.lean` proves that all finite source embeddings are
+injective and mass one but converge to one universal atom. Every uniformly Lipschitz observer loses
+fixed spectral separation. Only ratios of jointly vanishing shell coordinates retain the
+injective two-prime normal character. Any closed linear relation retaining those clocks has full
+vertical fibre; retaining the countable prime-normal reader gives unbounded finite vertical rank.
+`CompleteResolutionPrimeNormalHilbertSaturation.lean` strengthens this to the canonical Hilbert
+target: every closed relation is domain times full target, and Hermitian symmetry forces the pure
+vertical relation. More bounded/additive observers do not remove phantoms; they transmute lost
+horizontal data into unconstrained vertical multiplicity.
+
+Surviving conjectural object is therefore an **arithmetic exceptional fabric**, not a fixed list of
+routes or a hypercover of the collapsed source. Start with the horizon ideal of cofinally vanishing
+source differences; retain its Rees/associated-graded filtration and projective normal charts.
+Prime-normal ratios, Calderón radius, causal Hardy/Hawking sector, nonperturbative recurrence phase,
+ABHN invariant sum, and provenance become compatible filtrations or sectorial data on one
+exceptional fibre. Full vertical residual data are allowed and can distinguish different zeros.
+
+Corpus supplies a sharper index target. `EntireFunctionalEquationOffLine.lean`,
+`PoleOrderTwoRealStray.lean`, `StripDivisorRealization.lean`, and
+`PositivePrimeDensityMobiusInversion.lean` prove that positive generalized-prime/von-Mangoldt
+sources, exact Riemann reflection, entire order-one completion, and off-line divisors coexist. The
+price is boundary intervention: any finite inserted divisor `Z` raises endpoint pole order by
+`|Z|/2`. A critical conjugate pair occupies one unordered frequency pair `{w,-w}`; a genuinely
+complex off-line quartet occupies two, hence one extra transverse splitting unit after its neutral
+longitudinal core is removed. This refutes the former **no unaccounted transverse inflow** target:
+Hardy scattering assigns one exact missing direction to every upper resonance even in a lossless
+isometric model, and marked-variation dynamics preserves positive ancestry and phase-loss terms.
+Neither facewise zero index nor an additive anomaly cancellation law can be the universal theorem.
+The boundary data instead belong to the unrestricted defect core.
+
+`HTGeometry/NomologicalHomotopyGeometry/ObserverPhantomDescent.lean` now formalizes the exact
+generic bridge: a nonzero global morphism annihilated by every observer is an observer phantom;
+universal effectivity forbids it, and its existence disproves universal effectivity. The remaining
+refinement theorems prove that adjoining a new stratum leaves exactly old phantoms still invisible
+to it, while one detector seeing an old charge removes that charge. These remain correct finite-stage
+kernel laws. They cannot be extrapolated through the cofinal collapse as an additive hyperdescent
+theorem; the exceptional fabric must replace the terminal observer object.
+
+Provenance--weight exclusion is now retired as an arithmetic mechanism. The abstract selector in
+`HTGeometry/ReflectionTransverseProvenanceWeightSelection.lean` remains valid, but hostile testing
+shows that the required common action does not exist: resolved Hellinger--Gamma and Rees-corona
+quotients retain prime/depth provenance, valuation translation preserves private prime spectrum,
+Scaling-Site Frobenius moves reporter provenance while fixing spectral labels, and Gamma--Rees
+transverse scaling is a different action. Equating them is already the missing RH-strength seam.
+Plain properness, S-completeness, recurrence, and double-KMS sewing also fail: proper scaling
+quotients retain nonfixed orbits; two-ended analytic admission can identify endpoints while a
+discontinuous algebraic reporter separates them; finite quantum phases recur while an off-line
+coefficient-faithful radial orbit diverges; Hawking-relative passivity is saturated by tilted dark
+modes and pure double-KMS states may split into independent conjugate sectors.
+
+Surviving candidate law is now **arithmetic completion-anomaly 2-geometry**. Pre-divisor
+reflection-defect stabilization remains its finite Witt-capacity shadow, not the whole object.
+`EulerSquarefreeWickReplicaXiLanding.lean` and
+`EulerSquarefreeWickGlobalMeromorphicMatrixLanding.lean` give ordered source-first Xi channels.
+`EulerSquarefreeWickHedenmalmReflectionCrossing.lean` gives a concrete reflection-odd transverse
+amplitude before divisor selection; its square is reflection invariant. Thus neither orientation
+nor a transverse port is wholly missing.
+
+The decisive newer chain concerns completion itself. `CompletionDefectExactnessFlag.lean` records a
+completion error as a cycle which ceased to be a boundary and identifies inverse-limit survivors
+with nonzero `lim¹` classes. `ProvenanceContinuousCompletion.lean` proves that eventually exact
+marked stages cannot acquire homology under provenance-continuous completion. In the arithmetic
+source, `EulerPreScalarGammaOrthogonalFourPlusFourLaw.lean` splits the unique pre-scalar reporter
+into orthogonal radial and transverse four-unit records;
+`MobiusGammaXiMarkedClockSoninProducer.lean` makes the actual odd vector port vanish cofinally;
+and `MobiusGammaXiPreScalarAffineBoundaryRenormalization.lean` nevertheless constructs an exact
+coefficient-faithful finite/cofinal landing whose limit is
+
+`d = continuedXiAntiCausalWardResponse (1 / 2)`.
+
+The completed wall always exists with capacity `4 + |d|²`; fixed capacity four is equivalent to
+RH. Scalar repair cannot prove this: `MobiusGammaXiCoupledErrorDebtCancellationDichotomy.lean`
+shows every cancellation is either RH or the universal opposite controller, and that opposite
+controller merely transfers `2|d|²` into a hidden antisymmetric port. Quantum-recurrence no-gos
+independently show why complete local and all-orders perturbative data cannot select the global
+completion.
+
+The conjectural object is therefore a source-defined field of marked completion presentations
+together with radial completion, reflection, cofinal refinement, and boundary descent as a
+2-dimensional diagram. Its mapping-cone/`lim¹` class is the **completion anomaly**. Admissible
+global completion must be provenance-continuous and conservative on the entire radial--transverse
+marked source: quotient, scalarization, or a complementary port may move a defect but may not
+erase its ancestry. The scalar `d`, Route-R horizontal charge, Stokes negative inertia, Hawking
+Hardy defect, ABHN local sum, and recurrence collision hierarchy are different shadows of that
+class, not competing zero producers.
+
+An Xi zero is not generated. It is a support point where completed bulk slack disappears. Each
+critical zero may retain a different weight-zero soliton core, multiplicity, prime word, Hardy
+index, recurrence history, ABHN class, and local Stokes system. RH constrains only the transverse
+completion anomaly: it cannot survive as an off-line horizontal grade.
+
+`RHTower/XiPreDivisorReflectionDefectStabilization.lean` formalizes the pre-divisor reservoir,
+reflection-odd EWQ--Hedenmalm port candidate, pointwise regularity interface, central-port no-go,
+and RH handoff. Exact open core is narrower and deeper than “construct a port”: build the literal
+Euler--Gamma marked completion 2-diagram; identify its anomaly class before scalarization with the
+Ward limit `d`; prove provenance-continuous conservative completion from arithmetic source laws;
+and prove the scalar opposite controller has no source-faithful lift through that diagram. Existing
+`RouteRSourceMarkedFiniteCompletion.lean` warns that declaring the required continuity is already
+RH-equivalent, so it must be derived rather than assumed. Status: **[CONJECTURAL NEW FIELD;
+ABSTRACT EXACTNESS/`lim¹`, PRE-SCALAR SOURCE, COFINAL LANDING, DEBT-TRANSFER DICHOTOMY,
+TRANSVERSE-PORT CANDIDATE, STOKES CAPACITY, AND RH HANDOFF LEAN-PROVED; ARITHMETIC
+PROVENANCE-CONTINUITY/NON-LAUNDERING LAW OPEN; RH NOT PROVED]**.
+
 ## Live architectures
 
 ### CCM-FU — four-unit source-codiagonal incidence
@@ -3516,6 +3792,13 @@ normality is RH.
 
 `RouteRCompletionMigrationDefect.lean` identifies literal pre-divisor Fisher boundary and fixed-grade completion class, which survives exactly off critical line. `RouteRResolutionCoreDefect.lean` makes sharp core radius `|2 Re(rho)-1|`; `RouteRResolutionCoreNoetherCharge.lean` identifies it with absolute source transverse rate and transports multiplicity-weighted orientation charge through cycle, divisor-current, source-tail, and completion-core realizations. `CompletionDefectExactnessFlag.lean`, `ProvenanceContinuousCompletion.lean`, and `ResolutionExactnessProfile.lean` give exact abstract boundary/limit classification. `SourceMarkedExactnessCompletion.lean` retains literal markers and forbids exact-stage provenance from hiding physical escape; `SourceMarkedLawsonCompletion.lean` makes every marker's exact/defect phase clopen and convergence equivalent to eventual phase stabilization. `RouteRSourceMarkedFiniteCompletion.lean` instantiates canonical Fisher stages: every finite stage is exact and agrees eventually at each fixed coordinate, but source-marked convergence is exactly neutral grade; on Xi support it is critical-line placement, universally RH. Coordinate convergence is too weak, while provenance-continuous convergence carries full RH burden. These are sharp classifiers, not a revived producer; R is terminal as an independent RH route.
 
+`RouteRCompletionPhantomNoether.lean` now packages that closure as an observer-theoretic defect:
+finite exactness and coordinate shadows are unconditional, failure of marked convergence is the
+completion phantom, one Xi-labelled phantom is exactly off-critical placement and exactly nonzero
+Noether orientation charge, and global phantom-freedom is RH. This is an endpoint and ontology,
+not a proof. Surviving non-Route-R producer is an Xi-independent theorem that canonical finite
+prime/depth observers are universally effective for source-boundary histories.
+
 ### IW, AP, TD/C1, EWQ, AF, and SNR exact closures
 
 `SEMDyadicWeylExistenceClassification.lean` proves internal SEM Weyl-model existence iff dyadic
@@ -4014,3 +4297,358 @@ Fundamental remaining obstruction is not another equivalent criterion. Corpus al
 > derive favorable global order, cofinal approximation, or constitutive rigidity from literal
 > completed source while retaining matrix/off-diagonal orientation and mixed incidence erased by
 > scalarization, finite truncation, invariant energy, and post-divisor fitting.
+
+## 2026-08-24 frontier revision — nilradical, not producer
+
+Corpus-wide tracing of the residual Ward class now gives a stricter universal interpretation.
+`XiCompletionDefectSyndrome.lean` proves that off-line support, escape charge, tail Roos
+nonexactness, inverse boundary blowup, and shared-gauge failure are presentations of one completion
+syndrome. `EulerCutoffTailRoosStagewiseExhaustionNoGo.lean` then excludes the simplest construction:
+the syndrome cannot descend levelwise-surjectively from the exact finite Euler-cutoff tower.
+
+`RouteRPrimeHarmonicSummableCorona.lean` identifies the syndrome's first-wall carrier. Every
+nonneutral grade is an oriented copy of the universal prime-harmonic tail. Its class modulo
+absolutely summable tails is nonzero, but its Hadamard square is zero. Therefore a hypothetical
+off-line Xi point is best classified as a **nonreduced transverse arithmetic-completion point**, not
+as an object generated by a spectral, dynamical, thermodynamic, or solitonic producer. Any generic
+reduced/C*-positive receiver destroys this class and cannot be used to prove it absent unless the
+landing is already known faithful.
+
+`RouteRPrimeHarmonicShiftInvariantNilradical.lean` adds the dynamical classification. Deleting any
+finite prime head induces an automorphism of the corona, the harmonic class is fixed by one-step
+shift, and the difference ring is not `σ`-simple. Thus the class is not a travelling soliton and
+recurrence cannot wash it out. It is a stationary nilpotent completion charge: topological in the
+precise sense that finite/cofinal changes do not alter it, algebraically infinitesimal because its
+square vanishes.
+
+This preserves the user's proposed diversity of critical zeros. Weight-zero critical points may
+carry unrelated internal/topological/solitonic cores and arbitrary allowed tangential multiplicity.
+RH asks only that canonical arithmetic completion create no transverse nilpotent error. Full
+reducedness of the Xi divisor is neither needed nor currently admissible.
+
+> **New universal-principle candidate — transverse analytic unramifiedness.** Construct a
+> Xi-independent marked Euler--Gamma source algebra and prove its canonical transverse completion
+> reduced from its arithmetic formation law. Identify the completion nilradical, coefficient
+> faithfully, with the Route-R Roos/summable-corona class. The formal nonzero square-zero carrier
+> then excludes every nonneutral grade, and the existing completion-syndrome equivalence yields RH.
+
+Exact open core: source algebra construction; transverse ideal and completion; Roos/corona
+comparison retaining prime, orientation, and multiplicity marks; source-derived excellence,
+geometrically reduced formal fibres, source-admissible `σ`-simplicity, or a genuinely new
+replacement. The full corona is provably not `σ`-simple, so the arithmetic source image must be
+constructed and shown to exclude the stationary nilpotent without quotient laundering. Ordinary stagewise quotients,
+scalar Noether conservation, recurrence/KMS/unitary reporters, generic phantom-map nilpotence, and
+maps into reduced receivers are now recorded no-gos rather than candidate proofs.
+
+## 2026-08-24 frontier revision — reflection-normal frame anomaly
+
+The full corpus now forces a correction to “transverse analytic unramifiedness.” Nilpotence is not
+itself the forbidden phenomenon. `XiInternalTransverseCompletionSyndrome.lean` proves every Xi
+divisor point has a nonzero internal square-zero EWQ channel, including critical-line points.
+Internal multiplicity/leading-jet geometry must survive.
+
+New formal endpoint:
+
+1. `SquareZeroDualNumberEmbedding.lean` turns any nonzero square-zero element into a faithful
+   dual-number arc and proves its image is not formally unramified.
+2. `XiTransverseDualNumberArc.lean` applies this to the coefficient-faithful Route-R completion
+   class. The canonical transverse arc is faithful exactly off line.
+3. Reflection acts by `ε ↦ -ε`. Forward and reflected arcs have equal unframed image algebras
+   unconditionally, but their oriented frames agree exactly on the critical line.
+4. The canonical transverse image algebra is formally unramified exactly on the critical line.
+   Globally, frame descent and directional formal unramifiedness are each equivalent to RH.
+5. `EulerCofinalReducedCompletion.lean` proves ordinary reduced Euler completion cannot contain the
+   summable-corona arc faithfully. Reduced completion is an erasing observer, not source exclusion.
+
+The candidate universal principle is therefore **arithmetic reflection-normal derived formality**,
+not a producer of zeros and not full reducedness. Critical zeros may be mutually different internal
+defects or solitons. An off-line zero would additionally carry a forbidden global completion error:
+Euler/prime and Gamma/reflected first-order splittings of one source-derived reflection-wall formal
+neighbourhood disagree in oriented normal frame, even though forgetting frame makes their images
+identical.
+
+Classic spectral, dynamical, trace, positivity, thermodynamic, fixed-point, and divisor routes are
+treated as shadows/receivers of this comparison class. Corpus gives the concrete shadows—Route-R
+Roos charge, shared-gauge atlas, Ward debt, Noether countercharacter, singular Hawking/Hardy reader,
+ABHN fracture, recurrence/KMS persistence—but none supplies the source theorem. Normal-cone
+conservation, off-line Noether balance, separate local gauges, unitary gauge schedules, unframed
+range equality, and bounded/cofinally Lipschitz observers are explicit no-gos.
+
+> **Current conjecture.** Literal finite marked Euler--Gamma formation determines an Xi-independent
+> derived formal neighbourhood of the reflection wall. Euler and Gamma completions are two
+> first-order splittings. Their generalized Atiyah/Bass--Quillen comparison class and all higher
+> shifted-normal `L∞` obstructions vanish by functorial source formation. Its coefficient-faithful
+> first-order image is the framed Route-R transverse dual-number arc. Hence the normal frame
+> descends at every Xi divisor point while internal divisor jets remain allowed; RH follows.
+
+Exact open core:
+
+1. Construct the Xi-independent marked derived source neighbourhood.
+2. Realize Euler/prime and Gamma/reflected completions as two splittings of that same object.
+3. Bridge their comparison class to corpus `DirectionalMultiplierAtiyahClass` and then to the
+   Route-R transverse frame without reading the Xi divisor.
+4. Prove vanishing from source formation/functoriality, not from an RH-equivalent admission law.
+5. Control higher `L∞` obstructions and preserve internal EWQ/divisor nilpotence.
+6. Invoke the already formalized framed-descent or directional-unramified RH equivalence.
+
+Status: general dual-number/formal-ramification infrastructure, coefficient-faithful corona
+landing, internal/transverse split, reflection-sign action, unframed blindness, framed descent,
+directional unramifiedness, and RH handoffs are Lean-proved with no project axioms. Source-derived
+two-splitting formality is open. RH is not proved.
+
+## 2026-08-24 frontier correction — source-pinned, not equivariant, normal descent
+
+`PreDivisorTransverseDualNumberFormalNeighborhood.lean` removes Xi indexing from the first-order
+object. On the whole spectral plane it proves:
+
+- transverse dual-number arc is faithful and its image formally ramified exactly off the
+  reflection wall;
+- reflection reverses the normal frame by `ε ↦ -ε`;
+- unframed image descent and correctly transported covariant descent hold everywhere;
+- equality in one fixed source frame holds exactly on the wall;
+- fixed-frame descent is exactly the canonical cyclic Hermitian-star law; and
+- restriction to Xi support is literally `xiTransverseDualNumberArc`.
+
+This retires plain “reflection-normal derived formality.” Equivariant derived formality up to the
+natural sign action is unconditional and cannot imply RH. The candidate universal principle is now
+**source-polarized reflection-normal descent**: finite marked arithmetic formation must select one
+absolute integral/star frame, and singular completion must preserve it rather than replace it by a
+grade-dependent half-density frame.
+
+Corpus no-gos are exact. Covariant Stokes flatness holds at every grade; transported reflections
+are involutive and determinant one at every grade; unframed idempotent invariants agree; Noether
+balance survives; explicit nonneutral determinant-one trivializations exist; one-sided KMS/GNS
+receivers do not preserve the Laurent inverse; fixed-star positivity and Meyer unitarity are
+already RH-equivalent shadows. None supplies polarization preservation.
+
+> **Refined current conjecture.** Literal finite marked Euler--Gamma formation has a canonical
+> reflection-normal determinant line with integral/star polarization independent of spectral
+> grade. Its singular/corona completion preserves this pinned polarization faithfully. Euler and
+> Gamma continuations are polarized splittings of that one completed line, so their comparison is
+> required in the same frame, not merely after `ε ↦ -ε`. Polarized Atiyah/Bass--Quillen and higher
+> normal obstructions vanish by source formation. The whole-plane Route-R arc therefore becomes
+> source-fixed on Xi support, and RH follows.
+
+Exact open core is now narrower:
+
+1. reuse the existing finite rank-one marked Fisher boundary line and marker; construct its
+   canonical integral/Real-star polarization;
+2. prove cofinal singular completion preserves it faithfully;
+3. realize Euler and Gamma maps as polarized splittings of this line;
+4. prove polarized first-order and higher obstruction vanishing without assuming any
+   RH-equivalent star/positivity/unitarity/descent statement;
+5. land coefficient-faithfully in the already formalized whole-plane arc and restrict to Xi.
+
+Status: Xi-independent first-order family and finite rank-one marked Fisher line/marker are
+Lean-proved. Absolute polarization of that marker and its completion preservation remain open. RH
+is not proved.
+
+## 2026-08-24 frontier revision — source-provenance curvature, not local soliton type
+
+`RouteRSummableHadamardTailRoosEmbedding.lean` now proves a canonical injective linear map from
+bounded tails modulo `ell¹` to fixed-tail `lim¹` homology. It identifies the universal nonzero
+square-zero harmonic corona class and both critically damped orientations coefficient-for-
+coefficient with their diagonal tail--Roos classes. Multiplicative nilpotence and first-wall
+completion escape are therefore two structures on one carrier.
+
+Corpus simultaneously closes two tempting shortcuts. `RouteRSourceMarkedFiniteCompletion.lean`
+already constructs the finite rank-one Fisher line and fixed marker, so rebuilding that line is
+not frontier work. `LandauGinzburgNodeGerm.lean` and `LandauGinzburgRHBlindPair.lean` prove local
+matrix-factorization categories of simple on-line and off-line vacua are equivalent. Local
+soliton/defect type cannot locate zeros. The missing invariant must belong to one global,
+prime-filtered, source-pinned object.
+
+Plain fixed-frame descent cannot hold on the whole spectral plane. Refined candidate is
+**source-provenance curvature factorization**. A filtered Real-polarized curved object should be
+built from finite Euler--Gamma refinement before zero selection, with curvature equal to actual
+completed Xi source and boundary marker equal to the literal Fisher generator. Required global
+identity has schematic form
+
+```text
+transverse anomaly = dH + Hd + Xi · K
+```
+
+in the same pinned Real/star frame. Away from divisor, curvature term may carry mismatch. On a Xi
+zero fibre it disappears; remaining source-marked class is a boundary, hence its transverse frame
+descends. Different zeros may retain unrelated internal divisor/soliton structure.
+
+Exact open core:
+
+1. define filtered source-marked matrix-factorization/curved-complex morphisms retaining Fisher
+   marker and prime ancestry;
+2. construct object and curved null-homotopy from actual finite Euler--Gamma landings;
+3. identify potential with completed Xi source by theorem, not declaration;
+4. prove zero-fibre specialization lands in the existing tail boundary with fixed Real frame;
+5. bridge undamped Fisher escape to critically damped first-wall associated graded—new corona→Roos
+   map proves only normalized side;
+6. prove singular completion remains coefficient-faithful;
+7. invoke existing Xi framed-descent handoff.
+
+No-go boundary: local matrix-factorization category, arbitrary Xi-weighted stabilizer, bare curved
+contractibility, supertrace cancellation, uniform whole-plane fixed-frame descent, and equality of
+undamped/first-wall classes from matching null loci. RH remains unproved.
+
+## 2026-08-24 frontier correction — completion history, not another carrier
+
+`ConstitutiveGammaCoronaTailRoosEmbedding.lean` closes the alleged undamped/first-wall carrier
+gap. It constructs and proves injective both the full constitutive-corona landing and the
+source-marked relative-escape landing into fixed-tail `lim¹`. The literal Bockstein and Fisher
+escape have identical images. Gamma response commutes with the critically damped first-wall
+landing. Carrier transport and normalization are therefore complete.
+
+The same module gives the decisive negative result: response at time `|t|/2` is non-injective for
+every nonzero physical grade. It erases a different nonzero Bockstein with shorter lifetime.
+`gammaOrientedLifetimeSignature_injective` supplies the positive survivor: response lifetime plus
+oriented wall class reconstructs grade exactly. Full history is faithful; a static response slice
+is not.
+
+This changes frontier object from a matrix factorization with a still-hypothetical associated
+graded bridge to a **Real-polarized provenance persistence object**. It must couple:
+
+- finite exact Euler--Gamma ancestry and fixed Fisher marker;
+- singular `lim¹` completion phantom;
+- entire response-kernel filtration, death time, and oriented wall fibre;
+- fixed Real/star polarization;
+- non-torsion global reciprocity; and
+- curved bulk trivialization by actual completed Xi source.
+
+Different critical zeros may carry different internal soliton or derived categories. Universal
+law constrains only transverse completion history: a curvature-free zero fibre cannot acquire an
+orphan `lim¹` boundary absent from every finite exact ancestor.
+
+Exact open core:
+
+1. define persistent source-marked morphisms preserving boundary ancestry, response filtration,
+   and fixed Real polarization;
+2. lift the non-injective Gamma response maps to a history object retaining killed classes by
+   their death records;
+3. construct that object from finite Euler--Gamma formation before selecting Xi zeros;
+4. build a non-torsion differential/Hasse reciprocity target in which canonical polarization
+   makes reflected charges add rather than cancel;
+5. prove the curved provenance null-homotopy from source formation, with curvature actual Xi;
+6. specialize at Xi zero and apply `ExactCompletionDiagram.physical_exact` plus an existing
+   completion-escape/framed-descent RH handoff.
+
+Retired as open work: coefficient transport between full corona, undamped Fisher escape, tail
+Roos homology, Gamma response, and critical wall. Also retired: static barcode/no-dark-mode laws,
+bare ABHN sum zero, finite Brauer torsion, generic derived completion, and Hawking observability;
+corpus proves these are classifiers or receivers, not source annihilation laws. RH remains
+unproved.
+
+## 2026-08-24 frontier correction — recurrent provenance cobordism
+
+`ConstitutiveGammaCoronaTailRoosEmbedding.lean` now closes abstract history infrastructure at first
+useful level. Parallel response plus marker is faithful exactly when marker separates response
+kernel. Tail--Roos gives one unconditional faithful marker. No marker computed after response can
+repair critical-time loss.
+
+Combined with `CausalCollisionRecurrenceLaw.lean`, module proves a Gamma-specific obstruction: an
+erased kernel class in a faithful normed marker cannot sit at time zero of an exact nonnegative-
+action history whose unprojected source potential returns cofinally. Explicit critical Bockstein
+therefore admits no such history. Reporter-kernel soliton data remains free.
+
+Current reinterpretation: Xi zeros are not generated states. Off-line placement is irreversible
+dephasing introduced by singular completion of a reversible arithmetic source clock. Critical
+placement is recoverable/decoherence-free sector of completion functor. Different zeros may have
+different internal causes; universal law acts only on transverse provenance loss.
+
+Exact open core:
+
+1. construct a source-native normed marker from canonical Euler--Fisher column, preferably
+   upstream of corona quotient;
+2. construct a non-involutive compact prime-phase recurrent history;
+3. derive exact action accounting or summable total transverse action from finite Euler formation;
+4. identify replayed marker action with literal Gamma completion escape;
+5. aggregate and land coefficient-faithfully in global Xi reflection-defect energy;
+6. invoke existing recurrent-action RH endpoint.
+
+Retired: full `lim¹` norm, downstream Noether charge, static barcode, two-step involution,
+one-mode Hawking monotonicity, bare ABHN sum zero, local soliton type, and generic quantum detailed
+balance. Each is either too weak or simply restates missing recoverability. RH remains unproved.
+
+## 2026-08-24 frontier correction — upstream marker closed; effectivity still open
+
+`ConstitutiveGammaCoronaTailRoosEmbedding.lean` now constructs
+`routeRTraceCoordinateMarker` directly on the canonical Euler--Fisher source sequence. Its value on
+the explicit Bockstein sequence is the exact signed prime-Gamma coefficient and is nonzero at
+every nonneutral grade. `no_routeRPrimeGammaBockstein_summableCoordinateReplay` proves that no
+cofinal history can replay this fixed source coordinate with summable total action. Source-native
+normed marker obligation is closed.
+
+Corpus audit rejects the following proposed upgrades as producers: unweighted prime--arch
+summability, uniform bi-Lipschitz completion, arbitrarily chosen cofinal topology, integer
+divisibility, compactness of top cohomology, generic Mittag--Leffler/hyperdescent, and classical
+BV anomaly cancellation. Each is false for natural completions, blind to real horizontal charge,
+or already an RH-equivalent endpoint.
+
+Current universal interpretation is **effective source completion**: off-line support is a
+non-effective global assembly of finite exact Euler--Gamma histories, not a locally generated
+state. Hawking shell blindness, ABHN pairing, all-jet recurrence separation, unitary hidden
+memory, Lawson phantoms, and Tail--Roos escape are shadows of this same failure. Local soliton data
+remains unrestricted.
+
+Exact open core:
+
+1. construct a source-defined global assembly/history, not a chosen topology or fitted Xi object;
+2. prove its action ledger is finite while retaining the upstream trace marker;
+3. prove completion is effective on literal finite source relations;
+4. identify the resulting transverse action with the physical Gamma/Xi completion escape;
+5. invoke the existing recurrent-action or no-phantom RH handoff.
+
+RH remains unproved.
+
+## 2026-08-24 frontier correction — completion error as unbounded source ancestry
+
+Corpus-wide formation audit sharpens “effective source completion.” Generic recurrence,
+formation properness, nuclear/solid exactness, reduced receivers, common-germ rank counting, and
+finite-depth closure exchange do not produce RH. Each is either an existing RH endpoint, erases
+the transverse class, compares unrelated dimensions, or requires compactness/continuity/finite
+signature hypotheses that raw all-prime formation lacks.
+
+Surviving reinterpretation is **ancestry-filtered completion**. Off-line Xi support is a
+completion-born transverse law requiring unbounded Euler--Gamma formation ancestry. It is not
+locally produced and need not share internal soliton type with any other zero. Tail--Roos,
+summable corona, Noether charge, Lawson phase, Hawking blindness, and essential reflected-prime
+inequivalence measure the same loss in different observers. Explicit rectangular prime--Gamma
+criterion shows this global birth nevertheless has finite negative certificates.
+
+Candidate universal law is `NO FINITE-ACTION COFINAL BIRTH`: finite source-ancestry action forbids
+a coefficient-faithful law from appearing only at completion. Existing abstract theorems prove
+all logical pieces except arithmetic comparison assigning canonical finite ancestry action to the
+completed Xi source. That comparison must derive its weights and formation operations from same
+finite Euler--Gamma identities; chosen product topology, support counting, or post-Xi fitting is
+invalid.
+
+Revised open core:
+
+1. extract canonical formation operations and ancestry weights from finite Euler--Gamma source;
+2. prove proper action accounting without assuming Xi placement or source positivity;
+3. prove completed Xi source has finite ancestry action in the fixed coefficient-faithful frame;
+4. identify every nonzero Route-R/Tail--Roos class as cofinal birth of infinite ancestry action;
+5. apply no-birth comparison and existing no-phantom RH handoff.
+
+RH remains unproved.
+## 2026-08-24 correction — finite action is not a universal birth prohibition
+
+The earlier `NO FINITE-ACTION COFINAL BIRTH` candidate is too strong without a parabolicity/Liouville hypothesis on source dynamics.  Finite-action nonconstant configurations can carry boundary data through capacity.  Retain only the conditional survivor: a no-birth theorem must identify the exact source capacity or recurrence law that makes the relevant boundary removable; finite action by itself is insufficient.
+
+## 2026-08-24 current reinterpretation — joint-ancestry superselection
+
+Corpus-wide comparison now points away from a common local producer for zeros.  Internal divisor data may be genuinely zero-specific: first nonzero Xi jet, multiplicity, and conormal behave like individual soliton data.  The universal object is instead the admissibility of their **joint source ancestry** across forward and reflected completions.
+
+An off-line candidate has several mutually consistent local shadows—completion phantom, source-boundary migration, TailRoos escape, Noether charge, completed prime-pair incidence, nonclosable normalized graph, and reflected prime-Poisson sector separation.  No single shadow is contradictory.  The proposed contradiction is that all shadows cannot descend from one closed, single-valued, prime-source-linear ancestry.
+
+Lean already proves the decisive receiving obstruction in `PrimePoissonSourceLinearSuperselection`: off-center reflected product states are mutually singular, so every closed densely defined single-valued source-linear sewing is zero; nonzero sewing exists exactly at neutral grade.  Lean also proves the physical first-jet and Gamma/Hellinger local incidence bridges.  What it does **not** yet prove is that the divisor-independent Möbius–theta physical source generates the required sewing.
+
+### Open core
+
+Construct a zero-independent representation of the prime-normal Möbius–theta source on the infinite prime multiplication algebra whose forward/reflected first-jet graph is dense, closed, single-valued, source-linear, and nonzero.  The construction must survive these formal no-gos:
+
+- ordinary `L²(ℝ)` theta cyclicity is not prime-algebra cyclicity;
+- scalar functional equation/entire continuation/positivity admit off-line countermodels;
+- local source action dies where the full-support physical action survives;
+- coordinate convergence and every finite Rees order lose provenance;
+- closure of the normalized one-marginal graph creates vertical ambiguity;
+- source/Gamma naturality reporters that install `p⁻ᵗ` are fitted RH classifiers.
+
+If the source construction is achieved independently, prime-Poisson superselection forces the critical line while leaving multiplicity and individual soliton structure unconstrained.
