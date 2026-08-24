@@ -257,3 +257,16 @@ produces the Hilbert metric before the Xi divisor is reconstructed.
   non-Hilbertization proved on paper.
 - 2026-07-11 -- no-go recast as the positive full-sector requirement `P_-GP_->=P_-`; every successful
   Hilbertization must be noncompact, infinite-rank, and have essential norm at least one.
+
+## Formalization progress (2026-08-24)
+
+`GaloisForLFunctions.HTGeometry.FullSectorPolarizationLaw` now proves `(4)` and `(5)` as exact
+quadratic-form inequalities, plus the induced unit norm floor, infinite algebraic rank,
+noncompactness, and distance at least one from every compact perturbation.
+`GaloisForLFunctions.RHTower.FullSectorPolarizationEssentialNorm` proves
+`essentialNorm G ≥ 1` and exclusion from every positive Schatten class.  Both leaves pass direct
+Lean checking and targeted leaf builds; new declarations use only standard Lean
+`propext`/choice/quotient axioms.
+
+Card remains Stage 2.  Exact phase/Stirling asymptotics `(1)`--`(3)`, infinite alternating sign
+intervals, and the literal even weighted-`L²` Krein-index construction are still unformalized.

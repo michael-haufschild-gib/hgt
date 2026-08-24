@@ -6333,3 +6333,202 @@ Construct from the literal Möbius–theta/Euler–Gamma source, before divisor 
 5. a provenance-continuity theorem preventing the totalization from adding the vertical ambiguity already exposed by the nonclosable normalized graph.
 
 Step 3 then feeds `xiPrimePoissonReflectionSewing_iff_internalOnly`; prime-Poisson superselection forces absence of transverse defect while preserving the internal channel.  Construction of Steps 1–5 remains open.
+
+## 2026-08-24 — Cyclic arithmetic dilation rigidity
+
+### No-gos forced by corpus
+
+335. **Bare occupation-label copying is not a selector.**
+     Full prime-occupation basis has a canonical diagonal isometry
+     `delta_nu ↦ delta_(nu,nu)`, but copying a classical label only constructs a coupling. Mutually
+     singular reflected marginals can still have a coupling. Copy becomes RH-bearing only if both
+     descendants are proved to be source-minimal realizations of the same completely positive map;
+     otherwise desired source-linear sewing has been assumed rather than derived.
+
+336. **Scalar functional-equation/Schwarz gluing is gauge-trivial.**
+     `FESchwarzGermGluingTrivialization` shows scalar dual-germ identifications admit arbitrary
+     nonvanishing gauge. Uniqueness of scalar gluing, phase, or line-bundle descent cannot be the
+     higher law.
+
+337. **Group-like, dagger, compact-circle, and unitary landing restate the wall.**
+     Existing group-like landing classifiers already make required unitarity equivalent to the
+     critical line. Repackaging reflection as a Hopf, Frobenius, dagger, or unitary law does not
+     create an arithmetic reason the law must hold.
+
+338. **Generic purification permits hidden charge.**
+     Hawking/Hartle--Hawking double-KMS endpoint admits independent conjugate sectors. A nonminimal
+     common environment can silently carry transverse charge, so existence of a purification or
+     doubled state does not imply reflected-sector equivalence. Source cyclicity and minimality are
+     indispensable, not technical conveniences.
+
+339. **Separate Hilbert completions lose the source.**
+     `MobiusThetaAdaptivePrimeNormalHilbertNoGo` forbids the needed bounded-below passage from the
+     infinite `l1` source into independently completed Hilbert marginals. Channel must be defined
+     first on common prime-cylinder operator system and only then dilated.
+
+340. **Closed graph admission is already an RH classifier.**
+     `DeningerMeyerHalfDensityXiGraphClosure` makes closability/single-valuedness of literal Xi
+     evaluation graph equivalent to critical-line membership and exhibits maximal vertical failure
+     off line. New route may derive a closed graph from a bounded unitary intertwiner; it may not
+     postulate graph closure.
+
+341. **Reduced positive physicalization deletes the second-order defect.**
+     In second Cartier source, with `F=q-1` and `R=q^-1-1`, reflection gives
+     `R=-F+F^2 (mod F^3)`. Invariant `G=F+R=F^2` is nonzero and square-zero. Any reduced, special
+     Hilbertian-Frobenius, or coefficient-insensitive positive quotient kills `G`, while corpus shows
+     additive coefficient-faithful moderation of it is itself critical-line equivalent. Nilpotent
+     data must survive until after source constraint is applied.
+
+342. **One-particle equality is below compound threshold.**
+     A state, vector, pairwise Gram matrix, or ordinary GNS correspondence forgets the independent
+     pure third compound exposed by `GammaSewnXiShiftTangentHilbertKernel`. Proposed identity must
+     hold at every matrix amplification of finite prime-cylinder system. Complete positivity is
+     structural rather than decorative.
+
+### New rabbit hole: Cyclic Arithmetic Dilation Rigidity (CADR)
+
+Reinterpretation: zeros are not produced by a spectrum, flow, force, or soliton equation. A zero is
+a nonzero internal defect of one completed arithmetic channel. Completion forces that single defect
+to have two reflected realizations. A transverse zero would make those two realizations inequivalent
+even though both are minimal realizations of same channel. Off-line zero is therefore a **failure of
+unique arithmetic realization**: an attempted duplication of one source event into two
+superselection charges.
+
+Literal `1 → 2` occurs in two linked places:
+
+1. source reflection has one first-order orientation but two second-order lifts,
+   `R=-F+F^2`; their residual `G=F+R=F^2 != 0`, `G^2=0`, is internal defect;
+2. prime-occupation source is copied before observation, and one resulting completely positive
+   defect channel is presented through functional-equation and Schwarz descendants.
+
+This is a constraint, not a flow. No time, Hamiltonian, equilibrium, minimization, or asymptotic
+relaxation is used. Proposed law is uniqueness of a source-minimal realization.
+
+Let `A_cyl` be the inductive operator system of finite prime-valuation cylinder observables. Seek a
+zero-independent analytic, completely positive channel-valued section
+
+`Phi : completed Möbius–theta source → CP(A_cyl, B(E))`
+
+constructed from target-free prime-normal rungs and canonical occupation-label copy. For a Xi
+divisor `rho` of order `m`, source differentiation selects a nonzero internal defect channel
+`J_rho`; no horizontal grade or fitted marginal may enter its definition. Decisive theorem is:
+
+> **Arithmetic double-realization theorem.** Functional-equation and Schwarz source maps give two
+> minimal Stinespring realizations of same fully amplified nonzero channel `J_rho`, and their
+> representation parts are exactly reflected prime-Poisson multiplication representations at
+> grades `sigma-1/2` and `1/2-sigma`.
+
+Minimal Stinespring uniqueness then supplies a bounded unitary intertwiner. Its graph is
+automatically nonzero, closed, everywhere defined, single-valued, and linear over common prime
+source algebra. This is precisely `XiPrimePoissonReflectionSewing`; existing superselection gives
+`sigma=1/2`. Multiplicity and internal nilpotent class remain unrestricted.
+
+### Falsification gates
+
+CADR survives only if all gates pass in this order:
+
+1. define `Phi` and its finite amplifications before selecting a zero;
+2. verify equality of two channel presentations on every finite prime-cylinder generator, retaining
+   pure third and higher compounds;
+3. derive, rather than assume, source cyclicity/minimality from literal Möbius–theta rungs;
+4. identify two representation parts with existing prime-Poisson sectors;
+5. obtain sewing from minimal-dilation uniqueness and only then invoke superselection.
+
+If channel equality uses divisor displacement, if it holds only after scalarization, or if either
+realization contains a non-source-generated ancilla, retire CADR. Those failures make it another
+endpoint reformulation. Current open core is Gate 2: a finite-cylinder calculation must show whether
+functional-equation and Schwarz descendants are genuinely same source channel.
+
+## 2026-08-24 — CADR correction and derived arithmetic non-bifurcation
+
+343. **Complete positivity erases the very defect CADR needs.**
+     The physical two-leg landing is multiplication by a generally complex first Xi jet. It is not
+     a positive map. Replacing it by `L* (·) L` makes a CP channel but removes global phase and the
+     reflection-odd second-Cartier orientation. Thus the CP/Stinespring form of CADR is retired.
+     Complete boundedness could retain orientation, but by itself supplies no source theorem.
+
+344. **Absolute formal unramifiedness is already an RH receiver.**
+     `XiTransverseDualNumberArc` proves that the canonical transverse image algebra is formally
+     unramified exactly on the critical line, while preserving an independent internal nilpotent at
+     every zero. Declaring that image formally unramified is therefore circular.
+
+345. **Finite-stage étaleness alone cannot cross completion.**
+     Prime-cylinder algebras are finite products and hence formally étale, but corpus completion
+     phantoms show that exactness and uniqueness at every finite observer do not imply uniqueness in
+     the completion. Any route that jumps directly from finite products to the Xi completion repeats
+     Route R's main no-go.
+
+### Committed route: Derived Arithmetic Non-Bifurcation (DANB)
+
+Reframe one Xi divisor of multiplicity `m` by putting its legitimate internal jet in the base
+
+`J_m = C[epsilon]/(epsilon^(m+1))`.
+
+For finite prime support `P` and valuation cutoff `d`, define the source algebra
+
+`A_(P,d,m) = product_(nu : P → {0,...,d}) J_m`.
+
+This algebra contains internal multiplicity but no transverse infinitesimal freedom: it is finite
+étale over `J_m`. Reflection completion now attempts to turn one reduced source point into two
+`J_m`-relative lifts, the functional-equation lift and the Schwarz lift. A distinct pair agreeing
+after forgetting a nilpotent transverse ideal is an arithmetic bifurcation.
+
+New universal principle:
+
+> **Source-conservative completion law.** Literal Möbius–theta/Euler–Gamma completion creates no
+> reflection-normal cotangent direction beyond the internal divisor jet already present in its
+> base. Equivalently, its reflection-odd relative cotangent complex is acyclic, or its two
+> source-compatible lifts across every transverse nilpotent thickening are unique.
+
+This is `constraint not a flow`. No evolution creates zeros. The forbidden event is `1 → 2`: one
+prime-labelled internal defect branches into two different completed infinitesimal histories. A
+critical-line zero is an allowed internal nilpotent. An off-line zero is a new transverse tangent
+manufactured by completion, hence an error.
+
+Corpus shadows of one proposed class:
+
+- second-Cartier ghost is its nonreduced local representative;
+- completion phantom and TailRoos escape are its derived-limit representatives;
+- Noether charge is its pairing with a derivation;
+- nonclosable vertical graph is its functional-analytic representative;
+- Hawking/Bogoliubov pair creation is its doubled-channel representative;
+- prime-Poisson disjointness is its superselection representative;
+- ABHN local data test scalar extensions of the class but cannot alone kill its completed global
+  provenance;
+- classical reflection, spectral, positivity, and kernel criteria are lower-information receivers
+  obtained after forgetting source and cotangent provenance.
+
+### New Lean finite-stage theorem
+
+Added `formal/GaloisForLFunctions/RHTower/PrimeCylinderRelativeEtale.lean`:
+
+- `InternalJetPrimeCylinderAlgebra` is the finite valuation-cylinder algebra over arbitrary internal
+  truncated jet order;
+- `internalJetPrimeCylinderAlgebra_formallyEtale` proves finite discrete occupation labels add no
+  infinitesimal direction relative to that nonreduced base;
+- `ArithmeticCylinderTransverseBifurcation` isolates two distinct lifts invisible after a
+  nilpotent transverse quotient;
+- `no_arithmeticCylinderTransverseBifurcation` proves such bifurcation impossible at every finite
+  prime/depth stage.
+
+Target build passed `3075/3075`; theorem axioms are `[propext, Classical.choice, Quot.sound]`.
+RHTower umbrella rebuild currently fails in unrelated shared work: duplicate declaration
+`RHTower.norm_zetaChi_eq` between `ZetaChiStripGrowth` and `RouteBOfflineDomination`.
+
+### Exact open core and kill test
+
+Construct the literal prime-valuation pro-system and identify Möbius–theta/Euler–Gamma completion as
+its coefficient-faithful derived completion over `J_m`. Then prove the reflection-odd relative
+cotangent complex remains zero under that completion. Sufficient technical forms include a
+source-specific pro-Tor-unital/weak-proregular continuity theorem or direct uniqueness of compatible
+nilpotent lifts with no `lim^1` class.
+
+At an Xi divisor, existing pre-divisor and Xi transverse-dual-number theorems turn any off-line
+placement into a nonzero reflection-odd lift difference. Derived non-bifurcation would force that
+difference to vanish and hence force `Re(rho)=1/2`.
+
+Kill DANB immediately if the actual completion topology has a nonzero reflection-odd derived
+cotangent class constructed from the literal source, or if the FE/Schwarz maps fail to be lifts over
+the same internal jet base before divisor displacement is read. Do not replace the completion
+theorem by finite-stage uniqueness, density, pointwise convergence, or an RH-equivalent formal
+unramified admission.

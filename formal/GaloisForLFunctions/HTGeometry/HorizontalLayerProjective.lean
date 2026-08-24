@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.HorizontalLayerBlaschke
 import GaloisForLFunctions.HTGeometry.ProjectiveCauchyDensityControl
+import GaloisForLFunctions.HTGeometry.ProjectiveBoundary
 
 open Complex Filter Topology
 open scoped OnePoint
@@ -7,8 +8,6 @@ open scoped OnePoint
 noncomputable section
 
 namespace GaloisForLFunctions.HTGeometry
-
-abbrev ProjectiveBoundary := C(OnePoint ℝ, ℂ)
 
 /-- Totalized projective resolvent. At nonreal poles this is the literal Cauchy resolvent;
 at real poles it is set to zero. Horizontal-layer arguments only use nonreal poles. -/

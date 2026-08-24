@@ -33,6 +33,20 @@ The functional-equation partner has a coefficient-faithful asymmetry at every Bo
 Thus equality of the real partner growth rates is exactly critical-line placement, already at
 one grade.  Requiring this balance at every actual Xi zero is equivalent to RH.
 
+There is also a phase-sensitive survivor.  The source-derived recoil edge
+
+`E_k(s) = (s+2*k)(s+2*k+1)`
+
+and its functional-equation partner have closed-history holonomy
+
+`H_k(s) = E_k(s) E_k(1-s)`.
+
+For nonreal `s` in the critical strip, `Im H_k(s)=0` exactly when `Re(s)=1/2`.  More strongly,
+no positive diagonal change of recoil-grade metric can make the two edges adjoints away from the
+critical line.  This eliminates rate-level KMS and arbitrary metric reweighting as ways to hide
+the phase defect.  It still does not identify functional-equation reversal with a physical CTP
+reverse transition; that missing Hawking source theorem is not assumed.
+
 This is a new Hawking-specific reporter, not an RH proof.  Euler's exact hypergeometric partner
 gauge has real squeeze `(1/2-Re(s))*log(1-z)`.  Its canonical doubled `SU(1,1)` completion therefore
 has zero pair mixing exactly on the critical line and nonzero pair mixing in every tilted sector.
@@ -181,6 +195,118 @@ def schwarzschildParikhWilczekFirstWindingBorelGrowthRatio
     (s : ℂ) (k : ℕ) : ℂ :=
   ((s + 2 * (k : ℂ)) * (s + 2 * (k : ℂ) + 1)) /
     (((k + 1 : ℕ) : ℂ) ^ 2)
+
+/-- Numerator of one source-derived recoil-grade edge.  Removing the positive factorial
+normalization preserves its forward/reverse phase and diagonal symmetrizability. -/
+def schwarzschildParikhWilczekBorelRecoilEdge
+    (s : ℂ) (k : ℕ) : ℂ :=
+  (s + 2 * (k : ℂ)) * (s + 2 * (k : ℂ) + 1)
+
+/-- Gauge-invariant closed-history phase obtained by traversing one forward recoil edge and its
+functional-equation reverse. -/
+def schwarzschildParikhWilczekBorelRecoilHolonomy
+    (s : ℂ) (k : ℕ) : ℂ :=
+  schwarzschildParikhWilczekBorelRecoilEdge s k *
+    schwarzschildParikhWilczekBorelRecoilEdge (1 - s) k
+
+/-- Exact phase-sensitive recoil law.  Unlike KMS rates or particle number, its imaginary part is
+odd in both height and transverse displacement. -/
+theorem schwarzschildParikhWilczekBorelRecoilHolonomy_im
+    (s : ℂ) (k : ℕ) :
+    (schwarzschildParikhWilczekBorelRecoilHolonomy s k).im =
+      -2 * s.im * (2 * s.re - 1) *
+        ((2 * (k : ℝ) + s.re + 1 / 2) *
+            (2 * (k : ℝ) + 3 / 2 - s.re) +
+          s.im ^ 2 + 1 / 4) := by
+  rw [schwarzschildParikhWilczekBorelRecoilHolonomy,
+    schwarzschildParikhWilczekBorelRecoilEdge,
+    schwarzschildParikhWilczekBorelRecoilEdge]
+  norm_num [Complex.mul_re, Complex.mul_im]
+  ring
+
+/-- At every nonreal point of the critical strip, one recoil edge has zero closed-history phase
+exactly on the critical line. -/
+theorem schwarzschildParikhWilczekBorelRecoilHolonomy_im_eq_zero_iff
+    (s : ℂ) (k : ℕ) (hs0 : 0 < s.re) (hs1 : s.re < 1)
+    (hsim : s.im ≠ 0) :
+    (schwarzschildParikhWilczekBorelRecoilHolonomy s k).im = 0 ↔
+      s.re = 1 / 2 := by
+  rw [schwarzschildParikhWilczekBorelRecoilHolonomy_im]
+  have hleft : 0 < 2 * (k : ℝ) + s.re + 1 / 2 := by positivity
+  have hright : 0 < 2 * (k : ℝ) + 3 / 2 - s.re := by
+    have hk : 0 ≤ (k : ℝ) := Nat.cast_nonneg k
+    linarith
+  have hfactor : 0 <
+      (2 * (k : ℝ) + s.re + 1 / 2) *
+          (2 * (k : ℝ) + 3 / 2 - s.re) +
+        s.im ^ 2 + 1 / 4 := by positivity
+  constructor
+  · intro h
+    have hfirst : -2 * s.im ≠ 0 := mul_ne_zero (by norm_num) hsim
+    have hfactor_ne :
+        (2 * (k : ℝ) + s.re + 1 / 2) *
+              (2 * (k : ℝ) + 3 / 2 - s.re) +
+            s.im ^ 2 + 1 / 4 ≠ 0 := ne_of_gt hfactor
+    have hcenter : 2 * s.re - 1 = 0 := by
+      apply (mul_eq_zero.mp ?_).resolve_right hfactor_ne
+      apply (mul_eq_zero.mp ?_).resolve_left hfirst
+      simpa [mul_assoc] using h
+    linarith
+  · intro h
+    rw [h]
+    norm_num
+
+/-- Positive-diagonal detailed-balance condition for one recoil edge: the reverse edge equals a
+positive metric ratio times the adjoint forward edge.  This is the exact local criterion for a
+complex tridiagonal ladder to be diagonally similar to a Hermitian one. -/
+def SchwarzschildParikhWilczekBorelRecoilEdgePositivelySymmetrizable
+    (s : ℂ) (k : ℕ) : Prop :=
+  ∃ q : ℝ, 0 < q ∧
+    schwarzschildParikhWilczekBorelRecoilEdge (1 - s) k =
+      (q : ℂ) *
+        (starRingEnd ℂ) (schwarzschildParikhWilczekBorelRecoilEdge s k)
+
+/-- A positive diagonal metric cannot remove closed-history recoil phase. -/
+theorem schwarzschildParikhWilczekBorelRecoilHolonomy_im_eq_zero_of_symmetrizable
+    {s : ℂ} {k : ℕ}
+    (h : SchwarzschildParikhWilczekBorelRecoilEdgePositivelySymmetrizable s k) :
+    (schwarzschildParikhWilczekBorelRecoilHolonomy s k).im = 0 := by
+  obtain ⟨q, _hq, hqedge⟩ := h
+  rw [schwarzschildParikhWilczekBorelRecoilHolonomy, hqedge]
+  norm_num [Complex.mul_im, Complex.mul_re]
+  ring
+
+/-- On the critical line functional-equation reversal is literal Hermitian adjunction, with unit
+metric ratio. -/
+theorem schwarzschildParikhWilczekBorelRecoilEdge_symmetrizable_of_re_eq_half
+    {s : ℂ} {k : ℕ} (hs : s.re = 1 / 2) :
+    SchwarzschildParikhWilczekBorelRecoilEdgePositivelySymmetrizable s k := by
+  refine ⟨1, zero_lt_one, ?_⟩
+  have hpartner : 1 - s = (starRingEnd ℂ) s := by
+    apply Complex.ext
+    · simp
+      linarith
+    · simp
+  rw [hpartner]
+  apply Complex.ext <;>
+    norm_num [schwarzschildParikhWilczekBorelRecoilEdge,
+      Complex.mul_re, Complex.mul_im]
+
+/-- **Positive-metric recoil classification.**  At any nonreal critical-strip parameter, even an
+arbitrary positive diagonal change of grade metric makes the forward/reverse Parikh--Wilczek edge
+Hermitian exactly on the critical line. -/
+theorem schwarzschildParikhWilczekBorelRecoilEdge_symmetrizable_iff
+    (s : ℂ) (k : ℕ) (hs0 : 0 < s.re) (hs1 : s.re < 1)
+    (hsim : s.im ≠ 0) :
+    SchwarzschildParikhWilczekBorelRecoilEdgePositivelySymmetrizable s k ↔
+      s.re = 1 / 2 := by
+  constructor
+  · intro h
+    exact
+      (schwarzschildParikhWilczekBorelRecoilHolonomy_im_eq_zero_iff
+        s k hs0 hs1 hsim).mp
+        (schwarzschildParikhWilczekBorelRecoilHolonomy_im_eq_zero_of_symmetrizable h)
+  · exact schwarzschildParikhWilczekBorelRecoilEdge_symmetrizable_of_re_eq_half
 
 /-- Exact first-winding Borel recurrence.  Positive real part keeps both Gamma recurrence steps
 away from their totalized poles. -/

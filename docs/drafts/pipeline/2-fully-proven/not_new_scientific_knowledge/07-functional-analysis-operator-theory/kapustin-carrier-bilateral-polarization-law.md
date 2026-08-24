@@ -387,3 +387,18 @@ those three readings and canonically produces the full-sector metric.
 - 2026-07-11 -- weighted-tail and divisor-faithful readings audited: the former decouples and the
   latter is RH-equivalent.  The proposed pointed incidence metric moved to a terminal route card;
   only a new pre-divisor quantized source incidence can reopen it.
+
+## Formalization progress (2026-08-24)
+
+The positive full-sector construction law `(17)` and all operator-ideal consequences in items
+1--2 are now unconditional Lean theorems:
+
+- `GaloisForLFunctions.HTGeometry.FullSectorPolarizationLaw` proves the exact quadratic compression
+  floor, its norm lower bound, noncompactness on an infinite-dimensional closed sign sector,
+  infinite algebraic rank, and the sharp distance `1 ≤ ‖G - K‖` from every compact `K`.
+- `GaloisForLFunctions.RHTower.FullSectorPolarizationEssentialNorm` identifies that uniform compact
+  floor with `1 ≤ essentialNorm G` and excludes every `MemSchattenClass p G` for `0 < p`.
+
+Both leaves pass direct Lean checking and targeted leaf builds.  The card remains Stage 2: Theorem A
+(the universal reciprocal-gamma Toeplitz sign theorem), its measurable Hardy-boundary setup, and
+Theorem B's application to the literal even weighted `L²` Kapustin carrier are not yet formalized.

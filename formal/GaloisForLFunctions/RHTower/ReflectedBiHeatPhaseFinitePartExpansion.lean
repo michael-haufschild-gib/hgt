@@ -93,7 +93,6 @@ theorem reflectedBiHeatRightRaw_mul_heatMomentTerm
         ((x : ℂ) ^ (-P.z / 2)) := by
   have havg := averagedLead_mul_heatMomentTerm (s := 1 - P.z) hx
   have harg : (1 - P.z) - 1 = -P.z := by ring
-  have hexp : ((1 - P.z) - 1) / 2 = -P.z / 2 := by ring
   rw [harg] at havg
   calc
     reflectedBiHeatRightRawCoefficient P.z * heatMomentTerm x (-P.z) =
@@ -103,11 +102,11 @@ theorem reflectedBiHeatRightRaw_mul_heatMomentTerm
               rw [reflectedBiHeatRightRawCoefficient]
               ring
     _ = riemannZeta P.z *
-          (heatEchoC (1 - P.z) * ((x : ℂ) ^ (((1 - P.z) - 1) / 2))) := by
+          (heatEchoC (1 - P.z) * ((x : ℂ) ^ (-P.z / 2))) := by
             rw [havg]
     _ = reflectedBiHeatRightCrossCoefficient P.z *
           ((x : ℂ) ^ (-P.z / 2)) := by
-            rw [reflectedBiHeatRightCrossCoefficient, hexp]
+            rw [reflectedBiHeatRightCrossCoefficient]
             ring
     _ = (1 / 2 * reflectedCompletedLambda P.z) *
           ((x : ℂ) ^ (-P.z / 2)) := by
@@ -138,7 +137,7 @@ theorem tendsto_reflectedBiHeatPhaseFinitePart_sub_cardExpansion
   rw [zero_add, zero_add] at hsum
   refine hsum.congr' ?_
   filter_upwards [self_mem_nhdsWithin] with x hx
-  rw [reflectedBiHeatPhaseGaussianModel_eq_cardExpansion P hx]
+  rw [← reflectedBiHeatPhaseGaussianModel_eq_cardExpansion P hx]
   rw [reflectedBiHeatPhaseFinitePart, reflectedBiHeatPhaseGaussianModel]
   ring
 

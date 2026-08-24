@@ -194,10 +194,13 @@ theorem memLp_cauchyKernel {w : ℂ} (hw : w.im ≠ 0) :
   filter_upwards with ξ
   exact (norm_sq_cauchyKernel w ξ).symm
 
-/-- **The Cauchy kernel below the axis lies in the Hardy space.** -/
-theorem cauchyKernel_mem_hardyL2 {w : ℂ} (hw : w.im < 0) :
-    (memLp_cauchyKernel (ne_of_lt hw)).toLp _ ∈ hardyL2 := by
-  refine ⟨(memLp_cauchyDatum hw).toLp _, cauchyDatum_mem_lowerHalfLineL2 hw, ?_⟩
+/-- The Cauchy kernel below the axis is the `L²` Fourier transform of the one-sided exponential
+`cauchyDatum`. -/
+theorem fourierTransform_cauchyDatum {w : ℂ} (hw : w.im < 0) :
+    ((MeasureTheory.Lp.fourierTransformₗᵢ ℝ ℂ).toLinearEquiv.toLinearMap
+        ((memLp_cauchyDatum hw).toLp (cauchyDatum w)) : Lp ℂ 2 (volume : Measure ℝ))
+      = (memLp_cauchyKernel (ne_of_lt hw)).toLp
+          (fun ξ : ℝ => (((ξ : ℝ) : ℂ) - w)⁻¹) := by
   have hint : Integrable (((memLp_cauchyDatum hw).toLp (cauchyDatum w)) : ℝ → ℂ) :=
     (integrable_cauchyDatum hw).congr (memLp_cauchyDatum hw).coeFn_toLp.symm
   refine MeasureTheory.Lp.ext ?_
@@ -223,6 +226,12 @@ theorem cauchyKernel_mem_hardyL2 {w : ℂ} (hw : w.im < 0) :
           (((memLp_cauchyDatum hw).toLp (cauchyDatum w)) : ℝ → ℂ))) ξ := hbridge
   filter_upwards [hbridge', (memLp_cauchyKernel (ne_of_lt hw)).coeFn_toLp] with ξ h1 h2
   rw [h1, hclass ξ, h2]
+
+/-- **The Cauchy kernel below the axis lies in the Hardy space.** -/
+theorem cauchyKernel_mem_hardyL2 {w : ℂ} (hw : w.im < 0) :
+    (memLp_cauchyKernel (ne_of_lt hw)).toLp _ ∈ hardyL2 := by
+  exact ⟨(memLp_cauchyDatum hw).toLp _, cauchyDatum_mem_lowerHalfLineL2 hw,
+    fourierTransform_cauchyDatum hw⟩
 
 
 end RHTower

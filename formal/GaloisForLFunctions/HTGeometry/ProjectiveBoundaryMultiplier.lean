@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.OnePointPullbackRigidity
+import GaloisForLFunctions.HTGeometry.ProjectiveBoundary
 import GaloisForLFunctions.HTGeometry.LpBoundedMultiplier
 
 open Complex MeasureTheory Topology
@@ -8,7 +8,6 @@ noncomputable section
 
 namespace GaloisForLFunctions.HTGeometry
 
-abbrev ProjectiveBoundary := C(OnePoint ℝ, ℂ)
 abbrev ProjectiveBoundaryL2 := Lp ℂ 2 (volume : Measure ℝ)
 
 def projectiveBoundaryMul (F : ProjectiveBoundary) :
@@ -27,6 +26,16 @@ theorem coeFn_projectiveBoundaryMul (F : ProjectiveBoundary)
     (F.continuous.measurable.comp measurable_onePoint_some)
     (norm_nonneg F)
     (fun x => (ContinuousMap.norm_le F (norm_nonneg F)).mp le_rfl (x : OnePoint ℝ)) f
+
+theorem projectiveBoundaryMul_one :
+    projectiveBoundaryMul (1 : ProjectiveBoundary) =
+      ContinuousLinearMap.id ℂ ProjectiveBoundaryL2 := by
+  apply ContinuousLinearMap.ext
+  intro f
+  apply MeasureTheory.Lp.ext
+  filter_upwards [coeFn_projectiveBoundaryMul (1 : ProjectiveBoundary) f] with x hx
+  rw [hx]
+  simp
 
 theorem projectiveBoundaryMul_add (F G : ProjectiveBoundary) :
     projectiveBoundaryMul (F + G) = projectiveBoundaryMul F + projectiveBoundaryMul G := by

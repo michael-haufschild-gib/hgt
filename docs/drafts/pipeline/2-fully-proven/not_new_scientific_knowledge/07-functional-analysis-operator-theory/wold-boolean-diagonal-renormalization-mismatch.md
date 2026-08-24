@@ -421,12 +421,30 @@ RH construction and forces a genuinely two-record totalization.
 - exact Hilbert--Schmidt norm identity;
 - bounded left/right diagonal actions, centrality, and exact vector-state formula;
 - normalized finite occupation point weights;
-- finite occupation thermofield kernel, unit norm, centrality, and exact bounded-observable state.
+- finite occupation thermofield kernel, unit norm, centrality, and exact bounded-observable state;
+- canonical disjoint-packet pure-tensor shuffle, including norm, coefficient, kernel, and inner
+  product factorization;
+- local geometric unit half-densities and exact finite-product Hellinger overlap `(24)`.
+- canonical reindexing from finite support to literal `Ω_P = ℕ₀^P`, exact prime probability law
+  `(17)`, and literal finite-prime unit/state formulas.
+- `GaloisForLFunctions.RHTower.WoldBooleanAcceleratedType` proves the exact PNT logarithmic
+  comparison and accelerated limit
+  `a_N * ell2 (2 ^ Nat.primeCounting N) -> exp (-EulerGamma)` from `(14)`.
+- `GaloisForLFunctions.HTGeometry.FiniteBooleanDiagonalNormalization` proves the finite equality
+  cylinder mass `(2)`, exact reporter identity `(5)`, stability after adjoining ignored Boolean
+  coordinates, and forced scalar asymptotic `(7)`--`(8)` from total mass.
+- `GaloisForLFunctions.HTGeometry.BooleanSoninFullHistory` already supplies the labelled full
+  Boolean history contraction, exact distinguished-ray energy, and adjoint-mate fracture.
+- `GaloisForLFunctions.HTGeometry.PrimeValuationKakutaniSector` already proves that the twisted and
+  critical infinite prime product measures are equivalent exactly at `c = 0`.
+- `GaloisForLFunctions.RHTower.WoldBooleanFiniteReesVanishing` proves `(11)`--`(13)` exactly:
+  for every eventually positive `c_N` with `log⁺(c_N) = O(a_N⁻ᵋ)` for one fixed `K`,
+  `c_N / 2 ^ Nat.primeCounting N → 0`.
 
-Targeted leaf build passes.  Every new theorem has only `propext`, `Classical.choice`, and
+Targeted leaf builds pass.  Every new theorem has only `propext`, `Classical.choice`, and
 `Quot.sound` in its axiom report.
 
-Card remains Stage 2.  Exact remaining Lean obligations include the canonical finite-function
-carrier equivalence and disjoint-packet tensor factorization, finite Hellinger overlap and
-Kakutani-sector criterion, cylinder diagonal normalization/weak-* limit, Mertens/PNT comparison,
-accelerated Boolean type, and labelled Boolean--Sonin history coupling.
+Card remains Stage 2.  Exact remaining Lean obligations include the infinite
+incomplete-tensor-product realization and its vector-sector/Kakutani bridge, cylinder diagonal
+weak-* limit for all continuous reporters, and their identification with the card's canonical
+Haar diagonal coupling.

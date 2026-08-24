@@ -4,7 +4,7 @@
 
 This document is a present-tense topology of the RH research formalized in HTGeometry, HilbertMetric, and RHTower. It records live architectures, exact open cores, candidate openings, shared structure, and terminal no-gos. It is not chronology, research diary, or catalogue of every theorem.
 
-Formal-corpus cutoff: commit fa4cc5caba8634645ff3b624ca5af6140be8c0ed, plus complete declaration-index review of Lean working-tree additions present on 24 August 2026. Cards and papers are not evidence here. Incomplete intended theorems are not reported as proved. Working-tree results are identified where they affect topology.
+Formal-corpus cutoff: commit 388ae1ea2b50ee2ea7063bd4f418655ce9848988, plus declaration-index review of Lean working-tree additions present on 24 August 2026. Cards and papers are not evidence here. Incomplete intended theorems are not reported as proved.
 
 Status language:
 
@@ -24,9 +24,9 @@ The corpus supports **23 live producer architectures**:
 
 CCM-FU, C1, D2, E, NB/BD, F2, STC, CSB, G, G-CE, L, O, P, Q, CLG/TTF, HB, SP-E, SCE, T1, T2, U, HC, SV2.
 
-It supports **26 candidate openings**:
+It supports **28 candidate openings**:
 
-TK, FD2, BSH, CFI, UEB, PSRC, PBM, SC, PPM, IRK, OPUC, HJ, BW, MSC, PEP, EWQ-V, PCS, SEC, LI, BPC, MPLF, W1C, TCD, JAS, K-RVM, FZZ-P.
+TK, FD2, BSH, CFI, UEB, PSRC, PBM, SC, PPM, IRK, OPUC, HJ, BW, MSC, PEP, EWQ-V, PCS, SEC, LI, BPC, MPLF, W1C, TCD, JAS, K-RVM, FZZ-P, RBH, PW-B.
 
 Route R is terminal as an independent producer. Its surviving completion, corona, cubical-support, and source-ancestry invariants feed candidate JAS, which changes the interface rather than reviving Route R. Route K is terminal in its original quadratic form; K-RVM is a different infinite paired operator candidate. Fixed-scale FZZ and Vaidya selection are blind; FZZ-P survives only through universal horizon-dilation completeness.
 
@@ -178,7 +178,7 @@ Route R is terminal as an independent producer. Its surviving completion, corona
 
 **Open core.** First prove the quadratic self-polarized scalar lands coefficient-faithfully in the linear actual-head/restricted-Weil block, including spectral integration and collar control. Then classify all near-ground sequences and exclude both compact escape and radical competitors so the explicit source direction controls the whole ground space.
 
-**Boundary.** More seed asymptotics, finite real-zero determinants, or upper Rayleigh bounds cannot give the needed lower floor. FiniteBlaschkeGeneralizedSchurInertia and FiniteBlaschkeAdjointDefect supply exact finite negative-index receiver geometry under Hardy coprimality, not arithmetic ground selection.
+**Boundary.** More seed asymptotics, finite real-zero determinants, or upper Rayleigh bounds cannot give the needed lower floor. Finite-Blaschke inertia, literal kernel negative squares, exact leakage rank, and projective horizontal-layer limits close finite receiver geometry under Hardy coprimality, not arithmetic ground selection.
 
 ### P — cubic prime–Gamma collision
 
@@ -214,11 +214,11 @@ Route R is terminal as an independent producer. Its surviving completion, corona
 
 **Architecture.** Literal theta-cusp mirror source → canonical rank-one causal Hardy defect and two-input pseudo-unitary scattering → inverse-Cayley spectral square → squared-Euler selective three-shell kernel → early-time physical passivity/no-dark law → RH.
 
-**Proved frontier.** Canonical causal defect line; rapidity group, inverse, and Krein scattering law; inverse-Cayley weld; exact equality with the selective squared-Euler kernel; and eventual negative three-shell determinant for every off-critical orbit are formal. Passive remote-edge repair is classified and must introduce directed shell mixing. Canonical positive repair has unbounded endpoint load off line. Horizon-winding and redshift receivers are exact.
+**Proved frontier.** Canonical causal defect line; rapidity group, inverse, and Krein scattering law; inverse-Cayley weld; exact equality with the selective squared-Euler kernel; and eventual negative three-shell determinant for every off-critical orbit are formal. Passive remote-edge repair is classified and must introduce directed shell mixing. Canonical positive repair has unbounded endpoint load off line. Horizon-winding and redshift receivers are exact. The Parikh–Wilczek first-winding Borel recurrence and partner-growth asymmetry supply a separate Hawking-specific receiver, PW-B.
 
 **Open core.** Derive from the literal theta dynamics a zero-recoil/early-time law excluding the negative canonical three-shell chamber—equivalently a bounded normalized edge load, a coefficient-faithful no-dark law, or an equally strong source passivity theorem.
 
-**Boundary.** Exact recoil Gaussian dephasing eventually passivates every shell even off line. Schwarzschild mass dilation preserves onset order and makes loads summable. Generic passivity, common modular gain, ordinary L2, fixed temperature, fixed scale, and self-similar evaporation are blind.
+**Boundary.** Exact recoil Gaussian dephasing eventually passivates every shell even off line. Schwarzschild mass dilation preserves onset order and makes loads summable. Generic passivity, common modular gain, ordinary L2, fixed temperature, fixed scale, self-similar evaporation, and bare Bogoliubov norm conservation are blind.
 
 ### SP-E — signed prime dilation versus continuum
 
@@ -284,11 +284,11 @@ Route R is terminal as an independent producer. Its surviving completion, corona
 
 **Architecture.** Literal Suzuki energy space → paired self-adjoint characteristics → bounded projective normal family → global Xi projective target → corrected two-chart spherical limit → RH.
 
-**Proved frontier.** Canonical subsequences, actual first defect angle, whole-upper-half-plane Schur limits, point evaluation at every Xi zero, and exact RH equivalence of the V(0) mass-plus-peak condition are formal.
+**Proved frontier.** Canonical subsequences, actual first defect angle, whole-upper-half-plane Schur limits, point evaluation at every Xi zero, and exact RH equivalence of the V(0) mass-plus-peak condition are formal. SuzukiShiftedXiDivisorFactorization splits the Xi canonical product at every shift, retains full selected multiplicity, identifies every upper-half-plane zero of the shifted Suzuki denominator with a selected Xi divisor copy, and gives an entire nonvanishing complementary source factor at each selected point.
 
-**Open core.** Identify actual first and strictly negative second target coordinates, prove the full global target identity, reciprocal-chart convergence, and pole zero-freeness.
+**Open core.** Identify actual first and strictly negative second target coordinates, prove the full global target identity and reciprocal-chart convergence, and establish shift nonexceptionality so selected denominator zeros are not numerator zeros.
 
-**Boundary.** The old all-plane entire target has an unavoidable pole; finite holomorphic gauges cannot remove it. The route survives only in the corrected two-chart spherical formulation.
+**Boundary.** A single-chart all-plane entire target has an unavoidable pole; finite holomorphic gauges cannot remove it. The route survives only in the two-chart spherical formulation.
 
 ## Candidate openings
 
@@ -322,6 +322,8 @@ Candidates are not counted as live until a literal-source handoff and divisor-ex
 | JAS | Bifiltered cubical joint-ancestry completion with infinite reflected polarization. | Construct a zero-independent polarization on the synchronized finite-support/valuation diagram whose prime-Poisson first-jet shadow is closed, single-valued, nonzero, and source-linear. |
 | K-RVM | Prime-indexed doubled signed Riemann–von Mangoldt operator plus trace-class physical relocation and det-two product. | Identify the relocation matrix, eigenbasis, and determinant from prime source without using ordered zero ordinates. |
 | FZZ-P | FZZ cigar scattering asymmetry and puncture horizon-dilation completeness. | Prove no nontrivial cigar Mellin zero is missing from the real horizon spectrum and construct the physical theta/FZZ source weld. |
+| RBH | Reflected bi-heat residue, canonical finite part, completed two-channel equality, scale tomography, phase expansion, and sharp aperture remainder. | Construct a nonvanishing Xi-jet landing and a source normalization forcing both reflected channels to be co-leading; functional-equation coefficient equality alone is blind. |
+| PW-B | Finite-energy Parikh–Wilczek winding, Borel recurrence, partner-growth asymmetry, and gauge-invariant recoil holonomy. | Derive balance/flatness from source-first finite-mass evaporation or a global aggregate law; every copywise selector is exactly RH. |
 
 ### JAS — joint-ancestry architecture
 
@@ -329,7 +331,7 @@ Candidates are not counted as live until a literal-source handoff and divisor-ex
 
 **Why one Hilbert graph is insufficient.** GammaSewnXiShiftTangentHilbertKernel proves the exact three-prime determinant contains a rooted second compound and an independent pure tangent third compound. Pairwise Gram data loses source information. XiCTaylorThetaTailCompletedValuationReflection supplies genuine infinite square-index, product-fibre, and valuation-depth support.
 
-**Receiver.** Working-tree XiJointAncestrySuperselection proves that a nonzero closed source-linear sewing of reflected prime-Poisson sectors exists exactly on the critical wall. It also proves internal-only divisor syndrome is equivalent to such sewing. Every hypothetical right-half Xi divisor retains a nonzero square-zero internal channel while simultaneously failing completion, modular/Rees, and prime-source ancestry.
+**Receiver.** XiJointAncestrySuperselection proves that a nonzero closed source-linear sewing of reflected prime-Poisson sectors exists exactly on the critical wall. It also proves internal-only divisor syndrome is equivalent to such sewing. Every hypothetical right-half Xi divisor retains a nonzero square-zero internal channel while simultaneously failing completion, modular/Rees, and prime-source ancestry.
 
 **Open core.** Build one divisor-independent infinite-support reflection polarization on the bifiltered diagram:
 
@@ -357,11 +359,27 @@ Candidates are not counted as live until a literal-source handoff and divisor-ex
 
 **Proved receiver.** FZZCigarScatteringSpectralAsymmetry gives an exact boson–fermion Cauchy-density asymmetry, positive reflection deficit, and Fourier delay tower. Its positive-delay Mellin transform is Gamma times zeta, so the zeta divisor appears from the continuum scattering source. FZZCigarPunctureDilationCompletenessEndpoint proves real horizon-dilation spectral completeness is equivalent to RH. FZZCigarReplicaKreinScale proves universality over all finite replica levels selects the imaginary axis, while every fixed level is blind.
 
-**Working-tree bridge.** VaidyaEvaporationFZZHorizonScale proves variable horizon ratios realize every positive scale and universal Krein sign selects the imaginary axis; every fixed mass-loss rate is blind.
+**Bridge.** VaidyaEvaporationFZZHorizonScale proves variable horizon ratios realize every positive scale and universal Krein sign selects the imaginary axis; every fixed mass-loss rate is blind.
 
 **Open core.** Prove from cigar source that every nontrivial Mellin zero occurs in the real horizon spectrum, and construct the physical source weld between FZZ scattering, horizon dilation, and completed theta/Xi data.
 
 **Boundary.** Fixed replica level, fixed mass rate, fixed temperature, and ordinary genus/fugacity sector sums do not select the zeta divisor.
+
+### RBH — reflected bi-heat completion
+
+**Proved source.** ReflectedBiHeatThetaResidue proves normal convergence of the row-subtracted double series, the exact theta-times-zeta pole decomposition, theta residue at regulator zero, and canonical Euler–Mascheroni finite part. ReflectedBiHeatCompletedChannels identifies both cross coefficients with one half of the same completed zeta value, proves their unconditional equality, and gives reflected scale orders whose difference is Re z minus one half. Equality of scale orders is exactly the critical wall. PolarizedAdditiveHeatSharpRemainder and ReflectedBiHeatPhaseFinitePartExpansion prove the four-channel small-aperture expansion and an o(1) sharp remainder.
+
+**Open core.** Construct before divisor selection a nonvanishing coefficient-faithful Xi jet or multiplicity landing on which one source normalization forces the two reflected aperture channels to be co-leading.
+
+**Boundary.** Cross-coefficient equality holds everywhere in the open strip by the functional equation and therefore does not force equality of scale orders. At an Xi divisor the common completed coefficient vanishes, so a value-level leading-channel comparison loses the scale information. A successful route must retain a derivative, residue, multiplicity jet, or an independently nonzero mixed channel.
+
+### PW-B — Parikh–Wilczek Borel partner
+
+**Proved receiver.** ThetaCuspHawkingParikhWilczekBorelPartnerEndpoint identifies the first physical Borel wall with the nearest finite-energy tunnelling action, gives the exact first-winding Mellin/Borel coefficient, proves its recurrence, and computes partner-growth imbalance as a positive grade factor times transverse displacement. Its source-derived forward/reverse recoil edges have a gauge-invariant closed-history holonomy whose imaginary part is an explicit nonzero factor times height and transverse displacement. Equal real growth, zero holonomy phase, and positive-diagonal Hermitian symmetrizability are each exactly critical-line placement; universal balance over Xi zeros is exactly RH. Off line, the canonical two-mode SU(1,1) completion has nonzero pair mixing.
+
+**Open core.** Derive partner-growth balance or recoil-holonomy flatness from source-first finite-mass evaporation, or replace either copywise condition with a genuinely global source aggregate whose vanishing forces it.
+
+**Boundary.** No physical producer is formal. Generic KMS, CCR, unitarity, Cayley completion, Bogoliubov norm conservation, positive diagonal metric changes, and late recoil do not force balance or erase holonomy. A no-pair-creation premise conflicts with the proved off-line mixing receiver and positive recoil behavior; merely postulating copywise balance, flatness, or symmetrizability assumes the RH endpoint.
 
 ### LI — paired-Li receiver
 
@@ -391,15 +409,13 @@ Coprime matrix signature is exactly Mertens, tends to zero after PNT normalizati
 
 ### Finite generalized-Schur inertia
 
-Working-tree FiniteBlaschkeGeneralizedSchurInertia proves the generalized Schur defect has exact finite negative index equal to Blaschke degree under adjoint injectivity. FiniteBlaschkeAdjointDefect identifies the form as denominator-adjoint energy minus numerator-adjoint energy, proves the exact adjoint-energy loss, and derives the needed injectivity from Hardy coprimality. Thus coprime finite generalized-Schur factors have negative index exactly equal to denominator degree. This strengthens finite spectral counting for O, SV2, CLG, and LI, but does not prove arithmetic coprimality, construct their source selector, or control cofinal ground space.
+FiniteBlaschkeFamily packages arbitrary finite disk-point families, with repetitions, into finite Blaschke data and identifies both degree and product exactly. FiniteBlaschkeGeneralizedSchurInertia and FiniteBlaschkeAdjointDefect identify the generalized Schur form as denominator-adjoint energy minus numerator-adjoint energy and prove exact negative index equal to denominator degree under Hardy coprimality. FiniteBlaschkeGeneralizedSchurKernel realizes the literal analytic kernel and proves its finite Gram packets have exactly that many negative squares. FiniteBlaschkeLeakageRank constructs the canonical leakage core, proves surjectivity under coprimality, exact leakage rank equal to denominator degree, and exact anti-causal Schur energy.
 
-### Reflected bi-heat residue
+HorizontalLayerBlaschke and HorizontalLayerProjective prove uniform projective-boundary convergence of each horizontal Blaschke layer and every finite product to the sum of infinitesimal Cauchy-resolvent symbols. ProjectiveBoundaryMultiplier turns those symbols into bounded L2 multipliers. HardyHorizontalLayerLeakage realizes one infinitesimal layer as an actual Hardy compression: matched Blaschke multiplication leaks through one explicit rank-one Cauchy channel, while its analytic companion has zero leakage; the leakage map is linear, contractive, and norm-continuous. This closes the one-layer operator realization, but not arithmetic coprimality, an Xi source landing, cofinal negative-index control, or whole-ground selection for O, SV2, CLG, HC, and LI.
 
-Working-tree ReflectedBiHeatThetaResidue proves complementary Dirichlet orders sum to one plus the regulator, exact upper/lower row subtraction, uniform summable majorization on a regulator disc, normal convergence and continuity of the pole-free double series, exact summation of the common row model to shifted zeta, and the decomposition
+### Wold thermofield standard form
 
-reflected bi-heat pair sum = theta heat-coefficient sum × zeta(1 + regulator) + regular sum
-
-for positive regulator in the residue disc. It does not yet formalize the pole-filled limit/residue at zero or an Xi/RH landing. It is paired infinite theta infrastructure, not a route or endpoint.
+WoldThermofieldStandardForm constructs the diagonal Hilbert–Schmidt purification of every square-summable occupation half-density, proves exact norm and vector-state formulas, and specializes to normalized finite occupation laws. Its canonical pure-tensor shuffle multiplies norms and inner products and factorizes diagonal thermofield kernels. The diagonal kernel remains central: left and right diagonal actions agree identically. This supplies a rigorous doubled carrier for E, TK, and EWQ-V, but diagonal tensor amplification has no orientation by itself; a viable use requires an off-diagonal, signed, or noncentral source incidence.
 
 ### Finite Hasse and Weyl classifiers
 
@@ -413,7 +429,6 @@ Window-jet Weyl and Gohberg–Sigal index laws preserve multiplicity, covariance
 - **SFP:** split-formation parallax and hidden Poisson history are jointly reconstructive, with a sharp half-aperture prime reserve, but no completed arithmetic instantiation.
 - **PLAC/EPC/MEG:** Euler-log Herglotz mass, Euler-position commutators, and multiple-elliptic-Gamma cosets have nonclassical infinite or paired mechanisms but no Xi endpoint.
 - **VMG-HCD:** von-Mangoldt/Gamma Hilbert collision data expose source clocks, but strict contraction and unitary recurrence cannot share one real clock.
-- **RBT:** reflected bi-heat pairing has an exact theta-times-zeta pole plus normally convergent regular part; zero-regulator residue and Xi landing remain absent.
 
 ## Terminal and retired routes
 
@@ -441,6 +456,9 @@ Closure applies to the named mechanism, not to every future architecture using r
 | scalar EWQ | Scalar, determinant, unitary, checkerboard, finite-jet, Artin-positive, and auxiliary-vacuum constructions erase odd completed orientation or reduce to RH. | EWQ-V nonunitary matrix/jet candidate. |
 | DQPT | Exact eta/chi slope, rate, and memory-lag observables classify the critical line; universal annihilation is RH. | Sharp receiver, no producer. |
 | fixed-scale Hawking/FZZ/Vaidya | Fixed temperature, replica level, mass rate, recoil, or self-similar dilation is horizontally blind or passivates off-line shells. | HB early-time source law and FZZ-P universal dilation remain. |
+| copywise Parikh–Wilczek balance | Equality of Borel growth, zero recoil-holonomy phase, and positive-diagonal Hermitian symmetrizability are each exactly critical-line placement; universal copywise balance is exactly RH. Generic SU(1,1) completion only preserves norm and mixes every off-line pair. | PW-B survives only through a source-derived global balance/flatness law not fitted to Xi copies. |
+| reflected bi-heat coefficient balance | Both completed cross coefficients are equal at every strip point by the functional equation, while their scale orders agree only on the critical wall; coefficient equality cannot select the wall. | RBH requires a nonvanishing jet and source law forcing co-leading scale order. |
+| diagonal thermofield purification | Normalized Wold thermofield kernels are Hilbert–Schmidt and central, so left/right diagonal actions coincide and carry no orientation difference. Pure-tensor shuffle preserves this diagonal factorization. | Exact vector-state and tensor realization survive; orientation must enter off diagonal or through a noncentral signed incidence. |
 | standard CGL packet | Reflection partners share character and ordinate and collapse; formal envelope is at least 288 before secondary terms. | HC confluent packet or absolute source summability. |
 | positive diagonal repair | Finite-energy positive diagonal repair cannot remain analytic through a nontrivial critical boundary; critical jets force singularity or trivial reflection. | Signed, off-diagonal, or singular correction only. |
 | finite passports | Exact order, functional equation, Schwarz reality, hypertranscendence, any finite/all-jet differential field, finite Hasse profile, and positive zero density admit off-line relocated carriers. | Infinite coefficient-faithful arithmetic occurrence. |
@@ -472,7 +490,7 @@ Scalar positivity, absolute values, determinants, unitary gauges, positive diago
 
 ### 4. Pairing is necessary but not sufficient
 
-CLG/TTF, Q, HB, LI, JAS, K-RVM, and FZZ-P are genuinely paired or multi-channel and nonclassical. Lean also shows pairwise Gram data can be insufficient: third-compound source information appears at three primes. The likely global object is multi-support and multi-depth, not one scalar or one Hilbert vector.
+CLG/TTF, Q, HB, LI, JAS, K-RVM, FZZ-P, RBH, and PW-B are genuinely paired or multi-channel and nonclassical. Lean also shows pairwise Gram data can be insufficient: third-compound source information appears at three primes. The likely global object is multi-support and multi-depth, not one scalar or one Hilbert vector. Diagonal doubling alone is insufficient because thermofield centrality identifies the two actions.
 
 ### 5. Positive completion can fail before the spectral problem
 
@@ -488,24 +506,112 @@ Regular bounded descent is repeatedly terminal in L, R, PSRC, PCS, and P. The re
 
 ### 8. Dynamic selectors must act before late-time smoothing
 
-HB and FZZ-P show fixed equilibrium, recoil, self-similar evaporation, and fixed scale erase horizontal information. Any physical-looking successor must use early-time causal mixing, a universal scale family, or a no-dark law before dephasing.
+HB, FZZ-P, and PW-B show fixed equilibrium, recoil, self-similar evaporation, fixed scale, and norm-preserving two-mode completion do not orient horizontal displacement. Any physical-looking successor must use early-time causal mixing, a universal scale family, a nontrivial global Borel balance, or a no-dark law before dephasing.
 
 ### 9. Corpus-native nonclassical topology
 
 JAS is the clearest corpus-native architecture not reducible to a classical RH route. It joins finite prime-support cubical connection, valuation/Rees depth, higher compound order, infinite theta reflection current, and closed prime-Poisson sewing. Its endpoint is a superselection wall, but its open core is an arithmetic construction of joint source ancestry—not classical zero-free regions, mollifiers, explicit-formula positivity, or a Hilbert–Pólya spectrum.
 
-K-RVM and FZZ-P are also nonclassical candidates, but currently target-fed at their decisive steps. W2C is a deep unifying receiver rather than an independent producer.
+K-RVM, FZZ-P, RBH, and PW-B are also nonclassical candidates, but their decisive scale, balance, or spectral selection remains target-fed. W2C is a deep unifying receiver rather than an independent producer.
 
 ## Fundamental remaining problem classes
 
-The 23 live routes and 26 candidates reduce to seven recurring source problems:
+The 23 live routes and 28 candidates reduce to seven recurring source problems:
 
 1. **Arithmetic signed order.** Prove a bounded or nonnegative signed current without replacing it by absolute values: CCM-FU, E, G, G-CE, SP-E, SCE, T1, T2, U.
 2. **Whole-state selection.** Control every cofinal or near-ground direction rather than one trial state: C1, O, CLG/TTF, SV2, FD2.
 3. **Singular source-to-physical descent.** Preserve coefficients and provenance across a boundary-value or closed-graph landing: L, P, PSRC, PCS, TCD.
-4. **Source-native realization.** Identify an exact receiver with the literal prime–Gamma/theta source before divisor selection: F2, STC, CSB, Q, LI, MPLF, W1C, K-RVM, FZZ-P.
-5. **Mixed incidence and orientation.** Retain odd, nonunitary, higher-compound, or confluent information erased by scalarization: HC, EWQ-V, PPM, SC, JAS.
+4. **Source-native realization.** Identify an exact receiver with the literal prime–Gamma/theta source before divisor selection: F2, STC, CSB, Q, LI, MPLF, W1C, K-RVM, FZZ-P, RBH, PW-B.
+5. **Mixed incidence and orientation.** Retain odd, nonunitary, higher-compound, confluent, or noncentral information erased by scalarization or diagonal doubling: HC, EWQ-V, PPM, SC, JAS, RBH.
 6. **Cofinal synchronization.** Choose one source-controlled scale, aperture, degree, or relation that works globally: E, F2, CSB, TK, BW, MSC, OPUC.
 7. **Infinite reflected ancestry.** Prove functional-equation partners arise from one completed arithmetic event with a nonzero closed source-linear sewing: JAS and the completion survivors of R.
 
 These are the current open cores. Additional endpoint reformulations, finite packets, seed asymptotics, regular bounded completions, or divisor-fitted models do not change frontier unless they discharge one of these source problems.
+
+## Cyclic Arithmetic Dilation Rigidity (CADR): proposed JAS producer
+
+CADR is not a separate live route or candidate endpoint. It is a concrete producer proposal for
+JAS's missing source-linear sewing.
+
+| Layer | Corpus input | CADR obligation |
+|---|---|---|
+| Nonreduced defect | Second Cartier identity `q^-1-1 = -(q-1) + (q-1)^2 mod (q-1)^3`; nonzero square-zero ghost | Retain internal ghost through source channel instead of killing it by reduced positivity. |
+| One arithmetic source | Target-free Möbius–theta L2 rungs, exact prime-normal source, full occupation model | Construct one zero-independent channel on finite prime-cylinder operator system. |
+| Full compound content | Synchronized-lcm all-support cube and irreducible pure third compound | Prove complete positivity/equality at every matrix amplification, not only equality of scalar states or pairwise Gram data. |
+| `1 → 2` | Functional-equation and Schwarz descendants of copied source | Prove both are realizations of same nonzero divisor-jet channel. |
+| No hidden charge | Ordinary theta cyclicity exists, but prime-source cyclicity is open | Prove both realizations are generated by arithmetic source and hence Stinespring-minimal. |
+| Constraint | Minimal realization uniqueness | Obtain unitary prime-source intertwiner; take its graph to produce closed nonzero sewing. |
+| Endpoint | Prime-Poisson reflected-sector superselection | Sewing forces neutral transverse grade, hence `Re(rho)=1/2`. |
+
+Exact conjecture is **arithmetic double-realization theorem**: every nonzero Xi divisor jet is fiber
+of one globally constructed fully amplified CP source channel, while functional-equation and Schwarz
+completion furnish two source-minimal Stinespring realizations whose representation parts are
+corresponding reflected prime-Poisson sectors.
+
+This reframes RH as uniqueness of arithmetic realization. Critical-line zeros are legitimate
+internal nilpotent defects. An off-line zero would be one defect demanding two inequivalent minimal
+realizations of same channel. It is an error of completed source descent, not an object created by a
+spectral or dynamical mechanism.
+
+Immediate kill test: calculate two channel presentations on finite prime-cylinder generators before
+divisor evaluation. If their equality needs horizontal grade, loses a higher compound, or requires
+an extra ancilla not generated by source, CADR is circular and must be retired. No general
+Stinespring infrastructure should be added until this arithmetic identity has a nontrivial
+finite-cylinder witness.
+
+## CADR retired; Derived Arithmetic Non-Bifurcation (DANB) active
+
+CP/Stinespring CADR is retired: positivity replaces complex jet scaling by a quadratic channel and
+erases reflection-odd phase. DANB retains the nonreduced jet algebra and moves the constraint to
+relative derived completion.
+
+| DANB layer | Proven input | Remaining obligation |
+|---|---|---|
+| Internal defect base | Xi multiplicity jets; second-Cartier nonzero square-zero ghost | Use `J_m = C[epsilon]/epsilon^(m+1)` as base, never reduce it. |
+| Finite arithmetic source | Finite prime/depth valuation labels | Lean-proved: `A_(P,d,m) = product_nu J_m` is formally étale over `J_m`; no invisible transverse lift fork exists. |
+| Infinite source | Prime-Walsh cylinder algebra, full occupation completion, target-free Möbius–theta rungs | Assemble exact coefficient-faithful pro-system and its completion topology. |
+| Higher compounds | Cyclic-bar tensor operators, synchronized-lcm support cube, pure third compound | Express completion through full derived/cyclic object, not one state or Gram kernel. |
+| Universal constraint | Relative cotangent-complex vanishing / unique nilpotent lifting | Prove reflection-odd cotangent acyclicity survives the literal completion; finite stages alone are insufficient. |
+| Off-line witness | Pre-divisor and Xi transverse dual-number arcs; completion phantom; Noether charge | Identify all as images of one nonzero derived transverse class. |
+| RH endpoint | Transverse arc is nonzero/formally ramified iff off line | Non-bifurcation contradicts every off-line Xi divisor while retaining internal multiplicity. |
+
+New exact theorem sought:
+
+> **Source-conservative derived completion theorem.** For every internal jet order, completed
+> Möbius–theta/Euler–Gamma algebra is relatively derived-formally-étale in reflection-normal
+> direction over the pro-system of internal-jet-valued prime cylinders.
+
+This is the first architecture in the ledger whose central object is not a zero, operator,
+function, measure, action, or physical flow. It is a relative cotangent class of arithmetic
+completion. Other routes become observation functors of that class.
+
+Immediate falsifier: exhibit a nonzero reflection-odd relative cotangent class of the literal
+source completion before divisor selection. Immediate circularity test: if formal étaleness is
+assumed for `XiTransverseArcAlgebra`, route has merely assumed the existing RH-equivalent endpoint.
+
+## ACH: arithmetic constraint hyperdescent
+
+Actual Route-R audit falsifies DANB's first completion model: source-marked finite truncations are
+not the finite formally-etale product-algebra tower. Positive survivor is categorical and static.
+Literal prime--Gamma refinement presents one constraint lift; physical completion must not split
+its contractible lift fibre into two FE/Schwarz sections.
+
+| Proof obligation | Status |
+|---|---|
+| Actual prime-support x valuation-depth/Gamma refinement category | Open; no replacement tower may be invented. |
+| Finite local lift uniqueness on that category | Open comparison to existing formally-etale cylinders. |
+| One-ended finite-defect reconstruction | Lean-proved, but insufficient for infinite physical seam. |
+| Source-weighted Royden/quasianalytic end hyperdescent | **Primary open core.** |
+| Gamma anchor removes global-complement gauge | Open source identification. |
+| Physical completion is the left-exact end completion | Open; cannot be stipulated without circularity. |
+| Off-line fibre has two distinct sections | Corpus-proved in transverse, seam, curvature, and completion shadows; common-class weld open. |
+
+Logical chain:
+
+`one literal constraint lift`
+`+ source-derived locally flat finite-energy/all-jet refinement data`
+`+ one-ended Gamma-anchored hyperdescent`
+`=> one physical lift`
+`but off-line Xi support => two distinct reflected lifts`
+`=> no off-line Xi support`
+`=> RH`.

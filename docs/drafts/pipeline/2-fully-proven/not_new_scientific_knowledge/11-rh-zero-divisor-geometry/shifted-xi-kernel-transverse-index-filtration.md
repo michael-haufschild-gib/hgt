@@ -225,3 +225,20 @@ umbrella build was run. Remaining card obligation is source-specific, not finite
 construct the cancelled finite/infinite Blaschke factorization of `suzukiCanonicalTheta omega`,
 identify denominator multiplicities with shifted-Xi upper-half-plane zeros, and show an infinite
 denominator exposes finite factors of arbitrarily large degree.
+
+## Lean status update -- symmetric-core Schur factor (2026-08-24)
+
+`RHTower/SuzukiShiftedXiCoreSchur.lean` now constructs the multiplicity-exact canonical product
+over all Xi zero copies with transverse coordinate at most `omega` in absolute value and proves its
+shifted quotient is Schur on the upper half-plane, unconditionally. The proof reindexes the core
+through both functional-equation reflection and critical-line reflection, pairs genus-one factors
+so their exponential contacts cancel exactly, and transports the resulting factorwise vertical
+norm inequalities through the convergent infinite product. It also proves the shifted core
+denominator has no upper-half-plane zero. No Cartwright or bounded-type premise is assumed.
+
+Direct `lake env lean` and exact leaf `lake build` pass. All 21 new public declarations audit to
+only `propext`, `Classical.choice`, and `Quot.sound`. The leaf is wired into `RHTower.lean`; no
+umbrella build was run. Remaining source closure is now narrower: split the two finite/infinite
+transverse tails into upper-half-plane numerator and denominator Blaschke factors, prove exact
+Cayley conjugacy with the literal shifted-Xi quotient, then apply the completed generalized-Schur
+kernel inertia engine.
