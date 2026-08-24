@@ -1006,3 +1006,78 @@ inheritance only after selecting Xi zeros is exactly RH and is forbidden as a pr
 - 2026-08-24 — Built and checked the exact Lean weld from literal theta spin through three-slot
   thinning, centered Hurwitz monodromy, and the first nonzero Xi multiplicity jet to the RH
   frontier.
+
+### Global-loop boundary and local-germ no-go
+
+`[NO-GO]` Rank-one FE/Schwarz germ gluing cannot prove CSI.  Corpus theorem
+`germParityCoeff_gauge_trivial` removes every multiplicity phase `(-1)^m`; the fixed- and
+free-orbit gluing classifiers are likewise gauge-trivial.  Local zero-germ spin is therefore not
+an invariant capable of orienting the critical line.
+
+Positive survivor: metaplectic action history distinguishes the global loop from its local
+quadratic shadow.  Hessian Gram data stay constant while the oriented thimble and its amplitude
+change sign after a `2*pi` loop.  CSI must consequently be a global loop-incidence law, not a germ
+parity law.
+
+The arithmetic incidence half already exists: `XiReflectionSelfIntersectionCharge` constructs a
+coefficient-faithful prime incidence energy, proves it nonnegative, and proves local vanishing
+exactly on the critical line.  It does not prove that energy vanishes at every Xi fibre.  New open
+core is narrower: identify global theta-spin holonomy defect and reflection self-intersection
+energy as two realizations of one fixed source-incidence class, then derive annihilation of that
+class from closure of the completed constraint.  An equality merely sharing the same zero locus
+is insufficient.
+
+- 2026-08-24 — Closed local-germ parity route by gauge trivialization.  Retained only global
+  metaplectic loop holonomy coupled to coefficient-faithful arithmetic incidence.
+
+### 2026-08-24 hostile audit: broad constraint-spin inheritance is false
+
+`[FALSIFIED: CSI-GENERIC]` Closedness of a zero fibre of one fixed scalar constraint does not
+force that fibre to inherit the monodromy character of a source factor.  For any chosen exponent
+`a₀`, the fixed two-evaluation functional
+
+```text
+C(f) = f(0) - exp(-(a₀ + 1/2)) f(1)
+```
+
+annihilates `f(z) = exp((a₀ + 1/2) z)`, while this section has logarithmic deck multiplier
+`-exp(2*pi*i*a₀)`.  The fibre is closed and the constraint is fixed, but its spin is arbitrary.
+Therefore topology of a scalar zero set, fixedness of the constraint, and a nonzero source atom
+do not prove spin inheritance.
+
+The Xi-specific formal audit is even sharper.  `XiCenteredThetaSpinThinningCoherent rho` is
+definitionally a coefficient-faithful comparison of the centered monodromy with `1`; the corpus
+proves it equivalent to `Re(rho)=1/2`.  No actual Xi formation/deletion process currently maps to
+`PhaseAveragedThinningConsistent`.  The phrase “closed Xi error fibre inherits ambient spin” was a
+candidate semantic law, not an established source theorem.
+
+`[FALSIFIED: FLAT-TWO-CELL-AS-PRODUCER]` Existing source two-cell machinery does not discharge the
+gap.  `XiNodalArithmeticSecondOrderCoherent q` has second-order defect exactly
+
+```text
+(2*Re(rho)-1) * Im(rho) * observation.
+```
+
+The observation is surjective, so coherence is equivalent to this scalar being zero and globally
+equivalent to RH.  Likewise, existence of an order-independent Calderón--Witt Koszul lift is
+equivalent to nodal superselection and hence RH.  These are exact classifiers, not independent
+producers.
+
+Positive survivor: Xi supplies both ingredients of a possible noncircular proof before any
+critical-line assumption:
+
+- its terminal theta Fourier--Laplace multiplicity jet is nonzero;
+- its first neutral reflected source jet vanishes, while its first nonzero mixed jet is exactly
+  `2 * (2*Re(rho)-1) * Im(rho)`.
+
+Thus source information is not missing; missing operation is a source-defined completion
+interchange which identifies the nonzero terminal jet with a coherent two-dimensional boundary
+class.  This operation must be constructed before divisor specialization and must make horizontal
+formation and vertical reflection/log-deck completion commute.  If constructed, graded-skew
+source interchange and scalar order-independence kill the mixed jet; since Xi support has
+nonzero imaginary part, thinning coherence follows.  Assuming this interchange only for Xi
+fibres is RH-equivalent and forbidden.
+
+`[OPEN CORE]` Construct and prove that pre-divisor completion-interchange law from the literal
+prime--Gamma/theta source.  Until then, “prove thinning coherence” and “prove RH” are the same
+unresolved statement, not separate Lean obligations.

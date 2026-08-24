@@ -62,6 +62,25 @@ def reindex {κ : Type w} (f : κ → ι) (hf : Function.Surjective f) :
       obtain ⟨k, rfl⟩ := hf i
       exact hx k
 
+/-- Refine every place by a dependent family of subplaces.  This composes a global-to-local
+principle with one local-to-sublocal principle at each place. -/
+def refinePlaces {κ : ι → Type w}
+    (atSubplace : (i : ι) → κ i → G → Prop)
+    (hlocal : ∀ x i, H.atPlace i x ↔ ∀ j, atSubplace i j x) :
+    HassePredicate G (Σ i, κ i) where
+  global := H.global
+  atPlace ij := atSubplace ij.1 ij.2
+  local_global x := by
+    constructor
+    · intro hx ij
+      exact (hlocal x ij.1).mp ((H.local_global x).mp hx ij.1) ij.2
+    · intro hx
+      apply (H.local_global x).mpr
+      intro i
+      apply (hlocal x i).mpr
+      intro j
+      exact hx ⟨i, j⟩
+
 /-- Conjunction combines two local--global systems over the disjoint union of their places. -/
 def and {κ : Type w} (J : HassePredicate G κ) : HassePredicate G (Sum ι κ) where
   global x := H.global x ∧ J.global x
@@ -101,6 +120,16 @@ structure RigidHassePredicate (G : Type u) (ι : Type v)
 namespace RigidHassePredicate
 
 variable {G : Type u} {ι : Type v} (H : RigidHassePredicate G ι)
+
+/-- Package one fixed local--global equivalence together with certification at an arbitrary single
+place as a rigid Hasse predicate. -/
+def fixed {P : Prop} {Q : ι → Prop}
+    (hAll : P ↔ ∀ i, Q i) (hAny : P ↔ ∃ i, Q i) :
+    RigidHassePredicate Unit ι where
+  global _ := P
+  atPlace i _ := Q i
+  local_global _ := hAll
+  global_exists _ := hAny
 
 /-- In a rigid Hasse system, every individual place detects the global property. -/
 theorem global_iff_atPlace (x : G) (i : ι) : H.global x ↔ H.atPlace i x := by

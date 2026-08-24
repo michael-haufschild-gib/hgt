@@ -1,12 +1,13 @@
-import Mathlib.CategoryTheory.Functor.KanExtension.Pointwise
+import Mathlib.CategoryTheory.Functor.KanExtension.Adjunction
 import Mathlib.CategoryTheory.Limits.Indization.Category
 
 /-!
 # Covariant functor extension to ind-categories
 
-Every functor `F : C ⥤ D`, with `D` finitely cocomplete, extends covariantly to ind-categories by
-pointwise left Kan extension of `F ⋙ Ind.yoneda` along `Ind.yoneda`. The comparison is an
-isomorphism on representables.
+Every functor `F : C ⥤ D` extends covariantly to ind-categories by left Kan extension of presheaves
+along `Fᵒᵖ`. The Kan extension of a filtered colimit of representables is again a filtered colimit
+of representables, so it restricts to ind-objects. The comparison is an isomorphism on
+representables.
 
 No preservation theorem for finite limits, finite colimits, or filtered colimits is asserted here.
 -/
@@ -19,48 +20,92 @@ universe v u
 
 namespace Ind
 
-variable {C D : Type u} [Category.{v} C] [Category.{v} D]
-variable [HasFiniteColimits D]
+variable {C D : Type u} [SmallCategory C] [SmallCategory D]
 
-/-- Pointwise left Kan extension along Yoneda exists because its comma categories are filtered and
-finally small, while the target ind-category has small colimits. -/
-noncomputable instance yonedaHasPointwiseLeftKanExtension (F : C ⥤ Ind D) :
-    (Ind.yoneda : C ⥤ Ind C).HasPointwiseLeftKanExtension F := fun X => by
-  let e : CostructuredArrow (Ind.yoneda : C ⥤ Ind C) X ≌
-      CostructuredArrow yoneda ((Ind.inclusion C).obj X) :=
-    (CostructuredArrow.post Ind.yoneda (Ind.inclusion C) X).asEquivalence.trans
-      (CostructuredArrow.mapNatIso Ind.yonedaCompInclusion)
-  letI : FinallySmall.{v} (CostructuredArrow yoneda ((Ind.inclusion C).obj X)) :=
-    (Ind.isIndObject_inclusion_obj X).finallySmall
-  letI : FinallySmall.{v} (CostructuredArrow (Ind.yoneda : C ⥤ Ind C) X) :=
-    finallySmall_of_final_of_finallySmall e.inverse
-  letI : HasColimitsOfShape
-      (CostructuredArrow (Ind.yoneda : C ⥤ Ind C) X) (Ind D) :=
-    hasColimitsOfShape_of_finallySmall _ _
-  infer_instance
+/-- Left Kan extension sends Yoneda representables to Yoneda representables. -/
+noncomputable def yonedaCompLanIso (F : C ⥤ D) :
+    yoneda ⋙ F.op.lan ≅ F ⋙ yoneda :=
+  isoWhiskerRight uliftYonedaIsoYoneda.symm F.op.lan ≪≫
+    (Presheaf.compULiftYonedaIsoULiftYonedaCompLan.{u} F).symm ≪≫
+    isoWhiskerLeft F uliftYonedaIsoYoneda
+
+/-- Applying presheaf left Kan extension to a presentation replaces every representing object by
+its image under `F`. -/
+noncomputable def lanPresentationDiagramIso (F : C ⥤ D)
+    {A : Cᵒᵖ ⥤ Type u} (P : IndObjectPresentation A) :
+    (P.F ⋙ yoneda) ⋙ F.op.lan ≅ (P.F ⋙ F) ⋙ yoneda :=
+  Functor.associator _ _ _ ≪≫ isoWhiskerLeft P.F (yonedaCompLanIso F) ≪≫
+    (Functor.associator _ _ _).symm
+
+/-- Presheaf left Kan extension carries a chosen filtered presentation to the corresponding
+filtered presentation of the image. -/
+noncomputable def lanObjIsoPresentationColimit (F : C ⥤ D)
+    {A : Cᵒᵖ ⥤ Type u} (P : IndObjectPresentation A) :
+    F.op.lan.obj A ≅ colimit ((P.F ⋙ F) ⋙ yoneda) := by
+  letI : PreservesColimits (F.op.lan : (Cᵒᵖ ⥤ Type u) ⥤ Dᵒᵖ ⥤ Type u) :=
+    (F.op.lanAdjunction (Type u)).leftAdjoint_preservesColimits
+  exact F.op.lan.mapIso
+      (IsColimit.coconePointUniqueUpToIso P.coconeIsColimit
+        (colimit.isColimit (P.F ⋙ yoneda))) ≪≫
+    preservesColimitIso F.op.lan (P.F ⋙ yoneda) ≪≫
+    HasColimit.isoOfNatIso (lanPresentationDiagramIso F P)
+
+/-- Left Kan extension of an ind-object is an ind-object. -/
+theorem lan_obj_isIndObject (F : C ⥤ D) {A : Cᵒᵖ ⥤ Type u}
+    (hA : IsIndObject A) : IsIndObject (F.op.lan.obj A) := by
+  let P := hA.presentation
+  let e := lanObjIsoPresentationColimit F P
+  exact IsIndObject.mk (.ofCocone
+    ((colimit.cocone ((P.F ⋙ F) ⋙ yoneda)).extend e.inv)
+    ((colimit.isColimit ((P.F ⋙ F) ⋙ yoneda)).extendIso e.inv))
+
+/-- Presheaf left Kan extension lifted to the full subcategory of ind-objects. -/
+noncomputable def mapLift (F : C ⥤ D) :
+    Ind C ⥤ ObjectProperty.FullSubcategory (IsIndObject (C := D)) :=
+  ObjectProperty.lift _ (Ind.inclusion C ⋙ F.op.lan)
+    (fun X => lan_obj_isIndObject F (Ind.isIndObject_inclusion_obj X))
 
 /-- Covariant extension of a functor to ind-categories. -/
 noncomputable def map (F : C ⥤ D) : Ind C ⥤ Ind D :=
-  (Ind.yoneda : C ⥤ Ind C).pointwiseLeftKanExtension (F ⋙ Ind.yoneda)
+  mapLift F ⋙ (Ind.equivalence D).inverse
 
-/-- Pointwise Kan-extension comparison on representables. -/
-noncomputable def mapYonedaHom (F : C ⥤ D) :
-    F ⋙ Ind.yoneda ⟶ Ind.yoneda ⋙ Ind.map F :=
-  (Ind.yoneda : C ⥤ Ind C).pointwiseLeftKanExtensionUnit (F ⋙ Ind.yoneda)
+/-- Underlying presheaf of the ind-extension is presheaf left Kan extension. -/
+noncomputable def mapCompInclusionIso (F : C ⥤ D) :
+    Ind.map F ⋙ Ind.inclusion D ≅ Ind.inclusion C ⋙ F.op.lan :=
+  isoWhiskerLeft (mapLift F)
+    (isoWhiskerRight (Ind.equivalence D).counitIso (ObjectProperty.ι _))
 
-noncomputable instance mapYonedaHom_app_isIso (F : C ⥤ D) (X : C) :
-    IsIso ((Ind.mapYonedaHom F).app X) :=
-  (((Ind.yoneda : C ⥤ Ind C).pointwiseLeftKanExtensionIsPointwiseLeftKanExtension
-    (F ⋙ Ind.yoneda)) ((Ind.yoneda : C ⥤ Ind C).obj X)).isIso_hom_app
-
-noncomputable instance mapYonedaHom_isIso (F : C ⥤ D) :
-    IsIso (Ind.mapYonedaHom F) :=
-  NatIso.isIso_of_isIso_app _
+private noncomputable def mapYonedaCompInclusionIso (F : C ⥤ D) :
+    (F ⋙ Ind.yoneda) ⋙ Ind.inclusion D ≅
+      (Ind.yoneda ⋙ Ind.map F) ⋙ Ind.inclusion D :=
+  Functor.associator _ _ _ ≪≫
+    isoWhiskerLeft F Ind.yonedaCompInclusion ≪≫
+    (yonedaCompLanIso F).symm ≪≫
+    isoWhiskerRight Ind.yonedaCompInclusion.symm F.op.lan ≪≫
+    Functor.associator _ _ _ ≪≫
+    isoWhiskerLeft Ind.yoneda (mapCompInclusionIso F).symm ≪≫
+    (Functor.associator _ _ _).symm
 
 /-- Ind-extension agrees with the original functor on representables. -/
 noncomputable def mapYonedaIso (F : C ⥤ D) :
     F ⋙ Ind.yoneda ≅ Ind.yoneda ⋙ Ind.map F :=
-  asIso (Ind.mapYonedaHom F)
+  (Ind.inclusion.fullyFaithful (C := D)).whiskeringRight C |>.preimageIso
+    (mapYonedaCompInclusionIso F)
+
+/-- Hom of the comparison between the original functor and its ind-extension on representables. -/
+noncomputable def mapYonedaHom (F : C ⥤ D) :
+    F ⋙ Ind.yoneda ⟶ Ind.yoneda ⋙ Ind.map F :=
+  (mapYonedaIso F).hom
+
+noncomputable instance mapYonedaHom_app_isIso (F : C ⥤ D) (X : C) :
+    IsIso ((Ind.mapYonedaHom F).app X) := by
+  dsimp only [mapYonedaHom]
+  infer_instance
+
+noncomputable instance mapYonedaHom_isIso (F : C ⥤ D) :
+    IsIso (Ind.mapYonedaHom F) := by
+  dsimp only [mapYonedaHom]
+  infer_instance
 
 end Ind
 

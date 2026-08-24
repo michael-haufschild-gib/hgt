@@ -128,16 +128,16 @@ theorem gammaVerticalPhase_half_add_one (t : ℝ) :
       push_cast
       ring
     rw [htwo, hadd] at hdup
-    have hlogtwo : Complex.log (2 : ℂ) = (Real.log 2 : ℝ) := by
-      rw [Complex.log, Complex.arg_ofReal_of_nonneg (by norm_num : (0 : ℝ) ≤ 2),
-        Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by norm_num : (0 : ℝ) < 2)]
-      simp
-    rw [hlogtwo] at hdup
     have hdupRe :
         2 * (Complex.digamma ((1 : ℂ) + ((2 * u : ℝ) : ℂ) * I)).re =
           (Complex.digamma (((1 / 2 : ℝ) : ℂ) + (u : ℂ) * I)).re +
             (Complex.digamma ((1 : ℂ) + (u : ℂ) * I)).re + 2 * Real.log 2 := by
       have := congrArg Complex.re hdup
+      have hlogtwoRe : (Complex.log (2 : ℂ)).re = Real.log 2 := by
+        rw [Complex.log_re]
+        norm_num
+      norm_num at this
+      rw [hlogtwoRe] at this
       simpa [s] using this
     have hhalf := hasDerivAt_gammaVerticalPhase (by norm_num : (0 : ℝ) < 1 / 2) u
     have hone := hasDerivAt_gammaVerticalPhase (by norm_num : (0 : ℝ) < 1) u
@@ -148,9 +148,16 @@ theorem gammaVerticalPhase_half_add_one (t : ℝ) :
       simpa using (hasDerivAt_id u).const_mul 2
     have hdouble := (hasDerivAt_gammaVerticalPhase (by norm_num : (0 : ℝ) < 1) (2 * u)).comp
       u hscale
-    dsimp [F]
-    convert ((hhalf.add hone).add hlinear).sub hdouble using 1
-    linear_combination -hdupRe
+    have hzero :
+        (Complex.digamma (((1 / 2 : ℝ) : ℂ) + (u : ℂ) * I)).re +
+            (Complex.digamma ((1 : ℂ) + (u : ℂ) * I)).re + 2 * Real.log 2 -
+              (Complex.digamma ((1 : ℂ) + ((2 * u : ℝ) : ℂ) * I)).re * 2 = 0 := by
+      rw [← hdupRe]
+      ring
+    have hraw := ((hhalf.add hone).add hlinear).sub hdouble
+    refine (hraw.congr_deriv hzero).congr_of_eventuallyEq ?_
+    filter_upwards [] with x
+    rfl
   have hconst : F t = F 0 := by
     refine is_const_of_fderiv_eq_zero (fun x => (hF x).differentiableAt) (fun x => ?_) t 0
     have hx := (hF x).hasFDerivAt.fderiv
@@ -203,7 +210,7 @@ theorem abs_gammaVerticalPhase_half_sub_main_le {t : ℝ} (ht : 2 ≤ t) :
   have hintegral := intervalIntegral.norm_integral_le_of_norm_le_const hbound
   rw [Real.norm_eq_abs, hint] at hintegral
   have habs : |2 * t - t| = t := by
-    convert abs_of_pos ht0 using 1 <;> ring
+    rw [show 2 * t - t = t by ring, abs_of_pos ht0]
   rw [habs] at hintegral
   rw [show (8 / t ^ 2) * t = 8 / t by field_simp [ht0.ne']] at hintegral
   change |gammaVerticalPhaseRemainder (1 / 2) t| ≤ 8 / t

@@ -1,7 +1,7 @@
 # The Euler-region Xi quotient is pointwise contractive but its RH charge is nonlocal
 
 - **ID:** `euler-region-pointwise-schur-gap-nonlocal-index-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper), `[BRIDGE]`
 - **Scientific status:** `[PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parent results:** Sondow--Dumitrescu horizontal monotonicity and the generalized
@@ -242,3 +242,26 @@ public declarations audit to only `propext`, `Classical.choice`, and `Quot.sound
 Remaining dependency is the full analytic generalized-Pick divisor-index theorem for the actual
 shifted-Xi kernel. The new abstract locality/finite-Gram leaf closes locality after such a realization
 exists, but does not construct that realization. Card therefore remains stage 2.
+
+## Lean closure update (2026-08-24)
+
+Source-specific dependency is now closed without a nonexceptionality shortcut.
+`RHTower/SuzukiShiftedXiInfiniteKernelIdentification.lean` proves an exact Hermitian-cross-product
+identification of the literal canonical-product quotient with the phase-normalized infinite
+Blaschke quotient, then an invertible diagonal Cayley congruence from the literal regular Suzuki
+kernel to the arbitrary-inner generalized-Schur value kernel. Its capstone
+`xiShiftRegularUpperKernel_negativeDimension_iff_rankAtLeast` identifies every finite negative
+dimension with restricted Hardy leakage rank, including exceptional common-factor shifts.
+
+`RHTower/XiShiftEulerExceptionalIndex.lean` transports this profile to the literal Euler sampling
+half-plane. Theorems `eulerXiShiftPick_negativeDimension_iff_rankAtLeast` and
+`eulerXiShiftPick_firstFailingCorrelationOrder_eq_top_iff_not_rankAtLeast_one` give the exact
+cancellation-aware all-orders law. `eulerXiShiftPick_nonlocal_negative_correlation` combines it
+with unconditional strict one-node positivity: every surviving rank-one divisor direction has a
+finite negative correlation witness, while the first possible failing order is at least two.
+
+Together with `XiShiftEulerPointwiseContractivity.lean`, `XiShiftEulerPrimeFactor.lean`,
+`UpperHalfPlaneSchurKernelProduct.lean`, and the existing nonexceptional cardinal classification,
+this closes every theorem asserted by the card. Direct source checks and exact target builds pass;
+all new declarations audit to only `propext`, `Classical.choice`, and `Quot.sound`. Leaves are wired
+into their umbrellas; no umbrella build was run.

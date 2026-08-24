@@ -1,11 +1,10 @@
-import GaloisForLFunctions.RHTower.GammaVerticalPolar
+import GaloisForLFunctions.RHTower.GammaVerticalPhaseSecondOrder
 import GaloisForLFunctions.HTGeometry.PhaseSignChain
 import GaloisForLFunctions.HTGeometry.RealBaseCpowPolar
 import GaloisForLFunctions.HTGeometry.SectorPowerMassLower
 import GaloisForLFunctions.HTGeometry.EvenWeightedSignCarrier
 import GaloisForLFunctions.HTGeometry.FullSectorPolarizationLaw
 import GaloisForLFunctions.RHTower.FullSectorPolarizationEssentialNorm
-import GaloisForLFunctions.HTGeometry.DigammaSecondOrderVertical
 import GaloisForLFunctions.HTGeometry.GammaCriticalLineModulus
 
 open Complex Filter Topology intervalIntegral
@@ -155,6 +154,64 @@ theorem abs_kapustinPowerGaugePhase_deriv_sub_log_le
     _ ≤ 8 / t ^ 2 + β / (2 * t ^ 2) := add_le_add hd hterm
     _ = (8 + β / 2) / t ^ 2 := by field_simp [ht0.ne']
 
+private theorem arctan_le_self_of_nonneg {x : ℝ} (hx : 0 ≤ x) :
+    Real.arctan x ≤ x := by
+  rcases eq_or_lt_of_le hx with rfl | hx0
+  · simp
+  · have harg0 : 0 < Real.arctan x := Real.arctan_pos.mpr hx0
+    have hargPi : Real.arctan x < Real.pi / 2 := Real.arctan_lt_pi_div_two x
+    have htan := Real.lt_tan harg0 hargPi
+    rw [Real.tan_arctan] at htan
+    exact htan.le
+
+private theorem kapustin_arctan_tail_bound {t : ℝ} (ht : 0 < t) :
+    0 ≤ Real.pi / 2 - Real.arctan (2 * t) ∧
+      Real.pi / 2 - Real.arctan (2 * t) ≤ 1 / (2 * t) := by
+  have h2t : 0 < 2 * t := by positivity
+  constructor
+  · linarith [Real.arctan_lt_pi_div_two (2 * t)]
+  · rw [← Real.arctan_inv_of_pos h2t]
+    simpa [one_div] using arctan_le_self_of_nonneg
+      (show 0 ≤ (2 * t)⁻¹ by positivity)
+
+/-- Equation (2), with an explicit `O(t⁻¹)` constant and its exact constant term. -/
+theorem abs_kapustinPowerGaugePhase_sub_stirlingMain_le
+    {β t : ℝ} (hβ : 0 ≤ β) (ht : 2 ≤ t) :
+    |kapustinPowerGaugePhase β t -
+        (t * Real.log ((2 * Real.pi * Real.exp 1) / t) - β * Real.pi / 2)| ≤
+      (8 + β / 2) / t := by
+  have ht0 : 0 < t := by linarith
+  have hphase := abs_gammaVerticalPhase_half_sub_main_le ht
+  have htail := kapustin_arctan_tail_bound ht0
+  let R := gammaVerticalPhase (1 / 2) t - (t * Real.log t - t)
+  let a := Real.pi / 2 - Real.arctan (2 * t)
+  have hR : |R| ≤ 8 / t := by simpa [R] using hphase
+  have ha0 : 0 ≤ a := by simpa [a] using htail.1
+  have ha : a ≤ 1 / (2 * t) := by simpa [a] using htail.2
+  have hmain :
+      t * Real.log ((2 * Real.pi * Real.exp 1) / t) - β * Real.pi / 2 =
+        t * Real.log (2 * Real.pi) + t - t * Real.log t - β * Real.pi / 2 := by
+    rw [Real.log_div (mul_pos (mul_pos (by norm_num) Real.pi_pos) (Real.exp_pos _)).ne' ht0.ne',
+      Real.log_mul (mul_pos (by norm_num) Real.pi_pos).ne' (Real.exp_ne_zero _), Real.log_exp]
+    ring
+  rw [hmain]
+  have hrewrite :
+      kapustinPowerGaugePhase β t -
+          (t * Real.log (2 * Real.pi) + t - t * Real.log t - β * Real.pi / 2) =
+        -R + β * a := by
+    dsimp [kapustinPowerGaugePhase, R, a]
+    ring
+  rw [hrewrite]
+  calc
+    |-R + β * a| ≤ |R| + |β * a| := by
+      simpa only [abs_neg] using abs_add_le (-R) (β * a)
+    _ = |R| + β * a := by rw [abs_of_nonneg (mul_nonneg hβ ha0)]
+    _ ≤ 8 / t + β / (2 * t) := by
+      exact add_le_add hR (by
+        rw [show β / (2 * t) = β * (1 / (2 * t)) by ring]
+        exact mul_le_mul_of_nonneg_left ha hβ)
+    _ = (8 + β / 2) / t := by field_simp [ht0.ne']
+
 def kapustinPowerGaugeAmplitude (β t : ℝ) : ℝ :=
   Real.exp ((-3 / 2 : ℝ) * Real.log (2 * Real.pi) -
     β * Real.log ‖((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I‖) /
@@ -235,7 +292,7 @@ theorem kapustinPowerGaugeAmplitude_sq_div_main_sq {β t : ℝ} (ht : 0 < t) :
     ring
   have hcancel : Real.exp (-Real.pi * t) * Real.exp (Real.pi * t) = 1 := by
     rw [← Real.exp_add]
-    convert Real.exp_zero using 1 <;> ring_nf
+    rw [show -Real.pi * t + Real.pi * t = 0 by ring, Real.exp_zero]
   have hsquare : Real.exp (-Real.pi * t) * Real.exp (-Real.pi * t) =
       Real.exp (-2 * Real.pi * t) := by
     rw [← Real.exp_add]
@@ -374,7 +431,8 @@ theorem kapustinCriticalPoint_arg (t : ℝ) :
     (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I).arg = Real.arctan (2 * t) := by
   have h := GaloisForLFunctions.HTGeometry.complexArg_eq_arctan_of_re_pos
     (z := ((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I) (by norm_num)
-  convert h using 1 <;> norm_num
+  convert h using 1
+  norm_num
   field_simp
 
 theorem kapustinCriticalPoint_cpow (β t : ℝ) :
@@ -456,6 +514,12 @@ theorem kapustinPowerGaugeFormula_eq_Q (β t : ℝ) :
   push_cast
   field_simp [hg, hd]
 
+theorem kapustinPowerGaugeFormula_ne_zero (β t : ℝ) :
+    kapustinPowerGaugeFormula β t ≠ 0 := by
+  rw [kapustinPowerGaugeFormula_eq_Q, kapustinPowerGaugeQ]
+  exact mul_ne_zero (Complex.ofReal_ne_zero.mpr (kapustinPowerGaugeAmplitude_pos β t).ne')
+    (Complex.exp_ne_zero _)
+
 theorem kapustinPowerGaugeWeight_eq_cos (β t : ℝ) :
     kapustinPowerGaugeWeight β t =
       kapustinPowerGaugeAmplitude β t * Real.cos (kapustinPowerGaugePhase β t) := by
@@ -508,6 +572,14 @@ theorem continuous_kapustinPowerGaugeWeight (β : ℝ) :
       funext (kapustinPowerGaugeWeight_eq_cos β)]
   exact (continuous_kapustinPowerGaugeAmplitude β).mul
     (Real.continuous_cos.comp (continuous_kapustinPowerGaugePhase β))
+
+theorem isOpen_kapustinPowerGauge_positiveSet (β : ℝ) :
+    IsOpen {t : ℝ | 0 < kapustinPowerGaugeWeight β t} :=
+  isOpen_lt continuous_const (continuous_kapustinPowerGaugeWeight β)
+
+theorem isOpen_kapustinPowerGauge_negativeSet (β : ℝ) :
+    IsOpen {t : ℝ | kapustinPowerGaugeWeight β t < 0} :=
+  isOpen_lt (continuous_kapustinPowerGaugeWeight β) continuous_const
 
 theorem tendsto_kapustinPowerGaugePhase_div_scale (β : ℝ) :
     Tendsto (fun t : ℝ => kapustinPowerGaugePhase β t / (t * Real.log t))
@@ -627,6 +699,20 @@ def kapustinPowerPositiveProjection (β : ℝ) :
   GaloisForLFunctions.HTGeometry.weightPositiveProjection
     (continuous_kapustinPowerGaugeWeight β).measurable
     (kapustinPowerGaugeWeight_neg β)
+
+def kapustinPowerIndefiniteForm (β : ℝ)
+    (f g : KapustinPowerCarrier β) : ℂ :=
+  GaloisForLFunctions.HTGeometry.signedWeightIndefiniteForm
+    (kapustinPowerGaugeWeight β) f g
+
+/-- Kapustin's displayed signed integral is exactly the Hilbert inner product twisted by `Jβ`. -/
+theorem inner_kapustinPowerFundamentalSymmetry_eq_indefiniteForm
+    (β : ℝ) (f g : KapustinPowerCarrier β) :
+    inner ℂ (kapustinPowerFundamentalSymmetry β f) g =
+      kapustinPowerIndefiniteForm β f g := by
+  exact GaloisForLFunctions.HTGeometry.inner_weightFundamentalSymmetry_eq_signedWeightIndefiniteForm
+    (continuous_kapustinPowerGaugeWeight β).measurable
+    (kapustinPowerGaugeWeight_neg β) f g
 
 /-- Arbitrarily long alternating chains occur on the positive critical half-line.  Continuity then
 places each chain node inside an open interval of the same strict sign. -/

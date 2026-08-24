@@ -1,7 +1,7 @@
 # Kapustin power gauges require a noncompact full-sector polarization
 
 - **ID:** `kapustin-power-gauge-infinite-krein-index`
-- **Stage:** 2-fully-proven/not_new_scientific_knowledge
+- **Stage:** 3-formalized/not_new_scientific_knowledge
 - **Type:** THEOREM (paper), `[PROVED HERE; BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Source:** V. V. Kapustin, *Hilbert--Pólya Operators in Krein Spaces*, Siberian
   Mathematical Journal 65 (2024), 72--75
@@ -224,9 +224,9 @@ index faithfully equals the number of zeros beyond the shifted line.
 
 - [x] 0 -> 1: exact source operator, gauge family, and falsifiable inertia claim isolated.
 - [x] 1 -> 2: complete Stirling, sign-alternation, symmetric-index, and full-sector polarization proof.
-- [ ] 2 -> 3: no Lean formalization selected; the current tree lacks complex Stirling asymptotics and
-  weighted Krein-space infrastructure, and a partial finite-dimensional wrapper would not formalize
-  the theorem.
+- [x] 2 -> 3: literal power gauge, constant-sensitive Gamma phase, equations `(1)`--`(3)`,
+  alternating sign chains, even weighted Krein carrier, bilateral infinite index, and full-sector
+  correction obstruction formalized and audited in Lean.
 - [ ] 3 -> 4: independent expert check and broader admissible-gauge classification remain.
 
 ## Route disposition
@@ -260,13 +260,19 @@ produces the Hilbert metric before the Xi divisor is reconstructed.
 
 ## Formalization progress (2026-08-24)
 
-`GaloisForLFunctions.HTGeometry.FullSectorPolarizationLaw` now proves `(4)` and `(5)` as exact
-quadratic-form inequalities, plus the induced unit norm floor, infinite algebraic rank,
-noncompactness, and distance at least one from every compact perturbation.
-`GaloisForLFunctions.RHTower.FullSectorPolarizationEssentialNorm` proves
-`essentialNorm G ≥ 1` and exclusion from every positive Schatten class.  Both leaves pass direct
-Lean checking and targeted leaf builds; new declarations use only standard Lean
-`propext`/choice/quotient axioms.
+`GaloisForLFunctions.RHTower.KapustinPowerGaugeKreinIndex` formalizes the literal principal-branch
+power gauge, proves it nonzero, derives its exact polar form, and proves `(1)`--`(3)` with explicit
+bounds.  `GaloisForLFunctions.RHTower.GammaVerticalPhaseSecondOrder` uses Legendre duplication plus
+the second-order digamma estimate to remove the integration constant and prove the
+constant-sensitive critical-line phase law.  Arbitrarily long alternating chains lie in the open
+positive and negative sign sets.
 
-Card remains Stage 2.  Exact phase/Stirling asymptotics `(1)`--`(3)`, infinite alternating sign
-intervals, and the literal even weighted-`L²` Krein-index construction are still unformalized.
+`GaloisForLFunctions.HTGeometry.EvenWeightedSignCarrier` constructs the exact symmetric
+`L²(ℝ,|p_β(t)|dt)` carrier, identifies `<J_βf,g>` with the displayed signed integral, proves both
+sign sectors infinite-dimensional, and supplies their orthogonal projections.
+`FullSectorPolarizationLaw` and `FullSectorPolarizationEssentialNorm` prove `(4)`--`(5)`, infinite
+rank, noncompactness, exclusion from every finite Schatten class, compact distance at least one,
+and `essentialNorm G ≥ 1`.
+
+Direct Lean checks and targeted leaf build pass.  Axiom audit reports only `propext`,
+`Classical.choice`, and `Quot.sound`.

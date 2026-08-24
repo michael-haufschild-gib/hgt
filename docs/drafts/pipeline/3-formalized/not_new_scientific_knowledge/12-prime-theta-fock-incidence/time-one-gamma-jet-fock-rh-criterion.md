@@ -1,9 +1,9 @@
 # Time-one Gamma prime seams have finite factorial jet energy exactly on the critical line
 
 - **ID:** `time-one-gamma-jet-fock-rh-criterion`
-- **Stage:** 2-fully-proven/not_new_scientific_knowledge
+- **Stage:** 3-formalized/not_new_scientific_knowledge
 - **Type:** THEOREM (paper) / EXACT RH CONSUMER / HT CLOCK BRIDGE
-- **Scientific status:** `[PROVED HERE] [NOT FORMALIZED]
+- **Scientific status:** `[PROVED HERE] [FORMALIZED]
   [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parents:** `prime-laplace-gamma-jet-incidence-phase-transition.md`,
   `archimedean-meixner-root-seam-scale.md`, and
@@ -175,48 +175,41 @@ Thus `(14)` holds.
 Equation `(13)` is exactly the factorial Fock norm of the first `N` raw derivative observations,
 the positive metric selected by Gamma's opposite-variance jet clocks.
 
-## Lean bridge status
+## Lean certificate
 
-The source-independent analytic implication in `(13)`--`(16)` is now formalized in
-`formal/GaloisForLFunctions/HTGeometry/FactorialFockInfiniteRadius.lean`.  The general theorem
-`radius_eq_top_of_factorialFockPartialEnergy_le` is vector-valued over an arbitrary
-nontrivially normed field: a uniform bound on every finite `n! * ‖p_n‖²` energy forces the formal
-multilinear series radius to be infinite.  Its exact raw-derivative specialization
-`radius_taylorSeries_eq_top_of_rawJetFactorialFockPartialEnergy_le` proves that
+The dependency-closed module
 
 ```text
-forall N, sum_(j<N) |V^(j)(x_0)|^2 / j! <= C
+formal/GaloisForLFunctions/RHTower/TimeOneGammaJetFockRHCriterion.lean
 ```
 
-forces the normalized formal Taylor series with coefficients `V^(j)(x_0)/j!` to have infinite
-radius.  The proof uses an exact AM--GM majorant by the given factorial energy plus the exponential
-clock `r^(2j)/j!`; no asymptotic estimate or numerical input is used.
+formalizes every proved theorem on this card.  It identifies the complex prime transform with the
+actual real time-one Mertens source, realizes the reflected seam as the value transform of an honest
+time-one Meixner Hilbert vector, proves analyticity on the exact common convergence half-plane, and
+proves critical-line cancellation.  For off-line points it derives the two normalized inward-ray
+residues `-sqrt 2` and `+sqrt 2` at `(10)` and `(11)`.  Those nonzero residues give concrete
+`NoExtensionAt` witnesses without assuming meromorphic continuation.
 
-With `AnalyticAt V x_0`, the stronger theorem
-`exists_entire_extension_of_rawJetFactorialFockPartialEnergy_le` also discharges the germ interface:
-the same cofinal bound constructs an entire function agreeing with `V` on a neighborhood of `x_0`.
-Thus neither the Taylor-coefficient normalization nor the local identity step remains an assumed
-interface.  Its contrapositive
-`exists_rawJetFactorialFockPartialEnergy_gt_of_no_entire_extension` packages the remaining boundary
-cleanly: once the concrete seam is proved to admit no entire germ extension, every proposed finite
-energy bound is exceeded at some clock depth.
+The general factorial-Fock entire-extension theorem then yields the exact iff `(14)`, explicit
+cofinal divergence for every proposed off-line bound, and the Xi-divisor/RH equivalence `(17)`.
+Principal declarations are:
 
-The companion module
-`formal/GaloisForLFunctions/RHTower/FactorialFockPoleDivergence.lean` connects this interface to the
-existing `NoExtensionAt` corpus.  Analytic uniqueness transports a boundary no-extension
-obstruction to every interior germ of a preconnected continuation domain, and the specialization
-`exists_simplePoleAt_rawJetFactorialFockPartialEnergy_gt` proves unconditional divergence for
-`1/(z-b)` at every `a != b`.  The parallel
-`exists_expOverSimplePole_rawJetFactorialFockPartialEnergy_gt` shows that multiplication by the
-nonvanishing entire exponential column cannot heal the divergence.  Thus the general law subsumes
-both explicit no-extension providers already in the corpus.  This is the exact parent-theory pole
-mechanism needed by `(10)`--`(16)`; the unresolved work is to realize the time-one arithmetic seam
-in that interface.
+```text
+primeSeamTransform_one_ofReal_eq_timeOnePrimeLaplace
+meixnerPrimeSeamValue_eq_reflected_transform_complex
+analyticOnNhd_timeOneGammaPrimeSeam
+tendsto_timeOneGammaPrimeSeam_right_residue
+tendsto_timeOneGammaPrimeSeam_left_residue
+timeOneGammaPrimeSeam_noExtensionAt_of_re_gt_half
+timeOneGammaPrimeSeam_noExtensionAt_of_re_lt_half
+timeOneGammaJetFockBounded_iff_re_eq_half
+exists_timeOneGammaJetFockEnergy_gt_of_re_ne_half
+summable_timeOneMeixnerSeamEnergy_of_openStrip
+inner_timeOneMeixnerSeam_eq_timeOneGammaPrimeSeam
+riemannHypothesis_iff_forall_xiDivisor_timeOneGammaJetFockBounded
+```
 
-This does **not** yet formalize `(14)`.  The remaining zeta-specific Lean obligation is to construct
-the time-one transform `V_rho` with its meromorphic continuation and prove that the entire extension
-forced above is incompatible, by analytic uniqueness, with the explicit uncancelled simple pole for
-`Re rho != 1/2`.  The source producer `(18)` remains open independently.
+The conjectural source producer `(18)` remains open and is not assumed by any declaration.
 
 ## Exact RH criterion
 
@@ -310,6 +303,17 @@ only with a source proof of `(18)` through the HT anomaly colligation.
 - [x] isolate the source-facing uniform clock bound
 - [x] identify the off-line pole as the reflected Mertens corona doublet
 - [x] state the affine-pinned boundary descent alternative and its transport falsifier
+- [x] formalize the exact time-one transform and honest Hilbert-vector realization
+- [x] formalize both off-line residues and no-extension obstructions
+- [x] formalize the factorial raw-jet iff criterion and exact RH equivalence
 - [ ] construct the completed Euler anti-reflection anomaly in the Gamma clock field
 - [ ] prove the incidence identity and bound `(18)`
 - [ ] deduce RH
+
+## Lean completion log — 2026-08-24
+
+`RHTower/TimeOneGammaJetFockRHCriterion.lean` is imported explicitly by `RHTower.lean`. Direct
+source checking and targeted leaf build pass. `#print axioms` audits of every new declaration report
+only `propext`, `Classical.choice`, and `Quot.sound`. Repository lint finds no forbidden declaration
+in this module; its current nonzero exit is an unrelated pre-existing umbrella reachability failure
+for `GaloisForLFunctions.HTGeometry.SecondOrderConstraintDescent`.

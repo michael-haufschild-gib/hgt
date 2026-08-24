@@ -1,9 +1,9 @@
 # Source-face observation cohomology transmutation
 
 - **ID:** `source-face-observation-cohomology-transmutation`
-- **Stage:** 2-fully-proven / algebraic core Lean-formalized
+- **Stage:** 3-formalized
 - **Type:** MAXIMAL RECONSTRUCTION THEOREM / BASE-CHANGE BRIDGE / REPRESENTATION CORRECTION
-- **Scientific status:** `[PROVED] [LEAN-FORMALIZED CORE] [BRIDGE]`
+- **Scientific status:** `[PROVED] [LEAN-FORMALIZED] [BRIDGE]`
   `[GENERAL ALGEBRA IS NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH RESULT]`
 - **Common-kernel parent:**
   `../../3-formalized/not_new_scientific_knowledge/da-relative-source-conservativity.md`
@@ -13,6 +13,25 @@
   `../../3-formalized/hypertranscendental-critical-locus-universality.md`
 - **Live successor:**
   `../../1-in-progress/hypertranscendental-source-face-vanishing-cycle-conservation.md`
+
+## Lean formalization record
+
+- `SourceFaceObservationExcess.lean` proves `(1)`--`(6)` over rings, including heterogeneous
+  reporter families, quotient kernels, maximal reconstruction, and born-gauge/range-excess
+  equivalence.
+- `SourceFaceBaseChangeTransmutation.lean` proves the regular-face Bockstein laws `(8)`--`(11)`,
+  identifies degree-zero and degree-one Tor from the same length-one free resolution, and proves
+  all higher degrees vanish.
+- `SourceFaceHyperTorEdge.lean` proves the explicit common-kernel counterexample and the collapsed
+  one-face hyper-Tor edge sequence: inherited cycles are exactly the edge-map kernel and every
+  `Tor₁` class is reached.
+- `PrincipalQuotientBaseChangeTor.lean` and `BarnesSourceFaceTor.lean` prove `(13)`--`(16)` for
+  polynomial and Laurent Barnes source rings.
+- `CriticalNormalCrossingFaceTor.lean`, based on the existing exact Hilbert--Burch certificate,
+  proves every degree of `(19)` and `(20)`, plus both forms of `(21)`:
+  `Tor₁ ≃ J_F/(P_F)` and `Tor₁ ≃ ker(B/(P_F) → B/J_F)`.
+- Targeted module builds pass. New capstones were audited with `#print axioms`; dependencies are
+  only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## 1. Why the common kernel is not the whole object
 

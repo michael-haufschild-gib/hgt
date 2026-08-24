@@ -1,7 +1,7 @@
 # Prime-sieve Boolean first-trace connection curvature
 
 - **ID:** `prime-sieve-boolean-first-trace-connection-curvature`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized/not_new_scientific_knowledge
 - **Type:** EXACT SOURCE RENORMALIZATION / TWO-PRIME CURVATURE LAW
 - **Scientific status:** `[PAPER-PROVED] [BRIDGE] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Parents:**
@@ -234,8 +234,21 @@ firstTraceCorrectedSquareCurvature_mem_faceDefectIdeal
 map_firstTraceCorrectedSquareCurvature_eq_zero
 ```
 
-The projective-norm statements `(5)`--`(6)` and concrete Boolean nonvanishing evaluation `(10)`
-remain paper-proved; the formal module deliberately claims only its exact algebraic theorem.
+The same module now also formalizes the literal corrected Boolean edge, its exact projective norm,
+the total projective variation `1` along every enumeration of all primes, both expanded and
+face-defect factorizations of the curvature, the concrete Boolean nonvanishing evaluation `(10)`,
+and the reciprocal-prime BV scale identity `(11)`. The declarations are:
+
+```text
+finiteBooleanFirstTraceCorrectedEdge_eq
+projTensorSeminorm_finiteBooleanFirstTraceCorrectedEdge
+finiteBooleanFirstTraceEdgeProjectiveNorm_eq
+hasSum_finiteBooleanFirstTraceEdgeProjectiveNorm
+firstTraceCorrectedSquareCurvature_expanded_eq
+firstTraceCorrectedSquareCurvature_true_false
+firstTraceCorrectedSquareCurvature_ne_zero
+sieveDensity_reciprocalScale_difference
+```
 
 ## Gates
 
@@ -248,8 +261,21 @@ remain paper-proved; the formal module deliberately claims only its exact algebr
 - [x] BV reciprocal-prime scale bridge
 - [x] hostile audit
 - [x] Lean formalization of algebraic edge, curvature, and ideal landing
+- [x] Lean formalization of exact projective norm, arbitrary-enumeration total variation,
+  concrete nonvanishing, and BV reciprocal-prime scale bridge
 - [ ] restricted Wold/Gamma/BV two-cell
 - [ ] three-prime coherence
 - [ ] cofinal primitive convergence
 - [ ] literal co-Poisson/Sonin ideal landing
 - [ ] RH
+
+## Lean completion log — 2026-08-24
+
+`RHTower/PrimeSieveBooleanFirstTraceConnection.lean` now contains a dependency-closed formalization
+of every paper-proved theorem on this card. `HTGeometry/PrimeSieveDensityTelescope.lean` supplies
+the arbitrary-prime-enumeration sieve telescope and zero limit; the finite Boolean projective norm
+is inherited from the sharp separability-diagonal theorem. The leaf module is explicitly imported
+by `RHTower.lean`. Direct source checking, targeted leaf build, and `#print axioms` audits pass; the
+new declarations use only `propext`, `Classical.choice`, and `Quot.sound`. Unproved two-cell,
+three-face, cofinal primitive, literal Xi-ideal, and RH producer obligations remain open and are not
+assumed by any declaration.
