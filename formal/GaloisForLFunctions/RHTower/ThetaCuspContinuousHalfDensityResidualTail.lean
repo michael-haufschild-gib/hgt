@@ -998,8 +998,11 @@ theorem summable_integral_of_nonneg_hasSum
           ∑' n : ℕ, ∫⁻ x, ‖F n x‖ₑ ∂μ := by
       apply ENNReal.tsum_le_tsum
       intro n
-      simpa [Real.norm_eq_abs, abs_of_nonneg (hintNonneg n)] using
-        (MeasureTheory.enorm_integral_le_lintegral_enorm (F n))
+      calc
+        ENNReal.ofReal (∫ x, F n x ∂μ) = ‖∫ x, F n x ∂μ‖ₑ := by
+          rw [← ofReal_norm, Real.norm_eq_abs,
+            abs_of_nonneg (hintNonneg n)]
+        _ ≤ _ := MeasureTheory.enorm_integral_le_lintegral_enorm (F n)
     intro htop
     apply hfinite
     exact top_unique (htop ▸ hle)

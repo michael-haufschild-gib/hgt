@@ -1,9 +1,9 @@
 # Theta-cusp continuous half-density residual-tail chart
 
 - **ID:** `theta-cusp-continuous-half-density-residual-tail-chart`
-- **Stage:** 2-fully-proven/not_new_scientific_knowledge
+- **Stage:** 3-formalized/not_new_scientific_knowledge
 - **Type:** THEOREM (paper) / `[VALUE RELATION] [REFLECTION] [SOURCE TAIL CHART]`
-- **Scientific status:** `[PROVED] [BRIDGE] [NOVELTY UNVERIFIED] [NOT AN RH PROOF]`
+- **Scientific status:** `[PROVED] [FORMALIZED] [BRIDGE] [NOVELTY UNVERIFIED] [NOT AN RH PROOF]`
 - **Parents:** `../../3-formalized/not_new_scientific_knowledge/theta-cusp-half-density-ward-laplace-budget-transfer.md`;
   `theta-cusp-antisymmetric-half-density-turan-curvature-transfer.md`
 - **Lean input:** `PrimeArchThetaAtomLikelihoodRatio.lean`, especially
@@ -324,3 +324,12 @@ Residual-life transforms, exponential tilting, and moment layer-cake identities 
 The contribution here is a source-specific splice of those tools with the exact theta atom and its
 critical half-density reflection.  Scientific novelty has not been established and is not needed
 for its role in the RH chain.
+
+## Lean completion log — 2026-08-24
+
+`RHTower/ThetaCuspContinuousHalfDensityResidualTail.lean` formalizes equations `(1)`--`(26)`,
+including continuous half-density tails, residual parity series, survival and moment corridors,
+crossing-window collapse, unique regular-curvature seam, and both peak localizations. It is
+imported explicitly by `RHTower.lean`. Direct source checking and targeted leaf build pass.
+`#print axioms` audits of representative capstones from every section report only `propext`,
+`Classical.choice`, and `Quot.sound`.

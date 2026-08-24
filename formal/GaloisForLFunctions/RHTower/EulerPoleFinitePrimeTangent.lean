@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.SemilocalDualPairEulerConnection
 import GaloisForLFunctions.HTGeometry.DigammaGammaFactorialBlowUp
 import GaloisForLFunctions.RHTower.RiemannXiRealAxisNonvanishing
+import GaloisForLFunctions.RHTower.XiLogDerivNotHolonomic
 
 /-!
 # The unique finite-prime completed Euler pole
@@ -243,6 +244,155 @@ theorem analyticAt_allPrimeCompletedTangent_eulerPole :
     change AnalyticAt ℂ ((logDeriv xi) ∘ eulerPoleCompletedCoordinate) (I / 2)
     exact hlog.comp_of_eq hcoord hcoordVal
   exact analyticAt_const.mul hcomp
+
+/-! ## Exact transverse-zero replacement -/
+
+/-- A Xi zero `rho` in completed coordinates corresponds to this centered tangent node. -/
+def eulerPoleXiZeroNode (rho : ℂ) : ℂ := I * (rho - 1 / 2)
+
+theorem eulerPoleCompletedCoordinate_zeroNode (rho : ℂ) :
+    eulerPoleCompletedCoordinate (eulerPoleXiZeroNode rho) = rho := by
+  simp only [eulerPoleCompletedCoordinate, eulerPoleXiZeroNode]
+  rw [← mul_assoc, I_mul_I]
+  ring
+
+theorem eulerPoleXiZeroNode_completedCoordinate (z : ℂ) :
+    eulerPoleXiZeroNode (eulerPoleCompletedCoordinate z) = z := by
+  simp only [eulerPoleCompletedCoordinate, eulerPoleXiZeroNode]
+  rw [show 1 / 2 - I * z - 1 / 2 = -I * z by ring]
+  calc
+    I * (-I * z) = -(I * I) * z := by ring
+    _ = z := by rw [I_mul_I]; ring
+
+/-- Right-half Xi zeros are exactly upper-half-plane centered tangent nodes. -/
+theorem eulerPoleXiZeroNode_mem_upperHalfPlane_iff (rho : ℂ) :
+    0 < (eulerPoleXiZeroNode rho).im ↔ 1 / 2 < rho.re := by
+  have him : (eulerPoleXiZeroNode rho).im = rho.re - 1 / 2 := by
+    simp [eulerPoleXiZeroNode]
+  rw [him]
+  exact sub_pos
+
+/-- At every Xi zero, the all-prime tangent has residue `-2i` times the exact analytic
+multiplicity. This is the completed transverse-divisor replacement of the finite Euler pole. -/
+theorem tendsto_allPrimeCompletedTangent_xiZeroResidue
+    {rho : ℂ} (hrho : xi rho = 0) :
+    Tendsto
+      (fun z : ℂ => (z - eulerPoleXiZeroNode rho) * allPrimeCompletedTangent z)
+      (nhdsWithin (eulerPoleXiZeroNode rho) ({eulerPoleXiZeroNode rho}ᶜ))
+      (nhds (-2 * I * ((analyticOrderAt xi rho).toNat : ℂ))) := by
+  let p : ℂ := eulerPoleXiZeroNode rho
+  have hbase := xiLogDeriv_iteratedDeriv_residue hrho 0
+  have hbase' : Tendsto
+      (fun s : ℂ => (s - rho) * logDeriv xi s)
+      (nhdsWithin rho ({rho}ᶜ))
+      (nhds ((analyticOrderAt xi rho).toNat : ℂ)) := by
+    simpa only [zero_add, pow_one, iteratedDeriv_zero, xiLogDeriv, logDeriv_apply,
+      pow_zero, Nat.factorial_zero, Nat.cast_one, one_mul, mul_one] using hbase
+  have hpcoord : eulerPoleCompletedCoordinate p = rho := by
+    simpa only [p] using eulerPoleCompletedCoordinate_zeroNode rho
+  have hcoord : Tendsto eulerPoleCompletedCoordinate
+      (nhdsWithin p ({p}ᶜ)) (nhdsWithin rho ({rho}ᶜ)) := by
+    apply tendsto_nhdsWithin_iff.2
+    constructor
+    · have hc : Tendsto eulerPoleCompletedCoordinate
+          (nhdsWithin p ({p}ᶜ)) (nhds (eulerPoleCompletedCoordinate p)) :=
+        (hasDerivAt_eulerPoleCompletedCoordinate p).continuousAt.tendsto.mono_left
+          inf_le_left
+      rw [hpcoord] at hc
+      exact hc
+    · filter_upwards [self_mem_nhdsWithin] with z hz
+      change eulerPoleCompletedCoordinate z ≠ rho
+      intro heq
+      have hzp : z ≠ p := by
+        simpa only [Set.mem_compl_iff, Set.mem_singleton_iff] using hz
+      apply hzp
+      have hlin : -I * (z - p) = 0 := by
+        calc
+          -I * (z - p) = eulerPoleCompletedCoordinate z -
+              eulerPoleCompletedCoordinate p := by
+                simp only [eulerPoleCompletedCoordinate]
+                ring
+          _ = 0 := by rw [heq, hpcoord, sub_self]
+      exact sub_eq_zero.mp
+        (mul_eq_zero.mp hlin |>.resolve_left (neg_ne_zero.mpr I_ne_zero))
+  have hcomp := hbase'.comp hcoord
+  have hscaled := (tendsto_const_nhds.mul hcomp :
+    Tendsto
+      (fun z : ℂ => (-2 * I) *
+        ((eulerPoleCompletedCoordinate z - rho) *
+          logDeriv xi (eulerPoleCompletedCoordinate z)))
+      (nhdsWithin p ({p}ᶜ))
+      (nhds ((-2 * I) * ((analyticOrderAt xi rho).toNat : ℂ))))
+  simpa only [p] using hscaled.congr' (by
+    filter_upwards with z
+    have hid : eulerPoleCompletedCoordinate z - rho =
+        -I * (z - eulerPoleXiZeroNode rho) := by
+      calc
+        eulerPoleCompletedCoordinate z - rho =
+            eulerPoleCompletedCoordinate z -
+              eulerPoleCompletedCoordinate (eulerPoleXiZeroNode rho) := by
+                rw [eulerPoleCompletedCoordinate_zeroNode]
+        _ = -I * (z - eulerPoleXiZeroNode rho) := by
+          simp only [eulerPoleCompletedCoordinate]
+          ring
+    simp only [allPrimeCompletedTangent]
+    rw [hid]
+    calc
+      -2 * I * (-I * (z - eulerPoleXiZeroNode rho) *
+          logDeriv xi (eulerPoleCompletedCoordinate z)) =
+          2 * (I * I) * (z - eulerPoleXiZeroNode rho) *
+            logDeriv xi (eulerPoleCompletedCoordinate z) := by ring
+      _ = (z - eulerPoleXiZeroNode rho) *
+          (-2 * logDeriv xi (eulerPoleCompletedCoordinate z)) := by
+            rw [I_mul_I]
+            ring)
+
+private theorem xi_order_toNat_ne_zero_at_zero {rho : ℂ} (hrho : xi rho = 0) :
+    (analyticOrderAt xi rho).toNat ≠ 0 := by
+  have horder : analyticOrderAt xi rho ≠ 0 :=
+    analyticOrderAt_ne_zero.mpr
+      ⟨xi_analyticOnNhd_univ rho (Set.mem_univ rho), hrho⟩
+  intro hzero
+  rcases ENat.toNat_eq_zero.mp hzero with h | h
+  · exact horder h
+  · exact xi_order_ne_top rho h
+
+/-- The all-prime completed tangent is holomorphic exactly away from the shifted Xi divisor. -/
+theorem analyticAt_allPrimeCompletedTangent_iff (z : ℂ) :
+    AnalyticAt ℂ allPrimeCompletedTangent z ↔
+      xi (eulerPoleCompletedCoordinate z) ≠ 0 := by
+  constructor
+  · intro han hzero
+    have hres := tendsto_allPrimeCompletedTangent_xiZeroResidue hzero
+    rw [eulerPoleXiZeroNode_completedCoordinate] at hres
+    have hsub : Tendsto (fun w : ℂ => w - z) (nhds z) (nhds 0) := by
+      have hc : ContinuousAt (fun w : ℂ => w - z) z :=
+        continuousAt_id.sub_const z
+      simpa only [sub_self] using hc.tendsto
+    have hzeroLimit : Tendsto
+        (fun w : ℂ => (w - z) * allPrimeCompletedTangent w)
+        (nhdsWithin z ({z}ᶜ)) (nhds 0) := by
+      change Tendsto (fun w : ℂ => (w - z) * allPrimeCompletedTangent w)
+        (nhds z ⊓ Filter.principal ({z}ᶜ)) (nhds 0)
+      simpa only [zero_mul] using
+        (hsub.mono_left inf_le_left).mul
+          (han.continuousAt.mono_left inf_le_left)
+    have heq : (0 : ℂ) =
+        -2 * I * ((analyticOrderAt xi (eulerPoleCompletedCoordinate z)).toNat : ℂ) :=
+      tendsto_nhds_unique hzeroLimit hres
+    have hm : ((analyticOrderAt xi (eulerPoleCompletedCoordinate z)).toNat : ℂ) ≠ 0 := by
+      exact_mod_cast xi_order_toNat_ne_zero_at_zero hzero
+    exact (mul_ne_zero (mul_ne_zero (by norm_num) I_ne_zero) hm) heq.symm
+  · intro hxi
+    have hcoord : AnalyticAt ℂ eulerPoleCompletedCoordinate z :=
+      analyticAt_const.sub (analyticAt_const.mul analyticAt_id)
+    have hlog : AnalyticAt ℂ (logDeriv xi) (eulerPoleCompletedCoordinate z) :=
+      analyticAt_logDeriv_xi_of_ne hxi
+    change AnalyticAt ℂ
+      (fun w => -2 * logDeriv xi (eulerPoleCompletedCoordinate w)) z
+    exact analyticAt_const.mul
+      (show AnalyticAt ℂ ((logDeriv xi) ∘ eulerPoleCompletedCoordinate) z from
+        hlog.comp hcoord)
 
 end
 

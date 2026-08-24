@@ -1,9 +1,8 @@
 # FE ⟺ the generalized-integer measure is a Fourier quasicrystal (G8 / crystalline self-duality)
 
 - **ID:** fe-fourier-quasicrystal
-- **Stage:** 0-backlog-lean
-- **Type:** THEOREM (paper) — equivalence + Door-2 verdict; grade **BRIDGE**. (Was CANDIDATE; worked to a
-  verdict here.)
+- **Stage:** 5-failed
+- **Type:** FALSIFIED AS STATED; Poisson-summation survivor already formalized
 - **Priority:** FUTURE
 - **Source:** `../../door/bucket-new-sibling-conjectures.md` (#68 SEED-F) · 00-status row #97. Uses:
   `../2-fully-proven/explicit-formula-as-constraint.md` (#139), `../2-fully-proven/orthogonality-meta-theorem.md`
@@ -167,3 +166,24 @@ paper-proof defect. This is a **paper-proven BRIDGE theorem** whose proof legiti
 those imports are to be carried as hypotheses/axioms (or formalized separately) at the Lean stage — not a reason to
 reject the paper proof. The card's stated theorem is proved at its 1→2 gate; any co-located open conjecture
 (C5★ / ω=0 / Schanuel / apex) is explicitly a SEPARATE open core, not part of this theorem. Re-banked for Lean re-attempt.
+
+## No-go closure — 2026-08-24
+
+- **Exact killing mechanism:** Section 1 proves Poisson self-duality of the ordinary integer Dirac comb
+  `sum_(n in Z) delta_n`, then silently identifies it with a generalized-integer or Dirichlet-coefficient
+  measure. No map or Fourier-transform identity justifies that substitution. The integer comb is
+  self-dual unconditionally, so its self-duality cannot characterize a separately stated functional
+  equation without specifying an L-function construction. Section 2 is incompatible with the card's own
+  Fourier-quasicrystal definition: the displayed transform of the zero measure contains a continuous
+  archimedean density, hence is not an atomic locally finite measure. Finally, a Davenport–Heilbronn
+  functional equation does not follow from the zeta-specific theta-comb calculation, so the asserted
+  coefficient-comb self-duality is unsupported. The claimed equivalence is therefore false/not well-typed.
+- **Strongest positive survivor:** Poisson summation for the integer lattice is valid. In the exact
+  normalization used by the project, every even Schwartz function satisfies the folded half-line Poisson
+  identity with explicit central terms.
+- **New insight:** Theta modularity, coefficient measures, zero explicit formulas, and Fourier
+  quasicrystals are distinct objects. A correct generalized statement needs an explicit transform category
+  accommodating the archimedean continuous part and a proved Mellin functor to the completed L-function.
+- **Status:** The positive Poisson survivor is dependency-closed and already formalized as
+  `RHTower.even_poisson_summation` in `RHTower/ArchimedeanMellinFourier.lean`; exact Xi Guinand–Weil
+  source/divisor identities are separately formalized. No false generalized-comb wrapper is added.

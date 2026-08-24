@@ -1,10 +1,8 @@
 # The intrinsic RH locus = pure + polarized (G9) — the localization keystone of the ω/RH decoupling
 
 - **ID:** intrinsic-rh-locus-pure-polarized
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper, structural) — the proven localization keystone (§1–§3): RH is the faithful
-  `κ₋=0` positivity on the polarized locus, separate from realization. The arithmetic-motives / Euler-cut
-  identification (§4) is the **OPEN FIELDS-MEDAL apex**, explicitly **not** part of the banked theorem.
+- **Stage:** 5-failed
+- **Type:** FALSIFIED / NOT WELL-POSED AS STATED; divisor-positivity survivor already formalized
 - **Priority:** FOUNDATIONAL
 - **Grade:** BRIDGE (substrate) — the localization-axis face of the decoupling.
 - **Source:** #68 SEED-I §22.3 (`bucket-new-sibling-conjectures`) · 00-status row #98; resolved via
@@ -125,3 +123,24 @@ localization keystone (archimedean positivity) from realization, and reinforces 
 positivity is Deligne's Hard-Lefschetz, the geometric motives; the ℚ apex §4 is the missing Euler cut).
 
 Grade unchanged: BRIDGE (substrate), the localization-axis face of the decoupling. → 2-fully-proven.
+
+## No-go closure — 2026-08-24
+
+- **Exact killing mechanism:** The headline equivalence uses “meaningful-and-clean,” “pure,”
+  “polarized locus,” `M`, and `zeta_M` without defining one category or predicates. Absence of a
+  functional equation does not make every statement about zeros on a vertical line logically undefined;
+  it only removes a canonical symmetry line. Conversely, “polarized” alternates between existence of a
+  self-duality and positivity of that self-duality, making §§2–3 partly definitional. Section 3 then imports
+  `omega=0 ⇏ RH`, whose cited card supplies no separating model and is retired. The claimed locus theorem
+  therefore has no stable proposition and no dependency-closed paper proof. Adding categorical or omega
+  hypotheses would violate the unconditional formalization requirement and would not prove this statement.
+- **Strongest positive survivor:** For the actual completed Xi carrier, faithful divisor positivity is
+  mathematically precise: vanishing negative index/channel and appropriate Herglotz passivity are each
+  equivalent to `RiemannHypothesis` in existing Lean modules.
+- **New insight:** Exact Xi positivity does not imply a universal theorem about undefined motives or
+  realization loci. Any replacement must specify a category, purity predicate, polarization datum,
+  associated L-function, and functor relating its negative index to Xi zeros.
+- **Status:** Xi-index/Herglotz survivors are already dependency-closed and formalized, including
+  `universalOrientedHerglotz_nonneg_iff_negativeIndex_zero`,
+  `riemannHypothesis_iff_forall_pairDifEnergy_eq_zero`, and multiple completed-source passivity criteria.
+  No duplicate wrapper is added; no additional categorical positive survivor remains.

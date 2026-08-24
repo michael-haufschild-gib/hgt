@@ -16,9 +16,9 @@ For a Hodge-paired scalar/coexact-vector harmonic on the curvature `-1` horizon,
 
 `k_V^2 = k_S^2 + 1`, hence `Q_V = k_V^2-1 = k_S^2 = Q_S`.
 
-Their forbidden-boundary coefficient is therefore exactly the preceding physical Gamma-product
-Jost function.  Xi-divisor descendants are simple gravitational Jost zeros and inverse-Green
-poles, not Jost poles.
+Their forbidden-boundary coefficient is therefore exactly the preceding Gamma-product Jost
+function. Xi-divisor descendants under resonance continuation are simple gravitational Jost zeros
+and inverse-Green poles, not Jost poles. They are not asserted to be `L2` horizon modes.
 
 Specializing their full potentials (Eqs. (10)--(13)) to `d=4`, writing
 `x=omega_4 M/r`, `u=r^2/l^2`, and `Q=Q_S=Q_V`, gives the scalar numerator and vector bracket
@@ -239,7 +239,7 @@ def d4GravitationalHypergeometricBoundaryJost (omega z : ℂ) : ℂ :=
 def d4GravitationalHypergeometricBoundaryGreen (omega z : ℂ) : ℂ :=
   (d4GravitationalHypergeometricBoundaryJost omega z)⁻¹
 
-/-- Divisor descendants are simple gravitational Jost zeros. -/
+/-- Xi resonance descendants are simple gravitational Jost zeros. -/
 theorem d4GravitationalHypergeometricBoundaryJost_order_qnmPlus_xi
     (n : ℕ) (q : XiZeroCopy) :
     meromorphicOrderAt
@@ -351,7 +351,7 @@ lemma teukolskyReturnDeterminant_qnmPlus (n : ℕ) (q : XiZeroCopy)
     thetaCuspHawkingHypergeometricJostPlus_shadow,
     thetaCuspHawkingHypergeometricJostPlus_qnm_zero, zero_mul, sub_zero]
 
-/-- Exact returned-channel incidence at every actual divisor. -/
+/-- Exact returned-channel incidence at every Xi resonance descendant. -/
 lemma teukolskyReturnDeterminant_qnmPlus_ne_zero_iff (n : ℕ) (q : XiZeroCopy)
     (returnedJost : ℂ → ℂ) :
     teukolskyReturnDeterminant

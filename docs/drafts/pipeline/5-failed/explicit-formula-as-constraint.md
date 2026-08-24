@@ -1,8 +1,8 @@
 # The explicit formula is the constraint — Ĥ for ζ, given explicitly; RH = its positivity = the archimedean term
 
 - **ID:** explicit-formula-as-constraint
-- **Stage:** 0-backlog-lean
-- **Type:** THEOREM (paper, dictionary/identification) — Door grade **BRIDGE**
+- **Stage:** 5-failed
+- **Type:** FALSIFIED AS STATED; explicit-formula and Weil-positivity survivors already formalized
 - **Priority:** FOUNDATIONAL
 - **Source:** the companion of `constraint-not-flow-theorem.md` (the epigraph: *what* the constraint is);
   builds on `../2-fully-proven/orthogonality-meta-theorem.md` (positivity = archimedean) and the
@@ -119,3 +119,25 @@ paper-proof defect. This is a **paper-proven BRIDGE theorem** whose proof legiti
 those imports are to be carried as hypotheses/axioms (or formalized separately) at the Lean stage — not a reason to
 reject the paper proof. The card's stated theorem is proved at its 1→2 gate; any co-located open conjecture
 (C5★ / ω=0 / Schanuel / apex) is explicitly a SEPARATE open core, not part of this theorem. Re-banked for Lean re-attempt.
+
+## No-go closure — 2026-08-24
+
+- **Exact killing mechanism:** Calling the explicit formula a “constraint” is a dictionary, not a new
+  proposition. The load-bearing signature claim is false/unsupported. A fixed DeWitt signature `(1|infinity)`
+  has one negative direction, while the same card identifies `kappa_-` with the number of off-line zero
+  pairs; under false RH that count need not be one and may be arbitrarily large or infinite. Bounded Satake
+  traces do not imply positivity of the full prime-side Weil quadratic form, and no decomposition proving
+  that all negative directions are a single Gamma coordinate is supplied. The quoted `D=Q_W` numerical
+  agreement is not a proof and cannot be used under the no-computation rule. Thus the “sole archimedean
+  obstruction” and signature conclusions cannot be unconditionally formalized.
+- **Strongest positive survivor:** The Guinand–Weil explicit formula genuinely identifies finite resolvent
+  sums over the multiplicity-exact Xi divisor with the continued prime–archimedean source. Separately, full
+  square-summable Xi–Weil positivity is equivalent to `RiemannHypothesis`, with explicit finite-support
+  negative witnesses at every off-real divisor orbit.
+- **New insight:** Explicit formula couples prime and archimedean contributions; it does not canonically
+  split all negativity into one archimedean dimension. Correct inertia is divisor-orbit-sensitive.
+- **Status:** Positive survivors are already formalized and audited in
+  `RHTower/XiGuinandWeilExplicitFormula.lean` and `RHTower/XiWeilPositivityCriterion.lean`, tracked by
+  `xi-guinand-weil-contour-synthesis.md` and
+  `xi-weil-full-square-summable-positivity-criterion.md`. No duplicate wrapper or false signature theorem
+  is added.

@@ -1,7 +1,7 @@
 # Mahler coefficient-field confinement and prime-cyclotomic escape
 
 - **ID:** `prime-cyclotomic-coefficient-field-escape`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / BRIDGE / NOT NEW SCIENTIFIC KNOWLEDGE
 - **Scientific status:** `[PROVED] [SEARCH] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Statement:** If a power series with algebraic coefficients is differentially algebraic, then
@@ -161,32 +161,42 @@ Primary sources:
 
 ## Lean status
 
-Lean infrastructure now proves the entire post-recurrence algebraic chain:
+Whole theorem is formalized unconditionally.
 
-- `ForwardRecurrenceFieldConfinement.lean` defines the exact forward-field recursion property and
-  proves that algebraic coefficients and finitely many algebraic recurrence constants confine the
-  whole coefficient sequence to one number field;
-- `PrimeCyclotomicFieldEscape.lean` proves that a primitive `n`-th root has rational minpoly degree
-  `φ(n)`, bounds its order by the degree of every containing number field, and proves that primitive
-  roots of pairwise-distinct prime orders cannot share one number field, even after arbitrary
-  nonzero rational rescaling.
+- `MahlerCoefficientFieldConfinement.lean` proves the exact formal Mahler theorem: every
+  algebraic-coefficient formal series satisfying any nonzero complex algebraic differential
+  relation has all coefficients in one number field. It constructs the ordinary-jet-to-Euler-jet
+  compiler, proves nonzero preservation through generic-jet injectivity, selects a field-preserving
+  nondegenerate minimal annihilator, and derives the late-coefficient recursion without assuming a
+  recurrence, nondegeneracy, or a coefficient field.
+- `PrimeCyclotomicFieldEscape.lean` proves primitive-prime cyclotomic field escape, including
+  arbitrary nonzero rational rescaling.
+- `MahlerCoefficientFieldConfinement.lean` combines these results to prove that every scaled
+  primitive-prime cyclotomic formal series survives every nonzero algebraic differential relation,
+  and transports this survival to analytic hypertranscendence for every smooth realization with
+  that Taylor series.
+- `PrimeCyclotomicEntireHypertranscendence.lean` constructs the explicit `1/n!` realization as an
+  entire function, proves infinite convergence radius, proves hypertranscendence, and proves exact
+  termwise equality between its Taylor coefficient norms and those of formal `exp`.
 
-Both modules pass direct Lean checking and targeted builds, and their new endpoints use only
-`propext`, `Classical.choice`, and `Quot.sound`. They are wired into the HTGeometry umbrella without
-building that umbrella. The remaining theorem obligation is the unconditional extraction of
-`ForwardFieldRecursive` from a formal algebraic differential equation (the Mahler--Sibuya--Sperber
-normalization), followed by the analytic power-series bridge. The card therefore remains Stage 2.
+All new modules pass direct Lean checks and targeted module builds. New endpoint axiom audits report
+only `propext`, `Classical.choice`, and `Quot.sound`. Modules are wired into the HTGeometry umbrella;
+the umbrella itself was not built.
 
 ## Gates
 
 - [x] Complete paper proof.
 - [x] Exact Mahler--Sibuya--Sperber parent identified.
 - [x] Scientific-novelty claim rejected.
-- [x] Moved to `2-fully-proven/not_new_scientific_knowledge`.
-- [ ] Whole theorem formalized unconditionally in Lean.
+- [x] Moved to `3-formalized/not_new_scientific_knowledge`.
+- [x] Whole theorem formalized unconditionally in Lean.
 
 ## Lean progress log
 
 - 2026-08-24 — Formalized forward-recurrence number-field confinement and exact primitive-prime
   cyclotomic escape, including nonzero rational magnitude profiles. Targeted builds and new-endpoint
   axiom audit pass. Open core narrowed to ADE-to-forward-recurrence extraction and analytic assembly.
+- 2026-08-24 — Closed the open core unconditionally. Formalized integer-normalized ordinary ADE to
+  Euler ADE conversion, field-preserving minimal-annihilator selection, exact late-coefficient
+  confinement, analytic Taylor transport, and the explicit entire `1/n!` cyclotomic HT function
+  with Taylor moduli identical to `exp`. Targeted builds and new-endpoint axiom audit pass.

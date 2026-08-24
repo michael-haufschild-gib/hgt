@@ -1,8 +1,8 @@
 # The orthogonality meta-theorem — RH-positivity is not definable on the independent prime structure (Source B)
 
 - **ID:** orthogonality-meta-theorem
-- **Stage:** 0-backlog-lean
-- **Type:** THEOREM (paper, meta-structural) — Door grade **BRIDGE** (locating theorem; imports Weil positivity + Tannakian duality)
+- **Stage:** 5-failed
+- **Type:** FALSIFIED / CIRCULAR AS STATED; rank-one algebraic survivor already formalized
 - **Priority:** FOUNDATIONAL
 - **Source:** the user's observation (every `2-fully-proven` theorem is BRIDGE, zero NATIVE; `5-failed/c5-near-resonance-large-values.md`,
   `5-failed/c3-native-invariant-door3.md`); builds on `../2-fully-proven/erosion-cocycle-reducibility.md` (axis-mode
@@ -225,3 +225,24 @@ paper-proof defect. This is a **paper-proven BRIDGE theorem** whose proof legiti
 those imports are to be carried as hypotheses/axioms (or formalized separately) at the Lean stage — not a reason to
 reject the paper proof. The card's stated theorem is proved at its 1→2 gate; any co-located open conjecture
 (C5★ / ω=0 / Schanuel / apex) is explicitly a SEPARATE open core, not part of this theorem. Re-banked for Lean re-attempt.
+
+## No-go closure — 2026-08-24
+
+- **Exact killing mechanism:** “No Source-B statement is RH-bearing” is not a consequence of absence of
+  a chosen polarization. A property may be invariant or definable on a reduct without being supplied as
+  primitive structure; proving non-definability requires a precise language plus elementarily equivalent
+  or automorphic models separated by the property. No such model theorem is given. Worse, §0 defines
+  Source B by “Door-2-strippable” proof content and excludes the Mertens RH equivalence because proving it
+  would be RH. The conclusion that no Source-B theorem proves RH is therefore built into the definition.
+  “Every known criterion uses archimedean data” is evidence, not a universal theorem. Section 4 also flags
+  its required Beurling realization comparison as unverified. The claimed meta-theorem is consequently
+  circular and lacks a well-posed Lean proposition; adding imported hypotheses would only assume its core.
+- **Strongest positive survivor:** For a fixed rank-one group multiplier `g`, the pairing-dual multiplier
+  is `g⁻¹`; equality to that fixed dual is equivalent to `g²=1`, so `g²≠1` obstructs this strict
+  multiplier self-duality.
+- **New insight:** Rank-one multiplier algebra cannot establish categorical non-definability or exclude
+  all prime-side RH criteria. A viable replacement needs a formal Source-B language and two realizations
+  with identical reducts but different RH truth values.
+- **Status:** Positive survivor was already split, proved, leaf-built, axiom-audited, and promoted as
+  `pipeline/3-formalized/not_new_scientific_knowledge/rank-one-dual-multiplier-obstruction.md`, backed by
+  `HTGeometry/RankOneDuality.lean`. No additional non-trivial dependency-closed survivor remains.

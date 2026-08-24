@@ -1,7 +1,7 @@
 # The Euler pole is the exact four-unit anti-causal boundary budget
 
 - **ID:** `euler-pole-four-unit-anti-causal-budget-law`
-- **Stage:** 2-fully-proven/not_new_scientific_knowledge
+- **Stage:** 3-formalized/not_new_scientific_knowledge
 - **Type:** THEOREM (paper), `[PROVED HERE; BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Source:** `infinitesimal-euler-leakage-cauchy-energy-threshold.md`;
   `shifted-euler-error-floor-mobius-tail-coupling.md`
@@ -184,8 +184,9 @@ construction of `S_E` in `(9)`.
 - [x] all-prime pole cancellation and divisor replacement identified
 - [x] `C_E(0,0)<=4 <-> RH` proved in the extended-energy convention
 - [x] singular-ADE capacity floor attached to finite-prime realizations
-- [ ] source-defined contraction `(9)` constructed
-- [ ] unconditional Lean formalization of the analytic transfer
+- [x] proved pole/divisor replacement law formalized unconditionally in Lean
+- [x] open source-defined contraction `(9)` separated into the existing stage-1 RH producer
+  `mobius-incidence-curvature-gamma-sonin-pole-divisor-transfer-rh.md`
 
 ## Lean status update (2026-08-23)
 
@@ -200,6 +201,21 @@ It also formalizes the equivalent off-RH finite-aperture budget violation and pa
 incoming norm `4` with this completed-wall nonexpansiveness law.  Exact leaf build and axiom audit
 pass; the new theorems use only `propext`, `Classical.choice`, and `Quot.sound`.
 
-This closes the canonical completed-wall reformulation, but not the card's stronger construction
-target `(9)`: no source-defined cofinal `L²` contraction `S_E` has yet been constructed.  The card
-therefore remains at stage 2.
+`RHTower/EulerPoleFinitePrimeTangent.lean` now additionally formalizes the literal finite-prime
+tangent `(1)`, its unique upper-half-plane failure of holomorphy at `z=i/2`, residue `-2i`, and
+all-prime cancellation at that node.  For every Xi zero `rho`, the affine centered node is proved
+to lie in the upper half-plane exactly when `Re rho>1/2`; the all-prime tangent has punctured
+residue
+
+```text
+-2i * analyticMultiplicity(Xi,rho),
+```
+
+and is holomorphic exactly away from the shifted Xi divisor.  Exact leaf build and axiom audit
+pass; all new declarations use only `propext`, `Classical.choice`, and `Quot.sound`.
+
+This closes every proved assertion of the bridge card.  Construction `(9)` remains open and is
+not claimed here: it is already the explicit objective of
+`pipeline/1-in-progress/mobius-incidence-curvature-gamma-sonin-pole-divisor-transfer-rh.md`.
+The completed bridge theorem therefore advances to stage 3 without reclassifying its separate
+RH-producing conjecture.

@@ -62,9 +62,10 @@ The jet remains quantified because the parity-difference calculation deliberatel
 common operator variation. No property of that phase is assumed: at the old Jost zero it cancels
 identically, while the concrete cubic cross-helicity source survives.
 
-The resulting Evans determinant and its Cayley completion are nontrivial at every Xi divisor
-whenever A != 0. Thus this controlled nonlinear gravitational subchannel does not select the
-critical line; it forces every sector to mix.
+The resulting projective Evans wedge and its Cayley completion are nontrivial at every Xi divisor
+whenever A != 0. This is a same-branch, fixed-`Q` comparison invariant, not yet the AIME projection
+between the `+xi` and `-xi` QNM-frequency branches. Those signs exchange square-root branches of
+one separated eigenvalue; they are not distinct angular-momentum eigenspaces.
 
 For the complete reduced second-order Teukolsky source of Spiers--Pound--Moxon,
 arXiv:2305.19332, the uncomputed remainder is kept explicit. The full determinant can vanish at
@@ -73,12 +74,12 @@ counterterm identity, rather than generic KMS/passivity/CCR or a positive pole s
 remaining full-dynamics obligation.
 
 **[LITERATURE-DERIVED] [PAPER-PROVED] [LEAN-PROVED]** Fundamental QNM radial moment,
-parity-to-helicity source, cubic AIME return, phase cancellation, all-sector mixing, theta-mirror
-Cayley law, and exact full-source counterterm classification.
+fixed-sector parity-to-helicity source, cubic AIME return, phase cancellation, all-sector
+projective nontriviality, theta-mirror Cayley law, and exact projective counterterm classification.
 
-**[OPEN CORE]** Evaluate rest of reduced second-order Einstein/Teukolsky source in this same
-topological-AdS background and decide whether its conserved-bilinear projection equals the forced
-counterterm at any tilted Xi sector.
+**[OPEN CORE]** Evaluate the full reduced second-order Einstein/Teukolsky source and its
+regularized cross-branch QNM bilinear in this same topological-AdS background, including direct and
+continuum terms.
 -/
 
 open Complex Real Set Filter Topology
@@ -321,8 +322,8 @@ lemma d4FundamentalQNMNonlinearChiralSource_shadow (amplitude z : ℂ) :
   unfold d4FundamentalQNMNonlinearChiralSource
   rw [d4FundamentalQNMChiralSourceKernel_shadow]
 
-/-- Every nonzero absorbed horizon mode produces nonzero cross-helicity return in every actual
-Xi sector. -/
+/-- Every nonzero absorbed horizon mode produces nonzero fixed-angular-sector cross-helicity
+return at every actual Xi divisor. This is not a transition between theta-shadow harmonics. -/
 theorem d4FundamentalQNMNonlinearChiralSource_xi_ne_zero_iff
     (amplitude : ℂ) (q : XiZeroCopy) :
     d4FundamentalQNMNonlinearChiralSource amplitude (xiSpectralPoint q) ≠ 0 ↔
@@ -372,8 +373,8 @@ lemma d4FundamentalQNMNonlinearReturnedJost_qnmPlus
       d4FundamentalQNMNonlinearChiralSource amplitude (xiSpectralPoint q) := by
   exact teukolskyReturnedJostWithHorizonPhase_qnmPlus 0 q _ _
 
-/-- Horizon phase cancels at old pole; explicit cubic chiral source makes Evans return
-nonzero exactly for nonzero ingoing horizon mode. -/
+/-- Horizon phase cancels at old pole; explicit cubic fixed-sector chiral source makes the
+projective Evans wedge nonzero exactly for nonzero ingoing horizon mode. -/
 theorem d4FundamentalQNMNonlinearReturnDeterminant_qnmPlus_ne_zero_iff
     (advancedTime : ℝ) (amplitude : ℂ)
     (horizonFrequencyJet : ℂ → ℂ) (q : XiZeroCopy) :
@@ -388,7 +389,7 @@ theorem d4FundamentalQNMNonlinearReturnDeterminant_qnmPlus_ne_zero_iff
     d4FundamentalQNMNonlinearReturnedJost_qnmPlus,
     d4FundamentalQNMNonlinearChiralSource_xi_ne_zero_iff]
 
-/-- Concrete full nonperturbative Cayley completion of nonlinear AIME return. -/
+/-- Canonical projective Cayley completion of the controlled nonlinear AIME return component. -/
 def d4FundamentalQNMNonlinearCayleySMatrix
     (advancedTime : ℝ) (amplitude : ℂ)
     (horizonFrequencyJet : ℂ → ℂ) (omega z : ℂ) : ℂ :=
@@ -396,7 +397,8 @@ def d4FundamentalQNMNonlinearCayleySMatrix
     (d4FundamentalQNMNonlinearReturnedJost
       advancedTime amplitude horizonFrequencyJet omega) z
 
-/-- Exact theta-mirror law for concrete nonlinear gravitational S-matrix. -/
+/-- Exact theta-mirror law for the projective Cayley completion. This algebraic completion is not
+identified here with the full angularly resolved gravitational S-matrix. -/
 theorem d4FundamentalQNMNonlinearCayleySMatrix_shadow
     (advancedTime : ℝ) (amplitude : ℂ)
     (horizonFrequencyJet : ℂ → ℂ) (omega z : ℂ) :
@@ -423,8 +425,8 @@ theorem d4FundamentalQNMNonlinearCayleySMatrix_qnmPlus_ne_one_iff
     0 q _ _).trans
       (d4FundamentalQNMNonlinearChiralSource_xi_ne_zero_iff amplitude q)
 
-/-- Strong all-sector form: any nonzero horizon mode makes completed fundamental return
-nontrivial at every Xi divisor, not only tilted divisors. -/
+/-- Strong projective form: any nonzero horizon mode makes the completed fundamental comparison
+nontrivial at every Xi divisor. It does not assert inter-harmonic sector mixing. -/
 theorem d4FundamentalQNMNonlinearCayleySMatrix_nontrivial_everyXi
     (advancedTime : ℝ) {amplitude : ℂ} (ha : amplitude ≠ 0)
     (horizonFrequencyJet : ℂ → ℂ) :
@@ -452,8 +454,8 @@ def d4FullNonlinearChiralReturnedJost
       amplitude)
     (d4FullNonlinearChiralSource amplitude teukolskyRemainder)
 
-/-- Sharp full-dynamics classification. At divisor, complete return can erase
-source-derived AIME incidence only through exact pointwise counterterm. -/
+/-- Sharp projective-source classification. At a divisor, the completed projective return can
+erase the AIME component only through this exact pointwise counterterm. -/
 theorem d4FullNonlinearChiralReturnDeterminant_qnmPlus_eq_zero_iff_counterterm
     (advancedTime : ℝ) (amplitude : ℂ)
     (horizonFrequencyJet teukolskyRemainder : ℂ → ℂ) (q : XiZeroCopy) :

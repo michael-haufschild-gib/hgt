@@ -1,9 +1,9 @@
 # The CCM aperture Morse charge exhausts the Hardy off-line model-space index
 
 - **ID:** `ccm-aperture-morse-hardymodel-index-exhaustion-law`
-- **Stage:** 2-fully-proven / not-new
-- **Type:** THEOREM (paper), `[BRIDGE]`
-- **Scientific status:** `[PROVED] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
+- **Stage:** 5-failed
+- **Type:** FALSIFIED AS STATED; abstract Morse-exhaustion lemmas survive
+- **Scientific status:** `[FAILED MULTIPLICITY TRANSPORT] [POSITIVE SURVIVOR SPLIT]`
 - **Parents:** Suzuki's global screw kernel, Krein--Langer negative-square factorization,
   continuous-kernel exhaustion, and `ccm-aperture-morse-index-conservation-law.md`
 
@@ -277,3 +277,28 @@ Deliberately outside the Lean statement (cited parents, not results of this card
 - The Krein–Langer pole/index theorem giving `(10)`, together with its minimality statement.
 - The generalized Schur theorem giving the Hardy model-space dimension `(3)`.
 - The closed-form/step-function approximation used for the *upper* bound of `(11)`.
+
+## No-go closure — 2026-08-24
+
+- **Exact killing mechanism:** `screwFeature gamma` depends only on the spectral location `gamma`.
+  Repeating a zero with analytic multiplicity `m` therefore repeats the same feature vector; summing
+  `m` identical packets rescales one quadratic direction and cannot create `m` independent negative
+  directions. The theorem nevertheless equates aperture index with analytic multiplicity. Derivative-jet
+  features or an equivalent confluent construction are absent. Even for one conjugate pair,
+  `conjugate_pair_quadratic_eq` proves only a difference-of-two-squares identity; it does not prove the
+  negative feature is nonzero modulo the positive feature on the selected domain. The module explicitly
+  leaves the Xi screw-series identification, Krein–Langer pole/index theorem, and closed-form upper
+  exhaustion outside Lean. Thus equations `(10)`, `(13)`, `(16)`, and the multiplicity equality `(18)` are
+  neither proved by the declarations nor true with repeated ordinary features.
+- **Strongest positive survivor:** Rank-one packet nonnegativity; conjugate-pair polarization as an exact
+  difference-of-squares identity; stability of a coercive finite negative subspace under small form
+  perturbations; transport of finite negative subspaces through a linear equivalence; finite/infinite
+  cofinal-supremum lemmas; and a uniform positive horizontal shift for every finite set of right-half
+  points.
+- **New insight:** Ordinary value features detect distinct spectral locations. Analytic multiplicity
+  requires confluent derivative jets. Aperture transport cannot be multiplicity-exact until that carrier
+  is built and proved compatible with the actual Xi screw kernel.
+- **Status:** Exact survivors remain unconditional in
+  `RHTower/CCMApertureMorseExhaustion.lean` and are recorded by the replacement stage-3 card
+  `ccm-aperture-morse-abstract-exhaustion-survivor.md`. The false Xi/Hardy multiplicity transport is
+  retired; no RH or source identification is claimed.

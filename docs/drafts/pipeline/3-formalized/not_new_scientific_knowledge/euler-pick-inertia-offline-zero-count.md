@@ -1,7 +1,7 @@
 # Euler-region Pick inertia exactly counts off-line zeros
 
 - **ID:** euler-pick-inertia-offline-zero-count
-- **Stage:** 2-fully-proven/not_new_scientific_knowledge
+- **Stage:** 3-formalized/not_new_scientific_knowledge
 - **Type:** THEOREM (paper) -- scientifically non-new bridge
 - **Source:** `shifted-xi-kernel-transverse-index-filtration.md`; localization of negative squares
   to an Euler-convergent uniqueness region
@@ -149,7 +149,12 @@ an eigenvalue of the infinite Euler Pick system must cross zero.
 
 No derivative of xi at a zero appears.
 
-## General self-dual completed Euler products
+## General self-dual completed Euler products `[OUTSIDE THE CARDED THEOREM]`
+
+This is a proposed generalization, not part of the zeta theorem stated above. As written it does
+not define a Lean type of completed Euler products, local-factor convergence, Cartwright divisor,
+or common-divisor convention, so it is not a dependency-closed formal statement. The stage-3
+certificate below is for the exact shifted-Xi theorem only.
 
 The proof is not specific to zeta. Let `Lambda` be an entire completed Euler product such that its
 centered function is of Cartwright class, its Euler product converges absolutely in `Re s>1`, and
@@ -201,9 +206,11 @@ uncancelled pole of `Theta_omega` in the upper half-plane and therefore an off-l
 `(C)` is an equivalence when the witness format includes its rational `omega`, rational sample
 points, and certified Euler-product intervals.
 
-`[PROVED SUBSEQUENT APERTURE TRANSPORT]` The limiting Pick inertia is also the cofinal localized
-Weil Morse charge. The global screw kernel supplies the common negative-square realization, and
-continuous-kernel exhaustion proves
+`[RETRACTED: FALSE WITH ANALYTIC MULTIPLICITY]` The limiting Pick inertia was subsequently claimed
+to equal the cofinal localized Weil Morse charge. That assertion is false for the ordinary screw
+kernel at multiple zeros: all multiplicity copies at one spectral location have the same evaluation
+feature, so they contribute one direction, not their analytic multiplicity. Without derivative-jet
+features the claimed identity
 
 ```text
 sup_(a>0)kappa(a)
@@ -211,9 +218,10 @@ sup_(a>0)kappa(a)
  =sum_(Re rho>1/2)multiplicity(rho).
 ```
 
-Thus a finite Euler-region negative Pick witness is not merely a divisor certificate: after
-passing through the global screw carrier, its charge occurs in a genuine finite restricted-Weil
-aperture. The theorem is `ccm-aperture-morse-hardymodel-index-exhaustion-law.md`.
+cannot hold as stated. The referenced aperture card is retired separately; its valid perturbation,
+linear-equivalence, polarization, and finite-packet shift lemmas remain positive survivors. This
+retraction does not affect the Euler-region Pick theorem `(P)`, whose Hardy quotient retains exact
+multiplicity.
 
 `[PROVED SUBSEQUENT RAY REDUCTION]` The full shifted index is already attained on the single
 vertical ray `z=iy`, `y>1/2+omega`. There the shifted arguments are positive real numbers greater
@@ -292,7 +300,18 @@ information. Even the case `nu_-=0` for one `0<omega<1/2` would be a new zero-fr
   positive rational error margin whose exact all-prime tail is smaller than that margin. Exact
   target build and declaration-level axiom audit pass; dependencies are only `propext`,
   `Classical.choice`, and `Quot.sound`.
-- 2026-08-24 -- card remains in stage 2. Still required for full-card promotion: a
-  cancellation-aware exact multiplicity count at exceptional shifts (not merely the proved
-  uncancelled-pole negative witness), plus formal versions of the stated general self-dual
-  completed-Euler-product extension and both stated subsequent aperture/ray identifications.
+- 2026-08-24 -- exact common-divisor cancellation is now formalized by
+  `XiShiftEulerCommonDivisorIndex.lean`: at every positive shift, the dense nested Euler-region
+  inertia supremum is the `WithTop` dimension of the complete pole-model quotient by the exact
+  numerator-adjoint cancellation space. At nonexceptional shifts this is exactly the raw
+  strict-right Xi zero-copy count, finite or infinite. Arbitrary finite-matrix inertia bounds and
+  the positive-semidefinite/zero-divisor equivalence are also closed.
+- 2026-08-24 -- `XiShiftEulerRayIndex.lean` proves the claimed one-ray reduction. The literal ray
+  kernel is the displayed real Cauchy–Loewner kernel; every dense real-ray sequence exhausts the
+  same cancellation-aware `WithTop` index, and at nonexceptional shifts recovers exact raw
+  multiplicity. Exact leaf builds and declaration-level axiom audits pass with only `propext`,
+  `Classical.choice`, and `Quot.sound`.
+- 2026-08-24 -- aperture multiplicity transport retracted for the exact repeated-feature reason
+  above; generic completed-Euler-product paragraph demarcated as an under-specified proposed
+  generalization, not part of this zeta theorem. Every assertion of the carded theorem `(P)`, `(Z)`,
+  `(C)`, and the ray reduction is now unconditional in Lean. Card promoted to stage 3.

@@ -1,9 +1,8 @@
 # ω vs RH — RESOLVED: (II) decoupling. ω=0 ⇏ RH; realization is not localization
 
 - **ID:** omega-rh-coupling-vs-orthogonality
-- **Stage:** 0-backlog-lean
-  and the full ℚ-side `ι=κ` construction are the marked residual.
-- **Type:** THEOREM (paper, structural decision) — Door **BRIDGE (substrate)**
+- **Stage:** 5-failed
+- **Type:** FALSIFIED AS A PROOF OF NON-IMPLICATION; no separating model supplied
 - **Priority:** FOUNDATIONAL (decides the soundness of the project's A1∧A2 aim)
 - **Grade:** BRIDGE (substrate). **Consequence: the A1∧A2 aim "G1–G4 *forces* G5" must be WEAKENED** — see §6.
 - **Source:** the §U-chain in `compute-omega-h2-gl.md` (claim I) vs `faces-orthogonality.md` #54 + foundations
@@ -147,3 +146,26 @@ paper-proof defect. This is a **paper-proven BRIDGE theorem** whose proof legiti
 those imports are to be carried as hypotheses/axioms (or formalized separately) at the Lean stage — not a reason to
 reject the paper proof. The card's stated theorem is proved at its 1→2 gate; any co-located open conjecture
 (C5★ / ω=0 / Schanuel / apex) is explicitly a SEPARATE open core, not part of this theorem. Re-banked for Lean re-attempt.
+
+## No-go closure — 2026-08-24
+
+- **Exact killing mechanism:** Sections 2–5 establish, at most, that realization and positivity are
+  conceptually distinct and have different known proofs. They do not prove the logical non-implication
+  `omega=0 ⇏ RH`. In the proposed `F_q` calibration both antecedent and consequent are true, so it is
+  compatible with both implication and non-implication. A non-implication theorem requires a defined
+  `omega` and a model satisfying `omega=0 ∧ ¬RH`, or a relative-consistency/independence result. The card
+  explicitly identifies that exact object as its missing Lean target. Importing “realization does not see
+  ghosts” as a premise would assume the desired separation. Therefore the flagship conclusion is not
+  paper-proved and cannot have an unconditional closed Lean proof from the supplied argument.
+- **Strongest positive survivor:** Completed-Xi divisor positivity is exactly RH: existing audited corpus
+  theorems identify vanishing negative channel/index, Herglotz or anti-Herglotz passivity, and absence of
+  off-critical divisor energy with `RiemannHypothesis`. These are genuine localization theorems but make no
+  assertion about `omega` or logical independence from realization.
+- **New insight:** Distinct constructions or proof techniques do not imply logical independence. Future
+  omega/RH separation work must first define the omega-realization object and build a false-RH realization,
+  or prove a model-theoretic independence theorem.
+- **Status:** No new dependency-closed omega coupling theorem survives. RH/passivity survivors are already
+  formalized elsewhere, including
+  `riemannHypothesis_iff_forall_pairDifEnergy_eq_zero`,
+  `continuedPrimeArchUpperAntiHerglotz_iff_riemannHypothesis`, and related stage-3 cards. No duplicate Lean
+  declarations are added.

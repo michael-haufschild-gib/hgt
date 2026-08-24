@@ -33,7 +33,10 @@ For the modular resonance coordinate of the preceding module,
 
 `s(z)=1/2+I*xi(z)`,  `xi(z)=z/2+I/4`.
 
-Thus the functional-equation shadow sends `xi` to `-xi` and exchanges the two exact QNM branches.
+Thus the functional-equation shadow sends `xi` to `-xi` and exchanges the two analytically
+continued QNM-frequency branches. Birmingham--Mokhtari's sign is a square-root spectral parameter
+at fixed `Q`, not a pair of angular-momentum eigenspaces. At Xi divisors this is resonance
+continuation; it is not asserted to be an `L2` horizon harmonic.
 The angular eigenvalue `Q` is quadratic and therefore shadow-blind.  This is the precise reason the
 linear discrete-plus-continuum optical energy cannot prove RH: the hyperbolic Plancherel identity
 has the form
@@ -50,8 +53,8 @@ Time-oriented QNM data retain the missing sign.  Their imaginary-frequency split
 `Im(l*omega_+) - Im(l*omega_-) = 1/2 + Im z`.
 
 Hence canonical Hawking splitting `1/2 = pi*l*T_H` holds exactly when that Xi divisor has zero tilt.
-At every divisor, the scattering pole, shadow zero, opposing QNM branches, and splitting criterion
-are proved together below.
+At every divisor, the scattering pole, shadow zero, opposing analytically continued QNM branches,
+and splitting criterion are proved together below.
 
 **[LITERATURE-FORMALIZED] [PAPER-PROVED] [LEAN-PROVED]** The separated eigenvalue, QNM branch,
 shadow, pole/zero, energy-blindness, and splitting laws below are unconditional consequences of the
@@ -70,7 +73,7 @@ namespace RHTower
 
 noncomputable section
 
-/-- Hyperbolic angular momentum `xi` corresponding to the modular resonance coordinate. -/
+/-- Hyperbolic Laplacian square-root parameter `xi` corresponding to modular resonance coordinate. -/
 def thetaCuspHawkingTopologicalBlackHoleAngularMomentum (z : ℂ) : ℂ :=
   z / 2 + Complex.I / 4
 
@@ -82,12 +85,12 @@ def thetaCuspHawkingTopologicalBlackHoleAngularEigenvalue (z : ℂ) : ℂ :=
 def thetaCuspHawkingTopologicalBlackHoleConformalDecay (n : ℕ) : ℝ :=
   2 * n + 3 / 2
 
-/-- Positive-angular-momentum branch of the exact topological-black-hole QNM formula. -/
+/-- Positive square-root branch of exact topological-black-hole QNM formula. -/
 def thetaCuspHawkingTopologicalBlackHoleQNMPlus (n : ℕ) (z : ℂ) : ℂ :=
   thetaCuspHawkingTopologicalBlackHoleAngularMomentum z -
     Complex.I * thetaCuspHawkingTopologicalBlackHoleConformalDecay n
 
-/-- Negative-angular-momentum branch of the exact topological-black-hole QNM formula. -/
+/-- Negative square-root branch of exact topological-black-hole QNM formula. -/
 def thetaCuspHawkingTopologicalBlackHoleQNMMinus (n : ℕ) (z : ℂ) : ℂ :=
   -thetaCuspHawkingTopologicalBlackHoleAngularMomentum z -
     Complex.I * thetaCuspHawkingTopologicalBlackHoleConformalDecay n

@@ -1,8 +1,8 @@
 # The phase-cancellation crux: LP-symmetry modes demote large values; the crux is the Laguerre–Turán curvature hierarchy
 
 - **ID:** phase-cancellation-crux
-- **Stage:** 2-fully-proven (self-verified 2026-06-19; route-closing diagnosis; apex externalized; peer cross-check welcome)
-- **Type:** STRUCTURAL **diagnosis** (closes a route) — claimed Door grade **BRIDGE**; §7 affine decomposition is proved, §8 is the verdict: the positivity/localization lane is **affine-confined ⟹ cannot cross** (Hölder, mechanical). **Not** a crossing.
+- **Stage:** 5-failed
+- **Type:** FALSIFIED AS STATED; exact affine/quartet survivor formalized separately
 - **Priority:** FOUNDATIONAL (it closes a C5 route and redirects to the constraint axis)
 - **Source:** `theorem-m-with-margin-endpoint.md` (the named gap) × `finite-free-convolution-flow.md` (#104) × `c5-jensen-prime-kernel.md` §6–8 × `dewitt-supermetric-no-margin.md` Finding 3b; Professor #93 (translation-mode test); rh-corp theorist:1722 (affine diff-Galois `𝔾_a⋊𝔾_m`, seam=`[𝔾_a,𝔾_m]`); the Hölder/constraint-not-flow charter principle; ../../door/bucket-the-seam-archimedean-obstruction.md
 - **Statement:** The phase-cancellation gap decomposes by the **LP-symmetry / affine modes**. (1) The large-value content sits in the **affine subspace `⟨1,r⟩` (scaling+translation = `𝔾_a⋊𝔾_m`)**, which is **order-preserving and cannot collide roots at any `d`** — so the Selberg/Bondarenko–Seip barrier is a multiplier artifact, demoted. (2) The RH-collision danger is the **transverse seam `[𝔾_a,𝔾_m]`** (curvature+, the higher log-derivatives `Σ_ρ(½+it−ρ)^{-k}`, the Laguerre–Turán/Hankel hierarchy). (3) **Every flow/positivity/de-Bruijn/energy/Laguerre method is affine-confined, hence cannot reach the seam** — this is Hölder made mechanical (ζ carries the affine flows but is *fixed by a constraint* in the seam). Verdict: **the positivity/localization wall is uncrossable by flow methods by construction; C5 is on the constraint/transcendence axis (the seam `ω`, DSS/G2), not here.**
@@ -159,3 +159,25 @@ This does not formalize the card's broader methodological assertions that all la
 in the affine modes or that every flow/positivity/Laguerre method is affine-confined. Those assertions do
 not follow from the proved affine and quartet identities and currently have no precise quantified model
 in the card. The card therefore remains at stage 2; promotion would otherwise overstate the Lean result.
+
+## No-go closure — 2026-08-24
+
+- **Exact killing mechanism:** The headline universal assertion is internally incompatible with the
+  card's own decomposition. It calls every Laguerre method affine-confined while §§3–5 and §9 classify the
+  Laguerre–Turán curvature hierarchy as transverse, non-affine degree `≥2`. The further identity
+  `[partial_s,partial_t]=curvature` is false for ordinary smooth coordinate derivatives, which commute;
+  no non-flat covariant connection is defined that could replace them. Finally, “every method” and
+  “all large-value content” have no quantified carrier or class of admissible methods. Therefore the
+  claimed route-exclusion theorem has no consistent mathematical statement to formalize.
+- **Strongest positive survivor:** Positive-slope affine maps scale gaps exactly, preserve strict root
+  order, and cannot collide distinct roots. The normalized affine displacement difference is constant.
+  A reflected off-line pair and full quartet have the exact reciprocal-square curvature claimed in §3,
+  with positive quartet window exactly `|tau|<a` for `a>0`.
+- **New insight:** Affine noncollision and quartet curvature are valid local algebraic facts. They do not
+  classify all proof methods or prove an affine/seam obstruction. Any future route-exclusion claim must
+  first define a connection, method class, invariant carrier, and quantified factorization theorem.
+- **Status:** Survivor is dependency-closed and formalized by
+  `GaloisForLFunctions.RHTower.phaseCancellationAffineCurvatureLaw` in
+  `RHTower/PhaseCancellationAffineCurvature.lean`. Exact source check and leaf build pass. Axiom audit
+  reports only `propext`, `Classical.choice`, and `Quot.sound`. Survivor is recorded as the separate
+  stage-3 card `phase-cancellation-affine-curvature-law.md`; this overclaimed diagnosis is retired.
