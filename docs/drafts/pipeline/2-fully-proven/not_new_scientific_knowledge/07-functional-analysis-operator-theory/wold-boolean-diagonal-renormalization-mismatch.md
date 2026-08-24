@@ -412,3 +412,21 @@ RH construction and forces a genuinely two-record totalization.
 - [ ] prove Wold modular marginal conservation
 - [ ] RH
 - [ ] unconditional Lean formalization after selecting the analytic carrier
+
+## Formalization progress (2026-08-24)
+
+`GaloisForLFunctions.HTGeometry.WoldThermofieldStandardForm` now proves, unconditionally:
+
+- diagonal Hilbert--Schmidt standard-form kernel for every `ℓ²` vector;
+- exact Hilbert--Schmidt norm identity;
+- bounded left/right diagonal actions, centrality, and exact vector-state formula;
+- normalized finite occupation point weights;
+- finite occupation thermofield kernel, unit norm, centrality, and exact bounded-observable state.
+
+Targeted leaf build passes.  Every new theorem has only `propext`, `Classical.choice`, and
+`Quot.sound` in its axiom report.
+
+Card remains Stage 2.  Exact remaining Lean obligations include the canonical finite-function
+carrier equivalence and disjoint-packet tensor factorization, finite Hellinger overlap and
+Kakutani-sector criterion, cylinder diagonal normalization/weak-* limit, Mertens/PNT comparison,
+accelerated Boolean type, and labelled Boolean--Sonin history coupling.

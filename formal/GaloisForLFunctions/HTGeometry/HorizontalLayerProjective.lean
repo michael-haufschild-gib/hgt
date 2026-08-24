@@ -1,7 +1,7 @@
 import GaloisForLFunctions.HTGeometry.HorizontalLayerBlaschke
 import GaloisForLFunctions.HTGeometry.ProjectiveCauchyDensityControl
 
-open Complex Topology
+open Complex Filter Topology
 open scoped OnePoint
 
 noncomputable section
@@ -131,5 +131,119 @@ theorem norm_horizontalLayerNormalizedProjective_sub_le {a ω : ℝ} (ha : 0 < a
       rw [horizontalLayerNormalizedProjective_coe hplus.ne' hminus.ne',
         horizontalLayerInfinitesimalProjective_coe ha.ne']
       exact norm_horizontalLayerFactorRaw_normalized_sub_le ha hω hsmall x
+
+theorem tendsto_horizontalLayerNormalizedProjective (a : ℝ) (ha : 0 < a) :
+    Tendsto (horizontalLayerNormalizedProjective a) (𝓝[≠] 0)
+      (𝓝 (horizontalLayerInfinitesimalProjective a)) := by
+  rw [tendsto_iff_norm_sub_tendsto_zero]
+  have hid : Tendsto (fun ω : ℝ => ω) (𝓝[≠] 0) (𝓝 0) :=
+    tendsto_id.mono_left inf_le_left
+  have habs : Tendsto (fun ω : ℝ => |ω|) (𝓝[≠] 0) (𝓝 0) := by
+    simpa using hid.abs
+  apply squeeze_zero'
+  · exact Eventually.of_forall fun _ => norm_nonneg _
+  · have hsmall : ∀ᶠ ω : ℝ in 𝓝[≠] 0, |ω| ≤ a / 2 := by
+      have hmetric := (Metric.tendsto_nhds.mp habs) (a / 2) (by linarith)
+      filter_upwards [hmetric] with ω hω
+      simpa only [Real.dist_eq, sub_zero, abs_abs] using le_of_lt hω
+    filter_upwards [self_mem_nhdsWithin, hsmall] with ω hω hωsmall
+    apply norm_horizontalLayerNormalizedProjective_sub_le ha
+    · simpa only [Set.mem_compl_iff, Set.mem_singleton_iff] using hω
+    · exact hωsmall
+  · simpa [div_eq_mul_inv, mul_assoc, mul_comm, mul_left_comm] using
+      habs.const_mul (48 * (a ^ 2)⁻¹)
+
+theorem tendsto_horizontalLayerProjective (a : ℝ) (ha : 0 < a) :
+    Tendsto (horizontalLayerProjective a) (𝓝[≠] 0) (𝓝 1) := by
+  have hid : Tendsto (fun ω : ℝ => ω) (𝓝[≠] 0) (𝓝 0) :=
+    tendsto_id.mono_left inf_le_left
+  have hscalar : Tendsto (fun ω : ℝ => (ω : ℂ)) (𝓝[≠] 0) (𝓝 0) :=
+    (Complex.continuous_ofReal.tendsto 0).comp hid
+  have hnormalized := tendsto_horizontalLayerNormalizedProjective a ha
+  have hone : Tendsto (fun _ : ℝ => (1 : ProjectiveBoundary)) (𝓝[≠] 0) (𝓝 1) :=
+    tendsto_const_nhds
+  have hsum := hone.add (hscalar.smul hnormalized)
+  simp only [zero_smul, add_zero] at hsum
+  apply hsum.congr'
+  filter_upwards [self_mem_nhdsWithin] with ω hω
+  have hω' : ω ≠ 0 := by
+    simpa only [Set.mem_compl_iff, Set.mem_singleton_iff] using hω
+  ext t
+  simp [horizontalLayerNormalizedProjective, hω']
+
+lemma projectiveNormalizedMul_eq (F G : ProjectiveBoundary) {ω : ℝ} (hω : ω ≠ 0) :
+    ((ω : ℂ)⁻¹) • (F * G - 1) =
+      F * (((ω : ℂ)⁻¹) • (G - 1)) + ((ω : ℂ)⁻¹) • (F - 1) := by
+  ext t
+  simp only [ContinuousMap.smul_apply, ContinuousMap.sub_apply, ContinuousMap.mul_apply,
+    ContinuousMap.add_apply, ContinuousMap.one_apply, smul_eq_mul]
+  field_simp [ofReal_ne_zero.mpr hω]
+  ring
+
+def finiteHorizontalLayerProjective {ι : Type*} (s : Finset ι) (a : ι → ℝ) (ω : ℝ) :
+    ProjectiveBoundary :=
+  s.prod fun i => horizontalLayerProjective (a i) ω
+
+def finiteHorizontalLayerInfinitesimalProjective {ι : Type*} (s : Finset ι) (a : ι → ℝ) :
+    ProjectiveBoundary :=
+  s.sum fun i => horizontalLayerInfinitesimalProjective (a i)
+
+def finiteHorizontalLayerNormalizedProjective {ι : Type*} (s : Finset ι)
+    (a : ι → ℝ) (ω : ℝ) : ProjectiveBoundary :=
+  ((ω : ℂ)⁻¹) • (finiteHorizontalLayerProjective s a ω - 1)
+
+theorem tendsto_finiteHorizontalLayerProjective {ι : Type*} (s : Finset ι)
+    (a : ι → ℝ) (ha : ∀ i ∈ s, 0 < a i) :
+    Tendsto (finiteHorizontalLayerProjective s a) (𝓝[≠] 0) (𝓝 1) := by
+  classical
+  induction s using Finset.induction_on with
+  | empty =>
+      change Tendsto (fun _ : ℝ => (1 : ProjectiveBoundary)) (𝓝[≠] 0) (𝓝 1)
+      exact tendsto_const_nhds
+  | @insert i s hi ih =>
+      rw [show finiteHorizontalLayerProjective (insert i s) a =
+          fun ω => horizontalLayerProjective (a i) ω *
+            finiteHorizontalLayerProjective s a ω by
+        funext ω
+        simp [finiteHorizontalLayerProjective, hi]]
+      simpa using (tendsto_horizontalLayerProjective (a i)
+        (ha i (Finset.mem_insert_self i s))).mul
+          (ih (fun j hj => ha j (Finset.mem_insert_of_mem hj)))
+
+theorem tendsto_finiteHorizontalLayerNormalizedProjective {ι : Type*} (s : Finset ι)
+    (a : ι → ℝ) (ha : ∀ i ∈ s, 0 < a i) :
+    Tendsto (finiteHorizontalLayerNormalizedProjective s a) (𝓝[≠] 0)
+      (𝓝 (finiteHorizontalLayerInfinitesimalProjective s a)) := by
+  classical
+  induction s using Finset.induction_on with
+  | empty =>
+      change Tendsto
+        (fun ω : ℝ => ((ω : ℂ)⁻¹) • ((1 : ProjectiveBoundary) - 1))
+        (𝓝[≠] 0) (𝓝 0)
+      simpa only [sub_self, smul_zero] using (tendsto_const_nhds :
+        Tendsto (fun _ : ℝ => (0 : ProjectiveBoundary)) (𝓝[≠] 0) (𝓝 0))
+  | @insert i s hi ih =>
+      have hi0 := tendsto_horizontalLayerProjective (a i)
+        (ha i (Finset.mem_insert_self i s))
+      have hi1 := tendsto_horizontalLayerNormalizedProjective (a i)
+        (ha i (Finset.mem_insert_self i s))
+      have hs0 := tendsto_finiteHorizontalLayerProjective s a
+        (fun j hj => ha j (Finset.mem_insert_of_mem hj))
+      have hs1 := ih (fun j hj => ha j (Finset.mem_insert_of_mem hj))
+      have hlim := hi0.mul hs1 |>.add hi1
+      have heq :
+          (fun ω => horizontalLayerProjective (a i) ω *
+              finiteHorizontalLayerNormalizedProjective s a ω +
+            horizontalLayerNormalizedProjective (a i) ω) =ᶠ[𝓝[≠] 0]
+            finiteHorizontalLayerNormalizedProjective (insert i s) a := by
+        filter_upwards [self_mem_nhdsWithin] with ω hω
+        have hω' : ω ≠ 0 := by
+          simpa only [Set.mem_compl_iff, Set.mem_singleton_iff] using hω
+        simpa [finiteHorizontalLayerNormalizedProjective,
+          finiteHorizontalLayerProjective, horizontalLayerNormalizedProjective, hi] using
+          (projectiveNormalizedMul_eq (horizontalLayerProjective (a i) ω)
+            (finiteHorizontalLayerProjective s a ω) hω').symm
+      simpa [finiteHorizontalLayerInfinitesimalProjective, hi, add_comm] using
+        hlim.congr' heq
 
 end GaloisForLFunctions.HTGeometry
