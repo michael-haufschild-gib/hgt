@@ -1,15 +1,16 @@
 # Theta-cusp antisymmetric half-density Turan curvature transfer
 
 - **ID:** `theta-cusp-antisymmetric-half-density-turan-curvature-transfer`
-- **Stage:** 2-fully-proven/not_new_scientific_knowledge
+- **Stage:** 3-formalized/not_new_scientific_knowledge
 - **Type:** THEOREM (paper) / `[VALUE RELATION] [REFLECTION] [TOP-DOWN REFORMULATION]`
-- **Scientific status:** `[PROVED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
+- **Scientific status:** `[PROVED] [FORMALIZED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parents:** `../../3-formalized/not_new_scientific_knowledge/theta-cusp-half-density-ward-laplace-budget-transfer.md`;
   `../../1-in-progress/theta-cusp-dominant-first-atom-ratio-certificate.md`;
   `../../1-in-progress/theta-cusp-thermal-susceptibility-window.md`
 - **Lean inputs:** `PrimeArchThetaAtomLikelihoodRatio.lean`;
   `PrimeArchThetaBornWittenBootstrap.lean`; `PrimeArchThetaLiouvilleWard.lean`;
   `ThetaCuspFourierLaplace.lean`; `XiEndpointCompletedValue.lean`
+- **Lean module:** `RHTower/ThetaCuspAntisymmetricHalfDensityTuranCurvature.lean`
 - **Statement:** The difference of the two reflected half-density values supplies an exact odd-moment
   budget for every theta source atom.  For the first atom, the two open low-degree source gates are
   exactly a lower bound for the first half-line Turan defect and an upper bound for the second.
@@ -419,3 +420,15 @@ motivate `(15)` but do not discharge `(32)`--`(33)`.
   https://www.math.kent.edu/~varga/pub/paper_161.pdf
 - G. Csordas and D. K. Dimitrov, *Conjectures and theorems in the theory of entire functions*,
   https://www.dcce.ibilce.unesp.br/~dimitrov/papers/varga.pdf
+
+## Lean completion log — 2026-08-24
+
+`RHTower/ThetaCuspAntisymmetricHalfDensityTuranCurvature.lean` formalizes every proved identity and
+implication `(2)`--`(34)`, while preserving `(32)`--`(33)` as the explicitly open inequalities.
+This includes both reflected parity budgets, exact first-atom tail removal, source-specific
+curvature floor and one-seam law, literal double-integral Turan identity, positive boundary-pole
+determinant, literal crossing-window integral, strict unimodality, exact infinite Fubini
+representation `(26)`, positive seam balance `(28)`, and both exact low-gate reformulations. The
+module is imported explicitly by `RHTower.lean`. Direct source checking and targeted leaf build
+pass. `#print axioms` audits of section capstones report only `propext`, `Classical.choice`, and
+`Quot.sound`.

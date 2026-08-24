@@ -199,6 +199,15 @@ theorem signedToeplitz_no_invertible_compact_perturbation
     exact no_invertible_compact_perturbation (Int.natAbs_pos.mpr m.property)
       U hU hcomp
 
+/-- Premise-free unit form of compact index stability. -/
+theorem signedToeplitz_no_unit_compact_perturbation
+    (m : {m : ℤ // m ≠ 0})
+    (U : (ToeplitzSpace →L[ℂ] ToeplitzSpace)ˣ) :
+    ¬ IsCompactOperator
+      ((U : ToeplitzSpace →L[ℂ] ToeplitzSpace) - signedToeplitzOp m) :=
+  signedToeplitz_no_invertible_compact_perturbation m U
+    ((ContinuousLinearMap.isUnit_iff_bijective).1 U.isUnit)
+
 /-! ## Literal prime source and its reflected Fredholm cycle -/
 
 /-- Nonzero deck character on one literal arithmetic-Jacobian prime orbit. -/
@@ -207,6 +216,12 @@ structure CCMArithmeticPrimeFredholmCycle where
   grade : {m : ℤ // m ≠ 0}
 
 namespace CCMArithmeticPrimeFredholmCycle
+
+/-- Canonical source orientation: the fundamental positive character of the
+directed arithmetic deck generator `(Frob_p, log p)`. -/
+def canonical (p : Nat.Primes) : CCMArithmeticPrimeFredholmCycle where
+  prime := p
+  grade := ⟨1, one_ne_zero⟩
 
 /-- Arithmetic deck generator from which the horizontal period is read. -/
 def deck (X : CCMArithmeticPrimeFredholmCycle) :=
@@ -246,8 +261,9 @@ def dual (X : CCMArithmeticPrimeFredholmCycle) :
     X.dual.dual = X := by
   cases X with
   | mk p m =>
-      congr
-      exact Subtype.ext (by simp [dual])
+      apply congrArg (CCMArithmeticPrimeFredholmCycle.mk p)
+      apply Subtype.ext
+      exact neg_neg m.val
 
 /-- Source operator is genuinely Fredholm on the completed infinite carrier. -/
 theorem isFredholm (X : CCMArithmeticPrimeFredholmCycle) :
@@ -301,6 +317,39 @@ theorem no_invertible_compact_completion
     (hU : Function.Bijective U) :
     ¬ IsCompactOperator (U - X.operator) :=
   signedToeplitz_no_invertible_compact_perturbation X.grade U hU
+
+/-- Premise-free unit form of infinite-completion stability. -/
+theorem no_unit_compact_completion
+    (X : CCMArithmeticPrimeFredholmCycle)
+    (U : (ToeplitzSpace →L[ℂ] ToeplitzSpace)ˣ) :
+    ¬ IsCompactOperator
+      ((U : ToeplitzSpace →L[ℂ] ToeplitzSpace) - X.operator) :=
+  signedToeplitz_no_unit_compact_perturbation X.grade U
+
+/-- Literal arithmetic produces a canonical reflected signed pair: the
+directed fundamental character has index `-1`, its dual has index `+1`, their
+operators are adjoints, and neither class can be erased by compact completion. -/
+theorem canonical_reflected_signed_pair (p : Nat.Primes) :
+    (canonical p).index = -1 ∧
+      (canonical p).dual.index = 1 ∧
+      (canonical p).dual.operator =
+        ContinuousLinearMap.adjoint (canonical p).operator ∧
+      (canonical p).dual.horizontalOrientation =
+        -(canonical p).horizontalOrientation ∧
+      (∀ U : (ToeplitzSpace →L[ℂ] ToeplitzSpace)ˣ,
+        ¬ IsCompactOperator
+          ((U : ToeplitzSpace →L[ℂ] ToeplitzSpace) -
+            (canonical p).operator)) ∧
+      ∀ U : (ToeplitzSpace →L[ℂ] ToeplitzSpace)ˣ,
+        ¬ IsCompactOperator
+          ((U : ToeplitzSpace →L[ℂ] ToeplitzSpace) -
+            (canonical p).dual.operator) := by
+  refine ⟨?_, ?_, operator_dual (canonical p),
+    horizontalOrientation_dual (canonical p),
+    no_unit_compact_completion (canonical p),
+    no_unit_compact_completion (canonical p).dual⟩
+  · simp [index_eq_neg_grade, canonical]
+  · simp [index_eq_neg_grade, canonical]
 
 /-- Closed source-first package: literal deck period, Fredholmness, dual
 reflection, odd index/orientation, and compact-stable infinite completion. -/

@@ -5,8 +5,8 @@ import GaloisForLFunctions.HTGeometry.StokesCellularBoundaryRestriction
 
 Restrict a cyclic boundary representation to the cospan at every wall. The resulting functor to
 the category of local-germ families preserves finite limits and colimits, is additive, faithful,
-and reflects isomorphisms. Thus all local germs jointly detect global morphisms and equivalences;
-the remaining descent issue is compatibility/fullness of arbitrary local families.
+and reflects isomorphisms. Thus all local germs jointly detect global morphisms and equivalences.
+Compatible morphism and object descent are completed in subsequent modules.
 -/
 
 open CategoryTheory CategoryTheory.Limits
