@@ -354,3 +354,51 @@ The residue normalization is now also fully simplified: the pole-filled moment h
 `x^(-1/2)` at the regulator origin, and
 `RHTower.deriv_reflectedSingularPoleUnit_zero_eq_anomaly` is the literal Lean form of `(7)`, with
 coefficient `1/(2 sqrt x)`. Both final normalization theorems are targeted-built and axiom-audited.
+
+## Lean progress — exact theta pole and canonical finite part (2026-08-24)
+
+`formal/GaloisForLFunctions/RHTower/ReflectedBiHeatThetaResidue.lean` now performs exact triangular
+row subtraction on the original asymmetric lattice sum.  It proves a locally normally convergent
+regular-row series, identifies the removed row contribution exactly with
+`heatCoeffSum x * riemannZeta (1+epsilon)`, and derives the literal decomposition of the original
+double sum into its zeta pole plus that regular series.  The premise-free capstone
+`RHTower.reflectedBiHeatThetaResidue_capstone` gives the complex right-half-limit residue
+`heatCoeffSum x`; no meromorphic-continuation interface is assumed.
+
+On the positive real regulator ray, the same module combines this decomposition with the proved
+Laurent constant of `riemannZeta` at one.  It defines the canonical finite part
+`heatCoeffSum x * EulerGamma + reflectedBiHeatRegularSum x 0` and proves convergence after exact
+theta-pole subtraction in
+`RHTower.reflectedBiHeatFinitePart_capstone`.  Source check, targeted module build, and endpoint
+axiom audit pass; dependencies are only `[propext, Classical.choice, Quot.sound]`.  Module is wired
+into `GaloisForLFunctions.RHTower`; umbrella was not built.
+
+Remaining Lean gate: connect this exact finite part to the complete small-`x` Jonquière expansion,
+then prove completed-channel coefficient equality and first-nonzero-response multiplicity/scale
+tomography.  Card remains in Stage 2 until those endpoint statements are closed.
+
+`formal/GaloisForLFunctions/RHTower/ReflectedBiHeatCompletedChannels.lean` now closes the repeated
+coefficient calculation in `(9)`--`(10)` independently of the unfinished integral weld.  It defines
+the literal card factor `Lambda(s)=pi^(-s/2) Gamma(s/2) zeta(s)`, identifies both cross coefficients
+as one half of `Lambda(1-z)` and `Lambda(z)`, and uses the unconditional completed-zeta functional
+equation to prove their equality.  The premise-free capstone
+`RHTower.reflectedBiHeatCompletedChannels_capstone` is targeted-built and axiom-audited with only
+`[propext, Classical.choice, Quot.sound]`.  Module is wired into `GaloisForLFunctions.RHTower`;
+umbrella was not built.
+
+Remaining Lean gate is now the exact finite-part-to-Jonquière small-`x` weld and the differentiated
+tomography endpoint.
+
+`formal/GaloisForLFunctions/RHTower/PolarizedAdditiveHeatSharpRemainder.lean` removes the former
+separate-`L²` restriction from the subtracted Jonquière error.  For arbitrary orders in the full
+open product strip `0<Re(s),Re(w)<1`, it proves integrability of the exact germ-product minus its
+four principal channels and proves its heat average is `o(1)`.  The reflected specialization
+`RHTower.reflectedBiHeatSharpRemainder_capstone` in
+`ReflectedBiHeatCompletedChannels.lean` applies this at the complementary orders `z` and `1-z`.
+Thus all omitted terms in the proof of `(3)` are now controlled at regulator zero without assuming
+either factor is separately square-integrable.  Both modules are wired, targeted-built, and their
+new endpoints axiom-audited with baseline axioms only; no umbrella build was run.
+
+The remaining expansion gate is sharply isolated: identify the row-subtraction finite part with
+the finite part of the four explicit principal heat moments.  All non-principal remainder and both
+completed cross coefficients are already closed.

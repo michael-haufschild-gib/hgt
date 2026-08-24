@@ -185,3 +185,67 @@ theorem hollowBouquetClass_ne_zero_iff_exists_localWitness
 end
 
 end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+noncomputable section
+
+/-- Every codimension-one face of a concrete bouquet block belongs to the bouquet complex. -/
+theorem hbSigma_erase_isFace {k n : ℕ} (m : Fin k) {v : Fin k × Fin (n + 1)}
+    (hv : v ∈ hbSigma k n m) :
+    IsFaceOf (↑(hbFacets k n) : Set (Finset (Fin k × Fin (n + 1))))
+      ((hbSigma k n m).erase v) :=
+  ⟨(hbSigma k n m).erase v,
+    Finset.mem_coe.mpr (hbFacets_erase_mem m hv), Finset.Subset.refl _⟩
+
+/-- Explicit assembly of arbitrary coordinates into concrete bouquet homology. -/
+noncomputable def concreteHollowBouquetHasseAssembly
+    (F : Type*) [Field F] {k n : ℕ} :
+    (Fin k → F) →ₗ[F] SRFirstKoszulHomology F (hbFacets k n) :=
+  hollowBouquetHasseAssembly (hbFacets k n) (hbSigma k n) fun m => (m, 0)
+
+/-- Explicit detector packet on concrete disjoint hollow simplices. -/
+noncomputable def concreteHollowBouquetHasseProfile
+    (F : Type*) [Field F] {k n : ℕ} :
+    SRFirstKoszulHomology F (hbFacets k n) →ₗ[F] (Fin k → F) :=
+  hollowBouquetHasseProfile (hbFacets k n) (hbSigma k n) fun m _v hv =>
+    hbSigma_erase_isFace m hv
+
+/-- Concrete local detectors recover every assembled coordinate packet. -/
+theorem concreteHollowBouquetHasseProfile_assembly
+    (F : Type*) [Field F] {k n : ℕ} (c : Fin k → F) :
+    concreteHollowBouquetHasseProfile F (k := k) (n := n)
+        (concreteHollowBouquetHasseAssembly F (n := n) c) = c := by
+  exact hollowBouquetHasseProfile_assembly
+    (F := F) (hbFacets k n) (hbSigma k n) (fun m => (m, 0))
+    (fun m v hv => hbSigma_erase_isFace m hv)
+    (fun m => Finset.mem_product.mpr
+      ⟨Finset.mem_singleton_self m, Finset.mem_univ 0⟩)
+    (fun _ _ h => hbSigma_disjoint h) c
+
+/-- Every concrete finite detector packet has an explicit global homology realization. -/
+theorem concreteHollowBouquetHasseProfile_surjective
+    (F : Type*) [Field F] {k n : ℕ} :
+    Function.Surjective (concreteHollowBouquetHasseProfile F (k := k) (n := n)) := by
+  intro c
+  exact ⟨concreteHollowBouquetHasseAssembly F (n := n) c,
+    concreteHollowBouquetHasseProfile_assembly F (n := n) c⟩
+
+/-- Concrete bouquet homology modulo simultaneous detector invisibility is `F^k`. -/
+noncomputable def concreteHollowBouquetHasseQuotientEquiv
+    (F : Type*) [Field F] {k n : ℕ} :
+    (SRFirstKoszulHomology F (hbFacets k n) ⧸
+      LinearMap.ker (concreteHollowBouquetHasseProfile F (n := n))) ≃ₗ[F] (Fin k → F) :=
+  LinearMap.quotKerEquivOfSurjective _
+    (concreteHollowBouquetHasseProfile_surjective F (n := n))
+
+@[simp] theorem concreteHollowBouquetHasseQuotientEquiv_mk
+    (F : Type*) [Field F] {k n : ℕ}
+    (x : SRFirstKoszulHomology F (hbFacets k n)) :
+    concreteHollowBouquetHasseQuotientEquiv F (n := n) (Submodule.Quotient.mk x) =
+      concreteHollowBouquetHasseProfile F (n := n) x := by
+  rfl
+
+end
+
+end GaloisForLFunctions.HTGeometry

@@ -6272,3 +6272,64 @@ Construct, without selecting a zero or inserting its displacement, a divisor-ind
 5. identified with the exact source-to-Xi and Gamma/Hellinger incidence maps already formalized.
 
 Then `PrimePoissonSourceLinearSuperselection` forces neutral grade.  Until this construction is obtained independently, joint-ancestry superselection remains a corpus-guided research program, not an RH proof.
+## 2026-08-24 — Compound-order correction and joint-ancestry Lean bridge
+
+### Further corpus no-gos
+
+331. **One vector, one Gram kernel, or one GNS correspondence is too low-order.**
+     `GammaSewnXiShiftTangentHilbertKernel` constructs the exact source-derived cross-prime square-root-density tangent.  However its three-prime determinant splits as rooted stiffness times the tangent second compound **plus an irreducible pure tangent third compound**.  Replacing full ancestry by a single Gram/sewing object discards this term.  The earlier single-correspondence formulation is therefore only a necessary one-particle shadow, not the universal carrier.
+
+332. **All-support synchronized recovery preserves, but cannot cancel, the Xi first jet.**
+     `GammaSewnSynchronizedLcmContraction` already supplies every finite prime support: singleton support is the physical Gamma-sewn ray, pairs recover the Gram kernel, and higher supports carry their own lcm/Rees grades.  Prime insertion is a flat multiplicative connection on the Boolean support cube.  `GammaSewnSynchronizedRecoveryContraction` upgrades this to a fixed nonexpansive signed transport on `ℓ²` of all finite supports and preserves continued Xi-Ward tangents.  `RoutePGammaSewnRecoveryFirstJetNoGo` proves its cofinal recovery ratio is first-jet flat, so the linear Xi phase defect survives unchanged.  This carrier is genuine infrastructure, but not the missing reflection law.
+
+333. **No finite arithmetic packet can carry canonical theta reflection.**
+     `XiCTaylorThetaTailCompletedValuationReflection` constructs the source-selected value/derivative completion and its exact reflection current.  At the archimedean fixed point every square-index coordinate and every positive product fibre contributes nontrivially; valuation depth is unbounded.  The required reflection polarization must therefore have infinite arithmetic support.  Another finite prime, product-fibre, or valuation window cannot close the problem.
+
+334. **Finite-support flatness does not imply reflected totalization.**
+     The synchronized-lcm insertion cocycle is flat on every finite Boolean face, while the completed theta current requires simultaneous infinite support.  Existing completion-phantom and provenance no-gos show that facewise compatibility alone does not produce a provenance-preserving totalization.  The missing theorem must control the topology and reflection polarization of the completed two-filter object.
+
+### New Lean synthesis
+
+Added `formal/GaloisForLFunctions/RHTower/XiJointAncestrySuperselection.lean` and imported it from the RHTower umbrella.
+
+New declarations:
+
+- `XiPrimePoissonReflectionSewing` — nonzero closed source-linear sewing between the forward and reflected prime-Poisson multiplication representations attached to a divisor point;
+- `XiPrimePoissonReflectionDisjoint` — disjointness of those representations;
+- `xiPrimePoissonReflectionSewing_iff_internalOnly` — the new pointwise bridge: a Xi divisor is internal-only exactly when its reflected prime-source sectors admit nonzero closed sewing;
+- `XiRightJointAncestrySuperselectionCertificate` — simultaneous internal channel, transverse channel, completion syndrome, modular/Rees syndrome, prime-sector disjointness, and sewing failure;
+- `xiRightJointAncestrySuperselection_law` — every hypothetical right-half Xi divisor has that joint certificate while retaining its nonzero square-zero internal channel.
+
+Verification:
+
+- target build passed: `13193/13193` jobs;
+- axiom audit for all new theorems: `[propext, Classical.choice, Quot.sound]` only.
+
+This is not an RH proof and introduces no source-admission axiom.  It formalizes the exact distinction requested by the reinterpretation: internal zero structure can survive, while transverse placement is a simultaneous ancestry failure.
+
+### Revised big-picture object: bifiltered cubical ancestry completion
+
+Current universal candidate is no longer an operator or conservation law.  It is a completed diagram with two independent filtrations:
+
+1. **prime-support/compound filtration:** every finite support `P` has its own interaction grade; singleton, pair, triple, and higher compounds are retained rather than scalarized;
+2. **valuation/Rees filtration:** each support has its full prime-power depth and asymptotic type, including all-orders-flat versus finite/half-normal behavior.
+
+The synchronized-lcm insertion cocycle is the finite-face connection.  Source provenance marks which faces and depths have common ancestry.  A physical reflection law should be an infinite-support polarization/self-correspondence of the completed diagram, not a separately fitted map at each zero.
+
+In this language:
+
+- an internal Xi jet is a localized nonzero nilpotent class—legitimately soliton-like and free to vary with multiplicity;
+- transverse off-line charge is an obstruction to forming one reflected, provenance-preserving totalization;
+- completion phantom, TailRoos escape, nonclosable graph, Rees type fracture, prime-sector disjointness, Hawking horizon charge, Hurwitz phase, and one-port inertia are shadows obtained by applying different truncation/observation functors to that obstruction.
+
+### Exact revised open core
+
+Construct from the literal Möbius–theta/Euler–Gamma source, before divisor selection:
+
+1. the completed bifiltered object whose finite prime-support faces are the existing synchronized-lcm rays and whose valuation-depth completion retains the canonical infinite theta reflection current;
+2. an infinite-support reflected polarization or closed correspondence compatible with every Boolean-face insertion map and every compound order;
+3. a proof that its one-particle prime-torus shadow is closed, single-valued, source-algebra-linear, and nonzero on every nonzero first Xi jet;
+4. a proof that higher shadows retain the pure third and all higher compounds rather than collapsing to the rooted second compound;
+5. a provenance-continuity theorem preventing the totalization from adding the vertical ambiguity already exposed by the nonclosable normalized graph.
+
+Step 3 then feeds `xiPrimePoissonReflectionSewing_iff_internalOnly`; prime-Poisson superselection forces absence of transverse defect while preserving the internal channel.  Construction of Steps 1–5 remains open.

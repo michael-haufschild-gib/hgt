@@ -374,3 +374,32 @@ shifted quotient. They remain source-transport infrastructure, not a scientific 
 - 2026-07-10 -- generalized the outermost jump to an arbitrary isolated finite layer: the crossing
   multiplicity becomes an asymptotically orthogonal unitary leakage block, with an exact
   Hilbert--Schmidt jump when the persistent background is finite.
+
+## Formalization progress (2026-08-24)
+
+`[LEAN-PROVED] [CORPUS]` The finite coprime inner-quotient rank core is now exact in
+`HTGeometry.FiniteBlaschkeLeakageRank`:
+
+- `finiteBlaschkeLeakageCore` is the canonical initial-space realization
+  `P_(K_B) M_A : H² -> K_B` of anti-causal leakage;
+- `norm_sq_finiteBlaschkeLeakageCore` identifies its squared norm with the exact Schur leakage
+  energy `||f||²-||M_B^* M_A f||²`;
+- `finiteBlaschkeLeakageCore_surjective_of_coprime` proves that coprime numerator and denominator
+  make this channel onto the entire denominator model space; and
+- `finrank_range_finiteBlaschkeLeakageCore_of_coprime` proves exact rank `deg B`, including
+  multiplicities.
+
+The supporting leaves `HTGeometry.FiniteBlaschkeGeneralizedSchurInertia` and
+`HTGeometry.FiniteBlaschkeAdjointDefect` supply exact model-space degree, adjoint energy loss,
+Hardy coprimality, and the corresponding generalized-Schur negative-index theorem. All three
+leaves pass `lake env lean`; targeted leaf builds pass. New theorem axioms are exactly `propext`,
+`Classical.choice`, and `Quot.sound`.
+
+This is not yet the complete card and does not justify Stage 3. Remaining exact obligations are:
+
+1. infinite Blaschke denominator/model-space dimension and the infinite-rank branch;
+2. the completed-Xi shifted quotient's coprime inner factorization and divisor-multiplicity
+   transport into that finite/infinite operator theorem;
+3. Theorem B's outermost-layer norm singularity in the actual family; and
+4. Theorem C's arbitrary-layer unit-channel peeling, persistent-block orthogonality, spectral
+   multiset limit, and Hilbert--Schmidt trace jump.

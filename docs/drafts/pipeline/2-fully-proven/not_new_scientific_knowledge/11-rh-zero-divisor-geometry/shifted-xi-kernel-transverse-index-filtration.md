@@ -182,7 +182,46 @@ that forces `S_omega` to have no negative squares for a nonzero range of `omega`
 would prove a horizontal zero-free strip and would turn the index filtration from a recorder into a
 barrier.
 
+## Lean status update (2026-08-24)
+
+Two dependency-closed HTGeometry leaves now formalize the finite generalized-Schur inertia engine:
+
+- `FiniteBlaschkeGeneralizedSchurInertia.lean` defines exact finite negative index, proves the sharp
+  projection-corank upper bound and model-space lower witness, proves finite-Blaschke model-space
+  dimension equals denominator degree with multiplicity, and obtains the exact index theorem for a
+  Schur numerator whose adjoint is injective on the denominator model space.
+- `FiniteBlaschkeAdjointDefect.lean` proves the finite-Blaschke adjoint energy-loss identity, rewrites
+  the generalized-Schur form as the exact numerator/denominator adjoint-energy difference, and
+  discharges model-space injectivity from an explicit Hardy Bezout/coprimality decomposition.
+
+Both leaves are wired into `HTGeometry.lean`, pass direct `lake env lean` checks and exact leaf
+builds, and every new public declaration audits to only `propext`, `Classical.choice`, and
+`Quot.sound`. The card remains at stage 2. Exact remaining arithmetic-analytic producer is now the
+unconditional Cartwright/bounded-type factorization of `suzukiCanonicalTheta omega` after common
+divisor cancellation, including construction of the finite or infinite upper-half-plane Blaschke
+denominator and the disk/half-plane conjugacy identifying its pole multiplicities with shifted-Xi
+zeros. The finite factor case can then consume the new coprime exact-index theorem directly; an
+infinite denominator must supply finite factors of unbounded degree to certify unbounded index.
+
 ## Log
 
 - 2026-07-10 -- kernel filtration stated; proof reduced to classical generalized-Schur
   factorization; primary-literature audit open.
+
+## Lean status update -- finite kernel realization (2026-08-24)
+
+`HTGeometry/FiniteBlaschkeGeneralizedSchurKernel.lean` now closes the missing passage from the
+finite Hardy-operator index theorem to literal sampled generalized-Schur kernels. It constructs a
+total analytic Szego-section realization, proves its scalar kernel is exactly
+`(B(z)B(w)^* - F(z)F(w)^*)/(1-z w^*)` (in the realization's Schwarz-reflected analytic
+orientation), and proves multiplicity-aware exact negative squares: one finite Gram packet realizes
+the full denominator degree and no finite Gram packet has larger negative dimension. The proof uses
+Hardy coprimality, the finite-Blaschke model-space dimension theorem, and density/local finite
+section machinery; no confluent-node or simple-zero restriction is introduced.
+
+Direct `lake env lean` and exact leaf `lake build` pass. Every new declaration audits to only
+`propext`, `Classical.choice`, and `Quot.sound`. The leaf is wired into `HTGeometry.lean`; no
+umbrella build was run. Remaining card obligation is source-specific, not finite kernel algebra:
+construct the cancelled finite/infinite Blaschke factorization of `suzukiCanonicalTheta omega`,
+identify denominator multiplicities with shifted-Xi upper-half-plane zeros, and show an infinite
+denominator exposes finite factors of arbitrarily large degree.
