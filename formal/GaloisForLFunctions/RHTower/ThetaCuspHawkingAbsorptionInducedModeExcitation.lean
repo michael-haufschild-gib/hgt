@@ -25,13 +25,16 @@ coefficient.  The coefficient respects the physical mirror operation
 `omega ↦ -conj(omega)` and is nonzero at nonzero time for every nonzero
 frequency and nonzero absorbed mass response.
 
-Every multiplicity-exact Xi spectral point is nonzero.  Consequently AIME
-activates every theta/Xi sector, both critical and tilted.  This is a
-source-faithful Hawking no-go: universal absorption-induced self-frequency
-mixing cannot select RH or force the diagonal-preserving Cayley/Petz cubic
-completion.  Any surviving producer must use the cross-mode projection of the
-mass-shifted basis, or the fixed-ADM-charge canonical-energy sector, in a way
-that distinguishes the critical-line reflection pair.
+Every multiplicity-exact Xi spectral point is nonzero.  Consequently the bare
+AIME coefficient is nonzero after algebraically substituting that point for
+the QNM frequency, both critical and tilted.  This substitution is not a
+source-faithful scattering incidence: a centered Xi coordinate splits into
+real Schwarzschild frequency plus source tilt, and the source amplitude and
+sector-local absorbed flux vanish there.  The correction is formalized in
+`ThetaCuspHawkingAIMEJostIncidenceNoGo`.  Any surviving producer must use the
+cross-mode projection of the mass-shifted basis, or the fixed-ADM-charge
+canonical-energy sector, in a way that distinguishes the critical-line
+reflection pair.
 
 Physics sources:
 
@@ -147,8 +150,9 @@ def thetaXiSchwarzschildAIMECubicCoefficient
   schwarzschildAbsorptionInducedCubicCoefficient
     M absorption t (xiSpectralPoint q)
 
-/-- **Hawking-specific all-sector mixing law.**  Universal AIME self-frequency
-mixing is nonzero on every Xi divisor sector, without any RH hypothesis. -/
+/-- **Bare-coefficient no-go.**  Algebraic substitution of every nonzero Xi spectral point into
+the universal AIME self-frequency coefficient gives a nonzero value, without any RH hypothesis.
+This does not identify the Xi point with a QNM or supply nonzero source incidence. -/
 theorem thetaXiSchwarzschildAIMECubicCoefficient_ne_zero
     (q : XiZeroCopy) {M absorption t : ℝ} (hM : M ≠ 0)
     (habsorption : absorption ≠ 0) (ht : t ≠ 0) :
@@ -168,8 +172,8 @@ theorem thetaXiSchwarzschildAIMECubicCoefficient_lineConj
   rw [thetaXiSchwarzschildAIMECubicCoefficient,
     xiSpectralPoint_lineConj]
 
-/-- Packaged unconditional endpoint: every Xi sector is AIME-bright at every
-nondegenerate Schwarzschild mass, absorption response, and observation time. -/
+/-- Packaged unconditional bare-coefficient statement.  See
+`ThetaCuspHawkingAIMEJostIncidenceNoGo` for the vanishing source-dressed response. -/
 theorem thetaXiSchwarzschildAIME_mixesEveryMode
     {M absorption t : ℝ} (hM : M ≠ 0)
     (habsorption : absorption ≠ 0) (ht : t ≠ 0) :

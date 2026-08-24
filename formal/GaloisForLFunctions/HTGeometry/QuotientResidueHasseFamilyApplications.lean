@@ -1,0 +1,187 @@
+import GaloisForLFunctions.HTGeometry.HasseFamily
+import GaloisForLFunctions.HTGeometry.ABHN.FiniteFieldMilnorHasse
+import GaloisForLFunctions.HTGeometry.PrimeWalshStoneHasse
+import GaloisForLFunctions.HTGeometry.DifferentialOperatorCoordinateHasse
+import GaloisForLFunctions.HTGeometry.OrbitChargeSuperselection
+import GaloisForLFunctions.HTGeometry.GraphLocalHasse
+import GaloisForLFunctions.HTGeometry.FreeCoordinateSubfieldHasse
+import GaloisForLFunctions.HTGeometry.FiniteOperatorFamilyHasse
+import GaloisForLFunctions.HTGeometry.SteinerMobiusHasse
+
+/-!
+# Residue and quotient Hasse-family applications
+
+Concrete jointly separating local profiles for a genuine projective-line residue theorem and
+three quotient reconstructions already present in the corpus.  The Milnor family is the
+function-field local--global pattern closest to a future Brauer/ABHN comparison: all finite
+places together with infinity determine every class in degree at least two.
+-/
+
+namespace GaloisForLFunctions.HTGeometry
+
+universe u v
+
+noncomputable section
+
+/-- Finite places and infinity jointly determine high-degree Milnor classes over `F(t)`. -/
+def finiteFieldMilnorProjectiveLineHasseFamily
+    (F : Type u) [Field F] [Finite F] (n : ℕ) :
+    HasseFamily (MilnorKDeg (RatFunc F) (n + 2)) (Sum (MonicIrred F) Unit) where
+  Local := fun p => match p with
+    | .inl q => MilnorKDeg (polyResidueField q.2.1) (n + 1)
+    | .inr _ => MilnorKDeg F (n + 1)
+  profile := fun x p => match p with
+    | .inl q => milnorPolynomialTotalResidue (F := F) (n + 1) x q
+    | .inr _ => milnorResidueInfty (F := F) (n + 1) x
+  profile_injective := by
+    intro x y hxy
+    apply ABHN.finiteField_rationalFunctionMilnor_allResidue_injective (F := F) n
+    apply Prod.ext
+    · apply DFinsupp.ext
+      intro q
+      exact congrFun hxy (.inl q)
+    · exact congrFun hxy (.inr ())
+
+/-- Compact tail-cluster evaluations jointly determine a prime-tail quotient observable. -/
+def primeTailClusterHasseFamily
+    {J : Type u} [DecidableEq J] (theta : ℕ → (J → Bool)) :
+    HasseFamily
+      (LocallyConstant (J → Bool) ℂ ⧸ primeTailVanishingIdeal theta)
+      (primeOrientationTailClusterSet theta) where
+  Local := fun _ => ℂ
+  profile := fun q x => primeTailLocallyConstantQuotientEquiv theta q x
+  profile_injective := by
+    intro q r hqr
+    apply (primeTailLocallyConstantQuotientEquiv theta).injective
+    ext x
+    exact congrFun hqr x
+
+namespace DiffOp
+
+/-- Coordinates outside a finite exceptional set jointly determine a differential-operator
+vector modulo vectors supported on that exceptional set. -/
+def complementCoordinateQuotientHasseFamily
+    {K : Type u} [Field K] [Differential K]
+    {kappa : Type v} [DecidableEq kappa] (C : Finset kappa) :
+    HasseFamily
+      ((kappa → DiffOp K) ⧸ coordSupport C)
+      {j : kappa // j ∉ C} where
+  Local := fun _ => DiffOp K
+  profile := fun q j => complementCoordinateHasseQuotientEquiv (K := K) C q j
+  profile_injective := by
+    intro q r hqr
+    apply (complementCoordinateHasseQuotientEquiv (K := K) C).injective
+    funext j
+    exact congrFun hqr j
+
+end DiffOp
+
+/-- Orbit charges jointly determine a finite-support configuration modulo charge-zero motion. -/
+def orbitChargeQuotientHasseFamily
+    (ι : Type u) (A : Type v) [AddCommGroup A] :
+    HasseFamily (OrbitChargeQuotient ι A) ι where
+  Local := fun _ => A
+  profile := fun q i => orbitChargeQuotientEquiv q i
+  profile_injective := by
+    intro q r hqr
+    apply orbitChargeQuotientEquiv.injective
+    ext i
+    exact congrFun hqr i
+
+section GraphLocal
+
+variable {I R : Type*} [Fintype I] [DecidableEq I] [Fintype R] [DecidableEq R]
+
+/-- Graph-local commutators jointly determine an operator modulo simultaneous local
+invisibility. -/
+def graphLocalCommutatorQuotientHasseFamily (G : SimpleGraph I) :
+    HasseFamily
+      (GraphLocalHasseSpace (I := I) (R := R) ⧸ graphLocalCommonKernel I R G)
+      (GraphLocalIndex I G) where
+  Local := fun _ => GraphLocalHasseSpace (I := I) (R := R)
+  profile := fun q j => (graphLocalHasseQuotientEquivRealizedProfiles G q).1 j
+  profile_injective := by
+    intro q r hqr
+    apply (graphLocalHasseQuotientEquivRealizedProfiles G).injective
+    apply Subtype.ext
+    funext j
+    exact congrFun hqr j
+
+end GraphLocal
+
+/-- Coordinate derivations jointly determine a free rational function modulo scalars. -/
+def freeCoordinateDerivativeQuotientHasseFamily
+    (C sigma : Type*) [Field C] [CharZero C] :
+    HasseFamily (FreeCoordinateDerivativeHasseClass C sigma) sigma where
+  Local := fun _ => FreeCoordinateRationalField C sigma
+  profile := fun q i => (freeCoordinateDerivativeHasseEquivRealizedProfiles C sigma q).1 i
+  profile_injective := by
+    intro q r hqr
+    apply (freeCoordinateDerivativeHasseEquivRealizedProfiles C sigma).injective
+    apply Subtype.ext
+    funext i
+    exact congrFun hqr i
+
+/-- Derivations outside `S` jointly determine a free rational function modulo the subfield
+generated by `S`. -/
+def freeCoordinateSubfieldQuotientHasseFamily
+    (C sigma : Type*) [Field C] [CharZero C] (S : Set sigma) :
+    HasseFamily (FreeCoordinateSubfieldHasseClass C sigma S) {i : sigma // i ∉ S} where
+  Local := fun _ => FreeCoordinateRationalField C sigma
+  profile := fun q i => (freeCoordinateSubfieldHasseEquivRealizedProfiles C sigma S q).1 i
+  profile_injective := by
+    intro q r hqr
+    apply (freeCoordinateSubfieldHasseEquivRealizedProfiles C sigma S).injective
+    apply Subtype.ext
+    funext i
+    exact congrFun hqr i
+
+section FiniteOperator
+
+variable {X J : Type*} [NormedAddCommGroup X] [InnerProductSpace ℂ X]
+  [FiniteDimensional ℂ X] [Fintype J]
+
+/-- A finite operator packet jointly determines a vector modulo its common kernel. -/
+def finiteOperatorQuotientHasseFamily (A : J → X →ₗ[ℂ] X) :
+    HasseFamily (FiniteOperatorFamilyHasseClass A) J where
+  Local := fun _ => X
+  profile := fun q j => (finiteOperatorFamilyHasseEquivRealizedProfiles A q).1 j
+  profile_injective := by
+    intro q r hqr
+    apply (finiteOperatorFamilyHasseEquivRealizedProfiles A).injective
+    apply Subtype.ext
+    funext j
+    exact congrFun hqr j
+
+end FiniteOperator
+
+/-- Subconfigurations of a declared support packet jointly determine an anchored-local
+function. -/
+def anchoredLocalSupportHasseFamily
+    {V A R : Type*} [Fintype V] [DecidableEq V]
+    [Fintype A] [DecidableEq A] [Field R] {base : A}
+    (support : Finset V) :
+    HasseFamily
+      (anchoredLocalSubmodule (A := A) (base := base) (R := R) support)
+      {index : AnchoredConfiguration V A base // anchoredSupport index ⊆ support} where
+  Local := fun _ => R
+  profile := fun f i => f.1 i.1
+  profile_injective := by
+    intro f g hfg
+    exact (anchoredLocal_congr_hasse_iff support f g).1 (fun i => congrFun hfg i)
+
+/-- Boolean subconfigurations of a declared support packet jointly determine a Boolean-local
+function. -/
+def booleanLocalSupportHasseFamily
+    {V R : Type*} [Fintype V] [DecidableEq V] [Field R]
+    (support : Finset V) :
+    HasseFamily (booleanLocalSubmodule (R := R) support)
+      {sites : Finset V // sites ⊆ support} where
+  Local := fun _ => R
+  profile := fun f sites => f.1 sites.1
+  profile_injective := by
+    intro f g hfg
+    exact (booleanLocal_congr_hasse_iff support f g).1 (fun sites => congrFun hfg sites)
+
+end
+end GaloisForLFunctions.HTGeometry

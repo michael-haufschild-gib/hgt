@@ -63,6 +63,33 @@ def ofInjective (L : ι → Type w) (profile : G → ((i : ι) → L i))
   profile := profile
   profile_injective := hprofile
 
+/-- An equivalence with a full dependent product supplies a Hasse family. -/
+def ofEquivFunctions (L : ι → Type w) (e : G ≃ ((i : ι) → L i)) :
+    HasseFamily G ι where
+  Local := L
+  profile := e
+  profile_injective := e.injective
+
+/-- An equivalence with a subtype of dependent functions supplies a Hasse family by forgetting
+the realization certificate at each place. -/
+def ofEquivSubtypeFunctions (L : ι → Type w)
+    (S : Set ((i : ι) → L i)) (e : G ≃ S) : HasseFamily G ι where
+  Local := L
+  profile := fun x => (e x).1
+  profile_injective := by
+    intro x y hxy
+    apply e.injective
+    exact Subtype.ext hxy
+
+/-- A single complete local invariant supplies a one-place Hasse family. -/
+def ofEquivSingle {L : Type w} (e : G ≃ L) : HasseFamily G Unit where
+  Local := fun _ => L
+  profile := fun x _ => e x
+  profile_injective := by
+    intro x y hxy
+    apply e.injective
+    exact congrFun hxy ()
+
 end HasseFamily
 
 end GaloisForLFunctions.HTGeometry

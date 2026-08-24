@@ -22,6 +22,13 @@ namespace HassePredicate
 
 variable {G : Type u} {ι : Type v} (H : HassePredicate G ι)
 
+/-- Package one fixed local--global equivalence as a Hasse predicate. -/
+def fixed {P : Prop} {Q : ι → Prop} (h : P ↔ ∀ i, Q i) :
+    HassePredicate Unit ι where
+  global _ := P
+  atPlace i _ := Q i
+  local_global _ := h
+
 /-- Failure of a global Hasse predicate is exactly failure at one place. -/
 theorem not_global_iff_exists_local_not (x : G) :
     ¬ H.global x ↔ ∃ i, ¬ H.atPlace i x := by

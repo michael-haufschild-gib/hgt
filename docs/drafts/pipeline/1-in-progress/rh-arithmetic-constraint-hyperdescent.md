@@ -566,3 +566,357 @@ field-level law: **terminal arithmetic completion is effective higher descent**.
   curvature.
 - 2026-08-24 — Active rabbit hole frozen as terminal-source hyperdescent; exact source-specific
   horn-filling theorem is open.
+
+## 2026-08-24 synthesis pivot: reflection-relative arithmetic phase-anomaly geometry
+
+**Status:** `[CONJECTURE]` `[OPEN CORE]` `[NOVELTY UNVERIFIED]` `[NOT AN RH PROOF]`
+
+### Reframing
+
+Terminal-source hyperdescent is a combinatorial shadow, not yet the governing principle.  The
+corpus points to a more selective ontology:
+
+> The completed prime--Gamma source is allowed to possess non-trivial internal phase topology,
+> but completion is forbidden to create a new reflection-transverse anomaly.
+
+Zeros are therefore not excitations produced by a flow, spectrum, Hamiltonian, radiation law, or
+soliton equation.  A divisor is an internally legitimate defect of the completed arithmetic law.
+An off-line divisor would additionally certify that one source history has split into two
+inequivalent completed provenance histories -- forward and reflected -- which cannot be sewn by
+one coherent higher phase.  This is the required `1 -> 2`.  Its prohibition is a global
+consistency constraint, not an evolution law.
+
+The proposal deliberately permits different critical-line zeros to have different internal
+causes, phases, multiplicities, or local models.  It asserts only that none may acquire a second,
+reflection-normal completion class.  RH becomes a codimension-one statement about which part of
+the defect object is universal, not a universal mechanism generating every zero.
+
+### Candidate mathematical language
+
+Use nomological homotopy geometry as ambient language, but select a new arithmetic sector:
+**reflection-relative higher phase/anomaly geometry of formation and completion**.  Its primitive
+object should not be a space of zeros.  It should be a source-derived higher history object
+`H_ar` built from prime valuations, integral/Moebius formation, polar--Gamma completion, and
+reflection.  Its cells record operations and canonical comparisons between histories.
+
+Let `Phase(H_ar)` take values in a Picard infinity-groupoid or an equivalent tower of lines,
+gerbes, and higher invertible phase objects.  A schematic comparison square is
+
+```text
+formation(source)  --completion-->  completed formed source
+       |                                  |
+  completion                           comparison
+       |                                  |
+completed source  --formation-->  formed completed source.
+```
+
+The square and its higher comparison cells must be constructed from the actual source.  Write
+`Anom_rel(H_ar)` for the failure of its two histories to admit a reflection-compatible coherent
+trivialization.  The proposed decomposition is conceptual, not yet a theorem:
+
+```text
+total defect phase = internal arithmetic phase + reflection-transverse relative anomaly.
+```
+
+The first summand may be non-zero and divisor-dependent.  The second is the prospective RH
+obstruction.
+
+### Prime--Gamma transverse anomaly-inflow conjecture
+
+`[CONJECTURE]` For the fixed, zero-independent prime--Gamma history object, forward and reflected
+boundary phase data are transgressions of one source-derived higher phase object.  Consequently
+their relative reflection-transverse anomaly has a canonical coherent trivialization:
+
+```text
+Anom_perp(H_ar) ~= 1.
+```
+
+This is an inflow statement only if the bulk higher phase object is forced by the source before
+Xi or its divisors are mentioned.  Choosing a bulk or counterterm after seeing the desired
+boundary class is circular and has no evidential value.
+
+The word *anomaly* is relative here.  It does not mean that the entire arithmetic phase theory is
+trivial.  Existing Gamma Dixmier--Douady and Xi internal classes make such a claim false.  The law
+forbids only anomaly born in the formation/completion/reflection comparison.
+
+### Why this, rather than another renamed classical route
+
+The following independently formalized phenomena become functorial shadows of one proposed
+relative higher class:
+
+- The Xi internal square-zero channel is allowed intrinsic defect topology.  The transverse
+  dual-number arc is the normal infinitesimal shadow of the relative anomaly.
+- The complete-resolution reflection displacement and shared-gauge failure are its linear and
+  Cech shadows.
+- Tail--Roos phantoms and source-marked finite completion are its pro/ind or completion shadows:
+  every finite stage can be physical while the global provenance history fails.
+- Koszul order-independence and mutual-statistics superselection are its braided two-dimensional
+  shadows.
+- Coefficient-lift associators, Cayley secondary obstruction, and proper-face contextuality are
+  its ternary and higher-coherence shadows.  Pairwise gluing cannot see them.
+- The Gamma gerbe supplies genuine higher phase topology.  It prevents collapse of the proposal
+  to scalar positivity or an everywhere-trivial phase.
+- Derived arithmetic non-bifurcation is its cotangent shadow: finite formally etale prime
+  cylinders should not acquire a new reflection-normal direction only after completion.
+- Terminal-source hyperdescent is its matching-object shadow: a coherent trivialization fills the
+  source-derived horn.  Hyperdescent alone did not explain what the horn measured.
+- Noether charge is an infinitesimal variation of the same class, not its producer and not the
+  full law.
+- Hawking/KMS intensity blindness says phase-forgetting observers can erase this information;
+  partner correlation and rectangular holonomy are phase-sensitive shadows that may retain it.
+- Quantum recurrence says even a complete local jet can miss global temporal phase; collision
+  hierarchy/holonomy is the analogous global completion datum.
+- ABHN-type invariant sums are abelian projections.  Their failure to close RH is expected if the
+  load-bearing obstruction lives in a non-abelian or higher coherent phase object.
+
+This factorization is the main evidence for the reframing.  It is not yet evidence for the source
+inflow theorem itself.
+
+### Meaning of higher dimension
+
+The octonionic experiment exposed the useful correction: needed dimension is categorical arity,
+not Euclidean coordinate count.  The progression suggested by the corpus is
+
+```text
+scalar phase -> line/connection -> gerbe/3-class -> higher Picard phase object,
+pairwise equality -> coherent triangles -> tetrahedral/associator filling -> hyperdescent.
+```
+
+Thus a higher-dimensional `real object` can cast quaternionic, spectral, cohomological,
+operator-theoretic, and physical lower shadows without being an eight-dimensional manifold.
+Octonions remain one finite associator detector, not the ontology.
+
+### Physics consequences if the law is real
+
+The same law would predict that several quantum problems are mis-posed when only local or
+intensity observables are retained:
+
+1. Hawking information would be stored in relative partner phase/holonomy and source provenance,
+   not reconstructed from a thermal one-particle spectrum.
+2. Exact quantum recurrence would require a global temporal phase or collision hierarchy beyond
+   the complete local Taylor jet.
+3. KMS/passivity data would remain phase-blind; cross-channel or rectangular holonomy would be
+   the natural invariant.
+4. Topological quantum systems would require higher mutual-statistics and associator data when a
+   determinant line or Berry phase is too low-degree.
+5. Observer-induced information loss would be modeled as a non-faithful map from source phase
+   topology to Gram/intensity data, distinguishing erasure of provenance from physical creation
+   of entropy.
+
+These are consequences and test domains, not analogies to use as proof premises.
+
+### Hostile no-gos
+
+1. **Ordinary `C2`/Tate anomaly is oriented incorrectly.**  Existing reflection Tate
+   calculations make free reflected two-cycles boundaries while fixed labels carry parity.  That
+   detects the line instead of excluding off-line pairs.
+2. **`All anomalies vanish` is false.**  Gamma has a non-trivial infinite-order
+   Dixmier--Douady class and Xi divisors retain an internal nilpotent channel on the line.
+3. **A scalar `U(1)` phase or determinant line is too small.**  Ternary associators and compatible
+   proper faces with no total law survive all pairwise checks.
+4. **Noether/action language alone is non-selective.**  Generic cotangent doubling manufactures
+   an action, while a first obstruction may vanish and a higher one remain.
+5. **Finite-stage anomaly cancellation is insufficient.**  Completion phantoms can have every
+   finite coordinate physical and still lack global provenance.
+6. **Zero-indexed phase geometry is circular.**  `H_ar`, its reflection, and its higher phase must
+   exist before selecting an Xi divisor.
+7. **Arbitrary anomaly inflow is theatre.**  A freely chosen bulk or counterterm can cancel any
+   desired boundary defect.  Only a source-forced bulk class counts.
+8. **Intensity, positivity, and all-pass data are phase-blind.**  Hawking/KMS formalizations give
+   explicit countermodels.
+9. **Calling hyperdescent anomaly cancellation adds nothing by itself.**  Progress requires an
+   explicit arithmetic phase object and a theorem forcing its relative transverse
+   trivialization.
+10. **Topological-soliton production has wrong ontology.**  The relevant object is failed coherent
+    sewing of provenance histories, not a localized excitation created by dynamics.
+
+### Exact open core and proof architecture
+
+`[OPEN CORE]` Construct the zero-independent prime--Gamma higher history and prove its
+reflection-transverse relative anomaly is canonically trivial for a source-specific reason.
+
+Required stages:
+
+1. Give a paper definition of `H_ar`: objects, generating histories, reflection, and all required
+   comparison cells.  Establish that it retains integral provenance and unsquared phase.
+2. Construct the phase target and source-derived higher character.  The Gamma gerbe, prime
+   sectors, and their sewing must occur in one object rather than as separately fitted models.
+3. Define the internal/transverse separation invariantly.  It must preserve legitimate internal
+   Gamma/Xi topology while isolating only formation--completion--reflection mismatch.
+4. Prove the prime--Gamma inflow/trivialization theorem without an RH-equivalent boundedness,
+   shared-gauge, zero-placement, or completed-exactness premise.
+5. Prove a comparison theorem sending the one relative class to the existing complete-resolution,
+   Tail--Roos, Koszul, higher-confluence, Noether, and dual-number obstruction reporters.
+6. Prove faithful Xi landing: an off-line divisor gives a non-trivial transverse image, whereas an
+   on-line divisor retains only its permitted internal phase.
+7. Conclude RH.
+
+Stage 4 is decisive.  If its proof merely assumes continuity of completion, effectiveness of
+hyperdescent, or a chosen counterterm, this route collapses to an earlier endpoint and must be
+retired.  No Lean module should be started before Stages 1--4 have a dependency-closed paper proof.
+
+### Log continued
+
+- 2026-08-24 — Phase/topology working theory accepted with strict distinction between permitted
+  internal topology and forbidden completion-born transverse anomaly.
+- 2026-08-24 — Ordinary reflection Tate cohomology rejected: free reflected pairs are already
+  boundaries, so it has the wrong selectivity.
+- 2026-08-24 — `All anomalies vanish` rejected by Gamma Dixmier--Douady and Xi internal-channel
+  theorems.
+- 2026-08-24 — Terminal-source hyperdescent reclassified as combinatorial shadow of a proposed
+  source-relative higher phase anomaly.
+- 2026-08-24 — Active rabbit hole frozen as prime--Gamma transverse anomaly inflow; exact open
+  core is construction and source-forced trivialization of the zero-independent relative class.
+
+## Corpus-first correction: singular formation--reflection interchange
+
+The preceding higher-anomaly language is too unconstrained.  Systematic Lean-corpus mining now
+fixes two concrete source directions and one concrete completion failure.  This replaces the
+generic inflow proposal as active rabbit hole.
+
+### `[CORPUS]` forced decomposition
+
+1. `XiInternalTransverseCompletionSyndrome` proves every Xi divisor has a nonzero internal
+   square-zero channel, while only off-line divisors have a nonzero stationary transverse
+   completion class.  RH asks for **internal-only**, not reduced, zeros.
+2. `XiJointAncestrySuperselection` and `PrimePoissonSourceLinearSuperselection` prove the same
+   dichotomy as source ancestry: forward and reflected prime-Poisson sectors admit a nonzero
+   closed source-linear sewing exactly on the wall; off wall they are mutually singular and their
+   multiplication representations are disjoint.
+3. `XiHeatCassiniReflectedPhaseSourceJet` proves horizontal grade and vertical phase are
+   independent before divisor specialization.  Their first nonzero reflection defect is the
+   mixed jet `2*a*gamma`; completing either coordinate separately to an even scalar erases it.
+4. `LocalDivisorJetAdamsDilation`, `XiTransverseGammaValuationCoherence`, and
+   `ArithmeticSchurRenormalizationLaw` construct the first source direction: prime-power Adams
+   formation and repeated Gamma Schur elimination act as exact valuation translation to every
+   finite depth, with a cofinal residual tending to zero.
+5. `RouteRPrimeLogEssentialCapPhaseGeometry` constructs the second source direction: a nonzero,
+   coefficient-faithful, polynomially moderate Xi-height phase orbit with exact source sewing.
+   Physical sewing of that orbit is exactly the still-missing transverse flatness law.
+6. `MobiusThetaPhysicalSourceToXiLanding`, `MobiusThetaInternalJetSourceToXiLanding`, and their
+   conormal descendants construct a zero-independent physical source, identify prime-normal and
+   power-supported presentations as the same `L2` vector, land all Xi jets, and retain arbitrary
+   divisor multiplicity as a nonzero vertical conormal.
+7. `ConstitutiveFormationCompletionExchange` proves why finite source commutation is not enough:
+   unbounded formation and completion can fail to exchange.  `ProvenanceContinuousCompletion`
+   proves ordinary coordinatewise convergence is too weak.
+
+### `[REINTERPRETATION]` one scalar zero has two semantics
+
+A scalar zero is the image of either:
+
+- an **internal zero**: a genuine vertical/conormal defect inside one source sector, with arbitrary
+  multiplicity and arbitrary zero-specific internal mechanism; or
+- a **transverse failure zero**: scalar completion has identified or orthogonalized two source
+  histories which no longer admit a common reflected correspondence.
+
+The second is not a second kind of physical object.  It is an error of scalar completion: a failed
+interchange is reported as `0` after source ancestry and phase have been forgotten.  This is the
+literal meaning of “zeros are errors” compatible with the Lean theorem that internal nilpotence
+survives at every legitimate Xi divisor.
+
+This suggests **failure-aware fibred analytic geometry** as the larger language.  Analytic
+amplitudes live in continuous fibres; exact source provenance, formation history, and reflection
+orientation live in a discrete/profinite base or correspondence groupoid.  They cannot be placed
+in one complex topological vector space: `RelativeShellProvenanceCoordinateTopology` proves an
+exact `0/1` provenance coordinate is discontinuous under every topology with continuous complex
+scalar multiplication.
+
+### `[CONJECTURE SFRI]` singular formation--reflection interchange
+
+Let `S` be the already constructed zero-independent Möbius--theta prime-normal source with its
+internally promoted jet/conormal graph.  Let:
+
+- `A_d` be source-correct prime-power Adams formation, with Gamma Schur realization as valuation
+  translation;
+- `R` be the source reflection/dagger operation retaining unsquared height phase;
+- `L` be a divisor-supported singular completion from the source graph to a fibred physical
+  conormal/correspondence object.
+
+The proposed source theorem is a Beck--Chevalley/interchange law on the singular conormal graph:
+
+```text
+                    A_d
+          S -----------------> S
+          |                    |
+        R |                    | R
+          v                    v
+          S -----------------> S
+                    A_d
+
+          L(A_d R)  ==  L(R A_d)
+```
+
+The equality is not requested in a scalar Hilbert target.  It is requested before provenance and
+the two reflected source sectors are forgotten.  Its obstruction must compare faithfully with
+both existing target shadows:
+
+```text
+interchange obstruction at rho
+    -> preDivisorTransverseCompletionDefect(rho)
+    -> reflected mixed grade--phase jet 2*a(rho)*gamma(rho).
+```
+
+If the source square is exact after singular completion, its transverse obstruction is zero at
+every Xi conormal.  Existing Lean bridges then give `a(rho)=0`, while leaving the internal
+vertical conormal and multiplicity untouched.  Hence every divisor syndrome is internal-only and
+RH follows.
+
+This is `turn 1 into 2`: replace one scalar completion by two independent source operations and
+ask for their two-dimensional coherence.  It is `constraint not flow`: no dynamics creates or
+moves zeros; a completed divisor is admissible only when the formation/reflection square closes.
+
+### `[OPEN CORE]` non-tautological proof obligations
+
+1. Define the fibred target of `L`.  Continuous amplitudes and exact provenance must be separated;
+   neither an ordinary normed space nor a scalar phase quotient is admissible.
+2. Define `A_d` and `R` on the same zero-independent Möbius--theta prime-normal jet source.  Reuse
+   the proved Adams coefficient law, Gamma-to-valuation Schur law, exact source reflection, and
+   physical-source weld; do not invent parallel surrogate packets.
+3. Restrict the source domain by a source-defined incidence condition **before completion**, then
+   construct `L` as a divisor-supported singular relation/correspondence.  A bounded total ambient
+   map is impossible by `HedenmalmGammaSewnCokernelBaseChangeNoGo`; merely closing the full source
+   graph is worse: `DeningerMeyerHalfDensityXiGraphClosure` makes it maximally vertical off line.
+   Local Hellinger--Gamma coface recovery is also nonselective because it holds at every grade.
+4. Prove the interchange law from one source-specific cofinal estimate: transported Gamma Schur
+   residual must vanish after the singular conormal landing while prime labels and reflection
+   framing remain visible.  Generic continuity or coordinatewise convergence cannot substitute.
+5. Prove the comparison theorem from the interchange obstruction to the existing whole-plane
+   transverse class or mixed source jet.  This map must be conservative on the transverse class
+   but may retain arbitrary internal vertical cohomology.
+6. Only after Steps 1--5 have a dependency-closed paper proof, formalize the missing fibred
+   completion/correspondence infrastructure and the source theorem in Lean.
+
+### `[NO-GO]` hostile audit for SFRI
+
+1. Finite Frobenius collision or preperiodicity is dead: hypothetical right-half fibres have an
+   injective Big-Witt Frobenius orbit.
+2. Naive integral-charge divisibility is invalid: Adams scales horizontal/logarithmic grade, not
+   Xi multiplicity.  Any integral topological charge requires an independently constructed
+   singular relative class; it cannot be declared by hand.
+3. Scalar winding, Wilson phase, Berry holonomy, endpoint phase, and intensity do not retain full
+   history.  Corpus countermodels give equal endpoint data with different winding actions.
+4. Ordinary reflection Tate cohomology has wrong selectivity: free reflected pairs are boundaries.
+5. Bounded operators and total ambient base change cannot perform required landing.  Correct
+   object must be a singular closed relation/correspondence on divisor conormals.
+6. Full source-gauge invariance erases retained class.  Required square is framed/covariant, not
+   invariant under every source shear.
+7. Finite source commutation does not imply completed commutation.  Formation--completion boundary
+   is exact known obstruction; unbounded depth and noncompactness are load-bearing.
+8. Source-marked completion continuity, same-fibre sewing, or vanishing of the mixed obstruction
+   asserted only on Xi zeros is RH-equivalent and circular.
+9. Positivity, KMS, conservation, losslessness, and mixing do not select phase winding or source
+   ancestry.
+10. Generic K-theory, higher anomaly, or categorical language without the explicit `A_d/R/L`
+    comparison square is renamed endpoint theatre and must be rejected.
+
+### Log continued
+
+- 2026-08-24 — Workflow reset to corpus-first: no external literature or framework proposal before
+  mining formal no-gos, positive survivors, missing operations, and physics correspondences.
+- 2026-08-24 — Generic transverse-anomaly inflow demoted.  Active route is now `SFRI`: singular
+  formation--reflection interchange on the constructed prime-normal Möbius--theta conormal source.
+- 2026-08-24 — Direct integral-divisibility idea rejected because source Adams dilation scales
+  horizontal grade, not divisor multiplicity.
+- 2026-08-24 — Scalar winding refinement rejected as insufficiently singular and history-faithful.
+  Phase/topology must be carried by a framed source correspondence or fibred conormal object.

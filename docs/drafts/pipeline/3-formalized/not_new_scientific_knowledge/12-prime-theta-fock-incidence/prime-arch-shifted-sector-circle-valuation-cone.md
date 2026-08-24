@@ -1,7 +1,7 @@
 # Prime--archimedean shifted sector-circle and valuation-cone law
 
 - **ID:** `prime-arch-shifted-sector-circle-valuation-cone`
-- **Stage:** 2-fully-proven/not_new_scientific_knowledge
+- **Stage:** 3-formalized/not_new_scientific_knowledge
 - **Type:** THEOREM (paper), `[PROVED HERE] [BRIDGE] [NOT AN RH PROOF]`
 - **Parents:** `prime-arch-explicit-circle-state-reflection-law`,
   `prime-arch-scaled-hausdorff-divisor-value-law`,
@@ -380,7 +380,7 @@ belong in `RHTower`.
 - [x] literature calibration: classical carrier theory separated from the Xi-specific constants
 - [x] 2 -> 3: exact thirteenth-power sector bound, Xi specialization, mass lower bound, endpoint
   disk, and geometric tail envelope formalized
-- [ ] 2 -> 3: formalize the circle-density packaging, coefficient cone, and residual consumer
+- [x] 2 -> 3: circle-density packaging, coefficient cone, and residual consumer formalized
 - [ ] proof input: establish the restricted Sonin comparison `(19)`, or a different source-value
   theorem covering `R_sector`, without Xi zero orientation or an RH-equivalent representing measure
 
@@ -426,3 +426,55 @@ proved strict tail gap, and normalization is proved by Haar integration, not ass
 Targeted build `GaloisForLFunctions.RHTower.PrimeArchShiftedCircleDensity` and the new capstone
 axiom audit passed.  The remaining stage-3 blockers are Fourier-moment recovery for this measure,
 the concrete weighted `L²` reflection carrier, and the residual Sonin comparison.
+
+## Lean completion log — 2026-08-24
+
+All remaining formalization blockers are closed.
+
+- Exact moment recovery:
+  `integral_coe_pow_primeArchShiftCircleProbabilityMeasure`.
+- Exact rational density bounds:
+  `primeArchShiftCircleDensity_lower_of_le_eleven`,
+  `primeArchShiftCircleDensity_upper_of_le_eleven`,
+  `primeArchShiftCircleDensity_twelve_lower`, and
+  `primeArchShiftCircleDensity_twelve_upper`.
+- Real analyticity: `primeArchShiftCircleLaurentExtension` is an explicit holomorphic Laurent
+  extension with radius witness `41/2`; `primeArchShiftCircleLaurentExtension_coe` identifies its
+  circle restriction with the source density.
+- Concrete carrier: `primeArchShiftCircleReflectionLI` is inversion on
+  `L²(T,mu_(Xi,s))`; coordinate multiplication is the unitary
+  `HTGeometry.circleZMulLIE`; `primeArchShiftCircleReflectionLI_circleZMulLp_conj` proves
+  `Theta U Theta = U⁻¹`.
+- Exact reflected Gram/polarization:
+  `inner_primeArchShiftCircleReflectionLI_monomial`,
+  `inner_primeArchShiftCircleReflectionLI_finitePolynomial_eq_momentFunctional`, and
+  `primeArchShiftCircle_cosine_sine_polarization`.
+- Coefficient and valuation cones plus residual consumer are formalized in
+  `PrimeArchValuationSectorCones.lean`, including
+  `riemannHypothesis_of_soninCoupledPrimeArchValuationAtMostSixResidualVariationalUpperBound`.
+- The hard boundary is already witnessed by
+  `HTGeometry.tiedPowerNarrowSectorOrientationNoGo`.
+
+New reusable modules:
+
+```text
+GaloisForLFunctions.HTGeometry.SymmetricCircleFourierAnalyticity
+GaloisForLFunctions.HTGeometry.SymmetricCircleReflection
+```
+
+Both are wired into `GaloisForLFunctions.HTGeometry`; the specialization is wired into
+`GaloisForLFunctions.RHTower`.  No umbrella build was run.
+
+Targeted leaf audits passed:
+
+```text
+lake build GaloisForLFunctions.HTGeometry.SymmetricCircleFourierAnalyticity
+lake build GaloisForLFunctions.HTGeometry.SymmetricCircleReflection
+lake build GaloisForLFunctions.RHTower.PrimeArchShiftedCircleDensity
+```
+
+Every new declaration was checked with `#print axioms` and depends only on Lean's standard
+`propext`, `Classical.choice`, and `Quot.sound`.  Formal lint found no forbidden declaration in
+this batch; its only errors were unrelated pre-existing umbrella reachability failures for
+`SecondOrderConstraintDescent`, `StokesFirstQuadrantTotalExact`, and
+`StokesNonnegativePrefixFiltration`.

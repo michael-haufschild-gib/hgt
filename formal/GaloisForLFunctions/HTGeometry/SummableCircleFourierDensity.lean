@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.CircleRieszFischerFourier
 import GaloisForLFunctions.HTGeometry.CircleFourierDensityUniqueness
 import GaloisForLFunctions.HTGeometry.HarmonicLogEquidistribution
 import GaloisForLFunctions.HTGeometry.SzegoLowerBoundGeneral
+import GaloisForLFunctions.HTGeometry.L1PeriodizationFourier
 
 /-!
 # Symmetric densities from summable circle Fourier tails
@@ -283,9 +284,168 @@ theorem integral_symmetricCircleFourierDensity {a : ℕ → ℝ}
     exact tsum_zero]
   ring
 
+/-- Every nonnegative-index Fourier moment of the symmetric density is its defining coefficient. -/
+theorem integral_symmetricCircleFourierDensity_mul_coe_pow
+    {a : ℕ → ℝ} (ha : Summable fun n : ℕ => |a (n + 1)|) (k : ℕ) :
+    (∫ z : Circle, (symmetricCircleFourierDensity a z : ℂ) * (z : ℂ) ^ k
+        ∂circleLebesgue) = (a k : ℂ) := by
+  let f : ℕ → Circle → ℂ := fun n z =>
+    (a (n + 1) : ℂ) * (((z : ℂ) ^ (n + 1)).re : ℂ) * (z : ℂ) ^ k
+  have hterms : ∀ n, Integrable (f n) circleLebesgue := by
+    intro n
+    have hre : Integrable
+        (fun z : Circle => (((z : ℂ) ^ (n + 1)).re : ℂ)) circleLebesgue := by
+      have hp : Integrable (fun z : Circle => (z : ℂ) ^ (n + 1)) circleLebesgue := by
+        simpa only [zpow_natCast] using
+          (circleZMonomial_memLp circleLebesgue ((n + 1 : ℕ) : ℤ)).integrable (by norm_num)
+      exact Complex.reCLM.toContinuousLinearMap.integrable_comp hp |>.ofReal
+    have hscalar := hre.const_mul (a (n + 1) : ℂ)
+    exact hscalar.mul_bdd (c := 1)
+      (circleZMonomial_memLp circleLebesgue (k : ℤ)).aestronglyMeasurable
+      (Filter.Eventually.of_forall fun z => by
+        simp only [norm_pow, Circle.norm_coe, one_pow, le_refl])
+  have hnorm : Summable (fun n => ∫ z : Circle, ‖f n z‖ ∂circleLebesgue) := by
+    refine Summable.of_nonneg_of_le
+      (fun n => integral_nonneg fun z => norm_nonneg _) ?_ ha
+    intro n
+    calc
+      ∫ z : Circle, ‖f n z‖ ∂circleLebesgue ≤
+          ∫ _ : Circle, |a (n + 1)| ∂circleLebesgue := by
+        apply integral_mono (hterms n).norm
+          (integrable_const (μ := circleLebesgue) |a (n + 1)|)
+        intro z
+        simp only [f, norm_mul, Complex.norm_real, Real.norm_eq_abs, norm_pow,
+          Circle.norm_coe, one_pow, mul_one]
+        exact mul_le_of_le_one_right (abs_nonneg _)
+          (Complex.abs_re_le_norm _ |>.trans (by simp))
+      _ = |a (n + 1)| := by simp
+  have hswap := MeasureTheory.integral_tsum_of_summable_integral_norm hterms hnorm
+  have htail : (∫ z : Circle, (∑' n, f n z) ∂circleLebesgue) =
+      ∑' n, ∫ z : Circle, f n z ∂circleLebesgue := hswap.symm
+  have hheadInt : Integrable (fun z : Circle => (a 0 : ℂ) * (z : ℂ) ^ k)
+      circleLebesgue := by
+    exact ((circleZMonomial_memLp circleLebesgue (k : ℤ)).integrable (by norm_num)).const_mul _
+  have htailInt : Integrable (fun z : Circle => ∑' n, f n z) circleLebesgue :=
+    integrable_tsum_of_summable_integral_norm hterms hnorm
+  have hpoint (z : Circle) :
+      ((∑' n : ℕ, a (n + 1) * ((z : ℂ) ^ (n + 1)).re : ℝ) : ℂ) * (z : ℂ) ^ k =
+        ∑' n, f n z := by
+    have hs := summable_symmetricCircleFourierDensity_terms ha z
+    have hc := Complex.ofRealCLM.map_tsum hs
+    change ((∑' n : ℕ, a (n + 1) * ((z : ℂ) ^ (n + 1)).re : ℝ) : ℂ) *
+        (z : ℂ) ^ k = ∑' n, f n z
+    rw [show ((∑' n : ℕ, a (n + 1) * ((z : ℂ) ^ (n + 1)).re : ℝ) : ℂ) =
+        ∑' n : ℕ, ((a (n + 1) * ((z : ℂ) ^ (n + 1)).re : ℝ) : ℂ) by
+      exact hc]
+    rw [← tsum_mul_right]
+    apply tsum_congr
+    intro n
+    simp [f]
+  rw [show (fun z : Circle => (symmetricCircleFourierDensity a z : ℂ) * (z : ℂ) ^ k) =
+      fun z : Circle => (a 0 : ℂ) * (z : ℂ) ^ k + 2 * ∑' n, f n z by
+    funext z
+    simp only [symmetricCircleFourierDensity, Complex.ofReal_add, Complex.ofReal_mul,
+      Complex.ofReal_ofNat]
+    rw [add_mul, mul_assoc, hpoint]]
+  have hscaled : (∫ z : Circle, 2 * ∑' n, f n z ∂circleLebesgue) =
+      2 * ∑' n, ∫ z : Circle, f n z ∂circleLebesgue := by
+    rw [integral_const_mul, htail]
+  rw [integral_add hheadInt (htailInt.const_mul 2), hscaled]
+  have hfint (n : ℕ) :
+      (∫ z : Circle, f n z ∂circleLebesgue) =
+        if n + 1 = k then (a (n + 1) : ℂ) / 2 else 0 := by
+    rw [show f n = fun z : Circle =>
+        (a (n + 1) : ℂ) * ((((z : ℂ) ^ (n + 1)).re : ℂ) * (z : ℂ) ^ k) by
+      funext z
+      simp [f]
+      ring]
+    rw [integral_const_mul,
+      integral_re_circle_pow_mul_circle_pow (n + 1) k (Nat.succ_ne_zero n)]
+    by_cases hnk : n + 1 = k <;> simp [hnk, div_eq_mul_inv]
+  cases k with
+  | zero =>
+      have hsum : (∑' n : ℕ, ∫ z : Circle, f n z ∂circleLebesgue) = 0 := by
+        simp_rw [hfint]
+        simp
+      rw [hsum]
+      simp
+  | succ l =>
+      have hsum : (∑' n : ℕ, ∫ z : Circle, f n z ∂circleLebesgue) =
+          (a (l + 1) : ℂ) / 2 := by
+        rw [tsum_eq_single l]
+        · rw [hfint]
+          simp
+        · intro n hn
+          rw [hfint]
+          simp only [ite_eq_right_iff]
+          intro heq
+          exact (hn (by omega)).elim
+      rw [integral_const_mul,
+        integral_circleLebesgue_coe_pow_eq_zero (l + 1) (Nat.succ_ne_zero l), hsum]
+      ring
+
 /-- The finite circle measure having the symmetric Fourier density with respect to Haar. -/
 def symmetricCircleFourierDensityMeasure (a : ℕ → ℝ) : Measure Circle :=
   circleLebesgue.withDensity fun z => ENNReal.ofReal (symmetricCircleFourierDensity a z)
+
+/-- If the symmetric density is nonnegative, its positive measure recovers every defining
+nonnegative-index Fourier coefficient. -/
+theorem integral_coe_pow_symmetricCircleFourierDensityMeasure
+    {a : ℕ → ℝ} (ha : Summable fun n : ℕ => |a (n + 1)|)
+    (hpos : ∀ z : Circle, 0 ≤ symmetricCircleFourierDensity a z) (k : ℕ) :
+    (∫ z : Circle, (z : ℂ) ^ k ∂symmetricCircleFourierDensityMeasure a) = (a k : ℂ) := by
+  have hfourier := realDensity_fourier_eq_pos_sub_neg circleLebesgue
+    (integrable_symmetricCircleFourierDensity ha) (k : ℤ)
+  have hposMeasure : realPosDensityMeasure circleLebesgue
+      (symmetricCircleFourierDensity a) = symmetricCircleFourierDensityMeasure a := rfl
+  have hnegMeasure : realNegDensityMeasure circleLebesgue
+      (symmetricCircleFourierDensity a) = 0 := by
+    rw [realNegDensityMeasure]
+    have hzero : (fun z : Circle => ENNReal.ofReal (-symmetricCircleFourierDensity a z)) = 0 := by
+      funext z
+      simp [hpos z]
+    rw [hzero, withDensity_zero]
+  rw [hposMeasure, hnegMeasure, integral_zero_measure, sub_zero] at hfourier
+  simpa only [zpow_natCast] using hfourier.trans
+    (integral_symmetricCircleFourierDensity_mul_coe_pow ha k)
+
+/-- Dividing a positive symmetric density by its positive head produces the normalized moment
+sequence `a k / a 0`. -/
+theorem integral_coe_pow_normalized_symmetricCircleFourierDensityMeasure
+    {a : ℕ → ℝ} (ha : Summable fun n : ℕ => |a (n + 1)|)
+    (hhead : 0 < a 0)
+    (hpos : ∀ z : Circle, 0 ≤ symmetricCircleFourierDensity a z) (k : ℕ) :
+    (∫ z : Circle, (z : ℂ) ^ k ∂circleLebesgue.withDensity
+      (fun z => ENNReal.ofReal (symmetricCircleFourierDensity a z / a 0))) =
+        (a k : ℂ) / (a 0 : ℂ) := by
+  let d : Circle → ℝ := fun z => symmetricCircleFourierDensity a z / a 0
+  have hdInt : Integrable d circleLebesgue := by
+    exact (integrable_symmetricCircleFourierDensity ha).div_const (a 0)
+  have hdpos : ∀ z, 0 ≤ d z := fun z => div_nonneg (hpos z) hhead.le
+  have hfourier := realDensity_fourier_eq_pos_sub_neg circleLebesgue hdInt (k : ℤ)
+  have hposMeasure : realPosDensityMeasure circleLebesgue d =
+      circleLebesgue.withDensity
+        (fun z => ENNReal.ofReal (symmetricCircleFourierDensity a z / a 0)) := rfl
+  have hnegMeasure : realNegDensityMeasure circleLebesgue d = 0 := by
+    rw [realNegDensityMeasure]
+    have hzero : (fun z : Circle => ENNReal.ofReal (-d z)) = 0 := by
+      funext z
+      simp [hdpos z]
+    rw [hzero, withDensity_zero]
+  rw [hposMeasure, hnegMeasure, integral_zero_measure, sub_zero] at hfourier
+  have hright : (∫ z : Circle, (d z : ℂ) * (z : ℂ) ^ (k : ℤ) ∂circleLebesgue) =
+      (a k : ℂ) / (a 0 : ℂ) := by
+    rw [show (fun z : Circle => (d z : ℂ) * (z : ℂ) ^ (k : ℤ)) =
+        fun z => (a 0 : ℂ)⁻¹ *
+          ((symmetricCircleFourierDensity a z : ℂ) * (z : ℂ) ^ k) by
+      funext z
+      simp only [d, zpow_natCast]
+      push_cast
+      field_simp [hhead.ne']]
+    rw [integral_const_mul, integral_symmetricCircleFourierDensity_mul_coe_pow ha k]
+    simp only [div_eq_mul_inv]
+    ring
+  simpa only [zpow_natCast] using hfourier.trans hright
 
 /-- Absolute summability ensures that the symmetric density measure is finite. -/
 theorem symmetricCircleFourierDensityMeasure_finite {a : ℕ → ℝ}

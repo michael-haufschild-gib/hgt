@@ -161,4 +161,23 @@ theorem totalFunctor_map_exact
     exact totalFunctorPreservesHomology A
   exact (((Functor.exact_tfae F).out 2 1 rfl rfl).mp hF) S hS
 
+/-- First-quadrant totalization maps short exact sequences of bicomplexes to short exact
+sequences of total complexes. -/
+theorem totalFunctor_map_shortExact
+    (S : ShortComplex (ModulePresheafBicomplex A)) (hS : S.ShortExact) :
+    (S.map (HomologicalComplex₂.totalFunctor (ModulePresheaf A)
+      (ComplexShape.down ℕ) (ComplexShape.down ℕ)
+      (ComplexShape.down ℕ))).ShortExact := by
+  let F := HomologicalComplex₂.totalFunctor (ModulePresheaf A)
+    (ComplexShape.down ℕ) (ComplexShape.down ℕ) (ComplexShape.down ℕ)
+  letI : HasBinaryBiproducts (ModulePresheafBicomplex A) :=
+    HasBinaryBiproducts.of_hasBinaryProducts
+  letI : PreservesBinaryBiproducts F :=
+    preservesBinaryBiproducts_of_preservesBinaryCoproducts F
+  letI : F.Additive := Functor.additive_of_preservesBinaryBiproducts F
+  have hF : F.PreservesHomology := by
+    dsimp [F]
+    exact totalFunctorPreservesHomology A
+  exact (((Functor.exact_tfae F).out 2 0 rfl rfl).mp hF) S hS
+
 end GaloisForLFunctions.IrregularStokes.FirstQuadrantTotalExact

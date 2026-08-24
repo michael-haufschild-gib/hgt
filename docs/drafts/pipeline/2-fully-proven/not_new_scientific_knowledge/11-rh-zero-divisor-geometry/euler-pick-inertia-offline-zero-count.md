@@ -277,3 +277,22 @@ information. Even the case `nu_-=0` for one `0<omega<1/2` would be a new zero-fr
   locality/dense-node/finite-Gram passage, including infinite index. Remaining Lean dependency is
   the actual `xiShiftPick` analytic Pontryagin realization plus its global divisor-index theorem;
   no promotion until those source-specific obligations are discharged.
+- 2026-08-24 -- source-specific Lean closure advanced substantially. The shifted-Xi analytic
+  realization, open-region and accumulation-set locality, nested dense finite-section inertia,
+  arbitrary-sample bounds, exact Euler--Gamma--zeta product bridge, Gaussian-rational sample
+  witnesses, and rational-shift avoidance of common zeros are now unconditional theorems in
+  `SuzukiShiftedXiAnalyticKernelRealization.lean`,
+  `SuzukiShiftedXiKernelOpenRegionLocality.lean`, `XiShiftEulerDenseFiniteSection.lean`,
+  `XiShiftEulerProductBridge.lean`, `XiShiftEulerRationalSampleWitness.lean`, and
+  `XiShiftEulerRationalShiftWitness.lean`.
+- 2026-08-24 -- `XiShiftEulerFinitePrimeCertificate.lean` proves entrywise and finite-form
+  convergence of literal finite Euler products and the closed equivalence
+  `not_riemannHypothesis_iff_xiShiftEulerFinitePrimeCertificate`. The certificate contains a
+  positive rational shift, finitely supported Gaussian-rational nodes, a finite prime set, and a
+  positive rational error margin whose exact all-prime tail is smaller than that margin. Exact
+  target build and declaration-level axiom audit pass; dependencies are only `propext`,
+  `Classical.choice`, and `Quot.sound`.
+- 2026-08-24 -- card remains in stage 2. Still required for full-card promotion: a
+  cancellation-aware exact multiplicity count at exceptional shifts (not merely the proved
+  uncancelled-pole negative witness), plus formal versions of the stated general self-dual
+  completed-Euler-product extension and both stated subsequent aperture/ray identifications.

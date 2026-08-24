@@ -1,7 +1,7 @@
 # Nonnegative componentwise-projective total tensor is K-flat
 
 - **ID:** irregular-rh-nonnegative-projective-total-tensor-k-flat
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** `[PAPER-PROVED] [REDISCOVERED] [BRIDGE]`
 - **Source:** internal irregular-RH derived-tensor foundation audit; Stacks Project, Tag 06YQ; Spaltenstein (1988), §5
 - **Statement:** Total left tensor by any nonnegative componentwise-projective complex of module presheaves preserves quasi-isomorphisms of nonnegative complexes.
@@ -12,7 +12,7 @@ Close the genuine K-flatness input needed to descend presheaf total tensor to a 
 ## Gates
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea, Door passport sketch
 - [x] 1 → 2  fully-proven: complete paper proof, no open dependency
-- [ ] 2 → 3  formalized: targeted Lean theorem/module, targeted build green, new-declaration axiom audit PASS
+- [x] 2 → 3  formalized: targeted Lean theorem/module, targeted build green, new-declaration axiom audit PASS
 - [ ] 3 → 4  publication-ready: not applicable; internal standard infrastructure
 
 ## Corpus audit
@@ -51,15 +51,17 @@ Let `P`, `X`, and `Y` be nonnegative chain complexes of module presheaves, assum
 
 No global boundedness of `P` is needed: each fixed homological degree sees only one finite antidiagonal and stabilizes after a finite filtration stage.
 
-## Lean realization plan
+## Lean realization
 
-Construct the filtration and graded-piece comparison for the existing nonnegative total tensor. Reuse:
-
-- `ProjectivePresheafTensorFlat.projectiveTensorLeft_map_quasiIso` for every graded piece;
-- degreewise finite antidiagonal infrastructure from `StokesProjectiveComplexTensorExact`;
-- `ShortExactQuasiIso.quasiIso_middle` for finite-stage induction.
-
-Prove the final stabilization directly on categorical homology; do not introduce a spectral-sequence dependency.
+- `StokesNonnegativePrefixFiltration` constructs finite stupid prefixes, adjacent natural short
+  exact sequences, and canonical inclusions into the original complex.
+- `StokesFirstQuadrantTotalSingle` identifies totalization of a single row with a translated
+  sign-twisted row and proves preservation of row quasi-isomorphisms.
+- `StokesFirstQuadrantRowwiseQuasiIso` performs short-exact finite-prefix induction and proves
+  direct degree-`n` stabilization at prefix `n + 1`, without spectral sequences.
+- `StokesProjectiveComplexTensorKFlat.componentwiseProjectiveTotalTensorLeft_map_quasiIso`
+  specializes the rowwise theorem using
+  `ProjectivePresheafTensorFlat.projectiveTensorLeft_map_quasiIso` in every row.
 
 ## Hostile review
 
@@ -78,3 +80,7 @@ Not applicable: active positive construction.
 
 - 2026-08-24 — created in 1-in-progress after project and mathlib API audits; short-exact quasi-isomorphism induction bridge already formalized.
 - 2026-08-24 — external audit identified the stronger nonnegative theorem as the standard bounded-above K-flat result. Closed a finite-filtration paper proof, removed unnecessary boundedness, classified `[REDISCOVERED] [BRIDGE]`, and promoted to 2-fully-proven.
+- 2026-08-24 — formalized the full finite-prefix proof, explicit stabilization, rowwise total
+  quasi-isomorphism theorem, and componentwise-projective total-tensor K-flat specialization.
+  Direct Lean checks, targeted module builds, and new-declaration axiom audit passed; promoted to
+  3-formalized.
