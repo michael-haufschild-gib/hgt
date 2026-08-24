@@ -221,3 +221,71 @@ finite-prime or zero-indexed gauge.
 
 Targets 1--4 are dependency-closed.  The frozen regulator-interchange conjecture remains Stage 1
 and must not be represented in Lean as a proved existence theorem.
+
+## 2026-08-24 formalization result: node specialization closes, RH constraint does not
+
+The ordinary node has a more suitable conductor class than Lemma 10.3's torsion differential.
+For the normalization of an irreducible nodal cubic, the conductor preimage has two branches and
+
+```text
+C_D = coker(Z -> Z^{ {p_+,p_-} }) = Z.
+```
+
+After choosing branch orientation, its generator is the normalization Mayer--Vietoris connecting
+class.  In an oriented nearby-cycle basis, Picard--Lefschetz monodromy and conductor specialization
+are
+
+```text
+T(a,b) = (a+b,b),       sp_D(c) = (c,0).
+```
+
+The formalization proves over every commutative coefficient ring `A` that `sp_D` is injective and
+
+```text
+range(sp_D) = ker(T-1).
+```
+
+It then places the already-proved nonzero complex terminal multiplicity jet on the conductor
+coefficient line.  Its specialization is exactly `(j_rho(x),0)`, is nonzero, and is fixed by
+Picard--Lefschetz monodromy.  This is the exact cellular coefficient calculation requested by the
+paper mechanism; no rank-only inference is used.
+
+This closes an important local question and simultaneously proves a stronger no-go:
+
+- `[PROVED NO-GO]` Nonzero conductor specialization with image equal to monodromy invariants holds
+  for every coefficient and hence for every Xi divisor point.  It cannot distinguish on-line from
+  off-line support.
+- `[PROVED NO-GO]` The invariant line is canonical, but a generator is only canonical up to branch
+  orientation.  Pointwise multiplication by the terminal jet does not construct a source-natural
+  orientation or horizontal equivariance.
+- `[CORPUS COLLISION]` The existing `XiNodalDefectSuperselection` condition makes the mixed
+  grade--phase product vanish and is already equivalent to RH.  It cannot be imported as the
+  missing source law.
+- `[POSITIVE SURVIVOR]` The vertical map is no longer mysterious: it is the normalization
+  connecting line mapped to the vanishing-cycle line.  Missing object is a comparison of local
+  systems/actions, not another pointwise class or another invariant-cycle theorem.
+
+The exact unresolved arrow is therefore a pre-divisor, source-natural comparison
+
+```text
+Reg_Xi : (terminal Cartier valuation line) tensor C_D,C
+           -> (oriented vanishing-cycle local system of E_Xi),
+```
+
+not merely a fibrewise linear map.  It must intertwine the horizontal prime--Gamma/theta deck
+character with geometric transport of the oriented vanishing-cycle line.  Vertical
+Picard--Lefschetz monodromy fixes that line for every `rho`; only this independent two-action
+interchange can force the horizontal character to be isometric/trivial and hence constrain
+`Re(rho)`.  Constructing that source-level equivariant comparison, including branch orientation
+and compatibility under prime enlargement, is the remaining RH-bearing core.
+
+### Lean status
+
+- `HTGeometry/ConductorNearbyCycleSpecialization.lean`: conductor gluing, integral saturation
+  criterion and countermodel, universal-node Picard--Lefschetz lattice, injectivity, and exact
+  specialization-image theorem.
+- `RHTower/XiThetaNodalConductorDegeneration.lean`: source-first Xi node and Legendre equations,
+  identical reduced nodal fibres, terminal-jet conductor coefficient, nonzero nearby invariant
+  class, and instantiated image-equals-invariants theorem.
+- All new declarations elaborate without `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`.
+- Remaining regulator-interchange statement stays a conjecture; no Lean declaration assumes it.

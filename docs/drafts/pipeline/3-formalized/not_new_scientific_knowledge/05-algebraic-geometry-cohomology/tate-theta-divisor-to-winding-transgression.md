@@ -1,10 +1,11 @@
 # Tate-theta divisor-to-winding transgression
 
 - **ID:** `tate-theta-divisor-to-winding-transgression`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** ANALYTIC BRIDGE / SOURCE-FACE RECONSTRUCTION REPAIR
 - **Scientific status:** `[PAPER PROOF COMPLETE] [CLASSICAL PARENT]`
-  `[NOT NEW SCIENTIFIC KNOWLEDGE] [STRONG POSITIVE SUCCESSOR] [NOT AN RH RESULT]`
+  `[LEAN FORMALIZED] [NOT NEW SCIENTIFIC KNOWLEDGE] [STRONG POSITIVE SUCCESSOR]`
+  `[NOT AN RH RESULT]`
 - **Foundational consumer:**
   `../../1-in-progress/hypertranscendental-source-face-vanishing-cycle-conservation.md`
 
@@ -135,6 +136,47 @@ semistable skeleton, tropical Abel--Jacobi compatibility, and tropicalization of
 theta functions.  These parents explain the node charge and prevent promotion of `(1)`--`(11)` as
 new mathematics.
 
+## Lean formalization
+
+Formal artifacts:
+
+- `formal/GaloisForLFunctions/HTGeometry/MultiplicativeTheta.lean`
+- `formal/GaloisForLFunctions/HTGeometry/QPochhammerZeroNome.lean`
+- `formal/GaloisForLFunctions/HTGeometry/QPochhammerAnalytic.lean`
+- `formal/GaloisForLFunctions/HTGeometry/MultiplicativeThetaDivisor.lean`
+- `formal/GaloisForLFunctions/HTGeometry/TateThetaGauge.lean`
+- `formal/GaloisForLFunctions/HTGeometry/TateThetaDegeneration.lean`
+- `formal/GaloisForLFunctions/HTGeometry/TateThetaCompactOpen.lean`
+- `formal/GaloisForLFunctions/HTGeometry/TateThetaDivisor.lean`
+- `formal/GaloisForLFunctions/HTGeometry/TateThetaTransgression.lean`
+
+Closed theorem endpoints include:
+
+- `tateThetaGauge_mul_nome`: exact `q`-ellipticity.
+- `meromorphicOrderAt_tateThetaGauge_exact`: exact divisor multiplicity `+2`, `-2`, or `0`
+  at every point of `ℂˣ`.
+- `tendstoLocallyUniformlyOn_tateThetaGauge_of_root_zero`: literal compact-open convergence
+  `E_q → id` on `ℂˣ`.
+- `tateThetaGauge_one_ne_zero`: pointing denominator is nonzero for every positive quarter nome.
+- `tendstoLocallyUniformlyOn_pointedTateThetaGauge_of_root_zero`: compact-open convergence of
+  every normalized integer-power gauge to `x ↦ x^m`.
+- `eventually_tateTheta_divisor_avoids_compact` and
+  `eventually_meromorphicOrderAt_pointedTateThetaGauge_eq_zero_on_compact`: complete divisor
+  escape from every compact subset of `ℂˣ`.
+- `winding_integral_laurentMonomial` and `tateTheta_nodeCharge_eq_boundaryWinding`: analytic
+  winding integral and exact charge conservation.
+- `LaurentBoundaryCharacter.not_injective_divisorPointingObserver` and
+  `LaurentBoundaryCharacter.repairedObserver_injective`: closed no-go and maximal repaired
+  observer theorem.
+
+Verification:
+
+- `lake env lean GaloisForLFunctions/HTGeometry/TateThetaTransgression.lean` passed.
+- `lake build GaloisForLFunctions.HTGeometry.TateThetaTransgression` passed.
+- `#print axioms` on all endpoints above reports only `propext`, `Classical.choice`, and
+  `Quot.sound`; no project axiom and no `sorryAx` occurs.
+- Modules are wired into `GaloisForLFunctions.HTGeometry`; umbrella build intentionally omitted.
+
 ## Gates
 
 - [x] explicit `q`-elliptic gauge constructed
@@ -144,4 +186,6 @@ new mathematics.
 - [x] node charge identified with limiting winding
 - [x] no-go paired with an injective repaired observer
 - [x] classical parent collision recorded
-- [ ] functorial DA-filtered HT transgression constructed
+- [x] all dependency-closed classical claims formalized unconditionally in Lean
+- [ ] functorial DA-filtered HT transgression constructed (candidate-new downstream consumer gate;
+  not a theorem claimed by this classical Stage-2 card)

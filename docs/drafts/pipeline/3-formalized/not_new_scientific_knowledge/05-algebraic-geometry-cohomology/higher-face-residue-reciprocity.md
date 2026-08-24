@@ -1,7 +1,7 @@
 # Higher Face-Residue Reciprocity and the Constraint-Depth Phase Transition
 
 - **ID:** `higher-face-residue-reciprocity`
-- **Stage:** 2-fully-proven / needs independent audit
+- **Stage:** 3-formalized / needs independent scientific audit
 - **Type:** THEOREM (paper) / ALL-RANK RECIPROCITY / NO-GO THEOREM
 - **Scientific status:** `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]` — the all-rank reciprocity theorem is unconditional; the HT-kernel examples use the candidate generic multiple-elliptic-gamma theorem
 - **Statement:** Every meromorphic function with a constant full mixed difference has one canonical top face-residue, independent of which boundary face is used to compute it. This holds in every rank. The invariant is complete for DA versus HT exactly in the triptic case; at every higher constraint depth it has a hypertranscendental kernel. The exact repair is not a full higher complex but the collection of unpushed triptic residues on all two-parameter faces.
@@ -276,9 +276,36 @@ The formal induction alone is `[BRIDGE]`; it is not claimed independently as dis
 4. For `d>=3`, the top charge is deliberately not claimed complete.
 5. The pair-face signature is complete at every `d>=2`, conditional on depth-two atomicity.
 
-## Lean route
+## Lean formalization
 
-Formalizing the recursive finite pushforwards would prove only the formal induction. The depth-two local-finiteness theorem and elliptic analytic inputs are absent from the Lean tree. Formalization now would be theatre.
+The dependency-closed theorem package is collected by
+`formal/GaloisForLFunctions/HTGeometry/HigherFaceResidueReciprocity.lean`.
+It imports the exact corpus results rather than restating weaker wrappers:
+
+- depth-two reciprocity and DA criterion:
+  `triptic_orbit_residue_reciprocity` and
+  `differentiallyAlgebraic_iff_additiveOrbitalDivisorAt_eq_zero`;
+- all-depth pair-face vanishing, exact completeness, and exact image:
+  `pairFaceSignature_eq_zero_of_differentialAlgebraicOver`,
+  `differentialAlgebraicOver_iff_pairFace_eq_zero`,
+  `differentialAlgebraicOver_iff_pairFace_univ`,
+  `pairSig_triple_compat`, and
+  `exists_class_member_with_prescribed_pairSig`;
+- multiplicative reciprocity and bottom-charge push:
+  `differentialAlgebraicOver_iff_pairFace_logDeriv`,
+  `additiveOrbitalDivisorAt_pairFaceWitnessFun`, and
+  `exists_mixedConstGermSet_erase_of_bottomCharge_eq_zero`;
+- higher-depth noncompression and exact multiple-gamma depth:
+  `pairFaceCarrier_private`, `exists_private_carrier_of_omitted_pair`,
+  `differentialAlgebraicOver_listShiftDiff_multipleEllipticGammaLogDerivMero_iff`,
+  and
+  `hypertranscendentalOver_listShiftDiff_multipleEllipticGammaLogDerivMero_iff`.
+
+The capstone passes direct `lake env lean` checking and the targeted
+`lake build GaloisForLFunctions.HTGeometry.HigherFaceResidueReciprocity`.
+It is wired into `GaloisForLFunctions.HTGeometry`; the umbrella itself was not
+built. The capstone introduces no declarations and therefore no new axiom
+surface; all imported endpoints are existing unconditional corpus theorems.
 
 ## Gates
 
@@ -297,6 +324,7 @@ Formalizing the recursive finite pushforwards would prove only the formal induct
 - [x] Codimension-one face classes proved complete on every cyclic multiple-gamma structural module.
 - [x] Full face-complex conjecture replaced by the all-depth complete pair-face `2`-skeleton.
 - [x] Exact image characterized by triple compatibility and every compatible family realized.
+- [x] Whole dependency-closed theorem package formalized unconditionally in Lean.
 - [ ] Independent audit of depth-two atomicity and higher hierarchy HT.
 - [ ] Exact/equivalent/stronger literature audit across higher gerbes and discrete cohomology.
 - [ ] Independent audit of the all-depth pair-face induction.
@@ -320,3 +348,4 @@ Formalizing the recursive finite pushforwards would prove only the formal induct
 - 2026-07-10 — Isolated the full face-residue complex as the nontrivial next invariant; terminal residue alone is proved insufficient.
 - 2026-07-10 — Closed the first open case: the three unpushed triptic face residues are complete throughout `Q_3`; moved the universal open core to depth four and above.
 - 2026-07-10 — Closed the all-depth open core: the `binom(d,2)` unpushed triptic pair faces classify DA versus HT throughout `Q_d`; no higher face complex is required.
+- 2026-08-24 — Audited exact corpus endpoints, added and targeted-built the higher-face capstone, wired it into the HTGeometry umbrella, and advanced the card to Stage 3.

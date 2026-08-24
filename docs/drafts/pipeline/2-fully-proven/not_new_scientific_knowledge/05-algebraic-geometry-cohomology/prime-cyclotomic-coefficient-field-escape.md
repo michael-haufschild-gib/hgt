@@ -161,10 +161,21 @@ Primary sources:
 
 ## Lean status
 
-No Lean formalization is claimed. The whole card would require algebraic-differential coefficient
-recurrence extraction, normalization to an eventual forward recurrence, number-field confinement,
-and the finite cyclotomic compositum degree theorem. Formalizing only the final cyclotomic degree
-calculation would not formalize the claim.
+Lean infrastructure now proves the entire post-recurrence algebraic chain:
+
+- `ForwardRecurrenceFieldConfinement.lean` defines the exact forward-field recursion property and
+  proves that algebraic coefficients and finitely many algebraic recurrence constants confine the
+  whole coefficient sequence to one number field;
+- `PrimeCyclotomicFieldEscape.lean` proves that a primitive `n`-th root has rational minpoly degree
+  `φ(n)`, bounds its order by the degree of every containing number field, and proves that primitive
+  roots of pairwise-distinct prime orders cannot share one number field, even after arbitrary
+  nonzero rational rescaling.
+
+Both modules pass direct Lean checking and targeted builds, and their new endpoints use only
+`propext`, `Classical.choice`, and `Quot.sound`. They are wired into the HTGeometry umbrella without
+building that umbrella. The remaining theorem obligation is the unconditional extraction of
+`ForwardFieldRecursive` from a formal algebraic differential equation (the Mahler--Sibuya--Sperber
+normalization), followed by the analytic power-series bridge. The card therefore remains Stage 2.
 
 ## Gates
 
@@ -173,3 +184,9 @@ calculation would not formalize the claim.
 - [x] Scientific-novelty claim rejected.
 - [x] Moved to `2-fully-proven/not_new_scientific_knowledge`.
 - [ ] Whole theorem formalized unconditionally in Lean.
+
+## Lean progress log
+
+- 2026-08-24 — Formalized forward-recurrence number-field confinement and exact primitive-prime
+  cyclotomic escape, including nonzero rational magnitude profiles. Targeted builds and new-endpoint
+  axiom audit pass. Open core narrowed to ADE-to-forward-recurrence extraction and analytic assembly.

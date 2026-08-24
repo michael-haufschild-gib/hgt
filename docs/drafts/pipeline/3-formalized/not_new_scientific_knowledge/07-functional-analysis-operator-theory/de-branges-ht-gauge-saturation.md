@@ -1,7 +1,7 @@
 # Hypertranscendental gauge saturation of one de Branges spectral class
 
 - **ID:** `de-branges-ht-gauge-saturation`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / DE BRANGES--HILBERT--POLYA IMPLEMENTATION NO-GO / BRIDGE
 - **Scientific status:** `[PROVED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Statement:** Every Hermite--Biehler function admits continuum many positive real zero-free HT
@@ -264,10 +264,26 @@ Primary parent references:
 
 ## Lean status
 
-No Lean formalization is claimed. The current tree contains finite Schur/de Branges kernel
-positivity but not Hermite--Biehler entire functions, de Branges space membership, Holder's theorem,
-Weierstrass products, or the unitary gauge theorem. Formalizing a kernel-scaling identity alone
-would not formalize this card.
+Fully formalized unconditionally in Lean 4. Exact implementation spans:
+
+- `RHTower/DeBrangesGaugeInvariance.lean`: HB equivalence, `A/B` covariance, canonical spectra,
+  exact inner quotient, and kernel covariance;
+- `RHTower/DeBrangesGaugeUnitary.lean`: actual subtype of entire de Branges functions with both
+  Hardy membership conditions, boundary-quotient norm, and explicit surjective linear isometry
+  `F ↦ H F` with inverse `G ↦ G/H`;
+- `RHTower/DeBrangesHTGaugeSaturation.lean`: injective real continuum of positive zero-free
+  Schwarz-real HT gauges, arbitrary conjugation-stable discrete Hermite passports, exact spectrum
+  multiplicities, fixed-class saturation, and DA uniqueness;
+- `RHTower/DeBrangesExplicitGammaGauge.lean`: explicit DA/HT representatives in one exact class;
+- `HTGeometry/FiniteOrderEntireQuotient.lean` and
+  `RHTower/DeBrangesFiniteOrderRigidity.lean`: full divisor recovery from equal inner quotients,
+  finite-order quotient growth via Nevanlinna proximity, exponential-polynomial Schwarz-real gauge,
+  and exact DA/HT-type equivalence;
+- `HTGeometry/FiniteOrderZeroFreeDifferentialAlgebraic.lean`: no zero-free finite-order HT gauge.
+
+All leaf checks and targeted builds pass. Axiom audits of new capstones report only `propext`,
+`Classical.choice`, and `Quot.sound`. Modules are wired into `HTGeometry` and `RHTower`; neither
+umbrella was built.
 
 ## Gates
 
@@ -277,24 +293,10 @@ would not formalize this card.
 - [x] Finite-order escape boundary and finite-order gauge rigidity proved.
 - [x] Exact noncategorical route no-go stated.
 - [x] Scientific-novelty claim rejected.
-- [ ] Whole theorem formalized unconditionally in Lean.
+- [x] Whole theorem formalized unconditionally in Lean.
 
-## Formalization progress — exact gauge layer (2026-08-24)
+## Formalization completion (2026-08-24)
 
-`formal/GaloisForLFunctions/RHTower/DeBrangesGaugeInvariance.lean` now formalizes the
-dependency-closed algebraic gauge core without extra hypotheses:
-
-- multiplication by a Schwarz-real pointwise nonvanishing gauge preserves the strict
-  Hermite--Biehler inequality iff;
-- every canonical real-angle pencil has exactly the same zero set;
-- the inner quotient is unchanged; and
-- the algebraic de Branges kernel transforms by `H(z) * conj(H(w))`.
-
-Direct checking and the targeted leaf build pass.  The four exported core claims depend only on
-`propext`, `Classical.choice`, and `Quot.sound`.  The leaf is wired into the `RHTower` umbrella;
-the umbrella was not built.
-
-Card remains Stage 2.  Unformalized obligations are continuum HT saturation, Holder's theorem and
-the explicit DA/HT pair, Weierstrass/Hermite interpolation passports, de Branges-space unitary
-multiplication, and finite-order Hadamard rigidity.  Kernel and spectral gauge covariance alone do
-not close the card.
+Every paper theorem above now has a closed Lean proof, including previously missing actual-space
+unitary and arbitrary finite-order rigidity layers. Card moved to Stage 3 after targeted leaf builds
+and fresh axiom audit.

@@ -72,6 +72,44 @@ theorem tendsto_multiplicativeTheta_one_of_tendsto_zero
   have hsecond := tendsto_qPochhammerInf_one_of_tendsto_zero b q hb hq
   simpa only [multiplicativeTheta, hab, one_mul] using hfirst.mul hsecond
 
+/-- Uniform zero-nome convergence of q-Pochhammer products from a scalar compact majorant. -/
+theorem tendstoUniformlyOn_qPochhammerInf_one_of_norm_le
+    {ι X : Type*} {l : Filter ι} {K : Set X}
+    (a : ι → X → ℂ) (q : ι → EulerNome) (b : ι → ℝ)
+    (hb : Tendsto b l (nhds 0))
+    (hq : Tendsto (fun i => (((q i : EulerNome) : ℂ))) l (nhds 0))
+    (habound : ∀ᶠ i in l, ∀ x ∈ K, ‖a i x‖ ≤ b i) :
+    TendstoUniformlyOn (fun i x => qPochhammerInf (a i x) (q i)) (fun _ => 1) l K := by
+  have hqnorm : Tendsto (fun i => ‖((q i : EulerNome) : ℂ)‖) l (nhds 0) := by
+    simpa using hq.norm
+  have hden : Tendsto (fun i => (1 - ‖((q i : EulerNome) : ℂ)‖)⁻¹) l (nhds 1) := by
+    have hsub : Tendsto (fun i => 1 - ‖((q i : EulerNome) : ℂ)‖) l (nhds (1 : ℝ)) := by
+      convert (tendsto_const_nhds.sub hqnorm) using 1 <;> norm_num
+    simpa using hsub.inv₀ one_ne_zero
+  have hmajor : Tendsto
+      (fun i => Real.exp (b i * (1 - ‖((q i : EulerNome) : ℂ)‖)⁻¹) - 1)
+      l (nhds 0) := by
+    have hmass : Tendsto
+        (fun i => b i * (1 - ‖((q i : EulerNome) : ℂ)‖)⁻¹) l (nhds 0) := by
+      convert hb.mul hden using 1 <;> norm_num
+    have hone : Tendsto (fun _ : ι => (1 : ℝ)) l (nhds 1) := tendsto_const_nhds
+    convert (Real.continuous_exp.continuousAt.tendsto.comp hmass).sub hone using 1 <;>
+      norm_num
+  rw [Metric.tendstoUniformlyOn_iff]
+  intro ε hε
+  filter_upwards [hmajor.eventually_lt_const hε, habound] with i hi hibound x hx
+  rw [Complex.dist_eq, norm_sub_rev]
+  calc
+    ‖qPochhammerInf (a i x) (q i) - 1‖ ≤
+        Real.exp (‖a i x‖ * (1 - ‖((q i : EulerNome) : ℂ)‖)⁻¹) - 1 :=
+      norm_qPochhammerInf_sub_one_le (a i x) (q i)
+    _ ≤ Real.exp (b i * (1 - ‖((q i : EulerNome) : ℂ)‖)⁻¹) - 1 := by
+      apply sub_le_sub_right
+      apply Real.exp_le_exp.mpr
+      exact mul_le_mul_of_nonneg_right (hibound x hx)
+        (inv_nonneg.mpr (sub_nonneg.mpr (le_of_lt (q i).norm_lt_one)))
+    _ < ε := hi
+
 end
 
 end GaloisForLFunctions.HTGeometry

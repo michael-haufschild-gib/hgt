@@ -1,9 +1,9 @@
 # Tate-theta nodal localization and the Barnes face chain shadow
 
 - **ID:** `tate-theta-koszul-barnes-localization-transmutation`
-- **Stage:** 2-fully-proven local components / typed comparison open
+- **Stage:** 3-formalized local components / typed comparison open downstream
 - **Type:** LOCALIZATION BRIDGE COMPONENTS / TYPED-BRIDGE NO-GO
-- **Scientific status:** `[PROVED LOCAL COMPONENTS] [ALGEBRAIC CHAIN MAP LEAN-FORMALIZED]`
+- **Scientific status:** `[PROVED LOCAL COMPONENTS] [LEAN FORMALIZED]`
   `[CROSS-RECEIVER IDENTIFICATION OPEN] [BRIDGE]`
   `[GENERAL MECHANISM CLASSICAL] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH RESULT]`
 - **Theta parent:** `tate-theta-divisor-to-winding-transgression.md`
@@ -177,7 +177,9 @@ m[K(x)] -> m times the Tor_1 generator of A/(px).                         (18)
 The algebraic square `(14)`--`(15)` is Lean-formalized as
 `selectedToProductFace_chainMap_square` in
 `formal/GaloisForLFunctions/HTGeometry/SourceFaceObservationExcess.lean`.  The analytic infinite-
-product factorization `(3)`--`(9)` remains a paper proof; no special-function axiom was introduced.
+product factorization `(3)`--`(9)` is formalized in
+`formal/GaloisForLFunctions/HTGeometry/TateThetaNodalLocalization.lean`; no special-function axiom
+was introduced.
 
 ## 5. Typed-bridge no-go
 
@@ -281,7 +283,7 @@ localization, the full charge grading, the differential-translation character, f
 and the distinction between operator and vector.  A paper-significant new result requires a map
 of localization sequences and global DA-relative naturality across a nontrivial HT hierarchy.
 
-## 8. Exact remaining open core
+## 8. Downstream open core (not a theorem claimed by this classical component card)
 
 Construct a source-presentation-invariant face-poset realization for the actual multiple-gamma
 degeneration and prove that:
@@ -299,6 +301,44 @@ conservative after global completion.                                    (24)
 
 Only this typed, global comparison, not the local Koszul computation, is a candidate for new
 scientific knowledge.
+
+## 9. Lean formalization
+
+Formal artifacts:
+
+- `formal/GaloisForLFunctions/HTGeometry/TateThetaNodalLocalization.lean`
+- `formal/GaloisForLFunctions/HTGeometry/SourceFaceObservationExcess.lean`
+- `formal/GaloisForLFunctions/HTGeometry/NodalChargeCharacterRealization.lean`
+- `formal/GaloisForLFunctions/HTGeometry/GrothendieckKTheoryIntersectionApplications.lean`
+
+Closed endpoints include:
+
+- `root_mul_multiplicativeTheta_root_inv_mul`,
+  `multiplicativeTheta_root_cube_mul`, and `multiplicativeTheta_root_mul`: exact product identities
+  `(3)`--`(5)` on every analytic nodal chart point `xy=t`.
+- `tateThetaGauge_eq_coordinate_mul_nodalUnit`: exact `E=xu` factorization.
+- `TateNodalUnitDatum.nodalUnitFactor_ne_zero` and
+  `tendsto_tateThetaNodalUnitFactor_one`: analytic unit property and constant term one.
+- `tateNodalLocalizationBoundary_class`: signed formula `∂[x^m]=m[A/(x)]` in the Grothendieck
+  completion of the supported multiplicity monoid.
+- `selectedToProductFace_chainMap_square`: canonical selected-to-product Koszul chain square.
+- `nodalChargeModes_linearIndependent`, `nodalChargeFrequency_pair_eq_iff_neutral`, and
+  `nodalChargeBoundaryIntervalPairing_eq`: graded source-character realization, face separation,
+  and complete oriented interval multiplicity.
+- `tateNodalLocalizationBoundary_eq_chargeInterval`: equality of coherent localization
+  multiplicity with the analytic charge-interval multiplicity.
+
+Verification:
+
+- `lake env lean GaloisForLFunctions/HTGeometry/TateThetaNodalLocalization.lean` passed.
+- `lake build GaloisForLFunctions.HTGeometry.TateThetaNodalLocalization` passed.
+- `#print axioms` on every new endpoint reports only `propext`, `Classical.choice`, and
+  `Quot.sound`; no project axiom and no `sorryAx` occurs.
+- Module is wired into `GaloisForLFunctions.HTGeometry`; umbrella build intentionally omitted.
+
+All unconditional local-component theorems claimed by this card are Lean-formalized.  The
+cross-receiver map in `(24)` is explicitly candidate-new downstream work assigned to the live
+successor; no equality between the nodal coordinate and the Barnes operator is asserted here.
 
 ## References checked
 

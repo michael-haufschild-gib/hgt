@@ -63,6 +63,21 @@ theorem differentiallyAlgebraic_entireExponentialPencil_unique
       (hypertranscendental_cexp_const_mul_iff hh (c := u - t) hdiff).2 hHT
   exact hGHT hGDA
 
+/-- Some real pencil parameter is hypertranscendental; the two parameters `0` and `1` suffice. -/
+theorem exists_real_hypertranscendental_entireExponentialPencil
+    {W h : ℂ → ℂ}
+    (hW : AnalyticOnNhd ℂ W Set.univ)
+    (hh : AnalyticOnNhd ℂ h Set.univ)
+    (hWne : ∃ z, W z ≠ 0)
+    (hHT : Hypertranscendental h) :
+    ∃ t : ℝ, Hypertranscendental (entireExponentialPencil W h (t : ℂ)) := by
+  by_cases hzero : DifferentiallyAlgebraic (entireExponentialPencil W h 0)
+  · refine ⟨1, fun hone => ?_⟩
+    have hEq : (0 : ℂ) = 1 :=
+      differentiallyAlgebraic_entireExponentialPencil_unique hW hh hWne hHT hzero hone
+    norm_num at hEq
+  · exact ⟨0, hzero⟩
+
 end
 
 end GaloisForLFunctions.HTGeometry

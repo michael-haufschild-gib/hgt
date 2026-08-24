@@ -201,9 +201,9 @@ theorem tendstoUniformlyOn_dilation
   simpa [dist_comm] using hfun ((1 + ε) * u) hvBall u huBall hdist
 
 theorem TendstoUniformlyOn.div_of_isCompact_of_ne_zero
-    {ι : Type*} {p : Filter ι}
-    {q d : ℂ → ℂ} {qseq dseq : ι → ℂ → ℂ}
-    {K : Set ℂ} (hK : IsCompact K)
+    {ι X : Type*} [TopologicalSpace X] {p : Filter ι}
+    {q d : X → ℂ} {qseq dseq : ι → X → ℂ}
+    {K : Set X} (hK : IsCompact K)
     (hq : TendstoUniformlyOn qseq q p K)
     (hd : TendstoUniformlyOn dseq d p K)
     (hqcont : ContinuousOn q K) (hdcont : ContinuousOn d K)

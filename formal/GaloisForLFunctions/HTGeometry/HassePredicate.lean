@@ -131,6 +131,28 @@ def fixed {P : Prop} {Q : ι → Prop}
   local_global _ := hAll
   global_exists _ := hAny
 
+/-- Package a rigid Hasse predicate from detection at each specified place.  Nonemptiness of the
+place type turns the pointwise equivalence into both universal detection and a one-place
+certificate. -/
+def fixedOfIffAtPlace [Nonempty ι] {P : Prop} {Q : ι → Prop}
+    (h : ∀ i, P ↔ Q i) : RigidHassePredicate Unit ι where
+  global _ := P
+  atPlace i _ := Q i
+  local_global _ := by
+    constructor
+    · intro hP i
+      exact (h i).mp hP
+    · intro hQ
+      let i := Classical.choice (inferInstance : Nonempty ι)
+      exact (h i).mpr (hQ i)
+  global_exists _ := by
+    constructor
+    · intro hP
+      let i := Classical.choice (inferInstance : Nonempty ι)
+      exact ⟨i, (h i).mp hP⟩
+    · rintro ⟨i, hi⟩
+      exact (h i).mpr hi
+
 /-- In a rigid Hasse system, every individual place detects the global property. -/
 theorem global_iff_atPlace (x : G) (i : ι) : H.global x ↔ H.atPlace i x := by
   constructor

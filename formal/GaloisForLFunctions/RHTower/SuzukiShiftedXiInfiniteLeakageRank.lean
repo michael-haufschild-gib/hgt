@@ -126,14 +126,15 @@ private theorem suzukiCanonicalE_neg_numeratorCoordinate_eq_zero
   rw [xiSpectralPoint_reflect] at hreflect
   exact hreflect
 
-/-- Nonexceptionality makes the literal infinite Schur numerator nonzero at every denominator
-zero, with no separation or corona hypothesis. -/
-theorem xiShiftInfiniteSchurNumerator_fn_poleDiskCoordinate_ne_zero
+/-- Pointwise source nonvanishing at one reflected pole makes the literal infinite Schur numerator
+nonzero at that denominator coordinate, with no global separation or corona hypothesis. -/
+theorem xiShiftInfiniteSchurNumerator_fn_poleDiskCoordinate_ne_zero_of_source
     {omega : ℝ} (homega : 0 ≤ omega)
-    (hnon : SuzukiShiftNonexceptional omega)
     (q : XiShiftRightZeroCopy omega) :
+    suzukiCanonicalE omega (-xiShiftPoleCoordinate omega q) ≠ 0 →
     (xiShiftInfiniteSchurNumerator homega).fn
       (xiShiftPoleDiskCoordinate omega q) ≠ 0 := by
+  intro hsource
   have hpden : xiShiftPoleCoordinate omega q + I ≠ 0 := by
     intro hzero
     have him := congrArg Complex.im hzero
@@ -145,7 +146,7 @@ theorem xiShiftInfiniteSchurNumerator_fn_poleDiskCoordinate_ne_zero
       xiShiftPoleDiskCoordinate omega q ≠
         xiShiftNumeratorDiskCoordinate omega r := by
     intro r heq
-    apply hnon q
+    apply hsource
     have hrden : xiShiftNumeratorCoordinate omega r + I ≠ 0 := by
       intro hzero
       have him := congrArg Complex.im hzero
@@ -168,7 +169,7 @@ theorem xiShiftInfiniteSchurNumerator_fn_poleDiskCoordinate_ne_zero
       hpDisk haway
   have hcoreNumerator : xiShiftCoreE omega (-xiShiftPoleCoordinate omega q) ≠ 0 := by
     intro hzero
-    apply hnon q
+    apply hsource
     rw [suzukiCanonicalE_eq_center_mul_extremeE_mul_coreE, hzero, mul_zero]
   have hcoreDenominator : xiShiftCoreE omega (xiShiftPoleCoordinate omega q) ≠ 0 :=
     xiShiftCoreE_ne_zero_upperHalfPlane (xiShiftPoleCoordinate_im_pos omega q)
@@ -182,6 +183,17 @@ theorem xiShiftInfiniteSchurNumerator_fn_poleDiskCoordinate_ne_zero
     rw [GaloisForLFunctions.RHTower.suzukiUpperCayleyInv_lineCayley hpden]
     exact hcoreTheta
   exact mul_ne_zero hnumBlaschke hcoreDisk
+
+/-- Nonexceptionality makes the literal infinite Schur numerator nonzero at every denominator
+zero, with no separation or corona hypothesis. -/
+theorem xiShiftInfiniteSchurNumerator_fn_poleDiskCoordinate_ne_zero
+    {omega : ℝ} (homega : 0 ≤ omega)
+    (hnon : SuzukiShiftNonexceptional omega)
+    (q : XiShiftRightZeroCopy omega) :
+    (xiShiftInfiniteSchurNumerator homega).fn
+      (xiShiftPoleDiskCoordinate omega q) ≠ 0 :=
+  xiShiftInfiniteSchurNumerator_fn_poleDiskCoordinate_ne_zero_of_source
+    homega q (hnon q)
 
 /-- Literal projected Hardy leakage for the complete shifted-Xi Blaschke denominator. -/
 def xiShiftInfiniteLeakageCore

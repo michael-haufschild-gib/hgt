@@ -266,10 +266,18 @@ Euler-product, heat-flow, or divisor data which need not factor through (7) or t
 
 ## Lean status
 
-No Lean formalization is claimed. The complete theorem requires Mahler recurrence extraction and
-forward normalization, differential-algebraic constant descent, finite-family
-Lindemann--Weierstrass, and relative cyclotomic tensor bases. The current Lean tree does not expose
-that chain. The card cannot enter stage 3 until the whole unconditional theorem is formalized.
+Two reusable links are now formalized. `ForwardRecurrenceFieldConfinement.lean` proves that an exact
+forward-field recurrence with algebraic coefficients and finitely many algebraic recurrence
+constants confines every coefficient to one number field. `PrimeCyclotomicFieldEscape.lean` proves
+the exact primitive-root minpoly degree and excludes one number field from containing an injective
+prime-order cyclotomic sequence, including arbitrary nonzero rational scalings. Both targeted builds
+and the new-endpoint axiom audit pass, and the modules are wired into the HTGeometry umbrella without
+building it.
+
+This does not yet prove the stronger exponential-magnitude phase theorem. Remaining obligations are
+Mahler recurrence extraction and forward normalization, finite-family Lindemann--Weierstrass,
+relative number-field-robust cyclotomic tensor bases, and analytic convergence/entire assembly. The
+card therefore remains Stage 2.
 
 ## Gates
 
@@ -280,3 +288,9 @@ that chain. The card cannot enter stage 3 until the whole unconditional theorem 
 - [x] Candidate-new label withdrawn pending independent audit.
 - [ ] Independent proof and scientific-novelty audit.
 - [ ] Whole theorem formalized unconditionally in Lean.
+
+## Lean progress log
+
+- 2026-08-24 — Added and audited common forward-recurrence confinement and prime-cyclotomic field
+  escape infrastructure. No Stage-3 promotion: exponential-weight separation and relative tail-basis
+  obligations remain.

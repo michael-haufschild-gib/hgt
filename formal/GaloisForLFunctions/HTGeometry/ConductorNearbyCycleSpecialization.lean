@@ -109,6 +109,96 @@ theorem hiddenSection_ne_zero
 
 end ConductorGluingDiagram
 
+/-! ## Universal nodal Picard--Lefschetz lattice
+
+For one ordinary node, choose an oriented vanishing-cycle basis of nearby first homology.  The
+Picard--Lefschetz transformation is `(a, b) ↦ (a + b, b)`.  The normalization-conductor connecting
+generator specializes to `(1, 0)`.  The following coefficient-level model proves, over any
+commutative ring, that its full specialization line is exactly the monodromy-fixed line.
+
+This is the exact cellular lattice calculation, not a construction of a regulator from a concrete
+analytic family into this lattice.  That natural comparison remains separate data.
+-/
+
+section UniversalNodalLattice
+
+variable (A : Type*) [CommRing A]
+
+/-- Picard--Lefschetz monodromy for one oriented ordinary node. -/
+def universalNodePicardLefschetzMonodromy :
+    (A × A) →ₗ[A] (A × A) where
+  toFun v := (v.1 + v.2, v.2)
+  map_add' v w := by
+    ext <;> simp [add_left_comm, add_comm]
+  map_smul' a v := by
+    ext <;> simp [mul_add]
+
+/-- Specialization of the oriented normalization-conductor connecting coefficient. -/
+def universalNodeConductorSpecialization : A →ₗ[A] (A × A) where
+  toFun a := (a, 0)
+  map_add' a b := by simp
+  map_smul' a b := by simp
+
+/-- Monodromy-invariant line in the nearby two-cycle lattice. -/
+def universalNodeMonodromyInvariants : Submodule A (A × A) :=
+  LinearMap.ker (universalNodePicardLefschetzMonodromy A - LinearMap.id)
+
+@[simp]
+theorem universalNodePicardLefschetzMonodromy_apply (v : A × A) :
+    universalNodePicardLefschetzMonodromy A v = (v.1 + v.2, v.2) := rfl
+
+@[simp]
+theorem universalNodeConductorSpecialization_apply (a : A) :
+    universalNodeConductorSpecialization A a = (a, 0) := rfl
+
+/-- Fixed vectors are exactly multiples of the vanishing-cycle direction. -/
+@[simp]
+theorem mem_universalNodeMonodromyInvariants_iff (v : A × A) :
+    v ∈ universalNodeMonodromyInvariants A ↔ v.2 = 0 := by
+  rw [universalNodeMonodromyInvariants, LinearMap.mem_ker]
+  simp only [LinearMap.sub_apply, LinearMap.id_apply, sub_eq_zero]
+  constructor
+  · intro h
+    have hfirst := congrArg Prod.fst h
+    simpa using hfirst
+  · intro h
+    apply Prod.ext
+    · simp [h]
+    · rfl
+
+/-- The conductor specialization loses no coefficient. -/
+theorem universalNodeConductorSpecialization_injective :
+    Function.Injective (universalNodeConductorSpecialization A) := by
+  intro a b hab
+  exact congrArg Prod.fst hab
+
+/-- Exact local invariant-cycle theorem for the universal ordinary-node lattice. -/
+theorem universalNodeConductorSpecialization_range_eq_monodromyInvariants :
+    LinearMap.range (universalNodeConductorSpecialization A) =
+      universalNodeMonodromyInvariants A := by
+  ext v
+  rw [mem_universalNodeMonodromyInvariants_iff]
+  constructor
+  · rintro ⟨a, rfl⟩
+    rfl
+  · intro hv
+    exact ⟨v.1, Prod.ext rfl hv.symm⟩
+
+/-- A nonzero conductor coefficient gives a nonzero nearby invariant class. -/
+theorem universalNodeConductorSpecialization_ne_zero
+    {a : A} (ha : a ≠ 0) :
+    universalNodeConductorSpecialization A a ≠ 0 := by
+  exact (universalNodeConductorSpecialization_injective A).ne ha
+
+/-- Every specialized conductor coefficient is fixed by Picard--Lefschetz monodromy. -/
+theorem universalNodeConductorSpecialization_monodromy_fixed (a : A) :
+    universalNodePicardLefschetzMonodromy A
+        (universalNodeConductorSpecialization A a) =
+      universalNodeConductorSpecialization A a := by
+  simp
+
+end UniversalNodalLattice
+
 section IntegralSpecialization
 
 variable {S : Type uS} {M : Type uM}

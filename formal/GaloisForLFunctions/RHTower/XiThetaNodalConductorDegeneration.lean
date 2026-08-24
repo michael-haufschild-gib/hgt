@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HTGeometry.ConductorNearbyCycleSpecialization
 import GaloisForLFunctions.RHTower.FrankensteinGammaCompositionScaleZeroDescent
 
 /-!
@@ -63,6 +64,58 @@ theorem xiThetaLegendreEquation_at_divisor
       Y ^ 2 * Z - X ^ 2 * (X - Z) := by
   rw [xiThetaLegendreEquation, XiC_xiSpectralPointSupport_eq_zero]
   ring
+
+/-! ## Terminal-jet coefficient in the universal-node invariant lattice
+
+The conductor coefficient line of the universal ordinary node can be complexified.  In that
+coefficient model, the existing terminal multiplicity jet is a nonzero conductor coefficient,
+and its specialization is the corresponding Picard--Lefschetz invariant vector.  This identifies
+the exact target and proves non-erasure there.  It does not manufacture the still-missing natural
+regulator from the pulled-back analytic Legendre family to this coefficient model.
+-/
+
+/-- Existing terminal Xi jet, regarded as a coefficient on the oriented conductor generator. -/
+def xiThetaTerminalConductorCoefficient
+    (rho : XiDivisorSupport) (x : ℝ) : ℂ :=
+  xiThetaTerminalMultiplicityCutJet rho x
+
+/-- Coefficient-level specialization of the terminal jet to the universal-node nearby lattice. -/
+def xiThetaTerminalNearbyInvariantClass
+    (rho : XiDivisorSupport) (x : ℝ) : ℂ × ℂ :=
+  GaloisForLFunctions.HTGeometry.universalNodeConductorSpecialization ℂ
+    (xiThetaTerminalConductorCoefficient rho x)
+
+@[simp]
+theorem xiThetaTerminalNearbyInvariantClass_eq
+    (rho : XiDivisorSupport) (x : ℝ) :
+    xiThetaTerminalNearbyInvariantClass rho x =
+      (xiThetaTerminalMultiplicityCutJet rho x, 0) := rfl
+
+/-- Exact multiplicity division remains nonzero after universal-node specialization. -/
+theorem xiThetaTerminalNearbyInvariantClass_ne_zero
+    (rho : XiDivisorSupport) (x : ℝ) :
+    xiThetaTerminalNearbyInvariantClass rho x ≠ 0 := by
+  apply GaloisForLFunctions.HTGeometry.universalNodeConductorSpecialization_ne_zero
+  exact xiThetaTerminalMultiplicityCutJet_ne_zero rho x
+
+/-- The specialized terminal class lies on the Picard--Lefschetz fixed line. -/
+theorem xiThetaTerminalNearbyInvariantClass_monodromy_fixed
+    (rho : XiDivisorSupport) (x : ℝ) :
+    GaloisForLFunctions.HTGeometry.universalNodePicardLefschetzMonodromy ℂ
+        (xiThetaTerminalNearbyInvariantClass rho x) =
+      xiThetaTerminalNearbyInvariantClass rho x := by
+  exact
+    GaloisForLFunctions.HTGeometry.universalNodeConductorSpecialization_monodromy_fixed
+      ℂ (xiThetaTerminalConductorCoefficient rho x)
+
+/-- The complete complex conductor specialization image is exactly the monodromy-invariant line. -/
+theorem xiThetaConductorSpecialization_range_eq_monodromyInvariants :
+    LinearMap.range
+        (GaloisForLFunctions.HTGeometry.universalNodeConductorSpecialization ℂ) =
+      GaloisForLFunctions.HTGeometry.universalNodeMonodromyInvariants ℂ := by
+  exact
+    GaloisForLFunctions.HTGeometry.universalNodeConductorSpecialization_range_eq_monodromyInvariants
+      ℂ
 
 end
 

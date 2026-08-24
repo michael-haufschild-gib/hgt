@@ -1,5 +1,6 @@
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Topology.UniformSpace.CompactConvergence
+import GaloisForLFunctions.HTGeometry.CompactUniformDilation
 
 /-!
 # Products of locally uniformly convergent complex families
@@ -15,12 +16,13 @@ open Filter Topology
 namespace GaloisForLFunctions.HTGeometry
 
 /-- Uniform convergence is preserved by products of families with bounded limits. -/
-theorem tendstoUniformlyOn_mul_of_bound {X : Type*} [TopologicalSpace X]
-    {F G : ℕ → X → ℂ} {f g : X → ℂ} {K : Set X} {M : ℝ} (hM : 0 ≤ M)
+theorem tendstoUniformlyOn_mul_of_bound {ι X : Type*} [TopologicalSpace X]
+    {l : Filter ι} {F G : ι → X → ℂ} {f g : X → ℂ} {K : Set X} {M : ℝ}
+    (hM : 0 ≤ M)
     (hfb : ∀ x ∈ K, ‖f x‖ ≤ M) (hgb : ∀ x ∈ K, ‖g x‖ ≤ M)
-    (hF : TendstoUniformlyOn F f atTop K)
-    (hG : TendstoUniformlyOn G g atTop K) :
-    TendstoUniformlyOn (fun n x => F n x * G n x) (fun x => f x * g x) atTop K := by
+    (hF : TendstoUniformlyOn F f l K)
+    (hG : TendstoUniformlyOn G g l K) :
+    TendstoUniformlyOn (fun n x => F n x * G n x) (fun x => f x * g x) l K := by
   rw [Metric.tendstoUniformlyOn_iff] at hF hG ⊢
   intro ε hε
   obtain ⟨δ, hδ⟩ : ∃ δ : ℝ, δ = min 1 (ε / (2 * M + 2)) := ⟨_, rfl⟩
@@ -65,22 +67,70 @@ theorem tendstoUniformlyOn_mul_of_bound {X : Type*} [TopologicalSpace X]
   rw [dist_eq_norm, norm_sub_rev]
   exact lt_of_le_of_lt hbound hfinal
 
+/-- Uniform convergence on a compact set is preserved by multiplication when both limits are
+continuous there. -/
+theorem TendstoUniformlyOn.mul_of_isCompact
+    {ι X : Type*} [TopologicalSpace X] {l : Filter ι}
+    {F G : ι → X → ℂ} {f g : X → ℂ} {K : Set X}
+    (hF : TendstoUniformlyOn F f l K) (hG : TendstoUniformlyOn G g l K)
+    (hK : IsCompact K) (hf : ContinuousOn f K) (hg : ContinuousOn g K) :
+    TendstoUniformlyOn (fun i x => F i x * G i x) (fun x => f x * g x) l K := by
+  obtain ⟨Mf, hMf⟩ := hK.exists_bound_of_continuousOn hf
+  obtain ⟨Mg, hMg⟩ := hK.exists_bound_of_continuousOn hg
+  let M : ℝ := max (max Mf Mg) 0
+  have hM : 0 ≤ M := by exact le_max_right _ _
+  have hfb : ∀ x ∈ K, ‖f x‖ ≤ M := fun x hx =>
+    (hMf x hx).trans ((le_max_left _ _).trans (le_max_left _ _))
+  have hgb : ∀ x ∈ K, ‖g x‖ ≤ M := fun x hx =>
+    (hMg x hx).trans ((le_max_right _ _).trans (le_max_left _ _))
+  exact tendstoUniformlyOn_mul_of_bound hM hfb hgb hF hG
+
+/-- Uniform convergence on a compact set is preserved by every natural power. -/
+theorem TendstoUniformlyOn.pow_of_isCompact
+    {ι X : Type*} [TopologicalSpace X] {l : Filter ι}
+    {F : ι → X → ℂ} {f : X → ℂ} {K : Set X}
+    (hF : TendstoUniformlyOn F f l K) (hK : IsCompact K)
+    (hf : ContinuousOn f K) (n : ℕ) :
+    TendstoUniformlyOn (fun i x => F i x ^ n) (fun x => f x ^ n) l K := by
+  induction n with
+  | zero =>
+      rw [Metric.tendstoUniformlyOn_iff]
+      intro ε hε
+      exact Filter.Eventually.of_forall (fun i x hx => by simpa using hε)
+  | succ n hn =>
+      simpa only [pow_succ] using
+        TendstoUniformlyOn.mul_of_isCompact hn hF hK (hf.pow n) hf
+
+/-- Uniform convergence on a compact set avoiding zero is preserved by every integer power. -/
+theorem TendstoUniformlyOn.zpow_of_isCompact_of_ne_zero
+    {ι X : Type*} [TopologicalSpace X] {l : Filter ι}
+    {F : ι → X → ℂ} {f : X → ℂ} {K : Set X}
+    (hF : TendstoUniformlyOn F f l K) (hK : IsCompact K)
+    (hf : ContinuousOn f K) (hne : ∀ x ∈ K, f x ≠ 0) (m : ℤ) :
+    TendstoUniformlyOn (fun i x => F i x ^ m) (fun x => f x ^ m) l K := by
+  cases m with
+  | ofNat n => simpa using TendstoUniformlyOn.pow_of_isCompact hF hK hf n
+  | negSucc n =>
+      have hpow := TendstoUniformlyOn.pow_of_isCompact hF hK hf (n + 1)
+      have hone : TendstoUniformlyOn (fun _ : ι => fun _ : X => (1 : ℂ))
+          (fun _ => 1) l K := by
+        rw [Metric.tendstoUniformlyOn_iff]
+        intro ε hε
+        exact Filter.Eventually.of_forall (fun i x hx => by simpa using hε)
+      have hdiv := TendstoUniformlyOn.div_of_isCompact_of_ne_zero hK hone hpow
+        continuousOn_const (hf.pow (n + 1))
+        (fun x hx => pow_ne_zero (n + 1) (hne x hx))
+      simpa [zpow_negSucc] using hdiv
+
 /-- **Locally uniform convergence is preserved by products with continuous limits.** -/
-theorem tendstoLocallyUniformly_mul {X : Type*} [TopologicalSpace X] [LocallyCompactSpace X]
-    {F G : ℕ → X → ℂ} {f g : X → ℂ}
-    (hF : TendstoLocallyUniformly F f atTop) (hG : TendstoLocallyUniformly G g atTop)
+theorem tendstoLocallyUniformly_mul {ι X : Type*} [TopologicalSpace X] [LocallyCompactSpace X]
+    {l : Filter ι} {F G : ι → X → ℂ} {f g : X → ℂ}
+    (hF : TendstoLocallyUniformly F f l) (hG : TendstoLocallyUniformly G g l)
     (hf : Continuous f) (hg : Continuous g) :
-    TendstoLocallyUniformly (fun n x => F n x * G n x) (fun x => f x * g x) atTop := by
+    TendstoLocallyUniformly (fun n x => F n x * G n x) (fun x => f x * g x) l := by
   rw [tendstoLocallyUniformly_iff_forall_isCompact] at hF hG ⊢
   intro K hK
-  obtain ⟨Mf, hMf⟩ := hK.exists_bound_of_continuousOn hf.continuousOn
-  obtain ⟨Mg, hMg⟩ := hK.exists_bound_of_continuousOn hg.continuousOn
-  obtain ⟨M, hMdef⟩ : ∃ M : ℝ, M = max (max Mf Mg) 0 := ⟨_, rfl⟩
-  have hM : 0 ≤ M := by rw [hMdef]; exact le_max_right _ _
-  have hfb : ∀ x ∈ K, ‖f x‖ ≤ M := fun x hx =>
-    le_trans (hMf x hx) (by rw [hMdef]; exact le_trans (le_max_left _ _) (le_max_left _ _))
-  have hgb : ∀ x ∈ K, ‖g x‖ ≤ M := fun x hx =>
-    le_trans (hMg x hx) (by rw [hMdef]; exact le_trans (le_max_right _ _) (le_max_left _ _))
-  exact tendstoUniformlyOn_mul_of_bound hM hfb hgb (hF K hK) (hG K hK)
+  exact TendstoUniformlyOn.mul_of_isCompact
+    (hF K hK) (hG K hK) hK hf.continuousOn hg.continuousOn
 
 end GaloisForLFunctions.HTGeometry
