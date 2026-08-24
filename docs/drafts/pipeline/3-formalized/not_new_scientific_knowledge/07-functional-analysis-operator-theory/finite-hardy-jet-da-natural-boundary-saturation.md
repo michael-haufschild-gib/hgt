@@ -1,7 +1,7 @@
 # Finite Hardy-jet DA natural-boundary saturation
 
 - **ID:** `finite-hardy-jet-da-natural-boundary-saturation`
-- **Stage:** 2-fully-proven / not new scientific knowledge
+- **Stage:** 3-formalized / not new scientific knowledge
 - **Type:** THEOREM (paper) -- `[PROVED HERE] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Lane:** general hypertranscendence landscape; Hardy spaces; natural boundaries
 - **Statement:** For every finite depth `r>=0`, there is a differentially algebraic holomorphic
@@ -190,17 +190,38 @@ Primary adjacent sources checked:
 
 ## Lean status
 
-No complete Lean claim is made.  Stage 3 would require one theorem containing the analytic `E_2` series,
-Ramanujan--Chazy identity, modular cusp transformation, divisor-sum summability, termwise derivatives,
-Hardy boundedness, and natural-boundary argument.  The current tree has no such analytic modular-form stack.
-Partial sequence or differentiation lemmas would not formalize this theorem.
+Formalized unconditionally in
+`formal/GaloisForLFunctions/HTGeometry/FiniteHardyJetNaturalBoundary.lean`.
+
+The capstone theorem
+`GaloisForLFunctions.HTGeometry.finiteHardyJet_da_naturalBoundary_saturation` states the result for
+every `r : ℕ`: one explicit function is analytic and differentially algebraic on the open unit disk,
+every iterated derivative through `r` agrees there with a `DiskMultiplier` (`H^∞` witness), and no
+unit-circle point admits `Bottcher.ContinuesAcross` continuation.
+
+Exact supporting declarations include:
+
+- `hardyPrimitiveJet_eq_factorialRatioSeries` and
+  `iteratedDeriv_hardyPrimitiveJet_eq_factorialRatioSeries` for equations `(5)` and `(8)`;
+- `iteratedDeriv_hardyPrimitiveJet_self` for `F_m^(m) = E_2 - 1`;
+- `sigmaOne_LSeriesHasSum` and `sigmaOne_LSeries_eq_riemannZeta_mul` for equation `(9)`;
+- `hardyPrimitiveDiskMultiplier` for bounded analytic primitive levels `s >= 3`;
+- `hardyPrimitiveChazyPolynomial_ne_zero` and
+  `hardyPrimitiveJet_differentiallyAlgebraicOn` for the direct shifted Chazy ADE;
+- `hardyPrimitiveJet_naturalBoundary` for survival of the pointwise natural boundary under every
+  finite primitive.
+
+The disk Chazy and modular-cusp boundary inputs are formalized in
+`EisensteinSeriesDiskChazy.lean` and `EisensteinSeriesDiskNaturalBoundary.lean`; the Ramanujan--Chazy
+upper-half-plane input is in `Bottcher/RamanujanChazy.lean`.  Direct Lean checks, targeted builds,
+and axiom inspection pass with only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Gates
 
 - [x] 0 -> 1: bounded-function frontier and finite-jet strengthening isolated
 - [x] 1 -> 2: explicit unconditional construction and complete paper proof
 - [x] parent-theory audit: bridge / not new scientific knowledge
-- [ ] 2 -> 3: complete unconditional theorem formalized in Lean
+- [x] 2 -> 3: complete unconditional theorem formalized in Lean
 - [ ] 3 -> 4: publication-ready note only if useful as part of a broader HT boundary paper
 
 ## Log
@@ -210,3 +231,6 @@ Partial sequence or differentiation lemmas would not formalize this theorem.
 - 2026-07-11 -- Closed unconditionally by repeated primitives of `E_2`.  Strengthened from a single bounded
   DA counterexample to arbitrarily long bounded finite jets, retained the natural boundary by differentiation,
   and classified the result as a classical-parent bridge.
+- 2026-08-24 -- Formalized exact repeated-primitive series, derivative ladder, divisor-sum identity and
+  summability, `H^infinity` witnesses, explicit nonzero shifted Chazy polynomial, and pointwise natural
+  boundary.  Targeted module build and axiom audit passed; promoted to Stage 3.

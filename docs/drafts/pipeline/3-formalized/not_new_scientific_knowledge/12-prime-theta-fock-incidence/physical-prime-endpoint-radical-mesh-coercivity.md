@@ -1,7 +1,7 @@
 # Physical prime-endpoint radical and sharp mesh coercivity
 
 - **ID:** `physical-prime-endpoint-radical-mesh-coercivity`
-- **Stage:** `2-fully-proven`
+- **Stage:** `3-formalized`
 - **Type:** `THEOREM (paper) [SOURCE-SPECIFIC POSITIVE SURVIVOR] [BRIDGE]`
 - **Source:** `high-grade-sieve-survivor-one-mode-reduction.md` `(HGS26)`--`(HGS29)` and
   `fcrj-corrected-response-saturation-law.md` `(RS1)`--`(RS8)`
@@ -182,11 +182,23 @@ is made.  The result is recorded as new project-local source knowledge and posit
 
 ## Lean status
 
-The current Lean tree formalizes the low/high carrier join, but not the physical logarithmic
-endpoints or the Brownian endpoint radical.  Formalization should start with the exact two-cell
-identity `(PE12)`, its sharp coercivity/equality classification, and the finite-mesh lift; the
-prime-log endpoint noncollision and analytic identification `(PE1)`--`(PE10)` remain separate named
-gates and must not be claimed until present in Lean.
+`[LEAN-PROVED]` The exact physical packet, centered aperture carrier, endpoint jump,
+noncancellation/radical classification `(PE9)`, corrected-response identity and strict deficit
+`(PE10)`, two-cell identity `(PE12)`, local harmonic and half-mesh coercivity `(PE13)`--`(PE14)`,
+and square-root stability `(PE15)` are formalized in:
+
+```text
+formal/GaloisForLFunctions/RHTower/PhysicalPrimeEndpointMeshCoercivity.lean
+formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeEndpointNoncancellation.lean
+formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeEndpointRadical.lean
+formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeLocalMeshCoercivity.lean
+formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeCorrectedResponseSaturation.lean
+```
+
+The new capstone
+`abs_xiPhysicalPrimeLogEndpointJump_le_sqrt_energy_scale` is the literal formal statement of
+`(PE15)`. Targeted leaf elaboration/build succeeds. Its axiom audit contains only `propext`,
+`Classical.choice`, and `Quot.sound`.
 
 ## Gates
 
@@ -194,9 +206,9 @@ gates and must not be claimed until present in Lean.
 - [x] 1 -> 2: dependency-closed proofs of radical classification and sharp mesh coercivity
 - [x] exact-cancellation route closed with positive strictness theorem
 - [x] corpus audit: source-specific result absent; Brownian parent representation known
-- [ ] formalize `(PE12)` and finite-mesh coercivity in one Lean batch
-- [ ] formalize prime-log endpoint noncollision and the physical radical `(PE9)`
-- [ ] formalize the analytic bridge from `P_M` to the corrected `AC25` response
+- [x] formalize `(PE12)` and finite-mesh coercivity in one Lean batch
+- [x] formalize prime-log endpoint noncollision and the physical radical `(PE9)`
+- [x] formalize the exact finite corrected-response identity and strict saturation deficit
 
 ## Log
 
@@ -212,6 +224,25 @@ one-half constant, finite-mesh coercivity, and strict positive energy from a non
 contains the unique-factorization endpoint-weight separation lemma
 `physicalPrimeEndpointWeight_ne_of_distinct`.
 
-This is a real partial closure, but not `(PE9)`: clipped physical logarithmic endpoints, the
-noncancellation map from active packets to jumps, and the corrected-response identification remain
-unformalized.  The card stays at Stage 2.
+This was a real partial closure at that date, but not yet `(PE9)`: clipped physical logarithmic
+endpoints, the noncancellation map from active packets to jumps, and the corrected-response
+identification were then unformalized.
+
+## Lean completion log — 2026-08-24
+
+Later corpus modules already closed the formerly missing physical layer:
+`XiPhysicalPrimeEndpointNoncancellation` proves every active packet exposes a nonzero interior
+jump; `XiPhysicalPrimeEndpointRadical` proves the exact empty-packet radical; and
+`XiPhysicalPrimeCorrectedResponseSaturation` identifies carrier energy with the strict corrected
+response deficit. `XiPhysicalPrimeLocalMeshCoercivity` connects literal adjacent physical cells to
+the endpoint jump and its sharp harmonic lower bound. The final square-root inversion `(PE15)` was
+added as `abs_xiPhysicalPrimeLogEndpointJump_le_sqrt_energy_scale`.
+
+Targeted build:
+
+```text
+lake build GaloisForLFunctions.RHTower.XiPhysicalPrimeCorrectedResponseSaturation
+```
+
+passed. New-declaration axiom audit: `propext`, `Classical.choice`, `Quot.sound` only. Card is
+dependency-closed and promoted to Stage 3.

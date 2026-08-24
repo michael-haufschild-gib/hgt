@@ -163,6 +163,7 @@ import GaloisForLFunctions.Bottcher.ModularLambdaLocalBiholo
 import GaloisForLFunctions.Bottcher.ThetaWronskian
 import GaloisForLFunctions.Bottcher.ThetaDiscriminant
 import GaloisForLFunctions.Bottcher.Ramanujan
+import GaloisForLFunctions.Bottcher.RamanujanChazy
 import GaloisForLFunctions.Bottcher.ModularLambdaCovering
 import GaloisForLFunctions.Bottcher.ProperLocalHomeoCovering
 import GaloisForLFunctions.Bottcher.ProperlyDiscontinuousSubgroup

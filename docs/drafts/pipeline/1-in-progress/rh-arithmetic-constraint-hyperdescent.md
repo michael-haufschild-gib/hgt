@@ -312,3 +312,257 @@ be arithmetic closed-error functor and proof of DSPI.
 - 2026-08-24 — DSPI frozen: off-line means one semantic error with two metric provenances.
 - 2026-08-24 — Lean bridge and anti-circularity classifier added in
   ConstitutiveDaggerConfluence.lean.
+
+## 2026-08-24 pivot: mutual-statistics anomaly, not a common zero producer
+
+This section supersedes DSPI as the active proof language.  DSPI still classifies a possible
+metric presentation defect, but the corpus gives no source theorem forcing its dagger holonomy to
+vanish.  The new route starts from two unconditional structures already present in Lean:
+
+1. the all-prime Calderón--Witt degree-one cup is graded-skew;
+2. the Xi grade--phase obstruction is one classical scalar mixed jet
+   `xiReflectedPhaseNeutralMixedJet q = 2 * grade(q) * phase(q)`.
+
+### Big-picture reinterpretation
+
+**Mutual-statistics completion law.**  Grade and phase are two defect colours with trivial
+self-statistics but odd mutual statistics.  Swapping their order in the arithmetic source changes
+sign.  Completed scalar Xi data forgets the order.  A completion which is natural for that swap
+must therefore identify one scalar with both `c` and `-c`; characteristic zero forces `c = 0`.
+
+This is the intended `1 -> 2` operation:
+
+    one completed mixed defect c
+             |
+             +-- grade-then-phase Koszul lift  =  c
+             |
+             +-- phase-then-grade Koszul lift  =  c
+
+    source braiding says the second lift = - first lift.
+
+It is a constraint, not a flow.  Off-line zeros are mutual-statistics anomalies: a classical local
+defect carrying two source colours whose joint occupancy is nontransparent.  Critical nontrivial
+zeros are pure phase-carrying/grade-neutral defects; trivial zeta zeros occupy the opposite pure
+branch.  Different zeros may have completely different source legs and internal mechanisms.  The
+only universal law is swap-natural scalar completion.
+
+Topological model: two individually bosonic colours with mutual phase `-1`, analogous to the
+electric/magnetic pair in an abelian topological order.  This analogy is not used as a theorem.
+Mathematically, the candidate law is a central/braided comparison from arithmetic Koszul source to
+ordinary scalar completion.
+
+### Lean infrastructure built
+
+`formal/GaloisForLFunctions/HTGeometry/SecondOrderConstraintDescent.lean` proves
+
+    A = D π - π d
+    D A + A d = D² π - π d².
+
+For square-zero source and surjective observation, covariant closure of the first anomaly is
+equivalent to target flatness.  This formally prevents second-order coherence from being assumed
+as an upstream law.
+
+`formal/GaloisForLFunctions/RHTower/XiNodalDefectSuperselection.lean` now contains:
+
+- nodal quotient `R[x,y]/(xy)` for grade/phase defect sectors;
+- BV differential whose square is the mixed grade--phase scalar;
+- fixed surjective observation of the actual all-prime oriented Calderón--Witt total complex;
+- explicit first anomaly `(g*v - tau, p*u + tau)`;
+- explicit covariant second boundary `g*p*(u,v)`, proving internal arithmetic boundary trace
+  cancels and only mixed curvature survives;
+- local/global equivalence of second-order coherence with nodal superselection/RH.
+
+`formal/GaloisForLFunctions/RHTower/XiKoszulMutualStatisticsSuperselection.lean` contains:
+
+- `XiOrderIndependentKoszulLift q`, whose two source legs may depend on `q`;
+- both ordered actual all-prime cup traces must equal the same completed Xi mixed jet;
+- graded skewness forces that jet to vanish;
+- local lift existence iff nodal superselection;
+- universal zero-specific lift existence iff RH.
+
+All modules compile.  `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`
+for the new cancellation and endpoint theorems.
+
+### New no-gos
+
+- `[FALSIFIED]` Source square-zero alone.  The exact second-order identity holds off line and only
+  isolates `grade * phase`; it does not annihilate it.
+- `[FALSIFIED]` Full exterior-algebra scalar character.  Existing Lean proves every odd generator
+  maps to zero, which kills legitimate pure phase defects.  Required statistics is mutual only:
+  same-colour powers survive, cross-colour exchange changes sign.
+- `[FALSIFIED]` Independent normalization of the two source orders.  Existing completed
+  cross-prime incidence models normalize every ordered witness separately.  Such gauges erase the
+  comparison sign and cannot prove RH.  One swap-natural gauge is mandatory.
+- `[FALSIFIED]` Symmetry of analytic mixed derivatives by itself.  It matters only after proving
+  both analytic orders are images of the same two arithmetic source legs.
+- `[FALSIFIED]` Covariant Stokes with divisor-selected holonomy.  Corpus proves it for every grade;
+  untwisting to the fixed source is already equivalent to RH.
+- `[FALSIFIED]` Exterior/Koszul/BV vocabulary alone.  The new endpoint is exactly RH-strength.
+  Missing content is construction of the central comparison functor.
+
+### Active open core: braid-natural completion comparison
+
+`[OPEN CORE: BNC]` Construct before Xi zero selection a completion operation `C` on the actual
+prime--valuation--Möbius--Gamma source such that:
+
+1. `C` is coefficient-faithful on mixed grade--phase incidence;
+2. `C` uses one fixed orientation normalization for both source orders;
+3. `C` intertwines the Koszul swap with the ordinary scalar swap;
+4. specializing a closed completed error at any Xi divisor copy identifies both ordered source
+   cup traces with `xiReflectedPhaseNeutralMixedJet q`;
+5. multiplicity is retained and the source legs may depend on `q`.
+
+Then the formal mutual-statistics theorem gives the mixed jet zero at every copy, nodal purity,
+and RH.  Item 4 may not be postulated pointwise: together with 1--3 it is already the theorem.
+Candidate derivation must come from centrality/locality of completion, e.g. a braided-monoidal
+comparison whose scalar target is symmetric.  Existing order-by-order normalized Hilbert
+comparisons do not satisfy item 2.
+
+### External machinery audit
+
+Braided tensor categories, Müger centers, local modules, and symmetric/super TQFTs supply language
+for transparent completion and parity-preserving functors.  They do not supply BNC.  Relevant
+enabling references include Müger's modular closure, recent work identifying transparent
+subalgebras through central lifts, and super-symmetric TQFT targets.  Novel content remains the
+arithmetic central lift and identification of its mixed class with the Xi jet.
+
+## Log continued
+
+- 2026-08-24 — Source-level two-cell descent formalized; exact cancellation leaves only mixed
+  grade--phase curvature.
+- 2026-08-24 — Two-cell coherence rejected as a producer because surjective descent makes it
+  equivalent to target flatness.
+- 2026-08-24 — Mutual-statistics route frozen.  Zero-specific ordered Koszul lift endpoint
+  formalized; braid-natural completion comparison is sole active core.
+
+## 2026-08-24 pivot: higher-shadow contextuality and the first surviving completion obstruction
+
+The braid-natural comparison remains a valid endpoint, but it is still one binary face of a
+larger problem.  The active conjecture is now that essentially every established RH route is a
+proper-face shadow of one higher-arity completion law.
+
+### Reinterpretation
+
+The unknown object is not a zero moving in a larger ambient Euclidean space.  It is a total law
+whose restrictions are the familiar scalar, norm, support, reflection, prime, Gamma, phase, and
+orientation reporters.  Existing routes act on one restriction or compare two restrictions.
+Off-line zeros are **contextual completion defects**: every proper-face history can look valid,
+yet the face data have no single total realization.  A critical-line zero is not produced by a
+flow; it is a completed error whose proper-face histories are effective descent data.
+
+This gives precise meanings to the guiding phrases:
+
+- `1 -> 2`: one completed scalar error splits into forward and reflected local histories, and a
+  third overlap datum asks whether they are restrictions of one total law;
+- `constraint, not flow`: the master equation is surjectivity of a matching map / horn filling,
+  not conservation along time;
+- `higher-dimensional shadow`: a quaternionic four-plane records associative binary faces, while
+  the octonionic eight-dimensional completion retains the first ternary associator erased by all
+  those faces.
+
+Octonions are therefore a faithful finite coordinate model, not the proposed arithmetic object.
+The proposed arithmetic object is a hypercomplete law diagram on source histories.  Its first
+nontrivial obstruction is a Cech/Massey/associator class.
+
+### Corpus evidence
+
+- `ConstraintRelativity.ForgetfulTower.three_shadow_theorem` proves support, magnitude, and framed
+  scalar outputs are successive forgetful images of one datum.  Taking their product cannot add
+  selection.
+- `FacetRestrictionEmbedding.pairwiseCompatible_without_commonTripleRepresentative` proves all
+  three binary compatibility tests may vanish while no common representative exists.
+- `ConstitutivePolyscopicMatching` formalizes total laws, compatible proper-face data, matching
+  maps, and contextual versus reconstructible phases.
+- `CompleteResolutionSharedGaugeReflectionAtlas` is an actual complete-source three-obligation
+  model.  Off line, every two-obligation face is inhabited, while no single candidate satisfies
+  forward descent, reflected descent, and shared overlap gauge simultaneously.
+- `TateFractureObstructionBianchiAmplitudeLaw` proves a first obstruction can vanish while the
+  secondary Maurer--Cartan/Massey obstruction survives.
+- `OmegaObstruction` identifies vanishing of a section-defect class with existence of one global
+  coboundary choice.
+- `CompleteResolutionSourceEmbeddingReflectionLaw` shows scalar fusion loses a canonical
+  unsquared source displacement.  Prime two and prime three together retain the full complex
+  source coordinate.
+
+### Lean infrastructure built
+
+`formal/GaloisForLFunctions/HTGeometry/Octonion/CayleyShadowConfluence.lean` fixes a concrete
+quaternionic Cayley plane inside the real octonions and proves
+
+    [I, J, phase K + grade ell] = grade [I, J, ell],
+
+with nonzero transverse witness.  Thus the two parenthesizations agree exactly when `grade = 0`,
+while arbitrary internal phase survives.
+
+`formal/GaloisForLFunctions/HTGeometry/Octonion/CayleySecondaryObstruction.lean` constructs a
+filtered two-step matrix twist for which
+
+    O2 = 0,
+    O3 = grade * identity.
+
+It proves octonionic schedule confluence is equivalent to vanishing of this first surviving
+higher obstruction.  Hence the 8D detector is formally stronger than its quadratic shadow.
+
+Both modules compile on the project toolchain.
+
+### New no-gos
+
+- `[FALSIFIED]` More coordinates by themselves.  A quaternion-to-octonion replacement with no
+  source-derived higher operation is decoration and adds freedom, not selection.
+- `[FALSIFIED]` Product of existing scalar routes.  The forgetful-tower theorem shows the product
+  remains a shadow of one complex scalar.
+- `[FALSIFIED]` Gamma-six opposite-root chiral lift as the new higher invariant.  The corpus
+  already realizes the same two residues in `EulerSquarefreeWickGammaSixLaxCurvature`; their
+  binary commutator and proposed secondary anticommutator are both multiples of the same scalar
+  curvature.  Octonionic repackaging adds no information.
+- `[FALSIFIED]` Synchronized lcm insertion associator.  The actual three-prime insertion gain is a
+  flat multiplicative connection; both schedules already agree.
+- `[FALSIFIED]` Theta three-point determinant as the Xi defect.  It is genuinely ternary and all
+  pairwise sectors are strict, but the actual theta source already makes its failure shell empty;
+  no independent Xi-zero incidence is present.
+- `[FALSIFIED]` Multiplication inside the closed Xi quotient.  The strong degree-zero quotient is
+  not multiplication-closed and has no representative-preserving two-sided product.  Only
+  descended actions compose.
+- `[FALSIFIED]` Generic Maurer--Cartan, gerbe, or pentagon coherence.  Nontrivial coherent higher
+  classes exist; coherence alone does not force their vanishing.
+- `[FALSIFIED]` Pairwise local descent.  Complete-resolution sharpness models realize every
+  two-obligation face off line.
+
+### Active conjecture: terminal-source hyperdescent
+
+`[CONJECTURE: TSH]`  The actual prime--valuation--Mobius--polar--Gamma completion, before divisor
+selection, forms a hypercomplete polyscopic law diagram.  Equivalently, every coefficient-faithful
+compatible proper-face datum generated by one terminal completed source constraint lies in the
+image of the total-law matching map.
+
+This must not be assumed for arbitrary diagrams; the corpus contains contextual countermodels.
+The theorem must follow from a source-specific property stronger than ordinary associativity:
+candidate forms are exact cosimplicial resolution, flabby/soft arithmetic coefficient object,
+contractible total source fibre with conservative restrictions, or a canonical filling operation
+coming from the complete positive resolution.
+
+### Exact open core
+
+1. Define the actual law diagram.  Faces must be source-derived, not predicates attached to Xi
+   zeros.  Minimum labels are forward completion, reflected completion, and overlap provenance;
+   prime-two/prime-three characters must retain the full source coordinate.
+2. Construct its proper-face datum from one terminal completed source error, preserving
+   multiplicity and unsquared orientation.
+3. Prove source-specific hyperdescent/surjectivity of the matching map without using zero
+   placement, a shared-gauge reporter, or an RH-equivalent boundedness premise.
+4. Identify the obstruction of an off-line divisor with the nonzero complete-resolution
+   reflection displacement.  The existing minimal three-chart atlas should supply the local
+   normal form.
+5. Conclude no off-line divisor can be a terminal completed error; hence RH.
+
+The decisive task is Step 3.  This is not a search for another producer.  It is a proposed new
+field-level law: **terminal arithmetic completion is effective higher descent**.
+
+## Log continued
+
+- 2026-08-24 — Naive octonionic enlargement rejected; arity, not dimension count, is relevant.
+- 2026-08-24 — Cayley associator and secondary-obstruction equivalence formalized.
+- 2026-08-24 — Gamma-six chiral source realization rejected as duplicate of existing binary Lax
+  curvature.
+- 2026-08-24 — Active rabbit hole frozen as terminal-source hyperdescent; exact source-specific
+  horn-filling theorem is open.

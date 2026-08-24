@@ -343,5 +343,35 @@ theorem halfSigmaEndpointJump_div_totalWeight_sq_le_normalizedApertureDispersion
       harmonicEndpointJump_div_totalWeight_sq_le_normalizedApertureDispersion
         hP hA hmesh hactive
 
+/-- `(PE15)`: an upper bound for the physical carrier energy forces the sharp pointwise
+square-root stability bound on every genuine endpoint jump. -/
+theorem abs_xiPhysicalPrimeLogEndpointJump_le_sqrt_energy_scale
+    {P : Finset Nat.Primes} {A m k t L R epsilon : ℝ}
+    (hA : 0 < A)
+    (hmesh : XiPhysicalPrimeLogAdjacentCells P A m k t L R)
+    (hactive : ∀ p ∈ P, 0 < xiPhysicalPrimeLogApertureLength A m k p)
+    (henergy : xiPhysicalPrimeLogApertureFusionEnergy P A m k ≤ epsilon) :
+    |xiPhysicalPrimeLogEndpointJump P A m k t| ≤
+      Real.sqrt ((L + R) * epsilon / (L * R)) := by
+  have hlower := harmonicEndpointJump_le_xiPhysicalPrimeLogApertureFusionEnergy
+    hA hmesh hactive
+  have hLR : 0 < L * R := mul_pos hmesh.left_pos hmesh.right_pos
+  have hsum : 0 < L + R := add_pos hmesh.left_pos hmesh.right_pos
+  have hsq : |xiPhysicalPrimeLogEndpointJump P A m k t| ^ 2 ≤
+      (L + R) * epsilon / (L * R) := by
+    have hfrac : (L * R *
+          xiPhysicalPrimeLogEndpointJump P A m k t ^ 2) / (L + R) ≤ epsilon := by
+      calc
+        (L * R * xiPhysicalPrimeLogEndpointJump P A m k t ^ 2) / (L + R) =
+            L * R / (L + R) * xiPhysicalPrimeLogEndpointJump P A m k t ^ 2 := by
+              ring
+        _ ≤ xiPhysicalPrimeLogApertureFusionEnergy P A m k := hlower
+        _ ≤ epsilon := henergy
+    have hmul := (div_le_iff₀ hsum).mp hfrac
+    apply (le_div_iff₀ hLR).2
+    simpa [sq_abs, mul_comm, mul_left_comm, mul_assoc] using hmul
+  rw [← Real.sqrt_sq_eq_abs]
+  exact Real.sqrt_le_sqrt (by simpa [sq_abs] using hsq)
+
 end
 end RHTower

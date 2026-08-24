@@ -1,8 +1,9 @@
 # The Jensen-section prime kernel `K_d(r_l;p)` — pinned (first order)
 
 - **ID:** c5-jensen-prime-kernel
-- **Stage:** 0-backlog-lean
-- **Type:** THEOREM (paper, supporting lemma) — Door grade **BRIDGE**
+- **Stage:** 5-failed
+- **Type:** ROUTE NO-GO with Lean-formalized finite positive survivor — Door grade **BRIDGE**
+- **Scientific status:** `[POINTWISE INFINITE FORM FALSIFIED] [FINITE SURVIVOR LEAN-FORMALIZED]`
 - **Priority:** FOUNDATIONAL
 - **Source:** the flagged kernel input of `../1-in-progress/finite-free-convolution-flow.md` (Wheeler's
   root-displacement mechanism); Pólya–LP framework therein · 00-status #104
@@ -134,7 +135,8 @@ A rigorous check (using the kernel) of Wheeler's PSD-resonance conjecture (`fini
 - [x] 0 → 1  in-progress: kernel posed.
 - [x] 1 → 2  fully-proven: the first-order kernel formula derived (§2) from Pólya–LP + explicit formula +
   simple-node perturbation; structure (§3) and the C5-crux hand-off (§4) recorded. BRIDGE.
-- [ ] 2 → 3  formalized — Lean anchor **DONE** for the arithmetic coefficient:
+- [ ] 2 → 3  formalized — impossible for the stated global pointwise critical-line expansion.
+  Lean anchor **DONE** for the arithmetic coefficient:
   `logZetaPrimeCoeff_prime` and `logZetaPrimeCoeff_primePower` in
   `formal/GaloisForLFunctions/RHTower/C5JensenPrimeKernel.lean` prove
   `Λ(p)/log(p)·p^{-1/2}=p^{-1/2}` and `Λ(p^k)/log(p^k)·(p^k)^{-1/2}=p^{-k/2}/k`.
@@ -142,6 +144,9 @@ A rigorous check (using the kernel) of Wheeler's PSD-resonance conjecture (`fini
   single-frequency degree bound, and zero-order elimination. Remaining targets: the analytic
   connection to completed Xi jets, simple-root perturbation, and explicit-formula/Jensen-section
   regularization infrastructure.
+- [x] 2 → 5 failed/retired — Hardy's unconditional critical-line zero theorem contradicts the
+  required global pointwise identity `exp(P(t)) = ζ(1/2+it)`. Exact finite-prime survivor,
+  actual archimedean specialization, simple-root response, and summability walls are formalized.
 - [ ] 3 → 4  publication-ready.
 
 ## Notes / risk
@@ -151,6 +156,29 @@ A rigorous check (using the kernel) of Wheeler's PSD-resonance conjecture (`fini
   amplitudes `c_n` are exact, the summation is regularized (standard).
 - Does **not** close C5★ — it pins the kernel and converts the crux to a concrete weighted-Bohr-resonance
   inequality. The uniform-in-`d` edge bound stays open (Wheeler/DeWitt lanes).
+
+## No-go closure — 2026-08-24
+
+- **Exact killing theorem/mechanism:** `exp(P(t))` is nonzero for every complex-valued pointwise
+  function `P`, while Hardy's unconditional theorem supplies positive real `t` with
+  `Ξ(t)=0`. The actual polynomial--Gamma factor `Ξ_arch(t)` is nonzero on the critical line and
+  Lean proves `Ξ(t)=Ξ_arch(t)ζ(1/2+it)`. Hence no global pointwise `P : ℝ → ℂ` can satisfy
+  `exp(P(t))=ζ(1/2+it)`. A distributional boundary value cannot be evaluated or differentiated
+  pointwise at a Jensen base point without an additional regularization, and no such operation was
+  specified by the card.
+- **Strongest positive survivor:** every single finite prime mode has exact amplitude `p^(-1/2)`,
+  an explicit finite polynomial kernel in `log p` built from actual archimedean jets, and an exact
+  analytic simple-root branch with velocity `-K(r)/J'(r)`. Both the absolute prime mass and its
+  squared mass are nonsummable, proving that this finite law has no ordinary infinite `l¹` or `l²`
+  completion at half density.
+- **New insight:** finite-frequency root perturbation is rigorous, but the infinite critical-line
+  displacement is not a pointwise Bohr function supplied by `log ζ`; it requires a separately defined
+  distribution-to-jet regularization. The original card conflated those two levels.
+- **Status:** formalized in
+  `formal/GaloisForLFunctions/RHTower/C5JensenPrimeKernelClosure.lean`. Targeted source check and
+  `lake build GaloisForLFunctions.RHTower.C5JensenPrimeKernelClosure` pass. Axiom audits for the
+  no-go, both summability walls, actual single-prime root branch, and premise-free capstone use only
+  `propext`, `Classical.choice`, and `Quot.sound`. Positive survivor is recorded separately at stage 3.
 
 ## Cross-references
 - `../1-in-progress/finite-free-convolution-flow.md` — Wheeler's carrier; this kernel is its flagged input.
@@ -223,3 +251,9 @@ Consequently the prime amplitudes in the Jensen kernel cannot prove Hankel posit
   endpoint audits use only `propext`, `Classical.choice`, and `Quot.sound`. Remaining stage-3 gate is
   the unconditional completed-Xi/explicit-formula regularization that identifies the actual critical-line
   perturbation jets with this finite kernel.
+
+- 2026-08-24 (Codex) — proved that remaining gate is mathematically impossible as stated. Added
+  `C5JensenPrimeKernelClosure.lean`, including actual archimedean factorization and nonvanishing,
+  Hardy-zero obstruction to a global pointwise critical-line logarithm, exact `l¹`/`l²` prime-mass
+  walls, actual finite-prime kernel, analytic simple-root response, and premise-free capstone.
+  Retired original infinite pointwise route to stage 5 and promoted finite positive survivor to stage 3.

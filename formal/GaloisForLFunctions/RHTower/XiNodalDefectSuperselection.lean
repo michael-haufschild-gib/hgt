@@ -345,18 +345,22 @@ theorem xiNodalArithmeticSecondOrderDefect_apply (q : XiZeroCopy)
         (xiNodalTotalDefectEnd q) x =
       ((primeDepthBVWoldXiCenteredRate q.1 : ℂ) * ((q.1 : ℂ).im : ℂ)) •
         deningerCalderonWittNodalTopObservation x := by
-  rw [GaloisForLFunctions.HTGeometry.
-    secondOrderConstraintDescentDefect_eq_targetCurvature_comp
-      (K := ℂ)
-      (V := DeningerCalderonWittGlobalOrientedKoszulTotalCarrier)
-      (O := XiNodalDefectChannel)
-      deningerCalderonWittGlobalOrientedKoszulTotalDifferential
-      deningerCalderonWittNodalTopObservation
-      (xiNodalTotalDefectEnd q)
-      deningerCalderonWittGlobalOrientedKoszulTotalDifferential_sq]
+  have hboundary :
+      deningerCalderonWittGlobalKoszulBoundary
+          (deningerCalderonWittGlobalDefectAxisInclusion x.1) = 0 :=
+    LinearMap.congr_fun
+      deningerCalderonWittGlobalKoszulBoundary_defectAxis x.1
   ext i
   fin_cases i <;>
-    simp [xiNodalTotalDefectEnd, deningerCalderonWittNodalTopObservation,
+    simp [GaloisForLFunctions.HTGeometry.secondOrderConstraintDescentDefect,
+      GaloisForLFunctions.HTGeometry.clockDescentAnomaly,
+      xiNodalTotalDefectEnd, deningerCalderonWittNodalTopObservation,
+      deningerCalderonWittGlobalOrientedKoszulTotalDifferential,
+      deningerThreeTermTotalDifferential,
+      deningerCalderonWittGlobalOrientedKoszulSourceComplex,
+      deningerCalderonWittGlobalOrientedKoszulBoundary,
+      deningerCalderonWittGlobalOrientedCenterGraph,
+      hboundary,
       LinearMap.comp_apply]
   <;> ring
 

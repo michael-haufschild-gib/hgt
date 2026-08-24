@@ -429,11 +429,68 @@ copies, vanishes at every prescribed pole coordinate, and proves that an infinit
 has an infinite-dimensional denominator model space.  Direct Lean and targeted leaf build pass;
 new theorem axioms are exactly `propext`, `Classical.choice`, and `Quot.sound`.
 
+`RHTower.SuzukiShiftedXiInfiniteLeakageRank` now supplies the literal numerator and algebraic-rank
+branch for the full infinite divisor.  It constructs the numerator Blaschke product over every
+reflected shifted-Xi zero copy, proves its Blaschke condition, proves that the full numerator
+(including the core Schur factor) is nonzero at every denominator coordinate under exact
+`SuzukiShiftNonexceptional`, and proves that the corresponding projected Hardy leakage has
+non-finite-dimensional algebraic range whenever the shifted divisor type is infinite.  The proof
+uses arbitrarily large linearly independent packets of Szegő kernels in the adjoint range; it needs
+no separation or corona hypothesis.  Reusable `HTGeometry.IndexedBlaschkeMultiplier` now proves
+that the indexed product has no disk zeros beyond its prescribed divisor, while
+`HTGeometry.AdjointFiniteRange` transfers infinite adjoint range to infinite operator range.  Direct
+Lean, targeted leaf build, and batched new-declaration axiom audit pass; axioms are exactly
+`propext`, `Classical.choice`, and `Quot.sound`.
+
+`HTGeometry.ModelSpaceLeakageNorm` and
+`RHTower.SuzukiShiftedXiLeakageNormBounds` now formalize theorem B's exact operator squeeze for the
+literal full-divisor projected leakage.  Orthogonal projection never amplifies the multiplier
+bound, evaluation of the numerator at any denominator zero lower-bounds leakage norm, the shifted-Xi
+leakage is contractive, and convergence of one crossing numerator value to unit modulus forces the
+operator norm to converge to one.  Both leaves pass direct Lean, targeted leaf builds, and axiom
+audits with exactly `propext`, `Classical.choice`, and `Quot.sound`.  The remaining theorem-B work is
+the actual isolated-layer numerator-value limit and its identification with the stated anti-causal
+operator, not the Nehari/operator squeeze.
+
+`HTGeometry.HorizontalLayerBlaschkeGeometry` formalizes the exact local crossing calculation `(6)`:
+the numerator factor evaluated at its paired denominator zero has modulus `omega/a`, hence exactly
+`lambda` along `omega=lambda*a`, and multiplicity `m` contributes `lambda^m`.  Direct Lean,
+targeted leaf build, and axiom audit pass with the same standard three axioms.
+
+`HTGeometry.FiniteBlaschkeModelSpaceProduct` instantiates the existing abstract isometry splitting
+to prove theorem C's exact finite product identity `(10)`,
+`K_(B₀B₁)=K_(B₀) ⊕ B₀K_(B₁)`, and proves the two displayed summands orthogonal.  This reused
+`HTGeometry.orthogonal_map_eq_sup` rather than duplicating its Hilbert-space proof.  Direct Lean,
+targeted leaf build, and axiom audit pass with the same standard three axioms.  Infinite persistent
+background, moving-channel convergence, and operator/spectral peeling remain open.
+
+`HTGeometry.FiniteBlaschkeLeakagePythagoras` now proves theorem C's exact finite-inner energy law,
+not merely its diagonal norm specialization.  It reconstructs every numerator-multiplied Hardy
+vector as its denominator model-space leakage plus denominator-multiplied causal component, proves
+the fully polarized inner-product splitting, and derives the operator identity
+`L†L + T†T = I`, equation `(17)`.  For orthogonal inputs it proves the exact signed cross-pairing
+identity behind `(18)`, before taking absolute values.  Direct Lean and targeted leaf build pass;
+all new theorem axioms are exactly `propext`, `Classical.choice`, and `Quot.sound`.
+
+`HTGeometry.FiniteBlaschkeProduct` and `HTGeometry.FiniteBlaschkeCrossingChannelPeeling` now make
+the theorem-C channel literal.  Finite Blaschke divisors concatenate with exact degree addition,
+multiplier composition, and model-space splitting; `finiteBlaschkeCrossingChannel B₀ B₁` is a
+subspace of `K_(B₀B₁)` with finrank exactly `deg B₁`.  The crossing leakage Gram defect has norm
+exactly the square of the causal compression norm on that channel, while its complementary
+off-diagonal block is bounded by the same causal norm.  Consequently the boundary-scaling limit
+`(16)` implies `(11)` and `(12)` as formal `Tendsto` theorems.  Reusable
+`HTGeometry.AdjointGramChannelPeeling` supplies these identities for any orthogonal channel.  All
+three targeted leaves build; batched axiom audit of every new theorem reports exactly `propext`,
+`Classical.choice`, and `Quot.sound`.
+
 This is not yet the complete card and does not justify Stage 3. Remaining exact obligations are:
 
-1. extend the literal finite shifted-Xi leakage result through common-divisor cancellation and the
-   infinite-divisor numerator-faithfulness branch, then identify it with the full anti-causal
-   compression;
-2. Theorem B's outermost-layer norm singularity in the actual family; and
-3. Theorem C's arbitrary-layer unit-channel peeling, persistent-block orthogonality, spectral
-   multiset limit, and Hilbert--Schmidt trace jump.
+1. prove the exact full quotient/anti-causal-compression identification and the exceptional-shift
+   common-inner-divisor cancellation law, so finite and infinite projected-rank theorems become
+   theorem A for the stated operator `L_omega`;
+2. prove the isolated outermost-layer numerator-value limit in the actual shifted-Xi family, then
+   apply the formalized norm squeeze to obtain theorem B's norm singularity; and
+3. prove theorem C's boundary-scaling limit `(16)` for the actual moving isolated layer, including
+   infinite persistent background; `(11)`--`(12)` then follow from the formalized exact identities.
+   Persistent finite-block convergence, spectral multiset peeling `(13)`, and Hilbert--Schmidt
+   trace jump `(14)` also remain.

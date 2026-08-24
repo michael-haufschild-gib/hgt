@@ -1,7 +1,7 @@
 # Infinitesimal Euler leakage has a positive Cauchy-energy threshold
 
 - **ID:** `infinitesimal-euler-leakage-cauchy-energy-threshold`
-- **Stage:** 2-fully-proven/not_new_scientific_knowledge
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper), `[PROVED HERE; BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Source:** `euler-leakage-residue-mode-expansion.md`;
   `infinitesimal-hardy-leakage-horizontal-layer-resolvent.md`
@@ -322,7 +322,7 @@ Scientific novelty would begin with the unconditional Euler-source estimate in t
   `formal/GaloisForLFunctions/RHTower/FiniteOfflineCauchyEnergy.lean` and
   `formal/GaloisForLFunctions/RHTower/FiniteOfflineCauchyL2.lean`; the certificate is
   `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/finite-offline-cauchy-energy-threshold-core.md`.
-- [ ] Complete Lean formalization: derive the explicit finite profile from the differentiated Xi
+- [x] Complete Lean formalization: derive the explicit finite profile from the differentiated Xi
   leakage quotient and formalize the source-side construction.
 - [ ] 3 -> 4: no unconditional RH proof.
 
@@ -341,6 +341,36 @@ The one-zero induction atom of Theorem D is now formalized without a convergence
 - The corresponding compression defect divided by `omega²` is exact at every positive scale.
 
 Targeted source checks and module builds pass.  New endpoints have only the project baseline
-axioms `[propext, Classical.choice, Quot.sound]`.  Remaining source-side work is the finite-product
-assembly over every right-half divisor copy and its Paley--Wiener identification with `profile`;
-the single-layer operator-norm limit itself is no longer assumed.
+axioms `[propext, Classical.choice, Quot.sound]`.  At that checkpoint, finite-product assembly over
+every right-half divisor copy and its source/profile identification remained; the completion below
+closes it.
+
+## Lean completion — actual Xi source and finite-divisor capstone (2026-08-24)
+
+`formal/GaloisForLFunctions/RHTower/InfinitesimalXiLeakageCauchyEnergy.lean` closes the finite-divisor
+assembly.  `FiniteXiRightDivisor` is an equivalence from a finite index type to the complete
+strict-right Xi zero-copy type, so analytic multiplicity is represented literally by repeated
+copies rather than by an assumed coefficient.  Its profile theorem therefore gives coefficient
+`2m` after equal copies are collected.
+
+The module proves all source and energy identifications in one closed chain:
+
+- `hasDerivAt_xiShiftTheta_zero_logDeriv` differentiates the actual shifted completed-Xi quotient
+  and gives `-2 Xi'/Xi`;
+- `FiniteXiRightDivisor.profileLaplace_eq_ward_add_boundary` identifies the profile Laplace
+  transform with the source-selected continued anti-causal Xi Ward response plus its exact
+  genus-one boundary contact;
+- `finiteXiSuzukiEulerTangents` proves the first two source coefficients are exactly `2Λ` and
+  `4(Λ*Λ)` at every arithmetic label;
+- `FiniteXiRightDivisor.energy_eq_integral` and
+  `FiniteXiRightDivisor.curvatureKernel_zero_zero_re_eq_energy` identify the profile `L²` norm,
+  Cauchy Gram energy, and source-side curvature corner; and
+- `FiniteXiRightDivisor.energy_gt_four_card` proves every nonempty finite strict-right divisor has
+  energy strictly greater than `4·card`, hence in particular greater than `4`.
+
+The premise-free universal endpoint `RHTower.finiteXiRightDivisor_capstone` packages these clauses
+for every finite complete strict-right divisor certificate.  Exact source check and targeted build
+pass at default heartbeats.  Axiom audits of the actual quotient derivative, Ward/profile weld,
+strict energy threshold, Euler tangents, and capstone report only `propext`, `Classical.choice`, and
+`Quot.sound`.  Module is wired into `GaloisForLFunctions.RHTower`; umbrella was not built.  Lean gate
+is complete.
