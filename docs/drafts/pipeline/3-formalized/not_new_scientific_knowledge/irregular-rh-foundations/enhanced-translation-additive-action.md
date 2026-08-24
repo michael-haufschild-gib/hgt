@@ -2,7 +2,7 @@
 
 ## Status
 
-Paper proof in progress.
+Formalized in Lean 4.
 
 ## Classification
 
@@ -34,3 +34,8 @@ plus both generated quotient levels.
 
 - 2026-08-24 — corpus search found topological action and translation endofunctors but no functorial
   action coherence; paper proof drafted; Lean formalization started
+- 2026-08-24 — closed identity pullback and derived-identity dependencies; formalized zero and
+  composition isomorphisms through small, ind, unbounded derived, bounded derived, and both
+  generated quotient levels in `StokesEnhancedTranslationAction.lean`; direct Lean check and
+  targeted module build pass; all new declarations use only `propext`, `Classical.choice`, and
+  `Quot.sound`

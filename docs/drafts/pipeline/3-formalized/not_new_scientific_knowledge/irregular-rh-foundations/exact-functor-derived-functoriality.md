@@ -25,7 +25,7 @@ the derived composition isomorphism.
 
 ## Lean target
 
-Generic `mapDerivedCategoryNatIso` and `mapDerivedCategoryCompIso` declarations.
+Generic identity, natural-isomorphism, and composition comparisons for derived exact functors.
 
 ## Log
 
@@ -34,3 +34,5 @@ Generic `mapDerivedCategoryNatIso` and `mapDerivedCategoryCompIso` declarations.
 - 2026-08-24 — formalized natural-isomorphism and composition descent in
   `StokesExactFunctorDerivedFunctoriality.lean`; direct Lean check and targeted module build pass;
   both declarations use only `propext`, `Classical.choice`, and `Quot.sound`
+- 2026-08-24 — added derived identity comparison needed for translation-action coherence; direct
+  Lean check and targeted build pass; new declaration uses standard axioms only

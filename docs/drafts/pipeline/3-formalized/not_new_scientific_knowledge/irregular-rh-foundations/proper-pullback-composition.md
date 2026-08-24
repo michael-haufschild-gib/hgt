@@ -25,7 +25,8 @@ composition comparison, and cancel that inclusion. This yields the compact-suppo
 
 ## Lean target
 
-Canonical `sheafPullbackCompIso` and `properPullbackCompIso` declarations.
+Canonical identity and composition comparisons for sheaf pullback and compact-support proper
+pullback.
 
 ## Log
 
@@ -33,3 +34,5 @@ Canonical `sheafPullbackCompIso` and `properPullbackCompIso` declarations.
 - 2026-08-24 — formalized sheaf and compact-support composition comparisons in
   `StokesProperPullbackComposition.lean`; direct Lean check and targeted module build pass; both
   declarations use only `propext`, `Classical.choice`, and `Quot.sound`
+- 2026-08-24 — added identity-pullback comparisons needed for translation-action coherence; direct
+  Lean check and targeted build pass; new declarations use standard axioms only

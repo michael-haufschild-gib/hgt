@@ -953,6 +953,65 @@ theorem integral_tsum_of_nonneg_hasSum
       exact hxsum.tsum_eq.symm
     _ = ∑' n, ∫ x, F n x ∂μ := hswap
 
+/-- Absolute summability of the integrated coefficients in the same nonnegative Tonelli setup. -/
+theorem summable_integral_of_nonneg_hasSum
+    (μ : Measure ℝ) (F : ℕ → ℝ → ℝ) (G : ℝ → ℝ)
+    (hFmeas : ∀ n, AEStronglyMeasurable (F n) μ)
+    (hFnonneg : ∀ᵐ x ∂μ, ∀ n, 0 ≤ F n x)
+    (hsum : ∀ᵐ x ∂μ, HasSum (fun n => F n x) (G x))
+    (hG : Integrable G μ) :
+    Summable (fun n => ∫ x, F n x ∂μ) := by
+  have hnormsumE : ∀ᵐ x ∂μ,
+      (∑' n : ℕ, ‖F n x‖ₑ) = ‖G x‖ₑ := by
+    filter_upwards [hFnonneg, hsum] with x hxnonneg hxsum
+    have hsumF : Summable (fun n => F n x) := hxsum.summable
+    have hGnonneg : 0 ≤ G x := by
+      rw [← hxsum.tsum_eq]
+      exact tsum_nonneg fun n => hxnonneg n
+    have hnormsum : (∑' n : ℕ, ‖F n x‖₊) = ‖G x‖₊ := by
+      apply NNReal.eq
+      rw [NNReal.coe_tsum]
+      · simp only [coe_nnnorm, Real.norm_eq_abs]
+        simp_rw [abs_of_nonneg (hxnonneg _)]
+        rw [abs_of_nonneg hGnonneg, hxsum.tsum_eq]
+    have hnorm : Summable (fun n : ℕ => ‖F n x‖₊) :=
+      NNReal.summable_coe.mp (by
+        simpa only [coe_nnnorm] using hsumF.norm)
+    calc
+      (∑' n : ℕ, ‖F n x‖ₑ) =
+          ((∑' n : ℕ, ‖F n x‖₊ : NNReal) : ENNReal) := by
+            exact (ENNReal.coe_tsum hnorm).symm
+      _ = (‖G x‖₊ : ENNReal) := by rw [hnormsum]
+      _ = ‖G x‖ₑ := rfl
+  have hfinite : (∑' n : ℕ, ∫⁻ x, ‖F n x‖ₑ ∂μ) ≠ ⊤ := by
+    rw [← lintegral_tsum (fun n => (hFmeas n).enorm)]
+    rw [lintegral_congr_ae hnormsumE]
+    exact ne_of_lt hG.hasFiniteIntegral
+  have hintNonneg (n : ℕ) : 0 ≤ ∫ x, F n x ∂μ := by
+    apply integral_nonneg_of_ae
+    filter_upwards [hFnonneg] with x hx
+    exact hx n
+  have hfinite' :
+      (∑' n : ℕ, ENNReal.ofReal (∫ x, F n x ∂μ)) ≠ ⊤ := by
+    have hle :
+        (∑' n : ℕ, ENNReal.ofReal (∫ x, F n x ∂μ)) ≤
+          ∑' n : ℕ, ∫⁻ x, ‖F n x‖ₑ ∂μ := by
+      apply ENNReal.tsum_le_tsum
+      intro n
+      simpa [Real.norm_eq_abs, abs_of_nonneg (hintNonneg n)] using
+        (MeasureTheory.enorm_integral_le_lintegral_enorm (F n))
+    intro htop
+    apply hfinite
+    exact top_unique (htop ▸ hle)
+  have hcoe : ∀ n : ℕ, ENNReal.ofReal (∫ x, F n x ∂μ) =
+      ((((∫ x, F n x ∂μ).toNNReal) : NNReal) : ENNReal) := fun _ => rfl
+  have hsumNN : Summable (fun n : ℕ => (∫ x, F n x ∂μ).toNNReal) := by
+    rw [← ENNReal.tsum_coe_ne_top_iff_summable]
+    simpa only [hcoe] using hfinite'
+  have hsumR : Summable (fun n : ℕ => ((∫ x, F n x ∂μ).toNNReal : ℝ)) :=
+    NNReal.summable_coe.mpr hsumNN
+  exact hsumR.congr fun n => Real.coe_toNNReal _ (hintNonneg n)
+
 theorem thetaCusp_two_mul_evenTaylorTerm_eq (t : ℝ) (j : ℕ) :
     2 * ((t / 2) ^ (2 * j) / (Nat.factorial (2 * j) : ℝ)) =
       2 * t ^ (2 * j) /
