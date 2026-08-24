@@ -277,6 +277,364 @@ theorem differentiableOn_phaseGerm_neg_comp_of_openStrip
         rw [phaseGerm]]
     exact ((hentire (f z)).comp z (hf z)).differentiableWithinAt
 
+/-- One coefficient and one lower strip margin uniformly control a boundary germ. -/
+theorem norm_phaseGerm_le_uniform
+    {s : ℂ} {theta eta C : ℝ}
+    (hs0 : 0 < s.re) (hs1 : s.re < 1)
+    (htheta : theta ∈ Ioc (-Real.pi) Real.pi) (htheta0 : theta ≠ 0)
+    (heta0 : 0 < eta) (heta : eta ≤ s.re)
+    (hC : phaseGermProfileCoeff s ≤ C) :
+    ‖phaseGerm s theta‖ ≤ C * (|theta| ^ (eta - 1) + 2) := by
+  calc
+    ‖phaseGerm s theta‖
+        ≤ phaseGermProfileCoeff s * (|theta| ^ (s.re - 1) + 1) := by
+          simpa [phaseGermProfileCoeff] using norm_phaseGerm_le hs0 hs1 theta htheta htheta0
+    _ ≤ C * (|theta| ^ (s.re - 1) + 1) := by
+          exact mul_le_mul_of_nonneg_right hC (by positivity)
+    _ ≤ C * (|theta| ^ (eta - 1) + 2) := by
+          exact mul_le_mul_of_nonneg_left
+            (phase_rpow_add_one_le_uniform htheta0 heta0 heta hs1)
+            ((phaseGermProfileCoeff_nonneg s).trans hC)
+
+/-- Reflected phase integrand for a fixed positive regulator. -/
+def reflectedBiHeatFixedRegulatorPhaseIntegrand
+    (Q : ReflectedBiHeatPositiveSlice) (z : ℂ) (theta : ℝ) : ℂ :=
+  phaseGerm (Q.leftOrder z) theta * phaseGerm (Q.rightOrder z) (-theta) *
+    heatMultiplier Q.x theta
+
+/-- The fixed-regulator phase integral whose analytic continuation will be welded to the row sum. -/
+def reflectedBiHeatFixedRegulatorPhaseEnergy
+    (Q : ReflectedBiHeatPositiveSlice) (z : ℂ) : ℂ :=
+  (1 / (2 * (Real.pi : ℂ))) *
+    ∫ theta in Ioc (-Real.pi) Real.pi,
+      reflectedBiHeatFixedRegulatorPhaseIntegrand Q z theta
+
+/-- Four-term power majorant produced by multiplying the two one-sided Jonquière profiles. -/
+def reflectedBiHeatPhaseMajorant
+    (K etaLeft etaRight : ℝ) (theta : ℝ) : ℝ :=
+  K * |theta| ^ (etaLeft + etaRight - 2) +
+    (2 * K) * |theta| ^ (etaLeft - 1) +
+    (2 * K) * |theta| ^ (etaRight - 1) + 4 * K
+
+theorem integrableOn_reflectedBiHeatPhaseMajorant
+    {K etaLeft etaRight : ℝ}
+    (hetaLeft : 0 < etaLeft) (hetaRight : 0 < etaRight)
+    (hetaSum : 1 < etaLeft + etaRight) :
+    IntegrableOn (reflectedBiHeatPhaseMajorant K etaLeft etaRight)
+      (Ioc (-Real.pi) Real.pi) := by
+  have hcross := integrableOn_abs_rpow_window
+    (show -1 < etaLeft + etaRight - 2 by linarith)
+  have hleft := integrableOn_abs_rpow_window
+    (show -1 < etaLeft - 1 by linarith)
+  have hright := integrableOn_abs_rpow_window
+    (show -1 < etaRight - 1 by linarith)
+  have hconst : IntegrableOn (fun _ : ℝ => 4 * K) (Ioc (-Real.pi) Real.pi) := by
+    change Integrable (fun _ : ℝ => 4 * K)
+      (volume.restrict (Ioc (-Real.pi) Real.pi))
+    simpa using
+      (integrableOn_abs_rpow_window (r := 0) (by norm_num)).const_mul (4 * K)
+  exact (((hcross.const_mul K).add (hleft.const_mul (2 * K))).add
+    (hright.const_mul (2 * K))).add hconst
+
+/-- The reflected phase energy is holomorphic at every point where both shifted orders lie in the
+open unit strip. -/
+theorem differentiableAt_reflectedBiHeatFixedRegulatorPhaseEnergy
+    (Q : ReflectedBiHeatPositiveSlice) {z0 : ℂ} (hz0 : z0 ∈ Q.domain) :
+    DifferentiableAt ℂ (reflectedBiHeatFixedRegulatorPhaseEnergy Q) z0 := by
+  let leftGap : ℝ := z0.re - Q.delta / 2
+  let rightGap : ℝ := 1 - Q.delta / 2 - z0.re
+  let R : ℝ := min (Q.delta / 8) (min (leftGap / 2) (rightGap / 2))
+  have hleftGap : 0 < leftGap := by
+    dsimp [leftGap]
+    linarith [hz0.1]
+  have hrightGap : 0 < rightGap := by
+    dsimp [rightGap]
+    linarith [hz0.2]
+  have hR : 0 < R := by
+    dsimp [R]
+    exact lt_min (by linarith [Q.delta_pos])
+      (lt_min (by linarith [hleftGap]) (by linarith [hrightGap]))
+  have hRdelta : R ≤ Q.delta / 8 := by
+    dsimp [R]
+    exact min_le_left _ _
+  have hRleft : R ≤ leftGap / 2 := by
+    dsimp [R]
+    exact (min_le_right _ _).trans (min_le_left _ _)
+  have hRright : R ≤ rightGap / 2 := by
+    dsimp [R]
+    exact (min_le_right _ _).trans (min_le_right _ _)
+  let leftCenter : ℂ := Q.leftOrder z0
+  let rightCenter : ℂ := Q.rightOrder z0
+  let etaLeft : ℝ := leftCenter.re - R
+  let etaRight : ℝ := rightCenter.re - R
+  have hleftCenter0 : R < leftCenter.re := by
+    dsimp [leftCenter, ReflectedBiHeatPositiveSlice.leftOrder]
+    norm_num [Complex.add_re, Complex.div_re]
+    dsimp [leftGap] at hRleft
+    linarith [hleftGap, Q.delta_pos]
+  have hleftCenter1 : leftCenter.re + R < 1 := by
+    dsimp [leftCenter, ReflectedBiHeatPositiveSlice.leftOrder]
+    norm_num [Complex.add_re, Complex.div_re]
+    dsimp [rightGap] at hRright
+    linarith [hrightGap]
+  have hrightCenter0 : R < rightCenter.re := by
+    dsimp [rightCenter, ReflectedBiHeatPositiveSlice.rightOrder]
+    norm_num [Complex.add_re, Complex.sub_re, Complex.div_re]
+    dsimp [rightGap] at hRright
+    linarith [hrightGap, Q.delta_pos]
+  have hrightCenter1 : rightCenter.re + R < 1 := by
+    dsimp [rightCenter, ReflectedBiHeatPositiveSlice.rightOrder]
+    norm_num [Complex.add_re, Complex.sub_re, Complex.div_re]
+    dsimp [leftGap] at hRleft
+    linarith [hleftGap]
+  have hetaLeft : 0 < etaLeft := by
+    dsimp [etaLeft]
+    exact sub_pos.mpr hleftCenter0
+  have hetaRight : 0 < etaRight := by
+    dsimp [etaRight]
+    exact sub_pos.mpr hrightCenter0
+  have hetaSum : 1 < etaLeft + etaRight := by
+    dsimp [etaLeft, etaRight, leftCenter, rightCenter,
+      ReflectedBiHeatPositiveSlice.leftOrder,
+      ReflectedBiHeatPositiveSlice.rightOrder]
+    norm_num [Complex.add_re, Complex.sub_re, Complex.div_re]
+    linarith [hRdelta, Q.delta_pos]
+  obtain ⟨CLeft, hCLeft0, hCLeft⟩ :=
+    exists_phaseGermProfileCoeff_bound_closedBall hR hleftCenter0 hleftCenter1
+  obtain ⟨CRight, hCRight0, hCRight⟩ :=
+    exists_phaseGermProfileCoeff_bound_closedBall hR hrightCenter0 hrightCenter1
+  obtain ⟨H, hH⟩ := (isCompact_Icc : IsCompact (Icc (-Real.pi) Real.pi)).exists_bound_of_continuousOn
+    (continuous_heatMultiplier Q.x_pos).continuousOn
+  have hH0 : 0 ≤ H := by
+    exact (norm_nonneg (heatMultiplier Q.x 0)).trans
+      (hH 0 (by constructor <;> linarith [Real.pi_pos]))
+  have hleftStrip : ∀ z ∈ Metric.ball z0 R,
+      0 < (Q.leftOrder z).re ∧ (Q.leftOrder z).re < 1 := by
+    intro z hz
+    have hdist : ‖z - z0‖ < R := by simpa [Complex.dist_eq] using hz
+    have hre : |z.re - z0.re| < R :=
+      lt_of_le_of_lt (by simpa using Complex.abs_re_le_norm (z - z0)) hdist
+    constructor
+    · dsimp [ReflectedBiHeatPositiveSlice.leftOrder]
+      norm_num [Complex.add_re, Complex.div_re]
+      dsimp [leftCenter, ReflectedBiHeatPositiveSlice.leftOrder] at hleftCenter0
+      norm_num [Complex.add_re, Complex.div_re] at hleftCenter0
+      linarith [(abs_lt.mp hre).1]
+    · dsimp [ReflectedBiHeatPositiveSlice.leftOrder]
+      norm_num [Complex.add_re, Complex.div_re]
+      dsimp [leftCenter, ReflectedBiHeatPositiveSlice.leftOrder] at hleftCenter1
+      norm_num [Complex.add_re, Complex.div_re] at hleftCenter1
+      linarith [(abs_lt.mp hre).2]
+  have hrightStrip : ∀ z ∈ Metric.ball z0 R,
+      0 < (Q.rightOrder z).re ∧ (Q.rightOrder z).re < 1 := by
+    intro z hz
+    have hdist : ‖z - z0‖ < R := by simpa [Complex.dist_eq] using hz
+    have hre : |z.re - z0.re| < R :=
+      lt_of_le_of_lt (by simpa using Complex.abs_re_le_norm (z - z0)) hdist
+    constructor
+    · dsimp [ReflectedBiHeatPositiveSlice.rightOrder]
+      norm_num [Complex.add_re, Complex.sub_re, Complex.div_re]
+      dsimp [rightCenter, ReflectedBiHeatPositiveSlice.rightOrder] at hrightCenter0
+      norm_num [Complex.add_re, Complex.sub_re, Complex.div_re] at hrightCenter0
+      linarith [(abs_lt.mp hre).2]
+    · dsimp [ReflectedBiHeatPositiveSlice.rightOrder]
+      norm_num [Complex.add_re, Complex.sub_re, Complex.div_re]
+      dsimp [rightCenter, ReflectedBiHeatPositiveSlice.rightOrder] at hrightCenter1
+      norm_num [Complex.add_re, Complex.sub_re, Complex.div_re] at hrightCenter1
+      linarith [(abs_lt.mp hre).1]
+  have hleftBall : ∀ z ∈ Metric.ball z0 R,
+      Q.leftOrder z ∈ Metric.closedBall leftCenter R := by
+    intro z hz
+    have hle : dist z z0 ≤ R := le_of_lt hz
+    simpa [leftCenter, ReflectedBiHeatPositiveSlice.leftOrder, Complex.dist_eq] using hle
+  have hrightBall : ∀ z ∈ Metric.ball z0 R,
+      Q.rightOrder z ∈ Metric.closedBall rightCenter R := by
+    intro z hz
+    have hle : dist z z0 ≤ R := le_of_lt hz
+    rw [Metric.mem_closedBall, Complex.dist_eq]
+    calc
+      ‖Q.rightOrder z - rightCenter‖ = ‖-(z - z0)‖ := by
+        congr 1
+        dsimp [rightCenter, ReflectedBiHeatPositiveSlice.rightOrder]
+        ring
+      _ = ‖z - z0‖ := norm_neg _
+      _ ≤ R := by simpa [Complex.dist_eq] using hle
+  let K : ℝ := CLeft * CRight * H
+  have hK0 : 0 ≤ K := by dsimp [K]; positivity
+  let F : ℂ → ℝ → ℂ := fun z theta =>
+    (Ioo (-Real.pi) Real.pi).indicator
+      (reflectedBiHeatFixedRegulatorPhaseIntegrand Q z) theta
+  let bound : ℝ → ℝ := fun theta =>
+    (Ioo (-Real.pi) Real.pi).indicator
+      (reflectedBiHeatPhaseMajorant K etaLeft etaRight) theta
+  have hmeas : ∀ z ∈ Metric.ball z0 R,
+      AEStronglyMeasurable (F z)
+        (volume.restrict (Ioc (-Real.pi) Real.pi)) := by
+    intro z hz
+    have hraw : AEStronglyMeasurable
+        (reflectedBiHeatFixedRegulatorPhaseIntegrand Q z)
+        (volume.restrict (Ioc (-Real.pi) Real.pi)) :=
+      (((aestronglyMeasurable_phaseGerm (hleftStrip z hz).1 (hleftStrip z hz).2).mul
+        (aestronglyMeasurable_phaseGerm_neg_window
+          (hrightStrip z hz).1 (hrightStrip z hz).2)).mul
+        ((continuous_heatMultiplier Q.x_pos).continuousOn.aestronglyMeasurable
+          measurableSet_Ioc))
+    apply hraw.congr
+    have hnePi : ∀ᵐ theta ∂(volume : Measure ℝ), theta ≠ Real.pi :=
+      MeasureTheory.compl_mem_ae_iff.mpr (measure_singleton Real.pi)
+    filter_upwards [self_mem_ae_restrict measurableSet_Ioc,
+      MeasureTheory.ae_restrict_of_ae hnePi] with theta htheta hthetaPi
+    have hthetaOpen : theta ∈ Ioo (-Real.pi) Real.pi := ⟨htheta.1, lt_of_le_of_ne htheta.2 hthetaPi⟩
+    simp [F, Set.indicator_of_mem hthetaOpen]
+  have hdiff : ∀ theta : ℝ,
+      DifferentiableOn ℂ (fun z : ℂ => F z theta) (Metric.ball z0 R) := by
+    intro theta
+    by_cases htheta : theta ∈ Ioo (-Real.pi) Real.pi
+    · have hthetaPos : theta ∈ Ioc (-Real.pi) Real.pi := ⟨htheta.1, htheta.2.le⟩
+      have hnegTheta : -theta ∈ Ioc (-Real.pi) Real.pi := by
+        constructor <;> linarith [htheta.1, htheta.2]
+      have hleftDiff := differentiableOn_phaseGerm_comp_of_openStrip
+        (by
+          rw [show (Q.leftOrder : ℂ → ℂ) = fun z : ℂ => z + (Q.delta : ℂ) / 2 by rfl]
+          fun_prop) hleftStrip hthetaPos
+      have hrightDiff := differentiableOn_phaseGerm_neg_comp_of_openStrip
+        (by
+          rw [show (Q.rightOrder : ℂ → ℂ) = fun z : ℂ => 1 - z + (Q.delta : ℂ) / 2 by rfl]
+          fun_prop) hrightStrip hthetaPos
+      simpa [F, Set.indicator_of_mem htheta,
+        reflectedBiHeatFixedRegulatorPhaseIntegrand] using
+        (hleftDiff.mul hrightDiff).mul_const (heatMultiplier Q.x theta)
+    · simp [F, Set.indicator_of_notMem htheta]
+  have hbound : ∀ theta : ℝ, ∀ z ∈ Metric.ball z0 R,
+      ‖F z theta‖ ≤ bound theta := by
+    intro theta z hz
+    by_cases htheta : theta ∈ Ioo (-Real.pi) Real.pi
+    · rw [show F z theta = reflectedBiHeatFixedRegulatorPhaseIntegrand Q z theta by
+          simp [F, Set.indicator_of_mem htheta],
+        show bound theta = reflectedBiHeatPhaseMajorant K etaLeft etaRight theta by
+          simp [bound, Set.indicator_of_mem htheta]]
+      have hthetaPos : theta ∈ Ioc (-Real.pi) Real.pi := ⟨htheta.1, htheta.2.le⟩
+      have hnegTheta : -theta ∈ Ioc (-Real.pi) Real.pi := by
+        constructor <;> linarith [htheta.1, htheta.2]
+      have hleftEta : etaLeft ≤ (Q.leftOrder z).re := by
+        have hdist : ‖z - z0‖ < R := by simpa [Complex.dist_eq] using hz
+        have hre : |z.re - z0.re| < R :=
+          lt_of_le_of_lt (by simpa using Complex.abs_re_le_norm (z - z0)) hdist
+        dsimp [etaLeft, leftCenter, ReflectedBiHeatPositiveSlice.leftOrder]
+        norm_num [Complex.add_re, Complex.div_re]
+        linarith [(abs_lt.mp hre).1]
+      have hrightEta : etaRight ≤ (Q.rightOrder z).re := by
+        have hdist : ‖z - z0‖ < R := by simpa [Complex.dist_eq] using hz
+        have hre : |z.re - z0.re| < R :=
+          lt_of_le_of_lt (by simpa using Complex.abs_re_le_norm (z - z0)) hdist
+        dsimp [etaRight, rightCenter, ReflectedBiHeatPositiveSlice.rightOrder]
+        norm_num [Complex.add_re, Complex.sub_re, Complex.div_re]
+        linarith [(abs_lt.mp hre).2]
+      have hleftCoeff := hCLeft (Q.leftOrder z) (hleftBall z hz)
+      have hrightCoeff := hCRight (Q.rightOrder z) (hrightBall z hz)
+      have hheat : ‖heatMultiplier Q.x theta‖ ≤ H :=
+        hH theta ⟨htheta.1.le, htheta.2.le⟩
+      by_cases htheta0 : theta = 0
+      · have hleftZeta : ‖phaseGerm (Q.leftOrder z) theta‖ ≤ CLeft := by
+          subst theta
+          calc
+            ‖phaseGerm (Q.leftOrder z) 0‖ = ‖riemannZeta (Q.leftOrder z)‖ := by
+              simp [phaseGerm, expZeta_zero]
+            _ ≤ phaseGermProfileCoeff (Q.leftOrder z) := by
+              rw [phaseGermProfileCoeff]
+              nlinarith [norm_nonneg (jonquiereLead (Q.leftOrder z)),
+                norm_nonneg (jonquiereLeadNeg (Q.leftOrder z)),
+                mul_nonneg (jonquiereConst_nonneg (Q.leftOrder z)) Real.pi_pos.le]
+            _ ≤ CLeft := hleftCoeff
+        have hrightZeta : ‖phaseGerm (Q.rightOrder z) (-theta)‖ ≤ CRight := by
+          subst theta
+          calc
+            ‖phaseGerm (Q.rightOrder z) (-0)‖ = ‖riemannZeta (Q.rightOrder z)‖ := by
+              simp [phaseGerm, expZeta_zero]
+            _ ≤ phaseGermProfileCoeff (Q.rightOrder z) := by
+              rw [phaseGermProfileCoeff]
+              nlinarith [norm_nonneg (jonquiereLead (Q.rightOrder z)),
+                norm_nonneg (jonquiereLeadNeg (Q.rightOrder z)),
+                mul_nonneg (jonquiereConst_nonneg (Q.rightOrder z)) Real.pi_pos.le]
+            _ ≤ CRight := hrightCoeff
+        rw [reflectedBiHeatFixedRegulatorPhaseIntegrand, norm_mul, norm_mul]
+        calc
+          ‖phaseGerm (Q.leftOrder z) theta‖ * ‖phaseGerm (Q.rightOrder z) (-theta)‖ *
+              ‖heatMultiplier Q.x theta‖
+              ≤ CLeft * CRight * H := by gcongr
+          _ ≤ reflectedBiHeatPhaseMajorant K etaLeft etaRight theta := by
+            subst theta
+            rw [reflectedBiHeatPhaseMajorant]
+            dsimp [K]
+            nlinarith [Real.rpow_nonneg (abs_nonneg (0 : ℝ)) (etaLeft + etaRight - 2),
+              Real.rpow_nonneg (abs_nonneg (0 : ℝ)) (etaLeft - 1),
+              Real.rpow_nonneg (abs_nonneg (0 : ℝ)) (etaRight - 1)]
+      · have hleftNorm := norm_phaseGerm_le_uniform
+          (hleftStrip z hz).1 (hleftStrip z hz).2 hthetaPos htheta0
+          hetaLeft hleftEta hleftCoeff
+        have hrightNorm := norm_phaseGerm_le_uniform
+          (hrightStrip z hz).1 (hrightStrip z hz).2 hnegTheta (neg_ne_zero.mpr htheta0)
+          hetaRight hrightEta hrightCoeff
+        have hrightNorm' : ‖phaseGerm (Q.rightOrder z) (-theta)‖ ≤
+            CRight * (|theta| ^ (etaRight - 1) + 2) := by
+          simpa [abs_neg] using hrightNorm
+        have habs : 0 < |theta| := abs_pos.mpr htheta0
+        have hpow : |theta| ^ (etaLeft - 1) * |theta| ^ (etaRight - 1) =
+            |theta| ^ (etaLeft + etaRight - 2) := by
+          rw [← Real.rpow_add habs]
+          congr 1
+          ring
+        rw [reflectedBiHeatFixedRegulatorPhaseIntegrand, norm_mul, norm_mul]
+        calc
+          ‖phaseGerm (Q.leftOrder z) theta‖ * ‖phaseGerm (Q.rightOrder z) (-theta)‖ *
+              ‖heatMultiplier Q.x theta‖
+              ≤ (CLeft * (|theta| ^ (etaLeft - 1) + 2)) *
+                  (CRight * (|theta| ^ (etaRight - 1) + 2)) * H := by
+                gcongr
+          _ = reflectedBiHeatPhaseMajorant K etaLeft etaRight theta := by
+            rw [reflectedBiHeatPhaseMajorant]
+            dsimp [K]
+            rw [← hpow]
+            ring
+    · simp [F, bound, Set.indicator_of_notMem htheta]
+  have hboundInt : Integrable bound
+      (volume.restrict (Ioc (-Real.pi) Real.pi)) := by
+    have hraw := integrableOn_reflectedBiHeatPhaseMajorant
+      (K := K) hetaLeft hetaRight hetaSum
+    apply hraw.congr
+    have hnePi : ∀ᵐ theta ∂(volume : Measure ℝ), theta ≠ Real.pi :=
+      MeasureTheory.compl_mem_ae_iff.mpr (measure_singleton Real.pi)
+    filter_upwards [self_mem_ae_restrict measurableSet_Ioc,
+      MeasureTheory.ae_restrict_of_ae hnePi] with theta htheta hthetaPi
+    have hthetaOpen : theta ∈ Ioo (-Real.pi) Real.pi := ⟨htheta.1, lt_of_le_of_ne htheta.2 hthetaPi⟩
+    simp [bound, Set.indicator_of_mem hthetaOpen]
+  have hIntegral :=
+    GaloisForLFunctions.HTGeometry.differentiableAt_integral_of_cauchy_dominated
+      (μ := volume.restrict (Ioc (-Real.pi) Real.pi)) hR hmeas hdiff hbound hboundInt
+  have hfun : (fun z : ℂ => ∫ theta : ℝ, F z theta
+        ∂(volume.restrict (Ioc (-Real.pi) Real.pi))) =
+      fun z : ℂ => ∫ theta in Ioc (-Real.pi) Real.pi,
+        reflectedBiHeatFixedRegulatorPhaseIntegrand Q z theta := by
+    funext z
+    apply integral_congr_ae
+    have hnePi : ∀ᵐ theta ∂(volume : Measure ℝ), theta ≠ Real.pi :=
+      MeasureTheory.compl_mem_ae_iff.mpr (measure_singleton Real.pi)
+    filter_upwards [self_mem_ae_restrict measurableSet_Ioc,
+      MeasureTheory.ae_restrict_of_ae hnePi] with theta htheta hthetaPi
+    have hthetaOpen : theta ∈ Ioo (-Real.pi) Real.pi := ⟨htheta.1, lt_of_le_of_ne htheta.2 hthetaPi⟩
+    simp [F, Set.indicator_of_mem hthetaOpen]
+  rw [hfun] at hIntegral
+  change DifferentiableAt ℂ (fun z : ℂ => (1 / (2 * (Real.pi : ℂ))) *
+    ∫ theta in Ioc (-Real.pi) Real.pi,
+      reflectedBiHeatFixedRegulatorPhaseIntegrand Q z theta) z0
+  exact (differentiableAt_const (c := (1 / (2 * (Real.pi : ℂ))))).mul hIntegral
+
+theorem differentiableOn_reflectedBiHeatFixedRegulatorPhaseEnergy
+    (Q : ReflectedBiHeatPositiveSlice) :
+    DifferentiableOn ℂ (reflectedBiHeatFixedRegulatorPhaseEnergy Q) Q.domain := by
+  intro z hz
+  exact (differentiableAt_reflectedBiHeatFixedRegulatorPhaseEnergy Q hz).differentiableWithinAt
+
 end
 
 

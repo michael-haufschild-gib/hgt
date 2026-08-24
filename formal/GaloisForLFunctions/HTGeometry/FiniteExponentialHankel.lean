@@ -91,6 +91,158 @@ def finiteExponentialHankel {r : ℕ} (a : Fin r → ℝ) (ha : ∀ j, 0 < a j)
   finiteRankProbe (fun j => ((2 * m j : ℕ) : ℂ))
     (fun j => expFeature (a j) (ha j)) (fun j => expFeature (a j) (ha j))
 
+theorem coeFn_expFeature {a : ℝ} (ha : 0 < a) :
+    ((expFeature a ha : HalfLineLaplaceL2) : ℝ → ℂ) =ᵐ[halfLineLaplaceMeasure]
+      fun x => Complex.exp (-(a : ℂ) * (x : ℂ)) := by
+  have h := (halfLineLaplaceFeatureRaw_memLp
+    (w := (a : ℂ)) (by simpa using ha)).coeFn_toLp
+  have hraw : halfLineLaplaceFeatureRaw (a : ℂ) =
+      fun x : ℝ => Complex.exp (-(a : ℂ) * (x : ℂ)) := by
+    funext x
+    unfold halfLineLaplaceFeatureRaw
+    congr 1
+    simp
+  have hrawAE : halfLineLaplaceFeatureRaw (a : ℂ) =ᵐ[halfLineLaplaceMeasure]
+      fun x : ℝ => Complex.exp (-(a : ℂ) * (x : ℂ)) :=
+    Filter.Eventually.of_forall fun x => congrFun hraw x
+  simpa only [expFeature, halfLineLaplaceFeature] using h.trans hrawAE
+
+theorem inner_expFeature_eq_integral {a : ℝ} (ha : 0 < a)
+    (f : HalfLineLaplaceL2) :
+    inner ℂ (expFeature a ha) f =
+      ∫ y : ℝ, Complex.exp (-(a : ℂ) * (y : ℂ)) * (f : ℝ → ℂ) y
+        ∂halfLineLaplaceMeasure := by
+  rw [MeasureTheory.L2.inner_def]
+  apply integral_congr_ae
+  filter_upwards [coeFn_expFeature ha] with y hy
+  rw [hy, RCLike.inner_apply]
+  have hstar : (starRingEnd ℂ) (Complex.exp (-(a : ℂ) * (y : ℂ))) =
+      Complex.exp (-(a : ℂ) * (y : ℂ)) := by
+    rw [← Complex.exp_conj]
+    congr 1
+    simp
+  rw [hstar, mul_comm]
+
+theorem coeFn_finset_sum_smul_expFeature {r : ℕ} (s : Finset (Fin r))
+    (a : Fin r → ℝ) (ha : ∀ j, 0 < a j) (c : Fin r → ℂ) :
+    (((s.sum fun j => c j • expFeature (a j) (ha j) : HalfLineLaplaceL2) :
+        HalfLineLaplaceL2) : ℝ → ℂ) =ᵐ[halfLineLaplaceMeasure]
+      fun x => s.sum fun j => c j * Complex.exp (-(a j : ℂ) * (x : ℂ)) := by
+  classical
+  induction s using Finset.induction_on with
+  | empty =>
+      exact (MeasureTheory.Lp.coeFn_zero ℂ 2 halfLineLaplaceMeasure).trans
+        (Filter.Eventually.of_forall fun x => rfl)
+  | @insert j s hj ih =>
+      filter_upwards [MeasureTheory.Lp.coeFn_add
+          (c j • expFeature (a j) (ha j))
+          (s.sum fun k => c k • expFeature (a k) (ha k)),
+        MeasureTheory.Lp.coeFn_smul (c j) (expFeature (a j) (ha j)),
+        coeFn_expFeature (ha j), ih] with x hadd hsmul hfeature hsum
+      rw [Finset.sum_insert hj, hadd, Pi.add_apply, hsmul, Pi.smul_apply,
+        smul_eq_mul, hfeature, hsum, Finset.sum_insert hj]
+
+def finiteExponentialHankelKernel {r : ℕ} (a : Fin r → ℝ) (m : Fin r → ℕ)
+    (x y : ℝ) : ℂ :=
+  ∑ j, ((2 * m j : ℕ) : ℂ) *
+    Complex.exp (-(a j : ℂ) * ((x + y : ℝ) : ℂ))
+
+theorem integrable_expFeature_mul_coe {a : ℝ} (ha : 0 < a)
+    (f : HalfLineLaplaceL2) :
+    Integrable (fun y : ℝ =>
+      Complex.exp (-(a : ℂ) * (y : ℂ)) * (f : ℝ → ℂ) y)
+      halfLineLaplaceMeasure := by
+  have hraw := halfLineLaplaceFeatureRaw_memLp
+    (w := (a : ℂ)) (by simpa using ha)
+  have hmul := hraw.integrable_mul (MeasureTheory.Lp.memLp f)
+  apply hmul.congr
+  exact Filter.Eventually.of_forall fun y => by
+    unfold halfLineLaplaceFeatureRaw
+    simp
+
+theorem integral_finiteExponentialHankelKernel {r : ℕ}
+    (a : Fin r → ℝ) (ha : ∀ j, 0 < a j) (m : Fin r → ℕ)
+    (f : HalfLineLaplaceL2) (x : ℝ) :
+    ∫ y : ℝ, finiteExponentialHankelKernel a m x y * (f : ℝ → ℂ) y
+        ∂halfLineLaplaceMeasure =
+      ∑ j, ((2 * m j : ℕ) : ℂ) *
+        inner ℂ (expFeature (a j) (ha j)) f *
+        Complex.exp (-(a j : ℂ) * (x : ℂ)) := by
+  unfold finiteExponentialHankelKernel
+  simp only [Finset.sum_mul]
+  rw [MeasureTheory.integral_finsetSum]
+  · apply Finset.sum_congr rfl
+    intro j hj
+    have hexp : ∀ y : ℝ,
+        Complex.exp (-(a j : ℂ) * ((x + y : ℝ) : ℂ)) =
+          Complex.exp (-(a j : ℂ) * (x : ℂ)) *
+            Complex.exp (-(a j : ℂ) * (y : ℂ)) := by
+      intro y
+      rw [← Complex.exp_add]
+      congr 1
+      push_cast
+      ring
+    rw [show (fun y : ℝ =>
+        ((2 * m j : ℕ) : ℂ) *
+          Complex.exp (-(a j : ℂ) * ((x + y : ℝ) : ℂ)) *
+          (f : ℝ → ℂ) y) =
+        fun y : ℝ => (((2 * m j : ℕ) : ℂ) *
+          Complex.exp (-(a j : ℂ) * (x : ℂ))) *
+          (Complex.exp (-(a j : ℂ) * (y : ℂ)) * (f : ℝ → ℂ) y) by
+      funext y
+      rw [hexp]
+      ring]
+    rw [integral_const_mul, ← inner_expFeature_eq_integral (ha j) f]
+    ring
+  · intro j hj
+    have hint := integrable_expFeature_mul_coe (ha j) f
+    have hconst := hint.const_mul
+      (((2 * m j : ℕ) : ℂ) * Complex.exp (-(a j : ℂ) * (x : ℂ)))
+    apply hconst.congr
+    exact Filter.Eventually.of_forall fun y => by
+      dsimp only
+      rw [show Complex.exp (-(a j : ℂ) * ((x + y : ℝ) : ℂ)) =
+          Complex.exp (-(a j : ℂ) * (x : ℂ)) *
+            Complex.exp (-(a j : ℂ) * (y : ℂ)) by
+        rw [← Complex.exp_add]
+        congr 1
+        push_cast
+        ring]
+      ring
+
+theorem finiteExponentialHankel_apply_ae {r : ℕ}
+    (a : Fin r → ℝ) (ha : ∀ j, 0 < a j) (m : Fin r → ℕ)
+    (f : HalfLineLaplaceL2) :
+    ((finiteExponentialHankel a ha m f : HalfLineLaplaceL2) : ℝ → ℂ)
+      =ᵐ[halfLineLaplaceMeasure]
+      fun x => ∫ y : ℝ,
+        finiteExponentialHankelKernel a m x y * (f : ℝ → ℂ) y
+          ∂halfLineLaplaceMeasure := by
+  have hout := coeFn_finset_sum_smul_expFeature Finset.univ a ha
+    (fun j => ((2 * m j : ℕ) : ℂ) * inner ℂ (expFeature (a j) (ha j)) f)
+  have hout' :
+      ((finiteExponentialHankel a ha m f : HalfLineLaplaceL2) : ℝ → ℂ)
+        =ᵐ[halfLineLaplaceMeasure]
+        fun x => ∑ j, ((2 * m j : ℕ) : ℂ) *
+          inner ℂ (expFeature (a j) (ha j)) f *
+          Complex.exp (-(a j : ℂ) * (x : ℂ)) := by
+    simpa [finiteExponentialHankel, finiteRankProbe, smul_smul,
+      mul_assoc] using hout
+  filter_upwards [hout'] with x hx
+  rw [hx, integral_finiteExponentialHankelKernel]
+
+theorem finiteExponentialHankelKernel_eq_card_formula {r : ℕ}
+    (a : Fin r → ℝ) (m : Fin r → ℕ) (x y : ℝ) :
+    finiteExponentialHankelKernel a m x y =
+      2 * ∑ j, (m j : ℂ) *
+        Complex.exp (-(a j : ℂ) * ((x + y : ℝ) : ℂ)) := by
+  unfold finiteExponentialHankelKernel
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro j hj
+  push_cast
+  ring
+
 /-- Square-root weighted exponential vector whose Gram square is the Hankel layer. -/
 def weightedExpFeature {r : ℕ} (a : Fin r → ℝ) (ha : ∀ j, 0 < a j)
     (m : Fin r → ℕ) (j : Fin r) : HalfLineLaplaceL2 :=

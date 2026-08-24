@@ -216,4 +216,3 @@ theorem tendsto_horizontalLayerPaleyWienerNormalized {r : ℕ}
     exact paleyWienerOperatorTransportCLM_apply _
 
 end GaloisForLFunctions.HTGeometry
-

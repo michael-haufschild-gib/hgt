@@ -1,7 +1,7 @@
 # Irregular RH bordered-space foundation
 
 - **ID:** `irregular-rh-bordered-space-foundation`
-- **Stage:** 1-in-progress
+- **Stage:** 2-fully-proven
 - **Type:** FOUNDATION / BRIDGE
 - **Route:** irregular microlocal Riemann--Hilbert
 - **Started:** 2026-08-24
@@ -28,11 +28,24 @@ Formalize topological category on which enhanced sheaf theory is built.
 - `[CORPUS-GAP]` Corpus search found no bordered-space object/category and no enhanced sheaf
   six-operation layer.
 
-## Exact active checkpoint
+## Completed topological checkpoint
 
-`[BRIDGE]` Construct bordered-space objects and strict ambiently extending morphisms. Prove strict
-identity, composition, unit laws, and associativity. This is an honest subcategory-level foundation;
-it is not yet the full graph-proper bordered category.
+`[BRIDGE]` Construct bordered-space objects, strict ambiently extending morphisms, exact general
+graph-proper morphisms, and category structure under Hausdorff ambient hypotheses.
+
+## Complete proof of graph-proper composition
+
+Let `C_f ⊆ M̂×N̂` and `C_g ⊆ N̂×P̂` be closed ambient graphs. Form closed fiber product
+`F=C_f×_{N̂}C_g`. Properness of `C_g→N̂` is stable under base change, so `F→C_f` is proper;
+composing with proper `C_f→M̂` makes `F→M̂` proper. Pairing this map with continuous `P̂`
+coordinate gives proper `r:F→M̂×P̂`, hence closed image `R=r(F)`.
+
+Interior graph of `g∘f` lies in `R`, so its closure also lies in `R`. Codomain restriction
+`F→R` is a surjective proper map. Properness of `F→M̂` descends to `R→M̂`: for any cluster filter,
+pull back along the surjection, use properness upstairs, then map resulting cluster point down.
+Finally closed inclusion of closed graph of `g∘f` into `R` is proper, so its projection to `M̂` is
+proper. Identity is induced by strict identity ambient extension. Thus Hausdorff bordered spaces and
+graph-proper morphisms form a category.
 
 ## Dependency graph
 
@@ -53,8 +66,9 @@ it is not yet the full graph-proper bordered category.
 ## Gates
 
 - [x] 0 → 1: exact object, morphism, and failure boundary recorded
-- [ ] 1 → 2: full graph-proper composition proof dependency-closed on paper
-- [ ] 2 → 3: full stated foundation formalized, direct build and axiom audit pass
+- [x] 1 → 2: full graph-proper composition proof dependency-closed on paper
+- [ ] 2 → 3: full stated foundation is formalized and directly verified; repository-wide lint
+  remains red from unrelated pre-existing unreachable modules
 - [ ] 3 → 4: integrated into enhanced sheaf construction
 
 ## Log
@@ -65,3 +79,8 @@ it is not yet the full graph-proper bordered category.
   `StrictHom` with identity, composition, unit laws, and associativity. Direct Lean check and
   targeted module build pass. Axiom audit of all three new laws reports only `propext` and
   `Quot.sound`. Card remains in progress: graph-proper morphisms are not yet constructed.
+- 2026-08-24 — Added exact closed ambient graph, proper graph-projection predicate, proper base
+  change, proper codomain restriction, proper-surjection descent, composition theorem, and
+  `HausdorffBorderedSpace` category. Direct Lean check and targeted build pass. Axiom audit of every
+  new theorem reports only `propext`, `Classical.choice`, and `Quot.sound`. Promoted paper status to
+  Stage 2; Stage 3 remains blocked only by unrelated repository lint failures.
