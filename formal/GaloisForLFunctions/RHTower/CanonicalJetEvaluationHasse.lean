@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.FiniteEvaluationHasse
+import GaloisForLFunctions.HTGeometry.ProfileHasseFamilyApplications
 import GaloisForLFunctions.RHTower.ZetaArbitraryJetHilbertReconstruction
 import GaloisForLFunctions.RHTower.XiCanonicalJetSuccessorGaussianCurvatureUniversalityLaw
 
@@ -26,6 +27,14 @@ noncomputable def riemannZetaInitialJetHasseData (d : ℕ) :=
 noncomputable def xiCanonicalJetHasseData (d : ℕ) :=
   finiteEvaluationHasseDataOf
     (xiCanonicalDerivativeOrder_finiteEvaluationHilbertReconstruction d)
+
+/-- Chosen point evaluations form a Hasse family for initial Riemann-zeta jets. -/
+noncomputable def riemannZetaInitialJetHasseFamily (d : ℕ) :=
+  (riemannZetaInitialJetHasseData d).hasseFamily
+
+/-- Chosen point evaluations form a Hasse family for canonical completed-Xi jets. -/
+noncomputable def xiCanonicalJetHasseFamily (d : ℕ) :=
+  (xiCanonicalJetHasseData d).hasseFamily
 
 /-- Initial zeta-jet coefficients are recovered exactly from the chosen local values. -/
 theorem riemannZetaInitialJetHasse_reconstruct (d : ℕ) (a : Fin d → ℂ) :

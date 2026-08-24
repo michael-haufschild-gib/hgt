@@ -1,7 +1,7 @@
 # Prime--archimedean explicit circle-state and reflection-polarization law
 
 - **ID:** `prime-arch-explicit-circle-state-reflection-law`
-- **Stage:** 2-fully-proven/not_new_scientific_knowledge
+- **Stage:** 3-formalized/not_new_scientific_knowledge
 - **Type:** THEOREM (paper), `[PROVED HERE] [BRIDGE] [NOT AN RH PROOF]`
 - **Parents:** `xi-radial-jensen-schur-capacity-rigidity`,
   `prime-arch-central-moment-germ`, `prime-arch-scaled-hausdorff-divisor-value-law`,
@@ -439,8 +439,8 @@ concrete `L^2` reflection carrier.
   paper; the new thirteenth-mass and tail estimates are formalized
 - [x] 1 -> 2: radial Poisson-mixture equivalence proved from existing moment capstone
 - [x] 1 -> 2: perturbative coercivity shortcut falsified by an exact positive-density family
-- [ ] 2 -> 3: formalize the Fourier density, source carrier, and reflection identities
-- [ ] proof input: prove radial Poisson disintegration, or equivalently weighted cosine--sine
+- [x] 2 -> 3: formalize the Fourier density, source carrier, and reflection identities
+- [ ] open RH-equivalent input: prove radial Poisson disintegration, or equivalently weighted cosine--sine
   domination on the remaining degree-at-least-two tail-dominant coefficient cone, from the
   prime--Gamma source without importing divisor orientation or an RH-equivalent representing
   measure
@@ -460,3 +460,28 @@ axiom audit passed with only standard Lean foundations.
 
 This does not yet formalize `(9)` Fourier-moment recovery, the concrete `L²(T, μ_Xi)` reflection
 operator, or the reflected Hankel equivalence.  The card remains at Stage 2.
+
+## Lean completion log — 2026-08-24
+
+`RHTower/PrimeArchExplicitCircleStateReflection.lean` now formalizes the exact central density,
+probability measure, Fourier moments, rational bounds `(734/819)M ≤ w ≤ (904/819)M`, mutual
+absolute continuity with Haar measure, Laurent analyticity, concrete `L²` unitary and reflection
+operators, the reflected monomial and polynomial Gram laws, polarization, the full RH-equivalent
+reflection-positive and integer-polynomial cones, the unconditional central-coefficient cone,
+the complementary tail-dominant RH criterion, moment and atomic resolvents, and the strict Schur
+bound `85/1553`.
+
+`HTGeometry/RadialPoissonMixture.lean` supplies the reusable continuous radial Poisson family,
+exact Fourier moments, Bochner barycenters, uniform closed-convex-hull membership, and the closed
+half-space passage from hull membership to finite Hankel nonnegativity.
+`RHTower/PrimeArchExplicitCircleRadialPoisson.lean` specializes this infrastructure to the
+canonical compact Xi measure and proves, without extra hypotheses, both the uniform closed-hull
+criterion and exact pointwise Poisson-integral representation equivalent to RH.
+`HTGeometry/CircleReflectionCoercivityNoGo.lean` formalizes the exact coercive perturbation family
+and reflected monomial value `-epsilon/2`.
+
+The new leaf modules were wired into `HTGeometry.lean` and `RHTower.lean`. Direct Lean checks,
+the targeted three-module build, and `#print axioms` audits of the new capstones pass. The audit
+reports only `propext`, `Classical.choice`, and `Quot.sound`. No RH theorem is assumed or asserted:
+the source carrier and quantitative cone are unconditional, while radial disintegration and
+reflection positivity are proved exactly equivalent to `RiemannHypothesis`.

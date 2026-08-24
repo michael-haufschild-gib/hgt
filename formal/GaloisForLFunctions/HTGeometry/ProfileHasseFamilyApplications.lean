@@ -98,6 +98,14 @@ def FiniteEvaluationHasseData.hasseFamily
   profile := D.localPacket
   profile_injective := D.localPacket_injective
 
+/-- Chosen point evaluations jointly determine every initial Gamma-jet coefficient packet. -/
+noncomputable def gammaInitialJetHasseFamily (d : ℕ) :=
+  (gammaInitialJetHasseData d).hasseFamily
+
+/-- Chosen point evaluations jointly determine every initial digamma-jet coefficient packet. -/
+noncomputable def digammaInitialJetHasseFamily (d : ℕ) :=
+  (digammaInitialJetHasseData d).hasseFamily
+
 /-- Valuation vectors on the shell with fixed top bound `M` and an attained zero coordinate. -/
 abbrev CrossingValuationShell (ι : Type u) (M : ℕ) :=
   {x : ι → ℕ // (∀ p, x p ≤ M) ∧ ∃ p, x p = 0}

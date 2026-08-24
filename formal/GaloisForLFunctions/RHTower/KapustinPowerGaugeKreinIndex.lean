@@ -5,8 +5,8 @@ import GaloisForLFunctions.HTGeometry.SectorPowerMassLower
 import GaloisForLFunctions.HTGeometry.EvenWeightedSignCarrier
 import GaloisForLFunctions.HTGeometry.FullSectorPolarizationLaw
 import GaloisForLFunctions.RHTower.FullSectorPolarizationEssentialNorm
-import GaloisForLFunctions.RHTower.SuzukiRemainderFourierTransform
 import GaloisForLFunctions.HTGeometry.DigammaSecondOrderVertical
+import GaloisForLFunctions.HTGeometry.GammaCriticalLineModulus
 
 open Complex Filter Topology intervalIntegral
 open scoped ComplexConjugate InnerProductSpace
@@ -160,6 +160,197 @@ def kapustinPowerGaugeAmplitude (β t : ℝ) : ℝ :=
     β * Real.log ‖((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I‖) /
       ‖gammaVerticalValue (1 / 2) t‖
 
+def kapustinPowerGaugeMainAmplitude (β t : ℝ) : ℝ :=
+  Real.exp (-2 * Real.log (2 * Real.pi) + (Real.pi / 2) * t - β * Real.log t)
+
+theorem kapustinPowerGaugeAmplitude_pos (β t : ℝ) :
+    0 < kapustinPowerGaugeAmplitude β t := by
+  unfold kapustinPowerGaugeAmplitude
+  exact div_pos (Real.exp_pos _) (norm_pos_iff.mpr
+    (gammaVerticalValue_ne_zero (by norm_num : (0 : ℝ) < 1 / 2) t))
+
+theorem kapustinPowerGaugeMainAmplitude_pos (β t : ℝ) :
+    0 < kapustinPowerGaugeMainAmplitude β t := by
+  exact Real.exp_pos _
+
+/-- The main amplitude in the literal power-law form displayed in equation (1). -/
+theorem kapustinPowerGaugeMainAmplitude_eq_rpow {t : ℝ} (ht : 0 < t) (β : ℝ) :
+    kapustinPowerGaugeMainAmplitude β t =
+      (2 * Real.pi) ^ (-2 : ℝ) * Real.exp ((Real.pi / 2) * t) * t ^ (-β) := by
+  unfold kapustinPowerGaugeMainAmplitude
+  rw [Real.rpow_def_of_pos (mul_pos (by norm_num) Real.pi_pos),
+    Real.rpow_def_of_pos ht, ← Real.exp_add, ← Real.exp_add]
+  congr 1
+  ring
+
+theorem kapustinCriticalPoint_norm_sq (t : ℝ) :
+    ‖((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I‖ ^ 2 = t ^ 2 + 1 / 4 := by
+  rw [Complex.sq_norm, Complex.normSq_apply]
+  simp
+  ring
+
+theorem norm_gammaVerticalValue_half_sq (t : ℝ) :
+    ‖gammaVerticalValue (1 / 2) t‖ ^ 2 = Real.pi / Real.cosh (Real.pi * t) := by
+  simpa [gammaVerticalValue] using
+    GaloisForLFunctions.normSq_Gamma_half_add_mul_I t
+
+theorem two_mul_log_kapustinCriticalPoint_sub_log {t : ℝ} (ht : 0 < t) :
+    2 * (Real.log ‖((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I‖ - Real.log t) =
+      Real.log (1 + 1 / (4 * t ^ 2)) := by
+  have hz0 : 0 < ‖((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I‖ := by
+    rw [norm_pos_iff]
+    intro h
+    have hre := congrArg Complex.re h
+    norm_num at hre
+  calc
+    2 * (Real.log ‖((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I‖ - Real.log t) =
+        2 * Real.log (‖((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I‖ / t) := by
+      rw [Real.log_div hz0.ne' ht.ne']
+    _ = Real.log ((‖((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I‖ / t) ^ 2) := by
+      rw [Real.log_pow]
+      norm_num
+    _ = Real.log (1 + 1 / (4 * t ^ 2)) := by
+      congr 1
+      rw [div_pow, kapustinCriticalPoint_norm_sq]
+      field_simp [ht.ne']
+
+/-- Exact squared relative correction underlying equation (1).  Its two factors are respectively
+exponentially small and `1 + O(t⁻²)`. -/
+theorem kapustinPowerGaugeAmplitude_sq_div_main_sq {β t : ℝ} (ht : 0 < t) :
+    (kapustinPowerGaugeAmplitude β t / kapustinPowerGaugeMainAmplitude β t) ^ 2 =
+      (1 + Real.exp (-2 * Real.pi * t)) *
+        Real.exp (-β * Real.log (1 + 1 / (4 * t ^ 2))) := by
+  let X : ℝ := (-3 / 2 : ℝ) * Real.log (2 * Real.pi) -
+    β * Real.log ‖((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I‖
+  let Y : ℝ := -2 * Real.log (2 * Real.pi) + (Real.pi / 2) * t -
+    β * Real.log t
+  have hexp_sq (u : ℝ) : Real.exp u ^ 2 = Real.exp (2 * u) := by
+    rw [← Real.exp_nat_mul]
+    norm_num
+  have hexponent :
+      2 * X - 2 * Y = Real.log (2 * Real.pi) - Real.pi * t -
+        β * Real.log (1 + 1 / (4 * t ^ 2)) := by
+    rw [← two_mul_log_kapustinCriticalPoint_sub_log ht]
+    dsimp [X, Y]
+    ring
+  have hcancel : Real.exp (-Real.pi * t) * Real.exp (Real.pi * t) = 1 := by
+    rw [← Real.exp_add]
+    convert Real.exp_zero using 1 <;> ring_nf
+  have hsquare : Real.exp (-Real.pi * t) * Real.exp (-Real.pi * t) =
+      Real.exp (-2 * Real.pi * t) := by
+    rw [← Real.exp_add]
+    congr 1
+    ring
+  calc
+    (kapustinPowerGaugeAmplitude β t / kapustinPowerGaugeMainAmplitude β t) ^ 2 =
+        Real.exp (2 * X - 2 * Y) / ‖gammaVerticalValue (1 / 2) t‖ ^ 2 := by
+      change ((Real.exp X / ‖gammaVerticalValue (1 / 2) t‖) / Real.exp Y) ^ 2 = _
+      rw [div_pow, div_pow, hexp_sq, hexp_sq, Real.exp_sub]
+      field_simp
+    _ = Real.exp (2 * X - 2 * Y) /
+        (Real.pi / Real.cosh (Real.pi * t)) := by
+      rw [norm_gammaVerticalValue_half_sq]
+    _ = 2 * Real.exp (-Real.pi * t) * Real.cosh (Real.pi * t) *
+        Real.exp (-β * Real.log (1 + 1 / (4 * t ^ 2))) := by
+      rw [hexponent]
+      rw [show Real.log (2 * Real.pi) - Real.pi * t -
+          β * Real.log (1 + 1 / (4 * t ^ 2)) =
+          Real.log (2 * Real.pi) + (-Real.pi * t) +
+            (-β * Real.log (1 + 1 / (4 * t ^ 2))) by ring]
+      rw [Real.exp_add, Real.exp_add,
+        Real.exp_log (mul_pos (by norm_num) Real.pi_pos)]
+      field_simp [Real.pi_ne_zero]
+    _ = (1 + Real.exp (-2 * Real.pi * t)) *
+        Real.exp (-β * Real.log (1 + 1 / (4 * t ^ 2))) := by
+      rw [Real.cosh_eq]
+      rw [show -(Real.pi * t) = -Real.pi * t by ring]
+      rw [show 2 * Real.exp (-Real.pi * t) *
+            ((Real.exp (Real.pi * t) + Real.exp (-Real.pi * t)) / 2) *
+              Real.exp (-β * Real.log (1 + 1 / (4 * t ^ 2))) =
+          (Real.exp (-Real.pi * t) * Real.exp (Real.pi * t) +
+            Real.exp (-Real.pi * t) * Real.exp (-Real.pi * t)) *
+              Real.exp (-β * Real.log (1 + 1 / (4 * t ^ 2))) by ring]
+      rw [hcancel, hsquare]
+
+theorem abs_kapustinPowerGaugeAmplitude_sq_ratio_sub_one_le
+    {β t : ℝ} (hβ : 0 ≤ β) (ht : 1 ≤ t) :
+    |(kapustinPowerGaugeAmplitude β t / kapustinPowerGaugeMainAmplitude β t) ^ 2 - 1| ≤
+      (1 + β / 4) / t ^ 2 := by
+  have ht0 : 0 < t := lt_of_lt_of_le zero_lt_one ht
+  let u : ℝ := Real.exp (-2 * Real.pi * t)
+  let x : ℝ := 1 / (4 * t ^ 2)
+  let y : ℝ := β * Real.log (1 + x)
+  let v : ℝ := Real.exp (-y)
+  have hx0 : 0 ≤ x := by dsimp [x]; positivity
+  have hlog0 : 0 ≤ Real.log (1 + x) := Real.log_nonneg (by linarith)
+  have hy0 : 0 ≤ y := mul_nonneg hβ hlog0
+  have hv0 : 0 < v := Real.exp_pos _
+  have hv1 : v ≤ 1 := Real.exp_le_one_iff.mpr (neg_nonpos.mpr hy0)
+  have hlogle : Real.log (1 + x) ≤ x := by
+    have := Real.log_le_sub_one_of_pos (show 0 < 1 + x by linarith)
+    linarith
+  have honeSubV : 1 - v ≤ β / (4 * t ^ 2) := by
+    have hexpLower := Real.add_one_le_exp (-y)
+    have hyv : 1 - v ≤ y := by dsimp [v]; linarith
+    have hyx : y ≤ β * x := mul_le_mul_of_nonneg_left hlogle hβ
+    dsimp [x] at hyx
+    calc
+      1 - v ≤ y := hyv
+      _ ≤ β * (1 / (4 * t ^ 2)) := hyx
+      _ = β / (4 * t ^ 2) := by ring
+  have hpi : 1 ≤ Real.pi := by linarith [Real.pi_gt_three]
+  have htpi : t ≤ Real.pi * t := by nlinarith
+  have hlinear : 1 + Real.pi * t ≤ Real.exp (Real.pi * t) := by
+    linarith [Real.add_one_le_exp (Real.pi * t)]
+  have hsquareLower : t ^ 2 ≤ Real.exp (2 * Real.pi * t) := by
+    have htlin : t ≤ 1 + Real.pi * t := by linarith
+    have hsquare : t ^ 2 ≤ (1 + Real.pi * t) ^ 2 := by nlinarith
+    have hexpsquare : Real.exp (Real.pi * t) ^ 2 = Real.exp (2 * Real.pi * t) := by
+      rw [← Real.exp_nat_mul]
+      norm_num
+      ring
+    rw [← hexpsquare]
+    exact hsquare.trans ((sq_le_sq₀ (by positivity) (by positivity)).mpr hlinear)
+  have hu0 : 0 ≤ u := (Real.exp_pos _).le
+  have hu : u ≤ 1 / t ^ 2 := by
+    rw [show u = (Real.exp (2 * Real.pi * t))⁻¹ by
+      dsimp [u]
+      rw [show -2 * Real.pi * t = -(2 * Real.pi * t) by ring]
+      rw [Real.exp_neg]]
+    rw [one_div]
+    exact (inv_le_inv₀ (Real.exp_pos _) (sq_pos_of_pos ht0)).mpr hsquareLower
+  rw [kapustinPowerGaugeAmplitude_sq_div_main_sq ht0]
+  have hbound : |(1 + u) * v - 1| ≤ (1 + β / 4) / t ^ 2 := by
+    have hdecomp : (1 + u) * v - 1 = u * v + (v - 1) := by ring
+    rw [hdecomp]
+    calc
+      |u * v + (v - 1)| ≤ |u * v| + |v - 1| := abs_add_le _ _
+      _ = u * v + (1 - v) := by
+        rw [abs_of_nonneg (mul_nonneg hu0 hv0.le), abs_of_nonpos (sub_nonpos.mpr hv1)]
+        ring
+      _ ≤ 1 / t ^ 2 + β / (4 * t ^ 2) := by
+        have huv : u * v ≤ u := by nlinarith
+        linarith
+      _ = (1 + β / 4) / t ^ 2 := by field_simp [ht0.ne']
+  simpa [u, v, y, x] using hbound
+
+/-- Explicit relative-error form of equation (1), with a uniform constant for each `β ≥ 0`. -/
+theorem abs_kapustinPowerGaugeAmplitude_div_main_sub_one_le
+    {β t : ℝ} (hβ : 0 ≤ β) (ht : 1 ≤ t) :
+    |kapustinPowerGaugeAmplitude β t / kapustinPowerGaugeMainAmplitude β t - 1| ≤
+      (1 + β / 4) / t ^ 2 := by
+  let r := kapustinPowerGaugeAmplitude β t / kapustinPowerGaugeMainAmplitude β t
+  have hr : 0 < r := div_pos (kapustinPowerGaugeAmplitude_pos β t)
+    (kapustinPowerGaugeMainAmplitude_pos β t)
+  have hfactor : r ^ 2 - 1 = (r - 1) * (r + 1) := by ring
+  have habs : |r ^ 2 - 1| = |r - 1| * (r + 1) := by
+    rw [hfactor, abs_mul, abs_of_pos (by linarith : 0 < r + 1)]
+  have hlinear : |r - 1| ≤ |r ^ 2 - 1| := by
+    rw [habs]
+    nlinarith [abs_nonneg (r - 1)]
+  exact hlinear.trans (by
+    simpa [r] using abs_kapustinPowerGaugeAmplitude_sq_ratio_sub_one_le hβ ht)
+
 def kapustinPowerGaugeQ (β t : ℝ) : ℂ :=
   (kapustinPowerGaugeAmplitude β t : ℂ) *
     Complex.exp (I * (kapustinPowerGaugePhase β t : ℂ))
@@ -264,12 +455,6 @@ theorem kapustinPowerGaugeFormula_eq_Q (β t : ℝ) :
   field_simp [hg, hd]
   push_cast
   field_simp [hg, hd]
-
-theorem kapustinPowerGaugeAmplitude_pos (β t : ℝ) :
-    0 < kapustinPowerGaugeAmplitude β t := by
-  unfold kapustinPowerGaugeAmplitude
-  exact div_pos (Real.exp_pos _) (norm_pos_iff.mpr
-    (gammaVerticalValue_ne_zero (by norm_num) t))
 
 theorem kapustinPowerGaugeWeight_eq_cos (β t : ℝ) :
     kapustinPowerGaugeWeight β t =

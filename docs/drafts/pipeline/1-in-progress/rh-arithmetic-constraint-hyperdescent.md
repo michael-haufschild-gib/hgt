@@ -920,3 +920,89 @@ moves zeros; a completed divisor is admissible only when the formation/reflectio
   horizontal grade, not divisor multiplicity.
 - 2026-08-24 — Scalar winding refinement rejected as insufficiently singular and history-faithful.
   Phase/topology must be carried by a framed source correspondence or fibred conormal object.
+
+## 2026-08-24 refinement: metaplectic spin-thinning inheritance
+
+### Corpus-forced correction
+
+Generic formation thinning was not missing.  The formal corpus already proves:
+
+- three-slot phase-averaged thinning is equivalent to equality of the two coefficient-faithful
+  reporter laws;
+- reflected Euler occupancy is a Poisson-OR observation with source rate
+  `log (1 + p^(t-1))`;
+- unequal reflected rates have infinite completed formation-history action;
+- common Markov marking preserves, rather than removes, their information defect.
+
+Therefore ordinary Poisson thinning cannot prove the Xi statement.  It runs correctly upstairs
+and exposes the off-centre excess.  Missing theorem is inheritance of one fixed source phase type
+by a closed completion-error fibre.
+
+### New local-system formulation
+
+Let `S_theta` be the literal theta half-density local system on complex logarithmic scale.  Its
+monodromy under `z -> z + 2*pi*i` is `-1`.  At an actual Xi divisor point `rho`, the centered
+horizontal deformation tensors this fixed spin sector with a rank-one local system `L_rho` whose
+monodromy is
+
+```text
+q_rho = exp(-2*pi*i*(2*Re(rho)-1)).
+```
+
+Thus the deformed theta atom has monodromy `-q_rho`.  The two real coordinates of `q_rho` are a
+separating reporter family, so three-slot thinning against the neutral ambient sector is coherent
+exactly when `q_rho = 1`.  Since `2*Re(rho)-1` lies strictly between `-1` and `1`, this integral
+monodromy condition forces `Re(rho)=1/2`.
+
+This gives the higher principle a precise candidate form:
+
+`[CONJECTURE: CSI] Constraint-spin inheritance.`  A closed error fibre of one fixed arithmetic
+constraint inherits the ambient source local system.  It may carry arbitrary internal nilpotent
+structure and multiplicity, but it cannot select a new transverse rank-one monodromy sector.
+
+Producer language treats `rho` as a state and permits the varying twist `L_rho`.  Error language
+treats `rho` as a failure of one fixed section; then `L_rho` is an obstruction to being a defect of
+that fixed constraint at all.  This is `turn 1 into 2`: separate fixed theta spin from transverse
+Xi twist.  It is `constraint not flow`: admissibility is local-system type inheritance, not a
+dynamics that creates or moves zeros.
+
+### Lean infrastructure built
+
+New module:
+`formal/GaloisForLFunctions/RHTower/XiSourceSpinThinningCoherence.lean`.
+
+- `xiCenteredThetaDeformedSourceTerm_add_two_pi_I`: exact monodromy `-q_rho` of the literal
+  centered theta atom.
+- `thetaCuspComplexSourceTerm_zero_one_ne_zero`: fixed nonzero source reporter, preventing the Xi
+  zero value from censoring monodromy.
+- `xiCenteredThetaSpinCoherent_iff_thinningCoherent`: ambient spin preservation is exactly
+  reporter-faithful three-slot thinning.
+- `xiCenteredThetaSpinThinningCoherent_iff_logCharacterDescends`: same condition is descent of the
+  actual centered logarithmic character.
+- `xiCenteredThetaSpinThinningCoherent_iff_terminalMultiplicityJetDescends`: same condition is
+  isometry of the already constructed first nonzero Xi multiplicity jet at every retained prime
+  cut.  Multiplicity therefore supplies a noncensoring source coefficient, not the missing law.
+- `xiCenteredThetaSpinThinningCoherent_iff_re_eq_half`: pointwise rigidity.
+- `everyXiCenteredThetaSpinThinningCoherent_iff_riemannHypothesis`: exact global audit.
+
+### Strongest positive obstruction
+
+Xi vanishing and exact multiplicity do not prove CSI.  Vanishing scalar reporters make thinning
+trivial, while the first surviving source jet is nonzero and retains the projective cut gain.  Any
+proof must show that singular conormal landing is `S_theta`-linear before scalar Xi evaluation.
+Equivalently, SFRI's landing `L` must preserve the ambient metaplectic local-system type while
+allowing arbitrary internal square-zero error structure.
+
+Ordinary analytic continuation does not provide this: Mellin exponents legitimately define
+different local systems, and Gamma repair can compensate their monodromy pointwise.  CSI must be
+proved from the fact that all Xi fibres are failures of one fixed completed constraint, together
+with coefficient-faithful prime--Gamma formation/reflection interchange.  Assuming spin
+inheritance only after selecting Xi zeros is exactly RH and is forbidden as a producer.
+
+### Log continued
+
+- 2026-08-24 — Replaced vague “Xi thinning coherence” by metaplectic constraint-spin inheritance.
+  Generic Poisson thinning is complete and cannot annihilate unequal reflected rates.
+- 2026-08-24 — Built and checked the exact Lean weld from literal theta spin through three-slot
+  thinning, centered Hurwitz monodromy, and the first nonzero Xi multiplicity jet to the RH
+  frontier.

@@ -37,7 +37,7 @@ noncomputable section
 universe u v w
 
 variable {𝕜 : Type u} {M : Type v} {N : Type w}
-variable [Field 𝕜] [AddCommGroup M] [Module 𝕜 M]
+variable [Ring 𝕜] [AddCommGroup M] [Module 𝕜 M]
 variable [AddCommGroup N] [Module 𝕜 N]
 
 /-- Observation induced after quotienting a source layer `P` and a target layer `Q`. -/

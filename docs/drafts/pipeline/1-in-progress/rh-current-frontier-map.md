@@ -24,11 +24,11 @@ The corpus supports **24 live producer architectures**:
 
 CCM-FU, C1, CDC, D2, E, NB/BD, F2, STC, CSB, G, G-CE, L, O, P, Q, CLG/TTF, HB, SP-E, SCE, T1, T2, U, HC, SV2.
 
-It supports **31 candidate openings**:
+It supports **30 candidate openings**:
 
-TK, FD2, BSH, CFI, UEB, PSRC, PBM, SC, PPM, IRK, OPUC, HJ, BW, MSC, PEP, EWQ-V, PCS, SEC, LI, BPC, MPLF, W1C, TCD, JAS, K-RVM, FZZ-P, RBH, PW-B, WBF, NDS, KMSS.
+TK, FD2, BSH, CFI, UEB, PSRC, PBM, SC, PPM, IRK, HJ, BW, MSC, PEP, EWQ-V, PCS, SEC, LI, BPC, MPLF, W1C, TCD, JAS, K-RVM, FZZ-P, RBH, PW-B, WBF, NDS, KMSS.
 
-Route R is terminal as an independent producer. Its surviving completion, corona, cubical-support, and source-ancestry invariants feed candidate JAS, which changes the interface rather than reviving Route R. Route K is terminal in its original quadratic form; K-RVM is a different infinite paired operator candidate. Fixed-scale FZZ and Vaidya selection are blind; FZZ-P survives only through universal horizon-dilation completeness.
+Route R is terminal as an independent producer; its completion and ancestry invariants feed candidate JAS through a changed interface. Route K is terminal in quadratic form; K-RVM is a different infinite paired operator candidate. OPUC’s explicit circle carrier is complete, but both reflected positivity and its sharp radial-Poisson disintegration are exactly RH; ordinary circle positivity cannot supply either premise. Fixed-scale FZZ and Vaidya selection are blind; FZZ-P survives through universal horizon-dilation completeness.
 
 ### Live-route open cores
 
@@ -50,14 +50,14 @@ Route R is terminal as an independent producer. Its surviving completion, corona
 | P | Construct a pre-divisor contraction from the literal cubic prime–Gamma packet to the actual strict-right zero collision trace. |
 | Q | Prove source nonnegativity of the explicit exterior paired diagonal, equivalently passivity of every finite paired-value matrix. |
 | CLG/TTF | Prove source no-escape for every cofinal regular two-pole sequence in the completed theta Bezoutian. |
-| HB | Construct a source-faithful cross-sector Schwarzschild/Teukolsky return incidence that transfers a bright mode into each divisor-dark channel and has reflection-odd sign sufficient to exclude the negative three-shell chamber. |
+| HB | Prove EKG/Teukolsky evolution identifies reflected Xi sectors’ local Davies–Fulling anomaly outputs, or converts their proved reflection-odd asymmetry into a nonzero cross-sector return channel. |
 | SP-E | Compare exact signed prime dilation flux with the continuum increment and obtain a uniform amplitude imbalance. |
 | SCE | Prove the source checkpoint conjugate is at most the checkpoint moment, or a source recursion forcing it. |
 | T1 | Prove signed short Möbius-block cancellation while retaining the combined top-row/finite-translation current. |
 | T2 | Derive the inverse-log adjacent defect from actual prime shells, sum it at critical weight, and prove signed subhalf continuation. |
 | U | Prove source nonnegativity of every explicit filtered-Gamma Hankel packet or exclude the nonintegrable strict frontier. |
 | HC | Build a confluent horizontal divided-difference/log-derivative packet with a subquantum estimate, or prove absolute prime–Gamma collision-current summability. |
-| SV2 | Prove from the exact prime–archimedean Euler formula that every finite Gaussian-rational Euler Pick matrix is positive semidefinite for every positive rational shift; alternatively finish both projective charts. |
+| SV2 | Exclude every finite tail-certified prime-side negative Pick certificate at positive rational shift and Gaussian-rational Euler nodes; alternatively finish both projective charts. |
 
 ## Live architectures
 
@@ -223,13 +223,13 @@ Route R is terminal as an independent producer. Its surviving completion, corona
 
 ### HB — theta-cusp Hawking causal scattering
 
-**Architecture.** Literal theta-cusp mirror source → causal Hardy defect and pseudo-unitary scattering → inverse-Cayley squared-Euler three-shell kernel → cross-sector bright-to-dark return incidence with reflection-odd sign → RH.
+**Architecture.** Literal theta-cusp source → real timelike tilted mirrors carrying horizontal Xi lines → exact Born/Schwarzian optical theorem and reflection-odd bifurcation anomaly → either source-forced reflected anomaly equality, or EKG/Teukolsky cross-sector return into the causal-Hardy selective three-shell kernel → RH.
 
-**Proved frontier.** Canonical causal defect line, pseudo-unitary scattering, inverse-Cayley weld, selective squared-Euler kernel, and eventual negative three-shell determinant for every off-critical orbit are formal. Exact EKG insertion has positive derivative-energy mass but negative cubic response; only its reflection-odd past/future anomaly orients tilt. Every divisor-dark frequency has arbitrarily local bright cubic input triads, but pure retarded Volterra–Evans determinants are one and real-axis Jost denominators remain nonzero. The protected FZZ delay moments and Schwarzschild far-zone jets form one scale-independent all-order clock with no finite recurrence or fixed-dimensional realization. Its moment sequence is strictly log-convex: genuine long-range response lies strictly below Markov completion, and the positive edge defect equals a Bose susceptibility and one quarter of its spectral quantum Fisher information. Diagonal Jacobi charge Grams are positive semidefinite at every finite stage and pointwise limit, so they cannot reproduce the negative off-critical selective kernel. Neutral-pair recoil activates every Xi sector independently of horizontal location. AIME has a nonzero bare mass derivative, but divisor source amplitude, sector-local absorbed mass, and source-dressed response all vanish.
+**Proved frontier.** Every open-strip horizontal Xi line is the real-frequency Born carrier of an explicit timelike theta mirror, with an exact coefficient-correct Hawking-emission/Davies–Fulling optical theorem; dark-freeness of this family is exactly RH and is not implied by generic mirror kinematics. Every noncentral tilt generates a real-linearly independent source direction at every positive nonlinear order; reversing tilt reverses every jet, while the tower collapses exactly at zero tilt. The local bifurcation Schwarzian is mirror-neutral for every safe coupling exactly at zero tilt; two safe couplings suffice, and every off-wall Xi divisor therefore has unequal reflected conformal flux at some safe coupling. Canonical causal defect, pseudo-unitary scattering, inverse-Cayley weld, selective squared-Euler kernel, and eventual negative three-shell determinant for every off-critical orbit are also formal. Exact EKG response has the wrong sign, pure retarded Evans determinants are one, and real-axis Jost denominators remain nonzero. Diagonal charge Grams stay positive, neutral-pair recoil mixes every Xi sector, and sector-local AIME remains dark after source dressing.
 
-**Open core.** Construct from the actual Schwarzschild/Teukolsky cubic, Jost, greybody, and angular/radial overlaps one off-diagonal return incidence that transfers a bright source mode into each divisor-dark channel. Prove it is nonzero, coefficient-faithful, reflection-odd, and strong enough to exclude the negative three-shell chamber.
+**Open core.** Prove actual EKG/Teukolsky evolution forces the two reflected divisor sectors to have the same local bifurcation-Schwarzian output, which forces zero tilt; or land the proved anomaly/full-mirror asymmetry through Jost, greybody, angular, and radial overlaps into a coefficient-faithful nonzero bright-to-dark return channel.
 
-**Boundary.** Generic cubic nonnegativity, QNM pole identification, positive orthogonal pole-plus-cut energy, pure causal Evans determinants, diagonal charge completion, universal neutral-pair mixing, sector-local AIME, Jost passivity, recoil dephasing, fixed scale, and bare Bogoliubov norm conservation cannot locate Xi zeros. Any viable physical mechanism must be cross-sector and contain a return path.
+**Boundary.** Generic timelike-mirror kinematics, optical-theorem energy, cubic nonnegativity, QNM pole identification, positive orthogonal pole-plus-cut energy, pure causal Evans determinants, diagonal charge completion, universal neutral-pair mixing, sector-local AIME, Jost passivity, recoil dephasing, fixed scale, and bare Bogoliubov norm conservation cannot locate Xi zeros. A viable physical mechanism must force reflected anomaly equality or be cross-sector and contain a return path.
 
 ### SP-E — signed prime dilation versus continuum
 
@@ -295,11 +295,11 @@ Route R is terminal as an independent producer. Its surviving completion, corona
 
 **Architecture.** Literal Suzuki energy space → either a two-chart projective limit or rational shifted-Xi Euler kernels → finite Gaussian-rational Pick witnesses → exclusion of every strict-right divisor → RH.
 
-**Proved frontier.** Canonical subsequences, projective Schur limits, point evaluation at Xi zeros, and the V(0) mass-plus-peak endpoint are formal. Shifted canonical products split multiplicity-exactly into transverse tails and a symmetric Schur core. For every positive nonexceptional shift, kernel negative index is strict-right divisor multiplicity in the finite case and unbounded in the infinite case; every regular open node region and Euler half-plane retains full index. Dense nested inertia stabilizes at the divisor count or diverges, and arbitrary finite-sample positivity is exactly shifted-half-strip zero-freeness. Every strict-right Xi zero admits a positive rational shift avoiding numerator cancellation, and the resulting negative square has a finite Gaussian-rational Euler witness. Consequently failure of RH is exactly existence of such a fully arithmetic rational negative witness. Infinite projected Hardy leakage is contractive, infinite-rank, and bounded below by numerator evaluation. The Euler quotient is pointwise contractive and has an exact branch-free polynomial–Gamma times absolutely convergent Euler-log factorization.
+**Proved frontier.** Canonical subsequences, projective Schur limits, point evaluation at Xi zeros, and the V(0) mass-plus-peak endpoint are formal. Shifted canonical products split into transverse tails and a symmetric Schur core. Finite shifted kernels have exact cancellation-aware negative index at every nonnegative shift; common numerator/denominator factors contribute precisely the restricted-adjoint rank defect. Dense Euler finite sections stabilize at this index, and all finite samples are positive exactly when it vanishes. Every strict-right Xi zero admits a positive rational shift with a finite Gaussian-rational negative witness. Finite Euler products converge to the exact kernel, and any strict negative energy yields a finite prime packet with rational margin and certified tail. Hence failure of RH is exactly existence of a finite tail-certified prime-side Pick certificate. Infinite leakage remains contractive and infinite-rank; the Euler quotient has an exact branch-free prime–Gamma factorization.
 
-**Open core.** Use the exact prime–archimedean Euler factorization to prove positive semidefiniteness of every finite Gaussian-rational Euler Pick matrix for every positive rational shift. Alternatively complete the two-chart target identity and reciprocal convergence.
+**Open core.** Prove directly from finite Euler factors and the certified tail bound that no finite prime-side negative certificate exists at any positive rational shift and Gaussian-rational node packet. Alternatively complete the two-chart target identity and reciprocal convergence.
 
-**Boundary.** Pointwise contractivity and positive one-node tests do not imply multi-node Pick positivity. Rational witnesses remove sampling, cancellation, and global nonexceptionality as escape routes, but do not source the opposite matrix sign. The Euler product represents rather than signs the full kernel. A single-chart all-plane target has an unavoidable pole, and an infinite negative sector cannot be repaired compactly.
+**Boundary.** Pointwise contractivity and one-node positivity do not imply matrix positivity. Cancellation-aware rank removes exceptional shifts as an ambiguity; rational nodes and certified finite-prime tails remove analytic approximation as an ambiguity. What remains is the arithmetic sign of explicit finite prime packets. A single-chart target has an unavoidable pole, and an infinite negative sector cannot be repaired compactly.
 
 ## Candidate openings
 
@@ -317,7 +317,6 @@ Candidates are not counted as live until a literal-source handoff and divisor-ex
 | SC | Prime–Gamma Stokes/Coxeter carrier. | Construct a completed source category, positive form, and Xi determinant; raw positive completion is impossible. |
 | PPM | Prime-power centered-mark collision. | Prove source forces a mark collision or finite monodromy before choosing a divisor. |
 | IRK | Irrational-rotation projective module and K-zero class. | Produce a source projective trace/Chern landing into the completed Xi endpoint. |
-| OPUC | Paraorthogonal phase gate with exact shifted prime–archimedean circle moments and positive source densities through shift twelve. | Extend the source sections cofinally and construct a reflected orientation/value convergence to Xi; ordinary unitary circle positivity is blind. |
 | HJ | Hurwitz anchor-jet projective reflection. | Derive the projective anchor and reflection law from source before divisor selection. |
 | BW | Barrelled prime-depth Wold selection. | Construct a literal global barrelled-source certificate; bounded/subexponential depth transport is impossible. |
 | MSC | Moving-aperture Möbius signed-channel Schur projection. | Prove source covariance and a four-unit bound for the moving pointed pole/divisor packet. |
@@ -447,7 +446,7 @@ Coprime matrix signature is exactly Mertens, tends to zero after PNT normalizati
 
 ### Finite generalized-Schur inertia
 
-FiniteBlaschkeFamily packages arbitrary finite disk-point families, with repetitions, into finite Blaschke data and identifies both degree and product exactly. FiniteBlaschkeGeneralizedSchurInertia and FiniteBlaschkeAdjointDefect identify the generalized Schur form as denominator-adjoint energy minus numerator-adjoint energy and prove exact negative index equal to denominator degree under Hardy coprimality. FiniteBlaschkeGeneralizedSchurKernel realizes the literal analytic kernel and proves its finite Gram packets have exactly that many negative squares. FiniteBlaschkeLeakageRank constructs the canonical leakage core, proves surjectivity under coprimality, exact leakage rank equal to denominator degree, and exact anti-causal Schur energy.
+Finite Blaschke generalized-Schur kernels have exact negative index equal to the algebraic rank of the numerator adjoint restricted to the denominator model space, without coprimality. Common inner factors are precisely the cancelled-rank defect, visible even on exterior annuli away from denominator zeros. The arbitrary-denominator operator model has the same full rank profile. Under coprimality this reduces to denominator degree and exact leakage rank.
 
 Finite model spaces satisfy the exact product decomposition `K_(B₀B₁) = K_(B₀) ⊕ B₀K_(B₁)`. Leakage and causal Hardy compression obey a polarized Pythagoras law and operator identity `L†L + T†T = I`; the crossing-channel dimension is exactly disappearing denominator multiplicity, its Gram defect is the square of causal compression, and its off-diagonal defect is the negative causal cross block. Boundary-scale causal decay therefore peels both defects. Horizontal layers converge projectively to Cauchy-resolvent multipliers; finite products converge in operator norm to sums of rank-one leakage channels, with finite exponential Hankel transport. Infinite Blaschke divisors create infinite-dimensional model spaces and dense infinite-rank leakage. Leakage norm is bounded by multiplier norm and bounded below by evaluation at every denominator zero. Nested Hermitian kernel sections have nondecreasing negative index equal to negative-eigenvalue count, so negativity cannot evacuate. This closes receiver geometry, not arithmetic coprimality, source positivity, or whole-ground selection.
 
@@ -457,11 +456,11 @@ Diagonal Hilbert–Schmidt purification, exact vector states, pure-tensor shuffl
 
 ### Irregular Stokes sheaf foundation
 
-Bordered spaces, exponential-epigraph sheaves, proper epigraph addition, convolution, symmetric monoidal tensor, bounded-below derived pushforward, and free/projective presheaf tensor-flatness are formal. Componentwise-projective total tensor and first-quadrant totalization preserve monomorphisms, finite colimits, exact short complexes, and categorical homology through finite antidiagonals. Integer-module sheafification preserves finite limits, finite colimits, homology, exactness, and quasi-isomorphisms; in a morphism of short exact complexes, outer quasi-isomorphisms force the middle one. This is abelian exactness, not a K-flatness theorem. No prime–Gamma phase sheaf, Stokes filtration, coefficient-faithful Xi landing, or RH endpoint is formal, so this remains infrastructure for SC, L, P, and completion descendants of R.
+Bordered spaces, exponential-epigraph sheaves, proper epigraph addition, convolution, symmetric monoidal tensor, and bounded-below derived pushforward are formal. Componentwise-projective nonnegative presheaf complexes are K-flat: total tensor preserves every quasi-isomorphism and descends to derived tensor. First-quadrant rowwise quasi-isomorphisms totalize to quasi-isomorphisms, and exact sheafification descends to derived categories. Compactly supported sheaves form a Serre abelian category; their full faithful additive embedding into ind-sheaves preserves finite limits, finite colimits, homology, and exact short complexes. The ind-category is Grothendieck abelian with a derived category. Proper sheaf pullback preserves compact support and recovers ordinary inverse image after forgetting support witnesses; compactness of the enhanced `EReal` direction makes its projection and compact-support pullback formal. Abstract enhanced Verdier quotients and their descent property are formal. No prime–Gamma phase sheaf, Stokes filtration, coefficient-faithful Xi landing, or RH endpoint is formal, so this remains infrastructure for SC, L, P, and completion descendants of R.
 
 ### Finite Hasse and Weyl classifiers
 
-Finite Hasse/Koszul additions realize arbitrary finite detector profiles, classify local failure coordinates, and show nontrivial reciprocal finite-support invariants require at least two support coordinates. Concrete hollow-simplex bouquet homology surjects onto every finite detector packet. These theorems prove finite local algebra can represent arbitrary finite profiles; they do not distinguish global Xi completion.
+Hasse families are formal as injective local-profile systems: complete local agreement is exactly global equality, and every unequal pair has a separating place. Registries instantiate this for finite coefficient profiles, arithmetic, ABHN residue/cohomology, Kummer–Calderón, Deninger packet/restriction systems, valuation shells, wall quotients, and Stanley–Reisner/Čech coordinates. Chosen finite evaluations reconstruct every initial zeta-jet and canonical completed-Xi-jet coefficient packet uniquely. Finite Hasse/Koszul additions also realize arbitrary detector profiles and hollow-simplex homology surjects onto every finite packet. These are exact local-global classifiers for their declared carriers; none turns finite jet reconstruction into coefficient-faithful infinite Xi occurrence or locates a divisor.
 
 Window-jet Weyl and Gohberg–Sigal index laws preserve multiplicity, covariance, and local divisor data. Positive-density transverse relocation constructs exact-order-one functional-equation/Schwarz-real hypertranscendental carriers with the same finite/all-jet source passports and positive-density off-critical zeros. Therefore local jets, finite Hasse data, exact order, hypertranscendence, functional equation, and zero-density passports cannot locate Xi zeros without a coefficient-faithful infinite source landing.
 
@@ -472,7 +471,8 @@ Window-jet Weyl and Gohberg–Sigal index laws preserve multiplicity, covariance
 - **PLAC/EPC/MEG:** Euler-log Herglotz mass, Euler-position commutators, and multiple-elliptic-Gamma cosets have nonclassical infinite or paired mechanisms but no Xi endpoint.
 - **VMG-HCD:** von-Mangoldt/Gamma Hilbert collision data expose source clocks, but strict contraction and unitary recurrence cannot share one real clock.
 - **Cayley-HS:** a transverse octonionic grade is invisible to every quadratic shadow but equals the secondary Maurer–Cartan obstruction and parenthesization defect. This is a faithful higher-incidence model for JAS/NDS/KMSS, but has no arithmetic Xi landing.
-- **PA-CD:** shifted prime–archimedean moments define finite circle measures at every shift and strictly positive probability densities through shift twelve, with exact recovery of every nonnegative Fourier moment. This supplies finite source Toeplitz data for OPUC, but ordinary unitary positivity has no reflected Hankel orientation and no Xi landing.
+- **PA-CD:** shifted prime–archimedean moments define finite reflection-invariant circle measures at every shift and strictly positive probability densities through shift twelve, with exact recovery of every nonnegative Fourier moment. At the central shift, the source resolvent is zero-free on the closed disk, its Schur transform is contractive, and its Carathéodory transform has positive real part. Generic radial-Poisson barycenters supply positive Hankel forms, but membership of this explicit source density in the sharp source hull is exactly RH. These are positive survivors of the retired OPUC mechanism, not a reflected-orientation producer.
+- **KPG:** the Gamma power-gauge weight has infinitely many positive and negative intervals and bilateral infinite Krein index. Any bounded self-adjoint correction making the full carrier positive has essential norm at least one, infinite rank, is noncompact, and lies in no finite Schatten class. No coefficient-faithful Xi landing exists, so this is not a route.
 - **E2-NB:** the quasimodular transformation law and dense rational cusp images make the unit circle a pointwise natural boundary of disk Eisenstein E2. Every finite primitive retains that boundary, even when its coefficients become absolutely summable and every observed finite jet is differentially algebraic. Finite smoothing and finite-jet regularity therefore do not produce continuation; no Xi landing exists.
 
 ## Terminal and retired routes
@@ -499,6 +499,7 @@ Closure applies to the named mechanism, not to every future architecture using r
 | AF | Copywise convergent abelian class-law certificate exists exactly at centered rate zero; global certificates exist exactly under RH. | Singular/infinite-action or genuinely global aggregate interface only. |
 | SNR | Reporter aperture can realize arbitrary positive target height independently of source. | Source-native aperture invariant is required. |
 | scalar EWQ | Scalar, determinant, unitary, checkerboard, finite-jet, Artin-positive, and auxiliary-vacuum constructions erase odd completed orientation or reduce to RH. | EWQ-V nonunitary matrix/jet candidate. |
+| OPUC / positive circle carrier | The explicit central prime–archimedean probability carrier has exact moments and analytic density. Its unitary shift and involutive reflection satisfy `ΘUΘ = U⁻¹`; its Schur function is contractive and its Carathéodory function has positive real part. Yet reflected polynomial positivity and the complete Hankel cone are exactly RH. Equivalently, its normalized density belongs to the uniform closed convex hull—and admits a probability disintegration—of radial Poisson kernels on `[0, 2/41]` exactly under RH. Strictly positive uniformly coercive circle densities can still have a negative reflected monomial square. | Exact source circle state, shift/reflection covariance, Fourier moments, resolvent, ordinary unitary positivity, and sharp radial-Poisson receiver survive; reflected orientation requires a different producer. |
 | DQPT | Exact eta/chi slope, rate, and memory-lag observables classify the critical line; universal annihilation is RH. | Sharp receiver, no producer. |
 | fixed-scale Hawking/FZZ/Vaidya | Fixed temperature, replica level, mass rate, recoil, or self-similar dilation is horizontally blind or passivates off-line shells. | HB early-time source law and FZZ-P universal dilation remain. |
 | Hawking spectral shortcuts | Xi divisor coordinates are real-frequency source zeros, not Schwarzschild/FZZ Jost zeros or QNM poles. Pure retarded EKG Volterra determinants equal one; generic EKG cubic response is strictly negative; positive orthogonal pole-plus-cut energy is not physical. | HB requires reflection-odd nonlinear incidence with a return path and the actual Schwarzschild/Teukolsky kernel. |
@@ -539,7 +540,7 @@ Finite packets, all finite jets, exact finite homology, local indices, divisor m
 
 ### 3. Orientation is the common missing datum
 
-Scalar positivity, absolute values, determinants, unitary gauges, positive diagonal completion, and common modular gain repeatedly erase the sign distinguishing a zero from its reflection. Live routes retain orientation through signed incidence, indefinite pairing, paired channels, nonunitary magnitude change, singular boundary value, or source ancestry.
+Scalar positivity, absolute values, determinants, unitary gauges, positive diagonal completion, and common modular gain repeatedly erase the sign distinguishing a zero from its reflection. The explicit prime–archimedean circle carrier makes this sharp: ordinary probability, coercivity, Schur contractivity, and Carathéodory positivity coexist with negative reflected squares, while full reflected positivity is exactly RH. Live routes must retain orientation through signed incidence, indefinite pairing, paired channels, nonunitary magnitude change, singular boundary value, or source ancestry.
 
 ### 4. Pairing is necessary but not sufficient
 
@@ -551,7 +552,7 @@ TD/C1 fails at zeroth mass. Positive diagonal repair fails at critical jets. Rou
 
 ### 6. Ground and limit order cannot be interchanged
 
-O needs control of every near-ground sequence, not one good Rayleigh vector. CLG/TTF and SV2 need cofinal no-escape, not finite-aperture positivity. F2 and CSB need a source-selected cofinal section, not arbitrarily accurate finite moments. Strong/weak convergence cannot replace Calkin norm or singular graph control.
+O needs control of every near-ground sequence, not one good Rayleigh vector. CLG/TTF needs cofinal no-escape, and F2/CSB need a source-selected cofinal section rather than arbitrarily accurate finite moments. SV2’s nested no-escape and cancellation accounting are closed; its remaining obstruction is the sign of explicit finite prime certificates. Strong/weak convergence cannot replace Calkin norm or singular graph control where those topologies remain active.
 
 ### 7. Singular interfaces remain credible
 
@@ -563,20 +564,20 @@ HB, FZZ-P, and PW-B show fixed equilibrium, diagonal charge ensembles, universal
 
 ### 9. Corpus-native nonclassical topology
 
-JAS joins finite prime-support cubical connection, valuation/Rees depth, higher compound order, infinite theta reflection current, and closed prime-Poisson sewing. CDC treats an off-line zero as one semantic repair splitting into two metric provenances. NDS treats it as nonzero mixed curvature of a nodal two-sector constraint; KMSS asks whether the same mixed jet can descend independently of graded source ordering. WBF treats it as fracture of reflected all-prime boundary sectors. These are corpus-native architectures, not variants of zero-free regions, mollifiers, explicit-formula positivity, or Hilbert–Pólya spectral realization.
+JAS joins finite prime-support cubical connection, valuation/Rees depth, higher compound order, infinite theta reflection current, and closed prime-Poisson sewing. CDC treats an off-line zero as one semantic repair splitting into two metric provenances. NDS treats it as nonzero mixed curvature of a nodal two-sector constraint; KMSS asks whether the same mixed jet can descend independently of graded source ordering. WBF treats it as fracture of reflected all-prime boundary sectors. HB supplies an infinite reflection-odd nonlinear source-jet tower whose missing step is physical cross-sector landing. These are corpus-native architectures, not variants of zero-free regions, mollifiers, explicit-formula positivity, or Hilbert–Pólya spectral realization.
 
 K-RVM, FZZ-P, RBH, and PW-B are also nonclassical candidates, but their decisive scale, balance, or spectral selection remains target-fed. W2C remains a unifying receiver rather than an independent producer.
 
 ## Fundamental remaining problem classes
 
-The 24 live routes and 31 candidates reduce to seven recurring source problems:
+The 24 live routes and 30 candidates reduce to seven recurring source problems:
 
-1. **Arithmetic signed order.** Prove a bounded or nonnegative signed current without replacing it by absolute values: CCM-FU, E, G, G-CE, SP-E, SCE, T1, T2, U.
-2. **Whole-state selection.** Control every cofinal or near-ground direction rather than one trial state: C1, O, CLG/TTF, SV2, FD2.
+1. **Arithmetic signed order.** Prove a bounded or nonnegative signed current without replacing it by absolute values: CCM-FU, E, G, G-CE, SP-E, SCE, T1, T2, U, SV2.
+2. **Whole-state selection.** Control every cofinal or near-ground direction rather than one trial state: C1, O, CLG/TTF, FD2.
 3. **Singular source-to-physical descent.** Preserve coefficients and provenance across a boundary-value or closed-graph landing: L, P, PSRC, PCS, TCD.
 4. **Source-native realization.** Identify an exact receiver with the literal source before divisor selection: F2, STC, CSB, Q, LI, MPLF, W1C, K-RVM, FZZ-P, RBH, PW-B, WBF.
 5. **Mixed incidence and orientation.** Retain odd, nonunitary, higher-compound, confluent, noncentral, cross-sector, or order-sensitive information erased by scalarization or diagonal doubling: HB, HC, EWQ-V, PPM, SC, JAS, RBH, NDS, KMSS.
-6. **Cofinal synchronization.** Choose one source-controlled scale, aperture, degree, relation, or boundary sector that works globally: E, F2, CSB, TK, BW, MSC, OPUC, WBF.
+6. **Cofinal synchronization.** Choose one source-controlled scale, aperture, degree, relation, or boundary sector that works globally: E, F2, CSB, TK, BW, MSC, WBF.
 7. **Infinite reflected ancestry and semantic descent.** Prove reflected partners are one completed arithmetic event and that its source relation survives completion: CDC, JAS, NDS, KMSS, and the completion survivors of R.
 
 These are the current open cores. Additional endpoint reformulations, finite packets, seed asymptotics, regular bounded completions, or divisor-fitted models do not change frontier unless they discharge one of these source problems.

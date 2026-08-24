@@ -6,6 +6,7 @@ import GaloisForLFunctions.HTGeometry.ABHN.NonarchimedeanValuationHasse
 import GaloisForLFunctions.HTGeometry.ABHN.FiniteFieldNormHasse
 import GaloisForLFunctions.HTGeometry.ABHN.CyclicHilbert90Hasse
 import GaloisForLFunctions.HTGeometry.ABHN.CyclicGaloisH2Hasse
+import GaloisForLFunctions.HTGeometry.ABHN.HeterogeneousReciprocityHasseClassification
 
 /-!
 # Residue and obstruction Hasse-family applications
@@ -18,7 +19,7 @@ degree-two cohomology.  No comparison with a local Brauer group is asserted here
 
 namespace GaloisForLFunctions.HTGeometry.ABHN
 
-universe u
+universe u v
 
 noncomputable section
 
@@ -174,6 +175,15 @@ def cyclicGaloisH2NormQuotientHasseFamily
       (Additive Kˣ ⧸ cyclicGaloisH2BaseNormImage K L)
       Unit :=
   HasseFamily.ofEquivSingle (cyclicGaloisH2BaseNormQuotientEquiv K L).toEquiv
+
+/-- For place-dependent local groups and invariant maps, the realized invariant sum is a complete
+coordinate modulo the heterogeneous reciprocity kernel. -/
+noncomputable def heterogeneousInvariantSumQuotientHasseFamily
+    {ι : Type u} [DecidableEq ι]
+    (A : ι → Type v) [(i : ι) → AddCommGroup (A i)]
+    (inv : ∀ i, A i →+ RatModInt) :=
+  HasseFamily.ofEquivSingle
+    (heterogeneousRatModIntProfileInvariantSumQuotientEquivRange A inv).toEquiv
 
 end
 end GaloisForLFunctions.HTGeometry.ABHN

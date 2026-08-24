@@ -1,7 +1,7 @@
 # Finite Boolean Hochschild diagonals are uniformly contractible but cofinally nonconvergent
 
 - **ID:** `finite-boolean-hochschild-diagonal-cofinal-fracture`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** PARENT-THEORY CLOSURE / EXACT INFINITY FRACTURE
 - **Scientific status:** `[PAPER-PROVED] [NOT NEW IN LITERATURE] [NOT RH]`
 - **Parent in corpus:**
@@ -199,7 +199,30 @@ prime coherence is uniformly controlled while its canonical diagonals fail stric
 convergence by a fixed amount; this locates the RH-bearing infinity problem after, not inside,
 finite cubical homotopy.
 
-## 6. Gates
+## 6. Lean formalization
+
+Formal artifact:
+`formal/GaloisForLFunctions/HTGeometry/FiniteBooleanHochschildDiagonal.lean`.
+
+The module proves, for every finite coordinate type, the atomic separability diagonal,
+multiplication and centrality laws, Walsh expansion, exact projective norm one, genuine
+all-degree Hochschild chain contraction identity, projective operator norm at most one,
+disjoint-packet multiplicativity, exact two-point fracture, singleton-coordinate shuffle
+factorization, and exact arbitrary-packet cofinal fracture norm one.  It is imported by
+`GaloisForLFunctions.HTGeometry`.
+
+Targeted audit:
+
+- `lake build GaloisForLFunctions.HTGeometry.FiniteBooleanHochschildDiagonal` passes;
+- all ten theorem endpoints report only Lean's standard `propext`, `Classical.choice`, and
+  `Quot.sound` axioms;
+- formal lint reports no prohibited declaration in this module.
+
+The remaining Wold/Gamma, all-prime irregular totalization, and Xi-specialization items below
+are explicitly downstream research obligations, not unformalized premises of equations
+`(1)`--`(12)`.
+
+## 7. Gates
 
 - [x] finite Boolean separability diagonal constructed
 - [x] exact projective norm one proved

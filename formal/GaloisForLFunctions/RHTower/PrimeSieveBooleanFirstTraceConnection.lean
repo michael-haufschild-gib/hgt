@@ -1,4 +1,6 @@
 import Mathlib.RingTheory.Ideal.Operations
+import GaloisForLFunctions.HTGeometry.FiniteBooleanHochschildDiagonal
+import GaloisForLFunctions.HTGeometry.PrimeSieveDensityTelescope
 
 /-!
 # Prime-sieve Boolean first-trace connection
@@ -85,6 +87,109 @@ theorem map_firstTraceCorrectedSquareCurvature_eq_zero
     φ (firstTraceCorrectedSquareCurvature x e f r t) = 0 := by
   rw [firstTraceCorrectedSquareCurvature_eq]
   simp [he, hf]
+
+end
+
+open scoped TensorProduct BigOperators
+
+open GaloisForLFunctions GaloisForLFunctions.HTGeometry
+
+noncomputable section
+
+variable {I : Type*} [Fintype I] [DecidableEq I]
+
+/-- Literal corrected first-trace edge from an old Boolean diagonal, its unit extension, and the
+new diagonal.  Here `a` is the old sieve density and `r` is the reciprocal scale of the adjoined
+prime. -/
+def finiteBooleanFirstTraceCorrectedEdge (a r : ℝ) :
+    (FiniteBooleanAlgebra (I ⊕ PUnit.{1}) ⊗[ℂ]
+      FiniteBooleanAlgebra (I ⊕ PUnit.{1})) :=
+  ((a * (1 - r) : ℝ) : ℂ) • finiteBooleanDiagonal (I := I ⊕ PUnit.{1}) -
+    (a : ℂ) • finiteBooleanDiagonalUnitExtension (I := I) +
+      (a : ℂ) • (finiteBooleanDiagonalUnitExtension (I := I) -
+        finiteBooleanDiagonal (I := I ⊕ PUnit.{1}))
+
+/-- The concrete corrected edge is exactly the reciprocal-prime residual. -/
+theorem finiteBooleanFirstTraceCorrectedEdge_eq (a r : ℝ) :
+    finiteBooleanFirstTraceCorrectedEdge (I := I) a r =
+      (-(a * r) : ℂ) • finiteBooleanDiagonal (I := I ⊕ PUnit.{1}) := by
+  unfold finiteBooleanFirstTraceCorrectedEdge
+  module
+
+/-- Exact projective norm of the concrete corrected Boolean edge. -/
+theorem projTensorSeminorm_finiteBooleanFirstTraceCorrectedEdge
+    {a r : ℝ} (ha : 0 ≤ a) (hr : 0 ≤ r) :
+    projTensorSeminorm
+        (normSeminorm ℂ (FiniteBooleanAlgebra (I ⊕ PUnit.{1})))
+        (normSeminorm ℂ (FiniteBooleanAlgebra (I ⊕ PUnit.{1})))
+        (finiteBooleanFirstTraceCorrectedEdge (I := I) a r) = a * r := by
+  rw [finiteBooleanFirstTraceCorrectedEdge_eq, map_smul_eq_mul,
+    projTensorSeminorm_finiteBooleanDiagonal]
+  rw [norm_neg, norm_mul, Complex.norm_real, Complex.norm_real, Real.norm_eq_abs,
+    Real.norm_eq_abs, abs_of_nonneg ha, abs_of_nonneg hr]
+  simp
+
+/-- Concrete projective edge norm along an arbitrary enumeration of all primes. -/
+def finiteBooleanFirstTraceEdgeProjectiveNorm (e : ℕ ≃ Nat.Primes) (n : ℕ) : ℝ :=
+  projTensorSeminorm
+      (normSeminorm ℂ (FiniteBooleanAlgebra (Fin n ⊕ PUnit.{1})))
+      (normSeminorm ℂ (FiniteBooleanAlgebra (Fin n ⊕ PUnit.{1})))
+      (finiteBooleanFirstTraceCorrectedEdge (I := Fin n)
+        (sieveDensity (sievePrefix e n)) (((e n : ℕ) : ℝ)⁻¹))
+
+/-- Each concrete projective edge norm is the exact sieve loss `aₙ / pₙ`. -/
+theorem finiteBooleanFirstTraceEdgeProjectiveNorm_eq
+    (e : ℕ ≃ Nat.Primes) (n : ℕ) :
+    finiteBooleanFirstTraceEdgeProjectiveNorm e n =
+      sieveDensity (sievePrefix e n) / ((e n : ℕ) : ℝ) := by
+  rw [finiteBooleanFirstTraceEdgeProjectiveNorm,
+    projTensorSeminorm_finiteBooleanFirstTraceCorrectedEdge
+      (sieveDensity_pos _).le (inv_nonneg.mpr (Nat.cast_nonneg _))]
+  rw [div_eq_mul_inv]
+
+/-- Along every prime enumeration, the projective norms of the corrected edges sum to exactly
+one. -/
+theorem hasSum_finiteBooleanFirstTraceEdgeProjectiveNorm
+    (e : ℕ ≃ Nat.Primes) :
+    HasSum (finiteBooleanFirstTraceEdgeProjectiveNorm e) 1 := by
+  have hfun : finiteBooleanFirstTraceEdgeProjectiveNorm e =
+      fun n => sieveDensity (sievePrefix e n) / ((e n : ℕ) : ℝ) := by
+    funext n
+    exact finiteBooleanFirstTraceEdgeProjectiveNorm_eq e n
+  rw [hfun]
+  exact hasSum_sieveDensity_div_prime e
+
+/-- Equality-status Boolean face for the first new prime. -/
+def firstTraceBooleanPFace : Bool × Bool → ℂ := fun z => if z.1 then 1 else 0
+
+/-- Equality-status Boolean face for the second new prime. -/
+def firstTraceBooleanQFace : Bool × Bool → ℂ := fun z => if z.2 then 1 else 0
+
+/-- Constant old-packet source value at a two-face Boolean witness. -/
+def firstTraceBooleanSource (a : ℝ) : Bool × Bool → ℂ := fun _ => a
+
+/-- Evaluation at the witness agreeing on the old packet and first face, but disagreeing on the
+second face, is exactly `-a r`. -/
+theorem firstTraceCorrectedSquareCurvature_true_false
+    (a r t : ℝ) :
+    firstTraceCorrectedSquareCurvature
+        (firstTraceBooleanSource a) firstTraceBooleanPFace firstTraceBooleanQFace r t
+        (true, false) = -(a * r : ℝ) := by
+  rw [firstTraceCorrectedSquareCurvature_eq]
+  simp [firstTraceBooleanSource, firstTraceBooleanPFace, firstTraceBooleanQFace,
+    Algebra.smul_def]
+  ring
+
+/-- The concrete two-prime corrected curvature is nonzero whenever the old density and first
+reciprocal-prime scale are positive. -/
+theorem firstTraceCorrectedSquareCurvature_ne_zero
+    {a r : ℝ} (ha : 0 < a) (hr : 0 < r) (t : ℝ) :
+    firstTraceCorrectedSquareCurvature
+        (firstTraceBooleanSource a) firstTraceBooleanPFace firstTraceBooleanQFace r t ≠ 0 := by
+  intro hzero
+  have happ := congrFun hzero (true, false)
+  rw [firstTraceCorrectedSquareCurvature_true_false] at happ
+  exact (neg_ne_zero.mpr (mod_cast mul_ne_zero ha.ne' hr.ne')) happ
 
 end
 

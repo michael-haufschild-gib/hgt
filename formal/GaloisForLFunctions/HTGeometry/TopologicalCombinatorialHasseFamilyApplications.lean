@@ -3,6 +3,7 @@ import GaloisForLFunctions.HTGeometry.HollowSimplexBouquetHasse
 import GaloisForLFunctions.HTGeometry.ConstitutiveNonabelianRecoveryHasse
 import GaloisForLFunctions.HTGeometry.TwoReplicaLocalCommutatorHasse
 import GaloisForLFunctions.HTGeometry.FiniteTwoReplicaSingleSiteHasse
+import GaloisForLFunctions.HTGeometry.StanleyReisnerEmptyTriangleHasse
 
 /-!
 # Topological and combinatorial Hasse-family applications
@@ -76,6 +77,12 @@ def finiteTwoReplicaSingleSiteHasseFamily
     apply Subtype.ext
     funext j a
     exact congrFun hxy (j, a)
+
+/-- Empty-triangle local coefficient packets modulo globally generated zero-sum packets have their
+coefficient sum as one complete obstruction coordinate. -/
+noncomputable def srEmptyTriangleObstructionHasseFamily
+    (R : Type*) [CommRing R] :=
+  HasseFamily.ofEquivSingle (srEmptyTriangleHasseQuotientEquiv (R := R)).toEquiv
 
 end
 end GaloisForLFunctions.HTGeometry

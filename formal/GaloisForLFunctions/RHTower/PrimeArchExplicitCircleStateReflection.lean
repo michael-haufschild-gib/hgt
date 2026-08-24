@@ -138,6 +138,34 @@ abbrev primeArchCircleMonomialLp (n : ℕ) :
     MeasureTheory.Lp ℂ 2 primeArchCircleProbabilityMeasure :=
   primeArchShiftCircleMonomialLp 0 zero_le_twelve n
 
+/-- Multiplication by the circle coordinate on the central carrier, packaged as a unitary linear
+isometric equivalence. -/
+def primeArchCircleShiftLIE :
+    MeasureTheory.Lp ℂ 2 primeArchCircleProbabilityMeasure ≃ₗᵢ[ℂ]
+      MeasureTheory.Lp ℂ 2 primeArchCircleProbabilityMeasure := by
+  letI : IsProbabilityMeasure primeArchCircleProbabilityMeasure :=
+    isProbabilityMeasure_primeArchCircleProbabilityMeasure
+  exact GaloisForLFunctions.HTGeometry.circleZMulLIE primeArchCircleProbabilityMeasure
+
+/-- Central circle reflection is an involution. -/
+theorem primeArchCircleReflectionLI_apply_self
+    (f : MeasureTheory.Lp ℂ 2 primeArchCircleProbabilityMeasure) :
+    primeArchCircleReflectionLI (primeArchCircleReflectionLI f) = f := by
+  exact GaloisForLFunctions.HTGeometry.circleInvReflectionLI_apply_self
+    _ (measurePreserving_inv_primeArchShiftCircleProbabilityMeasure 0) f
+
+/-- Exact central carrier relation `Theta U Theta = U⁻¹`. -/
+theorem primeArchCircleReflectionLI_circleZMulLp_conj
+    (f : MeasureTheory.Lp ℂ 2 primeArchCircleProbabilityMeasure) :
+    letI : IsProbabilityMeasure primeArchCircleProbabilityMeasure :=
+      isProbabilityMeasure_primeArchCircleProbabilityMeasure
+    primeArchCircleReflectionLI
+        (GaloisForLFunctions.HTGeometry.circleZMulLp _
+          (primeArchCircleReflectionLI f)) =
+      primeArchCircleShiftLIE.symm f := by
+  simpa [primeArchCircleProbabilityMeasure, primeArchCircleShiftLIE] using
+    primeArchShiftCircleReflectionLI_circleZMulLp_conj 0 zero_le_twelve f
+
 /-- A finite real analytic polynomial in the central carrier. -/
 abbrev primeArchFiniteRealCirclePolynomialLp {n : ℕ} (v : Fin n → ℝ) :
     MeasureTheory.Lp ℂ 2 primeArchCircleProbabilityMeasure :=

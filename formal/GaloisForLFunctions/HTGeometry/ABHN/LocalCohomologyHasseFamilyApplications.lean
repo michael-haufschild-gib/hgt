@@ -3,6 +3,8 @@ import GaloisForLFunctions.HTGeometry.ABHN.NonarchimedeanContinuousH2Hasse
 import GaloisForLFunctions.HTGeometry.ABHN.NonarchimedeanIntegralNormHasse
 import GaloisForLFunctions.HTGeometry.ABHN.NonarchimedeanIntegralTraceHasse
 import GaloisForLFunctions.HTGeometry.ABHN.NonarchimedeanGradedNormHasse
+import GaloisForLFunctions.HTGeometry.ABHN.AdicTameResidueQuotientEquiv
+import GaloisForLFunctions.HTGeometry.ABHN.NonarchimedeanLocalFieldMilnorResidue
 
 /-!
 # Local cohomology Hasse-family applications
@@ -69,6 +71,37 @@ noncomputable def nonarchimedeanPrincipalUnitGradedNormQuotientHasseFamily
   HasseFamily.ofEquivSingle
     (nonarchimedeanLocalFieldAdjoinRootIntegralNormPrincipalUnitGradedHasseQuotientEquiv
       K f hf g hgmonic hfg hg n hn).toEquiv
+
+/-- At each finite number-field place, the completed-adic tame quotient is completely detected
+by its residue-field `K₁ᴹ` coordinate. -/
+noncomputable def numberFieldFiniteAdicTameHasseFamily
+    (K : Type u) [Field K] [NumberField K] (v : NumberField.FinitePlace K) :=
+  HasseFamily.ofEquivSingle
+    (numberFieldFiniteAdicTameQuotientEquivGlobalResidue K v).toEquiv
+
+/-- At each finite place of `F(t)`, the completed-adic tame quotient is completely detected by
+its residue-field `K₁ᴹ` coordinate. -/
+noncomputable def rationalFunctionFiniteAdicTameHasseFamily
+    (F : Type u) [Field F] [Finite F]
+    (v : IsDedekindDomain.HeightOneSpectrum (Polynomial F)) :=
+  HasseFamily.ofEquivSingle
+    (rationalFunctionFiniteAdicTameQuotientEquivGlobalResidue F v).toEquiv
+
+/-- The local Milnor `K₂` quotient by the standard tame-residue kernel is completely detected by
+residue-field `K₁ᴹ`. -/
+noncomputable def nonarchimedeanLocalTameMilnorHasseFamily
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] :=
+  HasseFamily.ofEquivSingle
+    (nonarchimedeanLocalFieldTameMilnorResidueQuotientKerEquiv K).toEquiv
+
+/-- The local Milnor `K₂` quotient by the tame-symbol kernel is completely detected by the
+residue-unit coordinate. -/
+noncomputable def nonarchimedeanLocalTameUnitHasseFamily
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] :=
+  HasseFamily.ofEquivSingle
+    (nonarchimedeanLocalFieldTameHomQuotientKerEquiv K).toEquiv
 
 end
 end GaloisForLFunctions.HTGeometry.ABHN
