@@ -1,9 +1,9 @@
 # Reflected bi-heat completion anomaly
 
 - **ID:** `reflected-bi-heat-completion-anomaly`
-- **Stage:** 2-fully-proven / needs-audit
-- **Type:** THEOREM CANDIDATE / source-defined reflection pairing
-- **Scientific status:** `[PROVED ON PAPER; NOVELTY UNVERIFIED]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM / source-defined reflection pairing
+- **Scientific status:** `[BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE; FORMALIZED]`
 - **Source:** prime Dirichlet wave, additive Gaussian aperture, and functional-equation reflection
 - **Statement:** Analytically regularizing the additive heat pairing between the Dirichlet wave at
   `s` and its reflected wave at `1-conj(s)` produces a universal logarithmic scale anomaly.
@@ -402,3 +402,33 @@ new endpoints axiom-audited with baseline axioms only; no umbrella build was run
 The remaining expansion gate is sharply isolated: identify the row-subtraction finite part with
 the finite part of the four explicit principal heat moments.  All non-principal remainder and both
 completed cross coefficients are already closed.
+
+## Lean completion — exact finite-part weld and tomography (2026-08-24)
+
+The final analytic weld is closed.  The new reusable modules
+`PolarizedAdditiveHeatSharpPrincipal.lean`, `HeatMomentParameterContinuity.lean`, and
+`ReflectedBiHeatRegulatorRemainderContinuity.lean` prove, on the natural complementary-order
+domain, the exact four-channel principal heat identity and regulator continuity of the sharp
+Jonquière remainder.  No separate `L²` hypothesis is introduced.
+
+`ReflectedBiHeatExactFinitePartWeld.lean` then identifies the row-subtraction finite part from
+`ReflectedBiHeatThetaResidue.lean` with the exact phase finite part, subtracts the exact theta
+residue rather than only its leading Gaussian approximation, and proves the complete canonical
+small-aperture expansion.  Its premise-free capstone is
+`RHTower.reflectedBiHeatExactFinitePartWeld_capstone`; the endpoint
+`RHTower.tendsto_reflectedBiHeatCanonicalFinitePart_sub_cardExpansion` is the literal `o(1)` form
+of `(3)`, including anomaly, both completed channels, regular product, and exponentially small
+full-window correction.
+
+`ReflectedBiHeatMultiplicityTomography.lean` supplies the actual-divisor derivative endpoint.
+`RHTower.reflectedBiHeatMultiplicityTomography_capstone` proves that both completed responses
+vanish to exactly the completed-Xi multiplicity and that their real scale-order difference is
+`Re(z)-1/2`, closing `(13)`--`(14)` without a zero-location premise.
+
+All new modules are wired into `GaloisForLFunctions.RHTower`; umbrella was not built.  Exact source
+checks and targeted module builds pass at default heartbeats.  Axiom audits of
+`RHTower.reflectedBiHeatFinitePart_eq_exactPhase`,
+`RHTower.tendsto_reflectedBiHeatCanonicalFinitePart_sub_cardExpansion`, and
+`RHTower.reflectedBiHeatExactFinitePartWeld_capstone` report only `propext`,
+`Classical.choice`, and `Quot.sound`.  Formalization is unconditional and contains no card-level
+premise, hypothesis, placeholder, or added axiom.  Lean gate is complete.

@@ -242,3 +242,76 @@ umbrella build was run. Remaining source closure is now narrower: split the two 
 transverse tails into upper-half-plane numerator and denominator Blaschke factors, prove exact
 Cayley conjugacy with the literal shifted-Xi quotient, then apply the completed generalized-Schur
 kernel inertia engine.
+
+## Lean status update -- literal finite shifted-Xi kernel inertia (2026-08-24)
+
+The finite transverse-tail case is now dependency-closed all the way to the literal kernel in this
+card. `RHTower/SuzukiShiftedXiFiniteUpperKernelInertia.lean` defines the regular upper-half-plane
+node type `XiShiftRegularUpperNode omega`, carrying both positive height and actual
+`suzukiCanonicalE omega z ≠ 0`, and proves
+`xiShiftRegularUpperKernel_exactNegativeSquares_finite`. For every `omega ≥ 0` whose strict-right
+Xi divisor-copy type is finite and every card-stated nonexceptional shift, the literal kernel
+
+```text
+i / (z - conjugate w) *
+  (1 - suzukiCanonicalTheta omega z * conjugate (suzukiCanonicalTheta omega w))
+```
+
+has exactly `Fintype.card (XiShiftRightZeroCopy omega)` negative squares: one finite packet realizes
+that dimension, and every finite negative packet has dimension at most that count. Pole nodes are
+not filled or sampled.
+
+The proof is source-exact. `SuzukiShiftedXiFiniteDiskFactor.lean` constructs the actual finite
+numerator and denominator Blaschke products, the contractive symmetric-core multiplier, and exact
+Cayley factorization of `suzukiCanonicalTheta`. `FiniteBlaschkeAdjointFaithfulness.lean` proves
+multiplicity-safe model-space injectivity from nonvanishing at every ordered denominator zero.
+`SuzukiShiftedXiFiniteInertia.lean` discharges that nonvanishing from
+`SuzukiShiftNonexceptional omega`. New generic leaves
+`KernelNegativeSquareCongruence.lean`, `KernelNegativeSquareConjugation.lean`, and
+`FiniteBlaschkeGeneralizedSchurValueKernel.lean` transport literal finite packets through repeated
+node pushforward, invertible diagonal congruence, Schwarz-reflected analytic orientation, and an
+explicit zero-free exterior annulus. The annulus supplies lower witnesses whose inverse Cayley
+images are genuine regular shifted-Xi nodes; the full disk supplies the sharp upper bound.
+
+All named leaves pass direct `lake env lean` checks and exact leaf builds, are wired into their
+umbrellas, and were not followed by umbrella builds. Every new declaration was batch-audited and
+depends only on `propext`, `Classical.choice`, and `Quot.sound`.
+
+Card remains at stage 2. Remaining obligation is exactly the infinite-tail branch of `(T)`: when
+`XiShiftRightZeroCopy omega` is infinite, construct finite denominator subproducts of every degree
+inside the actual infinite quotient (with the complementary tail retained as a Schur numerator),
+transport their exterior witnesses to the same literal regular kernel, and conclude unbounded
+finite negative dimension. No finite-card hypothesis has been promoted to the full theorem.
+
+## Lean status update -- exact finite/infinite literal-kernel classification (2026-08-24)
+
+`RHTower/SuzukiShiftedXiInfiniteUpperKernelInertia.lean` closes the infinite-tail branch without
+constructing an infinite Blaschke product. It clears the literal quotient denominator, proving the
+exact regular-locus congruence
+
+```text
+E(z) S_omega(z,w) conjugate(E(w))
+= i/(z-conjugate(w))
+  * (E(z)conjugate(E(w))-E(-z)conjugate(E(-w))).
+```
+
+At distinct nonexceptional denominator poles, normalization by the nonzero numerator values turns
+this cleared kernel into the negative upper-half-plane Hardy Cauchy matrix. Finite multiplicity of
+each Xi spectral fiber implies that an infinite strict-right divisor-copy type has arbitrarily long
+packets of distinct pole coordinates. Entire-function isolated-zero theory moves each pole packet
+to nearby genuine regular nodes; entrywise stability then supplies every finite negative dimension
+for the actual literal kernel.
+
+The capstone `xiShiftRegularUpperKernel_negativeIndex_classification` now proves `(T)` in exact Lean
+finite/infinite form for every positive nonexceptional shift: if `XiShiftRightZeroCopy omega` is
+finite, the literal kernel has exactly `Nat.card (XiShiftRightZeroCopy omega)` negative squares; if
+it is infinite, the kernel has every finite negative dimension. No bounded-type factorization,
+tail truncation premise, or unproved source hypothesis remains in this classification.
+
+The new leaf passes direct `lake env lean`, exact leaf `lake build`, and a declaration-by-declaration
+axiom audit with only `propext`, `Classical.choice`, and `Quot.sound`. It is wired into
+`RHTower.lean`; no umbrella build was run.
+
+Card remains at stage 2 pending formalization of the additional paper claims beyond the headline
+nonexceptional theorem: common-divisor cancellation at exceptional shifts and the locally finite
+Stieltjes/counting-function formulation `(F)`. The main theorem `(T)` itself is now closed.

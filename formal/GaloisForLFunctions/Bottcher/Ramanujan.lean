@@ -104,7 +104,7 @@ private theorem norm_normalizedDerivOfComplex_le_of_sphere_bound_ramanujan
           hr hDiff hbdd
   _ = M / (2 * Real.pi * r) := by ring
 
-private theorem normalizedDerivOfComplex_tendsto_zero_ramanujan
+theorem normalizedDerivOfComplex_tendsto_zero_ramanujan
     {f : ℍ → ℂ} (hf : MDiff f) (hbdd : IsBoundedAtImInfty f) :
     Tendsto (D f) atImInfty (nhds 0) := by
   obtain ⟨M, A, hMA⟩ := isBoundedAtImInfty_iff.mp hbdd
@@ -220,7 +220,7 @@ private theorem tendsto_zero_of_exp_decay_ramanujan
     ((tendsto_exp_neg_mul_atTop_ramanujan hc).comp
       tendsto_im_atImInfty_ramanujan)
 
-private theorem E2_periodic_comp_ramanujan :
+theorem E2_periodic_comp_ramanujan :
     Function.Periodic (E₂ ∘ UpperHalfPlane.ofComplex) (1 : ℂ) := by
   have hET : E₂ ∣[(2 : ℤ)] ModularGroup.T = E₂ := by
     rw [EisensteinSeries.E2_slash_action, EisensteinSeries.D2_T]

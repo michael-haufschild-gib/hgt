@@ -156,3 +156,159 @@ explicit source class, ACH is false even if its Xi specialization happens to cha
 
 - 2026-08-24 — Route frozen after actual Route-R audit falsified plain cotangent-completion DANB.
 - 2026-08-24 — Finite-observer and finite-boundary one-ended shortcuts recorded as no-gos.
+
+## 2026-08-24 pivot: metric proof-irrelevance, not end-energy hyperdescent
+
+This section supersedes the Royden/quasianalytic proof engine above. That engine had no fixed reason
+for the relative end section to vanish. The corpus now supplies a sharper rabbit hole.
+
+### New name and public sentence
+
+**Dagger-Squier constraint law / metric proof-irrelevance.**
+
+One closed arithmetic error may have many finite derivations, but semantically redundant repair
+steps cannot give it a second source--dagger orientation. Critical-line zeros are inherited errors
+with one metric provenance. A hypothetical off-line zero is one semantic error with two metric
+provenances.
+
+This is the intended meaning of constraint, not flow, and 1 -> 2:
+
+    one closed constraint error
+            |
+            +-- forward/source-inverse derivation -- relative potential D_+
+            |
+            +-- reflected/analytic-dagger derivation -- relative potential D_-
+
+    semantic proof-erasure requires D_+ = D_-.
+    off line gives D_+ - D_- = log chi_s(n) != 0.
+
+### Frozen law
+
+Build a source-defined 2-polygraph:
+
+- 0-cells: finite arithmetic constraint states;
+- 1-cells: literal prime insertion, valuation shift, Mobius deletion, and Gamma repair histories;
+- 2-cells: source-proved semantic identifications between histories;
+- dagger: fixed source inverse/analytic adjoint comparison induced by unique Euler-purifying face
+  metric;
+- closed-error fibres: fibres where completed source constraint closes, defined before enumerating
+  Xi divisors.
+
+[CONJECTURE: DSPI] Every source-generated null 2-cell in a closed-error fibre has trivial relative
+dagger holonomy. Equivalently, insertion/deletion of a semantically redundant repair commutes with
+the three-slot formation law. This is metric proof-irrelevance: physical orientation depends on
+constraint error, not its derivation.
+
+Law is deliberately restricted to relative source--dagger orientation on closed errors. It does
+not make all semantic histories cost-free and does not impose critical line on arbitrary complex
+parameters.
+
+### Exact Lean bridge now built
+
+New module:
+formal/GaloisForLFunctions/RHTower/ConstitutiveDaggerConfluence.lean.
+
+- DaggerConfluentPotential: signed relative orientation descends through generated semantic
+  equivalence.
+- RadiallyCalibratedRepairPotential: two marked derivations differ by global pre-divisor value
+  log (deningerHalfDensityMateGain n s).
+- semanticRepair_metricSplit_of_re_ne_half: off line, two endpoints are one semantic repair but
+  have unequal metric values.
+- RepairProofErasureConsistent: three-slot averaging commutes with deletion of one repair slot.
+- repairProofErasureConsistent_iff_repair_eq: proof-erasure consistency is exactly equality of two
+  metric presentations.
+- riemannHypothesis_of_predivisorRepairProofErasure: one fixed pre-divisor calibrated family plus
+  proof-erasure on every closed Xi-error fibre implies RH.
+- admitsRadiallyCalibratedDaggerConfluence_iff_re_eq_half: arbitrary pointwise existence is exactly
+  critical-line equation. This formally blocks zero-by-zero metric choice from being presented as
+  a producer.
+
+Bridge uses existing Lean facts:
+
+- semantic_new_rule: absent next executable repair is already equality in old semantics;
+- finite_stage_not_confluent: every nonempty finite rulebook still has two normal endpoints;
+- logarithm_deningerHalfDensityMateGain: arithmetic logarithmic mismatch is
+  (2 Re(s) - 1) log n;
+- phaseAveragedThinningConsistent_iff: three-slot proof erasure forces equality of two laws.
+
+### Why this is not ordinary confluence, conservation, or unitarization
+
+- Ordinary confluence is too weak and also false at every finite completion stage.
+- Linear source-inverse/dagger defect is cobar-exact even off line. Only metric/quadratic holonomy
+  retains obstruction.
+- A flat scalar FE/Schwarz square can be vertex-gauged to all-one square off line. Scalar coherence
+  is blind.
+- Arbitrary half-density or radial reweighting can unitarize nonneutral transport. Metric must be
+  fixed by source before closed-error selection.
+- Positive execution cost cannot descend to semantic endpoints:
+  collectiveRepairUnitCost_not_endpoint_integrable and viabilityUnitCost_not_endpoint_integrable.
+  DSPI preserves that open history. Only signed relative source--dagger orientation is
+  proof-irrelevant.
+- Generic conservative completion, arbitrary descending-potential existence, and global lim1
+  vanishing are RH-equivalent gates, not upstream laws.
+- Finite Rees/coherent-map and common minimal-resolution ancestry fail: actual off-line reflection
+  is essentially singular and two clock rates coexist.
+
+### Fringe-family audit
+
+- **Hawking:** tilted dark mode has zero KMS dissipation but positive Wigner delay/laboratory work.
+  Therefore dissipation cannot exclude error. Conservative reflected-sector mixing is a
+  receiver-level image of two metric provenances.
+- **ABHN:** global reciprocity forces a nonzero global class to have at least two non-split local
+  realizations. This explains prime/Gamma duplication of one defect but does not annihilate it.
+- **Quantum recurrence:** nonnegative exact-action recurrence can force stationary action. This may
+  prove DSPI only after constructing recurrence of relative dagger 2-cell. Exact recurrence can
+  coexist with open positive execution history, so recurrence of raw cost is a no-go.
+- **Poisson/superposition:** source-native superposition plus thinning uniquely selects a formation
+  law. It is a possible derivation of proof-erasure if actual arithmetic repairs form that species;
+  no such prime--Gamma construction is currently proved.
+- **Noether:** charge is scalar transgression of nontrivial 2-holonomy. Continuous symmetry and
+  action are downstream realizations, not source law.
+
+### Topological interpretation
+
+An off-line point is not a soliton generated by a flow. It is a topological defect in presentation
+space: nontrivial metric 2-holonomy around a loop that is null in semantic constraint space.
+Different zeros may be different internal square-zero errors for unrelated reasons. RH says only
+that completion never attaches a second transverse orientation provenance to any of them.
+
+### New open core
+
+[OPEN CORE: ACTUAL DAGGER 2-CELL]
+
+1. Replace two-letter completion laboratory by actual prime--valuation--Mobius--Gamma 2-polygraph.
+2. Construct one pre-divisor signed orientation potential from unique purified source face metric.
+   No divisor-indexed choices and no radial reweighting are allowed.
+3. Prove its marked repair difference is existing Deninger logarithmic calibration on whole
+   parameter plane.
+4. Prove a completed Xi source error supplies a source-generated null 2-cell between forward and
+   reflected repair histories.
+5. Derive three-slot proof-erasure for that null 2-cell from an independent source law:
+   higher-dagger coherence, formation thinning, or relative-action recurrence.
+
+Step 5 is only RH-bearing mathematical theorem left by this reframing. Stating it directly on Xi
+divisor copies is circular; it must be proved on source-generated closed-error category.
+
+### External machinery audit
+
+Higher-dimensional rewriting supplies language for critical branchings and coherent
+presentations, not an RH theorem:
+
+- Ara--Burroni--Guiraud--Malbos--Metayer--Mimram,
+  *Polygraphs: From Rewriting to Higher Categories*, arXiv:2312.00429.
+- Alleaume--Malbos, *Coherence of string rewriting systems by decreasingness*,
+  arXiv:1612.09193.
+- Ferrer et al., *Dagger n-categories*, arXiv:2403.01651.
+- Cockett--Kumar--Srinivasan, *Unitary, Inner product, and Dagger categories*,
+  arXiv:2603.27614.
+
+These give candidate infrastructure for actual 2-polygraph and metric dagger. Novel content would
+be arithmetic closed-error functor and proof of DSPI.
+
+## Log continued
+
+- 2026-08-24 — Finite Rees, minimal-resolution uniqueness, generic derived-completion vanishing,
+  and ordinary confluence rejected.
+- 2026-08-24 — DSPI frozen: off-line means one semantic error with two metric provenances.
+- 2026-08-24 — Lean bridge and anti-circularity classifier added in
+  ConstitutiveDaggerConfluence.lean.

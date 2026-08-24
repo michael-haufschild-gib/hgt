@@ -509,35 +509,6 @@ noncomputable def mobiusPlueckerCompactExhaustion :
     CompactExhaustion MobiusPlueckerEulerPoint :=
   CompactExhaustion.choice MobiusPlueckerEulerPoint
 
-theorem mem_primesBelowSubtype_iff
-    {p : Nat.Primes} {N : ℕ} :
-    p ∈ GaloisForLFunctions.primesBelowSubtype N ↔ (p : ℕ) < N := by
-  constructor
-  · intro hp
-    rw [GaloisForLFunctions.primesBelowSubtype] at hp
-    obtain ⟨q, hq, hqp⟩ := Finset.mem_map.mp hp
-    have hval := congrArg (fun r : Nat.Primes => (r : ℕ)) hqp
-    have hlt := (Nat.mem_primesBelow.mp q.property).1
-    rw [← hval]
-    exact hlt
-  · intro hp
-    rw [GaloisForLFunctions.primesBelowSubtype]
-    let q : {a // a ∈ Nat.primesBelow N} :=
-      ⟨(p : ℕ), Nat.mem_primesBelow.mpr ⟨hp, p.2⟩⟩
-    apply Finset.mem_map.mpr
-    exact ⟨q, by simp, Subtype.ext rfl⟩
-
-theorem monotone_primesBelowSubtype :
-    Monotone GaloisForLFunctions.primesBelowSubtype := by
-  intro m n hmn p hp
-  rw [mem_primesBelowSubtype_iff] at hp ⊢
-  exact hp.trans_le hmn
-
-theorem cofinal_primesBelowSubtype (p : Nat.Primes) :
-    ∃ N, p ∈ GaloisForLFunctions.primesBelowSubtype N := by
-  exact ⟨(p : ℕ) + 1,
-    mem_primesBelowSubtype_iff.mpr (Nat.lt_succ_self _)⟩
-
 /-- Quantitative compact-exhaustion diagonal lemma.  If `F n` differs from a locally uniformly
 convergent family `G n` by less than `1/(n+1)` on the `n`-th compact, then `F n` has the same
 locally uniform limit. -/

@@ -138,3 +138,17 @@ construction provides either side of that comparison with all required propertie
 Analytic Fredholm determinants, the argument principle, Riesz projections, homotopy invariance, and
 the Neumann-series criterion are standard.  Their assembly gives the terminal route audit but is not
 new scientific knowledge.
+
+## Formalization progress (2026-08-24)
+
+`GaloisForLFunctions.HTGeometry.WindowRieszRelativeNeumann` proves the exact relative source
+estimate core `(H)` in every complete complex normed algebra: for `0 ≤ t ≤ 1`,
+`‖F₀⁻¹(F₁-F₀)‖ < 1` forces `F₀+t(F₁-F₀)` to be invertible, pointwise on an
+arbitrary boundary.  It also formalizes the scalar counterexample `F(z)=z`: inverse norm is exactly
+one on the unit circle while the enclosed value `F(0)` is singular.
+
+Targeted leaf compile/build passes; axiom reports contain only `propext`, `Classical.choice`, and
+`Quot.sound`.  Card remains Stage 2.  Exact remaining Lean obligations are the full holomorphic
+trace-class Fredholm determinant multiplicity theorem on a bounded Jordan domain, its argument
+principle/winding identification, the characteristic-divisor bridge `(C)`, and the closed-operator
+Riesz-projection equivalence.

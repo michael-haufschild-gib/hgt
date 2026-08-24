@@ -29,7 +29,14 @@ create nonzero remote-sector mixing.  The determinant repair cost is exactly
 Generic KMS, CCR, group, inverse, and Krein identities enter only through the already-derived
 scattering dilation and do not imply this cubic sign.  Theta-divisor chamber inequalities supply
 the two strict adjacent minors.  This endpoint does not assert that nonlinear Hawking dynamics
-selects the canonical completion; that selection remains the RH-bearing producer.
+selects the canonical completion.
+
+`[PHYSICAL STATUS]` `ThetaCuspHawkingEKGNonlinearTailSignNoGo` now evaluates a genuine spherical
+Einstein--Klein--Gordon cubic backreaction coefficient on the literal theta source and proves it
+strictly negative.  That coefficient is not this three-shell determinant, so the algebra below
+remains correct; however, positive stress energy/passivity cannot select this completion by sign
+alone.  A coefficient-level incidence between Schwarzschild EKG/second-order Teukolsky dynamics
+and this determinant would be required before the completion could become an RH-bearing producer.
 -/
 
 open Set
@@ -347,4 +354,3 @@ theorem exists_thetaCuspHawking_negativeCubic_forcedBackreaction
 end
 
 end RHTower
-

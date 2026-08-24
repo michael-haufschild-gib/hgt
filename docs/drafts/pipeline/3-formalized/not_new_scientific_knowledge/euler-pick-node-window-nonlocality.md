@@ -1,7 +1,7 @@
 # Euler Pick node windows do not localize the divisor
 
 - **ID:** `euler-pick-node-window-nonlocality`
-- **Stage:** 2-fully-proven
+- **Stage:** `3-formalized`
 - **Type:** THEOREM / ROUTE-D NO-GO (paper)
 - **Scientific status:** BRIDGE / NOT NEW SCIENTIFIC KNOWLEDGE
 - **Input:** `euler-pick-inertia-offline-zero-count.md`
@@ -113,3 +113,40 @@ public declaration audits to only `propext`, `Classical.choice`, and `Quot.sound
 dependency is now exact: construct the analytic Pontryagin realization of the actual
 `xiShiftPick` kernel and prove its global index/divisor identification. Until that arithmetic
 realization is closed, the shifted-Xi application is not promoted.
+
+## Lean closure update (2026-08-24)
+
+The source-specific dependency is closed by three new leaves:
+
+- `RHTower/AnalyticHermitianClosedSpanRealization.lean` constructs a total analytic Hermitian
+  realization by compressing any bounded ambient Hermitian form to the closed span of its weakly
+  analytic sections, while preserving the literal kernel.
+- `RHTower/SuzukiShiftedXiAnalyticKernelRealization.lean` realizes the denominator-cleared
+  shifted-Xi kernel on the whole upper half-plane as the difference Gram kernel of two weighted
+  Hardy sections.
+- `RHTower/SuzukiShiftedXiKernelOpenRegionLocality.lean` transfers locality through the nonzero
+  shifted-Xi diagonal congruence to the literal regular Pick kernel.
+
+The source-facing capstones are
+`xiShiftRegularUpperKernel_openRegion_negativeDimension_iff` and
+`xiShiftRegularUpperKernel_accumulationSet_negativeDimension_iff`: every finite negative dimension
+is present on an arbitrary nonempty open regular node window, and on every regular node set with an
+interior accumulation point, exactly when it is present globally. The corresponding
+`...negativeIndex_classification` theorems combine this with the exact finite/infinite
+`XiShiftRightZeroCopy` classification, so every such window retains the complete shifted divisor
+count, including unbounded index. `AnalyticOpenCutoffNoGo.lean` already closes the cutoff claim.
+
+All three leaves pass exact `lake env lean` checks and targeted leaf builds; all newly introduced
+declarations audit to only `propext`, `Classical.choice`, and `Quot.sound`. They are wired into
+`RHTower.lean`; no umbrella build was run.
+
+## Gates
+
+- [x] abstract open-region negative-square locality
+- [x] abstract accumulation-set/dense-node locality
+- [x] exact analytic cutoff no-go
+- [x] actual shifted-Xi analytic Hermitian realization
+- [x] exact cleared-to-literal regular-kernel congruence
+- [x] literal open-window negative-index preservation
+- [x] literal accumulating-node negative-index preservation
+- [x] finite/infinite shifted-divisor classification on every window

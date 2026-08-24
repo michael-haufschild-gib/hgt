@@ -25,6 +25,25 @@ def diskGeneralizedSchurValueKernel
 /-- Standard upper-half-plane-to-disk Cayley map. -/
 def upperToDiskCayley (z : ℂ) : ℂ := (z - I) / (z + I)
 
+/-- Exact norm defect of the upper-half-plane Cayley transform. -/
+theorem one_sub_norm_upperToDiskCayley_sq
+    {z : ℂ} (hden : z + I ≠ 0) :
+    1 - ‖upperToDiskCayley z‖ ^ 2 = 4 * z.im / ‖z + I‖ ^ 2 := by
+  have hminus : ‖z - I‖ ^ 2 = z.re ^ 2 + (z.im - 1) ^ 2 := by
+    rw [Complex.sq_norm, Complex.normSq_apply]
+    simp only [sub_re, sub_im, I_re, I_im]
+    ring
+  have hplus : ‖z + I‖ ^ 2 = z.re ^ 2 + (z.im + 1) ^ 2 := by
+    rw [Complex.sq_norm, Complex.normSq_apply]
+    simp only [add_re, add_im, I_re, I_im]
+    ring
+  have hplusNe : z.re ^ 2 + (z.im + 1) ^ 2 ≠ 0 := by
+    rw [← hplus]
+    exact pow_ne_zero _ (norm_ne_zero_iff.mpr hden)
+  rw [upperToDiskCayley, norm_div, div_pow, hminus, hplus]
+  field_simp [hplusNe]
+  ring
+
 /-- Nonzero diagonal weight relating upper-half-plane and disk Schur kernels. -/
 def upperToDiskKernelWeight (z : ℂ) : ℂ :=
   (Real.sqrt 2 : ℂ) / (z + I)

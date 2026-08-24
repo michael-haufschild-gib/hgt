@@ -1,7 +1,7 @@
 # Infinitesimal Hardy leakage resolves a static horizontal layer
 
 - **ID:** `infinitesimal-hardy-leakage-horizontal-layer-resolvent`
-- **Stage:** 2-fully-proven/not_new_scientific_knowledge
+- **Stage:** 3-formalized/not_new_scientific_knowledge
 - **Type:** THEOREM (paper), `[PROVED HERE; BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Source:** `euler-hardy-leakage-offline-zero-rank.md`;
   `shifted-hardy-leakage-static-continuity-no-go.md`
@@ -205,6 +205,23 @@ whose norm or trace obeys an unconditional absolute bound not obtained by readin
 - [x] 0 -> 1: the first-order normalization and its falsifier isolated.
 - [x] 1 -> 2: operator-norm limit, positive kernel, rank, trace, unique scaling, and strip threshold
   proved on paper.
-- [ ] 2 -> 3: no Lean formalization selected; the existing formal tree lacks Hardy projections and
-  Paley--Wiener Hankel operators, and a scalar wrapper would not formalize the theorem.
+- [x] 2 -> 3: exact Hardy projections, Paley--Wiener operator transport, finite exponential
+  Hankel realization, power-normalization trichotomy, and strip threshold formalized in Lean.
 - [ ] 3 -> 4: the theorem is standard parent theory and is not a publication target by itself.
+
+## Lean formalization (2026-08-24)
+
+- `GaloisForLFunctions.HTGeometry.HorizontalLayerLeakageLimit` proves the operator-norm
+  first-order Hardy leakage limit.
+- `GaloisForLFunctions.HTGeometry.HorizontalLayerPaleyWienerLimit` transports that limit through
+  the exact upper/lower Hardy Paley--Wiener unitaries and identifies its limit with
+  `finiteExponentialHankel`.
+- `GaloisForLFunctions.HTGeometry.FiniteExponentialHankel` proves positivity, exact rank for
+  distinct positive rates and positive multiplicities, the literal almost-everywhere integral
+  kernel `2∑_j m_j exp(-a_j(x+y))`, trace `∑_j m_j/a_j`, and each sharp lower floor
+  `m_j/a_j ≤ ‖T_A‖`.
+- `GaloisForLFunctions.HTGeometry.HorizontalLayerPowerNormalization` proves the full static
+  trichotomy `(8)` along `ω → 0⁺`, strict bounds `(9)`, and exclusion implication `(10)`.
+
+Targeted leaf compiles/builds pass.  New theorem axiom reports contain only `propext`,
+`Classical.choice`, and `Quot.sound`.

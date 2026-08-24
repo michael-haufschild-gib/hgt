@@ -278,3 +278,23 @@ would not formalize this card.
 - [x] Exact noncategorical route no-go stated.
 - [x] Scientific-novelty claim rejected.
 - [ ] Whole theorem formalized unconditionally in Lean.
+
+## Formalization progress — exact gauge layer (2026-08-24)
+
+`formal/GaloisForLFunctions/RHTower/DeBrangesGaugeInvariance.lean` now formalizes the
+dependency-closed algebraic gauge core without extra hypotheses:
+
+- multiplication by a Schwarz-real pointwise nonvanishing gauge preserves the strict
+  Hermite--Biehler inequality iff;
+- every canonical real-angle pencil has exactly the same zero set;
+- the inner quotient is unchanged; and
+- the algebraic de Branges kernel transforms by `H(z) * conj(H(w))`.
+
+Direct checking and the targeted leaf build pass.  The four exported core claims depend only on
+`propext`, `Classical.choice`, and `Quot.sound`.  The leaf is wired into the `RHTower` umbrella;
+the umbrella was not built.
+
+Card remains Stage 2.  Unformalized obligations are continuum HT saturation, Holder's theorem and
+the explicit DA/HT pair, Weierstrass/Hermite interpolation passports, de Branges-space unitary
+multiplication, and finite-order Hadamard rigidity.  Kernel and spectral gauge covariance alone do
+not close the card.

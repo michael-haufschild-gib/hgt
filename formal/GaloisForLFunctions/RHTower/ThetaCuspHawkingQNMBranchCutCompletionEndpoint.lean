@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingHorizonRedshiftPassivityEndpoint
 
 /-!
-# QNM branch-cut completion forced by a negative theta-Hawking resonance cubic
+# QNM category wall and branch-cut completion forced by a negative theta-Hawking cubic
 
 `[LITERATURE]` Black-hole QNM perturbation theory does not admit a complete pole-only spectral
 expansion.  The Green-function contour decomposition contains both QNM residues and a continuous
@@ -12,31 +12,40 @@ Green--Hollands--Sberna--Toomani--Zimmerman, arXiv:2210.15935.  Horizon absorpti
 background at quadratic order and excites other QNMs at cubic order in the nonadiabatic regime;
 see Sberna--Bosch--East--Green--Lehner, arXiv:2112.11168.
 
-`[FALSIFIED]` Consequently, the independent two-port Cayley blocks in
-`ThetaCuspHawkingKMSCayleyScatteringMixingEndpoint` cannot by themselves be interpreted as the
-full nonperturbative black-hole S-matrix.  They omit the continuum term required by the
-Green-function contour and retain only discrete resonance data.
+`[CATEGORY WALL]` A zero of the theta moving-mirror Born numerator is a transmission/dark zero;
+a black-hole QNM is a pole of a retarded Green function.  The cited QNM contour theory does not
+identify these objects.  No theorem below calls an Xi zero a QNM pole.  Such an identification
+would require a new Jost/Evans incidence theorem and cannot be imported by terminology.
 
-`[LEAN-PROVED]` This module proves the exact positive survivor.  Evaluate the selectively
-stimulated theta resonance kernel on its canonical adjugate three-shell probe.  If its cubic is
-negative, the pole-sector probe energy is strictly negative.  A full pole-plus-branch-cut
-scattering output has energy
+`[FALSIFIED]` Independently of that category wall, the exact theta-mirror second-jet theorem in
+`ThetaCuspHawkingFullMirrorCayleyNoGo` proves that independent two-port Cayley blocks cannot be the
+full nonperturbative theta-mirror S-matrix: exact dynamics has a nonzero even coupling jet, while
+the Cayley transition is odd.  Black-hole QNM contour theory supplies a separate reason that a
+pole-only completion would also be incomplete in the genuine black-hole perturbation problem.
+
+`[FALSIFIED PHYSICAL IDENTIFICATION]` This module evaluated the selectively stimulated theta
+kernel on its canonical adjugate three-shell probe.  If its cubic is negative, that source-side
+probe form is strictly negative.  It then *defined* a pole-plus-branch-cut ansatz
 
 `E_full = E_pole + ‖A_cut‖²`.
 
-Therefore full passivity forces
+Within that definition, nonnegativity algebraically forces
 
 `‖A_cut‖² ≥ -E_pole > 0`.
 
-Every off-critical Xi orbit eventually enters the negative chamber, so every passive full
-scattering completion must then have nonzero branch-cut output on that orbit.  This proves the
-"otherwise every tilted sector mixes" alternative without selecting the ad hoc Markov/Schur long
-edge.  It does not assume that a QNM pole sum converges.
+That ansatz is not the Teukolsky optical energy.  QNM residues, the direct arc, and the branch-cut
+tail are not positive orthogonal Hilbert channels; their quadratic energy contains interference
+terms, and ordinary QNM profiles are not finite-energy vectors on standard slices.  Consequently
+the theorems below are retained only as conditional algebra inside the displayed definition.  They
+do not prove physical branch-cut mixing.
 
-`[OPEN CORE]` The remaining Hawking-specific incidence theorem must derive, from the actual
-Einstein--Klein--Gordon or Teukolsky Green function, that the theta three-shell pole energy is the
-displayed resonance term and that its contour remainder has Hilbert norm `‖A_cut‖`.  Generic KMS,
-CCR, group, inverse, or Krein laws do not identify that source coefficient.
+`[CATEGORY CLOSED NEGATIVELY]` `ThetaCuspHawkingSchwarzschildJostIncidenceNoGo` constructs the
+actual real-axis Schwarzschild Jost normal form and proves the correct incidence.  The theta
+divisor coordinate `w + i a` uses real physical frequency `w` and source tilt `a`; the homogeneous
+Evans denominator is evaluated at `w`, where conserved flux makes it nonzero.  Xi vanishes in the
+source numerator, so divisor points are scattering zeros, not QNM poles.  The actual optical
+identity is the real-axis infinity-plus-horizon greybody split.  Generic KMS, CCR, group, inverse,
+or Krein laws cannot turn this source zero into a pole or exclude it.
 -/
 
 open Complex
@@ -45,8 +54,8 @@ noncomputable section
 
 namespace RHTower
 
-/-- Signed pole-sector energy of the source-reconstructed theta resonance on its canonical
-adjugate three-shell probe. -/
+/-- Signed candidate discrete-sector energy of the source-reconstructed theta response on its
+canonical adjugate three-shell probe.  No QNM-pole interpretation is built into this definition. -/
 def thetaCuspHawkingResonanceCanonicalProbeEnergy
     (q : XiZeroCopy) (rapidity x y z : ℝ) : ℝ :=
   let K := thetaCuspHawkingSelectiveModularGainKernel q rapidity
@@ -64,8 +73,8 @@ theorem thetaCuspHawkingResonanceCanonicalProbeEnergy_eq_minor_mul_det
   exact symmetricThreePointLongEdgeEnergy_canonicalProbe_eq
     (thetaCuspHawkingSelectiveModularGainKernel q rapidity) x y z
 
-/-- A negative theta resonance cubic is a strictly negative pole-sector energy, before any
-continuous Green-function contribution is restored. -/
+/-- A negative theta cubic is a strictly negative candidate discrete-sector energy, before any
+conditional continuous Green-function contribution is restored. -/
 theorem thetaCuspHawking_negativeCubic_forces_negativeResonanceProbeEnergy
     (q : XiZeroCopy) (rapidity : ℝ) {x y z : ℝ}
     (hx : 0 < x) (hxy : x < y) (hyz : y < z)
@@ -75,17 +84,16 @@ theorem thetaCuspHawking_negativeCubic_forces_negativeResonanceProbeEnergy
   exact thetaCuspHawking_negativeCubic_forces_negativeCanonicalEnergy
     q rapidity hx hxy hyz hnegative
 
-/-- Full probe energy after restoring the continuous Green-function output.  `continuumOutput`
-is deliberately a vector in an arbitrary normed additive group: no pole-basis completeness or
-finite-dimensional truncation is assumed. -/
+/-- Algebraic pole-plus-cut energy ansatz retained for compatibility.  This is not the energy of
+the Teukolsky contour decomposition: it omits the direct arc and every interference term. -/
 def thetaCuspHawkingPoleBranchCutCompletedProbeEnergy
     {H : Type*} [Norm H]
     (q : XiZeroCopy) (rapidity x y z : ℝ) (continuumOutput : H) : ℝ :=
   thetaCuspHawkingResonanceCanonicalProbeEnergy q rapidity x y z +
     ‖continuumOutput‖ ^ 2
 
-/-- Exact optical lower bound: passive full scattering must pay at least the entire signed
-pole-sector energy debt into the branch-cut channel. -/
+/-- Conditional lower bound inside the preceding algebraic ansatz.  It is not a Teukolsky optical
+theorem. -/
 theorem thetaCuspHawking_passiveFullScattering_branchCutNormSq_lower
     {H : Type*} [Norm H]
     (q : XiZeroCopy) (rapidity x y z : ℝ) (continuumOutput : H)
@@ -96,8 +104,7 @@ theorem thetaCuspHawking_passiveFullScattering_branchCutNormSq_lower
   unfold thetaCuspHawkingPoleBranchCutCompletedProbeEnergy at hpassive
   linarith
 
-/-- Theta-specific passivity exclusion: a negative resonance cubic cannot be the whole passive
-scattering output; the continuous channel has strictly positive energy on the canonical probe. -/
+/-- Conditional consequence of declaring the falsified ansatz nonnegative. -/
 theorem thetaCuspHawking_negativeCubic_forces_positiveBranchCutEnergy
     {H : Type*} [Norm H]
     (q : XiZeroCopy) (rapidity : ℝ) {x y z : ℝ} (continuumOutput : H)
@@ -113,8 +120,8 @@ theorem thetaCuspHawking_negativeCubic_forces_positiveBranchCutEnergy
   unfold thetaCuspHawkingPoleBranchCutCompletedProbeEnergy at hpassive
   linarith
 
-/-- A passive completion of a negative theta resonance cubic must genuinely mix with the
-continuous channel. -/
+/-- Conditional nonvanishing inside the algebraic ansatz; no physical QNM/cut incidence is
+asserted. -/
 theorem thetaCuspHawking_negativeCubic_forces_nonzeroBranchCutOutput
     {H : Type*} [NormedAddCommGroup H]
     (q : XiZeroCopy) (rapidity : ℝ) {x y z : ℝ} (continuumOutput : H)
@@ -130,8 +137,8 @@ theorem thetaCuspHawking_negativeCubic_forces_nonzeroBranchCutOutput
   subst continuumOutput
   simp at hcut
 
-/-- Pole-only Cayley completion is impossible in a negative cubic chamber: setting the continuum
-output to zero contradicts passivity. -/
+/-- Setting the auxiliary output to zero contradicts nonnegativity of the algebraic ansatz.  This
+does not exclude a physical pole-only approximation. -/
 theorem thetaCuspHawking_negativeCubic_excludes_passivePoleOnlyCompletion
     (q : XiZeroCopy) (rapidity : ℝ) {x y z : ℝ}
     (hx : 0 < x) (hxy : x < y) (hyz : y < z)
@@ -144,9 +151,8 @@ theorem thetaCuspHawking_negativeCubic_excludes_passivePoleOnlyCompletion
     q rapidity (0 : ℂ) hx hxy hyz hnegative hpassive
   exact hnonzero rfl
 
-/-- **All-tilted-sector branch-cut necessity.** Every off-critical Xi orbit eventually forces
-nonzero continuum output in every passive full scattering completion, on every fixed ordered
-positive three-shell probe. -/
+/-- **Conditional all-sector statement.** Every off-critical orbit eventually forces nonzero
+auxiliary output if the falsified pole-plus-cut ansatz is imposed on a fixed ordered probe. -/
 theorem exists_eventually_thetaCuspHawking_offCritical_forces_branchCutMixing
     {H : Type*} [NormedAddCommGroup H]
     (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2)

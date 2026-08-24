@@ -1,7 +1,7 @@
 # Wold--Boolean diagonal renormalization mismatch
 
 - **ID:** `wold-boolean-diagonal-renormalization-mismatch`
-- **Stage:** 2-fully-proven / not new scientific knowledge
+- **Stage:** 3-formalized / not new scientific knowledge
 - **Type:** EXACT INFINITY-SCALE NO-GO / POSITIVE SURVIVOR
 - **Scientific status:** `[PAPER-PROVED] [PARENT MEASURE THEORY] [NOT RH]`
 - **Parents:**
@@ -411,7 +411,7 @@ RH construction and forces a genuinely two-record totalization.
 - [ ] prove source-first, multiplicity-faithful Xi conormal landing
 - [ ] prove Wold modular marginal conservation
 - [ ] RH
-- [ ] unconditional Lean formalization after selecting the analytic carrier
+- [x] unconditional Lean formalization after selecting the analytic carrier
 
 ## Formalization progress (2026-08-24)
 
@@ -433,10 +433,34 @@ RH construction and forces a genuinely two-record totalization.
 - `GaloisForLFunctions.HTGeometry.FiniteBooleanDiagonalNormalization` proves the finite equality
   cylinder mass `(2)`, exact reporter identity `(5)`, stability after adjoining ignored Boolean
   coordinates, and forced scalar asymptotic `(7)`--`(8)` from total mass.
+- `GaloisForLFunctions.HTGeometry.BooleanPrimeDiagonalWeakConvergence` upgrades this to the literal
+  ordinary-prime cutoff: `{p : prime // p <= N}` has cardinal `Nat.primeCounting N`, the equality
+  cylinder has mass `2 ^ (-Nat.primeCounting N)`, `2 ^ Nat.primeCounting N` gives the exact
+  diagonal Haar coupling, every other nonzero scalar normalization is forced by total mass, and the
+  normalized finite laws converge weak-* to the all-prime diagonal coupling against every continuous
+  reporter.  The proof uses a dense finite-support Walsh algebra, not a cylinder-only proxy.
+- `GaloisForLFunctions.HTGeometry.DenseContinuousMeasureWeakConvergence` supplies the reusable
+  dense-span-to-weak-convergence theorem used by that all-continuous-reporter upgrade.
 - `GaloisForLFunctions.HTGeometry.BooleanSoninFullHistory` already supplies the labelled full
   Boolean history contraction, exact distinguished-ray energy, and adjoint-mate fracture.
 - `GaloisForLFunctions.HTGeometry.PrimeValuationKakutaniSector` already proves that the twisted and
   critical infinite prime product measures are equivalent exactly at `c = 0`.
+- `GaloisForLFunctions.RHTower.WoldThermofieldSectorFracture` identifies the corpus Hellinger
+  product with the literal inner product of the normalized finite Wold occupation vectors.  Those
+  vector overlaps converge to `1` exactly at `c = 0` and to `0` for every other `c < 1/2`, giving
+  the exact thermofield-vector/Kakutani sector fracture from `(24)`.
+- `GaloisForLFunctions.HTGeometry.IncompleteTensorProduct` constructs von Neumann's incomplete
+  tensor product as the Hilbert completion of finite-excitation pure tensors under the exact product
+  Gram kernel.  It proves positive semidefiniteness, the completed pure-tensor inner-product law,
+  and norm one of the distinguished reference vector without additional assumptions.
+- `GaloisForLFunctions.RHTower.WoldThermofieldIncompleteTensorProduct` specializes the construction
+  to the literal local factors `ℓ²(ℕ₀ × ℕ₀)` and critical geometric Wold standard-form vectors.
+  It supplies the canonical carrier `(22)`, its distinguished unit vector, exact finite-packet
+  product pairings, and actual cofinal twisted vectors in the critical carrier whose reference
+  overlaps equal `(24)` and converge to `1` exactly at `c = 0`, otherwise to `0`.  More strongly,
+  it proves the literal sector criterion: the cofinal twisted finite packets converge strongly in
+  the critical incomplete tensor-product carrier if and only if `c = 0`; for `c ≠ 0`, exact tail
+  overlap ratios force any putative strong limit to be both unit and orthogonal to itself.
 - `GaloisForLFunctions.RHTower.WoldBooleanFiniteReesVanishing` proves `(11)`--`(13)` exactly:
   for every eventually positive `c_N` with `log⁺(c_N) = O(a_N⁻ᵋ)` for one fixed `K`,
   `c_N / 2 ^ Nat.primeCounting N → 0`.
@@ -444,7 +468,7 @@ RH construction and forces a genuinely two-record totalization.
 Targeted leaf builds pass.  Every new theorem has only `propext`, `Classical.choice`, and
 `Quot.sound` in its axiom report.
 
-Card remains Stage 2.  Exact remaining Lean obligations include the infinite
-incomplete-tensor-product realization and its vector-sector/Kakutani bridge, cylinder diagonal
-weak-* limit for all continuous reporters, and their identification with the card's canonical
-Haar diagonal coupling.
+Card is Stage 3.  All exact mathematical claims in this card, including the literal infinite
+incomplete-tensor-product Hilbert realization, are formalized unconditionally.  The unchecked
+Gamma/co-Poisson/Sonin and Xi bullets above remain separate RH-interface research obligations and
+are not asserted here.

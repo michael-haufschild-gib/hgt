@@ -395,11 +395,45 @@ Hardy coprimality, and the corresponding generalized-Schur negative-index theore
 leaves pass `lake env lean`; targeted leaf builds pass. New theorem axioms are exactly `propext`,
 `Classical.choice`, and `Quot.sound`.
 
+`HTGeometry.ModelSpaceLeakageDenseRank` now proves the exact infinite-dimensional operator branch:
+for any complete Hilbert model channel, faithfulness of the numerator adjoint makes projected leakage
+dense in that channel, and an infinite-dimensional channel forces genuinely infinite algebraic
+leakage rank.  This removes the finite-dimensional-surjectivity dependency from the abstract
+Hardy operator theorem.
+
+`HTGeometry.HardyMultiplierZeroModelDimension` proves the divisor-to-model-dimension half without
+a finite Blaschke proxy: Szegő kernels at pairwise distinct disk zeros of any bounded analytic
+multiplier are linearly independent and lie in its model space.  Therefore zero packets of
+arbitrarily large finite cardinality force that model space to be infinite-dimensional.
+
+`HTGeometry.InfiniteBlaschkeMultiplier` now closes the infinite-denominator construction itself,
+including divisor entries at the disk origin: the Blaschke condition gives locally uniform
+convergence on the full open disk, the product is holomorphic and contractive, every prescribed
+zero is attained exactly, and an injective infinite divisor produces an infinite-dimensional Hardy
+model space.  The module passes direct Lean, its targeted leaf build passes, and all new theorem
+axioms are exactly `propext`, `Classical.choice`, and `Quot.sound`.
+
+`RHTower.SuzukiShiftedXiFiniteLeakageRank` now instantiates the literal shifted-Xi finite-tail
+factors, rather than a proxy symbol.  For every finite nonexceptional shifted divisor it proves that
+the projected Hardy leakage is onto the full denominator model channel and that its algebraic range
+finrank is exactly `Fintype.card (XiShiftRightZeroCopy omega)`, hence counts every pole copy and its
+multiplicity.  Its reusable producer is the strengthened
+`HTGeometry.ModelSpaceLeakageDenseRank`: in a finite-dimensional model channel, faithful numerator
+adjoint implies surjective projected leakage and exact range finrank.  Both targeted builds and the
+new-declaration axiom audits pass.
+
+`RHTower.SuzukiShiftedXiInfiniteBlaschkeDenominator` now constructs the literal full denominator
+over every strict-right shifted-Xi pole copy.  It proves the exact disk Blaschke condition from the
+critical-strip geometry and reciprocal-square summability of the Xi divisor, retains multiplicity
+copies, vanishes at every prescribed pole coordinate, and proves that an infinite shifted divisor
+has an infinite-dimensional denominator model space.  Direct Lean and targeted leaf build pass;
+new theorem axioms are exactly `propext`, `Classical.choice`, and `Quot.sound`.
+
 This is not yet the complete card and does not justify Stage 3. Remaining exact obligations are:
 
-1. infinite Blaschke denominator/model-space dimension and the infinite-rank branch;
-2. the completed-Xi shifted quotient's coprime inner factorization and divisor-multiplicity
-   transport into that finite/infinite operator theorem;
-3. Theorem B's outermost-layer norm singularity in the actual family; and
-4. Theorem C's arbitrary-layer unit-channel peeling, persistent-block orthogonality, spectral
+1. extend the literal finite shifted-Xi leakage result through common-divisor cancellation and the
+   infinite-divisor numerator-faithfulness branch, then identify it with the full anti-causal
+   compression;
+2. Theorem B's outermost-layer norm singularity in the actual family; and
+3. Theorem C's arbitrary-layer unit-channel peeling, persistent-block orthogonality, spectral
    multiset limit, and Hilbert--Schmidt trace jump.

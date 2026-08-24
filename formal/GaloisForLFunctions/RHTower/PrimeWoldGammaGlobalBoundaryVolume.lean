@@ -508,3 +508,39 @@ theorem centeredReflectedIrregularPairPolynomiallyModerateAlongPrimeBoundary_iff
   constructor <;> intro h <;> linarith
 
 end GaloisForLFunctions
+
+namespace RHTower
+
+/-- Membership in the canonical prime-subtype exhaustion is the underlying prime bound. -/
+theorem mem_primesBelowSubtype_iff
+    {p : Nat.Primes} {N : ℕ} :
+    p ∈ GaloisForLFunctions.primesBelowSubtype N ↔ (p : ℕ) < N := by
+  constructor
+  · intro hp
+    rw [GaloisForLFunctions.primesBelowSubtype] at hp
+    obtain ⟨q, hq, hqp⟩ := Finset.mem_map.mp hp
+    have hval := congrArg (fun r : Nat.Primes => (r : ℕ)) hqp
+    have hlt := (Nat.mem_primesBelow.mp q.property).1
+    rw [← hval]
+    exact hlt
+  · intro hp
+    rw [GaloisForLFunctions.primesBelowSubtype]
+    let q : {a // a ∈ Nat.primesBelow N} :=
+      ⟨(p : ℕ), Nat.mem_primesBelow.mpr ⟨hp, p.2⟩⟩
+    apply Finset.mem_map.mpr
+    exact ⟨q, by simp, Subtype.ext rfl⟩
+
+/-- The canonical ordinary-prime finite packets increase with the cutoff. -/
+theorem monotone_primesBelowSubtype :
+    Monotone GaloisForLFunctions.primesBelowSubtype := by
+  intro m n hmn p hp
+  rw [mem_primesBelowSubtype_iff] at hp ⊢
+  exact hp.trans_le hmn
+
+/-- Every ordinary prime enters the canonical finite-packet exhaustion. -/
+theorem cofinal_primesBelowSubtype (p : Nat.Primes) :
+    ∃ N, p ∈ GaloisForLFunctions.primesBelowSubtype N := by
+  exact ⟨(p : ℕ) + 1,
+    mem_primesBelowSubtype_iff.mpr (Nat.lt_succ_self _)⟩
+
+end RHTower
