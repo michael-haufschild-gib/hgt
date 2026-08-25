@@ -1,0 +1,194 @@
+import GaloisForLFunctions.RHTower.ThetaCuspHawkingTeukolskyFiniteMassParityRigidity
+import GaloisForLFunctions.RHTower.ThetaCuspHawkingTeukolskySexticJostDealiasing
+
+/-!
+# Sextic Teukolsky source from the second horizon-mass jet
+
+Let `G(Q,x,u)` be the exact Birmingham--Mokhtari scalar-minus-vector potential bracket.  Its
+second mass curvature at `x = 0` is
+
+`G''(0) = 36 (Q+u-1)/(Q+2)^2`.
+
+A negative-charge quadratic carrier has amplitude `conj(A)^2`.  Two insertions of a quadratic
+horizon mass response `h A conj(A)` therefore produce the sextic carrier
+
+`(h^2/2) A^2 conj(A)^4 G''(0)`.
+
+The complexified curvature is nonzero at every Xi divisor: for
+`Q = rho (2-rho)/4`, its imaginary part is `im(rho) (1-re(rho))/2`, while every nontrivial Xi
+divisor has `im(rho) != 0` and `0 < re(rho) < 1`.  The curvature is also affine and nonconstant in
+the exterior coordinate `u`.  Consequently no `u`-independent same-grade counterterm can erase
+this component at two distinct radii.
+
+Combining coefficient nonvanishing with the alias-free sextic Jost theorem shows that this
+canonical mass-jet source is on the negative gravitational Jost divisor exactly on the critical
+line.
+
+**[BRIDGE] [PAPER-PROVED] [LEAN-PROVED] [NOVELTY UNVERIFIED]**
+
+This module identifies the stationary-background, two-memory associated-grade component.  It does
+not assert that the complete reduced Einstein--Teukolsky source has no second term in the same
+memory and radial principal grade.
+-/
+
+open Complex Real Set Filter Topology
+
+namespace RHTower
+
+noncomputable section
+
+/-- Complexification of the exact second mass curvature of the `d=4` parity gap. -/
+def d4ComplexSecondMassParityCurvature (Q : ℂ) (u : ℝ) : ℂ :=
+  36 * (Q + (u : ℂ) - 1) / (Q + 2) ^ 2
+
+theorem d4ComplexSecondMassParityCurvature_ofReal (Q u : ℝ) :
+    d4ComplexSecondMassParityCurvature (Q : ℂ) u =
+      (d4SecondMassParityCurvature Q u : ℂ) := by
+  unfold d4ComplexSecondMassParityCurvature d4SecondMassParityCurvature
+  push_cast
+  rfl
+
+/-- Imaginary part of the Xi-labelled complex angular eigenvalue. -/
+lemma d4ThetaTeukolskyAngularQ_xi_im (q : XiZeroCopy) :
+    (d4ThetaTeukolskyAngularQ (xiSpectralPoint q)).im =
+      (q.1 : ℂ).im * (1 - (q.1 : ℂ).re) / 2 := by
+  rw [d4ThetaTeukolskyAngularQ_eq_rho,
+    d4ThetaTeukolskyRho_xiSpectralPoint]
+  simp
+  ring
+
+/-- Second mass curvature never vanishes at an actual Xi divisor. -/
+theorem d4ComplexSecondMassParityCurvature_xi_ne_zero
+    (q : XiZeroCopy) (u : ℝ) :
+    d4ComplexSecondMassParityCurvature
+        (d4ThetaTeukolskyAngularQ (xiSpectralPoint q)) u ≠ 0 := by
+  unfold d4ComplexSecondMassParityCurvature
+  apply div_ne_zero
+  · apply mul_ne_zero (by norm_num)
+    intro hnum
+    have him := congrArg Complex.im hnum
+    simp only [sub_im, add_im, ofReal_im, one_im, zero_im, sub_zero] at him
+    rw [d4ThetaTeukolskyAngularQ_xi_im] at him
+    have hheight := xi_divisor_support_im_ne_zero q.1
+    have hstrip := xi_divisor_support_re_mem_open_unit q.1
+    apply hheight
+    have hone : 1 - (q.1 : ℂ).re ≠ 0 := by linarith
+    have hprod : (q.1 : ℂ).im * (1 - (q.1 : ℂ).re) = 0 := by
+      linarith
+    exact (mul_eq_zero.mp hprod).resolve_right hone
+  · exact pow_ne_zero 2 (d4ThetaTeukolskyAngularQ_xi_add_two_ne_zero q)
+
+/-- Exact radial principal difference of the second mass curvature. -/
+theorem d4ComplexSecondMassParityCurvature_sub
+    (Q : ℂ) (u v : ℝ) (hQ2 : Q + 2 ≠ 0) :
+    d4ComplexSecondMassParityCurvature Q u -
+        d4ComplexSecondMassParityCurvature Q v =
+      36 * ((u - v : ℝ) : ℂ) / (Q + 2) ^ 2 := by
+  unfold d4ComplexSecondMassParityCurvature
+  field_simp [hQ2]
+  push_cast
+  ring
+
+/-- Xi-labelled curvature separates every two distinct exterior radii. -/
+theorem d4ComplexSecondMassParityCurvature_ne_const
+    (q : XiZeroCopy) {u v : ℝ} (huv : u ≠ v) :
+    d4ComplexSecondMassParityCurvature
+        (d4ThetaTeukolskyAngularQ (xiSpectralPoint q)) u ≠
+      d4ComplexSecondMassParityCurvature
+        (d4ThetaTeukolskyAngularQ (xiSpectralPoint q)) v := by
+  rw [ne_eq, ← sub_eq_zero, d4ComplexSecondMassParityCurvature_sub _ _ _
+    (d4ThetaTeukolskyAngularQ_xi_add_two_ne_zero q)]
+  apply div_ne_zero
+  · exact mul_ne_zero (by norm_num) (by exact_mod_cast sub_ne_zero.mpr huv)
+  · exact pow_ne_zero 2 (d4ThetaTeukolskyAngularQ_xi_add_two_ne_zero q)
+
+/-- No radially constant counterterm cancels the curvature at two distinct radii. -/
+theorem d4ComplexSecondMassParityCurvature_add_const_not_both_zero
+    (q : XiZeroCopy) {u v : ℝ} (huv : u ≠ v) (counterterm : ℂ) :
+    ¬(d4ComplexSecondMassParityCurvature
+          (d4ThetaTeukolskyAngularQ (xiSpectralPoint q)) u + counterterm = 0 ∧
+      d4ComplexSecondMassParityCurvature
+          (d4ThetaTeukolskyAngularQ (xiSpectralPoint q)) v + counterterm = 0) := by
+  rintro ⟨hu, hv⟩
+  apply d4ComplexSecondMassParityCurvature_ne_const q huv
+  linear_combination hu - hv
+
+/-- Canonical sextic coefficient obtained from two quadratic horizon-mass insertions into a
+charge-minus-two carrier. -/
+def d4ThetaHawkingSexticMassJetCoefficient
+    (horizonMassResponse amplitude : ℂ) (u : ℝ) (z : ℂ) : ℂ :=
+  (1 / 2 : ℂ) * horizonMassResponse ^ 2 * amplitude ^ 2 *
+    (starRingEnd ℂ amplitude) ^ 4 *
+      d4ComplexSecondMassParityCurvature (d4ThetaTeukolskyAngularQ z) u
+
+/-- Nonzero absorbed response and seed give a nonzero sextic mass-jet coefficient at every Xi
+divisor. -/
+theorem d4ThetaHawkingSexticMassJetCoefficient_xi_ne_zero
+    {horizonMassResponse amplitude : ℂ}
+    (hh : horizonMassResponse ≠ 0) (ha : amplitude ≠ 0)
+    (q : XiZeroCopy) (u : ℝ) :
+    d4ThetaHawkingSexticMassJetCoefficient horizonMassResponse amplitude u
+        (xiSpectralPoint q) ≠ 0 := by
+  unfold d4ThetaHawkingSexticMassJetCoefficient
+  exact mul_ne_zero
+    (mul_ne_zero
+      (mul_ne_zero
+        (mul_ne_zero (by norm_num) (pow_ne_zero 2 hh))
+        (pow_ne_zero 2 ha))
+      (pow_ne_zero 4 ((map_ne_zero (starRingEnd ℂ)).2 ha)))
+    (d4ComplexSecondMassParityCurvature_xi_ne_zero q u)
+
+/-- The complete sextic mass-jet coefficient distinguishes every pair of radii. -/
+theorem d4ThetaHawkingSexticMassJetCoefficient_ne_const
+    {horizonMassResponse amplitude : ℂ}
+    (hh : horizonMassResponse ≠ 0) (ha : amplitude ≠ 0)
+    (q : XiZeroCopy) {u v : ℝ} (huv : u ≠ v) :
+    d4ThetaHawkingSexticMassJetCoefficient horizonMassResponse amplitude u
+        (xiSpectralPoint q) ≠
+      d4ThetaHawkingSexticMassJetCoefficient horizonMassResponse amplitude v
+        (xiSpectralPoint q) := by
+  let prefactor : ℂ :=
+    (1 / 2 : ℂ) * horizonMassResponse ^ 2 * amplitude ^ 2 *
+      (starRingEnd ℂ amplitude) ^ 4
+  have hprefactor : prefactor ≠ 0 := by
+    exact mul_ne_zero
+      (mul_ne_zero
+        (mul_ne_zero (by norm_num) (pow_ne_zero 2 hh))
+        (pow_ne_zero 2 ha))
+      (pow_ne_zero 4 ((map_ne_zero (starRingEnd ℂ)).2 ha))
+  change prefactor * d4ComplexSecondMassParityCurvature
+      (d4ThetaTeukolskyAngularQ (xiSpectralPoint q)) u ≠
+    prefactor * d4ComplexSecondMassParityCurvature
+      (d4ThetaTeukolskyAngularQ (xiSpectralPoint q)) v
+  exact fun h => d4ComplexSecondMassParityCurvature_ne_const q huv
+    (mul_left_cancel₀ hprefactor h)
+
+/-- No radially constant same-grade term cancels the sextic coefficient at two radii. -/
+theorem d4ThetaHawkingSexticMassJetCoefficient_add_const_not_both_zero
+    {horizonMassResponse amplitude : ℂ}
+    (hh : horizonMassResponse ≠ 0) (ha : amplitude ≠ 0)
+    (q : XiZeroCopy) {u v : ℝ} (huv : u ≠ v) (counterterm : ℂ) :
+    ¬(d4ThetaHawkingSexticMassJetCoefficient horizonMassResponse amplitude u
+          (xiSpectralPoint q) + counterterm = 0 ∧
+      d4ThetaHawkingSexticMassJetCoefficient horizonMassResponse amplitude v
+          (xiSpectralPoint q) + counterterm = 0) := by
+  rintro ⟨hu, hv⟩
+  apply d4ThetaHawkingSexticMassJetCoefficient_ne_const hh ha q huv
+  linear_combination hu - hv
+
+/-- Nonzero canonical sextic source and negative-Jost incidence occur together exactly on the
+critical line. -/
+theorem d4ThetaHawkingSexticMassJetSource_incides_iff_re_eq_half
+    {horizonMassResponse amplitude : ℂ}
+    (hh : horizonMassResponse ≠ 0) (ha : amplitude ≠ 0)
+    (q : XiZeroCopy) (u : ℝ) :
+    (d4ThetaHawkingSexticMassJetCoefficient horizonMassResponse amplitude u
+          (xiSpectralPoint q) ≠ 0 ∧
+      d4ThetaHawkingChargeDecayNegativeJost 0 (xiSpectralPoint q) = 0) ↔
+      (q.1 : ℂ).re = 1 / 2 := by
+  rw [d4ThetaHawkingSexticNegativeJost_xi_eq_zero_iff]
+  simp [d4ThetaHawkingSexticMassJetCoefficient_xi_ne_zero hh ha q u]
+
+end
+
+end RHTower

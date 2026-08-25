@@ -1,8 +1,8 @@
 # Route P cubic rank--coarea dissipation quantum
 
 - **ID:** `CUBIC-RANK-COAREA-DISSIPATION-QUANTUM`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** completed-Xi cubic irregular-microlocal Riemann--Hilbert route
 - **Statement:** Rank-magnitude-preserving contracted/unit cubic Xi landings dissipate at least the common-rank square times the sum of inverse local cover--branch complexities.
 
@@ -16,10 +16,10 @@ the theorem must use only intrinsic landing data and must not assume the missing
 
 - [x] 0 -> 1 in-progress: well-posed, source-pure, hostile attack and Door passport complete
 - [x] 1 -> 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 -> 3 formalized: targeted Lean theorem and new-declaration axiom audit
+- [x] 2 -> 3 formalized: targeted Lean theorem and new-declaration axiom audit
 - [ ] 3 -> 4 publication-ready: standalone paper (theorem + proof + Lean certificate + Door-2)
 
-## Exact conjecture
+## Exact theorem
 
 Fix coefficient-generated local Puiseux data `d_a` at the nonempty marked-point family
 `a : Fin (p+1)`.  Write `N_a` for local common-cover degree, `m_a` for local branch count, and
@@ -112,11 +112,27 @@ Absence is an audit inference, not a universal priority claim.
 - **New insight:** each marked point must independently pay for the same fused physical-rank
   channel; global dissipation accumulates all inverse local cover--branch capacities rather than
   selecting one favourable point or assuming terminal-coordinate control.
-- **Status:** paper proof dependency-closed; Lean formalization pending.  Application-level novelty
-  survives preliminary corpus/literature attack; local finite-dimensional lemma is standard.
+- **Status:** paper proof dependency-closed and exact theorem formalized in Lean.  Application-level
+  novelty survives preliminary corpus/literature attack; local finite-dimensional lemma is
+  standard.
+
+## Lean formalization
+
+Implemented in
+`formal/GaloisForLFunctions/RHTower/RoutePPrimitiveGammaJuliaStokesCubicRankCoareaDissipationQuantum.lean`.
+Public declarations:
+
+- `routePPrimitiveGammaJuliaStokesCubicUnitLanding_cumulativeRankCoareaQuantum_pos_le_blockEnergy`;
+- `routePPrimitiveGammaJuliaStokesCubicRankMagnitudePreservingMovingLanding_rankCoarea_dissipationQuantum`.
+
+All pendant-edge, branch-count, and division lemmas remain private.  Targeted module check passed.
+Both public declarations depend exactly on `[propext, Classical.choice, Quot.sound]`; no project
+axiom, `sorry`, `admit`, `opaque`, or `unsafe` declaration was introduced.  Temporary scratch and
+dependency `.olean` files were removed.  No umbrella build was run.
 
 ## Log
 
 - 2026-08-25 -- direct coefficient-faithful source bridge killed as circular.
 - 2026-08-25 -- stronger rank-only cumulative survivor conjectured and paper proof closed.
 - 2026-08-25 -- promoted to fully proven after hostile dependency and circularity audit.
+- 2026-08-25 -- formalized; targeted module check and new-declaration axiom audit passed.

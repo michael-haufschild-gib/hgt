@@ -1460,3 +1460,27 @@ There is no longer any ambiguity between the gcd-reduced four-index diagonal, mu
 product fibres, finite Dirichlet convolution, and the short arithmetic model. Remaining arithmetic
 gate is now exactly a sharp asymptotic or upper bound for `levinsonCriticalDetectorLongEnergy` in
 the AFE scaling regime. Analytic gate remains the stationary direct/reflected cross integral.
+
+## Brick 5y critical-line stationary mixed cross (2026-08-25)
+
+Three axiom-clean leaves now close the phase bookkeeping and exact finite-polynomial reduction at
+zero displacement:
+
+* `RHTower/ZetaChiCriticalLineOscillatoryIntegral.lean` identifies the critical-line chi factor
+  with the Hardy-theta phase and applies the proved negative-curvature van der Corput estimate to
+  every linear twist, including stationary frequencies;
+* `RHTower/ZetaChiCriticalDirichletCross.lean` expands an arbitrary finite chi-twisted
+  positive/negative Dirichlet cross and proves an explicit coefficient-`ell^1` integral bound;
+* `RHTower/SmoothAFEZetaCriticalFrozenCross.lean` specializes that bound exactly to the conjugated
+  direct mollified smooth-AFE head times the frozen reflected critical head, identifies its literal
+  convolution coefficient, and factors its `ell^1` mass through both head arrays and the linear
+  mollifier.
+
+Every leaf passes exact-module `lake build` and declaration-local `#print axioms`; dependencies are
+only `propext, Classical.choice, Quot.sound`. They are wired into `RHTower.lean`; no umbrella build
+was run.
+
+Remaining cross-term gate is displaced-line transfer together with coefficient summation sharp
+enough for the Levinson scaling; the current `ell^1` bound deliberately does not claim that
+asymptotic. Arithmetic gate remains the sharp long-tail estimate for
+`levinsonCriticalDetectorLongEnergy`, followed by published parameter optimization above `1/3`.

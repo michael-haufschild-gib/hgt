@@ -254,6 +254,53 @@ with direct check, targeted build, and standard-axiom audit passing.  It does no
 operator theorem identifying the literal incidence's approximation-number ideal with the adapted
 tube integral.
 
+`CriticalPrimeFockAdaptedCellMass.lean` now proves the exact arithmetic metric-cell law with no
+model-density substitution: for cell centers `x_n=n^(2/m)`, the literal shrinking-window mass
+`primeLogWindowMass x_n (rho_m x_n)` has `q`-summable powers exactly when
+`q>m/(m-4)`.  This formalizes both the relative PNT comparison and the load-bearing adapted-volume
+cell count in one unconditional theorem.  The targeted leaf build and axiom audit passed with only
+`propext`, `Classical.choice`, and `Quot.sound`.  Remaining gap is now specifically the analytic
+operator localization theorem comparing approximation numbers of the concrete incidence to these
+adapted-cell masses; card therefore stays at Stage 2.
+
+`CriticalPrimeFockAtomicCellAverage.lean` further restores the literal Toeplitz-measure atom
+factor from `(5)`: each prime term is weighted by
+`rho_m(log p)^2/rho_m(x_n)^2`.  Exact radius monotonicity bounds this atomic average above and below
+by fixed positive multiples of the unweighted prime-window cell mass, and the module proves its
+`q`-power series converges exactly for `q>m/(m-4)`.  Targeted build and final-theorem axiom audit
+passed with the same standard three axioms.  Thus arithmetic averaging, atom normalization, and
+adapted metric cell count are dependency-closed; only operator-to-cell approximation-number
+localization remains.
+
+`CriticalPrimeFockExactToeplitzApproximationBridge.lean` now proves the final ideal-theoretic
+transfer: eventual two-sided comparison between approximation numbers and the literal exact
+Toeplitz cell averages implies `T in S_q` exactly when `q>m/(m-4)`.  This leaf is unconditional as
+a general operator theorem, targeted-built, and axiom-audited.  It does not posit a provider for the
+concrete incidence; the sole unresolved theorem is the concrete doubling-Fock localization estimate
+establishing that two-sided comparison.
+
+`PolynomialFockExactToeplitzAtomScale.lean` removes the remaining diagonal-normalization shortcut.
+It defines the exact raw-evaluation atom coefficient
+`exp(2 phi_m(x))/K_m(x,x)` and proves unconditional two-sided comparison with the square of the
+adapted radius from the already formalized sharp diagonal kernel bounds.  Targeted build and
+new-theorem axiom audits passed with only `propext`, `Classical.choice`, and `Quot.sound`.
+
+`CriticalPrimeFockExactToeplitzCellAverage.lean` then forms the literal normalized-kernel Toeplitz
+measure average, including `exp(2 phi_m(log k))/K_m(log k,log k)` at every prime-power atom.  It
+proves eventual two-sided comparison with the arithmetic atomic average and the exact unconditional
+law
+
+```text
+sum_n A_exact(m,n)^q < infinity  iff  q>m/(m-4).
+```
+
+Its targeted leaf build and endpoint axiom audit passed.  Arithmetic windows, adapted volume,
+literal atom normalization, and exact cell-average summability are therefore closed.  Only the
+concrete operator-localization theorem proving
+`HasCriticalPrimeFockExactToeplitzApproximationCellComparison` for the actual doubling-Fock
+Toeplitz operator remains; no interface assumption is counted as its provider, so this card remains
+at Stage 2.
+
 ## Gates
 
 - [x] prime incidence identified with a positive doubling-Fock Toeplitz operator

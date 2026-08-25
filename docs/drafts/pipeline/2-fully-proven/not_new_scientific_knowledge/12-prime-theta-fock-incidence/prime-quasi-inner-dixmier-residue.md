@@ -548,3 +548,70 @@ still analytic: identify the distinguished block through the source isometries w
 apply the already formalized perturbation/residue capstone.  The actual Gauss critical residue and
 Euler-family reconstruction are closed, so no unproved modulation or reconstruction premise is
 being hidden.
+
+## Lean progress log — 2026-08-25
+
+`HTGeometry/CayleyBoundaryL2Unitary.lean` and
+`RHTower/CCMOnePrimeCayleyTransport.lean` close the exact full-space source transport.  The explicit
+Cayley half-density is proved surjective after the omitted circle endpoint is handled as a null set,
+then bundled as a unitary.  In the project's Fourier convention the nonnegative circle Hardy space
+maps to upper Hardy boundary, so the source projection transports to the complementary circle
+projection.  The literal product multiplier and full defect satisfy the unconditional intertwining
+
+```text
+H_p U_Cayley = U_Cayley (Q M_(rho_infinity rho_p) (1-Q)).
+```
+
+Direct checks, targeted leaf builds, and new-declaration axiom audits passed; dependencies are only
+`[propext, Classical.choice, Quot.sound]`.
+
+`RHTower/ConnesConsaniDoublePoleFiniteRank.lean` formalizes the exact `E_0` contribution of
+Connes--Consani Theorem 4.4.  It constructs source isometries
+
+```text
+U_+ e_n = e_n,    U_- e_n = e_(-(n+1)),
+```
+
+the geometric and first-weighted geometric vectors at the literal double-pole node `x=-1/3`, and
+the source coefficients `alpha_p`, `beta_p`.  Its Fourier matrix is proved exactly:
+
+```text
+<e_(-(r+1)),E_0 e_s>
+  = alpha_p x^(r+s) + beta_p (r+s) x^(r+s).
+```
+
+The operator is then proved to have rank at most two and hence to be Schatten one, with no premises.
+Direct check, targeted leaf build, and axiom audit passed with only the same standard axioms.
+
+`RHTower/CCMPaperCayleyTransport.lean` resolves the Fourier-orientation mismatch between the
+project Cayley convention and Theorem 4.4.  The explicit Hardy flip `J e_n=e_(-n-1)` is unitary,
+exchanges `Q` and `1-Q`, and yields the paper-coordinate unitary `W=J U_Cayley`.  The source
+projection and literal one-prime defect then satisfy the exact unconditional intertwining
+
+```text
+P W = W Q,
+H_p W = W ((1-Q) M_paper Q).
+```
+
+Targeted leaf build and all four new-declaration axiom audits passed with only
+`[propext, Classical.choice, Quot.sound]`.  This fixes the source/target orientation used by the
+displayed `E_0` matrix rather than changing the paper statement.
+
+`RHTower/ConnesConsaniArchimedeanPoleTraceClass.lean` formalizes the complete nonzero
+archimedean-pole series `E_infinity`.  For every paper index `N>=1` it constructs the literal Cayley
+node `x_N=1-4/(4N+3)`, normalized source/range Szego vectors, and the displayed Theorem 4.4 Gamma
+coefficient.  A proved half-integer-Gamma/factorial identity rewrites that coefficient to an
+absolutely summable factorial envelope; the resulting normalized rank-one series is therefore
+unconditionally Schatten one.  The source-series equality is explicit, not hidden behind a
+summability premise.  Direct check, targeted leaf build, and five new-declaration axiom audits
+passed with only `[propext, Classical.choice, Quot.sound]`.
+
+`RHTower/ConnesConsaniPoleRemainderTraceClass.lean` packages the exact pole remainder
+`R_p=E_infinity+E_0` and proves it Schatten one unconditionally.  Targeted leaf build and the new
+capstone axiom audit passed with only `[propext, Classical.choice, Quot.sound]`.  Thus once the
+literal source equality isolates `E_p`, no further trace-class argument remains.
+
+Card remains at Stage 2.  Remaining source theorem is the exact nonzero-prime-pole block `E_p` and
+its equality, together with `E_infinity+E_p+E_0`, to the literal paper-coordinate circle defect.
+The trace-class `E_infinity` and finite-rank `E_0` legs plus full Cayley transport are now closed
+rather than assumed.

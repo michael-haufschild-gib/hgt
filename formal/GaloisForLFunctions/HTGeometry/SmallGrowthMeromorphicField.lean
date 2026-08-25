@@ -187,6 +187,38 @@ theorem denominator_eventually_ne_zero {x : EntireField ℂ}
     (fun z _ => (p.denominator.2 z (Set.mem_univ z)).meromorphicAt)
     (fun z _ => horder z)
 
+/-- Two entire-fraction presentations of the same field element define the same meromorphic
+function off their denominator divisors. -/
+theorem function_eventuallyEq {x : EntireField ℂ}
+    (p q : EntireFractionPresentation x) :
+    p.function =ᶠ[Filter.codiscrete ℂ] q.function := by
+  have hpden : algebraMap (entireSubring ℂ) (EntireField ℂ) p.denominator ≠ 0 := by
+    simpa only [map_zero] using
+      (IsFractionRing.injective (entireSubring ℂ) (EntireField ℂ)).ne
+        p.denominator_ne_zero
+  have hqden : algebraMap (entireSubring ℂ) (EntireField ℂ) q.denominator ≠ 0 := by
+    simpa only [map_zero] using
+      (IsFractionRing.injective (entireSubring ℂ) (EntireField ℂ)).ne
+        q.denominator_ne_zero
+  have hcrossMap : algebraMap (entireSubring ℂ) (EntireField ℂ)
+      (p.numerator * q.denominator) =
+      algebraMap (entireSubring ℂ) (EntireField ℂ)
+        (q.numerator * p.denominator) := by
+    simp only [map_mul]
+    apply (div_eq_div_iff hpden hqden).mp
+    exact p.eq_div.symm.trans q.eq_div
+  have hcross : p.numerator * q.denominator = q.numerator * p.denominator :=
+    (IsFractionRing.injective (entireSubring ℂ) (EntireField ℂ)) hcrossMap
+  filter_upwards [p.denominator_eventually_ne_zero,
+    q.denominator_eventually_ne_zero] with z hp hq
+  change (p.numerator : ℂ → ℂ) z / (p.denominator : ℂ → ℂ) z =
+    (q.numerator : ℂ → ℂ) z / (q.denominator : ℂ → ℂ) z
+  apply div_eq_div_iff hp hq |>.mpr
+  have hz := congrArg (fun f : entireSubring ℂ => (f : ℂ → ℂ) z) hcross
+  change (p.numerator : ℂ → ℂ) z * (q.denominator : ℂ → ℂ) z =
+    (q.numerator : ℂ → ℂ) z * (p.denominator : ℂ → ℂ) z at hz
+  exact hz
+
 /-- Sum of two entire-fraction presentations. -/
 def add {x y : EntireField ℂ} (p : EntireFractionPresentation x)
     (q : EntireFractionPresentation y) : EntireFractionPresentation (x + y) where
@@ -420,7 +452,7 @@ theorem HasSmallGrowth.neg {x : EntireField ℂ} (hx : HasSmallGrowth x) :
   have hcorder : ∀ z, meromorphicOrderAt c z ≠ ⊤ := by
     intro z
     rw [meromorphicOrderAt_const]
-    simp [c]
+    simp
   have hcsmall : characteristic c ⊤ =o[atTop] id :=
     characteristic_const_isLittleO (-1)
   have hprod := characteristic_mul_isLittleO hcmero hcorder p.meromorphic
@@ -430,6 +462,218 @@ theorem HasSmallGrowth.neg {x : EntireField ℂ} (hx : HasSmallGrowth x) :
     simp [c]
   rw [p.function_neg, ← hfun]
   exact hprod
+
+/-- Nagoshi's field of global meromorphic functions with characteristic `T(r,f) = o(r)`. -/
+def smallGrowthMeromorphicField : Subfield (EntireField ℂ) where
+  carrier := HasSmallGrowth
+  zero_mem' := hasSmallGrowth_zero
+  one_mem' := hasSmallGrowth_one
+  add_mem' := HasSmallGrowth.add
+  mul_mem' := HasSmallGrowth.mul
+  neg_mem' := HasSmallGrowth.neg
+  inv_mem' := fun _ hx => hx.inv
+
+@[simp]
+theorem mem_smallGrowthMeromorphicField_iff (x : EntireField ℂ) :
+    x ∈ smallGrowthMeromorphicField ↔ HasSmallGrowth x :=
+  Iff.rfl
+
+/-- The coefficient field as a field type. -/
+abbrev SmallGrowthMeromorphicField : Type := smallGrowthMeromorphicField
+
+/-! ## Canonical representatives in the codiscrete germ ring -/
+
+/-- A chosen entire-fraction presentation of a small-growth field element. -/
+noncomputable def smallGrowthPresentation (x : SmallGrowthMeromorphicField) :
+    EntireFractionPresentation (x : EntireField ℂ) :=
+  Classical.choose x.2
+
+/-- Literal global meromorphic representative chosen for an `F_s` element. -/
+noncomputable def smallGrowthFunction (x : SmallGrowthMeromorphicField) : ℂ → ℂ :=
+  (smallGrowthPresentation x).function
+
+theorem smallGrowthFunction_meromorphic (x : SmallGrowthMeromorphicField) :
+    Meromorphic (smallGrowthFunction x) :=
+  (smallGrowthPresentation x).meromorphic
+
+theorem smallGrowthFunction_characteristic_isLittleO
+    (x : SmallGrowthMeromorphicField) :
+    characteristic (smallGrowthFunction x) ⊤ =o[atTop] id :=
+  (Classical.choose_spec x.2)
+
+theorem smallGrowthFunction_add_eventuallyEq
+    (x y : SmallGrowthMeromorphicField) :
+    smallGrowthFunction (x + y) =ᶠ[Filter.codiscrete ℂ]
+      smallGrowthFunction x + smallGrowthFunction y := by
+  exact ((smallGrowthPresentation (x + y)).function_eventuallyEq
+    ((smallGrowthPresentation x).add (smallGrowthPresentation y))).trans
+      ((smallGrowthPresentation x).function_add_eventuallyEq
+        (smallGrowthPresentation y))
+
+theorem smallGrowthFunction_mul_eventuallyEq
+    (x y : SmallGrowthMeromorphicField) :
+    smallGrowthFunction (x * y) =ᶠ[Filter.codiscrete ℂ]
+      smallGrowthFunction x * smallGrowthFunction y := by
+  exact ((smallGrowthPresentation (x * y)).function_eventuallyEq
+    ((smallGrowthPresentation x).mul (smallGrowthPresentation y))).trans
+      ((smallGrowthPresentation x).function_mul_eventuallyEq
+        (smallGrowthPresentation y))
+
+theorem smallGrowthFunction_zero_eventuallyEq :
+    smallGrowthFunction (0 : SmallGrowthMeromorphicField) =ᶠ[Filter.codiscrete ℂ]
+      (0 : ℂ → ℂ) := by
+  let p : EntireFractionPresentation (0 : EntireField ℂ) :=
+    { numerator := 0
+      denominator := 1
+      denominator_ne_zero := one_ne_zero
+      eq_div := by simp }
+  refine ((smallGrowthPresentation (0 : SmallGrowthMeromorphicField)).function_eventuallyEq p).trans ?_
+  exact Filter.Eventually.of_forall fun z => by
+    change (0 : ℂ) / 1 = 0
+    simp
+
+theorem smallGrowthFunction_one_eventuallyEq :
+    smallGrowthFunction (1 : SmallGrowthMeromorphicField) =ᶠ[Filter.codiscrete ℂ]
+      (1 : ℂ → ℂ) := by
+  let p : EntireFractionPresentation (1 : EntireField ℂ) :=
+    { numerator := 1
+      denominator := 1
+      denominator_ne_zero := one_ne_zero
+      eq_div := by simp }
+  refine ((smallGrowthPresentation (1 : SmallGrowthMeromorphicField)).function_eventuallyEq p).trans ?_
+  exact Filter.Eventually.of_forall fun z => by
+    change (1 : ℂ) / 1 = 1
+    simp
+
+/-- Canonical small-growth representatives form a ring homomorphism into codiscrete germs. -/
+noncomputable def smallGrowthMeromorphicToCodiscreteGerm :
+    SmallGrowthMeromorphicField →+* Germ (Filter.codiscrete ℂ) ℂ where
+  toFun x := Germ.coeRingHom (Filter.codiscrete ℂ) (smallGrowthFunction x)
+  map_zero' := by
+    change ((smallGrowthFunction (0 : SmallGrowthMeromorphicField) : ℂ → ℂ) :
+      Germ (Filter.codiscrete ℂ) ℂ) = (((0 : ℂ → ℂ)) : Germ (Filter.codiscrete ℂ) ℂ)
+    exact Germ.coe_eq.mpr smallGrowthFunction_zero_eventuallyEq
+  map_one' := by
+    change ((smallGrowthFunction (1 : SmallGrowthMeromorphicField) : ℂ → ℂ) :
+      Germ (Filter.codiscrete ℂ) ℂ) = (((1 : ℂ → ℂ)) : Germ (Filter.codiscrete ℂ) ℂ)
+    exact Germ.coe_eq.mpr smallGrowthFunction_one_eventuallyEq
+  map_add' x y := by
+    change ((smallGrowthFunction (x + y) : ℂ → ℂ) : Germ (Filter.codiscrete ℂ) ℂ) =
+      (((smallGrowthFunction x + smallGrowthFunction y : ℂ → ℂ)) :
+        Germ (Filter.codiscrete ℂ) ℂ)
+    exact Germ.coe_eq.mpr (smallGrowthFunction_add_eventuallyEq x y)
+  map_mul' x y := by
+    change ((smallGrowthFunction (x * y) : ℂ → ℂ) : Germ (Filter.codiscrete ℂ) ℂ) =
+      (((smallGrowthFunction x * smallGrowthFunction y : ℂ → ℂ)) :
+        Germ (Filter.codiscrete ℂ) ℂ)
+    exact Germ.coe_eq.mpr (smallGrowthFunction_mul_eventuallyEq x y)
+
+/-- Every complex constant belongs to the small-growth field. -/
+theorem hasSmallGrowth_constEntire (c : ℂ) : HasSmallGrowth (constEntire ℂ c) := by
+  let a : entireSubring ℂ := constEntireRing ℂ c
+  let p : EntireFractionPresentation (constEntire ℂ c) :=
+    { numerator := a
+      denominator := 1
+      denominator_ne_zero := one_ne_zero
+      eq_div := by
+        change algebraMap (entireSubring ℂ) (EntireField ℂ) a =
+          algebraMap (entireSubring ℂ) (EntireField ℂ) a /
+            algebraMap (entireSubring ℂ) (EntireField ℂ) 1
+        simp }
+  refine ⟨p, ?_⟩
+  have hfun : p.function = fun _ : ℂ => c := by
+    funext z
+    change c / 1 = c
+    simp
+  rw [hfun]
+  exact characteristic_const_isLittleO c
+
+/-- Complex constants embedded in Nagoshi's coefficient field. -/
+def complexToSmallGrowthMeromorphic : ℂ →+* SmallGrowthMeromorphicField :=
+  (constEntire ℂ).codRestrict smallGrowthMeromorphicField
+    (fun c => hasSmallGrowth_constEntire c)
+
+theorem smallGrowthFunction_complex_eventuallyEq (c : ℂ) :
+    smallGrowthFunction (complexToSmallGrowthMeromorphic c)
+      =ᶠ[Filter.codiscrete ℂ] fun _ : ℂ => c := by
+  let a : entireSubring ℂ := constEntireRing ℂ c
+  let p : EntireFractionPresentation (constEntire ℂ c) :=
+    { numerator := a
+      denominator := 1
+      denominator_ne_zero := one_ne_zero
+      eq_div := by
+        change algebraMap (entireSubring ℂ) (EntireField ℂ) a =
+          algebraMap (entireSubring ℂ) (EntireField ℂ) a /
+            algebraMap (entireSubring ℂ) (EntireField ℂ) 1
+        simp }
+  refine ((smallGrowthPresentation (complexToSmallGrowthMeromorphic c)).function_eventuallyEq
+    p).trans ?_
+  exact Filter.Eventually.of_forall fun z => by
+    change c / 1 = c
+    simp
+
+theorem smallGrowthMeromorphicToCodiscreteGerm_complex (c : ℂ) :
+    smallGrowthMeromorphicToCodiscreteGerm
+        (complexToSmallGrowthMeromorphic c) =
+      Germ.coeRingHom (Filter.codiscrete ℂ) (fun _ : ℂ => c) := by
+  change ((smallGrowthFunction (complexToSmallGrowthMeromorphic c) : ℂ → ℂ) :
+    Germ (Filter.codiscrete ℂ) ℂ) =
+      (((fun _ : ℂ => c) : ℂ → ℂ) : Germ (Filter.codiscrete ℂ) ℂ)
+  exact Germ.coe_eq.mpr (smallGrowthFunction_complex_eventuallyEq c)
+
+/-- Canonical representatives realize every finite complex linear combination codiscretely. -/
+theorem smallGrowthFunction_sum_complex_mul_eventuallyEq {ι : Type*} [Fintype ι]
+    (a : ι → ℂ) (x : ι → SmallGrowthMeromorphicField) :
+    smallGrowthFunction
+        (∑ i, complexToSmallGrowthMeromorphic (a i) * x i)
+      =ᶠ[Filter.codiscrete ℂ]
+        fun z => ∑ i, a i * smallGrowthFunction (x i) z := by
+  apply Germ.coe_eq.mp
+  change smallGrowthMeromorphicToCodiscreteGerm
+      (∑ i, complexToSmallGrowthMeromorphic (a i) * x i) =
+    Germ.coeRingHom (Filter.codiscrete ℂ)
+      (fun z => ∑ i, a i * smallGrowthFunction (x i) z)
+  rw [map_sum]
+  simp_rw [map_mul, smallGrowthMeromorphicToCodiscreteGerm_complex]
+  have hfun : (fun z => ∑ i, a i * smallGrowthFunction (x i) z) =
+      ∑ i, fun z => a i * smallGrowthFunction (x i) z := by
+    funext z
+    simp
+  rw [hfun, map_sum]
+  apply Finset.sum_congr rfl
+  intro i _
+  change Germ.coeRingHom (Filter.codiscrete ℂ) (fun _ : ℂ => a i) *
+      Germ.coeRingHom (Filter.codiscrete ℂ) (smallGrowthFunction (x i)) =
+    Germ.coeRingHom (Filter.codiscrete ℂ)
+      (fun z => a i * smallGrowthFunction (x i) z)
+  rw [← map_mul]
+  apply Germ.coe_eq.mpr
+  exact Filter.Eventually.of_forall fun _ => rfl
+
+theorem complexToSmallGrowthMeromorphic_injective :
+    Function.Injective complexToSmallGrowthMeromorphic := by
+  intro c d hcd
+  exact constEntire_injective (congrArg Subtype.val hcd)
+
+noncomputable instance smallGrowthMeromorphicComplexAlgebra :
+    Algebra ℂ SmallGrowthMeromorphicField :=
+  complexToSmallGrowthMeromorphic.toAlgebra
+
+local instance smallGrowthUpperEndDomain : IsDomain upperEndAnalyticSubring :=
+  isDomain_upperEndAnalyticSubring
+
+/-- Faithful realization of `F_s` in the upper-end meromorphic carrier. -/
+def smallGrowthMeromorphicToUpperEnd :
+    SmallGrowthMeromorphicField →+* upperEndMeroField :=
+  entireFieldToUpperEndMero.comp smallGrowthMeromorphicField.subtype
+
+theorem smallGrowthMeromorphicToUpperEnd_injective :
+    Function.Injective smallGrowthMeromorphicToUpperEnd :=
+  entireFieldToUpperEndMero_injective.comp Subtype.val_injective
+
+noncomputable instance smallGrowthMeromorphicUpperEndAlgebra :
+    Algebra SmallGrowthMeromorphicField upperEndMeroField :=
+  smallGrowthMeromorphicToUpperEnd.toAlgebra
 
 end
 
