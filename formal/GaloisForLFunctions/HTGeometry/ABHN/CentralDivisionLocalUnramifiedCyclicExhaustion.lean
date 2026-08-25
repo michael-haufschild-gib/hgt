@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.ABHN.CentralDivisionLocalCyclicReconstruction
 import GaloisForLFunctions.HTGeometry.ABHN.CentralDivisionUnramifiedRootLiftEquiv
+import GaloisForLFunctions.HTGeometry.ABHN.CyclicGaloisH2BrauerFaithful
 
 /-!
 # Unramified cyclic exhaustion of the local Brauer group
@@ -38,7 +39,9 @@ theorem nonarchimedeanLocal_brauerGroup_exists_unramifiedRootLiftCyclicRepresent
           let U := FractionRing B
           ∃ (_ : IsDomain B) (_ : Algebra F U),
             Nonempty (U ≃ₐ[F] T) ∧
-              Nonempty (cyclicGaloisH2 F T ≃+ ZMod R.polynomial.natDegree) := by
+              Nonempty (cyclicGaloisH2 F T ≃+ ZMod R.polynomial.natDegree) ∧
+                Nonempty (ZMod R.polynomial.natDegree ≃+
+                  cyclicGaloisBrauerSubgroup F T) := by
   letI : ValuativeRel F := .ofValuation (NormedField.valuation (K := F))
   letI : (Valued.v : Valuation F NNReal).IsNontrivial := by
     change (NormedField.valuation (K := F)).IsNontrivial
@@ -74,14 +77,41 @@ theorem nonarchimedeanLocal_brauerGroup_exists_unramifiedRootLiftCyclicRepresent
   letI : FiniteDimensional F T := by infer_instance
   letI : IsGalois F T := hGalois
   letI : IsCyclic Gal(T / F) := hCyclic
-  obtain ⟨R, hRdegree, hdom, aFU, ⟨⟨eUT⟩, ⟨hInv⟩⟩⟩ :=
+  obtain ⟨R, hRdegree, hdom, aFU, ⟨eUT⟩, ⟨hInv⟩⟩ :=
     divisionAlgebraResidueExhaustingMaximalSubfield_exists_unramifiedRootLiftAlgEquiv
       (F := F) (A := D) T hT hdegree hres
+  let hBrauerInv : ZMod R.polynomial.natDegree ≃+ cyclicGaloisBrauerSubgroup F T :=
+    cyclicGaloisInvariantBrauerSubgroupAddEquiv
+      F T R.polynomial.natDegree hInv
   refine ⟨T, inferInstance, inferInstance, inferInstance, inferInstance, inferInstance, a, ?_,
-    R, hRdegree, hdom, aFU, ⟨⟨eUT⟩, ⟨hInv⟩⟩⟩
+    R, hRdegree, hdom, aFU, ⟨eUT⟩, ⟨hInv⟩, ⟨hBrauerInv⟩⟩
   exact hx.trans (brauerClass_eq_of_algEquiv
     (cyclicGaloisAlgebraCSA F T ((a⁻¹ : Fˣ) : F) (Units.ne_zero (a⁻¹)))
     (centralDivisionCSA F D) e).symm
+
+/-- Every Brauer class over a nonarchimedean local field lies in a finite cyclic subgroup that
+is an explicitly certified unramified cyclic slice. This is the finite-slice form of local Brauer
+exhaustion needed before assembling the `ℚ/ℤ` colimit invariant. -/
+theorem nonarchimedeanLocal_brauerGroup_exists_finiteUnramifiedCyclicSlice
+    (x : BrauerGroup F) :
+    ∃ (n : ℕ) (S : AddSubgroup (BrauerGroup F)), Nonempty (ZMod n ≃+ S) ∧ x ∈ S := by
+  letI : ValuativeRel F := .ofValuation (NormedField.valuation (K := F))
+  letI : (Valued.v : Valuation F NNReal).IsNontrivial := by
+    change (NormedField.valuation (K := F)).IsNontrivial
+    exact Valuation.RankOne.toIsNontrivial
+  letI : IsNonarchimedeanLocalField F :=
+    isNonarchimedeanLocalField_of_valued_of_locallyCompact F NNReal
+  obtain ⟨T, hT, aFT, finT, galoisT, cyclicT, a, hx, R, hRdegree, hdom, aFU,
+      ⟨eUT⟩, ⟨hInv⟩, ⟨hBrauerInv⟩⟩ :=
+    nonarchimedeanLocal_brauerGroup_exists_unramifiedRootLiftCyclicRepresentative x
+  letI : Field T := hT
+  letI : Algebra F T := aFT
+  letI : FiniteDimensional F T := finT
+  letI : IsGalois F T := galoisT
+  letI : IsCyclic Gal(T / F) := cyclicT
+  refine ⟨R.polynomial.natDegree, cyclicGaloisBrauerSubgroup F T, ⟨hBrauerInv⟩, ?_⟩
+  rw [hx]
+  exact cyclicGaloisAlgebra_brauerClass_mem_cyclicGaloisBrauerSubgroup F T (a⁻¹)
 
 end
 
