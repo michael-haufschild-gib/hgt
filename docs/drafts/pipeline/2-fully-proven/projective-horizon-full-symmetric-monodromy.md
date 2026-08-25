@@ -6398,3 +6398,47 @@ prove it unramified at non-Schur height-one primes, and assemble slice/base-chan
 total-ramification argument into unconditional primitivity.  Schur-place unramifiedness,
 affine-space rank-one theorem, actual chart equivalence, total-ramification lower bound,
 transposition, and Jordan capstone are now present.
+
+## Exact analytic chart bridge (2026-08-25)
+
+The coordinate-ring identification now reaches the topological chart used by the cyclic-cover
+reduction.  Four axiom-clean additions are wired into `HTGeometry`:
+
+```text
+AlgebraSpectrumEquiv.lean
+  AlgSpec.precomp
+  AlgSpec.homeomorphOfAlgEquiv
+    a complex-algebra equivalence induces the contravariant homeomorphism on complex points
+
+CriticalObservationTorusChartEquiv.lean
+  criticalObservationChartTorusAlgEquiv
+    criticalObservationChartRing K m n ≃ₐ[K] TorusChart K (n+m-2)
+
+TorusChartComplexPoints.lean
+  torusChartComplexPointHomeomorph
+    AlgSpec (TorusChart ℂ k) ≃ₜ (ℂˣ × ℂˣ × Multiplicative (Fin k → ℂ))
+
+CriticalObservationComplexPoints.lean
+  criticalObservationComplexPointHomeomorph
+    AlgSpec (criticalObservationChartRing ℂ m n) ≃ₜ
+      ComplexTorusAffineChart (n+m-2)
+
+CriticalObservationConnectedCover.lean
+  criticalObservationAnalyticProjection_isCoveringMap
+  criticalObservationConnectedFiniteCover_exists_nontrivial_cyclic_character
+    every nontrivial connected finite cover of the actual observation chart yields the exact
+    nontrivial cyclic torus character and nondivisible exponent pair
+```
+
+The inverse continuity in `torusChartComplexPointHomeomorph` is not assumed: every fixed localized
+element is represented by a fixed numerator and denominator, polynomial evaluation is proved
+continuous by induction, and the denominator is nowhere zero because it lies in the localized
+power submonoid.  Targeted leaf builds pass.  Axiom audit of every new public declaration reports
+only `[propext, Classical.choice, Quot.sound]`; no umbrella build was run.
+
+Thus the torus `pi_1`, finite connected-cover cyclic-character theorem, actual observation-chart
+algebra, actual observation-chart complex topology, and covering transport are all joined.
+Remaining exact producer is narrower: construct the integral model of the fixed block intermediate
+field as a nontrivial connected finite covering of this `AlgSpec`, then identify its cyclic
+character with the source Kummer relation killed by the two already-formalized source valuations.
+No chart-identification, point-topology, cover-transport, or cyclic-reduction gap remains.

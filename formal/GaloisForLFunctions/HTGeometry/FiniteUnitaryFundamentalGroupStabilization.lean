@@ -13,7 +13,9 @@ open Matrix Finset
 open scoped ComplexConjugate
 open GaloisForLFunctions.HTGeometry
 
-namespace ScratchAF
+namespace GaloisForLFunctions.HTGeometry
+
+namespace FiniteUnitaryStabilization
 
 noncomputable section
 
@@ -1262,6 +1264,23 @@ theorem unitaryEmbedSuccFundamentalGroupMap_surjective (n : ℕ) :
       rw [heq] at hconcat
       exact hconcat
 
+@[simp] theorem det_embedSucc (n : ℕ) (V : Matrix (Fin n) (Fin n) ℂ) :
+    (embedSucc V).det = V.det := by
+  rw [Matrix.det_succ_row_zero, Fin.sum_univ_succ]
+  have hzero : ∀ j : Fin n,
+      (-1 : ℂ) ^ ((j.succ : Fin (n + 1)) : ℕ) * (embedSucc V) 0 j.succ *
+        ((embedSucc V).submatrix Fin.succ (Fin.succAbove j.succ)).det = 0 := by
+    intro j
+    rw [embedSucc_zero_succ, mul_zero, zero_mul]
+  rw [Finset.sum_congr rfl fun j _ => hzero j, Finset.sum_const_zero, add_zero,
+    Fin.succAbove_zero]
+  norm_num [embedSucc_zero_zero]
+  apply congrArg Matrix.det
+  ext i j
+  rfl
+
 end
 
-end ScratchAF
+end FiniteUnitaryStabilization
+
+end GaloisForLFunctions.HTGeometry

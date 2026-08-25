@@ -299,6 +299,19 @@ theorem riemannHypothesis_of_thetaSourceChiralXiCandidate_tendstoLocallyUniforml
   · exact Filter.Eventually.of_forall differentiable_thetaSourceChiralXiCandidate
   · exact Filter.Eventually.of_forall thetaSourceChiralXiCandidate_zero_im_eq_zero
 
+/-- Identification of the forced singular-value limit with Xi is already sufficient for RH. -/
+theorem riemannHypothesis_of_thetaSourceChiralEntireLimit_eq_XiC
+    (hlimit : thetaSourceChiralEntireLimit = XiC) : RiemannHypothesis := by
+  apply riemannHypothesis_of_thetaSourceChiralXiCandidate_tendstoLocallyUniformly
+  exact thetaSourceChiralXiCandidate_tendstoLocallyUniformly_XiC_iff_limit_eq.mpr hlimit
+
+/-- Closed target classification: either chiral completion misses Xi or RH holds. -/
+theorem thetaSourceChiralEntireLimit_ne_XiC_or_riemannHypothesis :
+    thetaSourceChiralEntireLimit ≠ XiC ∨ RiemannHypothesis := by
+  by_cases hlimit : thetaSourceChiralEntireLimit = XiC
+  · exact Or.inr (riemannHypothesis_of_thetaSourceChiralEntireLimit_eq_XiC hlimit)
+  · exact Or.inl hlimit
+
 /-- Closed qualitative fidelity wall. -/
 theorem riemannHypothesis_or_not_thetaSourceChiralXiCandidate_tendstoLocallyUniformly :
     RiemannHypothesis ∨
@@ -339,12 +352,18 @@ theorem thetaSourceEscapingNonlocalPolarization_certificate :
         (z * z) • ((thetaSourceSignedFiniteMatrix k)ᴴ *
           thetaSourceSignedFiniteMatrix k)).det) ∧
     (∀ k z, thetaSourceChiralDet k z = 0 → z.im = 0) ∧
+    TendstoLocallyUniformly thetaSourceChiralXiCandidate
+      thetaSourceChiralEntireLimit atTop ∧
+    (TendstoLocallyUniformly thetaSourceChiralXiCandidate XiC atTop ↔
+      thetaSourceChiralEntireLimit = XiC) ∧
     (RiemannHypothesis ∨
       ¬ TendstoLocallyUniformly thetaSourceChiralXiCandidate XiC atTop) := by
   exact ⟨thetaSourceEscapingNonlocalPolarization_posDef,
     thetaSourceEscapingChiralOperator_metricAdjoint,
     thetaSourceChiralDet_eq_sourceGramDet,
     thetaSourceChiralDet_zero_im_eq_zero,
+    thetaSourceChiralXiCandidate_tendstoLocallyUniformly_forcedLimit,
+    thetaSourceChiralXiCandidate_tendstoLocallyUniformly_XiC_iff_limit_eq,
     riemannHypothesis_or_not_thetaSourceChiralXiCandidate_tendstoLocallyUniformly⟩
 
 end HedenmalmThetaSource

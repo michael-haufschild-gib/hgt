@@ -24,6 +24,8 @@ open Complex Filter Topology
 open scoped BigOperators Polynomial
 open Polynomial
 
+set_option maxHeartbeats 1600000
+
 namespace RHTower
 
 noncomputable section
@@ -43,6 +45,82 @@ def xiSectorRefinedBernsteinAmplitudeBase : ℝ := 100197 / 100000
 theorem one_lt_xiSectorRefinedBernsteinAmplitudeBase :
     1 < xiSectorRefinedBernsteinAmplitudeBase := by
   norm_num [xiSectorRefinedBernsteinAmplitudeBase]
+
+/-- Exact radical ellipse ceiling from the quarter disk and `1/84` orientation sector. -/
+def xiSectorRadicalBernsteinAmplitudeBase : ℝ :=
+  1 / 4 + Real.sqrt (17 / 16 - Real.sqrt (84 / 85) / 2)
+
+theorem one_lt_xiSectorRadicalBernsteinAmplitudeBase :
+    1 < xiSectorRadicalBernsteinAmplitudeBase := by
+  let c : ℝ := Real.sqrt (84 / 85 : ℝ)
+  let g : ℝ := Real.sqrt (17 / 16 - c / 2)
+  have hc0 : 0 ≤ c := by
+    dsimp only [c]
+    exact Real.sqrt_nonneg _
+  have hcSq : c ^ 2 = 84 / 85 := by
+    dsimp only [c]
+    rw [Real.sq_sqrt]
+    norm_num
+  have hcOne : c < 1 := by
+    nlinarith [sq_nonneg (c + 1)]
+  have hrad : 0 ≤ 17 / 16 - c / 2 := by
+    nlinarith
+  have hgSq : g ^ 2 = 17 / 16 - c / 2 := by
+    dsimp only [g]
+    rw [Real.sq_sqrt hrad]
+  have hg0 : 0 ≤ g := by
+    dsimp only [g]
+    exact Real.sqrt_nonneg _
+  have hthree : 3 / 4 < g := by
+    have hsq : (3 / 4 : ℝ) ^ 2 < g ^ 2 := by
+      rw [hgSq]
+      nlinarith
+    nlinarith [sq_nonneg (g + (3 / 4 : ℝ))]
+  change 1 < 1 / 4 + g
+  linarith
+
+theorem xiSectorRadicalBernsteinAmplitudeBase_lt_refined :
+    xiSectorRadicalBernsteinAmplitudeBase < xiSectorRefinedBernsteinAmplitudeBase := by
+  let c : ℝ := Real.sqrt (84 / 85 : ℝ)
+  let R : ℝ := 1 / 4
+  let g : ℝ := Real.sqrt (1 - 2 * c * R + R ^ 2)
+  let B : ℝ := R + g
+  have hc0 : 0 ≤ c := by
+    dsimp only [c]
+    exact Real.sqrt_nonneg _
+  have hcSq : c ^ 2 = 84 / 85 := by
+    dsimp only [c]
+    rw [Real.sq_sqrt]
+    norm_num
+  have hcLower : 9941 / 10000 < c := by
+    have hsq : (9941 / 10000 : ℝ) ^ 2 < c ^ 2 := by
+      rw [hcSq]
+      norm_num
+    nlinarith [sq_nonneg (c + (9941 / 10000 : ℝ))]
+  have hrad : 0 ≤ 1 - 2 * c * R + R ^ 2 := by
+    have hcOne : c ≤ 1 := by
+      nlinarith [sq_nonneg (c + 1)]
+    dsimp only [R]
+    nlinarith
+  have hgSq : g ^ 2 = 1 - 2 * c * R + R ^ 2 := by
+    dsimp only [g]
+    rw [Real.sq_sqrt hrad]
+  have hg0 : 0 ≤ g := by
+    dsimp only [g]
+    exact Real.sqrt_nonneg _
+  have hgLess : g < 75197 / 100000 := by
+    have hsq : g ^ 2 < (75197 / 100000 : ℝ) ^ 2 := by
+      rw [hgSq]
+      dsimp only [R]
+      nlinarith
+    nlinarith [sq_nonneg (g + (75197 / 100000 : ℝ))]
+  have hBdef : B = xiSectorRadicalBernsteinAmplitudeBase := by
+    dsimp only [B, g, c, R, xiSectorRadicalBernsteinAmplitudeBase]
+    congr 1
+    ring
+  rw [← hBdef]
+  dsimp only [xiSectorRefinedBernsteinAmplitudeBase, B, R]
+  linarith
 
 theorem xiSectorRefinedBernsteinAmplitudeBase_lt_sectorConfined :
     xiSectorRefinedBernsteinAmplitudeBase < xiSectorConfinedBernsteinAmplitudeBase := by
@@ -175,6 +253,100 @@ theorem norm_add_norm_one_sub_lt_refinedSectorConfinedBase
   dsimp only [s, r] at hs ⊢
   linarith
 
+/-- The exact radical sector ceiling.  Its proof uses the sharp square identity
+`1 - (sqrt (84 / 85))^2 = 1 / 85`, rather than a decimal lower certificate. -/
+theorem norm_add_norm_one_sub_lt_radicalSectorConfinedBase
+    {u : ℂ} (hr : ‖u‖ < 1 / 4)
+    (hx : 0 ≤ u.re)
+    (hy : u.im ^ 2 ≤ (1 / 84 : ℝ) * u.re ^ 2) :
+    ‖u‖ + ‖1 - u‖ < xiSectorRadicalBernsteinAmplitudeBase := by
+  let r : ℝ := ‖u‖
+  let s : ℝ := ‖1 - u‖
+  let x : ℝ := u.re
+  let c : ℝ := Real.sqrt (84 / 85 : ℝ)
+  let R : ℝ := 1 / 4
+  let g : ℝ := Real.sqrt (1 - 2 * c * R + R ^ 2)
+  let B : ℝ := R + g
+  have hr0 : 0 ≤ r := norm_nonneg u
+  have hs0 : 0 ≤ s := norm_nonneg (1 - u)
+  have hx0 : 0 ≤ x := hx
+  have hc0 : 0 ≤ c := by
+    dsimp only [c]
+    exact Real.sqrt_nonneg _
+  have hcSq : c ^ 2 = 84 / 85 := by
+    dsimp only [c]
+    rw [Real.sq_sqrt]
+    norm_num
+  have hR0 : 0 ≤ R := by dsimp only [R]; norm_num
+  have hcR : R < c := by
+    have hsquare : R ^ 2 < c ^ 2 := by
+      rw [hcSq]
+      dsimp only [R]
+      norm_num
+    nlinarith [sq_nonneg (c + R)]
+  have hcOne : c ≤ 1 := by
+    nlinarith [sq_nonneg (c + 1)]
+  have hrSq : r ^ 2 = x ^ 2 + u.im ^ 2 := by
+    dsimp only [r, x]
+    rw [Complex.sq_norm, Complex.normSq_apply]
+    ring
+  have hrx : r ^ 2 ≤ (85 / 84 : ℝ) * x ^ 2 := by
+    rw [hrSq]
+    dsimp only [x] at hy ⊢
+    nlinarith
+  have hcxSq : (c * r) ^ 2 ≤ x ^ 2 := by
+    rw [mul_pow, hcSq]
+    nlinarith
+  have hcx0 : 0 ≤ c * r := mul_nonneg hc0 hr0
+  have hcx : c * r ≤ x := by
+    nlinarith [sq_nonneg (x + c * r)]
+  have hsSq : s ^ 2 = 1 - 2 * x + r ^ 2 := by
+    dsimp only [s, x, r]
+    rw [Complex.sq_norm, Complex.normSq_apply, Complex.sq_norm,
+      Complex.normSq_apply]
+    simp only [sub_re, one_re, sub_im, one_im]
+    ring
+  have hgSq : g ^ 2 = 1 - 2 * c * R + R ^ 2 := by
+    dsimp only [g]
+    rw [Real.sq_sqrt]
+    dsimp only [R]
+    nlinarith
+  have hg0 : 0 ≤ g := by
+    dsimp only [g]
+    exact Real.sqrt_nonneg _
+  have hcg : c - R < g := by
+    have hpos : 0 ≤ c - R := by linarith
+    have hsq : (c - R) ^ 2 < g ^ 2 := by
+      rw [hgSq]
+      dsimp only [R]
+      nlinarith
+    nlinarith [sq_nonneg (g + (c - R))]
+  have hBc : 0 < B - c := by
+    dsimp only [B]
+    linarith
+  have hBsq : B ^ 2 - 1 = 2 * (B - c) * R := by
+    dsimp only [B]
+    nlinarith [hgSq]
+  have hrR : r < R := by
+    dsimp only [r, R]
+    exact hr
+  have hlinear : 2 * (B - c) * r < B ^ 2 - 1 := by
+    rw [hBsq]
+    nlinarith
+  have hBr : 0 < B - r := by
+    dsimp only [B]
+    linarith
+  have hsLt : s ^ 2 < (B - r) ^ 2 := by
+    nlinarith
+  have hs : s < B - r := by
+    nlinarith [sq_nonneg (s + (B - r))]
+  have hBdef : B = xiSectorRadicalBernsteinAmplitudeBase := by
+    dsimp only [B, g, c, R, xiSectorRadicalBernsteinAmplitudeBase]
+    congr 1
+    ring
+  rw [← hBdef]
+  linarith
+
 /-- Endpoint normalization preserves the exact atomwise orientation ratio. -/
 theorem xiEndpointNormalizedReciprocalSquare_orientation_sq_le
     (q : XiZeroCopy) :
@@ -242,6 +414,30 @@ theorem xiEndpointBernsteinAtomAmplitudeBase_lt_refinedSectorConfined
     rw [xiEndpointBernsteinAtomAmplitudeBase_eq_one_of_onLine q hline]
     exact one_lt_xiSectorRefinedBernsteinAmplitudeBase
 
+/-- Every endpoint-normalized Xi atom obeys the exact radical sector amplitude ceiling. -/
+theorem xiEndpointBernsteinAtomAmplitudeBase_lt_radicalSectorConfined
+    (q : XiZeroCopy) :
+    xiEndpointBernsteinAtomAmplitudeBase q <
+      xiSectorRadicalBernsteinAmplitudeBase := by
+  by_cases hoff : (q.1 : ℂ).re ≠ 1 / 2
+  · have hr : ‖xiEndpointNormalizedReciprocalSquare q‖ < 1 / 4 :=
+      (norm_xiEndpointNormalizedReciprocalSquare_le_offLineRadius q hoff).trans_lt
+        xiOffLineNormalizedBernsteinRadius_lt_one_fourth
+    have hx : 0 ≤ (xiEndpointNormalizedReciprocalSquare q).re := by
+      have hR : 0 < primeArchEndpointHausdorffRadius :=
+        primeArchEndpointHausdorffRadius_pos
+      have hnode : 0 < (xiZeroCopyReciprocalSquare q).re := by
+        simpa only [xiThermalNode] using xiThermalNode_pos q
+      rw [xiEndpointNormalizedReciprocalSquare]
+      simp only [Complex.div_re, Complex.ofReal_re, Complex.ofReal_im, mul_zero,
+        Complex.normSq_ofReal]
+      positivity
+    exact norm_add_norm_one_sub_lt_radicalSectorConfinedBase hr hx
+      (xiEndpointNormalizedReciprocalSquare_orientation_sq_le q)
+  · have hline : (q.1 : ℂ).re = 1 / 2 := not_ne_iff.mp hoff
+    rw [xiEndpointBernsteinAtomAmplitudeBase_eq_one_of_onLine q hline]
+    exact one_lt_xiSectorRadicalBernsteinAmplitudeBase
+
 /-- **Sector-confined total variation.** The complete endpoint Bernstein vector has amplitude
 base `501/500`. -/
 theorem primeArchEndpointBernsteinTotalVariation_le_sectorConfined (n : ℕ) :
@@ -260,6 +456,15 @@ theorem primeArchEndpointBernsteinTotalVariation_le_refinedSectorConfined (n : �
   exact primeArchEndpointBernsteinTotalVariation_le_of_atomAmplitudeBase
     xiSectorRefinedBernsteinAmplitudeBase
     (fun q => (xiEndpointBernsteinAtomAmplitudeBase_lt_refinedSectorConfined q).le) n
+
+/-- The complete endpoint Bernstein vector satisfies the exact radical sector ceiling. -/
+theorem primeArchEndpointBernsteinTotalVariation_le_radicalSectorConfined (n : ℕ) :
+    primeArchEndpointBernsteinTotalVariation n ≤
+      xiReciprocalSquareAbsoluteMass *
+        xiSectorRadicalBernsteinAmplitudeBase ^ n := by
+  exact primeArchEndpointBernsteinTotalVariation_le_of_atomAmplitudeBase
+    xiSectorRadicalBernsteinAmplitudeBase
+    (fun q => (xiEndpointBernsteinAtomAmplitudeBase_lt_radicalSectorConfined q).le) n
 
 /-- A positive geometric total-variation ceiling yields decay at every strictly larger
 normalization base. -/
@@ -318,6 +523,16 @@ theorem tendsto_primeArchEndpointBernsteinTotalVariation_div_pow_of_refinedSecto
   tendsto_primeArchEndpointBernsteinTotalVariation_div_pow_of_geometric_bound
     (zero_lt_one.trans one_lt_xiSectorRefinedBernsteinAmplitudeBase)
     primeArchEndpointBernsteinTotalVariation_le_refinedSectorConfined hr
+
+/-- Every exponential normalization strictly above the exact radical sector amplitude annihilates
+the complete endpoint Bernstein total variation. -/
+theorem tendsto_primeArchEndpointBernsteinTotalVariation_div_pow_of_radicalSectorBase_lt
+    {r : ℝ} (hr : xiSectorRadicalBernsteinAmplitudeBase < r) :
+    Tendsto (fun n : ℕ => primeArchEndpointBernsteinTotalVariation n / r ^ n)
+      atTop (nhds 0) :=
+  tendsto_primeArchEndpointBernsteinTotalVariation_div_pow_of_geometric_bound
+    (zero_lt_one.trans one_lt_xiSectorRadicalBernsteinAmplitudeBase)
+    primeArchEndpointBernsteinTotalVariation_le_radicalSectorConfined hr
 
 /-- The positive Loschmidt purity inherits the square of the narrow-sector amplitude estimate. -/
 theorem primeArchEndpointBernsteinPurity_le_sectorConfined (n : ℕ) :

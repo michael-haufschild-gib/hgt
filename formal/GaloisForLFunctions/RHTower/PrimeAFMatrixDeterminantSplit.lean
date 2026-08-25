@@ -7,8 +7,10 @@ import GaloisForLFunctions.HTGeometry.ContinuousIntegerLatticeRigidity
 import GaloisForLFunctions.HTGeometry.FiniteSpecialUnitaryLocalLogNullhomotopy
 import GaloisForLFunctions.HTGeometry.FiniteSpecialUnitaryRotatedLogNullhomotopy
 import GaloisForLFunctions.HTGeometry.FiniteSpecialUnitaryNormalization
+import GaloisForLFunctions.HTGeometry.FiniteUnitaryFundamentalGroupStabilization
 
 open GaloisForLFunctions.HTGeometry
+open GaloisForLFunctions.HTGeometry.FiniteUnitaryStabilization
 
 namespace PrimeQuasiLocalCharge
 
@@ -665,6 +667,85 @@ theorem finiteUnitaryDeterminantKOneMap_injective_iff_subsingleton_specialUnitar
     simpa [finiteUnitarySpecialNormalizeKOneMap_inclusion] using hnorm
   · intro hsub q
     rw [show q = 1 from hsub.elim q 1, finiteSpecialUnitaryInclusionKOneMap_one]
+
+@[simp] theorem unitaryDeterminantUnits_unitaryEmbedSucc (n : ℕ)
+    (V : Matrix.unitaryGroup (Fin n) ℂ) :
+    unitaryDeterminantUnits (unitaryEmbedSucc n V) = unitaryDeterminantUnits V := by
+  apply Units.ext
+  simp [unitaryDeterminantUnits_coe]
+
+/-- Determinant commutes with adjoining a fixed first coordinate. -/
+theorem finiteUnitaryDeterminantPath_unitaryEmbedSucc (n : ℕ)
+    (p : Path (1 : Matrix.unitaryGroup (Fin (n + 1)) ℂ) 1) :
+    finiteUnitaryDeterminantPath (n + 1) (unitaryEmbedSuccPath (n + 1) p) =
+      finiteUnitaryDeterminantPath n p := by
+  ext t
+  change (unitaryDeterminantUnits (unitaryEmbedSuccPath (n + 1) p t) : ℂ) =
+    (unitaryDeterminantUnits (p t) : ℂ)
+  rw [unitaryDeterminantUnits_coe, unitaryDeterminantUnits_coe]
+  exact det_embedSucc (n + 1) _
+
+/-- The finite-stage determinant map is compatible with unitary stabilization. -/
+theorem finiteUnitaryDeterminantKOneMap_unitaryEmbedSucc (n : ℕ)
+    (q : FundamentalGroup (Matrix.unitaryGroup (Fin (n + 1)) ℂ) 1) :
+    finiteUnitaryDeterminantKOneMap (n + 1)
+        (unitaryEmbedSuccFundamentalGroupMap (n + 1) q) =
+      finiteUnitaryDeterminantKOneMap n q := by
+  induction q using Path.Homotopic.Quotient.ind with
+  | mk p =>
+      change Path.Homotopic.Quotient.mk
+          (finiteUnitaryDeterminantPath (n + 1)
+            (unitaryEmbedSuccPath (n + 1) p)) =
+        Path.Homotopic.Quotient.mk (finiteUnitaryDeterminantPath n p)
+      rw [finiteUnitaryDeterminantPath_unitaryEmbedSucc]
+
+noncomputable instance specialUnitaryFinOneSubsingleton :
+    Subsingleton (Matrix.specialUnitaryGroup (Fin 1) ℂ) where
+  allEq S T := by
+    apply Subtype.ext
+    ext i j
+    fin_cases i
+    fin_cases j
+    have hS := (Matrix.mem_specialUnitaryGroup_iff.mp S.2).2
+    have hT := (Matrix.mem_specialUnitaryGroup_iff.mp T.2).2
+    simpa [Matrix.det_fin_one] using hS.trans hT.symm
+
+/-- `SU(1)` has trivial fundamental group. -/
+theorem subsingleton_fundamentalGroup_specialUnitary_fin_one :
+    Subsingleton (FundamentalGroup (Matrix.specialUnitaryGroup (Fin 1) ℂ) 1) := by
+  constructor
+  intro x y
+  induction x using Path.Homotopic.Quotient.ind with
+  | mk p =>
+      induction y using Path.Homotopic.Quotient.ind with
+      | mk q =>
+          apply congrArg Path.Homotopic.Quotient.mk
+          apply Path.ext
+          funext t
+          exact Subsingleton.elim _ _
+
+/-- Determinant classifies every finite complex unitary fundamental group. -/
+theorem finiteUnitaryDeterminantKOneMap_injective_all :
+    ∀ n : ℕ, Function.Injective (finiteUnitaryDeterminantKOneMap n) := by
+  intro n
+  induction n with
+  | zero =>
+      exact (finiteUnitaryDeterminantKOneMap_injective_iff_subsingleton_specialUnitary 0).mpr
+        subsingleton_fundamentalGroup_specialUnitary_fin_one
+  | succ n ih =>
+      intro x y hxy
+      obtain ⟨x', rfl⟩ := unitaryEmbedSuccFundamentalGroupMap_surjective n x
+      obtain ⟨y', rfl⟩ := unitaryEmbedSuccFundamentalGroupMap_surjective n y
+      apply congrArg (unitaryEmbedSuccFundamentalGroupMap (n + 1))
+      apply ih
+      simpa [finiteUnitaryDeterminantKOneMap_unitaryEmbedSucc] using hxy
+
+/-- Every nonempty finite complex special-unitary group is simply connected at `π₁`. -/
+theorem subsingleton_fundamentalGroup_finiteSpecialUnitary (n : ℕ) :
+    Subsingleton (FundamentalGroup
+      (Matrix.specialUnitaryGroup (Fin (n + 1)) ℂ) 1) :=
+  (finiteUnitaryDeterminantKOneMap_injective_iff_subsingleton_specialUnitary n).mp
+    (finiteUnitaryDeterminantKOneMap_injective_all n)
 
 end
 

@@ -395,3 +395,18 @@ input. Remaining obligations are the sharp coefficient summation in Levinson sca
 long-tail estimate for `levinsonCriticalDetectorLongEnergy`, and explicit parameter optimization.
 The exact advertised `0.116158438` still requires unconditional Lean providers for the published
 PRZZ proportions `κ ≥ 0.417293962` and `κ_* ≥ 0.407511457`. Card therefore remains at stage 2.
+
+## Lean status update (2026-08-25) — exact long-tail frontier exposed
+
+The exact finite-convolution long range is now decomposed coefficientwise into the full
+differentiated Barban--Vehov coefficient minus its omitted-head divisor boundary. Both resulting
+energies are reindexed on `(L,L*M]`, and the full term has its literal arithmetic quadratic-form
+normal form. Independent unconditional caps are available from a divisor-fibre estimate and from
+the new finite multiplicative Young inequality; the latter removes the divisor factor but gives
+only the coarse bound `longEnergy <= 4*M*headEnergy`.
+
+All new declarations are axiom-clean and wired without an umbrella build. Neither coarse cap is
+silently treated as the sharp Levinson asymptotic. Remaining analytic inputs are unchanged: sharp
+evaluation of the full and omitted long tails, sharp summation of the displaced mixed-cross
+coefficients, and the published parameter optimization. Exact decimal still requires both PRZZ
+proportion providers, so card remains at stage 2.

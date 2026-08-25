@@ -1541,3 +1541,31 @@ cross-term gate is a coefficient summation estimate sharp enough for Levinson sc
 factorized `ell^1` carrier is not silently substituted for it. Arithmetic gate remains the sharp
 upper/asymptotic estimate for `levinsonCriticalDetectorLongEnergy`, followed by published
 parameter optimization above `1/3` and, for the card's exact decimal, the full PRZZ inputs.
+
+## Brick 5ab exact long-tail decomposition and unconditional coarse caps (2026-08-25)
+
+Four axiom-clean leaves now expose the arithmetic long range without hiding cancellation behind a
+divisor estimate:
+
+* `RHTower/SmoothAFEZetaCriticalDetectorLongEnergyDivisorBound.lean` gives an unconditional
+  arbitrarily-small-power divisor-fibre cap and explicit logarithmic factor energies;
+* `RHTower/SmoothAFEZetaCriticalDetectorLongCoefficientDecomposition.lean` proves that every
+  finite product coefficient is the full differentiated Barban--Vehov coefficient minus the exact
+  omitted-head divisor tail. It reindexes both long energies onto `(L,L*M]`, gives the full tail's
+  literal arithmetic quadratic form, and reduces the exact detector tail to twice the full energy
+  plus twice the omitted-boundary energy;
+* `RHTower/Sieve/DirichletYoung.lean` proves finite multiplicative Young
+  `ell^2 convolved with ell^1 to ell^2` for the corpus's product-index convolution, with no divisor
+  factor;
+* `RHTower/SmoothAFEZetaCriticalDetectorLongEnergyYoungBound.lean` specializes Young to the exact
+  detector and proves the complementary explicit bound `longEnergy <= 4*M*headEnergy`.
+
+All four leaves pass scratch/direct `lake env lean`, exact leaf `lake build`, and declaration-local
+`#print axioms`; dependencies are only `propext, Classical.choice, Quot.sound`. They are wired into
+`RHTower.lean`; no umbrella build was run.
+
+These bounds are unconditional but deliberately coarse: neither the small-power divisor cap nor
+the polynomial Young cap is the sharp `o(1)` long-tail evaluation required in Levinson scaling.
+The exact remaining arithmetic cores are now the displayed full differentiated Barban--Vehov
+quadratic form and the omitted-head boundary energy. Cross-term coefficient summation and published
+parameter optimization remain open as before.

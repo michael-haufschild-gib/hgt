@@ -1,8 +1,8 @@
 # Gauge-fixed total `++-` Teukolsky cokernel Schur section
 
 - **ID:** hawking-total-ppminus-cokernel-schur
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** `ThetaCuspHawkingAIMEThirdOrderSourceCohomology.lean` · `ThetaCuspHawkingAIMEThirdOrderFieldRedefinition.lean`
 - **Statement:** For the augmented gauge-fixed Einstein--Teukolsky boundary operator, the total resonant `++-` coefficient is the left-cokernel pairing of its cubic retarded Schur complement; lower-order horizon/flux data cannot determine it without the third jet.
 
@@ -12,7 +12,7 @@ Replace coordinate-dependent AIME, cascade, and direct-channel coefficients by o
 ## Gates
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea, Door passport sketch
 - [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: exact Lean theorem, targeted build green, axiom audit PASS
+- [x] 2 → 3  formalized: exact Lean theorem, targeted build green, axiom audit PASS
 - [ ] 3 → 4  publication-ready: standalone paper with proof and Lean certificate
 
 ## Approach
@@ -36,8 +36,9 @@ The total cokernel section is `Σ₊₊₋ = ell(S₊₊₋)`. Since `F` contain
 - **Exact killing theorem/mechanism:** Lower-order horizon dynamics does not fix `C`; adding a target-grade third-jet correction changes the section without changing any linear or quadratic datum.
 - **Strongest positive survivor:** The augmented retarded cubic Schur section is the unique total on-shell object determined by the three-jet and complete causal quadratic response.
 - **New insight:** “Direct”, AIME, exchange, prompt, discrete, and continuum pieces are presentations of one Schur section. RH incidence can only be asked of their total. The first missing physical input is now the actual gauge-fixed Einstein boundary three-jet, not another positivity law.
-- **Status:** `[BRIDGE] [PAPER-PROVED]`. Generic Schur/effective-vertex mechanism is established mathematics; exact augmented `++-` specialization is absent from audited corpus and black-hole literature. Lean formalization pending.
+- **Status:** `[BRIDGE] [LEAN-PROVED]`. Formal module `ThetaCuspHawkingTotalThirdOrderCokernelSchurSection.lean`; target build passed; all declarations depend only on `propext`, `Classical.choice`, and `Quot.sound`. Generic Schur/effective-vertex mechanism is established mathematics; exact augmented `++-` specialization is absent from audited corpus and black-hole literature.
 
 ## Log
 - 2026-08-25 — Created directly in Stage 1. Existing corpus proves total-source coordinate invariance but does not construct the augmented retarded Schur section.
 - 2026-08-25 — Horizon-flux-only determination falsified. Stronger three-jet Schur theorem paper-proved and promoted to Stage 2.
+- 2026-08-25 — Exact Schur source, cokernel section, causal-solver equations, gauge-range invariance, arbitrary-third-jet classification, and pole-velocity law formalized and verified.
