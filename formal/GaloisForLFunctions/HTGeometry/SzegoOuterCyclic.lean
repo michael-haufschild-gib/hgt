@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.DiskMultiplierOuterFactor
+import GaloisForLFunctions.HTGeometry.DiskMultiplierAlgebra
 import GaloisForLFunctions.HTGeometry.SmirnovBoundaryQuotient
 
 /-!
@@ -202,9 +203,8 @@ theorem tendsto_log_diskMultiplierOuterTruncatedWeight
     (-Real.log (diskMultiplierOuterWeight phi theta))
   filter_upwards [eventually_ge_atTop N] with n hn
   rw [log_diskMultiplierOuterTruncatedWeight]
-  apply max_eq_left
   have hcast : (N : ℝ) ≤ n := by exact_mod_cast hn
-  linarith
+  exact (max_eq_left (by linarith)).symm
 
 theorem tendsto_integral_log_diskMultiplierOuterTruncatedWeight
     (phi : DiskMultiplier)
@@ -251,6 +251,8 @@ theorem szegoOuter_zero_eq_real_exp (w : ℝ → ℝ) :
     rw [← intervalIntegral.integral_ofReal]
     apply intervalIntegral.integral_congr
     intro theta _
+    change -herglotzRieszKernel 0 (circleMap 0 1 theta) 0 *
+      (Real.log (w theta) : ℂ) = (Real.log (w theta) : ℂ)
     rw [neg_herglotz_zero, one_mul]
   rw [szegoOuter, hint]
   congr 1
@@ -267,8 +269,185 @@ theorem tendsto_szegoOuter_truncated_zero
   have hint := tendsto_integral_log_diskMultiplierOuterTruncatedWeight phi hphi
   have hscaled := hint.const_mul (1 / (4 * Real.pi))
   have hexp := (Real.continuous_exp.tendsto _).comp hscaled
-  have hcomplex := Complex.continuous_ofReal.tendsto.comp hexp
+  have hcomplex := (Complex.continuous_ofReal.tendsto _).comp hexp
+  change Tendsto
+    (fun n : ℕ => ((Real.exp ((1 / (4 * Real.pi)) *
+      ∫ theta in (0 : ℝ)..(2 * Real.pi),
+        Real.log (diskMultiplierOuterTruncatedWeight phi n theta)) : ℝ) : ℂ))
+    atTop
+    (𝓝 (((Real.exp ((1 / (4 * Real.pi)) *
+      ∫ theta in (0 : ℝ)..(2 * Real.pi),
+        Real.log (diskMultiplierOuterWeight phi theta)) : ℝ) : ℂ))) at hcomplex
   simpa only [szegoOuter_zero_eq_real_exp] using hcomplex
+
+theorem tendsto_diskMultiplierOuterCyclicApprox_zero
+    (phi : DiskMultiplier)
+    (hphi : ∃ z ∈ Metric.ball (0 : ℂ) 1, phi.fn z ≠ 0) :
+    Tendsto (fun n => (diskMultiplierOuterCyclicApprox phi hphi n).fn 0)
+      atTop (𝓝 (1 : ℂ)) := by
+  have hden := tendsto_szegoOuter_truncated_zero phi hphi
+  have hnum : Tendsto
+      (fun _n : ℕ => szegoOuter (diskMultiplierOuterWeight phi) 0)
+      atTop (𝓝 (szegoOuter (diskMultiplierOuterWeight phi) 0)) :=
+    tendsto_const_nhds
+  have hquot := hnum.div hden
+    (szegoOuter_ne_zero (diskMultiplierOuterWeight phi) 0)
+  change Tendsto
+    (fun n => szegoOuter (diskMultiplierOuterWeight phi) 0 /
+      szegoOuter (diskMultiplierOuterTruncatedWeight phi n) 0)
+    atTop
+    (𝓝 (szegoOuter (diskMultiplierOuterWeight phi) 0 /
+      szegoOuter (diskMultiplierOuterWeight phi) 0)) at hquot
+  rw [div_self (szegoOuter_ne_zero (diskMultiplierOuterWeight phi) 0)] at hquot
+  simpa only [diskMultiplierOuterCyclicApprox, div_eq_mul_inv] using hquot
+
+theorem norm_hardyOne_eq_one : ‖hardyOne‖ = 1 := by
+  rw [hardyOne, lp.norm_single (by norm_num)]
+  norm_num
+
+theorem tendsto_hardyOf_of_bound_one_of_tendsto_zero
+    (u : ℕ → DiskMultiplier)
+    (hubd : ∀ n, (u n).bd = 1)
+    (hu0 : Tendsto (fun n => (u n).fn 0) atTop (𝓝 (1 : ℂ))) :
+    Tendsto (fun n => hardyOf (u n)) atTop (𝓝 hardyOne) := by
+  have hnormSq (n : ℕ) : ‖hardyOf (u n)‖ ^ 2 ≤ 1 := by
+    have h := (hardyMulCoeff_bound (u n) hardyOne).2
+    change ‖hardyOf (u n)‖ ^ 2 ≤ 1
+    rw [hardyOf, hardyDisk_norm_sq]
+    change (∑' k, ‖hardyMulCoeff (u n) hardyOne k‖ ^ 2) ≤ 1
+    rw [hubd n, norm_hardyOne_eq_one] at h
+    norm_num at h
+    exact h
+  have hinner (n : ℕ) : inner ℂ hardyOne (hardyOf (u n)) = (u n).fn 0 := by
+    have hzero : hardyFun (hardyOf (u n)) 0 = (u n).fn 0 :=
+      hardyFun_hardyOf (u n) (by norm_num)
+    calc
+      inner ℂ hardyOne (hardyOf (u n)) =
+          inner ℂ (hardyKernel (by norm_num : ‖(0 : ℂ)‖ < 1))
+            (hardyOf (u n)) := by rw [hardyKernel_zero_eq_hardyOne]
+      _ = hardyFun (hardyOf (u n)) 0 :=
+        inner_hardyKernel (by norm_num) (hardyOf (u n))
+      _ = (hardyOf (u n)) 0 := hardyFun_zero _
+      _ = (u n).fn 0 := (hardyFun_zero _).symm.trans hzero
+  have hdistSq (n : ℕ) :
+      ‖hardyOf (u n) - hardyOne‖ ^ 2 ≤
+        2 - 2 * ((u n).fn 0).re := by
+    have hnormSub := norm_sub_sq (𝕜 := ℂ) hardyOne (hardyOf (u n))
+    rw [norm_sub_rev] at hnormSub
+    rw [norm_hardyOne_eq_one, hinner] at hnormSub
+    change ‖hardyOf (u n) - hardyOne‖ ^ 2 =
+      1 ^ 2 - 2 * ((u n).fn 0).re + ‖hardyOf (u n)‖ ^ 2 at hnormSub
+    nlinarith [hnormSq n]
+  have hupper : Tendsto (fun n => 2 - 2 * ((u n).fn 0).re)
+      atTop (𝓝 0) := by
+    have hre : Tendsto (fun n => ((u n).fn 0).re) atTop (𝓝 (1 : ℝ)) := by
+      have h := (Complex.continuous_re.tendsto (1 : ℂ)).comp hu0
+      change Tendsto (fun n => ((u n).fn 0).re) atTop (𝓝 (1 : ℝ)) at h
+      exact h
+    have hconst : Tendsto (fun _n : ℕ => (2 : ℝ)) atTop (𝓝 2) :=
+      tendsto_const_nhds
+    simpa using hconst.sub (hre.const_mul 2)
+  have hsq : Tendsto (fun n => ‖hardyOf (u n) - hardyOne‖ ^ 2)
+      atTop (𝓝 0) :=
+    tendsto_of_tendsto_of_tendsto_of_le_of_le'
+      tendsto_const_nhds hupper
+      (Filter.Eventually.of_forall fun n => sq_nonneg _)
+      (Filter.Eventually.of_forall hdistSq)
+  rw [tendsto_iff_norm_sub_tendsto_zero]
+  have hsqrt := (Real.continuous_sqrt.tendsto 0).comp hsq
+  change Tendsto
+    (fun n => Real.sqrt (‖hardyOf (u n) - hardyOne‖ ^ 2))
+    atTop (𝓝 (Real.sqrt 0)) at hsqrt
+  simpa only [Real.sqrt_sq_eq_abs, abs_of_nonneg (norm_nonneg _), Real.sqrt_zero] using hsqrt
+
+theorem tendsto_hardyOf_diskMultiplierOuterCyclicApprox
+    (phi : DiskMultiplier)
+    (hphi : ∃ z ∈ Metric.ball (0 : ℂ) 1, phi.fn z ≠ 0) :
+    Tendsto (fun n => hardyOf (diskMultiplierOuterCyclicApprox phi hphi n))
+      atTop (𝓝 hardyOne) :=
+  tendsto_hardyOf_of_bound_one_of_tendsto_zero
+    (diskMultiplierOuterCyclicApprox phi hphi)
+    (fun _ => rfl)
+    (tendsto_diskMultiplierOuterCyclicApprox_zero phi hphi)
+
+theorem hardyOf_diskMultiplierOuterCyclicApprox_mem_range
+    (phi : DiskMultiplier)
+    (hphi : ∃ z ∈ Metric.ball (0 : ℂ) 1, phi.fn z ≠ 0)
+    (n : ℕ) :
+    hardyOf (diskMultiplierOuterCyclicApprox phi hphi n) ∈
+      Set.range (hardyMul (diskMultiplierOuterFactor phi hphi)) := by
+  let outer := diskMultiplierOuterFactor phi hphi
+  let invn := diskMultiplierOuterTruncatedInverse phi hphi n
+  have hcongr : hardyOf (diskMultiplierOuterCyclicApprox phi hphi n) =
+      hardyOf (outer.mul invn) := by
+    apply hardyOf_congr
+    intro z _
+    rfl
+  refine ⟨hardyOf invn, ?_⟩
+  rw [hcongr, hardyOf, hardyOf]
+  exact hardyMul_mul outer invn hardyOne
+
+theorem isOuterDiskMultiplier_diskMultiplierOuterFactor
+    (phi : DiskMultiplier)
+    (hphi : ∃ z ∈ Metric.ball (0 : ℂ) 1, phi.fn z ≠ 0) :
+    IsOuterDiskMultiplier (diskMultiplierOuterFactor phi hphi) := by
+  let outer := diskMultiplierOuterFactor phi hphi
+  let R : Submodule ℂ HardyDisk :=
+    LinearMap.range ((hardyMul outer : HardyDisk →L[ℂ] HardyDisk) :
+      HardyDisk →ₗ[ℂ] HardyDisk)
+  let V : Submodule ℂ HardyDisk := R.topologicalClosure
+  have hone : hardyOne ∈ V := by
+    change hardyOne ∈ closure (R : Set HardyDisk)
+    apply mem_closure_of_tendsto
+      (tendsto_hardyOf_diskMultiplierOuterCyclicApprox phi hphi)
+    exact Filter.Eventually.of_forall fun n => by
+      change hardyOf (diskMultiplierOuterCyclicApprox phi hphi n) ∈ R
+      exact hardyOf_diskMultiplierOuterCyclicApprox_mem_range phi hphi n
+  have hshift : ∀ {x : HardyDisk}, x ∈ V → hardyMul diskShift x ∈ V := by
+    intro x hx
+    have hclosed : IsClosed
+        ((hardyMul diskShift : HardyDisk → HardyDisk) ⁻¹' (V : Set HardyDisk)) :=
+      (Submodule.isClosed_topologicalClosure R).preimage (hardyMul diskShift).continuous
+    have hrange : (R : Set HardyDisk) ⊆
+        (hardyMul diskShift : HardyDisk → HardyDisk) ⁻¹' (V : Set HardyDisk) := by
+      intro y hy
+      obtain ⟨q, rfl⟩ := hy
+      change hardyMul diskShift (hardyMul outer q) ∈ V
+      rw [hardyMul_comm]
+      exact Submodule.le_topologicalClosure R
+        (show hardyMul outer (hardyMul diskShift q) ∈ R from
+          ⟨hardyMul diskShift q, rfl⟩)
+    change x ∈ closure (R : Set HardyDisk) at hx
+    exact closure_minimal hrange hclosed hx
+  have hpowers : ∀ n : ℕ, ((hardyMul diskShift) ^ n) hardyOne ∈ V := by
+    intro n
+    induction n with
+    | zero => simpa using hone
+    | succ n ih =>
+        rw [pow_succ']
+        exact hshift ih
+  have hpoly : polyMultiples hardyOne ≤ V := by
+    rw [polyMultiples]
+    apply Submodule.span_le.mpr
+    rintro y ⟨n, rfl⟩
+    exact hpowers n
+  have hcyclic : cyclicSubspace hardyOne ≤ V := by
+    rw [cyclicSubspace]
+    exact (polyMultiples hardyOne).topologicalClosure_minimal hpoly
+      (Submodule.isClosed_topologicalClosure R)
+  have hVtop : V = ⊤ := by
+    apply top_unique
+    rw [← cyclicSubspace_hardyOne]
+    exact hcyclic
+  rw [isOuterDiskMultiplier_iff_denseRange, denseRange_iff_closure_range]
+  have hrange : (R : Set HardyDisk) =
+      Set.range (hardyMul outer : HardyDisk → HardyDisk) := by
+    ext y
+    constructor <;> rintro ⟨x, rfl⟩ <;> exact ⟨x, rfl⟩
+  have hsets := congrArg (fun W : Submodule ℂ HardyDisk => (W : Set HardyDisk)) hVtop
+  simp only [V, Submodule.topologicalClosure_coe, Submodule.top_coe] at hsets
+  rw [hrange] at hsets
+  simpa [outer] using hsets
 
 end
 

@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.AtomicIncrementPrimitive
 import GaloisForLFunctions.HTGeometry.AffineBaseJetGauge
 import GaloisForLFunctions.HTGeometry.CoordinatewiseDifferentialFamilyMatroid
 import GaloisForLFunctions.HTGeometry.JetHorizonTorsorTower
+import GaloisForLFunctions.HTGeometry.NevanlinnaTranslationCharacteristic
 import GaloisForLFunctions.HTGeometry.SmallGrowthRationalCoordinate
 import GaloisForLFunctions.RHTower.PrimePowerDirichletFullComplexJetIndependence
 import GaloisForLFunctions.RHTower.XiUpperEndHypertranscendence
@@ -46,6 +47,21 @@ local instance xiAtomicRationalBaseDifferentialAlgebra :
   ⟨fun x => derivationClosedDifferential_apply
     upperEndRationalCoordinateField
     upperEndRationalCoordinateField_derivationClosed x⟩
+
+local instance xiAtomicSmallGrowthDifferential :
+    Differential SmallGrowthMeromorphicField where
+  deriv := 0
+
+/-- Upper-end translation is semilinear over the exact small-growth coefficient field. -/
+noncomputable def smallGrowthUpperEndTranslationDifferentialSemilinearEquiv (h : ℂ) :
+    DifferentialSemilinearEquiv SmallGrowthMeromorphicField upperEndMeroField where
+  baseEquiv := smallGrowthTranslateEquiv h
+  ambientEquiv := upperEndTranslationMeroEquiv h
+  map_algebraMap' x := (smallGrowthTranslateEquiv_algebraMap h x).symm
+  map_base_deriv' x := by
+    change smallGrowthTranslateEquiv h 0 = 0
+    exact map_zero (smallGrowthTranslateEquiv h)
+  map_ambient_deriv' x := upperEndTranslationMeroEquiv_deriv h x
 
 /-- Each shifted reciprocal in the completed-Xi correction belongs to genuine `ℂ(s)`. -/
 private theorem xiShiftReciprocalUpperEndCarrier_mem_rationalCoordinateField (c : ℝ) :
@@ -238,6 +254,41 @@ theorem complexJetEvenShift_mem_xiLogDerivRotatedFullComplexShiftJets_rankAut :
   congr 1
   ring_nf
 
+/-- Common translation by `+2` preserves algebraic rank over Nagoshi's exact small-growth
+coefficient field. -/
+theorem complexJetEvenShift_mem_xiLogDerivRotatedFullComplexShiftJets_rankAut_smallGrowth :
+    GaloisForLFunctions.MatroidGluing.complexJetEvenShift ∈
+      (GaloisForLFunctions.MatroidGluing.matroidRank
+        (algebraicFamilyMatroid SmallGrowthMeromorphicField
+          xiLogDerivRotatedFullComplexShiftJets)).rankAutSubgroup := by
+  apply GaloisForLFunctions.MatroidGluing.algebraicFamilyRank_mem_rankAutSubgroup_of_semilinear
+    (smallGrowthUpperEndTranslationDifferentialSemilinearEquiv (2 * I))
+  intro hk
+  change upperEndTranslationMeroEquiv (2 * I)
+      (differentialJet hk.2
+        (upperEndTranslationMeroEquiv (I * hk.1)
+          xiLogDerivRotatedUpperEndCarrier)) =
+    differentialJet hk.2
+      (upperEndTranslationMeroEquiv (I * (hk.1 + 2))
+        xiLogDerivRotatedUpperEndCarrier)
+  have hjet := (smallGrowthUpperEndTranslationDifferentialSemilinearEquiv
+    (2 * I)).map_differentialJet hk.2
+      (upperEndTranslationMeroEquiv (I * hk.1)
+        xiLogDerivRotatedUpperEndCarrier)
+  change upperEndTranslationMeroEquiv (2 * I)
+      (differentialJet hk.2
+        (upperEndTranslationMeroEquiv (I * hk.1)
+          xiLogDerivRotatedUpperEndCarrier)) =
+    differentialJet hk.2
+      (upperEndTranslationMeroEquiv (2 * I)
+        (upperEndTranslationMeroEquiv (I * hk.1)
+          xiLogDerivRotatedUpperEndCarrier)) at hjet
+  rw [hjet]
+  congr 1
+  rw [upperEndTranslationMeroEquiv_add]
+  congr 1
+  ring_nf
+
 /-- The complete rotated `xi'/xi` translation-jet family is algebraically independent over the
 genuine rational-coordinate field. -/
 theorem xiLogDerivRotated_fullComplexShiftJets_algebraicIndependent :
@@ -252,6 +303,29 @@ theorem xiLogDerivRotated_fullComplexShiftJets_algebraicIndependent :
       filteredVonMangoldt_fullComplexShiftJets_algebraicIndependent
       filteredVonMangoldt_fullComplexShiftJets_eq_xi_affineIncrement_rational
       complexJetEvenShift_mem_xiLogDerivRotatedFullComplexShiftJets_rankAut
+
+/-- The complete rotated `xi'/xi` translation-jet family is algebraically independent over
+Nagoshi's exact small-growth meromorphic field. -/
+theorem xiLogDerivRotated_fullComplexShiftJets_algebraicIndependent_over_smallGrowth :
+    AlgebraicIndependent SmallGrowthMeromorphicField
+      xiLogDerivRotatedFullComplexShiftJets := by
+  exact GaloisForLFunctions.MatroidGluing.algebraicIndependent_primitive_of_evenShift_increments
+      xiLogDerivRotatedFullComplexShiftJets
+      (fun hk : ℂ × ℕ => differentialJet hk.2
+        (upperEndTranslationMeroEquiv (I * hk.1)
+          filteredVonMangoldtUpperEndCarrier))
+      xiShiftTwoRationalCorrectionSmallGrowthJet
+      filteredVonMangoldt_fullComplexShiftJets_algebraicIndependent_over_smallGrowth
+      filteredVonMangoldt_fullComplexShiftJets_eq_xi_affineIncrement
+      complexJetEvenShift_mem_xiLogDerivRotatedFullComplexShiftJets_rankAut_smallGrowth
+
+/-- Differential-independence form of the completed logarithmic-derivative orbit over `F_s`. -/
+theorem xiLogDerivRotated_fullComplexShiftOrbit_differentialIndependent_over_smallGrowth :
+    DifferentialIndependent SmallGrowthMeromorphicField
+      (fun h : ℂ => upperEndTranslationMeroEquiv (I * h)
+        xiLogDerivRotatedUpperEndCarrier) := by
+  unfold DifferentialIndependent
+  exact xiLogDerivRotated_fullComplexShiftJets_algebraicIndependent_over_smallGrowth
 
 /-- Differential-independence form of the full completed logarithmic-derivative orbit over
 `ℂ(s)`. -/

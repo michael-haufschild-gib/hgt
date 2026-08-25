@@ -296,3 +296,32 @@ thermodynamic limit cannot be the missing source of divisor winding.
 - [x] unconditional nonzero Xi boundary charge and no-uniform-limit consequence formalized in Lean
 - [ ] operator-K-theory/Morita/Bott identification with the concrete charge direct limit formalized
 - [x] parent-theory audit completed; classified as bridge
+
+## Formalization audit — 2026-08-25
+
+Corpus and current mathlib API contain no operator `K_1` construction, C-star inductive-limit
+continuity theorem, Morita invariance, or Bott-periodicity interface from which the remaining
+connector can be assembled.  Existing `AFChargeLimit` and Xi winding theorems close the concrete
+charge and no-nucleation content, but identifying that algebraic carrier with
+`K_1(C(S^1) tensor A)` without defining operator K-theory would be a simplification/provider shell.
+Exact completion therefore requires a new foundational operator-K-theory development; card remains
+Stage 2.
+
+## Finite-stage determinant split — 2026-08-25
+
+`formal/GaloisForLFunctions/RHTower/PrimeAFMatrixDeterminantSplit.lean` now constructs an explicit
+radial deformation of `ℂˣ` onto unit phase, lifts phase loops into the first diagonal coordinate of
+`U(n+1)`, and proves directly on endpoint-fixed path-homotopy quotients that determinant has a
+right inverse.  In particular,
+
+- `finiteUnitaryDeterminantKOneMap_phaseDiagonal` proves determinant after diagonal phase lift is
+  identity on `π₁(ℂˣ)`;
+- `finiteUnitaryDeterminantKOneMap_surjective` proves finite-stage determinant is surjective on the
+  literal operator-`K₁` carrier.
+
+Direct Lean check and targeted leaf build pass.  Axiom audit of every new proof-level declaration
+reports only `propext`, `Classical.choice`, and `Quot.sound`.  Remaining finite-stage theorem is
+injectivity of determinant, equivalently simple connectivity of `SU(n)`; current Mathlib and corpus
+contain path connectivity but no sphere/fibration homotopy sequence or `SimplyConnectedSpace`
+instance for finite special-unitary groups.  C-star inductive-limit continuity remains after this
+kernel theorem.  No hypothesis shell was added; card remains Stage 2.

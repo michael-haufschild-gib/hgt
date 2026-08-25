@@ -1,7 +1,7 @@
 # Prime-feature polarization forces complex-shift jet independence
 
 - **ID:** `prime-power-dirichlet-complex-jet-independence`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) — `[PROVED HERE] [UNCONDITIONAL] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Statement:** An ordinary Dirichlet series with no constant term, supported on prime powers,
   and with nonzero coefficients at all but finitely many primes has a differentially algebraically
@@ -272,7 +272,7 @@ coefficient field; that distinction is not erased by the finite polarization she
   to polynomial-exponential jet features and prime-power sources.
 - [x] Complete the internal paper-proof audit and move to stage 2.
 - [x] Classify into `not_new_scientific_knowledge` under the routine-parent gate.
-- [ ] Formalize the complete theorem before any move to stage 3.
+- [x] Formalize the complete theorem before any move to stage 3.
 
 ## Primary parents under audit
 
@@ -301,3 +301,30 @@ coefficient field; that distinction is not erased by the finite polarization she
   proof already contains the mechanism; polynomial-exponential derivative features and general
   prime-power coefficients are a direct extension.  Retained the theorem as the strongest proved
   nonlinear complex-shift bridge and moved it to `not_new_scientific_knowledge`.
+- 2026-08-25 -- `PrimePowerDirichletFullComplexJetIndependence.lean` now proves the single full
+  family of every complex translate and every derivative order over both the genuine rational
+  coordinate field and Nagoshi's exact `F_s`; the filtered von Mangoldt specialization is literal.
+  `AtomicIncrementPrimitive.lean` proves the finite algebraic-matroid rank argument, exact `+2`
+  label separation, and semilinear rank normalization.  `SmallGrowthRationalCoordinate.lean`
+  proves that the global coordinate has `T(r,z)=o(r)` and that every concrete `C(s)` correction has
+  an actual `F_s` preimage.  `XiAtomicIncrementCorrection.lean` identifies every translated
+  correction jet inside `C(s)`, proves the exact affine increment law, and proves unconditional
+  full complex-orbit differential independence of the actual rotated `xi'/xi` and `xi` carriers
+  over `C(s)`.  Direct checks pass.
+
+  Remaining Stage-3 obligation is now one exact analytic theorem: variable translation by the
+  fixed shift `2I` preserves `HasSmallGrowth`, so that the `+2` automorphism normalizes `F_s` and
+  the same atomic rank proof runs over `F_s`.  Current mathlib Nevanlinna API has value-shift and
+  reciprocal estimates but no domain-translation characteristic comparison (its Cartan file still
+  lists characteristic monotonicity as TODO).  No hypothesis/provider shell was introduced for
+  this missing result.  The card therefore remains at Stage 2 despite the complete source theorem
+  and complete `C(s)` completed-Xi theorem.
+- 2026-08-25 -- Closed domain translation unconditionally.  `ShiftedGreenKernelHarnack.lean` proves
+  shifted-circle Harnack control for exact divisor Green kernels.
+  `NevanlinnaTranslationCharacteristic.lean` proves quantitative translated proximity and pole-count
+  bounds, hence `HasSmallGrowth.translate`, constructs the exact `F_s` translation automorphism, and
+  proves equivariance of its upper-end realization.  `XiAtomicIncrementCorrection.lean` uses that
+  automorphism to prove the `+2` rank symmetry and full complex translation-jet algebraic
+  independence of the rotated completed logarithmic derivative over `F_s`, without hypotheses.
+  Direct checks and leaf build passed.  Axiom audit of every new declaration reports only `propext`,
+  `Classical.choice`, and `Quot.sound`.  Promoted to Stage 3.

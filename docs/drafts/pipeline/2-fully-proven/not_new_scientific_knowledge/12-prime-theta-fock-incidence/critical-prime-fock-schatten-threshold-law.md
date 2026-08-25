@@ -311,3 +311,14 @@ at Stage 2.
 - [x] determinant regularization order isolated
 - [x] parent-theory novelty claim rejected
 - [ ] complete unconditional Lean formalization
+
+## Formalization audit — 2026-08-25
+
+Corpus audit confirms that `HasCriticalPrimeFockExactToeplitzApproximationCellComparison` has no
+provider.  Every scalar ingredient is now exact, including literal polynomial-Fock carrier,
+normalized kernel atom scale, shrinking prime-window PNT, adapted-cell volume, exact cell-average
+summability, and abstract ideal transfer.  Missing declaration is not another asymptotic scalar
+estimate: it is the concrete doubling-Fock Toeplitz localization theorem comparing approximation
+numbers of the actual incidence operator with the ordered adapted-cell averages.  No corpus theorem
+or current mathlib API supplies this off-diagonal/operator result, and no hypothesis shell is
+counted as formalization.  Card remains Stage 2.

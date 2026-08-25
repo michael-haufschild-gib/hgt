@@ -1,0 +1,9 @@
+Variant-first Hawking route produced exact nonlinear response/QNM transgression. New module `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingSelfDualResponseClockTransgression.lean`, imported by `RHTower.lean`; endpoint recorded in `docs/reports/endpoints.md` under HRTV.
+
+Exact normalized selfdual Einstein-AdS4 quadratic response coefficient: C(rho)=rho^2(rho+2)/8. Intensity I=|C|^2. Let x=Re rho-1/2, A=x^2+(Im rho)^2+1/4, B=x^2+(Im rho)^2+25/4, S=5A^2+2AB+5x^2>0. Proved globally I(rho)-I(1-rho)=x*S/32, hence equality iff Re rho=1/2 and defect sign records side.
+
+On each Xi divisor q, proved actual conjugated-vs-reflected normalized carrier intensity defect equals this polynomial defect. Exact BM QNM clock law: defect=(-i)(omega_reflect-omega_conj)*S/32. Thermal form: defect=-(branchImaginarySplitting-1/2)*S/32. This ties genuine nonlinear chiral gravitational response variation to exact Hawking QNM variation.
+
+Targeted Lean file check passed. Axioms for key created theorems: propext, Classical.choice, Quot.sound only. Scratch files removed. `scripts/formal_tools.py lint` still exits 1 solely because pre-existing unreachable owned modules; no new lint issue reported.
+
+Hard open core: global gauge-invariant projection of local selfdual carrier into retarded second-order Teukolsky return, plus canonical-energy optical decomposition with common incoming normalization, nonnegative orthogonal helicity-mixing remainder, and classification/exclusion of zero-energy gauge/threshold channels. If return is unmixed/isometric, intensity equality forces central line; otherwise tilted sector must mix. Do not pretend generic KMS/passivity proves the optical identity.

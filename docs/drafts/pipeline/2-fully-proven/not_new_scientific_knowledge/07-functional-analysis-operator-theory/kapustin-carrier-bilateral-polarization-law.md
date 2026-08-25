@@ -402,3 +402,32 @@ The positive full-sector construction law `(17)` and all operator-ideal conseque
 Both leaves pass direct Lean checking and targeted leaf builds.  The card remains Stage 2: Theorem A
 (the universal reciprocal-gamma Toeplitz sign theorem), its measurable Hardy-boundary setup, and
 Theorem B's application to the literal even weighted `L²` Kapustin carrier are not yet formalized.
+
+## Formalization progress (2026-08-25)
+
+Exact reusable infrastructure now present:
+
+- `HTGeometry.DiskMultiplierOuterFactor`: canonical Szegő outer factor with original bounded
+  multiplier boundary modulus;
+- `HTGeometry.SzegoOuterCyclic`: unconditional cyclicity and dense Hardy multiplication range;
+- `HTGeometry.DiskMultiplierInnerOuterFactor`: exact inner--outer factorization, including
+  shift-commutant inner multiplier, Hardy isometry, unimodular boundary, and real-line product law;
+- `RHTower.KapustinGaugeSmirnovCollision`: either one-sided sign assumption constructs a literal
+  nonzero `SmirnovToeplitzKernelElement kapustinToeplitzSymbol`;
+- `HTGeometry.MakarovPoltoratskiWeakPhase`: exact Kolmogorov little-weak-`L¹` endpoint contradiction
+  for fixed reciprocal-Gamma phase;
+- `RHTower.KapustinGaugeCarrier`, `HTGeometry.MeasurableEvenWeightedSignCarrier`, and full-sector
+  polarization leaves contain exact Theorem B and operator-ideal consequences once Theorem A is
+  discharged.
+
+Open dependency-closed core: formalize one-way Makarov--Poltoratski basic criterion for the
+real-analytic fixed symbol used here,
+
+```text
+SmirnovToeplitzKernelElement (x ↦ exp(i * kapustinToeplitzPhase x))
+  → Nonempty (SmirnovToeplitzWeakPhaseWitness kapustinToeplitzPhase),
+```
+
+including inner/outer regularization and Kolmogorov little-weak-`L¹`. This exact bridge turns the
+already constructed literal kernel element into unconditional sign contradiction; no surrogate
+phase premise is acceptable.
