@@ -152,6 +152,98 @@ theorem tendstoWithin_sortedSpectrum_finiteGram_peeling
       (𝓝 (sortedTuple (hHerm x₀).eigenvalues)) :=
   (tendsto_sortedSpectrum_finiteGram_peeling G hG hHerm x₀).mono_left inf_le_left
 
+/-! ## Filter-level sorted spectral continuity -/
+
+/-- Finite square matrices in Euclidean coordinates.  This supplies a first-countable parameter
+space without changing the project's entrywise finite-matrix topology. -/
+def matrixEuclideanVecLinearEquiv (n : ℕ) :
+    Matrix (Fin n) (Fin n) ℂ ≃ₗ[ℂ] EuclideanSpace ℂ (Fin n × Fin n) where
+  toFun X := WithLp.toLp 2 (Matrix.vec X)
+  map_add' _ _ := rfl
+  map_smul' _ _ := rfl
+  invFun x := Matrix.of fun i j => WithLp.ofLp x (j, i)
+  left_inv _ := rfl
+  right_inv _ := rfl
+
+/-- Real-linear retraction of all complex matrices onto the Hermitian matrices. -/
+def hermitianProjection {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) :
+    Matrix (Fin n) (Fin n) ℂ :=
+  (2 : ℂ)⁻¹ • (A + Aᴴ)
+
+theorem hermitianProjection_isHermitian {n : ℕ}
+    (A : Matrix (Fin n) (Fin n) ℂ) : (hermitianProjection A).IsHermitian := by
+  ext i j
+  simp only [Matrix.conjTranspose_apply, hermitianProjection, Matrix.smul_apply,
+    smul_eq_mul, Matrix.add_apply, star_add, star_mul, star_star]
+  norm_num
+  ring
+
+def hermitianProjectionRealLinearMap (n : ℕ) :
+    Matrix (Fin n) (Fin n) ℂ →ₗ[ℝ] Matrix (Fin n) (Fin n) ℂ where
+  toFun := hermitianProjection
+  map_add' A B := by
+    ext i j
+    simp only [hermitianProjection, Matrix.smul_apply, smul_eq_mul, Matrix.add_apply,
+      Matrix.conjTranspose_apply, star_add]
+    ring
+  map_smul' r A := by
+    ext i j
+    simp [hermitianProjection, Matrix.smul_apply, Complex.real_smul, RCLike.star_def]
+    ring
+
+theorem hermitianProjection_eq_of_isHermitian {n : ℕ}
+    {A : Matrix (Fin n) (Fin n) ℂ} (hA : A.IsHermitian) :
+    hermitianProjection A = A := by
+  ext i j
+  have hij := congrFun (congrFun hA.eq i) j
+  simp only [Matrix.conjTranspose_apply] at hij
+  simp only [hermitianProjection, Matrix.smul_apply, smul_eq_mul, Matrix.add_apply,
+    Matrix.conjTranspose_apply, hij]
+  ring
+
+theorem isHermitian_eigenvalues_eq_of_matrix_eq {n : ℕ}
+    {A B : Matrix (Fin n) (Fin n) ℂ}
+    (hA : A.IsHermitian) (hB : B.IsHermitian) (h : A = B) :
+    hA.eigenvalues = hB.eigenvalues := by
+  subst B
+  rfl
+
+/-- Sorted spectra preserve arbitrary filter convergence of Hermitian finite matrices. -/
+theorem tendsto_sortedSpectrum_of_tendsto_hermitian
+    {n : ℕ} {ι : Type*} {l : Filter ι}
+    (G : ι → Matrix (Fin n) (Fin n) ℂ) (G₀ : Matrix (Fin n) (Fin n) ℂ)
+    (hG : Tendsto G l (𝓝 G₀))
+    (hHerm : ∀ i, (G i).IsHermitian) (hHerm₀ : G₀.IsHermitian) :
+    Tendsto (fun i => sortedTuple (hHerm i).eigenvalues) l
+      (𝓝 (sortedTuple hHerm₀.eigenvalues)) := by
+  let e := matrixEuclideanVecLinearEquiv n
+  let H : EuclideanSpace ℂ (Fin n × Fin n) → Matrix (Fin n) (Fin n) ℂ :=
+    fun x => hermitianProjection (e.symm x)
+  have hH : Continuous H := by
+    exact (hermitianProjectionRealLinearMap n).continuous_of_finiteDimensional.comp
+      e.toContinuousLinearEquiv.symm.continuous
+  have hHHerm : ∀ x, (H x).IsHermitian := fun x =>
+    hermitianProjection_isHermitian (e.symm x)
+  have hs := continuous_sortedTuple_eigenvalues hH hHHerm
+  have heG : Tendsto (fun i => e (G i)) l (𝓝 (e G₀)) :=
+    e.toContinuousLinearEquiv.continuous.continuousAt.tendsto.comp hG
+  have hcomp := hs.continuousAt.tendsto.comp heG
+  convert hcomp using 1
+  · funext i
+    have heq : H (e (G i)) = G i := by
+      rw [show H (e (G i)) = hermitianProjection (G i) by simp [H, e]]
+      exact hermitianProjection_eq_of_isHermitian (hHerm i)
+    apply congrArg sortedTuple
+    exact isHermitian_eigenvalues_eq_of_matrix_eq
+      (hHerm i) (hHHerm (e (G i))) heq.symm
+  · apply congrArg nhds
+    apply congrArg sortedTuple
+    have heq : H (e G₀) = G₀ := by
+      rw [show H (e G₀) = hermitianProjection G₀ by simp [H, e]]
+      exact hermitianProjection_eq_of_isHermitian hHerm₀
+    exact (isHermitian_eigenvalues_eq_of_matrix_eq
+      (hHHerm (e G₀)) hHerm₀ heq).symm
+
 /-- Finite Hilbert--Schmidt trace peeling `(14)`: convergence of the pre-crossing Gram to the
 persistent Gram plus `m` identity channels forces an exact trace jump of `m`. -/
 theorem tendsto_trace_finiteGram_peeling

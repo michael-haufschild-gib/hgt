@@ -174,12 +174,21 @@ finite-prefix Paley--Wiener/Jensen bridge on the actual Xi divisor:
   Paley--Wiener growth theorem; `suzukiCutoff_eq_zero_of_compactFourier_eq_zero` closes the final
   Fourier-injectivity step.
 
-The leaf passes direct `lake env lean`, exact leaf `lake build`, and declaration-local
-`#print axioms`; dependencies are only `propext, Classical.choice, Quot.sound`. It is wired into
-`RHTower.lean`; no umbrella build was run.
+`formal/GaloisForLFunctions/RHTower/WeilCriticalMellinLogBridge.lean` now closes the literal
+test-function notation bridge for every continuous multiplicative test `g` supported in
+`[exp(-a),exp(a)]`: it constructs `phi(x)=exp(x/2)g(exp x)`, proves its support lies in
+`[-a,a]`, packages it as the actual global `L²` vector consumed by Suzuki's compact Fourier
+carrier, and proves exactly
+
+```text
+mellin g (1/2+i t) = suzukiCompactL2Fourier a phi_L2 t.
+```
+
+Both leaves pass direct `lake env lean`, exact leaf `lake build`, and declaration-local
+`#print axioms`; dependencies are only `propext, Classical.choice, Quot.sound`. They are wired
+into `RHTower.lean`; no umbrella build was run.
 
 Remaining for 2 -> 3 is now exactly the unconditional superlinear provider
-`xiSimpleCriticalZeroCount T >= c*T*log T` for all sufficiently large `T` and the elementary
-Mellin-profile identification for the card's test-function notation. The provider is the same PRZZ
+`xiSimpleCriticalZeroCount T >= c*T*log T` for all sufficiently large `T`. It is the same PRZZ
 simple-critical density input already tracked by the Levinson programme; no hypothesis wrapper has
 been added.

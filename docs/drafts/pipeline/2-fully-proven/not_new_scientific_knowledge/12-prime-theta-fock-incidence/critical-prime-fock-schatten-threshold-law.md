@@ -236,6 +236,13 @@ adapted-radius bounds for `m>=2`.  The targeted leaf build and axiom audit passe
 potential/metric part of the averaging profile but not the load-bearing normalized-kernel
 localization or doubling-Fock Toeplitz Schatten averaging theorem; the card remains at Stage 2.
 
+`PolynomialFockTangentGaussian.lean` and `PolynomialMomentFockKernelLower.lean` now also prove the
+exact real-axis lower diagonal-kernel scale by constructing a tangent exponential in the literal
+moment carrier and bounding its plane norm.  This removes one diagonal asymptotic premise from the
+Toeplitz averaging route.  Direct checks, targeted leaf builds, and the new-declaration axiom audit
+passed with only `propext`, `Classical.choice`, and `Quot.sound`.  Off-diagonal localization and the
+all-exponent adapted-tube Schatten comparison remain open, so the card stays at Stage 2.
+
 ## Gates
 
 - [x] prime incidence identified with a positive doubling-Fock Toeplitz operator

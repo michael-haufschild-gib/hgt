@@ -19,7 +19,7 @@ namespace RHTower
 
 noncomputable section
 
-local instance : MeasurableSpace Nat.Primes := ⊤
+local instance coldAllOrderMeasurableSpacePrimes : MeasurableSpace Nat.Primes := ⊤
 
 private def coldPrimeTwoAllOrder : Nat.Primes := ⟨2, Nat.prime_two⟩
 

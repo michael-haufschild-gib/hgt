@@ -1,7 +1,7 @@
 # Hardy leakage rank and unit-channel singularity of off-line-zero entry
 
 - **ID:** euler-hardy-leakage-offline-zero-rank
-- **Stage:** 2-fully-proven/not_new_scientific_knowledge
+- **Stage:** 3-formalized/not_new_scientific_knowledge
 - **Type:** THEOREM (paper) -- scientifically non-new bridge
 - **Source:** Suzuki's shifted xi quotient; Hardy factorization; Kronecker--Nehari theory
 - **Statement:** `[PROVED HERE; BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]` The rank of the anti-causal
@@ -20,7 +20,7 @@ in the global prime-side operator when an off-line zero enters the critical line
 
 - [x] 0 -> 1 in-progress: well-posed, source-pure, attack idea, literature parents identified
 - [x] 1 -> 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 -> 3 formalized: Lean theorem, build green, axiom check pass
+- [x] 2 -> 3 formalized: Lean theorem, build green, axiom check pass
 - [ ] 3 -> 4 publication-ready: standalone paper and external novelty review
 
 ## Setup
@@ -375,122 +375,37 @@ shifted quotient. They remain source-transport infrastructure, not a scientific 
   multiplicity becomes an asymptotically orthogonal unitary leakage block, with an exact
   Hilbert--Schmidt jump when the persistent background is finite.
 
-## Formalization progress (2026-08-24)
+## Formalization status (2026-08-25)
 
-`[LEAN-PROVED] [CORPUS]` The finite coprime inner-quotient rank core is now exact in
-`HTGeometry.FiniteBlaschkeLeakageRank`:
+`[LEAN-PROVED] [UNCONDITIONAL] [AXIOM-AUDITED]` Complete. The literal shifted-Xi quotient and
+anti-causal Hardy compression are formalized in
+`RHTower.SuzukiShiftedXiBoundaryFactorization`. The exact cancellation-aware finite/infinite rank
+index and nonexceptional divisor classification are
+`suzukiShiftedXiHardyLeakage_rankIndex_eq_uncancelledDivisorIndex` and
+`suzukiShiftedXiHardyLeakage_rankIndex_nonexceptional_classification`; the Boolean endpoint is
+`riemannHypothesis_iff_forall_suzukiShiftedXiHardyLeakage_eq_zero`.
 
-- `finiteBlaschkeLeakageCore` is the canonical initial-space realization
-  `P_(K_B) M_A : H² -> K_B` of anti-causal leakage;
-- `norm_sq_finiteBlaschkeLeakageCore` identifies its squared norm with the exact Schur leakage
-  energy `||f||²-||M_B^* M_A f||²`;
-- `finiteBlaschkeLeakageCore_surjective_of_coprime` proves that coprime numerator and denominator
-  make this channel onto the entire denominator model space; and
-- `finrank_range_finiteBlaschkeLeakageCore_of_coprime` proves exact rank `deg B`, including
-  multiplicities.
+Theorem B is closed for the actual leakage operator by
+`tendsto_norm_suzukiShiftedXiHardyLeakage_one_of_poleValue`,
+`tendsto_norm_suzukiShiftedXiHardyLeakage_one_of_tameCrossing`,
+`lambda_pow_mul_residual_le_norm_suzukiShiftedXiHardyLeakage`, and
+`suzukiShiftedXiHardyLeakage_eq_zero_of_isEmpty`. These use the exact local Blaschke geometry and
+the actual full quotient, including residual factors.
 
-The supporting leaves `HTGeometry.FiniteBlaschkeGeneralizedSchurInertia` and
-`HTGeometry.FiniteBlaschkeAdjointDefect` supply exact model-space degree, adjoint energy loss,
-Hardy coprimality, and the corresponding generalized-Schur negative-index theorem. All three
-leaves pass `lake env lean`; targeted leaf builds pass. New theorem axioms are exactly `propext`,
-`Classical.choice`, and `Quot.sound`.
+Theorem C is closed by `RHTower.SuzukiShiftedXiCrossingChannelPeeling`,
+`RHTower.SuzukiShiftedXiStrongContinuity`, and
+`RHTower.SuzukiShiftedXiFiniteSpectralPeeling`. They prove literal equations `(11)` and `(12)`,
+persistent-block convergence, convergence of the complete finite Gram matrix to the persistent
+block plus `m` unit channels, the characteristic-root multiset law `(13)`, sorted Hermitian
+spectral convergence, and the exact trace jump `(14)`. Reusable dependent-codomain Gram assembly
+and arbitrary-filter Hermitian spectral continuity live in
+`HTGeometry.FiniteChannelGramSpectralPeeling` and `HTGeometry.FiniteGramSpectralPeeling`.
 
-`HTGeometry.ModelSpaceLeakageDenseRank` now proves the exact infinite-dimensional operator branch:
-for any complete Hilbert model channel, faithfulness of the numerator adjoint makes projected leakage
-dense in that channel, and an infinite-dimensional channel forces genuinely infinite algebraic
-leakage rank.  This removes the finite-dimensional-surjectivity dependency from the abstract
-Hardy operator theorem.
+Equation `(E)` is exact in `RHTower.XiShiftEulerProductBridge` as
+`eulerXiShiftTheta_eq_archimedean_mul_zeta_ratio` and
+`eulerXiShiftTheta_eq_archimedean_mul_exp_eulerLog`, with the shifted Euler logarithm on its
+absolute-convergence region.
 
-`HTGeometry.HardyMultiplierZeroModelDimension` proves the divisor-to-model-dimension half without
-a finite Blaschke proxy: Szegő kernels at pairwise distinct disk zeros of any bounded analytic
-multiplier are linearly independent and lie in its model space.  Therefore zero packets of
-arbitrarily large finite cardinality force that model space to be infinite-dimensional.
-
-`HTGeometry.InfiniteBlaschkeMultiplier` now closes the infinite-denominator construction itself,
-including divisor entries at the disk origin: the Blaschke condition gives locally uniform
-convergence on the full open disk, the product is holomorphic and contractive, every prescribed
-zero is attained exactly, and an injective infinite divisor produces an infinite-dimensional Hardy
-model space.  The module passes direct Lean, its targeted leaf build passes, and all new theorem
-axioms are exactly `propext`, `Classical.choice`, and `Quot.sound`.
-
-`RHTower.SuzukiShiftedXiFiniteLeakageRank` now instantiates the literal shifted-Xi finite-tail
-factors, rather than a proxy symbol.  For every finite nonexceptional shifted divisor it proves that
-the projected Hardy leakage is onto the full denominator model channel and that its algebraic range
-finrank is exactly `Fintype.card (XiShiftRightZeroCopy omega)`, hence counts every pole copy and its
-multiplicity.  Its reusable producer is the strengthened
-`HTGeometry.ModelSpaceLeakageDenseRank`: in a finite-dimensional model channel, faithful numerator
-adjoint implies surjective projected leakage and exact range finrank.  Both targeted builds and the
-new-declaration axiom audits pass.
-
-`RHTower.SuzukiShiftedXiInfiniteBlaschkeDenominator` now constructs the literal full denominator
-over every strict-right shifted-Xi pole copy.  It proves the exact disk Blaschke condition from the
-critical-strip geometry and reciprocal-square summability of the Xi divisor, retains multiplicity
-copies, vanishes at every prescribed pole coordinate, and proves that an infinite shifted divisor
-has an infinite-dimensional denominator model space.  Direct Lean and targeted leaf build pass;
-new theorem axioms are exactly `propext`, `Classical.choice`, and `Quot.sound`.
-
-`RHTower.SuzukiShiftedXiInfiniteLeakageRank` now supplies the literal numerator and algebraic-rank
-branch for the full infinite divisor.  It constructs the numerator Blaschke product over every
-reflected shifted-Xi zero copy, proves its Blaschke condition, proves that the full numerator
-(including the core Schur factor) is nonzero at every denominator coordinate under exact
-`SuzukiShiftNonexceptional`, and proves that the corresponding projected Hardy leakage has
-non-finite-dimensional algebraic range whenever the shifted divisor type is infinite.  The proof
-uses arbitrarily large linearly independent packets of Szegő kernels in the adjoint range; it needs
-no separation or corona hypothesis.  Reusable `HTGeometry.IndexedBlaschkeMultiplier` now proves
-that the indexed product has no disk zeros beyond its prescribed divisor, while
-`HTGeometry.AdjointFiniteRange` transfers infinite adjoint range to infinite operator range.  Direct
-Lean, targeted leaf build, and batched new-declaration axiom audit pass; axioms are exactly
-`propext`, `Classical.choice`, and `Quot.sound`.
-
-`HTGeometry.ModelSpaceLeakageNorm` and
-`RHTower.SuzukiShiftedXiLeakageNormBounds` now formalize theorem B's exact operator squeeze for the
-literal full-divisor projected leakage.  Orthogonal projection never amplifies the multiplier
-bound, evaluation of the numerator at any denominator zero lower-bounds leakage norm, the shifted-Xi
-leakage is contractive, and convergence of one crossing numerator value to unit modulus forces the
-operator norm to converge to one.  Both leaves pass direct Lean, targeted leaf builds, and axiom
-audits with exactly `propext`, `Classical.choice`, and `Quot.sound`.  The remaining theorem-B work is
-the actual isolated-layer numerator-value limit and its identification with the stated anti-causal
-operator, not the Nehari/operator squeeze.
-
-`HTGeometry.HorizontalLayerBlaschkeGeometry` formalizes the exact local crossing calculation `(6)`:
-the numerator factor evaluated at its paired denominator zero has modulus `omega/a`, hence exactly
-`lambda` along `omega=lambda*a`, and multiplicity `m` contributes `lambda^m`.  Direct Lean,
-targeted leaf build, and axiom audit pass with the same standard three axioms.
-
-`HTGeometry.FiniteBlaschkeModelSpaceProduct` instantiates the existing abstract isometry splitting
-to prove theorem C's exact finite product identity `(10)`,
-`K_(B₀B₁)=K_(B₀) ⊕ B₀K_(B₁)`, and proves the two displayed summands orthogonal.  This reused
-`HTGeometry.orthogonal_map_eq_sup` rather than duplicating its Hilbert-space proof.  Direct Lean,
-targeted leaf build, and axiom audit pass with the same standard three axioms.  Infinite persistent
-background, moving-channel convergence, and operator/spectral peeling remain open.
-
-`HTGeometry.FiniteBlaschkeLeakagePythagoras` now proves theorem C's exact finite-inner energy law,
-not merely its diagonal norm specialization.  It reconstructs every numerator-multiplied Hardy
-vector as its denominator model-space leakage plus denominator-multiplied causal component, proves
-the fully polarized inner-product splitting, and derives the operator identity
-`L†L + T†T = I`, equation `(17)`.  For orthogonal inputs it proves the exact signed cross-pairing
-identity behind `(18)`, before taking absolute values.  Direct Lean and targeted leaf build pass;
-all new theorem axioms are exactly `propext`, `Classical.choice`, and `Quot.sound`.
-
-`HTGeometry.FiniteBlaschkeProduct` and `HTGeometry.FiniteBlaschkeCrossingChannelPeeling` now make
-the theorem-C channel literal.  Finite Blaschke divisors concatenate with exact degree addition,
-multiplier composition, and model-space splitting; `finiteBlaschkeCrossingChannel B₀ B₁` is a
-subspace of `K_(B₀B₁)` with finrank exactly `deg B₁`.  The crossing leakage Gram defect has norm
-exactly the square of the causal compression norm on that channel, while its complementary
-off-diagonal block is bounded by the same causal norm.  Consequently the boundary-scaling limit
-`(16)` implies `(11)` and `(12)` as formal `Tendsto` theorems.  Reusable
-`HTGeometry.AdjointGramChannelPeeling` supplies these identities for any orthogonal channel.  All
-three targeted leaves build; batched axiom audit of every new theorem reports exactly `propext`,
-`Classical.choice`, and `Quot.sound`.
-
-This is not yet the complete card and does not justify Stage 3. Remaining exact obligations are:
-
-1. prove the exact full quotient/anti-causal-compression identification and the exceptional-shift
-   common-inner-divisor cancellation law, so finite and infinite projected-rank theorems become
-   theorem A for the stated operator `L_omega`;
-2. prove the isolated outermost-layer numerator-value limit in the actual shifted-Xi family, then
-   apply the formalized norm squeeze to obtain theorem B's norm singularity; and
-3. prove theorem C's boundary-scaling limit `(16)` for the actual moving isolated layer, including
-   infinite persistent background; `(11)`--`(12)` then follow from the formalized exact identities.
-   Persistent finite-block convergence, spectral multiset peeling `(13)`, and Hilbert--Schmidt
-   trace jump `(14)` also remain.
+Targeted leaf builds pass. Batched `#print axioms` for every newly added declaration reports only
+`propext`, `Classical.choice`, and `Quot.sound`; no project axiom, `sorry`, `admit`, `opaque`, or
+`unsafe` declaration is used.

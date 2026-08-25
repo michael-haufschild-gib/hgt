@@ -234,6 +234,21 @@ build and axiom audit passed with only `propext`, `Classical.choice`, and `Quot.
 Off-diagonal normalized-kernel localization and the concrete discrete Carleson estimate remain the
 operator-producing gap, so this card remains at Stage 2.
 
+`PolynomialFockTangentGaussian.lean` and `PolynomialMomentFockKernelLower.lean` now close the
+previously missing real-axis diagonal lower estimate without importing abstract doubling-Fock
+kernel asymptotics.  An explicit normalized holomorphic tangent exponential belongs to the exact
+moment carrier, its weighted norm is bounded by the adapted Gaussian, and reproducing-kernel
+duality gives
+
+```text
+exp(2 phi_m(x)) m(1+x^2)^(m/2-1)/pi <= K_m(x,x),  m>=2.
+```
+
+The direct checks, targeted leaf builds, and axiom audit passed with only `propext`,
+`Classical.choice`, and `Quot.sound`.  Remaining gap is an upper local evaluation estimate and its
+concrete prime-log Carleson/vanishing specialization; diagonal control alone does not construct the
+sampler.
+
 ## Gates
 
 - [x] polynomial potential and adapted scale computed

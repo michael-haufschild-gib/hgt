@@ -1233,3 +1233,32 @@ wired into `RHTower.lean`; no umbrella build was run.
 Remaining brick-5 core is the sharp differentiated Barban--Vehov asymptotic (the current Graham
 bounds are insufficient), control of the chi-weighted reflected cross heads and truncation error
 in the dyadic integral, and the exact PRZZ parameter optimization above `1/3`.
+
+## Brick 5p differentiated short-range energy decomposition (2026-08-25)
+
+Six axiom-clean leaves now expose and bound every elementary arithmetic moment in the literal
+linear-mollifier detector coefficient:
+
+* `RHTower/Sieve/LevinsonLinearMollifiedCriticalDetectorEnergy.lean` proves the exact finite
+  squared norm in both Barban--Vehov and divisor-log-moment forms;
+* `RHTower/Sieve/LevinsonLinearMollifiedCriticalDetectorShortRange.lean` uses the existing exact
+  Möbius divisor identities to identify the unit coefficient and every non-unit coefficient as
+  `((1-lambda log M)Lambda(k)-lambda(Lambda*Lambda)(k))/(log M sqrt k)`;
+* `RHTower/Sieve/LevinsonLinearMollifiedCriticalDetectorEnergyExpansion.lean` expands that square
+  into the `Lambda²`, cross, and `(Lambda*Lambda)²` harmonic moments;
+* `RHTower/Sieve/VonMangoldtHarmonicSquareAsymptotic.lean` proves the explicit sharp estimate
+  `|sum Lambda(k)²/k-(log N)²/2| <= 39 log N+25`;
+* `RHTower/Sieve/VonMangoldtSelfConvCrossHarmonicBound.lean` proves the cross moment is supported
+  on proper prime powers and is at most `24 log N(1+log N)`;
+* `RHTower/Sieve/VonMangoldtSelfConvLogBound.lean` proves the unconditional pointwise bounds
+  `(Lambda*Lambda)(n) <= 2(log n)²` and `(Lambda*Lambda)(n)² <= 4(log n)^4`, hence an explicit
+  finite `4(log N)^4(1+log N)` envelope for the last moment.
+
+Every leaf passes direct `lake env lean`, exact leaf `lake build`, and declaration-local
+`#print axioms`; dependencies are only `propext, Classical.choice, Quot.sound`. They are wired
+into `RHTower.lean`; no umbrella build was run.
+
+Remaining arithmetic core is the sharp leading asymptotic for
+`sum_(k<=N) (Lambda*Lambda)(k)²/k`; the coarse finite envelope is not substituted for that result.
+After it, reflected-head cancellation, full PRZZ long-mollifier moment, and exact published
+parameter optimization remain.

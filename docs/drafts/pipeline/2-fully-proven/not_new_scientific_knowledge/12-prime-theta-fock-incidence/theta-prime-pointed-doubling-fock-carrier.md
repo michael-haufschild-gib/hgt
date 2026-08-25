@@ -254,6 +254,18 @@ density together with two-sided adapted-radius comparisons.  This removes an abs
 from the shared Carleson producer, but does not itself prove boundedness of the normalized prime
 sampling map.  Its targeted leaf build and axiom audit passed with only the same standard axioms.
 
+`PolynomialFockTangentGaussian.lean` and `PolynomialMomentFockKernelLower.lean` additionally
+construct the literal tangent exponential in this exact carrier and prove the unconditional
+real-axis lower kernel estimate
+
+```text
+exp(2 phi_m(x)) m(1+x^2)^(m/2-1)/pi <= K_m(x,x),  m>=2.
+```
+
+All new declarations passed direct checks, targeted leaf builds, and axiom audit with only
+`propext`, `Classical.choice`, and `Quot.sound`.  Concrete local evaluation/prime Carleson control
+remains necessary before the all-prime normalized sampling channel is formalized.
+
 ## Gates
 
 - [x] pointed polynomial doubling-Fock carrier constructed

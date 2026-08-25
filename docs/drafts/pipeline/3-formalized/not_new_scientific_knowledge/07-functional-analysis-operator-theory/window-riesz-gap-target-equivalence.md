@@ -1,7 +1,7 @@
 # Window Riesz gap is a consumer unless a source homotopy is proved
 
 - **ID:** `window-riesz-gap-target-equivalence`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / ROUTE-D TERMINAL AUDIT (paper)
 - **Scientific status:** BRIDGE / NOT NEW SCIENTIFIC KNOWLEDGE
 - **Input:** `../../5-failed/completed-source-window-index-amplifier.md`
@@ -139,16 +139,29 @@ Analytic Fredholm determinants, the argument principle, Riesz projections, homot
 the Neumann-series criterion are standard.  Their assembly gives the terminal route audit but is not
 new scientific knowledge.
 
-## Formalization progress (2026-08-24)
+## Lean formalization (2026-08-25)
 
-`GaloisForLFunctions.HTGeometry.WindowRieszRelativeNeumann` proves the exact relative source
-estimate core `(H)` in every complete complex normed algebra: for `0 ≤ t ≤ 1`,
-`‖F₀⁻¹(F₁-F₀)‖ < 1` forces `F₀+t(F₁-F₀)` to be invertible, pointwise on an
-arbitrary boundary.  It also formalizes the scalar counterexample `F(z)=z`: inverse norm is exactly
-one on the unit circle while the enclosed value `F(0)` is singular.
+`GaloisForLFunctions.HTGeometry.WindowRieszGapTargetEquivalence` proves the full five-way theorem as
+`windowRieszGapTarget_equivalent`.  `BoundedJordanDomain` is a chosen
+Carathéodory--Schoenflies chart, so its image is an arbitrary bounded Jordan domain without a smooth
+boundary assumption.  `TraceClassKernelFamily` carries the Hilbert--Schmidt kernel and the literal
+Schatten-`1` proof; `IsHolomorphicFredholmOn` bundles analyticity of `I+K(z)` and its canonical
+ordinary Fredholm determinant on one open neighbourhood.
 
-Targeted leaf compile/build passes; axiom reports contain only `propext`, `Classical.choice`, and
-`Quot.sound`.  Card remains Stage 2.  Exact remaining Lean obligations are the full holomorphic
-trace-class Fredholm determinant multiplicity theorem on a bounded Jordan domain, its argument
-principle/winding identification, the characteristic-divisor bridge `(C)`, and the closed-operator
-Riesz-projection equivalence.
+The dependency-closed proof is split into exact reusable leaves:
+
+- `JordanWindowArgumentPrinciple` proves arbitrary-multiplicity zero finiteness, the boundary
+  winding formula, and zero-count/zero-free equivalence using an inner-circle homotopy;
+- `KernelFredholmDeterminant` defines
+  `det_F(I+K)=det₂(-K) exp(tr K)` and proves its zero set is exactly the noninvertibility locus;
+- `ClosedCompactResolventWindowRiesz` proves the compact-resolvent Fredholm-pencil equivalence and
+  canonical window spectral-range projection vanishing criterion;
+- `WindowCompactRiesz` supplies the literal contour Riesz-projection zero equivalence for compact
+  operator windows; and
+- `WindowRieszRelativeNeumann` proves exact relative estimate `(H)` and the scalar boundary-resolvent
+  counterexample.
+
+The characteristic-divisor law `(C)` is used exactly as stated.  No source exclusion or determinant
+nonvanishing is assumed.  Targeted leaf build
+`lake build GaloisForLFunctions.HTGeometry.WindowRieszGapTargetEquivalence` passes.  Batched axiom
+reports for every new declaration contain only `propext`, `Classical.choice`, and `Quot.sound`.
