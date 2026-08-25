@@ -1262,3 +1262,60 @@ Remaining arithmetic core is the sharp leading asymptotic for
 `sum_(k<=N) (Lambda*Lambda)(k)²/k`; the coarse finite envelope is not substituted for that result.
 After it, reflected-head cancellation, full PRZZ long-mollifier moment, and exact published
 parameter optimization remain.
+
+## Brick 5q sharp self-convolution and short detector energy (2026-08-25)
+
+The remaining short-range arithmetic moment is now closed unconditionally and with its sharp
+constant:
+
+* `RHTower/Sieve/VonMangoldtSquareProperPrimePowerCorrection.lean` proves that the difference
+  between `(Lambda*Lambda)(k)^2` and twice the square-weight convolution vanishes at primes, is
+  supported only on proper prime powers, and has a cutoff-uniform summable bound.
+* `QuadraticIncrementConvolution.lean`, `VonMangoldtSquareDyadicProfile.lean`,
+  `VonMangoldtSquareDyadicHyperbola.lean`, and
+  `VonMangoldtSquareDyadicHyperbolaAsymptotic.lean` prove the exact dyadic hyperbola squeeze and
+  the coefficient `1/24`.
+* `VonMangoldtSquareHyperbolaAsymptotic.lean` removes the dyadic restriction;
+  `VonMangoldtSelfConvHarmonicSquareAsymptotic.lean` absorbs the bounded proper-prime-power
+  correction and proves
+  `sum_(k<=N) (Lambda*Lambda)(k)^2/k / log(N)^4 -> 1/12`.
+* `VonMangoldtMomentRatioAsymptotics.lean` packages all three normalized moment limits, including
+  `sum Lambda(k)^2/k / log(N)^2 -> 1/2` and the cross moment divided by `log(N)^3 -> 0`.
+* `LevinsonLinearMollifiedCriticalDetectorEnergyAsymptotic.lean` substitutes those limits into the
+  exact differentiated Barban--Vehov quadratic form. For `lambda_N=r/log N`, the non-unit energy
+  tends to `(1-r)^2/2+r^2/12`, and the full short-range energy tends exactly to
+  `1+(1-r)^2/2+r^2/12`.
+
+Every leaf passes direct `lake env lean`, exact-module `lake build`, and declaration-local
+`#print axioms`; dependencies are only `propext, Classical.choice, Quot.sound`. All leaves are
+wired into `RHTower.lean`; no umbrella build was run.
+
+Remaining brick-5 core is no longer arithmetic short-range evaluation. It is the dyadic integral
+assembly with the chi-weighted reflected and cross heads, transfer of the finite-cutoff error, then
+the explicit Levinson/PRZZ parameter optimization above `1/3`.
+
+## Brick 5r reflected differentiated-head mean value (2026-08-25)
+
+Two axiom-clean leaves now place the actual reflected AFE detector heads into the exact mollified
+twisted mean-value substrate without discarding their coefficient structure:
+
+* `RHTower/SmoothAFEZetaDisplacedReflectedMollifiedMeanSquare.lean` proves unit/logarithmic
+  envelopes for the literal reflected base and detector coefficients and specializes the existing
+  mollified twisted theorem to each head. Both complex correlations are identified with literal
+  squared `Sieve.dirPoly`--linear-mollifier norms. Main terms remain the exact gcd-reduced
+  diagonals.
+* `RHTower/SmoothAFEZetaDisplacedReflectedCombinedMeanSquare.lean` merges the two differentiated
+  reflected heads exactly through the frozen complex value of `logDeriv zetaChi`, including an
+  exact normal form for the full finite mollified detector. It adds the arbitrary-complex
+  conjugate-coefficient bridge needed for positive frequencies, proves the actual displaced-line
+  logarithmic coefficient envelope, and establishes the corresponding exact gcd-reduced
+  mollified mean square.
+
+Both leaves pass scratch `lake env lean`, exact-module `lake build`, and declaration-local
+`#print axioms`; dependencies are only `propext, Classical.choice, Quot.sound`. They are wired into
+`RHTower.lean`; no umbrella build was run.
+
+Remaining dyadic work is now sharply scoped: control variation of the actual moving
+`logDeriv zetaChi` coefficient against this frozen combined carrier, price the direct/reflected
+cross term without losing its oscillation, transfer the Gaussian and pole remainders, and evaluate
+the full long-range gcd-reduced diagonal before parameter optimization above `1/3`.

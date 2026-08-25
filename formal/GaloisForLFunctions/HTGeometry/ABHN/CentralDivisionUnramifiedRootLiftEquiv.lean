@@ -61,9 +61,20 @@ theorem divisionAlgebraResidueExhaustingMaximalSubfield_exists_unramifiedRootLif
       D.polynomial.natDegree = Module.finrank F T ∧
       let B := AdjoinRoot D.polynomial
       let U := FractionRing B
-      ∃ (_ : IsDomain B) (_ : Algebra F U),
-        Nonempty (U ≃ₐ[F] T) ∧
-          Nonempty (cyclicGaloisH2 F T ≃+ ZMod D.polynomial.natDegree) := by
+      letI : IsDomain B := nonarchimedeanLocalFieldAdjoinRoot_isDomain F
+        D.polynomial D.monic D.residuePolynomial D.reduction_eq D.residueIrreducible
+      letI : Algebra F U := by
+        let g₀ : (ValuativeRel.valuation F).integer →+* U :=
+          (algebraMap B U).comp (AdjoinRoot.of D.polynomial)
+        have hg₀ : Function.Injective g₀ :=
+          (IsFractionRing.injective B U).comp
+            (AdjoinRoot.of.injective_of_degree_ne_zero
+              (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero F
+                D.polynomial D.monic D.residuePolynomial D.reduction_eq
+                  D.residueIrreducible))
+        exact RingHom.toAlgebra (IsFractionRing.lift hg₀)
+      Nonempty (U ≃ₐ[F] T) ∧
+        Nonempty (cyclicGaloisH2 F T ≃+ ZMod D.polynomial.natDegree) := by
   letI : NormedDivisionRing A :=
     divisionAlgebraRootDeterminantNormedDivisionRing (F := F) (A := A)
   letI : NontriviallyNormedField T :=
@@ -353,7 +364,7 @@ theorem divisionAlgebraResidueExhaustingMaximalSubfield_exists_unramifiedRootLif
     (cyclicGaloisH2AddEquivOfAlgEquiv F U T eUT).symm.trans
       (nonarchimedeanLocalFieldAdjoinRootFractionField_cyclicGaloisH2InvariantOverBase
         F f hf g hgmonic hfg hg)
-  refine ⟨D, ?_, inferInstance, inferInstance, ⟨⟨eUT⟩, ?_⟩⟩
+  refine ⟨D, ?_, ⟨⟨eUT⟩, ?_⟩⟩
   · dsimp only [D]
     exact hfdegree.trans (hgdegree.trans hdegree.symm)
   · dsimp only [D]

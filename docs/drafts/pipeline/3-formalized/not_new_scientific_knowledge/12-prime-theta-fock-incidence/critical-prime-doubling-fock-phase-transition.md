@@ -1,7 +1,7 @@
 # Critical prime incidence has a quartic doubling-Fock phase transition
 
 - **ID:** `critical-prime-doubling-fock-phase-transition`
-- **Stage:** 2-fully-proven
+- **Stage:** `3-formalized`
 - **Type:** THEOREM (paper) / POSITIVE HILBERT CARRIER / BRIDGE
 - **Scientific status:** `[PROVED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Statement:** In the polynomial doubling-Fock space with potential
@@ -194,60 +194,26 @@ Primary parent sources:
 
 ## Lean status
 
-The Lean tree now proves the literal critical-prime operator endpoints and constructs the normalized
-sampler from finite normalized-kernel Gram-row bounds in
-`formal/GaloisForLFunctions/RHTower/CriticalPrimeKernelSchurSampling.lean`.  Vanishing tail Gram
-rows imply compactness, while unit normalized kernels force the sampler outside Hilbert--Schmidt
-class and its incidence outside trace class.  It also proves the full scalar form of `(13)--(14)` in
-`formal/GaloisForLFunctions/RHTower/CriticalPrimeFockWindowPhaseTransition.lean`: at the exact
-polynomial Fock radius the prime-log mass diverges for `2<m<4`, converges to `2` at `m=4`, and
-converges to zero for `m>4`.
-`formal/GaloisForLFunctions/RHTower/PolynomialMomentFockNorm.lean` now proves that every coefficient
-carrier vector has integrable literal plane density and the exact norm identity
-`int_C |F(z)|^2 exp(-2 phi_m(|z|)) dA=||f||^2`.  Concrete normalized-kernel/Carleson estimates and
-their prime-log specialization remain open.  The scalar phase transition and exact carrier do not
-yet formalize the substantive operator theorem, so the card remains at Stage 2.
-
-`PolynomialMomentFockKernelBound.lean` additionally sums the annular moment lower bounds into an
-explicit diagonal-kernel and point-evaluation growth envelope.  Off-diagonal localization and the
-discrete Carleson estimate remain the operator-producing gap.
-
-`formal/GaloisForLFunctions/RHTower/MomentFockKernel.lean` and
-`formal/GaloisForLFunctions/RHTower/PolynomialMomentFock.lean` now construct the exact radial
-monomial moments of `exp(-2(1+r^2)^(m/2))`, prove those moments finite and strictly positive, prove
-all point-kernel coefficient sequences square-summable, construct bounded evaluations and unit
-normalized prime-log kernels, and provide the distinguished constant vector.
-`MomentFockEntire.lean` proves every carrier vector defines an entire function and that its entire
-power-series value is exactly the bounded RKHS evaluation. `PolynomialMomentFockNorm.lean` proves
-weighted-square integrability and the exact complex-plane norm isometry.  Remaining analytic core
-is the concrete normalized-kernel/Carleson estimate needed for boundedness and compactness.
-
-`PolynomialFockPotentialGeometry.lean` now formalizes exact radial slope, curvature, planar
-Laplacian density, positivity, the uniform comparison
+Complete. `PolynomialFockSharpPhaseTransition.lean` constructs the literal normalized all-prime
+sampler on the exact moment-Fock carrier and proves
 
 ```text
-2m(1+r^2)^(m/2-1) <= Delta phi_m(r) <= m^2(1+r^2)^(m/2-1),
+HasPolynomialCriticalPrimeBesselBound m ↔ 4 ≤ m       (2 < m),
+IsCompactOperator (polynomialCriticalPrimeSamplingOperator m) ↔ 4 < m  (4 ≤ m).
 ```
 
-and induced two-sided reciprocal-square-root adapted-radius bounds for `m>=2`.  Its targeted leaf
-build and axiom audit passed with only `propext`, `Classical.choice`, and `Quot.sound`.
-Off-diagonal normalized-kernel localization and the concrete discrete Carleson estimate remain the
-operator-producing gap, so this card remains at Stage 2.
+The proof uses tangent-scale local evaluation, exact prime-log window asymptotics, a cofinal
+coordinate-tail obstruction at `m=4`, and vanishing tail bounds for `m>4`. No RH assumption or
+additional hypothesis is present. The module is wired into `RHTower.lean`.
 
-`PolynomialFockTangentGaussian.lean` and `PolynomialMomentFockKernelLower.lean` now close the
-previously missing real-axis diagonal lower estimate without importing abstract doubling-Fock
-kernel asymptotics.  An explicit normalized holomorphic tangent exponential belongs to the exact
-moment carrier, its weighted norm is bounded by the adapted Gaussian, and reproducing-kernel
-duality gives
+Targeted direct check and leaf build passed:
 
 ```text
-exp(2 phi_m(x)) m(1+x^2)^(m/2-1)/pi <= K_m(x,x),  m>=2.
+lake env lean GaloisForLFunctions/RHTower/PolynomialFockSharpPhaseTransition.lean
+lake build GaloisForLFunctions.RHTower.PolynomialFockSharpPhaseTransition
 ```
 
-The direct checks, targeted leaf builds, and axiom audit passed with only `propext`,
-`Classical.choice`, and `Quot.sound`.  Remaining gap is an upper local evaluation estimate and its
-concrete prime-log Carleson/vanishing specialization; diagonal control alone does not construct the
-sampler.
+Capstone axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Gates
 
@@ -258,4 +224,4 @@ sampler.
 - [x] compactness threshold `m>4` proved
 - [x] RH-free source construction and exact limitations stated
 - [x] parent-theory novelty claim rejected
-- [ ] complete unconditional Lean formalization
+- [x] complete unconditional Lean formalization

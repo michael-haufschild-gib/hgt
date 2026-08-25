@@ -37,11 +37,22 @@ theorem nonarchimedeanLocal_brauerGroup_exists_unramifiedRootLiftCyclicRepresent
           R.polynomial.natDegree = Module.finrank F T ∧
           let B := AdjoinRoot R.polynomial
           let U := FractionRing B
-          ∃ (_ : IsDomain B) (_ : Algebra F U),
-            Nonempty (U ≃ₐ[F] T) ∧
-              Nonempty (cyclicGaloisH2 F T ≃+ ZMod R.polynomial.natDegree) ∧
-                Nonempty (ZMod R.polynomial.natDegree ≃+
-                  cyclicGaloisBrauerSubgroup F T) := by
+          letI : IsDomain B := nonarchimedeanLocalFieldAdjoinRoot_isDomain F
+            R.polynomial R.monic R.residuePolynomial R.reduction_eq R.residueIrreducible
+          letI : Algebra F U := by
+            let g₀ : (ValuativeRel.valuation F).integer →+* U :=
+              (algebraMap B U).comp (AdjoinRoot.of R.polynomial)
+            have hg₀ : Function.Injective g₀ :=
+              (IsFractionRing.injective B U).comp
+                (AdjoinRoot.of.injective_of_degree_ne_zero
+                  (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero F
+                    R.polynomial R.monic R.residuePolynomial R.reduction_eq
+                      R.residueIrreducible))
+            exact RingHom.toAlgebra (IsFractionRing.lift hg₀)
+          Nonempty (U ≃ₐ[F] T) ∧
+            Nonempty (cyclicGaloisH2 F T ≃+ ZMod R.polynomial.natDegree) ∧
+              Nonempty (ZMod R.polynomial.natDegree ≃+
+                cyclicGaloisBrauerSubgroup F T) := by
   letI : ValuativeRel F := .ofValuation (NormedField.valuation (K := F))
   letI : (Valued.v : Valuation F NNReal).IsNontrivial := by
     change (NormedField.valuation (K := F)).IsNontrivial
@@ -77,14 +88,26 @@ theorem nonarchimedeanLocal_brauerGroup_exists_unramifiedRootLiftCyclicRepresent
   letI : FiniteDimensional F T := by infer_instance
   letI : IsGalois F T := hGalois
   letI : IsCyclic Gal(T / F) := hCyclic
-  obtain ⟨R, hRdegree, hdom, aFU, ⟨eUT⟩, ⟨hInv⟩⟩ :=
+  obtain ⟨R, hRdegree, ⟨eUT⟩, ⟨hInv⟩⟩ :=
     divisionAlgebraResidueExhaustingMaximalSubfield_exists_unramifiedRootLiftAlgEquiv
       (F := F) (A := D) T hT hdegree hres
+  let B := AdjoinRoot R.polynomial
+  let U := FractionRing B
+  letI : IsDomain B := nonarchimedeanLocalFieldAdjoinRoot_isDomain F
+    R.polynomial R.monic R.residuePolynomial R.reduction_eq R.residueIrreducible
+  let g₀ : (ValuativeRel.valuation F).integer →+* U :=
+    (algebraMap B U).comp (AdjoinRoot.of R.polynomial)
+  have hg₀ : Function.Injective g₀ :=
+    (IsFractionRing.injective B U).comp
+      (AdjoinRoot.of.injective_of_degree_ne_zero
+        (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero F R.polynomial R.monic
+          R.residuePolynomial R.reduction_eq R.residueIrreducible))
+  letI : Algebra F U := RingHom.toAlgebra (IsFractionRing.lift hg₀)
   let hBrauerInv : ZMod R.polynomial.natDegree ≃+ cyclicGaloisBrauerSubgroup F T :=
     cyclicGaloisInvariantBrauerSubgroupAddEquiv
       F T R.polynomial.natDegree hInv
   refine ⟨T, inferInstance, inferInstance, inferInstance, inferInstance, inferInstance, a, ?_,
-    R, hRdegree, hdom, aFU, ⟨eUT⟩, ⟨hInv⟩, ⟨hBrauerInv⟩⟩
+    R, hRdegree, ⟨eUT⟩, ⟨hInv⟩, ⟨hBrauerInv⟩⟩
   exact hx.trans (brauerClass_eq_of_algEquiv
     (cyclicGaloisAlgebraCSA F T ((a⁻¹ : Fˣ) : F) (Units.ne_zero (a⁻¹)))
     (centralDivisionCSA F D) e).symm
@@ -101,7 +124,7 @@ theorem nonarchimedeanLocal_brauerGroup_exists_finiteUnramifiedCyclicSlice
     exact Valuation.RankOne.toIsNontrivial
   letI : IsNonarchimedeanLocalField F :=
     isNonarchimedeanLocalField_of_valued_of_locallyCompact F NNReal
-  obtain ⟨T, hT, aFT, finT, galoisT, cyclicT, a, hx, R, hRdegree, hdom, aFU,
+  obtain ⟨T, hT, aFT, finT, galoisT, cyclicT, a, hx, R, hRdegree,
       ⟨eUT⟩, ⟨hInv⟩, ⟨hBrauerInv⟩⟩ :=
     nonarchimedeanLocal_brauerGroup_exists_unramifiedRootLiftCyclicRepresentative x
   letI : Field T := hT

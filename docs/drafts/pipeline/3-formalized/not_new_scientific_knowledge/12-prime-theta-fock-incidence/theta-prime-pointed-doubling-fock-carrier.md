@@ -1,7 +1,7 @@
 # A pointed doubling-Fock carrier couples the prime tail to the exact completed trace
 
 - **ID:** `theta-prime-pointed-doubling-fock-carrier`
-- **Stage:** 2-fully-proven
+- **Stage:** `3-formalized`
 - **Type:** THEOREM (paper) / POSITIVE HILBERT--POLYA SOURCE CARRIER / BRIDGE
 - **Scientific status:** `[PROVED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Statement:** For every `m>=4`, one source-defined analytic Hilbert space simultaneously carries
@@ -224,47 +224,32 @@ Parent sources:
 
 ## Lean status
 
-The exact source reflection, integrability, and critical Fourier identity `(14)` are already
-formalized.  Complete carrier theorem still depends on doubling-Fock/Carleson and trace-continuity
-infrastructure not yet present in the Lean tree; a wrapper around `(14)` alone would not formalize
-the substantive construction.
-
-`formal/GaloisForLFunctions/RHTower/MomentFockKernel.lean` and
-`formal/GaloisForLFunctions/RHTower/PolynomialMomentFock.lean` now construct the exact polynomial
-radial moment coefficient carrier, bounded point evaluations, unit normalized prime-log kernels,
-and a distinguished vector whose evaluation is identically `1`.  `MomentFockEntire.lean` proves
-every vector's coefficient series is entire and agrees exactly with bounded evaluation.
-`PolynomialMomentFockNorm.lean` proves weighted-square integrability on `C` and exact equality
-between coefficient norm and literal weighted plane norm.  Remaining work is concrete prime
-Carleson boundedness and bounded/entire theta trace on this carrier; card therefore remains at
-Stage 2.
-`PolynomialMomentFockKernelBound.lean` supplies the explicit diagonal-kernel and point-evaluation
-growth envelope. `PolynomialMomentFockThetaTrace.lean` now closes the complete trace channel:
-two-sided double-exponential theta domination, integrability against every absolute exponential
-weight, absolute convergence and entire dependence, exact all-order derivative moments, bounded
-continuous-linear moment and point-trace functionals, uniform vertical-strip bounds (hence compact
-local-uniform continuity), and the exact completed-zeta trace at the distinguished constant vector.
-All new declarations passed the targeted leaf build and axiom audit with only `propext`,
-`Classical.choice`, and `Quot.sound`. The card remains at Stage 2 only because the concrete
-normalized prime-kernel Carleson estimate from `critical-prime-doubling-fock-phase-transition.md`
-is not yet formalized.
-
-`PolynomialFockPotentialGeometry.lean` additionally supplies exact radial curvature and Laplacian
-density together with two-sided adapted-radius comparisons.  This removes an abstract metric input
-from the shared Carleson producer, but does not itself prove boundedness of the normalized prime
-sampling map.  Its targeted leaf build and axiom audit passed with only the same standard axioms.
-
-`PolynomialFockTangentGaussian.lean` and `PolynomialMomentFockKernelLower.lean` additionally
-construct the literal tangent exponential in this exact carrier and prove the unconditional
-real-axis lower kernel estimate
+Complete. `PolynomialFockThetaPrimeCarrier.lean` packages, on one exact moment-Fock Hilbert space,
+the literal normalized all-prime sampler, bounded theta-trace evaluations, every bounded trace
+moment, and the distinguished constant vector. It proves the exact completed-zeta critical-line
+trace identity and imports the sharp compactness equivalence
 
 ```text
-exp(2 phi_m(x)) m(1+x^2)^(m/2-1)/pi <= K_m(x,x),  m>=2.
+IsCompactOperator primeSampler ↔ 4 < m,  for 4 ≤ m.
 ```
 
-All new declarations passed direct checks, targeted leaf builds, and axiom audit with only
-`propext`, `Classical.choice`, and `Quot.sound`.  Concrete local evaluation/prime Carleson control
-remains necessary before the all-prime normalized sampling channel is formalized.
+`PolynomialFockSharpPhaseTransition.lean` supplies unconditional bounded normalized prime sampling
+for every `m ≥ 4`; `PolynomialMomentFockThetaTrace.lean` supplies entire dependence, vertical-strip
+bounds, all trace moments, and exact completed-zeta normalization. Both new capstones are wired into
+`RHTower.lean`. Direct checks and targeted leaf build passed. New-declaration axiom audit reports
+only `propext`, `Classical.choice`, and `Quot.sound`.
+
+`PolynomialFockPointedPrimeThetaCarrier.lean` additionally formalizes equation `(17)` literally:
+it proves theta trace is continuous into `DeningerCompactOpenEntire`, project’s compact-open
+Fréchet space of entire functions, and packages
+
+```text
+J_m : MomentFock →L[ℂ] CriticalPrimeEllTwo × DeningerCompactOpenEntire.
+```
+
+This removes any reliance on interpreting pointwise bounded trace functionals as compact-open
+continuity. Targeted direct check, leaf build, umbrella wiring, and new-declaration axiom audit
+passed; axiom set remains `propext`, `Classical.choice`, and `Quot.sound` only.
 
 ## Gates
 
@@ -276,4 +261,4 @@ remains necessary before the all-prime normalized sampling channel is formalized
 - [x] no divisor input and no ambient-`L2` representative choice
 - [x] missing spectral-determinant theorem isolated
 - [x] parent-theory novelty claim rejected
-- [ ] complete unconditional Lean formalization
+- [x] complete unconditional Lean formalization

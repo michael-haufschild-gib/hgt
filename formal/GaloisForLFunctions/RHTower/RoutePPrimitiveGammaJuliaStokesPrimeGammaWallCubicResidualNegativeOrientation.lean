@@ -448,6 +448,42 @@ theorem thetaCuspRawEvenMoment_three_mul_zero_lt_fifteen_mul_one_mul_two :
   dsimp only [thetaCuspHalfMoment] at hprod
   nlinarith
 
+/-- Strict factorial-normalized contraction needed by the tenth theta moment. -/
+theorem thetaCuspRawEvenMoment_five_mul_zero_lt_fortyFive_mul_one_mul_four :
+    thetaCuspRawEvenMoment 5 * thetaCuspRawEvenMoment 0 <
+      45 * thetaCuspRawEvenMoment 1 * thetaCuspRawEvenMoment 4 := by
+  have h109 := thetaCuspFactorialMomentRatio_succ_lt 9 (by omega)
+  have h98 := thetaCuspFactorialMomentRatio_succ_lt 8 (by omega)
+  have h87 := thetaCuspFactorialMomentRatio_succ_lt 7 (by omega)
+  have h76 := thetaCuspFactorialMomentRatio_succ_lt 6 (by omega)
+  have h65 := thetaCuspFactorialMomentRatio_succ_lt 5 (by omega)
+  have h54 := thetaCuspFactorialMomentRatio_succ_lt 4 (by omega)
+  have h43 := thetaCuspFactorialMomentRatio_succ_lt 3 (by omega)
+  have h32 := thetaCuspFactorialMomentRatio_succ_lt 2 (by omega)
+  have h21 := thetaCuspFactorialMomentRatio_succ_lt 1 (by omega)
+  have h102 : thetaCuspFactorialMomentRatio 10 < thetaCuspFactorialMomentRatio 2 :=
+    h109.trans (h98.trans (h87.trans (h76.trans
+      (h65.trans (h54.trans (h43.trans h32))))))
+  have h91 : thetaCuspFactorialMomentRatio 9 < thetaCuspFactorialMomentRatio 1 :=
+    h98.trans (h87.trans (h76.trans (h65.trans
+      (h54.trans (h43.trans (h32.trans h21))))))
+  have hprod :
+      thetaCuspFactorialMomentRatio 10 * thetaCuspFactorialMomentRatio 9 <
+        thetaCuspFactorialMomentRatio 2 * thetaCuspFactorialMomentRatio 1 :=
+    mul_lt_mul h102 h91.le
+      (thetaCuspFactorialMomentRatio_pos (k := 9) (by omega))
+      (thetaCuspFactorialMomentRatio_pos (k := 2) (by omega)).le
+  have hM0 := thetaCuspHalfMoment_pos 0
+  have hM1 := thetaCuspHalfMoment_pos 1
+  have hM2 := thetaCuspHalfMoment_pos 2
+  have hM8 := thetaCuspHalfMoment_pos 8
+  have hM9 := thetaCuspHalfMoment_pos 9
+  norm_num [thetaCuspFactorialMomentRatio] at hprod
+  field_simp [hM0.ne', hM1.ne', hM2.ne', hM8.ne', hM9.ne'] at hprod
+  simp only [thetaCuspRawEvenMoment]
+  dsimp only [thetaCuspHalfMoment] at hprod
+  nlinarith
+
 theorem normalizedPrimeArchMoment_two_sub_zero_cube_div_four_neg :
     normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ 3 / 4 < 0 := by
   have hraw := thetaCuspRawEvenMoment_three_mul_zero_lt_fifteen_mul_one_mul_two
