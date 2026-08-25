@@ -29,28 +29,37 @@ private theorem twoBranchOneOrbit_localWittForm_eq_contactCoefficient
     {K N : ℕ} (d : PuiseuxOrbitCoareaDatum 1 2 K N) (x : Fin 1 → ℝ) :
     localWittForm d x =
       (5 - 2 * (d.branches.contactNumerator 0 1 / (N : ℝ))) * x 0 ^ 2 := by
-  have horbit : ∀ i : Fin 2, d.orbit i = 0 := fun i => Subsingleton.elim _ _
+  have horbit : ∀ i : Fin 2, d.toOrbitCoareaDatum.orbit i = 0 := by
+    intro i
+    change d.orbit i = 0
+    exact Subsingleton.elim _ _
   have hsym : d.branches.contactNumerator 1 0 =
       d.branches.contactNumerator 0 1 :=
     d.branches.contactNumerator_symm 1 0
-  have h00 : d.branches.canonicalCuts.contact 0 0 = 0 := by
+  have h00 : d.toOrbitCoareaDatum.cuts.contact 0 0 = 0 := by
+    change d.branches.canonicalCuts.contact 0 0 = 0
     rw [d.branches.canonicalCuts_contact_eq]
     simp
-  have h01 : d.branches.canonicalCuts.contact 0 1 =
-      d.branches.contactNumerator 0 1 / (N : ℝ) :=
-    d.branches.canonicalCuts_contact_eq 0 1
-  have h10 : d.branches.canonicalCuts.contact 1 0 =
+  have h01 : d.toOrbitCoareaDatum.cuts.contact 0 1 =
       d.branches.contactNumerator 0 1 / (N : ℝ) := by
+    change d.branches.canonicalCuts.contact 0 1 = _
+    exact d.branches.canonicalCuts_contact_eq 0 1
+  have h10 : d.toOrbitCoareaDatum.cuts.contact 1 0 =
+      d.branches.contactNumerator 0 1 / (N : ℝ) := by
+    change d.branches.canonicalCuts.contact 1 0 = _
     rw [d.branches.canonicalCuts_contact_eq, hsym]
-  have h11 : d.branches.canonicalCuts.contact 1 1 = 0 := by
+  have h11 : d.toOrbitCoareaDatum.cuts.contact 1 1 = 0 := by
+    change d.branches.canonicalCuts.contact 1 1 = 0
     rw [d.branches.canonicalCuts_contact_eq]
     simp
-  rw [localWittForm_apply]
-  simp [OrbitCoareaDatum.cartanQuadratic, OrbitCoareaDatum.terminalEnergy,
-    OrbitCoareaDatum.physicalRank, OrbitCoareaDatum.contactPairing,
-    OrbitCoareaDatum.liftCharge, PuiseuxOrbitCoareaDatum.toOrbitCoareaDatum,
-    horbit]
-  rw [h00, h01, h10, h11]
+  have hpair : d.toOrbitCoareaDatum.contactPairing x =
+      2 * (d.branches.contactNumerator 0 1 / (N : ℝ)) * x 0 ^ 2 := by
+    simp only [OrbitCoareaDatum.contactPairing]
+    simp [OrbitCoareaDatum.liftCharge, horbit, h00, h01, h10, h11]
+    ring
+  rw [localWittForm_apply, OrbitCoareaDatum.cartanQuadratic, hpair]
+  simp [OrbitCoareaDatum.terminalEnergy, OrbitCoareaDatum.physicalRank,
+    OrbitCoareaDatum.liftCharge, horbit]
   ring
 
 private theorem sphereOnePunctureTwoBranchOneOrbit_commonRank_eq_two_mul
@@ -128,7 +137,7 @@ theorem nonempty_routePPrimitiveGammaJuliaStokesCubicSphereUnitLandingFiber_twoB
     have hraw : ∀ a,
         localRankLinear (d a) (raw a) = localRankLinear (d 0) (raw 0) := by
       intro a
-      have ha : a = 0 := Subsingleton.elim _ _
+      have ha : a = 0 := by omega
       subst a
       rfl
     let y : compatibleCharges d := ⟨raw, hraw⟩

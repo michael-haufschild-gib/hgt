@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.FiniteAbscissaRationalCoordinateIndependence
-import GaloisForLFunctions.HTGeometry.SmallGrowthDirichletCoefficientSeparation
+import GaloisForLFunctions.HTGeometry.SmallGrowthRotatedDirichletCoefficientSeparation
 
 /-!
 # Small-growth coefficient separation in the upper-end meromorphic carrier
@@ -93,9 +93,7 @@ theorem upperEnd_smallGrowth_relation_eventually_rotated {d : ℕ}
         ∏ j ∈ (Finset.univ : Finset (Fin d)).erase i,
           ((p j).denominator : ℂ → ℂ) z
   have hclearedGerm : Germ.coeRingHom upperEndFilter cleared = 0 := by
-    have hval := congrArg (fun q : upperEndAnalyticSubring =>
-      (q : Germ upperEndFilter ℂ)) hclear
-    rw [ZeroMemClass.coe_zero] at hval
+    have hval := congrArg (Subring.subtype upperEndAnalyticSubring) hclear
     calc
       Germ.coeRingHom upperEndFilter cleared =
           ∑ i, Germ.coeRingHom upperEndFilter
@@ -110,26 +108,46 @@ theorem upperEnd_smallGrowth_relation_eventually_rotated {d : ℕ}
           funext z
           simp [cleared]]
         rw [map_sum]
-      _ = ∑ i, ((N i * L i *
-          ∏ j ∈ (Finset.univ : Finset (Fin d)).erase i, D j :
-            upperEndAnalyticSubring) : Germ upperEndFilter ℂ) := by
+      _ = ∑ i, upperEndAnalyticSubring.subtype (N i * L i *
+          ∏ j ∈ (Finset.univ : Finset (Fin d)).erase i, D j) := by
         apply Finset.sum_congr rfl
         intro i _
-        change Germ.coeRingHom upperEndFilter
-            (((p i).numerator : ℂ → ℂ) *
+        rw [show (fun z => ((p i).numerator : ℂ → ℂ) z *
+            LSeries (fun n => (A i).1 n) (-Complex.I * z) *
+              ∏ j ∈ (Finset.univ : Finset (Fin d)).erase i,
+                ((p j).denominator : ℂ → ℂ) z) =
+            ((p i).numerator : ℂ → ℂ) *
               (fun z => LSeries (fun n => (A i).1 n) (-Complex.I * z)) *
                 ∏ j ∈ (Finset.univ : Finset (Fin d)).erase i,
-                  ((p j).denominator : ℂ → ℂ)) = _
-        rw [MulMemClass.coe_mul, MulMemClass.coe_mul, map_mul, map_mul]
-        simp only [N, D, L, entireToUpperEndAnalytic_coe,
-          finiteAbscissaLSeriesToUpperEndAnalytic_coe,
-          finiteAbscissaLSeriesToUpperEndGerm]
-        rw [map_prod]
-        rfl
-      _ = 0 := by simpa only [map_sum] using hval
-  rw [← Germ.coe_zero, Germ.coe_eq] at hclearedGerm
-  rw [upperEndFilter_basis.eventually_iff] at hclearedGerm
-  obtain ⟨H, -, hH⟩ := hclearedGerm
+                  ((p j).denominator : ℂ → ℂ) by
+          funext z
+          simp]
+        rw [map_mul, map_mul]
+        rw [map_mul (Subring.subtype upperEndAnalyticSubring),
+          map_mul (Subring.subtype upperEndAnalyticSubring),
+          map_prod (Subring.subtype upperEndAnalyticSubring)]
+        have hnum : upperEndAnalyticSubring.subtype
+            (entireToUpperEndAnalytic (p i).numerator) =
+            Germ.coeRingHom upperEndFilter ((p i).numerator : ℂ → ℂ) :=
+          entireToUpperEndAnalytic_coe (p i).numerator
+        have hseries : upperEndAnalyticSubring.subtype
+            (finiteAbscissaLSeriesToUpperEndAnalytic (A i)) =
+            Germ.coeRingHom upperEndFilter
+              (fun z => LSeries (fun n => (A i).1 n) (-Complex.I * z)) := by
+          exact finiteAbscissaLSeriesToUpperEndAnalytic_coe (A i)
+        have hdenom : ∀ j, upperEndAnalyticSubring.subtype
+            (entireToUpperEndAnalytic (p j).denominator) =
+            Germ.coeRingHom upperEndFilter ((p j).denominator : ℂ → ℂ) := fun j =>
+          entireToUpperEndAnalytic_coe (p j).denominator
+        simp only [N, D, L, hnum, hseries, hdenom, map_prod]
+      _ = 0 := by simpa only [map_sum, map_zero] using hval
+  have hclearedEventually : ∀ᶠ z in upperEndFilter, cleared z = 0 := by
+    apply Germ.coe_eq.mp
+    change Germ.coeRingHom upperEndFilter cleared =
+      Germ.coeRingHom upperEndFilter (0 : ℂ → ℂ)
+    simpa only [map_zero] using hclearedGerm
+  rw [upperEndFilter_basis.eventually_iff] at hclearedEventually
+  obtain ⟨H, -, hH⟩ := hclearedEventually
   refine ⟨H, ?_⟩
   have hden : ∀ᶠ z in Filter.codiscrete ℂ, ∀ i,
       ((p i).denominator : ℂ → ℂ) z ≠ 0 := by
@@ -158,14 +176,53 @@ theorem upperEnd_smallGrowth_relation_eventually_rotated {d : ℕ}
       exact Finset.mul_prod_erase Finset.univ
         (fun j => ((p j).denominator : ℂ → ℂ) z) (Finset.mem_univ i)
     rw [← hprod]
-    field_simp
-    ring
+    calc
+      _ = (((p i).denominator : ℂ → ℂ) z *
+          (((p i).numerator : ℂ → ℂ) z /
+            ((p i).denominator : ℂ → ℂ) z)) *
+          (∏ j ∈ (Finset.univ : Finset (Fin d)).erase i,
+            ((p j).denominator : ℂ → ℂ) z) *
+          LSeries (fun n => (A i).1 n) (-Complex.I * z) := by ring
+      _ = _ := by
+        rw [mul_div_cancel₀ _ (hz i)]
+        ring
   have hmul : Pz * ∑ i, smallGrowthFunction (phi i) z *
       LSeries (fun n => (A i).1 n) (-Complex.I * z) = 0 := by
     rw [Finset.mul_sum]
     rw [Finset.sum_congr rfl (fun i _ => heach i)]
     exact hclearZ
   exact (mul_eq_zero.mp hmul).resolve_left hPz
+
+/-- Exact coefficient separation for finite-abscissa arithmetic sources with coefficients in the
+Nagoshi field, after realization in the upper-end meromorphic carrier. -/
+theorem smallGrowth_finiteAbscissa_relation_coeff_eq_zero {d : ℕ}
+    (A : Fin d → finiteAbscissaArithmeticSubalgebra)
+    (phi : Fin d → SmallGrowthMeromorphicField)
+    (hrel : ∑ i, smallGrowthMeromorphicToUpperEnd (phi i) *
+      finiteAbscissaLSeriesToUpperEndMero (A i) = 0) :
+    ∀ n, 1 ≤ n →
+      ∑ i, complexToSmallGrowthMeromorphic ((A i).1 n) * phi i = 0 := by
+  classical
+  choose H hH using fun i => (A i).2
+  let x₁ : ℝ := ∑ i, (|H i| + 1)
+  have hsum : ∀ i, LSeriesSummable (fun n => (A i).1 n) (x₁ : ℂ) := by
+    intro i
+    have hterm : |H i| + 1 ≤ x₁ := by
+      dsimp only [x₁]
+      exact Finset.single_le_sum (f := fun j => |H j| + 1)
+        (fun j _ => by positivity) (Finset.mem_univ i)
+    have hHlt : H i < x₁ :=
+      lt_of_lt_of_le (by linarith [le_abs_self (H i)]) hterm
+    exact hH i x₁ hHlt
+  obtain ⟨B, hraw⟩ := upperEnd_smallGrowth_relation_eventually_rotated A phi hrel
+  have hrawLe : ∀ᶠ z in Filter.codiscrete ℂ, B + 1 ≤ z.im →
+      ∑ i, smallGrowthFunction (phi i) z *
+        LSeries (fun n => (A i).1 n) (-Complex.I * z) = 0 := by
+    filter_upwards [hraw] with z hz
+    intro hzB
+    exact hz (lt_of_lt_of_le (lt_add_one B) hzB)
+  exact smallGrowth_rotated_LSeries_relation_coeff_eq_zero
+    (fun i n => (A i).1 n) hsum phi hrawLe
 
 end
 

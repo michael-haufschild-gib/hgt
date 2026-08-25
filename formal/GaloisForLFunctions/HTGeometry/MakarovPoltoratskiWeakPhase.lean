@@ -175,6 +175,19 @@ theorem PoissonWeakL1LittleO.add {f g : ℝ → ℝ}
   change Tendsto Tsum atTop (nhds 0)
   exact squeeze_zero' hnonneg hbound hupper
 
+/-- Little weak-`L¹` Poisson tails are invariant under negation. -/
+theorem PoissonWeakL1LittleO.neg {f : ℝ → ℝ}
+    (hf : PoissonWeakL1LittleO f) :
+    PoissonWeakL1LittleO (fun x => -f x) := by
+  unfold PoissonWeakL1LittleO at hf ⊢
+  simpa only [abs_neg] using hf
+
+/-- Little weak-`L¹` Poisson tails are closed under subtraction. -/
+theorem PoissonWeakL1LittleO.sub {f g : ℝ → ℝ}
+    (hf : PoissonWeakL1LittleO f) (hg : PoissonWeakL1LittleO g) :
+    PoissonWeakL1LittleO (fun x => f x - g x) := by
+  simpa only [sub_eq_add_neg] using hf.add hg.neg
+
 /-- Square-integrability for Poisson measure implies the little weak-`L¹` tail required by
 Kolmogorov's endpoint criterion. -/
 theorem poissonWeakL1LittleO_of_integrable_sq {f : ℝ → ℝ}

@@ -1,11 +1,14 @@
 # Prime quasi-inner defect has an arithmetic Dixmier residue
 
 - **ID:** prime-quasi-inner-dixmier-residue
-- **Stage:** 2-fully-proven / needs independent audit
-- **Type:** `[PROVED ON PAPER; NOVELTY UNVERIFIED]`
+- **Stage:** 5-failed
+- **Type:** `[FALSE AS STATED] [RETIRED] [POSITIVE SURVIVOR FORMALIZED]`
 - **Source object:** the one-prime quasi-inner defect of Connes--Consani
-- **Scientific status:** not new scientific knowledge unless the independent proof, primary-literature,
-  and significance gates all pass
+- **Scientific status:** stated residue normalization is false for every odd prime
+
+> **Retirement notice (2026-08-25).** The exact Fourier integral underlying Connes--Consani
+> Lemma 3.3 contains a missing factor `p-1`.  Therefore the displayed residue in this card is too
+> large by `(p-1)^2`, except at the accidental prime `p=2`.  See failure audit at EOF.
 
 ## Theorem
 
@@ -615,3 +618,44 @@ Card remains at Stage 2.  Remaining source theorem is the exact nonzero-prime-po
 its equality, together with `E_infinity+E_p+E_0`, to the literal paper-coordinate circle defect.
 The trace-class `E_infinity` and finite-rank `E_0` legs plus full Cayley transport are now closed
 rather than assumed.
+
+## Failure and positive-survivor audit — 2026-08-25
+
+The source normalization used in Sections 1 and 6 is false.  For `p>1` and `j in Z`, direct
+integration gives
+
+```text
+integral_0^1 p exp(-x log p) exp(-2 pi i j x) dx
+  = (p-1)/(log p + 2 pi i j),
+```
+
+not `1/(log p + 2 pi i j)`.  At frequency zero the printed identity holds exactly when `p=2`.
+Thus the source-feature Gram matrix is `(p-1)` times the printed matrix, and the normalized source
+isometry is
+
+```text
+V = (p-1)^(-1/2) U B,
+```
+
+not `V=UB`.  Substitution removes one factor `p-1` from the reduced defect and two factors from
+its energy.  The corrected measurable reduced-block residue is
+
+```text
+2 (p-1)^2 / (p^2 log p),
+```
+
+not `2 (p-1)^4 / (p^2 log p)`.
+
+Dependency-closed positive survivor:
+
+- `ConnesConsaniLemma33NormalizationCorrection.lean` proves the exact Fourier coefficient, proves
+  the printed zero-frequency coefficient iff `p=2`, and disproves it for every odd rational prime.
+- `ConnesConsaniCorrectedPrimePoleResidue.lean` constructs the correctly normalized reduced
+  distinguished block and proves its exact energy, weak Schatten-one membership, corrected
+  logarithmic residue, positivity, and non-trace-classness.
+- Both modules pass direct Lean checks with no placeholder hypothesis, `sorry`, or new axiom.
+
+Open survivor boundary: equality between the literal paper-coordinate Hardy defect and the sum of
+the corrected distinguished block plus the already formalized trace-class pole remainder is not
+yet formalized.  That missing source equality cannot rescue this card's stated constant; it only
+controls transfer of the corrected survivor to the full Hardy defect.

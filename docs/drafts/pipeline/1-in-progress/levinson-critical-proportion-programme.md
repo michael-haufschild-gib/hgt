@@ -1484,3 +1484,30 @@ Remaining cross-term gate is displaced-line transfer together with coefficient s
 enough for the Levinson scaling; the current `ell^1` bound deliberately does not claim that
 asymptotic. Arithmetic gate remains the sharp long-tail estimate for
 `levinsonCriticalDetectorLongEnergy`, followed by published parameter optimization above `1/3`.
+
+## Brick 5z displaced stationary cross transfer (2026-08-25)
+
+Four axiom-clean leaves now carry stationary cancellation from the critical line to every moving
+Levinson displacement `0 < d <= d₀ <= 1/4`:
+
+* `RHTower/OscillatoryIntegralComplexAmplitude.lean` proves complex Abel summation against any
+  bounded anchored oscillatory primitive;
+* `RHTower/ZetaChiDisplacedCriticalRatioOscillatoryIntegral.lean` differentiates the exact ratio
+  `chi(1/2-d+it)/chi(1/2+it)`, proves horizontal logarithmic-slope variation `O(1/t)` from the
+  existing digamma bounds, and derives a uniform dyadic stationary-frequency estimate of size
+  `T^(d+1/2)`;
+* `RHTower/ZetaChiDisplacedDirichletCross.lean` sums all finite positive/negative Dirichlet
+  frequencies without a nonstationary-frequency assumption;
+* `RHTower/SmoothAFEZetaDisplacedFrozenCross.lean` identifies the literal conjugated displaced
+  direct mollified head times the frozen chi-weighted reflected head with that finite cross and
+  proves its explicit factorized `ell^1` bound.
+
+Every leaf passes exact-module `lake build` and declaration-local `#print axioms`; dependencies are
+only `propext, Classical.choice, Quot.sound`. They are wired into `RHTower.lean`; no umbrella build
+was run.
+
+Stationary phase and displaced-line transfer are no longer open interfaces. Remaining cross-term
+task is coefficient summation sharp enough for Levinson scaling; the proved `ell^1` estimate is an
+exact unconditional carrier but is not claimed to be asymptotically sharp. Arithmetic gate remains
+the long-tail estimate for `levinsonCriticalDetectorLongEnergy`, followed by published parameter
+optimization above `1/3`.

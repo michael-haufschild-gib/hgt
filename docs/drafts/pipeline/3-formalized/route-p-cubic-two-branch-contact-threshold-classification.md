@@ -1,8 +1,8 @@
 # Route P cubic two-branch contact-threshold classification
 
 - **ID:** `CUBIC-TWO-BRANCH-CONTACT-THRESHOLD`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** completed-Xi cubic irregular-microlocal Riemann--Hilbert route
 - **Statement:** On a sphere with one marked point, exactly two Puiseux branches, and one Stokes orbit, the completed-Xi cubic unit landing fibre is nonempty exactly when mutual normalized highest-difference contact exceeds `5/2`; every landing then obeys an exact charge-magnitude law.
 
@@ -16,7 +16,7 @@ carrying the negative completed-Xi cubic Malgrange residual.
 
 - [x] 0 -> 1 in-progress: exact claim, corpus audit, parent-theory normalization
 - [x] 1 -> 2 fully-proven: dependency-closed proof and hostile audit
-- [ ] 2 -> 3 formalized: exact Lean theorem, targeted check, new-declaration axiom audit
+- [x] 2 -> 3 formalized: exact Lean theorem, targeted check, new-declaration axiom audit
 - [ ] 3 -> 4 publication-ready: standalone paper and independent priority review
 
 ## Exact conjecture `[CONJECTURE]`
@@ -124,17 +124,39 @@ Finally `c=k/N` with `N>0`.  Multiplication by positive `2N` shows
 `c>5/2` iff `2k>5N`.  Since coefficient construction gives `k<=K`, every landing also forces
 `5N<2K`.  No proof obligation remains.
 
+## Lean formalization `[LEAN-PROVED]`
+
+File: `formal/GaloisForLFunctions/RHTower/RoutePPrimitiveGammaJuliaStokesCubicTwoBranchContactThresholdClassification.lean`
+
+- `routePPrimitiveGammaJuliaStokesCubicSphereUnitWittForm_twoBranchOneOrbit_contactLaw` proves
+  the exact quadratic identity `4W=(5-2c)r^2`.
+- `routePPrimitiveGammaJuliaStokesCubicSphereUnitLanding_twoBranchOneOrbit_chargeMagnitude`
+  proves `(2c-5)r^2=-4R_Xi` for every landing.
+- `nonempty_routePPrimitiveGammaJuliaStokesCubicSphereUnitLandingFiber_twoBranchOneOrbit_iff_contact`
+  proves the sharp real threshold iff, including the explicit square-root converse charge.
+- `nonempty_routePPrimitiveGammaJuliaStokesCubicSphereUnitLandingFiber_twoBranchOneOrbit_iff_contactNumerator`
+  proves the equivalent integral phase boundary `5N<2k`.
+- `routePPrimitiveGammaJuliaStokesCubicSphereUnitLanding_twoBranchOneOrbit_five_mul_cover_lt_two_mul_ceiling`
+  forces `5N<2K` for every landing.
+
+Targeted module elaboration and explicit `.olean` emission passed.  A `/tmp` `#print axioms` audit
+of exactly these five public declarations returned `[propext, Classical.choice, Quot.sound]` for
+each.  No umbrella build, full rebuild, or repository-wide lint was run.  Temporary scratch and
+generated dependency/module `.olean` files were removed.
+
 ## No-go closure / positive survivor
 
 - **Killed predecessor:** single-branch low-genus landing, by Euler collapse.
 - **Representation lesson:** multibranch contact, not deeper single-branch slope, is first local
   coordinate capable of producing negative cubic anomaly.
 - **Positive survivor:** exact two-branch contact phase diagram and charge-magnitude law.
-- **Status:** exact classification and converse construction are dependency-closed on paper; Lean
-  formalization pending.
+- **Status:** exact classification and converse construction are dependency-closed and formally
+  verified in Lean; novelty remains unverified.
 
 ## Log
 
 - 2026-08-25 -- exact two-branch/one-orbit sphere classification conjectured after single-branch
   exclusion; internal and primary-literature audits completed.
 - 2026-08-25 -- square-root converse and sharp boundary audit closed; promoted to Stage 2.
+- 2026-08-25 -- exact contact law, sharp nonemptiness iff, magnitude law, and integral threshold
+  formalized; targeted elaboration and five-declaration axiom audit passed; promoted to Stage 3.

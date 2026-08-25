@@ -1,4 +1,6 @@
 import GaloisForLFunctions.RHTower.PrimeShiftJetIndependence
+import GaloisForLFunctions.HTGeometry.SmallGrowthFiniteAbscissaAlgebraicIndependence
+import GaloisForLFunctions.HTGeometry.ZetaUpperEndHypertranscendence
 
 /-!
 # Heterogeneous complex-shift jets of prime-power Dirichlet sources
@@ -88,6 +90,71 @@ theorem primePowerDirichlet_upperEnd_complexShiftJets_algebraicIndependent
     (dirichletShiftFamily_upperEnd_differentialIndependent
       S hsupport hzeros h hdistinct) ν
 
+/-- **Exact Nagoshi-field form of the card theorem.** The heterogeneous complex-shift jet packet
+of every finite-abscissa prime-power source with cofinitely many nonzero prime coefficients is
+algebraically independent over the genuine small-growth meromorphic field `F_s`. -/
+theorem primePowerDirichlet_upperEnd_complexShiftJets_algebraicIndependent_over_smallGrowth
+    {q : ℕ} [Nonempty (Fin q)] (S : finiteAbscissaArithmeticSubalgebra)
+    (hsupport : SupportedOnPositivePrimePowers S.1)
+    (hzeros : {p : Nat.Primes | S.1 ((p : ℕ)) = 0}.Finite)
+    (h : Fin q → ℂ) (hdistinct : Function.Injective h)
+    (ν : Fin q → ℕ) :
+    AlgebraicIndependent SmallGrowthMeromorphicField
+      (fun jk : (j : Fin q) × Fin (ν j + 1) =>
+        differentialJet (jk.2 : ℕ)
+          (upperEndTranslationMeroEquiv (Complex.I * h jk.1)
+            (finiteAbscissaLSeriesToUpperEndMero S))) := by
+  classical
+  let sourceJets : ((j : Fin q) × Fin (ν j + 1)) →
+      finiteAbscissaArithmeticSubalgebra := fun jk =>
+    (finiteAbscissaRotatedDeriv^[jk.2.val])
+      (finiteAbscissaDirichletShift (h jk.1) S)
+  have hfrac := primePowerDirichlet_complexShiftJets_algebraicIndependent
+    S.1 hsupport hzeros h hdistinct ν
+  let arithmeticIncl : ArithmeticFunction ℂ →ₐ[ℂ]
+      arithmeticFunctionFractionField :=
+    IsScalarTower.toAlgHom ℂ (ArithmeticFunction ℂ)
+      arithmeticFunctionFractionField
+  have harithmetic : AlgebraicIndependent ℂ
+      (fun jk => (sourceJets jk).1) := by
+    apply (AlgHom.algebraicIndependent_iff arithmeticIncl
+      (IsFractionRing.injective (ArithmeticFunction ℂ)
+        arithmeticFunctionFractionField)).mp
+    convert hfrac using 1
+    funext jk
+    rw [differentialJet_algebraMap_rotatedLogArithmeticJet]
+    change algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField
+        (sourceJets jk).1 =
+      algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField
+        (rotatedLogArithmeticJet jk.2.val (dirichletShift (h jk.1) S.1))
+    apply congrArg (algebraMap (ArithmeticFunction ℂ)
+      arithmeticFunctionFractionField)
+    apply ArithmeticFunction.ext
+    intro n
+    rw [finiteAbscissaRotatedDeriv_iterate_apply]
+    rfl
+  let finiteIncl : finiteAbscissaArithmeticSubalgebra →ₐ[ℂ]
+      ArithmeticFunction ℂ := finiteAbscissaArithmeticSubalgebra.val
+  have hfiniteIncl : Function.Injective finiteIncl := by
+    intro x y hxy
+    exact Subtype.ext hxy
+  have hsourceJets : AlgebraicIndependent ℂ sourceJets := by
+    apply (AlgHom.algebraicIndependent_iff finiteIncl hfiniteIncl).mp
+    convert harithmetic using 1
+    rfl
+  have hanalytic :=
+    algebraicIndependent_finiteAbscissaLSeries_over_smallGrowth
+      sourceJets hsourceJets
+  convert hanalytic using 1
+  funext jk
+  rw [show upperEndTranslationMeroEquiv (Complex.I * h jk.1)
+      (finiteAbscissaLSeriesToUpperEndMero S) =
+        finiteAbscissaLSeriesToUpperEndMero
+          (finiteAbscissaDirichletShift (h jk.1) S) by
+    exact (finiteAbscissaLSeriesToUpperEndMero_dirichletShift (h jk.1) S).symm]
+  exact differentialJet_finiteAbscissaLSeriesToUpperEndMero
+    (finiteAbscissaDirichletShift (h jk.1) S) jk.2.val
+
 /-- Completed-Xi source specialization: every heterogeneous finite jet packet of distinct complex
 translates of the filtered von Mangoldt carrier is algebraically independent over the genuine
 rational coordinate field. -/
@@ -102,6 +169,51 @@ theorem filteredVonMangoldt_complexShiftJets_algebraicIndependent
             filteredVonMangoldtUpperEndCarrier)) := by
   exact differentialIndependent_algebraicIndependent_heterogeneousJets
     (filteredVonMangoldt_translates_differentialIndependent h hdistinct) ν
+
+/-- Completed-Xi source specialization over Nagoshi's exact small-growth meromorphic field. -/
+theorem filteredVonMangoldt_complexShiftJets_algebraicIndependent_over_smallGrowth
+    {q : ℕ} [Nonempty (Fin q)]
+    (h : Fin q → ℂ) (hdistinct : Function.Injective h)
+    (ν : Fin q → ℕ) :
+    AlgebraicIndependent SmallGrowthMeromorphicField
+      (fun jk : (j : Fin q) × Fin (ν j + 1) =>
+        differentialJet (jk.2 : ℕ)
+          (upperEndTranslationMeroEquiv (Complex.I * h jk.1)
+            filteredVonMangoldtUpperEndCarrier)) := by
+  refine primePowerDirichlet_upperEnd_complexShiftJets_algebraicIndependent_over_smallGrowth
+    filteredVonMangoldtFiniteAbscissaSource ?_ ?_ h hdistinct ν
+  · exact filteredVonMangoldtArithmetic_supportedOnPositivePrimePowers
+  · have hempty :
+        {p : Nat.Primes |
+          filteredVonMangoldtFiniteAbscissaSource.1 ((p : ℕ)) = 0} = ∅ := by
+      ext p
+      simp only [Set.mem_setOf_eq, Set.mem_empty_iff_false, iff_false]
+      simpa [filteredVonMangoldtFiniteAbscissaSource,
+        filteredVonMangoldtArithmetic] using filteredVonMangoldtCoeff_prime_ne_zero p
+    rw [hempty]
+    exact Set.finite_empty
+
+/-- Unfiltered von Mangoldt specialization over Nagoshi's exact small-growth meromorphic field.
+This is the prime-power part of the direct completed-Xi logarithmic-derivative decomposition. -/
+theorem vonMangoldt_complexShiftJets_algebraicIndependent_over_smallGrowth
+    {q : ℕ} [Nonempty (Fin q)]
+    (h : Fin q → ℂ) (hdistinct : Function.Injective h)
+    (ν : Fin q → ℕ) :
+    AlgebraicIndependent SmallGrowthMeromorphicField
+      (fun jk : (j : Fin q) × Fin (ν j + 1) =>
+        differentialJet (jk.2 : ℕ)
+          (upperEndTranslationMeroEquiv (Complex.I * h jk.1)
+            vonMangoldtUpperEndMero)) := by
+  refine primePowerDirichlet_upperEnd_complexShiftJets_algebraicIndependent_over_smallGrowth
+    vonMangoldtSource ?_ ?_ h hdistinct ν
+  · exact vonMangoldtArith_supportedOnPositivePrimePowers
+  · have hempty :
+        {p : Nat.Primes | vonMangoldtSource.1 ((p : ℕ)) = 0} = ∅ := by
+      ext p
+      simp only [Set.mem_setOf_eq, Set.mem_empty_iff_false, iff_false]
+      simpa using vonMangoldtArith_prime_ne_zero p
+    rw [hempty]
+    exact Set.finite_empty
 
 end
 

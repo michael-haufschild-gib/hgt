@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.DiskMultiplierLineBoundary
 import GaloisForLFunctions.HTGeometry.HardyBoundaryCayleyIdentification
+import GaloisForLFunctions.HTGeometry.HardyDiskModelSpace
 
 open Complex MeasureTheory Topology
 
@@ -117,6 +118,32 @@ theorem IsOuterDiskMultiplier.exists_nonzero
       simpa using this
     have hcoord := congrArg (fun f : HardyDisk => f 0) hone
     norm_num [hardyOne, lp.single_apply] at hcoord) hφ
+
+/-- An outer bounded disk multiplier is zero-free throughout the open disk.  Density of its Hardy
+multiplication range would otherwise be trapped in the closed kernel of point evaluation. -/
+theorem IsOuterDiskMultiplier.ne_zero_on_disk
+    {φ : DiskMultiplier} (hφ : IsOuterDiskMultiplier φ)
+    {a : ℂ} (ha : ‖a‖ < 1) :
+    φ.fn a ≠ 0 := by
+  intro hzero
+  have hdense : DenseRange (hardyMul φ) :=
+    (isOuterDiskMultiplier_iff_denseRange φ).mp hφ
+  have hkill : ∀ f : HardyDisk,
+      inner ℂ (hardyKernel ha) (hardyMul φ f) = 0 := by
+    intro f
+    rw [inner_hardyKernel ha, hardyFun_hardyMul φ f ha, hzero, zero_mul]
+  have hclosed : IsClosed {f : HardyDisk | inner ℂ (hardyKernel ha) f = 0} := by
+    exact isClosed_eq (continuous_const.inner continuous_id) continuous_const
+  have hrange : Set.range (hardyMul φ) ⊆
+      {f : HardyDisk | inner ℂ (hardyKernel ha) f = 0} := by
+    rintro _ ⟨f, rfl⟩
+    exact hkill f
+  have hall : Set.univ ⊆
+      {f : HardyDisk | inner ℂ (hardyKernel ha) f = 0} := by
+    rw [← hdense.closure_range]
+    exact closure_minimal hrange hclosed
+  have hself := hall (Set.mem_univ (hardyKernel ha))
+  exact hardyKernel_ne_zero ha (inner_self_eq_zero.mp hself)
 
 /-- Exact Smirnov-class boundary datum: a quotient of bounded analytic functions by a cyclic
 (outer) bounded denominator. -/
