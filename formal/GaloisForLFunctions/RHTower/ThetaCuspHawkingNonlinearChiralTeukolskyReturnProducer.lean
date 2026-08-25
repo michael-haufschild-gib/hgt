@@ -67,19 +67,18 @@ whenever A != 0. This is a same-branch, fixed-`Q` comparison invariant, not yet 
 between the `+xi` and `-xi` QNM-frequency branches. Those signs exchange square-root branches of
 one separated eigenvalue; they are not distinct angular-momentum eigenspaces.
 
-For the complete reduced second-order Teukolsky source of Spiers--Pound--Moxon,
-arXiv:2305.19332, the uncomputed remainder is kept explicit. The full determinant can vanish at
-a divisor only if that remainder supplies the exact negative of the AIME source. This sharp
-counterterm identity, rather than generic KMS/passivity/CCR or a positive pole sum, is the
-remaining full-dynamics obligation.
+Spiers--Pound--Moxon's reduced second-order Teukolsky source is quadratic in the first-order
+metric, whereas AIME is cubic.  The algebraically free remainder below must therefore be read as
+a same-order third-order remainder if it is to cancel AIME coefficientwise.  The downstream
+perturbative-grade theorem proves that every second-order Einstein grade is excluded and that only
+the third-order `++-` helicity channel can supply the classified opposite numerator.
 
 **[LITERATURE-DERIVED] [PAPER-PROVED] [LEAN-PROVED]** Fundamental QNM radial moment,
 fixed-sector parity-to-helicity source, cubic AIME return, phase cancellation, all-sector
 projective nontriviality, theta-mirror Cayley law, and exact projective counterterm classification.
 
-**[OPEN CORE]** Evaluate the full reduced second-order Einstein/Teukolsky source and its
-regularized cross-branch QNM bilinear in this same topological-AdS background, including direct and
-continuum terms.
+Unevaluated mixed- and anti-chiral coefficients belong to distinct grades and cannot act as the
+classified pointwise direct counterterm.
 -/
 
 open Complex Real Set Filter Topology
@@ -439,33 +438,33 @@ theorem d4FundamentalQNMNonlinearCayleySMatrix_nontrivial_everyXi
   exact (d4FundamentalQNMNonlinearCayleySMatrix_qnmPlus_ne_one_iff
     advancedTime amplitude horizonFrequencyJet q).mpr ha
 
-/-- Full projected source split into exact AIME component and still-uncomputed reduced
-second-order Teukolsky remainder. -/
+/-- Full projected cubic source split into exact AIME component and uncomputed third-order
+`++-` Teukolsky remainder. -/
 def d4FullNonlinearChiralSource
-    (amplitude : ℂ) (teukolskyRemainder : ℂ → ℂ) (z : ℂ) : ℂ :=
-  d4FundamentalQNMNonlinearChiralSource amplitude z + teukolskyRemainder z
+    (amplitude : ℂ) (thirdOrderTeukolskyRemainder : ℂ → ℂ) (z : ℂ) : ℂ :=
+  d4FundamentalQNMNonlinearChiralSource amplitude z + thirdOrderTeukolskyRemainder z
 
 /-- Returned Jost channel retaining entire unknown reduced-source remainder explicitly. -/
 def d4FullNonlinearChiralReturnedJost
     (advancedTime : ℝ) (amplitude : ℂ)
-    (horizonFrequencyJet teukolskyRemainder : ℂ → ℂ) (omega : ℂ) : ℂ → ℂ :=
+    (horizonFrequencyJet thirdOrderTeukolskyRemainder : ℂ → ℂ) (omega : ℂ) : ℂ → ℂ :=
   teukolskyReturnedJostWithHorizonPhase omega
     (fun z => d4HorizonBackreactionPhase advancedTime amplitude horizonFrequencyJet z *
       amplitude)
-    (d4FullNonlinearChiralSource amplitude teukolskyRemainder)
+    (d4FullNonlinearChiralSource amplitude thirdOrderTeukolskyRemainder)
 
 /-- Sharp projective-source classification. At a divisor, the completed projective return can
 erase the AIME component only through this exact pointwise counterterm. -/
 theorem d4FullNonlinearChiralReturnDeterminant_qnmPlus_eq_zero_iff_counterterm
     (advancedTime : ℝ) (amplitude : ℂ)
-    (horizonFrequencyJet teukolskyRemainder : ℂ → ℂ) (q : XiZeroCopy) :
+    (horizonFrequencyJet thirdOrderTeukolskyRemainder : ℂ → ℂ) (q : XiZeroCopy) :
     teukolskyReturnDeterminant
         (thetaCuspHawkingTopologicalBlackHoleQNMPlus 0 (xiSpectralPoint q))
         (d4FullNonlinearChiralReturnedJost
-          advancedTime amplitude horizonFrequencyJet teukolskyRemainder
+          advancedTime amplitude horizonFrequencyJet thirdOrderTeukolskyRemainder
           (thetaCuspHawkingTopologicalBlackHoleQNMPlus 0 (xiSpectralPoint q)))
         (xiSpectralPoint q) = 0 ↔
-      teukolskyRemainder (xiSpectralPoint q) =
+      thirdOrderTeukolskyRemainder (xiSpectralPoint q) =
         -d4FundamentalQNMNonlinearChiralSource amplitude (xiSpectralPoint q) := by
   rw [teukolskyReturnDeterminant_qnmPlus]
   have hcomp := thetaCuspHawkingHypergeometricJostMinus_qnmPlus_ne_zero 0 q
@@ -473,7 +472,7 @@ theorem d4FullNonlinearChiralReturnDeterminant_qnmPlus_eq_zero_iff_counterterm
   simp only [hcomp, or_false]
   rw [d4FullNonlinearChiralReturnedJost,
     teukolskyReturnedJostWithHorizonPhase_qnmPlus]
-  change d4FullNonlinearChiralSource amplitude teukolskyRemainder
+  change d4FullNonlinearChiralSource amplitude thirdOrderTeukolskyRemainder
       (xiSpectralPoint q) = 0 ↔ _
   unfold d4FullNonlinearChiralSource
   constructor <;> intro h <;> linear_combination h

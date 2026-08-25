@@ -57,8 +57,10 @@ The Cayley completion `S=(1+R)/(1-R)` is fully nonperturbative and obeys
 
 ## Remaining open dynamics
 
-The actual `J_ret` must still be derived from the second-order Einstein/Teukolsky source and the
-horizon-absorbed mass/spin history.  Green--Hollands--Sberna--Toomani--Zimmerman,
+The actual `J_ret` must still be derived through third perturbative order from the
+Einstein--Teukolsky source and horizon-absorbed mass/spin history.  The second-order source is
+quadratic and cannot cancel cubic AIME; the remaining same-grade term is third-order `++-`.
+Green--Hollands--Sberna--Toomani--Zimmerman,
 arXiv:2210.15935, identify the QNM residue normalization with `dW/domega` and a conserved complex
 bilinear form; they do not prove a positive QNM completeness theorem.  AIME's AdS contour also
 discards the direct large-frequency arc, while asymptotically flat Teukolsky Green functions have

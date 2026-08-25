@@ -27,11 +27,11 @@ The resonance pairing is also invariant under an infinitesimal gauge commutator
 
 `[PAPER-PROVED] [LEAN-PROVED] [NOVELTY UNVERIFIED]`
 
-The theorem does not classify every zero-frequency second-order Einstein perturbation. Another
-nondecaying operator insertion can also carry two Green factors. Full dynamics must show that,
-after fixing final mass/spin and gauge, the remaining Teukolsky source is transient at this
-resonance. The arbitrary pointwise counterterm from the preceding source split is thereby reduced
-to this precise stationary-memory classification.
+Another nondecaying operator insertion can carry two Green factors, so pole order alone does not
+classify every zero-frequency second-order Einstein perturbation. The downstream full-Einstein
+grade theorem supplies the missing selection: mass/spin memory has Hermitian grade, while
+non-self-dual quadratic terms have mixed or anti-chiral grade, so none is a same-grade counterterm
+to the holomorphic Plebanski carrier.
 
 There is also a strict cusp-weight separation. Absorbed mass is Hermitian quadratic, so a linear
 weight `s` produces memory weight `s + conj(s)` and cubic return weight `2s + conj(s)`. This never

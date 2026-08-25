@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Sebastian Kumar
 -/
 import Mathlib.Topology.Subpath
+import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
 
 /-!
 # Loop decomposition subordinate to an open cover
@@ -79,7 +80,7 @@ theorem concat_trans_trans_symm_homotopic {n : ℕ}
         (hn (p ∘ castSucc) (q ∘ castSucc)
           (fun k ↦ F k.castSucc) (fun k ↦ G k.castSucc))
       simp at h
-      refine Quotient.exact (s := Path.Homotopic.setoid _ _) ?_
+      rw [← Path.Homotopic.Quotient.eq]
       simp only [Path.concat_succ, Function.comp_apply, castSucc_zero, succ_last,
         Nat.succ_eq_add_one, Path.Homotopic.Quotient.mk_trans, h,
         Path.Homotopic.Quotient.trans_assoc, Path.Homotopic.Quotient.mk_symm]
@@ -152,5 +153,25 @@ theorem exists_loops_homotopic_concat_of_open_cover
   · intro k
     use τ k
     grind [Path.trans_range, Path.symm_range, union_subset, Path.range_subpath]
+
+/-- A based loop is nullhomotopic when an open cover consists of simply connected sets, all
+contain the basepoint, and has path-connected pairwise intersections. -/
+theorem basedLoop_nullhomotopic_of_openCover
+    (hcOpen : ∀ i, IsOpen (c i)) (hcCover : Set.univ ⊆ ⋃ i, c i)
+    (hcInter : ∀ i j, IsPathConnected (c i ∩ c j))
+    (hcSimply : ∀ i, IsSimplyConnected (c i))
+    (ha : ∀ i, a ∈ c i) (γ : Path a a) :
+    γ.Homotopic (Path.refl a) := by
+  obtain ⟨n, D, hD, hRange⟩ :=
+    exists_loops_homotopic_concat_of_open_cover hcOpen hcCover hcInter ha γ
+  apply hD.symm.trans
+  rw [← Path.concat_refl]
+  apply Path.Homotopic.concat_hcomp
+  intro k
+  obtain ⟨i, hi⟩ := hRange k
+  obtain ⟨H, -⟩ :=
+    (isSimplyConnected_iff_exists_homotopy_refl_forall_mem.mp (hcSimply i)).2
+      a (D k) (Set.range_subset_iff.mp hi)
+  exact ⟨H⟩
 
 end GaloisForLFunctions.HTGeometry

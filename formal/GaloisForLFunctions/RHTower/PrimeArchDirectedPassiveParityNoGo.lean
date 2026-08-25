@@ -126,6 +126,94 @@ private theorem neg_primeLogHerglotz_zero_noGoPoint_re_neg :
   simp only [Complex.neg_re]
   linarith
 
+/-- Every bounded directed prime-log gauge has strictly positive real carrier value at the
+centered comparison point. -/
+theorem primeLogHerglotz_boundedGauge_noGoPoint_re_pos
+    (u : Nat.Primes → ℝ) (C : ℝ) (hu : ∀ p, u p ≤ C) :
+    0 < (primeLogHerglotz u primeArchDirectedPassiveNoGoPoint).re := by
+  have hz : 0 < primeArchDirectedPassiveNoGoPoint.im := by
+    norm_num [primeArchDirectedPassiveNoGoPoint]
+  have hweights : Summable fun p : Nat.Primes =>
+      ‖(primeDyadicWeight u p : ℂ)‖ :=
+    summable_norm_primeDyadicWeight u C hu
+  have hsum : Summable fun p : Nat.Primes =>
+      (primeDyadicWeight u p : ℂ) *
+        ((primeLogSupport p : ℂ) - primeArchDirectedPassiveNoGoPoint)⁻¹ :=
+    summable_discreteHerglotz_term primeLogSupport
+      (primeDyadicWeight u) primeArchDirectedPassiveNoGoPoint hz hweights
+  have hatom : ∀ p : Nat.Primes,
+      0 < ((primeDyadicWeight u p : ℂ) *
+        ((primeLogSupport p : ℂ) - primeArchDirectedPassiveNoGoPoint)⁻¹).re := by
+    intro p
+    have hlog : 0 < primeLogSupport p := by
+      unfold primeLogSupport
+      exact Real.log_pos (by exact_mod_cast p.prop.two_le)
+    have hne : (primeLogSupport p : ℂ) - primeArchDirectedPassiveNoGoPoint ≠ 0 := by
+      intro h
+      have him := congrArg Complex.im h
+      norm_num [primeArchDirectedPassiveNoGoPoint] at him
+    have hden : 0 < Complex.normSq
+        ((primeLogSupport p : ℂ) - primeArchDirectedPassiveNoGoPoint) :=
+      Complex.normSq_pos.mpr hne
+    simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul,
+      sub_zero]
+    rw [Complex.inv_re]
+    have hre : ((primeLogSupport p : ℂ) - primeArchDirectedPassiveNoGoPoint).re =
+        primeLogSupport p := by
+      simp [primeArchDirectedPassiveNoGoPoint]
+    rw [hre]
+    exact mul_pos (primeDyadicWeight_pos u p) (div_pos hlog hden)
+  rw [primeLogHerglotz, discreteHerglotz, Complex.re_tsum hsum]
+  have hsumRe : Summable fun p : Nat.Primes =>
+      ((primeDyadicWeight u p : ℂ) *
+        ((primeLogSupport p : ℂ) - primeArchDirectedPassiveNoGoPoint)⁻¹).re :=
+    (Complex.hasSum_re hsum.hasSum).summable
+  exact hsumRe.tsum_pos (fun p => (hatom p).le)
+    ⟨2, Nat.prime_two⟩ (hatom ⟨2, Nat.prime_two⟩)
+
+/-- The centered completed prime--Gamma response cannot equal the negative of any bounded
+directed prime-log Herglotz carrier. -/
+theorem continuedPrimeArchSourceRelativeTrace_ne_neg_primeLogHerglotz_noGoPoint
+    (u : Nat.Primes → ℝ) (C : ℝ) (hu : ∀ p, u p ≤ C) :
+    continuedPrimeArchSourceRelativeTrace primeArchDirectedPassiveNoGoPoint ≠
+      -primeLogHerglotz u primeArchDirectedPassiveNoGoPoint := by
+  intro hvalue
+  have hre := congrArg Complex.re hvalue
+  rw [continuedPrimeArchSourceRelativeTrace_noGoPoint_re_eq_zero] at hre
+  have hpos := primeLogHerglotz_boundedGauge_noGoPoint_re_pos u C hu
+  simp only [Complex.neg_re] at hre
+  linarith
+
+/-- No bounded-gauge directed prime-log KMS family can converge at the centered point to the
+completed prime--Gamma response. -/
+theorem not_tendsto_directedPrimeLogKMSResponse_continuedPrimeArch_noGoPoint_of_boundedGauge
+    (u : Nat.Primes → ℝ) (C : ℝ) (hu : ∀ p, u p ≤ C) (β : ℝ) :
+    ¬ Tendsto
+      (fun P : Finset Nat.Primes =>
+        HTGeometry.finiteTransitionPassiveResponse
+          (HTGeometry.finiteKMSWightmanTransitionIntensity β
+            (primeLogKMSFiniteEnergy P)
+            (primeLogKMSFiniteAmplitude P u β))
+          (primeLogKMSFiniteEnergy P) primeArchDirectedPassiveNoGoPoint)
+      atTop
+      (nhds (continuedPrimeArchSourceRelativeTrace primeArchDirectedPassiveNoGoPoint)) := by
+  intro hsource
+  have hprime := finiteKMSWightmanResponse_tendsto_primeLogHerglotz
+    u C hu β primeArchDirectedPassiveNoGoPoint
+    (by norm_num [primeArchDirectedPassiveNoGoPoint])
+  have hresponse : Tendsto
+      (fun P : Finset Nat.Primes =>
+        HTGeometry.finiteTransitionPassiveResponse
+          (HTGeometry.finiteKMSWightmanTransitionIntensity β
+            (primeLogKMSFiniteEnergy P)
+            (primeLogKMSFiniteAmplitude P u β))
+          (primeLogKMSFiniteEnergy P) primeArchDirectedPassiveNoGoPoint)
+      atTop
+      (nhds (-primeLogHerglotz u primeArchDirectedPassiveNoGoPoint)) := by
+    simpa only [neg_neg] using hprime.neg
+  exact continuedPrimeArchSourceRelativeTrace_ne_neg_primeLogHerglotz_noGoPoint
+    u C hu (tendsto_nhds_unique hsource hresponse)
+
 /-- Canonical directed prime-log finite KMS responses cannot converge to the completed
 prime--Gamma source, already at the fixed centered point `I / 4`. -/
 theorem not_tendsto_directedPrimeLogKMSResponse_continuedPrimeArch_noGoPoint :

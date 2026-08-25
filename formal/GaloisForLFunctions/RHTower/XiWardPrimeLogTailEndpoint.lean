@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.XiWardPrimeLogSampledGramLaw
+import GaloisForLFunctions.RHTower.XiWardMergedSlackPrimeLogSampling
 
 /-!
 # Prime-log tail endpoints for the Xi Ward law
@@ -23,6 +24,12 @@ local zero-free margin.  This is the weaker scalar endpoint. -/
 def ContinuedXiWardPrimeLogTailMergedSlackLaw : Prop :=
   ∃ y₀ : ℝ, ∀ Y : ℝ, y₀ ≤ Y →
     ContinuedXiWardMergedSlackSampledScalarLaw (xiWardPrimeLogSampleSet Y)
+
+/-- The same prime-log tail criterion with a three-halves local-margin
+allowance at each sample.  This is the weakest scalar tail endpoint here. -/
+def ContinuedXiWardPrimeLogTailThreeHalvesSlackLaw : Prop :=
+  ∃ y₀ : ℝ, ∀ Y : ℝ, y₀ ≤ Y →
+    ContinuedXiWardThreeHalvesSlackSampledScalarLaw (xiWardPrimeLogSampleSet Y)
 
 /-- Eventual four-unit Gram positivity on canonical prime-log samples. -/
 def ContinuedXiWardPrimeLogTailBoundaryGramLaw : Prop :=
@@ -60,6 +67,23 @@ theorem riemannHypothesis_iff_continuedXiWardPrimeLogTailMergedSlackLaw :
     obtain ⟨y₁, _hy₁, hcover⟩ :=
       exists_cutoff_xiWardDetectionCover_primeLogSampleSet
     apply riemannHypothesis_of_continuedXiWardMergedSlackSampledScalarLaw
+      (hcover (max y₀ y₁) (le_max_right _ _))
+    exact htail (max y₀ y₁) (le_max_left _ _)
+
+/-- **Lowest-burden prime-log scalar endpoint.**  The sampled four-unit Ward
+budget may absorb three halves of the local zero-free margin at every canonical
+prime-log node, without restoring a detection-cover premise. -/
+theorem riemannHypothesis_iff_continuedXiWardPrimeLogTailThreeHalvesSlackLaw :
+    RiemannHypothesis ↔ ContinuedXiWardPrimeLogTailThreeHalvesSlackLaw := by
+  constructor
+  · intro hRH
+    exact ⟨0, fun Y _ =>
+      continuedXiWardThreeHalvesSlackSampledScalarLaw_of_riemannHypothesis hRH
+        (xiWardPrimeLogSampleSet Y)⟩
+  · rintro ⟨y₀, htail⟩
+    obtain ⟨y₁, _hy₁, hcover⟩ :=
+      exists_cutoff_xiWardDetectionCover_primeLogSampleSet
+    apply riemannHypothesis_of_continuedXiWardThreeHalvesSlackSampledScalarLaw
       (hcover (max y₀ y₁) (le_max_right _ _))
     exact htail (max y₀ y₁) (le_max_left _ _)
 

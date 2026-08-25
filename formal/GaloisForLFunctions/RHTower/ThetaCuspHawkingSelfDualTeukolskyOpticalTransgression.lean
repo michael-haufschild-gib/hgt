@@ -22,9 +22,9 @@ greybody normalization.
 
 At exact self-dual second-harmonic frequency, the BM hypergeometric radial parameter is
 `-(rho+2)/4`.  Its real part lies strictly between adjacent Gamma poles throughout the Xi strip,
-so every nonzero self-dual principal source has nonzero chiral boundary response.  Full
-second-order incidence still requires classification of non-self-dual same-grade source terms on
-the gauge quotient.
+so every nonzero self-dual principal source has nonzero chiral boundary response.  The downstream
+full-Einstein radiation-Gram module proves that non-self-dual quadratic terms have distinct grades
+and constructs the exact gauge-quotient BM horizon-plus-boundary map.
 -/
 
 open Complex Real

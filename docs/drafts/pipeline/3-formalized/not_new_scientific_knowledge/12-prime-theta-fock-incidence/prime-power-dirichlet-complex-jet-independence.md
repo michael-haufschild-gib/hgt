@@ -240,22 +240,25 @@ unprinted, but it is a routine parent corollary and therefore a bridge.
 
 ## Formalization status
 
-`PrimeShiftJetIndependence.lean` now proves the analytic prime-feature tail-span theorem from the
-exponential-type zero count, the squarefree common-layer polarization theorem, and differential
-independence of every finite family of distinct complex translates of a general prime-power source
-over `ℂ` and over the genuine upper-end rational-coordinate field.
+`PrimeShiftJetIndependence.lean`, `PrimePowerDirichletComplexJetIndependence.lean`, and
+`PrimePowerDirichletFullComplexJetIndependence.lean` prove the analytic prime-feature tail-span,
+squarefree polarization, arbitrary heterogeneous finite jet theorem, and the equivalent full
+complex-translation differential-independence theorem over Nagoshi's exact small-growth field
+`F_s`.  The filtered von Mangoldt specialization is the literal completed-Xi atomic increment.
 
-`PrimePowerDirichletComplexJetIndependence.lean` records the card's literal heterogeneous jet
-shape: each shift has an arbitrary independent derivative cutoff.  It proves this for general
-finite-abscissa prime-power sources and specializes it to the actual filtered von Mangoldt carrier
-exposed by the completed-Xi `+2` increment.  Direct check, targeted leaf build, and axiom audits
-pass; audits use only `propext`, `Classical.choice`, and `Quot.sound`.
+`XiAtomicIncrementCorrection.lean` transfers that full-complex theorem to the actual rotated
+completed logarithmic derivative `xi'/xi` over `F_s`.  `SmallGrowthDerivative.lean` proves the
+Nevanlinna logarithmic-derivative estimate needed to show that `F_s` is closed under ordinary
+complex differentiation; `SmallGrowthDifferentialField.lean` installs the resulting genuine
+differential-field structure and proves compatibility with restriction to upper-end meromorphic
+germs.  `XiAtomicIncrementSmallGrowthCarrier.lean` then applies the exact logarithmic-derivative
+equivalence and proves full complex-translate differential independence of the actual rotated
+completed-Xi carrier itself over `F_s`.
 
-The card remains at Stage 2.  Exact completion still requires formalizing Chiang--Feng coefficient
-separation for Nagoshi's small-growth meromorphic field `F_s`, then transferring the source-family
-result through the completed logarithmic-derivative increment to the full translate families of
-`xi'/xi` and `xi`.  The present theorem is unconditional but over `ℂ(s)`, not the card's stronger
-coefficient field; that distinction is not erased by the finite polarization shell.
+All statements are unconditional.  Direct checks and targeted leaf builds pass.  Axiom audits for
+every new declaration use only Lean's standard `propext`, `Classical.choice`, and `Quot.sound`.
+The exact paper theorem and both completed-Xi consequences are therefore dependency-closed at
+Stage 3.
 
 ## Gates
 

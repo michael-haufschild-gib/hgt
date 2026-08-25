@@ -45,10 +45,11 @@ every Xi descendant, not only tilted or central ones.
 
 **[OPEN CORE]** In the fixed-angular-channel asymptotically AdS QNM problem the frequency Green
 function is meromorphic; direct propagation is the large-frequency contour arc, not a local germ
-at a QNM pole. It therefore cannot cancel this principal part. Any RH selection must come from the
-full reduced second-order Einstein--Teukolsky source supplying an exact opposite numerator at the
-same pole. This is the remaining nonlinear chiral incidence problem, not KMS, passivity, CCR,
-scalar energy, homogeneous angular mixing, or a generic continuum counterterm.
+at a QNM pole. It therefore cannot cancel this principal part. Since AIME is cubic, the reduced
+second-order Einstein--Teukolsky source is excluded coefficientwise. Only the full third-order
+`++-` Einstein--Teukolsky projection can supply an exact opposite numerator at the same pole.
+Computing that coefficient is the remaining nonlinear chiral incidence problem, not KMS,
+passivity, CCR, scalar energy, homogeneous angular mixing, or a generic continuum counterterm.
 -/
 
 open Complex Real Set Filter Topology
@@ -398,8 +399,9 @@ theorem d4FundamentalQNMCrossBranchAIMECayleySMatrix_nontrivial_everyXi
   exact (d4FundamentalQNMCrossBranchAIMECayleySMatrix_qnmPlus_ne_one_iff
     advancedTime amplitude horizonFrequencyJet q).mpr ha
 
-/-- Full on-shell source numerator in the same inverse-Jost channel. A direct contour arc is
-deliberately absent: only a term sharing this QNM denominator can alter its local principal part. -/
+/-- Full cubic on-shell source numerator in the same inverse-Jost channel. A direct contour arc is
+deliberately absent: only a third-order `++-` term sharing this QNM denominator and grade can alter
+its local principal part. -/
 def d4FullCrossBranchPoleNumerator
     (amplitude : ℂ) (samePoleSourceRemainder : ℂ → ℂ) (z : ℂ) : ℂ :=
   d4FundamentalQNMCrossBranchAIMENumerator amplitude z +
@@ -422,8 +424,8 @@ def d4FullCrossBranchPolePrincipalPart
   d4FullCrossBranchPoleNumerator amplitude samePoleSourceRemainder z *
     d4GravitationalHypergeometricBoundaryGreen omega z
 
-/-- Sharp local alternative: full response retains exact simple pole unless remaining nonlinear
-Einstein--Teukolsky source supplies unique opposite numerator at that same pole. -/
+/-- Sharp local alternative: full response retains exact simple pole unless remaining third-order
+`++-` Einstein--Teukolsky source supplies unique opposite numerator at that same pole. -/
 theorem d4FullCrossBranchPolePrincipalPart_order_qnmMinus_xi_iff
     (amplitude : ℂ) (samePoleSourceRemainder : ℂ → ℂ) (q : XiZeroCopy) :
     meromorphicOrderAt

@@ -90,12 +90,12 @@ theorem xiWardZeroFreeMargin_close_le_two_mul {t b : ℝ} (h : |t + b| ≤ 1) :
   nlinarith [mul_le_mul_of_nonneg_left hpow xiWardZeroFreeMarginC_pos.le]
 
 /-- Inside a detection window the selected pair response exceeds the four-unit
-level by half the margin. -/
-theorem re_xiAntiCausalWardSchwarzPairResponse_marginWindow_gt_two_add_half
+level by three quarters of the margin. -/
+theorem re_xiAntiCausalWardSchwarzPairResponse_marginWindow_gt_two_add_three_quarters
     (q : XiRightUpperZeroCopy) {t : ℝ}
     (ht : (t + (xiRightCenteredZero q.1).im) ^ 2 ≤
       xiWardZeroFreeMargin (xiRightCenteredZero q.1).im / 2) :
-    2 + xiWardZeroFreeMargin (xiRightCenteredZero q.1).im / 2 <
+    2 + 3 * xiWardZeroFreeMargin (xiRightCenteredZero q.1).im / 4 <
       (xiAntiCausalWardSchwarzPairResponse q
         ((1 / 2 : ℂ) + I * (t : ℂ))).re := by
   set lam := xiRightCenteredZero q.1
@@ -126,8 +126,8 @@ theorem re_xiAntiCausalWardSchwarzPairResponse_marginWindow_gt_two_add_half
     ring
   have hdenpos : 0 < (lam.re + 1 / 2) ^ 2 + (t + lam.im) ^ 2 := by
     nlinarith [sq_nonneg (t + lam.im)]
-  -- the first inverse dominates `(2 + m/2)/2` after clearing denominators
-  have hfirst : (2 + m / 2) / 2 ≤ ((w + lam)⁻¹).re := by
+  -- the first inverse dominates `1 + 3m/8` after clearing denominators
+  have hfirst : (8 + 3 * m) / 8 ≤ ((w + lam)⁻¹).re := by
     rw [Complex.inv_re, hzre, hznormSq, div_le_div_iff₀ (by norm_num) hdenpos]
     nlinarith [ht, hM, ha.le, hm0.le, hm1024, sq_nonneg (t + lam.im),
       mul_nonneg ha.le (by linarith : (0 : ℝ) ≤ 1 / 2 - m - lam.re),
@@ -152,6 +152,19 @@ theorem re_xiAntiCausalWardSchwarzPairResponse_marginWindow_gt_two_add_half
   rw [h2a, h2b]
   linarith [hfirst, hiother]
 
+/-- Compatibility form of the detection-window pair lower bound. -/
+theorem re_xiAntiCausalWardSchwarzPairResponse_marginWindow_gt_two_add_half
+    (q : XiRightUpperZeroCopy) {t : ℝ}
+    (ht : (t + (xiRightCenteredZero q.1).im) ^ 2 ≤
+      xiWardZeroFreeMargin (xiRightCenteredZero q.1).im / 2) :
+    2 + xiWardZeroFreeMargin (xiRightCenteredZero q.1).im / 2 <
+      (xiAntiCausalWardSchwarzPairResponse q
+        ((1 / 2 : ℂ) + I * (t : ℂ))).re := by
+  have hstrong :=
+    re_xiAntiCausalWardSchwarzPairResponse_marginWindow_gt_two_add_three_quarters q ht
+  have hm0 := xiWardZeroFreeMargin_pos (xiRightCenteredZero q.1).im
+  linarith
+
 /-- Inside a detection window the continued response exceeds the four-unit
 budget by twice the margin. -/
 theorem normSq_continuedXiAntiCausalWardResponse_marginWindow_gt_four_add
@@ -168,6 +181,28 @@ theorem normSq_continuedXiAntiCausalWardResponse_marginWindow_gt_four_add
     re_xiAntiCausalWardSchwarzPairResponse_marginWindow_gt_two_add_half q ht
   have hfull := re_xiAntiCausalWardSchwarzPairResponse_le_continued q hw
   have hre : 2 + xiWardZeroFreeMargin (xiRightCenteredZero q.1).im / 2 <
+      (continuedXiAntiCausalWardResponse ((1 / 2 : ℂ) + I * (t : ℂ))).re :=
+    lt_of_lt_of_le hpair hfull
+  have hsq := Complex.re_sq_le_normSq
+    (continuedXiAntiCausalWardResponse ((1 / 2 : ℂ) + I * (t : ℂ)))
+  nlinarith [hre, hsq, hm0]
+
+/-- The sharpened detection-window estimate leaves three full margin units
+above the four-unit budget. -/
+theorem normSq_continuedXiAntiCausalWardResponse_marginWindow_gt_four_add_three
+    (q : XiRightUpperZeroCopy) {t : ℝ}
+    (ht : (t + (xiRightCenteredZero q.1).im) ^ 2 ≤
+      xiWardZeroFreeMargin (xiRightCenteredZero q.1).im / 2) :
+    4 + 3 * xiWardZeroFreeMargin (xiRightCenteredZero q.1).im <
+      Complex.normSq
+        (continuedXiAntiCausalWardResponse ((1 / 2 : ℂ) + I * (t : ℂ))) := by
+  have hw : 0 < ((1 / 2 : ℂ) + I * (t : ℂ)).re := by
+    norm_num [Complex.add_re, Complex.mul_re]
+  have hm0 := xiWardZeroFreeMargin_pos (xiRightCenteredZero q.1).im
+  have hpair :=
+    re_xiAntiCausalWardSchwarzPairResponse_marginWindow_gt_two_add_three_quarters q ht
+  have hfull := re_xiAntiCausalWardSchwarzPairResponse_le_continued q hw
+  have hre : 2 + 3 * xiWardZeroFreeMargin (xiRightCenteredZero q.1).im / 4 <
       (continuedXiAntiCausalWardResponse ((1 / 2 : ℂ) + I * (t : ℂ))).re :=
     lt_of_lt_of_le hpair hfull
   have hsq := Complex.re_sq_le_normSq
@@ -228,6 +263,58 @@ theorem riemannHypothesis_iff_continuedXiWardMergedSlackSampledScalarLaw
   ⟨fun hRH =>
     continuedXiWardMergedSlackSampledScalarLaw_of_riemannHypothesis hRH S,
     riemannHypothesis_of_continuedXiWardMergedSlackSampledScalarLaw hcov⟩
+
+/-- The sampled Ward scalar law with a three-halves local-margin allowance.  It
+is strictly weaker than the full-margin law while retaining the same detector. -/
+def ContinuedXiWardThreeHalvesSlackSampledScalarLaw (S : Set ℝ) : Prop :=
+  ∀ t ∈ S,
+    Complex.normSq
+        (continuedXiAntiCausalWardResponse ((1 / 2 : ℂ) + I * (t : ℂ))) ≤
+      4 + (3 / 2 : ℝ) * xiWardZeroFreeMargin t
+
+theorem continuedXiWardThreeHalvesSlackSampledScalarLaw_of_riemannHypothesis
+    (hRH : RiemannHypothesis) (S : Set ℝ) :
+    ContinuedXiWardThreeHalvesSlackSampledScalarLaw S := by
+  intro t _
+  have hw : 0 < ((1 / 2 : ℂ) + I * (t : ℂ)).re := by
+    norm_num [Complex.add_re, Complex.mul_re]
+  rw [continuedXiAntiCausalWardResponse_eq_zero_of_riemannHypothesis hRH hw,
+    Complex.normSq_zero]
+  have := xiWardZeroFreeMargin_pos t
+  linarith
+
+theorem riemannHypothesis_of_continuedXiWardThreeHalvesSlackSampledScalarLaw
+    {S : Set ℝ} (hcov : XiWardDetectionCover S)
+    (hlaw : ContinuedXiWardThreeHalvesSlackSampledScalarLaw S) :
+    RiemannHypothesis := by
+  by_contra hRH
+  obtain ⟨q⟩ := nonempty_xiRightUpperZeroCopy_for_boundaryLift hRH
+  obtain ⟨t, htS, htwin⟩ := hcov (xiRightCenteredZero q.1).im
+  have hclose : |t + (xiRightCenteredZero q.1).im| ≤ 1 := by
+    have hbound :=
+      xiWardZeroFreeMargin_le_inv1024 (xiRightCenteredZero q.1).im
+    have h1 : (t + (xiRightCenteredZero q.1).im) ^ 2 ≤ 1 := by
+      nlinarith [htwin]
+    nlinarith [sq_abs (t + (xiRightCenteredZero q.1).im),
+      abs_nonneg (t + (xiRightCenteredZero q.1).im),
+      sq_nonneg (|t + (xiRightCenteredZero q.1).im| - 1)]
+  have hvar : xiWardZeroFreeMargin t ≤
+      2 * xiWardZeroFreeMargin (xiRightCenteredZero q.1).im :=
+    xiWardZeroFreeMargin_close_le_two_mul hclose
+  have hgt :=
+    normSq_continuedXiAntiCausalWardResponse_marginWindow_gt_four_add_three q htwin
+  have hle := hlaw t htS
+  linarith
+
+/-- **Three-halves-slack sampled completeness law.**  The same detection cover
+still decides RH after enlarging every sampled budget by three halves of its
+local zero-free margin. -/
+theorem riemannHypothesis_iff_continuedXiWardThreeHalvesSlackSampledScalarLaw
+    {S : Set ℝ} (hcov : XiWardDetectionCover S) :
+    RiemannHypothesis ↔ ContinuedXiWardThreeHalvesSlackSampledScalarLaw S :=
+  ⟨fun hRH =>
+    continuedXiWardThreeHalvesSlackSampledScalarLaw_of_riemannHypothesis hRH S,
+    riemannHypothesis_of_continuedXiWardThreeHalvesSlackSampledScalarLaw hcov⟩
 
 /-- **Prime-log merged slack completeness.**  Past an explicit cutoff, RH is
 equivalent to the margin-relaxed four-unit law sampled only on the signed prime

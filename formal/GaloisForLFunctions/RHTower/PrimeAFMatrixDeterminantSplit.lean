@@ -1,6 +1,12 @@
 import GaloisForLFunctions.RHTower.PrimeAFMatrixOperatorKOne
 import GaloisForLFunctions.HTGeometry.UnitaryConjugationMatrixUnits
 import GaloisForLFunctions.HTGeometry.UnitaryLocalLogNullhomotopy
+import GaloisForLFunctions.HTGeometry.LoopOpenCoverDecomposition
+import GaloisForLFunctions.HTGeometry.FiniteUnitaryDeterminantExponential
+import GaloisForLFunctions.HTGeometry.ContinuousIntegerLatticeRigidity
+import GaloisForLFunctions.HTGeometry.FiniteSpecialUnitaryLocalLogNullhomotopy
+import GaloisForLFunctions.HTGeometry.FiniteSpecialUnitaryRotatedLogNullhomotopy
+import GaloisForLFunctions.HTGeometry.FiniteSpecialUnitaryNormalization
 
 open GaloisForLFunctions.HTGeometry
 
@@ -335,6 +341,330 @@ theorem finiteUnitaryDeterminantKOneMap_surjective (n : ℕ) :
   intro q
   exact ⟨complexUnitsPhaseDiagonalKOneMap n q,
     finiteUnitaryDeterminantKOneMap_phaseDiagonal n q⟩
+
+theorem norm_unitaryMatrix_det {n : ℕ}
+    (U : Matrix.unitaryGroup (Fin (n + 1)) ℂ) :
+    ‖(U : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ).det‖ = 1 := by
+  have hdet : star (U : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ).det *
+      (U : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ).det = 1 :=
+    (Unitary.mem_iff.mp (Matrix.det_of_mem_unitary U.2)).1
+  have hnorm := congrArg norm hdet
+  rw [norm_mul, norm_star, norm_one] at hnorm
+  nlinarith [norm_nonneg
+    (U : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ).det]
+
+theorem complexUnitsPhase_unitaryDeterminantUnits {n : ℕ}
+    (U : Matrix.unitaryGroup (Fin (n + 1)) ℂ) :
+    complexUnitsPhase (unitaryDeterminantUnits U) =
+      (U : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ).det := by
+  rw [complexUnitsPhase, unitaryDeterminantUnits_coe,
+    norm_unitaryMatrix_det]
+  norm_num
+
+theorem complexUnitsPhaseDiagonal_unitaryDeterminantUnits {n : ℕ}
+    (U : Matrix.unitaryGroup (Fin (n + 1)) ℂ) :
+    complexUnitsPhaseDiagonal n (unitaryDeterminantUnits U) =
+      unitaryDeterminantSection (0 : Fin (n + 1))
+        (U : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ).det
+        ((Unitary.mem_iff.mp (Matrix.det_of_mem_unitary U.2)).1) := by
+  apply Subtype.ext
+  ext i j
+  by_cases hij : i = j
+  · subst j
+    by_cases hi : i = 0
+    · subst i
+      simp [complexUnitsPhaseDiagonal, unitaryDeterminantSection,
+        complexUnitsPhase_unitaryDeterminantUnits]
+    · simp [complexUnitsPhaseDiagonal, unitaryDeterminantSection, hi]
+  · simp [complexUnitsPhaseDiagonal, unitaryDeterminantSection, hij]
+
+/-- Pointwise exact factorization into determinant-normalized special-unitary part and diagonal
+determinant section. -/
+theorem specialUnitaryNormalize_mul_phaseDiagonal {n : ℕ}
+    (U : Matrix.unitaryGroup (Fin (n + 1)) ℂ) :
+    specialUnitaryToUnitary
+        (specialUnitaryNormalize (0 : Fin (n + 1)) U) *
+      complexUnitsPhaseDiagonal n (unitaryDeterminantUnits U) = U := by
+  apply Subtype.ext
+  unfold specialUnitaryNormalize specialUnitaryToUnitary
+  let D : Matrix.unitaryGroup (Fin (n + 1)) ℂ :=
+    unitaryDeterminantSection (0 : Fin (n + 1))
+      (U : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ).det
+      ((Unitary.mem_iff.mp (Matrix.det_of_mem_unitary U.2)).1)
+  change ((U * D⁻¹ : Matrix.unitaryGroup (Fin (n + 1)) ℂ) *
+    complexUnitsPhaseDiagonal n (unitaryDeterminantUnits U) :
+      Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ) = U
+  rw [complexUnitsPhaseDiagonal_unitaryDeterminantUnits]
+  change ((U * D⁻¹ : Matrix.unitaryGroup (Fin (n + 1)) ℂ) * D :
+    Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ) = U
+  have hD : star D * D = (1 : Matrix.unitaryGroup (Fin (n + 1)) ℂ) := by
+    simp
+  have hDcoe := congrArg Subtype.val hD
+  have hDmatrix :
+      ((star D : Matrix.unitaryGroup (Fin (n + 1)) ℂ) :
+          Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ) * D = 1 := by
+    change ((star D : Matrix.unitaryGroup (Fin (n + 1)) ℂ) :
+      Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ) * D = 1 at hDcoe
+    exact hDcoe
+  change (U : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ) *
+    ((star D : Matrix.unitaryGroup (Fin (n + 1)) ℂ) :
+      Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ) * D = U
+  rw [Matrix.mul_assoc, hDmatrix, Matrix.mul_one]
+
+theorem continuous_specialUnitaryToUnitary {n : ℕ} :
+    Continuous (specialUnitaryToUnitary :
+      Matrix.specialUnitaryGroup (Fin (n + 1)) ℂ →
+        Matrix.unitaryGroup (Fin (n + 1)) ℂ) := by
+  apply continuous_induced_rng.2
+  exact continuous_subtype_val
+
+@[simp] theorem specialUnitaryNormalize_one {n : ℕ} :
+    specialUnitaryNormalize (0 : Fin (n + 1))
+      (1 : Matrix.unitaryGroup (Fin (n + 1)) ℂ) = 1 := by
+  apply Subtype.ext
+  have h := congrArg Subtype.val (specialUnitaryNormalize_eq_of_det_eq_one
+    (0 : Fin (n + 1)) (1 : Matrix.unitaryGroup (Fin (n + 1)) ℂ) (by simp))
+  exact h
+
+/-- Determinant normalization of a based finite-unitary loop, as a literal based `SU` loop. -/
+def finiteUnitarySpecialNormalizePath (n : ℕ)
+    (p : Path (1 : Matrix.unitaryGroup (Fin (n + 1)) ℂ) 1) :
+    Path (1 : Matrix.specialUnitaryGroup (Fin (n + 1)) ℂ) 1 :=
+  basedMapPath
+    ⟨specialUnitaryNormalize (0 : Fin (n + 1)),
+      continuous_specialUnitaryNormalize (0 : Fin (n + 1))⟩
+    1 1 specialUnitaryNormalize_one p
+
+/-- Include a based finite special-unitary loop into the finite unitary group. -/
+def finiteSpecialUnitaryInclusionPath (n : ℕ)
+    (p : Path (1 : Matrix.specialUnitaryGroup (Fin (n + 1)) ℂ) 1) :
+    Path (1 : Matrix.unitaryGroup (Fin (n + 1)) ℂ) 1 :=
+  basedMapPath
+    ⟨specialUnitaryToUnitary, continuous_specialUnitaryToUnitary⟩
+    1 1 (by rfl) p
+
+/-- Normalization followed by inclusion, at path level. -/
+def finiteUnitarySpecialNormalizeInclusionPath (n : ℕ)
+    (p : Path (1 : Matrix.unitaryGroup (Fin (n + 1)) ℂ) 1) :
+    Path (1 : Matrix.unitaryGroup (Fin (n + 1)) ℂ) 1 :=
+  finiteSpecialUnitaryInclusionPath n (finiteUnitarySpecialNormalizePath n p)
+
+theorem finiteUnitarySpecialNormalizeInclusionPath_homotopic {n : ℕ}
+    {p q : Path (1 : Matrix.unitaryGroup (Fin (n + 1)) ℂ) 1}
+    (h : p.Homotopic q) :
+    (finiteUnitarySpecialNormalizeInclusionPath n p).Homotopic
+      (finiteUnitarySpecialNormalizeInclusionPath n q) := by
+  unfold finiteUnitarySpecialNormalizeInclusionPath
+  unfold finiteSpecialUnitaryInclusionPath finiteUnitarySpecialNormalizePath
+  refine basedMapPath_homotopic _ 1 1 (by rfl) ?_
+  exact basedMapPath_homotopic _ 1 1 specialUnitaryNormalize_one h
+
+/-- Every finite-unitary loop is pointwise its normalized `SU` loop times its diagonal determinant
+loop. -/
+theorem finiteUnitary_normalize_mul_determinant_path (n : ℕ)
+    (p : Path (1 : Matrix.unitaryGroup (Fin (n + 1)) ℂ) 1) :
+    GaloisForLFunctions.HTGeometry.loopPointwiseMulPath
+      (finiteUnitarySpecialNormalizeInclusionPath n p)
+      (complexUnitsPhaseDiagonalPath n (finiteUnitaryDeterminantPath n p)) = p := by
+  ext t i j
+  have ht := congrArg Subtype.val
+    (specialUnitaryNormalize_mul_phaseDiagonal (p t))
+  exact congrFun (congrFun ht i) j
+
+/-- Normalization-inclusion on finite-unitary path-homotopy classes. -/
+def finiteUnitarySpecialNormalizeInclusionKOneMap (n : ℕ) :
+    FundamentalGroup (Matrix.unitaryGroup (Fin (n + 1)) ℂ) 1 →
+      FundamentalGroup (Matrix.unitaryGroup (Fin (n + 1)) ℂ) 1 :=
+  Quotient.map (finiteUnitarySpecialNormalizeInclusionPath n)
+    (fun _ _ h ↦ finiteUnitarySpecialNormalizeInclusionPath_homotopic h)
+
+/-- Exact quotient-level factorization into the `SU` kernel part and determinant section. -/
+theorem finiteUnitaryKOne_eq_normalize_pointwiseMul_determinant (n : ℕ)
+    (q : FundamentalGroup (Matrix.unitaryGroup (Fin (n + 1)) ℂ) 1) :
+    q = GaloisForLFunctions.HTGeometry.fundamentalGroupPointwiseMul
+      (finiteUnitarySpecialNormalizeInclusionKOneMap n q)
+      (complexUnitsPhaseDiagonalKOneMap n
+        (finiteUnitaryDeterminantKOneMap n q)) := by
+  induction q using Path.Homotopic.Quotient.ind with
+  | mk p =>
+      change Path.Homotopic.Quotient.mk p =
+        GaloisForLFunctions.HTGeometry.fundamentalGroupPointwiseMul
+          (Path.Homotopic.Quotient.mk
+            (finiteUnitarySpecialNormalizeInclusionPath n p))
+          (Path.Homotopic.Quotient.mk
+            (complexUnitsPhaseDiagonalPath n (finiteUnitaryDeterminantPath n p)))
+      rw [GaloisForLFunctions.HTGeometry.fundamentalGroupPointwiseMul_mk]
+      exact congrArg Path.Homotopic.Quotient.mk
+        (finiteUnitary_normalize_mul_determinant_path n p).symm
+
+/-- A determinant-trivial class equals its normalized special-unitary inclusion. -/
+theorem finiteUnitaryKOne_eq_normalize_of_determinant_eq_one (n : ℕ)
+    (q : FundamentalGroup (Matrix.unitaryGroup (Fin (n + 1)) ℂ) 1)
+    (hq : finiteUnitaryDeterminantKOneMap n q = 1) :
+    q = finiteUnitarySpecialNormalizeInclusionKOneMap n q := by
+  have hone : complexUnitsPhaseDiagonalKOneMap n 1 = 1 := by
+    change Path.Homotopic.Quotient.mk
+      (complexUnitsPhaseDiagonalPath n (Path.refl 1)) =
+        Path.Homotopic.Quotient.mk (Path.refl 1)
+    apply congrArg Path.Homotopic.Quotient.mk
+    ext t
+    simp [complexUnitsPhaseDiagonalPath, basedMapPath]
+  calc
+    q = GaloisForLFunctions.HTGeometry.fundamentalGroupPointwiseMul
+        (finiteUnitarySpecialNormalizeInclusionKOneMap n q)
+        (complexUnitsPhaseDiagonalKOneMap n
+          (finiteUnitaryDeterminantKOneMap n q)) :=
+      finiteUnitaryKOne_eq_normalize_pointwiseMul_determinant n q
+    _ = GaloisForLFunctions.HTGeometry.fundamentalGroupPointwiseMul
+        (finiteUnitarySpecialNormalizeInclusionKOneMap n q)
+        (complexUnitsPhaseDiagonalKOneMap n 1) := by rw [hq]
+    _ =
+    GaloisForLFunctions.HTGeometry.fundamentalGroupPointwiseMul
+        (finiteUnitarySpecialNormalizeInclusionKOneMap n q)
+        (1 : FundamentalGroup (Matrix.unitaryGroup (Fin (n + 1)) ℂ) 1) := by rw [hone]
+    _ = finiteUnitarySpecialNormalizeInclusionKOneMap n q :=
+      GaloisForLFunctions.HTGeometry.fundamentalGroupPointwiseMul_one_right _
+
+theorem finiteUnitarySpecialNormalizePath_homotopic {n : ℕ}
+    {p q : Path (1 : Matrix.unitaryGroup (Fin (n + 1)) ℂ) 1}
+    (h : p.Homotopic q) :
+    (finiteUnitarySpecialNormalizePath n p).Homotopic
+      (finiteUnitarySpecialNormalizePath n q) := by
+  exact basedMapPath_homotopic _ _ _ _ h
+
+theorem finiteSpecialUnitaryInclusionPath_homotopic {n : ℕ}
+    {p q : Path (1 : Matrix.specialUnitaryGroup (Fin (n + 1)) ℂ) 1}
+    (h : p.Homotopic q) :
+    (finiteSpecialUnitaryInclusionPath n p).Homotopic
+      (finiteSpecialUnitaryInclusionPath n q) := by
+  exact basedMapPath_homotopic _ _ _ _ h
+
+/-- Determinant normalization from finite-unitary loop classes to literal finite `SU` loop
+classes. -/
+def finiteUnitarySpecialNormalizeKOneMap (n : ℕ) :
+    FundamentalGroup (Matrix.unitaryGroup (Fin (n + 1)) ℂ) 1 →
+      FundamentalGroup (Matrix.specialUnitaryGroup (Fin (n + 1)) ℂ) 1 :=
+  Quotient.map (finiteUnitarySpecialNormalizePath n)
+    (fun _ _ h ↦ finiteUnitarySpecialNormalizePath_homotopic h)
+
+/-- Inclusion from literal finite `SU` loop classes to finite-unitary loop classes. -/
+def finiteSpecialUnitaryInclusionKOneMap (n : ℕ) :
+    FundamentalGroup (Matrix.specialUnitaryGroup (Fin (n + 1)) ℂ) 1 →
+      FundamentalGroup (Matrix.unitaryGroup (Fin (n + 1)) ℂ) 1 :=
+  Quotient.map (finiteSpecialUnitaryInclusionPath n)
+    (fun _ _ h ↦ finiteSpecialUnitaryInclusionPath_homotopic h)
+
+theorem finiteUnitarySpecialNormalizeInclusionKOneMap_eq (n : ℕ)
+    (q : FundamentalGroup (Matrix.unitaryGroup (Fin (n + 1)) ℂ) 1) :
+    finiteUnitarySpecialNormalizeInclusionKOneMap n q =
+      finiteSpecialUnitaryInclusionKOneMap n
+        (finiteUnitarySpecialNormalizeKOneMap n q) := by
+  induction q using Path.Homotopic.Quotient.ind with
+  | mk p => rfl
+
+/-- Normalization retracts inclusion on literal finite `SU` loop classes. -/
+theorem finiteUnitarySpecialNormalizeKOneMap_inclusion (n : ℕ)
+    (q : FundamentalGroup (Matrix.specialUnitaryGroup (Fin (n + 1)) ℂ) 1) :
+    finiteUnitarySpecialNormalizeKOneMap n
+      (finiteSpecialUnitaryInclusionKOneMap n q) = q := by
+  induction q using Path.Homotopic.Quotient.ind with
+  | mk p =>
+      change Path.Homotopic.Quotient.mk
+        (finiteUnitarySpecialNormalizePath n
+          (finiteSpecialUnitaryInclusionPath n p)) =
+        Path.Homotopic.Quotient.mk p
+      apply congrArg Path.Homotopic.Quotient.mk
+      ext t i j
+      have ht := congrArg Subtype.val
+        (specialUnitaryNormalize_toUnitary (0 : Fin (n + 1)) (p t))
+      exact congrFun (congrFun ht i) j
+
+/-- Determinant kills the included literal finite `SU` loop classes. -/
+theorem finiteUnitaryDeterminantKOneMap_inclusion (n : ℕ)
+    (q : FundamentalGroup (Matrix.specialUnitaryGroup (Fin (n + 1)) ℂ) 1) :
+    finiteUnitaryDeterminantKOneMap n
+      (finiteSpecialUnitaryInclusionKOneMap n q) = 1 := by
+  induction q using Path.Homotopic.Quotient.ind with
+  | mk p =>
+      change Path.Homotopic.Quotient.mk
+        (finiteUnitaryDeterminantPath n
+          (finiteSpecialUnitaryInclusionPath n p)) =
+        Path.Homotopic.Quotient.mk (Path.refl 1)
+      apply congrArg Path.Homotopic.Quotient.mk
+      ext t
+      change (unitaryDeterminantUnits (specialUnitaryToUnitary (p t)) : ℂ) = 1
+      rw [unitaryDeterminantUnits_coe]
+      exact (Matrix.mem_specialUnitaryGroup_iff.mp (p t).2).2
+
+/-- Exact kernel identification: every determinant-trivial finite-unitary loop class is inclusion
+of its literal normalized special-unitary loop class. -/
+theorem finiteUnitaryKOne_eq_inclusion_normalize_of_determinant_eq_one (n : ℕ)
+    (q : FundamentalGroup (Matrix.unitaryGroup (Fin (n + 1)) ℂ) 1)
+    (hq : finiteUnitaryDeterminantKOneMap n q = 1) :
+    q = finiteSpecialUnitaryInclusionKOneMap n
+      (finiteUnitarySpecialNormalizeKOneMap n q) := by
+  rw [← finiteUnitarySpecialNormalizeInclusionKOneMap_eq]
+  exact finiteUnitaryKOne_eq_normalize_of_determinant_eq_one n q hq
+
+@[simp] theorem finiteUnitaryDeterminantKOneMap_one (n : ℕ) :
+    finiteUnitaryDeterminantKOneMap n 1 = 1 := by
+  change Path.Homotopic.Quotient.mk
+      (finiteUnitaryDeterminantPath n (Path.refl 1)) =
+    Path.Homotopic.Quotient.mk (Path.refl 1)
+  apply congrArg Path.Homotopic.Quotient.mk
+  ext t
+  simp [finiteUnitaryDeterminantPath, basedMapPath]
+
+/-- Exact finite-stage obstruction: determinant is injective precisely when every literal
+special-unitary loop class dies after inclusion. Since normalization retracts inclusion, this is
+equivalent to `π₁(SU(n+1))` being trivial. -/
+theorem finiteUnitaryDeterminantKOneMap_injective_iff_inclusion_eq_one (n : ℕ) :
+    Function.Injective (finiteUnitaryDeterminantKOneMap n) ↔
+      ∀ q : FundamentalGroup
+        (Matrix.specialUnitaryGroup (Fin (n + 1)) ℂ) 1,
+        finiteSpecialUnitaryInclusionKOneMap n q = 1 := by
+  constructor
+  · intro hinj q
+    apply hinj
+    rw [finiteUnitaryDeterminantKOneMap_inclusion,
+      finiteUnitaryDeterminantKOneMap_one]
+  · intro hkill x y hxy
+    rw [finiteUnitaryKOne_eq_normalize_pointwiseMul_determinant n x,
+      finiteUnitarySpecialNormalizeInclusionKOneMap_eq,
+      hkill,
+      GaloisForLFunctions.HTGeometry.fundamentalGroupPointwiseMul_one_left,
+      finiteUnitaryKOne_eq_normalize_pointwiseMul_determinant n y,
+      finiteUnitarySpecialNormalizeInclusionKOneMap_eq,
+      hkill,
+      GaloisForLFunctions.HTGeometry.fundamentalGroupPointwiseMul_one_left,
+      hxy]
+
+@[simp] theorem finiteSpecialUnitaryInclusionKOneMap_one (n : ℕ) :
+    finiteSpecialUnitaryInclusionKOneMap n 1 = 1 := by
+  change Path.Homotopic.Quotient.mk
+      (finiteSpecialUnitaryInclusionPath n (Path.refl 1)) =
+    Path.Homotopic.Quotient.mk (Path.refl 1)
+  apply congrArg Path.Homotopic.Quotient.mk
+  ext t
+  rfl
+
+/-- Finite-stage determinant injectivity is exactly triviality of the literal fundamental group
+of `SU(n+1)`; no surrogate winding interface remains. -/
+theorem finiteUnitaryDeterminantKOneMap_injective_iff_subsingleton_specialUnitary (n : ℕ) :
+    Function.Injective (finiteUnitaryDeterminantKOneMap n) ↔
+      Subsingleton (FundamentalGroup
+        (Matrix.specialUnitaryGroup (Fin (n + 1)) ℂ) 1) := by
+  rw [finiteUnitaryDeterminantKOneMap_injective_iff_inclusion_eq_one]
+  constructor
+  · intro hkill
+    constructor
+    intro x y
+    have hxy : finiteSpecialUnitaryInclusionKOneMap n x =
+        finiteSpecialUnitaryInclusionKOneMap n y := by rw [hkill x, hkill y]
+    have hnorm := congrArg (finiteUnitarySpecialNormalizeKOneMap n) hxy
+    simpa [finiteUnitarySpecialNormalizeKOneMap_inclusion] using hnorm
+  · intro hsub q
+    rw [show q = 1 from hsub.elim q 1, finiteSpecialUnitaryInclusionKOneMap_one]
 
 end
 

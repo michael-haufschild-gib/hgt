@@ -1,7 +1,7 @@
 # An exact Xi determinant forces logarithmically enhanced weak-trace singular values
 
 - **ID:** `xi-determinant-logarithmic-singular-value-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / POSITIVE HILBERT--POLYA IDEAL LAW / BRIDGE
 - **Scientific status:** `[PROVED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Statement:** If a compact self-adjoint operator has a genus-one regularized characteristic
@@ -230,12 +230,23 @@ exactly the reciprocal eigenvalues of the actual incidence operator.  This is pr
 “every determinant order, whenever determinant zeros are reciprocal eigenvalues” scope of `(17)`;
 it does not assume an implementation-specific determinant formula.
 
-The card is not yet dependency-closed.  Equation `(16)` is still represented only by
-`HasCriticalPrimeFockSchattenLaw`; no theorem supplies that interface for
-`polynomialCriticalPrimeSamplingIncidence`.  The actual incidence is already constructed and is
-proved positive, compact for `m>4`, and non-trace-class, but its exact all-`q` Schatten threshold
-still requires the doubling-Fock Toeplitz averaging theorem and the adapted-tube comparison.
-Therefore this card remains at Stage 2.
+`PolynomialFockSchattenUpperPhaseTransition.lean` closes the remaining dependency on the actual
+critical-prime incidence operator, without a Toeplitz proxy.  It proves
+
+```text
+polynomialCriticalPrimeSamplingIncidence_memSchattenClass_iff
+  (hm : 4 < m) (hq : 0 < q) :
+  MemSchattenClass q (polynomialCriticalPrimeSamplingIncidence m hm.le)
+    <-> criticalPrimeFockSchattenThreshold m < q.
+```
+
+The proof combines the exact lower obstruction with finite tangent-ball Jensen estimates, the
+reproducing-kernel diagonal trace bound, adapted-cell grouping, a uniform finite singular-packet
+bound, a finite low-log prime head, and cofinal convergence to the singular-value sum.  The leaf
+was checked directly with `lake env lean` and built with the exact targeted `lake build` module.
+The endpoint and every new public theorem in its upper/lower dependency chain were axiom-audited;
+they use only `propext`, `Classical.choice`, and `Quot.sound`.  The leaf is wired into the RHTower
+umbrella, which was not built.  Equations `(1)`--`(17)` are therefore dependency-closed in Lean.
 
 ## Gates
 
@@ -247,4 +258,4 @@ Therefore this card remains at Stage 2.
 - [x] every finite polynomial-Fock incidence excluded as the exact determinant carrier
 - [x] positive target ideal stated
 - [x] parent-theory novelty claim rejected
-- [ ] complete unconditional Lean formalization
+- [x] complete unconditional Lean formalization

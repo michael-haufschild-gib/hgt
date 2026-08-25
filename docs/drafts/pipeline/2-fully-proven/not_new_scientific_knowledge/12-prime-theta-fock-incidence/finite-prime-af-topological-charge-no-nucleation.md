@@ -325,3 +325,36 @@ injectivity of determinant, equivalently simple connectivity of `SU(n)`; current
 contain path connectivity but no sphere/fibration homotopy sequence or `SimplyConnectedSpace`
 instance for finite special-unitary groups.  C-star inductive-limit continuity remains after this
 kernel theorem.  No hypothesis shell was added; card remains Stage 2.
+
+## Finite-stage kernel reduction and logarithm charts — 2026-08-25
+
+The finite-stage kernel has now been reduced exactly, without a provider premise.
+`formal/GaloisForLFunctions/HTGeometry/FiniteUnitaryDeterminantExponential.lean` proves
+
+```text
+det(exp(iH)) = exp(i trace(H))
+```
+
+by the Hermitian spectral theorem.  Continuous integer-lattice rigidity then forces a based
+special-unitary loop's principal logarithm to have trace zero throughout every radius-two chart,
+and `FiniteSpecialUnitaryLocalLogNullhomotopy.lean` contracts such a loop inside `SU(n)`.
+
+`PrimeAFMatrixDeterminantSplit.lean` now also constructs determinant normalization and the literal
+maps between the unitary and special-unitary fundamental groups.  It proves that finite-stage
+determinant injectivity is equivalent to
+
+```text
+Subsingleton (FundamentalGroup (Matrix.specialUnitaryGroup (Fin (n + 1)) ℂ) 1).
+```
+
+Thus no kernel content is hidden behind an assumption: the exact remaining finite-stage obligation
+is simple connectivity of `SU(n+1)`.
+
+`FiniteSpecialUnitaryRotatedLogNullhomotopy.lean` strengthens the local result.  For every
+`|beta| < pi`, it defines the scalar-rotated principal logarithm, proves its exponential is the
+original unitary, proves its trace remains zero on a based special-unitary loop, and gives an
+endpoint-fixed contraction whenever that loop lies in the rotated chart.  Together with
+`LoopOpenCoverDecomposition.lean`, this leaves the global kernel step as the concrete spectral
+cover problem: cover `SU(n+1)` by trace-zero rotated logarithm charts and prove the required chart
+intersections path connected.  AF C-star inductive-limit continuity remains after that global
+finite-stage theorem.  Card remains Stage 2.
