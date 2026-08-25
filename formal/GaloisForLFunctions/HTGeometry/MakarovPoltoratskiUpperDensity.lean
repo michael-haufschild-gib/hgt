@@ -15,6 +15,69 @@ structure SmirnovToeplitzPhaseWitness (γ : ℝ → ℝ) where
   outerHilbertPhase_sublinear_atTop :
     Tendsto (fun x => outerHilbertPhase x / x) atTop (nhds 0)
 
+def SmirnovToeplitzPhaseWitness.add {γ δ : ℝ → ℝ}
+    (Wγ : SmirnovToeplitzPhaseWitness γ)
+    (Wδ : SmirnovToeplitzPhaseWitness δ) :
+    SmirnovToeplitzPhaseWitness (fun x => γ x + δ x) where
+  innerPhase := fun x => Wγ.innerPhase x + Wδ.innerPhase x
+  outerHilbertPhase := fun x => Wγ.outerHilbertPhase x + Wδ.outerHilbertPhase x
+  innerPhase_monotone := Wγ.innerPhase_monotone.add Wδ.innerPhase_monotone
+  phase_balance := by
+    intro x
+    rw [show γ x + δ x + (Wγ.innerPhase x + Wδ.innerPhase x) =
+      (γ x + Wγ.innerPhase x) + (δ x + Wδ.innerPhase x) by ring,
+      Wγ.phase_balance, Wδ.phase_balance]
+  outerHilbertPhase_sublinear_atTop := by
+    convert Wγ.outerHilbertPhase_sublinear_atTop.add
+      Wδ.outerHilbertPhase_sublinear_atTop using 1
+    · funext x
+      rw [add_div]
+    · ring
+
+def SmirnovToeplitzPhaseWitness.congr {γ δ : ℝ → ℝ}
+    (W : SmirnovToeplitzPhaseWitness γ) (h : ∀ x, γ x = δ x) :
+    SmirnovToeplitzPhaseWitness δ where
+  innerPhase := W.innerPhase
+  outerHilbertPhase := W.outerHilbertPhase
+  innerPhase_monotone := W.innerPhase_monotone
+  phase_balance := by intro x; rw [← h x, W.phase_balance]
+  outerHilbertPhase_sublinear_atTop := W.outerHilbertPhase_sublinear_atTop
+
+theorem tendsto_div_atTop_zero_of_abs_le
+    {f : ℝ → ℝ} {C : ℝ} (hf : ∀ x, |f x| ≤ C) :
+    Tendsto (fun x => f x / x) atTop (nhds 0) := by
+  rw [Metric.tendsto_atTop]
+  intro ε hε
+  refine ⟨max 1 (C / ε + 1), ?_⟩
+  intro x hx
+  rw [Real.dist_eq]
+  have hx0 : 0 < x := lt_of_lt_of_le zero_lt_one
+    (le_trans (le_max_left 1 (C / ε + 1)) hx)
+  have hCdiv : C / x < ε := by
+    have hxC : C / ε < x := lt_of_lt_of_le (lt_add_one (C / ε))
+      (le_trans (le_max_right 1 (C / ε + 1)) hx)
+    apply (div_lt_iff₀ hx0).2
+    simpa [mul_comm] using (div_lt_iff₀ hε).mp hxC
+  rw [sub_zero, abs_div, abs_of_pos hx0]
+  exact lt_of_le_of_lt (div_le_div_of_nonneg_right (hf x) hx0.le) hCdiv
+
+/-- Smirnov--Kolmogorov bounded-phase multiplier at exponent `p = 1/2`, in phase coordinates. -/
+noncomputable def boundedPhaseBlaschkeFourWitness (b : ℝ → ℝ) (C : ℝ) (_hC : 0 ≤ C)
+    (hb : ∀ x, |b x| ≤ C) :
+    SmirnovToeplitzPhaseWitness (fun x => -8 * Real.arctan x + 2 * b x) where
+  innerPhase := fun x => 8 * Real.arctan x
+  outerHilbertPhase := fun x => 2 * b x
+  innerPhase_monotone := ((show StrictMono Real.arctan from
+    fun _ _ h => Real.arctan_lt_arctan_iff.mpr h).const_mul
+      (by norm_num : (0 : ℝ) < 8)).monotone
+  phase_balance := by intro x; ring
+  outerHilbertPhase_sublinear_atTop := by
+    apply tendsto_div_atTop_zero_of_abs_le (C := 2 * C)
+    intro x
+    rw [abs_mul]
+    simpa only [abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 2)] using
+      mul_le_mul_of_nonneg_left (hb x) (by norm_num : (0 : ℝ) ≤ 2)
+
 /-- Makarov--Poltoratski upper-density obstruction at `κ = 0`, in the exact phase criterion:
 a Toeplitz phase whose excess over the exponential inner phase grows to `+∞` cannot have a
 nonzero Smirnov kernel element. -/
@@ -58,6 +121,19 @@ end GaloisForLFunctions.HTGeometry
 namespace RHTower
 
 open GaloisForLFunctions.HTGeometry
+
+/-- Exact bounded-phase product step in Kapustin's proof: a Hardy phase witness for the gauge,
+together with a bounded representative of the positive-real cancellation, creates a forbidden
+witness for the reciprocal-Gamma Toeplitz symbol. -/
+noncomputable def kapustinToeplitzPhaseWitness_of_boundedCancellation
+    (ψ b : ℝ → ℝ) (C : ℝ) (hC : 0 ≤ C)
+    (hψ : SmirnovToeplitzPhaseWitness (fun x => -2 * ψ x))
+    (hb : ∀ x, |b x| ≤ C)
+    (hphase : ∀ x,
+      kapustinToeplitzPhase x =
+        -2 * ψ x + (-8 * Real.arctan x + 2 * b x)) :
+    SmirnovToeplitzPhaseWitness kapustinToeplitzPhase :=
+  (hψ.add (boundedPhaseBlaschkeFourWitness b C hC hb)).congr fun x => (hphase x).symm
 
 theorem noSmirnovToeplitzPhaseWitness_kapustinToeplitzPhase :
     ¬ Nonempty (SmirnovToeplitzPhaseWitness kapustinToeplitzPhase) :=

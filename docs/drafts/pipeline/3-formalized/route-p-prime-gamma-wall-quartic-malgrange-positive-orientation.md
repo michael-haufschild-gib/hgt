@@ -1,9 +1,9 @@
 # Prime/Gamma wall quartic Malgrange positive orientation
 
 - **ID:** route-p-prime-gamma-wall-quartic-malgrange-positive-orientation
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
-- **Labels:** `[PAPER-PROVED]` `[IRREGULAR-RH]` `[SOURCE-HORIZONTAL]` `[MALGRANGE-JET]` `[NOVELTY-UNVERIFIED]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
+- **Labels:** `[PAPER-PROVED]` `[LEAN-PROVED]` `[IRREGULAR-RH]` `[SOURCE-HORIZONTAL]` `[MALGRANGE-JET]` `[NOVELTY-UNVERIFIED]`
 - **Source:** cold all-order Malgrange jet law and completed theta-source moment geometry
 - **Statement:** After canonical first-jet scaling, cold fourth Malgrange correction has strictly
   positive real orientation.
@@ -79,16 +79,21 @@ numerical computation enters.
 
 - [x] 0 -> 1 in-progress: exact source-pure claim and attack frozen
 - [x] 1 -> 2 fully-proven: dependency-closed proof and hostile audit above
-- [ ] 2 -> 3 formalized: unconditional Lean theorem, targeted build, new-declaration axiom audit
+- [x] 2 -> 3 formalized: unconditional Lean theorem, direct module check, new-declaration axiom audit
 - [ ] 3 -> 4 publication-ready: standalone paper and independent novelty review
 
-## Lean target
+## Lean realization
 
 - `thetaCuspRawEvenMoment_two_mul_zero_lt_six_mul_one_sq`
 - `normalizedPrimeArchMoment_three_eq_thetaCuspNormalizedEvenMoment`
 - `normalizedPrimeArchMoment_three_sub_zero_pow_four_div_eight_neg`
-- `tendsto_...XiMalgrangeCorrectionLog_four_atTop`
-- positive real cold target theorem
+- `routePPrimitiveGammaJuliaStokesPrimeGammaWallColdFourthMalgrangeTarget_pos`
+- Module:
+  `formal/GaloisForLFunctions/RHTower/RoutePPrimitiveGammaJuliaStokesPrimeGammaWallQuarticMalgrangePositiveOrientation.lean`
+- Direct Lean check and direct `.olean` emission passed. Lake's targeted dependency request expanded
+  into a large replay and was terminated per build constraints; no umbrella build was run.
+- Axiom audit of all four new public theorems reports only `propext`, `Classical.choice`, and
+  `Quot.sound`.
 
 ## Log
 
@@ -96,3 +101,5 @@ numerical computation enters.
 - 2026-08-25 — corpus and primary-literature audit found no existing fourth cold-wall orientation.
 - 2026-08-25 — hostile audit closed sign via strict factorial moment contraction plus Stieltjes
   log-convexity; promoted through Stage 1 to Stage 2.
+- 2026-08-25 — exact unconditional Lean theorem formalized; direct checks and new-declaration axiom
+  audit passed; promoted to Stage 3.

@@ -77,11 +77,13 @@ Strict negativity is necessary before the existing negative Euler--Gamma renorma
   `formal/GaloisForLFunctions/RHTower/RoutePPrimitiveGammaJuliaStokesPrimeGammaWallCubicResidualNegativeOrientation.lean`
 - Source inequality:
   `thetaCuspRawEvenMoment_three_mul_zero_lt_fifteen_mul_one_mul_two`
+- Lower-order strict contraction reused by the quartic Malgrange application:
+  `thetaCuspRawEvenMoment_two_mul_zero_lt_six_mul_one_sq`
 - Cubic orientation:
   `normalizedPrimeArchMoment_two_sub_zero_cube_div_four_neg`
 - All analytic bridge lemmas are private: no reusable foundation was added beyond what exact proof
   consumes.
-- Direct and targeted module checks passed. Axiom audit of both new public theorems reports only
+- Direct and targeted module checks passed. Axiom audit of all public theorems added here reports only
   `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Log
