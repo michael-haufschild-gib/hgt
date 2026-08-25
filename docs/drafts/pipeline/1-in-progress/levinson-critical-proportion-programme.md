@@ -1142,7 +1142,7 @@ evaluation, and explicit optimization above `1/3`.
 
 ## Brick 5m mollified twisted mean-value and reduced diagonal (2026-08-25)
 
-Eight axiom-clean leaves now connect the finite AFE detector coefficients to the exact arithmetic
+Ten axiom-clean leaves now connect the finite AFE detector coefficients to the exact arithmetic
 diagonal consumed by the classical mollified-moment calculation:
 
 * `RHTower/SmoothAFEZetaDisplacedDirichletMeanValueBridge.lean` identifies zero-based
@@ -1168,6 +1168,11 @@ diagonal consumed by the classical mollified-moment calculation:
 * `RHTower/SmoothAFEZetaDisplacedLinearMollifier.lean` reindexes that positive-natural mollifier
   into the detector's zero-based convolution convention and gives the exact mollified detector:
   one direct `dirConv` polynomial, two reflected products, and both pole terms.
+* `RHTower/Sieve/DirichletMVTNegativeWindow.lean` transfers the arbitrary-window mean-value
+  theorem to the direct head's negative-frequency convention by coefficient conjugation.
+* `RHTower/SmoothAFEZetaDisplacedDirectMollifiedMeanSquare.lean` defines the direct convolution
+  coefficient and proves its exact window mean square with the coefficient energy and explicit
+  Montgomery--Vaughan error retained.
 
 Each leaf passes direct `lake env lean`, exact leaf `lake build`, and declaration-local
 `#print axioms`; dependencies are only `propext, Classical.choice, Quot.sound`. All leaves are
@@ -1176,3 +1181,55 @@ wired into `RHTower.lean`; no umbrella build was run.
 Remaining brick-5 core is evaluation of this explicit gcd-reduced arithmetic main term for the
 chosen Möbius-polynomial mollifier, control of the chi-weighted cross heads and truncation error in
 the dyadic integral, then exact parameter optimization above `1/3`.
+
+## Brick 5n divisor coefficient and critical Barban--Vehov bridge (2026-08-25)
+
+Three further axiom-clean leaves expose the exact arithmetic coefficient consumed by the main-term
+calculation:
+
+* `RHTower/Sieve/DirichletConvolutionDivisorReindex.lean` rewrites every zero-based finite
+  `Sieve.dirConv` fibre as the standard positive-natural divisor convolution, with both finite
+  supports retained exactly.
+* `RHTower/SmoothAFEZetaDisplacedDirectMollifiedDivisorCoefficient.lean` specializes that theorem
+  to the displaced direct detector and literal linear Levinson mollifier.  It gives both the exact
+  supported divisor sum and its fully expanded Möbius--logarithmic form.
+* `RHTower/Sieve/LevinsonLinearMollifiedCriticalCoefficient.lean` proves the complementary-divisor
+  square-root cancellation, identifies the unsmoothed critical product coefficient exactly as
+  `b_M(k)/(log M sqrt k)`, converts its finite square energy to the harmonic Barban--Vehov mean
+  square, and applies the existing harmonic Graham bound.
+
+Each leaf passes direct `lake env lean`, exact leaf `lake build`, and declaration-local
+`#print axioms`; dependencies are only `propext, Classical.choice, Quot.sound`.  All three are
+wired into `RHTower.lean`; no umbrella build was run.
+
+Remaining brick-5 core is the sharp asymptotic, rather than only the current unconditional upper
+bound, for the displaced/log-differentiated and Gaussian-cutoff coefficient energy; the
+chi-weighted reflected cross heads and truncation error; and exact parameter optimization above
+`1/3`.
+
+## Brick 5o differentiated coefficient and cutoff-transfer algebra (2026-08-25)
+
+Five further axiom-clean leaves isolate the differentiated Barban--Vehov carrier and remove the
+Gaussian cutoff through an exact finite convolution estimate:
+
+* `RHTower/Sieve/LevinsonLinearMollifiedCriticalDetectorCoefficient.lean` defines the literal
+  critical `zeta + lambda zeta'` product coefficient and proves its exact decomposition into the
+  Barban--Vehov term plus the complementary divisor-log moment.
+* `RHTower/Sieve/LevinsonLinearMollifiedCriticalDetectorDirConv.lean` identifies every short-head
+  finite convolution fibre with that differentiated divisor coefficient.
+* `RHTower/SmoothAFEZetaCriticalDetectorArithmeticBridge.lean` proves the exact zero-displacement
+  Gaussian-cutoff factorization and a uniform power-rate coefficient error.
+* `RHTower/Sieve/DirichletConvolutionLinear.lean` supplies both-sided add, subtract, and scalar
+  bilinearity for the finite Dirichlet convolution.
+* `RHTower/SmoothAFEZetaCriticalDetectorMollifiedCutoffError.lean` proves that the full mollified
+  cutoff error is exactly the convolution of the head error with the linear mollifier, converts
+  its finite `ell^1` mass to the positive-natural `Icc` form, and obtains the explicit
+  `2 * sqrt M` amplification bound and uniform power-rate consequence.
+
+Each leaf passes direct `lake env lean`, exact leaf `lake build`, and declaration-local
+`#print axioms`; dependencies are only `propext, Classical.choice, Quot.sound`. All leaves are
+wired into `RHTower.lean`; no umbrella build was run.
+
+Remaining brick-5 core is the sharp differentiated Barban--Vehov asymptotic (the current Graham
+bounds are insufficient), control of the chi-weighted reflected cross heads and truncation error
+in the dyadic integral, and the exact PRZZ parameter optimization above `1/3`.

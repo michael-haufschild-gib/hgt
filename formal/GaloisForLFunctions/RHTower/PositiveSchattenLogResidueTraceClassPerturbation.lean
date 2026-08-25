@@ -1,6 +1,5 @@
 import GaloisForLFunctions.RHTower.PositiveOperatorTraceComparison
-import GaloisForLFunctions.RHTower.TraceNormLimit
-import GaloisForLFunctions.RHTower.WeakSchattenResidue
+import GaloisForLFunctions.RHTower.SchattenLogResidueFiniteRankPerturbation
 
 /-!
 # Positive logarithmic Schatten residues under trace-class perturbations
@@ -98,7 +97,7 @@ theorem abs_schattenPowerPartialSum_one_sub_le_traceNorm_of_nonneg
     hAcpt hBcpt hApos hBpos hAB N
   have hBA : MemSchattenClass 1 (B - A) := by
     have h := hAB.one_neg
-    simpa [show -(A - B) = B - A by abel] using this
+    simpa [show -(A - B) = B - A by abel] using h
   have hlower := schattenPowerPartialSum_one_le_add_traceNorm_of_nonneg
     hBcpt hAcpt hBpos hApos hBA N
   have hnormNeg : traceNorm H (B - A) = traceNorm H (A - B) := by
@@ -157,6 +156,20 @@ theorem hasSchattenLogResidue_one_iff_of_nonneg_traceClass_sub
     have h := hB.add hdiff
     rw [add_zero] at h
     exact h.congr fun N => by simp [fA, fB]
+
+/-- Positive trace-class perturbations preserve both weak trace-ideal membership and the exact
+measurable logarithmic residue. -/
+theorem weakAndHasSchattenLogResidue_one_of_nonneg_traceClass_sub
+    {A B : H →L[ℂ] H}
+    (hAcpt : IsCompactOperator A) (hBcpt : IsCompactOperator B)
+    (hApos : 0 ≤ A) (hBpos : 0 ≤ B)
+    (hAB : MemSchattenClass 1 (A - B)) {R : ℝ}
+    (hBweak : MemWeakSchattenClass 1 B)
+    (hBres : HasSchattenLogResidue 1 B R) :
+    MemWeakSchattenClass 1 A ∧ HasSchattenLogResidue 1 A R := by
+  exact ⟨(memWeakSchattenClass_one_iff_of_memSchattenClass_one_sub hAB).2 hBweak,
+    (hasSchattenLogResidue_one_iff_of_nonneg_traceClass_sub
+      hAcpt hBcpt hApos hBpos hAB R).2 hBres⟩
 
 end
 

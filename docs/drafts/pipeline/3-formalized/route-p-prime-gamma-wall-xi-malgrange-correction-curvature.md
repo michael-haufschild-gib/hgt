@@ -1,9 +1,9 @@
 # Prime/Gamma Stokes-wall Xi Malgrange correction curvature
 
 - **ID:** route-p-prime-gamma-wall-xi-malgrange-correction-curvature
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
-- **Labels:** `[PROVED HERE]` `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]` `[IRREGULAR-RH]` `[POSITIVE-SURVIVOR]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
+- **Labels:** `[LEAN-PROVED]` `[NOVELTY UNVERIFIED]` `[IRREGULAR-RH]` `[POSITIVE-SURVIVOR]`
 - **Source:** exact prime/Gamma Stokes-wall Fredholm tau and canonical completed-Xi seam germ
 - **Statement:** First-jet normalization forces the logarithmic Malgrange correction to have curvature `2c²(P_wall(d)-P_Xi)`; this curvature has strictly positive real part for every `d ≥ 1` and throughout a punctured right neighborhood of the wild wall.
 
@@ -15,7 +15,7 @@ Extract strongest positive rigidity law exposed by scalar prime/Gamma wall no-go
 
 - [x] 0 → 1  in-progress: well-posed, source/target provenance explicit, attack idea fixed
 - [x] 1 → 2  fully-proven: complete algebraic paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorem, targeted check, new declarations axiom-audited
+- [x] 2 → 3  formalized: Lean theorem, targeted check, new declarations axiom-audited
 - [ ] 3 → 4  publication-ready: standalone paper and novelty review
 
 ## Exact theorem
@@ -93,8 +93,18 @@ Now `c_Xi>0` and `P_Xi<9/80`. The explicit cold theorem gives `Re P_wall(d)>9/80
 - **New insight:** viable Xi realization must alter even Stokes/Malgrange data; scalar clock change and constant tau gauge are insufficient.
 - **Next live core:** construct this positive-curvature anomaly from independent prime--Gamma microlocal data, then prove its full Fredholm coefficient law.
 
+## Formal certificate
+
+- **Module:** `RoutePPrimitiveGammaJuliaStokesPrimeGammaWallXiMalgrangeCorrectionCurvature.lean`
+- **Exact curvature theorem:** `iteratedDeriv_routePPrimitiveGammaJuliaStokesPrimeGammaWallXiMalgrangeCorrectionLog_two`
+- **Cold half-ray sign:** `zero_lt_re_iteratedDeriv_routePPrimitiveGammaJuliaStokesPrimeGammaWallXiMalgrangeCorrectionLog_two_of_one_le`
+- **Wild-wall collar sign:** `eventually_zero_lt_re_iteratedDeriv_routePPrimitiveGammaJuliaStokesPrimeGammaWallXiMalgrangeCorrectionLog_two`
+- **Verification:** direct `lake env lean` check passed. All five new public theorems depend only on `propext`, `Classical.choice`, and `Quot.sound`.
+- **Lint:** new module is reachable and clean. Repository lint remains nonzero only for unrelated pre-existing reachability failures.
+
 ## Log
 
 - 2026-08-25 — formed after rejecting unsupported global coherence monotonicity.
 - 2026-08-25 — external prior-art audit found general Malgrange/Fredholm mechanisms but no arithmetic correction-curvature law.
 - 2026-08-25 — promoted to 2-fully-proven after normalization, branch, sign, and circularity audits closed.
+- 2026-08-25 — promoted to 3-formalized after targeted Lean verification and five-declaration axiom audit.

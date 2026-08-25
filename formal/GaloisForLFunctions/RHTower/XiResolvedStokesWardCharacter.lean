@@ -82,17 +82,24 @@ theorem tendsto_xiStokesConductorResolvedWallCurrent_nhdsGT_zero
       (𝓝[>] (0 : ℝ))
       (𝓝 (((xiSupportMultiplicity rho : ℝ) * 4,
         -((xiSupportMultiplicity rho : ℝ) * 4)))) := by
-  apply tendsto_prod_iff.mpr
-  constructor
-  · exact tendsto_xiStokesConductorWallCurrent_nhdsGT_zero rho
-  · change Tendsto
+  have hraw := tendsto_xiStokesConductorWallCurrent_nhdsGT_zero rho
+  have hpolar : Tendsto
       (fun t => (xiSupportMultiplicity rho : ℝ) *
         gammaSewnMobiusApertureStokesOrientedPolarCountercurrent t)
-      (𝓝[>] (0 : ℝ)))
-      (𝓝 (-((xiSupportMultiplicity rho : ℝ) * 4)))
+      (𝓝[>] (0 : ℝ))
+      (𝓝 (-((xiSupportMultiplicity rho : ℝ) * 4))) := by
     convert
       tendsto_gammaSewnMobiusApertureStokesOrientedPolarCountercurrent_nhdsGT_zero.const_mul
-        (xiSupportMultiplicity rho : ℝ) using 1 <;> ring
+        (xiSupportMultiplicity rho : ℝ) using 1
+    all_goals ring_nf
+  change Tendsto
+    (fun t => (xiStokesConductorWallCurrent rho t,
+      xiStokesConductorPolarCountercurrent rho t))
+    (𝓝[>] (0 : ℝ))
+    (𝓝 (((xiSupportMultiplicity rho : ℝ) * 4,
+      -((xiSupportMultiplicity rho : ℝ) * 4))))
+  simpa only [xiStokesConductorPolarCountercurrent, nhds_prod_eq] using
+    hraw.prodMk hpolar
 
 /-- Relative, rather than total, wall charge of the resolved pair. -/
 def xiStokesConductorResolvedWallRelativeCharge
@@ -105,33 +112,37 @@ not destroyed, exact multiplicity. -/
 theorem tendsto_xiStokesConductorResolvedWallRelativeCharge_nhdsGT_zero
     (rho : XiDivisorSupport) :
     Tendsto (xiStokesConductorResolvedWallRelativeCharge rho)
-      (𝓝[>] (0 : ℝ)))
+      (𝓝[>] (0 : ℝ))
       (𝓝 ((xiSupportMultiplicity rho : ℝ) * 8)) := by
-  have hpair :=
-    tendsto_xiStokesConductorResolvedWallCurrent_nhdsGT_zero rho
-  have hfst := (continuous_fst.tendsto
-    (((xiSupportMultiplicity rho : ℝ) * 4,
-      -((xiSupportMultiplicity rho : ℝ) * 4)))).comp hpair
-  have hsnd := (continuous_snd.tendsto
-    (((xiSupportMultiplicity rho : ℝ) * 4,
-      -((xiSupportMultiplicity rho : ℝ) * 4)))).comp hpair
+  have hraw := tendsto_xiStokesConductorWallCurrent_nhdsGT_zero rho
+  have hpolar : Tendsto (xiStokesConductorPolarCountercurrent rho)
+      (𝓝[>] (0 : ℝ))
+      (𝓝 (-((xiSupportMultiplicity rho : ℝ) * 4))) := by
+    change Tendsto
+      (fun t => (xiSupportMultiplicity rho : ℝ) *
+        gammaSewnMobiusApertureStokesOrientedPolarCountercurrent t)
+      (𝓝[>] (0 : ℝ))
+      (𝓝 (-((xiSupportMultiplicity rho : ℝ) * 4)))
+    convert
+      tendsto_gammaSewnMobiusApertureStokesOrientedPolarCountercurrent_nhdsGT_zero.const_mul
+        (xiSupportMultiplicity rho : ℝ) using 1
+    all_goals ring_nf
   change Tendsto
-    (fun t => (xiStokesConductorResolvedWallCurrent rho t).1 -
-      (xiStokesConductorResolvedWallCurrent rho t).2)
-    (𝓝[>] (0 : ℝ)))
+    (fun t => xiStokesConductorWallCurrent rho t -
+      xiStokesConductorPolarCountercurrent rho t)
+    (𝓝[>] (0 : ℝ))
     (𝓝 ((xiSupportMultiplicity rho : ℝ) * 8))
-  convert hfst.sub hsnd using 1 <;> ring
+  convert hraw.sub hpolar using 1
+  all_goals ring_nf
 
 /-! ## Second-order resolved Ward character -/
 
 namespace HedenmalmThetaSource
 
-private abbrev ThetaH := Lp ℂ 2 unitIntervalMeasure
-
 /-- Laurent ghost and physical cyclic anomaly before their Ward
 codiagonal is taken. -/
 def thetaXiIntegralResolvedWardDouble
-    (rho : XiDivisorSupport) (p : Nat.Primes) : ThetaH × ThetaH :=
+    (rho : XiDivisorSupport) (p : Nat.Primes) :=
   (thetaXiIntegralQuadraticGhostVector rho p,
     thetaXiIntegralCyclicBoundaryAnomalyVector rho p)
 
@@ -159,7 +170,7 @@ theorem thetaXiIntegralResolvedWardDouble_codiagonal
 
 /-- Difference coordinate retained before codiagonal anomaly cancellation. -/
 def thetaXiIntegralWardRelativeCharacter
-    (rho : XiDivisorSupport) (p : Nat.Primes) : ThetaH :=
+    (rho : XiDivisorSupport) (p : Nat.Primes) :=
   (thetaXiIntegralResolvedWardDouble rho p).1 -
     (thetaXiIntegralResolvedWardDouble rho p).2
 

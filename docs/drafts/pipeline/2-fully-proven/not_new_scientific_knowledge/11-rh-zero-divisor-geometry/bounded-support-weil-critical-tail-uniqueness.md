@@ -156,3 +156,30 @@ bounded-support infinite-Euler route.
 ## Log
 
 - 2026-07-10 -- Paper theorem completed; Jensen zero-density core formalized in Lean.  Classified as formalized analytic infrastructure plus a paper-level not-new route obstruction.
+
+## Lean status update (2026-08-25)
+
+`formal/GaloisForLFunctions/RHTower/XiSimpleCriticalExponentialTypeBound.lean` closes the
+finite-prefix Paley--Wiener/Jensen bridge on the actual Xi divisor:
+
+* `xiSimpleCriticalZeroFinset` and `xiSimpleCriticalOrdinateFinset` identify the actual simple
+  critical zeros in `(0,T]` with an injective finite set of positive ordinates, whose cardinality is
+  exactly `xiSimpleCriticalZeroCount T`;
+* `exists_xiSimpleCriticalZeroCount_linear_of_cofinite_exponentialType_zeros` proves that if a
+  nonzero entire finite-exponential-type function vanishes at all of those ordinates apart from a
+  fixed finite set `E`, then
+  `xiSimpleCriticalZeroCount T <= K(1+T)+#E` for every `T>=1`;
+* `exists_xiSimpleCriticalZeroCount_linear_of_cofinite_suzukiFourier_zeros` specializes the result
+  to the literal Fourier transform of arbitrary compactly supported `L²` data using the existing
+  Paley--Wiener growth theorem; `suzukiCutoff_eq_zero_of_compactFourier_eq_zero` closes the final
+  Fourier-injectivity step.
+
+The leaf passes direct `lake env lean`, exact leaf `lake build`, and declaration-local
+`#print axioms`; dependencies are only `propext, Classical.choice, Quot.sound`. It is wired into
+`RHTower.lean`; no umbrella build was run.
+
+Remaining for 2 -> 3 is now exactly the unconditional superlinear provider
+`xiSimpleCriticalZeroCount T >= c*T*log T` for all sufficiently large `T` and the elementary
+Mellin-profile identification for the card's test-function notation. The provider is the same PRZZ
+simple-critical density input already tracked by the Levinson programme; no hypothesis wrapper has
+been added.

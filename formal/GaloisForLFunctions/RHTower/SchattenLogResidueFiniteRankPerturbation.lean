@@ -102,6 +102,87 @@ theorem memWeakSchattenClass_one_add_iff_of_hasRankLE
   apply memWeakSchattenClass_one_iff_of_hasRankLE_sub (r := r)
   simpa using hF
 
+/-- Trace-class membership gives the sharp weak Schatten-one pointwise bound with trace norm as
+constant. -/
+theorem approxNumber_mul_succ_le_traceNorm_of_memSchattenClass_one
+    {T : H →L[ℂ] H} (hT : MemSchattenClass 1 T) (n : ℕ) :
+    approxNumber T n * ((n : ℝ) + 1) ≤ traceNorm H T := by
+  have hsum : Summable fun k => approxNumber T k := hT.one_summable
+  have hprefix : (∑ k ∈ Finset.range (n + 1), approxNumber T k) ≤ traceNorm H T := by
+    exact hsum.sum_le_tsum (Finset.range (n + 1)) (fun k _ => approxNumber_nonneg T k)
+  calc
+    approxNumber T n * ((n : ℝ) + 1) =
+        ∑ k ∈ Finset.range (n + 1), approxNumber T n := by
+      simp [Finset.sum_const, nsmul_eq_mul]
+      ring
+    _ ≤ ∑ k ∈ Finset.range (n + 1), approxNumber T k := by
+      apply Finset.sum_le_sum
+      intro k hk
+      exact approxNumber_antitone T (Nat.le_of_lt_succ (Finset.mem_range.mp hk))
+    _ ≤ traceNorm H T := hprefix
+
+/-- Every Schatten-one operator belongs to weak Schatten one. -/
+theorem memWeakSchattenClass_one_of_memSchattenClass_one
+    {T : H →L[ℂ] H} (hT : MemSchattenClass 1 T) :
+    MemWeakSchattenClass 1 T := by
+  refine ⟨traceNorm H T, traceNorm_nonneg T, fun n => ?_⟩
+  rw [Real.rpow_one]
+  have hn : 0 < (n : ℝ) + 1 := by positivity
+  rw [le_div_iff₀ hn]
+  exact approxNumber_mul_succ_le_traceNorm_of_memSchattenClass_one hT n
+
+/-- Weak Schatten-one membership is preserved by a Schatten-one perturbation. -/
+theorem memWeakSchattenClass_one_add_of_memSchattenClass_one
+    {A T : H →L[ℂ] H} (hA : MemWeakSchattenClass 1 A)
+    (hT : MemSchattenClass 1 T) : MemWeakSchattenClass 1 (A + T) := by
+  obtain ⟨C, hC, hAbound⟩ := hA
+  obtain ⟨D, hD, hTbound⟩ := memWeakSchattenClass_one_of_memSchattenClass_one hT
+  refine ⟨2 * (C + D), by positivity, fun k => ?_⟩
+  let n := k / 2
+  have h2n : 2 * n ≤ k := by dsimp [n]; omega
+  have hk : k ≤ 2 * n + 1 := by dsimp [n]; omega
+  have hinterlace : approxNumber (A + T) k ≤ approxNumber A n + approxNumber T n := by
+    calc
+      approxNumber (A + T) k ≤ approxNumber (A + T) (n + n) :=
+        approxNumber_antitone _ (by omega)
+      _ ≤ approxNumber A n + approxNumber T n := approxNumber_add_le A T n n
+  have hAn := hAbound n
+  have hTn := hTbound n
+  rw [Real.rpow_one] at hAn hTn ⊢
+  have hnpos : 0 < (n : ℝ) + 1 := by positivity
+  have hkpos : 0 < (k : ℝ) + 1 := by positivity
+  have hratio : (k : ℝ) + 1 ≤ 2 * ((n : ℝ) + 1) := by
+    exact_mod_cast Nat.succ_le_succ hk
+  rw [le_div_iff₀ hkpos]
+  have hsum : approxNumber A n + approxNumber T n ≤ (C + D) / ((n : ℝ) + 1) := by
+    calc
+      approxNumber A n + approxNumber T n ≤
+          C / ((n : ℝ) + 1) + D / ((n : ℝ) + 1) := add_le_add hAn hTn
+      _ = (C + D) / ((n : ℝ) + 1) := by ring
+  have hCD : 0 ≤ C + D := add_nonneg hC hD
+  calc
+    approxNumber (A + T) k * ((k : ℝ) + 1) ≤
+        (approxNumber A n + approxNumber T n) * ((k : ℝ) + 1) :=
+      mul_le_mul_of_nonneg_right hinterlace hkpos.le
+    _ ≤ ((C + D) / ((n : ℝ) + 1)) * ((k : ℝ) + 1) :=
+      mul_le_mul_of_nonneg_right hsum hkpos.le
+    _ ≤ ((C + D) / ((n : ℝ) + 1)) * (2 * ((n : ℝ) + 1)) :=
+      mul_le_mul_of_nonneg_left hratio (div_nonneg hCD hnpos.le)
+    _ = 2 * (C + D) := by field_simp [hnpos.ne']
+
+/-- Weak Schatten-one membership is invariant under Schatten-one perturbation. -/
+theorem memWeakSchattenClass_one_iff_of_memSchattenClass_one_sub
+    [CompleteSpace H] {A B : H →L[ℂ] H} (hAB : MemSchattenClass 1 (A - B)) :
+    MemWeakSchattenClass 1 A ↔ MemWeakSchattenClass 1 B := by
+  constructor
+  · intro hA
+    have hneg := hAB.one_neg
+    have h := memWeakSchattenClass_one_add_of_memSchattenClass_one hA hneg
+    simpa [show A + -(A - B) = B by abel] using h
+  · intro hB
+    have h := memWeakSchattenClass_one_add_of_memSchattenClass_one hB hAB
+    simpa [show B + (A - B) = A by abel] using h
+
 /-- A shifted pointwise comparison bounds every prefix by a fixed initial prefix plus the
 comparison prefix. -/
 theorem sum_range_le_prefix_add_of_shift

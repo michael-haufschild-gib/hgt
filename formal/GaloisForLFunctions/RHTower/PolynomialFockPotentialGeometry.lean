@@ -136,6 +136,79 @@ theorem polynomialFockAdaptedRadius_lower
   rw [inv_le_inv₀ (Real.sqrt_pos.2 hupperPos) (Real.sqrt_pos.2 hdensityPos)]
   exact Real.sqrt_le_sqrt (polynomialFockLaplacianDensity_upper hm)
 
+/-! ## Global tangent geometry -/
+
+/-- Tangent-line lower bound for a real power of exponent at least one. -/
+theorem rpow_tangent_lower {A B α : ℝ} (hA : 0 < A) (hB : 0 ≤ B) (hα : 1 ≤ α) :
+    A ^ α + α * A ^ (α - 1) * (B - A) ≤ B ^ α := by
+  have hα0 : 0 < α := zero_lt_one.trans_le hα
+  let t : ℝ := B / A
+  have ht : 0 ≤ t := div_nonneg hB hA.le
+  have htα : 0 ≤ t ^ α := Real.rpow_nonneg ht α
+  have hs0 : 0 ≤ 1 / α := by positivity
+  have hs1 : 1 / α ≤ 1 := (div_le_one hα0).2 hα
+  have hbern : (t ^ α) ^ (1 / α) ≤ 1 + (1 / α) * (t ^ α - 1) := by
+    have h := Real.geom_mean_le_arith_mean2_weighted hs0 (by linarith : 0 ≤ 1 - 1 / α)
+      htα zero_le_one (by ring)
+    rw [Real.one_rpow, mul_one, mul_one] at h
+    linarith
+  have hroot : (t ^ α) ^ (1 / α) = t := by
+    rw [← Real.rpow_mul ht]
+    have : α * (1 / α) = 1 := by field_simp
+    rw [this, Real.rpow_one]
+  rw [hroot] at hbern
+  have hinv : α * (1 / α) = 1 := by field_simp
+  have hbern' : 1 + α * (t - 1) ≤ t ^ α := by
+    nlinarith
+  have hBA : B = A * t := by
+    dsimp [t]
+    field_simp
+  have hsplit : A ^ α = A ^ (α - 1) * A := by
+    symm
+    calc
+      A ^ (α - 1) * A = A ^ (α - 1) * A ^ (1 : ℝ) := by rw [Real.rpow_one]
+      _ = A ^ ((α - 1) + 1) := (Real.rpow_add hA (α - 1) 1).symm
+      _ = A ^ α := by ring_nf
+  calc
+    A ^ α + α * A ^ (α - 1) * (B - A) =
+        A ^ α * (1 + α * (t - 1)) := by rw [hBA, hsplit]; ring
+    _ ≤ A ^ α * t ^ α :=
+      mul_le_mul_of_nonneg_left hbern' (Real.rpow_nonneg hA.le α)
+    _ = (A * t) ^ α := by rw [Real.mul_rpow hA.le ht]
+    _ = B ^ α := by rw [← hBA]
+
+/-- The tangent gauge of the polynomial Fock potential leaves a globally coercive quadratic
+Bregman remainder.  This is the source of the sharp adapted Gaussian scale. -/
+theorem polynomialFockPotential_bregman_lower
+    {m x : ℝ} (hm : 2 ≤ m) (z : ℂ) :
+    polynomialFockPotential m x +
+        polynomialFockRadialSlope m x * (z.re - x) +
+        (m / 2) * (1 + x ^ 2) ^ (m / 2 - 1) * ‖z - (x : ℂ)‖ ^ 2 ≤
+      polynomialFockPotential m ‖z‖ := by
+  have hA : 0 < 1 + x ^ 2 := by positivity
+  have hB : 0 ≤ 1 + ‖z‖ ^ 2 := by positivity
+  have hα : 1 ≤ m / 2 := by linarith
+  have ht := rpow_tangent_lower hA hB hα
+  unfold polynomialFockPotential polynomialFockRadialSlope at *
+  have hnorm : ‖z‖ ^ 2 = z.re ^ 2 + z.im ^ 2 := by
+    rw [Complex.sq_norm, Complex.normSq_apply]
+    ring
+  have hsubnorm : ‖z - (x : ℂ)‖ ^ 2 = (z.re - x) ^ 2 + z.im ^ 2 := by
+    rw [Complex.sq_norm, Complex.normSq_apply]
+    simp
+    ring
+  rw [hnorm] at ht
+  rw [hsubnorm]
+  have hid :
+      (m / 2) * (1 + x ^ 2) ^ (m / 2 - 1) *
+          (1 + (z.re ^ 2 + z.im ^ 2) - (1 + x ^ 2)) =
+        m * x * (1 + x ^ 2) ^ (m / 2 - 1) * (z.re - x) +
+          (m / 2) * (1 + x ^ 2) ^ (m / 2 - 1) *
+            ((z.re - x) ^ 2 + z.im ^ 2) := by
+    ring
+  rw [hid] at ht
+  simpa only [hnorm, add_assoc] using ht
+
 end
 
 end RHTower

@@ -320,6 +320,249 @@ noncomputable def divisionAlgebraRestrictedNormValuationResidueEquiv
     (divisionAlgebraRestrictedNormValuationSubringEquiv_map_maximalIdeal
       (F := F) (A := A) T hT)
 
+/-- The root-determinant norm on a commutative subfield restricts exactly to the original norm on
+base-field scalars. -/
+theorem divisionAlgebraRestrictedRootDeterminant_norm_algebraMap
+    (T : Subalgebra F A) (hT : IsField T) (c : F) :
+    letI : NormedDivisionRing A :=
+      divisionAlgebraRootDeterminantNormedDivisionRing (F := F) (A := A)
+    letI : NontriviallyNormedField T :=
+      divisionAlgebraRestrictedRootDeterminantNontriviallyNormedField
+        (F := F) (A := A) T hT
+    ‖algebraMap F T c‖ = ‖c‖ := by
+  letI : NormedDivisionRing A :=
+    divisionAlgebraRootDeterminantNormedDivisionRing (F := F) (A := A)
+  letI : NontriviallyNormedField T :=
+    divisionAlgebraRestrictedRootDeterminantNontriviallyNormedField
+      (F := F) (A := A) T hT
+  change divisionAlgebraRootDeterminantNorm (F := F) (algebraMap F A c) = ‖c‖
+  rw [divisionAlgebraRootDeterminantNorm, Algebra.norm_algebraMap, norm_pow,
+    Real.pow_rpow_inv_natCast (norm_nonneg c)
+      (Module.finrank_pos (R := F) (M := A)).ne']
+
+/-- Integral base scalars map to integral elements of a root-determinant subfield. -/
+noncomputable def normValuationSubringToDivisionAlgebraRestrictedNormValuationSubring
+    (T : Subalgebra F A) (hT : IsField T) :
+    letI : NormedDivisionRing A :=
+      divisionAlgebraRootDeterminantNormedDivisionRing (F := F) (A := A)
+    letI : NontriviallyNormedField T :=
+      divisionAlgebraRestrictedRootDeterminantNontriviallyNormedField
+        (F := F) (A := A) T hT
+    letI : NormedSpace F T :=
+      divisionAlgebraRestrictedRootDeterminantNormedSpace (F := F) (A := A) T hT
+    letI : IsUltrametricDist T :=
+      divisionAlgebraRestrictedRootDeterminantIsUltrametricDist (F := F) (A := A) T hT
+    NormValuationSubring (F := F) →+* NormValuationSubring (F := T) := by
+  letI : NormedDivisionRing A :=
+    divisionAlgebraRootDeterminantNormedDivisionRing (F := F) (A := A)
+  letI : NontriviallyNormedField T :=
+    divisionAlgebraRestrictedRootDeterminantNontriviallyNormedField
+      (F := F) (A := A) T hT
+  letI : NormedSpace F T :=
+    divisionAlgebraRestrictedRootDeterminantNormedSpace (F := F) (A := A) T hT
+  letI : IsUltrametricDist T :=
+    divisionAlgebraRestrictedRootDeterminantIsUltrametricDist (F := F) (A := A) T hT
+  exact {
+    toFun := fun c => ⟨algebraMap F T (c : F), by
+      change ‖algebraMap F T (c : F)‖₊ ≤ 1
+      have hc : ‖algebraMap F T (c : F)‖₊ = ‖(c : F)‖₊ := by
+        apply NNReal.eq
+        exact divisionAlgebraRestrictedRootDeterminant_norm_algebraMap
+          (F := F) (A := A) T hT (c : F)
+      rw [hc]
+      exact c.property⟩
+    map_one' := by ext; simp
+    map_mul' := by intro x y; ext; simp
+    map_zero' := by ext; simp
+    map_add' := by intro x y; ext; simp }
+
+/-- The base maximal ideal is exactly the pullback of the subfield maximal ideal.  Equivalently,
+the integral scalar embedding is a local homomorphism. -/
+theorem divisionAlgebraRestrictedNormValuationSubring_maximalIdeal_comap
+    (T : Subalgebra F A) (hT : IsField T) :
+    letI : NormedDivisionRing A :=
+      divisionAlgebraRootDeterminantNormedDivisionRing (F := F) (A := A)
+    letI : NontriviallyNormedField T :=
+      divisionAlgebraRestrictedRootDeterminantNontriviallyNormedField
+        (F := F) (A := A) T hT
+    letI : NormedSpace F T :=
+      divisionAlgebraRestrictedRootDeterminantNormedSpace (F := F) (A := A) T hT
+    letI : IsUltrametricDist T :=
+      divisionAlgebraRestrictedRootDeterminantIsUltrametricDist (F := F) (A := A) T hT
+    Ideal.comap
+        (normValuationSubringToDivisionAlgebraRestrictedNormValuationSubring
+          (F := F) (A := A) T hT)
+        (IsLocalRing.maximalIdeal (NormValuationSubring (F := T))) =
+      IsLocalRing.maximalIdeal (NormValuationSubring (F := F)) := by
+  letI : NormedDivisionRing A :=
+    divisionAlgebraRootDeterminantNormedDivisionRing (F := F) (A := A)
+  letI : NontriviallyNormedField T :=
+    divisionAlgebraRestrictedRootDeterminantNontriviallyNormedField
+      (F := F) (A := A) T hT
+  letI : NormedSpace F T :=
+    divisionAlgebraRestrictedRootDeterminantNormedSpace (F := F) (A := A) T hT
+  letI : IsUltrametricDist T :=
+    divisionAlgebraRestrictedRootDeterminantIsUltrametricDist (F := F) (A := A) T hT
+  ext c
+  rw [Ideal.mem_comap,
+    Valuation.mem_maximalIdeal_iff T (NormedField.valuation (K := T)),
+    Valuation.mem_maximalIdeal_iff F (NormedField.valuation (K := F)),
+    NormedField.valuation_apply, NormedField.valuation_apply]
+  change ‖algebraMap F T (c : F)‖₊ < 1 ↔ ‖(c : F)‖₊ < 1
+  have hc : ‖algebraMap F T (c : F)‖₊ = ‖(c : F)‖₊ := by
+    apply NNReal.eq
+    exact divisionAlgebraRestrictedRootDeterminant_norm_algebraMap
+      (F := F) (A := A) T hT (c : F)
+  rw [hc]
+
+/-- Algebra structure on integral root-determinant subfield elements over integral base scalars. -/
+noncomputable instance divisionAlgebraRestrictedNormValuationSubringAlgebra
+    (T : Subalgebra F A) (hT : IsField T) :
+    letI : NormedDivisionRing A :=
+      divisionAlgebraRootDeterminantNormedDivisionRing (F := F) (A := A)
+    letI : NontriviallyNormedField T :=
+      divisionAlgebraRestrictedRootDeterminantNontriviallyNormedField
+        (F := F) (A := A) T hT
+    letI : NormedSpace F T :=
+      divisionAlgebraRestrictedRootDeterminantNormedSpace (F := F) (A := A) T hT
+    letI : IsUltrametricDist T :=
+      divisionAlgebraRestrictedRootDeterminantIsUltrametricDist (F := F) (A := A) T hT
+    Algebra (NormValuationSubring (F := F)) (NormValuationSubring (F := T)) := by
+  letI : NormedDivisionRing A :=
+    divisionAlgebraRootDeterminantNormedDivisionRing (F := F) (A := A)
+  letI : NontriviallyNormedField T :=
+    divisionAlgebraRestrictedRootDeterminantNontriviallyNormedField
+      (F := F) (A := A) T hT
+  letI : NormedSpace F T :=
+    divisionAlgebraRestrictedRootDeterminantNormedSpace (F := F) (A := A) T hT
+  letI : IsUltrametricDist T :=
+    divisionAlgebraRestrictedRootDeterminantIsUltrametricDist (F := F) (A := A) T hT
+  exact (normValuationSubringToDivisionAlgebraRestrictedNormValuationSubring
+    (F := F) (A := A) T hT).toAlgebra
+
+/-- The integral scalar embedding reflects units, hence induces the canonical extension of norm
+residue fields. -/
+instance divisionAlgebraRestrictedNormValuationSubringAlgebra_isLocalHom
+    (T : Subalgebra F A) (hT : IsField T) :
+    letI : NormedDivisionRing A :=
+      divisionAlgebraRootDeterminantNormedDivisionRing (F := F) (A := A)
+    letI : NontriviallyNormedField T :=
+      divisionAlgebraRestrictedRootDeterminantNontriviallyNormedField
+        (F := F) (A := A) T hT
+    letI : NormedSpace F T :=
+      divisionAlgebraRestrictedRootDeterminantNormedSpace (F := F) (A := A) T hT
+    letI : IsUltrametricDist T :=
+      divisionAlgebraRestrictedRootDeterminantIsUltrametricDist (F := F) (A := A) T hT
+    IsLocalHom (algebraMap (NormValuationSubring (F := F))
+      (NormValuationSubring (F := T))) := by
+  letI : NormedDivisionRing A :=
+    divisionAlgebraRootDeterminantNormedDivisionRing (F := F) (A := A)
+  letI : NontriviallyNormedField T :=
+    divisionAlgebraRestrictedRootDeterminantNontriviallyNormedField
+      (F := F) (A := A) T hT
+  letI : NormedSpace F T :=
+    divisionAlgebraRestrictedRootDeterminantNormedSpace (F := F) (A := A) T hT
+  letI : IsUltrametricDist T :=
+    divisionAlgebraRestrictedRootDeterminantIsUltrametricDist (F := F) (A := A) T hT
+  apply ((IsLocalRing.local_hom_TFAE
+    (algebraMap (NormValuationSubring (F := F))
+      (NormValuationSubring (F := T)))).out 4 0 rfl rfl).mp
+  change Ideal.comap
+      (normValuationSubringToDivisionAlgebraRestrictedNormValuationSubring
+        (F := F) (A := A) T hT)
+      (IsLocalRing.maximalIdeal (NormValuationSubring (F := T))) =
+    IsLocalRing.maximalIdeal (NormValuationSubring (F := F))
+  exact divisionAlgebraRestrictedNormValuationSubring_maximalIdeal_comap
+    (F := F) (A := A) T hT
+
+/-- If the restricted determinant residue exhausts the full determinant residue, then the norm
+residue field of the subfield is canonically equivalent to it as an algebra over the base residue
+field, not merely as an abstract ring. -/
+noncomputable def divisionAlgebraRestrictedNormValuationResidueAlgEquiv_of_bijective
+    (T : Subalgebra F A) (hT : IsField T)
+    (hbij : Function.Bijective
+      (divisionAlgebraDeterminantRestrictedResidueToResidue
+        (F := F) (A := A) T hT)) :
+    letI : NormedDivisionRing A :=
+      divisionAlgebraRootDeterminantNormedDivisionRing (F := F) (A := A)
+    letI : NontriviallyNormedField T :=
+      divisionAlgebraRestrictedRootDeterminantNontriviallyNormedField
+        (F := F) (A := A) T hT
+    letI : NormedSpace F T :=
+      divisionAlgebraRestrictedRootDeterminantNormedSpace (F := F) (A := A) T hT
+    letI : IsUltrametricDist T :=
+      divisionAlgebraRestrictedRootDeterminantIsUltrametricDist (F := F) (A := A) T hT
+    NormValuationResidue (F := T) ≃ₐ[NormValuationResidue (F := F)]
+      DivisionAlgebraDeterminantResidue (F := F) (A := A) := by
+  letI : NormedDivisionRing A :=
+    divisionAlgebraRootDeterminantNormedDivisionRing (F := F) (A := A)
+  letI : NontriviallyNormedField T :=
+    divisionAlgebraRestrictedRootDeterminantNontriviallyNormedField
+      (F := F) (A := A) T hT
+  letI : NormedSpace F T :=
+    divisionAlgebraRestrictedRootDeterminantNormedSpace (F := F) (A := A) T hT
+  letI : IsUltrametricDist T :=
+    divisionAlgebraRestrictedRootDeterminantIsUltrametricDist (F := F) (A := A) T hT
+  let e := (divisionAlgebraRestrictedNormValuationResidueEquiv
+    (F := F) (A := A) T hT).trans
+      (RingEquiv.ofBijective
+        (divisionAlgebraDeterminantRestrictedResidueToResidue
+          (F := F) (A := A) T hT) hbij)
+  exact {
+    toRingEquiv := e
+    commutes' := by
+      intro c
+      obtain ⟨c, rfl⟩ := Ideal.Quotient.mk_surjective c
+      rfl }
+
+variable [Algebra.IsCentral F A] [LocallyCompactSpace F]
+
+/-- A local central division algebra contains a maximal-degree subfield whose norm residue field
+is the entire determinant residue field as an extension of the base residue field.  This is the
+scalar-compatible unramified slice required to compare it with the canonical finite-field and
+Hensel unramified lift. -/
+theorem exists_maximalSubfield_normValuationResidue_algEquiv :
+    ∃ x : divisionAlgebraDeterminantValuationSubring (F := F) (A := A),
+      let T := Algebra.adjoin F ({(x : A)} : Set A)
+      ∃ hT : IsField T,
+        letI : NormedDivisionRing A :=
+          divisionAlgebraRootDeterminantNormedDivisionRing (F := F) (A := A)
+        letI : NontriviallyNormedField T :=
+          divisionAlgebraRestrictedRootDeterminantNontriviallyNormedField
+            (F := F) (A := A) T hT
+        letI : NormedSpace F T :=
+          divisionAlgebraRestrictedRootDeterminantNormedSpace (F := F) (A := A) T hT
+        letI : IsUltrametricDist T :=
+          divisionAlgebraRestrictedRootDeterminantIsUltrametricDist
+            (F := F) (A := A) T hT
+        Module.finrank F T = divisionAlgebraDegree (F := F) (A := A) ∧
+          Nonempty (NormValuationResidue (F := T) ≃ₐ[NormValuationResidue (F := F)]
+            DivisionAlgebraDeterminantResidue (F := F) (A := A)) := by
+  obtain ⟨x, hdegree, hgen⟩ :=
+    exists_fullResidueDegree_maximalSubfieldGenerator (F := F) (A := A)
+  let T := Algebra.adjoin F ({(x : A)} : Set A)
+  let hT : IsField T := algebraAdjoinSingleton_isField_of_finiteDivisionRing F A (x : A)
+  letI : NormedDivisionRing A :=
+    divisionAlgebraRootDeterminantNormedDivisionRing (F := F) (A := A)
+  letI : NontriviallyNormedField T :=
+    divisionAlgebraRestrictedRootDeterminantNontriviallyNormedField
+      (F := F) (A := A) T hT
+  letI : NormedSpace F T :=
+    divisionAlgebraRestrictedRootDeterminantNormedSpace (F := F) (A := A) T hT
+  letI : IsUltrametricDist T :=
+    divisionAlgebraRestrictedRootDeterminantIsUltrametricDist (F := F) (A := A) T hT
+  have hbij : Function.Bijective
+      (divisionAlgebraDeterminantRestrictedResidueToResidue
+        (F := F) (A := A) T hT) := ⟨
+    divisionAlgebraDeterminantRestrictedResidueToResidue_injective
+      (F := F) (A := A) T hT,
+    divisionAlgebraDeterminantRestrictedResidueToResidue_surjective_of_generator
+      (F := F) (A := A) T hT x
+      (Algebra.self_mem_adjoin_singleton F (x : A)) hgen⟩
+  exact ⟨x, hT, hdegree,
+    ⟨divisionAlgebraRestrictedNormValuationResidueAlgEquiv_of_bijective
+      (F := F) (A := A) T hT hbij⟩⟩
+
 end
 
 end GaloisForLFunctions.HTGeometry.ABHN

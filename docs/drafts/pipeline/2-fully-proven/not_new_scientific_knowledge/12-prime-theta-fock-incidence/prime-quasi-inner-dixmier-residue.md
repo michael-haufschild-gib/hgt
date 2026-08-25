@@ -399,6 +399,140 @@ and therefore preserves both weak Schatten-one membership and the value/existenc
 logarithmic residue.  Its targeted leaf build and full new-declaration axiom audit passed with only
 the same standard axioms.
 
-This does not close the card: identification of the explicit model with `H_p*H_p`, weak
-modulation/measurability, stability under the infinite-order trace-class term `E_infinity`, and
-reconstruction of the full Euler divisor from the unlabelled operator family remain unformalized.
+`RHTower/PositiveSchattenLogResidueTraceClassPerturbation.lean` closes the corresponding
+infinite-order perturbation law.  For positive compact `A,B` with `A-B` Schatten one, it proves the
+sharp uniform prefix estimate
+
+```text
+|sum_(n<N) a_n(A) - sum_(n<N) a_n(B)| <= ||A-B||_1,
+```
+
+then proves invariance of weak Schatten-one membership and exact logarithmic residue.  This is the
+operator-ideal implication required once the concrete `H_p*H_p-E_p*E_p` trace-class decomposition
+is available.  Targeted leaf build and all new-declaration axiom audits passed with only `propext`,
+`Classical.choice`, and `Quot.sound`.
+
+`RHTower/ConnesConsaniResiduePerturbationCapstone.lean` packages the complete abstract reduction in
+the exact decomposition shape: if compact `E` has weak Schatten-one measurable `E*E` with residue
+`Q` and `R` is trace class, then `(E+R)*(E+R)` is weak Schatten one and has the same exact residue
+`Q`.  Positivity, compactness, and the trace-class modulus-square difference are all discharged
+inside the theorem.  Its targeted leaf build and axiom audit passed with only the standard axioms.
+
+This does not close the card: the concrete Connes--Consani `H_p` and its decomposition are not yet
+constructed in Lean, so neither the identification of its distinguished block with the explicit
+Gauss critical model nor the trace-class proof for its actual `E_infinity+E_0` remainder has landed.
+Reconstruction of the full Euler divisor from the resulting unlabelled operator family also remains
+unformalized.
+
+`RHTower/QuasiInnerResidueTraceClassTransfer.lean` sharpens that abstract capstone at the positive
+endpoint.  It proves that a positive transferred logarithmic residue forces the full energy outside
+Schatten one, and specializes this result to the literal positive one-prime scale
+`2 (p-1)^4/(p^2 log p)`.  Thus the eventual concrete decomposition will simultaneously yield weak
+Schatten-one membership, exact measurable residue, and non-trace-classness without another ideal
+argument.  The targeted leaf/module checks passed, and both declarations have axiom set exactly
+`[propext, Classical.choice, Quot.sound]`.  Concrete Hardy-space realization obligations above
+remain unchanged, so the card stays at Stage 2.
+
+`RHTower/WeakSchattenHolder.lean` adds the reusable weak-ideal calculus needed by the literal
+quasi-inner factorization.  It proves left/right bounded-ideal closure and the weak Hölder law
+
+```text
+S_(p,infinity) * S_(q,infinity) subset S_(pq/(p+q),infinity)
+```
+
+directly from approximation-number composition.  `RHTower/IndexedDiagonalWeakSchatten.lean` adds
+unitary invariance and a finite-rank truncation theorem converting enumerated critical power decay
+of an arbitrary indexed diagonal into weak Schatten membership.
+
+`RHTower/GaussDiagonalWeakSchatten.lean` applies those results to the actual sampled Gauss Fourier
+symbol.  It proves unconditionally that the literal full diagonals `D,D*` lie in weak `S_(2m)` and
+that the already constructed operator
+
+```text
+gaussQuasiInnerGFull = p B D B^(-2) D* B
+```
+
+lies in weak `S_m` for every `m>=1`.  In particular the actual depth-one quasi-inner block is weak
+Schatten one; this conclusion no longer appears as a premise.  Combining it with the existing
+unconditional non-trace theorem also proves the sharp depth-one classification: the literal block
+is outside every `S_q` for `0<q<=1` and belongs to every `S_q` for `q>1`.  All three targeted leaf builds
+passed, and every new declaration has axiom set exactly
+`[propext, Classical.choice, Quot.sound]`.
+
+This still does not close the card.  Weak membership alone does not identify the depth-one
+singular-value logarithmic mean with the already proved Fourier-diagonal mean.  The required
+weak-modulation/Dixmier-residue comparison for the nonnormal `m=1` block, followed by construction
+of the concrete Connes--Consani `H_p=E_p+E_infinity+E_0` trace-class decomposition, remains open.
+
+`RHTower/GaussOnePrimeReducedDefectEnergy.lean` closes the distinguished-block algebra exactly.
+It promotes circle reflection to an involutive linear isometry, proves `C_full=B D_full I B`
+self-adjoint, and proves
+
+```text
+C_full* C_full = G_full,
+E_p,reduced := ((1-p)/p) C_full,
+E_p,reduced* E_p,reduced = gaussChannelOperator 1 0 p.
+```
+
+Thus the local-factor normalization and modulus-square identification are now literal operator
+equalities, not spectral premises or diagonal proxies.  Targeted direct and module builds passed;
+every new declaration depends only on `[propext, Classical.choice, Quot.sound]`.
+
+Remaining Stage-3 obligations are analytic and source-faithful: prove the exact depth-one
+singular-value logarithmic mean for this actual channel, construct the Hardy defect and its
+`E_p+E_infinity+E_0` decomposition, transfer through the source isometries and trace-class
+remainder, then formalize unlabelled-family Euler-divisor reconstruction.
+
+`RHTower/GaussOnePrimeActualCriticalResidue.lean` now closes the exact depth-one singular-value
+problem.  A sharper one-step two-piece-amplitude budget proves, for every `rho>0`,
+
+```text
+||G e_n|| <= C_rho |n|^(-1+rho).
+```
+
+The existing positive-operator diagonal comparison then transfers the already proved literal
+Fourier-diagonal mean to the actual singular values:
+
+```text
+(1/log N) sum_(n<N) s_n(gaussChannelOperator 1 0 p)
+  --> gaussChannelResidue 1 p = 2 (p-1)^4/(p^2 log p).
+```
+
+Consequently the actual depth-one channel is in the Dixmier ideal, has an ordinary measurable
+Schatten logarithmic residue, and is not trace class.  Rewriting through the exact operator identity
+from `GaussOnePrimeReducedDefectEnergy.lean` gives the same three unconditional conclusions for the
+literal reduced defect energy `E_p,reduced* E_p,reduced`.  Direct Lean check and targeted leaf build
+passed; every new declaration has axiom set exactly
+`[propext, Classical.choice, Quot.sound]`.
+
+Remaining Stage-3 obligations are now source realization and reconstruction only: construct the
+concrete Hardy defect `H_p`, prove its source-isometric
+`E_p+E_infinity+E_0` decomposition with trace-class remainder, apply the proved perturbation
+capstone, and formalize Euler-divisor reconstruction from the unlabelled prime family.
+
+`RHTower/PrimeQuasiInnerEulerReconstruction.lean` closes the reconstruction clause.  It connects
+each literal reduced-defect energy to its measured residue, proves the prime-to-residue map
+injective, and proves that both arbitrary unlabelled residue sets and finite unlabelled residue
+packets recover their prime apertures exactly.  Therefore equal measured packets force equality of
+every prime-indexed observable, including the literal finite Euler denominator
+
+```text
+product_(p in P) (1 - p^(-z)).
+```
+
+Direct Lean check and targeted leaf build passed; every new declaration has axiom set exactly
+`[propext, Classical.choice, Quot.sound]`.  Only concrete Hardy/source decomposition and its
+trace-class remainder transfer remain before this card can move to Stage 3.
+
+`RHTower/GaussHarmonicModulationReference.lean` constructs the exact positive compact harmonic
+reference underlying the depth-one weak-modulation route.  It transports
+`diag (1/(n+1))` to `L²(ℝ/ℤ)` through the standard `ℤ ≃ ℕ` reindexing and Fourier unitary, then
+proves its exact approximation numbers, weak `S₁` membership, logarithmic residue one,
+injectivity, self-adjointness, nonnegativity, dense range, and compactness.  No comparison with the
+Gauss block is assumed or asserted.  Direct Lean check and targeted leaf build passed; every new
+declaration depends only on `[propext, Classical.choice, Quot.sound]`.
+
+This is reusable endpoint infrastructure but does not change the remaining Stage-3 boundary:
+concrete Hardy/source realization and its `E_p+E_infinity+E_0` trace-class decomposition are still
+required.  The actual Gauss critical residue itself is already closed by
+`GaussOnePrimeActualCriticalResidue.lean`, so no unproved modulation hypothesis is introduced.
