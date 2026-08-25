@@ -225,8 +225,26 @@ Primary parent source:
 
 ## Lean status
 
-The exact theta trace is already formalized.  Rapid-Fock kernels, adapted Carleson measures, compact
-embeddings, and Schatten ideals are absent from the formal tree.  No Lean formalization is claimed.
+The exact theta trace is already formalized.
+`formal/GaloisForLFunctions/RHTower/CriticalPrimeSamplingIncidence.lean` now proves the common
+operator endpoint unconditionally: the literal normalized prime weight is nonsummable, the sampling
+map is not Hilbert--Schmidt once its adjoint coordinate vectors have the normalized kernel norms,
+and compact sampling gives a positive compact incidence which is not Schatten one.  Rapid-Fock
+kernels, adapted Carleson measures, and the concrete compact embedding remain open.
+`formal/GaloisForLFunctions/RHTower/CriticalPrimeKernelSampling.lean` now constructs the literal
+sampling map from any proved unit-kernel Bessel estimate and discharges the normalized coordinate
+identity automatically; this shared endpoint is not counted as a complete formalization of the
+card.  `CriticalPrimeKernelSamplingCompact.lean` proves compactness from vanishing finite-tail
+Bessel constants, and `CriticalPrimeKernelSchurSampling.lean` removes the Bessel premise by
+constructing the sampler directly from uniform finite Gram-row bounds and proving compactness from
+vanishing tail Gram rows.  The remaining card-specific producer is the rapid-Fock normalized-kernel
+Gram estimate and its concrete prime-log specialization.
+
+`PolynomialFockPotentialGeometry.lean` supplies reusable polynomial-carrier geometry: exact radial
+slope, radial curvature, Laplacian density, positivity, sharp uniform density comparison with
+`(1+r^2)^(m/2-1)`, and corresponding two-sided reciprocal-square-root adapted-radius bounds.  Its
+targeted leaf build and axiom audit passed.  This polynomial infrastructure does not establish the
+rapid exponential carrier's kernel/Carleson estimate, so it does not close this card.
 
 ## Gates
 

@@ -280,6 +280,55 @@ theorem d4GravitationalHypergeometricBoundaryJost_shadow (omega z : ℂ) :
       d4GravitationalHypergeometricBoundaryJost omega z :=
   thetaCuspHawkingHypergeometricPhysicalBoundaryJost_shadow omega z
 
+lemma d4BMStationaryRadialA_xi_im_ne_zero (q : XiZeroCopy) :
+    (thetaCuspHawkingHypergeometricRadialA 0 (xiSpectralPoint q)).im ≠ 0 := by
+  have hz := thetaCuspHawkingHypergeometricXiSpectralPoint_re_ne_zero q
+  simp [thetaCuspHawkingHypergeometricRadialA,
+    thetaCuspHawkingTopologicalBlackHoleAngularMomentum]
+  exact hz
+
+lemma d4BMStationaryRadialB_xi_im_ne_zero (q : XiZeroCopy) :
+    (thetaCuspHawkingHypergeometricRadialB 0 (xiSpectralPoint q)).im ≠ 0 := by
+  have hz := thetaCuspHawkingHypergeometricXiSpectralPoint_re_ne_zero q
+  simp [thetaCuspHawkingHypergeometricRadialB,
+    thetaCuspHawkingTopologicalBlackHoleAngularMomentum]
+  exact hz
+
+lemma d4BMStationaryJostPlus_xi_ne_zero (q : XiZeroCopy) :
+    thetaCuspHawkingHypergeometricJostPlus 0 (xiSpectralPoint q) ≠ 0 := by
+  unfold thetaCuspHawkingHypergeometricJostPlus
+    GaloisForLFunctions.reciprocalGammaEntire
+  apply inv_ne_zero
+  apply Complex.Gamma_ne_zero
+  intro n h
+  apply d4BMStationaryRadialA_xi_im_ne_zero q
+  rw [h]
+  simp
+
+lemma d4BMStationaryJostMinus_xi_ne_zero (q : XiZeroCopy) :
+    thetaCuspHawkingHypergeometricJostMinus 0 (xiSpectralPoint q) ≠ 0 := by
+  unfold thetaCuspHawkingHypergeometricJostMinus
+    GaloisForLFunctions.reciprocalGammaEntire
+  apply inv_ne_zero
+  apply Complex.Gamma_ne_zero
+  intro n h
+  apply d4BMStationaryRadialB_xi_im_ne_zero q
+  rw [h]
+  simp
+
+/-- No Xi divisor supports a stationary Dirichlet gravitational master mode. -/
+theorem d4GravitationalHypergeometricBoundaryJost_stationary_xi_ne_zero
+    (q : XiZeroCopy) :
+    d4GravitationalHypergeometricBoundaryJost 0 (xiSpectralPoint q) ≠ 0 := by
+  unfold d4GravitationalHypergeometricBoundaryJost
+    thetaCuspHawkingHypergeometricPhysicalBoundaryJost
+    thetaCuspHawkingHypergeometricJost
+    thetaCuspHawkingHypergeometricRadialC
+  exact mul_ne_zero
+    (mul_ne_zero (by norm_num) (Complex.Gamma_ne_zero_of_re_pos (by norm_num)))
+    (mul_ne_zero (d4BMStationaryJostPlus_xi_ne_zero q)
+      (d4BMStationaryJostMinus_xi_ne_zero q))
+
 /-- Analytically continued Schwarzschild Teukolsky--Starobinsky constant. -/
 def teukolskyStarobinskyConstant (M E omega : ℂ) : ℂ :=
   E * (E - 2) + 12 * Complex.I * M * omega

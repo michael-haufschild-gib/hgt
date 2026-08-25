@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.XiMassStripFourierLipschitz
 import GaloisForLFunctions.RHTower.CCMPolarPrimeStieltjesAutocorrelation
-import GaloisForLFunctions.RHTower.ExpDecayFourierAnalytic
+import GaloisForLFunctions.RHTower.ExpFourierNormalization
 import GaloisForLFunctions.RHTower.XiMassArchimedeanUniformBound
 import GaloisForLFunctions.RHTower.PrimeMassLowerBound
 
@@ -626,16 +626,8 @@ theorem integrable_xiMassHalfWeightedFourier
       _ = C * Real.exp (-(r * |w|)) := by ring
 
 theorem fourier_xiMassHalfShifted_eq_expFourier_two_pi (f : ℝ → ℂ) (w : ℝ) :
-    FourierTransform.fourier f w = expFourier f ((2 * Real.pi * w : ℝ) : ℂ) := by
-  rw [Real.fourier_real_eq_integral_exp_smul]
-  rw [expFourier]
-  apply MeasureTheory.integral_congr_ae
-  filter_upwards with x
-  rw [smul_eq_mul]
-  rw [mul_comm]
-  congr 1
-  push_cast
-  ring_nf
+    FourierTransform.fourier f w = expFourier f ((2 * Real.pi * w : ℝ) : ℂ) :=
+  fourier_eq_expFourier_two_pi f w
 
 theorem integral_xiMassHalfWeightedFourier_eq_pointValue
     {a σ : ℝ} (hhalf : 1 / 2 < a) (hσ : 0 < σ) (u : ℝ) :

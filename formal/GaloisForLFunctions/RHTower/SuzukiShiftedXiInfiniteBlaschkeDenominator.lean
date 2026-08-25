@@ -109,6 +109,16 @@ def xiShiftPoleBlaschkeMultiplier
     (norm_xiShiftPoleDiskCoordinate_lt_one omega)
     (summable_one_sub_norm_xiShiftPoleDiskCoordinate homega)
 
+/-- With no strict-right shifted-Xi zero copy, the full denominator is pointwise one. -/
+theorem xiShiftPoleBlaschkeMultiplier_fn_eq_one_of_isEmpty
+    {omega : ℝ} (homega : 0 ≤ omega)
+    [IsEmpty (XiShiftRightZeroCopy omega)] :
+    (xiShiftPoleBlaschkeMultiplier homega).fn = fun _ => 1 :=
+  indexedBlaschkeMultiplier_fn_eq_one_of_isEmpty
+    (xiShiftPoleDiskCoordinate omega)
+    (norm_xiShiftPoleDiskCoordinate_lt_one omega)
+    (summable_one_sub_norm_xiShiftPoleDiskCoordinate homega)
+
 /-- Every strict-right shifted-Xi pole copy is an exact zero of the literal denominator. -/
 theorem xiShiftPoleBlaschkeMultiplier_apply_zero
     {omega : ℝ} (homega : 0 ≤ omega)

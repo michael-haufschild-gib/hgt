@@ -203,9 +203,38 @@ Primary parent source:
 
 ## Lean status
 
-The current formal tree has no doubling-Fock Toeplitz or Schatten-class infrastructure at this
-generality.  Formalizing only the final power-integral test would not formalize the operator theorem.
-No Lean formalization is claimed.
+`formal/GaloisForLFunctions/RHTower/CriticalPrimeSamplingIncidence.lean` now formalizes the shared
+operator endpoint unconditionally: divergence of the literal weight `(log p)^2/p`, failure of the
+normalized sampler to be Hilbert--Schmidt from its adjoint coordinate norms, compactness and
+positivity of `S^*S` from compactness of `S`, and failure of `S^*S` to be Schatten one.  The existing
+rectangular Gram-spectrum module and
+`formal/GaloisForLFunctions/RHTower/CriticalPrimeSamplingSchattenBridge.lean` supply the exact
+all-exponent law `S in S_(2q) iff S^*S in S_q`.
+`formal/GaloisForLFunctions/RHTower/CriticalPrimeKernelSampling.lean` constructs the literal
+all-prime analysis operator from any proved Bessel estimate for unit normalized kernel vectors and
+derives its coordinate norms, so no operator or endpoint law remains assumed.  The substantive
+doubling-Fock Toeplitz/Carleson theorem and its specialization to the concrete carrier remain to be
+formalized; the scalar power-integral test alone is not counted as completion.
+`CriticalPrimeKernelSamplingCompact.lean` and `CriticalPrimeKernelSchurSampling.lean` additionally
+derive boundedness and compactness from finite normalized-kernel Gram-row estimates, including the
+vanishing tail form, without assuming a Bessel or compact operator.  Exact all-exponent Schatten
+membership still requires the doubling-Fock Toeplitz averaging theorem and the adapted tube
+integrability classification.
+`MomentFockKernel.lean` and `PolynomialMomentFock.lean` now supply the exact polynomial radial
+moment carrier, bounded point evaluations, literal normalized prime-log kernels, and their exact
+kernel series.  `PolynomialMomentFockNorm.lean` proves that this carrier has integrable literal
+weighted square density on `C` and that its coefficient norm is exactly the weighted plane norm.
+Thus neither carrier nor normalized kernels are abstract placeholders; remaining producers are the
+doubling-Fock Gram/Toeplitz estimate and the all-exponent adapted-tube comparison.
+`PolynomialMomentFockKernelBound.lean` also proves a concrete geometric diagonal-kernel bound and
+point-evaluation envelope; the missing ideal classification is still off-diagonal/Toeplitz rather
+than carrier existence or diagonal growth.
+
+`PolynomialFockPotentialGeometry.lean` now proves the exact polynomial potential's radial slope,
+radial curvature, Laplacian density, positivity, uniform two-sided density comparison, and exact
+adapted-radius bounds for `m>=2`.  The targeted leaf build and axiom audit passed.  This closes the
+potential/metric part of the averaging profile but not the load-bearing normalized-kernel
+localization or doubling-Fock Toeplitz Schatten averaging theorem; the card remains at Stage 2.
 
 ## Gates
 

@@ -377,3 +377,28 @@ Scope is intentionally narrower than the card theorem: this is the explicit crit
 the existing weighted `G_full` diagonal calculation.  No Lean theorem currently identifies it with
 the full Connes--Consani defect `H_p`, proves the source trace-class perturbation, or gives the
 depth-one singular-value/Dixmier statement for that defect.  The card therefore remains at Stage 2.
+
+`RHTower/PrimeQuasiInnerResidueRigidity.lean` now formalizes the residue-recovery part of Section 7.
+It defines the real interpolation
+
+```text
+R(q)=2 (q-1)^4/(q^2 log q),
+```
+
+proves positivity and a factorization into strictly increasing algebraic and logarithmic-mean
+factors on `q>1`, proves `R` strictly increasing and injective there, proves its endpoint limits and
+exact image `(0,infinity)`, and identifies `R(p)` exactly with `gaussChannelResidue 1 p`.  Thus
+equality of the explicit critical-model residues now unconditionally recovers the local real scale.
+The targeted leaf build passed, and every new declaration depends only on `propext`,
+`Classical.choice`, and `Quot.sound`.
+
+`RHTower/SchattenLogResidueFiniteRankPerturbation.lean` now proves the exact finite-rank stability
+needed for the `E_0` term.  A rank-`r` difference interlaces approximation numbers with an index
+shift of `r`, uniformly bounds the difference of all Schatten-one partial sums by fixed prefixes,
+and therefore preserves both weak Schatten-one membership and the value/existence of the ordinary
+logarithmic residue.  Its targeted leaf build and full new-declaration axiom audit passed with only
+the same standard axioms.
+
+This does not close the card: identification of the explicit model with `H_p*H_p`, weak
+modulation/measurability, stability under the infinite-order trace-class term `E_infinity`, and
+reconstruction of the full Euler divisor from the unlabelled operator family remain unformalized.

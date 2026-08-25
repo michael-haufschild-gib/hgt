@@ -907,3 +907,272 @@ Axiom-clean.  `θ(T₂) − θ(T₁)` is the archimedean main term, asymptotical
 quantity: `N_{G♯}([½,4]×[T₁,T₂])`.**  That is brick 5 — Littlewood's lemma applied to `G♯·M` at the
 abscissa `σ₀ = ½ − R/log T`, hence the mollified second moment.  Bricks 6 and 7 are the optimization
 of the resulting constant.
+
+## Brick 5c--5d structural AFE closure (2026-08-24)
+
+Three axiom-clean modules now close both infinite-series and both finite-tail steps at every point
+of the open critical strip, hence at every Levinson abscissa:
+
+* `RHTower/SmoothAFEZetaGeneralDualExpansion.lean` proves
+  `riemannZeta_eq_two_tsum_smoothAFE_general`.  The fixed reflected edge `Re w = -1` is expanded
+  term by term for every `0 < Re s < 1`; its coefficients decay as
+  `(n+1)^(-(2-Re s))` after a polynomial-times-Gaussian domination of the exact shifted `χ` factor.
+* `RHTower/SmoothAFEZetaGeneralDualTruncation.lean` proves
+  `exists_smoothAFEZetaDualMellinGeneral_sub_head_le`, with explicit reflected remainder
+  `K L^(Re s-1)/(1-Re s)`.
+* `RHTower/SmoothAFEZetaGeneralTwoHeadTruncation.lean` proves
+  `exists_riemannZeta_sub_two_smoothAFE_heads_le`, replacing both contour edges by finite
+  Dirichlet polynomials and retaining the direct arbitrary-power tail and reflected `p`-series tail
+  separately.
+
+Exact leaf builds pass; `#print axioms` for all new capstones reports only
+`propext, Classical.choice, Quot.sound`.
+
+This closes the pointwise structural AFE.  It does **not** yet close brick 5: the constants and
+exact dual coefficients still vary with height.  Remaining analytic work is a uniform dyadic
+height/conductor estimate for the two finite heads, the corresponding derivative expansion for
+`G = ζ + λζ'`, multiplication by the mollifier, and arithmetic main-term evaluation strong enough
+to give a proportion strictly above `1/3` (then the sharper PRZZ constants).
+
+## Brick 5e displaced-contour conductor localization (2026-08-24)
+
+Four further axiom-clean modules specialize and localize the structural AFE at Levinson's moving
+abscissa `σ₀ = 1/2 - R/log T`:
+
+* `RHTower/LevinsonAbscissaSmoothAFE.lean` proves the exact two-head truncation at every
+  `1/2-R/log T+iτ` with `R>0` and `exp(2R)<T`.
+* `RHTower/SmoothAFEZetaChiShiftGeneralPowerBound.lean` reflects the denominator of the shifted
+  `χ`-ratio and proves the full conductor gain
+  `‖χ(s+d+η-iv)/χ(s)‖ ≤ K(1+|v|)^η/max(1,|τ|)^(d+η)`.
+* `RHTower/SmoothAFEZetaDisplacedDualContour.lean` proves the finite residue rectangle on
+  `Re w ∈ [-(d+η),1]`.
+* `RHTower/SmoothAFEZetaDisplacedDualContourLimit.lean` proves integrability of both vertical
+  edges, Gaussian extinction of both horizontal edges, the exact infinite residue identity, and
+  the conductor-localized capstone
+  `‖W_{d,τ}(Y)-1‖ ≤ C(d,η)Y^(d+η)/max(1,|τ|)^(d+η)`.
+
+Each leaf passes direct `lake env lean`, exact-module `lake build`, and a declaration-local axiom
+audit reporting only `propext, Classical.choice, Quot.sound`.
+
+This removes the previously missing conductor factor from the displaced dual weight.  Brick 5 is
+still open: its final dyadic argument needs control of `C(d,η)` uniform as
+`d = R/log T → 0`, the differentiated two-head formula for `ζ'`, mollifier multiplication, and
+the arithmetic mean-square evaluation yielding a strict proportion above `1/3`.
+
+## Brick 5f moving-abscissa uniformity (2026-08-24)
+
+`RHTower/SmoothAFEZetaChiUniformMovingRightLine.lean` removes the `d → 0` qualification above.
+Compactness controls `χ` uniformly on the bounded-height rectangle
+`0 ≤ d ≤ d₀, |t| ≤ 256`; the explicit digamma estimate controls its complement.  The resulting
+three capstones give, with constants independent of `d`:
+
+```text
+|χ(1/2+d+it)| ≤ K / max(1,|t|)^d,
+|χ(s+d+η-iv)/χ(s)| ≤ K′(1+|v|)^η / max(1,|τ|)^(d+η),
+|W_{d,τ}(Y)-1| ≤ C Y^(d+η) / max(1,|τ|)^(d+η)
+```
+
+simultaneously for every `0<d≤d₀<1/2`.  Direct check, exact leaf build, and declaration-local
+axiom audit pass; axioms are only `propext, Classical.choice, Quot.sound`.
+
+Remaining brick-5 work is now the differentiated finite-head formula for `ζ'`, mollifier
+multiplication, and arithmetic mean-square evaluation/optimization above `1/3`.
+
+## Brick 5g classical reflected head and derivative inputs (2026-08-24)
+
+Six axiom-clean leaves now replace the exact displaced reflected weight by its classical
+Dirichlet head, uniformly across a compact family of moving Levinson lines:
+
+* `RHTower/SmoothAFEZetaChiShiftDisplacedDerivative.lean` proves the exact derivative and
+  logarithmic-derivative laws for the displaced shifted `χ`-ratio.
+* `RHTower/SmoothAFEZetaDisplacedDualReflection.lean` identifies every general reflected
+  coefficient as `-χ(s)n^(s-1)W_{d,τ}(nx)` and isolates its difference from the classical
+  coefficient.
+* `RHTower/SmoothAFEZetaDisplacedTwoHeadTruncation.lean` gives explicit finite direct and exact
+  displaced-weight heads.
+* `RHTower/SmoothAFEZetaChiUniformMovingLeftLine.lean` proves
+  `|χ(1/2-d+it)| ≤ K max(1,|t|)^d` with one `K` for every `0≤d≤d₀`.
+* `RHTower/SmoothAFEZetaDisplacedDualHeadMainApproximation.lean` combines left-line growth with
+  conductor localization.  Pointwise errors have exponent `n^(-1/2+η)`, and their first `L`
+  terms satisfy the explicit uniform bound
+  `C x^(d+η) max(1,|τ|)^(-η) (1 + L^(1/2+η)/(1/2+η))`.
+* `RHTower/SmoothAFEZetaDisplacedClassicalTwoHeadTruncation.lean` inserts that estimate into the
+  finite AFE, yielding direct and classical reflected Dirichlet heads plus three explicit errors.
+
+Every leaf passes direct `lake env lean`, exact-module `lake build`, and declaration-local
+`#print axioms`; dependencies are only `propext, Classical.choice, Quot.sound`.
+
+Remaining brick-5 core: differentiate the finite classical two-head identity to obtain a usable
+`ζ'` polynomial with controlled remainder, multiply by the mollifier, and prove/evaluate the
+arithmetic mean square strongly enough to force a critical-zero proportion strictly above `1/3`.
+
+## Brick 5h differentiated classical AFE closure (2026-08-25)
+
+The differentiated finite-head step is now closed by four axiom-clean leaves:
+
+* `RHTower/SmoothAFEZetaDisplacedDualCoefficientDerivative.lean` differentiates one exact
+  reflected coefficient under the fixed left contour, proves its
+  `(n+1)^(-(3/2+d))(1+log(n+1))(1+|tau|)^3` envelope, absolute summability, termwise
+  differentiation of the full coefficient series, and the exact derivative of
+  `smoothAFEZetaDualMellinGeneral`.
+* `RHTower/SmoothAFEZetaDisplacedFullDerivativeIdentity.lean` identifies the contour derivative
+  with the negative derivative of the conductor-oriented weighted coefficient, differentiates the
+  full weighted reflected series, and proves the exact unconditional identity
+  `d/dtau zeta(1/2-d+i tau) = direct' + reflected' - residue'` for `0<d<=1/4`.
+* `RHTower/SmoothAFEZetaDisplacedReflectedDerivativeTruncation.lean` absorbs the logarithm into
+  half of the `d` margin and gives the explicit reflected derivative tail
+  `K(1+|tau|)^3 L^(-(1/2+d/2))/(1/2+d/2)`.
+* `RHTower/SmoothAFEZetaDisplacedClassicalDerivativeTruncation.lean` combines that tail with the
+  direct derivative tail and the finite weighted-to-classical correction.  Its capstone
+  `exists_norm_deriv_riemannZeta_mul_I_displaced_sub_finiteClassical_le` is the analytic `zeta'`
+  statement, with every direct, reflected, pole, and conductor error retained explicitly.
+
+All four leaves pass direct `lake env lean`, exact-module `lake build`, and declaration-local
+`#print axioms`; dependencies are only `propext, Classical.choice, Quot.sound`.  They are wired
+into `RHTower.lean`; no umbrella build was run.
+
+Remaining brick-5 core is now strictly the mollifier product and the twisted arithmetic
+mean-square evaluation/optimization yielding a proportion above `1/3`.  No derivative-AFE
+structural hypothesis remains.
+
+## Brick 5i deep-edge differentiated AFE (2026-08-25)
+
+The coarse reflected derivative tail has been replaced by an exact fixed-exponent expansion.
+Eight axiom-clean leaves close the contour and differentiation chain:
+
+* `RHTower/SmoothAFEZetaArbitraryNegativeEdge.lean` moves the reflected contour to every
+  admissible negative depth and proves exact equality with the original `Re w=-1` edge.
+* `RHTower/SmoothAFEZetaDisplacedDeepDualExpansion.lean` couples the depth to `4-d`, fixing
+  `s+w=-7/2+i(tau+v)` and the reflected coefficient power at `(n+1)^(-9/2)`.
+* `RHTower/SmoothAFEZetaDisplacedDeepDualCoefficientDerivative.lean` differentiates each deep
+  coefficient in `d`; fixed `s+w` removes both `chi'` and `log(n+1)` from the derivative.
+* `RHTower/SmoothAFEZetaDisplacedDeepDualTsumDerivative.lean` proves absolute derivative
+  summability, differentiates the deep series termwise, and transfers the derivative back to the
+  exact original dual edge.
+* `RHTower/SmoothAFEZetaDisplacedDirectDisplacementDerivative.lean` supplies the matching
+  logarithmic derivative series for the direct edge with uniform normal convergence.
+* `RHTower/SmoothAFEZetaDisplacedPoleResidueDisplacementDerivative.lean` differentiates the
+  elementary pole residue and identifies displacement differentiation with `I` times height
+  differentiation.
+* `RHTower/SmoothAFEZetaDisplacedDeepFullDerivativeIdentity.lean` assembles the exact AFE and
+  proves the closed identity
+  `deepDisplacementDerivativeSourceField(d,x,tau) = -zeta'(1/2-d+i tau)`.
+* `RHTower/SmoothAFEZetaDisplacedDeepDerivativeTruncation.lean` gives a polynomial-height
+  coefficient envelope, the explicit reflected derivative tail `O((1+|tau|)^N L^(-7/2))`, and a
+  finite `zeta'` approximation whose only other infinite-series error is the direct
+  `O(L^(-3/4))` tail.
+
+Each leaf passes direct `lake env lean`, exact leaf `lake build`, and declaration-local
+`#print axioms`; dependencies are only `propext, Classical.choice, Quot.sound`.  All leaves are
+wired into `RHTower.lean`; no umbrella build was run.
+
+Remaining brick-5 core: mollifier product, twisted arithmetic mean-square evaluation, and explicit
+parameter optimization yielding a critical-zero proportion strictly above `1/3`.
+
+## Brick 5j deep-edge coefficient and height transfer (2026-08-25)
+
+Two further axiom-clean leaves remove the last contour-identification and derivative-orientation
+ambiguities:
+
+* `RHTower/SmoothAFEZetaDisplacedDeepCoefficientIdentification.lean` proves coefficientwise
+  contour invariance from the coupled deep edge back to the original general reflected
+  coefficient.  It supplies the required reciprocal-zeta and closed-strip `chi` bounds,
+  differentiability, horizontal decay, and exact coefficient identity.
+* `RHTower/SmoothAFEZetaDisplacedDeepHeightDerivative.lean` differentiates the deep contour in
+  height, proves a compatible Cauchy-derived polynomial bound for `chi'`, integrates the
+  frequency derivative using `HTGeometry/IntegralDerivativeZero.lean`, and establishes the exact
+  quarter-turn laws
+  `deepDisplacementDerivative = I * deepHeightDerivative` and
+  `deepDisplacementDerivative = -I * weightedReflectedHeightDerivative`, coefficientwise and for
+  every finite reflected head.
+
+Both leaves pass direct `lake env lean`, exact leaf `lake build`, and declaration-local
+`#print axioms`; dependencies are only `propext, Classical.choice, Quot.sound`.  They are wired
+into `RHTower.lean`; no umbrella build was run.
+
+Remaining brick-5 core is strictly mollifier multiplication, twisted arithmetic mean-square
+evaluation, and explicit parameter optimization yielding a critical-zero proportion above `1/3`.
+
+## Brick 5k finite detector and mollifier normal form (2026-08-25)
+
+Two axiom-clean leaves now connect the differentiated AFE to the existing Dirichlet mean-value
+machinery:
+
+* `RHTower/SmoothAFEZetaDisplacedFiniteDetectorDirichlet.lean` defines the finite approximation to
+  `zeta + lambda zeta'`, splits complex powers into amplitude and frequency, and proves its exact
+  normal form: one direct Dirichlet polynomial at frequency `-tau`, two reflected Dirichlet
+  polynomials at `+tau` with the exact `chi` and `chi'` multipliers, and both pole terms.  After
+  multiplication by an arbitrary finite mollifier, the direct same-frequency product is the
+  existing Dirichlet convolution, while both opposite-frequency products remain explicit for the
+  twisted mean-value theorem.
+* `RHTower/SmoothAFEZetaDisplacedFiniteDetectorApproximation.lean` combines the classical value
+  AFE and differentiated AFE into a quantitative bound for the actual Levinson detector.  All five
+  source constants and every direct, reflected, conductor-localization, logarithmic, and pole
+  contribution are retained.
+
+Both leaves pass direct `lake env lean`, exact leaf `lake build`, and declaration-local
+`#print axioms`; dependencies are only `propext, Classical.choice, Quot.sound`.  They are wired
+into `RHTower.lean`; no umbrella build was run.
+
+Remaining brick-5 core: strengthen the value truncation to height-uniform constants, apply the
+twisted mean-value theorem to the two opposite-frequency products, evaluate the arithmetic main
+term, and optimize parameters above `1/3`.
+
+## Brick 5l height-uniform detector truncation (2026-08-25)
+
+Three axiom-clean leaves remove the height-dependent value-tail constants:
+
+* `RHTower/SmoothAFEZetaDisplacedDeepValueTruncation.lean` proves a polynomial-height
+  `(n+1)^(-9/2)` envelope for deep reflected value coefficients and the resulting explicit
+  `L^(-7/2)` tail.
+* `RHTower/SmoothAFEZetaDisplacedUniformValueTruncation.lean` adds the direct `L^-1` tail, proves
+  the exact deep-edge value AFE, and transfers its finite truncation to the classical reflected
+  head with the conductor-localization error retained.
+* `RHTower/SmoothAFEZetaDisplacedUniformFiniteDetectorApproximation.lean` combines that value
+  estimate with the differentiated AFE.  Its constants are selected before `lambda`, height, and
+  cutoff; the capstone bounds the actual `zeta + lambda zeta'` detector by the exact finite
+  Dirichlet normal form uniformly for every height at least `4`.
+
+All three leaves pass direct `lake env lean`, exact leaf `lake build`, and declaration-local
+`#print axioms`; dependencies are only `propext, Classical.choice, Quot.sound`.  They are wired
+into `RHTower.lean`; no umbrella build was run.
+
+Remaining brick-5 core is now the twisted mean-square application, arithmetic main-term
+evaluation, and explicit optimization above `1/3`.
+
+## Brick 5m mollified twisted mean-value and reduced diagonal (2026-08-25)
+
+Eight axiom-clean leaves now connect the finite AFE detector coefficients to the exact arithmetic
+diagonal consumed by the classical mollified-moment calculation:
+
+* `RHTower/SmoothAFEZetaDisplacedDirichletMeanValueBridge.lean` identifies zero-based
+  `Sieve.dirPoly` values exactly with positive-natural `HTGeometry.cdpoly` values at `sigma = 0`,
+  with the correct height reflection.
+* `RHTower/Sieve/MollifiedTwistedMeanValueError.lean` expands two finite mollifier factors into the
+  integer-ratio twists, identifies the resulting weighted family with a literal four-polynomial
+  correlation, and proves its distance from the exact diagonal `n*k = m*h` is at most
+  `4*#s*C*B*(1+log #s)*||u||_1*||v||_1`.
+* `RHTower/Sieve/TwistedDiagonalGCDReindex.lean` removes the former coprimality restriction:
+  arbitrary positive `h,k` reduce along `g = gcd h k`, and their diagonal is one scale sum on the
+  coprime direction `(k/g,h/g)`.
+* `RHTower/Sieve/MollifiedTwistedDiagonalIcc.lean` specializes that scale sum to AFE support
+  `Icc 1 L`; its exact range is `Icc 1 (L / max(k/g,h/g))`.
+* `RHTower/Sieve/MollifiedTwistedMeanValueIcc.lean` packages the AFE-ready capstone: source
+  cardinality `L`, geometric product bound `L*M`, exact gcd-reduced main term, and accumulated
+  mollifier error in one theorem.
+* `RHTower/Sieve/LevinsonLinearMollifier.lean` defines the literal linear mollifier
+  `mu(n)n^(-1/2)log(M/n)/log M` in the same positive-natural convention, proves its exact
+  Barban--Vehov coefficient identity, and gives the reusable `ell^1 <= 2 sqrt M` bound.
+* `RHTower/Sieve/LevinsonLinearMollifiedMeanValue.lean` instantiates the full finite correlation
+  theorem with that mollifier and eliminates both coefficient masses from the error term.
+* `RHTower/SmoothAFEZetaDisplacedLinearMollifier.lean` reindexes that positive-natural mollifier
+  into the detector's zero-based convolution convention and gives the exact mollified detector:
+  one direct `dirConv` polynomial, two reflected products, and both pole terms.
+
+Each leaf passes direct `lake env lean`, exact leaf `lake build`, and declaration-local
+`#print axioms`; dependencies are only `propext, Classical.choice, Quot.sound`. All leaves are
+wired into `RHTower.lean`; no umbrella build was run.
+
+Remaining brick-5 core is evaluation of this explicit gcd-reduced arithmetic main term for the
+chosen Möbius-polynomial mollifier, control of the chi-weighted cross heads and truncation error in
+the dyadic integral, then exact parameter optimization above `1/3`.

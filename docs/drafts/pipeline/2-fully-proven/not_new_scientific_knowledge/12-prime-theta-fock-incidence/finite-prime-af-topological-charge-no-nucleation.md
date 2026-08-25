@@ -1,7 +1,8 @@
 # A norm-regular finite-prime quantum universe cannot nucleate divisor charge
 
 - **ID:** `finite-prime-af-topological-charge-no-nucleation`
-- **Stage:** 2-fully-proven / finite amplification core formalized in Lean
+- **Stage:** 2-fully-proven / charge-colimit and Xi no-nucleation core formalized in Lean;
+  operator-K-theory identification remains
 - **Type:** THEOREM / OPERATOR-K-THEORY AND TOPOLOGICAL-PHASE NO-GO
 - **Scientific status:** `[PROVED; BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Source:** independent pivot into quasi-local quantum spin systems and operator K-theory; separate
@@ -227,10 +228,41 @@ same finite-ancestor obligation in another category.
 - `PrimeQuasiLocalCharge.windingNumber_amplifiedDeterminantLoop`;
 - `PrimeQuasiLocalCharge.windingNumber_amplifiedDeterminantLoop_eq_zero_iff`.
 
-The formal theorem uses the actual Kronecker determinant identity and the project's constructed
-integer winding number.  It proves the non-placeholder finite charge law `(6)`--`(8)` without an
-assumed K-theory interface.  The C-star inductive-limit theorem `(11)` remains on paper because
-operator K-theory is not presently available in this Lean tree.
+`formal/GaloisForLFunctions/RHTower/PrimeAFChargeDirectLimit.lean` now constructs the exact
+algebraic directed system
+
+```text
+Z --times d_(N+1)--> Z
+```
+
+and proves:
+
+- `PrimeQuasiLocalCharge.chargeLimit_has_finiteAncestor`;
+- `PrimeQuasiLocalCharge.chargeLimit_eq_zero_of_all_ancestors_zero`;
+- `PrimeQuasiLocalCharge.nonzero_chargeLimit_has_nonzero_finiteAncestor`;
+- `PrimeQuasiLocalCharge.afChargeToRational_injective`;
+- `PrimeQuasiLocalCharge.mem_qubit_afChargeToRational_range_iff`;
+- `PrimeQuasiLocalCharge.windingNumber_eq_zero_of_uniform_limit`;
+- `PrimeQuasiLocalCharge.nonzero_winding_uniform_limit_has_finiteAncestor`.
+
+Thus every algebraic limit charge has a finite ancestor, the limit embeds faithfully in `Q`, the
+qubit image is exactly the dyadic subgroup, and uniform convergence to a nonvanishing periodic loop
+cannot nucleate winding.  No abstract K-theory premise is used.
+
+`formal/GaloisForLFunctions/RHTower/PrimeAFXichargeNoNucleation.lean` proves the unconditional Xi
+instance:
+
+- `PrimeQuasiLocalCharge.exists_xiBoundaryLoop_nonzero_winding`;
+- `PrimeQuasiLocalCharge.exists_xiBoundaryLoop_not_uniformLimit_of_zeroWindingLoops`.
+
+The latter uses Hardy's theorem to construct an actual nonzero-charge Xi boundary circle and rules
+out every uniformly convergent sequence of continuous periodic zero-winding loops.
+
+All these declarations pass direct Lean checks, targeted leaf builds, and axiom audits with only
+Lean's standard `propext`, `Classical.choice`, and `Quot.sound`.  Remaining exact Stage-3 gap is the
+operator-K-theory connector identifying `K_1(C(S^1) tensor A)` and the finite matrix-stage `K_1`
+groups with this concrete charge direct limit.  The present tree has no operator K-theory
+infrastructure, so the card is not promoted yet.
 
 ## 8. Parent and novelty boundary
 
@@ -258,5 +290,9 @@ thermodynamic limit cannot be the missing source of divisor winding.
 - [x] scalar divisor class and Xi consequence derived
 - [x] false “AF forbids all topological order” overclaim excluded
 - [x] singular and state-dependent escape categories classified
-- [x] finite theorem formalized in Lean
+- [x] finite amplification theorem formalized in Lean
+- [x] algebraic AF charge direct limit and finite-ancestor theorem formalized in Lean
+- [x] norm-regular no-nucleation theorem formalized in Lean
+- [x] unconditional nonzero Xi boundary charge and no-uniform-limit consequence formalized in Lean
+- [ ] operator-K-theory/Morita/Bott identification with the concrete charge direct limit formalized
 - [x] parent-theory audit completed; classified as bridge

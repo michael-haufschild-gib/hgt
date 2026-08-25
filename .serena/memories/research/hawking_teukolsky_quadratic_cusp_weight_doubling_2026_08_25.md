@@ -1,0 +1,24 @@
+# Quadratic cusp-weight doubling endpoint (2026-08-25)
+
+- Falsified proposed Kruskal half-density origin of the `-i/2` correction. Birmingham–Mokhtari's gauge-invariant gravitational master field is scalar; their angular momentum `xi` is a horizon-Laplacian parameter and does not acquire a horizon-coordinate square-root Jacobian. A half-density belongs only to a chosen flux-amplitude representation and would be double-counting here.
+- Exact modular/BM coordinate chain:
+  - modular scattering pole weight `s(z)=1/4+i z/2=rho/2`;
+  - raw BM momentum `xi_raw=-i(s-1/2)=z/2+i/4`;
+  - a local holomorphic quadratic cusp principal term has additive weight `s_ret=2s=rho`;
+  - BM re-centering gives `xi_ret=-i(s_ret-1/2)=z=2 xi_raw-i/2`;
+  - returned Casimir `s_ret(1-s_ret)=rho(1-rho)=1/4+z^2`.
+- Hence the old “thermal de-aliasing” algebra has a source-specific interpretation: Weyl re-centering after nonlinear chiral cusp-weight doubling, not generic KMS/redshift.
+- Formalized in `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingTeukolskyThermalDealiasingEndpoint.lean`:
+  - `d4ThetaTeukolskyQuadraticChiralCuspWeight_eq_rho`
+  - `d4ThetaTeukolskyQuadraticChiralAngularMomentum_eq`
+  - `d4ThetaTeukolskyQuadraticChiralAngularMomentum_eq_raw_sub_half`
+  - `d4ThetaTeukolskyQuadraticChiralAngularEigenvalue_eq`
+  - `riemannHypothesis_iff_d4ThetaTeukolskyQuadraticChiralPrincipalReturnIsUnitary`
+- Target file compiled. New theorem axioms only `[propext, Classical.choice, Quot.sound]`. Scratch removed.
+- Exact remaining physical producer: compute reduced second-order Teukolsky source `S[-delta^2 G[h,h]]` on the topological-AdS modular cusp and prove its holomorphic `2s` principal coefficient is nonzero. If nonzero, a tilted divisor cannot be a single self-adjoint angular return and must spectrally mix. If coefficient vanishes (possible helicity/null-structure cancellation), retire mechanism.
+- Important hostile points:
+  - resonant residue orientation is outgoing `y^(1-s)`, so distinguish it from driven incident `y^s`;
+  - real-field products also contain `s+conj(s)`/shadow-neutral terms;
+  - generic Eisenstein products mix all sectors; only the holomorphic principal coefficient can be RH-sensitive;
+  - horizon Raychaudhuri mass memory contracts opposite helicities and is shadow-blind, so it cannot supply `2s`.
+- Primary sources checked: Birmingham–Mokhtari hep-th/0609028 eqs. (23)–(36); Spiers–Pound–Moxon arXiv:2305.19332 reduced equation (84), whose source is `S[8pi T^(2)-delta^2G[h^(1),h^(1)]]`.

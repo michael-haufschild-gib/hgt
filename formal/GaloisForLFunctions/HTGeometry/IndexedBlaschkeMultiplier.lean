@@ -10,6 +10,13 @@ noncomputable section
 def indexedBlaschkeProduct {ι : Type*} (a : ι → ℂ) (z : ℂ) : ℂ :=
   ∏' i, normalizedBlaschkeFactor (a i) z
 
+/-- An empty indexed divisor has the constant-one Blaschke product. -/
+theorem indexedBlaschkeProduct_eq_one_of_isEmpty
+    {ι : Type*} [IsEmpty ι] (a : ι → ℂ) :
+    indexedBlaschkeProduct a = fun _ => 1 := by
+  funext z
+  simp [indexedBlaschkeProduct]
+
 /-- The indexed Blaschke condition gives locally uniform convergence on the open disk. -/
 theorem indexedBlaschkeProduct_hasProdLocallyUniformlyOn
     {ι : Type*} (a : ι → ℂ) (haDisk : ∀ i, ‖a i‖ < 1)
@@ -186,6 +193,14 @@ def indexedBlaschkeMultiplier
   bd_nonneg := zero_le_one
   bd_le := fun z hz => norm_indexedBlaschkeProduct_le_one a haDisk hsum
     (by simpa [Metric.mem_ball, dist_zero_right] using hz)
+
+/-- An indexed Blaschke multiplier over an empty divisor is pointwise one. -/
+theorem indexedBlaschkeMultiplier_fn_eq_one_of_isEmpty
+    {ι : Type*} [IsEmpty ι] (a : ι → ℂ)
+    (haDisk : ∀ i, ‖a i‖ < 1)
+    (hsum : Summable (fun i => 1 - ‖a i‖)) :
+    (indexedBlaschkeMultiplier a haDisk hsum).fn = fun _ => 1 :=
+  indexedBlaschkeProduct_eq_one_of_isEmpty a
 
 theorem indexedBlaschkeMultiplier_apply_zero
     {ι : Type*} (a : ι → ℂ) (haDisk : ∀ i, ‖a i‖ < 1)

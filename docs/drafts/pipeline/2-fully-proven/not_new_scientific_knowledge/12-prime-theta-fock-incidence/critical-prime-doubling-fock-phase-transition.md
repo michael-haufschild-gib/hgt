@@ -194,10 +194,45 @@ Primary parent sources:
 
 ## Lean status
 
-The current Lean tree proves the global divergence of the critical prime profile but has no
-doubling-Fock space, adapted-radius, reproducing-kernel estimate, or Fock-Carleson embedding theory.
-A scalar restatement of `(13)` would not formalize the substantive analytic theorem.  No Lean
-formalization is claimed.
+The Lean tree now proves the literal critical-prime operator endpoints and constructs the normalized
+sampler from finite normalized-kernel Gram-row bounds in
+`formal/GaloisForLFunctions/RHTower/CriticalPrimeKernelSchurSampling.lean`.  Vanishing tail Gram
+rows imply compactness, while unit normalized kernels force the sampler outside Hilbert--Schmidt
+class and its incidence outside trace class.  It also proves the full scalar form of `(13)--(14)` in
+`formal/GaloisForLFunctions/RHTower/CriticalPrimeFockWindowPhaseTransition.lean`: at the exact
+polynomial Fock radius the prime-log mass diverges for `2<m<4`, converges to `2` at `m=4`, and
+converges to zero for `m>4`.
+`formal/GaloisForLFunctions/RHTower/PolynomialMomentFockNorm.lean` now proves that every coefficient
+carrier vector has integrable literal plane density and the exact norm identity
+`int_C |F(z)|^2 exp(-2 phi_m(|z|)) dA=||f||^2`.  Concrete normalized-kernel/Carleson estimates and
+their prime-log specialization remain open.  The scalar phase transition and exact carrier do not
+yet formalize the substantive operator theorem, so the card remains at Stage 2.
+
+`PolynomialMomentFockKernelBound.lean` additionally sums the annular moment lower bounds into an
+explicit diagonal-kernel and point-evaluation growth envelope.  Off-diagonal localization and the
+discrete Carleson estimate remain the operator-producing gap.
+
+`formal/GaloisForLFunctions/RHTower/MomentFockKernel.lean` and
+`formal/GaloisForLFunctions/RHTower/PolynomialMomentFock.lean` now construct the exact radial
+monomial moments of `exp(-2(1+r^2)^(m/2))`, prove those moments finite and strictly positive, prove
+all point-kernel coefficient sequences square-summable, construct bounded evaluations and unit
+normalized prime-log kernels, and provide the distinguished constant vector.
+`MomentFockEntire.lean` proves every carrier vector defines an entire function and that its entire
+power-series value is exactly the bounded RKHS evaluation. `PolynomialMomentFockNorm.lean` proves
+weighted-square integrability and the exact complex-plane norm isometry.  Remaining analytic core
+is the concrete normalized-kernel/Carleson estimate needed for boundedness and compactness.
+
+`PolynomialFockPotentialGeometry.lean` now formalizes exact radial slope, curvature, planar
+Laplacian density, positivity, the uniform comparison
+
+```text
+2m(1+r^2)^(m/2-1) <= Delta phi_m(r) <= m^2(1+r^2)^(m/2-1),
+```
+
+and induced two-sided reciprocal-square-root adapted-radius bounds for `m>=2`.  Its targeted leaf
+build and axiom audit passed with only `propext`, `Classical.choice`, and `Quot.sound`.
+Off-diagonal normalized-kernel localization and the concrete discrete Carleson estimate remain the
+operator-producing gap, so this card remains at Stage 2.
 
 ## Gates
 

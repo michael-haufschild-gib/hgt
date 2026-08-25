@@ -225,9 +225,34 @@ Parent sources:
 ## Lean status
 
 The exact source reflection, integrability, and critical Fourier identity `(14)` are already
-formalized.  The new analytic Hilbert carrier depends on doubling-Fock RKHS and Carleson theory not
-present in the Lean tree.  A wrapper around `(14)` would not formalize the substantive carrier
-construction, so no new Lean declaration is added.
+formalized.  Complete carrier theorem still depends on doubling-Fock/Carleson and trace-continuity
+infrastructure not yet present in the Lean tree; a wrapper around `(14)` alone would not formalize
+the substantive construction.
+
+`formal/GaloisForLFunctions/RHTower/MomentFockKernel.lean` and
+`formal/GaloisForLFunctions/RHTower/PolynomialMomentFock.lean` now construct the exact polynomial
+radial moment coefficient carrier, bounded point evaluations, unit normalized prime-log kernels,
+and a distinguished vector whose evaluation is identically `1`.  `MomentFockEntire.lean` proves
+every vector's coefficient series is entire and agrees exactly with bounded evaluation.
+`PolynomialMomentFockNorm.lean` proves weighted-square integrability on `C` and exact equality
+between coefficient norm and literal weighted plane norm.  Remaining work is concrete prime
+Carleson boundedness and bounded/entire theta trace on this carrier; card therefore remains at
+Stage 2.
+`PolynomialMomentFockKernelBound.lean` supplies the explicit diagonal-kernel and point-evaluation
+growth envelope. `PolynomialMomentFockThetaTrace.lean` now closes the complete trace channel:
+two-sided double-exponential theta domination, integrability against every absolute exponential
+weight, absolute convergence and entire dependence, exact all-order derivative moments, bounded
+continuous-linear moment and point-trace functionals, uniform vertical-strip bounds (hence compact
+local-uniform continuity), and the exact completed-zeta trace at the distinguished constant vector.
+All new declarations passed the targeted leaf build and axiom audit with only `propext`,
+`Classical.choice`, and `Quot.sound`. The card remains at Stage 2 only because the concrete
+normalized prime-kernel Carleson estimate from `critical-prime-doubling-fock-phase-transition.md`
+is not yet formalized.
+
+`PolynomialFockPotentialGeometry.lean` additionally supplies exact radial curvature and Laplacian
+density together with two-sided adapted-radius comparisons.  This removes an abstract metric input
+from the shared Carleson producer, but does not itself prove boundedness of the normalized prime
+sampling map.  Its targeted leaf build and axiom audit passed with only the same standard axioms.
 
 ## Gates
 
