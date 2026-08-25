@@ -6442,3 +6442,67 @@ Remaining exact producer is narrower: construct the integral model of the fixed 
 field as a nontrivial connected finite covering of this `AlgSpec`, then identify its cyclic
 character with the source Kummer relation killed by the two already-formalized source valuations.
 No chart-identification, point-topology, cover-transport, or cyclic-reduction gap remains.
+
+`CriticalBlockFieldSourceDescent.lean` now closes the next field-theoretic connector:
+
+```text
+criticalBlockFixedField_le_sourceFieldRange_of_mem
+  canonical sheet in block  ⟹  fixedField (criticalBlockStabilizer B) ≤ source field range
+```
+
+An automorphism fixing the canonical sheet cannot move a block containing that sheet disjointly
+from itself, so the source point stabilizer lies in the block stabilizer.  Finite Galois
+correspondence reverses that inclusion.  The block field is therefore realized inside the actual
+source field, exactly where the independent marked-coordinate valuations are already formalized.
+Targeted leaf build passes; axiom audit is `[propext, Classical.choice, Quot.sound]`; umbrella wired
+without building it.  Remaining normalization/cover producer no longer needs an abstract embedding
+of the block field into the source.
+
+## Finite block normalization is complete (2026-08-25)
+
+`formal/GaloisForLFunctions/HTGeometry/CriticalBlockFieldNormalization.lean` constructs the exact
+canonical algebraic model of every block field:
+
+```text
+CriticalBlockFixedField
+  = fixedField (criticalBlockStabilizer B)
+
+CriticalBlockNormalization
+  = integralClosure criticalObservationChartRing CriticalBlockFixedField
+
+criticalBlockNormalization_finite
+  Module.Finite criticalObservationChartRing CriticalBlockNormalization
+
+criticalBlockNormalization_isFractionRing
+  Frac(CriticalBlockNormalization) = CriticalBlockFixedField
+```
+
+The decisive existing corpus/mathlib theorem is `IsIntegralClosure.finite`: the observation chart
+is Noetherian and integrally closed, its fraction field is the actual observation field, and the
+block fixed field is a finite separable intermediate extension of the actual normal closure.  No
+trace-dual lattice or duplicate normalization theorem is needed.  The normalization is also
+Noetherian.
+
+Direct checking and the targeted leaf build pass.  Axiom audits of all six new declarations report
+only `[propext, Classical.choice, Quot.sound]`; the module is wired into `HTGeometry` without an
+umbrella build.
+
+The remaining exact producer is now strictly topological/etale: prove that the complex-point map of
+the finite normalization (after the already-established removal of all branch loci) is a connected
+finite covering of `AlgSpec criticalObservationChartRing`, and identify its cyclic character with
+the Kummer relation in the source field.  Finiteness, normality, Noetherianity, and equality of the
+function field with the block field are no longer gaps.
+
+`CriticalBlockFieldNontrivial.lean` also closes the nontriviality side of that producer:
+
+```text
+criticalBlockStabilizer_ne_top_of_mem_of_ne_univ
+criticalBlockFixedField_ne_bot_of_mem_of_ne_univ
+```
+
+Transitivity of the actual normal-closure action shows that a proper sheet set containing the
+canonical sheet cannot be stabilized by every automorphism.  Injectivity of finite fixed-field
+correspondence then makes its fixed field strictly larger than the observation field.  Thus a
+proper block yields a genuinely nontrivial finite normalization, not merely a finite algebra model
+whose generic extension might collapse.  Targeted leaf build and axiom audit pass; umbrella wired
+without building it.

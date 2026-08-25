@@ -1569,3 +1569,26 @@ the polynomial Young cap is the sharp `o(1)` long-tail evaluation required in Le
 The exact remaining arithmetic cores are now the displayed full differentiated Barban--Vehov
 quadratic form and the omitted-head boundary energy. Cross-term coefficient summation and published
 parameter optimization remain open as before.
+
+## Brick 5ac exact long-moment carrier and linear optimization certificate (2026-08-25)
+
+Two axiom-clean leaves now close the remaining algebraic and scalar layers around the analytic
+mean-value input:
+
+* `RHTower/SmoothAFEZetaCriticalDetectorFullLongMomentExpansion.lean` names the base, mixed, and
+  differentiated harmonic Barban--Vehov moments on the exact range `(L,L*M]` and proves that the
+  full differentiated long energy is their literal quadratic polynomial in the detector parameter;
+* `RHTower/LevinsonLinearOptimization.lean` evaluates Young's linear choice
+  `P(x)=x`, `Q(x)=1-x`, `R=13/10`, `theta=1/2` by exact antiderivatives and rational Taylor bounds,
+  proving unconditionally
+  `1 - log(levinsonLinearOptimizationConstant)/(13/10) > 1/3`.
+
+Both leaves pass direct `lake env lean`, exact leaf `lake build`, and declaration-local
+`#print axioms`; dependencies are only `propext, Classical.choice, Quot.sound`. They are wired into
+`RHTower.lean`; no umbrella build was run.
+
+Parameter optimization is therefore no longer an open scalar task for the cheaper odd-fibre
+closure. The remaining classical Levinson gate is analytic: prove the mollified mean-value
+asymptotic matching this constant, including sharp full/omitted long-tail evaluation and sharp
+mixed-cross coefficient summation. The card's exact decimal still additionally requires the full
+PRZZ proportion inputs.

@@ -1,8 +1,9 @@
 # A norm-regular finite-prime quantum universe cannot nucleate divisor charge
 
 - **ID:** `finite-prime-af-topological-charge-no-nucleation`
-- **Stage:** 2-fully-proven / charge-colimit and Xi no-nucleation core formalized in Lean;
-  operator-K-theory identification remains
+- **Stage:** 2-fully-proven / finite matrix-loop colimit, physical AF transitions, charge
+  classification, finite-ancestor law, and Xi no-nucleation consequence formalized in Lean;
+  actual C-star AF-limit operator-`K₁` identification remains
 - **Type:** THEOREM / OPERATOR-K-THEORY AND TOPOLOGICAL-PHASE NO-GO
 - **Scientific status:** `[PROVED; BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Source:** independent pivot into quasi-local quantum spin systems and operator K-theory; separate
@@ -258,11 +259,26 @@ instance:
 The latter uses Hardy's theorem to construct an actual nonzero-charge Xi boundary circle and rules
 out every uniformly convergent sequence of continuous periodic zero-winding loops.
 
-All these declarations pass direct Lean checks, targeted leaf builds, and axiom audits with only
-Lean's standard `propext`, `Classical.choice`, and `Quot.sound`.  Remaining exact Stage-3 gap is the
-operator-K-theory connector identifying `K_1(C(S^1) tensor A)` and the finite matrix-stage `K_1`
-groups with this concrete charge direct limit.  The present tree has no operator K-theory
-infrastructure, so the card is not promoted yet.
+`formal/GaloisForLFunctions/RHTower/PrimeAFMatrixOperatorKOneDirectLimit.lean` supplies the complete
+matrix-loop colimit layer specialized to this AF circle system.  It constructs each finite-stage
+group as the based-unitary-loop homotopy quotient, proves determinant charge classifies that group,
+proves tensor-identity amplification induces multiplication by the next local dimension, and forms
+the literal directed limit.  Its capstone declarations include:
+
+- `PrimeQuasiLocalCharge.matrixAFOperatorKOneTransition_succ_eq_physical`;
+- `PrimeQuasiLocalCharge.primeAFCircleOperatorKOneEquivChargeLimit`;
+- `PrimeQuasiLocalCharge.primeAFCircleOperatorKOne_has_finiteAncestor`;
+- `PrimeQuasiLocalCharge.nonzero_primeAFCircleOperatorKOne_has_nonzero_finiteAncestor`;
+- `PrimeQuasiLocalCharge.primeAFCircleOperatorKOne_eq_zero_of_all_ancestors_zero`;
+- `PrimeQuasiLocalCharge.primeAFCircleOperatorKOneToRational_injective`.
+
+This proves the finite-stage classification `(14)`, the physical transition law, and the resulting
+algebraic colimit calculation.  It does **not** construct the norm-completed UHF algebra `A`, define
+operator `K₁` of `C(S¹) ⊗ A`, or prove continuity `(12)`--`(13)`.  Treating the algebraic colimit as
+that analytic `K₁` group by definition would be the forbidden simplification.  The actual C-star
+completion/continuity identification is therefore the exact remaining Stage-3 obligation.  All
+implemented declarations pass direct Lean checks, targeted leaf builds, and axiom audits using only
+Lean's standard `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## 8. Parent and novelty boundary
 
@@ -294,18 +310,22 @@ thermodynamic limit cannot be the missing source of divisor winding.
 - [x] algebraic AF charge direct limit and finite-ancestor theorem formalized in Lean
 - [x] norm-regular no-nucleation theorem formalized in Lean
 - [x] unconditional nonzero Xi boundary charge and no-uniform-limit consequence formalized in Lean
-- [ ] operator-K-theory/Morita/Bott identification with the concrete charge direct limit formalized
+- [x] finite matrix-circle loop-group/determinant classification and algebraic charge colimit
+  identification formalized
+- [ ] actual `K₁(C(S¹) ⊗ A)` construction and C-star inductive-limit continuity identification
+  formalized
 - [x] parent-theory audit completed; classified as bridge
 
 ## Formalization audit — 2026-08-25
 
-Corpus and current mathlib API contain no operator `K_1` construction, C-star inductive-limit
-continuity theorem, Morita invariance, or Bott-periodicity interface from which the remaining
-connector can be assembled.  Existing `AFChargeLimit` and Xi winding theorems close the concrete
-charge and no-nucleation content, but identifying that algebraic carrier with
+At audit time, corpus and current mathlib API contained no operator `K_1` construction, C-star
+inductive-limit continuity theorem, Morita invariance, or Bott-periodicity interface from which the
+remaining connector could be assembled.  Existing `AFChargeLimit` and Xi winding theorems closed
+the concrete charge and no-nucleation content, but identifying that algebraic carrier with
 `K_1(C(S^1) tensor A)` without defining operator K-theory would be a simplification/provider shell.
-Exact completion therefore requires a new foundational operator-K-theory development; card remains
-Stage 2.
+This audit identified two layers.  `PrimeAFMatrixOperatorKOneDirectLimit.lean` subsequently closed
+the finite-stage and algebraic-colimit layer.  The norm-completed C-star and operator-`K₁`
+continuity layer remains; see the final audit below.
 
 ## Finite-stage determinant split — 2026-08-25
 
@@ -324,7 +344,8 @@ reports only `propext`, `Classical.choice`, and `Quot.sound`.  Remaining finite-
 injectivity of determinant, equivalently simple connectivity of `SU(n)`; current Mathlib and corpus
 contain path connectivity but no sphere/fibration homotopy sequence or `SimplyConnectedSpace`
 instance for finite special-unitary groups.  C-star inductive-limit continuity remains after this
-kernel theorem.  No hypothesis shell was added; card remains Stage 2.
+kernel theorem.  No hypothesis shell was added.  The later stabilization and direct-limit modules
+close the finite-stage kernel and algebraic-colimit obligations, but not C-star continuity.
 
 ## Finite-stage kernel reduction and logarithm charts — 2026-08-25
 
@@ -357,4 +378,35 @@ endpoint-fixed contraction whenever that loop lies in the rotated chart.  Togeth
 `LoopOpenCoverDecomposition.lean`, this leaves the global kernel step as the concrete spectral
 cover problem: cover `SU(n+1)` by trace-zero rotated logarithm charts and prove the required chart
 intersections path connected.  AF C-star inductive-limit continuity remains after that global
-finite-stage theorem.  Card remains Stage 2.
+finite-stage theorem.  This recorded obligation was subsequently closed by explicit Householder
+completion and unitary-group stabilization, followed by the constructive AF direct limit below.
+
+## Algebraic connector audit — 2026-08-25
+
+`formal/GaloisForLFunctions/HTGeometry/FiniteUnitaryFundamentalGroupStabilization.lean` constructs
+Householder completion charts and proves
+`unitaryEmbedSuccFundamentalGroupMap_surjective`.  Combined with the determinant split, this yields
+`finiteUnitaryDeterminantKOneMap_injective_all` and
+`subsingleton_fundamentalGroup_finiteSpecialUnitary` in
+`formal/GaloisForLFunctions/RHTower/PrimeAFMatrixDeterminantSplit.lean`.
+
+`formal/GaloisForLFunctions/RHTower/PrimeAFMatrixOperatorKOneDirectLimit.lean` then constructs the
+specialized matrix-circle loop-group system.  It proves finite-stage determinant charge is
+bijective, physical tensor amplification is exactly the system transition and multiplies charge by
+the new local dimension, and the resulting direct limit is equivalent to `AFChargeLimit`.  Hence
+every class has a finite ancestor, every nonzero class has a nonzero finite ancestor, and vanishing
+of every finite ancestor forces vanishing in the limit.  The faithful rational charge map records
+the normalized denominator law.
+
+Verification completed with direct source checks and targeted leaf builds only.  Final targeted
+build:
+
+```text
+lake build GaloisForLFunctions.RHTower.PrimeAFMatrixOperatorKOneDirectLimit
+Build completed successfully (8788 jobs).
+```
+
+Capstone `#print axioms` checks report exactly `[propext, Classical.choice, Quot.sound]`.  No `sorry`,
+`admit`, new `axiom`, `opaque`, or `unsafe` declaration was introduced.  This algebraic support
+layer is dependency-closed.  Card remains Stage 2 until a literal norm-completed prime UHF algebra,
+its circle algebra, operator `K₁`, and the continuity equivalence with this colimit are formalized.

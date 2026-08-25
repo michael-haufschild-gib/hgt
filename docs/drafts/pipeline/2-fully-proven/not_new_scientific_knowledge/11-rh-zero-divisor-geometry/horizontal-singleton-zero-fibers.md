@@ -410,3 +410,18 @@ silently treated as the sharp Levinson asymptotic. Remaining analytic inputs are
 evaluation of the full and omitted long tails, sharp summation of the displaced mixed-cross
 coefficients, and the published parameter optimization. Exact decimal still requires both PRZZ
 proportion providers, so card remains at stage 2.
+
+## Lean status update (2026-08-25) — scalar `> 1/3` certificate closed
+
+The exact full long energy is now a named quadratic form in base, mixed, and differentiated
+harmonic Barban--Vehov moments. Independently, the classical linear Young choice
+`P(x)=x`, `Q(x)=1-x`, `R=13/10`, `theta=1/2` has been evaluated in Lean by exact antiderivatives and
+rational exponential bounds. The resulting unconditional theorem is
+`one_sub_log_levinsonLinearOptimizationConstant_div_gt_one_third`.
+
+New declarations pass direct file check, exact leaf build, and `#print axioms` with only
+`propext, Classical.choice, Quot.sound`; both leaves are wired without an umbrella build. This
+closes scalar optimization for the cheaper odd-fibre non-vacuity route. It does not assume or
+replace the missing analytic mollified mean-value asymptotic. Sharp long-tail and mixed-cross
+evaluation remain open; exact advertised decimal still requires unconditional Lean providers for
+both PRZZ proportions. Card remains at stage 2.
