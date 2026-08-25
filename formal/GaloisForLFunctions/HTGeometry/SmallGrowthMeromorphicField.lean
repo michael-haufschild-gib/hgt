@@ -195,13 +195,26 @@ def add {x y : EntireField ℂ} (p : EntireFractionPresentation x)
   denominator_ne_zero := mul_ne_zero p.denominator_ne_zero q.denominator_ne_zero
   eq_div := by
     have hp : algebraMap (entireSubring ℂ) (EntireField ℂ) p.denominator ≠ 0 :=
-      (IsFractionRing.injective (entireSubring ℂ) (EntireField ℂ)).ne p.denominator_ne_zero
+      by simpa only [map_zero] using
+        (IsFractionRing.injective (entireSubring ℂ) (EntireField ℂ)).ne
+          p.denominator_ne_zero
     have hq : algebraMap (entireSubring ℂ) (EntireField ℂ) q.denominator ≠ 0 :=
-      (IsFractionRing.injective (entireSubring ℂ) (EntireField ℂ)).ne q.denominator_ne_zero
-    rw [p.eq_div, q.eq_div]
-    simp only [map_add, map_mul]
-    field_simp
-    ring
+      by simpa only [map_zero] using
+        (IsFractionRing.injective (entireSubring ℂ) (EntireField ℂ)).ne
+          q.denominator_ne_zero
+    calc
+      x + y =
+          algebraMap (entireSubring ℂ) (EntireField ℂ) p.numerator /
+              algebraMap (entireSubring ℂ) (EntireField ℂ) p.denominator +
+            algebraMap (entireSubring ℂ) (EntireField ℂ) q.numerator /
+              algebraMap (entireSubring ℂ) (EntireField ℂ) q.denominator :=
+        congrArg₂ (· + ·) p.eq_div q.eq_div
+      _ = algebraMap (entireSubring ℂ) (EntireField ℂ)
+              (p.numerator * q.denominator + q.numerator * p.denominator) /
+            algebraMap (entireSubring ℂ) (EntireField ℂ)
+              (p.denominator * q.denominator) := by
+        simp only [map_add, map_mul]
+        field_simp
 
 /-- The common-denominator sum agrees codiscretely with pointwise addition. -/
 theorem function_add_eventuallyEq {x y : EntireField ℂ}
@@ -209,9 +222,13 @@ theorem function_add_eventuallyEq {x y : EntireField ℂ}
     (p.add q).function =ᶠ[Filter.codiscrete ℂ] p.function + q.function := by
   filter_upwards [p.denominator_eventually_ne_zero,
     q.denominator_eventually_ne_zero] with z hp hq
-  simp only [function, add, Pi.add_apply, Pi.mul_apply]
+  change
+    ((p.numerator : ℂ → ℂ) z * (q.denominator : ℂ → ℂ) z +
+        (q.numerator : ℂ → ℂ) z * (p.denominator : ℂ → ℂ) z) /
+        ((p.denominator : ℂ → ℂ) z * (q.denominator : ℂ → ℂ) z) =
+      (p.numerator : ℂ → ℂ) z / (p.denominator : ℂ → ℂ) z +
+        (q.numerator : ℂ → ℂ) z / (q.denominator : ℂ → ℂ) z
   field_simp
-  ring
 
 /-- Product of two entire-fraction presentations. -/
 def mul {x y : EntireField ℂ} (p : EntireFractionPresentation x)
@@ -220,10 +237,19 @@ def mul {x y : EntireField ℂ} (p : EntireFractionPresentation x)
   denominator := p.denominator * q.denominator
   denominator_ne_zero := mul_ne_zero p.denominator_ne_zero q.denominator_ne_zero
   eq_div := by
-    rw [p.eq_div, q.eq_div]
-    simp only [map_mul]
-    field_simp
-    ring
+    calc
+      x * y =
+          (algebraMap (entireSubring ℂ) (EntireField ℂ) p.numerator /
+              algebraMap (entireSubring ℂ) (EntireField ℂ) p.denominator) *
+            (algebraMap (entireSubring ℂ) (EntireField ℂ) q.numerator /
+              algebraMap (entireSubring ℂ) (EntireField ℂ) q.denominator) :=
+        congrArg₂ (· * ·) p.eq_div q.eq_div
+      _ = algebraMap (entireSubring ℂ) (EntireField ℂ)
+              (p.numerator * q.numerator) /
+            algebraMap (entireSubring ℂ) (EntireField ℂ)
+              (p.denominator * q.denominator) := by
+        simp only [map_mul]
+        ring
 
 /-- The product presentation agrees pointwise off the two denominator divisors. -/
 theorem function_mul_eventuallyEq {x y : EntireField ℂ}
@@ -231,9 +257,11 @@ theorem function_mul_eventuallyEq {x y : EntireField ℂ}
     (p.mul q).function =ᶠ[Filter.codiscrete ℂ] p.function * q.function := by
   filter_upwards [p.denominator_eventually_ne_zero,
     q.denominator_eventually_ne_zero] with z hp hq
-  simp only [function, mul, Pi.mul_apply]
+  change ((p.numerator : ℂ → ℂ) z * (q.numerator : ℂ → ℂ) z) /
+      ((p.denominator : ℂ → ℂ) z * (q.denominator : ℂ → ℂ) z) =
+    ((p.numerator : ℂ → ℂ) z / (p.denominator : ℂ → ℂ) z) *
+      ((q.numerator : ℂ → ℂ) z / (q.denominator : ℂ → ℂ) z)
   field_simp
-  ring
 
 /-- The numerator of a presentation of a nonzero fraction is nonzero. -/
 theorem numerator_ne_zero {x : EntireField ℂ} (p : EntireFractionPresentation x)
@@ -249,16 +277,159 @@ def inv {x : EntireField ℂ} (p : EntireFractionPresentation x) (hx : x ≠ 0) 
   denominator := p.numerator
   denominator_ne_zero := p.numerator_ne_zero hx
   eq_div := by
-    rw [p.eq_div]
-    simp only [inv_div]
+    calc
+      x⁻¹ = (algebraMap (entireSubring ℂ) (EntireField ℂ) p.numerator /
+          algebraMap (entireSubring ℂ) (EntireField ℂ) p.denominator)⁻¹ :=
+        congrArg Inv.inv p.eq_div
+      _ = algebraMap (entireSubring ℂ) (EntireField ℂ) p.denominator /
+          algebraMap (entireSubring ℂ) (EntireField ℂ) p.numerator := inv_div _ _
 
 @[simp]
 theorem function_inv {x : EntireField ℂ} (p : EntireFractionPresentation x) (hx : x ≠ 0) :
     (p.inv hx).function = p.function⁻¹ := by
   funext z
-  simp only [function, inv, Pi.inv_apply, inv_div]
+  change (p.denominator : ℂ → ℂ) z / (p.numerator : ℂ → ℂ) z =
+    ((p.numerator : ℂ → ℂ) z / (p.denominator : ℂ → ℂ) z)⁻¹
+  exact (inv_div _ _).symm
+
+/-- Additive inverse presentation. -/
+def neg {x : EntireField ℂ} (p : EntireFractionPresentation x) :
+    EntireFractionPresentation (-x) where
+  numerator := -p.numerator
+  denominator := p.denominator
+  denominator_ne_zero := p.denominator_ne_zero
+  eq_div := by
+    calc
+      -x = -(algebraMap (entireSubring ℂ) (EntireField ℂ) p.numerator /
+          algebraMap (entireSubring ℂ) (EntireField ℂ) p.denominator) :=
+        congrArg Neg.neg p.eq_div
+      _ = algebraMap (entireSubring ℂ) (EntireField ℂ) (-p.numerator) /
+          algebraMap (entireSubring ℂ) (EntireField ℂ) p.denominator := by
+        rw [map_neg, neg_div]
+
+@[simp]
+theorem function_neg {x : EntireField ℂ} (p : EntireFractionPresentation x) :
+    p.neg.function = -p.function := by
+  funext z
+  change (-(p.numerator : ℂ → ℂ)) z / (p.denominator : ℂ → ℂ) z =
+    -((p.numerator : ℂ → ℂ) z / (p.denominator : ℂ → ℂ) z)
+  rw [Pi.neg_apply, neg_div]
 
 end EntireFractionPresentation
+
+/-! ## The small-growth carrier -/
+
+/-- A global meromorphic fraction has small growth when one entire-fraction representative has
+Nevanlinna characteristic `o(r)`.  Codiscrete invariance makes this independent of totalized values
+at poles. -/
+def HasSmallGrowth (x : EntireField ℂ) : Prop :=
+  ∃ p : EntireFractionPresentation x, characteristic p.function ⊤ =o[atTop] id
+
+theorem characteristic_const_isLittleO (c : ℂ) :
+    characteristic (fun _ : ℂ => c) ⊤ =o[atTop] id := by
+  apply (Asymptotics.isLittleO_const_id_atTop (Real.posLog ‖c‖)).congr'
+  · exact Filter.Eventually.of_forall fun r =>
+      (GaloisForLFunctions.Nevanlinna.characteristic_const_eq c r).symm
+  · exact EventuallyEq.rfl
+
+theorem hasSmallGrowth_zero : HasSmallGrowth (0 : EntireField ℂ) := by
+  let p : EntireFractionPresentation (0 : EntireField ℂ) :=
+    { numerator := 0
+      denominator := 1
+      denominator_ne_zero := one_ne_zero
+      eq_div := by simp }
+  refine ⟨p, ?_⟩
+  have hfun : p.function = fun _ : ℂ => 0 := by
+    funext z
+    change (0 : ℂ) / 1 = 0
+    simp
+  rw [hfun]
+  exact characteristic_const_isLittleO 0
+
+theorem hasSmallGrowth_one : HasSmallGrowth (1 : EntireField ℂ) := by
+  let p : EntireFractionPresentation (1 : EntireField ℂ) :=
+    { numerator := 1
+      denominator := 1
+      denominator_ne_zero := one_ne_zero
+      eq_div := by simp }
+  refine ⟨p, ?_⟩
+  have hfun : p.function = fun _ : ℂ => 1 := by
+    funext z
+    change (1 : ℂ) / 1 = 1
+    simp
+  rw [hfun]
+  exact characteristic_const_isLittleO 1
+
+theorem HasSmallGrowth.add {x y : EntireField ℂ}
+    (hx : HasSmallGrowth x) (hy : HasSmallGrowth y) :
+    HasSmallGrowth (x + y) := by
+  obtain ⟨p, hp⟩ := hx
+  obtain ⟨q, hq⟩ := hy
+  refine ⟨p.add q, ?_⟩
+  have hsum := characteristic_add_isLittleO p.meromorphic q.meromorphic hp hq
+  have hchar : characteristic (p.add q).function ⊤
+      =ᶠ[atTop] characteristic (p.function + q.function) ⊤ := by
+    filter_upwards [eventually_ge_atTop (1 : ℝ)] with r hr
+    exact characteristic_congr_codiscrete (p.add q).meromorphic
+      (p.meromorphic.add q.meromorphic) (p.function_add_eventuallyEq q)
+      (ne_of_gt (zero_lt_one.trans_le hr))
+  exact hsum.congr' hchar.symm (EventuallyEq.rfl)
+
+theorem HasSmallGrowth.mul {x y : EntireField ℂ}
+    (hx : HasSmallGrowth x) (hy : HasSmallGrowth y) :
+    HasSmallGrowth (x * y) := by
+  by_cases hx0 : x = 0
+  · rw [hx0, zero_mul]
+    exact hasSmallGrowth_zero
+  by_cases hy0 : y = 0
+  · rw [hy0, mul_zero]
+    exact hasSmallGrowth_zero
+  obtain ⟨p, hp⟩ := hx
+  obtain ⟨q, hq⟩ := hy
+  refine ⟨p.mul q, ?_⟩
+  have hprod := characteristic_mul_isLittleO p.meromorphic
+    (p.meromorphicOrderAt_ne_top hx0) q.meromorphic
+    (q.meromorphicOrderAt_ne_top hy0) hp hq
+  have hchar : characteristic (p.mul q).function ⊤
+      =ᶠ[atTop] characteristic (p.function * q.function) ⊤ := by
+    filter_upwards [eventually_ge_atTop (1 : ℝ)] with r hr
+    exact characteristic_congr_codiscrete (p.mul q).meromorphic
+      (p.meromorphic.mul q.meromorphic) (p.function_mul_eventuallyEq q)
+      (ne_of_gt (zero_lt_one.trans_le hr))
+  exact hprod.congr' hchar.symm (EventuallyEq.rfl)
+
+theorem HasSmallGrowth.inv {x : EntireField ℂ} (hx : HasSmallGrowth x) :
+    HasSmallGrowth x⁻¹ := by
+  by_cases hx0 : x = 0
+  · rw [hx0, inv_zero]
+    exact hasSmallGrowth_zero
+  obtain ⟨p, hp⟩ := hx
+  refine ⟨p.inv hx0, ?_⟩
+  rw [p.function_inv hx0]
+  exact characteristic_inv_isLittleO p.meromorphic hp
+
+theorem HasSmallGrowth.neg {x : EntireField ℂ} (hx : HasSmallGrowth x) :
+    HasSmallGrowth (-x) := by
+  by_cases hx0 : x = 0
+  · rw [hx0, neg_zero]
+    exact hasSmallGrowth_zero
+  obtain ⟨p, hp⟩ := hx
+  refine ⟨p.neg, ?_⟩
+  let c : ℂ → ℂ := fun _ => -1
+  have hcmero : Meromorphic c := fun _ => analyticAt_const.meromorphicAt
+  have hcorder : ∀ z, meromorphicOrderAt c z ≠ ⊤ := by
+    intro z
+    rw [meromorphicOrderAt_const]
+    simp [c]
+  have hcsmall : characteristic c ⊤ =o[atTop] id :=
+    characteristic_const_isLittleO (-1)
+  have hprod := characteristic_mul_isLittleO hcmero hcorder p.meromorphic
+    (p.meromorphicOrderAt_ne_top hx0) hcsmall hp
+  have hfun : c * p.function = -p.function := by
+    funext z
+    simp [c]
+  rw [p.function_neg, ← hfun]
+  exact hprod
 
 end
 

@@ -36,6 +36,61 @@ theorem measurable_circleCayleyInverse : Measurable circleCayleyInverse :=
   simpa [circleCayley_measurableEmbedding] using
     circleCayley_measurableEmbedding.equivRange.symm_apply_apply x
 
+theorem abs_arg_le_pi_div_two_of_re_nonneg {z : ℂ}
+    (hz : z ≠ 0) (hre : 0 ≤ z.re) :
+    |z.arg| ≤ Real.pi / 2 := by
+  rw [abs_le]
+  have hcos : 0 ≤ Real.cos z.arg := by
+    rw [Complex.cos_arg hz]
+    exact div_nonneg hre (norm_nonneg z)
+  constructor
+  · by_contra hlow
+    rw [not_le] at hlow
+    have hhalfMem : Real.pi / 2 ∈ Set.Icc (0 : ℝ) Real.pi := by
+      constructor <;> linarith [Real.pi_pos]
+    have hnegMem : -z.arg ∈ Set.Icc (0 : ℝ) Real.pi := by
+      constructor
+      · linarith [Real.pi_div_two_pos]
+      · linarith [Complex.neg_pi_lt_arg z]
+    have hlt := Real.strictAntiOn_cos hhalfMem hnegMem (by linarith)
+    rw [Real.cos_pi_div_two, Real.cos_neg] at hlt
+    linarith
+  · by_contra hupp
+    rw [not_le] at hupp
+    have hhalfMem : Real.pi / 2 ∈ Set.Icc (0 : ℝ) Real.pi := by
+      constructor <;> linarith [Real.pi_pos]
+    have hargMem : z.arg ∈ Set.Icc (0 : ℝ) Real.pi := by
+      constructor
+      · linarith [Real.pi_div_two_pos]
+      · exact Complex.arg_le_pi z
+    have hlt := Real.strictAntiOn_cos hhalfMem hargMem hupp
+    rw [Real.cos_pi_div_two] at hlt
+    linarith
+
+theorem exp_two_mul_I_mul_arg_eq_div_conj {z : ℂ} (hz : z ≠ 0) :
+    Complex.exp (2 * I * (z.arg : ℂ)) = z / (starRingEnd ℂ) z := by
+  have hr : ((‖z‖ : ℝ) : ℂ) ≠ 0 := by
+    exact_mod_cast (norm_pos_iff.mpr hz).ne'
+  have hp := Complex.norm_mul_exp_arg_mul_I z
+  have harg : (starRingEnd ℂ) ((z.arg : ℂ) * I) =
+      -(z.arg : ℂ) * I := by
+    apply Complex.ext <;> simp [Complex.mul_re, Complex.mul_im]
+  symm
+  calc
+    z / (starRingEnd ℂ) z =
+        ((‖z‖ : ℝ) : ℂ) * Complex.exp ((z.arg : ℂ) * I) /
+          (starRingEnd ℂ)
+            (((‖z‖ : ℝ) : ℂ) * Complex.exp ((z.arg : ℂ) * I)) := by
+      rw [hp]
+    _ = Complex.exp ((z.arg : ℂ) * I) /
+        Complex.exp (-(z.arg : ℂ) * I) := by
+      simp only [map_mul, Complex.conj_ofReal, ← Complex.exp_conj, harg]
+      field_simp
+    _ = Complex.exp (2 * I * (z.arg : ℂ)) := by
+      rw [← Complex.exp_sub]
+      congr 1
+      ring
+
 private theorem continuousAt_sectorCayleyValue {w : ℂ}
     (hw : |w.re| ≤ Real.pi / 2) :
     ContinuousAt sectorCayleyValue w := by
