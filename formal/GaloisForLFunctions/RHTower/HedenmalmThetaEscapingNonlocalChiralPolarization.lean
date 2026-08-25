@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.NonlocalSourceChiralPolarization
+import GaloisForLFunctions.HTGeometry.LocallyUniformProduct
 import GaloisForLFunctions.RHTower.HedenmalmThetaSourceSignedOrdinaryDeterminantCompletion
 import GaloisForLFunctions.RHTower.RoutePPrimeGammaCubicCarrierIdentification
 import GaloisForLFunctions.RHTower.XiCRealZeroApproximationErrorFloor
@@ -65,6 +66,19 @@ theorem routePPrimeGammaEscapingChiralOperator_metricAdjoint {N : ℕ}
   sourceEscapingChiralOperator_metricAdjoint k
     (routePPrimeGammaCubicKernelMatrix R n kappa)
 
+/-- Exact divisor cost of positive chiralization: the prime--Gamma eigenvalue divisor is replaced
+by its squared singular-value divisor, with all coefficient interference retained in `Cᴴ C`. -/
+theorem routePPrimeGammaEscapingChiralOperator_divisor_eq_gramDet {N : ℕ}
+    (k : ℕ) (R : ℝ) (n : Fin N → ℕ) (kappa : Fin N → ℝ) (z : ℂ) :
+    ((1 : Matrix (Fin N ⊕ Fin N) (Fin N ⊕ Fin N) ℂ) -
+      z • routePPrimeGammaEscapingChiralOperator k R n kappa).det =
+      ((1 : Matrix (Fin N) (Fin N) ℂ) - (z * z) •
+        ((routePPrimeGammaCubicKernelMatrix R n kappa)ᴴ *
+          routePPrimeGammaCubicKernelMatrix R n kappa)).det := by
+  unfold routePPrimeGammaEscapingChiralOperator
+  rw [sourceEscapingChiralOperator_divisor_eq,
+    sourceHermitianDilationDivisor_eq_gramDet]
+
 theorem routePPrimeGammaEscapingChiralOperator_divisor_zero_im_eq_zero {N : ℕ}
     (k : ℕ) (R : ℝ) (n : Fin N → ℕ) (kappa : Fin N → ℝ) {z : ℂ}
     (hz : ((1 : Matrix (Fin N ⊕ Fin N) (Fin N ⊕ Fin N) ℂ) -
@@ -113,6 +127,20 @@ def thetaSourceChiralDet (k : ℕ) (z : ℂ) : ℂ :=
 def thetaSourceChiralXiCandidate (k : ℕ) (z : ℂ) : ℂ :=
   XiC 0 * thetaSourceChiralDet k z
 
+/-- Full-index Hermitian dilation of the corrected signed source kernel. -/
+def thetaSourceSignedChiralKernel (k : ℕ) :
+    (thetaIndex ⊕ thetaIndex) × (thetaIndex ⊕ thetaIndex) → ℂ :=
+  sourceHermitianDilationKernel (thetaSourceSignedKernel k)
+
+/-- Forced infinite source target of positive chiralization. -/
+def thetaSourceChiralLimitKernel :
+    (thetaIndex ⊕ thetaIndex) × (thetaIndex ⊕ thetaIndex) → ℂ :=
+  sourceHermitianDilationKernel (-thetaKernelMatrix)
+
+/-- Forced compact-open limit of the normalized finite chiral divisors. -/
+def thetaSourceChiralEntireLimit (z : ℂ) : ℂ :=
+  XiC 0 * entireDet2 thetaSourceChiralLimitKernel z
+
 /-- Exact signed-source provenance survives in one chiral block. -/
 @[simp] theorem thetaSourceHermitianDilation_sourceBlock
     (k : ℕ) (i j : ↥(thetaSourceSignedCutoff k)) :
@@ -152,6 +180,16 @@ theorem thetaSourceChiralDet_eq_sourceDilationDivisor (k : ℕ) :
   funext z
   exact sourceEscapingChiralOperator_divisor_eq k (thetaSourceSignedFiniteMatrix k) z
 
+/-- Exact finite divisor change.  Positivity retains the complete signed source matrix inside
+`Cᴴ C`, but replaces its ordinary divisor by the squared singular-value divisor. -/
+theorem thetaSourceChiralDet_eq_sourceGramDet (k : ℕ) (z : ℂ) :
+    thetaSourceChiralDet k z =
+      ((1 : Matrix ↥(thetaSourceSignedCutoff k) ↥(thetaSourceSignedCutoff k) ℂ) -
+        (z * z) • ((thetaSourceSignedFiniteMatrix k)ᴴ *
+          thetaSourceSignedFiniteMatrix k)).det := by
+  rw [thetaSourceChiralDet_eq_sourceDilationDivisor,
+    sourceHermitianDilationDivisor_eq_gramDet]
+
 theorem differentiable_thetaSourceChiralDet (k : ℕ) :
     Differentiable ℂ (thetaSourceChiralDet k) := by
   rw [thetaSourceChiralDet_eq_sourceDilationDivisor]
@@ -171,6 +209,87 @@ theorem thetaSourceChiralXiCandidate_zero_im_eq_zero (k : ℕ) {z : ℂ}
     (hz : thetaSourceChiralXiCandidate k z = 0) : z.im = 0 := by
   apply thetaSourceChiralDet_zero_im_eq_zero k
   exact (mul_eq_zero.mp hz).resolve_left XiC_zero_ne
+
+/-- Infinite finite-support determinant is exactly the escaped finite matrix divisor. -/
+theorem thetaSourceChiralDet_eq_entireDet2_signedChiralKernel (k : ℕ) :
+    thetaSourceChiralDet k = entireDet2 (thetaSourceSignedChiralKernel k) := by
+  rw [thetaSourceChiralDet_eq_sourceDilationDivisor]
+  exact (entireDet2_sourceHermitianDilationKernel_eq_sourceHermitianDilationDivisor
+    (isHS_thetaSourceSignedKernel k) (thetaSourceSignedKernel_support k)).symm
+
+theorem thetaSourceChiralXiCandidate_eq_entireDet2_signedChiralKernel
+    (k : ℕ) (z : ℂ) :
+    thetaSourceChiralXiCandidate k z =
+      XiC 0 * entireDet2 (thetaSourceSignedChiralKernel k) z := by
+  rw [thetaSourceChiralXiCandidate,
+    thetaSourceChiralDet_eq_entireDet2_signedChiralKernel]
+
+theorem isHS_thetaSourceSignedChiralKernel (k : ℕ) :
+    IsHS (thetaSourceSignedChiralKernel k) :=
+  isHS_sourceHermitianDilationKernel (isHS_thetaSourceSignedKernel k)
+
+theorem isHS_thetaSourceChiralLimitKernel : IsHS thetaSourceChiralLimitKernel :=
+  isHS_sourceHermitianDilationKernel isHS_neg_thetaKernelMatrix
+
+/-- Escaping chiral kernels retain exact Hilbert--Schmidt convergence; norm cost is `sqrt 2`. -/
+theorem thetaSourceSignedChiralKernel_tendsto_limit :
+    Tendsto (fun k => hsNorm (thetaSourceSignedChiralKernel k -
+      thetaSourceChiralLimitKernel)) atTop (nhds 0) := by
+  have hfun :
+      (fun k => hsNorm (thetaSourceSignedChiralKernel k -
+        thetaSourceChiralLimitKernel)) =
+      (fun k => Real.sqrt 2 *
+        hsNorm (thetaSourceSignedKernel k - (-thetaKernelMatrix))) := by
+    funext k
+    rw [thetaSourceSignedChiralKernel, thetaSourceChiralLimitKernel,
+      ← sourceHermitianDilationKernel_sub,
+      hsNorm_sourceHermitianDilationKernel]
+    exact isHS_sub (isHS_thetaSourceSignedKernel k) isHS_neg_thetaKernelMatrix
+  rw [hfun]
+  simpa using thetaSourceSignedKernel_tendsto_source.const_mul (Real.sqrt 2)
+
+/-- Unconditional compact-open limit after chiral positivity: singular-value source target. -/
+theorem thetaSourceChiralXiCandidate_tendstoLocallyUniformly_forcedLimit :
+    TendstoLocallyUniformly thetaSourceChiralXiCandidate
+      thetaSourceChiralEntireLimit atTop := by
+  have hdet := tendstoLocallyUniformly_entireDet2_of_hsNorm_sub_tendsto_zero
+    thetaSourceSignedChiralKernel thetaSourceChiralLimitKernel
+    isHS_thetaSourceSignedChiralKernel isHS_thetaSourceChiralLimitKernel
+    thetaSourceSignedChiralKernel_tendsto_limit
+  have hconst : TendstoLocallyUniformly
+      (fun _ : ℕ => fun _ : ℂ => XiC 0) (fun _ : ℂ => XiC 0) atTop := by
+    rw [tendstoLocallyUniformly_iff_forall_isCompact]
+    intro K hK
+    rw [Metric.tendstoUniformlyOn_iff]
+    intro epsilon hepsilon
+    exact Filter.Eventually.of_forall (fun k z hz => by simpa using hepsilon)
+  have hmul := tendstoLocallyUniformly_mul hconst hdet
+    continuous_const (differentiable_entireDet2 isHS_thetaSourceChiralLimitKernel).continuous
+  rw [show thetaSourceChiralXiCandidate =
+      (fun k z => XiC 0 * entireDet2 (thetaSourceSignedChiralKernel k) z) by
+    funext k z
+    exact thetaSourceChiralXiCandidate_eq_entireDet2_signedChiralKernel k z]
+  exact hmul
+
+/-- Exact fidelity classification: Xi convergence occurs precisely when forced chiral source
+limit equals Xi. -/
+theorem thetaSourceChiralXiCandidate_tendstoLocallyUniformly_XiC_iff_limit_eq :
+    TendstoLocallyUniformly thetaSourceChiralXiCandidate XiC atTop ↔
+      thetaSourceChiralEntireLimit = XiC := by
+  constructor
+  · intro hXi
+    funext z
+    have hforcedPoint :=
+      ((tendstoLocallyUniformly_iff_forall_isCompact.mp
+        thetaSourceChiralXiCandidate_tendstoLocallyUniformly_forcedLimit)
+        {z} isCompact_singleton).tendsto_at (Set.mem_singleton z)
+    have hXiPoint :=
+      ((tendstoLocallyUniformly_iff_forall_isCompact.mp hXi)
+        {z} isCompact_singleton).tendsto_at (Set.mem_singleton z)
+    exact tendsto_nhds_unique hforcedPoint hXiPoint
+  · intro hlimit
+    simpa only [hlimit] using
+      thetaSourceChiralXiCandidate_tendstoLocallyUniformly_forcedLimit
 
 /-- Compact-open Xi fidelity of this real-divisor family would prove RH. -/
 theorem riemannHypothesis_of_thetaSourceChiralXiCandidate_tendstoLocallyUniformly
@@ -215,11 +334,16 @@ theorem thetaSourceEscapingNonlocalPolarization_certificate :
     (∀ k, thetaSourceEscapingNonlocalPolarization k * thetaSourceEscapingChiralOperator k =
       (thetaSourceEscapingChiralOperator k)ᴴ *
         thetaSourceEscapingNonlocalPolarization k) ∧
+    (∀ k z, thetaSourceChiralDet k z =
+      ((1 : Matrix ↥(thetaSourceSignedCutoff k) ↥(thetaSourceSignedCutoff k) ℂ) -
+        (z * z) • ((thetaSourceSignedFiniteMatrix k)ᴴ *
+          thetaSourceSignedFiniteMatrix k)).det) ∧
     (∀ k z, thetaSourceChiralDet k z = 0 → z.im = 0) ∧
     (RiemannHypothesis ∨
       ¬ TendstoLocallyUniformly thetaSourceChiralXiCandidate XiC atTop) := by
   exact ⟨thetaSourceEscapingNonlocalPolarization_posDef,
     thetaSourceEscapingChiralOperator_metricAdjoint,
+    thetaSourceChiralDet_eq_sourceGramDet,
     thetaSourceChiralDet_zero_im_eq_zero,
     riemannHypothesis_or_not_thetaSourceChiralXiCandidate_tendstoLocallyUniformly⟩
 

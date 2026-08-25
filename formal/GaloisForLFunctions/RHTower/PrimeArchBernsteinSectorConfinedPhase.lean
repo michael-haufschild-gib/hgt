@@ -14,10 +14,10 @@ strict elliptic bound
 
 `‖u‖ + ‖1 - u‖ < 501 / 500`.
 
-The complete Bernstein total variation and Loschmidt purity therefore have exponential bases
-`501 / 500` and `(501 / 500)^2 = 251001 / 250000 < 201 / 200`, respectively.  Thus
-failure of RH can occupy only a strict five-per-mille purity window above the critical exponent
-one.
+The initial complete-Bernstein bound is `501 / 500`; the same geometry admits the tighter
+rational base `100197 / 100000`.  The older exact square formula is retained for downstream
+compatibility.  Failure of RH can therefore occupy only a strict near-critical exponential
+window above exponent one.
 -/
 
 open Complex Filter Topology
@@ -35,6 +35,18 @@ def xiSectorConfinedBernsteinAmplitudeBase : ℝ := 501 / 500
 theorem one_lt_xiSectorConfinedBernsteinAmplitudeBase :
     1 < xiSectorConfinedBernsteinAmplitudeBase := by
   norm_num [xiSectorConfinedBernsteinAmplitudeBase]
+
+/-- Tighter rational ellipse ceiling extracted from the same quarter-disk and `1/84` sector
+constraints. -/
+def xiSectorRefinedBernsteinAmplitudeBase : ℝ := 100197 / 100000
+
+theorem one_lt_xiSectorRefinedBernsteinAmplitudeBase :
+    1 < xiSectorRefinedBernsteinAmplitudeBase := by
+  norm_num [xiSectorRefinedBernsteinAmplitudeBase]
+
+theorem xiSectorRefinedBernsteinAmplitudeBase_lt_sectorConfined :
+    xiSectorRefinedBernsteinAmplitudeBase < xiSectorConfinedBernsteinAmplitudeBase := by
+  norm_num [xiSectorRefinedBernsteinAmplitudeBase, xiSectorConfinedBernsteinAmplitudeBase]
 
 theorem xiSectorConfinedBernsteinAmplitudeBase_sq_eq :
     xiSectorConfinedBernsteinAmplitudeBase ^ 2 = 251001 / 250000 := by
@@ -108,6 +120,61 @@ theorem norm_add_norm_one_sub_lt_sectorConfinedBase
   dsimp only [s, r] at hs ⊢
   linarith
 
+/-- Pure geometry with the tightened rational major axis.  The sole inputs remain the strict
+quarter disk, nonnegative real part, and the exact `1/84` orientation sector. -/
+theorem norm_add_norm_one_sub_lt_refinedSectorConfinedBase
+    {u : ℂ} (hr : ‖u‖ < 1 / 4)
+    (hx : 0 ≤ u.re)
+    (hy : u.im ^ 2 ≤ (1 / 84 : ℝ) * u.re ^ 2) :
+    ‖u‖ + ‖1 - u‖ < xiSectorRefinedBernsteinAmplitudeBase := by
+  let r : ℝ := ‖u‖
+  let s : ℝ := ‖1 - u‖
+  let x : ℝ := u.re
+  have hr0 : 0 ≤ r := norm_nonneg u
+  have hs0 : 0 ≤ s := norm_nonneg (1 - u)
+  have hx0 : 0 ≤ x := hx
+  have hrSq : r ^ 2 = x ^ 2 + u.im ^ 2 := by
+    dsimp only [r, x]
+    rw [Complex.sq_norm, Complex.normSq_apply]
+    ring
+  have hrx : r ^ 2 ≤ (85 / 84 : ℝ) * x ^ 2 := by
+    rw [hrSq]
+    dsimp only [x] at hy ⊢
+    nlinarith
+  have hcxSq : ((9941 / 10000 : ℝ) * r) ^ 2 ≤ x ^ 2 := by
+    have hconst : (9941 / 10000 : ℝ) ^ 2 * (85 / 84 : ℝ) < 1 := by
+      norm_num
+    nlinarith [sq_nonneg x]
+  have hcx0 : 0 ≤ (9941 / 10000 : ℝ) * r := by positivity
+  have hcx : (9941 / 10000 : ℝ) * r ≤ x := by
+    nlinarith [sq_nonneg (x + (9941 / 10000 : ℝ) * r)]
+  have hsSq : s ^ 2 = 1 - 2 * x + r ^ 2 := by
+    dsimp only [s, x, r]
+    rw [Complex.sq_norm, Complex.normSq_apply, Complex.sq_norm,
+      Complex.normSq_apply]
+    simp only [sub_re, one_re, sub_im, one_im]
+    ring
+  have hBr : 0 < xiSectorRefinedBernsteinAmplitudeBase - r := by
+    dsimp only [r] at hr ⊢
+    norm_num [xiSectorRefinedBernsteinAmplitudeBase] at hr ⊢
+    linarith
+  have hlinear :
+      2 * (xiSectorRefinedBernsteinAmplitudeBase - 9941 / 10000) * r <
+        xiSectorRefinedBernsteinAmplitudeBase ^ 2 - 1 := by
+    have hcoeff : 0 < xiSectorRefinedBernsteinAmplitudeBase - 9941 / 10000 := by
+      norm_num [xiSectorRefinedBernsteinAmplitudeBase]
+    have hconst :
+        2 * (xiSectorRefinedBernsteinAmplitudeBase - 9941 / 10000) * (1 / 4 : ℝ) <
+          xiSectorRefinedBernsteinAmplitudeBase ^ 2 - 1 := by
+      norm_num [xiSectorRefinedBernsteinAmplitudeBase]
+    nlinarith
+  have hsLt : s ^ 2 < (xiSectorRefinedBernsteinAmplitudeBase - r) ^ 2 := by
+    nlinarith
+  have hs : s < xiSectorRefinedBernsteinAmplitudeBase - r := by
+    nlinarith [sq_nonneg (s + (xiSectorRefinedBernsteinAmplitudeBase - r))]
+  dsimp only [s, r] at hs ⊢
+  linarith
+
 /-- Endpoint normalization preserves the exact atomwise orientation ratio. -/
 theorem xiEndpointNormalizedReciprocalSquare_orientation_sq_le
     (q : XiZeroCopy) :
@@ -151,6 +218,30 @@ theorem xiEndpointBernsteinAtomAmplitudeBase_lt_sectorConfined
     rw [xiEndpointBernsteinAtomAmplitudeBase_eq_one_of_onLine q hline]
     exact one_lt_xiSectorConfinedBernsteinAmplitudeBase
 
+/-- Every endpoint-normalized Xi atom obeys the tightened sector amplitude ceiling. -/
+theorem xiEndpointBernsteinAtomAmplitudeBase_lt_refinedSectorConfined
+    (q : XiZeroCopy) :
+    xiEndpointBernsteinAtomAmplitudeBase q <
+      xiSectorRefinedBernsteinAmplitudeBase := by
+  by_cases hoff : (q.1 : ℂ).re ≠ 1 / 2
+  · have hr : ‖xiEndpointNormalizedReciprocalSquare q‖ < 1 / 4 :=
+      (norm_xiEndpointNormalizedReciprocalSquare_le_offLineRadius q hoff).trans_lt
+        xiOffLineNormalizedBernsteinRadius_lt_one_fourth
+    have hx : 0 ≤ (xiEndpointNormalizedReciprocalSquare q).re := by
+      have hR : 0 < primeArchEndpointHausdorffRadius :=
+        primeArchEndpointHausdorffRadius_pos
+      have hnode : 0 < (xiZeroCopyReciprocalSquare q).re := by
+        simpa only [xiThermalNode] using xiThermalNode_pos q
+      rw [xiEndpointNormalizedReciprocalSquare]
+      simp only [Complex.div_re, Complex.ofReal_re, Complex.ofReal_im, mul_zero,
+        Complex.normSq_ofReal]
+      positivity
+    exact norm_add_norm_one_sub_lt_refinedSectorConfinedBase hr hx
+      (xiEndpointNormalizedReciprocalSquare_orientation_sq_le q)
+  · have hline : (q.1 : ℂ).re = 1 / 2 := not_ne_iff.mp hoff
+    rw [xiEndpointBernsteinAtomAmplitudeBase_eq_one_of_onLine q hline]
+    exact one_lt_xiSectorRefinedBernsteinAmplitudeBase
+
 /-- **Sector-confined total variation.** The complete endpoint Bernstein vector has amplitude
 base `501/500`. -/
 theorem primeArchEndpointBernsteinTotalVariation_le_sectorConfined (n : ℕ) :
@@ -160,6 +251,73 @@ theorem primeArchEndpointBernsteinTotalVariation_le_sectorConfined (n : ℕ) :
   exact primeArchEndpointBernsteinTotalVariation_le_of_atomAmplitudeBase
     xiSectorConfinedBernsteinAmplitudeBase
     (fun q => (xiEndpointBernsteinAtomAmplitudeBase_lt_sectorConfined q).le) n
+
+/-- The complete endpoint Bernstein vector satisfies the tightened sector amplitude ceiling. -/
+theorem primeArchEndpointBernsteinTotalVariation_le_refinedSectorConfined (n : ℕ) :
+    primeArchEndpointBernsteinTotalVariation n ≤
+      xiReciprocalSquareAbsoluteMass *
+        xiSectorRefinedBernsteinAmplitudeBase ^ n := by
+  exact primeArchEndpointBernsteinTotalVariation_le_of_atomAmplitudeBase
+    xiSectorRefinedBernsteinAmplitudeBase
+    (fun q => (xiEndpointBernsteinAtomAmplitudeBase_lt_refinedSectorConfined q).le) n
+
+/-- A positive geometric total-variation ceiling yields decay at every strictly larger
+normalization base. -/
+theorem tendsto_primeArchEndpointBernsteinTotalVariation_div_pow_of_geometric_bound
+    {B r : ℝ} (hB : 0 < B)
+    (hbound : ∀ n : ℕ, primeArchEndpointBernsteinTotalVariation n ≤
+      xiReciprocalSquareAbsoluteMass * B ^ n)
+    (hr : B < r) :
+    Tendsto (fun n : ℕ => primeArchEndpointBernsteinTotalVariation n / r ^ n)
+      atTop (nhds 0) := by
+  have hrpos : 0 < r := hB.trans hr
+  let q : ℝ := B / r
+  have hq0 : 0 ≤ q := div_nonneg
+    hB.le hrpos.le
+  have hq1 : q < 1 := (div_lt_one hrpos).2 hr
+  have hpow : Tendsto (fun n : ℕ => q ^ n) atTop (nhds 0) :=
+    tendsto_pow_atTop_nhds_zero_of_lt_one hq0 hq1
+  have hupper : Tendsto
+      (fun n : ℕ => xiReciprocalSquareAbsoluteMass * q ^ n)
+      atTop (nhds 0) := by
+    simpa using tendsto_const_nhds.mul hpow
+  apply squeeze_zero (fun n => ?_) (fun n => ?_) hupper
+  · exact div_nonneg
+      (show 0 ≤ primeArchEndpointBernsteinTotalVariation n by
+        unfold primeArchEndpointBernsteinTotalVariation bernsteinCoefficientL1
+        exact Finset.sum_nonneg fun _ _ => abs_nonneg _)
+      (pow_nonneg hrpos.le n)
+  · calc
+      primeArchEndpointBernsteinTotalVariation n / r ^ n ≤
+          (xiReciprocalSquareAbsoluteMass *
+            B ^ n) / r ^ n :=
+        div_le_div_of_nonneg_right
+          (hbound n)
+          (pow_nonneg hrpos.le n)
+      _ = xiReciprocalSquareAbsoluteMass * q ^ n := by
+        dsimp only [q]
+        rw [div_pow]
+        ring
+
+/-- Every exponential normalization strictly above the original sector-confined `501/500`
+amplitude annihilates the complete endpoint Bernstein total variation. -/
+theorem tendsto_primeArchEndpointBernsteinTotalVariation_div_pow_of_sectorBase_lt
+    {r : ℝ} (hr : xiSectorConfinedBernsteinAmplitudeBase < r) :
+    Tendsto (fun n : ℕ => primeArchEndpointBernsteinTotalVariation n / r ^ n)
+      atTop (nhds 0) :=
+  tendsto_primeArchEndpointBernsteinTotalVariation_div_pow_of_geometric_bound
+    (zero_lt_one.trans one_lt_xiSectorConfinedBernsteinAmplitudeBase)
+    primeArchEndpointBernsteinTotalVariation_le_sectorConfined hr
+
+/-- Every exponential normalization strictly above the tightened `100197/100000` sector
+amplitude annihilates the complete endpoint Bernstein total variation. -/
+theorem tendsto_primeArchEndpointBernsteinTotalVariation_div_pow_of_refinedSectorBase_lt
+    {r : ℝ} (hr : xiSectorRefinedBernsteinAmplitudeBase < r) :
+    Tendsto (fun n : ℕ => primeArchEndpointBernsteinTotalVariation n / r ^ n)
+      atTop (nhds 0) :=
+  tendsto_primeArchEndpointBernsteinTotalVariation_div_pow_of_geometric_bound
+    (zero_lt_one.trans one_lt_xiSectorRefinedBernsteinAmplitudeBase)
+    primeArchEndpointBernsteinTotalVariation_le_refinedSectorConfined hr
 
 /-- The positive Loschmidt purity inherits the square of the narrow-sector amplitude estimate. -/
 theorem primeArchEndpointBernsteinPurity_le_sectorConfined (n : ℕ) :

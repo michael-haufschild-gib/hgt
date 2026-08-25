@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.FiniteRegularizedDeterminant
+import GaloisForLFunctions.HTGeometry.FiniteRankDeterminantCompletion
 import GaloisForLFunctions.HTGeometry.HermitianLocalSpectralObserverLaw
 import Mathlib.LinearAlgebra.Matrix.PosDef
 
@@ -245,6 +246,193 @@ theorem sourceEscapingChiralOperator_divisor_zero_im_eq_zero
       z • sourceEscapingChiralOperator k C).det = 0) : z.im = 0 := by
   apply sourceHermitianDilationDivisor_zero_im_eq_zero C
   rwa [← sourceEscapingChiralOperator_divisor_eq k C z]
+
+/-! ## Infinite Hilbert--Schmidt continuation -/
+
+open HilbertSchmidt
+
+variable {ι : Type*}
+
+/-- Infinite coefficient-faithful Hermitian dilation of a source kernel. -/
+def sourceHermitianDilationKernel (K : ι × ι → ℂ) :
+    (ι ⊕ ι) × (ι ⊕ ι) → ℂ
+  | (Sum.inl _, Sum.inl _) => 0
+  | (Sum.inl i, Sum.inr j) => K (i, j)
+  | (Sum.inr i, Sum.inl j) => (starRingEnd ℂ) (K (j, i))
+  | (Sum.inr _, Sum.inr _) => 0
+
+/-- Hermitian dilation preserves Hilbert--Schmidt class. -/
+theorem isHS_sourceHermitianDilationKernel {K : ι × ι → ℂ} (hK : IsHS K) :
+    IsHS (sourceHermitianDilationKernel K) := by
+  rw [IsHS]
+  apply (Equiv.sumProdDistrib ι ι (ι ⊕ ι)).symm.summable_iff.mp
+  apply Summable.sum
+  · apply (Equiv.prodSumDistrib ι ι ι).symm.summable_iff.mp
+    apply Summable.sum
+    · change Summable (fun _ : ι × ι => ‖(0 : ℂ)‖ ^ 2)
+      simp
+    · change Summable (fun p : ι × ι => ‖K p‖ ^ 2)
+      exact hK
+  · apply (Equiv.prodSumDistrib ι ι ι).symm.summable_iff.mp
+    apply Summable.sum
+    · change Summable (fun p : ι × ι =>
+        ‖(starRingEnd ℂ) (K (p.2, p.1))‖ ^ 2)
+      simp only [RCLike.norm_conj]
+      exact (Equiv.prodComm ι ι).summable_iff.mpr hK
+    · change Summable (fun _ : ι × ι => ‖(0 : ℂ)‖ ^ 2)
+      simp
+
+/-- Exact energy cost of chiralization: two copies of source Hilbert--Schmidt mass. -/
+theorem hsNormSq_sourceHermitianDilationKernel {K : ι × ι → ℂ} (hK : IsHS K) :
+    hsNormSq (sourceHermitianDilationKernel K) = 2 * hsNormSq K := by
+  let e : ((ι ⊕ ι) × (ι ⊕ ι)) ≃
+      ((ι × ι) ⊕ (ι × ι)) ⊕ ((ι × ι) ⊕ (ι × ι)) :=
+    (Equiv.sumProdDistrib ι ι (ι ⊕ ι)).trans
+      (Equiv.sumCongr (Equiv.prodSumDistrib ι ι ι)
+        (Equiv.prodSumDistrib ι ι ι))
+  have hswap : Summable (fun p : ι × ι => ‖K (p.2, p.1)‖ ^ 2) :=
+    (Equiv.prodComm ι ι).summable_iff.mpr hK
+  have hswapSum : (∑' p : ι × ι, ‖K (p.2, p.1)‖ ^ 2) = hsNormSq K := by
+    rw [hsNormSq, ← (Equiv.prodComm ι ι).tsum_eq]
+    rfl
+  have hfour : HasSum
+      (fun q : ((ι × ι) ⊕ (ι × ι)) ⊕ ((ι × ι) ⊕ (ι × ι)) =>
+        match q with
+        | Sum.inl (Sum.inl _) => 0
+        | Sum.inl (Sum.inr p) => ‖K p‖ ^ 2
+        | Sum.inr (Sum.inl p) => ‖K (p.2, p.1)‖ ^ 2
+        | Sum.inr (Sum.inr _) => 0)
+      ((0 + hsNormSq K) + (hsNormSq K + 0)) := by
+    apply HasSum.sum
+    · apply HasSum.sum
+      · exact hasSum_zero
+      · exact hK.hasSum
+    · apply HasSum.sum
+      · simpa [Function.comp_def, hswapSum] using hswap.hasSum
+      · exact hasSum_zero
+  rw [hsNormSq, ← e.symm.tsum_eq]
+  dsimp [e]
+  rw [show (fun q : ((ι × ι) ⊕ (ι × ι)) ⊕ ((ι × ι) ⊕ (ι × ι)) =>
+      ‖sourceHermitianDilationKernel K
+        ((Equiv.sumProdDistrib ι ι (ι ⊕ ι)).symm
+          (((Equiv.prodSumDistrib ι ι ι).symm.sumCongr
+            (Equiv.prodSumDistrib ι ι ι).symm) q))‖ ^ 2) =
+      (fun q => match q with
+        | Sum.inl (Sum.inl _) => 0
+        | Sum.inl (Sum.inr p) => ‖K p‖ ^ 2
+        | Sum.inr (Sum.inl p) => ‖(starRingEnd ℂ) (K (p.2, p.1))‖ ^ 2
+        | Sum.inr (Sum.inr _) => 0) by
+      funext q
+      rcases q with (q | q) <;> rcases q with (p | p) <;>
+        simp [sourceHermitianDilationKernel]]
+  simp only [RCLike.norm_conj]
+  rw [hfour.tsum_eq]
+  ring
+
+theorem hsNorm_sourceHermitianDilationKernel {K : ι × ι → ℂ} (hK : IsHS K) :
+    hsNorm (sourceHermitianDilationKernel K) = Real.sqrt 2 * hsNorm K := by
+  rw [hsNorm, hsNormSq_sourceHermitianDilationKernel hK,
+    Real.sqrt_mul (by positivity : 0 ≤ (2 : ℝ))]
+  rfl
+
+theorem sourceHermitianDilationKernel_sub (K L : ι × ι → ℂ) :
+    sourceHermitianDilationKernel (K - L) =
+      sourceHermitianDilationKernel K - sourceHermitianDilationKernel L := by
+  funext p
+  rcases p with ⟨i, j⟩
+  rcases i with i | i <;> rcases j with j | j <;>
+    simp [sourceHermitianDilationKernel]
+
+/-- Canonical identification between doubled cutoff and sum of cutoff subtypes. -/
+def sourceDisjSumSubtypeEquiv (s : Finset ι) :
+    ↥(s.disjSum s) ≃ (↥s ⊕ ↥s) where
+  toFun x := match hx : x.1 with
+    | Sum.inl i => Sum.inl ⟨i, by
+        rcases Finset.mem_disjSum.mp x.2 with ⟨a, ha, heq⟩ | ⟨b, hb, heq⟩
+        · exact Sum.inl.inj (heq.trans hx) ▸ ha
+        · exact (Sum.inr_ne_inl (heq.trans hx)).elim⟩
+    | Sum.inr i => Sum.inr ⟨i, by
+        rcases Finset.mem_disjSum.mp x.2 with ⟨a, ha, heq⟩ | ⟨b, hb, heq⟩
+        · exact (Sum.inl_ne_inr (heq.trans hx)).elim
+        · exact Sum.inr.inj (heq.trans hx) ▸ hb⟩
+  invFun x := match x with
+    | Sum.inl i => ⟨Sum.inl i.1, by simp [i.2]⟩
+    | Sum.inr i => ⟨Sum.inr i.1, by simp [i.2]⟩
+  left_inv x := by
+    rcases x with ⟨(i | i), hi⟩ <;> rfl
+  right_inv x := by
+    rcases x with (i | i) <;> rfl
+
+theorem reindex_blockMatrix_sourceHermitianDilationKernel
+    (K : ι × ι → ℂ) (s : Finset ι) :
+    Matrix.reindex (sourceDisjSumSubtypeEquiv s) (sourceDisjSumSubtypeEquiv s)
+        (blockMatrix (sourceHermitianDilationKernel K) (s.disjSum s)) =
+      sourceHermitianDilation (blockMatrix K s) := by
+  ext i j
+  rcases i with i | i <;> rcases j with j | j <;>
+    simp [Matrix.reindex_apply, sourceDisjSumSubtypeEquiv, blockMatrix,
+      sourceHermitianDilationKernel, sourceHermitianDilation]
+
+theorem sourceHermitianDilationKernel_support {K : ι × ι → ℂ} {s : Finset ι}
+    (hK : ∀ p, p ∉ s ×ˢ s → K p = 0) :
+    ∀ p, p ∉ (s.disjSum s) ×ˢ (s.disjSum s) →
+      sourceHermitianDilationKernel K p = 0 := by
+  rintro ⟨i, j⟩ hij
+  rcases i with i | i <;> rcases j with j | j
+  · rfl
+  · apply hK (i, j)
+    intro hmem
+    apply hij
+    rcases Finset.mem_product.mp hmem with ⟨hi, hj⟩
+    exact Finset.mem_product.mpr ⟨by simp [hi], by simp [hj]⟩
+  · simp only [sourceHermitianDilationKernel, starRingEnd_apply]
+    rw [hK (j, i)]
+    · simp
+    · intro hmem
+      apply hij
+      rcases Finset.mem_product.mp hmem with ⟨hj, hi⟩
+      exact Finset.mem_product.mpr ⟨by simp [hi], by simp [hj]⟩
+  · rfl
+
+theorem trace_reindex_self {a b : Type*} [Fintype a] [Fintype b]
+    [DecidableEq a] [DecidableEq b] (e : a ≃ b) (M : Matrix a a ℂ) :
+    (Matrix.reindex e e M).trace = M.trace := by
+  rw [Matrix.trace, Matrix.trace]
+  change (∑ i : b, M (e.symm i) (e.symm i)) = ∑ i : a, M i i
+  exact Equiv.sum_comp e.symm (fun i : a => M i i)
+
+theorem finiteDet2_reindex_self {a b : Type*} [Fintype a] [Fintype b]
+    [DecidableEq a] [DecidableEq b] (e : a ≃ b) (M : Matrix a a ℂ) :
+    finiteDet2 (Matrix.reindex e e M) = finiteDet2 M := by
+  funext z
+  unfold finiteDet2
+  have hmatrix :
+      (1 : Matrix b b ℂ) + z • Matrix.reindex e e M =
+        Matrix.reindex e e ((1 : Matrix a a ℂ) + z • M) := by
+    ext i j
+    simp [Matrix.reindex_apply, Matrix.one_apply]
+  rw [hmatrix, Matrix.det_reindex_self, trace_reindex_self]
+
+/-- Finite-support infinite dilation determinant is exactly finite source-dilation divisor. -/
+theorem entireDet2_sourceHermitianDilationKernel_eq_sourceHermitianDilationDivisor
+    [DecidableEq ι] {K : ι × ι → ℂ} {s : Finset ι}
+    (hK : IsHS K) (hsupp : ∀ p, p ∉ s ×ˢ s → K p = 0) :
+    entireDet2 (sourceHermitianDilationKernel K) =
+      sourceHermitianDilationDivisor (blockMatrix K s) := by
+  rw [entireDet2_eq_finiteDet2_of_support
+    (isHS_sourceHermitianDilationKernel hK)
+    (sourceHermitianDilationKernel_support hsupp)]
+  rw [sourceHermitianDilationDivisor_eq_finiteDet2]
+  rw [← finiteDet2_reindex_self (sourceDisjSumSubtypeEquiv s)
+    (-(blockMatrix (sourceHermitianDilationKernel K) (s.disjSum s)))]
+  have hmatrix :
+      Matrix.reindex (sourceDisjSumSubtypeEquiv s) (sourceDisjSumSubtypeEquiv s)
+          (-(blockMatrix (sourceHermitianDilationKernel K) (s.disjSum s))) =
+        -sourceHermitianDilation (blockMatrix K s) := by
+    change -(Matrix.reindex (sourceDisjSumSubtypeEquiv s) (sourceDisjSumSubtypeEquiv s))
+        (blockMatrix (sourceHermitianDilationKernel K) (s.disjSum s)) = _
+    rw [reindex_blockMatrix_sourceHermitianDilationKernel]
+  exact congrArg finiteDet2 hmatrix
 
 end
 

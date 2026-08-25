@@ -20,4 +20,10 @@ noncomputable def awayRingEquiv {A B : Type*} [CommRing A] [CommRing B]
       rw [Submonoid.map_powers]
       exact congrArg Submonoid.powers hfg)
 
+theorem awayRingEquiv_algebraMap {A B : Type*} [CommRing A] [CommRing B]
+    (e : A ≃+* B) {f : A} {g : B} (hfg : e f = g) (x : A) :
+    awayRingEquiv e hfg (algebraMap A (Localization.Away f) x) =
+      algebraMap B (Localization.Away g) (e x) := by
+  apply IsLocalization.ringEquivOfRingEquiv_eq
+
 end GaloisForLFunctions.HTGeometry

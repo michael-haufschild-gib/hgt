@@ -241,6 +241,15 @@ theorem ccmFUCentralXiScrewCodiagonalMixtureBound_iff_positiveMixtureBound
       hb hbH.le]
     exact (abs_sub _ _).trans (add_le_add (hC H hbH) (hA H hbH))
 
+/-- **Direct CCM-FU compression.**  The anchored triangular prime--polar moment and the positive
+Suzuki-profile mixture have the same uniform-boundedness burden at every positive lower wall. -/
+theorem ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound_iff_positiveMixtureBound
+    {b : ℝ} (hb : 0 < b) :
+    CCMGuinandWeilThirdGradeCesaroAnchoredMomentBound b ↔
+      CCMFUCentralXiScrewPositiveMixtureBound b :=
+  ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound_iff_xiScrewCodiagonalMixtureBound hb |>.trans
+    (ccmFUCentralXiScrewCodiagonalMixtureBound_iff_positiveMixtureBound hb)
+
 /-- Uniform boundedness of the positive marked Suzuki-profile average forces RH. -/
 theorem riemannHypothesis_of_ccmFUCentralXiScrewPositiveMixtureBound
     {b : ℝ} (hb : 0 < b)
