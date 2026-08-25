@@ -23,9 +23,9 @@ Inside the Xi strip, the imaginary part of `P` is nonzero at every tilted
 point and vanishes exactly on the critical line.  This is an ordered chiral
 Hawking/Teukolsky polarization; Schwarz closure erases it by conjugation.
 
-The remaining physical input is source incidence: complete second-order
-Einstein--Teukolsky evolution must either preserve this ordered helicity
-return or mix every tilted channel with its Schwarz partner.
+Second-order Einstein--Teukolsky frequency addition cannot reach this lifted
+QNM channel. The first same-sector charge-compatible resonance instead occurs
+on the sixth-order Hawking charge-decay ladder.
 -/
 
 open Complex Real Set Filter Topology
@@ -973,4 +973,3 @@ theorem d4ThetaCuspHawkingQuadraticDealiasedAIMEResiduePair_xi_im_eq_zero_iff (q
 end
 
 end RHTower
-
