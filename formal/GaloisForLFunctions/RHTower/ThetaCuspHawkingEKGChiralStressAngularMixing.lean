@@ -14,10 +14,11 @@ so
 
 `T_mm = (m Y_s)² = (s²/2) exp(2su)`.
 
-At a theta scattering pole `s=rho/2`. Thus EKG backreaction has a literal
-spin-two principal cusp source of weight `rho` and coefficient `rho²/8`, which
-is nonzero at every nontrivial Xi divisor. This supplies an angular source
-incidence absent from scalar optical-energy identities.
+At a theta scattering pole `s=rho/2`, pole residue is outgoing and has weight
+`1-s`. Incoming term above instead survives canonically in renormalized finite
+part. Its chiral square has weight `rho` and coefficient `rho²/8`, nonzero at
+every nontrivial Xi divisor. Laurent-layer classification is formalized
+separately; this module isolates finite-part incoming source.
 
 For an off-line FE pair, select the member with real part below `1/2`. Its
 hyperbolic cusp norm density is `exp(-(1-2 re(rho))u)`, hence integrable. The
@@ -38,7 +39,7 @@ namespace RHTower
 
 noncomputable section
 
-/-- Chiral `T_mm` coefficient of the doubled Eisenstein constant term. -/
+/-- Chiral `T_mm` coefficient of squared finite-part incoming cusp term. -/
 def d4ThetaHawkingEKGChiralCuspStressCoefficient (z : ℂ) : ℂ :=
   d4ThetaTeukolskyLinearCuspWeight z ^ 2 / 2
 

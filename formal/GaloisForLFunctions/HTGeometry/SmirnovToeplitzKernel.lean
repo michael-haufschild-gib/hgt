@@ -54,6 +54,18 @@ def SmirnovToeplitzKernelElement.mul {U V : ℝ → ℂ}
     change F.forward.numerator.fn z * G.forward.numerator.fn z = 0 at hz0
     exact hz0
 
+/-- A Smirnov Toeplitz-kernel element depends only on the almost-everywhere class of its
+boundary symbol. -/
+def SmirnovToeplitzKernelElement.congr {U V : ℝ → ℂ}
+    (F : SmirnovToeplitzKernelElement U) (hUV : U =ᵐ[volume] V) :
+    SmirnovToeplitzKernelElement V where
+  forward := F.forward
+  reflected := F.reflected
+  boundary_relation := by
+    filter_upwards [F.boundary_relation, hUV] with x hF hx
+    rw [hF, hx]
+  forward_nonzero := F.forward_nonzero
+
 /-- Exact boundary phase-reflection symbol of a bounded analytic multiplier. -/
 def diskMultiplierPhaseReflectionSymbol (φ : DiskMultiplier) (x : ℝ) : ℂ :=
   if diskMultiplierLineBoundary φ x = 0 then 1

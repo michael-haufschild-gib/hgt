@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.StokesFirstQuadrantTotalExact
+import GaloisForLFunctions.HTGeometry.ThresholdDerivativeGlue
 import GaloisForLFunctions.HTGeometry.FiniteBooleanHochschildDiagonal
 import GaloisForLFunctions.HTGeometry.SourceFaceBaseChangeTransmutation
 import GaloisForLFunctions.HTGeometry.ProjectedAdjointRankProfile

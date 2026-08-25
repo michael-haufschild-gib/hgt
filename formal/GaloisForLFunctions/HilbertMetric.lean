@@ -60,6 +60,7 @@ import GaloisForLFunctions.HilbertMetric.NomologicalCrossGram
 import GaloisForLFunctions.HilbertMetric.NoetherCorpusApplications
 import GaloisForLFunctions.HilbertMetric.FullCCRInterfaceClassification
 import GaloisForLFunctions.HilbertMetric.PolynomialEvaluationHasse
+import GaloisForLFunctions.HilbertMetric.FourPointOddParityCusp
 
 /-!
 # Hilbert-metric theorem area

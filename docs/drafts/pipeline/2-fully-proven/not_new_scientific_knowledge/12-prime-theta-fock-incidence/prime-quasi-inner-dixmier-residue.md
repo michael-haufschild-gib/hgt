@@ -532,7 +532,19 @@ injectivity, self-adjointness, nonnegativity, dense range, and compactness.  No 
 Gauss block is assumed or asserted.  Direct Lean check and targeted leaf build passed; every new
 declaration depends only on `[propext, Classical.choice, Quot.sound]`.
 
-This is reusable endpoint infrastructure but does not change the remaining Stage-3 boundary:
-concrete Hardy/source realization and its `E_p+E_infinity+E_0` trace-class decomposition are still
-required.  The actual Gauss critical residue itself is already closed by
-`GaussOnePrimeActualCriticalResidue.lean`, so no unproved modulation hypothesis is introduced.
+`RHTower/ConnesConsaniOnePrimeSourceDefect.lean` now constructs the literal source object
+
+```text
+(1-P) M_(rho_infinity rho_p) P
+```
+
+on the actual spectral `L²(ℝ)`, with the exact archimedean/finite local-factor product symbol,
+unit-modulus multiplication operator, Hardy source/range laws, and exact two-block product
+decomposition.  Thus the full Hardy defect is no longer an undefined placeholder.
+
+The card nevertheless remains at Stage 2.  Missing source-faithful theorem is now narrower but
+still analytic: identify the distinguished block through the source isometries with
+`gaussOnePrimeReducedDefect`, prove the difference from the literal Hardy defect trace class, and
+apply the already formalized perturbation/residue capstone.  The actual Gauss critical residue and
+Euler-family reconstruction are closed, so no unproved modulation or reconstruction premise is
+being hidden.

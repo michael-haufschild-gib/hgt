@@ -1,7 +1,7 @@
 # Exponential-Fock geometry makes critical prime incidence compact but non-Hilbert--Schmidt
 
 - **ID:** `critical-prime-exponential-fock-compact-incidence`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / POSITIVE HILBERT--POLYA CARRIER / BRIDGE
 - **Scientific status:** `[PROVED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Statement:** For every `0<a<1/2`, a rapidly increasing radial Fock space with adapted scale
@@ -225,26 +225,25 @@ Primary parent source:
 
 ## Lean status
 
-The exact theta trace is already formalized.
-`formal/GaloisForLFunctions/RHTower/CriticalPrimeSamplingIncidence.lean` now proves the common
-operator endpoint unconditionally: the literal normalized prime weight is nonsummable, the sampling
-map is not Hilbert--Schmidt once its adjoint coordinate vectors have the normalized kernel norms,
-and compact sampling gives a positive compact incidence which is not Schatten one.  Rapid-Fock
-kernels, adapted Carleson measures, and the concrete compact embedding remain open.
-`formal/GaloisForLFunctions/RHTower/CriticalPrimeKernelSampling.lean` now constructs the literal
-sampling map from any proved unit-kernel Bessel estimate and discharges the normalized coordinate
-identity automatically; this shared endpoint is not counted as a complete formalization of the
-card.  `CriticalPrimeKernelSamplingCompact.lean` proves compactness from vanishing finite-tail
-Bessel constants, and `CriticalPrimeKernelSchurSampling.lean` removes the Bessel premise by
-constructing the sampler directly from uniform finite Gram-row bounds and proving compactness from
-vanishing tail Gram rows.  The remaining card-specific producer is the rapid-Fock normalized-kernel
-Gram estimate and its concrete prime-log specialization.
+Unconditionally formalized.  `RapidExponentialFockTangentGaussian.lean` proves explicit tangent
+Gaussian control; `RapidExponentialMomentFockKernelLower.lean` constructs literal exponential
+kernel vectors and a diagonal lower bound; `RapidExponentialFockNormalizedLocalEvaluation.lean`
+turns that bound into normalized local evaluation.  The resulting estimate has a quadratic
+polynomial loss versus the paper's cited sharp kernel asymptotic.
 
-`PolynomialFockPotentialGeometry.lean` supplies reusable polynomial-carrier geometry: exact radial
-slope, radial curvature, Laplacian density, positivity, sharp uniform density comparison with
-`(1+r^2)^(m/2-1)`, and corresponding two-sided reciprocal-square-root adapted-radius bounds.  Its
-targeted leaf build and axiom audit passed.  This polynomial infrastructure does not establish the
-rapid exponential carrier's kernel/Carleson estimate, so it does not close this card.
+`RapidExponentialFockWeightedPrimeOverlap.lean` compensates for that loss by deriving the needed
+quadratically weighted shrinking-window limit from the unconditional quantitative PNT remainder,
+then produces finite prime heads with vanishing weighted tails.
+`RapidExponentialFockCriticalPrimeSampling.lean` constructs the literal normalized all-prime
+sampler, proves boundedness, compactness, failure of Hilbert--Schmidt membership, and proves its
+positive compact incidence is not Schatten one.
+
+`RapidExponentialMomentFockThetaTrace.lean` proves continuous compact-open theta tracing and the
+exact full differentiated moment tower.  `RapidExponentialFockPrimeThetaCarrier.lean` combines that
+trace and compact prime sampler on one pointed moment-Fock Hilbert space and identifies the
+distinguished constant vector with the completed critical-line zeta trace.  Direct Lean checks,
+the targeted leaf build, and axiom audits of the new endpoints pass; audits use only `propext`,
+`Classical.choice`, and `Quot.sound`.
 
 ## Gates
 
@@ -256,4 +255,4 @@ rapid exponential carrier's kernel/Carleson estimate, so it does not close this 
 - [x] exact completed theta trace proved continuous on the same space
 - [x] parent-theory novelty claim rejected
 - [ ] exact eigenvalue counting law
-- [ ] complete unconditional Lean formalization
+- [x] complete unconditional Lean formalization

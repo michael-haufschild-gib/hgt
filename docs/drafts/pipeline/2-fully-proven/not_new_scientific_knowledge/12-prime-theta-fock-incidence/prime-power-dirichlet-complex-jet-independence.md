@@ -240,12 +240,22 @@ unprinted, but it is a routine parent corollary and therefore a bridge.
 
 ## Formalization status
 
-The completed source identity is formalized in
-`formal/GaloisForLFunctions/RHTower/XiShiftPrimeExposure.lean`.  The theorem is not at stage 3:
-Lean lacks the required analytic prime-feature tail-span theorem, Dirichlet convolution
-coefficient extraction at squarefree products, and Chiang--Feng small-growth coefficient
-separation.  Formalizing only the finite polarization shell would not formalize the complete
-unconditional claim.
+`PrimeShiftJetIndependence.lean` now proves the analytic prime-feature tail-span theorem from the
+exponential-type zero count, the squarefree common-layer polarization theorem, and differential
+independence of every finite family of distinct complex translates of a general prime-power source
+over `ℂ` and over the genuine upper-end rational-coordinate field.
+
+`PrimePowerDirichletComplexJetIndependence.lean` records the card's literal heterogeneous jet
+shape: each shift has an arbitrary independent derivative cutoff.  It proves this for general
+finite-abscissa prime-power sources and specializes it to the actual filtered von Mangoldt carrier
+exposed by the completed-Xi `+2` increment.  Direct check, targeted leaf build, and axiom audits
+pass; audits use only `propext`, `Classical.choice`, and `Quot.sound`.
+
+The card remains at Stage 2.  Exact completion still requires formalizing Chiang--Feng coefficient
+separation for Nagoshi's small-growth meromorphic field `F_s`, then transferring the source-family
+result through the completed logarithmic-derivative increment to the full translate families of
+`xi'/xi` and `xi`.  The present theorem is unconditional but over `ℂ(s)`, not the card's stronger
+coefficient field; that distinction is not erased by the finite polarization shell.
 
 ## Gates
 

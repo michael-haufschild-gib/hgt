@@ -1319,3 +1319,144 @@ Remaining dyadic work is now sharply scoped: control variation of the actual mov
 `logDeriv zetaChi` coefficient against this frozen combined carrier, price the direct/reflected
 cross term without losing its oscillation, transfer the Gaussian and pole remainders, and evaluate
 the full long-range gcd-reduced diagonal before parameter optimization above `1/3`.
+
+## Brick 5s moving reflected-coefficient freezing (2026-08-25)
+
+Two axiom-clean leaves now control the actual height dependence of the differentiated reflected
+coefficient and transfer that control to its mollified mean square:
+
+* `RHTower/SmoothAFEZetaChiDisplacedHeightVariationBound.lean` proves an unconditional Lipschitz
+  estimate for `logDeriv zetaChi` on the displaced critical line from the existing digamma
+  derivative bounds. Its dyadic form is
+  `norm (q(t)-q(u)) <= (8+4*pi)(1+H)/T` whenever `u >= T`, `T >= 4`, and
+  `abs (t-u) <= H <= T/2`.
+* `RHTower/SmoothAFEZetaDisplacedReflectedCombinedFreezingMeanSquare.lean` identifies the moving
+  combined reflected head minus its coefficient frozen at `u` exactly as
+  `lambda*(q(t)-q(u))` times the reflected base head and mollifier. It proves continuity, converts
+  the exact complex base-head mean theorem into a positive real energy bound, and integrates the
+  dyadic freezing error against the same exact gcd-reduced diagonal plus its explicit mean-value
+  error.
+
+Both leaves pass exact-module `lake build` and declaration-local `#print axioms`; dependencies are
+only `propext, Classical.choice, Quot.sound`. They are wired into `RHTower.lean`; no umbrella build
+was run.
+
+Remaining dyadic work is the direct/reflected cross term with its oscillatory chi factor, the
+variation and magnitude of the chi weight itself, Gaussian and pole remainder transfer, and the
+full long-range gcd-reduced diagonal and parameter optimization above `1/3`.
+
+## Brick 5t actual chi-weighted moving reflected energy (2026-08-25)
+
+Three axiom-clean leaves now close the same-head mean-square assembly for the literal reflected
+part of the differentiated smooth AFE:
+
+* `RHTower/SmoothAFEZetaDisplacedReflectedCombinedEnergyUpper.lean` converts the exact frozen
+  complex mean theorem into a positive real energy upper bound, retaining the full gcd-reduced
+  combined diagonal and explicit error.
+* `RHTower/SmoothAFEZetaDisplacedReflectedChiWeightedMeanSquare.lean` reuses the existing uniform
+  moving-left-line chi theorem to prove one existential dyadic conductor-growth constant for every
+  `0 < d <= d0`, then transfers the frozen combined energy through the literal chi factor.
+* `RHTower/SmoothAFEZetaDisplacedReflectedMovingMeanSquare.lean` proves the exact moving carrier
+  decomposition into the frozen `logDeriv zetaChi` carrier plus its freezing error. It integrates
+  the literal chi-weighted moving head on a short dyadic subwindow against the sum of the exact
+  frozen combined diagonal and the exact reflected-base diagonal pricing the freezing error.
+
+Every leaf passes exact-module `lake build` and declaration-local `#print axioms`; dependencies are
+only `propext, Classical.choice, Quot.sound`. They are wired into `RHTower.lean`; no umbrella build
+was run.
+
+Same-head reflected energy is no longer an open analytic interface. Remaining dyadic gates are the
+oscillatory direct/reflected cross term, Gaussian and pole remainder transfer, and evaluation of the
+full long-range gcd-reduced diagonal followed by parameter optimization above `1/3`.
+
+## Brick 5u Gaussian pole-remainder transfer (2026-08-25)
+
+Two axiom-clean leaves now remove both elementary pole terms from the differentiated finite AFE
+frontier:
+
+* `RHTower/SmoothAFEZetaDisplacedPoleDecay.lean` proves the missing displaced-line Gaussian bound
+  for `smoothAFEZetaShiftedPoleResidue`, the pointwise `2*sqrt M` envelope for the literal linear
+  mollifier, and a single exact package for the shifted residue plus height-derivative residue. Its
+  norm is bounded by an explicit coefficient times `exp(-t^2)`.
+* `RHTower/SmoothAFEZetaDisplacedPoleRemainderMeanSquare.lean` proves continuity of the displaced
+  residue, its closed-form height derivative, and the combined mollified remainder. It integrates
+  the literal remainder over every positive interval above `T`, obtaining the interval length times
+  the square of the explicit `exp(-T^2)` envelope.
+
+Both leaves pass exact-module `lake build` and declaration-local `#print axioms`; dependencies are
+only `propext, Classical.choice, Quot.sound`. They are wired into `RHTower.lean`; no umbrella build
+was run.
+
+Pole and Gaussian remainders are no longer open. Remaining differentiated-AFE analytic gate is the
+phase-faithful direct/reflected cross term. Arithmetic gates remain the full long-range gcd-reduced
+diagonal and published parameter optimization above `1/3`.
+
+## Brick 5v exact full-detector energy assembly (2026-08-25)
+
+`RHTower/SmoothAFEZetaDisplacedDetectorEnergyDecomposition.lean` now gives the exact global
+bookkeeping layer for the finite mollified differentiated AFE:
+
+* `smoothAFEZetaDisplacedMollifiedDirectHead` is the literal convolution polynomial from the
+  direct detector and linear mollifier;
+* `smoothAFEZetaDisplacedMollifiedPrincipalHead` is direct plus the actual moving chi-weighted
+  reflected head;
+* `smoothAFEZetaDisplacedFiniteClassicalDetector_mul_mollifier_eq_principal_add_pole` identifies the
+  full finite detector exactly with that principal part plus the already bounded Gaussian pole
+  remainder;
+* pointwise and integrated squared-energy identities preserve the direct/reflected mixed term as
+  the literal integral of
+  `re (conj direct * reflected)`. No triangle inequality or phase erasure is applied to it.
+
+The leaf passes exact-module `lake build` and declaration-local `#print axioms`; dependencies are
+only `propext, Classical.choice, Quot.sound`. It is wired into `RHTower.lean`; no umbrella build was
+run.
+
+This removes all assembly ambiguity. The differentiated-AFE analytic frontier is exactly the
+stationary direct/reflected cross integral. Arithmetic frontier remains evaluation of the full
+long-range gcd-reduced diagonal and parameter optimization above `1/3`.
+
+## Brick 5w exact zero-twist product-fibre energy (2026-08-25)
+
+`RHTower/Sieve/MollifiedTwistedDiagonalProductEnergy.lean` identifies the full zero-twist
+four-index mollified diagonal with its exact multiplicative product-fibre Gram energy. The proof
+first matches the twisted diagonal to the literal product-collision sum, then partitions the
+Cartesian coefficient support by the product map. In the self-paired case it proves the exact
+initial-range identity
+
+`mollifiedTwistedDiagonalIcc a a u u L M 0 = sum_r ofReal (normSq c_r)`,
+
+where `c_r` is the complete head/mollifier convolution coefficient on product fibre `r`. Thus the
+long-range arithmetic main term is now a manifest finite square energy, with no lost cross terms
+and no asymptotic replacement.
+
+The leaf passes exact-module `lake build` and declaration-local `#print axioms`; dependencies are
+only `propext, Classical.choice, Quot.sound`. It is wired into `RHTower.lean`; no umbrella build was
+run.
+
+Remaining arithmetic task is a sharp short/tail analysis of these exact product-fibre coefficients
+for the Levinson detector and linear mollifier. Analytic frontier remains the stationary
+direct/reflected cross integral, followed by optimization above `1/3`.
+
+## Brick 5x full finite-convolution diagonal and exact long tail (2026-08-25)
+
+Three axiom-clean leaves now put the entire zero-twist arithmetic diagonal into the coefficient
+space used by the Levinson programme:
+
+* `RHTower/Sieve/MollifiedTwistedDiagonalDirConvEnergy.lean` proves that each positive-natural
+  product-fibre coefficient is exactly the corresponding zero-based `dirConv` coefficient and that
+  the whole Icc diagonal is the sum of its squared moduli over `Fin (L*M)`;
+* `RHTower/SmoothAFEZetaCriticalDetectorDiagonalEnergy.lean` specializes this identity to the
+  literal finite critical detector and linear Levinson mollifier;
+* `RHTower/SmoothAFEZetaCriticalDetectorLongRangeSplit.lean` splits the full product energy exactly
+  at index `L`. The short summand is definitionally the already-evaluated Barban--Vehov detector
+  energy, while `levinsonCriticalDetectorLongEnergy` is the explicit sum of squared finite
+  convolution coefficients for `L < r+1`; it is proved nonnegative.
+
+Every leaf passes exact-module `lake build` and declaration-local `#print axioms`; dependencies are
+only `propext, Classical.choice, Quot.sound`. They are wired into `RHTower.lean`; no umbrella build
+was run.
+
+There is no longer any ambiguity between the gcd-reduced four-index diagonal, multiplicative
+product fibres, finite Dirichlet convolution, and the short arithmetic model. Remaining arithmetic
+gate is now exactly a sharp asymptotic or upper bound for `levinsonCriticalDetectorLongEnergy` in
+the AFE scaling regime. Analytic gate remains the stationary direct/reflected cross integral.
