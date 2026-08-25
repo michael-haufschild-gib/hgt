@@ -392,6 +392,33 @@ private theorem thetaCuspFactorialMomentRatio_succ_lt
   rw [div_lt_div_iff₀ hleft hright]
   nlinarith
 
+/-- Strict factorial-normalized contraction at the fourth theta moment. -/
+theorem thetaCuspRawEvenMoment_two_mul_zero_lt_six_mul_one_sq :
+    thetaCuspRawEvenMoment 2 * thetaCuspRawEvenMoment 0 <
+      6 * thetaCuspRawEvenMoment 1 ^ 2 := by
+  have h43 := thetaCuspFactorialMomentRatio_succ_lt 3 (by omega)
+  have h32 := thetaCuspFactorialMomentRatio_succ_lt 2 (by omega)
+  have h21 := thetaCuspFactorialMomentRatio_succ_lt 1 (by omega)
+  have h42 : thetaCuspFactorialMomentRatio 4 < thetaCuspFactorialMomentRatio 2 :=
+    h43.trans h32
+  have h31 : thetaCuspFactorialMomentRatio 3 < thetaCuspFactorialMomentRatio 1 :=
+    h32.trans h21
+  have hprod :
+      thetaCuspFactorialMomentRatio 4 * thetaCuspFactorialMomentRatio 3 <
+        thetaCuspFactorialMomentRatio 2 * thetaCuspFactorialMomentRatio 1 :=
+    mul_lt_mul h42 h31.le
+      (thetaCuspFactorialMomentRatio_pos (k := 3) (by omega))
+      (thetaCuspFactorialMomentRatio_pos (k := 2) (by omega)).le
+  have hM0 := thetaCuspHalfMoment_pos 0
+  have hM1 := thetaCuspHalfMoment_pos 1
+  have hM2 := thetaCuspHalfMoment_pos 2
+  have hM3 := thetaCuspHalfMoment_pos 3
+  norm_num [thetaCuspFactorialMomentRatio] at hprod
+  field_simp [hM0.ne', hM1.ne', hM2.ne', hM3.ne'] at hprod
+  simp only [thetaCuspRawEvenMoment]
+  dsimp only [thetaCuspHalfMoment] at hprod
+  nlinarith
+
 theorem thetaCuspRawEvenMoment_three_mul_zero_lt_fifteen_mul_one_mul_two :
     thetaCuspRawEvenMoment 3 * thetaCuspRawEvenMoment 0 <
       15 * thetaCuspRawEvenMoment 1 * thetaCuspRawEvenMoment 2 := by
