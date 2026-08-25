@@ -374,3 +374,24 @@ real trace of `G`); and density of admissible heights.  Modules:
 `0.3474…` already suffices for positivity.  The card's advertised decimal `0.116158438` needs the
 PRZZ pair `κ ≥ 0.417293962`, `κ_* ≥ 0.407511457`, i.e. bricks 9–10 (Conrey's `θ = 4/7` mollifier and
 the PRZZ optimization) on top of brick 5.
+
+## Lean status update (2026-08-25) — moving displaced cross transfer closed
+
+The phase-faithful direct/reflected cross now reaches the literal moving differentiated smooth AFE
+on short dyadic windows. New modules prove the subinterval stationary-oscillation estimate, its
+finite Dirichlet-cross expansion, the frozen smooth-AFE specialization, the positive direct-head
+energy bound, and the exact moving-equals-frozen-plus-chi-weighted-freezing-error decomposition.
+The capstone
+`exists_norm_integral_conj_smoothAFEZetaDisplacedDirect_mul_movingReflected_le_frozen_add_dyadic`
+bounds the actual moving cross by the unchanged frozen oscillatory integral plus an explicit
+square-root error built from unconditional direct and freezing mean squares.
+
+All new declarations pass direct file checks, exact leaf builds, and batched `#print axioms` with
+only `propext, Classical.choice, Quot.sound`; all leaves are wired into `RHTower.lean` without an
+umbrella build.
+
+This closes moving-coefficient variation and short-window transfer, but not the analytic density
+input. Remaining obligations are the sharp coefficient summation in Levinson scaling, the sharp
+long-tail estimate for `levinsonCriticalDetectorLongEnergy`, and explicit parameter optimization.
+The exact advertised `0.116158438` still requires unconditional Lean providers for the published
+PRZZ proportions `κ ≥ 0.417293962` and `κ_* ≥ 0.407511457`. Card therefore remains at stage 2.

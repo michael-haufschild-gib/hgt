@@ -60,6 +60,20 @@ theorem riemannHypothesis_iff_soninCoupledRelativeDeterminant_unitCollar
       (fun n => bernsteinCoefficientPurity_nonneg _ n)).trans
         (primeArchEndpoint_unitCollarEnvelope_iff_relativeDeterminantPurity a))
 
+/-- **Coupled-Sonin mismatch classification.**  At every nondegenerate aperture, arbitrarily
+thin exponential bounds for the concrete endpoint/source mismatch are exactly RH. -/
+theorem riemannHypothesis_iff_soninCoupledEndpointBernsteinMismatch_unitCollar
+    (a : SoninCoupledNondegenerateAperture) :
+    RiemannHypothesis ↔
+      UnitCollarExponentialEnvelope (soninCoupledEndpointBernsteinMismatch a) := by
+  have hseq : soninCoupledEndpointBernsteinMismatch a = fun n =>
+      bernsteinCoefficientPurity
+        (soninCoupledRelativeNormalizedSpectralLogDerivativeMoment a) n := by
+    funext n
+    exact soninCoupledEndpointBernsteinMismatch_eq_relativeDeterminantPurity a n
+  rw [hseq]
+  exact riemannHypothesis_iff_soninCoupledRelativeDeterminant_unitCollar a
+
 end
 
 end RHTower

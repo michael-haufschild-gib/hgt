@@ -1,7 +1,7 @@
 # Critical prime incidence has an exact polynomial-Fock Schatten threshold
 
 - **ID:** `critical-prime-fock-schatten-threshold-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / HILBERT--POLYA DETERMINANT LAW / BRIDGE
 - **Scientific status:** `[PROVED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Statement:** For the superquartic doubling-Fock carrier `phi_m(z)=(1+|z|^2)^(m/2)`, `m>4`,
@@ -201,7 +201,7 @@ Primary parent source:
 - R. Oliver and D. Pascuas, *Toeplitz operators on doubling Fock spaces*, Journal of Mathematical
   Analysis and Applications 435 (2016), 1140--1170, `https://arxiv.org/abs/1508.02887`.
 
-## Lean status
+## Lean status (historical progression; superseded by final audit)
 
 `formal/GaloisForLFunctions/RHTower/CriticalPrimeSamplingIncidence.lean` now formalizes the shared
 operator endpoint unconditionally: divergence of the literal weight `(log p)^2/p`, failure of the
@@ -310,15 +310,35 @@ at Stage 2.
 - [x] non-Hilbert--Schmidt and non-trace-class consequences proved
 - [x] determinant regularization order isolated
 - [x] parent-theory novelty claim rejected
-- [ ] complete unconditional Lean formalization
+- [x] complete unconditional Lean formalization
 
-## Formalization audit — 2026-08-25
+## Final formalization audit — 2026-08-25
 
-Corpus audit confirms that `HasCriticalPrimeFockExactToeplitzApproximationCellComparison` has no
-provider.  Every scalar ingredient is now exact, including literal polynomial-Fock carrier,
-normalized kernel atom scale, shrinking prime-window PNT, adapted-cell volume, exact cell-average
-summability, and abstract ideal transfer.  Missing declaration is not another asymptotic scalar
-estimate: it is the concrete doubling-Fock Toeplitz localization theorem comparing approximation
-numbers of the actual incidence operator with the ordered adapted-cell averages.  No corpus theorem
-or current mathlib API supplies this off-diagonal/operator result, and no hypothesis shell is
-counted as formalization.  Card remains Stage 2.
+Historical intermediate audits above are superseded.  The concrete operator theorem is now closed
+without `HasCriticalPrimeFockExactToeplitzApproximationCellComparison` or any replacement
+hypothesis: the proof uses the literal polynomial-Fock tangent family, finite tangent Jensen bound,
+finite trace identity, and exact adapted-cell grouping directly.
+
+`PolynomialFockFiniteTangentJensen.lean`, `PolynomialFockFiniteTangentTrace.lean`,
+`PolynomialFockFiniteTangentCellGrouping.lean`, and `PolynomialFockFiniteTangentUpper.lean` supply
+the dependency-closed upper estimate for the actual critical-prime sampling incidence.
+`PolynomialFockSchattenLowerObstruction.lean` supplies the matching lower obstruction.
+`PolynomialFockSchattenUpperPhaseTransition.lean` proves, for the literal operators and with no
+external premises beyond the theorem parameters,
+
+```text
+MemSchattenClass q T_m  iff  m/(m-4) < q                  (12)
+MemRectSchattenClass r S_m  iff  2m/(m-4) < r             (13)
+```
+
+for `m>4`, `q>0`, and `r>0`.  Existing concrete endpoint theorems give compactness of `T_m`,
+`T_m notin S_1`, and `S_m notin S_2`.  `CriticalPrimeFockSchattenExponent.lean` gives the exact
+regularization-order conversion and the second-order criterion `8<m`.
+
+Direct Lean check and targeted leaf build of
+`GaloisForLFunctions.RHTower.PolynomialFockSchattenUpperPhaseTransition` pass.  Axiom audit of the
+new upper theorem, exact incidence equivalence, and exact sampler equivalence reports only
+`propext`, `Classical.choice`, and `Quot.sound`.  Module is wired into
+`GaloisForLFunctions.RHTower`; no umbrella build was run.  Global lint remains independently red
+because concurrent theorem-area modules outside this card are not yet wired; this card's owned
+module is reachable and lint reports no forbidden declaration in it.

@@ -284,6 +284,33 @@ theorem polynomialCriticalPrimeSamplingIncidence_memSchattenClass_iff
         hm hq hle hmem
   · exact polynomialCriticalPrimeSamplingIncidence_memSchattenClass_of_threshold_lt hm
 
+/-- Exact rectangular Schatten threshold of the literal normalized critical-prime sampler. -/
+theorem polynomialCriticalPrimeSamplingOperator_memRectSchattenClass_iff
+    {m r : ℝ} (hm : 4 < m) (hr : 0 < r) :
+    MemRectSchattenClass r (polynomialCriticalPrimeSamplingOperator m hm.le) ↔
+      2 * criticalPrimeFockSchattenThreshold m < r := by
+  let S : MomentFock →L[ℂ] CriticalPrimeEllTwo :=
+    polynomialCriticalPrimeSamplingOperator m hm.le
+  have hcompact : IsCompactOperator S :=
+    polynomialCriticalPrimeSamplingOperator_isCompactOperator hm
+  have hbridge :=
+    memRectSchattenClass_two_mul_iff_memSchattenClass_criticalPrimeSamplingIncidence
+      S hcompact (r / 2)
+  have hincidence := polynomialCriticalPrimeSamplingIncidence_memSchattenClass_iff
+    hm (by linarith : 0 < r / 2)
+  constructor
+  · intro hS
+    have hS' : MemRectSchattenClass (2 * (r / 2)) S := by
+      convert hS using 1 <;> ring
+    have hT := hincidence.mp (hbridge.mp hS')
+    linarith
+  · intro hrThreshold
+    have hT : MemSchattenClass (r / 2) (criticalPrimeSamplingIncidence S) :=
+      hincidence.mpr (by linarith)
+    have hS' := hbridge.mpr hT
+    change MemRectSchattenClass r S
+    convert hS' using 1 <;> ring
+
 end
 
 end RHTower

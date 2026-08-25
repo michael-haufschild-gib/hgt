@@ -6357,3 +6357,44 @@ has discriminant a unit, because it is isomorphic to `κⁿ`, whose discriminant
 height-one prime ⟹ the discriminant lies in no height-one prime (`discr_notMem_of_split_fibre`) ⟹ the
 discriminant is a unit (`isUnit_of_forall_notMem_isPrime`) ⟹ `SCE_k` applies.  What remains of `(4)`
 is `(a)`'s two structural inputs, `(c)`'s induction and `(d)`'s horizon slice presentation.
+
+## Corpus correction and exact chart identification (2026-08-25)
+
+Mandated corpus audit found that the preceding `SC_k` programme duplicates a theorem already in
+the tree.  `HTGeometry/AffineSpaceEtaleRankOne.lean` proves
+
+```text
+rank_eq_one_of_isUnit_discr_mvPolynomial
+```
+
+for arbitrary finite-dimensional affine space over an algebraically closed field.  Thus the
+field-form `SC_1`, Gauss transport, and induction listed above are not remaining obligations for
+this card.
+
+Three exact infrastructure modules now close the coordinate-ring side of step 3:
+
+```text
+PolynomialFractionIntegralRoot.lean
+  exists_polynomial_eq_of_monic_eval₂_eq_zero
+  exists_polynomial_eq_of_monic_map_isRoot
+    roots in Frac(F[u]) integral over F[u] already lie in F[u]
+
+LocalizationAwayRingEquiv.lean
+  awayRingEquiv
+    a ring equivalence carrying f to g transports Localization.Away f to Localization.Away g
+
+CriticalObservationTorusChartEquiv.lean
+  criticalObservationPolynomialTorusEquiv_marked
+  criticalObservationChartTorusEquiv
+    criticalObservationChartRing K m n ≃+* TorusChart K (n+m-2)
+```
+
+All three leaf modules pass targeted builds.  Every new declaration is axiom-clean with only
+`[propext, Classical.choice, Quot.sound]`, and all are wired into the `HTGeometry` umbrella without
+building that umbrella.
+
+Remaining exact obligation for `(4)`: instantiate the block intermediate field on this chart,
+prove it unramified at non-Schur height-one primes, and assemble slice/base-change plus marked
+total-ramification argument into unconditional primitivity.  Schur-place unramifiedness,
+affine-space rank-one theorem, actual chart equivalence, total-ramification lower bound,
+transposition, and Jordan capstone are now present.

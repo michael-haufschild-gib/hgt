@@ -243,4 +243,21 @@ theorem continuedPrimeArchPositiveFrequencyAbove_four_iff_cofinalBernsteinNegati
   continuedPrimeArchPositiveFrequencyAbove_iff_cofinalBernsteinNegativeMass_of_verifiedHeight
     (9 / 2) 4 rhVerifiedThrough_nine_halves (by norm_num)
 
+/-- **Canonical scalar ultraviolet core.**  The apparently weaker subexponential Bernstein
+negative-mass condition is exactly cofinal vanishing of that one nonnegative scalar defect. -/
+theorem primeArchBernsteinNegativeMassSubexponential_iff_cofinalBernsteinNegativeMass :
+    PrimeArchBernsteinNegativeMassSubexponential ↔
+      CofinalHausdorffBernsteinNegativeMassVanishing
+        primeArchEndpointHausdorffRadius normalizedPrimeArchMoment :=
+  riemannHypothesis_iff_primeArchBernsteinNegativeMassSubexponential.symm.trans
+    cofinalPrimeArchHausdorffBernsteinNegativeMassVanishing_iff_riemannHypothesis.symm
+
+/-- **Direct ultraviolet compression.**  Positive-frequency passivity above four is exactly the
+same scalar Bernstein core; no thermodynamic or divisor-indexed intermediate is needed. -/
+theorem primeArchBernsteinNegativeMassSubexponential_iff_positiveFrequencyAbove_four :
+    PrimeArchBernsteinNegativeMassSubexponential ↔
+      ContinuedPrimeArchPositiveFrequencyAbove 4 :=
+  primeArchBernsteinNegativeMassSubexponential_iff_cofinalBernsteinNegativeMass.trans
+    continuedPrimeArchPositiveFrequencyAbove_four_iff_cofinalBernsteinNegativeMass.symm
+
 end RHTower

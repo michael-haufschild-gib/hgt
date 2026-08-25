@@ -1511,3 +1511,33 @@ task is coefficient summation sharp enough for Levinson scaling; the proved `ell
 exact unconditional carrier but is not claimed to be asymptotically sharp. Arithmetic gate remains
 the long-tail estimate for `levinsonCriticalDetectorLongEnergy`, followed by published parameter
 optimization above `1/3`.
+
+## Brick 5aa actual moving cross on short windows (2026-08-25)
+
+Five axiom-clean leaves now transfer the frozen displaced cross estimate to the literal moving
+`logDeriv zetaChi` reflected head on every short dyadic subwindow:
+
+* `RHTower/ZetaChiDisplacedSubintervalOscillatoryIntegral.lean` proves the displaced stationary
+  primitive estimate on arbitrary subintervals `[a,b]` of `[T,2T]` with the same
+  `T^(d+1/2)` scale;
+* `RHTower/ZetaChiDisplacedDirichletCrossSubinterval.lean` expands the finite positive/negative
+  cross on such subintervals and retains the exact factorized coefficient mass;
+* `RHTower/SmoothAFEZetaDisplacedFrozenCrossSubinterval.lean` specializes that estimate to the
+  literal differentiated direct head and frozen chi-weighted reflected head;
+* `RHTower/SmoothAFEZetaDisplacedDirectMollifiedEnergyUpper.lean` converts the exact direct
+  mean-value identity into the positive energy upper bound needed by Cauchy--Schwarz;
+* `RHTower/SmoothAFEZetaDisplacedMovingCrossFreezing.lean` proves the exact pointwise and
+  integrated moving-equals-frozen-plus-error identities, bounds the chi-weighted freezing-error
+  energy from the existing dyadic chi envelope and freezing mean square, and concludes that the
+  actual moving cross is at most the phase-faithful frozen cross plus an explicit short-window
+  square-root error.
+
+All five leaves pass direct `lake env lean`, exact leaf `lake build`, and one batched
+declaration-local `#print axioms`; dependencies are only `propext, Classical.choice, Quot.sound`.
+They are wired into `RHTower.lean`; no umbrella build was run.
+
+Moving-coefficient variation and short-window transfer are no longer open interfaces. Remaining
+cross-term gate is a coefficient summation estimate sharp enough for Levinson scaling; the exact
+factorized `ell^1` carrier is not silently substituted for it. Arithmetic gate remains the sharp
+upper/asymptotic estimate for `levinsonCriticalDetectorLongEnergy`, followed by published
+parameter optimization above `1/3` and, for the card's exact decimal, the full PRZZ inputs.
