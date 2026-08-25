@@ -57,6 +57,26 @@ theorem integrableOn_criticalPrimeFockSchattenDensity_iff
   rw [integrableOn_Ioi_rpow_iff (by norm_num),
     criticalPrimeFockSchattenDensityExponent_lt_neg_one_iff hm]
 
+/-- Exact confinement-degree condition for a prescribed real regularization order. -/
+theorem criticalPrimeFockSchattenThreshold_lt_iff
+    {m q : ℝ} (hm : 4 < m) (hq : 1 < q) :
+    criticalPrimeFockSchattenThreshold m < q ↔
+      4 * q / (q - 1) < m := by
+  have hmden : 0 < m - 4 := sub_pos.mpr hm
+  have hqden : 0 < q - 1 := sub_pos.mpr hq
+  rw [criticalPrimeFockSchattenThreshold, div_lt_iff₀ hmden,
+    div_lt_iff₀ hqden]
+  constructor <;> intro h <;> nlinarith
+
+/-- A second regularized determinant is admissible at the scalar Schatten threshold exactly for
+polynomial confinement degree strictly above eight. -/
+theorem criticalPrimeFockSchattenThreshold_lt_two_iff
+    {m : ℝ} (hm : 4 < m) :
+    criticalPrimeFockSchattenThreshold m < 2 ↔ 8 < m := by
+  have h := criticalPrimeFockSchattenThreshold_lt_iff hm (by norm_num : (1 : ℝ) < 2)
+  norm_num at h
+  exact h
+
 end
 
 end RHTower

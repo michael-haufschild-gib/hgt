@@ -1,8 +1,8 @@
 # Route P cubic cover-weighted terminal dissipation
 
 - **ID:** `CUBIC-COVER-WEIGHTED-TERMINAL-DISSIPATION`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** completed-Xi cubic irregular-Stokes route
 - **Statement:** Unit Rees activation pays at least the inverse-cover-weighted terminal energy; rank-magnitude-preserving moving landings contract terminal energy by that explicit amount.
 
@@ -16,7 +16,7 @@ new abstract Stokes foundation or a source-incidence assumption.
 
 - [x] 0 -> 1 in-progress: well-posed, source-pure, attack idea, Door passport sketch
 - [x] 1 -> 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 -> 3 formalized: Lean theorem, targeted module check, new-declaration axiom audit
+- [x] 2 -> 3 formalized: Lean theorem, targeted module check, new-declaration axiom audit
 - [ ] 3 -> 4 publication-ready: standalone paper (theorem + proof + Lean certificate + Door-2)
 
 ## Exact theorem
@@ -87,8 +87,23 @@ Flat Bundle* (2011); Mochizuki, *Wild Harmonic Bundles* (Asterisque 340, 2011); 
 Bolibruch--Malek--Mitschi, *On the Generalized Riemann--Hilbert Problem with Irregular
 Singularities* (2006).  Absence is an audit inference, not a universal priority claim.
 
+## Lean formalization
+
+Implemented in
+`formal/GaloisForLFunctions/RHTower/RoutePPrimitiveGammaJuliaStokesCubicCoverWeightedTerminalDissipation.lean`.
+Public declarations:
+
+- `routePPrimitiveGammaJuliaStokesCubicUnitLanding_coverWeightedTerminalEnergy_pos_le_blockEnergy`;
+- `routePPrimitiveGammaJuliaStokesCubicMovingLanding_coverWeighted_rankTerminal_exchange`;
+- `routePPrimitiveGammaJuliaStokesCubicRankMagnitudePreservingMovingLanding_coverWeightedTerminalEnergy_contraction`.
+
+Pendant-edge selection and finite-sum domination remain private.  Targeted module check passed.
+Each new public declaration depends exactly on `[propext, Classical.choice, Quot.sound]`; no
+project axiom, `sorry`, `admit`, `opaque`, or `unsafe` declaration was introduced.
+
 ## Log
 
 - 2026-08-25 -- conjectured after moving-charge balance; corpus and primary-literature audit found
   no existing statement.
 - 2026-08-25 -- hostile audit passed; dependency-closed paper proof completed.
+- 2026-08-25 -- formalized in Lean; targeted module check passed.

@@ -31,6 +31,20 @@ theorem polynomialCriticalPrimeSamplingIncidence_not_exactXiDeterminant
     exact polynomialCriticalPrimeSamplingIncidence_isPositive m hm
   exact positiveOperator_not_exactXiDeterminant hK hpos H hH
 
+/-- No finite-degree polynomial critical-prime incidence admits an exact Xi spectral determinant
+of any regularization order.  The statement uses only the defining nonzero-zero law shared by all
+regularized determinant orders. -/
+theorem polynomialCriticalPrimeSamplingIncidence_not_exists_exactXiSpectralZeroFunction :
+    ¬ ∃ (m : ℝ) (hm : 4 ≤ m) (D H : ℂ → ℂ),
+      HasReciprocalEigenvalueZeroSet
+        (polynomialCriticalPrimeSamplingIncidence m hm) D ∧
+      (∀ z, H z ≠ 0) ∧
+      (∀ z, XiC z = H z * D z) := by
+  rintro ⟨m, hm, D, H, hzeros, hH, hXi⟩
+  exact positiveOperator_not_exactXiSpectralZeroFunction
+    (polynomialCriticalPrimeSamplingIncidence_isPositive m hm)
+    ⟨D, H, hzeros, hH, hXi⟩
+
 end
 
 end RHTower

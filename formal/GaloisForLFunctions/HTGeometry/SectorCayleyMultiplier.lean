@@ -93,6 +93,25 @@ theorem one_add_sectorCayleyValue_re_pos {w : ℂ}
         ring]
   positivity
 
+/-- Inverting the sector Cayley transform recovers its exponential. -/
+theorem one_add_sectorCayleyValue_div_one_sub {w : ℂ}
+    (hw : |w.re| ≤ Real.pi / 2) :
+    (1 + sectorCayleyValue w) / (1 - sectorCayleyValue w) =
+      sectorExponential w := by
+  have hden : sectorExponential w + 1 ≠ 0 :=
+    add_one_ne_zero_of_re_nonneg (sectorExponential_re_nonneg hw)
+  rw [sectorCayleyValue]
+  field_simp
+  ring
+
+/-- The phase reflection of the sector exponential only sees the real part of its exponent. -/
+theorem sectorExponential_div_conj (w : ℂ) :
+    sectorExponential w / (starRingEnd ℂ) (sectorExponential w) =
+      Complex.exp (2 * I * (w.re : ℂ)) := by
+  rw [sectorExponential, ← Complex.exp_conj, ← Complex.exp_sub]
+  congr 1
+  apply Complex.ext <;> simp [Complex.mul_re, Complex.mul_im] <;> ring
+
 /-- Schur multiplier obtained by applying the sector Cayley transform to a Hardy function whose
 real part stays in the closed central half-period. -/
 def sectorCayleyMultiplier (H : HardyDisk)

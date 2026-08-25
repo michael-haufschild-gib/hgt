@@ -208,10 +208,34 @@ assumed.
 
 ## Lean status
 
-The tree contains the exact genus-one Hadamard factorization and finite/rank-one regularized
-determinant examples, but not infinite-dimensional compact-operator singular values, Schatten
-ideals, `det_2`, or the Riemann--von Mangoldt asymptotic in the required operator form.  A finite
-sequence wrapper would not formalize this theorem.  No Lean formalization is claimed.
+The main determinant law is now formalized on the actual infinite-dimensional Hilbert--Carleman
+carrier.  `XiDeterminantLogarithmicSingularValueLaw.lean` proves the reciprocal-spectrum counting
+law and the sharp approximation-number asymptotic.  `XiDeterminantIdealConsequences.lean` proves
+membership in every `S_q`, `q>1`, failure of `S_1`, the exact logarithmically enhanced weak-trace
+residue, failure of ordinary weak `S_1`, and the partial-trace asymptotic.
+`XiDeterminantGenusOneMinimality.lean` proves exact genus-one minimality.
+
+`PositiveXiDeterminantExclusion.lean` proves unconditionally that no positive Hilbert--Schmidt
+operator can be an exact `XiC` Hilbert--Carleman determinant carrier: Hardy's positive zero and
+evenness produce a negative determinant zero, whose reciprocal eigenvalue contradicts positivity.
+`PolynomialFockCriticalPrimeDeterminantExclusion.lean` specializes this to the literal polynomial
+critical-prime incidence operator.  Its targeted leaf build and axiom audit passed with only
+`propext`, `Classical.choice`, and `Quot.sound`.
+
+The same modules define the regularization-order-independent interface
+`HasReciprocalEigenvalueZeroSet` and prove the closed theorem
+`polynomialCriticalPrimeSamplingIncidence_not_exists_exactXiSpectralZeroFunction`: no finite
+polynomial degree admits any zero-free-gauge Xi determinant function whose nonzero zeros are
+exactly the reciprocal eigenvalues of the actual incidence operator.  This is precisely the
+“every determinant order, whenever determinant zeros are reciprocal eigenvalues” scope of `(17)`;
+it does not assume an implementation-specific determinant formula.
+
+The card is not yet dependency-closed.  Equation `(16)` is still represented only by
+`HasCriticalPrimeFockSchattenLaw`; no theorem supplies that interface for
+`polynomialCriticalPrimeSamplingIncidence`.  The actual incidence is already constructed and is
+proved positive, compact for `m>4`, and non-trace-class, but its exact all-`q` Schatten threshold
+still requires the doubling-Fock Toeplitz averaging theorem and the adapted-tube comparison.
+Therefore this card remains at Stage 2.
 
 ## Gates
 

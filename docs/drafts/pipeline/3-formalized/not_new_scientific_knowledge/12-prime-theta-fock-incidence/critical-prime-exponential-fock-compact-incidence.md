@@ -245,6 +245,17 @@ distinguished constant vector with the completed critical-line zeta trace.  Dire
 the targeted leaf build, and axiom audits of the new endpoints pass; audits use only `propext`,
 `Classical.choice`, and `Quot.sound`.
 
+`SmoothConvexRapidExponentialFockPotential.lean` and
+`SmoothConvexRapidExponentialMomentFock.lean` close the literal smoothness clause rather than
+silently replacing it by the cusp profile `r ↦ exp(2ar)`.  They construct a `C∞` plane potential
+flat near the origin and exactly equal to `exp(2ar)` for `r ≥ 1`, prove nonnegative radial
+Laplacian, build its exact moments, and establish a bounded diagonal equivalence preserving the
+represented entire function.  The normalized smooth sampler factors exactly through bounded source
+and target diagonals around the rapid sampler.  Hence its compactness, non-Hilbert--Schmidt endpoint,
+positive compact incidence, non-Schatten-one endpoint, compact-open theta trace, and completed-zeta
+value all hold on this literal smooth pointed carrier.  Direct check, targeted leaf build, and
+endpoint axiom audit pass with only `propext`, `Classical.choice`, and `Quot.sound`.
+
 ## Gates
 
 - [x] exponential rapid-Fock carrier constructed

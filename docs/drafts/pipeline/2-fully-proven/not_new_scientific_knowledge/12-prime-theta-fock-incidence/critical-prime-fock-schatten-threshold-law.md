@@ -243,6 +243,17 @@ Toeplitz averaging route.  Direct checks, targeted leaf builds, and the new-decl
 passed with only `propext`, `Classical.choice`, and `Quot.sound`.  Off-diagonal localization and the
 all-exponent adapted-tube Schatten comparison remain open, so the card stays at Stage 2.
 
+`CriticalPrimeFockSchattenExponent.lean` now also proves the exact degree/order conversion
+
+```text
+m/(m-4) < q  iff  4q/(q-1) < m,
+```
+
+for `m>4`, including `m/(m-4)<2 iff 8<m`.  This closes the stated determinant-order arithmetic,
+with direct check, targeted build, and standard-axiom audit passing.  It does not replace the open
+operator theorem identifying the literal incidence's approximation-number ideal with the adapted
+tube integral.
+
 ## Gates
 
 - [x] prime incidence identified with a positive doubling-Fock Toeplitz operator
