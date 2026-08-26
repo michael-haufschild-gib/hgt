@@ -1,8 +1,8 @@
 # Jetwise density of one symmetric HT translation-profield class
 
 - **ID:** `jetwise-dense-single-ht-profield-class`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper) — `[PROVED HERE] [NOVELTY UNVERIFIED]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean) — `[PROVED HERE] [FORMALIZED] [NOVELTY UNVERIFIED]`
 - **Lane:** general hypertranscendence; compact-open topology; continuous-selector no-go
 - **Statement:** One explicit zero-free FE/Schwarz-symmetric hypertranscendental entire carrier has
   a symmetric-polynomial orbit which is dense, even in every compatible finite-jet fiber, while
@@ -239,17 +239,31 @@ criterion.  If the exact synthesis is already implicit in the parent theories, m
 
 ## Lean status
 
-No complete Lean claim is made.  Formalizing only polynomial density, Hermite interpolation, or
-the algebraic field equality would not formalize this card: the complete statement also needs
-Holder's theorem, Euler reflection, Frechet compact-open density, and the continuous-selector
-corollary.  Therefore the card remains at Stage 2.
+Fully formalized unconditionally in Lean 4.  The implementation is dependency-closed across:
+
+- `CenteredRealEvenPolynomialDensity.lean`: compact-open polynomial density with real-even and
+  Schwarz symmetry;
+- `CenteredRealEvenFiniteJetDensity.lean`: exact finite Hermite-jet interpolation while retaining
+  compact-open convergence;
+- `CenteredRealEvenNonzeroJetDensity.lean`: nonzero symmetric repair preserving all prescribed
+  jets and convergence;
+- `JetwiseDenseSingleHTProfieldClass.lean`: explicit centered reciprocal-Gamma carrier, FE and
+  Schwarz symmetry, zero-freeness, hypertranscendence, finite-order barrier, exact profield orbit,
+  dense full orbit, dense orbit in every compatible finite-jet fiber, and both continuous-selector
+  collapse laws.
+
+The card's coordinate `s` is represented through the stated equivalent centered coordinate
+`w=s-1/2`; real-even Schwarz polynomials are the centered `R(w^2)` multipliers.  No conjectural
+premise, `sorry`, `admit`, new axiom, or heartbeat increase is used.  Targeted `lake env lean` and
+`lake build GaloisForLFunctions.RHTower.JetwiseDenseSingleHTProfieldClass` both pass.  Axiom audits
+of every new capstone report only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Gates
 
 - [x] 0 -> 1: explicit carrier and exact equivalence relation stated
 - [x] 1 -> 2: complete unconditional paper proof with sharp route boundary
 - [ ] novelty gate: exact parent-literature comparison by a specialist
-- [ ] 2 -> 3: full unconditional theorem formalized in Lean
+- [x] 2 -> 3: full unconditional theorem formalized in Lean
 - [ ] 3 -> 4: publication-ready preprint
 
 ## Cross-references
@@ -270,3 +284,7 @@ corollary.  Therefore the card remains at Stage 2.
   every power of the complete translation-differential field.
 - 2026-07-11 -- Derived the continuous-selector no-go and isolated the unavoidable infinite-order
   boundary.
+- 2026-08-26 -- Formalized compact-open real-even density, exact finite-jet interpolation,
+  nonzero jet-preserving repair, explicit reciprocal-Gamma HT carrier, fixed profield orbit,
+  jet-fiber density, selector collapse, and finite-order barrier in Lean; targeted build and
+  closed-axiom audit passed.

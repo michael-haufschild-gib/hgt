@@ -35,47 +35,47 @@ def thetaCuspThirtySecondExpTaylorUpper : ℝ :=
 
 namespace ThetaRationalQuadrature
 
-abbrev Poly := List ℚ
+abbrev QPoly := List ℚ
 
-def coeff (p : Poly) (n : ℕ) : ℚ := p[n]?.getD 0
+def coeff (p : QPoly) (n : ℕ) : ℚ := p[n]?.getD 0
 
-def add : Poly → Poly → Poly
+def add : QPoly → QPoly → QPoly
   | [], q => q
   | p, [] => p
   | a :: p, b :: q => (a + b) :: add p q
 
-def neg (p : Poly) : Poly := p.map (-·)
-def sub (p q : Poly) : Poly := add p (neg q)
-def scale (a : ℚ) (p : Poly) : Poly := p.map (a * ·)
+def neg (p : QPoly) : QPoly := p.map (-·)
+def sub (p q : QPoly) : QPoly := add p (neg q)
+def scale (a : ℚ) (p : QPoly) : QPoly := p.map (a * ·)
 
-def mul : Poly → Poly → Poly
+def mul : QPoly → QPoly → QPoly
   | [], _ => []
   | _ :: _, [] => []
   | a :: p, q => add (scale a q) (0 :: mul p q)
 
-def pow (p : Poly) : ℕ → Poly
+def pow (p : QPoly) : ℕ → QPoly
   | 0 => [1]
   | n + 1 => mul (pow p n) p
 
-def comp (p q : Poly) : Poly :=
+def comp (p q : QPoly) : QPoly :=
   p.foldr (fun a acc => add [a] (mul q acc)) []
 
-def eval (p : Poly) (x : ℚ) : ℚ :=
+def eval (p : QPoly) (x : ℚ) : ℚ :=
   p.foldr (fun a acc => a + x * acc) 0
 
-def C (a : ℚ) : Poly := [a]
-def X : Poly := [0, 1]
+def C (a : ℚ) : QPoly := [a]
+def X : QPoly := [0, 1]
 
-def expTwoTaylor : Poly :=
+def expTwoTaylor : QPoly :=
   [1, 2, 2, 4 / 3, 2 / 3, 4 / 15, 4 / 45, 8 / 315, 2 / 315]
 
-def expTwoTaylorUpper : Poly :=
+def expTwoTaylorUpper : QPoly :=
   add expTwoTaylor (mul (C (4 / 945)) (pow X 9))
 
 def thirtySecondExpLower : ℚ := eval expTwoTaylor (1 / 64)
 def thirtySecondExpUpper : ℚ := eval expTwoTaylorUpper (1 / 64)
 
-def expNeg (P : ℕ) : Poly :=
+def expNeg (P : ℕ) : QPoly :=
   List.ofFn fun p : Fin P => ((-1 : ℚ) ^ (p : ℕ)) / ((p : ℕ).factorial : ℚ)
 
 def upperIncrement (j : ℕ) : ℚ :=

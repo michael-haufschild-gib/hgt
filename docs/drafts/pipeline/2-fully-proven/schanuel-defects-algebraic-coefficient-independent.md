@@ -1214,3 +1214,120 @@ an umbrella build.  This closes construction and stabilization of finite multipl
 kernels.  Remaining geometric bridge is to identify a stable symmetric product image with the
 actual subgroup Hopf closure and transport the invariant Kähler identity through its dominant
 function-field map.
+
+## Tensor-kernel exactness and stable-product propagation formalized (2026-08-26)
+
+Fresh corpus research found tensor injectivity over a field but no theorem that tensor-product map
+kernels depend only on the two factor kernels.  `TensorProductLinearMapKernel.lean` proves
+
+```text
+tensorProduct_map_ker_eq_of_right_ker_eq
+```
+
+by factoring both factor maps through their common quotient by the kernel and applying existing
+flat tensor injectivity to the induced injections.  `IteratedBialgebraProductStabilization.lean`
+then proves
+
+```text
+tensorAlgHom_toLinearMap
+iteratedProductKernel_eq_succ_propagates
+iteratedProductKernel_stable_add
+```
+
+Thus one consecutive equality of iterated multiplication-image kernels forces every later kernel
+to equal the same stable prime.  This is the exact algebraic form of the geometric observation that
+once `X^m` and `X^(m+1)` have the same closure, adjoining further `X` factors cannot enlarge it.
+
+Both direct checks and targeted leaf builds pass.  All four new theorem declarations audit to at
+most `[propext, Classical.choice, Quot.sound]`; both leaves are wired into `HTGeometry` without an
+umbrella build.  Remaining stable-image work is tensor regrouping for the coideal law and inversion
+symmetry for the antipode law; neither is assumed by an interface.
+
+## Stable product-image coideal law formalized (2026-08-26)
+
+Fresh corpus research found the canonical linear tensor associator and bialgebra coassociativity,
+but no assembled block-regrouping theorem.  `IteratedBialgebraProductCoideal.lean` proves
+
+```text
+tensorProduct_assoc_natural
+combinedProductLinearMap
+combinedProductLinearMap_succ_left_assoc
+combinedProductLinearMap_ker
+iteratedProductKernel_stable_comul_quotient_eq_zero
+```
+
+Multiplying a `(p+1)`-factor block by a `(q+1)`-factor block has exactly the same kernel as one
+`(p+q+2)`-factor block.  The proof moves factors through the canonical associator and uses the
+actual coalgebra coassociativity law.  At a stable kernel `K`, all later block kernels equal `K`;
+the induced injection `A/K → B^(⊗(m+1))`, tensored with itself, therefore detects that
+`(π⊗π)Δ(a)=0` for every `a∈K`.  This is the exact `IsHopfIdeal.map_mkQ_comul_eq_zero`
+obligation, not a pointwise proxy.
+
+Direct source checking and the targeted leaf build pass.  All five theorem declarations audit to
+at most `[propext, Classical.choice, Quot.sound]`; the leaf is wired into `HTGeometry` without an
+umbrella build.  Stable image kernel now has prime, counit-ready, and coideal infrastructure.
+Remaining Hopf obligation is antipode stability from inversion symmetry of the translated locus.
+
+## Affine-exponential antipode/comultiplication compatibility formalized (2026-08-26)
+
+Fresh corpus research recovered the concrete additive and torus antipode generator laws and the
+generic Hopf-kernel functoriality, but no assembled theorem identifying inversion before
+multiplication with factorwise inversion.  `AffineExponentialAntipodeComultiplication.lean` proves
+
+```text
+affineExponential_comul_antipode
+```
+
+as an equality of algebra homomorphisms on the actual coordinate algebra of
+`Gₐⁿ × Gₘⁿ`.  The proof uses Laurent characters and symmetric-algebra coordinate generators:
+torus characters are group-like and invert their exponent, while additive coordinates are
+primitive and change sign.  No abstract cocommutativity or antipode/comultiplication premise is
+inserted.
+
+Direct source checking and the targeted leaf build pass.  The theorem audits to only
+`[propext, Classical.choice, Quot.sound]` and is wired into `HTGeometry` without an umbrella build.
+
+## Iterated product-image antipode stability formalized (2026-08-26)
+
+Fresh corpus research found no existing iterated inversion-equivariance wrapper.
+`IteratedBialgebraProductAntipode.lean` supplies
+
+```text
+tensorAlgHom_comp
+iteratedTensorAlgHom
+iteratedTensorAlgHom_comp_iteratedProductMap
+iteratedProductKernel_endomorphism_mem
+affineExponential_iteratedProductKernel_antipode_mem
+```
+
+A source endomorphism realizing ambient inversion propagates independently through every tensor
+factor and intertwines every finite product map.  Therefore every finite-product image kernel is
+stable under the ambient antipode; the affine-exponential endpoint discharges the ambient
+compatibility with `affineExponential_comul_antipode`.  This is exact kernel membership, not a
+set-of-points substitute.
+
+Direct source checking and the targeted leaf build pass.  All six theorem declarations audit to
+at most `[propext, Classical.choice, Quot.sound]`; the leaf is wired into `HTGeometry` without an
+umbrella build.  Stable kernel now has the coideal and antipode mechanisms.  Remaining work is to
+construct the symmetric translated source endomorphism, discharge counit and source equivariance,
+package the stable kernel as a Hopf ideal, and execute the Kähler/coLie pullback endpoint.
+
+## Stable product-image Hopf ideal packaged (2026-08-26)
+
+Fresh corpus research confirmed the project already had each individual Hopf-ideal obligation but
+no stable-image assembly.  `IteratedBialgebraProductHopfIdeal.lean` proves
+
+```text
+iteratedProductKernel_isHopfIdeal
+affineExponential_iteratedProductKernel_isHopfIdeal
+```
+
+The identity-valued source point and kernel antitonicity give counit vanishing; the exact stable
+block theorem gives quotient-tensor coideal vanishing; source inversion equivariance gives
+antipode membership.  The affine-exponential specialization discharges the ambient inversion law
+with the concrete generator theorem.  No Hopf obligation is assumed in the specialized endpoint.
+
+Direct source checking and the targeted leaf build pass.  Both declarations audit to only
+`[propext, Classical.choice, Quot.sound]`; the leaf is wired into `HTGeometry` without an umbrella
+build.  Remaining geometric bridge is construction of the symmetric translated principal-open
+source and transport of its generic Kähler vanishing to the stable quotient co-Lie module.

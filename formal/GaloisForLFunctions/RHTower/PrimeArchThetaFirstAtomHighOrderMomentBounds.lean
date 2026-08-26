@@ -1,6 +1,4 @@
 import GaloisForLFunctions.RHTower.PrimeArchThetaFirstAtomHighOrderQuadrature
-import GaloisForLFunctions.HTGeometry.PolynomialSmoothApproximation
-import GaloisForLFunctions.RHTower.WallFinitePart
 
 /-!
 # Exact first-atom moment bounds from high-order quadrature
@@ -15,6 +13,229 @@ open scoped BigOperators Interval
 namespace RHTower
 
 noncomputable section
+
+theorem integral_Ioi_eq_intervalIntegral_add_tail_local
+    {Y : Type*} [NormedAddCommGroup Y] [NormedSpace ℝ Y]
+    {f : ℝ → Y} {a b : ℝ} (hab : a ≤ b) (hint : IntegrableOn f (Ioi a)) :
+    (∫ t in Ioi a, f t) = (∫ t in a..b, f t) + ∫ t in Ioi b, f t := by
+  have hunion : Ioi a = Ioc a b ∪ Ioi b := (Ioc_union_Ioi_eq_Ioi hab).symm
+  have hdisj : Disjoint (Ioc a b) (Ioi b) := by
+    rw [Set.disjoint_left]
+    intro t ht ht'
+    exact absurd ht.2 (not_le.mpr ht')
+  have h1 : IntegrableOn f (Ioc a b) :=
+    hint.mono_set (by rw [hunion]; exact subset_union_left)
+  have h2 : IntegrableOn f (Ioi b) :=
+    hint.mono_set (by rw [hunion]; exact subset_union_right)
+  rw [hunion, setIntegral_union hdisj measurableSet_Ioi h1 h2,
+    intervalIntegral.integral_of_le hab]
+
+namespace ThetaRationalQuadrature
+
+def momentMass : QPoly → ℕ → ℚ → ℚ
+  | [], _, _ => 0
+  | a :: p, k, h =>
+      a * h ^ (k + 1) / (k + 1 : ℚ) + momentMass p (k + 1) h
+
+def integralMass (p : QPoly) (h : ℚ) : ℚ := momentMass p 0 h
+
+def upperDelta (j : ℕ) : QPoly :=
+  sub (mul (C ((3.14159265358979323847 : ℚ) * thirtySecondExpUpper ^ j))
+      (sub expTwoTaylorUpper (C 1)))
+    (mul (C (5 / 2)) X)
+
+def lowerDelta (j : ℕ) : QPoly :=
+  sub (mul (C ((3.14159265358979323846 : ℚ) * thirtySecondExpLower ^ j))
+      (sub expTwoTaylor (C 1)))
+    (mul (C (5 / 2)) X)
+
+def localLower (j : ℕ) : QPoly := comp (expNeg 6) (upperDelta j)
+def localUpper (j : ℕ) : QPoly := comp (expNeg 5) (lowerDelta j)
+
+def sourceLower (j : ℕ) : QPoly :=
+  sub (mul (C ((6.28318530717958647692 : ℚ) * thirtySecondExpLower ^ j))
+    expTwoTaylor) (C 3)
+
+def sourceUpper (j : ℕ) : QPoly :=
+  sub (mul (C ((6.28318530717958647694 : ℚ) * thirtySecondExpUpper ^ j))
+    expTwoTaylorUpper) (C 3)
+
+def lowerPolynomial (r j : ℕ) : QPoly :=
+  mul (mul (mul (C (12.5663706143591729538 : ℚ))
+    (pow (add (C ((j : ℚ) / 64)) X) (2 * r))) (sourceLower j))
+    (mul (C ((0.0432139182637 : ℚ) * endpointLower j)) (localLower j))
+
+def upperPolynomial (r j : ℕ) : QPoly :=
+  mul (mul (mul (C (12.5663706143591729539 : ℚ))
+    (pow (add (C ((j : ℚ) / 64)) X) (2 * r))) (sourceUpper j))
+    (mul (C ((0.0432139182638 : ℚ) * endpointUpper j)) (localUpper j))
+
+def lowerMass (r j : ℕ) : ℚ := integralMass (lowerPolynomial r j) (1 / 64)
+def upperMass (r j : ℕ) : ℚ := integralMass (upperPolynomial r j) (1 / 64)
+
+noncomputable def realPolynomial : QPoly → ℝ[X]
+  | [] => 0
+  | a :: p => Polynomial.C (a : ℝ) + Polynomial.X * realPolynomial p
+
+@[simp] theorem realPolynomial_nil : realPolynomial [] = 0 := rfl
+
+@[simp] theorem realPolynomial_cons (a : ℚ) (p : QPoly) :
+    realPolynomial (a :: p) =
+      Polynomial.C (a : ℝ) + Polynomial.X * realPolynomial p := rfl
+
+theorem realPolynomial_add (p q : QPoly) :
+    realPolynomial (add p q) = realPolynomial p + realPolynomial q := by
+  induction p generalizing q with
+  | nil => simp [add]
+  | cons a p ih =>
+      cases q with
+      | nil => simp [add]
+      | cons b q =>
+          rw [add, realPolynomial_cons, realPolynomial_cons,
+            realPolynomial_cons, ih]
+          push_cast
+          simp only [map_add]
+          ring
+
+theorem realPolynomial_scale (a : ℚ) (p : QPoly) :
+    realPolynomial (scale a p) = Polynomial.C (a : ℝ) * realPolynomial p := by
+  induction p with
+  | nil => simp [scale]
+  | cons b p ih =>
+      change realPolynomial ((a * b) :: scale a p) =
+        Polynomial.C (a : ℝ) * realPolynomial (b :: p)
+      rw [realPolynomial_cons, realPolynomial_cons, ih]
+      push_cast
+      simp only [map_mul]
+      ring
+
+theorem realPolynomial_neg (p : QPoly) : realPolynomial (neg p) = -realPolynomial p := by
+  induction p with
+  | nil => simp [neg]
+  | cons a p ih =>
+      change realPolynomial ((-a) :: neg p) = -realPolynomial (a :: p)
+      rw [realPolynomial_cons, realPolynomial_cons, ih]
+      push_cast
+      simp only [map_neg]
+      ring
+
+theorem realPolynomial_sub (p q : QPoly) :
+    realPolynomial (sub p q) = realPolynomial p - realPolynomial q := by
+  rw [sub, realPolynomial_add, realPolynomial_neg]
+  ring
+
+@[simp] theorem realPolynomial_C (a : ℚ) : realPolynomial (C a) = Polynomial.C (a : ℝ) := by
+  simp [C, realPolynomial]
+
+@[simp] theorem realPolynomial_X : realPolynomial X = Polynomial.X := by
+  simp [X, realPolynomial]
+
+theorem realPolynomial_mul (p q : QPoly) :
+    realPolynomial (mul p q) = realPolynomial p * realPolynomial q := by
+  induction p generalizing q with
+  | nil => simp [mul]
+  | cons a p ih =>
+      cases q with
+      | nil => simp [mul]
+      | cons b q =>
+          change realPolynomial
+              (add (scale a (b :: q)) (0 :: mul p (b :: q))) =
+            realPolynomial (a :: p) * realPolynomial (b :: q)
+          rw [realPolynomial_add, realPolynomial_scale]
+          simp only [realPolynomial_cons]
+          rw [ih]
+          simp [realPolynomial]
+          ring
+
+theorem realPolynomial_pow (p : QPoly) (n : ℕ) :
+    realPolynomial (pow p n) = realPolynomial p ^ n := by
+  induction n with
+  | zero => simp [pow]
+  | succ n ih => rw [pow, realPolynomial_mul, ih, pow_succ]
+
+theorem realPolynomial_comp (p q : QPoly) :
+    realPolynomial (comp p q) = (realPolynomial p).comp (realPolynomial q) := by
+  induction p with
+  | nil => simp [comp]
+  | cons a p ih =>
+      change realPolynomial (add [a] (mul q (comp p q))) =
+        (realPolynomial (a :: p)).comp (realPolynomial q)
+      rw [realPolynomial_add, realPolynomial_mul,
+        realPolynomial_cons, realPolynomial_cons, ih]
+      apply Polynomial.funext
+      intro x
+      simp only [eval_add, eval_C, eval_mul, eval_X, eval_comp]
+      simp [realPolynomial]
+
+theorem realPolynomial_expTwoTaylor :
+    realPolynomial expTwoTaylor = thetaCuspExpTwoTaylorEightPolynomial := by
+  norm_num [expTwoTaylor, realPolynomial, thetaCuspExpTwoTaylorEightPolynomial]
+  ring
+
+theorem realPolynomial_expTwoTaylorUpper :
+    realPolynomial expTwoTaylorUpper = thetaCuspExpTwoTaylorEightUpperPolynomial := by
+  rw [expTwoTaylorUpper, realPolynomial_add, realPolynomial_mul,
+    realPolynomial_C, realPolynomial_pow, realPolynomial_X,
+    realPolynomial_expTwoTaylor]
+  norm_num [thetaCuspExpTwoTaylorEightUpperPolynomial]
+
+theorem realPolynomial_expNeg_six : realPolynomial (expNeg 6) = expNegTruncPoly 6 := by
+  norm_num [expNeg, realPolynomial, expNegTruncPoly, Finset.sum_range_succ]
+  ring
+
+theorem realPolynomial_expNeg_five : realPolynomial (expNeg 5) = expNegTruncPoly 5 := by
+  norm_num [expNeg, realPolynomial, expNegTruncPoly, Finset.sum_range_succ]
+  ring
+
+theorem realPolynomial_upperDelta (j : ℕ) :
+    realPolynomial (upperDelta j) = thetaCuspFirstRateTaylorUpperDelta64 j := by
+  rw [upperDelta, realPolynomial_sub, realPolynomial_mul,
+    realPolynomial_C, realPolynomial_sub, realPolynomial_expTwoTaylorUpper,
+    realPolynomial_C, realPolynomial_mul, realPolynomial_C,
+    realPolynomial_X, thetaCuspFirstRateTaylorUpperDelta64,
+    ← thetaRationalQuadrature_thirtySecondExpUpper_cast]
+  push_cast
+  simp
+
+theorem realPolynomial_lowerDelta (j : ℕ) :
+    realPolynomial (lowerDelta j) = thetaCuspFirstRateTaylorLowerDelta64 j := by
+  rw [lowerDelta, realPolynomial_sub, realPolynomial_mul,
+    realPolynomial_C, realPolynomial_sub, realPolynomial_expTwoTaylor,
+    realPolynomial_C, realPolynomial_mul, realPolynomial_C,
+    realPolynomial_X, thetaCuspFirstRateTaylorLowerDelta64,
+    ← thetaRationalQuadrature_thirtySecondExpLower_cast]
+  push_cast
+  simp
+
+theorem realPolynomial_localLower (j : ℕ) :
+    realPolynomial (localLower j) = thetaCuspFirstRateTaylorLocalLowerCertificate64 j := by
+  rw [localLower, realPolynomial_comp, realPolynomial_expNeg_six,
+    realPolynomial_upperDelta, thetaCuspFirstRateTaylorLocalLowerCertificate64]
+
+theorem realPolynomial_localUpper (j : ℕ) :
+    realPolynomial (localUpper j) = thetaCuspFirstRateTaylorLocalUpperCertificate64 j := by
+  rw [localUpper, realPolynomial_comp, realPolynomial_expNeg_five,
+    realPolynomial_lowerDelta, thetaCuspFirstRateTaylorLocalUpperCertificate64]
+
+theorem realPolynomial_sourceLower (j : ℕ) :
+    realPolynomial (sourceLower j) = thetaCuspFirstSourceTaylorLower64 j := by
+  rw [sourceLower, realPolynomial_sub, realPolynomial_mul,
+    realPolynomial_C, realPolynomial_expTwoTaylor, realPolynomial_C,
+    thetaCuspFirstSourceTaylorLower64,
+    ← thetaRationalQuadrature_thirtySecondExpLower_cast]
+  push_cast
+  rfl
+
+theorem realPolynomial_sourceUpper (j : ℕ) :
+    realPolynomial (sourceUpper j) = thetaCuspFirstSourceTaylorUpper64 j := by
+  rw [sourceUpper, realPolynomial_sub, realPolynomial_mul,
+    realPolynomial_C, realPolynomial_expTwoTaylorUpper, realPolynomial_C,
+    thetaCuspFirstSourceTaylorUpper64,
+    ← thetaRationalQuadrature_thirtySecondExpUpper_cast]
+  push_cast
+  rfl
+
+end ThetaRationalQuadrature
 
 def thetaCuspFirstAtomHighOrderLowerPolynomial64 (r j : ℕ) : ℝ[X] :=
   C (12.5663706143591729538 : ℝ) *
@@ -31,6 +252,64 @@ def thetaCuspFirstAtomHighOrderUpperPolynomial64 (r j : ℕ) : ℝ[X] :=
     (C ((0.0432139182638 : ℝ) *
       thetaCuspFirstRateTaylorLowerEndpointUpperCertificate64 j) *
       thetaCuspFirstRateTaylorLocalUpperCertificate64 j)
+
+namespace ThetaRationalQuadrature
+
+theorem realPolynomial_lowerPolynomial (r j : ℕ) :
+    realPolynomial (lowerPolynomial r j) =
+      thetaCuspFirstAtomHighOrderLowerPolynomial64 r j := by
+  rw [lowerPolynomial, realPolynomial_mul, realPolynomial_mul,
+    realPolynomial_mul, realPolynomial_C, realPolynomial_pow,
+    realPolynomial_add, realPolynomial_C, realPolynomial_X,
+    realPolynomial_sourceLower, realPolynomial_mul,
+    realPolynomial_C, realPolynomial_localLower,
+    thetaCuspFirstAtomHighOrderLowerPolynomial64,
+    thetaCuspFirstRateTaylorUpperEndpointLowerCertificate64]
+  push_cast
+  rfl
+
+theorem realPolynomial_upperPolynomial (r j : ℕ) :
+    realPolynomial (upperPolynomial r j) =
+      thetaCuspFirstAtomHighOrderUpperPolynomial64 r j := by
+  rw [upperPolynomial, realPolynomial_mul, realPolynomial_mul,
+    realPolynomial_mul, realPolynomial_C, realPolynomial_pow,
+    realPolynomial_add, realPolynomial_C, realPolynomial_X,
+    realPolynomial_sourceUpper, realPolynomial_mul,
+    realPolynomial_C, realPolynomial_localUpper,
+    thetaCuspFirstAtomHighOrderUpperPolynomial64,
+    thetaCuspFirstRateTaylorLowerEndpointUpperCertificate64]
+  push_cast
+  rfl
+
+theorem intervalIntegral_pow_mul_realPolynomial_eval_eq_momentMass
+    (p : QPoly) (k : ℕ) (h : ℚ) :
+    (∫ x : ℝ in 0..(h : ℝ), x ^ k * (realPolynomial p).eval x) =
+      (momentMass p k h : ℚ) := by
+  induction p generalizing k with
+  | nil => simp [realPolynomial, momentMass]
+  | cons a p ih =>
+      rw [realPolynomial_cons]
+      simp only [eval_add, eval_C, eval_mul, eval_X]
+      rw [show (fun x : ℝ => x ^ k * (↑a + x * (realPolynomial p).eval x)) =
+          fun x : ℝ => ↑a * x ^ k + x ^ (k + 1) * (realPolynomial p).eval x by
+        funext x
+        rw [pow_succ]
+        ring]
+      rw [intervalIntegral.integral_add]
+      · rw [intervalIntegral.integral_const_mul, integral_pow, ih]
+        rw [momentMass]
+        push_cast
+        ring
+      · exact (continuous_const.mul (continuous_id.pow _)).intervalIntegrable _ _
+      · exact ((continuous_id.pow _).mul (Polynomial.continuous _)).intervalIntegrable _ _
+
+theorem intervalIntegral_realPolynomial_eval_eq_integralMass (p : QPoly) (h : ℚ) :
+    (∫ x : ℝ in 0..(h : ℝ), (realPolynomial p).eval x) =
+      (integralMass p h : ℚ) := by
+  simpa [integralMass] using
+    intervalIntegral_pow_mul_realPolynomial_eval_eq_momentMass p 0 h
+
+end ThetaRationalQuadrature
 
 theorem thetaCuspFirstAtomHighOrderLowerPolynomial64_eval_le_density
     {r j : ℕ} (hj : j < 64) {y : ℝ} (hy : 0 ≤ y) (hyh : y ≤ 1 / 64) :
@@ -154,41 +433,33 @@ theorem thetaCuspFirstAtom_density_le_highOrderUpperPolynomial64_eval
       exact mul_le_mul_of_nonneg_left hg
         (mul_nonneg (mul_nonneg (by norm_num) (pow_nonneg hx0 _)) hs0)
 
-theorem intervalIntegral_polynomial_eval_eq_realAntiderivative_eval
-    (p : ℝ[X]) (a b : ℝ) :
-    (∫ x in a..b, p.eval x) =
-      (Polynomial.realAntiderivative p).eval b -
-        (Polynomial.realAntiderivative p).eval a := by
-  have h := Polynomial.eval_anchoredRealAntiderivative_eq_add_integral p a 0 b
-  rw [Polynomial.anchoredRealAntiderivative] at h
-  simp only [eval_add, eval_C, zero_add] at h
-  linarith
-
 def thetaCuspFirstAtomHighOrderLowerIntervalMass64 (r j : ℕ) : ℝ :=
-  (Polynomial.realAntiderivative
-      (thetaCuspFirstAtomHighOrderLowerPolynomial64 r j)).eval (1 / 64) -
-    (Polynomial.realAntiderivative
-      (thetaCuspFirstAtomHighOrderLowerPolynomial64 r j)).eval 0
+  (ThetaRationalQuadrature.lowerMass r j : ℚ)
 
 def thetaCuspFirstAtomHighOrderUpperIntervalMass64 (r j : ℕ) : ℝ :=
-  (Polynomial.realAntiderivative
-      (thetaCuspFirstAtomHighOrderUpperPolynomial64 r j)).eval (1 / 64) -
-    (Polynomial.realAntiderivative
-      (thetaCuspFirstAtomHighOrderUpperPolynomial64 r j)).eval 0
+  (ThetaRationalQuadrature.upperMass r j : ℚ)
 
 theorem intervalIntegral_thetaCuspFirstAtomHighOrderLowerPolynomial64_eq_mass
     (r j : ℕ) :
     (∫ y in (0 : ℝ)..1 / 64,
       (thetaCuspFirstAtomHighOrderLowerPolynomial64 r j).eval y) =
       thetaCuspFirstAtomHighOrderLowerIntervalMass64 r j := by
-  exact intervalIntegral_polynomial_eval_eq_realAntiderivative_eval _ _ _
+  rw [← ThetaRationalQuadrature.realPolynomial_lowerPolynomial]
+  convert ThetaRationalQuadrature.intervalIntegral_realPolynomial_eval_eq_integralMass
+    (ThetaRationalQuadrature.lowerPolynomial r j) (1 / 64) using 1 <;>
+    norm_num [thetaCuspFirstAtomHighOrderLowerIntervalMass64,
+      ThetaRationalQuadrature.lowerMass]
 
 theorem intervalIntegral_thetaCuspFirstAtomHighOrderUpperPolynomial64_eq_mass
     (r j : ℕ) :
     (∫ y in (0 : ℝ)..1 / 64,
       (thetaCuspFirstAtomHighOrderUpperPolynomial64 r j).eval y) =
       thetaCuspFirstAtomHighOrderUpperIntervalMass64 r j := by
-  exact intervalIntegral_polynomial_eval_eq_realAntiderivative_eval _ _ _
+  rw [← ThetaRationalQuadrature.realPolynomial_upperPolynomial]
+  convert ThetaRationalQuadrature.intervalIntegral_realPolynomial_eval_eq_integralMass
+    (ThetaRationalQuadrature.upperPolynomial r j) (1 / 64) using 1 <;>
+    norm_num [thetaCuspFirstAtomHighOrderUpperIntervalMass64,
+      ThetaRationalQuadrature.upperMass]
 
 theorem sum_firstAtomHighOrderLowerMass64_le_thetaCuspAtomRawEvenMoment
     (r : ℕ) :
@@ -303,8 +574,7 @@ theorem thetaCuspAtomRawEvenMoment_le_sum_firstAtomHighOrderUpperMass64_add_tail
         (fun k _ => hfcont.intervalIntegrable _ _)) using 1 <;> norm_num
   have hsplit : (∫ x in Ioi (0 : ℝ), f x) =
       (∫ x in (0 : ℝ)..1, f x) + ∫ x in Ioi (1 : ℝ), f x :=
-    GaloisForLFunctions.RHTower.integral_Ioi_eq_intervalIntegral_add_tail
-      (by norm_num) hfint
+    integral_Ioi_eq_intervalIntegral_add_tail_local (by norm_num) hfint
   have hraw : (∫ x in Ioi 0, f x) = thetaCuspAtomRawEvenMoment r 1 := by
     rw [thetaCuspAtomRawEvenMoment]
     dsimp only [f]
@@ -464,6 +734,118 @@ theorem thetaCuspFirstAtom_tail_evenMoment_lt_one_div_fortyMillion
           exp_neg_thirtySeven_div_two_lt_one_div_ninetyMillion (by norm_num)
       _ < (1 / 40000000 : ℝ) := by norm_num
   exact hmono.trans_lt (hgeval ▸ hnumeric)
+
+theorem thetaRationalQuadrature_firstAtom_bounds :
+    ((0.4969488 : ℚ) <
+        ∑ j ∈ Finset.range 64, ThetaRationalQuadrature.lowerMass 0 j) ∧
+    ((0.02297 : ℚ) <
+        ∑ j ∈ Finset.range 64, ThetaRationalQuadrature.lowerMass 1 j) ∧
+    ((0.0029627 : ℚ) <
+        ∑ j ∈ Finset.range 64, ThetaRationalQuadrature.lowerMass 2 j) ∧
+    ((∑ j ∈ Finset.range 64, ThetaRationalQuadrature.upperMass 1 j) +
+        1 / 40000000 < (0.0229718 : ℚ)) ∧
+    ((∑ j ∈ Finset.range 64, ThetaRationalQuadrature.upperMass 3 j) +
+        1 / 40000000 < (0.00059935 : ℚ)) := by
+  native_decide
+
+/-- Generated rational quadrature discharges all five first-atom premises of the order-24
+sixth-trace reduction.  No tabulated numerical value is assumed: every mass is computed from the
+Taylor recurrences above and checked by the kernel. -/
+theorem thetaCuspFirstAtom_highOrder_five_bounds :
+    (0.4969488 : ℝ) < thetaCuspAtomRawEvenMoment 0 1 ∧
+    (0.02297 : ℝ) < thetaCuspAtomRawEvenMoment 1 1 ∧
+    thetaCuspAtomRawEvenMoment 1 1 < (0.0229718 : ℝ) ∧
+    (0.0029627 : ℝ) < thetaCuspAtomRawEvenMoment 2 1 ∧
+    thetaCuspAtomRawEvenMoment 3 1 < (0.00059935 : ℝ) := by
+  have hq := thetaRationalQuadrature_firstAtom_bounds
+  have h0q := hq.1
+  have h1q := hq.2.1
+  have h2q := hq.2.2.1
+  have h1uq := hq.2.2.2.1
+  have h3uq := hq.2.2.2.2
+  have h0r : (0.4969488 : ℝ) <
+      ∑ j ∈ Finset.range 64,
+        thetaCuspFirstAtomHighOrderLowerIntervalMass64 0 j := by
+    have hcast : (0.4969488 : ℝ) <
+        ((∑ j ∈ Finset.range 64,
+          ThetaRationalQuadrature.lowerMass 0 j : ℚ) : ℝ) := by
+      simpa using (Rat.cast_lt (K := ℝ)).2 h0q
+    simpa [thetaCuspFirstAtomHighOrderLowerIntervalMass64] using hcast
+  have h1r : (0.02297 : ℝ) <
+      ∑ j ∈ Finset.range 64,
+        thetaCuspFirstAtomHighOrderLowerIntervalMass64 1 j := by
+    have hcast : (0.02297 : ℝ) <
+        ((∑ j ∈ Finset.range 64,
+          ThetaRationalQuadrature.lowerMass 1 j : ℚ) : ℝ) := by
+      simpa using (Rat.cast_lt (K := ℝ)).2 h1q
+    simpa [thetaCuspFirstAtomHighOrderLowerIntervalMass64] using hcast
+  have h2r : (0.0029627 : ℝ) <
+      ∑ j ∈ Finset.range 64,
+        thetaCuspFirstAtomHighOrderLowerIntervalMass64 2 j := by
+    have hcast : (0.0029627 : ℝ) <
+        ((∑ j ∈ Finset.range 64,
+          ThetaRationalQuadrature.lowerMass 2 j : ℚ) : ℝ) := by
+      simpa using (Rat.cast_lt (K := ℝ)).2 h2q
+    simpa [thetaCuspFirstAtomHighOrderLowerIntervalMass64] using hcast
+  have h1ur :
+      (∑ j ∈ Finset.range 64,
+          thetaCuspFirstAtomHighOrderUpperIntervalMass64 1 j) +
+        1 / 40000000 < (0.0229718 : ℝ) := by
+    have hcast :
+        (((∑ j ∈ Finset.range 64,
+          ThetaRationalQuadrature.upperMass 1 j : ℚ) : ℚ) : ℝ) +
+            1 / 40000000 < (0.0229718 : ℝ) := by
+      simpa using (Rat.cast_lt (K := ℝ)).2 h1uq
+    simpa [thetaCuspFirstAtomHighOrderUpperIntervalMass64] using hcast
+  have h3ur :
+      (∑ j ∈ Finset.range 64,
+          thetaCuspFirstAtomHighOrderUpperIntervalMass64 3 j) +
+        1 / 40000000 < (0.00059935 : ℝ) := by
+    have hcast :
+        (((∑ j ∈ Finset.range 64,
+          ThetaRationalQuadrature.upperMass 3 j : ℚ) : ℚ) : ℝ) +
+            1 / 40000000 < (0.00059935 : ℝ) := by
+      simpa using (Rat.cast_lt (K := ℝ)).2 h3uq
+    simpa [thetaCuspFirstAtomHighOrderUpperIntervalMass64] using hcast
+  have h0 := h0r.trans_le
+    (sum_firstAtomHighOrderLowerMass64_le_thetaCuspAtomRawEvenMoment 0)
+  have h1 := h1r.trans_le
+    (sum_firstAtomHighOrderLowerMass64_le_thetaCuspAtomRawEvenMoment 1)
+  have h2 := h2r.trans_le
+    (sum_firstAtomHighOrderLowerMass64_le_thetaCuspAtomRawEvenMoment 2)
+  have h1upper := thetaCuspAtomRawEvenMoment_le_sum_firstAtomHighOrderUpperMass64_add_tail 1
+  have h3upper := thetaCuspAtomRawEvenMoment_le_sum_firstAtomHighOrderUpperMass64_add_tail 3
+  have h1tail := thetaCuspFirstAtom_tail_evenMoment_lt_one_div_fortyMillion
+    (r := 1) (by omega)
+  have h3tail := thetaCuspFirstAtom_tail_evenMoment_lt_one_div_fortyMillion
+    (r := 3) (by omega)
+  refine ⟨h0, h1, ?_, h2, ?_⟩
+  · have htailAdd :
+        (∑ j ∈ Finset.range 64,
+            thetaCuspFirstAtomHighOrderUpperIntervalMass64 1 j) +
+            (∫ x in Ioi (1 : ℝ),
+              2 * (x ^ (2 * 1) * thetaCuspSourceTerm x 1)) <
+          (∑ j ∈ Finset.range 64,
+            thetaCuspFirstAtomHighOrderUpperIntervalMass64 1 j) +
+            1 / 40000000 := by
+      simpa [add_comm] using
+        add_lt_add_left h1tail
+          (∑ j ∈ Finset.range 64,
+            thetaCuspFirstAtomHighOrderUpperIntervalMass64 1 j)
+    exact h1upper.trans_lt (htailAdd.trans h1ur)
+  · have htailAdd :
+        (∑ j ∈ Finset.range 64,
+            thetaCuspFirstAtomHighOrderUpperIntervalMass64 3 j) +
+            (∫ x in Ioi (1 : ℝ),
+              2 * (x ^ (2 * 3) * thetaCuspSourceTerm x 1)) <
+          (∑ j ∈ Finset.range 64,
+            thetaCuspFirstAtomHighOrderUpperIntervalMass64 3 j) +
+            1 / 40000000 := by
+      simpa [add_comm] using
+        add_lt_add_left h3tail
+          (∑ j ∈ Finset.range 64,
+            thetaCuspFirstAtomHighOrderUpperIntervalMass64 3 j)
+    exact h3upper.trans_lt (htailAdd.trans h3ur)
 
 end
 

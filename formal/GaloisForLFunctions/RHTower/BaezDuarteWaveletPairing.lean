@@ -3,6 +3,7 @@ import GaloisForLFunctions.RHTower.BaezDuarteMobiusSeries
 import GaloisForLFunctions.RHTower.MobiusCenteredMertensLimit
 import GaloisForLFunctions.RHTower.MobiusCausalSourceLimit
 import GaloisForLFunctions.RHTower.SqrtTelescopeSums
+import GaloisForLFunctions.RHTower.LogFloorExpBridge
 
 /-!
 # The Báez--Duarte coefficient as a critical Möbius wavelet pairing
@@ -95,18 +96,6 @@ theorem integral_jump_bdKernel (k : ℕ) {a T : ℝ} (ha : 0 ≤ a) (haT : a ≤
   linarith [hsplit]
 
 /-! ## The finite-aperture pairing -/
-
-theorem log_le_iff_le_floor {n : ℕ} (hn : 1 ≤ n) (t : ℝ) :
-    Real.log n ≤ t ↔ n ≤ ⌊Real.exp t⌋₊ := by
-  have hn0 : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn
-  rw [Nat.le_floor_iff (Real.exp_pos t).le]
-  constructor
-  · intro h
-    calc (n : ℝ) = Real.exp (Real.log n) := (Real.exp_log hn0).symm
-      _ ≤ Real.exp t := Real.exp_le_exp.mpr h
-  · intro h
-    have := Real.log_le_log hn0 h
-    rwa [Real.log_exp] at this
 
 theorem mobiusPartial_eq_jumpSum {t T : ℝ} (ht : 0 ≤ t) (htT : t ≤ T) :
     mobiusWeightedPartial 1 t

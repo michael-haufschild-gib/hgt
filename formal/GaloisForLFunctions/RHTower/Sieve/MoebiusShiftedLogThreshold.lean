@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.Sieve.MoebiusShiftedLogRealCutoff
-import GaloisForLFunctions.RHTower.BaezDuarteWaveletPairing
+import GaloisForLFunctions.RHTower.LogFloorExpBridge
 
 /-!
 # Logarithmic threshold form of shifted Möbius kernels

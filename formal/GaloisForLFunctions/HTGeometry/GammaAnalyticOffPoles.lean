@@ -18,6 +18,15 @@ open Complex
 
 namespace HTGeometry
 
+/-- **The totalized complex Gamma function is Borel measurable.**  Mathlib's reciprocal Gamma is
+entire; measurable inversion recovers `Gamma`, including its totalized values at the poles. -/
+theorem measurable_Gamma : Measurable Complex.Gamma := by
+  have hinv : Continuous (fun s : ℂ => (Complex.Gamma s)⁻¹) :=
+    Complex.differentiable_one_div_Gamma.continuous
+  have hmeas : Measurable (fun s : ℂ => ((Complex.Gamma s)⁻¹)⁻¹) :=
+    hinv.measurable.inv
+  simpa only [inv_inv] using hmeas
+
 /-- **`Γ` is analytic off its poles.**  At any `x ∉ -ℕ`, `Complex.Gamma` is the pointwise inverse of
 the entire reciprocal `1/Γ`, which is nonzero exactly off the poles; inversion preserves analyticity
 at a nonvanishing point. -/
