@@ -1,8 +1,8 @@
 # Algebraic-coefficient independence of numerical exponential defects
 
 - **ID:** schanuel-defects-algebraic-coefficient-independent
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3 — formalised in Lean 4
+- **Type:** THEOREM (Lean), `[LEAN-PROVED]`
 - **Source:** defect-lattice survivor + invariant-form subgroup closure + Baker
 - **Statement:** Defect forms of a `Q`-linearly independent complex exponential tuple are linearly independent over `Qbar`.
 
@@ -16,7 +16,7 @@ coefficients from the tuple's value field.
 
 - [x] 0 -> 1  in-progress: well-posed, source-pure, attack idea, Door passport sketch
 - [x] 1 -> 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 -> 3  formalized: exact theorem requires algebraic-group/Kahler-differential layer
+- [x] 2 -> 3  formalized: exact unconditional theorem, leaf build, umbrella wiring, axiom audit
 - [ ] 3 -> 4  publication-ready: independent novelty and proof audit pending
 
 ## Statement
@@ -1331,3 +1331,121 @@ Direct source checking and the targeted leaf build pass.  Both declarations audi
 `[propext, Classical.choice, Quot.sound]`; the leaf is wired into `HTGeometry` without an umbrella
 build.  Remaining geometric bridge is construction of the symmetric translated principal-open
 source and transport of its generic Kähler vanishing to the stable quotient co-Lie module.
+
+## Symmetric product source and Kähler inversion formalized (2026-08-26)
+
+Fresh corpus research recovered existing multiplication and translation pullback laws but no
+antipode pullback or symmetric-source assembly.  `AffineExponentialSymmetricProductSource.lean`
+now supplies
+
+```text
+affineExponentialSymmetricSourceMap
+affineExponential_antipode_involutive
+affineExponentialSymmetricSourceMap_swap
+tensorPoint_comp_affineExponentialSymmetricSourceMap
+algHomKaehlerMap_mixedInvariantKaehlerVector_antipode
+algHomKaehlerMap_affineExponentialSymmetricSourceMap_eq_zero
+```
+
+The source map is the exact coordinate pullback of `(x,y) ↦ x y⁻¹`.  Swapping source factors
+intertwines it with ambient inversion, and any identity-valued point of the original translated
+source produces an identity-valued point of the symmetric source.  On Kähler differentials,
+inversion sends the mixed invariant form to its negative; combining this with the existing
+multiplication law proves that a zero pullback on the original source remains zero on the
+symmetric source.
+
+Direct source checking and the targeted leaf build pass.  All nine theorem declarations audit to
+only `[propext, Classical.choice, Quot.sound]`; the leaf is wired into `HTGeometry` without an
+umbrella build.  Remaining construction is the concrete principal-open quotient source over the
+algebraic numbers and its generic-point injection into the stable Hopf quotient.
+
+## Principal-open localization infrastructure formalized (2026-08-26)
+
+Fresh corpus research found the denominator-torsion Kähler theorem but no finite-type instance for
+`Localization.Away`.  `PrincipalOpenLocalizationFiniteType.lean` proves
+
+```text
+localizationAway_isDomain_of_ne_zero
+awayPolynomialEvalAlgHom_surjective
+localizationAway_finiteType
+algHomKaehlerMap_localizationAway_eq_zero_of_smul_eq_zero
+```
+
+The localization has an explicit surjective presentation by `R[X]`, sending `X` to the inverse of
+the distinguished denominator.  Hence a principal open of a finite-type domain remains finite
+type and integral.  If that denominator kills a Kähler form before localization, its unit image
+kills the pullback, forcing the pullback itself to vanish.
+
+Direct source checking and the targeted leaf build pass.  All four declarations audit to only
+`[propext, Classical.choice, Quot.sound]`; the leaf is wired into `HTGeometry` without an umbrella
+build.  This closes the generic algebra needed for the exact principal-open locus source.
+
+## Exact principal-open locus source formalized (2026-08-26)
+
+Fresh corpus research identified `ker(eval_p)`, the existing quotient generic-point injection,
+the denominator-torsion theorem, and algebraically closed specialization as the reusable spine.
+`AffineExponentialPrincipalOpenLocusSource.lean` packages these into
+
+```text
+AffineExponentialPrincipalOpenSource
+exists_affineExponentialPrincipalOpenSource
+```
+
+For an extension-field point where a mixed invariant form vanishes, the construction takes the
+exact prime locus quotient, inverts the one denominator killing the generic pullback, specializes
+inside that principal open to a base-field point, and translates by its inverse.  The resulting
+source is an integral finite-type algebra with certified identity point, original generic point,
+and exact Kähler pullback zero.  The stored generic map remains evaluation at the original point
+after the literal right translation.
+
+Direct source checking and the targeted leaf build pass.  The existence theorem audits to only
+`[propext, Classical.choice, Quot.sound]`; the leaf is wired into `HTGeometry` without an umbrella
+build.  Remaining bridge is symmetric tensoring, stabilization, and injective Kähler transport to
+the stable Hopf quotient.
+
+## Exact algebraic-coefficient theorem formalized (2026-08-26)
+
+Fresh corpus searches were run before each missing bridge.  They recovered the existing
+comultiplication law for `additiveLinear`, `eval_additiveLinear`, character evaluation, lattice-span
+assembly, and Baker capstone, so none was duplicated.  The only absent translation helper was added
+once as
+
+```text
+AffineExponentialInvariantKaehler.rightTranslate_additiveLinear
+```
+
+The remaining dependency-closed geometric assembly is now provided by
+`BialgebraInvariantKaehlerTorsion.lean`, `IteratedBialgebraProductKaehler.lean`, the generic-point
+specialization theorem in `AffineExponentialSymmetricProductSource.lean`, and
+`AffineExponentialStableHopfLocus.lean`.  Its unconditional endpoint
+
+```text
+exists_affineExponentialStableHopfLocus
+```
+
+constructs the exact stable prime Hopf kernel, preserves the original extension-valued coset,
+propagates invariant Kähler vanishing through every iterated product, and proves the mixed co-Lie
+class vanishes.  No subgroup, dominance, translation, finite-type, torsion, or co-Lie premise is
+left to the caller.
+
+`RHTower/SchanuelDefectAlgebraicIndependence.lean` closes the card with
+
+```text
+schanuelDefect_algebraic_relation
+schanuelDefect_linearIndependent_algebraic
+```
+
+The first proves every algebraic-coefficient relation is zero.  The second is the exact public
+statement
+
+```text
+LinearIndependent (algebraicClosure ℚ ℂ)
+  (fun i ↦ schanuelDefect (x i))
+```
+
+for every `ℚ`-linearly independent finite tuple `x`.  Direct source checks pass.  Targeted leaf
+builds of the changed translation module and the final Schanuel module pass; both new leaves are
+wired into their existing umbrellas, and no umbrella build was run.  `#print axioms` on every new
+endpoint reports only `[propext, Classical.choice, Quot.sound]` (or a subset).  Global formal lint
+was also run: it reports only unrelated concurrently added owned modules not yet wired into their
+umbrellas; none of this card's modules or declarations appears in its errors.

@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.MultilinearEvaluationUniformity
 import GaloisForLFunctions.HTGeometry.TorusPhaseTrigCalculus
+import GaloisForLFunctions.HTGeometry.AddCharFinset
 
 /-!
 # Transfer of character means from continuous phases to cubic eighth-root phases
@@ -35,14 +36,6 @@ theorem mulVec_evalMatrix_eq_boolEval {R : Type*} [CommRing R] {k m : ℕ}
 end Evaluation
 
 section Character
-
-theorem addChar_map_finsetSum {A R : Type*} [AddCommGroup A] [CommMonoid R] (ψ : AddChar A R)
-    {κ : Type*} (s : Finset κ) (f : κ → A) : ψ (∑ i ∈ s, f i) = ∏ i ∈ s, ψ (f i) := by
-  classical
-  induction s using Finset.induction with
-  | empty => simp
-  | insert a s ha ih =>
-    rw [Finset.sum_insert ha, Finset.prod_insert ha, ψ.map_add_eq_mul, ih]
 
 /-- The eighth-root phase character of a frequency vector on Boolean points. -/
 def charFinite {m : ℕ} (n : (ι → Bool) → ℤ) (c : MonLe ι m → ZMod 8) : ℂ :=

@@ -282,20 +282,20 @@ theorem analyticMatrixFamily_eigenvalueBranch
 
 /-! ## Disconnected spectra add exactly -/
 
-/-- Tensor product of two coordinate vectors. -/
-def tensorVec {R ι κ : Type*} [Mul R] (v : ι → R) (w : κ → R) : ι × κ → R :=
+/-- Binary tensor product of two coordinate vectors. -/
+def binaryTensorVec {R ι κ : Type*} [Mul R] (v : ι → R) (w : κ → R) : ι × κ → R :=
   fun p => v p.1 * w p.2
 
 /-- A Kronecker product acts componentwise on a tensor-product vector. -/
-theorem kronecker_mulVec_tensorVec
+theorem kronecker_mulVec_binaryTensorVec
     {R ι κ : Type*} [CommRing R] [Fintype ι] [Fintype κ]
     (A : Matrix ι ι R) (B : Matrix κ κ R)
     (v : ι → R) (w : κ → R) :
-    (A ⊗ₖ B) *ᵥ tensorVec v w =
-      tensorVec (A *ᵥ v) (B *ᵥ w) := by
+    (A ⊗ₖ B) *ᵥ binaryTensorVec v w =
+      binaryTensorVec (A *ᵥ v) (B *ᵥ w) := by
   ext p
   rcases p with ⟨i, j⟩
-  simp only [mulVec, dotProduct, tensorVec]
+  simp only [mulVec, dotProduct, binaryTensorVec]
   change (∑ x : ι × κ, (A i x.1 * B j x.2) * (v x.1 * w x.2)) =
     (∑ x : ι, A i x * v x) * ∑ x : κ, B j x * w x
   rw [Fintype.sum_prod_type, Finset.sum_mul]
@@ -307,15 +307,15 @@ theorem kronecker_mulVec_tensorVec
   ring
 
 /-- A tensor product of nonzero vectors over a domain is nonzero. -/
-theorem tensorVec_ne_zero
+theorem binaryTensorVec_ne_zero
     {R ι κ : Type*} [CommRing R] [NoZeroDivisors R]
     {v : ι → R} {w : κ → R} (hv : v ≠ 0) (hw : w ≠ 0) :
-    tensorVec v w ≠ 0 := by
+    binaryTensorVec v w ≠ 0 := by
   intro h
   obtain ⟨i, hi⟩ : ∃ i, v i ≠ 0 := by simpa [Function.ne_iff] using hv
   obtain ⟨j, hj⟩ : ∃ j, w j ≠ 0 := by simpa [Function.ne_iff] using hw
   have hp := congr_fun h (i, j)
-  exact mul_ne_zero hi hj (by simpa [tensorVec] using hp)
+  exact mul_ne_zero hi hj (by simpa [binaryTensorVec] using hp)
 
 /-- Matrix Kronecker sum, representing two dynamically disconnected components. -/
 def kroneckerSum
@@ -386,7 +386,7 @@ theorem charpoly_eval_kroneckerSum_eq_zero
   obtain ⟨w, hw, hBw⟩ := Matrix.exists_mulVec_eq_zero_iff.mpr hdb
   rw [Matrix.eval_charpoly]
   apply Matrix.exists_mulVec_eq_zero_iff.mp
-  refine ⟨tensorVec v w, tensorVec_ne_zero hv hw, ?_⟩
+  refine ⟨binaryTensorVec v w, binaryTensorVec_ne_zero hv hw, ?_⟩
   ext p
   rcases p with ⟨i, j⟩
   have hAvi := congr_fun hAv i
@@ -401,14 +401,14 @@ theorem charpoly_eval_kroneckerSum_eq_zero
   have hAv' : (A *ᵥ v) i = a * v i := (sub_eq_zero.mp hAvi).symm
   have hBw' : (B *ᵥ w) j = b * w j := (sub_eq_zero.mp hBwj).symm
   simp only [kroneckerSum, sub_mulVec, add_mulVec,
-    kronecker_mulVec_tensorVec, Pi.sub_apply, Pi.add_apply, tensorVec,
+    kronecker_mulVec_binaryTensorVec, Pi.sub_apply, Pi.add_apply, binaryTensorVec,
     one_mulVec, Pi.zero_apply]
   have hscalar :
-      ((Matrix.scalar (ι × κ) (a + b)) *ᵥ tensorVec v w) (i, j) =
-        (a + b) * tensorVec v w (i, j) := by
+      ((Matrix.scalar (ι × κ) (a + b)) *ᵥ binaryTensorVec v w) (i, j) =
+        (a + b) * binaryTensorVec v w (i, j) := by
     simp [Matrix.scalar_apply, Matrix.mulVec_diagonal]
   rw [hscalar, hAv', hBw']
-  simp [tensorVec]
+  simp [binaryTensorVec]
   ring
 
 /-- **Disconnected analytic branches add as germs.** For any two analytic finite matrix families,

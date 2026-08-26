@@ -16,7 +16,7 @@ open Coalgebra Bialgebra
 namespace GaloisForLFunctions.HTGeometry
 namespace AffineExponentialInvariantKaehler
 
-open AffineExponentialGroup AffineExponentialPointEvaluation
+open AffineExponentialGroup AffineExponentialPointEvaluation AffineExponentialSubgroups
 open AffineExponentialPointClosure
 
 noncomputable section
@@ -49,6 +49,39 @@ theorem rightTranslate_additiveCoordinate
     mul_one, one_mul]
   rw [AlgHom.comp_apply, eval_additiveCoordinate]
   rfl
+
+/-- Right translation shifts an arbitrary additive linear form by its value at the translating
+point. -/
+theorem rightTranslate_additiveLinear
+    (k : Type*) [Field k] {n : ℕ} (q : Point k n) (c : Fin n → k) :
+    rightTranslate q (additiveLinear k c) =
+      additiveLinear k c +
+        algebraMap k (CoordinateAlgebra k n)
+          (eval (k := k) q (additiveLinear k c)) := by
+  rw [rightTranslate, AlgHom.comp_apply]
+  change AffineExponentialPointClosure.rightSlice q
+      (Coalgebra.comul (R := k) (additiveLinear k c)) = _
+  rw [comul_additiveLinear]
+  let ρ :
+      (CoordinateAlgebra k n ⊗[k] CoordinateAlgebra k n) →ₐ[k]
+        CoordinateAlgebra k n :=
+    AffineExponentialPointClosure.rightSlice q
+  change ρ (additiveLinear k c ⊗ₜ[k] 1 +
+    1 ⊗ₜ[k] additiveLinear k c) = _
+  have hleft : ρ (additiveLinear k c ⊗ₜ[k] 1) = additiveLinear k c := by
+    change additiveLinear k c *
+        algebraMap k (CoordinateAlgebra k n)
+          (eval (k := k) q (1 : CoordinateAlgebra k n)) = _
+    rw [map_one, map_one, mul_one]
+  have hright : ρ (1 ⊗ₜ[k] additiveLinear k c) =
+      algebraMap k (CoordinateAlgebra k n)
+        (eval (k := k) q (additiveLinear k c)) := by
+    change (1 : CoordinateAlgebra k n) *
+        algebraMap k (CoordinateAlgebra k n)
+          (eval (k := k) q (additiveLinear k c)) = _
+    rw [one_mul]
+  exact (ρ.map_add _ _).trans
+    (congrArg₂ (fun a b : CoordinateAlgebra k n => a + b) hleft hright)
 
 set_option maxHeartbeats 800000 in
 /-- **Translation invariance.** Pullback of the actual mixed invariant Kähler form along right

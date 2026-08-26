@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.NearDiagonalPhaseCurvature
+import GaloisForLFunctions.RHTower.NearDiagonalDyadicSum
 import GaloisForLFunctions.RHTower.Sieve.KthDerivativeTest
 import GaloisForLFunctions.RHTower.Sieve.LogPhaseBlock
 
@@ -195,6 +196,38 @@ theorem norm_nearDiagonalBlock_third_le {T r M : ℝ}
   simp only [nearDiagonalNegDerivativeChain] at htest
   convert htest using 1
   all_goals norm_num
+
+/-- Third-derivative estimate on a half-open integer interval contained in one dyadic block. -/
+theorem norm_nearDiagonalSum_third_le {T r : ℝ} (hT : 0 < T) (hr : 0 < r)
+    (A B : ℕ) (hA : 1 ≤ A) (hspan : B - A - 1 ≤ A) (hrA : r ≤ (A : ℝ))
+    (hlam1 : nearDiagonalLambda3 T r A ≤ 1) :
+    ‖nearDiagonalSum T r A B‖
+      ≤ 256 * (((B - A : ℕ) : ℝ) * (1368 ^ 2 * nearDiagonalLambda3 T r A) ^ (1 / 6 : ℝ)
+          + ((B - A : ℕ) : ℝ) ^ (1 / 2 : ℝ) *
+            nearDiagonalLambda3 T r A ^ (-(1 / 4 : ℝ))) := by
+  by_cases hBA : B ≤ A
+  · rw [nearDiagonalSum, Finset.Ico_eq_empty_of_le hBA, Finset.sum_empty, norm_zero]
+    rw [Nat.sub_eq_zero_of_le hBA]
+    norm_num
+  · have hAB : A < B := Nat.lt_of_not_le hBA
+    have hN : 1 ≤ B - A := by omega
+    have hA0 : (0 : ℝ) < (A : ℝ) := by exact_mod_cast hA
+    have hspan' : (((B - A : ℕ) - 1 : ℕ) : ℝ) ≤ (A : ℝ) := by exact_mod_cast hspan
+    have hblock := norm_nearDiagonalBlock_third_le hT hr hA0 hrA hN hspan' hlam1
+    rw [nearDiagonalSum, Finset.sum_Ico_eq_sum_range]
+    have hsum :
+        (∑ n ∈ Finset.range (B - A),
+            Complex.exp (((2 * Real.pi * nearDiagonalPhase T r ((A + n : ℕ) : ℝ) : ℝ) : ℂ)
+              * Complex.I)) =
+          ∑ n ∈ Finset.range (B - A),
+            Complex.exp (((2 * Real.pi * nearDiagonalPhase T r ((A : ℝ) + n) : ℝ) : ℂ)
+              * Complex.I) := by
+      refine Finset.sum_congr rfl fun n hn => ?_
+      congr 3
+      push_cast
+      rfl
+    rw [hsum]
+    exact hblock
 
 end
 

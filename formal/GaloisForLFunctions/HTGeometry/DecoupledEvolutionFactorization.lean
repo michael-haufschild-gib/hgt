@@ -109,8 +109,8 @@ theorem unitaryEvolution_kroneckerSum (A : Matrix ι ι ℂ) (B : Matrix κ κ �
 evolves factorwise. -/
 theorem unitaryEvolution_kroneckerSum_mulVec_tensorVec
     (A : Matrix ι ι ℂ) (B : Matrix κ κ ℂ) (t : ℝ) (u : ι → ℂ) (v : κ → ℂ) :
-    unitaryEvolution (kroneckerSum A B) t *ᵥ tensorVec u v =
-      tensorVec (unitaryEvolution A t *ᵥ u) (unitaryEvolution B t *ᵥ v) := by
-  rw [unitaryEvolution_kroneckerSum, kronecker_mulVec_tensorVec]
+    unitaryEvolution (kroneckerSum A B) t *ᵥ binaryTensorVec u v =
+      binaryTensorVec (unitaryEvolution A t *ᵥ u) (unitaryEvolution B t *ᵥ v) := by
+  rw [unitaryEvolution_kroneckerSum, kronecker_mulVec_binaryTensorVec]
 
 end GaloisForLFunctions.HTGeometry

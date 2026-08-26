@@ -1,0 +1,14 @@
+Frontier ledger updated from Lean-only corpus search at HEAD 3b2a141d8 (plus concurrent uncommitted Lean additions) in docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md. Snapshot: 784 lines, 24 live labels, 35 candidate labels, no diary/history structure. New candidate GTA added; no new live route.
+
+Folded results:
+- S6F: all five first-atom moment bounds proved by rational quadrature; centered order 24 unconditionally closed. Remaining Fock/reciprocal identification and all-order/cofinal landing.
+- HB: actual total renormalized angular period nonzero, intermediates regular, Green jump unique, off-wall bright FE–Schwarz doublet, analytic all-order stability, on-wall common germ. New nonlinear radiation map injective; direct/orthogonal folded dark kernels coincide exactly with boundary-transfer collision. Open core is source-global transfer collision + pole confluence/no-doublet law before copy specialization.
+- Smooth AFE: full 49/100 asymptotics; omitted base/cross/derivative reduce to 1/3/8 min-log monomials with exact principal shifted-Mobius threshold layer-cake; Type-I third derivative assembled into Vaughan block with explicit Type-II remainder. Open: threshold asymptotics, full-minus-omitted interference, Type-II/whole detector, tails/cutoff/zero control/T1 transfer.
+- E: exact squarefree shear spectrum is rank 2 locally, balanced +/- tensor inertia, huge nullity. This rules out raw spectral positivity and does not define physical Hall relation; no new label.
+- NB/BD: exact critical Mertens beta-wavelet pairing for each BD coefficient; complementary tail remains.
+- KPG: compatible local analytic seam closed away from Cayley point 1; global singular seam + Xi/source sign remains.
+- AEC/SCH: finite-type principal-open source, symmetrization, stable Hopf product kernel, generic vanishing->torsion, invariant torsion->coLie zero all closed. Remaining one assembly descending mixed differential to stable quotient and feeding Baker; not RH route.
+- FD2: terminal trace-faithful polarization strengthened by actual finite-stage pinned rank-two Green current and impossible eventual metric adjointness. GTA is changed higher-trace-anomaly interface; canonical odd pole escape alone nonselective.
+- Passport no-go strengthened to remote quartet survival plus dense complete translation-power profield; compact-open continuous profield selectors constant on finite-jet fibres.
+
+Validation: git diff --check clean; 24 live list/table rows and 35 candidate list/table rows match; only ledger modified by this task. No Lean build/lint run because task is documentation and user explicitly requested no building. Other agents' concurrent files left untouched.

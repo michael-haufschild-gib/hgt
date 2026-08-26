@@ -34,15 +34,17 @@ def selbergPrincipalScaledModel (a b N : ℕ) : ℝ :=
       coprimeLogMoebius 1 ((N : ℝ) / ((b * d : ℕ) : ℝ)) /
         (d : ℝ)
 
-/-- A double sum against the diagonal reciprocal coefficient collapses to its common diagonal. -/
-theorem selbergDiagonalReciprocalCoeff_double_sum_eq {X Y : ℕ} (h k : ℕ → ℝ) :
+/-- A double sum of an arbitrary kernel against the diagonal reciprocal coefficient collapses to
+its common diagonal. -/
+theorem selbergDiagonalReciprocalCoeff_double_sum_mul_eq
+    {X Y : ℕ} (F : ℕ → ℕ → ℝ) :
     (∑ d ∈ Finset.Icc 1 X, ∑ e ∈ Finset.Icc 1 Y,
-      selbergDiagonalReciprocalCoeff d e * (h d * k e)) =
-      ∑ d ∈ Finset.Icc 1 (min X Y), (1 / (d : ℝ)) * (h d * k d) := by
+      selbergDiagonalReciprocalCoeff d e * F d e) =
+      ∑ d ∈ Finset.Icc 1 (min X Y), (1 / (d : ℝ)) * F d d := by
   have hinner : ∀ d ∈ Finset.Icc 1 X,
       (∑ e ∈ Finset.Icc 1 Y,
-        selbergDiagonalReciprocalCoeff d e * (h d * k e)) =
-      if d ∈ Finset.Icc 1 Y then (1 / (d : ℝ)) * (h d * k d) else 0 := by
+        selbergDiagonalReciprocalCoeff d e * F d e) =
+      if d ∈ Finset.Icc 1 Y then (1 / (d : ℝ)) * F d d else 0 := by
     intro d hd
     by_cases hdY : d ∈ Finset.Icc 1 Y
     · rw [if_pos hdY, Finset.sum_eq_single_of_mem d hdY]
@@ -63,6 +65,14 @@ theorem selbergDiagonalReciprocalCoeff_double_sum_eq {X Y : ℕ} (h k : ℕ → 
   ext d
   simp only [Finset.mem_filter, Finset.mem_Icc]
   omega
+
+/-- Product-kernel specialization of the arbitrary diagonal collapse. -/
+theorem selbergDiagonalReciprocalCoeff_double_sum_eq {X Y : ℕ} (h k : ℕ → ℝ) :
+    (∑ d ∈ Finset.Icc 1 X, ∑ e ∈ Finset.Icc 1 Y,
+      selbergDiagonalReciprocalCoeff d e * (h d * k e)) =
+      ∑ d ∈ Finset.Icc 1 (min X Y), (1 / (d : ℝ)) * (h d * k d) := by
+  simpa using selbergDiagonalReciprocalCoeff_double_sum_mul_eq (X := X) (Y := Y)
+    (fun d e => h d * k e)
 
 /-- The common truncation of two positive dilations is division by their maximum. -/
 theorem min_natDiv_eq_natDiv_max (N a b : ℕ) (ha : 0 < a) (hb : 0 < b) :
