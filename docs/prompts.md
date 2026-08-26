@@ -34,7 +34,7 @@ where mathematical knowledge is missing use the /hgtl7 skill to create it.
 /goal
 
 formalize UNCONDITIONALLY in lean any proven theorem from all these cards: 
-- docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/07-functional-analysis-operator-theory
+- docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/03-ht-translation-projective-geometry
   
 add missing infrastructure, lean proofs, everything needed to mark a card as fully done and move it to stage 3 of the pipeline - no simplifications. 
 
@@ -66,6 +66,7 @@ do not add hypotheses. always use our custom search tool check first what the le
 
 be efficient with lean. clean up after yourself. do not run large rebuilds. do not run umbrella builds. do only check axioms for what you have created - no need to constantly check stuff we have already checked.
 
+only use the search tool for our lean corpus, not rg.
 
 
 to create new knowledge use the hgt-fields-medalist skill workflow and heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ...
@@ -75,6 +76,12 @@ optimize lean code. only build what is necessary. you can yourself only start 1 
 note: our research is in several places ahead of literature and your training data, let the lean corpus guide you. do not assume, because your assumptions are based on your outdated training data, not our actual research.
 
 do not touch git. for searching in our lean corpus use the search tool for it. pull in ideas wide from our lean corpus and arxiv, do not just search for direct solutions but indirect and vaguely related topics to get inspiration and new ideas for a solution of a problem.
+
+
+optimize lean code. only build what is necessary. you can yourself only start 1 build procress at a time. be mindful that you are not the only agent working on the lean codebase right now.
+
+do not touch git. for searching in our lean corpus use the search tool for it. pull in ideas wide from our lean corpus and arxiv, to find solutions to a problem. where mathematical / lean infrastructure is missing in our corpus, build it.
+
 
 ## goal theorems gpt
 
@@ -184,7 +191,7 @@ https://arxiv.org/pdf/2607.24830
 
 ## Formalize
 
-Formalize and prove fully, unconditional and closed in our lean corpus the proofs for all lemmas and theorems and provable propositions as far as mathlib or our lean corpus not already proof them from this paper: https://arxiv.org/pdf/2608.19244
+Formalize all foundations needed for using "irregular microlocal Riemann–Hilbert theory" in our rh proof research. Once the foundations are formalized, start applying it to existing RH research and expand the lean corpus with significant meaningful infrastructure and possibly novel knowledge.
 
 Skip everything already present in our corpus or mathlib.
 Any missing infrastructure you build no matter the effort.
@@ -208,6 +215,10 @@ Non-negotiable working mode rules:
 do not add hypotheses.
 
 always use our custom search tool check first what the lean corpus already contains, to not duplicate existing work.
+
+goal is met when rh is proven through the lense of "irregular microlocal Riemann–Hilbert theory".
+
+
 
 
 ## frontier paper
@@ -290,7 +301,9 @@ how would a fields medal mathematician approach this problem? what our corpus is
 
 
 ## theorem experiment
-find as many places as possible in our lean corpus to apply anything from this paper: https://arxiv.org/pdf/2607.26782, formalize it and see what happens. this is experimental. it does not have to be about rh or anything, purely mechanical. it has no goal other than this task done in as many places as possible. explain in chat whenever you find something what this could be about.
+find as many places as possible in our lean corpus to apply any form of the Korteweg–De Vries equation, Kawahara equation, Kadomtsev–Petviashvili equation, Shrira-Pesenson equation, Nonlinear Schrödinger equation, Solitons math and physics, formalize it and see what happens. this is experimental. it does not have to be about rh or anything, purely mechanical. it has no goal other than this task done in as many places as possible. explain in chat whenever you find something what this could be about.
+
+Construct source-defined graded/Fredholm object carrying an odd index or weight. Reflection should follow from duality, horizontal orientation from eta/spectral flow or polarization, and infinite completion from index stability. Xi should appear only afterward as determinant or trace formula.
 
 Lean rules:
 1. Proofs must be unconditional and closed in lean, no premises, no hypotheses, no added axioms, ....
@@ -302,13 +315,15 @@ Lean rules:
 7. make sure you don't leave stale lean processes running - clean up after yourself.
    
 Non-negotiable working mode rules:
-1. If an application would be interesting, but is missing lean infrastructure, build it no matter the effort.
+1. If an idea/conjecture would be interesting, but is missing lean infrastructure, build it no matter the effort, instead of pivoting.
 2. use the search tool for our lean corpus. do not read cards or anything, only work directly on lean.
-
+3. Missing mathematical knowledge: create it with the hgtl7 or hgt-fields-medalist skill workflow and heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ...
+   
 use the search tool for the lean corpus to check what already was formalized so you do not duplicate existing work.
-
 
 
  are you sure, you are not duplicating work? we have extensive prior work in our lean corpus exactly about this.
 
 be efficient with lean. clean up after yourself. do not run large rebuilds. do not run umbrella builds. do only check axioms for what you have created - no need to constantly check stuff we have already checked.
+
+do not pivot on unanswered mathematical problems. your job is precisely to solve problems that neither our lean corpus nor literature have solved yet. use the hgt-fields-medalist skill workflow and heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ...

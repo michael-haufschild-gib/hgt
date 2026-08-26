@@ -1,0 +1,108 @@
+import GaloisForLFunctions.RHTower.Sieve.SmoothPrimeReciprocalMass
+import GaloisForLFunctions.RHTower.ThetaCuspFinitePrimeFluxWindow
+
+/-!
+# Fractional-moment tail for smooth-prime reciprocal mass
+
+A `3/4`-power moment on the finite-prime smooth monoid converts the reciprocal tail beyond `D`
+into a factor `D⁻¹ᐟ⁴`.  This is the tail input in the smooth-prime expansion.
+-/
+
+namespace RHTower.Sieve
+
+open Finset Set
+open scoped BigOperators
+
+noncomputable section
+
+/-- The summable `3/4`-power majorant on integers smooth over primes at most `r`. -/
+def smoothPrimeThreeQuarterWeight (r n : ℕ) : ℝ :=
+  ((r + 1).smoothNumbers : Set ℕ).indicator
+    (fun m : ℕ => (m : ℝ) ^ (-(3 / 4 : ℝ))) n
+
+/-- Total `3/4`-power mass of the finite-prime smooth monoid. -/
+def smoothPrimeThreeQuarterMass (r : ℕ) : ℝ :=
+  ∑' n : ℕ, smoothPrimeThreeQuarterWeight r n
+
+theorem summable_smoothPrimeThreeQuarterWeight (r : ℕ) :
+    Summable (smoothPrimeThreeQuarterWeight r) := by
+  change Summable (((r + 1).smoothNumbers : Set ℕ).indicator
+    (fun m : ℕ => (m : ℝ) ^ (-(3 / 4 : ℝ))))
+  rw [← summable_subtype_iff_indicator]
+  exact (RHTower.summable_smoothNumbers_rpow_neg r
+    (by norm_num : (0 : ℝ) < 3 / 4)).congr (fun n => by rfl)
+
+theorem smoothPrimeThreeQuarterWeight_nonneg (r n : ℕ) :
+    0 ≤ smoothPrimeThreeQuarterWeight r n := by
+  classical
+  rw [smoothPrimeThreeQuarterWeight]
+  by_cases h : n ∈ (r + 1).smoothNumbers
+  · rw [Set.indicator_of_mem h]
+    exact Real.rpow_nonneg (Nat.cast_nonneg n) _
+  · simp [Set.indicator, h]
+
+theorem smoothPrimeThreeQuarterMass_nonneg (r : ℕ) :
+    0 ≤ smoothPrimeThreeQuarterMass r := by
+  rw [smoothPrimeThreeQuarterMass]
+  exact tsum_nonneg (smoothPrimeThreeQuarterWeight_nonneg r)
+
+theorem summable_primeSupportedReciprocal_Ioi
+    {r : ℕ} (hr : 0 < r) (D : ℕ) :
+    Summable ((Set.Ioi D).indicator (fun n : ℕ => primeSupportedReciprocal r n)) := by
+  rw [← summable_subtype_iff_indicator]
+  exact (summable_primeSupportedReciprocal hr).subtype (fun n : ℕ => n ∈ Set.Ioi D)
+
+/-- Reciprocal smooth-prime mass above `D` is at most its `3/4`-moment times `D⁻¹ᐟ⁴`. -/
+theorem tsum_primeSupportedReciprocal_Ioi_le_threeQuarterMass
+    {r D : ℕ} (hr : 0 < r) (hD : 1 ≤ D) :
+    (∑' n : ℕ,
+        (Set.Ioi D).indicator (fun m : ℕ => primeSupportedReciprocal r m) n) ≤
+      (D : ℝ) ^ (-(1 / 4 : ℝ)) * smoothPrimeThreeQuarterMass r := by
+  classical
+  have hDpos : (0 : ℝ) < (D : ℝ) := by
+    exact_mod_cast (lt_of_lt_of_le Nat.zero_lt_one hD)
+  have hsmooth := summable_smoothPrimeThreeQuarterWeight r
+  have hpoint : ∀ n : ℕ,
+      (Set.Ioi D).indicator (fun m : ℕ => primeSupportedReciprocal r m) n ≤
+        (D : ℝ) ^ (-(1 / 4 : ℝ)) * smoothPrimeThreeQuarterWeight r n := by
+    intro n
+    by_cases hnD : n ∈ Set.Ioi D
+    · rw [Set.indicator_of_mem hnD]
+      by_cases hsupp : primeSupportedOn r n
+      · have hnposNat : 0 < n := lt_trans (lt_of_lt_of_le Nat.zero_lt_one hD) hnD
+        have hnpos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hnposNat
+        have hn0 : n ≠ 0 := Nat.ne_of_gt hnposNat
+        have hsmoothMem : n ∈ (r + 1).smoothNumbers :=
+          primeSupportedOn_mem_smoothNumbers hr hsupp
+        have hDn : (D : ℝ) ≤ (n : ℝ) := by exact_mod_cast (Nat.le_of_lt hnD)
+        have hrpow : (n : ℝ) ^ (-(1 / 4 : ℝ)) ≤
+            (D : ℝ) ^ (-(1 / 4 : ℝ)) :=
+          Real.rpow_le_rpow_of_nonpos hDpos hDn (by norm_num)
+        rw [primeSupportedReciprocal_apply_of_supported hsupp,
+          reciprocalNatArithmetic_apply hn0, smoothPrimeThreeQuarterWeight,
+          Set.indicator_of_mem hsmoothMem]
+        calc
+          1 / (n : ℝ) = (n : ℝ) ^ (-1 : ℝ) := by
+            rw [Real.rpow_neg_one]
+            exact one_div _
+          _ = (n : ℝ) ^ (-(1 / 4 : ℝ)) *
+              (n : ℝ) ^ (-(3 / 4 : ℝ)) := by
+            rw [← Real.rpow_add hnpos]
+            congr 1
+            norm_num
+          _ ≤ (D : ℝ) ^ (-(1 / 4 : ℝ)) *
+              (n : ℝ) ^ (-(3 / 4 : ℝ)) :=
+            mul_le_mul_of_nonneg_right hrpow (Real.rpow_nonneg hnpos.le _)
+      · rw [primeSupportedReciprocal_apply_of_not_supported hsupp]
+        exact mul_nonneg (Real.rpow_nonneg hDpos.le _)
+          (smoothPrimeThreeQuarterWeight_nonneg r n)
+    · simp [Set.indicator, hnD]
+      exact mul_nonneg (Real.rpow_nonneg hDpos.le _)
+        (smoothPrimeThreeQuarterWeight_nonneg r n)
+  have hle := (summable_primeSupportedReciprocal_Ioi hr D).tsum_le_tsum hpoint
+    (hsmooth.mul_left ((D : ℝ) ^ (-(1 / 4 : ℝ))))
+  simpa only [tsum_mul_left, smoothPrimeThreeQuarterMass] using hle
+
+end
+
+end RHTower.Sieve

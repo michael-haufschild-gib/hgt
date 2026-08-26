@@ -220,25 +220,55 @@ private theorem mul_natSucc_rpow_le_four_mul_deningerAbelWeight
   set x : ℝ := (n : ℝ) + 1 with hxdef
   have hx : 0 < x := by rw [hxdef]; positivity
   have hx1 : 1 ≤ x := by rw [hxdef]; simp
-  have hderiv : ∀ t ∈ Set.Icc x (x + 1),
-      HasDerivWithinAt (fun y : ℝ => -(y ^ (-σ)))
-        (σ * t ^ (-σ - 1)) (Set.Icc x (x + 1)) t := by
+  have hderivAt : ∀ t, x < t → t < x + 1 →
+      HasDerivAt (-(fun y : ℝ => y ^ (-σ))) (σ * t ^ (-σ - 1)) t := by
+    intro t hxt _
+    have htpos : 0 < t := lt_trans hx hxt
+    simpa only [neg_mul, neg_neg] using
+      (Real.hasDerivAt_rpow_const (p := -σ) (Or.inl htpos.ne')).neg
+  have hcont : ContinuousOn (-(fun y : ℝ => y ^ (-σ))) (Set.Icc x (x + 1)) := by
     intro t ht
     have htpos : 0 < t := lt_of_lt_of_le hx ht.1
-    convert ((Real.hasDerivAt_rpow_const (p := -σ) htpos).neg).hasDerivWithinAt using 1 <;> ring
+    exact (Real.hasDerivAt_rpow_const (p := -σ) (Or.inl htpos.ne')).neg.continuousAt.continuousWithinAt
+  have hdiff : DifferentiableOn ℝ (-(fun y : ℝ => y ^ (-σ)))
+      (interior (Set.Icc x (x + 1))) := by
+    rw [interior_Icc]
+    intro t ht
+    exact (hderivAt t ht.1 ht.2).differentiableAt.differentiableWithinAt
   have hlower : ∀ t ∈ Set.Ioo x (x + 1),
       σ * (x + 1) ^ (-σ - 1) ≤ σ * t ^ (-σ - 1) := by
     intro t ht
     exact mul_le_mul_of_nonneg_left
       (Real.rpow_le_rpow_of_nonpos (lt_trans hx ht.1) ht.2.le (by linarith)) hσ.le
   have hmvt := (convex_Icc x (x + 1)).mul_sub_le_image_sub_of_le_deriv
-    (continuousOn_of_forall_continuousAt fun t => by
-      exact (Real.continuousAt_rpow_const (by linarith [hx])).neg)
-    (by linarith) hderiv hlower
+    hcont hdiff (fun t ht => by
+      rw [interior_Icc] at ht
+      rw [(hderivAt t ht.1 ht.2).deriv]
+      exact hlower t ht)
+    x (left_mem_Icc.2 (by linarith)) (x + 1) (right_mem_Icc.2 (by linarith)) (by linarith)
   have hweight : σ * (x + 1) ^ (-σ - 1) ≤ deningerAbelWeight σ n := by
-    simpa [deningerAbelWeight, hxdef] using hmvt
+    rw [deningerAbelWeight]
+    have hn2 : (n : ℝ) + 2 = x + 1 := by rw [hxdef]; ring
+    rw [← hxdef, hn2]
+    linarith [hmvt]
   have hratio : x ^ (-1 - σ) ≤ 4 * (x + 1) ^ (-1 - σ) := by
-    sorry
+    have hbase : x + 1 ≤ 2 * x := by linarith
+    have hpowbase : (2 * x) ^ (-1 - σ) ≤ (x + 1) ^ (-1 - σ) :=
+      Real.rpow_le_rpow_of_nonpos (by positivity) hbase (by linarith)
+    have hexp : (-2 : ℝ) ≤ -1 - σ := by linarith
+    have htwo : (2 : ℝ) ^ (-2 : ℝ) ≤ (2 : ℝ) ^ (-1 - σ) :=
+      Real.rpow_le_rpow_of_exponent_le (by norm_num) hexp
+    have hquarter : (2 : ℝ) ^ (-2 : ℝ) = 1 / 4 := by norm_num [Real.rpow_neg]
+    have hcoeff : 1 ≤ 4 * (2 : ℝ) ^ (-1 - σ) := by
+      rw [hquarter] at htwo
+      nlinarith
+    have hxpow : 0 ≤ x ^ (-1 - σ) := Real.rpow_nonneg hx.le _
+    calc
+      x ^ (-1 - σ) = 1 * x ^ (-1 - σ) := by ring
+      _ ≤ (4 * (2 : ℝ) ^ (-1 - σ)) * x ^ (-1 - σ) :=
+        mul_le_mul_of_nonneg_right hcoeff hxpow
+      _ = 4 * (2 * x) ^ (-1 - σ) := by rw [Real.mul_rpow (by norm_num) hx.le]; ring
+      _ ≤ 4 * (x + 1) ^ (-1 - σ) := mul_le_mul_of_nonneg_left hpowbase (by norm_num)
   calc
     σ * x ^ (-1 - σ) ≤ σ * (4 * (x + 1) ^ (-1 - σ)) :=
       mul_le_mul_of_nonneg_left hratio hσ.le
