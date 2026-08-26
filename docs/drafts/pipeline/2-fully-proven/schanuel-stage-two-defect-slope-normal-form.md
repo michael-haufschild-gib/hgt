@@ -297,3 +297,60 @@ are part of the theorem.  Direct check, targeted leaf build, and new-declaration
 the module is umbrella-wired without building the umbrella.  Clause 5 now lacks only the concrete
 normalization/coordinate/path packaging that instantiates this general analytic theorem on `V`.
 Clause 4 and that geometric packaging still keep the card at Stage 2.
+
+## Clause 4 closed: exact essentiality and countable ecl membership (2026-08-26)
+
+Fresh `formal_tools.py research` searches found the existing stage-two value field, Hermite--
+Lindemann selector, Kähler-kernel machinery, matrix-minor transfer, and algebraic-coefficient
+defect theorem.  `RHTower/SchanuelStageTwoExponentialAlgebraicity.lean` supplies only the missing
+bridges.  It constructs three pair-supported polynomial relations, proves their gradient rows span
+the three-dimensional coordinate-differential kernel, restricts them to the two-dimensional
+exponential tangent, and uses nonvanishing of the intrinsic defect to prove injectivity.  A
+nonsingular two-row minor therefore gives an actual Khovanskii system over `complexEclStage 1`.
+
+The resulting declarations prove:
+
+```text
+stageTwoExponent_mem_complexEclStage_two_of_trdeg_one
+stageTwoGenerator_mem_complexExponentialAlgebraicClosure_of_trdeg_one
+stageTwoValueField_le_complexEclAsIntermediateField_of_trdeg_one
+IsEssentialSchanuelCounterexample
+isEssentialSchanuelCounterexample_stageTwo_of_trdeg_one
+exists_stageTwoDefectSlopeCore_essential_ecl
+```
+
+`IsEssentialSchanuelCounterexample` is Kirby's exact condition, not a proper-subtuple proxy: its
+cancellation-free inequality is `delta(x) <= delta(c)` for every rationally independent basis `c`
+of every rational subspace of the span of `x`.  The capstone packages the already-proved unique
+transcendental slope with exact essentiality and proves that the actual `rho : K`, hence its complex
+value, belongs to the countable exponential-algebraic closure.
+
+Direct check, targeted leaf build, and new-capstone axiom audit pass; only
+`[propext, Classical.choice, Quot.sound]` occur.  New leaves are umbrella-wired, and no umbrella
+build was run.  Clause 4 is closed.  Clause 5's normalized-projective-curve packaging remains.
+
+Formalization also exposes a required reading of clause 5: the path must lie in the complement of
+the zeros and poles of each `Y_i`.  Without this, an arbitrary path can cross the divisor, where
+`dY_i / Y_i` and a logarithm lift are undefined.  The existing literal path-integral theorem already
+has exactly this nonvanishing/log-lift domain; remaining work is the normal projective model and its
+divisor-avoiding analytic path realization.
+
+## Divisor-avoiding paths automatically supply logarithm lifts (2026-08-26)
+
+Fresh corpus search found the pre-existing theorem
+`RHTower.exists_continuousOn_log_of_hasDerivAt` in `HTGeometry/SegmentPolarForm.lean`.  No second
+continuous-logarithm construction was added.  The new capstone
+`exists_logarithmLift_intervalIntegral_eq_base_add_branch` in
+`HTGeometry/LogarithmicDifferentialPathIntegral.lean` reuses it to prove that every differentiable
+interval path on which `Y` is nowhere zero automatically admits a continuous differentiable
+logarithm lift and satisfies the exact regulator identity
+
+```text
+∫ (Y'/Y - X') = X(a) - L(a) + 2πik.
+```
+
+Thus clause 5 no longer needs a separately supplied logarithm branch.  Direct file check and the
+targeted leaf build pass.  The new declaration's axiom audit is exactly
+`[propext, Classical.choice, Quot.sound]`.  Remaining clause-5 obligations are the normalized
+projective model, coordinate pullbacks, and construction of a divisor-avoiding analytic path to
+which this theorem applies.  Card remains Stage 2.

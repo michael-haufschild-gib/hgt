@@ -48,9 +48,9 @@ for exact claims they prove.
 | 18 | `ultrametric-one-loop-resolvent-hypertranscendence` | `UltrametricResolventSusceptibility` proves exact formal coefficients, constraint, uniqueness | Analytic meromorphic resolvent, pole/nonrational proof, difference-Galois HT, determinant and de Sitter Hessian interpretation |
 | 19 | `ultrametric-thermal-mahler-hypertranscendence` | `UltrametricThermalMahler` proves coefficient spectrum, constraint, uniqueness; truncation formalized | Analytic heat trace, nonrational gap theorem, Mahler difference-Galois HT, spectral-zeta DA split, QFT realization |
 | 20 | `universal-typed-event-network-fixed-carrier-no-go` | `EventNetworkFixedCarrier` proves algebraic network; `TraceClassQuantumCorner` proves abstract certified corner composition | Literal Hilbert direct-sum inclusion/compression, complete positivity, trace nonincrease, normality, exact CP history theorem |
-| 21 | `zero-frequency-repaired-source-dx-over-x-law` | No exact card module found | Determinate representing measure, exact density comparison for every nonnegative Borel weight, measure-class corollary |
-| 22 | `zero-frequency-repaired-source-mellin-threshold` | No exact card module found | Determinacy/representation, all positive real Mellin exponents finite, zero and negative exponents infinite |
-| 23 | `zero-frequency-reservoir-density-laplace-equivalence` | No exact card module found | Radon--Nikodym density, logarithmic asymptotic, Laplace uniqueness and target recovery |
+| 21 | `zero-frequency-repaired-source-dx-over-x-law` | Stage 3. `RepairedFrequencyDxOverXLaw`: exact source restriction, all nonnegative Borel-weight bounds/finiteness, and two-source bounded equivalence | Complete |
+| 22 | `zero-frequency-repaired-source-mellin-threshold` | Stage 3. `RepairedFrequencyMellinThreshold.source_exact_localMellin_threshold` proves all positive, zero, and negative real-exponent regimes | Complete |
+| 23 | `zero-frequency-reservoir-density-laplace-equivalence` | Stage 3. `RepairedFrequencyDensityLaplace`: density limit, source logarithmic ratio, Laplace identity/uniqueness, and positive-reservoir recovery | Complete |
 
 ## Active lane
 
@@ -85,3 +85,8 @@ for exact claims they prove.
   `totient_prod_of_pairwise_coprime`, and `quadraticCongruenceNormalizedRootSum_mul_alias`.
   Remaining `(SG9)` requires the literal physical window/BV response, absent from current corpus;
   no conditional interface will be introduced.
+- 2026-08-26 — cards 21--23 promoted to Stage 3. Reused shifted-factorial density/determinacy,
+  local-divergence, truncated-power integrability, and compact moment determinacy. Added only the
+  missing `dx/x` cancellation/consequences, exact Mellin threshold, logarithmic asymptotic, and
+  Laplace-recovery bridge. Direct checks, targeted builds, umbrella wiring, and new-declaration
+  axiom audits passed; audits report only `propext`, `Classical.choice`, and `Quot.sound`.

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.DigammaImaginaryVerticalAsymptotic
+import GaloisForLFunctions.HTGeometry.IntegralCesaro
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 
 /-!
@@ -65,55 +66,8 @@ def gammaVerticalPhase (σ T : ℝ) : ℝ :=
 
 theorem tendsto_integral_div_atTop {ε : ℝ → ℝ} (hcont : ContinuousOn ε (Set.Ici 1))
     (h : Tendsto ε atTop (𝓝 0)) :
-    Tendsto (fun T => (∫ t in (1 : ℝ)..T, ε t) / T) atTop (𝓝 0) := by
-  have hint : ∀ a b : ℝ, 1 ≤ a → 1 ≤ b → IntervalIntegrable ε MeasureTheory.volume a b := by
-    intro a b ha hb
-    refine (hcont.mono ?_).intervalIntegrable
-    intro x hx
-    rw [Set.uIcc, Set.mem_Icc] at hx
-    exact le_trans (le_min ha hb) hx.1
-  rw [Metric.tendsto_atTop]
-  intro δ hδ
-  have hhalf : 0 < δ / 2 := by linarith
-  obtain ⟨T₀, hT₀⟩ := (Metric.tendsto_atTop.mp h) (δ / 2) hhalf
-  set T₁ : ℝ := max T₀ 1 with hT₁
-  have hT₁1 : (1 : ℝ) ≤ T₁ := le_max_right _ _
-  set A : ℝ := |∫ t in (1 : ℝ)..T₁, ε t| with hA
-  have hA0 : 0 ≤ A := abs_nonneg _
-  refine ⟨max T₁ (2 * A / δ + 1), fun T hT => ?_⟩
-  have hTT₁ : T₁ ≤ T := le_trans (le_max_left _ _) hT
-  have hTA : 2 * A / δ + 1 ≤ T := le_trans (le_max_right _ _) hT
-  have hT0 : (0 : ℝ) < T := by
-    have : (1 : ℝ) ≤ T := le_trans hT₁1 hTT₁
-    linarith
-  have hsplit : (∫ t in (1 : ℝ)..T, ε t)
-      = (∫ t in (1 : ℝ)..T₁, ε t) + ∫ t in T₁..T, ε t := by
-    rw [intervalIntegral.integral_add_adjacent_intervals (hint 1 T₁ (le_refl _) hT₁1)
-      (hint T₁ T hT₁1 (le_trans hT₁1 hTT₁))]
-  have htail : |∫ t in T₁..T, ε t| ≤ δ / 2 * (T - T₁) := by
-    have hbound : ∀ t ∈ Set.uIoc T₁ T, ‖ε t‖ ≤ δ / 2 := by
-      intro t ht
-      rw [Set.uIoc_of_le hTT₁] at ht
-      have hge : T₀ ≤ t := le_trans (le_max_left _ _) (le_of_lt ht.1)
-      have := hT₀ t hge
-      rw [Real.dist_eq, sub_zero] at this
-      exact this.le
-    have := intervalIntegral.norm_integral_le_of_norm_le_const (C := δ / 2) hbound
-    rw [Real.norm_eq_abs] at this
-    calc |∫ t in T₁..T, ε t| ≤ δ / 2 * |T - T₁| := this
-      _ = δ / 2 * (T - T₁) := by rw [abs_of_nonneg (by linarith)]
-  have hnum : |∫ t in (1 : ℝ)..T, ε t| ≤ A + δ / 2 * T := by
-    rw [hsplit]
-    calc |(∫ t in (1 : ℝ)..T₁, ε t) + ∫ t in T₁..T, ε t|
-        ≤ A + |∫ t in T₁..T, ε t| := abs_add_le _ _
-      _ ≤ A + δ / 2 * (T - T₁) := by linarith [htail]
-      _ ≤ A + δ / 2 * T := by nlinarith [hT₁1, hδ]
-  rw [Real.dist_eq, sub_zero, abs_div, abs_of_pos hT0, div_lt_iff₀ hT0]
-  have hAT : A < δ / 2 * T := by
-    have h1 : 2 * A / δ < T := by linarith
-    rw [div_lt_iff₀ hδ] at h1
-    linarith
-  linarith [hnum]
+    Tendsto (fun T => (∫ t in (1 : ℝ)..T, ε t) / T) atTop (𝓝 0) :=
+  HTGeometry.tendsto_integral_div_atTop hcont h
 
 /-! ## The asymptotic -/
 

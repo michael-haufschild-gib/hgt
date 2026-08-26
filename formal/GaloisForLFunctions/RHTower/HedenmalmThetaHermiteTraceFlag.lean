@@ -47,6 +47,17 @@ def ThetaSourceArithmeticHermiteStageProperty (k : ℕ) : Prop :=
 def ThetaSourceArithmeticHermiteFlag : Prop :=
   ∀ k : ℕ, ThetaSourceArithmeticHermiteStageProperty k
 
+/-- Finite arithmetic window at stage `k`.  A matrix of size `n` needs trace moments only through
+degree `4n+2`, arising from polynomial tests of degree at most `2n+1`. -/
+def ThetaSourceArithmeticHermiteWindowStageProperty (k : ℕ) : Prop :=
+  ∀ p : Polynomial ℝ,
+    p.natDegree ≤ 2 * Fintype.card ↥(thetaSourceSignedCutoff k) + 1 →
+    0 ≤ (thetaSourceSignedStageHermiteTrace k p).re
+
+/-- Cofinal finite-window theta arithmetic flag. -/
+def ThetaSourceArithmeticHermiteWindowFlag : Prop :=
+  ∀ k : ℕ, ThetaSourceArithmeticHermiteWindowStageProperty k
+
 private theorem thetaSourceSignedStage_entireDet2_eq_finiteDet2
     (k : ℕ) (z : ℂ) :
     entireDet2 (thetaSourceSignedKernel k) z =
@@ -174,6 +185,49 @@ theorem thetaSourceArithmeticHermiteStage_iff_greenStage (k : ℕ) :
   exact ⟨thetaSourceArithmeticHermiteStage_realDivisor k,
     thetaSourceArithmeticHermiteStage_of_realDivisor k⟩
 
+/-- The explicit finite degree window is already complete: it is equivalent to unrestricted
+Hermite positivity at the same actual theta stage. -/
+theorem thetaSourceArithmeticHermiteWindowStage_iff_hermiteStage (k : ℕ) :
+    ThetaSourceArithmeticHermiteWindowStageProperty k ↔
+      ThetaSourceArithmeticHermiteStageProperty k := by
+  constructor
+  · intro hwindow
+    let M := thetaSourceSignedStageFinMatrix k
+    obtain ⟨U, T, hU1, hU2, hT, hMT⟩ :=
+      GaloisForLFunctions.HTGeometry.exists_schur_triangulation
+        (Fintype.card ↥(thetaSourceSignedCutoff k)) M
+    have hdiag : ∀ i, (T i i).im = 0 := by
+      apply finiteMatrix_unweightedTraceHankel_nonneg_degree_le_implies_schur_real
+        hU1 hU2 hT hMT
+      intro p hp
+      apply hwindow p
+      simpa using hp
+    intro p
+    change 0 ≤ (finiteMatrixUnweightedTraceHankel M p).re
+    rw [finiteMatrixUnweightedTraceHankel_eq_schur hU1 hU2 hT hMT]
+    have hsum : (∑ i, evalRealPolynomial p (T i i) ^ 2).re =
+        ∑ i, (evalRealPolynomial p (T i i) ^ 2).re := by simp
+    rw [hsum]
+    apply Finset.sum_nonneg
+    intro i hi
+    let x : ℝ := (T i i).re
+    have htx : T i i = (x : ℂ) := by
+      apply Complex.ext
+      · rfl
+      · simpa [x] using hdiag i
+    rw [htx, evalRealPolynomial_ofReal, pow_two, Complex.mul_re]
+    simpa only [Complex.ofReal_re, Complex.ofReal_im, mul_zero, sub_zero] using
+      mul_self_nonneg (Polynomial.eval x p)
+  · intro h p hp
+    exact h p
+
+/-- Finite trace window, real stage divisor, and exact modal Green cancellation are equivalent. -/
+theorem thetaSourceArithmeticHermiteWindowStage_iff_greenStage (k : ℕ) :
+    ThetaSourceArithmeticHermiteWindowStageProperty k ↔
+      ThetaSourceArithmeticGreenStageProperty k := by
+  rw [thetaSourceArithmeticHermiteWindowStage_iff_hermiteStage,
+    thetaSourceArithmeticHermiteStage_iff_greenStage]
+
 /-- Global root-free Hermite flag is exactly the previous modal Green flag. -/
 theorem thetaSourceArithmeticHermiteFlag_iff_greenFlag :
     ThetaSourceArithmeticHermiteFlag ↔ ThetaSourceArithmeticGreenFlag := by
@@ -183,11 +237,26 @@ theorem thetaSourceArithmeticHermiteFlag_iff_greenFlag :
   · intro h k
     exact (thetaSourceArithmeticHermiteStage_iff_greenStage k).mpr (h k)
 
+/-- The cofinal finite-window flag is exactly the modal Green flag. -/
+theorem thetaSourceArithmeticHermiteWindowFlag_iff_greenFlag :
+    ThetaSourceArithmeticHermiteWindowFlag ↔ ThetaSourceArithmeticGreenFlag := by
+  constructor
+  · intro h k
+    exact (thetaSourceArithmeticHermiteWindowStage_iff_greenStage k).mp (h k)
+  · intro h k
+    exact (thetaSourceArithmeticHermiteWindowStage_iff_greenStage k).mpr (h k)
+
 /-- Root-free theta source arithmetic flag closes RH. -/
 theorem riemannHypothesis_of_thetaSourceArithmeticHermiteFlag
     (h : ThetaSourceArithmeticHermiteFlag) : RiemannHypothesis :=
   riemannHypothesis_of_thetaSourceArithmeticGreenFlag
     (thetaSourceArithmeticHermiteFlag_iff_greenFlag.mp h)
+
+/-- Finite-window source arithmetic positivity closes RH. -/
+theorem riemannHypothesis_of_thetaSourceArithmeticHermiteWindowFlag
+    (h : ThetaSourceArithmeticHermiteWindowFlag) : RiemannHypothesis :=
+  riemannHypothesis_of_thetaSourceArithmeticGreenFlag
+    (thetaSourceArithmeticHermiteWindowFlag_iff_greenFlag.mp h)
 
 /-- Unconditional completion belongs to exactly the same source matrices whose power traces define
 the Hermite flag. -/
@@ -198,6 +267,15 @@ theorem thetaSourceArithmeticHermiteStages_completion :
       (fun z => XiC z / XiC 0) atTop :=
   ⟨thetaSourceSignedKernel_tendsto_source,
     thetaSourceSignedOrdinaryDet_tendstoLocallyUniformly_XiC⟩
+
+/-- Same finite-window stages converge in Hilbert--Schmidt topology and their ordinary
+determinants converge compact-open to normalized Xi. -/
+theorem thetaSourceArithmeticHermiteWindowStages_completion :
+    Tendsto (fun k => HilbertSchmidt.hsNorm
+      (thetaSourceSignedKernel k - (-thetaKernelMatrix))) atTop (nhds 0) ∧
+    TendstoLocallyUniformly thetaSourceSignedOrdinaryDet
+      (fun z => XiC z / XiC 0) atTop :=
+  thetaSourceArithmeticHermiteStages_completion
 
 end
 

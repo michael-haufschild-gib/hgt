@@ -1,7 +1,7 @@
 # Zero-Frequency Repaired Source `dx/x` Law
 
 - **ID:** zero-frequency-repaired-source-dx-over-x-law
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / source-admissibility guardrail
 - **Door grade:** BRIDGE (classical measure comparison; route-relevant, not a
   native C5 theorem)
@@ -135,7 +135,8 @@ Taking `w(x)=x^q` recovers
 - [x] 0 -> 1 in-progress: local weighted-integrability selector isolated.
 - [x] 1 -> 2 fully-proven: exact `dx/x` comparison proved from the determinate
   shifted-factorial representing measure.
-- [ ] 2 -> 3 formalized: not formalized.
+- [x] 2 -> 3 formalized: exact density law, quantitative weighted comparison,
+  finiteness equivalence, and two-source bounded-equivalence corollary formalized.
 
 ## Log
 
@@ -189,3 +190,19 @@ with respect to `dx/x`. Thus `h(x)->nu((0,R])/2` as `x->0+`, and
 `mu((epsilon,delta))/log(delta/epsilon) -> nu((0,R])/2`.
 
 The full density profile is not independent source data: after `x=t^2`, `2h(t^2)` is the Laplace transform of the pushforward of `nu|_(0,R]` by `y->y^(-1/2)`, so it determines the positive target measure.
+
+## 2026-08-26 Lean formalization
+
+Formalized unconditionally in
+`GaloisForLFunctions.HTGeometry.RepairedFrequencyDxOverXLaw`.
+
+Main declarations:
+
+- `restrict_Ioi_eq_repairedFrequencyMeasure_of_shiftedFactorialMoments`;
+- `source_weighted_lintegral_bounds`;
+- `source_weighted_lintegral_ne_top_iff`;
+- `exists_sourceMeasure_local_bounded_equivalence_of_shiftedFactorialMoments`.
+
+The target module build passed. New declarations use only Lean's standard
+`propext`, `Classical.choice`, and `Quot.sound` axioms. Module is wired into the
+`GaloisForLFunctions.HTGeometry` umbrella.

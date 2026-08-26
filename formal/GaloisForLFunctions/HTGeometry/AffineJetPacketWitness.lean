@@ -18,6 +18,18 @@ open MvPolynomial
 
 noncomputable section
 
+/-- A decorated-pattern witness retaining the separation certificate used by Hermite
+interpolation.  The older residual construction only needs the underlying escaping witness;
+probabilistic applications also need to know that its finite jet packet is read at distinct
+affine-image points. -/
+structure SeparatedMultivariateAffinePatternWitness {d : ℕ} {Λ : Type*}
+    (frame : Λ → (Fin d → ℂ) ≃ᴬ[ℂ] (Fin d → ℂ))
+    (p : FiniteMultivariateAffineJetPattern Λ d)
+    extends MultivariateAffinePatternWitness frame p where
+  packet_injective : Function.Injective
+    (fun q : MultivariateAffinePatternRow p × Fin p.frameCount =>
+      frame (p.frameCode q.2) (base q.1))
+
 /-- The decorated pattern determinant with the base coordinates as further indeterminates. -/
 def multivariateFullPatternDeterminant {d : ℕ} {row σ : Type*} [Fintype row] [DecidableEq row]
     (coordinateExponent : row → Fin d →₀ ℕ) (jetExponent : row → σ →₀ ℕ) :
@@ -57,11 +69,12 @@ theorem multivariateFullPatternDeterminant_ne_zero {d : ℕ} {row σ : Type*}
   rw [← eval_multivariateFullPatternDeterminant coordinateExponent jetExponent base
     (fun pr => target pr.1 pr.2), hzero, map_zero]
 
-/-- **Every finite decorated pattern of a noncolliding affine family has an escaping witness.** -/
-theorem nonempty_multivariateAffinePatternWitness {d : ℕ} (hd : 0 < d) {Λ : Type*}
+/-- **Every finite decorated pattern of a noncolliding affine family has a separated escaping
+witness.** -/
+theorem nonempty_separatedMultivariateAffinePatternWitness {d : ℕ} (hd : 0 < d) {Λ : Type*}
     (frame : Λ → ((Fin d → ℂ) ≃ᴬ[ℂ] (Fin d → ℂ))) (hframe : Function.Injective frame)
     (p : FiniteMultivariateAffineJetPattern Λ d) :
-    Nonempty (MultivariateAffinePatternWitness frame p) := by
+    Nonempty (SeparatedMultivariateAffinePatternWitness frame p) := by
   classical
   let ε : Fin p.frameCount → ((Fin d → ℂ) ≃ᴬ[ℂ] (Fin d → ℂ)) := fun i => frame (p.frameCode i)
   have hε : Function.Injective fun i => ((ε i : (Fin d → ℂ) → Fin d → ℂ)) := by
@@ -89,15 +102,26 @@ theorem nonempty_multivariateAffinePatternWitness {d : ℕ} (hd : 0 < d) {Λ : T
     rw [hobs, eval_multivariateCoefficientPatternDeterminant]
     rw [eval_multivariateFullPatternDeterminant p.coordinateExponent p.jetExponent base t] at hne
     exact hne
-  exact ⟨{ base := base
-           source := mvPolynomialMultivariateEntire P
-           escapes := hescape
-           defect_interior_empty :=
-             interior_continuousLinearMap_mvPolynomial_zero_eq_empty_of_witness
-               (multivariateAffinePatternObservationCLM frame p base)
-               (multivariateCoefficientPatternDeterminant base p.coordinateExponent
-                 p.jetExponent)
-               (mvPolynomialMultivariateEntire P) hescape }⟩
+  exact ⟨{
+    toMultivariateAffinePatternWitness :=
+      { base := base
+        source := mvPolynomialMultivariateEntire P
+        escapes := hescape
+        defect_interior_empty :=
+          interior_continuousLinearMap_mvPolynomial_zero_eq_empty_of_witness
+            (multivariateAffinePatternObservationCLM frame p base)
+            (multivariateCoefficientPatternDeterminant base p.coordinateExponent
+              p.jetExponent)
+            (mvPolynomialMultivariateEntire P) hescape }
+    packet_injective := by simpa [ε] using hsep }⟩
+
+/-- Backward-compatible escaping witness, obtained by forgetting the retained separation
+certificate. -/
+theorem nonempty_multivariateAffinePatternWitness {d : ℕ} (hd : 0 < d) {Λ : Type*}
+    (frame : Λ → ((Fin d → ℂ) ≃ᴬ[ℂ] (Fin d → ℂ))) (hframe : Function.Injective frame)
+    (p : FiniteMultivariateAffineJetPattern Λ d) :
+    Nonempty (MultivariateAffinePatternWitness frame p) :=
+  ⟨(nonempty_separatedMultivariateAffinePatternWitness hd frame hframe p).some.toMultivariateAffinePatternWitness⟩
 
 end
 

@@ -283,6 +283,168 @@ theorem countable_differentiallyAlgebraic_translationDefect {F : ℂ → ℂ}
     exact absurd (differentiallyAlgebraic_of_deriv hderiv) hFht
   · simpa [entireTranslationDefectFamily] using hcount
 
+/-- Fixed jet-order/exponent-box stratum of the DA translation spectrum. -/
+def entireTranslationJetStratum (F : ℂ → ℂ) (n d : ℕ) : Set ℂ :=
+  {h | ∀ φ : JetExponent n d → ℕ,
+    familyMinorDet (entireTranslationDefectFamily F) n d φ h = 0}
+
+/-- An accumulating fixed-complexity translation stratum forces the source itself to be DA. -/
+theorem differentiallyAlgebraic_of_translationJetStratum_accumulates {F : ℂ → ℂ}
+    (hF : Differentiable ℂ F) {n d : ℕ} {u : ℕ → ℂ} (huinj : Function.Injective u)
+    (hu : ∀ k, u k ∈ entireTranslationJetStratum F n d) {h₀ : ℂ}
+    (hutend : Tendsto u atTop (𝓝 h₀)) : DifferentiallyAlgebraic F := by
+  have hΦ : Differentiable ℂ (entireTranslationDefectFamily F) :=
+    differentiable_entireTranslationDefectFamily hF
+  have hne : ∀ᶠ k in atTop, u k ≠ h₀ := by
+    by_cases hex : ∃ k₀, u k₀ = h₀
+    · obtain ⟨k₀, hk₀⟩ := hex
+      filter_upwards [eventually_gt_atTop k₀] with k hk hkeq
+      exact (Nat.ne_of_gt hk) (huinj (hkeq.trans hk₀.symm))
+    · push Not at hex
+      exact Filter.Eventually.of_forall hex
+  have huwithin : Tendsto u atTop (𝓝[≠] h₀) :=
+    tendsto_nhdsWithin_iff.mpr ⟨hutend, hne⟩
+  have hrel : ∀ (φ : JetExponent n d → ℕ) (h : ℂ),
+      familyMinorDet (entireTranslationDefectFamily F) n d φ h = 0 := by
+    intro φ
+    have hfreq : ∃ᶠ h in 𝓝[≠] h₀,
+        familyMinorDet (entireTranslationDefectFamily F) n d φ h = 0 :=
+      huwithin.frequently (Filter.Frequently.of_forall fun k => hu k φ)
+    have hanalytic : AnalyticOnNhd ℂ
+        (familyMinorDet (entireTranslationDefectFamily F) n d φ) Set.univ :=
+      Complex.analyticOnNhd_univ_iff_differentiable.2
+        (differentiable_familyMinorDet hΦ n d φ)
+    have hzero := hanalytic.eqOn_zero_of_preconnected_of_frequently_eq_zero
+      isPreconnected_univ (Set.mem_univ h₀) hfreq
+    exact fun h => hzero (Set.mem_univ h)
+  exact differentiallyAlgebraic_of_deriv
+    (differentiallyAlgebraic_deriv_of_uniform_translation_relations hF hrel)
+
+/-- A hypertranscendental entire source admits no convergent injective sequence inside one fixed
+translation-relation complexity stratum. -/
+theorem not_exists_injective_tendsto_translationJetStratum {F : ℂ → ℂ}
+    (hF : Differentiable ℂ F) (hFht : ¬ DifferentiallyAlgebraic F) (n d : ℕ) :
+    ¬ ∃ (u : ℕ → ℂ) (h₀ : ℂ), Function.Injective u ∧
+      (∀ k, u k ∈ entireTranslationJetStratum F n d) ∧ Tendsto u atTop (𝓝 h₀) := by
+  rintro ⟨u, h₀, huinj, hu, hutend⟩
+  exact hFht (differentiallyAlgebraic_of_translationJetStratum_accumulates
+    hF huinj hu hutend)
+
+/-- A nonzero ADE whose jet order is `n` and whose total polynomial degree is at most `d`. -/
+def HasDifferentialRelationOfComplexity (f : ℂ → ℂ) (n d : ℕ) : Prop :=
+  ∃ P : MvPolynomial (Fin (n + 2)) ℂ, P ≠ 0 ∧ P.totalDegree ≤ d ∧
+    ∀ z, MvPolynomial.eval (entireJetVector f n z) P = 0
+
+/-- A total-degree-bounded ADE gives the corresponding bounded-exponent jet relation. -/
+theorem exists_jetRelation_of_hasDifferentialRelationOfComplexity {f : ℂ → ℂ} {n d : ℕ}
+    (h : HasDifferentialRelationOfComplexity f n d) :
+    ∃ c : JetExponent n d → ℂ, c ≠ 0 ∧ JetRelation f n d c := by
+  classical
+  obtain ⟨P, hP0, hPdeg, hP⟩ := h
+  refine ⟨fun m => MvPolynomial.coeff (jetExponentToFinsupp m) P, ?_, ?_⟩
+  · intro hc
+    refine hP0 (MvPolynomial.ext P 0 fun μ => ?_)
+    by_cases hμ : μ ∈ P.support
+    · have hbd : ∀ i, μ i ≤ d := fun i =>
+        le_trans (le_trans (finsupp_apply_le_sum μ i) (MvPolynomial.le_totalDegree hμ)) hPdeg
+      have hmem : jetExponentToFinsupp
+          (fun i => (⟨μ i, Nat.lt_succ_of_le (hbd i)⟩ : Fin (d + 1))) = μ := by
+        ext i
+        rfl
+      have hcμ := congrFun hc
+        (fun i => (⟨μ i, Nat.lt_succ_of_le (hbd i)⟩ : Fin (d + 1)))
+      rw [hmem] at hcμ
+      simpa using hcμ
+    · simp [MvPolynomial.notMem_support_iff.1 hμ]
+  · intro z
+    have hbd : ∀ μ ∈ P.support, ∀ i, μ i ≤ d := fun μ hμ i =>
+      le_trans (le_trans (finsupp_apply_le_sum μ i) (MvPolynomial.le_totalDegree hμ)) hPdeg
+    have hsum := sum_jetExponent_eq_sum_support (d := d) P hbd
+      (fun μ => MvPolynomial.coeff μ P *
+        ∏ i : Fin (n + 2), (entireJetVector f n z i) ^ (μ i))
+      (fun μ hμ => by simp [MvPolynomial.notMem_support_iff.1 hμ])
+    rw [show (∑ m : JetExponent n d,
+        MvPolynomial.coeff (jetExponentToFinsupp m) P * jetMon f n d m z) =
+        ∑ m : JetExponent n d,
+          (fun μ => MvPolynomial.coeff μ P *
+            ∏ i : Fin (n + 2), (entireJetVector f n z i) ^ (μ i))
+            (jetExponentToFinsupp m) from rfl,
+      hsum, ← eval_entireJetVector_eq_sum]
+    exact hP z
+
+theorem forall_coordinateMinor_eq_zero_of_hasDifferentialRelationOfComplexity
+    {f : ℂ → ℂ} (hf : Differentiable ℂ f) {n d : ℕ}
+    (h : HasDifferentialRelationOfComplexity f n d) :
+    ∀ φ : JetExponent n d → ℕ, (coordinateMinor (jetSampleRow f n d) φ).det = 0 := by
+  have hnli := (exists_jetRelation_iff_not_linearIndependent f hf n d).1
+    (exists_jetRelation_of_hasDifferentialRelationOfComplexity h)
+  exact (not_linearIndependent_iff_forall_coordinateMinor_det_eq_zero f n d).1 hnli
+
+theorem mem_entireTranslationJetStratum_of_hasDifferentialRelationOfComplexity
+    {F : ℂ → ℂ} (hF : Differentiable ℂ F) {n d : ℕ} {h : ℂ}
+    (hADE : HasDifferentialRelationOfComplexity (fun z => F (z + h) - F z) n d) :
+    h ∈ entireTranslationJetStratum F n d := by
+  intro φ
+  have hdefect : Differentiable ℂ (fun z => F (z + h) - F z) :=
+    (hF.comp (by fun_prop)).sub hF
+  simpa [familyMinorDet, entireTranslationDefectFamily] using
+    forall_coordinateMinor_eq_zero_of_hasDifferentialRelationOfComplexity hdefect hADE φ
+
+/-- Exact total-degree form of complexity escape at a fixed differential order. -/
+theorem not_exists_injective_tendsto_boundedDegree_translationADE {F : ℂ → ℂ}
+    (hF : Differentiable ℂ F) (hFht : ¬ DifferentiallyAlgebraic F) (n d : ℕ) :
+    ¬ ∃ (u : ℕ → ℂ) (h₀ : ℂ), Function.Injective u ∧ Tendsto u atTop (𝓝 h₀) ∧
+      ∀ k, HasDifferentialRelationOfComplexity (fun z => F (z + u k) - F z) n d := by
+  rintro ⟨u, h₀, huinj, hutend, huADE⟩
+  exact (not_exists_injective_tendsto_translationJetStratum hF hFht n d)
+    ⟨u, h₀, huinj,
+      fun k => mem_entireTranslationJetStratum_of_hasDifferentialRelationOfComplexity
+        hF (huADE k), hutend⟩
+
+/-- Embed a lower jet packet into a larger packet without changing coordinate labels. -/
+def jetOrderEmbed {n N : ℕ} (h : n ≤ N) : Fin (n + 2) → Fin (N + 2) :=
+  Fin.castLE (Nat.add_le_add_right h 2)
+
+theorem jetOrderEmbed_injective {n N : ℕ} (h : n ≤ N) :
+    Function.Injective (jetOrderEmbed h) :=
+  Fin.castLE_injective _
+
+theorem entireJetVector_jetOrderEmbed {f : ℂ → ℂ} {n N : ℕ} (h : n ≤ N) (z : ℂ)
+    (i : Fin (n + 2)) :
+    entireJetVector f N z (jetOrderEmbed h i) = entireJetVector f n z i := by
+  induction i using Fin.cases with
+  | zero => rfl
+  | succ j => rfl
+
+theorem HasDifferentialRelationOfComplexity.mono_order {f : ℂ → ℂ} {n N d : ℕ}
+    (h : HasDifferentialRelationOfComplexity f n d) (hnN : n ≤ N) :
+    HasDifferentialRelationOfComplexity f N d := by
+  obtain ⟨P, hP0, hPdeg, hP⟩ := h
+  refine ⟨MvPolynomial.rename (jetOrderEmbed hnN) P, ?_,
+    le_trans (MvPolynomial.totalDegree_rename_le _ _) hPdeg, ?_⟩
+  · intro hzero
+    apply hP0
+    apply MvPolynomial.rename_injective _ (jetOrderEmbed_injective hnN)
+    simpa using hzero
+  · intro z
+    rw [MvPolynomial.eval_rename]
+    have hvec : entireJetVector f N z ∘ jetOrderEmbed hnN = entireJetVector f n z := by
+      funext i
+      exact entireJetVector_jetOrderEmbed hnN z i
+    rw [hvec]
+    exact hP z
+
+/-- Full paper-level complexity escape: differential orders and total degrees cannot both remain
+bounded along an accumulating injective DA-defect sequence. -/
+theorem not_exists_injective_tendsto_boundedOrderDegree_translationADE {F : ℂ → ℂ}
+    (hF : Differentiable ℂ F) (hFht : ¬ DifferentiallyAlgebraic F) (N d : ℕ) :
+    ¬ ∃ (u : ℕ → ℂ) (r : ℕ → ℕ) (h₀ : ℂ), Function.Injective u ∧
+      Tendsto u atTop (𝓝 h₀) ∧ (∀ k, r k ≤ N) ∧
+      ∀ k, HasDifferentialRelationOfComplexity (fun z => F (z + u k) - F z) (r k) d := by
+  rintro ⟨u, r, h₀, huinj, hutend, hr, huADE⟩
+  exact (not_exists_injective_tendsto_boundedDegree_translationADE hF hFht N d)
+    ⟨u, h₀, huinj, hutend, fun k => (huADE k).mono_order (hr k)⟩
+
 end
 
 end GaloisForLFunctions.HTGeometry

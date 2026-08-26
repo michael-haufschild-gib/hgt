@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.DefectSlopeNormalForm
+import GaloisForLFunctions.HTGeometry.SegmentPolarForm
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 
 /-!
@@ -69,6 +70,42 @@ theorem intervalIntegral_logarithmicDifferential_eq_base_add_branch
   refine ⟨k, ?_⟩
   rw [intervalIntegral_logarithmicDifferential_sub_eq hX hY hL hexp hint]
   exact hk
+
+/-- A smooth nowhere-zero path automatically admits the logarithm lift needed by the exact
+regulator formula.  Thus the only path hypothesis beyond differentiability is avoidance of the
+divisor of `Y`. -/
+theorem exists_logarithmLift_intervalIntegral_eq_base_add_branch
+    {a b : ℝ} (hab : a ≤ b) {X Y X' Y' : ℝ → ℂ}
+    (hX : ∀ t ∈ Icc a b, HasDerivAt X (X' t) t)
+    (hY : ∀ t ∈ Icc a b, HasDerivAt Y (Y' t) t)
+    (hlogCont : ContinuousOn (fun t => Y' t / Y t) (Icc a b))
+    (hYne : ∀ t ∈ Icc a b, Y t ≠ 0)
+    (hend : Y b = Complex.exp (X b))
+    (hint : IntervalIntegrable (fun t => Y' t / Y t - X' t)
+      MeasureTheory.volume a b) :
+    ∃ (L : ℝ → ℂ) (k : ℤ),
+      ContinuousOn L (Icc a b) ∧
+      (∀ t ∈ Icc a b, HasDerivAt L (Y' t / Y t) t) ∧
+      (∀ t ∈ Icc a b, Complex.exp (L t) = Y t) ∧
+      (∫ t in a..b, Y' t / Y t - X' t) =
+        X a - L a + (k : ℂ) * (2 * (Real.pi : ℂ) * Complex.I) := by
+  obtain ⟨L, hLcont, hLderiv, hLexp⟩ :=
+    RHTower.exists_continuousOn_log_of_hasDerivAt hab hY hlogCont hYne
+  have hb : b ∈ Icc a b := ⟨hab, le_rfl⟩
+  have hbranch : Complex.exp (L b) = Complex.exp (X b) := by
+    rw [← hLexp b hb, hend]
+  obtain ⟨k, hk⟩ := regulator_eq_base_add_branch hbranch
+  refine ⟨L, k, hLcont, hLderiv, ?_, ?_⟩
+  · intro t ht
+    exact (hLexp t ht).symm
+  · rw [intervalIntegral.integral_eq_sub_of_hasDerivAt (fun t ht =>
+      (hLderiv t (by simpa [uIcc_of_le hab] using ht)).sub
+        (hX t (by simpa [uIcc_of_le hab] using ht))) hint]
+    calc
+      (L - X) b - (L - X) a = L b - L a - (X b - X a) := by
+        change (L b - X b) - (L a - X a) = _
+        ring
+      _ = X a - L a + (k : ℂ) * (2 * (Real.pi : ℂ) * Complex.I) := hk
 
 end
 

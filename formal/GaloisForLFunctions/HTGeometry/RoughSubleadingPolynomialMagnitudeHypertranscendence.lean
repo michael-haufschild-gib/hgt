@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.PolynomialPowerADEResonance
 import GaloisForLFunctions.HTGeometry.PolynomialPowerExplicitConfinement
 import GaloisForLFunctions.HTGeometry.LogSuperlacunaryDoubleExponentialFamily
+import GaloisForLFunctions.HTGeometry.IntervalUnitProbability
 import Mathlib.Probability.ProductMeasure
 import Mathlib.MeasureTheory.OuterMeasure.BorelCantelli
 import Mathlib.MeasureTheory.Integral.Marginal
@@ -24,15 +25,6 @@ open scoped ENNReal Topology
 namespace GaloisForLFunctions
 
 noncomputable section
-
-def intervalUnitProbability : Measure ℝ :=
-  volume.restrict (Set.Icc 1 2)
-
-instance : IsProbabilityMeasure intervalUnitProbability where
-  measure_univ := by
-    rw [intervalUnitProbability, Measure.restrict_apply MeasurableSet.univ, Set.univ_inter,
-      Real.volume_Icc]
-    norm_num
 
 theorem volume_abs_mul_add_le (a c R : ℝ) (ha : a ≠ 0) :
     volume {x : ℝ | |a * x + c| ≤ R} = ENNReal.ofReal (2 * R / |a|) := by

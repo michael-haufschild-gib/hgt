@@ -1,7 +1,7 @@
 # Zero-Frequency Repaired Source Mellin Threshold
 
 - **ID:** zero-frequency-repaired-source-mellin-threshold
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / source-admissibility guardrail
 - **Source:** `locally-infinite-repaired-frequency-source-for-compact-markov.md`;
   `infinite-half-turn-frequency-source-admissibility-split.md`
@@ -132,7 +132,8 @@ border are too strong for this model. The remaining live alternatives are:
 - [x] 0 -> 1 in-progress: weaker Mellin-admissibility loophole isolated.
 - [x] 1 -> 2 fully-proven: exact local Mellin threshold proved from the
   determinate shifted-factorial representing measure.
-- [ ] 2 -> 3 formalized: not formalized.
+- [x] 2 -> 3 formalized: exact positive/zero/negative Mellin threshold
+  formalized for every source realizing the shifted-factorial moments.
 
 ## Log
 
@@ -147,3 +148,12 @@ border are too strong for this model. The remaining live alternatives are:
 `int_(0,delta) w dmu < infinity <=> int_0^delta w(x) dx/x < infinity`.
 
 This card is the special case `w(x)=x^q`: `x^q` is `dx/x`-integrable near `0` exactly when `q>0`.
+
+## 2026-08-26 Lean formalization
+
+Formalized unconditionally in
+`GaloisForLFunctions.HTGeometry.RepairedFrequencyMellinThreshold`.
+The capstone declaration is `source_exact_localMellin_threshold`; it includes
+all real exponents in the three exact regimes. Target module build passed.
+Axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.
+Module is wired into the `GaloisForLFunctions.HTGeometry` umbrella.

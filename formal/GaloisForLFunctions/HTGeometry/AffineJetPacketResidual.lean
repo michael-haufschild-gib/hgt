@@ -15,12 +15,28 @@ open Set Topology
 
 noncomputable section
 
+/-- A choice of separated escaping witness for every finite decorated pattern. -/
+def separatedAffineJetPacketWitness {d : ℕ} (hd : 0 < d) {Λ : Type*}
+    (frame : Λ → ((Fin d → ℂ) ≃ᴬ[ℂ] (Fin d → ℂ))) (hframe : Function.Injective frame)
+    (p : FiniteMultivariateAffineJetPattern Λ d) :
+    SeparatedMultivariateAffinePatternWitness frame p :=
+  (nonempty_separatedMultivariateAffinePatternWitness hd frame hframe p).some
+
 /-- A choice of escaping witness for every finite decorated pattern. -/
 def affineJetPacketWitness {d : ℕ} (hd : 0 < d) {Λ : Type*}
     (frame : Λ → ((Fin d → ℂ) ≃ᴬ[ℂ] (Fin d → ℂ))) (hframe : Function.Injective frame)
     (p : FiniteMultivariateAffineJetPattern Λ d) :
     MultivariateAffinePatternWitness frame p :=
-  (nonempty_multivariateAffinePatternWitness hd frame hframe p).some
+  (separatedAffineJetPacketWitness hd frame hframe p).toMultivariateAffinePatternWitness
+
+/-- The chosen witness reads its whole row-by-frame jet packet at distinct affine-image points. -/
+theorem affineJetPacketWitness_packet_injective {d : ℕ} (hd : 0 < d) {Λ : Type*}
+    (frame : Λ → ((Fin d → ℂ) ≃ᴬ[ℂ] (Fin d → ℂ))) (hframe : Function.Injective frame)
+    (p : FiniteMultivariateAffineJetPattern Λ d) :
+    Function.Injective
+      (fun q : MultivariateAffinePatternRow p × Fin p.frameCount =>
+        frame (p.frameCode q.2) ((affineJetPacketWitness hd frame hframe p).base q.1)) :=
+  (separatedAffineJetPacketWitness hd frame hframe p).packet_injective
 
 /-- The sources avoiding every finite decorated jet determinant of the family. -/
 def affineJetPacketGenericSet {d : ℕ} (hd : 0 < d) {Λ : Type*}

@@ -1,7 +1,7 @@
 # Zero-Frequency Reservoir Density Laplace Equivalence
 
 - **ID:** zero-frequency-reservoir-density-laplace-equivalence
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / source-admissibility guardrail
 - **Door grade:** BRIDGE (classical Laplace uniqueness; route-relevant, not a
   native C5 theorem)
@@ -125,7 +125,8 @@ completed boundary/index object.
   law.
 - [x] 1 -> 2 fully-proven: local logarithmic asymptotic and Laplace
   equivalence proved.
-- [ ] 2 -> 3 formalized: not formalized.
+- [x] 2 -> 3 formalized: density limit, logarithmic source-mass asymptotic,
+  Laplace representation, transform uniqueness, and reservoir recovery formalized.
 
 ## Log
 
@@ -137,3 +138,23 @@ completed boundary/index object.
 `reservoir-density-complete-monotonicity-markov-equivalence.md` classifies the analytic admissibility condition for the reservoir profile. With `H(t)=2h(t^2)`, compact positive Markov targets correspond exactly to finite Laplace transforms supported in `[a,infty)` for some `a>0`; equivalently, `H` is completely monotone with finite `H(0+)`, and `exp(a t)H(t)` is completely monotone for some `a>0`.
 
 Thus complete monotonicity of the reservoir profile is not a weaker source condition. With the compact-support lower-bound condition, it is the Markov cone written in reservoir coordinates.
+
+## 2026-08-26 Lean formalization
+
+Formalized unconditionally in
+`GaloisForLFunctions.HTGeometry.RepairedFrequencyDensityLaplace`, reusing the
+corpus's `CompactDeterminacy` theorem after exponential compactification.
+
+Main declarations:
+
+- `tendsto_factorialMomentDensity_nhdsGT_zero`;
+- `tendsto_sourceMeasure_log_ratio_of_shiftedFactorialMoments`;
+- `factorialMomentDensity_laplace_inverseSqrtPushforward`;
+- `measure_eq_of_laplace_eq`;
+- `restrict_Ioi_eq_of_factorialMomentDensity_eq`.
+
+Shared Cesaro infrastructure was consolidated in
+`GaloisForLFunctions.HTGeometry.IntegralCesaro`; the prior `RHTower` theorem is
+now a compatibility wrapper. Target module build passed. Axiom audit reports
+only `propext`, `Classical.choice`, and `Quot.sound`. Modules are wired into the
+`GaloisForLFunctions.HTGeometry` umbrella.
