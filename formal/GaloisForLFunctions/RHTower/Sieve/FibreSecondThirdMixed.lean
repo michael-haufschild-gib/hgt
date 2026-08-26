@@ -82,25 +82,52 @@ theorem secondThirdMixedFibreBound_le_powerEnvelope {T r : ℝ}
   have hC1D : sharpThirdDerivativeFibreFirstCoefficient T r A ≤
       secondThirdMixedFibreMainCoefficient T r A := by
     rw [secondThirdMixedFibreMainCoefficient]
-    positivity
+    exact le_add_of_nonneg_right (Real.sqrt_nonneg _)
   have hbalance : fibreKernel T r A * sharpThirdDerivativeFibreSecondCoefficient T r A ≤
       secondThirdMixedFibreMainCoefficient T r A ^ 2 := by
-    rw [secondThirdMixedFibreMainCoefficient]
-    nlinarith [Real.sqrt_nonneg
-      (fibreKernel T r A * sharpThirdDerivativeFibreSecondCoefficient T r A)]
+    calc
+      fibreKernel T r A * sharpThirdDerivativeFibreSecondCoefficient T r A =
+          Real.sqrt (fibreKernel T r A * sharpThirdDerivativeFibreSecondCoefficient T r A) ^ 2 :=
+        hsqrt.symm
+      _ ≤ secondThirdMixedFibreMainCoefficient T r A ^ 2 :=
+        pow_le_pow_left₀ (Real.sqrt_nonneg _)
+          (by
+            rw [secondThirdMixedFibreMainCoefficient]
+            exact le_add_of_nonneg_left hC1.le) 2
   have hw : 0 < (b : ℝ) ^ (-(1 / 2 : ℝ)) := Real.rpow_pos_of_pos hb0 _
   rw [secondThirdMixedFibreBound]
   split_ifs with hlow
   · have hfb := fibreBound_le hT hr hA hb (le_trans hbA hAB)
     have htail : 0 ≤ fibreTail T r B / (b : ℝ) :=
       div_nonneg (fibreTail_nonneg T r B) hb0.le
-    nlinarith
+    have hmain : 0 ≤ secondThirdMixedFibreMainCoefficient T r A *
+        (b : ℝ) ^ (-(1 / 2 : ℝ)) := mul_nonneg hD.le hw.le
+    calc
+      fibreBound T r A B b ≤ fibreKernel T r A + fibreTail T r B / b := hfb
+      _ ≤ secondThirdMixedFibreMainCoefficient T r A * (b : ℝ) ^ (-(1 / 2 : ℝ)) +
+          fibreTail T r B / b := add_le_add hlow le_rfl
+      _ ≤ (secondThirdMixedFibreMainCoefficient T r A * (b : ℝ) ^ (-(1 / 2 : ℝ)) +
+            secondThirdMixedFibreMainCoefficient T r A * (b : ℝ) ^ (-(1 / 2 : ℝ))) +
+          fibreTail T r B / b := add_le_add (le_add_of_nonneg_right hmain) le_rfl
+      _ = 2 * secondThirdMixedFibreMainCoefficient T r A * (b : ℝ) ^ (-(1 / 2 : ℝ)) +
+          fibreTail T r B / b := by ring
   · have hhigh : secondThirdMixedFibreMainCoefficient T r A *
         (b : ℝ) ^ (-(1 / 2 : ℝ)) < fibreKernel T r A := lt_of_not_ge hlow
     have hmul := mul_lt_mul_of_pos_right hhigh hC2
     have hcw : sharpThirdDerivativeFibreSecondCoefficient T r A *
         (b : ℝ) ^ (-(1 / 2 : ℝ)) < secondThirdMixedFibreMainCoefficient T r A := by
-      nlinarith [hmul, hbalance]
+      apply lt_of_mul_lt_mul_left _ hD.le
+      calc
+        secondThirdMixedFibreMainCoefficient T r A *
+              (sharpThirdDerivativeFibreSecondCoefficient T r A *
+                (b : ℝ) ^ (-(1 / 2 : ℝ))) =
+            (secondThirdMixedFibreMainCoefficient T r A *
+                (b : ℝ) ^ (-(1 / 2 : ℝ))) *
+              sharpThirdDerivativeFibreSecondCoefficient T r A := by ring
+        _ < fibreKernel T r A * sharpThirdDerivativeFibreSecondCoefficient T r A := hmul
+        _ ≤ secondThirdMixedFibreMainCoefficient T r A ^ 2 := hbalance
+        _ = secondThirdMixedFibreMainCoefficient T r A *
+              secondThirdMixedFibreMainCoefficient T r A := by ring
     have htailThird : sharpThirdDerivativeFibreSecondCoefficient T r A * (b : ℝ)⁻¹ ≤
         secondThirdMixedFibreMainCoefficient T r A *
           (b : ℝ) ^ (-(1 / 2 : ℝ)) := by
@@ -114,7 +141,18 @@ theorem secondThirdMixedFibreBound_le_powerEnvelope {T r : ℝ}
           (b : ℝ) ^ (-(1 / 2 : ℝ)) := mul_le_mul_of_nonneg_right hC1D hw.le
     have htail : 0 ≤ fibreTail T r B / (b : ℝ) :=
       div_nonneg (fibreTail_nonneg T r B) hb0.le
-    nlinarith
+    calc
+      sharpThirdDerivativeFibreBound T r A B b ≤
+          sharpThirdDerivativeFibreFirstCoefficient T r A * (b : ℝ) ^ (-(1 / 2 : ℝ)) +
+            sharpThirdDerivativeFibreSecondCoefficient T r A * (b : ℝ)⁻¹ := hsharp
+      _ ≤ secondThirdMixedFibreMainCoefficient T r A * (b : ℝ) ^ (-(1 / 2 : ℝ)) +
+            secondThirdMixedFibreMainCoefficient T r A * (b : ℝ) ^ (-(1 / 2 : ℝ)) :=
+        add_le_add hfirst htailThird
+      _ ≤ (secondThirdMixedFibreMainCoefficient T r A * (b : ℝ) ^ (-(1 / 2 : ℝ)) +
+            secondThirdMixedFibreMainCoefficient T r A * (b : ℝ) ^ (-(1 / 2 : ℝ))) +
+          fibreTail T r B / b := le_add_of_nonneg_right htail
+      _ = 2 * secondThirdMixedFibreMainCoefficient T r A * (b : ℝ) ^ (-(1 / 2 : ℝ)) +
+          fibreTail T r B / b := by ring
 
 end
 

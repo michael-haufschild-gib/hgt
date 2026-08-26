@@ -23,7 +23,8 @@ theorem sum_secondThirdMixedFibreBound_le {T r : ℝ} (hT : 0 < T) (hr : 0 < r)
       secondThirdMixedAggregateEnvelope T r A B K := by
   have hC1 : 0 ≤ secondThirdMixedFibreMainCoefficient T r A := by
     rw [secondThirdMixedFibreMainCoefficient]
-    positivity
+    exact add_nonneg (sharpThirdDerivativeFibreFirstCoefficient_nonneg hT hr hA)
+      (Real.sqrt_nonneg _)
   have hpoint : ∀ b ∈ Finset.Icc 1 K,
       secondThirdMixedFibreBound T r A B b ≤
         2 * secondThirdMixedFibreMainCoefficient T r A * (b : ℝ) ^ (-(1 / 2 : ℝ))

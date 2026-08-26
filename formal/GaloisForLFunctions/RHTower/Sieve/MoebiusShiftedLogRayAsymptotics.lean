@@ -16,6 +16,61 @@ namespace RHTower.Sieve
 
 noncomputable section
 
+private theorem tendsto_finset_sum_real {A X : Type*}
+    {l : Filter A} (s : Finset X) (f : X → A → ℝ) (g : X → ℝ)
+    (h : ∀ x ∈ s, Tendsto (f x) l (nhds (g x))) :
+    Tendsto (fun a => ∑ x ∈ s, f x a) l (nhds (∑ x ∈ s, g x)) := by
+  classical
+  induction s using Finset.induction_on with
+  | empty =>
+      simpa using (tendsto_const_nhds : Tendsto (fun _ : A => (0 : ℝ)) l (nhds 0))
+  | @insert x s hx ih =>
+      simp only [Finset.sum_insert hx]
+      exact (h x (by simp)).add (ih (fun y hy => h y (by simp [hy])))
+
+private theorem weighted_binomial_derivative_sum (p : ℕ) (v : ℝ) :
+    (∑ q ∈ Finset.range (p + 1),
+      ((p + 1).choose q : ℝ) * ((p + 1 - q : ℕ) : ℝ) *
+        v ^ q * (1 - v) ^ (p - q)) = (p + 1 : ℕ) := by
+  have hcoeff (q : ℕ) :
+      (p + 1 - q) * (p + 1).choose q = (p + 1) * p.choose q := by
+    calc
+      (p + 1 - q) * (p + 1).choose q =
+          (p + 1).choose q * (p + 1 - q) := Nat.mul_comm _ _
+      _ = (p + 1).choose (q + 1) * (q + 1) :=
+        (Nat.choose_succ_right_eq (p + 1) q).symm
+      _ = (p + 1) * p.choose q :=
+        (Nat.add_one_mul_choose_eq p q).symm
+  calc
+    (∑ q ∈ Finset.range (p + 1),
+        ((p + 1).choose q : ℝ) * ((p + 1 - q : ℕ) : ℝ) *
+          v ^ q * (1 - v) ^ (p - q)) =
+      (p + 1 : ℝ) * ∑ q ∈ Finset.range (p + 1),
+        (p.choose q : ℝ) * v ^ q * (1 - v) ^ (p - q) := by
+          rw [Finset.mul_sum]
+          apply Finset.sum_congr rfl
+          intro q hq
+          have hc :
+              ((p + 1 - q : ℕ) : ℝ) * ((p + 1).choose q : ℝ) =
+                (p + 1 : ℝ) * (p.choose q : ℝ) := by
+            exact_mod_cast hcoeff q
+          calc
+            ((p + 1).choose q : ℝ) * ((p + 1 - q : ℕ) : ℝ) *
+                v ^ q * (1 - v) ^ (p - q) =
+              (((p + 1 - q : ℕ) : ℝ) * ((p + 1).choose q : ℝ)) *
+                v ^ q * (1 - v) ^ (p - q) := by ring
+            _ = ((p + 1 : ℝ) * (p.choose q : ℝ)) *
+                v ^ q * (1 - v) ^ (p - q) := by rw [hc]
+            _ = (p + 1 : ℝ) *
+                ((p.choose q : ℝ) * v ^ q * (1 - v) ^ (p - q)) := by ring
+    _ = (p + 1 : ℝ) * (v + (1 - v)) ^ p := by
+      rw [add_pow]
+      apply congrArg ((p + 1 : ℝ) * ·)
+      apply Finset.sum_congr rfl
+      intro q hq
+      ring
+    _ = (p + 1 : ℕ) := by norm_num
+
 /-- Remaining cutoff on the logarithmic ray of relative depth `v`. -/
 def moebiusShiftedLogRay (v X : ℝ) : ℝ :=
   X * Real.exp (-v * Real.log X)
@@ -43,6 +98,117 @@ theorem tendsto_moebiusShiftedLogRay_atTop {v : ℝ} (hv : v < 1) :
   refine h.congr' ?_
   filter_upwards [eventually_gt_atTop (0 : ℝ)] with X hX
   exact (moebiusShiftedLogRay_eq_rpow hX).symm
+
+/-- Every positive shifted logarithmic power has its universal leading coefficient on each fixed
+interior logarithmic ray. -/
+theorem tendsto_moebiusShiftedLogPowerKernelReal_div_log_pow_logRay
+    (p : ℕ) {v : ℝ} (hv : v < 1) :
+    Tendsto (fun X : ℝ =>
+      moebiusShiftedLogPowerKernelReal (p + 1) (v * Real.log X)
+          (moebiusShiftedLogRay v X) / Real.log X ^ p)
+      atTop (nhds ((p + 1 : ℕ) : ℝ)) := by
+  have hY := tendsto_moebiusShiftedLogRay_atTop hv
+  have hlogratio : Tendsto
+      (fun X : ℝ => Real.log (moebiusShiftedLogRay v X) / Real.log X)
+      atTop (nhds (1 - v)) := by
+    refine tendsto_const_nhds.congr' ?_
+    filter_upwards [eventually_gt_atTop (1 : ℝ)] with X hX
+    have hXpos : 0 < X := by linarith
+    have hlogX : Real.log X ≠ 0 := (Real.log_pos hX).ne'
+    rw [log_moebiusShiftedLogRay hXpos]
+    field_simp [hlogX]
+  have hlower : Tendsto (fun X : ℝ =>
+      ∑ q ∈ Finset.range (p + 1),
+        ((p + 1).choose q : ℝ) * (v * Real.log X) ^ q *
+          moebiusLogPowerKernelReal (p + 1 - q)
+            (moebiusShiftedLogRay v X) / Real.log X ^ p)
+      atTop (nhds (∑ q ∈ Finset.range (p + 1),
+        ((p + 1).choose q : ℝ) * ((p + 1 - q : ℕ) : ℝ) *
+          v ^ q * (1 - v) ^ (p - q))) := by
+    apply tendsto_finset_sum_real
+    intro q hq
+    have hqle : q ≤ p := Nat.le_of_lt_succ (Finset.mem_range.mp hq)
+    let r : ℕ := p - q
+    have hdeg : p + 1 - q = r + 1 := by dsimp [r]; omega
+    have hpqr : p = q + r := by dsimp [r]; omega
+    have hkernel :=
+      (tendsto_moebiusLogPowerKernelReal_div_log_pow r).comp hY
+    have hscaled := hkernel.mul (hlogratio.pow r)
+    have hconst := hscaled.const_mul
+      (((p + 1).choose q : ℝ) * v ^ q)
+    have htarget :
+        (((p + 1).choose q : ℝ) * v ^ q) *
+            (((r + 1 : ℕ) : ℝ) * (1 - v) ^ r) =
+          ((p + 1).choose q : ℝ) * ((p + 1 - q : ℕ) : ℝ) *
+            v ^ q * (1 - v) ^ (p - q) := by
+      have hrplus : r + 1 = p + 1 - q := by dsimp [r]; omega
+      have hr : r = p - q := rfl
+      rw [hrplus, hr]
+      ring
+    rw [htarget] at hconst
+    refine hconst.congr' ?_
+    filter_upwards [eventually_gt_atTop (1 : ℝ),
+      hY.eventually (eventually_gt_atTop (1 : ℝ))] with X hX hYX
+    have hlogX : Real.log X ≠ 0 := (Real.log_pos hX).ne'
+    have hlogY : Real.log (moebiusShiftedLogRay v X) ≠ 0 :=
+      (Real.log_pos hYX).ne'
+    simp only [Function.comp_apply]
+    rw [hdeg]
+    calc
+      (((p + 1).choose q : ℝ) * v ^ q) *
+          (moebiusLogPowerKernelReal (r + 1) (moebiusShiftedLogRay v X) /
+              Real.log (moebiusShiftedLogRay v X) ^ r *
+            (Real.log (moebiusShiftedLogRay v X) / Real.log X) ^ r) =
+        (((p + 1).choose q : ℝ) * v ^ q) *
+          (moebiusLogPowerKernelReal (r + 1) (moebiusShiftedLogRay v X) /
+            Real.log X ^ r) := by
+              rw [div_pow]
+              field_simp [hlogY]
+      _ = ((p + 1).choose q : ℝ) * (v * Real.log X) ^ q *
+          moebiusLogPowerKernelReal (r + 1) (moebiusShiftedLogRay v X) /
+            Real.log X ^ p := by
+              rw [hpqr, pow_add]
+              field_simp [hlogX]
+              ring
+  have hlograte : Tendsto (fun X : ℝ => Real.log X *
+      RHTower.deningerHarmonicPartial ⌊moebiusShiftedLogRay v X⌋₊)
+      atTop (nhds 0) := by
+    have hrate :=
+      (tendsto_log_pow_mul_deningerHarmonicPartial_natFloor_zero 1).comp hY
+    have hscaled := hrate.const_mul (1 / (1 - v))
+    simp only [one_div, mul_zero] at hscaled
+    refine hscaled.congr' ?_
+    filter_upwards [eventually_gt_atTop (0 : ℝ)] with X hX
+    have hvne : 1 - v ≠ 0 := by linarith
+    simp only [Function.comp_apply, pow_one]
+    rw [log_moebiusShiftedLogRay hX]
+    field_simp [hvne]
+  have hendpointCore := hlograte.const_mul (v ^ (p + 1))
+  simp only [mul_zero] at hendpointCore
+  have hendpoint : Tendsto (fun X : ℝ =>
+      ((p + 1).choose (p + 1) : ℝ) * (v * Real.log X) ^ (p + 1) *
+          moebiusLogPowerKernelReal (p + 1 - (p + 1))
+            (moebiusShiftedLogRay v X) / Real.log X ^ p)
+      atTop (nhds 0) := by
+    refine hendpointCore.congr' ?_
+    filter_upwards [eventually_gt_atTop (1 : ℝ)] with X hX
+    have hlogX : Real.log X ≠ 0 := (Real.log_pos hX).ne'
+    rw [show p + 1 - (p + 1) = 0 by omega]
+    simp only [Nat.choose_self, Nat.cast_one, one_mul]
+    rw [moebiusLogPowerKernelReal_zero]
+    rw [pow_succ, mul_div_assoc]
+    field_simp [hlogX]
+    ring
+  have hsum := hlower.add hendpoint
+  rw [add_zero, weighted_binomial_derivative_sum p v] at hsum
+  refine hsum.congr' ?_
+  filter_upwards with X
+  symm
+  conv_lhs =>
+    rw [moebiusShiftedLogPowerKernelReal_eq_sum]
+    rw [Finset.sum_range_succ]
+    rw [add_div]
+    rw [Finset.sum_div]
 
 /-- The shifted linear kernel has limit one on every fixed interior logarithmic ray. -/
 theorem tendsto_moebiusShiftedLogKernelReal_logRay_one

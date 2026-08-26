@@ -1,6 +1,5 @@
-import GaloisForLFunctions.RHTower.XiShiftedTerminalFrontierParabolicSynchronization
+import GaloisForLFunctions.RHTower.XiShiftedParabolicDegreeHorizon
 import GaloisForLFunctions.RHTower.XiShiftedMomentSourceJet
-import GaloisForLFunctions.RHTower.XiShiftedHankelBoundaryPadeContactParity
 import GaloisForLFunctions.HTGeometry.FiniteGaussQuadrature
 
 /-!
@@ -125,8 +124,18 @@ theorem thetaArithmeticParabolicMoment_eq_shifted (k m : ℕ) :
 theorem thetaArithmeticParabolicMoment_hankel_posDef (k : ℕ) :
     (HTGeometry.momentHankelMatrix
       (thetaArithmeticParabolicMoment k) (k + 2)).PosDef := by
-  have h := xiShiftedMomentHankelMatrix_posDef_of_parabolicDegreeHorizon
-    k (y := thetaArithmeticParabolicMass k) (le_rfl)
+  have h :
+      (xiShiftedMomentHankelMatrix
+        (thetaArithmeticParabolicMass k) (k + 2)).PosDef := by
+    rw [Matrix.posDef_iff_dotProduct_mulVec]
+    refine ⟨xiShiftedMomentHankelMatrix_isHermitian _ _, ?_⟩
+    intro c hc
+    rw [star_trivial]
+    change 0 < xiShiftedMomentHankelQuadratic
+      (thetaArithmeticParabolicMass k) (k + 2) c
+    rw [xiShiftedMomentHankelQuadratic_eq]
+    exact xiShiftedReciprocalHankelQuadratic_pos_of_parabolic
+      (k + 1) c hc le_rfl
   change (HTGeometry.momentHankelMatrix
     (thetaArithmeticParabolicMoment k) (k + 2)).PosDef
   convert h using 1
@@ -203,14 +212,34 @@ theorem thetaArithmeticTraceHankelBlock_eq_momentHankel (k N : ℕ) :
   ext r s
   exact re_trace_pow_thetaArithmeticTraceZeroStage k ((r : ℕ) + (s : ℕ))
 
+private theorem finiteNodeMomentHankel_posSemidef
+    (S : Finset ℝ) (N : ℕ) :
+    (HTGeometry.momentHankelMatrix
+      (fun m => ∑ x ∈ S, x ^ m) N).PosSemidef := by
+  classical
+  let atom (x : ℝ) : Matrix (Fin N) (Fin N) ℝ :=
+    fun i j => x ^ ((i : ℕ) + (j : ℕ))
+  have hatom (x : ℝ) : (atom x).PosSemidef := by
+    let v : Matrix (Fin N) (Fin 1) ℝ := fun i _ => x ^ (i : ℕ)
+    have heq : atom x = v * vᴴ := by
+      ext i j
+      simp [atom, v, Matrix.mul_apply, pow_add]
+    rw [heq]
+    exact Matrix.posSemidef_self_mul_conjTranspose v
+  have heq :
+      HTGeometry.momentHankelMatrix (fun m => ∑ x ∈ S, x ^ m) N =
+        ∑ x ∈ S, atom x := by
+    ext i j
+    simp [HTGeometry.momentHankelMatrix, Matrix.sum_apply, atom]
+  rw [heq]
+  exact Finset.sum_induction _ _ (fun _ _ => Matrix.PosSemidef.add)
+    Matrix.PosSemidef.zero (fun x _ => hatom x)
+
 /-- Every finite power-trace Hankel block is positive semidefinite. -/
 theorem thetaArithmeticTraceHankelBlock_posSemidef (k N : ℕ) :
     (thetaArithmeticTraceHankelBlock k N).PosSemidef := by
   rw [thetaArithmeticTraceHankelBlock_eq_momentHankel]
-  simpa only [one_mul] using
-    momentHankelMatrix_finiteAtomic_posSemidef
-      (thetaArithmeticCenteredNodes k) (fun _ => 1)
-      (fun _ _ => by positivity) N
+  exact finiteNodeMomentHankel_posSemidef (thetaArithmeticCenteredNodes k) N
 
 /-- Requested finite Hermite window: indices are exactly `0, ..., 2 n_k + 1`. -/
 theorem thetaArithmeticTraceHankelRequiredWindow_posSemidef (k : ℕ) :

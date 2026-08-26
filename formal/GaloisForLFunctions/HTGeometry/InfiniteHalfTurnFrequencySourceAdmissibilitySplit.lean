@@ -61,6 +61,50 @@ theorem halfTurn_repaired_moment_curvature
   field_simp at hlog
   nlinarith
 
+/-- The curvature obstruction has exact asymptotic constant `2`, stated in `EReal` so no
+extraneous boundedness hypothesis is needed. -/
+theorem two_le_limsup_halfTurn_rawMoment_curvature
+    {M U : ℕ → ℝ} {nu : Measure ℝ}
+    (hrep : HasStieltjesMoments U nu)
+    (hrepair : ∀ k : ℕ, 1 ≤ k →
+      U k = M k / (Nat.factorial (2 * k - 1) : ℝ))
+    (hMpos : ∀ k : ℕ, 1 ≤ k → 0 < M k) :
+    (2 : EReal) ≤ Filter.limsup
+      (fun k : ℕ =>
+        (((k : ℝ) * (M k * M (k + 2) / M (k + 1) ^ 2 - 1) : ℝ) : EReal))
+      atTop := by
+  apply Filter.le_limsup_of_frequently_le'
+  apply (eventually_ge_atTop (1 : ℕ)).frequently.mono
+  intro k hk
+  have hkpos : (0 : ℝ) < k := by exact_mod_cast hk
+  have hratio := halfTurn_repaired_moment_curvature hrep hrepair hMpos k hk
+  have hthreshold :
+      (2 : ℝ) ≤ (k : ℝ) *
+        (((2 * k + 2 : ℕ) : ℝ) * ((2 * k + 3 : ℕ) : ℝ) /
+          (((2 * k : ℕ) : ℝ) * ((2 * k + 1 : ℕ) : ℝ)) - 1) := by
+    push_cast
+    field_simp
+    nlinarith
+  have hsub := sub_le_sub_right hratio 1
+  have hmul := mul_le_mul_of_nonneg_left hsub (le_of_lt hkpos)
+  change ((2 : ℝ) : EReal) ≤
+    ((k : ℝ) * (M k * M (k + 2) / M (k + 1) ^ 2 - 1) : ℝ)
+  exact EReal.coe_le_coe (hthreshold.trans hmul)
+
+/-- Therefore a raw moment law whose normalized curvature has extended limsup below `2` cannot
+admit a Stieltjes half-turn repair. -/
+theorem not_limsup_halfTurn_rawMoment_curvature_lt_two
+    {M U : ℕ → ℝ} {nu : Measure ℝ}
+    (hrep : HasStieltjesMoments U nu)
+    (hrepair : ∀ k : ℕ, 1 ≤ k →
+      U k = M k / (Nat.factorial (2 * k - 1) : ℝ))
+    (hMpos : ∀ k : ℕ, 1 ≤ k → 0 < M k) :
+    ¬ Filter.limsup
+        (fun k : ℕ =>
+          (((k : ℝ) * (M k * M (k + 2) / M (k + 1) ^ 2 - 1) : ℝ) : EReal))
+        atTop < (2 : EReal) := by
+  exact not_lt_of_ge (two_le_limsup_halfTurn_rawMoment_curvature hrep hrepair hMpos)
+
 end
 
 end GaloisForLFunctions.HTGeometry

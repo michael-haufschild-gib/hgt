@@ -18,6 +18,21 @@ def moebiusLogPowerKernelReal (p : ℕ) (Y : ℝ) : ℝ :=
     moebiusLogPowerKernelReal p (N : ℝ) = moebiusLogPowerKernel p N := by
   rw [moebiusLogPowerKernelReal, moebiusLogPowerKernel, Nat.floor_natCast]
 
+/-- The degree-zero real-cutoff kernel is the harmonic Möbius partial sum at the natural floor. -/
+@[simp] theorem moebiusLogPowerKernelReal_zero (Y : ℝ) :
+    moebiusLogPowerKernelReal 0 Y =
+      RHTower.deningerHarmonicPartial ⌊Y⌋₊ := by
+  rw [moebiusLogPowerKernelReal, RHTower.deningerHarmonicPartial]
+  simp only [pow_zero, mul_one]
+  have hmem : 0 ∈ Finset.range (⌊Y⌋₊ + 1) := by simp
+  have herase : (Finset.range (⌊Y⌋₊ + 1)).erase 0 =
+      Finset.Icc 1 ⌊Y⌋₊ := by
+    ext m
+    simp
+    omega
+  rw [← herase, ← Finset.sum_erase_add _ _ hmem]
+  simp
+
 /-- The logarithmic displacement from a real cutoff to its natural floor beats every fixed
 logarithmic power. -/
 theorem tendsto_log_div_natFloor_mul_log_pow_zero (q : ℕ) :

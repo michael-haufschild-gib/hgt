@@ -60,12 +60,16 @@ def boundedRandomEntireCoeff (x : ℕ → ℂ) (n : ℕ) : ℂ :=
 
 theorem norm_boundedRandomEntireCoeff_le (x : ℕ → ℂ) (n : ℕ) :
     ‖boundedRandomEntireCoeff x n‖ ≤ 1 / (Nat.factorial n : ℝ) := by
-  rw [boundedRandomEntireCoeff, norm_div, norm_mul, norm_ofNat,
-    Complex.norm_natCast]
+  rw [boundedRandomEntireCoeff, norm_div, norm_mul, Complex.norm_natCast]
   have hfac : (0 : ℝ) < (Nat.factorial n : ℝ) := by positivity
-  have hden : (0 : ℝ) < 4 * (Nat.factorial n : ℝ) := by positivity
-  rw [div_le_iff₀ hden]
-  convert norm_clampComplexSquare_le_four (x n) using 1 <;> field_simp
+  have hfour : (0 : ℝ) < 4 := by norm_num
+  have hnorm4 : ‖(4 : ℂ)‖ = 4 := by norm_num
+  rw [hnorm4]
+  rw [show ‖clampComplexSquare (x n)‖ / (4 * (Nat.factorial n : ℝ)) =
+      (‖clampComplexSquare (x n)‖ / 4) / (Nat.factorial n : ℝ) by ring]
+  rw [div_le_div_iff_of_pos_right hfac]
+  rw [div_le_iff₀ hfour]
+  simpa using norm_clampComplexSquare_le_four (x n)
 
 theorem boundedRandomEntireCoeff_orderTwo (x : ℕ → ℂ) :
     ∀ R : ℝ, 0 < R → ∀ n,
