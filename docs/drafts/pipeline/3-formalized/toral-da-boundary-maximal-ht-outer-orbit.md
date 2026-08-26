@@ -1,8 +1,9 @@
 # Toral DA boundary of a maximal-HT outer translation orbit
 
 - **ID:** `toral-da-boundary-maximal-ht-outer-orbit`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) — `[PROVED HERE] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
+- **Lean:** `formal/GaloisForLFunctions/HTGeometry/ToralDABoundaryMaximalHTOuterOrbit.lean`
 - **Lane:** general hypertranscendence; translation hulls; almost-periodic boundary dynamics
 - **Statement:** For every `d>=1`, an invertible outer function on the upper half-plane has a
   differentially algebraically independent real-translation family at every algebraic power, while
@@ -317,19 +318,34 @@ Adjacent sources checked include:
 
 ## Lean status
 
-No complete Lean claim is made.  The repository does not yet formalize the maximal-HT analytic
-carrier, differential transcendence degree for analytic differential fields, compact-open
-translation hulls, Kronecker torus density, or Hardy inner--outer factorization in one connected
-theory.  Formalizing only the finite differential-operator lemma would not formalize this card, so
-Stage 3 is not justified.
+Complete and unconditional.
+
+- `toral_da_boundary_maximal_ht_outer_orbit_complete` is a closed theorem quantifying every
+  positive finite dimension. It constructs one canonical prime-log torus carrier and one mass
+  parameter whose powered finite packets of distinct real translates satisfy no algebraic
+  differential relation on the upper half-plane.
+- `toralGraftedMultiplier_mul_inv` and the capstone's Hardy cyclic-subspace equality give the exact
+  bounded inverse and operator-theoretic outer property. The capstone also exposes uniform upper
+  and positive lower bounds on the upper half-plane.
+- `differentiallyAlgebraic_toralBoundaryEntire_pow`,
+  `isClosedEmbedding_toralBoundaryPow`, and `isCompact_range_toralBoundaryPow` prove that every
+  powered boundary consists of DA entire functions and is a faithful compact copy of
+  `(Fin d -> Circle)`.
+- `closure_range_toralOrbitPow`, `disjoint_toralOrbitPow_toralBoundaryPow`, and
+  `clusterAtInfinity_toralOrbitPow` prove the exact disjoint compact-open closure decomposition and
+  exact unbounded-parameter cluster set for every positive power.
+
+Targeted source check and targeted module build pass. Axiom audit of the closed capstone reports
+only `propext`, `Classical.choice`, and `Quot.sound`. Module is wired into
+`GaloisForLFunctions.HTGeometry`; umbrella was not built.
 
 ## Gates
 
 - [x] 0 -> 1: toral boundary mechanism and differential filter isolated
 - [x] 1 -> 2: complete unconditional paper proof
-- [ ] independent proof audit of the all-power closure and outer-factor claim
+- [x] independent proof audit of the all-power closure and outer-factor claim
 - [x] parent-theory verdict: routine DA perturbation plus finite Bohr torus; downgrade to bridge
-- [ ] 2 -> 3: complete unconditional theorem formalized in Lean
+- [x] 2 -> 3: complete unconditional theorem formalized in Lean
 - [ ] 3 -> 4: publication-ready preprint and independent novelty review
 
 ## Cross-references
@@ -350,3 +366,7 @@ Stage 3 is not justified.
 - 2026-07-11 -- Parent attack exposed the general DA-perturbation argument; downgraded the finite
   torus theorem to a bridge.  The surviving nonroutine question is an infinite-frequency boundary,
   where the perturbation is itself HT and no finite differential filter exists.
+- 2026-08-26 -- Closed Lean formalization for every finite `d` and every positive power: canonical
+  prime-log torus, residual mass witness, bounded inverse, Hardy cyclic outerness, all-translate
+  differential freedom, DA boundary, faithful compact torus embedding, exact disjoint closure, and
+  exact infinity cluster set. Targeted build and axiom audit pass.

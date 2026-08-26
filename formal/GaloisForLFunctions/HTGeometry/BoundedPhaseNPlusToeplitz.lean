@@ -22,7 +22,8 @@ def halfBoundedPhase (b : Circle → ℝ) (z : Circle) : ℝ := b z / 2
 
 theorem measurable_halfBoundedPhase {b : Circle → ℝ} (hb : Measurable b) :
     Measurable (halfBoundedPhase b) := by
-  simpa [halfBoundedPhase, div_eq_mul_inv] using hb.mul_const (2 : ℝ)⁻¹
+  change Measurable fun z => b z * (2 : ℝ)⁻¹
+  exact hb.mul_const _
 
 theorem abs_halfBoundedPhase_le
     {b : Circle → ℝ} (hbound : ∀ z, |b z| ≤ Real.pi / 2) (z : Circle) :
@@ -67,7 +68,8 @@ theorem boundedPhaseReciprocal_half_radial_eq_halfValue
           ((hardyDiskAbelRadius n : ℂ) * (z : ℂ)) := by
   let w : ℂ := (hardyDiskAbelRadius n : ℂ) * (z : ℂ)
   have hw : ‖w‖ < 1 := by
-    rw [w, norm_mul, norm_real, Real.norm_eq_abs,
+    change ‖(hardyDiskAbelRadius n : ℂ) * (z : ℂ)‖ < 1
+    rw [norm_mul, norm_real, Real.norm_eq_abs,
       abs_of_nonneg (hardyDiskAbelRadius_nonneg n), Circle.norm_coe, mul_one]
     exact hardyDiskAbelRadius_lt_one n
   let Hhalf := boundedPhaseHardy (halfBoundedPhase b)
@@ -90,7 +92,8 @@ theorem boundedPhaseReciprocal_half_radial_eq_halfValue
   congr 1
   have hhalf := hardyFun_boundedPhaseHardy_half b hb hbound hw
   change hardyFun Hhalf w = hardyFun (boundedPhaseHardy b hb hbound) w / 2 at hhalf
-  rw [hhalf]
+  change -(I * v) = -I * hardyFun (boundedPhaseHardy b hb hbound) w / 2
+  rw [show v = hardyFun (boundedPhaseHardy b hb hbound) w / 2 from hhalf]
   ring
 
 theorem circleIntegral_boundedPhaseReciprocal_half_norm_le
@@ -136,8 +139,9 @@ private theorem standardCauchyWeight_le_inv_pi (x : ℝ) :
     standardCauchyWeight x ≤ Real.pi⁻¹ := by
   rw [standardCauchyWeight]
   have hone : 1 ≤ 1 + x ^ 2 := by nlinarith [sq_nonneg x]
-  exact one_div_le_one_div_of_le Real.pi_pos
-    (mul_le_mul_of_nonneg_left hone Real.pi_pos.le)
+  have hden : Real.pi ≤ Real.pi * (1 + x ^ 2) := by
+    simpa using mul_le_mul_of_nonneg_left hone Real.pi_pos.le
+  simpa only [one_div] using one_div_le_one_div_of_le Real.pi_pos hden
 
 /-- The fourth-order Cayley decay transports the circle `L¹` endpoint to Lebesgue measure on the
 line. -/
@@ -176,7 +180,7 @@ theorem integrable_boundary_boundedPhaseHalfForward_half
   have hA := diskMultiplierLineBoundary_oneSubDiskMultiplierFourth_ae
   have hR := DiskSmirnovBoundary.boundary_eq_circleBoundary_cayley_ae R
   apply hMajorant.mono'
-  · exact F.measurable_boundary.norm.aestronglyMeasurable
+  · exact F.measurable_boundary.aestronglyMeasurable
   · filter_upwards [hMul, hA, hR] with x hxMul hxA hxR
     have hfactor : F.boundary x =
         diskMultiplierLineBoundary oneSubDiskMultiplierFourth x * R.boundary x := by
@@ -205,7 +209,12 @@ theorem integrable_boundary_boundedPhaseHalfForward_half
       simpa [Real.pi_ne_zero] using h
     have hbase : (4 * Real.pi * standardCauchyWeight x) ^ 2 ≤
         16 * Real.pi * standardCauchyWeight x := by
-      nlinarith [Real.pi_pos, hw0]
+      have hpw0 : 0 ≤ Real.pi * standardCauchyWeight x :=
+        mul_nonneg Real.pi_pos.le hw0
+      have hprod : 0 ≤ (Real.pi * standardCauchyWeight x) *
+          (1 - Real.pi * standardCauchyWeight x) :=
+        mul_nonneg hpw0 (sub_nonneg.mpr hpiw)
+      nlinarith
     calc
       (4 * Real.pi * standardCauchyWeight x) ^ 2 *
           ‖R.circleBoundary (circleCayley x)‖ ≤
@@ -227,8 +236,8 @@ theorem boundedPhaseToeplitzSymbol_half_eq
   funext x
   rw [boundedPhaseToeplitzSymbol, boundedPhaseOneToeplitzSymbol]
   congr 2
-  push_cast
   simp only [halfBoundedPhase]
+  push_cast
   ring
 
 /-- Measurable bounded phase at `p = 1`, packaged in the literal local-`L¹` Smirnov class. -/

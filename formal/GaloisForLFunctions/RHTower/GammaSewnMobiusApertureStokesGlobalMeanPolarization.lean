@@ -197,25 +197,13 @@ theorem summable_norm_gammaSewnCriticalPhysicalPluckerMeanDispersionRankOneTerm 
   have hmajor : Summable (fun zw : (ℕ × ℕ) × (ℕ × ℕ) =>
       gammaSewnCriticalAdjacentPrime_PluckerBlockWeight zw.1 *
         gammaSewnCriticalAdjacentPrime_PluckerBlockWeight zw.2 * C) := by
-    rw [summable_prod_of_nonneg (fun zw => mul_nonneg
-      (mul_nonneg
-        (gammaSewnCriticalAdjacentPrime_PluckerBlockWeight_pos zw.1).le
-        (gammaSewnCriticalAdjacentPrime_PluckerBlockWeight_pos zw.2).le)
-      (mul_nonneg (by norm_num) gammaSewnCriticalPlucker_nodeBound_pos.le))]
-    constructor
-    · intro z
-      exact summable_gammaSewnCriticalAdjacentPrime_PluckerBlockWeight.mul_left
-        (gammaSewnCriticalAdjacentPrime_PluckerBlockWeight z * C)
-    · have houter :=
-        summable_gammaSewnCriticalAdjacentPrime_PluckerBlockWeight.mul_right C
-      refine houter.congr fun z => ?_
-      change gammaSewnCriticalAdjacentPrime_PluckerBlockWeight z * C =
-        ∑' w : ℕ × ℕ,
-          gammaSewnCriticalAdjacentPrime_PluckerBlockWeight z *
-            gammaSewnCriticalAdjacentPrime_PluckerBlockWeight w * C
-      rw [← tsum_mul_left]
-      simp only [tsum_gammaSewnCriticalAdjacentPrime_PluckerBlockWeight]
-      ring
+    have hprod : Summable (fun zw : (ℕ × ℕ) × (ℕ × ℕ) =>
+        gammaSewnCriticalAdjacentPrime_PluckerBlockWeight zw.1 *
+          gammaSewnCriticalAdjacentPrime_PluckerBlockWeight zw.2) :=
+      summable_mul_of_summable_norm
+        summable_gammaSewnCriticalAdjacentPrime_PluckerBlockWeight.norm
+        summable_gammaSewnCriticalAdjacentPrime_PluckerBlockWeight.norm
+    exact hprod.mul_right C
   exact Summable.of_nonneg_of_le
     (fun zw => norm_nonneg _)
     (fun zw => by
@@ -280,9 +268,13 @@ theorem gammaSewnCriticalPhysicalPluckerGlobalMeanPolarizedRankOneTerm_isPositiv
 theorem summable_norm_gammaSewnCriticalPhysicalPluckerGlobalMeanPolarizedRankOneTerm :
     Summable (fun idx : ((ℕ × ℕ) × Fin 6) ⊕ ((ℕ × ℕ) × (ℕ × ℕ)) =>
       ‖gammaSewnCriticalPhysicalPluckerGlobalMeanPolarizedRankOneTerm idx‖) := by
-  rw [Equiv.summable_sum]
-  exact ⟨summable_norm_gammaSewnCriticalPhysicalPluckerPositiveRankOneTerm,
-    summable_norm_gammaSewnCriticalPhysicalPluckerMeanDispersionRankOneTerm⟩
+  apply Summable.sum
+  · change Summable (fun idx : (ℕ × ℕ) × Fin 6 =>
+      ‖gammaSewnCriticalPhysicalPluckerPositiveRankOneTerm idx‖)
+    exact summable_norm_gammaSewnCriticalPhysicalPluckerPositiveRankOneTerm
+  · change Summable (fun zw : (ℕ × ℕ) × (ℕ × ℕ) =>
+      ‖gammaSewnCriticalPhysicalPluckerMeanDispersionRankOneTerm zw‖)
+    exact summable_norm_gammaSewnCriticalPhysicalPluckerMeanDispersionRankOneTerm
 
 /-- Packet covariance plus global mean dispersion: source-defined nonlocal polar completion. -/
 def gammaSewnCriticalPhysicalPluckerGlobalMeanPolarizedOperator :
@@ -295,8 +287,23 @@ theorem gammaSewnCriticalPhysicalPluckerGlobalMeanPolarizedOperator_eq_add :
     gammaSewnCriticalPhysicalPluckerGlobalMeanPolarizedOperator =
       gammaSewnCriticalPhysicalPluckerSpectralOperator +
         gammaSewnCriticalPhysicalPluckerGlobalMeanDispersionOperator := by
-  rw [gammaSewnCriticalPhysicalPluckerGlobalMeanPolarizedOperator, tsum_sum]
-  rfl
+  have hleft : HasSum
+      (gammaSewnCriticalPhysicalPluckerGlobalMeanPolarizedRankOneTerm ∘ Sum.inl)
+      gammaSewnCriticalPhysicalPluckerSpectralOperator := by
+    change HasSum gammaSewnCriticalPhysicalPluckerPositiveRankOneTerm
+      gammaSewnCriticalPhysicalPluckerSpectralOperator
+    simpa [gammaSewnCriticalPhysicalPluckerSpectralOperator] using
+      (Summable.of_norm
+        summable_norm_gammaSewnCriticalPhysicalPluckerPositiveRankOneTerm).hasSum
+  have hright : HasSum
+      (gammaSewnCriticalPhysicalPluckerGlobalMeanPolarizedRankOneTerm ∘ Sum.inr)
+      gammaSewnCriticalPhysicalPluckerGlobalMeanDispersionOperator := by
+    change HasSum gammaSewnCriticalPhysicalPluckerMeanDispersionRankOneTerm
+      gammaSewnCriticalPhysicalPluckerGlobalMeanDispersionOperator
+    simpa [gammaSewnCriticalPhysicalPluckerGlobalMeanDispersionOperator] using
+      (Summable.of_norm
+        summable_norm_gammaSewnCriticalPhysicalPluckerMeanDispersionRankOneTerm).hasSum
+  exact (hleft.sum hright).tsum_eq
 
 theorem gammaSewnCriticalPhysicalPluckerGlobalMeanPolarizedOperator_isPositive :
     gammaSewnCriticalPhysicalPluckerGlobalMeanPolarizedOperator.IsPositive := by

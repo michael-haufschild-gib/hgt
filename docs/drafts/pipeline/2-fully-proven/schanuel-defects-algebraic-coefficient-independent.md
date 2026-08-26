@@ -714,3 +714,43 @@ Both direct checks and targeted leaf builds pass.  New declarations audit to at 
 `[propext, Classical.choice, Quot.sound]`; both leaves are wired into `HTGeometry` without an
 umbrella build.  This supplies the point/evaluation foundation for the translated-locus subgroup
 closure still required by the card.  It does not assume that closure or promote the card.
+
+## Point subgroup closure and Hopf vanishing ideal formalized (2026-08-26)
+
+Repeated corpus search found the existing affine-space closure, point-separation, reduced tensor,
+Hopf quotient, and factor-evaluation machinery, but no full mixed point group law, inverse law,
+algebra-map representation, or subgroup-vanishing Hopf theorem.  The new layer reuses those exact
+components rather than introducing a second affine-polynomial closure theory.
+
+`AffineExponentialPointEvaluation.lean` now proves the full convolution and antipode identities
+
+```text
+eval_mul_point
+eval_inv_point
+```
+
+for every mixed coordinate function.  `AffineExponentialPointRepresentation.lean` proves that
+every algebra map from the mixed coordinate algebra to a field is evaluation at a concrete
+additive-torus point.  `AffineExponentialPointClosure.lean` constructs the mixed-coordinate
+vanishing ideal and proves, for every point subgroup over an arbitrary field,
+
+```text
+closureSubgroup
+vanishingIdeal_isRadical
+vanishingIdeal_isHopfIdeal
+```
+
+The coideal proof adds no finite-type or algebraic-closedness premise.  Evaluations by the original
+subgroup jointly separate its quotient, a basis argument promotes that separation to the tensor
+square, and subgroup multiplication kills the image of comultiplication.  Thus no missing Laurent
+finite-generation instance or conditional Nullstellensatz wrapper is needed.
+
+Direct source checks and targeted builds of
+`AffineExponentialPointRepresentation` and `AffineExponentialPointClosure` pass.  All new
+declarations audit to only `[propext, Classical.choice, Quot.sound]`; the leaves are wired into
+`HTGeometry` without building that umbrella.
+
+This closes same-field point-subgroup closure and its exact Hopf ideal.  Card remains Stage 2:
+translated `Q̄`-locus generation still needs coefficient-field/base-change descent from complex
+points to the `Q̄` Hopf ideal, followed by invariant Kähler-differential restriction and the
+already-isolated character-lattice/Baker assembly.

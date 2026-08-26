@@ -37,8 +37,12 @@ theorem kapustinUniversalGammaCarrier_neg_div_norm (x : ℝ) :
       Complex.exp (-I * ((-kapustinReciprocalGammaPhase x : ℝ) : ℂ)) /
         ‖(r : ℂ) *
           Complex.exp (-I * ((-kapustinReciprocalGammaPhase x : ℝ) : ℂ))‖ = _
+  have hphaseNorm :
+      ‖Complex.exp (-I * ((-kapustinReciprocalGammaPhase x : ℝ) : ℂ))‖ = 1 := by
+    rw [Complex.norm_exp]
+    norm_num [Complex.mul_re]
   rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hr,
-    Complex.norm_exp, mul_one]
+    hphaseNorm, mul_one]
   field_simp [show (r : ℂ) ≠ 0 by exact_mod_cast hr.ne']
   congr 1
   push_cast
@@ -74,7 +78,10 @@ noncomputable def kapustinSmirnovToeplitzNPlusElement_of_rotated_nonnegative
     intro z hz
     exact hOouter.ne_zero_on_disk
       (by simpa [Metric.mem_ball, dist_zero_right] using hz)
-  obtain ⟨Hroot, hHsq⟩ := Oouter.exists_squareRoot_of_zeroFree hOzero
+  let hrootExists := Oouter.exists_squareRoot_of_zeroFree hOzero
+  let Hroot : DiskMultiplier := Classical.choose hrootExists
+  have hHsq : ∀ z ∈ ball (0 : ℂ) 1, Hroot.fn z ^ 2 = Oouter.fn z :=
+    Classical.choose_spec hrootExists
   have hHnonzero : ∃ z ∈ ball (0 : ℂ) 1, Hroot.fn z ≠ 0 := by
     refine ⟨0, by simp [Metric.mem_ball], ?_⟩
     intro hzero
@@ -110,6 +117,7 @@ noncomputable def kapustinSmirnovToeplitzNPlusElement_of_rotated_nonnegative
     have ha : a ≠ 0 := kapustinUniversalGammaCarrier_ne_zero (-x)
     have hi : i ≠ 0 := by
       intro hz
+      change ‖i‖ = 1 at hxInnerUnit
       rw [hz, norm_zero] at hxInnerUnit
       norm_num at hxInnerUnit
     have hphi : phi ≠ 0 := hxPhiNe
@@ -123,31 +131,36 @@ noncomputable def kapustinSmirnovToeplitzNPlusElement_of_rotated_nonnegative
         exact_mod_cast (norm_pos_iff.mpr hq).ne'
       calc
         Complex.exp (I * (q.arg : ℂ)) =
-            Complex.exp ((q.arg : ℂ) * I) := by congr 1 <;> ring
+            Complex.exp ((q.arg : ℂ) * I) := by congr 1; ring
         _ = q / (‖q‖ : ℂ) := by
           field_simp [hnorm]
-          exact hp.symm
+          simpa [mul_comm] using hp
     have hnormQ : ‖q‖ = ‖a‖ * ‖h‖ ^ 2 := by
-      rw [q, kapustinRotatedGaugeQ, phi, ← hfactor', norm_mul, norm_mul,
+      change ‖a * phi‖ = ‖a‖ * ‖h‖ ^ 2
+      rw [← hfactor', norm_mul, norm_mul,
         hinnerNorm, one_mul, ← hrootSq', norm_pow]
     have hrootConjMul : (starRingEnd ℂ) h * h = (‖h‖ ^ 2 : ℂ) := by
       rw [Complex.conj_mul']
     rw [smirnovToeplitzSymbolMul, smirnovToeplitzSymbolMul,
       diskMultiplierPhaseReflectionSymbol, if_neg hxRootNe,
-      boundedPhaseOneToeplitzSymbol, hxPhase, hqPhase,
-      kapustinOneSidedToeplitzSymbol, kapustinOneSidedToeplitzPhase,
-      ← Complex.exp_add]
-    rw [show ((kapustinReciprocalGammaPhase x : ℝ) : ℂ) * I +
-        ((-8 * Real.arctan x : ℝ) : ℂ) * I =
-          ((kapustinReciprocalGammaPhase x - 8 * Real.arctan x : ℝ) : ℂ) * I by
+      boundedPhaseOneToeplitzSymbol]
+    rw [show b (circleCayley x) = q.arg from hxPhase, hqPhase,
+      kapustinOneSidedToeplitzSymbol, kapustinOneSidedToeplitzPhase]
+    rw [show Complex.exp
+          (((kapustinReciprocalGammaPhase x - 8 * Real.arctan x : ℝ) : ℂ) * I) =
+        Complex.exp (((kapustinReciprocalGammaPhase x : ℝ) : ℂ) * I) *
+          Complex.exp (((-8 * Real.arctan x : ℝ) : ℂ) * I) by
+      rw [← Complex.exp_add]
+      congr 1
       push_cast
       ring]
     rw [← conj_realCayley_pow_four_eq_exp_neg_eight_arctan,
       ← kapustinUniversalGammaCarrier_neg_div_norm x]
     change ((starRingEnd ℂ) h / h) *
         ((starRingEnd ℂ) (realCayley x ^ 4) * (q / (‖q‖ : ℂ))) =
-      (((starRingEnd ℂ) (realCayley x ^ 4) * (a / (‖a‖ : ℂ))) * i)
-    rw [q, kapustinRotatedGaugeQ, phi, ← hfactor', ← hrootSq', hnormQ]
+      (a / (‖a‖ : ℂ)) * (starRingEnd ℂ) (realCayley x ^ 4) * i
+    have hqEq : q = a * phi := rfl
+    rw [hnormQ, hqEq, ← hfactor', ← hrootSq']
     have hnormA : (‖a‖ : ℂ) ≠ 0 := by
       exact_mod_cast (norm_pos_iff.mpr ha).ne'
     have hnormH : (‖h‖ : ℂ) ≠ 0 := by

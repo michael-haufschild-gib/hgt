@@ -1,7 +1,7 @@
 # Translation-Superposition Group-Algebra Calculus
 
 - **ID:** translation-superposition-boundary-calculus
-- **Stage:** 2-fully-proven / needs independent audit
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / REALIZATION THEOREM
 - **Scientific status:** `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]` — contingent on the independently audited elliptic-gamma defect theorem
 - **Statement:** Once a hypertranscendental function has an atomic coset matroid of translation defects and infinite quotient group, its complete translation orbit is a free cyclic group-algebra module modulo DA functions. Every finite translate superposition then has full DA annihilator equal to the algebraic annihilator of its group-algebra divisor; spectra and finite-defect matroids are its binomial and boundary shadows.
@@ -294,7 +294,7 @@ The abstract regular-module implication is a `[BRIDGE]` once an atomic defect th
 
 ## Lean route
 
-The group-algebra part is formally accessible, but formalizing it before the analytic atomic-defect theorem would certify only a conditional linear-algebra shell. That would be formalization theatre. No Lean edit is warranted until the elliptic analytic and parameterized-Galois parent exists in the formal tree.
+The required analytic parent and stronger mixed differential-translation algebra are now present in `TripticMixedConstraintNormalForm`. Its closed explicit-period package contains the card's ordinary group-algebra calculus as the order-zero slice, so duplicating a weaker conditional shell is neither necessary nor correct.
 
 ## Gates
 
@@ -309,6 +309,18 @@ The group-algebra part is formally accessible, but formalizing it before the ana
 - [x] Preliminary exact/equivalent/stronger literature search completed.
 - [ ] Independent audit of the elliptic-gamma atomic-defect theorem.
 - [ ] Independent audit of the literature boundary.
+- [x] 2 -> 3 formalized: mapped to the stronger closed explicit-period Lean package and its multiplicative divisor realization.
+
+## Lean formalization
+
+- **Module:** `formal/GaloisForLFunctions/HTGeometry/TripticMixedConstraintNormalForm.lean`
+- **Closed capstone:** `tripticMixedConstraintNormalForm_unconditional`
+- **Package:** `TripticMixedConstraintNormalFormPackage`
+- **Exact components:** `regularModule`, `exactAnnihilator`, `exactSpectrum`, `finiteSpectrum`, `realizesEveryFiniteSpectrum`, and `completeFamilyMatroid`.
+- **Concrete realization:** periods `reflectionPairPeriods true` and `reflectionPairPeriods false`; positivity and rational independence are discharged internally.
+- **Multiplicative layer:** `TripticGammaProductRealization` realizes finite integral quotient divisors by genuine finite products of elliptic-gamma translates, while `TripticMultiplicativeKernelConverse` identifies the DA logarithmic-derivative kernel with zero orbital charge.
+- **Corpus audit:** existing capstone is stronger than the ordinary `C[C/H]` statement because it treats `C[delta][C/H]`; no Lean declaration was duplicated.
+- **Verification:** existing module and declarations were already compiled and indexed by project corpus. Mapping added no declaration, so no redundant build or axiom audit was run.
 
 ## Log
 
@@ -318,3 +330,4 @@ The group-algebra part is formally accessible, but formalizing it before the ana
 - 2026-07-10 - Checked the full torsion-orbit case against Felder--Varchenko's multiplication formula; both routes give the exact spectrum `(1/n)H`.
 - 2026-07-10 - Transferred the boundary calculus to integer-weighted products of elliptic gamma functions, including exact quotient spectra and finite-family quotient matroids.
 - 2026-07-10 - Strengthened the boundary calculus to a free cyclic `C[C/H]` translation module modulo DA functions and computed every superposition's full group-algebra annihilator.
+- 2026-08-26 - Corpus-first audit found full result already formalized by stronger closed triptic mixed-constraint normal-form package. Mapped exact clauses and promoted to stage 3 without duplicating Lean.

@@ -1,8 +1,9 @@
 # Atomic increments force the full primitive translation orbit
 
 - **ID:** `atomic-increment-full-orbit-codimension-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) — `[PROVED HERE] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
+- **Lean:** `formal/GaloisForLFunctions/RHTower/AtomicIncrementFullOrbitCodimensionLaw.lean`
 - **Statement:** Let a non-torsion translation `T_a` act on a differential function field.  If the
   complete translation orbit of one increment `(T_a-1)u`, modulo the base field, is
   differentially algebraically independent, then the complete translation orbit of the primitive
@@ -233,13 +234,28 @@ scientific mechanism.  Under the project's routine-parent test the abstract law 
 bridge.  Its completed-xi consequence inherits whatever novelty survives in the separate
 prime-feature polarization theorem; it is not independently new.
 
-## Formalization status
+## Lean verification
 
-The exact xi source identity (7) is fully formalized in
-`formal/GaloisForLFunctions/RHTower/XiShiftPrimeExposure.lean`.  The complete theorem is not at
-stage 3.  Its xi specialization uses the analytic prime-feature polarization theorem, which is not
-formalized in the local Lean tree.  Formalizing only the finite forest rank would not formalize the
-unconditional claim.
+Complete and unconditional.
+
+- `GaloisForLFunctions.MatroidGluing.Rank.indepSet_of_atomic_increment_lower_bound` proves the
+  abstract repeated-copy rank amplification for an arbitrary rank function and rank-preserving
+  infinite-order permutation satisfying the exact separation law.
+- `GaloisForLFunctions.MatroidGluing.Rank.algebraicFamilyRank_atomic_increment_lower_bound`
+  proves the affine-increment lower bound inside the algebraic matroid, and
+  `GaloisForLFunctions.MatroidGluing.algebraicIndependent_primitive_of_evenShift_increments`
+  closes the complete complex-shift jet primitive theorem.
+- `RHTower.xiAtomicIncrement_fullOrbitCodimension_complete` packages the exact completed-Xi affine
+  increment identity together with algebraic and differential independence of the full primitive
+  orbit over both Nagoshi's small-growth field and the rational-coordinate field.
+- `RHTower.xiLogDerivRotated_finiteOperatorRows_differentialMatroid` proves the complete nonlinear
+  finite-superposition matroid equality.
+- `RHTower.xiLogDerivRotated_finiteOperatorRows_eRk_eq_finrank_span` proves equation (6) as the exact
+  localized polynomial-row rank formula on every finite output packet.
+
+Targeted source check and targeted module build pass.  Axiom audit for the three capstone
+declarations reports only `propext`, `Classical.choice`, and `Quot.sound`.  Module is wired into
+`GaloisForLFunctions.RHTower`; umbrella was not built.
 
 ## Gates
 
@@ -254,6 +270,7 @@ unconditional claim.
 - [x] Classify as a bridge by the standard transformal-dimension parent principle.
 - [x] Obtain the complex-shift nonlinear analogue from the separate prime-feature theorem.
 - [x] Complete the paper proof and move to stage 2.
+- [x] 2 -> 3: complete unconditional claim formalized in Lean.
 
 ## Primary parents under audit
 
@@ -276,3 +293,6 @@ unconditional claim.
   qualitative abstract mechanism, so the general theorem is graded a bridge.  The separately
   proved prime-feature polarization theorem supplies a full complex increment orbit and upgrades
   the completed-xi specialization from real to arbitrary complex shifts.
+- 2026-08-26 -- Closed Lean formalization: abstract rank amplification, exact completed-Xi affine
+  increment, full complex primitive orbit, complete finite operator-row differential matroid, and
+  numerical localized-row rank law.  Targeted module build and axiom audit pass.

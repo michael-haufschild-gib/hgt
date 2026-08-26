@@ -2,7 +2,7 @@ import GaloisForLFunctions.RHTower.ThetaCuspHawkingTeukolskyFiniteMassParityRigi
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingTeukolskySingleSectorFrequencyNoGo
 
 /-!
-# Third mass jet of the four-dimensional Teukolsky parity split
+# Fixed-radius third mass jet of the four-dimensional Teukolsky parity split
 
 For the exact Birmingham--Mokhtari scalar/vector potential gap, subtracting the linear and
 quadratic mass terms leaves a cubic factor with continuous coefficient.  Its value at zero mass is
@@ -15,9 +15,10 @@ imply coefficientwise cubic positivity.  If a total cubic projection is required
 nonnegative, the sum of its remaining causal and orthogonal-helicity channels must exceed the
 explicit positive compensation threshold below.
 
-On the Xi-reflected BM mediator at the horizon, the third-jet variation factors through the same
-horizontal displacement as the first mass response.  Their ratio is strictly positive, so the
-diagonal first and third horizon variants reinforce rather than cancel off the critical line.
+On the Xi-reflected BM mediator, the specialization `u = 1` is the partial mass derivative at the
+massless event-horizon radius held fixed.  It is not the finite-mass event horizon, which moves by
+`u = 1 + x`.  This fixed-radius third-jet variation factors through the same horizontal
+displacement as the first mass response.
 -/
 
 open Complex Real Set Filter Topology
@@ -150,28 +151,28 @@ theorem d4ThirdMassParityCubicBalance_zeroResidual_neg_physical
   simpa [d4ThirdMassParityCubicBalance] using
     d4ThirdMassParityJet_neg_physical xi u hu
 
-/-- Third mass jet of the BM reflected real-pair mediator at the massless horizon `u=1`. -/
-def d4BMXiReflectedHorizonThirdMassParityJet (q : XiZeroCopy) : ℝ :=
+/-- Third mass jet of the BM reflected real-pair mediator at fixed `u=1`. -/
+def d4BMXiReflectedFixedUnitRadiusThirdMassParityJet (q : XiZeroCopy) : ℝ :=
   d4ThirdMassParityJet (d4BMXiReflectedRealPairMediatorAngularQ q) 1
 
-/-- Reflection-odd variation of the exact horizon third mass jet. -/
-def d4BMXiReflectedHorizonThirdMassParityJetDefect (q : XiZeroCopy) : ℝ :=
-  d4BMXiReflectedHorizonThirdMassParityJet q -
-    d4BMXiReflectedHorizonThirdMassParityJet (xiZeroCopyReflectEquiv q)
+/-- Reflection-odd variation of the exact fixed-unit-radius third mass jet. -/
+def d4BMXiReflectedFixedUnitRadiusThirdMassParityJetDefect (q : XiZeroCopy) : ℝ :=
+  d4BMXiReflectedFixedUnitRadiusThirdMassParityJet q -
+    d4BMXiReflectedFixedUnitRadiusThirdMassParityJet (xiZeroCopyReflectEquiv q)
 
-/-- Positive polynomial multiplying the horizontal Xi displacement in the horizon third-jet
+/-- Positive polynomial multiplying horizontal Xi displacement in fixed-radius third-jet
 variation. -/
-def d4BMXiHorizonThirdMassParityReflectionPolynomial (q : XiZeroCopy) : ℝ :=
+def d4BMXiFixedUnitRadiusThirdMassParityReflectionPolynomial (q : XiZeroCopy) : ℝ :=
   let a := (q.1 : ℂ).re
   24 - 36 * (a * (1 - a)) - 38 * (a * (1 - a)) ^ 2 -
     8 * (a * (1 - a)) ^ 3
 
-/-- Exact reflection variation of the BM horizon third mass jet. -/
-theorem d4BMXiReflectedHorizonThirdMassParityJetDefect_eq
+/-- Exact reflection variation of the BM fixed-unit-radius third mass jet. -/
+theorem d4BMXiReflectedFixedUnitRadiusThirdMassParityJetDefect_eq
     (q : XiZeroCopy) :
-    d4BMXiReflectedHorizonThirdMassParityJetDefect q =
+    d4BMXiReflectedFixedUnitRadiusThirdMassParityJetDefect q =
       216 * (1 - 2 * (q.1 : ℂ).re) *
-          d4BMXiHorizonThirdMassParityReflectionPolynomial q /
+          d4BMXiFixedUnitRadiusThirdMassParityReflectionPolynomial q /
         ((q.1 : ℂ).re ^ 3 * (3 - (q.1 : ℂ).re) ^ 3 *
           (1 - (q.1 : ℂ).re) ^ 3 * (2 + (q.1 : ℂ).re) ^ 3) := by
   let a : ℝ := (q.1 : ℂ).re
@@ -190,10 +191,10 @@ theorem d4BMXiReflectedHorizonThirdMassParityJetDefect_eq
   have h1a : 1 - a ≠ 0 := ne_of_gt (by dsimp [a]; linarith)
   have h3a : 3 - a ≠ 0 := ne_of_gt (by dsimp [a]; linarith)
   have h2a : 2 + a ≠ 0 := ne_of_gt (by dsimp [a]; linarith)
-  unfold d4BMXiReflectedHorizonThirdMassParityJetDefect
-    d4BMXiReflectedHorizonThirdMassParityJet
+  unfold d4BMXiReflectedFixedUnitRadiusThirdMassParityJetDefect
+    d4BMXiReflectedFixedUnitRadiusThirdMassParityJet
   rw [hQ, hQr]
-  unfold d4ThirdMassParityJet d4BMXiHorizonThirdMassParityReflectionPolynomial
+  unfold d4ThirdMassParityJet d4BMXiFixedUnitRadiusThirdMassParityReflectionPolynomial
   change
     216 * (2 - 2 * ((2 - a) * (a - 1)) - 3 * 1) /
           (((2 - a) * (a - 1)) + 2) ^ 3 -
@@ -212,9 +213,9 @@ theorem d4BMXiReflectedHorizonThirdMassParityJetDefect_eq
   field_simp [ha, h1a, h3a, h2a]
   ring
 
-theorem d4BMXiHorizonThirdMassParityReflectionPolynomial_pos
+theorem d4BMXiFixedUnitRadiusThirdMassParityReflectionPolynomial_pos
     (q : XiZeroCopy) :
-    0 < d4BMXiHorizonThirdMassParityReflectionPolynomial q := by
+    0 < d4BMXiFixedUnitRadiusThirdMassParityReflectionPolynomial q := by
   let a : ℝ := (q.1 : ℂ).re
   let t : ℝ := a * (1 - a)
   have hstrip := xi_divisor_support_re_mem_open_unit q.1
@@ -228,23 +229,23 @@ theorem d4BMXiHorizonThirdMassParityReflectionPolynomial_pos
     mul_nonneg ht (sub_nonneg.mpr htle)
   have hgap2 : 0 ≤ t ^ 2 * (1 / 4 - t) :=
     mul_nonneg (sq_nonneg t) (sub_nonneg.mpr htle)
-  unfold d4BMXiHorizonThirdMassParityReflectionPolynomial
+  unfold d4BMXiFixedUnitRadiusThirdMassParityReflectionPolynomial
   change 0 < 24 - 36 * t - 38 * t ^ 2 - 8 * t ^ 3
   nlinarith
 
-/-- Reflected BM horizon third mass jets agree exactly at critical-line incidence. -/
-theorem d4BMXiReflectedHorizonThirdMassParityJetDefect_eq_zero_iff
+/-- Reflected BM fixed-unit-radius third mass jets agree exactly at critical-line incidence. -/
+theorem d4BMXiReflectedFixedUnitRadiusThirdMassParityJetDefect_eq_zero_iff
     (q : XiZeroCopy) :
-    d4BMXiReflectedHorizonThirdMassParityJetDefect q = 0 ↔
+    d4BMXiReflectedFixedUnitRadiusThirdMassParityJetDefect q = 0 ↔
       (q.1 : ℂ).re = 1 / 2 := by
-  rw [d4BMXiReflectedHorizonThirdMassParityJetDefect_eq]
+  rw [d4BMXiReflectedFixedUnitRadiusThirdMassParityJetDefect_eq]
   let a : ℝ := (q.1 : ℂ).re
   have hstrip := xi_divisor_support_re_mem_open_unit q.1
   have ha : a ≠ 0 := ne_of_gt (by simpa [a] using hstrip.1)
   have h1a : 1 - a ≠ 0 := ne_of_gt (by dsimp [a]; linarith)
   have h3a : 3 - a ≠ 0 := ne_of_gt (by dsimp [a]; linarith)
   have h2a : 2 + a ≠ 0 := ne_of_gt (by dsimp [a]; linarith)
-  have hp := d4BMXiHorizonThirdMassParityReflectionPolynomial_pos q
+  have hp := d4BMXiFixedUnitRadiusThirdMassParityReflectionPolynomial_pos q
   have hden : a ^ 3 * (3 - a) ^ 3 * (1 - a) ^ 3 * (2 + a) ^ 3 ≠ 0 :=
     mul_ne_zero
       (mul_ne_zero
@@ -253,13 +254,13 @@ theorem d4BMXiReflectedHorizonThirdMassParityJetDefect_eq_zero_iff
       (pow_ne_zero 3 h2a)
   change
     216 * (1 - 2 * a) *
-          d4BMXiHorizonThirdMassParityReflectionPolynomial q /
+          d4BMXiFixedUnitRadiusThirdMassParityReflectionPolynomial q /
         (a ^ 3 * (3 - a) ^ 3 * (1 - a) ^ 3 * (2 + a) ^ 3) = 0 ↔
       a = 1 / 2
   constructor
   · intro h
     have hnum : 216 * (1 - 2 * a) *
-        d4BMXiHorizonThirdMassParityReflectionPolynomial q = 0 := by
+        d4BMXiFixedUnitRadiusThirdMassParityReflectionPolynomial q = 0 := by
       rcases div_eq_zero_iff.mp h with hnum | hdenzero
       · exact hnum
       · exact False.elim (hden hdenzero)
@@ -272,16 +273,16 @@ theorem d4BMXiReflectedHorizonThirdMassParityJetDefect_eq_zero_iff
     rw [h]
     norm_num
 
-/-- Positive susceptibility relating the reflected horizon third mass jet to the first BM parity
+/-- Positive susceptibility relating fixed-unit-radius third mass jet to first BM parity
 response. -/
-def d4BMXiHorizonThirdToFirstMassSusceptibility (q : XiZeroCopy) : ℝ :=
+def d4BMXiFixedUnitRadiusThirdToFirstMassSusceptibility (q : XiZeroCopy) : ℝ :=
   let a := (q.1 : ℂ).re
-  9 * d4BMXiHorizonThirdMassParityReflectionPolynomial q /
+  9 * d4BMXiFixedUnitRadiusThirdMassParityReflectionPolynomial q /
     (a * (1 - a) * (3 - a) * (2 + a)) ^ 2
 
-theorem d4BMXiHorizonThirdToFirstMassSusceptibility_pos
+theorem d4BMXiFixedUnitRadiusThirdToFirstMassSusceptibility_pos
     (q : XiZeroCopy) :
-    0 < d4BMXiHorizonThirdToFirstMassSusceptibility q := by
+    0 < d4BMXiFixedUnitRadiusThirdToFirstMassSusceptibility q := by
   let a : ℝ := (q.1 : ℂ).re
   have hstrip := xi_divisor_support_re_mem_open_unit q.1
   have ha : a ≠ 0 := ne_of_gt (by simpa [a] using hstrip.1)
@@ -290,21 +291,21 @@ theorem d4BMXiHorizonThirdToFirstMassSusceptibility_pos
   have h2a : 2 + a ≠ 0 := ne_of_gt (by dsimp [a]; linarith)
   have hD : a * (1 - a) * (3 - a) * (2 + a) ≠ 0 :=
     mul_ne_zero (mul_ne_zero (mul_ne_zero ha h1a) h3a) h2a
-  unfold d4BMXiHorizonThirdToFirstMassSusceptibility
-  change 0 < 9 * d4BMXiHorizonThirdMassParityReflectionPolynomial q /
+  unfold d4BMXiFixedUnitRadiusThirdToFirstMassSusceptibility
+  change 0 < 9 * d4BMXiFixedUnitRadiusThirdMassParityReflectionPolynomial q /
     (a * (1 - a) * (3 - a) * (2 + a)) ^ 2
   exact div_pos
     (mul_pos (by norm_num)
-      (d4BMXiHorizonThirdMassParityReflectionPolynomial_pos q))
+      (d4BMXiFixedUnitRadiusThirdMassParityReflectionPolynomial_pos q))
     (sq_pos_of_ne_zero hD)
 
-/-- The horizon third mass variant is a positive multiple of the first BM backreaction variant. -/
-theorem d4BMXiReflectedHorizonThirdMassParityJetDefect_eq_susceptibility_mul_first
+/-- Fixed-unit-radius third mass variant is a positive multiple of first BM variant. -/
+theorem d4BMXiReflectedFixedUnitRadiusThirdMassParityJetDefect_eq_susceptibility_mul_first
     (q : XiZeroCopy) :
-    d4BMXiReflectedHorizonThirdMassParityJetDefect q =
-      d4BMXiHorizonThirdToFirstMassSusceptibility q *
+    d4BMXiReflectedFixedUnitRadiusThirdMassParityJetDefect q =
+      d4BMXiFixedUnitRadiusThirdToFirstMassSusceptibility q *
         d4BMXiReflectionOddBackreactionDefect q := by
-  rw [d4BMXiReflectedHorizonThirdMassParityJetDefect_eq,
+  rw [d4BMXiReflectedFixedUnitRadiusThirdMassParityJetDefect_eq,
     d4BMXiReflectionOddBackreactionDefect_eq]
   let a : ℝ := (q.1 : ℂ).re
   have hstrip := xi_divisor_support_re_mem_open_unit q.1
@@ -312,33 +313,33 @@ theorem d4BMXiReflectedHorizonThirdMassParityJetDefect_eq_susceptibility_mul_fir
   have h1a : 1 - a ≠ 0 := ne_of_gt (by dsimp [a]; linarith)
   have h3a : 3 - a ≠ 0 := ne_of_gt (by dsimp [a]; linarith)
   have h2a : 2 + a ≠ 0 := ne_of_gt (by dsimp [a]; linarith)
-  unfold d4BMXiHorizonThirdToFirstMassSusceptibility
+  unfold d4BMXiFixedUnitRadiusThirdToFirstMassSusceptibility
   change
     216 * (1 - 2 * a) *
-          d4BMXiHorizonThirdMassParityReflectionPolynomial q /
+          d4BMXiFixedUnitRadiusThirdMassParityReflectionPolynomial q /
         (a ^ 3 * (3 - a) ^ 3 * (1 - a) ^ 3 * (2 + a) ^ 3) =
-      (9 * d4BMXiHorizonThirdMassParityReflectionPolynomial q /
+      (9 * d4BMXiFixedUnitRadiusThirdMassParityReflectionPolynomial q /
           (a * (1 - a) * (3 - a) * (2 + a)) ^ 2) *
         (24 * (1 - 2 * a) /
           (a * (1 - a) * (3 - a) * (2 + a)))
   field_simp [ha, h1a, h3a, h2a]
   ring
 
-/-- Off the critical line, first and third horizon mass variants have the same orientation. -/
-theorem d4BMXiReflectedHorizonThirdMassParityJetDefect_mul_first_pos_of_tilt
+/-- Off critical line, first and fixed-unit-radius third mass variants have same orientation. -/
+theorem d4BMXiReflectedFixedUnitRadiusThirdMassParityJetDefect_mul_first_pos_of_tilt
     (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2) :
-    0 < d4BMXiReflectedHorizonThirdMassParityJetDefect q *
+    0 < d4BMXiReflectedFixedUnitRadiusThirdMassParityJetDefect q *
       d4BMXiReflectionOddBackreactionDefect q := by
-  rw [d4BMXiReflectedHorizonThirdMassParityJetDefect_eq_susceptibility_mul_first]
-  have hs := d4BMXiHorizonThirdToFirstMassSusceptibility_pos q
+  rw [d4BMXiReflectedFixedUnitRadiusThirdMassParityJetDefect_eq_susceptibility_mul_first]
+  have hs := d4BMXiFixedUnitRadiusThirdToFirstMassSusceptibility_pos q
   have hf : d4BMXiReflectionOddBackreactionDefect q ≠ 0 := by
     intro hzero
     exact hoff ((d4BMXiReflectionOddBackreactionDefect_eq_zero_iff q).1 hzero)
   calc
-    d4BMXiHorizonThirdToFirstMassSusceptibility q *
+    d4BMXiFixedUnitRadiusThirdToFirstMassSusceptibility q *
           d4BMXiReflectionOddBackreactionDefect q *
         d4BMXiReflectionOddBackreactionDefect q =
-      d4BMXiHorizonThirdToFirstMassSusceptibility q *
+      d4BMXiFixedUnitRadiusThirdToFirstMassSusceptibility q *
         d4BMXiReflectionOddBackreactionDefect q ^ 2 := by ring
     _ > 0 := mul_pos hs (sq_pos_of_ne_zero hf)
 

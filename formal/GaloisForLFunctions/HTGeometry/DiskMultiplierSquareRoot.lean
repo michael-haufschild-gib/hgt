@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.AnalyticSquareRoot
 import GaloisForLFunctions.HTGeometry.HardyDiskMultiplier
+import GaloisForLFunctions.HTGeometry.SmirnovBoundaryQuotient
 
 /-!
 # Bounded square roots of zero-free disk multipliers
@@ -39,6 +40,27 @@ theorem DiskMultiplier.exists_squareRoot_of_zeroFree
         · have hone : 1 < ‖s z‖ := lt_of_not_ge hsmall
           nlinarith [norm_nonneg (s z)] }
   exact ⟨root, hsSq⟩
+
+/-- A bounded analytic square root of an outer multiplier is outer.  Dense range of multiplication
+by the square is contained in the range of multiplication by the root. -/
+theorem IsOuterDiskMultiplier.of_square_eq
+    {phi root : DiskMultiplier}
+    (hphi : IsOuterDiskMultiplier phi)
+    (hsq : ∀ z ∈ ball (0 : ℂ) 1, root.fn z ^ 2 = phi.fn z) :
+    IsOuterDiskMultiplier root := by
+  rw [isOuterDiskMultiplier_iff_denseRange] at hphi ⊢
+  rw [denseRange_iff_closure_range] at hphi ⊢
+  apply Set.Subset.antisymm (Set.subset_univ _)
+  rw [← hphi]
+  apply closure_mono
+  rintro _ ⟨f, rfl⟩
+  refine ⟨hardyMul root f, ?_⟩
+  apply hardyDisk_ext
+  intro z hz
+  rw [hardyFun_hardyMul root (hardyMul root f) hz,
+    hardyFun_hardyMul root f hz, hardyFun_hardyMul phi f hz]
+  rw [← hsq z (by simpa [Metric.mem_ball, dist_zero_right] using hz)]
+  ring
 
 end
 

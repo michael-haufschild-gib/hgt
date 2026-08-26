@@ -1,7 +1,7 @@
 # The squarefree Ward current is the reciprocal projective-horizon seam
 
 - **ID:** `projective-reciprocal-horizon-ward-seam`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / GENERAL HT TOPOLOGY TO RHTOWER BRIDGE
 - **Scientific status:** `[PROVED HERE] [LEAN CORE] [NOT A NOVELTY CLAIM] [NOT RH]`
 - **HT parents:**
@@ -11,7 +11,8 @@
 - **RH parents:**
   - `../squarefree-fixed-current-right-half-ward-localization.md`;
   - `../squarefree-euler-modular-corona-curvature-colligation.md`.
-- **Lean:** `formal/GaloisForLFunctions/RHTower/ProjectiveHorizonWardSeam.lean`.
+- **Lean:**
+  `formal/GaloisForLFunctions/RHTower/ProjectiveReciprocalHorizonWardSeamSaturation.lean`.
 - **Statement:** The completed squarefree logarithmic Ward current is exactly the logarithmic
   connection on the transition between the two complementary projective derivative horizons of
   the completed squarefree amplitude.  Its strict anti-causal component is therefore the Hardy
@@ -224,6 +225,31 @@ the actual source current `Q_sq`, and Hardy localization produces the actual nor
 harmonic, or polarized without constructing the source capacity metric on its boundary trace
 would still be a restatement of the Ward estimate.
 
+## Lean formalization
+
+The exact proved content is dependency-closed in
+`GaloisForLFunctions.RHTower.ProjectiveReciprocalHorizonWardSeamSaturation`:
+
+- `hypertranscendentalOver_projectiveReciprocalWardSeam_complete` proves the reciprocal-square
+  transition, doubled logarithmic connection, and sharp depth-one/depth-two fixed-field law from
+  the project-native HT predicate;
+- `completedSquarefreePartition_projectiveReciprocalWardSeam` identifies both the completed
+  squarefree reciprocal chart and completed Möbius transfer with the literal current `Q_sq`;
+- `completedSquarefreePartition_projectiveReciprocalWardObserver` transports every
+  Euler-half-plane connection observer, including the anti-causal Hardy observer;
+- `analyticOrderAt_completedSquarefreePartition_eq_xi_of_strictRightStrip` preserves the complete
+  Xi divisor with multiplicity;
+- `completedSquarefreePartition_projectivePunctureCharge` proves the exact punctured logarithmic
+  residue `-2m` at every strict-right Xi zero;
+- `completedSquarefree_boundaryTraceDensity` identifies the positive boundary trace density with
+  the complete finite-packet Cauchy residue energy.
+
+The new complex analytic logarithmic-residue infrastructure is
+`AnalyticAt.tendsto_sub_mul_logDeriv_of_analyticOrderAt_eq_natCast_complex`. The module is wired into
+`GaloisForLFunctions.RHTower`; no umbrella build was run. Targeted source checking and
+`lake build GaloisForLFunctions.RHTower.ProjectiveReciprocalHorizonWardSeamSaturation` pass. Axiom
+audit of every new declaration reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
 ## Gates
 
 - [x] reciprocal horizon tangent transition computed
@@ -237,6 +263,14 @@ would still be a restatement of the Ward estimate.
 - [x] puncture charge and first-trace corona interpretations matched
 - [x] construct the extended positive Hardy boundary trace directly from the horizon seam
 - [x] identify that trace with `||ell_E||_2^2`
+- [x] exact proved seam theorem formalized unconditionally in Lean
 - [ ] lift the same seam to the source-rigged Pluecker capacity boundary
 - [ ] prove harmonic Hardy projection is nonexpansive from capacity norm
 - [ ] deduce the four-unit bound and RH
+
+## Log
+
+- 2026-08-26 -- Added the dependency-closed reciprocal-horizon saturation capstone, including
+  completed squarefree source identification, arbitrary connection-observer transport, exact Xi
+  divisor order, puncture charge, and positive boundary trace density. Targeted build and axiom
+  audit pass; moved to stage 3.

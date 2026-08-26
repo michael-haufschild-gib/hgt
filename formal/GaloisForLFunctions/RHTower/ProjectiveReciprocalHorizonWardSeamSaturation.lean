@@ -182,7 +182,9 @@ theorem completedSquarefreePartition_projectivePunctureCharge
     RHTower.AnalyticAt.tendsto_sub_mul_logDeriv_of_analyticOrderAt_eq_natCast_complex
       hsource hord
   refine ⟨m, Nat.one_le_iff_ne_zero.mpr hmne, ?_⟩
-  convert tendsto_const_nhds.mul hres using 1 <;> ring
+  convert tendsto_const_nhds.mul hres using 1
+  · funext s
+    ring
 
 end
 
