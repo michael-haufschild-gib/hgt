@@ -55,7 +55,8 @@ def barbanVehovLongSecondLogKernel (L U q r : ℕ) : ℝ :=
   ∑ k ∈ (Finset.Ioc L U).filter (fun k => Nat.lcm q r ∣ k),
     Real.log (((k / q : ℕ) : ℝ)) * Real.log (((k / r : ℕ) : ℝ)) / (k : ℝ)
 
-private theorem sum_barbanVehovWeight_pair_support {M U : ℕ} (hMU : M ≤ U)
+/-- A bilinear Barban--Vehov lcm form only sees the square of the weight support. -/
+theorem sum_barbanVehovWeight_pair_support {M U : ℕ} (hMU : M ≤ U)
     (K : ℕ × ℕ → ℝ) :
     (∑ p ∈ (Finset.Icc 1 U) ×ˢ (Finset.Icc 1 U),
       barbanVehovWeight M p.1 * barbanVehovWeight M p.2 * K p) =
@@ -247,4 +248,3 @@ end
 
 
 end RHTower.Sieve
-

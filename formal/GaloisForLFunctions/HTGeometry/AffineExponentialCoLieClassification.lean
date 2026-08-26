@@ -225,6 +225,7 @@ omit [CharZero k] in
       (B := AdditiveQuotient k I)) x
   simpa using h
 
+omit [CharZero k] in
 theorem coLieProdEquiv_mixedProjection (tor add : Fin n → k) :
     coLieProdEquiv
         (mixedProjectionCoLieMap k I (mixedCoLieVector k tor add)) =
@@ -263,7 +264,8 @@ theorem coLieProdEquiv_mixedProjection (tor add : Fin n → k) :
     convert hmap.symm using 1 <;>
       simp only [LinearMap.comp_apply, map_sum, map_smul] <;> rfl
 
-/-- Exact kernel of the factorwise mixed projection on logarithmic/additive directions. -/
+/- Exact kernel of the factorwise mixed projection on logarithmic/additive directions. -/
+omit [CharZero k] in
 theorem coLieMap_mixedProjection_eq_zero_iff (tor add : Fin n → k) :
     mixedProjectionCoLieMap k I (mixedCoLieVector k tor add) = 0 ↔
       tor ∈ latticeSpan k (torusRelationLattice k I) ∧
@@ -294,7 +296,7 @@ theorem coLieMap_mixedProjection_eq_zero_iff (tor add : Fin n → k) :
     rw [haq, map_zero]
     rfl
 
-/-- Exact invariant-differential kernel for an arbitrary mixed affine-exponential Hopf quotient. -/
+/- Exact invariant-differential kernel for an arbitrary mixed affine-exponential Hopf quotient. -/
 set_option maxHeartbeats 800000 in
 theorem coLieMap_subgroupQuotient_eq_zero_iff (tor add : Fin n → k) :
     subgroupQuotientCoLieMap k I (mixedCoLieVector k tor add) = 0 ↔

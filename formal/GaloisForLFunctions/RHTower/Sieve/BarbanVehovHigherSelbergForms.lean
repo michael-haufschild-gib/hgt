@@ -21,6 +21,21 @@ def barbanVehovSelbergQuadraticLogDiagonal (N : ℕ) : ℝ :=
         Real.log ((N : ℝ) / (p.2 : ℝ))) /
       (Nat.lcm p.1 p.2 : ℝ)
 
+/-- Symmetry moves the single complementary logarithm from the right divisor to the left. -/
+theorem barbanVehovSelbergMixedDiagonal_left_eq (N : ℕ) :
+    (∑ p ∈ (Finset.Icc 1 N) ×ˢ (Finset.Icc 1 N),
+      barbanVehovWeight N p.1 * barbanVehovWeight N p.2 *
+        Real.log ((N : ℝ) / (p.1 : ℝ)) / (Nat.lcm p.1 p.2 : ℝ)) =
+      barbanVehovSelbergMixedDiagonal N := by
+  rw [barbanVehovSelbergMixedDiagonal, Finset.sum_product, Finset.sum_product,
+    Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro q hq
+  apply Finset.sum_congr rfl
+  intro r hr
+  rw [Nat.lcm_comm]
+  ring
+
 theorem barbanVehovSelbergMixedDiagonal_eq_originalLogOneTwo (N : ℕ) :
     barbanVehovSelbergMixedDiagonal N = selbergOriginalLogOneTwo N := by
   rw [barbanVehovSelbergMixedDiagonal, Finset.sum_product,

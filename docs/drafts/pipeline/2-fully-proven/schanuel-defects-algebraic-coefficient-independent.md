@@ -754,3 +754,266 @@ This closes same-field point-subgroup closure and its exact Hopf ideal.  Card re
 translated `Q̄`-locus generation still needs coefficient-field/base-change descent from complex
 points to the `Q̄` Hopf ideal, followed by invariant Kähler-differential restriction and the
 already-isolated character-lattice/Baker assembly.
+
+## Exact mixed invariant-differential kernel formalized (2026-08-26)
+
+Fresh corpus research recovered the existing mixed quotient maps, tensor presentation, factor
+classification, co-Lie/Kähler comparison, and product co-Lie equivalence.  It found no theorem
+identifying the joint co-Lie kernel of the actual subgroup quotient.  The added layer therefore
+reuses those declarations and supplies only the missing factorwise separation and assembly.
+
+`GroupAlgebraPointDerivation.lean` constructs point derivations of a group algebra from additive
+weights.  `TorusCharacterCoLie.lean` uses them to prove that the kernel of the logarithmic
+differential map for `k[ℤⁿ/L]` is exactly the `k`-linear span of the integral subgroup `L`, including
+when `ℤⁿ/L` has torsion.  `SymmetricAlgebraCoLie.lean` proves that degree-one generators inject into
+the co-Lie module of a symmetric algebra.  Finally,
+`AffineExponentialCoLieClassification.lean` combines these results with the already-proved exact
+mixed tensor presentation to establish
+
+```text
+coLieMap_subgroupQuotient_eq_zero_iff
+```
+
+for every characteristic-zero field and every Hopf ideal in the mixed coordinate algebra.  A
+mixed logarithmic/additive direction vanishes in the subgroup quotient if and only if its torus
+part belongs to the field-linear span of the actual integral character relations and its additive
+part belongs to the actual additive relation subspace.  No connectedness, saturation,
+algebraic-closedness, or extra theorem premise is used.
+
+Direct source check and targeted leaf build pass.  Endpoint axiom audits report only
+`[propext, Classical.choice, Quot.sound]`; the leaves are wired into `HTGeometry` without building
+the umbrella.  This removes the previously stated need for coefficient-field descent in the
+differential-to-lattice step: the theorem may be applied over `ℂ` to the same-field Hopf closure.
+Card remains Stage 2 because one bridge is still open: prove that the numerical Kähler relation on
+the translated exponential locus induces the corresponding zero co-Lie class for its Hopf
+vanishing ideal, then complete the already-formalized character-lattice/Baker contradiction.
+
+## Lattice descent and Baker endgame formalized (2026-08-26)
+
+Corpus research found the existing square-family scalar-extension lemma and unconditional Baker
+capstone, but not the non-square span descent or the exact mixed-lattice assembly required here.
+Four small leaves close that arithmetic endgame without duplicating either component.
+
+`LinearSpanBaseChange.lean` proves scalar-extension independence and span-membership reflection for
+an arbitrary finite independent family in a finite coordinate space.  `IntegralLatticeBasis.lean`
+extracts, from any finite packet of integral characters, a `ℤ`-basis made of actual integral
+vectors whose rational coordinate vectors are linearly independent.  `LatticeSpanFinite.lean`
+proves finite witness and independent-basis forms of membership in `latticeSpan`.
+
+`RHTower/SchanuelLatticeBakerAssembly.lean` then proves
+
+```text
+algebraic_coefficients_eq_zero_of_latticeSpan
+```
+
+Given a rationally independent complex tuple `x`, an integral relation lattice `L`, and an
+algebraic coefficient vector `c`, if `c` lies in the complex span of `L`, every exponential
+character indexed by `L` is algebraic, and `c·x` is algebraic, then `c = 0`.  Span membership first
+descends from `ℂ` to `Q̄`; an independent integral basis turns its characters into rationally
+independent logarithms of algebraic numbers; the existing unconditional Baker theorem rules out
+the resulting nonzero algebraic linear form.
+
+All four direct checks and targeted leaf builds pass.  Endpoint axiom audits report only
+`[propext, Classical.choice, Quot.sound]`; imports are wired into `HTGeometry` and `RHTower`
+without building either umbrella.  Thus character-lattice descent and Baker contradiction are no
+longer part of the frontier.  Card remains Stage 2 solely at the geometric differential bridge:
+transport the assumed numerical Kähler relation to the co-Lie kernel of the Hopf vanishing ideal
+of the translated algebraic locus and derive its algebraic character/additive coset values.
+
+## Exact subgroup-coset relation values formalized (2026-08-26)
+
+Fresh corpus research found the existing mixed point evaluation, Hopf zero-locus, torus-relation,
+and additive-relation APIs, but no theorem transporting those relations between two points in the
+same subgroup coset.  `AffineExponentialCosetRelations.lean` supplies precisely that missing glue.
+
+For an arbitrary field, Hopf ideal `I`, and points `p,q` with `p * q⁻¹ ∈ zeroLocus I`, it proves:
+
+```text
+additiveLinearEval_eq_of_div_mem_zeroLocus
+torusCharacter_eq_of_div_mem_zeroLocus
+```
+
+Every vector in the actual additive relation subspace has equal linear value at `p` and `q`, and
+every character in the actual integral torus relation lattice has equal character value at `p`
+and `q`.  These are direct consequences of membership in `I`; no connectedness, saturation,
+algebraic-closedness, characteristic-zero, or auxiliary theorem premise is introduced.
+
+Direct source check and targeted leaf build pass.  Endpoint axiom audits report only
+`[propext, Classical.choice, Quot.sound]`; the leaf is wired into `HTGeometry` without building the
+umbrella.  The card remains Stage 2 at the numerical Kähler-to-co-Lie transport.  Once that bridge
+places the coefficient direction in the already-classified mixed kernel, these coset identities
+supply the algebraic character and additive values consumed by the formalized Baker endgame.
+
+## Algebraic-coset co-Lie-to-Baker assembly formalized (2026-08-26)
+
+Fresh corpus research found no theorem joining coordinatewise algebraicity of a coset
+representative to the existing relation spaces and Baker endpoint.  The new
+`RHTower/SchanuelAlgebraicCosetBaker.lean` leaf supplies that exact assembly and reuses every
+previous layer.
+
+Its endpoint
+
+```text
+algebraic_coefficients_eq_zero_of_algebraic_coset_coLie
+```
+
+takes the actual exponential point `p=(x,exp x)`, a coordinatewise algebraic point `q`, membership
+`p*q⁻¹` in the actual Hopf-ideal zero locus, and vanishing of the invariant direction
+`(c,-c)` under the actual subgroup-quotient co-Lie map.  It concludes `c=0`.  The proof uses the
+exact co-Lie kernel classification to obtain the torus lattice and additive subspace memberships,
+the exact coset-value identities to make all characters and the additive form algebraic, and the
+already-formalized unconditional Baker assembly to force vanishing.  Auxiliary lemmas prove
+algebraicity of finite additive-linear values and Laurent characters of coordinatewise algebraic
+points; no connectedness or saturation premise is introduced.
+
+Direct source check and targeted leaf build pass.  All six new declarations audit to only
+`[propext, Classical.choice, Quot.sound]`; the leaf is wired into `RHTower` without an umbrella
+build.  The arithmetic, relation-classification, and coset stages are therefore closed.  Card
+remains Stage 2 only at the geometric locus step: construct the algebraic coset representative and
+prove that the numerical Kähler relation maps to zero in this subgroup quotient's co-Lie module.
+
+## Exact algebraic locus point formalized (2026-08-26)
+
+Corpus research recovered weak Nullstellensatz, mixed finite-type, and algebra-map point
+representation, but no theorem applying them to the concrete `Q̄`-locus of a mixed complex point.
+Two new leaves close that part of the geometric step.
+
+`AlgebraicClosureAlgClosed.lean` proves that the relative algebraic closure of a field inside an
+algebraically closed extension is itself algebraically closed.  Applied to
+`algebraicClosure ℚ ℂ`, this makes the project's concrete algebraic-number field eligible for weak
+Nullstellensatz without replacing it by an abstract closure.
+
+`AffineExponentialAlgebraicLocusPoint.lean` defines the exact ideal
+
+```text
+algebraicLocusIdeal p = ker (eval over algebraicClosure ℚ ℂ at p)
+```
+
+and proves `exists_algebraic_locus_point`: every mixed complex point `p` has a point `q` with
+coordinatewise algebraic additive and torus coordinates such that every `Q̄`-regular function
+vanishing at `p` also vanishes at `q`.  The proof takes the finite-type quotient by that exact
+kernel, applies weak Nullstellensatz over the concrete algebraic numbers, and reconstructs the
+resulting algebra map as a genuine mixed point.
+
+Both direct checks and targeted leaf builds pass.  All three new declarations audit to only
+`[propext, Classical.choice, Quot.sound]`; both leaves are wired into `HTGeometry` without building
+the umbrella.  Algebraic coset-point existence is no longer open.  Card remains Stage 2 only at
+Kähler transport: propagate the locus differential relation through translated subgroup
+generation and identify its zero class in the subgroup quotient co-Lie module.
+
+## Translated locus subgroup and Hopf ideal formalized (2026-08-26)
+
+Fresh corpus research found the general point-subgroup vanishing-ideal closure, but no construction
+specialized to the exact algebraic-number locus and its algebraic translate.  The new
+`AffineExponentialAlgebraicLocusSubgroup.lean` leaf defines the exact complex point locus, its
+translate by `q⁻¹`, the subgroup generated by that translate, and the vanishing ideal of the
+generated subgroup.
+
+That vanishing ideal is an actual Hopf ideal by the existing point-subgroup closure theorem.  The
+leaf proves that every translated locus point belongs to its zero locus and packages the preceding
+Nullstellensatz result as
+
+```text
+exists_algebraic_coset_subgroup
+```
+
+which supplies a coordinatewise algebraic `q`, certifies that `q` lies on the exact `Q̄`-locus of
+`p`, and proves `p*q⁻¹` lies in the zero locus of this actual subgroup Hopf ideal.  No finite-product
+stabilization, connectedness, or saturation premise is assumed.
+
+Direct source check and targeted leaf build pass.  All six theorem/instance declarations audit to
+only `[propext, Classical.choice, Quot.sound]`; the leaf is wired into `HTGeometry` without an
+umbrella build.  Thus algebraic representative, translated subgroup, Hopf ideal, and coset
+membership are closed.  Card remains Stage 2 solely at one exact bridge: show the original
+numerical Kähler relation induces zero of `(c,-c)` in this generated subgroup quotient's co-Lie
+module.
+
+## Exact invariant Kähler/co-Lie comparison formalized (2026-08-26)
+
+Corpus research found general Kähler functoriality and the co-Lie-as-identity-cotangent theorem,
+but no mixed invariant one-form or its point-evaluation formula.  The new
+`AffineExponentialInvariantKaehler.lean` leaf defines the actual regular invariant form with torus
+logarithmic coefficients `tor` and additive coefficients `add`.
+
+It constructs pullback of Kähler differentials along the actual mixed-point evaluation map and
+proves both comparison identities:
+
+```text
+kaehlerToCoLie_mixedInvariantKaehlerVector
+pointKaehlerMap_mixedInvariantKaehlerVector
+```
+
+Identity pullback is exactly `mixedCoLieVector tor add`; point pullback is exactly the finite sum
+of `tor_i * y_i⁻¹ dy_i` and `add_i * dx_i`.  In particular the card's coefficient direction is
+literally `(c,-c)`, with no proxy class or provider hypothesis.
+
+Direct source check and targeted leaf build pass.  All six new declarations audit to only
+`[propext, Classical.choice, Quot.sound]`; the leaf is wired into `HTGeometry` without an umbrella
+build.  Remaining Stage-2 gate is now only propagation: from zero point pullback on the exact
+`Q̄`-locus, prove zero identity pullback after subgroup generation.  Every object on both sides of
+that statement is now concrete and formalized.
+
+## Numerical Schanuel relation identified with invariant pullback (2026-08-26)
+
+Fresh corpus research reused the existing complex-exponential unit map; no mixed exponential point
+or exact Schanuel pullback theorem existed.  `RHTower/SchanuelInvariantKaehlerForm.lean` defines the
+genuine mixed point `schanuelExponentialPoint x = (x, exp x)` and proves
+
+```text
+pointKaehlerMap_schanuelInvariantVector
+pointKaehlerMap_schanuelInvariantVector_eq_zero_of_relation
+```
+
+Pulling the invariant form with direction `(c,-c)` back along this point is definitionally the
+finite sum `∑ c_i • schanuelDefect(x_i)`.  Consequently the card's assumed numerical relation gives
+zero pullback of the exact regular invariant form, with no change of coefficient field or
+derivation surrogate.
+
+Direct source check and targeted leaf build pass.  All six new declarations audit to only
+`[propext, Classical.choice, Quot.sound]`; the leaf is wired into `RHTower` without an umbrella
+build.  Remaining Stage-2 gate is exactly one theorem: zero of this invariant pullback on the
+exact algebraic locus propagates to zero in the co-Lie module of the subgroup generated by its
+algebraic translate.
+
+## Principal-open algebraic locus point formalized (2026-08-26)
+
+The Kähler relation may first become a regular identity only after clearing a nonzero denominator,
+so an arbitrary algebraic locus point is insufficient.  Corpus search recovered the existing
+finite-type domain specialization theorem.  The new
+`AffineExponentialAlgebraicLocusOpenPoint.lean` applies it to the prime kernel of mixed evaluation
+and proves `exists_algebraic_locus_point_avoiding`.
+
+For every `Q̄`-regular function `g` nonzero at `p`, the theorem chooses a coordinatewise algebraic
+point `q` on the exact locus of `p` with `g(q) ≠ 0`.  Thus the eventual denominator-clearing step
+can choose `q` inside the required smooth/principal open rather than silently specializing onto a
+bad closed subset.
+
+Direct source check and targeted leaf build pass.  The new theorem audits to only
+`[propext, Classical.choice, Quot.sound]`; the leaf is wired into `HTGeometry` without an umbrella
+build.  Remaining propagation theorem may now use an algebraic translate inside any explicitly
+produced nonempty principal open.  The subgroup leaf now packages this directly as
+`exists_algebraic_coset_subgroup_avoiding`; its targeted rebuild passes and the new endpoint has
+the same standard axiom audit.
+
+## Characteristic-zero field-tower Kähler injectivity formalized (2026-08-26)
+
+Fresh corpus research found the existing ambient theorem
+`algebraicIndependent_iff_kaehlerD_linearIndependent`, the transcendence-basis Kähler basis, and
+the generic basis-map injectivity lemma, but no assembled theorem for an arbitrary field tower.
+The new `KaehlerFieldTowerInjective.lean` leaf proves
+
+```text
+kaehlerMap_injective_of_fieldTower
+```
+
+for every characteristic-zero field tower `K → F → L`.  It chooses a transcendence basis of
+`F/K`, reuses formal étaleness of the remaining separable algebraic extension to obtain a basis of
+`Ω[F/K]`, and invokes the existing ambient Kähler-independence theorem to show that this basis stays
+independent in `Ω[L/K]`.  This closes the function-field-to-complex injectivity needed to descend a
+zero complex pullback to the generic algebraic-locus differential; no finite-generation premise or
+new independence argument is introduced.
+
+Direct source check and targeted leaf build pass.  The sole new declaration audits to only
+`[propext, Classical.choice, Quot.sound]`; the leaf is wired into `HTGeometry` without an umbrella
+build.  Remaining Stage-2 gate is denominator clearing followed by translation/subgroup
+propagation of the resulting regular invariant differential identity.

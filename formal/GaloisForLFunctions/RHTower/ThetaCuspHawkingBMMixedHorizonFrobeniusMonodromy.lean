@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCausalChannelEvaluation
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingTotalThirdOrderCausalCut
+import GaloisForLFunctions.RHTower.ThetaCuspHawkingTopologicalBlackHoleQNMIncidence
 
 /-!
 # Birmingham--Mokhtari mixed-horizon Frobenius monodromy
@@ -60,6 +61,14 @@ theorem d4HypergeometricResonantFrobeniusLogCoefficient_terminalBalance
     exact_mod_cast Nat.succ_ne_zero N
   field_simp
 
+/-- The resonant logarithmic coefficient is symmetric in the two hypergeometric exponents. -/
+theorem d4HypergeometricResonantFrobeniusLogCoefficient_comm
+    (N : ℕ) (a b : ℂ) :
+    d4HypergeometricResonantFrobeniusLogCoefficient N a b =
+      d4HypergeometricResonantFrobeniusLogCoefficient N b a := by
+  unfold d4HypergeometricResonantFrobeniusLogCoefficient
+  ring
+
 private theorem d4AscPochhammer_eval_conj (N : ℕ) (z : ℂ) :
     (ascPochhammer ℂ N).eval (starRingEnd ℂ z) =
       starRingEnd ℂ ((ascPochhammer ℂ N).eval z) := by
@@ -72,6 +81,130 @@ private theorem d4AscPochhammer_eval_conj (N : ℕ) (z : ℂ) :
 /-- Even Frobenius collision order of the mixed BM horizon channel. -/
 def d4BMMixedHorizonFrobeniusOrder (n k : ℕ) : ℕ :=
   2 * n + 2 * k + 2
+
+/-- Plus connection exponent at complex analytically continued BM momentum. -/
+def d4BMMixedHorizonComplexA (n k : ℕ) (chi : ℂ) : ℂ :=
+  d4BMCausalRadialA (d4BMCausalPlusMinusFrequency n k chi) chi
+
+/-- Minus connection exponent at complex analytically continued BM momentum. -/
+def d4BMMixedHorizonComplexB (n k : ℕ) (chi : ℂ) : ℂ :=
+  d4BMCausalRadialB (d4BMCausalPlusMinusFrequency n k chi) chi
+
+/-- Complex-momentum continuation of the oriented mixed-horizon logarithmic monodromy. -/
+def d4BMMixedHorizonComplexMonodromyJump
+    (n k : ℕ) (chi : ℂ) : ℂ :=
+  (2 * Real.pi * Complex.I) *
+    d4HypergeometricResonantFrobeniusLogCoefficient
+      (d4BMMixedHorizonFrobeniusOrder n k)
+      (d4BMMixedHorizonComplexA n k chi)
+      (d4BMMixedHorizonComplexB n k chi)
+
+private theorem d4BMMixedHorizonComplexA_ascPochhammer_ne_zero
+    (n k : ℕ) (chi : ℂ) (hchi : chi.re ≠ 0) :
+    (ascPochhammer ℂ (d4BMMixedHorizonFrobeniusOrder n k + 1)).eval
+        (d4BMMixedHorizonComplexA n k chi) ≠ 0 := by
+  rw [ne_eq, ascPochhammer_eval_eq_zero_iff]
+  push Not
+  intro j hj hja
+  have him := congrArg Complex.im hja
+  rw [d4BMMixedHorizonComplexA, d4BMCausalRadialA_plusMinus] at him
+  simp [Complex.mul_im] at him
+  exact hchi (by linarith)
+
+private theorem d4BMMixedHorizonComplexB_ascPochhammer_ne_zero
+    (n k : ℕ) (chi : ℂ) (hchi : chi.re ≠ 0) :
+    (ascPochhammer ℂ (d4BMMixedHorizonFrobeniusOrder n k + 1)).eval
+        (d4BMMixedHorizonComplexB n k chi) ≠ 0 := by
+  rw [ne_eq, ascPochhammer_eval_eq_zero_iff]
+  push Not
+  intro j hj hjb
+  have him := congrArg Complex.im hjb
+  rw [d4BMMixedHorizonComplexB, d4BMCausalRadialB_plusMinus] at him
+  simp [Complex.mul_im] at him
+  exact hchi (by linarith)
+
+/-- Complex BM mixed-horizon monodromy is nonzero throughout `Re chi ≠ 0`. -/
+theorem d4BMMixedHorizonComplexMonodromyJump_ne_zero
+    (n k : ℕ) (chi : ℂ) (hchi : chi.re ≠ 0) :
+    d4BMMixedHorizonComplexMonodromyJump n k chi ≠ 0 := by
+  unfold d4BMMixedHorizonComplexMonodromyJump
+    d4HypergeometricResonantFrobeniusLogCoefficient
+  have hpi : (Real.pi : ℂ) ≠ 0 := by
+    exact_mod_cast Real.pi_ne_zero
+  have hfacN :
+      ((d4BMMixedHorizonFrobeniusOrder n k).factorial : ℂ) ≠ 0 := by
+    exact_mod_cast Nat.factorial_ne_zero (d4BMMixedHorizonFrobeniusOrder n k)
+  have hfacN1 :
+      ((d4BMMixedHorizonFrobeniusOrder n k + 1).factorial : ℂ) ≠ 0 := by
+    exact_mod_cast Nat.factorial_ne_zero (d4BMMixedHorizonFrobeniusOrder n k + 1)
+  apply mul_ne_zero
+  · exact mul_ne_zero (mul_ne_zero (by norm_num) hpi) Complex.I_ne_zero
+  · apply div_ne_zero
+    · exact mul_ne_zero
+        (mul_ne_zero (pow_ne_zero _ (by norm_num))
+          (d4BMMixedHorizonComplexA_ascPochhammer_ne_zero n k chi hchi))
+        (d4BMMixedHorizonComplexB_ascPochhammer_ne_zero n k chi hchi)
+    · exact mul_ne_zero hfacN hfacN1
+
+/-- Negating BM momentum exchanges the two connection exponents. -/
+theorem d4BMMixedHorizonComplexA_neg
+    (n k : ℕ) (chi : ℂ) :
+    d4BMMixedHorizonComplexA n k (-chi) =
+      d4BMMixedHorizonComplexB n k chi := by
+  rw [d4BMMixedHorizonComplexA, d4BMMixedHorizonComplexB,
+    d4BMCausalRadialA_plusMinus, d4BMCausalRadialB_plusMinus]
+  ring
+
+/-- The second connection exponent is exchanged in the opposite direction. -/
+theorem d4BMMixedHorizonComplexB_neg
+    (n k : ℕ) (chi : ℂ) :
+    d4BMMixedHorizonComplexB n k (-chi) =
+      d4BMMixedHorizonComplexA n k chi := by
+  rw [d4BMMixedHorizonComplexA, d4BMMixedHorizonComplexB,
+    d4BMCausalRadialA_plusMinus, d4BMCausalRadialB_plusMinus]
+  ring
+
+/-- Radial Frobenius monodromy is branch-shadow even. -/
+theorem d4BMMixedHorizonComplexMonodromyJump_neg
+    (n k : ℕ) (chi : ℂ) :
+    d4BMMixedHorizonComplexMonodromyJump n k (-chi) =
+      d4BMMixedHorizonComplexMonodromyJump n k chi := by
+  rw [d4BMMixedHorizonComplexMonodromyJump,
+    d4BMMixedHorizonComplexMonodromyJump,
+    d4BMMixedHorizonComplexA_neg, d4BMMixedHorizonComplexB_neg,
+    d4HypergeometricResonantFrobeniusLogCoefficient_comm]
+
+/-- Actual analytically continued BM angular momentum carried by an Xi divisor. -/
+def d4BMXiMixedHorizonAngularMomentum (q : XiZeroCopy) : ℂ :=
+  thetaCuspHawkingTopologicalBlackHoleAngularMomentum (xiSpectralPoint q)
+
+/-- Real momentum component is half the nonzero Xi height. -/
+theorem d4BMXiMixedHorizonAngularMomentum_re
+    (q : XiZeroCopy) :
+    (d4BMXiMixedHorizonAngularMomentum q).re = (q.1 : ℂ).im / 2 := by
+  simp [d4BMXiMixedHorizonAngularMomentum,
+    thetaCuspHawkingTopologicalBlackHoleAngularMomentum,
+    xiSpectralPoint, Complex.mul_re]
+
+/-- Every actual Xi divisor lies in the nonvanishing complex-monodromy region. -/
+theorem d4BMXiMixedHorizonAngularMomentum_re_ne_zero
+    (q : XiZeroCopy) :
+    (d4BMXiMixedHorizonAngularMomentum q).re ≠ 0 := by
+  rw [d4BMXiMixedHorizonAngularMomentum_re]
+  exact div_ne_zero (xi_divisor_support_im_ne_zero q.1) (by norm_num)
+
+/-- Complex BM mixed-horizon monodromy evaluated on an actual Xi fibre. -/
+def d4BMXiMixedHorizonComplexMonodromyJump
+    (n k : ℕ) (q : XiZeroCopy) : ℂ :=
+  d4BMMixedHorizonComplexMonodromyJump
+    n k (d4BMXiMixedHorizonAngularMomentum q)
+
+/-- Actual Xi-fibre mixed-horizon monodromy never vanishes. -/
+theorem d4BMXiMixedHorizonComplexMonodromyJump_ne_zero
+    (n k : ℕ) (q : XiZeroCopy) :
+    d4BMXiMixedHorizonComplexMonodromyJump n k q ≠ 0 := by
+  exact d4BMMixedHorizonComplexMonodromyJump_ne_zero n k _
+    (d4BMXiMixedHorizonAngularMomentum_re_ne_zero q)
 
 /-- Plus connection exponent of the physical real-angular-momentum mixed channel. -/
 def d4BMMixedHorizonA (n k : ℕ) (chi : ℝ) : ℂ :=

@@ -1,7 +1,7 @@
 # Fixed intrinsic HT dimension supports arbitrary derived source-coherence depth
 
 - **ID:** `fixed-analytic-dimension-arbitrary-source-coherence`
-- **Stage:** 2-fully-proven / Lean combinatorial core complete
+- **Stage:** 3-formalized
 - **Type:** THEOREM / ARCHITECTURAL NO-GO / POSITIVE REALIZATION LAW
 - **Scientific status:** `[PROVED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH RESULT]`
 - **Parents:**
@@ -147,3 +147,31 @@ structure field may be used to assume it.
 - [x] anti-theatre downgrade recorded
 - [x] unconditional Lean combinatorial core
 - [ ] general Lean Hochster chain equivalence
+
+## Lean formalization
+
+- **Module:**
+  `formal/GaloisForLFunctions/HTGeometry/FixedAnalyticDimensionArbitrarySourceCoherence.lean`
+- **Closed capstone:** `fixedAnalyticDimensionArbitrarySourceCoherence_unconditional`.
+- **Package:** `FixedAnalyticDimensionArbitrarySourceCoherencePackage m`.
+- **Uniform analytic dimension:** `uniformDimensionGap` is supplied by
+  `boundaryWedge_uniformHTDimensionGap`; it includes the dimension-two realization and the proofs
+  that dimensions zero and one cannot realize the nondegenerate wedge.
+- **Arbitrary depth:** the package constructs `r=2`, `s=m-1` for every `m>=3` and proves
+  `boundaryWedgeSourceCoherenceDepth r s = m`.
+- **Exact declared combinatorial boundary:** package fields certify the deleted-centre face
+  classification, all same-block faces, absence of every mixed edge, local constancy of the block
+  label on each face, and global nonconstancy across the two nonempty blocks.
+- **No assumed Hochster theorem:** the package contains no axiom or structure field asserting a
+  general Hochster chain equivalence.  That larger reusable parent remains the unchecked gate
+  above, exactly as required by this card's Lean boundary.
+- **Verification:** source check and targeted
+  `lake build GaloisForLFunctions.HTGeometry.FixedAnalyticDimensionArbitrarySourceCoherence` pass.
+  `#print axioms fixedAnalyticDimensionArbitrarySourceCoherence_unconditional` reports only
+  `propext`, `Classical.choice`, and `Quot.sound`.
+
+## Formalization log
+
+- 2026-08-26 - Assembled exact dimension-two parent theorem and all four unconditional
+  deleted-centre combinatorial clauses into a closed arbitrary-depth package; wired module into
+  HTGeometry umbrella and promoted card to stage 3.

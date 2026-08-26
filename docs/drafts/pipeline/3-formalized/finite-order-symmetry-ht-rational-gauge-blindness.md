@@ -1,7 +1,7 @@
 # Finite-order symmetry-caged HT rational-gauge blindness
 
 - **ID:** `finite-order-symmetry-ht-rational-gauge-blindness`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) — `[PROVED HERE] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Lane:** general hypertranscendence; finite order; scalar symmetry; divisor blindness
 - **Statement:** There are two finite-order entire HT functions with the same complete
@@ -149,16 +149,16 @@ Primary sources:
 
 ## Lean status
 
-No complete Lean claim is made.  `FiniteHermiteCRT.lean` formalizes the finite equivariant
-interpolation component, but the analytic gamma carrier, its exact order and divisor, and the
-Hardouin--Singer hypertranscendence import are not formalized.  The card therefore cannot enter
-stage 3.
+Fully formalized unconditionally.  The reflected-Gamma carrier, exact entire order one,
+critical-line divisor law, Hardouin--Singer hypertranscendence bridge, arbitrary finite symmetric
+passport gauge, literal all-translate/all-derivative field equality, logarithmic characteristic
+equivalence, and exact bounded zero-count correction are all dependency-closed Lean theorems.
 
 ## Gates
 
 - [x] 0 -> 1: carrier and exact open core isolated
 - [x] 1 -> 2: complete unconditional paper proof
-- [ ] 2 -> 3: complete unconditional claim formalized in Lean
+- [x] 2 -> 3: complete unconditional claim formalized in Lean
 - [ ] 3 -> 4: publication-ready preprint
 
 ## Log
@@ -168,3 +168,30 @@ stage 3.
 - 2026-07-11 -- Inserted an off-line orbit by a passport-flat symmetric polynomial.  The complete
   differential-translation field stays exactly equal, and coarse growth changes only by a rational
   `O(log r)` term.
+
+## Lean formalization
+
+- **Module:**
+  `formal/GaloisForLFunctions/RHTower/FiniteOrderSymmetryHTRationalGaugeBlindness.lean`
+- **Closed capstone:** `finiteOrderSymmetryHTRationalGaugeBlindness_unconditional`.
+- **Complete package:** `FiniteOrderSymmetryHTRationalGaugePackage A nu (1/4)` certifies both exact
+  order-one entire HT functions, both scalar symmetries, every requested finite analytic jet,
+  critical-line versus off-line divisor separation, and literal equality of fields generated over
+  `ℂ(s)` by every derivative of every complex translate.
+- **Stronger passport construction:** `finiteSymmetryGauge` symmetry-closes arbitrary finite
+  `A` internally, so no external `G`-invariance premise is required.  It is normalized at `1/2`,
+  flat to order `nu(a)` at each `a`, and has an explicitly certified real off-line zero.
+- **Quantitative coarse blindness:** `characteristicLogEquivalent_mul_polynomial` gives the full
+  two-sided `O(log r)` characteristic estimate.  `zeroCount_mul_eq_add` and
+  `zeroCount_polynomial_le_natDegree` give the exact zero-count correction and uniform degree bound.
+- **Verification:** source check and targeted
+  `lake build GaloisForLFunctions.RHTower.FiniteOrderSymmetryHTRationalGaugeBlindness` pass.
+  `#print axioms finiteOrderSymmetryHTRationalGaugeBlindness_unconditional` reports only
+  `propext`, `Classical.choice`, and `Quot.sound`.
+
+## Formalization log
+
+- 2026-08-26 -- Added reusable polynomial-gauge Nevanlinna and divisor-count infrastructure;
+  constructed arbitrary finite symmetric flat gauges with explicit off-line zeros; proved analytic
+  passport equality, exact order one, HT preservation, literal complete translated-jet field
+  equality, and quantitative coarse-data blindness; wired both modules and promoted card to stage 3.

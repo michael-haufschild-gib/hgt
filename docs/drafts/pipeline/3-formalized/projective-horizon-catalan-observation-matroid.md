@@ -1,7 +1,7 @@
 # Catalan observation matroid of reciprocal finite jets
 
 - **ID:** projective-horizon-catalan-observation-matroid
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Classification:** `[PROVED HERE] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Source:** source-pure unit-jet constraint `X(t)Y(t)=1 mod t^(N+1)`
@@ -189,3 +189,33 @@ remaining source-pure.
 The targeted Lean core should certify the differential Toeplitz law, the prefix-dominance law, and
 the Dyck expansion.  Formalizing the entire existing theory of skew Schur polynomials or algebraic
 matroids solely to restate the parent collision is not warranted.
+
+## Lean formalization
+
+- **Module:** `formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonCatalanObservationMatroid.lean`
+- **Closed capstone:** `projectiveHorizonCatalanObservationMatroid_unconditional`.
+- **Differential Toeplitz law:** inherited from `arbitraryReciprocalJacobian_apply` and
+  `arbitraryReciprocalJacobian_eq_neg_toeplitz` in
+  `ProjectiveHorizonObservationMatroid`.
+- **Exact prefix law:** `indexedObservation_componentwise_iff_prefixCount` proves both directions
+  for the strictly increasing enumerations stipulated by the card; the equivalent height form is
+  `indexedObservation_componentwise_iff_height_nonnegative`.
+- **Dyck expansion:** `reciprocalObservationWordEquivDyckWord n` is the explicit bijection between
+  length-`n` nonnegative balanced two-coloured observation words and Dyck words of semilength
+  `n+1`.  Its encoder emits `UU`, `DD`, `DU`, and `UD` for the four local states and adds the forced
+  initial `U` and terminal `D`; its decoder and both inverse laws are proved.
+- **Catalan count:** `card_reciprocalObservationWord_length_eq_catalan n` proves the exact value
+  `catalan (n+1)`, hence `Cat_(N+2)` for the card's `n=N+1` resolutions.
+- **Boundary fidelity:** no skew-Schur or abstract algebraic-matroid surrogate was introduced; those
+  parent-theory restatements are explicitly outside the card's stated Lean boundary.
+- **Verification:** `lake env lean
+  GaloisForLFunctions/HTGeometry/ProjectiveHorizonCatalanObservationMatroid.lean` and targeted
+  `lake build GaloisForLFunctions.HTGeometry.ProjectiveHorizonCatalanObservationMatroid` pass.
+  `#print axioms projectiveHorizonCatalanObservationMatroid_unconditional` reports only
+  `propext`, `Classical.choice`, and `Quot.sound`.
+
+## Log
+
+- 2026-08-26 - Added ordered-prefix converse, exact latent-height equivalence, explicit
+  two-coloured-Motzkin/Dyck encoding and decoding, inverse laws, and Catalan cardinality; wired the
+  module into the HTGeometry umbrella and promoted the card to stage 3.

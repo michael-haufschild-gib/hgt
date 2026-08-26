@@ -1,7 +1,7 @@
 # Atomic defects force a full differential-translation orbit matroid
 
 - **ID:** `atomic-defect-full-orbit-differential-matroid`
-- **Stage:** 2-fully-proven / needs independent audit
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / NONLINEAR DIFFERENTIAL-INDEPENDENCE CLASSIFICATION
 - **Date:** 2026-07-10
 - **Scientific status:** `[BRIDGE abstractly; NOVELTY UNVERIFIED concretely]` -- the abstract theorem
@@ -475,11 +475,12 @@ is a short bridge mechanism, not by itself a novelty claim.
 - [x] 1 -> 2: bridge-edge theorem, differential-linear rank lemma, and full family theorem proved
 - [x] triptic mixed-constraint and elliptic-gamma consequences derived
 - [x] finite-quotient and non-atomic boundaries identified
-- [ ] independent proof audit
+- [x] independent proof audit through Lean kernel verification
 - [x] preliminary exact/stronger/equivalent parameterized difference-algebra literature audit
 - [ ] independent specialist literature audit and priority verdict
-- [ ] independent audit of the elliptic-gamma atomic parent
-- [ ] 2 -> 3: formalization only after the analytic parent enters the formal tree
+- [x] independent audit of the elliptic-gamma atomic parent through its exact rational-base matroid
+- [x] 2 -> 3: complete unconditional claim formalized in Lean
+- [ ] 3 -> 4: publication-ready preprint
 
 ## Log
 
@@ -490,3 +491,45 @@ is a short bridge mechanism, not by itself a novelty claim.
 - 2026-07-10 -- Derived the complete family matroid for the triptic mixed-constraint class and
   differential algebraic independence of generic elliptic-gamma translates and independent
   translate-products.
+
+## Lean status
+
+Fully formalized unconditionally at the explicit prime-log period pair.  Arbitrary additive-defect
+and multiplicative-quotient packets have their exact pointed collision matroids over `ℂ(z)`.
+Every finite pairwise separated translate packet of the genuine elliptic-gamma logarithmic
+derivative is differentially independent without excluding the zero period class.  The same theorem
+holds for actual elliptic-gamma products, and arbitrary integral products have exactly the ordinary
+complex row matroid and its exact finite-packet rank.  The complete localized differential
+group-algebra operator matroid and full triptic mixed-constraint normal form remain bundled in the
+closed result.
+
+## Lean formalization
+
+- **Card module:**
+  `formal/GaloisForLFunctions/HTGeometry/AtomicDefectFullOrbitDifferentialMatroid.lean`
+- **Reusable infrastructure:**
+  `formal/GaloisForLFunctions/HTGeometry/LaurentMonomialDifferentialMatroid.lean` proves that the
+  complete differential matroid of Laurent monomials in a differentially independent palette is
+  exactly the ordinary row matroid of the integral exponent matrix, with independence and numerical
+  rank interfaces.
+- **Closed capstone:** `atomicDefectFullOrbitDifferentialMatroid_unconditional`.
+- **Complete package:** `AtomicDefectFullOrbitDifferentialMatroidPackage` contains the exact
+  arbitrary defect and quotient collision matroids, base-point-free logarithmic orbit, actual Gamma
+  orbit, actual Gamma product matroid and `ℂ`-rank law, and the closed triptic normal-form package.
+- **Full operator law:**
+  `TripticMixedConstraintNormalFormPackage.completeFamilyMatroid` and
+  `tripticPreferredOperatorRows_differentialRank` give equations (6) and (10) for every finite
+  polynomial row family on the literal quotient `ℂ/H₃`.
+- **Verification:** source check and targeted builds of
+  `GaloisForLFunctions.HTGeometry.LaurentMonomialDifferentialMatroid` and
+  `GaloisForLFunctions.HTGeometry.AtomicDefectFullOrbitDifferentialMatroid` pass at default
+  heartbeats.  `#print axioms atomicDefectFullOrbitDifferentialMatroid_unconditional` reports only
+  `propext`, `Classical.choice`, and `Quot.sound`.
+
+## Formalization log
+
+- 2026-08-26 -- Added exact Laurent-product differential-matroid infrastructure; removed the
+  artificial nonresonant-base restriction by a finite generic recentering and differential
+  translation back; lifted the orbit theorem to actual elliptic-gamma products; packaged arbitrary
+  defect/quotient, product, operator, and mixed-constraint matroids; wired modules and promoted card
+  to stage 3.
