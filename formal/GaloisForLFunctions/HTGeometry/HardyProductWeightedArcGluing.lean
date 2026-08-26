@@ -277,7 +277,8 @@ theorem hardyProductCauchyCommutator_eq
     (u v : HardyDisk) (a : Circle → ℂ) (L : ℂ → ℂ)
     (z₀ : ℂ) {r : ℝ}
     (haMeas : Measurable a) (haUnit : ∀ ζ, ‖a ζ‖ = 1)
-    (hcoef : ∀ ζ : Circle, dist (ζ : ℂ) z₀ < 2 * r → a ζ = L (ζ : ℂ))
+    (hcoef : ∀ᵐ ζ : Circle ∂circleLebesgue,
+      dist (ζ : ℂ) z₀ < 2 * r → a ζ = L (ζ : ℂ))
     {z : ℂ} (hz : ‖z‖ ≠ 1) :
     hardyProductCauchyCommutator u v a L z₀ r z =
       L z * circleL1CauchyTransform
@@ -297,7 +298,7 @@ theorem hardyProductCauchyCommutator_eq
       (Lp.memLp (hardyDiskBoundary v))
   have haq : Integrable aq circleLebesgue := by
     apply hq.bdd_mul haMeas.aestronglyMeasurable
-    filter_upwards with ζ
+    filter_upwards [hcoef] with ζ hcoefζ
     rw [haUnit]
   have hK : Continuous K := by
     apply Continuous.div continuous_subtype_val
@@ -322,13 +323,13 @@ theorem hardyProductCauchyCommutator_eq
         ∂circleLebesgue := by
     rw [hardyProductCauchyCommutator]
     apply integral_congr_ae
-    filter_upwards with ζ
+    filter_upwards [hcoef] with ζ hcoefζ
     have hzne : z ≠ (ζ : ℂ) := by
       intro heq
       apply hz
       rw [heq, Circle.norm_coe]
     by_cases hnear : dist (ζ : ℂ) z₀ < 2 * r
-    · rw [if_pos hnear, hcoef ζ hnear, analyticSlope_of_ne hzne]
+    · rw [if_pos hnear, hcoefζ hnear, analyticSlope_of_ne hzne]
       have hden : (ζ : ℂ) - z ≠ 0 := sub_ne_zero.mpr hzne.symm
       field_simp [hden, sub_ne_zero.mpr hzne]
       ring
@@ -361,8 +362,8 @@ theorem exists_differentiableAt_weighted_hardyProduct_arc_glue
     (hslopeMeas : ∀ z ∈ ball z₀ r,
       AEStronglyMeasurable
         (fun ζ : Circle => analyticSlope L (ζ : ℂ) z) circleLebesgue)
-    (hcoef : ∀ ζ : Circle, dist (ζ : ℂ) z₀ < 2 * r →
-      a ζ = L (ζ : ℂ))
+    (hcoef : ∀ᵐ ζ : Circle ∂circleLebesgue,
+      dist (ζ : ℂ) z₀ < 2 * r → a ζ = L (ζ : ℂ))
     (hseam : ∀ᵐ ζ : Circle ∂circleLebesgue,
       dist (ζ : ℂ) z₀ < 2 * r →
         a ζ * ((hardyDiskBoundary u₁ : Circle → ℂ) ζ *

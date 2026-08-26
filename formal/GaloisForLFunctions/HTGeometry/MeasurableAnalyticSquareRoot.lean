@@ -72,6 +72,33 @@ theorem exists_measurable_analyticAt_sq_eq
       Complex.exp_log hqz0, hqval, hs]
     field_simp
 
+/-- A prescribed nonzero square root at the base point fixes the sign of the measurable local
+analytic branch. -/
+theorem exists_measurable_analyticAt_sq_eq_of_value
+    {g : ℂ → ℂ} {z₀ s : ℂ} (hgMeas : Measurable g)
+    (hg : AnalyticAt ℂ g z₀) (hs : s ^ 2 = g z₀) (hs0 : s ≠ 0) :
+    ∃ h : ℂ → ℂ, Measurable h ∧ AnalyticAt ℂ h z₀ ∧ h z₀ = s ∧
+      ∀ᶠ z in nhds z₀, h z ^ 2 = g z := by
+  have hg0 : g z₀ ≠ 0 := by
+    rw [← hs]
+    exact pow_ne_zero 2 hs0
+  obtain ⟨h, hhMeas, hhan, hh0, hhsq⟩ :=
+    exists_measurable_analyticAt_sq_eq hgMeas hg hg0
+  have hh0sq : h z₀ ^ 2 = g z₀ := hhsq.self_of_nhds
+  let c : ℂ := s / h z₀
+  have hc2 : c ^ 2 = 1 := by
+    dsimp [c]
+    rw [div_pow, hh0sq, hs]
+    exact div_self hg0
+  let H : ℂ → ℂ := fun z => c * h z
+  refine ⟨H, measurable_const.mul hhMeas,
+    analyticAt_const.mul hhan, ?_, ?_⟩
+  · dsimp [H, c]
+    field_simp
+  · filter_upwards [hhsq] with z hz
+    dsimp [H]
+    rw [mul_pow, hc2, one_mul, hz]
+
 end
 
 end GaloisForLFunctions.HTGeometry

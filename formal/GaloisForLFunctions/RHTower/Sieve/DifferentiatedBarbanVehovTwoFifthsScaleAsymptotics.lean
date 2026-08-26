@@ -16,14 +16,16 @@ namespace RHTower.Sieve
 
 noncomputable section
 
-private theorem twoFifths_scale_condition {N : ℕ} (hN : 8 ≤ N) :
+/-- Mollifier exponent `2/5` satisfies the uniform long-fibre scale condition. -/
+theorem twoFifths_scale_condition {N : ℕ} (hN : 8 ≤ N) :
     8 * (N ^ 2) ^ 2 ≤ N ^ 5 := by
   calc
     8 * (N ^ 2) ^ 2 = 8 * N ^ 4 := by ring
     _ ≤ N * N ^ 4 := Nat.mul_le_mul_right _ hN
     _ = N ^ 5 := by ring
 
-private theorem log_pow_five_eq_five_halves_log_pow_two
+/-- At the `L=N^5`, `M=N^2` scale, `log L = (5/2) log M`. -/
+theorem log_pow_five_eq_five_halves_log_pow_two
     (N : ℕ) :
     Real.log (((N ^ 5 : ℕ) : ℝ)) =
       (5 / 2 : ℝ) * Real.log (((N ^ 2 : ℕ) : ℝ)) := by

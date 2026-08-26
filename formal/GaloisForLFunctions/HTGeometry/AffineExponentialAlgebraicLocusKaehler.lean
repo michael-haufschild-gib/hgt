@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.AffineExponentialAlgebraicLocusSubgroup
-import GaloisForLFunctions.HTGeometry.AffineExponentialInvariantKaehler
+import GaloisForLFunctions.HTGeometry.AffineExponentialInvariantPointPullback
 
 /-!
 # Kähler propagation on a principal open of an algebraic locus
@@ -17,6 +17,7 @@ open AffineExponentialGroup AffineExponentialPointEvaluation
 open AffineExponentialAlgebraicLocusPoint
 open AffineExponentialAlgebraicLocusSubgroup
 open AffineExponentialInvariantKaehler
+open AffineExponentialPointClosure
 
 noncomputable section
 
@@ -91,6 +92,47 @@ theorem exists_principal_open_pointKaehlerMap_eq_zero
     change algHomKaehlerMap (eval (k := algebraicClosure ℚ ℂ) r) w = 0
     rw [← hcompR, algHomKaehlerMap_comp]
     exact hzero
+
+/-- The principal-open propagation theorem and algebraic specialization together supply an
+algebraic coset representative at which the same Kähler form vanishes. -/
+theorem exists_algebraic_coset_subgroup_pointKaehlerMap_eq_zero
+    {n : ℕ} (p : Point ℂ n)
+    (w : Ω[CoordinateAlgebra (algebraicClosure ℚ ℂ) n⁄algebraicClosure ℚ ℂ])
+    (hw : pointKaehlerMap (algebraicClosure ℚ ℂ) p w = 0) :
+    ∃ q : Point ℂ n,
+      (∀ i, IsAlgebraic ℚ (additivePart q i)) ∧
+      (∀ i, IsAlgebraic ℚ (torusPart q i : ℂ)) ∧
+      q ∈ algebraicLocus p ∧
+      pointKaehlerMap (algebraicClosure ℚ ℂ) q w = 0 ∧
+      p * q⁻¹ ∈ zeroLocus (algebraicLocusSubgroupIdeal p q) := by
+  obtain ⟨g, hgp, hvanish⟩ :=
+    exists_principal_open_pointKaehlerMap_eq_zero p w hw
+  obtain ⟨q, hqadd, hqtorus, hqlocus, hqg, hdiv⟩ :=
+    exists_algebraic_coset_subgroup_avoiding p g hgp
+  exact ⟨q, hqadd, hqtorus, hqlocus, hvanish q hqlocus hqg, hdiv⟩
+
+/-- For a mixed invariant form, the algebraic coset representative can be chosen so that the form
+vanishes both at the representative and at the translated original point. -/
+theorem exists_algebraic_coset_subgroup_mixedInvariant_pullback_eq_zero
+    {n : ℕ} (p : Point ℂ n)
+    (tor add : Fin n → algebraicClosure ℚ ℂ)
+    (hw : pointKaehlerMap (algebraicClosure ℚ ℂ) p
+      (mixedInvariantKaehlerVector (algebraicClosure ℚ ℂ) tor add) = 0) :
+    ∃ q : Point ℂ n,
+      (∀ i, IsAlgebraic ℚ (additivePart q i)) ∧
+      (∀ i, IsAlgebraic ℚ (torusPart q i : ℂ)) ∧
+      q ∈ algebraicLocus p ∧
+      pointKaehlerMap (algebraicClosure ℚ ℂ) q
+        (mixedInvariantKaehlerVector (algebraicClosure ℚ ℂ) tor add) = 0 ∧
+      pointKaehlerMap (algebraicClosure ℚ ℂ) (p * q⁻¹)
+        (mixedInvariantKaehlerVector (algebraicClosure ℚ ℂ) tor add) = 0 ∧
+      p * q⁻¹ ∈ zeroLocus (algebraicLocusSubgroupIdeal p q) := by
+  obtain ⟨q, hqadd, hqtorus, hqlocus, hqzero, hdiv⟩ :=
+    exists_algebraic_coset_subgroup_pointKaehlerMap_eq_zero p
+      (mixedInvariantKaehlerVector (algebraicClosure ℚ ℂ) tor add) hw
+  exact ⟨q, hqadd, hqtorus, hqlocus, hqzero,
+    pointKaehlerMap_mixedInvariantKaehlerVector_mul_inv_eq_zero
+      p q tor add hw hqzero, hdiv⟩
 
 end
 

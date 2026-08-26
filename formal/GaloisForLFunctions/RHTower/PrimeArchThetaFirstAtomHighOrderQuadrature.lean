@@ -417,8 +417,12 @@ theorem thetaCuspFirstSourceTaylorLower64_eval_le_actual
   simp only [eval_sub, eval_mul, eval_C]
   calc
     (6.28318530717958647692 : ℝ) *
+          thetaCuspThirtySecondExpTaylorLower ^ j *
+            thetaCuspExpTwoTaylorEightPolynomial.eval y - 3 =
+        (6.28318530717958647692 : ℝ) *
           (thetaCuspThirtySecondExpTaylorLower ^ j *
-            thetaCuspExpTwoTaylorEightPolynomial.eval y) - 3 ≤
+            thetaCuspExpTwoTaylorEightPolynomial.eval y) - 3 := by ring
+    _ ≤
         (6.28318530717958647692 : ℝ) *
           Real.exp (2 * ((j : ℝ) / 64 + y)) - 3 := by gcongr
     _ ≤ 2 * Real.pi * Real.exp (2 * ((j : ℝ) / 64 + y)) - 3 := by
@@ -442,7 +446,8 @@ theorem actual_le_thetaCuspFirstSourceTaylorUpper64_eval
   have hpi : 2 * Real.pi ≤ (6.28318530717958647694 : ℝ) := by
     nlinarith [Real.pi_lt_d20]
   have hupper0 : 0 ≤ thetaCuspThirtySecondExpTaylorUpper ^ j *
-      thetaCuspExpTwoTaylorEightUpperPolynomial.eval y := by positivity
+      thetaCuspExpTwoTaylorEightUpperPolynomial.eval y :=
+    (Real.exp_pos _).le.trans hproduct
   rw [thetaCuspFirstSourceTaylorUpper64]
   simp only [eval_sub, eval_mul, eval_C]
   calc
@@ -453,6 +458,9 @@ theorem actual_le_thetaCuspFirstSourceTaylorUpper64_eval
           (thetaCuspThirtySecondExpTaylorUpper ^ j *
             thetaCuspExpTwoTaylorEightUpperPolynomial.eval y) - 3 := by
       gcongr
+    _ = (6.28318530717958647694 : ℝ) *
+          thetaCuspThirtySecondExpTaylorUpper ^ j *
+            thetaCuspExpTwoTaylorEightUpperPolynomial.eval y - 3 := by ring
 
 theorem thetaCuspFirstGibbsTaylorLower64_le
     {j : ℕ} (hj : j < 64) {y : ℝ} (hy : 0 ≤ y) (hyh : y ≤ 1 / 64) :
@@ -460,7 +468,8 @@ theorem thetaCuspFirstGibbsTaylorLower64_le
         thetaCuspFirstRateTaylorUpperEndpointLowerCertificate64 j *
         (thetaCuspFirstRateTaylorLocalLowerCertificate64 j).eval y ≤
       thetaCuspLiouvilleGibbsAtom 1 ((j : ℝ) / 64 + y) := by
-  have hrate := (thetaCuspFirstLiouvilleRate_taylor_bounds64 hy hyh).2
+  have hrate :=
+    (thetaCuspFirstLiouvilleRate_taylor_bounds64 (j := j) hy hyh).2
   have hendpoint :=
     thetaCuspFirstRateTaylorUpperEndpointLowerCertificate64_le_exp hj
   have hlocal :=
@@ -475,20 +484,26 @@ theorem thetaCuspFirstGibbsTaylorLower64_le
           thetaCuspFirstRateTaylorUpperEndpointLowerCertificate64 j *
           (thetaCuspFirstRateTaylorLocalLowerCertificate64 j).eval y ≤
         Real.exp (-Real.pi) *
-          (thetaCuspFirstRateTaylorUpperEndpointLowerCertificate64 j *
-            (thetaCuspFirstRateTaylorLocalLowerCertificate64 j).eval y) := by
-      exact mul_le_mul_of_nonneg_right exp_neg_pi_rationalEnclosure_lower
-        (mul_nonneg hendpoint0 hlocal0)
+          thetaCuspFirstRateTaylorUpperEndpointLowerCertificate64 j *
+            (thetaCuspFirstRateTaylorLocalLowerCertificate64 j).eval y := by
+      exact mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_right exp_neg_pi_rationalEnclosure_lower hendpoint0)
+        hlocal0
     _ ≤ Real.exp (-Real.pi) *
-          (Real.exp (-thetaCuspFirstRateTaylorUpperEndpoint64 j) *
-            Real.exp (-(thetaCuspFirstRateTaylorUpperDelta64 j).eval y)) := by
+          Real.exp (-thetaCuspFirstRateTaylorUpperEndpoint64 j) *
+            Real.exp (-(thetaCuspFirstRateTaylorUpperDelta64 j).eval y) := by
       gcongr
+    _ = Real.exp (-Real.pi) *
+          (Real.exp (-thetaCuspFirstRateTaylorUpperEndpoint64 j) *
+            Real.exp (-(thetaCuspFirstRateTaylorUpperDelta64 j).eval y)) := by ring
     _ = Real.exp (-Real.pi) *
           Real.exp (-(thetaCuspFirstRateTaylorUpperEndpoint64 j +
             (thetaCuspFirstRateTaylorUpperDelta64 j).eval y)) := by
-      rw [← Real.exp_add]
-      congr 2
-      ring
+      rw [show -(thetaCuspFirstRateTaylorUpperEndpoint64 j +
+          (thetaCuspFirstRateTaylorUpperDelta64 j).eval y) =
+        -thetaCuspFirstRateTaylorUpperEndpoint64 j +
+          -(thetaCuspFirstRateTaylorUpperDelta64 j).eval y by ring,
+        Real.exp_add]
     _ ≤ Real.exp (-Real.pi) *
           Real.exp (-thetaCuspFirstLiouvilleRate ((j : ℝ) / 64 + y)) := by
       gcongr
@@ -499,10 +514,17 @@ theorem thetaCuspFirstGibbs_le_taylorUpper64
       (0.0432139182638 : ℝ) *
         thetaCuspFirstRateTaylorLowerEndpointUpperCertificate64 j *
         (thetaCuspFirstRateTaylorLocalUpperCertificate64 j).eval y := by
-  have hrate := (thetaCuspFirstLiouvilleRate_taylor_bounds64 hy hyh).1
+  have hrate :=
+    (thetaCuspFirstLiouvilleRate_taylor_bounds64 (j := j) hy hyh).1
   have hendpoint :=
     exp_le_thetaCuspFirstRateTaylorLowerEndpointUpperCertificate64 hj
   have hlocal := exp_le_thetaCuspFirstRateTaylorLocalUpperCertificate64_eval j hy
+  have hendpointCert0 :
+      0 ≤ thetaCuspFirstRateTaylorLowerEndpointUpperCertificate64 j :=
+    (Real.exp_pos _).le.trans hendpoint
+  have hlocalCert0 :
+      0 ≤ (thetaCuspFirstRateTaylorLocalUpperCertificate64 j).eval y :=
+    (Real.exp_pos _).le.trans hlocal
   rw [thetaCuspLiouvilleGibbsAtom_one_eq_rate]
   calc
     Real.exp (-Real.pi) *
@@ -514,7 +536,11 @@ theorem thetaCuspFirstGibbs_le_taylorUpper64
     _ = Real.exp (-Real.pi) *
           (Real.exp (-thetaCuspFirstRateTaylorLowerEndpoint64 j) *
             Real.exp (-(thetaCuspFirstRateTaylorLowerDelta64 j).eval y)) := by
-      rw [← Real.exp_add]
+      rw [show -(thetaCuspFirstRateTaylorLowerEndpoint64 j +
+          (thetaCuspFirstRateTaylorLowerDelta64 j).eval y) =
+        -thetaCuspFirstRateTaylorLowerEndpoint64 j +
+          -(thetaCuspFirstRateTaylorLowerDelta64 j).eval y by ring,
+        Real.exp_add]
     _ ≤ (0.0432139182638 : ℝ) *
           (Real.exp (-thetaCuspFirstRateTaylorLowerEndpoint64 j) *
             Real.exp (-(thetaCuspFirstRateTaylorLowerDelta64 j).eval y)) := by
@@ -523,7 +549,21 @@ theorem thetaCuspFirstGibbs_le_taylorUpper64
     _ ≤ (0.0432139182638 : ℝ) *
           thetaCuspFirstRateTaylorLowerEndpointUpperCertificate64 j *
           (thetaCuspFirstRateTaylorLocalUpperCertificate64 j).eval y := by
-      positivity
+      calc
+        (0.0432139182638 : ℝ) *
+              (Real.exp (-thetaCuspFirstRateTaylorLowerEndpoint64 j) *
+                Real.exp (-(thetaCuspFirstRateTaylorLowerDelta64 j).eval y)) ≤
+            (0.0432139182638 : ℝ) *
+              (thetaCuspFirstRateTaylorLowerEndpointUpperCertificate64 j *
+                Real.exp (-(thetaCuspFirstRateTaylorLowerDelta64 j).eval y)) := by
+          gcongr
+        _ ≤ (0.0432139182638 : ℝ) *
+              (thetaCuspFirstRateTaylorLowerEndpointUpperCertificate64 j *
+                (thetaCuspFirstRateTaylorLocalUpperCertificate64 j).eval y) := by
+          gcongr
+        _ = (0.0432139182638 : ℝ) *
+              thetaCuspFirstRateTaylorLowerEndpointUpperCertificate64 j *
+              (thetaCuspFirstRateTaylorLocalUpperCertificate64 j).eval y := by ring
 
 end
 

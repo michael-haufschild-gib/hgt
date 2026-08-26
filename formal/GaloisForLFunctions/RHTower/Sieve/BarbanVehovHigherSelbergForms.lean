@@ -21,6 +21,36 @@ def barbanVehovSelbergQuadraticLogDiagonal (N : ℕ) : ℝ :=
         Real.log ((N : ℝ) / (p.2 : ℝ))) /
       (Nat.lcm p.1 p.2 : ℝ)
 
+/-- Pointwise conversion from the Barban--Vehov lcm weight to the original Selberg coefficient. -/
+theorem barbanVehovWeight_mul_div_lcm_eq_originalCoeff
+    {N m n : ℕ} (hm : 1 ≤ m) (hn : 1 ≤ n) (hmN : m ≤ N) (hnN : n ≤ N) :
+    barbanVehovWeight N m * barbanVehovWeight N n /
+        (Nat.lcm m n : ℝ) =
+      selbergOriginalCoeff m n *
+        (Real.log ((N : ℝ) / (m : ℝ)) *
+          Real.log ((N : ℝ) / (n : ℝ))) := by
+  rw [barbanVehovWeight, if_pos hmN,
+    barbanVehovWeight, if_pos hnN, selbergOriginalCoeff]
+  have hmR : (m : ℝ) ≠ 0 := by exact_mod_cast (Nat.ne_of_gt hm)
+  have hnR : (n : ℝ) ≠ 0 := by exact_mod_cast (Nat.ne_of_gt hn)
+  have hlcm : Nat.lcm m n ≠ 0 := Nat.lcm_ne_zero
+    (Nat.ne_of_gt hm) (Nat.ne_of_gt hn)
+  have hlcmR : (Nat.lcm m n : ℝ) ≠ 0 := by exact_mod_cast hlcm
+  have hgcdlcm : (Nat.gcd m n : ℝ) * (Nat.lcm m n : ℝ) =
+      (m : ℝ) * (n : ℝ) := by
+    exact_mod_cast Nat.gcd_mul_lcm m n
+  field_simp [hmR, hnR, hlcmR]
+  calc
+    (((μ m : ℤ) : ℝ) * (m : ℝ) * Real.log ((N : ℝ) / (m : ℝ)) *
+        ((μ n : ℤ) : ℝ) * (n : ℝ) * Real.log ((N : ℝ) / (n : ℝ))) =
+        (((μ m : ℤ) : ℝ) * Real.log ((N : ℝ) / (m : ℝ)) *
+          ((μ n : ℤ) : ℝ) * Real.log ((N : ℝ) / (n : ℝ))) *
+            ((m : ℝ) * (n : ℝ)) := by ring
+    _ = (((μ m : ℤ) : ℝ) * Real.log ((N : ℝ) / (m : ℝ)) *
+          ((μ n : ℤ) : ℝ) * Real.log ((N : ℝ) / (n : ℝ))) *
+            ((Nat.gcd m n : ℝ) * (Nat.lcm m n : ℝ)) := by rw [hgcdlcm]
+    _ = _ := by ring
+
 /-- Symmetry moves the single complementary logarithm from the right divisor to the left. -/
 theorem barbanVehovSelbergMixedDiagonal_left_eq (N : ℕ) :
     (∑ p ∈ (Finset.Icc 1 N) ×ˢ (Finset.Icc 1 N),

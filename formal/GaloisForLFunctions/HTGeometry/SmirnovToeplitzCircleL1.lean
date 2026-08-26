@@ -8,13 +8,14 @@ namespace GaloisForLFunctions.HTGeometry
 noncomputable section
 
 theorem circle_eventuallyEq_of_line_eventuallyEq_ae
-    {f g : Circle → ℝ}
+    {β : Type*} [MeasurableSpace β] [MeasurableEq β]
+    {f g : Circle → β}
     (hf : AEMeasurable f circleLebesgue)
     (hg : AEMeasurable g circleLebesgue)
     (h : (fun x => f (circleCayley x)) =ᵐ[volume]
       fun x => g (circleCayley x)) :
     f =ᵐ[circleLebesgue] g := by
-  have hpull {u v : Circle → ℝ} (huv : u =ᵐ[circleLebesgue] v) :
+  have hpull {u v : Circle → β} (huv : u =ᵐ[circleLebesgue] v) :
       (fun x => u (circleCayley x)) =ᵐ[volume]
         fun x => v (circleCayley x) := by
     have hweighted := huv.comp_tendsto
@@ -28,7 +29,7 @@ theorem circle_eventuallyEq_of_line_eventuallyEq_ae
         fun x => hg.mk g (circleCayley x) :=
     hfLine.symm.trans (h.trans hgLine)
   have hmk : hf.mk f =ᵐ[circleLebesgue] hg.mk g :=
-    circle_eventuallyEq_of_line_eventuallyEq
+    circle_eventuallyEq_of_line_eventuallyEq (β := β)
       hf.measurable_mk hg.measurable_mk hmkLine
   exact hf.ae_eq_mk.trans (hmk.trans hg.ae_eq_mk.symm)
 

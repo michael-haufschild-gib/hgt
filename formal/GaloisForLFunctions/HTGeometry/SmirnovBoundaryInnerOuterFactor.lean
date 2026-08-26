@@ -50,7 +50,8 @@ theorem DiskSmirnovBoundary.aestronglyMeasurable_circleBoundary
 pullback.  The omitted Cayley point is null because the weighted real Cayley map pushes forward
 exactly to normalized circle measure. -/
 theorem circle_eventuallyEq_of_line_eventuallyEq
-    {f g : Circle → ℝ} (hf : Measurable f) (hg : Measurable g)
+    {β : Type*} [MeasurableSpace β] [MeasurableEq β]
+    {f g : Circle → β} (hf : Measurable f) (hg : Measurable g)
     (h : (fun x => f (circleCayley x)) =ᵐ[volume]
       fun x => g (circleCayley x)) :
     f =ᵐ[circleLebesgue] g := by

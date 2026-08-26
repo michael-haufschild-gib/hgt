@@ -15,6 +15,13 @@ namespace RHTower.Sieve
 
 noncomputable section
 
+/-- Normalize an absolute approximation error by a common nonnegative denominator. -/
+theorem abs_div_sub_div_le_of_abs_sub_le
+    {a b E D : ℝ} (hD : 0 ≤ D) (h : |a - b| ≤ E) :
+    |a / D - b / D| ≤ E / D := by
+  rw [← sub_div, abs_div, abs_of_nonneg hD]
+  exact div_le_div_of_nonneg_right h hD
+
 /-- A uniform pointwise kernel error transfers through an arbitrary finite real weight. -/
 theorem abs_sum_weight_mul_sub_le_of_pointwise
     {α : Type*} [DecidableEq α] (s : Finset α)
