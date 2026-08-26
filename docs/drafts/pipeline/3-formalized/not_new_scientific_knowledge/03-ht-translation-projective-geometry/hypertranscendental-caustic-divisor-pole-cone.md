@@ -1,9 +1,9 @@
 # A zero is a finite-width pole cone in the projective-horizon caustic tower
 
 - **ID:** `hypertranscendental-caustic-divisor-pole-cone`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / LOCAL DIVISOR GEOMETRY / `[BRIDGE]`
-- **Scientific status:** `[PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE] [FORMAL CORE COMPLETE]`
+- **Scientific status:** `[PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE] [FULLY FORMALIZED]`
 - **Parents:** `projective-horizon-rectangular-schur-caustic`,
   `hypertranscendental-horizon-q-system`
 - **Lane:** analytic source marking of the static projective-horizon constraint
@@ -156,8 +156,18 @@ has no positive RH consequence.
 
 ## Lean verification
 
-`ProjectiveHorizonCausticReflection.lean` proves the diagonal-conjugation identity and the exact
-determinant sign `(-1)^(mn)` over every commutative ring.  It also proves the odd-area protected
-vanishing for every reflection-fixed coefficient sequence over a characteristic-zero field.  The
-analytic local factorization and hook-content specialization remain paper-level.  A targeted leaf
-check passes; no full build was run.
+`ProjectiveHorizonBinomialPoleCone.lean` proves the exact binomial Toeplitz cutoff: its determinant
+is nonzero exactly through rank `m<=2r`, and an explicit finite-difference kernel forces vanishing
+beyond that width. `HypertranscendentalCausticDivisorPoleCone.lean` proves the analytic
+factorization, coefficientwise normalized reciprocal-square limit, meromorphicity of every
+coefficient and determinant, exact pole-order iff, greatest-full-pole-rank recovery, strict
+exterior order, reflection parity, odd-area central vanishing, unconditional all-rank Q-system,
+and unique horizontal tropical boundary continuation. The pole cutoff is stronger than the paper
+statement: it needs no non-identical-vanishing or hypertranscendence premise.
+
+`AffineReflectionJet.lean` supplies the shared local reflection chain rule; the former `RHTower`
+symbol remains as a compatibility wrapper. Targeted `lake env lean` checks passed for all changed
+files. Targeted leaf builds passed for `AffineReflectionJet`,
+`ProjectiveHorizonBinomialPoleCone`, and `HypertranscendentalCausticDivisorPoleCone`. Axiom audits
+of the new capstones report only `propext`, `Classical.choice`, and `Quot.sound`. Modules are wired
+into the `HTGeometry` umbrella; no umbrella or full build was run.

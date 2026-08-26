@@ -72,7 +72,7 @@ theorem selbergQuadraticHarmonicMain_eq_moments
     Real.log_mul haR.ne' hdR.ne', Real.log_mul hbR.ne' hdR.ne']
   ring
 
-private theorem tendsto_log_sub_const_div_log_one (K : ℝ) :
+theorem tendsto_log_sub_const_div_log_one (K : ℝ) :
     Tendsto (fun N : ℕ => (Real.log N - K) / Real.log N) atTop (𝓝 1) := by
   have hlog : Tendsto (fun N : ℕ => Real.log (N : ℝ)) atTop atTop :=
     Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop

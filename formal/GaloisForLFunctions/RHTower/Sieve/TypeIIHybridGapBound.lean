@@ -32,13 +32,12 @@ theorem norm_masked_correlation_hybrid_gap_le {T r : ℝ} (hT : 0 < T) (hr : 0 <
     {m₁ m₂ : ℕ} (hm₁ : 1 ≤ m₁) (hm₂ : 1 ≤ m₂) (hne : m₁ ≠ m₂)
     (hM₀ : 1 ≤ M₀) (hlo₁ : M₀ ≤ m₁) (hlo₂ : M₀ ≤ m₂)
     (hhi₁ : m₁ ≤ M₁) (hhi₂ : m₂ ≤ M₁)
-    (h4₁ : 4 * (r / m₁) ≤ (P : ℝ)) (h4₂ : 4 * (r / m₂) ≤ (P : ℝ))
-    (hlam : curvedLambda (T * |r / m₁ - r / m₂|) (P : ℝ) ≤ 1) :
+    (h4₁ : 4 * (r / m₁) ≤ (P : ℝ)) (h4₂ : 4 * (r / m₂) ≤ (P : ℝ)) :
     ‖∑ d ∈ Finset.Ico P Q,
         maskedNdExp T r A B d m₁ * (starRingEnd ℂ) (maskedNdExp T r A B d m₂)‖
       ≤ hybridGapCorrBound T r M₀ M₁ P Q (Nat.dist m₁ m₂) := by
-  have hmain := norm_masked_correlation_offdiag_hybrid_le hT hr hA hB hP hQ2P
-    hm₁ hm₂ hne h4₁ h4₂ hlam
+  have hmain := norm_masked_correlation_offdiag_hybrid_unconditional_le hT hr hA hB hP hQ2P
+    hm₁ hm₂ hne h4₁ h4₂
   have hM₀0 : (0 : ℝ) < (M₀ : ℝ) := by exact_mod_cast hM₀
   have hM₁0 : (0 : ℝ) < (M₁ : ℝ) := lt_of_lt_of_le hM₀0 (by exact_mod_cast le_trans hlo₁ hhi₁)
   have hdist : 1 ≤ Nat.dist m₁ m₂ := by

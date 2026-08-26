@@ -31,7 +31,7 @@ for exact claims they prove.
 | 1 | `balanced-causal-fracture-torsor-classification` | `ColorGram*`, `PrimitivePairInteriorDimension`, `BalancedActualityCapacity` prove the `3x2` orbit, primitive-pair dimension test, and finite balance arithmetic | General AIII Gram-fibre torsor equivalence, smooth product equivalence, arbitrary-boundary strict-convexity iff rank two, genuine Cartan-family corollary |
 | 2 | `bbm-pullback-completion-purely-continuous-law` | `BBMMetricObstruction` proves the Mellin state is never in the pullback metric | Pullback completion unitary, self-adjoint restriction reducing, dilation spectral type, BBM no-point-spectrum conclusion, compact/trace-class consequences |
 | 3 | `coherence-graph-volume-recurrence-exponent-law` | `FiniteQuantumObserverCoherenceLaw` and `FiniteQuantumObserverGraphRecurrenceBound` prove graph rank and universal upper recurrence | Exact Haar-volume bounds, minimax lower exponent, almost-every fixed-spectrum exponent, rank-zero boundary |
-| 4 | `common-profile-boolean-anchor-curvature` | `CommonProfileBooleanAnchorCurvature` proves Boolean response/curvature algebra and rank-one sign surjectivity; `SquarefreeShearKernelSignedTensor` proves local factorization and branch expansion | Exact arithmetic normalization/CRT join; tensor rank, inertia, eigenvalues, density/Fourier identities, operator norms and sharp first-crossing boundary, protected-anchor alias theorem, analytic `(SG9)` |
+| 4 | `common-profile-boolean-anchor-curvature` | Existing Boolean/signed-tensor laws plus new `SquarefreeShearKernelSpectrum`, `SquarefreeShearKernelFourier`, `SquarefreeShearKernelHilbert`, and `SquarefreeShearKernelArithmetic`: exact rank/inertia/eigenvalues/norms, actual root-density `(SG5)`, literal coprime-packet `(SG6)`, sharp `(SG7)`--`(SG8a)`, and canonical `ZMod`/spectral reindexing; `(SG10)` is existing `quadraticCongruenceNormalizedRootSum_mul_alias` | Build/axiom/lint/wiring audit after exact physical `(SG9)`; no corpus implementation of its `W_h/δ_h` BV layer found |
 | 5 | `de-sitter-ultrametric-detailed-balance-hypertranscendence` | `FiniteKMSDetailedBalance`, `UltrametricThermalMahler`, `UltrametricThermalTruncation` prove finite KMS algebra, formal Mahler constraint, finite residual | Infinite detector trace, DA inverse time-change and HT transfer, exact Hubble equation/nonselection, source spectrum and physical analytic dependencies |
 | 6 | `erosion-threshold` | Stage-3 `critical-line-abscissa-of-convergence` exists; related cocycle and finite-free infrastructure require audit | Exact backbone, sharp `L2` coboundary iff threshold, imported statistical theorem surface, zero/singularity identity, terminal conjunction |
 | 7 | `exact-rational-rg-generation-dichotomy` | Differential-algebra infrastructure exists but no exact analytic Poincare/Ritt theorem | Analytic Poincare construction, local inversion, Ritt equivalence, cocycle equivalence, DA-scheme theorem |
@@ -78,3 +78,10 @@ for exact claims they prove.
 - 2026-08-26 — sweep opened; read all source cards, project scientific method, frontier map matches,
   endpoints matches, and existing Stage-3/Lean surfaces. Serena symbol operations do not support
   Lean in this project (`Active languages: ['python']`), so Lean symbol inventory uses `rg`.
+- 2026-08-26 — card 4 finite algebra completed in passing leaf checks. Corpus-first reuse includes
+  `commonGramBooleanAnchorCurvature`, `productDifferenceKernel_signedBranchExpansion`,
+  `DistinctPrimeFamily`, `quadraticCongruenceRootCountTotal_*`, canonical CRT, additive-character
+  Parseval infrastructure, tensor inertia/norm infrastructure,
+  `totient_prod_of_pairwise_coprime`, and `quadraticCongruenceNormalizedRootSum_mul_alias`.
+  Remaining `(SG9)` requires the literal physical window/BV response, absent from current corpus;
+  no conditional interface will be introduced.

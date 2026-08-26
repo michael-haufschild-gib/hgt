@@ -26,6 +26,32 @@ instance : Algebra.IsAlgebraic ℚ AlgNum := algebraicClosure.isAlgebraic ℚ �
 def stageTwoValueField (x₁ x₂ : ℂ) : IntermediateField AlgNum ℂ :=
   IntermediateField.adjoin AlgNum {x₁, x₂, Complex.exp x₁, Complex.exp x₂}
 
+/-- The concrete two-coordinate value field is the generic Schanuel exponential value field. -/
+theorem stageTwoValueField_eq_schanuelExponentialValueField (x : Fin 2 → ℂ) :
+    stageTwoValueField (x 0) (x 1) = schanuelExponentialValueField x := by
+  rw [stageTwoValueField, schanuelExponentialValueField,
+    range_schanuelExponentialGenerator]
+  congr 1
+  ext z
+  simp only [Set.mem_insert_iff, Set.mem_singleton_iff, Set.mem_union, Set.mem_range]
+  constructor
+  · rintro (h | h | h | h)
+    · exact Or.inl ⟨0, h.symm⟩
+    · exact Or.inl ⟨1, h.symm⟩
+    · exact Or.inr ⟨0, h.symm⟩
+    · exact Or.inr ⟨1, h.symm⟩
+  · rintro (⟨i, rfl⟩ | ⟨i, rfl⟩)
+    · fin_cases i <;> simp
+    · fin_cases i <;> simp
+
+/-- At stage two, failure of extraction is exactly low transcendence degree in the concrete value
+field used by the defect-slope normal form. -/
+theorem not_schanuelExtractionFor_two_iff_stageTwoValueField_trdeg_lt (x : Fin 2 → ℂ) :
+    (¬ SchanuelExtractionFor x) ↔
+      Algebra.trdeg AlgNum (stageTwoValueField (x 0) (x 1)) < 2 := by
+  rw [stageTwoValueField_eq_schanuelExponentialValueField]
+  exact not_schanuelExtractionFor_iff_trdeg_lt x
+
 theorem x₁_mem_stageTwoValueField (x₁ x₂ : ℂ) : x₁ ∈ stageTwoValueField x₁ x₂ :=
   IntermediateField.subset_adjoin _ _ (by simp)
 

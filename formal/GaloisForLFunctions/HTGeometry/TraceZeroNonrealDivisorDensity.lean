@@ -50,8 +50,10 @@ theorem hsNormSq_imaginaryPairBlock {a b : ι} (hab : a ≠ b) (r : ℝ) :
     ring
   · rw [imaginaryPairBlock]
     split_ifs with hpa hpb
-    · exact absurd (by simpa [hpa]) hp
-    · exact absurd (by simpa [hpb]) hp
+    · subst p
+      exact (hp (by simp)).elim
+    · subst p
+      exact (hp (by simp)).elim
     · simp
 
 theorem hsTraceDiag_imaginaryPairBlock {a b : ι} (hab : a ≠ b) (r : ℝ) :
@@ -149,7 +151,8 @@ theorem exists_finiteSupport_traceZero_nonrealDivisor_close
     have hsumB : Summable fun i : ι => B (i, i) := by
       apply summable_diag_of_finset_support (s := ({a, b} : Finset ι))
       intro i hi
-      exact imaginaryPairBlock_eq_zero_of_notMem r (by simpa [B, hi])
+      change imaginaryPairBlock a b r (i, i) = 0
+      exact imaginaryPairBlock_eq_zero_of_notMem r (by simp [hi])
     change hsTraceDiag (T + B) = 0
     rw [hsTraceDiag]
     change (∑' i : ι, (fun j => T (j, j) + B (j, j)) i) = 0

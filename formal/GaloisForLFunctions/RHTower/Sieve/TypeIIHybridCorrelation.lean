@@ -94,6 +94,71 @@ theorem norm_masked_correlation_offdiag_hybrid_le {T r : ℝ} (hT : 0 < T) (hr :
           + 75 * Real.pi * (Q : ℝ) ^ 2 / (16 * (T * |r / m₁ - r / m₂|)) + 1 := by
         nlinarith
 
+/-- Trivial correlation bound used when curvature exceeds the normalized derivative-test range. -/
+theorem norm_masked_correlation_trivial_le_two_mul {T r : ℝ} {A B P Q m₁ m₂ : ℕ}
+    (hQ2P : Q ≤ 2 * P) :
+    ‖∑ d ∈ Finset.Ico P Q,
+        maskedNdExp T r A B d m₁ * (starRingEnd ℂ) (maskedNdExp T r A B d m₂)‖
+      ≤ 2 * (P : ℝ) := by
+  refine (norm_sum_le _ _).trans ?_
+  have hterm : ∀ d ∈ Finset.Ico P Q,
+      ‖maskedNdExp T r A B d m₁ * (starRingEnd ℂ) (maskedNdExp T r A B d m₂)‖ ≤ 1 := by
+    intro d hd
+    rw [norm_mul, RCLike.norm_conj]
+    have hmask : ∀ m : ℕ, ‖maskedNdExp T r A B d m‖ ≤ 1 := by
+      intro m
+      rw [maskedNdExp]
+      split_ifs
+      · rw [norm_ndExp]
+      · simp
+    have h1 := hmask m₁
+    have h2 := hmask m₂
+    nlinarith [norm_nonneg (maskedNdExp T r A B d m₁),
+      norm_nonneg (maskedNdExp T r A B d m₂)]
+  refine (Finset.sum_le_sum hterm).trans ?_
+  rw [Finset.sum_const, nsmul_eq_mul, mul_one, Nat.card_Ico]
+  exact_mod_cast le_trans (Nat.sub_le Q P) hQ2P
+
+/-- The hybrid correlation bound is unconditional: above normalized curvature one, its first term
+already dominates the trivial block-cardinality estimate. -/
+theorem norm_masked_correlation_offdiag_hybrid_unconditional_le {T r : ℝ}
+    (hT : 0 < T) (hr : 0 < r) {A B P Q : ℕ}
+    (hA : 1 ≤ A) (hB : 1 ≤ B) (hP : 1 ≤ P) (hQ2P : Q ≤ 2 * P)
+    {m₁ m₂ : ℕ} (hm₁ : 1 ≤ m₁) (hm₂ : 1 ≤ m₂) (hne : m₁ ≠ m₂)
+    (h4₁ : 4 * (r / m₁) ≤ (P : ℝ)) (h4₂ : 4 * (r / m₂) ≤ (P : ℝ)) :
+    ‖∑ d ∈ Finset.Ico P Q,
+        maskedNdExp T r A B d m₁ * (starRingEnd ℂ) (maskedNdExp T r A B d m₂)‖
+      ≤ 5000 * Real.sqrt (T * |r / m₁ - r / m₂| / (36 * Real.pi * P))
+        + 75 * Real.pi * (Q : ℝ) ^ 2 / (16 * (T * |r / m₁ - r / m₂|)) + 1 := by
+  by_cases hlam : curvedLambda (T * |r / m₁ - r / m₂|) (P : ℝ) ≤ 1
+  · exact norm_masked_correlation_offdiag_hybrid_le hT hr hA hB hP hQ2P
+      hm₁ hm₂ hne h4₁ h4₂ hlam
+  · have hY : 0 < T * |r / m₁ - r / m₂| := by
+      have hm₁0 : (0 : ℝ) < m₁ := by exact_mod_cast hm₁
+      have hm₂0 : (0 : ℝ) < m₂ := by exact_mod_cast hm₂
+      have hdivne : r / (m₁ : ℝ) ≠ r / (m₂ : ℝ) := by
+        intro heq
+        field_simp at heq
+        have hcast : (m₁ : ℝ) = (m₂ : ℝ) := by nlinarith
+        exact hne (Nat.cast_inj.mp hcast)
+      exact mul_pos hT (abs_pos.mpr (sub_ne_zero.mpr hdivne))
+    have hP0 : (0 : ℝ) < P := by exact_mod_cast hP
+    have hlarge : 36 * Real.pi * (P : ℝ) ^ 3 < T * |r / m₁ - r / m₂| := by
+      rw [curvedLambda, not_le] at hlam
+      rwa [one_lt_div (by positivity)] at hlam
+    have hrad : (P : ℝ) ^ 2 ≤
+        T * |r / m₁ - r / m₂| / (36 * Real.pi * P) := by
+      rw [le_div_iff₀ (by positivity : 0 < 36 * Real.pi * (P : ℝ))]
+      nlinarith [hlarge]
+    have hsqrt := Real.sqrt_le_sqrt hrad
+    rw [Real.sqrt_sq hP0.le] at hsqrt
+    have htriv := norm_masked_correlation_trivial_le_two_mul
+      (T := T) (r := r) (A := A) (B := B) (m₁ := m₁) (m₂ := m₂) hQ2P
+    have hrec : 0 ≤ 75 * Real.pi * (Q : ℝ) ^ 2 /
+        (16 * (T * |r / m₁ - r / m₂|)) := by positivity
+    nlinarith [Real.sqrt_nonneg
+      (T * |r / m₁ - r / m₂| / (36 * Real.pi * (P : ℝ)))]
+
 end
 
 end RHTower.Sieve

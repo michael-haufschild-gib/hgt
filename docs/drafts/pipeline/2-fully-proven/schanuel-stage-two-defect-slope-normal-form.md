@@ -222,3 +222,78 @@ run.
 This closes the rational part of clause 3.  The card's exact claim that `rho` is transcendental
 still requires exclusion of every algebraic irrational coefficient, i.e. the mixed Hopf-ideal and
 character-lattice step of `schanuel-defects-algebraic-coefficient-independent`.
+
+## Clauses 1–3 closed in the concrete value field (2026-08-26)
+
+The algebraic-coefficient dependency is now closed by
+`RHTower.schanuelDefect_linearIndependent_algebraic`.  Fresh corpus searches recovered the existing
+concrete value field, Kähler-rank theorem, generic slope theorem, and internal-generation lemma
+before new code was written.
+
+`RHTower/SchanuelDefectAlgebraicSlope.lean` proves the missing coefficient consequence:
+
+```text
+schanuelDefect_slope_transcendental_algebraicClosure
+```
+
+Any complex scalar relating the two numerical defects is transcendental over
+`algebraicClosure ℚ ℂ`; the proof applies the exact algebraic-coefficient independence theorem to
+the coefficient vector `(-rho,1)`.
+
+`RHTower/SchanuelStageTwoDefectSlopeCore.lean` then instantiates the whole algebraic core in the
+literal field
+
+```text
+stageTwoValueField (x 0) (x 1)
+```
+
+and introduces its intrinsic defects in `Ω[K⁄AlgNum]`.  The main declarations are:
+
+```text
+map_stageTwoDefect
+stageTwoDefect_ne_zero
+existsUnique_stageTwoDefectSlope
+stageTwoDefectSlope_transcendental
+finiteDimensional_stageTwoValueField_adjoin_slope
+exists_stageTwoDefectSlopeCore
+```
+
+Thus clauses 1–3 now hold together without an abstract-field bookkeeping premise: `trdeg K = 1`,
+there is a unique `rho : K` with `epsilon_2 = rho • epsilon_1`, `rho` is transcendental over the
+algebraic numbers, and `K` is finite-dimensional over its internal simple field `AlgNum⟨rho⟩`.
+The finite-extension proof uses the actual four generators, proves they internally adjoin to `⊤`,
+and applies finite-dimensionality of a finite algebraic adjunction; it does not weaken "finite" to
+mere algebraicity.
+
+Both new leaves pass direct checks and targeted builds, are wired into `RHTower`, and were not
+umbrella-built.  Every new theorem declaration audits to only
+`[propext, Classical.choice, Quot.sound]`.  Exact remaining clauses are now only clause 4
+(Kirby's essential-counterexample/exponential-algebraic-closure theorem) and clause 5's geometric
+identification of the already-formal regulator identity with the contour integral on the normalized
+projective curve.  Card remains Stage 2 until both are formalized.
+
+## Literal path-integral bridge (2026-08-26)
+
+Fresh corpus search recovered the existing closed-loop FTC, logarithmic-derivative contour, and
+endpoint-regulator layers before new code was written.  The missing open-path bridge is now
+formalized in `HTGeometry/LogarithmicDifferentialPathIntegral.lean`:
+
+```text
+logarithmLift_deriv_eq_div
+intervalIntegral_logarithmicDifferential_sub_eq
+intervalIntegral_logarithmicDifferential_eq_base_add_branch
+```
+
+For differentiable pullbacks `X`, `Y` and an actual logarithm lift `exp L = Y`, the second theorem
+integrates the literal differential `Y'/Y - X'` and proves
+
+```text
+∫ (Y'/Y - X') = (L(b) - L(a)) - (X(b) - X(a)).
+```
+
+The capstone combines this with `Y(b) = exp(X(b))` and proves the card's exact regulator value
+`X(a) - L(a) + 2πik`.  It is not an endpoint-only restatement: the integrand and FTC identification
+are part of the theorem.  Direct check, targeted leaf build, and new-declaration axiom audits pass;
+the module is umbrella-wired without building the umbrella.  Clause 5 now lacks only the concrete
+normalization/coordinate/path packaging that instantiates this general analytic theorem on `V`.
+Clause 4 and that geometric packaging still keep the card at Stage 2.

@@ -18,9 +18,7 @@ noncomputable section
 theorem norm_maskedBlockSum_sq_le_hybrid_bound {T r : ℝ} (hT : 0 < T) (hr : 0 < r)
     {A B L P Q : ℕ} (hA : 1 ≤ A) (hB : 1 ≤ B) (hP : 1 ≤ P) (hQ : 2 ≤ Q)
     (hQ2P : Q ≤ 2 * P) (a b : ℕ → ℝ)
-    (hfour : ∀ m ∈ effSet A B P Q L, 4 * (r / m) ≤ (P : ℝ))
-    (hlam : ∀ m₁ ∈ effSet A B P Q L, ∀ m₂ ∈ effSet A B P Q L,
-      curvedLambda (T * |r / m₁ - r / m₂|) (P : ℝ) ≤ 1) :
+    (hfour : ∀ m ∈ effSet A B P Q L, 4 * (r / m) ≤ (P : ℝ)) :
     ‖maskedBlockSum T r A B L P Q a b‖ ^ 2
       ≤ (∑ d ∈ Finset.Ico P Q, |a d| ^ 2)
         * (((Q - P : ℕ) : ℝ) * (∑ m ∈ effSet A B P Q L, |b m| ^ 2)
@@ -29,7 +27,7 @@ theorem norm_maskedBlockSum_sq_le_hybrid_bound {T r : ℝ} (hT : 0 < T) (hr : 0 
                 hybridGapCorrBound T r (effLow A Q) (effHigh B P) P Q h)) := by
   refine le_trans (norm_maskedBlockSum_sq_le T r A B L P Q a b) ?_
   refine mul_le_mul_of_nonneg_left
-    (pairSum_hybrid_block_le hT hr hA hB hP hQ hQ2P b hfour hlam) ?_
+    (pairSum_hybrid_block_le hT hr hA hB hP hQ hQ2P b hfour) ?_
   exact Finset.sum_nonneg fun d _ => sq_nonneg _
 
 /-- Closed hybrid block estimate, with one absolute coefficient-energy constant. -/
@@ -37,7 +35,6 @@ theorem exists_norm_maskedBlockSum_sq_le_hybrid_explicit :
     ∃ C : ℝ, 0 < C ∧ ∀ {T r : ℝ} {A B L U V P Q : ℕ},
       0 < T → 0 < r → 1 ≤ A → 1 ≤ B → 1 ≤ L → 1 ≤ P → 2 ≤ Q →
       Q ≤ 2 * P → Q ≤ L + 1 → 8 * r ≤ (A : ℝ) →
-      T * r ≤ 9 * Real.pi * A * P ^ 2 →
       ‖maskedBlockSum T r A B L P Q (fun d => typeIILong U d)
           (fun m => typeIIShort V m)‖ ^ 2
         ≤ (C * (Q : ℝ) * Real.log L)
@@ -47,14 +44,11 @@ theorem exists_norm_maskedBlockSum_sq_le_hybrid_explicit :
                 (effGap A B P Q))) := by
   obtain ⟨C, hC0, hClong⟩ := exists_sum_typeIILong_sq_block_le
   refine ⟨C, hC0, ?_⟩
-  intro T r A B L U V P Q hT hr hA hB hL hP hQ hQ2P hQL h8 hTr
+  intro T r A B L U V P Q hT hr hA hB hL hP hQ hQ2P hQL h8
   have hfour : ∀ m ∈ effSet A B P Q L, 4 * (r / m) ≤ (P : ℝ) :=
     fun m hm => four_r_div_le_of_mem_effSet hA hP hQ hQ2P hr.le h8 hm
-  have hlam : ∀ m₁ ∈ effSet A B P Q L, ∀ m₂ ∈ effSet A B P Q L,
-      curvedLambda (T * |r / m₁ - r / m₂|) (P : ℝ) ≤ 1 :=
-    fun m₁ hm₁ m₂ hm₂ => curvedLambda_effSet_le_one hT hA hP hQ hQ2P hr.le hTr hm₁ hm₂
   have hmain := norm_maskedBlockSum_sq_le_hybrid_bound hT hr hA hB hP hQ hQ2P
-    (fun d => typeIILong U d) (fun m => typeIIShort V m) hfour hlam
+    (fun d => typeIILong U d) (fun m => typeIIShort V m) hfour
   have hlong := sum_typeIILong_sq_block_abs_le hClong U P Q L hL hQL
   have hshort := sum_typeIIShort_sq_subset_le
     (S := effSet A B P Q L) (N := effHigh B P)
