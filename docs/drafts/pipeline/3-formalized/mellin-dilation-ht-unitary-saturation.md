@@ -1,7 +1,7 @@
 # Mellin-dilation HT unitary saturation
 
 - **ID:** `mellin-dilation-ht-unitary-saturation`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / GENERAL HT HILBERT-GEOMETRY LAW / NYMAN IMPLEMENTATION NO-GO
 - **Scientific status:** `[PROVED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Statement:** The commutant of the positive-dilation representation contains a continuum
@@ -185,10 +185,25 @@ Primary parents:
 
 ## Lean status
 
-`RHTower/L2MellinUnitary.lean` contains the normalized Mellin unitary and the tree contains concrete
-dilation transports. The explicit reciprocal-Gamma HT phase, Holder's theorem, DA-field closure,
-and the complete closed-subspace/commutant saturation theorem are not formalized. Formalizing only
-the unitary multiplier identity would not formalize this card, so it remains at stage 2.
+Fully formalized unconditionally in:
+
+- `formal/GaloisForLFunctions/HTGeometry/UnitaryOrbitGeometry.lean`, providing reusable exact
+  transport of marked closed orbit spans, closure membership, approximation distance, cyclicity,
+  Gram kernels, and finite Gram determinants under any commuting unitary;
+- `formal/GaloisForLFunctions/RHTower/MellinDilationHTUnitarySaturation.lean`, proving the explicit
+  odd reciprocal-Gamma phase hypertranscendental by the reflection quadratic, the continuum
+  injective zero-free HT phase group, real-axis unimodularity and reflection, the spectral
+  multiplier unitary, commutation with every positive dilation, and exact transport on both the
+  multiplicative-Haar carrier and literal normalized `L²((0,∞),dx)` carrier;
+- the same module's global-meromorphic endpoint: every nonzero element of the global meromorphic
+  differential field has at most one DA phase parameter, every countable marked meromorphic family
+  has a countable exceptional union, and a simultaneous HT parameter exists;
+- `exists_mellinHTPositiveRayUnitary_saturation`, coupling that meromorphic selection to exact
+  positive-ray closed-span, distance, membership, cyclicity, and Gram-determinant invariance.
+
+Targeted module build succeeds. Axiom audit for every new endpoint, including the capstone, reports
+only `[propext, Classical.choice, Quot.sound]`. Both new modules are wired into their umbrellas;
+no umbrella build was run.
 
 ## Gates
 
@@ -198,4 +213,17 @@ the unitary multiplier identity would not formalize this card, so it remains at 
 - [x] simultaneous countable HT saturation
 - [x] Nyman route consequence bounded to the unitarily unmarked implementation
 - [x] parent-theory novelty rejection
-- [ ] complete unconditional Lean formalization of the whole theorem
+- [x] complete unconditional Lean formalization of the whole theorem
+
+## 2026-08-26 formalization log
+
+- Audited corpus first; reused reciprocal-Gamma reflection, Hölder hypertranscendence,
+  exponential-pencil DA cancellation, normalized Mellin transport, even/positive-ray carrier
+  unitaries, and global meromorphic-field bridges.
+- Verified primary Nyman parent against Luis Báez-Duarte,
+  *A strengthening of the Nyman--Beurling criterion for the Riemann Hypothesis*,
+  `https://arxiv.org/abs/math/0202141`; abstract states the exact `L²(0,∞)` closure criterion used
+  only as the arithmetically marked application.
+- Final targeted audit:
+  `lake build GaloisForLFunctions.RHTower.MellinDilationHTUnitarySaturation` succeeded.
+- No full build or umbrella build run; no nonstandard axioms introduced.

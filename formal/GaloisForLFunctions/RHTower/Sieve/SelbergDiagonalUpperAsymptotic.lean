@@ -34,7 +34,8 @@ def selbergPrincipalScaledModel (a b N : ℕ) : ℝ :=
       coprimeLogMoebius 1 ((N : ℝ) / ((b * d : ℕ) : ℝ)) /
         (d : ℝ)
 
-private theorem diagonal_double_sum_eq {X Y : ℕ} (h k : ℕ → ℝ) :
+/-- A double sum against the diagonal reciprocal coefficient collapses to its common diagonal. -/
+theorem selbergDiagonalReciprocalCoeff_double_sum_eq {X Y : ℕ} (h k : ℕ → ℝ) :
     (∑ d ∈ Finset.Icc 1 X, ∑ e ∈ Finset.Icc 1 Y,
       selbergDiagonalReciprocalCoeff d e * (h d * k e)) =
       ∑ d ∈ Finset.Icc 1 (min X Y), (1 / (d : ℝ)) * (h d * k d) := by
@@ -62,6 +63,14 @@ private theorem diagonal_double_sum_eq {X Y : ℕ} (h k : ℕ → ℝ) :
   ext d
   simp only [Finset.mem_filter, Finset.mem_Icc]
   omega
+
+/-- The common truncation of two positive dilations is division by their maximum. -/
+theorem min_natDiv_eq_natDiv_max (N a b : ℕ) (ha : 0 < a) (hb : 0 < b) :
+    min (N / a) (N / b) = N / max a b := by
+  by_cases hab : a ≤ b
+  · rw [max_eq_right hab, min_eq_right (Nat.div_le_div_left hab ha)]
+  · have hba : b ≤ a := le_of_not_ge hab
+    rw [max_eq_left hba, min_eq_left (Nat.div_le_div_left hba hb)]
 
 theorem selbergPrincipalCoeff_weighted_eq_scaledModel
     (a b N : ℕ) (ha : 0 < a) (hb : 0 < b) :
@@ -109,13 +118,8 @@ theorem selbergPrincipalCoeff_weighted_eq_scaledModel
             (Finset.mem_Icc.mp he).1)]
   rw [Finset.sum_congr rfl (fun d hd => Finset.sum_congr rfl
     (fun e he => by rw [hinner d hd e he]))]
-  rw [diagonal_double_sum_eq]
-  have hmin : min (N / a) (N / b) = N / max a b := by
-    by_cases hab : a ≤ b
-    · rw [max_eq_right hab, min_eq_right (Nat.div_le_div_left hab ha)]
-    · have hba : b ≤ a := le_of_not_ge hab
-      rw [max_eq_left hba, min_eq_left (Nat.div_le_div_left hba hb)]
-  rw [hmin]
+  rw [selbergDiagonalReciprocalCoeff_double_sum_eq]
+  rw [min_natDiv_eq_natDiv_max N a b ha hb]
   apply Finset.sum_congr rfl
   intro d hd
   ring

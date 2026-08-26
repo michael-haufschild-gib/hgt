@@ -37,13 +37,17 @@ noncomputable def additiveDegree (basis : Module.Basis ι k V)
   classical
   simp [additiveDegree]
 
+omit [AddCommGroup M] in
 /-- Every coefficient degree is bounded by the maximum, including coefficients outside support. -/
 theorem coefficientPolynomial_totalDegree_le (basis : Module.Basis ι k V)
     (p : AddMonoidAlgebra (SymmetricAlgebra k V) M) (m : M) :
     (coefficientPolynomial basis p m).totalDegree ≤ additiveDegree basis p := by
   classical
   by_cases hm : m ∈ p.coeff.support
-  · exact Finset.le_sup hm
+  · change (coefficientPolynomial basis p m).totalDegree ≤
+      p.coeff.support.sup fun a => (coefficientPolynomial basis p a).totalDegree
+    exact Finset.le_sup (α := ℕ)
+      (f := fun a => (coefficientPolynomial basis p a).totalDegree) hm
   · have hcoeff : p.coeff m = 0 := Finsupp.notMem_support_iff.mp hm
     simp [coefficientPolynomial, hcoeff]
 
@@ -97,6 +101,17 @@ theorem additiveDegree_smul_le (basis : Module.Basis ι k V) (c : k)
   exact (MvPolynomial.totalDegree_smul_le c _).trans
     (coefficientPolynomial_totalDegree_le basis p m)
 
+/-- Additive degree of one homogeneous weight is the polynomial degree of its coefficient. -/
+theorem additiveDegree_single (basis : Module.Basis ι k V) (m : M)
+    (b : SymmetricAlgebra k V) :
+    additiveDegree basis (AddMonoidAlgebra.single m b) =
+      (SymmetricAlgebra.equivMvPolynomial basis b).totalDegree := by
+  classical
+  by_cases hb : b = 0
+  · subst b
+    simp
+  · simp [additiveDegree, coefficientPolynomial, hb]
+
 /-- Degree-at-most-`d` elements form a linear subspace. -/
 noncomputable def degreeLE (basis : Module.Basis ι k V) (d : ℕ) :
     Submodule k (AddMonoidAlgebra (SymmetricAlgebra k V) M) where
@@ -110,6 +125,19 @@ noncomputable def degreeLE (basis : Module.Basis ι k V) (d : ℕ) :
     (p : AddMonoidAlgebra (SymmetricAlgebra k V) M) :
     p ∈ degreeLE basis d ↔ additiveDegree basis p ≤ d := Iff.rfl
 
+/-- Every group-like monomial belongs to additive degree zero. -/
+theorem single_one_mem_degreeLE (basis : Module.Basis ι k V) (m : M) :
+    AddMonoidAlgebra.single m (1 : SymmetricAlgebra k V) ∈ degreeLE basis 0 := by
+  rw [mem_degreeLE_iff, additiveDegree_single]
+  simp
+
+/-- A homogeneous basis generator belongs to additive degree one. -/
+theorem single_ι_basis_mem_degreeLE_one (basis : Module.Basis ι k V) (m : M) (i : ι) :
+    AddMonoidAlgebra.single m (SymmetricAlgebra.ι k V (basis i)) ∈ degreeLE basis 1 := by
+  rw [mem_degreeLE_iff, additiveDegree_single]
+  simp [SymmetricAlgebra.equivMvPolynomial, MvPolynomial.totalDegree_X]
+
+omit [AddCommGroup M] in
 /-- A degree-zero coefficient is a scalar polynomial. -/
 theorem coefficientPolynomial_eq_C_of_additiveDegree_eq_zero
     (basis : Module.Basis ι k V)

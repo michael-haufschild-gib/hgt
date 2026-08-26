@@ -651,3 +651,66 @@ The later skew-primitive result above sharpens the final paragraph immediately p
 section.  Common-factor scalarity and every coradical/skew-primitive obstruction are closed.  Exact
 remaining theorem is the Heyneman–Radford injectivity step for the explicit pointed coalgebra
 `Sym(V)[M]`; no conditional interface for that theorem has been introduced.
+
+## Residual mixed Hopf kernel vanishing formalized (2026-08-26)
+
+Corpus search first recovered the existing minimal-degree, exact partial-derivative, coalgebra-slice,
+skew-primitive, homogeneous-kernel, and factor-image-intersection theorems.  The new work reuses
+those declarations and adds only the missing group-graded filtration transport needed to pass from
+an arbitrary kernel element to the already-classified affine layer.
+
+The reusable leaves
+`GroupGradedSymmetricDegree.lean`,
+`AdditivePolynomialCoalgebraFiltration.lean`,
+`GroupGradedSymmetricCoalgebraFiltration.lean`,
+`GroupGradedSymmetricAffine.lean`, and
+`GroupGradedBialgKernelDegreeOne.lean` prove that a noninjective bialgebra morphism out of
+`Sym(V)[M]` over a characteristic-zero field has a nonzero kernel element of additive degree at
+most one.  Exact fixed-weight counit and linear-coefficient slices then isolate its affine
+coefficient.
+
+`formal/GaloisForLFunctions/HTGeometry/MixedProjectionTensorKernelVanishing.lean` applies this to
+the actual classified mixed projection and proves
+
+```text
+groupGradedJointBialgHom_injective
+mixedProjectionTensorBialgHom_injective
+jointKernel_eq_bot
+groupGradedJointKernel_eq_bot
+```
+
+Degree zero reduces to the injective torus factor.  In degree one, the fixed-weight slice leaves a
+scalar group-algebra error; the affine coefficient is a scalar plus one symmetric generator.
+The resulting equality lies in both classified factor images, so
+`factor_images_intersection_eq_scalars` makes the generator scalar, contradicting exact degree
+one.  Thus every residual mixed Hopf relation vanishes, not only homogeneous or skew-primitive
+ones.  No connectedness, finite-dimensionality, reducedness, or added theorem premise is used.
+
+Direct checks and the targeted leaf build pass.  The new declarations audit to only
+`[propext, Classical.choice, Quot.sound]`; all leaves are wired into `HTGeometry` without an
+umbrella build.  The mixed-factor classification gate is closed.  Remaining card gates are now
+the translated-locus subgroup closure/connectedness construction and transport of the numerical
+Kähler relation to invariant-form restrictions; Baker and torus saturation are already formalized.
+Card remains Stage 2.
+
+## Additive-exponential point evaluation layer formalized (2026-08-26)
+
+Fresh corpus search found only the complex-analytic product-torus character and a Hurwitz-specific
+Laurent evaluator, not a field-generic evaluator for the finite-support character lattice used by
+the mixed subgroup coordinate algebra.  `AlgebraicTorusCharacter.lean` now provides the reusable
+character, its exponent-addition and point-multiplication laws, and evaluation
+
+```text
+k[ℤ⁽ⁿ⁾] →ₐ[k] L
+```
+
+at every `L`-valued split-torus point over an arbitrary field extension `k → L`.
+`AffineExponentialPointEvaluation.lean` packages `L`-points of `Gₐⁿ × Gₘⁿ` as an actual
+commutative group, constructs the mixed coordinate evaluation, proves its values on the canonical
+additive coordinates and torus characters, and proves that both factor evaluations intertwine
+point multiplication/addition with Hopf comultiplication.
+
+Both direct checks and targeted leaf builds pass.  New declarations audit to at most
+`[propext, Classical.choice, Quot.sound]`; both leaves are wired into `HTGeometry` without an
+umbrella build.  This supplies the point/evaluation foundation for the translated-locus subgroup
+closure still required by the card.  It does not assume that closure or promote the card.

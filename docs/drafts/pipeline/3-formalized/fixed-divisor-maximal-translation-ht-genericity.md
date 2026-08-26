@@ -1,7 +1,7 @@
 # Fixed-divisor maximal translation-HT genericity
 
 - **ID:** `fixed-divisor-maximal-translation-ht-genericity`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) — `[PROVED HERE] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Lane:** general hypertranscendence; fixed-divisor fibers; countable translation matroids
 - **Statement:** For every nonzero entire function `W` and every countable set of shifts `H`, a
@@ -260,16 +260,26 @@ Primary adjacent sources checked:
 
 ## Lean status
 
-No Lean claim is made.  Formalization requires a complete formal treatment of the Frechet/Baire
-space `O(C)`, simultaneous Runge--Hermite interpolation, divisor preservation by exponential
-gauges, and finite-support differential-monomial independence.  Partial algebraic anchors would
-not formalize this theorem.
+Complete unconditional formalization:
+
+- `FixedDivisorTranslationFreeness.lean` proves one dense residual gauge phase simultaneously
+  excludes every finite differential relation for every injective finite complex-shift packet and
+  preserves the zero set.
+- `FixedDivisorDifferentialFieldUniversality.lean` upgrades that functional statement to genuine
+  differential independence over `ℂ(z)` in the upper-end meromorphic field, preserves every
+  analytic zero multiplicity, and constructs the canonical labelled generated-field equivalence
+  for any two prescribed entire divisors.  The equivalence carries every labelled jet to its
+  counterpart and commutes with derivation.
+
+The formal endpoint is stronger than the countable-`H` statement: one residual phase works for the
+full complex translation palette, so restriction to every countable subset or subgroup is
+immediate.
 
 ## Gates
 
 - [x] 0 -> 1: exact theorem, complete proof architecture, failure modes, and route scope
 - [x] 1 -> 2: complete paper proof, explicit interpolation lemma, and final bridge verdict
-- [ ] 2 -> 3: complete unconditional theorem formalized in Lean
+- [x] 2 -> 3: complete unconditional theorem formalized in Lean
 - [ ] 3 -> 4: standalone paper and independent novelty review
 
 ## Log
@@ -280,3 +290,7 @@ not formalize this theorem.
 - 2026-07-11 -- Closed the interpolation hinge explicitly and downgraded the result to a bridge:
   the exact packaging was not located, but the proof is a routine fixed-divisor extension of known
   Baire-genericity machinery.
+- 2026-08-26 -- Completed object-level Lean bridge and exact generated differential-field
+  universality in `FixedDivisorDifferentialFieldUniversality.lean`; targeted module build passed
+  and every new endpoint has only Lean's standard `propext`, `Classical.choice`, and `Quot.sound`
+  dependencies.

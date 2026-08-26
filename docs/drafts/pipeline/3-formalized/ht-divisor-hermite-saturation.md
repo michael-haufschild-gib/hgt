@@ -1,7 +1,7 @@
 # Divisor-Hermite saturation by hypertranscendental functions
 
 - **ID:** ht-divisor-hermite-saturation
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) — `[BRIDGE]`; scientifically not new
 - **Source:** whole-class hypertranscendence program; `finite-jet-nonidentifiability-ht`;
   `asymptotic-flat-ht-invisibility`; exponential-perturbation literature; Weierstrass interpolation
@@ -153,23 +153,37 @@ not factored through this saturated observation channel.
 
 ## Formal status
 
-The algebraic selection mechanism is formalized and imported through
-`GaloisForLFunctions.ExponentialGaugeSelection`:
+Fully formalized in
+`GaloisForLFunctions.RHTower.DivisorHermiteHTSaturation`.
 
-- `exceptionalParameters_eq_relationCoset`
-- `exceptionalParameters_subsingleton`
-- `exceptionalParameters_eq_empty_or_singleton_or_univ`
+- `DivisorHermiteObservationFiber` is the project-native exact fiber of global meromorphic-field
+  elements with an actual realization, complete local meromorphic-order equality, holomorphy at
+  every marked site, and the full prescribed finite Hermite table.
+- `exists_divisorHermite_hypertranscendental_saturation` proves the main theorem for every nonzero
+  global meromorphic representative and every closed discrete site set with arbitrary sitewise
+  finite depths. It constructs an injective real-indexed HT family in the exact fiber and proves
+  its range has cardinality `Cardinal.continuum`.
+- `differentialAlgebraicOver_divisorHermiteGaugeElement_unique` proves the one-exception law;
+  `hypertranscendentalOver_divisorHermiteGaugeElement_of_base_DA` proves that a DA base is the
+  parameter-zero member and every nonzero parameter is HT.
+- `divisorHermiteGaugeRepresentative_order` proves exact divisor preservation;
+  `divisorHermiteGaugeRepresentative_jet` proves all prescribed jet equalities;
+  `realizesMero_divisorHermiteGaugeRepresentative` connects the field element to the actual
+  meromorphic function.
+- `eq_of_frequently_divisorHermite_values` and `eq_of_full_divisorHermite_germ` formalize both
+  identity-theorem sharpness boundaries.
 
-The narrow Lean file check, module build, and formal lint pass. The concrete analytic layer—the DA
-field of meromorphic functions, Hölder's theorem, Weierstrass products, orders of zeros, and Hermite
-jet preservation—is not yet available in the Lean tree, so this card remains at stage 2 rather than
-misgrading the bridge formalization as a formalization of the new theorem.
+Audit: `lake env lean GaloisForLFunctions/RHTower/DivisorHermiteHTSaturation.lean` passed;
+targeted `lake build GaloisForLFunctions.RHTower.DivisorHermiteHTSaturation` passed; axiom checks
+for all new endpoints report only `propext`, `Classical.choice`, and `Quot.sound`. Module is wired
+into `GaloisForLFunctions.RHTower`; no umbrella build was run. Global formal lint reports only
+pre-existing unrelated umbrella-reachability failures and large-file warnings, not this module.
 
 ## Gates
 
 - [x] 0 -> 1: well-posed observation fiber, deterministic attack, parent reductions
 - [x] 1 -> 2: complete proof and sharp boundary; scientific-novelty gate explicitly failed
-- [ ] 2 -> 3: formalize the concrete meromorphic/entire specialization and the two nested
+- [x] 2 -> 3: formalize the concrete meromorphic/entire specialization and the two nested
   Weierstrass-gauge applications
 - [ ] 3 -> 4: comprehensive bibliography and standalone paper
 
@@ -190,3 +204,7 @@ misgrading the bridge formalization as a formalization of the new theorem.
 - 2026-07-10 — deterministic candidate competition; proved the divisor-Hermite saturation theorem,
   then downgraded it to `[BRIDGE]` because it is a routine cross-parent corollary rather than new
   scientific knowledge; no numerical or random-search discovery.
+- 2026-08-26 — formalized the exact global-meromorphic observation fiber, closed-discrete Hermite
+  exponent, zero-free divisor preservation, arbitrary finite jet preservation, one-exception DA
+  law, injective continuum HT saturation, DA-base specialization, and both identity-theorem
+  sharpness clauses; targeted build and new-declaration axiom audit passed; moved to stage 3.

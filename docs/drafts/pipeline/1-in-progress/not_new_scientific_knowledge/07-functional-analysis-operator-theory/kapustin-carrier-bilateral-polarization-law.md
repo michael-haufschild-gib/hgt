@@ -1,8 +1,8 @@
 # Kapustin's exact carrier requires a source-selected full-sector polarization
 
 - **ID:** `kapustin-carrier-bilateral-polarization-law`
-- **Stage:** 2-fully-proven/not_new_scientific_knowledge
-- **Type:** THEOREM (paper), `[PROVED HERE; BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]`
+- **Stage:** 1-in-progress/not_new_scientific_knowledge
+- **Type:** CONJECTURE, `[BRIDGE; OPEN CORE; NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Source:** Kapustin's exact Krein-space Hilbert--Polya operator; Makarov--Poltoratski
   Beurling--Malliavin theory for Toeplitz kernels
 - **Statement:** Every nonzero bounded analytic Kapustin gauge has a critical-line metric weight
@@ -325,11 +325,11 @@ compact-open regular-germ convergence.
 ## Gates
 
 - [x] 0 -> 1: exact constant-sign question and Toeplitz-kernel falsifier isolated.
-- [x] 1 -> 2: complete upper-half-plane rotation, bounded-phase cancellation, kernel product,
-  Makarov--Poltoratski triviality, index, and polarization proof.
-- [ ] 2 -> 3: no Lean formalization selected.  The present tree lacks Hardy/Smirnov Toeplitz kernels,
-  canonical boundary phase, digamma asymptotics, and the Makarov--Poltoratski density theorem; a
-  finite-dimensional wrapper would not formalize the analytic result.
+- [ ] 1 -> 2: reopened on 2026-08-26.  Bounded-phase equation `(1.8)` was applied to a merely
+  measurable phase at `p = 1/2`, and half-power admission does not imply local `L^1`.  Exact
+  oriented semicircle endpoint remains open.
+- [ ] 2 -> 3: substantial Hardy/Smirnov, inner--outer, reciprocal-Gamma, measurable carrier, and
+  operator-ideal infrastructure is Lean-proved, but no unconditional universal sign theorem exists.
 - [ ] 3 -> 4: independent operator-theory review and publication-level parent audit remain.
 
 ## Route disposition
@@ -431,3 +431,46 @@ SmirnovToeplitzKernelElement (x ↦ exp(i * kapustinToeplitzPhase x))
 including inner/outer regularization and Kolmogorov little-weak-`L¹`. This exact bridge turns the
 already constructed literal kernel element into unconditional sign contradiction; no surrogate
 phase premise is acceptable.
+
+## Proof-status correction (2026-08-26)
+
+**True status:** `[CONJECTURE] [BRIDGE] [OPEN CORE]`.  The universal arbitrary-`H^\infty`
+statement is not dependency-closed on paper and is not Lean-proved.
+
+The application of Makarov--Poltoratski equation `(1.8)` in Step 2 is outside its hypotheses.
+Their bounded-phase corollary assumes a continuous phase for `p < 1`; they explicitly state that
+continuity may be omitted only for `p >= 1`.  Here `b = arg(q_phi)` is merely measurable, while
+the proof applies the result with `p = 1/2` to `2b`.
+
+This is structural.  Squaring the phase identity discards the orientation supplied by
+`Re(q_phi) >= 0`: every unimodular ratio has a measurable half-angle in `[-pi/2, pi/2]`.
+Consequently, the asserted measurable endpoint theorem would manufacture the same collision even
+without a one-sided-sign assumption.  Moreover, an analytic `H^(1/2)` boundary need not be locally
+`L^1`, so the constructed half-power element does not automatically belong to the literal class
+`N^+[V] = N^+ intersect L^1_loc`.
+
+`[CORPUS]` Existing indexed Blaschke products, exact zero characterization, contractivity, `H^2`
+isometry, one-zero bounded division, canonical inner--outer factorization, and outer regularization
+must be reused.  They do not currently contain either a full smooth-symbol `N^+` basic criterion or
+an oriented semicircle endpoint theorem.
+
+`[LEAN-PROVED]` The strongest unconditional survivors are:
+
+- either one-sided sign assumption yields the exact half-power collision
+  `kapustinSmirnovToeplitzHalfElement_of_rotated_nonnegative` or its negative analogue;
+- clearing its outer denominator yields the nonzero bounded multiplier
+  `kapustinGaugeRegularizedMultiplier` and its exact bounded phase-reflection identity;
+- reciprocal-Gamma superlinear growth excludes every additive monotone-inner/weak-outer phase
+  witness, including bounded additive regularizations;
+- positive-measure sign sets imply the literal bilateral infinite Krein index and all recorded
+  full-sector metric-correction consequences.
+
+`[CONJECTURE]` **Oriented semicircle exclusion.**  A nonzero bounded analytic upper-half-plane
+gauge cannot make `Re(kapustinRotatedGaugeQ Phi)` one-sided almost everywhere.
+
+`[OPEN CORE]` Prove this while retaining the unsquared right-half-plane orientation.  A valid route
+must either derive the smooth-symbol `N^+` basic criterion from the existing inner--outer
+factorization, including removal of boundary singular factors using local `L^1`, or directly prove
+that a right-semicircle perturbation of the reciprocal-Gamma phase cannot be the boundary phase of
+a nonzero bounded analytic multiplier.  Splitting the phase and applying the measurable `p = 1`
+theorem leaves a bounded measurable terminal phase, so it does not close this core.
