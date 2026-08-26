@@ -36,6 +36,52 @@ theorem measurable_circleCayleyInverse : Measurable circleCayleyInverse :=
   simpa [circleCayley_measurableEmbedding] using
     circleCayley_measurableEmbedding.equivRange.symm_apply_apply x
 
+/-- Every unit-circle point except `1` is a finite real Cayley value. -/
+theorem exists_circleCayley_eq_of_ne_one
+    (z : Circle) (hz : (z : ℂ) ≠ 1) :
+    ∃ x : ℝ, circleCayley x = z := by
+  let x : ℝ := -(z : ℂ).im / (1 - (z : ℂ).re)
+  have hnormSq : (z : ℂ).re ^ 2 + (z : ℂ).im ^ 2 = 1 := by
+    calc
+      (z : ℂ).re ^ 2 + (z : ℂ).im ^ 2 = Complex.normSq (z : ℂ) := by
+        rw [Complex.normSq_apply]
+        ring
+      _ = ‖(z : ℂ)‖ ^ 2 := (Complex.sq_norm _).symm
+      _ = 1 := by rw [Circle.norm_coe]; norm_num
+  have hre : 1 - (z : ℂ).re ≠ 0 := by
+    intro hzero
+    have hreOne : (z : ℂ).re = 1 := by linarith
+    have himZero : (z : ℂ).im = 0 := by
+      rw [hreOne] at hnormSq
+      nlinarith
+    apply hz
+    apply Complex.ext
+    · simpa [hreOne]
+    · simpa [himZero]
+  refine ⟨x, Subtype.ext ?_⟩
+  rw [circleCayley_coe, realCayley]
+  apply (div_eq_iff (real_add_I_ne_zero x)).2
+  apply Complex.ext
+  · simp only [Complex.sub_re, Complex.ofReal_re, I_re, sub_zero,
+      Complex.mul_re, Complex.add_re, Complex.add_im, Complex.ofReal_im,
+      I_im, add_zero, zero_mul, mul_one]
+    dsimp [x]
+    field_simp [hre]
+    ring
+  · simp only [Complex.sub_im, Complex.ofReal_im, I_im, zero_sub,
+      Complex.mul_im, Complex.add_re, Complex.add_im, Complex.ofReal_re,
+      add_zero, mul_one]
+    dsimp [x]
+    field_simp [hre]
+    nlinarith
+
+/-- The measurable Cayley inverse is a right inverse away from the omitted point `1`. -/
+@[simp] theorem circleCayley_circleCayleyInverse_of_ne_one
+    (z : Circle) (hz : (z : ℂ) ≠ 1) :
+    circleCayley (circleCayleyInverse z) = z := by
+  obtain ⟨x, rfl⟩ := exists_circleCayley_eq_of_ne_one z hz
+  rw [circleCayleyInverse_circleCayley]
+
 theorem abs_arg_le_pi_div_two_of_re_nonneg {z : ℂ}
     (hz : z ≠ 0) (hre : 0 ≤ z.re) :
     |z.arg| ≤ Real.pi / 2 := by
