@@ -60,7 +60,6 @@ theorem DiskSmirnovBoundary.exists_hardyDisk_of_memLp_two_circleBoundary
     have hmul := diskMultiplierBoundaryFun_mul_ae (DiskMultiplier.const c) O
     have hconst := diskMultiplierBoundaryFun_const_ae c
     filter_upwards [hmul, hconst] with z hzMul hzConst
-    change diskMultiplierBoundaryFun D z = c * diskMultiplierBoundaryFun O z
     change ((hardyDiskBoundary (hardyOf D) : Lp ℂ 2 circleLebesgue) : Circle → ℂ) z = _
     rw [hboundary]
     change diskMultiplierBoundaryFun ((DiskMultiplier.const c).mul O) z = _
@@ -75,7 +74,6 @@ theorem DiskSmirnovBoundary.exists_hardyDisk_of_memLp_two_circleBoundary
     have hboundary := congrArg hardyDiskBoundary hhardy
     have hmul := diskMultiplierBoundaryFun_mul_ae O (invn n)
     filter_upwards [hmul] with z hzMul
-    change diskMultiplierBoundaryFun (u n) z = _
     change ((hardyDiskBoundary (hardyOf (u n)) : Lp ℂ 2 circleLebesgue) :
       Circle → ℂ) z = _
     rw [hboundary]
@@ -90,7 +88,6 @@ theorem DiskSmirnovBoundary.exists_hardyDisk_of_memLp_two_circleBoundary
     have hinner := diskMultiplierBoundaryFun_mul_ae F.numerator (invn n)
     have hconst := diskMultiplierBoundaryFun_const_ae c⁻¹
     filter_upwards [houter, hinner, hconst] with z hzOuter hzInner hzConst
-    change diskMultiplierBoundaryFun (v n) z = _
     rw [hzOuter, hzInner, hzConst]
   have hqCoe : (⇑q : Circle → ℂ) =ᵐ[circleLebesgue] F.circleBoundary :=
     hF.coeFn_toLp
@@ -127,8 +124,6 @@ theorem DiskSmirnovBoundary.exists_hardyDisk_of_memLp_two_circleBoundary
       Tendsto (fun i => diskMultiplierBoundaryFun (u (ns i)) z)
         atTop (nhds 1) := by
     filter_upwards [huAE, hone] with z hz hzone
-    change Tendsto (fun i => diskMultiplierBoundaryFun (u (ns i)) z)
-      atTop (nhds 1)
     simpa only [diskMultiplierBoundaryFun, hzone] using hz
   have huBound : ∀ᵐ z ∂circleLebesgue, ∀ i : ℕ,
       ‖diskMultiplierBoundaryFun (u (ns i)) z‖ ≤ 1 := by
@@ -165,7 +160,10 @@ theorem DiskSmirnovBoundary.exists_hardyDisk_of_memLp_two_circleBoundary
     have hmul : Tendsto
         (fun i => diskMultiplierBoundaryFun (u (ns i)) z * q z)
         atTop (nhds (1 * q z)) := hz.mul tendsto_const_nhds
-    have hsub := hmul.sub tendsto_const_nhds
+    have hsub : Tendsto
+        (fun i => diskMultiplierBoundaryFun (u (ns i)) z * q z - q z)
+        atTop (nhds (1 * q z - q z)) :=
+      hmul.sub (tendsto_const_nhds (x := q z))
     have hnorm := hsub.norm
     simpa [energy] using hnorm.pow 2
   have henergyIntegral : Tendsto
@@ -207,7 +205,6 @@ theorem DiskSmirnovBoundary.exists_hardyDisk_of_memLp_two_circleBoundary
   obtain ⟨f, hf⟩ := hqRange
   refine ⟨f, ?_⟩
   filter_upwards [hqCoe] with z hz
-  change (hardyDiskBoundary f : Circle → ℂ) z = F.circleBoundary z
   rw [hf]
   exact hz
 

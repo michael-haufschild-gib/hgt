@@ -10,7 +10,7 @@ outer-factor half-power needed when an oriented Toeplitz collision must retain o
 inner factor instead of squaring the entire boundary phase.
 -/
 
-open Complex Metric Set
+open Complex MeasureTheory Metric Set
 
 namespace GaloisForLFunctions.HTGeometry
 
@@ -61,6 +61,27 @@ theorem IsOuterDiskMultiplier.of_square_eq
     hardyFun_hardyMul root f hz, hardyFun_hardyMul phi f hz]
   rw [← hsq z (by simpa [Metric.mem_ball, dist_zero_right] using hz)]
   ring
+
+/-- Analytic square identities pass to the exact circle-boundary representatives. -/
+theorem diskMultiplierBoundaryFun_sq_ae_of_square_eq
+    {phi root : DiskMultiplier}
+    (hsq : ∀ z ∈ ball (0 : ℂ) 1, root.fn z ^ 2 = phi.fn z) :
+    (fun z => diskMultiplierBoundaryFun root z ^ 2) =ᵐ[circleLebesgue]
+      diskMultiplierBoundaryFun phi := by
+  have hhardy : hardyOf (root.mul root) = hardyOf phi := by
+    apply hardyDisk_ext
+    intro z hz
+    rw [hardyFun_hardyOf _ hz, hardyFun_hardyOf phi hz]
+    change root.fn z * root.fn z = phi.fn z
+    rw [← pow_two]
+    exact hsq z (by simpa [Metric.mem_ball, dist_zero_right] using hz)
+  have hboundary := congrArg hardyDiskBoundary hhardy
+  filter_upwards [diskMultiplierBoundaryFun_mul_ae root root] with z hz
+  rw [pow_two, ← hz]
+  change ((hardyDiskBoundary (hardyOf (root.mul root)) :
+    Lp ℂ 2 circleLebesgue) : Circle → ℂ) z = _
+  rw [hboundary]
+  rfl
 
 end
 

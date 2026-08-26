@@ -113,6 +113,23 @@ def d4GaugeFixedTeukolskyTotalPlusPlusMinusCokernelCausalCut
   ell (d4GaugeFixedTeukolskyTotalPlusPlusMinusCausalCut
     B C RppRet RpmRet RppAdv RpmAdv p m)
 
+/-- Cokernel causal cut is literally the retarded total section minus the advanced total
+section. -/
+theorem d4GaugeFixedTeukolskyTotalPlusPlusMinusCokernelCausalCut_eq_section_sub
+    (ell : Y →ₗ[ℂ] ℂ)
+    (B : X →ₗ[ℂ] X →ₗ[ℂ] Y)
+    (C : X →ₗ[ℂ] X →ₗ[ℂ] X →ₗ[ℂ] Y)
+    (RppRet RpmRet RppAdv RpmAdv : Y →ₗ[ℂ] X) (p m : X) :
+    d4GaugeFixedTeukolskyTotalPlusPlusMinusCokernelCausalCut
+        ell B C RppRet RpmRet RppAdv RpmAdv p m =
+      d4GaugeFixedTeukolskyTotalPlusPlusMinusCokernelSection
+          ell B C RppRet RpmRet p m -
+        d4GaugeFixedTeukolskyTotalPlusPlusMinusCokernelSection
+          ell B C RppAdv RpmAdv p m := by
+  simp [d4GaugeFixedTeukolskyTotalPlusPlusMinusCokernelCausalCut,
+    d4GaugeFixedTeukolskyTotalPlusPlusMinusCausalCut,
+    d4GaugeFixedTeukolskyTotalPlusPlusMinusCokernelSection, map_sub]
+
 /-- The nonlinear cokernel cut is the sum of the two projected response discontinuities. -/
 theorem d4GaugeFixedTeukolskyTotalPlusPlusMinusCokernelCausalCut_eq
     (ell : Y →ₗ[ℂ] ℂ)

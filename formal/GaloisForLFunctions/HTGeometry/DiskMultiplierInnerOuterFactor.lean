@@ -275,6 +275,25 @@ theorem diskMultiplierInnerFactor_mul_outerFactor_fn
   rw [hardyFun_hardyOf _ hz', hardyFun_hardyOf phi hz'] at h
   exact h
 
+/-- Exact circle-boundary inner--outer factorization. -/
+theorem diskMultiplierBoundaryFun_innerFactor_mul_outerFactor_ae
+    (phi : DiskMultiplier)
+    (hphi : ∃ z ∈ Metric.ball (0 : ℂ) 1, phi.fn z ≠ 0) :
+    (fun z => diskMultiplierBoundaryFun (diskMultiplierInnerFactor phi hphi) z *
+      diskMultiplierBoundaryFun (diskMultiplierOuterFactor phi hphi) z) =ᵐ[
+        circleLebesgue] diskMultiplierBoundaryFun phi := by
+  have hhardy := hardyOf_innerFactor_mul_outerFactor phi hphi
+  filter_upwards [diskMultiplierBoundaryFun_mul_ae
+    (diskMultiplierInnerFactor phi hphi)
+    (diskMultiplierOuterFactor phi hphi)] with z hz
+  rw [← hz]
+  change ((hardyDiskBoundary (hardyOf
+    ((diskMultiplierInnerFactor phi hphi).mul
+      (diskMultiplierOuterFactor phi hphi))) :
+        Lp ℂ 2 circleLebesgue) : Circle → ℂ) z = _
+  rw [hhardy]
+  rfl
+
 /-- Exact real-line boundary factorization, independent of representative choices. -/
 theorem diskMultiplierLineBoundary_innerFactor_mul_outerFactor_ae
     (phi : DiskMultiplier)

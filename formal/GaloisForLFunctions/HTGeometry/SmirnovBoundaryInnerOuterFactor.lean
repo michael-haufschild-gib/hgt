@@ -32,6 +32,20 @@ theorem DiskSmirnovBoundary.measurable_circleBoundaryMeasurableRep
   (measurable_diskMultiplierBoundaryMeasurableRep F.numerator).div
     (measurable_diskMultiplierBoundaryMeasurableRep F.denominator)
 
+/-- The exact circle-boundary representative of every Smirnov quotient is strongly measurable
+almost everywhere. -/
+theorem DiskSmirnovBoundary.aestronglyMeasurable_circleBoundary
+    (F : DiskSmirnovBoundary) :
+    AEStronglyMeasurable F.circleBoundary circleLebesgue := by
+  apply F.measurable_circleBoundaryMeasurableRep.aestronglyMeasurable.congr
+  filter_upwards [diskMultiplierBoundaryMeasurableRep_ae F.numerator,
+    diskMultiplierBoundaryMeasurableRep_ae F.denominator] with z hn hd
+  change diskMultiplierBoundaryMeasurableRep F.numerator z /
+      diskMultiplierBoundaryMeasurableRep F.denominator z =
+    diskMultiplierBoundaryFun F.numerator z /
+      diskMultiplierBoundaryFun F.denominator z
+  rw [hn, hd]
+
 /-- An a.e. equality of measurable circle functions can be recovered from its real Cayley
 pullback.  The omitted Cayley point is null because the weighted real Cayley map pushes forward
 exactly to normalized circle measure. -/

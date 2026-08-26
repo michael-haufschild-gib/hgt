@@ -304,10 +304,14 @@ private theorem source_pair_grade_two_raw_bound
   nlinarith
 
 set_option maxHeartbeats 2400000 in
-/-- Sixth logarithmic source jet is strictly positive on the nonnegative source half-line. -/
-theorem thetaCuspLikelihoodSourceLogPartitionJetSix_pos
+/-- Quantitative sixth logarithmic source orientation.  After every negative Faa di Bruno
+particle grade is paid, more than `2/25` of the normalized leading sixth spectral moment
+survives. -/
+theorem two_twentyFifths_mul_likelihoodSixthMoment_lt_sourceLogPartitionJetSix
     {x : ℝ} (hx : 0 ≤ x) :
-    0 < thetaCuspLikelihoodSourceLogPartitionJetSix x := by
+    (2 / 25 : ℝ) * thetaCuspSingleAtomReflectionScale 1 x ^ 6 *
+        thetaCuspLikelihoodNormalizedMoment (thetaCuspLikelihoodCoordinate x) 6 <
+      thetaCuspLikelihoodSourceLogPartitionJetSix x := by
   let A := thetaCuspSingleAtomReflectionScale 1 x
   let B := thetaCuspLikelihoodCoordinate x
   let p := thetaCuspLikelihoodTailProbability B
@@ -537,10 +541,10 @@ theorem thetaCuspLikelihoodSourceLogPartitionJetSix_pos
     pow_lt_pow_left₀ hpLt hp0 (by norm_num)
   have hp5 : p ^ 5 < (1 / 400 : ℝ) ^ 5 :=
     pow_lt_pow_left₀ hpLt hp0 (by norm_num)
-  have hbudget : 383 * p + 11700 * p ^ 3 + 3600 * p ^ 5 < 1 := by
+  have hbudget : 383 * p + 11700 * p ^ 3 + 3600 * p ^ 5 < 24 / 25 := by
     norm_num at hp3 hp5 ⊢
     nlinarith
-  have hloss : q2 + 6 * q4 + 120 * q6 < b6 := by
+  have hloss : q2 + 6 * q4 + 120 * q6 < (24 / 25 : ℝ) * b6 := by
     have hscaled := mul_lt_mul_of_pos_right hbudget hb6
     nlinarith
   have hdecomp :
@@ -557,6 +561,32 @@ theorem thetaCuspLikelihoodSourceLogPartitionJetSix_pos
   rw [hdecomp]
   nlinarith
 
+/-- Sixth logarithmic source jet is strictly positive on the nonnegative source half-line. -/
+theorem thetaCuspLikelihoodSourceLogPartitionJetSix_pos
+    {x : ℝ} (hx : 0 ≤ x) :
+    0 < thetaCuspLikelihoodSourceLogPartitionJetSix x := by
+  have h :=
+    two_twentyFifths_mul_likelihoodSixthMoment_lt_sourceLogPartitionJetSix hx
+  have hA : 0 < thetaCuspSingleAtomReflectionScale 1 x := by
+    unfold thetaCuspSingleAtomReflectionScale
+    positivity
+  have hB : 0 < thetaCuspLikelihoodCoordinate x :=
+    thetaCuspLikelihoodCoordinate_pos hx
+  have h2 : 0 < thetaCuspLikelihoodNormalizedMoment
+      (thetaCuspLikelihoodCoordinate x) 2 :=
+    thetaCuspLikelihoodNormalizedMoment_two_pos hB
+  have h23 := three_mul_thetaCuspLikelihoodNormalizedMoment_le_succ hB 2
+  have h34 := three_mul_thetaCuspLikelihoodNormalizedMoment_le_succ hB 3
+  have h45 := three_mul_thetaCuspLikelihoodNormalizedMoment_le_succ hB 4
+  have h56 := three_mul_thetaCuspLikelihoodNormalizedMoment_le_succ hB 5
+  have hmoment : 0 < thetaCuspLikelihoodNormalizedMoment
+      (thetaCuspLikelihoodCoordinate x) 6 := by
+    nlinarith
+  have hlead : 0 < (2 / 25 : ℝ) *
+      thetaCuspSingleAtomReflectionScale 1 x ^ 6 *
+        thetaCuspLikelihoodNormalizedMoment (thetaCuspLikelihoodCoordinate x) 6 := by
+    positivity
+  linarith
+
 end
 end RHTower
-
