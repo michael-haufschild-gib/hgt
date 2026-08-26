@@ -247,10 +247,11 @@ theorem exists_norm_sq_sub_smul_bdGen {θ : ℝ} (hθ0 : 0 < θ) (hθ1 : θ < 1)
 target is saturated by one generator — that is, if `‖bdGen θ‖` attains its lower bound `θ|log θ|` — then the
 target lies on that generator's line, hence in the closed span, hence the Riemann hypothesis holds.
 
-This is the `N = 1`, and therefore weakest, instance of the criterion, and the equality is expected to
-fail.  Its content is to identify what the criterion is sensitive to: the ratio `θ|log θ| / ‖bdGen θ‖`,
-i.e. the Gram diagonal `bdGram θ θ`.  Every quantitative statement about Báez-Duarte distances is a
-statement about how close that ratio (or its many-generator analogue) gets to `1`. -/
+This is the `N = 1`, and therefore weakest, instance of the criterion.  The later finite-family
+obstruction proves that this equality always fails (`norm_bdGen_lower_strict_of_lt_one` in
+`FiniteFamilyObstruction`), so this declaration is retained only as the exact saturation interface.
+Its content is to identify the ratio `θ|log θ| / ‖bdGen θ‖`, i.e. the Gram diagonal `bdGram θ θ`, that
+the many-generator quantitative problem generalizes. -/
 theorem riemannHypothesis_of_norm_bdGen_eq {θ : ℝ} (hθ0 : 0 < θ) (hθ1 : θ < 1)
     (h : ‖bdGen θ‖ = θ * |Real.log θ|) : RiemannHypothesis := by
   have hne : bdGen θ ≠ 0 := bdGen_ne_zero hθ0 hθ1

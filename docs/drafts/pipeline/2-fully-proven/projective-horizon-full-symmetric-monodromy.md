@@ -6506,3 +6506,377 @@ correspondence then makes its fixed field strictly larger than the observation f
 proper block yields a genuinely nontrivial finite normalization, not merely a finite algebra model
 whose generic extension might collapse.  Targeted leaf build and axiom audit pass; umbrella wired
 without building it.
+
+## Proper surjective complex-point normalization map (2026-08-25)
+
+The global topology of the exact finite block normalization is now formalized in reusable layers:
+
+```text
+AlgebraSpectrumFiniteProper.lean
+  AlgSpec.isCompact_preimage_precomp_of_finite
+  AlgSpec.isProperMap_precomp_of_finite
+
+AlgebraSpectrumIntegralSurjective.lean
+  AlgSpec.surjective_precomp_of_isIntegral
+
+CriticalBlockNormalizationComplexPoints.lean
+  criticalBlockNormalizationProjection
+  continuous_criticalBlockNormalizationProjection
+  isProperMap_criticalBlockNormalizationProjection
+  surjective_criticalBlockNormalizationProjection
+```
+
+The normalization now also carries the explicit ground-field algebra, both scalar towers, and a
+faithful action of the observation chart.  Consequently its complex-point projection is the actual
+contravariant map induced by the chart inclusion; module-finiteness makes it proper, while integral
+lying-over and algebraic closedness of `ℂ` make it surjective.  The actual observation spectrum has
+the transported second-countable and compactly-coherent topology required by the properness theorem.
+
+Direct checks and targeted leaf builds pass.  A consolidated axiom audit of only these new
+declarations reports `[propext, Classical.choice, Quot.sound]`.  Both generic modules and the exact
+normalization projection are wired into `HTGeometry`; no umbrella build was run.
+
+Remaining cover-producer obligation is now local plus connectedness: prove the projection is a local
+homeomorphism from the already-formalized absence of non-Schur ramification and the source descent,
+and prove the normalization's complex-point space is connected.  Properness and surjectivity then
+promote that local statement to the required nontrivial connected finite covering.
+
+## Banach-parametric simple-root covering chart (2026-08-26)
+
+`formal/GaloisForLFunctions/HTGeometry/ParametricRootCovering.lean` now extracts the reusable local
+analytic core of the normalization-cover producer:
+
+```text
+exists_chart_parametricRootProj
+isLocalHomeomorph_parametricRootProj
+```
+
+For any scalar analytic relation on `P × ℂ`, with `P` an arbitrary complete complex Banach
+space, a nonzero vertical derivative at every root makes the zero-locus projection a local
+homeomorphism.  The proof constructs the actual `OpenPartialHomeomorph` from the holomorphic IFT;
+it is not a branch-existence wrapper.  `BivariateRootCovering.lean` now specializes this one generic
+proof, eliminating its former duplicate chart construction.
+
+Direct checks and targeted builds of the new leaf and refactored bivariate leaf pass.  Axiom audits
+of every new declaration report only `[propext, Classical.choice, Quot.sound]`; the new leaf is wired
+into `HTGeometry` without building the umbrella.
+
+The remaining local obligation is algebraic-to-analytic transport: present the finite normalization
+locally by a monic relation, prove its specialized roots simple from the unramified locus, and
+identify its `AlgSpec` map with the pullback of this root-locus projection.  Connectedness of the
+normalization complex-point space remains separate.  This card is therefore not yet promotable.
+
+`formal/GaloisForLFunctions/HTGeometry/LocalHomeomorphPullback.lean` closes the general topological
+transport step as well:
+
+```text
+isLocalHomeomorph_localHomeomorphPullbackProj
+```
+
+It constructs the fibre-product chart explicitly and proves that every local homeomorphism stays a
+local homeomorphism after arbitrary continuous base change.  Direct check, targeted leaf build, and
+axiom audit pass; only the standard Lean axioms occur in the proof declarations.  The module is
+wired into `HTGeometry` without an umbrella build.  Thus the remaining local gap is now purely the
+algebraic presentation and `AlgSpec` fibre-product identification, not general topology.
+
+`formal/GaloisForLFunctions/HTGeometry/MonicCoefficientRootCovering.lean` now supplies the universal
+finite-dimensional analytic model.  It defines the monic polynomial encoded by `Fin d → ℂ`,
+proves analyticity of its evaluation relation, identifies the vertical Fréchet derivative with the
+formal polynomial derivative, and proves:
+
+```text
+isLocalHomeomorph_monicCoeffRootProj
+```
+
+for every degree whose specialized polynomials are separable.  Scratch/direct checks, targeted leaf
+build, and axiom audit pass with only `[propext, Classical.choice, Quot.sound]`; umbrella import is
+wired without an umbrella build.  Combined with `LocalHomeomorphPullback`, coefficient-space
+analytic topology is complete.  Remaining local normalization work is to produce the local monic
+presentation over the chart ring and the exact spectrum/root-locus homeomorphism.
+
+The pointwise form needed for a varying family is now closed too.  The pullback module exposes
+`exists_chart_localHomeomorphPullbackProj_of_chart`, while the coefficient module exposes
+`exists_chart_monicCoeffRootProj` at one separable specialized polynomial.  Their composition is
+packaged unconditionally in
+`formal/GaloisForLFunctions/HTGeometry/ContinuousMonicRootCovering.lean`:
+
+```text
+isLocalHomeomorph_continuousMonicRootPullbackProj
+```
+
+A continuous family of separable monic polynomials over an arbitrary topological space has a
+locally homeomorphic pulled-back root projection.  This avoids the false global requirement that
+every point of the full universal coefficient space be separable.  Direct and targeted checks pass;
+new-declaration axiom audits are standard only; umbrella is wired but not built.  Remaining local
+normalization gap is exactly local monogenic presentation plus the spectrum/pullback equivalence.
+
+The monogenic spectrum equivalence itself is now complete in
+`formal/GaloisForLFunctions/HTGeometry/AdjoinRootSpectrumHomeomorph.lean`:
+
+```text
+AlgSpec.adjoinRootSpectrumHomeomorph :
+  AlgSpec (AdjoinRoot p) ≃ₜ {(χ,z) | eval₂ χ z p = 0}
+```
+
+Both directions are explicit: restriction plus distinguished-root evaluation forward, and
+`AdjoinRoot.lift` backward.  The inverse topology is proved coordinatewise using polynomial
+evaluation, so this is a genuine homeomorphism.  Direct check, targeted leaf build, and axiom audit
+pass; all public declarations use only `[propext, Classical.choice, Quot.sound]`; umbrella wired
+without building it.  Remaining local normalization gap is now only production of a local
+`AdjoinRoot` presentation with separable fibres and transport through that algebra equivalence.
+
+The analytic and topological transport through a monogenic presentation is now fully assembled.
+`ParametricRootBaseChange.lean` identifies a substituted root locus with the actual fibre product
+and proves its projection locally homeomorphic from pointwise simple-root data.
+`AdjoinRootSpectrumCovering.lean` then proves:
+
+```text
+AlgSpec.isLocalHomeomorph_adjoinRootBase
+```
+
+For any complex algebra `A`, monic `p : A[X]`, and separable specialization `p_χ` at every
+`χ : AlgSpec A`, the map `AlgSpec (AdjoinRoot p) → AlgSpec A` is a local homeomorphism.  The
+proof includes continuous lower-coefficient specialization, equality with the universal monic
+polynomial, direct-root-locus/fibre-product homeomorphism, and transport through
+`adjoinRootSpectrumHomeomorph`.
+
+Both new leaves pass direct checks, targeted builds, and new-declaration axiom audits with standard
+Lean axioms only; both are umbrella-wired without an umbrella build.  The normalization-specific
+local gap is now solely algebraic: construct, around every chart point, an algebra equivalence from
+the localized finite normalization to such a separable `AdjoinRoot` algebra.  General analytic,
+topological, coefficient, and spectrum transport are complete.
+
+The monogenic projection is now promoted from a local homeomorphism to a genuine finite covering.
+`formal/GaloisForLFunctions/HTGeometry/AdjoinRootSpectrumCovering.lean` additionally proves:
+
+```text
+AlgSpec.adjoinRoot_moduleFinite_of_monic
+AlgSpec.isProperMap_adjoinRootBase
+AlgSpec.isCoveringMap_adjoinRootBase
+```
+
+For a positive-degree monic polynomial over a domain, the first theorem constructs module-finiteness
+directly from the spanning family of distinguished-root powers, using monic polynomial remainder.
+Compact coherence then makes the spectrum projection proper.  Combined with the already proved
+simple-fibre local-homeomorphism theorem, this yields an unconditional `IsCoveringMap`.  The source
+targeted `.olean` is newer than its source file; direct checking passed before that targeted build, and an
+axiom audit of all three new declarations reports only `[propext, Classical.choice, Quot.sound]`.
+The module remains wired into `HTGeometry`; no umbrella build was run.
+
+Thus every generic monogenic analytic/topological covering obligation is closed.  Remaining
+normalization-specific work is to produce the required local separable monogenic presentations and
+prove connectedness of the exact block normalization spectrum; this card is not yet promotable.
+
+Two new algebraic producer leaves now make the local-presentation step precise and reusable:
+
+```text
+exists_adjoin_eq_top_of_split_residue_fibre
+exists_adjoin_eq_top_of_residue_traceForm_nondegenerate
+exists_adjoinRoot_equiv_of_split_residue_fibre
+exists_adjoinRoot_equiv_of_residue_traceForm_nondegenerate
+```
+
+`SplitResidueLocalMonogenic.lean` proves that a module-finite algebra over a local ring is generated
+by one element whenever its closed fibre is a finite product of copies of the residue field.  It
+also derives that split fibre from a nondegenerate trace pairing over an algebraically closed
+characteristic-zero residue field.  `SplitResidueAdjoinRootPresentation.lean` upgrades these
+generators, for finite domain extensions over an integrally closed local domain, to exact
+minimal-polynomial `AdjoinRoot` algebra equivalences.  These results compose existing split-product,
+Nakayama, trace-splitting, and minimal-polynomial infrastructure without adding locality or
+freeness assumptions on the upper algebra in the generator theorem.
+
+Both leaves pass direct checks and targeted builds.  Axiom audits of all four declarations report
+only `[propext, Classical.choice, Quot.sound]`; both imports are wired into `HTGeometry` without an
+umbrella build.  Remaining normalization-specific producer is now sharply reduced to
+nondegeneracy/splitting of each localized block-normalization fibre and spreading the resulting
+local equivalence to a principal open chart.  Connectedness remains the separate global input, so
+the card is not yet promotable.
+
+The closed-fibre polynomial is now controlled, not merely the abstract algebra.  Two additional
+leaves prove:
+
+```text
+adjoinRootQuotientFibreEquiv
+adjoinRootQuotientFibreEquiv_root
+separable_of_adjoinRoot_algEquiv_pi
+separable_map_of_adjoinRoot_equiv_of_split_quotient
+exists_adjoinRoot_equiv_and_separable_residue_of_split_residue_fibre
+exists_adjoinRoot_equiv_and_separable_residue_of_residue_traceForm_nondegenerate
+```
+
+`AdjoinRootQuotientFibre.lean` identifies every quotient fibre of an `AdjoinRoot p` presentation
+with `AdjoinRoot (p.map quotientMap)` and tracks the distinguished root exactly.  The proof uses
+the actual tensor-product base-change equivalence and the canonical quotient pushout, rather than
+a cardinality-only surrogate.  `AdjoinRootSplitFibreSeparable.lean` proves that if such a fibre is
+a product of copies of its residue field, its coordinate evaluations give exactly degree-many
+distinct roots.  Hence the reduced polynomial factors into pairwise-coprime linear factors and is
+separable.  It packages both split-fibre and nondegenerate-trace routes into a local theorem that
+simultaneously returns a generator, exact minimal-polynomial presentation, and separable closed
+fibre.
+
+Both leaves pass direct checks and targeted builds.  Axiom audits of all six declarations report
+only `[propext, Classical.choice, Quot.sound]`; imports are umbrella-wired without building the
+umbrella.  Remaining local normalization work is now only the geometric producer of split or
+nondegenerate block-normalization fibres and algebraic spreading from the local ring to a
+principal open neighbourhood.  Once spread, the previously built analytic `AdjoinRoot` covering
+theorem applies.  Connectedness/global nontrivial-cover elimination remains separate, so this card
+is not yet promotable.
+
+Separability now spreads automatically once a monic presentation exists on an algebraic
+neighbourhood.  `MonicSeparableLocus.lean` defines the single specialization-resultant element and
+proves:
+
+```text
+AlgSpec.mem_monicSeparableLocus_iff_resultant_ne_zero
+AlgSpec.isOpen_monicSeparableLocus
+```
+
+Thus separability of a monic polynomial family is an open condition in the exact pointwise
+topology on complex algebra maps.  The proof uses resultant base change and continuity of algebra
+evaluation; no global all-fibres premise is introduced.
+
+The root-cover transport was correspondingly strengthened and deduplicated.  The new pointwise
+chart theorems
+
+```text
+exists_chart_parametricRootBaseChangeProj
+AlgSpec.exists_chart_adjoinRootBase
+AlgSpec.isLocalHomeomorphOn_adjoinRootBase_monicSeparableLocus
+AlgSpec.isOpen_adjoinRootBase_preimage_monicSeparableLocus
+```
+
+construct a local homeomorphism at each simple root even when other fibres are singular.  Existing
+global base-change and `AdjoinRoot` local-homeomorphism proofs now invoke these pointwise charts.
+Direct checks and targeted leaf builds pass.  New-declaration axiom audits report only
+`[propext, Classical.choice, Quot.sound]`; no umbrella build was run.
+
+Consequently local fibre separability no longer needs to be assumed throughout an entire chart:
+one separable closed fibre supplies an open analytic simple locus.  Remaining algebraic spreading
+obligation is only to descend the localized generator/minimal-polynomial presentation itself to a
+principal open model.  The actual block fibre nondegeneracy and global connectedness/Kummer
+elimination remain open, so this card is not yet promotable.
+
+The localized generator now spreads to a genuine principal-open power basis.  Two reusable leaves,
+`PrincipalOpenPowerBasis.lean` and `PrincipalOpenPowerBasisNumerator.lean`, prove:
+
+```text
+moduleFinitePresentation_of_isNoetherianRing_of_finite
+exists_notMem_powerCombination_bijective_of_localized_basis
+exists_global_numerator_powerBasis
+exists_global_numerator_powerBasis_of_adjoinRoot_equiv
+exists_global_numerator_powerBasis_of_split_residue_fibre
+exists_global_numerator_powerBasis_of_residue_traceForm_nondegenerate
+```
+
+The first leaf proves finite modules over Noetherian commutative rings are finitely presented and
+uses finite-presentation localization to spread bijectivity of a prescribed power-coordinate map
+to one principal open.  The second clears the denominator of a localized power-basis generator:
+successive powers of its global numerator differ from the local basis by successive powers of a
+unit, hence remain a basis.  Combining this with the split-fibre `AdjoinRoot` producer yields a
+global numerator whose powers are a basis after localizing away from one element outside the
+chosen prime.  The same conclusion is proved directly from a nondegenerate residue trace over an
+algebraically closed characteristic-zero residue field.  This closes the generic
+denominator-clearing and principal-open spreading obligation without adding freeness, genericity,
+or global separability hypotheses.
+
+Both leaves pass direct `lake env lean` checks and targeted leaf builds.  Axiom audits of their new
+declarations report only `[propext, Classical.choice, Quot.sound]`; both are wired into
+`HTGeometry` without an umbrella build.  Remaining normalization-specific work is to prove the
+actual block-normalization closed fibres split (or have nondegenerate residue trace), turn the
+spread power basis into the required principal-open algebra presentation, and establish global
+connectedness/nontrivial-cover and Kummer elimination.  This card is not yet promotable.
+
+The module-level spreading witness now upgrades to the exact algebra presentation required by the
+covering chart.  `PrincipalOpenAdjoinRootPresentation.lean` proves:
+
+```text
+localizedPowerBasisOfBijective
+powerBasisAdjoinRootEquiv
+exists_adjoinRoot_equiv_of_localized_powerCombination_bijective
+exists_principalOpen_adjoinRoot_equiv_of_split_residue_fibre
+exists_principalOpen_adjoinRoot_equiv_of_residue_traceForm_nondegenerate
+```
+
+It transports localized-module bijectivity to ordinary tensor scalar extension, turns the
+transported powers into a `PowerBasis`, and constructs an explicit two-sided algebra equivalence
+from the root algebra of its monic minimal polynomial.  The equivalence tracks the distinguished
+root exactly: it maps to the principal-open image of the global numerator.  Consequently either a
+split local closed fibre or a nondegenerate local residue trace now produces, without any further
+spreading step, one principal open and an exact monic `AdjoinRoot` presentation of the localized
+finite algebra.
+
+The leaf passes a direct check and targeted build.  Axiom audits of all changed/new declarations
+report only `[propext, Classical.choice, Quot.sound]`; it is umbrella-wired without an umbrella
+build.  Generic local-to-principal-open presentation is therefore closed.  Remaining
+normalization-specific local input is solely to prove splitting or trace nondegeneracy for the
+actual block-normalization fibres.  Global connectedness/nontrivial-cover and Kummer elimination
+remain separate, so this card is not yet promotable.
+
+Principal-open spreading now preserves the simple-root certificate through every scalar-extension
+layer.  Two additional reusable leaves prove:
+
+```text
+localizedAlgebraTensorEquiv
+nonempty_split_baseChange_of_localizedAlgebra
+nonempty_tensorProduct_algEquiv_pi_of_split_residue_fibre
+separable_map_of_adjoinRoot_equiv_of_split_baseChange
+separable_map_of_adjoinRoot_equiv_of_localized_split_baseChange
+```
+
+`LocalizedAlgebraTensorEquiv.lean` upgrades any algebra map realizing module localization to the
+canonical algebra equivalence from ordinary tensor scalar extension, then transports a split field
+fibre backwards through nested scalar extensions.  `AdjoinRootSplitBaseChangeSeparable.lean`
+identifies the standard tensor fibre with the split residue quotient and proves that a monic root
+presentation specializing to that split algebra has separable reduced polynomial.  Therefore the
+global numerator/principal-open presentation produced above retains separability at the chosen
+local point; denominator clearing cannot lose the analytic simple-root input.
+
+Both leaves pass direct checks and targeted builds.  Axiom audits of all new declarations report
+only `[propext, Classical.choice, Quot.sound]`; imports are umbrella-wired without an umbrella
+build.  The generic local-certificate-to-separable-principal-chart chain is now dependency-closed.
+Remaining normalization-specific local input is exactly the split/nondegenerate fibre theorem for
+the actual block normalization; connectedness and the final Kummer/block elimination remain open.
+
+The complete generic producer is now packaged in
+`PrincipalOpenSeparablePresentation.lean`:
+
+```text
+principalOpenToLocalizationRingHom
+principalOpenToResidueRingHom
+exists_principalOpen_adjoinRoot_equiv_and_separable_of_split_residue_fibre
+exists_principalOpen_adjoinRoot_equiv_and_separable_of_residue_traceForm_nondegenerate
+```
+
+For either accepted local certificate, the theorem returns one element `g` outside the chosen
+prime, a monic polynomial over `R[g⁻¹]`, an exact algebra equivalence with the scalar-extended
+finite algebra, the identity carrying the distinguished root to the localized global numerator,
+and separability after the canonical specialization `R[g⁻¹] → κ(p)`.  This is precisely the local
+algebra/analytic interface consumed by the pointwise `AdjoinRoot` covering theorem; no additional
+denominator, fibre, or coefficient transport remains implicit.
+
+The leaf passes direct checking and a targeted build.  Axiom audits of all four declarations report
+only `[propext, Classical.choice, Quot.sound]`; it is umbrella-wired without an umbrella build.
+Actual block-normalization split/nondegenerate fibres and global connected block elimination remain
+the only card-specific inputs, so this card is not yet promotable.
+
+Finite étaleness is now an accepted local certificate with no intervening reducedness or trace-form
+obligation.  `FiniteEtaleAlgClosedSplit.lean` and the strengthened
+`PrincipalOpenSeparablePresentation.lean` prove:
+
+```text
+Algebra.nonempty_algEquiv_pi_of_finiteEtale_isAlgClosed
+exists_principalOpen_adjoinRoot_equiv_and_separable_of_residue_finiteEtale
+```
+
+The first theorem packages Mathlib's formal-étale decomposition: a finite étale algebra over an
+algebraically closed field is exactly a finite product of copies of that field, indexed by its
+prime spectrum.  The second feeds that split fibre directly through the completed generic producer
+and returns the principal-open monic presentation, distinguished-root identity, and separable
+specialization.  Thus the block-normalization local obligation is reduced further to proving
+étaleness of its actual closed fibre; no separate reducedness, coordinate splitting, trace
+nondegeneracy, or generator construction is required.
+
+Both changed leaves pass direct checks and targeted builds.  Axiom audits of both new declarations
+report only `[propext, Classical.choice, Quot.sound]`; the new leaf is umbrella-wired without an
+umbrella build.  Concrete block-fibre étaleness, global connectedness, and Kummer/block elimination
+remain open, so this card is not yet promotable.

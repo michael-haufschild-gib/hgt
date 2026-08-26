@@ -29,6 +29,49 @@ abbrev CriticalBlockFixedField (B : Set (criticalGeometricSheet K m n)) :=
 abbrev CriticalBlockNormalization (B : Set (criticalGeometricSheet K m n)) :=
   integralClosure (criticalObservationChartRing K m n) (CriticalBlockFixedField K B)
 
+/-- Ground-field algebra structure on the block normalization, induced through the observation
+chart. -/
+noncomputable instance criticalBlockNormalization_groundAlgebra
+    (B : Set (criticalGeometricSheet K m n)) :
+    Algebra K (CriticalBlockNormalization K B) :=
+  ((algebraMap (criticalObservationChartRing K m n) (CriticalBlockNormalization K B)).comp
+    (algebraMap K (criticalObservationChartRing K m n))).toAlgebra
+
+/-- The ground field, observation chart, and block normalization form the expected scalar tower. -/
+instance criticalBlockNormalization_groundTower
+    (B : Set (criticalGeometricSheet K m n)) :
+    IsScalarTower K (criticalObservationChartRing K m n) (CriticalBlockNormalization K B) :=
+  IsScalarTower.of_algebraMap_eq fun _ => rfl
+
+/-- The normalization embeds into its block function field through the canonical scalar tower. -/
+noncomputable instance criticalBlockNormalization_scalarTower
+    (B : Set (criticalGeometricSheet K m n)) :
+    IsScalarTower (criticalObservationChartRing K m n) (CriticalBlockNormalization K B)
+      (CriticalBlockFixedField K B) :=
+  IsScalarTower.of_algebraMap_eq fun _ => rfl
+
+/-- The chart acts faithfully on the block normalization. -/
+noncomputable instance criticalBlockNormalization_faithfulSMul
+    (B : Set (criticalGeometricSheet K m n)) :
+    FaithfulSMul (criticalObservationChartRing K m n) (CriticalBlockNormalization K B) :=
+  (faithfulSMul_iff_algebraMap_injective _ _).2 <| by
+    intro x y hxy
+    have hAE : Function.Injective (algebraMap (criticalObservationChartRing K m n)
+        (CriticalBlockFixedField K B)) := by
+      intro a b hab
+      apply IsFractionRing.injective (criticalObservationChartRing K m n)
+        (criticalObservationField K m n)
+      apply (algebraMap (criticalObservationField K m n)
+        (CriticalBlockFixedField K B)).injective
+      simpa only [IsScalarTower.algebraMap_apply
+        (criticalObservationChartRing K m n) (criticalObservationField K m n)
+        (CriticalBlockFixedField K B)] using hab
+    apply hAE
+    simpa only [IsScalarTower.algebraMap_apply
+      (criticalObservationChartRing K m n) (CriticalBlockNormalization K B)
+      (CriticalBlockFixedField K B)] using
+      congrArg (algebraMap (CriticalBlockNormalization K B) (CriticalBlockFixedField K B)) hxy
+
 /-- A block fixed field is finite-dimensional over the observation field. -/
 noncomputable instance criticalBlockFixedField_finiteDimensional
     (B : Set (criticalGeometricSheet K m n)) :

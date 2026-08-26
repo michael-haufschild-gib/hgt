@@ -57,6 +57,15 @@ def XiCTaylorGaussianRatLeftHalfImEventuallyBoundedAbove : Prop :=
         (logDeriv (xiCTaylorApprox n)
           (xiCTaylorCenteredPoint (gaussianRatPoint q))).im ≤ C
 
+/-- Canonical fixed-bound form of the finite-polynomial source condition. -/
+def XiCTaylorGaussianRatLeftHalfImEventuallyLeOne : Prop :=
+  ∀ q : ℚ × ℚ, 0 < (gaussianRatPoint q).re →
+    (gaussianRatPoint q).re < 1 / 2 →
+    riemannZeta (gaussianRatPoint q) ≠ 0 →
+      ∀ᶠ n in atTop,
+        (logDeriv (xiCTaylorApprox n)
+          (xiCTaylorCenteredPoint (gaussianRatPoint q))).im ≤ 1
+
 /-- The finite Taylor bound transfers to the countable completed prime--Gamma flux lower bound. -/
 theorem completedPrimeGammaGaussianRatLeftHalfBoundedBelow_of_xiCTaylor
     (htaylor : XiCTaylorGaussianRatLeftHalfImEventuallyBoundedAbove) :
@@ -109,14 +118,13 @@ theorem riemannHypothesis_of_xiCTaylorGaussianRatLeftHalfImEventuallyBoundedAbov
   riemannHypothesis_of_completedPrimeGammaGaussianRatLeftHalfBoundedBelow
     (completedPrimeGammaGaussianRatLeftHalfBoundedBelow_of_xiCTaylor htaylor)
 
-/-- RH supplies the uniform finite bound `1` eventually at every rational point. -/
-theorem xiCTaylorGaussianRatLeftHalfImEventuallyBoundedAbove_of_riemannHypothesis
+/-- RH supplies the explicit uniform finite bound `1` eventually at every rational point. -/
+theorem xiCTaylorGaussianRatLeftHalfImEventuallyLeOne_of_riemannHypothesis
     (hRH : RiemannHypothesis) :
-    XiCTaylorGaussianRatLeftHalfImEventuallyBoundedAbove := by
+    XiCTaylorGaussianRatLeftHalfImEventuallyLeOne := by
   let hanti : ContinuedPrimeArchUpperAntiHerglotz :=
     continuedPrimeArchUpperCauchyDiagonalNonnegative_iff_antiHerglotz.mp
       (continuedPrimeArchUpperCauchyDiagonalNonnegative_of_riemannHypothesis hRH)
-  refine ⟨1, ?_⟩
   intro q hqpos hqhalf hqzeta
   let s : ℂ := gaussianRatPoint q
   let z : ℂ := xiCTaylorCenteredPoint s
@@ -159,11 +167,26 @@ theorem xiCTaylorGaussianRatLeftHalfImEventuallyBoundedAbove_of_riemannHypothesi
     himTend.eventually (eventually_lt_nhds (lt_of_le_of_lt hlim zero_lt_one))
   exact hev.mono fun _ hn => hn.le
 
+/-- RH supplies finite Xi--Taylor boundedness, now through the canonical fixed-one form. -/
+theorem xiCTaylorGaussianRatLeftHalfImEventuallyBoundedAbove_of_riemannHypothesis
+    (hRH : RiemannHypothesis) :
+    XiCTaylorGaussianRatLeftHalfImEventuallyBoundedAbove :=
+  ⟨1, xiCTaylorGaussianRatLeftHalfImEventuallyLeOne_of_riemannHypothesis hRH⟩
+
 /-- Exact finite Xi-Taylor logarithmic-derivative criterion for RH. -/
 theorem xiCTaylorGaussianRatLeftHalfImEventuallyBoundedAbove_iff_riemannHypothesis :
     XiCTaylorGaussianRatLeftHalfImEventuallyBoundedAbove ↔ RiemannHypothesis :=
   ⟨riemannHypothesis_of_xiCTaylorGaussianRatLeftHalfImEventuallyBoundedAbove,
     xiCTaylorGaussianRatLeftHalfImEventuallyBoundedAbove_of_riemannHypothesis⟩
+
+/-- **Fixed-one finite Xi--Taylor criterion.** The arbitrary common ceiling in the original
+finite-polynomial gate can be replaced by the explicit value `1`. -/
+theorem xiCTaylorGaussianRatLeftHalfImEventuallyLeOne_iff_riemannHypothesis :
+    XiCTaylorGaussianRatLeftHalfImEventuallyLeOne ↔ RiemannHypothesis := by
+  constructor
+  · intro h
+    exact riemannHypothesis_of_xiCTaylorGaussianRatLeftHalfImEventuallyBoundedAbove ⟨1, h⟩
+  · exact xiCTaylorGaussianRatLeftHalfImEventuallyLeOne_of_riemannHypothesis
 
 end
 

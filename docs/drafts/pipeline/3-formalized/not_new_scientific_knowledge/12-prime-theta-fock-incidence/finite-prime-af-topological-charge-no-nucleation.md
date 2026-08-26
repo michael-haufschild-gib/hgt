@@ -1,9 +1,9 @@
 # A norm-regular finite-prime quantum universe cannot nucleate divisor charge
 
 - **ID:** `finite-prime-af-topological-charge-no-nucleation`
-- **Stage:** 2-fully-proven / finite matrix-loop colimit, physical AF transitions, charge
-  classification, finite-ancestor law, and Xi no-nucleation consequence formalized in Lean;
-  actual C-star AF-limit operator-`K₁` identification remains
+- **Stage:** 3-formalized / finite matrix-loop colimit, physical AF transitions, completed prime
+  UHF algebra, operator-`K₁` continuity equivalence, finite-ancestor law, and Xi no-nucleation
+  consequence formalized in Lean
 - **Type:** THEOREM / OPERATOR-K-THEORY AND TOPOLOGICAL-PHASE NO-GO
 - **Scientific status:** `[PROVED; BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Source:** independent pivot into quasi-local quantum spin systems and operator K-theory; separate
@@ -272,13 +272,29 @@ the literal directed limit.  Its capstone declarations include:
 - `PrimeQuasiLocalCharge.primeAFCircleOperatorKOne_eq_zero_of_all_ancestors_zero`;
 - `PrimeQuasiLocalCharge.primeAFCircleOperatorKOneToRational_injective`.
 
-This proves the finite-stage classification `(14)`, the physical transition law, and the resulting
-algebraic colimit calculation.  It does **not** construct the norm-completed UHF algebra `A`, define
-operator `K₁` of `C(S¹) ⊗ A`, or prove continuity `(12)`--`(13)`.  Treating the algebraic colimit as
-that analytic `K₁` group by definition would be the forbidden simplification.  The actual C-star
-completion/continuity identification is therefore the exact remaining Stage-3 obligation.  All
-implemented declarations pass direct Lean checks, targeted leaf builds, and axiom audits using only
-Lean's standard `propext`, `Classical.choice`, and `Quot.sound`.
+`formal/GaloisForLFunctions/RHTower/PrimeUHFCStarAlgebra.lean` constructs the literal norm-completed
+prime UHF algebra from the matrix AF system.  The circle operator-`K₁` carrier is realized in its
+standard reduced based-unitary-loop presentation
+
+```text
+K₁(C(S¹) ⊗ A) = Additive π₁(U(A), 1).
+```
+
+It is not defined to be the algebraic charge colimit.  Instead,
+`PrimeUHFRelativeFiniteStageApproximation.lean` proves common-stage approximation relative to a
+closed boundary and upgrades it by exact finite-stage polar correction.  Then
+`PrimeUHFCircleOperatorKOneEquiv.lean` independently proves the canonical comparison from the
+finite matrix-loop colimit to completed-UHF based loops is injective and surjective.  Its capstones
+are:
+
+- `PrimeQuasiLocalCharge.primeAFCircleOperatorKOneEquivUHF`;
+- `PrimeQuasiLocalCharge.primeUHFCircleOperatorKOne_has_finiteMatrixAncestor`;
+- `PrimeQuasiLocalCharge.nonzero_primeUHFCircleOperatorKOne_has_nonzero_finiteMatrixAncestor`;
+- `PrimeQuasiLocalCharge.primeUHFCircleOperatorKOne_eq_zero_of_all_finiteAncestors_zero`;
+- `PrimeQuasiLocalCharge.primeUHFCircleOperatorKOne_eq_zero_of_uniform_limit`.
+
+Thus `(11)`--`(13)` and all three no-nucleation consequences hold on the actual norm-completed UHF
+loop carrier, without a provider premise or definition-by-colimit shortcut.
 
 ## 8. Parent and novelty boundary
 
@@ -312,7 +328,7 @@ thermodynamic limit cannot be the missing source of divisor winding.
 - [x] unconditional nonzero Xi boundary charge and no-uniform-limit consequence formalized in Lean
 - [x] finite matrix-circle loop-group/determinant classification and algebraic charge colimit
   identification formalized
-- [ ] actual `K₁(C(S¹) ⊗ A)` construction and C-star inductive-limit continuity identification
+- [x] actual `K₁(C(S¹) ⊗ A)` based-unitary-loop construction and C-star inductive-limit continuity identification
   formalized
 - [x] parent-theory audit completed; classified as bridge
 
@@ -408,5 +424,28 @@ Build completed successfully (8788 jobs).
 
 Capstone `#print axioms` checks report exactly `[propext, Classical.choice, Quot.sound]`.  No `sorry`,
 `admit`, new `axiom`, `opaque`, or `unsafe` declaration was introduced.  This algebraic support
-layer is dependency-closed.  Card remains Stage 2 until a literal norm-completed prime UHF algebra,
-its circle algebra, operator `K₁`, and the continuity equivalence with this colimit are formalized.
+layer is dependency-closed.
+
+## Completed-UHF continuity closure — 2026-08-26
+
+`PrimeUHFCStarAlgebra.lean` constructs the literal C-star completion of the algebraic matrix AF
+limit and proves every stage inclusion is isometric.  `PrimeUHFFiniteStageUnitaryDensity.lean`
+proves finite-stage unitaries are norm dense after exact polar correction.
+`PrimeUHFRelativeFiniteStageApproximation.lean` strengthens density to a common finite stage for
+continuous compact families, relative to a prescribed closed zero boundary.  Its two-parameter
+case proves that any finite-stage loop nullhomotopic after inclusion into `U(A)` becomes
+nullhomotopic at a later literal matrix stage.
+
+`PrimeUHFCircleOperatorKOneEquiv.lean` uses those results twice.  Polygonal finite-stage
+approximation proves every completed-UHF based loop comes from a finite matrix stage.  Relative
+two-parameter approximation proves the comparison map has trivial kernel.  Consequently
+
+```text
+indlim_N K₁(C(S¹) ⊗ M_(D_N)(C)) ≃ K₁(C(S¹) ⊗ A)
+```
+
+in the explicit reduced based-unitary-loop presentation, and every nonzero completed-UHF charge
+has a nonzero finite matrix-stage ancestor.  Uniform norm limits preserve the zero class by an
+explicit endpoint-fixed unitary homotopy inside the radius-two neighborhood.  No abstract
+continuity axiom, stabilization premise, provider shell, `sorry`, `admit`, `opaque`, or `unsafe`
+declaration is used.  Card is dependency-closed and promoted to Stage 3.

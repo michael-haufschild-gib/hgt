@@ -70,6 +70,17 @@ noncomputable def tensorGroupBialgEquiv :
       simp [tensorGroupAlgEquiv, Algebra.smul_def,
         AddMonoidAlgebra.comul_single])
 
+/-- The inverse tensor/group-graded equivalence sends one homogeneous coefficient to its canonical
+pure tensor. -/
+@[simp] theorem tensorGroupBialgEquiv_symm_single (m : M) (b : B) :
+    (tensorGroupBialgEquiv (k := k) (B := B) (M := M)).symm
+        (AddMonoidAlgebra.single m b) =
+      AddMonoidAlgebra.single m (1 : k) ⊗ₜ[k] b := by
+  change (tensorGroupAlgEquiv (k := k) (B := B) (M := M)).symm
+      (AddMonoidAlgebra.single m b) = _
+  rw [AlgEquiv.symm_apply_eq]
+  simp
+
 end
 end TensorGroupEquiv
 end GaloisForLFunctions.HTGeometry

@@ -116,6 +116,51 @@ theorem riemannHypothesis_of_tendsto_bdDistDiscrete
   riemannHypothesis_of_tendsto_bdDistFinset bdDiscrete bdDiscrete_mem
     (fun N => Finset.range N) hd
 
+/-- The countable finite-witness form of the classical Báez-Duarte distance burden: for each
+reciprocal threshold, one finite section beats that threshold. -/
+def BdDistDiscreteReciprocalWitnesses : Prop :=
+  ∀ k : ℕ, ∃ N : ℕ, bdDistDiscrete N < 1 / ((k + 1 : ℕ) : ℝ)
+
+/-- Reciprocal-threshold witnesses imply convergence because the finite-section distances are
+antitone and nonnegative. -/
+theorem tendsto_bdDistDiscrete_zero_of_reciprocalWitnesses
+    (h : BdDistDiscreteReciprocalWitnesses) : Tendsto bdDistDiscrete atTop (𝓝 0) := by
+  refine tendsto_order.2 ⟨?_, ?_⟩
+  · intro a ha
+    exact Filter.Eventually.of_forall fun N =>
+      ha.trans_le (bdDistDiscrete_mem_Icc N).1
+  · intro b hb
+    obtain ⟨k, hk⟩ := exists_nat_gt (1 / b)
+    have hden : (0 : ℝ) < ((k + 1 : ℕ) : ℝ) := by positivity
+    have hbmul : 1 < b * (k : ℝ) := by
+      calc
+        1 = b * (1 / b) := by field_simp
+        _ < b * (k : ℝ) := mul_lt_mul_of_pos_left hk hb
+    have hbden : 1 < b * ((k + 1 : ℕ) : ℝ) := by
+      norm_num at hbmul ⊢
+      nlinarith
+    have hthreshold : 1 / ((k + 1 : ℕ) : ℝ) < b :=
+      (div_lt_iff₀ hden).2 (by simpa [mul_comm] using hbden)
+    obtain ⟨N, hN⟩ := h k
+    filter_upwards [eventually_ge_atTop N] with M hNM
+    exact (bdDistDiscrete_antitone hNM).trans_lt (hN.trans hthreshold)
+
+/-- The reciprocal-threshold finite witnesses are exactly the classical `d_N → 0` burden. -/
+theorem bdDistDiscrete_reciprocalWitnesses_iff_tendsto_zero :
+    BdDistDiscreteReciprocalWitnesses ↔ Tendsto bdDistDiscrete atTop (𝓝 0) := by
+  constructor
+  · exact tendsto_bdDistDiscrete_zero_of_reciprocalWitnesses
+  · intro h k
+    have hpos : (0 : ℝ) < 1 / ((k + 1 : ℕ) : ℝ) := by positivity
+    obtain ⟨N, hN⟩ := ((tendsto_order.1 h).2 _ hpos).exists
+    exact ⟨N, hN⟩
+
+/-- One finite Báez-Duarte section below each reciprocal threshold forces RH. -/
+theorem riemannHypothesis_of_bdDistDiscrete_reciprocalWitnesses
+    (h : BdDistDiscreteReciprocalWitnesses) : RiemannHypothesis :=
+  riemannHypothesis_of_tendsto_bdDistDiscrete
+    (tendsto_bdDistDiscrete_zero_of_reciprocalWitnesses h)
+
 /-! ## The floor in distance form -/
 
 /-- **The quantitative obstruction.**  At a zero of `ζ` with `½ < Re ρ < 1` every Báez-Duarte distance is

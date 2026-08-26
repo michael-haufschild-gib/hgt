@@ -176,6 +176,36 @@ theorem tendsto_primeArchBernsteinNegativeMass_atTop_of_not_riemannHypothesis
   exact hnot
     (riemannHypothesis_iff_primeArchBernsteinNegativeMassBounded.mpr hbounded)
 
+/-- **Exact endpoint phase dichotomy.** False RH is equivalent to divergence of the single
+source-defined Bernstein negative-mass sequence to positive infinity. -/
+theorem not_riemannHypothesis_iff_tendsto_primeArchBernsteinNegativeMass_atTop :
+    ¬ RiemannHypothesis ↔
+      Tendsto
+        (hausdorffBernsteinNegativeMass
+          (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+            normalizedPrimeArchMoment))
+        atTop atTop := by
+  constructor
+  · exact tendsto_primeArchBernsteinNegativeMass_atTop_of_not_riemannHypothesis
+  · intro hdiv hRH
+    obtain ⟨C, hC⟩ :=
+      riemannHypothesis_iff_primeArchBernsteinNegativeMassBounded.mp hRH
+    obtain ⟨N, hN⟩ :=
+      eventually_atTop.1 ((tendsto_atTop.1 hdiv) (C + 1))
+    linarith [hN N le_rfl, hC N]
+
+/-- **Lowest-quantifier Bernstein endpoint.** RH is exactly failure of the endpoint negative
+mass to diverge. No cofinal schedule, convergence rate, zero limit, or ceiling witness remains. -/
+theorem riemannHypothesis_iff_not_tendsto_primeArchBernsteinNegativeMass_atTop :
+    RiemannHypothesis ↔
+      ¬ Tendsto
+        (hausdorffBernsteinNegativeMass
+          (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+            normalizedPrimeArchMoment))
+        atTop atTop := by
+  rw [← not_riemannHypothesis_iff_tendsto_primeArchBernsteinNegativeMass_atTop]
+  tauto
+
 /-- For every admissible prime--polar rectangle, a finite ceiling on one cofinal Bernstein
 sampling is exactly the requested critical absolute-convergence abscissa. -/
 theorem primeArchBernsteinNegativeMassCofinallyBounded_iff_rectangularPrimePolarSource_negativeAbscissa_le_one

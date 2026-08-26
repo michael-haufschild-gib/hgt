@@ -178,6 +178,37 @@ theorem bdDist_sq_le_quadratic (θ : I → ℝ) (hθ : ∀ i, 0 < θ i ∧ θ i 
   have hnn : 0 ≤ bdDist θ := bdDist_nonneg θ
   nlinarith [hle, hexp, norm_nonneg (bdTarget - ∑ j, ((c j : ℝ) : ℂ) • bdGen (θ j))]
 
+/-! ## Explicit finite Gram certificates -/
+
+/-- A source-explicit sufficient condition for the reciprocal-threshold distance burden.  At each
+threshold one supplies a finite real coefficient vector whose Gram quadratic is small enough. -/
+def BdDiscreteGramReciprocalCertificates : Prop :=
+  ∀ k : ℕ, ∃ N : ℕ,
+    ∃ c : {n // n ∈ Finset.range N} → ℝ,
+      1 + 2 * (∑ i, c i * (bdDiscrete i * Real.log (bdDiscrete i)))
+          + ∑ i, ∑ j, c i * c j * bdGram (bdDiscrete i) (bdDiscrete j)
+        < (1 / ((k + 1 : ℕ) : ℝ)) ^ 2
+
+/-- Every explicit finite Gram certificate supplies the corresponding reciprocal distance witness. -/
+theorem bdDistDiscrete_reciprocalWitnesses_of_gramCertificates
+    (h : BdDiscreteGramReciprocalCertificates) : BdDistDiscreteReciprocalWitnesses := by
+  intro k
+  obtain ⟨N, c, hc⟩ := h k
+  have hsq := bdDist_sq_le_quadratic
+    (fun i : {n // n ∈ Finset.range N} => bdDiscrete i)
+    (fun i => bdDiscrete_mem i.1) c
+  have hlt : bdDistDiscrete N ^ 2 < (1 / ((k + 1 : ℕ) : ℝ)) ^ 2 :=
+    hsq.trans_lt hc
+  have hd0 : 0 ≤ bdDistDiscrete N := (bdDistDiscrete_mem_Icc N).1
+  have ht0 : 0 < 1 / ((k + 1 : ℕ) : ℝ) := by positivity
+  exact ⟨N, (sq_lt_sq₀ hd0 ht0.le).mp hlt⟩
+
+/-- Explicit finite Gram quadratic certificates at every reciprocal threshold force RH. -/
+theorem riemannHypothesis_of_bdDiscreteGramReciprocalCertificates
+    (h : BdDiscreteGramReciprocalCertificates) : RiemannHypothesis :=
+  riemannHypothesis_of_bdDistDiscrete_reciprocalWitnesses
+    (bdDistDiscrete_reciprocalWitnesses_of_gramCertificates h)
+
 end RHTower
 
 end

@@ -102,6 +102,46 @@ theorem bdDistFinset_pos {I : Type*} [DecidableEq I] (θ : I → ℝ)
     0 < bdDistFinset θ s :=
   bdDist_pos_of_finite (fun i : {x // x ∈ s} => θ i) fun i => hθ i.1
 
+/-! ## Strictness of the single-generator Cauchy--Schwarz bound -/
+
+/-- **The one-generator lower bound is always strict.**  Equality would put the target exactly on
+the generator's line, contradicting the positive distance to every finite Báez--Duarte span. -/
+theorem norm_bdGen_lower_strict_of_lt_one {θ : ℝ} (hθ0 : 0 < θ) (hθ1 : θ < 1) :
+    θ * |Real.log θ| < ‖bdGen θ‖ := by
+  refine lt_of_le_of_ne (norm_bdGen_lower hθ0 hθ1.le) ?_
+  intro heq
+  obtain ⟨c, hc⟩ := exists_norm_sq_sub_smul_bdGen hθ0 hθ1
+  have hsq : (θ * Real.log θ) ^ 2 = ‖bdGen θ‖ ^ 2 := by
+    calc
+      (θ * Real.log θ) ^ 2 = (θ * |Real.log θ|) ^ 2 := by
+        rw [mul_pow, mul_pow, sq_abs]
+      _ = ‖bdGen θ‖ ^ 2 := congrArg (fun x : ℝ => x ^ 2) heq
+  have hnpos : (0 : ℝ) < ‖bdGen θ‖ := norm_pos_iff.mpr (bdGen_ne_zero hθ0 hθ1)
+  rw [hsq, div_self (by positivity : ‖bdGen θ‖ ^ 2 ≠ 0), sub_self] at hc
+  have hzero : bdTarget - c • bdGen θ = 0 := by
+    apply norm_eq_zero.mp
+    nlinarith [norm_nonneg (bdTarget - c • bdGen θ), hc]
+  let η : Unit → ℝ := fun _ => θ
+  have hdistPos : 0 < bdDist η :=
+    bdDist_pos_of_finite η (fun _ => ⟨hθ0, hθ1.le⟩)
+  have hmem : c • bdGen θ ∈ bdSpanSet η := by
+    exact Submodule.smul_mem _ c (Submodule.subset_span ⟨(), rfl⟩)
+  have hle := Metric.infDist_le_dist_of_mem (x := bdTarget) hmem
+  have hdist : dist bdTarget (c • bdGen θ) = 0 := by
+    rw [dist_eq_norm, hzero, norm_zero]
+  rw [hdist] at hle
+  exact (not_lt_of_ge hle hdistPos).elim
+
+/-- Strict Gram-diagonal form of `norm_bdGen_lower_strict_of_lt_one`. -/
+theorem sq_lt_bdGram_self_of_lt_one {θ : ℝ} (hθ0 : 0 < θ) (hθ1 : θ < 1) :
+    (θ * Real.log θ) ^ 2 < bdGram θ θ := by
+  rw [bdGram_self]
+  have h := norm_bdGen_lower_strict_of_lt_one hθ0 hθ1
+  have hnonneg : 0 ≤ θ * |Real.log θ| := by positivity
+  have hnorm : 0 ≤ ‖bdGen θ‖ := norm_nonneg _
+  have hsq := (sq_lt_sq₀ hnonneg hnorm).2 h
+  simpa [mul_pow, sq_abs] using hsq
+
 end RHTower
 
 end

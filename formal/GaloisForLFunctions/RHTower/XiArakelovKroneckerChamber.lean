@@ -123,6 +123,114 @@ theorem norm_eq_one_of_integral_conjugates_contractive
 def XiArakelovCoordinatesIntegral : Prop :=
   ∀ rho : ℂ, xi rho = 0 → IsIntegral ℤ (GaloisForLFunctions.arakelovW rho)
 
+/-- Algebraic-unit formulation: every Xi-zero coordinate and its inverse are integral over `ℤ`. -/
+def XiArakelovCoordinatesAlgebraicUnits : Prop :=
+  ∀ rho : ℂ, xi rho = 0 →
+    IsIntegral ℤ (GaloisForLFunctions.arakelovW rho) ∧
+      IsIntegral ℤ (GaloisForLFunctions.arakelovW rho)⁻¹
+
+/-- Global Xi-zero integrality automatically supplies inverse-integrality through functional-
+equation reflection. -/
+theorem xiArakelovCoordinate_inv_integral_of_coordinatesIntegral
+    (hint : XiArakelovCoordinatesIntegral)
+    (rho : ℂ) (hzero : xi rho = 0) :
+    IsIntegral ℤ (GaloisForLFunctions.arakelovW rho)⁻¹ := by
+  have hstrip := xi_zero_re_mem_open_unit hzero
+  have hrho0 : rho ≠ 0 := by
+    intro hz
+    subst rho
+    norm_num at hstrip
+  have hrho1 : rho ≠ 1 := by
+    intro hz
+    subst rho
+    norm_num at hstrip
+  have hrefzero : xi (GaloisForLFunctions.sigma rho) = 0 := by
+    rw [GaloisForLFunctions.sigma, xi_one_sub, hzero]
+  have href := hint (GaloisForLFunctions.sigma rho) hrefzero
+  have hrefeq :
+      GaloisForLFunctions.arakelovW (GaloisForLFunctions.sigma rho) =
+        (GaloisForLFunctions.arakelovW rho)⁻¹ :=
+    eq_inv_of_mul_eq_one_right
+      (GaloisForLFunctions.arakelovW_mul_sigma rho hrho0 hrho1)
+  rwa [hrefeq] at href
+
+/-- On the reflection-stable Xi divisor, coordinate integrality is already the algebraic-unit
+condition; inverse-integrality is not an additional premise. -/
+theorem xiArakelovCoordinatesAlgebraicUnits_iff_integral :
+    XiArakelovCoordinatesAlgebraicUnits ↔ XiArakelovCoordinatesIntegral := by
+  constructor
+  · intro h rho hzero
+    exact (h rho hzero).1
+  · intro hint rho hzero
+    exact
+      ⟨hint rho hzero,
+        xiArakelovCoordinate_inv_integral_of_coordinatesIntegral hint rho hzero⟩
+
+/-- Algebraic-unit Arakelov coordinates alone do not force the critical line: the golden-ratio
+conjugate is an explicit off-critical point in the open strip whose coordinate and inverse are
+integral over `ℤ`. -/
+theorem exists_offCritical_openStrip_arakelovW_algebraicUnit :
+    ∃ rho : ℂ,
+      0 < rho.re ∧ rho.re < 1 ∧ rho.re ≠ 1 / 2 ∧
+      IsIntegral ℤ (GaloisForLFunctions.arakelovW rho) ∧
+      IsIntegral ℤ (GaloisForLFunctions.arakelovW rho)⁻¹ := by
+  let rho : ℂ := ((Real.sqrt 5 - 1) / 2 : ℝ)
+  have hquad : rho ^ 2 + rho = 1 := by
+    have hs : (Real.sqrt 5) ^ 2 = 5 := Real.sq_sqrt (by norm_num)
+    have hr : ((Real.sqrt 5 - 1) / 2) ^ 2 +
+        (Real.sqrt 5 - 1) / 2 = 1 := by
+      nlinarith
+    simpa [rho] using congrArg (fun x : ℝ => (x : ℂ)) hr
+  have hstrip : 0 < rho.re ∧ rho.re < 1 ∧ rho.re ≠ 1 / 2 := by
+    have hs : (Real.sqrt 5) ^ 2 = 5 := Real.sq_sqrt (by norm_num)
+    have hs0 : 0 ≤ Real.sqrt 5 := Real.sqrt_nonneg 5
+    dsimp [rho]
+    norm_num
+    constructor
+    · nlinarith
+    constructor
+    · nlinarith
+    · intro h
+      nlinarith
+  have hrho0 : rho ≠ 0 := by
+    intro h
+    have hre := congrArg Complex.re h
+    exact (ne_of_gt hstrip.1) hre
+  have hw : GaloisForLFunctions.arakelovW rho = -rho := by
+    rw [GaloisForLFunctions.arakelovW]
+    field_simp [hrho0]
+    linear_combination hquad
+  have hrhoIntegral : IsIntegral ℤ rho := by
+    let p : Polynomial ℤ := Polynomial.X ^ 2 + Polynomial.X - 1
+    refine ⟨p, ?_, ?_⟩
+    · dsimp only [p]
+      rw [show (Polynomial.X ^ 2 + Polynomial.X - 1 : Polynomial ℤ) =
+          Polynomial.X ^ 2 + (Polynomial.X - 1) by ring]
+      apply Polynomial.monic_X_pow_add
+      have hd : (Polynomial.X - (1 : Polynomial ℤ)).degree = 1 := by
+        simpa using Polynomial.degree_X_sub_C (1 : ℤ)
+      rw [hd]
+      norm_num
+    · dsimp only [p]
+      simp only [Polynomial.eval₂_sub, Polynomial.eval₂_add,
+        Polynomial.eval₂_pow, Polynomial.eval₂_X, Polynomial.eval₂_one]
+      change rho ^ 2 + rho - 1 = 0
+      rw [hquad]
+      norm_num
+  have hwIntegral : IsIntegral ℤ (GaloisForLFunctions.arakelovW rho) := by
+    rw [hw]
+    exact hrhoIntegral.neg
+  have hwInvIntegral : IsIntegral ℤ (GaloisForLFunctions.arakelovW rho)⁻¹ := by
+    rw [hw, inv_neg]
+    have hinv : rho⁻¹ = rho + 1 := by
+      exact (eq_inv_of_mul_eq_one_left (show (rho + 1) * rho = 1 by
+        calc
+          (rho + 1) * rho = rho ^ 2 + rho := by ring
+          _ = 1 := hquad)).symm
+    rw [hinv]
+    exact (hrhoIntegral.add isIntegral_one).neg
+  exact ⟨rho, hstrip.1, hstrip.2.1, hstrip.2.2, hwIntegral, hwInvIntegral⟩
+
 /-- Orientation constraint on the arithmetic orbit: every complex root of the integral minimal
 polynomial of each Xi-zero Arakelov coordinate lies in the closed unit disk. -/
 def XiArakelovConjugateRootsContractive : Prop :=

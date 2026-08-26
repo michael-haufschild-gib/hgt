@@ -438,4 +438,49 @@ theorem ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound_iff
   · exact ⟨ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound_lower_of_le hc hcb,
       ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound_of_le hc hcb⟩
 
+/-- Eventual uniform boundedness of the anchored signed completed-error moment. -/
+def CCMGuinandWeilThirdGradeCesaroAnchoredMomentTailBound (b : ℝ) : Prop :=
+  ∃ U C : ℝ, b < U ∧ 0 ≤ C ∧ ∀ H : ℝ, U ≤ H →
+    |ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment b H| ≤ C
+
+/-- Finite upper-wall intervals are elementary, so only an eventual tail bound is needed. -/
+theorem ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound_iff_tailBound
+    {b : ℝ} (hb : 0 < b) :
+    CCMGuinandWeilThirdGradeCesaroAnchoredMomentBound b ↔
+      CCMGuinandWeilThirdGradeCesaroAnchoredMomentTailBound b := by
+  constructor
+  · rintro ⟨C, hC, hbound⟩
+    refine ⟨b + 1, C, by linarith, hC, ?_⟩
+    intro H hH
+    exact hbound H (lt_of_lt_of_le (by linarith) hH)
+  · rintro ⟨U, C, hbU, hC, htail⟩
+    let B : ℝ :=
+      (96 / b ^ 4) *
+        (|criticalMellinCompletedError b| + 23 * Real.exp (U / 2)) * (U - b)
+    refine ⟨max C B, hC.trans (le_max_left _ _), ?_⟩
+    intro H hbH
+    rcases le_total H U with hHU | hUH
+    · exact
+        (abs_ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment_le_of_mem
+          hb hbH.le hHU).trans (le_max_right _ _)
+    · exact (htail H hUH).trans (le_max_left _ _)
+
+/-- The eventual-tail burden is independent of the chosen positive anchor. -/
+theorem ccmGuinandWeilThirdGradeCesaroAnchoredMomentTailBound_iff
+    {b c : ℝ} (hb : 0 < b) (hc : 0 < c) :
+    CCMGuinandWeilThirdGradeCesaroAnchoredMomentTailBound b ↔
+      CCMGuinandWeilThirdGradeCesaroAnchoredMomentTailBound c :=
+  (ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound_iff_tailBound hb).symm.trans
+    ((ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound_iff hb hc).trans
+      (ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound_iff_tailBound hc))
+
+/-- Eventual boundedness of one anchored prime--polar tail suffices for RH. -/
+theorem riemannHypothesis_of_ccmGuinandWeilThirdGradeCesaroAnchoredMomentTailBound
+    {b : ℝ} (hb : 0 < b)
+    (htail : CCMGuinandWeilThirdGradeCesaroAnchoredMomentTailBound b) :
+    RiemannHypothesis := by
+  apply riemannHypothesis_of_ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound hb
+  exact
+    (ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound_iff_tailBound hb).2 htail
+
 end GaloisForLFunctions.RHTower

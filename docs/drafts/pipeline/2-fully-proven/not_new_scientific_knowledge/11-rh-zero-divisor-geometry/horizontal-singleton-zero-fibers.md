@@ -425,3 +425,33 @@ closes scalar optimization for the cheaper odd-fibre non-vacuity route. It does 
 replace the missing analytic mollified mean-value asymptotic. Sharp long-tail and mixed-cross
 evaluation remain open; exact advertised decimal still requires unconditional Lean providers for
 both PRZZ proportions. Card remains at stage 2.
+
+## Lean status update (2026-08-25) — strict-theta and fixed-modulus Graham layers closed
+
+The linear Young scalar certificate now holds at a fixed admissible parameter strictly below
+`1/2`, not merely at the limiting endpoint. The arithmetic normalization has also advanced from a
+bounded interface to unconditional limits: Lean proves
+`sum_{d <= N} mu(d)/d log(N/d) -> 1`, its real-cutoff modulus-one form, a generic
+divided-argument contraction limit, and `T_e(Y) -> e/phi(e)` for every fixed squarefree modulus.
+
+New declarations pass direct file checks, exact leaf builds, and `#print axioms` with only
+`propext, Classical.choice, Quot.sound`; modules are wired without an umbrella build. Remaining
+gap is genuinely uniform: the Barban--Vehov quadratic asymptotic must handle moduli growing with
+mollifier length, after which full/omitted long-tail and mixed-cross terms must be assembled into
+the mollified Levinson mean value. Exact advertised `0.116158438` still requires unconditional
+Lean providers for both PRZZ proportions. Card remains at stage 2.
+
+## Lean status update (2026-08-26) -- sharp Selberg lower half closed
+
+Lean now proves `sum_{n<=N} mu(n)^2/phi(n) / log N -> 1` unconditionally. The proof constructs the
+explicit Möbius--totient residue, proves prime-square support and absolute summability of its
+reciprocal normalization, identifies its Euler mass as exactly `1`, and applies a new dominated
+divisor-harmonic mean theorem. Möbius inversion plus weighted Cauchy then gives the exact finite
+lower bound `log(X)^2 / sum_{e<=X} mu(e)^2/phi(e) <= D_X`, hence `D_X/log X >= 1-epsilon`
+eventually for the Barban--Vehov Selberg diagonal.
+
+All four new leaves pass direct checks, exact leaf builds, and declaration-local axiom audits with
+only `propext, Classical.choice, Quot.sound`; umbrella imports were added without an umbrella build.
+This closes Graham's sharp lower half, not its matching upper half. Growing-modulus upper control,
+differentiated full/omitted long tails, mixed-cross evaluation, and both exact PRZZ proportion
+providers remain required. Card stays at stage 2.

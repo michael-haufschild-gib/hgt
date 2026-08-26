@@ -427,4 +427,119 @@ theorem riemannHypothesis_iff_suzukiCheckpointNonnegative :
       obtain ⟨v, hv, hmin⟩ := exists_suzukiCheckpoint_isMinOn hNtwo
       exact (hcheck N hNtwo v hv hmin).trans ((isMinOn_iff.mp hmin) t htcell)
 
+/-- Explicit scalar checkpoint condition: restricted Legendre--Mangoldt conjugate never exceeds
+the corresponding logarithmic prime moment. -/
+def SuzukiCheckpointConjugateLeMoment : Prop :=
+  ∀ N : ℕ, 2 ≤ N →
+    suzukiCheckpointConjugate N ≤ suzukiCheckpointMoment N
+
+/-- Minimizer quantification in the checkpoint criterion is exactly the scalar conjugate--moment
+inequality on each integer event cell. -/
+theorem suzukiCheckpointNonnegative_iff_conjugateLeMoment :
+    SuzukiCheckpointNonnegative ↔ SuzukiCheckpointConjugateLeMoment := by
+  constructor
+  · intro h N hN
+    obtain ⟨v, hv, hmin, hvalue⟩ :=
+      exists_suzukiCheckpoint_legendre_representation hN
+    have hnonneg := h N hN v hv hmin
+    rw [hvalue] at hnonneg
+    linarith
+  · intro h N hN v hv hmin
+    obtain ⟨u, hu, hminu, hvalue⟩ :=
+      exists_suzukiCheckpoint_legendre_representation hN
+    have hvu : suzukiPsi v ≤ suzukiPsi u :=
+      (isMinOn_iff.mp hmin) u hu
+    have huv : suzukiPsi u ≤ suzukiPsi v :=
+      (isMinOn_iff.mp hminu) v hv
+    have heq : suzukiPsi v = suzukiPsi u := le_antisymm hvu huv
+    rw [heq, hvalue]
+    linarith [h N hN]
+
+/-- **Legendre--Mangoldt scalar criterion.** RH is exactly domination of every restricted
+checkpoint conjugate by its literal logarithmic prime moment. -/
+theorem riemannHypothesis_iff_suzukiCheckpointConjugateLeMoment :
+    RiemannHypothesis ↔ SuzukiCheckpointConjugateLeMoment :=
+  riemannHypothesis_iff_suzukiCheckpointNonnegative.trans
+    suzukiCheckpointNonnegative_iff_conjugateLeMoment
+
+/-- One weighted running sum of all negative checkpoint conjugate--moment margins exposed through
+stage `N`. Multiplication by `N` makes any fixed negative cell force escape to `-∞`. -/
+noncomputable def suzukiCheckpointGlobalNegativeSum (N : ℕ) : ℝ :=
+  (N : ℝ) * ∑ k ∈ Finset.range (N + 1),
+    min (suzukiCheckpointMoment (k + 2) -
+      suzukiCheckpointConjugate (k + 2)) 0
+
+/-- The global Suzuki checkpoint negative-sum sequence does not diverge to negative infinity. -/
+def SuzukiCheckpointGlobalNegativeSumNondivergent : Prop :=
+  ¬ Tendsto suzukiCheckpointGlobalNegativeSum atTop atBot
+
+/-- One-sequence nondivergence already recovers every checkpoint conjugate--moment inequality. -/
+theorem suzukiCheckpointGlobalNegativeSumNondivergent_iff_conjugateLeMoment :
+    SuzukiCheckpointGlobalNegativeSumNondivergent ↔
+      SuzukiCheckpointConjugateLeMoment := by
+  constructor
+  · intro hglobal N hN
+    by_contra hle
+    have hneg : suzukiCheckpointMoment N - suzukiCheckpointConjugate N < 0 := by
+      linarith
+    let k₀ : ℕ := N - 2
+    have hk₀ : k₀ + 2 = N := by
+      dsimp only [k₀]
+      omega
+    have hscaled : Tendsto
+        (fun n : ℕ => (n : ℝ) *
+          (suzukiCheckpointMoment N - suzukiCheckpointConjugate N))
+        atTop atBot := by
+      simpa only [mul_comm] using
+        tendsto_natCast_atTop_atTop.const_mul_atTop_of_neg hneg
+    apply hglobal
+    rw [tendsto_atBot]
+    intro b
+    filter_upwards [tendsto_atBot.1 hscaled b, eventually_ge_atTop k₀] with n hn hnk
+    have hk₀mem : k₀ ∈ Finset.range (n + 1) := by
+      simp only [Finset.mem_range]
+      omega
+    have hsumErase :
+        (∑ k ∈ (Finset.range (n + 1)).erase k₀,
+          min (suzukiCheckpointMoment (k + 2) -
+            suzukiCheckpointConjugate (k + 2)) 0) ≤ 0 := by
+      exact Finset.sum_nonpos fun k hk => min_le_right _ _
+    calc
+      suzukiCheckpointGlobalNegativeSum n =
+          (n : ℝ) *
+            ((∑ k ∈ (Finset.range (n + 1)).erase k₀,
+              min (suzukiCheckpointMoment (k + 2) -
+                suzukiCheckpointConjugate (k + 2)) 0) +
+              min (suzukiCheckpointMoment (k₀ + 2) -
+                suzukiCheckpointConjugate (k₀ + 2)) 0) := by
+        unfold suzukiCheckpointGlobalNegativeSum
+        rw [Finset.sum_erase_add _ _ hk₀mem]
+      _ ≤ (n : ℝ) *
+          min (suzukiCheckpointMoment (k₀ + 2) -
+            suzukiCheckpointConjugate (k₀ + 2)) 0 := by
+        apply mul_le_mul_of_nonneg_left _ (Nat.cast_nonneg n)
+        exact add_le_of_nonpos_left hsumErase
+      _ = (n : ℝ) *
+          (suzukiCheckpointMoment N - suzukiCheckpointConjugate N) := by
+        rw [hk₀, min_eq_left hneg.le]
+      _ ≤ b := hn
+  · intro hmargin hlim
+    obtain ⟨N, hN⟩ := (tendsto_atBot.1 hlim (-1)).exists
+    have hzero : suzukiCheckpointGlobalNegativeSum N = 0 := by
+      unfold suzukiCheckpointGlobalNegativeSum
+      rw [Finset.sum_eq_zero]
+      · norm_num
+      · intro k hk
+        rw [min_eq_right]
+        exact sub_nonneg.mpr (hmargin (k + 2) (by omega))
+    rw [hzero] at hN
+    norm_num at hN
+
+/-- **One-sequence Suzuki checkpoint criterion.** RH is equivalent to nondivergence of one
+weighted scalar running sum of the literal checkpoint conjugate--moment defects. -/
+theorem suzukiCheckpointGlobalNegativeSumNondivergent_iff_riemannHypothesis :
+    SuzukiCheckpointGlobalNegativeSumNondivergent ↔ RiemannHypothesis :=
+  suzukiCheckpointGlobalNegativeSumNondivergent_iff_conjugateLeMoment.trans
+    riemannHypothesis_iff_suzukiCheckpointConjugateLeMoment.symm
+
 end RHTower

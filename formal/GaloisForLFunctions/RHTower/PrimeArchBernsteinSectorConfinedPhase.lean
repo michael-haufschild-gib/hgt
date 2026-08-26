@@ -1091,30 +1091,52 @@ theorem
     (zero_lt_one.trans one_lt_xiOrderTwentyThreeCurvatureBernsteinAmplitudeBase)
     primeArchEndpointBernsteinTotalVariation_le_orderTwentyThreeCurvatureConfined hr
 
+/-- Shared transport from a geometric total-variation ceiling to Loschmidt purity. -/
+private theorem primeArchEndpointBernsteinPurity_le_of_totalVariation_geometric
+    {B : ℝ} (hB : 0 ≤ B)
+    (hvariation : ∀ n : ℕ,
+      primeArchEndpointBernsteinTotalVariation n ≤
+        xiReciprocalSquareAbsoluteMass * B ^ n)
+    (n : ℕ) :
+    primeArchEndpointBernsteinPurity n ≤
+      (xiReciprocalSquareAbsoluteMass * B ^ n) ^ 2 :=
+  (bernsteinCoefficientPurity_le_l1_sq _ _).trans
+    ((sq_le_sq₀
+      (Finset.sum_nonneg fun _ _ => abs_nonneg _)
+      (mul_nonneg xiReciprocalSquareAbsoluteMass_nonneg
+        (pow_nonneg hB n))).2
+      (hvariation n))
+
+/-- The positive Loschmidt purity retains the exact source-calibrated order-23 ceiling. -/
+theorem primeArchEndpointBernsteinPurity_le_orderTwentyThreeCurvatureConfined (n : ℕ) :
+    primeArchEndpointBernsteinPurity n ≤
+      (xiReciprocalSquareAbsoluteMass *
+        xiOrderTwentyThreeCurvatureBernsteinAmplitudeBase ^ n) ^ 2 :=
+  primeArchEndpointBernsteinPurity_le_of_totalVariation_geometric
+    (zero_le_one.trans one_lt_xiOrderTwentyThreeCurvatureBernsteinAmplitudeBase.le)
+    primeArchEndpointBernsteinTotalVariation_le_orderTwentyThreeCurvatureConfined n
+
 /-- The positive Loschmidt purity inherits the square of the narrow-sector amplitude estimate. -/
 theorem primeArchEndpointBernsteinPurity_le_sectorConfined (n : ℕ) :
     primeArchEndpointBernsteinPurity n ≤
       (xiReciprocalSquareAbsoluteMass *
         xiSectorConfinedBernsteinAmplitudeBase ^ n) ^ 2 :=
-  (bernsteinCoefficientPurity_le_l1_sq _ _).trans
-    ((sq_le_sq₀
-      (Finset.sum_nonneg fun _ _ => abs_nonneg _)
-      (mul_nonneg xiReciprocalSquareAbsoluteMass_nonneg
-        (pow_nonneg
-          (zero_le_one.trans one_lt_xiSectorConfinedBernsteinAmplitudeBase.le) n))).2
-      (primeArchEndpointBernsteinTotalVariation_le_sectorConfined n))
+  primeArchEndpointBernsteinPurity_le_of_totalVariation_geometric
+    (zero_le_one.trans one_lt_xiSectorConfinedBernsteinAmplitudeBase.le)
+    primeArchEndpointBernsteinTotalVariation_le_sectorConfined n
 
-/-- Normalization above the narrow-sector squared base kills the endpoint purity
-unconditionally. -/
-theorem tendsto_primeArchEndpointBernsteinPurity_div_pow_of_sectorBase_sq_lt
-    {r : ℝ} (hr : xiSectorConfinedBernsteinAmplitudeBase ^ 2 < r) :
+/-- Shared decay transport above the square of a geometric total-variation base. -/
+private theorem tendsto_primeArchEndpointBernsteinPurity_div_pow_of_geometric_bound
+    {B r : ℝ} (hB : 0 < B)
+    (hvariation : ∀ n : ℕ,
+      primeArchEndpointBernsteinTotalVariation n ≤
+        xiReciprocalSquareAbsoluteMass * B ^ n)
+    (hr : B ^ 2 < r) :
     Tendsto (fun n : ℕ => primeArchEndpointBernsteinPurity n / r ^ n)
       atTop (nhds 0) := by
-  have hrpos : 0 < r := lt_trans
-    (sq_pos_of_pos (zero_lt_one.trans one_lt_xiSectorConfinedBernsteinAmplitudeBase)) hr
-  let q : ℝ := xiSectorConfinedBernsteinAmplitudeBase ^ 2 / r
-  have hq0 : 0 ≤ q := div_nonneg
-    (sq_nonneg xiSectorConfinedBernsteinAmplitudeBase) hrpos.le
+  have hrpos : 0 < r := lt_trans (sq_pos_of_pos hB) hr
+  let q : ℝ := B ^ 2 / r
+  have hq0 : 0 ≤ q := div_nonneg (sq_nonneg B) hrpos.le
   have hq1 : q < 1 := (div_lt_one hrpos).2 hr
   have hpow : Tendsto (fun n : ℕ => q ^ n) atTop (nhds 0) :=
     tendsto_pow_atTop_nhds_zero_of_lt_one hq0 hq1
@@ -1128,22 +1150,44 @@ theorem tendsto_primeArchEndpointBernsteinPurity_div_pow_of_sectorBase_sq_lt
     (fun n => ?_) hupper
   calc
     primeArchEndpointBernsteinPurity n / r ^ n ≤
-        (xiReciprocalSquareAbsoluteMass *
-          xiSectorConfinedBernsteinAmplitudeBase ^ n) ^ 2 / r ^ n :=
+        (xiReciprocalSquareAbsoluteMass * B ^ n) ^ 2 / r ^ n :=
       div_le_div_of_nonneg_right
-        (primeArchEndpointBernsteinPurity_le_sectorConfined n)
+        (primeArchEndpointBernsteinPurity_le_of_totalVariation_geometric hB.le hvariation n)
         (pow_nonneg hrpos.le n)
     _ = xiReciprocalSquareAbsoluteMass ^ 2 * q ^ n := by
       dsimp only [q]
       rw [div_pow]
       ring
 
-/-- **Exact false-RH phase law.** Failure of RH forces a surviving purity exponent above one and
-at most the exact narrow-sector squared base. -/
-theorem exists_sectorConfined_primeArchEndpointBernsteinPurity_phase_of_not_riemannHypothesis
+/-- Normalization above the squared source-calibrated order-23 base kills endpoint purity. -/
+theorem
+    tendsto_primeArchEndpointBernsteinPurity_div_pow_of_orderTwentyThreeCurvatureBase_sq_lt
+    {r : ℝ} (hr : xiOrderTwentyThreeCurvatureBernsteinAmplitudeBase ^ 2 < r) :
+    Tendsto (fun n : ℕ => primeArchEndpointBernsteinPurity n / r ^ n)
+      atTop (nhds 0) :=
+  tendsto_primeArchEndpointBernsteinPurity_div_pow_of_geometric_bound
+    (zero_lt_one.trans one_lt_xiOrderTwentyThreeCurvatureBernsteinAmplitudeBase)
+    primeArchEndpointBernsteinTotalVariation_le_orderTwentyThreeCurvatureConfined hr
+
+/-- Normalization above the narrow-sector squared base kills the endpoint purity
+unconditionally. -/
+theorem tendsto_primeArchEndpointBernsteinPurity_div_pow_of_sectorBase_sq_lt
+    {r : ℝ} (hr : xiSectorConfinedBernsteinAmplitudeBase ^ 2 < r) :
+    Tendsto (fun n : ℕ => primeArchEndpointBernsteinPurity n / r ^ n)
+      atTop (nhds 0) :=
+  tendsto_primeArchEndpointBernsteinPurity_div_pow_of_geometric_bound
+    (zero_lt_one.trans one_lt_xiSectorConfinedBernsteinAmplitudeBase)
+    primeArchEndpointBernsteinTotalVariation_le_sectorConfined hr
+
+/-- Shared contradiction argument locating a false-RH exponent below any geometric decay base. -/
+private theorem exists_primeArchEndpointBernsteinPurity_phase_of_not_rh_of_geometric_decay
+    (B : ℝ)
+    (hdecay : ∀ {r : ℝ}, B ^ 2 < r →
+      Tendsto (fun n : ℕ => primeArchEndpointBernsteinPurity n / r ^ n)
+        atTop (nhds 0))
     (hRH : ¬ RiemannHypothesis) :
     ∃ r : ℝ,
-      1 < r ∧ r ≤ xiSectorConfinedBernsteinAmplitudeBase ^ 2 ∧
+      1 < r ∧ r ≤ B ^ 2 ∧
         ¬ Tendsto (fun n : ℕ => primeArchEndpointBernsteinPurity n / r ^ n)
           atTop (nhds 0) := by
   have hnsub :
@@ -1154,28 +1198,54 @@ theorem exists_sectorConfined_primeArchEndpointBernsteinPurity_phase_of_not_riem
   simp only [SubexponentialSquareEnergyAtNatInfinity] at hnsub
   push Not at hnsub
   obtain ⟨r, hr, hnot⟩ := hnsub
-  have hrbase : r ≤ xiSectorConfinedBernsteinAmplitudeBase ^ 2 := by
+  have hrbase : r ≤ B ^ 2 := by
     by_contra hle
-    have hgt : xiSectorConfinedBernsteinAmplitudeBase ^ 2 < r := lt_of_not_ge hle
-    exact hnot
-      (tendsto_primeArchEndpointBernsteinPurity_div_pow_of_sectorBase_sq_lt hgt)
+    exact hnot (hdecay (lt_of_not_ge hle))
   exact ⟨r, hr, hrbase, hnot⟩
 
-/-- The false-RH witness may be chosen strictly below the narrow-sector squared ceiling. -/
-theorem exists_strict_sectorConfined_primeArchEndpointBernsteinPurity_phase_of_not_riemannHypothesis
+/-- **Source-calibrated false-RH phase law.** Failure of RH forces a surviving purity exponent
+above one and at most the exact curvature/order-23 squared base. -/
+theorem
+    exists_orderTwentyThreeCurvatureConfined_primeArchEndpointBernsteinPurity_phase_of_not_rh
     (hRH : ¬ RiemannHypothesis) :
+    ∃ r : ℝ,
+      1 < r ∧ r ≤ xiOrderTwentyThreeCurvatureBernsteinAmplitudeBase ^ 2 ∧
+        ¬ Tendsto (fun n : ℕ => primeArchEndpointBernsteinPurity n / r ^ n)
+          atTop (nhds 0) :=
+  exists_primeArchEndpointBernsteinPurity_phase_of_not_rh_of_geometric_decay
+    xiOrderTwentyThreeCurvatureBernsteinAmplitudeBase
+    tendsto_primeArchEndpointBernsteinPurity_div_pow_of_orderTwentyThreeCurvatureBase_sq_lt
+    hRH
+
+/-- **Exact false-RH phase law.** Failure of RH forces a surviving purity exponent above one and
+at most the exact narrow-sector squared base. -/
+theorem exists_sectorConfined_primeArchEndpointBernsteinPurity_phase_of_not_riemannHypothesis
+    (hRH : ¬ RiemannHypothesis) :
+    ∃ r : ℝ,
+      1 < r ∧ r ≤ xiSectorConfinedBernsteinAmplitudeBase ^ 2 ∧
+        ¬ Tendsto (fun n : ℕ => primeArchEndpointBernsteinPurity n / r ^ n)
+          atTop (nhds 0) :=
+  exists_primeArchEndpointBernsteinPurity_phase_of_not_rh_of_geometric_decay
+    xiSectorConfinedBernsteinAmplitudeBase
+    tendsto_primeArchEndpointBernsteinPurity_div_pow_of_sectorBase_sq_lt hRH
+
+private theorem exists_strict_primeArchEndpointBernsteinPurity_phase_of_phase_le
+    {B : ℝ}
+    (hphase : ∃ r : ℝ,
+      1 < r ∧ r ≤ B ^ 2 ∧
+        ¬ Tendsto (fun n : ℕ => primeArchEndpointBernsteinPurity n / r ^ n)
+          atTop (nhds 0)) :
     ∃ s : ℝ,
-      1 < s ∧ s < xiSectorConfinedBernsteinAmplitudeBase ^ 2 ∧
+      1 < s ∧ s < B ^ 2 ∧
         ¬ Tendsto (fun n : ℕ => primeArchEndpointBernsteinPurity n / s ^ n)
           atTop (nhds 0) := by
-  obtain ⟨r, hr, hrbase, hnot⟩ :=
-    exists_sectorConfined_primeArchEndpointBernsteinPurity_phase_of_not_riemannHypothesis hRH
+  obtain ⟨r, hr, hrbase, hnot⟩ := hphase
   let s : ℝ := (1 + r) / 2
   have hr0 : 0 < r := lt_trans zero_lt_one hr
   have hs0 : 0 < s := by dsimp only [s]; linarith
   have hones : 1 < s := by dsimp only [s]; linarith
   have hsr : s < r := by dsimp only [s]; linarith
-  have hsbase : s < xiSectorConfinedBernsteinAmplitudeBase ^ 2 := hsr.trans_le hrbase
+  have hsbase : s < B ^ 2 := hsr.trans_le hrbase
   refine ⟨s, hones, hsbase, ?_⟩
   intro hs
   have hratio0 : 0 ≤ s / r := div_nonneg hs0.le hr0.le
@@ -1189,6 +1259,27 @@ theorem exists_strict_sectorConfined_primeArchEndpointBernsteinPurity_phase_of_n
     simp only [div_pow]
     field_simp [hr0.ne', hs0.ne']
   · norm_num
+
+/-- A false-RH purity exponent survives strictly inside the curvature/order-23 chamber. -/
+theorem
+    exists_strict_orderTwentyThreeCurvatureConfined_primeArchEndpointBernsteinPurity_phase_of_not_rh
+    (hRH : ¬ RiemannHypothesis) :
+    ∃ s : ℝ,
+      1 < s ∧ s < xiOrderTwentyThreeCurvatureBernsteinAmplitudeBase ^ 2 ∧
+        ¬ Tendsto (fun n : ℕ => primeArchEndpointBernsteinPurity n / s ^ n)
+          atTop (nhds 0) :=
+  exists_strict_primeArchEndpointBernsteinPurity_phase_of_phase_le
+    (exists_orderTwentyThreeCurvatureConfined_primeArchEndpointBernsteinPurity_phase_of_not_rh hRH)
+
+/-- The false-RH witness may be chosen strictly below the narrow-sector squared ceiling. -/
+theorem exists_strict_sectorConfined_primeArchEndpointBernsteinPurity_phase_of_not_riemannHypothesis
+    (hRH : ¬ RiemannHypothesis) :
+    ∃ s : ℝ,
+      1 < s ∧ s < xiSectorConfinedBernsteinAmplitudeBase ^ 2 ∧
+        ¬ Tendsto (fun n : ℕ => primeArchEndpointBernsteinPurity n / s ^ n)
+          atTop (nhds 0) :=
+  exists_strict_primeArchEndpointBernsteinPurity_phase_of_phase_le
+    (exists_sectorConfined_primeArchEndpointBernsteinPurity_phase_of_not_riemannHypothesis hRH)
 
 /-- A convenient five-per-mille corollary of the exact false-RH chamber. -/
 theorem exists_fivePerMille_primeArchEndpointBernsteinPurity_phase_of_not_riemannHypothesis

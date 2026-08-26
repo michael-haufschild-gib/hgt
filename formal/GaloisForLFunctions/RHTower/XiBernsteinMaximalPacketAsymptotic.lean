@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.FiniteBernsteinCoordinatePacketAsymptotic
 import GaloisForLFunctions.RHTower.XiBernsteinMaximalPacketGap
+import GaloisForLFunctions.RHTower.PrimeArchBernsteinSectorConfinedPhase
 
 /-!
 # Positive half-order asymptotic of the maximal Xi Bernstein packet
@@ -134,6 +135,37 @@ theorem exists_positive_halfOrder_maximalXiBernsteinCoordinatePacket_of_not_rh
     exact ⟨u, hu, htermpos u hu⟩
   exact ⟨D, B, beta, hB, hbeta1, hbeta, hDne, hD, hDsub,
     hlimit, hsumpos⟩
+
+/-- The positive maximal packet forced by false RH lies strictly inside the exact source-calibrated
+order-23 amplitude ceiling.  Thus FE--Schwarz aggregation cannot cancel the leading diagonal
+packet; source arithmetic must exclude its existence. -/
+theorem
+    exists_positive_halfOrder_maximalXiBernsteinCoordinatePacket_below_orderTwentyThreeCurvature_of_not_rh
+    (hRH : ¬ RiemannHypothesis) :
+    ∃ D : Finset XiZeroCopy, ∃ B beta : ℝ,
+      1 < B ∧ B < xiOrderTwentyThreeCurvatureBernsteinAmplitudeBase ∧
+      1 < beta ∧ beta < B ∧ D.Nonempty ∧
+      (∀ q ∈ D, xiEndpointBernsteinAtomAmplitudeBase q = B) ∧
+      (∀ q ∉ D, xiEndpointBernsteinAtomAmplitudeBase q ≤ beta) ∧
+      Tendsto
+        (fun n : ℕ => Real.sqrt n *
+          finiteBernsteinCoordinatePacketEnergy
+            (xiEndpointCoordinateSet D) (xiEndpointCoordinateWeight D) n /
+              (B ^ 2) ^ n)
+        atTop
+        (nhds (∑ u ∈ xiEndpointCoordinateSet D,
+          ‖xiEndpointCoordinateWeight D u‖ ^ 2 *
+            bernsteinAffineRowHalfOrderConstant u)) ∧
+      0 < ∑ u ∈ xiEndpointCoordinateSet D,
+        ‖xiEndpointCoordinateWeight D u‖ ^ 2 *
+          bernsteinAffineRowHalfOrderConstant u := by
+  obtain ⟨D, B, beta, hB, hbeta1, hbeta, hDne, hD, hDsub, hlimit, hpos⟩ :=
+    exists_positive_halfOrder_maximalXiBernsteinCoordinatePacket_of_not_rh hRH
+  obtain ⟨q, hqD⟩ := hDne
+  have hcap : B < xiOrderTwentyThreeCurvatureBernsteinAmplitudeBase := by
+    rw [← hD q hqD]
+    exact xiEndpointBernsteinAtomAmplitudeBase_lt_orderTwentyThreeCurvatureConfined q
+  exact ⟨D, B, beta, hB, hcap, hbeta1, hbeta, ⟨q, hqD⟩, hD, hDsub, hlimit, hpos⟩
 
 end
 

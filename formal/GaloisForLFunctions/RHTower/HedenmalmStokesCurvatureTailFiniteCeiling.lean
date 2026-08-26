@@ -166,6 +166,57 @@ theorem exists_hedenmalmCurvatureNormalizedSeamFlux_re_gt_above_twoHundredThirty
   intro s hhalf hone hfreq hzeta
   exact le_of_not_gt fun hgt => h ⟨s, hhalf, hone, hfreq, hzeta, hgt⟩
 
+/-- The strongest unconditional fourth-trace prefix reduces the completed prime--Gamma endpoint
+to one common lower bound on a countable dense tail strictly above `233 / 20`. -/
+theorem completedPrimeGammaGaussianRatPositiveFrequencyAboveReBoundedBelow_twoHundredThirtyThree_twentieths_iff_rh :
+    CompletedPrimeGammaGaussianRatPositiveFrequencyAboveReBoundedBelow (233 / 20) ↔
+      RiemannHypothesis := by
+  constructor
+  · intro hrat
+    exact
+      (continuedPrimeArchPositiveFrequencyAboveImBoundedAbove_iff_rh_of_verifiedHeight
+        (243 / 20) (233 / 20) rhVerifiedThrough_twoHundredFortyThree_twentieths
+        (by norm_num)).mp
+        (continuedPrimeArchPositiveFrequencyAboveImBoundedAbove_of_gaussianRatReBoundedBelow
+          (233 / 20) hrat)
+  · intro hRH
+    obtain ⟨L, hL⟩ :=
+      completedPrimeGammaGaussianRatLeftHalfBoundedBelow_of_riemannHypothesis hRH
+    exact ⟨L, fun q hqpos hqhalf _hqhigh hqzeta => hL q hqpos hqhalf hqzeta⟩
+
+/-- At the fourth-trace threshold, countable completed-flux boundedness and finite boundedness of
+the curvature-normalized right tail are the same RH-bearing condition. -/
+theorem completedPrimeGammaGaussianRatPositiveFrequencyAboveReBoundedBelow_twoHundredThirtyThree_twentieths_iff_curvatureTailBoundedAbove :
+    CompletedPrimeGammaGaussianRatPositiveFrequencyAboveReBoundedBelow (233 / 20) ↔
+      HedenmalmCurvatureNormalizedRightPositiveTailBoundedAbove (233 / 20) :=
+  completedPrimeGammaGaussianRatPositiveFrequencyAboveReBoundedBelow_twoHundredThirtyThree_twentieths_iff_rh.trans
+    hedenmalmCurvatureNormalizedRightPositiveTailBoundedAbove_twoHundredThirtyThree_twentieths_iff_rh.symm
+
+/-- Threshold consolidation: the smaller fourth-trace tail has exactly the same content as the
+older source-pure tail above four. -/
+theorem completedPrimeGammaGaussianRatPositiveFrequencyAboveReBoundedBelow_twoHundredThirtyThree_twentieths_iff_four :
+    CompletedPrimeGammaGaussianRatPositiveFrequencyAboveReBoundedBelow (233 / 20) ↔
+      CompletedPrimeGammaGaussianRatPositiveFrequencyAboveReBoundedBelow 4 :=
+  completedPrimeGammaGaussianRatPositiveFrequencyAboveReBoundedBelow_twoHundredThirtyThree_twentieths_iff_rh.trans
+    completedPrimeGammaGaussianRatPositiveFrequencyAboveReBoundedBelow_four_iff_rh.symm
+
+/-- Positive countable failure law at the fourth-trace threshold: false RH drives admissible
+Gaussian-rational completed flux below every proposed common lower bound. -/
+theorem exists_gaussianRat_completedPrimeGammaFlux_re_lt_above_twoHundredThirtyThree_twentieths_of_not_rh
+    (hnot : ¬ RiemannHypothesis) :
+    ∀ L : ℝ, ∃ q : ℚ × ℚ, 0 < (gaussianRatPoint q).re ∧
+      (gaussianRatPoint q).re < 1 / 2 ∧ 233 / 20 < (gaussianRatPoint q).im ∧
+      riemannZeta (gaussianRatPoint q) ≠ 0 ∧
+        (completedPrimeGammaFlux (gaussianRatPoint q)).re < L := by
+  intro L
+  by_contra hescape
+  push Not at hescape
+  apply hnot
+  exact
+    completedPrimeGammaGaussianRatPositiveFrequencyAboveReBoundedBelow_twoHundredThirtyThree_twentieths_iff_rh.mp
+      ⟨L, fun q hqpos hqhalf hqhigh hqzeta =>
+        hescape q hqpos hqhalf hqhigh hqzeta⟩
+
 end
 
 end RHTower

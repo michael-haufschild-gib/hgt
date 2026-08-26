@@ -10202,3 +10202,27 @@ merely of lower degree, and the accuracy `(v x)⁻¹` would not be available fro
 This is what the peel's coefficient bookkeeping reads: every ratio appearing in a border row is a
 quotient of two polynomials in the newest coordinate, and its value at the place is now computable
 from the leading coefficients alone.
+
+### Log — the algebraic model, part 21: small-response peel needs no Wronskian premise
+
+`HTGeometry/PlacePeelSmallResponse.lean` (wired, targeted leaf build, axiom-clean) composes the
+small-response estimate with the assembled place column:
+
+```text
+placeDegLE_placeShift_of_borderShape_of_small_response
+    a two-degree border shape stays two degrees down
+placeLim_below_of_borderShape_of_small_response
+    **every iterated entry below the border has scaled place value zero**
+```
+
+The extra premise in part 19 was that the shifted operator sends the logarithmic factor two
+place-degrees down.  If the response satisfies `v(c) ≤ v(x)⁻¹`,
+`placeDegLE_placeShift_logFactor` proves that premise automatically: the derivation costs one
+coordinate degree and multiplying by the response costs the other.  The new capstones therefore
+need only the coefficient field, derivation drop, rational-class membership, positive polynomial
+degree, and exact border shape.  Both declarations audit to
+`[propext, Classical.choice, Quot.sound]`; no umbrella build was run.
+
+This closes the full place-level newest-column peel in the small-response regime.  The general
+first-order cascade still has a unit-sized response and needs the law-specific Wronskian
+cancellation plus the global Wiman-place selection, so the card remains at Stage 2.

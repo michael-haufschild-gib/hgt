@@ -134,6 +134,31 @@ theorem hedenmalmCurvatureNormalizedRightTailBudget_twoHundredThirtyThree_twenti
       (by norm_num),
     hedenmalmCurvatureNormalizedRightBudget_iff_riemannHypothesis]
 
+/-- Closed fourth-trace specialization of the signed positive-frequency prime--Gamma tail. -/
+theorem continuedPrimeArchPositiveFrequencyAbove_twoHundredThirtyThree_twentieths_iff_rh :
+    ContinuedPrimeArchPositiveFrequencyAbove (233 / 20) ↔ RiemannHypothesis :=
+  continuedPrimeArchPositiveFrequencyAbove_iff_rh_of_verifiedHeight
+    (243 / 20) (233 / 20) rhVerifiedThrough_twoHundredFortyThree_twentieths
+    (by norm_num)
+
+/-- Closed fourth-trace specialization of the finite-ceiling positive-frequency tail. -/
+theorem continuedPrimeArchPositiveFrequencyAboveImBoundedAbove_twoHundredThirtyThree_twentieths_iff_rh :
+    ContinuedPrimeArchPositiveFrequencyAboveImBoundedAbove (233 / 20) ↔
+      RiemannHypothesis :=
+  continuedPrimeArchPositiveFrequencyAboveImBoundedAbove_iff_rh_of_verifiedHeight
+    (243 / 20) (233 / 20) rhVerifiedThrough_twoHundredFortyThree_twentieths
+    (by norm_num)
+
+/-- False RH forces the fourth-trace positive-frequency tail above every finite ceiling. -/
+theorem exists_continuedPrimeArchSource_im_gt_above_twoHundredThirtyThree_twentieths_of_not_rh
+    (hnot : ¬ RiemannHypothesis) (C : ℝ) :
+    ∃ z : ℂ, 0 < z.im ∧ z.im < 1 / 2 ∧ 233 / 20 < z.re ∧
+      riemannZeta (1 / 2 + z * I) ≠ 0 ∧
+        C < (continuedPrimeArchSourceRelativeTrace z).im :=
+  exists_continuedPrimeArchSource_im_gt_above_of_not_rh_verifiedHeight
+    (243 / 20) (233 / 20) rhVerifiedThrough_twoHundredFortyThree_twentieths
+    (by norm_num) hnot C
+
 end
 
 end RHTower

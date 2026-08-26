@@ -1170,3 +1170,46 @@ whenever some shear reaches `c = 0`.  What remains is exactly the attainment que
 `A` admits a pair `(N, S)` reaching one of those two regimes.  `InvertibleLeadingChainVanishes`
 shows the naive answer is no — for the companion matrix of `t³ + ∂t + 1` the rate is `1/2` and no
 integer shear sees it — so the missing statement is the bound on the number of restarts.
+
+### Lean progress — the companion witness has exact rate `1/2`
+
+`GaloisForLFunctions.HTGeometry.CompanionHalfRate` (wired, targeted leaf build, axiom-clean) now
+proves the quantitative assertion about the rank-three restart witness rather than reading its rate
+only from the paper Newton polygon:
+
+```text
+companionSquare, companionSquare_eq
+    the two-step block `A²` is explicit
+matDeg_companionSquare, topCoeffMatrix_companionSquare
+    `deg A² = 1` and its leading matrix is `diag(0,-1,-1)`
+matDeg_companionSquare_pow
+    **`deg((A²)^n) = n` for every n**
+matDeg_companionMatrix_even_pow
+    **`deg(A^(2n)) = n` for every n**
+twistedChainRate_companionMatrix
+    **the full Fekete rate of the identity-twisted companion chain is exactly `1/2`**
+```
+
+The restart block's `(1,1)` leading entry is `(-1)^n`, so its accumulated leading matrix never
+vanishes and the existing exact chain-degree theorem applies.  The normalized even powers form a
+cofinal subsequence constantly equal to `1/2`; uniqueness of the already-proved full-chain limit
+identifies the rate.  All seven new public declarations audit to
+`[propext, Classical.choice, Quot.sound]`; the module is imported by the `HTGeometry` umbrella,
+which was not built.
+
+This closes the explicit nonintegral witness and proves quantitatively that one restart can reveal a
+rate invisible to the original leading matrix.  It does not bound the number of restarts for an
+arbitrary invertible rank-`r` chain, so the card remains at Stage 2.
+
+`CompanionHalfRate.lean` now also closes the complementary odd iterates:
+
+```text
+matDeg_companionMatrix_odd_pow : deg(A^(2n+1)) = n+1
+matDeg_companionMatrix_pow     : deg(A^k) = (k+1)/2
+```
+
+The proof multiplies the exact two-step block by the original companion matrix and tracks the
+nonzero `(1,2)` top coefficient.  The parity assembly formalizes that every power has exact degree
+`ceil(k/2)`, not only a cofinal subsequence.  Direct check, targeted leaf build, and new-theorem
+axiom audit pass with only `[propext, Classical.choice, Quot.sound]`.  General restart attainment
+remains the card's unresolved formal core, so no promotion is made.

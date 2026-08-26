@@ -171,6 +171,23 @@ def quotientGroupMap :
   AddMonoidAlgebra.mapDomainBialgHom k (QuotientAddGroup.mk' (relationSubgroup I))
 
 omit [I.IsHopfIdeal k] in
+/-- The group-algebra map induced by the quotient character group is surjective. -/
+theorem quotientGroupMap_surjective : Function.Surjective (quotientGroupMap I) := by
+  intro p
+  induction p using AddMonoidAlgebra.induction_linear with
+  | zero => exact ⟨0, map_zero _⟩
+  | add p q hp hq =>
+      obtain ⟨p', rfl⟩ := hp
+      obtain ⟨q', rfl⟩ := hq
+      exact ⟨p' + q', by simp⟩
+  | single q c =>
+      obtain ⟨m, rfl⟩ := QuotientAddGroup.mk'_surjective (relationSubgroup I) q
+      refine ⟨AddMonoidAlgebra.single m c, ?_⟩
+      change AddMonoidAlgebra.mapDomain (QuotientAddGroup.mk' (relationSubgroup I))
+          (AddMonoidAlgebra.single m c) = _
+      rw [AddMonoidAlgebra.mapDomain_single]
+
+omit [I.IsHopfIdeal k] in
 theorem quotientGroupAlgHom_comp_quotientGroupMap :
     (quotientGroupAlgHom I).comp (quotientGroupMap I).toAlgHom =
       Ideal.Quotient.mkₐ k I := by

@@ -203,3 +203,22 @@ differential is a unique multiple of it.
   step;
 - clause 4, Kirby's exponential-algebraicity theorem;
 - the contour-integration layer for `d log Y − dX` on the normalized projective curve.
+
+## Rational slope exclusion (2026-08-25)
+
+`RHTower.schanuelDefect_slope_not_rational` now proves unconditionally that any complex slope
+`rho` satisfying
+
+```text
+schanuelDefect (x 1) = rho • schanuelDefect (x 0)
+```
+
+for a `ℚ`-linearly independent pair cannot equal the complex image of any `q : ℚ`.  It is a
+direct consequence of the newly packaged theorem
+`schanuelDefect_linearIndependent_rational`, obtained from the existing integral defect theorem by
+simultaneous denominator clearing.  Targeted leaf build and axiom audit pass; no umbrella build was
+run.
+
+This closes the rational part of clause 3.  The card's exact claim that `rho` is transcendental
+still requires exclusion of every algebraic irrational coefficient, i.e. the mixed Hopf-ideal and
+character-lattice step of `schanuel-defects-algebraic-coefficient-independent`.

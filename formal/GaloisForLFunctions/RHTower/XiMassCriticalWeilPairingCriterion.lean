@@ -291,6 +291,192 @@ theorem riemannHypothesis_iff_xiMassCriticalHalfDensityWeilPairingLineBound
       (xiMassCriticalHalfDensityWeilPairingLineBound_iff_primeAtomCone
         (lt_trans hhalf hca) hsigma hdhalf hda).symm
 
+/-! ## Eventual fixed-source criterion -/
+
+/-- One critical half-density source atom has an explicit absolute majorant after shifting to any
+strict interior line.  This is used only on compact height intervals; the exponential factor is
+not a candidate for the remaining high-height cancellation. -/
+theorem norm_xiMassCriticalHalfDensityCrossAtom_le_exp_majorant
+    {a sigma d : ℝ} (hd0 : 0 ≤ d) (hda : d < a) (hsigma : 0 < sigma)
+    (u : ℝ) (n : DeningerPrimePowerIndex) :
+    ‖xiMassCriticalHalfDensityCrossAtom a sigma u n‖ ≤
+      (Real.exp (|u| * d) * ∫ x : ℝ, Real.exp (-(sigma * |x|))) *
+        (ArithmeticFunction.vonMangoldt (n : ℕ) *
+          ((n : ℕ) : ℝ) ^ (-(1 / 2 + d))) := by
+  have hnPos : (0 : ℝ) < (n : ℕ) := by
+    exact_mod_cast lt_of_lt_of_le Nat.zero_lt_two n.property
+  have hF := norm_stripFourier_xiMass_deepShift_le
+    (a := a) (σ := sigma) (d := d) hd0 hda hsigma u
+      (deningerPrimePowerTime n)
+  have hF' :
+      ‖xiMassSpectralCrossProfile a sigma u (deningerPrimePowerTime n)‖ ≤
+        Real.exp (|u| * d) * ((n : ℕ) : ℝ) ^ (-d) *
+          ∫ x : ℝ, Real.exp (-(sigma * |x|)) := by
+    rw [← xiMassSpectralCrossProfile_eq_stripFourier] at hF
+    have hexp :
+        Real.exp (|u| * d - deningerPrimePowerTime n * d) =
+          Real.exp (|u| * d) * ((n : ℕ) : ℝ) ^ (-d) := by
+      rw [deningerPrimePowerTime, Real.rpow_def_of_pos hnPos, ← Real.exp_add]
+      congr 1
+      ring_nf
+    simpa only [hexp, mul_assoc] using hF
+  have hweight :
+      criticalMellinAtomWeight (n : ℕ) =
+        ArithmeticFunction.vonMangoldt (n : ℕ) *
+          ((n : ℕ) : ℝ) ^ (-(1 / 2 : ℝ)) := by
+    rw [criticalMellinAtomWeight]
+    ring_nf
+  rw [xiMassCriticalHalfDensityCrossAtom, norm_mul, Complex.norm_real,
+    Real.norm_eq_abs, hweight,
+    abs_of_nonneg (mul_nonneg ArithmeticFunction.vonMangoldt_nonneg
+      (Real.rpow_nonneg hnPos.le _))]
+  have hpowHalf : 0 ≤ ((n : ℕ) : ℝ) ^ (-(1 / 2 : ℝ)) :=
+    Real.rpow_nonneg hnPos.le _
+  have hLambda : 0 ≤ ArithmeticFunction.vonMangoldt (n : ℕ) :=
+    ArithmeticFunction.vonMangoldt_nonneg
+  have hmul := mul_le_mul_of_nonneg_left hF'
+    (mul_nonneg hLambda hpowHalf)
+  calc
+    ArithmeticFunction.vonMangoldt (n : ℕ) * ((n : ℕ) : ℝ) ^ (-(1 / 2 : ℝ)) *
+        ‖xiMassSpectralCrossProfile a sigma u (deningerPrimePowerTime n)‖ ≤
+      ArithmeticFunction.vonMangoldt (n : ℕ) * ((n : ℕ) : ℝ) ^ (-(1 / 2 : ℝ)) *
+        (Real.exp (|u| * d) * ((n : ℕ) : ℝ) ^ (-d) *
+          ∫ x : ℝ, Real.exp (-(sigma * |x|))) := hmul
+    _ = (Real.exp (|u| * d) * ∫ x : ℝ, Real.exp (-(sigma * |x|))) *
+        (ArithmeticFunction.vonMangoldt (n : ℕ) *
+          (((n : ℕ) : ℝ) ^ (-(1 / 2 : ℝ)) * ((n : ℕ) : ℝ) ^ (-d))) := by
+      ring
+    _ = (Real.exp (|u| * d) * ∫ x : ℝ, Real.exp (-(sigma * |x|))) *
+        (ArithmeticFunction.vonMangoldt (n : ℕ) *
+          ((n : ℕ) : ℝ) ^ (-(1 / 2 : ℝ) + -d)) := by
+      rw [Real.rpow_add hnPos]
+    _ = (Real.exp (|u| * d) * ∫ x : ℝ, Real.exp (-(sigma * |x|))) *
+        (ArithmeticFunction.vonMangoldt (n : ℕ) *
+          ((n : ℕ) : ℝ) ^ (-(1 / 2 + d))) := by
+      congr 3
+      ring
+
+/-- Explicit absolute majorant for the complete fixed-source pairing at one height.  Its arithmetic
+series lies strictly to the right of the von Mangoldt absolute-convergence abscissa. -/
+theorem norm_xiMassCriticalHalfDensityWeilPairing_le_exp_majorant
+    {a sigma d : ℝ} (hdhalf : 1 / 2 < d) (hda : d < a) (hsigma : 0 < sigma)
+    (u : ℝ) :
+    ‖xiMassCriticalHalfDensityWeilPairing a sigma u‖ ≤
+      (Real.exp (|u| * d) * ∫ x : ℝ, Real.exp (-(sigma * |x|))) *
+        ∑' n : DeningerPrimePowerIndex,
+          ArithmeticFunction.vonMangoldt (n : ℕ) *
+            ((n : ℕ) : ℝ) ^ (-(1 / 2 + d)) := by
+  let base : DeningerPrimePowerIndex → ℝ := fun n =>
+    ArithmeticFunction.vonMangoldt (n : ℕ) *
+      ((n : ℕ) : ℝ) ^ (-(1 / 2 + d))
+  let K : ℝ := Real.exp (|u| * d) * ∫ x : ℝ, Real.exp (-(sigma * |x|))
+  have ha : 1 / 2 < a := hdhalf.trans hda
+  have hp : 1 < 1 / 2 + d := by linarith
+  have hbaseNat : Summable (fun n : ℕ =>
+      ArithmeticFunction.vonMangoldt n * (n : ℝ) ^ (-(1 / 2 + d))) :=
+    summable_vonMangoldt_mul_rpow hp
+  have hbase : Summable base := by
+    exact hbaseNat.subtype {n : ℕ | 2 ≤ n}
+  have hmajorant : Summable (fun n => K * base n) := hbase.mul_left K
+  have hnorm := summable_norm_xiMassCriticalHalfDensityCrossAtom ha hsigma u
+  rw [xiMassCriticalHalfDensityWeilPairing_eq_crossSeries ha hsigma,
+    xiMassCriticalHalfDensityCrossSeries]
+  calc
+    ‖∑' n : DeningerPrimePowerIndex,
+        xiMassCriticalHalfDensityCrossAtom a sigma u n‖ ≤
+      ∑' n : DeningerPrimePowerIndex,
+        ‖xiMassCriticalHalfDensityCrossAtom a sigma u n‖ :=
+      norm_tsum_le_tsum_norm hnorm
+    _ ≤ ∑' n : DeningerPrimePowerIndex, K * base n := by
+      apply Summable.tsum_le_tsum
+      · intro n
+        simpa only [K, base] using
+          norm_xiMassCriticalHalfDensityCrossAtom_le_exp_majorant
+            (a := a) (sigma := sigma) (d := d) (by linarith) hda hsigma u n
+      · exact hnorm
+      · exact hmajorant
+    _ = K * ∑' n : DeningerPrimePowerIndex, base n := tsum_mul_left
+    _ = _ := rfl
+
+/-- Eventual height-uniform boundedness of the fixed critical Weil-source orbit. -/
+def XiMassCriticalHalfDensityWeilPairingTailBound (a sigma : ℝ) : Prop :=
+  ∃ U C : ℝ, 0 ≤ U ∧ ∀ u : ℝ, U ≤ u →
+    ‖xiMassCriticalHalfDensityWeilPairing a sigma u‖ ≤ C
+
+/-- Finite heights cost nothing: full nonnegative-line boundedness is equivalent to one uniform
+bound beyond an unspecified nonnegative height. -/
+theorem xiMassCriticalHalfDensityWeilPairingLineBound_iff_tailBound
+    {a sigma d : ℝ} (hdhalf : 1 / 2 < d) (hda : d < a) (hsigma : 0 < sigma) :
+    XiMassCriticalHalfDensityWeilPairingLineBound a sigma ↔
+      XiMassCriticalHalfDensityWeilPairingTailBound a sigma := by
+  let base : DeningerPrimePowerIndex → ℝ := fun n =>
+    ArithmeticFunction.vonMangoldt (n : ℕ) *
+      ((n : ℕ) : ℝ) ^ (-(1 / 2 + d))
+  let J : ℝ := ∫ x : ℝ, Real.exp (-(sigma * |x|))
+  let S : ℝ := ∑' n : DeningerPrimePowerIndex, base n
+  have hd0 : 0 ≤ d := by linarith
+  have hJ : 0 ≤ J := integral_nonneg fun _ => Real.exp_nonneg _
+  have hbaseNonneg : ∀ n, 0 ≤ base n := fun n => by
+    exact mul_nonneg ArithmeticFunction.vonMangoldt_nonneg
+      (Real.rpow_nonneg (by positivity) _)
+  have hS : 0 ≤ S := tsum_nonneg hbaseNonneg
+  constructor
+  · rintro ⟨C, hC⟩
+    exact ⟨0, C, le_rfl, fun u hu => hC u hu⟩
+  · rintro ⟨U, C, hU, hC⟩
+    let B : ℝ := Real.exp (U * d) * J * S
+    refine ⟨max C B, fun u hu => ?_⟩
+    by_cases htail : U ≤ u
+    · exact (hC u htail).trans (le_max_left _ _)
+    · have huU : u ≤ U := le_of_not_ge htail
+      have hexp : Real.exp (|u| * d) ≤ Real.exp (U * d) := by
+        rw [abs_of_nonneg hu]
+        exact Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_right huU hd0)
+      have hpoint := norm_xiMassCriticalHalfDensityWeilPairing_le_exp_majorant
+        hdhalf hda hsigma u
+      calc
+        ‖xiMassCriticalHalfDensityWeilPairing a sigma u‖ ≤
+            (Real.exp (|u| * d) * J) * S := by
+          simpa only [J, S, base] using hpoint
+        _ ≤ (Real.exp (U * d) * J) * S :=
+          mul_le_mul_of_nonneg_right
+            (mul_le_mul_of_nonneg_right hexp hJ) hS
+        _ = B := rfl
+        _ ≤ max C B := le_max_right _ _
+
+/-- **Eventual fixed-source exact open core.**  RH is equivalent to boundedness of the one fixed
+critical half-density Weil-source pairing after some finite height.  No low-height, moving-cutoff,
+Gamma, floor, or superluminal-tail premise remains. -/
+theorem riemannHypothesis_iff_xiMassCriticalHalfDensityWeilPairingTailBound
+    {a c sigma d : ℝ} (hhalf : 1 / 2 < c) (hca : c < a)
+    (hsigma : 0 < sigma) (hdhalf : 1 / 2 < d) (hda : d < a) :
+    RiemannHypothesis ↔
+      XiMassCriticalHalfDensityWeilPairingTailBound a sigma := by
+  exact (riemannHypothesis_iff_xiMassCriticalHalfDensityWeilPairingLineBound
+    hhalf hca hsigma hdhalf hda).trans
+      (xiMassCriticalHalfDensityWeilPairingLineBound_iff_tailBound
+        hdhalf hda hsigma)
+
+/-- Failure of RH forces genuine recurrent escape of the fixed source: after every height and above
+every proposed ceiling, a later response exceeds that ceiling.  Thus no finite exceptional band can
+carry the obstruction. -/
+theorem not_riemannHypothesis_iff_xiMassCriticalHalfDensityWeilPairing_cofinally_unbounded
+    {a c sigma d : ℝ} (hhalf : 1 / 2 < c) (hca : c < a)
+    (hsigma : 0 < sigma) (hdhalf : 1 / 2 < d) (hda : d < a) :
+    ¬ RiemannHypothesis ↔
+      ∀ U C : ℝ, 0 ≤ U → ∃ u : ℝ, U ≤ u ∧
+        C < ‖xiMassCriticalHalfDensityWeilPairing a sigma u‖ := by
+  rw [riemannHypothesis_iff_xiMassCriticalHalfDensityWeilPairingTailBound
+    hhalf hca hsigma hdhalf hda]
+  constructor
+  · intro hnot U C hU
+    by_contra hex
+    push Not at hex
+    exact hnot ⟨U, C, hU, hex⟩
+  · rintro hcofinal ⟨U, C, hU, hC⟩
+    obtain ⟨u, hu, hgt⟩ := hcofinal U C hU
+    exact (not_lt_of_ge (hC u hu)) hgt
+
 end
 
 end RHTower

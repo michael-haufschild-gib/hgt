@@ -1108,3 +1108,72 @@ The norm map of Bass and Tate is now formal (`milnorNormAt`, `milnorNormAt_spec`
 both halves of Milnor's sequence in final form (`mem_range_of_residues_zero`,
 `exists_residue_single`) and the residue at infinity (`milnorResidueInfty`).  This is the transfer
 machinery that Moore's theorem — route 5 above — is built on.
+
+## Finite generation kills the divisible kernel (2026-08-26)
+
+`formal/GaloisForLFunctions/HTGeometry/FinitelyGeneratedDivisibleSubgroup.lean` formalizes the
+firewall-breaking group-theoretic step used by route 5:
+
+```text
+eq_zero_of_fg_of_nsmul_surjective
+subsingleton_of_fg_of_nsmul_surjective
+addSubgroup_eq_bot_of_fg_of_nsmulDivisible
+addSubgroup_eq_bot_of_le_fg_of_nsmulDivisible
+directSumFinite_isTorsion
+addMonoidHom_eq_zero_of_nsmulDivisible_directSumFinite
+addSubgroup_le_ker_of_nsmulDivisible_directSumFinite
+isTorsion_of_fg_of_ker_nsmulDivisible_directSumFinite
+isTorsion_of_ker_le_fg_of_ker_nsmulDivisible_directSumFinite
+```
+
+A finitely generated divisible abelian group is first forced to be torsion: otherwise the existing
+finite-generation theorem gives a quotient onto `ZMod 2`, while divisibility forces every map to a
+finite abelian group to vanish.  A finitely generated torsion abelian group is finite, and
+surjectivity of multiplication by its cardinality then kills every element.  No structure theorem
+is postulated at the theorem boundary.
+
+The direct-sum lemmas also prove, for an arbitrary reciprocity map, that every divisible subgroup
+of its source lies in its kernel.  This formalizes the card's claim that the maximal divisible
+subgroup lies in the tame kernel when residues land in a direct sum of finite groups.
+
+Crucially, the final assembly needs finite generation only of a subgroup containing the divisible
+kernel, not of the whole source.  This is the exact tame-kernel configuration in route 5.
+
+The leaf passes direct checking and targeted build.  All nine declarations audit to only
+`[propext, Classical.choice, Quot.sound]`; it is wired into `HTGeometry` without building the
+umbrella.
+
+Thus, once finite generation of the tame kernel and Moore's identification of its maximal
+divisible subgroup are supplied, no further abstract group theory is needed to deduce that the
+divisible kernel is zero.  The final theorem packages the Moore-style conclusion itself: a
+finitely generated source mapping to a direct sum of finite groups is torsion whenever its
+reciprocity kernel is divisible.  Finite generation and Moore reciprocity remain the two classical
+arithmetic producers; card stays Stage 2.
+
+## Divisible Milnor classes land in the actual tame kernel (2026-08-26)
+
+`formal/GaloisForLFunctions/HTGeometry/MilnorTameDivisibleKernel.lean` specializes the preceding
+direct-sum theorem to the corpus's finite-place Milnor residue map.  It first transports finiteness
+through the already-proved equivalence `K₁ᴹ(F) ≃ Fˣ`:
+
+```text
+finite_milnorKDeg_one
+addSubgroup_le_milnorTameKernel_of_nsmulDivisible_of_finiteResidue
+addSubgroup_le_milnorTameKernel_of_nsmulDivisible_numberField
+milnorKDegTwo_isTorsion_of_tameKernel_fg_of_ker_nsmulDivisible_numberField
+```
+
+For every number field, each residue target is therefore finite.  Any divisible subgroup of
+`K₂ᴹ(K)` maps trivially under the total residue homomorphism and hence lies in the exact
+finite-place tame kernel, using `milnorTameKernel_eq_ker_milnorTotalResidue`.  This closes the
+previously informal containment used in route 5.
+
+The capstone composes that containment with the finitely-generated-subgroup assembly: finite
+generation of the actual tame kernel plus any Moore reciprocity map whose kernel is divisible
+forces `K₂ᴹ(K)` itself to be torsion.  No finite-generation assumption on the full Milnor group is
+introduced.
+
+The leaf passes direct checking and targeted build.  Its instance and three theorems audit to only
+`[propext, Classical.choice, Quot.sound]`; it is wired into `HTGeometry` without building the
+umbrella.  Remaining arithmetic producers are still finite generation of the tame kernel and
+Moore's reciprocity/maximal-divisible-kernel theorem.  Card remains Stage 2.

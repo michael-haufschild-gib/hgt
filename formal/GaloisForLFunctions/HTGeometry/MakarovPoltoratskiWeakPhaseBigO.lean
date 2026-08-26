@@ -19,6 +19,87 @@ def PoissonWeakL1BigO (f : ℝ → ℝ) : Prop :=
   ∃ C : ℝ, ∀ᶠ A : ℝ in atTop,
     A * (cauchyMeasure 0 1 {x | A < |f x|}).toReal ≤ C
 
+/-- Weak-`L¹` big-O only depends on the a.e. representative. -/
+theorem PoissonWeakL1BigO.congr {f g : ℝ → ℝ}
+    (hf : PoissonWeakL1BigO f) (hfg : f =ᵐ[volume] g) :
+    PoissonWeakL1BigO g := by
+  obtain ⟨C, hC⟩ := hf
+  refine ⟨C, ?_⟩
+  have hmeasure (A : ℝ) :
+      cauchyMeasure 0 1 {x | A < |f x|} =
+        cauchyMeasure 0 1 {x | A < |g x|} := by
+    rw [standardCauchyMeasure_eq_withDensity]
+    apply MeasureTheory.measure_congr
+    exact (withDensity_realDensity_ae_eq measurable_standardCauchyWeight
+      standardCauchyWeight_pos).mpr
+        (hfg.mono fun x hx => by
+          apply propext
+          change (A < |f x|) ↔ (A < |g x|)
+          rw [hx])
+  filter_upwards [hC] with A hA
+  rwa [← hmeasure A]
+
+/-- Weak-`L¹` big-O is closed under addition. -/
+theorem PoissonWeakL1BigO.add {f g : ℝ → ℝ}
+    (hf : PoissonWeakL1BigO f) (hg : PoissonWeakL1BigO g) :
+    PoissonWeakL1BigO (fun x => f x + g x) := by
+  obtain ⟨Cf, hf⟩ := hf
+  obtain ⟨Cg, hg⟩ := hg
+  refine ⟨2 * (Cf + Cg), ?_⟩
+  have hhalf : Tendsto (fun A : ℝ => A / 2) atTop atTop := by
+    simpa [div_eq_mul_inv, mul_comm] using
+      tendsto_id.const_mul_atTop (by norm_num : (0 : ℝ) < 1 / 2)
+  have hfHalf := hhalf.eventually hf
+  have hgHalf := hhalf.eventually hg
+  filter_upwards [eventually_ge_atTop 0, hfHalf, hgHalf] with A hA hfA hgA
+  have hset : {x : ℝ | A < |f x + g x|} ⊆
+      {x | A / 2 < |f x|} ∪ {x | A / 2 < |g x|} := by
+    intro x hx
+    by_contra hnot
+    simp only [Set.mem_union, Set.mem_setOf_eq, not_or, not_lt] at hnot
+    change A < |f x + g x| at hx
+    linarith [abs_add_le (f x) (g x)]
+  have hmeasureENN :
+      cauchyMeasure 0 1 {x : ℝ | A < |f x + g x|} ≤
+        cauchyMeasure 0 1 {x | A / 2 < |f x|} +
+          cauchyMeasure 0 1 {x | A / 2 < |g x|} :=
+    (MeasureTheory.measure_mono hset).trans (MeasureTheory.measure_union_le _ _)
+  have hfiniteF : cauchyMeasure 0 1 {x | A / 2 < |f x|} ≠ ⊤ :=
+    MeasureTheory.measure_ne_top _ _
+  have hfiniteG : cauchyMeasure 0 1 {x | A / 2 < |g x|} ≠ ⊤ :=
+    MeasureTheory.measure_ne_top _ _
+  have hmeasure :
+      (cauchyMeasure 0 1 {x : ℝ | A < |f x + g x|}).toReal ≤
+        (cauchyMeasure 0 1 {x | A / 2 < |f x|}).toReal +
+          (cauchyMeasure 0 1 {x | A / 2 < |g x|}).toReal := by
+    calc
+      _ ≤ (cauchyMeasure 0 1 {x | A / 2 < |f x|} +
+          cauchyMeasure 0 1 {x | A / 2 < |g x|}).toReal :=
+        ENNReal.toReal_mono (by simp [hfiniteF, hfiniteG]) hmeasureENN
+      _ = _ := ENNReal.toReal_add hfiniteF hfiniteG
+  have hmul := mul_le_mul_of_nonneg_left hmeasure hA
+  calc
+    A * (cauchyMeasure 0 1 {x : ℝ | A < |f x + g x|}).toReal ≤
+        A * ((cauchyMeasure 0 1 {x | A / 2 < |f x|}).toReal +
+          (cauchyMeasure 0 1 {x | A / 2 < |g x|}).toReal) := hmul
+    _ = 2 * ((A / 2) * (cauchyMeasure 0 1 {x | A / 2 < |f x|}).toReal +
+        (A / 2) * (cauchyMeasure 0 1 {x | A / 2 < |g x|}).toReal) := by ring
+    _ ≤ 2 * (Cf + Cg) := by linarith
+
+/-- Weak-`L¹` big-O is invariant under negation. -/
+theorem PoissonWeakL1BigO.neg {f : ℝ → ℝ}
+    (hf : PoissonWeakL1BigO f) : PoissonWeakL1BigO (fun x => -f x) := by
+  obtain ⟨C, hC⟩ := hf
+  refine ⟨C, ?_⟩
+  filter_upwards [hC] with A hA
+  simpa only [abs_neg] using hA
+
+/-- Weak-`L¹` big-O is closed under subtraction. -/
+theorem PoissonWeakL1BigO.sub {f g : ℝ → ℝ}
+    (hf : PoissonWeakL1BigO f) (hg : PoissonWeakL1BigO g) :
+    PoissonWeakL1BigO (fun x => f x - g x) := by
+  simpa only [sub_eq_add_neg] using hf.add hg.neg
+
 /-- Almost-everywhere phase-coordinate output with a finite weak-`L¹` outer tail. -/
 structure AESmirnovToeplitzWeakPhaseBigOWitness (γ : ℝ → ℝ) where
   innerPhase : ℝ → ℝ

@@ -260,4 +260,17 @@ theorem primeArchBernsteinNegativeMassSubexponential_iff_positiveFrequencyAbove_
   primeArchBernsteinNegativeMassSubexponential_iff_cofinalBernsteinNegativeMass.trans
     continuedPrimeArchPositiveFrequencyAbove_four_iff_cofinalBernsteinNegativeMass.symm
 
+/-- **Countable ultraviolet compression.**  A single finite lower bound on the
+Gaussian-rational high-frequency completed flux is exactly nondivergence of the canonical
+endpoint Bernstein negative-mass sequence. -/
+theorem completedPrimeGammaGaussianRatPositiveFrequencyAboveReBoundedBelow_four_iff_bernsteinNondivergence :
+    CompletedPrimeGammaGaussianRatPositiveFrequencyAboveReBoundedBelow 4 ↔
+      ¬ Tendsto
+        (hausdorffBernsteinNegativeMass
+          (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+            normalizedPrimeArchMoment))
+        atTop atTop :=
+  completedPrimeGammaGaussianRatPositiveFrequencyAboveReBoundedBelow_four_iff_rh.trans
+    riemannHypothesis_iff_not_tendsto_primeArchBernsteinNegativeMass_atTop
+
 end RHTower

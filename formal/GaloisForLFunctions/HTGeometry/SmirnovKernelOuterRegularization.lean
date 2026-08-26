@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.SchurOneSubOuter
 import GaloisForLFunctions.HTGeometry.HardyMultiplierModelSpaceProduct
+import GaloisForLFunctions.HTGeometry.SmirnovToeplitzNPlus
 
 /-!
 # Outer regularization of a nonzero Smirnov Toeplitz kernel
@@ -14,6 +15,84 @@ open Complex MeasureTheory Metric
 namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
+
+/-- Complex conjugation preserves local boundary integrability. -/
+theorem locallyIntegrable_conj_complex {f : ℝ → ℂ}
+    (hf : LocallyIntegrable f volume) :
+    LocallyIntegrable (fun x => (starRingEnd ℂ) (f x)) volume := by
+  rw [locallyIntegrable_iff] at hf ⊢
+  intro K hK
+  apply (hf K hK).norm.mono'
+  · exact Complex.continuous_conj.comp_aestronglyMeasurable
+      (hf K hK).aestronglyMeasurable
+  · filter_upwards with x
+    simp
+
+/-- Removing a unit inner boundary factor preserves local integrability. -/
+theorem DiskSmirnovBoundary.locallyIntegrable_outerPart_boundary
+    (F : DiskSmirnovBoundary)
+    (hF : ∃ z ∈ ball (0 : ℂ) 1, F.numerator.fn z ≠ 0)
+    (hloc : LocallyIntegrable F.boundary volume) :
+    LocallyIntegrable (F.outerPart hF).boundary volume := by
+  let I := F.innerFactor hF
+  let H := F.outerPart hF
+  have hmul : LocallyIntegrable
+      (fun x => (starRingEnd ℂ) (diskMultiplierLineBoundary I x) * F.boundary x)
+      volume :=
+    locallyIntegrable_bounded_mul_left (C := 1) hloc
+      (Complex.continuous_conj.measurable.comp
+        (measurable_diskMultiplierLineBoundary I))
+      (by
+        filter_upwards [ae_norm_diskMultiplierLineBoundary_innerFactor_eq_one
+          F.numerator hF] with x hx
+        simpa [I, DiskSmirnovBoundary.innerFactor] using hx.le)
+  have heq : (fun x => (starRingEnd ℂ) (diskMultiplierLineBoundary I x) *
+      F.boundary x) =ᵐ[volume] H.boundary := by
+    filter_upwards [F.boundary_innerFactor_mul_outerPart_ae hF,
+      ae_norm_diskMultiplierLineBoundary_innerFactor_eq_one F.numerator hF]
+        with x hfac hunit
+    rw [hfac]
+    have hunitI : ‖diskMultiplierLineBoundary I x‖ = 1 := by
+      simpa [I, DiskSmirnovBoundary.innerFactor] using hunit
+    have hprod : (starRingEnd ℂ) (diskMultiplierLineBoundary I x) *
+        diskMultiplierLineBoundary I x = 1 := by
+      rw [Complex.conj_mul', hunitI]
+      norm_num
+    rw [← mul_assoc, hprod, one_mul]
+  exact hmul.congr heq
+
+/-- Multiplying a locally integrable Smirnov boundary by a bounded analytic factor preserves local
+integrability. -/
+theorem DiskSmirnovBoundary.locallyIntegrable_mul_ofMultiplier_boundary
+    (F : DiskSmirnovBoundary) (A : DiskMultiplier)
+    (hloc : LocallyIntegrable F.boundary volume) :
+    LocallyIntegrable (F.mul (DiskSmirnovBoundary.ofMultiplier A)).boundary volume := by
+  have hmul : LocallyIntegrable
+      (fun x => diskMultiplierLineBoundary A x * F.boundary x) volume :=
+    locallyIntegrable_bounded_mul_left hloc
+      (measurable_diskMultiplierLineBoundary A)
+      (ae_norm_diskMultiplierLineBoundary_le A)
+  have heq : (fun x => diskMultiplierLineBoundary A x * F.boundary x) =ᵐ[volume]
+      (F.mul (DiskSmirnovBoundary.ofMultiplier A)).boundary := by
+    filter_upwards [F.boundary_mul_ae (DiskSmirnovBoundary.ofMultiplier A),
+      DiskSmirnovBoundary.boundary_ofMultiplier_ae A] with x hprod hA
+    rw [hprod, hA, mul_comm]
+  exact hmul.congr heq
+
+/-- The reflected boundary of an admitted `N⁺` kernel remains locally integrable for a
+measurable unimodular symbol. -/
+theorem SmirnovToeplitzNPlusElement.reflected_locallyIntegrable
+    {U : ℝ → ℂ} (K : SmirnovToeplitzNPlusElement U)
+    (hUmeas : Measurable U) (hU : ∀ᵐ x ∂volume, ‖U x‖ = 1) :
+    LocallyIntegrable K.toKernelElement.reflected.boundary volume := by
+  have hconj := locallyIntegrable_conj_complex K.forward_locallyIntegrable
+  have hmul : LocallyIntegrable
+      (fun x => (starRingEnd ℂ) (U x) *
+        (starRingEnd ℂ) (K.toKernelElement.forward.boundary x)) volume :=
+    locallyIntegrable_bounded_mul_left (C := 1) hconj
+      (Complex.continuous_conj.measurable.comp hUmeas)
+      (by filter_upwards [hU] with x hx; simp [hx])
+  exact hmul.congr K.toKernelElement.boundary_relation.symm
 
 /-- Phase reflection is multiplicative for nonzero Smirnov quotients. -/
 theorem DiskSmirnovBoundary.phaseReflectionSymbol_mul_ae
@@ -83,7 +162,9 @@ theorem SmirnovToeplitzKernelElement.exists_outerSmirnov_phaseReflection
     (hU : ∀ᵐ x ∂volume, ‖U x‖ = 1) :
     ∃ (d : ℂ) (Q : DiskSmirnovBoundary),
       ‖d‖ = 1 ∧ IsOuterDiskMultiplier Q.numerator ∧
-        U =ᵐ[volume] fun x => d * Q.phaseReflectionSymbol x := by
+        (U =ᵐ[volume] fun x => d * Q.phaseReflectionSymbol x) ∧
+        (LocallyIntegrable K.reflected.boundary volume →
+          LocallyIntegrable Q.boundary volume) := by
   obtain ⟨hR, c, hc, hfactor⟩ := K.exists_innerOuter_boundary_factorization hU
   let I := K.combinedInner hR
   let H := K.reflected.outerPart hR
@@ -95,7 +176,7 @@ theorem SmirnovToeplitzKernelElement.exists_outerSmirnov_phaseReflection
     K.reflected.outerPart_numerator_outer hR
   by_cases hIone : ∀ z ∈ ball (0 : ℂ) 1, I.fn z = 1
   · let Q := H
-    refine ⟨(starRingEnd ℂ) c, Q, ?_, hHouter, ?_⟩
+    refine ⟨(starRingEnd ℂ) c, Q, ?_, hHouter, ?_, ?_⟩
     · simpa using hc
     have hIline : diskMultiplierLineBoundary I =ᵐ[volume] fun _ => 1 := by
       have hcongr : diskMultiplierLineBoundary I =ᵐ[volume]
@@ -118,6 +199,8 @@ theorem SmirnovToeplitzKernelElement.exists_outerSmirnov_phaseReflection
           (K.forward.innerFactor K.forward_nonzero) x *
             diskMultiplierLineBoundary (K.reflected.innerFactor hR) x := by rw [mul_assoc]
       _ = (starRingEnd ℂ) c * H.phaseReflectionSymbol x := hfac
+    · intro hloc
+      exact K.reflected.locallyIntegrable_outerPart_boundary hR hloc
   · push Not at hIone
     obtain ⟨z0, hz0, hIz0⟩ := hIone
     let A := (DiskMultiplier.const 1).sub I
@@ -126,7 +209,7 @@ theorem SmirnovToeplitzKernelElement.exists_outerSmirnov_phaseReflection
     let Q := H.mul (DiskSmirnovBoundary.ofMultiplier A)
     have hQouter : IsOuterDiskMultiplier Q.numerator := by
       exact hHouter.mul hAouter
-    refine ⟨-(starRingEnd ℂ) c, Q, ?_, hQouter, ?_⟩
+    refine ⟨-(starRingEnd ℂ) c, Q, ?_, hQouter, ?_, ?_⟩
     · simpa using hc
     have hAphase := diskMultiplierPhaseReflectionSymbol_one_sub_ae
       I hIschur hIunit ⟨z0, hz0, hIz0⟩
@@ -172,6 +255,23 @@ theorem SmirnovToeplitzKernelElement.exists_outerSmirnov_phaseReflection
       _ = -(starRingEnd ℂ) c *
           (H.phaseReflectionSymbol x *
             (-(starRingEnd ℂ) (diskMultiplierLineBoundary I x))) := by ring
+    · intro hloc
+      exact H.locallyIntegrable_mul_ofMultiplier_boundary A
+        (K.reflected.locallyIntegrable_outerPart_boundary hR hloc)
+
+/-- Exact `N⁺` outer regularization: the output outer quotient retains local boundary
+integrability. -/
+theorem SmirnovToeplitzNPlusElement.exists_outerSmirnov_phaseReflection
+    {U : ℝ → ℂ} (K : SmirnovToeplitzNPlusElement U)
+    (hUmeas : Measurable U) (hU : ∀ᵐ x ∂volume, ‖U x‖ = 1) :
+    ∃ (d : ℂ) (Q : DiskSmirnovBoundary),
+      ‖d‖ = 1 ∧ IsOuterDiskMultiplier Q.numerator ∧
+        LocallyIntegrable Q.boundary volume ∧
+        U =ᵐ[volume] fun x => d * Q.phaseReflectionSymbol x := by
+  obtain ⟨d, Q, hd, hQouter, hphase, hlocal⟩ :=
+    K.toKernelElement.exists_outerSmirnov_phaseReflection hU
+  exact ⟨d, Q, hd, hQouter,
+    hlocal (K.reflected_locallyIntegrable hUmeas hU), hphase⟩
 
 end
 

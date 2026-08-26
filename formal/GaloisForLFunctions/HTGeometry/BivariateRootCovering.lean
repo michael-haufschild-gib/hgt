@@ -1,5 +1,5 @@
 import Mathlib
-import GaloisForLFunctions.U0.HolomorphicIFT
+import GaloisForLFunctions.HTGeometry.ParametricRootCovering
 import GaloisForLFunctions.Bottcher.BranchContinuation
 import GaloisForLFunctions.Bottcher.ProperLocalHomeoCovering
 
@@ -88,13 +88,8 @@ theorem biRootLocus_partial_ne {f : ℂ[X][X]} (q : BiRootLocus f)
 /-- Implicit-function data at a point of the root locus. -/
 noncomputable def biIFTData {f : ℂ[X][X]} (q : BiRootLocus f)
     (hsep : (biFibre f q.1.1).Separable) :
-    ImplicitFunctionData ℂ (ℂ × ℂ) ℂ ℂ := by
-  have cdf : ContDiffAt ℂ ω (biEval f) q.1 := (analyticAt_biEval f q.1).contDiffAt
-  have hω : (ω : WithTop ℕ∞) ≠ 0 := by decide
-  have if₂ : (fderiv ℂ (biEval f) q.1 ∘L (.inr ℂ ℂ ℂ)).IsInvertible :=
-    HolomorphicIFT.clm_invertible_of_apply_one_ne
-      (by simpa using biRootLocus_partial_ne q hsep)
-  exact cdf.hasStrictFDerivAt hω |>.implicitFunctionDataOfProdDomain if₂
+    ImplicitFunctionData ℂ (ℂ × ℂ) ℂ ℂ :=
+  parametricRootIFTData q (analyticAt_biEval f q.1) (biRootLocus_partial_ne q hsep)
 
 theorem biIFTData_apply {f : ℂ[X][X]} (q : BiRootLocus f)
     (hsep : (biFibre f q.1.1).Separable) (v : ℂ × ℂ) :
@@ -109,87 +104,17 @@ theorem biIFTData_mem_source {f : ℂ[X][X]} (q : BiRootLocus f)
 theorem exists_chart_biRootProj {f : ℂ[X][X]} (e : BiRootLocus f)
     (hsepe : (biFibre f e.1.1).Separable) :
     ∃ φ : OpenPartialHomeomorph (BiRootLocus f) ℂ,
-      e ∈ φ.source ∧ biRootProj (f := f) = φ := by
-  classical
-  let ψ := (biIFTData e hsepe).toOpenPartialHomeomorph
-  let baseTarget : ℂ → ℂ × ℂ := fun s => (0, s)
-  have hbaseTarget : Continuous baseTarget := continuous_const.prodMk continuous_id
-  have hambient : Continuous (fun q : BiRootLocus f => (q : ℂ × ℂ)) := continuous_subtype_val
-  let targetPred : ℂ → Prop := fun s => baseTarget s ∈ ψ.target
-  have hsymm_spec : ∀ s (hs : targetPred s),
-      biEval f (ψ.symm (baseTarget s)) = 0 ∧ (ψ.symm (baseTarget s)).1 = s := by
-    intro s hs
-    have hright := ψ.right_inv hs
-    have h1 := congrArg Prod.fst hright
-    have h2 := congrArg Prod.snd hright
-    rw [show ψ (ψ.symm (baseTarget s)) = (biEval f (ψ.symm (baseTarget s)),
-        (ψ.symm (baseTarget s)).1) from biIFTData_apply e hsepe _] at h1 h2
-    exact ⟨h1, h2⟩
-  let liftRoot : ∀ s, targetPred s → BiRootLocus f :=
-    fun s hs => ⟨ψ.symm (baseTarget s), (hsymm_spec s hs).1⟩
-  let invRoot : ℂ → BiRootLocus f := fun s => if hs : targetPred s then liftRoot s hs else e
-  let source : Set (BiRootLocus f) := (fun q : BiRootLocus f => (q : ℂ × ℂ)) ⁻¹' ψ.source
-  let target : Set ℂ := baseTarget ⁻¹' ψ.target
-  have hpsi_eq : ∀ q : BiRootLocus f, ψ (q : ℂ × ℂ) = baseTarget (biRootProj q) := by
-    intro q
-    rw [biIFTData_apply e hsepe]
-    exact Prod.ext q.2 rfl
-  have hmapSource : ∀ q ∈ source, biRootProj q ∈ target := by
-    intro q hq
-    show baseTarget (biRootProj q) ∈ ψ.target
-    rw [← hpsi_eq q]
-    exact ψ.map_source hq
-  have hmapTarget : ∀ s ∈ target, invRoot s ∈ source := by
-    intro s hs
-    have hs' : targetPred s := hs
-    rw [show invRoot s = liftRoot s hs' by dsimp only [invRoot]; rw [dif_pos hs']]
-    exact ψ.map_target hs'
-  have hleft : ∀ q ∈ source, invRoot (biRootProj q) = q := by
-    intro q hq
-    have hs' : targetPred (biRootProj q) := hmapSource q hq
-    rw [show invRoot (biRootProj q) = liftRoot (biRootProj q) hs' by
-      dsimp only [invRoot]; rw [dif_pos hs']]
-    apply Subtype.ext
-    show ψ.symm (baseTarget (biRootProj q)) = (q : ℂ × ℂ)
-    rw [← hpsi_eq q]
-    exact ψ.left_inv hq
-  have hright : ∀ s ∈ target, biRootProj (invRoot s) = s := by
-    intro s hs
-    have hs' : targetPred s := hs
-    rw [show invRoot s = liftRoot s hs' by dsimp only [invRoot]; rw [dif_pos hs']]
-    exact (hsymm_spec s hs').2
-  have hcontInv : ContinuousOn invRoot target := by
-    have hψsymm : ContinuousOn (fun s => ψ.symm (baseTarget s)) target :=
-      ψ.continuousOn_symm.comp hbaseTarget.continuousOn (fun s hs => hs)
-    rw [continuousOn_iff_continuous_restrict]
-    apply Continuous.subtype_mk
-    have hrestr : Continuous fun s : target => ψ.symm (baseTarget s.1) :=
-      continuousOn_iff_continuous_restrict.mp hψsymm
-    convert hrestr using 1
-    funext s
-    have hs' : targetPred s.1 := s.2
-    change ((invRoot s.1 : BiRootLocus f) : ℂ × ℂ) = ψ.symm (baseTarget s.1)
-    rw [show invRoot s.1 = liftRoot s.1 hs' by dsimp only [invRoot]; rw [dif_pos hs']]
-  let chart : OpenPartialHomeomorph (BiRootLocus f) ℂ :=
-    { toFun := biRootProj
-      invFun := invRoot
-      source := source
-      target := target
-      map_source' := hmapSource
-      map_target' := hmapTarget
-      left_inv' := hleft
-      right_inv' := hright
-      continuousOn_toFun := (continuous_fst.comp continuous_subtype_val).continuousOn
-      continuousOn_invFun := hcontInv
-      open_source := ψ.open_source.preimage hambient
-      open_target := ψ.open_target.preimage hbaseTarget }
-  exact ⟨chart, biIFTData_mem_source e hsepe, rfl⟩
+      e ∈ φ.source ∧ biRootProj (f := f) = φ :=
+  exists_chart_parametricRootProj e (analyticAt_biEval f e.1)
+    (biRootLocus_partial_ne e hsepe)
 
 /-- **The root projection is a local homeomorphism** as soon as every fibre is separable. -/
 theorem isLocalHomeomorph_biRootProj {f : ℂ[X][X]}
     (hsep : ∀ s : ℂ, (biFibre f s).Separable) :
     IsLocalHomeomorph (biRootProj (f := f)) :=
-  fun e => exists_chart_biRootProj e (hsep _)
+  isLocalHomeomorph_parametricRootProj
+    (fun q => analyticAt_biEval f q.1)
+    (fun q => biRootLocus_partial_ne q (hsep q.1.1))
 
 /-! ### Properness and the covering property -/
 

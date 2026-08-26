@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.CCMFUSuzukiPositiveMixture
+import GaloisForLFunctions.RHTower.CCMGuinandWeilThirdGradeAnchoredWallTransport
 import GaloisForLFunctions.RHTower.SuzukiCheckpointEventDynamics
 import Mathlib.Analysis.Calculus.Deriv.MeanValue
 import Mathlib.MeasureTheory.Function.Floor
@@ -578,5 +579,142 @@ theorem riemannHypothesis_of_ccmFUSuzukiCheckpointAffineMixtureBound
     ((Real.log_pos (by norm_num : (1 : ℝ) < 2)).trans_le hlogb)
   exact (ccmFUCentralXiScrewPositiveMixtureBound_iff_checkpointAffineMixtureBound
     hlogb).2 hbound
+
+/-- Eventual uniform boundedness of the discrete affine checkpoint current. -/
+def CCMFUSuzukiCheckpointAffineMixtureTailBound (b : ℝ) : Prop :=
+  ∃ U C : ℝ, b < U ∧ 0 ≤ C ∧ ∀ H : ℝ, U ≤ H →
+    |ccmFUSuzukiCheckpointAffineMixture b H| ≤ C
+
+/-- The anchored prime--polar moment and discrete checkpoint current differ by a uniformly bounded
+sum of curvature, affine-wall, and Gamma--Lerch terms. -/
+theorem exists_nonnegative_uniform_bound_ccmFUSuzukiAnchoredCheckpointSum
+    {b : ℝ} (hlogb : Real.log 2 ≤ b) :
+    ∃ D : ℝ, 0 ≤ D ∧ ∀ H : ℝ, b < H →
+      |ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment b H +
+        ccmFUSuzukiCheckpointAffineMixture b H| ≤ D := by
+  have hb : 0 < b := (Real.log_pos (by norm_num : (1 : ℝ) < 2)).trans_le hlogb
+  obtain ⟨A, hA0, hA⟩ :=
+    exists_nonnegative_uniform_bound_ccmFUCentralXiScrewAffineMemory hb
+  obtain ⟨G, hG0, hG⟩ :=
+    exists_nonnegative_uniform_bound_ccmFUCentralGammaLerchAffineMixture hb
+  let K : ℝ := 96 / b ^ 4
+  refine ⟨K + A + G,
+    add_nonneg (add_nonneg (by dsimp only [K]; positivity) hA0) hG0, ?_⟩
+  intro H hbH
+  have hcurv := ccmFUSuzukiCheckpointCurvatureMixture_mem_Icc hlogb hbH.le
+  have hdecomp :
+      ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment b H +
+          ccmFUSuzukiCheckpointAffineMixture b H =
+        -ccmFUSuzukiCheckpointCurvatureMixture b H +
+          ccmFUCentralXiScrewAffineMemory b H -
+            ccmFUCentralGammaLerchAffineMixture b H := by
+    rw [ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment_eq_neg_xiScrewCodiagonalMixture_sub_gammaLerch
+        hb hbH.le,
+      ccmFUCentralXiScrewCodiagonalMixture_eq_positiveMixture_sub_affineMemory
+        hb hbH.le,
+      ccmFUCentralXiScrewPositiveMixture_eq_checkpointAffine_add_curvature
+        hlogb hbH.le]
+    ring
+  rw [hdecomp]
+  calc
+    |-ccmFUSuzukiCheckpointCurvatureMixture b H +
+          ccmFUCentralXiScrewAffineMemory b H -
+        ccmFUCentralGammaLerchAffineMixture b H| ≤
+        |-ccmFUSuzukiCheckpointCurvatureMixture b H +
+          ccmFUCentralXiScrewAffineMemory b H| +
+        |ccmFUCentralGammaLerchAffineMixture b H| := abs_sub _ _
+    _ ≤ (|ccmFUSuzukiCheckpointCurvatureMixture b H| +
+          |ccmFUCentralXiScrewAffineMemory b H|) +
+        |ccmFUCentralGammaLerchAffineMixture b H| := by
+      gcongr
+      simpa only [abs_neg] using
+        (abs_add_le (-ccmFUSuzukiCheckpointCurvatureMixture b H)
+          (ccmFUCentralXiScrewAffineMemory b H))
+    _ ≤ (K + A) + G := by
+      have hcurvAbs : |ccmFUSuzukiCheckpointCurvatureMixture b H| ≤ K := by
+        rw [abs_of_nonneg hcurv.1]
+        exact hcurv.2
+      exact add_le_add (add_le_add hcurvAbs (hA H hbH)) (hG H hbH)
+
+/-- Eventual boundedness is unchanged after removing every smooth and archimedean defect from the
+anchored moment, leaving only the floor-selected affine checkpoint current. -/
+theorem ccmGuinandWeilThirdGradeCesaroAnchoredMomentTailBound_iff_checkpointAffineMixtureTailBound
+    {b : ℝ} (hlogb : Real.log 2 ≤ b) :
+    CCMGuinandWeilThirdGradeCesaroAnchoredMomentTailBound b ↔
+      CCMFUSuzukiCheckpointAffineMixtureTailBound b := by
+  obtain ⟨D, hD0, hD⟩ :=
+    exists_nonnegative_uniform_bound_ccmFUSuzukiAnchoredCheckpointSum hlogb
+  constructor
+  · rintro ⟨U, C, hbU, hC0, hC⟩
+    refine ⟨U, C + D, hbU, add_nonneg hC0 hD0, ?_⟩
+    intro H hUH
+    have hbH : b < H := hbU.trans_le hUH
+    have htri : |ccmFUSuzukiCheckpointAffineMixture b H| ≤
+        |ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment b H +
+          ccmFUSuzukiCheckpointAffineMixture b H| +
+        |ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment b H| := by
+      calc
+        |ccmFUSuzukiCheckpointAffineMixture b H| =
+            |(ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment b H +
+                ccmFUSuzukiCheckpointAffineMixture b H) -
+              ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment b H| := by ring
+        _ ≤ _ := abs_sub _ _
+    exact htri.trans (by linarith [hD H hbH, hC H hUH])
+  · rintro ⟨U, C, hbU, hC0, hC⟩
+    refine ⟨U, C + D, hbU, add_nonneg hC0 hD0, ?_⟩
+    intro H hUH
+    have hbH : b < H := hbU.trans_le hUH
+    have htri : |ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment b H| ≤
+        |ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment b H +
+          ccmFUSuzukiCheckpointAffineMixture b H| +
+        |ccmFUSuzukiCheckpointAffineMixture b H| := by
+      calc
+        |ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment b H| =
+            |(ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment b H +
+                ccmFUSuzukiCheckpointAffineMixture b H) -
+              ccmFUSuzukiCheckpointAffineMixture b H| := by ring
+        _ ≤ _ := abs_sub _ _
+    exact htri.trans (by linarith [hD H hbH, hC H hUH])
+
+/-- Fixed-source tail bound for the actual affine checkpoint current. -/
+def CCMFUSuzukiCanonicalCheckpointAffineTailBound : Prop :=
+  ∃ C : ℝ, 0 ≤ C ∧ ∀ H : ℝ, 2 ≤ H →
+    |ccmFUSuzukiCheckpointAffineMixture 1 H| ≤ C
+
+/-- The canonical discrete checkpoint tail is sufficient for RH. -/
+theorem riemannHypothesis_of_ccmFUSuzukiCanonicalCheckpointAffineTailBound
+    (htail : CCMFUSuzukiCanonicalCheckpointAffineTailBound) :
+    RiemannHypothesis := by
+  have hlog2 : Real.log 2 ≤ (1 : ℝ) := by
+    have h := Real.log_le_sub_one_of_pos (by norm_num : (0 : ℝ) < 2)
+    linarith
+  apply riemannHypothesis_of_ccmGuinandWeilThirdGradeCesaroAnchoredMomentTailBound
+    (b := 1) (by norm_num)
+  apply
+    (ccmGuinandWeilThirdGradeCesaroAnchoredMomentTailBound_iff_checkpointAffineMixtureTailBound
+      hlog2).2
+  rcases htail with ⟨C, hC0, hC⟩
+  exact ⟨2, C, by norm_num, hC0, hC⟩
+
+/-- False RH forces the canonical checkpoint current above every ceiling after every later wall. -/
+theorem ccmFUSuzukiCheckpointAffineMixture_cofinally_unbounded_of_not_riemannHypothesis
+    (hRH : ¬ RiemannHypothesis) :
+    ∀ U C : ℝ, 1 < U → ∃ H : ℝ, U ≤ H ∧
+      C < |ccmFUSuzukiCheckpointAffineMixture 1 H| := by
+  intro U C hU
+  by_contra hescape
+  push Not at hescape
+  apply hRH
+  apply riemannHypothesis_of_ccmGuinandWeilThirdGradeCesaroAnchoredMomentTailBound
+    (b := 1) (by norm_num)
+  have hlog2 : Real.log 2 ≤ (1 : ℝ) := by
+    have h := Real.log_le_sub_one_of_pos (by norm_num : (0 : ℝ) < 2)
+    linarith
+  apply
+    (ccmGuinandWeilThirdGradeCesaroAnchoredMomentTailBound_iff_checkpointAffineMixtureTailBound
+      hlog2).2
+  refine ⟨U, max C 0, hU, le_max_right _ _, ?_⟩
+  intro H hH
+  exact (hescape H hH).trans (le_max_left _ _)
 
 end GaloisForLFunctions.RHTower

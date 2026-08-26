@@ -163,6 +163,15 @@ theorem not_riemannHypothesis_iff_xiMassBottomPrimeIntegral_norm_unbounded
   simpa only [XiMassBottomPrimeLineBound, not_exists, not_forall, not_le] using
     not_congr (riemannHypothesis_iff_xiMassBottomPrimeLineBound hhalf hca hσ)
 
+/-- RH is exactly failure of unbounded escape for one canonical bottom prime integral. -/
+theorem riemannHypothesis_iff_not_xiMassCanonicalBottomPrimeIntegral_norm_unbounded :
+    RiemannHypothesis ↔
+      ¬ ∀ C : ℝ, ∃ u : ℝ,
+        C < ‖xiMassBottomPrimeIntegral 1 (3 / 4) (((1 : ℝ) : ℂ) + u * I)‖ := by
+  rw [← not_riemannHypothesis_iff_xiMassBottomPrimeIntegral_norm_unbounded
+    (a := 1) (c := 3 / 4) (σ := 1) (by norm_num) (by norm_num) (by norm_num)]
+  tauto
+
 end
 
 end RHTower

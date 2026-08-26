@@ -42,13 +42,25 @@ the exact channel values are
 
 `A(Omega₊₊₋)=-2n-k-3/2`.
 
-Thus `R₊₊` has regular same-fibre inverse-Jost factors given by the corresponding Gamma values. The transient `R₊₋` channel is an exact odd Hawking--Matsubara Frobenius resonance. If `c=-N+epsilon` is approached at fixed angular fibre, then `dA/dc=dB/dc=1/2` and the non-normalizable BM connection coefficient has Laurent expansion
+Let `S` and `V` be the forbidden constant-branch and decaying-branch coefficients in the BM boundary expansion. With `a=A-1/2` and `b=B-1/2`,
 
-`Gamma(c) Gamma(1/2)/(Gamma(A) Gamma(B))`
+`S=Gamma(c) Gamma(1/2)/(Gamma(A) Gamma(B))`,
 
-`= P₋₁/epsilon + P₋₁*(H_N-gamma_E-(digamma(A₀)+digamma(B₀))/2)+O(epsilon)`,
+`V=Gamma(c) Gamma(-1/2)/(Gamma(a) Gamma(b))`.
 
-where `P₋₁=(-1)^N Gamma(1/2)/(N! Gamma(A₀) Gamma(B₀))`. Here `N` is even, so the residue sign is positive. Retarded analytic continuation therefore determines a logarithmic finite-part transfer, not the reciprocal Jost scalar used in the earlier fibre radiation abstraction.
+The normalization-invariant boundary response is their projective ratio
+
+`mathscr R(omega,chi)=V/S=-2 Gamma(A)Gamma(B)/(Gamma(A-1/2)Gamma(B-1/2))`.
+
+The common `Gamma(c)` pole cancels. At the mixed Hawking--Matsubara frequency and real `chi`, conjugation gives the exact identity
+
+`mathscr R₊₋=-2 |Gamma(-n-k-3/4+I*chi/2)/Gamma(-n-k-5/4+I*chi/2)|^2 < 0`.
+
+All four Gamma arguments are quarter-shifted away from nonpositive integers, so `mathscr R₊₋` is finite and nonzero, including at `chi=0`. The pole of each separately horizon-normalized coefficient, and the associated logarithmic Frobenius representative, is not a pole of projective response. Likewise, the zero of reciprocal forbidden coefficient `1/S` is a normalization zero, not vanishing physical response. For the second harmonic,
+
+`mathscr R₊₊=-2 Gamma(A₊₊)Gamma(B₊₊)/(Gamma(A₊₊-1/2)Gamma(B₊₊-1/2))`,
+
+with `A₊₊` and `B₊₊` as above.
 
 At the cubic frequency, `A(Omega₊₊₋)` is a negative half-integer. Hence the same-fibre plus Jost factor is nonzero, and for `Re chi != 0` so is the full radial Jost determinant. The local `++-` monomial misses every same-fibre BM QNM.
 
@@ -58,7 +70,7 @@ Actual `B` and `C` values require Kodama--Ishibashi metric reconstruction, gauge
 
 `uhat₊₋(omega,r) = Mhat₀(omega,r)-I sum_lambda Y_lambda/(omega-Omega₊₋) int G^ret_lambda(r,r';omega) S_{lambda,+-}(r') dr'`.
 
-`M₀` lies in the exceptional zero-frequency constraint kernel; the transient term uses the logarithmic Matsubara Green kernel above. The direct third jet is
+`M₀` lies in the exceptional zero-frequency constraint kernel. A horizon-normalized Green representative may require a logarithmic finite part at `c=-N`, but its boundary response must reproduce the finite projective ratio above; the common `Gamma(c)` pole cannot act as physical gain. The direct third jet is
 
 `C_aug(p,p,m)=exp(-I*Omega₊₊₋*t) sum_lambda C_{lambda,++-}(r)Y_lambda`,
 
@@ -104,9 +116,9 @@ This is the required single contour expression: insert harmonic source coefficie
 
 ## No-go closure (mandatory when falsified)
 - **Exact killing theorem/mechanism:** BM linear master data contain no horizon harmonic multiplication coefficients, nonlinear metric reconstruction, augmented boundary jets, or sourced radial kernels. Equal linear eigenvalue/Jost data therefore do not determine `C`, `R₊₊`, or full `R₊₋`.
-- **Strongest positive survivor:** Exact channel-frequency/Jost classification, logarithmic mixed-channel transfer, and proof that full residue requires a causal convolution numerator rather than an on-shell scalar Green factor.
-- **New insight:** Mixed transient response is a Hawking--Matsubara logarithmic channel. Local cubic source misses the QNM lattice, so it cannot create a higher coincident pole; nevertheless causal turn-on lets it contribute to the same simple-pole residue. Cancellation remains a full augmented causal-source problem.
-- **Status:** Frequency and Jost theorem is Lean-proved in `ThetaCuspHawkingBMCausalChannelEvaluation.lean`. Full tensor coefficients remain open because required horizon multiplication and augmented Einstein source data have not been supplied.
+- **Strongest positive survivor:** Exact channel-frequency/Jost classification; normalization-invariant mixed response is a finite, nonzero, strictly negative norm-square; full residue requires a causal convolution numerator rather than an on-shell scalar Green factor.
+- **New insight:** Hawking--Matsubara resonance changes a horizon-normalized Frobenius representative but not its projective boundary response. Local cubic source misses the QNM lattice, so it cannot create a higher coincident pole; causal turn-on can still contribute to the same simple-pole residue. Cancellation remains a full augmented causal-source problem among finite channels.
+- **Status:** Frequency/Jost classification and projective `R₊₋`, `R₊₊` formulas are Lean-proved in `ThetaCuspHawkingBMCausalChannelEvaluation.lean` and `ThetaCuspHawkingBMProjectiveCausalResponse.lean`. Full sourced kernels and tensor coefficients remain open because horizon multiplication and augmented Einstein source data have not been supplied.
 
 ## Log
 - 2026-08-25 — Entered Stage 1 after corpus and source audit.

@@ -16,6 +16,8 @@ noncomputable section
 
 namespace AlgSpec
 
+set_option linter.unusedSectionVars false
+
 variable {A B : Type*} [CommRing A] [CommRing B] [Nontrivial A] [Nontrivial B]
 variable [Algebra ℂ A] [Algebra ℂ B] [Algebra A B] [IsScalarTower ℂ A B]
 

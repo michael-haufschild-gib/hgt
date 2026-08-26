@@ -224,6 +224,17 @@ theorem deningerMeyerHalfDensityWeightedXiEvaluationAdmissible_iff_rh_of_pointwi
       (xiNearbyPoleDualityAdjunctionFracture_eq_zero_iff
         (q.1 : ℂ)).mp hfracture
 
+/-- The canonical reciprocal divisor vector is square-summable and nonzero at every Xi copy,
+so its weighted half-density evaluation is admissible exactly under RH. -/
+theorem deningerMeyerHalfDensityXiInvEvaluationAdmissible_iff_rh :
+    DeningerMeyerHalfDensityWeightedXiEvaluationAdmissible xiInvVec ↔
+      RiemannHypothesis := by
+  exact
+    deningerMeyerHalfDensityWeightedXiEvaluationAdmissible_iff_rh_of_pointwise_ne_zero
+      xiInvVec (fun q => by
+        rw [xiInvVec_apply]
+        exact inv_ne_zero (xiSpectralPoint_ne_zero q))
+
 end
 
 end RHTower

@@ -1592,3 +1592,59 @@ closure. The remaining classical Levinson gate is analytic: prove the mollified 
 asymptotic matching this constant, including sharp full/omitted long-tail evaluation and sharp
 mixed-cross coefficient summation. The card's exact decimal still additionally requires the full
 PRZZ proportion inputs.
+
+## Brick 5ad admissible interior parameter and logarithmic Möbius normalization (2026-08-25)
+
+Seven axiom-clean leaves now close the endpoint-continuity and fixed-modulus arithmetic layers:
+
+* `RHTower/LevinsonLinearOptimizationInterior.lean` transfers the exact endpoint computation to
+  some strict `0 < theta < 1/2` while preserving proportion `> 1/3`;
+* `RHTower/LevinsonLinearAdmissibleParameter.lean` selects a fixed unconditional admissible
+  parameter and exports its proportion certificate;
+* `RHTower/Sieve/MoebiusHarmonicTailIdentity.lean`,
+  `HTGeometry/ReciprocalLogPowerTail.lean`, and
+  `RHTower/Sieve/MoebiusHarmonicLogRate.lean` provide the Abel identity and logarithmic decay needed
+  at the zeta pole;
+* `RHTower/Sieve/MoebiusLogarithmicNormalization.lean` proves
+  `sum_{d <= N} mu(d)/d log(N/d) -> 1` by identifying the boundary derivative of reciprocal zeta;
+* `RHTower/Sieve/CoprimeLogMoebiusOneLimit.lean` and
+  `RHTower/Sieve/CoprimeLogMoebiusLimit.lean` transfer this to real cutoffs, prove a generic
+  divided-argument contraction theorem, and establish for every fixed squarefree modulus `e`
+  that `T_e(Y) -> e/phi(e)`.
+
+Every leaf passes direct `lake env lean`, exact leaf `lake build`, and declaration-local
+`#print axioms`; dependencies are only `propext, Classical.choice, Quot.sound`. Leaves are wired
+into their umbrellas; no umbrella build was run.
+
+The admissible strict-theta scalar and fixed-modulus Graham normalization are therefore closed.
+This does not yet give the modulus-uniform Barban--Vehov quadratic asymptotic when the modulus grows
+with the mollifier length. Sharp full/omitted long-tail evaluation and mixed-cross coefficient
+summation remain the analytic Levinson gate; the exact card decimal still additionally requires
+both PRZZ proportion providers.
+
+## Brick 5ae squarefree--totient mean and sharp Selberg lower half (2026-08-26)
+
+Four axiom-clean leaves close the arithmetic residue and lower-variational side of Graham's
+quadratic form:
+
+* `RHTower/SummableDivisorHarmonicMean.lean` proves a reusable dominated divisor-harmonic mean
+  from plain absolute summability of the reciprocal residue;
+* `RHTower/Sieve/SquarefreeTotientResidueKernel.lean` constructs the Möbius inverse of
+  `n*mu(n)^2/phi(n)`, proves its prime-square support, absolute summability after reciprocal
+  weighting, and exact Euler mass `1`;
+* `RHTower/Sieve/SquarefreeTotientLogMean.lean` deduces the unconditional asymptotic
+  `sum_{n<=N} mu(n)^2/phi(n) / log N -> 1`;
+* `RHTower/Sieve/SelbergDiagonalLowerAsymptotic.lean` proves the finite Möbius inversion constraint,
+  the weighted-Cauchy bound
+  `log(X)^2 / sum_{e<=X} mu(e)^2/phi(e) <= D_X`, and hence the sharp epsilon-form lower law
+  `D_X/log X >= 1-epsilon` eventually.
+
+Each leaf passes direct `lake env lean`, exact leaf `lake build`, and declaration-local
+`#print axioms`; dependencies are only `propext, Classical.choice, Quot.sound`. Leaves are wired
+into `RHTower.lean`; no umbrella build was run.
+
+Graham's lower half and its leading constant are no longer open. Remaining arithmetic core is the
+matching sharp upper law for the specific linear Barban--Vehov weight, uniformly across growing
+moduli; existing `GrahamMeanSquare` and `HarmonicWeightedGrahamMeanSquare` give unconditional but
+coarse upper bounds. Full/omitted differentiated long-tail evaluation, mixed-cross summation, and
+published PRZZ providers remain open.

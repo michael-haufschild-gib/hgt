@@ -33,6 +33,48 @@ def quotientMap (L : Submodule k V) :
       SymmetricAlgebra.ι k (V ⧸ L) (L.mkQ v) := by
   simp [quotientMap]
 
+/-- The symmetric-algebra map induced by a module quotient is a bialgebra morphism. -/
+noncomputable def quotientBialgHom (L : Submodule k V) :
+    SymmetricAlgebra k V →ₐc[k] SymmetricAlgebra k (V ⧸ L) :=
+  BialgHom.ofAlgHom (quotientMap L) (by
+    apply SymmetricAlgebra.algHom_ext
+    apply LinearMap.ext
+    intro v
+    change Coalgebra.counit (R := k)
+        (quotientMap L (SymmetricAlgebra.ι k V v)) =
+      Coalgebra.counit (R := k) (SymmetricAlgebra.ι k V v)
+    rw [quotientMap_ι]
+    simp) (by
+    apply SymmetricAlgebra.algHom_ext
+    apply LinearMap.ext
+    intro v
+    simp [quotientMap, SymmetricAlgebra.comul_ι])
+
+@[simp] theorem quotientBialgHom_apply (L : Submodule k V)
+    (p : SymmetricAlgebra k V) :
+    quotientBialgHom L p = quotientMap L p := rfl
+
+/-- The symmetric-algebra map induced by a quotient module is surjective. -/
+theorem quotientBialgHom_surjective (L : Submodule k V) :
+    Function.Surjective (quotientBialgHom L) := by
+  intro p
+  induction p using SymmetricAlgebra.induction with
+  | algebraMap r =>
+      exact ⟨(algebraMap k (SymmetricAlgebra k V)) r,
+        by simp [quotientBialgHom]⟩
+  | ι qv =>
+      obtain ⟨v, rfl⟩ := L.mkQ_surjective qv
+      exact ⟨SymmetricAlgebra.ι k V v, by
+        simp [quotientBialgHom, quotientMap]⟩
+  | mul p q hp hq =>
+      obtain ⟨p', rfl⟩ := hp
+      obtain ⟨q', rfl⟩ := hq
+      exact ⟨p' * q', by simp⟩
+  | add p q hp hq =>
+      obtain ⟨p', rfl⟩ := hp
+      obtain ⟨q', rfl⟩ := hq
+      exact ⟨p' + q', by simp⟩
+
 theorem linearIdeal_le_ker_quotientMap (L : Submodule k V) :
     linearIdeal L ≤ RingHom.ker (quotientMap L).toRingHom := by
   rw [linearIdeal, Ideal.span_le]

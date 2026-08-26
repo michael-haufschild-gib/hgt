@@ -1053,3 +1053,25 @@ spectrum.  (The note there that "the corpus has no Selberg-class layer at all" i
 functional equation and its regular set.)  Everything else -- Step 1 interior, Step 2 mechanism,
 Step 3 in every degree, and the whole Verifications table at degree one (`ζ`, every Dirichlet
 character) and degree two (divisor function) -- is unconditional in Lean.
+
+## Full-class normalization wrapper (2026-08-25)
+
+`formal/GaloisForLFunctions/RHTower/SelbergFullShiftRootLaw.lean` now states Step 3 directly for the
+actual full `SelbergClass`, rather than asking callers to re-supply the extended carrier's
+first-coefficient premise:
+
+```text
+SelbergClass.limsup_norm_shift_rpow_inv_of_height
+SelbergClass.limsup_norm_shift_rpow_inv_of_halfRate_of_height
+```
+
+Both replace `ha1 : a_F(1) ≠ 0` by the full-class normalization `F.coeff_one : a_F(1) = 1`.  The
+second also discharges sine nondegeneracy for a rank-one/half-rate gamma presentation, so its only
+inputs are positive degree, the presentation identity, and the base-height inequality already in
+the card.  Direct check and targeted leaf build pass; both declarations audit to
+`[propext, Classical.choice, Quot.sound]` and are wired into `RHTower` without building the
+umbrella.
+
+This removes a representational premise from the exact full-class cusp constant.  Card remains at
+Stage 2 solely because the general Kaczorowski--Perelli standard-twist spectrum theorem is still
+unformalized.

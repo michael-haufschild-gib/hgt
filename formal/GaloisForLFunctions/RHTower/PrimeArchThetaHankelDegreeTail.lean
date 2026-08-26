@@ -728,3 +728,291 @@ theorem primeArchSourceTraceHankelIntTwoEisensteinDegreeSetNonnegative_iff_riema
 end
 
 end RHTower
+
+namespace RHTower
+
+noncomputable section
+
+open Polynomial Filter Topology
+
+/-- Monomial cap with a positive integer multiple of `p`. -/
+def primeArchMonomialCappedPlus (p : Polynomial ℤ) (N : ℕ) : Polynomial ℤ :=
+  Polynomial.X ^ (p.natDegree + 1) + Polynomial.C (N : ℤ) * p
+
+/-- Monomial cap with a negative integer multiple of `p`. -/
+def primeArchMonomialCappedMinus (p : Polynomial ℤ) (N : ℕ) : Polynomial ℤ :=
+  Polynomial.X ^ (p.natDegree + 1) - Polynomial.C (N : ℤ) * p
+
+/-- Cofinal nonnegativity of the sum on one antipodal monomial-capped pair per polynomial. -/
+def PrimeArchSourceTraceHankelAntipodalCofinalNonnegative : Prop :=
+  ∀ (p : Polynomial ℤ) (M : ℕ), ∃ N : ℕ, M ≤ N ∧
+    0 ≤
+      (primeArchSourceTraceHankel
+        ((primeArchMonomialCappedPlus p N).map (Int.castRingHom ℝ))).re +
+      (primeArchSourceTraceHankel
+        ((primeArchMonomialCappedMinus p N).map (Int.castRingHom ℝ))).re
+
+/-- Cofinal antipodal-pair nonnegativity is already full integer-polynomial positivity.
+
+The cross terms cancel in the pair sum. If the Hankel form were negative on `p`, sufficiently
+large integer scaling would dominate the fixed monomial cap and contradict the cofinal condition.
+-/
+theorem primeArchSourceTraceHankelAntipodalCofinalNonnegative_iff_full :
+    PrimeArchSourceTraceHankelAntipodalCofinalNonnegative ↔
+      PrimeArchSourceTraceHankelIntNonnegative := by
+  constructor
+  · intro hpair p
+    let P : Polynomial ℝ := p.map (Int.castRingHom ℝ)
+    by_contra hp
+    have hpneg : (primeArchSourceTraceHankel P).re < 0 := lt_of_not_ge hp
+    let d : ℕ := p.natDegree + 1
+    let Q : Polynomial ℝ := Polynomial.X ^ d
+    let A : ℝ := (primeArchSourceTraceHankel Q).re
+    let B : ℝ := -(primeArchSourceTraceHankel P).re
+    have hB : 0 < B := by
+      dsimp only [B]
+      linarith
+    obtain ⟨M, hM⟩ := exists_nat_gt (max 1 (|A| / B))
+    obtain ⟨N, hMN, hnonneg⟩ := hpair p M
+    have hMNcast : (M : ℝ) ≤ N := by exact_mod_cast hMN
+    have hNgt : |A| / B < (N : ℝ) :=
+      (lt_of_le_of_lt (le_max_right _ _) hM).trans_le hMNcast
+    have hNone : 1 < (N : ℝ) :=
+      (lt_of_le_of_lt (le_max_left _ _) hM).trans_le hMNcast
+    have hmapPlus :
+        (primeArchMonomialCappedPlus p N).map (Int.castRingHom ℝ) =
+          Q + (N : ℝ) • P := by
+      simp [primeArchMonomialCappedPlus, P, Q, d,
+        Polynomial.smul_eq_C_mul]
+    have hmapMinus :
+        (primeArchMonomialCappedMinus p N).map (Int.castRingHom ℝ) =
+          Q - (N : ℝ) • P := by
+      simp [primeArchMonomialCappedMinus, P, Q, d,
+        Polynomial.smul_eq_C_mul]
+    rw [hmapPlus, hmapMinus,
+      primeArchSourceTraceHankel_add_sub_smul_re] at hnonneg
+    have hAB : |A| < (N : ℝ) * B := (div_lt_iff₀ hB).mp hNgt
+    have hNN : (N : ℝ) ≤ (N : ℝ) ^ 2 := by nlinarith
+    have hmul : (N : ℝ) * B ≤ (N : ℝ) ^ 2 * B :=
+      mul_le_mul_of_nonneg_right hNN hB.le
+    have hAle : A ≤ |A| := le_abs_self A
+    dsimp only [A, B] at hnonneg hAB hmul hAle
+    nlinarith
+  · intro hfull p M
+    refine ⟨M, le_rfl, ?_⟩
+    exact add_nonneg
+      (hfull (primeArchMonomialCappedPlus p M))
+      (hfull (primeArchMonomialCappedMinus p M))
+
+/-- **Cofinal antipodal monomial-pair RH law.** RH is equivalent to one cofinal nonnegative
+antipodal pair sum for each integer polynomial. -/
+theorem primeArchSourceTraceHankelAntipodalCofinalNonnegative_iff_riemannHypothesis :
+    PrimeArchSourceTraceHankelAntipodalCofinalNonnegative ↔
+      RiemannHypothesis :=
+  primeArchSourceTraceHankelAntipodalCofinalNonnegative_iff_full.trans
+    primeArchSourceTraceHankelIntNonnegative_iff_riemannHypothesis
+
+/-- Sum of the source Hankel form on the two antipodal monomial-capped perturbations. -/
+def primeArchSourceTraceHankelAntipodalPairSum
+    (p : Polynomial ℤ) (N : ℕ) : ℝ :=
+  (primeArchSourceTraceHankel
+      ((primeArchMonomialCappedPlus p N).map (Int.castRingHom ℝ))).re +
+    (primeArchSourceTraceHankel
+      ((primeArchMonomialCappedMinus p N).map (Int.castRingHom ℝ))).re
+
+/-- No integer-polynomial antipodal pair-sum sequence diverges to negative infinity. -/
+def PrimeArchSourceTraceHankelAntipodalPairNondivergent : Prop :=
+  ∀ p : Polynomial ℤ,
+    ¬ Tendsto (primeArchSourceTraceHankelAntipodalPairSum p) atTop atBot
+
+/-- Antipodal pair sum is a quadratic whose leading coefficient is the Hankel value on `p`. -/
+theorem primeArchSourceTraceHankelAntipodalPairSum_eq
+    (p : Polynomial ℤ) (N : ℕ) :
+    primeArchSourceTraceHankelAntipodalPairSum p N =
+      2 * (N : ℝ) ^ 2 *
+          (primeArchSourceTraceHankel (p.map (Int.castRingHom ℝ))).re +
+        2 * (primeArchSourceTraceHankel
+          (Polynomial.X ^ (p.natDegree + 1) : Polynomial ℝ)).re := by
+  have hmapPlus :
+      (primeArchMonomialCappedPlus p N).map (Int.castRingHom ℝ) =
+        Polynomial.X ^ (p.natDegree + 1) +
+          (N : ℝ) • p.map (Int.castRingHom ℝ) := by
+    simp [primeArchMonomialCappedPlus, Polynomial.smul_eq_C_mul]
+  have hmapMinus :
+      (primeArchMonomialCappedMinus p N).map (Int.castRingHom ℝ) =
+        Polynomial.X ^ (p.natDegree + 1) -
+          (N : ℝ) • p.map (Int.castRingHom ℝ) := by
+    simp [primeArchMonomialCappedMinus, Polynomial.smul_eq_C_mul]
+  unfold primeArchSourceTraceHankelAntipodalPairSum
+  rw [hmapPlus, hmapMinus,
+    primeArchSourceTraceHankel_add_sub_smul_re]
+
+/-- Antipodal pair nondivergence is exactly full integer-polynomial source positivity. -/
+theorem primeArchSourceTraceHankelAntipodalPairNondivergent_iff_full :
+    PrimeArchSourceTraceHankelAntipodalPairNondivergent ↔
+      PrimeArchSourceTraceHankelIntNonnegative := by
+  constructor
+  · intro hnondiv p
+    by_contra hp
+    have hpneg :
+        (primeArchSourceTraceHankel (p.map (Int.castRingHom ℝ))).re < 0 :=
+      lt_of_not_ge hp
+    have hsq : Tendsto (fun N : ℕ => (N : ℝ) ^ 2) atTop atTop :=
+      (tendsto_pow_atTop (by norm_num)).comp tendsto_natCast_atTop_atTop
+    have hscaled :
+        Tendsto
+          (fun N : ℕ =>
+            (2 * (primeArchSourceTraceHankel
+              (p.map (Int.castRingHom ℝ))).re) * (N : ℝ) ^ 2)
+          atTop atBot :=
+      hsq.const_mul_atTop_of_neg (by linarith)
+    have hlim :
+        Tendsto (primeArchSourceTraceHankelAntipodalPairSum p) atTop atBot := by
+      have hadd := tendsto_atBot_add_const_right _
+        (2 * (primeArchSourceTraceHankel
+          (Polynomial.X ^ (p.natDegree + 1) : Polynomial ℝ)).re) hscaled
+      convert hadd using 1
+      ext N
+      rw [primeArchSourceTraceHankelAntipodalPairSum_eq]
+      ring
+    exact (hnondiv p) hlim
+  · intro hfull p hlim
+    obtain ⟨N, hN⟩ := (tendsto_atBot.1 hlim (-1)).exists
+    have hnonneg : 0 ≤ primeArchSourceTraceHankelAntipodalPairSum p N := by
+      unfold primeArchSourceTraceHankelAntipodalPairSum
+      exact add_nonneg
+        (hfull (primeArchMonomialCappedPlus p N))
+        (hfull (primeArchMonomialCappedMinus p N))
+    linarith
+
+/-- **Antipodal pair nondivergence RH law.** RH is equivalent to excluding negative-infinite
+quadratic escape on every integer-polynomial antipodal pair sequence. -/
+theorem primeArchSourceTraceHankelAntipodalPairNondivergent_iff_riemannHypothesis :
+    PrimeArchSourceTraceHankelAntipodalPairNondivergent ↔ RiemannHypothesis :=
+  primeArchSourceTraceHankelAntipodalPairNondivergent_iff_full.trans
+    primeArchSourceTraceHankelIntNonnegative_iff_riemannHypothesis
+
+/-- Fixed integer-polynomial encoding through the finite graph of nonzero coefficients. -/
+@[implicit_reducible]
+noncomputable def primeArchIntegerPolynomialEncodable :
+    Encodable (Polynomial ℤ) :=
+  Encodable.ofInj
+    (fun p : Polynomial ℤ => p.toFinsupp.coeff.graph)
+    ((Finsupp.graph_injective ℕ ℤ).comp
+      (AddMonoidAlgebra.coeff_injective.comp Polynomial.toFinsupp_injective))
+
+/-- Code assigned to an integer polynomial by the fixed encoding. -/
+noncomputable def primeArchIntegerPolynomialCode (p : Polynomial ℤ) : ℕ :=
+  @Encodable.encode _ primeArchIntegerPolynomialEncodable p
+
+/-- Integer polynomial decoded at a natural index; invalid codes default to zero. -/
+noncomputable def primeArchIntegerPolynomialAt (k : ℕ) : Polynomial ℤ :=
+  (@Encodable.decode _ primeArchIntegerPolynomialEncodable k).getD 0
+
+/-- The fixed integer-polynomial enumeration hits every polynomial at its assigned code. -/
+theorem primeArchIntegerPolynomialAt_code (p : Polynomial ℤ) :
+    primeArchIntegerPolynomialAt (primeArchIntegerPolynomialCode p) = p := by
+  change
+    (@Encodable.decode _ primeArchIntegerPolynomialEncodable
+      (@Encodable.encode _ primeArchIntegerPolynomialEncodable p)).getD 0 = p
+  rw [@Encodable.encodek _ primeArchIntegerPolynomialEncodable p]
+  rfl
+
+/-- Running sum of negative antipodal pair values over all polynomial codes exposed so far. -/
+noncomputable def primeArchSourceTraceHankelAntipodalGlobalNegativeSum (N : ℕ) : ℝ :=
+  ∑ k ∈ Finset.range (N + 1),
+    min (primeArchSourceTraceHankelAntipodalPairSum
+      (primeArchIntegerPolynomialAt k) N) 0
+
+/-- The single enumerated running negative sum does not diverge to negative infinity. -/
+def PrimeArchSourceTraceHankelAntipodalGlobalNondivergent : Prop :=
+  ¬ Tendsto primeArchSourceTraceHankelAntipodalGlobalNegativeSum atTop atBot
+
+/-- Nondivergence of one enumerated global negative-sum sequence is already full positivity. -/
+theorem primeArchSourceTraceHankelAntipodalGlobalNondivergent_iff_full :
+    PrimeArchSourceTraceHankelAntipodalGlobalNondivergent ↔
+      PrimeArchSourceTraceHankelIntNonnegative := by
+  constructor
+  · intro hglobal p
+    by_contra hp
+    have hpneg :
+        (primeArchSourceTraceHankel (p.map (Int.castRingHom ℝ))).re < 0 :=
+      lt_of_not_ge hp
+    have hsq : Tendsto (fun N : ℕ => (N : ℝ) ^ 2) atTop atTop :=
+      (tendsto_pow_atTop (by norm_num)).comp tendsto_natCast_atTop_atTop
+    have hscaled :
+        Tendsto
+          (fun N : ℕ =>
+            (2 * (primeArchSourceTraceHankel
+              (p.map (Int.castRingHom ℝ))).re) * (N : ℝ) ^ 2)
+          atTop atBot :=
+      hsq.const_mul_atTop_of_neg (by linarith)
+    have hpair :
+        Tendsto (primeArchSourceTraceHankelAntipodalPairSum p) atTop atBot := by
+      have hadd := tendsto_atBot_add_const_right _
+        (2 * (primeArchSourceTraceHankel
+          (Polynomial.X ^ (p.natDegree + 1) : Polynomial ℝ)).re) hscaled
+      convert hadd using 1
+      ext N
+      rw [primeArchSourceTraceHankelAntipodalPairSum_eq]
+      ring
+    apply hglobal
+    rw [tendsto_atBot]
+    intro b
+    filter_upwards [tendsto_atBot.1 hpair b,
+      eventually_ge_atTop (primeArchIntegerPolynomialCode p)] with N hpairN hcodeN
+    have hcodeMem :
+        primeArchIntegerPolynomialCode p ∈ Finset.range (N + 1) := by
+      simp only [Finset.mem_range]
+      omega
+    have hsumErase :
+        (∑ k ∈ (Finset.range (N + 1)).erase
+          (primeArchIntegerPolynomialCode p),
+            min (primeArchSourceTraceHankelAntipodalPairSum
+              (primeArchIntegerPolynomialAt k) N) 0) ≤ 0 := by
+      exact Finset.sum_nonpos fun k hk => min_le_right _ _
+    calc
+      primeArchSourceTraceHankelAntipodalGlobalNegativeSum N =
+          (∑ k ∈ (Finset.range (N + 1)).erase
+            (primeArchIntegerPolynomialCode p),
+              min (primeArchSourceTraceHankelAntipodalPairSum
+                (primeArchIntegerPolynomialAt k) N) 0) +
+            min (primeArchSourceTraceHankelAntipodalPairSum
+              (primeArchIntegerPolynomialAt
+                (primeArchIntegerPolynomialCode p)) N) 0 := by
+        unfold primeArchSourceTraceHankelAntipodalGlobalNegativeSum
+        rw [Finset.sum_erase_add _ _ hcodeMem]
+      _ ≤ min (primeArchSourceTraceHankelAntipodalPairSum
+            (primeArchIntegerPolynomialAt
+              (primeArchIntegerPolynomialCode p)) N) 0 :=
+        add_le_of_nonpos_left hsumErase
+      _ = min (primeArchSourceTraceHankelAntipodalPairSum p N) 0 := by
+        rw [primeArchIntegerPolynomialAt_code]
+      _ ≤ primeArchSourceTraceHankelAntipodalPairSum p N := min_le_left _ _
+      _ ≤ b := hpairN
+  · intro hfull hlim
+    obtain ⟨N, hN⟩ := (tendsto_atBot.1 hlim (-1)).exists
+    have hzero : primeArchSourceTraceHankelAntipodalGlobalNegativeSum N = 0 := by
+      unfold primeArchSourceTraceHankelAntipodalGlobalNegativeSum
+      apply Finset.sum_eq_zero
+      intro k hk
+      rw [min_eq_right]
+      unfold primeArchSourceTraceHankelAntipodalPairSum
+      exact add_nonneg
+        (hfull (primeArchMonomialCappedPlus
+          (primeArchIntegerPolynomialAt k) N))
+        (hfull (primeArchMonomialCappedMinus
+          (primeArchIntegerPolynomialAt k) N))
+    rw [hzero] at hN
+    norm_num at hN
+
+/-- **One-sequence antipodal RH law.** RH is equivalent to nondivergence of a single running
+negative-sum sequence over the fixed enumeration of integer polynomials. -/
+theorem primeArchSourceTraceHankelAntipodalGlobalNondivergent_iff_riemannHypothesis :
+    PrimeArchSourceTraceHankelAntipodalGlobalNondivergent ↔ RiemannHypothesis :=
+  primeArchSourceTraceHankelAntipodalGlobalNondivergent_iff_full.trans
+    primeArchSourceTraceHankelIntNonnegative_iff_riemannHypothesis
+
+end
+
+end RHTower

@@ -558,6 +558,22 @@ theorem riemannHypothesis_iff_screwTotalEnergy_bounded {L : ℝ} (hL : 0 < L) :
     have h2 := screwImaginaryEnergy_le_totalEnergy L (Real.log n)
     linarith
 
+/-- **Canonical unit-width energy criterion.** RH is exactly domination of the arithmetic-mesh
+energy at the fixed width `L = 1` by its own diagonal value. This removes the arbitrary width,
+ceiling, starting index, and aperture side condition from the bounded-energy receiver. -/
+theorem riemannHypothesis_iff_unitScrewTotalEnergy_le_diagonal :
+    RiemannHypothesis ↔
+      ∀ n : ℕ,
+        screwTotalEnergy 1 (Real.log n) ≤ screwTotalEnergy 1 1 := by
+  constructor
+  · intro hRH n
+    exact screwTotalEnergy_le_diagonal_of_spectrum_isReal 1 (Real.log n)
+      (xiSpectralPoint_im_eq_zero_of_riemannHypothesis hRH)
+  · intro h
+    apply (riemannHypothesis_iff_screwTotalEnergy_bounded
+      (L := 1) (by norm_num)).2
+    exact ⟨screwTotalEnergy 1 1, 0, fun n _ _ => h n⟩
+
 
 
 /-! ### Growth forces reality: the criterion decomposes zero by zero

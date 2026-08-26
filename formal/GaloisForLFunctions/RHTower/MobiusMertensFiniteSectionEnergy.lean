@@ -518,6 +518,84 @@ theorem mobiusLaplaceCofinalFiniteSectionEnergyBounded_iff_riemannHypothesis :
   ⟨mobiusLaplaceCofinalFiniteSectionEnergyBounded_implies_riemannHypothesis,
     riemannHypothesis_implies_mobiusLaplaceCofinalFiniteSectionEnergyBounded⟩
 
+/-- Explicit cofinal sequence of strict-right Mellin abscissas. -/
+noncomputable def mobiusLaplaceCanonicalAbscissa (k : ℕ) : ℝ :=
+  1 / 2 + 1 / ((k + 2 : ℕ) : ℝ)
+
+/-- Canonical-schedule finite-section frontier: at every prescribed abscissa, all finite
+Möbius--Laplace sections share one finite `L²` ceiling. -/
+noncomputable def MobiusLaplaceCanonicalFiniteSectionEnergyBounded : Prop :=
+  ∀ k : ℕ, ∃ C : ENNReal, C ≠ ⊤ ∧ ∀ N : ℕ,
+    eLpNorm (mobiusLaplaceFiniteSectionLogMellinLineSource N
+      (mobiusLaplaceCanonicalAbscissa k)) 2 volume ≤ C
+
+/-- Littlewood's RH consequence controls every abscissa in the canonical cofinal schedule. -/
+theorem mobiusLaplaceCanonicalFiniteSectionEnergyBounded_of_riemannHypothesis
+    (hRH : RiemannHypothesis) :
+    MobiusLaplaceCanonicalFiniteSectionEnergyBounded := by
+  intro k
+  let d : ℝ := ((k + 2 : ℕ) : ℝ)
+  let eta : ℝ := 1 / (4 * d)
+  let theta : ℝ := 1 / 2 + eta
+  let sigma : ℝ := mobiusLaplaceCanonicalAbscissa k
+  have hd : 0 < d := by
+    dsimp only [d]
+    positivity
+  have heta : 0 < eta := by
+    dsimp only [eta]
+    positivity
+  have htheta : 0 ≤ theta := by
+    dsimp only [theta]
+    positivity
+  have hthetaSigma : theta < sigma := by
+    have h4d : d < 4 * d := by nlinarith
+    have hfrac : 1 / (4 * d) < 1 / d :=
+      one_div_lt_one_div_of_lt hd h4d
+    dsimp only [theta, eta, sigma, mobiusLaplaceCanonicalAbscissa]
+    dsimp only [d] at hfrac
+    linarith
+  obtain ⟨C, hC, hM⟩ :=
+    riemannHypothesis_implies_mobiusMertensAllStrictHalfPowerBound hRH eta heta
+  obtain ⟨E, hEtop, hE⟩ :=
+    mobiusLaplaceFiniteSectionEnergyBounded_of_mertensBound
+      htheta hC hthetaSigma hM
+  exact ⟨E, hEtop, hE⟩
+
+/-- The explicit abscissas are cofinal, so their finite-section ceilings discharge the older
+existential line-selection interface. -/
+theorem mobiusLaplaceCofinalFiniteSectionEnergyBounded_of_canonical
+    (h : MobiusLaplaceCanonicalFiniteSectionEnergyBounded) :
+    MobiusLaplaceCofinalFiniteSectionEnergyBounded := by
+  intro epsilon hepsilon
+  obtain ⟨k, hk⟩ := exists_nat_gt (1 / epsilon)
+  have hden : (0 : ℝ) < ((k + 2 : ℕ) : ℝ) := by positivity
+  have hepsmul : 1 < epsilon * (k : ℝ) := by
+    calc
+      1 = epsilon * (1 / epsilon) := by field_simp
+      _ < epsilon * (k : ℝ) := mul_lt_mul_of_pos_left hk hepsilon
+  have hepsden : 1 < epsilon * ((k + 2 : ℕ) : ℝ) := by
+    norm_num at hepsmul ⊢
+    nlinarith
+  have hinvlt : 1 / ((k + 2 : ℕ) : ℝ) < epsilon :=
+    (div_lt_iff₀ hden).2 (by simpa [mul_comm] using hepsden)
+  obtain ⟨C, hCtop, hC⟩ := h k
+  refine ⟨mobiusLaplaceCanonicalAbscissa k, C, ?_, ?_, hCtop, hC⟩
+  · dsimp only [mobiusLaplaceCanonicalAbscissa]
+    have hinvpos : 0 < 1 / ((k + 2 : ℕ) : ℝ) := one_div_pos.mpr hden
+    linarith
+  · dsimp only [mobiusLaplaceCanonicalAbscissa]
+    linarith
+
+/-- **Canonical finite Möbius--Laplace criterion.** RH is equivalent to uniform cutoff energy
+bounds on the single explicit abscissa schedule `1/2 + 1/(k+2)`. -/
+theorem mobiusLaplaceCanonicalFiniteSectionEnergyBounded_iff_riemannHypothesis :
+    MobiusLaplaceCanonicalFiniteSectionEnergyBounded ↔ RiemannHypothesis := by
+  constructor
+  · intro h
+    exact mobiusLaplaceCofinalFiniteSectionEnergyBounded_implies_riemannHypothesis
+      (mobiusLaplaceCofinalFiniteSectionEnergyBounded_of_canonical h)
+  · exact mobiusLaplaceCanonicalFiniteSectionEnergyBounded_of_riemannHypothesis
+
 /-- Cofinal one-sided Gamma--Hankel covariance ceilings are exactly RH. -/
 theorem mobiusLaplaceCofinalGammaHankelOffDiagonalUpperBounded_iff_riemannHypothesis :
     MobiusLaplaceCofinalGammaHankelOffDiagonalUpperBounded ↔ RiemannHypothesis :=

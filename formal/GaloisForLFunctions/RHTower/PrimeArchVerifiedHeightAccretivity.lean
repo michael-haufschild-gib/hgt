@@ -238,6 +238,73 @@ def ContinuedPrimeArchPositiveFrequencyAboveImBoundedAbove (R : ℝ) : Prop :=
     riemannZeta (1 / 2 + z * I) ≠ 0 →
       (continuedPrimeArchSourceRelativeTrace z).im ≤ C
 
+/-- A countable source-side tail condition: one finite lower bound for the completed prime--Gamma
+flux on all Gaussian-rational points in the right critical half-strip above frequency `R`. -/
+def CompletedPrimeGammaGaussianRatPositiveFrequencyAboveReBoundedBelow
+    (R : ℝ) : Prop :=
+  ∃ L : ℝ, ∀ q : ℚ × ℚ, 0 < (gaussianRatPoint q).re →
+    (gaussianRatPoint q).re < 1 / 2 → R < (gaussianRatPoint q).im →
+    riemannZeta (gaussianRatPoint q) ≠ 0 →
+      L ≤ (completedPrimeGammaFlux (gaussianRatPoint q)).re
+
+/-- Gaussian-rational sampling loses no information for finite tail boundedness.  A strict
+failure at a complex source point persists on a neighborhood by continuity, and the Gaussian
+rationals meet that neighborhood. -/
+theorem continuedPrimeArchPositiveFrequencyAboveImBoundedAbove_of_gaussianRatReBoundedBelow
+    (R : ℝ)
+    (hrat : CompletedPrimeGammaGaussianRatPositiveFrequencyAboveReBoundedBelow R) :
+    ContinuedPrimeArchPositiveFrequencyAboveImBoundedAbove R := by
+  obtain ⟨L, hL⟩ := hrat
+  refine ⟨-L, ?_⟩
+  intro z hzIm hzHalf hzRe hzeta
+  let s : ℂ := 1 / 2 + z * Complex.I
+  have hsRe : s.re = 1 / 2 - z.im := by
+    simp [s, Complex.mul_re]
+    ring
+  have hsIm : s.im = z.re := by simp [s, Complex.mul_im]
+  have hspos : 0 < s.re := by rw [hsRe]; linarith
+  have hshalf : s.re < 1 / 2 := by rw [hsRe]; linarith
+  have hsHigh : R < s.im := by rw [hsIm]; exact hzRe
+  have hszeta : riemannZeta s ≠ 0 := by simpa only [s] using hzeta
+  have hs1 : s ≠ 1 := by
+    intro h
+    have hre := congrArg Complex.re h
+    rw [Complex.one_re] at hre
+    linarith
+  have hflux : L ≤ (completedPrimeGammaFlux s).re := by
+    by_contra hge
+    have hlt : (completedPrimeGammaFlux s).re < L := lt_of_not_ge hge
+    have hcont := continuousAt_completedPrimeGammaFlux hspos hs1 hszeta
+    have hrePos : {w : ℂ | 0 < w.re} ∈ nhds s :=
+      (isOpen_lt continuous_const Complex.continuous_re).mem_nhds hspos
+    have hreHalf : {w : ℂ | w.re < 1 / 2} ∈ nhds s :=
+      (isOpen_lt Complex.continuous_re continuous_const).mem_nhds hshalf
+    have himHigh : {w : ℂ | R < w.im} ∈ nhds s :=
+      (isOpen_lt continuous_const Complex.continuous_im).mem_nhds hsHigh
+    have hzetaAn : AnalyticAt ℂ riemannZeta s := analyticOn_riemannZeta s hs1
+    have hzetaNe : {w : ℂ | riemannZeta w ≠ 0} ∈ nhds s :=
+      hzetaAn.continuousAt.eventually_ne hszeta
+    have hfre : ContinuousAt (fun w ↦ (completedPrimeGammaFlux w).re) s :=
+      Complex.continuous_re.continuousAt.comp hcont
+    have hfluxLt : {w : ℂ | (completedPrimeGammaFlux w).re < L} ∈ nhds s :=
+      hfre.tendsto (Iio_mem_nhds hlt)
+    have hall : {w : ℂ | 0 < w.re} ∩ {w : ℂ | w.re < 1 / 2} ∩
+        {w : ℂ | R < w.im} ∩ {w : ℂ | riemannZeta w ≠ 0} ∩
+        {w : ℂ | (completedPrimeGammaFlux w).re < L} ∈ nhds s :=
+      inter_mem (inter_mem (inter_mem (inter_mem hrePos hreHalf) himHigh) hzetaNe)
+        hfluxLt
+    obtain ⟨r, hr, hball⟩ := Metric.mem_nhds_iff.mp hall
+    obtain ⟨q, hqball⟩ := denseRange_gaussianRatPoint.exists_mem_open isOpen_ball
+      ⟨s, mem_ball_self hr⟩
+    have hq := hball hqball
+    exact (not_lt_of_ge (hL q hq.1.1.1.1 hq.1.1.1.2 hq.1.1.2 hq.1.2)) hq.2
+  change L ≤ (infinitePrimeFlux s - logDeriv archFactor s).re at hflux
+  rw [continuedPrimeArchSourceRelativeTrace]
+  change (-Complex.I * (infinitePrimeFlux s - logDeriv archFactor s)).im ≤ -L
+  simp only [Complex.mul_im, Complex.I_re, zero_mul, Complex.neg_im,
+    Complex.I_im, neg_mul, one_mul]
+  linarith
+
 /-- Verified central accretivity and any finite ceiling on the positive tail give a finite ceiling
 on the full centered upper half-strip.  The negative tail is the reflected positive tail. -/
 theorem continuedPrimeArchUpperImBoundedAbove_of_verifiedHeight_and_positiveFrequencyAboveImBoundedAbove
@@ -332,6 +399,38 @@ theorem continuedPrimeArchPositiveFrequencyAboveImBoundedAbove_four_iff_rh :
       RiemannHypothesis := by
   exact continuedPrimeArchPositiveFrequencyAboveImBoundedAbove_iff_rh_of_verifiedHeight
     (9 / 2) 4 rhVerifiedThrough_nine_halves (by norm_num)
+
+/-- Countably many Gaussian-rational source values above the source-pure threshold retain the
+entire bounded-tail RH criterion. -/
+theorem completedPrimeGammaGaussianRatPositiveFrequencyAboveReBoundedBelow_four_iff_rh :
+    CompletedPrimeGammaGaussianRatPositiveFrequencyAboveReBoundedBelow 4 ↔
+      RiemannHypothesis := by
+  constructor
+  · intro hrat
+    exact continuedPrimeArchPositiveFrequencyAboveImBoundedAbove_four_iff_rh.mp
+      (continuedPrimeArchPositiveFrequencyAboveImBoundedAbove_of_gaussianRatReBoundedBelow
+        4 hrat)
+  · intro hRH
+    obtain ⟨L, hL⟩ :=
+      completedPrimeGammaGaussianRatLeftHalfBoundedBelow_of_riemannHypothesis hRH
+    exact ⟨L, fun q hqpos hqhalf _hqhigh hqzeta => hL q hqpos hqhalf hqzeta⟩
+
+/-- Positive countable failure law: if RH is false, Gaussian-rational completed prime--Gamma
+flux values above frequency four fall below every proposed common lower bound. -/
+theorem exists_gaussianRat_completedPrimeGammaFlux_re_lt_above_four_of_not_rh
+    (hnot : ¬ RiemannHypothesis) :
+    ∀ L : ℝ, ∃ q : ℚ × ℚ, 0 < (gaussianRatPoint q).re ∧
+      (gaussianRatPoint q).re < 1 / 2 ∧ 4 < (gaussianRatPoint q).im ∧
+      riemannZeta (gaussianRatPoint q) ≠ 0 ∧
+        (completedPrimeGammaFlux (gaussianRatPoint q)).re < L := by
+  intro L
+  by_contra hescape
+  push Not at hescape
+  apply hnot
+  exact
+    completedPrimeGammaGaussianRatPositiveFrequencyAboveReBoundedBelow_four_iff_rh.mp
+      ⟨L, fun q hqpos hqhalf hqhigh hqzeta =>
+        hescape q hqpos hqhalf hqhigh hqzeta⟩
 
 /-- Positive unconditional failure law at the source-pure threshold four.  If RH is false, the
 positive-frequency tail above four exceeds every prescribed finite ceiling. -/
