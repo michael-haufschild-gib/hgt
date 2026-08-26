@@ -193,78 +193,139 @@ theorem thetaCuspFirstLiouvilleRate_taylor_bounds64
     linarith
 
 def thetaCuspFirstRateTaylorUpperEndpointLowerCertificate64 (j : ℕ) : ℝ :=
-  (expNegTruncPoly 64).eval (thetaCuspFirstRateTaylorUpperEndpoint64 j)
+  (1 - thetaCuspFirstRateTaylorUpperEndpoint64 j / 100000000) ^ 100000000
 
 def thetaCuspFirstRateTaylorLowerEndpointUpperCertificate64 (j : ℕ) : ℝ :=
-  (expNegTruncPoly 65).eval (thetaCuspFirstRateTaylorLowerEndpoint64 j)
+  ((1 + thetaCuspFirstRateTaylorLowerEndpoint64 j / 100000000)⁻¹) ^ 100000000
 
 def thetaCuspFirstRateTaylorLocalLowerCertificate64 (j : ℕ) : ℝ[X] :=
-  (expNegTruncPoly 10).comp (thetaCuspFirstRateTaylorUpperDelta64 j)
+  (expNegTruncPoly 6).comp (thetaCuspFirstRateTaylorUpperDelta64 j)
 
 def thetaCuspFirstRateTaylorLocalUpperCertificate64 (j : ℕ) : ℝ[X] :=
-  (expNegTruncPoly 9).comp (thetaCuspFirstRateTaylorLowerDelta64 j)
+  (expNegTruncPoly 5).comp (thetaCuspFirstRateTaylorLowerDelta64 j)
 
-set_option maxRecDepth 30000 in
-set_option maxHeartbeats 4000000 in
 theorem thetaCuspFirstRateTaylorUpperEndpoint64_nonneg
     {j : ℕ} (hj : j < 64) :
     0 ≤ thetaCuspFirstRateTaylorUpperEndpoint64 j := by
-  interval_cases j <;>
-    norm_num [thetaCuspFirstRateTaylorUpperEndpoint64,
-      thetaCuspThirtySecondExpTaylorUpper,
+  let x : ℝ := (j : ℝ) / 64
+  have hx : 0 ≤ x := by dsimp only [x]; positivity
+  have hexp : 2 * x ≤ Real.exp (2 * x) - 1 := by
+    nlinarith [Real.add_one_le_exp (2 * x)]
+  have hmul : 3 * (2 * x) ≤ Real.pi * (Real.exp (2 * x) - 1) := by
+    exact mul_le_mul Real.pi_gt_three.le hexp (by nlinarith) (by positivity)
+  have hrate0 : 0 ≤ thetaCuspFirstLiouvilleRate x := by
+    rw [thetaCuspFirstLiouvilleRate]
+    nlinarith
+  have hb := (thetaCuspFirstLiouvilleRate_taylor_bounds64
+    (j := j) (y := (0 : ℝ)) (by norm_num) (by norm_num)).2
+  have hdelta : (thetaCuspFirstRateTaylorUpperDelta64 j).eval 0 = 0 := by
+    norm_num [thetaCuspFirstRateTaylorUpperDelta64,
       thetaCuspExpTwoTaylorEightUpperPolynomial,
       thetaCuspExpTwoTaylorEightPolynomial]
+  dsimp only [x] at hrate0
+  rw [hdelta, add_zero] at hb
+  linarith
 
-set_option maxRecDepth 30000 in
-set_option maxHeartbeats 4000000 in
 theorem thetaCuspFirstRateTaylorLowerEndpoint64_nonneg
     {j : ℕ} (hj : j < 64) :
     0 ≤ thetaCuspFirstRateTaylorLowerEndpoint64 j := by
-  interval_cases j <;>
-    norm_num [thetaCuspFirstRateTaylorLowerEndpoint64,
-      thetaCuspThirtySecondExpTaylorLower,
+  have hbern := one_add_mul_le_pow
+    (a := thetaCuspThirtySecondExpTaylorLower - 1) (n := j)
+    (by norm_num [thetaCuspThirtySecondExpTaylorLower,
+      thetaCuspExpTwoTaylorEightPolynomial])
+  have hpow : 1 + (j : ℝ) *
+      (thetaCuspThirtySecondExpTaylorLower - 1) ≤
+      thetaCuspThirtySecondExpTaylorLower ^ j := by
+    rw [show 1 + (thetaCuspThirtySecondExpTaylorLower - 1) =
+      thetaCuspThirtySecondExpTaylorLower by ring] at hbern
+    exact hbern
+  have hslope : (5 / 128 : ℝ) ≤
+      (3.14159265358979323846 : ℝ) *
+        (thetaCuspThirtySecondExpTaylorLower - 1) := by
+    norm_num [thetaCuspThirtySecondExpTaylorLower,
       thetaCuspExpTwoTaylorEightPolynomial]
+  have hj0 : 0 ≤ (j : ℝ) := Nat.cast_nonneg j
+  have hscaled := mul_le_mul_of_nonneg_left hslope hj0
+  rw [thetaCuspFirstRateTaylorLowerEndpoint64]
+  nlinarith
 
-set_option maxRecDepth 30000 in
-set_option maxHeartbeats 10000000 in
+theorem thetaCuspFirstRateTaylorUpperEndpoint64_lt_hundredMillion
+    {j : ℕ} (hj : j < 64) :
+    thetaCuspFirstRateTaylorUpperEndpoint64 j < 100000000 := by
+  have hbase : (1 : ℝ) ≤ thetaCuspThirtySecondExpTaylorUpper := by
+    norm_num [thetaCuspThirtySecondExpTaylorUpper,
+      thetaCuspExpTwoTaylorEightUpperPolynomial,
+      thetaCuspExpTwoTaylorEightPolynomial]
+  have hj64 : j ≤ 64 := by omega
+  have hpow := pow_le_pow_right₀ hbase hj64
+  have hcap : thetaCuspThirtySecondExpTaylorUpper ^ 64 < (8 : ℝ) := by
+    norm_num [thetaCuspThirtySecondExpTaylorUpper,
+      thetaCuspExpTwoTaylorEightUpperPolynomial,
+      thetaCuspExpTwoTaylorEightPolynomial]
+  have hpow8 := hpow.trans_lt hcap
+  rw [thetaCuspFirstRateTaylorUpperEndpoint64]
+  have hj0 : 0 ≤ (j : ℝ) := Nat.cast_nonneg j
+  nlinarith
+
 theorem thetaCuspFirstRateTaylorUpperEndpointLowerCertificate64_pos
     {j : ℕ} (hj : j < 64) :
     0 < thetaCuspFirstRateTaylorUpperEndpointLowerCertificate64 j := by
-  interval_cases j <;>
-    norm_num [thetaCuspFirstRateTaylorUpperEndpointLowerCertificate64,
-      thetaCuspFirstRateTaylorUpperEndpoint64,
-      thetaCuspThirtySecondExpTaylorUpper,
-      thetaCuspExpTwoTaylorEightUpperPolynomial,
-      thetaCuspExpTwoTaylorEightPolynomial,
-      eval_expNegTruncPoly, Finset.sum_range_succ]
+  rw [thetaCuspFirstRateTaylorUpperEndpointLowerCertificate64]
+  apply pow_pos
+  have hz := thetaCuspFirstRateTaylorUpperEndpoint64_lt_hundredMillion hj
+  nlinarith
 
 theorem thetaCuspFirstRateTaylorUpperEndpointLowerCertificate64_le_exp
     {j : ℕ} (hj : j < 64) :
     thetaCuspFirstRateTaylorUpperEndpointLowerCertificate64 j ≤
       Real.exp (-thetaCuspFirstRateTaylorUpperEndpoint64 j) := by
   have hz := thetaCuspFirstRateTaylorUpperEndpoint64_nonneg hj
-  rcases hz.eq_or_lt with hz0 | hzpos
-  · rw [thetaCuspFirstRateTaylorUpperEndpointLowerCertificate64, ← hz0]
-    norm_num [thetaCuspFirstRateTaylorUpperEndpointLowerCertificate64,
-      eval_expNegTruncPoly, Finset.sum_range_succ]
-  · have h := expNegTruncPoly_sub_exp_oriented_pos
-      (m := 64) (by norm_num) hzpos
-    norm_num at h
-    simpa only [thetaCuspFirstRateTaylorUpperEndpointLowerCertificate64] using h.le
+  have hzlt := thetaCuspFirstRateTaylorUpperEndpoint64_lt_hundredMillion hj
+  have hbase : 0 ≤ 1 - thetaCuspFirstRateTaylorUpperEndpoint64 j / 100000000 := by
+    nlinarith
+  have hone : 1 - thetaCuspFirstRateTaylorUpperEndpoint64 j / 100000000 ≤
+      Real.exp (-thetaCuspFirstRateTaylorUpperEndpoint64 j / 100000000) := by
+    nlinarith [Real.add_one_le_exp
+      (-thetaCuspFirstRateTaylorUpperEndpoint64 j / 100000000)]
+  rw [thetaCuspFirstRateTaylorUpperEndpointLowerCertificate64]
+  calc
+    (1 - thetaCuspFirstRateTaylorUpperEndpoint64 j / 100000000) ^ 100000000 ≤
+        Real.exp (-thetaCuspFirstRateTaylorUpperEndpoint64 j / 100000000) ^
+          100000000 := pow_le_pow_left₀ hbase hone _
+    _ = Real.exp (-thetaCuspFirstRateTaylorUpperEndpoint64 j) := by
+      rw [← Real.exp_nat_mul]
+      congr 1
+      field_simp
+      ring
 
 theorem exp_le_thetaCuspFirstRateTaylorLowerEndpointUpperCertificate64
     {j : ℕ} (hj : j < 64) :
     Real.exp (-thetaCuspFirstRateTaylorLowerEndpoint64 j) ≤
       thetaCuspFirstRateTaylorLowerEndpointUpperCertificate64 j := by
   have hz := thetaCuspFirstRateTaylorLowerEndpoint64_nonneg hj
-  rcases hz.eq_or_lt with hz0 | hzpos
-  · rw [thetaCuspFirstRateTaylorLowerEndpointUpperCertificate64, ← hz0]
-    norm_num [thetaCuspFirstRateTaylorLowerEndpointUpperCertificate64,
-      eval_expNegTruncPoly, Finset.sum_range_succ]
-  · have h := expNegTruncPoly_sub_exp_oriented_pos
-      (m := 65) (by norm_num) hzpos
-    norm_num at h
-    simpa only [thetaCuspFirstRateTaylorLowerEndpointUpperCertificate64] using h.le
+  have hden : 0 < 1 + thetaCuspFirstRateTaylorLowerEndpoint64 j / 100000000 := by
+    positivity
+  have hadd : 1 + thetaCuspFirstRateTaylorLowerEndpoint64 j / 100000000 ≤
+      Real.exp (thetaCuspFirstRateTaylorLowerEndpoint64 j / 100000000) := by
+    simpa [add_comm] using
+      Real.add_one_le_exp (thetaCuspFirstRateTaylorLowerEndpoint64 j / 100000000)
+  have hinv : Real.exp (-thetaCuspFirstRateTaylorLowerEndpoint64 j / 100000000) ≤
+      (1 + thetaCuspFirstRateTaylorLowerEndpoint64 j / 100000000)⁻¹ := by
+    rw [show -thetaCuspFirstRateTaylorLowerEndpoint64 j / 100000000 =
+      -(thetaCuspFirstRateTaylorLowerEndpoint64 j / 100000000) by ring,
+      Real.exp_neg]
+    exact (inv_le_inv₀ (Real.exp_pos _) hden).2 hadd
+  rw [thetaCuspFirstRateTaylorLowerEndpointUpperCertificate64]
+  calc
+    Real.exp (-thetaCuspFirstRateTaylorLowerEndpoint64 j) =
+        Real.exp (-thetaCuspFirstRateTaylorLowerEndpoint64 j / 100000000) ^
+          100000000 := by
+      rw [← Real.exp_nat_mul]
+      congr 1
+      field_simp
+      ring
+    _ ≤ ((1 + thetaCuspFirstRateTaylorLowerEndpoint64 j / 100000000)⁻¹) ^
+          100000000 := pow_le_pow_left₀ (Real.exp_pos _).le hinv _
 
 theorem thetaCuspFirstRateTaylorLowerDelta64_eval_nonneg
     (j : ℕ) {y : ℝ} (hy : 0 ≤ y) :
@@ -297,8 +358,6 @@ theorem thetaCuspFirstRateTaylorUpperDelta64_eval_nonneg
     pow_nonneg hy 5, pow_nonneg hy 6, pow_nonneg hy 7, pow_nonneg hy 8,
     pow_nonneg hy 9]
 
-set_option maxRecDepth 30000 in
-set_option maxHeartbeats 10000000 in
 theorem thetaCuspFirstRateTaylorUpperDelta64_eval_le_one
     {j : ℕ} (hj : j < 64) {y : ℝ} (hy : 0 ≤ y) (hyh : y ≤ 1 / 64) :
     (thetaCuspFirstRateTaylorUpperDelta64 j).eval y ≤ 1 := by
@@ -310,19 +369,53 @@ theorem thetaCuspFirstRateTaylorUpperDelta64_eval_le_one
   have h7 := pow_le_pow_left₀ hy hyh 7
   have h8 := pow_le_pow_left₀ hy hyh 8
   have h9 := pow_le_pow_left₀ hy hyh 9
-  interval_cases j <;>
-    norm_num [thetaCuspFirstRateTaylorUpperDelta64,
-      thetaCuspThirtySecondExpTaylorUpper,
+  have hbase : (1 : ℝ) ≤ thetaCuspThirtySecondExpTaylorUpper := by
+    norm_num [thetaCuspThirtySecondExpTaylorUpper,
       thetaCuspExpTwoTaylorEightUpperPolynomial,
-      thetaCuspExpTwoTaylorEightPolynomial] at * <;>
+      thetaCuspExpTwoTaylorEightPolynomial]
+  have hpow : thetaCuspThirtySecondExpTaylorUpper ^ j ≤
+      thetaCuspThirtySecondExpTaylorUpper ^ 64 :=
+    pow_le_pow_right₀ hbase (by omega)
+  have hlocal : thetaCuspExpTwoTaylorEightUpperPolynomial.eval y ≤
+      thetaCuspExpTwoTaylorEightUpperPolynomial.eval (1 / 64) := by
+    rw [thetaCuspExpTwoTaylorEightUpperPolynomial_eval,
+      thetaCuspExpTwoTaylorEightUpperPolynomial_eval,
+      thetaCuspExpTwoTaylorEightPolynomial_eval,
+      thetaCuspExpTwoTaylorEightPolynomial_eval]
+    norm_num at h2 h3 h4 h5 h6 h7 h8 h9 ⊢
     nlinarith
+  have hdiff0 : 0 ≤ thetaCuspExpTwoTaylorEightUpperPolynomial.eval y - 1 := by
+    rw [thetaCuspExpTwoTaylorEightUpperPolynomial_eval,
+      thetaCuspExpTwoTaylorEightPolynomial_eval]
+    nlinarith [pow_nonneg hy 2, pow_nonneg hy 3, pow_nonneg hy 4,
+      pow_nonneg hy 5, pow_nonneg hy 6, pow_nonneg hy 7,
+      pow_nonneg hy 8, pow_nonneg hy 9]
+  have hproduct : thetaCuspThirtySecondExpTaylorUpper ^ j *
+        (thetaCuspExpTwoTaylorEightUpperPolynomial.eval y - 1) ≤
+      thetaCuspThirtySecondExpTaylorUpper ^ 64 *
+        (thetaCuspExpTwoTaylorEightUpperPolynomial.eval (1 / 64) - 1) := by
+    exact mul_le_mul hpow (sub_le_sub_right hlocal 1) hdiff0
+      (pow_nonneg (by norm_num [thetaCuspThirtySecondExpTaylorUpper,
+        thetaCuspExpTwoTaylorEightUpperPolynomial,
+        thetaCuspExpTwoTaylorEightPolynomial]) _)
+  have hcap : (3.14159265358979323847 : ℝ) *
+      (thetaCuspThirtySecondExpTaylorUpper ^ 64 *
+        (thetaCuspExpTwoTaylorEightUpperPolynomial.eval (1 / 64) - 1)) < 1 := by
+    norm_num [thetaCuspThirtySecondExpTaylorUpper,
+      thetaCuspExpTwoTaylorEightUpperPolynomial,
+      thetaCuspExpTwoTaylorEightPolynomial]
+  rw [thetaCuspFirstRateTaylorUpperDelta64]
+  simp only [eval_sub, eval_mul, eval_C, eval_one, eval_X]
+  have hweighted := mul_le_mul_of_nonneg_left hproduct
+    (by norm_num : (0 : ℝ) ≤ 3.14159265358979323847)
+  nlinarith
 
-theorem expNegTruncPoly_ten_eval_pos_of_mem_unit
+theorem expNegTruncPoly_six_eval_pos_of_mem_unit
     {t : ℝ} (ht0 : 0 ≤ t) (ht1 : t ≤ 1) :
-    0 < (expNegTruncPoly 10).eval t := by
-  have hid : (expNegTruncPoly 10).eval t =
+    0 < (expNegTruncPoly 6).eval t := by
+  have hid : (expNegTruncPoly 6).eval t =
       (1 - t) + t ^ 2 * (3 - t) / 6 + t ^ 4 * (5 - t) / 120 +
-        t ^ 6 * (7 - t) / 5040 + t ^ 8 * (9 - t) / 362880 := by
+        0 := by
     norm_num [eval_expNegTruncPoly, Finset.sum_range_succ]
     ring
   rw [hid]
@@ -333,17 +426,13 @@ theorem expNegTruncPoly_ten_eval_pos_of_mem_unit
       exact div_pos (mul_pos (sq_pos_of_pos htpos) (by linarith)) (by norm_num)
     have hfourth : 0 ≤ t ^ 4 * (5 - t) / 120 := by
       exact div_nonneg (mul_nonneg (pow_nonneg ht0 4) (by linarith)) (by norm_num)
-    have hsixth : 0 ≤ t ^ 6 * (7 - t) / 5040 := by
-      exact div_nonneg (mul_nonneg (pow_nonneg ht0 6) (by linarith)) (by norm_num)
-    have heighth : 0 ≤ t ^ 8 * (9 - t) / 362880 := by
-      exact div_nonneg (mul_nonneg (pow_nonneg ht0 8) (by linarith)) (by norm_num)
     linarith
 
 theorem thetaCuspFirstRateTaylorLocalLowerCertificate64_eval_pos
     {j : ℕ} (hj : j < 64) {y : ℝ} (hy : 0 ≤ y) (hyh : y ≤ 1 / 64) :
     0 < (thetaCuspFirstRateTaylorLocalLowerCertificate64 j).eval y := by
   rw [thetaCuspFirstRateTaylorLocalLowerCertificate64, eval_comp]
-  exact expNegTruncPoly_ten_eval_pos_of_mem_unit
+  exact expNegTruncPoly_six_eval_pos_of_mem_unit
     (thetaCuspFirstRateTaylorUpperDelta64_eval_nonneg j hy)
     (thetaCuspFirstRateTaylorUpperDelta64_eval_le_one hj hy hyh)
 
@@ -354,12 +443,12 @@ theorem thetaCuspFirstRateTaylorLocalLowerCertificate64_eval_le_exp
   let t := (thetaCuspFirstRateTaylorUpperDelta64 j).eval y
   have ht0 : 0 ≤ t := thetaCuspFirstRateTaylorUpperDelta64_eval_nonneg j hy
   rw [thetaCuspFirstRateTaylorLocalLowerCertificate64, eval_comp]
-  change (expNegTruncPoly 10).eval t ≤ Real.exp (-t)
+  change (expNegTruncPoly 6).eval t ≤ Real.exp (-t)
   rcases ht0.eq_or_lt with htzero | htpos
   · rw [← htzero]
     norm_num [eval_expNegTruncPoly, Finset.sum_range_succ]
   · have h := expNegTruncPoly_sub_exp_oriented_pos
-      (m := 10) (by norm_num) htpos
+      (m := 6) (by norm_num) htpos
     norm_num at h
     exact h.le
 
@@ -368,8 +457,16 @@ theorem exp_le_thetaCuspFirstRateTaylorLocalUpperCertificate64_eval
     Real.exp (-(thetaCuspFirstRateTaylorLowerDelta64 j).eval y) ≤
       (thetaCuspFirstRateTaylorLocalUpperCertificate64 j).eval y := by
   rw [thetaCuspFirstRateTaylorLocalUpperCertificate64, eval_comp]
-  exact exp_neg_le_expNegTruncPoly_nine
-    (thetaCuspFirstRateTaylorLowerDelta64_eval_nonneg j hy)
+  let t := (thetaCuspFirstRateTaylorLowerDelta64 j).eval y
+  have ht0 : 0 ≤ t := thetaCuspFirstRateTaylorLowerDelta64_eval_nonneg j hy
+  change Real.exp (-t) ≤ (expNegTruncPoly 5).eval t
+  rcases ht0.eq_or_lt with htzero | htpos
+  · rw [← htzero]
+    norm_num [eval_expNegTruncPoly, Finset.sum_range_succ]
+  · have h := expNegTruncPoly_sub_exp_oriented_pos
+      (m := 5) (by norm_num) htpos
+    norm_num at h
+    exact h.le
 
 def thetaCuspFirstSourceTaylorLower64 (j : ℕ) : ℝ[X] :=
   C ((6.28318530717958647692 : ℝ) *

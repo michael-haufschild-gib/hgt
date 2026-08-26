@@ -17,8 +17,9 @@ The BM damping lattice is `2 L + 3/2`.  A `++` collision in the open physical an
 equate this half-integral lattice with an integral lattice.  A `+-` collision would instead force
 the sum of two open half-strip coordinates to an excluded endpoint.  Thus neither intermediate
 response has a BM pole in the nonconstant discrete-plus-continuum angular spectrum.  A collision
-on the closed strip can occur only at `Im eta = ±1/2`, the zero-angular-eigenvalue edge; the
-nonzero doubled theta grade removes that constant mode before causal propagation.
+on the closed strip can occur only at `Im eta = ±1/2`, the zero-angular-eigenvalue edge.  That
+exceptional harmonic is a stationary mass/charge completion, not a radiative BM master mode, and
+is therefore carried by the augmented boundary block rather than its meromorphic resolvent.
 
 For the nonlinear self-energy, integrate the gauge-fixed Einstein--Teukolsky Lagrange identity on
 a truncated cusp and take its finite part.  Local bulk terms and real cusp counterterms contribute

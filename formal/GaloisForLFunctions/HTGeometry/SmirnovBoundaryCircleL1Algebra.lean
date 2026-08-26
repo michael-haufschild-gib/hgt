@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.SmirnovBoundaryInnerOuterFactor
 import GaloisForLFunctions.HTGeometry.DiskMultiplierAlgebra
+import GaloisForLFunctions.HTGeometry.DiskMultiplierInnerOuterFactor
 
 open Complex MeasureTheory Metric
 
@@ -65,6 +66,50 @@ theorem DiskSmirnovBoundary.integrable_circleBoundary_ofMultiplier_mul
   filter_upwards [(DiskSmirnovBoundary.ofMultiplier A).circleBoundary_mul_ae F,
     DiskSmirnovBoundary.circleBoundary_ofMultiplier_ae A] with z hmul hA
   rw [hmul, hA]
+
+/-- Removing a canonical unit inner factor preserves circle-boundary integrability. -/
+theorem DiskSmirnovBoundary.integrable_outerPart_circleBoundary
+    (F : DiskSmirnovBoundary)
+    (hF : ∃ z ∈ Metric.ball (0 : ℂ) 1, F.numerator.fn z ≠ 0)
+    (hint : Integrable F.circleBoundary circleLebesgue) :
+    Integrable (F.outerPart hF).circleBoundary circleLebesgue := by
+  let I := F.innerFactor hF
+  let H := F.outerPart hF
+  have hImeas : AEStronglyMeasurable
+      (fun z => (starRingEnd ℂ) (diskMultiplierBoundaryFun I z))
+      circleLebesgue :=
+    Complex.continuous_conj.comp_aestronglyMeasurable
+      (Lp.aestronglyMeasurable (hardyDiskBoundary (hardyOf I)))
+  have hmul : Integrable
+      (fun z => (starRingEnd ℂ) (diskMultiplierBoundaryFun I z) *
+        F.circleBoundary z) circleLebesgue :=
+    hint.bdd_mul hImeas (by
+      filter_upwards [ae_norm_diskMultiplierInnerFactor_boundary_eq_one
+        F.numerator hF] with z hz
+      simpa [I, DiskSmirnovBoundary.innerFactor] using hz.le)
+  apply hmul.congr
+  filter_upwards [diskMultiplierBoundaryFun_innerFactor_mul_outerFactor_ae
+      F.numerator hF, F.denominator_circle_ne_zero_ae,
+    ae_norm_diskMultiplierInnerFactor_boundary_eq_one F.numerator hF]
+      with z hfactor hden hunit
+  have hIunit : ‖diskMultiplierBoundaryFun I z‖ = 1 := by
+    simpa [I, DiskSmirnovBoundary.innerFactor] using hunit
+  have hprod : (starRingEnd ℂ) (diskMultiplierBoundaryFun I z) *
+      diskMultiplierBoundaryFun I z = 1 := by
+    rw [Complex.conj_mul', hIunit]
+    norm_num
+  rw [DiskSmirnovBoundary.circleBoundary, DiskSmirnovBoundary.circleBoundary]
+  change (starRingEnd ℂ) (diskMultiplierBoundaryFun I z) *
+      (diskMultiplierBoundaryFun F.numerator z /
+        diskMultiplierBoundaryFun F.denominator z) =
+      diskMultiplierBoundaryFun (diskMultiplierOuterFactor F.numerator hF) z /
+        diskMultiplierBoundaryFun F.denominator z
+  rw [← hfactor]
+  field_simp [hden]
+  change ((starRingEnd ℂ) (diskMultiplierBoundaryFun I z) *
+      diskMultiplierBoundaryFun I z) *
+        diskMultiplierBoundaryFun (diskMultiplierOuterFactor F.numerator hF) z = _
+  rw [hprod, one_mul]
 
 end
 

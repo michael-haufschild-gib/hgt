@@ -1,7 +1,7 @@
 # HT remote-quartet compact-open field invisibility
 
 - **ID:** `ht-remote-quartet-compact-open-field-invisibility`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) — `[PROVED HERE] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Lane:** general hypertranscendence; remote divisor surgery; multi-route finite-probe no-go
 - **Statement:** Inside one exact order-one differential-translation field and the FE/Schwarz symmetry
@@ -187,9 +187,27 @@ not new scientific knowledge.
 
 ## Lean status
 
-No complete Lean claim is made.  The full theorem includes the analytic reflected-gamma carrier,
-its hypertranscendence import, compact-open convergence, and generalized Li sums.  Formalizing only
-the polynomial coefficient estimates would be a partial anchor and would not justify stage 3.
+Complete unconditional formalization:
+
+- `GaloisForLFunctions.RHTower.RemotePassportSurgery` constructs the real-even two-coefficient
+  passport gauge and proves quartet insertion, FE/Schwarz symmetry, arbitrary Hermite-jet
+  preservation, critical-strip placement, coefficient decay, compact zero escape, locally uniform
+  convergence with every derivative, exact order one, hypertranscendence, and literal equality of
+  complete translated differential fields.
+- The same module proves a general bounded-degree inverse-root escape theorem for every continuous
+  decaying root test, specializes it to generalized Li contributions, and proves eventual positivity
+  of every prescribed finite Li prefix.
+- `GaloisForLFunctions.RHTower.HTRemoteQuartetCompactOpenFieldInvisibility` packages all clauses in
+  `HTRemoteQuartetPackage`; capstone
+  `htRemoteQuartetCompactOpenFieldInvisibility` is closed and unconditional.
+- Pure-quartet finite Weil clauses use the exact imported declarations
+  `liRemoteQuartetGaugedCarrier_structuralWeilPackage` and
+  `htWeilCompactDetectorNearRadicalAlternative`.
+
+Both new modules pass direct `lake env lean` checks; targeted
+`lake build GaloisForLFunctions.RHTower.HTRemoteQuartetCompactOpenFieldInvisibility` passes.  Axiom
+audit for new root-escape, same-field, and capstone theorems reports only `propext`,
+`Classical.choice`, and `Quot.sound`.
 
 ## Open core
 
@@ -199,7 +217,7 @@ Closed explicitly by the two real coefficients `c_T,d_T` in (3).
 
 - [x] 0 -> 1: exact construction and open core isolated
 - [x] 1 -> 2: complete unconditional paper proof and route corollaries
-- [ ] 2 -> 3: complete unconditional theorem formalized in Lean
+- [x] 2 -> 3: complete unconditional theorem formalized in Lean
 - [ ] 3 -> 4: publication-ready preprint
 
 ## Log
@@ -209,3 +227,7 @@ Closed explicitly by the two real coefficients `c_T,d_T` in (3).
   every prescribed finite passport converge to the all-line HT carrier.
 - 2026-07-11 -- Proved exact differential-translation field equality, finite Li-prefix positivity,
   and the finite continuous-selector law.  Classified the result as a bridge.
+- 2026-08-26 -- Formalized arbitrary symmetry-complete passport surgery, cofinal off-critical
+  quartets, exact order/HT/same-field realization, all-derivative compact-open escape, compact zero
+  escape, finite continuous selectors, finite Li prefixes, and arbitrary finite decaying inverse-root
+  tests.  Wired capstone into the `RHTower` umbrella and completed targeted build/axiom audits.

@@ -1,6 +1,8 @@
 import GaloisForLFunctions.HTGeometry.SchurOneSubOuter
 import GaloisForLFunctions.HTGeometry.HardyMultiplierModelSpaceProduct
 import GaloisForLFunctions.HTGeometry.SmirnovToeplitzNPlus
+import GaloisForLFunctions.HTGeometry.SmirnovBoundaryCircleL1Algebra
+import GaloisForLFunctions.HTGeometry.SmirnovToeplitzCircleL1
 
 /-!
 # Outer regularization of a nonzero Smirnov Toeplitz kernel
@@ -157,14 +159,16 @@ theorem SmirnovToeplitzKernelElement.combinedInner_line_unit_ae {U : ℝ → ℂ
 /-- A nonzero kernel for a unimodular symbol makes that symbol, up to a constant unit, the phase
 reflection of an outer Smirnov quotient.  No boundary-analytic or finite-Blaschke assumption is
 used. -/
-theorem SmirnovToeplitzKernelElement.exists_outerSmirnov_phaseReflection
+theorem SmirnovToeplitzKernelElement.exists_outerSmirnov_phaseReflection_with_circleL1
     {U : ℝ → ℂ} (K : SmirnovToeplitzKernelElement U)
     (hU : ∀ᵐ x ∂volume, ‖U x‖ = 1) :
     ∃ (d : ℂ) (Q : DiskSmirnovBoundary),
       ‖d‖ = 1 ∧ IsOuterDiskMultiplier Q.numerator ∧
         (U =ᵐ[volume] fun x => d * Q.phaseReflectionSymbol x) ∧
         (LocallyIntegrable K.reflected.boundary volume →
-          LocallyIntegrable Q.boundary volume) := by
+          LocallyIntegrable Q.boundary volume) ∧
+        (Integrable K.reflected.circleBoundary circleLebesgue →
+          Integrable Q.circleBoundary circleLebesgue) := by
   obtain ⟨hR, c, hc, hfactor⟩ := K.exists_innerOuter_boundary_factorization hU
   let I := K.combinedInner hR
   let H := K.reflected.outerPart hR
@@ -176,7 +180,7 @@ theorem SmirnovToeplitzKernelElement.exists_outerSmirnov_phaseReflection
     K.reflected.outerPart_numerator_outer hR
   by_cases hIone : ∀ z ∈ ball (0 : ℂ) 1, I.fn z = 1
   · let Q := H
-    refine ⟨(starRingEnd ℂ) c, Q, ?_, hHouter, ?_, ?_⟩
+    refine ⟨(starRingEnd ℂ) c, Q, ?_, hHouter, ?_, ?_, ?_⟩
     · simpa using hc
     have hIline : diskMultiplierLineBoundary I =ᵐ[volume] fun _ => 1 := by
       have hcongr : diskMultiplierLineBoundary I =ᵐ[volume]
@@ -201,6 +205,8 @@ theorem SmirnovToeplitzKernelElement.exists_outerSmirnov_phaseReflection
       _ = (starRingEnd ℂ) c * H.phaseReflectionSymbol x := hfac
     · intro hloc
       exact K.reflected.locallyIntegrable_outerPart_boundary hR hloc
+    · intro hint
+      exact K.reflected.integrable_outerPart_circleBoundary hR hint
   · push Not at hIone
     obtain ⟨z0, hz0, hIz0⟩ := hIone
     let A := (DiskMultiplier.const 1).sub I
@@ -209,7 +215,7 @@ theorem SmirnovToeplitzKernelElement.exists_outerSmirnov_phaseReflection
     let Q := H.mul (DiskSmirnovBoundary.ofMultiplier A)
     have hQouter : IsOuterDiskMultiplier Q.numerator := by
       exact hHouter.mul hAouter
-    refine ⟨-(starRingEnd ℂ) c, Q, ?_, hQouter, ?_, ?_⟩
+    refine ⟨-(starRingEnd ℂ) c, Q, ?_, hQouter, ?_, ?_, ?_⟩
     · simpa using hc
     have hAphase := diskMultiplierPhaseReflectionSymbol_one_sub_ae
       I hIschur hIunit ⟨z0, hz0, hIz0⟩
@@ -258,6 +264,24 @@ theorem SmirnovToeplitzKernelElement.exists_outerSmirnov_phaseReflection
     · intro hloc
       exact H.locallyIntegrable_mul_ofMultiplier_boundary A
         (K.reflected.locallyIntegrable_outerPart_boundary hR hloc)
+    · intro hint
+      exact H.integrable_circleBoundary_mul_ofMultiplier A
+        (K.reflected.integrable_outerPart_circleBoundary hR hint)
+
+/-- A nonzero kernel for a unimodular symbol makes that symbol, up to a constant unit, the phase
+reflection of an outer Smirnov quotient.  No boundary-analytic or finite-Blaschke assumption is
+used. -/
+theorem SmirnovToeplitzKernelElement.exists_outerSmirnov_phaseReflection
+    {U : ℝ → ℂ} (K : SmirnovToeplitzKernelElement U)
+    (hU : ∀ᵐ x ∂volume, ‖U x‖ = 1) :
+    ∃ (d : ℂ) (Q : DiskSmirnovBoundary),
+      ‖d‖ = 1 ∧ IsOuterDiskMultiplier Q.numerator ∧
+        (U =ᵐ[volume] fun x => d * Q.phaseReflectionSymbol x) ∧
+        (LocallyIntegrable K.reflected.boundary volume →
+          LocallyIntegrable Q.boundary volume) := by
+  obtain ⟨d, Q, hd, hQouter, hphase, hlocal, _hcircle⟩ :=
+    K.exists_outerSmirnov_phaseReflection_with_circleL1 hU
+  exact ⟨d, Q, hd, hQouter, hphase, hlocal⟩
 
 /-- Exact `N⁺` outer regularization: the output outer quotient retains local boundary
 integrability. -/
@@ -272,6 +296,23 @@ theorem SmirnovToeplitzNPlusElement.exists_outerSmirnov_phaseReflection
     K.toKernelElement.exists_outerSmirnov_phaseReflection hU
   exact ⟨d, Q, hd, hQouter,
     hlocal (K.reflected_locallyIntegrable hUmeas hU), hphase⟩
+
+/-- Exact `N⁺` outer regularization preserving both local real-line integrability and global
+circle-boundary `L¹`. -/
+theorem SmirnovToeplitzNPlusElement.exists_outerSmirnov_phaseReflection_circleL1
+    {U : ℝ → ℂ} (K : SmirnovToeplitzNPlusElement U)
+    (hUmeas : Measurable U) (hU : ∀ᵐ x ∂volume, ‖U x‖ = 1)
+    (hforward : Integrable K.toKernelElement.forward.circleBoundary circleLebesgue) :
+    ∃ (d : ℂ) (Q : DiskSmirnovBoundary),
+      ‖d‖ = 1 ∧ IsOuterDiskMultiplier Q.numerator ∧
+        LocallyIntegrable Q.boundary volume ∧
+        Integrable Q.circleBoundary circleLebesgue ∧
+        U =ᵐ[volume] fun x => d * Q.phaseReflectionSymbol x := by
+  obtain ⟨d, Q, hd, hQouter, hphase, hlocal, hcircle⟩ :=
+    K.toKernelElement.exists_outerSmirnov_phaseReflection_with_circleL1 hU
+  exact ⟨d, Q, hd, hQouter,
+    hlocal (K.reflected_locallyIntegrable hUmeas hU),
+    hcircle (K.toKernelElement.integrable_reflected_circleBoundary hU hforward), hphase⟩
 
 end
 

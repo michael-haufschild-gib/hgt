@@ -1087,3 +1087,130 @@ umbrella builds.  Remaining Stage-2 gate is no longer point translation or denom
 it is precisely the generalized Rosenlicht/Liouville theorem converting generic mixed invariant
 Kähler vanishing into zero of the corresponding co-Lie class on the Zariski-closed generated
 subgroup.
+
+## Scheme-level invariant multiplication pullback formalized (2026-08-26)
+
+A fresh corpus audit recovered `FunctionFieldPullback`, the exact Hopf multiplication formulas,
+and the existing pointwise invariant-form law.  It found no coordinate-algebra Kähler pullback
+identity for multiplication.  `AffineExponentialInvariantKaehlerMultiplication.lean` supplies
+that missing non-pointwise layer:
+
+```text
+mixedInvariantKaehlerVector_normalized
+algHomKaehlerMap_dlog_comul
+algHomKaehlerMap_additiveCoordinate_comul
+algHomKaehlerMap_mixedInvariantKaehlerVector_comul
+```
+
+The last theorem is the exact Hopf-coordinate identity `μ*η = pr₁*η + pr₂*η` in
+Kähler differentials.  Its torus part proves the universal logarithmic product rule using the
+actual group-like characters; its additive part uses the actual primitive coordinates.  This
+upgrades finite-product propagation from complex-point evaluation to algebra-valued generic
+pullback, which is the level required by Rosenlicht indecomposability.
+
+Direct source checking and the targeted leaf build pass.  All four declarations audit to only
+`[propext, Classical.choice, Quot.sound]`; the leaf is wired into `HTGeometry` without an umbrella
+build.  The remaining Stage-2 gate is now geometric: construct a finite product of the translated
+principal-open locus dominant onto the generated algebraic subgroup (or an equivalent exact
+Rosenlicht theorem), then apply function-field pullback injectivity to obtain zero subgroup co-Lie
+class.  Pointwise density alone is not used, since algebraic-point pullback kills absolute
+differentials and cannot justify this step.
+
+## Scheme-level right-translation invariance formalized (2026-08-26)
+
+Fresh corpus research found the existing Hopf right-translation map and point-evaluation laws,
+but no Kähler pullback theorem for right translation.  The new
+`AffineExponentialInvariantKaehlerTranslation.lean` reuses those definitions and the preceding
+multiplication leaf to prove
+
+```text
+rightTranslate_torusCharacter
+rightTranslate_additiveCoordinate
+algHomKaehlerMap_rightTranslate_mixedInvariantKaehlerVector
+```
+
+The coordinate formulas show that right translation scales every torus character by its value
+at the translating point and shifts every additive coordinate by its value there.  Since both
+values lie in the base field, their universal relative differentials vanish.  The endpoint is the
+exact unconditional scheme-level identity `R_q^* η = η` for the actual mixed invariant Kähler
+form and every base-field point `q`.
+
+Direct source checking and the targeted leaf build pass.  All three declarations audit to only
+`[propext, Classical.choice, Quot.sound]`; both multiplication and translation leaves are wired
+into `HTGeometry` without an umbrella build.  No Lean or Lake process remains.  Remaining
+Stage-2 gate is finite-product dominance/stabilization for the principal-open locus, followed by
+the already existing `FunctionFieldPullback` injectivity.  The formal route therefore reuses the
+corpus function-field bridge and does not replace it with a pointwise-density surrogate.
+
+## Algebraically closed tensor-domain bridge formalized (2026-08-26)
+
+Fresh corpus research recovered `exists_algHom_ne_zero_of_finiteType_domain` and the existing
+tensor basis representation, but found only reducedness—not integrality—of tensor products over an
+algebraically closed field.  `TensorProductAlgClosedDomain.lean` proves
+
+```text
+isDomain_tensorProduct_of_finiteType
+```
+
+for the tensor product of a finite-type domain with any domain over an algebraically closed field.
+Given two nonzero tensors, one nonzero basis coefficient from each has nonzero product.  The
+existing finite-type specialization theorem supplies one rational point preserving that product;
+specializing the first tensor factor then leaves two nonzero elements in the second domain, so
+their product cannot vanish.  This also iterates with only the original locus quotient required to
+be finite type.
+
+Direct source checking and the targeted leaf build pass.  The theorem audits to only
+`[propext, Classical.choice, Quot.sound]` and is wired into `HTGeometry` without an umbrella build.
+This closes irreducibility/integrality of finite product sources for the finite-product dominance
+route.  Remaining geometric infrastructure is iterated multiplication-image kernels and their
+finite-dimensional prime-chain stabilization; the already-existing `FunctionFieldPullback` then
+provides the injective generic pullback.
+
+## Finite-type prime-chain stabilization formalized (2026-08-26)
+
+Fresh corpus research found the existing Noether-normalization theorem
+`exists_ringKrullDim_eq_of_finiteType`, but no sequence-level stabilization wrapper.
+`FiniteTypePrimeChainStabilization.lean` proves
+
+```text
+exists_eq_succ_of_antitone_prime
+```
+
+for every antitone sequence of prime ideals in a finite-type algebra over a field.  If every
+consecutive inclusion were strict, reversing a prefix one longer than the finite Krull dimension
+would construct an `LTSeries` forbidden by `LTSeries.length_le_krullDim`.  No new dimension theorem
+or bounded-dimension premise is introduced.
+
+Direct source checking and the targeted leaf build pass.  The theorem audits to only
+`[propext, Classical.choice, Quot.sound]` and is wired into `HTGeometry` without an umbrella build.
+Together with `isDomain_tensorProduct_of_finiteType`, this closes both abstract ingredients for
+stabilizing the prime kernels of finite multiplication images.  Remaining bridge is now their
+concrete iterated Hopf-coordinate construction and Kähler propagation.
+
+## Iterated bialgebra product-image stabilization formalized (2026-08-26)
+
+Fresh corpus research found the binary bialgebra coproduct/counit laws but no iterated affine
+product-image construction.  `IteratedBialgebraProductImage.lean` now supplies
+
+```text
+IteratedTensorAlgebra
+iteratedProductMap
+iteratedProductKernel
+iteratedProductKernel_isPrime
+iteratedProductKernel_antitone
+exists_iteratedProductKernel_stabilizes
+```
+
+`IteratedTensorAlgebra k B m` is the tensor product of `m+1` copies of `B`.
+`iteratedProductMap` composes the actual bialgebra comultiplication with the given affine map in
+every factor.  The new algebraically closed tensor-domain theorem makes each target integral, so
+every image kernel is prime.  If a point of the source maps to the bialgebra counit, specializing
+one tensor factor at that point removes it exactly; hence the kernels are antitone.  The preceding
+finite-type prime-chain theorem then gives a consecutive stable kernel unconditionally.
+
+Direct source checking and the targeted leaf build pass.  All eight new theorem declarations audit
+to at most `[propext, Classical.choice, Quot.sound]`; the leaf is wired into `HTGeometry` without
+an umbrella build.  This closes construction and stabilization of finite multiplication-image
+kernels.  Remaining geometric bridge is to identify a stable symmetric product image with the
+actual subgroup Hopf closure and transport the invariant Kähler identity through its dominant
+function-field map.

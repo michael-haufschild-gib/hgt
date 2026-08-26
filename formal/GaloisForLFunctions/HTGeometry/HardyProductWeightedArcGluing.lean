@@ -68,7 +68,7 @@ def hardyProductCauchyCommutator
           (L z - a ζ) / ((ζ : ℂ) - z)
     ∂circleLebesgue
 
-theorem differentiableAt_hardyProductCauchyCommutator
+theorem differentiableAt_hardyProductCauchyCommutator_of_mem_ball
     (u v : HardyDisk) (a : Circle → ℂ) (L : ℂ → ℂ)
     (z₀ : ℂ) {r C : ℝ} (hr : 0 < r) (hC : 0 ≤ C)
     (haMeas : Measurable a) (haUnit : ∀ ζ, ‖a ζ‖ = 1)
@@ -79,8 +79,8 @@ theorem differentiableAt_hardyProductCauchyCommutator
     (hslopeMeas : ∀ z ∈ ball z₀ r,
       AEStronglyMeasurable
         (fun ζ : Circle => analyticSlope L (ζ : ℂ) z) circleLebesgue) :
-    DifferentiableAt ℂ
-      (hardyProductCauchyCommutator u v a L z₀ r) z₀ := by
+    ∀ z ∈ ball z₀ r,
+      DifferentiableAt ℂ (hardyProductCauchyCommutator u v a L z₀ r) z := by
   let q : Circle → ℂ := fun ζ =>
     (hardyDiskBoundary u : Circle → ℂ) ζ *
       (hardyDiskBoundary v : Circle → ℂ) ζ
@@ -269,9 +269,41 @@ theorem differentiableAt_hardyProductCauchyCommutator
           exact mul_le_mul_of_nonneg_right (le_max_right _ _) (norm_nonneg _)
   have hboundInt : Integrable bound circleLebesgue := by
     exact hq.norm.const_mul B
-  change DifferentiableAt ℂ (fun z => ∫ ζ, F z ζ ∂circleLebesgue) z₀
-  exact differentiableAt_integral_of_cauchy_dominated
-    hr hmeas hdiff hbound hboundInt
+  intro z hz
+  let ρ := (r - dist z z₀) / 2
+  have hz' : dist z z₀ < r := by simpa [mem_ball] using hz
+  have hρ : 0 < ρ := by
+    dsimp [ρ]
+    linarith
+  have hρsub : ball z ρ ⊆ ball z₀ r := by
+    intro w hw
+    rw [mem_ball] at hw ⊢
+    have htri := dist_triangle w z z₀
+    have hw' : dist w z < ρ := hw
+    dsimp [ρ] at hw'
+    linarith
+  change DifferentiableAt ℂ (fun z => ∫ ζ, F z ζ ∂circleLebesgue) z
+  exact differentiableAt_integral_of_cauchy_dominated hρ
+    (fun w hw => hmeas w (hρsub hw))
+    (fun ζ => (hdiff ζ).mono hρsub)
+    (fun ζ w hw => hbound ζ w (hρsub hw)) hboundInt
+
+theorem differentiableAt_hardyProductCauchyCommutator
+    (u v : HardyDisk) (a : Circle → ℂ) (L : ℂ → ℂ)
+    (z₀ : ℂ) {r C : ℝ} (hr : 0 < r) (hC : 0 ≤ C)
+    (haMeas : Measurable a) (haUnit : ∀ ζ, ‖a ζ‖ = 1)
+    (hLanalytic : ∀ w ∈ closedBall z₀ (3 * r), AnalyticAt ℂ L w)
+    (hLlip : ∀ x ∈ closedBall z₀ (3 * r), ∀ y ∈ closedBall z₀ (3 * r),
+      ‖L y - L x‖ ≤ C * ‖y - x‖)
+    (hLderiv : ∀ w ∈ closedBall z₀ (3 * r), ‖deriv L w‖ ≤ C)
+    (hslopeMeas : ∀ z ∈ ball z₀ r,
+      AEStronglyMeasurable
+        (fun ζ : Circle => analyticSlope L (ζ : ℂ) z) circleLebesgue) :
+    DifferentiableAt ℂ
+      (hardyProductCauchyCommutator u v a L z₀ r) z₀ := by
+  exact differentiableAt_hardyProductCauchyCommutator_of_mem_ball
+    u v a L z₀ hr hC haMeas haUnit hLanalytic hLlip hLderiv hslopeMeas
+      z₀ (by simpa [mem_ball] using hr)
 
 theorem hardyProductCauchyCommutator_eq
     (u v : HardyDisk) (a : Circle → ℂ) (L : ℂ → ℂ)
@@ -349,9 +381,9 @@ theorem hardyProductCauchyCommutator_eq
       rw [integral_sub (hqK.const_mul (L z)) haqK, integral_const_mul]
     _ = _ := by rfl
 
-/-- Exact local gluing of an analytically weighted `H¹` Hardy product to an exterior `H¹`
-product. -/
-theorem exists_differentiableAt_weighted_hardyProduct_arc_glue
+/-- Exact local analytic gluing of an analytically weighted `H¹` Hardy product to an exterior
+`H¹` product. -/
+theorem exists_analyticAt_weighted_hardyProduct_arc_glue
     (u₁ u₂ v₁ v₂ : HardyDisk) (a : Circle → ℂ) (L : ℂ → ℂ)
     (z₀ : ℂ) {r C : ℝ} (hr : 0 < r) (hC : 0 ≤ C)
     (haMeas : Measurable a) (haUnit : ∀ ζ, ‖a ζ‖ = 1)
@@ -372,7 +404,7 @@ theorem exists_differentiableAt_weighted_hardyProduct_arc_glue
               ((hardyDiskBoundary v₁ : Circle → ℂ) ζ *
                 (hardyDiskBoundary v₂ : Circle → ℂ) ζ)) :
     ∃ G : ℂ → ℂ,
-      DifferentiableAt ℂ G z₀ ∧
+      AnalyticAt ℂ G z₀ ∧
       (∀ z : ℂ, ‖z‖ < 1 →
         G z = L z * (hardyFun u₁ z * hardyFun u₂ z)) ∧
       (∀ z : ℂ, 1 < ‖z‖ →
@@ -409,13 +441,29 @@ theorem exists_differentiableAt_weighted_hardyProduct_arc_glue
     intro hnear
     dsimp [d, aq, q, sc, s]
     rw [hmatch hnear, sub_self]
-  have hHdiff : DifferentiableAt ℂ H z₀ :=
-    differentiableAt_hardyProductCauchyCommutator
+  have hHdiff : ∀ z ∈ ball z₀ r, DifferentiableAt ℂ H z :=
+    differentiableAt_hardyProductCauchyCommutator_of_mem_ball
       u₁ u₂ a L z₀ hr hC haMeas haUnit hLanalytic hLlip hLderiv hslopeMeas
+  have hGanalytic : AnalyticAt ℂ
+      (fun z => circleL1CauchyTransform d z + c + H z) z₀ := by
+    rw [Complex.analyticAt_iff_eventually_differentiableAt]
+    filter_upwards [ball_mem_nhds z₀ (by positivity : 0 < r / 2)] with z hz
+    have hz' : dist z z₀ < r / 2 := by simpa [mem_ball] using hz
+    have hzR : z ∈ ball z₀ r := by
+      rw [mem_ball]
+      linarith
+    have hzeroDz : ∀ᵐ ζ : Circle ∂circleLebesgue,
+        dist (ζ : ℂ) z < r / 2 → d ζ = 0 := by
+      filter_upwards [hzeroD] with ζ hζ
+      intro hζz
+      apply hζ
+      have htri := dist_triangle (ζ : ℂ) z z₀
+      linarith
+    exact ((differentiableAt_circleL1CauchyTransform_of_ae_zero_near
+      d hd z (by positivity : 0 < r / 2) hzeroDz).add
+        (differentiableAt_const (c := c))).add (hHdiff z hzR)
   refine ⟨fun z => circleL1CauchyTransform d z + c + H z,
-    ((differentiableAt_circleL1CauchyTransform_of_ae_zero_near
-      d hd z₀ (by positivity : 0 < 2 * r) hzeroD).add
-        (differentiableAt_const (c := c))).add hHdiff, ?_, ?_⟩
+    hGanalytic, ?_, ?_⟩
   · intro z hz
     have hzne : ‖z‖ ≠ 1 := ne_of_lt hz
     have hH := hardyProductCauchyCommutator_eq
@@ -459,6 +507,40 @@ theorem exists_differentiableAt_weighted_hardyProduct_arc_glue
     dsimp [c]
     rw [hardyProductExteriorReflection]
     ring
+
+/-- Exact local gluing of an analytically weighted `H¹` Hardy product to an exterior `H¹`
+product. -/
+theorem exists_differentiableAt_weighted_hardyProduct_arc_glue
+    (u₁ u₂ v₁ v₂ : HardyDisk) (a : Circle → ℂ) (L : ℂ → ℂ)
+    (z₀ : ℂ) {r C : ℝ} (hr : 0 < r) (hC : 0 ≤ C)
+    (haMeas : Measurable a) (haUnit : ∀ ζ, ‖a ζ‖ = 1)
+    (hLanalytic : ∀ w ∈ closedBall z₀ (3 * r), AnalyticAt ℂ L w)
+    (hLlip : ∀ x ∈ closedBall z₀ (3 * r), ∀ y ∈ closedBall z₀ (3 * r),
+      ‖L y - L x‖ ≤ C * ‖y - x‖)
+    (hLderiv : ∀ w ∈ closedBall z₀ (3 * r), ‖deriv L w‖ ≤ C)
+    (hslopeMeas : ∀ z ∈ ball z₀ r,
+      AEStronglyMeasurable
+        (fun ζ : Circle => analyticSlope L (ζ : ℂ) z) circleLebesgue)
+    (hcoef : ∀ᵐ ζ : Circle ∂circleLebesgue,
+      dist (ζ : ℂ) z₀ < 2 * r → a ζ = L (ζ : ℂ))
+    (hseam : ∀ᵐ ζ : Circle ∂circleLebesgue,
+      dist (ζ : ℂ) z₀ < 2 * r →
+        a ζ * ((hardyDiskBoundary u₁ : Circle → ℂ) ζ *
+          (hardyDiskBoundary u₂ : Circle → ℂ) ζ) =
+            (starRingEnd ℂ)
+              ((hardyDiskBoundary v₁ : Circle → ℂ) ζ *
+                (hardyDiskBoundary v₂ : Circle → ℂ) ζ)) :
+    ∃ G : ℂ → ℂ,
+      DifferentiableAt ℂ G z₀ ∧
+      (∀ z : ℂ, ‖z‖ < 1 →
+        G z = L z * (hardyFun u₁ z * hardyFun u₂ z)) ∧
+      (∀ z : ℂ, 1 < ‖z‖ →
+        G z = hardyProductExteriorReflection v₁ v₂ z) := by
+  obtain ⟨G, hG, hin, hout⟩ :=
+    exists_analyticAt_weighted_hardyProduct_arc_glue
+      u₁ u₂ v₁ v₂ a L z₀ hr hC haMeas haUnit hLanalytic hLlip hLderiv
+        hslopeMeas hcoef hseam
+  exact ⟨G, hG.differentiableAt, hin, hout⟩
 
 end
 

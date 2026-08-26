@@ -65,12 +65,15 @@ theorem continuous_kapustinOneSidedToeplitzSymbol :
   exact (((Complex.continuous_ofReal.comp
     continuous_kapustinOneSidedToeplitzPhase).mul continuous_const).cexp)
 
-/-- The one-sided Kapustin symbol is the real trace of a measurable analytic germ at every point. -/
-theorem exists_measurable_analyticAt_eventuallyEq_kapustinOneSidedToeplitzSymbol
+/-- The one-sided Kapustin symbol is the real trace of a measurable analytic square-root germ at
+every point. -/
+theorem exists_measurable_analyticAt_eventuallyEq_kapustinOneSidedToeplitzSymbol_with_square
     (x₀ : ℝ) :
     ∃ h : ℂ → ℂ, Measurable h ∧ AnalyticAt ℂ h (x₀ : ℂ) ∧
       h (x₀ : ℂ) = kapustinOneSidedToeplitzSymbol x₀ ∧
-      (fun x : ℝ => h (x : ℂ)) =ᶠ[nhds x₀] kapustinOneSidedToeplitzSymbol := by
+      (fun x : ℝ => h (x : ℂ)) =ᶠ[nhds x₀] kapustinOneSidedToeplitzSymbol ∧
+      ∀ᶠ z in nhds (x₀ : ℂ),
+        h z ^ 2 = kapustinOneSidedToeplitzAnalyticSquare z := by
   obtain ⟨g, hgMeas, hgAnalytic, hgerm⟩ :=
     exists_measurable_eventuallyEq_of_analyticAt
       (analyticAt_kapustinOneSidedToeplitzAnalyticSquare_ofReal x₀)
@@ -81,11 +84,11 @@ theorem exists_measurable_analyticAt_eventuallyEq_kapustinOneSidedToeplitzSymbol
     norm_ne_zero_iff.mp (by rw [norm_kapustinOneSidedToeplitzSymbol]; norm_num)
   obtain ⟨h, hhMeas, hhAnalytic, hh₀, hhsq⟩ :=
     exists_measurable_analyticAt_sq_eq_of_value hgMeas hgAnalytic hga.symm hU₀
-  refine ⟨h, hhMeas, hhAnalytic, hh₀, ?_⟩
   have hsqComplex : ∀ᶠ z in nhds (x₀ : ℂ),
       h z ^ 2 = kapustinOneSidedToeplitzAnalyticSquare z := by
     filter_upwards [hhsq, hgerm] with z hsq heq
     rw [hsq, ← heq]
+  refine ⟨h, hhMeas, hhAnalytic, hh₀, ?_, hsqComplex⟩
   have hsqReal : ∀ᶠ x : ℝ in nhds x₀,
       h (x : ℂ) ^ 2 = kapustinOneSidedToeplitzSymbol x ^ 2 := by
     have hmap : Tendsto Complex.ofReal (nhds x₀) (nhds (x₀ : ℂ)) :=
@@ -114,6 +117,16 @@ theorem exists_measurable_analyticAt_eventuallyEq_kapustinOneSidedToeplitzSymbol
         (h (x : ℂ) + kapustinOneSidedToeplitzSymbol x) =
       h (x : ℂ) ^ 2 - kapustinOneSidedToeplitzSymbol x ^ 2 := by ring
     _ = 0 := by rw [hsq, sub_self]
+
+/-- The one-sided Kapustin symbol is the real trace of a measurable analytic germ at every point. -/
+theorem exists_measurable_analyticAt_eventuallyEq_kapustinOneSidedToeplitzSymbol
+    (x₀ : ℝ) :
+    ∃ h : ℂ → ℂ, Measurable h ∧ AnalyticAt ℂ h (x₀ : ℂ) ∧
+      h (x₀ : ℂ) = kapustinOneSidedToeplitzSymbol x₀ ∧
+      (fun x : ℝ => h (x : ℂ)) =ᶠ[nhds x₀] kapustinOneSidedToeplitzSymbol := by
+  obtain ⟨h, hhMeas, hhAnalytic, hh₀, hhTrace, _hhsq⟩ :=
+    exists_measurable_analyticAt_eventuallyEq_kapustinOneSidedToeplitzSymbol_with_square x₀
+  exact ⟨h, hhMeas, hhAnalytic, hh₀, hhTrace⟩
 
 end
 
