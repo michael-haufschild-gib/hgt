@@ -2,7 +2,7 @@
 
 Audit date: 2026-08-27
 
-Scope: every one of the 34 entries now present in `references.tex`, plus every
+Scope: every one of the 35 entries now present in `references.tex`, plus every
 claim directly attached to a citation in `body.tex`. Previously retained but
 now unused entries remain listed only where removal history matters. Sources below are
 publisher records, author-hosted records, or arXiv records maintained from the
@@ -31,6 +31,9 @@ authors' submissions. Search-result aggregators were not used as authority.
 - Added and verified primary publisher and arXiv records for
   `WangEtAl2017` and `ElbenEtAl2023`, supporting experimental calibration and
   randomized-measurement feasibility rather than any mathematical theorem
+- Restored previously verified primary record for `KleinbockMargulis1998`,
+  supporting metric extremality of nondegenerate analytic maps used in sharp
+  local first-hit theorem
 - Citation prose: replaced unsupported wording `first-return bounds` with
   `recurrence-time bounds`; replaced vague claim that higher no-resonance
   conditions are difficult to verify with source-backed statement that
@@ -41,6 +44,7 @@ authors' submissions. Search-result aggregators were not used as authority.
 | Key | Result | Primary record |
 |---|---|---|
 | `BocchieriLoinger1957` | Verified: authors, title, *Phys. Rev.* 107, 337--338 (1957), DOI. | [APS](https://journals.aps.org/pr/abstract/10.1103/PhysRev.107.337) |
+| `KleinbockMargulis1998` | Verified: authors, title, *Annals of Mathematics* 148, 339--360 (1998), DOI; source proves extremality for nondegenerate manifolds used in first-hit argument. | [Annals/DOI](https://doi.org/10.2307/120997) |
 | `CamposVenuti2015` | Verified: author, title, arXiv identifier, year. | [arXiv:1509.04352](https://arxiv.org/abs/1509.04352) |
 | `KotowskiOszmaniec2026` | Verified: authors, title, arXiv identifier, current version 3, year. | [arXiv:2601.10409](https://arxiv.org/abs/2601.10409) |
 | `GuptaShort2026` | Verified: authors, title, *Phys. Rev. A* 114, 012208 (2026), arXiv identifier. | [arXiv:2604.14995](https://arxiv.org/abs/2604.14995) |
@@ -83,5 +87,5 @@ authors' submissions. Search-result aggregators were not used as authority.
 All statements directly carrying citations were checked against cited
 abstracts or publisher descriptions. After corrections listed above, no
 cited sentence attributes result absent from its cited source. Every one of
-34 references retained in manuscript is cited in body; no uncited
+35 references retained in manuscript is cited in body; no uncited
 bibliography padding remains.

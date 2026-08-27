@@ -232,6 +232,70 @@ theorem false_of_mobilePrefix_fourPhaseWitness
     (hbound x01) (hbound x11)
   exact (not_lt_of_ge hupp) hchord
 
+/-- Cut-oriented version of `false_of_mobilePrefix_fourPhaseWitness`.  Tree orientation may choose
+an arbitrary sign field; only the physical circuit cut remains fixed. -/
+theorem false_of_mobilePrefix_cutFourPhaseWitness
+    {L : ℕ} (c : List (LocalGate (PairQubit L)))
+    {T : Matrix (Config (PairQubit L)) (Config (PairQubit L)) ℂ}
+    {S : Finset (Fin L)} {sigma : PairQubit L → Bool} {ε : ℝ}
+    (hSdisj : Disjoint S (circuitTouchedPairs c))
+    (hclose : ‖circuitMatrix c - T‖ ≤ ε)
+    {B : Matrix (Off (firstEndpointSites S)) (Off (firstEndpointSites S)) ℂ}
+    {D : Matrix (Config (PairQubit L)) (Config (PairQubit L)) ℂ}
+    (hBunit : B ∈ Matrix.unitaryGroup (Off (firstEndpointSites S)) ℂ)
+    (hT : T = offMatrixLift (firstEndpointSites S) B * D)
+    (hDnorm : ∀ a b : Bool,
+      ‖D (cutFourConfig (firstEndpointSites S) sigma a b)
+        (cutFourConfig (firstEndpointSites S) sigma a b)‖ = 1)
+    (hchord : 4 * ε < ‖
+      D (cutFourConfig (firstEndpointSites S) sigma false false)
+          (cutFourConfig (firstEndpointSites S) sigma false false) *
+        D (cutFourConfig (firstEndpointSites S) sigma true true)
+          (cutFourConfig (firstEndpointSites S) sigma true true) -
+      D (cutFourConfig (firstEndpointSites S) sigma false true)
+          (cutFourConfig (firstEndpointSites S) sigma false true) *
+        D (cutFourConfig (firstEndpointSites S) sigma true false)
+          (cutFourConfig (firstEndpointSites S) sigma true false)‖) : False := by
+  let A := firstEndpointSites S
+  let W := (offMatrixLift A B)ᴴ * circuitMatrix c
+  have hsep : SeparatesAcross A W := by
+    exact prefixStrip_separates A (circuitMatrix_separates_firstEndpoints c S hSdisj)
+  have hLift := offMatrixLift_unitary A hBunit
+  have hStar : (offMatrixLift A B)ᴴ ∈ Matrix.unitaryGroup (Config (PairQubit L)) ℂ := by
+    rw [← Matrix.star_eq_conjTranspose]
+    exact Unitary.star_mem hLift
+  have hWunit : W ∈ Matrix.unitaryGroup (Config (PairQubit L)) ℂ :=
+    mul_mem hStar (circuitMatrix_unitary c)
+  have hstripTarget : (offMatrixLift A B)ᴴ * T = D := by
+    rw [hT]
+    exact prefixStrip_mul_self A hBunit D
+  have hstripClose : ‖W - D‖ ≤ ε := by
+    rw [← hstripTarget]
+    change ‖(offMatrixLift A B)ᴴ * circuitMatrix c -
+      (offMatrixLift A B)ᴴ * T‖ ≤ ε
+    rw [prefixStrip_distance_eq A hBunit]
+    exact hclose
+  let x00 := cutFourConfig A sigma false false
+  let x01 := cutFourConfig A sigma false true
+  let x10 := cutFourConfig A sigma true false
+  let x11 := cutFourConfig A sigma true true
+  have hfactor : W x00 x00 * W x11 x11 = W x01 x01 * W x10 x10 := by
+    dsimp only [x00, x01, x10, x11]
+    exact hsep.fourPoint_diagonal_cut
+  have hentry (x : Config (PairQubit L)) : ‖D x x - W x x‖ ≤ ε := by
+    have hnorm : ‖(W - D) x x‖ ≤ ‖W - D‖ := norm_entry_le_l2_opNorm _ _ _
+    have hrewrite : (W - D) x x = W x x - D x x := rfl
+    rw [hrewrite, norm_sub_rev] at hnorm
+    exact le_trans hnorm hstripClose
+  have hbound (x : Config (PairQubit L)) : ‖W x x‖ ≤ 1 :=
+    entry_norm_bound_of_unitary hWunit _ _
+  have hupp := norm_four_target_difference_le hfactor
+    (hentry x00) (hentry x01) (hentry x10) (hentry x11)
+    (hDnorm false false) (hDnorm true true)
+    (hDnorm false true) (hDnorm true false)
+    (hbound x01) (hbound x11)
+  exact (not_lt_of_ge hupp) hchord
+
 /-- **Abstract mobile-prefix phase-witness law.**  A circuit-dependent late four-phase witness is
 enough: arbitrary unitary dynamics on the disjoint early prefix cancels with no error loss and no
 gate charge.  The statement does not assume that the late diagonal factor is itself a circuit. -/

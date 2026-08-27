@@ -34,9 +34,14 @@ source search nor internal proof audit can establish literature priority.
    exact component-rank formula simultaneously on every induced subsystem.
    Pair curvature reconstructs adjacency and partition curvature reconstructs
    component compatibility.
-5. Static nearest-neighbour qudit paths attain every replica floor and have an
-   exact completed-time thermodynamic extinction rate. This is bounded-degree
-   recurrence geometry, not bounded-degree circuit hardness.
+5. On every open simple-spectrum chart of static nearest-neighbour qudit paths,
+   one conull set of Hamiltonians simultaneously has maximal projective rank,
+   sharp stroboscopic and first-gap-clock exponents `D-1` and `D-2`, every
+   positive-weight replica floor and zero-only exact anchored return. Exact
+   commuting l-bit classification isolates fixed-range commutativity, not
+   geometric locality, as phase-capacity compression mechanism. Path return
+   density then has exact completed-time thermodynamic extinction rate. This
+   is bounded-degree recurrence geometry, not bounded-degree circuit hardness.
 6. Countable pure-point spectra admit arbitrarily small domain-preserving
    trace-class completion, and product spectra admit one separable interaction
    ray with only countably many exceptional couplings.

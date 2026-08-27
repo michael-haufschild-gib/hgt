@@ -255,6 +255,35 @@ theorem norm_unitaryEvolution_thermodynamicPair_sub_mobileReference_lt
     (show 12 / (1000000 * (K : ℝ)) ≤ 12 / (1000000 * (K : ℝ)) by rfl)
   nlinarith
 
+/-- Sharpened shared-error form of the mobile-reference approximation. -/
+theorem norm_unitaryEvolution_thermodynamicPair_sub_mobileReference_lt_nine_sixtyfourths
+    {N K : ℕ} {p : InfinitePathLabel → ℝ} {t ε : ℝ}
+    (hK : 8 ≤ K) (hsize : 4 * K ≤ N * 2 + 3)
+    (hp : ∀ i, |p i - nestedInfinitePathCenter i| < infinitePathRadius i)
+    (hε : 0 < ε) (ht0 : 0 ≤ t)
+    (ht : t < 256 * Real.pi * ε * (K + 1)) :
+    ‖unitaryEvolution (thermodynamicPairHamiltonian N p) t -
+      unitaryEvolution (thermodynamicPairMobileReference N K p) t‖ < 9 * ε / 64 := by
+  have hActual : IsSelfAdjoint (thermodynamicPairHamiltonian N p) :=
+    isSelfAdjoint_reindexAlgEquiv _ (isSelfAdjoint_pathHamiltonian _)
+  have hReference : IsSelfAdjoint (thermodynamicPairMobileReference N K p) :=
+    (isSelfAdjoint_reindexAlgEquiv _ (isSelfAdjoint_pathHamiltonianOnSites _ _)).add
+      (isSelfAdjoint_reindexAlgEquiv _ (isSelfAdjoint_pathHamiltonianOnSites _ _))
+  have hduhamel :
+      ‖unitaryEvolution (thermodynamicPairHamiltonian N p) t -
+        unitaryEvolution (thermodynamicPairMobileReference N K p) t‖ ≤
+        |t| * ‖thermodynamicPairHamiltonian N p - thermodynamicPairMobileReference N K p‖ := by
+    simpa [unitaryEvolution] using selfAdjoint_unitaryEvolution_norm_sub_le
+      (thermodynamicPairHamiltonian N p) (thermodynamicPairMobileReference N K p)
+      hActual hReference t
+  rw [abs_of_nonneg ht0] at hduhamel
+  have hnorm := norm_thermodynamicPair_sub_mobileReference_le hK hsize hp
+  have hmul := mul_le_mul_of_nonneg_left hnorm ht0
+  have hbase := mobileCut_baseDuhamel_lt_eighth hK hε ht
+  have hpert := mobileCut_perturbDuhamel_lt_sixtyfourth hK hε ht0 ht
+    (show 12 / (1000000 * (K : ℝ)) ≤ 12 / (1000000 * (K : ℝ)) by rfl)
+  nlinarith
+
 end
 
 end GaloisForLFunctions.HTGeometry.StaticLocalLaboratoryComplexityGrowthLaw

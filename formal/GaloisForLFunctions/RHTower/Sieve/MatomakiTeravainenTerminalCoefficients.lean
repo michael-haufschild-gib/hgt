@@ -79,6 +79,64 @@ theorem mtTerminalChainProducts_prefix_pairwiseDisjoint {t : ℕ}
     exact Finset.mem_biUnion.mpr ⟨q, hq, Finset.mem_image.mpr
       ⟨d, mtTerminalChainProducts_subset data depth u.castSucc k hd, rfl⟩⟩
 
+/-- Distinct terminal cutoffs have disjoint chain-product fibres. -/
+theorem mtTerminalChainProducts_disjoint_of_ne {t : ℕ}
+    (data : MTFiniteIterationSourceData t) (depth : ℕ)
+    (j : Fin (t + 1)) {k u : Fin (t + 1)} (hku : k ≠ u) :
+    Disjoint (mtTerminalChainProducts data depth j k)
+      (mtTerminalChainProducts data depth j u) := by
+  induction depth generalizing j with
+  | zero =>
+      by_cases hjk : j = k
+      · subst j
+        simp [mtTerminalChainProducts, hku]
+      · simp [mtTerminalChainProducts, hjk]
+  | succ depth ih =>
+      rw [Finset.disjoint_left]
+      intro x hxk hxu
+      rw [mtTerminalChainProducts] at hxk hxu
+      obtain ⟨i, hi, q, hq, d, hd, hqdx⟩ := by
+        simpa only [Finset.mem_biUnion, Finset.mem_image] using hxk
+      obtain ⟨v, hv, r, hr, e, he, hrex⟩ := by
+        simpa only [Finset.mem_biUnion, Finset.mem_image] using hxu
+      have hiv : i = v := by
+        by_contra hiv
+        have hxI : x ∈ (data.block i).biUnion fun p =>
+            (mtChainProducts data depth i.castSucc).image fun c => p * c := by
+          exact Finset.mem_biUnion.mpr ⟨q, hq, Finset.mem_image.mpr
+            ⟨d, mtTerminalChainProducts_subset data depth i.castSucc k hd, hqdx⟩⟩
+        have hxV : x ∈ (data.block v).biUnion fun p =>
+            (mtChainProducts data depth v.castSucc).image fun c => p * c := by
+          exact Finset.mem_biUnion.mpr ⟨r, hr, Finset.mem_image.mpr
+            ⟨e, mtTerminalChainProducts_subset data depth v.castSucc u he, hrex⟩⟩
+        exact (Finset.disjoint_left.mp
+          (mtChainProducts_blocks_disjoint_of_ne data depth hiv)) hxI hxV
+      subst v
+      have hqr : q = r := by
+        by_contra hqr
+        have hxQ : x ∈ (mtChainProducts data depth i.castSucc).image
+            (fun c => q * c) := Finset.mem_image.mpr
+          ⟨d, mtTerminalChainProducts_subset data depth i.castSucc k hd, hqdx⟩
+        have hxR : x ∈ (mtChainProducts data depth i.castSucc).image
+            (fun c => r * c) := Finset.mem_image.mpr
+          ⟨e, mtTerminalChainProducts_subset data depth i.castSucc u he, hrex⟩
+        exact (Finset.disjoint_left.mp
+          (mtChainProducts_images_disjoint_of_ne data depth i hq hr hqr)) hxQ hxR
+      subst r
+      have hde : d = e := by
+        apply Nat.eq_of_mul_eq_mul_left (data.block_prime i q hq).pos
+        exact hqdx.trans hrex.symm
+      subst e
+      exact (Finset.disjoint_left.mp (ih i.castSucc)) hd he
+
+/-- Terminal chain-product fibres are pairwise disjoint. -/
+theorem mtTerminalChainProducts_pairwiseDisjoint {t : ℕ}
+    (data : MTFiniteIterationSourceData t) (depth : ℕ) (j : Fin (t + 1)) :
+    (↑(Finset.univ : Finset (Fin (t + 1))) : Set (Fin (t + 1))).PairwiseDisjoint fun k =>
+      mtTerminalChainProducts data depth j k := by
+  intro k hk u hu hku
+  exact mtTerminalChainProducts_disjoint_of_ne data depth j hku
+
 /-- Aggregate coefficient from all depth-many chains ending at one terminal cutoff. -/
 def mtTerminalCoefficientAF {t : ℕ} (data : MTFiniteIterationSourceData t)
     (a : ArithmeticFunction ℂ) :
@@ -174,6 +232,57 @@ theorem MTFiniteIterationSourceData.norm_mtTerminalCoefficientAF_le_card_divisor
       apply mul_le_mul_of_nonneg_left _ hB
       exact_mod_cast Finset.card_le_card hsubset
 
+/-- Sum of terminal coefficient norms has one divisor envelope, with no adic-grid factor. -/
+theorem MTFiniteIterationSourceData.sum_norm_mtTerminalCoefficientAF_le_card_divisors
+    {t : ℕ} (data : MTFiniteIterationSourceData t)
+    (a : ArithmeticFunction ℂ) (B : ℝ) (hB : 0 ≤ B)
+    (ha : ∀ {m : ℕ}, 0 < m → ‖a m‖ ≤ B)
+    (depth : ℕ) (j : Fin (t + 1)) {n : ℕ} (hn : 0 < n) :
+    ∑ k : Fin (t + 1), ‖mtTerminalCoefficientAF data a depth j k n‖ ≤
+      B * (n.divisors.card : ℝ) := by
+  let T : Fin (t + 1) → Finset ℕ := fun k =>
+    (mtTerminalChainProducts data depth j k).filter fun d => d ∣ n
+  have hpair :
+      (↑(Finset.univ : Finset (Fin (t + 1))) : Set (Fin (t + 1))).PairwiseDisjoint T := by
+    intro k hk u hu hku
+    exact (mtTerminalChainProducts_disjoint_of_ne data depth j hku).mono
+      (Finset.filter_subset _ _) (Finset.filter_subset _ _)
+  have hsubset : (Finset.univ.biUnion T) ⊆ n.divisors := by
+    intro d hd
+    obtain ⟨k, hk, hd⟩ := Finset.mem_biUnion.mp hd
+    exact Nat.mem_divisors.mpr ⟨(Finset.mem_filter.mp hd).2, hn.ne'⟩
+  calc
+    ∑ k : Fin (t + 1), ‖mtTerminalCoefficientAF data a depth j k n‖ ≤
+        ∑ k : Fin (t + 1), ∑ d ∈ T k, ‖a (n / d)‖ := by
+      apply Finset.sum_le_sum
+      intro k hk
+      rw [mtTerminalCoefficientAF_apply_eq_chainProducts data a depth j k hn]
+      apply (norm_sum_le _ _).trans
+      dsimp [T]
+      rw [Finset.sum_filter]
+      apply le_of_eq
+      apply Finset.sum_congr rfl
+      intro d hd
+      by_cases hdn : d ∣ n
+      · simp [hdn]
+      · simp [hdn]
+    _ ≤ ∑ k : Fin (t + 1), ∑ _d ∈ T k, B := by
+      apply Finset.sum_le_sum
+      intro k hk
+      apply Finset.sum_le_sum
+      intro d hd
+      have hdDvd : d ∣ n := (Finset.mem_filter.mp hd).2
+      exact ha (Nat.div_pos (Nat.le_of_dvd hn hdDvd)
+        (Nat.pos_of_dvd_of_pos hdDvd hn))
+    _ = B * ((Finset.univ.biUnion T).card : ℝ) := by
+      have hsum := Finset.sum_biUnion (f := fun _d : ℕ => B) hpair
+      rw [← hsum]
+      simp [Finset.sum_const, nsmul_eq_mul]
+      ring
+    _ ≤ B * (n.divisors.card : ℝ) := by
+      apply mul_le_mul_of_nonneg_left _ hB
+      exact_mod_cast Finset.card_le_card hsubset
+
 /-- Unsigned sum of one-step error kernels after grouping chains by terminal cutoff. -/
 def mtTerminalErrorSumAF {t : ℕ} (data : MTFiniteIterationSourceData t)
     (a : ArithmeticFunction ℂ) (depth : ℕ) (j : Fin (t + 1)) :
@@ -245,7 +354,12 @@ theorem mtLiteralSignedSourceErrorLayer_eq_terminalErrors {t : ℕ}
       data a depth j)
   rw [mtSignedSourceErrorLayerAF_apply_eq_literal data a depth j hn] at h
   unfold mtTerminalErrorSumAF at h
-  rw [ArithmeticFunction.smul_apply, arithmeticFunction_finset_sum_apply] at h
+  change mtLiteralSignedSourceErrorLayer data a depth j n =
+    ((-1 : ℂ) ^ depth) *
+      ((∑ k : Fin (t + 1),
+        mtTerminalCoefficientAF data a depth j k *
+          mtOneStepErrorKernel data.truncation data.block data.cutoff k) n) at h
+  rw [arithmeticFunction_finset_sum_apply] at h
   have hsum :
       (∑ k : Fin (t + 1),
           (mtTerminalCoefficientAF data a depth j k *

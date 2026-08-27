@@ -7146,3 +7146,261 @@ qualitative extinction theorem `(AC74)`; no RH claim.
 
 Verdict: `[PROVED — ORDINARY PNT KILLS EVERY FIXED-WIDTH COMPLETE PHYSICAL CARRIER QUALITATIVELY;
 THE SOLE SURVIVING GAP IS RH-SCALE L2 RATE]`.
+
+## Conjecture loop 71 — theta--Abel spectral-mode rate wall
+
+### Failed provider conjecture `[TERM-WISE POSITIVE ZERO ENERGY PROVES RH-SCALE DECAY]`
+
+Expanding normalized theta discrepancy into explicit-formula modes and then bounding modes
+diagonally or absolutely destroys coherent cross-mode cancellation. This is not merely a weak
+estimate: one supercritical mode violates every polynomially relaxed FCRJ budget.
+
+### Exact rate-wall survivor `[PAPER-PROVED] [LEAN-PROVED] [POSITIVE SURVIVOR]`
+
+For one exponential normalized-theta mode, define
+
+```text
+R_z(m,u)=exp(z(m+c-u))-exp(z(m-u))
+         +integral_(m-u)^(m+c-u) exp(zh)dh.
+```
+
+Exact Abel transport restores a rational factor on physical window multiplier:
+
+```text
+R_z(m,u)=exp(z(m-u))(exp(cz)-1)(z+1)/z.               (AC75)
+```
+
+For `Re z<0`, its raw aperture energy factors without asymptotic loss:
+
+```text
+J_z(A,c,m)=integral_0^A |R_z(m,u)|^2du
+          =exp(2 Re(z)m)K(A,c,z),                     (AC76)
+
+K(A,c,z)=|exp(cz)-1|^2 |(z+1)/z|^2
+         *[exp(-2 Re(z)A)-1]/[-2 Re(z)].              (AC77)
+```
+
+For `A>0`, `c>0`, `Re z<0`, `z!=-1`, coefficient `K` is strictly positive. Consequently
+
+```text
+Re z < -1/2 : exp(m)J_z(A,c,m) -> 0,
+Re z = -1/2 : exp(m)J_z(A,c,m) = K(A,c,z),            (AC78)
+Re z > -1/2 : exp(m)J_z(A,c,m)/m^p -> infinity
+              for every real p.                       (AC79)
+```
+
+For a nontrivial zeta zero `rho`, substitution `z=rho-1` makes wall exactly `Re rho=1/2`.
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeApertureThetaAbelModeRateWall.lean`.
+Direct checking, targeted build, axiom audit, and umbrella wiring pass.
+
+No-go closure: every diagonal-positive or absolute zero-mode provider for `(AC70)` is now ruled
+out unless it already excludes zeros with `Re rho>1/2`. Strongest survivor is exact coefficient
+and complete three-regime rate classification `(AC75)--(AC79)`. This does not lower-bound full
+theta response by one mode: cross-mode interference remains possible. Remaining viable attack must
+retain coherent zero-sum cancellation, or prove that full response rate itself excludes
+supercritical zeros.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-27]`: explicit formulas, Selberg integrals, and
+prime short-interval variance/pair-correlation equivalences are classical and adjacent. Corpus and
+primary-literature search found no exact physical aperture Abel-restoration coefficient, positive
+prefactor, or route-specific three-regime termwise-provider obstruction. Candidate-new content is
+restricted to exact synthesis `(AC75)--(AC79)`; classical zero-rate heuristics are not claimed new.
+
+Verdict: `[PROVED — THETA-ABEL RAW MODE ENERGY HAS SHARP POSITIVE RATE WALL AT RE RHO=1/2;
+TERM-WISE POSITIVE ZERO PROVIDERS ARE CIRCULAR, COHERENT CROSS-MODE CANCELLATION REMAINS OPEN]`.
+
+## Conjecture loop 72 — finite coherent packet observability
+
+### Failed escape conjecture `[FINITE CROSS-MODE INTERFERENCE HIDES A SUPERCRITICAL MODE]`
+
+Keeping cross terms does not rescue any finite explicit-formula truncation. Distinct exponential
+features on a positive aperture admit fixed dual coordinate extractors, so each mode coefficient is
+uniformly controlled by full coherent `L²` mass.
+
+### Exact observability survivor `[PAPER-PROVED] [LEAN-PROVED] [POSITIVE SURVIVOR]`
+
+For distinct complex nodes `lambda_k`, every coordinate `j`, and every `a<b`, there exists `C_j>0`
+such that
+
+```text
+|x_j|^2 <= C_j integral_a^b |sum_k x_k exp(lambda_k u)|^2du.       (AC80)
+```
+
+Lean proves `(AC80)` for complete exponential-polynomial feature families, including confluent
+slots. The proof inverts the positive interval Gram moment map to build a compact dual extractor,
+then applies complex integral Cauchy--Schwarz.
+
+For distinct theta--Abel modes, loop-71 factorization sums exactly to
+
+```text
+sum_i a_i R_(z_i)(m,u)
+ =sum_i [a_i(exp(cz_i)-1)(z_i+1)/z_i exp(z_i m)]exp(-z_i u).        (AC81)
+```
+
+Hence for every selected coordinate `j` there is an aperture constant independent of `m` and all
+other phases:
+
+```text
+|a_j(exp(cz_j)-1)(z_j+1)/z_j exp(z_j m)|^2
+ <= C_j integral_0^A |sum_i a_i R_(z_i)(m,u)|^2du.                (AC82)
+```
+
+If `a_j!=0`, `z_j!=-1`, and `-1/2<Re z_j<0`, then for every real `p`,
+
+```text
+exp(m)/m^p * integral_0^A |sum_i a_i R_(z_i)(m,u)|^2du
+ -> infinity.                                                     (AC83)
+```
+
+For `z_j=rho_j-1`, this is every finite packet containing a zero with `Re rho_j>1/2`.
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeApertureThetaAbelFiniteModeObservability.lean`.
+Direct checking, targeted build, axiom audit, and umbrella wiring pass.
+
+No-go closure: diagonalization was not source of loop-71 wall. Arbitrary coherent cancellation
+inside every finite distinct zero packet still cannot hide a supercritical coordinate. Strongest
+survivor is uniform coordinate observability `(AC80)--(AC83)`. Sole surviving loophole is an
+infinite, height-nonuniform explicit-formula tail whose cancellation defeats every fixed dual
+extractor; proving such a tail negligible at RH scale would close finite-to-infinite passage.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-27]`: exponential independence, positive Gram
+matrices, Ingham observability, and Turán power-sum methods are classical. Corpus and primary-
+literature audit found no exact FCRJ physical theta--Abel packet synthesis or its supercritical
+coordinate obstruction. Candidate-new content is restricted to `(AC80)--(AC83)` and resulting exact
+infinite-tail boundary.
+
+Verdict: `[PROVED — NO FINITE COHERENT ZERO PACKET CAN HIDE A SUPERCRITICAL THETA-ABEL MODE;
+ONLY HEIGHT-NONUNIFORM INFINITE-TAIL CANCELLATION REMAINS]`.
+
+## Conjecture loop 73 — countable `L²` dominant-layer survival
+
+### Failed escape conjecture `[COUNTABLY INFINITE SUMMABLE TAIL CAN HIDE AN ISOLATED SUPERCRITICAL LAYER]`
+
+Countable cardinality alone does not create a new cancellation mechanism. Absolute summability in
+physical aperture `L²` lets every strictly subdominant tail die after maximal-radius normalization,
+while a bounded Hilbert-space probe detects a surviving finite dominant phase fiber.
+
+### Exact Hilbert-valued survivor `[PAPER-PROVED] [LEAN-PROVED] [POSITIVE SURVIVOR]`
+
+Let `c_i` be vectors in a complex Hilbert space with `sum_i ||c_i||<infinity`. If finite `D` is the
+strictly isolated maximal-radius layer of modes `b_i`, with radius `r>0`, and one normalized phase
+fiber has nonzero aggregate vector, then
+
+```text
+tsum_i (b_i/r)^n c_i  does not tend to 0.                         (AC84)
+```
+
+Indeed, pairing against nonzero fiber vector `V` turns its scalar coefficient into
+`<V,V>=||V||²`, reducing `(AC84)` to corpus scalar dominant-packet survival.
+
+For physical aperture `[0,A]`, loop-71 factorization defines literal mode vectors
+
+```text
+v_i(u)=a_i (exp(cz_i)-1)(z_i+1)/z_i exp(-z_i u) in L²([0,A]).     (AC85)
+```
+
+Writing `beta` for a finite isolated maximal real part gives normalized countable response
+
+```text
+N_n=tsum_i [exp(z_i)/exp(beta)]^n v_i.                            (AC86)
+```
+
+Under `sum_i ||v_i||_L2<infinity` and a nonzero dominant phase fiber,
+
+```text
+N_n does not tend to 0 in L².                                    (AC87)
+```
+
+If `-1/2<beta<0`, physical half-density scaling also cannot decay:
+
+```text
+exp((beta+1/2)n) N_n does not tend to 0 in L².                    (AC88)
+```
+
+For `z=rho-1`, condition `beta>-1/2` is exactly `Re rho>1/2`. Positive aperture makes every
+individual profile in `(AC85)` nonzero. If normalized phases are injective on `D`, any selected
+nonzero source coefficient makes nonzero-fiber premise automatic.
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeApertureThetaAbelCountableL2Dominance.lean`.
+Direct checking, targeted build, axiom audit, and umbrella wiring pass.
+
+No-go closure: infinite but absolutely `L²`-summable strictly subdominant zero tails cannot hide a
+finite isolated supercritical layer. Under dominant-phase injectivity, only two escapes remain:
+actual zero-mode vectors are not `ell¹(L²)`, or rightmost real part is not finitely attained and
+strictly isolated. Without phase injectivity, exact maximal phase-fiber cancellation remains a
+finite rigidity subproblem. These alternatives are now explicit theorem hypotheses, not informal
+uniformity caveats.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-27]`: bounded-functional reductions for vector-
+valued Dirichlet series and nonharmonic exponential observability are classical. Corpus and primary-
+literature search found no exact synthesis of restored theta--Abel coefficient, literal compact-
+aperture `L²` mode vectors, isolated rightmost zeta layer, and sharp physical half-density wall.
+Candidate-new content is restricted to route-specific `(AC85)--(AC88)` and resulting escape
+classification; abstract Hilbert-valued reduction `(AC84)` is not claimed new in literature.
+
+Verdict: `[PROVED — EVERY NORM-SUMMABLE COUNTABLE THETA-ABEL L2 TAIL WITH FINITE ISOLATED
+RIGHTMOST LAYER RETAINS ITS SUPERCRITICAL PHYSICAL SCALE; ONLY NONSUMMABILITY, NONATTAINED
+RIGHTMOST SUPPORT, OR PHASE-FIBER COLLISION REMAIN]`.
+
+## Conjecture loop 74 — continuous-aperture phase-fiber rigidity
+
+### Failed escape conjecture `[DISCRETE PHASE COLLISIONS CAN CANCEL A FINITE MAXIMAL FIBER]`
+
+Equality of sampled phases `exp(z_i)` does not identify the continuous aperture profiles
+`u |-> exp(-z_i u)`. Distinct complex exponents remain coefficient-faithful in `L²` on every
+positive aperture.
+
+### Exact rigidity survivor `[PAPER-PROVED] [LEAN-PROVED] [POSITIVE SURVIVOR]`
+
+For pairwise distinct `z_i`, positive `A`, and every selected coordinate `j`, Lean proves an
+aperture constant `C_j` such that
+
+```text
+|x_j|² <= C_j integral_0^A |sum_i x_i exp(-z_i u)|²du.           (AC89)
+```
+
+Therefore
+
+```text
+sum_i x_i [u |-> exp(-z_i u)] = 0 in L²([0,A])
+  ==> x_i = 0 for every i.                                      (AC90)
+```
+
+Restricting `(AC90)` to a finite fiber of
+`phase_i=exp(z_i)/exp(beta)` shows that every fiber containing a nonzero theta--Abel coefficient
+has nonzero aggregate aperture vector, even when several modes have the same sampled phase:
+
+```text
+sum_(i in D, phase_i=u) a_i (exp(cz_i)-1)(z_i+1)/z_i
+    [v |-> exp(-z_i v)] != 0.                                   (AC91)
+```
+
+Feeding `(AC91)` into loop-73 countable dominant-layer survival removes phase injectivity. If the
+literal aperture vectors are norm-summable, `D` is a finite strictly isolated rightmost layer of
+distinct modes, and one source coefficient in `D` is nonzero, then for `-1/2<beta<0`,
+
+```text
+exp((beta+1/2)n) N_n does not tend to 0 in L².                   (AC92)
+```
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeApertureThetaAbelPhaseFiberRigidity.lean`.
+Direct checking, targeted build, axiom audit, and umbrella wiring pass.
+
+No-go closure: sampled phase collision cannot hide a finite maximal theta--Abel layer. Under
+distinct dominant exponents, exactly two analytic escapes remain: actual zero-mode vectors are not
+`ell¹(L²)`, or no finite strictly isolated rightmost real part is attained. The finite algebraic
+cancellation loophole is closed completely.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-27]`: finite exponential independence, interval
+Gram observability, and nonharmonic Fourier inequalities are classical. Corpus and primary-
+literature audit found no exact synthesis of continuous theta--Abel aperture profiles, sampled-phase
+collisions, countable dominant-layer survival, and physical half-density nondecay. Candidate-new
+content is restricted to `(AC91)--(AC92)` and the resulting exact two-escape classification.
+
+Verdict: `[PROVED — FINITE MAXIMAL PHASE FIBERS CANNOT CANCEL IN THETA-ABEL APERTURE L2;
+ONLY NONSUMMABILITY OR NONATTAINED RIGHTMOST SUPPORT REMAIN]`.

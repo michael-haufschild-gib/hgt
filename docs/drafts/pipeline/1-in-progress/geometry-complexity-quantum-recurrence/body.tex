@@ -199,12 +199,17 @@ either completed object.}
 \label{fig:architecture}
 \end{figure}
 
-Following sections prove each law and retain all earlier carrier, phase-hull,
-weighted-metric, observer and inference results in same compiled document.
-They then show what laws imply for local many-body rank, exact return density,
-countable completion, Born records and circuit targets.  One compatible
-static nearest-neighbour family finally exhibits finite-time complexity
-growth, exact recurrence and reflected descent in a single physical model.
+Logical dependence matters.  Laws I--IV are structural statements: they say
+which mathematical object controls survival, phase motion, visible return and
+inference.  Local many-body theorems then ask whether sparse interactions
+force Law II's phase hull to be small.  Answer is no for generic
+nearest-neighbour paths and yes, with exact ceiling, for fixed-range
+commuting l-bits.  First-hit, collision and thermodynamic laws quantify two
+sides of this boundary.  Born and circuit results are Law III with concrete
+target families, not independent complexity postulates.  Law IV finally
+explains why finite records cannot certify completed arithmetic.  One
+explicit static nearest-neighbour family closes loop with finite-time
+complexity growth, exact recurrence and reflected descent.
 
 \section{Law I: loss selects the persistent carrier}
 
@@ -346,6 +351,106 @@ conditions are commonly assumed, while chaotic and random-matrix models can
 exhibit violations or near violations \cite{RiddellPagliaroli2023}.  Theorem
 \ref{thm:path} supplies all orders for
 the stated onsite-plus-edge family.
+
+\subsection{Sharp clocks on one static nearest-neighbour path}
+
+Maximal temporal rank becomes a quantitative recurrence statement only after
+one specifies a clock.  For $\beta\in\R^d$ and $r>0$, define the first
+simultaneous integer-time hit
+\begin{equation}
+ T_\beta(r)=\min\left\{m\in\N:m\ge1,\
+   \max_{1\le j\le d}\lVert m\beta_j\rVert_\Z<r\right\},
+ \qquad
+ \lVert x\rVert_\Z=\min_{k\in\Z}|x-k|.              \label{eq:local-first-hit}
+\end{equation}
+For an ordered simple spectrum
+$\lambda_1<\cdots<\lambda_D$, use two physically distinct clocks:
+\begin{align}
+ \beta^{\rm disc}_j&=\frac{\lambda_{j+1}-\lambda_1}{2\pi},
+   &&1\le j\le D-1,                                      \label{eq:local-disc-beta}\\
+ \beta^{\rm wind}_j&=\frac{\lambda_{j+2}-\lambda_1}
+                           {\lambda_2-\lambda_1},
+   &&1\le j\le D-2.                                      \label{eq:local-wind-beta}
+\end{align}
+The first is a stroboscopic laboratory clock.  The second spends the first positive gap
+as an internal clock and asks how many windings are needed to align all
+remaining gaps.  It is not unrestricted continuous-time first return.
+
+\begin{theorem}[Same-Hamiltonian local saturation and sharp clocks]
+\label{thm:local-clock-capstone}
+Let $n,q\ge2$, put $D=q^n$, and consider the full real coefficient space of
+Hermitian onsite-plus-nearest-neighbour Hamiltonians on the open $n$-site
+$q$-level path.  On every nonempty connected open simple-spectrum chart,
+one conull set of Hamiltonians simultaneously satisfies:
+\begin{enumerate}[label=(\alph*),leftmargin=1.7em]
+\item $\Rel_E=\{0\}$ and $\tau(E)=D-1$;
+\item
+\begin{equation}
+ \lim_{r\downarrow0}
+ \frac{\log T_{\beta^{\rm disc}}(r)}{\log(1/r)}=D-1,
+ \qquad
+ \lim_{r\downarrow0}
+ \frac{\log T_{\beta^{\rm wind}}(r)}{\log(1/r)}=D-2;
+ \label{eq:local-sharp-clocks}
+\end{equation}
+\item for every strictly positive spectral weight and every replica order,
+the collision mass and completed survival-fidelity moment equal the
+permutation floor;
+\item zero is the only exact anchored projective return time.
+\end{enumerate}
+One coefficient draw satisfies every clause; the Hamiltonian is not reselected
+between rank, clock, collision and exact-return conclusions.
+\end{theorem}
+
+Dirichlet approximation supplies exponent upper bounds in
+\eqref{eq:local-sharp-clocks}.  Exact path-local spectral escape makes both
+gap maps analytically nondegenerate on every simple chart; metric
+Diophantine extremality supplies matching lower bounds almost everywhere.
+Appendix \ref{app:sharp-local-clocks} gives full argument.  Result is stronger
+than nondegenerate gaps and more informative than completed density: it
+controls first hits for two stated clocks while preserving same-Hamiltonian
+all-order collision conclusions.
+
+\subsection{Exact commuting-local boundary}
+
+The preceding theorem does not say every local model is maximal.  It says
+geometric locality alone does not force a deficit.  A commuting l-bit family
+exposes additional algebraic restriction exactly.  For $N$ binary modes and
+$x\in\{0,1\}^N$, write
+\begin{equation}
+ E_J(x)=\sum_{S\subseteq\{1,\ldots,N\}}J_S
+       \prod_{i\in S}(-1)^{x_i}.                         \label{eq:lbit-energy-main}
+\end{equation}
+
+\begin{theorem}[Exact commuting l-bit phase-capacity classification]
+\label{thm:lbit-classification-main}
+For every real coefficient family,
+\begin{equation}
+ \boxed{\tau(E_J)=\dim_\Q\operatorname{span}_\Q
+   \{J_S:S\ne\varnothing\}},
+ \qquad
+ \tau(E_J)+\rho(E_J)=2^N-1.                            \label{eq:lbit-rank-main}
+\end{equation}
+If only one-body coefficients occur, then $\tau(E_J)\le N$.  If every
+nonzero support has diameter at most $R$, then
+\begin{equation}
+ \tau(E_J)\le |\mathcal S_{N,R}|\le N\,2^{R+1},       \label{eq:lbit-range-main}
+\end{equation}
+where $\mathcal S_{N,R}$ is the family of nonempty allowed supports.  The first
+inequality is equality whenever allowed coefficients are rationally
+independent; one-body ceiling is attained.  If all nonconstant coefficients
+are rationally independent, then $\tau(E_J)=2^N-1$.
+\end{theorem}
+
+Walsh orthogonality recovers every $J_S$ from the complete energy packet, so
+coefficient span and gap span coincide.  Uniform product state
+$|+\rangle^{\otimes N}$ has positive weight on every configuration and sees
+full rank; its all-order moments reach permutation floors exactly in the maximal
+case.  Contrast is therefore operational.  A fixed-range commuting family
+has phase capacity at most linear in $N$, while generic noncommuting
+nearest-neighbour path reaches $q^n-1$ despite having only linearly many local
+terms.  Parameter-space dimension and rational spectral rank are different
+invariants.
 
 \begin{corollary}[Interaction multiplication]
 If one edge joins components of dimensions $A$ and $B$, generic temporal
@@ -1080,8 +1185,9 @@ That hierarchy has following physical realizations and consequences:
       arbitrarily weak interaction, together with a dimension-free finite-time
       continuity bound and all-replica collision extremality;
 \item generic maximal projective rank for every static finite interaction
-      graph, simultaneous subsystem graph reconstruction, and its
-      nearest-neighbour thermodynamic consequences;
+      graph, simultaneous subsystem graph reconstruction, sharp same-draw
+      $D-1$/$D-2$ first-hit clocks on nearest-neighbour paths, exact
+      commuting-local compression boundary, and thermodynamic consequences;
 \item complete countable-spectrum saturation under arbitrarily weak
       domain-preserving trace-class perturbations and along a separable
       interaction ray outside a countable exceptional set, together with a
@@ -1209,7 +1315,8 @@ finite contraction selection and arbitrary spectral measures, prove
 character completeness, action--constraint conversion, scalar quotient and
 resolved relation recovery, and verify strict nine-level witness directly.
 They then develop interaction conversion, static-path and arbitrary-graph
-genericity, completed return densities, observer deadlines, Born-record
+genericity, sharp path first-hit clocks, exact commuting l-bit
+classification, completed return densities, observer deadlines, Born-record
 return, l-bit Hilbert dynamics, circuit-target bounds, countable saturation
 and finite-record ambiguity.  Final construction proves bounded
 thermodynamic completion, finite-time circuit ramp, exact return and

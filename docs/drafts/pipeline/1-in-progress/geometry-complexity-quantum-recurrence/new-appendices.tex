@@ -189,6 +189,104 @@ intersect.  This proves the component formula
 \eqref{eq:graphrank-main}.  There are only finitely many induced subsystems;
 intersecting their pullbacks supplies one simultaneous generic set.
 
+\subsection{Sharp first-hit clocks on a local path}
+\label{app:sharp-local-clocks}
+
+We first isolate clock arithmetic.  Dirichlet simultaneous approximation
+gives
+\begin{equation}
+ T_\beta(r)\le \lceil1/r\rceil^d.                     \label{eq:clock-dirichlet}
+\end{equation}
+Call $\beta\in\R^d$ very well approximable if some $\delta>0$ admits
+infinitely many $m\ge1$ with
+\[
+ \max_j\lVert m\beta_j\rVert_\Z
+ \le m^{-1/d-\delta}.
+\]
+If $\beta$ is not very well approximable, then for every $c>1/d$ only
+finitely many $m$ satisfy
+$\max_j\lVert m\beta_j\rVert_\Z\le m^{-c}$.  At a sufficiently small first
+hit $m=T_\beta(r)$ one therefore has $m^{-c}<r$, hence
+$m>r^{-1/c}$.  Taking lower logarithmic limits and then
+$c\downarrow1/d$, while using \eqref{eq:clock-dirichlet} for upper limit,
+proves
+\begin{equation}
+ \lim_{r\downarrow0}
+ \frac{\log T_\beta(r)}{\log(1/r)}=d.                 \label{eq:clock-nonvwa}
+\end{equation}
+
+It remains to prove that both path gap maps are almost everywhere outside
+the very-well-approximable set.  We record the exact nondegeneracy input.  A Hermitian
+family has \emph{affine spectral escape} when, for every nonconstant balanced
+$c\in\R^D$ and every $a\in\R$, some simple spectrum in the family satisfies
+\[
+ \sum_i c_iE_{\sigma(i)}\ne a
+ \quad\text{for every spectral labeling }\sigma.
+\]
+The full onsite-plus-edge family on every open qudit path has affine spectral
+escape.  The proof is inductive.  The two-site base is the full Hermitian matrix space,
+where one diagonal simple spectrum avoids finitely many affine hyperplanes.
+For leaf step, start with simple maximally projective old spectrum
+$(E_\alpha)$ and coded new-site shifts $(s_r)$ making all
+$E_\alpha+s_r$ distinct.  Choose endpoint transition matrix whose graph is
+connected and nonbipartite.  In product energy basis, vary
+\begin{equation}
+ M(u,B)=\operatorname{diag}(E_\alpha+u_r)+A\otimes B. \label{eq:clock-leaf-slice}
+\end{equation}
+If a balanced spectral action were constant on an open slice, the second derivative
+in one exchange entry of $B$ would give a simple-pole identity in the relative
+layer shift.  Maximal projectivity makes oriented old gaps distinct.
+Vanishing residues force action coefficients equal along categorical product
+of the endpoint transition graph with the complete layer graph.  Connectedness and
+an odd cycle make the product connected, hence all coefficients equal.  Balancedness
+then forces all of them to vanish, contradiction.  Conjugating
+\eqref{eq:clock-leaf-slice} back to physical tensor basis leaves old path
+term, new onsite term and last-edge term only, so induction stays inside exact
+nearest-neighbour family.
+
+On any connected simple-spectrum chart, ordered eigenvalues are real
+analytic.  If $1$ and the coordinates of either map
+\eqref{eq:local-disc-beta} or \eqref{eq:local-wind-beta} obeyed a real affine
+relation on an open subset, analyticity would extend it across the chart.  For
+the stroboscopic map this is a balanced affine spectral action.  For the winding map,
+multiplication by the nonzero first gap gives the same form.  Symmetrizing over
+spectral labels contradicts affine spectral escape.  Both analytic maps are
+therefore nondegenerate.  Metric extremality of nondegenerate analytic maps
+\cite{KleinbockMargulis1998} says almost every image point is not very well
+approximable.  Equation \eqref{eq:clock-nonvwa} gives dimensions $D-1$ and
+$D-2$.
+
+Intersect these two conull events with the conull maximal-projectivity event from
+the preceding spectral-escape argument.  Maximality gives all positive-weight
+replica floors by collision expansion and makes any exact anchored return
+force time zero.  This proves Theorem \ref{thm:local-clock-capstone} for one
+unchanged Hamiltonian.
+
+\subsection{Proof of commuting l-bit boundary}
+
+Walsh characters
+$\chi_S(x)=\prod_{i\in S}(-1)^{x_i}$ form a basis of functions on the Boolean cube.
+Walsh inversion recovers
+\[
+ J_S=2^{-N}\sum_x E_J(x)\chi_S(x).
+\]
+Every gap is a rational linear combination of nonconstant coefficients
+$J_S$, so gap span is contained in their rational span.  Conversely, for
+$S\ne\varnothing$, Walsh formula may be rewritten using energy differences
+after subtracting any reference energy because
+$\sum_x\chi_S(x)=0$.  Thus every $J_S$ belongs to rational gap span.  Spans
+coincide, proving first equality in \eqref{eq:lbit-rank-main}; rank
+conservation gives second.
+
+If coefficients vanish outside the allowed support family, their rational span has
+dimension at most the number of allowed supports, with equality under rational
+independence.  A support of diameter at most $R$ is assigned to its leftmost
+site and lies inside window of at most $R+1$ sites.  Each window has at most
+$2^{R+1}$ subsets, giving \eqref{eq:lbit-range-main}.  One-body and full-rank
+claims are the corresponding special cases.  Positive uniform product-state
+weights expose every Boolean energy; all-order collision equivalence then
+gives final operational statement.
+
 \subsection{Curvature, density and exhaustion}
 
 On one vertex, temporal rank is $q_v-1$.  On two vertices it is

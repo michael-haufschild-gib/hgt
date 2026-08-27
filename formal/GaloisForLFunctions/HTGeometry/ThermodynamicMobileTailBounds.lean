@@ -160,4 +160,85 @@ theorem mobileCut_perturbDuhamel_lt_half {K : ℕ} {t ε R : ℝ}
     nlinarith
   exact lt_of_le_of_lt hmul hrough
 
+/-- Sharpened boundary-bond budget used when physical approximation and circuit approximation must
+share one four-phase error allowance. -/
+theorem mobileCut_baseDuhamel_lt_eighth {K : ℕ} {t ε : ℝ}
+    (hK : 8 ≤ K) (hε : 0 < ε)
+    (ht : t < 256 * Real.pi * ε * (K + 1)) :
+    t * (1 / (((2 * K + 1 : ℕ) : ℝ) ^ 4)) < ε / 8 := by
+  have hk : (8 : ℝ) ≤ K := by exact_mod_cast hK
+  have hk0 : (0 : ℝ) < K := lt_of_lt_of_le (by norm_num) hk
+  have hqpos : 0 <
+      16 * (K : ℝ) ^ 3 + 160 * (K : ℝ) ^ 2 + 1304 * K + 10440 := by positivity
+  have hfactor : 0 ≤ ((K : ℝ) - 8) *
+      (16 * (K : ℝ) ^ 3 + 160 * (K : ℝ) ^ 2 + 1304 * K + 10440) :=
+    mul_nonneg (sub_nonneg.mpr hk) (le_of_lt hqpos)
+  have hpoly : 8192 * ((K : ℝ) + 1) < (2 * (K : ℝ) + 1) ^ 4 := by
+    nlinarith [hfactor]
+  have htScale : t < 1024 * ε * ((K : ℝ) + 1) := by
+    have hpi := Real.pi_lt_four
+    have hk1 : 0 < (K : ℝ) + 1 := by positivity
+    have hm := mul_lt_mul_of_pos_right hpi
+      (mul_pos (mul_pos (by norm_num : (0 : ℝ) < 256) hε) hk1)
+    refine lt_trans (by simpa using ht) ?_
+    convert hm using 1 <;> ring
+  have hden : (0 : ℝ) < (2 * (K : ℝ) + 1) ^ 4 := by positivity
+  norm_num [Nat.cast_add, Nat.cast_mul]
+  rw [← div_eq_mul_inv, div_lt_iff₀ hden]
+  nlinarith
+
+/-- Sharpened perturbation-tail budget: the `10⁻⁶` envelope consumes less than one sixty-fourth
+of the target error throughout the shell. -/
+theorem mobileCut_perturbDuhamel_lt_sixtyfourth {K : ℕ} {t ε R : ℝ}
+    (hK : 8 ≤ K) (hε : 0 < ε) (ht0 : 0 ≤ t)
+    (ht : t < 256 * Real.pi * ε * (K + 1))
+    (hR : R ≤ 12 / (1000000 * (K : ℝ))) :
+    t * R < ε / 64 := by
+  have hk : (8 : ℝ) ≤ K := by exact_mod_cast hK
+  have hk0 : (0 : ℝ) < K := lt_of_lt_of_le (by norm_num) hk
+  have htScale : t < 1024 * ε * ((K : ℝ) + 1) := by
+    have hpi := Real.pi_lt_four
+    have hk1 : 0 < (K : ℝ) + 1 := by positivity
+    have hm := mul_lt_mul_of_pos_right hpi
+      (mul_pos (mul_pos (by norm_num : (0 : ℝ) < 256) hε) hk1)
+    refine lt_trans (by simpa using ht) ?_
+    convert hm using 1 <;> ring
+  have hmul := mul_le_mul_of_nonneg_left hR ht0
+  have hrough : t * (12 / (1000000 * (K : ℝ))) < ε / 64 := by
+    have hden : (0 : ℝ) < 1000000 * (K : ℝ) := by positivity
+    rw [show t * (12 / (1000000 * (K : ℝ))) =
+      (12 * t) / (1000000 * (K : ℝ)) by ring]
+    rw [div_lt_iff₀ hden]
+    have hk1 : 8 * ((K : ℝ) + 1) ≤ 9 * K := by nlinarith
+    have htScale' : 12 * t < 12 * (1024 * ε * ((K : ℝ) + 1)) := by nlinarith
+    nlinarith
+  exact lt_of_le_of_lt hmul hrough
+
+/-- The complete inverse-fourth bridge tail beyond the selected block consumes less than one
+quarter of the phase window. -/
+theorem mobilePhaseBridgeTail_lt_quarter {K : ℕ} {t ε : ℝ}
+    (hK : 8 ≤ K) (hε : 0 < ε)
+    (ht : t < 128 * Real.pi * ε * (K + 1)) :
+    t * (1 / ((4 * K : ℕ) : ℝ) ^ 3) < ε / 4 := by
+  have hKreal : (8 : ℝ) ≤ K := by exact_mod_cast hK
+  have hKpos : (0 : ℝ) < K := by positivity
+  have hscale : 128 * Real.pi * ε * ((K : ℝ) + 1) <
+      ε / 4 * (4 * (K : ℝ)) ^ 3 := by
+    have hpoly : 32 * ((K : ℝ) + 1) < (K : ℝ) ^ 3 := by
+      nlinarith [sq_nonneg ((K : ℝ) - 8)]
+    have hpi : Real.pi < 4 := Real.pi_lt_four
+    have hpiScale : 8 * Real.pi * ((K : ℝ) + 1) < (K : ℝ) ^ 3 := by
+      nlinarith
+    have hm := mul_lt_mul_of_pos_left hpiScale
+      (mul_pos hε (by norm_num : (0 : ℝ) < 16))
+    nlinarith
+  have htScale : t < ε / 4 * (4 * (K : ℝ)) ^ 3 := by
+    have ht' : t < 128 * Real.pi * ε * ((K : ℝ) + 1) := by
+      exact_mod_cast ht
+    exact lt_trans ht' hscale
+  have hden : (0 : ℝ) < (4 * (K : ℝ)) ^ 3 := by positivity
+  norm_num [Nat.cast_mul]
+  rw [← div_eq_mul_inv, div_lt_iff₀ hden]
+  exact htScale
+
 end GaloisForLFunctions.HTGeometry.StaticLocalLaboratoryComplexityGrowthLaw

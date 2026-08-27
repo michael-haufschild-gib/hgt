@@ -56,6 +56,19 @@ def thetaCuspLikelihoodEighthSourceScoreRayTransform (r z : ℝ) : ℝ :=
     r ^ 7 * thetaCuspLikelihoodEighthSourceScoreDerivSeven z +
     r ^ 8 * thetaCuspLikelihoodEighthSourceScoreDerivEight z
 
+/-- Second exponential-ray Taylor operator.  The coefficient `k+1` is the exact extra factor
+created by convolving two half-line rays. -/
+def thetaCuspLikelihoodEighthSourceScoreDoubleRayTransform (r z : ℝ) : ℝ :=
+  thetaCuspLikelihoodEighthSourceScore z +
+    2 * r * thetaCuspLikelihoodEighthSourceScoreDerivOne z +
+    3 * r ^ 2 * thetaCuspLikelihoodEighthSourceScoreDerivTwo z +
+    4 * r ^ 3 * thetaCuspLikelihoodEighthSourceScoreDerivThree z +
+    5 * r ^ 4 * thetaCuspLikelihoodEighthSourceScoreDerivFour z +
+    6 * r ^ 5 * thetaCuspLikelihoodEighthSourceScoreDerivFive z +
+    7 * r ^ 6 * thetaCuspLikelihoodEighthSourceScoreDerivSix z +
+    8 * r ^ 7 * thetaCuspLikelihoodEighthSourceScoreDerivSeven z +
+    9 * r ^ 8 * thetaCuspLikelihoodEighthSourceScoreDerivEight z
+
 /-- Exponential-ray Taylor transform of the leading eighth monomial. -/
 def thetaCuspLikelihoodEighthMonomialRayTransform (r z : ℝ) : ℝ :=
   z ^ 8 + 8 * r * z ^ 7 + 56 * r ^ 2 * z ^ 6 +
@@ -262,6 +275,75 @@ theorem integral_Ioi_thetaCuspLikelihoodEighthSourceScore_mul_exp_neg_rate
     field_simp [hB.ne']
   · intro k hk
     exact (integrableOn_pow_mul_exp_neg_rate_eighth k hB).const_mul _
+
+/-- Exact incomplete-Laplace transform with one ray-convolution length.  This is the analytic
+identity behind the ray--ray sector of the two-particle eighth score. -/
+theorem integral_Ioi_sub_mul_thetaCuspLikelihoodEighthSourceScore_mul_exp_neg_rate
+    (A d : ℝ) {B : ℝ} (hB : 0 < B) :
+    (∫ t : ℝ in Ioi d, (t - d) * thetaCuspLikelihoodEighthSourceScore (A * t) *
+        Real.exp (-(B * t))) =
+      Real.exp (-(B * d)) / B ^ 2 *
+        thetaCuspLikelihoodEighthSourceScoreDoubleRayTransform (A / B) (A * d) := by
+  let z := A * d
+  let c : ℕ → ℝ := fun k =>
+    match k with
+    | 0 => thetaCuspLikelihoodEighthSourceScore z
+    | 1 => A * thetaCuspLikelihoodEighthSourceScoreDerivOne z
+    | 2 => A ^ 2 * thetaCuspLikelihoodEighthSourceScoreDerivTwo z / 2
+    | 3 => A ^ 3 * thetaCuspLikelihoodEighthSourceScoreDerivThree z / 6
+    | 4 => A ^ 4 * thetaCuspLikelihoodEighthSourceScoreDerivFour z / 24
+    | 5 => A ^ 5 * thetaCuspLikelihoodEighthSourceScoreDerivFive z / 120
+    | 6 => A ^ 6 * thetaCuspLikelihoodEighthSourceScoreDerivSix z / 720
+    | 7 => A ^ 7 * thetaCuspLikelihoodEighthSourceScoreDerivSeven z / 5040
+    | 8 => A ^ 8 * thetaCuspLikelihoodEighthSourceScoreDerivEight z / 40320
+    | _ => 0
+  have htrans := setIntegral_Ioi_comp_add_right_eighth
+    (fun t : ℝ => (t - d) * thetaCuspLikelihoodEighthSourceScore (A * t) *
+      Real.exp (-(B * t))) d d
+  rw [sub_self] at htrans
+  rw [← htrans]
+  have hfun : (fun u : ℝ =>
+      (u + d - d) * thetaCuspLikelihoodEighthSourceScore (A * (u + d)) *
+        Real.exp (-(B * (u + d)))) =
+      fun u => Real.exp (-(B * d)) *
+        (∑ k ∈ Finset.range 9, c k * (u ^ (k + 1) * Real.exp (-(B * u)))) := by
+    funext u
+    have hexp : Real.exp (-(B * (u + d))) =
+        Real.exp (-(B * d)) * Real.exp (-(B * u)) := by
+      rw [← Real.exp_add]
+      congr 1
+      ring
+    rw [hexp]
+    norm_num [Finset.sum_range_succ, c]
+    dsimp [z, thetaCuspLikelihoodEighthSourceScore,
+      thetaCuspLikelihoodEighthSourceScoreDerivOne,
+      thetaCuspLikelihoodEighthSourceScoreDerivTwo,
+      thetaCuspLikelihoodEighthSourceScoreDerivThree,
+      thetaCuspLikelihoodEighthSourceScoreDerivFour,
+      thetaCuspLikelihoodEighthSourceScoreDerivFive,
+      thetaCuspLikelihoodEighthSourceScoreDerivSix,
+      thetaCuspLikelihoodEighthSourceScoreDerivSeven,
+      thetaCuspLikelihoodEighthSourceScoreDerivEight]
+    ring
+  rw [hfun, integral_const_mul, integral_finsetSum]
+  · have hI1 : (∫ u : ℝ in Ioi 0, u * Real.exp (-(B * u))) = 1 / B ^ 2 := by
+      simpa using integral_Ioi_pow_mul_exp_neg_rate 1 hB
+    simp only [integral_const_mul]
+    norm_num [Finset.sum_range_succ, c, hI1,
+      integral_Ioi_pow_mul_exp_neg_rate 1 hB,
+      integral_Ioi_pow_mul_exp_neg_rate 2 hB,
+      integral_Ioi_pow_mul_exp_neg_rate 3 hB,
+      integral_Ioi_pow_mul_exp_neg_rate 4 hB,
+      integral_Ioi_pow_mul_exp_neg_rate 5 hB,
+      integral_Ioi_pow_mul_exp_neg_rate 6 hB,
+      integral_Ioi_pow_mul_exp_neg_rate 7 hB,
+      integral_Ioi_pow_mul_exp_neg_rate 8 hB,
+      integral_Ioi_pow_mul_exp_neg_rate 9 hB]
+    dsimp [thetaCuspLikelihoodEighthSourceScoreDoubleRayTransform, z]
+    field_simp [hB.ne']
+    ring
+  · intro k hk
+    exact (integrableOn_pow_mul_exp_neg_rate_eighth (k + 1) hB).const_mul _
 
 /-- Exact incomplete-Laplace transform of the leading eighth monomial. -/
 theorem integral_Ioi_thetaCuspLikelihoodEighthMonomial_mul_exp_neg_rate

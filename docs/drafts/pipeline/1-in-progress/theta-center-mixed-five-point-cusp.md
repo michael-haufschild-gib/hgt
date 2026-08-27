@@ -5,7 +5,7 @@
 - **Type:** CANDIDATE
 - **Source:** rh-current-frontier-map.md · route TCD
 - **Statement:** For every aperture `a > 0`, the equispaced five-node Gram matrix of the theta center-mixed density is positive definite on a punctured neighborhood of the coalesced node.
-- **Status:** `[RANK-FIVE SOURCE SEAM LEAN-PROVED] [OPEN D1 CHAMBER LEAN-PROVED] [ORDER-EIGHT LIKELIHOOD LADDER LEAN-PROVED] [GLOBAL D1 OPEN]`
+- **Status:** `[RANK-FIVE SOURCE SEAM LEAN-PROVED] [OPEN D1 CHAMBER LEAN-PROVED] [ORDER-EIGHT LIKELIHOOD LADDER LEAN-PROVED] [FULL GRADE-TWO ABSORPTION LEAN-PROVED] [GLOBAL D1 OPEN]`
 
 ## Goal
 
@@ -50,9 +50,30 @@ Attack: extend corpus likelihood-score and Bell-transfer infrastructure from ord
 `P₈(z)=z⁸-28z⁷+266z⁶-1050z⁵+1701z⁴-966z³+127z²-z`
 is negative at proved support margin `z=47/5`, so pointwise score positivity is false and cannot prove D1. Fixed spectral carrier exposes stronger fact: dominant `n=2` component is Dirac mass at gap three plus a Lebesgue ray. Exact incomplete-Laplace integration makes their combined eighth score strictly positive for every physical `A≥157/50`. After clearing `(A-3/2)^9`, certificate is positive-coefficient polynomial in `A-157/50`. Every `n≥3` component lies in `z≥24` positive Taylor chamber. Consequently complete ordinary eighth likelihood jet is strictly positive and satisfies sharp proved lower bound
 ```text
-(64/25) A^8 m₈ < ordinary₈.
+(128/15) A^8 m₈ < ordinary₈.
 ```
-Equivalently, integrated score retains more than `1/100` of leading unnormalized eighth moment. Trial constant `1/10` fails at seam after exact coefficient expansion; `1/100` is certified. Remaining logarithmic/D1 burden is correlated multi-particle grade-two compensation, not one-particle sign or missing order-eight infrastructure.
+Equivalently, integrated score retains more than `1/30` of leading unnormalized eighth moment. Trial constant `1/10` fails at seam; direct positive-coefficient certificate also fails at `1/25`, while `1/30` succeeds simultaneously for dominant and stable atom-rays.
+
+**Dominant grade-two absorption `[PROVED HERE]`.** Fixed binary fusion constant is wrong order-eight invariant: exact dominant pair/single core ratio is not controlled by seam-sharp constant as `A` moves. Convolving two gap-three rays introduces transform
+```text
+T₂(r,z)=P₈(z)+2rP₈'(z)+3r²P₈''(z)+...+9r⁸P₈⁽⁸⁾(z).
+```
+Its literal weighted-ray integral is proved. Complete `(3,3)` core—Dirac--Dirac, both mixed sectors, and ray--ray—is strictly below degree-twenty Taylor polynomial for `exp(3A)` times compensated one-particle core. Multiplication by exact `exp(-3A)` particle activity gives
+```text
+(3/2) dominantPairMass₈(A) < dominantSingleMass₈(A),  A ≥ 157/50.
+```
+After shifting `A=157/50+s`, cleared fusion difference has positive coefficients. The `3/2` reserve is essential: coefficientwise proof fails at factor `7/4` and gives an exact one-third one-particle budget for the remaining pair chambers.
+
+**Full grade-two absorption `[PROVED HERE]`.** Every pair outside `(2,2)` has total gap at least eleven and scaled support above `34`. On that chamber, exact symbolic envelopes are
+```text
+P₈(z) ≤ z⁸,   T₁(r,z) ≤ 2z⁸,   T₂(r,z) ≤ 4z⁸,   0≤r≤2.
+```
+Normalized ray coefficient is at most corresponding point coefficient, giving factor-nine bound for every atom pair. New Gaussian sums close infinite arithmetic chambers:
+```text
+Σ_{n≥3} n⁴(n²-1)⁸e^{-π(n²-1)} ≤ 25/99,
+Σ_{n≥3} n⁴e^{-π((n²-1)-3)} ≤ 1/999.
+```
+Hence each ordered dominant--stable tail costs at most `(5200/11)A⁸e^{-3A}`, stable--stable square costs at most `A⁸e^{-3A}`, and all non-dominant pairs cost at most `(10411/11)A⁸e^{-3A}`. Dominant single mass exceeds `(17496/5)A⁸e^{-3A}`; non-dominant total fits strictly inside its one-third reserve. Therefore complete ordered grade-two sector—dominant, both mixed orientations, and stable square—is strictly smaller than dominant one-particle mass. Remaining logarithmic/D1 burden starts at higher even Fock grades.
 
 ### D2 — strict three-by-three mixture law
 
@@ -80,8 +101,10 @@ Exact comparison now separates the statements. Planat--Solé prove negativity of
 - `RHTower/PrimeArchThetaBornWittenEighthJet.lean`: actual Born--Witten seventh/eighth jets and atomwise D1 positivity.
 - `RHTower/ThetaCuspLikelihoodSeventhEighthCumulant.lean`: exact cumulants and quantitative `κ₈>(2/3)m₈`.
 - `RHTower/ThetaCuspLikelihoodSeventhEighthSourceJets.lean`: actual source jets and exact pointwise low-score obstruction.
-- `RHTower/ThetaCuspLikelihoodEighthScoreRayTransform.lean`: exact incomplete-Laplace transform, dominant Dirac--ray compensation, and `1/100` core certificate.
-- `RHTower/ThetaCuspLikelihoodEighthOrdinaryPositivity.lean`: strict full ordinary eighth-jet positivity and quantitative normalized-moment lower bound.
+- `RHTower/ThetaCuspLikelihoodEighthScoreRayTransform.lean`: exact one- and two-ray incomplete-Laplace transforms, dominant Dirac--ray compensation, and `1/30` core certificate.
+- `RHTower/ThetaCuspLikelihoodEighthOrdinaryPositivity.lean`: strict full ordinary eighth-jet positivity and sharpened `(128/15)A⁸m₈` normalized-moment lower bound.
+- `RHTower/ThetaCuspLikelihoodEighthDominantPairCompensation.lean`: degree-twenty exponential fusion and strict dominant grade-two absorption.
+- `RHTower/ThetaCuspLikelihoodEighthStablePairCompensation.lean`: exact atom-pair core, factor-nine transform envelope, Gaussian stable-tail budgets, and complete ordered grade-two absorption.
 - `RHTower/ThetaCuspFullReflectionEighthLogJets.lean`: actual complete-source seventh/eighth log jets and normalized D1 polynomial.
 - `RHTower/ThetaCuspFullReflectionEighthBellTransfer.lean`: exact raw-to-log D1 connector through Bell order eight.
 - `RHTower/ThetaCuspFullReflectionEighthHankelSeam.lean`: strict source seam theorem and nontrivial open D1 chamber.
@@ -89,8 +112,8 @@ Exact comparison now separates the statements. Planat--Solé prove negativity of
 ## No-go closure
 
 - **Exact killing theorem/mechanism:** open
-- **Strongest positive survivor:** exact atom-ray compensation theorem plus strict ordinary eighth likelihood jet with `1/100` leading-moment survival; D1 holds on a nontrivial open center chamber.
-- **New insight:** rank five separates exactly into previously closed odd rank-two curvature and a new even rank-three eighth-jet determinant. Pointwise eighth-score sign is the wrong invariant; exact mixed Dirac--ray mass restores positivity. Remaining obstruction first appears after logarithmic multi-particle grading.
+- **Strongest positive survivor:** exact atom-ray compensation, strict ordinary eighth likelihood jet with `1/30` leading-moment survival, and strict absorption of the complete infinite ordered grade-two sector; D1 holds on a nontrivial open center chamber.
+- **New insight:** rank five separates exactly into previously closed odd rank-two curvature and new even rank-three eighth-jet determinant. Pointwise eighth-score sign and fixed-constant binary fusion are wrong invariants. Exact ray convolution plus gap-separated Gaussian activity closes all two-particle chambers: factor-nine transform growth is paid by order-eight stable moment `25/99` and shifted activity `1/999`. Remaining obstruction begins at higher even Fock grades.
 - **Status:** active paper/Lean conjecture loop
 
 ## Log
@@ -99,3 +122,5 @@ Exact comparison now separates the statements. Planat--Solé prove negativity of
 - 2026-08-27 — exact reflected eighth-jet determinant identity and strict rank-three modular-seam theorem proved in Lean; global D1 continuation remains active.
 - 2026-08-27 — completed seventh/eighth cumulant and source-jet ladders, Bell transfer, raw/native D1 connector, and open center chamber in Lean.
 - 2026-08-27 — disproved pointwise eighth-score route at `47/5`; proved exact `n=2` Dirac--ray compensation, stable-tower positivity, full ordinary eighth-jet positivity, and quantitative `1/100` eighth-moment survival. Global logarithmic grade-two compensation remains open.
+- 2026-08-27 — sharpened one-particle survival from `1/100` to `1/30`; proved exact two-ray transform and degree-twenty exponential-Taylor absorption of dominant `(3,3)` two-particle sector. Fixed fusion constants failed and were replaced by activity-coupled fusion.
+- 2026-08-27 — strengthened dominant absorption to a `3/2` reserve; proved factor-nine non-dominant pair envelope, exact `25/99` and `1/999` Gaussian budgets, and strict absorption of complete infinite ordered grade-two sector. Higher even Fock grades remain.

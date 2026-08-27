@@ -131,6 +131,7 @@ itself is unconditional and formally checked.
 ## Verification
 
 - Direct `lake env lean` check: passed.
-- Targeted module build: pending final audit.
-- Axiom audit: pending final audit.
+- Targeted module build: passed.
+- Axiom audit: all fourteen exported theorems use only `propext`,
+  `Classical.choice`, and `Quot.sound`.
 - Umbrella import: wired; full umbrella build intentionally not run.
