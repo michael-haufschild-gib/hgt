@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.ProjectiveOperatorNormReturnTarget
 import GaloisForLFunctions.HTGeometry.CompletedOccupationHardGapLaw
 import GaloisForLFunctions.HTGeometry.OneSidedCaptureDensity
 import GaloisForLFunctions.HTGeometry.ContinuousPlateauGrid
+import GaloisForLFunctions.HTGeometry.JointHardEventMeasurability
 import GaloisForLFunctions.HTGeometry.ThermodynamicProjectiveRecurrenceExtinctionLaw
 import GaloisForLFunctions.HTGeometry.ThermodynamicSameFieldUHFRecurrenceComplexityLaw
 
@@ -70,6 +71,81 @@ theorem norm_unitaryEvolution_sub_anchorPhase_le_two_mul_of_scalar
 def scalarUnitaryReturnTimes (H : Matrix d d ℂ) (eps : ℝ) : Set ℝ :=
   {t | ∃ c : ℂ, ‖c‖ = 1 ∧
     ‖unitaryEvolution H t - c • (1 : Matrix d d ℂ)‖ ≤ eps}
+
+/-- Scalar unitaries inside a finite matrix algebra. -/
+def scalarUnitaryTarget : Set (Matrix d d ℂ) :=
+  (fun c : ℂ => c • (1 : Matrix d d ℂ)) '' Metric.sphere 0 1
+
+omit [Fintype d] [Nonempty d] in
+theorem isCompact_scalarUnitaryTarget :
+    IsCompact (scalarUnitaryTarget (d := d)) := by
+  exact (isCompact_sphere (0 : ℂ) 1).image (by fun_prop)
+
+omit [Fintype d] [Nonempty d] in
+theorem scalarUnitaryTarget_nonempty :
+    (scalarUnitaryTarget (d := d)).Nonempty := by
+  refine ⟨(1 : ℂ) • (1 : Matrix d d ℂ), 1, ?_, rfl⟩
+  simp
+
+omit [Nonempty d] in
+theorem scalarUnitaryReturnTimes_eq_infDist
+    (H : Matrix d d ℂ) (eps : ℝ) :
+    scalarUnitaryReturnTimes H eps =
+      {t | Metric.infDist (unitaryEvolution H t) (scalarUnitaryTarget (d := d)) ≤ eps} := by
+  ext t
+  constructor
+  · rintro ⟨c, hc, hclose⟩
+    have hcTarget : c • (1 : Matrix d d ℂ) ∈ scalarUnitaryTarget (d := d) := by
+      exact ⟨c, by simpa [Metric.mem_sphere] using hc, rfl⟩
+    exact (Metric.infDist_le_dist_of_mem hcTarget).trans (by
+      simpa [dist_eq_norm] using hclose)
+  · intro h
+    obtain ⟨M, hM, hdist⟩ := exists_compactTarget_minDist
+      (isCompact_scalarUnitaryTarget (d := d))
+      (scalarUnitaryTarget_nonempty (d := d)) (unitaryEvolution H t)
+    obtain ⟨c, hc, rfl⟩ := hM
+    refine ⟨c, by simpa [Metric.mem_sphere] using hc, ?_⟩
+    rw [← dist_eq_norm, hdist]
+    exact h
+
+theorem isClosed_scalarUnitaryReturnTimes
+    (H : Matrix d d ℂ) (eps : ℝ) :
+    IsClosed (scalarUnitaryReturnTimes H eps) := by
+  rw [scalarUnitaryReturnTimes_eq_infDist]
+  apply isClosed_compactTargetCaptureTimeSet
+  exact (continuous_unitaryEvolution (d := d)).comp
+    (continuous_const.prodMk continuous_id)
+
+/-- A hard block for a closed projective-return set, together with syndetic recurrence, lies
+between two consecutive projective returns. -/
+theorem scalarUnitaryReturnTimes_consecutiveVisitGap
+    (H : Matrix d d ℂ) {eps W u B : ℝ} (hW : 0 ≤ W)
+    (hrec : ∀ a : ℝ,
+      ∃ t ∈ Icc a (a + B), t ∈ scalarUnitaryReturnTimes H eps)
+    (havoid : Icc u (u + W) ∩ scalarUnitaryReturnTimes H eps = ∅) :
+    ∃ tExit tReturn : ℝ,
+      tExit ∈ Icc (u - B) u ∧
+      tReturn ∈ Icc (u + W) (u + W + B) ∧
+      tExit ∈ scalarUnitaryReturnTimes H eps ∧
+      tReturn ∈ scalarUnitaryReturnTimes H eps ∧
+      tExit < tReturn ∧ W ≤ tReturn - tExit ∧
+      ∀ t ∈ Ioo tExit tReturn, t ∉ scalarUnitaryReturnTimes H eps := by
+  have hpre : ∃ t ∈ Icc (u - B) u, t ∈ scalarUnitaryReturnTimes H eps := by
+    obtain ⟨t, ht, hret⟩ := hrec (u - B)
+    exact ⟨t, ⟨ht.1, by linarith [ht.2]⟩, hret⟩
+  have hpost : ∃ t ∈ Icc (u + W) (u + W + B),
+      t ∈ scalarUnitaryReturnTimes H eps := hrec (u + W)
+  have havoid' : ∀ t ∈ Icc u (u + W), t ∉ scalarUnitaryReturnTimes H eps := by
+    intro t ht hret
+    have : t ∈ Icc u (u + W) ∩ scalarUnitaryReturnTimes H eps := ⟨ht, hret⟩
+    rw [havoid] at this
+    exact this
+  obtain ⟨tExit, tReturn, htExit, htReturn, hExitRet, hReturnRet,
+      hlt, hwidth, hbetween⟩ :=
+    exists_consecutive_mem_separated_by_avoided_Icc
+      (isClosed_scalarUnitaryReturnTimes H eps) hW hpre hpost havoid'
+  exact ⟨tExit, tReturn, htExit, htReturn, hExitRet, hReturnRet,
+    hlt, hwidth, hbetween⟩
 
 theorem scalarUnitaryReturnTimes_subset_projectiveReturnTimes
     {H : Matrix d d ℂ} (hH : H.IsHermitian) (a : d) (eps : ℝ) :
@@ -352,12 +428,51 @@ structure ThermodynamicRecurrenceDesertLifecycle
             (pathHamiltonian (infinitePathPrefixShell k p))
               thermodynamicProjectiveDesertRadius = ∅
 
+/-- Same-field recurrence deserts are enclosed by actual consecutive projective returns, with
+the same quantitative width. -/
+theorem ThermodynamicRecurrenceDesertLifecycle.eventually_quantitativeConsecutiveProjectiveReturnGaps
+    {p : InfinitePathLabel → ℝ} (hp : ThermodynamicRecurrenceDesertLifecycle p) :
+    ∀ᶠ k : ℕ in atTop,
+      ∀ A0 : ℝ, 0 ≤ A0 → ∃ tExit tReturn : ℝ,
+        A0 ≤ tExit ∧
+        tExit ∈ scalarUnitaryReturnTimes
+          (pathHamiltonian (infinitePathPrefixShell k p))
+            thermodynamicProjectiveDesertRadius ∧
+        tReturn ∈ scalarUnitaryReturnTimes
+          (pathHamiltonian (infinitePathPrefixShell k p))
+            thermodynamicProjectiveDesertRadius ∧
+        tExit < tReturn ∧
+        thermodynamicProjectiveDesertWidth p k ≤ tReturn - tExit ∧
+        ∀ t ∈ Ioo tExit tReturn,
+          t ∉ scalarUnitaryReturnTimes
+            (pathHamiltonian (infinitePathPrefixShell k p))
+              thermodynamicProjectiveDesertRadius := by
+  filter_upwards [hp.eventually_quantitativeProjectiveDeserts] with k hdesert
+  let H : Matrix (Fin (k + 3) → Bool) (Fin (k + 3) → Bool) ℂ :=
+    pathHamiltonian (infinitePathPrefixShell k p)
+  obtain ⟨B, hB, hrecStrict⟩ := hp.prefix_projective_recurrence k
+    thermodynamicProjectiveDesertRadius
+      (by norm_num [thermodynamicProjectiveDesertRadius])
+  have hrec : ∀ a : ℝ,
+      ∃ t ∈ Icc a (a + B), t ∈ scalarUnitaryReturnTimes H
+        thermodynamicProjectiveDesertRadius := by
+    intro a
+    obtain ⟨t, ht, c, hc, hclose⟩ := hrecStrict a
+    exact ⟨t, ht, c, hc, hclose.le⟩
+  intro A0 hA0
+  obtain ⟨u, hu, havoid⟩ := hdesert.2 (A0 + B) (add_nonneg hA0 hB)
+  obtain ⟨tExit, tReturn, htExit, _htReturn, hExitRet,
+      hReturnRet, hlt, hwidth, hbetween⟩ :=
+    scalarUnitaryReturnTimes_consecutiveVisitGap H hdesert.1 hrec havoid
+  refine ⟨tExit, tReturn, ?_, hExitRet, hReturnRet, hlt, hwidth, hbetween⟩
+  linarith [htExit.1, hu]
+
 /-- Diverging certified deserts rule out every volume-independent projective-recurrence clock.
 For each prescribed duration, all sufficiently large prefixes contain an arbitrarily late
 interval of that duration with no operator-norm return up to global phase. -/
 theorem ThermodynamicRecurrenceDesertLifecycle.eventually_arbitraryWidthProjectiveDeserts
     {p : InfinitePathLabel → ℝ} (hp : ThermodynamicRecurrenceDesertLifecycle p)
-    (W : ℝ) (hW : 0 ≤ W) :
+    (W : ℝ) (_hW : 0 ≤ W) :
     ∀ᶠ k : ℕ in atTop,
       ∀ A0 : ℝ, 0 ≤ A0 → ∃ u : ℝ, A0 ≤ u ∧
         Icc u (u + W) ∩ scalarUnitaryReturnTimes
@@ -369,7 +484,7 @@ theorem ThermodynamicRecurrenceDesertLifecycle.eventually_arbitraryWidthProjecti
   filter_upwards [hwidth, hp.eventually_quantitativeProjectiveDeserts] with k hk hdesert
   intro A0 hA0
   obtain ⟨u, hu, hlarge⟩ := hdesert.2 A0 hA0
-  refine ⟨u, hu, Set.eq_empty_iff_forall_not_mem.2 fun t ht => ?_⟩
+  refine ⟨u, hu, Set.eq_empty_iff_forall_notMem.2 fun t ht => ?_⟩
   have htlarge : t ∈ Icc u (u + thermodynamicProjectiveDesertWidth p k) :=
     ⟨ht.1.1, by linarith [ht.1.2]⟩
   have : t ∈ Icc u (u + thermodynamicProjectiveDesertWidth p k) ∩
@@ -392,6 +507,31 @@ theorem exists_thermodynamicRecurrenceDesertLifecycle :
     toThermodynamicSameFieldLifecycle := hp
     projectiveDesertWidth_tendsto := hdesert.1
     eventually_quantitativeProjectiveDeserts := hdesert.2 }⟩
+
+/-- **Unconditional consecutive thermodynamic projective-return-gap law.**  One countable static
+nearest-neighbour Pauli field has the complete same-field lifecycle and, for all sufficiently
+large prefixes, arbitrarily late pairs of consecutive projective returns whose separation is at
+least the explicit inverse-occupation width tending to infinity. -/
+theorem exists_thermodynamicConsecutiveProjectiveReturnGapLaw :
+    ∃ p : InfinitePathLabel → ℝ,
+      ThermodynamicRecurrenceDesertLifecycle p ∧
+      ∀ᶠ k : ℕ in atTop,
+        ∀ A0 : ℝ, 0 ≤ A0 → ∃ tExit tReturn : ℝ,
+          A0 ≤ tExit ∧
+          tExit ∈ scalarUnitaryReturnTimes
+            (pathHamiltonian (infinitePathPrefixShell k p))
+              thermodynamicProjectiveDesertRadius ∧
+          tReturn ∈ scalarUnitaryReturnTimes
+            (pathHamiltonian (infinitePathPrefixShell k p))
+              thermodynamicProjectiveDesertRadius ∧
+          tExit < tReturn ∧
+          thermodynamicProjectiveDesertWidth p k ≤ tReturn - tExit ∧
+          ∀ t ∈ Ioo tExit tReturn,
+            t ∉ scalarUnitaryReturnTimes
+              (pathHamiltonian (infinitePathPrefixShell k p))
+                thermodynamicProjectiveDesertRadius := by
+  obtain ⟨p, hp⟩ := exists_thermodynamicRecurrenceDesertLifecycle
+  exact ⟨p, hp, hp.eventually_quantitativeConsecutiveProjectiveReturnGaps⟩
 
 /-- **Thermodynamic projective-recurrence desert law.**  One compatible static nearest-neighbour
 qubit field has a fixed positive operator-norm resolution at which every prescribed duration is,

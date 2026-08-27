@@ -572,8 +572,75 @@ Taking supremum over $|t|\le T$ proves
 \end{equation}
 which proves \eqref{eq:samefieldAconv}.  Group laws follow from functional
 calculus for one fixed generator, and same estimates give norm continuity in
-Schr\"odinger picture and point-norm continuity in Heisenberg picture.  This
-completes theorem.
+Schr\"odinger picture and point-norm continuity in Heisenberg picture.
+
+It remains to prove projective-return deserts.  Fix one eigenvalue $E_0$ of
+$H_n(a)$ and write $U_n(t)=\ee^{-\ii tH_n(a)}$.  Spectral decomposition gives,
+for every $c\in\C$,
+\begin{equation}
+ |\ee^{-\ii tE_0}-c|\le \|U_n(t)-cI\|.               \label{eq:anchorcoordinate}
+\end{equation}
+Indeed, after unitary diagonalization the right side is maximum of diagonal
+chords and left side is one of them.  Triangle inequality therefore yields
+\begin{equation}
+ \|U_n(t)-\ee^{-\ii tE_0}I\|
+ \le 2\|U_n(t)-cI\|.                                 \label{eq:anyphaseanchor}
+\end{equation}
+Thus return within $1/10$ of any scalar unitary is contained in anchored
+return target of radius $1/5$.
+
+Maximal projectivity equidistributes relative phase orbit on
+$\T^{2^n-1}$.  The anchored radius-$1/5$ target is product of
+$2^n-1$ circle arcs, each of normalized length
+$2\arcsin(1/10)/\pi$.  Its completed one-sided occupation is exactly
+$\beta_n$ from \eqref{eq:desertscale}.  Norm convergence of prefix
+Hamiltonians gives, for all sufficiently large $n$,
+\begin{equation}
+ \|H_n(a)\|\le\|H_\infty(a)\|+1<S,
+ \qquad
+ \|U_n(t)-U_n(s)\|\le S|t-s|.                       \label{eq:uniformreturnspeed}
+\end{equation}
+Consequently a return within $1/20$ of some $cI$ at time $t$ forces every
+$v\in(t,t+\delta]$ to lie within $1/10$ of same $cI$, hence inside anchored
+radius-$1/5$ target by \eqref{eq:anyphaseanchor}.
+
+We use elementary occupation packing.  If every interval of length $W\ge0$
+after some epoch contained a narrow return, choose one hit in each consecutive
+block of length $W+\delta$.  Positive intervals of length $\delta$ following
+those hits are disjoint and lie in wide anchored target.  Its completed
+occupation would then be at least
+\begin{equation}
+ \frac{\delta}{W+\delta}.                             \label{eq:returnpacking}
+\end{equation}
+Therefore $\beta_n<\delta/(W+\delta)$ forces arbitrarily late intervals of
+length $W$ with no narrow projective return.  Take
+$W=\Lambda_n=\delta/(2\beta_n)-\delta$.  Since $\beta_n>0$,
+right side of \eqref{eq:returnpacking} is $2\beta_n$, so strict packing
+inequality holds.  Also $\beta_n\to0$, hence eventually $\Lambda_n\ge0$ and
+$\Lambda_n\to\infty$.  This proves
+\eqref{eq:samefielddesert}.  Given any fixed requested duration, eventually
+$\Lambda_n$ exceeds it; restricting certified interval proves absence of a
+volume-independent recurrence clock.
+
+It remains to identify these deserts as lower bounds on actual consecutive
+return gaps.  Let
+\begin{equation}
+ \mathcal R_n=\{t:\text{some }|z|=1\text{ satisfies }
+       \|U_n(t)-zI\|\le1/20\}.                       \label{eq:closedprojectivereturnset}
+\end{equation}
+Scalar unitaries form compact circle inside finite matrix algebra, and
+$t\mapsto U_n(t)$ is continuous.  Therefore $\mathcal R_n$ is closed.
+Syndetic recurrence from item 2 supplies $B_n\ge0$ such that every interval
+of length $B_n$ meets $\mathcal R_n$.  Apply desert statement after epoch
+$A_0+B_n$, obtaining $[u,u+\Lambda_n]\cap\mathcal R_n=\varnothing$.
+There is a return in $[u-B_n,u]$ and another in
+$[u+\Lambda_n,u+\Lambda_n+B_n]$.  Compactness of these intervals and
+closedness of $\mathcal R_n$ give last return $t_-$ before desert and first
+return $t_+$ after it.  Maximality/minimality and desert exclusion show
+$(t_-,t_+)\cap\mathcal R_n=\varnothing$, while
+$t_+-t_-\ge\Lambda_n$ and $t_-\ge u-B_n\ge A_0$.  This proves
+\eqref{eq:samefieldgapends}--\eqref{eq:samefieldconsecutivegap} and completes
+theorem.
 
 \subsection{Nested static-local ramp and exact return}
 

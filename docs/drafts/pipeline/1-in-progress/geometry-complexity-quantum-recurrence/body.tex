@@ -1003,14 +1003,50 @@ properties.
        \sup_{|t|\le T}\|\ee^{-\ii tH_n(a)}A\ee^{\ii tH_n(a)}
                     -\alpha_t(A)\|&\longrightarrow0              \label{eq:samefieldAconv}
       \end{align}
+\item Put
+      \begin{equation}
+       S=\|H_\infty(a)\|+2,\qquad
+       \delta=\frac1{20S},\qquad
+       \beta_n=\left(\frac{2\arcsin(1/10)}{\pi}\right)^{2^n-1},
+       \qquad
+       \Lambda_n=\frac{\delta}{2\beta_n}-\delta .     \label{eq:desertscale}
+      \end{equation}
+      Then $\Lambda_n\to\infty$.  For all sufficiently large $n$, after
+      every requested epoch $A_0\ge0$ there is $u\ge A_0$ such that
+      throughout the whole closed interval $[u,u+\Lambda_n]$,
+      \begin{equation}
+       \|\ee^{-\ii tH_n(a)}-zI\|_{2\to2}>\frac1{20}
+       \qquad(t\in[u,u+\Lambda_n],\ |z|=1).           \label{eq:samefielddesert}
+      \end{equation}
+      More strongly, after every $A_0$ there are $A_0\le t_-<t_+$ and
+      phases $|z_-|=|z_+|=1$ such that
+      \begin{align}
+       \|\ee^{-\ii t_-H_n(a)}-z_-I\|_{2\to2}&\le\frac1{20},
+       &\|\ee^{-\ii t_+H_n(a)}-z_+I\|_{2\to2}&\le\frac1{20},
+                                                              \label{eq:samefieldgapends}\\
+       \Lambda_n&\le t_+-t_-,
+       &\|\ee^{-\ii tH_n(a)}-zI\|_{2\to2}&>\frac1{20}
+       \quad(t_-<t<t_+,\ |z|=1).                 \label{eq:samefieldconsecutivegap}
+      \end{align}
+      Thus $t_-$ and $t_+$ are consecutive visits to closed projective-return
+      tube: no further visit lies strictly between them.
+      Consequently, although every fixed prefix is syndetically recurrent
+      by item 2, no projective-recurrence gap bound at accuracy $1/20$ can
+      remain uniform in $n$.  Equivalently, every prescribed return-free
+      duration occurs arbitrarily late in all sufficiently large prefixes.
 \end{enumerate}
 \end{theorem}
 
-This theorem closes three separations left by per-size results.  No
+This theorem closes four separations left by per-size results.  No
 Hamiltonian is redrawn when size changes; ramp, hard excursion, re-entry and
 recurrence use literal prefixes of same field; and finite dynamics converge
-to standard infinite-volume dynamics.  It is not a translation-invariant
-construction: absolute summability forces position-dependent decay.  It also
+to standard infinite-volume dynamics.  Finite-volume recurrence survives at
+every size, while every volume-independent recurrence clock fails.  Scale
+$\Lambda_n$ is not asserted to equal a first-return time measured from zero;
+it is a deterministic lower bound on actual arbitrarily late consecutive-return
+gaps obtained from exact completed occupation, uniform orbit speed, closedness
+of projective-return tube and syndetic recurrence.  Construction is not
+translation invariant: absolute summability forces position-dependent decay.  It also
 does not assert recurrence or circuit complexity of $U_\infty(t)$ itself.
 Those are different infinite-volume questions.
 
@@ -1260,8 +1296,12 @@ The same-field Theorem \ref{thm:samefield} is not itself a device blueprint.
 Its simultaneous coefficient selection is existential, and no finite
 experiment realizes UHF limit.  A laboratory test of that stronger theorem
 would first require one explicitly calibrated coefficient witness and
-finite-size error bounds for chosen observables.  We therefore attach no
-experimental confirmation claim to its infinite-volume clause.
+finite-size error bounds for chosen observables.  With such witness, process
+reconstruction across increasing prefixes could estimate distance to scalar
+unitary circle, identify successive entries into closed $1/20$ return tube,
+and test whether measured consecutive gaps exceed $\Lambda_n$ within
+calibrated uncertainty.  We therefore attach no experimental confirmation
+claim to current existential construction or its infinite-volume clause.
 
 These protocols probe different arrows in Figure \ref{fig:architecture}.
 None can replace mathematical proof, and no single protocol validates the whole
@@ -1307,8 +1347,9 @@ That hierarchy has following physical realizations and consequences:
 \item static circuit-target occupation and recurrent-hardness laws, plus one
       countable nearest-neighbour coefficient field whose literal prefixes
       share a laboratory complexity floor, near-Hilbert circuit-hard
-      excursion--re-entry, syndetic projective recurrence and compact-time
-      convergence to one UHF dynamics; and one explicit commuting path with
+      excursion--re-entry, syndetic projective recurrence, diverging
+      consecutive projective-return gaps and compact-time convergence to one UHF
+      dynamics; and one explicit commuting path with
       a two-sided finite-time linear envelope, exact return, exact reflected
       descent, and a certified failure of pointwise monotonicity inside that
       envelope.
@@ -1335,9 +1376,16 @@ different frontier: unconditional existence of one ordinary nearest-neighbour
 qubit Pauli field, compatible at every size, with a laboratory lower ramp,
 arbitrarily late near-Hilbert circuit-free intervals with consecutive
 re-entry, syndetic finite-volume recurrence and a standard UHF thermodynamic
-dynamics.  It does not prove exponential-duration growth, near-maximal
-saturation, a recurrence timescale uniform in volume, typicality, translation
-invariance or infinite-volume recurrence.
+dynamics.  It additionally proves that no projective-recurrence clock can be
+uniform in volume: a deterministic return-free scale proportional to inverse
+completed return occupation diverges along same literal prefixes and
+lower-bounds actual consecutive-return gaps.  This
+addresses an existence/lower-gap aspect of current open program of obtaining
+tight recurrence bounds for physical local noncommuting Hamiltonians
+\cite{KotowskiOszmaniec2026}; it does not give optimal first-return bounds for
+all local systems.  Nor does theorem prove exponential-duration complexity
+growth, near-maximal saturation, typicality, translation invariance or
+infinite-volume recurrence.
 
 These results are also complementary to jump theorems for unitarily invariant
 random Hamiltonians \cite{KotowskiOszmaniecHorodecki2025}.  They respect the obstruction that
@@ -1381,7 +1429,13 @@ need not equal first hitting time.  Second, thermodynamic density takes
 $T\to\infty$ at each fixed finite volume before sending volume to infinity.
 The resulting extinction law says that recurrence windows occupy a vanishing
 fraction of completed time; it does not say that an infinite-system orbit
-returns in operator norm.
+returns in operator norm.  The same-field desert theorem adds a deterministic
+consequence that density extinction alone does not contain: one
+volume-uniform speed scale converts exact finite-volume occupation into
+arbitrarily late return-free intervals whose certified length diverges;
+closedness and syndeticity then turn these into lower bounds on actual
+consecutive-return gaps.  This still is not a first-return distribution, a
+first-hit estimate from time zero or an infinite-volume return claim.
 
 Third, physical realization depends on theorem.  Generic graph laws allow
 arbitrary onsite and edge terms on the supplied finite graph and do not
@@ -1428,14 +1482,21 @@ reflection, while the explicit local path shows why reflection does not imply
 pointwise growth before midpoint.  The same-field theorem supplies missing
 finite-to-infinite coherence: early ramp, late hard excursion and recurrence
 belong to literal restrictions of one countable Hamiltonian, and those
-restrictions converge to one infinite-chain dynamics.
+restrictions converge to one infinite-chain dynamics.  It also resolves
+apparent tension between finite recurrence and thermodynamic extinction:
+every finite prefix returns with bounded gaps, but necessary gap scale cannot
+remain bounded as prefix grows: explicit consecutive gaps diverge.
 
 For interested non-specialists, the central message is concrete.  A system may
 look recurrent or nonrecurrent depending on what survived and what is being
 measured; even a perfect recording of one return probability can miss hidden
 phase organization.  Local interactions do not automatically simplify this
 organization, and increasing a chain can make accurate returns occupy an
-extraordinarily small share of long times.  Nevertheless exact recurrence,
+extraordinarily small share of long times.  For one fixed local field this
+rarity is operational: larger prefixes contain arbitrarily long epochs in
+which no global phase makes evolution close to identity, even though each
+prefix eventually returns again; those epochs sit between certified
+consecutive visits to return tube.  Nevertheless exact recurrence,
 when engineered, places a global symmetry on complexity history.  The paper turns
 these statements into exact laws and marks which parts a finite experiment
 can test.
@@ -1451,6 +1512,7 @@ genericity, sharp path first-hit clocks, exact commuting l-bit
 classification, completed return densities, observer deadlines, Born-record
 return, l-bit Hilbert dynamics, circuit-target bounds, countable saturation
 and finite-record ambiguity.  Final constructions prove one compatible Pauli
-field from finite ramps and recurrent hard excursions to UHF dynamics,
+field from finite ramps, recurrent hard excursions and diverging projective
+consecutive-return gaps to UHF dynamics,
 followed by bounded thermodynamic completion, finite-time circuit ramp, exact
 return and reflection for nested static path \eqref{eq:nestedH}.

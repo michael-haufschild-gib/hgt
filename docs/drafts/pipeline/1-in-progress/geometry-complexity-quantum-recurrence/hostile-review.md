@@ -18,8 +18,10 @@ priority and specialist review remain necessary before submission; neither
 source search nor internal proof audit can establish literature priority.
 New same-field capstone removes prior per-volume compatibility gap: one
 countable nearest-neighbour Pauli field supplies literal finite prefixes and
-standard UHF dynamics.  It does not turn finite-volume recurrence into
-infinite-volume recurrence.
+standard UHF dynamics.  New desert law proves same prefixes have no
+volume-independent projective-recurrence clock, with explicit divergent
+inverse-occupation lower bound on actual consecutive-return gaps.  It does not turn finite-volume
+recurrence into infinite-volume recurrence.
 
 ## Strongest defensible claims
 
@@ -60,7 +62,10 @@ infinite-volume recurrence.
    syndetically recurrent every finite prefix, paired-prefix laboratory
    complexity ramp, eventually near-Hilbert circuit-hard consecutive
    excursion--re-entry, and compact-time convergence to one bounded
-   self-adjoint UHF dynamics.
+   self-adjoint UHF dynamics.  Same field also has explicit projective-return
+   desert length proportional to inverse exact occupation and tending to
+   infinity; closedness and syndetic recurrence bracket each desert by actual
+   consecutive returns, despite bounded recurrence gaps at each fixed size.
 
 ## Objections and dispositions
 
@@ -107,6 +112,18 @@ Exhaustion and same-field theorems supply one ambient coefficient assignment
 whose every finite restriction is generic.  Same-field theorem additionally
 constructs bounded self-adjoint UHF generator and compact-time convergence of
 finite dynamics.  Neither result proves return of infinite-volume orbit.
+
+### “Vanishing return density does not imply long return-free intervals”
+
+Correct in isolation.  Paper does not make that inference alone.  Every
+narrow operator-norm return has fixed positive time thickness inside wider
+anchored target, because same-field generator norms are eventually bounded by
+one speed scale.  Disjoint-cell packing then turns exact completed wide-target
+occupation into arbitrarily late continuous narrow-target deserts.  Explicit
+choice `Lambda_n=delta/(2 beta_n)-delta` makes packing contradiction strict
+and `Lambda_n→∞`.  Return tube is closed; syndetic recurrence supplies visits
+on both sides.  Taking last pre-desert visit and first post-desert visit gives
+literal consecutive returns separated by at least `Lambda_n`.
 
 ### “Circuit-hard local Hamiltonian means bounded-degree geometry”
 
@@ -168,6 +185,8 @@ microscopic MBL realization is inferred.
    complexity as application.
 5. Terminology: “completed-time occupation” must not drift into “first-return
    time,” “mixing,” “ramp” or “randomization.”
+6. New local-recurrence comparison addresses deterministic existence and
+   lower gaps, not optimal first-return bounds for every local Hamiltonian.
 
 ## Verified editorial gates
 

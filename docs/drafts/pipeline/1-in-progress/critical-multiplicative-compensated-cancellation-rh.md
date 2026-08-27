@@ -7924,3 +7924,157 @@ this exact synthesis and unconditional formal reduction.
 Verdict: `[PROVED — COFINAL ADMISSIBLE RECTANGLES CAN ALWAYS CROSS EXACTLY THE CENTERED ARCH POLE;
 THE PACKET-STABLE PHYSICAL THETA-ABEL SOURCE CRITERION IS THEREFORE EQUIVALENT TO AN EXPLICITLY
 CORRECTED LITERAL CONTINUED-PRIME-FLUX LOWER-BOUND CRITERION, WITH NO GAMMA REMAINDER]`.
+
+## Conjecture loop 82 — valuation-completion cofinal invariance
+
+### Failed prime-power-obstruction conjecture `[VALUATION COMPLETION MAY DESTROY THE PHYSICAL FLOOR]`
+
+Loop 81 exposes a literal prime-flux lower-floor criterion, while the completed endpoint response
+is assembled from all prime-power clocks. The apparent obstruction was that removing the deeper
+valuation layers to recover the ordinary-prime physical endpoint might introduce an unbounded
+signed error on translated support packets. Corpus inspection instead exposes a stronger law.
+
+Let `U(p,q)` be the real-symmetric unit--double completed seam kernel and let `C_sym(p,q)` be the
+real-symmetric phase-preserving valuation-correction kernel. Lean proves coefficientwise
+
+```text
+K_end(p,q)=-U(p,q)+C_sym(p,q).                                (AC129)
+```
+
+Since diagonal completion is killed by physical Hilbert distance, the exact completed signed
+Dirichlet energy splits as
+
+```text
+D_end(P,A,m,k)=D_ref(P,A,m,k)+D_corr(P,A,m,k).                (AC130)
+```
+
+Absolute prime-by-valuation summability and aperture geometry give
+
+```text
+|D_corr(P,A,m,k)|
+ <=4 A M_corr [sum_(p in P) log(p)/p]^2,                     (AC131)
+```
+
+where `M_corr=sum_(r,e)|log(r) correction(r,e)|<infinity`. For the exact fixed-width support
+packet `P_m={p:m-A<log p<=m+c}`, the corpus Mertens theorem supplies
+
+```text
+sum_(p in P_m)log(p)/p <= A+c+primeLogWindowConst             (AC132)
+```
+
+as soon as `2<=exp(m-A)`. Therefore
+
+```text
+|D_end(P_m)-D_ref(P_m)|
+ <=4 A M_corr (A+c+primeLogWindowConst)^2,                   (AC133)
+```
+
+uniformly in translation scale `m`. For every `A>0,c>=0`, Lean proves both cofinal invariances
+
+```text
+[D_end eventually bounded above] <-> [D_ref eventually bounded above],
+[D_end eventually bounded below] <-> [D_ref eventually bounded below]. (AC134)
+```
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/XiPhysicalEndpointValuationCompletionCofinalInvariance.lean`.
+Direct scratch/source checks, targeted build, standard-axiom audit, and umbrella wiring pass. Global
+lint reached this module but is temporarily blocked by unrelated concurrently edited unwired Sieve
+modules.
+
+No-go closure: prime-power valuation completion is not the remaining cofinal-growth producer or
+obstruction. It is not merely trace class as an abstract operator; on the literal translated
+physical support packets its whole signed Dirichlet-energy effect is uniformly bounded. Thus any
+upper-bound proof for the completed endpoint energy may work on refinement alone, and any lower
+floor transfers in either direction after changing one constant. Remaining open core is the
+refinement-oriented completed seam response, not its valuation correction. This does not prove
+that remaining estimate or RH.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-27]`: Connes--Consani semilocal trace formulas,
+Connes--van Suijlekom finite-interval quadratic forms, Connes--Consani--Moscovici finite-prime
+spectral triples, and Suzuki screw-function Weil operators treat related finite-place, trace-class,
+and cutoff structures. Corpus and primary-literature searches found no exact physical endpoint
+decomposition `(AC129)--(AC130)`, translation-uniform valuation-completion law `(AC133)`, or
+two-sided cofinal boundedness invariance `(AC134)`. Candidate-new content is restricted to this
+route-specific synthesis.
+
+Verdict: `[PROVED — THE UNIQUE PRIME-POWER VALUATION CORRECTION CHANGES FIXED-WIDTH PHYSICAL
+ENDPOINT DIRICHLET ENERGY BY ONLY ONE SCALE-INDEPENDENT CONSTANT; COMPLETED AND REFINEMENT
+COFINAL UPPER/LOWER BOUNDEDNESS ARE EXACTLY EQUIVALENT]`.
+
+## Conjecture loop 83 — fixed-width refinement-energy no-go
+
+### Failed RH-strength boundedness conjecture `[REFINEMENT COFINAL BOUNDEDNESS MAY ENCODE RH]`
+
+Loop 82 reduced completed physical endpoint cofinal boundedness to the refinement seam. Corpus
+inspection then exposed a compact-frequency mechanism: translating a fixed logarithmic packet
+changes absolute prime scale but never enlarges any prime-log difference sampled by the kernel.
+
+The completed unit--double response satisfies an unconditional global bound
+
+```text
+||K12(x,y)|| <= C12 (1+|x-y|)^9                              (AC135)
+```
+
+for some `C12>=0`, by combining corpus bounds for completed seam flux on `Re(s)=1` and `Re(s)=2`.
+For the support packet `P_m={p:m-A<log p<=m+c}`,
+
+```text
+|log p-log q| <= A+c for p,q in P_m.                          (AC136)
+```
+
+Lean proves the abstract positive survivor: if `|K(p,q)|<=K` on any finite packet `P`, then
+
+```text
+|D_ref(P,A,m,k)|
+ <=4 A K [sum_(p in P) log(p)/p]^2.                           (AC137)
+```
+
+Using `(AC132)`, `(AC135)--(AC137)` give the translation-uniform refinement estimate
+
+```text
+|D_ref(P_m,A,m,m+c)|
+ <=4 A C12 (1+A+c)^9 (A+c+primeLogWindowConst)^2.             (AC138)
+```
+
+Adding the exact valuation correction from `(AC130)--(AC133)` yields
+
+```text
+|D_end(P_m,A,m,m+c)|
+ <=4 A [C12 (1+A+c)^9+M_corr]
+      (A+c+primeLogWindowConst)^2.                            (AC139)
+```
+
+Thus, for every fixed `A>0,c>=0`, Lean proves unconditionally
+
+```text
+D_end(P_m) is uniformly absolutely bounded in m,
+D_end(P_m) is uniformly bounded above and below in m.         (AC140)
+```
+
+Premise-free unit-window absolute and two-sided capstones are included.
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/XiPhysicalEndpointRefinementFixedWindowEnergyNoGo.lean`.
+Direct source check, targeted `11798/11798` build, standard-axiom audit, and umbrella wiring pass.
+Global lint reaches the wired module but is blocked by five unrelated, concurrently edited unwired
+Sieve/HTGeometry modules.
+
+No-go closure: bare fixed-width cofinal upper boundedness, lower boundedness, and absolute
+boundedness cannot encode RH for this response. Fixed window keeps seam frequency compact and
+Mertens keeps endpoint mass bounded, so improving valuation tails or constants cannot restore lost
+RH information. Strongest positive survivor is `(AC137)--(AC139)`. Any viable replacement must
+use growing width/aperture, positivity or coercivity, a vanishing/sharp normalized asymptotic, or a
+coupling to Loop 81's pole-crossing prime-source floor.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-27]`: Connes--Consani semilocal forms,
+Connes--van Suijlekom lower-bounded finite-interval convolutions, Connes--Consani--Moscovici
+finite-prime spectral triples, Suzuki's unconditional finite-interval Weil operator, and Chuk's
+2026-08-25 compact-window positivity bounds treat related localized forms. Corpus and literature
+searches found no exact physical endpoint kernel-energy law `(AC137)`, no translation-uniform
+unit--double/completed estimates `(AC138)--(AC139)`, and no corresponding two-sided cofinal no-go
+`(AC140)`. Candidate-new content is restricted to this route-specific synthesis.
+
+Verdict: `[PROVED NO-GO — FIXED-WIDTH TRANSLATION ONLY SAMPLES A COMPACT SEAM-FREQUENCY BAND;
+REFINEMENT AND FULLY COMPLETED PHYSICAL ENDPOINT ENERGIES ARE UNCONDITIONALLY ABSOLUTELY BOUNDED,
+SO BARE COFINAL UPPER/LOWER BOUNDEDNESS HAS NO RH STRENGTH]`.

@@ -10,7 +10,10 @@ No absolute “first” claim is authorized.
    target-capacity laws.
 2. Kotowski--Oszmaniec and Gupta--Short study first-return bounds for finite
    quantum systems. Current paper studies completed orbit geometry and
-   completed-time occupation and explicitly does not infer first-return times.
+   completed-time occupation.  It does not infer a first hit from time zero,
+   but its separate closedness-and-syndeticity theorem now converts
+   inverse-occupation deserts into lower bounds on actual consecutive-return
+   gaps.
 3. Riddell--Pagliaroli--Alhambra study recurrence and concentration; Riddell--
    Bertini study rationally independent free-fermion spectra and form-factor
    moments. Campos Venuti--Odavic--Hamma derive all-order spectral-form-factor
@@ -255,6 +258,42 @@ Candidate novelty is closed same-field conjunction and literal compatibility
 across every finite prefix.  Search found no exact match.  Result is
 existential, not translation-invariant, not a numerical Hamiltonian, and does
 not prove infinite-volume recurrence or complexity.
+
+### K. Finite recurrence with thermodynamically diverging consecutive-return gaps
+
+Exact residue: same countable, absolutely summable, static nearest-neighbour
+noncommuting qubit Pauli field has syndetic projective operator-norm recurrence
+at every finite prefix and every positive resolution, yet at fixed resolution
+`1/20` has no volume-independent recurrence clock.  Its certified return-free
+length is `delta/(2 beta_n)-delta`, where `delta` is one volume-uniform speed
+mesh and `beta_n=(2 asin(1/10)/pi)^(2^n-1)` is exact completed anchored
+occupation.  This length tends to infinity, and all sufficiently large
+prefixes realize a desert of that length after every requested epoch.
+Because projective-return tube is closed and each fixed prefix recurs
+syndetically, each desert is enclosed by a last return and first re-entry.
+Hence same explicit length lower-bounds an actual consecutive projective-return
+gap, with no intervening return, after every requested epoch.
+
+Closest primary sources: Kotowski--Oszmaniec (arXiv:2601.10409v3) give
+deterministic finite-dimensional recurrence upper bounds and random-diagonal
+lower saturation, explicitly listing tight recurrence bounds for physical
+local noncommuting Hamiltonians as open.  Gupta--Short (arXiv:2604.14995)
+give state-independent finite-dimensional upper bounds by simultaneous
+Diophantine approximation.  Campos Venuti (arXiv:1509.04352) derives typical
+recurrence-time scaling under statistical/rational-independence assumptions.
+None of these sources supplies one compatible deterministic local field whose
+every finite prefix recurs syndetically while certified consecutive
+projective-return gaps diverge with volume.
+
+Preliminary verdict: strongest new theorem in same-field line.  It converts
+completed density extinction into deterministic continuous hard intervals
+using physical operator norm and one uniform local-field speed, then uses
+closedness and syndetic recurrence to bracket them by actual consecutive
+returns.  It does not identify inverse density with first hitting time from
+zero.  It addresses an
+existence/lower-gap aspect of local noncommuting recurrence frontier, not
+universal tight first-return bounds.  Absence claim remains bounded by listed
+search and is not an absolute priority assertion.
 
 ## Novelty explicitly disclaimed
 

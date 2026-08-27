@@ -94,3 +94,9 @@ abstracts or publisher descriptions. After corrections listed above, no
 cited sentence attributes result absent from its cited source. Every one of
 35 references retained in manuscript is cited in body; no uncited
 bibliography padding remains.
+
+The new recurrence-desert comparison uses only a claim stated explicitly in
+Kotowski--Oszmaniec v3: tight recurrence bounds for physical dynamics induced
+by local noncommuting Hamiltonians remain an open direction.  Manuscript
+limits its contribution to deterministic existence/consecutive-gap lower-bound aspect and does
+not claim universal optimal first-return bounds.

@@ -99,6 +99,8 @@ proof-assistant or internal-corpus references.
 | Concrete nearby-time failure of all-pairs monotonicity inside nested laboratory window: early complexity at least `1514`, late complexity at most `1513`, strict reversal and `not MonotoneOn` | `monotonicityCounterEarly_complexity_lower`; `monotonicityCounterLate_complexity_upper`; `counterLateCircuit_approximates`; `monotonicityCounter_strict_complexity_reversal`; `nestedOperatorTwoGateComplexity_not_monotoneOn_laboratoryWindow` | `NestedMonotonicityLower.lean`; `NestedMonotonicityUpper.lean`; `NestedMonotonicityCounterexample.lean` |
 | One countable static nearest-neighbour Pauli field, selected once, with absolutely summable coefficients; every finite prefix maximally projective and syndetically recurrent; paired-prefix laboratory ramp; eventually near-Hilbert continuous-circuit excursion and consecutive re-entry; bounded self-adjoint UHF Hamiltonian and point-norm continuous automorphism group; literal-prefix Hamiltonian convergence and compact-time Schrödinger/Heisenberg convergence | `HTGeometry.exists_thermodynamicSameFieldLifecycle` | `ThermodynamicSameFieldUHFRecurrenceComplexityLaw.lean` |
 | Every finite maximally projective Hamiltonian has projective operator-norm returns in every interval of one fixed finite length at every positive resolution; specialization to every literal selected path prefix | `HTGeometry.maximallyProjective_unitaryEvolution_projectiveReturn_syndetic`; `HTGeometry.infinitePathPrefix_projectiveReturn_syndetic` | `ThermodynamicSameFieldUHFRecurrenceComplexityLaw.lean` |
+| Arbitrary scalar-unitary approximation controls anchored relative-phase return within twice radius; exact completed anchored occupation plus orbit speed forces arbitrarily late continuous projective-return deserts | `HTGeometry.norm_unitaryEvolution_sub_anchorPhase_le_two_mul_of_scalar`; `HTGeometry.limsup_windowProbability_projectiveReturnTimes_le`; `HTGeometry.maximallyProjective_scalarUnitaryReturnTimes_late_deserts` | `ThermodynamicProjectiveRecurrenceDesertLaw.lean` |
+| Same countable local Pauli field has explicit inverse-occupation desert width `delta/(2 beta_n)-delta` tending to infinity; all sufficiently large prefixes realize such desert after every epoch; closedness plus syndetic recurrence enclose every desert between actual consecutive projective returns separated by at least that width; every prescribed gap occurs eventually, so no volume-independent projective-recurrence clock survives | `HTGeometry.thermodynamicProjectiveDesertWidth_tendsto_atTop`; `HTGeometry.infinitePathPrefix_quantitativeProjectiveRecurrenceDeserts`; `HTGeometry.scalarUnitaryReturnTimes_consecutiveVisitGap`; `HTGeometry.ThermodynamicRecurrenceDesertLifecycle.eventually_quantitativeConsecutiveProjectiveReturnGaps`; `HTGeometry.exists_thermodynamicConsecutiveProjectiveReturnGapLaw`; `HTGeometry.ThermodynamicRecurrenceDesertLifecycle.eventually_arbitraryWidthProjectiveDeserts` | `ThermodynamicProjectiveRecurrenceDesertLaw.lean` |
 | Exact UHF support: coherent local Pauli embeddings, absolutely summable bounded self-adjoint generator, continuous unitary group and point-norm automorphism group | `HTGeometry.infinitePathUHFHamiltonian`; `HTGeometry.isSelfAdjoint_infinitePathUHFHamiltonian`; `HTGeometry.infinitePathUHFDynamics`; `HTGeometry.continuous_infinitePathUHFDynamics_apply`; `HTGeometry.infinitePathUHFDynamics_add_apply` | `QubitUHFLocalPauli.lean`; `ThermodynamicPathUHFDynamics.lean` |
 | Literal finite-prefix partial-sum identity, norm convergence of generators and uniform-on-compact Schrödinger and Heisenberg convergence | `HTGeometry.embeddedInfinitePathPrefixHamiltonian_eq_sum`; `HTGeometry.tendsto_embeddedInfinitePathPrefixHamiltonian`; `HTGeometry.embeddedInfinitePathPrefixEvolution_uniformOnCompact`; `HTGeometry.embeddedInfinitePathPrefixHeisenberg_uniformOnCompact` | `ThermodynamicPathUHFPrefixConvergence.lean` |
 
@@ -156,15 +158,20 @@ Targeted 27 August source checks and build of
 same-field capstone, recurrence theorem, UHF generator, literal-prefix
 identity and both compact-time convergence laws reports only
 `[propext, Classical.choice, Quot.sound]`.
+Targeted 27 August source check and module build of
+`ThermodynamicProjectiveRecurrenceDesertLaw` passed.  Axiom audit of spectral
+anchoring, finite-system hard-gap law, divergent desert scale, closed-return
+consecutive-gap extraction and unconditional same-field capstones reports only
+`[propext, Classical.choice, Quot.sound]`.
 Repository formal lint forbids `sorry`, `admit`, project `axiom`,
 `opaque` and `unsafe` declarations.
 
 ## Explicit exclusions
 
-- No first-return time inferred from inverse completed density.
+- No first-return time from initial epoch is inferred from inverse completed density.  Inverse density supplies a desert width; a separate closedness-and-syndeticity argument proves that width lower-bounds an arbitrarily late actual consecutive-return gap.
 - No pointwise monotonicity, saturation plateau or finite-time random-matrix ramp. Pointwise monotonicity is explicitly false: nested path gives a two-sided linear envelope and scale-separated ordering, but also a strict nearby-time drop inside same laboratory window.
 - No Haar randomization by static bounded-local Hamiltonians.
 - No bounded-degree geometry claim for bounded-weight all-to-all Pauli terms.
 - No infinite-volume orbit recurrence, infinite-system circuit complexity or interchange of size and time limits.
-- No translation invariance, volume-uniform recurrence deadline or explicit numerical witness for existential same-field selection.
+- No translation invariance or explicit numerical witness for existential same-field selection.  Rather than assuming a volume-uniform recurrence deadline, same-field theorem proves that none exists at stated projective accuracy.
 - No physical-space reconstruction without supplied subsystem factorization.
