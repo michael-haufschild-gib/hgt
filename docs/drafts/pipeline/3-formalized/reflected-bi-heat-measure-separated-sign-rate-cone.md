@@ -1,7 +1,7 @@
 # Reflected bi-heat measure-separated sign rate cone
 
 - **ID:** RBH-MSSF
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** CONTINUUM INCOMMENSURATE SIGNED RECEIVER CLASSIFICATION
 - **Parent:** RBH-CSSF
 - **Frontier-map policy:** read only
@@ -68,7 +68,40 @@ provisional pending expert review.
 
 - Mandatory corpus search complete.
 - Conjecture frozen.
-- Proof attack active.
+- Paper proof dependency-closed.
+- Formalized in
+  `GaloisForLFunctions.RHTower.ReflectedBiHeatMeasureSeparatedSignRateCone`.
+- Direct `lake env lean` check passed.
+- Targeted module build passed.
+- Axiom audit passed: only `propext`, `Classical.choice`, and `Quot.sound`.
+
+## Formal theorem package
+
+- `tendsto_reflectedBiHeatMeasureSeparatedSignReporter_div_self_nhdsGT_zero`
+- `reflectedBiHeatMeasureSeparatedSignReporter_pos`
+- `reflectedBiHeatMeasureSeparatedSignWallOriented_iff`
+- `tendsto_reflectedBiHeatMeasureLowRateIntegral_div_sinh_atTop`
+- `continuousOn_reflectedBiHeatMeasureSeparatedSignReporter_Icc`
+- `exists_pos_reflectedBiHeatMeasureSeparatedSignReporter_eq_zero_of_derivative_neg`
+- `reflectedBiHeatMeasureSeparatedSignWallSelective_iff`
+- `reflectedBiHeatMeasureSeparatedSignApertureGap_eq_reporter`
+- `reflectedBiHeatMeasureSeparatedSignApertureGap_eq_zero_iff`
+- `riemannHypothesis_iff_reflectedBiHeatMeasureSeparatedSignApertureGap_eq_zero`
+
+## New exact insight
+
+Atomicity and countability are irrelevant to separated-sign RBH rigidity.
+Arbitrary nonzero finite positive Borel rate measures obey same exact cone, with
+no uniform distance between low support and separator.  First wall moment is
+complete invariant for zero exclusion.
+
+At infinity, entire low measure becomes negligible after normalization by
+`sinh(kappa*t)` through dominated convergence.  Positive high mass—not a high
+atom—then forces eventual positivity.  Thus accumulation and continuous rate
+spectra create no hidden cancellation chamber.
+
+Continuum real-power aperture integration transports classification to exact RH
+receivers.
 
 ## Failure boundaries
 
@@ -76,4 +109,3 @@ provisional pending expert review.
 - Positive mass on separator from low side (`r=kappa`).
 - Infinite measures or missing high hyperbolic moments.
 - Source-derived measure law and non-diagonal rate collisions.
-

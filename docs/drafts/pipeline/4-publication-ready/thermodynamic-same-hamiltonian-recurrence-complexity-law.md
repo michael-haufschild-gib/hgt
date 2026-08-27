@@ -1,8 +1,8 @@
 # One thermodynamic local Hamiltonian across the complexity lifecycle
 
 - **ID:** thermodynamic-same-hamiltonian-recurrence-complexity
-- **Stage:** 2-fully-proven on paper
-- **Type:** CONJECTURE
+- **Stage:** 4-publication-ready
+- **Type:** THEOREM
 - **Source:** quantum-recurrence corpus audit, 2026-08-27
 - **Statement:** One absolutely summable, time-independent nearest-neighbour qubit Hamiltonian on the countable path has compatible finite restrictions whose laboratory complexity grows, whose late orbit has near-Hilbert circuit-hard intervals and literal first re-entry, and whose infinite-volume dynamics exists as one strongly continuous unitary group.
 
@@ -21,8 +21,8 @@ onsite-plus-edge coefficient assignment.
 
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea, external-frontier sketch
 - [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorem `<name>`, targeted `lake env lean` and `lake build` green, axiom audit PASS
-- [ ] 3 → 4  publication-ready: theorem and proof integrated into one standalone recurrence paper
+- [x] 2 → 3  formalized: Lean theorem `exists_thermodynamicSameFieldLifecycle`, targeted `lake env lean` and `lake build` green, axiom audit PASS
+- [x] 3 → 4  publication-ready: theorem and proof integrated into one standalone recurrence paper
 
 ## Frozen conjecture C1
 
@@ -91,12 +91,13 @@ until theorem shape is final and a second exact-title/assumption audit is run.
    each prefix.  Construct `H∞` as the norm-convergent sum of local Pauli operators and prove compact-
    time convergence of exponentials.
 
-## Open core
+## Former open core — closed
 
 **Mobile-tail stability:** if a static path Hamiltonian equals the nested diagonal ramp seed plus
 an arbitrary self-adjoint prefix operator and a norm-small tail, prove a two-qubit circuit lower
-bound from the untouched later inverse-square block.  Existing global operator-norm perturbation
-bound is insufficient because any fixed nonzero prefix perturbation accumulates linearly in time.
+bound from the untouched later inverse-square block.  This is closed by
+`thermodynamicPairHamiltonian_twoGateCount_ge`; exact UHF prefix compatibility and compact-time
+convergence are closed by `ThermodynamicPathUHFPrefixConvergence`.
 
 ## Hostile checks
 
@@ -339,3 +340,51 @@ only if the finite-shot experimental confidence statement is promoted from propo
 - 2026-08-27 — exact prospective ramp constants match the existing same-draw envelope:
   `floor(t/(256*pi*epsilon))` on `[2048*pi*epsilon, epsilon*L]`.
 - 2026-08-27 — second hostile audit PASS; C1 promoted to fully proven on paper.
+
+## Gate 2 -> 3 closure
+
+**[FORMALIZED]** The unconditional capstone is
+`GaloisForLFunctions.HTGeometry.exists_thermodynamicSameFieldLifecycle` in
+`ThermodynamicSameFieldUHFRecurrenceComplexityLaw.lean`.  It selects one field and discharges:
+
+- absolute coefficient summability;
+- maximal projectivity of every literal finite prefix;
+- syndetic projective quantum recurrence at every positive resolution;
+- the quantitative laboratory two-qubit gate ramp;
+- eventual near-Hilbert continuous-circuit excursions with consecutive re-entry;
+- a bounded self-adjoint Hamiltonian in the standard qubit UHF algebra;
+- a point-norm continuous one-parameter group of UHF star-automorphisms;
+- exact identification of every embedded finite path Hamiltonian with the matching partial sum;
+- operator-norm convergence of prefix Hamiltonians;
+- compact-time-uniform convergence of Schrödinger evolutions; and
+- compact-time-uniform point-norm convergence of Heisenberg evolutions.
+
+Formal modules:
+
+- `QubitUHFLocalPauli.lean`
+- `ThermodynamicPathCoefficientSummability.lean`
+- `ThermodynamicPathUHFDynamics.lean`
+- `ThermodynamicPathUHFPrefixConvergence.lean`
+- `ThermodynamicSameFieldUHFRecurrenceComplexityLaw.lean`
+
+Verification on 2026-08-27:
+
+- all targeted `lake env lean <file>` checks passed;
+- targeted `lake build GaloisForLFunctions.HTGeometry.ThermodynamicSameFieldUHFRecurrenceComplexityLaw` passed;
+- `#print axioms` for embedding, convergence, recurrence, and capstone declarations reports only
+  `propext`, `Classical.choice`, and `Quot.sound`;
+- no `sorry`, `admit`, custom `axiom`, `opaque`, or `unsafe` declaration occurs in the five modules;
+- capstone is reachable from `GaloisForLFunctions.HTGeometry` without building that umbrella.
+
+Repository-wide lint still reports unrelated RHTower sieve modules missing from the RHTower
+umbrella.  It reports no reachability or forbidden-declaration error for this theorem chain.
+
+## Gate 3 -> 4 closure
+
+Theorem is stated as Theorem 24 and proved in Appendix E.5 of
+`geometry-complexity-quantum-recurrence/main.tex`.  Abstract, public summary,
+literature comparison, physical-scope boundary, experimental boundary,
+claim trace, novelty audit and hostile review all include exact same-field
+scope.  Compiled 35-page PDF is warning-free; rendered checks cover theorem,
+proof, experiment section and both architecture figures.  Literature priority
+remains explicitly provisional and no absolute-first claim is made.

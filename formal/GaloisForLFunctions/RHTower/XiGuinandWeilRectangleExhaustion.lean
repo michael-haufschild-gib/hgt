@@ -71,13 +71,16 @@ private theorem exists_Ioo_not_mem_finset {a b : ℝ} (hab : a < b) (F : Finset 
   obtain ⟨x, hxI, hxF⟩ := hdiff.nonempty
   exact ⟨x, hxI, by simpa using hxF⟩
 
-/-- **Cofinal admissible rectangle selection.**  Every finite packet of multiplicity-exact Xi
-divisor copies lies strictly inside some positively oriented rectangle on whose four edges every
-base point is admissible for the continued Guinand--Weil formula. -/
-theorem exists_admissible_rectangle_containing_xiZeroCopy_finset
+/-- **Cofinal pole-crossing admissible rectangle selection.**  Every finite packet of
+multiplicity-exact Xi divisor copies lies strictly inside a positively oriented rectangle whose
+boundary is admissible, whose horizontal span crosses zero, and whose vertical span crosses the
+unique centered archimedean pole at height `-1/2` while remaining below height `1/2`. -/
+theorem exists_poleCrossing_admissible_rectangle_containing_xiZeroCopy_finset
     (t : Finset XiZeroCopy) :
     ∃ z₁ z₂ : ℂ,
       z₁.re < z₂.re ∧ z₁.im < z₂.im ∧
+      z₁.re < 0 ∧ 0 < z₂.re ∧
+      z₁.im < -(1 / 2) ∧ -(1 / 2) < z₂.im ∧ z₂.im < 1 / 2 ∧
       (∀ q ∈ t, z₁.re < (xiSpectralPoint q).re ∧
         (xiSpectralPoint q).re < z₂.re ∧
         z₁.im < (xiSpectralPoint q).im ∧
@@ -286,8 +289,47 @@ theorem exists_admissible_rectangle_containing_xiZeroCopy_finset
       simp [hz₁re]
       linarith [hx₁hi, hR]
     · exact hleft0 y hy
-  exact ⟨z₁, z₂, hre, him, hpacket,
+  have hz₁neg : z₁.re < 0 := by
+    rw [hz₁re]
+    linarith [hx₁hi, hR]
+  have hz₂pos : 0 < z₂.re := by
+    rw [hz₂re]
+    linarith [hx₂lo, hR]
+  have hz₁below : z₁.im < -(1 / 2) := by
+    rw [hz₁im]
+    norm_num
+  have hz₂above : -(1 / 2) < z₂.im := by
+    rw [hz₂im]
+    linarith [hy₂lo, hy₀lower]
+  have hz₂top : z₂.im < 1 / 2 := by
+    rw [hz₂im]
+    exact hy₂hi
+  exact ⟨z₁, z₂, hre, him, hz₁neg, hz₂pos, hz₁below, hz₂above, hz₂top, hpacket,
     hbotAdm, htopAdm, hrightAdm, hleftAdm⟩
+
+/-- **Cofinal admissible rectangle selection.**  Every finite packet of multiplicity-exact Xi
+divisor copies lies strictly inside some positively oriented rectangle on whose four edges every
+base point is admissible for the continued Guinand--Weil formula. -/
+theorem exists_admissible_rectangle_containing_xiZeroCopy_finset
+    (t : Finset XiZeroCopy) :
+    ∃ z₁ z₂ : ℂ,
+      z₁.re < z₂.re ∧ z₁.im < z₂.im ∧
+      (∀ q ∈ t, z₁.re < (xiSpectralPoint q).re ∧
+        (xiSpectralPoint q).re < z₂.re ∧
+        z₁.im < (xiSpectralPoint q).im ∧
+        (xiSpectralPoint q).im < z₂.im) ∧
+      (∀ x ∈ uIcc z₁.re z₂.re,
+        XiExplicitAdmissible ((x : ℂ) + z₁.im * I)) ∧
+      (∀ x ∈ uIcc z₁.re z₂.re,
+        XiExplicitAdmissible ((x : ℂ) + z₂.im * I)) ∧
+      (∀ y ∈ uIcc z₁.im z₂.im,
+        XiExplicitAdmissible ((z₂.re : ℂ) + y * I)) ∧
+      (∀ y ∈ uIcc z₁.im z₂.im,
+        XiExplicitAdmissible ((z₁.re : ℂ) + y * I)) := by
+  obtain ⟨z₁, z₂, hre, him, _hleft, _hright, _hbelow, _habove, _htop,
+      hpacket, hbotAdm, htopAdm, hrightAdm, hleftAdm⟩ :=
+    exists_poleCrossing_admissible_rectangle_containing_xiZeroCopy_finset t
+  exact ⟨z₁, z₂, hre, him, hpacket, hbotAdm, htopAdm, hrightAdm, hleftAdm⟩
 
 end
 

@@ -32,17 +32,17 @@ def finiteSymmetryFlatPacket (A : Finset ℂ) (nu : ℂ → ℕ) : Polynomial �
   simultaneousFlatPolynomial (fun a : {z // z ∈ A} => nu a)
       (fun a : {z // z ∈ A} => a.1 - (1 / 2 : ℂ)) * X ^ 2
 
-theorem quartetFlatPolynomial_eval_neg (a z : ℂ) :
+private theorem quartetFlatPolynomial_eval_neg (a z : ℂ) :
     (quartetFlatPolynomial a).eval (-z) = (quartetFlatPolynomial a).eval z := by
   simp [quartetFlatPolynomial]
 
-theorem quartetFlatPolynomial_eval_conj (a z : ℂ) :
+private theorem quartetFlatPolynomial_eval_conj (a z : ℂ) :
     (quartetFlatPolynomial a).eval ((starRingEnd ℂ) z) =
       (starRingEnd ℂ) ((quartetFlatPolynomial a).eval z) := by
   simp [quartetFlatPolynomial, map_mul, map_sub, map_pow]
   ring
 
-theorem simultaneousFlatPolynomial_eval_neg
+private theorem simultaneousFlatPolynomial_eval_neg
     {iota : Type*} [Fintype iota] (M : iota → ℕ) (a : iota → ℂ) (z : ℂ) :
     (simultaneousFlatPolynomial M a).eval (-z) =
       (simultaneousFlatPolynomial M a).eval z := by
@@ -51,7 +51,7 @@ theorem simultaneousFlatPolynomial_eval_neg
   intro i hi
   rw [quartetFlatPolynomial_eval_neg]
 
-theorem simultaneousFlatPolynomial_eval_conj
+private theorem simultaneousFlatPolynomial_eval_conj
     {iota : Type*} [Fintype iota] (M : iota → ℕ) (a : iota → ℂ) (z : ℂ) :
     (simultaneousFlatPolynomial M a).eval ((starRingEnd ℂ) z) =
       (starRingEnd ℂ) ((simultaneousFlatPolynomial M a).eval z) := by
@@ -86,7 +86,7 @@ theorem finiteSymmetryFlatPacket_eval_conj
   simp only [finiteSymmetryFlatPacket, eval_mul, eval_pow, eval_X, map_mul, map_pow]
   rw [simultaneousFlatPolynomial_eval_conj]
 
-theorem X_sub_C_dvd_quartetFlatPolynomial (a : ℂ) :
+private theorem X_sub_C_dvd_quartetFlatPolynomial (a : ℂ) :
     X - C a ∣ quartetFlatPolynomial a := by
   rw [Polynomial.dvd_iff_isRoot]
   simp [Polynomial.IsRoot, quartetFlatPolynomial]

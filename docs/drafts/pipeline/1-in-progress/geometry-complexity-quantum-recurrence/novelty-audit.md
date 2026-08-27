@@ -31,6 +31,11 @@ No absolute “first” claim is authorized.
    completed-time occupation, not stochastic mixing time. Nested path result
    additionally gives explicit deterministic backtracking between two nearby
    increasing times inside a certified linear-envelope window.
+   Bohdanowicz--Brand\~ao construct a time-independent, local,
+   one-dimensional translation-invariant universal Hamiltonian with
+   exponentially long complexity-growth consequence under computational-
+   complexity assumptions.  It does not supply unconditional compatible
+   finite-prefix recurrence--hard-excursion--UHF lifecycle.
 6. Cui--Schuster--Mao--Huang--Brandao show constant-local static Hamiltonian
    ensembles need not approach Haar randomness. Permanent non-Haar separation
    is not claimed new; candidate contribution is its exact coexistence with
@@ -69,6 +74,16 @@ No returned source stated paper's exact core package, arbitrary-graph rank
 formula, same-record observer theorem or deterministic nested
 ramp--return--backtrack conjunction. This is strengthened absence evidence,
 not priority proof. No absolute-first language is authorized.
+
+Second exact-object search for final same-field theorem separately targeted
+one static nearest-neighbour Hamiltonian with early operator-complexity ramp,
+late continuous circuit-hard intervals, recurrence and compatible
+infinite-volume dynamics.  Primary matches were random/stochastic
+growth--saturation--recurrence (arXiv:2205.09734), conditional encoded static
+growth (arXiv:1710.02625), piecewise-local or coefficient-sensitive
+simulation lower bounds (arXiv:1801.03922, arXiv:2607.19852), and standard
+quasi-local $C^*$ dynamics.  No source located exact conjunction or literal
+all-prefix coefficient compatibility.  This remains absence evidence only.
 
 Experimental feasibility citations were separately checked against primary
 publisher and arXiv records: Wang et al. demonstrate Hamiltonian learning and
@@ -221,6 +236,26 @@ local spectra and interaction-suppressed revivals are established. Exact
 rational-rank/cascade/Hilbert conjunction may be technically new but is not
 headline novelty and is not a microscopic random-field MBL theorem.
 
+### J. One compatible static field across finite recurrence and UHF dynamics
+
+Exact residue: one countable, absolutely summable onsite-plus-edge Pauli
+field on one-dimensional qubit path is fixed before volume.  Every literal
+finite prefix is simple and maximally projective, returns projectively in
+every sufficiently long interval at every resolution, and sufficiently large
+prefixes have perpetual consecutive excursion--re-entry against complete
+continuous two-qubit circuit target at budget
+`floor(2^n/(64(n+1)))`.  Pair-grouped prefixes of same field obey explicit
+laboratory operator-complexity lower ramp.  Same coefficients converge in
+norm to bounded self-adjoint UHF Hamiltonian; Schrödinger and Heisenberg
+finite-prefix dynamics converge uniformly on compact time intervals.
+
+Preliminary verdict: strongest locality/thermodynamic complexity synthesis.
+Each ingredient has ancestry, and standard UHF dynamics is not claimed new.
+Candidate novelty is closed same-field conjunction and literal compatibility
+across every finite prefix.  Search found no exact match.  Result is
+existential, not translation-invariant, not a numerical Hamiltonian, and does
+not prove infinite-volume recurrence or complexity.
+
 ## Novelty explicitly disclaimed
 
 - Compact-hull equidistribution and Kronecker--Weyl theory.
@@ -245,13 +280,14 @@ headline novelty and is not a microscopic random-field MBL theorem.
 - Literature section distinguishes premises from their local-network
   realization.
 - Scope section separates nested bounded-degree path ramp from all-to-all
-  bounded-weight Pauli alternation and states path's decaying-coupling limits.
+  bounded-weight Pauli alternation, adds one compatible bounded-degree UHF
+  field, and states both fields' decaying-coupling limits.
 - No “first,” “unprecedented,” “solves,” or “open problem” language appears.
 
 ## Required before submission
 
 1. Independent MathSciNet/zbMATH/INSPIRE/Google Scholar ancestry and citation
-   search for core hierarchy and candidates A--G, especially quantum phase
+   search for core hierarchy and candidates A--J, especially quantum phase
    retrieval, clock identifiability, monitored recurrence, and exact
    comparison of G with arXiv:2607.19852.
 2. Specialist review of interaction and arbitrary-graph proofs.

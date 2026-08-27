@@ -178,3 +178,63 @@ literature does not decide this corpus-specific identity. Next loop must prove a
 block-weight floor (equivalently a denominator upper bound), combine several bounded-overlap packet
 capacities, or sharpen the raw weighted node expectation enough to separate the audited theta
 interval; otherwise prove exact equality.
+
+## 2026-08-27 constructive-interference survivor (C1-GMP-TR.4f)
+
+- [x] Every reverse-incidence fibre has cardinality at most four, including boundary collisions.
+- [x] Local finite Cauchy retains energy inside the same physical window. Summing packet windows
+  therefore loses at most multiplicity four; rank-two occupation supplies the cancelling factor
+  four.
+- [x] The resulting unconditional additive lower bound is
+  \[
+    \sum_z \frac{a_z^2}{R_z}
+      \le \sum_u n_u\,\operatorname{occupation}(u)^2,
+  \]
+  with the exact closed prime/depth formula for every `R_z` substituted in Lean.
+- [x] Stronger positive-interference law: because every packet contribution is nonnegative, the
+  full collision dominates all packet self-collisions simultaneously, without overlap loss:
+  \[
+    \sum_z a_z^2\sum_{i=0}^3 n_{z,i}\mu_{z,i}^2
+      \le \sum_u n_u\,\operatorname{occupation}(u)^2.
+  \]
+  This is strictly sharper than replacing the four marginals by their resistance-minimizing
+  distribution.
+- [x] Consequently the completed first trace obeys both explicit bounds
+  \[
+    \operatorname{tr}T
+      \le M_{\rm raw}-\sum_z a_z^2\sum_i n_{z,i}\mu_{z,i}^2
+      \le M_{\rm raw}-\sum_z a_z^2/R_z.
+  \]
+
+Generic nonnegative-square interference and finite Cauchy are elementary; no novelty is claimed
+for those abstract inequalities. Candidate new knowledge is their exact arithmetic realization in
+the corpus-defined adjacent-prime/depth Pluecker family and the resulting explicit completed-Xi
+first-coefficient burden. Literature search found fixed-size DPP background but no treatment of
+this prime-depth family or either exact trace bound.
+
+New main Lean theorems:
+
+- `gammaSewnCriticalPhysicalPluckerIncidentPackets_card_le_four`
+- `gammaSewnCriticalPhysicalPluckerGlobalMean_finiteOccupation_local_cauchy`
+- `gammaSewnCriticalPhysicalPlucker_packetSelfKernel_eq`
+- `gammaSewnCriticalPhysicalPlucker_globalPacketSelfCollision_le`
+- `gammaSewnCriticalPhysicalPlucker_packetCoordinateResistanceCauchy`
+- `gammaSewnCriticalPhysicalPlucker_packetSelfCollisionCapacity`
+- `gammaSewnCriticalPhysicalPlucker_globalAdditiveCapacity_le_packetSelfCollision`
+- `gammaSewnCriticalPhysicalPlucker_packetLocalScaledCollisionCapacity`
+- `gammaSewnCriticalPhysicalPlucker_finitePacketWindowEnergy_le_four_collision`
+- `gammaSewnCriticalPhysicalPlucker_globalAdditiveCollisionCapacity`
+- `gammaSewnCriticalPhysicalPlucker_globalAdditiveCollisionCapacity_closed`
+- `gammaSewnCriticalPhysicalPluckerGlobalMeanPolarizedNuclearTraceMass_le_rawFirstMoment_sub_packetSelfCollision`
+- `gammaSewnCriticalPhysicalPluckerGlobalMeanPolarizedNuclearTraceMass_le_rawFirstMoment_sub_additiveCapacity`
+
+Sharpened open burden: compare `M_raw - packetSelfCollision` with `Theta_1/2`. This supersedes the
+previous suggestion merely to combine bounded-overlap packet capacities. A useful quantitative
+bound now needs either direct control of the normalized squared denominator terms `a_z^2`, or an
+upper bound on the cofinal denominator strong enough to make a finite packet prefix separate the
+audited theta interval. Exact equality remains possible until that scalar comparison is closed.
+
+Verification update: direct `lake env lean` PASS; exact module-only `lake build` PASS
+(`12792/12792`); expanded axiom audit PASS with only `propext`, `Classical.choice`, `Quot.sound`.
+Formal lint reaches this module from `RHTower` and reports no forbidden declaration here; global
+exit remains red only for unrelated concurrent unreachable sieve modules.

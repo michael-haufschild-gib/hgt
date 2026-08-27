@@ -7711,3 +7711,129 @@ equivalence.
 Verdict: `[PROVED — EVENTUAL PACKET-STABLE LOWER BOUNDEDNESS OF THE EXACT PHYSICAL THETA-ABEL
 CONTINUED SOURCE CONTOURS IS EQUIVALENT TO RH; ONE FAVORABLE CONTOUR IS INSUFFICIENT, WHILE EVERY
 FINITE-PACKET EXTENSION IS EXACTLY SUFFICIENT]`.
+
+## Conjecture loop 79 — canonical symmetric-radius source exhaustion
+
+### Failed necessity conjecture `[ARBITRARY FINITE-PACKET QUANTIFICATION IS INTRINSIC]`
+
+The Loop-78 criterion appears non-geometric because it challenges the source rectangle with every
+finite multiplicity packet. That quantifier is not intrinsic. For `m in N`, let
+
+```text
+K_m={q : xiSpectralPoint(q) lies in [-m,m] x [-1,1]}.           (AC116)
+```
+
+Every centered Xi point has imaginary coordinate strictly between `-1/2` and `1/2`. For every
+finite packet `t`, choosing an integer
+
+```text
+m > 1 + sum_(q in t) |xiSpectralPoint(q)|
+```
+
+gives `t subset K_m`.
+
+### Canonical geometric survivor `[PAPER-PROVED] [LEAN-PROVED] [POSITIVE SURVIVOR]`
+
+Define canonical symmetric-radius source boundedness by
+
+```text
+exists B,N0, for every n>=N0 with L<log(n)/2,
+  for every m in N,
+    exists an admissible physical-energy source rectangle containing K_m
+    whose normalized continued-source value has real part >=B. (AC117)
+```
+
+Lean proves unconditionally, before invoking any RH criterion,
+
+```text
+(AC117) <-> packet-stable cofinal source boundedness.           (AC118)
+```
+
+The forward direction embeds any prescribed packet in one `K_m`; the reverse direction applies
+packet stability to `K_m`. Combining `(AC118)` with `(AC115)` proves `(AC117)<->RH` for every
+`L,A,c>0`, plus a closed premise-free unit specialization.
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeApertureThetaAbelEnergySymmetricRadiusSourceCriterion.lean`.
+Direct checking, scratch and built-module axiom audits, targeted build, and umbrella wiring pass.
+
+No-go closure: arbitrary packet selection and arbitrary divisor enumeration are eliminated from
+the final source criterion. One canonical countable exhaustion by integral-radius symmetric boxes
+already forces every absolute-tail control packet. Remaining burden is correspondingly canonical:
+prove a single eventual floor uniform in aperture `n` and radius `m` for exact physical-energy
+continued-source contours enclosing `K_m`.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-27]`: centered-strip containment, Archimedean
+exhaustion, Weil positivity, and contour residues are classical. Corpus and primary-literature
+searches found no canonical integral-box reduction `(AC116)--(AC118)` for the exact physical
+theta--Abel continued-source criterion. Candidate-new content is restricted to that unconditional
+cofinality equivalence and its route-specific RH specialization.
+
+Verdict: `[PROVED — ARBITRARY FINITE-PACKET COFINALITY COLLAPSES EXACTLY TO ONE CANONICAL
+INTEGRAL-RADIUS SYMMETRIC-BOX EXHAUSTION; EVENTUAL UNIFORM LOWER BOUNDEDNESS OF THESE EXACT
+PHYSICAL THETA-ABEL SOURCE CONTOURS IS EQUIVALENT TO RH]`.
+
+## Conjecture loop 80 — exact physical prime/archimedean residue separation
+
+### Failed obstruction conjecture `[THE GAMMA CHANNEL REQUIRES A COFINAL TAIL ESTIMATE]`
+
+Let `F_a` be the Loop-77 physical-energy transform, `s(z)=1/2+i z`, and write the continued source
+as prime plus completed-archimedean channels. Lean proves pointwise
+
+```text
+F_a(z)^2 continuedSource(z)
+ =F_a(z)^2[-i infinitePrimeFlux(s(z))]
+  +F_a(z)^2[i logDeriv(archFactor)(s(z))].                     (AC119)
+```
+
+In the source domain `Im z<1/2`, the completed arch factor has exactly one zero:
+
+```text
+archFactor(s(z))=(z+i/2)H(z),                                  (AC120)
+```
+
+with `H` analytic and nowhere zero.
+
+### Exact positive arch-residue survivor `[PAPER-PROVED] [LEAN-PROVED] [POSITIVE SURVIVOR]`
+
+For every positively oriented rectangle crossing `-i/2` and contained below `Im z=1/2`, weighted
+residues give
+
+```text
+contour F_a(z)^2[i logDeriv(archFactor)(s(z))] dz
+ =2 pi i F_a(-i/2)^2.                                         (AC121)
+```
+
+The physical pole cancellation makes this landing explicit:
+
+```text
+F_a(-i/2)=e^(a/2) 2(1-e^(-L/2)) c A.                           (AC122)
+```
+
+Consequently the normalized completed-archimedean channel is exactly
+
+```text
+[e^(a/2) 2(1-e^(-L/2)) c A]^2,                                (AC123)
+```
+
+nonnegative without assumptions and strictly positive for `L,A,c>0`.
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeApertureThetaAbelEnergyPrimeArchResidue.lean`.
+Direct checking, scratch and built-module axiom audits, targeted build, and umbrella wiring pass.
+
+No-go closure: the Gamma/archimedean contour is not a cofinal error budget. It collapses exactly
+to the positive scalar `(AC123)`. Therefore every negative completed-source value must arise in
+the continued prime-flux channel of `(AC119)` with enough magnitude to overcome `(AC123)`.
+Remaining burden is prime-only: build a cofinal pole-crossing source-rectangle family and prove a
+uniform lower floor for its continued prime contour after the explicit positive correction.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-27]`: weighted residues, the arch-factor zero at
+`s=1`, and prime/Gamma explicit-formula splitting are classical. Corpus and primary-literature
+searches found no exact physical theta--Abel landing `(AC122)--(AC123)` or its elimination of the
+whole archimedean sign burden in this criterion. Candidate-new content is restricted to that
+route-specific synthesis.
+
+Verdict: `[PROVED — THE COMPLETED ARCHIMEDEAN CHANNEL OF THE EXACT PHYSICAL THETA-ABEL ENERGY
+SOURCE IS ONE EXPLICIT STRICTLY POSITIVE RESIDUE; ALL REMAINING RH-BEARING SIGN BURDEN IS IN THE
+CONTINUED PRIME-FLUX CONTOUR]`.

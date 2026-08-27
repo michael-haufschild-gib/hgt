@@ -2,7 +2,7 @@
 
 Audit date: 2026-08-27
 
-Scope: every one of the 35 entries now present in `references.tex`, plus every
+Scope: every one of the 37 entries now present in `references.tex`, plus every
 claim directly attached to a citation in `body.tex`. Previously retained but
 now unused entries remain listed only where removal history matters. Sources below are
 publisher records, author-hosted records, or arXiv records maintained from the
@@ -28,6 +28,9 @@ authors' submissions. Search-result aggregators were not used as authority.
 - Added and verified primary records for `RosenblattSeymour1982`,
   `GrimmBaake2008`, `YellottIverson1992` and
   `AgulnickBusickWarner2026`
+- Added and verified primary records for `BohdanowiczBrandao2017` and
+  `BratteliRobinson1997`; former supports conditional static one-dimensional
+  comparison, latter standard UHF/quasi-local dynamics context
 - Added and verified primary publisher and arXiv records for
   `WangEtAl2017` and `ElbenEtAl2023`, supporting experimental calibration and
   randomized-measurement feasibility rather than any mathematical theorem
@@ -52,6 +55,7 @@ authors' submissions. Search-result aggregators were not used as authority.
 | `RauerEtAl2018` | Verified: title, six-author paper, *Science* 360, 307--310 (2018), DOI. | [arXiv:1705.08231](https://arxiv.org/abs/1705.08231) |
 | `KarimiEtAl2026` | Verified: four authors, journal title, *Phys. Rev. Research* 8, L012062 (2026). | [APS](https://journals.aps.org/prresearch/abstract/10.1103/wv9h-x14y) |
 | `BrownSusskind2018` | Verified: authors, title, *Phys. Rev. D* 97, 086015 (2018), arXiv identifier. | [arXiv:1701.01107](https://arxiv.org/abs/1701.01107) |
+| `BohdanowiczBrandao2017` | Verified: authors, title and arXiv identifier; abstract explicitly states time-independent, local, one-dimensional, translation-invariant construction and that complexity growth consequence assumes computational-complexity hypotheses. | [arXiv:1710.02625](https://arxiv.org/abs/1710.02625) |
 | `OszmaniecEtAl2024` | Verified: four authors, title, *Phys. Rev. X* 14, 041068 (2024), arXiv identifier. | [arXiv:2205.09734](https://arxiv.org/abs/2205.09734) |
 | `CuiEtAl2025` | Verified: five authors, title, arXiv identifier, year. | [arXiv:2510.08434](https://arxiv.org/abs/2510.08434) |
 | `BalasubramanianEtAl2020` | Verified: four authors, title, JHEP 01, 134 (2020), arXiv identifier. | [arXiv:1905.05765](https://arxiv.org/abs/1905.05765) |
@@ -71,6 +75,7 @@ authors' submissions. Search-result aggregators were not used as authority.
 | `HaahEtAl2023` | Verified: four authors, title, *SIAM Journal on Computing* 52 publication record and arXiv identifier; source also states matching worst-case one-dimensional piecewise-local lower bound used in prose. | [arXiv:1801.03922](https://arxiv.org/abs/1801.03922) |
 | `LowEtAl2023` | Verified: four authors, title, *PRX Quantum* 4, 020323 (2023), arXiv identifier; abstract supports generic commuting two-local lower-bound comparison. | [arXiv:2211.09133](https://arxiv.org/abs/2211.09133) |
 | `ZlokapaEtAl2026` | Verified: three authors, title, arXiv identifier and 2026 preprint status; abstract supports local bounded-degree classical hard-instance comparison. | [arXiv:2607.19852](https://arxiv.org/abs/2607.19852) |
+| `BratteliRobinson1997` | Verified: authors, title, second edition, publisher and 1997 edition record; source is standard reference for quasi-local $C^*$-algebraic quantum statistical mechanics. | [WorldCat](https://search.worldcat.org/title/37346715) |
 | `GimenoSotoca2017` | Verified: authors, title, *J. Phys. A* 50, 185302 (2017), DOI and arXiv identifier; source treats mixed states with finite or countably discrete energy spectra. | [Journal manuscript](https://repositori.uji.es/bitstreams/2fafa81d-b0d1-411e-b833-6980abf036a3/download) |
 | `KimChandranAbanin2014` | Verified: three authors, title, arXiv identifier and year; abstract supports logarithmic-light-cone attribution. | [arXiv:1412.3073](https://arxiv.org/abs/1412.3073) |
 | `NandkishoreGopalakrishnanHuse2014` | Verified: three authors, published title, *Phys. Rev. B* 90, 064203 (2014), DOI and arXiv identifier; source supports local spectral-tree attribution. | [arXiv:1402.5971](https://arxiv.org/abs/1402.5971) |

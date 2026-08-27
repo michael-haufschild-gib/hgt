@@ -16,6 +16,10 @@ consequences or realizations of this hierarchy.
 Manuscript is internally proof-closed and publication-shaped. External
 priority and specialist review remain necessary before submission; neither
 source search nor internal proof audit can establish literature priority.
+New same-field capstone removes prior per-volume compatibility gap: one
+countable nearest-neighbour Pauli field supplies literal finite prefixes and
+standard UHF dynamics.  It does not turn finite-volume recurrence into
+infinite-volume recurrence.
 
 ## Strongest defensible claims
 
@@ -51,6 +55,12 @@ source search nor internal proof audit can establish literature priority.
 8. Arbitrary finite Hermitian Born records satisfy a same-record
    never-exits/post-exit-return law with least deadline inside exact
    graph--resolution certificate family.
+9. One countable static nearest-neighbour Pauli field, selected once inside
+   explicit inverse-power coefficient boxes, has maximally projective and
+   syndetically recurrent every finite prefix, paired-prefix laboratory
+   complexity ramp, eventually near-Hilbert circuit-hard consecutive
+   excursion--re-entry, and compact-time convergence to one bounded
+   self-adjoint UHF dynamics.
 
 ## Objections and dispositions
 
@@ -83,17 +93,27 @@ No. Statement is dense, residual and full Lebesgue measure in finite
 onsite-plus-edge coefficient space. It excludes translation-invariant
 subfamilies and arbitrary singular coefficient laws unless separately stated.
 
+### “Same-field theorem supplies an explicit experimental Hamiltonian”
+
+No. Coefficient boxes and background are explicit, but simultaneous ambient
+selection is existential.  The theorem proves compatibility and existence,
+not a numerical coefficient list or hardware prescription.  Experimental
+section reserves direct device proposal for explicit finite witnesses.
+
 ### “Thermodynamic recurrence is an infinite-volume return”
 
 No. Time limit is taken at each fixed finite volume before size limit.
-Exhaustion theorem supplies one ambient coefficient assignment whose every
-finite restriction is generic; it does not construct an infinite-volume orbit.
+Exhaustion and same-field theorems supply one ambient coefficient assignment
+whose every finite restriction is generic.  Same-field theorem additionally
+constructs bounded self-adjoint UHF generator and compact-time convergence of
+finite dynamics.  Neither result proves return of infinite-volume orbit.
 
 ### “Circuit-hard local Hamiltonian means bounded-degree geometry”
 
-No. Path theorem is nearest-neighbour and proves rank/collision/return laws.
-Pauli complexity theorem is bounded weight but all-to-all in support. Paper
-states this separation explicitly.
+No such inference is needed for same-field theorem: its target Hamiltonians
+are literally nearest-neighbour on one-dimensional path, while approximating
+two-qubit gates may be nonlocal.  Separate bounded-weight Pauli theorem remains
+all-to-all in support and is labeled accordingly.
 
 ### “Hard epochs imply Haar randomization or a monotone ramp”
 
@@ -127,9 +147,10 @@ cross a different determinacy boundary.
 
 No. Explicit l-bit field defines bounded self-adjoint multiplication
 Hamiltonian and strongly continuous unitary group on every selected
-$L^2(\Omega,\mu)$. Uniform finite-window energy convergence and exact
-diameter cascade are proved. No global infinite-volume return, microscopic
-MBL realization or quasi-local $C^*$ dynamics is inferred.
+$L^2(\Omega,\mu)$.  Same-field Pauli construction separately defines standard
+qubit UHF $C^*$ dynamics and proves compact-time finite-prefix convergence.
+No global infinite-volume return, infinite-system circuit complexity or
+microscopic MBL realization is inferred.
 
 ## Remaining risks
 
@@ -138,7 +159,10 @@ MBL realization or quasi-local $C^*$ dynamics is inferred.
 2. Independent specialist check of arbitrary-graph leaf-extension and
    simultaneous-subsystem genericity.
 3. External priority search in inverse spectral graph theory, quantum
-   controllability, recurrence arithmetic and static-Hamiltonian complexity.
+   controllability, recurrence arithmetic and static-Hamiltonian complexity;
+   exact same-field comparison currently separates random/stochastic
+   growth--saturation--recurrence and conditional static universal-simulation
+   results, but priority still needs independent specialist confirmation.
 4. Journal positioning: paper combines several exact regimes; abstract and
    introduction must keep information hierarchy as center and label
    complexity as application.

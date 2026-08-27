@@ -462,6 +462,119 @@ multiple hard.  The $p$th multiple is identity.  A nonempty open
 neighbourhood of this polygon is visited syndetically by every maximally
 projective phase flow.
 
+\subsection{One compatible field from finite ramps to UHF dynamics}
+
+We prove Theorem \ref{thm:samefield}.  Let $\mathcal I$ be countable label
+set consisting of three onsite Pauli axes at every site and nine Pauli-pair
+axes at every bond.  For each $n\ge3$, restriction to first $n$ sites is a
+finite coordinate projection
+\[
+ \pi_n:\R^{\mathcal I}\longrightarrow\R^{3n+9(n-1)}.
+\]
+In this finite coefficient space, failure of maximal projectivity is union of
+the spectral-collision wall and rational balanced-relation walls.  Each wall
+is zero set of a nonzero spectral polynomial.  The local path escape theorem
+proves nontriviality of every such polynomial.  Hence good set $G_n$ is
+residual.
+
+Map every real coordinate homeomorphically onto open interval
+$(c_\ell-r_j,c_\ell+r_j)$ from \eqref{eq:samefieldradius}.  Pulling $G_n$
+back through finite coordinate map and then through $\pi_n$ gives residual
+subset of complete countable product space.  Countable intersection over
+$n$ remains residual and is nonempty.  Choose $a$ in that intersection.
+Then
+\begin{equation}
+ |a_\ell-c_\ell|<r_j                                  \label{eq:samefieldboxproof}
+\end{equation}
+for every coordinate, and every finite prefix is maximally projective.  An
+eigenvalue collision itself is nonzero balanced relation, so spectra are
+simple as well.  This is one ambient choice: $a$ is never reselected after
+$n$ is specified.
+
+Every Pauli word has operator norm one.  There are three onsite and nine edge
+coordinates at each position, while nested center is finite linear expansion
+of inverse-square and inverse-fourth bonds.  Therefore
+\begin{equation}
+ \sum_{\ell\in\mathcal I}|a_\ell|
+ \le \sum_\ell|c_\ell|+
+     12\cdot10^{-6}\sum_{j\ge0}(j+1)^{-2}<\infty.      \label{eq:samefieldlone}
+\end{equation}
+This proves first clause and will also construct infinite Hamiltonian below.
+
+For recurrence, fix one prefix.  Maximal projectivity says anchored energy
+gaps generate dense one-parameter subgroup of projective torus
+$\T^{2^n-1}$.  Pull operator ball of radius $\eta$ about identity back through
+continuous spectral-coordinate map.  It is nonempty open neighbourhood of
+zero.  A dense translation on compact group visits every nonempty open set
+syndetically: finitely many translates cover group, and maximal translate
+time gives one uniform gap $B_{n,\eta}$.  Restoring anchor eigenphase gives
+\eqref{eq:samefieldrecurrence}.
+
+We next prove ramp without replacing early coefficients by diagonal center.
+For integers $N,K$ in theorem, split paired $(2N+4)$-site path into first
+$4K$ sites, mobile matching tail indexed by pairs $(4K,8K]$, and remainder.
+Retain actual selected Hamiltonian on first block but replace mobile tail by
+nested center.  These two parts have disjoint support.  From
+\eqref{eq:samefieldboxproof}, summing omitted tail radii and applying Duhamel
+formula bounds difference between actual and reference evolutions by reserved
+fraction of $\eta$ throughout shell
+\eqref{eq:samefieldrampwindow}.
+
+Suppose an approximating circuit used fewer than $K$ two-qubit gates.  Its
+support graph touches fewer than $2K$ selected matching pairs, leaving enough
+untouched pairs in mobile tail.  Greedy phase selection produces untouched
+set whose accumulated inverse-square phase lies in fixed interval strictly
+between zero and $\pi$.  Cut one endpoint from each chosen pair.  Every gate
+then lies on one side of cut, so four corner amplitudes factor and obey
+\[
+ W_{00}W_{11}=W_{01}W_{10}.
+\]
+Target violates this identity by more than total approximation and Duhamel
+allowance; inverse-fourth bridges and selected perturbation tail fit inside
+same allowance.  Contradiction.  Exact bookkeeping gives
+$K\le\#_2(C)$ under hypotheses of \eqref{eq:samefieldrampwindow}.  Since early
+part was arbitrary and retained exactly, argument applies to literal prefix
+of selected field, not only diagonal center.
+
+For hard excursions, let $s_n$ be \eqref{eq:samefieldtarget}.  Continuous
+two-qubit circuits with at most $s_n$ gates form finite union of compact
+images, after discrete supports and gate counts are fixed.  At budget
+$s_n=\lfloor2^n/(64(n+1))\rfloor$, projective $1/20$-tube entropy estimate is,
+for all sufficiently large $n$, strictly smaller than
+anchored projective Boolean carrier.  Thus complement contains nonempty open
+phase set.  Maximal projective flow hits this hard set syndetically and also
+hits identity tube syndetically.  Compact-flow consecutive-gap lemma chooses
+last circuit capture before hard visit and first capture afterward.  Continuity
+gives positive hard width $W_n$; finite-cover syndeticity gives $G_n,B_n$.
+This is exactly \eqref{eq:samefieldtimes}--\eqref{eq:samefieldhard}; no
+uncounted target lies between selected captures.
+
+Finally embed every finite Pauli word coherently into qubit UHF algebra
+$\mathfrak A=\overline{\bigcup_n M_2(\C)^{\otimes n}}$.  By
+\eqref{eq:samefieldlone}, series
+\begin{equation}
+ H_\infty(a)=\sum_{\ell\in\mathcal I}a_\ell P_\ell   \label{eq:samefieldHinftyproof}
+\end{equation}
+converges in $C^*$ norm.  Every partial sum is self-adjoint, hence so is
+$H_\infty(a)$, and literal prefix Hamiltonians are exactly corresponding
+partial sums.  Consequently $H_n(a)\to H_\infty(a)$ in norm.  Functional
+calculus supplies unitary group $U_\infty(t)$ and automorphism group
+$\alpha_t$.  For self-adjoint $A,B$, Duhamel estimate gives
+\begin{equation}
+ \|\ee^{-\ii tA}-\ee^{-\ii tB}\|
+ \le |t|\,\|A-B\|.                                  \label{eq:samefieldduhamel}
+\end{equation}
+Taking supremum over $|t|\le T$ proves
+\eqref{eq:samefieldUconv}.  Since all exponentials are unitary,
+\begin{equation}
+ \|U_n(t)AU_n(t)^*-U_\infty(t)AU_\infty(t)^*\|
+ \le2\|A\|\,\|U_n(t)-U_\infty(t)\|,                 \label{eq:samefieldheisenberg}
+\end{equation}
+which proves \eqref{eq:samefieldAconv}.  Group laws follow from functional
+calculus for one fixed generator, and same estimates give norm continuity in
+Schr\"odinger picture and point-norm continuity in Heisenberg picture.  This
+completes theorem.
+
 \subsection{Nested static-local ramp and exact return}
 
 We prove Theorem \ref{thm:nestedramp}.  Write $p_j(x)$ for indicator that

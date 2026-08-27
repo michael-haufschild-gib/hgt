@@ -63,7 +63,7 @@ theorem levinsonY_line_mul_hardyZ (lam : ℝ) (τ : ℝ) :
 
 /-! ## Analyticity of the detector -/
 
-theorem analyticAt_riemannZeta_of_ne_one {s : ℂ} (hs : s ≠ 1) :
+private theorem analyticAt_riemannZeta_of_ne_one {s : ℂ} (hs : s ≠ 1) :
     AnalyticAt ℂ riemannZeta s := by
   have hopen : IsOpen {z : ℂ | z ≠ 1} := isOpen_ne
   have hana : AnalyticOnNhd ℂ riemannZeta {z : ℂ | z ≠ 1} :=

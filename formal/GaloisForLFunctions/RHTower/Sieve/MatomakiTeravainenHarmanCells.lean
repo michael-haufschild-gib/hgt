@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.Sieve.MatomakiTeravainenPieceClassification
+import GaloisForLFunctions.RHTower.Sieve.MatomakiTeravainenAdjacentSchedule
 
 /-!
 # Aligned cells for the Harman pair and triple terms
@@ -75,6 +75,19 @@ theorem adjacentBlock_eq_or_lt_of_prime_lt
   · exact Or.inl (Fin.ext heq)
   · exact Or.inr hltIdx
 
+/-- Strictly ordered adjacent block indices make the corresponding prime order automatic. -/
+theorem prime_lt_of_adjacentBlock_index_lt
+    {t : ℕ} {endpoint : ℕ → ℕ} (hmono : Monotone endpoint)
+    {i₁ i₂ : Fin t} {q₁ q₂ : ℕ}
+    (hidx : i₂.1 < i₁.1)
+    (hq₁ : q₁ ∈ mtAdjacentPrimeBlock endpoint i₁)
+    (hq₂ : q₂ ∈ mtAdjacentPrimeBlock endpoint i₂) :
+    q₂ < q₁ := by
+  have hq₁Lower := (mem_primesIco.mp hq₁).1
+  have hq₂Upper := (mem_primesIco.mp hq₂).2.1
+  have hendpointLe : endpoint (i₂.1 + 1) ≤ endpoint i₁.1 := hmono (by omega)
+  omega
+
 /-- Lower block scales lie strictly below the actual Harman pair product. -/
 theorem adjacentBlock_lower_product_lt
     {t : ℕ} {endpoint : ℕ → ℕ} (hendpoint : ∀ i, 1 ≤ endpoint i)
@@ -121,6 +134,63 @@ theorem adjacentBlock_product_le_upper
     _ ≤ mtAdjacentBlockUpperScale endpoint i₁ *
         mtAdjacentBlockUpperScale endpoint i₂ ^ 4 :=
       mul_le_mul_of_nonneg_left h₂pow hupper₁_nonneg
+
+/-- One cell upper-product is strictly below the fifth power of its block-width dilation times
+the actual Harman pair product. -/
+theorem adjacentBlock_upper_product_lt_dilated_actual
+    {t : ℕ} {endpoint : ℕ → ℕ} (hendpoint : ∀ i, 1 ≤ endpoint i)
+    {i₁ i₂ : Fin t} {q₁ q₂ : ℕ} {δ : ℝ}
+    (hδ : 0 ≤ δ)
+    (hband : ∀ i : Fin t,
+      mtAdjacentBlockUpperScale endpoint i ≤
+        (1 + δ) * mtAdjacentBlockLowerScale endpoint i)
+    (hq₁ : q₁ ∈ mtAdjacentPrimeBlock endpoint i₁)
+    (hq₂ : q₂ ∈ mtAdjacentPrimeBlock endpoint i₂) :
+    mtAdjacentBlockUpperScale endpoint i₁ *
+        mtAdjacentBlockUpperScale endpoint i₂ ^ 4 <
+      (1 + δ) ^ 5 * ((q₁ : ℝ) * (q₂ : ℝ) ^ 4) := by
+  have hq₁Mem := (mem_mtAdjacentPrimeBlock_scale_iff hendpoint i₁ q₁).mp hq₁
+  have hq₂Mem := (mem_mtAdjacentPrimeBlock_scale_iff hendpoint i₂ q₂).mp hq₂
+  have hdilation : 0 < 1 + δ := by linarith
+  have hupper₁ : mtAdjacentBlockUpperScale endpoint i₁ < (1 + δ) * (q₁ : ℝ) :=
+    (hband i₁).trans_lt (mul_lt_mul_of_pos_left hq₁Mem.2.1 hdilation)
+  have hupper₂ : mtAdjacentBlockUpperScale endpoint i₂ < (1 + δ) * (q₂ : ℝ) :=
+    (hband i₂).trans_lt (mul_lt_mul_of_pos_left hq₂Mem.2.1 hdilation)
+  have hq₁Pos : 0 < (q₁ : ℝ) := by exact_mod_cast hq₁Mem.1.pos
+  have hq₂Pos : 0 < (q₂ : ℝ) := by exact_mod_cast hq₂Mem.1.pos
+  have hupper₂Pos : 0 < mtAdjacentBlockUpperScale endpoint i₂ :=
+    hq₂Pos.trans_le hq₂Mem.2.2
+  have hupper₂Pow : mtAdjacentBlockUpperScale endpoint i₂ ^ 4 <
+      ((1 + δ) * (q₂ : ℝ)) ^ 4 :=
+    pow_lt_pow_left₀ hupper₂ hupper₂Pos.le (by norm_num)
+  calc
+    mtAdjacentBlockUpperScale endpoint i₁ *
+        mtAdjacentBlockUpperScale endpoint i₂ ^ 4 <
+      ((1 + δ) * (q₁ : ℝ)) * mtAdjacentBlockUpperScale endpoint i₂ ^ 4 :=
+        mul_lt_mul_of_pos_right hupper₁ (pow_pos hupper₂Pos 4)
+    _ < ((1 + δ) * (q₁ : ℝ)) * ((1 + δ) * (q₂ : ℝ)) ^ 4 :=
+      mul_lt_mul_of_pos_left hupper₂Pow (mul_pos hdilation hq₁Pos)
+    _ = (1 + δ) ^ 5 * ((q₁ : ℝ) * (q₂ : ℝ) ^ 4) := by ring
+
+/-- A threshold-crossing cell places its actual pair in a multiplicative window of exact relative
+width `(1+δ)^5`. -/
+theorem adjacentBlock_thresholdBoundary_implies_harmanWindow
+    {t : ℕ} {endpoint : ℕ → ℕ} (hendpoint : ∀ i, 1 ≤ endpoint i)
+    {i₁ i₂ : Fin t} {q₁ q₂ : ℕ} {δ E : ℝ}
+    (hδ : 0 ≤ δ)
+    (hband : ∀ i : Fin t,
+      mtAdjacentBlockUpperScale endpoint i ≤
+        (1 + δ) * mtAdjacentBlockLowerScale endpoint i)
+    (hq₁ : q₁ ∈ mtAdjacentPrimeBlock endpoint i₁)
+    (hq₂ : q₂ ∈ mtAdjacentPrimeBlock endpoint i₂)
+    (hgeometry : (q₁ : ℝ) * (q₂ : ℝ) ^ 4 < E)
+    (hboundary : E ≤ mtAdjacentBlockUpperScale endpoint i₁ *
+      mtAdjacentBlockUpperScale endpoint i₂ ^ 4) :
+    E < (1 + δ) ^ 5 * ((q₁ : ℝ) * (q₂ : ℝ) ^ 4) ∧
+      (q₁ : ℝ) * (q₂ : ℝ) ^ 4 < E := by
+  exact ⟨hboundary.trans_lt
+    (adjacentBlock_upper_product_lt_dilated_actual
+      hendpoint hδ hband hq₁ hq₂), hgeometry⟩
 
 /-- Every admissible Harman pair cell is either uniformly good or an explicit threshold-crossing
 boundary cell. -/

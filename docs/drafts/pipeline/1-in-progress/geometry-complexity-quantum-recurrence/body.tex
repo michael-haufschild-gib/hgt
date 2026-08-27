@@ -37,9 +37,10 @@ measurement and finite observation.
 
 \subsection{First-principles scope}
 
-Every theorem starts from an explicitly stated Hamiltonian or contraction,
-the Born rule for specified states and effects, and a stated metric or target
-class.  Deductions use spectral decomposition, unitary evolution,
+Every theorem either starts from an explicitly stated Hamiltonian or
+contraction, or proves existence inside an explicitly stated coefficient
+class.  States, effects, metrics and target classes are specified.  Deductions
+use Born rule, spectral decomposition, unitary evolution,
 compact-group characters, exact arithmetic relations, probability measures
 and operator-norm circuit approximation.  Randomness, chaos, eigenstate
 thermalization and random-matrix statistics are never hidden premises.
@@ -208,8 +209,10 @@ commuting l-bits.  First-hit, collision and thermodynamic laws quantify two
 sides of this boundary.  Born and circuit results are Law III with concrete
 target families, not independent complexity postulates.  Law IV finally
 explains why finite records cannot certify completed arithmetic.  One
-explicit static nearest-neighbour family closes loop with finite-time
-complexity growth, exact recurrence and reflected descent.
+countable static nearest-neighbour field closes finite-to-infinite loop with
+compatible ramps, circuit-hard excursions, recurrence and UHF dynamics.  One
+explicit commuting family separately supplies exact recurrence, reflected
+descent and failure of pointwise monotonicity.
 
 \section{Law I: loss selects the persistent carrier}
 
@@ -913,7 +916,105 @@ generic bounded-weight Pauli Hamiltonians satisfying second inequality in
 benchmark at every time.
 \end{theorem}
 
-\subsubsection{One nested local path: ramp, return and thermodynamic completion}
+\subsubsection{One field across growth, hard excursions, recurrence and the thermodynamic limit}
+
+The preceding target laws are finite-dimensional.  We now make size
+compatibility literal.  On the countable qubit path, let
+\begin{equation}
+ H_n(a)=\sum_{j=0}^{n-1}\sum_{\alpha=1}^{3}
+   a_{j,\alpha}\sigma_j^\alpha
+ +\sum_{j=0}^{n-2}\sum_{\alpha,\beta=1}^{3}
+   a_{j,\alpha\beta}\sigma_j^\alpha\sigma_{j+1}^\beta,
+ \qquad n\ge3,                                      \label{eq:samefieldH}
+\end{equation}
+where every $H_n(a)$ is the literal restriction of one coefficient field
+$a$.  Let $c$ be the nonscalar Pauli expansion of the infinite nested
+$P_{11}$ background in \eqref{eq:nestedH}, and give every onsite or edge
+coordinate at position $j$ the open radius
+\begin{equation}
+ r_j=\frac{10^{-6}}{(j+1)^2}.                         \label{eq:samefieldradius}
+\end{equation}
+For an $n$-qubit two-qubit circuit $C$, write $\#_2(C)$ for gate count and
+put
+\begin{equation}
+ s_n=\left\lfloor\frac{2^n}{64(n+1)}\right\rfloor,
+ \qquad
+ \mathcal L_{n,s}=\{zC:|z|=1,\ \#_2(C)\le s\}.       \label{eq:samefieldtarget}
+\end{equation}
+Gates are arbitrary continuous two-qubit unitaries; no geometric restriction
+is imposed on approximating circuit.
+
+\begin{theorem}[Same-field finite-to-thermodynamic recurrence--complexity law]
+\label{thm:samefield}
+There exists one coefficient field $a$ in \eqref{eq:samefieldH} with following
+properties.
+\begin{enumerate}[leftmargin=1.7em]
+\item It is coordinatewise close to nested background,
+      $|a_\ell-c_\ell|<r_j$ for every coordinate $\ell$ at position $j$, and
+      $\sum_\ell|a_\ell|<\infty$.  Thus it is static, one-dimensional,
+      nearest-neighbour and bounded in total interaction norm.
+\item Every finite $H_n(a)$ has simple, maximally projective spectrum.  For
+      every $n\ge3$ and $\eta>0$ there is $B_{n,\eta}\ge0$ such that every
+      interval $[b,b+B_{n,\eta}]$ contains $t$ and $z\in\C$, $|z|=1$, with
+      \begin{equation}
+       \|\ee^{-\ii tH_n(a)}-zI\|_{2\to2}<\eta .       \label{eq:samefieldrecurrence}
+      \end{equation}
+\item On paired prefixes the same field has a quantitative laboratory ramp.
+      If $N,K\in\N$, $8\le K$, $8K\le N+2$, $0<\eta\le1/100$, and
+      \begin{equation}
+       128\pi\eta K\le t<128\pi\eta(K+1),             \label{eq:samefieldrampwindow}
+      \end{equation}
+      then every circuit approximating
+      $\ee^{-\ii tH_{2N+4}(a)}$ within operator error $\eta$ contains at
+      least $K$ two-qubit gates.
+\item For every sufficiently large $n$, same orbit has perpetual consecutive
+      excursions from complete target $\mathcal L_{n,s_n}$.  More precisely,
+      there are $W_n>0$ and $G_n,B_n\ge0$ such that for every $b\in\R$ one
+      can choose
+      \begin{align}
+       &u\in[b,b+G_n],\qquad
+       t_-\in[u-B_n,u],\qquad
+       t_+\in[u+W_n,u+W_n+B_n],                       \label{eq:samefieldtimes}\\
+       &t_-<t_+,\qquad W_n\le t_+-t_-,                \notag
+      \end{align}
+      with both endpoint evolutions within $1/20$ of
+      $\mathcal L_{n,s_n}$, whereas for every $t\in(t_-,t_+)$ and every
+      $V\in\mathcal L_{n,s_n}$,
+      \begin{equation}
+       \|\ee^{-\ii tH_n(a)}-V\|_{2\to2}>\frac1{20}.   \label{eq:samefieldhard}
+      \end{equation}
+      Thus $t_+$ is a literal first re-entry after $t_-$ into closed
+      $1/20$ circuit tube, and such excursions occur after every starting
+      epoch.
+\item The same coefficients define a bounded self-adjoint element
+      $H_\infty(a)$ of standard qubit UHF algebra
+      \cite{BratteliRobinson1997} and
+      \begin{equation}
+       U_\infty(t)=\ee^{-\ii tH_\infty(a)},\qquad
+       \alpha_t(A)=U_\infty(t)A U_\infty(t)^*          \label{eq:samefieldUHF}
+      \end{equation}
+      form a norm-continuous unitary group; conjugation defines a point-norm
+      continuous one-parameter group of star automorphisms.  For every $T\ge0$ and every
+      UHF observable $A$, canonical prefix embeddings satisfy
+      \begin{align}
+       H_n(a)&\longrightarrow H_\infty(a),             \label{eq:samefieldHconv}\\
+       \sup_{|t|\le T}\|\ee^{-\ii tH_n(a)}-U_\infty(t)\|&\longrightarrow0,
+                                                               \label{eq:samefieldUconv}\\
+       \sup_{|t|\le T}\|\ee^{-\ii tH_n(a)}A\ee^{\ii tH_n(a)}
+                    -\alpha_t(A)\|&\longrightarrow0              \label{eq:samefieldAconv}
+      \end{align}
+\end{enumerate}
+\end{theorem}
+
+This theorem closes three separations left by per-size results.  No
+Hamiltonian is redrawn when size changes; ramp, hard excursion, re-entry and
+recurrence use literal prefixes of same field; and finite dynamics converge
+to standard infinite-volume dynamics.  It is not a translation-invariant
+construction: absolute summability forces position-dependent decay.  It also
+does not assert recurrence or circuit complexity of $U_\infty(t)$ itself.
+Those are different infinite-volume questions.
+
+\subsubsection{An exact-return companion: nested local ramp and reflection}
 
 Number qubits consecutively along a path and write
 $P_{a,b}=|11\rangle\!\langle11|_{a,b}$.  For $L\ge1$, define
@@ -1155,6 +1256,13 @@ to find such circuit does not experimentally prove minimality.  The exact return
 period grows rapidly with $L$, so useful near-term tests are small-volume
 checks of mechanism rather than direct evidence for thermodynamic limit.
 
+The same-field Theorem \ref{thm:samefield} is not itself a device blueprint.
+Its simultaneous coefficient selection is existential, and no finite
+experiment realizes UHF limit.  A laboratory test of that stronger theorem
+would first require one explicitly calibrated coefficient witness and
+finite-size error bounds for chosen observables.  We therefore attach no
+experimental confirmation claim to its infinite-volume clause.
+
 These protocols probe different arrows in Figure \ref{fig:architecture}.
 None can replace mathematical proof, and no single protocol validates the whole
 paper.  Together they distinguish loss, hidden phase constraints,
@@ -1197,9 +1305,13 @@ That hierarchy has following physical realizations and consequences:
       certificate family, and a local finite-record construction compatible
       with every later return probability;
 \item static circuit-target occupation and recurrent-hardness laws, plus one
-      explicit nearest-neighbour path with a finite-time linear complexity
-      envelope, exact return, exact reflected descent, and a certified failure
-      of pointwise monotonicity inside that envelope.
+      countable nearest-neighbour coefficient field whose literal prefixes
+      share a laboratory complexity floor, near-Hilbert circuit-hard
+      excursion--re-entry, syndetic projective recurrence and compact-time
+      convergence to one UHF dynamics; and one explicit commuting path with
+      a two-sided finite-time linear envelope, exact return, exact reflected
+      descent, and a certified failure of pointwise monotonicity inside that
+      envelope.
 \end{enumerate}
 
 Completed-time densities complement rather than replace current first-return
@@ -1213,10 +1325,22 @@ autocorrelation results address reconstruction from correlation data
 survival quotients and proves that resolved recurrence recovers precisely the
 projective spectral relation lattice.
 
-Complexity result is complementary to saturation theorems for random circuits
-and stochastic Hamiltonian evolution \cite{OszmaniecEtAl2024} and to jump
-theorems for unitarily invariant random Hamiltonians
-\cite{KotowskiOszmaniecHorodecki2025}.  It also respects obstruction that
+Full growth--saturation--recurrence theorems currently concern random circuits
+and stochastic Hamiltonian evolution \cite{OszmaniecEtAl2024}.  A static,
+time-independent, translation-invariant one-dimensional Hamiltonian can
+support exponentially long complexity growth through universal encoded
+simulation, but known proof uses computational-complexity assumptions
+\cite{BohdanowiczBrandao2017}.  Theorem \ref{thm:samefield} addresses a
+different frontier: unconditional existence of one ordinary nearest-neighbour
+qubit Pauli field, compatible at every size, with a laboratory lower ramp,
+arbitrarily late near-Hilbert circuit-free intervals with consecutive
+re-entry, syndetic finite-volume recurrence and a standard UHF thermodynamic
+dynamics.  It does not prove exponential-duration growth, near-maximal
+saturation, a recurrence timescale uniform in volume, typicality, translation
+invariance or infinite-volume recurrence.
+
+These results are also complementary to jump theorems for unitarily invariant
+random Hamiltonians \cite{KotowskiOszmaniecHorodecki2025}.  They respect the obstruction that
 constant-local time-independent Hamiltonian ensembles need not become Haar
 random \cite{CuiEtAl2025}.  A static geometrically local SFF ramp has recently
 been proved by a clock embedding \cite{Ippoliti2026}; our completed-time rank
@@ -1264,10 +1388,15 @@ arbitrary onsite and edge terms on the supplied finite graph and do not
 assume translation invariance.  The countable results concern pure-point
 diagonal spectra.  The l-bit construction supplies a bounded self-adjoint
 Hamiltonian, strongly continuous unitary dynamics and uniform finite-volume
-completion for one absolutely summable diagonal field.  The nested path is
-static and geometrically nearest-neighbour, with position-dependent decaying
-couplings.  These hypotheses are part of the models, not hidden claims about
-all local or disordered systems.
+completion for one absolutely summable diagonal field.  Theorem
+\ref{thm:samefield} instead supplies standard quasi-local $C^*$ dynamics for
+one noncommuting nearest-neighbour Pauli field and compact-time convergence of
+literal finite prefixes.  Its absolute summability and position-dependent
+decay are essential; no translation-invariant or infinite-volume recurrence
+claim follows.  The exact-return nested path is static and geometrically
+nearest-neighbour with a different, commuting arithmetic structure.  These
+hypotheses are part of models, not hidden claims about all local or disordered
+systems.
 
 Circuit complexity is included only where recurrence geometry controls a
 precisely defined target set.  Completed target occupation does not imply Haar
@@ -1296,7 +1425,10 @@ the same phase hull is occupied by a specified target.  Their dimensions differ
 because carrier, constraints, weights, observers and record classes differ.
 No extra complexity-dynamics postulate is needed to obtain return-forced
 reflection, while the explicit local path shows why reflection does not imply
-pointwise growth before midpoint.
+pointwise growth before midpoint.  The same-field theorem supplies missing
+finite-to-infinite coherence: early ramp, late hard excursion and recurrence
+belong to literal restrictions of one countable Hamiltonian, and those
+restrictions converge to one infinite-chain dynamics.
 
 For interested non-specialists, the central message is concrete.  A system may
 look recurrent or nonrecurrent depending on what survived and what is being
@@ -1318,6 +1450,7 @@ They then develop interaction conversion, static-path and arbitrary-graph
 genericity, sharp path first-hit clocks, exact commuting l-bit
 classification, completed return densities, observer deadlines, Born-record
 return, l-bit Hilbert dynamics, circuit-target bounds, countable saturation
-and finite-record ambiguity.  Final construction proves bounded
-thermodynamic completion, finite-time circuit ramp, exact return and
-reflection for nested static path \eqref{eq:nestedH}.
+and finite-record ambiguity.  Final constructions prove one compatible Pauli
+field from finite ramps and recurrent hard excursions to UHF dynamics,
+followed by bounded thermodynamic completion, finite-time circuit ramp, exact
+return and reflection for nested static path \eqref{eq:nestedH}.

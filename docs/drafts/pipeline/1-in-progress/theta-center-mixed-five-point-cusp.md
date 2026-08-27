@@ -155,3 +155,23 @@ Exact comparison now separates the statements. Planat--Solé prove negativity of
 - 2026-08-27 — sharpened Gaussian budgets to `100/1999` and `20/999999`; proved dominant/stable monomial-ray factors `16`/`3`, full one-particle budget, `Σq⁷r^(q-1)<1/3000`, and strict absorption of complete even-Fock budget. Exact connector to literal logarithmic J8 remains.
 - 2026-08-27 — proved complete loss nonnegativity and strict Fock-reserve landing into literal normalized ordinary eighth source jet. Remaining connector is exact ordered-convolution to negative-even Bell-grade identification.
 - 2026-08-27 — proved exact literal order-eight Bell-grade decomposition, positivity of favorable odd grades, four/six/eight-factor normalized-moment laws, exact full monomial trace, and absorption of Bell grades four, six, and eight into completed higher-even Fock loss. Exact log-J8 positivity is reduced to grade-two ordered pair trace.
+
+**Exact pair trace and literal log-J8 positivity `[PROVED HERE]`.** Product exponential tilting is exactly the product Gibbs density. Absolute integrability permits expansion of the spectral product into the ordered atom-pair sum. For every atom pair, finite shifted incomplete-Laplace moment algebra identifies the explicit point/ray score mass with its literal product-measure integral; this includes the ray--ray sector without a new convolution axiom. Countable Fubini and the exact four-sector split then give
+```text
+algebraicPairTrace₈ = pairSectorMass₈.
+```
+Consequently Bell grade two is at most `(128/P²)·pairSectorMass₈`. Since `P=1+r≥1`, this is at most `(256/P)·pairSectorMass₈`, matching the higher-even coefficient. The ordinary leading trace contains `(256/P)` times dominant one-particle mass, so the strict positive Fock reserve survives after every negative even Bell grade. Favorable odd grades yield the literal theorem
+```text
+0 < d⁸/dx⁸ log(thetaCuspLikelihoodPartition(thetaCuspLikelihoodCoordinate x)),
+    for every x ≥ 0.
+```
+All connector and positivity theorems pass direct Lean, targeted module builds, and axiom audit with only `propext`, `Classical.choice`, and `Quot.sound`. This closes the global order-eight logarithmic likelihood burden; next D1 burden is transfer of this signed eighth likelihood input through the full reflection determinant polynomial.
+
+**New Lean artifacts.**
+
+- `RHTower/ThetaCuspLikelihoodEighthPairTraceIntegral.lean`: exact algebraic-pair/product-integral identity.
+- `RHTower/ThetaCuspLikelihoodEighthAtomPairTrace.lean`: exact point/ray atom-pair integral formula, including symbolic ray--ray shifted moments.
+- `RHTower/ThetaCuspLikelihoodEighthPairSectorTrace.lean`: product tilting, absolutely convergent atom expansion, four-sector reassembly, and `algebraicPairTrace₈ = pairSectorMass₈`.
+- `RHTower/ThetaCuspLikelihoodEighthLogPositivity.lean`: coefficient-matched even-loss absorption and strict literal logarithmic J8 positivity on `x≥0`.
+
+- 2026-08-27 — proved exact tilted-product trace, exact atom-pair trace including ray--ray sector, absolutely convergent four-sector pair reassembly, and strict literal logarithmic eighth likelihood jet positivity for all physical sources. Global D1 transfer remains active.

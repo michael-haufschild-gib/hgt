@@ -97,6 +97,10 @@ proof-assistant or internal-corpus references.
 | Arbitrary tree phase-tail obstruction against arbitrary nonlocal and non-diagonal support-certified one/two-qubit circuits | `StaticLocalLaboratoryComplexityGrowthLaw.treePhase_twoGateCount_gt`; cut core `exists_tree_cut_separating_circuit` | `TreePhaseTailCapacityLower.lean`; `CircuitTreeCutCertificate.lean` |
 | Free scalar/one-qubit centering of omitted controlled phases and exact residual identity | `StaticLocalLaboratoryComplexityGrowthLaw.centeredPairCircuit_matrix`; `centeredPairCircuit_twoGateCount`; `p11_centered_residual` | `CenteredControlledPhaseGate.lean` |
 | Concrete nearby-time failure of all-pairs monotonicity inside nested laboratory window: early complexity at least `1514`, late complexity at most `1513`, strict reversal and `not MonotoneOn` | `monotonicityCounterEarly_complexity_lower`; `monotonicityCounterLate_complexity_upper`; `counterLateCircuit_approximates`; `monotonicityCounter_strict_complexity_reversal`; `nestedOperatorTwoGateComplexity_not_monotoneOn_laboratoryWindow` | `NestedMonotonicityLower.lean`; `NestedMonotonicityUpper.lean`; `NestedMonotonicityCounterexample.lean` |
+| One countable static nearest-neighbour Pauli field, selected once, with absolutely summable coefficients; every finite prefix maximally projective and syndetically recurrent; paired-prefix laboratory ramp; eventually near-Hilbert continuous-circuit excursion and consecutive re-entry; bounded self-adjoint UHF Hamiltonian and point-norm continuous automorphism group; literal-prefix Hamiltonian convergence and compact-time Schrödinger/Heisenberg convergence | `HTGeometry.exists_thermodynamicSameFieldLifecycle` | `ThermodynamicSameFieldUHFRecurrenceComplexityLaw.lean` |
+| Every finite maximally projective Hamiltonian has projective operator-norm returns in every interval of one fixed finite length at every positive resolution; specialization to every literal selected path prefix | `HTGeometry.maximallyProjective_unitaryEvolution_projectiveReturn_syndetic`; `HTGeometry.infinitePathPrefix_projectiveReturn_syndetic` | `ThermodynamicSameFieldUHFRecurrenceComplexityLaw.lean` |
+| Exact UHF support: coherent local Pauli embeddings, absolutely summable bounded self-adjoint generator, continuous unitary group and point-norm automorphism group | `HTGeometry.infinitePathUHFHamiltonian`; `HTGeometry.isSelfAdjoint_infinitePathUHFHamiltonian`; `HTGeometry.infinitePathUHFDynamics`; `HTGeometry.continuous_infinitePathUHFDynamics_apply`; `HTGeometry.infinitePathUHFDynamics_add_apply` | `QubitUHFLocalPauli.lean`; `ThermodynamicPathUHFDynamics.lean` |
+| Literal finite-prefix partial-sum identity, norm convergence of generators and uniform-on-compact Schrödinger and Heisenberg convergence | `HTGeometry.embeddedInfinitePathPrefixHamiltonian_eq_sum`; `HTGeometry.tendsto_embeddedInfinitePathPrefixHamiltonian`; `HTGeometry.embeddedInfinitePathPrefixEvolution_uniformOnCompact`; `HTGeometry.embeddedInfinitePathPrefixHeisenberg_uniformOnCompact` | `ThermodynamicPathUHFPrefixConvergence.lean` |
 
 ## Law IV: inference boundary
 
@@ -147,6 +151,11 @@ Targeted 27 August audits of
 `universalQuantumRecurrenceInformationHierarchyLaw` also report only
 `[propext, Classical.choice, Quot.sound]`; both source checks and targeted
 module builds passed.
+Targeted 27 August source checks and build of
+`ThermodynamicSameFieldUHFRecurrenceComplexityLaw` passed.  Axiom audit of
+same-field capstone, recurrence theorem, UHF generator, literal-prefix
+identity and both compact-time convergence laws reports only
+`[propext, Classical.choice, Quot.sound]`.
 Repository formal lint forbids `sorry`, `admit`, project `axiom`,
 `opaque` and `unsafe` declarations.
 
@@ -157,4 +166,5 @@ Repository formal lint forbids `sorry`, `admit`, project `axiom`,
 - No Haar randomization by static bounded-local Hamiltonians.
 - No bounded-degree geometry claim for bounded-weight all-to-all Pauli terms.
 - No infinite-volume orbit recurrence, infinite-system circuit complexity or interchange of size and time limits.
+- No translation invariance, volume-uniform recurrence deadline or explicit numerical witness for existential same-field selection.
 - No physical-space reconstruction without supplied subsystem factorization.

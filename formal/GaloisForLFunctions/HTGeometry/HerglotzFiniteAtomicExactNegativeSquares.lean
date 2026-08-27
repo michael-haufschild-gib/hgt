@@ -74,7 +74,7 @@ theorem upper_sub_star_ne_zero {z w : ℂ}
     Complex.zero_im, sub_neg_eq_add] at him
   linarith
 
-def upperCauchyFeature {N : ℕ} (z : Fin N → ℂ)
+private def upperCauchyFeature {N : ℕ} (z : Fin N → ℂ)
     (j : Fin N) (t : ℝ) : ℂ :=
   ((t : ℂ) - z j)⁻¹
 

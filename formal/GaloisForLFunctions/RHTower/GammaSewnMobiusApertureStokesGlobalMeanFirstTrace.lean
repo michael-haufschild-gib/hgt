@@ -1325,7 +1325,11 @@ private theorem gammaSewnCriticalPhysicalPluckerGlobalMean_pointwiseSelfKernel_l
     _ = (∑' z : ℕ × ℕ,
         gammaSewnCriticalPhysicalPluckerGlobalMeanOccupationIncidenceKernel (z, u)) * total :=
       tsum_mul_right
-    _ = total ^ 2 := by rfl
+    _ = total ^ 2 := by
+      rw [show (∑' z : ℕ × ℕ,
+          gammaSewnCriticalPhysicalPluckerGlobalMeanOccupationIncidenceKernel (z, u)) =
+          total by rfl]
+      ring
   rw [tsum_mul_left]
   exact mul_le_mul_of_nonneg_left hsquare_le <|
     (gammaSewnCriticalPrimeDepthPacket_node_pos u.1
@@ -1449,6 +1453,113 @@ theorem gammaSewnCriticalPhysicalPlucker_packetSelfKernel_eq (z : ℕ × ℕ) :
       simp [hne]
     simp [hkernel]
 
+/-- Rank-two coordinate mass and reciprocal-node Cauchy give the exact resistance relaxation of
+one packet's self-collision. -/
+theorem gammaSewnCriticalPhysicalPlucker_packetCoordinateResistanceCauchy
+    (z : ℕ × ℕ) :
+    4 ≤ gammaSewnCriticalPhysicalPlucker_packetResistance z *
+      ∑ i : Fin 4,
+        gammaSewnCriticalPrimeDepthPacket_node z.1
+            (gammaSewnCriticalAdjacentPrime_lower z.2)
+            (gammaSewnCriticalAdjacentPrime_upper z.2) i *
+          gammaSewnCriticalAdjacentPrime_PluckerCoordinateMean z i ^ 2 := by
+  let node : Fin 4 → ℝ := fun i =>
+    gammaSewnCriticalPrimeDepthPacket_node z.1
+      (gammaSewnCriticalAdjacentPrime_lower z.2)
+      (gammaSewnCriticalAdjacentPrime_upper z.2) i
+  let mean : Fin 4 → ℝ := gammaSewnCriticalAdjacentPrime_PluckerCoordinateMean z
+  let a : Fin 4 → ℝ := fun i => Real.sqrt (node i) * mean i
+  let b : Fin 4 → ℝ := fun i => Real.sqrt (1 / node i)
+  have hnode (i : Fin 4) : 0 < node i :=
+    gammaSewnCriticalPrimeDepthPacket_node_pos z.1
+      (gammaSewnCriticalAdjacentPrime_lower z.2)
+      (gammaSewnCriticalAdjacentPrime_upper z.2) i
+  have hab (i : Fin 4) : a i * b i = mean i := by
+    have hsqrt : Real.sqrt (node i) * Real.sqrt (1 / node i) = 1 := by
+      rw [← Real.sqrt_mul (hnode i).le]
+      field_simp [(hnode i).ne']
+      norm_num
+    dsimp [a, b]
+    calc
+      _ = (Real.sqrt (node i) * Real.sqrt (1 / node i)) * mean i := by ring
+      _ = _ := by rw [hsqrt, one_mul]
+  have ha (i : Fin 4) : a i ^ 2 = node i * mean i ^ 2 := by
+    dsimp [a]
+    rw [mul_pow, Real.sq_sqrt (hnode i).le]
+  have hb (i : Fin 4) : b i ^ 2 = 1 / node i := by
+    dsimp [b]
+    rw [Real.sq_sqrt (div_nonneg (by norm_num) (hnode i).le)]
+  have hcs := Finset.sum_mul_sq_le_sq_mul_sq Finset.univ a b
+  rw [Finset.sum_congr rfl (fun i _ => hab i),
+    Finset.sum_congr rfl (fun i _ => ha i),
+    Finset.sum_congr rfl (fun i _ => hb i)] at hcs
+  have hmean : ∑ i, mean i = 2 :=
+    sum_gammaSewnCriticalAdjacentPrime_PluckerCoordinateMean z
+  have hres : (∑ i, 1 / node i) =
+      gammaSewnCriticalPhysicalPlucker_packetResistance z := by
+    rw [gammaSewnCriticalPhysicalPlucker_packetResistance,
+      Finset.sum_image fun i _ j _ hij =>
+        gammaSewnCriticalAdjacentPrime_PluckerPhysicalLabel_injective z hij]
+    apply Finset.sum_congr rfl
+    intro i _
+    rw [← gammaSewnCriticalPhysicalPlucker_packetNode_eq_physicalNode_label]
+  change 4 ≤ gammaSewnCriticalPhysicalPlucker_packetResistance z *
+    ∑ i, node i * mean i ^ 2
+  rw [← hres]
+  nlinarith
+
+theorem gammaSewnCriticalPhysicalPlucker_packetSelfCollisionCapacity
+    (z : ℕ × ℕ) :
+    4 * (gammaSewnCriticalAdjacentPrime_PluckerBlockWeight z ^ 2 /
+      gammaSewnCriticalPhysicalPlucker_packetResistance z) ≤
+      gammaSewnCriticalAdjacentPrime_PluckerBlockWeight z ^ 2 *
+        ∑ i : Fin 4,
+          gammaSewnCriticalPrimeDepthPacket_node z.1
+              (gammaSewnCriticalAdjacentPrime_lower z.2)
+              (gammaSewnCriticalAdjacentPrime_upper z.2) i *
+            gammaSewnCriticalAdjacentPrime_PluckerCoordinateMean z i ^ 2 := by
+  have hdiv : 4 / gammaSewnCriticalPhysicalPlucker_packetResistance z ≤
+      ∑ i : Fin 4,
+        gammaSewnCriticalPrimeDepthPacket_node z.1
+            (gammaSewnCriticalAdjacentPrime_lower z.2)
+            (gammaSewnCriticalAdjacentPrime_upper z.2) i *
+          gammaSewnCriticalAdjacentPrime_PluckerCoordinateMean z i ^ 2 :=
+    (div_le_iff₀ (gammaSewnCriticalPhysicalPlucker_packetResistance_pos z)).2 <| by
+      simpa [mul_comm] using
+        gammaSewnCriticalPhysicalPlucker_packetCoordinateResistanceCauchy z
+  have hmul := mul_le_mul_of_nonneg_left hdiv
+    (sq_nonneg (gammaSewnCriticalAdjacentPrime_PluckerBlockWeight z))
+  calc
+    4 * (gammaSewnCriticalAdjacentPrime_PluckerBlockWeight z ^ 2 /
+        gammaSewnCriticalPhysicalPlucker_packetResistance z) =
+      gammaSewnCriticalAdjacentPrime_PluckerBlockWeight z ^ 2 *
+        (4 / gammaSewnCriticalPhysicalPlucker_packetResistance z) := by ring
+    _ ≤ _ := hmul
+
+theorem summable_gammaSewnCriticalPhysicalPlucker_packetSelfCollision :
+    Summable (fun z : ℕ × ℕ =>
+      gammaSewnCriticalAdjacentPrime_PluckerBlockWeight z ^ 2 *
+        ∑ i : Fin 4,
+          gammaSewnCriticalPrimeDepthPacket_node z.1
+              (gammaSewnCriticalAdjacentPrime_lower z.2)
+              (gammaSewnCriticalAdjacentPrime_upper z.2) i *
+            gammaSewnCriticalAdjacentPrime_PluckerCoordinateMean z i ^ 2) := by
+  have hsymm :=
+    summable_gammaSewnCriticalPhysicalPluckerGlobalMean_selfKernel_double.prod_symm
+  have hnonneg : 0 ≤
+      fun zu : (ℕ × ℕ) × GammaSewnCriticalPhysicalPluckerIndex =>
+        gammaSewnCriticalPhysicalPluckerPhysicalNode zu.2 *
+          gammaSewnCriticalPhysicalPluckerGlobalMeanOccupationIncidenceKernel
+            (zu.1, zu.2) ^ 2 := by
+    intro zu
+    exact mul_nonneg
+      (gammaSewnCriticalPrimeDepthPacket_node_pos zu.2.1
+        (gammaSewnCriticalAdjacentPrime_lower zu.2.2)
+        (gammaSewnCriticalAdjacentPrime_upper zu.2.2) 0).le (sq_nonneg _)
+  have houter := (summable_prod_of_nonneg hnonneg).mp hsymm |>.2
+  exact houter.congr fun z =>
+    gammaSewnCriticalPhysicalPlucker_packetSelfKernel_eq z
+
 /-- Positive overlap creates only constructive interference: full collision dominates the
 simultaneous sum of all exact packet self-collisions, with no multiplicity loss. -/
 theorem gammaSewnCriticalPhysicalPlucker_globalPacketSelfCollision_le :
@@ -1462,9 +1573,59 @@ theorem gammaSewnCriticalPhysicalPlucker_globalPacketSelfCollision_le :
       ∑' u : GammaSewnCriticalPhysicalPluckerIndex,
         gammaSewnCriticalPhysicalPluckerPhysicalNode u *
           gammaSewnCriticalPhysicalPluckerGlobalMeanOccupationIncidenceAmplitude u ^ 2 := by
-  rw [← gammaSewnCriticalPhysicalPluckerGlobalMean_selfKernel_tsum_comm]
-  simpa only [gammaSewnCriticalPhysicalPlucker_packetSelfKernel_eq] using
-    gammaSewnCriticalPhysicalPluckerGlobalMean_selfKernel_row_le_collision
+  have h :
+      (∑' z : ℕ × ℕ, ∑' u : GammaSewnCriticalPhysicalPluckerIndex,
+          gammaSewnCriticalPhysicalPluckerPhysicalNode u *
+            gammaSewnCriticalPhysicalPluckerGlobalMeanOccupationIncidenceKernel (z, u) ^ 2) ≤
+        ∑' u : GammaSewnCriticalPhysicalPluckerIndex,
+          gammaSewnCriticalPhysicalPluckerPhysicalNode u *
+            gammaSewnCriticalPhysicalPluckerGlobalMeanOccupationIncidenceAmplitude u ^ 2 := by
+    rw [gammaSewnCriticalPhysicalPluckerGlobalMean_selfKernel_tsum_comm]
+    exact gammaSewnCriticalPhysicalPluckerGlobalMean_selfKernel_row_le_collision
+  simpa only [gammaSewnCriticalPhysicalPlucker_packetSelfKernel_eq] using h
+
+/-- The exact packet self-collision sum dominates its reciprocal-resistance relaxation by factor
+four, so the constructive-interference trace bound is genuinely stronger. -/
+theorem gammaSewnCriticalPhysicalPlucker_globalAdditiveCapacity_le_packetSelfCollision :
+    ∑' z : ℕ × ℕ,
+        gammaSewnCriticalAdjacentPrime_PluckerBlockWeight z ^ 2 /
+          gammaSewnCriticalPhysicalPlucker_packetResistance z ≤
+      ∑' z : ℕ × ℕ,
+        gammaSewnCriticalAdjacentPrime_PluckerBlockWeight z ^ 2 *
+          ∑ i : Fin 4,
+            gammaSewnCriticalPrimeDepthPacket_node z.1
+                (gammaSewnCriticalAdjacentPrime_lower z.2)
+                (gammaSewnCriticalAdjacentPrime_upper z.2) i *
+              gammaSewnCriticalAdjacentPrime_PluckerCoordinateMean z i ^ 2 := by
+  let capacity : (ℕ × ℕ) → ℝ := fun z =>
+    gammaSewnCriticalAdjacentPrime_PluckerBlockWeight z ^ 2 /
+      gammaSewnCriticalPhysicalPlucker_packetResistance z
+  let self : (ℕ × ℕ) → ℝ := fun z =>
+    gammaSewnCriticalAdjacentPrime_PluckerBlockWeight z ^ 2 *
+      ∑ i : Fin 4,
+        gammaSewnCriticalPrimeDepthPacket_node z.1
+            (gammaSewnCriticalAdjacentPrime_lower z.2)
+            (gammaSewnCriticalAdjacentPrime_upper z.2) i *
+          gammaSewnCriticalAdjacentPrime_PluckerCoordinateMean z i ^ 2
+  have hcapacity_nonneg (z : ℕ × ℕ) : 0 ≤ capacity z :=
+    div_nonneg (sq_nonneg _)
+      (gammaSewnCriticalPhysicalPlucker_packetResistance_pos z).le
+  have hcapacity_le (z : ℕ × ℕ) : capacity z ≤ self z := by
+    have hscaled := gammaSewnCriticalPhysicalPlucker_packetSelfCollisionCapacity z
+    change 4 * capacity z ≤ self z at hscaled
+    have hself_nonneg : 0 ≤ self z := by
+      exact mul_nonneg (sq_nonneg _) (Finset.sum_nonneg fun i _ =>
+        mul_nonneg
+          (gammaSewnCriticalPrimeDepthPacket_node_pos z.1
+            (gammaSewnCriticalAdjacentPrime_lower z.2)
+            (gammaSewnCriticalAdjacentPrime_upper z.2) i).le
+          (sq_nonneg _))
+    linarith
+  have hself_summable : Summable self :=
+    summable_gammaSewnCriticalPhysicalPlucker_packetSelfCollision
+  have hcapacity_summable : Summable capacity :=
+    Summable.of_nonneg_of_le hcapacity_nonneg hcapacity_le hself_summable
+  exact hcapacity_summable.tsum_le_tsum hcapacity_le hself_summable
 
 /-- One packet deposits its full rank-two occupation mass into its four physical labels; all
 other packets add nonnegative mass there. -/
@@ -1703,6 +1864,21 @@ theorem gammaSewnCriticalPhysicalPlucker_globalAdditiveCollisionCapacity :
   have hsummable : Summable capacity := summable_of_sum_le hcapacity_nonneg hfinite
   exact hsummable.tsum_le_of_sum_le hfinite
 
+/-- Closed arithmetic form of the global additive capacity lower bound. -/
+theorem gammaSewnCriticalPhysicalPlucker_globalAdditiveCollisionCapacity_closed :
+    ∑' z : ℕ × ℕ,
+        gammaSewnCriticalAdjacentPrime_PluckerBlockWeight z ^ 2 /
+          ((((z.1 : ℝ) + 1) ^ 2 + ((z.1 : ℝ) + 2) ^ 2) *
+            (1 / RHTower.gammaSewnMobiusApertureStokesSquaredReciprocalGapNode
+                (1 / 2) (gammaSewnCriticalAdjacentPrime_lower z.2, 0) +
+              1 / RHTower.gammaSewnMobiusApertureStokesSquaredReciprocalGapNode
+                (1 / 2) (gammaSewnCriticalAdjacentPrime_upper z.2, 0))) ≤
+      ∑' u : GammaSewnCriticalPhysicalPluckerIndex,
+        gammaSewnCriticalPhysicalPluckerPhysicalNode u *
+          gammaSewnCriticalPhysicalPluckerGlobalMeanOccupationIncidenceAmplitude u ^ 2 := by
+  simpa only [gammaSewnCriticalPhysicalPlucker_packetResistance_eq] using
+    gammaSewnCriticalPhysicalPlucker_globalAdditiveCollisionCapacity
+
 /-- Fully scalar conserved-occupation source law. -/
 theorem gammaSewnCriticalPhysicalPluckerGlobalMeanPolarizedNuclearTraceMass_eq_rawFirstMoment_sub_weighted_occupation_sq :
     gammaSewnCriticalPhysicalPluckerGlobalMeanPolarizedNuclearTraceMass =
@@ -1712,6 +1888,31 @@ theorem gammaSewnCriticalPhysicalPluckerGlobalMeanPolarizedNuclearTraceMass_eq_r
             gammaSewnCriticalPhysicalPluckerGlobalMeanOccupationIncidenceAmplitude u ^ 2 := by
   rw [gammaSewnCriticalPhysicalPluckerGlobalMeanPolarizedNuclearTraceMass_eq_rawFirstMoment_sub_incidenceAmplitude,
     gammaSewnCriticalPhysicalPluckerGlobalMeanCollisionEnergy_eq_weighted_occupation_sq]
+
+/-- Constructive-interference upper bound: subtract every exact packet self-collision from the raw
+first moment. Cross-packet overlap can only lower the completed trace further. -/
+theorem gammaSewnCriticalPhysicalPluckerGlobalMeanPolarizedNuclearTraceMass_le_rawFirstMoment_sub_packetSelfCollision :
+    gammaSewnCriticalPhysicalPluckerGlobalMeanPolarizedNuclearTraceMass ≤
+      gammaSewnCriticalPhysicalPluckerGlobalMeanRawFirstMoment -
+        ∑' z : ℕ × ℕ,
+          gammaSewnCriticalAdjacentPrime_PluckerBlockWeight z ^ 2 *
+            ∑ i : Fin 4,
+              gammaSewnCriticalPrimeDepthPacket_node z.1
+                  (gammaSewnCriticalAdjacentPrime_lower z.2)
+                  (gammaSewnCriticalAdjacentPrime_upper z.2) i *
+                gammaSewnCriticalAdjacentPrime_PluckerCoordinateMean z i ^ 2 := by
+  rw [gammaSewnCriticalPhysicalPluckerGlobalMeanPolarizedNuclearTraceMass_eq_rawFirstMoment_sub_weighted_occupation_sq]
+  linarith [gammaSewnCriticalPhysicalPlucker_globalPacketSelfCollision_le]
+
+/-- Resistance-relaxed arithmetic upper bound for the completed first trace. -/
+theorem gammaSewnCriticalPhysicalPluckerGlobalMeanPolarizedNuclearTraceMass_le_rawFirstMoment_sub_additiveCapacity :
+    gammaSewnCriticalPhysicalPluckerGlobalMeanPolarizedNuclearTraceMass ≤
+      gammaSewnCriticalPhysicalPluckerGlobalMeanRawFirstMoment -
+        ∑' z : ℕ × ℕ,
+          gammaSewnCriticalAdjacentPrime_PluckerBlockWeight z ^ 2 /
+            gammaSewnCriticalPhysicalPlucker_packetResistance z := by
+  rw [gammaSewnCriticalPhysicalPluckerGlobalMeanPolarizedNuclearTraceMass_eq_rawFirstMoment_sub_weighted_occupation_sq]
+  linarith [gammaSewnCriticalPhysicalPlucker_globalAdditiveCollisionCapacity]
 
 theorem gammaSewnCriticalPhysicalPlucker_packetRawFirstMoment_lt_two_div_twentyFive
     (z : ℕ × ℕ) :
