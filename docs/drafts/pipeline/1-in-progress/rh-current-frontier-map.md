@@ -879,3 +879,72 @@ nonselective. FZZ-P's remaining producer must derive collective nodes coefficien
 global winding-condensate dynamics at exactly Mellin-divisor ordinates, without zero fitting.
 Formal module: `FZZCigarPunctureAffineChannelClassification.lean`; Stage-3 card:
 `fzz-puncture-affine-channel-classification.md`.
+
+## 2026-08-27 FZZ-P sharp fractional nodal threshold
+
+`[NEW] [CLASSIFICATION] [SHARP BOUNDARY] [POSITIVE SURVIVOR] [PAPER-PROVED] [LEAN-PROVED]`
+For target-centered source germ `x^α1_(0,1)`, continuum equation has a nonzero embedded `L²` mode
+iff `α>1/2`; every solution is uniquely `-x^(α-1)1_(0,1)` almost everywhere. Pure square-root
+node is excluded by logarithmic divergence, while strict sublinear node `α=3/4` already succeeds.
+Therefore first-order cancellation is sufficient but not sharp. Exact local FZZ occurrence burden
+is more-than-half-order vanishing. Since any fixed exponent above threshold works in every target
+chart, local regularity cannot select Mellin-divisor ordinates; source dynamics must globally derive
+both node location and strength. Formal module:
+`FZZCigarPunctureFractionalNodalThreshold.lean`; Stage-3 card:
+`fzz-puncture-fractional-nodal-threshold.md`.
+
+## 2026-08-27 FCRJ quantitative endpoint collision rate
+
+`[NEW] [SHARP BOUNDARY] [POSITIVE SURVIVOR] [PAPER-PROVED] [LEAN-PROVED]` For any finite pencil of
+distinct unit modes, its scaled inverse-square norm tail differs from diagonal charge `J` by at
+most
+
+```text
+J/(N+1) + N/(N+1)^2
+  sum_(x!=y) 2|j_x||j_y|/|1-conj(z_x)z_y|.
+```
+
+The same bound holds for physical prime-log endpoint moments, and exact differentiation multiplies
+it by `A^2/(4 pi^2)` for raw FCRJ amplitudes.  This converts loop 59's nonuniform fixed-packet
+limit into an explicit moving-packet criterion: collision budget `C_M=o(N_M)` suffices for
+asymptotic coefficient stability.  Minimum chord bounds are strictly coarser and were rejected.
+Classical content is the one-phase Abel estimate; candidate-new content is the exact signed
+physical endpoint specialization and source obstruction.  Remaining CCM-FU/FCRJ burden is an
+arithmetic bound on physical collision growth or a signed cluster invariant that improves absolute
+pair cost, plus common-source total energy.  Formal module:
+`XiPhysicalPrimeEndpointPhaseCollisionTailRate.lean`.  Direct Lean, targeted build, and axiom gates
+pass; Stage-3 card promotion awaits unrelated repository-wide lint reachability repairs.
+
+## 2026-08-27 FZZ-P critical logarithmic nodal threshold
+
+`[NEW] [CLASSIFICATION] [SHARP BOUNDARY] [POSITIVE SURVIVOR] [PAPER-PROVED] [LEAN-PROVED]` At
+pure-power wall `α=1/2`, source
+`x^(1/2)(1-log x)^(-β)1_(0,1)` has a nonzero embedded `L²` mode exactly when `β>1/2`; every
+solution is uniquely `-x^(-1/2)(1-log x)^(-β)1_(0,1)` almost everywhere. Log chart
+`x=e^(-u)` turns energy into `(1+u)^(-2β)`, excluding double-critical `β=1/2` and admitting
+`β=3/4`. Correct local invariant is therefore `v/x∈L²`, not integer Taylor order: critical
+square-root nodes can survive with stronger-than-half logarithmic damping. This widens viable
+singular/nonanalytic FZZ interactions but remains nonselective; literal dynamics must globally
+derive node location and weighted strength. Formal module:
+`FZZCigarPunctureCriticalLogNodalThreshold.lean`; Stage-3 card:
+`fzz-puncture-critical-log-nodal-threshold.md`.
+
+## 2026-08-27 FCRJ frequency-resolved collision saturation
+
+`[NEW] [SHARP BOUNDARY] [POSITIVE SURVIVOR] [PAPER-PROVED] [LEAN-PROVED]` Loop-60 inverse-chord
+cost is sharpened pairwise to
+
+```text
+sum_(x!=y) |j_x||j_y|
+  min(1, 2N/(|1-conj(z_x)z_y|(N+1)^2)).
+```
+
+Together with diagonal error `J/(N+1)`, this bounds scaled inverse-square endpoint tail; raw FCRJ
+bound has exact multiplier `A^2/(4 pi^2)`.  Chords below `1/N` now cost only full pair mass, while
+resolved chords retain inverse-chord decay.  Thus arbitrarily small phase separation alone is not
+moving-packet obstruction.  Remaining CCM-FU/FCRJ core is weighted mass of unresolved clusters,
+resolved chord sum, or a signed cluster-multipole improvement, plus common-source total energy.
+Scalar minimum is classical; candidate-new content is physical source specialization and exact
+resolution-scale route boundary.  Lean additions are in
+`XiPhysicalPrimeEndpointPhaseCollisionTailRate.lean`; direct check, targeted build, and axiom gates
+pass.  Stage-3 promotion awaits unrelated repository-wide sieve reachability repairs.

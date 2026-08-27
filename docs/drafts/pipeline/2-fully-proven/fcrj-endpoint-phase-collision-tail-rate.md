@@ -1,8 +1,8 @@
 # FCRJ endpoint phase-collision tail rate
 
 - **ID:** FCRJ-PCTR
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Stage:** 2-fully-proven
+- **Type:** THEOREM (Lean proof complete; Stage-3 global lint gate pending)
 - **Source:** `critical-multiplicative-compensated-cancellation-rh.md` · Conjecture loop 60
 - **Statement:** Fixed finite physical FCRJ packet has explicit ultraviolet-tail error controlled
   exactly by pairwise endpoint chord denominators.
@@ -34,7 +34,7 @@ Endpoint differentiation should give the raw FCRJ character-energy form
 ## Gates
 
 - [x] 0 → 1 in-progress: corpus search, primary-literature audit, frozen source statement
-- [ ] 1 → 2 fully-proven: dependency-closed paper proof and hostile constant audit
+- [x] 1 → 2 fully-proven: dependency-closed paper proof and hostile constant audit
 - [ ] 2 → 3 formalized: exact Lean theorem, targeted build, axiom and lint gates
 - [ ] 3 → 4 publication-ready: independent expert priority review
 
@@ -105,12 +105,16 @@ differentiation gives `(PCR2)` termwise.
 - The theorem still does not prove required arithmetic collision bound.  It replaces vague
   uniformity by exact source quantity whose growth must be estimated.
 
-Verdict: `SURVIVES PRELIMINARY ATTACK`.  Generic `(PCR3)` is classical infrastructure;
+Verdict: `PROVED ON PAPER`.  Generic `(PCR3)` is classical infrastructure;
 source-specific `(PCR1)--(PCR2)` is candidate-new and closes analytic side of moving-packet
 uniformity once arithmetic collision budget is supplied.
 
 ## Open core
 
-Formalize `(PCR3)`, finite-pencil pair expansion, and physical specialization.  Next source
-conjecture, if successful, must bound physical `C_M` from prime-log endpoint separation or exploit
+Lean formalization is complete in
+`formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeEndpointPhaseCollisionTailRate.lean`.
+Direct checking, targeted module build, and `#print axioms` audit pass; capstones depend only on
+`propext`, `Classical.choice`, and `Quot.sound`.  Global formal lint is temporarily blocked by
+unrelated concurrent untracked modules absent from `RHTower.lean`, so Stage 3 is not claimed yet.
+Next source conjecture must bound physical `C_M` from prime-log endpoint separation or exploit
 cluster cancellation beyond absolute pairwise cost.

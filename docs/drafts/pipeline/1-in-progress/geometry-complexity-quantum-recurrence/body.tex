@@ -1,25 +1,31 @@
-\section{A singular law behind recurrence}
+\section{One recurrence problem, one information hierarchy}
 
 The quantum recurrence theorem guarantees arbitrarily accurate returns for
-finite closed systems \cite{BocchieriLoinger1957}.  Quantitative work includes
-recurrence-time estimates for generic nonintegrable models
-\cite{CamposVenuti2015}, bounds for general finite Hamiltonians
-\cite{KotowskiOszmaniec2026,GuptaShort2026}, mixed states with discrete
-spectra \cite{GimenoSotoca2017}, concentration bounds and
-many-body recurrence estimates \cite{RiddellPagliaroliAlhambra2023}, and exact
-arithmetic criteria in Floquet models \cite{AnandEtAl2026}.  Many-body
-recurrences have been observed in an isolated quantum gas
-\cite{RauerEtAl2018}, while coupled-qubit experiments have been proposed
-\cite{KarimiEtAl2026}.  A separate literature studies proposed complexity
-growth laws and static chaotic evolution
-\cite{BrownSusskind2018,BalasubramanianEtAl2020}, as well as rigorous
-complexity saturation and recurrence in random circuits, stochastic
-Hamiltonian dynamics and unitarily invariant random generators
-\cite{OszmaniecEtAl2024,KotowskiOszmaniecHorodecki2025}.
+finite closed systems \cite{BocchieriLoinger1957}.  Quantitative work now
+bounds recurrence times for broad finite systems
+\cite{KotowskiOszmaniec2026,GuptaShort2026}, treats mixed states and
+many-body concentration \cite{GimenoSotoca2017,
+RiddellPagliaroliAlhambra2023}, and gives exact arithmetic criteria for
+Floquet recurrence \cite{AnandEtAl2026}.  Many-body recurrences have been
+observed in an isolated quantum gas \cite{RauerEtAl2018}, and coupled-qubit
+tests have been proposed \cite{KarimiEtAl2026}.
 
-These theories involve different metrics and time questions.  Their common
-long-time object is nevertheless elementary.  For a finite energy list
-$E=(E_1,\ldots,E_D)$, remove global phase and define
+The phrase ``recurrence time'' compresses four different questions:
+\begin{equation}
+ \boxed{\text{What survives?}\quad\text{What phases can move?}\quad
+ \text{What can an observer know?}\quad\text{What can finite data predict?}}
+ \label{eq:fourquestions-new}
+\end{equation}
+They must be answered in that order.  Loss can remove phase coordinates.
+Exact spectral relations constrain motion on the surviving coordinates.  A
+measurement can discard information that remains present in the motion.
+Finally, a finite record can fail to identify even the information visible
+to a richer experiment.  Our central result makes this hierarchy exact for
+finite and countable spectra and then follows it into local many-body and
+thermodynamic regimes.
+
+For a finite labelled energy list $E=(E_1,\ldots,E_D)$, global phase is
+unobservable, so use the balanced character group
 \begin{align}
  P_D&=\left\{k\in\Z^D:\sum_{j=1}^D k_j=0\right\},
  \label{eq:projectivecharacters-new}\\
@@ -29,51 +35,107 @@ $E=(E_1,\ldots,E_D)$, remove global phase and define
  \{E_j-E_1:2\le j\le D\},                            \label{eq:tau-new}\\
  \rho(E)&=\dim_{\Q}\operatorname{span}_{\Q}\Rel_E.  \label{eq:rho-new}
 \end{align}
-The relation lattice fixes the projective orbit closure $\Hull_E$; its Haar
-measure is the completed phase law.  A return question is then a target set
-inside $\Hull_E$.  Loss changes the carrier, interaction changes $\Hull_E$,
-an observer changes the target, and finite data see only a projection.
-
-\begin{theorem}[Projective phase-capacity law]
-\label{thm:phasecapacity}
-For every finite real energy list,
+The relation lattice fixes the projective orbit closure
 \begin{equation}
- \boxed{\tau(E)+\rho(E)=D-1.}                          \label{eq:rankconservation}
+ \Hull_E=\{z\in\T^D/\T:z^k=1\text{ for every }k\in\Rel_E\}. \label{eq:hull-new}
 \end{equation}
-The temporal dimension of the completed projective phase law is exactly
-$\tau(E)$.  A balanced integer character is constant on that law precisely
-when it belongs to $\Rel_E$.  At replica order $r$, the resolved phase-grid
-detector sees precisely those constant characters whose positive mass is at
-most $r$.
+Its Haar law is the ordinary completed phase ensemble.  For a probability
+spectral measure $\mu$, write $\Delta\mu$ for the law of $E-E'$ under two
+independent samples.  This difference law is the autocorrelation of the
+spectrum and the Fourier transform of the scalar survival fidelity.
+
+\begin{theorem}[Universal recurrence-information hierarchy]
+\label{thm:hierarchy}
+The following statements hold simultaneously.
+\begin{enumerate}[leftmargin=1.65em]
+\item Every finite contraction has a unique persistent peripheral carrier;
+      all transient contributions vanish and late recurrence occurs entirely
+      on this carrier.
+\item Along any limiting family of centered uniform observation windows, a
+      finite phase law converges weakly if and only if every integer-character
+      action coefficient converges.  The same equivalence holds for countable
+      spectra using all finite-support characters.
+\item For every finite limiting phase law described by zero, finite and
+      dephased character actions, zero-action characters are exactly its
+      rational constraints and
+      \begin{equation}
+       \boxed{\text{temporal dimension}+\text{zero-action constraint rank}
+       =D-1.}                                         \label{eq:rankconservation}
+      \end{equation}
+\item Two spectral laws give the same scalar survival-return distribution
+      under every probability clock if and only if their difference measures
+      $\Delta\mu$ agree.  Dually, two probability clocks give the same scalar
+      return distributions for every spectrum if and only if their
+      reflection-symmetrized laws agree.
+\item Two finite labelled spectra have the same projective relation lattice
+      if and only if every resolved replica detector agrees.  This resolved
+      hierarchy is strictly more informative than all scalar survival data.
+\end{enumerate}
 \end{theorem}
 
-The theorem is a rank--nullity law for one rational detuning map.  It turns
-recurrence constraints and temporal directions into complementary quantities
-rather than separate diagnostics.
+The second statement is the existence criterion.  It does not assume a
+limiting ensemble and then describe it: convergence of all character
+coefficients is necessary and sufficient for that ensemble to exist and be
+unique.  The third statement is its capacity law.  A phase direction cannot
+simultaneously be locked and carry independent temporal motion.  The fourth
+and fifth statements identify two different information levels.  Scalar
+survival sees only an autocorrelation; resolved characters recover the
+relations themselves.
 
-\begin{theorem}[Arbitrarily weak interaction singularity]
-\label{thm:interaction}
-Let two nonempty finite spectra have $m+1$ and $n+1$ levels.  For every
-$\delta>0$, their tensor-sum Hamiltonian admits a diagonal
-operator-Schmidt-rank-one interaction $V=A\otimes B$ with
-$\|V\|\le\delta$ such that the perturbed spectrum is maximally projective and
-\begin{align}
- \tau(E_A\boxplus E_B)&\le m+n,\\
- \tau(E_A\boxplus E_B+V)&=mn+m+n,                    \label{eq:interactionmult}\\
- \tau(E_A\boxplus E_B+V)-\tau(E_A\boxplus E_B)&\ge mn.
-\end{align}
-For every bounded observable $O$ and every real $t$, the two Heisenberg
-evolutions satisfy
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{@{}
+  >{\raggedright\arraybackslash}p{0.13\textwidth}
+  >{\raggedright\arraybackslash}p{0.25\textwidth}
+  >{\raggedright\arraybackslash}X
+  >{\raggedright\arraybackslash}X@{}}
+\toprule
+Law & Exact object & What it determines & What it discards or cannot fix \\
+\midrule
+I: carrier & persistent peripheral spectrum & attainable late return ceiling
+  and surviving collision law & transient spectral directions \\
+II: action & character actions and zero-action lattice & existence of phase
+  law, constraints and temporal capacity & no measurement quotient yet \\
+III: observation & difference measure for scalar data; relation lattice for
+  resolved data & all clock-sampled survival laws; all resolved detectors &
+  scalar data discard labelled higher phase relations and clock orientation \\
+IV: record & finite-horizon record class & certified finite-time agreement &
+  completed recurrence geometry without additional global information \\
+\bottomrule
+\end{tabularx}
+\caption{The four laws separate dynamical survival, phase capacity,
+measurement information and inference.  Each row acts on output of preceding
+row.}
+\label{tab:hierarchy}
+\end{table}
+
+Strictness already appears in nine levels.  Put
 \begin{equation}
- \|O_V(t)-O_0(t)\|\le2|t|\delta\,\|O\|.              \label{eq:duhamel-main}
+ C=(0,1,4),\qquad D=(0,10,30),\qquad
+ E^{\pm}_{ij}=C_i\pm D_j,                              \label{eq:homometricpair}
 \end{equation}
-For every positive full-support spectral weight and every replica order, the
-perturbed survival-fidelity collision mass equals the unavoidable
-permutation floor.
-\end{theorem}
-
-Thus finite-time dynamics is uniformly continuous at every fixed horizon,
-while completed recurrence geometry can jump by a product-sized amount.
+with uniform weight on the nine labelled pairs.  Their amplitudes factor as
+$A_+(t)=A_C(t)A_D(t)$ and
+$A_-(t)=A_C(t)\overline{A_D(t)}$, hence
+\begin{equation}
+ |A_+(t)|^2=|A_-(t)|^2\qquad(t\in\R).                 \label{eq:homometricfidelity}
+\end{equation}
+This equality persists after sampling by every probability clock.  Yet the
+balanced character
+\begin{equation}
+ k_{0,1}=1,\qquad k_{1,0}=-10,\qquad k_{0,0}=9,
+ \qquad k_{ij}=0\text{ otherwise}                    \label{eq:witnesscharacter}
+\end{equation}
+has detuning $0$ for $E^+$ and $-20$ for $E^-$.  The projective relation
+lattices therefore differ, and a finite resolved replica detector separates
+them.  Product/reflection pairs are classical homometric constructions in
+autocorrelation and phase-retrieval theory
+\cite{RosenblattSeymour1982,GrimmBaake2008}; the result here is their exact
+placement inside a quantum recurrence hierarchy whose scalar quotient is
+maximal and whose resolved hierarchy is complete.  Higher-order
+autocorrelation completeness and failure are studied in related settings
+\cite{YellottIverson1992,AgulnickBusickWarner2026}.
 
 \begin{figure}[H]
 \centering
@@ -98,8 +160,9 @@ while completed recurrence geometry can jump by a product-sized amount.
 \draw[arr] (r) -- node[left=6pt,lab]{finite data probe} (p);
 \end{tikzpicture}
 \caption{\textbf{Persistent phase geometry.}  Exact spectral relations
-determine the completed phase hull.  Physical questions differ by carrier
-and target, while finite records need not determine the completed hull.}
+determine the completed phase hull.  Scalar and resolved observations retain
+different quotients of that hull, while finite records need not determine
+either completed object.}
 \label{fig:architecture}
 \end{figure}
 
@@ -156,7 +219,64 @@ has density tending to zero.
 Pure-point and atomless spectra are extreme cases; mixed spectra remain
 covered by collision identity \eqref{eq:wienercollision}.
 
-\section{Law II: spectral constraints determine temporal dimension}
+\section{Law II: phase action converts constraints into temporal capacity}
+
+\subsection{Relations, action and capacity}
+
+For a fixed finite spectrum observed on the centered window $[-T,T]$, the
+coefficient of character $k$ is
+\begin{equation}
+ \frac1{2T}\int_{-T}^{T}e^{-it\mathcal D_E(k)}\,dt
+ =\sinc\!\bigl(T\mathcal D_E(k)\bigr).               \label{eq:characteraction}
+\end{equation}
+It equals one on an exact relation, decays to zero for a fixed nonzero
+detuning, and retains a nontrivial finite profile when detuning closes on the
+inverse-window scale.  These are the zero, dephased and finite-action regimes
+in Theorem \ref{thm:hierarchy}.  Character coefficients determine probability
+laws on compact phase groups, which is why their convergence is both
+necessary and sufficient rather than only a diagnostic.
+
+\begin{theorem}[Projective phase-capacity law]
+\label{thm:phasecapacity}
+For every finite real energy list,
+\begin{equation}
+ \boxed{\tau(E)+\rho(E)=D-1.}                         \label{eq:phasecapacity}
+\end{equation}
+The temporal dimension of the completed projective phase law is exactly
+$\tau(E)$.  A balanced integer character is constant on that law precisely
+when it belongs to $\Rel_E$.  At replica order $r$, a resolved detector sees
+exactly the locked characters whose positive coefficient mass is at most
+$r$.
+\end{theorem}
+
+The identity is rank--nullity for the rational detuning map.  It turns an
+arithmetic perturbation into an exact conversion law: every relation removed
+from a fixed carrier becomes one additional temporal direction.
+
+\begin{theorem}[Arbitrarily weak interaction singularity]
+\label{thm:interaction}
+Let two nonempty finite spectra have $m+1$ and $n+1$ levels.  For every
+$\delta>0$, their tensor-sum Hamiltonian admits a diagonal
+operator-Schmidt-rank-one interaction $V=A\otimes B$ with
+$\|V\|\le\delta$ such that the perturbed spectrum is maximally projective and
+\begin{align}
+ \tau(E_A\boxplus E_B)&\le m+n,\\
+ \tau(E_A\boxplus E_B+V)&=mn+m+n,                    \label{eq:interactionmult}\\
+ \tau(E_A\boxplus E_B+V)-\tau(E_A\boxplus E_B)&\ge mn.
+\end{align}
+For every bounded observable $O$ and every real $t$,
+\begin{equation}
+ \|O_V(t)-O_0(t)\|\le2|t|\delta\,\|O\|.              \label{eq:duhamel-main}
+\end{equation}
+For every positive full-support spectral weight and every replica order, the
+perturbed survival-fidelity collision mass equals the unavoidable
+permutation floor.
+\end{theorem}
+
+Finite-time dynamics is therefore uniformly continuous at every fixed
+horizon while completed recurrence geometry can jump by a product-sized
+amount.  The singularity is not the universal law itself; it is one sharp
+consequence of exact action--constraint conversion.
 
 \subsection{Static local networks}
 
@@ -403,7 +523,49 @@ rational rank in one specified coefficient field.  It is an engineered
 diagonal l-bit model, not a theorem for a microscopic random-field chain and
 not an infinite-volume global-recurrence claim.
 
-\section{Law III: target capacity governs observability and complexity}
+\section{Law III: measurement selects the information quotient}
+
+\subsection{Scalar and resolved recurrence}
+
+Let $T$ be sampled from a probability clock $\lambda$, independently of the
+spectral law $\mu$, and denote the resulting scalar return law by
+\begin{equation}
+ \mathscr R(\lambda,\mu)
+ =\operatorname{Law}_{T\sim\lambda}\bigl(|A_\mu(T)|^2\bigr). \label{eq:returnlaw}
+\end{equation}
+Write $\check\lambda(B)=\lambda(-B)$ and
+$\lambda^{\rm or}=\tfrac12(\lambda+\check\lambda)$ for the clock with its
+orientation forgotten.
+
+\begin{theorem}[Maximal scalar quotients and resolved completeness]
+\label{thm:informationquotients}
+For probability spectral laws $\mu_1,\mu_2$,
+\begin{equation}
+ \Delta\mu_1=\Delta\mu_2
+ \quad\Longleftrightarrow\quad
+ \mathscr R(\lambda,\mu_1)=\mathscr R(\lambda,\mu_2)
+ \quad\text{for every probability clock }\lambda.     \label{eq:systemquotient}
+\end{equation}
+For probability clocks $\lambda_1,\lambda_2$,
+\begin{equation}
+ \lambda_1^{\rm or}=\lambda_2^{\rm or}
+ \quad\Longleftrightarrow\quad
+ \mathscr R(\lambda_1,\mu)=\mathscr R(\lambda_2,\mu)
+ \quad\text{for every probability spectrum }\mu.     \label{eq:clockquotient}
+\end{equation}
+For finite labelled spectra, equality of every resolved replica detector is
+equivalent to equality of the full projective relation lattice.
+\end{theorem}
+
+The word ``maximal'' in this theorem is literal.  The difference measure is
+not merely sufficient for scalar survival statistics: no finer invariant of
+the spectral law is recoverable from all such statistics, even if the
+experimenter may choose every clock.  Likewise, scalar return probability is
+even in time, so clock orientation is irretrievably lost.  Resolved replica
+characters restore information by retaining labelled phase combinations
+before collapsing them to one modulus squared.  Equations
+\eqref{eq:homometricpair}--\eqref{eq:witnesscharacter} prove this inclusion is
+strict.
 
 \subsection{Weighted recurrence information}
 
@@ -519,7 +681,14 @@ record and a deadline compressed by visible coherence graph.  Its novelty
 claim is this conjunction, not existence of expectation-value recurrence by
 itself.
 
-\subsection{Static connected-network Choi occupation}
+\subsection{Applications to circuit targets and complexity}
+
+Circuit approximation is another observer problem: a gate dictionary selects
+a union of target neighbourhoods inside the completed phase hull.  The next
+results apply the same occupation and return geometry to those targets.  They
+are consequences of Law III, not an alternative definition of recurrence.
+
+\subsubsection{Static connected-network Choi occupation}
 
 For a $D$-level Hamiltonian, let $\rho(z)$ be normalized equal-weight Choi
 density of phase vector $z$.  Define
@@ -546,7 +715,7 @@ Bound is independent of Hamiltonian eigenbasis.
 This is a completed-time occupation law, not a claim about monotone growth or
 finite-time mixing.
 
-\subsection{Static bounded-weight Pauli alternation}
+\subsubsection{Static bounded-weight Pauli alternation}
 
 Let $D=2^n$, let $q\ge2$, and let $M_q$ be number of Pauli labels of weight
 at most $q$ used by fixed two-query protocol.  For trace-distance tolerance
@@ -597,7 +766,7 @@ generic bounded-weight Pauli Hamiltonians satisfying second inequality in
 benchmark at every time.
 \end{theorem}
 
-\subsection{One nested local path: ramp, return and thermodynamic completion}
+\subsubsection{One nested local path: ramp, return and thermodynamic completion}
 
 Number qubits consecutively along a path and write
 $P_{a,b}=|11\rangle\!\langle11|_{a,b}$.  For $L\ge1$, define
@@ -710,7 +879,7 @@ phase return.  Couplings decay with position, so theorem
 does not claim translation invariance, uniform transport or a complexity
 plateau.
 
-\subsection{Return forces reflection}
+\subsubsection{Return forces reflection}
 
 \begin{theorem}[Robust complexity reflection]
 \label{thm:reflection}
@@ -727,7 +896,7 @@ palindromic: $C_\varepsilon(U_t)=C_\varepsilon(U_{R-t})$.
 
 This law constrains decline near recurrence but supplies no first hard time.
 
-\section{Law IV: finite-horizon records do not determine completed geometry}
+\section{Law IV: finite records do not determine completed geometry}
 
 Energy-constrained time series can already exhibit severe extrapolation
 limits \cite{ManosWeilenmannNavascues2025}.  The next theorem gives a distinct
@@ -780,35 +949,52 @@ boundary; finite-horizon data do not.
 
 \section{Position relative to current results}
 
-Abstract implications of rational independence---torus averaging, all-order
-SFF moments and exponential limiting laws---are not claimed as new
-\cite{RiddellBertini2024,CamposVenutiOdavicHamma2026}.  Nor do completed-time
-density formulas replace current recurrence-time bounds
-\cite{KotowskiOszmaniec2026,GuptaShort2026}.  Pure- and mixed-state return
-theorems do not by themselves supply same-record Born escape and return with
-observer-compressed certificate \cite{GimenoSotoca2017,
-KotowskiOszmaniec2026}.  Principal new results are joined statements:
+Kronecker--Weyl phase occupation, consequences of rational independence, and
+all-order spectral-form-factor moments are established ingredients
+\cite{RiddellBertini2024,CamposVenutiOdavicHamma2026}.  Homometric structures
+with equal autocorrelation are classical
+\cite{RosenblattSeymour1982,GrimmBaake2008}.  The contribution is therefore
+not torus averaging or homometry in isolation.  Mathematical center is the
+joined quantum information hierarchy: an exact existence criterion for
+finite and countable phase laws, action--constraint capacity conversion,
+maximal scalar system and clock quotients, complete resolved tomography, and
+an explicit strict separation between scalar and resolved recurrence.
+
+That hierarchy has following physical realizations and consequences:
 \begin{enumerate}[leftmargin=1.6em]
-\item exact product-sized discontinuity of completed temporal dimension under
+\item loss selects an exact persistent carrier, while arbitrary spectral
+      types obey one collision hierarchy and exact approximate-versus-periodic
+      recurrence classification;
+\item completed temporal dimension has a product-sized discontinuity under
       arbitrarily weak interaction, together with a dimension-free finite-time
       continuity bound and all-replica collision extremality;
-\item generic maximal projective rank for arbitrary static finite interaction
-      graphs, simultaneous subsystem graph reconstruction, and its
+\item generic maximal projective rank for every static finite interaction
+      graph, simultaneous subsystem graph reconstruction, and its
       nearest-neighbour thermodynamic consequences;
 \item complete countable-spectrum saturation under arbitrarily weak
       domain-preserving trace-class perturbations and along a separable
-      interaction ray outside a countable exceptional set;
+      interaction ray outside a countable exceptional set, together with a
+      bounded infinite-chain phase cascade;
 \item same-record post-exit recurrence for arbitrary finite Hermitian Born
       histories, with least deadline inside exact graph--resolution
-      certificate family;
-\item static bounded-weight Pauli recurrence--hardness alternation with a
-      permanent operational separation from Haar randomness;
-\item one explicit nested static nearest-neighbour qubit path with bounded
-      infinite-chain energy, a robust finite-time linear circuit-complexity
-      envelope, exact return and exact reflected descent, together with a
-      tree phase-tail obstruction and a certified failure of all-pairs
-      monotonicity inside the ramp window.
+      certificate family, and a local finite-record construction compatible
+      with every later return probability;
+\item as applications, static circuit-target occupation and recurrent-hardness
+      laws, plus one explicit nearest-neighbour path with a finite-time linear
+      complexity envelope, exact return, exact reflected descent, and a
+      certified failure of pointwise monotonicity inside that envelope.
 \end{enumerate}
+
+Completed-time densities complement rather than replace current first-return
+bounds \cite{KotowskiOszmaniec2026,GuptaShort2026}.  Pure- and mixed-state
+return theorems do not by themselves supply same-record Born escape and
+return with an observer-compressed certificate
+\cite{GimenoSotoca2017,KotowskiOszmaniec2026}.  Likewise, higher-order
+autocorrelation results address reconstruction from correlation data
+\cite{YellottIverson1992,AgulnickBusickWarner2026}; Theorem
+\ref{thm:informationquotients} instead identifies exact maximal quantum
+survival quotients and proves that resolved recurrence recovers precisely the
+projective spectral relation lattice.
 
 Complexity result is complementary to saturation theorems for random circuits
 and stochastic Hamiltonian evolution \cite{OszmaniecEtAl2024} and to jump
@@ -846,40 +1032,42 @@ fast-forwarding and its connection to exponentially precise measurement
 \cite{AtiaAharonov2017}, and from explicit transcendence-based examples of
 exponential circuit complexity \cite{JiaWolf2023}.
 
-\section{Scope and open boundary}
+\section{Interpretation and order of limits}
 
-All local-network genericity statements allow arbitrary onsite and edge terms
-on a supplied finite graph.  They do not impose translation invariance.  All
-thermodynamic density statements take $T\to\infty$ at fixed volume before
-size limit.  All countable results concern pure-point diagonal spectra.
-Infinite l-bit theorem supplies bounded self-adjoint multiplication
-Hamiltonian and strongly continuous unitary dynamics for one engineered
-absolutely summable diagonal field; it is not microscopic MBL theorem,
-quasi-local $C^*$-dynamics theorem or global orbit recurrence.
-Bounded-weight Pauli complexity theorem is $q$-local but all-to-all in
-support.  The nested path theorem is static, geometrically nearest-neighbour
-and circuit-hard over explicit finite-time windows, but its diagonal
-couplings decay with position; it is neither translation invariant nor a
-uniform-transport model.  Its thermodynamic statement concerns bounded
-static energy and uniform finite-volume truncation, not infinite-system
-circuit complexity.
+Three distinctions prevent misreading the laws.  First, completed occupation
+is a frequency statement, not a first-return estimate: inverse return density
+need not equal first hitting time.  Second, thermodynamic density takes
+$T\to\infty$ at each fixed finite volume before sending volume to infinity.
+The resulting extinction law says that recurrence windows occupy a vanishing
+fraction of completed time; it does not say that an infinite-system orbit
+returns in operator norm.
 
-Principal open boundary is stronger dynamical shape: a classification of
-all local complexity drops, a sharp phase-return exchange law, a
-parametrically longer growth regime, and a saturation plateau for one
-uniform-strength noncommuting bounded-degree Hamiltonian are not proved.
-Completed occupation does not determine first onset, and inverse
-completed density is not asserted to be a first-return time.  Infinite-volume
-quasi-local orbit recurrence remains outside present scope.
+Third, physical realization depends on theorem.  Generic graph laws allow
+arbitrary onsite and edge terms on the supplied finite graph and do not
+assume translation invariance.  The countable results concern pure-point
+diagonal spectra.  The l-bit construction supplies a bounded self-adjoint
+Hamiltonian, strongly continuous unitary dynamics and uniform finite-volume
+completion for one absolutely summable diagonal field.  The nested path is
+static and geometrically nearest-neighbour, with position-dependent decaying
+couplings.  These hypotheses are part of the models, not hidden claims about
+all local or disordered systems.
+
+Circuit complexity is included only where recurrence geometry controls a
+precisely defined target set.  Completed target occupation does not imply Haar
+randomization, and a two-sided linear envelope does not imply monotonicity;
+Theorem \ref{thm:nestedramp} proves both scale-separated order and an explicit
+nearby backtrack.  Exact return instead enforces the robust reflection law of
+Theorem \ref{thm:reflection}.
 
 \section{Proof organization}
 
 Appendices give self-contained proofs in order used above.  They begin with
-finite contraction selection and arbitrary spectral measures, develop
-projective detuning map and interaction conversion, prove static path and
-arbitrary-graph genericity, and then derive completed return densities,
-observer deadlines, Born-record return, l-bit Hilbert dynamics,
-circuit-target bounds, countable saturation and finite-record no-go theorem.
-A separate construction proves bounded
+finite contraction selection and arbitrary spectral measures, prove
+character completeness, action--constraint conversion, scalar quotient and
+resolved relation recovery, and verify strict nine-level witness directly.
+They then develop interaction conversion, static-path and arbitrary-graph
+genericity, completed return densities, observer deadlines, Born-record
+return, l-bit Hilbert dynamics, circuit-target bounds, countable saturation
+and finite-record ambiguity.  Final construction proves bounded
 thermodynamic completion, finite-time circuit ramp, exact return and
 reflection for nested static path \eqref{eq:nestedH}.

@@ -6521,3 +6521,123 @@ common-source total-energy control; no further fixed-packet Fourier decay estima
 
 Verdict: `[PROVED — EXACT POSITIVE FCRJ ONE-OVER-N ULTRAVIOLET LAW; FIXED-PACKET EXTRA-DECAY
 PROVIDERS RETIRED]`.
+
+## Conjecture loop 60 — quantitative FCRJ endpoint phase-collision tail rate
+
+### Failed first conjecture `[TOO COARSE]`
+
+Controlling every off-diagonal endpoint pair by one minimum chord separation is valid but charges
+all pairs at the worst collision, is awkward for singleton packets, and destroys cluster-local
+information needed by moving prime apertures.  It was rejected in favor of coefficient-weighted
+ordered-pair denominators.
+
+### Pairwise survivor `[PAPER-PROVED] [LEAN-PROVED] [POSITIVE SURVIVOR]`
+
+For distinct unit modes `z_x`, coefficients `j_x`, endpoint moment
+`U_n=sum_x j_x z_x^n`, jump charge `J=sum_x|j_x|^2`, and collision budget
+
+```text
+C = sum_(x!=y) 2|j_x||j_y|/|1-conj(z_x)z_y|,
+```
+
+every `N>=1` satisfies
+
+```text
+|N sum_(n>N)|U_n|^2/n^2-J|
+  <= J/(N+1)+N C/(N+1)^2.                              (AC37)
+```
+
+For the physical FCRJ amplitudes this becomes
+
+```text
+|N sum_(n>N)|A_n|^2-A^2 J/(4 pi^2)|
+  <= A^2/(4 pi^2) [J/(N+1)+N C/(N+1)^2].              (AC38)
+```
+
+The proof is an exact one-step Abel telescope.  For `|w|=1`, `w!=1`, and `M>=1`,
+
+```text
+|sum_(n>=M) w^n/n^2| <= 2/(M^2 |1-w|).                 (AC39)
+```
+
+Expanding `|U_n|^2` over ordered pairs, `(AC39)` controls every off-diagonal phase; integral-test
+bounds put the diagonal scaled tail between `N/(N+1)` and `1`.  This gives `(AC37)` with no hidden
+cardinality or minimum-separation loss.  Exact endpoint differentiation gives `(AC38)` termwise.
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeEndpointPhaseCollisionTailRate.lean`.
+It proves `(AC39)`, the generic finite-pencil theorem, the exact physical endpoint budget, and
+both physical bounds.  Direct `lake env lean`, targeted module build, and axiom audit pass.  Global
+lint promotion is pending only because unrelated concurrent untracked modules are not yet wired
+into `RHTower.lean`; no Stage-3 claim is made before that repository-wide gate clears.
+
+Hostile limit: `C_M=o(N_M)` is now an explicit sufficient moving-packet condition, not a proved
+arithmetic fact.  Near-colliding prime-log endpoints can make absolute pairwise cost large even
+when signed clusters cancel.  Remaining producer is therefore a source theorem bounding physical
+collision budget, or a sharper cluster-renormalized invariant, together with common-source total
+energy control.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-27]`: Abel estimate `(AC39)` and quantitative
+finite-atomic Wiener arguments are classical infrastructure.  Corpus and targeted literature
+search found no physical clipped prime-log endpoint formula `(AC37)--(AC38)` or its explicit
+moving-packet criterion.  Candidate-new claim is restricted to this coefficient-faithful source
+specialization and exact obstruction.
+
+Verdict: `[PROVED — EXPLICIT FCRJ PHASE-COLLISION RATE; MOVING-PACKET CORE REDUCED TO SOURCE
+COLLISION GROWTH OR SIGNED CLUSTER CANCELLATION]`.
+
+## Conjecture loop 61 — frequency-resolved FCRJ collision saturation
+
+### Failed predecessor `[SINGULAR FRONTIER INVARIANT]`
+
+Loop 60's inverse-chord cost is correct but diverges when two distinct modes approach within the
+frequency resolution `1/N`.  Actual scaled pair tail stays bounded there, so raw collision budget
+overprices precisely the clusters relevant to moving packets.
+
+### Saturated survivor `[PAPER-PROVED] [LEAN-PROVED] [SHARP BOUNDARY] [POSITIVE SURVIVOR]`
+
+For loop-60 notation define frequency-resolved budget
+
+```text
+R_N = sum_(x!=y) |j_x||j_y|
+        min(1, 2N/(|1-conj(z_x)z_y|(N+1)^2)).          (AC40)
+```
+
+Then every `N>=1` satisfies
+
+```text
+|N sum_(n>N)|U_n|^2/n^2-J| <= J/(N+1)+R_N,            (AC41)
+```
+
+and raw physical FCRJ amplitudes obey the same right side multiplied by `A^2/(4 pi^2)`.
+
+Proof takes the minimum of two exact scalar controls:
+
+```text
+|sum_(n>N)w^n/n^2|
+ <= min(1/N, 2/(|1-w|(N+1)^2)).                       (AC42)
+```
+
+First branch is absolute inverse-square mass; second is Abel oscillation `(AC39)`.  Pairwise
+finite-pencil expansion and diagonal integral bounds give `(AC41)`.  Thus pairs with
+`N|1-w|<<1` cost at most full coefficient mass, while resolved pairs retain inverse-chord decay.
+Singleton cost is zero, and no minimum separation appears.
+
+Lean additions in
+`formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeEndpointPhaseCollisionTailRate.lean` prove
+`(AC42)`, generic resolved budget, physical endpoint specialization, and raw-amplitude theorem.
+Direct checking, targeted build, and axiom audits pass.  Repository-wide lint promotion remains
+pending only on unrelated concurrent sieve modules missing umbrella imports.
+
+Hostile limit: absolute resolved pair mass still discards cancellation among three or more signed
+near-colliding nodes.  Arithmetic core is now sharper: control weighted unresolved clusters and
+resolved inverse-chord pairs, or replace them by a signed cluster multipole invariant.  An
+arbitrarily small chord alone is no longer an obstruction.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-27]`: both scalar branches of `(AC42)` are
+classical.  Corpus and targeted current literature search found no pairwise saturated
+inverse-square Wiener law or physical clipped prime-log endpoint version.  Candidate-new content
+is exact source specialization, resolution-scale boundary, and revised moving-packet obstruction.
+
+Verdict: `[PROVED — PHASE COLLISIONS SATURATE AT FULL PAIR MASS BELOW 1/N RESOLUTION; REMAINING
+FCRJ CORE IS WEIGHTED CLUSTER MASS OR SIGNED MULTIPOLE CANCELLATION]`.

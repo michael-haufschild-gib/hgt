@@ -241,7 +241,8 @@ theorem two_fifths_le_thetaCuspLikelihoodSourceOrdinaryJetFour
     have hAt : (47 / 5 : ℝ) ≤ A * t := by
       nlinarith [mul_lt_mul_of_pos_right hA (show 0 < t by linarith)]
     have h := two_fifths_mul_pow_four_le_thetaLikelihoodFourthScore hAt
-    convert h using 1 <;> ring
+    convert h using 1
+    all_goals ring
   have hint := integral_mono_ae hlead hI4 hpoint
   rw [integral_const_mul,
     show (∫ t : ℝ, t ^ 4 ∂thetaCuspHigherLikelihoodTiltedMeasure B) =

@@ -37,82 +37,70 @@
 \title{\textbf{Persistent phase geometry of quantum recurrence}\\
 \large\itshape Four structural laws for loss, spectral constraints, observability, and finite-horizon inference}
 \author{GPT 5.6 Sol \and Opus 5 \and Fable 5 \and Michael Haufschild}
-\date{17 August 2026}
+\date{27 August 2026}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-Quantum recurrence is controlled by exact spectral relations, whereas every
-finite-time experiment is continuous under small changes of the Hamiltonian.
-We show that this mismatch produces a sharp singularity: one arbitrarily weak
-diagonal operator-Schmidt-rank-one interaction can convert the completed
-recurrence geometry of two finite systems from at most additive temporal
-dimension to the full product-space dimension, create at least the product of
-their non-global spectral capacities in new independent phase directions,
-and simultaneously drive every full-support replica moment to its minimum
-collision value.  Nevertheless every
-operator-normalized Heisenberg observable changes by at most the explicit
-dimension-free Duhamel bound $2|t|\delta$ on a perturbation of norm at most
-$\delta$.
+Quantum recurrence is usually posed as a question of whether or when a state
+returns.  We prove a broader information hierarchy showing that recurrence
+has four logically distinct layers.  Loss first selects the persistent
+spectral carrier.  On that carrier, convergence of a finite or countable
+phase ensemble is equivalent to convergence of every integer-character
+action coefficient.  Zero-action characters are exactly the locked spectral
+relations, and their rank plus the exposed temporal dimension equals the
+full projective phase capacity.  Measurement then forms a strict quotient:
+all scalar survival-return experiments determine exactly the spectral
+difference measure, while arbitrary observation clocks are themselves
+visible only up to time reversal.  By contrast, the complete resolved
+replica hierarchy recovers the full projective relation lattice.
 
-This singular principle organizes four structural laws.  Loss selects the
-persistent carrier and fixes the exact asymptotic return ceiling.  Spectral
-constraints determine completed temporal dimension: for any finite
-interaction graph, generic onsite-plus-edge Hamiltonians have an exact
-component formula, subsystem temporal curvature reconstructs the supplied
-graph, and homogeneous nearest-neighbour qudit paths have strict return
-density doubly exponential in their length.  Observability is governed by
-target capacity: coherence-graph rank gives the visible exponent, every
-finite family of Born histories either never exits a prescribed tolerance
-or returns after a same-record exit within a least graph--resolution
-certificate, while
-static connected networks and bounded-weight Pauli Hamiltonians obey exact
-completed-time circuit-target bounds and recurrent hard-epoch laws without
-becoming Haar random.  An explicit nested family of static diagonal
-nearest-neighbour qubit paths has a bounded infinite-chain completion, a
-two-sided linear operator-norm circuit-complexity envelope throughout a
-finite laboratory-time window, an exact factorial-four return, and exact
-complexity reflection about that return.  Its actual complexity rises
-strictly above the zero-complexity endpoints at every ramp point and cannot
-backtrack across sufficiently scale-separated laboratory times.  Yet an
-explicit pair of increasing times inside the same window has exact
-complexities at least $1514$ and at most $1513$, respectively.  Thus a
-linear ramp envelope does not imply literal pointwise monotonicity, even for
-one fixed static nearest-neighbour Hamiltonian.  Finite-horizon information remains
-incomplete: one common earlier record, common finite moments and one common
-spectrum are compatible with every later return probability.
+This loss of information is strict, not merely formal.  We construct two
+explicit uniform nine-level spectra whose scalar survival fidelity agrees at
+every time, and hence under every probability law of observation times, but
+whose projective relation lattices differ and are separated by a finite
+resolved replica detector.  Thus even perfect scalar recurrence data need
+not determine completed phase geometry.
 
-The finite theory extends to countable pure-point spectra.  Arbitrarily small
-domain-preserving trace-class perturbations can produce unbounded
-finite-window temporal rank, dense future projective orbits, no nonzero exact
-global return, and recurrent traversal of the full range of every positive
-summable phase-defect probe.  Separately, one absolutely summable diagonal
-l-bit field has uniform finite-volume completion, bounded self-adjoint
-$L^2$ Hamiltonians, strongly continuous unitary dynamics, and a
-nonterminating diameter-resolved phase cascade.  Completed-time
-thermodynamic densities take long-time limit at fixed finite volume before
-system size; nested path has a uniformly convergent static-energy
-completion.  We assert no first-return scale, pointwise monotonicity of complexity,
-infinite-volume orbit recurrence, or Haar randomization.
+The same hierarchy organizes quantitative and many-body results.  It gives
+the exact late-return ceiling for finite lossy dynamics, weighted first-hit
+bounds, observer-coherence deadlines, arbitrary-spectrum collision laws and
+a complete finite-record ambiguity theorem.  Generic static onsite-plus-edge
+Hamiltonians on every finite interaction graph attain an exact
+component-wise temporal-rank formula; connected nearest-neighbour qudit paths
+therefore attain the maximal projective rank.  Their strict completed-time
+return density is exponentially small in Hilbert-space dimension and doubly
+exponentially small in chain length.  Countable pure-point and bounded
+infinite-chain constructions supply corresponding thermodynamic completion
+laws.  Circuit-target occupation, recurrent hard epochs, and an explicit
+static nearest-neighbour ramp--return--reflection theorem appear as
+applications of the same target geometry rather than as a separate account
+of recurrence.
 \end{abstract}
 
 \noindent\textbf{Public summary.}
-A tiny interaction may be almost invisible for any fixed duration yet
-completely reorganize what a quantum system does over arbitrarily long time.
-The reason is arithmetic: long-time recurrence depends on exact relations
-among energy levels, and exact relations can disappear under an arbitrarily
-small perturbation.  We turn that observation into quantitative laws for
-loss, local many-body systems, measurement, computational complexity and
-limits of prediction.  If a chosen finite collection of quantum measurement
-probabilities ever leaves a tolerance band, same record is guaranteed to
-re-enter it.
-For one concrete one-dimensional chain, the same analysis proves that the
-number of two-qubit gates needed to reproduce its motion lies between
-explicit linear bounds for a controlled time window, but can nevertheless
-drop between two nearby increasing times when one local phase completes a
-full turn.  This separates large-scale complexity growth from literal
-increase at every instant.
+Quantum systems can return close to earlier states, but ``the recurrence'' is
+not one number.  First ask which part of a system survives loss.  Then ask
+which energy phases can move independently.  Next ask which of those phases
+a chosen measurement can see.  Only after those questions does it make sense
+to ask how often a return occurs or what finite data can predict.
+
+The paper proves that these layers form one exact hierarchy.  It also exposes
+a sharp blind spot: two concrete nine-level systems produce identical return
+probabilities at every possible time, so no scalar survival experiment can
+distinguish them, yet a more resolved multi-copy measurement reveals that
+their hidden phase constraints differ.  Perfectly recording one familiar
+return signal is therefore not the same as learning the system's full
+recurrence structure.
+
+For local many-body systems, spatial simplicity does not imply simple
+long-time recurrence.  Generic static nearest-neighbour chains can use every
+available relative phase direction, making close returns doubly
+exponentially rare with chain length.  The framework also quantifies what
+loss erases, what an observer retains, why bounded-time records cannot fix
+all future returns, and how circuit complexity must reflect when an exact
+return occurs.
 
 \input{body}
 

@@ -1,3 +1,91 @@
+\section{Proof of the universal recurrence-information hierarchy}
+
+\subsection{Character completeness for finite and countable phase laws}
+
+Let $K$ be a finite torus modulo global phase, or a countable product of
+circles.  In the countable case every continuous character has finite
+support.  Both spaces are compact abelian groups, and their characters form
+a self-adjoint unital algebra separating points.  Hence finite linear
+combinations of characters are uniformly dense in $C(K)$.
+
+For a probability phase law $\mu_x$ in any limiting family, weak convergence
+implies convergence of every character integral.  Conversely, suppose every
+character integral converges.  Compactness gives a cluster point of
+$(\mu_x)$.  Every cluster point has the prescribed limiting character
+coefficients.  Two probability measures with same coefficients agree first
+on trigonometric polynomials and then, by uniform density, on all of $C(K)$;
+they are equal.  Thus family has a unique cluster point and converges to it.
+This proves finite and countable existence equivalences in Theorem
+\ref{thm:hierarchy}.
+
+For centered uniform observation on $[-T,T]$, direct integration gives
+\eqref{eq:characteraction}.  More generally, when frequency profile and
+window vary together, same calculation gives the corresponding
+zero-action, finite-action or dephased limiting coefficient.  A unit-modulus
+character has integral one exactly when it equals one almost surely.  Since
+regime coefficient equals one exactly in zero-action case, rational phase
+constraints are precisely rational span of zero-action characters.  Quotient
+of projective rational character space by this span is exposed temporal
+space.  Rank--nullity gives \eqref{eq:rankconservation} and proves action and
+capacity parts of Theorem \ref{thm:hierarchy}.
+
+\subsection{Maximal scalar quotients}
+
+Let $\varphi_\mu(t)=\int e^{-itE}\,d\mu(E)$.  Independence gives
+\begin{equation}
+ |\varphi_\mu(t)|^2
+ =\iint e^{-it(E-E')}\,d\mu(E)d\mu(E')
+ =\widehat{\Delta\mu}(t).                             \label{eq:diffcharproof}
+\end{equation}
+Thus equality of difference measures implies equality of every clock-sampled
+return law.  For converse, choose clock to be point mass at arbitrary $t$.
+Equality of return laws then gives equality of
+$|\varphi_{\mu_1}(t)|^2$ and $|\varphi_{\mu_2}(t)|^2$ for every $t$.
+Equation \eqref{eq:diffcharproof} and uniqueness of characteristic functions
+give $\Delta\mu_1=\Delta\mu_2$.  This proves
+\eqref{eq:systemquotient}.
+
+Every scalar survival function is even, so it depends on a clock only through
+$\lambda^{\rm or}$.  Conversely, assume two clocks give same return law for
+every spectrum.  For each $s\in\R$, use equal spectral weights at energies
+$0$ and $s$.  Its return probability is
+$(1+\cos(st))/2$.  Equality of return distributions implies equality of
+their means and therefore equality of cosine transforms of two clocks for
+every $s$.  Those cosine transforms are characteristic functions of
+reflection-symmetrized laws.  Characteristic-function uniqueness gives
+$\lambda_1^{\rm or}=\lambda_2^{\rm or}$ and proves
+\eqref{eq:clockquotient}.
+
+\subsection{Resolved completeness and strict scalar separation}
+
+Write a balanced integer character as $k=k^+-k^-$ with disjoint nonnegative
+parts and equal masses.  Its height is this common mass.  Expansion of a
+resolved order-$r$ replica monomial shows that it detects $k$ exactly when
+$k\in\Rel_E$ and height is at most $r$.  Equality of relation lattices hence
+implies equality of every detector.  Conversely, if all detectors agree,
+apply detector at height of each relation to recover membership one
+character at a time.  This proves resolved completeness in Theorems
+\ref{thm:hierarchy} and \ref{thm:informationquotients}.
+
+For explicit pair \eqref{eq:homometricpair}, product weights give
+\[
+ A_+(t)=\left(\frac13\sum_i e^{-itC_i}\right)
+        \left(\frac13\sum_j e^{-itD_j}\right),\qquad
+ A_-(t)=\left(\frac13\sum_i e^{-itC_i}\right)
+        \overline{\left(\frac13\sum_j e^{-itD_j}\right)}.
+\]
+Taking absolute squares proves \eqref{eq:homometricfidelity};
+\eqref{eq:systemquotient} then proves equality under every probability
+clock.  Coefficients in \eqref{eq:witnesscharacter} sum to zero.  Direct
+substitution gives
+\[
+ \mathcal D_{E^+}(k)=0,
+ \qquad \mathcal D_{E^-}(k)=-20.
+\]
+Hence $k\in\Rel_{E^+}$ but $k\notin\Rel_{E^-}$, and resolved completeness
+supplies a finite distinguishing detector.  Scalar recurrence is therefore
+a strict quotient of resolved recurrence geometry.
+
 \section{Projective detuning and weak-interaction singularity}
 
 \subsection{Proof of Theorem \ref{thm:phasecapacity}}

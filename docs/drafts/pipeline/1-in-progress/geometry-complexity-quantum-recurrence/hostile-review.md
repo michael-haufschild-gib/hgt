@@ -1,13 +1,17 @@
 # Hostile review and scope audit
 
-Date: 17 August 2026.
+Date: 27 August 2026.
 
 ## Verdict
 
-Mathematical center is now sharp: completed recurrence geometry is singular
-under arbitrarily weak rank-one interaction even while every fixed-horizon
-observable is Lipschitz-continuous. Four laws organize carrier, constraints,
-targets and inference around this finite-time/completed-time divide.
+Mathematical center is now sharper and broader: quantum recurrence forms one
+carrier--action--quotient--record information hierarchy. Character actions
+give exact finite/countable existence criterion and capacity law; scalar
+survival has exact maximal system and clock quotients; resolved replicas
+recover full projective relation lattice; explicit nine-level pair proves
+strictness. Weak-interaction singularity, local-network saturation,
+thermodynamic extinction, observers, inference and complexity are
+consequences or realizations of this hierarchy.
 
 Manuscript is internally proof-closed and publication-shaped. External
 priority and specialist review remain necessary before submission; neither
@@ -15,24 +19,31 @@ source search nor internal proof audit can establish literature priority.
 
 ## Strongest defensible claims
 
-1. One arbitrarily weak diagonal operator-Schmidt-rank-one interaction changes
+1. Finite and countable phase-law convergence is equivalent to convergence of
+   all finite-support character action coefficients. Zero-action constraints
+   and temporal directions obey exact projective capacity conservation.
+2. Across every probability clock, scalar survival retains exactly spectral
+   difference measure; across every spectrum, it retains exactly unoriented
+   clock law. Resolved replica hierarchy retains exactly projective relation
+   lattice, and explicit uniform nine-level pair proves strict separation.
+3. One arbitrarily weak diagonal operator-Schmidt-rank-one interaction changes
    temporal dimension from at most additive to full product-space rank,
    creates at least `mn` directions, preserves a dimension-free finite-time
    Duhamel bound and attains every positive-weight replica floor.
-2. Generic onsite-plus-edge Hamiltonians on any supplied finite graph obey an
+4. Generic onsite-plus-edge Hamiltonians on any supplied finite graph obey an
    exact component-rank formula simultaneously on every induced subsystem.
    Pair curvature reconstructs adjacency and partition curvature reconstructs
    component compatibility.
-3. Static nearest-neighbour qudit paths attain every replica floor and have an
+5. Static nearest-neighbour qudit paths attain every replica floor and have an
    exact completed-time thermodynamic extinction rate. This is bounded-degree
    recurrence geometry, not bounded-degree circuit hardness.
-4. Countable pure-point spectra admit arbitrarily small domain-preserving
+6. Countable pure-point spectra admit arbitrarily small domain-preserving
    trace-class completion, and product spectra admit one separable interaction
    ray with only countably many exceptional couplings.
-5. Connected graph-local static Hamiltonians obey an exact completed-time
+7. Connected graph-local static Hamiltonians obey an exact completed-time
    Choi-target occupation cap. Separate bounded-weight Pauli Hamiltonians show
    recurrent hard epochs while remaining operationally non-Haar.
-6. Arbitrary finite Hermitian Born records satisfy a same-record
+8. Arbitrary finite Hermitian Born records satisfy a same-record
    never-exits/post-exit-return law with least deadline inside exact
    graph--resolution certificate family.
 
@@ -40,10 +51,19 @@ source search nor internal proof audit can establish literature priority.
 
 ### “This is only Kronecker--Weyl repackaging”
 
-Equidistribution is not claimed as new. New candidates are exact structural
-discharges: weak rank-one interaction conversion, arbitrary-graph genericity,
-subsystem curvature, local all-replica floors, countable trace-class
-completion and their joined continuity/singularity statement.
+Equidistribution and character determination of compact measures are not
+claimed new. New candidate is exact quantum closure: arbitrary-regime
+finite/countable action criterion, capacity conversion, two maximal scalar
+quotients, complete resolved relation tomography and strict separation,
+followed by local and inferential realizations.
+
+### “The nine-level example is classical homometry”
+
+Product/reflection homometry is classical and explicitly credited. Example is
+not headline novelty. It proves strictness of quantum hierarchy after scalar
+system and clock quotients have been characterized exactly. Resolved theorem
+identifies precisely what extra recurrence data recovers: full projective
+spectral relation lattice.
 
 ### “Arbitrarily weak interaction cannot change observable physics”
 
@@ -115,7 +135,8 @@ MBL realization or quasi-local $C^*$ dynamics is inferred.
 3. External priority search in inverse spectral graph theory, quantum
    controllability, recurrence arithmetic and static-Hamiltonian complexity.
 4. Journal positioning: paper combines several exact regimes; abstract and
-   introduction must keep singularity theorem as clear center.
+   introduction must keep information hierarchy as center and label
+   complexity as application.
 5. Terminology: “completed-time occupation” must not drift into “first-return
    time,” “mixing,” “ramp” or “randomization.”
 

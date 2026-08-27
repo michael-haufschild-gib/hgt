@@ -1,6 +1,6 @@
 # Novelty audit
 
-Date: 17 August 2026. Priority status: provisional pending independent search.
+Date: 27 August 2026. Priority status: provisional pending independent search.
 No absolute “first” claim is authorized.
 
 ## Closest current literature
@@ -46,8 +46,33 @@ No absolute “first” claim is authorized.
    classical hard instances, with static unit-time and piecewise-constant
    late-time constructions. These results are closer than random-complexity
    work to candidate G below and substantially narrow its priority residue.
+9. Rosenblatt--Seymour characterize finite homometric product/reflection
+   constructions, and Baake--Grimm study autocorrelation ambiguity in
+   diffraction. Yellott--Iverson and Agulnick--Busick-Warner study when
+   higher-order autocorrelations recover signals. These are direct parent
+   literatures for scalar/resolved separation; homometry and higher-order
+   reconstruction are not claimed new.
 
 ## Candidate novelty residues
+
+### Core. Universal observer-action information hierarchy
+
+Exact residue: finite or countable phase-law convergence is equivalent to
+convergence of every finite-support character action coefficient; zero-action
+characters are exact constraints and split projective capacity with temporal
+dimension; scalar survival laws have exact maximal system quotient given by
+spectral difference measure and exact maximal clock quotient given by
+reflection symmetrization; complete resolved replica detectors recover full
+projective relation lattice. One explicit uniform nine-level pair proves
+scalar quotient is strict under every probability clock.
+
+Preliminary verdict: strongest paper spine. Each harmonic-analysis or
+homometry ingredient has literature ancestry. Candidate novelty is exact
+quantum closure of all five clauses, especially two maximal quotient
+characterizations, resolved relation-lattice completeness and their strict
+finite witness, joined to carrier, locality and finite-record laws. Search
+found no matching theorem package; this is provisional absence evidence, not
+priority proof.
 
 ### A. Weak rank-one interaction singularity
 
@@ -57,8 +82,9 @@ product-space projective rank, creates at least `mn` new temporal directions,
 obeys `2|t|delta||O||` for every bounded fixed-time Heisenberg probe, and
 attains every positive-weight replica collision floor.
 
-Preliminary verdict: strongest central candidate. Search found no exact match
-combining all four clauses. This is not proof of priority.
+Preliminary verdict: strong physical consequence of core hierarchy. Search
+found no exact match combining all four clauses. This is not proof of
+priority.
 
 ### B. Arbitrary-graph temporal curvature
 
@@ -176,6 +202,9 @@ headline novelty and is not a microscopic random-field MBL theorem.
 
 - Compact-hull equidistribution and Kronecker--Weyl theory.
 - Rank--nullity itself.
+- Homometric ambiguity and product/reflection construction by themselves.
+- General principle that Fourier characters determine compact-group measures.
+- Higher-order autocorrelation reconstruction in its existing signal-analysis settings.
 - Abstract all-order form-factor formulas under rational independence.
 - Elementary finite target union bound.
 - Permanent non-Haar behavior of constant-local static ensembles.
@@ -185,7 +214,8 @@ headline novelty and is not a microscopic random-field MBL theorem.
 
 ## Priority controls used in paper
 
-- “Principal new results” is limited to joined statements above.
+- “Principal new results” centers exact information hierarchy; other results
+  are labeled physical realizations, consequences or applications.
 - Literature section distinguishes premises from their local-network
   realization.
 - Scope section separates nested bounded-degree path ramp from all-to-all
@@ -195,8 +225,9 @@ headline novelty and is not a microscopic random-field MBL theorem.
 ## Required before submission
 
 1. Independent MathSciNet/zbMATH/INSPIRE/Google Scholar ancestry and citation
-   search for candidates A--G, especially exact comparison of G with
-   arXiv:2607.19852.
+   search for core hierarchy and candidates A--G, especially quantum phase
+   retrieval, clock identifiability, monitored recurrence, and exact
+   comparison of G with arXiv:2607.19852.
 2. Specialist review of interaction and arbitrary-graph proofs.
 3. Metadata check for 2026 preprints and later versions.
 4. Calibrate journal claim language after external priority result.

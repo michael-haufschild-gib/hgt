@@ -1,6 +1,6 @@
 # Internal claim ledger
 
-Not part of submitted paper. Audit date: 17 August 2026.
+Not part of submitted paper. Audit date: 27 August 2026.
 
 ## Admission rule
 
@@ -19,6 +19,20 @@ proof-assistant or internal-corpus references.
 | Projective characters, detuning, relation lattice, temporal rank, hull dimension, character constancy, replica height, `tau+rho=D-1` | `HTGeometry.finiteProjectiveRecurrence_universalLaw` | `UniversalProjectiveRecurrenceCapstoneLaw.lean` |
 | Arbitrarily weak diagonal operator-Schmidt-rank-one interaction; uncoupled rank at most `m+n`; coupled rank `mn+m+n`; gain at least `mn`; norm budget; dimension-free Heisenberg bound; every positive full-support replica collision floor | `HTGeometry.exists_smallSeparableInteraction_temporalDimensionMultiplication` | `SeparableInteractionTemporalDimensionLaw.lean` |
 | General diagonal bipartite-interaction formulation used by proof narrative | `HTGeometry.exists_arbitrarilyWeak_bipartiteInteraction_fullRecurrenceCompletion` | `WeakInteractionRecurrenceSingularityLaw.lean` |
+
+## Universal information hierarchy and strict quotient
+
+| Paper block | Checked declaration(s) | Source |
+|---|---|---|
+| One capstone joining carrier, finite/countable action limits, constraint-capacity conversion, scalar quotients, resolved completeness and strictness | `RHTower.universalQuantumRecurrenceInformationHierarchyLaw` | `UniversalQuantumRecurrenceInformationHierarchyLaw.lean` |
+| Finite phase-law convergence iff every integer-character observer-action coefficient converges | `HTGeometry.existsUnique_finitePhaseLimit_iff_completeObserverActionLimits` | `UniversalObserverActionLaw.lean` |
+| Countable phase-law convergence iff every finite-support character coefficient converges | `HTGeometry.existsUnique_countablePhaseLimit_iff_completeObserverActionLimits` | `UniversalObserverActionLaw.lean` |
+| Zero-action characters are exact rational constraints; temporal dimension plus zero-constraint rank equals full projective capacity | `HTGeometry.phaseLawConstraintRationalSpace_eq_observerActionZero`; `HTGeometry.observerAction_temporalDimension_add_zeroConstraintRank` | `UniversalObserverActionLaw.lean` |
+| Spectral difference measure is exact maximal system quotient for scalar survival under every probability clock | `RHTower.spectralDifferenceMeasure_eq_iff_allClockReturnLaws` | `ObserverRecurrenceDistributionLaw.lean` |
+| Reflection-symmetrized clock law is exact maximal clock quotient for scalar survival under every probability spectrum | `RHTower.clockOrientationQuotient_eq_iff_allReturnLaws` | `ObserverRecurrenceDistributionLaw.lean` |
+| Complete resolved replica detector hierarchy is equivalent to full projective relation lattice | `HTGeometry.relationLattice_eq_iff_all_resolvedReplicaDetectors_eq` | `ResolvedRecurrenceRelationCompletenessLaw.lean` |
+| Product/reflection fidelity identity for arbitrary finite factor weights and energies | `RHTower.finiteSpectralSurvivalFidelity_productReflection` | `QuantumRecurrenceScalarResolvedSeparationLaw.lean` |
+| Explicit uniform nine-level pair: equal scalar fidelity at every time, equal law under every probability clock, unequal relation lattices and finite resolved separation | `RHTower.quantumRecurrence_scalarResolved_strictSeparation`; component declarations `recurrenceHomometric_normSq_charFun_eq`, `recurrenceHomometric_allClockReturnLaws_eq`, `recurrenceHomometric_relationLattices_ne`, `recurrenceHomometric_exists_resolvedDetector_separation` | `QuantumRecurrenceScalarResolvedSeparationLaw.lean` |
 
 ## Law I: carrier and arbitrary spectra
 
@@ -60,7 +74,7 @@ proof-assistant or internal-corpus references.
 | Same diameter-scaled field gives bounded self-adjoint multiplication Hamiltonian and strongly continuous unitary `L²` dynamics for every Borel measure | `HTGeometry.thermodynamicDiameterLBitHilbertDynamicsLaw` | `ThermodynamicDiameterLBitHilbertDynamicsLaw.lean` |
 | Same unscaled infinite field: maximal local-flip rank in every finite environment and volume-independent exponential commutator bound | `HTGeometry.quasiLocalInfiniteLBit_fullRank_and_commutatorBound` | `InfiniteLBitRecurrenceLocalitySeparationLaw.lean` |
 
-## Law III: target capacity and complexity
+## Law III: measurement quotient, target capacity and complexity applications
 
 | Paper block | Checked declaration(s) | Source |
 |---|---|---|
@@ -112,6 +126,11 @@ Targeted 17 August audits of
 `ThermodynamicDiameterLBitCascadeLaw` and
 `ThermodynamicDiameterLBitHilbertDynamicsLaw` report same standard
 dependencies.
+Targeted 27 August audits of
+`quantumRecurrence_scalarResolved_strictSeparation` and
+`universalQuantumRecurrenceInformationHierarchyLaw` also report only
+`[propext, Classical.choice, Quot.sound]`; both source checks and targeted
+module builds passed.
 Repository formal lint forbids `sorry`, `admit`, project `axiom`,
 `opaque` and `unsafe` declarations.
 

@@ -39,7 +39,7 @@ private theorem integrableOn_thetaCuspCenterMixedReflectionJetZeroIntegrand
     simp only [add_zero, sub_zero, iteratedDeriv_zero]
     ring)
 
-private theorem integrableOn_thetaCuspCenterMixedReflectionJetTwoIntegrand
+theorem integrableOn_thetaCuspCenterMixedReflectionJetTwoIntegrand
     {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1 / 2) :
     IntegrableOn (thetaCuspCenterMixedReflectionJetTwoIntegrand a) (Ioi 0) := by
   have h20 := integrable_thetaCuspCenterMixedDerivativeProduct (t := 0) ha0 ha 2 0
@@ -52,7 +52,7 @@ private theorem integrableOn_thetaCuspCenterMixedReflectionJetTwoIntegrand
     simp only [add_zero, sub_zero, iteratedDeriv_zero, Pi.add_apply, Pi.sub_apply]
     ring)
 
-private theorem integrableOn_thetaCuspCenterMixedReflectionJetFourIntegrand
+theorem integrableOn_thetaCuspCenterMixedReflectionJetFourIntegrand
     {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1 / 2) :
     IntegrableOn (thetaCuspCenterMixedReflectionJetFourIntegrand a) (Ioi 0) := by
   have h40 := integrable_thetaCuspCenterMixedDerivativeProduct (t := 0) ha0 ha 4 0
@@ -79,7 +79,7 @@ private theorem integral_thetaCuspCenterMixedReflectionJetZeroIntegrand
   simp only [add_zero, sub_zero]
   ring
 
-private theorem integral_thetaCuspCenterMixedReflectionJetTwoIntegrand
+theorem integral_thetaCuspCenterMixedReflectionJetTwoIntegrand
     {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1 / 2) :
     (∫ r : ℝ in Ioi 0, thetaCuspCenterMixedReflectionJetTwoIntegrand a r) =
       thetaCuspCenterMixedDensitySecondJet a 0 := by
@@ -122,7 +122,7 @@ private theorem integral_thetaCuspCenterMixedReflectionJetTwoIntegrand
     _ = thetaCuspCenterMixedDensitySecondJet a 0 := by
       rfl
 
-private theorem integral_thetaCuspCenterMixedReflectionJetFourIntegrand
+theorem integral_thetaCuspCenterMixedReflectionJetFourIntegrand
     {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1 / 2) :
     (∫ r : ℝ in Ioi 0, thetaCuspCenterMixedReflectionJetFourIntegrand a r) =
       thetaCuspCenterMixedDensityFourthJet a 0 := by

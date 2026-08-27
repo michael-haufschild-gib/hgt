@@ -99,3 +99,67 @@ requirement and formalize it.
 - **Strongest survivor:** source-derived collective simple node with nonzero transverse jet.
 - 2026-08-27 — finite affine-channel occurrence solved exactly; global coefficient dynamics becomes
   open core.
+
+## Finite exponential-type density attempt
+
+C9 tested whether any nonzero fixed finite-exponential-type source can vanish at all simple critical
+ordinates. Corpus theorem
+`exists_xiSimpleCriticalZeroCount_linear_of_cofinite_exponentialType_zeros` forces a linear envelope
+on simple-critical-zero count under that vanishing. Current unconditional Lean census is only
+logarithmic, so it does not contradict linear growth. A superlinear simple-critical census is open.
+
+**Result:** conjecture failed as unconditional route closure; no theorem promoted. It remains a
+conditional diagnostic, not an RH advance.
+
+## Sharp fractional nodal threshold delta
+
+For target-centered source `v_α(x)=x^α1_(0,1)(x)`, every continuum solution of
+`xf+v_α=0` equals `-x^(α-1)1_(0,1)` almost everywhere. A nonzero embedded `L²` mode exists exactly
+when `α>1/2`. Borderline `α=1/2` fails; strict fractional node `α=3/4` succeeds.
+
+This corrects prior language: first order is sufficient but not sharp. Exact local occurrence burden
+is source vanishing order strictly above one half. Any such exponent works in every target-centered
+chart, so local regularity remains nonselective.
+
+Formal module: `FZZCigarPunctureFractionalNodalThreshold.lean`.
+
+### Updated next conjecture loop
+
+Classify logarithmically corrected critical germs
+`x^(1/2)(log(1/x))^(-β)`. Determine exact endpoint `β` threshold and whether literal FZZ/GFZZ
+winding source has enough regularity. Then test global source law rather than another fitted node.
+
+- **Latest classification:** `fzzPunctureFractionalPointMode_iff`.
+- **Strongest survivor:** source-derived node of local order strictly greater than `1/2`.
+- **Sharp excluded wall:** pure square-root and weaker nodes.
+- 2026-08-27 — fractional occurrence wall solved exactly; logarithmic critical refinement and
+  global coefficient dynamics remain open.
+
+## Critical logarithmic nodal threshold delta
+
+At pure-power wall `α=1/2`, source
+
+`v_β(x)=x^(1/2)(1-log x)^(-β)1_(0,1)(x)`
+
+has unique formal state `-x^(-1/2)(1-log x)^(-β)1_(0,1)`. It is a nonzero `L²` mode exactly when
+`β>1/2`. Change `x=e^(-u)` converts energy to `(1+u)^(-2β)`, so double-critical `β=1/2` fails
+and `β=3/4` succeeds.
+
+This refines local burden from power order to exact weighted condition: source divided by spectral
+distance must lie in `L²`. Critical power can survive with strong slowly-varying damping, but remains
+nonselective across target charts.
+
+Formal module: `FZZCigarPunctureCriticalLogNodalThreshold.lean`.
+
+### Updated next conjecture loop
+
+Leave fitted local germ ladder. Extract universal weighted criterion for arbitrary measurable source:
+nonzero point mode iff `v(x)/x∈L²` and source is nonzero modulo null sets, with unique state. Then
+apply criterion to literal FZZ/GFZZ source candidate from corpus; if unavailable, identify exact
+coefficient-faithful object still missing.
+
+- **Latest classification:** `fzzPunctureCriticalLogPointMode_iff`.
+- **Strongest survivor:** source-derived collective germ with `v/x∈L²`, including critical
+  square-root plus `β>1/2` log damping.
+- **Sharp excluded wall:** power-log pair `(α,β)=(1/2,1/2)` and weaker lexicographic decay.
+- 2026-08-27 — critical logarithmic wall solved; universal weighted source law becomes next core.

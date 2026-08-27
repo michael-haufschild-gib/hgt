@@ -1,9 +1,10 @@
 # Literature-reference audit
 
-Audit date: 2026-08-17
+Audit date: 2026-08-27
 
-Scope: every one of the 30 entries now present in `references.tex`, plus every
-claim directly attached to a citation in `body.tex`. Sources below are
+Scope: every one of the 32 entries now present in `references.tex`, plus every
+claim directly attached to a citation in `body.tex`. Previously retained but
+now unused entries remain listed only where removal history matters. Sources below are
 publisher records, author-hosted records, or arXiv records maintained from the
 authors' submissions. Search-result aggregators were not used as authority.
 
@@ -22,6 +23,11 @@ authors' submissions. Search-result aggregators were not used as authority.
   article 116 (2025)
 - `NayakSen2007`: verified as real, then removed because no claim in current
   manuscript uses it
+- `CamposVenuti2015` and `BalasubramanianEtAl2020`: verified as real, then
+  removed after rewrite because no retained sentence cites them
+- Added and verified primary records for `RosenblattSeymour1982`,
+  `GrimmBaake2008`, `YellottIverson1992` and
+  `AgulnickBusickWarner2026`
 - Citation prose: replaced unsupported wording `first-return bounds` with
   `recurrence-time bounds`; replaced vague claim that higher no-resonance
   conditions are difficult to verify with source-backed statement that
@@ -62,11 +68,15 @@ authors' submissions. Search-result aggregators were not used as authority.
 | `KimChandranAbanin2014` | Verified: three authors, title, arXiv identifier and year; abstract supports logarithmic-light-cone attribution. | [arXiv:1412.3073](https://arxiv.org/abs/1412.3073) |
 | `NandkishoreGopalakrishnanHuse2014` | Verified: three authors, published title, *Phys. Rev. B* 90, 064203 (2014), DOI and arXiv identifier; source supports local spectral-tree attribution. | [arXiv:1402.5971](https://arxiv.org/abs/1402.5971) |
 | `VasseurParameswaranMoore2015` | Verified: three authors, title, *Phys. Rev. B* 91, 140202(R) (2015), DOI and arXiv identifier; source supports interaction-suppressed revival attribution. | [APS accepted manuscript](https://link.aps.org/accepted/10.1103/PhysRevB.91.140202) |
+| `RosenblattSeymour1982` | Verified: authors, title, *SIAM Journal on Algebraic Discrete Methods* 3(3), 343--350 (1982), DOI; abstract gives product/reflection characterization used as homometry ancestry. | [SIAM](https://epubs.siam.org/doi/10.1137/0603035) |
+| `GrimmBaake2008` | Verified: authors, title, *Zeitschrift für Kristallographie* 223, 777--781 (2008), DOI and arXiv identifier; abstract identifies equality of autocorrelation as homometry. | [Open Research Online](https://oro.open.ac.uk/14992/) |
+| `YellottIverson1992` | Verified: authors, title, *Journal of the Optical Society of America A* 9(3), 388--404 (1992), DOI; abstract treats uniqueness and failure of higher-order autocorrelation reconstruction. | [Optica](https://opg.optica.org/josaa/abstract.cfm?uri=josaa-9-3-388) |
+| `AgulnickBusickWarner2026` | Verified: authors, title, arXiv identifier and 2026 version; abstract gives upper bounds and finite-group nonuniqueness examples for higher-order autocorrelations. | [arXiv:2604.13310](https://arxiv.org/abs/2604.13310) |
 
 ## Citation-context findings
 
 All statements directly carrying citations were checked against cited
 abstracts or publisher descriptions. After corrections listed above, no
 cited sentence attributes result absent from its cited source. Every one of
-30 references retained in manuscript is cited in body; no uncited
+32 references retained in manuscript is cited in body; no uncited
 bibliography padding remains.

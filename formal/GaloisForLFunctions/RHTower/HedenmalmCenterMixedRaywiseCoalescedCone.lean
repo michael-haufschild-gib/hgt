@@ -91,7 +91,7 @@ theorem contDiff_six_thetaCuspCenterMixedDensity
   exact contDiff_succ_of_hasDerivAt
     (fun t => hasDerivAt_thetaCuspCenterMixedDensity ha0 ha t) h1
 
-private theorem iteratedDeriv_one_thetaCuspCenterMixedDensity
+theorem iteratedDeriv_one_thetaCuspCenterMixedDensity
     {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1 / 2) :
     iteratedDeriv 1 (thetaCuspCenterMixedDensity a) =
       thetaCuspCenterMixedDensityFirstJet a := by
@@ -99,7 +99,7 @@ private theorem iteratedDeriv_one_thetaCuspCenterMixedDensity
   funext t
   exact (hasDerivAt_thetaCuspCenterMixedDensity ha0 ha t).deriv
 
-private theorem iteratedDeriv_two_thetaCuspCenterMixedDensity
+theorem iteratedDeriv_two_thetaCuspCenterMixedDensity
     {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1 / 2) :
     iteratedDeriv 2 (thetaCuspCenterMixedDensity a) =
       thetaCuspCenterMixedDensitySecondJet a := by
@@ -113,7 +113,7 @@ private theorem iteratedDeriv_two_thetaCuspCenterMixedDensity
       funext t
       exact (hasDerivAt_thetaCuspCenterMixedDensityFirstJet ha0 ha t).deriv
 
-private theorem iteratedDeriv_three_thetaCuspCenterMixedDensity
+theorem iteratedDeriv_three_thetaCuspCenterMixedDensity
     {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1 / 2) :
     iteratedDeriv 3 (thetaCuspCenterMixedDensity a) =
       thetaCuspCenterMixedDensityThirdJet a := by
@@ -127,7 +127,7 @@ private theorem iteratedDeriv_three_thetaCuspCenterMixedDensity
       funext t
       exact (hasDerivAt_thetaCuspCenterMixedDensitySecondJet ha0 ha t).deriv
 
-private theorem iteratedDeriv_four_thetaCuspCenterMixedDensity
+theorem iteratedDeriv_four_thetaCuspCenterMixedDensity
     {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1 / 2) :
     iteratedDeriv 4 (thetaCuspCenterMixedDensity a) =
       thetaCuspCenterMixedDensityFourthJet a := by
@@ -141,7 +141,7 @@ private theorem iteratedDeriv_four_thetaCuspCenterMixedDensity
       funext t
       exact (hasDerivAt_thetaCuspCenterMixedDensityThirdJet ha0 ha t).deriv
 
-private theorem iteratedDeriv_five_thetaCuspCenterMixedDensity
+theorem iteratedDeriv_five_thetaCuspCenterMixedDensity
     {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1 / 2) :
     iteratedDeriv 5 (thetaCuspCenterMixedDensity a) =
       thetaCuspCenterMixedDensityFifthJet a := by
@@ -154,6 +154,21 @@ private theorem iteratedDeriv_five_thetaCuspCenterMixedDensity
     _ = thetaCuspCenterMixedDensityFifthJet a := by
       funext t
       exact (hasDerivAt_thetaCuspCenterMixedDensityFourthJet ha0 ha t).deriv
+
+/-- The literal sixth center derivative is the completed derivative-product integral jet. -/
+theorem iteratedDeriv_six_thetaCuspCenterMixedDensity
+    {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1 / 2) :
+    iteratedDeriv 6 (thetaCuspCenterMixedDensity a) =
+      thetaCuspCenterMixedDensitySixthJet a := by
+  calc
+    iteratedDeriv 6 (thetaCuspCenterMixedDensity a) =
+        deriv (iteratedDeriv 5 (thetaCuspCenterMixedDensity a)) := by
+      rw [show (6 : ℕ) = 5 + 1 by norm_num, iteratedDeriv_succ]
+    _ = deriv (thetaCuspCenterMixedDensityFifthJet a) := by
+      rw [iteratedDeriv_five_thetaCuspCenterMixedDensity ha0 ha]
+    _ = thetaCuspCenterMixedDensitySixthJet a := by
+      funext t
+      exact (hasDerivAt_thetaCuspCenterMixedDensityFifthJet ha0 ha t).deriv
 
 /-- **Unconditional raywise coalesced cone.**  Every fixed positive direction through the
 two-gap origin enters the strict positive-definite chamber of the actual center-mixed theta

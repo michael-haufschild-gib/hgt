@@ -1,7 +1,7 @@
 # Observer-action information hierarchy of quantum recurrence
 
 - **ID:** `observer-action-quantum-recurrence-information-hierarchy`
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized; publication integration in progress
 - **Type:** CANDIDATE UNIVERSAL LAW / PAPER SPINE
 - **Statement:** Every quantum-recurrence record factors through a persistent phase law; zero-action characters exactly classify its constraints, scalar survival records retain exactly spectral autocorrelation and unoriented clock information, and resolved replica characters recover the full projective relation lattice.
 
@@ -15,8 +15,8 @@ only claims backed by unconditional checked declarations.
 ## Gates
 
 - [x] 0 → 1  in-progress: well-posed, corpus-audited, primary-literature frontier sketched, hostile attacks recorded
-- [ ] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorem `<name>`, targeted `lake env lean` and axiom audit green
+- [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
+- [x] 2 → 3  formalized: Lean theorem `universalQuantumRecurrenceInformationHierarchyLaw`, targeted `lake env lean` and axiom audit green
 - [ ] 3 → 4  publication-ready: standalone single-document paper, reference audit, hostile review, clean PDF
 
 ## Frozen candidate
@@ -86,6 +86,9 @@ thus a strict quotient of resolved recurrence geometry.
 - `allClockReturnLaws_eq_iff_deterministicFirstMoments`
 - `allReturnLaws_eq_iff_balancedTwoLevelFirstMoments`
 - `relationLattice_eq_iff_all_resolvedReplicaDetectors_eq`
+- `finiteSpectralSurvivalFidelity_productReflection`
+- `quantumRecurrence_scalarResolved_strictSeparation`
+- `universalQuantumRecurrenceInformationHierarchyLaw`
 - `exists_smallSeparableInteraction_temporalDimensionMultiplication`
 - generic static local network/path, countable completion, thermodynamic density, observer,
   finite-record and compact-determinacy capstones listed in the two existing recurrence claim ledgers.
@@ -148,7 +151,7 @@ recurrence; thermodynamic claims use ordered limits; no infinite-volume orbit re
 ## Approach
 
 1. Prove product/reflection scalar equality and explicit relation-lattice separation on paper.
-2. Formalize that exact strictness witness without computation tactics.
+2. Formalize that exact strictness witness without numerical search.
 3. Add one capstone theorem joining action-limit completeness, constraint/capacity conservation,
    maximal scalar quotients, resolved completeness and strictness.
 4. Rewrite from the explanatory publication-ready manuscript, incorporating newer results only at
@@ -158,10 +161,10 @@ recurrence; thermodynamic claims use ordered limits; no infinite-volume orbit re
 ## No-go closure
 
 - **Exact killing theorem/mechanism:** Not applicable; candidate active.
-- **Strongest positive survivor:** Pending hostile proof audit.
+- **Strongest positive survivor:** Universal finite/countable carrier--action--quotient--record hierarchy with an exact strict scalar/resolved separation.
 - **New insight:** Scalar survival recurrence is not the completed geometry; it is the exact
   autocorrelation/orientation quotient of a more informative observer-action phase law.
-- **Status:** Existing main clauses Lean-proved; strict witness and joined capstone not yet formalized.
+- **Status:** Paper proof complete; strict witness and joined capstone formalized and axiom-audited. Publication rewrite and render audit remain.
 
 ## Log
 
@@ -171,6 +174,11 @@ recurrence; thermodynamic claims use ordered limits; no infinite-volume orbit re
   completeness and maximal scalar-quotient theorems absent from the earlier publication-ready paper.
 - 2026-08-27 — External search separated known homometry/compact Fourier parent theory from the
   candidate quantum recurrence hierarchy.
+- 2026-08-27 — Proved and formalized general product/reflection survival equality, explicit
+  nine-level strictness witness and joined universal information-hierarchy capstone. Targeted source
+  checks, module builds and axiom audits passed.
+- 2026-08-27 — Rewrote manuscript spine around four reader questions; restored prior explanatory
+  breadth and demoted circuit complexity from universal law to target-geometry application.
 
 ## Paper proof of strict scalar/resolved separation
 
