@@ -13,14 +13,14 @@ def stripPassportCenter (ρ : ℂ) : ℂ :=
   Complex.I * (ρ - ((1 / 2 : ℝ) : ℂ))
 
 /-- The strip quartet `1 - ρ, ρ, conj ρ, 1 - conj ρ`, indexed compatibly with
-`quartetPoint (stripPassportCenter ρ)`. -/
+`quartetVertex (stripPassportCenter ρ)`. -/
 def stripQuartetPoint (ρ : ℂ) (q : Fin 4) : ℂ :=
-  ((1 / 2 : ℝ) : ℂ) + Complex.I * quartetPoint (stripPassportCenter ρ) q
+  ((1 / 2 : ℝ) : ℂ) + Complex.I * quartetVertex (stripPassportCenter ρ) q
 
 /-- The strip coordinate sends the strip quartet exactly to its centered quartet. -/
 theorem stripCoordinate_stripQuartetPoint (ρ : ℂ) (q : Fin 4) :
     -Complex.I * (stripQuartetPoint ρ q - ((1 / 2 : ℝ) : ℂ)) =
-      quartetPoint (stripPassportCenter ρ) q := by
+      quartetVertex (stripPassportCenter ρ) q := by
   rw [stripQuartetPoint, add_sub_cancel_left, ← mul_assoc]
   have hI : -Complex.I * Complex.I = 1 := by
     rw [neg_mul, Complex.I_mul_I]
@@ -29,26 +29,26 @@ theorem stripCoordinate_stripQuartetPoint (ρ : ℂ) (q : Fin 4) :
 
 @[simp] theorem stripQuartetPoint_zero (ρ : ℂ) :
     stripQuartetPoint ρ 0 = 1 - ρ := by
-  simp [stripQuartetPoint, stripPassportCenter, quartetPoint]
+  simp [stripQuartetPoint, stripPassportCenter, quartetVertex]
   rw [← mul_assoc, Complex.I_mul_I, neg_one_mul]
   ring
 
 @[simp] theorem stripQuartetPoint_one (ρ : ℂ) :
     stripQuartetPoint ρ 1 = ρ := by
-  simp [stripQuartetPoint, stripPassportCenter, quartetPoint]
+  simp [stripQuartetPoint, stripPassportCenter, quartetVertex]
   rw [← mul_assoc, Complex.I_mul_I, neg_one_mul, neg_neg]
   ring
 
 @[simp] theorem stripQuartetPoint_two (ρ : ℂ) :
     stripQuartetPoint ρ 2 = (starRingEnd ℂ) ρ := by
-  simp [stripQuartetPoint, stripPassportCenter, quartetPoint, map_sub, map_mul, map_ofNat]
+  simp [stripQuartetPoint, stripPassportCenter, quartetVertex, map_sub, map_mul, map_ofNat]
   norm_num
   rw [← mul_assoc, Complex.I_mul_I, neg_one_mul, neg_neg]
   ring
 
 @[simp] theorem stripQuartetPoint_three (ρ : ℂ) :
     stripQuartetPoint ρ 3 = 1 - (starRingEnd ℂ) ρ := by
-  simp [stripQuartetPoint, stripPassportCenter, quartetPoint, map_sub, map_mul, map_ofNat]
+  simp [stripQuartetPoint, stripPassportCenter, quartetVertex, map_sub, map_mul, map_ofNat]
   norm_num
   rw [← mul_assoc, Complex.I_mul_I, neg_one_mul]
   ring
@@ -140,7 +140,7 @@ theorem exists_strip_quartet_passport_flux_realizer_of_graded_passport
     intro j
     simpa [β, stripPassportCenter] using neg_ne_zero.mpr (ne_of_gt (hρim j))
   have hinjβ : Function.Injective
-      (fun i : J × Fin 4 => quartetPoint (β i.1) i.2) := by
+      (fun i : J × Fin 4 => quartetVertex (β i.1) i.2) := by
     intro i i' hii'
     apply hinj
     have := congrArg (fun z : ℂ => ((1 / 2 : ℝ) : ℂ) + Complex.I * z) hii'
@@ -152,10 +152,10 @@ theorem exists_strip_quartet_passport_flux_realizer_of_graded_passport
   have hf : ∀ z, AnalyticAt ℂ (quartetRealizer a₀ B) z :=
     quartetRealizer_analyticAt a₀ B
   have hord (i : J × Fin 4) :
-      analyticOrderAt (quartetRealizer a₀ B) (quartetPoint (β i.1) i.2) = (1 : ℕ) :=
+      analyticOrderAt (quartetRealizer a₀ B) (quartetVertex (β i.1) i.2) = (1 : ℕ) :=
     (hf _).analyticOrderAt_eq_one_of_zero_deriv_ne_zero (hsimple i).1 (hsimple i).2
   have hcenterCoeff (j : J) (n : ℕ) (hn : n ≤ N j + 1) :
-      fluxGermTaylorCoeff (quartetRealizer a₀ B) (quartetPoint (β j) 0) n =
+      fluxGermTaylorCoeff (quartetRealizer a₀ B) (quartetVertex (β j) 0) n =
         Complex.I ^ n * target j n := by
     rw [fluxGermTaylorCoeff, hjets j 0 n hn]
     have hfac : (n.factorial : ℂ) ≠ 0 := by
@@ -163,7 +163,7 @@ theorem exists_strip_quartet_passport_flux_realizer_of_graded_passport
     simp [quartetFluxJet, jet]
     field_simp
   have hconjCenterCoeff (j : J) (n : ℕ) (hn : n ≤ N j + 1) :
-      fluxGermTaylorCoeff (quartetRealizer a₀ B) (quartetPoint (β j) 2) n =
+      fluxGermTaylorCoeff (quartetRealizer a₀ B) (quartetVertex (β j) 2) n =
         (-Complex.I) ^ n * (starRingEnd ℂ) (target j n) := by
     rw [fluxGermTaylorCoeff, hjets j 2 n hn]
     have hfac : (n.factorial : ℂ) ≠ 0 := by

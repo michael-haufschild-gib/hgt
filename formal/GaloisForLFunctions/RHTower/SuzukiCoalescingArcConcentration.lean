@@ -95,7 +95,7 @@ theorem norm_suzukiCenteredBlaschkeSection_sub_one_le
   exact div_le_div₀ (by linarith) hnum hsqrtpos hden_lb
 
 /-- A unimodular number stays within `N` times its own defect after taking an `N`-th power. -/
-theorem norm_pow_sub_one_le {x : ℂ} (hx : ‖x‖ = 1) (N : ℕ) :
+private theorem norm_pow_sub_one_le {x : ℂ} (hx : ‖x‖ = 1) (N : ℕ) :
     ‖x ^ N - 1‖ ≤ (N : ℝ) * ‖x - 1‖ := by
   induction N with
   | zero => simp

@@ -122,3 +122,111 @@ This is the required single contour expression: insert harmonic source coefficie
 
 ## Log
 - 2026-08-25 — Entered Stage 1 after corpus and source audit.
+- 2026-08-27 — Closed Gauss endpoint infrastructure without analytic-continuation premises:
+  coefficient/GammaSeq asymptotics, absolute summability, contiguous transport, Euler-integral
+  summation, and global nonresonant Gauss summation now compile in Lean.
+- 2026-08-27 — Identified horizon-regular endpoint value and Wronskian-defined forbidden/source
+  connection coefficient with literal BM Gamma coefficient. Open connection core is square-root
+  Abel edge identifying normalizable coefficient with
+  `Gamma(c) Gamma(-1/2)/(Gamma(a) Gamma(b))`; afterward, `LAND + DYN` still requires augmented
+  causal-source projection and source-global equality.
+- 2026-08-27 — Closed `HB-GAUSS-SQRT-ABEL` in Lean. Half-order coefficient asymptotics,
+  complex Abel transfer, componentwise one-sided L'Hopital, exact forbidden/normalizable outer
+  residues, and connection-phase uniqueness identify the Cramer normalizable coefficient with
+  the literal BM decaying Gamma/Jost coefficient. Targeted build and axiom audit pass.
+
+## Closed conjecture: square-root Abel connection edge
+
+Label: `HB-GAUSS-SQRT-ABEL` — **PROVED IN LEAN**.
+
+For ordinary coefficients `t_j(a,b,c)` with `c-a-b=1/2`, nonresonance gives
+
+`sqrt(n) (n+1) t_(n+1) -> L := Gamma(c)/(Gamma(a)Gamma(b))`.
+
+The corpus theorem `tendsto_sqrt_one_sub_mul_tsum_of_sqrtNat_mul`, applied to real and imaginary
+parts, should therefore give
+
+`sqrt(1-x) R'(x) -> sqrt(pi) L`, `x -> 1-`.
+
+One-sided L'Hopital applied to
+
+`(R(x)-R(1))/sqrt(1-x)`
+
+then gives `-2 sqrt(pi) L = Gamma(-1/2)L`. Since forbidden outer factor is `1+O(1-x)` and
+normalizable outer branch divided by `sqrt(1-x)` tends to `1`, exact connection phase forces
+
+`RegularAdSNormalizableConnectionCoefficient = Gamma(c) Gamma(-1/2)/(Gamma(a)Gamma(b))`.
+
+Hostile checks: use `Ico 0 1`/left-neighborhood filter conversion explicitly; justify every
+real/imag `tsum` interchange from derivative-series summability inside radius one; prove derivative
+of square root and denominator nonvanishing only eventually on `x<1`; use exact Gamma recurrence at
+`-1/2`, not a remembered numerical identity. Failure of any transfer becomes new infrastructure,
+not reason to abandon route.
+
+Formal survivor:
+
+`d4BMPlusPlusRegularAdSNormalizableConnectionCoefficient_eq`
+
+in `ThetaCuspHawkingBMSecondHarmonicGaussSquareRootEndpoint.lean`. Its only axioms are
+`propext`, `Classical.choice`, and `Quot.sound`.
+
+## Current conjecture: physical BM Green-cut incidence
+
+Label: `HB-GREEN-CUT-INCIDENCE`.
+
+### First infrastructure theorem: exact resonant regular branch
+
+Hostile parameter audit found a half-shift defect in the existing monodromy coefficient: its
+Pochhammer factors used BM connection exponents `RadialA/B`, while the literal mixed differential
+operator uses original Gauss parameters
+`HypergeometricA/B = RadialA/B - 1/2`. The Frobenius obstruction must use the latter. Every
+definition and downstream theorem is being corrected before Green-cut construction continues.
+
+Let `N = 2n+2k+2`, `c=-N`, and let `a,b` be the original mixed hypergeometric parameters. Put
+
+`F(z) = 2F1(a+N+1,b+N+1;N+2;z)` and `u(z)=z^(N+1)F(z)`.
+
+The shifted denominator `N+2` is positive, so its Gauss series has radius one. Substituting
+
+`u' = (N+1)z^N F + z^(N+1)F'`,
+
+`u'' = N(N+1)z^(N-1)F + 2(N+1)z^N F' + z^(N+1)F''`
+
+into `z(1-z)u'' + [-N-(a+b+1)z]u' - ab u` factors the result as `z^(N+1)` times
+
+`z(1-z)F'' + [(N+2)-(a+b+2N+3)z]F' -(a+N+1)(b+N+1)F`,
+
+which vanishes by the ordinary Gauss ODE. Hence `u` is the actual regular exponent-`N+1`
+solution, with leading coefficient one. For a resonant companion `P_N + kappa*u*log z + tail`,
+the order-`N` obstruction of `P_N` is `-(a+N)(b+N)q_N`; the non-log part of
+`L(u log z)` has leading coefficient `N+1`. Thus
+
+`kappa = (-1)^N (a)_(N+1)(b)_(N+1)/(N!(N+1)!)`,
+
+now with the literal operator parameters. Next proof obligation: formalize `u`, its two
+derivatives, original mixed jet equation, horizon leading normalization, then build the full
+logarithmic companion and endpoint-selected Green responses.
+
+The corpus theorem `d4BMXiMixedHorizon_retardedSection_eq_advancedSection_iff` already reduces the
+critical-line selector to three exact dynamical identities. Construct physical endpoint-selected
+retarded and advanced `++` and `+-` response maps from the exact radial bases and Cauchy kernels,
+then prove:
+
+1. mixed retarded-minus-advanced response on the literal quadratic residual equals the actual
+   Xi-fibre unit-Wronskian logarithmic monodromy mode;
+2. nonresonant `++` retarded-minus-advanced response vanishes on the literal second-harmonic
+   residual;
+3. augmented Einstein cokernel pairing with the monodromy mode equals the exact horizon optical
+   norm-square.
+
+The first two statements are Green-kernel boundary-value theorems; the third is the missing
+Einstein--Green reciprocity theorem. Birmingham--Mokhtari provides exact linear hypergeometric QNM
+data, while available nonlinear-QNM literature gives general excitation/bilinear-form frameworks,
+not these source-faithful topological-black-hole identities. Missing reconstruction and source
+infrastructure must therefore be built rather than assumed.
+
+Hostile checks: no abstract response maps may survive in final theorem; retarded/advanced labels
+must be fixed by horizon and AdS boundary values, not sign conventions; direct third jet must cancel
+only after forming complete causal cut; all radial integrals must use exact integrating measure and
+unit Wronskian; reciprocity must include gauge, horizon, and AdS boundary terms; no positivity claim
+may be analytically continued from real momentum to complex Xi momentum.

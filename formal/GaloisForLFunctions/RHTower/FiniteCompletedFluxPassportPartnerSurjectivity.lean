@@ -23,7 +23,7 @@ theorem exists_quartet_passport_flux_realizer_of_full_finite_jet_passport
     (α : J → ℂ) (N : J → ℕ) (c : J → ℕ → ℂ)
     (hc0 : ∀ j, c j 0 = -1)
     (hαre : ∀ j, (α j).re ≠ 0)
-    (hinj : Function.Injective (fun i : J × Fin 4 => quartetPoint (α i.1) i.2)) :
+    (hinj : Function.Injective (fun i : J × Fin 4 => quartetVertex (α i.1) i.2)) :
     ∃ a₀ : ℝ, 0 < a₀ ∧ ∃ B : Polynomial ℂ,
       0 < B.degree ∧
       (∀ z : ℂ, quartetRealizer a₀ B (-z) = quartetRealizer a₀ B z) ∧
@@ -37,11 +37,11 @@ theorem exists_quartet_passport_flux_realizer_of_full_finite_jet_passport
           Kupper * (1 + ‖z‖) ^ B.natDegree * Real.exp (2 * ‖z‖)) ∧
         ∀ x : ℝ, R ≤ x → Klower * Real.exp (2 * x) ≤ ‖quartetRealizer a₀ B (x : ℂ)‖) ∧
       (∀ i : J × Fin 4,
-        quartetRealizer a₀ B (quartetPoint (α i.1) i.2) = 0 ∧
-        deriv (quartetRealizer a₀ B) (quartetPoint (α i.1) i.2) ≠ 0) ∧
+        quartetRealizer a₀ B (quartetVertex (α i.1) i.2) = 0 ∧
+        deriv (quartetRealizer a₀ B) (quartetVertex (α i.1) i.2) ≠ 0) ∧
       ∀ (j : J) (q : Fin 4) (k : ℕ), k ≤ N j →
         iteratedDeriv k
-          (fluxGerm (quartetRealizer a₀ B) (quartetPoint (α j) q)) 0 =
+          (fluxGerm (quartetRealizer a₀ B) (quartetVertex (α j) q)) 0 =
             quartetFluxJet (c j) q k := by
   obtain ⟨a₀, ha₀, B, hdeg, heven, hreal, haxis, hperiod, horder, hsimple, hflux⟩ :=
     exists_quartet_passport_flux_realizer_of_finite_jet_passport α N c hc0 hαre hinj
@@ -53,37 +53,37 @@ theorem exists_quartet_passport_flux_realizer_of_full_finite_jet_passport
   refine ⟨a₀, ha₀, B, hdeg, heven, hreal, haxis, hperiod, horder, ?_, ?_⟩
   · rintro ⟨j, q⟩
     fin_cases q
-    · simpa [quartetPoint] using hsimple j
+    · simpa [quartetVertex] using hsimple j
     · constructor
-      · simpa [quartetPoint] using (heven (α j)).trans (hsimple j).1
-      · simpa [quartetPoint, deriv_neg_of_even heven] using
+      · simpa [quartetVertex] using (heven (α j)).trans (hsimple j).1
+      · simpa [quartetVertex, deriv_neg_of_even heven] using
           (neg_ne_zero.mpr (hsimple j).2)
     · constructor
-      · simp [quartetPoint, hreal, (hsimple j).1]
-      · simpa [quartetPoint, deriv_conj_of_conjEquivariant hreal] using
+      · simp [quartetVertex, hreal, (hsimple j).1]
+      · simpa [quartetVertex, deriv_conj_of_conjEquivariant hreal] using
           ((map_ne_zero (starRingEnd ℂ)).mpr (hsimple j).2)
     · constructor
-      · simp [quartetPoint, heven, hreal, (hsimple j).1]
-      · simpa [quartetPoint, deriv_neg_of_even heven,
+      · simp [quartetVertex, heven, hreal, (hsimple j).1]
+      · simpa [quartetVertex, deriv_neg_of_even heven,
           deriv_conj_of_conjEquivariant hreal] using
           (neg_ne_zero.mpr ((map_ne_zero (starRingEnd ℂ)).mpr (hsimple j).2))
   · intro j q k hk
     have hprimary := hflux j k hk
     fin_cases q
-    · simpa [quartetPoint, quartetFluxJet] using hprimary
+    · simpa [quartetVertex, quartetFluxJet] using hprimary
     · have hneg := iteratedDeriv_fluxGerm_neg_of_even
           heven hf (hord j) k
-      simpa [quartetPoint, quartetFluxJet, hprimary] using hneg
+      simpa [quartetVertex, quartetFluxJet, hprimary] using hneg
     · have hordconj :
           analyticOrderAt (quartetRealizer a₀ B) ((starRingEnd ℂ) (α j)) =
             analyticOrderAt (quartetRealizer a₀ B) (α j) :=
         analyticOrderAt_conj_of_conjEquivariant hreal
           (hf (α j)) (hf ((starRingEnd ℂ) (α j)))
       have hconj := iteratedDeriv_fluxGerm_conj_of_conjEquivariant hreal hordconj k
-      simpa [quartetPoint, quartetFluxJet, hprimary] using hconj
+      simpa [quartetVertex, quartetFluxJet, hprimary] using hconj
     · have hnegconj :=
           iteratedDeriv_fluxGerm_neg_conj_of_even_conjEquivariant
             heven hreal hf (hord j) k
-      simpa [quartetPoint, quartetFluxJet, hprimary] using hnegconj
+      simpa [quartetVertex, quartetFluxJet, hprimary] using hnegconj
 
 end RHTower

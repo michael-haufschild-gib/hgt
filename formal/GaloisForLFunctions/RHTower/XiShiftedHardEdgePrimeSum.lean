@@ -40,7 +40,7 @@ theorem routeUVonMangoldtTailConst_nonneg : 0 ≤ routeUVonMangoldtTailConst := 
 
 /-- **The uniform von Mangoldt tail.**  Beyond exponent two the von Mangoldt series is dominated by
 its value there, uniformly. -/
-theorem tsum_vonMangoldt_rpow_le {s : ℝ} (hs : 2 ≤ s) :
+private theorem tsum_vonMangoldt_rpow_le {s : ℝ} (hs : 2 ≤ s) :
     (∑' n : ℕ, (ArithmeticFunction.vonMangoldt n : ℝ) * (n : ℝ) ^ (-s))
       ≤ routeUVonMangoldtTailConst := by
   have hsumm : Summable fun n : ℕ =>

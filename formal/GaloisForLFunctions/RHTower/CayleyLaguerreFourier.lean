@@ -32,7 +32,7 @@ theorem routeUGammaDatum_eq_indicator (j : ℕ) (t : ℝ) :
 
 theorem integrable_routeUGammaDatum (j : ℕ) :
     Integrable (routeUGammaDatum j) := by
-  have hraw := GaloisForLFunctions.HTGeometry.integrableOn_cpow_mul_cexp
+  have hraw := GaloisForLFunctions.HTGeometry.integrableOn_natPow_mul_cexp
     (c := (1 : ℂ)) (by norm_num) (j + 1)
   have hdiv : IntegrableOn (fun s : ℝ =>
       (s : ℂ) ^ (j + 1) * Complex.exp (-((1 : ℂ) * s)) /

@@ -23,7 +23,7 @@ noncomputable section
 /-! ## The logarithmic majorant -/
 
 /-- `1/(t (log t)²)` is integrable on `(e, ∞)`, with primitive `-1/log t`. -/
-theorem integrableOn_inv_mul_log_sq :
+private theorem integrableOn_inv_mul_log_sq :
     IntegrableOn (fun t : ℝ => (t * Real.log t ^ 2)⁻¹) (Ioi (Real.exp 1)) := by
   have hcont : ContinuousWithinAt (fun t : ℝ => -(Real.log t)⁻¹) (Ici (Real.exp 1))
       (Real.exp 1) := by

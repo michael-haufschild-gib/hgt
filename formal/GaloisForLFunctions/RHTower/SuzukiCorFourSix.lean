@@ -102,7 +102,7 @@ theorem suzukiEntireFourier_liTestFun (n : ℕ) {z : ℂ} (hz : -(1 / 2 : ℝ) <
   rw [suzukiEntireFourier, MeasureTheory.integral_congr_ae hae,
     MeasureTheory.integral_indicator measurableSet_Ioi]
   rw [MeasureTheory.integral_finsetSum _ (fun k _ =>
-    (integrableOn_cpow_mul_cexp hsre k).const_mul (c k))]
+    (integrableOn_natPow_mul_cexp hsre k).const_mul (c k))]
   have hterm : ∀ k ∈ Finset.range n,
       (∫ x in Ioi (0 : ℝ), c k * ((x : ℂ) ^ k * Complex.exp (-(s * x))))
         = (n.choose (k + 1) : ℂ) * (-1) ^ k / s ^ (k + 1) := by

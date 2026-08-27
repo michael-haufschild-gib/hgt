@@ -193,7 +193,7 @@ theorem rapidExponentialFockLocalEvaluationPolynomialConstant_pos
   unfold rapidExponentialFockLocalEvaluationPolynomialConstant
   positivity
 
-theorem rapidExponentialFockLocalEvaluationFactor_eq
+private theorem rapidExponentialFockLocalEvaluationFactor_eq
     {a : ℝ} (ha : 0 < a) (x : ℝ) :
     rapidExponentialFockLocalEvaluationFactor a x =
       (128 * Real.exp 2 * (a + 1) ^ 2 / a ^ 2) *

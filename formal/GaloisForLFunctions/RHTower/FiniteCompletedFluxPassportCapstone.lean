@@ -17,7 +17,7 @@ theorem exists_quartet_passport_flux_realizer_of_target {J : Type} [Fintype J] [
     (htargetDiff : ∀ j, Differentiable ℂ (target j))
     (htargetzero : ∀ j, target j (α j) = 0)
     (htargetderiv : ∀ j, deriv (target j) (α j) ≠ 0)
-    (hinj : Function.Injective (fun i : J × Fin 4 => quartetPoint (α i.1) i.2)) :
+    (hinj : Function.Injective (fun i : J × Fin 4 => quartetVertex (α i.1) i.2)) :
     ∃ B : Polynomial ℂ,
       0 < B.degree ∧
       (∀ z : ℂ, quartetRealizer a₀ B (-z) = quartetRealizer a₀ B z) ∧

@@ -24,7 +24,7 @@ def deningerPrimeRestrictionQuotientHasseFamily
     {U V : Opens (PrimeSpectrum ℤ)} (hVU : V ≤ U) :
     GaloisForLFunctions.HTGeometry.HasseFamily
       (deningerPrimeSections n1 n2 alpha beta U ⧸
-        LinearMap.ker (deningerPrimeRestrictionLinearMap n1 n2 alpha beta U V))
+        LinearMap.ker (deningerPrimeSectionsRestrictionLinearMap n1 n2 alpha beta U V))
       {p : Nat.Primes // p ∈ deningerPrimeIndex V} where
   Local := fun p => E p.1
   profile := fun q p =>

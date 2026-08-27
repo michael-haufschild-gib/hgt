@@ -18,7 +18,7 @@ namespace RHTower
 noncomputable section
 
 /-- The prime log-density mass of a window `(A, B]`. -/
-def primeLogWindowMass (A B : ℝ) : ℝ :=
+private def primeLogWindowMass (A B : ℝ) : ℝ :=
   mertensPrimeWeightSum ⌊B⌋₊ - mertensPrimeWeightSum ⌊A⌋₊
 
 /-- The uniform window constant of the prime log-density. -/

@@ -89,7 +89,7 @@ def deningerTwistHom (σ : G ≃* G) (ν ν' : ℕ) : G →* G where
     simp only [map_mul, mul_pow, mul_inv]
     exact mul_mul_mul_comm _ _ _ _
 
-@[simp] theorem deningerTwistHom_apply (σ : G ≃* G) (ν ν' : ℕ) (y : G) :
+@[simp] private theorem deningerTwistHom_apply (σ : G ≃* G) (ν ν' : ℕ) (y : G) :
     deningerTwistHom σ ν ν' y = y ^ ν * (σ y ^ ν')⁻¹ := rfl
 
 /-- The telescoping identity `(z^ω)^ν σ (z^ω)^{-ν'} = z^{ν^i} σ^i (z)^{-ν'^i}` for

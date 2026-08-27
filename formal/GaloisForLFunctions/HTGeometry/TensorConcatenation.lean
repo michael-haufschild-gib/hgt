@@ -91,7 +91,7 @@ private def tensorVec (ψ : EuclideanSpace ℂ dA) (φ : EuclideanSpace ℂ dB) 
   WithLp.toLp 2 (fun p : dA × dB => ψ p.1 * φ p.2)
 
 omit [Fintype dA] [Fintype dB] in
-theorem tensorVec_apply (ψ : EuclideanSpace ℂ dA) (φ : EuclideanSpace ℂ dB) (p : dA × dB) :
+private theorem tensorVec_apply (ψ : EuclideanSpace ℂ dA) (φ : EuclideanSpace ℂ dB) (p : dA × dB) :
     tensorVec ψ φ p = ψ p.1 * φ p.2 := rfl
 
 /-- **The tensor norm is multiplicative.** -/

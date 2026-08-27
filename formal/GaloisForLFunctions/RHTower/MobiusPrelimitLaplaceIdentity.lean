@@ -179,7 +179,7 @@ theorem causalTransform_indicator_one {z : ℂ} (hz : 0 < z.re) :
   rw [hcongr, GaloisForLFunctions.RHTower.integral_Ioi_cexp_neg_mul_shift hz 0]
   simp
 
-theorem norm_mobiusWeightedPartial_le {a : ℝ} (ha : 1 < a) (t : ℝ) :
+private theorem norm_mobiusWeightedPartial_le {a : ℝ} (ha : 1 < a) (t : ℝ) :
     ‖mobiusWeightedPartial a t‖ ≤ ∑' n : ℕ, ((n : ℝ)) ^ (-a) := by
   have hbase : Summable (fun n : ℕ => ((n : ℝ)) ^ (-a)) :=
     Real.summable_nat_rpow.mpr (by linarith)

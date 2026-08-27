@@ -33,7 +33,7 @@ namespace GaloisForLFunctions.HTGeometry
 variable {Ξ Ξ' Ξ'' D D' : ℝ → ℝ} {y : ℝ}
 
 /-- The first-order coefficient of a Liouville–Green comparison equation. -/
-def lgDrift (Ξ Ξ' D : ℝ → ℝ) (y : ℝ) : ℝ := Ξ' y / Ξ y - D y
+private def lgDrift (Ξ Ξ' D : ℝ → ℝ) (y : ℝ) : ℝ := Ξ' y / Ξ y - D y
 
 theorem hasDerivAt_lgDrift (hΞ : HasDerivAt Ξ (Ξ' y) y) (hΞ' : HasDerivAt Ξ' (Ξ'' y) y)
     (hD : HasDerivAt D (D' y) y) (hΞ0 : Ξ y ≠ 0) :

@@ -32,7 +32,7 @@ theorem norm_Gammaℝ_eq (w : ℂ) :
 
 /-- **The modulus of the functional-equation factor.**  Off the real axis the `Γ_ℝ` quotient
 splits into a power of `π` and a ratio of `Γ` moduli. -/
-theorem norm_zetaChi_eq {s : ℂ} (hsim : s.im ≠ 0) :
+theorem norm_zetaChi_eq_mul_inv {s : ℂ} (hsim : s.im ≠ 0) :
     ‖zetaChi s‖ = Real.pi ^ (s.re - 1 / 2)
       * (‖Complex.Gamma ((1 - s) / 2)‖ * ‖(Complex.Gamma (s / 2))⁻¹‖) := by
   have hGne : Complex.Gamma (s / 2) ≠ 0 := by
@@ -95,7 +95,7 @@ theorem hasStripPolyGrowthOffReal_zetaChi : HasStripPolyGrowthOffReal zetaChi :=
     intro h
     rw [h] at hτ
     norm_num at hτ
-  have hchi := norm_zetaChi_eq hsim
+  have hchi := norm_zetaChi_eq_mul_inv hsim
   rw [hchi]
   -- assemble
   have hexp : Real.exp (-(Real.pi * (|s.im| / 2) / 2)) * Real.exp (Real.pi * (|s.im| / 2) / 2)

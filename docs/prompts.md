@@ -34,7 +34,7 @@ where mathematical knowledge is missing use the /hgtl7 skill to create it.
 /goal
 
 formalize UNCONDITIONALLY in lean any proven theorem from all these cards: 
-- docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/03-ht-translation-projective-geometry
+- docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/04-rg-stochastic-quantum-fields
   
 add missing infrastructure, lean proofs, everything needed to mark a card as fully done and move it to stage 3 of the pipeline - no simplifications. 
 
@@ -322,8 +322,29 @@ Non-negotiable working mode rules:
 use the search tool for the lean corpus to check what already was formalized so you do not duplicate existing work.
 
 
- are you sure, you are not duplicating work? we have extensive prior work in our lean corpus exactly about this.
+are you sure, you are not duplicating work? we have extensive prior work in our lean corpus exactly about this. always use the search tool for our lean corpus.
 
 be efficient with lean. clean up after yourself. do not run large rebuilds. do not run umbrella builds. do only check axioms for what you have created - no need to constantly check stuff we have already checked.
 
 do not pivot on unanswered mathematical problems. your job is precisely to solve problems that neither our lean corpus nor literature have solved yet. use the hgt-fields-medalist skill workflow and heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ...
+
+## Research 2
+**Goal:** Formalize an unconditional proof in lean of the Goncharov conjecture 
+
+**Lean rules:**
+1. Proofs must be unconditional and closed in lean, no premises, no hypotheses, no added axioms, ....
+2. Always build in the foreground, 1 process per single agent.
+3. Be efficient, use caching, batch instead of running constant loops of tiny edits and rebuilds
+4. No computations.
+5. Always use  lake env lean \<file>  and only lake build \<module> for the final audit. Do not forget to wire new modules into the umbrellas.
+6. do not run full builds. check in scratch, build only oleans that are needed, wire finished modules into their umbrella but do not run full umbrella builds.
+7. make sure you don't leave stale lean processes running - clean up after yourself.
+
+be efficient with lean. clean up after yourself. do not run large rebuilds. do not run umbrella builds. do only check axioms for what you have created - no need to constantly check stuff we have already checked.
+
+**Mandatory reasearch and conjecturing rules:** 
+1. always use the search tool for our lean corpus to find ideas, existing work. conjecture based on the lean corpus, not your training data which is behind our research in the lean corpus.
+2. be creative, do not get stuck on any classic route but research our lean corpus and let it guide you.
+3. always tackle the hardest mathematical problem that neither our lean corpus nor literature have solved yet. missing infrastructure or no existing proof is not reason to pivot but to build the infrastructure and to solve the open problem yourself.
+4. to create new knowledge use the hgt-fields-medalist skill workflow and heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ...  
+

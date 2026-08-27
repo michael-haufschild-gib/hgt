@@ -37,7 +37,7 @@ open Finset
 variable {A : Type*} [CommGroup A]
 
 /-- The twist endomorphism `y ↦ y ^ ν · σ (y) ^ (-ν')` of a commutative group. -/
-def deningerTwistHom (σ : MulAut A) (ν ν' : ℕ) : A →* A where
+private def deningerTwistHom (σ : MulAut A) (ν ν' : ℕ) : A →* A where
   toFun y := y ^ ν * ((σ y) ^ ν')⁻¹
   map_one' := by simp
   map_mul' a b := by

@@ -40,7 +40,7 @@ theorem memLp_two_of_poisson_bound {u : ℝ → ℂ} {a b D : ℝ} (hb : 0 < b)
     MemLp u 2 volume := by
   refine (memLp_two_iff_integrable_sq_norm hmeas).mpr ?_
   refine Integrable.mono'
-    ((integrable_inv_sq_add_sq (a := a) hb).const_mul D) (hmeas.norm.pow 2) ?_
+    ((integrable_inv_sub_sq_add_sq (a := a) hb).const_mul D) (hmeas.norm.pow 2) ?_
   filter_upwards with x
   rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
   have h := hbd x

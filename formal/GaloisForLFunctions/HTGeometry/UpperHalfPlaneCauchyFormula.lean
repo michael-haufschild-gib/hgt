@@ -33,7 +33,7 @@ theorem differentiableAt_dslope_of_ne {f : ℂ → ℂ} {a z : ℂ} (hz : z ≠ 
   exact (hf.sub_const _).div (differentiableAt_id.sub_const _) hne'
 
 /-- **The Poisson normalisation** `∫ dx/((x-a)² + b²) = π/b`. -/
-theorem integral_inv_sq_add_sq {a b : ℝ} (hb : 0 < b) :
+theorem integral_inv_sub_sq_add_sq {a b : ℝ} (hb : 0 < b) :
     (∫ x : ℝ, ((x - a) ^ 2 + b ^ 2)⁻¹) = Real.pi / b := by
   have hb0 : b ≠ 0 := ne_of_gt hb
   have hfun : ∀ x : ℝ, ((x - a) ^ 2 + b ^ 2)⁻¹
@@ -50,7 +50,7 @@ theorem integral_inv_sq_add_sq {a b : ℝ} (hb : 0 < b) :
     integral_univ_inv_one_add_sq, smul_eq_mul, abs_of_pos hb]
   field_simp
 
-theorem integrable_inv_sq_add_sq {a b : ℝ} (hb : 0 < b) :
+theorem integrable_inv_sub_sq_add_sq {a b : ℝ} (hb : 0 < b) :
     Integrable (fun x : ℝ => ((x - a) ^ 2 + b ^ 2)⁻¹) volume := by
   have hbase : Integrable (fun x : ℝ => ((b ^ 2)⁻¹ * (1 + ((x - a) / b) ^ 2)⁻¹)) volume :=
     ((integrable_inv_one_add_sq.comp_div (ne_of_gt hb)).comp_sub_right a).const_mul _
@@ -75,7 +75,7 @@ theorem cauchyPair_eq_ofReal (w : ℂ) (x : ℝ) :
 
 theorem integrable_cauchyPair {w : ℂ} (hw : 0 < w.im) :
     Integrable (fun x : ℝ => (((x : ℂ) - w) * ((x : ℂ) - (starRingEnd ℂ) w))⁻¹) volume := by
-  have hb := integrable_inv_sq_add_sq (a := w.re) hw
+  have hb := integrable_inv_sub_sq_add_sq (a := w.re) hw
   have hcoe : Integrable
       (fun x : ℝ => (((((x - w.re) ^ 2 + w.im ^ 2 : ℝ)) : ℂ))⁻¹) volume := by
     have hc : Integrable (fun x : ℝ => (((((x - w.re) ^ 2 + w.im ^ 2)⁻¹ : ℝ)) : ℂ)) volume :=
@@ -97,7 +97,7 @@ theorem integral_cauchyPair {w : ℂ} (hw : 0 < w.im) :
   rw [MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall hfun)]
   have h := integral_ofReal (𝕜 := ℂ) (μ := (volume : Measure ℝ))
     (f := fun x : ℝ => ((x - w.re) ^ 2 + w.im ^ 2)⁻¹)
-  exact h.trans (by rw [integral_inv_sq_add_sq hw]; rfl)
+  exact h.trans (by rw [integral_inv_sub_sq_add_sq hw]; rfl)
 
 /-- **The Cauchy integral formula for the closed upper half-plane.**  A function holomorphic on the
 closed upper half-plane and decaying like `1/|z|` there reproduces itself from its boundary values.

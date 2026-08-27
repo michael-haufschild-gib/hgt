@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCausalChannelEvaluation
+import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMProjectiveCausalResponse
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingTotalThirdOrderCausalCut
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingTopologicalBlackHoleQNMIncidence
 
@@ -82,13 +82,13 @@ private theorem d4AscPochhammer_eval_conj (N : ℕ) (z : ℂ) :
 def d4BMMixedHorizonFrobeniusOrder (n k : ℕ) : ℕ :=
   2 * n + 2 * k + 2
 
-/-- Plus connection exponent at complex analytically continued BM momentum. -/
+/-- First original hypergeometric parameter at complex analytically continued BM momentum. -/
 def d4BMMixedHorizonComplexA (n k : ℕ) (chi : ℂ) : ℂ :=
-  d4BMCausalRadialA (d4BMCausalPlusMinusFrequency n k chi) chi
+  d4BMCausalHypergeometricA (d4BMCausalPlusMinusFrequency n k chi) chi
 
-/-- Minus connection exponent at complex analytically continued BM momentum. -/
+/-- Second original hypergeometric parameter at complex analytically continued BM momentum. -/
 def d4BMMixedHorizonComplexB (n k : ℕ) (chi : ℂ) : ℂ :=
-  d4BMCausalRadialB (d4BMCausalPlusMinusFrequency n k chi) chi
+  d4BMCausalHypergeometricB (d4BMCausalPlusMinusFrequency n k chi) chi
 
 /-- Complex-momentum continuation of the oriented mixed-horizon logarithmic monodromy. -/
 def d4BMMixedHorizonComplexMonodromyJump
@@ -107,7 +107,7 @@ private theorem d4BMMixedHorizonComplexA_ascPochhammer_ne_zero
   push Not
   intro j hj hja
   have him := congrArg Complex.im hja
-  rw [d4BMMixedHorizonComplexA, d4BMCausalRadialA_plusMinus] at him
+  rw [d4BMMixedHorizonComplexA, d4BMCausalHypergeometricA_plusMinus] at him
   simp [Complex.mul_im] at him
   exact hchi (by linarith)
 
@@ -119,7 +119,7 @@ private theorem d4BMMixedHorizonComplexB_ascPochhammer_ne_zero
   push Not
   intro j hj hjb
   have him := congrArg Complex.im hjb
-  rw [d4BMMixedHorizonComplexB, d4BMCausalRadialB_plusMinus] at him
+  rw [d4BMMixedHorizonComplexB, d4BMCausalHypergeometricB_plusMinus] at him
   simp [Complex.mul_im] at him
   exact hchi (by linarith)
 
@@ -152,7 +152,7 @@ theorem d4BMMixedHorizonComplexA_neg
     d4BMMixedHorizonComplexA n k (-chi) =
       d4BMMixedHorizonComplexB n k chi := by
   rw [d4BMMixedHorizonComplexA, d4BMMixedHorizonComplexB,
-    d4BMCausalRadialA_plusMinus, d4BMCausalRadialB_plusMinus]
+    d4BMCausalHypergeometricA_plusMinus, d4BMCausalHypergeometricB_plusMinus]
   ring
 
 /-- The second connection exponent is exchanged in the opposite direction. -/
@@ -161,7 +161,7 @@ theorem d4BMMixedHorizonComplexB_neg
     d4BMMixedHorizonComplexB n k (-chi) =
       d4BMMixedHorizonComplexA n k chi := by
   rw [d4BMMixedHorizonComplexA, d4BMMixedHorizonComplexB,
-    d4BMCausalRadialA_plusMinus, d4BMCausalRadialB_plusMinus]
+    d4BMCausalHypergeometricA_plusMinus, d4BMCausalHypergeometricB_plusMinus]
   ring
 
 /-- Radial Frobenius monodromy is branch-shadow even. -/
@@ -206,14 +206,14 @@ theorem d4BMXiMixedHorizonComplexMonodromyJump_ne_zero
   exact d4BMMixedHorizonComplexMonodromyJump_ne_zero n k _
     (d4BMXiMixedHorizonAngularMomentum_re_ne_zero q)
 
-/-- Plus connection exponent of the physical real-angular-momentum mixed channel. -/
+/-- First original hypergeometric parameter of the physical real-angular-momentum mixed channel. -/
 def d4BMMixedHorizonA (n k : ℕ) (chi : ℝ) : ℂ :=
-  d4BMCausalRadialA
+  d4BMCausalHypergeometricA
     (d4BMCausalPlusMinusFrequency n k (chi : ℂ)) (chi : ℂ)
 
-/-- Minus connection exponent of the physical real-angular-momentum mixed channel. -/
+/-- Second original hypergeometric parameter of the physical real-angular-momentum mixed channel. -/
 def d4BMMixedHorizonB (n k : ℕ) (chi : ℝ) : ℂ :=
-  d4BMCausalRadialB
+  d4BMCausalHypergeometricB
     (d4BMCausalPlusMinusFrequency n k (chi : ℂ)) (chi : ℂ)
 
 /-- The exact mixed frequency lies at the negative-integral horizon parameter `-N`. -/
@@ -237,7 +237,7 @@ theorem d4BMMixedHorizonB_eq_conj_A
     d4BMMixedHorizonB n k chi =
       starRingEnd ℂ (d4BMMixedHorizonA n k chi) := by
   rw [d4BMMixedHorizonA, d4BMMixedHorizonB,
-    d4BMCausalRadialA_plusMinus, d4BMCausalRadialB_plusMinus]
+    d4BMCausalHypergeometricA_plusMinus, d4BMCausalHypergeometricB_plusMinus]
   norm_num [map_sub, map_add, map_neg, map_div₀, map_mul, map_ofNat,
     Complex.conj_I]
   ring
@@ -272,13 +272,13 @@ private theorem d4BMMixedHorizonAscPochhammer_ne_zero
   push Not
   intro j hj hja
   have hre := congrArg Complex.re hja
-  rw [d4BMMixedHorizonA, d4BMCausalRadialA_plusMinus] at hre
+  rw [d4BMMixedHorizonA, d4BMCausalHypergeometricA_plusMinus] at hre
   norm_num at hre
   have hfour : (4 : ℝ) * (j : ℝ) =
-      4 * (n : ℝ) + 4 * (k : ℝ) + 3 := by
+      4 * (n : ℝ) + 4 * (k : ℝ) + 5 := by
     linarith
   have hcast : (4 : ℤ) * (j : ℤ) =
-      4 * (n : ℤ) + 4 * (k : ℤ) + 3 := by
+      4 * (n : ℤ) + 4 * (k : ℤ) + 5 := by
     exact_mod_cast hfour
   omega
 

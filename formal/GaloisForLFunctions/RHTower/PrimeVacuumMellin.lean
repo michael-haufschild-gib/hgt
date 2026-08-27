@@ -39,7 +39,7 @@ theorem primeVacuumCurrent_eq_tail {z : ℂ} {x : ℝ} (hx : 0 < x) (hxe : x ≤
 
 /-! ## The antiderivative in the cut -/
 
-theorem ofReal_inv_cpow {a : ℝ} (ha : 0 < a) (w : ℂ) :
+private theorem ofReal_inv_cpow {a : ℝ} (ha : 0 < a) (w : ℂ) :
     ((a⁻¹ : ℝ) : ℂ) ^ w = ((a : ℂ) ^ w)⁻¹ := by
   rw [Complex.ofReal_inv]
   refine Complex.inv_cpow (a : ℂ) w ?_

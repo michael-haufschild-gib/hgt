@@ -21,7 +21,7 @@ noncomputable section
 open MeasureTheory Set
 
 /-- The seed is an even function. -/
-@[simp] theorem thetaCuspSeed_neg (t : ℝ) : thetaCuspSeed (-t) = thetaCuspSeed t := by
+@[simp] private theorem thetaCuspSeed_neg (t : ℝ) : thetaCuspSeed (-t) = thetaCuspSeed t := by
   unfold thetaCuspSeed
   ring_nf
 

@@ -14,7 +14,7 @@ theorem exists_quartet_passport_flux_realizer_of_polynomial_passport_uncondition
     (α : J → ℂ) (N : J → ℕ)
     (H : J → Polynomial ℂ) (hH0 : ∀ j, (H j).coeff 0 = -1)
     (hαre : ∀ j, (α j).re ≠ 0)
-    (hinj : Function.Injective (fun i : J × Fin 4 => quartetPoint (α i.1) i.2)) :
+    (hinj : Function.Injective (fun i : J × Fin 4 => quartetVertex (α i.1) i.2)) :
     ∃ a₀ : ℝ, 0 < a₀ ∧ ∃ B : Polynomial ℂ,
       0 < B.degree ∧
       (∀ z : ℂ, quartetRealizer a₀ B (-z) = quartetRealizer a₀ B z) ∧

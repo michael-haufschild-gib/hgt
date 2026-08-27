@@ -100,7 +100,7 @@ theorem tendsto_pow_mul_exp_neg_mul_atTop {b : ℝ} (hb : 0 < b) (n : ℕ) :
   rw [mul_pow]
   field_simp
 
-theorem norm_cpow_mul_cexp {c : ℂ} {x : ℝ} (hx : 0 ≤ x) (j : ℕ) :
+theorem norm_natPow_mul_cexp {c : ℂ} {x : ℝ} (hx : 0 ≤ x) (j : ℕ) :
     ‖((x : ℂ) ^ j) * Complex.exp (-(c * x))‖ = x ^ j * Real.exp (-(c.re * x)) := by
   rw [norm_mul, norm_pow, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hx,
     Complex.norm_exp]
@@ -112,7 +112,7 @@ theorem tendsto_cpow_mul_cexp {c : ℂ} (hc : 0 < c.re) (j : ℕ) :
   rw [tendsto_zero_iff_norm_tendsto_zero]
   refine (tendsto_pow_mul_exp_neg_mul_atTop hc j).congr' ?_
   filter_upwards [Filter.eventually_ge_atTop (0:ℝ)] with x hx
-  exact (norm_cpow_mul_cexp hx j).symm
+  exact (norm_natPow_mul_cexp hx j).symm
 
 theorem continuous_cexpAntider (c : ℂ) (j : ℕ) : Continuous (cexpAntider c j) := by
   induction j with
@@ -145,7 +145,7 @@ theorem tendsto_cexpAntider {c : ℂ} (hc : 0 < c.re) (j : ℕ) :
       refine h3.congr fun x => ?_
       simp only [cexpAntider, neg_div]
 
-theorem integrableOn_cpow_mul_cexp {c : ℂ} (hc : 0 < c.re) (j : ℕ) :
+theorem integrableOn_natPow_mul_cexp {c : ℂ} (hc : 0 < c.re) (j : ℕ) :
     IntegrableOn (fun x : ℝ => ((x : ℂ) ^ j) * Complex.exp (-(c * x))) (Ioi 0) volume := by
   have hbase : IntegrableOn (fun x : ℝ => x ^ (j : ℝ) * Real.exp (-c.re * x ^ (1 : ℝ)))
       (Ioi 0) volume :=
@@ -161,7 +161,7 @@ theorem integrableOn_cpow_mul_cexp {c : ℂ} (hc : 0 < c.re) (j : ℕ) :
     fun_prop
   · filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
     have hx0 : (0:ℝ) < x := hx
-    exact le_of_eq (norm_cpow_mul_cexp hx0.le j)
+    exact le_of_eq (norm_natPow_mul_cexp hx0.le j)
 
 /-- **The half-line Laplace transform of a monomial at a complex rate.**  A mathlib gap: both
 `integral_cpow_mul_exp_neg_mul_Ioi` and the corpus's real-rate version take a real rate. -/
@@ -175,7 +175,7 @@ theorem integral_Ioi_pow_mul_cexp {c : ℂ} (hc : 0 < c.re) (j : ℕ) :
   have hcont : ContinuousWithinAt (cexpAntider c j) (Ici (0:ℝ)) 0 :=
     (continuous_cexpAntider c j).continuousWithinAt
   have h := integral_Ioi_of_hasDerivAt_of_tendsto hcont
-    (fun x _ => hasDerivAt_cexpAntider hcne j x) (integrableOn_cpow_mul_cexp hc j)
+    (fun x _ => hasDerivAt_cexpAntider hcne j x) (integrableOn_natPow_mul_cexp hc j)
     (tendsto_cexpAntider hc j)
   rw [h, cexpAntider_zero hcne j]
   ring

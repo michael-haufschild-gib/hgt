@@ -199,7 +199,7 @@ theorem exists_norm_zetaChi_line_le {σ : ℝ} (hσ : σ < 1 / 2) :
     norm_num
   have hGpos : 0 < ‖Complex.Gamma (((σ / 2 : ℝ) : ℂ) + (τ : ℂ) * Complex.I)‖ :=
     norm_pos_iff.mpr (gammaArg_Gamma_ne_zero hτ0 (σ / 2))
-  rw [norm_zetaChi_eq hsim, hsre, norm_inv, h1, h2]
+  rw [norm_zetaChi_eq_mul_inv hsim, hsre, norm_inv, h1, h2]
   have hratio : ‖Complex.Gamma ((((1 - σ) / 2 : ℝ) : ℂ) + (τ : ℂ) * Complex.I)‖
       * ‖Complex.Gamma (((σ / 2 : ℝ) : ℂ) + (τ : ℂ) * Complex.I)‖⁻¹ ≤ C₁ * τ ^ (1 / 2 - σ) := by
     rw [← div_eq_mul_inv, div_le_iff₀ hGpos]

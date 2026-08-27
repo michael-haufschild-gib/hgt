@@ -45,7 +45,7 @@ theorem algebra_trace_baseChange {A B : Type*} [CommRing A] [CommRing B] [Algebr
   rw [Algebra.trace_apply, Algebra.trace_apply, hlm, LinearMap.trace_baseChange]
 
 /-- **The discriminant commutes with base change.** -/
-theorem discr_baseChange {A B : Type*} [CommRing A] [CommRing B] [Algebra A B]
+private theorem discr_baseChange {A B : Type*} [CommRing A] [CommRing B] [Algebra A B]
     [Module.Free A B] [Module.Finite A B] (S : Type*) [CommRing S] [Algebra A S]
     {ι : Type*} [Fintype ι] [DecidableEq ι] (b : Module.Basis ι A B) :
     Algebra.discr S ⇑(b.baseChange S) = algebraMap A S (Algebra.discr A ⇑b) := by

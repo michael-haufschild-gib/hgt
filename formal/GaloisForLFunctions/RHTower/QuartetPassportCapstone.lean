@@ -10,7 +10,7 @@ import GaloisForLFunctions.RHTower.DeningerArithmeticFiniteJetInterpolation
 
 This module assembles the pieces of the arbitrary-finite-quartet-passport realization.
 
-`quartetPoint α : Fin 4 → ℂ` lists the four points `α, -α, conj α, -conj α`, and `neg4`, `conj4`
+`quartetVertex α : Fin 4 → ℂ` lists the four points `α, -α, conj α, -conj α`, and `neg4`, `conj4`
 are the two induced involutions of the four slots.  `quartetTarget P` generates the four target
 jets of a quartet from the single base one by `P`, `P ∘ (-X)`, `P̄`, `P̄ ∘ (-X)`; with that choice
 the two equivariance hypotheses of `FiniteHermiteCRT` become the polynomial identities
@@ -50,7 +50,7 @@ namespace RHTower
 /-! ## The four points of a quartet -/
 
 /-- The four points `α, -α, conj α, -conj α` of a quartet. -/
-def quartetPoint (α : ℂ) : Fin 4 → ℂ
+def quartetVertex (α : ℂ) : Fin 4 → ℂ
   | 0 => α
   | 1 => -α
   | 2 => (starRingEnd ℂ) α
@@ -75,13 +75,13 @@ theorem neg4_apply : ∀ k : Fin 4, neg4 k = if k = 0 then 1 else if k = 1 then 
 theorem conj4_apply : ∀ k : Fin 4, conj4 k = if k = 0 then 2 else if k = 1 then 3
     else if k = 2 then 0 else 1 := by decide
 
-theorem quartetPoint_neg4 (α : ℂ) (k : Fin 4) :
-    quartetPoint α (neg4 k) = -(quartetPoint α k) := by
-  fin_cases k <;> simp [quartetPoint, neg4, Equiv.swap_apply_def]
+theorem quartetVertex_neg4 (α : ℂ) (k : Fin 4) :
+    quartetVertex α (neg4 k) = -(quartetVertex α k) := by
+  fin_cases k <;> simp [quartetVertex, neg4, Equiv.swap_apply_def]
 
-theorem quartetPoint_conj4 (α : ℂ) (k : Fin 4) :
-    quartetPoint α (conj4 k) = (starRingEnd ℂ) (quartetPoint α k) := by
-  fin_cases k <;> simp [quartetPoint, conj4, Equiv.swap_apply_def]
+theorem quartetVertex_conj4 (α : ℂ) (k : Fin 4) :
+    quartetVertex α (conj4 k) = (starRingEnd ℂ) (quartetVertex α k) := by
+  fin_cases k <;> simp [quartetVertex, conj4, Equiv.swap_apply_def]
 
 theorem sign4_neg4 (k : Fin 4) : sign4 (neg4 k) = -(sign4 k) := by
   fin_cases k <;> simp [sign4, neg4, Equiv.swap_apply_def]
@@ -112,51 +112,51 @@ theorem neg_one_pow_sq (n : ℕ) : ((-1 : ℂ) ^ n) * ((-1 : ℂ) ^ n) = 1 := by
 
 /-- The reflection compatibility required by the equivariant Hermite interpolation. -/
 theorem quartetTarget_jet_neg (P : Polynomial ℂ) (α : ℂ) (k : Fin 4) (n : ℕ) :
-    (Polynomial.derivative^[n] (quartetTarget P (neg4 k))).eval (quartetPoint α (neg4 k))
-      = (-1) ^ n * (Polynomial.derivative^[n] (quartetTarget P k)).eval (quartetPoint α k) := by
+    (Polynomial.derivative^[n] (quartetTarget P (neg4 k))).eval (quartetVertex α (neg4 k))
+      = (-1) ^ n * (Polynomial.derivative^[n] (quartetTarget P k)).eval (quartetVertex α k) := by
   have hsq := neg_one_pow_sq n
   fin_cases k
-  · show (Polynomial.derivative^[n] (quartetTarget P 1)).eval (quartetPoint α 1)
-      = (-1) ^ n * (Polynomial.derivative^[n] (quartetTarget P 0)).eval (quartetPoint α 0)
-    simp only [quartetTarget, quartetPoint]
+  · show (Polynomial.derivative^[n] (quartetTarget P 1)).eval (quartetVertex α 1)
+      = (-1) ^ n * (Polynomial.derivative^[n] (quartetTarget P 0)).eval (quartetVertex α 0)
+    simp only [quartetTarget, quartetVertex]
     exact iterate_derivative_comp_neg_eval P n α
-  · show (Polynomial.derivative^[n] (quartetTarget P 0)).eval (quartetPoint α 0)
-      = (-1) ^ n * (Polynomial.derivative^[n] (quartetTarget P 1)).eval (quartetPoint α 1)
-    simp only [quartetTarget, quartetPoint]
+  · show (Polynomial.derivative^[n] (quartetTarget P 0)).eval (quartetVertex α 0)
+      = (-1) ^ n * (Polynomial.derivative^[n] (quartetTarget P 1)).eval (quartetVertex α 1)
+    simp only [quartetTarget, quartetVertex]
     rw [iterate_derivative_comp_neg_eval P n α, ← mul_assoc, hsq, one_mul]
-  · show (Polynomial.derivative^[n] (quartetTarget P 3)).eval (quartetPoint α 3)
-      = (-1) ^ n * (Polynomial.derivative^[n] (quartetTarget P 2)).eval (quartetPoint α 2)
-    simp only [quartetTarget, quartetPoint]
+  · show (Polynomial.derivative^[n] (quartetTarget P 3)).eval (quartetVertex α 3)
+      = (-1) ^ n * (Polynomial.derivative^[n] (quartetTarget P 2)).eval (quartetVertex α 2)
+    simp only [quartetTarget, quartetVertex]
     exact iterate_derivative_comp_neg_eval (P.map (starRingEnd ℂ)) n ((starRingEnd ℂ) α)
-  · show (Polynomial.derivative^[n] (quartetTarget P 2)).eval (quartetPoint α 2)
-      = (-1) ^ n * (Polynomial.derivative^[n] (quartetTarget P 3)).eval (quartetPoint α 3)
-    simp only [quartetTarget, quartetPoint]
+  · show (Polynomial.derivative^[n] (quartetTarget P 2)).eval (quartetVertex α 2)
+      = (-1) ^ n * (Polynomial.derivative^[n] (quartetTarget P 3)).eval (quartetVertex α 3)
+    simp only [quartetTarget, quartetVertex]
     rw [iterate_derivative_comp_neg_eval (P.map (starRingEnd ℂ)) n ((starRingEnd ℂ) α),
       ← mul_assoc, hsq, one_mul]
 
 /-- The Schwarz compatibility required by the equivariant Hermite interpolation. -/
 theorem quartetTarget_jet_conj (P : Polynomial ℂ) (α : ℂ) (k : Fin 4) (n : ℕ) :
-    (Polynomial.derivative^[n] (quartetTarget P (conj4 k))).eval (quartetPoint α (conj4 k))
+    (Polynomial.derivative^[n] (quartetTarget P (conj4 k))).eval (quartetVertex α (conj4 k))
       = (starRingEnd ℂ)
-        ((Polynomial.derivative^[n] (quartetTarget P k)).eval (quartetPoint α k)) := by
+        ((Polynomial.derivative^[n] (quartetTarget P k)).eval (quartetVertex α k)) := by
   fin_cases k
-  · show (Polynomial.derivative^[n] (quartetTarget P 2)).eval (quartetPoint α 2)
-      = (starRingEnd ℂ) ((Polynomial.derivative^[n] (quartetTarget P 0)).eval (quartetPoint α 0))
-    simp only [quartetTarget, quartetPoint]
+  · show (Polynomial.derivative^[n] (quartetTarget P 2)).eval (quartetVertex α 2)
+      = (starRingEnd ℂ) ((Polynomial.derivative^[n] (quartetTarget P 0)).eval (quartetVertex α 0))
+    simp only [quartetTarget, quartetVertex]
     exact iterate_derivative_map_conj_eval P n α
-  · show (Polynomial.derivative^[n] (quartetTarget P 3)).eval (quartetPoint α 3)
-      = (starRingEnd ℂ) ((Polynomial.derivative^[n] (quartetTarget P 1)).eval (quartetPoint α 1))
-    simp only [quartetTarget, quartetPoint]
+  · show (Polynomial.derivative^[n] (quartetTarget P 3)).eval (quartetVertex α 3)
+      = (starRingEnd ℂ) ((Polynomial.derivative^[n] (quartetTarget P 1)).eval (quartetVertex α 1))
+    simp only [quartetTarget, quartetVertex]
     rw [iterate_derivative_comp_neg_eval (P.map (starRingEnd ℂ)) n ((starRingEnd ℂ) α),
       iterate_derivative_map_conj_eval P n α, iterate_derivative_comp_neg_eval P n α,
       map_mul, conj_neg_one_pow]
-  · show (Polynomial.derivative^[n] (quartetTarget P 0)).eval (quartetPoint α 0)
-      = (starRingEnd ℂ) ((Polynomial.derivative^[n] (quartetTarget P 2)).eval (quartetPoint α 2))
-    simp only [quartetTarget, quartetPoint]
+  · show (Polynomial.derivative^[n] (quartetTarget P 0)).eval (quartetVertex α 0)
+      = (starRingEnd ℂ) ((Polynomial.derivative^[n] (quartetTarget P 2)).eval (quartetVertex α 2))
+    simp only [quartetTarget, quartetVertex]
     rw [iterate_derivative_map_conj_eval P n α, Complex.conj_conj]
-  · show (Polynomial.derivative^[n] (quartetTarget P 1)).eval (quartetPoint α 1)
-      = (starRingEnd ℂ) ((Polynomial.derivative^[n] (quartetTarget P 3)).eval (quartetPoint α 3))
-    simp only [quartetTarget, quartetPoint]
+  · show (Polynomial.derivative^[n] (quartetTarget P 1)).eval (quartetVertex α 1)
+      = (starRingEnd ℂ) ((Polynomial.derivative^[n] (quartetTarget P 3)).eval (quartetVertex α 3))
+    simp only [quartetTarget, quartetVertex]
     rw [iterate_derivative_comp_neg_eval (P.map (starRingEnd ℂ)) n ((starRingEnd ℂ) α),
       iterate_derivative_map_conj_eval P n α, iterate_derivative_comp_neg_eval P n α,
       map_mul, conj_neg_one_pow, Complex.conj_conj]
@@ -165,14 +165,14 @@ theorem quartetTarget_jet_conj (P : Polynomial ℂ) (α : ℂ) (k : Fin 4) (n : 
 /-! ## The repair term does not disturb the prescribed jets -/
 
 theorem X_sub_C_dvd_quartetFlatPolynomial (α : ℂ) (k : Fin 4) :
-    (X - Polynomial.C (quartetPoint α k)) ∣ quartetFlatPolynomial α := by
-  have hroot : (quartetFlatPolynomial α).IsRoot (quartetPoint α k) := by
-    fin_cases k <;> simp [quartetFlatPolynomial, quartetPoint, Polynomial.IsRoot]
+    (X - Polynomial.C (quartetVertex α k)) ∣ quartetFlatPolynomial α := by
+  have hroot : (quartetFlatPolynomial α).IsRoot (quartetVertex α k) := by
+    fin_cases k <;> simp [quartetFlatPolynomial, quartetVertex, Polynomial.IsRoot]
   exact Polynomial.dvd_iff_isRoot.mpr hroot
 
 theorem X_sub_C_pow_dvd_simultaneousFlatPolynomial {J : Type} [Fintype J] [DecidableEq J]
     (M : J → ℕ) (α : J → ℂ) (j : J) (k : Fin 4) :
-    (X - Polynomial.C (quartetPoint (α j) k)) ^ (M j) ∣ simultaneousFlatPolynomial M α := by
+    (X - Polynomial.C (quartetVertex (α j) k)) ^ (M j) ∣ simultaneousFlatPolynomial M α := by
   obtain ⟨Q, hQ⟩ := quartetFlatPolynomial_pow_dvd_simultaneousFlatPolynomial M α j
   obtain ⟨R, hR⟩ := X_sub_C_dvd_quartetFlatPolynomial (α j) k
   refine ⟨R ^ (M j) * Q, ?_⟩
@@ -257,7 +257,7 @@ theorem iterate_derivative_add (P Q : Polynomial ℂ) (n : ℕ) :
 theorem exists_quartet_passport_polynomial_of_base {J : Type} [Fintype J] [DecidableEq J]
     (α : J → ℂ) (N : J → ℕ) (base : J → Polynomial ℂ)
     (hαre : ∀ j, (α j).re ≠ 0)
-    (hinj : Function.Injective (fun i : J × Fin 4 => quartetPoint (α i.1) i.2)) :
+    (hinj : Function.Injective (fun i : J × Fin 4 => quartetVertex (α i.1) i.2)) :
     ∃ B : Polynomial ℂ,
       (∀ z : ℂ, B.eval (-z) = B.eval z) ∧
       (∀ z : ℂ, B.eval ((starRingEnd ℂ) z) = (starRingEnd ℂ) (B.eval z)) ∧
@@ -266,7 +266,7 @@ theorem exists_quartet_passport_polynomial_of_base {J : Type} [Fintype J] [Decid
         (Polynomial.derivative^[n] B).eval (α j)
           = (Polynomial.derivative^[n] (base j)).eval (α j)) := by
   classical
-  set w : J × Fin 4 → ℂ := fun i => quartetPoint (α i.1) i.2 with hwdef
+  set w : J × Fin 4 → ℂ := fun i => quartetVertex (α i.1) i.2 with hwdef
   set m : J × Fin 4 → ℕ := fun i => N i.1 + 2 with hmdef
   set target : J × Fin 4 → Polynomial ℂ := fun i => quartetTarget (base i.1) i.2 with htargetdef
   set negIdx : (J × Fin 4) ≃ (J × Fin 4) := (Equiv.refl J).prodCongr neg4 with hnegdef
@@ -274,8 +274,8 @@ theorem exists_quartet_passport_polynomial_of_base {J : Type} [Fintype J] [Decid
   obtain ⟨B₀, hdeg₀, heven₀, hreal₀, hjets₀⟩ :=
     exists_real_even_polynomial_iterateDerivative_eval_eq_degree_lt_modulus
       negIdx conjIdx w hinj m target
-      (fun i => quartetPoint_neg4 (α i.1) i.2)
-      (fun i => quartetPoint_conj4 (α i.1) i.2)
+      (fun i => quartetVertex_neg4 (α i.1) i.2)
+      (fun i => quartetVertex_conj4 (α i.1) i.2)
       (fun i => rfl) (fun i => rfl)
       (fun i n _ => quartetTarget_jet_neg (base i.1) (α i.1) i.2 n)
       (fun i n _ => quartetTarget_jet_conj (base i.1) (α i.1) i.2 n)
@@ -340,14 +340,14 @@ theorem exists_quartet_passport_polynomial_of_base {J : Type} [Fintype J] [Decid
     have hS0 : S ≠ 0 := (simultaneousFlatPolynomial_monic M α).ne_zero
     have hdvd : (X - Polynomial.C (α j)) ^ (M j) ∣ S := by
       have hd := X_sub_C_pow_dvd_simultaneousFlatPolynomial M α j 0
-      simpa [quartetPoint] using hd
+      simpa [quartetVertex] using hd
     have hzero : (Polynomial.derivative^[n] (Polynomial.C (L : ℂ) * S)).eval (α j) = 0 := by
       rw [Polynomial.iterate_derivative_C_mul, Polynomial.eval_mul, Polynomial.eval_C,
         iterate_derivative_eval_eq_zero_of_pow_dvd hS0 hdvd hn, mul_zero]
     have hbase : (Polynomial.derivative^[n] B₀).eval (α j)
         = (Polynomial.derivative^[n] (base j)).eval (α j) := by
       have h := hjets₀ (j, (0 : Fin 4)) n hn
-      simpa [hwdef, htargetdef, quartetPoint, quartetTarget] using h
+      simpa [hwdef, htargetdef, quartetVertex, quartetTarget] using h
     rw [iterate_derivative_add, Polynomial.eval_add, hzero, add_zero]
     exact hbase
 
@@ -356,7 +356,7 @@ theorem exists_quartet_passport_realizer_of_base {J : Type} [Fintype J] [Decidab
     [Nonempty J] (a₀ : ℝ) (ha₀ : a₀ ≠ 0) (α : J → ℂ) (N : J → ℕ)
     (base : J → Polynomial ℂ) (hbase0 : ∀ j, (base j).eval (α j) = 0)
     (hαre : ∀ j, (α j).re ≠ 0)
-    (hinj : Function.Injective (fun i : J × Fin 4 => quartetPoint (α i.1) i.2)) :
+    (hinj : Function.Injective (fun i : J × Fin 4 => quartetVertex (α i.1) i.2)) :
     ∃ B : Polynomial ℂ,
       0 < B.degree ∧
       (∀ z : ℂ, quartetRealizer a₀ B (-z) = quartetRealizer a₀ B z) ∧
@@ -428,7 +428,7 @@ theorem exists_quartet_passport_realizer_of_target {J : Type} [Fintype J] [Decid
     (hAne : ∀ j, coshQuartetEnvelope a₀ (α j) ≠ 0)
     (htarget : ∀ j, AnalyticAt ℂ (target j) (α j))
     (htargetzero : ∀ j, target j (α j) = 0)
-    (hinj : Function.Injective (fun i : J × Fin 4 => quartetPoint (α i.1) i.2)) :
+    (hinj : Function.Injective (fun i : J × Fin 4 => quartetVertex (α i.1) i.2)) :
     ∃ B : Polynomial ℂ,
       0 < B.degree ∧
       (∀ z : ℂ, quartetRealizer a₀ B (-z) = quartetRealizer a₀ B z) ∧
@@ -471,7 +471,7 @@ Hermite realization by choosing the local envelope-normalized linear target. -/
 theorem exists_quartet_passport_polynomial {J : Type} [Fintype J] [DecidableEq J]
     (a₀ : ℝ) (α : J → ℂ) (N : J → ℕ)
     (hαre : ∀ j, (α j).re ≠ 0)
-    (hinj : Function.Injective (fun i : J × Fin 4 => quartetPoint (α i.1) i.2)) :
+    (hinj : Function.Injective (fun i : J × Fin 4 => quartetVertex (α i.1) i.2)) :
     ∃ B : Polynomial ℂ,
       (∀ z : ℂ, B.eval (-z) = B.eval z) ∧
       (∀ z : ℂ, B.eval ((starRingEnd ℂ) z) = (starRingEnd ℂ) (B.eval z)) ∧
@@ -497,7 +497,7 @@ theorem exists_quartet_passport_realizer {J : Type} [Fintype J] [DecidableEq J] 
     (a₀ : ℝ) (ha₀ : a₀ ≠ 0) (α : J → ℂ) (N : J → ℕ)
     (hαre : ∀ j, (α j).re ≠ 0)
     (hAne : ∀ j : J, coshQuartetEnvelope a₀ (α j) ≠ 0)
-    (hinj : Function.Injective (fun i : J × Fin 4 => quartetPoint (α i.1) i.2)) :
+    (hinj : Function.Injective (fun i : J × Fin 4 => quartetVertex (α i.1) i.2)) :
     ∃ B : Polynomial ℂ,
       0 < B.degree ∧
       (∀ z : ℂ, quartetRealizer a₀ B (-z) = quartetRealizer a₀ B z) ∧

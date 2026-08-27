@@ -784,7 +784,7 @@ theorem norm_digamma_shift_le {y : ℝ} (hy : 2 ≤ y) :
         linarith
     _ = ‖Complex.digamma (1 / 4)‖ + (2 * ∑' n : ℕ, 1 / ((n : ℝ) + 1) ^ 2) * y := by ring
 
-theorem tendsto_exp_neg_mul_linear {t : ℝ} (ht : 0 < t) (K₁ K₂ : ℝ) :
+private theorem tendsto_exp_neg_mul_linear {t : ℝ} (ht : 0 < t) (K₁ K₂ : ℝ) :
     Tendsto (fun y : ℝ => Real.exp (-(y * t)) * (K₁ + K₂ * y)) atTop (𝓝 0) := by
   have hmul : Tendsto (fun y : ℝ => y * t) atTop atTop :=
     Filter.Tendsto.atTop_mul_const ht tendsto_id
