@@ -376,6 +376,20 @@ theorem norm_mtLemma23Error_le_five_mul_ternaryDivisorCount
       · exact norm_mtC3Coefficient_le_two_mul_ternaryDivisorCount α P lower hn hB hα
     _ = 5 * B * (ternaryDivisorCount n : ℝ) := by ring
 
+/-- Equation (2.12) with the combined source error packaged as `mtLemma23Error`. -/
+theorem matomakiTeravainen_lemma23i_exact_with_error
+    (α : ℕ → ℂ) {n z₀ z₁ D : ℕ} (hn : 0 < n) (hz : z₀ ≤ z₁)
+    (lowerSpill upperSpill : Finset ℕ) (lower : ℕ → ℕ)
+    (hlower : lowerSpill ⊆ primesIco z₀ z₁)
+    (hdisj : Disjoint (primesIco z₀ z₁ \ lowerSpill) upperSpill) :
+    (∑ m ∈ n.divisors, α m * (rho (n / m) z₁ : ℂ)) =
+      (∑ m ∈ n.divisors, α m * (truncLegendre (n / m) z₀ D : ℂ)) -
+        mtC2BoundaryCoefficient α
+          ((primesIco z₀ z₁ \ lowerSpill) ∪ upperSpill) lower n +
+        mtLemma23Error α z₀ D lowerSpill upperSpill (primesIco z₀ z₁) lower n := by
+  simpa only [mtLemma23Error] using
+    matomakiTeravainen_lemma23i_exact α hn hz lowerSpill upperSpill lower hlower hdisj
+
 end
 
 end RHTower.Sieve

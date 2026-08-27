@@ -1621,3 +1621,101 @@ uniformly for `Y ≤ 4X`, `N ≤ X`, bounded coefficients `|α_m| ≤ B`, and th
 endpoint conditions.  Direct Lean, targeted module builds, and batched new-declaration axiom audit
 passed.  Remaining work: combine the exact `c₁,n`, `c₂,n`, and `c₃,n` estimates into Lemma 2.3,
 then discharge Proposition 2.2's finite block/type bookkeeping.
+
+### M5b, brick 16 — literal `c₂,n` coefficient and source-scale bound (2026-08-27)
+
+Added `Sieve/PrimeDivisorWeightedMean.lean`,
+`Sieve/MatomakiTeravainenC2Coefficient.lean`, and
+`Sieve/MatomakiTeravainenC2PaperScale.lean`, all umbrella-wired.  The exact coefficient is the
+source's upper block spill minus lower clipped spill.  Divisor reindexing gives its unconditional
+one-prime weighted mean, and the paper-width prime-window estimate plus fixed polylogarithmic
+absorption proves
+
+```text
+∑_{1≤n≤Y} d₃(n) |c₂,n| ≤ B Y (log X)^(−3A).
+```
+
+No analytic estimate is assumed as a premise.  Direct Lean, targeted module builds, and batched
+new-declaration axiom audit passed.
+
+### M5b, brick 17 — literal `c₁,n` smooth-tail coefficient (2026-08-27)
+
+Added `Sieve/DivisorSubmultiplicative.lean`, `Sieve/SiftTailDivisorWeightedMean.lean`,
+`Sieve/SiftTailDivisorEulerBound.lean`, `Sieve/MatomakiTeravainenC1Coefficient.lean`,
+`Sieve/MatomakiTeravainenC1Schedule.lean`, and
+`Sieve/MatomakiTeravainenC1PaperScale.lean`, all umbrella-wired.  The schedule uses the literal
+rounded source parameters
+
+```text
+z₀ = ⌈exp(log X/(log log X)³)⌉,
+D  = ⌊exp(log X/log log X)⌋.
+```
+
+The composite smooth truncation tail is controlled by an Euler-product/Rankin bound, then its
+fixed polylogarithmic factors are absorbed at the source scale.  This proves unconditionally
+
+```text
+∑_{1≤n≤Y} d₃(n) |c₁,n| ≤ B Y (log X)^(−3A).
+```
+
+Direct Lean, targeted module builds, and batched new-declaration axiom audit passed.
+
+### M5b, brick 18 — exact Lemma 2.3(i) and mean-square capstone (2026-08-27)
+
+Added `Sieve/MatomakiTeravainenLemma23I.lean` and
+`Sieve/MatomakiTeravainenLemma23IPaperScale.lean`, both umbrella-wired.  Exact finite divisor
+reindexing, Buchstab decomposition, and the literal signs of `c₁,n`, `c₂,n`, and `c₃,n` prove the
+source identity.  With
+
+```text
+e_n = c₁,n + c₂,n + c₃,n,
+```
+
+the formal pointwise estimate is `|e_n| ≤ 5B d₃(n)`.  The three source-scale first moments give
+
+```text
+∑_{1≤n≤Y} d₃(n) |e_n| ≤ 3B Y (log X)^(−3A),
+∑_{1≤n≤Y} |e_n|²       ≤ 15B² Y (log X)^(−3A).
+```
+
+Thus Lemma 2.3(i), including equation (2.13) and its stated mean-square consequence, is now an
+unconditional Lean theorem.  Direct Lean, targeted module builds, and batched new-declaration
+axiom audit passed.  Remaining source obligations: Lemma 2.3(ii)'s finite Buchstab iteration and
+Proposition 2.2's finite block/type bookkeeping.
+
+### M5b, brick 19 — exact Lemma 2.3(ii) survivors and published absorption no-go (2026-08-27)
+
+Added exact finite operator iteration, literal source-error identification, adjacent and real
+geometric block schedules (with separate floor/ceiling endpoints), large-prime-count terminal
+argument, explicit signed main/error layers, and sharp recursive coefficient bound
+
+```text
+|α_r^(d)| ≤ B K^d.
+```
+
+Finite `L²` accumulator proves source exponent exactly:
+
+```text
+K^(sum_{0≤j≤J} 2j),
+```
+
+with one depth-independent constant. Source re-audit then found a fatal final-step mismatch. At
+paper's literal
+
+```text
+z₀ = exp(log X/(log log X)^3),
+L  = floor(log(4X)/log z₀) ≍ (log log X)^3,
+```
+
+claimed factor `((log(4X)/log z₀)+1)^(2L²)` has logarithm
+`Θ((log log X)^6 log log log X)`, whereas any fixed power of `log X` has logarithm only
+`Θ(log log X)`. Therefore it is not `(log X)^o(1)` and cannot convert equation-(2.16)
+`(log X)^(-3A)` bound to stated `(log X)^(-2A)` bound. Same line appears in arXiv v2 and 2023
+accepted manuscript. Recorded
+`5-failed/matomaki-teravainen-lemma23ii-log-absorption-no-go.md`.
+
+Strong positive survivor: equation (2.15)'s exact algebra, literal `c₁+c₂+c₃` provenance,
+source-faithful block schedule, correct coefficient growth, cumulative exponent, and terminal
+remainder vanishing are formal. Open core is a genuinely stronger analytic layer estimate or a
+different stopping/schedule argument. Proposition 2.2 cannot be promoted from this published
+Lemma 2.3(ii) proof until that core is repaired.

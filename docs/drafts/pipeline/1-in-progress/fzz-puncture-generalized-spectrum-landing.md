@@ -163,3 +163,68 @@ coefficient-faithful object still missing.
   square-root plus `β>1/2` log damping.
 - **Sharp excluded wall:** power-log pair `(α,β)=(1/2,1/2)` and weaker lexicographic decay.
 - 2026-08-27 — critical logarithmic wall solved; universal weighted source law becomes next core.
+
+## Universal weighted-source classification delta
+
+For every target `E : ℝ` and arbitrary scalar source `v : ℝ → ℂ`, continuum equation
+
+`(x-E)f(x)+v(x)=0`
+
+has a nonzero `L²` solution exactly when canonical quotient `-v(x)/(x-E)` belongs to `L²` and
+`v` is nonzero modulo null sets. Every solution equals canonical quotient almost everywhere.
+
+This closes scalar local occurrence for all sources, not only affine, fractional, or power-log
+families. Earlier fractional and critical-log thresholds are formal corollaries. Local source
+engineering is therefore exhausted: arbitrary target can be realized by a suitable source, while
+regular nonvanishing source is obstructed by weighted pole.
+
+Formal module: `FZZCigarPunctureWeightedSourceClassification.lean`.
+
+### Updated next conjecture loop
+
+Search corpus for literal coefficient-faithful FZZ/GFZZ winding source. Apply universal weighted
+criterion directly. If corpus contains only divisor predicates or fitted source surrogates, freeze
+that missing source map as exact open core and derive strongest unconditional obstruction from
+available FZZ delay/Mellin density. No further fitted local germs count as progress.
+
+- **Latest classification:** `fzzPunctureWeightedSourcePointMode_iff`.
+- **Strongest survivor:** literal source must be nonzero and its quotient by spectral distance must
+  lie in `L²`; state is then forced uniquely.
+- **Closed burden:** arbitrary scalar local occurrence and uniqueness.
+- **Remaining core:** literal FZZ/GFZZ source identification plus global coefficient-faithful
+  zeta-selective node law.
+- 2026-08-27 — universal weighted source occurrence solved; literal source becomes mandatory next
+  conjecture input.
+
+## Literal protected continuum-delay no-go delta
+
+Corpus-derived protected source is positive-half-line Bose delay
+`v(x)=1_(0,∞)(x)/(exp x-1)`. For every real target `E`, canonical weighted state obeys exact
+quantitative floor
+
+`|f_E(x)|² ≥ [4(|E|+1)²]⁻¹ x⁻²`
+
+on `(0,1)` away from null singleton `{E}`. Hence state is never `L²`, and literal protected delay
+admits no scalar point mode at any energy.
+
+This kills first coefficient-faithful source candidate. Obstruction is endpoint Bose pole, not only
+resonant target pole. It does not kill backreacted winding source, singular domain, or generalized
+resonance.
+
+Formal module: `FZZCigarProtectedDelayPointModeNoGo.lean`.
+
+### Updated next conjecture loop
+
+No scalar point-spectrum continuation may reuse unrenormalized protected delay. Extract from corpus
+actual winding/oscillator backreaction or singular carrier. Test whether its coefficient-faithful
+source cancels both Bose endpoint pole and target weighted pole. If no such source is presently
+derived, scalar protected-delay branch is a proven dead end and work moves to generalized/singular
+carrier burden.
+
+- **Latest killing theorem:** `not_FZZPunctureProtectedContinuumDelayPointMode`.
+- **Strongest positive survivor:** explicit all-energy inverse-square floor with positive
+  coefficient `1/(4(|E|+1)²)`.
+- **Killed branch:** unrenormalized protected continuum delay as scalar `L²` puncture source.
+- **Remaining core:** coefficient-faithful backreacted source or non-`L²` carrier with global
+  zeta-selective landing.
+- 2026-08-27 — literal protected source audited and excluded in scalar point spectrum.

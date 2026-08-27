@@ -1,6 +1,7 @@
 import GaloisForLFunctions.Bottcher.ModularLambdaCovering
 import GaloisForLFunctions.Bottcher.ThetaDiscriminant
-import GaloisForLFunctions.HTGeometry.PolynomialODEJetClosure
+import GaloisForLFunctions.HTGeometry.PolynomialODEJetRankThreeClosure
+import GaloisForLFunctions.HilbertMetric.ReflectionEighthJet
 import GaloisForLFunctions.HTGeometry.SchwartzSpectralQuadraticSeparation
 import GaloisForLFunctions.RHTower.PrimeArchThetaGaussianApertureSixthSeamChamber
 import GaloisForLFunctions.RHTower.XiCTaylorThetaTailSeamJets
@@ -786,6 +787,72 @@ theorem thetaCuspGaussianApertureSixthSeamNumerator_pos :
     0 < thetaCuspGaussianApertureSixthSeamNumerator := by
   rw [thetaCuspGaussianApertureSixthSeamNumerator_eq_modularClosure]
   exact thetaCuspGaussianApertureSixthSeamModularClosureValue_pos
+
+/-! ## Rank-three reflected eighth-jet closure -/
+
+/-- Real degree-twelve polynomial selected by the rank-three reflected eighth-jet seam. -/
+def thetaCuspReflectedEighthSeamModularPolynomial (X : ℝ) : ℝ :=
+  3444525 / 512 - 80754975 / 2048 * X + 4194195795 / 65536 * X ^ 2 -
+    2646917595 / 65536 * X ^ 3 + 5201727255 / 524288 * X ^ 4 -
+    1723813569 / 1048576 * X ^ 5 + 4581650223 / 16777216 * X ^ 6 -
+    612571059 / 16777216 * X ^ 7 + 35927199 / 16777216 * X ^ 8 +
+    1999197 / 268435456 * X ^ 9 - 117855 / 134217728 * X ^ 10 -
+    13245 / 536870912 * X ^ 11 + 14025 / 8589934592 * X ^ 12
+
+/-- Source-specialized modular value of rank-three reflected eighth-jet curvature. -/
+def thetaCuspReflectedEighthSeamModularClosureValue : ℝ :=
+  thetaCuspSelfDualThetaMass ^ 6 *
+    thetaCuspReflectedEighthSeamModularPolynomial
+      (thetaCuspSelfDualModularScale ^ 2)
+
+/-- Exact modular closure of the completed theta profile's rank-three reflected seam. -/
+theorem completedThetaProfile_reflectedEighthSeam_modularClosure :
+    let f : ℕ → ℂ := fun n =>
+      (iteratedDeriv (n + 2) thetaModularH 0 -
+        (1 / 4 : ℂ) * iteratedDeriv n thetaModularH 0) / 2
+    HTGeometry.signedEvenHankelThreeDetC
+      (f 0 ^ 2)
+      (2 * f 0 * f 2)
+      (2 * f 0 * f 4 + 6 * f 2 ^ 2)
+      (2 * f 0 * f 6 + 30 * f 2 * f 4)
+      (2 * f 0 * f 8 + 56 * f 2 * f 6 + 70 * f 4 ^ 2) =
+      (thetaCuspReflectedEighthSeamModularClosureValue : ℂ) := by
+  have h := HTGeometry.modularThetaReflectedEighthSeamClosure_of_ode
+    (thetaCuspSelfDualThetaMass : ℂ)
+    (thetaCuspSelfDualModularScale : ℂ)
+    thetaModularH thetaModularZ thetaModularR thetaModularP
+    contDiff_thetaModularH contDiff_thetaModularZ
+    contDiff_thetaModularR contDiff_thetaModularP
+    thetaModularH_zero thetaModularZ_zero
+    thetaModularR_zero thetaModularP_zero
+    deriv_thetaModularH deriv_thetaModularZ
+    deriv_thetaModularR deriv_thetaModularP
+  simpa [thetaCuspReflectedEighthSeamModularClosureValue,
+    thetaCuspReflectedEighthSeamModularPolynomial,
+    HTGeometry.modularThetaReflectedEighthSeamPolynomial] using h
+
+/-- Native full-source rank-three reflected seam equals its modular closure value. -/
+theorem thetaCuspFullSource_reflectedEighthHankelSeam_eq_modularClosure :
+    let f : ℕ → ℝ := fun n => iteratedDeriv n thetaCuspFullSource 0
+    HilbertMetric.signedEvenHankelThreeDet
+      (f 0 ^ 2)
+      (2 * f 0 * f 2)
+      (2 * f 0 * f 4 + 6 * f 2 ^ 2)
+      (2 * f 0 * f 6 + 30 * f 2 * f 4)
+      (2 * f 0 * f 8 + 56 * f 2 * f 6 + 70 * f 4 ^ 2) =
+      thetaCuspReflectedEighthSeamModularClosureValue := by
+  apply Complex.ofReal_injective
+  have h := completedThetaProfile_reflectedEighthSeam_modularClosure
+  dsimp only at h ⊢
+  rw [completedThetaProfile_sourceJet 0,
+    completedThetaProfile_sourceJet 2,
+    completedThetaProfile_sourceJet 4,
+    completedThetaProfile_sourceJet 6,
+    completedThetaProfile_sourceJet 8] at h
+  simpa only [HilbertMetric.signedEvenHankelThreeDet,
+    HTGeometry.signedEvenHankelThreeDetC, Complex.ofReal_add,
+    Complex.ofReal_sub, Complex.ofReal_mul, Complex.ofReal_pow,
+    Complex.ofReal_ofNat] using h
 
 end
 

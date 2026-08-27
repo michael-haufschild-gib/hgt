@@ -115,6 +115,17 @@ geometry, observer bounds and finite-record inference. This ledger supersedes
 old paper-only status labels: only rows backed by checked declarations are
 retained in present main text.
 
+## Experimental section boundary
+
+Section `Experimental tests and falsification targets` introduces no new
+mathematical theorem. Exact predictions in its four protocols refer back to
+already traced declarations: the nine-level scalar/resolved witness,
+finite-observer graph law, generic subsystem rank/curvature and exact density,
+and nested path ramp/return/reflection. Statements about calibration,
+randomized measurements, finite sampling and falsification are explicitly
+experimental proposals, not deductions of device fidelity or infinite-limit
+validation.
+
 ## Axiom and source audit
 
 `/tmp/QuantumRecurrencePaperAudit.lean` and

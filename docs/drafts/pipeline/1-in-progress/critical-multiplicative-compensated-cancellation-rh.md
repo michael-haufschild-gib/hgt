@@ -6567,9 +6567,9 @@ cardinality or minimum-separation loss.  Exact endpoint differentiation gives `(
 Formal module:
 `formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeEndpointPhaseCollisionTailRate.lean`.
 It proves `(AC39)`, the generic finite-pencil theorem, the exact physical endpoint budget, and
-both physical bounds.  Direct `lake env lean`, targeted module build, and axiom audit pass.  Global
-lint promotion is pending only because unrelated concurrent untracked modules are not yet wired
-into `RHTower.lean`; no Stage-3 claim is made before that repository-wide gate clears.
+both physical bounds.  Direct `lake env lean`, targeted module build, axiom audit, umbrella wiring,
+and global formal lint pass.  Stage-3 card:
+`docs/drafts/pipeline/3-formalized/fcrj-endpoint-phase-collision-tail-rate.md`.
 
 Hostile limit: `C_M=o(N_M)` is now an explicit sufficient moving-packet condition, not a proved
 arithmetic fact.  Near-colliding prime-log endpoints can make absolute pairwise cost large even
@@ -6626,8 +6626,9 @@ Singleton cost is zero, and no minimum separation appears.
 Lean additions in
 `formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeEndpointPhaseCollisionTailRate.lean` prove
 `(AC42)`, generic resolved budget, physical endpoint specialization, and raw-amplitude theorem.
-Direct checking, targeted build, and axiom audits pass.  Repository-wide lint promotion remains
-pending only on unrelated concurrent sieve modules missing umbrella imports.
+Direct checking, targeted build, axiom audits, umbrella wiring, and global formal lint pass.
+Stage-3 card:
+`docs/drafts/pipeline/3-formalized/fcrj-endpoint-resolved-collision-tail-rate.md`.
 
 Hostile limit: absolute resolved pair mass still discards cancellation among three or more signed
 near-colliding nodes.  Arithmetic core is now sharper: control weighted unresolved clusters and
@@ -6641,3 +6642,395 @@ is exact source specialization, resolution-scale boundary, and revised moving-pa
 
 Verdict: `[PROVED — PHASE COLLISIONS SATURATE AT FULL PAIR MASS BELOW 1/N RESOLUTION; REMAINING
 FCRJ CORE IS WEIGHTED CLUSTER MASS OR SIGNED MULTIPOLE CANCELLATION]`.
+
+## Conjecture loop 62 — physical primewise dipole multipole bound
+
+### Failed first conjecture `[SOURCE-DISCONNECTED]`
+
+An abstract zero-sum assumption on arbitrary endpoint clusters can improve loop 61, but source
+does not canonically supply such a partition. Adding one would hide arithmetic burden inside an
+unproved premise. Literal source instead pairs two endpoints produced by each prime.
+
+### Primewise survivor `[PAPER-PROVED] [LEAN-PROVED] [POSITIVE SURVIVOR]`
+
+For finite prime aperture `P`, write
+
+```text
+W = sum_(p in P) log(p)/p,
+D = sum_(p in P) (log(p)/p)|z_end(p)-z_start(p)|,
+U_n = sum_x j_x z_x^n.
+```
+
+Physical endpoint source satisfies, with no activity or separation premise,
+
+```text
+sum_x j_x = 0,                                           (AC43)
+|U_n| <= n D,                                            (AC44)
+|U_n| <= min(n D, 2W).                                   (AC45)
+```
+
+Exact endpoint aggregation writes `U_n` prime by prime as
+
+```text
+sum_(p in P) (log(p)/p)(z_end(p)^n-z_start(p)^n).
+```
+
+Constant test function proves `(AC43)`. Unit-circle power Lipschitz estimate
+`|z^n-w^n|<=n|z-w|` proves `(AC44)`; trivial unit bound gives `|U_n|<=2W`, and taking minimum
+yields `(AC45)`. Thus unresolved physical mass is dipolar before any cluster choice: short
+endpoint arcs cost weighted chord `D`, not full two-endpoint mass.
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeEndpointDipoleMultipoleBound.lean`.
+Direct `lake env lean`, targeted module build, axiom audit, umbrella wiring, and global formal lint
+pass. Stage-3 card:
+`docs/drafts/pipeline/3-formalized/fcrj-primewise-dipole-multipole-bound.md`.
+
+Hostile limit: `(AC45)` is pointwise. Its low branch grows like `nD`; summing it through entire
+inverse-square tail diverges, while high branch alone recreates a `1/N` mass bound. Next source
+problem is exact low/high split converting both branches into a quantitative tail law, followed by
+arithmetic control of `D` and `W` across moving apertures.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-27]`: zero-mass signed-measure Fourier control by
+first transport moment is classical. Corpus and targeted literature search found no exact clipped
+prime-log identity `(AC43)--(AC45)` or use of literal primewise dipoles in FCRJ ultraviolet
+control. Candidate-new content is restricted to this source specialization and its replacement of
+unresolved endpoint mass by weighted chord.
+
+Verdict: `[PROVED — PHYSICAL FCRJ SOURCE IS EXACTLY PRIMEWISE DIPOLAR; UNRESOLVED MOMENTS OBEY
+THE CLIPPED MULTIPOLE LAW]`.
+
+## Conjecture loop 63 — primewise dipole inverse-square transport energy
+
+### Failed first conjecture `[HARMONIC DIVERGENCE]`
+
+Pointwise geometric interpolation between `|U_n|<=nD` and `|U_n|<=2W` gives
+`|U_n|^2/n^2<=2WD/n`. Its harmonic majorant diverges, so it cannot control complete ultraviolet
+energy. A source-scale frequency split is essential.
+
+### Transport-energy survivor `[PAPER-PROVED] [LEAN-PROVED] [POSITIVE SURVIVOR]`
+
+With loop-62 total weight `W`, weighted primewise chord `D`, and every `N>=1`,
+
+```text
+sum_(n>N) |U_n|^2/n^2 <= 4 W D,                         (AC46)
+N sum_(n>N) |U_n|^2/n^2 <= 4 N W D.                     (AC47)
+```
+
+More precisely, every natural split length `L` satisfies
+
+```text
+sum_(n>N) |U_n|^2/n^2 <= L D^2 + 4W^2/(N+L).            (AC48)
+```
+
+Proof uses loop 62 on first `L` frequencies and reciprocal-square telescope on remainder. Source
+geometry gives `0<=D<=2W`. If `D=0`, every moment vanishes. Otherwise set
+`L=floor(2W/D)`: then `LD<=2W` and, because `N>=1`, `2W<=(N+L)D`. Each term in `(AC48)` is at most
+`2WD`, proving `(AC46)--(AC47)`. Exact endpoint differentiation transports `(AC47)` to raw FCRJ
+character energy with multiplier `A^2/(4 pi^2)`.
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeEndpointDipoleInverseSquareEnergy.lean`.
+Direct `lake env lean`, targeted module build, axiom audit, and umbrella wiring pass. Global formal
+lint is temporarily blocked by unrelated concurrently owned sieve-module reachability, so card
+remains Stage 2 until that repository-wide gate clears.
+
+Hostile limit: `(AC46)` eliminates phase separation and arbitrary unresolved-cluster mass from
+physical tail control, but moving-packet vanishing still requires arithmetic `N W D -> 0`. This is
+strictly more source-local than loop 61: only total prime weight and literal within-prime endpoint
+transport remain.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-27]`: Fourier/Wasserstein and signed Kantorovich
+energy comparisons are established infrastructure. Corpus and targeted current literature search
+found no clipped prime-log aperture identity `(AC46)--(AC48)` or raw FCRJ specialization.
+Candidate-new claim is restricted to exact physical specialization and route reduction.
+
+Verdict: `[PROVED — COMPLETE PHYSICAL FCRJ INVERSE-SQUARE ENERGY IS CONTROLLED BY PRIMEWISE
+TRANSPORT W D; MOVING CORE REDUCED TO N W D]`.
+
+## Conjecture loop 64 — active-aperture width ultraviolet law
+
+### Failed first conjecture `[INACTIVE REVERSAL]`
+
+Bounding endpoint chord by clipped interval length without activity is false: when raw endpoints
+reverse, clipped length is zero but literal endpoint nodes need not coincide. This premise cannot be
+dropped. Exact endpoint differentiation already requires every selected prime interval to be
+active, so source statement is frozen on that natural domain.
+
+### Width survivor `[PAPER-PROVED] [LEAN-PROVED] [POSITIVE SURVIVOR]`
+
+Let `L` be weighted clipped-interval length, `D` loop-62 weighted endpoint chord, `W` total prime
+weight, `A>0`, and assume every selected interval is active. Then
+
+```text
+D <= (2 pi/A) L,                                        (AC49)
+L <= (k-m) W,                                           (AC50)
+N sum_(n>N)|a_n|^2 <= (2A/pi) N(k-m)W^2.                (AC51)
+```
+
+For each prime, activity identifies clipped length with `end-start>0`. Fourier character has
+angular speed `2pi/A`, so chord-below-arc proves its contribution to `(AC49)`. Definitions
+`start=max(0,m-log p)` and `end=min(A,k-log p)` give
+`end-start<=k-m`, proving `(AC50)`. Substitution into `(AC47)` and exact raw-amplitude multiplier
+`A^2/(4pi^2)` simplifies to `(AC51)`.
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeEndpointActiveApertureWidthEnergy.lean`.
+Direct checking, targeted build, axiom audit, and umbrella wiring pass. Global lint is temporarily
+blocked by unrelated concurrent unwired modules, so card remains Stage 2.
+
+Hostile limit: `(AC51)` removes phase collisions, cluster mass, dipole chord, and weighted clipped
+length from final physical ultraviolet bound. It does not make width small. Moving-packet disposal
+now has exact sufficient source condition `N(k-m)W^2 -> 0`; whether intended CCM-FU scaling supplies
+that condition is next arithmetic audit.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-27]`: chord-below-arc and clipping monotonicity are
+classical. Corpus and targeted current literature search found no clipped prime-log formula
+`(AC49)--(AC51)` or FCRJ ultraviolet application. Candidate-new content is exact physical
+specialization and elimination of prior collision variables.
+
+Verdict: `[PROVED — ACTIVE PHYSICAL FCRJ ULTRAVIOLET TAIL HAS EXPLICIT APERTURE-WIDTH BOUND;
+MOVING CORE REDUCED TO N(k-m)W^2]`.
+
+## Conjecture loop 65 — activity-localized Mertens ultraviolet law
+
+### Failed first conjecture `[DIVERGENT ALL-PRIME MASS]`
+
+A uniform packet-independent bound on `W=sum log p/p` is false; corpus formally proves physical
+endpoint weights are not summable over all primes. Any valid elimination of `W` must retain source
+localization supplied by active aperture endpoints.
+
+### Mertens survivor `[PAPER-PROVED] [LEAN-PROVED] [POSITIVE SURVIVOR]`
+
+For every nonempty active packet,
+
+```text
+W <= k + log 4.                                          (AC52)
+```
+
+Indeed activity gives `0<end<=k-log p`, hence `log p<k` and `p<exp k`. Put
+`M=floor(exp k)`. Every selected prime lies at most `M`; nonemptiness gives `M>=1`. Embedding packet
+into all primes up to `M` and applying corpus elementary Mertens upper law
+
+```text
+sum_(p<=M) log p/p <= log M + log 4
+```
+
+proves `(AC52)` because `M<=exp k`. Combining with `(AC51)` gives, for `m<=k`, including empty
+packet by direct zero collapse,
+
+```text
+N sum_(n>N)|a_n|^2
+  <= (2A/pi) N(k-m)(k+log 4)^2.                          (AC53)
+```
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeEndpointActiveMertensUltravioletEnergy.lean`.
+Direct checking, targeted build, axiom audit, and umbrella wiring pass. Global lint remains blocked
+by unrelated concurrent unwired modules, so card remains Stage 2.
+
+Hostile limit: `(AC53)` removes every packet-dependent finite-set, phase, collision, cluster,
+transport, and mass invariant from ultraviolet bound. It still requires source scaling
+`N(k-m)(k+log 4)^2 -> 0`. This is now an explicit parameter law rather than arithmetic collision
+problem. Compatibility with intended moving CCM-FU aperture schedule is next decisive audit.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-27]`: Mertens first upper law is classical and
+already formal in corpus. Corpus and targeted current literature search found no active clipped
+prime-log support localization combined with it to obtain `(AC52)--(AC53)`. Candidate-new content
+is exact physical specialization and route reduction.
+
+Verdict: `[PROVED — ACTIVE FCRJ ULTRAVIOLET TAIL HAS FULLY EXPLICIT MERTENS-WIDTH BOUND;
+MOVING CORE REDUCED TO N(k-m)(k+log 4)^2]`.
+
+## Conjecture loop 66 — full carrier Mertens-width law and source-retention wall
+
+### Failed first conjecture `[SOURCE-RETENTION COLLAPSE]`
+
+Loop 65 suggests shrinking `k-m` to suppress ultraviolet energy. Treating this as a harmless
+regularization while retaining a uniformly nontrivial normalized FCRJ source is false. The same
+width controls complete coherent source energy, so normalized source strength collapses with it.
+
+### Full-energy survivor `[PAPER-PROVED] [LEAN-PROVED] [POSITIVE SURVIVOR]`
+
+Let `P_M` be exact coherent physical prime-log carrier, `W` total endpoint weight, `L` weighted
+clipped length, and `Disp=||P_M||^2/W^2` for nonempty packets. Weighted Hilbert
+Cauchy--Schwarz and exact centered-indicator variance give
+
+```text
+||P_M||^2 <= W sum_p (log p/p)||phi_p||^2 <= W L.       (AC54)
+```
+
+Indeed `||phi_p||^2=ell_p-ell_p^2/A<=ell_p`. Under activity, loop 64 gives
+`L<=(k-m)W`; loop 65 gives `W<=k+log 4`. Therefore
+
+```text
+||P_M||^2 <= (k-m)W^2,                                  (AC55)
+||P_M||^2 <= (k-m)(k+log 4)^2.                          (AC56)
+```
+
+The normalized law is
+
+```text
+Disp <= k-m.                                            (AC57)
+```
+
+In proper physical chamber `0<k-m<A`, nonempty activity and existing endpoint radical theorem
+give exact wall
+
+```text
+0 < Disp <= k-m.                                        (AC58)
+```
+
+Hence any active schedule with `k_n-m_n -> 0` has `Disp_n -> 0`; no uniform positive normalized
+source floor survives. On other hand `(AC56)` is direct full-carrier provider: if actual
+coefficient-faithful aperture parameters satisfy
+
+```text
+(k_M-m_M)(k_M+log 4)^2 << log(M)^B/M,                   (AC59)
+```
+
+then corrected-response carrier `||P_M||^2` is already inside FCRJ error budget.
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeApertureSourceRetentionWall.lean`.
+Direct check, targeted module build, axiom audit, and umbrella wiring pass. Global lint sees this
+module as reachable and clean but remains blocked by unrelated concurrently owned unwired modules;
+card remains Stage 2.
+
+Hostile limit: actual physical packet uses width `log(K_M/M)`. If this ratio stays bounded away
+from one, `(AC56)` gives no `M^-1` saving. Width cannot be freely changed: doing so changes exact
+moving prime window, and `(AC58)` shows normalized source collapses. Thus loop closes shrinking
+aperture as source-retaining shortcut while converting full FCRJ burden into explicit schedule
+test `(AC59)`. Fixed-ratio regime remains genuine centered moving prime-log discrepancy problem.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-27]`: weighted Cauchy--Schwarz, centered-indicator
+variance, and squeeze are standard. Prime short-window variance literature does not state exact
+clipped prime-log physical-carrier synthesis `(AC54)--(AC59)`. Candidate-new content is restricted
+to coefficient-faithful full-energy bound and FCRJ source-retention/provider boundary.
+
+Verdict: `[PROVED — COMPLETE PHYSICAL FCRJ CARRIER ENERGY OBEYS PACKET-FREE MERTENS-WIDTH LAW;
+SHRINKING WIDTH CLOSES ENERGY ONLY BY COLLAPSING NORMALIZED SOURCE]`.
+
+## Conjecture loop 67 — adaptive-aperture divisor censorship
+
+### Failed escape `[POINTWISE FAITHFUL, UNIFORMLY CENSORING]`
+
+Loop 66 leaves apparent possibility that shrinking width suppresses full carrier energy while
+remaining divisor-faithful because every positive fixed-width multiplier is nonzero. This confuses
+pointwise injectivity with uniform observability.
+
+### Exact-jet survivor `[PAPER-PROVED] [LEAN-PROVED] [POSITIVE SURVIVOR]`
+
+For exact physical log-window divisor multiplier
+
+```text
+M_c(z)=exp(cz)-1,
+```
+
+global exponential remainder bound gives
+
+```text
+||M_c(z)|| <= |c|||z|| exp(|c|||z||).                   (AC60)
+```
+
+Consequently `c_n->0` forces `M_{c_n}(z)->0` for every fixed mode. Along positive widths, complex
+differentiability supplies exact first jet
+
+```text
+M_c(z)/c -> z,
+||M_c(z)||/c -> ||z||.                                 (AC61)
+```
+
+For every nonzero `z`, eventually
+
+```text
+(||z||/2)c <= ||M_c(z)|| <= 2||z||c.                   (AC62)
+```
+
+Existing coefficient-faithfulness theorem says `M_c(z)!=0` whenever `c>0` and `Re z<0`. Therefore
+every positive shrinking schedule is noncensoring at each finite stage but converges to complete
+attenuation, and no positive uniform response floor exists.
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeApertureAdaptiveDivisorCensorship.lean`.
+Direct check, targeted build, capstone axiom audit, and umbrella wiring pass.
+
+Hostile limit: loop 66 energy gain is bought at exact first-order loss of divisor observability.
+Renormalizing by `1/c` recovers mode `z` but imposes matching inverse-conditioning cost on every
+arithmetic and ultraviolet error. Thus adaptive shrinking is closed as free FCRJ regularization.
+Fixed positive ratio remains genuine centered moving prime-log discrepancy core.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-27]`: exponential Taylor and derivative laws are
+classical. Corpus and targeted current-literature searches found no exact synthesis of physical
+FCRJ multiplier noncensorship, adaptive attenuation, first-order jet, and loop 66 full-carrier
+source collapse. Candidate-new content is coefficient-faithful provider obstruction only.
+
+Verdict: `[PROVED — SHRINKING PHYSICAL APERTURES CENSOR EVERY FIXED DIVISOR MODE AT EXACT LINEAR
+RATE DESPITE NONZERO RESPONSE AT EVERY FINITE POSITIVE WIDTH]`.
+
+## Conjecture loop 68 — exact Mertens-coboundary variance bridge
+
+### Failed first conjecture `[ABSOLUTE PAIR COUNT LOSES CONTINUUM CANCELLATION]`
+
+Bounding positive tent overlaps by multiplicative neighbor counts discards rank-one aperture mean.
+At fixed ratio this leaves macroscopic continuum pair mass and cannot reach `M^-1 polylog(M)`.
+Physical centering must occur before any absolute estimate.
+
+### Exact burden survivor `[PAPER-PROVED] [LEAN-PROVED] [POSITIVE SURVIVOR]`
+
+Define finite-packet cumulative physical mass and Mertens discrepancy
+
+```text
+C_P(t)=sum_(p in P,log p<=t) log(p)/p,
+D_P(t)=C_P(t)-t.
+```
+
+Window flux is exact two-endpoint coboundary
+
+```text
+Flux_P(m,k;u)
+ =C_P(k-u)-C_P(m-u)
+ =(k-m)+D_P(k-u)-D_P(m-u).                             (AC63)
+```
+
+If `L_P` is weighted clipped-length mass, coherent physical centering gives
+
+```text
+CenteredFlux_P(A,m,k;u)
+ =[D_P(k-u)-D_P(m-u)]-[L_P/A-(k-m)].                   (AC64)
+```
+
+An almost-everywhere representative theorem identifies this scalar exactly with existing complex
+Hilbert carrier. Hence
+
+```text
+||P_M||^2
+ =integral_0^A
+   |D_P(k-u)-D_P(m-u)-[L_P/A-(k-m)]|^2 du.             (AC65)
+```
+
+At physical scale `m=log X`, `k=log X+c`, the FCRJ bound `||P_M||^2<=B` is equivalent, with no
+constant or one-sided loss, to corresponding centered Mertens-increment variance bound
+
+```text
+integral_0^A
+ |D_P(log X+c-u)-D_P(log X-u)-[L_P/A-c]|^2 du <= B.    (AC66)
+```
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeApertureMertensCoboundary.lean`.
+Direct check, targeted build, axiom audit, and umbrella wiring pass.
+
+Hostile limit: standard almost-diagonal/Gallagher bounds on uncentered positive pair mass lose
+continuum cancellation and remain macroscopic. Pointwise PNT error also misses target scale. The
+remaining provider must prove exact centered mean square `(AC66)`, including `log p/p` partial
+summation and prime-power corrections. This is now a classical-looking Selberg-type input with
+every FCRJ coefficient frozen.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-27]`: cumulative differences and variance are
+classical; Selberg-integral literature is adjacent. Corpus and targeted current-literature searches
+found no exact clipped physical FCRJ identification `(AC63)--(AC66)`. Candidate-new content is
+restricted to coefficient-exact bridge and burden equivalence.
+
+Verdict: `[PROVED — FIXED-RATIO FCRJ CARRIER BOUND IS EXACTLY CENTERED TWO-ENDPOINT MERTENS
+DISCREPANCY VARIANCE; ALL CONTINUUM AND HILBERT CONVERSION LOSSES REMOVED]`.

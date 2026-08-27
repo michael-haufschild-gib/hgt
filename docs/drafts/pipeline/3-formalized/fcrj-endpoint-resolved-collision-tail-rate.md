@@ -1,8 +1,8 @@
 # FCRJ endpoint phase-resolution collision tail rate
 
 - **ID:** FCRJ-RCTR
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (Lean proof complete; Stage-3 global lint gate pending)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean-formalized)
 - **Source:** `critical-multiplicative-compensated-cancellation-rh.md` · Conjecture loop 61
 - **Statement:** Replace singular inverse-chord collision cost by exact frequency-resolution
   saturation at chord scale `1/N`.
@@ -31,7 +31,7 @@ Specialize to physical prime-log endpoint jumps and multiply by exact aperture f
 
 - [x] 0 → 1 in-progress: corpus search, primary-literature audit, frozen source statement
 - [x] 1 → 2 fully-proven: dependency-closed paper proof and hostile constant audit
-- [ ] 2 → 3 formalized: exact Lean theorem, targeted build, axiom and lint gates
+- [x] 2 → 3 formalized: exact Lean theorem, targeted build, axiom and lint gates
 - [ ] 3 → 4 publication-ready: independent expert priority review
 
 ## Corpus frontier `[CORPUS]`
@@ -100,8 +100,7 @@ candidate-new.
 
 Lean formalization is complete in
 `formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeEndpointPhaseCollisionTailRate.lean`.
-Direct checking, targeted module build, and `#print axioms` audits pass; capstones depend only on
-`propext`, `Classical.choice`, and `Quot.sound`.  Global lint remains blocked by unrelated
-concurrent untracked sieve modules absent from `RHTower.lean`, so Stage 3 is not claimed yet.
+Direct checking, targeted module build, `#print axioms` audits, and global formal lint pass;
+capstones depend only on `propext`, `Classical.choice`, and `Quot.sound`.
 Next audit: whether physical signed endpoint clusters admit a source-derived cancellation
 invariant beyond absolute resolved pair mass.

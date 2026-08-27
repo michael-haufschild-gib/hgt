@@ -1,4 +1,4 @@
-\section{One recurrence problem, one information hierarchy}
+\section{One recurrence problem, four structural laws}
 
 The quantum recurrence theorem guarantees arbitrarily accurate returns for
 finite closed systems \cite{BocchieriLoinger1957}.  Quantitative work now
@@ -10,19 +10,49 @@ Floquet recurrence \cite{AnandEtAl2026}.  Many-body recurrences have been
 observed in an isolated quantum gas \cite{RauerEtAl2018}, and coupled-qubit
 tests have been proposed \cite{KarimiEtAl2026}.
 
-The phrase ``recurrence time'' compresses four different questions:
+Yet ``the recurrence time'' is not a sufficient organizing object.  It mixes
+four questions with different answers:
 \begin{equation}
- \boxed{\text{What survives?}\quad\text{What phases can move?}\quad
- \text{What can an observer know?}\quad\text{What can finite data predict?}}
+ \boxed{
+ \text{persistent carrier}
+ \longrightarrow \text{phase action and relation hull}
+ \longrightarrow \text{target metric and observer quotient}
+ \longrightarrow \text{finite record}}
  \label{eq:fourquestions-new}
 \end{equation}
-They must be answered in that order.  Loss can remove phase coordinates.
-Exact spectral relations constrain motion on the surviving coordinates.  A
-measurement can discard information that remains present in the motion.
-Finally, a finite record can fail to identify even the information visible
-to a richer experiment.  Our central result makes this hierarchy exact for
-finite and countable spectra and then follows it into local many-body and
-thermodynamic regimes.
+Loss deletes transient coordinates.  Exact spectral relations cut the ambient
+phase torus down to the orbit actually visited.  State weights define how
+distance from return is measured, while an observer graph identifies phase
+differences that no selected probe can see.  A finite record is finally a
+restriction of this already reduced geometry, not a substitute for its
+completed arithmetic structure.
+
+This factorization is the paper's universal principle.  Its laws apply to lossy
+finite dynamics, arbitrary spectral measures, finite local many-body
+Hamiltonians, countable pure-point spectra and specified bounded
+infinite-chain models.  They do not claim that all such systems share one
+numerical timescale.  They identify which exact object controls each
+recurrence question and how that object changes under loss, interaction,
+measurement and finite observation.
+
+\subsection{First-principles scope}
+
+Every theorem starts from an explicitly stated Hamiltonian or contraction,
+the Born rule for specified states and effects, and a stated metric or target
+class.  Deductions use spectral decomposition, unitary evolution,
+compact-group characters, exact arithmetic relations, probability measures
+and operator-norm circuit approximation.  Randomness, chaos, eigenstate
+thermalization and random-matrix statistics are never hidden premises.
+Generic conclusions explicitly say generic; exact-model conclusions display
+their couplings.
+
+This is first-principles mathematics conditional only on those model axioms.
+It is not a microscopic derivation of a laboratory Hamiltonian from a more
+fundamental theory of matter.  Experiment therefore tests whether a device
+realizes stated carrier, spectrum, coupling graph and measurement map.  It
+cannot prove an infinite-time or thermodynamic theorem, but it can falsify
+corresponding finite-system predictions.  Section \ref{sec:experiments}
+gives concrete protocols and separates these two kinds of claim.
 
 For a finite labelled energy list $E=(E_1,\ldots,E_D)$, global phase is
 unobservable, so use the balanced character group
@@ -44,7 +74,7 @@ spectral measure $\mu$, write $\Delta\mu$ for the law of $E-E'$ under two
 independent samples.  This difference law is the autocorrelation of the
 spectrum and the Fourier transform of the scalar survival fidelity.
 
-\begin{theorem}[Universal recurrence-information hierarchy]
+\begin{theorem}[Four-law recurrence architecture]
 \label{thm:hierarchy}
 The following statements hold simultaneously.
 \begin{enumerate}[leftmargin=1.65em]
@@ -73,33 +103,36 @@ The following statements hold simultaneously.
 \end{enumerate}
 \end{theorem}
 
-The second statement is the existence criterion.  It does not assume a
+Statements two and three are Law II's existence and capacity principles.
+They do not assume a
 limiting ensemble and then describe it: convergence of all character
 coefficients is necessary and sufficient for that ensemble to exist and be
-unique.  The third statement is its capacity law.  A phase direction cannot
+unique.  A phase direction cannot
 simultaneously be locked and carry independent temporal motion.  The fourth
-and fifth statements identify two different information levels.  Scalar
+and fifth statements begin Law III by identifying two different information levels.  Scalar
 survival sees only an autocorrelation; resolved characters recover the
-relations themselves.
+relations themselves.  Weighted targets, observer coherences and finite
+records complete Laws III and IV below.
 
 \begin{table}[H]
 \centering
 \small
 \begin{tabularx}{\textwidth}{@{}
-  >{\raggedright\arraybackslash}p{0.13\textwidth}
-  >{\raggedright\arraybackslash}p{0.25\textwidth}
+  >{\raggedright\arraybackslash}p{0.12\textwidth}
+  >{\raggedright\arraybackslash}p{0.24\textwidth}
   >{\raggedright\arraybackslash}X
   >{\raggedright\arraybackslash}X@{}}
 \toprule
-Law & Exact object & What it determines & What it discards or cannot fix \\
+Law & Exact object & What it determines & Boundary it exposes \\
 \midrule
 I: carrier & persistent peripheral spectrum & attainable late return ceiling
   and surviving collision law & transient spectral directions \\
-II: action & character actions and zero-action lattice & existence of phase
-  law, constraints and temporal capacity & no measurement quotient yet \\
-III: observation & difference measure for scalar data; relation lattice for
-  resolved data & all clock-sampled survival laws; all resolved detectors &
-  scalar data discard labelled higher phase relations and clock orientation \\
+II: action & character actions and relation hull & phase-law existence,
+  temporal capacity, exact resonances and completed occupation & locked
+  relations remove temporal directions \\
+III: target & weighted metric and measurement quotient & target cost,
+  observer-visible rank, Born deadlines and circuit-target occupation &
+  scalar data discard labelled relations and clock orientation \\
 IV: record & finite-horizon record class & certified finite-time agreement &
   completed recurrence geometry without additional global information \\
 \bottomrule
@@ -165,6 +198,13 @@ different quotients of that hull, while finite records need not determine
 either completed object.}
 \label{fig:architecture}
 \end{figure}
+
+Following sections prove each law and retain all earlier carrier, phase-hull,
+weighted-metric, observer and inference results in same compiled document.
+They then show what laws imply for local many-body rank, exact return density,
+countable completion, Born records and circuit targets.  One compatible
+static nearest-neighbour family finally exhibits finite-time complexity
+growth, exact recurrence and reflected descent in a single physical model.
 
 \section{Law I: loss selects the persistent carrier}
 
@@ -523,7 +563,7 @@ rational rank in one specified coefficient field.  It is an engineered
 diagonal l-bit model, not a theorem for a microscopic random-field chain and
 not an infinite-volume global-recurrence claim.
 
-\section{Law III: measurement selects the information quotient}
+\section{Law III: weights and observers select visible return geometry}
 
 \subsection{Scalar and resolved recurrence}
 
@@ -681,12 +721,14 @@ record and a deadline compressed by visible coherence graph.  Its novelty
 claim is this conjunction, not existence of expectation-value recurrence by
 itself.
 
-\subsection{Applications to circuit targets and complexity}
+\subsection{Circuit targets and physical complexity}
 
 Circuit approximation is another observer problem: a gate dictionary selects
-a union of target neighbourhoods inside the completed phase hull.  The next
-results apply the same occupation and return geometry to those targets.  They
-are consequences of Law III, not an alternative definition of recurrence.
+a union of target neighbourhoods inside completed phase hull.  This is not a
+side application.  It is Law III with an operational target family: phase
+motion sets occupation, gate support supplies witnesses, and exact return
+constrains entire complexity history.  Next results follow this chain from
+generic occupation to one explicit static nearest-neighbour lifecycle.
 
 \subsubsection{Static connected-network Choi occupation}
 
@@ -947,6 +989,73 @@ Finite records, complete local moment data and complete perturbative data are
 distinct information regimes.  Compact exact moments cross determinacy
 boundary; finite-horizon data do not.
 
+\section{Experimental tests and falsification targets}
+\label{sec:experiments}
+
+Experiments do not prove exact arithmetic, infinite-time or thermodynamic
+statements.  They test a different proposition: whether a controlled device,
+within characterized preparation, Hamiltonian and readout error, realizes a
+finite member of the stated mathematical family.  This distinction is especially
+important for recurrence because an undetected detuning can become decisive
+only beyond the observation window.  Hamiltonian-learning and
+randomized-measurement methods provide established routes for model
+calibration and nonlinear observable estimation
+\cite{WangEtAl2017,ElbenEtAl2023}.  Four direct tests follow from our laws.
+
+\paragraph{Scalar blindness versus resolved recurrence.}
+Implement diagonal nine-level Hamiltonians with energies $E^+$ and $E^-$ in
+\eqref{eq:homometricpair}, prepare uniform superposition, and measure survival
+probability across same time grid.  Law III predicts identical scalar traces
+for every time and therefore for every randomized sampling clock.  A second
+run measures the resolved character in \eqref{eq:witnesscharacter}, using a
+multi-copy interferometric or randomized-measurement realization appropriate
+to platform.  That record separates two devices.  Experimental target is not
+mere recurrence: it is simultaneous scalar agreement and resolved
+disagreement.  A statistically significant scalar mismatch after calibrated
+errors would falsify claimed implementation; failure of resolved separation
+would falsify either Hamiltonian calibration or measurement map.
+
+\paragraph{Observer-graph quotient.}
+For one calibrated finite Hamiltonian, choose two probe families whose
+coherence graphs differ by a controlled bridge.  Prepare the same states,
+record the same Born observables, and compare return windows.  Theorem
+\ref{thm:observer} predicts which phase differences become visible, exact
+visible dimension $D-c$, and graph--resolution deadline.  Existing
+many-body recurrence experiments already illustrate why recurrence is
+observable-relative \cite{RauerEtAl2018}; the present law turns that qualitative
+choice into a rank and a finite certificate.  Finite data can test deadline
+and zero-set predictions but cannot certify absence of every unmeasured
+arithmetic relation.
+
+\paragraph{Local interaction reconstruction and return-density scaling.}
+On a programmable qudit chain or small interaction graph, perform calibrated
+spectroscopy on induced one- and two-site subsystems.  Candidate temporal
+ranks give pair curvature \eqref{eq:paircurvature}; positive curvature should
+track programmed edges.  Across increasing path lengths, sample anchored
+return condition \eqref{eq:anchoredtarget-main} over expanding time windows
+and compare occupation with \eqref{eq:exactdensity}.  This tests finite-volume
+predictions and the approach to completed density.  No finite run establishes
+rational independence or order of limits in Corollary
+\ref{cor:thermodynamic}.
+
+\paragraph{Complexity excursion, exact return and reflection.}
+Implement commuting controlled-phase path \eqref{eq:nestedH} for modest $L$,
+using independently calibrated bond angles.  Characterize channels near
+$0$, a laboratory-window time $t$, reflected time $R_L-t$, and return
+$R_L$.  Process measurements test return and reflection; circuit compilation
+at fixed operator-norm tolerance searches for matching upper witnesses.
+Verified approximation with fewer gates than lower bound in Theorem
+\ref{thm:nestedramp} would falsify claimed Hamiltonian or error model.  Failure
+to find such circuit does not experimentally prove minimality.  The exact return
+period grows rapidly with $L$, so useful near-term tests are small-volume
+checks of mechanism rather than direct evidence for thermodynamic limit.
+
+These protocols probe different arrows in Figure \ref{fig:architecture}.
+None can replace mathematical proof, and no single protocol validates the whole
+paper.  Together they distinguish loss, hidden phase constraints,
+measurement quotient, local connectivity and return-forced complexity
+reflection instead of reporting one undifferentiated recurrence time.
+
 \section{Position relative to current results}
 
 Kronecker--Weyl phase occupation, consequences of rational independence, and
@@ -955,10 +1064,12 @@ all-order spectral-form-factor moments are established ingredients
 with equal autocorrelation are classical
 \cite{RosenblattSeymour1982,GrimmBaake2008}.  The contribution is therefore
 not torus averaging or homometry in isolation.  Mathematical center is the
-joined quantum information hierarchy: an exact existence criterion for
-finite and countable phase laws, action--constraint capacity conversion,
-maximal scalar system and clock quotients, complete resolved tomography, and
-an explicit strict separation between scalar and resolved recurrence.
+joined persistent-phase factorization: carrier selection, an exact existence
+criterion for finite and countable phase laws, action--constraint capacity
+conversion, weighted and observer-dependent target geometry, maximal scalar
+system and clock quotients, complete resolved tomography, and a sharp
+finite-record boundary.  Explicit scalar--resolved separation shows why none
+of these layers can be collapsed into one return time.
 
 That hierarchy has following physical realizations and consequences:
 \begin{enumerate}[leftmargin=1.6em]
@@ -979,10 +1090,10 @@ That hierarchy has following physical realizations and consequences:
       histories, with least deadline inside exact graph--resolution
       certificate family, and a local finite-record construction compatible
       with every later return probability;
-\item as applications, static circuit-target occupation and recurrent-hardness
-      laws, plus one explicit nearest-neighbour path with a finite-time linear
-      complexity envelope, exact return, exact reflected descent, and a
-      certified failure of pointwise monotonicity inside that envelope.
+\item static circuit-target occupation and recurrent-hardness laws, plus one
+      explicit nearest-neighbour path with a finite-time linear complexity
+      envelope, exact return, exact reflected descent, and a certified failure
+      of pointwise monotonicity inside that envelope.
 \end{enumerate}
 
 Completed-time densities complement rather than replace current first-return
@@ -1058,6 +1169,38 @@ randomization, and a two-sided linear envelope does not imply monotonicity;
 Theorem \ref{thm:nestedramp} proves both scale-separated order and an explicit
 nearby backtrack.  Exact return instead enforces the robust reflection law of
 Theorem \ref{thm:reflection}.
+
+\section{Synthesis: recurrence as persistent phase geometry}
+
+Four laws answer different versions of the same physical question.  Law I says
+whether any recurrent signal remains after loss and gives its exact ceiling.
+Law II says what completed motion is possible on the surviving carrier: relations
+are locked directions, temporal rank is complementary free capacity, and
+local interaction can convert one into the other.  Law III says which portion of
+that motion matters for a target or measurement.  Weights set accuracy cost;
+observer coherences set visible dimension; scalar survival and resolved
+replicas retain provably different information.  Law IV says where finite
+data stop: agreement throughout any prescribed horizon need not fix completed
+geometry or one later probability.
+
+This organization keeps apparently different results in one theory rather
+than one catalogue.  Generic local rank, return-density extinction, countable
+completion, Born-record recurrence and circuit complexity all ask how much of
+the same phase hull is occupied by a specified target.  Their dimensions differ
+because carrier, constraints, weights, observers and record classes differ.
+No extra complexity-dynamics postulate is needed to obtain return-forced
+reflection, while the explicit local path shows why reflection does not imply
+pointwise growth before midpoint.
+
+For interested non-specialists, the central message is concrete.  A system may
+look recurrent or nonrecurrent depending on what survived and what is being
+measured; even a perfect recording of one return probability can miss hidden
+phase organization.  Local interactions do not automatically simplify this
+organization, and increasing a chain can make accurate returns occupy an
+extraordinarily small share of long times.  Nevertheless exact recurrence,
+when engineered, places a global symmetry on complexity history.  The paper turns
+these statements into exact laws and marks which parts a finite experiment
+can test.
 
 \section{Proof organization}
 

@@ -1,7 +1,7 @@
 # Observer-action information hierarchy of quantum recurrence
 
 - **ID:** `observer-action-quantum-recurrence-information-hierarchy`
-- **Stage:** 3-formalized; publication integration in progress
+- **Stage:** 4-publication-ready
 - **Type:** CANDIDATE UNIVERSAL LAW / PAPER SPINE
 - **Statement:** Every quantum-recurrence record factors through a persistent phase law; zero-action characters exactly classify its constraints, scalar survival records retain exactly spectral autocorrelation and unoriented clock information, and resolved replica characters recover the full projective relation lattice.
 
@@ -17,7 +17,7 @@ only claims backed by unconditional checked declarations.
 - [x] 0 → 1  in-progress: well-posed, corpus-audited, primary-literature frontier sketched, hostile attacks recorded
 - [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
 - [x] 2 → 3  formalized: Lean theorem `universalQuantumRecurrenceInformationHierarchyLaw`, targeted `lake env lean` and axiom audit green
-- [ ] 3 → 4  publication-ready: standalone single-document paper, reference audit, hostile review, clean PDF
+- [x] 3 → 4  publication-ready: standalone single-document paper, reference audit, hostile review, clean PDF
 
 ## Frozen candidate
 
@@ -164,7 +164,7 @@ recurrence; thermodynamic claims use ordered limits; no infinite-volume orbit re
 - **Strongest positive survivor:** Universal finite/countable carrier--action--quotient--record hierarchy with an exact strict scalar/resolved separation.
 - **New insight:** Scalar survival recurrence is not the completed geometry; it is the exact
   autocorrelation/orientation quotient of a more informative observer-action phase law.
-- **Status:** Paper proof complete; strict witness and joined capstone formalized and axiom-audited. Publication rewrite and render audit remain.
+- **Status:** Paper proof complete; strict witness and joined capstone formalized and axiom-audited. Standalone rewrite, citation audit and render audit complete. Independent priority and referee passes remain external submission gates.
 
 ## Log
 
@@ -179,6 +179,9 @@ recurrence; thermodynamic claims use ordered limits; no infinite-volume orbit re
   checks, module builds and axiom audits passed.
 - 2026-08-27 — Rewrote manuscript spine around four reader questions; restored prior explanatory
   breadth and demoted circuit complexity from universal law to target-geometry application.
+- 2026-08-27 — Final 29-page PDF compiled without TeX warnings, undefined references or missing
+  citations; affected pages and Figure 1 visually inspected. Public source contains no internal
+  project or proof-infrastructure references.
 
 ## Paper proof of strict scalar/resolved separation
 

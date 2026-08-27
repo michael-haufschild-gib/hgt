@@ -2,8 +2,8 @@
 
 - **ID:** `theta-center-mixed-odd-four-point-cusp`
 - **Stage:** 1-in-progress
-- **Type:** CONJECTURE / TCD singular-RKHS finite-rank advance
-- **Scientific status:** `[NOVEL SEAM SUBTHEOREM] [PAPER-PROVED] [LEAN-PROVED] [GLOBAL C1 OPEN]`
+- **Type:** THEOREM / TCD singular-RKHS finite-rank advance
+- **Scientific status:** `[NOVEL GLOBAL C1] [PAPER-PROVED] [LEAN-PROVED] [LOCAL FOUR-POINT POSDEF CLOSED] [TCD COFINAL OPEN]`
 - **Source:** literal theta-cusp center-mixed density and its completed reflected jet
 - **Statement:** For every physical aperture `0 < a < 1/2`, the second--sixth
   Hankel margin of `f_a(t) = thetaCuspCenterMixedDensity a t` is strictly positive:
@@ -34,7 +34,8 @@ Corpus supplies:
 7. complete-source logarithmic jets through order six plus summable
    higher-atom derivative transport.
 
-No corpus theorem proves (C1), the local odd wall, or a four-node chamber.
+At card opening no corpus theorem proved (C1), the local odd wall, or a four-node chamber.  This
+card now proves all three; only the all-order/cofinal TCD landing remains open.
 
 ## Conjecture loop
 
@@ -81,12 +82,12 @@ coalesced chamber and supplies the next completed reflected-jet constraint.
 
 - [x] exact corpus frontier audited
 - [x] August 2026 primary-literature collision audit
-- [ ] C1 proved or falsified
-- [ ] C2 proved or falsified
-- [ ] C3 proved or falsified
-- [ ] dependency-closed paper proof
-- [ ] hostile fake-kernel audit
-- [x] Lean theorem with no added axioms for modular seam and open seam chamber
+- [x] C1 proved globally
+- [x] C2 bypassed by the global source theorem
+- [x] C3 realized as a signed-fibre positive two-by-two matrix mixture
+- [x] dependency-closed paper proof
+- [x] hostile fake-kernel audit
+- [x] Lean theorem with no added axioms for global source curvature, C1, odd wall, and local four-point positive definiteness
 - [x] targeted leaf build and axiom/lint audit
 - [x] wire into `RHTower.lean`
 
@@ -172,3 +173,90 @@ Next conjecture is C1b: use modular flow to continue positivity from this
 open seam chamber until the first possible polynomial/covariance crossing,
 then prove the outer carrier by a scale-separated atom-pair Gram.  Generic
 positive-mixture closure remains rejected.
+
+### 2026-08-27 — C1b global theorem and center-mixture closure
+
+`[NEW] [PAPER-PROVED] [LEAN-PROVED] [GLOBAL C1 CLOSED]`
+
+The seam-continuation conjecture succeeds after a second pivot.  Direct pairwise expansion and the
+old sixth-likelihood envelope were too coarse.  The corpus's score-ray transform instead exposes
+the exact dominant-atom variable `q`, with
+
+```text
+q >= 41/25,   e2 <= 13/10,   e4 < 2432,   e6 < 63232.
+```
+
+The sharp fourth-to-sixth spectral comparison first proves `log4 < ordinary6/25`, then the
+dominant-atom estimate improves the ordinary sixth envelope to `60800` and hence `log6 < 63232`.
+After multiplying by `q^8` and translating `y = q - 41/25`, the worst allowed reflected-curvature
+profile has a strictly positive coefficient certificate.  Monotonicity in the three error
+coordinates transfers this certificate to the exact theta source.  The exponential Bell-jet
+connector then proves, for every real `x`,
+
+```text
+thetaCuspFullSourceReflectionSecondSixthCurvature x > 0.
+```
+
+Strict source log-concavity gives `J2(x) < 0`; the determinant inequality forces `J6(x) < 0`.
+For each radial fibre with positive center weight `w`, set
+
+```text
+p0 = -w J2,   p2 = w J4,   p4 = -w J6.
+```
+
+Then `p0 > 0` and `p0*p4 - p2^2 > 0` pointwise.  The corpus theorem
+`HilbertMetric.integral_twoByTwo_det_pos` preserves strict positive definiteness under integration,
+yielding for every `0 < a < 1/2`
+
+```text
+f_a''(0) f_a^(6)(0) - f_a^(4)(0)^2 > 0.
+```
+
+This is C3's viable form: not scalar positive-mixture closure, but integration of a signed-jet
+positive matrix field.
+
+The downstream odd-wall theorem required `C^8`, while the corpus exposed only `C^6`.  Two new
+binomial derivative-product jets close orders seven and eight.  Exact evenness kills origin jets
+`1,3,5,7`; the generic eighth-order cusp theorem opens the reflection-odd wall.  Combining it with
+the existing even wall and the exact determinant factorization
+
+```text
+det(toeplitzFour) = evenParityWall * oddParityWall
+```
+
+proves a nontrivial right-hand interval on which the literal four-node equispaced center-mixed
+theta Gram matrix is positive definite for every physical aperture.
+
+**Hostile fake-kernel audit.**  Evenness, `C^8`, positive density, and the modular-seam sign alone do
+not pass this proof.  A fake kernel must additionally satisfy the exact theta score-ray transform,
+the `q >= 41/25` dominant-atom floor, the three certified spectral envelopes, the exponential Bell
+jet identity, global source log-concavity, and the derivative-product center-mixture landing.
+Generic positive mixtures can still reverse sixth curvature; the proof uses literal theta-source
+structure at every nonformal sign step.
+
+**August 2026 novelty audit.**  Exact searches found no external statement of the global raw
+reflected curvature, physical center-mixture sixth Hankel inequality, odd four-point wall, or local
+four-node positive-definite chamber.  Closest result is Planat--Solé,
+[*Second-Level Concavity of the Riemann Xi Kernel*](https://arxiv.org/abs/2608.19160), which proves
+strict log-concavity of the first Laguerre expression for the classical Xi kernel and derives
+double Turán consequences.  It does not use this reflected complete-source determinant or the
+center mixture.  Salazar's
+[*Order-Moment Transport and Hankel Determinants in Special-Function Inequalities*](https://arxiv.org/abs/2606.31647)
+supplies a general moment-recognition calculus for other special functions, not this theta source
+or four-point cusp.  Noncollision is a literature-search conclusion, not a theorem of Lean.
+
+Lean artifacts:
+
+- `thetaCuspFullSourceReflectionSecondSixthCurvature_pos`;
+- `thetaCuspCenterMixedDensity_iteratedDeriv_secondSixthHankel_pos_all`;
+- `contDiff_eight_thetaCuspCenterMixedDensity`;
+- `exists_thetaCuspCenterMixed_oddParityWall_pos_right`;
+- `exists_thetaCuspCenterMixedGramFourEquispaced_posDef_right`.
+
+Audit: direct `lake env lean` passed; targeted leaf builds passed; formal lint passed; `#print
+axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`.  No added axiom, `sorry`,
+`admit`, `opaque`, `unsafe`, numerical evaluation, or RH premise is used.
+
+Next open TCD core: replace this finite rank-four chamber by an all-order/cofinal singular
+Hardy/RKHS carrier with coefficient-faithful Xi landing.  Finite jet positivity, including the new
+global sixth law, does not itself select the Xi divisor.

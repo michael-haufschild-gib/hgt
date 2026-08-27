@@ -53,6 +53,29 @@ No absolute “first” claim is authorized.
    literatures for scalar/resolved separation; homometry and higher-order
    reconstruction are not claimed new.
 
+## Second frozen-shape search, 27 August 2026
+
+Exact-object searches were repeated after manuscript was reorganized around
+four laws. Queries separately targeted (i) scalar survival equivalence versus
+spectral difference measures and resolved replica recovery of relation
+lattices, (ii) all-order rational independence for generic static
+nearest-neighbour Hamiltonians, (iii) exact-return reflection or palindromic
+circuit complexity for autonomous Hamiltonians, and (iv) observer-coherence
+graph recurrence deadlines. Returned primary literature again covered
+spectral autocorrelation, recurrence-time bounds, free-fermion rational
+independence, stochastic/random complexity saturation, Brown--Susskind's
+typical second-law picture and unrelated circuit-compilation palindromes.
+No returned source stated paper's exact core package, arbitrary-graph rank
+formula, same-record observer theorem or deterministic nested
+ramp--return--backtrack conjunction. This is strengthened absence evidence,
+not priority proof. No absolute-first language is authorized.
+
+Experimental feasibility citations were separately checked against primary
+publisher and arXiv records: Wang et al. demonstrate Hamiltonian learning and
+model validation, while Elben et al. review randomized-measurement protocols
+and experimental use. They support proposed calibration/readout routes only;
+they are not cited as predecessors of mathematical laws.
+
 ## Candidate novelty residues
 
 ### Core. Universal observer-action information hierarchy
@@ -214,8 +237,11 @@ headline novelty and is not a microscopic random-field MBL theorem.
 
 ## Priority controls used in paper
 
-- “Principal new results” centers exact information hierarchy; other results
-  are labeled physical realizations, consequences or applications.
+- Main text centers four-law persistent-phase factorization. Exact
+  scalar/resolved information hierarchy is Law III's completeness theorem;
+  locality, thermodynamics, Born records and complexity are presented as
+  realizations of same carrier--hull--target--record architecture, not as an
+  unrelated catalogue.
 - Literature section distinguishes premises from their local-network
   realization.
 - Scope section separates nested bounded-degree path ramp from all-to-all

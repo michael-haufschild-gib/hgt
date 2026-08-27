@@ -2,7 +2,7 @@
 
 Audit date: 2026-08-27
 
-Scope: every one of the 32 entries now present in `references.tex`, plus every
+Scope: every one of the 34 entries now present in `references.tex`, plus every
 claim directly attached to a citation in `body.tex`. Previously retained but
 now unused entries remain listed only where removal history matters. Sources below are
 publisher records, author-hosted records, or arXiv records maintained from the
@@ -28,6 +28,9 @@ authors' submissions. Search-result aggregators were not used as authority.
 - Added and verified primary records for `RosenblattSeymour1982`,
   `GrimmBaake2008`, `YellottIverson1992` and
   `AgulnickBusickWarner2026`
+- Added and verified primary publisher and arXiv records for
+  `WangEtAl2017` and `ElbenEtAl2023`, supporting experimental calibration and
+  randomized-measurement feasibility rather than any mathematical theorem
 - Citation prose: replaced unsupported wording `first-return bounds` with
   `recurrence-time bounds`; replaced vague claim that higher no-resonance
   conditions are difficult to verify with source-backed statement that
@@ -72,11 +75,13 @@ authors' submissions. Search-result aggregators were not used as authority.
 | `GrimmBaake2008` | Verified: authors, title, *Zeitschrift für Kristallographie* 223, 777--781 (2008), DOI and arXiv identifier; abstract identifies equality of autocorrelation as homometry. | [Open Research Online](https://oro.open.ac.uk/14992/) |
 | `YellottIverson1992` | Verified: authors, title, *Journal of the Optical Society of America A* 9(3), 388--404 (1992), DOI; abstract treats uniqueness and failure of higher-order autocorrelation reconstruction. | [Optica](https://opg.optica.org/josaa/abstract.cfm?uri=josaa-9-3-388) |
 | `AgulnickBusickWarner2026` | Verified: authors, title, arXiv identifier and 2026 version; abstract gives upper bounds and finite-group nonuniqueness examples for higher-order autocorrelations. | [arXiv:2604.13310](https://arxiv.org/abs/2604.13310) |
+| `WangEtAl2017` | Verified: eleven authors, title, *Nature Physics* 13, 551--555 (2017), DOI and arXiv identifier; source reports experimental Bayesian Hamiltonian learning and model-validation use. | [Nature Physics](https://www.nature.com/articles/nphys4074) |
+| `ElbenEtAl2023` | Verified: seven authors, title, *Nature Reviews Physics* 5, 9--24 (2023), DOI and arXiv identifier; source reviews practical randomized-measurement protocols and experimental applications. | [Nature Reviews Physics](https://www.nature.com/articles/s42254-022-00535-2) |
 
 ## Citation-context findings
 
 All statements directly carrying citations were checked against cited
 abstracts or publisher descriptions. After corrections listed above, no
 cited sentence attributes result absent from its cited source. Every one of
-32 references retained in manuscript is cited in body; no uncited
+34 references retained in manuscript is cited in body; no uncited
 bibliography padding remains.
