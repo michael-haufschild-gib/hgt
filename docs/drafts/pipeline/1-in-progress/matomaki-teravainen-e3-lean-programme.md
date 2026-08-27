@@ -1413,3 +1413,211 @@ reciprocal-mass estimate for the paper's `(1+δ_A)`-adic blocks.  The corpus alr
 Mertens' second theorem with exponential error, strong enough because the block bottom is at least
 `z₀ = exp(log X/(log log X)³)` while `δ_A = (log X)^{-10A}`.  Direct Lean, targeted build, and
 new-declaration axiom audit passed.
+
+### M5b, brick 8 — uniform Mertens mass for `c₂,n` blocks (2026-08-27)
+
+Added `Sieve/PrimeWindowMertensMass.lean`, axiom-clean and umbrella-wired.  The endpoint identity
+
+```text
+primesIco a b = primesRange (a−1) (b−1)
+```
+
+allows direct use of the corpus's exponential-error Mertens theorem.  Unconditionally there are
+fixed `B ≥ 0`, `c > 0`, and `N₀ ≥ 3` such that every `N₀ ≤ u ≤ v` satisfies
+
+```text
+∑_{u<p≤v} 1/p
+  ≤ log log v − log log u + 2B exp(−c sqrt(log u)).
+```
+
+The module combines this with brick 7 and obtains the same bound for the full second moment of
+`#primeWindow(n,a,b)`, with `η` equal to the displayed mass majorant:
+
+```text
+∑_{1≤n≤Y} #primeWindow(n,a,b)² ≤ Y(η + η²).
+```
+
+This is uniform across all sufficiently high blocks, so block count does not spend a separate
+Mertens error.  Remaining `c₂,n` step is pure scale calculus: for
+`b/a ≤ 1 + δ_A`, bound the log-log increment by `O(δ_A)` and absorb
+`exp(−c sqrt(log z₀))` into the same logarithmic power.  Direct Lean, targeted build,
+new-declaration axiom audit, umbrella reachability, and formal lint passed.
+
+### M5b, brick 9 — linear `δ` bound on one adic block (2026-08-27)
+
+Added `Sieve/PrimeWindowAdicMeanSquare.lean`, axiom-clean and umbrella-wired.  Elementary scale
+calculus gives
+
+```text
+logLog_sub_le_delta_div_log
+  (v ≤ (1+δ)u) : log log v − log log u ≤ δ / log u.
+```
+
+Combining this with brick 8 yields fixed `B ≥ 0`, `c > 0`, `N₀ ≥ 3` for which every sufficiently
+high half-open block `[a,b)` obeys
+
+```text
+exists_sum_sq_card_primeWindow_le_six_mul_delta:
+  b−1 ≤ (1+δ)(a−1),  0≤δ≤1,
+  2B exp(−c sqrt(log(a−1))) ≤ δ
+  ----------------------------------------------------------------
+  ∑_{1≤n≤Y} #primeWindow(n,a,b)² ≤ 6Yδ.
+```
+
+Thus only one scalar schedule comparison remains for the `c₂,n` mean square: the PNT error at
+`a ≥ z₀` is eventually below `δ_A = (log X)^{-10A}`.  Direct Lean, targeted build, and
+new-declaration axiom audit passed.
+
+### M5b, brick 10 — log-power schedule for `c₂,n` blocks (2026-08-27)
+
+Added `Sieve/PrimeWindowLogPowerSchedule.lean`, axiom-clean and umbrella-wired.  The module proves
+the unconditional scalar comparison
+
+```text
+2B exp(−c sqrt(log x)) ≤ (log x)^(−K)
+```
+
+eventually for arbitrary fixed `B ≥ 0`, `c > 0`, and `K > 0`.  Substitution into brick 9 gives a
+single uniform threshold after which every half-open block `[a,b)` satisfying
+
+```text
+b−1 ≤ (1 + (log(a−1))^(−K))(a−1)
+```
+
+has exact second-moment bound
+
+```text
+∑_{1≤n≤Y} #primeWindow(n,a,b)² ≤ 6Y(log(a−1))^(−K).
+```
+
+Remaining paper-scale translation is explicit: at the paper's lower cutoff
+`z₀ = exp(log X/(log log X)³)`, choose a fixed exponent stronger than `10A` and prove the resulting
+lower-end log power is at most `δ_A = (log X)^(−10A)`.  After that, only `c₃,n` boundary handling
+and Proposition 2.2 bookkeeping remain in this branch.  Direct Lean, targeted build,
+new-declaration axiom audit, umbrella reachability, and formal lint passed.
+
+### M5b, brick 11 — exact paper-scale `c₂,n` mean square (2026-08-27)
+
+Added `Sieve/PrimeWindowPaperScale.lean`, axiom-clean and umbrella-wired.  It names the literal
+paper schedules
+
+```text
+mtLowerCutoff X = exp(log X/(log log X)³),
+mtPaperWidth A X = (log X)^(−10A),
+```
+
+proves `log X/(log log X)³ → ∞`, and uses the spare exponent `10A+1` to establish
+
+```text
+(log X/(log log X)³)^(−(10A+1)) ≤ (log X)^(−10A)
+```
+
+eventually.  Therefore the exponential Mertens error at every block bottom `a−1 ≥ z₀` is at most
+the paper width `δ_A`.  Substitution into brick 9 gives the exact unconditional capstone
+
+```text
+eventually_primeWindow_paperLogWidth:
+  z₀ ≤ a−1,
+  b−1 ≤ (1+δ_A)(a−1)
+  ------------------------------------------------
+  ∑_{1≤n≤Y} #primeWindow(n,a,b)² ≤ 6Yδ_A.
+```
+
+This closes the analytic estimate for each `c₂,n` adic block at the literal source scale.  Remaining
+work in M5b is `c₃,n` last-block boundary handling and Proposition 2.2's finite block/type
+bookkeeping.  Direct Lean, targeted module build, new-declaration axiom audit, umbrella
+reachability, and formal lint passed.
+
+### M5b, brick 12 — exact prime-pair factorial mean (2026-08-27)
+
+Source re-audit corrects the earlier shorthand “last-block boundary”: `c₃,n` is the replacement
+error `ρ(k,Q)−ρ(k,q)`.  Buchstab forces a second prime factor in the same
+`(Q,Q(1+δ_A)]` block.  Added `Sieve/PrimePairDivisorMean.lean`, defining the literal product-
+divisibility pair count and proving
+
+```text
+∑_{1≤n≤Y} primePairDivisorCount S T n
+  ≤ Y ∑_{p∈S} (1/p) ∑_{q∈T(p)} 1/q.
+```
+
+If every fibre has reciprocal mass at most `η`, this is at most
+`Y η ∑_{p∈S}1/p`.  Equal pairs are handled separately and exactly by `p² ∣ n`, with mean
+`≤ Y∑_{p∈S}p⁻²`.  This removes the diagonal term that made an ordinary card-square moment too
+large after summing all adic blocks.  Direct Lean, targeted build, new-declaration axiom audit,
+umbrella reachability, and formal lint passed.
+
+### M5b, brick 13 — `c₃,n` collision envelope at paper scales (2026-08-27)
+
+Added `Sieve/PrimePairPaperScale.lean`, axiom-clean and umbrella-wired.  Every distinct-prime fibre
+above `z₀` has reciprocal mass at most `2δ_A`.  Also
+
+```text
+z₀⁻¹ ≤ δ_A
+```
+
+eventually, so repeated-prime square divisors fit the same scale.  For arbitrary finite outer
+prime family `S` above `z₀` and endpoints `b(p)` satisfying
+`b(p)−1 ≤ (1+δ_A)p`, the combined collision count obeys
+
+```text
+∑_{1≤n≤Y} primeBlockCollisionCount S b n
+  ≤ 3Y δ_A ∑_{p∈S} 1/p.
+```
+
+This closes exact same-block pair geometry and its unweighted first moment.  Remaining `c₃,n`
+work is the source's divisor-weighted lift
+`∑_{n∼Y} d₃(n)|c₃,n|`, the outer reciprocal-mass bound over
+`z₀/(1+δ_A) ≤ p < z₁(1+δ_A)`, and final polylog absorption into `(log X)^(−3A)`.
+Direct Lean, targeted build, new-declaration axiom audit, umbrella reachability, and formal lint
+passed.
+
+### M5b, brick 14 — divisor-weighted `c₃,n` collision mean (2026-08-27)
+
+Added `Sieve/PrimePairDivisorWeightedMean.lean` and
+`Sieve/PrimePairWeightedPaperScale.lean`, both axiom-clean and umbrella-wired.  Multiplication by
+one prime at most doubles divisor count, hence multiplication by two primes at most quadruples it.
+Reindexing multiples of each prime pair and applying the unconditional fixed divisor-moment bound
+gives, for every fixed `K`,
+
+```text
+∑_{1≤n≤Y} d(n)^K primeBlockCollisionCount(S,b,n)
+  ≤ 4^K Y (1+log Y)^(2^K−1) · 3δ_A · ∑_{p∈S} 1/p.
+```
+
+The proof packages the distinct- and repeated-prime cases as one inclusive fibre
+`{p} ∪ primesIco(p+1,b(p))`; its reciprocal mass is at most `δ_A+2δ_A=3δ_A`.
+This retains the decisive pair-reciprocal saving under divisor weights without a Hölder loss.
+Remaining `c₃,n` work: formalize the literal source coefficient and its domination by a fixed
+power of `d(n)`, bound outer reciprocal mass on the source range, and absorb the resulting fixed
+polylogarithm into `(log X)^(−3A)`.  Direct Lean, targeted module builds, and batched
+new-declaration axiom audit passed.
+
+### M5b, brick 15 — literal `c₃,n` coefficient and source-scale bound (2026-08-27)
+
+Added `Sieve/MatomakiTeravainenC3Coefficient.lean`,
+`Sieve/PrimeWindowRelaxedPaperScale.lean`, and
+`Sieve/MatomakiTeravainenC3PaperScale.lean`, all axiom-clean and umbrella-wired.  The first module
+defines the source coefficient over each outer prime's assigned adic block bottom `Q`:
+
+```text
+∑_q ∑_{m∣n/q} α_m (ρ((n/q)/m,Q) − ρ((n/q)/m,q)).
+```
+
+Its exact Buchstab expansion proves internally that every new prime `p` satisfies `qp ∣ n`; no
+support premise replaces this arithmetic step.  Expansion multiplicity is bounded by `d(n)` and
+the source ternary divisor weight satisfies `d₃(n) ≤ d(n)²`, reducing the weighted coefficient to
+the already-proved `d(n)³` prime-pair mean.
+
+The first source block may start at `z₀/(1+δ_A)`, below the earlier clean cutoff.  The relaxed
+window theorem proves its reciprocal prime mass is still at most `2δ_A`.  The outer prime sum is
+bounded by `1+log N`; the resulting fixed `log⁸` loss is absorbed by the spare powers in
+`δ_A=(log X)^(−10A)`.  For `A ≥ 2` (hence the paper's `A ≥ 5`), the unconditional capstone is
+
+```text
+∑_{1≤n≤Y} d₃(n) |c₃,n| ≤ B Y (log X)^(−3A),
+```
+
+uniformly for `Y ≤ 4X`, `N ≤ X`, bounded coefficients `|α_m| ≤ B`, and the literal source block
+endpoint conditions.  Direct Lean, targeted module builds, and batched new-declaration axiom audit
+passed.  Remaining work: combine the exact `c₁,n`, `c₂,n`, and `c₃,n` estimates into Lemma 2.3,
+then discharge Proposition 2.2's finite block/type bookkeeping.

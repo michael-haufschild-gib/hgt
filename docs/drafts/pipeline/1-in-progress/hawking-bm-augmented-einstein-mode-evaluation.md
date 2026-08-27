@@ -834,10 +834,39 @@ For nonzero seed amplitude `A`, define the source-faithful candidate
 
 `P(n,A,q,z) = 2 |kappa(q)|^2 |carrier(A,q)|^2 J_BM(n,q,z)`.
 
+This factorization is not merely assembled from unrelated scalars. If both independent Schwarz
+fibres are scaled by the literal separated source amplitude
+
+`a(A,q)=kappa(q)*carrier(A,q)`,
+
+sesquilinearity of the exact BM concomitant gives
+
+`P(n,A,q,z)=2 J_BM[a(A,q)Y++,a(A,q)Y--](z)`.
+
+Thus the candidate is twice an actual conserved source-scaled polarized radial current.
+Exact outer reciprocity further identifies that current with the AdS boundary symplectic
+concomitant of the correspondingly scaled forbidden/normalizable connection data. The landing
+premise is therefore reduced to equality between augmented Peierls source pairing and this literal
+boundary concomitant; angular, nonlinear-carrier, radial, and endpoint factorization are closed.
+
 The Einstein carrier and BM current are nonzero on every Xi fibre, while
 `kappa(q)=0 iff re(q)=1/2`. Therefore
 
 `P(n,A,q,z)=0 iff re(q)=1/2`.
+
+A hostile functional-equation cancellation conjecture also fails sharply. Reflection sends the
+continued BM angular momentum by
+
+`chi(reflect(q)) = -chi(q) + i/2`,
+
+so the two complementary exponents add to `8n+5`. Consequently the unscaled canonical polarized
+currents obey the exact rigidity law
+
+`J_BM(n,q,z) + J_BM(n,reflect(q),z) = -(8n+5) != 0`.
+
+Thus reflection pairing cannot erase the radial carrier. Any global cancellation would have to
+come from actual source amplitudes or Peierls dynamics, not functional-equation antisymmetry of
+the canonical BM current.
 
 If augmented retarded and advanced graded blocks are restrictions of one skew Peierls propagator,
 Einstein Hessian pairing is cyclic, and its polarized `Q++/Q--` source pairing equals the displayed
@@ -846,8 +875,13 @@ retarded and advanced total sections agree exactly on the critical line.
 
 Hostile qualification: this is corrected conditional landing, not RH. Missing hard theorem is now
 one explicit field-theoretic incidence: actual augmented Einstein--Teukolsky action pairing on the
-two quadratic source profiles must equal the factorized BM Schwarz current. Frequency-domain
+two quadratic source profiles must equal the now-literal BM AdS boundary concomitant. Frequency-domain
 ingoing/outgoing kernel equality is neither required nor true, and radial current conservation
 alone does not establish global time-oriented Peierls support.
 
-Status: `[BRIDGE] [PAPER-PROVED] [LEAN-PENDING] [NOVELTY UNVERIFIED]`.
+Lean closure: `ThetaCuspHawkingBMSecondHarmonicPeierlsPolarizedLanding.lean` formalizes the exact
+BM Schwarz current, its affine reflection law and noncancelling pair sum, literal source-scaled
+current realization, critical-line zero locus, Peierls landing under one displayed source-pairing
+incidence, and corrected retarded/advanced section equivalence.
+
+Status: `[BRIDGE] [PAPER-PROVED] [LEAN-PROVED] [NOVELTY UNVERIFIED]`.

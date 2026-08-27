@@ -31,6 +31,13 @@ def scalarJetUnit : ℕ → ℂ
   | 0 => 1
   | _ + 1 => 0
 
+/-- Degree-eight modular polynomial governing the reflected second--sixth seam curvature. -/
+def modularThetaReflectedSixthSeamPolynomial (X : ℂ) : ℂ :=
+  127575 / 4096 - 1828575 / 16384 * X + 6333795 / 65536 * X ^ 2 -
+    7447545 / 262144 * X ^ 3 + 397305 / 262144 * X ^ 4 -
+    48411 / 262144 * X ^ 5 + 229545 / 8388608 * X ^ 6 +
+    225 / 1048576 * X ^ 7 - 375 / 33554432 * X ^ 8
+
 /-- Exact eighth-jet elimination for the self-dual theta modular ODE.
 
 The four jet sequences correspond to
@@ -42,7 +49,7 @@ The four jet sequences correspond to
 
 with seam data `(H,z,R,p)=(M,0,R,0)`.  The conclusion is the sixth logarithmic
 source combination for `Φ=(H''-H/4)/2`. -/
-theorem modularThetaSixthSeamJetElimination
+theorem modularThetaSixthSeamJetEliminationPair
     (M R : ℂ) (h z r p : ℕ → ℂ)
     (hh0 : h 0 = M) (hz0 : z 0 = 0)
     (hr0 : r 0 = R) (hp0 : p 0 = 0)
@@ -66,11 +73,14 @@ theorem modularThetaSixthSeamJetElimination
               scalarJetConvolution z z k) n) :
     let f : ℕ → ℂ :=
       fun n => (h (n + 2) - (1 / 4 : ℂ) * h n) / 2
-    f 0 ^ 2 * f 6 - 15 * f 0 * f 2 * f 4 + 30 * f 2 ^ 3 =
-      M ^ 3 / 131072 *
-        (99 * (R ^ 2) ^ 6 + 12 * (R ^ 2) ^ 5 -
-          3160 * (R ^ 2) ^ 4 - 544272 * (R ^ 2) ^ 3 -
-          1446144 * (R ^ 2) ^ 2 - 1509120 * (R ^ 2) + 276480) := by
+    (f 0 ^ 2 * f 6 - 15 * f 0 * f 2 * f 4 + 30 * f 2 ^ 3 =
+        M ^ 3 / 131072 *
+          (99 * (R ^ 2) ^ 6 + 12 * (R ^ 2) ^ 5 -
+            3160 * (R ^ 2) ^ 4 - 544272 * (R ^ 2) ^ 3 -
+            1446144 * (R ^ 2) ^ 2 - 1509120 * (R ^ 2) + 276480)) ∧
+      (f 0 ^ 2 * (f 2 * f 6 - f 4 ^ 2) +
+          9 * f 0 * f 2 ^ 2 * f 4 - 9 * f 2 ^ 4 =
+        M ^ 4 * modularThetaReflectedSixthSeamPolynomial (R ^ 2)) := by
   have hh1 := hh 0
   have hz1 := hz 0
   have hr1 := hr 0
@@ -146,7 +156,74 @@ theorem modularThetaSixthSeamJetElimination
   ring_nf at hh8
   dsimp
   rw [hh0, hh2, hh4, hh6, hh8]
-  ring
+  constructor
+  · ring
+  · unfold modularThetaReflectedSixthSeamPolynomial
+    ring
+
+/-- Gaussian-aperture projection of the paired self-dual jet elimination. -/
+theorem modularThetaSixthSeamJetElimination
+    (M R : ℂ) (h z r p : ℕ → ℂ)
+    (hh0 : h 0 = M) (hz0 : z 0 = 0)
+    (hr0 : r 0 = R) (hp0 : p 0 = 0)
+    (hh : ∀ n, h (n + 1) =
+      -(1 / 6 : ℂ) *
+        scalarJetConvolution h
+          (fun k => p k + scalarJetConvolution r z k) n)
+    (hz : ∀ n, z (n + 1) =
+      -scalarJetConvolution r
+        (fun k => scalarJetUnit k - scalarJetConvolution z z k) n)
+    (hr : ∀ n, r (n + 1) =
+      -(2 / 3 : ℂ) *
+        scalarJetConvolution r
+          (fun k => p k + scalarJetConvolution r z k) n)
+    (hp : ∀ n, p (n + 1) =
+      3 * scalarJetUnit n -
+        (1 / 3 : ℂ) * scalarJetConvolution p p n +
+        (1 / 12 : ℂ) *
+          scalarJetConvolution (scalarJetConvolution r r)
+            (fun k => 3 * scalarJetUnit k +
+              scalarJetConvolution z z k) n) :
+    let f : ℕ → ℂ :=
+      fun n => (h (n + 2) - (1 / 4 : ℂ) * h n) / 2
+    f 0 ^ 2 * f 6 - 15 * f 0 * f 2 * f 4 + 30 * f 2 ^ 3 =
+      M ^ 3 / 131072 *
+        (99 * (R ^ 2) ^ 6 + 12 * (R ^ 2) ^ 5 -
+          3160 * (R ^ 2) ^ 4 - 544272 * (R ^ 2) ^ 3 -
+          1446144 * (R ^ 2) ^ 2 - 1509120 * (R ^ 2) + 276480) := by
+  exact (modularThetaSixthSeamJetEliminationPair M R h z r p
+    hh0 hz0 hr0 hp0 hh hz hr hp).1
+
+/-- Reflected-Hankel projection of the paired self-dual jet elimination. -/
+theorem modularThetaReflectedSixthSeamJetElimination
+    (M R : ℂ) (h z r p : ℕ → ℂ)
+    (hh0 : h 0 = M) (hz0 : z 0 = 0)
+    (hr0 : r 0 = R) (hp0 : p 0 = 0)
+    (hh : ∀ n, h (n + 1) =
+      -(1 / 6 : ℂ) *
+        scalarJetConvolution h
+          (fun k => p k + scalarJetConvolution r z k) n)
+    (hz : ∀ n, z (n + 1) =
+      -scalarJetConvolution r
+        (fun k => scalarJetUnit k - scalarJetConvolution z z k) n)
+    (hr : ∀ n, r (n + 1) =
+      -(2 / 3 : ℂ) *
+        scalarJetConvolution r
+          (fun k => p k + scalarJetConvolution r z k) n)
+    (hp : ∀ n, p (n + 1) =
+      3 * scalarJetUnit n -
+        (1 / 3 : ℂ) * scalarJetConvolution p p n +
+        (1 / 12 : ℂ) *
+          scalarJetConvolution (scalarJetConvolution r r)
+            (fun k => 3 * scalarJetUnit k +
+              scalarJetConvolution z z k) n) :
+    let f : ℕ → ℂ :=
+      fun n => (h (n + 2) - (1 / 4 : ℂ) * h n) / 2
+    f 0 ^ 2 * (f 2 * f 6 - f 4 ^ 2) +
+        9 * f 0 * f 2 ^ 2 * f 4 - 9 * f 2 ^ 4 =
+      M ^ 4 * modularThetaReflectedSixthSeamPolynomial (R ^ 2) := by
+  exact (modularThetaSixthSeamJetEliminationPair M R h z r p
+    hh0 hz0 hr0 hp0 hh hz hr hp).2
 
 /-- Leibniz rule in the public jet-convolution coordinates. -/
 theorem iteratedDeriv_mul_eq_scalarJetConvolution
@@ -161,7 +238,7 @@ theorem iteratedDeriv_mul_eq_scalarJetConvolution
 /-- Analytic-to-algebraic closure for any smooth solution of the self-dual theta ODE.
 This theorem converts the four differential equations into jet convolutions and invokes
 `modularThetaSixthSeamJetElimination`; callers need not expose any finite-jet premise. -/
-theorem modularThetaSixthSeamClosure_of_ode
+theorem modularThetaSixthSeamClosurePair_of_ode
     (M R : ℂ) (h z r p : ℝ → ℂ)
     (hhc : ContDiff ℝ ∞ h) (hzc : ContDiff ℝ ∞ z)
     (hrc : ContDiff ℝ ∞ r) (hpc : ContDiff ℝ ∞ p)
@@ -179,11 +256,14 @@ theorem modularThetaSixthSeamClosure_of_ode
     let f : ℕ → ℂ := fun n =>
       (iteratedDeriv (n + 2) h 0 -
         (1 / 4 : ℂ) * iteratedDeriv n h 0) / 2
-    f 0 ^ 2 * f 6 - 15 * f 0 * f 2 * f 4 + 30 * f 2 ^ 3 =
-      M ^ 3 / 131072 *
-        (99 * (R ^ 2) ^ 6 + 12 * (R ^ 2) ^ 5 -
-          3160 * (R ^ 2) ^ 4 - 544272 * (R ^ 2) ^ 3 -
-          1446144 * (R ^ 2) ^ 2 - 1509120 * (R ^ 2) + 276480) := by
+    (f 0 ^ 2 * f 6 - 15 * f 0 * f 2 * f 4 + 30 * f 2 ^ 3 =
+        M ^ 3 / 131072 *
+          (99 * (R ^ 2) ^ 6 + 12 * (R ^ 2) ^ 5 -
+            3160 * (R ^ 2) ^ 4 - 544272 * (R ^ 2) ^ 3 -
+            1446144 * (R ^ 2) ^ 2 - 1509120 * (R ^ 2) + 276480)) ∧
+      (f 0 ^ 2 * (f 2 * f 6 - f 4 ^ 2) +
+          9 * f 0 * f 2 ^ 2 * f 4 - 9 * f 2 ^ 4 =
+        M ^ 4 * modularThetaReflectedSixthSeamPolynomial (R ^ 2)) := by
   let jh : ℕ → ℂ := fun n => iteratedDeriv n h 0
   let jz : ℕ → ℂ := fun n => iteratedDeriv n z 0
   let jr : ℕ → ℂ := fun n => iteratedDeriv n r 0
@@ -395,8 +475,60 @@ theorem modularThetaSixthSeamClosure_of_ode
             contDiff_const (hzc.mul hzc),
           hconst3, hmul z z hzc hzc]
       rfl
-  exact modularThetaSixthSeamJetElimination M R jh jz jr jp
+  exact modularThetaSixthSeamJetEliminationPair M R jh jz jr jp
     jh0 jz0 jr0 jp0 jhrec jzrec jrrec jprec
+
+/-- Gaussian-aperture projection of analytic self-dual modular closure. -/
+theorem modularThetaSixthSeamClosure_of_ode
+    (M R : ℂ) (h z r p : ℝ → ℂ)
+    (hhc : ContDiff ℝ ∞ h) (hzc : ContDiff ℝ ∞ z)
+    (hrc : ContDiff ℝ ∞ r) (hpc : ContDiff ℝ ∞ p)
+    (hh0 : h 0 = M) (hz0 : z 0 = 0)
+    (hr0 : r 0 = R) (hp0 : p 0 = 0)
+    (hh' : ∀ x, deriv h x =
+      -(1 / 6 : ℂ) * (h x * (p x + r x * z x)))
+    (hz' : ∀ x, deriv z x =
+      -(r x * (1 - z x * z x)))
+    (hr' : ∀ x, deriv r x =
+      -(2 / 3 : ℂ) * (r x * (p x + r x * z x)))
+    (hp' : ∀ x, deriv p x =
+      3 - (1 / 3 : ℂ) * (p x * p x) +
+        (1 / 12 : ℂ) * ((r x * r x) * (3 + z x * z x))) :
+    let f : ℕ → ℂ := fun n =>
+      (iteratedDeriv (n + 2) h 0 -
+        (1 / 4 : ℂ) * iteratedDeriv n h 0) / 2
+    f 0 ^ 2 * f 6 - 15 * f 0 * f 2 * f 4 + 30 * f 2 ^ 3 =
+      M ^ 3 / 131072 *
+        (99 * (R ^ 2) ^ 6 + 12 * (R ^ 2) ^ 5 -
+          3160 * (R ^ 2) ^ 4 - 544272 * (R ^ 2) ^ 3 -
+          1446144 * (R ^ 2) ^ 2 - 1509120 * (R ^ 2) + 276480) := by
+  exact (modularThetaSixthSeamClosurePair_of_ode M R h z r p
+    hhc hzc hrc hpc hh0 hz0 hr0 hp0 hh' hz' hr' hp').1
+
+/-- Reflected-Hankel projection of analytic self-dual modular closure. -/
+theorem modularThetaReflectedSixthSeamClosure_of_ode
+    (M R : ℂ) (h z r p : ℝ → ℂ)
+    (hhc : ContDiff ℝ ∞ h) (hzc : ContDiff ℝ ∞ z)
+    (hrc : ContDiff ℝ ∞ r) (hpc : ContDiff ℝ ∞ p)
+    (hh0 : h 0 = M) (hz0 : z 0 = 0)
+    (hr0 : r 0 = R) (hp0 : p 0 = 0)
+    (hh' : ∀ x, deriv h x =
+      -(1 / 6 : ℂ) * (h x * (p x + r x * z x)))
+    (hz' : ∀ x, deriv z x =
+      -(r x * (1 - z x * z x)))
+    (hr' : ∀ x, deriv r x =
+      -(2 / 3 : ℂ) * (r x * (p x + r x * z x)))
+    (hp' : ∀ x, deriv p x =
+      3 - (1 / 3 : ℂ) * (p x * p x) +
+        (1 / 12 : ℂ) * ((r x * r x) * (3 + z x * z x))) :
+    let f : ℕ → ℂ := fun n =>
+      (iteratedDeriv (n + 2) h 0 -
+        (1 / 4 : ℂ) * iteratedDeriv n h 0) / 2
+    f 0 ^ 2 * (f 2 * f 6 - f 4 ^ 2) +
+        9 * f 0 * f 2 ^ 2 * f 4 - 9 * f 2 ^ 4 =
+      M ^ 4 * modularThetaReflectedSixthSeamPolynomial (R ^ 2) := by
+  exact (modularThetaSixthSeamClosurePair_of_ode M R h z r p
+    hhc hzc hrc hpc hh0 hz0 hr0 hp0 hh' hz' hr' hp').2
 
 end
 

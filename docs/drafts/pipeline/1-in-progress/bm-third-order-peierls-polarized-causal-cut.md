@@ -861,3 +861,95 @@ Gamma recurrence obeys exactly the inverse finite shift factors, so `(GAUSS-INF-
 analytic continuation. Since BM has `d=1/2`, this identifies the regular-to-forbidden Cramer
 coefficient with `d4BMCausalForbiddenBoundaryCoefficient`; the derivative/companion Gauss value
 then identifies the normalizable coefficient. This is infrastructure construction, not a new route.
+
+## Finite-source radical and carrier-normalized reflection obstruction
+
+The exact finite physical BM causal cut has now been classified. For every finite interior source
+packet `f`,
+
+\[
+ R_{\rm in}(f;z)-R_{\rm out}(f;z)
+ =\frac{-4\lambda}{A_R A_C}\,M_V(f)\,V(z),
+ \qquad M_V(f)=\sum_i f_iV(t_i).
+\]
+
+The gain and one interior value of `V` are nonzero, so the two response functions agree iff
+`M_V(f)=0`. This is a complete codimension-one dark-radical classification. It retires the failed
+conjecture that point-source noncollapse controls arbitrary sources and leaves one literal
+augmented-Einstein source-moment evaluation.
+
+Carrier-size asymmetry under functional-equation reflection is also eliminated. The nonzero
+self-dual Einstein coefficient has an explicit nonzero unit-normalizing seed. With that
+normalization, the exact Peierls candidate `P0` obeys
+
+\[
+ P_0(n,q,z)+P_0(n,\operatorname{reflect}q,z)
+ =-2\,\|\mu(q)\|^2(8n+5).
+\]
+
+Here `mu(reflect q)=mu(q)` follows from evenness of the exact angular polynomial and
+`xiSpectralPoint(reflect q)=-xiSpectralPoint(q)`. Since `8n+5` never vanishes, reflected-sum
+vanishing is exactly the critical-line equation; universal vanishing is exactly RH.
+
+Formal modules:
+
+- `ThetaCuspHawkingBMSecondHarmonicFiniteSourceGreenRadical.lean`
+- `ThetaCuspHawkingBMSecondHarmonicCarrierNormalizedReflectionObstruction.lean`
+
+Both direct checks, targeted builds, axiom audits, formal lint, and umbrella wiring pass.
+
+The sharpened open core is no longer an unspecified source-global equality. After deriving actual
+augmented `++/--` Peierls incidence, prove one exact pre-specialization covariance statement:
+the carrier-normalized physical causal cut is functional-equation-reflection odd. The displayed
+`8n+5` obstruction then forces every supplied Xi copy onto the wall. Actual incidence and this
+physical reflection law remain open; further radial receiver construction does not address them.
+
+- 2026-08-27 — finite-source radical and unit-carrier reflected obstruction paper-proved and
+  formalized in Lean; HB open core reduced to physical incidence plus FE-odd source covariance.
+
+## Canonical left-connection covector delta
+
+The exact Xi-fibre connection determinant also removes radial left-functional normalization as an
+independent premise. Inverse connection rows define canonical covectors
+
+`ell_R(s,r)=(s B_C-r A_C)/D`, `ell_C(s,r)=(A_R r-B_R s)/D`,
+
+where `D=A_R B_C-B_R A_C=-2 lambda != 0`. They are exactly dual to regular/complementary horizon
+columns, and every AdS source/response vector has one unique horizon-coordinate pair. Exact outer
+concomitant now has coordinate form
+
+`J_AdS(u,v)=-lambda*(ell_R(u)ell_C(v_hol)-ell_C(u)ell_R(v_hol))`.
+
+Formal module:
+`ThetaCuspHawkingBMSecondHarmonicLeftConnectionCovector.lean`.
+
+This closes radial left normalization, not global augmented left-QNM construction. Remaining
+incidence must prove actual gauge/constraint/corner-completed retarded and advanced source blocks
+land in these canonical coordinates with correct time support and counterterm reciprocity. A
+different radial left normalization is no longer an admissible escape.
+
+- 2026-08-27 — canonical left covectors, unique outer-to-horizon decomposition, and symplectic
+  coordinate transport paper-proved and formalized in Lean.
+
+## Reflected positive-cone no-go delta
+
+Corpus half-strip control and the exact BM current law imply that both complementary exponents in
+every functional-equation reflection pair have strictly positive real part. Consequently, for
+all `a,b : NNReal`,
+
+`a J_BM(n,q,1/2)+b J_BM(n,reflect(q),1/2)=0  iff  a=b=0`.
+
+Thus no Hermitian norm-square, probability, or other nonnegative real source weighting can produce
+the required nonzero FE-odd seam. This eliminates a full source-incidence ansatz class, not only
+equal-weight pairing. Strongest positive survivor is strict separation of reflected canonical
+currents from zero by their real part.
+
+Remaining physical incidence must obtain genuinely complex or sign-indefinite orientation from
+time ordering, retarded/advanced support, gauge/corner completion, or action pairing before Xi
+specialization. Carrier magnitude and radial normalization cannot provide it.
+
+Formal module:
+`ThetaCuspHawkingBMSecondHarmonicReflectionPositiveConeNoGo.lean`.
+
+- 2026-08-27 — reflected positive-cone rigidity paper-proved and Lean-formalized; direct check,
+  targeted build (`11879/11879`), axiom audit, and umbrella wiring pass.

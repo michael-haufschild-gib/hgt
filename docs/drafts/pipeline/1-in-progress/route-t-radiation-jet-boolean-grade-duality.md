@@ -4592,3 +4592,199 @@ phase-sensitive signed substitute from pre-divisor Route-T transport.  Merely as
 holomorphy or required-continuation regularity is RH itself.
 
 Verdict: `[PROVED — EXACT UPPER ABSCISSA, SHARP ABEL NORMALITY, INTRINSIC ZETA ODE, AND FORMAL CONDITIONAL RH CLOSURE; OPEN PRODUCER IS ENDPOINT RESIDUAL VARIATION]`.
+
+## 80. Conjecture loop 56 — quantized orbit-charge floor for every reflected Wold compensator
+
+### Conjecture `[FROZEN 2026-08-27]`
+
+Let `rho` lie in the open critical strip, let `m >= 1`, and put
+
+```text
+x = rho - 1,
+y = -conj(rho),
+q = 2,
+c = simplePoleDifferentialOperator 1 (-m).
+```
+
+For the reflected physical pole head `delta_x c - delta_y c`, define its quotient-orbit charge
+energy by summing the squared complex coefficient norms over `C / 2Z` and derivative order.  Then
+
+```text
+chargeEnergy(rho,m) = 0              if Re(rho)=1/2,
+chargeEnergy(rho,m) = 2 m^2          if Re(rho)!=1/2.       (RJG254)
+```
+
+Moreover, if a compensator `R` completes the physical head to a finite shift-two coboundary,
+
+```text
+[delta_x c-delta_y c] + R = delta_2 E,
+```
+
+then its quotient-orbit charge has exactly the same energy:
+
+```text
+chargeEnergy(orbitResidue_2 R)=chargeEnergy(rho,m).          (RJG255)
+```
+
+Thus every off-critical completion pays the scale-free floor `2m^2 >= 2`; the charge cannot tend
+to zero as a zero approaches the critical line.  If true, this retires all norm-small or
+subexponential-compensator versions of the T2 continuation handoff.  Surviving producer must force
+literal quotient-orbit neutrality before divisor selection, or use a coefficient-unfaithful
+topology that cannot feed the existing orbit criterion.
+
+### Attack order
+
+1. Prove the two quotient classes are distinct exactly off the critical line inside `0<Re rho<1`.
+2. Reduce the pole coefficient to the single derivative-order atom `-m`.
+3. Compute the two-atom energy without numerical evaluation.
+4. Transport the value to every compensator using the existing exact orbit-leakage identity.
+5. Audit literature and corpus for an existing quantitative charge theorem; formalize only after
+   dependency-closed paper proof and hostile audit.
+
+### Proof, hostile audit, and positive survivor `[PAPER-PROVED] [LEAN-PROVED]`
+
+The conjecture is true.  In the quotient `C / 2Z`, equality of the two reflected physical classes
+would give an integer `n` with
+
+```text
+2 n = (rho-1)-(-conj(rho)),
+2 n = 2 Re(rho)-1                                             (RJG256)
+```
+
+after taking real parts.  The open-strip inequalities put `n` strictly between `-1` and `1`, hence
+`n=0`; equality of the classes therefore forces `Re(rho)=1/2`.  Conversely, on the critical line
+the two pole positions themselves coincide.
+
+The simple-pole differential operator is the single derivative-order-one coefficient `-m`.
+Consequently an off-line head has two distinct quotient atoms with coefficients `-m` and `m`, so
+its coefficient energy is
+
+```text
+|-m|^2 + |m|^2 = 2 m^2.                                      (RJG257)
+```
+
+On the line the two atoms cancel and the energy is zero.  The existing exact orbit-leakage identity
+says that every finite shift-two coboundary completion has compensator orbit residue equal to the
+negative of the head residue.  Squared coefficient energy is invariant under negation, proving
+(RJG254)--(RJG255).  Since `m>=1`, every off-line completion has energy at least `2`.
+
+Lean file:
+`formal/GaloisForLFunctions/RHTower/XiHeatCassiniWoldOrbitChargeQuantization.lean`.
+It defines `principalPartOrbitChargeEnergy` and proves the exact phase transition, compensator
+identity, and scale-free lower bound without RH, zero enumeration, numerical certificates, or new
+axioms.  The module is wired into `RHTower.lean`; direct `lake env lean` checking passed.
+
+Hostile limit: this is a norm theorem only for the coefficient-faithful quotient-orbit charge.  It
+is deliberately discontinuous at the critical wall.  It does not imply a lower bound in a compact-
+open or locally uniform analytic topology: a nonzero charged pole can escape every fixed compact.
+Thus the result retires T2 producers whose handoff requires orbit-residue energy tending to zero,
+but it does not retire coefficient-unfaithful analytic continuation schemes.
+
+Positive survivor: any viable reflected Wold producer must establish one of two genuinely stronger
+bridges before divisor selection:
+
+1. exact quotient-orbit neutrality from the prime source; or
+2. a source-derived tightness/properness law preventing charged poles from escaping while analytic
+   compensators tend to zero.
+
+The second alternative is the next open core.  Without tightness, compact-open smallness cannot see
+the quantized charge; with tightness, (RJG257) would turn analytic smallness into literal neutrality.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-27]`: corpus search found the qualitative orbit
+leakage identity but no charge functional, exact `0/2m^2` wall law, or universal compensator floor.
+Targeted primary-literature searches covering meromorphic linear and algebraic difference equations,
+apparent-singularity removal, and first-order difference equations found no source-specific zeta/Wold
+quotient-orbit energy theorem.  The ingredients are elementary; novelty claim is restricted to this
+exact reflected-Wold quantization and its T2 no-go consequence, not to general difference-divisor
+cohomology.
+
+Verdict: `[PROVED — QUANTIZED COEFFICIENT-FAITHFUL COMPENSATOR CHARGE; SMALL-NORM T2 SUBROUTE RETIRED; TIGHTNESS/EXACT-NEUTRALITY SURVIVES]`.
+
+## 81. Conjecture loop 57 — compact-open Wold charge descent is exactly RH
+
+### Conjecture `[FROZEN 2026-08-27]`
+
+For an Xi divisor point `rho`, let `m(rho)` be its positive analytic multiplicity and define
+
+```text
+E_W(rho) = chargeEnergy(reflectedWoldPhysicalOrbitCharge(rho,m(rho))).  (RJG258)
+```
+
+Use the corpus's canonical multiplicity-matched escaping bubbles `B_(rho,n)`, which converge
+locally uniformly to Xi for every off-line `rho`.  A scalar reporter `Q` is Wold-charge faithful
+when it is sequentially compact-open continuous, `Q(Xi)=0`, and
+
+```text
+Q(B_(rho,n)) = E_W(rho)                                     (RJG259)
+```
+
+for every divisor point and every `n`.  Conjecture:
+
+```text
+there exists one compact-open Wold-charge-faithful Q  <=>  RH. (RJG260)
+```
+
+If true, this closes the first surviving tightness proposal after (RJG254): no scalar invariant of
+ordinary compact-open analytic continuation can detect the quantized Wold charge.  Any useful
+properness bridge must retain a source marker, a noncompact boundary mass, or a nonscalar singular
+object.
+
+### Corpus basis and attack order
+
+1. `xiSourceMatchedBubble_tendstoLocallyUniformly` supplies local-uniform escape.
+2. (RJG254) computes `E_W(rho)=2m(rho)^2` off line and `0` on line.
+3. Positivity of analytic multiplicity gives the uniform off-line floor `E_W>=2`.
+4. Compact-open continuity would force `Q(B_(rho,n)) -> Q(Xi)=0`, contradicting the constant
+   positive value in (RJG259).
+5. Under RH, every `E_W(rho)=0`, so the zero reporter supplies the converse.
+
+Targeted primary audit found general work on pole distribution, valuations, and apparent-
+singularity removal for meromorphic difference equations, but no completed-Xi/Wold theorem
+identifying existence of a compact-open charge reporter with RH.  Novelty claim, if proved, will be
+restricted to exact source-matched Wold charge descent.
+
+### Proof and verdict `[PAPER-PROVED] [LEAN-PROVED] [NO-GO]`
+
+The conjecture is true.  At every Xi divisor point, analytic multiplicity `m(rho)` is positive and
+the open-strip theorem applies.  Hence (RJG254) specializes to
+
+```text
+E_W(rho) = 0          on Re(rho)=1/2,
+E_W(rho) = 2m(rho)^2  off Re(rho)=1/2, so E_W(rho)>=2.       (RJG261)
+```
+
+For an off-line point, canonical source-matched bubbles converge locally uniformly to Xi.  If `Q`
+were sequentially compact-open continuous, then `Q(B_(rho,n)) -> Q(Xi)=0`; exact faithfulness
+would make the same sequence constant at `E_W(rho)>=2`.  Uniqueness of real limits is the
+contradiction.  Under RH, (RJG261) vanishes at every divisor point and the zero reporter is
+continuous and faithful.  This proves (RJG260).
+
+Lean file:
+`formal/GaloisForLFunctions/RHTower/XiHeatCassiniWoldOrbitChargeCompactOpenNoGo.lean`.
+It proves the multiplicity-labelled exact wall law, off-line lower bound, pointwise reporter no-go,
+and global equivalence
+`xiWoldOrbitChargeEnergyCompactOpenDescent_iff_riemannHypothesis`.  Module is wired into
+`RHTower.lean`; direct `lake env lean` checking passed.
+
+Hostile limit: equivalence is a receiver/no-go, not source production.  It shows ordinary compact-
+open scalar reporting is exactly too weak.  It does not exclude stronger marked topologies,
+noncompact boundary measures, or singular vector-valued currents.  Those are now the only honest
+T2 properness survivors.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-27]`: general literature studies growth and pole
+distribution of meromorphic difference-equation solutions, valuations, and removal of apparent
+singularities.  No audited source states the completed-Xi equivalence (RJG260), the exact Wold
+energy `2m^2`, or its canonical source-matched bubble obstruction.  Novelty claim remains limited
+to this source-specific cross-topology theorem.
+
+Verdict: `[PROVED — COMPACT-OPEN SCALAR WOLD-CHARGE DESCENT IS EXACTLY RH; ORDINARY ANALYTIC TIGHTNESS RETIRED]`.
+
+### 2026-08-27 formal audit log
+
+Targeted builds passed for both new modules:
+
+- `GaloisForLFunctions.RHTower.XiHeatCassiniWoldOrbitChargeQuantization`
+- `GaloisForLFunctions.RHTower.XiHeatCassiniWoldOrbitChargeCompactOpenNoGo`
+
+Scratch `#print axioms` audits of all capstones report only `propext`, `Classical.choice`, and
+`Quot.sound`.  `scripts/formal_tools.py lint` passed.  No umbrella or full build was run.

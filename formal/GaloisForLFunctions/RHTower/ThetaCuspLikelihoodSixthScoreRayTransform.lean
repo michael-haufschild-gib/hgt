@@ -52,6 +52,38 @@ def thetaLikelihoodSixthScoreRayTransformPolynomial (r y : ℝ) : ℝ :=
     r ^ 5 * thetaLikelihoodSixthScoreShiftDerivFive y +
     r ^ 6 * thetaLikelihoodSixthScoreShiftDerivSix y
 
+/-- Coefficient-sharp dominant-ray envelope.  Retaining the exact Taylor coefficients lowers the
+uniform constant from `1000000` to `950000`; this is the margin needed by the reflected
+second--sixth curvature comparison. -/
+theorem thetaLikelihoodSixthScoreRayTransformPolynomial_seam_envelope_sharp
+    {s : ℝ} (hs : 0 ≤ s) :
+    thetaLikelihoodSixthScoreRayTransformPolynomial (48 / 25) (21 / 50 + s) ≤
+      950000 * Real.exp s := by
+  have he := Real.sum_le_exp_of_nonneg hs 7
+  have ht : 1 + s + s ^ 2 / 2 + s ^ 3 / 6 + s ^ 4 / 24 +
+      s ^ 5 / 120 + s ^ 6 / 720 ≤ Real.exp s := by
+    norm_num [Finset.sum_range_succ] at he ⊢
+    exact he
+  have hp :
+      thetaLikelihoodSixthScoreRayTransformPolynomial (48 / 25) (21 / 50 + s) ≤
+        950000 * (1 + s + s ^ 2 / 2 + s ^ 3 / 6 + s ^ 4 / 24 +
+          s ^ 5 / 120 + s ^ 6 / 720) := by
+    dsimp [thetaLikelihoodSixthScoreRayTransformPolynomial,
+      thetaLikelihoodSixthScoreShift, thetaLikelihoodSixthScoreShiftDerivOne,
+      thetaLikelihoodSixthScoreShiftDerivTwo,
+      thetaLikelihoodSixthScoreShiftDerivThree,
+      thetaLikelihoodSixthScoreShiftDerivFour,
+      thetaLikelihoodSixthScoreShiftDerivFive,
+      thetaLikelihoodSixthScoreShiftDerivSix]
+    ring_nf
+    have hs2 : 0 ≤ s ^ 2 := by positivity
+    have hs3 : 0 ≤ s ^ 3 := by positivity
+    have hs4 : 0 ≤ s ^ 4 := by positivity
+    have hs5 : 0 ≤ s ^ 5 := by positivity
+    have hs6 : 0 ≤ s ^ 6 := by positivity
+    nlinarith
+  exact hp.trans (mul_le_mul_of_nonneg_left ht (by norm_num))
+
 /-- Exact positive-coefficient normal form at the arithmetic edge `9`. -/
 theorem thetaLikelihoodSixthScore_eq_shiftNine (z : ℝ) :
     thetaLikelihoodSixthScore z = thetaLikelihoodSixthScoreShift (z - 9) := by

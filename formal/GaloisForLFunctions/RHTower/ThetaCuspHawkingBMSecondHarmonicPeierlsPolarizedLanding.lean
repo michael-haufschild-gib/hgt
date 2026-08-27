@@ -54,6 +54,177 @@ theorem d4BMSecondHarmonicRegularComplementaryPolarizedCurrentValue_eq_negExpone
   exact d4BMSecondHarmonicRegularComplementaryPolarizedCurrent_eq_negExponent
     n chi hchi hz0 hz1
 
+/-- Functional-equation reflection shifts the analytically continued BM angular momentum by the
+affine rule `chi ↦ -chi + i/2`. -/
+theorem d4BMXiMixedHorizonAngularMomentum_reflect
+    (q : XiZeroCopy) :
+    d4BMXiMixedHorizonAngularMomentum (xiZeroCopyReflectEquiv q) =
+      -d4BMXiMixedHorizonAngularMomentum q + Complex.I / 2 := by
+  simp only [d4BMXiMixedHorizonAngularMomentum,
+    thetaCuspHawkingTopologicalBlackHoleAngularMomentum,
+    xiSpectralPoint_reflect]
+  ring
+
+/-- Reflected complementary exponents do not cancel: their sum is the positive odd integer
+`8n+5`, independent of the Xi divisor. -/
+theorem d4BMXi_reflectionPair_complementaryExponent_add
+    (n : ℕ) (q : XiZeroCopy) :
+    d4BMPlusPlusComplementaryFrobeniusExponent n
+        (d4BMXiMixedHorizonAngularMomentum q) +
+      d4BMPlusPlusComplementaryFrobeniusExponent n
+        (d4BMXiMixedHorizonAngularMomentum (xiZeroCopyReflectEquiv q)) =
+      8 * (n : ℂ) + 5 := by
+  rw [d4BMPlusPlusComplementaryFrobeniusExponent_eq,
+    d4BMPlusPlusComplementaryFrobeniusExponent_eq]
+  simp only [d4BMXiMixedHorizonAngularMomentum,
+    thetaCuspHawkingTopologicalBlackHoleAngularMomentum,
+    xiSpectralPoint_reflect]
+  ring_nf
+  rw [Complex.I_sq]
+  ring
+
+/-- Sharp survivor of the failed reflection-cancellation conjecture: the canonical paired BM
+polarized currents have constant nonzero sum `-(8n+5)` at every interior radius. -/
+theorem d4BMXi_reflectionPair_regularComplementaryPolarizedCurrent_add
+    (n : ℕ) (q : XiZeroCopy) {z : ℝ} (hz0 : 0 < z) (hz1 : z < 1) :
+    d4BMSecondHarmonicRegularComplementaryPolarizedCurrentValue n
+        (d4BMXiMixedHorizonAngularMomentum q) z +
+      d4BMSecondHarmonicRegularComplementaryPolarizedCurrentValue n
+        (d4BMXiMixedHorizonAngularMomentum (xiZeroCopyReflectEquiv q)) z =
+      -(8 * (n : ℂ) + 5) := by
+  rw [d4BMSecondHarmonicRegularComplementaryPolarizedCurrentValue_eq_negExponent n
+      (d4BMXiMixedHorizonAngularMomentum q)
+      (d4BMXiMixedHorizonAngularMomentum_re_ne_zero q) hz0 hz1,
+    d4BMSecondHarmonicRegularComplementaryPolarizedCurrentValue_eq_negExponent n
+      (d4BMXiMixedHorizonAngularMomentum (xiZeroCopyReflectEquiv q))
+      (d4BMXiMixedHorizonAngularMomentum_re_ne_zero (xiZeroCopyReflectEquiv q)) hz0 hz1]
+  have h := d4BMXi_reflectionPair_complementaryExponent_add n q
+  linear_combination -h
+
+/-- Literal angular--Einstein source amplitude transported by the polarized radial channel. -/
+def d4BMXiSecondHarmonicPolarizedSourceAmplitude
+    (amplitude : ℂ) (q : XiZeroCopy) : ℂ :=
+  d4ThetaTeukolskyOrthogonalHelicityMixingCoefficient q *
+    d4ThetaHawkingSelfDualQuadraticCarrierCoefficient amplitude (xiSpectralPoint q)
+
+/-- Exact BM polarized current after scaling both independent Schwarz fibres by the same
+phase-normalized angular--Einstein source amplitude. -/
+def d4BMXiSecondHarmonicSourceScaledPolarizedCurrent
+    (n : ℕ) (amplitude : ℂ) (q : XiZeroCopy) (z : ℝ) : ℂ :=
+  let chi := d4BMXiMixedHorizonAngularMomentum q
+  let a := d4BMXiSecondHarmonicPolarizedSourceAmplitude amplitude q
+  d4BMSecondHarmonicPolarizedCurrent n chi
+    (fun x => a * d4BMPlusPlusAdSOuterLinearCombination n chi
+      (d4BMPlusPlusRegularAdSForbiddenConnectionCoefficient n chi)
+      (d4BMPlusPlusRegularAdSNormalizableConnectionCoefficient n chi) x)
+    (fun x => a * d4BMPlusPlusAdSOuterLinearCombinationDerivative n chi
+      (d4BMPlusPlusRegularAdSForbiddenConnectionCoefficient n chi)
+      (d4BMPlusPlusRegularAdSNormalizableConnectionCoefficient n chi) x)
+    (fun x => a * d4BMMinusMinusAdSOuterSchwarzLinearCombination n chi
+      ((starRingEnd ℂ) (d4BMPlusPlusComplementaryAdSForbiddenConnectionCoefficient n chi))
+      ((starRingEnd ℂ) (d4BMPlusPlusComplementaryAdSNormalizableConnectionCoefficient n chi)) x)
+    (fun x => a * d4BMMinusMinusAdSOuterSchwarzLinearCombinationDerivative n chi
+      ((starRingEnd ℂ) (d4BMPlusPlusComplementaryAdSForbiddenConnectionCoefficient n chi))
+      ((starRingEnd ℂ) (d4BMPlusPlusComplementaryAdSNormalizableConnectionCoefficient n chi)) x) z
+
+/-- Source scaling turns the exact polarized current into squared source amplitude times the
+canonical nonzero radial current. -/
+theorem d4BMXiSecondHarmonicSourceScaledPolarizedCurrent_eq
+    (n : ℕ) (amplitude : ℂ) (q : XiZeroCopy) (z : ℝ) :
+    d4BMXiSecondHarmonicSourceScaledPolarizedCurrent n amplitude q z =
+      (Complex.normSq
+        (d4BMXiSecondHarmonicPolarizedSourceAmplitude amplitude q) : ℂ) *
+        d4BMSecondHarmonicRegularComplementaryPolarizedCurrentValue n
+          (d4BMXiMixedHorizonAngularMomentum q) z := by
+  unfold d4BMXiSecondHarmonicSourceScaledPolarizedCurrent
+    d4BMSecondHarmonicRegularComplementaryPolarizedCurrentValue
+    d4BMSecondHarmonicPolarizedCurrent
+  dsimp only
+  simp only [map_mul, Pi.mul_apply]
+  rw [← Complex.mul_conj]
+  ring
+
+/-- Exact AdS boundary symplectic concomitant of source-scaled regular `++` and
+Schwarz-complementary `--` connection data. -/
+def d4BMXiSecondHarmonicSourceScaledBoundaryConcomitant
+    (n : ℕ) (amplitude : ℂ) (q : XiZeroCopy) : ℂ :=
+  let chi := d4BMXiMixedHorizonAngularMomentum q
+  let a := d4BMXiSecondHarmonicPolarizedSourceAmplitude amplitude q
+  d4BMAdSBoundaryPolarizedConcomitant
+    (a * d4BMPlusPlusRegularAdSForbiddenConnectionCoefficient n chi)
+    (a * d4BMPlusPlusRegularAdSNormalizableConnectionCoefficient n chi)
+    (a * (starRingEnd ℂ)
+      (d4BMPlusPlusComplementaryAdSForbiddenConnectionCoefficient n chi))
+    (a * (starRingEnd ℂ)
+      (d4BMPlusPlusComplementaryAdSNormalizableConnectionCoefficient n chi))
+
+/-- Conserved source-scaled radial current is literally the source-scaled AdS boundary
+concomitant. -/
+theorem d4BMXiSecondHarmonicSourceScaledPolarizedCurrent_eq_boundaryConcomitant
+    (n : ℕ) (amplitude : ℂ) (q : XiZeroCopy)
+    {z : ℝ} (hz0 : 0 < z) (hz1 : z < 1) :
+    d4BMXiSecondHarmonicSourceScaledPolarizedCurrent n amplitude q z =
+      d4BMXiSecondHarmonicSourceScaledBoundaryConcomitant n amplitude q := by
+  let chi := d4BMXiMixedHorizonAngularMomentum q
+  let a := d4BMXiSecondHarmonicPolarizedSourceAmplitude amplitude q
+  have hy :
+      (fun x => a * d4BMPlusPlusAdSOuterLinearCombination n chi
+        (d4BMPlusPlusRegularAdSForbiddenConnectionCoefficient n chi)
+        (d4BMPlusPlusRegularAdSNormalizableConnectionCoefficient n chi) x) =
+      d4BMPlusPlusAdSOuterLinearCombination n chi
+        (a * d4BMPlusPlusRegularAdSForbiddenConnectionCoefficient n chi)
+        (a * d4BMPlusPlusRegularAdSNormalizableConnectionCoefficient n chi) := by
+    funext x
+    simp [d4BMPlusPlusAdSOuterLinearCombination]
+    ring
+  have hdy :
+      (fun x => a * d4BMPlusPlusAdSOuterLinearCombinationDerivative n chi
+        (d4BMPlusPlusRegularAdSForbiddenConnectionCoefficient n chi)
+        (d4BMPlusPlusRegularAdSNormalizableConnectionCoefficient n chi) x) =
+      d4BMPlusPlusAdSOuterLinearCombinationDerivative n chi
+        (a * d4BMPlusPlusRegularAdSForbiddenConnectionCoefficient n chi)
+        (a * d4BMPlusPlusRegularAdSNormalizableConnectionCoefficient n chi) := by
+    funext x
+    simp [d4BMPlusPlusAdSOuterLinearCombinationDerivative]
+    ring
+  have hv :
+      (fun x => a * d4BMMinusMinusAdSOuterSchwarzLinearCombination n chi
+        ((starRingEnd ℂ) (d4BMPlusPlusComplementaryAdSForbiddenConnectionCoefficient n chi))
+        ((starRingEnd ℂ) (d4BMPlusPlusComplementaryAdSNormalizableConnectionCoefficient n chi)) x) =
+      d4BMMinusMinusAdSOuterSchwarzLinearCombination n chi
+        (a * (starRingEnd ℂ)
+          (d4BMPlusPlusComplementaryAdSForbiddenConnectionCoefficient n chi))
+        (a * (starRingEnd ℂ)
+          (d4BMPlusPlusComplementaryAdSNormalizableConnectionCoefficient n chi)) := by
+    funext x
+    simp [d4BMMinusMinusAdSOuterSchwarzLinearCombination]
+    ring
+  have hdv :
+      (fun x => a * d4BMMinusMinusAdSOuterSchwarzLinearCombinationDerivative n chi
+        ((starRingEnd ℂ) (d4BMPlusPlusComplementaryAdSForbiddenConnectionCoefficient n chi))
+        ((starRingEnd ℂ) (d4BMPlusPlusComplementaryAdSNormalizableConnectionCoefficient n chi)) x) =
+      d4BMMinusMinusAdSOuterSchwarzLinearCombinationDerivative n chi
+        (a * (starRingEnd ℂ)
+          (d4BMPlusPlusComplementaryAdSForbiddenConnectionCoefficient n chi))
+        (a * (starRingEnd ℂ)
+          (d4BMPlusPlusComplementaryAdSNormalizableConnectionCoefficient n chi)) := by
+    funext x
+    simp [d4BMMinusMinusAdSOuterSchwarzLinearCombinationDerivative]
+    ring
+  unfold d4BMXiSecondHarmonicSourceScaledPolarizedCurrent
+    d4BMXiSecondHarmonicSourceScaledBoundaryConcomitant
+  dsimp only
+  change d4BMSecondHarmonicPolarizedCurrent n chi _ _ _ _ z = _
+  rw [hy, hdy, hv, hdv]
+  exact d4BMSecondHarmonicOuterPolarizedCurrent_eq_boundaryConcomitant n chi
+    (a * d4BMPlusPlusRegularAdSForbiddenConnectionCoefficient n chi)
+    (a * d4BMPlusPlusRegularAdSNormalizableConnectionCoefficient n chi)
+    (a * (starRingEnd ℂ)
+      (d4BMPlusPlusComplementaryAdSForbiddenConnectionCoefficient n chi))
+    (a * (starRingEnd ℂ)
+      (d4BMPlusPlusComplementaryAdSNormalizableConnectionCoefficient n chi))
+    (d4BMXiMixedHorizonAngularMomentum_re_ne_zero q) hz0 hz1
+
 /-- Candidate full Peierls polarization: angular helicity norm, nonlinear carrier norm, and exact
 BM Schwarz radial current, with the polarization factor two. -/
 def d4BMXiSecondHarmonicPeierlsPolarizedCutCandidate
@@ -65,6 +236,28 @@ def d4BMXiSecondHarmonicPeierlsPolarizedCutCandidate
         (xiSpectralPoint q)) : ℂ) *
     d4BMSecondHarmonicRegularComplementaryPolarizedCurrentValue n
       (d4BMXiMixedHorizonAngularMomentum q) z
+
+/-- Peierls candidate is twice the literal source-scaled BM Schwarz polarized current. -/
+theorem d4BMXiSecondHarmonicPeierlsPolarizedCutCandidate_eq_two_mul_sourceScaledCurrent
+    (n : ℕ) (amplitude : ℂ) (q : XiZeroCopy) (z : ℝ) :
+    d4BMXiSecondHarmonicPeierlsPolarizedCutCandidate n amplitude q z =
+      2 * d4BMXiSecondHarmonicSourceScaledPolarizedCurrent n amplitude q z := by
+  rw [d4BMXiSecondHarmonicSourceScaledPolarizedCurrent_eq]
+  unfold d4BMXiSecondHarmonicPeierlsPolarizedCutCandidate
+    d4BMXiSecondHarmonicPolarizedSourceAmplitude
+  rw [Complex.normSq_mul]
+  push_cast
+  ring
+
+/-- Candidate is twice the literal source-scaled AdS boundary symplectic current. -/
+theorem d4BMXiSecondHarmonicPeierlsPolarizedCutCandidate_eq_two_mul_boundaryConcomitant
+    (n : ℕ) (amplitude : ℂ) (q : XiZeroCopy)
+    {z : ℝ} (hz0 : 0 < z) (hz1 : z < 1) :
+    d4BMXiSecondHarmonicPeierlsPolarizedCutCandidate n amplitude q z =
+      2 * d4BMXiSecondHarmonicSourceScaledBoundaryConcomitant n amplitude q := by
+  rw [d4BMXiSecondHarmonicPeierlsPolarizedCutCandidate_eq_two_mul_sourceScaledCurrent,
+    d4BMXiSecondHarmonicSourceScaledPolarizedCurrent_eq_boundaryConcomitant
+      n amplitude q hz0 hz1]
 
 /-- For a nonzero Einstein seed, exact BM Peierls candidate vanishes precisely on the critical
 line. -/
@@ -106,7 +299,8 @@ theorem d4BMXiSecondHarmonicCokernelCausalCut_eq_PeierlsPolarizedCandidate
     (C : X →ₗ[ℂ] X →ₗ[ℂ] X →ₗ[ℂ] Y)
     (Delta : Y →ₗ[ℂ] X)
     (RppRet RpmRet RppAdv RpmAdv : Y →ₗ[ℂ] X) (p m : X)
-    (n : ℕ) (amplitude : ℂ) (q : XiZeroCopy) (z : ℝ)
+    (n : ℕ) (amplitude : ℂ) (q : XiZeroCopy) {z : ℝ}
+    (hz0 : 0 < z) (hz1 : z < 1)
     (hpm : RpmRet - RpmAdv = Delta)
     (hpp : RppRet - RppAdv = Delta)
     (hB : ∀ x y, B x y = B y x)
@@ -117,13 +311,7 @@ theorem d4BMXiSecondHarmonicCokernelCausalCut_eq_PeierlsPolarizedCandidate
       d4GaugeFixedTeukolskyPeierlsSourcePairing pairing Delta
           (d4GaugeFixedTeukolskyQuadraticPlusPlusResidual B p)
           (d4GaugeFixedTeukolskyQuadraticPlusPlusResidual B m) =
-        (Complex.normSq
-          (d4ThetaTeukolskyOrthogonalHelicityMixingCoefficient q) : ℂ) *
-        (Complex.normSq
-          (d4ThetaHawkingSelfDualQuadraticCarrierCoefficient amplitude
-            (xiSpectralPoint q)) : ℂ) *
-        d4BMSecondHarmonicRegularComplementaryPolarizedCurrentValue n
-          (d4BMXiMixedHorizonAngularMomentum q) z) :
+        d4BMXiSecondHarmonicSourceScaledBoundaryConcomitant n amplitude q) :
     d4GaugeFixedTeukolskyTotalPlusPlusMinusCokernelCausalCut
         (pairing m) B C RppRet RpmRet RppAdv RpmAdv p m =
       d4BMXiSecondHarmonicPeierlsPolarizedCutCandidate n amplitude q z := by
@@ -131,8 +319,9 @@ theorem d4BMXiSecondHarmonicCokernelCausalCut_eq_PeierlsPolarizedCandidate
       pairing B C Delta RppRet RpmRet RppAdv RpmAdv p m hpm hpp,
     d4GaugeFixedTeukolskyPhaseNormalizedPeierlsCubicCut_eq_polarized
       pairing B Delta p m hB hcyclic hskew,
-    hincidence, d4BMXiSecondHarmonicPeierlsPolarizedCutCandidate]
-  ring
+    hincidence,
+    d4BMXiSecondHarmonicPeierlsPolarizedCutCandidate_eq_two_mul_boundaryConcomitant
+      n amplitude q hz0 hz1]
 
 /-- Corrected conditional landing: equality of complete retarded and advanced nonlinear sections
 is equivalent to criticality once the actual polarized Peierls source incidence is supplied. -/
@@ -157,13 +346,7 @@ theorem d4BMXiSecondHarmonic_retardedSection_eq_advancedSection_iff_criticalLine
       d4GaugeFixedTeukolskyPeierlsSourcePairing pairing Delta
           (d4GaugeFixedTeukolskyQuadraticPlusPlusResidual B p)
           (d4GaugeFixedTeukolskyQuadraticPlusPlusResidual B m) =
-        (Complex.normSq
-          (d4ThetaTeukolskyOrthogonalHelicityMixingCoefficient q) : ℂ) *
-        (Complex.normSq
-          (d4ThetaHawkingSelfDualQuadraticCarrierCoefficient amplitude
-            (xiSpectralPoint q)) : ℂ) *
-        d4BMSecondHarmonicRegularComplementaryPolarizedCurrentValue n
-          (d4BMXiMixedHorizonAngularMomentum q) z) :
+        d4BMXiSecondHarmonicSourceScaledBoundaryConcomitant n amplitude q) :
     d4GaugeFixedTeukolskyTotalPlusPlusMinusCokernelSection
           (pairing m) B C RppRet RpmRet p m =
         d4GaugeFixedTeukolskyTotalPlusPlusMinusCokernelSection
@@ -171,7 +354,7 @@ theorem d4BMXiSecondHarmonic_retardedSection_eq_advancedSection_iff_criticalLine
       (q.1 : ℂ).re = 1 / 2 := by
   have hcut := d4BMXiSecondHarmonicCokernelCausalCut_eq_PeierlsPolarizedCandidate
     pairing B C Delta RppRet RpmRet RppAdv RpmAdv p m
-      n amplitude q z hpm hpp hB hcyclic hskew hincidence
+      n amplitude q hz0 hz1 hpm hpp hB hcyclic hskew hincidence
   rw [d4GaugeFixedTeukolskyTotalPlusPlusMinusCokernelCausalCut_eq_section_sub]
     at hcut
   constructor

@@ -6369,3 +6369,155 @@ No sectorwise absolute estimate is justified.  Without the exact common physical
 the primitive anchored response coordinates can be phase-aligned independently, so CRT
 conjugation and causal-color retention alone cannot improve the sector total-variation norm.  Any
 surviving conjecture must use the common source and the global `h,p,a,r` joining in `(AC25)`.
+
+## Conjecture loop 58 — endpoint-charge Wiener law for physical FCRJ carrier
+
+### Conjecture `[FROZEN 2026-08-27]`
+
+For a finite active physical prime packet, let `B` be its distinct endpoint nodes on aperture
+circle, let `j(x)` be signed prime-log endpoint jump, and define
+
+```text
+U_n = sum_(x in B) j(x) fourier_1(x)^n.                  (AC29)
+```
+
+Then
+
+```text
+lim_(N->infinity) (1/N) sum_(0<=n<N) |U_n|^2
+  = sum_(x in B) |j(x)|^2.                               (AC30)
+```
+
+For every positive integer `n`, existing endpoint tomography should identify
+
+```text
+U_n = (2 pi i n/A) A_n,                                 (AC31)
+```
+
+where `A_n` is exact physical FCRJ character amplitude.  Thus every nonempty active packet with
+`0<k-m<A` has strictly positive differentiated-character Cesàro mass.  Its character amplitudes
+cannot decay `o(1/n)` in Cesàro mean, and no proof of `(AC28)` may discard a fixed tail as uniformly
+rapid.
+
+### Corpus basis and attack order
+
+1. `sum_endpointCircleJump_mul_fourier` is exact identity `(AC31)`.
+2. Distinct endpoint nodes have distinct unit modes under `fourier 1`.
+3. `tendsto_finiteExponentialPencil_cesaro_norm_sq` supplies finite atomic Wiener identity.
+4. Existing physical endpoint noncancellation supplies strict positivity of right side.
+5. Hostile audit must separate this ultraviolet law from desired total-energy upper bound: an
+   exact `1/n` tail is compatible with finite `L2` energy and does not itself prove `(AC28)`.
+
+Primary audit: Wiener mean-square theorem for atomic measures and `O(1/n)` Fourier decay for
+bounded-variation functions are classical.  No audited source states exact physical prime-log
+endpoint law `(AC30)--(AC31)` or its FCRJ consequence.  Novelty claim, if proved, is restricted to
+this coefficient-faithful source specialization and no-go boundary.
+
+### Proof and verdict `[PAPER-PROVED] [LEAN-PROVED] [NO-GO] [POSITIVE SURVIVOR]`
+
+The conjecture is true.  Fundamental character `fourier_1` is injective on positive-length
+aperture circle and has unit norm.  Therefore endpoint moment `(AC29)` is a finite exponential
+pencil with distinct unit modes.  Expanding squared modulus and Cesàro averaging kills every
+off-diagonal mode ratio and retains exactly diagonal coefficient mass, proving `(AC30)`.
+
+For positive `n`, existing endpoint differentiation identity gives `(AC31)` exactly.  Existing
+physical noncancellation produces one nonzero character amplitude for every nonempty active packet
+with `0<k-m<A`; because character rate is nonzero, some endpoint jump is nonzero and
+
+```text
+sum_(x in B)|j(x)|^2 > 0.                               (AC32)
+```
+
+Consequently `U_n` cannot tend to zero.  Equivalently,
+
+```text
+(2 pi i n/A) A_n  does not tend to 0,                   (AC33)
+```
+
+so physical amplitudes are not uniformly `o(1/n)` along positive integer aperture frequencies.
+
+Lean file:
+`formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeEndpointWienerCharge.lean`.
+It proves exact Cesàro law, differentiated-amplitude identity, strict jump-mass positivity, and both
+nondecay theorems.  Module is wired into `RHTower.lean`; direct `lake env lean` checking passed.
+
+Hostile limit: `(AC30)` is ultraviolet lower structure, not desired total-energy upper bound.  A
+`1/n` Fourier tail remains square summable, and right side `(AC32)` varies with physical packet.
+Thus theorem does not prove `(AC28)` or RH.  It retires uniform rapid-tail truncation and any fixed-
+mode argument claiming high characters vanish harmlessly.  Positive survivor is a multiscale
+estimate that retains exact endpoint charge while proving total Parseval energy
+`O(M^-1 polylog M)` from common prime source.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-27]`: finite-atomic Wiener mean-square identity and
+`O(1/n)` bounded-variation Fourier bound are classical parent results.  Corpus had endpoint
+moment identity and general finite-pencil theorem separately, but not their physical FCRJ
+specialization, positive jump-mass limit, or non-`o(1/n)` no-go.  No audited primary source states
+this bespoke prime-log endpoint theorem.  Novelty claim is source-specific; parent harmonic
+analysis is not claimed new.
+
+Verdict: `[PROVED — EXACT FCRJ ENDPOINT WIENER CHARGE; UNIFORM RAPID FOURIER-TAIL PROVIDERS RETIRED]`.
+
+### Formal audit `[2026-08-27]`
+
+`lake env lean formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeEndpointWienerCharge.lean`
+and targeted
+`lake build GaloisForLFunctions.RHTower.XiPhysicalPrimeEndpointWienerCharge` both pass.  Scratch
+`#print axioms` audits of the exact Cesàro law and both nondecay capstones report only `propext`,
+`Classical.choice`, and `Quot.sound`.  Module is imported by theorem-area umbrella
+`GaloisForLFunctions.RHTower`; repository formal lint passes with no active `sorry`, `admit`, new
+`axiom`, `opaque`, or `unsafe` declaration.
+
+## Conjecture loop 59 — exact FCRJ ultraviolet tail coefficient
+
+### Failed first conjecture `[REDISCOVERED]`
+
+Abstract implication
+
+```text
+(1/N) sum_(n<N) a_n -> L  ==>  N sum_(n>N) a_n/n^2 -> L
+```
+
+is classical Abelian partial summation, not new scientific knowledge.  Corpus supplied exact
+weighted power-tail asymptotics, so generic statement was retained only as Lean infrastructure.
+
+### Source-specific survivor `[PAPER-PROVED] [LEAN-PROVED] [NO-GO] [POSITIVE SURVIVOR]`
+
+For endpoint moment `U_n` and jump charge `J` from `(AC29)--(AC32)`, exact fixed-packet laws are
+
+```text
+lim_(N->infinity) N sum_(n>N) |U_n|^2/n^2 = J,          (AC34)
+lim_(N->infinity) N sum_(n>N) |A_n|^2
+  = A^2/(4 pi^2) J.                                     (AC35)
+```
+
+Paper proof uses normalized cumulative energy `g_n=S_n/n` and exact two-kernel Abel decomposition
+
+```text
+sum_(n>=M) a_n/n^2
+ = -g_M/M + sum_(j>=M) g_(j+1)/j^2
+   + sum_(j>=M) [g_(j+1)j/(j+1)]/j^2.                  (AC36)
+```
+
+Both tail weights converge to `J`; corpus weighted inverse-square theorem gives limits `J+J`,
+while boundary gives `-J`.  Endpoint differentiation supplies exact factor in `(AC35)`.  Character
+Parseval proves required summability unconditionally.
+
+For every nonempty active packet with `0<k-m<A`, `J>0`; therefore scaled raw-character tail cannot
+converge to zero.  Fixed-packet energy is exactly order `1/N`, not `o(1/N)`.  This strictly sharpens
+loop 58's pointwise nondecay and closes high-frequency decay as a source of extra FCRJ saving.
+
+Lean file:
+`formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeEndpointUltravioletTail.lean`.
+Capstones are
+`tendsto_xiPhysicalPrimeLogEndpointCircleMoment_ultravioletTail`,
+`tendsto_xiPhysicalPrimeLogCharacterAmplitude_ultravioletTail`, and
+`not_tendsto_xiPhysicalPrimeLogCharacterAmplitude_ultravioletTail_zero`.
+Targeted module build, direct Lean check, axiom audit, and formal lint pass.
+
+Hostile limit: theorem is pointwise in fixed physical packet.  It supplies no uniform rate when
+prime packet, aperture, and colliding endpoint phases move with arithmetic scale.  Remaining FCRJ
+burden is therefore exact two-parameter uniformity through phase-separation/collision data plus
+common-source total-energy control; no further fixed-packet Fourier decay estimate can close it.
+
+Verdict: `[PROVED — EXACT POSITIVE FCRJ ONE-OVER-N ULTRAVIOLET LAW; FIXED-PACKET EXTRA-DECAY
+PROVIDERS RETIRED]`.

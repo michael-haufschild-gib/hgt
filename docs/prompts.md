@@ -34,7 +34,7 @@ where mathematical knowledge is missing use the /hgtl7 skill to create it.
 /goal
 
 formalize UNCONDITIONALLY in lean any proven theorem from all these cards: 
-- docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/04-rg-stochastic-quantum-fields
+- docs/drafts/pipeline/2-fully-proven (including subfolders)
   
 add missing infrastructure, lean proofs, everything needed to mark a card as fully done and move it to stage 3 of the pipeline - no simplifications. 
 
@@ -329,18 +329,19 @@ be efficient with lean. clean up after yourself. do not run large rebuilds. do n
 do not pivot on unanswered mathematical problems. your job is precisely to solve problems that neither our lean corpus nor literature have solved yet. use the hgt-fields-medalist skill workflow and heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ...
 
 ## Research 2
-**Goal:** Formalize an unconditional proof in lean of the Goncharov conjecture 
+**Goal:** Create novel and significant knowledge towards RH proof routes CCM-FU, D2, E, G, G-CE, P, SP-E, SCE, T1, T2, HC, CFI, PPM, HJ, BW, MSC, PEP, EWQ-V, LI from docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md
+
+Novel and significant means: 
+1. It solves a mathematical problem neither our lean corpus nor literature have solved yet (as of August 2026).
+2. It closes the remaining proof burden towards an RH proof in lean.
 
 **Lean rules:**
 1. Proofs must be unconditional and closed in lean, no premises, no hypotheses, no added axioms, ....
 2. Always build in the foreground, 1 process per single agent.
-3. Be efficient, use caching, batch instead of running constant loops of tiny edits and rebuilds
-4. No computations.
-5. Always use  lake env lean \<file>  and only lake build \<module> for the final audit. Do not forget to wire new modules into the umbrellas.
-6. do not run full builds. check in scratch, build only oleans that are needed, wire finished modules into their umbrella but do not run full umbrella builds.
-7. make sure you don't leave stale lean processes running - clean up after yourself.
-
-be efficient with lean. clean up after yourself. do not run large rebuilds. do not run umbrella builds. do only check axioms for what you have created - no need to constantly check stuff we have already checked.
+3. No computations.
+4. Always use  lake env lean \<file>  and only lake build \<module> for the final audit. Do not forget to wire new modules into the umbrellas.
+5. do not run full builds. check in scratch, build only oleans that are needed, wire finished modules into their umbrella but do not run full umbrella builds.
+6. make sure you don't leave stale lean processes running - clean up after yourself.
 
 **Mandatory reasearch and conjecturing rules:** 
 1. always use the search tool for our lean corpus to find ideas, existing work. conjecture based on the lean corpus, not your training data which is behind our research in the lean corpus.
@@ -348,3 +349,17 @@ be efficient with lean. clean up after yourself. do not run large rebuilds. do n
 3. always tackle the hardest mathematical problem that neither our lean corpus nor literature have solved yet. missing infrastructure or no existing proof is not reason to pivot but to build the infrastructure and to solve the open problem yourself.
 4. to create new knowledge use the hgt-fields-medalist skill workflow and heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ...  
 
+goal is met when all routes are either a proven dead end or the RH proof is formalized in lean.
+
+
+• 1. Arithmetic signed-incidence / Ward: CCM-FU, D2, E, G, G-CE, P, SP-E, SCE,
+     T1, T2, HC, CFI, PPM, HJ, BW, MSC, PEP, EWQ-V, LI.
+
+  2. Global spectral / cofinal operator selection: C1, NB/BD, F2, STC, CSB, O,
+     Q, CLG/TTF, U, SV2, BSH, UEB, PBM, IRK, SEC, BPC, MPLF, W1C, K-RVM, GTA,
+     APF, AKC, S6F, WS2.
+
+  3. Singular descent / provenance / completion: CDC, L, TK, PSRC, SC, PCS,
+     TCD, JAS, WBF, XST, NDS, KMSS.
+
+  4. Nonlinear scattering / dynamical selection: HB, FZZ-P, RBH, PW-B.

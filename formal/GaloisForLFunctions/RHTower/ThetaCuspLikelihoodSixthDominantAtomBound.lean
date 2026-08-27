@@ -63,11 +63,11 @@ theorem thetaCuspLikelihoodDominantAtomSixthScoreMass_eq
 
 /-- Uniform same-aperture bound for the dominant score mass.  The exponent `471/50` is the
 rational seam `9 + 21/50`; every displayed constant comes from the literal atom and ray weights. -/
-theorem thetaCuspLikelihoodDominantAtomSixthScoreMass_le_seamEnvelope
+theorem thetaCuspLikelihoodDominantAtomSixthScoreMass_le_seamEnvelope_sharp
     (A : ℝ) {B : ℝ} (hA : (157 / 50 : ℝ) ≤ A)
     (hBA : B = A - 3 / 2) :
     thetaCuspLikelihoodDominantAtomSixthScoreMass A B ≤
-      (16 * 50000 + 18 * (25 / 41 : ℝ) * 1000000) *
+      (16 * 50000 + 18 * (25 / 41 : ℝ) * 950000) *
         Real.exp (-(471 / 50 : ℝ)) := by
   have hB : 0 < B := by rw [hBA]; linarith
   have hy : (21 / 50 : ℝ) ≤ 3 * A - 9 := by linarith
@@ -119,13 +119,13 @@ theorem thetaCuspLikelihoodDominantAtomSixthScoreMass_le_seamEnvelope
     nlinarith
   have hq :
       thetaLikelihoodSixthScoreRayTransformPolynomial (A / B) (3 * A - 9) ≤
-        1000000 * Real.exp s := by
+        950000 * Real.exp s := by
     calc
       _ ≤ thetaLikelihoodSixthScoreRayTransformPolynomial
           (48 / 25) (3 * A - 9) := hqmono
       _ = thetaLikelihoodSixthScoreRayTransformPolynomial
           (48 / 25) (21 / 50 + s) := by rw [hyrw]
-      _ ≤ _ := thetaLikelihoodSixthScoreRayTransformPolynomial_seam_envelope hs
+      _ ≤ _ := thetaLikelihoodSixthScoreRayTransformPolynomial_seam_envelope_sharp hs
   have hp : thetaLikelihoodSixthScore (3 * A) ≤ 50000 * Real.exp s := by
     rw [thetaLikelihoodSixthScore_eq_shiftNine, hyrw]
     exact thetaLikelihoodSixthScoreShift_seam_envelope hs
@@ -150,11 +150,11 @@ theorem thetaCuspLikelihoodDominantAtomSixthScoreMass_le_seamEnvelope
       18 * Real.exp (-(9 / 2 : ℝ)) *
           (Real.exp (-(3 * B)) / B *
             thetaLikelihoodSixthScoreRayTransformPolynomial (A / B) (3 * A - 9)) ≤
-        (18 * (25 / 41 : ℝ) * 1000000) * Real.exp (-(471 / 50 : ℝ)) := by
+        (18 * (25 / 41 : ℝ) * 950000) * Real.exp (-(471 / 50 : ℝ)) := by
     calc
       _ ≤ 18 * Real.exp (-(9 / 2 : ℝ)) *
           (Real.exp (-(3 * B)) * (25 / 41 : ℝ) *
-            (1000000 * Real.exp s)) := by
+            (950000 * Real.exp s)) := by
           have hq0 : 0 ≤ thetaLikelihoodSixthScoreRayTransformPolynomial
               (A / B) (3 * A - 9) := by
             dsimp [thetaLikelihoodSixthScoreRayTransformPolynomial,
@@ -179,8 +179,8 @@ theorem thetaCuspLikelihoodDominantAtomSixthScoreMass_le_seamEnvelope
       _ = _ := by
         rw [show 18 * Real.exp (-(9 / 2 : ℝ)) *
             (Real.exp (-(3 * B)) * (25 / 41 : ℝ) *
-              (1000000 * Real.exp s)) =
-          (18 * (25 / 41 : ℝ) * 1000000) *
+              (950000 * Real.exp s)) =
+          (18 * (25 / 41 : ℝ) * 950000) *
             (Real.exp (-(9 / 2 : ℝ)) * Real.exp (-(3 * B)) *
               Real.exp s) by ring]
         rw [← Real.exp_add, ← Real.exp_add]
@@ -188,6 +188,18 @@ theorem thetaCuspLikelihoodDominantAtomSixthScoreMass_le_seamEnvelope
         dsimp [s]
         ring
   rw [thetaCuspLikelihoodDominantAtomSixthScoreMass_eq A hB]
+  nlinarith
+
+/-- Compatibility form with the original round ray constant. -/
+theorem thetaCuspLikelihoodDominantAtomSixthScoreMass_le_seamEnvelope
+    (A : ℝ) {B : ℝ} (hA : (157 / 50 : ℝ) ≤ A)
+    (hBA : B = A - 3 / 2) :
+    thetaCuspLikelihoodDominantAtomSixthScoreMass A B ≤
+      (16 * 50000 + 18 * (25 / 41 : ℝ) * 1000000) *
+        Real.exp (-(471 / 50 : ℝ)) := by
+  have h := thetaCuspLikelihoodDominantAtomSixthScoreMass_le_seamEnvelope_sharp
+    A hA hBA
+  have he := Real.exp_pos (-(471 / 50 : ℝ))
   nlinarith
 
 end
