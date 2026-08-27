@@ -70,6 +70,65 @@ theorem mtHarmanPairCellCoefficient_polynomialDivisorBounded
     ((mtHarmanPairCellTuples S₁ S₂ m).card : ℝ) ≤
       (m.divisors.card : ℝ) ^ 2 by exact_mod_cast hcard)
 
+/-- Two disjoint prime blocks give at most one ordered factorization of a fixed product. -/
+theorem card_mtHarmanPairCellTuples_le_one_of_disjoint
+    {S₁ S₂ : Finset ℕ}
+    (hdisjoint : Disjoint S₁ S₂)
+    (hprime₁ : ∀ q ∈ S₁, q.Prime)
+    (hprime₂ : ∀ q ∈ S₂, q.Prime)
+    (m : ℕ) :
+    (mtHarmanPairCellTuples S₁ S₂ m).card ≤ 1 := by
+  rw [Finset.card_le_one]
+  intro q hq r hr
+  have hq' := mem_mtHarmanPairCellTuples.mp hq
+  have hr' := mem_mtHarmanPairCellTuples.mp hr
+  have hprod : q.1 * q.2 = r.1 * r.2 := hq'.2.2.trans hr'.2.2.symm
+  have hq₁Prime := hprime₁ q.1 hq'.1
+  have hq₂Prime := hprime₂ q.2 hq'.2.1
+  have hr₁Prime := hprime₁ r.1 hr'.1
+  have hr₂Prime := hprime₂ r.2 hr'.2.1
+  have hq₁Dvd : q.1 ∣ r.1 * r.2 := ⟨q.2, hprod.symm⟩
+  rcases hq₁Prime.dvd_mul.mp hq₁Dvd with hq₁r₁ | hq₁r₂
+  · have hfirst : q.1 = r.1 :=
+      (Nat.prime_dvd_prime_iff_eq hq₁Prime hr₁Prime).mp hq₁r₁
+    have hsecond : q.2 = r.2 := by
+      exact Nat.eq_of_mul_eq_mul_left hq₁Prime.pos (hfirst ▸ hprod)
+    exact Prod.ext hfirst hsecond
+  · have hcross : q.1 = r.2 :=
+      (Nat.prime_dvd_prime_iff_eq hq₁Prime hr₂Prime).mp hq₁r₂
+    exact False.elim ((Finset.disjoint_left.mp hdisjoint) hq'.1 (hcross ▸ hr'.2.1))
+
+theorem norm_mtHarmanPairCellCoefficient_le_one_of_disjoint
+    {S₁ S₂ : Finset ℕ}
+    (hdisjoint : Disjoint S₁ S₂)
+    (hprime₁ : ∀ q ∈ S₁, q.Prime)
+    (hprime₂ : ∀ q ∈ S₂, q.Prime)
+    (m : ℕ) :
+    ‖mtHarmanPairCellCoefficient S₁ S₂ m‖ ≤ 1 := by
+  have hcard := card_mtHarmanPairCellTuples_le_one_of_disjoint
+    hdisjoint hprime₁ hprime₂ m
+  simpa [mtHarmanPairCellCoefficient] using (show
+    ((mtHarmanPairCellTuples S₁ S₂ m).card : ℝ) ≤ 1 by exact_mod_cast hcard)
+
+/-- Every good adjacent pair-cell coefficient is uniformly bounded by one, as required by the
+repaired finite Lemma 2.3 iteration. -/
+theorem norm_mtHarmanPairCellCoefficient_le_one
+    {t : ℕ} {endpoint : ℕ → ℕ} (hmono : Monotone endpoint)
+    {E : ℝ} {i₁ i₂ : Fin t}
+    (hcell : (i₁, i₂) ∈ mtHarmanGoodPairCells endpoint E)
+    (m : ℕ) :
+    ‖mtHarmanPairCellCoefficient
+      (mtAdjacentPrimeBlock endpoint i₁) (mtAdjacentPrimeBlock endpoint i₂) m‖ ≤ 1 := by
+  have hidx : i₁ ≠ i₂ := by
+    have := (mem_mtHarmanGoodPairCells.mp hcell).1
+    omega
+  have hdisjoint := mtAdjacentPrimeBlock_disjoint endpoint hmono i₁ i₂ hidx
+  have hprime : ∀ i : Fin t, ∀ q ∈ mtAdjacentPrimeBlock endpoint i, q.Prime := by
+    intro i q hq
+    exact (mem_primesIco.mp hq).2.2
+  exact norm_mtHarmanPairCellCoefficient_le_one_of_disjoint hdisjoint
+    (hprime i₁) (hprime i₂) m
+
 /-- A nonzero adjacent pair-cell coefficient has exactly the product support of its two block
 scales. -/
 theorem mtHarmanPairCellCoefficient_support
@@ -181,6 +240,93 @@ theorem mtHarmanTripleCellCoefficient_polynomialDivisorBounded
   simpa [mtHarmanTripleCellCoefficient] using (show
     ((mtHarmanTripleCellTuples S₁ S₂ S₃ m).card : ℝ) ≤
       (m.divisors.card : ℝ) ^ 3 by exact_mod_cast hcard)
+
+/-- Three pairwise-disjoint prime blocks give at most one ordered factorization of a fixed
+product. -/
+theorem card_mtHarmanTripleCellTuples_le_one_of_pairwise_disjoint
+    {S₁ S₂ S₃ : Finset ℕ}
+    (hdisjoint₁₂ : Disjoint S₁ S₂)
+    (hdisjoint₁₃ : Disjoint S₁ S₃)
+    (hdisjoint₂₃ : Disjoint S₂ S₃)
+    (hprime₁ : ∀ q ∈ S₁, q.Prime)
+    (hprime₂ : ∀ q ∈ S₂, q.Prime)
+    (hprime₃ : ∀ q ∈ S₃, q.Prime)
+    (m : ℕ) :
+    (mtHarmanTripleCellTuples S₁ S₂ S₃ m).card ≤ 1 := by
+  rw [Finset.card_le_one]
+  intro q hq r hr
+  have hq' := mem_mtHarmanTripleCellTuples.mp hq
+  have hr' := mem_mtHarmanTripleCellTuples.mp hr
+  have hprod : q.1.1 * q.1.2 * q.2 = r.1.1 * r.1.2 * r.2 :=
+    hq'.2.2.2.trans hr'.2.2.2.symm
+  have hq₁Prime := hprime₁ q.1.1 hq'.1
+  have hq₂Prime := hprime₂ q.1.2 hq'.2.1
+  have hr₁Prime := hprime₁ r.1.1 hr'.1
+  have hr₂Prime := hprime₂ r.1.2 hr'.2.1
+  have hr₃Prime := hprime₃ r.2 hr'.2.2.1
+  have hq₁Dvd : q.1.1 ∣ r.1.1 * (r.1.2 * r.2) := by
+    refine ⟨q.1.2 * q.2, ?_⟩
+    simpa only [Nat.mul_assoc] using hprod.symm
+  have hfirst : q.1.1 = r.1.1 := by
+    rcases hq₁Prime.dvd_mul.mp hq₁Dvd with hq₁r₁ | hq₁tail
+    · exact (Nat.prime_dvd_prime_iff_eq hq₁Prime hr₁Prime).mp hq₁r₁
+    · rcases hq₁Prime.dvd_mul.mp hq₁tail with hq₁r₂ | hq₁r₃
+      · have hcross := (Nat.prime_dvd_prime_iff_eq hq₁Prime hr₂Prime).mp hq₁r₂
+        exact False.elim
+          ((Finset.disjoint_left.mp hdisjoint₁₂) hq'.1 (hcross ▸ hr'.2.1))
+      · have hcross := (Nat.prime_dvd_prime_iff_eq hq₁Prime hr₃Prime).mp hq₁r₃
+        exact False.elim
+          ((Finset.disjoint_left.mp hdisjoint₁₃) hq'.1 (hcross ▸ hr'.2.2.1))
+  have htailProd : q.1.2 * q.2 = r.1.2 * r.2 := by
+    apply Nat.eq_of_mul_eq_mul_left hq₁Prime.pos
+    simpa only [Nat.mul_assoc, hfirst] using hprod
+  have hq₂Dvd : q.1.2 ∣ r.1.2 * r.2 := ⟨q.2, htailProd.symm⟩
+  have hsecond : q.1.2 = r.1.2 := by
+    rcases hq₂Prime.dvd_mul.mp hq₂Dvd with hq₂r₂ | hq₂r₃
+    · exact (Nat.prime_dvd_prime_iff_eq hq₂Prime hr₂Prime).mp hq₂r₂
+    · have hcross := (Nat.prime_dvd_prime_iff_eq hq₂Prime hr₃Prime).mp hq₂r₃
+      exact False.elim
+        ((Finset.disjoint_left.mp hdisjoint₂₃) hq'.2.1 (hcross ▸ hr'.2.2.1))
+  have hthird : q.2 = r.2 := by
+    exact Nat.eq_of_mul_eq_mul_left hq₂Prime.pos (hsecond ▸ htailProd)
+  exact Prod.ext (Prod.ext hfirst hsecond) hthird
+
+theorem norm_mtHarmanTripleCellCoefficient_le_one_of_pairwise_disjoint
+    {S₁ S₂ S₃ : Finset ℕ}
+    (hdisjoint₁₂ : Disjoint S₁ S₂)
+    (hdisjoint₁₃ : Disjoint S₁ S₃)
+    (hdisjoint₂₃ : Disjoint S₂ S₃)
+    (hprime₁ : ∀ q ∈ S₁, q.Prime)
+    (hprime₂ : ∀ q ∈ S₂, q.Prime)
+    (hprime₃ : ∀ q ∈ S₃, q.Prime)
+    (m : ℕ) :
+    ‖mtHarmanTripleCellCoefficient S₁ S₂ S₃ m‖ ≤ 1 := by
+  have hcard := card_mtHarmanTripleCellTuples_le_one_of_pairwise_disjoint
+    hdisjoint₁₂ hdisjoint₁₃ hdisjoint₂₃ hprime₁ hprime₂ hprime₃ m
+  simpa [mtHarmanTripleCellCoefficient] using (show
+    ((mtHarmanTripleCellTuples S₁ S₂ S₃ m).card : ℝ) ≤ 1 by exact_mod_cast hcard)
+
+/-- Every good adjacent triple-cell coefficient is uniformly bounded by one. -/
+theorem norm_mtHarmanTripleCellCoefficient_le_one
+    {t : ℕ} {endpoint : ℕ → ℕ} (hmono : Monotone endpoint)
+    {E : ℝ} {i₁ i₂ i₃ : Fin t}
+    (hcell : ((i₁, i₂), i₃) ∈ mtHarmanGoodTripleCells endpoint E)
+    (m : ℕ) :
+    ‖mtHarmanTripleCellCoefficient
+      (mtAdjacentPrimeBlock endpoint i₁) (mtAdjacentPrimeBlock endpoint i₂)
+      (mtAdjacentPrimeBlock endpoint i₃) m‖ ≤ 1 := by
+  have hidx := mem_mtHarmanGoodTripleCells.mp hcell
+  have hne₁₂ : i₁ ≠ i₂ := by omega
+  have hne₁₃ : i₁ ≠ i₃ := by omega
+  have hne₂₃ : i₂ ≠ i₃ := by omega
+  have hprime : ∀ i : Fin t, ∀ q ∈ mtAdjacentPrimeBlock endpoint i, q.Prime := by
+    intro i q hq
+    exact (mem_primesIco.mp hq).2.2
+  exact norm_mtHarmanTripleCellCoefficient_le_one_of_pairwise_disjoint
+    (mtAdjacentPrimeBlock_disjoint endpoint hmono i₁ i₂ hne₁₂)
+    (mtAdjacentPrimeBlock_disjoint endpoint hmono i₁ i₃ hne₁₃)
+    (mtAdjacentPrimeBlock_disjoint endpoint hmono i₂ i₃ hne₂₃)
+    (hprime i₁) (hprime i₂) (hprime i₃) m
 
 /-- A nonzero adjacent triple-cell coefficient has exactly the product support of its three block
 scales. -/

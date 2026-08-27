@@ -7837,3 +7837,90 @@ route-specific synthesis.
 Verdict: `[PROVED — THE COMPLETED ARCHIMEDEAN CHANNEL OF THE EXACT PHYSICAL THETA-ABEL ENERGY
 SOURCE IS ONE EXPLICIT STRICTLY POSITIVE RESIDUE; ALL REMAINING RH-BEARING SIGN BURDEN IS IN THE
 CONTINUED PRIME-FLUX CONTOUR]`.
+
+## Conjecture loop 81 — cofinal pole-crossing direct-prime source criterion
+
+### Failed geometry-loss conjecture `[THE COFINAL SELECTOR CANNOT CONTROL THE ARCH POLE]`
+
+The finite-avoidance selector used in Loops 77--79 appeared to return only an arbitrary
+admissible rectangle. Its construction in fact contains a stronger invariant which had been
+discarded from the theorem statement. For every finite Xi-copy packet `t`, one can choose an
+admissible rectangle with
+
+```text
+z1.re < 0 < z2.re,
+z1.im < -1/2 < z2.im < 1/2,                                   (AC124)
+```
+
+while retaining strict interior containment of `t`. The proof exposes the selector's actual
+choices: bottom `-3/4`, top in `(y0,1/2)` with `y0>-1/2`, left below `-R`, and right above `R>0`.
+No zero enumeration, numerical zero, or RH assumption enters.
+
+### Exact direct-prime contour survivor `[PAPER-PROVED] [LEAN-PROVED] [POSITIVE SURVIVOR]`
+
+Let
+
+```text
+C_P(L,A,c,a;z1,z2)
+ =(2 pi i)^-1 contour F_a(z)^2[-i infinitePrimeFlux(1/2+i z)] dz.
+```
+
+Admissibility on all four edges supplies interval integrability of the completed source and
+centered arch logarithmic derivative; the direct prime channel is their difference. Thus Lean
+promotes the Loop-80 pointwise split to the exact normalized rectangle identity
+
+```text
+normalizedSource
+ =C_P + normalizedArch.                                       (AC125)
+```
+
+On every rectangle satisfying `(AC124)`, the exact residue landing `(AC123)` gives
+
+```text
+normalizedSource
+ =C_P+[e^(a/2) 2(1-e^(-L/2)) c A]^2.                         (AC126)
+```
+
+Define packet-stable corrected-prime boundedness by
+
+```text
+exists B,N0, for every n>=N0 with L<log(n)/2,
+  for every finite Xi-copy packet t,
+    exists a rectangle satisfying (AC124), containing t,
+    admissible on all four edges, such that
+    B <= Re(C_P+[e^(log(n)/4) 2(1-e^(-L/2)) c A]^2).          (AC127)
+```
+
+For every fixed `L,A,c>0`, Lean proves
+
+```text
+(AC127) <-> RH,                                                (AC128)
+```
+
+plus a closed premise-free unit specialization. For `RH -> (AC127)`, enlarge the prescribed
+packet by an absolute-tail packet and use the pole-crossing selector; the normalized source is
+within `1` of the nonnegative complete Weil value, so `B=-1` works, and `(AC126)` transfers the
+floor. For `(AC127) -> RH`, `(AC126)` converts every corrected-prime witness into the previously
+proved packet-stable source witness, and `(AC115)` applies.
+
+Formal modules:
+`formal/GaloisForLFunctions/RHTower/XiGuinandWeilRectangleExhaustion.lean`,
+`formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeApertureThetaAbelEnergyPrimeContour.lean`, and
+`formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeApertureThetaAbelEnergyPrimeSourceCriterion.lean`.
+Direct checks, targeted final build, built-module axiom audit, and umbrella wiring pass.
+
+No-go closure: rectangle geometry and Gamma terms are fully eliminated as open burdens. The
+remaining FCRJ/CCM-FU statement is prime-only: prove the uniform packet-stable lower floor
+`(AC127)` for the literal continued prime-flux contour after adding its one explicit elementary
+correction. This loop identifies that burden exactly but does not prove RH.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-27]`: classical explicit formulas use
+zero-avoiding rectangular contours and split prime-power from infinite-place terms. Corpus and
+literature searches found no packet-cofinal pole-crossing selector `(AC124)`, no route-specific
+edge-integrable identity `(AC125)--(AC126)`, and no corrected direct-prime equivalence
+`(AC127)--(AC128)` for the physical theta--Abel detector. Candidate-new content is restricted to
+this exact synthesis and unconditional formal reduction.
+
+Verdict: `[PROVED — COFINAL ADMISSIBLE RECTANGLES CAN ALWAYS CROSS EXACTLY THE CENTERED ARCH POLE;
+THE PACKET-STABLE PHYSICAL THETA-ABEL SOURCE CRITERION IS THEREFORE EQUIVALENT TO AN EXPLICITLY
+CORRECTED LITERAL CONTINUED-PRIME-FLUX LOWER-BOUND CRITERION, WITH NO GAMMA REMAINDER]`.

@@ -202,9 +202,9 @@ theorem eventually_sum_weightedMTHarmanTripleNonrectangularCount_paperAligned_le
         weightedMTHarmanTripleNonrectangularCount K
           (t := z₁ - z₀) endpoint P δ E n =
       (∑ n ∈ Finset.Icc 1 Y,
-        weightedMTHarmanNonrectangularCount K endpoint P δ E n) +
+        weightedMTHarmanNonrectangularCount K (t := z₁ - z₀) endpoint P δ E n) +
       ∑ n ∈ Finset.Icc 1 Y,
-        weightedMTHarmanSameCellCollisionCount K endpoint n := by
+        weightedMTHarmanSameCellCollisionCount K (t := z₁ - z₀) endpoint n := by
       simp only [weightedMTHarmanTripleNonrectangularCount, Finset.sum_add_distrib]
     _ ≤ C * (66 * δ) * ∑ q ∈ P, 1 / (q : ℝ) +
         C * (2 * δ) * ∑ q ∈ P, 1 / (q : ℝ) :=

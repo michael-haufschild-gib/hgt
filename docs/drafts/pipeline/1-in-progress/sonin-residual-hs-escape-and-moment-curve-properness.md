@@ -260,3 +260,104 @@ broader operator-theory and Sonine/prolate audit is complete.
 - [ ] promote to 2-fully-proven
 - [ ] formalize source theorem and fixed-aperture classification in Lean
 - [ ] decide exact fixed-aperture identity or retire block-diagonal Sonin cluster route
+## 2026-08-27 — F2-RHSE.1 formal closure: large-aperture ceiling and compactness
+
+New module:
+
+- `formal/GaloisForLFunctions/RHTower/SoninAllPrimeMomentWeldApertureCeiling.lean`
+- umbrella import: `formal/GaloisForLFunctions/RHTower.lean`
+
+### New mathematical theorem
+
+For every fixed prime-power block, the principal-subtracted Sonin residual has a
+nonzero strong limit on each normalized dilation vector as the aperture tends to
+infinity.  More precisely, the physical and Fourier cutoff projections converge
+strongly to the identity, the actual Sonin projection converges strongly to zero,
+and the formal complement `1 - P_a - F_a` converges strongly to `-1`.  Consequently
+
+`centralSoninDilationCornerResidual a p hp g → 2 • dilationSum p hp g`.
+
+The factor `2` is essential: both the actual Sonin corner and the formal complement
+survive with opposite limiting signs.  Applying the residual to arbitrarily large
+finite orthonormal shell families and using finite-family Hilbert--Schmidt domination
+proves
+
+`hsNormSq (centralSoninWeightedPrimePowerResidual a pk) → +∞`
+
+for every prime-power label `pk`.  A single fixed `(2, 0)` block therefore forces
+
+`(soninAllPrimeEnergyMoment a 0).re → +∞`.
+
+This closes the large-aperture escape and properness half of the source theorem.
+Combined with the previously formalized small-aperture floor and exact zeroth weld
+coordinate, every exact-weld witness sequence is eventually contained in a compact
+positive aperture interval and hence admits a positive finite cluster aperture.
+
+### Lean surface
+
+The module proves:
+
+- `tendsto_hsNormSq_centralSoninWeightedPrimePowerResidual_atTop`
+- `hsNormSq_centralSoninWeightedPrimePowerResidual_le_re_energyMoment_zero`
+- `tendsto_re_soninAllPrimeEnergyMoment_zero_comp_atTop`
+- `tendsto_re_soninAllPrimeEnergyMoment_zero_atTop`
+- `soninPrimeArchSingleMomentCoupling_eventually_aperture_boundedAbove`
+- `soninPrimeArchSingleMomentCoupling_eventually_aperture_mem_compactWindow`
+- `soninPrimeArchSingleMomentCoupling_exists_positive_aperture_cluster`
+- `soninAllPrimeExactTraceMomentWeld_has_aperture_compactWindow`
+
+All declarations are closed.  Axiom audit reports only `propext`,
+`Classical.choice`, and `Quot.sound`.
+
+### Verification
+
+- direct check:
+  `cd formal && lake env lean GaloisForLFunctions/RHTower/SoninAllPrimeMomentWeldApertureCeiling.lean`
+  — PASS
+- exact final module audit:
+  `lake build GaloisForLFunctions.RHTower.SoninAllPrimeMomentWeldApertureCeiling`
+  — PASS (`Build completed successfully (9526 jobs).`)
+- scratch axiom audit with `lake env lean` — PASS
+
+### Targeted literature collision audit
+
+The closest located sources are Xian-Jin Li's explicit orthogonal-projection formula
+for Sonine space (JMAA 389 (2012), 379--393), Connes--Consani's fixed-cutoff
+archimedean Sonin compression (arXiv:2006.13771), and
+Connes--Consani--Moscovici's semilocal Sonin/prolate stability programme
+(arXiv:2310.18423).  None of the searched statements gives the principal-subtracted
+weighted residual limit, its factor `2`, single-block Hilbert--Schmidt escape, or the
+resulting all-prime moment properness.  Novelty status remains **provisional after a
+targeted audit**, not an exhaustive claim.
+
+### Remaining open core
+
+The next indispensable theorem is positive-aperture continuity of
+`a ↦ soninAllPrimeEnergyMoment a r` on compact intervals.  The local burden is
+strong continuity of `a ↦ centralSoninProjection a` followed by Hilbert--Schmidt
+continuity of the principal-subtracted residual.  Once closed, continuity sends the
+positive cluster aperture above to an exact fixed-aperture weld and removes the last
+moving-aperture escape in this F2 branch.
+
+## Active conjecture F2-RHSC.1 — strong continuity of the actual Sonin projection
+
+**Conjecture.** For every `g : SoninL2`,
+
+`ContinuousOn (fun a : ℝ => centralSoninProjection a g) (Set.Ioi 0)`.
+
+**Corpus basis.** Right continuity is forced by the already formalized Burnol
+dense-union theorem
+`topologicalClosure_iSup_centralSoninCarrier`.  Left continuity is forced by the
+dual closed-intersection statement: the intersection of `K_b` over `b < a` is
+`K_a`.  The latter should follow from monotone convergence of central interval
+cutoffs and Fourier conjugacy.  Mathlib's
+`Submodule.starProjection_tendsto_closure_iSup` and the corpus theorem
+`starProjection_tendsto_iInf_of_antitone` then convert the two lattice limits into
+strong projection limits.  The order-filter bridges
+`tendsto_comp_coe_Ioi_atBot` and `tendsto_comp_coe_Iio_atTop` join them into ordinary
+positive-aperture continuity.
+
+**Failure/pivot rule.** If the full left carrier intersection cannot be closed
+directly, first formalize the exact physical-band identity
+`closure (⨆ b<a, centralPhysicalForbidden b) = centralPhysicalForbidden a`, transfer
+it by `fourierUnitary`, and recover the carrier statement through orthogonals.
