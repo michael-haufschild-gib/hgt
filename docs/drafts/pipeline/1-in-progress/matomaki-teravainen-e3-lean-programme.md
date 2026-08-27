@@ -1757,3 +1757,59 @@ Status: paper mechanism identified, not yet dependency-closed. Required Lean bri
 Lemma 2.3(i) at paper scale, (iii) layer accumulation with only polynomial `L` loss, and
 (iv) final source-scale absorption. No repaired Lemma 2.3(ii) theorem is claimed before all four
 close.
+
+### M5b, brick 21 — dependency-closed aligned repair of Lemma 2.3(ii) (2026-08-27)
+
+All four repair obligations from brick 20 are now closed. Strictly ordered disjoint prime blocks
+give a depth-uniform divisor envelope for terminal coefficients. A grid-free aggregation of all
+terminal cutoffs keeps one global `c₁`, endpoint-spill, and same-block collision family rather than
+paying the false grid factor. Fixed divisor moments give every depth layer the source
+`Y(log X)^(-3A)` saving, finite Hilbert-space accumulation costs only `(L+1)^2`, and the cubic
+source depth absorbs this into `(log X)^(-2A)`.
+
+The repaired schedule uses natural aligned endpoints whose nonempty prime blocks satisfy the exact
+source-width condition `(Q,(1+δ_A)Q]`; empty padded blocks are removed. Added exact chain-product,
+terminal-coefficient, grid-free error, paper-scale accumulation, and aligned-schedule modules. The
+unconditional capstone is
+
+```text
+eventually_exists_matomakiTeravainen_lemma23ii_repaired:
+  A ≥ 5, z₀ ≤ z₁ ≤ X, Y ≤ 4X, |α_m| ≤ B
+  ---------------------------------------------------
+  ∃ aligned source data,
+    exact terminal expansion at depth floor(log Y/log z₀),
+    ∑_{1≤n≤Y}|accumulated error(n)|²
+      ≤ 15 B²Y(log X)^(-2A).
+```
+
+This is a mathematically repaired variant, not a proof of the published literal power-grid final
+line ruled out in brick 19.
+
+### M5b, brick 22 — Proposition 2.2 count and scale classification (2026-08-27)
+
+Added exact active-chain indexing and proved that every signed main layer is the sum over strictly
+descending nonempty block chains. Active aligned blocks are bounded by
+`6(log X)^(10A+1)`, source depth by `2(log log X)^3`, and the exact sum of chain cardinalities over
+all depths by `exp((log log X)^5/2)`. Any fixed number of outer `δ_A`-adic grid choices is a fixed
+power of `log X`, so chain count times every outer partition is at most the proposition's literal
+`exp((log log X)^5)` budget.
+
+The source's final subset choice is now exact: if the full iterated block product reaches
+`X^(ε/2)`, a nonempty subset product lies in `[X^(ε/2),X^(2/11)]`; the proof splits off a single
+large factor or greedily accumulates logarithms and uses `ε ≤ 2/11`. The complementary small
+branch gives the exact Type-I scale for the pair term. For the triple term, the source grouping
+
+```text
+M₁ = E Q₂ Q₃,     M₂ = Q₁ ∏Qᵢ′
+```
+
+satisfies `M₁²M₂ ≤ X^(1-ε)` and `M₂ ≤ X^(1/4-ε)`. Literal Type I, Type I/II, and Type II
+arithmetic-function types are defined, including equation (2.11)'s ordered prime-block tuple
+coefficient and its unconditional divisor bound.
+
+Open Proposition 2.2 core: rectangularize the fourth Harman term without hiding its coupled
+conditions. Exact adic cells create (i) same-block `q₂,q₃` order collisions and (ii) the narrow
+boundary where `q₁q₂⁴ < X^(1-2ε)` changes inside one cell. Both must be source-identified and
+discharged with the existing divisor-weighted prime-pair/window bounds before assembling the full
+minorant decomposition and its supported `L²` error. Count, subset selection, and all scale
+inequalities are closed.

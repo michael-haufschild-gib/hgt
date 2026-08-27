@@ -337,13 +337,14 @@ def MTFiniteIterationSourceData.paperAlignedPaperScaleCertificate
   · intro i
     exact mtPaperAlignedEndpoint_band hδ i.1
 
-/-- Paper width eventually advances the shifted natural lower endpoint by at least one. -/
-theorem eventually_one_le_mtPaperWidth_mul_mtLowerCutoffNat_sub_one (A : ℕ) :
+/-- Paper width times the shifted natural lower endpoint eventually dominates every fixed
+nonnegative constant. -/
+theorem eventually_const_le_mtPaperWidth_mul_mtLowerCutoffNat_sub_one
+    (A : ℕ) (C : ℝ) (hC : 0 ≤ C) :
     ∀ᶠ X : ℝ in atTop,
-      1 ≤ mtPaperWidth A X * ((mtLowerCutoffNat X - 1 : ℕ) : ℝ) := by
+      C ≤ mtPaperWidth A X * ((mtLowerCutoffNat X - 1 : ℕ) : ℝ) := by
   have hdecay := eventually_two_mul_exp_neg_sqrt_log_le_log_rpow_neg
-    (B := (1 : ℝ)) (c := (1 : ℝ)) (K := ((10 * A : ℕ) : ℝ))
-    (by norm_num) (by norm_num)
+    (B := C) (c := (1 : ℝ)) (K := ((10 * A : ℕ) : ℝ)) hC (by norm_num)
   have hcutLarge := tendsto_mtLowerLogCutoff_atTop.eventually_ge_atTop (Real.log 2)
   filter_upwards [eventually_sqrt_log_le_mtLowerLogCutoff, hdecay, hcutLarge,
     Filter.eventually_ge_atTop (1 : ℝ)] with X hsqrt hdecayX hcutLargeX hX
@@ -367,25 +368,33 @@ theorem eventually_one_le_mtPaperWidth_mul_mtLowerCutoffNat_sub_one (A : ℕ) :
       Real.exp (-Real.sqrt (Real.log X)) := by
     rw [Real.exp_le_exp]
     linarith
-  have hinv : 2 * (mtLowerCutoff X)⁻¹ ≤ mtPaperWidth A X := by
+  have hinv : 2 * C * (mtLowerCutoff X)⁻¹ ≤ mtPaperWidth A X := by
     calc
-      2 * (mtLowerCutoff X)⁻¹ = 2 * Real.exp (-mtLowerLogCutoff X) := by
+      2 * C * (mtLowerCutoff X)⁻¹ =
+          2 * C * Real.exp (-mtLowerLogCutoff X) := by
         rw [mtLowerCutoff, Real.exp_neg]
-      _ ≤ 2 * Real.exp (-Real.sqrt (Real.log X)) :=
-        mul_le_mul_of_nonneg_left hexp (by norm_num)
+      _ ≤ 2 * C * Real.exp (-Real.sqrt (Real.log X)) :=
+        mul_le_mul_of_nonneg_left hexp (mul_nonneg (by norm_num) hC)
       _ ≤ mtPaperWidth A X := by
         simpa [mtPaperWidth] using hdecayX
   have hwidth : 0 ≤ mtPaperWidth A X := by
     rw [mtPaperWidth]
     exact Real.rpow_nonneg (Real.log_nonneg hX) _
-  have hone : (1 : ℝ) ≤ mtPaperWidth A X * (mtLowerCutoff X / 2) := by
+  have hconstant : C ≤ mtPaperWidth A X * (mtLowerCutoff X / 2) := by
     have hmul := mul_le_mul_of_nonneg_right hinv
       (show 0 ≤ mtLowerCutoff X / 2 by positivity)
-    have hcancel : 2 * (mtLowerCutoff X)⁻¹ * (mtLowerCutoff X / 2) = 1 := by
+    have hcancel : 2 * C * (mtLowerCutoff X)⁻¹ * (mtLowerCutoff X / 2) = C := by
       field_simp
     rw [hcancel] at hmul
-    nlinarith
-  exact hone.trans (mul_le_mul_of_nonneg_left hhalf hwidth)
+    exact hmul
+  exact hconstant.trans (mul_le_mul_of_nonneg_left hhalf hwidth)
+
+/-- Paper width eventually advances the shifted natural lower endpoint by at least one. -/
+theorem eventually_one_le_mtPaperWidth_mul_mtLowerCutoffNat_sub_one (A : ℕ) :
+    ∀ᶠ X : ℝ in atTop,
+      1 ≤ mtPaperWidth A X * ((mtLowerCutoffNat X - 1 : ℕ) : ℝ) := by
+  simpa using eventually_const_le_mtPaperWidth_mul_mtLowerCutoffNat_sub_one
+    A (1 : ℝ) (by norm_num)
 
 /-- Unconditional paper-scale schedule and repaired terminal-depth error bound. -/
 theorem eventually_exists_paperAlignedSourceData_errorBound

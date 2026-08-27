@@ -30,9 +30,9 @@ C1 already has finite adelic bands, finite trace formula, positive trace-class n
 
 ## Current open core
 
-C1-GMP-TR.1--4b are closed in Lean. Prove or refute the remaining explicit scalar identity
-`rawFirstMoment - ‖barycenter‖² = thetaCuspNormalizedEvenMoment 1 / 2`; do not claim a completed
-Weil landing before this comparison closes.
+C1-GMP-TR.1--4e are closed in Lean. Prove or refute the remaining explicit scalar identity
+`rawFirstMoment - ∑u physicalNode(u) * occupation(u)^2 = thetaCuspNormalizedEvenMoment 1 / 2`;
+do not claim a completed Weil landing before this comparison closes.
 
 ## Novelty discipline
 
@@ -55,7 +55,7 @@ Generic variance identities are classical. Novelty is not claimed for them. Cand
   positive and therefore `tr D > 0`.
 - [x] **C1-GMP-TR.3** Full trace decomposition:
   \[
-    \operatorname{tr}(C+D)=\operatorname{tr}C+operatorname{tr}D,
+    \operatorname{tr}(C+D)=\operatorname{tr}C+\operatorname{tr}D,
   \]
   with both terms identified as exact real source masses. Hence global-mean completion raises the
   local covariance first trace strictly.
@@ -88,8 +88,23 @@ Generic variance identities are classical. Novelty is not claimed for them. Cand
   Each interior physical cell has exactly four incident packet coordinates; `(0,0)` has exactly
   one strictly positive contribution. Hence barycenter is nonzero and global trace is strictly
   below raw first moment.
+- [x] **C1-GMP-TR.4e** Conserved rank-two occupation and capacity reduction. The four coordinate
+  marginals of every packet sum exactly to `2`. After removing the physical-node square root,
+  the global occupation amplitudes are nonnegative, summable, and have total mass `2`; moreover
+  \[
+    \sum_u |\operatorname{incidence}(u)|^2
+      =\sum_u n_u\,\operatorname{occupation}(u)^2.
+  \]
+  The two-coordinate law sharpens the raw packet and global ceilings from `2/25` to `8/125`.
+  Every finite physical window obeys the reciprocal-node resistance/capacity inequality, and
+  every packet supplies a four-cell certificate with captured mass at least `2 a_z`. Its
+  resistance is now closed exactly as
+  \[
+    ((e+1)^2+(e+2)^2)\left(B_p^{-1}+B_q^{-1}\right),
+  \]
+  where `B_p,B_q` are the two depth-zero reciprocal-gap nodes.
 - [ ] **C1-GMP-TR.5** Prove or refute equality of this explicit scalar with completed Xi's first
-  coefficient. Current source ceiling `2/25` is compatible with audited theta bounds and therefore
+  coefficient. Sharpened source ceiling `8/125` is compatible with audited theta bounds and therefore
   is not itself a no-go.
 
 ## Lean realization
@@ -115,6 +130,15 @@ Generic variance identities are classical. Novelty is not claimed for them. Cand
   - `gammaSewnCriticalPhysicalPluckerGlobalMeanBarycenter_ne_zero`
   - `gammaSewnCriticalPhysicalPluckerGlobalMeanPolarizedNuclearTraceMass_lt_rawFirstMoment`
   - `gammaSewnCriticalPhysicalPluckerGlobalMeanPolarizedSourceTrace_eq_theta_iff_incidenceAmplitude`
+  - `sum_gammaSewnCriticalAdjacentPrime_PluckerCoordinateMean`
+  - `gammaSewnCriticalPhysicalPlucker_packetRawFirstMoment_lt_eight_div_oneTwentyFive`
+  - `tsum_gammaSewnCriticalPhysicalPluckerGlobalMeanOccupationIncidenceAmplitude_eq_two`
+  - `gammaSewnCriticalPhysicalPluckerGlobalMeanCollisionEnergy_eq_weighted_occupation_sq`
+  - `gammaSewnCriticalPhysicalPluckerGlobalMean_finiteOccupation_cauchy`
+  - `gammaSewnCriticalPhysicalPlucker_packetResistance_eq`
+  - `gammaSewnCriticalPhysicalPlucker_packetCollisionCapacity`
+  - `gammaSewnCriticalPhysicalPlucker_packetCollisionCapacity_closed`
+  - `gammaSewnCriticalPhysicalPluckerGlobalMeanPolarizedSourceTrace_eq_theta_iff_weighted_occupation_sq`
 
 ## Verification
 
@@ -123,7 +147,8 @@ Generic variance identities are classical. Novelty is not claimed for them. Cand
 - `lake build GaloisForLFunctions.HTGeometry.InfiniteHilbertDispersion` — PASS (`1935/1935`).
 - `lake build GaloisForLFunctions.RHTower.GammaSewnMobiusApertureStokesGlobalMeanFirstTrace` — PASS (`12792/12792`).
 - Axiom audit of coordinate positivity, packet separation, positive trace, both exact trace laws,
-  infinite Hilbert dispersion, source collapse, strict ceiling, and Xi landing criterion — PASS;
+  infinite Hilbert dispersion, source collapse, rank-two occupation conservation, `8/125` ceiling,
+  weighted collision factorization, finite capacity certificates, and Xi landing criteria — PASS;
   only `propext`, `Classical.choice`, `Quot.sound`.
 - Global formal lint — new modules reachable and clean; repository-wide gate remains red only on
   unrelated concurrent unreachable modules in `RHTower/Sieve` and `HTGeometry`.
@@ -131,20 +156,25 @@ Generic variance identities are classical. Novelty is not claimed for them. Cand
 ## Literature audit update
 
 Covariance operators of Hilbert-valued random variables, their trace-class positivity, and
-second-moment-minus-barycenter identities are standard. Literature therefore defeats any novelty
-claim for the generic variance algebra. No audited source concerns this arithmetic prime-depth
-Pluecker family or identifies its nonlocal source trace with a completed Xi coefficient. Candidate
-novelty remains only the corpus-specific exact trace package; no broad publication claim is made.
+second-moment-minus-barycenter identities are standard. Fixed-size/projection determinantal point
+process literature also makes rank conservation of inclusion marginals standard, so no novelty is
+claimed for the abstract mass-two law or finite Cauchy capacity inequality. No audited source
+concerns this arithmetic prime-depth Pluecker family, its exact conserved physical occupation, or
+its completed-Xi coefficient reduction. Candidate novelty remains only the corpus-specific exact
+trace/occupation package; no broad publication claim is made.
 
 ## Sharpened open core
 
-C1 first-trace landing is no longer an operator-trace or double-series problem. It is the single
-arithmetic identity
+C1 first-trace landing is no longer an operator-trace, double-series, square-root incidence, or
+rank-conservation problem. It is the single arithmetic identity
 \[
   \sum_z a_z\sum_i n_{z,i}\mu_{z,i}
-    -\left\|\sum_z a_zm_z\right\|^2
+    -\sum_u n_u\,\operatorname{occupation}(u)^2
   =\Theta_1/2.
 \]
-Generic covariance literature does not decide this corpus-specific identity. Barycenter incidence
-is now exposed as an explicit four-neighbor lattice square. Next loop must estimate that positive
-collision penalty sharply enough to separate the audited theta interval, or prove exact equality.
+Here `occupation ≥ 0`, `∑u occupation(u)=2`, and every packet provides a finite four-cell capacity
+lower bound for the collision penalty with a closed prime/depth resistance. Generic covariance/DPP
+literature does not decide this corpus-specific identity. Next loop must prove a useful cofinal
+block-weight floor (equivalently a denominator upper bound), combine several bounded-overlap packet
+capacities, or sharpen the raw weighted node expectation enough to separate the audited theta
+interval; otherwise prove exact equality.

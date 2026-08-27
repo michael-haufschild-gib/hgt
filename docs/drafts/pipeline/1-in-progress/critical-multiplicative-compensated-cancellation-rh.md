@@ -7404,3 +7404,310 @@ content is restricted to `(AC91)--(AC92)` and the resulting exact two-escape cla
 
 Verdict: `[PROVED — FINITE MAXIMAL PHASE FIBERS CANNOT CANCEL IN THETA-ABEL APERTURE L2;
 ONLY NONSUMMABILITY OR NONATTAINED RIGHTMOST SUPPORT REMAIN]`.
+
+## Conjecture loop 75 — smooth-probe closure of countable summability
+
+### Failed escape conjecture `[THE ACTUAL XI PACKET IS INTRINSICALLY TOO LARGE FOR COUNTABLE DOMINANCE]`
+
+Unsquared raw zero weights are not expected to be `ell¹`, but this is not an invariant obstruction.
+A single fixed smooth compact-aperture probe gives reciprocal-height decay; squaring it matches the
+multiplicity-exact inverse-square summability of the Xi divisor without erasing any right-Xi point.
+
+### Exact smooth-probe survivor `[PAPER-PROVED] [LEAN-PROVED] [POSITIVE SURVIVOR]`
+
+On actual divisor support with `Re rho>1/2`, set
+
+```text
+w_rho=rho-1/2,  z_rho=rho-1,
+lambda_f(rho)=mult(rho) Laplace(f)(w_rho)^2.                     (AC93)
+```
+
+Corpus smooth-profile decay and Xi inverse-square summability give
+
+```text
+sum_rho |lambda_f(rho)| < infinity.                              (AC94)
+```
+
+The critical strip and unconditional Xi height gap give uniform literal theta--Abel bounds
+
+```text
+|exp(cz_rho)-1|<=2,
+|(z_rho+1)/z_rho|<=2,
+||exp(-z_rho u)||_L2([0,A])<=K_A.                               (AC95)
+```
+
+Therefore the complete multiplicity-weighted physical mode family is norm-summable:
+
+```text
+sum_rho ||lambda_f(rho)(exp(cz_rho)-1)(z_rho+1)/z_rho
+  [u |-> exp(-z_rho u)]||_L2 < infinity.                         (AC96)
+```
+
+For every nonempty finite strictly isolated rightmost support layer `D`, dense-residual profile
+nonvanishing selects one fixed `f`; support injectivity and Loop 74 handle all sampled-phase
+collisions. With `beta=Re z_rho` on `D`, Lean proves
+
+```text
+exp((beta+1/2)n) N_n(f) does not tend to 0 in L².                (AC97)
+```
+
+Here `-1/2<beta<0` follows automatically from actual Xi geometry. No summability,
+phase-injectivity, coefficient-nonvanishing, or wall hypothesis survives.
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeApertureThetaAbelSmoothProbeSummability.lean`.
+Direct checking, targeted build, axiom audit, and umbrella wiring pass.
+
+No-go closure: norm nonsummability is not an intrinsic infinite-tail escape. A fixed smooth probe
+repairs it while remaining nonzero at every actual right-Xi support point. Sole surviving analytic
+escape is now exact: positive transverse real parts have no nonempty finite strictly isolated
+maximum.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-27]`: smooth explicit-formula weights,
+integration-by-parts Laplace decay, inverse-square Xi summability, and convolution-square probes are
+classical. Corpus and primary-literature audit found no exact synthesis with restored theta--Abel
+coefficients, physical aperture `L²`, phase-fiber rigidity, and the resulting one-escape
+classification. Candidate-new content is restricted to `(AC95)--(AC97)` and that classification.
+
+Verdict: `[PROVED — A FIXED SMOOTH PROBE MAKES THE COMPLETE MULTIPLICITY-WEIGHTED RIGHT-XI
+THETA-ABEL PACKET NORM-SUMMABLE; ONLY NONATTAINMENT OF RIGHTMOST SUPPORT REMAINS]`.
+
+## Conjecture loop 76 — Landau closure of nonattained rightmost support
+
+### Failed escape conjecture `[NO ATTAINED RIGHTMOST ZERO DEFEATS EVERY COHERENT DETECTOR]`
+
+Dominant-layer asymptotics need a maximum, but the corpus coefficient-generic Xi Landau theorem
+does not. It detects a pole at every actual support point and uses the transverse supremum only as
+an abscissa boundary. The sole issue is whether the complete physical theta--Abel factors define a
+noncensoring inverse-square coefficient system.
+
+### Exact maximum-free survivor `[PAPER-PROVED] [LEAN-PROVED] [POSITIVE SURVIVOR]`
+
+For a multiplicity-exact right-Xi copy `q`, put
+
+```text
+w_q=rho_q-1/2,  z_q=rho_q-1,
+b_f,A,c(q)=Laplace(f)(w_q)^2 (exp(cz_q)-1)(z_q+1)/z_q
+             * (1-exp(-Az_q))/z_q.                              (AC98)
+```
+
+Actual Xi strip geometry and the unconditional ordinate gap imply
+
+```text
+-1/2<Re z_q<0,  1<|Im z_q|<=|z_q|,                              (AC99)
+
+|exp(cz_q)-1|<=2,
+|(z_q+1)/z_q|<=2,
+|(1-exp(-Az_q))/z_q|<=1+exp(A/2).                               (AC100)
+```
+
+For positive `A,c`, every factor in `(AC98)` is nonzero on one generic fixed smooth profile.
+Squared smooth Laplace decay gives an inverse-square majorant; conjugation and multiplicity-fibre
+invariance hold factorwise. Thus `(AC98)` is an exact `XiRightCoefficientSystem`.
+
+Define the real log-sampled scalar carrier
+
+```text
+H_f,A,c(n)=Re[2 sum_q b_f,A,c(q)n^(rho_q-1/2)].                 (AC101)
+```
+
+For every nonempty right-Xi divisor, Landau pole tomography gives the maximum-free law
+
+```text
+for every B in R and N in N, exists n>=N with H_f,A,c(n)<B.      (AC102)
+```
+
+Therefore `H_f,A,c` does not tend to zero. Since RH empties right-Xi copies and false RH supplies
+one, Lean proves the closed criterion
+
+```text
+RH <-> exists generic smooth f, exists C,N,
+        for every n>=N, 0<=H_f,A,c(n)+C.                        (AC103)
+```
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeApertureThetaAbelLandauNoMaximum.lean`.
+Direct checking, targeted build, axiom audit, and umbrella wiring pass.
+
+No-go closure: nonattainment, nonisolation, and infinite right-support accumulation are no longer
+divisor-side escapes. Loops 73--76 remove phase collisions, countable-tail nonsummability, and the
+absence of a maximal real-part zero. The remaining RH-bearing burden is source-side and exact:
+transport the actual centered theta--Abel prime response to `(AC101)`, or dominate their difference
+strongly enough that the desired RH-scale source estimate yields an eventual lower bound in
+`(AC103)`. No such source-to-divisor comparison is asserted here.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-27]`: Landau's positive-coefficient Dirichlet-series
+theorem, smooth explicit formulae, compact Laplace windows, and inverse-square Xi summability are
+classical. Corpus and primary-literature searches found no exact synthesis of the squared generic
+smooth probe, physical theta--Abel window/restoration/aperture factors, multiplicity-exact pole
+tomography, and maximum-free RH criterion `(AC98)--(AC103)`. Candidate-new content is restricted to
+that route-specific synthesis.
+
+Verdict: `[PROVED — NONATTAINMENT OF RIGHTMOST XI SUPPORT CANNOT HIDE THE COMPLETE SMOOTHED
+PHYSICAL THETA-ABEL SCALAR CARRIER; ALL IDENTIFIED DIVISOR-SIDE INFINITE-TAIL ESCAPES ARE CLOSED,
+SOURCE-TO-DIVISOR TRANSPORT REMAINS]`.
+
+## Conjecture loop 77 — entire physical-energy Weil/source weld
+
+### Failed obstruction conjecture `[THE RESTORED THETA-ABEL POLE PREVENTS AN ENTIRE WEIL TEST]`
+
+The restored factor is meromorphic in isolation, but the physical logarithmic window cancels its
+pole exactly. In centered coordinate `w=rho-1/2`, with `z=w-1/2`, define
+
+```text
+A_d(u)=(1-exp(-du))/u,
+P_L,A,c(w)=A_L(w)(w+1/2)A_c(1/2-w)A_A(w-1/2).                  (AC104)
+```
+
+Every factor in `(AC104)` is entire, and on right-Xi support
+
+```text
+P_L,A,c(w)=A_L(w)(exp(cz)-1)((z+1)/z)A_A(z).                   (AC105)
+```
+
+Thus `(AC105)` is the exact scalar physical theta--Abel amplitude, not a surrogate.
+
+### Exact source-weld survivor `[PAPER-PROVED] [LEAN-PROVED] [POSITIVE SURVIVOR]`
+
+For `L,A,c>0`, `P_L,A,c` is nonzero at every right-Xi copy and satisfies
+
+```text
+|P_L,A,c(± i alpha_q)| <= C_L,A/|alpha_q|,
+C_L,A=4(1+exp A)(1+exp(|L|/2)).                                (AC106)
+```
+
+Set `b(q)=P_L,A,c(rho_q-1/2)^2` and form the bilateral transform
+
+```text
+F_a(s)=exp(a i s)P_L,A,c(i s)+exp(-a i s)P_L,A,c(-i s).        (AC107)
+```
+
+Lean proves that `F_a` is entire, even, Schwarz-symmetric, self-sharp, and square-summable on the
+full multiplicity-exact Xi divisor. Expanding `F_a^2`, selecting the growing edge by sign of
+`Re(i alpha_q)`, and using `a>=0` gives the aperture-uniform remainder law
+
+```text
+|Weil(F_a,F_a)-sum_q D_a(i alpha_q)|
+ <= 4 C_L,A^2 sum_q |alpha_q|^-2.                              (AC108)
+```
+
+At `a=log(n)/2`, divisor reflection folds the dominant sum exactly to
+
+```text
+sum_q D_(log n/2)(i alpha_q)
+ = Re-embedded [2 sum_(right q) b(q)n^(rho_q-1/2)].             (AC109)
+```
+
+The maximum-free Landau theorem plus the fixed error `(AC108)` yields
+
+```text
+not RH ==> for every B,N, some n>=N has
+  Re Weil(F_(log n/2),F_(log n/2))<B.                           (AC110)
+```
+
+The corpus cofinal Guinand--Weil rectangle law applies because `F_a^2` is entire and summable. It
+identifies finite normalized contours of the independently defined continued prime--archimedean
+source with enclosed spectral sums and makes them converge to the full Weil value. Hence
+
+```text
+not RH ==> for every B,N, some n>=N and admissible rectangle have
+  Re[(2 pi i)^-1 contour(F_(log n/2)^2 * continued-source)]<B.  (AC111)
+```
+
+Lean also proves the closed unit-family criterion
+
+```text
+RH <-> for every n with 1<log(n)/2,
+  0<=Re Weil(F^unit_(log n/2),F^unit_(log n/2)).                (AC112)
+```
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeApertureThetaAbelEnergyWeilSource.lean`.
+Direct checking, scratch axiom audit, targeted build, and umbrella wiring pass.
+
+No-go closure: neither the restored-factor pole, analytic admissibility, full-divisor reflection,
+nor an aperture-growing remainder blocks source transport. Loop 77 carries the exact physical
+theta--Abel energy from its right-Xi Landau series through a full self-sharp Weil value to cofinal
+continued prime--archimedean source contours. Remaining burden is now a source sign theorem:
+unconditionally lower-bound `(AC111)`, or identify its prime contribution with a manifestly
+nonnegative FCRJ energy while controlling archimedean and boundary terms.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-27]`: Weil positivity, Guinand--Weil explicit
+formulae, compact Laplace windows, and Landau oscillation are classical. Corpus and primary
+literature searches found no exact synthesis of pole cancellation `(AC104)--(AC105)`, squared
+physical noncensoring, uniform two-edge error `(AC108)`, maximum-free Landau transfer `(AC110)`,
+and cofinal continued-source divergence `(AC111)`. Candidate-new content is restricted to that
+route-specific synthesis.
+
+Verdict: `[PROVED — THE EXACT PHYSICAL THETA-ABEL ENERGY IS AN ENTIRE NONCENSORING SELF-SHARP
+WEIL FAMILY; FALSE RH FORCES ITS CONTINUED PRIME-ARCHIMEDEAN SOURCE CONTOURS COFINALLY BELOW EVERY
+REAL LEVEL. REMAINING BURDEN IS THE SOURCE-SIDE LOWER-BOUND/PASSIVITY THEOREM]`.
+
+## Conjecture loop 78 — packet-stable cofinal source criterion
+
+### Failed sufficiency conjecture `[ONE FAVORABLE SOURCE RECTANGLE PER APERTURE IS ENOUGH]`
+
+Existence of one admissible rectangle near the full Weil value proves source realizability but is
+not itself a source-side converse: favorable rectangle selection could avoid a prescribed unstable
+finite packet. The missing quantifier is exact and finite.
+
+For the Loop-77 physical-energy transform `F_n`, define
+
+```text
+C_n(z1,z2)=(2 pi i)^-1 contour_[z1,z2]
+  (F_n(z)^2 * continuedPrimeArchSourceRelativeTrace(z)).        (AC113)
+```
+
+A rectangle is packet-admissible above `B` when it is positively oriented, contains a prescribed
+finite Xi multiplicity packet `t`, every point on all four edges is explicit-formula admissible,
+and `B<=Re C_n(z1,z2)`.
+
+### Exact packet-stable survivor `[PAPER-PROVED] [LEAN-PROVED] [POSITIVE SURVIVOR]`
+
+The exact cofinal source predicate is
+
+```text
+exists B,N0, for every n>=N0 with L<log(n)/2,
+  for every finite packet t,
+    exists a packet-admissible source rectangle above B.        (AC114)
+```
+
+Lean proves for every fixed `L,A,c>0`
+
+```text
+(AC114) <-> RH,                                                  (AC115)
+```
+
+and in particular a premise-free unit-parameter specialization.
+
+Proof of `RH -> (AC114)`: the complete self-sharp Weil value is nonnegative. Given `t`, choose a
+finite absolute-tail control packet `u` and apply cofinal admissible rectangle selection to
+`t union u`. Exact residues put the normalized source contour within `1` of the full Weil value,
+so `B=-1` works uniformly.
+
+Proof of `(AC114) -> RH`: under false RH, Loop 77 chooses `n` beyond `N0` with full Weil value below
+`B-1`. Absolute summability gives a finite packet `t` such that every finite superset sum is within
+`1/2` of that value. Any admissible rectangle containing `t` is, by the exact residue law, one of
+those supersets, hence has source value below `B-1/2`. This contradicts `(AC114)`.
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeApertureThetaAbelEnergyCofinalSourceCriterion.lean`.
+Direct checking, scratch axiom audit, targeted build, and umbrella wiring pass.
+
+No-go closure: favorable-contour selection is eliminated. Packet stability is sufficient because
+absolute convergence makes one large forced packet control every finite extension; it is necessary
+because false RH produces an aperture whose entire cofinal tail lies below any proposed floor.
+Remaining burden is now syntactically source-side: prove `(AC114)` directly. A producer that only
+returns one preferred contour per aperture is too weak unless it remains valid after arbitrary
+finite-packet enlargement.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-27]`: cofinal finite sums and Guinand--Weil
+rectangle residues are classical. Corpus and primary-literature searches, including 2026 work on
+finite Guinand--Weil dictionaries and compact-window positivity, found no physical theta--Abel
+criterion with the universal packet-extension quantifier `(AC114)` or the bidirectional absolute-
+tail proof of `(AC115)`. Candidate-new content is restricted to that exact source predicate and
+equivalence.
+
+Verdict: `[PROVED — EVENTUAL PACKET-STABLE LOWER BOUNDEDNESS OF THE EXACT PHYSICAL THETA-ABEL
+CONTINUED SOURCE CONTOURS IS EQUIVALENT TO RH; ONE FAVORABLE CONTOUR IS INSUFFICIENT, WHILE EVERY
+FINITE-PACKET EXTENSION IS EXACTLY SUFFICIENT]`.

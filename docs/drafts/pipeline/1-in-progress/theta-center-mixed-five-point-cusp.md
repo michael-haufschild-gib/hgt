@@ -5,7 +5,7 @@
 - **Type:** CANDIDATE
 - **Source:** rh-current-frontier-map.md · route TCD
 - **Statement:** For every aperture `a > 0`, the equispaced five-node Gram matrix of the theta center-mixed density is positive definite on a punctured neighborhood of the coalesced node.
-- **Status:** `[RANK-FIVE SOURCE SEAM LEAN-PROVED] [OPEN D1 CHAMBER LEAN-PROVED] [ORDER-EIGHT LIKELIHOOD LADDER LEAN-PROVED] [FULL GRADE-TWO ABSORPTION LEAN-PROVED] [GLOBAL D1 OPEN]`
+- **Status:** `[RANK-FIVE SOURCE SEAM LEAN-PROVED] [OPEN D1 CHAMBER LEAN-PROVED] [ORDER-EIGHT LIKELIHOOD LADDER LEAN-PROVED] [FULL EVEN-FOCK BUDGET ABSORPTION LEAN-PROVED] [ORDINARY SOURCE LANDING LEAN-PROVED] [EXACT BELL-GRADE DECOMPOSITION LEAN-PROVED] [HIGHER EVEN BELL GRADES ABSORBED] [GRADE-TWO PAIR TRACE OPEN] [GLOBAL D1 OPEN]`
 
 ## Goal
 
@@ -75,6 +75,30 @@ Normalized ray coefficient is at most corresponding point coefficient, giving fa
 ```
 Hence each ordered dominant--stable tail costs at most `(5200/11)A⁸e^{-3A}`, stable--stable square costs at most `A⁸e^{-3A}`, and all non-dominant pairs cost at most `(10411/11)A⁸e^{-3A}`. Dominant single mass exceeds `(17496/5)A⁸e^{-3A}`; non-dominant total fits strictly inside its one-third reserve. Therefore complete ordered grade-two sector—dominant, both mixed orientations, and stable square—is strictly smaller than dominant one-particle mass. Remaining logarithmic/D1 burden starts at higher even Fock grades.
 
+**Higher-even Fock budget absorption `[PROVED HERE]`.** Sharpened exact exponential certificates give
+```text
+Σ_{n≥3} n⁴(n²-1)⁸e^{-π(n²-1)} ≤ 100/1999,
+Σ_{n≥3} n⁴e^{-π((n²-1)-3)} ≤ 20/999999.
+```
+The coupled dominant monomial ray costs at most sixteen point monomials; every stable ray costs at most three. Consequently complete one-particle eighth monomial mass is at most `1300000 A⁸e^{-3A}`. For theta activity `r`, corpus theorem `399r<1` and order-eight convex fusion give the exact infinite logarithmic scalar
+```text
+Σ_{q=4,6,8,...} q⁷ r^(q-1) < 1/3000.
+```
+All higher even grades therefore cost at most `(1300/3)A⁸e^{-3A}`. Combined with sharpened non-dominant pair cost `(376399/1999)A⁸e^{-3A}` and dominant `3/2` reserve, source-defined eighth Fock odd weight is strictly positive for every `x≥0`. Remaining burden is no longer an estimate: prove exact identity connecting this completed Fock budget to literal eighth logarithmic jet entering D1.
+
+**Ordinary source landing `[PROVED HERE]`.** Complete ordered pair sector and higher-even loss are nonnegative. Splitting the summable one-particle score tower at dominant atom shows Fock reserve is strictly below dominant mass, hence below full unnormalized ordinary score. Exact partition normalization and `399r<1` give `1<256/(1+r)`, so reserve lands strictly inside literal normalized ordinary eighth source jet. Thus remaining log-J8 connector has one precise missing identity: ordered convolution/Fock grades must be matched to negative even Bell grades of `d⁸ log(1+r(x))`; no positivity, summability, source-scaling, or normalization estimate remains.
+
+**Exact Bell decomposition and higher-even absorption `[PROVED HERE]`.** Literal log-J8 has the exact finite identity
+```text
+J8_log = b8 - B₈,₂ + 2B₈,₃ - 6B₈,₄ + 24B₈,₅ - 120B₈,₆
+         + 720B₈,₇ - 5040B₈,₈.
+```
+Ordinary source jets `b1,...,b6` are strictly positive, so odd grades `B₈,₃,B₈,₅,B₈,₇` are favorable. New four-, six-, and eight-factor likelihood moment laws cost exactly `p³,p⁵,p⁷`. Their coefficient sums fit the corresponding `4⁷r³,6⁷r⁵,8⁷r⁷` Fock terms. Consequently
+```text
+6B₈,₄ + 120B₈,₆ + 5040B₈,₈ ≤ (256/P) · higherEvenFockLoss.
+```
+The exact logarithmic connector is therefore reduced to one theorem: normalized Bell grade two must land inside `(256/P)` times complete ordered pair score mass.
+
 ### D2 — strict three-by-three mixture law
 
 If D1 holds pointwise for the reflected source field, integrate its quadratic forms against the positive center-mixed radial weight. Prove strict positivity of the integrated matrix, then its determinant. This generalizes the corpus theorem `integral_twoByTwo_det_pos` by one rank.
@@ -105,6 +129,10 @@ Exact comparison now separates the statements. Planat--Solé prove negativity of
 - `RHTower/ThetaCuspLikelihoodEighthOrdinaryPositivity.lean`: strict full ordinary eighth-jet positivity and sharpened `(128/15)A⁸m₈` normalized-moment lower bound.
 - `RHTower/ThetaCuspLikelihoodEighthDominantPairCompensation.lean`: degree-twenty exponential fusion and strict dominant grade-two absorption.
 - `RHTower/ThetaCuspLikelihoodEighthStablePairCompensation.lean`: exact atom-pair core, factor-nine transform envelope, Gaussian stable-tail budgets, and complete ordered grade-two absorption.
+- `RHTower/ThetaCuspLikelihoodEighthFockSector.lean`: sharp stable Gaussian bounds, full one-particle monomial budget, `q⁷` higher-even summability, and strict completed even-Fock reserve.
+- `RHTower/ThetaCuspLikelihoodEighthFockTraceConnector.lean`: positivity of completed losses and strict coefficient-faithful landing inside literal ordinary eighth source jet.
+- `RHTower/ThetaCuspLikelihoodEighthBellGrades.lean`: exact literal log-J8 Bell decomposition, positivity of all favorable odd grades, and reduction to four even losses.
+- `RHTower/ThetaCuspLikelihoodEighthBellHigherEvenAbsorption.lean`: iterated normalized-moment product laws, exact monomial trace, and absorption of Bell grades four, six, and eight into higher-even Fock loss.
 - `RHTower/ThetaCuspFullReflectionEighthLogJets.lean`: actual complete-source seventh/eighth log jets and normalized D1 polynomial.
 - `RHTower/ThetaCuspFullReflectionEighthBellTransfer.lean`: exact raw-to-log D1 connector through Bell order eight.
 - `RHTower/ThetaCuspFullReflectionEighthHankelSeam.lean`: strict source seam theorem and nontrivial open D1 chamber.
@@ -112,8 +140,8 @@ Exact comparison now separates the statements. Planat--Solé prove negativity of
 ## No-go closure
 
 - **Exact killing theorem/mechanism:** open
-- **Strongest positive survivor:** exact atom-ray compensation, strict ordinary eighth likelihood jet with `1/30` leading-moment survival, and strict absorption of the complete infinite ordered grade-two sector; D1 holds on a nontrivial open center chamber.
-- **New insight:** rank five separates exactly into previously closed odd rank-two curvature and new even rank-three eighth-jet determinant. Pointwise eighth-score sign and fixed-constant binary fusion are wrong invariants. Exact ray convolution plus gap-separated Gaussian activity closes all two-particle chambers: factor-nine transform growth is paid by order-eight stable moment `25/99` and shifted activity `1/999`. Remaining obstruction begins at higher even Fock grades.
+- **Strongest positive survivor:** exact atom-ray compensation, strict ordinary eighth likelihood jet with `1/30` leading-moment survival, strict absorption of complete infinite even-Fock budget, exact literal Bell decomposition, and complete absorption of negative Bell grades four, six, and eight; D1 holds on a nontrivial open center chamber.
+- **New insight:** rank five separates exactly into previously closed odd rank-two curvature and new even rank-three eighth-jet determinant. Pointwise eighth-score sign and fixed-constant binary fusion are wrong invariants. Exact ray convolution and gap-separated Gaussian activity close all two-particle chambers; logarithmic `1/q` cancellation reduces every higher even grade to `Σq⁷r^(q-1)<1/3000`. Iterated moment multiplication identifies Bell grades `4,6,8` with finite subterms of that scalar. Remaining obstruction is only exact ordered-pair trace identification for Bell grade two, not higher sectors, tail size, normalization, or source scaling.
 - **Status:** active paper/Lean conjecture loop
 
 ## Log
@@ -124,3 +152,6 @@ Exact comparison now separates the statements. Planat--Solé prove negativity of
 - 2026-08-27 — disproved pointwise eighth-score route at `47/5`; proved exact `n=2` Dirac--ray compensation, stable-tower positivity, full ordinary eighth-jet positivity, and quantitative `1/100` eighth-moment survival. Global logarithmic grade-two compensation remains open.
 - 2026-08-27 — sharpened one-particle survival from `1/100` to `1/30`; proved exact two-ray transform and degree-twenty exponential-Taylor absorption of dominant `(3,3)` two-particle sector. Fixed fusion constants failed and were replaced by activity-coupled fusion.
 - 2026-08-27 — strengthened dominant absorption to a `3/2` reserve; proved factor-nine non-dominant pair envelope, exact `25/99` and `1/999` Gaussian budgets, and strict absorption of complete infinite ordered grade-two sector. Higher even Fock grades remain.
+- 2026-08-27 — sharpened Gaussian budgets to `100/1999` and `20/999999`; proved dominant/stable monomial-ray factors `16`/`3`, full one-particle budget, `Σq⁷r^(q-1)<1/3000`, and strict absorption of complete even-Fock budget. Exact connector to literal logarithmic J8 remains.
+- 2026-08-27 — proved complete loss nonnegativity and strict Fock-reserve landing into literal normalized ordinary eighth source jet. Remaining connector is exact ordered-convolution to negative-even Bell-grade identification.
+- 2026-08-27 — proved exact literal order-eight Bell-grade decomposition, positivity of favorable odd grades, four/six/eight-factor normalized-moment laws, exact full monomial trace, and absorption of Bell grades four, six, and eight into completed higher-even Fock loss. Exact log-J8 positivity is reduced to grade-two ordered pair trace.
