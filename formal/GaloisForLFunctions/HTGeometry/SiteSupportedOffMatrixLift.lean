@@ -25,6 +25,7 @@ def offMatrixRestriction (A : Finset Q)
     (V : Matrix (Config Q) (Config Q) ℂ) : Matrix (Off A) (Off A) ℂ :=
   fun x y => V (falseOnExtension A x) (falseOnExtension A y)
 
+omit [Fintype Q] in
 theorem offMatrixLift_injective (A : Finset Q) :
     Function.Injective (offMatrixLift A) := by
   intro B C h

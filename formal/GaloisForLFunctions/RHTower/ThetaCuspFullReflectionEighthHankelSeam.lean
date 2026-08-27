@@ -10,7 +10,7 @@ polynomial. After shifting the squared modular scale by `191/10`, every coeffici
 positive, giving an exact non-interval seam certificate.
 -/
 
-open Real
+open Real Filter Topology
 
 namespace RHTower
 
@@ -102,6 +102,33 @@ theorem thetaCuspFullSourceReflectionEighthHankelCurvature_zero_pos :
     0 < thetaCuspFullSourceReflectionEighthHankelCurvature 0 := by
   rw [thetaCuspFullSourceReflectionEighthHankelCurvature_zero_eq_modularClosure]
   exact thetaCuspReflectedEighthSeamModularClosureValue_pos
+
+/-- Rank-three reflected eighth curvature varies continuously with source coordinate. -/
+theorem continuous_thetaCuspFullSourceReflectionEighthHankelCurvature :
+    Continuous thetaCuspFullSourceReflectionEighthHankelCurvature := by
+  have hj (n : ℕ) : Continuous (iteratedDeriv n thetaCuspFullSource) := by
+    rw [iteratedDeriv_thetaCuspFullSource]
+    exact continuous_iff_continuousAt.mpr fun x =>
+      (hasDerivAt_thetaCuspFullDerivative n x).continuousAt
+  unfold thetaCuspFullSourceReflectionEighthHankelCurvature
+    HilbertMetric.signedEvenHankelThreeDet
+    HilbertMetric.reflectedProductSecondJet
+    HilbertMetric.reflectedProductFourthJet
+    HilbertMetric.reflectedProductSixthJet
+    HilbertMetric.reflectedProductEighthJet
+  fun_prop
+
+/-- Nontrivial open theta-source chamber with strict rank-three reflected eighth curvature. -/
+theorem exists_thetaCuspFullSourceReflectionEighthHankelCurvature_pos_near_zero :
+    ∃ delta : ℝ, 0 < delta ∧ ∀ x : ℝ, |x| < delta →
+      0 < thetaCuspFullSourceReflectionEighthHankelCurvature x := by
+  have hev : ∀ᶠ x : ℝ in 𝓝 0,
+      0 < thetaCuspFullSourceReflectionEighthHankelCurvature x :=
+    continuous_thetaCuspFullSourceReflectionEighthHankelCurvature.continuousAt.eventually
+      (eventually_gt_nhds thetaCuspFullSourceReflectionEighthHankelCurvature_zero_pos)
+  obtain ⟨delta, hdelta, hball⟩ := Metric.eventually_nhds_iff.mp hev
+  refine ⟨delta, hdelta, fun x hx => hball ?_⟩
+  simpa [Real.dist_eq] using hx
 
 end
 

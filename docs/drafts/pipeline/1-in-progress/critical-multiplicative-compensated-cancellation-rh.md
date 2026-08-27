@@ -7034,3 +7034,115 @@ restricted to coefficient-exact bridge and burden equivalence.
 
 Verdict: `[PROVED — FIXED-RATIO FCRJ CARRIER BOUND IS EXACTLY CENTERED TWO-ENDPOINT MERTENS
 DISCREPANCY VARIANCE; ALL CONTINUUM AND HILBERT CONVERSION LOSSES REMOVED]`.
+
+## Conjecture loop 69 — exact theta--Abel rank-one provider
+
+### Failed first estimate `[POINTWISE ENDPOINT BOUND WITHOUT ABEL TRANSPORT]`
+
+Bounding cumulative Mertens discrepancies separately retains an arbitrary packet truncation and
+hides the continuum correction. The exact `log p/p` coefficient must be transported before
+squaring, and physical clipping mean must be computed rather than bounded.
+
+### Exact provider survivor `[PAPER-PROVED] [LEAN-PROVED] [POSITIVE SURVIVOR]`
+
+Let the complete support packet be
+
+```text
+P(A,m,k)={p prime : m-A<log p<=k}
+```
+
+and put
+
+```text
+q(h)=[theta(exp h)-exp h]exp(-h),
+R(m,k;u)=q(k-u)-q(m-u)+integral_(m-u)^(k-u)q(h)dh.
+```
+
+Exact Abel summation at every `u in [0,A]` gives
+
+```text
+sum_(m-u<log p<=k-u) log p/p-(k-m)=R(m,k;u).           (AC67)
+```
+
+The weighted clipping correction is not an error term: it is exactly response mean,
+
+```text
+L(P,A,m,k)/A-(k-m)=(1/A)integral_0^A R(m,k;u)du.       (AC68)
+```
+
+Consequently complete physical fusion energy has lossless rank-one decomposition
+
+```text
+||P_M||^2
+ =integral_0^A R(m,k;u)^2du
+  -(1/A)(integral_0^A R(m,k;u)du)^2                    (AC69)
+ <=integral_0^A R(m,k;u)^2du.                          (AC70)
+```
+
+In particular, a uniform aperture response bound `|R|<=B` gives exact provider
+
+```text
+||P_M||^2<=A B^2.                                      (AC71)
+```
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeApertureThetaAbelVariance.lean`.
+Direct checking, targeted build, axiom audit, and umbrella wiring pass.
+
+Hostile limit: `(AC69)` removes packet, clipping, Hilbert, and rank-one conversion losses, but does
+not estimate theta-error response. At `m=log X`, proving raw response mean square
+`O(X^-1 polylog X)` is exactly remaining RH-bearing analytic burden. Pointwise PNT error is too
+large; cancellation must occur inside response `L²` mass.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-27]`: Abel summation and variance decomposition are
+classical. Selberg-integral literature is adjacent. Corpus and targeted primary-literature audit
+found no exact clipped physical FCRJ synthesis `(AC67)--(AC71)`. Candidate-new content is restricted
+to coefficient-exact source identification and zero-loss provider reduction.
+
+Verdict: `[PROVED — COMPLETE FIXED-RATIO FCRJ ENERGY IS RAW NORMALIZED THETA-ABEL L2 MASS MINUS
+ITS EXACT RANK-ONE MEAN; REMAINING BURDEN IS ONE SOURCE-PURE MEAN SQUARE]`.
+
+## Conjecture loop 70 — ordinary-PNT fixed-width extinction boundary
+
+### Failed conjecture `[QUALITATIVE PNT DECAY SUPPLIES FCRJ RATE]`
+
+Ordinary PNT makes normalized theta error tend to zero, but its zero-free-region rate does not
+manufacture the required `exp(-m)=X^-1` factor after Abel transport and squaring.
+
+### Qualitative survivor `[PAPER-PROVED] [LEAN-PROVED] [POSITIVE SURVIVOR]`
+
+If `c>=0` and `|q(h)|<=B` throughout enlarged band `[m-A,m+c]`, endpoint plus interior Abel terms
+give exact uniform estimate
+
+```text
+|R(m,m+c;u)|<=(2+c)B,  0<=u<=A.                       (AC72)
+```
+
+Combining `(AC71)` and `(AC72)` gives
+
+```text
+||P_M||^2<=A((2+c)B)^2.                                (AC73)
+```
+
+Corpus power-log PNT proves `q(h)->0`. Every fixed translated band eventually lies beyond same
+PNT threshold, hence for every fixed `A>0`, `c>=0`,
+
+```text
+Energy(P(A,m,m+c),A,m,m+c)->0 as m->infinity.          (AC74)
+```
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeAperturePNTDecay.lean`.
+Direct checking, targeted build, axiom audit, and umbrella wiring pass.
+
+No-go closure: ordinary PNT now closes qualitative fixed-width carrier extinction completely.
+Its strongest positive survivor is `(AC72)--(AC74)`. Remaining FCRJ theorem is purely quantitative:
+upgrade qualitative/zero-free-region decay to `exp(-m)poly(m)` by centered theta-response
+mean-square cancellation. Treating pointwise PNT as that upgrade is invalid.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-27]`: PNT and bounded-shift uniformity are
+classical. Candidate-new content is exact transport through physical theta--Abel carrier and
+qualitative extinction theorem `(AC74)`; no RH claim.
+
+Verdict: `[PROVED — ORDINARY PNT KILLS EVERY FIXED-WIDTH COMPLETE PHYSICAL CARRIER QUALITATIVELY;
+THE SOLE SURVIVING GAP IS RH-SCALE L2 RATE]`.

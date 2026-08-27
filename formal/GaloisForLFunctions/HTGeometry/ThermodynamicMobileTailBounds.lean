@@ -12,6 +12,96 @@ pairs `4K+1,...,8K` while allowing an arbitrary noncommuting prefix.
 
 namespace GaloisForLFunctions.HTGeometry.StaticLocalLaboratoryComplexityGrowthLaw
 
+/-- Elementary inverse-square tail bound by telescoping `1/n - 1/(n+1)`. -/
+theorem sum_inv_square_Ioc_le (K : ℕ) (hK : 1 ≤ K) :
+    ∀ L : ℕ, K ≤ L →
+      ∑ n ∈ Finset.Ioc K L, (1 : ℝ) / (n : ℝ) ^ 2
+        ≤ 1 / (K : ℝ) - 1 / (L : ℝ) := by
+  intro L
+  induction L with
+  | zero =>
+      intro h
+      have : K = 0 := Nat.le_zero.mp h
+      omega
+  | succ L ih =>
+      intro hKL
+      rcases Nat.lt_or_ge K (L + 1) with hlt | hge
+      · have hKle : K ≤ L := Nat.lt_succ_iff.mp hlt
+        rw [Finset.sum_Ioc_succ_top hKle]
+        have hprev := ih hKle
+        have hLpos : (0 : ℝ) < L := by
+          have : 1 ≤ L := le_trans hK hKle
+          exact_mod_cast Nat.lt_of_lt_of_le Nat.zero_lt_one this
+        have hL1pos : (0 : ℝ) < (L : ℝ) + 1 := by linarith
+        have hstep : (1 : ℝ) / ((L : ℝ) + 1) ^ 2 ≤
+            1 / (L : ℝ) - 1 / ((L : ℝ) + 1) := by
+          rw [div_le_iff₀ (pow_pos hL1pos 2)]
+          field_simp
+          nlinarith
+        have hcast : ((L + 1 : ℕ) : ℝ) = (L : ℝ) + 1 := by push_cast; ring
+        rw [hcast]
+        linarith
+      · have hKeq : K = L + 1 := le_antisymm hKL hge
+        subst hKeq
+        simp
+
+/-- A finite suffix indexed by `j+1>K` is bounded by `1/K`. -/
+theorem sum_fin_succ_inv_square_indicator_le
+    (N K : ℕ) (hK : 1 ≤ K) (hKN : K ≤ N) :
+    (∑ j : Fin N, if K < j.val + 1 then (1 : ℝ) / ((j.val + 1 : ℕ) : ℝ) ^ 2 else 0)
+      ≤ 1 / (K : ℝ) := by
+  have heq :
+      (∑ j : Fin N,
+        if K < j.val + 1 then (1 : ℝ) / ((j.val + 1 : ℕ) : ℝ) ^ 2 else 0) =
+        ∑ n ∈ Finset.Ioc K N, (1 : ℝ) / (n : ℝ) ^ 2 := by
+    rw [← Finset.sum_filter]
+    refine Finset.sum_bij (fun j _ => j.val + 1) ?_ ?_ ?_ ?_
+    · intro j hj
+      simp only [Finset.mem_Ioc]
+      exact ⟨(Finset.mem_filter.mp hj).2, j.isLt⟩
+    · intro i hi j hj hij
+      exact Fin.ext (Nat.add_right_cancel hij)
+    · intro n hn
+      have hnK : K < n := (Finset.mem_Ioc.mp hn).1
+      have hnN : n ≤ N := (Finset.mem_Ioc.mp hn).2
+      have hn0 : 0 < n := by omega
+      let j : Fin N := ⟨n - 1, by omega⟩
+      refine ⟨j, ?_, ?_⟩
+      · simp [j]
+        omega
+      · dsimp [j]
+        omega
+    · intro j hj
+      rfl
+  rw [heq]
+  have htail := sum_inv_square_Ioc_le K hK N hKN
+  have hnonneg : 0 ≤ 1 / (N : ℝ) := by positivity
+  linarith
+
+/-- Scaled finite inverse-square suffix with the perturbation normalization used below. -/
+theorem sum_fin_succ_inv_square_over_million_le
+    (N K : ℕ) (m : ℝ) (hm : 0 ≤ m) (hK : 1 ≤ K) (hKN : K ≤ N) :
+    (∑ j : Fin N,
+      if K < j.val + 1 then m / (1000000 * (((j.val + 1 : ℕ) : ℝ) ^ 2)) else 0)
+      ≤ m / (1000000 * (K : ℝ)) := by
+  have hbase := sum_fin_succ_inv_square_indicator_le N K hK hKN
+  have hscale : 0 ≤ m / 1000000 := by positivity
+  have hmul := mul_le_mul_of_nonneg_left hbase hscale
+  calc
+    (∑ j : Fin N,
+      if K < j.val + 1 then m / (1000000 * (((j.val + 1 : ℕ) : ℝ) ^ 2)) else 0) =
+        (m / 1000000) *
+          (∑ j : Fin N,
+            if K < j.val + 1 then (1 : ℝ) / (((j.val + 1 : ℕ) : ℝ) ^ 2) else 0) := by
+      rw [Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro j hj
+      split_ifs
+      · field_simp
+      · simp
+    _ ≤ (m / 1000000) * (1 / (K : ℝ)) := hmul
+    _ = m / (1000000 * (K : ℝ)) := by field_simp
+
 /-- The inverse-fourth base bond crossing the cut after pair `2K` costs less than half the error. -/
 theorem mobileCut_baseDuhamel_lt_half {K : ℕ} {t ε : ℝ}
     (hK : 8 ≤ K) (hε : 0 < ε)

@@ -1719,3 +1719,41 @@ source-faithful block schedule, correct coefficient growth, cumulative exponent,
 remainder vanishing are formal. Open core is a genuinely stronger analytic layer estimate or a
 different stopping/schedule argument. Proposition 2.2 cannot be promoted from this published
 Lemma 2.3(ii) proof until that core is repaired.
+
+### M5b, brick 20 — divisor-bounded repair candidate for Lemma 2.3(ii) (2026-08-27)
+
+The false factor in the published proof comes from bounding the depth-`d` coefficient by
+`B K^d`, where `K` counts prime divisors at least `z₀`. This loses strict block ordering. For fixed
+`r`, every representation
+
+```text
+r = m q₁ ... q_d,   j_d < ... < j₁,   q_u in block j_u
+```
+
+maps injectively to divisor `q₁ ... q_d | r`: pairwise-disjoint prime blocks recover each `q_u`
+and its unique block, then `m` is forced. Hence iterated coefficient is bounded by
+
+```text
+|alpha'_r| <= B d(r),
+```
+
+uniformly in `d`, not by `B K^d`.
+
+This suggests an exact repair. Extend Lemma 2.3(i) from bounded coefficients to fixed
+divisor-bounded envelope `|alpha_m| <= B d(m)`. Its proof already uses fixed divisor moments;
+submultiplicativity changes only fixed log powers. Each depth layer then retains a
+`Y (log X)^(-3A)` mean square after reserving those powers. Finite Hilbert-space accumulation
+costs at most `(L+1)^2`, and
+
+```text
+L = floor(log(4X)/log z₀) = O((log log X)^3),
+(L+1)^2 = (log X)^o(1).
+```
+
+Thus repaired route can absorb from `-3A` to `-2A` without false `L^(2L²)` step.
+
+Status: paper mechanism identified, not yet dependency-closed. Required Lean bricks are
+(i) exact depth-uniform divisor bound for iterated coefficient, (ii) literal divisor-bounded
+Lemma 2.3(i) at paper scale, (iii) layer accumulation with only polynomial `L` loss, and
+(iv) final source-scale absorption. No repaired Lemma 2.3(ii) theorem is claimed before all four
+close.

@@ -1,0 +1,17 @@
+# RH frontier map Lean-only delta 8 (2026-08-27)
+
+Updated `docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md` from current Lean working tree only. Map remains present-tense and concise (843 lines); dated Matomäki--Teräväinen appendix removed.
+
+## Folded route changes
+
+- GTA: root-free quadratic defect is half ordinary skew-adjoint HS energy and bounds quartic charge, but `HedenmalmThetaSkewAdjointDefectFloorNoGo` proves actual stage energy tends to a strictly positive limit. Full asymptotic Hermiticity/full-defect decay is terminal. Survivor: isolate transverse spectral energy relative to persistent nonnormality or justify source-relative subtraction.
+- HB: complex cancellation ratio is unique and nonreal; signed-real/Hermitian/literal-unsquared copywise weights fail off wall; reversal inverts ratio; no fixed complex incidence cancels both orientations. Divisor-fitted punctured-height reflection-odd correction cancels every Xi fibre, so oddness alone is nonselective. Open core: actual augmented Peierls source incidence plus pre-divisor bioriented/global compatibility.
+- PW-B: complete dyadic evaporation multiplies phase/energy by positive lifetime; every summable scalar shell history factors through total weight. Zero total blind; nonzero total same wall receiver. Survivor requires channel-relative or matrix-valued cross-shell/cross-orbit interaction.
+- FCRJ/CCM-FU: shrinking active aperture forces normalized source and fixed divisor-mode response to zero. Vanishing-width landing terminal. Exact fixed-ratio energy identities as Mertens-coboundary variance and theta-Abel-response variance survive; fixed-ratio source-faithful handoff or pre-shrinking relative current remains. Primary CCM-FU affine checkpoint core unchanged.
+- E/sieve: exact Lemma 2.3(ii) algebra/provenance/termination. Generic accumulated L2 bound pays `8 C K^(sum_{j<=J} 2j)`, but exact pairwise-disjoint prime-chain expansion now gives actual iterated coefficients one ordinary-divisor bound uniformly in depth, retiring geometric coefficient growth as source-sharp obstacle. Need uniform Lemma 2.3(i) error transfer to chain coefficients and signed layer accumulation. Still no fixed `R_X`, Hall expansion, or co-moving flux.
+- S6F/TCD: order-eight atomwise curvature, likelihood-cumulant positivity, positive complete atom-ray spectral integral, globally positive ordinary eighth likelihood jet, exact complete-source Bell transfer, and rank-three modular-seam positivity. Global complete-source rank-three order-eight sign after mixing remains open; then cofinal/all-order landing.
+- FZZ-P: two-channel internal-row point mode iff internal/on-shell Pluecker minor vanishes and internal/slope minor is nonzero. Canonical unconstrained matrix data realize mode at every target energy. Positive Gram/Feshbach return is inert on coupling-dark kernel; coupling-sourced fixed nonzero transverse data also produce modes at every energy. Abstract multichannel existence and positive dark-sector self-energy are nonselective. Open core: derive Pluecker plus energy-selective data from literal FZZ/GFZZ source before target choice or use a source-faithful singular/interacting carrier, then Xi landing.
+
+No new independent branch label added. Counts remain 24 live labels and 35 candidate labels.
+
+Validation: no diary/addendum headings; no literature/card evidence added; `git diff --check` clean. No Lean build run because task was documentation-only. Concurrent unrelated/user changes preserved.
