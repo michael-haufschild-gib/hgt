@@ -1298,6 +1298,30 @@ Let `F` be an arbitrary totally real number field.
   Two lifts `w,w'` of the same monomial differ by `w'w⁻¹` in the projection kernel. Lemma 12.4
   identifies that kernel with the faithful central image of `K₂ᴹ(F)`, giving existence and
   uniqueness of the translating symbol.
-- **Lean strategy:** First identify `K₂ᴹ(F)` with the subtype kernel of `milnorWProjection`, then
-  define its fiberwise action on `Fin4BruhatPair` and prove an `∃!` transport theorem.
-- **Current blocker:** `[OPEN CORE]` Kernel group equivalence and subtype bookkeeping.
+- **Lean proof:** `milnorWKernelEquiv` identifies `K₂ᴹ(F)` with the exact projection kernel.
+  Multiplication through `milnorWCentralIncl` defines a fiberwise action on `Fin4BruhatPair`.
+  The quotient of two lifts in one fiber lies in the kernel; kernel surjectivity gives the
+  translating symbol and faithfulness gives uniqueness.
+- **Verdict:** `[LEAN-PROVED]` Proved every matrix fiber nonempty and
+  `existsUnique_milnorKTwo_smul_bruhatPair`. Narrow build passes with 3261 jobs.
+- **Formal artifact:** `MilnorKTwoBruhatPairs.lean`.
+- **Next open core:** `[OPEN CORE]` Lift left and right diagonal, upper, and adjacent-Weyl base
+  transformations to commuting permutations of the pair space.
+
+### BT.C35 — left generator permutations on the Bruhat-pair space
+
+- **Conjecture:** `[CONJECTURE]` Milnor's left diagonal, upper-unipotent, and three adjacent-Weyl
+  transformations are permutations of `Fin4BruhatPair` and commute with the fiberwise central
+  `K₂ᴹ(F)` action.
+- **Paper proof:** `[PAPER-PROVED]` Lemma 12.7 supplies a compatible Weyl or diagonal lift for each
+  adjacent transition. Every transformation covers an invertible left multiplication of the matrix
+  coordinate and is central-`K₂` equivariant. A fiber-torsor argument gives injectivity and
+  surjectivity without Milnor's separate square computation.
+- **Verdict:** `[LEAN-PROVED]` Added public projection formulas for diagonal and Weyl generators,
+  upper-factor invariance of `fin4BruhatProjection`, the generic
+  `fin4BruhatPairEquivOfFiberEquivariant` theorem, and the left diagonal, upper, and `W01/W12/W23`
+  pair permutations. Narrow build passes with 3262 jobs.
+- **Formal artifacts:** `MilnorKTwoWeylProjection.lean`, `MilnorKTwoBruhatTransitions.lean`,
+  `MilnorKTwoBruhatPairActions.lean`.
+- **Next open core:** `[OPEN CORE]` Construct right generator permutations with canonical correction
+  parameters, then prove all left/right generators commute (Milnor Lemma 12.10).

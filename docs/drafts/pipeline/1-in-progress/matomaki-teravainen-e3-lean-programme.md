@@ -1330,3 +1330,86 @@ the two corpus Euler products.
 The proof is Gauss's `∑_{d ∣ n} φ(d) = n` (`Nat.sum_totient`) restricted to the divisors of `P`,
 then two `Finset.sum_comm` swaps to bring `d` outside and `Finset.sum_mul_sum` to factor the two
 inner sums.
+
+### M5b, brick 5 — divisor pair reduced to Euler products (2026-08-27)
+
+Added to `Sieve/DivisorMomentMeanSquare.lean`, axiom-clean:
+
+```text
+sum_filter_dvd_rpow_le:
+  ∑_{e ∣ P, d ∣ e} e^β ≤ d^β · ∑_{f ∣ P} f^β
+
+sum_divisors_rpow_eq_prod (Squarefree P):
+  ∑_{d ∣ P} d^β = ∏_{p ∣ P} (1 + p^β)
+
+sum_pair_gcd_le_eulerProducts (0 < P) (Squarefree P):
+  ∑_{e₁,e₂ ∣ P} (e₁e₂)^{α−1} gcd(e₁,e₂)
+    ≤ (∏_{p ∣ P} (1 + p^{α−1}))² · ∏_{p ∣ P} (1 + p^{2α−1})
+```
+
+This closes the exact quotient-reindexing and positivity comparison left by brick 4.  The first
+bound uses the injection `e ↦ e/d` from divisors of `P` divisible by `d` into all divisors of `P`;
+no squarefree assumption is needed.  Gauss's identity, `φ(d) ≤ d`, rpow positivity, and square
+monotonicity then reduce the pair sum to two divisor power sums.  Squarefreeness evaluates those
+sums with the existing corpus Euler-product theorem.
+
+Direct Lean check and targeted module build passed.  New declarations depend only on
+`propext`, `Classical.choice`, and `Quot.sound`.  Remaining `c₁,n` work is the parameter-specific
+Euler-product estimate and its insertion into the divisor mean-square bound; no pair-sum or
+two-variable divisor combinatorics remain.
+
+### M5b, brick 6 — explicit `c₁,n` mean square (2026-08-27)
+
+Added two axiom-clean modules:
+
+- `Sieve/DivisorMomentEulerBound.lean` proves `siftModulus_squarefree`, identifies its prime factors
+  with the primes below `z`, and shows
+
+  ```text
+  sum_pair_gcd_siftModulus_invLog_le_logLog (2 ≤ z):
+    ∑_{e₁,e₂ ∣ P(z)} (e₁e₂)^{1/log z−1} gcd(e₁,e₂)
+      ≤ exp((2e + e²) · (log log z + mertensSecondUpperConst)).
+  ```
+
+- `Sieve/MinorantTruncTailMeanSquare.lean` rewrites this in the original lcm form, squares the
+  pointwise Rankin bound, applies `sum_sq_divisor_moment_le`, and proves
+
+  ```text
+  sum_sq_truncTail_invLog_le_logLog (2 ≤ z) (0 < D):
+    ∑_{1≤n≤Y} truncTail(n,z,D)²
+      ≤ D^{−2/log z} · Y ·
+          exp((2e + e²) · (log log z + mertensSecondUpperConst)).
+  ```
+
+Thus the `c₁,n` analytic estimate is dependency-closed through the exact Rankin parameter.  Only
+the paper's external scale substitution
+`z₀ = exp(log X/(log log X)³)`, `D = exp(log X/log log X)` and the resulting absorption into
+`Y/(log X)^{3A}` remain for this term.  Both modules passed direct Lean checks, targeted module
+builds, new-declaration axiom audits (`propext`, `Classical.choice`, `Quot.sound` only), umbrella
+reachability, and formal lint.
+
+### M5b, brick 7 — `c₂,n` prime-window mean square (2026-08-27)
+
+Added `Sieve/PrimeWindowMeanSquare.lean`, axiom-clean and umbrella-wired.  It defines the prime set
+of a half-open block and proves the exact identification
+
+```text
+primeWindow n a b = primeFactorsIn (primesIco a b) n.
+```
+
+The existing Turán second moment for designated prime factors then gives, with
+`A(a,b) = ∑_{a≤p<b} 1/p`,
+
+```text
+sum_sq_card_primeWindow_le:
+  ∑_{1≤n≤Y} #primeWindow(n,a,b)² ≤ Y·A(a,b) + Y·A(a,b)²
+
+sum_sq_card_primeWindow_le_of_mass (A(a,b) ≤ η):
+  ∑_{1≤n≤Y} #primeWindow(n,a,b)² ≤ Y·(η + η²).
+```
+
+This closes the `c₂,n` divisor-count combinatorics.  Remaining analytic step is a uniform
+reciprocal-mass estimate for the paper's `(1+δ_A)`-adic blocks.  The corpus already contains
+Mertens' second theorem with exponential error, strong enough because the block bottom is at least
+`z₀ = exp(log X/(log log X)³)` while `δ_A = (log X)^{-10A}`.  Direct Lean, targeted build, and
+new-declaration axiom audit passed.

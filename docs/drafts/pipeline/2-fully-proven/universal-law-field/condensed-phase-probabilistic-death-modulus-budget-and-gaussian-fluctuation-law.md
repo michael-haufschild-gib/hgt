@@ -13,7 +13,7 @@
   fluctuation law with polynomial variance.
 - **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [PRD-C INSTANTIATED]
   [PHASE-CANNOT-PAY-MODULUS-DEBT EXCHANGE LAW] [CLASSICAL PARENTS DISCLAIMED] [NOT RH]
-  [THEOREMS 2.1 AND 2.2 LEAN CERTIFIED] [THEOREM 1.1 DISTRIBUTIONAL CLAUSE LEAN CERTIFIED]
+  [THEOREMS 1.1, 2.1, AND 2.2 LEAN CERTIFIED]
 
 ## 0. Setting
 
@@ -589,10 +589,12 @@ because `defectProduct_ne_zero` keeps the denominator away from `0`.
 
 Axiom prints: `propext`, `Classical.choice`, `Quot.sound` only; module green at 8 663 jobs.
 
-### Theorem 1.1 — literal cutoff laws and distributional no-go (DONE)
+### Theorem 1.1 — literal cutoff laws, distributional no-go, and almost-sure no-go (DONE)
 
 `formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/SoclePrimePartialLaw.lean` (wired into
-`HTGeometry/UniversalLawField.lean`).
+`HTGeometry/UniversalLawField.lean`) and
+`formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/SoclePrimeAlmostSureNoGo.lean` (same
+umbrella).
 
 | Clause | Lean |
 |---|---|
@@ -601,27 +603,30 @@ Axiom prints: `propext`, `Classical.choice`, `Quot.sound` only; module green at 
 | exact q-Gamma identity at `1 + it` | `qChar_eq_qGammaOn_one_add_I` |
 | exact characteristic function of the centered cutoff law | `charFun_soclePrimePartialMeasure` |
 | **no weak limit under any primewise centering** | **`not_tendsto_soclePrimePartialLaw`** |
+| honest prime-indexed Kolmogorov product of the actual q-Gamma laws | `soclePrimeProductMeasure` |
+| exact pushforward law of every centered cutoff sum | `map_soclePrimeProductPartialSum` |
+| **no deterministic centering yields almost-sure convergence** | **`not_ae_convergent_soclePrimeProductPartialSum`** |
 
 The capstone invokes `ProbabilityMeasure.tendsto_iff_tendsto_charFun` on genuine probability
 measures.  The modulus theorem forces every nonzero-frequency limit to zero, while continuity of
 the target characteristic function and its value `1` at the origin give the contradiction.  No
-assumption wrapper or surrogate law is used.
+assumption wrapper or surrogate law is used.  The almost-sure capstone works on one fixed
+prime-indexed product space.  If the centered sums converged almost everywhere, mathlib's
+`tendstoInDistribution_of_ae_tendsto` would force their pushforward laws to converge weakly; the
+exact pushforward identity then contradicts `not_tendsto_soclePrimePartialLaw`.
 
 Direct elaboration and targeted build pass. Axiom prints for every new theorem:
 `propext`, `Classical.choice`, `Quot.sound` only.
 
 **Remaining exact surface.**
 
-1. *Theorem 1.1, almost-sure equivalence.*  Distributional failure is certified.  The additional
-   almost-sure statement needs the prime-indexed infinite product realization plus the
-   almost-sure-to-weak-convergence bridge (or the card's Borel–Cantelli symmetrization argument).
-2. *Theorem 3.1 (CLT).*  Corpus research found no Lindeberg–Feller triangular-array theorem;
+1. *Theorem 3.1 (CLT).*  Corpus research found no Lindeberg–Feller triangular-array theorem;
    mathlib's available CLT layer is i.i.d.  Exact closure therefore requires a new triangular-array
    CLT plus the q-Gamma variance asymptotic and Lindeberg estimate.
-3. *Theorem 3.2 (Dickman law at the wall).*  `RHTower/PrimeBoundaryPoissonJumpField.lean` certifies
+2. *Theorem 3.2 (Dickman law at the wall).*  `RHTower/PrimeBoundaryPoissonJumpField.lean` certifies
    the scale-invariant prime Lévy-window limit for a symmetric Poisson analogue, not the actual
    one-sided q-Gamma occupation law.  Exact closure still requires the q-Gamma-to-depth-one
    characteristic expansion, an `O(p⁻²)` product error, tightness/Prokhorov target construction,
    and identification of the resulting Dickman probability measure.
 
-The card stays in Stage 2 until all three remaining clauses are closed.
+The card stays in Stage 2 until both remaining clauses are closed.

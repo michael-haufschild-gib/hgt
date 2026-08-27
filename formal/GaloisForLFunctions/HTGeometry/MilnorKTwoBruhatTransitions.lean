@@ -61,6 +61,58 @@ theorem fin4BruhatProjection_upper_word_upper
         rw [map_mul, map_mul, Units.val_mul, Units.val_mul] }
   exact fin4BruhatProjection_eq_middle x
 
+theorem fin4BruhatProjection_mul_left_upper
+    (t : SteinbergGroup F (Fin 4))
+    (ht : t ∈ upperSteinbergSubgroup (F := F) (Fin 4))
+    (A : elementaryGroup F (Fin 4)) :
+    fin4BruhatProjection (fin4SteinbergElementary t * A) =
+      fin4BruhatProjection A := by
+  let x := fin4BruhatFactorization A
+  let y : Fin4BruhatFactorization (fin4SteinbergElementary t * A) :=
+    { left := ((steinbergToGL t : (Matrix (Fin 4) (Fin 4) F)ˣ) :
+          Matrix (Fin 4) (Fin 4) F) * x.left
+      middle := x.middle
+      right := x.right
+      left_upper := IsUpperUnipotent.mul (fin4_upperSteinberg_matrix_isUpper ht) x.left_upper
+      right_upper := x.right_upper
+      eq_factor := by
+        change ((steinbergToGL t : (Matrix (Fin 4) (Fin 4) F)ˣ) :
+              Matrix (Fin 4) (Fin 4) F) *
+            (A.1 : Matrix (Fin 4) (Fin 4) F) =
+          (((steinbergToGL t : (Matrix (Fin 4) (Fin 4) F)ˣ) :
+              Matrix (Fin 4) (Fin 4) F) * x.left) *
+            (x.middle.1 : Matrix (Fin 4) (Fin 4) F) * x.right
+        rw [x.eq_factor]
+        simp only [Matrix.mul_assoc] }
+  exact fin4BruhatProjection_eq_middle y
+
+theorem fin4BruhatProjection_mul_right_upper
+    (A : elementaryGroup F (Fin 4))
+    (t : SteinbergGroup F (Fin 4))
+    (ht : t ∈ upperSteinbergSubgroup (F := F) (Fin 4)) :
+    fin4BruhatProjection (A * fin4SteinbergElementary t) =
+      fin4BruhatProjection A := by
+  let x := fin4BruhatFactorization A
+  let y : Fin4BruhatFactorization (A * fin4SteinbergElementary t) :=
+    { left := x.left
+      middle := x.middle
+      right := x.right *
+        ((steinbergToGL t : (Matrix (Fin 4) (Fin 4) F)ˣ) :
+          Matrix (Fin 4) (Fin 4) F)
+      left_upper := x.left_upper
+      right_upper := IsUpperUnipotent.mul x.right_upper
+        (fin4_upperSteinberg_matrix_isUpper ht)
+      eq_factor := by
+        change (A.1 : Matrix (Fin 4) (Fin 4) F) *
+            ((steinbergToGL t : (Matrix (Fin 4) (Fin 4) F)ˣ) :
+              Matrix (Fin 4) (Fin 4) F) =
+          x.left * (x.middle.1 : Matrix (Fin 4) (Fin 4) F) *
+            (x.right * ((steinbergToGL t : (Matrix (Fin 4) (Fin 4) F)ˣ) :
+              Matrix (Fin 4) (Fin 4) F))
+        rw [x.eq_factor]
+        simp only [Matrix.mul_assoc] }
+  exact fin4BruhatProjection_eq_middle y
+
 /-- Exact local upper--Weyl--upper alternative behind Milnor Lemma 12.7. -/
 theorem weylWord_upper_root_simpleWeyl_exact
     (word : SteinbergWeylWord F (Fin 4)) {i j : Fin 4}

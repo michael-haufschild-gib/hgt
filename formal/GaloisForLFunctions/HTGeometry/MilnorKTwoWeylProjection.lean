@@ -752,8 +752,23 @@ noncomputable def milnorWMonomialProjection :
           exact AmalgamatedSemidirect.projection_inl _ _ _ _ _ _ _ h
         projection_weylGenerator := by
           intro i j hij
-          rw [AmalgamatedSemidirect.projection_inr]
-          rfl
+          change ((milnorWZeroProjection he)
+            (AmalgamatedSemidirect.inr
+              (fin4MilnorH0 (F := F))
+              (fin4MilnorH0ToFieldSignedWeyl (F := F))
+              (fieldSignedWeylActionHom (F := F))
+              (fieldSignedWeylCompatible he)
+              (MilnorSpinWeyl.fieldWeylGeneratorSigned (F := F) i j hij))).1 = _
+          have hp := AmalgamatedSemidirect.projection_inr
+            (fin4MilnorH0 (F := F))
+            (fin4MilnorH0ToFieldSignedWeyl (F := F))
+            (fieldSignedWeylActionHom (F := F))
+            (fieldSignedWeylCompatible he)
+            (milnorDiagonalToFieldMonomial (F := F))
+            (fieldSignedWeylToDetOneMonomial (F := F))
+            fieldProjectionCompatible
+            (MilnorSpinWeyl.fieldWeylGeneratorSigned (F := F) i j hij)
+          exact congrArg Subtype.val hp
         conjugation_matsumotoDiagonalLift := by
           intro x p q hpq v
           exact amalgamated_conjugation_matsumotoDiagonalLift
@@ -790,11 +805,27 @@ noncomputable def milnorWMonomialProjection :
           exact AmalgamatedSemidirect.projection_inl _ _ _ _ _ _ _ h
         projection_weylGenerator := by
           intro i j hij
-          rw [AmalgamatedSemidirect.projection_inr]
-          change (MilnorSpinWeyl.spinWeylToFieldSigned
-            (MilnorSpinWeyl.weylLiftSpinWeyl i j hij)).1.1 = _
-          rw [MilnorSpinWeyl.spinWeylToFieldSigned_weylLift]
-          rfl
+          change ((MilnorSpinWeyl.milnorWNonzeroProjection he)
+            (AmalgamatedSemidirect.inr
+              (fin4MilnorH0 (F := F))
+              (fin4MilnorH0ToSpinWeyl he)
+              (MilnorSpinWeyl.spinWeylActionHom (F := F))
+              (MilnorSpinWeyl.spinWeylCompatible he)
+              (MilnorSpinWeyl.weylLiftSpinWeyl i j hij))).1 = _
+          have hp := AmalgamatedSemidirect.projection_inr
+            (fin4MilnorH0 (F := F))
+            (fin4MilnorH0ToSpinWeyl he)
+            (MilnorSpinWeyl.spinWeylActionHom (F := F))
+            (MilnorSpinWeyl.spinWeylCompatible he)
+            (milnorDiagonalToFieldMonomial (F := F))
+            (MilnorSpinWeyl.spinWeylToDetOneMonomial (F := F))
+            (MilnorSpinWeyl.spinProjectionCompatible he)
+            (MilnorSpinWeyl.weylLiftSpinWeyl i j hij)
+          have hpval := congrArg Subtype.val hp
+          change _ = (MilnorSpinWeyl.spinWeylToFieldSigned
+            (MilnorSpinWeyl.weylLiftSpinWeyl i j hij)).1 at hpval
+          rw [MilnorSpinWeyl.spinWeylToFieldSigned_weylLift] at hpval
+          exact hpval
         conjugation_matsumotoDiagonalLift := by
           intro x p q hpq v
           exact amalgamated_conjugation_matsumotoDiagonalLift
@@ -826,6 +857,19 @@ noncomputable def milnorWMonomialProjection :
 noncomputable def milnorWProjection :
     MilnorW F →* fieldDetOneMonomialSubgroup (F := F) :=
   (milnorWMonomialProjection (F := F)).projection
+
+theorem milnorWProjection_diagonalIncl
+    (h : MilnorDiagonalExtension F 4) :
+    milnorWProjection (F := F) (milnorWDiagonalIncl (F := F) h) =
+      milnorDiagonalToFieldMonomial h :=
+  (milnorWMonomialProjection (F := F)).projection_diagonalIncl h
+
+theorem milnorWProjection_weylGenerator
+    (i j : Fin 4) (hij : i ≠ j) :
+    (milnorWProjection (F := F)
+      (milnorWWeylGenerator (F := F) i j hij)).1 =
+        steinbergToGL (steinbergWeyl hij (1 : Fˣ)) :=
+  (milnorWMonomialProjection (F := F)).projection_weylGenerator i j hij
 
 theorem milnorWProjection_surjective :
     Function.Surjective (milnorWProjection (F := F)) :=

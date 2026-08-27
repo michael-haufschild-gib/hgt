@@ -564,7 +564,10 @@ candidate from actual canonical horizon lines and physical normalizable AdS line
 regular/complementary pair retarded/advanced; that requires time-domain/gauge-fixed Einstein
 incidence.
 
-Status: `[PAPER-PROVED] [LEAN-PENDING] [NOVELTY UNVERIFIED]`.
+Status: `[PAPER-PROVED] [LEAN-PROVED] [NOVELTY UNVERIFIED]`. Lean now proves both canonical
+denominators nonzero, right/left endpoint rank-one differences, unit derivative jumps, finite
+source-response factorization, and actual-Xi specialization. Physical retarded/advanced incidence
+remains open.
 
 ## Complementary Gauss connection conjecture
 
@@ -689,3 +692,162 @@ equations, radius-independent equality of polarized radial current with boundary
 its exact advanced-minus-retarded response factorization.
 
 Status: `[PAPER-PROVED] [LEAN-PROVED] [NOVELTY UNVERIFIED]`.
+
+## Exact physical horizon-incidence conjecture
+
+Birmingham--Mokhtari, arXiv:hep-th/0609028, Eq. (23)--(31), use
+
+`z=1-l^2/r^2`, `alpha=-i*omega/2`, `c=1-i*omega`,
+
+and the physical master field
+
+`Phi_in(t,z)=exp(-i*omega*t)*z^alpha*(1-z)^beta*F(a,b;c;z)`.
+
+For four-dimensional scalar and vector gravitational modes, `beta=0`. The reduced equation has
+regular and complementary horizon factors
+
+`R(z)=F(a,b;c;z)`,
+`C(z)=z^(1-c)*F(a-c+1,b-c+1;2-c;z)`.
+
+Set asymptotic horizon null coordinates
+
+`v_z=t+log(z)/2`, `u_z=t-log(z)/2`.
+
+Since `c=1+2*alpha`, the complementary physical exponent is
+
+`alpha+1-c=-alpha`.
+
+Therefore, on the positive radial interval,
+
+`exp(-i*omega*t)*z^alpha*R(z)=exp(-i*omega*v_z)*F(a,b;c;z)`,
+
+`exp(-i*omega*t)*z^alpha*C(z)=`
+`exp(-i*omega*u_z)*F(a-c+1,b-c+1;2-c;z)`.
+
+Both analytic factors have unit horizon value. Thus regular canonical horizon line is exactly
+future-horizon ingoing and complementary canonical horizon line is exactly past-horizon outgoing
+for the BM Fourier convention `exp(-i*omega*t)`. Consequently the two premise-free
+horizon/normalizable kernels constructed above are the exact ingoing and outgoing frequency-domain
+Green blocks.
+
+Hostile qualification: for complex frequency, outgoing incidence at the same `omega` does not by
+itself prove that this block is the Schwarz-conjugate advanced distribution. That needs conjugate
+frequency transport and time-domain support. No `retarded`/`advanced` relabel is permitted before
+that further theorem.
+
+Lean closure in `ThetaCuspHawkingBMSecondHarmonicPhysicalHorizonIncidence.lean` proves the generic
+`c=1+2*alpha` relation, ingoing/outgoing phase factorizations, canonical unit horizon amplitudes,
+regular/complementary physical master-field incidence, exact ingoing/outgoing Green-block Krein
+difference, finite source-global response, and actual-Xi specialization.
+
+Status: `[LITERATURE-DERIVED] [PAPER-PROVED] [LEAN-PROVED] [NOVELTY UNVERIFIED]`.
+
+## Canonical physical Green equality no-go
+
+The exact normalizable AdS branch obeys
+
+`V(z)/sqrt(1-z) -> 1` as `z -> 1-`.
+
+Hence this ratio is eventually nonzero. Choose an interior point `t` in that neighborhood; then
+`V(t) != 0`. For `chi.re != 0`, the complementary horizon exponent
+
+`lambda=4n+3+2*i*chi`
+
+and both canonical Green denominators `D_in(t),D_out(t)` are nonzero. The physical horizon-basis
+Krein identity on the diagonal gives
+
+`G_in(t,t)-G_out(t,t)=-lambda*V(t)^2/(D_in(t)*D_out(t)) != 0`.
+
+Every actual Xi fibre satisfies `chi.re != 0`. Therefore canonical physical ingoing and outgoing
+frequency-domain Green blocks are never equal as functions on any Xi fibre, including fibres on
+the critical line. A proposed endpoint
+
+`G_in=G_out iff critical line`
+
+is false and must be retired.
+
+Positive survivor: every Xi fibre has an explicit interior one-point radial source whose physical
+ingoing-minus-outgoing response is nonzero and lies exactly on the rank-one normalizable AdS line.
+This is a canonical noncollapse/spectral-density witness. It can feed a polarized optical law, but
+RH selection must come from a further arithmetic or nonlinear incidence condition, not equality
+of canonical radial propagators.
+
+Lean closure in
+`ThetaCuspHawkingBMSecondHarmonicPhysicalHorizonGreenNoncollapseNoGo.lean` proves eventual and
+existential normalizable-branch nonvanishing, a nonzero interior diagonal kernel difference,
+functional inequality of canonical ingoing/outgoing kernels on every Xi fibre, and an explicit
+unit point-source noncollapse witness.
+
+Status: `[NO-GO] [PAPER-PROVED] [LEAN-PROVED] [NOVELTY UNVERIFIED]`.
+
+## Factorized angular-radial point-source selector
+
+For every Xi fibre, canonical Green noncollapse provides an interior point `t` with
+
+`DeltaG(q,t)=G_in(q;t,t)-G_out(q;t,t) != 0`.
+
+Let `kappa(q)` be the exact Teukolsky orthogonal-helicity mixing coefficient. Its norm square is
+the orthogonal mixing energy of a unit source, and the corpus optical transgression proves
+
+`kappa(q)=0 iff re(q)=1/2`.
+
+Define the factorized point-source observable
+
+`O(q,t)=kappa(q)*DeltaG(q,t)`.
+
+At the selected interior point, `DeltaG(q,t)` is nonzero, so
+
+`O(q,t)=0 iff kappa(q)=0 iff re(q)=1/2`.
+
+This is an exact source-global angular/radial incidence: arithmetic critical-line information is
+carried only by the angular helicity factor, while the physical radial causal cut is a certified
+nonzero carrier. It removes all radial denominator and source-support premises.
+
+Hostile qualification: the zero-locus theorem is a receiver, not RH. Unconditional RH still needs
+one upstream Einstein/Peierls/Ward law forcing this actual factorized observable to vanish for every
+Xi fibre. Canonical Green sewing alone forces the opposite radial statement and cannot provide that
+law.
+
+Lean closure: `ThetaCuspHawkingBMSecondHarmonicPhysicalHorizonPolarizedSelector.lean`
+formalizes the exact mixing zero locus, factorized observable, canonical noncollapse-point selector,
+and the global equivalence between universal selector vanishing and RH. Targeted build and axiom
+audit pass; only standard theorem-prover axioms remain.
+
+Status: `[BRIDGE] [PAPER-PROVED] [LEAN-PROVED] [NOVELTY UNVERIFIED]`.
+
+## Corrected Peierls-polarized BM landing
+
+The one-channel conjecture that the mixed `+-` response carries the complete cubic causal cut
+fails. Cyclicity turns that contribution into a Peierls self-pairing, hence zero; setting the
+`++` jump to zero then kills the whole cut. The surviving corpus identity is instead
+
+`Cut(++-) = 2 Omega(Q++, Q--)`,
+
+where `Q++` and `Q--` are independently polarized same-grade quadratic sources.
+
+The exact BM Schwarz radial infrastructure supplies a canonical nonzero carrier. For an interior
+radius `z`, regular `++` and Schwarz-complementary `--` outer solutions have polarized current
+
+`J_BM(n,q,z) = -alpha_comp(n,chi(q)) != 0`.
+
+For nonzero seed amplitude `A`, define the source-faithful candidate
+
+`P(n,A,q,z) = 2 |kappa(q)|^2 |carrier(A,q)|^2 J_BM(n,q,z)`.
+
+The Einstein carrier and BM current are nonzero on every Xi fibre, while
+`kappa(q)=0 iff re(q)=1/2`. Therefore
+
+`P(n,A,q,z)=0 iff re(q)=1/2`.
+
+If augmented retarded and advanced graded blocks are restrictions of one skew Peierls propagator,
+Einstein Hessian pairing is cyclic, and its polarized `Q++/Q--` source pairing equals the displayed
+BM angular-radial factor, the complete nonlinear cokernel cut equals `P`. Under that precise weld,
+retarded and advanced total sections agree exactly on the critical line.
+
+Hostile qualification: this is corrected conditional landing, not RH. Missing hard theorem is now
+one explicit field-theoretic incidence: actual augmented Einstein--Teukolsky action pairing on the
+two quadratic source profiles must equal the factorized BM Schwarz current. Frequency-domain
+ingoing/outgoing kernel equality is neither required nor true, and radial current conservation
+alone does not establish global time-oriented Peierls support.
+
+Status: `[BRIDGE] [PAPER-PROVED] [LEAN-PENDING] [NOVELTY UNVERIFIED]`.
