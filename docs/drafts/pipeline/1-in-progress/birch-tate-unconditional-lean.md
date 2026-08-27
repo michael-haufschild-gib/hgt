@@ -1161,3 +1161,143 @@ Let `F` be an arbitrary totally real number field.
 - **Next open core:** `[OPEN CORE]` Transport the field signed-matrix action to the Spin double-cover
   branch under `e_F ≠ 0`, verify the same compatibility package, and instantiate `MilnorWNonzero`
   with faithful central `K₂ᴹ(F)`.
+
+### BT.C28 — nonzero-symbol `W` and exact Spin cocycle equivariance
+
+- **Conjecture:** `[CONJECTURE]` Real signed-monomial rotor matrices base-change canonically to
+  field-valued signed matrices. The descended action preserves `H₀`; under `e_F ≠ 0`, its Milnor
+  cocycle is exactly the central Clifford sign in rotor conjugation. Hence the Spin common-subgroup
+  embedding is equivariant and supplies Milnor's nonzero-symbol amalgamated group.
+- **Paper proof:** `[PAPER-PROVED]` Signed real scales are uniquely `±1`; reinterpreting their sign
+  bits in `F` is multiplicative and sends each rotor matrix to `w_ij(1)`. On a generator
+  `h_pq(-1)`, the Weyl action contributes `{s_p s_q⁻¹,-1}`. This is zero if the scale ratio is
+  `1`, and is `e_F` if it is `-1`. The faithful Spin embedding sends `e_F` to scalar `-1` and
+  `h_pq(-1)` to bivector `e_p e_q`. Conjugation by the rotor sends `e_i` to `-e_j`, `e_j` to
+  `e_i`, and fixes other basis vectors, producing exactly the same central sign. Closure first in
+  `H₀`, then in the rotor-generated Spin Weyl group, proves full equivariance. The common action
+  reduces through the field matrix quotient to the already proved diagonal inner-action law.
+- **Verdict:** `[LEAN-PROVED]` Constructed signed base change, exact rotor/action generator laws,
+  central-symbol correspondence, generator and closure equivariance, compatibility package,
+  `MilnorWNonzero`, and its injective central `K₂ᴹ(F)` map. Narrow build passes with 3248 jobs.
+  Targeted axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`; forbidden-token
+  scan and diff check pass.
+- **Formal artifact:** `MilnorKTwoSpinWeylFieldAction.lean`.
+- **Next open core:** `[OPEN CORE]` Remove the symbol case premise at the public interface, then
+  construct Milnor's projection `W → M`, prove exact central kernel, and formalize Lemma 12.5.
+
+### BT.C29 — unconditional Milnor `W`
+
+- **Conjecture:** `[CONJECTURE]` The exhaustive decision `e_F=0 ∨ e_F≠0` packages the two verified
+  constructions into a premise-free group `MilnorW F` with a central injective copy of
+  `K₂ᴹ(F)`.
+- **Paper proof:** `[PAPER-PROVED]` Equality is decidable classically. In the zero branch use
+  `MilnorWZero`; in the nonzero branch use `MilnorWNonzero`. Both packages contain the group,
+  central homomorphism, injectivity proof, and center-membership proof, so selecting the package
+  preserves all properties without transporting proof-dependent quotient terms by hand.
+- **Verdict:** `[LEAN-PROVED]` Defined `MilnorWPackage`, both branch packages, unconditional
+  `MilnorW F`, `milnorWCentralIncl`, and premise-free injectivity and centrality theorems. Narrow
+  build passes with 3249 jobs. Targeted axiom audit reports only `propext`, `Classical.choice`, and
+  `Quot.sound`; forbidden-token scan and diff check pass.
+- **Formal artifact:** `MilnorKTwoWeylUnconditional.lean`.
+- **Next open core:** `[OPEN CORE]` Build the determinant-one monomial target `M`, descend the
+  projection from the amalgamated semidirect presentation, prove its kernel is exactly the
+  unconditional central `K₂ᴹ(F)` copy (Milnor Lemma 12.4), then prove the two conjugation formulas
+  of Lemma 12.5 before starting the Bruhat retraction construction.
+
+### BT.C30 — full determinant-one monomial target
+
+- **Conjecture:** `[CONJECTURE]` Every determinant-one monomial matrix factors canonically enough
+  for the quotient proof as a determinant-one diagonal matrix times an element of the signed Weyl
+  subgroup, including characteristic two.
+- **Paper proof:** `[PAPER-PROVED]` Unique monomial permutation/scale data recover `A=P_sigma
+  diag(c)`. A sign correction with the same permutation adjusts the signed Weyl factor to
+  determinant one; the remaining scale is diagonal with product one. Matrix multiplication gives
+  the required factorization without dividing by characteristic-dependent constants.
+- **Verdict:** `[LEAN-PROVED]` Defined the full target, canonical monomial data, permutation map,
+  and diagonal-times-signed-Weyl factorization.
+- **Formal artifact:** `MilnorKTwoFieldMonomial.lean`.
+
+### BT.C31 — Milnor Lemma 12.4, exact monomial extension
+
+- **Conjecture:** `[CONJECTURE]` Both amalgamated branches project onto the full determinant-one
+  monomial group, with kernel exactly the central `K₂ᴹ(F)` range; exhaustive packaging makes this
+  premise-free.
+- **Paper proof:** `[PAPER-PROVED]` Compatibility descends the product of diagonal and Weyl
+  projections. C30 gives surjectivity. If a representative `(g,w)` projects to one, signed-Weyl
+  alignment puts `w` in the common diagonal subgroup; the amalgamation removes it, leaving a
+  diagonal element with trivial matrix, hence a unique central Milnor symbol.
+- **Verdict:** `[LEAN-PROVED]` Constructed both branch projections and the unconditional
+  `milnorWProjection`; proved surjectivity and
+  `milnorWProjection.ker = MonoidHom.range milnorWCentralIncl`. Narrow build passes.
+- **Formal artifacts:** `MilnorKTwoAmalgamatedProjection.lean`,
+  `MilnorKTwoWeylProjection.lean`.
+
+### BT.C32 — Milnor Lemma 12.5, both conjugation identities
+
+- **Conjecture:** `[CONJECTURE]` If `phi(x)=P_sigma diag(c)`, then
+  `x h_pq(v) x^-1 = {c_p c_q^-1,v} h_(sigma p)(sigma q)(v)` and
+  `x w_pq(1) x^-1 = h_(sigma p)(sigma q)(c_p c_q^-1)
+  w_(sigma p)(sigma q)(1)` in the unconditional extension.
+- **Paper proof:** `[PAPER-PROVED]` The first formula follows from signed-Weyl action plus diagonal
+  cocycle conjugation. For the second, arbitrary diagonal conjugation reduces to three canonical
+  root lifts; the apparent residues are exactly the two-torsion symbol `{-1,u}` and cancel.
+  Arbitrary field signed-Weyl conjugation is an exact signed-monomial matrix identity. Arbitrary
+  Spin conjugation follows directly from canonical signed matrix data acting on Clifford basis
+  vectors; this resolves the central-sign ambiguity invisible in the matrix quotient. Combining
+  both factors in the amalgam cancels the opposite Milnor cocycles by antisymmetry.
+- **Verdict:** `[LEAN-PROVED]` Added canonical unconditional Weyl generators and proved both public
+  formulas `milnorW_conjugation_matsumotoDiagonalLift` and
+  `milnorW_conjugation_weylGenerator`, with no field or symbol premise. Narrow build passes with
+  3252 jobs. Targeted axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`;
+  forbidden-token scan passes. Global lint reaches two unrelated unreachable `RHTower` modules,
+  not these artifacts.
+- **Formal artifacts:** `MilnorKTwoSignSubgroup.lean`, `MilnorKTwoWeylAction.lean`,
+  `MilnorKTwoSpinWeylFieldAction.lean`, `MilnorKTwoWeylUnconditional.lean`,
+  `MilnorKTwoWeylProjection.lean`.
+- **Next open core:** `[OPEN CORE]` Construct Milnor's Bruhat retraction and Steinberg-symbol
+  comparison needed after Lemma 12.5, then continue the premise-free Birch--Tate chain.
+
+### BT.C33 — rank-four Bruhat projection and adjacent-Weyl transitions
+
+- **Conjecture:** `[CONJECTURE]` Every element of the rank-four elementary matrix group has an
+  upper-unipotent--monomial--upper-unipotent factorization with a unique determinant-one monomial
+  factor. The resulting set retraction `p : E₄(F) → M₄(F)` obeys Milnor's exact Lemma 12.7
+  alternatives under left multiplication by `mᵢ,ᵢ₊₁(1)` and right multiplication by
+  `mᵢ,ᵢ₊₁(-1)`.
+- **Paper status:** `[PAPER-PROVED]` Milnor, *Introduction to Algebraic K-Theory*, Lemmas 12.6 and
+  12.7. Existence is Gaussian elimination; uniqueness follows from pivot support in an
+  upper--monomial--upper factorization. The transition alternatives are the rank-one identity
+  moving one upper-root factor across an adjacent Weyl matrix.
+- **Lean proof:** Southwest suffix-row/prefix-column ranks are invariant under upper-unipotent
+  multiplication. Their complete rank profile determines the monomial permutation. Pivot-prefix
+  determinants then recover every scale, proving middle-factor uniqueness without enumerating the
+  24 permutations. `fin4_steinbergTWT_eq_top` supplies existence. Exact Steinberg absorption isolates
+  each adjacent root from the rank-four upper collector and proves both right alternatives. Diagonal
+  equivariance changes `w(1)` to Milnor's stated `w(-1)` formula. Finally
+  `fin4BruhatProjection_inv` turns all three right laws into the three left laws.
+- **Verdict:** `[LEAN-PROVED]` Defined `fin4BruhatProjection`; proved determinant-one elementary
+  generation, retraction on monomials, left/right diagonal equivariance, inversion equivariance,
+  and all six adjacent-root transition laws
+  `fin4BruhatProjection_mul_w{01,12,23}_neg_one` and
+  `fin4BruhatProjection_w{01,12,23}_mul`. Narrow builds pass with 3260 jobs; forbidden-token scan
+  and authoritative formal lint pass. Targeted axiom audit reports only `propext`,
+  `Classical.choice`, and `Quot.sound`.
+- **Formal artifacts:** `MilnorKTwoBruhatProjection.lean`,
+  `MilnorKTwoBruhatTransitions.lean`.
+- **Next open core:** `[OPEN CORE]` Construct Milnor's Bruhat-pair set `X`, prove commuting left/right
+  permutation actions and simple transitivity (Lemmas 12.8--12.10), then extract the central
+  extension and Steinberg-to-Milnor inverse.
+
+### BT.C34 — Bruhat-pair fibers are Milnor-K₂ torsors
+
+- **Conjecture:** `[CONJECTURE]` For
+  `X = {(s,w) | fin4BruhatProjection s = milnorWProjection w}`, every fiber over a fixed elementary
+  matrix is nonempty and carries a simply transitive action of `K₂ᴹ(F)` through
+  `milnorWCentralIncl`.
+- **Paper proof:** `[PAPER-PROVED]` Surjectivity of `milnorWProjection` makes every fiber nonempty.
+  Two lifts `w,w'` of the same monomial differ by `w'w⁻¹` in the projection kernel. Lemma 12.4
+  identifies that kernel with the faithful central image of `K₂ᴹ(F)`, giving existence and
+  uniqueness of the translating symbol.
+- **Lean strategy:** First identify `K₂ᴹ(F)` with the subtype kernel of `milnorWProjection`, then
+  define its fiberwise action on `Fin4BruhatPair` and prove an `∃!` transport theorem.
+- **Current blocker:** `[OPEN CORE]` Kernel group equivalence and subtype bookkeeping.

@@ -146,7 +146,7 @@ theorem d4BMMixedHorizonComplexMonodromyJump_ne_zero
         (d4BMMixedHorizonComplexB_ascPochhammer_ne_zero n k chi hchi)
     · exact mul_ne_zero hfacN hfacN1
 
-/-- Negating BM momentum exchanges the two connection exponents. -/
+/-- Negating BM momentum exchanges the two original hypergeometric parameters. -/
 theorem d4BMMixedHorizonComplexA_neg
     (n k : ℕ) (chi : ℂ) :
     d4BMMixedHorizonComplexA n k (-chi) =
@@ -155,7 +155,7 @@ theorem d4BMMixedHorizonComplexA_neg
     d4BMCausalHypergeometricA_plusMinus, d4BMCausalHypergeometricB_plusMinus]
   ring
 
-/-- The second connection exponent is exchanged in the opposite direction. -/
+/-- The second original hypergeometric parameter is exchanged in the opposite direction. -/
 theorem d4BMMixedHorizonComplexB_neg
     (n k : ℕ) (chi : ℂ) :
     d4BMMixedHorizonComplexB n k (-chi) =
@@ -231,7 +231,7 @@ theorem d4BMMixedHorizonFrobeniusOrder_negOne_pow
     (-1 : ℂ) ^ d4BMMixedHorizonFrobeniusOrder n k = 1 := by
   simp [d4BMMixedHorizonFrobeniusOrder, pow_add]
 
-/-- Physical BM mixed connection parameters are conjugates. -/
+/-- Physical BM mixed original hypergeometric parameters are conjugates. -/
 theorem d4BMMixedHorizonB_eq_conj_A
     (n k : ℕ) (chi : ℝ) :
     d4BMMixedHorizonB n k chi =

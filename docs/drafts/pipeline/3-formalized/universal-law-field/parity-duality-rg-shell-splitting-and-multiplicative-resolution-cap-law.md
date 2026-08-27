@@ -16,7 +16,8 @@
   (Route-E/MR-type) events, though exactly expressible as gas probabilities, are undecidable by
   the solvable organ cone.
 - **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [OBSERVATIONAL-IDENTITY INSTANCE]
-  [ORGAN-SCOPE NO-GO] [ROUTINE COROLLARIES FLAGGED AS SUCH] [NOT RH] [NO LEAN]
+  [ORGAN-SCOPE NO-GO] [ROUTINE COROLLARIES FLAGGED AS SUCH] [NOT RH]
+  [THEOREM 3.1 CORRECTED] [FORMALISED IN LEAN 4] [AXIOM-AUDITED]
 
 ## 0. Setting
 
@@ -153,9 +154,12 @@ observers can decide them. They cannot:
 
 ### Theorem 3.1 — tilt-Markov certificates are multiplicatively coarse
 
-Let \(\mathcal C\) be the cone of finite positive combinations
+Let \(\mathcal C^*\) be the cone of **nonzero** finite positive combinations
 \(f(A)=\sum_ic_i|A|^{-u_i}\) with \(c_i\ge0\), \(u_i\in[-U,U]\) (the order-tilt certificate cone).
-For \(0<h\le x\) and \(I=(x,x+h]\), every Markov certificate from \(\mathcal C\) satisfies
+Interpret the expectation in \([0,+\infty]\), so a non-admitted negative moment gives the correct
+infinite certificate rather than a spurious finite value. For \(0<h\le x\), put \(I=(x,x+h]\)
+and assume that \(I\) contains at least one finite-abelian-group order. Then every Markov certificate
+from \(\mathcal C^*\) satisfies
 
 \[
 \operatorname{cert}_I(f):=\frac{\mathbb E_\sigma[f]}{\inf_{|A|\in I}f}
@@ -170,19 +174,19 @@ scale.
 
 #### Proof
 
-Each generator \(n\mapsto n^{-u}\) varies by at most \(2^{|u|}\le2^{U}\) on \((x,2x]\), hence so
-does any \(f\in\mathcal C\) up to \(\sup_{(x,2x]}f\le 4^{U}\inf_{(x,2x]}f\) (crude but uniform:
-positive combinations inherit the ratio bound with one extra factor \(2^U\) absorbed into
-\(4^U\)). Since \(I\subset(x,2x]\), \(\inf_If\ge\inf_{(x,2x]}f\), so
+Each generator \(n\mapsto n^{-u}\) varies by at most \(2^{|u|}\le2^{U}\) on \((x,2x]\), hence every
+nonzero positive combination is strictly positive there and satisfies the deliberately coarse
+pairwise bound \(f(n)\le4^Uf(m)\). Choose any group order \(n_0\in I\). For every
+\(m\in(x,2x]\),
 
 \[
-\operatorname{cert}_I(f)
-\ge\frac{\mathbb E[f\,\mathbf 1_{|A|\in(x,2x]}]}{\inf_I f}
-\ge\frac{\inf_{(x,2x]}f}{\inf_I f}\,\mathbb P(|A|\in(x,2x])
-\ge 4^{-U}\,\mathbb P(|A|\in(x,2x]).
+4^{-U}\inf_If\le4^{-U}f(n_0)\le f(m).
 \]
 
-QED.
+Integrating this pointwise lower bound over the dyadic window and dividing by the positive
+\(\inf_If\) proves `(GAS4.5)`. The nonzero-certificate and nonempty-target hypotheses are
+load-bearing: the original draft omitted them, making the displayed quotient degenerate and the
+claim false for the zero certificate or an empty short interval. QED.
 
 Remarks, with hostile boundaries:
 
@@ -236,9 +240,29 @@ Remarks, with hostile boundaries:
   all \(\sigma>0\).
 - Nothing localizes zeros. The card's contribution is structural: signed sector typed, sources
   separated, walls re-derived shell-wise, and the solvable/wall boundary made exact.
-- Lean targets: (GAS4.3) is a finite partition-identity layer (Euler's theorem is in mathlib's
-  q-series vicinity — verify against toolchain); Theorem 3.1 is elementary; (GAS4.1–2) need the
-  Euler-product layer already used by ULF-GAS-1 targets.
+- Lean certification:
+  - `AbelianZetaGas/ParityMass.lean` proves `(GAS4.1)`, its strict `(0,1)` range, and the exact
+    parity-twisted change-of-measure identity as `integral_classLaw_parity`,
+    `integral_classLaw_parity_re_mem_Ioo`, and `integral_classLaw_parity_mul_gasTilt`.
+  - `AbelianZetaGas/SignedGrandResponse.lean` proves the literal zeta-product `(GAS4.2)`, identifies
+    it with the actual class-law expectation, and proves meromorphic continuation as
+    `signedGrandResponse_eq_zetaProduct`,
+    `integral_classLaw_parity_mul_gasTilt_eq_signedGrandResponse`, and
+    `meromorphicAt_signedGrandResponse`. Normal compact convergence uses the existing uniform-tail
+    theorem `hasProdUniformlyOn_zeta_depthTail` on each ladder.
+  - `AbelianZetaGas/FermionicOrderDuality.lean` proves partition-function duality, `(GAS4.3)`,
+    equality of full probability laws, positive order-`p²` conditioning mass, and the distinct/odd
+    fibre classifications as `fermionicZetaPartition_eq_oddDepth`,
+    `fermionicPrimeOrderProbability_eq_oddDepth`, `fermionicOrderLaw_eq_oddDepth`,
+    `orderTwo_conditioning_probabilities_pos`, `eq_cyclicOrderTwoPartition_of_mem_distincts`, and
+    `eq_elementaryOrderTwoPartition_of_mem_odds`.
+  - `AbelianZetaGas/ParityShellFan.lean` proves the odd/even fan split, RG-double image, critical
+    half-wall separation, and order-response transfer. `AbelianZetaGas/FermionicModeFan.lean`
+    separately constructs the Bernoulli fermionic probability field and proves its full
+    mode-activity fan, blocking the retracted over-reading.
+  - `AbelianZetaGas/MultiplicativeResolutionCap.lean` proves corrected exact Theorem 3.1 as
+    `abelianZetaOrderTiltMarkovCertificate_ge_dyadic`, using the actual class law and an
+    extended-nonnegative expectation.
 
 ## Log
 
@@ -250,3 +274,10 @@ Remarks, with hostile boundaries:
   condenses at \(\tfrac12\) like the bosonic one, and only order-organ statements transfer.
   Corrected with an explicit warning item. Separation in Theorem 2.1.3 sharpened from \(p^3\) to
   the deterministic \(p^2\) statement.
+- 2026-08-27 — ERRATUM: Theorem 3.1 omitted nonzero-certificate and nonempty-target hypotheses;
+  without them `(GAS4.5)` is false. Corrected statement and exact class-law theorem formalized in
+  `AbelianZetaGas/MultiplicativeResolutionCap.lean`; card remains Stage 2 for Theorems 1.1/2.1 and
+  Corollary 2.2.
+- 2026-08-27 — Lean closure: formalized every theorem and warning clause in six targeted modules;
+  normalized local and full fermionic/odd-depth laws as genuine probability measures; targeted
+  builds, created-declaration axiom audit, and formal lint all passed. Promoted to Stage 3.

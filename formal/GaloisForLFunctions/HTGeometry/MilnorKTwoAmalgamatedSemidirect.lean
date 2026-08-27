@@ -120,6 +120,37 @@ def inr : W →* Construction K i rho h :=
   (QuotientGroup.mk' (graphSubgroup K i rho h)).comp
     SemidirectProduct.inr
 
+/-- Conjugation by the second factor realizes the prescribed action on the first factor. -/
+theorem inr_conj_inl (w : W) (g : G) :
+    inr K i rho h w * inl K i rho h g * (inr K i rho h w)⁻¹ =
+      inl K i rho h (rho w g) := by
+  change (QuotientGroup.mk' (graphSubgroup K i rho h))
+        (SemidirectProduct.inr w) *
+      (QuotientGroup.mk' (graphSubgroup K i rho h))
+        (SemidirectProduct.inl g) *
+      ((QuotientGroup.mk' (graphSubgroup K i rho h))
+        (SemidirectProduct.inr w))⁻¹ =
+    (QuotientGroup.mk' (graphSubgroup K i rho h))
+      (SemidirectProduct.inl (rho w g))
+  rw [← map_inv, ← map_mul, ← map_mul]
+  apply congrArg (QuotientGroup.mk' (graphSubgroup K i rho h))
+  ext <;> simp
+
+/-- Every amalgamated-semidirect element has a first-factor/second-factor representative. -/
+theorem exists_inl_mul_inr (q : Construction K i rho h) :
+    ∃ (g : G) (w : W), q = inl K i rho h g * inr K i rho h w := by
+  obtain ⟨x, rfl⟩ := QuotientGroup.mk'_surjective
+    (graphSubgroup K i rho h) q
+  exact ⟨x.left, x.right, by
+    change (QuotientGroup.mk' (graphSubgroup K i rho h)) x =
+      (QuotientGroup.mk' (graphSubgroup K i rho h))
+          (SemidirectProduct.inl x.left) *
+        (QuotientGroup.mk' (graphSubgroup K i rho h))
+          (SemidirectProduct.inr x.right)
+    rw [← map_mul]
+    exact congrArg (QuotientGroup.mk' (graphSubgroup K i rho h))
+      (SemidirectProduct.inl_left_mul_inr_right x).symm⟩
+
 /-- Both copies of every common-subgroup element are identified. -/
 theorem common_identified (k : K) :
     inl K i rho h (k : G) = inr K i rho h (i k) := by
@@ -203,4 +234,3 @@ end AmalgamatedSemidirect
 end GaloisForLFunctions.HTGeometry
 
 end
-

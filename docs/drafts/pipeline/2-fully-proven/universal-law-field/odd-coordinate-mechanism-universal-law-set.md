@@ -7,7 +7,8 @@
 - **Parents:** ULF-FIELD-2 (Θ1–Θ4, stage 2), ULF-FIELD-3 (charge no-go + corner exhaustion),
   FORK-1 (local Euler squares), rh-current-frontier-map.md (the observation base:
   all route dossiers, §6 five classes, §7 retired ledger)
-- **Scientific status:** `[LAWS PROVED — CITED]` `[LAW 6 PROVED HERE]`
+- **Scientific status:** `[LAWS 1–3 AND 6 LEAN-ANCHORED]` `[LAWS 4–5 SYNTHESIS ONLY]`
+  `[BLOCKED ON THEOREM-SHAPED PAPER STATEMENTS FOR LAWS 4–5]`
   `[SUBSUMPTION TABLE COMPLETE]` `[SELF-CEILING STATED AS THEOREM, NOT EXCUSE]` `[NOT RH]`
 
 ## The mechanism in one paragraph
@@ -130,3 +131,38 @@ landscape theory is, by Law 6, wrong.
   route-diving. All component laws proven earlier this session (citations above); Law 6
   proved here; subsumption table covers every route dossier and the retired ledger of the
   frontier map.
+
+## Lean exactness audit — 2026-08-27
+
+Existing exact anchors:
+
+- Law 1: `RHTower/CriticalLocusQuadrupleEvenness.lean`, especially
+  `criticalQuadruple_neg`, `apply_criticalQuadruple_neg`, and
+  `deriv_criticalQuadrupleSum_zero`.
+- Law 2: `RHTower/CriticalLocusHessianClassification.lean` and
+  `RHTower/CrystallineShadowTransversality.lean` certify the displayed local evenness,
+  separation, Hessian, and kernel structure.
+- Law 3: `RHTower/FiniteProbeRHNonselection.lean` now proves a stronger concrete statement than
+  the old Θ4 dependency: `exists_offLine_perturbation_of_probes`,
+  `exists_offLine_perturbation_of_finiteCodim`, and
+  `exists_offLine_perturbation_of_finiteType` preserve every finite probe family while creating a
+  non-real zero quartet.
+- Law 6: `RHTower/OddCoordinateSelfClosure.lean` certifies
+  `odd_landscape_output_eq_zero`, its quadruple and multi-quadruple instances, and
+  `no_odd_landscape_detector`. Direct elaboration passes on the current toolchain.
+
+The card cannot move to Stage 3 exactly as written because Laws 4 and 5 are not formal
+propositions:
+
+1. Law 4's “there is no sixth option” is explicitly qualified in Hostile boundaries as a taxonomy
+   relative to the corpus's recorded functor classes. No type of admissible completion mechanisms,
+   exhaustive predicate, or five-way classification theorem is stated.
+2. Law 5's “exactly one unconditional linear presentation” does not specify the carrier,
+   equivalence relation on presentations, or uniqueness quantifier. Its proof locations are a
+   synthesis ledger, not a theorem proving uniqueness.
+
+Encoding either claim as a structure populated by five constructors, or assuming the missing
+classification/uniqueness premise, would be an assumption wrapper rather than formalization of the
+paper claim. Required paper repair: replace Laws 4 and 5 with theorem-shaped definitions and exact
+quantifiers, or relabel them as synthesis consequences outside the Lean-completeness gate. Card
+remains Stage 2.

@@ -4314,3 +4314,40 @@ into convergence *and* holomorphy of `∫_1^∞ f x^{-w} dx` on `Re w > ρ + 1`,
 entry point for every Mellin continuation argument.  Second, the four-quarter split in the window
 recursion is the general shape for adding any bounded perturbation to a rounding construction: the
 perturbation must be `o(1)` relative to the floor, and the floor is linear in the window length.
+
+## `universal-law-field/parity-duality-rg-shell-splitting-and-multiplicative-resolution-cap-law` — promoted 2026-08-27
+
+Full exact closure in six Abelian-zeta-gas modules: parity mass and strict range; signed doubled
+zeta ladder, expectation bridge, and meromorphic continuation; distinct/odd partition duality as
+genuine local and full probability laws; positive order-`p²` conditioning and deterministic socle
+separation; odd/even RG shell fans; separate full fermionic mode-activity fan; corrected nonzero,
+nonempty-target multiplicative resolution cap. Targeted builds, all-created-declaration axiom audit,
+and formal lint passed.
+
+## `universal-law-field/c1-o-open-core-reduction-theorem` — promoted 2026-08-27
+
+Exact reduction closed in `RHTower/COneOOpenCoreReduction.lean`: absolute-domain packet source
+continuity; uniqueness-of-limit iff against C1's Hilbert extension; specializations to Route O's
+literal restricted-Weil functional and every published matrix entry; rectangular evaluation
+membership in closed Cauchy core; exact arithmetic/spectral negativity transport on absolute
+packets. Connector remains explicitly open—no equality premise is repackaged as closure. Targeted
+module build, all-created-declaration axiom audit, umbrella wiring, and formal lint passed.
+
+## `schanuel-stage-two-defect-slope-normal-form` — exact residual audit 2026-08-27
+
+Clauses 1–4 and the literal logarithmic-differential interval integral are already Lean-closed in
+the recorded Schanuel defect-slope and path-integral modules. Remaining exact gate is construction
+and analytification of the normalized projective curve with the concrete coordinate pullbacks and
+divisor-avoiding path. Corrected stale clause-5 wording from “every path” to paths staying outside
+coordinate divisors; the logarithmic differential is undefined on those divisors. No premise
+wrapper added; card remains Stage 2.
+
+## `all-replica-static-centralizer-planar-separation-law` — residual audit 2026-08-27
+
+Theorems A, B, D and algebraic separation core remain exact in existing modules. Corpus now owns
+nearest-neighbor Pauli-shell dephasing for every balanced spectral character, but the concrete
+Theorem C assembly still needs a measurable/global spectral-projector or eigenchart
+partition-of-unity layer. Theorem E `(25)` at replica order `r > 1` still needs absolute
+continuity for the genuinely non-diagonal matrix Dyson equation; corpus search found only the
+subsingleton-column diagonal reduction. No replicated-instantiation shortcut or assumption
+wrapper is valid. Card remains Stage 2.

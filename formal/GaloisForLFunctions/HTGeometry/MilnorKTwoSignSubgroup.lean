@@ -132,6 +132,12 @@ theorem fin4MatsumotoDiagonalLift_of_sign_mem_H0 {i j : Fin 4}
     exact Subgroup.one_mem _
   · exact Subgroup.subset_closure ⟨i, j, hij, rfl⟩
 
+/-- Canonical common-subgroup element `hᵢⱼ(u)` for a sign `u ∈ {±1}`. -/
+def fin4MilnorH0RootLift {i j : Fin 4} (hij : i ≠ j)
+    (u : Fˣ) (hu : u = 1 ∨ u = -1) : fin4MilnorH0 (F := F) :=
+  ⟨fin4MatsumotoDiagonalLift hij u,
+    fin4MatsumotoDiagonalLift_of_sign_mem_H0 hij u hu⟩
+
 theorem centralIncl_minusOneSymbol_mem_H0 :
     centralIncl (F := F) (n := 4)
         (Multiplicative.ofAdd (fin4MinusOneSymbol F))

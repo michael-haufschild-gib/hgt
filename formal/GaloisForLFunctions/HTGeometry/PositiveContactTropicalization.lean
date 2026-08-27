@@ -45,6 +45,16 @@ theorem analyticOrderAt_eq (h : AnalyticContact f m a) : analyticOrderAt f 0 = m
   · simpa [hu0] using ha
   · simpa using hfactor
 
+/-- A contact whose value vanishes at the origin has strictly positive order. -/
+theorem order_pos_of_value_zero (h : AnalyticContact f m a) (hzero : f 0 = 0) : 0 < m := by
+  by_contra hnot
+  have hm : m = 0 := Nat.eq_zero_of_not_pos hnot
+  rcases h with ⟨u, hu, hu0, ha, hfactor⟩
+  have hfa : f 0 = a := by
+    have h := hfactor.self_of_nhds
+    simpa [hm, hu0] using h
+  exact ha (hfa.symm.trans hzero)
+
 theorem leading_eq_of_eventuallyEq (hf : AnalyticContact f m a)
     (hg : AnalyticContact g m b) (hfg : f =ᶠ[𝓝 0] g) : a = b := by
   rcases hf with ⟨uf, huf, huf0, ha, hffactor⟩
@@ -176,6 +186,16 @@ theorem exists_of_analytic_eventually_nonnegative
     · exact hu0pos
   refine ⟨u 0, ?_, hnonneg, hu0pos⟩
   exact ⟨u, hu, rfl, ne_of_gt hu0pos, by simpa [smul_eq_mul] using hfactor⟩
+
+/-- Exact extraction for the positive zero-germ class `A₊`: contact data exists and its order is
+strictly positive. -/
+theorem exists_of_analytic_zero_eventually_nonnegative
+    (hf : AnalyticAt ℝ f 0) (hzero : f 0 = 0)
+    (hfinite : analyticOrderAt f 0 ≠ ⊤) (hnonneg : ∀ᶠ x in 𝓝 0, 0 ≤ f x) :
+    ∃ a, PositiveAnalyticContact f (analyticOrderAt f 0).toNat a ∧
+      0 < (analyticOrderAt f 0).toNat := by
+  obtain ⟨a, ha⟩ := exists_of_analytic_eventually_nonnegative hf hfinite hnonneg
+  exact ⟨a, ha, ha.1.order_pos_of_value_zero hzero⟩
 
 /-- Two-sided nonnegativity forces even contact order. -/
 theorem order_even (h : PositiveAnalyticContact f m a) : Even m := by
@@ -439,7 +459,7 @@ theorem positiveAnalyticContact_normSq {E : Type*} [NormedAddCommGroup E]
   have hlead : 0 < ‖a‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr ha)
   refine ⟨?_, Eventually.of_forall (fun x => sq_nonneg ‖v x‖), hlead⟩
   refine ⟨fun x => inner ℝ (u x) (u x), hunit_analytic, ?_, ne_of_gt hlead, ?_⟩
-  · simpa [hu0] using real_inner_self_eq_norm_sq a
+  · simp [hu0]
   · filter_upwards [hvfactor] with x hx
     rw [hx, real_inner_self_eq_norm_sq]
     have hpow : x ^ (2 * m) = (x ^ m) * (x ^ m) := by

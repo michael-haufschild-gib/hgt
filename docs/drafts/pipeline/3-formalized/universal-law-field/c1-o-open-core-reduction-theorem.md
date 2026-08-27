@@ -1,12 +1,12 @@
 # The C1⟷O open-core reduction theorem
 
 - **ID:** ULF-MECH-3
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper, dependency-closed assembly of verified in-tree components)
 - **Parents:** ULF-MECH-2 (implication-graph program); frontier map route dossiers C1, O
 - **Scientific status:** `[PROVED HERE — ASSEMBLY]` `[BRIDGE-GRADE BY CONSTRUCTION]`
   `[FIRST THEOREM-GRADE ANNOTATION OF THE MAP'S CONDITIONAL ROUTE COUNT]` `[NOT RH]`
-  `[NO LEAN — user directive]`
+  `[LEAN CLOSED 2026-08-27]`
 
 ## Verified components (each read in-tree this session; exact hypotheses recorded)
 
@@ -82,9 +82,28 @@ independent at the comparison level.
   parameters, which is why the connector is genuinely open and the theorem is a reduction,
   not a merger.
 
+## Lean formalization
+
+- `RHTower/COneOOpenCoreReduction.lean` defines the absolute-domain packet evaluation, literal
+  prime-plus-archimedean packet source, and C1 Hilbert extension.
+- `tendsto_cOnePrimeArchPacketSource_iff_eq_extendedPairing` formalizes the closed-class reduction
+  by uniqueness of limits after applying the exact in-tree source-continuity theorem.
+- `tendsto_cOnePrimeArchPacketSource_to_publishedWeil_iff_connector` and
+  `tendsto_cOnePrimeArchPacketSource_to_publishedMatrix_iff_connector` specialize the reduction to
+  Route O's literal functional and every entry of its published finite matrix.  Both are iff
+  statements; neither assumes or asserts the open connector.
+- `xiRectangularTwoEdgeEvaluation_mem_cOneClosedCore` closes square-summable rectangular-profile
+  membership.  `cOnePrimeArchPacketSource_re_lt_zero_iff_polarization` gives exact unconditional
+  negativity transport on the absolute packet class.
+- Module is wired through `HTGeometry/UniversalLawField.lean`.  Targeted module build, all-created-
+  declaration axiom audit, and formal lint pass.
+
 ## Log
 
 - 2026-08-09 — assembled and promoted after the two promotion gates resolved: (B)'s exact
   hypotheses verified in-tree; the density-criterion dependency REMOVED from the statement
   (downgraded to a cited remark). Independence re-test run: no count change, annotation
   recorded.
+- 2026-08-27 — exact reduction formalized without closing the connector; literal functional,
+  whole matrix family, rectangular closed-core membership, and packet negativity transport are
+  kernel-checked. Promoted to Stage 3.

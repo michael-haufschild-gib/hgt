@@ -129,6 +129,35 @@ theorem analyticAt_tprod_depthFactor_tail (σ : ℝ) (v : ℂ) {a₀ : ℝ} (ha�
   have hmem : u ∈ {w : ℂ | a₀ < σ + w.re} := hu
   exact (hdiff.analyticOnNhd hopen) u hmem
 
+/-- The grand response is meromorphic throughout every positive dilation chamber. -/
+theorem meromorphicAt_grandResponse (σ : ℝ) (v : ℂ) {a₀ : ℝ} (ha₀ : 0 < a₀) {u : ℂ}
+    (hu : a₀ < σ + u.re) : MeromorphicAt (grandResponse σ v) u := by
+  let J := depthTailThreshold v a₀
+  have hopen : IsOpen {w : ℂ | a₀ < σ + w.re} := by
+    have hcont : Continuous fun w : ℂ => σ + w.re := continuous_const.add Complex.continuous_re
+    exact isOpen_lt continuous_const hcont
+  have heq : grandResponse σ v
+      =ᶠ[nhdsWithin u {u}ᶜ]
+        fun w : ℂ => depthProduct σ v J w * ∏' j : ℕ, depthFactor σ v (j + J + 1) w := by
+    filter_upwards [nhdsWithin_le_nhds (hopen.mem_nhds hu)] with w hw
+    exact grandResponse_split σ v (lt_of_lt_of_le ha₀ (le_of_lt hw)) J
+  have hhead : MeromorphicAt (depthProduct σ v J) u := by
+    show MeromorphicAt (fun w : ℂ => ∏ j ∈ Finset.range J, depthFactor σ v (j + 1) w) u
+    exact MeromorphicAt.fun_prod fun j _ =>
+      meromorphicAt_depthFactor σ v (Nat.succ_le_succ (Nat.zero_le j)) u
+  have hJ1 : depthTailThreshold v a₀ ≤ J + 1 := Nat.le_succ _
+  have htailfun : (fun w : ℂ => ∏' j : ℕ, depthFactor σ v (j + J + 1) w)
+      = fun w : ℂ => ∏' j : ℕ, depthFactor σ v (j + (J + 1)) w := by
+    funext w
+    refine tprod_congr fun j => ?_
+    have hidx : j + J + 1 = j + (J + 1) := by omega
+    rw [hidx]
+  have htail : MeromorphicAt
+      (fun w : ℂ => ∏' j : ℕ, depthFactor σ v (j + J + 1) w) u := by
+    rw [htailfun]
+    exact (analyticAt_tprod_depthFactor_tail σ v ha₀ hu hJ1).meromorphicAt
+  exact (hhead.fun_mul htail).congr heq.symm
+
 /-- **(GAS.9), full form.**  On the chamber the divisor of the grand response is the finite sum of
 the pulled-back zeta orders at the depths below the threshold. -/
 theorem meromorphicOrderAt_grandResponse (σ : ℝ) (v : ℂ) {a₀ : ℝ} (ha₀ : 0 < a₀) {u : ℂ}

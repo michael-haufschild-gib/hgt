@@ -1,7 +1,7 @@
 # Universal typed-event network fixed-carrier no-go
 
 - **ID:** `universal-typed-event-network-fixed-carrier-no-go`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** UNIVERSAL LINEAR/QUANTUM NETWORK REPRESENTATION THEOREM / PHYSICAL NO-GO
 - **Status:** `[PAPER-PROVED] [LEAN-PROVED] [REDISCOVERED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Parent:** `event-order-diamond-carrier-boundary.md`
@@ -230,48 +230,38 @@ escape route and the isolation of the monoidal/locality residue.
 
 ## Lean status
 
-The arbitrary-network algebraic theorem is `[LEAN-PROVED]` in
-`formal/GaloisForLFunctions/HTGeometry/EventNetworkFixedCarrier.lean`. It proves exact recovery,
-faithfulness, typed composition, identities as corners, addition, subtraction, and scalar
-weighting over the stated coefficient classes.
+The exact theorem is `[LEAN-PROVED]` in two dependency-closed layers.
 
-Focused final build:
+- `formal/GaloisForLFunctions/HTGeometry/EventNetworkFixedCarrier.lean` proves the arbitrary
+  algebraic network theorem: exact recovery, faithfulness, typed composition, identities as
+  corners, addition, subtraction, and scalar weighting.
+- `formal/GaloisForLFunctions/HTGeometry/EventNetworkHilbertDirectSum.lean` constructs the literal
+  dependent `ℓ²` carrier. It proves summand isometry and adjoint coordinate compression, the
+  finite-dimensional dimension sum, separability for countable families of separable fibres,
+  literal normal completely-positive trace-class corners, trace nonincrease, exact recovery,
+  exact lifted composition, and normalization preservation on valid source-corner states.
+
+The operational layer rests on unconditional reusable infrastructure in
+`formal/GaloisForLFunctions/HTGeometry/TraceClassQuantumCorner.lean`: exact Hermitian
+quadratic-form matrix cones, complete positivity of arbitrary bounded sandwiches, quantitative
+trace-norm ideal bounds, trace-norm predual normality, and isometric corner construction.
+
+Verification on 2026-08-27:
 
 ```text
-lake build GaloisForLFunctions.HTGeometry.EventNetworkFixedCarrier
-✔ [1211/1211] Built GaloisForLFunctions.HTGeometry.EventNetworkFixedCarrier
-Build completed successfully (1211 jobs).
+lake env lean GaloisForLFunctions/HTGeometry/TraceClassQuantumCorner.lean
+lake env lean GaloisForLFunctions/HTGeometry/EventNetworkHilbertDirectSum.lean
+lake build GaloisForLFunctions.HTGeometry.EventNetworkHilbertDirectSum
+✔ Built GaloisForLFunctions.HTGeometry.TraceClassQuantumCorner
+✔ Built GaloisForLFunctions.HTGeometry.EventNetworkHilbertDirectSum
+Build completed successfully.
 ```
 
-The axiom audit for every declaration reports only:
+The axiom audit covered every declaration created or changed for this closure and reports only
+`propext`, `Classical.choice`, and `Quot.sound`. Repository formal lint passed.
 
-```text
-propext
-Classical.choice
-Quot.sound
-```
-
-Repository formal lint passed. The completely-positive operational corollary remains
-paper-proved rather than Lean-formalized; it is not needed for the algebraic no-go.
-
-### Trace-class corner checkpoint (2026-08-15)
-
-`HTGeometry/TraceClassQuantumCorner.lean` now proves reusable unconditional infrastructure on
-the project’s actual approximation-number Schatten-one subtype:
-
-- `memSchattenClass_one_sandwich` and `traceClassSandwich_comp` close trace-class preservation
-  and exact composition for every bounded Hilbert sandwich;
-- `TraceClassQuantumOperation` closes composition, complete positivity at every finite matrix
-  level, trace nonincrease, and order-normality for operations carrying those proved properties;
-- `cornerLift_include`, `cornerLift_comp`, and
-  `trace_cornerLift_include_eq_of_tracePreserving` close exact valid-corner recovery,
-  compositionality, and normalization for certified corners.
-
-The focused leaf build and axiom audit pass with only `propext`, `Classical.choice`, and
-`Quot.sound`.  This does **not** yet construct the inclusion and compression operations for the
-literal Hilbert direct sum: their complete positivity, trace inequality, and normality are still
-fields of `TraceClassQuantumCorner`.  Therefore the completely-positive corollary remains open
-and this card stays in Stage 2.
+The monoidal-locality obstruction remains the explicitly isolated physical open core. It is not a
+missing obligation in the fixed-carrier representation theorem proved on this card.
 
 ## Gates
 
@@ -282,7 +272,7 @@ and this card stays in Stage 2.
 - [x] strongest positive survivor and new physical open core
 - [x] arbitrary-network algebraic theorem formalized in Lean
 - [x] genuine trace-class sandwich closure and certified-corner composition formalized in Lean
-- [ ] literal Hilbert-direct-sum corner proved completely positive, normal, and trace-nonincreasing
+- [x] literal Hilbert-direct-sum corner proved completely positive, normal, and trace-nonincreasing
 - [ ] monoidal-locality obstruction derived from physics
 
 ## Log
@@ -294,3 +284,6 @@ and this card stays in Stage 2.
   `EventNetworkFixedCarrier.lean`; focused build, axiom audit, and repository lint passed.
 - 2026-08-15 — added and audited genuine trace-class sandwich and certified-corner infrastructure;
   retained Stage 2 because the literal direct-sum CP corner construction remains unproved.
+- 2026-08-27 — formalized literal dependent `ℓ²` carrier, separability and dimension laws, and
+  normal CP trace-class corners with exact recovery, composition, trace contraction, and valid-state
+  normalization; targeted build, changed-declaration axiom audit, and repository lint passed.

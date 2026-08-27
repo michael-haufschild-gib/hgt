@@ -1,13 +1,13 @@
 # Positive-contact tropicalization, observation monotonicity, and ramification law
 
 - **ID:** ULF-PCFG-1
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Statement:** Order at a marked analytic event is a tropical valuation on nonnegative response
   germs, can only increase under information-losing observation, is preserved by exact recovery,
   doubles under positive Gram formation, and multiplies under ramification; reflection-compatible
   ramification preserves half-order parity.
-- **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [BRIDGE] [NOVELTY UNVERIFIED] [LEAN PENDING]`
+- **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [BRIDGE] [NOVELTY UNVERIFIED] [LEAN-PROVED]`
 
 ## Goal
 
@@ -20,7 +20,7 @@ independent sources of information.
 
 - [x] 0 -> 1 in-progress: exact germ category, operations, and counterexamples identified
 - [x] 1 -> 2 fully-proven: complete proof below; no open dependency
-- [ ] 2 -> 3 formalized: Lean theorem pending
+- [x] 2 -> 3 formalized: exact package in `PositiveContactTropicalization.lean`
 - [ ] 3 -> 4 publication-ready
 
 ## 1. Positive analytic contact
@@ -244,10 +244,25 @@ half-order parity.
 
 ## Lean status
 
-Read-only audit found reusable order, ramification, formal-contact, Gram, and recovery modules. No
-Lean file was written or built in this research phase. The exact theorem remains `[LEAN PENDING]`.
+Formalized unconditionally in
+`formal/GaloisForLFunctions/HTGeometry/PositiveContactTropicalization.lean`. The module proves:
+
+- extraction and uniqueness of exact analytic contact order and leading coefficient;
+- even order and positive leading coefficient for nonnegative zero germs;
+- exact tropical sum/product laws, including strict/equal-order leading coefficients;
+- observation order monotonicity and equal-order leading-coefficient monotonicity;
+- exact recovery, finite positive sums, and identical-copy scaling;
+- vector Gram doubling and finite Gram minimum laws;
+- exact ramified composition order and leading coefficient;
+- odd order for reflection-compatible ramification and half-order parity preservation.
+
+Verification: direct `lake env lean`, targeted module build, and axiom audit of every new public
+declaration passed. Axiom output contains only standard Lean foundations (`propext`,
+`Classical.choice`, `Quot.sound`). Module is imported by the universal-law-field umbrella.
 
 ## Log
 
 - 2026-08-12 -- extracted from contact, positive Gram, Fisher observation, recovery, and
   ramification theorem surfaces; dependency-closed paper proof completed.
+- 2026-08-27 -- exact Lean package completed, built, axiom-audited, and wired into
+  `GaloisForLFunctions.HTGeometry.UniversalLawField`; promoted to Stage 3.

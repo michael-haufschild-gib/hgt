@@ -11,20 +11,31 @@ card has been moved into `docs/drafts/pipeline/3-formalized/universal-law-field/
 | # | Card | Status |
 |---|---|---|
 | 1 | `beurling-cross-system-blindness-of-multiplicative-regularization-law.md` | **DONE 2026-08-12** — promoted to `3-formalized/`.  New modules `HTGeometry/BeurlingCrossSystemBlindness.lean` (38 decls) and `RHTower/BeurlingRationalPrimeSystem.lean` (13 decls); all axiom-clean |
-| 2 | `c1-o-open-core-reduction-theorem.md` | NEEDS-LEAN — assembly card flagged [NO LEAN — user directive]; components are in-tree |
-| 3 | `condensed-phase-probabilistic-death-modulus-budget-and-gaussian-fluctuation-law.md` | NEEDS-LEAN — audit which clauses already have modules |
+| 2 | `c1-o-open-core-reduction-theorem.md` | **DONE 2026-08-27** — promoted to `3-formalized/`; exact absolute-packet source continuity, literal O functional and whole-matrix connector iff, rectangular closed-core membership, and unconditional packet negativity transport closed in `RHTower/COneOOpenCoreReduction`; targeted build, axiom audit, lint pass |
+| 3 | `condensed-phase-probabilistic-death-modulus-budget-and-gaussian-fluctuation-law.md` | **PARTIAL 2026-08-27** — Theorems 2.1/2.2 already certified; new `SoclePrimePartialLaw` gives genuine cutoff q-Gamma probability laws, exact characteristic products, cofinal prime cutoffs, and Theorem 1.1's no-weak-limit result for every centering. Remaining exact surface: 1.1 almost-sure equivalence, 3.1 non-i.i.d. triangular-array CLT, 3.2 actual one-sided q-Gamma Dickman law; card remains Stage 2 |
 | 4 | `critical-locus-hessian-classification-and-crystalline-transversality-law.md` | IN PROGRESS — Θ1, Θ2(i)–(v), Θ3.1 (packaged), Θ3.2 all certified (CriticalLocusQuadrupleEvenness, CrystallineShadowTransversality, CriticalLocusHessianClassification); Θ4 Step A certified (CriticalLocusConeFullness). Left: Θ4 exact-hitting assembly — OPEN RESEARCH, hostile audit + repair route + residual open point on the card (2026-08-13 log) |
 | 5 | `eigen-pair-prime-identification-derivation.md` | PAPER-INCOMPLETE — card states D3–D6 open; only D1–D2 are derived, so full formalization is blocked on the paper proof |
 | 6 | `finite-amplifier-width-cap-and-fejer-ratio-barrier-law.md` | **DONE 2026-08-13** — promoted to `3-formalized/`.  `HTGeometry/FiniteAmplifierFrame.lean`: Thm 1 (master bound/exclusion/width cap), Thm 1′ (multi-σ + averaging), Thm 2 (threshold, ratio form, ρ-finiteness: cosine sampling, finite-abelian dual averaging, separating-quotient reduction); Page + circle anchors in `FiniteAmplifierPatternCap`; residual-finiteness glue and Fejér's exact value recorded as cited-classical; 2504.05606 audited (no ceiling) |
-| 7 | `g-u-structure-admission-split-law.md` | NEEDS-LEAN — typing-grade split law flagged [NO LEAN — directive] |
+| 7 | `g-u-structure-admission-split-law.md` | **DONE 2026-08-20** — already promoted to `3-formalized/`; `HTGeometry/GUStructureAdmissionSplit.lean` certifies clause (ii)'s abstract non-transport law plus U/G witnesses and capstone, umbrella-wired and axiom-clean; clause (i) remains explicitly cited classical Krein/de Branges theory, matching card scope |
 | 8 | `nonvacuous-independence-and-polarization-import-law.md` | BLOCKED-ON-PREREQ — quantitative core certified (SelbergSpectralParameter); the rest is citation-level and needs a hyperbolic-surface spectral layer (Laplace spectrum, Eisenstein series, Maass-Selberg truncation, Selberg trace formula and zeta) absent from mathlib and the corpus |
-| 9 | `odd-coordinate-mechanism-universal-law-set.md` | NEEDS-LEAN — law set; Law 6 proved here |
-| 10 | `parity-duality-rg-shell-splitting-and-multiplicative-resolution-cap-law.md` | NEEDS-LEAN — signed-sector and organ-scope law |
+| 9 | `odd-coordinate-mechanism-universal-law-set.md` | **BLOCKED-ON-PAPER-STATEMENT 2026-08-27** — Laws 1–3 and 6 have exact current Lean anchors (`CriticalLocusQuadrupleEvenness`, `CriticalLocusHessianClassification`, `FiniteProbeRHNonselection`, `OddCoordinateSelfClosure`; Law 6 directly elaborates). Laws 4–5 are taxonomy/synthesis prose, not formal propositions: missing mechanism type/exhaustive five-way predicate and missing carrier/equivalence/uniqueness quantifiers. No assumption wrapper added; card remains Stage 2 pending paper repair |
+| 10 | `parity-duality-rg-shell-splitting-and-multiplicative-resolution-cap-law.md` | **DONE 2026-08-27** — promoted to `3-formalized/`; exact parity mass/signed response, probability-law Euler duality, order-`p²` separation, shell fans, fermionic activity fan, and corrected resolution cap closed in six targeted Abelian-zeta-gas modules; targeted builds, axiom audit, lint pass |
 | 11 | `pole-purchase-escape-and-collision-gap-law.md` | **DONE 2026-08-13** — promoted to `3-formalized/`.  The (INV3.2) log-derivative identity closed in `RHTower/PolePurchaseLogDerivIdentity.lean` (mathlib `LSeries_vonMangoldt_eq_deriv_riemannZeta_div` + `VonMangoldtLineSeriesSwap` kernels); axiom-clean |
 | 12 | `route-q-ratio-gate-decision.md` | BLOCKED-ON-NUMERICS — gate mechanism certified (DivisorHeightRatioGate: height damping, unconditional geometric decay, `9 < c` implies the gate); remaining inputs are gamma_1 > 9 (verified-zero computation) and a signed-moment lower bound (zero-location input) |
 | 13 | `specification-consistency-polarization-independence-and-cusp-concentration-law.md` | **DONE 2026-08-13** — promoted to `3-formalized/`.  Theorem B's independence witness fully certified (`RHTower/InverseTheoryGraphWitness.lean`: prism `C₁₆×K₂`, Rayleigh data by root-of-unity sampling, eigenvalue strictly inside `(2√2, 3)`, Perron pair, capstone `prism_independence_witness`); A/C/D recorded as cited-classical / in-tree-cited / synthesis per the card's own claims |
 
 Completed and promoted:
+
+- `c1-o-open-core-reduction-theorem.md` — 2026-08-27.
+  `COneOOpenCoreReduction` isolates the open connector as an exact iff for Route O's literal
+  restricted-Weil functional and every published matrix entry; no connector equality is assumed
+  or claimed. Absolute packet continuity, rectangular closed-core membership, and negativity
+  transport are Lean-closed.
+
+- `parity-duality-rg-shell-splitting-and-multiplicative-resolution-cap-law.md` — 2026-08-27.
+  `ParityMass`, `SignedGrandResponse`, `FermionicOrderDuality`, `ParityShellFan`,
+  `FermionicModeFan`, and `MultiplicativeResolutionCap` close every theorem and warning clause;
+  local and full order laws are genuine probability measures.
 
 - `beurling-cross-system-blindness-of-multiplicative-regularization-law.md` — 2026-08-12.
   Beurling systems as a structure (`System ι`); the Gram entry as an exact layer-cake integral;
@@ -101,8 +112,8 @@ Dependency order matters — the Θ package is upstream of two other cards.
    stage 2 with that recorded.
 7. Independent, not yet read under the corrected scope — audit each for displayed theorems first:
    `beurling-cross-system-blindness-…`, `pole-purchase-escape-…`,
-   `parity-duality-rg-shell-splitting-…`, `specification-consistency-…`,
-   `condensed-phase-probabilistic-death-…`, `g-u-structure-admission-split-law`,
+   `specification-consistency-…`, `condensed-phase-probabilistic-death-…`,
+   `g-u-structure-admission-split-law`,
    `c1-o-open-core-reduction-theorem`.
    The `[NO LEAN — user directive]` tags on the last two predate the current goal and are stale;
    treat them as targets, not exemptions.

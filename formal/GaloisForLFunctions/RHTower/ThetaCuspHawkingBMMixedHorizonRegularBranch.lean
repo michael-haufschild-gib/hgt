@@ -24,6 +24,10 @@ namespace RHTower
 
 noncomputable section
 
+attribute [-instance] instInnerProductSpaceRealComplex
+attribute [-instance] RCLike.toInnerProductSpaceReal
+attribute [-instance] NormedSpace.complexToReal
+
 /-- Shifted first parameter of the regular exponent-`N+1` mixed-horizon branch. -/
 def d4BMMixedHorizonShiftedRegularA (n k : ℕ) (chi : ℂ) : ℂ :=
   d4BMMixedHorizonComplexA n k chi +
@@ -204,11 +208,29 @@ theorem hasDerivAt_d4BMMixedHorizonRegularBranchDerivative
           d4BMMixedHorizonRegularHypergeometricFactorDerivative n k chi z +
         z ^ (N + 1) *
           d4BMMixedHorizonRegularHypergeometricFactorSecondDerivative n k chi z) z
-  convert hsum using 1
-  · funext w
+  have hderiv :
+      (N + 1 : ℂ) *
+          ((N : ℂ) * z ^ (N - 1) *
+              d4BMMixedHorizonRegularHypergeometricFactor n k chi z +
+            z ^ N *
+              d4BMMixedHorizonRegularHypergeometricFactorDerivative n k chi z) +
+        (((N + 1 : ℕ) : ℂ) * z ^ (N + 1 - 1) *
+            d4BMMixedHorizonRegularHypergeometricFactorDerivative n k chi z +
+          z ^ (N + 1) *
+            d4BMMixedHorizonRegularHypergeometricFactorSecondDerivative n k chi z) =
+      (N : ℂ) * (N + 1 : ℂ) * z ^ (N - 1) *
+            d4BMMixedHorizonRegularHypergeometricFactor n k chi z +
+          2 * (N + 1 : ℂ) * z ^ N *
+            d4BMMixedHorizonRegularHypergeometricFactorDerivative n k chi z +
+          z ^ (N + 1) *
+            d4BMMixedHorizonRegularHypergeometricFactorSecondDerivative n k chi z := by
     simp
-  · push_cast
     ring
+  have hsum' := hsum.congr_deriv hderiv
+  apply hsum'.congr_of_eventuallyEq
+  filter_upwards with w
+  simp
+  ring
 
 /-- Frobenius power shift converts the shifted Gauss equation to the original equation at
 `c=-N`. -/
@@ -345,6 +367,92 @@ theorem tendsto_d4BMMixedHorizonRegularBranch_div_pow_zero
       hcont.continuousWithinAt.tendsto
     simpa using ht0
   exact ht.congr' heq.symm
+
+/-- Exact regular branch divided by its leading horizon Wronskian `N+1`. -/
+def d4BMMixedHorizonExactUnitWronskianRegularBranch
+    (n k : ℕ) (chi z : ℂ) : ℂ :=
+  d4BMMixedHorizonRegularBranch n k chi z /
+    (d4BMMixedHorizonFrobeniusOrder n k + 1 : ℂ)
+
+/-- Complex monodromy coefficient in the exact unit-Wronskian branch normalization. -/
+def d4BMMixedHorizonComplexUnitWronskianMonodromyJump
+    (n k : ℕ) (chi : ℂ) : ℂ :=
+  (d4BMMixedHorizonFrobeniusOrder n k + 1 : ℂ) *
+    d4BMMixedHorizonComplexMonodromyJump n k chi
+
+/-- Raw and unit-Wronskian coefficients give the same exact hypergeometric monodromy mode. -/
+theorem d4BMMixedHorizonComplexMonodromy_raw_eq_exactUnitWronskian
+    (n k : ℕ) (chi z : ℂ) :
+    d4BMMixedHorizonComplexMonodromyJump n k chi *
+        d4BMMixedHorizonRegularBranch n k chi z =
+      d4BMMixedHorizonComplexUnitWronskianMonodromyJump n k chi *
+        d4BMMixedHorizonExactUnitWronskianRegularBranch n k chi z := by
+  rw [d4BMMixedHorizonComplexUnitWronskianMonodromyJump,
+    d4BMMixedHorizonExactUnitWronskianRegularBranch]
+  have hN : (d4BMMixedHorizonFrobeniusOrder n k + 1 : ℂ) ≠ 0 := by
+    exact_mod_cast Nat.succ_ne_zero (d4BMMixedHorizonFrobeniusOrder n k)
+  field_simp [hN]
+
+/-- Actual Xi-fibre logarithmic monodromy mode on the exact resonant regular branch. -/
+def d4BMXiMixedHorizonExactMonodromyMode
+    (n k : ℕ) (q : XiZeroCopy) (z : ℂ) : ℂ :=
+  d4BMXiMixedHorizonComplexMonodromyJump n k q *
+    d4BMMixedHorizonRegularBranch n k
+      (d4BMXiMixedHorizonAngularMomentum q) z
+
+/-- First jet of the exact Xi-fibre monodromy mode. -/
+def d4BMXiMixedHorizonExactMonodromyModeDerivative
+    (n k : ℕ) (q : XiZeroCopy) (z : ℂ) : ℂ :=
+  d4BMXiMixedHorizonComplexMonodromyJump n k q *
+    d4BMMixedHorizonRegularBranchDerivative n k
+      (d4BMXiMixedHorizonAngularMomentum q) z
+
+/-- Second jet of the exact Xi-fibre monodromy mode. -/
+def d4BMXiMixedHorizonExactMonodromyModeSecondDerivative
+    (n k : ℕ) (q : XiZeroCopy) (z : ℂ) : ℂ :=
+  d4BMXiMixedHorizonComplexMonodromyJump n k q *
+    d4BMMixedHorizonRegularBranchSecondDerivative n k
+      (d4BMXiMixedHorizonAngularMomentum q) z
+
+/-- Exact Xi-fibre logarithmic monodromy mode solves the literal homogeneous mixed BM equation. -/
+theorem d4BMXiMixedHorizonExactMonodromyMode_jet_eq_zero
+    (n k : ℕ) (q : XiZeroCopy) (z : ℂ) (hz : ‖z‖ₑ < 1) :
+    z * (1 - z) * d4BMXiMixedHorizonExactMonodromyModeSecondDerivative n k q z +
+        (d4BMCausalRadialC
+            (d4BMCausalPlusMinusFrequency n k (d4BMXiMixedHorizonAngularMomentum q)) -
+          (d4BMMixedHorizonComplexA n k (d4BMXiMixedHorizonAngularMomentum q) +
+            d4BMMixedHorizonComplexB n k (d4BMXiMixedHorizonAngularMomentum q) + 1) * z) *
+          d4BMXiMixedHorizonExactMonodromyModeDerivative n k q z -
+      d4BMMixedHorizonComplexA n k (d4BMXiMixedHorizonAngularMomentum q) *
+        d4BMMixedHorizonComplexB n k (d4BMXiMixedHorizonAngularMomentum q) *
+          d4BMXiMixedHorizonExactMonodromyMode n k q z = 0 := by
+  have hbranch := d4BMXiMixedHorizonRegularBranch_jet_eq_zero n k q z hz
+  rw [d4BMXiMixedHorizonExactMonodromyMode,
+    d4BMXiMixedHorizonExactMonodromyModeDerivative,
+    d4BMXiMixedHorizonExactMonodromyModeSecondDerivative]
+  linear_combination d4BMXiMixedHorizonComplexMonodromyJump n k q * hbranch
+
+/-- The exact Xi-fibre monodromy mode has the corrected nonzero Frobenius jump as its leading
+horizon coefficient. -/
+theorem tendsto_d4BMXiMixedHorizonExactMonodromyMode_div_pow_zero
+    (n k : ℕ) (q : XiZeroCopy) :
+    Tendsto
+      (fun z : ℂ => d4BMXiMixedHorizonExactMonodromyMode n k q z /
+        z ^ (d4BMMixedHorizonFrobeniusOrder n k + 1))
+      (𝓝[≠] 0)
+      (𝓝 (d4BMXiMixedHorizonComplexMonodromyJump n k q)) := by
+  have hbranch := tendsto_d4BMMixedHorizonRegularBranch_div_pow_zero n k
+    (d4BMXiMixedHorizonAngularMomentum q)
+    (d4BMXiMixedHorizonAngularMomentum_re_ne_zero q)
+  have ht := (tendsto_const_nhds.mul hbranch :
+    Tendsto
+      (fun z : ℂ => d4BMXiMixedHorizonComplexMonodromyJump n k q *
+        (d4BMMixedHorizonRegularBranch n k
+          (d4BMXiMixedHorizonAngularMomentum q) z /
+            z ^ (d4BMMixedHorizonFrobeniusOrder n k + 1)))
+      (𝓝[≠] 0)
+      (𝓝 (d4BMXiMixedHorizonComplexMonodromyJump n k q * 1)))
+  simpa [d4BMXiMixedHorizonExactMonodromyMode, mul_div_assoc] using ht
 
 end
 

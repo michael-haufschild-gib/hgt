@@ -36,8 +36,9 @@ has transcendence degree less than two.  Put `y_i=e^{x_i}` and
 4. the tuple is an essential counterexample, and `rho` lies in the countable
    exponential-algebraic closure `ecl^C(emptyset)`;
 5. on the normalized projective curve `V/Qbar` with function field `K`, for every algebraic smooth
-   base point `q` avoiding coordinate poles and zeroes, and every path from `q` to the complex point
-   `p=(x,y)`, suitable logarithm branches give
+   base point `q` avoiding coordinate poles and zeroes, and every smooth path from `q` to the
+   complex point `p=(x,y)` that stays in the complement of the coordinate divisors, suitable
+   logarithm branches give
 
 \[
  \int_q^p\epsilon_i=X_i(q)-\log Y_i(q)+2\pi i k_i,\qquad k_i\in\mathbb Z. \tag{R}

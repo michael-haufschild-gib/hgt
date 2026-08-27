@@ -6354,3 +6354,2984 @@ contains \(M^\eta\) more points than its area prediction.
   common factor.  Roth then contradicts \(R\le M^{1-\delta}\).  Every surviving two-window hit
   has \(0<|E|\ll cR/M\), hence \(c\gg M/R\), and both imprimitive gcds satisfy \(gh\mid E\).
   Remaining C37 burden is the primitive nonzero-determinant completion C39.
+
+## Paper theorem R51 — primitive conductor descent
+
+Continue with a surviving point from R50 and write
+
+\[
+ E=gh e,\qquad k=(c,gh),\qquad c=kd,\qquad gh=ka.
+ \tag{R51.1}
+\]
+
+Then
+
+\[
+ (a,d)=1.
+ \tag{R51.2}
+\]
+
+Indeed \((kd,ka)=k\) by the definition of \(k\).  More importantly, the conductor left after
+removing the two rational-approximation contents survives in *both* primitive denominators:
+
+\[
+ d\mid q_0,\qquad d\mid v_0.
+ \tag{R51.3}
+\]
+
+**Proof.**  Prime by prime, put
+\(C=\nu_p(c),G=\nu_p(g),H=\nu_p(h)\).  Since
+\(c\mid gq_0\) and \(c\mid hv_0\),
+
+\[
+ \nu_p(q_0)\ge C-G,\qquad \nu_p(v_0)\ge C-H.
+\]
+
+The exponent of \(d=c/(c,gh)\) is
+\(\max(C-G-H,0)\), which is bounded by both right-hand sides.  This proves (R51.3).
+
+Put
+
+\[
+ q_0=dx,\qquad v_0=dy.
+ \tag{R51.4}
+\]
+
+Since \((A_0,q_0)=(B_0,v_0)=1\), the primitive determinant equation gives the exact modular
+hyperbola
+
+\[
+ A_0B_0-4d^2xy=e,\qquad
+ A_0B_0\equiv e\pmod {d^2},\qquad
+ (A_0B_0,d)=(e,d)=1.
+ \tag{R51.5}
+\]
+
+The size conditions are equally rigid.  Because \(gh\mid E\), \(E\ne0\), and
+\(|E|\ll cR/M\),
+
+\[
+ gh\ll \frac{cR}{M}.
+\]
+
+With \(L=M/R\), (R51.1) therefore yields
+
+\[
+ d\gg aL.
+ \tag{R51.6}
+\]
+
+Moreover
+
+\[
+ |e|=\frac{|E|}{gh}
+ \ll \frac{cR}{Mgh}
+ =\frac{d}{aL}.
+ \tag{R51.7}
+\]
+
+Thus \(|e|<d\) for all sufficiently large \(M\) in the unresolved range.  The nonzero
+determinant is not merely short: after primitive reduction it is a unit modulo a square conductor
+which is larger by the factor \(aL\).
+
+The same reduction records the exact source-coordinate sizes
+
+\[
+ x=\frac{kr_2}{g}=\frac{hr_2}{a},
+ \qquad
+ y=\frac{kr_3}{h}=\frac{gr_3}{a},
+ \tag{R51.8}
+\]
+
+where integrality follows from (R51.3).  Finally Roth applied separately to the two reduced
+windows gives, for every fixed \(\kappa>1\),
+
+\[
+ g^{\kappa+1}\ll_\kappa\frac{(cR)^\kappa}{M},
+ \qquad
+ h^{\kappa+1}\ll_\kappa\frac{(cR)^\kappa}{M}.
+ \tag{R51.9}
+\]
+
+`[SURVIVOR] [PAPER-PROVED BT3-PRIMITIVE-CONDUCTOR-DESCENT]` C39 is a sparse modular-hyperbola
+problem, not an unrestricted Farey completion problem.  Every point has coprime parameters
+\((a,d)=1\), modulus \(d^2\), unit residue \(0<|e|\ll d/(aL)\), and both primitive
+denominators divisible by \(d\).  Any completion estimate which discards this square conductor
+also discards the full second reciprocal window.
+
+## Conjecture C40 — microscopic modular-hyperbola completion
+
+`[CONJECTURE BT3-MICROSCOPIC-MODULAR-HYPERBOLA]` Sum the solutions of (R51.5) with the reduced
+windows
+
+\[
+ |A_0-\vartheta dx|\ll(Mg)^{-1},\qquad
+ |B_0-2\vartheta^2dy|\ll(Mh)^{-1},
+ \tag{R51.10}
+\]
+
+the source relations (R51.8), \(gh=ka\), \((a,d)=1\), and (R51.6)--(R51.9), before taking
+absolute values in the residue classes.  Uniformly in a dyadic \(R>M^{1/3+\delta}\), their
+aggregate count is \(O_\varepsilon(RM^\varepsilon)\).
+
+**Falsifier.**  A family of unit residues \(e\bmod d^2\), with
+\(0<|e|\ll d/(aL)\), on which the two algebraic Beatty graphs in (R51.10) correlate with the
+modular inverse graph by a fixed power more than their area prediction.
+
+## Log continuation 48
+
+- 2026-08-27 — factored the shared multiplier against the two approximation contents.  The exact
+  split \(c=kd,gh=ka,(a,d)=1\) forces \(d\mid q_0,v_0\), while the primitive determinant quotient
+  is a nonzero unit \(e\bmod d\) with \(|e|\ll d/(aL)\).  C39 therefore reduces to C40, a
+  microscopic algebraic-Beatty incidence on the modular hyperbola
+  \(A_0B_0\equiv e\pmod {d^2}\).  This square-conductor structure is the retained second window.
+
+## Paper theorem R52 — both reciprocal windows are one irrational strip
+
+Put
+
+\[
+ \alpha=A_0-\vartheta q_0,\qquad
+ \gamma=4v_0-\vartheta B_0
+       =-\vartheta(B_0-2\vartheta^2v_0),
+ \tag{R52.1}
+\]
+
+and form the primitive-strip vectors
+
+\[
+ U=(A_0,q_0),\qquad V=(4v_0,B_0).
+ \tag{R52.2}
+\]
+
+Then
+
+\[
+ |\alpha|\ll(Mg)^{-1},\qquad |\gamma|\ll(Mh)^{-1},
+ \qquad \det(U,V)=e.
+ \tag{R52.3}
+\]
+
+Thus both reciprocal windows are lattice points in the same thin strip about the line
+\(\mathbb R(\vartheta,1)\); reciprocity has changed which coordinate carries the conductor:
+
+\[
+ d\mid U_2,\qquad 4d\mid V_1.
+ \tag{R52.4}
+\]
+
+The determinant has the exact error-coordinate form
+
+\[
+ e=\alpha B_0-q_0\gamma.
+ \tag{R52.5}
+\]
+
+Fix \(U\) and choose \(Z=(z_1,z_2)\in\mathbb Z^2\) with \(\det(U,Z)=1\).  Every integral
+completion of determinant \(e\) is
+
+\[
+ V=eZ+tU,\qquad t\in\mathbb Z.
+ \tag{R52.6}
+\]
+
+Writing \(\eta=z_1-\vartheta z_2\), its transverse coordinate is
+
+\[
+ \gamma=e\eta+t\alpha.
+ \tag{R52.7}
+\]
+
+The linear map from completion coordinates to physical/transverse coordinates,
+
+\[
+ (e,t)\longmapsto(V_1,\gamma)
+   =(ez_1+tA_0,\ e\eta+t\alpha),
+\]
+
+has constant determinant
+
+\[
+ z_1\alpha-A_0\eta
+ =\vartheta(A_0z_2-q_0z_1)=\vartheta.
+ \tag{R52.8}
+\]
+
+Finally (R52.4) imposes
+
+\[
+ ez_1+tA_0\equiv0\pmod d,
+ \tag{R52.9}
+\]
+
+where \((A_0,d)=1\).  Hence C40 is a determinant-\(e\) Hecke completion in an
+area-preserving irrational strip, with one genuine index-\(d\) congruence retained.
+
+`[SURVIVOR] [PAPER-PROVED BT3-ONE-STRIP-HECKE-COORDINATES]` The second window is not an
+independent Beatty decoration on an arbitrary modular hyperbola.  It is the second primitive
+vector in the same irrational strip, and (R52.8)--(R52.9) retain its exact area and conductor.
+
+## Paper theorem R53 — unique Farey ray and weighted cusp form
+
+Return temporarily to the unreduced simultaneous-hit set (R49.6).  Fix \(c\).  If
+\((r,A)\) and \((s,A')\) are two first-coordinate hits, then
+
+\[
+ |As-A'r|
+ =|(A-\vartheta cr)s-(A'-\vartheta cs)r|
+ \ll R/M<1.
+ \tag{R53.1}
+\]
+
+The left side is an integer, so it vanishes.  Consequently every first-coordinate hit lies on
+one primitive ray
+
+\[
+ (A,r)=t(a,u),\qquad (a,u)=1,
+ \tag{R53.2}
+\]
+
+and
+
+\[
+ \left|\frac au-\vartheta c\right|\ll\frac1{MR}.
+ \tag{R53.3}
+\]
+
+There cannot be two distinct reduced fractions satisfying (R53.3), because their Farey spacing
+is at least \(R^{-2}\), whereas \(1/(MR)=o(R^{-2})\).  The second coordinate has the identical
+description
+
+\[
+ (B,r_3)=s(b,v),\qquad (b,v)=1,\qquad
+ \left|\frac bv-2\vartheta^2c\right|\ll\frac1{MR}.
+ \tag{R53.4}
+\]
+
+For dyadic source coordinates \(r_2,r_3\asymp R\), this gives
+
+\[
+ |\mathcal R_c|\ll\frac{R^2}{uv}.
+ \tag{R53.5}
+\]
+
+The base determinant
+
+\[
+ e_0=ab-4c^2uv
+ \tag{R53.6}
+\]
+
+is nonzero: otherwise every pair of ray multiples would have \(E=0\), contrary to R50.  The
+two reduced Farey windows give
+
+\[
+ 1\le |e_0|\ll\frac{cuv}{MR},
+ \qquad\text{hence}\qquad
+ uv\gg\frac{MR}{c}.
+ \tag{R53.7}
+\]
+
+This has an exact homogeneous-dynamics normalization.  Set
+\(x_1=\vartheta\), \(x_2=2\vartheta^2\), and \(\mathrm e^{2t}=MR\).  The two primitive rows
+associated with (R53.2) and (R53.4) have lengths
+\(\rho_1\ll u/\sqrt{MR}\), \(\rho_2\ll v/\sqrt{MR}\).  Thus the product cusp height satisfies
+
+\[
+ \alpha_2\gg\frac{MR}{uv},
+ \qquad
+ \frac{R^2}{uv}\ll\frac{\alpha_2}{L}.
+ \tag{R53.8}
+\]
+
+Define the source-selected cusp weight
+
+\[
+ \alpha^{\mathrm{hit}}_{2,R}(c)=
+ \begin{cases}
+ MR/(uv),&\text{if the two unique hit rays (R53.2), (R53.4) exist},\\
+ 0,&\text{otherwise}.
+ \end{cases}
+ \tag{R53.9}
+\]
+
+Then \(\alpha^{\mathrm{hit}}_{2,R}\ll\alpha_2\) and
+\(|\mathcal R_c|\ll\alpha^{\mathrm{hit}}_{2,R}(c)/L\).  The selected weight, rather than an
+unrestricted global cusp height which might be attained by a different row, is the exact C37
+observable.
+
+`[SURVIVOR] [PAPER-PROVED BT3-UNIQUE-FAREY-RAY]` C37 is dominated by a discrete product-cusp
+sampling problem for the algebraic Kronecker orbit
+\(c\mapsto(\vartheta c,2\vartheta^2c)\), weighted by \(\alpha_2/L\).  KMW Proposition 5.2 and
+Lemma 5.4 control the corresponding *continuous* \(\xi\)-integral, but do not imply the discrete
+bound: one integer hit remains stable only on a \(\xi\)-interval of length \(O((MR)^{-1})\), and
+their stated long-parameter hypothesis is \(L_{\xi}\ll\mathrm e^t=\sqrt{MR}\), whereas here
+\(c\) reaches \(M^2/R\).
+
+### R53.1 Hostile audit of off-the-shelf modular-hyperbola estimates
+
+Technau's modular-hyperbola/Beatty theorem (arXiv:1808.00413) treats prime modulus and one
+ordinary Beatty coordinate.  Pointwise Weil completion for modulus \(d^2\) has error
+\(d^{1+o(1)}\), already larger than the entire target after summing conductors.  Blomer--Pascadi
+(arXiv:2607.24311, Theorem 1.1) gives a new saving for bilinear Kloosterman forms for every
+modulus, but only when the two Kloosterman-index intervals are near the square-root length
+(nontrivial for equal length \(N>m^{13/28+\varepsilon}\)).  C40 has two microscopic algebraic
+Farey graphs and moving square modulus \(m=d^2\); replacing either graph by its ambient interval
+loses the missing factor \(MR\).
+
+`[FAILED BT3-C40-POINTWISE-KLOOSTERMAN]` Neither pointwise Weil nor a direct invocation of the
+current bilinear Kloosterman theorem proves C40.  The positive survivor is the source-specific
+discrete cusp/Hecke dispersion problem in R52--R53; any successful use of Kloosterman technology
+must first preserve the two Farey-ray weights.
+
+## Conjecture C41 — discrete algebraic product-cusp sampling
+
+`[CONJECTURE BT3-DISCRETE-PRODUCT-CUSP]` With the normalization in R53.8 and after retaining the
+nonzero determinant strata R50--R52,
+
+\[
+ \sum_{0<|c|\ll M^2/R}
+ \frac{\alpha^{\mathrm{hit}}_{2,R}(c)}{L}
+ \ll_\varepsilon RM^\varepsilon.
+ \tag{R53.10}
+\]
+
+The proof must be a discrete analogue of KMW's product-cusp moment, with Poisson modes in the
+integer sampling variable completed against the determinant-\(e\), index-\(d\) coordinates
+(R52.6)--(R52.9).  The zero Poisson mode is KMW's continuous volume term; every nonzero mode
+must retain \(e\ne0\) and \(d\gg aL|e|\).
+
+**Falsifier.**  A determinant-\(e\) Hecke packet whose Farey centers fall within
+\(O((MR)^{-1})\) of integers for \(M^\eta\) more samples than the continuous product-cusp mass,
+while respecting \(d\gg aL|e|\).
+
+## Log continuation 49
+
+- 2026-08-27 — identified both reciprocal windows as primitive vectors in one irrational strip
+  with determinant \(e\), complementary conductor coordinates, and an area-preserving completion
+  map of determinant \(\vartheta\).  For each fixed \(c\), exact integer cross-products force all
+  hits in each coordinate onto a unique primitive Farey ray; the hit multiplicity
+  \(R^2/(uv)\) is bounded by the source-selected cusp weight
+  \(\alpha^{\mathrm{hit}}_{2,R}/L\), and \(e_0\ne0\) forces \(uv\gg MR/c\).  This reduces C37 to
+  discrete product-cusp theorem C41.  Continuous KMW moments and pointwise modular-hyperbola
+  bounds do not supply the missing integer-sampling gain.
+
+## Paper theorem R54 — Farey-ray content descent
+
+Retain the ray notation of R53 and put
+
+\[
+ \sigma=(a,c),\qquad \tau=(b,c),\qquad
+ k=(c,\sigma\tau),\qquad
+ c=kd,\qquad \sigma\tau=k\omega.
+ \tag{R54.1}
+\]
+
+For full ray multipliers \(t,s\), the two rational-approximation contents and determinant are
+
+\[
+ (ta,ctu)=t\sigma,\qquad
+ (sb,csv)=s\tau,\qquad
+ E=ts e_0.
+ \tag{R54.2}
+\]
+
+R50.10 therefore gives
+
+\[
+ \sigma\tau\mid e_0.
+ \tag{R54.3}
+\]
+
+Write \(e_0=\sigma\tau e\).  Then
+
+\[
+ (\omega,d)=1,
+ \qquad
+ d\mid\frac{cu}{\sigma},
+ \qquad
+ d\mid\frac{cv}{\tau},
+ \qquad
+ (e,d)=1.
+ \tag{R54.4}
+\]
+
+These are R51.2--R51.5 applied after cancelling the harmless ray multipliers.  If
+
+\[
+ L_{\mathrm{eff}}=\frac{MR}{uv},
+ \tag{R54.5}
+\]
+
+then (R53.7) sharpens to
+
+\[
+ 0<|e|\ll\frac{d}{\omega L_{\mathrm{eff}}},
+ \qquad
+ d\gg\omega L_{\mathrm{eff}}|e|.
+ \tag{R54.6}
+\]
+
+The reduced strip vectors are
+
+\[
+ U=\left(\frac a\sigma,\frac{cu}\sigma\right),\qquad
+ V=\left(\frac{4cv}\tau,\frac b\tau\right),
+ \qquad
+ \det(U,V)=e.
+ \tag{R54.7}
+\]
+
+Here \(U\) is primitive and the content of \(V\) divides \(4\).  Thus the conductor-to-determinant
+ratio grows with the *actual hit multiplicity*, since
+
+\[
+ |\mathcal R_c|\ll\frac{R^2}{uv}=\frac{L_{\mathrm{eff}}}{L}.
+ \tag{R54.8}
+\]
+
+`[SURVIVOR] [PAPER-PROVED BT3-FAREY-CONTENT-DESCENT]` High multiplicity cannot hide inside
+imprimitive Farey rays.  After content removal, its effective cusp height appears as the explicit
+level gap \(d/|e|\gg\omega L_{\mathrm{eff}}\).
+
+## Paper theorem R55 — conductor-normalized determinant line
+
+Let \(U=(A,Q)\) be the first vector in (R54.7), so \((A,Q)=1\), \(d\mid Q\), and
+\((A,d)=1\).  Choose \(Z=(z_1,z_2)\) with \(\det(U,Z)=1\), and choose \(t_0\bmod d\) from
+
+\[
+ z_1+t_0A\equiv0\pmod d.
+ \tag{R55.1}
+\]
+
+Set
+
+\[
+ Z_d=Z+t_0U=(dz,z_2'),\qquad \det(U,Z_d)=1.
+ \tag{R55.2}
+\]
+
+Every determinant-\(e\) completion satisfying \(d\mid V_1\) has the unique form
+
+\[
+ \boxed{V=eZ_d+dnU,\qquad n\in\mathbb Z.}
+ \tag{R55.3}
+\]
+
+Indeed R52.6 gives \(V=eZ+tU\), and its first-coordinate congruence is
+\(t\equiv et_0\pmod d\).  Since the basis \((Z_d,U)\) is unimodular,
+
+\[
+ (V_1,V_2)=(e,dn)=(e,n).
+ \tag{R55.4}
+\]
+
+The last equality uses \((e,d)=1\).  As the content of the second vector in (R54.7) divides
+\(4\), every actual completion obeys
+
+\[
+ (e,n)\mid4.
+ \tag{R55.5}
+\]
+
+Put
+
+\[
+ \alpha=A-\vartheta Q,\qquad
+ \eta_d=(Z_d)_1-\vartheta(Z_d)_2.
+ \tag{R55.6}
+\]
+
+Adding a multiple of \(dU\) to \(Z_d\) preserves (R55.2)--(R55.3); choose it so that
+\(|\eta_d|\leq d|\alpha|/2\).  The base-ray second transverse window is
+
+\[
+ |e\eta_d+dn\alpha|\ll\frac{v}{MR\tau}.
+ \tag{R55.7}
+\]
+
+Equivalently, for
+
+\[
+ \rho_U=\frac{\eta_d}{d\alpha},
+ \tag{R55.8}
+\]
+
+the completion parameter satisfies
+
+\[
+ \|e\rho_U\|\ll\frac{v}{dMR\tau|\alpha|},
+ \qquad
+ 0<|e|\ll\frac d{\omega L_{\mathrm{eff}}},
+ \qquad
+ (e,n)\mid4,
+ \tag{R55.9}
+\]
+
+where \(n\) is the nearest integer with the sign dictated by (R55.7).  The slope \(\rho_U\) is
+irrational: a rational relation would give a nonzero integral vector exactly on
+\(\mathbb R(\vartheta,1)\).
+
+`[SURVIVOR] [PAPER-PROVED BT3-CONDUCTOR-NORMALIZED-DETERMINANT-LINE]` C41's missing discrete
+gain is now a one-dimensional first-return problem in the determinant variable \(e\), but its
+slope varies with the first primitive strip vector.  Pointwise Roth gives an
+\(M^\varepsilon\) boundary term per \(U\), which is still too large after summing first vectors;
+the slopes must be averaged before that boundary term is paid.
+
+## Conjecture C42 — averaged determinant-line first return
+
+`[CONJECTURE BT3-AVERAGED-DETERMINANT-LINE]` Sum (R55.9) over the actual first Farey rays
+\(U\), retaining their errors \(\alpha\), contents \((\sigma,\tau,\omega)\), source scales
+\((u,v)\), and the coprimality (R55.5).  Both the area term and its discrete boundary satisfy
+
+\[
+ \mathcal A_U:=
+ \frac d{\omega L_{\mathrm{eff}}}
+ \min\!\left(1,\frac{v}{dMR\tau|\alpha|}\right),
+ \qquad
+ \sum_U\mathcal A_U
+ \ll_\varepsilon RM^\varepsilon,
+ \tag{R55.10}
+\]
+
+and
+
+\[
+ \sum_U\left(
+ \#\left\{0<|e|\ll\frac d{\omega L_{\mathrm{eff}}}:
+ \|e\rho_U\|\ll\frac{v}{dMR\tau|\alpha|},\ (e,n_e)\mid4\right\}
+ -O(\mathcal A_U)
+ \right)_+
+ \ll_\varepsilon RM^\varepsilon.
+ \tag{R55.11}
+\]
+
+Prove this by a dual large sieve for the exact slopes (R55.8), with collision energy evaluated
+through the radial coefficient theorem R48 and the determinant/content laws R54--R55.  A generic
+pointwise discrepancy estimate is explicitly insufficient.
+
+**Falsifier.**  A positive-power family of first vectors \(U\) whose normalized Bezout slopes
+\(\rho_U\) share one rational major arc, while their primitive radial coefficients retain the
+R48 energy bound and their completions satisfy \(d\gg\omega L_{\mathrm{eff}}|e|\).
+
+## Log continuation 50
+
+- 2026-08-27 — descended R51 through the unique Farey rays.  Their numerator--multiplier
+  contents satisfy \(\sigma\tau\mid e_0\), and after cancellation the surviving level obeys
+  \(d\gg\omega L_{\mathrm{eff}}|e|\), where
+  \(L_{\mathrm{eff}}=MR/(uv)=L|\mathcal R_c|\).  A conductor-adapted Bezout basis then writes
+  every companion uniquely as \(V=eZ_d+dnU\), forces \((e,n)\mid4\), and converts the second
+  window to the rotation (R55.9).  C42 isolates the sole remaining boundary term: average the
+  varying Bezout slopes before invoking Roth.
+
+## Paper theorem R56 — normalized Bezout slopes have diagonal exact energy
+
+For \(U=(A,Q)\), \(Z_d=(P,S)\) in R55, define the rational function
+
+\[
+ f_U(X)=\frac{P-SX}{d(A-QX)}.
+ \tag{R56.1}
+\]
+
+Then \(f_U(\vartheta)=\rho_U\), and
+
+\[
+ AS-QP=1.
+ \tag{R56.2}
+\]
+
+`[SURVIVOR] [PAPER-PROVED]` In the positive chamber,
+
+\[
+ \rho_U\equiv\rho_{U'}\pmod1
+ \quad\Longrightarrow\quad
+ d=d'\ \text{ and }\ U=U'.
+ \tag{R56.3}
+\]
+
+**Proof.**  If \(\rho_U-\rho_{U'}=m\in\mathbb Z\), replace
+\(Z_d\) by \(Z_d-mdU\).  This preserves its conductor divisibility and determinant one, and
+replaces \(f_U\) by \(f_U-m\).  We may therefore assume
+\(f_U(\vartheta)=f_{U'}(\vartheta)\).  Cross multiplication gives an integral polynomial of
+degree at most two vanishing at the degree-three number \(\vartheta\); it is identically zero.
+Hence the two Möbius matrices
+
+\[
+ \begin{pmatrix}P&-S\\ dA&-dQ\end{pmatrix},
+ \qquad
+ \begin{pmatrix}P'&-S'\\ d'A'&-d'Q'\end{pmatrix}
+ \tag{R56.4}
+\]
+
+are rationally proportional.  Their first rows are primitive by (R56.2), so the proportionality
+factor is \(\pm1\).  Both determinants equal respectively \(d,d'\), and positivity removes the
+remaining sign.  Thus \(d=d'\) and \(U=U'\).
+
+There is also an exact field formula.  Put
+
+\[
+ K_U=A^3-2Q^3\ne0.
+ \tag{R56.5}
+\]
+
+The determinant identity
+
+\[
+ (A-\vartheta Q)S-Q(P-\vartheta S)=1
+\]
+
+and
+
+\[
+ (A-\vartheta Q)^{-1}
+ =\frac{A^2+AQ\vartheta+Q^2\vartheta^2}{K_U}
+\]
+
+give
+
+\[
+ \boxed{\rho_U=
+ \frac{S}{dQ}
+ -\frac{A^2+AQ\vartheta+Q^2\vartheta^2}{dQK_U}.}
+ \tag{R56.6}
+\]
+
+This makes quantitative separation algebraic rather than qualitative.  Choose representatives
+of \(\rho_U,\rho_{U'}\bmod1\), equivalently conductor-adapted Bezout vectors, and let
+\(m\) be the nearest integer to their difference.  The numerator
+
+\[
+ \mathcal P_{U,U'}(\vartheta)=
+ d'(P-S\vartheta)(A'-Q'\vartheta)
+ -d(P'-S'\vartheta)(A-Q\vartheta)
+ -mdd'(A-Q\vartheta)(A'-Q'\vartheta)
+ \tag{R56.7}
+\]
+
+is a nonzero integral polynomial of degree at most two unless \(U=U'\).  If
+\(\mathcal H_{U,U'}\) denotes the maximum absolute coefficient of this polynomial, the cubic
+norm gives
+
+\[
+ \|\rho_U-\rho_{U'}\|
+ \gg
+ \frac{\mathcal H_{U,U'}^{-2}}
+      {dd'|\alpha_U\alpha_{U'}|}.
+ \tag{R56.8}
+\]
+
+Indeed the two nonreal conjugates of \(\mathcal P_{U,U'}(\vartheta)\) are
+\(O(\mathcal H_{U,U'})\), while its nonzero norm is an integer.  A height-controlled Bezout
+choice has \(|Z_d|\ll dQ\); reducing its slope modulo one changes this to at most
+
+\[
+ |Z_d|\ll dQ+|\alpha_U|^{-1}.
+ \tag{R56.9}
+\]
+
+Thus every term in (R56.8) is source-computable.  Exact slope collisions contribute only the
+diagonal; C42 now needs a weighted count of nonzero quadratic polynomials (R56.7) with small real
+embedding.
+
+## Conjecture C43 — quadratic collision-polynomial energy
+
+`[CONJECTURE BT3-BEZOUT-SLOPE-COLLISION-ENERGY]` For the source-selected first vectors in C42,
+the weighted number of pairs for which
+
+\[
+ 0<|\mathcal P_{U,U'}(\vartheta)|
+ \ll dd'|\alpha_U\alpha_{U'}|\Delta
+ \tag{R56.10}
+\]
+
+has the diagonal-size large-sieve bound uniformly for every dual scale \(\Delta\) arising from
+(R55.9).  Prove it by dyadically fixing \(K_U,K_{U'}\), using the fixed-norm
+ideal/unit fibres from R35 for \(U,U'\), and applying the coefficient-sensitive ternary-quadric
+count from R48 to the three coefficients of (R56.7).  The exact diagonal is already R56.3.
+
+**Falsifier.**  A nonproportional family of primitive norm fibres for which the three
+coefficients in (R56.7) share a polynomial content or a singular quadratic relation not exposed
+by \(K_U,K_{U'}\), producing more near collisions than the large-sieve diagonal.
+
+## Log continuation 51
+
+- 2026-08-27 — proved exact injectivity of the conductor-normalized Bezout phase.  Equality
+  modulo one makes two degree-one rational functions agree at the cubic number \(\vartheta\);
+  the resulting degree-two identity and unimodular first rows force identical \(d,U\).
+  Formula (R56.6) expresses every slope through the first cubic norm \(K_U\), and every near
+  collision through a nonzero integral quadratic polynomial with the norm separation (R56.8).
+  C43 is now the precise energy theorem needed to discharge C42.
+
+## Paper theorem R57 — exact source-gcd Farey coordinates
+
+The conductor normalization has a second, source-visible form.  Retain a first Farey ray
+\((a,u)=1\) from R53 and put
+
+\[
+ \sigma=(a,c),\qquad A=\frac a\sigma,\qquad q=\frac{cu}\sigma.
+ \tag{R57.1}
+\]
+
+Then
+
+\[
+ (A,q)=1,\qquad (c,q)=\frac c\sigma,\qquad
+ \boxed{u=\frac q{(c,q)}}.
+ \tag{R57.2}
+\]
+
+Indeed, writing \(c=\sigma c_1\) gives \(q=c_1u\).  The relations
+\((A,c_1)=1\) and \((A,u)=1\) prove primitivity, while \((\sigma,u)=1\), forced by
+\(\sigma\mid a\) and \((a,u)=1\), gives \((c,q)=c_1\).  Moreover, if
+
+\[
+ \alpha=A-\vartheta q,
+\]
+
+then the first source window becomes
+
+\[
+ |\alpha|\ll\frac{q}{cMR},
+ \qquad q|\alpha|\ll\frac{q^2}{cMR}.
+ \tag{R57.3}
+\]
+
+Conversely, let \((A,q)=1\), put \(g=(c,q)\), \(u=q/g\),
+\(\sigma=c/g\), and \(a=\sigma A\).  Since
+\(c=g\sigma\), \(q=gu\), and \((\sigma,u)=1\), one has
+\((a,u)=1\), \((a,c)=\sigma\), and (R57.3) is exactly the first window in R53.
+Thus (R57.1)--(R57.3) are a bijective change of coordinates, not a relaxation.
+
+For the second ray define
+
+\[
+ \tau=(b,c),\qquad B=\frac b\tau,\qquad s=\frac{cv}\tau,
+ \qquad \beta=2\vartheta^2.
+ \tag{R57.4}
+\]
+
+The identical argument gives
+
+\[
+ (B,s)=1,\qquad (c,s)=\frac c\tau,\qquad
+ v=\frac s{(c,s)},\qquad
+ |B-\beta s|\ll\frac{s}{cMR}.
+ \tag{R57.5}
+\]
+
+Consequently the source multiplicity has the exact gcd form
+
+\[
+ \boxed{
+ \frac{R^2}{uv}
+ =R^2\frac{(c,q)(c,s)}{qs}.}
+ \tag{R57.6}
+\]
+
+This is the weight that was invisible in the unweighted Bezout-slope formulation.
+
+### R57.1 A uniform dyadic Farey count
+
+`[SURVIVOR] [PAPER-PROVED]` For every irrational real \(x\), \(Q\ge1\), and \(H>0\),
+
+\[
+ \#\left\{(p,q)=1:Q\le q<2Q,\ q|p-xq|\le H\right\}
+ \le 8H+1.
+ \tag{R57.7}
+\]
+
+Every fraction in the set lies in the interval
+\([x-H/Q^2,x+H/Q^2]\).  Two distinct reduced fractions with denominators below \(2Q\)
+are separated by more than \(1/(4Q^2)\), because their nonzero cross product is an integer.
+Packing points with that spacing into an interval of length \(2H/Q^2\) proves (R57.7).
+In particular, summing dyadic denominator blocks gives \(O((H+1)\log(2X))\) up to height
+\(X\).  No continued-fraction classification is needed; this is the same cleared-cross-product
+discreteness already present in the Lean corpus's rational-approximation module.
+
+For fixed \(c\asymp C\), (R57.7) applied to (R57.3) shows that the number of first reduced
+denominators \(q\asymp Q\), even before the source condition \(q/(c,q)\le R\), is
+
+\[
+ \ll 1+\frac{Q^2}{CMR}.
+ \tag{R57.8}
+\]
+
+The same bound with \(s\asymp S\) holds for the second coordinate.
+
+### R57.2 The determinant is the reciprocal-Farey cross product
+
+Put \(\delta=B-\beta s\).  Since \(\vartheta\beta=4\), the reduced determinant is
+
+\[
+ e=AB-4qs
+   =\vartheta q\delta+\beta s\alpha+\alpha\delta.
+ \tag{R57.9}
+\]
+
+It is the integer \(e_0/(\sigma\tau)\) from R54 and is nonzero by R50.  Equations
+(R57.3), (R57.5), and (R57.9) therefore give
+
+\[
+ 1\le |e|\ll\frac{qs}{cMR},
+ \qquad
+ \boxed{qs\gg cMR.}
+ \tag{R57.10}
+\]
+
+If
+
+\[
+ H_1=\frac{Q^2}{CMR},\qquad
+ H_2=\frac{S^2}{CMR},\qquad
+ D=\frac{QS}{CMR},
+ \tag{R57.11}
+\]
+
+then every occupied dyadic block has \(D\gg1\), \(H_1H_2=D^2\), and at least one of its
+two rational columns has Farey quality at most \(D\).  This recovers the diagonal exact-energy
+part of R56 by elementary source coordinates, but it also identifies why an unweighted Farey
+bound cannot finish C41: the boundary term in (R57.8) must be summed with the exact gcd weight
+(R57.6).
+
+`[SURVIVOR] [PAPER-PROVED BT3-SOURCE-GCD-RECIPROCAL-FAREY]` C41 is exactly a
+gcd-weighted incidence theorem for two reduced rational approximations to
+\((\vartheta,2\vartheta^2)\), coupled by the nonzero cross product (R57.9).  The target is
+
+\[
+ R^2\sum_{0<c\ll M^2/R}
+ \sum_{\substack{(A,q)=1\\ |A-\vartheta q|\ll q/(cMR)\\ q/(c,q)\le R}}
+ \sum_{\substack{(B,s)=1\\ |B-\beta s|\ll s/(cMR)\\ s/(c,s)\le R}}
+ \frac{(c,q)(c,s)}{qs}
+ \ll_\varepsilon RM^\varepsilon,
+ \tag{R57.12}
+\]
+
+with the additional exact restriction \(AB-4qs\ne0\).  Each inner sum has at most one term
+when pulled back to its source denominator, by R53; (R57.12) preserves rather than duplicates
+that uniqueness.
+
+### R57.3 Sharp hostile boundary and cubic lift
+
+The product barrier (R57.10) alone gives only \(uv\gg R^2/M\) at
+\(c\asymp M^2/R\).  A single hit at that boundary has weight \(\asymp M\), exceeding the
+desired \(R\)-scale whenever \(R=o(M)\).  Thus neither determinant nonvanishing nor the
+unweighted count (R57.8) proves (R57.12).
+
+The primitive corner \(u=v=1\), \(\sigma=\tau=1\), already exposes the missing arithmetic.
+Here \(q=s=c\), and besides
+
+\[
+ e=AB-4c^2,
+\]
+
+the second integral minor
+
+\[
+ f=2A^2-Bc
+ \tag{R57.13}
+\]
+
+obeys
+
+\[
+ |e|+|f|\ll\frac c{MR},
+ \qquad
+ \boxed{A f=2(A^3-2c^3)-ec.}
+ \tag{R57.14}
+\]
+
+The identity follows by substituting \(AB=4c^2+e\).  At the determinant threshold
+\(c\asymp MR\), both \(e\) and \(f\) range over bounded sets, while \((A,c)\) lies on the
+affine cubic
+
+\[
+ 2A^3-4c^3-fA-ec=0.
+ \tag{R57.15}
+\]
+
+This shows that the dangerous Farey boundary is a sparse family of integral points on cubic
+curves, not a generic rotation discrepancy.  Current uniform Thue-inequality bounds applied only
+to \(|A^3-2c^3|\) lose the linear coupling by \((e,f)\) in (R57.14) and do not recover the
+required gcd-weighted first moment.
+
+## Conjecture C44 — gcd-weighted reciprocal-Farey boundary theorem
+
+`[CONJECTURE BT3-GCD-WEIGHTED-RECIPROCAL-FAREY]` Prove (R57.12) by separating the Farey
+volume term from occupied boundary blocks.  For the latter, orient toward the smaller quality in
+(R57.11), retain \((c,q)(c,s)/(qs)\), and lift the cross product (R57.9) to its two cubic minors,
+of which (R57.14) is the primitive corner.  Fixed nonzero minor fibres must have only
+divisor/unit-rank multiplicity; summing their source gcds must give \(O_\varepsilon(RM^\varepsilon)\).
+
+**Falsifier.**  A family of solutions to the coupled cubic-minor system, with
+\(c\le M^2/R\), source product \(uv<R/M^\varepsilon\), and total weight
+\(\sum R^2/(uv)>RM^\varepsilon\).  Such a family would disprove C41 itself, not merely the
+Bezout-slope proof strategy.
+
+`[FAILED BT3-UNWEIGHTED-FAREY-CLOSURE]` Dyadic Farey spacing proves (R57.8), but its additive
+boundary term permits one occupied block with weight above the C41 target.  The positive survivor
+is the exact gcd-weighted formulation (R57.12) and its coupled cubic lift (R57.14).
+
+## Log continuation 52
+
+- 2026-08-27 — replaced semiconvergent heuristics by the universal dyadic Farey packing bound
+  (R57.7).  Exact source descent identifies \(u=q/(c,q)\), \(v=s/(c,s)\), turns the cusp mass
+  into the gcd weight (R57.6), and writes the reciprocal determinant as the cross product
+  \(AB-4qs\).  Its nonvanishing forces \(qs\gg cMR\), but a hostile boundary calculation shows
+  that this alone is insufficient.  The primitive boundary lifts to the coupled cubic-minor
+  identity (R57.14); C44 is the resulting exact open theorem.
+
+## Paper theorem R58 — bounded source corners evacuate
+
+The cubic lift gives an unconditional qualitative exclusion at the sharp determinant boundary.
+No content assumption is needed.  For fixed source denominators \(u,v\ge1\), write
+
+\[
+ \epsilon=a-\vartheta cu,\qquad
+ \delta=b-\beta cv,\qquad
+ e_0=ab-4c^2uv
+ \tag{R58.1}
+\]
+
+and introduce the second integral minor
+
+\[
+ F_0=2va^2-cu^2b.
+ \tag{R58.2}
+\]
+
+The two source windows imply
+
+\[
+ |e_0|\ll\frac{cuv}{MR},
+ \qquad
+ |F_0|\ll\frac{cu^2v}{MR}.
+ \tag{R58.3}
+\]
+
+Indeed,
+
+\[
+ e_0=\vartheta cu\,\delta+\beta cv\,\epsilon+\epsilon\delta
+\]
+
+and, using \(\beta=2\vartheta^2\),
+
+\[
+ F_0=4\vartheta cuv\,\epsilon+2v\epsilon^2-cu^2\delta.
+\]
+
+There is also the exact cubic identity
+
+\[
+ \boxed{aF_0=2v(a^3-2c^3u^3)-cu^2e_0.}
+ \tag{R58.4}
+\]
+
+For fixed integers \(u,v,e_0,F_0\), the possible pairs \((a,c)\) lie on the projective plane cubic
+
+\[
+ \mathcal C_{u,v,e_0,F_0}:
+ 2vX^3-4vu^3Y^3-F_0XZ^2-u^2e_0YZ^2=0.
+ \tag{R58.5}
+\]
+
+`[SURVIVOR] [PAPER-PROVED VIA SIEGEL]` If \((e_0,F_0)\ne(0,0)\), this cubic is smooth.
+There is no singular point at infinity.  In the affine chart a singular point \((x,y)\) would
+satisfy
+
+\[
+ F_0=6vx^2,\qquad e_0=-12vuy^2,\qquad x^3=2u^3y^3.
+ \tag{R58.6}
+\]
+
+The last equality forces \(x=y=0\), because \(\sqrt[3]2\notin\mathbb Q\), and then
+\(e_0=F_0=0\).  Hence every nonzero minor pair gives a smooth plane cubic, of genus one.
+Siegel's integral-point theorem makes \(\mathcal C_{u,v,e_0,F_0}(\mathbb Z)\) finite.  The
+remaining singular case \(e_0=F_0=0\) would give \(a^3=2(cu)^3\), which has no solution with
+\(c>0\).
+
+It follows that for every fixed \(U_0\) and \(\Lambda\), only finitely many hits can satisfy
+
+\[
+ 1\le u,v\le U_0,\qquad
+ 0<\frac{cuv}{MR}\le\Lambda.
+ \tag{R58.7}
+\]
+
+To see this, (R58.3) leaves finitely many \((u,v,e_0,F_0)\), and each associated integer-point
+set is finite.  In particular, as \(MR\to\infty\), every fixed source corner eventually
+contains no hit in any bounded determinant-height annulus.  This rules out the most concentrated
+version of C44's falsifier.
+
+The invoked theorem is exactly Siegel's 1929 finiteness theorem for integral points on affine
+curves of positive genus; a curve-only proof via the Schmidt Subspace Theorem is Corvaja--Zannier,
+*A subspace theorem approach to integral points on curves* (2002),
+<https://doi.org/10.1016/S1631-073X(02)02240-9>.  The Lean corpus has finite-field elliptic-curve
+primitives but no number-field Siegel integral-point theorem.  R58 is therefore paper-closed and
+an explicit future infrastructure obligation, not yet formalisation-ready.
+
+`[BOUNDARY]` R58 is qualitative and nonuniform in growing \(u,v,e_0,F_0\).  C44 needs a
+weighted uniform theorem across \(u,v\le R\); invoking Siegel curve-by-curve does not supply that
+estimate.
+
+## Log continuation 53
+
+- 2026-08-27 — lifted every fixed-source boundary packet, without any content restriction, to
+  the plane cubic (R58.5).  Its Jacobian can vanish only for \(e_0=F_0=0\), a case excluded by
+  cubic irrationality.
+  Siegel finiteness therefore evacuates every bounded \((u,v)\) corner at bounded determinant
+  height.  Remaining open core is uniformity as source denominators and contents grow.
+
+## Paper theorem R59 — Ramanujan Fourier form of the source cusp
+
+There is an exact harmonic form of R57.  Take
+\(\Delta=C_0/(MR)\), with \(C_0\) large enough to majorise the two source windows, and define the
+periodic Farey-arc cusp
+
+\[
+ \Phi_{M,R}(x)=
+ \sum_{1\le u\le R}\frac Ru
+ \sum_{\substack{a\bmod u\\(a,u)=1}}
+ \mathbf 1_{\{\|x-a/u\|\le\Delta\}}.
+ \tag{R59.1}
+\]
+
+In the active range \(R=o(M)\), these arcs are pairwise disjoint: two distinct reduced fractions
+of height at most \(R\) are separated by at least \(R^{-2}\), whereas \(2\Delta=o(R^{-2})\).
+Consequently, at \(x=c\vartheta\), the value of (R59.1) is either zero or exactly \(R/u\) for the
+unique first source ray.  The same statement at \(x=c\beta\) gives the second ray.  Thus
+
+\[
+ \sum_{c\le C}\Phi_{M,R}(c\vartheta)\Phi_{M,R}(c\beta)
+ \tag{R59.2}
+\]
+
+majorises the dyadic C41 mass, and equals its sharp-window version up to endpoint smoothing.
+
+Let
+
+\[
+ \mathfrak c_u(k)=
+ \sum_{\substack{a\bmod u\\(a,u)=1}}e(-ka/u)
+ \tag{R59.3}
+\]
+
+be the Ramanujan sum.  Direct Fourier integration gives
+
+\[
+ \widehat\Phi(0)=2\Delta R\sum_{u\le R}\frac{\varphi(u)}u
+ \asymp\frac RM,
+ \tag{R59.4}
+\]
+
+and, for \(k\ne0\),
+
+\[
+ \boxed{
+ \widehat\Phi(k)=
+ R\frac{\sin(2\pi k\Delta)}{\pi k}
+ \mathcal A_R(k),\qquad
+ \mathcal A_R(k)=\sum_{u\le R}\frac{\mathfrak c_u(k)}u.}
+ \tag{R59.5}
+\]
+
+The divisor formula for Ramanujan sums gives the exact Möbius decomposition
+
+\[
+ \boxed{
+ \mathcal A_R(k)=
+ \sum_{\substack{d\mid k\\d\le R}}
+ \mathcal M_1(R/d),\qquad
+ \mathcal M_1(X)=\sum_{m\le X}\frac{\mu(m)}m.}
+ \tag{R59.6}
+\]
+
+The disjoint arcs also give the physical Parseval energy
+
+\[
+ \sum_{k\in\mathbb Z}|\widehat\Phi(k)|^2
+ =2\Delta R^2\sum_{u\le R}\frac{\varphi(u)}{u^2}
+ \ll\frac RM\log(2R).
+ \tag{R59.7}
+\]
+
+Equations (R59.5)--(R59.7) are the analytic counterpart of the corpus's exact positive-pair to
+primitive-ray equivalence: the gcd weight becomes a Ramanujan sum, then a Möbius-weighted divisor
+packet.
+
+### R59.1 Cubic norm controls aggregate frequency recurrence
+
+For \(k,\ell\in\mathbb Z\), let \(n=n(k,\ell)\) be the nearest integer to
+\(-k\vartheta-2\ell\vartheta^2\), and put
+
+\[
+ z=n+k\vartheta+2\ell\vartheta^2\in\mathbb Z[\vartheta].
+ \tag{R59.8}
+\]
+
+The exact norm is
+
+\[
+ N(z)=n^3+2k^3+32\ell^3-12nk\ell.
+ \tag{R59.9}
+\]
+
+For \((k,\ell)\ne(0,0)\), this is a nonzero integer.  If
+\(|k|,|\ell|\le H\), then \(|n|\ll H\), the two nonreal embeddings of \(z\) have size
+\(O(H)\), and therefore
+
+\[
+ \|k\vartheta+2\ell\vartheta^2\|^{-1}
+ \ll\frac{H^2}{|N(z)|}.
+ \tag{R59.10}
+\]
+
+`[SURVIVOR] [PAPER-PROVED]` Uniformly for \(H,C\ge2\),
+
+\[
+ \boxed{
+ \sum_{\substack{|k|,|\ell|\le H\\(k,\ell)\ne(0,0)}}
+ \min\!\left(C,\|k\vartheta+2\ell\vartheta^2\|^{-1}\right)
+ \ll_\varepsilon H^{2+\varepsilon}.}
+ \tag{R59.11}
+\]
+
+For fixed nonzero norm \(N\), the principal ideal \((z)\) is one of
+\(O_\varepsilon(|N|^\varepsilon)\) integral ideals of norm \(|N|\).  Generators of one principal
+ideal differ by units; the field has signature \((1,1)\), hence unit rank one, so only
+\(O(\log(2H))\) generators lie in the coefficient box.  Also \(|N(z)|\ll H^2\).  Split the norm
+sum at \(|N|=H^2/C\).  The lower part costs
+\(C(H^2/C)H^\varepsilon\), while (R59.10) and harmonic summation give
+\(H^{2+\varepsilon}\) for the upper part.  This proves (R59.11).
+
+For the length-\(C\) Dirichlet kernel
+
+\[
+ D_C(t)=\sum_{1\le c\le C}e(ct),
+\]
+
+(R59.11) equivalently gives
+
+\[
+ \sum_{\substack{|k|,|\ell|\le H\\(k,\ell)\ne(0,0)}}
+ |D_C(k\vartheta+2\ell\vartheta^2)|
+ \ll_\varepsilon H^{2+\varepsilon}.
+ \tag{R59.12}
+\]
+
+### R59.2 Exact remaining signed restriction
+
+The zero Fourier mode in (R59.2) has the correct size:
+
+\[
+ C\,\widehat\Phi(0)^2
+ \ll C\frac{R^2}{M^2}\ll R
+ \qquad(C\ll M^2/R).
+ \tag{R59.13}
+\]
+
+Smooth the arcs at scale \(\Delta\), so modes beyond \(H\asymp\Delta^{-1}=MR\) decay rapidly.
+The coefficient bound from (R59.5)--(R59.6),
+
+\[
+ |\widehat\Phi(k)|
+ \ll_\varepsilon M^\varepsilon
+ \min\!\left(M^{-1},\frac R{|k|}\right),
+ \tag{R59.14}
+\]
+
+combined absolutely with (R59.12), yields \(O_\varepsilon(R^2M^\varepsilon)\).  It misses C41 by
+exactly one factor \(R\).  Thus cubic norm sparsity alone, like the energy-only attempt R49, does
+not close the cusp moment; the signs and divisor structure in \(\mathcal A_R(k)\mathcal A_R(\ell)\)
+must survive.
+
+The mixed Fourier axes are already harmless.  Roth spacing for either fixed algebraic irrational
+\(x\in\{\vartheta,\beta\}\) gives
+
+\[
+ \sum_{1\le |k|\le H}|D_C(kx)|\ll_\varepsilon H^{1+\varepsilon}.
+ \tag{R59.15}
+\]
+
+Indeed \(\|(k-k')x\|\gg_\varepsilon H^{-1-\varepsilon}\) for distinct
+\(|k|,|k'|\le H\); ordering the fractional parts and summing reciprocal distances proves the
+claim.  With \(H\asymp MR\), (R59.4) and (R59.14) bound either mixed axis by
+
+\[
+ \widehat\Phi(0)M^{-1}H^{1+\varepsilon}
+ \ll_\varepsilon \frac{R^2}{M}M^\varepsilon
+ \ll_\varepsilon RM^\varepsilon.
+ \tag{R59.16}
+\]
+
+Hence only the fully nonzero two-frequency packet remains.
+
+## Conjecture C45 — Ramanujan–cubic signed restriction
+
+`[CONJECTURE BT3-RAMANUJAN-CUBIC-RESTRICTION]` For
+\(C\ll M^2/R\), the fully nonzero Fourier packet satisfies
+
+\[
+ \sum_{k\ell\ne0}
+ \widehat\Phi(k)\widehat\Phi(\ell)
+ D_C(k\vartheta+2\ell\vartheta^2)
+ \ll_\varepsilon RM^\varepsilon,
+ \tag{R59.17}
+\]
+
+uniformly after a fixed smooth majorisation of (R59.1).  Prove this by inserting (R59.6), grouping
+\(k=dh\), \(\ell=d'h'\), and applying the fixed-norm/unit-rank decomposition from R59.11 before
+summing the signed \(\mathcal M_1(R/d)\mathcal M_1(R/d')\) packet.  The boundary divisors
+\(d,d'\asymp R\), where pointwise Möbius cancellation is unavailable, must be paired with the
+nonzero cubic norm rather than estimated separately.
+
+**Falsifier.**  A fixed-norm family in (R59.9) on which the divisor packets
+\(\mathcal A_R(k)\mathcal A_R(\ell)\) have coherent sign and total weighted Dirichlet mass
+\(R^{1+\eta}\).  Such a family would explain a genuine discrete product-cusp excess.
+
+`[FAILED BT3-ABSOLUTE-CUBIC-NORM-FOURIER]` The aggregate norm theorem R59.11 is sharp
+enough to remove the worst recurrence \(H^2\) per mode, but absolute Fourier summation still gives
+\(R^2\).  Positive survivor is the exact signed restriction (R59.17).
+
+## Log continuation 54
+
+- 2026-08-27 — encoded the source cusp as disjoint primitive Farey arcs.  Its Fourier
+  coefficients are exact Ramanujan sums and admit the Möbius divisor decomposition (R59.6).
+  Cubic norm fibres plus unit rank one prove the aggregate recurrence bound (R59.11).  Absolute
+  use loses one factor \(R\); C45 is the precise signed Möbius–norm theorem now linking C44 to
+  the corpus's primitive-ray arithmetic.
+
+## Paper theorem R60 — binary-cubic discriminant closure of all minors
+
+Return to the raw source variables and put
+
+\[
+ U=(a,2cu),\qquad V=(2cv,b),\qquad
+ e_0=\det(U,V)=ab-4c^2uv.
+ \tag{R60.1}
+\]
+
+Both rows approximate the same projective root
+
+\[
+ \alpha_0=\frac{\vartheta}{2},\qquad 4\alpha_0^3=1:
+ \tag{R60.2}
+\]
+
+\[
+ a-\alpha_0(2cu)=\epsilon,\qquad
+ 2cv-\alpha_0b=-\frac{\vartheta}{2}\delta,
+ \qquad
+ |\epsilon|\ll\frac u{MR},\quad |\delta|\ll\frac v{MR}.
+ \tag{R60.3}
+\]
+
+Pull the fixed binary cubic
+
+\[
+ \mathcal F(X,Y)=4X^3-Y^3
+ \tag{R60.4}
+\]
+
+back through the matrix with rows \(U,V\):
+
+\[
+ \mathcal F(sU+tV)
+ =C_0s^3+3C_1s^2t+3C_2st^2+C_3t^3.
+ \tag{R60.5}
+\]
+
+Direct polarization gives
+
+\[
+ \begin{aligned}
+ C_0&=4a^3-(2cu)^3=4K,\\
+ C_1&=4a^2(2cv)-(2cu)^2b=4cF_0,\\
+ C_2&=4a(2cv)^2-(2cu)b^2=-2cG_0,\\
+ C_3&=4(2cv)^3-b^3=-J,
+ \end{aligned}
+ \tag{R60.6}
+\]
+
+where
+
+\[
+ K=a^3-2c^3u^3,\qquad
+ J=b^3-32c^3v^3,\qquad
+ G_0=ub^2-8cv^2a,
+ \tag{R60.7}
+\]
+
+and \(F_0\) is R58.2.  Thus determinant, both norm defects, and both second minors are the four
+coefficients of one transformed binary cubic.
+
+`[SURVIVOR] [PAPER-PROVED]` The coefficient box is anisotropic but exact:
+
+\[
+ |C_i|\ll
+ \frac{c^2}{MR}u^{3-i}v^i
+ \qquad(0\le i\le3).
+ \tag{R60.8}
+\]
+
+This follows by writing
+\[
+ (as+2cvt,\;2cus+bt)
+ =(2cus+bt)(\alpha_0,1)
+   +(\epsilon s-\tfrac{\vartheta}{2}\delta t)(1,0)
+\]
+and expanding (R60.4); every cubic coefficient has one transverse error and two longitudinal
+factors, with higher error powers smaller.
+
+The discriminant of \(4X^3-Y^3\) is \(-432\).  Binary-cubic discriminant scales by the sixth
+power of the change-of-variables determinant, hence
+
+\[
+ \boxed{
+ \begin{aligned}
+ &81C_1^2C_2^2-108C_0C_2^3-108C_1^3C_3-27C_0^2C_3^2
+   +162C_0C_1C_2C_3\\
+ &\hspace{45mm}=-432e_0^6.
+ \end{aligned}}
+ \tag{R60.9}
+\]
+
+Substitution of (R60.6) yields the integral syzygy
+
+\[
+ \boxed{
+ K^2J^2-12c^2KF_0G_0J-12c^4F_0^2G_0^2
+ -8c^3KG_0^3-16c^3F_0^3J=e_0^6.}
+ \tag{R60.10}
+\]
+
+In particular, the earlier cubic congruence is a shadow of the full discriminant law:
+
+\[
+ c^2\mid KJ-e_0^3.
+ \tag{R60.11}
+\]
+
+One can also obtain (R60.11) directly from
+\[
+ 4a^3-(2cu)^3\equiv4a^3,\qquad
+ 4(2cv)^3-b^3\equiv-b^3\pmod {c^2}
+\]
+and \(ab\equiv e_0\pmod {c^2}\).
+
+`[PAPER-PROVED BT3-BINARY-CUBIC-MINOR-CLOSURE]` R50's determinant and R58's two cubic
+lifts assemble into the complete coefficient vector of the transformed fixed binary cubic, and
+discriminant covariance supplies the exact invariant identity (R60.9).  This is the complete
+binary-cubic covariant package used here; it does not assert an arithmetic orbit classification.
+C44 can now be attacked as an anisotropic cusp count in integral Hecke translates of the base
+\(\mathrm{SL}_2\)-orbit, stratified by \(e_0\), with source divisibilities retained in (R60.1).
+
+### R60.1 Literature boundary
+
+Shintani/Davenport theory and modern binary-form reduction count reduced
+\(\mathrm{SL}_2(\mathbb Z)\)-equivalence classes by discriminant or Julia invariant.  For example,
+Bhargava--Yang, *On the number of integral binary \(n\)-ic forms having bounded Julia invariant*
+(2013), <https://arxiv.org/abs/1312.7339>, recovers the classical positive-discriminant binary
+cubic orbit count.  Taniguchi's Shintani-zeta treatment
+<https://arxiv.org/abs/math/0606109> controls mean class numbers by discriminant.
+
+Those theorems quotient or reduce the \(\mathrm{SL}_2(\mathbb Z)\)-orbit.  R60 needs the opposite:
+count highly nonreduced representatives in the anisotropic box (R60.8), with the two
+cross-divisibilities \(2c\mid U_2,V_1\) and weight \(R^2/(uv)\).  Applying existing orbit counts
+after reduction loses precisely the cusp multiplicity under study.  They do not prove C44.
+
+## Conjecture C46 — anisotropic binary-cubic Hecke cusp count
+
+`[CONJECTURE BT3-BINARY-CUBIC-HECKE-CUSP]` For matrices (R60.1) satisfying the two source
+ windows, the binary-cubic coefficient law (R60.8)--(R60.9) and cross-divisibilities imply
+
+\[
+ \sum \frac{R^2}{uv}\ll_\varepsilon RM^\varepsilon.
+ \tag{R60.12}
+\]
+
+Prove this by first fixing \(e_0\), identifying the corresponding Hecke translate of the base
+\(\mathrm{SL}_2(\mathbb Z)\)-orbit, then counting the nonreduced return matrix in Iwasawa
+coordinates before quotienting.  The discriminant identity supplies the nonzero radial
+coordinate; the cross-divisibilities must be imposed through Ramanujan/Möbius expansion, which
+should recover exactly C45.
+
+**Falsifier.**  One determinant stratum with \(R^{1+\eta}\) weighted representatives inside
+(R60.8) whose off-diagonal matrix entries share the required source divisor \(2c\).
+
+## Log continuation 55
+
+- 2026-08-27 — polarized \(4X^3-Y^3\) along the two reciprocal Farey rows.  Its four transformed
+  coefficients are exactly the two cubic norms and two secondary minors; discriminant covariance
+  gives the sixth-power determinant identity (R60.9) and syzygy (R60.10).  Existing binary-cubic
+  orbit counts discard the nonreduced cusp multiplicity, so C46 is the precise fixed-orbit form
+  of C44/C45.
+
+## Paper theorem R61 — conductor-square norm congruence and exact-factor subvariety
+
+Use the reduced coordinates from R54 and R57:
+
+\[
+ A=\frac a\sigma,\quad q=\frac{cu}\sigma,\qquad
+ B=\frac b\tau,\quad s=\frac{cv}\tau,\qquad
+ e=AB-4qs,
+ \tag{R61.1}
+\]
+
+with
+
+\[
+ c=kd,\qquad \sigma\tau=k\omega,\qquad
+ (d,\omega)=1,\qquad d\mid q,s,\qquad(e,d)=1.
+ \tag{R61.2}
+\]
+
+Define the reduced cubic norms
+
+\[
+ K=A^3-2q^3,\qquad J=B^3-32s^3.
+ \tag{R61.3}
+\]
+
+`[SURVIVOR] [PAPER-PROVED]` They obey the conductor-square congruence
+
+\[
+ \boxed{d^2\mid KJ-e^3.}
+ \tag{R61.4}
+\]
+
+Indeed \(K\equiv A^3\), \(J\equiv B^3\), and
+\(e\equiv AB\pmod {d^2}\), since \(d\mid q,s\).
+
+The rational-approximation windows give
+
+\[
+ |K|\ll\frac{c^2u^3}{\sigma^3MR},\qquad
+ |J|\ll\frac{c^2v^3}{\tau^3MR}.
+ \tag{R61.5}
+\]
+
+Put
+
+\[
+ D=\frac{d}{\omega L_{\mathrm{eff}}}
+   =\frac{duv}{\omega MR};
+ \tag{R61.6}
+\]
+
+this is the determinant-height cap from R54.  Substituting
+\(c=kd\) and \(\sigma\tau=k\omega\) into (R61.5) gives
+
+\[
+ \frac{|KJ|}{d^2}
+ \ll
+ \frac{k\,uv}{\omega}D^2,
+ \qquad
+ \frac{|e|^3}{d^2}\ll\frac{D^3}{d^2}.
+ \tag{R61.7}
+\]
+
+Since the quotient in (R61.4) is an integer, there is the formal dichotomy:
+
+\[
+ \boxed{
+ KJ=e^3
+ \quad\text{or}\quad
+ 1\ll
+ \frac{k\,uv}{\omega}D^2+\frac{D^3}{d^2}.}
+ \tag{R61.8}
+\]
+
+This dichotomy does **not** force exact factorisation.  Indeed the definitions give
+
+\[
+ \boxed{
+ \frac{k\,uv}{\omega}
+ =\frac{qs}{d^2}
+ =\frac qd\frac sd\ge1,}
+ \tag{R61.8a}
+\]
+
+because \(d\mid q,s\).  Hence the first term on the right of (R61.8) is already of constant size
+on every occupied packet.  The initially proposed “high-content” regime
+\(\omega\gg kuvD^2\) is incompatible with (R61.8a) once \(D\gg1\).
+
+`[FAILED BT3-HIGH-CONTENT-FORCES-NORM-FACTOR]` R61.4 is a valid new congruence, but its
+archimedean upper bound is exactly the ambient product volume and cannot make the quotient vanish.
+Positive survivor is arithmetic structure of the exceptional equality subvariety \(KJ=e^3\),
+developed next.
+
+### R61.1 Structure of the exact-factor branch
+
+Assume \(KJ=e^3\).  Both norms are nonzero, so the possible pairs \((K,J)\) for fixed \(e\)
+are divisor-bounded.  For each \(K\), the solutions of
+\(A^3-2q^3=K\) in a coefficient box form finitely many principal-ideal generators and hence
+number \(O_\varepsilon(|e|^\varepsilon M^\varepsilon)\) by unit rank one.  The identical
+statement holds for \(B^3-32s^3=J\), in the fixed finite-index order generated by
+\(\beta=2\vartheta^2\).  Consequently, for each fixed nonzero \(e\):
+
+\[
+ \#\{(A,q,B,s):KJ=e^3,\ AB-4qs=e\}
+ \ll_\varepsilon |e|^\varepsilon M^\varepsilon.
+ \tag{R61.9}
+\]
+
+This counts reduced column pairs.  Their reconstruction in the sampling variable still carries
+the source gcd weight and must not be discarded.
+
+There is an additional exact valuation law.  Let
+
+\[
+ g=(q,s),\qquad q=gq_0,\qquad s=gs_0,\qquad(q_0,s_0)=1.
+ \tag{R61.10}
+\]
+
+Because \((A,q)=(B,s)=1\), one has \((AB,g)=1\).  Reducing \(KJ=e^3\) modulo \(g^3\) gives
+
+\[
+ (AB)^3\equiv
+ (AB-4g^2q_0s_0)^3
+ \equiv (AB)^3-12(AB)^2g^2q_0s_0
+ \pmod {g^3}.
+\]
+
+Therefore
+
+\[
+ \boxed{g\mid12q_0s_0.}
+ \tag{R61.11}
+\]
+
+Prime by prime, if \(Q=\nu_p(q)\), \(S=\nu_p(s)\), and \(m=\min(Q,S)\), then
+
+\[
+ m\le\nu_p(12)+|Q-S|.
+ \tag{R61.12}
+\]
+
+Large common denominator valuation is possible only when the two norm solutions have a matching
+valuation imbalance.
+
+Finally, for fixed reduced denominators \(q,s\) and any cap \(C_*\), the exact gcd-kernel sum is
+
+\[
+ \sum_{c\le C_*}(c,q)(c,s)
+ \ll_\varepsilon C_*(q,s)M^\varepsilon.
+ \tag{R61.13}
+\]
+
+Use \((c,q)=\sum_{r\mid(c,q)}\varphi(r)\), expand both gcds, and note that
+\[
+ \#\{c\le C_*:[r,t]\mid c\}\le C_*/[r,t]
+\]
+with no additive boundary term; then
+\(\varphi(r)\varphi(t)/[r,t]\le(r,t)\le(q,s)\), and divisor summation proves
+(R61.13).
+
+The determinant window gives \(C_*\ll qs/(MR|e|)\).  Hence one fixed exact-factor column pair
+contributes at most
+
+\[
+ \frac{R^2}{qs}
+ \sum_{c\le C_*}(c,q)(c,s)
+ \ll_\varepsilon
+ \frac{R(q,s)}{M|e|}M^\varepsilon.
+ \tag{R61.14}
+\]
+
+`[PAPER-PROVED BT3-EXACT-FACTOR-SUBVARIETY-DESCENT]` Conditional on \(KJ=e^3\), the
+packet reduces to divisor-many unit-orbit norm pairs and their cross-gcd \((q,s)\).  This does not
+cover the generic nonzero quotient in (R61.4).  The exact-factor subvariety itself reduces to the
+weighted unit-orbit estimate obtained by summing (R61.14), with valuation restriction (R61.11).
+
+## Conjecture C47 — cross-gcd energy of paired cubic norm orbits
+
+`[CONJECTURE BT3-PAIRED-CUBIC-NORM-GCD]` Uniformly over the exact-factor packets
+\(KJ=e^3\) in R61.9,
+
+\[
+ \sum_{\substack{(A,q),(B,s)\\KJ=e^3\\AB-4qs=e}}
+ \frac{(q,s)}{|e|}
+ \ll_\varepsilon M^{1+\varepsilon}.
+ \tag{R61.15}
+\]
+
+Together with (R61.14), this closes the exact-factor subvariety of C44.  Prove it by writing each
+fixed-norm solution as a base generator times a power of the fundamental unit, then applying
+(R61.12) prime by prime to the two resulting coefficient recurrences.  Dependent unit exponents
+must be isolated before any generic gcd theorem is invoked.
+
+**Falsifier.**  A dependent pair of norm-unit recurrences satisfying the determinant equation
+and \(KJ=e^3\) for which \((q,s)\) grows proportionally to the coefficient height on more than
+divisor-many exponent pairs.
+
+## Log continuation 56
+
+- 2026-08-27 — descended the two cubic norms through the R54 conductor.  Their product is
+  congruent to \(e^3\) modulo \(d^2\).  Hostile audit found
+  \(kuv/\omega=qs/d^2\ge1\), so this congruence does not force equality; the proposed
+  high-content closure is retired.  On the exceptional equality subvariety, norms factor \(e^3\),
+  fixed norm fibres are unit-rank sparse, common denominator valuations satisfy (R61.11), and
+  sampling-variable reconstruction is the explicit gcd sum (R61.14).  C47 concerns only this
+  subvariety.
+
+## Paper theorem R62 — exact-factor curve and primewise doubling
+
+The equality subvariety from R61 has a scale-free equation.  Put
+
+\[
+ x=\frac qA,\qquad y=\frac sB.
+ \tag{R62.1}
+\]
+
+Since
+
+\[
+ K=A^3(1-2x^3),\qquad
+ J=B^3(1-32y^3),\qquad
+ e=AB(1-4xy),
+ \tag{R62.2}
+\]
+
+the equality \(KJ=e^3\) is equivalent to the fixed rational curve
+
+\[
+ \boxed{
+ (1-2x^3)(1-32y^3)=(1-4xy)^3.}
+ \tag{R62.3}
+\]
+
+Equivalently,
+
+\[
+ 6xy-24x^2y^2-x^3-16y^3+64x^3y^3=0.
+ \tag{R62.4}
+\]
+
+This is not a generic pair of unit recurrences; all exact-factor pairs lie on one curve.
+
+### R62.1 Exact valuation doubling away from \(6\)
+
+`[SURVIVOR] [PAPER-PROVED]` Let \(p\ge5\) divide \(g=(q,s)\), and put
+
+\[
+ Q=\nu_p(q)>0,\qquad S=\nu_p(s)>0.
+ \]
+
+Because \((A,q)=(B,s)=1\), both \(A,B\) are \(p\)-adic units, so
+\(\nu_p(x)=Q\) and \(\nu_p(y)=S\).  The five terms in (R62.4) have valuations
+
+\[
+ Q+S,\qquad 2Q+2S,\qquad3Q,\qquad3S,\qquad3Q+3S.
+ \tag{R62.5}
+\]
+
+Assume \(Q\ge S\).  If \(Q<2S\), then \(Q+S\) is the unique minimum; if \(Q>2S\), then
+\(3S\) is the unique minimum.  A nonarchimedean sum cannot vanish with a unique least-valuation
+term.  Therefore \(Q=2S\).  Interchanging \(q,s\) gives
+
+\[
+ \boxed{
+ \nu_p(q)=2\nu_p(s)
+ \quad\text{or}\quad
+ \nu_p(s)=2\nu_p(q)
+ \qquad(p\ge5,\ p\mid(q,s)).}
+ \tag{R62.6}
+\]
+
+In particular, if \(g_{(6)}\) denotes the part of \(g\) coprime to \(6\), there are coprime
+integers \(r,t\) with \(g_{(6)}=rt\) such that, away from primes \(2,3\),
+
+\[
+ q=r^2t\,q_1,\qquad
+ s=rt^2\,s_1,\qquad
+ (rt,q_1s_1)=1.
+ \tag{R62.7}
+\]
+
+Thus the common denominator is not arbitrary: every common prime is assigned to exactly one of
+the two quadratic branches.
+
+### R62.2 Archimedean quadratic branches
+
+Scale
+
+\[
+ X=\vartheta x,\qquad Y=\beta y.
+ \tag{R62.8}
+\]
+
+Then (R62.3) becomes the universal equation
+
+\[
+ (1-X^3)(1-Y^3)=(1-XY)^3,
+ \tag{R62.9}
+\]
+
+and the target point is \((X,Y)=(1,1)\).  Write \(X=1+\xi\), \(Y=1+\eta\).  The tangent cone of
+(R62.9) is
+
+\[
+ 9\xi\eta=0.
+ \tag{R62.10}
+\]
+
+More precisely, the two local branches have expansions
+
+\[
+ \xi=-\frac{\eta^2}{9}+O(\eta^3),
+ \qquad\text{or}\qquad
+ \eta=-\frac{\xi^2}{9}+O(\xi^3).
+ \tag{R62.11}
+\]
+
+Since
+
+\[
+ \xi=-\frac{A-\vartheta q}{A},\qquad
+ \eta=-\frac{B-\beta s}{B},
+ \tag{R62.12}
+\]
+
+the primewise doubling (R62.6) is the finite-place counterpart of the same quadratic branch law.
+One rational approximation must be quadratically subordinate to the other.
+
+There is also a norm-one interpretation.  If
+
+\[
+ z=A-\vartheta q,\qquad w=B-\beta s,
+ \]
+
+then
+
+\[
+ \Xi=\frac{zw}{e}
+ \tag{R62.13}
+\]
+
+has \(N_{K/\mathbb Q}(\Xi)=1\) exactly when (R62.3) holds.  The determinant identity
+
+\[
+ Bz+\vartheta q\,w=e
+ \tag{R62.14}
+\]
+
+selects the two quadratic branches inside that norm-one torus.
+
+`[PAPER-PROVED BT3-EXACT-FACTOR-LOCAL-DOUBLING]` C47 is now a rational-point count near
+the cubic node (R62.10), with matching quadratic valuation pattern (R62.7), rather than a generic
+gcd problem for unrelated recurrence sequences.
+
+## Conjecture C48 — rational normalization of the cubic node with height
+
+`[CONJECTURE BT3-EXACT-FACTOR-NODE-HEIGHT]` Construct the normalization of (R62.3)
+over \(\mathbb Q\), retain both preimages of the cubic target
+\((1/\vartheta,1/\beta)\), and prove that rational points satisfying the two source windows obey
+
+\[
+ \sum \frac{(q,s)}{|e|}\ll_\varepsilon M^{1+\varepsilon}.
+ \tag{R62.15}
+\]
+
+The proof must combine Roth approximation to the algebraic normalization parameter with the
+finite-place quadratic allocation (R62.7).  A height comparison that forgets \(r,t\) cannot prove
+the gcd weight.
+
+**Falsifier.**  A rational parametrized branch approaching the cubic node for which its parameter
+denominator supplies \(r,t\) in (R62.7) but the normalization height grows slower than
+\((q,s)/|e|\).
+
+## Log continuation 57
+
+- 2026-08-27 — rewrote \(KJ=e^3\) as the fixed curve (R62.3).  At every common prime
+  \(p\ge5\), nonarchimedean unique-minimum analysis forces exact valuation ratio \(2:1\);
+  archimedean expansion at the target node has the same quadratic branching.  C47 is therefore
+  the normalization-height theorem C48, not a generic unit-recurrence gcd estimate.
+
+## Paper theorem R63 — explicit normalization and exact-factor evacuation
+
+The normalization requested in C48 is rational and elementary.  It also retains enough
+arithmetic to close the exact-factor subvariety completely.
+
+### R63.1 Normalization over \(\mathbb Q\)
+
+First work over \(K=\mathbb Q(\vartheta)\) with the universal coordinates from R62:
+
+\[
+ X=\vartheta x,\qquad Y=\beta y,\qquad
+ (1-X^3)(1-Y^3)=(1-XY)^3.
+ \tag{R63.1}
+\]
+
+Put \(S=X+Y\) and \(P=XY\).  Expanding (R63.1) gives the plane cubic
+
+\[
+ S^3=3PS+2P^3-3P^2+3P.
+ \tag{R63.2}
+\]
+
+Its point \((S,P)=(-1,1)\) is singular.  Intersect with
+\(P=1+\lambda(S+1)\).  After removing the double intersection at the singular point, the
+remaining point satisfies
+
+\[
+ S+1=\frac{3(1+\lambda+\lambda^2)}{1-2\lambda^3}.
+ \tag{R63.3}
+\]
+
+The discriminant needed to recover \(X,Y\) is
+
+\[
+ S^2-4P
+ =
+ \frac{3\lambda^2(\lambda+1)^2(4\lambda^2+4\lambda+3)}
+      {(1-2\lambda^3)^2}.
+ \tag{R63.4}
+\]
+
+Thus only the rational conic
+
+\[
+ T^2=3(4\lambda^2+4\lambda+3)
+ \tag{R63.5}
+\]
+
+remains.  Parametrize it from \((\lambda,T)=(-1,3)\) by
+\(T=3+h(\lambda+1)\).  The second intersection is
+
+\[
+ \lambda=\frac{h(h+6)}{12-h^2},
+ \qquad
+ T=\frac{3(h^2+4h+12)}{12-h^2}.
+ \tag{R63.6}
+\]
+
+Writing \(k=h+2\) and simplifying the two roots
+\((S\pm\sqrt{S^2-4P})/2\) gives
+
+\[
+ \boxed{
+ X=\frac{6k^2}{32-k^3},
+ \qquad
+ Y=\frac{12k}{k^3+16}.}
+ \tag{R63.7}
+\]
+
+Now set \(k=2\vartheta^2t\).  The powers of \(\vartheta\) cancel after returning to
+\(x=X/\vartheta\), \(y=Y/\beta\):
+
+\[
+ \boxed{
+ x(t)=\frac{3t^2}{2(1-t^3)},
+ \qquad
+ y(t)=\frac{3t}{4(1+2t^3)}.}
+ \tag{R63.8}
+\]
+
+This parametrization is defined over \(\mathbb Q\).  Direct substitution is certified by
+
+\[
+\begin{aligned}
+ 1-2x(t)^3
+  &=\frac{(1-4t^3)(t^3+2)^2}{4(1-t^3)^3},\\
+ 1-32y(t)^3
+  &=\frac{(4t^3-1)^2(t^3+2)}{2(1+2t^3)^3},\\
+ 1-4x(t)y(t)
+  &=\frac{(1-4t^3)(t^3+2)}
+          {2(1-t^3)(1+2t^3)}.
+\end{aligned}
+\tag{R63.9}
+\]
+
+Conversely, on a dense affine open, eliminating \(t^3\) from the two equations in (R63.8)
+gives the rational inverse
+
+\[
+ \boxed{
+ t=\frac{4y(x^2-2y)}{x^2+16xy^2-6y}.}
+ \tag{R63.10}
+\]
+
+Indeed the two equations first give
+\[
+ 4yt^2+xt-4xy=0,
+\]
+and division of \(8yt^3-3t+4y\) by this quadratic leaves
+\[
+ \left(\frac{x^2}{2y}+8xy-3\right)t+4y-2x^2.
+\]
+Equations (R63.8) and (R63.10) prove birationality.  The coordinate maps in (R63.8) have
+degree three, so their image has bidegree \((3,3)\), equal to the whole curve (R62.3).
+Thus (R63.8) is its normalization, not a parametrization of a proper component.
+
+The rational node \((x,y)=(0,0)\) has preimages \(t=0,\infty\).  More importantly, the
+cubic target has the two distinct preimages
+
+\[
+ \boxed{
+ t_+=\frac{\vartheta}{2},
+ \qquad
+ t_-=-\vartheta.}
+ \tag{R63.11}
+\]
+
+Their branch orders are explicit:
+
+\[
+\begin{aligned}
+ 1-\vartheta x(t)
+  &=
+ \frac{(1-\vartheta^2t)(\vartheta^2t+2)^2}
+      {4(1-t^3)},\\
+ 1-\beta y(t)
+  &=
+ \frac{(\vartheta^2t-1)^2(\vartheta^2t+2)}
+      {2(1+2t^3)}.
+\end{aligned}
+\tag{R63.12}
+\]
+
+At \(t_+\), the first error is simple and the second is double.  At \(t_-\), the orders
+are reversed.  This is the global form of R62.11.
+
+### R63.2 Integral coordinates and the two cubic norms
+
+Let \(t=m/n\), where \((m,n)=1\).  In either target neighbourhood \(mn\ne0\).
+Before reduction, (R63.8) is
+
+\[
+ \frac qA=\frac{3m^2n}{2(n^3-m^3)},
+ \qquad
+ \frac sB=\frac{3mn^2}{4(n^3+2m^3)}.
+ \tag{R63.13}
+\]
+
+Define
+
+\[
+\begin{aligned}
+ g_1&=(3m^2n,\,2(n^3-m^3)),\\
+ g_2&=(3mn^2,\,4(n^3+2m^3)).
+\end{aligned}
+\tag{R63.14}
+\]
+
+Since \((m,n)=1\),
+
+\[
+ \boxed{g_1\mid6,\qquad g_2\mid24.}
+ \tag{R63.15}
+\]
+
+For \(p\ge5\), a common divisor of a numerator and its cubic denominator would divide both
+\(m\) and \(n\).  At \(p=3\), each numerator has only the displayed extra factor \(3\)
+unless \(3\mid mn\), in which case its cubic denominator is a unit.  At \(p=2\), direct parity
+gives \(\nu_2(g_1)\le1\) and \(\nu_2(g_2)\le3\).  This proves (R63.15).
+
+After dividing by \(g_1,g_2\) and orienting each column so \(q,s>0\), put
+
+\[
+ P_+=n^3-4m^3,\qquad P_-=m^3+2n^3.
+ \tag{R63.16}
+\]
+
+Then
+
+\[
+ \boxed{
+ |e|=\frac{4|P_+P_-|}{g_1g_2},
+ \qquad
+ (q,s)\le3|mn|.}
+ \tag{R63.17}
+\]
+
+The determinant identity follows from
+
+\[
+\begin{aligned}
+ &2(n^3-m^3)\,4(n^3+2m^3)
+   -4(3m^2n)(3mn^2)\\
+ &\hspace{30mm}
+ =4(2n^3+m^3)(n^3-4m^3).
+\end{aligned}
+\]
+
+The cubic norms themselves factor compatibly:
+
+\[
+ |K|=\frac{2|P_+P_-^2|}{g_1^3},
+ \qquad
+ |J|=\frac{32|P_+^2P_-|}{g_2^3}.
+ \tag{R63.18}
+\]
+
+Hence \(KJ=e^3\) is visible term by term in the normalization.  The two branches are precisely
+\(P_+\) small near \(t_+\) and \(P_-\) small near \(t_-\).
+
+### R63.3 Source windows force bounded norm and one height
+
+Let
+
+\[
+ H=\max(|m|,|n|).
+ \tag{R63.19}
+\]
+
+In fixed disjoint neighbourhoods of \(t_+,t_-\), one has
+
+\[
+ |m|\asymp|n|\asymp H,\qquad q\asymp s\asymp H^3.
+ \tag{R63.20}
+\]
+
+For every source-selected pair, R57.3 and R57.5 imply
+
+\[
+ \left|x-\frac1\vartheta\right|
+ +
+ \left|y-\frac1\beta\right|
+ \ll\frac1{cMR}.
+ \tag{R63.21}
+\]
+
+The determinant is nonzero.  In the unresolved minor range, R50 therefore supplies
+
+\[
+ c\gg\frac MR.
+ \tag{R63.22}
+\]
+
+Also \(q=cu/\sigma\), \(s=cv/\tau\), with \(u,v\le R\), while
+\(c\ll M^2/R\).  Consequently
+
+\[
+ q,s\ll M^2,\qquad H^3\ll M^2.
+ \tag{R63.23}
+\]
+
+Equations (R63.12) and (R63.21) now give exactly one of
+
+\[
+\begin{array}{lll}
+ |t-t_+|\ll(cMR)^{-1},&
+ |P_+|\ll H^3/(cMR),&
+ |P_-|\asymp H^3,\\[2mm]
+ |t-t_-|\ll(cMR)^{-1},&
+ |P_-|\ll H^3/(cMR),&
+ |P_+|\asymp H^3.
+\end{array}
+\tag{R63.24}
+\]
+
+The small factor in (R63.24) is a nonzero integer: \(P_+=0\) or \(P_-=0\) would make a
+rational cube equal to \(1/4\) or \(-2\).  Combining (R63.22)--(R63.24) yields
+
+\[
+ 1\le |P_{\mathrm{small}}|
+ \ll\frac{H^3}{M^2}\ll1.
+ \tag{R63.25}
+\]
+
+In particular,
+
+\[
+ \boxed{
+ H^3\asymp M^2,
+ \qquad
+ 1\le|P_{\mathrm{small}}|\ll1.}
+ \tag{R63.26}
+\]
+
+This is the missing height law.  Exact-factor points cannot occupy a range of source heights:
+they sit at \(H\asymp M^{2/3}\) on finitely many nonzero cubic-norm fibres.
+
+### R63.4 Weighted count
+
+For each fixed nonzero value of \(P_+\), the solutions of
+\(n^3-4m^3=P_+\) are contained among generators of fixed norm in
+\(\mathbb Z[\vartheta^2]\).  For each fixed nonzero \(P_-\), the solutions of
+\(m^3+2n^3=P_-\) are contained among generators of fixed norm in
+\(\mathbb Z[\vartheta]\).  The fixed-ideal divisor count and unit rank one argument already
+proved in R35 therefore gives
+
+\[
+ \#\{(m,n)\text{ satisfying (R63.26)}\}
+ \ll_\varepsilon M^\varepsilon.
+ \tag{R63.27}
+\]
+
+For each such pair, (R63.17), (R63.20), and (R63.24) give
+
+\[
+ \frac{(q,s)}{|e|}
+ \ll
+ \frac{H^2}{|P_{\mathrm{small}}|H^3}
+ \ll\frac1H.
+ \tag{R63.28}
+\]
+
+Therefore
+
+\[
+ \boxed{
+ \sum_{\substack{\text{source-selected }(A,q),(B,s)\\KJ=e^3}}
+ \frac{(q,s)}{|e|}
+ \ll_\varepsilon M^{-2/3+\varepsilon}.}
+ \tag{R63.29}
+\]
+
+This is much stronger than C47's required \(M^{1+\varepsilon}\).  Substitution into R61.14
+shows that the entire exact-factor contribution to R57.12 is
+
+\[
+ \ll_\varepsilon R M^{-5/3+\varepsilon},
+ \tag{R63.30}
+\]
+
+and hence negligible.
+
+`[PAPER-PROVED BT3-EXACT-FACTOR-NODE-HEIGHT]`
+`[PAPER-PROVED BT3-PAIRED-CUBIC-NORM-GCD]`
+The explicit normalization (R63.8), bounded reduction factors (R63.15), determinant
+factorization (R63.17), and source-height trap (R63.26) prove C48 and C47.
+
+`[BOUNDARY]` R63 closes only the exceptional quotient \(KJ=e^3\).  For the generic branch
+\((KJ-e^3)/d^2\ne0\), no rational curve (R62.3) is available.  The full gcd-weighted
+reciprocal-Farey theorem C44 remains the active obstruction.
+
+## Log continuation 58
+
+- 2026-08-27 — normalized the exact-factor curve explicitly over \(\mathbb Q\).  Its two
+  cubic-target preimages are \(t=\vartheta/2\) and \(t=-\vartheta\), and a reduced parameter
+  \(t=m/n\) factors the determinant into the two integer norms
+  \(n^3-4m^3\) and \(m^3+2n^3\).  Source windows plus \(c\gg M/R\) force one norm to be
+  bounded and \(H^3\asymp M^2\); fixed-norm unit rank then proves the cross-gcd sum with a
+  power surplus.  C47/C48 are closed.  Generic C44 is unchanged.
+
+## Paper theorem R64 — complementary cubic norm and cusp-floor closure
+
+The generic conductor quotient has an exact second norm.  Retain R61 coordinates
+
+\[
+ q=dQ,\qquad s=dS,\qquad Z=QS=\frac{k uv}{\omega},
+ \qquad
+ T=\frac{KJ-e^3}{d^2}\in\mathbb Z.
+ \tag{R64.1}
+\]
+
+Define
+
+\[
+ \boxed{
+ \mathcal H
+ =
+ N_{K/\mathbb Q}
+ \left(QB+2SA\vartheta+2dQS\vartheta^2\right).}
+ \tag{R64.2}
+\]
+
+Using R59.9 with \(n=QB\), \(k=2SA\), and \(\ell=dQS\) gives
+
+\[
+ \mathcal H
+ =
+ Q^3B^3+16S^3A^3
+ -24dQ^2S^2AB
+ +32d^3Q^3S^3.
+ \tag{R64.3}
+\]
+
+### R64.1 Exact transverse quotient identity
+
+`[SURVIVOR] [PAPER-PROVED]` One has
+
+\[
+ \boxed{
+ T=12QS\,e^2-2d\mathcal H.}
+ \tag{R64.4}
+\]
+
+To prove it, expand directly:
+
+\[
+\begin{aligned}
+ KJ-e^3
+ &=(A^3-2d^3Q^3)(B^3-32d^3S^3)
+   -(AB-4d^2QS)^3.
+\end{aligned}
+\]
+
+After division by \(d^2\),
+
+\[
+\begin{aligned}
+ T={}&12QS A^2B^2
+ -2dQ^3B^3-32dS^3A^3\\
+ &-48d^2Q^2S^2AB
+ +128d^4Q^3S^3.
+\end{aligned}
+\tag{R64.5}
+\]
+
+Substitute \(AB=e+4d^2QS\) in the first, fourth, and fifth terms.  Their sum is
+
+\[
+ 12QS e^2+48d^2Q^2S^2e+128d^4Q^3S^3.
+\]
+
+The difference from \(12QS e^2\) is exactly \(-2d\) times (R64.3), proving (R64.4).
+In particular,
+
+\[
+ \boxed{
+ T\equiv12QS\,e^2\pmod {2d}.}
+ \tag{R64.6}
+\]
+
+Since \((e,d)=1\), this congruence also gives the primewise truncated valuation law
+
+\[
+ \boxed{
+ \min(\nu_p(T),\nu_p(d))
+ =
+ \min(\nu_p(QS),\nu_p(d))
+ \qquad(p\ge5).}
+ \tag{R64.7}
+\]
+
+Indeed \(12e^2\) is a \(p\)-adic unit.  R64.7 is a generic replacement for the
+exact-factor valuation doubling R62.6.
+
+### R64.2 The norm is the product of the two source errors
+
+Let
+
+\[
+ \alpha=A-\vartheta dQ,\qquad
+ \delta=B-\beta dS.
+ \tag{R64.8}
+\]
+
+For a nonreal cube root of unity \(\rho\), the real and complex embeddings of the element in
+(R64.2) are
+
+\[
+\begin{aligned}
+ \zeta_1
+ &=6\vartheta^2dQS+Q\delta+2\vartheta S\alpha,\\
+ \zeta_\rho
+ &=Q\delta+2\vartheta\rho S\alpha.
+\end{aligned}
+\tag{R64.9}
+\]
+
+The leading terms in the second line cancel because
+\(1+\rho+\rho^2=0\).  Hence
+
+\[
+ \boxed{
+ \mathcal H
+ =
+ (6\vartheta^2dQS+Q\delta+2\vartheta S\alpha)
+ (Q^2\delta^2-2\vartheta QS\alpha\delta
+       +4\vartheta^2S^2\alpha^2).}
+ \tag{R64.10}
+\]
+
+The quadratic factor is positive definite.  The first factor is positive for all sufficiently
+large \(M\), by the source windows
+
+\[
+ |\alpha|\ll\frac{Q}{kMR},
+ \qquad
+ |\delta|\ll\frac{S}{kMR}.
+ \tag{R64.11}
+\]
+
+Thus \(\mathcal H\) is a positive rational integer.  It cannot vanish, and
+
+\[
+ 1\le\mathcal H
+ \ll
+ dQS\left(\frac{QS}{kMR}\right)^2
+ =
+ \boxed{
+ \frac{c\,u^3v^3}{\omega^3M^2R^2}.}
+ \tag{R64.12}
+\]
+
+This also follows from R64.4 and the archimedean bounds in R61, but R64.10 exposes the
+positive-definite transverse error that those separate bounds concealed.
+
+Combining (R64.4), \(|e|\ll D\), and \(|T|\ll ZD^2\) gives the equivalent conductor form
+
+\[
+ d\mathcal H\ll ZD^2.
+ \tag{R64.13}
+\]
+
+The discarded term \(D^3/d^2\) from R61.7 is at most \(ZD^2\), because
+\(D/d^2\le R/(M\omega d)\le1\).
+
+### R64.3 Sharp product-cusp floor
+
+Since \(c\ll M^2/R\), (R64.12) forces
+
+\[
+ \boxed{
+ uv\gg\omega R.}
+ \tag{R64.14}
+\]
+
+Thus no source-selected hit exists below the product cusp floor \(uv=\omega R\).
+The hostile corner \(uv\ll R\), previously left open by determinant nonvanishing, is empty.
+
+There is a raw integral version retaining all contents.  Put
+
+\[
+ \mathcal Z_0
+ =
+ ub+2va\vartheta+2cuv\vartheta^2
+ =\omega\left(QB+2SA\vartheta+2dQS\vartheta^2\right).
+ \tag{R64.15}
+\]
+
+Then
+
+\[
+ \mathcal H_0=N(\mathcal Z_0)=\omega^3\mathcal H
+ \tag{R64.16}
+\]
+
+and, with the raw errors from R58,
+
+\[
+\begin{aligned}
+ \mathcal H_0
+ ={}&(6\vartheta^2cuv+u\delta+2\vartheta v\epsilon)\\
+ &\times
+ (u^2\delta^2-2\vartheta uv\epsilon\delta
+       +4\vartheta^2v^2\epsilon^2).
+\end{aligned}
+\tag{R64.17}
+\]
+
+Consequently
+
+\[
+ 1\le\mathcal H_0
+ \ll\frac{c\,u^3v^3}{M^2R^2}.
+ \tag{R64.18}
+\]
+
+For fixed nonzero \(\mathcal H_0\), the possible \(\mathcal Z_0\) in the polynomial-size
+coefficient box are divisor-many principal ideals times \(O(\log M)\) unit powers.  Once its
+three coefficients
+
+\[
+ (n_0,k_0,\ell_0)=(ub,\,2va,\,cuv)
+ \tag{R64.19}
+\]
+
+are fixed, the choices \(u\mid n_0\), \(v\mid k_0/2\), \(uv\mid\ell_0\) reconstruct
+\((a,b,c)\) with only divisor multiplicity.  Therefore
+
+\[
+ \#\{\text{raw source hits with fixed }\mathcal H_0\}
+ \ll_\varepsilon M^\varepsilon.
+ \tag{R64.20}
+\]
+
+### R64.4 The deepest cusp band is closed
+
+Fix \(P_0\ge1\).  Consider hits with
+
+\[
+ 1\ll \frac{uv}{\omega R}\le P_0.
+ \tag{R64.21}
+\]
+
+By (R64.12), \(\mathcal H\ll P_0^3\).  Since
+\(\mathcal H_0=\omega^3\mathcal H\), R64.20 and divisor summation give
+
+\[
+\begin{aligned}
+ \sum_{\substack{\text{hits satisfying (R64.21)}}}
+ \frac{R^2}{uv}
+ &\ll_{\varepsilon,P_0}
+ \sum_{\omega\le R}
+ M^\varepsilon\frac{R}{\omega}\\
+ &\ll_{\varepsilon,P_0}RM^\varepsilon.
+\end{aligned}
+\tag{R64.22}
+\]
+
+Here \(\omega\le R\) follows from (R64.14) and \(uv\le R^2\).
+
+`[PAPER-PROVED BT3-COMPLEMENTARY-CUBIC-NORM]`
+`[PAPER-PROVED BT3-PRODUCT-CUSP-FLOOR]`
+The exact norm (R64.2) closes the full bounded-depth product cusp, including generic
+\(KJ-e^3\ne0\) packets.  It is independent of R63's rational exact-factor normalization.
+
+`[BOUNDARY]` R64.22 is uniform only for bounded
+\(P=uv/(\omega R)\).  For \(P\to\infty\), the norm range
+\(\mathcal H\ll P^3\) and the bound obtained by summing fixed norm fibres is
+\(O(RP^2M^\varepsilon)\), not \(O(RM^\varepsilon)\).  Remaining C44 regime is therefore
+the volume range of the complementary-norm Hecke lattice, not its cusp floor.
+
+## Conjecture C49 — complementary-norm Hecke volume theorem
+
+`[CONJECTURE BT3-COMPLEMENTARY-NORM-HECKE-VOLUME]` For dyadic
+\(P=uv/(\omega R)\ge1\), prove
+
+\[
+ \sum_{\substack{\text{source hits}\\
+                  P\le uv/(\omega R)<2P}}
+ \frac{R^2}{uv}
+ \ll_\varepsilon RM^\varepsilon.
+ \tag{R64.23}
+\]
+
+The proof must use the coefficient sublattice
+
+\[
+ (n_0,k_0,\ell_0)=(ub,2va,cuv),
+ \qquad
+ [\mathbb Z^3:\Lambda_{u,v}]\asymp u^2v^2,
+ \tag{R64.24}
+\]
+
+inside the thin Minkowski cylinder exposed by (R64.17).  Fixed-norm counting alone loses
+\(P^2\); a geometry-of-numbers or signed Poisson argument must retain the full sublattice
+index.  The bounded band \(P=O(1)\) is already R64.22 and must be removed before estimating
+the volume range.
+
+**Falsifier.**  A sequence \(P\to\infty\) and a family of principal generators in the thin
+Minkowski cylinder whose divisibility factorizations (R64.19) occupy more than
+\(P^\varepsilon\) times the covolume-predicted number of Hecke sublattices.
+
+## Log continuation 59
+
+- 2026-08-27 — found the complementary norm
+  \(N(QB+2SA\vartheta+2dQS\vartheta^2)\).  Its nonreal embeddings are exactly the two
+  source errors, and the conductor quotient obeys
+  \(T=12QS e^2-2d\mathcal H\).  Positivity forces \(uv\gg\omega R\), while fixed-norm
+  unit fibres close every bounded band \(uv/(\omega R)=O(1)\).  Generic C44 is reduced to
+  the covolume-sensitive Hecke volume theorem C49.
+
+## Research log 65 — exact coefficient lattice and unit-balanced rank collapse
+
+`[CORPUS-FIRST]` Before introducing another incidence target, ran
+`scripts/formal_tools.py research` on the cubic unit, the Smith form of the coefficient
+lattice, and the resulting moving-unimodular divisibility sieve.  The corpus contains a
+general DVR Smith-normal-form theorem, but no theorem counting these cubic-unit Hecke
+lattices and no relevant \(\mathrm{SL}_3\) Hecke/property-\((T)\) infrastructure.  The
+following reduction is therefore derived from R64, not imported from a pointwise lattice
+discrepancy theorem.
+
+### R65.1 Raw coefficient compression
+
+Write
+
+\[
+ w=uv,\qquad r=va,\qquad n=ub,\qquad \ell=cuv.
+ \tag{R65.1}
+\]
+
+The two source windows become the symmetric simultaneous-approximation box
+
+\[
+ \boxed{
+ |r-\vartheta\ell|\ll\frac{w}{MR},\qquad
+ |n-\beta\ell|\ll\frac{w}{MR}.}
+ \tag{R65.2}
+\]
+
+The raw determinant and complementary cubic element are
+
+\[
+ rn-4\ell^2=w e_0,
+ \qquad
+ \mathcal Z_0=n+2r\vartheta+2\ell\vartheta^2.
+ \tag{R65.3}
+\]
+
+Thus every hit is an integral coefficient vector
+
+\[
+ z_0=(n,2r,2\ell)
+ \in
+ \Lambda_{u,v}:=\operatorname{diag}(u,2v,2uv)\mathbb Z^3.
+ \tag{R65.4}
+\]
+
+Conversely, a vector in (R65.4) satisfying (R65.2), the original sign/range conditions,
+and \(2uv\mid z_{0,3}\) reconstructs
+
+\[
+ b=z_{0,1}/u,\qquad a=z_{0,2}/(2v),\qquad
+ c=z_{0,3}/(2uv)
+ \tag{R65.5}
+\]
+
+uniquely.  Hence there is no hidden multiplicity in the coefficient compression.
+
+### R65.2 Exact Smith and exterior-square invariants
+
+Put \(g_2=(u,2v)\).  The determinantal divisors of \(\Lambda_{u,v}\) are
+
+\[
+ \Delta_1=g_2,\qquad
+ \Delta_2=2uv,
+ \qquad
+ \Delta_3=4u^2v^2.
+ \tag{R65.6}
+\]
+
+Indeed the three nonzero two-by-two diagonal minors are
+\(2uv,2u^2v,4uv^2\), whose gcd is \(2uv\).  Therefore the Smith invariants are
+
+\[
+ \boxed{g_2,\quad \frac{2uv}{g_2},\quad 2uv}
+ \tag{R65.7}
+\]
+
+and the covolume is exactly \(4u^2v^2\).  More importantly, for every
+\(x,y\in\Lambda_{u,v}\), all three coordinates of \(x\wedge y\) are divisible by
+\(2uv\).  Consequently
+
+\[
+ x,y\text{ independent}\quad\Longrightarrow\quad
+ \|x\wedge y\|_2\ge2uv.
+ \tag{R65.8}
+\]
+
+This exterior-square gap, absent from a determinant-only volume estimate, survives every
+left multiplication by \(\mathrm{SL}_3(\mathbb Z)\).
+
+### R65.3 Cubic-unit balancing
+
+Let
+
+\[
+ \eta=1+\vartheta+\vartheta^2=(\vartheta-1)^{-1}.
+ \tag{R65.9}
+\]
+
+Multiplication by \(\eta\) on the basis \((1,\vartheta,\vartheta^2)\) has matrix
+
+\[
+ U=
+ \begin{pmatrix}
+  1&2&2\\
+  1&1&2\\
+  1&1&1
+ \end{pmatrix},
+ \qquad \det U=1.
+ \tag{R65.10}
+\]
+
+Set
+
+\[
+ X=\frac{uv}{R}.
+ \tag{R65.11}
+\]
+
+R64.18 and \(c\ll M^2/R\) give
+
+\[
+ 1\le N(\mathcal Z_0)\ll X^3.
+ \tag{R65.12}
+\]
+
+At the real embedding \(\eta>1\), while either complex embedding has modulus
+\(\eta^{-1/2}\), because \(N(\eta)=1\).  Choose an integer \(j\) making the real and
+complex magnitudes of \(\eta^{-j}\mathcal Z_0\) comparable.  Both are then
+\(\asymp N(\mathcal Z_0)^{1/3}\), up to constants depending only on the field.  Inverting
+the fixed embedding matrix yields a balanced coefficient vector
+
+\[
+ \gamma=U^{-j}z_0,
+ \qquad
+ \|\gamma\|_\infty\ll N(\mathcal Z_0)^{1/3}\ll X.
+ \tag{R65.13}
+\]
+
+All original coefficients are polynomially bounded, so \(|j|\ll\log M\).  For fixed
+\((u,v,j)\), the balanced vectors lie in
+
+\[
+ \Lambda_{u,v,j}:=U^{-j}\Lambda_{u,v}.
+ \tag{R65.14}
+\]
+
+This lattice has the same Smith invariants as (R65.7), and its independent two-vector
+wedge still has Euclidean norm at least \(2uv\).
+
+### R65.4 Rank collapse away from the top product face
+
+Two vectors in the balanced cube \(\|\gamma\|_\infty\le C X\) have wedge norm at most
+\(C_1X^2\).  Hence, whenever
+
+\[
+ C_1X^2<2uv,
+ \quad\text{equivalently}\quad
+ uv<\frac{2}{C_1}R^2,
+ \tag{R65.15}
+\]
+
+all balanced hits for fixed \((u,v,j)\) are collinear.  In particular, after fixing a
+sufficiently small absolute \(\kappa>0\), every packet with
+\(uv\le\kappa R^2\) has rank at most one in each unit cell.  Only the constant-width top
+face \(uv\asymp R^2\) can support a genuinely rank-two balanced packet.
+
+`[PAPER-PROVED BT3-COEFFICIENT-LATTICE-SMITH-LAW]`
+`[PAPER-PROVED BT3-UNIT-BALANCED-RANK-COLLAPSE]`
+R65 replaces the vague Hecke-lattice formulation in R64.24 by an exact lattice, exact
+Smith invariants, and a projective rank-one reduction throughout the product cusp away
+from its top face.
+
+`[BOUNDARY]` Rank collapse alone does not prove C49.  A single exceptional primitive
+line can contain many scalar multiples, and its occurrence must be averaged over the
+divisor lattices \((u,v)\) and unit powers \(j\).  Summing pointwise shortest-vector
+bounds discards exactly the index gain needed in R64.23.
+
+## Conjecture C50 — cubic-unit exceptional-line large-gcd sieve
+
+`[CONJECTURE BT3-CUBIC-UNIT-LARGE-GCD-SIEVE]` For every dyadic C49 band and every unit
+cell \(|j|\ll\log M\), bound the source-admissible vectors
+
+\[
+ \gamma\in U^{-j}\operatorname{diag}(u,2v,2uv)\mathbb Z^3,
+ \qquad \|\gamma\|_\infty\ll uv/R,
+ \tag{R65.16}
+\]
+
+with the original thin windows imposed after applying \(U^j\), so that
+
+\[
+ \sum_{u,v}
+ \frac{R^2}{uv}\,
+ \#\{\text{source-admissible vectors in (R65.16)}\}
+ \ll_\varepsilon RM^\varepsilon.
+ \tag{R65.17}
+\]
+
+For \(uv\le\kappa R^2\), prove (R65.17) by charging each nonzero packet to its unique
+primitive projective line and retaining the simultaneous divisibilities
+
+\[
+ u\mid (U^j\gamma)_1,\qquad
+ 2v\mid (U^j\gamma)_2,\qquad
+ 2uv\mid (U^j\gamma)_3.
+ \tag{R65.18}
+\]
+
+The face \(uv\asymp R^2\) requires a separate two-dimensional estimate.  C50 is a
+strictly explicit form of C49; it does not assume equidistribution of arbitrary
+\(\mathrm{SL}_3\) Hecke points.
+
+**Falsifier.**  A family of primitive \(\gamma\), unit cells \(j\), and divisor pairs
+\((u,v)\) satisfying (R65.18) and the two source windows for which the weighted count in
+one dyadic band exceeds \(RM^\varepsilon\).  Collinearity without the weighted divisor
+bound is not evidence for C50.
+
+## Log continuation 60
+
+- 2026-08-27 — compressed raw hits to
+  \(z_0=(ub,2va,2cuv)\in\operatorname{diag}(u,2v,2uv)\mathbb Z^3\).  The lattice has
+  Smith invariants \((g_2,2uv/g_2,2uv)\), so every independent wedge costs at least
+  \(2uv\).  Balancing by the explicit cubic unit \(1+\vartheta+\vartheta^2\) places each
+  hit in a cube of side \(uv/R\) without changing that exterior-square gap.  Fixed
+  Hecke packets are therefore rank one away from \(uv\asymp R^2\); the remaining C49
+  core is the exceptional-line large-gcd sieve C50.
+
+## Research log 66 — content-normalized denominator and adjugate hostile test
+
+`[CORPUS-FIRST]` Searched the corpus for the pure-cubic adjugate, its double-adjugate
+identity, projective-line large sieves, and moving-unit gcd estimates.  No pure-cubic adjugate
+or cubic-unit gcd theorem is present.  The relevant existing infrastructure is
+`RHTower/Sieve/MontgomerySieve.lean`: it proves the omitted-residue-class lower half of
+Montgomery's sieve for one common set and one common modulus.  It does not apply directly here,
+because each source hit carries a different large divisor pair.  The exact normalization below
+identifies the moving-modulus theorem that would have to be added.
+
+### R66.1 Divide out the source gcd before balancing
+
+Write
+
+\[
+ u=\omega Q,\qquad v=\omega S,\qquad (Q,S)=1,
+ \qquad
+ p_*=\frac{uv}{\omega R}=\frac{\omega QS}{R}.
+ \tag{R66.1}
+\]
+
+The raw vector in R65.4 has a common factor \(\omega\).  Define
+
+\[
+ \zeta_0=\frac{z_0}{\omega}
+   =(Qb,\,2Sa,\,2c\omega QS).
+ \tag{R66.2}
+\]
+
+Then
+
+\[
+ \zeta_0\in
+ \Lambda'_{\omega,Q,S}
+ :=\operatorname{diag}(Q,2S,2\omega QS)\mathbb Z^3.
+ \tag{R66.3}
+\]
+
+Its determinant and determinantal divisors are
+
+\[
+ \det\Lambda'_{\omega,Q,S}=4\omega Q^2S^2,\qquad
+ \Delta_1=(Q,2S),\qquad
+ \Delta_2=2QS.
+ \tag{R66.4}
+\]
+
+Thus its Smith invariants are
+
+\[
+ \boxed{(Q,2S),\quad \frac{2QS}{(Q,2S)},\quad 2\omega QS.}
+ \tag{R66.5}
+\]
+
+Since \(u,v\le R\),
+
+\[
+ \boxed{p_*\le Q,\qquad p_*\le S.}
+ \tag{R66.6}
+\]
+
+The two normalized source errors are
+
+\[
+ \left|Sa-\vartheta c\omega QS\right|
+ \ll\frac{p_*}{M},
+ \qquad
+ \left|Qb-\beta c\omega QS\right|
+ \ll\frac{p_*}{M}.
+ \tag{R66.7}
+\]
+
+Moreover
+
+\[
+ N(\zeta_0)=\mathcal H,\qquad 1\le\mathcal H\ll p_*^3.
+ \tag{R66.8}
+\]
+
+Balancing by \(\eta^{-j}\) therefore puts \(\zeta_0\) in a coefficient cube of side
+\(O(p_*)\), not \(O(\omega p_*)\).  Every independent wedge in the balanced lattice costs at
+least \(2QS\).  Since \(QS=p_*R/\omega\), fixed
+\((\omega,Q,S,j)\) packets are rank one whenever
+\[
+ C p_*^2<2QS
+ \quad\Longleftrightarrow\quad
+ C\omega p_*<2R.
+ \tag{R66.9}
+\]
+
+This is R65.15 with the common content removed, and makes the projective scale explicit.
+
+### R66.2 One exact common denominator
+
+Set
+
+\[
+ n=\omega QS=Rp_*,
+ \qquad x=Qb,\qquad y=Sa.
+ \tag{R66.10}
+\]
+
+For an individual hit \(p_*\) is the exact real depth; in a dyadic \(P\)-band one has
+\(n\asymp PR\).  Equations (R66.2) and (R66.7) become
+
+\[
+ \boxed{
+ \zeta_0=(x,2y,2cn),\qquad
+ |x-\beta cn|\ll\frac{n}{MR},\qquad
+ |y-\vartheta cn|\ll\frac{n}{MR}.}
+ \tag{R66.11}
+\]
+
+The reduced Farey-ray coprimalities \((a,u)=(b,v)=1\) recover all source factors from
+\((c,n,x,y)\):
+
+\[
+ \boxed{
+ Q=(x,n),\qquad S=(y,n),\qquad
+ \omega=\frac{n}{(x,n)(y,n)}.}
+ \tag{R66.12}
+\]
+
+Indeed
+\[
+ (Qb,\omega QS)=Q(b,\omega S)=Q,
+ \qquad
+ (Sa,\omega QS)=S(a,\omega Q)=S.
+\]
+In particular \(((x,n),(y,n))=1\), and the cusp weight has the exact one-denominator form
+
+\[
+ \boxed{
+ \frac{R^2}{uv}
+ =\frac{R^2}{\omega n}
+ =\frac{R^2(x,n)(y,n)}{n^2}.}
+ \tag{R66.13}
+\]
+
+There is no sum over possible gcd factorizations in (R66.13): the two gcds are exactly
+\((Q,S)\).  Conversely, (R66.11)--(R66.12), the sign/range conditions, and the stated
+coprimalities reconstruct
+\[
+ u=\omega Q,\quad v=\omega S,\quad a=y/S,\quad b=x/Q
+ \tag{R66.14}
+\]
+uniquely.
+
+`[PAPER-PROVED BT3-CONTENT-NORMALIZED-COMMON-DENOMINATOR]` C49 is therefore a weighted
+simultaneous shrinking-target theorem for the single denominator \(cn\), with
+\(n\asymp PR\), rather than an arbitrary \(\mathrm{SL}_3\) Hecke average.
+
+### R66.3 Exact pure-cubic adjugate
+
+For
+\[
+ \alpha=x+y\vartheta+z\vartheta^2
+\]
+define
+\[
+ \alpha^\#
+ =(x^2-2yz)+(2z^2-xy)\vartheta+(y^2-xz)\vartheta^2.
+ \tag{R66.15}
+\]
+
+Direct multiplication, using \(\vartheta^3=2\), gives
+
+\[
+ \boxed{
+ \alpha\alpha^\#
+ =N(\alpha)
+ =x^3+2y^3+4z^3-6xyz,}
+ \tag{R66.16}
+\]
+\[
+ \boxed{
+ (\alpha^\#)^\#=N(\alpha)\alpha,\qquad
+ N(\alpha^\#)=N(\alpha)^2.}
+ \tag{R66.17}
+\]
+
+For the raw coefficient element
+\(\alpha=n_0+2r\vartheta+2\ell\vartheta^2\), R58 and R60's three secondary
+minors occur literally as
+
+\[
+ \boxed{
+ \alpha^\#
+ =uG_0-2uv\,e_0\,\vartheta+2vF_0\,\vartheta^2.}
+ \tag{R66.18}
+\]
+
+Hence the adjugate coefficient vector belongs to the dual diagonal lattice
+
+\[
+ \operatorname{diag}(u,2uv,2v)\mathbb Z^3,
+ \tag{R66.19}
+\]
+
+which has the same determinant \(4u^2v^2\), the same second determinantal divisor \(2uv\),
+and the same exterior-square gap as R65.4.  Unit multiplication reverses:
+
+\[
+ (\eta^j\gamma)^\#=\eta^{-j}\gamma^\#.
+ \tag{R66.20}
+\]
+
+`[PAPER-PROVED BT3-PURE-CUBIC-ADJUGATE-DUALITY]` This identifies R58/R60's minors as the
+literal field inverse numerator, not merely analogous binary-cubic covariants.
+
+`[FAILED BT3-ADJUGATE-SCALE-DESCENT]` If \(\|\gamma\|\ll p_*\), then
+\(\|\gamma^\#\|\ll p_*^2\).  Applying the same wedge argument to the dual lattice compares
+\(2QS\) with \(p_*^4\), which is weaker, not stronger, than R66.9.  The adjugate gives exact
+duality but no descending induction.
+
+### R66.4 Exact remaining large-gcd statistic
+
+For a balanced coefficient vector \(\gamma\), put
+\[
+ (X_j,Y_j,Z_j)=U^j\gamma.
+ \tag{R66.21}
+\]
+The source lattice conditions imply
+\[
+ Q\mid X_j,Z_j,\qquad S\mid Y_j,Z_j.
+ \tag{R66.22}
+\]
+After primitive content is separated, the remaining product modulus is therefore charged to
+\[
+ \mathfrak G_j(\gamma)
+ :=(X_j,Z_j)(Y_j,Z_j).
+ \tag{R66.23}
+\]
+The exact common-denominator version is even sharper: before balancing,
+\[
+ (x,n)(y,n)=QS=\frac n\omega,
+ \tag{R66.24}
+\]
+and its contribution is exactly (R66.13).
+
+## Conjecture C51 — moving cubic-unit gcd tail
+
+`[CONJECTURE BT3-MOVING-CUBIC-UNIT-GCD-TAIL]` Uniformly for
+\(M^{1/3+\delta}\le R\le M^{3/5+\delta}\), dyadic \(1\le P\le R\), and the
+unit cells arising from (R66.11), prove
+\[
+ R^2
+ \sum_{\substack{c\ll M^2/R,\ n\asymp PR\\
+  |x-\beta cn|\ll n/(MR)\\
+  |y-\vartheta cn|\ll n/(MR)}}
+ \frac{(x,n)(y,n)}{n^2}
+ \ll_\varepsilon RM^\varepsilon,
+ \tag{R66.25}
+\]
+where \(x,y\) are the unique integers in the two microscopic windows and only tuples satisfying
+the reconstruction conditions (R66.12)--(R66.14) are retained.
+
+Equivalently, after unit balancing, prove the corresponding weighted tail for
+\(\mathfrak G_j(\gamma)\) while retaining the exact divisor \(n\asymp PR\) of
+\((U^j\gamma)_3\).  A theorem about two fixed recurrence sequences is insufficient:
+\(\gamma\) moves through a box of side \(P\), and the estimate must be uniform in that moving
+initial vector.
+
+**Falsifier.**  A family of moving primitive initial vectors \(\gamma\), with
+\(\|\gamma\|\ll P\), for which the two coordinate gcds in (R66.23) coherently absorb the
+source modulus and make the sum in (R66.25) exceed \(RM^\varepsilon\).
+
+### R66.5 Literature boundary
+
+Grieve--Wang, *Greatest common divisors with moving targets and consequences for linear
+recurrence sequences* (2021), <https://arxiv.org/abs/1902.09109>, and Xiao,
+*Greatest common divisors for polynomials in almost units and applications to linear recurrence
+sequences* (2023), <https://arxiv.org/abs/2110.01751>, prove qualitative/subspace-theorem gcd
+bounds for moving targets or recurrence sequences under nondegeneracy hypotheses.  They do not
+state the uniform weighted count over all initial vectors of height \(P\) required by R66.25.
+Likewise, the corpus Montgomery sieve assumes one set has few occupied classes for every selected
+modulus; C51 assigns a different modulus to each hit.  None of these results closes C51 without
+a new uniform moving-initial-vector argument.
+
+## Log continuation 61
+
+- 2026-08-27 — divided the coefficient element by the exact source gcd \(\omega\).
+  The balanced projective box has side \(p_*=\omega QS/R\), while both residual moduli satisfy
+  \(Q,S\ge p_*\).  Introducing \(n=\omega QS\) compresses both source windows to the common
+  denominator \(cn\) and recovers \(Q=(x,n)\), \(S=(y,n)\), so the cusp weight is exactly
+  \(R^2(x,n)(y,n)/n^2\).  The pure-cubic adjugate identifies all secondary minors and dualizes
+  the coefficient lattice, but its quadratic height expansion prevents descent.  Remaining
+  core is the moving cubic-unit gcd tail C51.

@@ -37,6 +37,22 @@ theorem milnorSym2_self_add_self (u : Fˣ) :
     milnorSym2 F u u + milnorSym2 F u u = 0 := by
   simpa only [two_nsmul] using milnorSym2_two_nsmul_self F u
 
+theorem milnorSym2_negOne_left_eq_neg (u : Fˣ) :
+    milnorSym2 F (-1) u = -milnorSym2 F (-1) u := by
+  calc
+    milnorSym2 F (-1) u = milnorSym2 F u u := (milnorSym2_self u).symm
+    _ = -milnorSym2 F u u := (neg_milnorSym2_self_eq_self u).symm
+    _ = -milnorSym2 F (-1) u := congrArg Neg.neg (milnorSym2_self u)
+
+theorem milnorSym2_negOne_left_add_self (u : Fˣ) :
+    milnorSym2 F (-1) u + milnorSym2 F (-1) u = 0 := by
+  rw [← milnorSym2_self]
+  exact milnorSym2_self_add_self u
+
+theorem neg_milnorSym2_negOne_left_add_self (u : Fˣ) :
+    -milnorSym2 F (-1) u + -milnorSym2 F (-1) u = 0 := by
+  rw [← neg_add_rev, milnorSym2_negOne_left_add_self, neg_zero]
+
 /-- Relabel determinant-one diagonal coordinates by a permutation. -/
 def fin4PermuteDiagonal (π : Equiv.Perm (Fin 4)) :
     detOneDiagonalUnits F 4 ≃* detOneDiagonalUnits F 4 where
@@ -883,6 +899,123 @@ theorem exists_central_mul_fin4DiagonalLiftProduct (x : MilnorDiagonalExtension 
   rw [hcentral]
   change x = (x * y⁻¹) * y
   group
+
+private def fin4RootRatio (x : MilnorDiagonalExtension F 4) (p q : Fin 4) : Fˣ :=
+  x.diag.1 p * (x.diag.1 q)⁻¹
+
+private def Fin4WeylDeltaProperty {p q : Fin 4} (hpq : p ≠ q)
+    (x : MilnorDiagonalExtension F 4) : Prop :=
+  x * fin4WeylGeneratorAction (F := F) hpq 1 x⁻¹ =
+    fin4MatsumotoDiagonalLift hpq (fin4RootRatio x p q)
+
+private theorem fin4RootRatio_mul (x y : MilnorDiagonalExtension F 4) (p q : Fin 4) :
+    fin4RootRatio (x * y) p q = fin4RootRatio x p q * fin4RootRatio y p q := by
+  rw [fin4RootRatio, diag_mul]
+  change (x.diag.1 p * y.diag.1 p) * (x.diag.1 q * y.diag.1 q)⁻¹ = _
+  simp only [fin4RootRatio, mul_inv_rev]
+  ac_rfl
+
+private theorem fin4WeylDeltaProperty_mul {p q : Fin 4} (hpq : p ≠ q)
+    (x y : MilnorDiagonalExtension F 4)
+    (hx : Fin4WeylDeltaProperty hpq x) (hy : Fin4WeylDeltaProperty hpq y) :
+    Fin4WeylDeltaProperty hpq (x * y) := by
+  let rx := fin4RootRatio x p q
+  let ry := fin4RootRatio y p q
+  unfold Fin4WeylDeltaProperty at hx hy ⊢
+  rw [fin4RootRatio_mul]
+  change (x * y) * fin4WeylGeneratorAction (F := F) hpq 1 (x * y)⁻¹ =
+    fin4MatsumotoDiagonalLift hpq (rx * ry)
+  rw [map_inv, map_mul, mul_inv_rev, ← map_inv, ← map_inv]
+  calc
+    (x * y) *
+          (fin4WeylGeneratorAction (F := F) hpq 1 y⁻¹ *
+            fin4WeylGeneratorAction (F := F) hpq 1 x⁻¹) =
+        (x * (y * fin4WeylGeneratorAction (F := F) hpq 1 y⁻¹) * x⁻¹) *
+          (x * fin4WeylGeneratorAction (F := F) hpq 1 x⁻¹) := by group
+    _ = (x * fin4MatsumotoDiagonalLift hpq ry * x⁻¹) *
+          fin4MatsumotoDiagonalLift hpq rx := by rw [hy, hx]
+    _ = fin4DiagonalAction (F := F) x.diag.1
+          (fin4MatsumotoDiagonalLift hpq ry) *
+          fin4MatsumotoDiagonalLift hpq rx := by
+      rw [fin4DiagonalAction_eq_conj x.diag x _ rfl]
+    _ = fin4MatsumotoDiagonalLift hpq (rx * ry) := by
+      rw [fin4DiagonalAction_matsumotoDiagonalLift]
+      change centralIncl (F := F) (n := 4)
+          (Multiplicative.ofAdd (milnorSym2 F rx ry)) *
+          fin4MatsumotoDiagonalLift hpq ry *
+          fin4MatsumotoDiagonalLift hpq rx = _
+      rw [mul_assoc, fin4MatsumotoDiagonalLift_mul]
+      rw [mul_comm ry rx]
+      apply MilnorDiagonalExtension.ext
+      · simp [rx, ry, mul_comm]
+      · simp only [central_mul, centralIncl_central, centralIncl_diag,
+          diag_mul, milnorDiagonalCocycle_one_left, toAdd_ofAdd]
+        rw [milnorSym2_antisymm]
+        abel
+
+private theorem fin4WeylDeltaProperty_central {p q : Fin 4} (hpq : p ≠ q)
+    (z : Multiplicative (MilnorKDeg F 2)) :
+    Fin4WeylDeltaProperty hpq (centralIncl (F := F) (n := 4) z) := by
+  unfold Fin4WeylDeltaProperty fin4RootRatio
+  rw [map_inv, fin4WeylGeneratorAction_centralIncl]
+  apply MilnorDiagonalExtension.ext
+  · apply Subtype.ext
+    funext k
+    simp [fin4MatsumotoDiagonalLift, fin4MatsumotoDiagonal]
+  · simp [fin4MatsumotoDiagonalLift, milnorSym2_one_left]
+
+set_option maxHeartbeats 2000000 in
+set_option maxRecDepth 10000 in
+private theorem fin4WeylDeltaProperty_canonical {p q : Fin 4} (hpq : p ≠ q)
+    (a : Fin 3) (u : Fˣ) :
+    Fin4WeylDeltaProperty hpq
+      (fin4MatsumotoDiagonalLift (Fin.ne_of_lt a.castSucc_lt_last) u) := by
+  unfold Fin4WeylDeltaProperty fin4RootRatio
+  rw [map_inv, fin4WeylGeneratorAction_matsumotoDiagonalLift]
+  apply MilnorDiagonalExtension.ext
+  · apply Subtype.ext
+    funext s
+    fin_cases a <;> fin_cases p <;> fin_cases q
+    all_goals try { exact (hpq rfl).elim }
+    all_goals fin_cases s <;>
+      simp [fin4MatsumotoDiagonalLift, fin4MatsumotoDiagonal,
+        Equiv.swap_apply_def, steinbergWeylRootScale]
+  · fin_cases a <;> fin_cases p <;> fin_cases q
+    all_goals try { exact (hpq rfl).elim }
+    all_goals simp [central_mul, central_inv, diag_mul, diag_inv,
+      centralIncl_central, centralIncl_diag,
+      fin4MatsumotoDiagonalLift, fin4MatsumotoDiagonal,
+      milnorDiagonalCocycle, steinbergWeylRootScale,
+      Fin.sum_univ_four, Equiv.swap_apply_def,
+      milnorSym2_one_left, milnorSym2_one_right,
+      milnorSym2_self, milnorSym2_mul_left, milnorSym2_mul_right,
+      milnorSym2_inv_left, milnorSym2_inv_right]
+    all_goals have ht := milnorSym2_negOne_left_eq_neg (F := F) u
+    all_goals try exact ht
+    all_goals try exact ht.symm
+    all_goals exact (neg_milnorSym2_negOne_left_add_self (F := F) u).symm
+
+private theorem fin4WeylDeltaProperty_all {p q : Fin 4} (hpq : p ≠ q)
+    (x : MilnorDiagonalExtension F 4) :
+    Fin4WeylDeltaProperty hpq x := by
+  obtain ⟨z, hx⟩ := exists_central_mul_fin4DiagonalLiftProduct x
+  rw [hx]
+  apply fin4WeylDeltaProperty_mul hpq
+  · exact fin4WeylDeltaProperty_central hpq z
+  · unfold fin4DiagonalLiftProduct
+    apply fin4WeylDeltaProperty_mul hpq
+    · apply fin4WeylDeltaProperty_mul hpq
+      · simpa using fin4WeylDeltaProperty_canonical hpq (0 : Fin 3) (x.diag.1 0)
+      · simpa using fin4WeylDeltaProperty_canonical hpq (1 : Fin 3) (x.diag.1 1)
+    · simpa using fin4WeylDeltaProperty_canonical hpq (2 : Fin 3) (x.diag.1 2)
+
+/-- Diagonal half of Milnor Lemma 12.5's second identity.  Conjugating the normalized Weyl
+generator by any element of `H` gives the canonical lift of its root character. -/
+theorem fin4Diagonal_conj_weylGeneratorAction (x : MilnorDiagonalExtension F 4)
+    {p q : Fin 4} (hpq : p ≠ q) :
+    x * fin4WeylGeneratorAction (F := F) hpq 1 x⁻¹ =
+      fin4MatsumotoDiagonalLift hpq (x.diag.1 p * (x.diag.1 q)⁻¹) :=
+  fin4WeylDeltaProperty_all hpq x
 
 /-- Automorphisms of `H` agree when they fix the center and agree on every canonical `hᵢⱼ(u)`. -/
 theorem mulEquiv_eq_of_centralIncl_and_matsumotoDiagonalLift

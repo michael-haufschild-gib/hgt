@@ -537,21 +537,270 @@ No audited source constructs the required second correction.
   injectivity from algebraic simplicial homology into the completed sector after adjoining all
   deleted-divisor residues.  Vertex completion alone is not faithful, as divisors avoiding the
   vertices are invisible there.
-- 2026-08-27 — `[POSITIVE SURVIVOR / TORIC CHARACTER DESCENT]` After a finite cyclotomic extension,
+- 2026-08-27 — `[FALSIFIED / TORIC CHARACTER-SECTION GAP]` After a finite cyclotomic extension,
   the deck group of `q_(d,n)` is `mu_d^(n+1)/mu_d`.  Its rational character decomposition is
   compatible with faces: restriction to face `i` kills a character unless its `i`th exponent is
-  zero.  Semilocal face maps on `K_2^M` are surjective (lift each unit and choose a nonzero value
-  at the added vertex), so inserting a zero exponent and applying the Reynolds projector gives
-  the usual simplex contraction on every nontrivial character-support block.  Hence only the
-  deck-invariant block can contribute to simplicial homology.  Rational ramified descent holds
-  for that block: descend at the generic field by restriction/corestriction, then use Gersten;
-  vanishing of the pulled-back residue implies vanishing downstairs because ramification indices
-  are invertible over `Q`.  Therefore `q_d^*` is surjective as well as split injective on the
-  obstruction homology.
-- 2026-08-27 — `[OPEN CORE / TORIC SOLENOID]` Surjectivity does not finish the proof.  Iterated
+  zero.  This character-support pattern alone does not contract the nontrivial blocks.  Semilocal
+  face maps on `K_2^M` are surjective, but their unit lifts cannot be chosen coherently with all
+  other faces.  An ordinary degeneracy merges two coordinates; projecting its lift to the desired
+  character averages a rational function of their sum and breaks the other simplicial identities.
+  Thus the proposed zero-exponent insertion assumes the missing second coherence.  Rational
+  ramified descent of an already invariant generic class remains valid by restriction/corestriction
+  plus Gersten, but invariance of all homology classes—and hence surjectivity of `q_d^*`—is not
+  proved.
+- 2026-08-27 — `[OPEN CONDITIONAL CORE / TORIC SOLENOID]` Even if coherent character descent were
+  supplied, surjectivity would not finish the proof.  Iterated
   normalized transfer `d^(-n) q_(d,n),*` lowers codimension-one divisor mass by a factor `d`, but
   introduces denominators of order `d^n`; a rational class can therefore survive as an infinitely
   divisible inverse-limit tail.  Independent polynomial-place residues show chain orbits are not
   locally finite representations of the coordinate torus, so finite-character averaging cannot
   be upgraded to a Zariski-torus average.  Required new theorem: exclude this rational toric
   solenoid in degree-three homology while retaining the nonzero degree-one Bloch sector.
+- 2026-08-27 — `[FALSIFIED / BIRATIONAL-EFFECTIVE HEART GAP]` For an abelian variety `A`, the
+  Jacobian form of the primitive obstruction is the degree-three motivic-tensor tail
+  `Tor_3^DM(G_m,A)` (subject only to the displayed shift convention).  Kahn--Sujatha Proposition
+  4.1.3 proves that every positive `Tor_q^DM(G_m,A)` is birational, equivalently has zero
+  contraction.  It does **not** make this sheaf heart-level `1`-effective.  Motivic tensor in
+  `DM^eff` is not the derived tensor product of the homotopy heart, and homotopy truncation need
+  not preserve the effective essential image.  Their Section 3.7 gives the exact warning:
+  projective objects of the heart can still have nonzero motivic homology (for example the
+  `K_3^ind` tail of `Z(2)[2]`), and `D(HI) -> DM^eff` is not full.  Hence the tempting
+  `birational intersect 1-effective = 0` proof assumes precisely the missing connectivity theorem.
+  Positive survivor: the unknown is canonically birational and its contraction vanishes; any
+  successful argument must use extra structure of `A`, not formal effectivity.
+- 2026-08-27 — `[POSITIVE SURVIVOR / EXACT TOR IDENTIFICATION]` With the homological convention
+  `Q(1)[1]=G_m`, motivic duality `A^vee ~= A^t(-1)[-2]` identifies
+
+  `Hom_DM(A,Q(2)) ~= Hom_DM(1,A^t tensor G_m[-3])
+                    ~= Tor_3^DM(G_m,A^t)(k)`.
+
+  The last equality is legitimate on field sections because Kahn--Sujatha Proposition 4.1.3
+  makes the positive Tor sheaf birational, hence Nisnevich-acyclic.  This does not conflict with
+  `nu^(<=0)A=A[0]`: Proposition 4.1.2 computes that localization from `A_(-1)=0`, whereas the
+  displayed group is a positive homology sheaf of `G_m tensor A`.
+- 2026-08-27 — `[FALSIFIED / MULTI-EXCISION THRESHOLD GAP]` A normalized degree-three cycle lies
+  in the kernels of all four coordinate-face restrictions, suggesting a four-ideal multi-relative
+  `K_2` class.  No rational theorem makes the corresponding four-cube 3-connected.  Available
+  Suslin--Wodzicki/Dundas--Kittang/Morrow results give excision for Tor-unital ideals, cyclotomic-
+  trace fibres, or pro-systems; they neither identify the next simplicial boundary with the cube's
+  total fibre nor supply the required connectivity.  Imposing it would be a reformulation of the
+  missing semilocal `H_3` vanishing.  Positive survivor: the corpus theorem `faceComplex_exact`
+  proves this multi-excision only for the additive associated-graded coordinate-face cube.
+- 2026-08-27 — `[FALSIFIED / JACOBIAN CONE-VERTEX OBSTRUCTION]` Writing a primitive higher cycle
+  as a simplex divisor carrying Jacobian-valued zero-cycle data suggests coning the divisor and
+  extending its map to the proper abelian variety.  Blow up the cone vertex: the exceptional
+  divisor is the original support, and the lifted map restricts there to the original Jacobian
+  coefficient.  It descends through the contraction only when that coefficient is constant.
+  Thus proper-target extension across a smooth source does not collapse the singular cone vertex;
+  its descent obstruction is exactly the primitive `Hom_DM(A,Q(2))` class.  Abelian rigidity along
+  rational fibres removes no exceptional-divisor data.
+- 2026-08-27 — `[FALSIFIED / DUALIZABLE-AMPLITUDE CIRCULARITY]` The stable duality
+
+  `M_1(A)^vee ~= M_1(A^t) tensor (Q(1)[1])^(-1)[-1]`
+
+  tempts one to combine one-sided connectivity of `Sigma^infty M_1(A)` and its dual and conclude
+  Tor-amplitude at most one.  The standard rigid-category proof needs the tensor unit in the
+  opposite half of the homotopy `t`-structure: for `Y` sufficiently connective it uses
+  `Hom(Y tensor M_1(A)^vee,1)=0`.  In stable motives the unit is not known to be
+  `t`-coconnective.  Its positive tails include `K_3^ind` and then `K_4^(2)` itself; asserting the
+  needed orthogonality is Beilinson--Soule connectivity.  Thus motivic duality bounds amplitude
+  only relative to the unknown amplitude of the unit and does not prove
+  `Tor_3^DM(G_m,A)=0`.
+- 2026-08-27 — `[FALSIFIED / HERMITIAN LIFT IS NOT VANISHING]` KRS duality places
+  `K_4^(2)` in the `+1` eigenspace of vector-space dualization.  After inverting `2`, Karoubi's
+  hyperbolic and forgetful maps satisfy `F H=1+tau`, so every such class lifts to higher
+  Grothendieck--Witt theory.  Over an algebraically closed field the ordinary Witt groups are
+  torsion, but this kills only the kernel/cokernel measuring the difference between hermitian
+  theory and the `+` eigenspace.  It identifies rational `GW_4` with `K_4^+`; it does not make
+  either group zero.  Therefore hermitian periodicity sharpens the parity classification already
+  in KRS and supplies no annihilator of the weight-two class.
+- 2026-08-27 — `[FALSIFIED / MINIMAL-TRANSCENDENCE SPECIALISATION GAP]` KRS Proposition 10.15
+  turns a minimal-transcendence counterexample into a nonzero Galois representation inside
+  `K_4^(2)(E)` and a nonzero invariant kernel of multiplication by `E^x`.  Divisorial residues
+  lower transcendence, but weight-two classes themselves have zero residues because
+  `K_3^(1)=0`; they are unramified.  Spreading such a class and observing that every closed-fibre
+  specialisation vanishes does not recover the generic class.  A nontrivial `Pic^0` class on a
+  curve is the exact structural countermodel: locally/formally trivial and zero after evaluation
+  at points, yet nonzero as global gluing.  The missing assertion would be specialisation
+  faithfulness for the realization-invisible Jacobian summand, stronger than minimality.
+- 2026-08-27 — `[FALSIFIED / RIGHT 1-MOTIVIC ADJOINT VARIANCE]` Barbieri-Viale--Kahn prove
+  `LAlb_Q ⊣ Tot` and compute `LAlb(Q(2)) = 0`.  This controls maps *from* `Q(2)` to a
+  1-motive.  The primitive obstruction has the opposite variance, `Hom_DM(A,Q(2))`.
+  Their `RPic` is the contravariant Cartier dual of `LAlb`, not a right adjoint to `Tot`, so
+  `RPic(Q(2)) = 0` supplies no factorisation of these maps.  The same source explicitly uses
+  `Z(2)` as the first example where the homotopy `t`-structure does not restrict to geometric
+  level `<= 2`; a right-adjoint argument here would assume the missing level-two truncation.
+- 2026-08-27 — `[FALSIFIED / FPPF EXT--MOTIVIC TOR MISMATCH]` Ribeiro--Rosengarten prove the
+  sheaf vanishing `Ext^2_fppf(A,G_m)=0`, but the Goncharov obstruction is the left-derived
+  motivic tensor group `Tor_3^DM(G_m,A^t)(k)`.  Turning the former into the latter would require
+  the abelian sheaf `A` to be perfect/dualizable in the fppf derived category and comparison to
+  preserve the motivic transfer tensor product.  Neither holds; their paper notes that
+  `Ext^3_fppf(A,G_m)` can be nonzero.  Thus Barsotti--Weil removes a 2-extension sheaf, not the
+  birational motivic Tor tail.
+- 2026-08-27 — `[OPEN CONJECTURE / COVECTOR NORMALISATION CONTRACTION]` KRS's projective
+  resolution gives an exact chain-level reformulation not used in their degree-two analysis.
+  For `V=F^2`, replace formal correlators by formal iterated integrals and take `GL(V)`
+  coinvariants.  Degree `k` is generated by oriented symbols
+  `[h_1|...|h_k] tensor FI[v_1,v_2]`, and after normalising `(v_1,v_2)` it is a tuple of nonzero
+  covectors in `F^2`, modulo the transposition sign.  All faces except the last delete one
+  covector.  The last applies the explicit three-term operator
+
+  `D_h FI[v_1,v_2] = FI[v_1/h(v_1),v_2/h(v_2)]
+     - FI[v_1/h(v_1),(v_2-v_1)/h(v_2-v_1)]
+     + FI[v_2/h(v_2),(v_2-v_1)/h(v_2-v_1)]`,
+
+  omitting zero denominators.  Each output basis makes the deleted `h` equal to `(1,1)`.
+  Consequently every basis has a canonical covector `c=(1,1)` with `D_c=id`, while
+  `D_a D_b=D_a`.  Proposed hard lemma: corrected insertion of `c`, with a two-step correction
+  for `id-D_{h_k}`, contracts the coinvariant complex in degrees `>=2` but leaves degree-one
+  Bloch homology.  Proving this exact identity is equivalent to `H_2(PGL_2;St^infty_2)=0`; no
+  unproved geometric input is hidden, and failure can be exposed by an explicit residual term.
+- 2026-08-27 — `[FALSIFIED / VARIABLE-BASEPOINT RESIDUAL]` Let `c_B` be the unique covector
+  taking value `1` on both vectors of an oriented basis `B`.  Prepending `c_B` gives the expected
+  simplex contraction except for
+
+  `(-1)^k ([h_k|h_1|...|h_(k-1)]-[c_B|h_1|...|h_(k-1)]) tensor D_(h_k)B`.
+
+  A second insertion converts this to a coefficient `(D_b-D_a)FI[v_1,v_2]`.  Every
+  decomposition operator kills that coefficient because `D_rD_s=D_r`, but it need not vanish:
+  it lies in the relation module whose degree-one coinvariants produce the Bloch group.  Thus
+  canonical normalisation reduces the conjecture to common-kernel syzygies; it does not contract
+  them.  Declaring this residual zero would assume the desired degree-two exactness.
+- 2026-08-27 — `[POSITIVE SURVIVOR / EXTERIOR-STEINBERG REDUCTION]` Put
+  `P=Q[P^1(F)]` and `I=ker(P->Q)=St_2(F)`.  In rank two,
+  `St_2^double=I tensor I`; a rank-one direct-sum decomposition contributes
+  `(e_x-e_y) tensor (e_x-e_y)`.  These squares span `Sym^2 I` (polarise relative to one
+  basepoint), hence
+
+  `St_2^infinity ~= exterior^2 I`.
+
+  The exact sequence `0 -> exterior^2 I -> exterior^2 P -> I -> 0` identifies
+  `exterior^2 P` with `Ind_(N(T))^(PGL_2) sgn`.  Since inversion acts by `(-1)^q` on
+  `H_q(T;Q)` and the Weyl element acts by `-1` on `sgn`,
+  `H_2(N(T);sgn)=0`.  Therefore the universal obstruction has the sharper form
+
+  `K_4^(2)(F)_Q ~= coker(H_3(N(T);sgn) -> H_3(PGL_2(F);St_2(F)))`.
+
+  Existing Steinberg-coefficient vanishing starts in higher semisimple rank and does not prove
+  this rank-one surjectivity.  This reformulation isolates the missing statement as generation of
+  `H_3(PGL_2;St_2)` by oriented torus-normaliser apartments.
+- 2026-08-27 — `[FALSIFIED / HOPF NILPOTENCE NEEDS KUNNETH FAITHFULNESS]` Kimura oddness gives
+  `Sym^(2g+1) M_1(A)=0`; hence a primitive `f:M_1(A)->Q(2)` defines a nilpotent primitive
+  motivic-cohomology class on `A`.  The corpus theorem
+  `eq_zero_of_isNilpotent_of_primitive` would kill it in an ordinary characteristic-zero Hopf
+  algebra.  Motivic cohomology is not such a Hopf algebra: multiplication pullback lands in
+  `H(A x A)`, and external product `H(A) tensor H(A)->H(A x A)` is not faithful.  A nonzero
+  `Pic^0` divisor on an elliptic curve is already a nilpotent primitive Chow class.  Thus the
+  missing Kunneth injectivity is a smash-nilpotence obstruction, not a formal consequence of
+  Kimura finite-dimensionality.
+- 2026-08-27 — `[FALSIFIED / VERONESE RANK AMPLIFICATION HAS NO INJECTIVITY]` For
+  `N = m+1 congruent to 2 or 3 mod 4`, the weight-basis apartment of `Sym^m(F^2)` transforms
+  by the sign character of the torus normaliser.  Frobenius reciprocity therefore gives a
+  `PGL_2`-equivariant map `exterior^2 St_2 -> Res St_N`, and `Sym^m` gives a group map
+  `PGL_2 -> GL_N`.  Miller--Patzt--Putman prove `H_2(GL_N;St_N)=0` for `N >= 6`.
+  The induced map on homology has no reason to be injective: the subgroup has infinite index,
+  there is no transfer or building retraction, and stabilization is designed to kill unstable
+  rank-two relations.  Joint Vandermonde separation detects apartment generators, not bar
+  boundaries created by the larger group.  Thus target vanishing cannot be pulled back.
+- 2026-08-27 — `[FALSIFIED / MOTIVIC HARD LEFSCHETZ RETURNS THE SAME CORE]` Sugiyama's Fourier
+  form `CH^(g+1)(A^t,4)_(2g-1)` lies on the unconditional motivic hard-Lefschetz string
+  `h^(2g-1)(A^t) ~= h^1(A^t)(g-1)`.  Applying the inverse Lefschetz operator sends it exactly
+  back to `CH^2(A^t,4)_(1) = Hom(M_1(A^t),Q(2))`; it does not reach the known codimension-one
+  vanishing `CH^1(-,n>=2)=0`.  Lefschetz symmetry repackages rather than lowers the obstruction.
+- 2026-08-27 — `[POSITIVE SURVIVOR / RELATIVE-HOMOLOGY NORMAL FORM]` Let `F` be algebraically
+  closed, `G=PGL_2(F)`, `B` the point stabiliser, `T` the diagonal torus, and `N=N_G(T)`.
+  Rationally `H_*(B) ~= H_*(T)`: in positive characteristic the unipotent radical is torsion,
+  while in characteristic zero a torus homothety kills every positive unipotent-homology row.
+  The Weyl involution acts by `(-1)^q` on `H_q(T;Q)`.  Hence the inclusion
+  `H_3(B;Q) -> H_3(G;Q)` is zero: conjugation by the Weyl element is inner on `G` but is `-1`
+  on `H_3(T;Q)`.
+
+  Apply group homology first to `0 -> I -> Q[P^1(F)] -> Q -> 0` and then to
+  `0 -> exterior^2 I -> exterior^2 Q[P^1(F)] -> I -> 0`.  Shapiro identifies the permutation
+  terms with `B` and `(N,sgn)`.  The composite
+
+  `H_3(N;sgn) -> H_3(G;I) -> H_3(B;Q)`
+
+  is the two Weyl faces `1-w`; it is multiplication by `2` up to sign on
+  `H_3(T;Q)=exterior^3 F^x_Q`.  Since `H_2(N;sgn)=0`, the normaliser image is a complement to
+  `ker(H_3(G;I)->H_3(B))`.  Exactness therefore sharpens the exterior-Steinberg reduction to
+
+  `K_4^(2)(F)_Q ~= coker(H_4(B;Q) -> H_4(PGL_2(F);Q))`.
+
+  Thus oriented normaliser apartments generate exactly the Borel summand.  Their missing
+  surjectivity is not a new route: it is equivalent to saying every unstable rational
+  four-cycle of `PGL_2(F)` is represented in its Borel subgroup.
+- 2026-08-27 — `[POSITIVE SURVIVOR / FIVE--SIX-POINT CHAIN MODEL]` The exterior Koszul
+  complex of the augmentation `Q[P^1(F)] -> Q` gives a projective rational `G`-resolution
+
+  `... -> exterior^6 P -> exterior^5 P -> exterior^4 P -> exterior^3 P
+       -> exterior^2 I -> 0`.
+
+  For exterior degree at least three every stabiliser is finite, so the terms are projective
+  over `Q[G]`.  Consequently
+
+  `H_2(G;exterior^2 I)
+     = ker((exterior^5 P)_G -> (exterior^4 P)_G)
+         / im((exterior^6 P)_G -> (exterior^5 P)_G)`.
+
+  Four-point orbits are cross-ratios, five-point boundaries are the five-term relations, and
+  six-point boundaries are their first syzygies.  This is an exact presentation of the open
+  core, with no motivic comparison left inside it.
+- 2026-08-27 — `[FALSIFIED / OPERADIC KOSZULITY PRECEDES DERIVED COINVARIANTS]` Koszulity of
+  the Steinberg algebra and boundary-stratum identities on `M_(0,n)` prove exactness of the
+  configuration resolution as a `G`-module.  The desired group appears only after applying
+  non-exact `G`-coinvariants.  Six-point/associahedral identities describe the image already
+  present in the displayed complex; they do not prove that every field-valued rational
+  combination of five-point cycles lies in that image.  Existing polylogarithmic presentations
+  that identify all higher functional equations impose Beilinson--Soule vanishing at this step.
+- 2026-08-27 — `[FALSIFIED / COVARIANT INSERTION LACKS FACE COMPATIBILITY]` A binary-quintic
+  linear covariant supplies a canonical extra point on a generic five-point orbit, but an
+  insertion homotopy needs the stronger identities `q(S)=q(S minus {x})` on every face.
+  Deleting a root changes the covariant, so `d s+s d` contains the differences between these
+  inserted points.  Stratifying the vanishing/collision locus does not remove this generic
+  mismatch.  It is the same transition-matrix two-cocycle found by first-basis and
+  variable-covector normalisation.
+- 2026-08-27 — `[FALSIFIED / LOCAL HOLLOW-SIMPLEX DETECTOR DOES NOT DESCEND]` Corpus theorem
+  `srHollowSimplexSyzygyVec_boundary_iff` says that a single oriented hollow-simplex syzygy is a
+  boundary exactly when its coefficient sum is zero.  This cannot be applied blockwise after
+  `PGL_2`-coinvariants: there is no coherent orientation or augmentation on all configuration
+  orbits and their faces.  Choosing orientations orbit by orbit inserts transition signs; their
+  incompatibility is precisely the twisted five-point cycle.  A filtration whose graded blocks
+  are hollow simplices would solve the conjecture only if it also trivialised this orientation
+  local system, which is the original `H_2(G;exterior^2 I)` obligation.
+- 2026-08-27 — `[FALSIFIED / RANK AND PRODUCT AMPLIFICATION]` Neither symmetric-power embedding
+  `PGL_2 -> GL_N` nor multiplication by transcendental units supplies a retraction.  The former
+  has infinite index and high-rank Steinberg boundaries can kill genuine unstable rank-two
+  classes.  For the latter, residue left-inverts `alpha |-> alpha*{t}`, but a vertical class may
+  specialise to zero on every constant fibre; adding variables merely reproduces the
+  localisation sequence.  Both constructions transport the obstruction without detecting it.
+- 2026-08-27 — `[OPEN CORE / UNSTABLE BOREL GENERATION]` Prove for every algebraically closed
+  field `F` that
+
+  `H_4(B(F);Q) -> H_4(PGL_2(F);Q)`
+
+  is surjective.  Equivalently, construct a face-compatible contraction of the oriented
+  five-/six-point configuration complex.  Current corpus provides the local hollow-simplex
+  boundary classification and higher-rank Steinberg vanishing, but neither supplies the global
+  orientation descent or a rank-two homological retraction.
+- 2026-08-27 — `[FALSIFIED / VALUATION DESCENT SEES ONLY AUTOMATIC UNRAMIFIEDNESS]` A
+  Bruhat--Tits tree or Laurent-series fundamental theorem lowers a completed weight-two class to
+  the residue field because the possible residue summand is `K_3^(1)=0`.  But every
+  `K_4^(2)` class is already unramified at every divisorial valuation.  Passing from a function
+  field to one or all completions is not known to be injective on this primitive summand; such
+  injectivity would exclude the same Jacobian-valued global gluing that defeats point
+  specialisation.  Local tree decompositions therefore recover the zero residues, not the class.
+- 2026-08-27 — `[FALSIFIED / FACE RECONSTRUCTION LOSES CORRELATIONS]` Classical binary-quintic
+  invariant theory reconstructs an individual unordered five-point configuration from the
+  collection of its five four-point subconfigurations.  The boundary map does not retain that
+  collection: it sends a rational packet of five-configurations to the signed first marginal of
+  all faces.  Distinct packets can have cancelling marginals, and six-point boundaries already
+  give such cancellations.  Nonlinear support reconstruction therefore neither proves
+  injectivity nor identifies the kernel of the linear incidence map.
+- 2026-08-27 — `[FALSIFIED / FINITE-COEFFICIENT RIGIDITY MISSES THE RATIONAL DEFECT]`
+  Friedlander--Milnor comparison and low-rank stability results over algebraically closed fields
+  control homology with finite coefficients.  The target `K_4^(2)(F)_Q` is a rational vector
+  space and hence uniquely divisible; reduction modulo every integer is zero whether or not the
+  group itself vanishes.  Divisibility or finite-coefficient comparison cannot imply the needed
+  rational Borel-generation theorem without an independent finite-generation/boundedness input,
+  which is false or unavailable for these discrete groups.
