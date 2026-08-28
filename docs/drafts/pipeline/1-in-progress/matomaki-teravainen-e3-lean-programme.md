@@ -1813,3 +1813,121 @@ boundary where `q₁q₂⁴ < X^(1-2ε)` changes inside one cell. Both must be s
 discharged with the existing divisor-weighted prime-pair/window bounds before assembling the full
 minorant decomposition and its supported `L²` error. Count, subset selection, and all scale
 inequalities are closed.
+
+### M5b, brick 23 — exact Harman rectangularization and literal error bounds (2026-08-27)
+
+The fourth-term rectangularization core is closed without weakening source predicates. Exact
+active pair and triple cells partition the uniformly good source tuples; disjoint prime blocks make
+every pair/triple cell coefficient unique and uniformly bounded by one. Applying the repaired
+Lemma 2.3(ii) cellwise gives an exact terminal expansion with per-cell mean square
+`15Y(log X)^(-2A)`.
+
+The exposed source sums are definitionally reindexed back to Harman's original terms:
+
+```text
+mtHarmanAdmissiblePairSiftSum (primesIco z D) E z n = harmanS2 z D E n,
+mtHarmanAdmissibleTripleSiftSum (primesIco z D) E z n = harmanS3 z D E n.
+```
+
+Every excluded pair is either a strict same-cell collision or lies in the exact threshold-boundary
+fibre. Every excluded triple is one of the two strict same-cell collisions or lies in the same
+pair-threshold fibre. Literal complex errors are bounded by their exact bad-tuple counts. Bad pairs
+inject into `divisors(n)^2`; bad triples inject into `divisors(n)^3`, while the extra prime above a
+counted obstruction costs at most one further divisor. Consequently the pointwise squared errors
+are absorbed by the existing weighted majorants at `K=2` and `K=4`. Their paper-aligned means are
+therefore bounded by the already-proved exact costs
+
+```text
+4^2 Y (1+log Y)^3  (66 δ_A) ∑_{p in P} 1/p,
+4^4 Y (1+log Y)^15 (68 δ_A) ∑_{p in P} 1/p.
+```
+
+New compiled leaves are `MatomakiTeravainenHarmanCellIteration.lean`,
+`MatomakiTeravainenHarmanRectangularSums.lean`, and
+`MatomakiTeravainenHarmanNonrectangularErrors.lean`.
+
+Open Proposition 2.2 core: exact outer adic partition of the base, one-prime, pair, and triple
+terms; package all terminal expansions as literal Type I, Type I/II, and Type II pieces; aggregate
+the finite family errors inside the proposition's `exp((log log X)^5)` count budget; prove final
+support `(Y/4,8Y]` and `Y(log X)^(-A)` mean square; wire the capstone and promote only after this
+dependency closes.
+
+### M5b, brick 24 — unconditional literal Proposition 2.2 assembly (2026-08-28)
+
+The remaining Proposition 2.2 obligations are closed. Exact outer adic partitions for the base,
+one-prime, pair, and triple terms feed the repaired grid-free terminal expansion. Compression
+removes only padded empty one-prime blocks and preserves the retained main exactly. Every retained
+index is classified at the literal real thresholds as Type I, Type I/II, or Type II; the Type-II
+chain-length obligation now follows intrinsically from its selected prime product rather than an
+impossible global recursion-depth bound.
+
+Added the paper-parameter side-condition package and capstone in
+`Sieve/MatomakiTeravainenProposition22PaperConditions.lean` and
+`Sieve/MatomakiTeravainenProposition22PaperAssembly.lean`. For `A ≥ 5`,
+`0 < epsilon ≤ 1/100`, all sufficiently large `X`, and every natural `Y` with
+
+```text
+X^(1-epsilon/100) < Y ≤ X/2,
+```
+
+`eventually_nonempty_mtProposition22Decomposition` constructs an exact finite decomposition with
+
+```text
+rhoMinus-source = sum of Proposition-2.2 pieces + c,
+#pieces ≤ exp((log log X)^5),
+support(c) ⊆ (Y/4,8Y],
+sum_{1≤n≤8Y} |c(n)|^2
+  ≤ (92224 * 5^35 + 7232) Y (log X)^(-A).
+```
+
+Natural cutoffs are the ceilings of the paper's literal real powers; no open input, added premise,
+axiom, `sorry`, or computational certificate is used. Proposition 2.2 bookkeeping is therefore
+dependency-closed in Lean. Programme remains in progress because the later analytic route from
+Proposition 2.2 to the all-interval `E3` theorem still has separate obligations.
+
+### M6, brick 25 — finite one-spaced Type-II assembly (2026-08-28)
+
+The three Proposition 4.2 amplitude regimes now assemble unconditionally for every finite
+one-spaced frequency set. The new capstone
+`exists_matomakiTeravainen_typeII_proposition42_huxley` combines the exact large-amplitude `T1`
+energy bound, Huxley's middle-amplitude `T2` saving, and the tiny-amplitude `T3` saving through the
+overlap-safe partition theorem. Under the explicit dyadic product window and
+`sigma0 + eta + epsilon^2/20 <= 7/32 - 5 epsilon`, it proves
+
+```text
+sum_{t in S} |M1(1+it)|^2 |M2(1+it)|^2
+  <= 16384 B1^2 (1+|log T|) C2^2
+       (2(1+|log T|))^(2^(2(w2+1))-1)
+     + T^(-epsilon^2/20) + T^(-1/2).
+```
+
+This is the dependency-closed finite Huxley-strength core, not the paper's literal measurable-set
+Proposition 4.2. Two obligations remain distinct: the paper uses Jutila's sharper large-values
+input, and its reduction from an arbitrary measurable `U subset [0,T]` to one-spaced samples needs
+a restricted-set discretisation theorem. Corpus `exists_spaced_families_integral_le` applies only
+to a continuous integrand on a full interval, so it cannot be used on `U.indicator F` without a
+new measurable-set argument. No measurable conclusion is claimed.
+
+### M2, brick 26 — exact pointwise two-window Perron comparison (2026-08-28)
+
+Added `Sieve/MatomakiTeravainenLemma31PerronComparison.lean`. For natural left endpoint `A`, short
+width `H`, reference width `H1`, coefficient cutoff `M`, and Perron height `T`, the theorem
+`norm_perronWindowSum_compare_sub_integral_le` proves exactly
+
+```text
+windowSum(A,H) - (H/H1) windowSum(A,H1)
+  = (1/(2*pi)) integral_{-T}^{T}
+      perronPoly(1+it) perronCompareKernel(A+1/2,H,H1,t) dt
+    + endpoint error,
+```
+
+with the endpoint error bounded by the sum of the two short-window Perron errors plus `H/H1`
+times the two long-window Perron errors. The kernel identity is literal at base `A+1/2`; no
+asymptotic notation, floor suppression, or cancellation premise is hidden. Existing
+`norm_perronCompareKernel_le_min3` and `integral_mixed_moment_windowCompare_le` can now consume the
+integral without another algebraic bridge.
+
+This closes the pointwise Perron bookkeeping seam, not all of Lemma 3.1. Remaining work is the
+continuous `x`-variance integration: align real window endpoints with the natural half-integer
+windows, identify the coefficient polynomial with `P1(s)P(s)`, integrate the explicit endpoint
+errors, and insert the assumed mixed mean-square bound. No variance conclusion is claimed yet.

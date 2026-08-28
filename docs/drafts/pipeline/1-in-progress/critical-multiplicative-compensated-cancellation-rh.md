@@ -8078,3 +8078,1169 @@ unit--double/completed estimates `(AC138)--(AC139)`, and no corresponding two-si
 Verdict: `[PROVED NO-GO — FIXED-WIDTH TRANSLATION ONLY SAMPLES A COMPACT SEAM-FREQUENCY BAND;
 REFINEMENT AND FULLY COMPLETED PHYSICAL ENDPOINT ENERGIES ARE UNCONDITIONALLY ABSOLUTELY BOUNDED,
 SO BARE COFINAL UPPER/LOWER BOUNDEDNESS HAS NO RH STRENGTH]`.
+
+## Conjecture loop 84 — corrected-prime finite killer-packet duality
+
+### Failed positivity decomposition `[CORRECTED PRIME CONTOUR MAY BE POSITIVE ENERGY PLUS BOUNDED ERROR]`
+
+Corpus search immediately kills this proposal: false RH already forces complete physical
+theta--Abel Weil energy cofinally unbounded below, while the established remainder is uniformly
+summable. The serious second pass instead extracts a finite obstruction stable under every
+admissible contour enlargement.
+
+For any absolutely summable complex family `f`, Lean proves
+
+```text
+Re(tsum f)<B
+ -> exists finite t, forall finite u containing t,
+      Re(sum_(x in u) f(x))<B.                               (AC141)
+```
+
+Define a corrected-prime killer packet `t` at scale `a` and floor `B` by requiring that **every**
+admissible pole-crossing rectangle `R` containing `t` obey
+
+```text
+Re(CorrectedPrimeContour(L,A,c,a;R))<B.                      (AC142)
+```
+
+Absolute summability of the physical two-edge zero-square family, `(AC141)`, the exact rectangle
+residue theorem, and the pole-crossing source/corrected-prime identity give
+
+```text
+Re(complete physical theta-Abel Weil energy at a)<B
+ -> exists corrected-prime killer packet at (a,B).           (AC143)
+```
+
+The established false-RH instability now yields, for every `L,A,c>0`,
+
+```text
+not RH -> for every B,N0, exists n>=N0 with L<log(n)/2
+          carrying a killer packet at scale log(n)/2.        (AC144)
+```
+
+Conversely, RH supplies one eventual packet-stable corrected-prime lower floor: for every
+proposed packet at every late scale there is an admissible enclosing rectangle at or above that
+floor. Applying a killer packet at the same floor gives a contradiction. Therefore Lean proves
+
+```text
+[cofinally, below every floor, corrected-prime killer packets exist]
+  <-> not RH.                                                 (AC145)
+```
+
+A closed premise-free unit specialization is included.
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeApertureThetaAbelEnergyPrimeKillerPacket.lean`.
+Direct source check, targeted `11806/11806` build, standard-axiom audit, and umbrella wiring pass.
+Global lint reaches the module but is blocked by seven unrelated concurrently edited unwired
+Sieve/HTGeometry modules.
+
+No-go closure: adaptive rectangle choice is no longer a possible escape from false-RH
+instability. Off-critical behavior produces a finite zero core that poisons every admissible
+enclosing corrected-prime contour, not merely one selected exhaustion rectangle. Strongest
+positive survivor is the general persistent finite-core law `(AC141)` and its exact prime-contour
+transfer `(AC143)--(AC145)`. Remaining burden is to exclude these killer packets directly from the
+prime side, equivalently prove the packet-stable lower floor `(AC127)`; this remains RH-strength.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-27]`: Connes--Consani semilocal positivity,
+Connes--van Suijlekom finite-interval lower-bounded forms, Connes--Consani--Moscovici finite-prime
+spectral triples, Suzuki screw-function finite-interval operators, and Chuk compact-window
+positivity do not state an every-enclosing-rectangle finite copied-zero obstruction for a literal
+corrected-prime contour. Corpus and current-literature searches found no `(AC141)--(AC145)`
+synthesis. Candidate-new content is restricted to this route-specific unconditional formal
+duality.
+
+Verdict: `[PROVED — FAILURE OF RH IS EQUIVALENT TO COFINALLY PERSISTENT FINITE KILLER PACKETS:
+BELOW EVERY FLOOR, ONE FINITE ZERO CORE FORCES EVERY ADMISSIBLE ENCLOSING CORRECTED-PRIME CONTOUR
+LOW, SO RECTANGLE SELECTION CANNOT EVADE THE OFF-CRITICAL OBSTRUCTION]`.
+
+## Conjecture loop 85 — canonical-radius killer tails
+
+Loop 84 still permits an arbitrary finite killer packet. Corpus search exposes a deterministic
+replacement: the canonical copied-zero packets `P_m` in centered boxes `[-m,m] × [-1,1]` are
+cofinal. Lean adds the missing monotonicity laws
+
+```text
+m<=k -> P_m subset P_k,                                     (AC146)
+t killer and t subset u -> u killer.                         (AC147)
+```
+
+Consequently, for each fixed physical scale and floor,
+
+```text
+[exists an arbitrary finite killer packet]
+  <-> [exists m0, every canonical P_m with m>=m0 is killer]. (AC148)
+```
+
+In particular, a strict complete-Weil upper bound forces not one canonical obstruction but an
+entire radius tail. Combining `(AC145)` and `(AC148)`, Lean proves for every `L,A,c>0`
+
+```text
+[for every B,N0, some n>=N0 with L<log(n)/2 has an m0
+ such that every canonical P_m, m>=m0, forces every admissible
+ enclosing corrected-prime contour below B]
+  <-> not RH.                                                 (AC149)
+```
+
+The unit-parameter specialization is closed and premise-free.
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeApertureThetaAbelEnergyPrimeCanonicalKillerTail.lean`.
+Direct source check, targeted `11807/11807` build, standard-axiom audit, and umbrella wiring pass.
+Global lint reaches the wired module but is blocked by unrelated concurrently edited unwired
+RHTower/HTGeometry modules.
+
+Route impact: arbitrary packet choice is fully eliminated. Under false RH, one fixed symmetric
+geometric exhaustion is eventually hostile at each bad scale/floor; every sufficiently large
+canonical radius poisons every admissible enclosing corrected-prime contour. Strongest positive
+survivor is the scale-local upward-closed classification `(AC148)`. Remaining RH burden is to rule
+out the canonical tail directly from the prime side, equivalently find one sufficiently large
+canonical radius admitting a contour above a uniform eventual floor.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-27]`: current semilocal Weil, finite-interval,
+finite-prime spectral, screw-function, compact-window, and zero-exhaustion literature does not state
+the deterministic centered-box tail obstruction `(AC148)--(AC149)` for every enclosing literal
+corrected-prime contour. Candidate-new content is restricted to this exact route-specific formal
+synthesis.
+
+Verdict: `[PROVED — FAILURE OF RH IS EQUIVALENT TO COFINALLY HOSTILE CANONICAL-RADIUS TAILS; AT
+EACH BAD SCALE AND FLOOR, EVERY SUFFICIENTLY LARGE CENTERED XI BOX FORCES EVERY ADMISSIBLE ENCLOSING
+CORRECTED-PRIME CONTOUR LOW]`.
+
+## Conjecture loop 86 — fixed canonical selected corrected-prime array
+
+Loop 85 removes arbitrary packet choice but retains universal quantification over admissible
+enclosing rectangles. Corpus search exposes a uniform selector: at every scale `a` and canonical
+radius `m`, the pole-crossing approximation theorem supplies an admissible rectangle containing
+`P_m` whose normalized source lies within one unit of complete Weil energy. Fix one such rectangle
+once and for all and write its corrected-prime value as `S(L,A,c,a,m)`. Exact residue transfer gives
+
+```text
+dist(S(L,A,c,a,m), CompleteWeilEnergy(L,A,c,a)) < 1.         (AC150)
+```
+
+RH positivity therefore implies the pointwise array floor
+
+```text
+-1 < Re(S(L,A,c,a,m)) for every a,m.                        (AC151)
+```
+
+If RH is false, choose complete energy below `B-1`. Since `(AC150)` is uniform in radius, Lean
+proves the simultaneous collapse
+
+```text
+for every B,N0, exists n>=N0 with L<log(n)/2 such that
+  for every m, Re(S(L,A,c,log(n)/2,m))<B.                   (AC152)
+```
+
+Thus, for every `L,A,c>0`,
+
+```text
+[the one fixed selected array is eventually bounded below] <-> RH,       (AC153)
+[the one fixed selected array has all-radius cofinal collapse] <-> not RH. (AC154)
+```
+
+Closed unit-parameter forms are included.
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeApertureThetaAbelEnergyPrimeCanonicalSelectedContour.lean`.
+Direct source check, targeted `11808/11808` build, standard-axiom audit, and umbrella wiring pass.
+Global lint reaches the wired module but remains blocked by unrelated concurrently edited unwired
+RHTower/HTGeometry modules.
+
+Route impact: both finite-packet and contour witnesses disappear from the final statement; a single
+fixed two-parameter corrected-prime array detects RH. False RH is stronger than canonical-tail
+hostility: every radius collapses at one common late scale. Limitation: the fixed selector is
+noncomputable and inherits zero-side approximation provenance. Remaining burden is a constructive
+prime-defined rectangle schedule or a direct arithmetic lower floor for this selected array.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-27]`: current semilocal Weil,
+finite-prime/finite-interval spectral, compact-window, and classical contour literature does not
+state uniform unit approximation `(AC150)`, simultaneous all-radius collapse `(AC152)`, or the
+fixed corrected-prime array criteria `(AC153)--(AC154)`. Candidate-new content is restricted to
+this exact route-specific formal synthesis.
+
+Verdict: `[PROVED — ONE FIXED CANONICAL SELECTED CORRECTED-PRIME CONTOUR ARRAY IS EVENTUALLY
+BOUNDED BELOW EXACTLY UNDER RH; FAILURE OF RH DRIVES EVERY CANONICAL RADIUS BELOW EVERY FLOOR AT
+COMMON COFINALLY LATE SCALES]`.
+
+## Conjecture loop 87 — vanishing-error corrected-prime limit
+
+Loop 86 fixes contour witnesses but retains unit approximation error. Corpus search shows the
+packet-containing pole-crossing selector accepts arbitrary positive accuracy. Select the radius-`m`
+rectangle with error `1/(m+1)`. For its corrected-prime value `C_m`, exact residue transfer gives
+
+```text
+dist(C_m, CompleteWeilEnergy(L,A,c,a)) < 1/(m+1).            (AC155)
+```
+
+Therefore Lean proves the exact contour limit
+
+```text
+C_m -> CompleteWeilEnergy(L,A,c,a).                          (AC156)
+```
+
+On the same rectangles let `P_m^raw` be the normalized literal continued-prime contour. Since
+corrected prime equals raw prime plus the explicit centered archimedean residue square,
+
+```text
+P_m^raw -> CompleteWeilEnergy(L,A,c,a)
+           -[exp(a/2) 2(1-exp(-L/2)) c A]^2.                (AC157)
+```
+
+At logarithmic samples define the sharp asymptotic floor by
+
+```text
+for every admissible n and every ε>0,
+  eventually in m, -ε < Re(C_m).                             (AC158)
+```
+
+Real-part continuity, `(AC156)`, and physical logarithmic-mesh completeness yield
+
+```text
+(AC158) <-> RH                                                (AC159)
+```
+
+for every `L,A,c>0`, plus a closed unit specialization.
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeApertureThetaAbelEnergyPrimeCanonicalVanishingLimit.lean`.
+Direct source check, targeted `11809/11809` build, standard-axiom audit, and umbrella wiring pass.
+Global lint reaches the wired module but remains blocked by unrelated concurrently edited unwired
+RHTower/HTGeometry modules.
+
+Route impact: contour convergence is fully closed. Complete physical Weil energy is an exact limit
+of corrected literal prime contours, while the raw prime limit differs by exactly one elementary
+square. The fixed `-1` floor sharpens to the zero floor through every negative epsilon. Selector is
+still noncomputable and zero-side-derived; remaining arithmetic burden is direct proof of `(AC158)`
+for prime flux, preferably along an explicit prime-defined admissible schedule.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-27]`: Groskin's 2026 finite Guinand--Weil
+dictionary proves exact finite Galerkin zero sums and a positive omitted archimedean tail; current
+semilocal, screw-function, compact-window, and spectral-truncation literature does not state the
+physical pole-crossing corrected/raw prime limits `(AC156)--(AC157)` or epsilon-floor equivalence
+`(AC159)`. Candidate-new content is restricted to this exact route-specific formal synthesis.
+
+Verdict: `[PROVED — CANONICALLY SELECTED CORRECTED PRIME-FLUX CONTOURS CONVERGE EXACTLY TO COMPLETE
+PHYSICAL WEIL ENERGY; RAW PRIME CONTOURS CONVERGE TO THAT ENERGY MINUS ONE EXPLICIT ARCHIMEDEAN
+SQUARE, AND ASYMPTOTIC ZERO-FLOOR NONNEGATIVITY IS EQUIVALENT TO RH]`.
+
+## Conjecture loop 88 — universal least-coded arithmetic contour exhaustion
+
+Loop 87's exact limit still selects each rectangle from a copied-zero packet and its target Weil
+energy. Corpus search supports a stronger selector. Enumerate `ℚ²`; at stage `m`, admit `(R,c)` when
+
+```text
+m+1 < R,
+1/2 - 1/(m+2) < c < 1/2,
+the boundary of [-R,R] × [-1,c] is Xi-explicit-formula admissible.   (AC160)
+```
+
+Finite zero avoidance and rational density prove `(AC160)` inhabited. Lean fixes the least natural-
+number code, making one rational rectangle sequence depending only on geometric stage and boundary
+admissibility. It contains no prescribed zero packet, physical detector, or Weil target, and its
+code is minimal among all admitted rational-pair codes:
+
+```text
+Stage(m,decode N) -> leastCode(m) <= N.                     (AC161)
+```
+
+The selected horizontal radii escape to infinity and their top heights approach `1/2` from below.
+Since every centered Xi point lies in `(-1/2,1/2)` and the bottom is fixed at `-1`, Lean proves
+
+```text
+for every finite t : Finset XiZeroCopy,
+  eventually t is contained in the selected rectangle.     (AC162)
+```
+
+Thus one universal arithmetic sequence works for every physical detector. For `A,c>0`,
+
+```text
+CorrectedPrime_m(L,A,c,a) -> CompleteWeilEnergy(L,A,c,a),   (AC163)
+
+RawPrime_m(L,A,c,a) -> CompleteWeilEnergy(L,A,c,a)
+  -[exp(a/2) 2(1-exp(-L/2)) c A]^2.                        (AC164)
+```
+
+At all admissible logarithmic samples, define
+
+```text
+for every ε>0, eventually -ε < Re(CorrectedPrime_m).        (AC165)
+```
+
+Weil positivity, real-part continuity, and physical logarithmic-mesh completeness yield
+
+```text
+(AC165) <-> RH.                                             (AC166)
+```
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeApertureThetaAbelEnergyPrimeArithmeticCofinalContour.lean`.
+Direct source check, targeted `11811/11811` build, standard-axiom audit, and umbrella wiring pass.
+Global lint reaches the wired module but remains blocked by unrelated concurrently edited unwired
+RHTower/HTGeometry modules.
+
+Route impact: copied-zero and target-Weil provenance are removed from contour selection. The same
+fixed countable rational array recovers all physical Weil energies. Selection remains logically
+noncomputable because boundary admissibility is undecidable; remaining RH burden is the direct
+prime-flux proof of `(AC165)` for this array. No packet choice, contour existence, residue
+evaluation, archimedean correction, cofinality, or limit theorem remains.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-27]`: current finite Guinand--Weil Galerkin,
+finite-interval screw-operator, semilocal scaling-Hamiltonian, and finite-Euler-product convergence
+literature does not state a least-coded rational pole-crossing sequence independent of both zero
+packets and test targets, nor the universal literal corrected/raw prime limits `(AC163)--(AC164)`.
+Candidate-new content is restricted to this exact route-specific formal synthesis.
+
+Verdict: `[PROVED — ONE UNIVERSAL LEAST-CODED RATIONAL POLE-CROSSING RECTANGLE SEQUENCE, DEFINED
+WITHOUT ZERO PACKETS OR WEIL TARGETS, RECOVERS EVERY PHYSICAL WEIL ENERGY AS A CORRECTED LITERAL
+PRIME-CONTOUR LIMIT; ITS SHARP ASYMPTOTIC ZERO FLOOR IS EQUIVALENT TO RH]`.
+
+## Conjecture loop 89 — cofinal contour schedule invariance no-go
+
+Loop 88 supplies one universal rational schedule, but leaves open whether a more favorable
+adaptive schedule could change the limiting prime sign. Corpus search found only existential
+contour approximations, so Lean packages an arbitrary schedule `S` satisfying:
+
+```text
+every rectangle is admissible and pole-crossing;
+every finite XiZeroCopy packet is eventually enclosed.                  (AC167)
+```
+
+For every `A,c>0`, every physical detector, and every `S` satisfying `(AC167)`, summability plus
+exact residue transfer prove
+
+```text
+CorrectedPrime_S(m) -> CompleteWeilEnergy,                               (AC168)
+RawPrime_S(m) -> CompleteWeilEnergy - explicitArchimedeanSquare.         (AC169)
+```
+
+Therefore every two cofinal schedules `S,T` obey
+
+```text
+CorrectedPrime_S(m)-CorrectedPrime_T(m) -> 0,
+RawPrime_S(m)-RawPrime_T(m) -> 0.                                       (AC170)
+```
+
+The sharp zero-floor property along each fixed schedule is equivalent to RH. Since Loop 88 proves
+the schedule type inhabited, Lean closes the universal classifications
+
+```text
+[every cofinal schedule is asymptotically nonnegative] <-> RH,          (AC171)
+[every cofinal schedule has one eventually strict negative sample]
+  <-> not RH.                                                           (AC172)
+```
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeApertureThetaAbelEnergyPrimeCofinalScheduleInvariance.lean`.
+Direct source check, targeted `11812/11812` build, standard-axiom audit, and umbrella wiring pass.
+Global lint reaches the wired module but remains blocked by unrelated concurrently edited unwired
+RHTower/HTGeometry modules.
+
+No-go closure: adaptive contour selection is asymptotically powerless. Any two legal cofinal
+schedules differ by a null sequence, and false RH drives every schedule into a strict negative
+chamber. Strongest positive survivor is the universal limit/classification `(AC168)--(AC172)`.
+Remaining burden is a direct prime-side zero-floor estimate for one, hence every, cofinal schedule;
+no schedule optimization can replace it.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-27]`: classical explicit-formula derivations select
+zero-avoiding heights, while current finite Galerkin, finite-window, scaling-Hamiltonian, and screw-
+operator literature studies particular truncations. No comparison point states the all-schedule
+literal corrected/raw prime limits, pairwise null-difference theorem, or universal false-RH
+negative classification `(AC168)--(AC172)`. Candidate-new content is restricted to this exact
+route-specific formal synthesis.
+
+Verdict: `[PROVED NO-GO — ALL COFINAL ADMISSIBLE POLE-CROSSING CORRECTED-PRIME CONTOUR SCHEDULES
+ARE ASYMPTOTICALLY IDENTICAL; FALSE RH FORCES EVERY SCHEDULE EVENTUALLY STRICTLY NEGATIVE AT ONE
+PHYSICAL SAMPLE, SO ADAPTIVE CONTOUR SELECTION CANNOT EVADE THE OPEN PRIME-SIGN BURDEN]`.
+
+## Conjecture loop 90 — D2-to-physical-contour phase rigidity
+
+Loop 89 leaves one direct arithmetic sign burden. D2 already isolates a scalar pure-prime defect,
+
+```text
+D(s)=2 Re(infinitePrimeFlux(s))-log(Im s),
+```
+
+whose common lower bound on the Gaussian-rational fourth-trace tail is equivalent to RH. The
+physical corrected-prime contour samples the same flux at `s=1/2+iz`, but multiplies it by the
+complex square `T(z)^2` of the physical two-edge transform. Lean classifies the missing order law.
+For a complex weight `w`, let `M(w)` assert that multiplication by `w` preserves order of real
+parts for every pair of complex source values. Then
+
+```text
+M(w)   <-> Im(w)=0 and Re(w)>=0,                            (AC173)
+M(v^2) <-> Im(v)=0.                                         (AC174)
+```
+
+Thus a scalar D2 floor transports pointwise through `T(z)^2` exactly at real transform phase.
+Under that phase premise Lean proves the resulting weighted complex-defect floor, so the exact
+positive survivor is retained rather than only the negative statement.
+
+The established structural information on `T` is entireness, evenness, and Schwarz reality. Lean
+proves the sharp universal boundary
+
+```text
+[every entire even Schwarz-real mode is real at z]
+  <-> Im(z)=0 or Re(z)=0.                                  (AC175)
+```
+
+The off-axis witness is the entire polynomial `z^2`. Meanwhile the exact D2-to-contour map is
+
+```text
+z(s)=-i(s-1/2),
+Re z(s)=Im s,
+Im z(s)=1/2-Re s.                                          (AC176)
+```
+
+Every D2 point has `0<Re s<1/2` and `Im s>233/20`, so `(AC176)` lies strictly off both axes.
+Therefore evenness, Schwarz reality, and entireness alone cannot provide the real-phase premise
+needed by `(AC174)`. A direct pointwise scalar-floor multiplication argument is terminal unless it
+adds a new phase identity, conjugate-edge cancellation, or imaginary-flux estimate.
+
+The strongest global survivor is exact. Define D2 cofinal unboundedness below by asking for a
+Gaussian-rational tail point below every proposed floor. Existing D2 escape plus its RH lower-bound
+criterion give
+
+```text
+[D2 defect is cofinally unbounded below] <-> not RH.        (AC177)
+```
+
+Combining `(AC177)` with Loop 89's all-schedule classification gives the cross-route dictionary
+
+```text
+[D2 defect is cofinally unbounded below]
+  <-> [every cofinal admissible corrected-prime schedule
+       has one eventually uniformly negative sample].      (AC178)
+```
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeApertureThetaAbelEnergyPrimeD2PhaseRigidity.lean`.
+Direct source check, targeted `12918/12918` build, standard-axiom audit, and umbrella wiring pass.
+Global lint reaches the wired module with no local violation but remains blocked by unrelated
+concurrently edited unwired RHTower/HTGeometry modules.
+
+No-go closure: D2 and the physical corrected-prime contour encode the same global false-RH event by
+`(AC178)`, but their currently available local structures do not form a positive-kernel proof.
+Strongest positive survivors are the exact phase classifier `(AC173)--(AC174)`, symmetry boundary
+`(AC175)`, conditional weighted floor, and global witness dictionary `(AC177)--(AC178)`. Remaining
+burden is now precise: prove actual off-axis phase reality, pair phases before applying order,
+control imaginary prime flux, or derive the corrected-prime floor globally from arithmetic.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-27]`: current explicit logarithmic-derivative
+bounds control real parts or moduli, and current Weil/screw/operator work packages positivity via
+test-function or operator structure. No comparison point states the physical two-edge symmetry
+locus, D2 off-axis phase obstruction, or D2/all-cofinal-prime witness dictionary
+`(AC173)--(AC178)`. Candidate-new content is restricted to this exact route-specific synthesis.
+
+Verdict: `[PROVED NO-GO WITH POSITIVE SURVIVOR — A D2 REAL-PART FLOOR PASSES THROUGH THE SQUARED
+PHYSICAL CONTOUR WEIGHT EXACTLY AT REAL TRANSFORM PHASE; D2 POINTS LIE OFF THE LOCUS WHERE ENTIRE
+EVEN/SCHWARZ SYMMETRY FORCES THAT PHASE. GLOBAL D2 UNBOUNDEDNESS IS STILL EXACTLY EVENTUAL STRICT
+NEGATIVITY ON EVERY COFINAL CORRECTED-PRIME SCHEDULE]`.
+
+## Conjecture loop 91 — actual physical off-axis phase escape
+
+Loop 90 left one possible rescue for pointwise D2-to-physical transport: although generic
+even/Schwarz-real entire modes need not be real off-axis, the particular physical two-edge
+transform might have an additional real-phase identity. Lean now closes that loophole.
+
+For complex `w,P,Q`, define
+
+```text
+F(a)=exp(a w)P+exp(-a w)Q.
+```
+
+The exact two-edge recurrence is
+
+```text
+F(a+h)+F(a-h)=(exp(hw)+exp(-hw))F(a).                     (AC179)
+```
+
+If `Re w!=0`, `Im w!=0`, and `P!=0`, choose `h=1/(2 Im w)`. The multiplier in `(AC179)` has
+imaginary part
+
+```text
+(exp(h Re w)-exp(-h Re w)) sin(1/2) != 0.
+```
+
+Moreover at least one of `F(b),F(b+1)` is nonzero for every `b`. If both vanished, cancellation at
+`b` and substitution at `b+1` would force
+`(exp(w)-exp(-w)) exp(bw)P=0`, contradicting `Re w!=0` and `P!=0`. Assuming all sufficiently late
+values are real, apply `(AC179)` at a late nonzero member of that pair and its two phase-step
+neighbors. The real left side would equal a product with nonzero imaginary part and nonzero real
+second factor. Hence
+
+```text
+for every R, some a>=R has Im(F(a))!=0.                    (AC180)
+```
+
+The physical one-edge coefficient has no zero throughout the centered open strip away from the
+critical line:
+
+```text
+L,A,c>0, -1/2<Re w<1/2, Re w!=0
+  => xiPhysicalThetaAbelEntireModeAmplitude(L,A,c,w)!=0.   (AC181)
+```
+
+Each factor is certified in its natural half-plane: the length window at `w`, the restored factor
+`w+1/2`, the right-half-plane `c` window at `1/2-w`, and the left-half-plane `A` window at
+`w-1/2`. For D2 point `s`, the contour coordinate `z=-i(s-1/2)` obeys `iz=s-1/2`, whose real part
+lies strictly between `-1/2` and `0` and whose imaginary part is nonzero. Thus `(AC180)--(AC181)`
+give the actual, parameter-uniform theorem
+
+```text
+for every D2 point s, every L,A,c>0, and every R,
+some a>=R has Im(T(L,A,c,a,z(s)))!=0.                      (AC182)
+```
+
+Using Loop 90's exact square-order classifier:
+
+```text
+for every R, some a>=R has
+  not ComplexRealPartMonotoneMultiplier(T(a,z(s))^2).      (AC183)
+```
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeApertureThetaAbelEnergyPrimeActualPhaseEscape.lean`.
+Direct source check, targeted `12919/12919` build, standard-axiom audit, and umbrella wiring pass.
+Global lint reaches the wired module without a local violation; unrelated unwired RHTower and
+HTGeometry modules still block the repository-wide gate.
+
+No-go closure: actual physical transform phase does not remain real on the off-axis D2 locus; it
+escapes the real axis beyond every continuous translation threshold for every positive physical
+window triple. Strongest positive survivors are the recurrence `(AC179)`, general phase theorem
+`(AC180)`, strip noncensorship `(AC181)`, and exact actual consequences `(AC182)--(AC183)`.
+Pointwise D2 scalar-floor multiplication is therefore impossible uniformly in translation. A
+surviving proof must pair phases, control imaginary prime flux, or use a global arithmetic floor.
+The discrete logarithmic aperture mesh remains a separate question.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-28]`: current Weil/screw/operator literature studies
+positivity and spectral limits, while current explicit logarithmic-derivative literature controls
+zeta real parts or moduli. No comparison point states `(AC179)--(AC183)` for this physical
+theta--Abel two-edge family or its D2 square-order consequence. Candidate-new content is restricted
+to this exact route-specific formal synthesis.
+
+Verdict: `[PROVED ACTUAL-PHASE NO-GO WITH POSITIVE SURVIVOR — EVERY POSITIVE PHYSICAL WINDOW TRIPLE
+HAS COFINALLY LATE NONREAL TRANSFORM PHASE AT EVERY D2 POINT, SO ITS SQUARED WEIGHT COFINALLY FAILS
+UNIVERSAL REAL-PART ORDER TRANSPORT. THE EXACT RECURRENCE AND STRIP-WIDE NONCENSORSHIP IDENTIFY
+PHASE PAIRING OR COMPLEX PRIME-FLUX CONTROL AS THE SURVIVING LOCAL BURDEN]`.
+
+## Conjecture loop 92 — exact natural logarithmic-mesh phase escape
+
+Loop 91 proved cofinal phase escape over continuous translations but left the detector's literal
+arithmetic aperture mesh `a=log n/2` open. Lean now proves that this mesh cannot restore real phase.
+
+The first new ingredient is an unconditional logarithmic rounding law. For every real sequence
+`t_k→∞`,
+
+```text
+log(ceil(exp(t_k)))-t_k → 0.                              (AC184)
+```
+
+Indeed `1<=ceil(exp t_k)/exp t_k<=1+exp(-t_k)`, and continuity of logarithm closes the
+squeeze. No number-theoretic approximation hypothesis is used.
+
+For `F(a)=exp(aw)P+exp(-aw)Q` with `alpha=Re w<0`, `beta=Im w>0`, and `Q!=0`, choose
+`theta` in `{0,pi/2}` so `Im(exp(-i theta)Q)!=0`. Define the explicit natural selector
+
+```text
+t_k=(theta+2 pi k)/beta,
+n_k=ceil(exp(2t_k)),
+a_k=log(n_k)/2.
+```
+
+Then `n_k→∞`, `a_k-t_k→0`, and the exact normalized full-mode limit is
+
+```text
+exp(alpha a_k)F(a_k) → exp(-i theta)Q.                   (AC185)
+```
+
+The first edge in `(AC185)` has norm `exp(2 alpha a_k)|P|→0`; the second inherits the chosen
+phase because the ceiling error vanishes modulo the exact `2 pi k` period. Since the limit has
+nonzero imaginary part and the normalizer is positive real, Lean obtains
+
+```text
+for every N, some n>=N has Im(F(log n/2))!=0.                (AC186)
+```
+
+At D2 point `s`, take `w=s-1/2`, `z=-i(s-1/2)`, and the growing edge coefficient equal to the
+physical one-edge amplitude at `-w`. Loop 91's open-strip noncensorship makes it nonzero for every
+positive `L,A,c`. Hence
+
+```text
+for every D2 point s, every L,A,c>0, and every N,
+some n>=N has Im(T(L,A,c,log(n)/2,z(s)))!=0.                 (AC187)
+```
+
+The exact square-order classifier finally gives
+
+```text
+for every N, some n>=N has
+  not ComplexRealPartMonotoneMultiplier(T(log(n)/2,z(s))^2). (AC188)
+```
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeApertureThetaAbelEnergyPrimeLogMeshPhaseEscape.lean`.
+Direct source check, targeted `12920/12920` build, standard-axiom audit, and umbrella wiring pass.
+Global lint reaches the wired module without local violation; unrelated unwired RHTower and
+HTGeometry modules remain the repository-wide failures.
+
+No-go closure: the exact natural aperture sequence cannot rescue uniform pointwise D2 scalar-floor
+transport. Strongest positive survivors are the generic rounding law `(AC184)`, explicit
+phase-aligned selector and normalized limit `(AC185)`, abstract mesh escape `(AC186)`, and actual
+physical consequences `(AC187)--(AC188)`. The next local burden is no longer aperture choice:
+one must pair conjugate phases before order or jointly control imaginary prime flux. A global
+prime-side floor remains an alternative. Failure of universal multiplier monotonicity does not by
+itself assert negativity for the actual complex prime source.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-28]`: the latest compact-window Weil work gives
+finite-window positivity certificates and Landau--Widom decay, while screw/operator work studies
+continuous finite-interval limits and numerical spectra. No comparison point states the exact
+natural log-mesh selector, normalized two-edge limit, or D2 physical phase obstruction
+`(AC184)--(AC188)`. Candidate-new content is restricted to this route-specific formal synthesis.
+
+Verdict: `[PROVED EXACT-APERTURE NO-GO WITH POSITIVE SURVIVOR — NATURAL LOGARITHMIC SAMPLING IS
+ASYMPTOTICALLY FINE ENOUGH TO RETAIN THE OFF-CRITICAL GROWING-EDGE PHASE. EVERY D2 POINT AND EVERY
+POSITIVE PHYSICAL WINDOW TRIPLE HAS COFINALLY LARGE NATURAL APERTURES WHERE THE ACTUAL TRANSFORM IS
+NONREAL AND ITS SQUARE FAILS UNIVERSAL REAL-PART ORDER TRANSPORT]`.
+
+## Conjecture loop 93 — physical direct-prime weighted-pole directional escape
+
+Loop 92 left one precise objection: failure of abstract real-part multiplier order did not itself
+produce a negative sample of the actual complex prime source. Lean now closes that gap locally at
+every hypothetical off-line zero.
+
+For the actual physical transform `T_a` define the literal direct-prime integrand
+
+```text
+P_a(z)=T_a(z)^2 * (-i * infinitePrimeFlux(1/2+i z)).
+```
+
+At every centered `alpha` with `0<Im alpha<1/2`, the zeta-coordinate identity
+`(1/2+i z)-(1/2+i alpha)=(z-alpha)i` cancels the contour orientation exactly. The corpus
+normalized `zeta'/zeta` residue theorem and analyticity of the physical square therefore give
+
+```text
+(z-alpha)P_a(z)
+  -> ord_{1/2+i alpha}(xi) * T_a(alpha)^2.                 (AC189)
+```
+
+No Gamma term, completed source, contour integral, or limiting correction appears in `(AC189)`.
+
+Lean also proves a coordinate-free directional-pole law. If
+`(z-alpha)f(z)->C!=0`, set `epsilon_k=1/(k+1)` and
+`z_k=alpha-epsilon_k C`. Then
+
+```text
+epsilon_k f(z_k) -> -1,
+```
+
+so every neighborhood of `alpha` contains nonzero points with `Re f` below every prescribed
+real level:
+
+```text
+forall U in nhds(alpha), forall B, exists z in U,
+  z!=alpha, f(z)!=0, Re f(z)<B.                            (AC190)
+```
+
+Loop 92's natural selector extends from rational D2 points to every centered upper-half-strip
+point. For `L,A,c>0`, `Re alpha>0`, and `0<Im alpha<1/2`,
+
+```text
+forall N, exists n>=N,
+  Im T_{log n/2}(alpha) != 0.                              (AC191)
+```
+
+If additionally `XiC(alpha)=0`, multiplicity positivity and `(AC191)` make the residue in
+`(AC189)` nonzero. Applying `(AC190)` inside the intersection of a radius-`r` ball with the
+centered upper strip yields the actual source theorem
+
+```text
+forall N, exists n>=N, forall r>0, forall B, exists z,
+  0<Re z, 0<Im z<1/2, XiC(z)!=0, dist(z,alpha)<r,
+  Re P_{log n/2}(z)<B.                                    (AC192)
+```
+
+Thus complex physical phase is not merely an abstract obstruction: coupled to the divisor pole,
+its square forces literal direct-prime negativity of arbitrary magnitude near a hypothetical
+off-line zero.
+
+Define `XiPhysicalThetaAbelEnergyPrimeLogMeshEventuallyLocallyBoundedBelow(L,A,c)` to mean that
+some `N` makes every `n>=N` and every point with `Re alpha>0`, `0<Im alpha<1/2` possess a
+neighborhood on which `Re P_{log n/2}` has a finite lower bound. Under RH, centered upper-half-plane
+zero-freeness makes each integrand continuous locally. Under false RH, a strict-right upper zero
+copy and Schwarz reflection produce an `alpha` to which `(AC192)` applies cofinally. Therefore
+
+```text
+L,A,c>0 =>
+XiPhysicalThetaAbelEnergyPrimeLogMeshEventuallyLocallyBoundedBelow(L,A,c)
+  <-> RiemannHypothesis.                                  (AC193)
+```
+
+In particular the unit-window version is a closed theorem:
+
+```text
+XiPhysicalThetaAbelEnergyPrimeLogMeshEventuallyLocallyBoundedBelow(1,1,1)
+  <-> RiemannHypothesis.                                  (AC194)
+```
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeApertureThetaAbelEnergyPrimeWeightedPoleEscape.lean`.
+Direct source check, targeted `12921/12921` build, standard-axiom audit, and umbrella wiring pass.
+Formal lint reports no local violation; unrelated unwired dirty-tree modules remain the only
+repository-wide failures.
+
+Strongest positive survivors are exact direct-prime residue `(AC189)`, generic directional escape
+`(AC190)`, physical aperture noncensorship `(AC191)`, actual local detector `(AC192)`, and exact
+prime-only criterion `(AC193)--(AC194)`. This closes aperture selection and pointwise
+complex-multiplier alignment as unresolved local excuses. Remaining burden is arithmetic and
+exact: prove eventual local lower boundedness in `(AC193)` unconditionally.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-28]`: current compact-window Weil work proves
+finite-window positivity and decay; screw/operator work studies continuous finite-interval limits
+and numerical Archimedean laws; finite-core Volterra work isolates global operator bridges. No
+comparison point states `(AC189)--(AC194)`, retains the literal direct-prime pole with the exact
+natural physical square, or gives the eventual local-lower-bound equivalence. Candidate-new
+content is restricted to this exact route-specific formal synthesis.
+
+Verdict: `[PROVED ACTUAL DIRECT-PRIME POLE ESCAPE AND EXACT RH CRITERION — EVERY HYPOTHETICAL
+OFF-LINE ZERO FORCES COFINALLY MANY NATURAL PHYSICAL APERTURES WHOSE LITERAL WEIGHTED PRIME SOURCE
+IS LOCALLY UNBOUNDED BELOW. EVENTUAL LOCAL LOWER BOUNDEDNESS OF THESE PRIME-ONLY INTEGRANDS IS
+EQUIVALENT TO RH; GAMMA COMPLETION, CONTOUR CORRECTION, AND PHASE-REALITY ASSUMPTIONS ARE ABSENT]`.
+
+## Conjecture loop 94 — countable D2 Gaussian-rational window criterion
+
+Loop 93's exact direct-prime endpoint still quantified over arbitrary complex centers and sample
+points. Replacing those centers pointwise by rationals would be invalid: an irrational off-line
+zero can have a zero-free neighborhood around every distinct rational center. Lean now closes the
+correct countable replacement by using rational compact windows and dense rational samples.
+
+For a centered Gaussian-rational index `q=(r,t)`, define the original-coordinate rational index
+
+```text
+q^D2=(1/2-t,r).
+```
+
+The D2 contour coordinate is preserved exactly:
+
+```text
+primeFluxContourCoordinate(gaussianRatPoint(q^D2))
+  = gaussianRatPoint(q).                                  (AC195)
+```
+
+At every regular centered point `z` with `0<Im z<1/2`, the literal physical source
+
+```text
+P_a(z)=T_a(z)^2 * (-i * infinitePrimeFlux(1/2+i z))
+```
+
+is continuous:
+
+```text
+XiC(z)!=0 => ContinuousAt(P_a,z).                          (AC196)
+```
+
+Consequently strict local negativity rationalizes without weakening. If `z` is regular, lies in a
+rational rectangle `R`, and `Re P_a(z)<B`, Gaussian-rational density gives an exact `q` with
+
+```text
+gaussianRatPoint(q) in R,
+Re P_a(gaussianRatPoint(q))<B.                             (AC197)
+```
+
+By `(AC195)`, this is an original-plane Gaussian-rational D2 sample, not merely an approximating
+complex coordinate.
+
+Call `R=(u,v)×(x,y)` admissible when its closed envelope satisfies
+`0<u<v` and `0<x<y<1/2`. Every centered point with positive real part in the upper half-strip lies
+in such a rational rectangle. Under RH, `(AC196)` makes every fixed-aperture source continuous on
+the closed envelope. Compactness supplies `C` with `||P_n||<=C`, hence
+
+```text
+-C <= Re P_n(z_q)
+```
+
+for every D2 Gaussian-rational sample in `R`. Conversely, under false RH choose an admissible
+rational rectangle containing a strict-right upper Xi zero. Loop 93 selects cofinally many exact
+natural apertures with arbitrary negative regular samples inside that rectangle; `(AC197)` and
+`(AC195)` contradict its claimed rational-sample lower bound. Therefore both the all-aperture and
+eventual countable predicates are exact:
+
+```text
+L,A,c>0 =>
+XiPhysicalThetaAbelEnergyPrimeD2GaussianRatWindowsBoundedBelow(L,A,c)
+  <-> RiemannHypothesis,                                  (AC198)
+
+L,A,c>0 =>
+XiPhysicalThetaAbelEnergyPrimeD2GaussianRatWindowsEventuallyBoundedBelow(L,A,c)
+  <-> RiemannHypothesis.                                  (AC199)
+```
+
+The unit specialization is closed and premise-free:
+
+```text
+XiPhysicalThetaAbelEnergyPrimeD2GaussianRatWindowsEventuallyBoundedBelow(1,1,1)
+  <-> RiemannHypothesis.                                  (AC200)
+```
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeApertureThetaAbelEnergyPrimeD2GaussianRatWindowCriterion.lean`.
+Direct source check, targeted `12923/12923` build, standard-axiom audit, and umbrella wiring pass.
+Formal lint reports no local violation; unrelated unwired dirty-tree modules remain the only
+repository-wide failures.
+
+Strongest positive survivors are exact rational coordinate rotation `(AC195)`, regular-source
+continuity `(AC196)`, rational strict-sublevel transfer `(AC197)`, and exact countable criteria
+`(AC198)--(AC200)`. The remaining direct-prime burden is no longer topological or uncountable:
+prove eventual finite lower bounds on the explicit countable family of rational windows, natural
+apertures, and Gaussian-rational D2 samples.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-28]`: the corpus contains rational divisor-window
+bases, completed-source Gaussian-rational criteria, compact complex boxes, and Loop 93's
+arbitrary-complex local detector, but not their direct-prime physical synthesis. Current primary
+literature covers compact-window Weil positivity, continuous screw/operator models, numerical
+Archimedean spectra, and finite-core Volterra/Weyl reductions. No comparison point states
+`(AC195)--(AC200)`. Candidate-new content is restricted to this exact route-specific formal
+synthesis.
+
+Verdict: `[PROVED COUNTABLE PHYSICAL DIRECT-PRIME D2 CRITERION — RATIONAL POINT CENTERS ALONE ARE
+BLIND TO IRRATIONAL ZEROS, BUT RATIONAL COMPACT WINDOWS PLUS EXACT GAUSSIAN-RATIONAL D2 SAMPLES
+LOSE NO DETECTION POWER. EVENTUAL LOWER BOUNDEDNESS OF THE LITERAL PRIME-ONLY SOURCE ON THIS
+COUNTABLE SAMPLE FAMILY IS EQUIVALENT TO RH]`.
+
+## Conjecture loop 95 — D2 localized rational pole escape
+
+The D2 endpoint had only a global/cofinal failure statement: under false RH the pure-prime defect
+is unbounded below somewhere at arbitrarily large heights. That formulation obscured whether the
+obstruction genuinely required height escape. It does not. Lean now localizes the entire failure
+inside one bounded rational window.
+
+For
+
+```text
+D_C(s)=2 * infinitePrimeFlux(s) - log(Im s),
+D(s)=Re D_C(s),
+```
+
+every Xi zero `rho` with `0<Re rho<1` and `Im rho>0` has exact normalized residue
+
+```text
+(s-rho) * D_C(s) -> -2 * xiZeroOrder(rho).                 (AC201)
+```
+
+The logarithmic height correction has zero residue, so the full pole is carried by the literal
+prime flux. Applying the opposite-residue escape lemma, isolation of the corresponding zeta zero,
+continuity at regular points, and Gaussian-rational density gives a local arithmetic statement.
+Every rational rectangle `R` containing a positive-height left-half Xi zero and whose lower
+imaginary endpoint is positive satisfies
+
+```text
+forall B : Real, exists q : Rat × Rat,
+  gaussianRatPoint(q) in R /
+  primeArchLogHeightDefect(gaussianRatPoint(q)) < B.       (AC202)
+```
+
+Call a rational rectangle D2-admissible when its closed envelope obeys
+
+```text
+0 < u < v < 1/2,    233/20 < x < y.
+```
+
+If RH is false, strict-right upper-zero production, Xi reflection, and the formally verified
+zero-free region through height `243/20` produce a left-upper Xi zero above `233/20`. A rational
+selector places it in one admissible rectangle. Thus false RH is equivalent to one fixed bounded
+rational window containing defect samples below every real floor:
+
+```text
+PrimeArchLogHeightDefectGaussianRatLocalizedUnboundedBelow
+  <-> not RiemannHypothesis.                              (AC203)
+```
+
+Negating this localized obstruction yields the exact D2 lower-bound criterion with no uniformity
+across windows or heights:
+
+```text
+PrimeArchLogHeightDefectGaussianRatAdmissibleWindowsBoundedBelow
+  <-> RiemannHypothesis.                                  (AC204)
+```
+
+The local escape can be diagonalized without leaving that same rectangle. Equivalently,
+
+```text
+exists R, IsAdmissibleD2RatRectangle R /
+  exists q : Nat -> Rat × Rat,
+    (forall n, gaussianRatPoint(q n) in R) /
+    Tendsto (fun n => primeArchLogHeightDefect(gaussianRatPoint(q n))) atTop atBot
+  <-> not RiemannHypothesis.                              (AC205)
+```
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/PrimeArchLogHeightDefectLocalizedRationalPoleEscape.lean`.
+Direct source check and targeted `12923/12923` build pass. The six principal declarations have
+axioms `[propext, Classical.choice, Quot.sound]`; umbrella wiring passes. Formal lint reports no
+local violation; only unrelated unwired dirty-tree modules fail the repository-wide scan.
+
+Strongest positive survivors are exact residue `(AC201)`, local Gaussian-rational escape
+`(AC202)`, and the exact localized equivalences `(AC203)--(AC205)`. Main structural gain: D2
+failure is not genuinely cofinal in height. Global height escape was a quantifier artifact. The
+remaining RH burden may be attacked independently on every compact admissible rational window;
+no uniform cross-height lower bound is required.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-28]`: the corpus contained global/cofinal D2
+unboundedness, Gaussian-rational density, isolated-zero infrastructure, and verified-height
+zero-free input, but no fixed-window pole localization or one-window sequence criterion. Primary
+comparison points on logarithmic-derivative means/distributions, nearest-zero approximation, and
+omega results do not state `(AC201)--(AC205)`. Candidate-new content is restricted to this exact
+route-specific synthesis and its closed Lean proof.
+
+Verdict: `[PROVED LOCALIZED D2 RATIONAL POLE ESCAPE — IF RH FAILS, ONE BOUNDED ADMISSIBLE RATIONAL
+WINDOW ALREADY CONTAINS A GAUSSIAN-RATIONAL SEQUENCE ALONG WHICH THE LITERAL PRIME-ARCHIMEDEAN
+DEFECT TENDS TO MINUS INFINITY. RH IS EQUIVALENT TO WINDOW-BY-WINDOW LOWER BOUNDEDNESS; COFINAL
+HEIGHT UNIFORMITY IS UNNECESSARY]`.
+
+## Conjecture loop 96 — exact fourth-trace advance of D2 threshold
+
+D2's canonical threshold `233/20` came from rounding the fourth reciprocal-trace zero exclusion
+to verified height `243/20`, then paying one half-unit in centered resolvent transfer. The exact
+corpus theorem is stronger: every off-line Xi zero has squared ordinate at least `2365/16`. Lean
+now recovers the discarded algebraic margin.
+
+For every real `H`, the exact square condition itself produces a verified-height certificate:
+
+```text
+H^2 < 2365/16  =>  RHVerifiedThrough(H).                  (AC206)
+```
+
+Let
+
+```text
+D(s)=2 Re(infinitePrimeFlux(s))-log(Im s),
+K=-(log pi+log 2)-8.
+```
+
+If `(R+1/2)^2<2365/16`, verified-height accretivity gives nonnegative completed prime--Gamma flux
+through frequency `R`. The corpus's uniform Stirling envelope then removes Gamma explicitly:
+
+```text
+0<Re s<1/2, 233/20<Im s≤R  =>  K≤D(s).                   (AC207)
+```
+
+Thus every exact fourth-trace band can be deleted from D2's remaining burden. For all `R` with
+
+```text
+233/20<R,  (R+1/2)^2<2365/16,
+```
+
+Lean proves
+
+```text
+PrimeArchLogHeightDefectGaussianRatPositiveFrequencyAboveBoundedBelow(R)
+  <-> RiemannHypothesis.                                  (AC208)
+```
+
+Indeed, a proposed floor `L` above `R` and `(AC207)` below `R` combine to the canonical floor
+`min(L,K)` above `233/20`; the existing D2 endpoint gives RH. The converse is monotonicity of the
+sampling region.
+
+The rational point
+
+```text
+R_4=58289/5000
+```
+
+satisfies both strict hypotheses exactly. Therefore the following strengthened endpoint is
+closed and premise-free:
+
+```text
+PrimeArchLogHeightDefectGaussianRatPositiveFrequencyAboveBoundedBelow(R_4)
+  <-> RiemannHypothesis.                                  (AC209)
+```
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/PrimeArchLogHeightDefectFourthTraceThresholdAdvance.lean`.
+Direct source check and targeted `12854/12854` build pass. Principal declarations have axioms
+`[propext, Classical.choice, Quot.sound]`; umbrella wiring and local lint pass. Repository-wide
+lint failures are unrelated unwired dirty-tree modules.
+
+Strongest positive survivors are general exact verified-height recovery `(AC206)`, explicit
+literal prime-only floor `(AC207)`, and threshold-advanced RH endpoints `(AC208)--(AC209)`. The
+remaining D2 burden now begins strictly later, at `58289/5000`, and every future improvement of
+the source moment exclusion can be transferred by `(AC208)` without rebuilding the D2 argument.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-28]`: corpus search found the exact squared-height
+exclusion, rounded verified-height theorem, Stirling envelope, and old D2 endpoint, but no theorem
+recovering their lost algebraic margin. Platt--Trudgian prove vastly stronger finite-height RH by
+rigorous interval computation, not this reciprocal-trace-to-pure-prime defect law. No primary
+comparison point found states `(AC206)--(AC209)` or threshold `58289/5000`. Candidate-new content
+is restricted to this exact source-theorem synthesis.
+
+Verdict: `[PROVED D2 FOURTH-TRACE THRESHOLD ADVANCE — THE PURE-PRIME DEFECT HAS AN EXPLICIT
+UNCONDITIONAL FLOOR ON THE PREVIOUSLY OPEN BAND ABOVE 233/20, AND THE RH-EQUIVALENT TAIL MAY START
+AT 58289/5000. THE ROUNDED VERIFIED-HEIGHT CONSTANT HAD DISCARDED REAL SOURCE MARGIN]`.
+
+## Conjecture loop 97 — order-23 source-height exclusion and D2 advance
+
+The first conjecture targeted the stronger sixth reciprocal-trace frontier `467/2`. Its atom floor
+is kernel-clean, but the only closed source cap depends on native-decision axioms. Explicit axiom
+audit exposed `thetaRationalQuadrature_firstAtom_bounds._native.native_decide.ax_1_1`; that route
+is inadmissible under current no-computation rule and was rejected.
+
+Corpus search then exposed a standard-axiom order-23 quartet contradiction. It separately proves
+
+```text
+normalizedPrimeArchMoment(1)<17/200000,
+
+2365/16≤Im(q)^2<431/2 and q off-line
+  => 17/800000<Re(xiZeroCopyReciprocalSquare(q)^2),
+
+4 Re(xiZeroCopyReciprocalSquare(q)^2)
+  ≤ normalizedPrimeArchMoment(1).                         (AC210)
+```
+
+The last two inequalities force the source strictly above `17/200000`, contradicting the first.
+Together with the prior fourth-trace exclusion below `2365/16`, this proves the new unconditional
+zero-height theorem
+
+```text
+Im(q)^2<431/2 => Re(q)=1/2,
+q off-line    => 431/2≤Im(q)^2.                           (AC211)
+```
+
+Consequently every exact lower height inherits a verified-height certificate:
+
+```text
+H^2<431/2 => RHVerifiedThrough(H).                        (AC212)
+```
+
+The transfer to D2 is now abstracted from any particular moment order. For any verified band
+`R+1/2≤H`, the centered coordinate `z=Im(s)+i(1/2-Re(s))` converts source accretivity to
+nonnegative completed prime--Gamma flux. Uniform Stirling control gives
+
+```text
+0<Re s<1/2, 233/20<Im s≤R
+  => -(log pi+log 2)-8≤primeArchLogHeightDefect(s).        (AC213)
+```
+
+Hence, whenever `233/20<R` and the band through `R+1/2` is verified,
+
+```text
+PrimeArchLogHeightDefectGaussianRatPositiveFrequencyAboveBoundedBelow(R)
+  <-> RiemannHypothesis.                                  (AC214)
+```
+
+The rational threshold
+
+```text
+R_23=141799/10000
+```
+
+satisfies `(R_23+1/2)^2<431/2` exactly. Thus Lean closes the premise-free endpoint
+
+```text
+PrimeArchLogHeightDefectGaussianRatPositiveFrequencyAboveBoundedBelow(R_23)
+  <-> RiemannHypothesis.                                  (AC215)
+```
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/PrimeArchLogHeightDefectOrderTwentyThreeThresholdAdvance.lean`.
+Direct source check and targeted `12855/12855` build pass. All eight principal declarations have
+axioms `[propext, Classical.choice, Quot.sound]`; no native-decision axiom appears. Umbrella wiring
+and local lint pass; repository-wide lint failures remain unrelated unwired dirty-tree modules.
+
+Strongest positive survivors are kernel-clean off-line height gap `(AC211)`, generic
+verified-height certificate `(AC212)`, reusable pure-prime transfer `(AC213)--(AC214)`, and exact
+D2 endpoint `(AC215)`. Relative to Loop 96, another interval of width `252101/100000` is removed
+from open tail. Remaining pure-prime burden begins only above `14.1799`.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-28]`: corpus had three inequalities `(AC210)` in
+separate order-23 modules but no zero-location synthesis, verified-height theorem through `431/2`,
+or D2 transfer. Primary literature has vastly taller rigorous numerical verification and explicit
+zero-density estimates, but no noncomputational order-23 source-moment exclusion or
+`(AC211)--(AC215)`. Candidate-new content is restricted to exact synthesis and Lean proof.
+
+Verdict: `[PROVED ORDER-23 SOURCE-HEIGHT EXCLUSION — FOUR KERNEL-CLEAN RECIPROCAL-TRACE ATOMS
+OVERSPEND THE COMPLETE SOURCE BUDGET, SO EVERY OFF-LINE XI ZERO HAS SQUARED ORDINATE AT LEAST
+431/2. D2'S RH-EQUIVALENT PRIME-ONLY TAIL NOW STARTS AT 141799/10000, WITH NO COMPUTATION AXIOM]`.
+
+## Conjecture loop 98 — exact order-23 endpoint optimization
+
+The kernel-clean order-23 atom proof had rounded its squared-height ceiling to `431/2`. Reopening
+the exact atom polynomial exposes unused source-budget margin. For
+
+```text
+u=(Re(q)-1/2)^2,  v=Im(q)^2,  w=u+v,
+V=431349/2000,    W=V+1/4=431849/2000,
+```
+
+the strip bounds `0<u<1/4` and `2365/16≤v<V` imply `w<W` and `uv<V/4`. Exact factorization gives
+
+```text
+(800000w^2-17w^4)-(800000W^2-17W^4)
+  =(W^2-w^2)(17(W^2+w^2)-800000)>0.
+```
+
+The rational endpoint inequality then proves
+
+```text
+17/800000 < Re(xiZeroCopyReciprocalSquare(q)^2).          (AC216)
+```
+
+Four FE--Schwarz copies of `(AC216)` overspend
+`normalizedPrimeArchMoment(1)<17/200000`. Together with the older lower-height exclusion:
+
+```text
+Im(q)^2<431349/2000 => Re(q)=1/2,
+q off-line          => 431349/2000≤Im(q)^2.               (AC217)
+```
+
+Thus every exact lower band inherits a verified-height certificate:
+
+```text
+H^2<431349/2000 => RHVerifiedThrough(H).                  (AC218)
+```
+
+Set
+
+```text
+R*=141858/10000.
+```
+
+Lean proves both `(R*+1/2)^2<431349/2000` and the strict threshold advance
+
+```text
+141799/10000 < R*.                                       (AC219)
+```
+
+The generic verified-band transfer therefore closes the premise-free endpoint
+
+```text
+PrimeArchLogHeightDefectGaussianRatPositiveFrequencyAboveBoundedBelow(R*)
+  <-> RiemannHypothesis.                                  (AC220)
+```
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/PrimeArchLogHeightDefectOrderTwentyThreeEndpointOptimization.lean`.
+Direct source check and targeted `12861/12861` build pass. Five principal declarations have axioms
+`[propext, Classical.choice, Quot.sound]`; no numerical zero verification or native-decision axiom
+is used. Module is wired into theorem-area umbrella. Formal lint reports no local violation; its
+repository-wide failures are unrelated unwired dirty-tree Sieve and HTGeometry modules.
+
+Strongest positive survivors are exact rational atom floor `(AC216)`, sharpened off-line height
+gap `(AC217)`, generic verified-height certificate `(AC218)`, and D2 advance `(AC219)--(AC220)`.
+Relative to Loop 97, another interval of width `59/10000` is removed from D2's open tail. Remaining
+pure-prime burden begins only above `14.1858`.
+
+The stronger order-24 sixth-trace route remains active. Its one-cell rational reductions close in
+the standard kernel after exposing `Rat.floor_def`, but monolithic 64-cell normalization exceeded
+a practical proof window. That is a certificate-engineering obstruction, not a mathematical
+no-go; next loop must build shared bounded-block certificates.
+
+Novelty audit `[TARGETED PRIMARY AUDIT, 2026-08-28]`: corpus search found the rounded order-23
+theorem and its ingredients but no exact endpoint optimization or `(AC216)--(AC220)`. Primary
+literature has far taller rigorous numerical verification and reciprocal-power criteria, but no
+noncomputational source-moment height exclusion at `431349/2000` or pure-prime D2 endpoint at
+`141858/10000`. Candidate-new content is restricted to this exact route-specific synthesis.
+
+Verdict: `[PROVED EXACT ORDER-23 ENDPOINT OPTIMIZATION — THE SAME KERNEL-CLEAN SOURCE BUDGET
+EXCLUDES OFF-LINE XI ZEROS THROUGH SQUARED HEIGHT 431349/2000, AND D2'S RH-EQUIVALENT PURE-PRIME
+TAIL NOW STARTS AT 141858/10000. THE PRIOR 431/2 ENDPOINT DISCARDED EXACT ALGEBRAIC MARGIN]`.

@@ -59,6 +59,26 @@ theorem card_mtHarmanPairCellTuples_le_divisors_sq
         (m.divisors.product m.divisors).card := Finset.card_le_card hsubset
     _ = m.divisors.card ^ 2 := by simp [pow_two]
 
+/-- A pair product has only one free divisor: the second factor is forced by the first. -/
+theorem card_mtHarmanPairCellTuples_le_divisors
+    {S₁ S₂ : Finset ℕ} {m : ℕ} (hm : 0 < m) :
+    (mtHarmanPairCellTuples S₁ S₂ m).card ≤ m.divisors.card := by
+  apply Finset.card_le_card_of_injOn Prod.fst
+  · intro q hq
+    have htuple := mem_mtHarmanPairCellTuples.mp hq
+    exact Nat.mem_divisors.mpr ⟨⟨q.2, htuple.2.2.symm⟩, hm.ne'⟩
+  · intro q hq r hr hfirst
+    have hqTuple := mem_mtHarmanPairCellTuples.mp hq
+    have hrTuple := mem_mtHarmanPairCellTuples.mp hr
+    have hqDvd : q.1 ∣ m := ⟨q.2, hqTuple.2.2.symm⟩
+    have hqPos : 0 < q.1 := Nat.pos_of_dvd_of_pos hqDvd hm
+    apply Prod.ext hfirst
+    exact Nat.eq_of_mul_eq_mul_left hqPos (by
+      calc
+        q.1 * q.2 = m := hqTuple.2.2
+        _ = r.1 * r.2 := hrTuple.2.2.symm
+        _ = q.1 * r.2 := by rw [hfirst])
+
 theorem mtHarmanPairCellCoefficient_polynomialDivisorBounded
     (S₁ S₂ : Finset ℕ) :
     MTPolynomialDivisorBounded (mtHarmanPairCellCoefficient S₁ S₂) := by
@@ -229,6 +249,37 @@ theorem card_mtHarmanTripleCellTuples_le_divisors_cube
         ((m.divisors.product m.divisors).product m.divisors).card :=
       Finset.card_le_card hsubset
     _ = m.divisors.card ^ 3 := by simp [pow_succ]
+
+/-- A triple product has only two free divisors: the last factor is forced by the first pair. -/
+theorem card_mtHarmanTripleCellTuples_le_divisors_sq
+    {S₁ S₂ S₃ : Finset ℕ} {m : ℕ} (hm : 0 < m) :
+    (mtHarmanTripleCellTuples S₁ S₂ S₃ m).card ≤ m.divisors.card ^ 2 := by
+  calc
+    (mtHarmanTripleCellTuples S₁ S₂ S₃ m).card ≤
+        (m.divisors.product m.divisors).card := by
+      apply Finset.card_le_card_of_injOn Prod.fst
+      · intro q hq
+        have htuple := mem_mtHarmanTripleCellTuples.mp hq
+        exact Finset.mem_product.mpr ⟨
+          Nat.mem_divisors.mpr ⟨⟨q.1.2 * q.2, by
+            simpa [Nat.mul_assoc] using htuple.2.2.2.symm⟩, hm.ne'⟩,
+          Nat.mem_divisors.mpr ⟨⟨q.1.1 * q.2, by
+            simpa [Nat.mul_left_comm, Nat.mul_comm, Nat.mul_assoc] using
+              htuple.2.2.2.symm⟩, hm.ne'⟩⟩
+      · intro q hq r hr hpair
+        have hqTuple := mem_mtHarmanTripleCellTuples.mp hq
+        have hrTuple := mem_mtHarmanTripleCellTuples.mp hr
+        have hprefixDvd : q.1.1 * q.1.2 ∣ m :=
+          ⟨q.2, hqTuple.2.2.2.symm⟩
+        have hprefixPos : 0 < q.1.1 * q.1.2 :=
+          Nat.pos_of_dvd_of_pos hprefixDvd hm
+        apply Prod.ext hpair
+        exact Nat.eq_of_mul_eq_mul_left hprefixPos (by
+          calc
+            q.1.1 * q.1.2 * q.2 = m := hqTuple.2.2.2
+            _ = r.1.1 * r.1.2 * r.2 := hrTuple.2.2.2.symm
+            _ = q.1.1 * q.1.2 * r.2 := by rw [hpair])
+    _ = m.divisors.card ^ 2 := by simp [pow_two]
 
 theorem mtHarmanTripleCellCoefficient_polynomialDivisorBounded
     (S₁ S₂ S₃ : Finset ℕ) :

@@ -181,6 +181,55 @@ theorem measureReal_cyclicOverlap_ge_le
   exact hmono.trans (measureReal_cyclicCenteredOverlap_ge_le
     p hp t w (sub_nonneg.mpr hthreshold))
 
+/-- Variance-budget form of the cyclic cap estimate.  It includes the degenerate zero-energy case
+instead of dividing it away: then every coefficient vanishes and every positive-threshold capture
+event is empty.  For positive actual energy, reciprocal monotonicity replaces it by any larger
+declared budget. -/
+theorem measureReal_cyclicOverlap_ge_le_of_energy_le
+    (p : ℕ) [NeZero p] (hp : 0 < p) (t : ℝ) (w : I → ℂ)
+    {threshold bias energy : ℝ} (henergy : 0 < energy)
+    (hbias : 0 ≤ bias) (hthreshold : bias < threshold)
+    (hweight : (↑(∑ i, ‖w i‖₊ ^ 2) : ℝ) ≤ energy)
+    (hmean : ‖cyclicPhaseMean p t * ∑ i, w i‖ ≤ bias) :
+    (cyclicFrequencyProductMeasure p I).real
+        {q | threshold ≤ ‖∑ i, w i * cyclicPhaseValue p t (q i)‖} ≤
+      4 * Real.exp (-(threshold - bias) ^ 2 / (16 * energy)) := by
+  classical
+  let S : ℝ := (↑(∑ i, ‖w i‖₊ ^ 2) : ℝ)
+  have hS0 : 0 ≤ S := by positivity
+  rcases hS0.eq_or_lt with hSzero | hSpos
+  · have hsumNN : ∑ i, ‖w i‖₊ ^ 2 = 0 := by
+      apply NNReal.eq
+      simpa [S] using hSzero.symm
+    have hw : ∀ i, w i = 0 := by
+      intro i
+      have hi_le : ‖w i‖₊ ^ 2 ≤ ∑ j, ‖w j‖₊ ^ 2 :=
+        Finset.single_le_sum (s := Finset.univ)
+          (f := fun j => ‖w j‖₊ ^ 2) (fun _ _ => by positivity) (Finset.mem_univ i)
+      rw [hsumNN] at hi_le
+      have hi : ‖w i‖₊ ^ 2 = 0 := le_antisymm hi_le (by positivity)
+      have hiR : ‖w i‖ ^ 2 = 0 := by
+        simpa using congrArg (fun x : NNReal => (x : ℝ)) hi
+      have hinorm : ‖w i‖ = 0 := by nlinarith [norm_nonneg (w i)]
+      exact norm_eq_zero.mp hinorm
+    have hset : {q : I → Fin p |
+        threshold ≤ ‖∑ i, w i * cyclicPhaseValue p t (q i)‖} = ∅ := by
+      ext q
+      simp [hw, not_le.mpr (lt_of_le_of_lt hbias hthreshold)]
+    rw [hset, measureReal_empty]
+    positivity
+  · have hpoint := measureReal_cyclicOverlap_ge_le p hp t w hbias hthreshold.le hmean
+    have hrecip : (16 * energy)⁻¹ ≤ (16 * S)⁻¹ := by
+      rw [inv_le_inv₀ (by positivity) (by positivity)]
+      exact mul_le_mul_of_nonneg_left hweight (by norm_num)
+    have hexp : Real.exp (-(threshold - bias) ^ 2 / (16 * S)) ≤
+        Real.exp (-(threshold - bias) ^ 2 / (16 * energy)) := by
+      apply Real.exp_le_exp.mpr
+      rw [div_eq_mul_inv, div_eq_mul_inv]
+      exact mul_le_mul_of_nonpos_left hrecip (neg_nonpos.mpr (sq_nonneg _))
+    change _ ≤ 4 * Real.exp (-(threshold - bias) ^ 2 / (16 * S)) at hpoint
+    exact hpoint.trans (mul_le_mul_of_nonneg_left hexp (by norm_num))
+
 end
 
 end GaloisForLFunctions.HTGeometry

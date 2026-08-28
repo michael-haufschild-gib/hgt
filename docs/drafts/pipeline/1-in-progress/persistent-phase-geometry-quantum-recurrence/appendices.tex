@@ -82,6 +82,63 @@ approximation on $[0,1]$ extends convergence from moments to every
 continuous statistic.
 \end{proof}
 
+\subsection{No-gap stationary support and bound-state mass}
+
+We prove Theorem~\ref{thm:boundstateedge} directly from preceding collision
+law and compact phase geometry.  First suppose
+$\nu=\sum_iw_i\delta_{E_i}$ is a countably carried probability measure.  Its
+weights are nonnegative and absolutely summable, with $\sum_iw_i=1$.  For
+every $t$, absolute convergence and Hilbert-space dispersion give
+\begin{align}
+ 1-|A_\nu(t)|^2
+ &=\sum_{i,j}w_iw_j
+   \bigl(1-\cos((E_i-E_j)t)\bigr).                  \label{eq:gapdefectidentity}
+\end{align}
+Indeed, twice right side is weighted pairwise squared chord length of unit
+phases $\ee^{-\ii tE_i}$; expanding this length gives twice
+$1-|\sum_iw_i\ee^{-\ii tE_i}|^2$.
+
+Let $\mathcal K_\nu$ be closure of ordered-gap phase orbit in countable
+torus.  Orbit is continuous image of connected group $\R$, so its closure is
+compact and connected.  Haar measure on $\mathcal K_\nu$ has full support.
+Nonnegative series
+\[
+ D_\nu(z)=\sum_{i,j}w_iw_j(1-\operatorname{Re}z_{ij})
+\]
+converges uniformly, hence is continuous.  Its image is compact connected
+subset of $\R$, contains zero at identity and attains maximum $M_\nu$.
+Consequently
+\[
+ D_\nu(\mathcal K_\nu)=[0,M_\nu].
+\]
+Support of continuous pushforward of full-support Haar measure is exactly
+continuous image.  Equation~\eqref{eq:gapdefectidentity}, followed by
+reflection $d\mapsto1-d$, therefore gives
+\begin{equation}
+ \operatorname{supp}\mathscr R_\nu=[1-M_\nu,1].     \label{eq:purepointsupport}
+\end{equation}
+Physical fidelity bounds imply $0\le M_\nu\le1$.
+
+Now let $\mu$ have pure-point restriction $\mu_{\rm pp}$ of total mass $p$.
+For every $r\ge1$, singleton mass at zero of $r$-fold difference
+convolution is unchanged when $\mu$ is replaced by $\mu_{\rm pp}$.  If
+$p>0$ and $\bar\mu_{\rm pp}=p^{-1}\mu_{\rm pp}$, homogeneity gives
+\[
+ \int x^r\,d\mathscr R_\mu(x)
+ =p^{2r}\int x^r\,d\mathscr R_{\bar\mu_{\rm pp}}(x).
+\]
+Probability measures on compact interval $[0,1]$ are determined by moments,
+so
+\[
+ \mathscr R_\mu=(x\mapsto p^2x)_*
+   \mathscr R_{\bar\mu_{\rm pp}}.
+\]
+Positive scaling sends interval~\eqref{eq:purepointsupport} exactly to
+$[p^2(1-M_{\bar\mu_{\rm pp}}),p^2]$.  If $p=0$, every positive moment
+vanishes, hence stationary law is $\delta_0$.  Both branches yield
+\eqref{eq:boundstateedge} and \eqref{eq:boundstatescaling}; nonnegativity of
+$p$ gives square-root inversion.
+
 \begin{theorem}[Pure-point, cyclic and atomless trichotomy]
 \leavevmode
 \begin{enumerate}[leftmargin=1.6em]
@@ -614,56 +671,58 @@ Result & Where established \\
 \midrule
 \endhead
 Projective completion; relation hull; $\tau+\rho=D-1$ & Main
-Theorem~\ref{thm:phasecapacity}; Appendix Sections H and I \\
+Theorem~\ref{thm:phasecapacity}; Appendix Sections J and K \\
 Singular wall, sinc profile, dense ranks, bounded-horizon indistinguishability
-& Main Theorem~\ref{thm:interaction}; Appendix Section I \\
+& Main Theorem~\ref{thm:interaction}; Appendix Section K \\
 Protected affine relation and complete weak separable conversion & Main
-Theorem~\ref{thm:interaction}; Appendix Sections I.1--I.2 \\
+Theorem~\ref{thm:interaction}; Appendix Sections K.1--K.2 \\
 Countable relation hull and infinite separable recurrence ray & Main
-Theorem~\ref{thm:countable}; Appendix Section I.2 \\
+Theorem~\ref{thm:countable}; Appendix Section K.2 \\
 Replica height, finite-grid readout and Nyquist sharpness & Main
-Theorem~\ref{thm:phasecapacity}; Appendix Section H.1 \\
+Theorem~\ref{thm:phasecapacity}; Appendix Section J.1 \\
 Finite contraction threshold and coupled post-burn-in deadline & Main Law I;
-Appendix Section G.1 \\
+Appendix Section I.1 \\
 Stationary point-spectrum scaling and collision hierarchy & Main Law I;
-Appendix Section G.2 \\
+Appendix Section I.2 \\
+No-gap stationary support and exact bound-state-mass inversion & Main
+Theorem~\ref{thm:boundstateedge}; Appendix Section I.3 \\
 Countable pure-point recurrence, cyclic exact return and atomless boundary &
-Main Law I; Appendix Section G.2 \\
+Main Law I; Appendix Section I.3 \\
 Generic static nearest-neighbour qudit maximality and exact return frequency &
-Main Theorem~\ref{thm:path}; Appendix Section J \\
+Main Theorem~\ref{thm:path}; Appendix Section L \\
 Exact finite-volume thermodynamic return-density extinction and rates & Main
-Corollary~\ref{cor:thermodynamic}; Appendix Section J.3 \\
+Corollary~\ref{cor:thermodynamic}; Appendix Section L.3 \\
 Weighted projective variance and reverse-water global optimizer & Main Law
-III; Appendix Sections K and K.1 \\
+III; Appendix Sections M and M.1 \\
 Product-box lower law, pivot upper law and two-sided target information & Main
-Theorem~\ref{thm:water}; Appendix Section K.2 \\
+Theorem~\ref{thm:water}; Appendix Section M.2 \\
 Universal deadline, post-delay return, selected support and Haar hit quantile
-& Main Theorem~\ref{thm:water}; Appendix Section K.3 \\
+& Main Theorem~\ref{thm:water}; Appendix Section M.3 \\
 Exact onsite local-spin phase transfer and binary hard-support separation &
-Main Law III; Appendix Section K.3 \\
+Main Law III; Appendix Section M.3 \\
 Finite observer phase energy, zero set and graph capacity & Main
 Theorem~\ref{thm:observer};
-Appendix Section L \\
+Appendix Section N \\
 Sharp graph exponent, probe, calibration and device-window bounds & Main
-Theorem~\ref{thm:observer}; Appendix Section L \\
+Theorem~\ref{thm:observer}; Appendix Section N \\
 Countable observer recurrence and zero law & Main Law III; Appendix Section
-L \\
+N \\
 Equal qutrit local information with opposite global recurrence & Main Law
-III; Appendix Section L.1 \\
+III; Appendix Section N.1 \\
 Positive binomial/parity measures and amplitude identities & Main Law IV;
-Appendix Section M.1 \\
+Appendix Section O.1 \\
 One Hamiltonian, uniform-field qubit and fixed-protocol isospectral forms &
-Main Theorem~\ref{thm:ambiguity}; Appendix Sections M.2--M.3 \\
+Main Theorem~\ref{thm:ambiguity}; Appendix Sections O.2--O.3 \\
 Krylov path realization, perfect-return block and forced disconnection & Main
-Theorem~\ref{thm:ambiguity}; Appendix Section M.4 \\
+Theorem~\ref{thm:ambiguity}; Appendix Section O.4 \\
 Occupation embedding and complete all-sector fermionic spectra & Main
-Theorem~\ref{thm:ambiguity}; Appendix Section M.5 \\
+Theorem~\ref{thm:ambiguity}; Appendix Section O.5 \\
 Common moments, exponential hiding and every exact future & Main
 Theorem~\ref{thm:ambiguity};
-Appendix Sections M.1--M.3 \\
+Appendix Sections O.1--O.3 \\
 Vandermonde support threshold and one-half forecast lower bound & Main Law IV;
-Appendix Section M.6 \\
+Appendix Section O.6 \\
 Complete local/perturbative nonidentifiability and compact moment determinacy &
-Main Theorem~\ref{thm:globalcompletion}; Appendix Section N \\
+Main Theorem~\ref{thm:globalcompletion}; Appendix Section P \\
 \bottomrule
 \end{longtable}

@@ -162,6 +162,7 @@ public paper must not silently identify their witnesses.
 | exact replica-height filtration | `resolvedReplicaDetects_iff_relation_and_height_le`; `relationLattice_eq_iff_all_resolvedReplicaDetectors_eq` | closed |
 | generic local path maximality | `exists_uniformQuditPathLocalHamiltonianMaximalSet_dense_residual_fullMeasure` | closed |
 | local discrete exponent `q^n-1` | `exists_quditPathChain_discreteRecurrenceExponent` | closed |
+| local physical survival-fidelity first-return exponent `(q^n-2)/2` for every cyclic state | `universalQuditPathPhysicalRecurrenceCollisionLaw` | closed, same Hamiltonian as rank/collision laws |
 | local continuous/winding exponent `q^n-2` | `exists_quditPathChain_windingRecurrenceExponent` plus `WindingReturnEquivalence` | closed |
 | universal collision floor/equality | `fidelityReplicaCollisionMass_floor_le`; `all_fidelityReplicaCollisionMass_eq_floor_iff` | closed |
 | generic local all-order floor | `exists_quditPath_generic_collisionFloor`; `exists_quditPath_generic_survivalFidelityFloor` | closed |
@@ -237,8 +238,9 @@ rejected “anatomy” collage.
 ## Gates
 
 - [x] 0 → 1: central question, single invariant, corpus closure and primary frontier mapped
-- [ ] 1 → 2: exact same-object capstone and physical onsite/interaction instantiation
-- [ ] 2 → 3: targeted final-capstone build, formal lint and axiom audit
+- [x] same-object path capstone: rank, sharp clocks, physical first return, collisions and exact-return rigidity
+- [ ] 1 → 2: physical onsite/interaction weak-coupling instantiation
+- [x] targeted physical-first-return capstone build and axiom audit
 - [ ] 3 → 4: standalone rewrite, claim trace, reference audit and hostile specialist review
 
 ## Approach
@@ -257,3 +259,8 @@ rejected “anatomy” collage.
 - 2026-08-23 — identified exact formal gap: abstract onsite one-knob theorem lacks one unconditional
   canonical local-path instantiation, and separate local recurrence results lack one public
   same-object capstone.
+- 2026-08-28 — closed same-object local capstone and upgraded winding surrogate to actual orbit
+  survival-fidelity first return for every cyclic state.  Exact exponent is `(q^n-2)/2` in fidelity
+  deficit.  Targeted module build passed; axiom audit reports only standard quotient/classical
+  principles.  Remaining gap on this card is weak-coupling onsite/pure-edge activation, not local
+  first return.

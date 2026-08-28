@@ -28,13 +28,13 @@ def thetaCuspLikelihoodSourceOrdinaryJetSix (x : ℝ) : ℝ :=
     A * thetaCuspLikelihoodMean B)
 
 set_option maxHeartbeats 2400000 in
-/-- The literal sixth logarithmic source jet lies within four percent of its one-particle
+/-- The literal sixth logarithmic source jet lies within three and one-half percent of its one-particle
 ordinary score.  Positive odd particle grades cost only `O(p^2)` and `O(p^4)`, while every even
 particle grade has the favorable sign. -/
-theorem thetaCuspLikelihoodSourceLogPartitionJetSix_lt_twentySixTwentyFifths_ordinary
+theorem thetaCuspLikelihoodSourceLogPartitionJetSix_lt_twoHundredSevenTwoHundredths_ordinary
     {x : ℝ} (hx : 0 ≤ x) :
     thetaCuspLikelihoodSourceLogPartitionJetSix x <
-      (26 / 25 : ℝ) * thetaCuspLikelihoodSourceOrdinaryJetSix x := by
+      (207 / 200 : ℝ) * thetaCuspLikelihoodSourceOrdinaryJetSix x := by
   let A := thetaCuspSingleAtomReflectionScale 1 x
   let B := thetaCuspLikelihoodCoordinate x
   let p := thetaCuspLikelihoodTailProbability B
@@ -252,10 +252,10 @@ theorem thetaCuspLikelihoodSourceLogPartitionJetSix_lt_twentySixTwentyFifths_ord
     pow_lt_pow_left₀ hpLt hp0 (by norm_num)
   have hp4 : p ^ 4 < (1 / 400 : ℝ) ^ 4 :=
     pow_lt_pow_left₀ hpLt hp0 (by norm_num)
-  have hbudget : 1 + 5400 * p ^ 2 + 10800 * p ^ 4 < (26 / 25 : ℝ) := by
+  have hbudget : 1 + 5400 * p ^ 2 + 10800 * p ^ 4 < (207 / 200 : ℝ) := by
     norm_num at hp2 hp4 ⊢
     nlinarith
-  have hupper : b6 + 2 * q3 + 24 * q5 < (26 / 25 : ℝ) * b6 := by
+  have hupper : b6 + 2 * q3 + 24 * q5 < (207 / 200 : ℝ) * b6 := by
     have hscaled := mul_lt_mul_of_pos_right hbudget hb6
     nlinarith
   have hdecomp :
@@ -271,7 +271,7 @@ theorem thetaCuspLikelihoodSourceLogPartitionJetSix_lt_twentySixTwentyFifths_ord
     ring
   rw [hdecomp]
   change b6 - q2 + 2 * q3 - 6 * q4 + 24 * q5 - 120 * q6 <
-    (26 / 25 : ℝ) * b6
+    (207 / 200 : ℝ) * b6
   nlinarith
 
 /-- The one-particle ordinary sixth source score is strictly positive. -/
@@ -297,6 +297,16 @@ theorem thetaCuspLikelihoodSourceOrdinaryJetSix_pos
   have hlead : 0 < (64 / 30 : ℝ) * A ^ 6 *
       thetaCuspLikelihoodNormalizedMoment B 6 := by positivity
   dsimp only [A, B] at hlead
+  nlinarith
+
+/-- Compatibility form of the earlier four-percent sixth-jet upper orientation. -/
+theorem thetaCuspLikelihoodSourceLogPartitionJetSix_lt_twentySixTwentyFifths_ordinary
+    {x : ℝ} (hx : 0 ≤ x) :
+    thetaCuspLikelihoodSourceLogPartitionJetSix x <
+      (26 / 25 : ℝ) * thetaCuspLikelihoodSourceOrdinaryJetSix x := by
+  have hsharp :=
+    thetaCuspLikelihoodSourceLogPartitionJetSix_lt_twoHundredSevenTwoHundredths_ordinary hx
+  have hord := thetaCuspLikelihoodSourceOrdinaryJetSix_pos hx
   nlinarith
 
 end

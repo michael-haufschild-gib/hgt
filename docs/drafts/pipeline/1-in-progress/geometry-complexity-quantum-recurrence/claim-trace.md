@@ -1,6 +1,6 @@
 # Internal claim ledger
 
-Not part of submitted paper. Audit date: 27 August 2026.
+Not part of submitted paper. Audit date: 28 August 2026.
 
 ## Admission rule
 
@@ -42,6 +42,9 @@ proof-assistant or internal-corpus references.
 | Exact late-time ceiling and threshold dichotomy | `RHTower.finiteContraction_returnAmplitude_exactAsymptoticCeiling`; `RHTower.finiteContraction_returnThreshold_dichotomy` | same |
 | Post-burn-in target and reverse-water deadline | `RHTower.finiteContraction_exists_return_at_target_before_waterDeadline` | same |
 | Arbitrary-spectrum collision hierarchy and continuous fidelity-statistic means | `RHTower.spectralReturnMomentMeanReal_tendsto_collisionHierarchy`; `RHTower.exists_tendsto_spectralReturnStatisticMeanReal` | `ObserverRecurrenceDistributionLaw.lean` |
+| Arbitrary-spectrum stationary law has support exactly one interval ending at squared total point-spectrum mass; endpoint belongs to support, dominates it, and total point mass is its square root | `RHTower.universalStationaryRecurrenceNoGapBoundStateMassLaw`; components `RHTower.exists_stationarySpectralReturnProbabilityMeasure_support_Icc`, `RHTower.pointSpectrumFidelityScale_one_is_stationarySupportMaximum`, `RHTower.pointSpectrumMassReal_eq_sqrt_stationarySupportEdge` | `StationaryRecurrenceSupportIntervalLaw.lean` |
+| Countable pure-point deficit identity, reflected relation-hull law and exact interval support used in proof | `RHTower.one_sub_normSq_countablePurePointSurvivalAmplitude_eq_screwSeries`; `RHTower.countablePurePointStationaryFidelityLaw_support`; `RHTower.stationarySpectralReturnProbabilityMeasure_support_of_countablyCarried` | `StationaryRecurrenceSupportIntervalLaw.lean` |
+| Exact stationary point-spectrum scaling and atomless zero-law branch | `RHTower.stationarySpectralReturnProbabilityMeasure_eq_scaledPointSpectrum`; `RHTower.stationarySpectralReturnProbabilityMeasure_eq_zero_of_noAtoms` | `StationaryRecurrencePointSpectrumScalingLaw.lean`; `StationaryRecurrenceCompletionLaw.lean` |
 | Countable pure-point recurrence | `RHTower.exists_summablePhaseEnergy_recurrence` | `SummablePurePointPhaseRecurrence.lean` |
 | Positive exact return iff visible group is cyclic | `RHTower.exists_positive_unitFidelity_iff_cyclic` | `ObserverTemporalUniversalityLaw.lean` |
 | Atomless continuum dimension and vanishing fixed return-window density | `RHTower.atomlessProjectiveObserverTemporalPhaseLaw`; packaged in `RHTower.universalQuantumRecurrenceAnatomyLaw` | `ObserverTemporalUniversalityLaw.lean`; `UniversalQuantumRecurrenceAnatomyLaw.lean` |
@@ -53,6 +56,9 @@ proof-assistant or internal-corpus references.
 | One dense, residual, full-measure coefficient set works for every induced subsystem | `HTGeometry.allSubsystemGenericSet_dense_residual_fullMeasure` | `SubsystemComponentWitness.lean` |
 | Exact subsystem component formula and connected rank `D-1` | `HTGeometry.anchoredTemporalRank_subsystemHamiltonian_of_generic`; `HTGeometry.finiteGraphTemporalRank_add_one_of_connected` | `SubsystemComponentWitness.lean`; `FiniteGraphTemporalCurvatureLaw.lean` |
 | One conull set in every open simple-spectrum qudit-path chart simultaneously has maximal projectivity, stroboscopic exponent `D-1`, first-gap-clock exponent `D-2`, every positive-weight replica floor and zero-only exact anchored return | `HTGeometry.exists_quditPath_everyChart_sameDraw_recurrenceCollisionLaw` | `QuditPathRecurrenceCollisionCapstone.lean` |
+| Same local Hamiltonian additionally has exact physical survival-fidelity first-return exponent `(D-2)/2` for every normalized cyclic state and every positive cutoff; locality and chart existence discharged; closed shifted capstone has no proposition-valued side hypotheses | `HTGeometry.ae_tendsto_log_orbitFidelityReturnTime_sortedSpectrum`; `HTGeometry.quditPathPhysicalRecurrenceCollisionLaw_of_two_le`; `HTGeometry.universalQuditPathPhysicalRecurrenceCollisionLaw` | `QuditPathPhysicalRecurrenceCollisionLaw.lean` |
+| One common conull local-Hamiltonian set classifies every normalized state simultaneously by exact nonzero spectral-support size `s`: physical survival-fidelity first-return exponent is `max(s-2,0)/2`, with exact periodic exponent-zero strata at `s=1,2`; support compression, all-support finite intersection, locality and chart existence are discharged; closed shifted capstone has no proposition-valued side hypotheses | `HTGeometry.tendsto_log_fidelityReturnTime_supportCard`; `HTGeometry.ae_all_supportGapRatio_not_vwa`; `HTGeometry.ae_tendsto_log_orbitFidelityReturnTime_supportCard_sortedSpectrum`; `HTGeometry.quditPathAllStateSupportRecurrenceLaw_of_two_le`; `HTGeometry.universalQuditPathAllStateSupportRecurrenceLaw` | `AllStateSpectralSupportRecurrenceLaw.lean` |
+| Horizon-free vanishing-tail preparation instability on same local-Hamiltonian event: anchor-doped pure state is normalized and has anchor fidelity at least `1-η`; its survival deficit is at most `4η` for every real time, every resolution `δ>4η` gives return functional exactly equal to cutoff, yet every fixed `η>0` has maximal exact-resolution exponent `(D-2)/2`; locality, chart existence and unconditional shifted capstone are discharged | `HTGeometry.spectralReturnDeficit_anchorDopedWeights_le`; `HTGeometry.fidelityReturnTime_anchorDopedWeights_eq_cutoff`; `HTGeometry.finitePureStateFidelity_anchorDopedState`; `HTGeometry.tendsto_log_orbitFidelityReturnTime_anchorDopedState`; `HTGeometry.ae_vanishingTailPreparationInstability_sortedSpectrum`; `HTGeometry.quditPathVanishingTailPreparationInstabilityLaw_of_two_le`; `HTGeometry.universalQuditPathVanishingTailPreparationInstabilityLaw` | `VanishingTailRecurrenceExponentInstabilityLaw.lean` |
 | Dirichlet first-hit upper bound and exact non-VWA logarithmic exponent | `HTGeometry.firstHit_le`; `HTGeometry.tendsto_log_firstHit_div_log` | `SimultaneousDirichlet.lean`; `FirstHitExponentLaw.lean` |
 | Path affine spectral escape, leaf-extension rigidity and connected lifted transition graph used in sharp-clock proof | `HTGeometry.exists_quditPathChain_spectrumEscapes`; `HTGeometry.hermitianLocalExtensionSlice_spectrumEscapesAffineRelations`; `HTGeometry.hermitianLocalExtension_constantAction_coefficients_constant`; `HTGeometry.crossLayer_eq_of_selectedLayerAnalyticBranchConstantAction`; `HTGeometry.crossLayerLiftGraph_preconnected_of_two_le_card` | `QuditPathChainEscape.lean`; `AffineSpectrumRelationEscape.lean`; `HermitianLocalExtensionRelationEscape.lean`; `LocalSelectedLayerSpectralResponse.lean`; `CrossLayerLiftParityRigidity.lean` |
 | Nondegenerate chart gap maps have almost-everywhere discrete and first-gap-clock exponent laws | `HTGeometry.ae_tendsto_log_firstHit_sortedGap`; `HTGeometry.ae_tendsto_log_firstHit_sortedGapRatio` | `SpectralRecurrenceExponentLaw.lean` |
@@ -98,6 +104,12 @@ proof-assistant or internal-corpus references.
 | Free scalar/one-qubit centering of omitted controlled phases and exact residual identity | `StaticLocalLaboratoryComplexityGrowthLaw.centeredPairCircuit_matrix`; `centeredPairCircuit_twoGateCount`; `p11_centered_residual` | `CenteredControlledPhaseGate.lean` |
 | Concrete nearby-time failure of all-pairs monotonicity inside nested laboratory window: early complexity at least `1514`, late complexity at most `1513`, strict reversal and `not MonotoneOn` | `monotonicityCounterEarly_complexity_lower`; `monotonicityCounterLate_complexity_upper`; `counterLateCircuit_approximates`; `monotonicityCounter_strict_complexity_reversal`; `nestedOperatorTwoGateComplexity_not_monotoneOn_laboratoryWindow` | `NestedMonotonicityLower.lean`; `NestedMonotonicityUpper.lean`; `NestedMonotonicityCounterexample.lean` |
 | One countable static nearest-neighbour Pauli field, selected once, with absolutely summable coefficients; every finite prefix maximally projective and syndetically recurrent; paired-prefix laboratory ramp; eventually near-Hilbert continuous-circuit excursion and consecutive re-entry; bounded self-adjoint UHF Hamiltonian and point-norm continuous automorphism group; literal-prefix Hamiltonian convergence and compact-time Schrödinger/Heisenberg convergence | `HTGeometry.exists_thermodynamicSameFieldLifecycle` | `ThermodynamicSameFieldUHFRecurrenceComplexityLaw.lean` |
+| Complete phase-saturated continuous `SU(4)` two-qubit circuit image: completed-time operator-norm occupation bound for every maximally projective spectrum; near-Hilbert budget `2^n/[64(n+1)]` has vanishing entropy-times-volume envelope; exact equivalence with physical Schrödinger approximation on every literal prefix; unconditional one-field capstone | `HTGeometry.maximallyProjective_continuousCircuitCapture_completedTime_le`; `HTGeometry.tendsto_nearHilbertContinuousCircuitOccupationCost_atTop`; `RHTower.thermodynamicLiteralPrefixContinuousCircuitCaptureTarget_physical_iff`; `RHTower.ThermodynamicSameFieldLifecycle.thermodynamicLiteralPrefix_continuousCircuitOccupation`; `RHTower.exists_thermodynamicSameFieldContinuousCircuitOccupationLaw` | `ContinuousCircuitCompletedOccupationLaw.lean`; `ThermodynamicSameFieldContinuousCircuitOccupationLaw.lean` |
+| Arbitrary-spectrum finite-aperture continuous-circuit occupation: for every finite spectrum, including degeneracies and exact resonances, every translated window and complete arbitrary-`SU(4)` two-qubit circuit family at operator tolerance `1/20` obey explicit Fejér envelope. Exact zero-action packet sheets persist; all nonzero sheets receive `2/(T Δ_N^nz)` correction with unconditional `Δ_N^nz>0`. No spectral premise. Maximal-projective specialization recovers previous law; same static nearest-neighbour field satisfies it at every literal prefix and resolution/window. | `HTGeometry.finitePacketNonzeroDetuningFloor_pos`; `HTGeometry.resonantPacketIndexSet_card_add_nonresonantPacketIndexSet_card`; `HTGeometry.arbitrarySpectrum_periodicProductFejerMajorant_windowMean_le`; `HTGeometry.arbitrarySpectrum_finiteCubeVisit_tensorMajorantWindowUpper`; `HTGeometry.arbitrarySpectrum_continuousCircuitCapture_finiteWindow_le`; `RHTower.ThermodynamicSameFieldLifecycle.thermodynamicLiteralPrefix_continuousCircuitFiniteWindow`; `RHTower.exists_thermodynamicSameFieldFiniteWindowContinuousCircuitOccupationLaw` | `ArbitrarySpectrumFiniteDetuningTensorWindowLaw.lean`; `ArbitrarySpectrumFiniteWindowContinuousCircuitOccupationLaw.lean`; `ThermodynamicSameFieldFiniteWindowContinuousCircuitOccupationLaw.lean` |
+| Static-local exponential continuous-circuit plateau: for every sufficiently large `L`, one ordinary time-independent nearest-neighbour Hamiltonian on `2L` qubits lies in controlled inverse-square ball, has quantitative laboratory ramp, consecutive near-Hilbert continuous-circuit exits and re-entries, exponentially wide `2^(L/2)` pointwise hard plateaux at projective error `1/40` and half near-Hilbert budget, linear norm cap, and permanent local non-Haar two-query signal | `RHTower.eventually_exists_nearestNeighborPath_exponentialContinuousCircuitPlateau_capstone`; predicates `RHTower.NearestNeighborLaboratoryRamp`, `RHTower.NearestNeighborNearHilbertContinuousFirstReturn`, `RHTower.NearestNeighborNearHilbertExponentialHardPlateaux` | `NearestNeighborExponentialContinuousCircuitPlateauCapstone.lean` |
+| Quantitative first-principles bridge behind hard plateaux: explicit Lie-product remainder; projective Pauli-two-local `SU(4)` compiler with error `3 m^3 ‖H‖² |t|²/r` and exactly `rm` gates; autonomous projective backward cone; exponential width/cost arithmetic fitting compiler below half near-Hilbert budget | `HTGeometry.norm_list_exp_product_pow_sub_exp_sum_le`; `HTGeometry.exists_twoLocal_projectiveTrotterCircuit_normBound`; `HTGeometry.twoLocal_projectiveCircuitHard_backwardInterval`; `HTGeometry.eventually_two_mul_continuousCircuitPlateauCompilerCost_le_nearHilbert`; `HTGeometry.continuousCircuitPlateau_compiler_small`; `HTGeometry.continuousCircuitPlateau_compiler_error` | `QuantitativeLieProductFormula.lean`; `TwoLocalProjectiveTrotterCompilerLaw.lean`; `ProjectiveContinuousCircuitConeLaw.lean`; `ContinuousCircuitExponentialPlateauBudgetLaw.lean` |
+| Physical path data for plateau: site relabelling preserves onsite-plus-edge locality and Pauli weight at most two; selected numbered-register Hamiltonian has norm at most `L+2` and lies within `1/L` of explicit inverse-square seed | `HTGeometry.hasPauliWeightAtMost_two_reindex_of_mem_siteFactorLocalSubmodule`; `RHTower.pairQubitProjectivePauliSeed_hasPauliWeightAtMost_two`; `RHTower.norm_pairQubitProjectivePauliSeed_le_length_add_two`; `RHTower.norm_pairQubitProjectivePauliSeed_sub_inverseSquare_le_inv_length` | `SiteFactorLocalReindexLaw.lean`; `PairQubitProjectiveSeedLocalCompilerData.lean` |
+| Same one-field recurrence-desert lifecycle plus, simultaneously for every fixed finite alphabet, polynomial exponent and target family, upper completed-time padded-circuit Choi occupation bounded by an explicit envelope tending to zero along paired literal prefixes | `RHTower.ThermodynamicSameFieldLifecycle.thermodynamicPairedPrefix_polynomialCircuitPlateau`; `RHTower.tendsto_thermodynamicPairedPrefixPolynomialCircuitCost_atTop`; `RHTower.exists_thermodynamicSameFieldPolynomialCircuitPlateauLaw` | `ThermodynamicSameFieldPolynomialCircuitPlateauLaw.lean` |
 | Every finite maximally projective Hamiltonian has projective operator-norm returns in every interval of one fixed finite length at every positive resolution; specialization to every literal selected path prefix | `HTGeometry.maximallyProjective_unitaryEvolution_projectiveReturn_syndetic`; `HTGeometry.infinitePathPrefix_projectiveReturn_syndetic` | `ThermodynamicSameFieldUHFRecurrenceComplexityLaw.lean` |
 | Arbitrary scalar-unitary approximation controls anchored relative-phase return within twice radius; exact completed anchored occupation plus orbit speed forces arbitrarily late continuous projective-return deserts | `HTGeometry.norm_unitaryEvolution_sub_anchorPhase_le_two_mul_of_scalar`; `HTGeometry.limsup_windowProbability_projectiveReturnTimes_le`; `HTGeometry.maximallyProjective_scalarUnitaryReturnTimes_late_deserts` | `ThermodynamicProjectiveRecurrenceDesertLaw.lean` |
 | Same countable local Pauli field has explicit inverse-occupation desert width `delta/(2 beta_n)-delta` tending to infinity; all sufficiently large prefixes realize such desert after every epoch; closedness plus syndetic recurrence enclose every desert between actual consecutive projective returns separated by at least that width; every prescribed gap occurs eventually, so no volume-independent projective-recurrence clock survives | `HTGeometry.thermodynamicProjectiveDesertWidth_tendsto_atTop`; `HTGeometry.infinitePathPrefix_quantitativeProjectiveRecurrenceDeserts`; `HTGeometry.scalarUnitaryReturnTimes_consecutiveVisitGap`; `HTGeometry.ThermodynamicRecurrenceDesertLifecycle.eventually_quantitativeConsecutiveProjectiveReturnGaps`; `HTGeometry.exists_thermodynamicConsecutiveProjectiveReturnGapLaw`; `HTGeometry.ThermodynamicRecurrenceDesertLifecycle.eventually_arbitraryWidthProjectiveDeserts` | `ThermodynamicProjectiveRecurrenceDesertLaw.lean` |
@@ -108,6 +120,7 @@ proof-assistant or internal-corpus references.
 
 | Paper block | Checked declaration(s) | Source |
 |---|---|---|
+| Every bounded-time operator-norm tube around every finite Hermitian Hamiltonian of dimension at least three contains commuting simple-spectrum periodic and maximal-return-exponent Hamiltonians with one common eigenbasis; same normalized cyclic state has physical survival-fidelity first-return exponents `0` and `(D-2)/2` | `HTGeometry.exists_sameEigenbasis_periodic_and_maximalPhysicalReturn_uniform_horizon` | `PhysicalFirstReturnHorizonInstabilityLaw.lean` |
 | One fixed spectrum/protocol/earlier record with every future probability, Jacobi endpoint classification and free-fermion all-sector lift | `RHTower.ParityForecast.one_fixed_nearestNeighbor_freeFermion_every_future_probability` | `FermionicFockIsospectrality.lean` |
 | Minimax terminal absolute error `1/2` | `RHTower.ParityForecast.every_forecaster_has_half_error` | `ParityConditionedForecastingInstability.lean` |
 | Complete polynomial cyclic-local data do not universally decide persistent recurrence | `RHTower.universalQuantumRecurrenceAnatomyLaw`, field `localDataDoNotDecide` | `UniversalQuantumRecurrenceAnatomyLaw.lean` |
@@ -129,13 +142,18 @@ retained in present main text.
 ## Experimental section boundary
 
 Section `Experimental tests and falsification targets` introduces no new
-mathematical theorem. Exact predictions in its four protocols refer back to
-already traced declarations: the nine-level scalar/resolved witness,
-finite-observer graph law, generic subsystem rank/curvature and exact density,
-and nested path ramp/return/reflection. Statements about calibration,
-randomized measurements, finite sampling and falsification are explicitly
-experimental proposals, not deductions of device fidelity or infinite-limit
-validation.
+mathematical theorem. Exact predictions in its nine protocols refer back to
+already traced declarations: full-process horizon instability, bound-state support edge, nine-level
+scalar/resolved witness, finite-observer graph law, generic subsystem
+rank/curvature and exact density, all-state support-stratified physical
+local-path first-return exponent and vanishing-tail resolution singularity,
+finite-aperture spectroscopic circuit occupation, static-local exponential
+plateau, and nested path ramp/return/reflection. Conditional same-field protocol uses only
+already-traced finite-prefix return-gap and continuous-circuit occupation
+bounds.  Statements about calibration, randomized measurements, finite
+sampling, compiler searches and falsification are experimental proposals, not
+deductions of device fidelity or infinite-limit validation.  Circuit witnesses
+certify capture; compiler failure alone does not certify hardness.
 
 ## Axiom and source audit
 
@@ -163,15 +181,76 @@ Targeted 27 August source check and module build of
 anchoring, finite-system hard-gap law, divergent desert scale, closed-return
 consecutive-gap extraction and unconditional same-field capstones reports only
 `[propext, Classical.choice, Quot.sound]`.
+Targeted 27 August source check and module build of
+`ThermodynamicSameFieldPolynomialCircuitPlateauLaw` passed.  Axiom audit of
+paired-prefix dimension, maximal projectivity, exact completed-time/Haar
+bound, vanishing entropy envelope and unconditional one-field capstone reports
+only `[propext, Classical.choice, Quot.sound]`.
+Targeted 27 August source checks and module build of
+`ContinuousCircuitCompletedOccupationLaw` and
+`ThermodynamicSameFieldContinuousCircuitOccupationLaw` passed.  Axiom audit
+of generic completed-time bound, near-Hilbert decay, exact physical bridge,
+literal-prefix occupation theorem and unconditional one-field capstone reports
+only `[propext, Classical.choice, Quot.sound]`.
+Targeted 28 August build of
+`ThermodynamicSameFieldFiniteWindowContinuousCircuitOccupationLaw` passed.
+Axiom audit of finite-packet detuning positivity, finite-cube window law,
+continuous-circuit finite-window capstone and unconditional same-field
+capstone reports only `[propext, Classical.choice, Quot.sound]`.  Four new
+modules contain no forbidden declaration; repository lint reports only
+unrelated pre-existing umbrella-reachability failures, and all four modules
+are reachable from their theorem-area umbrellas.
+Targeted 28 August builds of
+`ArbitrarySpectrumFiniteDetuningTensorWindowLaw` and
+`ArbitrarySpectrumFiniteWindowContinuousCircuitOccupationLaw` passed.
+Axiom audit of unconditional nonzero-floor positivity, arbitrary-spectrum
+Fejér mean, arbitrary-spectrum finite-cube visit and physical
+continuous-circuit capstone reports only
+`[propext, Classical.choice, Quot.sound]`. Both new modules contain no
+forbidden declaration and are reachable from `HTGeometry` umbrella; umbrella
+itself was not built.
+Targeted 28 August checks and builds of
+`QuantitativeLieProductFormula`, `TwoLocalProjectiveTrotterCompilerLaw`,
+`ProjectiveContinuousCircuitConeLaw`,
+`ContinuousCircuitExponentialPlateauBudgetLaw`,
+`PairQubitProjectiveSeedLocalCompilerData` and
+`NearestNeighborExponentialContinuousCircuitPlateauCapstone` passed without
+errors in these modules; no full umbrella build was run.  Axiom audit of
+product-formula bound, compiler, backward cone, budget separation, locality
+transport and capstone reports only
+`[propext, Classical.choice, Quot.sound]`.
+Targeted 28 August source check and module build of
+`QuditPathPhysicalRecurrenceCollisionLaw` passed.  Axiom audit of generic
+spectral-escape bridge, conventional local-path theorem and closed shifted
+capstone reports only `[propext, Classical.choice, Quot.sound]`.
+Targeted 28 August source check and module build of
+`PhysicalFirstReturnHorizonInstabilityLaw` passed.  Axiom audit of its
+same-eigenbasis capstone, exact-period exponent-zero bridge and dense
+non-VWA-spectrum selection reports only
+`[propext, Classical.choice, Quot.sound]`; module is wired into HTGeometry
+umbrella and no umbrella build was run.
+Targeted 28 August source check and module build of
+`AllStateSpectralSupportRecurrenceLaw` passed.  Axiom audit of support-card
+compression, simultaneous chartwise all-state exponent theorem and
+unconditional local capstone reports only
+`[propext, Classical.choice, Quot.sound]`; module is wired into HTGeometry
+umbrella and no umbrella build was run.
+Targeted 28 August source check and module build of
+`VanishingTailRecurrenceExponentInstabilityLaw` passed.  Its source contains
+no forbidden declaration.  Axiom audit of uniform all-time deficit, exact
+coarse cutoff, physical maximal exponent, simultaneous chartwise theorem and
+unconditional local capstones reports only
+`[propext, Classical.choice, Quot.sound]`; module is wired into HTGeometry
+umbrella and no umbrella build was run.
 Repository formal lint forbids `sorry`, `admit`, project `axiom`,
 `opaque` and `unsafe` declarations.
 
 ## Explicit exclusions
 
 - No first-return time from initial epoch is inferred from inverse completed density.  Inverse density supplies a desert width; a separate closedness-and-syndeticity argument proves that width lower-bounds an arbitrarily late actual consecutive-return gap.
-- No pointwise monotonicity, saturation plateau or finite-time random-matrix ramp. Pointwise monotonicity is explicitly false: nested path gives a two-sided linear envelope and scale-separated ordering, but also a strict nearby-time drop inside same laboratory window.
+- No pointwise monotonicity, maximal-complexity saturation plateau or finite-time random-matrix ramp. New finite-volume theorem does prove pointwise exclusion of a fixed circuit budget across exponential-width intervals; it does not identify constant complexity value, maximal saturation or hardness at every late time. Same-field result combines completed-time occupation extinction with finite-window occupation upper bound; neither is a pointwise lower bound at every late time. Pointwise monotonicity is explicitly false: nested path gives a two-sided linear envelope and scale-separated ordering, but also a strict nearby-time drop inside same laboratory window.
 - No Haar randomization by static bounded-local Hamiltonians.
 - No bounded-degree geometry claim for bounded-weight all-to-all Pauli terms.
 - No infinite-volume orbit recurrence, infinite-system circuit complexity or interchange of size and time limits.
-- No translation invariance or explicit numerical witness for existential same-field selection.  Rather than assuming a volume-uniform recurrence deadline, same-field theorem proves that none exists at stated projective accuracy.
+- No translation invariance, explicit numerical witness for existential same-field or per-size plateau selection, or volume-uniform finite-window convergence rate.  Finite packet detuning is positive at each prefix but may shrink with size or resolution.  Rather than assuming a volume-uniform recurrence deadline, same-field theorem proves that none exists at stated projective accuracy.
 - No physical-space reconstruction without supplied subsystem factorization.

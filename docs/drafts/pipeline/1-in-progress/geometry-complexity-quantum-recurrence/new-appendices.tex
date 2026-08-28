@@ -256,11 +256,94 @@ therefore nondegenerate.  Metric extremality of nondegenerate analytic maps
 approximable.  Equation \eqref{eq:clock-nonvwa} gives dimensions $D-1$ and
 $D-2$.
 
-Intersect these two conull events with the conull maximal-projectivity event from
-the preceding spectral-escape argument.  Maximality gives all positive-weight
-replica floors by collision expansion and makes any exact anchored return
-force time zero.  This proves Theorem \ref{thm:local-clock-capstone} for one
-unchanged Hamiltonian.
+To pass from winding to physical survival fidelity for every state at once,
+let $p_j=|\langle e_j,\psi\rangle|^2$ and
+$S(\psi)=\{j:p_j>0\}$.  Normalization gives $\sum_jp_j=1$, so
+$S(\psi)$ is nonempty.  Put $s=|S(\psi)|$.  Spectral decomposition gives
+the exact identity
+\[
+ |\langle\psi,\ee^{-\ii tH}\psi\rangle|^2
+ =\left|\sum_jp_j\ee^{-\ii t\lambda_j}\right|^2.
+\]
+Terms outside $S(\psi)$ vanish, so deleting their eigenlevels changes neither
+amplitude, fidelity deficit nor first-return time.  Increasingly enumerate
+the retained energies as $\lambda_{i_1}<\cdots<\lambda_{i_s}$.  If $s=1$,
+fidelity is identically one.  If $s=2$, the single retained gap has positive
+exact return period $2\pi/(\lambda_{i_2}-\lambda_{i_1})$.  Hence after every
+fixed $t_0>0$ the first-return times stay between positive constants as
+$\delta\downarrow0$, and logarithmic exponent is zero in both cases.
+
+Suppose $s\ge3$.  Apply winding construction to retained packet, using
+$\lambda_{i_2}-\lambda_{i_1}$ as clock.  Its gap-ratio dimension is $s-2$.
+For each fixed support $S\subseteq\{1,\ldots,D\}$ with $|S|\ge3$, same
+spectral-escape argument proves corresponding analytic support-gap map is
+nondegenerate.  Metric extremality therefore excludes very-well-approximable
+support ratios almost everywhere.  Because finite spectrum has only finitely
+many support subsets, intersection of these conull events is conull.  This
+single event depends on Hamiltonian and support, not on positive values of
+weights, and therefore applies simultaneously to uncountable family of all
+normalized states.
+
+On retained support, $c=\min_{j\in S}p_j$ is positive.  A simultaneous
+winding return therefore produces fidelity return at radius proportional to
+$\sqrt\delta$.  Conversely, bound $p_j\ge c$ forces every retained anchored
+phase into fixed multiple of $\sqrt\delta$ whenever fidelity deficit is below
+$\delta$.  These two inequalities compare physical first-return time after
+any fixed $t_0>0$ with support winding first-hit times at two constant
+multiples of $\sqrt\delta$.  Constants depend on positive weights but
+disappear after division by $\log(1/\delta)$, whereas
+\[
+ \frac{\log(1/\sqrt\delta)}{\log(1/\delta)}\longrightarrow\frac12.
+\]
+The winding exponent $s-2$ consequently becomes physical survival-fidelity
+exponent $(s-2)/2$.  Together with exactly periodic $s\le2$ strata, this is
+$\max\{s-2,0\}/2$ for every state.
+
+Intersect simultaneous stroboscopic, full winding and all-support events with
+the conull maximal-projectivity event from preceding spectral-escape argument.
+Maximality gives all positive-weight replica floors by collision expansion and
+makes any exact anchored return force time zero.  This proves Theorem
+\ref{thm:local-clock-capstone} for one unchanged Hamiltonian and one common
+exceptional null set, independently of subsequently chosen state.
+
+\subsection{Proof of Corollary \ref{cor:vanishing-tail}}
+
+The weights in \eqref{eq:vanishing-tail-state} are strictly positive and sum
+to one.  Orthonormality of the energy eigenbasis therefore gives
+\[
+ \langle\psi_\eta,\psi_\eta\rangle=1,
+ \qquad
+ |\langle e_a,\psi_\eta\rangle|^2
+ =1-\eta+\frac{\eta}{D}\ge1-\eta.
+\]
+Put $z_j(t)=e^{-itE_j}$ and
+$U(t)=D^{-1}\sum_jz_j(t)$.  Since $|z_j(t)|=1$, triangle inequality gives
+$|U(t)|\le1$.  The survival amplitude is exactly
+\[
+ A_\eta(t)=(1-\eta)z_a(t)+\eta U(t),
+\]
+so $|A_\eta(t)|\le1$ and
+\[
+ |A_\eta(t)-z_a(t)|=\eta|U(t)-z_a(t)|\le2\eta.
+\]
+Reverse triangle inequality now yields
+\[
+ 1-|A_\eta(t)|\le2\eta,
+ \qquad
+ 1-|A_\eta(t)|^2
+ =(1-|A_\eta(t)|)(1+|A_\eta(t)|)\le4\eta.
+\]
+This holds uniformly for every real $t$.  If $\delta>4\eta$, every
+$t\ge t_0$ lies in defining return set, so its infimum is $t_0$, proving
+\eqref{eq:vanishing-tail-coarse}.
+
+For every fixed positive $\eta$, all $D$ weights are nonzero.  The common
+all-state event in Theorem \ref{thm:local-clock-capstone} therefore applies
+with $s_H(\psi_\eta)=D$ and proves
+\eqref{eq:vanishing-tail-exponent}.  At $\eta=0$, $\psi_0=e_a$ and survival
+fidelity is identically one, hence exponent zero.  All anchors and all
+$0<\eta<1$ use same Hamiltonian event because theorem already quantifies over
+every normalized state.
 
 \subsection{Proof of commuting l-bit boundary}
 
@@ -462,6 +545,189 @@ multiple hard.  The $p$th multiple is identity.  A nonempty open
 neighbourhood of this polygon is visited syndetically by every maximally
 projective phase flow.
 
+\subsection{Arbitrary-spectrum finite-window circuit occupation}
+
+We prove Theorem \ref{thm:finitewindowcircuit} directly.  Fix $H,N,s,u$ and
+$T>0$.  For exact two-qubit gate count $R$, compactness of $SU(4)^R$ and
+finite choice of ordered qubit supports give operator-norm $1/20$ net with at
+most
+\[
+ 1+n^{2R}(1+80R)^{32R}
+\]
+points.  Union over $0\le R\le s$ has at most
+$\mathcal E_{20}(n,s)$ points.  A captured evolution is within $1/20$ of its
+circuit and that circuit within $1/20$ of one net point, so anchored spectral
+phase lies in projective operator tube of radius $1/10$.
+
+Choose one phase centre in each nonempty tube.  If two phase vectors lie in
+same tube, scalar alignment and triangle inequality make every coordinate
+chord at most $2/5$.  Exact chord--arc identity places every coordinate within
+angular distance $2\arcsin(1/5)$ of chosen centre.  Since
+\[
+ 2\arcsin(1/5)<\rho_*<\pi/2,
+\]
+each tube lies in product cube of radius $\rho_*$.  Thus capture event lies in
+union of at most $\mathcal E_{20}(n,s)$ translated phase cubes.  This geometric
+reduction uses no spectral hypothesis.
+
+It remains to count one cube on $(u,u+T]$.  Majorize its periodic product
+indicator by $2^d$ times tensor product of width-$2\rho_*$ periodic tents.
+Let $F_N$ be order-$N$ Fej\'er kernel and majorize each tent by its Fej\'er
+convolution plus uniform error
+\[
+ e_N(2\rho_*)=\frac{2\pi}{2\rho_*\sqrt{N+1}}.
+\]
+Tensor expansion has constant coefficient $b_N^d$ and nonconstant packet
+$\mathfrak S_{N,d}$.  Its sheet $(r,s)$ has temporal action
+\[
+ \xi_{r,s}=\sum_{j<d}(r_j-s_j)\omega_j
+\]
+and coefficient magnitude at most
+$A_N=(b_N/(N+1))^d$.  Partition packet exactly into
+$\mathfrak Z_N(H)=\{\xi_{r,s}=0\}$ and
+$\mathfrak Q_N(H)=\{\xi_{r,s}\ne0\}$.  Zero-action sheets are constant in time,
+so triangle inequality bounds their total contribution by
+$|\mathfrak Z_N(H)|A_N$.
+
+If $\mathfrak Q_N(H)$ is empty, its contribution is zero and convention
+$\Delta_N^{\rm nz}(H)=1$ is harmless.  Otherwise finite set
+$\{|\xi_{r,s}|:(r,s)\in\mathfrak Q_N(H)\}$ consists entirely of positive real
+numbers, hence its minimum $\Delta_N^{\rm nz}(H)$ is positive.  For each
+nonzero $\xi$ and every translated interval,
+\[
+ \left|\frac1T\int_u^{u+T}e^{it\xi}\,dt\right|
+ =\left|\frac{e^{i(u+T)\xi}-e^{iu\xi}}{iT\xi}\right|
+ \le\frac{2}{T|\xi|}
+ \le\frac{2}{T\Delta_N^{\rm nz}(H)}.
+\]
+Consequently one cube has normalized occupation at most
+\[
+ 2^d\left[
+ b_N^d+|\mathfrak Z_N(H)|A_N+
+ |\mathfrak Q_N(H)|A_N\frac{2}{T\Delta_N^{\rm nz}(H)}
+ \right].
+\]
+Union bound over circuit net proves \eqref{eq:finitewindowcircuit}.  Translation
+$u$ appears only as unit-modulus phase and therefore bound is uniform in
+window origin.  Degeneracies and exact resonances were retained in
+$\mathfrak Z_N(H)$ rather than excluded.
+
+\subsection{Proof of the static-local exponential hard-plateau law}
+
+We prove Theorem \ref{thm:exponentialplateau}.  Work in real finite-dimensional
+space $\mathscr V_L$ of onsite-plus-edge Hermitian path Hamiltonians.  Choose
+any real basis $(B_\ell)$ and write
+$H_L(p)=\sum_\ell p_\ell B_\ell$.  Let $p^{(0)}$ represent
+$H_L^{(0)}$ in \eqref{eq:plateauseed}, put
+\begin{equation}
+ M_L=\sum_\ell\|B_\ell\|_{2\to2},\qquad
+ \rho_L=\frac1{L(M_L+1)},                            \label{eq:plateauball}
+\end{equation}
+and use Euclidean closed ball of radius $\rho_L$ about $p^{(0)}$.
+Coefficient-to-operator estimate gives, throughout this ball,
+\begin{equation}
+ \|H_L(p)-H_L^{(0)}\|_{2\to2}
+ \le\rho_LM_L\le\frac1L.                           \label{eq:plateauballop}
+\end{equation}
+The explicit seed has norm at most $L+1$, hence
+$\|H_L(p)\|\le L+2$.
+
+Failure of maximal projectivity is countable union of zero sets of nonzero
+spectral polynomials in $p$.  Path spectral-escape construction proves that
+none is identically zero.  Their complement is conull, dense and residual.
+The robust inverse-square ramp event occupies positive measure inside
+\eqref{eq:plateauball}; intersecting with conull maximal-projectivity event
+therefore leaves a nonempty set.  Choose $p$ there once.  Duhamel stability
+from \eqref{eq:plateauballop}, with terminal time $L/10000$, transfers
+inverse-square cut lower bound to $H_L(p)$ and gives
+\eqref{eq:plateaurampwindow}--\eqref{eq:plateauramp}.  A repeated eigenvalue
+would itself yield a nonzero balanced integer relation, so maximal
+projectivity also gives simplicity.
+
+We next obtain one hard endpoint after every epoch.  In spectral eigenbasis,
+maximal projectivity makes anchored phase orbit dense in full torus
+$\mathbb T^{2^{2L}-1}$.  For fixed support architecture and gate count $R$,
+continuous circuit map has compact domain $SU(4)^R$; finite architecture
+union remains compact.  Fixed-resolution metric entropy of union over
+$0\le R\le P_L$ is eventually strictly below entropy of projective Boolean
+carrier.  Hence projective $1/20$ circuit tube has nonempty open complement.
+Minimality of phase translation gives syndetic visits both to complement and
+to circuit tube.  Taking last tube visit before hard visit and first one after
+it yields consecutive $t_-<t_+$ and proves
+\eqref{eq:plateaufullgap}.  This step also supplies hard point arbitrarily
+far in future.
+
+It remains to turn one hard point into a long hard interval.  Let
+\begin{equation}
+ m_L=\#\{\text{nonidentity Pauli labels on $2L$ qubits of weight at most two}\}
+\end{equation}
+and define one repetition count
+\begin{equation}
+ r_L=300m_L^3(L+2)^2W_L^2+W_Lm_L(L+2)+1,
+ \qquad k_L=r_Lm_L.                                  \label{eq:plateaurepetitions}
+\end{equation}
+For any self-adjoint Pauli-two-local $H$ and integer $r>0$, first-order Lie
+product formula, with scalar identity coefficient removed as global phase,
+constructs phase $|z|=1$ and continuous two-qubit circuit $C_{\tau,r}$ with
+$rm_L$ gates such that
+\begin{equation}
+ \left\|\ee^{-\ii\tau H}-zC_{\tau,r}\right\|_{2\to2}
+ \le\frac{3m_L^3\|H\|_{2\to2}^2|\tau|^2}{r},       \label{eq:plateaucompiler}
+\end{equation}
+provided
+\begin{equation}
+ \left|\frac\tau r\right|m_L\|H\|_{2\to2}\le1.   \label{eq:plateaucompilercondition}
+\end{equation}
+Each nonidentity Pauli exponential is, up to scalar phase, one lifted
+$SU(4)$ gate on its one- or two-site support.  Inequality
+\eqref{eq:plateaucompiler} follows by expanding exponential remainder,
+telescoping one product step and then telescoping $r$ powers; no simulation
+algorithm or oracle premise enters.
+
+For selected $H_L$, $\|H_L\|\le L+2$.  Formula
+\eqref{eq:plateaurepetitions} therefore makes
+\eqref{eq:plateaucompilercondition} valid simultaneously for every
+$0\le\tau\le W_L$ and makes right side of
+\eqref{eq:plateaucompiler} at most $1/100$.  Moreover
+\begin{equation}
+ m_L\le72(L+2)^2,\qquad W_L^2\le2^L,
+\end{equation}
+and direct multiplication gives
+\begin{equation}
+ k_L\le302\cdot72^4(L+2)^{10}2^L.                  \label{eq:plateaucostbound}
+\end{equation}
+Since $P_L$ grows as $2^{2L}$ divided by a linear factor,
+\begin{equation}
+ 2k_L\le P_L                                        \label{eq:plateaubudgetfit}
+\end{equation}
+for all sufficiently large $L$.
+
+Fix now a hard endpoint $T$ with separation $1/20$ against budget $P_L$.
+For $0\le\tau\le W_L$, autonomous group law is exact:
+\begin{equation}
+ \ee^{-\ii(T-\tau)H_L}\ee^{-\ii\tau H_L}
+ =\ee^{-\ii TH_L}.                                  \label{eq:plateaugroup}
+\end{equation}
+If first factor had projective $1/40$ approximation using at most
+$P_L-k_L$ gates, composing it with compiler
+\eqref{eq:plateaucompiler} would approximate endpoint with at most $P_L$
+gates and error
+\begin{equation}
+ \frac1{40}+\frac1{100}=\frac7{200}<\frac1{20},
+\end{equation}
+contradicting hardness of $T$.  Thus every time in $[T-W_L,T]$ is
+$1/40$-hard at budget $P_L-k_L$.  By
+\eqref{eq:plateaubudgetfit}, $Q_L\le P_L-k_L$, proving
+\eqref{eq:exponentialplateau}.  Applying preceding consecutive-visit law
+after shifted epoch $a+W_L$ places $T$ in
+\eqref{eq:plateauendpoint} for one finite $G_L$.
+
+Finally selected Hamiltonian is nonzero and literally Pauli-two-local.
+For sufficiently large $L$, number of local Pauli probes is below paired
+Hilbert dimension.  Exact two-query transfer identity then gives a
+product-stabilizer signal strictly above Haar value at every time.  This
+proves last clause and completes theorem.
+
 \subsection{One compatible field from finite ramps to UHF dynamics}
 
 We prove Theorem \ref{thm:samefield}.  Let $\mathcal I$ be countable label
@@ -548,6 +814,111 @@ last circuit capture before hard visit and first capture afterward.  Continuity
 gives positive hard width $W_n$; finite-cover syndeticity gives $G_n,B_n$.
 This is exactly \eqref{eq:samefieldtimes}--\eqref{eq:samefieldhard}; no
 uncounted target lies between selected captures.
+
+We next prove same-field completed-time circuit extinction for complete
+continuous circuit family.  Fix a literal $n$-qubit prefix and put
+$d=D_n-1$.  Its canonical Boolean enumeration identifies Hilbert space with
+$\C^{D_n}$, and relabeling item 2 preserves maximal projectivity.  Hence
+anchored relative-energy flow is Haar-equidistributed on $\T^d$.
+
+For every exact gate count $R$, compactness of $SU(4)^R$ and finite choice of
+ordered qubit supports give an operator-norm $1/4$-net.  Taking union over
+$0\le R\le s$ gives a finite set $N_{n,s}$ satisfying
+\begin{equation}
+ |N_{n,s}|\le\mathcal E(n,s),                         \label{eq:samefieldnetcard}
+\end{equation}
+with $\mathcal E$ from \eqref{eq:samefieldentropy}, and every circuit with at
+most $s$ gates is within $1/4$ of some $W\in N_{n,s}$.
+
+Let $T_W(r)$ be set of anchored spectral phases $x$ for which some unit
+scalar $c$ satisfies $\|P_{n,a}(x)-cW\|\le r$.  If
+$x,y\in T_W(r)$, choose corresponding scalars $c_x,c_y$ and put
+$z=c_x/c_y$.  Triangle inequality gives
+\[
+ \|P_{n,a}(x)-zP_{n,a}(y)\|\le2r.
+\]
+Unitary conjugation into energy basis leaves operator norm unchanged.  The
+anchor coordinate is $1$, so $|1-z|\le2r$; every remaining diagonal
+coordinate therefore obeys
+\[
+ |\ee^{\ii x_j}-\ee^{\ii y_j}|\le4r.
+\]
+If tube is nonempty, translate one point to origin.  Haar invariance and
+product structure then give, for $4r<2$,
+\begin{equation}
+ \mu_n(T_W(r))\le
+ \left[\frac{2\arcsin(2r)}{\pi}\right]^d.           \label{eq:samefieldtubebound}
+\end{equation}
+Empty case is immediate.
+
+Now take $r=1/20+1/4=3/10$.  Every $x\in\mathcal A_n$ lies within $1/20$
+of some phase-saturated circuit and that circuit lies within $1/4$ of one
+net point.  Thus
+\[
+ \mathcal A_n\subseteq\bigcup_{W\in N_{n,s_n}}T_W(3/10),
+ \qquad
+ \mu_n(\mathcal A_n)\le\mathcal E(n,s_n)q_*^d.
+\]
+Complete phase-saturated circuit image is compact, so $\mathcal A_n$ is
+closed.  Haar equidistribution and closed-set half of portmanteau theorem
+therefore yield
+\[
+ \overline{\dens}_n(\mathcal A_n)
+ \le\mu_n(\mathcal A_n)\le\Gamma_n.
+\]
+This controls uncountable gate family through one finite metric net; no union
+bound over gate parameters is used.
+
+At $s_n=\lfloor2^n/[64(n+1)]\rfloor$, entropy estimate gives eventually
+$\mathcal E(n,s_n)<2^d$.  Also $q_*\ge0$ and $2q_*<1$: since
+$3/5<\sin(\pi/4)=\sqrt2/2$, monotonicity of $\arcsin$ gives
+$\arcsin(3/5)<\pi/4$.  Hence
+\[
+ 0\le\Gamma_n< (2q_*)^d\longrightarrow0.
+\]
+
+Finally spectral decomposition gives
+$\ee^{-\ii tH_n(a)}=\ee^{-\ii tE_0}P_{n,a}(\theta_n(t))$ for anchor
+eigenvalue $E_0$.  Since $\mathcal L_{n,s_n}$ is saturated by every unit
+global phase, this identity proves exact equivalence
+\eqref{eq:samefieldphysicalcapture}.  Every literal prefix of already-selected
+field is maximally projective, so argument applies simultaneously to all
+$n\ge3$ without reselecting field, architecture or continuous gate
+parameters.  This proves \eqref{eq:samefieldplateau}--
+\eqref{eq:samefieldplateaucost}.
+
+For finite-aperture clause, apply Theorem
+\ref{thm:finitewindowcircuit} to each literal prefix.  Maximal projectivity
+makes every nonconstant packet action nonzero, so
+$\mathfrak Z_N(H_n(a))=\varnothing$,
+$\mathfrak Q_N(H_n(a))=\mathfrak S_{N,d_n}$ and
+$\Delta_{n,N}^{\rm nz}>0$.  General arbitrary-spectrum bound therefore
+reduces exactly to \eqref{eq:samefieldfinitewindow}, simultaneously for every
+prefix, resolution, translated window and positive duration.  This proves
+finite-window clause without adding assumption to selected field.
+
+For completeness, same field also satisfies resolved Choi-target clause.
+Choose prefix index $k=2L+1$, so $n_L=k+3=2(L+2)$ and
+$D_L=4^{L+2}$.  Maximal projectivity again gives Haar equidistribution on
+$\T^{D_L-1}$.  For fixed $M,r$ and arbitrary targets $\psi_{L,w}$, set
+$\delta_0=\sqrt2/100$.  Target $\mathcal B_L$ in
+\eqref{eq:samefieldchoiset} is finite union of closed balls, so portmanteau
+and projective Choi tube estimate give
+\[
+ \overline{\dens}_{n_L}(\mathcal B_L)
+ \le\mu_{n_L}(\mathcal B_L)
+ \le M^{(L+2)^r+1}D_L\ee^{D_L/2}
+ \left(\sqrt{\pi\delta_0^2}\right)^{D_L-1}
+ =\Gamma^{\rm Choi}_{M,r}(L).
+\]
+For fixed $M,r$, polynomial exponent $(L+2)^r$ is eventually dominated by
+$D_L$; hence $M^{(L+2)^r+1}\le2^{D_L}$ eventually.  Also
+$\ee^{D_L/2}\le2^{D_L}$ and $\sqrt{\pi/5000}\le1/10$.  Therefore
+\[
+ 0\le\Gamma^{\rm Choi}_{M,r}(L)
+ \le10D_L\left(\frac25\right)^{D_L}\longrightarrow0,
+\]
+proving \eqref{eq:samefieldchoiplateau}--\eqref{eq:samefieldchoicost}.
 
 Finally embed every finite Pauli word coherently into qubit UHF algebra
 $\mathfrak A=\overline{\bigcup_n M_2(\C)^{\otimes n}}$.  By
@@ -877,6 +1248,77 @@ Finally
 \]
 which places both increasing times strictly inside laboratory window and
 completes proof.
+
+\section{Finite-horizon instability of physical first return}
+\label{app:horizon-instability}
+
+We prove Theorem \ref{thm:horizon-instability}.  Put $D=e+3$.  By finite
+spectral theorem choose unitary $U$ and real tuple $\lambda$ such that
+$A=U\operatorname{diag}(\lambda)U^*$.  For every real $D$-tuple $E$, define
+\begin{equation}
+ B(E)=U\operatorname{diag}(E)U^*.                     \label{eq:spectral-transport}
+\end{equation}
+Every $B(E)$ is Hermitian.  Every pair $B(E),B(F)$ commutes, each commutes
+with $A$, and all have common orthonormal eigenbasis given by columns of $U$.
+If $E$ is injective, this displayed spectrum is simple.
+
+Fix $r=\eta/T$.  First choose an injective commensurate tuple
+$E_{\rm per}$ with
+\begin{equation}
+ \max_j|E_{{\rm per},j}-\lambda_j|<r.                \label{eq:periodic-dense}
+\end{equation}
+Such tuples are dense: choose sufficiently fine frequency $\omega>0$ and
+distinct integers $m_j$ with $|\omega m_j-\lambda_j|<r$.  At
+$R=2\pi/\omega$, all phases $\ee^{-\ii R E_{{\rm per},j}}$ equal one.
+
+For second tuple, consider open simple locus in $\R^D$.  On each ordering
+chamber, sorted anchored gap-ratio map to $\R^{D-2}$ is smooth
+nondegenerate affine-ratio map.  Metric Diophantine extremality implies its
+preimage of very-well-approximable vectors has Lebesgue measure zero
+\cite{KleinbockMargulis1998}.  Every ball has positive measure and collision
+hyperplanes are null.  Hence ball of radius $r$ around $\lambda$ contains an
+injective tuple $E_{\rm max}$ whose sorted gap-ratio packet is not very well
+approximable:
+\begin{equation}
+ \max_j|E_{{\rm max},j}-\lambda_j|<r.                \label{eq:maximal-dense}
+\end{equation}
+
+Let $B_{\rm per}=B(E_{\rm per})$ and
+$B_{\rm max}=B(E_{\rm max})$.  Unitary invariance of operator norm and norm
+of diagonal matrix give
+\begin{equation}
+ \|B(E)-A\|_{2\to2}=\max_j|E_j-\lambda_j|.           \label{eq:transport-norm}
+\end{equation}
+For Hermitian $H,K$, Duhamel identity
+\begin{equation}
+ \ee^{-\ii tH}-\ee^{-\ii tK}
+ =-\ii\int_0^t \ee^{-\ii(t-s)H}(H-K)\ee^{-\ii sK}\,ds
+\end{equation}
+(with reversed orientation for $t<0$) and unitarity yield
+\begin{equation}
+ \|\ee^{-\ii tH}-\ee^{-\ii tK}\|_{2\to2}
+ \le |t|\|H-K\|_{2\to2}.                            \label{eq:duhamel-horizon}
+\end{equation}
+Equations \eqref{eq:periodic-dense}--\eqref{eq:transport-norm} therefore
+prove \eqref{eq:horizon-tube}.
+
+Fix one normalized $\psi$ having nonzero overlap with every common
+eigenvector and $t_0>0$.  Some integer multiple $mR$ is at least $t_0$.
+At $mR$, $B_{\rm per}$ has zero survival-fidelity deficit.  For every
+$\delta>0$ its first return consequently lies in $[t_0,mR]$.  Since
+$\log(1/\delta)\to\infty$, logarithmic squeezing proves first limit in
+\eqref{eq:horizon-exponents}.
+
+For $B_{\rm max}$, cyclicity makes all spectral weights strictly positive.
+On finite projective torus, weighted survival-fidelity deficit is bounded
+above and below by positive constants times square of projective phase
+distance in sufficiently small neighborhood of return.  Dirichlet's theorem
+gives upper first-hit exponent $D-2$ after using first positive spectral gap
+as continuous clock.  Failure of very-well approximation gives matching
+lower exponent.  Squaring relation between phase distance and fidelity
+deficit divides exponent by two, proving second limit in
+\eqref{eq:horizon-exponents}.  Same $U$, $\psi$ and $t_0$ were used on both
+branches, completing proof.
 
 \section{Countable completion and reflection}
 

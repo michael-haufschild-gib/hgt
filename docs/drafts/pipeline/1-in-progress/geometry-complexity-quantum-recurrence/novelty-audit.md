@@ -1,6 +1,6 @@
 # Novelty audit
 
-Date: 27 August 2026. Priority status: provisional pending independent search.
+Date: 28 August 2026. Priority status: provisional pending independent search.
 No absolute “first” claim is authorized.
 
 ## Closest current literature
@@ -60,6 +60,10 @@ No absolute “first” claim is authorized.
    higher-order autocorrelations recover signals. These are direct parent
    literatures for scalar/resolved separation; homometry and higher-order
    reconstruction are not claimed new.
+10. Wiener--Eberlein theory identifies mean squared Fourier--Stieltjes
+    amplitude with sum of squared atomic masses.  It supplies the first
+    stationary moment, not connectedness of full survival-law support, its
+    exact upper endpoint, or inversion of total atomic mass from that edge.
 
 ## Second frozen-shape search, 27 August 2026
 
@@ -94,7 +98,42 @@ model validation, while Elben et al. review randomized-measurement protocols
 and experimental use. They support proposed calibration/readout routes only;
 they are not cited as predecessors of mathematical laws.
 
+## Frozen support-edge search, 28 August 2026
+
+Searches targeted `stationary survival fidelity distribution support`,
+`Fourier--Stieltjes transform value distribution support`, `pure point mass
+support supremum`, `bound-state weight recurrence distribution`,
+`Wiener--Eberlein support edge`, and `RAGE survival distribution`.  Primary
+matches treated Wiener--Eberlein mean-square identities, RAGE separation,
+return decay, localization diagnostics and recurrence times.  A later hostile
+pass found Jessen--Wintner (1935), Theorem 26: support of asymptotic law of a
+uniformly almost-periodic vector function is closure of its range.  For a
+pure-point scalar survival-fidelity orbit, continuity of real-time range then
+already gives interval support.  Therefore no-gap topology in pure-point case
+is classical, not new.  Search still found no source packaging arbitrary
+mixed spectral measure as exact interval `[rho,p^2]` or deriving square-root
+bound-state-mass inverse law.  That narrower claim is absence evidence, not
+proof of priority.
+
 ## Candidate novelty residues
+
+### New core. No-gap stationary recurrence and bound-state-mass inversion
+
+Exact residue: for every probability spectral measure, including arbitrary
+mixtures of pure-point, absolutely continuous and singular-continuous parts,
+stationary survival-fidelity support is exactly one closed interval
+`[rho,p^2]`; `p` is total pure-point mass.  Hence full stationary law recovers
+`p` as square root of support maximum.  Lower edge is scaled least fidelity
+on exact compact relation hull.  No simplicity, finite support, rational
+independence, decay or genericity enters.
+
+Preliminary verdict: useful mixed-spectrum extension, no longer novelty
+anchor.  Classical Wiener--Eberlein mean uses `sum w_i^2`; theorem extracts
+`(sum w_i)^2` from full-law support.  Jessen--Wintner already supplies
+support-equals-range-closure mechanism behind pure-point no-gap topology.
+Candidate novelty is exact mixed-spectrum reduction, interval endpoints and
+inverse formula.  Priority remains provisional pending independent specialist
+search.
 
 ### Core. Universal observer-action information hierarchy
 
@@ -148,6 +187,41 @@ rates.
 Preliminary verdict: abstract rational-independence consequences are known;
 candidate novelty is generic realization in ordinary static bounded-degree
 interacting many-body family plus exact thermodynamic completed-density law.
+
+### New local core. Exact physical first return in full static path family
+
+Exact residue: for `D=q^n`, on every nonempty simple-spectrum chart of full
+Hermitian onsite-plus-nearest-neighbour coefficient space, one conull set of
+Hamiltonians has, simultaneously for every normalized initial state and every
+positive post-exit cutoff,
+
+`lim_{delta->0} log T_H,psi(delta) / log(1/delta) = max(s_H(psi)-2,0)/2`,
+
+where `s_H(psi)` is exact number of eigenlevels with nonzero spectral weight.
+One- and two-level states form exact periodic exponent-zero strata; cyclic
+states recover maximal `(D-2)/2` stratum.  Uncountable all-state quantifier is
+handled by one finite intersection over spectral supports: positive weight
+values alter comparison constants, while exact zeros alone alter dimension.
+
+Same Hamiltonian also has maximal projective rank, exact stroboscopic and
+winding exponents, all positive-weight replica and moment floors, and no
+nonzero exact projective return.  Locality, simple-chart existence and spectral
+nondegeneracy are discharged inside capstone.
+
+Closest primary results: Campos Venuti (2015) computes average spacing of
+fidelity-level crossings, explicitly not first recurrence, and uses Gaussian
+approximation near exact return.  Gupta--Short (2026) prove deterministic
+Dirichlet upper bounds but no matching generic local lower law.
+Kotowski--Oszmaniec (arXiv:2601.10409v3, 5 August 2026) prove packing upper
+bounds and random-diagonal lower bounds and explicitly list tight recurrence
+bounds for physical local noncommuting Hamiltonians as open.
+
+Preliminary verdict: strongest finite local recurrence novelty.  It closes
+typical-case version of named open direction and strengthens effective-support
+upper estimates to exact support-stratified physical equality for one generic
+local Hamiltonian simultaneously across all pure states.  It does not solve
+every-local-Hamiltonian problem; absence of state-uniform finite-resolution
+constants remains explicit.
 
 ### D. Countable complete recurrence under weak perturbation
 
@@ -279,8 +353,9 @@ deterministic finite-dimensional recurrence upper bounds and random-diagonal
 lower saturation, explicitly listing tight recurrence bounds for physical
 local noncommuting Hamiltonians as open.  Gupta--Short (arXiv:2604.14995)
 give state-independent finite-dimensional upper bounds by simultaneous
-Diophantine approximation.  Campos Venuti (arXiv:1509.04352) derives typical
-recurrence-time scaling under statistical/rational-independence assumptions.
+Diophantine approximation.  Campos Venuti (arXiv:1509.04352) derives average
+spacing of fidelity-level crossings under statistical/rational-independence
+assumptions, not first-return asymptotics.
 None of these sources supplies one compatible deterministic local field whose
 every finite prefix recurs syndetically while certified consecutive
 projective-return gaps diverge with volume.
@@ -295,6 +370,189 @@ existence/lower-gap aspect of local noncommuting recurrence frontier, not
 universal tight first-return bounds.  Absence claim remains bounded by listed
 search and is not an absolute priority assertion.
 
+### L. Same-field thermodynamic continuous-circuit occupation extinction
+
+Exact residue: same one countable static nearest-neighbour Pauli field from
+sections J--K works for complete global-phase-saturated image of every circuit
+with at most `floor(2^n/[64(n+1)])` arbitrary continuous `SU(4)` two-qubit
+gates.  On every literal prefix, not only paired subsequence, upper centered
+completed-time physical operator-norm occupation at error `1/20` is bounded by
+`E(n,s_n) q^(2^n-1)`, where `q=2 asin(3/5)/pi<1/2`; envelope tends to zero.
+Exact spectral target membership is proved equivalent to physical
+approximation of `exp(-itH_n)` modulo global phase.  Field is not reselected
+for architecture, continuous gate parameters, volume or time.
+
+Earlier finite-alphabet result is retained as complementary resolved-target
+clause: for every fixed alphabet, polynomial word-depth and arbitrary Choi
+target family, paired-prefix occupation is bounded by
+`M^((L+2)^r+1) D_L exp(D_L/2) (sqrt(pi/5000))^(D_L-1) -> 0`.
+Continuous theorem is stronger in gate family and budget; Choi theorem allows
+arbitrary resolved targets attached to words and is therefore not deleted.
+
+Closest primary sources: Oszmaniec--Kotowski--Horodecki--Hunter-Jones study
+complexity saturation and recurrence for random local circuits and stochastic
+local-Hamiltonian evolution.  Kotowski--Oszmaniec study deterministic
+finite-dimensional recurrence bounds and random-Hamiltonian saturation.
+Existing static tube estimates in cited phase-equidistribution line are
+finite-dimensional and do not supply one compatible local field across
+volume, circuit model, recurrence gaps and infinite-volume dynamics.
+Cui--Schuster--Mao--Huang--Brandao show constant-local time-independent
+Hamiltonian ensembles fail Haar `2`-design/PRU tests; spectral-torus
+occupation theorem neither assumes nor asserts Haar randomization.  Search
+found no exact deterministic time-independent nearest-neighbour same-field
+theorem with full continuous-circuit completed-time thermodynamic occupation.
+
+Preliminary verdict: strengthens section J from recurrent hard excursions to
+quantified almost-all-time circuit rarity in thermodynamic order of limits.
+Novelty is continuous gate family, near-Hilbert budget, every-prefix
+compatibility and same-field conjunction with explicit vanishing envelope,
+not metric-net union bound or Kronecker--Weyl equidistribution in isolation.
+It does not prove pointwise complexity saturation, finite-time
+mixing, typicality, translation invariance or infinite-volume circuit
+complexity.  Absence claim is bounded by documented search, not absolute
+priority proof.
+
+### M. Arbitrary-spectrum finite-aperture continuous-circuit occupation
+
+Exact residue: for every finite spectrum—including degeneracies and exact
+resonances—every translated window `(u,u+T]`, every Fejér resolution `N`,
+every circuit budget and complete uncountable arbitrary-`SU(4)` two-qubit gate
+class, physical operator-norm capture at tolerance `1/20` has explicit upper
+occupation envelope. Retained packet splits into exact zero-action census
+`Z_N` and nonzero census `Q_N`. Zero actions persist; nonzero contribution is
+controlled by unconditional positive finite floor `Δ_N^nz` and decays as
+`2/(T Δ_N^nz)`. No simplicity, rational independence, chaos, randomness,
+mixing, locality or Diophantine premise is used. Under maximal projectivity,
+`Z_N=∅`, recovering prior law. One same static nearest-neighbour field
+satisfies specialization simultaneously at every literal prefix.
+
+Literature-first Aug-2026 audit found established finite-time equilibration
+with gap-degeneracy control (Short--Farrelly), finite temporal-ensemble sinc
+suppression and late inverse-window behavior (Mark et al.), random
+local-circuit/stochastic-local-H occupation and recurrence, general
+finite-dimensional recurrence, and arithmetic Floquet recurrence. It found
+no theorem combining arbitrary deterministic finite spectrum with exact
+resonances, every translated window, physical projective operator norm,
+complete continuous two-qubit circuit targets, and explicit finite-resolution
+resonance census. Same-field corollary adds deterministic static bounded-degree
+locality. Novelty is scoped to these conjunctions. Resonant/nonresonant Fourier
+splitting, Fejér approximation, sinc decay, finite exponential-sum bounds and
+circuit nets are not claimed new separately.
+
+Boundary: `Δ_N^nz>0` is exact at each finite packet but may be experimentally
+small and may shrink with volume/resolution. Resonant term may make envelope
+vacuous when census is large; that records genuine obstruction rather than
+mixing it into false convergence claim. The theorem supplies no volume-uniform
+finite-time rate, pointwise hardness, mixing or efficient all-circuit compiler.
+Empirical violations can falsify calibrated model; agreement cannot prove an
+exact real-number resonance or thermodynamic claim.
+
+### N. Static nearest-neighbour exponential continuous-circuit hard plateaux
+
+Exact residue: for every sufficiently large $L$, one deterministic
+time-independent Hamiltonian in full onsite-plus-edge family of $2L$-qubit
+path is within operator norm $1/L$ of explicit inverse-square path and has all
+following simultaneously: quantitative early operator-complexity ramp;
+maximally projective simple spectrum; recurrent consecutive exits and
+re-entries into projective $1/20$ tube of all arbitrary continuous two-qubit
+circuits below $P_L=\lfloor2^{2L}/[64(2L+1)]\rfloor$ gates; after every epoch,
+pointwise projective $1/40$ hardness throughout interval of width
+$2^{\lfloor L/2\rfloor}$ against half this budget; linear norm cap; permanent
+two-query separation from exact Haar benchmark. Hamiltonian remains same
+through every interval. No stochasticity, time averaging, finite gate
+alphabet, computational assumption or time-dependent control.
+
+Primary comparison repeated 28 August 2026. Oszmaniec--Kotowski--Horodecki--
+Hunter-Jones prove saturation and recurrence for random local circuits and
+stochastic local-Hamiltonian evolution (arXiv:2205.09734). Childs--Su give
+nearly optimal product-formula upper simulation for nearest-neighbour lattice
+Hamiltonians (arXiv:1901.00564). Haah--Hastings--Kothari--Low give worst-case
+lower bound for piecewise-constant bounded 1D dynamics, allowing infinite
+nonlocal gate set (arXiv:1801.03922). Low--Su--Tong--Tran give generic
+commuting two-local short-time lower bounds without nearest-neighbour
+bounded-degree restriction (arXiv:2211.09133). Zlokapa--Allen--Harrow give
+coefficient-sensitive optimal simulation lower bounds using bounded-degree
+classical hard instances (arXiv:2607.19852). Brown--Susskind give typical
+second-law argument, not deterministic theorem (arXiv:1701.01107).
+
+No checked source states exact conjunction of deterministic static 1D
+nearest-neighbour locality, continuous two-qubit gate class, near-Hilbert
+budget, explicitly exponential-width pointwise hard intervals and recurrent
+re-entry. This is absence evidence, not priority proof. Novel ingredients in
+combination are entropy hard endpoint plus quantitative projective
+Pauli-two-local compiler plus autonomous backward cone. Lie product formula,
+metric covering and compact-torus minimality are not claimed new separately.
+Result does not prove maximal-complexity saturation, monotonic growth,
+translation invariance, optimal constants, first hard time or one compatible
+Hamiltonian across all volumes.
+
+### O. Physical first-return horizon-instability law
+
+**Closed theorem.**  Every bounded-time operator-norm neighborhood of every
+finite Hermitian Hamiltonian in dimension at least three contains two
+pairwise commuting simple-spectrum Hamiltonians sharing one explicit
+orthonormal eigenbasis.  Uniformly over same finite interval, both complete
+propagators are arbitrarily close to original.  Nevertheless, for every one
+fixed normalized state cyclic in common basis, periodic branch has physical
+survival-fidelity first-return exponent zero and non-VWA branch has maximal
+exponent `(D-2)/2`.
+
+**Frontier comparison.**  Gupta--Short and Kotowski--Oszmaniec bound recurrence
+for fixed Hamiltonian.  Campos Venuti studies fidelity-level crossing
+spacing, not actual first hit.  Dumas--Fischler prove optimal filling-time
+bounds from truncated Diophantine data.  Gr\"unbaum--Vel\'azquez--Werner--Werner
+study monitored discrete-time recurrence, where projective measurement is
+inserted after every step.  None states local instability of unmeasured
+physical first-return exponent under uniform full-propagator control, same
+eigenbasis and same cyclic state.
+
+**Priority verdict.**  Strong, likely novel identifiability theorem.  Exact
+conjunction was not located as of 28 August 2026.  Priority remains absence
+evidence, not bibliographic proof.  Established ingredients explicitly not
+claimed new: density of commensurate spectra, nullity/extremality of VWA
+packets, finite-dimensional spectral theorem and Duhamel continuity.
+
+**Experimental boundary.**  Finite process tomography can test finite-window
+closeness and observe subsequent divergence at accessible thresholds; it
+cannot certify non-VWA arithmetic or asymptotic exponent.  This is theorem's
+physical message rather than a defect in protocol.
+
+### P. Vanishing-tail preparation-instability law
+
+**Closed theorem.**  On every open simple-spectrum chart of full static
+nearest-neighbour qudit-path coefficient family, one conull Hamiltonian set
+works for every anchor eigenlevel and every `0<η<1`.  The normalized pure state
+formed by retaining mass `1-η` at anchor and distributing `η` uniformly over
+all eigenlevels has anchor fidelity at least `1-η` and survival-fidelity
+deficit at most `4η` for every real time.  Hence every resolution `δ>4η`
+returns cutoff exactly.  Nevertheless every fixed positive `η` activates full
+support and exact first-return exponent `(D-2)/2`, while `η=0` eigenstate has
+exponent zero.  Unconditional shifted capstone discharges dimension, locality,
+simple-chart existence and generic spectral escape.
+
+**Frontier comparison.**  Kotowski--Oszmaniec use effective spectral support
+and uniform orbit closeness after deleting a probability tail to prove
+deterministic recurrence upper bounds.  Gupta--Short provide all-state upper
+bounds.  Monitored first-detection literature has discontinuous quantized mean
+return at resonances and dark states, but inserts repeated measurements and
+does not concern unmeasured continuous survival fidelity.  Loschmidt-echo
+literature perturbs Hamiltonian and studies decay rather than initial-state
+support activation.  No checked source states horizon-free scalar invisibility
+and exact coarse no-exit together with maximal asymptotic first-return exponent
+activation on one static bounded-degree local Hamiltonian.
+
+**Priority verdict.**  Strong likely-novel conjunction and natural corollary of
+all-state law, not separate fifth principle.  It sharpens Law III: exact zeros
+select dimension discontinuously, positive weights select resolution scale.
+Priority remains absence evidence as of 28 August 2026.  Effective-support
+continuity, pure-state spectral decomposition and metric Diophantine
+extremality are explicitly not claimed new separately.
+
+**Experimental boundary.**  Deliberate tail injection allows a small-system
+test of uniform `4η` envelope and resolution crossover while Hamiltonian stays
+fixed.  Finite apparatus cannot certify exact zero population or asymptotic
+exponent; it can falsify calibrated finite-system realization.
+
 ## Novelty explicitly disclaimed
 
 - Compact-hull equidistribution and Kronecker--Weyl theory.
@@ -305,8 +563,12 @@ search and is not an absolute priority assertion.
 - Abstract all-order form-factor formulas under rational independence.
 - Elementary finite target union bound.
 - Permanent non-Haar behavior of constant-local static ensembles.
-- First-return estimates, any literal monotone complexity trajectory,
-  saturation plateaus and random-matrix ramps.
+- Universal first-return estimates, any literal monotone complexity trajectory,
+  maximal-complexity saturation plateaus and random-matrix ramps. Candidate N
+  proves fixed-budget hard plateaux, not saturation at maximum complexity.
+- Density of periodic spectra, metric nullity of VWA vectors, Duhamel
+  continuity, or any claim that bounded experiments certify exact asymptotic
+  recurrence exponents.
 - Infinite-volume recurrence.
 
 ## Priority controls used in paper

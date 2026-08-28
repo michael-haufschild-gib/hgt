@@ -224,6 +224,23 @@ theorem mtHarmanPairNonrectangularTupleCount_eq_sum
             ¬MTHarmanPairRectangular t endpoint E q₁ q₂ then 1 else 0 :=
       Finset.sum_product P P _
 
+theorem mtHarmanPairNonrectangularTupleCount_mono
+    {t : ℕ} (endpoint : ℕ → ℕ) {P P' : Finset ℕ} (hPP' : P ⊆ P')
+    (E : ℝ) (n : ℕ) :
+    mtHarmanPairNonrectangularTupleCount (t := t) endpoint P E n ≤
+      mtHarmanPairNonrectangularTupleCount (t := t) endpoint P' E n := by
+  classical
+  have hsubset : mtHarmanPairNonrectangularTuples (t := t) endpoint P E n ⊆
+      mtHarmanPairNonrectangularTuples (t := t) endpoint P' E n := by
+    intro q hq
+    have hq' := Finset.mem_filter.mp hq
+    apply Finset.mem_filter.mpr
+    exact ⟨Finset.mem_product.mpr
+      ⟨hPP' (Finset.mem_product.mp hq'.1).1,
+        hPP' (Finset.mem_product.mp hq'.1).2⟩, hq'.2⟩
+  unfold mtHarmanPairNonrectangularTupleCount
+  exact_mod_cast Finset.card_le_card hsubset
+
 /-- Triangle inequality and `rho ≤ 1`: literal pair error is at most its exact tuple count. -/
 theorem norm_mtHarmanPairNonrectangularError_le_tupleCount
     {t : ℕ} (endpoint : ℕ → ℕ) (P : Finset ℕ) (E : ℝ) (z n : ℕ) :
@@ -405,18 +422,61 @@ theorem normSq_mtHarmanPairNonrectangularError_le_weighted
     _ = weightedMTHarmanNonrectangularCount 2 (t := t) endpoint P δ E n := by
       rw [weightedMTHarmanNonrectangularCount_eq_divisorsPow_mul_zero]
 
+/-- Source-subset form: the literal error may use any prime carrier inside the complete aligned
+schedule, while the majorant safely counts the complete schedule. -/
+theorem normSq_mtHarmanPairNonrectangularError_le_weighted_of_subset
+    {t : ℕ} {endpoint : ℕ → ℕ}
+    (hendpoint : ∀ i, 1 ≤ endpoint i) (hmono : Monotone endpoint)
+    (S : Finset ℕ)
+    (hS : S ⊆ primesIco (endpoint 0) (endpoint t))
+    (δ E : ℝ) (hδ : 0 ≤ δ)
+    (hband : ∀ i : Fin t,
+      mtAdjacentBlockUpperScale endpoint i ≤
+        (1 + δ) * mtAdjacentBlockLowerScale endpoint i)
+    (z : ℕ) {n : ℕ} (hn : n ≠ 0) :
+    ‖mtHarmanPairNonrectangularError (t := t) endpoint S E z n‖ ^ 2 ≤
+      weightedMTHarmanNonrectangularCount 2 (t := t) endpoint
+        (primesIco (endpoint 0) (endpoint t)) δ E n := by
+  let P := primesIco (endpoint 0) (endpoint t)
+  let C := mtHarmanPairNonrectangularTupleCount (t := t) endpoint S E n
+  let M := weightedMTHarmanNonrectangularCount 0 (t := t) endpoint P δ E n
+  have hnorm : ‖mtHarmanPairNonrectangularError (t := t) endpoint S E z n‖ ≤ C :=
+    norm_mtHarmanPairNonrectangularError_le_tupleCount endpoint S E z n
+  have hCM : C ≤ M := by
+    calc
+      C ≤ mtHarmanPairNonrectangularTupleCount (t := t) endpoint P E n :=
+        mtHarmanPairNonrectangularTupleCount_mono endpoint hS E n
+      _ ≤ mtHarmanPairGlobalObstructionCount (t := t) endpoint P δ E n :=
+        mtHarmanPairNonrectangularTupleCount_le_globalObstruction
+          hendpoint hmono δ E hδ hband n
+      _ = M := mtHarmanPairGlobalObstructionCount_eq_weighted_zero hmono δ E n
+  have hCd : C ≤ (n.divisors.card : ℝ) ^ 2 :=
+    mtHarmanPairNonrectangularTupleCount_le_divisors_sq endpoint S E hn
+  have hC0 : 0 ≤ C := by
+    dsimp [C, mtHarmanPairNonrectangularTupleCount]
+    positivity
+  calc
+    ‖mtHarmanPairNonrectangularError (t := t) endpoint S E z n‖ ^ 2 ≤ C ^ 2 := by
+      simpa only [pow_two] using mul_le_mul hnorm hnorm (norm_nonneg _) hC0
+    _ ≤ (n.divisors.card : ℝ) ^ 2 * M := by
+      simpa only [pow_two] using
+        mul_le_mul hCd hCM hC0 (sq_nonneg (n.divisors.card : ℝ))
+    _ = weightedMTHarmanNonrectangularCount 2 (t := t) endpoint P δ E n := by
+      rw [weightedMTHarmanNonrectangularCount_eq_divisorsPow_mul_zero]
+
 /-- Paper-aligned pair rectangularization has the exact `66δ_A` mean-square cost inherited from
 the collision/boundary majorant. -/
-theorem eventually_sum_normSq_mtHarmanPairNonrectangularError_paperAligned_le
+theorem eventually_sum_normSq_mtHarmanPairNonrectangularError_sourceSubset_paperAligned_le
     (A : ℕ) :
-    ∀ᶠ X : ℝ in atTop, ∀ (z₁ Y : ℕ) (E : ℝ) (z : ℕ),
+    ∀ᶠ X : ℝ in atTop, ∀ (z₁ Y : ℕ) (E : ℝ) (z : ℕ) (S : Finset ℕ),
       mtLowerCutoffNat X ≤ z₁ → (z₁ : ℝ) ≤ X → 1 ≤ Y →
+      S ⊆ primesIco (mtLowerCutoffNat X) z₁ →
       let endpoint :=
         mtPaperAlignedEndpoint (mtLowerCutoffNat X) z₁ (mtPaperWidth A X)
       let P := primesIco (mtLowerCutoffNat X) z₁
       ∑ n ∈ Finset.Icc 1 Y,
           ‖mtHarmanPairNonrectangularError
-            (t := z₁ - mtLowerCutoffNat X) endpoint P E z n‖ ^ 2 ≤
+            (t := z₁ - mtLowerCutoffNat X) endpoint S E z n‖ ^ 2 ≤
         (4 : ℝ) ^ 2 * (Y : ℝ) *
           (1 + Real.log (Y : ℝ)) ^ (2 ^ 2 - 1) *
             (66 * mtPaperWidth A X) * ∑ q ∈ P, 1 / (q : ℝ) := by
@@ -424,7 +484,7 @@ theorem eventually_sum_normSq_mtHarmanPairNonrectangularError_paperAligned_le
     eventually_sum_weightedMTHarmanNonrectangularCount_paperAligned_le A 2,
     eventually_one_le_mtPaperWidth_mul_mtLowerCutoffNat_sub_one A,
     Filter.eventually_ge_atTop (Real.exp 1)] with X hweightedX hprogressX hX
-  intro z₁ Y E z hz hzX hY
+  intro z₁ Y E z S hz hzX hY hS
   dsimp only
   let z₀ := mtLowerCutoffNat X
   let δ := mtPaperWidth A X
@@ -462,10 +522,12 @@ theorem eventually_sum_normSq_mtHarmanPairNonrectangularError_paperAligned_le
     dsimp [endpoint]
     exact mtPaperAlignedEndpoint_sub_eq hzOne (by simpa only [z₀] using hz) hδ0
       (by simpa only [z₀, δ] using hprogressX)
+  have hSfull : S ⊆ primesIco (endpoint 0) (endpoint (z₁ - z₀)) := by
+    simpa only [z₀, endpoint, mtPaperAlignedEndpoint_zero, hterminal] using hS
   calc
     ∑ n ∈ Finset.Icc 1 Y,
         ‖mtHarmanPairNonrectangularError
-          (t := z₁ - z₀) endpoint P E z n‖ ^ 2 ≤
+          (t := z₁ - z₀) endpoint S E z n‖ ^ 2 ≤
       ∑ n ∈ Finset.Icc 1 Y,
         weightedMTHarmanNonrectangularCount 2
           (t := z₁ - z₀) endpoint P δ E n := by
@@ -474,14 +536,36 @@ theorem eventually_sum_normSq_mtHarmanPairNonrectangularError_paperAligned_le
       have hn0 : n ≠ 0 := by
         have hn1 : 1 ≤ n := (Finset.mem_Icc.mp hn).1
         omega
-      have hpoint := normSq_mtHarmanPairNonrectangularError_le_weighted
-        (t := z₁ - z₀) hendpoint hmonoEndpoint δ E hδ0 hband z
+      have hpoint := normSq_mtHarmanPairNonrectangularError_le_weighted_of_subset
+        (t := z₁ - z₀) hendpoint hmonoEndpoint S hSfull δ E hδ0 hband z
         (n := n) hn0
       simpa only [P, endpoint, mtPaperAlignedEndpoint_zero, hterminal] using hpoint
     _ ≤ (4 : ℝ) ^ 2 * (Y : ℝ) *
         (1 + Real.log (Y : ℝ)) ^ (2 ^ 2 - 1) *
           (66 * δ) * ∑ q ∈ P, 1 / (q : ℝ) := by
       simpa only [z₀, δ, endpoint, P] using hweightedX z₁ Y E hz hzX hY
+
+/-- Paper-aligned pair rectangularization has the exact `66δ_A` mean-square cost inherited from
+the collision/boundary majorant. -/
+theorem eventually_sum_normSq_mtHarmanPairNonrectangularError_paperAligned_le
+    (A : ℕ) :
+    ∀ᶠ X : ℝ in atTop, ∀ (z₁ Y : ℕ) (E : ℝ) (z : ℕ),
+      mtLowerCutoffNat X ≤ z₁ → (z₁ : ℝ) ≤ X → 1 ≤ Y →
+      let endpoint :=
+        mtPaperAlignedEndpoint (mtLowerCutoffNat X) z₁ (mtPaperWidth A X)
+      let P := primesIco (mtLowerCutoffNat X) z₁
+      ∑ n ∈ Finset.Icc 1 Y,
+          ‖mtHarmanPairNonrectangularError
+            (t := z₁ - mtLowerCutoffNat X) endpoint P E z n‖ ^ 2 ≤
+        (4 : ℝ) ^ 2 * (Y : ℝ) *
+          (1 + Real.log (Y : ℝ)) ^ (2 ^ 2 - 1) *
+            (66 * mtPaperWidth A X) * ∑ q ∈ P, 1 / (q : ℝ) := by
+  filter_upwards [
+    eventually_sum_normSq_mtHarmanPairNonrectangularError_sourceSubset_paperAligned_le A]
+    with X hX
+  intro z₁ Y E z hz hzX hY
+  exact hX z₁ Y E z (primesIco (mtLowerCutoffNat X) z₁)
+    hz hzX hY (by rfl)
 
 local instance instDecidableMTHarmanTripleRectangularError
     {t : ℕ} (endpoint : ℕ → ℕ) (E : ℝ) (q₁ q₂ q₃ : ℕ) :
@@ -538,6 +622,25 @@ theorem mtHarmanTripleNonrectangularTupleCount_eq_sum
             (q₁ : ℝ) * (q₂ : ℝ) ^ 4 < E ∧ q₁ * q₂ * q₃ ∣ n ∧
             ¬MTHarmanTripleRectangular t endpoint E q₁ q₂ q₃ then 1 else 0 :=
       Finset.sum_product P P _
+
+theorem mtHarmanTripleNonrectangularTupleCount_mono
+    {t : ℕ} (endpoint : ℕ → ℕ) {P P' : Finset ℕ} (hPP' : P ⊆ P')
+    (E : ℝ) (n : ℕ) :
+    mtHarmanTripleNonrectangularTupleCount (t := t) endpoint P E n ≤
+      mtHarmanTripleNonrectangularTupleCount (t := t) endpoint P' E n := by
+  classical
+  have hsubset : mtHarmanTripleNonrectangularTuples (t := t) endpoint P E n ⊆
+      mtHarmanTripleNonrectangularTuples (t := t) endpoint P' E n := by
+    intro q hq
+    have hq' := Finset.mem_filter.mp hq
+    have hqprod := Finset.mem_product.mp hq'.1
+    have hqpair := Finset.mem_product.mp hqprod.1
+    apply Finset.mem_filter.mpr
+    exact ⟨Finset.mem_product.mpr
+      ⟨Finset.mem_product.mpr ⟨hPP' hqpair.1, hPP' hqpair.2⟩,
+        hPP' hqprod.2⟩, hq'.2⟩
+  unfold mtHarmanTripleNonrectangularTupleCount
+  exact_mod_cast Finset.card_le_card hsubset
 
 /-- Triangle inequality and `rho ≤ 1`: literal triple error is at most its exact tuple count. -/
 theorem norm_mtHarmanTripleNonrectangularError_le_tupleCount
@@ -901,6 +1004,345 @@ private theorem mtHarmanTripleBoundaryGrid_le
     _ = d * primePairDivisorCount P
         (fun q₂ => mtHarmanThresholdBoundaryFibre P δ E q₂) n := by
       rw [mtHarmanPairGlobalBoundaryCount_eq]
+
+private theorem mtHarmanTripleSecondCollisionGrid_le
+    {t : ℕ} {endpoint : ℕ → ℕ} (hmono : Monotone endpoint)
+    {n : ℕ} (hn : n ≠ 0) :
+    (∑ q₁ ∈ primesIco (endpoint 0) (endpoint t),
+      ∑ q₂ ∈ primesIco (endpoint 0) (endpoint t),
+      ∑ q₃ ∈ primesIco (endpoint 0) (endpoint t),
+      ∑ i : Fin t,
+        if q₃ ∈ mtAdjacentPrimeBlock endpoint i ∧
+            q₂ ∈ mtHarmanSameCellFibre endpoint i q₃ ∧
+            q₁ * q₂ * q₃ ∣ n then (1 : ℝ) else 0) ≤
+      (n.divisors.card : ℝ) *
+        ∑ i : Fin t, primePairDivisorCount
+          (mtAdjacentPrimeBlock endpoint i) (mtHarmanSameCellFibre endpoint i) n := by
+  let P := primesIco (endpoint 0) (endpoint t)
+  let d : ℝ := n.divisors.card
+  calc
+    (∑ q₁ ∈ P, ∑ q₂ ∈ P, ∑ q₃ ∈ P, ∑ i : Fin t,
+        if q₃ ∈ mtAdjacentPrimeBlock endpoint i ∧
+            q₂ ∈ mtHarmanSameCellFibre endpoint i q₃ ∧
+            q₁ * q₂ * q₃ ∣ n then (1 : ℝ) else 0) =
+      ∑ q₂ ∈ P, ∑ q₁ ∈ P, ∑ q₃ ∈ P, ∑ i : Fin t,
+        if q₃ ∈ mtAdjacentPrimeBlock endpoint i ∧
+            q₂ ∈ mtHarmanSameCellFibre endpoint i q₃ ∧
+            q₁ * q₂ * q₃ ∣ n then (1 : ℝ) else 0 := Finset.sum_comm
+    _ = ∑ q₂ ∈ P, ∑ q₃ ∈ P, ∑ q₁ ∈ P, ∑ i : Fin t,
+        if q₃ ∈ mtAdjacentPrimeBlock endpoint i ∧
+            q₂ ∈ mtHarmanSameCellFibre endpoint i q₃ ∧
+            q₁ * q₂ * q₃ ∣ n then (1 : ℝ) else 0 := by
+      apply Finset.sum_congr rfl
+      intro q₂ hq₂
+      exact Finset.sum_comm
+    _ = ∑ q₂ ∈ P, ∑ q₃ ∈ P, ∑ i : Fin t, ∑ q₁ ∈ P,
+        if q₃ ∈ mtAdjacentPrimeBlock endpoint i ∧
+            q₂ ∈ mtHarmanSameCellFibre endpoint i q₃ ∧
+            q₁ * q₂ * q₃ ∣ n then (1 : ℝ) else 0 := by
+      apply Finset.sum_congr rfl
+      intro q₂ hq₂
+      apply Finset.sum_congr rfl
+      intro q₃ hq₃
+      exact Finset.sum_comm
+    _ ≤ ∑ q₂ ∈ P, ∑ q₃ ∈ P, ∑ i : Fin t,
+        d * (if q₃ ∈ mtAdjacentPrimeBlock endpoint i ∧
+            q₂ ∈ mtHarmanSameCellFibre endpoint i q₃ ∧ q₂ * q₃ ∣ n then
+          (1 : ℝ) else 0) := by
+      apply Finset.sum_le_sum
+      intro q₂ hq₂
+      apply Finset.sum_le_sum
+      intro q₃ hq₃
+      apply Finset.sum_le_sum
+      intro i hi
+      by_cases hmem : q₃ ∈ mtAdjacentPrimeBlock endpoint i ∧
+          q₂ ∈ mtHarmanSameCellFibre endpoint i q₃
+      · simpa only [hmem, true_and, if_true, d, Nat.mul_comm, Nat.mul_left_comm,
+          Nat.mul_assoc] using
+          sum_tripleDvdIndicator_le_divisors_mul_pairIndicator P q₂ q₃ hn
+      · have hright : ¬(q₃ ∈ mtAdjacentPrimeBlock endpoint i ∧
+            q₂ ∈ mtHarmanSameCellFibre endpoint i q₃ ∧ q₂ * q₃ ∣ n) := by
+          intro h
+          exact hmem ⟨h.1, h.2.1⟩
+        rw [if_neg hright, mul_zero]
+        apply le_of_eq
+        apply Finset.sum_eq_zero
+        intro q₁ hq₁
+        rw [if_neg]
+        intro h
+        exact hmem ⟨h.1, h.2.1⟩
+    _ = d * (∑ q₂ ∈ P, ∑ q₃ ∈ P, ∑ i : Fin t,
+        if q₃ ∈ mtAdjacentPrimeBlock endpoint i ∧
+            q₂ ∈ mtHarmanSameCellFibre endpoint i q₃ ∧ q₂ * q₃ ∣ n then
+          (1 : ℝ) else 0) := by
+      rw [Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro q₂ hq₂
+      rw [Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro q₃ hq₃
+      rw [Finset.mul_sum]
+    _ = d * ∑ i : Fin t, primePairDivisorCount
+        (mtAdjacentPrimeBlock endpoint i) (mtHarmanSameCellFibre endpoint i) n := by
+      rw [mtHarmanPairGlobalCollisionCount_eq hmono]
+
+/-- The full triple obstruction grid costs at most one free divisor times the unweighted triple
+majorant. -/
+theorem mtHarmanTripleGlobalObstructionCount_le_divisors_mul_weighted_zero
+    {t : ℕ} {endpoint : ℕ → ℕ} (hmono : Monotone endpoint)
+    (δ E : ℝ) {n : ℕ} (hn : n ≠ 0) :
+    mtHarmanTripleGlobalObstructionCount (t := t) endpoint
+        (primesIco (endpoint 0) (endpoint t)) δ E n ≤
+      (n.divisors.card : ℝ) *
+        weightedMTHarmanTripleNonrectangularCount 0 (t := t) endpoint
+          (primesIco (endpoint 0) (endpoint t)) δ E n := by
+  let P := primesIco (endpoint 0) (endpoint t)
+  let d : ℝ := n.divisors.card
+  let C : ℝ := ∑ i : Fin t, primePairDivisorCount
+    (mtAdjacentPrimeBlock endpoint i) (mtHarmanSameCellFibre endpoint i) n
+  let B : ℝ := primePairDivisorCount P
+    (fun q₂ => mtHarmanThresholdBoundaryFibre P δ E q₂) n
+  let G₁₂ : ℝ := ∑ q₁ ∈ P, ∑ q₂ ∈ P, ∑ q₃ ∈ P, ∑ i : Fin t,
+    if q₂ ∈ mtAdjacentPrimeBlock endpoint i ∧
+        q₁ ∈ mtHarmanSameCellFibre endpoint i q₂ ∧ q₁ * q₂ * q₃ ∣ n then
+      1 else 0
+  let G₂₃ : ℝ := ∑ q₁ ∈ P, ∑ q₂ ∈ P, ∑ q₃ ∈ P, ∑ i : Fin t,
+    if q₃ ∈ mtAdjacentPrimeBlock endpoint i ∧
+        q₂ ∈ mtHarmanSameCellFibre endpoint i q₃ ∧ q₁ * q₂ * q₃ ∣ n then
+      1 else 0
+  let Gₑ : ℝ := ∑ q₁ ∈ P, ∑ q₂ ∈ P, ∑ q₃ ∈ P,
+    if q₁ ∈ mtHarmanThresholdBoundaryFibre P δ E q₂ ∧ q₁ * q₂ * q₃ ∣ n then
+      1 else 0
+  have hsplit : mtHarmanTripleGlobalObstructionCount (t := t) endpoint P δ E n =
+      (G₁₂ + G₂₃) + Gₑ := by
+    unfold mtHarmanTripleGlobalObstructionCount
+    dsimp only [G₁₂, G₂₃, Gₑ]
+    simp only [Finset.sum_add_distrib]
+  have h₁₂ : G₁₂ ≤ d * C := by
+    simpa only [G₁₂, d, C, P] using
+      mtHarmanTripleFirstCollisionGrid_le hmono hn
+  have h₂₃ : G₂₃ ≤ d * C := by
+    simpa only [G₂₃, d, C, P] using
+      mtHarmanTripleSecondCollisionGrid_le hmono hn
+  have hₑ : Gₑ ≤ d * B := by
+    simpa only [Gₑ, d, B, P] using mtHarmanTripleBoundaryGrid_le endpoint δ E hn
+  have hmajorant : weightedMTHarmanTripleNonrectangularCount 0 (t := t) endpoint P δ E n =
+      (C + B) + C := by
+    dsimp only [C, B]
+    simp [weightedMTHarmanTripleNonrectangularCount,
+      weightedMTHarmanNonrectangularCount,
+      weightedMTHarmanSameCellCollisionCount,
+      weightedMTHarmanThresholdBoundaryCount, weightedPrimePairDivisorCount]
+  calc
+    mtHarmanTripleGlobalObstructionCount (t := t) endpoint P δ E n =
+        (G₁₂ + G₂₃) + Gₑ := hsplit
+    _ ≤ (d * C + d * C) + d * B := add_le_add (add_le_add h₁₂ h₂₃) hₑ
+    _ = d * ((C + B) + C) := by ring
+    _ = d * weightedMTHarmanTripleNonrectangularCount 0 (t := t) endpoint P δ E n := by
+      rw [hmajorant]
+
+/-- Triple majorant has the same exact divisor-power scaling as the pair majorant. -/
+theorem weightedMTHarmanTripleNonrectangularCount_eq_divisorsPow_mul_zero
+    (K : ℕ) {t : ℕ} (endpoint : ℕ → ℕ) (P : Finset ℕ)
+    (δ E : ℝ) (n : ℕ) :
+    weightedMTHarmanTripleNonrectangularCount K (t := t) endpoint P δ E n =
+      (n.divisors.card : ℝ) ^ K *
+        weightedMTHarmanTripleNonrectangularCount 0 (t := t) endpoint P δ E n := by
+  have hsame : weightedMTHarmanSameCellCollisionCount K (t := t) endpoint n =
+      (n.divisors.card : ℝ) ^ K *
+        weightedMTHarmanSameCellCollisionCount 0 (t := t) endpoint n := by
+    unfold weightedMTHarmanSameCellCollisionCount weightedPrimePairDivisorCount
+    simp only [pow_zero, one_mul]
+    rw [Finset.mul_sum]
+  unfold weightedMTHarmanTripleNonrectangularCount
+  rw [weightedMTHarmanNonrectangularCount_eq_divisorsPow_mul_zero, hsame, mul_add]
+
+/-- Pointwise squared triple error is absorbed by the existing `K = 4` weighted triple
+majorant. -/
+theorem normSq_mtHarmanTripleNonrectangularError_le_weighted
+    {t : ℕ} {endpoint : ℕ → ℕ}
+    (hendpoint : ∀ i, 1 ≤ endpoint i) (hmono : Monotone endpoint)
+    (δ E : ℝ) (hδ : 0 ≤ δ)
+    (hband : ∀ i : Fin t,
+      mtAdjacentBlockUpperScale endpoint i ≤
+        (1 + δ) * mtAdjacentBlockLowerScale endpoint i)
+    (z : ℕ) {n : ℕ} (hn : n ≠ 0) :
+    ‖mtHarmanTripleNonrectangularError (t := t) endpoint
+        (primesIco (endpoint 0) (endpoint t)) E z n‖ ^ 2 ≤
+      weightedMTHarmanTripleNonrectangularCount 4 (t := t) endpoint
+        (primesIco (endpoint 0) (endpoint t)) δ E n := by
+  let P := primesIco (endpoint 0) (endpoint t)
+  let C := mtHarmanTripleNonrectangularTupleCount (t := t) endpoint P E n
+  let M := weightedMTHarmanTripleNonrectangularCount 0 (t := t) endpoint P δ E n
+  let d : ℝ := n.divisors.card
+  have hnorm : ‖mtHarmanTripleNonrectangularError (t := t) endpoint P E z n‖ ≤ C :=
+    norm_mtHarmanTripleNonrectangularError_le_tupleCount endpoint P E z n
+  have hCdM : C ≤ d * M := by
+    calc
+      C ≤ mtHarmanTripleGlobalObstructionCount (t := t) endpoint P δ E n :=
+        mtHarmanTripleNonrectangularTupleCount_le_globalObstruction
+          hendpoint hmono δ E hδ hband n
+      _ ≤ d * M :=
+        mtHarmanTripleGlobalObstructionCount_le_divisors_mul_weighted_zero hmono δ E hn
+  have hCd3 : C ≤ d ^ 3 := by
+    exact mtHarmanTripleNonrectangularTupleCount_le_divisors_cube endpoint P E hn
+  have hC0 : 0 ≤ C := by
+    dsimp [C, mtHarmanTripleNonrectangularTupleCount]
+    positivity
+  calc
+    ‖mtHarmanTripleNonrectangularError (t := t) endpoint P E z n‖ ^ 2 ≤ C ^ 2 := by
+      simpa only [pow_two] using mul_le_mul hnorm hnorm (norm_nonneg _) hC0
+    _ ≤ d ^ 3 * (d * M) := by
+      simpa only [pow_two] using mul_le_mul hCd3 hCdM hC0 (by positivity : 0 ≤ d ^ 3)
+    _ = d ^ 4 * M := by ring
+    _ = weightedMTHarmanTripleNonrectangularCount 4 (t := t) endpoint P δ E n := by
+      rw [weightedMTHarmanTripleNonrectangularCount_eq_divisorsPow_mul_zero]
+
+/-- Source-subset form for the literal triple carrier. -/
+theorem normSq_mtHarmanTripleNonrectangularError_le_weighted_of_subset
+    {t : ℕ} {endpoint : ℕ → ℕ}
+    (hendpoint : ∀ i, 1 ≤ endpoint i) (hmono : Monotone endpoint)
+    (S : Finset ℕ)
+    (hS : S ⊆ primesIco (endpoint 0) (endpoint t))
+    (δ E : ℝ) (hδ : 0 ≤ δ)
+    (hband : ∀ i : Fin t,
+      mtAdjacentBlockUpperScale endpoint i ≤
+        (1 + δ) * mtAdjacentBlockLowerScale endpoint i)
+    (z : ℕ) {n : ℕ} (hn : n ≠ 0) :
+    ‖mtHarmanTripleNonrectangularError (t := t) endpoint S E z n‖ ^ 2 ≤
+      weightedMTHarmanTripleNonrectangularCount 4 (t := t) endpoint
+        (primesIco (endpoint 0) (endpoint t)) δ E n := by
+  let P := primesIco (endpoint 0) (endpoint t)
+  let C := mtHarmanTripleNonrectangularTupleCount (t := t) endpoint S E n
+  let M := weightedMTHarmanTripleNonrectangularCount 0 (t := t) endpoint P δ E n
+  let d : ℝ := n.divisors.card
+  have hnorm : ‖mtHarmanTripleNonrectangularError (t := t) endpoint S E z n‖ ≤ C :=
+    norm_mtHarmanTripleNonrectangularError_le_tupleCount endpoint S E z n
+  have hCdM : C ≤ d * M := by
+    calc
+      C ≤ mtHarmanTripleNonrectangularTupleCount (t := t) endpoint P E n :=
+        mtHarmanTripleNonrectangularTupleCount_mono endpoint hS E n
+      _ ≤ mtHarmanTripleGlobalObstructionCount (t := t) endpoint P δ E n :=
+        mtHarmanTripleNonrectangularTupleCount_le_globalObstruction
+          hendpoint hmono δ E hδ hband n
+      _ ≤ d * M :=
+        mtHarmanTripleGlobalObstructionCount_le_divisors_mul_weighted_zero hmono δ E hn
+  have hCd3 : C ≤ d ^ 3 :=
+    mtHarmanTripleNonrectangularTupleCount_le_divisors_cube endpoint S E hn
+  have hC0 : 0 ≤ C := by
+    dsimp [C, mtHarmanTripleNonrectangularTupleCount]
+    positivity
+  calc
+    ‖mtHarmanTripleNonrectangularError (t := t) endpoint S E z n‖ ^ 2 ≤ C ^ 2 := by
+      simpa only [pow_two] using mul_le_mul hnorm hnorm (norm_nonneg _) hC0
+    _ ≤ d ^ 3 * (d * M) := by
+      simpa only [pow_two] using mul_le_mul hCd3 hCdM hC0 (by positivity : 0 ≤ d ^ 3)
+    _ = d ^ 4 * M := by ring
+    _ = weightedMTHarmanTripleNonrectangularCount 4 (t := t) endpoint P δ E n := by
+      rw [weightedMTHarmanTripleNonrectangularCount_eq_divisorsPow_mul_zero]
+
+/-- Paper-aligned triple rectangularization has the exact `68δ_A` mean-square cost inherited from
+the complete triple obstruction majorant. -/
+theorem eventually_sum_normSq_mtHarmanTripleNonrectangularError_sourceSubset_paperAligned_le
+    (A : ℕ) :
+    ∀ᶠ X : ℝ in atTop, ∀ (z₁ Y : ℕ) (E : ℝ) (z : ℕ) (S : Finset ℕ),
+      mtLowerCutoffNat X ≤ z₁ → (z₁ : ℝ) ≤ X → 1 ≤ Y →
+      S ⊆ primesIco (mtLowerCutoffNat X) z₁ →
+      let endpoint :=
+        mtPaperAlignedEndpoint (mtLowerCutoffNat X) z₁ (mtPaperWidth A X)
+      let P := primesIco (mtLowerCutoffNat X) z₁
+      ∑ n ∈ Finset.Icc 1 Y,
+          ‖mtHarmanTripleNonrectangularError
+            (t := z₁ - mtLowerCutoffNat X) endpoint S E z n‖ ^ 2 ≤
+        (4 : ℝ) ^ 4 * (Y : ℝ) *
+          (1 + Real.log (Y : ℝ)) ^ (2 ^ 4 - 1) *
+            (68 * mtPaperWidth A X) * ∑ q ∈ P, 1 / (q : ℝ) := by
+  filter_upwards [
+    eventually_sum_weightedMTHarmanTripleNonrectangularCount_paperAligned_le A 4,
+    eventually_one_le_mtPaperWidth_mul_mtLowerCutoffNat_sub_one A,
+    Filter.eventually_ge_atTop (Real.exp 1)] with X hweightedX hprogressX hX
+  intro z₁ Y E z S hz hzX hY hS
+  dsimp only
+  let z₀ := mtLowerCutoffNat X
+  let δ := mtPaperWidth A X
+  let endpoint := mtPaperAlignedEndpoint z₀ z₁ δ
+  let P := primesIco z₀ z₁
+  have hlogX : 1 ≤ Real.log X := by
+    have hmonoLog := Real.log_le_log (Real.exp_pos 1) hX
+    simpa only [Real.log_exp] using hmonoLog
+  have hδ0 : 0 ≤ δ := by
+    dsimp [δ, mtPaperWidth]
+    exact Real.rpow_nonneg (zero_le_one.trans hlogX) _
+  have hzSubPos : 0 < z₀ - 1 := by
+    by_contra hnot
+    have hzero : z₀ - 1 = 0 := Nat.eq_zero_of_not_pos hnot
+    have hfalse : (1 : ℝ) ≤ 0 := by
+      simpa only [z₀, δ, hzero, Nat.cast_zero, mul_zero] using hprogressX
+    norm_num at hfalse
+  have hzOne : 1 ≤ z₀ := by omega
+  have hmonoEndpoint : Monotone endpoint := by
+    dsimp [endpoint]
+    exact mtPaperAlignedEndpoint_monotone hzOne (by simpa only [z₀] using hz) hδ0
+      (by simpa only [z₀, δ] using hprogressX)
+  have hendpoint : ∀ i, 1 ≤ endpoint i := by
+    intro i
+    exact hzOne.trans (mtPaperAlignedEndpoint_mem_Icc hzOne
+      (by simpa only [z₀] using hz) hδ0
+      (by simpa only [z₀, δ] using hprogressX) i).1
+  have hband : ∀ i : Fin (z₁ - z₀),
+      mtAdjacentBlockUpperScale endpoint i ≤
+        (1 + δ) * mtAdjacentBlockLowerScale endpoint i := by
+    intro i
+    simpa only [endpoint, mtAdjacentBlockUpperScale, mtAdjacentBlockLowerScale] using
+      mtPaperAlignedEndpoint_band (z₀ := z₀) (z₁ := z₁) hδ0 i.1
+  have hterminal : endpoint (z₁ - z₀) = z₁ := by
+    dsimp [endpoint]
+    exact mtPaperAlignedEndpoint_sub_eq hzOne (by simpa only [z₀] using hz) hδ0
+      (by simpa only [z₀, δ] using hprogressX)
+  have hSfull : S ⊆ primesIco (endpoint 0) (endpoint (z₁ - z₀)) := by
+    simpa only [z₀, endpoint, mtPaperAlignedEndpoint_zero, hterminal] using hS
+  calc
+    ∑ n ∈ Finset.Icc 1 Y,
+        ‖mtHarmanTripleNonrectangularError
+          (t := z₁ - z₀) endpoint S E z n‖ ^ 2 ≤
+      ∑ n ∈ Finset.Icc 1 Y,
+        weightedMTHarmanTripleNonrectangularCount 4
+          (t := z₁ - z₀) endpoint P δ E n := by
+      apply Finset.sum_le_sum
+      intro n hn
+      have hn0 : n ≠ 0 := by
+        have hn1 : 1 ≤ n := (Finset.mem_Icc.mp hn).1
+        omega
+      have hpoint := normSq_mtHarmanTripleNonrectangularError_le_weighted_of_subset
+        (t := z₁ - z₀) hendpoint hmonoEndpoint S hSfull δ E hδ0 hband z
+        (n := n) hn0
+      simpa only [P, endpoint, mtPaperAlignedEndpoint_zero, hterminal] using hpoint
+    _ ≤ (4 : ℝ) ^ 4 * (Y : ℝ) *
+        (1 + Real.log (Y : ℝ)) ^ (2 ^ 4 - 1) *
+          (68 * δ) * ∑ q ∈ P, 1 / (q : ℝ) := by
+      simpa only [z₀, δ, endpoint, P] using hweightedX z₁ Y E hz hzX hY
+
+/-- Paper-aligned triple rectangularization has the exact `68δ_A` mean-square cost inherited from
+the complete triple obstruction majorant. -/
+theorem eventually_sum_normSq_mtHarmanTripleNonrectangularError_paperAligned_le
+    (A : ℕ) :
+    ∀ᶠ X : ℝ in atTop, ∀ (z₁ Y : ℕ) (E : ℝ) (z : ℕ),
+      mtLowerCutoffNat X ≤ z₁ → (z₁ : ℝ) ≤ X → 1 ≤ Y →
+      let endpoint :=
+        mtPaperAlignedEndpoint (mtLowerCutoffNat X) z₁ (mtPaperWidth A X)
+      let P := primesIco (mtLowerCutoffNat X) z₁
+      ∑ n ∈ Finset.Icc 1 Y,
+          ‖mtHarmanTripleNonrectangularError
+            (t := z₁ - mtLowerCutoffNat X) endpoint P E z n‖ ^ 2 ≤
+        (4 : ℝ) ^ 4 * (Y : ℝ) *
+          (1 + Real.log (Y : ℝ)) ^ (2 ^ 4 - 1) *
+            (68 * mtPaperWidth A X) * ∑ q ∈ P, 1 / (q : ℝ) := by
+  filter_upwards [
+    eventually_sum_normSq_mtHarmanTripleNonrectangularError_sourceSubset_paperAligned_le A]
+    with X hX
+  intro z₁ Y E z hz hzX hY
+  exact hX z₁ Y E z (primesIco (mtLowerCutoffNat X) z₁)
+    hz hzX hY (by rfl)
 
 end
 

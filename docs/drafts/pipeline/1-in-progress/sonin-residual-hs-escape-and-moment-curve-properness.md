@@ -361,3 +361,237 @@ positive-aperture continuity.
 directly, first formalize the exact physical-band identity
 `closure (⨆ b<a, centralPhysicalForbidden b) = centralPhysicalForbidden a`, transfer
 it by `fourierUnitary`, and recover the carrier statement through orthogonals.
+
+## 2026-08-27 — F2-RHSC.1 formal closure: Hilbert--Schmidt continuity and exact landing
+
+New modules:
+
+- `formal/GaloisForLFunctions/RHTower/SoninProjectionApertureStrongContinuity.lean`
+- `formal/GaloisForLFunctions/RHTower/SoninResidualApertureHilbertSchmidtContinuity.lean`
+- `formal/GaloisForLFunctions/RHTower/SoninAllPrimeMomentApertureContinuity.lean`
+- umbrella imports: `formal/GaloisForLFunctions/RHTower.lean`
+
+### New mathematical theorem
+
+The actual Sonin projection `P_a` is strongly continuous for every positive aperture.
+The proof identifies both one-sided carrier limits exactly: the Burnol dense-union
+theorem supplies the increasing side, while closure of the increasing physical and
+Fourier forbidden bands supplies the decreasing side through orthogonal complements.
+
+Strong convergence alone does not imply Hilbert--Schmidt convergence.  The missing
+mixed-topology bridge is now closed: strong convergence of bounded operators, together
+with convergence of their Hilbert--Schmidt norm squares, gives Hilbert--Schmidt
+convergence; multiplication by a fixed Hilbert--Schmidt operator sends strong convergence
+of a uniformly bounded family to Hilbert--Schmidt convergence.  Applying these lemmas to
+the exact correction-energy identity and the four-term residual factorization proves
+
+`centralSoninDilationCornerResidual a p hp g`
+
+is Hilbert--Schmidt continuous in `a > 0`, as is every weighted prime-power residual
+block.
+
+On any compact positive aperture window, the existing prime-power square-summable
+majorant dominates the block differences.  Dominated convergence therefore passes
+through the all-prime block sum and proves Hilbert--Schmidt continuity of the all-prime
+residual kernel.  Every trace moment
+
+`a ↦ soninAllPrimeEnergyMoment a r`
+
+is consequently continuous on positive apertures.
+
+Combining this continuity with the previously proved compact positive cluster aperture
+turns an asymptotic moving-aperture weld into an exact finite-aperture identity.  Lean now
+proves the exact classification
+
+`soninAllPrimeExactTraceMomentWeld ↔`
+`  ∃ a > 0, ∀ r, soninAllPrimeEnergyMoment a r = normalizedPrimeArchMoment r`.
+
+Thus the whole compactness/continuity burden of F2 is closed.  The former asymptotic
+weld endpoint is neither weaker nor more flexible than one exact positive-aperture
+all-moment equality.
+
+### Lean surface
+
+The modules prove, among other declarations:
+
+- `continuousOn_centralSoninProjection_apply`
+- `tendsto_hsNormSq_comp_left_zero_of_strong`
+- `tendsto_hsNormSq_centralSoninDilationCornerResidual_sub`
+- `tendsto_hsNormSq_soninAllPrimeResidualKernel_sub`
+- `tendsto_soninAllPrimeEnergyMoment_of_tendsto`
+- `soninPrimeArchSingleMomentCoupling_exists_exact_positive_aperture`
+- `soninAllPrimeExactTraceMomentWeld_iff_exists_exact_positive_aperture`
+- `riemannHypothesis_of_soninAllPrimeExactPositiveApertureMomentWeld`
+
+All declarations are closed.  Axiom audit reports only `propext`,
+`Classical.choice`, and `Quot.sound`.
+
+### Verification
+
+- all three direct checks with `lake env lean <file>` — PASS
+- exact final module audits:
+  - `lake build GaloisForLFunctions.RHTower.SoninProjectionApertureStrongContinuity`
+    — PASS (`Build completed successfully (9582 jobs).`)
+  - `lake build GaloisForLFunctions.RHTower.SoninResidualApertureHilbertSchmidtContinuity`
+    — PASS (`Build completed successfully (9593 jobs).`)
+  - `lake build GaloisForLFunctions.RHTower.SoninAllPrimeMomentApertureContinuity`
+    — PASS (`Build completed successfully (10015 jobs).`)
+- scratch `#print axioms` audit — PASS
+
+### Targeted literature collision audit
+
+The closest located primary sources remain Xian-Jin Li's projection formula for Sonine
+space (JMAA 389 (2012), 379--393) and Connes--Consani--Moscovici's semilocal
+Sonin/prolate construction (arXiv:2310.18423).  The searched statements do not supply
+positive-aperture strong continuity of the Sonin projections, Hilbert--Schmidt continuity
+of this principal-subtracted all-prime residual, continuity of all its trace moments, or
+the exact cluster-aperture landing classification above.  Novelty remains **provisional
+after a targeted audit**, not an exhaustive claim.
+
+### Remaining open core
+
+F2-RHSC.1 is closed.  The irreducible remaining F2 statement is the exact fixed-aperture
+identity
+
+`∃ a > 0, ∀ r, soninAllPrimeEnergyMoment a r = normalizedPrimeArchMoment r`.
+
+It is sufficient for RH through the already formalized exact moment-to-Li chain, but it is
+not proved here.  The next unconditional attack is the scalar base case: use small-
+aperture vanishing, large-aperture escape, and the new continuity theorem to prove that
+some positive aperture matches the zeroth normalized prime--archimedean moment exactly.
+
+## 2026-08-27 — F2-RHSZ.1 formal closure: positive zeroth-moment surjectivity
+
+New module:
+
+- `formal/GaloisForLFunctions/RHTower/SoninAllPrimeZerothMomentApertureSurjectivity.lean`
+- umbrella import: `formal/GaloisForLFunctions/RHTower.lean`
+
+### New mathematical theorem
+
+Let
+
+`S₀(a) = soninAllPrimeEnergyMoment a 0`.
+
+The previous continuity theorem upgrades from sequential form to ordinary continuity on
+`a > 0`.  For an arbitrary target `T > 0`, choose the explicit positive aperture
+
+`a₀ = sqrt (T / (2 * 128 * soninAllPrimeColumnWeightSqMass))`.
+
+The quadratic Shannon-area ceiling gives `S₀(a₀).re ≤ T / 2 < T`.  Large-aperture escape
+gives some finite `A > a₀` with `T < S₀(A).re`.  The intermediate value theorem on
+`[a₀, A]` therefore gives a finite positive aperture at which `S₀(a) = T` exactly.  Hence
+the real zeroth trace map is surjective onto the entire positive half-line:
+
+`∀ T > 0, ∃ a > 0, soninAllPrimeEnergyMoment a 0 = (T : ℂ)`.
+
+Specializing `T` to `normalizedPrimeArchMoment 0`, whose strict positivity is already
+closed in the corpus, proves the first exact coordinate of the fixed-aperture F2 weld
+unconditionally.
+
+### Lean surface
+
+- `continuousAt_soninAllPrimeEnergyMoment`
+- `continuousOn_soninAllPrimeEnergyMoment`
+- `continuousOn_re_soninAllPrimeEnergyMoment_zero`
+- `exists_positive_aperture_soninAllPrimeEnergyMoment_zero_eq`
+- `exists_positive_aperture_soninAllPrimeEnergyMoment_zero_eq_normalizedPrimeArchMoment`
+
+All declarations are closed.  Axiom audit reports only `propext`,
+`Classical.choice`, and `Quot.sound`.
+
+### Verification
+
+- scratch check: `lake env lean /tmp/f2_zeroth_aperture.lean` — PASS
+- direct check:
+  `lake env lean GaloisForLFunctions/RHTower/SoninAllPrimeZerothMomentApertureSurjectivity.lean`
+  — PASS
+- exact final module audit:
+  `lake build GaloisForLFunctions.RHTower.SoninAllPrimeZerothMomentApertureSurjectivity`
+  — PASS (`Build completed successfully (10016 jobs).`)
+- scratch `#print axioms` audit — PASS
+
+### Targeted literature collision audit
+
+Targeted searches around Sonine projections, cutoff-parameter continuity, Hilbert--Schmidt
+trace moments, and aperture intermediate-value statements found Connes--Consani's
+fixed-cutoff archimedean compression and the established Sonine/prolate programme, but no
+statement matching surjectivity of this logarithmically weighted principal-subtracted
+all-prime residual trace.  Novelty remains **provisional after a targeted audit**, not an
+exhaustive claim.
+
+### Remaining open core
+
+Zeroth-coordinate existence is closed but does not synchronize higher moments.  The hard
+F2 burden is now sharply reduced to proving that at least one aperture in the nonempty
+zeroth-level set
+
+`{a > 0 | soninAllPrimeEnergyMoment a 0 = normalizedPrimeArchMoment 0}`
+
+also matches every higher normalized prime--archimedean moment.  The next conjecture loop
+must extract rigidity of this level set or derive higher-moment identities from the zeroth
+normalization; coordinatewise existence at unrelated apertures is insufficient.
+
+## 2026-08-27 — F2-RHSF.1 formal closure: compact normalization fiber
+
+New module:
+
+- `formal/GaloisForLFunctions/RHTower/SoninAllPrimeZerothMomentApertureFiberCompactness.lean`
+- umbrella import: `formal/GaloisForLFunctions/RHTower.lean`
+
+### New mathematical theorem
+
+The exact zeroth-normalization set
+
+`Z₀ = {a > 0 | soninAllPrimeEnergyMoment a 0 = normalizedPrimeArchMoment 0}`
+
+is nonempty by positive-half-line surjectivity.  It is also compact.  Quantitatively, the
+Shannon-area ceiling places every member above an explicit positive square-root floor, and
+large-aperture escape places every member below one finite ceiling.  Positive-aperture
+continuity then makes `Z₀` closed inside that compact window.
+
+For every `r`, the continuous discrepancy
+
+`a ↦ ‖soninAllPrimeEnergyMoment a r - normalizedPrimeArchMoment r‖`
+
+therefore attains a genuine minimum on `Z₀`.  Thus the remaining higher-moment problem has
+no loss of compactness, no boundary escape, and no unattained infimum: failure at any fixed
+degree is witnessed by an actual positive minimum-aperture obstruction.
+
+### Lean surface
+
+- `soninNormalizedZerothApertureFiber_nonempty`
+- `soninNormalizedZerothApertureFiber_exists_compactWindow`
+- `soninNormalizedZerothApertureFiber_isCompact`
+- `exists_soninNormalizedHigherMomentDefect_isMinOn`
+
+All declarations are closed.  Axiom audit reports only `propext`,
+`Classical.choice`, and `Quot.sound`.
+
+### Verification
+
+- scratch check: `lake env lean /tmp/f2_zeroth_fiber.lean` — PASS
+- direct check:
+  `lake env lean GaloisForLFunctions/RHTower/SoninAllPrimeZerothMomentApertureFiberCompactness.lean`
+  — PASS
+- exact final module audit:
+  `lake build GaloisForLFunctions.RHTower.SoninAllPrimeZerothMomentApertureFiberCompactness`
+  — PASS (`Build completed successfully (10110 jobs).`)
+- scratch `#print axioms` audit — PASS
+
+### Remaining open core
+
+The next irreducible object is the attained first defect on `Z₀`.  Proving its minimum is
+zero produces one aperture matching moments `0` and `1`; proving it strictly positive
+retires the literal block-diagonal F2 weld with a quantitative obstruction.  Either result
+must come from a new arithmetic--operator comparison, since compactness and positivity alone
+cannot select the sign.
+
+### Exact first-defect alternative
+
+The same module additionally closes
+`soninNormalizedFirstMoment_exact_or_uniformGap`: unconditionally, either one positive
+aperture matches normalized moments `0` and `1` simultaneously, or there is an `ε > 0`
+which lower-bounds the first-moment mismatch at every exactly zeroth-normalized aperture.
+This is the sharp quantitative success/no-go alternative for the next F2 coordinate.  Its
+direct check, exact module build (`10110 jobs`), and axiom audit all pass.

@@ -37,7 +37,7 @@
 \title{\textbf{Persistent phase geometry of quantum recurrence}\\
 \large\itshape Four structural laws for loss, spectral constraints, observability, and finite-horizon inference}
 \author{GPT 5.6 Sol \and Opus 5 \and Fable 5 \and Michael Haufschild}
-\date{27 August 2026}
+\date{28 August 2026}
 
 \begin{document}
 \maketitle
@@ -54,6 +54,25 @@ the full capacity, with ranks summing to $D-1$.  Weights pull a target metric
 onto this hull, while an observer's coherence graph selects its visible
 quotient.  Finite records determine finite-time behavior but need not
 determine the completed relation geometry.
+
+This finite-horizon boundary is sharp even for complete process information.
+For every finite Hermitian Hamiltonian of dimension at least three, every
+observation horizon and every positive operator resolution, its entire
+bounded-time propagator tube contains two commuting simple-spectrum
+Hamiltonians with one common eigenbasis.  For every one fixed normalized
+state cyclic in that basis, one has physical survival-fidelity first-return
+exponent zero and the other has maximal exponent $(D-2)/2$.  Thus even a
+uniformly accurate movie of full evolution over an arbitrarily long but
+finite interval does not identify asymptotic recurrence scaling.
+
+For arbitrary spectral type, the completed survival-fidelity distribution
+obeys a sharper universal law.  Its support is always one closed interval,
+with no forbidden fidelity bands, and its upper endpoint is exactly $p^2$,
+where $p$ is total weight of the initial state in the pure-point---physically,
+bound-state---spectral sector.  Consequently the full stationary return
+distribution recovers bound-state weight as square root of its support edge.
+This is distinct from the classical time-averaged survival probability,
+which measures sum of squared atomic weights rather than their total mass.
 
 This framework gives exact results at each level: late-return ceilings for
 finite lossy dynamics; character-complete finite and countable phase laws;
@@ -75,8 +94,19 @@ for all induced subsystems; pairwise rank curvature reconstructs supplied
 graph adjacency.  On every open simple-spectrum chart of the full static
 nearest-neighbour $n$-qudit path family, one conull set of Hamiltonians
 simultaneously attains all $D-1$ relative phase directions, sharp
-stroboscopic and first-gap-clock exponents $D-1$ and $D-2$, every
-positive-weight replica floor, and zero-only exact projective return.  Its
+stroboscopic and first-gap-clock exponents $D-1$ and $D-2$, and an exact
+all-state physical law.  For every normalized initial state at once, if $s$
+is the number of energy eigenlevels carrying nonzero state weight, its
+survival-fidelity first-return exponent is $\max\{s-2,0\}/2$.  Eigenstates
+and two-level superpositions are exactly periodic; full-support states recover
+the maximal exponent $(D-2)/2$.  This classification is singular at exact
+zero weight.  For every anchor eigenstate and arbitrarily small $\eta>0$, a
+normalized full-support state has anchor fidelity at least $1-\eta$ and
+survival-fidelity deficit at most $4\eta$ for every real time, yet its
+exact-resolution exponent is maximal.  Above resolution $4\eta$ it never
+leaves return window.  Thus finite-resolution invisibility and asymptotic
+recurrence dimension obey a proved order-of-limits law.  The same Hamiltonian also attains every
+positive-weight replica floor and has zero-only exact projective return.  Its
 strict completed return density is exponentially small in $D=q^n$ and doubly
 exponentially small in path length.  An exact commuting l-bit classification
 shows why this is a locality theorem rather than a parameter-counting
@@ -84,13 +114,35 @@ accident: geometric locality alone does not compress phase capacity, whereas
 fixed-range commuting structure does.  Separate countable and bounded
 infinite-chain theorems establish uniform thermodynamic completion and
 strongly continuous Hilbert-space dynamics.  Finally, target geometry yields
-static circuit-occupation laws and a single-field finite-to-thermodynamic
-lifecycle.  There exists one countable, static nearest-neighbour qubit Pauli
+static circuit-occupation laws and a pointwise many-body plateau theorem.  For
+every sufficiently large $L$, one time-independent nearest-neighbour
+Hamiltonian on $2L$ qubits lies within operator distance $1/L$ of an explicit
+inverse-square path, has a certified early complexity ramp, recurrent
+consecutive exits and re-entries, and arbitrarily late circuit-hard intervals
+of width $2^{\lfloor L/2\rfloor}$.  Throughout each interval, evolution stays
+at operator distance greater than $1/40$, modulo global phase, from every
+circuit below half a near-Hilbert gate budget, even though gates range over
+all continuous two-qubit special unitaries.  No stochastic dynamics,
+computational-complexity assumption or time averaging is used.
+
+A separate single-field theorem supplies finite-to-thermodynamic lifecycle.
+There exists one countable, static nearest-neighbour qubit Pauli
 field, fixed before system size is chosen, whose every finite prefix is
 maximally projective and syndetically recurrent, whose paired prefixes obey a
 quantitative linear laboratory complexity floor, and whose sufficiently large
 prefixes undergo arbitrarily late near-Hilbert circuit-hard excursions with
-consecutive re-entry.  Nevertheless this same field has no
+consecutive re-entry.  Along every literal $n$-qubit prefix of this same
+field, the upper completed-time fraction spent within operator distance
+$1/20$, modulo global phase, of the complete family of circuits using at most
+$\lfloor2^n/[64(n+1)]\rfloor$ arbitrary continuous two-qubit gates obeys an
+explicit envelope tending to zero with system size.  A finite-aperture
+version bounds same capture event on every translated laboratory window for
+every finite spectrum, including degeneracies and exact resonances.  At any
+chosen resolution, zero spectral actions form persistent term while remaining
+finite list is controlled by smallest nonzero action with explicit
+inverse-window correction.  No simplicity, rational-independence, chaos,
+randomness or mixing premise is needed.  Nevertheless this same
+field has no
 volume-independent projective-recurrence clock: at fixed operator accuracy,
 every prescribed duration becomes an arbitrarily late return-free interval in
 all sufficiently large prefixes.  More sharply, a certified desert length is
@@ -112,12 +164,29 @@ see only some of their relative phases; and a finite record may be compatible
 with radically different futures.  This paper separates these effects and proves
 how they fit together.
 
+The strongest spectrum-wide conclusion is an exact diagnostic of what part
+of a state remains bound.  Over completed time, possible survival
+probabilities never form several separated bands: they fill one interval.
+The top of that interval is square of total bound-state weight.  Thus full
+distribution of returns reveals information that average return loses.  A
+state spread over many bound levels can have a small average return while
+still having same upper return edge as any other fully bound state.
+
 The main conceptual result is a hierarchy of information.  A standard survival
 measurement can be perfect for its purpose yet blind to part of recurrence
 structure.  We give two concrete nine-level systems with exactly same return
 probability at every time, while a more resolved multi-copy measurement tells
 them apart.  Thus observing all values of one return signal does not amount
 to learning all temporal organization inside a quantum system.
+
+There is an even stronger limit on prediction.  Suppose an experimenter
+knows complete quantum evolution, not merely one signal, throughout any
+chosen finite interval.  Arbitrarily close to that entire observed evolution
+are two systems sharing same energy basis and same prepared state, yet one
+returns exactly and repeatedly while the other's increasingly accurate first
+returns obey largest possible logarithmic scaling law.  No finite movie,
+however precise, can decide which asymptotic recurrence clock governs system
+without additional global spectral information.
 
 Spatial simplicity does not remove this organization.  Generic static
 nearest-neighbour chains use every available relative phase direction: an
@@ -127,11 +196,39 @@ return a simultaneous alignment problem in $q^n-1$ directions, so its share
 of long times shrinks doubly exponentially with $n$.  Commuting finite-range
 models obey an exact linear phase-capacity ceiling, identifying algebraic
 commutativity---not one-dimensional geometry---as the compressing mechanism.
+For almost every Hamiltonian in full local path family, this geometry also
+fixes actual first return of every state.  A state occupying exactly $s$
+energy levels has logarithmic survival-fidelity return-time exponent
+$\max\{s-2,0\}/2$.  Thus changing only prepared state's exact spectral
+support changes recurrence dimension inside one unchanged Hamiltonian;
+full-support states give $(q^n-2)/2$.  This is an asymptotic theorem, not claim
+that macroscopic recurrences are experimentally reachable.
+It also exposes an experimentally important singularity.  Adding an
+arbitrarily weak population tail across all levels changes exponent from zero
+to maximal while altering survival signal by at most four times tail weight
+at every time.  Coarse apparatus can therefore see an eigenstate-like history
+forever even when exact recurrence geometry has full dimension; deliberate
+tail injection supplies a finite-system crossover test.
 One fixed countable nearest-neighbour field now joins several regimes that
 are usually studied separately: compatible finite chains have an early
 complexity floor, repeatedly leave every circuit family below almost Hilbert-
 space size, return to that family, and converge to one well-defined infinite-
-chain dynamics.  Every finite chain returns within bounded gaps, but no bound
+chain dynamics.  On every literal $n$-qubit prefix, fraction of completed
+time spent near complete continuous circuit family below
+$\lfloor2^n/[64(n+1)]\rfloor$ two-qubit gates vanishes as $n$ grows.  This is
+stronger than restricting to one fixed gate alphabet or polynomial depth.
+At finite size, a sharper pointwise result excludes this entire continuous
+gate family across hard intervals whose duration grows exponentially with
+path length.  It turns sparse occupation into a long stretch of certified
+noncompressibility for one fixed static Hamiltonian, while still bracketing
+hard episodes by genuine circuit re-entry.
+At every fixed finite size and spectral resolution, a companion bound applies
+to any finite laboratory window and arbitrary spectrum.  It converts finite
+census of exact resonances and nonzero spectral actions into falsifiable upper
+envelope for observed circuit-capture frequency, separating persistent
+resonant baseline from inverse-window dephasing without assuming chaos or
+random-matrix behavior.
+Every finite chain returns within bounded gaps, but no bound
 works uniformly with chain length: at one fixed accuracy, actual consecutive
 return gaps become arbitrarily long, with a proved inverse-density lower
 scale.  This is not an
