@@ -334,3 +334,95 @@ guess about a Plebanski radial vertex is needed.
 apply Eq. (63) to the exact scalar--vector chiral carrier and corner-renormalized `++` response,
 then perform harmonic product, negative-leg contraction, gravity corner completion, and conserved
 left-QNM projection.
+
+**HC94-A.6 formal audit.** The full-Jacobian target passed `11262/11262`; the coordinate Eq. (63)
+target passed `11263/11263`. Axiom audits for all three Jacobian diagonalization theorems, the
+fixed-charge classification, Xi-QNM nonvanishing and route-killer, and coordinate-to-plane-wave
+Eq. (63) compatibility report only `propext`, `Classical.choice`, and `Quot.sound`. Formal lint
+reports no finding in any HC94-A.5/A.6 module; its remaining red entries are unrelated unwired
+modules already present in the shared worktree.
+
+## Loop HC94-A.7 — full Hessian closed; scalar angular sufficiency under hostile attack
+
+`[CORPUS]` The exact pure-radial second pullback, full first inverse Jacobian, scalar--vector
+chiral radial two-jet, Xi QNM frequency, angular eigenvalue, and scalar completed triple-Eisenstein
+vertex exist. Corpus research finds no full horizon-polarized `(u,w,uu,uw,ww)` transport and no
+Eisenstein first/traceless-second derivative vertex.
+
+`[PAPER-PROVED] [LEAN-PROVED]` The full variable-coefficient chain rule
+`V(Wf)=V^iW^jf_ij+V^i(partial_i W^j)f_j` and the complete rapidity-chart transport to
+`u,w,uu,uw,ww` are formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMPoincareLightConeSecondJetPullback`.
+The map agrees with the earlier first Jacobian and feeds coordinate Eq. (63) directly. A physical
+sigma-affine witness has zero principal Hessian term but exact `partial_Z^2=tanh(xi)^2`, proving
+that the first-jet connection cannot be deleted. Direct Lean and targeted build pass
+`11264/11264`; headline axiom audits report only `propext`, `Classical.choice`, and `Quot.sound`.
+
+`[CONJECTURE]` The scalar angular data already in the corpus--value, first scalar data, Laplacian
+eigenvalue, and completed scalar triple-Eisenstein vertex--determine the pulled-back Eq. (63)
+source. Hostile test: compare equal scalar signatures with opposite traceless horizon Hessian.
+If Eq. (63) separates them, retire scalar-only angular contraction and replace it by a polarized
+spin-two Eisenstein derivative vertex before negative-leg/left-QNM projection.
+
+`[FALSIFIED] [PAPER-PROVED] [LEAN-PROVED]` Scalar angular sufficiency fails.  The zero BM two-jet
+and the unit traceless horizon Hessian `f_xx=-1`, `f_sigmasigma=1` have identical value, complete
+first horizon jet, and Laplacian trace.  At the physical rapidity-chart point
+`(tau,xi,sigma)=(0,1,1)`, however, their diagonal pulled Eq. (63) sources are respectively zero and
+exactly `-sech(1)^2/16`.  Since `sech(1)` is nonzero, no universal scalar-signature factorization
+can determine the source.  This kills the scalar completed triple-Eisenstein-vertex shortcut
+before it contaminates the negative-leg projection.
+
+**Positive survivor HC94-A.7-P.** The missing angular datum is now sharply localized: any complete
+source carrier must retain the spin-two/traceless horizon Hessian polarization, or an equivalent
+polarized derivative Eisenstein vertex.  The witness and universal no-factorization theorem are
+formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMPlebanskiAngularPolarizationNoGo`, wired into the
+RHTower umbrella.  Direct Lean and targeted build pass `11265/11265`; all three headline axiom
+audits report only `propext`, `Classical.choice`, and `Quot.sound`.
+
+**Pivot HC94-A.8 / `[OPEN CORE]`.** Classify the minimal polarized horizon two-jet quotient through
+which the pulled Eq. (63) source factors, then identify the corresponding completed Eisenstein
+derivative vertex for the actual Xi chiral carrier.  Only after that exact angular carrier is
+closed should the negative leg and conserved left-QNM projection be composed into HC94.
+
+## Loop HC94-A.8 — actual Xi radial carrier activates the spin-two source
+
+`[CORPUS]` The exact Xi monodromy mode has a nonzero punctured-complex Frobenius limit, but the
+corpus previously proved nonvanishing only at an unspecified complex BM radius.  It also contains
+the exact surjectivity `tanh '' (0,infinity)=(0,1)`.  No theorem placed the monodromy carrier on a
+positive real BM radius or coupled it to the pulled spin-two Eq. (63) source.
+
+`[PAPER-PROVED] [LEAN-PROVED]` The punctured limit pulls back along the real embedding, so every Xi
+fibre has `z in (0,1)` where its exact monodromy mode is nonzero.  Writing `z=tanh(xi)^2`, `xi>0`,
+and scaling the traceless horizon Hessian by that actual mode gives the exact local source
+
+`-sech(xi)^2 * mode(tanh(xi)^2)^2 / 16`.
+
+It is nonzero for every Xi copy, all overtone labels, and every Eq. (63) curvature coefficient.
+Thus radial darkness cannot make the missing polarized angular channel vacuous.  This is
+formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMXiPlebanskiPolarizedSourceExistence`, wired into the
+RHTower umbrella.  Direct Lean and targeted build pass `12046/12046`; headline axiom audits report
+only `propext`, `Classical.choice`, and `Quot.sound`.
+
+`[LITERATURE ATTACK]` Bonifacio, arXiv:2107.09674, treats spin-two/holomorphic-differential triple
+overlaps on hyperbolic surfaces as independent tensor data; therefore a universal reduction of
+polarized Hessian overlaps to scalar Laplace eigenvalues is false.  Kim, arXiv:2608.07774, confirms
+that a Plebański scalar enters the metric through its fibrewise Hessian and that reconstructing it
+is a light-cone gauge/inverse-Hessian problem.  Neither result supplies the topological-AdS BM/KI
+lift or a Maass-raised Eisenstein triple vertex.
+
+`[CONJECTURE HC94-A.9]` For the modular Eisenstein principal-series legs used by the existing
+completed cubic vertex--not for arbitrary hyperbolic eigenfunctions--the precise spin-two
+derivative contraction selected by the separated pulled Eq. (63) source equals the completed
+scalar triple-Eisenstein vertex times the Maass raising/lowering coefficient fixed by the three
+spectral parameters.  Required proof chain:
+
+`KI chiral carrier -> separated pulled Eq. (63) tensor monomials -> Maass-raised Eisenstein triple
+projection -> negative-helicity leg -> conserved left-QNM coefficient -> HC94 clock-defect
+factorization -> RH endpoint`.
+
+**Pivot HC94-A.9 / `[OPEN CORE]`.** Expand the separated pulled Eq. (63) source into exact horizon
+spin weights, identify the required raising/lowering word on each Eisenstein leg, and prove its
+completed trilinear coefficient.  Generic integration-by-parts or scalar-eigenvalue arguments are
+retired; only principal-series intertwining can close this burden.

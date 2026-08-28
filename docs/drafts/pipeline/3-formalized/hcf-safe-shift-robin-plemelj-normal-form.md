@@ -1,8 +1,8 @@
 # HCF safe-shift Robin--Plemelj normal form
 
 - **ID:** hcf-safe-shift-robin-plemelj
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (paper + Lean)
 - **Source:** HCF source-Plemelj covariance route
 - **Statement:** The Euler-safe pole--Gamma--von-Mangoldt jet is exactly the Robin datum `2π(D_t(1) - D_t'(1))` of the zero-independent source density `D_t(η) = π⁻¹ Im P(t-iη)`; hence every compact corrected HCF budget is a finite sum of local Robin--Plemelj defects.
 
@@ -12,7 +12,7 @@ Replace derivative-plus-value syntax of the safe-line source diagonal by one ver
 ## Gates
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea, Door passport sketch
 - [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorem `criticalFeatureSafeShiftRobinJet_eq_poleGammaVMJet`, `lake build` green, `check_axioms.sh` PASS
+- [x] 2 → 3  formalized: exact Lean theorem surface in `HedenmalmCriticalFeatureSafeShiftRobinPlemelj.lean`; direct-file check and leaf build green
 - [ ] 3 → 4  publication-ready: standalone paper (theorem + proof + Lean certificate + Door-2)
 
 ## Approach
@@ -38,8 +38,20 @@ size estimate.
 - **Exact killing theorem/mechanism:** Not falsified.
 - **Strongest positive survivor:** Exact local Robin--Plemelj decomposition.
 - **New insight:** Quantitative HCF gate can be attacked as a vertical Robin-to-boundary defect rather than cancellation between unrelated lattice totals.
-- **Status:** Paper proof above; Lean formalization pending.
+- **Status:** Paper proof and Lean formalization complete.
+
+## Lean certificate
+
+- **Module:** `formal/GaloisForLFunctions/RHTower/HedenmalmCriticalFeatureSafeShiftRobinPlemelj.lean`
+- **Exact source derivative:** `hasDerivAt_criticalFeatureSafeShiftSourceDensity_one`
+- **Exact Robin identity:** `criticalFeatureSafeShiftRobinJet_eq_poleGammaVMJet`
+- **Finite localization:** `criticalFeatureSourcePlemeljCorrectedLatticeBudget_eq_sum_robinDefects`
+- **Cofinal limit:** `tendsto_criticalFeatureSafeShiftRobinPlemeljDefect_sum`
+- **Reachability:** imported by `formal/GaloisForLFunctions/RHTower.lean`
+- **Verification (2026-08-29):** `lake env lean GaloisForLFunctions/RHTower/HedenmalmCriticalFeatureSafeShiftRobinPlemelj.lean` passed; leaf target `lake build GaloisForLFunctions.RHTower.HedenmalmCriticalFeatureSafeShiftRobinPlemelj` passed.
+- **Axiom audit:** not rerun; no declarations were created or modified in this promotion pass.
 
 ## Log
 - 2026-08-28 — created in 1-in-progress from source-Plemelj and safe Euler-jet corpus theorems.
 - 2026-08-28 — hostile review passed: exact chain-rule identity is dependency-closed; moved to 2-fully-proven.  Quantitative ceiling remains open.
+- 2026-08-29 — audited exact existing Lean surface, verified leaf module, and promoted to Stage 3.

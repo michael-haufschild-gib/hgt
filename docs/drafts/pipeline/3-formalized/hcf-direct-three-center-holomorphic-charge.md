@@ -1,8 +1,8 @@
 # HCF direct three-center holomorphic charge
 
 - **ID:** hcf-direct-three-center-holomorphic-charge
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper) `[PAPER-PROVED] [NOVELTY UNVERIFIED]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (paper + Lean) `[PAPER-PROVED] [NOVELTY UNVERIFIED]`
 - **Source:** HCF corrected prime--Gamma lattice route
 - **Statement:** Every finite strict-right Xi packet whose nearest three centers lie in `K` deposits at least `63488/21125` per copy directly in `criticalFeaturePrimeGammaOffLineLatticeBudget K`; consequently `7936/21125 · N` is sufficient for the 75% receiver.
 
@@ -12,7 +12,7 @@ Remove avoidable global factor-two loss in HCF receiver by using real holomorphi
 ## Gates
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea, Door passport sketch
 - [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorem `three_quarters_line_of_directThreeCenter_primeGammaOffLineLatticeBudget`, targeted build green, axiom audit PASS
+- [x] 2 → 3  formalized: exact theorem surface in `HedenmalmCriticalFeatureDirectThreeCenterHolomorphicCharge.lean`; direct-file Lean check green
 - [ ] 3 → 4  publication-ready: standalone paper (theorem + proof + Lean certificate + Door-2)
 
 ## Approach
@@ -81,8 +81,20 @@ constant `7936/21125`.
 - **Exact killing theorem/mechanism:** Not falsified.
 - **Strongest positive survivor:** Direct holomorphic charge above.
 - **New insight:** Critical-line subtraction converts HCF source diagonal into a positive off-line holomorphic trace; receiver need not detour through Hermitian energy and global factor two.
-- **Status:** `[PAPER-PROVED]`; external 2026 pair-correlation record does not contain this HCF receiver; exact Lean formalization pending.
+- **Status:** `[PAPER-PROVED] [LEAN-FORMALIZED]`; external 2026 pair-correlation record does not contain this HCF receiver.
+
+## Lean certificate
+
+- **Module:** `formal/GaloisForLFunctions/RHTower/HedenmalmCriticalFeatureDirectThreeCenterHolomorphicCharge.lean`
+- **Trace identity:** `criticalFeaturePrimeGammaOffLineExcess_eq_tsum_offLineHolomorphicEnergy`
+- **Local sharp charge:** `directThreeCenterCriticalFeatureHolomorphicCharge_lower`
+- **Finite packet bound:** `finite_strictRight_card_mul_directThreeCenterCharge_le_offLineLatticeBudget`
+- **Receiver:** `three_quarters_line_of_directThreeCenter_primeGammaOffLineLatticeBudget`
+- **Reachability:** imported by `formal/GaloisForLFunctions/RHTower.lean`
+- **Verification (2026-08-29):** `lake env lean GaloisForLFunctions/RHTower/HedenmalmCriticalFeatureDirectThreeCenterHolomorphicCharge.lean` passed. No separate Lake build rerun because adjacent RHTower leaf build replayed 13,138 cached jobs; direct-file checking validates this unchanged pre-existing module without another large replay.
+- **Axiom audit:** not rerun; no declarations were created or modified in this promotion pass.
 
 ## Log
 - 2026-08-29 — created in 1-in-progress from corpus sector and three-center theorems.
 - 2026-08-29 — complete summability/trace/finite-packet proof survived hostile audit; moved to 2-fully-proven.
+- 2026-08-29 — audited exact existing Lean theorem surface, verified direct module, and promoted to Stage 3.

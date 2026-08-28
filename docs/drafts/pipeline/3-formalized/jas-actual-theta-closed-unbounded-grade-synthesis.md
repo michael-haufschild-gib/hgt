@@ -1,8 +1,8 @@
 # JAS actual-theta closed unbounded grade synthesis
 
 - **ID:** JAS-ACTUAL-THETA-CLOSED-UNBOUNDED-GRADE-SYNTHESIS
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** `JointAncestryActualThetaGradeNormEscape`,
   `JointAncestryCriticalMixedPrimeGradeIncidence`, `BoundedDiagonalOperatorLp`, and
   `SourceLinearClosedRelationSplitting`
@@ -29,13 +29,13 @@ the remaining support-cutting sewing.
 ## Gates
 
 - [x] 0 → 1  in-progress: corpus search, frozen theorem, exact RH chain, hostile audit
-- [ ] 1 → 2  fully-proven: dependency-closed proof
-- [ ] 2 → 3  formalized: direct check, leaf build, axiom audit, umbrella import
+- [x] 1 → 2  fully-proven: dependency-closed proof
+- [x] 2 → 3  formalized: direct check, leaf build, axiom audit, umbrella import
 - [ ] 3 → 4  publication-ready: standalone theorem, proof, certificate, Door-2 audit
 
-## Frozen conjecture
+## Formalized theorem
 
-`[CONJECTURE] [NOVELTY UNVERIFIED]`
+`[THEOREM] [NOVELTY UNVERIFIED]`
 
 Let `w_p` be norm of actual completed-theta grade indexed by prime `p`, and let `U` be canonical
 isometric normalized prime-grade synthesis. There is a submodule `R` of orthogonal Hilbert sum
@@ -60,6 +60,46 @@ isometric normalized prime-grade synthesis. There is a submodule `R` of orthogon
 - `not_JASCriticalPrimeActualThetaInjectiveGradeSynthesis` excludes every bounded realization of
   same coordinate law.
 
+## Dependency-closed proof
+
+Write `w_p > 0` for actual theta-grade norm at `natEquivPrimes.symm p` and choose
+`c = min(1, sqrt(jasActualThetaPositiveIntervalMass)) > 0`. Norm escape and its fixed-interval
+lower bound give `c ≤ w_p`, so `g_p = c / w_p` is nonzero and has modulus at most one. Moreover
+`g_(natEquivPrimes n) → 0`. Therefore diagonal multiplier `D_g` is injective with dense nonclosed
+range.
+
+Let `U` be canonical isometry synthesizing normalized collision-free prime-grade packets. Define
+`R` by two bounded equations on `ell2(Primes) ⊕ packetHilbert`:
+
+- `c u = D_g (U* v)`;
+- `U U* v = v`.
+
+Thus `R` is intersection of two kernels and is closed. Pairs `(D_g x, c U x)` lie in `R`; hence
+its domain contains dense range of `D_g`. Conversely first equation and `c ≠ 0` put every domain
+vector in that range, so domain equals the dense nonclosed range. If `(0,v) ∈ R`, injectivity of
+`D_g` forces `U* v = 0`, and second equation forces `v = 0`; hence relation is single-valued. For
+coordinate `p`, `D_g(w_p e_p) = c e_p` and `U(w_p e_p)` is literal actual theta-weighted packet,
+so `(e_p, actualPacket_p) ∈ R`. Prior norm-escape theorem excludes every bounded operator with
+these coordinate values.
+
+## Lean certificate
+
+- Module:
+  `GaloisForLFunctions.RHTower.JointAncestryActualThetaClosedUnboundedGradeSynthesis`
+- Main theorem: `jasActualThetaClosedUnboundedGradeSynthesis`
+- Supporting certificate:
+  - `isClosed_jasActualThetaClosedGradeSynthesisRelation`
+  - `jasActualThetaClosedGradeSynthesisRelation_domain_eq_range`
+  - `not_isClosed_jasActualThetaClosedGradeSynthesisRelation_domain`
+  - `jasActualThetaClosedGradeSynthesisRelation_singleValued`
+  - `jasActualThetaClosedGradeSynthesisRelation_coordinate_mem`
+- Direct check:
+  `lake env lean GaloisForLFunctions/RHTower/JointAncestryActualThetaClosedUnboundedGradeSynthesis.lean`
+- Leaf audit:
+  `lake build GaloisForLFunctions.RHTower.JointAncestryActualThetaClosedUnboundedGradeSynthesis`
+- Audited theorem axioms: `[propext, Classical.choice, Quot.sound]` only.
+- Wired into `GaloisForLFunctions.RHTower`; umbrella build intentionally not run.
+
 ## Hostile audit
 
 - Not RH: relation is coefficient-faithful but not yet source-linear for forward/reflected
@@ -69,8 +109,12 @@ isometric normalized prime-grade synthesis. There is a submodule `R` of orthogon
 - Exact positive survivor of prior no-go; it replaces impossible bounded synthesis with strongest
   closed unbounded realization.
 - Literature novelty remains unverified; exact JAS construction is corpus-specific.
+- 2026-08-29 arXiv search found standard Xi--theta approximation and generic diagonal/unbounded
+  operator literature, but no exact prime-indexed actual-theta relation or JAS sewing construction.
 
 ## Log
 
 - 2026-08-29 — frozen from corpus search after bounded actual-grade no-go and exact Xi sewing
   endpoint audit.
+- 2026-08-29 — proved and formalized exact closed unbounded positive survivor; direct check, leaf
+  build, axiom audit, and umbrella wiring passed.

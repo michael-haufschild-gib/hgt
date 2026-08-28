@@ -3148,3 +3148,169 @@ that one implication, `cassidy_dichotomy` closes item (b), and with it the card:
 `isomonodromy_of_no_riccati_of_linearRelation` consumes the second branch directly, since a Lie
 algebra conjugated into the constants gives `δ` of every entry equal to zero — a linear differential
 relation.
+
+## Lean progress — the dimension hypothesis is GONE, and the group step is proved (2026-08-29)
+
+The previous entry left item (b) as `hfin`: finite dimensionality of the Lie algebra over the
+constants.  That hypothesis is *equivalent to the conclusion* — for the improper group `SL₂(U)` the
+Lie algebra is `sl₂(U)`, infinite dimensional over the constants — so `cassidy_dichotomy` carried no
+information beyond an excluded middle.  It is now replaced by a sharp, unconditional dichotomy, and
+the passage from the Lie algebra to the *group* is proved.  Six new modules, all axiom-clean
+(`[propext, Classical.choice, Quot.sound]`) and wired into `GaloisForLFunctions.HTGeometry`.
+
+### `Sl2AbsorbingLine` — absorption
+
+```text
+sl2E_00 … sl2H_11                   the entries of the standard basis
+sl2_bracket_E, sl2_bracket_E_E,     one and two brackets against the raising matrix,
+sl2_bracket_F_F                     two against the lowering matrix
+sl2_bracket_EF, _FE, _HE, _HF       the structure constants
+sl2_traceless_decomp                a traceless matrix is `Z₀₀ h + Z₀₁ e + Z₁₀ f`
+absorbSubmodule L                   **the matrices whose whole `U`-line lies in `L`** — a
+                                    `U`-submodule, not merely a `C`-submodule
+bracket_mem_absorbSubmodule         it is a bracket ideal against every traceless matrix, because
+                                    `c[Z,W] = [cZ, W]` and `span_U L = sl₂(U)`
+sl2_eq_of_absorbing                 **absorption**: a bracket-closed `C`-subspace of `sl₂(U)` whose
+                                    `U`-span is `sl₂(U)` and which contains one whole `U`-line is
+                                    all of `sl₂(U)`
+```
+
+The proof of the last is `sl₂`-simplicity, done by hand in `2 × 2`: two brackets against `e` return
+`−2 Z₁₀ · e`, two against `f` return `−2 Z₀₁ · f`, and a diagonal `Z` is handled by a single bracket
+against `e`; then `[e,f] = h` and `[h,f] = −2f` fill in the rest.
+
+### `TangentLineStabiliserDichotomy` — where the linear operator comes from
+
+```text
+differentialJet_mul_leibniz         the binomial Leibniz rule for the algebraic jets, from
+                                    `DerivationIterateLeibniz` (no heavy import)
+exists_linearOperator_linearisationForm_smul
+    **substituting `c · Y` into a linearisation gives a linear differential operator in `c`**:
+    `linearisationForm p P s (c·Y) = ∑_{k ≤ N} b k · δ^k c`, with
+    `b k = ∑_{v ∈ s, k ≤ v₂} C(v₂,k) (∂_v P)(p) δ^{v₂−k}(Y_{v₁})`
+exists_monic_of_linearOperator      a nonzero coefficient makes the relation monic
+tangent_lineStabiliser_dichotomy    **the dichotomy**: for a direction `Y`, either every scalar
+                                    multiple of `Y` is tangent, or the scalars `c` with `c·Y`
+                                    tangent solve one monic scalar linear differential equation
+```
+
+This is the exact input `cassidy_sl2_of_differentialSolution` asks for, and it is *free*: the
+tangent space is cut out by linearisations, and a linearisation is linear.
+
+### `CassidyTangentDichotomy` — Cassidy with no dimension hypothesis
+
+```text
+mem_matrixTangentM_iff_linearisation   membership in the Lie algebra, spelled out
+cassidy_tangent_dichotomy
+    **either the Lie algebra is all of `sl₂(U)`, or one conjugation carries it onto `sl₂` over the
+    differential constants** — no `hfin`, no side condition
+```
+
+The case split is on whether some nonzero `Y` has its whole `U`-line inside `L`.  If one does,
+`sl2_eq_of_absorbing` gives everything; if none does, the dichotomy supplies the monic operator for
+*every* nonzero `Y`, and the corpus's `cassidy_sl2_of_differentialSolution` applies.
+
+### `Sl2ConstantNormaliser` — the normaliser of `sl₂(K)`
+
+```text
+entries_mem_of_conj_sl2
+    **an invertible matrix whose adjoint action carries `e`, `f`, `h` into a square-root-closed
+    subfield `K`, and whose determinant lies in `K`, has all four entries in `K`**
+```
+
+Explicit: writing `g = [[a,b],[c,d]]`,
+
+```text
+g e adj(g) = [[−ac, a²], [−c², ac]],
+g f adj(g) = [[bd, −b²], [d², −bd]],
+g h adj(g) = [[ad+bc, −2ab], [2cd, −(ad+bc)]],
+```
+
+so every pairwise product of `a,b,c,d` lies in `K`; `ad − bc = det g ∈ K` splits `ad` from `bc`;
+one of `a`, `b` is nonzero, its square is in `K`, hence so is it, and dividing the products by it
+recovers the other three entries.  Note the determinant need only lie in `K`, not equal one — the
+difference Galois group of the order recurrence lands in `det = ±1`, not in `SL₂`.
+
+### `FiniteConstantSpanOperator` — finite span ⟹ one operator
+
+```text
+exists_nonzero_linearJet_relation_of_span
+    **a finite family `w : ι → U` lies in the solution set of a nonzero linear differential operator
+    of order at most `#ι`**, and hence so does its whole span over the constants
+```
+
+No Wronskian: the `#ι + 1` jet vectors `(δ^k w j)_j` are that many vectors in a `#ι`-dimensional
+space, hence dependent, and a dependence *is* the operator.  The solution set is a module over the
+constants, so it swallows the span.
+
+### `CassidyGroupConstants` — from the Lie algebra to the group
+
+```text
+entries_mem_of_mem_span_sl2         members of the constant span of `h,e,f` have constant entries
+sq_root_mem_differentialConstants   algebraically closed constants are square-root closed
+conj_entries_mem_constants
+    **the group step**: if one conjugation carries the Lie algebra onto `sl₂` over the constants,
+    then every group element with nonzero constant determinant has constant entries after that
+    conjugation
+conjProducts P Q                    the sixteen products `Q i l · P k j`
+entries_mem_span_of_conj_constants  undoing the conjugation lands every entry in their constant span
+exists_linearJet_relation_of_conj_constants
+    hence **one** nonzero linear differential operator annihilates every entry of every element
+cassidy_group_dichotomy
+    **the capstone**: for a differential algebraic subgroup of `GL₂` with traceless, bracket-closed,
+    spanning Lie algebra, either the Lie algebra is all of `sl₂(U)`, or one nonzero scalar linear
+    differential operator annihilates every entry of every group element
+```
+
+The group step needs **no exponential map**.  The Lie algebra of a differential algebraic subgroup
+is stable under the adjoint action of the group (`adjoint_mem_tangent_of_zeroSet`, already owned),
+so after the conjugation every group element normalises `sl₂` over the constants, and
+`entries_mem_of_conj_sl2` finishes.  Undoing the conjugation costs only a bounded-dimensional
+constant span, which `exists_nonzero_linearJet_relation_of_span` converts into a single operator.
+
+The second alternative of `cassidy_group_dichotomy` is **exactly** the hypothesis `hGL` of
+`DifferentialGaloisScalarZeroSet.isomonodromy_of_no_riccati_of_linearRelation`.
+
+### What item (b) now is
+
+One statement, and it is the only thing between this card and the isomonodromy contradiction:
+
+> **exclude the improper branch** — the tangent space of the difference Galois group of the order
+> recurrence is not all of `sl₂`, given that `K_ν(s)` is differentially algebraic.
+
+Everything else is proved: irreducibility (no rational Riccati solution), non-imprimitivity
+(`no_imprimitive_pair`), the Lie algebra's tracelessness, bracket closure, spanning and adjoint
+stability, the classification itself, the group step, and the endgame.
+
+### The improper branch, stated exactly
+
+`cassidy_group_dichotomy`'s first alternative is
+
+```text
+∀ Z, Z.trace = 0 → Z ∈ matrixTangentM S hone
+```
+
+i.e. **every linearisation `linearisationForm 1 P P.vars` of every `P ∈ S` vanishes on all of
+`sl₂`**.  For the tautological family `S = {P over C : P vanishes on the Galois monoid}` — which is
+radical, since `U` is a field — this says the Galois group has full Lie algebra, and the classical
+consequence is that it is the whole of `SL₂`, whose Picard–Vessiot extension has differential
+transcendence degree three; `K_ν(s)` would then not be differentially algebraic.
+
+Three separate things are needed to make that argument Lean-complete, and none of them is a
+classification statement:
+
+1. **A family `S` with the monoid property.**  `hmulBi` (the zero set over the bi-dual numbers is
+   closed under multiplication) is the statement that `S` is a differential *Hopf* ideal.  The
+   corpus already owns the object that supplies it: `E`, the constants subalgebra of the tensor
+   square, with `adjoin_tensor_comparison_eq_top` and `TorsorDecomposition`; `S` is the kernel of
+   `C{X_ij}[1/det] → E`, and comultiplication gives `hmulBi`.
+2. **Kolchin smoothness in characteristic zero** (Cartier), which is what makes the tangent space of
+   a *radical* differential ideal the true tangent space — without it `{t : t² = 0}` has full
+   tangent space at `0` and is a monoid, so no dimension argument can run.
+3. **The dimension step**: a Kolchin-closed submonoid of `SL₂(U)` with full Lie algebra is
+   `SL₂(U)`.  With (2) this is the one-parameter statement `k = {t : u(t) ∈ H}` is a Kolchin-closed
+   additive submonoid of `U` with full tangent space at `0`, hence all of `U`, plus the elementary
+   fact that two opposite unipotent one-parameter subgroups generate `SL₂`.
+
+That is the remaining programme for item (b).  Everything downstream of it — the classification, the
+group step, the operator, the endgame — is now unconditional in the tree.

@@ -1869,3 +1869,20 @@ without building either umbrella. Eighteen audited capstones depend only on `pro
 it; its nonzero status is caused by unrelated shared-worktree umbrella-reachability failures.
 Certificate includes full finite-support homology Euler cancellation, canonical comparison-quotient
 transport under injective lifts, and harmonic rank/zero-locus realization; no RH claim is made.
+
+## Session 2026-08-29 addition (prime-edge observer-formation Hodge reconstruction)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-DOFM-3 | Literal path-edge independence; scalar-fusion kernel/cokernel homology; endpoint-plus-charge reconstruction; Hodge projector and fourth-power charge; vertex/packet reversal; recurrent open history; bilateral cofinal properness; depth-`12` differential-independence coexistence | `HTGeometry.PrimeEdgeObserverFormationHodge` |
+
+Scratch and project-path elaboration and one targeted leaf build pass. No umbrella, theorem-area,
+or project build was run. Module is wired into `HTGeometry.UniversalLawField` and `HTGeometry`
+without building either umbrella. Twenty audited created declarations depend only on `propext`,
+`Classical.choice`, and `Quot.sound`. Repository lint reaches the module and reports no defect in
+it; nonzero status comes from unrelated shared-worktree umbrella-reachability failures. Certificate
+includes exact zero-sum formation homology, vanishing coarse cokernel, linear reconstruction and
+Pythagorean conservation, functional-equation information neutrality, even-aperture recurrent
+growth, shifted bilateral selection of unit character/zero prime-radial drift, and unbounded
+formation rank coexisting with the literal depth-`12` differentially independent source. No RH
+claim is made.

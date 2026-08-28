@@ -1,7 +1,7 @@
 # Prime-edge observer formation, Hodge reconstruction, functional equation, recurrence, and bilateral properness law
 
 - **ID:** ULF-DOFM-3
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / LITERAL SOURCE FUSION LAW
 - **Programme:** `../../../1-in-progress/universal-law-field/derived-observer-formation-mechanics/field-programme.md`
 - **Arithmetic parent:** `../../../3-formalized/universal-law-field/source-formation-harmonic-mechanics/prime-exponent-source-edge-refinement-energy-and-criticality-law.md`
@@ -9,7 +9,7 @@
   `[FORMATION HOMOLOGY] [JOINT RECONSTRUCTION] [HODGE ENERGY IDENTITY]`
   `[FUNCTIONAL-EQUATION ISOMETRY] [RECURRENT SHADOW/OPEN HISTORY]`
   `[BILATERAL PROPERNESS SELECTOR] [HT COEXISTENCE] [NOT RH]`
-  `[LEAN OPEN: READ-ONLY AUDIT]`
+  `[LEAN-FORMALIZED] [AXIOM-AUDITED]`
 - **Statement:** A finite block of literal prime-exponent source edges, observed by one character,
   has formation homology equal to the zero-sum edge-packet sector.  Coarse endpoint plus this
   harmonic class reconstructs the complete packet, its Hodge norm is exactly the source refinement
@@ -488,19 +488,35 @@ current horizontal-selector wall.
 
 ## 13. Lean status
 
-The arithmetic parent theorems are already Lean-certified in
-`HTGeometry.SourceFormationHarmonicMechanics`.  The homology/Hodge identification, reconstruction
-map, and functional-equation action on the zero-sum carrier are not packaged as a Lean theorem.
-Per the active goal, this was a read-only audit: no Lean file was written and no build was run.
+Fully certified in
+`HTGeometry.PrimeEdgeObserverFormationHodge`.  The module proves literal consecutive-edge
+independence and trivial pairwise leg intersections; identifies formation homology with the
+zero-sum kernel and proves the coarse cokernel vanishes; constructs endpoint-plus-charge linear
+reconstruction with exact Pythagorean conservation; realizes the fusion-adjoint Laplacian and its
+harmonic projector; proves vertex and signed packet reversal, reciprocal character transport,
+energy preservation, and nonannihilation; computes the two-edge fourth-power charge and its prime
+radial zero locus; certifies even recurrent closure with `l2` and `l1` growth; proves shifted
+bilateral cofinal summability exactly at unit character and zero radial drift; and combines
+depth-`12` differential independence with unbounded formation rank.
+
+Direct project-path elaboration and targeted leaf build
+`lake build GaloisForLFunctions.HTGeometry.PrimeEdgeObserverFormationHodge` pass.  Module is wired
+into `HTGeometry.UniversalLawField` and `HTGeometry`; neither umbrella was built.  Twenty audited
+created declarations depend only on `propext`, `Classical.choice`, and `Quot.sound`.  Repository
+lint reaches the module and reports no defect in it; nonzero status comes from unrelated
+shared-worktree umbrella-reachability failures.  No RH claim is made.
 
 ## Gates
 
 - [x] 0 -> 1: literal source block, observer complex, and formation carrier
 - [x] 1 -> 2: joint reconstruction, Hodge identity, FE isometry, recurrence, and bilateral selector
-- [ ] 2 -> 3: Lean certification of the homology/Hodge/reversal fusion
+- [x] 2 -> 3: Lean certification of the homology/Hodge/reversal fusion
 - [ ] 3 -> 4: unconditional global Xi admission of the bilateral Hodge class
 
 ## Log
 
 - 2026-08-14 -- literal prime-edge source reinterpreted as one observer-formation Hodge mechanism;
   endpoint-plus-charge reconstruction and bilateral homological properness proved on paper.
+- 2026-08-29 -- formalized the full literal fusion law in
+  `HTGeometry.PrimeEdgeObserverFormationHodge`; direct elaboration, targeted leaf build, lint
+  reachability, and batched axiom audit completed; promoted to Stage 3.

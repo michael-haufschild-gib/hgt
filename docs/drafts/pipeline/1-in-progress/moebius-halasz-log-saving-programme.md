@@ -1669,3 +1669,104 @@ yet built:
 
 Neither step needs a lower bound on `Q`, which is exactly why this route is not subject to the
 `(log x)^{−1/5}` ceiling above.
+
+## Brick 1 of the large-values route is CLOSED — the level set is sampled inside itself (2026-08-29)
+
+The previous entry named two mechanical gaps between `Sieve/BlockProductLevelSplit` and the corpus's
+large-values stack.  The first is now closed.
+
+> **1. From an integral over `S_j` to a sum over separated points.**
+
+The obstruction was that the corpus's discretisation
+(`HTGeometry/CellMaxDiscretisation.exists_spaced_families_integral_le`) works on a *full interval*
+and produces unconstrained sample points, while every large-values estimate needs the sample points
+to satisfy the level condition — i.e. to lie in `S_j`.
+
+The resolution is that `S_j` is **closed**, not merely measurable: `primeBlockPoly B` is continuous,
+so `S_j = [-G,G] ∩ {w : V ≤ ‖primeBlockPoly B w‖}` is a compact interval intersected with the
+preimage of a closed half-line.  For a closed restricting set the cell-max argument runs verbatim —
+each closed unit cell meets `S_j` in a *compact* set, so a continuous integrand attains its maximum
+there at a point **of `S_j`**.
+
+Two new modules, unconditional and axiom-clean (`[propext, Classical.choice, Quot.sound]`), both
+umbrella-wired:
+
+`GaloisForLFunctions/HTGeometry/CellMaxSetDiscretisation.lean`
+
+```text
+iUnion_Ioc_cells                        the half-open cells of length Δ tile Ioc a (a+mΔ)
+exists_cell_max_setIntegral_le          maxima taken inside U, over the cells that meet U
+exists_spaced_families_setIntegral_le   ∃ S₁ S₂ ⊆ U ∩ Icc a (a+mΔ), both Δ-spaced, with
+                                          ∫_{U ∩ Ioc a (a+mΔ)} F ≤ Δ·( ∑_{S₁} F + ∑_{S₂} F )
+```
+
+`GaloisForLFunctions/RHTower/Sieve/LevelSetSpacedSample.lean`
+
+```text
+primeBlockLevelSet B G V                = Icc (−G) G ∩ {w : V ≤ ‖primeBlockPoly B w‖}
+isClosed_primeBlockLevelSet
+exists_spaced_families_levelSet_le
+    ∫_{S_V} ‖logPoly a D‖²  ≤  ∑_{P₁} ‖logPoly a D‖² + ∑_{P₂} ‖logPoly a D‖² ,
+    with P₁, P₂ ⊆ S_V one-spaced
+exists_spaced_families_blockProduct_levelSplit
+    **the level split with every level set already discretised**:
+      ∫_{|w| ≤ G} ‖primeBlockPoly B w · logPoly a D w‖²
+        ≤ V₀²·∫_{|w| ≤ G} ‖logPoly a D w‖²
+          + ∑_{j < J} (2^{j+1}V₀)² · ( ∑_{P₁ j} ‖logPoly a D‖² + ∑_{P₂ j} ‖logPoly a D‖² ) ,
+    with `P₁ j, P₂ j ⊆ primeBlockLevelSet B G (2^j V₀)` one-spaced
+```
+
+The whole cost of the discretisation is the factor two from the parity split of the cells.
+
+**What remains of the large-values route.**  Only the second named gap:
+
+> **2. From a dyadic block to an initial segment.**  `Sieve/DyadicSecondEnvelopeClosed.halaszMontgomery_dyadic_explicit`
+> is stated for `dyadicDirRow N`, i.e. coefficients supported on `[N, 2N)`; the Ramaré cofactor's
+> support is `Icc 1 ⌊M/Q_j⌋`, so a dyadic decomposition in `n` (cost `log`) is needed.
+
+With that, `exists_spaced_families_blockProduct_levelSplit` feeds the Halász–Montgomery bound
+directly, and — as recorded above — this route carries **no lower constraint on `Q`**, so it is not
+subject to the exact-Ramaré chain's `(log x)^{−1/5}` ceiling.
+
+## Brick 2 is CLOSED — the initial segment splits into dyadic blocks (2026-08-29)
+
+> **2. From a dyadic block to an initial segment.**
+
+`GaloisForLFunctions/RHTower/Sieve/LogPolyDyadicSplit.lean`, unconditional, axiom-clean,
+umbrella-wired:
+
+```text
+dyadicSegmentBlock M j                  = { n ∈ [1,M] : ⌊log₂ n⌋ = j }
+mem_dyadicSegmentBlock                  2^j ≤ n < 2^{j+1} on the j-th block
+logPoly_Icc_eq_sum_dyadicBlocks         logPoly a [1,M] = ∑_{j ≤ ⌊log₂ M⌋} logPoly a (block j)
+normSq_logPoly_Icc_le_card_mul_sum_blocks
+    ‖logPoly a [1,M] w‖² ≤ (⌊log₂ M⌋+1) · ∑_j ‖logPoly a (block j) w‖²
+sum_normSq_logPoly_Icc_le_card_mul_sum_blocks
+    ∑_{w ∈ P} ‖logPoly a [1,M] w‖² ≤ (⌊log₂ M⌋+1) · ∑_j ∑_{w ∈ P} ‖logPoly a (block j) w‖²
+```
+
+The decomposition itself is the corpus's `Sieve/AdicBlocks.sum_Icc_eq_sum_dyadic_blocks`; what is
+new is its Dirichlet-polynomial form, the Cauchy–Schwarz cost, and the frequency-summed version —
+the exact shape a per-block Halász–Montgomery estimate is consumed in.  The whole cost of the
+reduction is the single factor `⌊log₂ M⌋ + 1`.
+
+### Both named gaps of the large-values route are now closed
+
+The route recorded on 2026-08-19 read:
+
+> What is actually left, named: a large-values (Halász–Montgomery) replacement for `hV` … Two gaps
+> to bridge, both mechanical but not yet built: (1) from an integral over `S_j` to a sum over
+> separated points; (2) from a dyadic block to an initial segment.
+
+Both are now theorems.  Composing `exists_spaced_families_blockProduct_levelSplit` (brick 1) with
+`sum_normSq_logPoly_Icc_le_card_mul_sum_blocks` (brick 2) reduces the annulus estimate to
+
+```text
+    ∑_{w ∈ P} ‖logPoly a (dyadic block) w‖²      over a one-spaced P inside a level set of the
+                                                 prime block polynomial,
+```
+
+which is precisely the hypothesis shape of `Sieve/DyadicSecondEnvelopeClosed.halaszMontgomery_dyadic_explicit`
+and of `RHTower/WellSpacedSubset`.  What remains on this lane is the arithmetic of the composition —
+choosing `V₀` and `J`, and bounding the level-set cardinality by the large-values theorem — not any
+further structural bridge.

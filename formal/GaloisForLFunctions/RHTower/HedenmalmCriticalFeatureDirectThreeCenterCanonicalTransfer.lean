@@ -30,7 +30,7 @@ theorem canonical_correctedBudget_ceiling_iff_plemeljCovariance_ceiling_directTh
   have htransfer (X Y : ℕ → ℝ)
       (hXY : Tendsto
         (fun n => (X n - Y n) / criticalFeatureCanonicalZeroCount n)
-        atTop (𝒩 0))
+        atTop (𝓝 0))
       (hY : CriticalFeatureCanonicalAsymptoticUpper Y (7936 / 21125)) :
       CriticalFeatureCanonicalAsymptoticUpper X (7936 / 21125) := by
     intro ε hε

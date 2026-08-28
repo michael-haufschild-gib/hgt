@@ -762,10 +762,8 @@ cannot skip a window of multiplicative width `T^{1/6+ε/2}`).
 ### Revised milestone list for Theorem 1.2
 
 - [x] **M4** Lemma 4.1 at `σ = 7/32 − 5ε` (`exists_lemma41_huxley`), and its general-range form.
-- [~] **M4d** Prop 4.2: the `T₂` cell cancellation is **owned**
-      (`MatomakiTeravainenTypeIIAmplitudeCells`); the `T₁` step has its discrete mean value theorem
-      (`DirichletFiniteSetLargeValues.largeValues_dirPoly_finset`, Ivić Thm 9.4) and
-      Halász–Montgomery; `T₃` is trivial.  **Remaining: the case split and the `ℓ`-selection.**
+- [x] **M4d** Prop 4.2, finite one-spaced form (brick 25) and **integral form** (brick 28,
+      `exists_matomakiTeravainen_typeII_proposition42_integral`), at Huxley strength.
 - [ ] **M2** Lemma 3.1 (Perron/variance reduction) — `Sieve/PerronShortInterval` and
       `Sieve/PerronWindowKernel` are the primitives.
 - [ ] **M5** Prop 2.2 (Harman sieve decomposition).
@@ -1931,3 +1929,75 @@ This closes the pointwise Perron bookkeeping seam, not all of Lemma 3.1. Remaini
 continuous `x`-variance integration: align real window endpoints with the natural half-integer
 windows, identify the coefficient polynomial with `P1(s)P(s)`, integrate the explicit endpoint
 errors, and insert the assumed mixed mean-square bound. No variance conclusion is claimed yet.
+
+### M6, brick 27 — cell-max discretisation *restricted to a closed set* (2026-08-29)
+
+Brick 25 left `exists_matomakiTeravainen_typeII_proposition42_huxley` stated for finite one-spaced
+frequency **sets**, and recorded that the passage to the paper's measurable `U ⊆ [0,T]` was blocked:
+the corpus's `HTGeometry/CellMaxDiscretisation.exists_spaced_families_integral_le` discretises a
+continuous integrand over a *full* interval, and its sample points are unconstrained, whereas the
+Proposition 4.2 hypotheses require every sample point to satisfy the amplitude threshold — i.e. to
+lie in `U`.
+
+That gap is now closed, in the form the application actually needs.  `U` is not an arbitrary
+measurable set: it is the set where a Dirichlet-polynomial amplitude exceeds a threshold, i.e. the
+preimage of a closed half-line under a continuous function, hence **closed**.  For a closed
+restricting set the cell-max argument runs verbatim, because each closed cell meets `U` in a
+*compact* set and a continuous integrand attains its maximum there at a point of `U`.
+
+`formal/GaloisForLFunctions/HTGeometry/CellMaxSetDiscretisation.lean`, unconditional and axiom-clean
+(`[propext, Classical.choice, Quot.sound]`), wired into `GaloisForLFunctions.HTGeometry`:
+
+```text
+iUnion_Ioc_cells                  the half-open cells of length Δ tile `Ioc a (a+mΔ)`
+exists_cell_max_setIntegral_le    ∃ K ⊆ range m and maximisers c k ∈ U ∩ cell k with
+                                    ∫_{U ∩ Ioc a (a+mΔ)} F ≤ ∑_{k ∈ K} Δ · F (c k)
+exists_spaced_families_setIntegral_le
+    ∃ S₁ S₂ ⊆ U ∩ Icc a (a+mΔ), both Δ-spaced, with
+      ∫_{U ∩ Ioc a (a+mΔ)} F ≤ Δ · ( ∑_{S₁} F + ∑_{S₂} F )
+```
+
+The conclusion also records `S₁, S₂ ⊆ Icc a (a+mΔ)`, which discharges Proposition 4.2's diameter
+hypothesis `∀ x y ∈ S, |x − y| ≤ 2T` at `a = -T`, `Δ = 1`, `m = 2T`.
+
+Only cells that actually meet `U` enter the sum (the index set `K`), so no sample point is
+manufactured outside the level set; cells missing `U` contribute a vanishing integral.  Splitting
+`K` by parity gives the two `Δ`-spaced families.
+
+**What this unblocks.** With the amplitude's continuity, the level set
+`{t : A₁^{-σ₀} ≤ amp₁ t ∨ A₂^{-σ₀} ≤ amp₂ t}` is closed, and
+`exists_spaced_families_setIntegral_le` converts the finite-set bound of brick 25 into a bound on
+`∫_U amp₁² amp₂²` at the cost of a factor two.  That is the paper's Proposition 4.2 in integral
+form, the shape §5's Cauchy–Schwarz consumes.
+
+### M4d, brick 28 — Proposition 4.2 in integral form (2026-08-29)
+
+`Sieve/MatomakiTeravainenProposition42Integral.lean`, unconditional and axiom-clean, wired into
+`GaloisForLFunctions.RHTower`:
+
+```text
+continuous_matomakiTeravainenDirichletAmplitude
+    the Dirichlet amplitude is continuous in the ordinate (from the corpus's `continuous_dirPoly`)
+matomakiTeravainenTypeIIRegion T N₁ a₁ N₂ a₂ A₁ A₂ σ₀ B₁
+    = Icc (−T) T ∩ {amp₁ ≤ 1} ∩ {amp₂ ≤ 1} ∩ {amp₁ ≤ B₁}
+        ∩ ({A₁^{−σ₀} ≤ amp₁} ∪ {A₂^{−σ₀} ≤ amp₂})
+isClosed_matomakiTeravainenTypeIIRegion       — every constraint is a closed condition
+matomakiTeravainenTypeIIRegion_subset_Icc
+exists_matomakiTeravainen_typeII_proposition42_integral
+    ∫_{region} amp₁² amp₂²
+      ≤ 2 · ( 16384 B₁² (1+|log T|) C₂² (2(1+|log T|))^{2^{2(w₂+1)}−1}
+              + T^{−ε²/20} + T^{−1/2} )
+```
+
+The factor two is the parity split of the unit cells; nothing else is lost.  The diameter
+hypothesis `|x − y| ≤ 2T` of the finite form is discharged from `region ⊆ Icc (−T) T`, and the
+one-spacing from `Δ = 1`.
+
+**M4d is therefore complete in the Huxley-strength form**: the paper's Proposition 4.2 as an
+integral over the amplitude region, with no measurable-set hypothesis left open, and with the
+factor-two loss made explicit.  What separates it from the paper's literal statement is only the
+strength of the large-values input (Huxley in place of Jutila), which the programme deliberately
+chose.
+
+Remaining milestones: **M2** (Lemma 3.1's continuous variance integration), **M6/M7** (Type I and
+Type I/II), **M8** (the assembly at exponent `1 + 44/79`).

@@ -209,7 +209,7 @@ in precisely this forced residual.
 
 ### C5a — local carrier theorem
 
-`[CONJECTURE — PAPER PROVED, LEAN OPEN]` There is a radius `r > 0`, independent of `x`, such that
+`[LEAN-PROVED]` There is a radius `r > 0`, independent of `x`, such that
 the defining prime-edge series for `B_x(xi)` converges absolutely and locally uniformly on every
 compact subset of `R x {xi : |xi| < r}`. Hence `B_x` is holomorphic in `xi` there and its Taylor
 coefficients recover all lower-half residual edge jets with the second factorial normalization.
@@ -246,6 +246,14 @@ compact subdiscs by a constant times
 The corpus reciprocal-height telescope proves this majorant summable. Weierstrass convergence
 gives holomorphy. Absolute local uniform convergence of the differentiated series permits
 termwise differentiation at zero, and `Phi^(k)(0) = 1/k!`, giving the exact jet identity.
+
+Formalized in
+`formal/GaloisForLFunctions/RHTower/XiHeatCassiniWoldResidualBorelCarrier.lean`.
+The module proves a global square-root-exponential residual envelope, absolute summability of the
+source-labelled two-index carrier on one source-independent disc, exact Fubini regrouping into
+the complete residual jet series, and holomorphy on that disc. Direct foreground elaboration and
+the targeted module build pass. Axiom audit reports only `propext`, `Classical.choice`, and
+`Quot.sound`. Global lint is blocked only by unrelated pre-existing umbrella reachability debt.
 
 ### C5b — remaining open core
 

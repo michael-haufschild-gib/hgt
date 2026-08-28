@@ -31,12 +31,12 @@ noncomputable section
 
 variable {U : Type*} [Field U]
 
-/-- **The normaliser of `sl₂` over a subfield.**  A determinant-one matrix whose adjoint action
+/-- **The normaliser of `sl₂` over a subfield.**  An invertible matrix whose adjoint action
 carries the three standard generators into a square-root-closed subfield has all its entries in
-that subfield. -/
+that subfield.  Only the determinant has to lie in the subfield, not to be one. -/
 theorem entries_mem_of_conj_sl2 [CharZero U] (K : Subfield U)
     (hsq : ∀ x ∈ K, ∃ y ∈ K, y * y = x)
-    {g : Matrix (Fin 2) (Fin 2) U} (hdet : g.det = 1)
+    {g : Matrix (Fin 2) (Fin 2) U} (hdetK : g.det ∈ K) (hdet0 : g.det ≠ 0)
     (hE : ∀ i j, (g * sl2E U * Matrix.adjugate g) i j ∈ K)
     (hF : ∀ i j, (g * sl2F U * Matrix.adjugate g) i j ∈ K)
     (hH : ∀ i j, (g * sl2H U * Matrix.adjugate g) i j ∈ K) :
@@ -46,8 +46,8 @@ theorem entries_mem_of_conj_sl2 [CharZero U] (K : Subfield U)
   have ha01 : g.adjugate 0 1 = -(g 0 1) := by rw [hadj]; simp
   have ha10 : g.adjugate 1 0 = -(g 1 0) := by rw [hadj]; simp
   have ha11 : g.adjugate 1 1 = g 0 0 := by rw [hadj]; simp
-  have hdet' : g 0 0 * g 1 1 - g 0 1 * g 1 0 = 1 := by
-    rw [← Matrix.det_fin_two]; exact hdet
+  have hdet' : g 0 0 * g 1 1 - g 0 1 * g 1 0 = g.det := by
+    rw [Matrix.det_fin_two]
   -- the entry identities of the adjoint action
   have hE01 : (g * sl2E U * Matrix.adjugate g) 0 1 = g 0 0 * g 0 0 := by
     simp only [Matrix.mul_apply, Fin.sum_univ_two, sl2E_00, sl2E_01, sl2E_10, sl2E_11,
@@ -92,8 +92,8 @@ theorem entries_mem_of_conj_sl2 [CharZero U] (K : Subfield U)
     rwa [hid] at h'
   have hsum : g 0 0 * g 1 1 + g 0 1 * g 1 0 ∈ K := hH00 ▸ hH 0 0
   have had : g 0 0 * g 1 1 ∈ K := by
-    have h := K.mul_mem (K.inv_mem h2K) (K.add_mem K.one_mem hsum)
-    have hid : (2 : U)⁻¹ * (1 + (g 0 0 * g 1 1 + g 0 1 * g 1 0)) = g 0 0 * g 1 1 := by
+    have h := K.mul_mem (K.inv_mem h2K) (K.add_mem hdetK hsum)
+    have hid : (2 : U)⁻¹ * (g.det + (g 0 0 * g 1 1 + g 0 1 * g 1 0)) = g 0 0 * g 1 1 := by
       field_simp
       linear_combination -hdet'
     rwa [hid] at h
@@ -113,8 +113,9 @@ theorem entries_mem_of_conj_sl2 [CharZero U] (K : Subfield U)
   by_cases h00 : g 0 0 = 0
   · have hb0 : g 0 1 ≠ 0 := by
       intro h
-      rw [h00, h] at hdet'
-      simp at hdet'
+      apply hdet0
+      rw [← hdet', h00, h]
+      ring
     have hbK : g 0 1 ∈ K := hsqrt_mem _ hbb
     have hbinv : (g 0 1)⁻¹ ∈ K := K.inv_mem hbK
     have hcK : g 1 0 ∈ K := by

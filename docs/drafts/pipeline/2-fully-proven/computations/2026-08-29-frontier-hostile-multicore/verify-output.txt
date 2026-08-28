@@ -1,0 +1,3 @@
+verified: S6F/TCD dense and Arb positivity outputs; C5 scan integrity
+results.json sha256 5752dfb5850879ba264bc3a046e2bc47991e9afb7ba23db65a7bf1dfd40c5f12
+s6f_arb_boxes.jsonl sha256 a3c08e6b6e4ae13f3b36d816693d196054fb4c4c3dd24c9a6f469088ae987ca0
