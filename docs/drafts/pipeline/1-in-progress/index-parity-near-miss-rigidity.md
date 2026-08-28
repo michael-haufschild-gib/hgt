@@ -239,3 +239,111 @@ with a new consumer relation: those lanes' PARTIAL goals suffice for near-miss r
 their full goals are reached, and the target frequency being fixed/known permits Diophantine
 window tuning unavailable to the full lanes. Next cycle: mine the proved T2/E layers for any
 statement meeting the spec (one-sided, density > 2/3, sub-power scale, fixed frequency).
+
+## Attack surface A — second assault: T2/E mining verdict + boundary closure (2026-08-28)
+
+**Mining verdict [LOCAL-RESEARCH].** The T2/E/D2 proved layers were audited against the spec
+(one-sided, density > 2/3, sub-power scale, fixed frequency). No proved statement meets it.
+"Signed subhalf continuation" is T2's OPEN item (frontier map §T2: open content = literal
+amplitude/cell-count summation, inverse-log identification, signed subhalf continuation), not a
+proved layer; T2's stage-3 module (`t2-wold-lower-hardy-ray-injectivity`) is ray
+coefficient-faithfulness — a receiver, not supply. The CCM window cluster
+(`dyadicWeightedPrimeWindowSubpowerUpper_iff_thetaErrorIncrement`,
+`riemannHypothesis_of_eventually_dyadicWeightedPrimeWindow_square_upper`) states the receiver
+equivalence explicitly: all-x one-sided subpower θ-error increments ⟺ the RH window gate. What
+the corpus DOES own and attack A now consumes: `exists_prime_log_window`
+(`RHTower/PrimeWindowSupply`) — unconditional prime in EVERY positive-length log window past a
+threshold, from the corpus's own elementary PNT; `WindowBudget`'s sine-steering interface with
+uniform floor √2/2; divergent window budgets (`windowPrimes_card_ge`);
+`exists_abs_psiRemainder_le_of_sign_change` (sign change ⟹ small-remainder point).
+
+**Three new boundary markers (this cycle's no-go closure):**
+
+1. **Ingham closure [LITERATURE-mechanism].** An ALL-x one-sided bound `ψ(x) − x ≥ −Kx^θ` (or ≤)
+   already implies no zeros with β > θ: write the one-signed defect `Kx^θ − (ψ(x)−x) ≥ 0`; by
+   Landau's theorem its Mellin abscissa is a real singularity; the transform continues past every
+   real point right of θ because ζ has no real zeros in (0,1); so the abscissa is ≤ θ and the
+   full transform is analytic on Re s > θ. Hence the all-x version of the spec is EQUIVALENT to
+   quasi-RH — circular as a target. Only genuinely density-type one-sided statements (which do
+   NOT imply quasi-RH: logical room is real) can serve.
+2. **Uniform upgrade of the anomaly law.** Under finite κ the background is not merely
+   density-vanishing: all non-exceptional zeros lie on the line, so the von Koch mechanism
+   (T = √x truncation of the explicit formula + N(T) ≪ T log T) gives
+   `ψ(x) = x − Σ_quadruples 2Re(x^ρ/ρ) + O(√x log²x)` UNIFORMLY. C10 upgrades from
+   density-convergence to uniform convergence; the refutation spec weakens to: ONE unbounded
+   sequence of scales inside the (measure-1/3) deep valley where the anomaly is ≥ −(1−ε)·half
+   amplitude. The needed carrier is sequence-level, not density-level.
+3. **Relative-scale, identity, and driver no-gos.** (a) Sieve one-sided bounds
+   (Brun–Titchmarsh, window counts) are relative-scale — factor-C on the window mass h — hence
+   blind to the o(h) fluctuation an off-line zero induces at every β < 1; they see only β = 1.
+   (b) Exact convolution identities (Λ⋆1 = log, Stirling error O(log x)) are blind by
+   resonance-vanishing: the exceptional term's harmonic average is `x^ρ/ρ·Σ_{m≤x}m^{−ρ} =
+   x/(ρ(1−ρ)) + ζ(ρ)·x^ρ/ρ + O(1)` and ζ(ρ) = 0 — every such identity encodes the zero rather
+   than constraining its position. (c) Oscillation-localization machinery (Kaczorowski–Pintz
+   type) is driven by the extremal zero; in a κ=1 world the exceptional zero IS the driver, and
+   the machinery's output (sign changes at gap ≤ 2π/γ, V(T) ≫ log T) is exactly what the cosine
+   itself supplies: self-consistent, no contradiction.
+
+**Purified open core [OPEN CORE of C10, final form].** After the closure the entire attack
+reduces to: *prove unconditionally that no asymptotic
+`ψ(x) = x − (4/|ρ|)·x^β cos(γ log x − arg ρ)·(1+o(1))-type single-frequency law + O(x^{1/2}log²x)`
+with β ∈ (1/2,1) can hold* — equivalently, exhibit for each (β,γ,φ) one unbounded scale
+sequence in the prescribed valley phases where ψ−x fails the cosine's depth. Every linear,
+quadratic, relative-scale, identity, extremal-driver, and budget carrier is now provably
+unusable; what is NOT excluded: genuinely density-type one-sided statements (new mathematics —
+no known technology), and in-world self-defeat exploiting that the κ=1 world is "RH + one
+visible cosine" (its remainder obeys von-Koch-quality control, so classical conditional
+technology APPLIES inside the counterfactual world — an unexplored asymmetric weapon).
+
+**New Lean anchors (both umbrella-wired, axioms propext/Classical.choice/Quot.sound):**
+
+- `HTGeometry/CosineValleyWindowFloor.lean` — the measure half of the contradiction engine,
+  CLOSED at all frequencies and phases: `volume_cosDeepSublevel_inter_Ioc` (every one-period
+  window carries exactly 2π/3, position-independent), `volume_cosDeepSublevel_inter_Ioc_nat`
+  (n periods = n·2π/3 exactly), `le_volume_cosDeepSublevel_inter_Ioc` (every window (a,b]
+  carries ≥ (b−a)/3 − 2π/3), `le_volume_cos_valley_window` (affine transport: the deep valley
+  of cos(γu+φ) in (0,U] has measure ≥ U/3 − 2π/(3γ) for every γ > 0, φ), and
+  `exists_valley_mem_of_volume_compl_lt` (**the single-frequency pigeonhole**: any G whose
+  complement in (0,U] has measure < U/3 − 2π/(3γ) contains a deep-valley scale; no
+  measurability of G required). A one-sided carrier on > 2/3 of scales now formally forces a
+  meeting with the valley.
+- `RHTower/WindowBudgetUnconditionalSupply.lean` — the Diophantine-tuning half at position
+  level, CLOSED: `primeWindowSupply_of_pos` (the WindowBudget interface Prop holds at EVERY
+  length L > 0 — Bertrand's log 2 restriction removed via the corpus PNT supply),
+  `exists_prime_sin_pos/neg_unconditional` (primes with sin(τ log q) ≥ √2/2, resp. ≤ −√2/2,
+  beyond any bound at EVERY frequency τ > 0), `exists_prime_mirrorTiltIncrement_pos/neg_unconditional`
+  (the defect walk steers both ways cofinally at every interior strip point).
+
+What neither anchor supplies — and what nothing in corpus or literature supplies — is
+AMPLITUDE: single-prime steering moves the walk by one prime's mass; the valley demands x^β.
+The frontier statement is unchanged in substance but now maximally narrow: an unconditional
+amplitude carrier at sequence-level in prescribed valley phases, OR an in-world self-defeat
+argument. Next cycle: attack the in-world route — inside the κ=1 counterfactual, all
+RH-conditional technology (second moments ≍, pair correlation inputs, short-interval variance)
+holds with the cosine as the ONLY anomaly; find one classical conditional theorem whose
+κ=1-world form contradicts the cosine's forced variance excess `(2/|ρ|²)·x^{2β−1}` in windows.
+
+**In-world route closure (same cycle, hostile audit).** Both in-world weapons unwind to known
+walls. (1) Variance: in the κ=1 world the cosine forces a short-interval variance excess
+`J(x,h) ⊇ ≍ h²x^{2β−1}`, dominant for `h ≫ x^{2−2β}log²x`; but every unconditional J-upper-bound
+is proved by zero-side evaluation, so the hypothetical zero's own term `h²x^{2β−1}` appears
+inside the bound — quadratic carriers are blind by SELF-INCLUSION (failure-map entry (b),
+reconfirmed from the proof side). (2) Resonant multiplicative sum: the cosine is the resonance
+`Σ_{n≤x}Λ(n)n^{−iγ} ∼ main − x^β/β·(unit)`; the strongest unconditional bound on that sum at
+log-monomial phase IS Vinogradov–Korobov — i.e., the in-world resonant route is literally "prove
+a vertical-strip zero-free region", the 80-year wall. Verdict for the in-world idea:
+REDISCOVERED (the wall, not a theorem). Uniform post-mortem across ALL routes: every known
+unconditional carrier proof is (i) zero-side evaluation — blind by self-inclusion, (ii)
+relative-scale — blind to o(h), (iii) exact ζ-identity — blind by resonance-vanishing, or (iv)
+resonant-phase exponential sum — the zero-free region itself. These exhaust the ALL-x
+technologies. The unique structural exception, with no known production technology AND no known
+obstruction: sequence/density-level one-sidedness.
+
+**C11 [CONJECTURE, purified target, strictly implies no-finite-κ at its parameters]:** for every
+γ > 0, φ, β ∈ (1/2,1), δ > 0 there are arbitrarily large u with cos(γu+φ) ≤ −1/2 and
+(ψ(e^u) − e^u)·e^{−βu} ≥ −δ. Under κ=1 at exactly (β,γ) the uniform anomaly law makes this
+false for δ < half-amplitude — so C11 is not a lemma toward C8, it IS C8's sequence-level form:
+new technology by construction, uncharted rather than known-hard. Status of attack surface A:
+driven to its honest wall; the Lean-closed valley floor + pigeonhole + every-frequency steering
+supply are its permanent assets. Loop returns to the parent programme's live positive track
+(CP-1/2/3 deficit domination on the Lean split foundation) with A parked at C11.

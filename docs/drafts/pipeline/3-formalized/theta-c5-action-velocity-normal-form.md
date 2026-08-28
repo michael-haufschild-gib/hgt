@@ -53,5 +53,18 @@ At fixed action, writing `h=partial_u v|_q`, direct differentiation yields
 Thus `h<=0` and `partial_q(vh)>=0` form an exact sufficient source-specific transport chamber.
 These remain open and are tracked by `theta-c5-fixed-action-seam-transport.md`.
 
+At the modular seam, the first transport law has the exact source-jet boundary
+
+`h(0,t)=0`,
+
+`partial_u h(0,t)=2[t kappa'(t)-(kappa(t)-kappa(0))(1+t kappa(t)/S(t))]`,
+
+where `S=-ell'` and `kappa=-ell''`.  Since `q_u(0,t)=0`, ordinary and fixed-action centre
+derivatives agree there.  Lean theorem
+`hasDerivAt_thetaCuspReflectedActionVelocityFixedActionCenterTransport_zero` closes this reduction
+without a sign premise.
+
 ## Log
 - 2026-08-28 — paper proof closed, Lean formalization built, axiom audit passed.
+- 2026-08-28 — exact seam transverse-transport margin added and formalized; its global sign is the
+  sharpened open source law.

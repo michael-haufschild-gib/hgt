@@ -1841,3 +1841,17 @@ module is wired into `HTGeometry.UniversalLawField` without building that umbrel
 the prior uniform-index requirement by a strictly weaker finite criterion: one form-preserving
 amplified realization whose target port budget is below the previous tensor rank forces positivity.
 Literal pre-divisor amplified Xi realization remains open; no RH claim is made.
+
+## Session 2026-08-28 addition (coefficient-dominated refinement collapse)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-DOFM-2 | Explicit coefficient-dominated contraction; presentation-core homology equivalence; serial kernel/retention and pair-quotient compatibility; iterated legal-refinement invariance; sharp join-redundancy countermodel; relabelling naturality | `HTGeometry.CoefficientDominatedRefinementCollapse` |
+
+Direct leaf elaboration and one targeted leaf build pass. No umbrella, theorem-area, or project
+build was run. Module is wired into `HTGeometry.UniversalLawField` and `HTGeometry` without
+building either umbrella. Five audited capstones depend only on `propext`, `Classical.choice`, and
+`Quot.sound`. Repository lint reaches this module and reports no defect in it; its nonzero status is
+caused by sixteen unrelated umbrella-reachability failures in the shared worktree. The formal
+certificate covers normalized collapse/prism identity and compatible chain-level serial maps;
+literal arithmetic formation realization remains open, and no RH claim is made.

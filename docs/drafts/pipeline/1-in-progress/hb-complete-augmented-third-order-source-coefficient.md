@@ -269,6 +269,7 @@ recovers `(Phi,Phi',Phi'')` independently of every third-jet extension. Substitu
 Eq. (100) pulled-back vertex is therefore identical to direct substitution of the BM master
 two-jets. The actual Xi carrier equals the corpus's exact monodromy mode, not a fitted amplitude.
 Direct `lake env lean` passed.
+Targeted build passed `11260/11260`.
 
 **Novelty status.** Primary sources provide the KI scalar coefficients, vector master identity,
 and Plebanski vertex separately. Targeted corpus and literature searches found no prior statement
@@ -286,3 +287,50 @@ gravity corner completion, and conserved left-QNM projection.
 `partial_X` pullback on separated BM time/hyperbolic jets; lift the coordinate-space Plebanski
 bidifferential operator through that chart; then apply it to the exact chiral carrier two-jets.
 Do not reuse fixed Poincare plane-wave charges for a BM separated mode.
+
+## Loop result HC94-A.6 — full first Jacobian and fixed-momentum route killed
+
+The rapidity substitution `rho=sech(xi)`, `sqrt(1-rho^2)=tanh(xi)` removes square-root edge
+premises. The module
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullPoincareDerivativePullback` constructs the three
+globally defined scaled coordinate fields
+
+`sigma*tanh(xi)*partial_T`, `sigma*tanh(xi)*partial_Y`,
+`sigma*sech(xi)*partial_Z`
+
+and proves unconditionally that they diagonalize the complete `(tau,xi,sigma)` chart Jacobian.
+Together with `partial_X`, algebraic inverse-scale variables give the exact Poincare `T,X,Y,Z`
+first jet, light-cone `u,w` derivatives, and their alternating kinematic bracket on arbitrary BM
+first jets.
+
+The sharp classification
+
+`a normalized BM time eigenjet has one fixed Poincare-T charge on every hyperbolic scale
+  iff its BM frequency is zero`
+
+is Lean-proved. Existing corpus damping then specializes it premise-free: no positive-branch Xi
+QNM admits a single fixed Poincare momentum throughout a BM hyperbolic fibre. This formally kills
+the remaining plane-wave-charge shortcut, rather than merely warning against it.
+
+The module
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMPlebanskiCoordinateJacobiVertex` implements the
+literal position-space Jacobi double bracket from Chowdhury et al. Eq. (63):
+
+`(f_uu*g_ww+g_uu*f_ww)/2 - f_uw*g_uw
+ + (u-v)^-1*(f_uw*g_w+f_w*g_uw-f_ww*g_u-f_u*g_ww)`.
+
+On Poincare plane-wave eigenjets, Lean proves the curvature term factors as
+`-i*(u-v)^-1*X*(h-k)` and the full operator equals the existing vertex
+`X*(X-2i*(u-v)^-1*(h-k))/2`. Thus momentum-space Eq. (100) is now proved to be an eigenjet
+specialization of the coordinate-space operator. Both new modules pass direct `lake env lean`.
+
+**Positive survivor HC94-A.6-P.** Full first-order light-cone transport is closed, and fixed
+Poincare momenta are excluded for actual Xi QNMs. The exact finite remaining chart burden is the
+second inverse-Jacobian transport of `partial_u^2`, `partial_u partial_w`, and `partial_w^2` on BM
+time/hyperbolic/radial two-jets. Those three components feed Eq. (63) directly; no additional
+guess about a Plebanski radial vertex is needed.
+
+**Pivot HC94-A.7 / `[OPEN CORE]`.** Construct the three coordinate-space light-cone second jets,
+apply Eq. (63) to the exact scalar--vector chiral carrier and corner-renormalized `++` response,
+then perform harmonic product, negative-leg contraction, gravity corner completion, and conserved
+left-QNM projection.

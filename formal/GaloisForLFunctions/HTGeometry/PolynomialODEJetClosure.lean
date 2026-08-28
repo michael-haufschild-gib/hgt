@@ -38,6 +38,13 @@ def modularThetaReflectedSixthSeamPolynomial (X : ℂ) : ℂ :=
     48411 / 262144 * X ^ 5 + 229545 / 8388608 * X ^ 6 +
     225 / 1048576 * X ^ 7 - 375 / 33554432 * X ^ 8
 
+/-- Degree-eight modular polynomial governing the first transverse action-velocity seam minor. -/
+def modularThetaActionVelocitySeamMinorPolynomial (X : ℂ) : ℂ :=
+  2025 / 2048 - 57375 / 8192 * X - 240075 / 32768 * X ^ 2 -
+    159525 / 131072 * X ^ 3 + 467169 / 262144 * X ^ 4 -
+    4125 / 524288 * X ^ 5 + 15589 / 2097152 * X ^ 6 -
+    1677 / 8388608 * X ^ 7 - 387 / 16777216 * X ^ 8
+
 /-- Exact eighth-jet elimination for the self-dual theta modular ODE.
 
 The four jet sequences correspond to
@@ -49,7 +56,7 @@ The four jet sequences correspond to
 
 with seam data `(H,z,R,p)=(M,0,R,0)`.  The conclusion is the sixth logarithmic
 source combination for `Φ=(H''-H/4)/2`. -/
-theorem modularThetaSixthSeamJetEliminationPair
+private theorem modularThetaSixthSeamJetEliminationTriple
     (M R : ℂ) (h z r p : ℕ → ℂ)
     (hh0 : h 0 = M) (hz0 : z 0 = 0)
     (hr0 : r 0 = R) (hp0 : p 0 = 0)
@@ -80,7 +87,10 @@ theorem modularThetaSixthSeamJetEliminationPair
             1446144 * (R ^ 2) ^ 2 - 1509120 * (R ^ 2) + 276480)) ∧
       (f 0 ^ 2 * (f 2 * f 6 - f 4 ^ 2) +
           9 * f 0 * f 2 ^ 2 * f 4 - 9 * f 2 ^ 4 =
-        M ^ 4 * modularThetaReflectedSixthSeamPolynomial (R ^ 2)) := by
+        M ^ 4 * modularThetaReflectedSixthSeamPolynomial (R ^ 2)) ∧
+      (f 0 ^ 2 * f 2 * f 6 - 3 * f 0 * f 2 ^ 2 * f 4 +
+          12 * f 2 ^ 4 - 2 * f 0 ^ 2 * f 4 ^ 2 =
+        M ^ 4 * modularThetaActionVelocitySeamMinorPolynomial (R ^ 2)) := by
   have hh1 := hh 0
   have hz1 := hz 0
   have hr1 := hr 0
@@ -158,8 +168,80 @@ theorem modularThetaSixthSeamJetEliminationPair
   rw [hh0, hh2, hh4, hh6, hh8]
   constructor
   · ring
-  · unfold modularThetaReflectedSixthSeamPolynomial
-    ring
+  · constructor
+    · unfold modularThetaReflectedSixthSeamPolynomial
+      ring
+    · unfold modularThetaActionVelocitySeamMinorPolynomial
+      ring
+
+/-- Exact eighth-jet elimination for the Gaussian-aperture and reflected self-dual seam
+invariants. -/
+theorem modularThetaSixthSeamJetEliminationPair
+    (M R : ℂ) (h z r p : ℕ → ℂ)
+    (hh0 : h 0 = M) (hz0 : z 0 = 0)
+    (hr0 : r 0 = R) (hp0 : p 0 = 0)
+    (hh : ∀ n, h (n + 1) =
+      -(1 / 6 : ℂ) *
+        scalarJetConvolution h
+          (fun k => p k + scalarJetConvolution r z k) n)
+    (hz : ∀ n, z (n + 1) =
+      -scalarJetConvolution r
+        (fun k => scalarJetUnit k - scalarJetConvolution z z k) n)
+    (hr : ∀ n, r (n + 1) =
+      -(2 / 3 : ℂ) *
+        scalarJetConvolution r
+          (fun k => p k + scalarJetConvolution r z k) n)
+    (hp : ∀ n, p (n + 1) =
+      3 * scalarJetUnit n -
+        (1 / 3 : ℂ) * scalarJetConvolution p p n +
+        (1 / 12 : ℂ) *
+          scalarJetConvolution (scalarJetConvolution r r)
+            (fun k => 3 * scalarJetUnit k +
+              scalarJetConvolution z z k) n) :
+    let f : ℕ → ℂ :=
+      fun n => (h (n + 2) - (1 / 4 : ℂ) * h n) / 2
+    (f 0 ^ 2 * f 6 - 15 * f 0 * f 2 * f 4 + 30 * f 2 ^ 3 =
+        M ^ 3 / 131072 *
+          (99 * (R ^ 2) ^ 6 + 12 * (R ^ 2) ^ 5 -
+            3160 * (R ^ 2) ^ 4 - 544272 * (R ^ 2) ^ 3 -
+            1446144 * (R ^ 2) ^ 2 - 1509120 * (R ^ 2) + 276480)) ∧
+      (f 0 ^ 2 * (f 2 * f 6 - f 4 ^ 2) +
+          9 * f 0 * f 2 ^ 2 * f 4 - 9 * f 2 ^ 4 =
+        M ^ 4 * modularThetaReflectedSixthSeamPolynomial (R ^ 2)) := by
+  have htriple := modularThetaSixthSeamJetEliminationTriple
+    M R h z r p hh0 hz0 hr0 hp0 hh hz hr hp
+  exact ⟨htriple.1, htriple.2.1⟩
+
+/-- Action-velocity projection of the self-dual eighth-jet elimination. -/
+theorem modularThetaActionVelocitySeamMinorJetElimination
+    (M R : ℂ) (h z r p : ℕ → ℂ)
+    (hh0 : h 0 = M) (hz0 : z 0 = 0)
+    (hr0 : r 0 = R) (hp0 : p 0 = 0)
+    (hh : ∀ n, h (n + 1) =
+      -(1 / 6 : ℂ) *
+        scalarJetConvolution h
+          (fun k => p k + scalarJetConvolution r z k) n)
+    (hz : ∀ n, z (n + 1) =
+      -scalarJetConvolution r
+        (fun k => scalarJetUnit k - scalarJetConvolution z z k) n)
+    (hr : ∀ n, r (n + 1) =
+      -(2 / 3 : ℂ) *
+        scalarJetConvolution r
+          (fun k => p k + scalarJetConvolution r z k) n)
+    (hp : ∀ n, p (n + 1) =
+      3 * scalarJetUnit n -
+        (1 / 3 : ℂ) * scalarJetConvolution p p n +
+        (1 / 12 : ℂ) *
+          scalarJetConvolution (scalarJetConvolution r r)
+            (fun k => 3 * scalarJetUnit k +
+              scalarJetConvolution z z k) n) :
+    let f : ℕ → ℂ :=
+      fun n => (h (n + 2) - (1 / 4 : ℂ) * h n) / 2
+    f 0 ^ 2 * f 2 * f 6 - 3 * f 0 * f 2 ^ 2 * f 4 +
+        12 * f 2 ^ 4 - 2 * f 0 ^ 2 * f 4 ^ 2 =
+      M ^ 4 * modularThetaActionVelocitySeamMinorPolynomial (R ^ 2) := by
+  exact (modularThetaSixthSeamJetEliminationTriple
+    M R h z r p hh0 hz0 hr0 hp0 hh hz hr hp).2.2
 
 /-- Gaussian-aperture projection of the paired self-dual jet elimination. -/
 theorem modularThetaSixthSeamJetElimination
@@ -238,7 +320,7 @@ theorem iteratedDeriv_mul_eq_scalarJetConvolution
 /-- Analytic-to-algebraic closure for any smooth solution of the self-dual theta ODE.
 This theorem converts the four differential equations into jet convolutions and invokes
 `modularThetaSixthSeamJetElimination`; callers need not expose any finite-jet premise. -/
-theorem modularThetaSixthSeamClosurePair_of_ode
+private theorem modularThetaSixthSeamClosureTriple_of_ode
     (M R : ℂ) (h z r p : ℝ → ℂ)
     (hhc : ContDiff ℝ ∞ h) (hzc : ContDiff ℝ ∞ z)
     (hrc : ContDiff ℝ ∞ r) (hpc : ContDiff ℝ ∞ p)
@@ -263,7 +345,10 @@ theorem modularThetaSixthSeamClosurePair_of_ode
             1446144 * (R ^ 2) ^ 2 - 1509120 * (R ^ 2) + 276480)) ∧
       (f 0 ^ 2 * (f 2 * f 6 - f 4 ^ 2) +
           9 * f 0 * f 2 ^ 2 * f 4 - 9 * f 2 ^ 4 =
-        M ^ 4 * modularThetaReflectedSixthSeamPolynomial (R ^ 2)) := by
+        M ^ 4 * modularThetaReflectedSixthSeamPolynomial (R ^ 2)) ∧
+      (f 0 ^ 2 * f 2 * f 6 - 3 * f 0 * f 2 ^ 2 * f 4 +
+          12 * f 2 ^ 4 - 2 * f 0 ^ 2 * f 4 ^ 2 =
+        M ^ 4 * modularThetaActionVelocitySeamMinorPolynomial (R ^ 2)) := by
   let jh : ℕ → ℂ := fun n => iteratedDeriv n h 0
   let jz : ℕ → ℂ := fun n => iteratedDeriv n z 0
   let jr : ℕ → ℂ := fun n => iteratedDeriv n r 0
@@ -475,8 +560,65 @@ theorem modularThetaSixthSeamClosurePair_of_ode
             contDiff_const (hzc.mul hzc),
           hconst3, hmul z z hzc hzc]
       rfl
-  exact modularThetaSixthSeamJetEliminationPair M R jh jz jr jp
+  exact modularThetaSixthSeamJetEliminationTriple M R jh jz jr jp
     jh0 jz0 jr0 jp0 jhrec jzrec jrrec jprec
+
+/-- Analytic-to-algebraic closure for the Gaussian-aperture and reflected invariants of any
+smooth solution of the self-dual theta ODE. -/
+theorem modularThetaSixthSeamClosurePair_of_ode
+    (M R : ℂ) (h z r p : ℝ → ℂ)
+    (hhc : ContDiff ℝ ∞ h) (hzc : ContDiff ℝ ∞ z)
+    (hrc : ContDiff ℝ ∞ r) (hpc : ContDiff ℝ ∞ p)
+    (hh0 : h 0 = M) (hz0 : z 0 = 0)
+    (hr0 : r 0 = R) (hp0 : p 0 = 0)
+    (hh' : ∀ x, deriv h x =
+      -(1 / 6 : ℂ) * (h x * (p x + r x * z x)))
+    (hz' : ∀ x, deriv z x =
+      -(r x * (1 - z x * z x)))
+    (hr' : ∀ x, deriv r x =
+      -(2 / 3 : ℂ) * (r x * (p x + r x * z x)))
+    (hp' : ∀ x, deriv p x =
+      3 - (1 / 3 : ℂ) * (p x * p x) +
+        (1 / 12 : ℂ) * ((r x * r x) * (3 + z x * z x))) :
+    let f : ℕ → ℂ := fun n =>
+      (iteratedDeriv (n + 2) h 0 -
+        (1 / 4 : ℂ) * iteratedDeriv n h 0) / 2
+    (f 0 ^ 2 * f 6 - 15 * f 0 * f 2 * f 4 + 30 * f 2 ^ 3 =
+        M ^ 3 / 131072 *
+          (99 * (R ^ 2) ^ 6 + 12 * (R ^ 2) ^ 5 -
+            3160 * (R ^ 2) ^ 4 - 544272 * (R ^ 2) ^ 3 -
+            1446144 * (R ^ 2) ^ 2 - 1509120 * (R ^ 2) + 276480)) ∧
+      (f 0 ^ 2 * (f 2 * f 6 - f 4 ^ 2) +
+          9 * f 0 * f 2 ^ 2 * f 4 - 9 * f 2 ^ 4 =
+        M ^ 4 * modularThetaReflectedSixthSeamPolynomial (R ^ 2)) := by
+  have htriple := modularThetaSixthSeamClosureTriple_of_ode M R h z r p
+    hhc hzc hrc hpc hh0 hz0 hr0 hp0 hh' hz' hr' hp'
+  exact ⟨htriple.1, htriple.2.1⟩
+
+/-- Action-velocity projection of analytic self-dual modular closure. -/
+theorem modularThetaActionVelocitySeamMinorClosure_of_ode
+    (M R : ℂ) (h z r p : ℝ → ℂ)
+    (hhc : ContDiff ℝ ∞ h) (hzc : ContDiff ℝ ∞ z)
+    (hrc : ContDiff ℝ ∞ r) (hpc : ContDiff ℝ ∞ p)
+    (hh0 : h 0 = M) (hz0 : z 0 = 0)
+    (hr0 : r 0 = R) (hp0 : p 0 = 0)
+    (hh' : ∀ x, deriv h x =
+      -(1 / 6 : ℂ) * (h x * (p x + r x * z x)))
+    (hz' : ∀ x, deriv z x =
+      -(r x * (1 - z x * z x)))
+    (hr' : ∀ x, deriv r x =
+      -(2 / 3 : ℂ) * (r x * (p x + r x * z x)))
+    (hp' : ∀ x, deriv p x =
+      3 - (1 / 3 : ℂ) * (p x * p x) +
+        (1 / 12 : ℂ) * ((r x * r x) * (3 + z x * z x))) :
+    let f : ℕ → ℂ := fun n =>
+      (iteratedDeriv (n + 2) h 0 -
+        (1 / 4 : ℂ) * iteratedDeriv n h 0) / 2
+    f 0 ^ 2 * f 2 * f 6 - 3 * f 0 * f 2 ^ 2 * f 4 +
+        12 * f 2 ^ 4 - 2 * f 0 ^ 2 * f 4 ^ 2 =
+      M ^ 4 * modularThetaActionVelocitySeamMinorPolynomial (R ^ 2) := by
+  exact (modularThetaSixthSeamClosureTriple_of_ode M R h z r p
+    hhc hzc hrc hpc hh0 hz0 hr0 hp0 hh' hz' hr' hp').2.2
 
 /-- Gaussian-aperture projection of analytic self-dual modular closure. -/
 theorem modularThetaSixthSeamClosure_of_ode

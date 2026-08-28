@@ -70,3 +70,15 @@ sharp positive transport chamber or first sign-changing invariant before retirin
   Therefore the source-specific pair `h<=0` and `(v h)_q>=0` is sufficient for seam
   minimization.  This is the current hard core; neither inequality is present in the corpus or
   follows from the formal generic no-go inputs.
+- 2026-08-28 — The first sufficient law now has an exact seam obstruction.  With
+  `S=-ell'`, `kappa=-ell''`, and
+  `h=t q_tu-(q_t+t q_tt)q_u/q_t`, modular parity gives `h(0,t)=0`, while
+
+  `partial_u h(0,t) = 2[t kappa'(t) - (kappa(t)-kappa(0))
+    (1+t kappa(t)/S(t))]`.
+
+  This is also the fixed-action derivative at the seam because `q_u(0,t)=0`.  Hence any proof of
+  the proposed chamber `h<=0` on the positive-centre side must prove the displayed one-variable
+  curvature-acceleration margin nonpositive for every `t>0`.  The identity and every chain-rule
+  connector are unconditional in Lean; sign remains the source-specific open core.  This
+  prevents hiding a two-variable transport claim behind generic Riccati positivity.

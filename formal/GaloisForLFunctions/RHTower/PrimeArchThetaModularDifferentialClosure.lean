@@ -589,6 +589,19 @@ def thetaCuspReflectedSixthSeamModularClosureValue : ℝ :=
     thetaCuspReflectedSixthSeamModularPolynomial
       (thetaCuspSelfDualModularScale ^ 2)
 
+/-- Real degree-eight polynomial selected by the first transverse action-velocity seam minor. -/
+def thetaCuspActionVelocitySeamMinorModularPolynomial (X : ℝ) : ℝ :=
+  2025 / 2048 - 57375 / 8192 * X - 240075 / 32768 * X ^ 2 -
+    159525 / 131072 * X ^ 3 + 467169 / 262144 * X ^ 4 -
+    4125 / 524288 * X ^ 5 + 15589 / 2097152 * X ^ 6 -
+    1677 / 8388608 * X ^ 7 - 387 / 16777216 * X ^ 8
+
+/-- Source-specialized modular value of the first transverse action-velocity seam minor. -/
+def thetaCuspActionVelocitySeamMinorModularClosureValue : ℝ :=
+  thetaCuspSelfDualThetaMass ^ 4 *
+    thetaCuspActionVelocitySeamMinorModularPolynomial
+      (thetaCuspSelfDualModularScale ^ 2)
+
 /-- Exact modular closure of the completed theta profile's sixth seam. -/
 theorem completedThetaProfile_sixthSeam_modularClosure :
     let f : ℕ → ℂ := fun n =>
@@ -630,6 +643,29 @@ theorem completedThetaProfile_reflectedSixthSeam_modularClosure :
   simpa [thetaCuspReflectedSixthSeamModularClosureValue,
     thetaCuspReflectedSixthSeamModularPolynomial,
     HTGeometry.modularThetaReflectedSixthSeamPolynomial] using h
+
+/-- Exact modular closure of the completed theta profile's first transverse action-velocity
+seam minor. -/
+theorem completedThetaProfile_actionVelocitySeamMinor_modularClosure :
+    let f : ℕ → ℂ := fun n =>
+      (iteratedDeriv (n + 2) thetaModularH 0 -
+        (1 / 4 : ℂ) * iteratedDeriv n thetaModularH 0) / 2
+    f 0 ^ 2 * f 2 * f 6 - 3 * f 0 * f 2 ^ 2 * f 4 +
+        12 * f 2 ^ 4 - 2 * f 0 ^ 2 * f 4 ^ 2 =
+      (thetaCuspActionVelocitySeamMinorModularClosureValue : ℂ) := by
+  have h := HTGeometry.modularThetaActionVelocitySeamMinorClosure_of_ode
+    (thetaCuspSelfDualThetaMass : ℂ)
+    (thetaCuspSelfDualModularScale : ℂ)
+    thetaModularH thetaModularZ thetaModularR thetaModularP
+    contDiff_thetaModularH contDiff_thetaModularZ
+    contDiff_thetaModularR contDiff_thetaModularP
+    thetaModularH_zero thetaModularZ_zero
+    thetaModularR_zero thetaModularP_zero
+    deriv_thetaModularH deriv_thetaModularZ
+    deriv_thetaModularR deriv_thetaModularP
+  simpa [thetaCuspActionVelocitySeamMinorModularClosureValue,
+    thetaCuspActionVelocitySeamMinorModularPolynomial,
+    HTGeometry.modularThetaActionVelocitySeamMinorPolynomial] using h
 
 private theorem thetaModularH_eq_completedThetaProfile (x : ℝ) :
     thetaModularH x = (Bottcher.completedThetaProfile x : ℂ) := by
@@ -759,6 +795,23 @@ theorem thetaCuspFullSource_reflectedSixthSeam_eq_modularClosure :
       thetaCuspReflectedSixthSeamModularClosureValue := by
   apply Complex.ofReal_injective
   have h := completedThetaProfile_reflectedSixthSeam_modularClosure
+  dsimp only at h ⊢
+  rw [completedThetaProfile_sourceJet 0,
+    completedThetaProfile_sourceJet 2,
+    completedThetaProfile_sourceJet 4,
+    completedThetaProfile_sourceJet 6] at h
+  simpa only [Complex.ofReal_add, Complex.ofReal_sub, Complex.ofReal_mul,
+    Complex.ofReal_pow, Complex.ofReal_ofNat] using h
+
+/-- The native full-theta source action-velocity seam minor is exactly its modular-closure
+value. -/
+theorem thetaCuspFullSource_actionVelocitySeamMinor_eq_modularClosure :
+    let f : ℕ → ℝ := fun n => iteratedDeriv n thetaCuspFullSource 0
+    f 0 ^ 2 * f 2 * f 6 - 3 * f 0 * f 2 ^ 2 * f 4 +
+        12 * f 2 ^ 4 - 2 * f 0 ^ 2 * f 4 ^ 2 =
+      thetaCuspActionVelocitySeamMinorModularClosureValue := by
+  apply Complex.ofReal_injective
+  have h := completedThetaProfile_actionVelocitySeamMinor_modularClosure
   dsimp only at h ⊢
   rw [completedThetaProfile_sourceJet 0,
     completedThetaProfile_sourceJet 2,

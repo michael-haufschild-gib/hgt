@@ -1,14 +1,19 @@
 # Coefficient-dominated refinement collapse, presentation core, and serial-charge invariance law
 
 - **ID:** ULF-DOFM-2
-- **Stage:** 2-fully-proven
+- **Stage:** 3 -- formalized in Lean 4
 - **Type:** THEOREM (paper) / PRESENTATION-INDEPENDENCE LAW
 - **Programme:** `../../../1-in-progress/universal-law-field/derived-observer-formation-mechanics/field-programme.md`
 - **Parent:** ULF-DOFM-1
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [PRESENTATION INVARIANCE]`
   `[EXPLICIT CHAIN CONTRACTION] [ALL HOMOLOGICAL DEGREES]`
   `[SERIAL ERASURE/RETENTION INVARIANT] [SHARP JOIN-REDUNDANCY COUNTERMODEL]`
-  `[CLASSICAL CONTIGUITY MACHINERY] [NOT RH] [LEAN OPEN: READ-ONLY AUDIT]`
+  `[CLASSICAL CONTIGUITY MACHINERY] [NOT RH] [LEAN-FORMALIZED] [AXIOM-AUDITED]`
+- **Formal status:** formalized unconditionally in
+  `GaloisForLFunctions.HTGeometry.CoefficientDominatedRefinementCollapse`. Direct Lean elaboration
+  and targeted leaf build pass. Audited capstones depend only on `propext`, `Classical.choice`, and
+  `Quot.sound`. The sharp join-redundancy countermodel is instantiated over `ℚ`, making the
+  load-bearing non-characteristic-two condition explicit.
 - **Statement:** Adding a formation leg contained in an existing leg adds a contractible
   coefficient-incidence sector.  Deleting the dominated leg is a chain-homotopy equivalence for
   every observer-formation complex and for the serial kernel/retention complexes.  Mere redundancy
@@ -381,18 +386,40 @@ This gives a hard anti-theatre test for future arithmetic realizations:
 
 ## 10. Lean status
 
-The Lean corpus contains finite sums, submodules, and simplicial/chain infrastructure, but no module
-was found packaging this coefficient-dominated contraction for the DOFM complexes.  Per the active
-goal, the audit was read-only: no Lean file was written and no build was run.
+`CoefficientDominatedRefinementCollapse.lean` supplies the missing coefficient-sensitive complex
+and contraction. It formalizes ordered alternating boundaries with `∂²=0`, dominated-label
+collapse, insertion prism, chain-homotopy identity, collapse idempotence, explicit homology and
+presentation-core equivalence, coefficient naturality, pair quotients, serial refinement
+certificates, iterated legal-refinement invariance, a sharp `ℚ²` join-redundancy countermodel, and
+order-isomorphic relabelling with boundary commutation.
+
+The serial certificate records compatible chain maps and homotopies for the kernel, retained, and
+pair-quotient coefficient systems. It does not introduce a second category-theoretic long-exact-
+sequence implementation: connecting-map naturality is represented by this chain-level naturality
+data. This is the exact normalized retraction/prism gate stated below.
+
+Verification certificate:
+
+- `lake env lean GaloisForLFunctions/HTGeometry/CoefficientDominatedRefinementCollapse.lean` passes;
+- `lake build GaloisForLFunctions.HTGeometry.CoefficientDominatedRefinementCollapse` passes;
+- repository lint reaches the module and reports no defect in it; current nonzero lint status is
+  caused by sixteen unrelated umbrella-reachability errors in the shared worktree;
+- `prism_identity_succ`, `presentationCoreHomologyEquiv`,
+  `serial_refinement_certificate`, `join_redundancy_creates_charge`, and
+  `chainRelabel_comm_boundary` depend only on `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Gates
 
 - [x] 0 -> 1: coefficient domination, explicit maps, and sharp non-dominated falsifier
 - [x] 1 -> 2: chain contraction, serial-pair compatibility, quotient invariance, and marked scope
-- [ ] 2 -> 3: Lean formalization of the normalized retraction and prism identity
+- [x] 2 -> 3: Lean formalization of the normalized retraction and prism identity
 - [ ] 3 -> 4: literal arithmetic formation family and legal-refinement theorem
 
 ## Log
 
 - 2026-08-14 -- dominated-refinement contraction closed on paper; arbitrary join redundancy proved
   insufficient; serial erasure/retention exact laws shown presentation-invariant.
+- 2026-08-28 -- formalized coefficient complex, explicit contraction, presentation-core homology,
+  serial compatibility, quotient descent, iterated legal-refinement invariance, sharp `ℚ²`
+  countermodel, and relabelling naturality. Direct elaboration, targeted leaf build, and capstone
+  axiom audit passed; promoted to Stage 3.

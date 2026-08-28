@@ -1,56 +1,58 @@
-# Index/parity near-miss programme — after PF test + attack-A first assault (2026-08-28)
+# Index / near-miss rigidity (C8) — state after the second assault (2026-08-28)
 
-Card: `1-in-progress/index-parity-near-miss-rigidity.md` (complete detail). Hub:
-`source-contraction-two-volterra-domination` cycles 7–8+. Scripts:
-`computations/2026-08-28-two-volterra-domination-loop/pf_test.py`, `pf_check.py`.
+Card: `docs/drafts/pipeline/1-in-progress/index-parity-near-miss-rigidity.md` (full record there).
 
-## Headline state
-κ_T = N_off(T) (two negative squares per off-line quadruple; model-quartic verified).
-**C8: κ ∈ {0,∞}** — near-miss rigidity, weaker than RH, absent from refereed literature; the
-κ=2 analytic counterfeit `Ξ·(τ²−ρ²)(τ²−ρ̄²)/((τ²−γ₁²)(τ²−γ₂²))` forces any proof to use the
-Euler orbit. C9 (FF/Perron–Frobenius weld) RETIRED by the executed two-atom test: witness =
-anti-Perron point at critical cone weight (exact; three finite-section regimes measured; m-fold
-soft space = discretized zero lattice), but cone bounds give only the trivial region, zeta's
-operative cone is Λ≥0+341 (classical), and the **Bohr-denseness no-go** kills all fixed-weight
-spectral-membership frames (inf|ζ|=0 on every strip line ⟹ 0 ∈ σ unconditionally). Surviving
-receiver: RH ⟺ weight-indexed WH Fredholm index constant on (0,1/2); finite jumps ⟺ C8.
+## Where attack surface A ended
 
-## Lean landed for this programme (unconditional; axioms standard)
-- `HTGeometry/HerglotzPoleIndexAnchor.lean`: `re_one_div_sub`, `re_one_div_sub_neg_iff` (RHP
-  pole ⟹ negative rank-one Carathéodory diagonal left of its abscissa), `re_lhpPoleSum_nonneg`,
-  `isPSDKernel_lhpPoleSum` (stable poles ⟹ zero negative squares) — the generic κ = N_off
-  anchors, assembled on `isPSDKernel_halfPlaneCaratheodory`.
-- `RHTower/ThetaTailKreinTiltSectionAnchor.lean`: sesquilinear section identity
-  `2c(w+conj v)·B = tiltGram-difference`; `tiltGram_param_uniform` (section inertia is
-  tilt-parameter-free).
-- `HTGeometry/CosineSublevelPeriodMeasure.lean`: `cos_sublevel_period_eq` +
-  `volume_cos_sublevel_period` — {cos ≤ −1/2} is exactly the middle third (2π/3 per period):
-  the κ=1 Bohr-negativity measure core.
+- **T2/E mining verdict:** no proved corpus layer meets the carrier spec. "Signed subhalf
+  continuation" is T2's OPEN item; the CCM window cluster states explicitly that all-x one-sided
+  subpower θ-error bounds ⟺ the RH window gate (receiver, not supply).
+- **Ingham closure:** ALL-x one-sided `ψ(x)−x ≥ −Kx^θ` already implies no zeros right of θ
+  (Landau nonneg-Mellin + no real zeros of ζ in (0,1)) — the all-x spec is quasi-RH, circular.
+- **Uniform anomaly upgrade:** under finite κ the anomaly law is UNIFORM (von Koch on the
+  on-line rest): `ψ(x) = x − Σ_quad 2Re(x^ρ/ρ) + O(√x log²x)`. Refutation needs only ONE
+  unbounded scale sequence in the (measure-1/3) deep valley.
+- **Complete no-go taxonomy (all-x technologies exhausted):** (i) zero-side evaluations blind by
+  self-inclusion (all quadratic/variance carriers — the hypothetical zero's term sits inside the
+  bound's own proof); (ii) relative-scale sieve bounds blind to o(h) (kill only β=1);
+  (iii) exact ζ-identities blind by resonance-vanishing (Σ_{m≤x}m^{−ρ} kills its own resonance
+  because ζ(ρ)=0); (iv) resonant-phase exponential sums = Vinogradov–Korobov = the zero-free
+  region wall. In-world (κ=1-counterfactual) routes unwind to (i) and (iv): REDISCOVERED wall.
+- **C11 (purified target, = C8 in sequence form):** ∀ γ>0, φ, β∈(1/2,1), δ>0 ∃ arbitrarily
+  large u with cos(γu+φ) ≤ −1/2 and (ψ(e^u)−e^u)e^{−βu} ≥ −δ. Not a lemma — new technology by
+  construction; uncharted (no known obstruction), not known-hard. A is PARKED at C11.
 
-## Attack A — state after first assault
-Anomaly law (paper-exact, unconditional inputs only): finite κ ⟹
-`(ψ(e^u)−e^u)e^{−βu} = A(u) + E(u)`, A the exact κ-frequency Bohr polynomial,
-density{|E|>δ} → 0 (explicit formula + Σ1/|ρ|² + windowed Chebyshev). **C10 (minimal target):
-the normalized prime fluctuation does not converge in density to a nonzero finite Bohr
-polynomial** — C10 ⟸ any unconditional one-sided carrier bound at density > 2/3 (κ=1;
-> 1−1/(8κ) general via the L²/L∞ lemma: density ≥ 1/(8κ) at depth ‖A‖₂/(4√(2κ))); C10 ⟹ C8.
-Carrier failure map (audited): ψ-direct = RH-strength; quadratic = blind; Λ≥0-monotonicity =
-main-term-dominated (kills only β=1 — the classical mechanism); S(T) insensitive; Littlewood
-line-means non-discriminating (keep receiver: ∫₀^T log|ζ(σ₀+it)| = O(1) ⟺ finitely many zeros
-right of σ₀); Odlyzko budgets spent by on-line zeros.
-**Landing:** the missing piece = unconditional positive-density one-sided prime bound at
-sub-main scale vs a FIXED frequency — exactly the T2-subhalf / E-supply / D2-window frontier,
-with a new consumer relation (their PARTIAL goals suffice for C8) and the extra resource of
-Diophantine window tuning to the known frequency. Next: mine proved T2/E layers for any
-statement meeting the spec.
+## Permanent Lean assets from A (umbrella-wired, axioms propext/Classical.choice/Quot.sound)
 
-## Do-not-revisit (extended)
-Shift-orbit amplification; abstract Toeplitz/Smirnov 0-or-∞; Pontryagin symmetry-compression;
-det-sign mod 2; C9 PF-invertibility weld; fixed-weight spectral membership (Bohr no-go);
-ψ-direct one-sided bounds; quadratic carriers; monotonicity beyond β=1; S(T); line-means;
-positive-test budgets.
+- `HTGeometry/CosineValleyWindowFloor.lean`: `cosDeepSublevel` def; period-window measure exactly
+  2π/3 at EVERY window position (indicator-periodicity + interval-integral transfer);
+  n-window exactness; `le_volume_cosDeepSublevel_inter_Ioc` (≥ (b−a)/3 − 2π/3 in every window);
+  `le_volume_cos_valley_window` (valley of cos(γu+φ) in (0,U] has measure ≥ U/3 − 2π/(3γ), all
+  γ>0, φ — affine transport via `Real.map_volume_mul_left` + `measure_preimage_add_right`);
+  `exists_valley_mem_of_volume_compl_lt` (pigeonhole: complement measure < floor ⟹ G meets the
+  valley; NO measurability of G needed — outer-measure monotonicity).
+- `RHTower/WindowBudgetUnconditionalSupply.lean`: `primeWindowSupply_of_pos` (WindowBudget's
+  interface Prop at EVERY L>0, from `exists_prime_log_window`, removing Bertrand's log 2 bound);
+  `exists_prime_sin_pos/neg_unconditional` (sine steering with floor √2/2 at EVERY frequency,
+  cofinally); `exists_prime_mirrorTiltIncrement_pos/neg_unconditional` (defect walk steers both
+  ways at every interior strip point). Missing forever at this level: AMPLITUDE (single primes
+  move walks by ~log q; the valley demands x^β).
 
-## Queued
-Periodized κ=1 density statement; general-κ negativity lemma; E(u)-density-vanishing as formal
-brick; the κ=2 counterfeit formal object; Littlewood discriminator receiver; section-index
-nesting export.
+## Lean traps hit this cycle
+
+- `Mathlib.MeasureTheory.Integral.Periodic` moved to
+  `Mathlib.MeasureTheory.Integral.IntervalIntegral.Periodic` (olean path).
+- `Function.Periodic.intervalIntegral_add_eq` needs NO integrability hypothesis.
+- `le_or_lt` unknown in this toolchain — use `le_or_gt`; ENNReal `0 ≤ x` is `exact zero_le`
+  (implicit arg, NOT `zero_le _`); `mul_le_mul_left'` deprecated → `gcongr`;
+  interval-integral ↔ volume via `integral_indicator` + `Set.indicator_indicator` +
+  `integral_indicator_const` + `simp [MeasureTheory.measureReal_def]`.
+- Lint currently reports 3 unreachable modules from OTHER agents (TwoLocalProjectiveTrotter…,
+  UniversalRecurrenceOccupation…, WeightedComplexSumConcentration) — pre-existing, not ours.
+
+## Next
+
+Loop continues on the parent programme's live track: CP-1/2/3 (theta-kernel CP/deficit
+domination card) on the Lean split foundation (`ThetaTailKernelGeometricDeficitSplit`):
+Schur-test for D against M's square family on separation-restricted packets is the first
+theorem candidate (CP-1).
