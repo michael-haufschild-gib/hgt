@@ -63,6 +63,7 @@ import GaloisForLFunctions.HilbertMetric.FullCCRInterfaceClassification
 import GaloisForLFunctions.HilbertMetric.PolynomialEvaluationHasse
 import GaloisForLFunctions.HilbertMetric.FourPointOddParityCusp
 import GaloisForLFunctions.HilbertMetric.FifthRootDividedDropWall
+import GaloisForLFunctions.HilbertMetric.FifthRootCurvatureCusp
 
 /-!
 # Hilbert-metric theorem area

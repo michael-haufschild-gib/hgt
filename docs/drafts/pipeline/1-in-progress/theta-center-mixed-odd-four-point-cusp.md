@@ -856,3 +856,56 @@ C4 is therefore half closed, and its remaining burden is pure convexity.  Exact 
 and axiom audit pass; only `propext`, `Classical.choice`, and `Quot.sound` occur.  Repo-wide lint
 still fails solely on unrelated pre-existing unreachable modules; both new modules are reachable
 from their umbrellas.
+
+### 2026-08-28 — second--sixth Hankel curvature opens the exact C5 cusp
+
+The remaining convexity numerator has a new exact coalesced law.  For any even smooth real
+profile `f`, put
+
+```text
+C_f(t) = 24(f(0)-f(t))^2
+       + 9t(f(0)-f(t))f'(t)
+       + t^2(-5(f(0)-f(t))f''(t)-4f'(t)^2).
+```
+
+All jets of `C_f` below order eight vanish at zero, while
+
+```text
+C_f^(8)(0) = 1120 (f''(0) f^(6)(0) - f^(4)(0)^2).
+```
+
+This is an exact bridge from the rank-three second--sixth Hankel curvature already proved for
+the literal completed-theta source to the rank-four fifth-root curvature numerator.  Repeated
+strict-derivative propagation yields, without hypotheses on `u`, a `delta(u)>0` such that
+
+```text
+0 < t < delta(u)  =>  0 < C5(u,t).
+```
+
+The exact projective derivative identity then gives strict negative velocity of the C5
+projective ratio throughout the same punctured cusp neighborhood.  Hence no C4/C5 failure can
+originate at coalescence; every remaining failure, if one exists, is genuinely nonlocal in the
+source displacement.
+
+New Lean artifacts:
+
+- `GaloisForLFunctions/HilbertMetric/FifthRootCurvatureCusp.lean`;
+- `GaloisForLFunctions/RHTower/ThetaCuspReflectedSourceFifthRootCurvature.lean`;
+- `HilbertMetric.iteratedDeriv_eight_fifthRootDividedDropCurvatureNumerator_zero`;
+- `HilbertMetric.iteratedDeriv_fifthRootDividedDropCurvatureNumerator_zero_of_lt_eight`;
+- `HilbertMetric.exists_fifthRootDividedDropCurvatureNumerator_pos_right`;
+- `thetaCuspReflectedSourceFifthRootCurvatureNumerator_eq_generic`;
+- `exists_thetaCuspReflectedSourceFifthRootCurvatureNumerator_pos_right`;
+- `deriv_thetaCuspReflectedSourceFifthRootProjectiveRatio_neg_iff`;
+- `exists_deriv_thetaCuspReflectedSourceFifthRootProjectiveRatio_neg_right`.
+
+Both targeted module builds pass.  Axiom audit reports only `propext`, `Classical.choice`, and
+`Quot.sound`.  Proof engineering was profiled: separating the generic theorem from the RHTower
+import graph and replacing nested Leibniz normalization by the coordinate-multiplication jet
+recurrence reduced the measured successful check from `69.88s` to `6.30s`; import time fell
+from `58.6s` to `1.32s`, and tactic time from `4.07s` to `2.53s`, even after adding all
+lower-jet and positivity theorems.
+
+C4 remains open globally.  Exact surviving burden is now sharper: prove `C5(u,t)>=0` away from
+the already-closed coalescent neighborhood for every literal fibre, equivalently global
+antitonicity of the projective ratio.  Higher packets and cofinal escape remain downstream.

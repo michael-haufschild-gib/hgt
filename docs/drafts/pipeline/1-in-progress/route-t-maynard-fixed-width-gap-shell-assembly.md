@@ -103,3 +103,19 @@ Not yet formalized. Frontier map remains read-only.
 - Remaining open core: choose a terminal-shell convention with no sub-length-two residue; prove the
   rung-count and shell-count selector budget for the literal variable defect; then sum low/base,
   positive second-count, and additive-energy bad measures over the fixed cover.
+
+## 2026-08-28 literal selector and terminal-shell closure
+
+- The literal selector budget is Lean-closed. Canonical packet-width admissibility bounds the
+  stopped-width ratio by ambient height; both width-rung and ordinate-shell counts are linear-log.
+  Together with amplitude-band depth and degree-60 box selection, the exact defect left by the
+  finite cover is absorbed uniformly on every height-matched shell.
+- The resulting high-shell receiver is Lean-closed with no fixed-defect or selector-cost premise:
+  the actual rung-divided and shell-divided defect forces Maynard's second alternative.
+- Terminal-shell obstruction is Lean-closed by a dyadically aligned lower ordinate. Moving the
+  desired floor upward by less than factor two makes the upper/lower ratio an exact power of two.
+  Every positive-defect shell is then exactly `[T,2T]` and has length at least two; all later
+  stopped indices are zero packets. No short residual interval remains.
+- Remaining C2 core is measure-theoretic/analytic rather than combinatorial: apply base `L²`,
+  positive-band second-count `L²`, and independent `L⁴/R*` bounds to every literal cover member,
+  then sum the finite family and feed ordered-prime gap occupancy.

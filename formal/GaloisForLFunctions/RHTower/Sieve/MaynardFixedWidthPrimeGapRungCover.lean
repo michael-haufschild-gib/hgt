@@ -2283,5 +2283,370 @@ theorem eventually_routeT_threeQuarter_gapSequence_boundedSupport_forcedSecond_o
   apply routeT_second_alternative_of_shell_mass hD hV hQ hdelta hdeltaTwo
     (Real.log_nonneg hT.le) (by simpa only [alpha] using hthreshold) hmass halt
 
+/-! ## Literal finite-selector budget -/
+
+/-- Universal linear-log constant for a selector count obtained by rounding
+`1 + log(ratio) / log 2`. -/
+def routeTFiniteSelectorLogConstant : ℝ := 2 + 1 / Real.log 2
+
+/-- Any canonical dyadic selector whose ratio lies in `[1,T]` has only linear-log depth. -/
+theorem routeT_ceilLogSelectorCount_cast_le_log
+    {Q T : ℝ} (hQ : 1 ≤ Q) (hQT : Q ≤ T) :
+    (⌈1 + Real.log Q / Real.log 2⌉₊ : ℝ) ≤
+      routeTFiniteSelectorLogConstant * (1 + Real.log T) := by
+  have hT : 1 ≤ T := hQ.trans hQT
+  have hlogT : 0 ≤ Real.log T := Real.log_nonneg hT
+  have hlogTwo : 0 < Real.log 2 := Real.log_pos (by norm_num)
+  have harg : 0 < 1 + Real.log Q / Real.log 2 := by
+    have hlogQ : 0 ≤ Real.log Q := Real.log_nonneg hQ
+    positivity
+  have hceil : (⌈1 + Real.log Q / Real.log 2⌉₊ : ℝ) <
+      2 + Real.log Q / Real.log 2 := by
+    calc
+      (⌈1 + Real.log Q / Real.log 2⌉₊ : ℝ) <
+          1 + Real.log Q / Real.log 2 + 1 := Nat.ceil_lt_add_one harg.le
+      _ = 2 + Real.log Q / Real.log 2 := by ring
+  have hlogQ : Real.log Q ≤ Real.log T :=
+    Real.log_le_log (zero_lt_one.trans_le hQ) hQT
+  have hdiv : Real.log Q / Real.log 2 ≤ Real.log T / Real.log 2 :=
+    div_le_div_of_nonneg_right hlogQ hlogTwo.le
+  have hinv : 0 ≤ (Real.log 2)⁻¹ := inv_nonneg.mpr hlogTwo.le
+  calc
+    (⌈1 + Real.log Q / Real.log 2⌉₊ : ℝ) ≤
+        2 + Real.log Q / Real.log 2 := hceil.le
+    _ ≤ 2 + Real.log T / Real.log 2 := by linarith
+    _ ≤ routeTFiniteSelectorLogConstant * (1 + Real.log T) := by
+      dsimp only [routeTFiniteSelectorLogConstant]
+      rw [div_eq_mul_inv, div_eq_mul_inv]
+      nlinarith [mul_nonneg hinv hlogT]
+
+/-- The literal fixed-width ladder count is linear-log once its endpoint ratio is at most the
+ambient height. -/
+theorem routeTFixedWidthRungCount_cast_le_log
+    {T H0 : ℝ} (hH0 : 0 < H0) (hH0quarter : H0 ≤ 1 / 4)
+    (hratio : (1 / 4) / H0 ≤ T) :
+    (routeTFixedWidthRungCount H0 : ℝ) ≤
+      routeTFiniteSelectorLogConstant * (1 + Real.log T) := by
+  apply routeT_ceilLogSelectorCount_cast_le_log
+  · exact (le_div_iff₀ hH0).2 (by simpa using hH0quarter)
+  · exact hratio
+
+/-- The literal ordinate-shell count is linear-log relative to any containing ambient height. -/
+theorem routeTOrdinateShellCount_cast_le_log
+    {T U V : ℝ} (hU : 1 ≤ U) (hUV : U ≤ V) (hVT : V ≤ T) :
+    (routeTOrdinateShellCount U V : ℝ) ≤
+      routeTFiniteSelectorLogConstant * (1 + Real.log T) := by
+  apply routeT_ceilLogSelectorCount_cast_le_log
+  · exact (le_div_iff₀ (zero_lt_one.trans_le hU)).2 (by simpa using hUV)
+  · apply (div_le_iff₀ (zero_lt_one.trans_le hU)).2
+    calc
+      V ≤ T := hVT
+      _ = T * 1 := by ring
+      _ ≤ T * U := mul_le_mul_of_nonneg_left hU
+        (zero_le_one.trans (hU.trans (hUV.trans hVT)))
+
+/-- Canonical packet-width admissibility already forces the entire stopped-width ladder ratio
+below ambient height.  No independent rung-growth hypothesis is required. -/
+theorem routeT_canonical_fixedWidth_rung_ratio_le_height
+    {T H0 : ℝ} (hT : 1 ≤ T) (hH0 : 0 < H0)
+    (hwidth : routeTPrimeGapPacketWidth (routeTPrimeGapPacketBase T) ≤ H0) :
+    (1 / 4) / H0 ≤ T := by
+  let x : ℝ := routeTPrimeGapPacketBase T
+  have hTpos : 0 < T := zero_lt_one.trans_le hT
+  have hxpos : 0 < x := by
+    dsimp only [x, routeTPrimeGapPacketBase]
+    positivity
+  have hinv : 1 / H0 ≤ 1 / routeTPrimeGapPacketWidth x :=
+    one_div_le_one_div_of_le
+      (by dsimp only [routeTPrimeGapPacketWidth]; positivity) hwidth
+  have hinv' : 1 / H0 ≤ x ^ (49 / 80 : ℝ) := by
+    simpa only [routeTPrimeGapPacketWidth, Real.rpow_neg hxpos.le,
+      one_div, inv_inv] using hinv
+  have hxTop : x ≤ T ^ (8 / 5 : ℝ) := by
+    dsimp only [x, routeTPrimeGapPacketBase]
+    have hp : 0 ≤ T ^ (8 / 5 : ℝ) := Real.rpow_nonneg hTpos.le _
+    nlinarith
+  have hpow : x ^ (49 / 80 : ℝ) ≤ (T ^ (8 / 5 : ℝ)) ^ (49 / 80 : ℝ) :=
+    Real.rpow_le_rpow hxpos.le hxTop (by norm_num)
+  have hpowTop : (T ^ (8 / 5 : ℝ)) ^ (49 / 80 : ℝ) ≤ T := by
+    calc
+      (T ^ (8 / 5 : ℝ)) ^ (49 / 80 : ℝ) = T ^ (49 / 50 : ℝ) := by
+        rw [← Real.rpow_mul hTpos.le]
+        norm_num
+      _ ≤ T := by
+        simpa using Real.rpow_le_rpow_of_exponent_le hT
+          (by norm_num : (49 / 50 : ℝ) ≤ 1)
+  calc
+    (1 / 4) / H0 ≤ 1 / H0 :=
+      div_le_div_of_nonneg_right (by norm_num) hH0.le
+    _ ≤ x ^ (49 / 80 : ℝ) := hinv'
+    _ ≤ (T ^ (8 / 5 : ℝ)) ^ (49 / 80 : ℝ) := hpow
+    _ ≤ T := hpowTop
+
+/-- Receiver logarithmic power after paying width-rung, ordinate-shell, and amplitude-band
+selectors in addition to the degree-60 Heath--Brown box cost. -/
+def routeTFixedWidthShellReceiverLogPower : ℕ := 124
+
+/-- Linear-log selector constant transported from ambient packet height to every admissible
+height-matched shell. -/
+def routeTFixedWidthSelectorShellLogConstant : ℝ :=
+  routeTFiniteSelectorLogConstant * (19 / 8 : ℝ)
+
+/-- **Complete literal selector budget.**  On every admissible height-matched shell, the actual
+fixed-width rung count, ordinate-shell count, amplitude-band count, and degree-60 box selector are
+simultaneously absorbed.  The right side is exactly the defect threshold left by the finite cover;
+no fixed-defect or bounded-selector surrogate remains. -/
+theorem eventually_routeT_fixedWidth_rung_shell_band_selectorCost_le_receiverLog :
+    ∀ᶠ T₀ : ℝ in atTop,
+      ∀ {T₁ H0 U V : ℝ} {L X : ℕ},
+      T₀ ^ (8 / 11 : ℝ) ≤ T₁ →
+      0 < H0 → H0 ≤ 1 / 4 →
+      routeTPrimeGapPacketWidth (routeTPrimeGapPacketBase T₀) ≤ H0 →
+      1 ≤ U → U ≤ V → V ≤ T₀ →
+      1 ≤ X → L ≤ X → (X : ℝ) ≤ T₁ ^ (11 / 5 : ℝ) →
+      32 * (routeTTrivialBoundaryBandCount T₁ : ℝ) * (4 / 3 : ℝ) *
+          heathBrownEligibleBoxCost L X 60 *
+            (4 * (2 ^ 120 : ℝ)) ^ routeTTrivialBoundaryDistortionExponent ≤
+        (((routeTFixedWidthPacketDefectFloor /
+              (routeTFixedWidthRungCount H0 : ℝ)) / 2) /
+            (routeTOrdinateShellCount U V : ℝ)) *
+          (Real.log T₁) ^ routeTFixedWidthShellReceiverLogPower := by
+  let C0 : ℝ := routeTFiniteSelectorLogConstant
+  let C : ℝ := routeTFixedWidthSelectorShellLogConstant
+  let kappa : ℝ := 4 / 3
+  let D0 : ℝ := routeTFixedWidthPacketDefectFloor / (2 * kappa * C ^ 2)
+  have hC0 : 0 < C0 := by
+    dsimp only [C0, routeTFiniteSelectorLogConstant]
+    positivity [Real.log_pos (by norm_num : (1 : ℝ) < 2)]
+  have hC : 0 < C := by
+    dsimp only [C, routeTFixedWidthSelectorShellLogConstant]
+    positivity
+  have hkappa : 0 < kappa := by dsimp only [kappa]; norm_num
+  have hD0 : 0 < D0 := by
+    dsimp only [D0]
+    positivity [routeTFixedWidthPacketDefectFloor_pos]
+  obtain ⟨A, hA⟩ := Filter.eventually_atTop.1
+    (eventually_thirtytwo_shellBandCount_selectorCost_le_receiverLog_elevenFifths hD0)
+  let B : ℝ := max A (Real.exp 1)
+  have hheight : ∀ᶠ T₀ : ℝ in atTop, B ≤ T₀ ^ (8 / 11 : ℝ) :=
+    (tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 8 / 11)).eventually_ge_atTop B
+  filter_upwards [hheight, Filter.eventually_ge_atTop (1 : ℝ)] with T₀ hheightT hT₀
+  intro T₁ H0 U V L X hT₁lower hH0 hH0quarter hwidth hU hUV hVT₀ hX hLX
+    hXscale
+  let ell : ℝ := Real.log T₁
+  let Rcount : ℝ := routeTFixedWidthRungCount H0
+  let Scount : ℝ := routeTOrdinateShellCount U V
+  let Acost : ℝ := 32 * (routeTTrivialBoundaryBandCount T₁ : ℝ) *
+    heathBrownEligibleBoxCost L X 60 *
+      (4 * (2 ^ 120 : ℝ)) ^ routeTTrivialBoundaryDistortionExponent
+  have hT₀pos : 0 < T₀ := zero_lt_one.trans_le hT₀
+  have hT₁A : A ≤ T₁ :=
+    (le_max_left A (Real.exp 1)).trans (hheightT.trans hT₁lower)
+  have hexpT₁ : Real.exp 1 ≤ T₁ :=
+    (le_max_right A (Real.exp 1)).trans (hheightT.trans hT₁lower)
+  have hT₁one : 1 ≤ T₁ := by
+    have honeExp : (1 : ℝ) ≤ Real.exp 1 := by
+      have h := Real.exp_le_exp.mpr (show (0 : ℝ) ≤ 1 from zero_le_one)
+      rwa [Real.exp_zero] at h
+    exact honeExp.trans hexpT₁
+  have hellOne : 1 ≤ ell := by
+    have hlog := Real.log_le_log (Real.exp_pos 1) hexpT₁
+    simpa only [Real.log_exp, ell] using hlog
+  have hell0 : 0 ≤ ell := zero_le_one.trans hellOne
+  have hlogRelation : (8 / 11 : ℝ) * Real.log T₀ ≤ ell := by
+    have hlog := Real.log_le_log
+      (Real.rpow_pos_of_pos hT₀pos (8 / 11 : ℝ)) hT₁lower
+    rw [Real.log_rpow hT₀pos] at hlog
+    simpa only [ell] using hlog
+  have hlogT₀ : 0 ≤ Real.log T₀ := Real.log_nonneg hT₀
+  have hshape : 1 + Real.log T₀ ≤ (19 / 8 : ℝ) * ell := by
+    nlinarith
+  have hratio := routeT_canonical_fixedWidth_rung_ratio_le_height
+    hT₀ hH0 hwidth
+  have hRraw := routeTFixedWidthRungCount_cast_le_log hH0 hH0quarter hratio
+  have hR : Rcount ≤ C * ell := by
+    calc
+      Rcount ≤ C0 * (1 + Real.log T₀) := by
+        simpa only [Rcount, C0] using hRraw
+      _ ≤ C0 * ((19 / 8 : ℝ) * ell) :=
+        mul_le_mul_of_nonneg_left hshape hC0.le
+      _ = C * ell := by
+        dsimp only [C, C0, routeTFixedWidthSelectorShellLogConstant]
+        ring
+  have hSraw := routeTOrdinateShellCount_cast_le_log hU hUV hVT₀
+  have hS : Scount ≤ C * ell := by
+    calc
+      Scount ≤ C0 * (1 + Real.log T₀) := by
+        simpa only [Scount, C0] using hSraw
+      _ ≤ C0 * ((19 / 8 : ℝ) * ell) :=
+        mul_le_mul_of_nonneg_left hshape hC0.le
+      _ = C * ell := by
+        dsimp only [C, C0, routeTFixedWidthSelectorShellLogConstant]
+        ring
+  have hRpos : 0 < Rcount := by
+    dsimp only [Rcount]
+    exact_mod_cast routeTFixedWidthRungCount_pos hH0 hH0quarter
+  have hSpos : 0 < Scount := by
+    dsimp only [Scount]
+    exact_mod_cast routeTOrdinateShellCount_pos (zero_lt_one.trans_le hU) hUV
+  have hcost : Acost ≤ D0 * ell ^ routeTTrivialBoundaryReceiverLogPower := by
+    simpa only [Acost, ell] using hA T₁ hT₁A L X hX hLX hXscale
+  have hcostKappa : kappa * Acost ≤
+      (routeTFixedWidthPacketDefectFloor / (2 * C ^ 2)) *
+        ell ^ routeTTrivialBoundaryReceiverLogPower := by
+    calc
+      kappa * Acost ≤ kappa *
+          (D0 * ell ^ routeTTrivialBoundaryReceiverLogPower) :=
+        mul_le_mul_of_nonneg_left hcost hkappa.le
+      _ = (routeTFixedWidthPacketDefectFloor / (2 * C ^ 2)) *
+          ell ^ routeTTrivialBoundaryReceiverLogPower := by
+        dsimp only [D0]
+        field_simp [hkappa.ne', hC.ne']
+  have hRS : Rcount * Scount ≤ C ^ 2 * ell ^ 2 := by
+    calc
+      Rcount * Scount ≤ (C * ell) * Scount :=
+        mul_le_mul_of_nonneg_right hR hSpos.le
+      _ ≤ (C * ell) * (C * ell) :=
+        mul_le_mul_of_nonneg_left hS (mul_nonneg hC.le hell0)
+      _ = C ^ 2 * ell ^ 2 := by ring
+  have hcoefficient : 0 ≤
+      (routeTFixedWidthPacketDefectFloor / (C ^ 2)) *
+        ell ^ routeTTrivialBoundaryReceiverLogPower :=
+    mul_nonneg
+      (div_nonneg routeTFixedWidthPacketDefectFloor_pos.le (sq_nonneg C))
+      (pow_nonneg hell0 _)
+  have hscaled : (kappa * Acost) * (2 * Rcount * Scount) ≤
+      routeTFixedWidthPacketDefectFloor *
+        ell ^ routeTFixedWidthShellReceiverLogPower := by
+    calc
+      (kappa * Acost) * (2 * Rcount * Scount) ≤
+          ((routeTFixedWidthPacketDefectFloor / (2 * C ^ 2)) *
+            ell ^ routeTTrivialBoundaryReceiverLogPower) *
+              (2 * Rcount * Scount) :=
+        mul_le_mul_of_nonneg_right hcostKappa (by positivity)
+      _ = ((routeTFixedWidthPacketDefectFloor / (C ^ 2)) *
+            ell ^ routeTTrivialBoundaryReceiverLogPower) *
+              (Rcount * Scount) := by ring
+      _ ≤ ((routeTFixedWidthPacketDefectFloor / (C ^ 2)) *
+            ell ^ routeTTrivialBoundaryReceiverLogPower) *
+              (C ^ 2 * ell ^ 2) :=
+        mul_le_mul_of_nonneg_left hRS hcoefficient
+      _ = routeTFixedWidthPacketDefectFloor *
+          ell ^ routeTFixedWidthShellReceiverLogPower := by
+        dsimp only [routeTFixedWidthShellReceiverLogPower,
+          routeTTrivialBoundaryReceiverLogPower]
+        rw [show (124 : ℕ) = 122 + 2 by norm_num, pow_add]
+        field_simp [hC.ne']
+  have hden : 0 < 2 * Rcount * Scount := by positivity
+  have hmain : kappa * Acost ≤
+      (routeTFixedWidthPacketDefectFloor *
+          ell ^ routeTFixedWidthShellReceiverLogPower) /
+        (2 * Rcount * Scount) := (le_div_iff₀ hden).2 hscaled
+  calc
+    32 * (routeTTrivialBoundaryBandCount T₁ : ℝ) * (4 / 3 : ℝ) *
+          heathBrownEligibleBoxCost L X 60 *
+            (4 * (2 ^ 120 : ℝ)) ^ routeTTrivialBoundaryDistortionExponent =
+        kappa * Acost := by dsimp only [kappa, Acost]; ring
+    _ ≤ (routeTFixedWidthPacketDefectFloor *
+          ell ^ routeTFixedWidthShellReceiverLogPower) /
+        (2 * Rcount * Scount) := hmain
+    _ = (((routeTFixedWidthPacketDefectFloor /
+              (routeTFixedWidthRungCount H0 : ℝ)) / 2) /
+            (routeTOrdinateShellCount U V : ℝ)) *
+          (Real.log T₁) ^ routeTFixedWidthShellReceiverLogPower := by
+      dsimp only [Rcount, Scount, ell]
+      field_simp [hRpos.ne', hSpos.ne']
+
+/-- **Literal fixed-width high-shell receiver.**  The exact defect remaining after width-rung and
+ordinate-shell pigeonholing forces the second Maynard alternative.  The amplitude-band selector
+and degree-60 box cost are discharged internally, so no selector-cost premise survives. -/
+theorem eventually_routeT_fixedWidth_literalShell_gapSequence_forcedSecond :
+    ∀ᶠ T₀ : ℝ in atTop,
+      ∀ {T₁ H0 U W : ℝ} {L X K : ℕ} {mu M Aamp delta : ℝ},
+      T₀ ^ (8 / 11 : ℝ) ≤ T₁ →
+      0 < H0 → H0 ≤ 1 / 4 →
+      routeTPrimeGapPacketWidth (routeTPrimeGapPacketBase T₀) ≤ H0 →
+      1 ≤ U → U ≤ W → W ≤ T₀ →
+      1 < X → 1 ≤ L → L ≤ X → X < (L + 1) ^ 60 →
+      (X : ℝ) ≤ T₁ ^ mu → T₁ ^ mu ≤ (4 / 3 : ℝ) * (X : ℝ) →
+      (L : ℝ) ≤ T₁ ^ (2 * (mu / 120)) →
+      4 / 3 ≤ mu → mu ≤ 11 / 5 →
+      (X : ℝ) / (2 ^ 120 : ℝ) ≤ M →
+      1 < M / (2 ^ 120 : ℝ) →
+      (X : ℝ) ≤ (4 * (2 ^ 120 : ℝ)) * (M / (2 ^ 120 : ℝ)) →
+      0 < Aamp →
+      heathBrownEligibleBoxCost L X 60 *
+        (M / (2 ^ 120 : ℝ)) ^ (-(1 : ℝ) / 4) ≤ Aamp →
+      1 ≤ delta → delta ≤ 2 → (K : ℝ) ≤ T₁ →
+      ∀ (S : Finset ℕ), S ⊆ Finset.range K →
+      ∀ (lam : ℕ → ℝ),
+      (∀ r ∈ S, T₁ ≤ lam r ∧ lam r ≤ 2 * T₁) →
+      (∀ i, lam i + delta ≤ lam (i + 1)) →
+      (∀ r ∈ S, ∀ s ∈ S, |lam s - lam r| ≤ T₁) →
+      (∀ r ∈ S, Aamp ≤
+        ‖heathBrownWindowRelevantEligibleDyadicAggregate
+          L X 60 T₁ (mu / 120) M
+            ((1 : ℂ) + (lam r : ℝ) * Complex.I)‖) →
+      (((routeTFixedWidthPacketDefectFloor /
+              (routeTFixedWidthRungCount H0 : ℝ)) / 2) /
+            (routeTOrdinateShellCount U W : ℝ)) /
+          (16 * delta * (routeTTrivialBoundaryBandCount T₁ : ℝ)) ≤
+        Aamp * (S.card : ℝ) →
+      (S.card : ℝ) ≤ T₁ * (T₁ ^ mu) ^
+        (1 + routeTGapMomentNu -
+          2 * routeTAdaptiveCellAmplitude L X 60 M Aamp) := by
+  obtain ⟨A, hforceA⟩ := Filter.eventually_atTop.1
+    (eventually_routeT_threeQuarter_gapSequence_boundedSupport_forcedSecond_of_selectorCost
+      routeTFixedWidthShellReceiverLogPower (by norm_num : (1 : ℝ) ≤ 4 / 3))
+  have hheight : ∀ᶠ T₀ : ℝ in atTop, A ≤ T₀ ^ (8 / 11 : ℝ) :=
+    (tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 8 / 11)).eventually_ge_atTop A
+  filter_upwards [
+    hheight,
+    eventually_routeT_fixedWidth_rung_shell_band_selectorCost_le_receiverLog,
+    Filter.eventually_gt_atTop (1 : ℝ)] with T₀ hheightT hselectorT hT₀
+  intro T₁ H0 U W L X K mu M Aamp delta hT₁lower hH0 hH0quarter hwidth hU hUW
+    hWT₀ hX hL hLX hXL hXscale hscaleUpper hLscale hmuLo hmuHi hlowCutoff
+    hMbase hcomparable hAamp hlow hdelta hdeltaTwo hK S hS lam hband hgap hdiam
+    hlarge hmass
+  have hT₁ : 1 < T₁ := by
+    have hpowOne : 1 < T₀ ^ (8 / 11 : ℝ) := by
+      have hmono := (Real.strictMono_rpow_of_base_gt_one hT₀)
+        (by norm_num : (0 : ℝ) < 8 / 11)
+      simpa using hmono
+    exact hpowOne.trans_le hT₁lower
+  have hXscaleTop : (X : ℝ) ≤ T₁ ^ (11 / 5 : ℝ) :=
+    hXscale.trans (Real.rpow_le_rpow_of_exponent_le hT₁.le hmuHi)
+  have hselector := hselectorT hT₁lower hH0 hH0quarter hwidth hU hUW hWT₀
+    hX.le hLX hXscaleTop
+  let Dcover : ℝ := ((routeTFixedWidthPacketDefectFloor /
+      (routeTFixedWidthRungCount H0 : ℝ)) / 2) /
+        (routeTOrdinateShellCount U W : ℝ)
+  let Qband : ℝ := routeTTrivialBoundaryBandCount T₁
+  have hRpos : 0 < (routeTFixedWidthRungCount H0 : ℝ) := by
+    exact_mod_cast routeTFixedWidthRungCount_pos hH0 hH0quarter
+  have hSpos : 0 < (routeTOrdinateShellCount U W : ℝ) := by
+    exact_mod_cast routeTOrdinateShellCount_pos (zero_lt_one.trans_le hU) hUW
+  have hD : 0 < Dcover := by
+    dsimp only [Dcover]
+    exact div_pos
+      (div_pos (div_pos routeTFixedWidthPacketDefectFloor_pos hRpos) (by norm_num))
+      hSpos
+  have hQ : 0 < Qband := by
+    dsimp only [Qband]
+    exact_mod_cast routeTTrivialBoundaryBandCount_pos hT₁.le
+  have hselector' : 32 * Qband * (4 / 3 : ℝ) *
+        heathBrownEligibleBoxCost L X 60 *
+          (4 * (2 ^ 120 : ℝ)) ^ routeTTrivialBoundaryDistortionExponent ≤
+      Dcover * (Real.log T₁) ^ routeTFixedWidthShellReceiverLogPower := by
+    simpa only [Dcover, Qband] using hselector
+  have hmass' : Dcover / (16 * delta * Qband) ≤ Aamp * (S.card : ℝ) := by
+    simpa only [Dcover, Qband] using hmass
+  exact hforceA T₁ (hheightT.trans hT₁lower)
+    (L := L) (X := X) (K := K) (mu := mu) (M := M) (V := Aamp)
+    (delta := delta) (D := Dcover) (Q := Qband)
+    hX hL hXL hXscale hscaleUpper hLscale hmuLo hmuHi hlowCutoff
+      hMbase hcomparable hAamp hlow hdelta hdeltaTwo hK S hS lam hband hgap
+        hdiam hlarge hD hQ hselector' hmass'
+
 
 end RHTower.Sieve

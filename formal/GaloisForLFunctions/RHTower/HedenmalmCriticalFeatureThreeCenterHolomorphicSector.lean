@@ -4,8 +4,8 @@ import GaloisForLFunctions.RHTower.HedenmalmCriticalFeatureThreeCenterLatticeQua
 # Height-local holomorphic coercivity for three critical-feature centers
 
 On the nearest-center Voronoi cell, the central critical feature satisfies the sharp sector bound
-`3/5`, improving the global single-channel factor `1/2`.  Combining this with the existing
-three-center Hermitian quantum gives a cheap exact local holomorphic quantum `689/250`.
+`3/5`, improving the global single-channel factor `1/2`.  Combining this with the elementary
+three-center Hermitian quantum gives the exact local holomorphic quantum `242/125`.
 
 This result is deliberately local.  Selecting each zero's nearest three source channels depends on
 the Xi divisor, while omitted holomorphic squares need not be nonnegative.  Therefore this theorem
@@ -109,13 +109,13 @@ theorem three_fifths_mul_normSq_criticalFeatureCauchyKernelTest_le_re_sq
     _ ≤ 4 * (A ^ 2 - B ^ 2) / D ^ 2 :=
       (div_le_div_iff_of_pos_right (sq_pos_of_pos hDpos)).2 hnumerator
 
-/-- **Fast local three-center holomorphic quantum.**  Nearest-channel `3/5` coercivity, global
-`1/2` coercivity for both neighbours, central Hermitian mass `64/25`, and total three-center mass
-five give the exact local source floor `689/250`. -/
-theorem sixHundredEightyNine_twoHundredFiftieths_le_threeCenter_re_sq_sum
+/-- **Local three-center holomorphic quantum.**  Nearest-channel `3/5` coercivity, global `1/2`
+coercivity for both neighbours, central Hermitian mass `64/25`, and elementary total mass `84/25`
+give the exact local source floor `242/125`. -/
+theorem twoHundredFortyTwo_oneHundredTwentyFifths_le_threeCenter_re_sq_sum
     {t : ℝ} {z : ℂ} (hz : |z.im| < 1 / 2)
     (ht : |z.re - t| ≤ 1 / 2) :
-    (689 / 250 : ℝ) ≤
+    (242 / 125 : ℝ) ≤
       ((criticalFeatureCauchyKernelTest (t - 1) z) ^ 2).re +
         ((criticalFeatureCauchyKernelTest t z) ^ 2).re +
         ((criticalFeatureCauchyKernelTest (t + 1) z) ^ 2).re := by
@@ -125,7 +125,7 @@ theorem sixHundredEightyNine_twoHundredFiftieths_le_threeCenter_re_sq_sum
     half_mul_normSq_criticalFeatureCauchyKernelTest_le_re_sq (t - 1) hz
   have hplusSector :=
     half_mul_normSq_criticalFeatureCauchyKernelTest_le_re_sq (t + 1) hz
-  have htotal := five_le_threeCenterCriticalFeatureEnergy hz ht
+  have htotal := eightyFour_twentyFive_le_threeCenterCriticalFeatureEnergy hz ht
   have hcenter : (64 / 25 : ℝ) ≤
       Complex.normSq (criticalFeatureCauchyKernelTest t z) := by
     have heval := normSq_criticalEvaluation_realCriticalFeature_ge_of_abs_sub_le_half

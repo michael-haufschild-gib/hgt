@@ -298,8 +298,7 @@ theorem differentiable_preDivisorRiggedPrimeHolomorphicUnitizedDeterminant (m : 
   unfold preDivisorRiggedPrimeHolomorphicUnitizedDeterminant
   unfold preDivisorRiggedPrimeHolomorphicReservoirMatrix
   unfold preDivisorHolomorphicPrimeBockstein
-  simp only [Matrix.det_apply', Matrix.add_apply, Matrix.mul_apply,
-    Matrix.diagonal_apply]
+  simp only [Matrix.det_apply', Matrix.add_apply, Matrix.mul_diagonal]
   fun_prop
 
 /-- Real coefficient vector of the prime Bocksteins at positive transverse input `t = 1`. -/

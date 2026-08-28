@@ -5,7 +5,7 @@
 - **Stage:** 1-in-progress
 - **Type:** OWN CONJECTURE / QUANTITATIVE SOURCE BUDGET
 - **RH status:** open
-- **Computation used:** mpmath constant audit plus exact rational Lean audit
+- **Computation used:** historical receiver audit only; numerical certificate retired
 - **Source:** `HedenmalmCriticalFeatureHolomorphicSectorCoercivity.lean` and
   `HedenmalmWardDefectTransverseGreenSource.lean`
 - **Statement:** Sum the explicit real-centered critical-feature prime–Gamma diagonal over the
@@ -34,11 +34,11 @@ Already Lean-proved:
 Needed source estimate: a lattice-window bound strong enough to imply that strict-right
 multiplicity is at most one eighth of total multiplicity.
 
-The formalized strongest receiver now uses three adjacent lattice centers.  A positive Bernstein
-certificate gives five units of Hermitian mass per strict-right copy, hence `5/2` corrected-source
-charge after global holomorphic scalarization.  Therefore a corrected lattice ceiling
-`(5/16) N` implies strict-right multiplicity at most `N/8` and at least `3N/4` copies on the line.
-The earlier single-center receiver required the much smaller ceiling `(4/25) N`.
+The maintained receiver uses three adjacent lattice centers.  The conceptual nearest-plus-adjacent
+argument gives `84/25` units of Hermitian mass per strict-right copy, hence `42/25`
+corrected-source charge after global holomorphic scalarization.  Therefore a corrected lattice
+ceiling `(21/100) N` implies strict-right multiplicity at most `N/8` and at least `3N/4` copies on
+the line.  In particular the requested stronger ceiling `(4/25) N` is already sufficient.
 
 ## Approach
 
@@ -47,8 +47,7 @@ The earlier single-center receiver required the much smaller ceiling `(4/25) N`.
 2. Sum each rational Cauchy translate over a finite integer lattice before any divisor expansion.
 3. Use exact rational-lattice identities or monotone integral comparison for tails; preserve
    cancellation between reflected source cups whenever absolute values lose the required constant.
-4. Compare the resulting leading term with the Riemann–von Mangoldt census and numerically
-   pre-certify the constant before formalization.
+4. Compare the resulting leading term symbolically with the Riemann–von Mangoldt census.
 5. Formalize the strongest dependency-closed source theorem.  If the `1/8` margin fails, record the
    exact sharp obstruction and derive the best proportion coefficient instead.
 
@@ -68,15 +67,49 @@ The earlier single-center receiver required the much smaller ceiling `(4/25) N`.
 
 - [x] 0 → 1: well-posed source-pure target and exact receiver identified
 - [x] explicit finite lattice source formula
-- [x] numerical `1/8` margin pre-certified
+- [x] exact rational `1/8` receiver margin proved
 - [x] hostile circularity audit passed for raw and corrected algebraic budgets
 - [x] complete paper proof of raw no-go, exact diagonal subtraction, and 75% receiver
 - [x] Lean theorem and targeted build
 - [x] axiom and module lint audit (standard `propext`/choice/quotient axioms only; global lint's
-      remaining failure is unrelated `HTGeometry.SteinbergIndexAvoidance` umbrella reachability)
+      remaining failures are unrelated pre-existing umbrella reachability defects)
 - [x] exact spectral classification of the corrected excess
-- [ ] construct a genuinely pre-divisor replacement for the zero-indexed critical-line subtraction
-- [ ] prove its pole--Gamma--von-Mangoldt upper bound at scale `(5/16) N`
+- [x] construct a genuinely pre-divisor replacement for the zero-indexed critical-line subtraction
+- [ ] prove its pole--Gamma--von-Mangoldt upper bound at scale `(4/25) N`
+
+## Submicroscopic scalar-covariance no-go
+
+The new thin-strip contour and centered real-shift extractor remove the old provenance objection:
+both are defined from continued prime--archimedean source values before a zero list is formed.  The
+remaining issue is quantitative, not definitional.
+
+Let `K : R -> R` be a continuous even finite-displacement selector with `K(0)=1`.  For a packet of
+two distinct simple points separated by `d`, its scalar diagonal approximation is
+
+```text
+2 + 2 K(d).
+```
+
+Continuity at zero forces `K(d)>0` for some nonzero arbitrarily small `d`, so this approximation is
+strictly larger than exact diagonal mass `2`.  Consequently no continuous normalized scalar shift
+kernel can be an unconditional lower approximation to diagonal multiplicity on all finite packets.
+The two canonical source shifts expose the obstruction explicitly:
+
+```text
+transverse/positive-s-real shift:  K_eps(d) = eps^2 / (d^2 + eps^2) > 0,
+real-height centered shift:        K_eps(d) = eps^2 / (eps^2 - d^2) > 0
+                                  whenever 0 < |d| < eps.
+```
+
+For the corrected budget, subtracting either finite-shift scalar extractor therefore gives the
+wrong majorant direction in the presence of a close pair.  Taking `eps -> 0` first recovers exact
+diagonal multiplicity, but loses the uniform submicroscopic estimate needed when zero spacing is
+`1 / log T`.
+
+**Hostile scope audit.** This does not prove that Xi has close pairs, nor rule out an Xi-specific
+arithmetic cancellation.  It rules out deriving the needed majorant from continuity, normalization,
+and scalar shift extraction alone.  A live successor must keep signed off-diagonal matrix covariance
+through scalarization or add a genuine quantitative zero-repulsion/pair-correlation input.
 
 ## No-go closure
 
@@ -148,13 +181,43 @@ zero-indexed subtraction is circular.
   critical-line projector.  Formalized the reverse comparison `excess <= offLineEnergy`, the
   fixed-channel zero iff RH theorem, and the nonempty lattice zero iff RH theorem.  Current
   `(4/25)N` target remains the 75% arithmetic core, not a proved source consequence.
-- 2026-08-28 — Formalized the three-center Hermitian quantum.  A 49-coefficient positive
-  Bernstein certificate proves the exact local floor `5`; the resulting global corrected-source
-  charge `5/2` moves the sufficient 75% arithmetic ceiling from `4/25` to `5/16`.  This is genuine
-  receiver progress but does not supply the missing pre-divisor arithmetic upper bound.
+- 2026-08-28 — Formalized the three-center Hermitian quantum.  The maintained conceptual proof
+  gives local floor `84/25`; corrected charge `42/25` makes `(21/100)N` sufficient and therefore
+  already accepts the requested `(4/25)N` premise.  Retired the sharper 49-coefficient Bernstein
+  certificate because it changed only receiver slack while imposing substantial elaboration cost.
 - 2026-08-28 — Tested joint three-center holomorphic phase cancellation.  An exact `59/100`
   certificate existed but required 121 rational Bernstein coefficients, compiled in roughly three
   minutes, and could not lift to a source-only lattice inequality without divisor-dependent channel
   selection.  Retired that implementation.  Preserved the strongest cheap positive survivor:
-  nearest-cell coercivity `3/5` and local three-center holomorphic quantum `689/250`, compiling in
-  22.6 seconds.  These local theorems are explicitly not claimed as a global budget improvement.
+  nearest-cell coercivity `3/5` and local three-center holomorphic quantum `242/125`.  These local
+  theorems are explicitly not claimed as a global budget improvement.
+- 2026-08-28 — Confluent fixed-safe-pole audit: Cayley/Malmquist jets can supply many local modes
+  without moving the pole toward the Euler boundary, and the corpus already gives exact Cauchy-jet,
+  Toeplitz, all-derivative Euler, and Poisson order-space laws.  Scaling shows depth divided by pole
+  distance is effective prime bandwidth; reaching zero spacing `1/log T` still reaches prime length
+  `T`.  Existing Gamma-sewn recovery is contractive but first-jet transparent, so it cannot supply
+  coefficient-faithful quadratic Weil covariance.  Survivor: preserve the full confluent source
+  matrix and seek a direct prime covariance bound; scalar contraction and residue extraction are
+  not producers.
+- 2026-08-28 — Rectangular prime--polar audit: the corpus now gives an exact source-only finite
+  formula and identifies its negative part with square-sampled positive excess of the von Mangoldt
+  window.  The available near-linear square-energy bound is equivalent to an RH-strength abscissa
+  statement, not an unconditional density estimate; using it for `75%` would merely rename the
+  open prime-cancellation problem.
+- 2026-08-28 — Source-aligned restricted-Weil audit: every finite nonpositive block injects into a
+  finite peripheral Gamma--Slepian head, and every nonpositive vector forces literal finite
+  von-Mangoldt compression to overcompensate scalar Gamma plus polar mass by `3/4` of head norm.
+  This is a genuine pre-divisor source obstruction.  Two quantitative bridges are absent:
+  asymptotic finrank/trace control of the moving Gamma--Slepian head, and an unconditional
+  divisor-free comparison from restricted-Weil Morse index to off-line zero multiplicity.  These,
+  not stronger local receiver constants, are the viable next conjecture targets.
+- 2026-08-28 — Formalized the submicroscopic scalar-covariance no-go.  Every continuous normalized
+  scalar displacement kernel is positive at some nonzero arbitrarily close separation and therefore
+  overcounts the exact diagonal on a two-point packet.  The transverse Poisson and centered
+  real-height kernels exhibit the obstruction explicitly.  Positive survivor: preserve signed
+  matrix covariance through scalarization or prove genuine quantitative pair repulsion.
+- 2026-08-28 — Formalized the archimedean contour reduction.  The exact corrected source budget is
+  von Mangoldt plus pole--Gamma minus thin contour; when lattice cardinality is `o(N)`, the uniformly
+  bounded von Mangoldt channel contributes `o(N)`.  Thus the requested `4/25` theorem is equivalent
+  up to `o(N)` to a pole--Gamma/thin-contour upper bound.  Prime-window optimization and further
+  receiver constants cannot close this leading target.

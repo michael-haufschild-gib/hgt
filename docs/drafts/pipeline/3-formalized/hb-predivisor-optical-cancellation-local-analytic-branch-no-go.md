@@ -1,8 +1,8 @@
 # HB optical cancellation local analytic-branch obstruction
 
 - **ID:** HC77
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE / LOCAL BRANCH-DOMAIN NO-GO / HARD FRONTIER
+- **Stage:** 3-formalized
+- **Type:** THEOREM / LEAN-PROVED LOCAL BRANCH-DOMAIN NO-GO / HARD FRONTIER
 - **Routes:** HB, FZZ-P, PW-B; RBH comparison
 - **Source:** HC74--HC76 scalar cancellation profile; corpus analytic identity machinery;
   exact rational profile formula
@@ -59,8 +59,8 @@ analytic-branch obstruction. Bounded, not exhaustive, priority claim.
 ## Gates
 
 - [x] 0 -> 1 in-progress: corpus gap, exact conjecture, hostile proof route, bounded literature audit
-- [ ] 1 -> 2 fully-proven: dependency-closed paper proof
-- [ ] 2 -> 3 formalized: closed Lean theorem, target build, axiom/lint audit, umbrella wire
+- [x] 1 -> 2 fully-proven: dependency-closed paper proof
+- [x] 2 -> 3 formalized: closed Lean theorem, target build, axiom/lint audit, umbrella wire
 - [ ] 3 -> 4 publication-ready: independent priority audit and standalone exposition
 
 ## Log
@@ -68,3 +68,14 @@ analytic-branch obstruction. Bounded, not exhaustive, priority claim.
 - 2026-08-28 — Opened from HC76's branch/nonmeromorphic survivor. Frontier map remains read-only.
 - 2026-08-28 — First conjecture: complexify exact profile, prove full-strip analyticity and real
   specialization, then combine local vertical and global horizontal identity theorems.
+- 2026-08-28 — First conjecture succeeded in scratch Lean. Constructed exact complex rational
+  continuation, proved its denominators nonzero and the continuation analytic throughout the strip,
+  proved literal real specialization, and closed the arbitrary-open-domain no-go through two
+  accumulation/identity arguments.
+- 2026-08-28 — Formalized in
+  `ThetaCuspHawkingPreDivisorOpticalCancellationLocalAnalyticBranchNoGo.lean`. Direct
+  `lake env lean` passed; target-only
+  `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingPreDivisorOpticalCancellationLocalAnalyticBranchNoGo`
+  passed (`12141/12141`). All three exported theorem axiom audits report only `propext`,
+  `Classical.choice`, and `Quot.sound`; umbrella import present. Formal lint reports no finding in
+  this module and remains nonzero only for unrelated unreachable modules in the shared worktree.
