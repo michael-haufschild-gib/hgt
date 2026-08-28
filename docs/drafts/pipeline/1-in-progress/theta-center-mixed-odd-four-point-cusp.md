@@ -609,7 +609,9 @@ Lean artifact:
 - `exists_thetaCuspReflectedSourceOddParityWall_pos_right`;
 - `tendsto_thetaCuspReflectedSourceOddParityWall_atTop`;
 - `exists_thetaCuspReflectedSourceOddParityWall_stationary_neg_of_neg`;
-- `exists_thetaCuspReflectedSourceOddParityWall_stationary_flux_amplification_of_neg`.
+- `exists_thetaCuspReflectedSourceOddParityWall_stationary_flux_amplification_of_neg`;
+- hypothesis-free classification
+  `thetaCuspReflectedSourceOddParityWall_global_or_stationary_flux_obstruction`.
 
 Exact foreground `lake env lean`, targeted
 `lake build GaloisForLFunctions.RHTower.ThetaCuspReflectedSourceOddStationary`, and umbrella wiring
@@ -626,3 +628,231 @@ Open core remains `W_u(t)>=0` for every `u>0,t>0`.  The next hard conjecture mus
 stationary balance and strict dyadic flux retention with the coupled atom--likelihood curvature;
 generic log-concavity, angle concavity, and separated atom-pair positivity have now been ruled out
 as sufficient mechanisms.
+
+### 2026-08-28 — single-switch flux and second-order stationary curvature obstruction
+
+`[NEW] [PAPER-PROVED] [LEAN-PROVED] [SECOND-ORDER MINIMUM PRINCIPLE] [SOURCE-SPECIFIC]`
+
+The next conjecture loop differentiated the exact stationary carrier instead of weakening or
+numerically optimizing the wall.  Write the reflected logarithmic action jets as `q1,q2,q3` and
+put
+
+```text
+H_u(t) = q1(u,t)^2-q2(u,t) = P_u''(t)/P_u(t),
+J_u(t) = D_u'(t) = P_u(t)(q2(u,t)-q1(u,t)^2) = -P_u(t)H_u(t).
+```
+
+The corpus's global reflected Riccati theorem has the exact new interpretation
+
+```text
+H_u'(t) = 2 q1(u,t)q2(u,t)-q3(u,t) >= 0       (t>=0).
+```
+
+Moreover `H_u(0)<0`.  Thus the positive decay flux is single-switch: positive `J_u` propagates
+backward in displacement, while negative `J_u` propagates forward.  This is an exact unimodality
+law, not an asymptotic or sampled assertion.
+
+For the wall slope
+
+```text
+W_u'(t)=3 A D_u(3t)+D_u(t)(T+2B)-4B D_u(2t),
+```
+
+direct differentiation gives the source-coupled second-order identity
+
+```text
+W_u''(t) =
+  J_u(t)(T+2B) + 9 A J_u(3t) - 8 B J_u(2t)
+  + 6 D_u(t)D_u(3t) - 2(-D_u(t)+2D_u(2t))^2.
+```
+
+Every hypothetical negative wall has an interior local-minimum witness, so the same witness now
+obeys all of
+
+```text
+W_u(t)<0,
+4 B D_u(2t)=D_u(t)(T+2B)+3 A D_u(3t),
+3 D_u(t)/4 < D_u(2t),
+0 <= W_u''(t),
+```
+
+together with the global single-switch law for `J_u`.  The previous balance and retention
+certificates therefore no longer live at a potentially different existential point: Lean proves
+one local minimum carrying the complete first- and second-order obstruction package.
+
+Lean artifact:
+
+- `GaloisForLFunctions/RHTower/ThetaCuspReflectedSourceOddStationaryCurvature.lean`;
+- `hasDerivAt_thetaCuspReflectedSourceSchrodingerPotential`;
+- `monotoneOn_thetaCuspReflectedSourceSchrodingerPotential`;
+- `thetaCuspReflectedSourceDecayFluxCurvature_single_switch`;
+- `hasDerivAt_thetaCuspReflectedSourceOddParityWallSlope`;
+- `iteratedDeriv_two_thetaCuspReflectedSourceOddParityWall`;
+- `exists_thetaCuspReflectedSourceOddParityWall_stationary_curvature_retention_of_neg`;
+- hypothesis-free classification
+  `thetaCuspReflectedSourceOddParityWall_global_or_stationary_curvature_obstruction`.
+
+Hostile audit remains essential.  The monotone potential is not by itself the missing four-point
+theorem: the earlier abstract action countermodels satisfy the Riccati differential inequality
+while allowing a negative odd wall.  New content is compulsory second-order multiscale curvature
+at the actual completed-source minimum, where three source scales and the square of the middle
+flux derivative couple exactly.
+
+August 2026 primary-literature search found no collision.  Michałowski's 2026
+[PF-order paper](https://arxiv.org/abs/2602.20313) reports the global `PF_4` problem for the
+de Bruijn--Newman kernel as open while certifying a computational `PF_5` failure.  Planat--Solé's
+2026 [second-level concavity theorem](https://arxiv.org/abs/2608.19160) proves a different local
+Laguerre/log-concavity statement using theta differential equations and finite certificates; it
+does not contain this reflected-fibre three-scale stationary identity or its Lean closure.
+
+Open core remains literal fibrewise Ptolemy, `W_u(t)>=0` for every `u>0,t>0`.  Any counterexample
+must now survive a monotone Schrödinger potential, single-switch decay flux, exact stationary
+balance, strict retention, and the displayed nonnegative second-order curvature at one common
+negative local minimum.  Next conjecture must use the completed atom--likelihood fourth/sixth jet
+structure to contradict that joint package; Riccati alone is formally exhausted.
+
+Exact foreground `lake env lean` and targeted
+`lake build GaloisForLFunctions.RHTower.ThetaCuspReflectedSourceOddStationaryCurvature` pass after
+umbrella wiring.  The capstone axiom audit reports only `propext`, `Classical.choice`, and
+`Quot.sound`; the module contains no `sorry`, `admit`, added `axiom`, `opaque`, or `unsafe`
+declaration.  Repo-wide formal lint reaches this module but remains red on unrelated pre-existing
+unreachable modules in the `RHTower` and `HTGeometry` umbrellas; none is introduced by this work.
+
+### 2026-08-28 — frozen C4: fifth-root divided-drop convexity
+
+`[FROZEN CONJECTURE] [HARD FIBRE CORE]`
+
+For a literal completed-source fibre write
+
+```text
+P_u(t) = Phi(u+t) Phi(u-t),
+G_u(x) = (P_u(0)-P_u(sqrt x))/x                  (x>0).
+```
+
+Corpus endpoint laws select the power `1/5`, without fitting it to a proof: the global coalesced
+second--sixth determinant says exactly that the right second jet of `G_u^(1/5)` is positive at
+`x=0`, while source decay gives `G_u(x)^(1/5) ~ P_u(0)^(1/5) x^(-1/5)` in the far tail.  Freeze:
+
+```text
+x |-> G_u(x)^(1/5) is decreasing and convex on (0,infinity), for every real u.       (C4)
+```
+
+Public meaning: after dividing out the forced quadratic cusp, every completed theta fibre loses
+correlation along one convex fifth-root scale.
+
+This is not generic angle concavity, generic log-concavity, or a restatement of the wall.  Its
+risky consequence is a full continuum curvature law between the already-proved coalesced and tail
+chambers.  At `x=t^2`, convex interpolation across `t^2,4t^2,9t^2`, plus monotonicity, is expected
+to imply the exact odd wall.  The proof route for C4 is not frozen; current attack is to expose its
+literal differential numerator and collide it with the completed atom--likelihood fourth/sixth
+jets.  A counterexample retires C4 unchanged and must leave its strongest curvature survivor.
+
+### 2026-08-28 — C4 discrete bridge closed in Lean
+
+Let `a,b,c` be values of `G_u^(1/5)` at squared scales `x,4x,9x`.  Decrease and convexity give
+
+```text
+0 <= c <= a,                 8b <= 5a+3c.
+```
+
+Source monotonicity independently gives `a^5 <= 4b^5`.  Put `c=a y^2`, `0<=y<=1`.  The exact
+algebraic core is
+
+```text
+8192(1+3y^5) - (5+3y^2)^5
+ = (1-y)^3 (
+     243y^7 + 729y^6 + 3483y^5 + 8505y^4 + 22545y^3
+     + 21027y^2 + 15201y + 5067),
+```
+
+whose remaining factor is coefficientwise positive.  Therefore
+
+```text
+(4b^5-a^5)^2 <= 9a^5c^5.
+```
+
+After restoring the common factor `t^4`, this is precisely
+
+```text
+(P_u(t)-P_u(2t))^2
+  <= (P_u(0)-P_u(t))(P_u(0)-P_u(3t)),
+```
+
+the unresolved reflected-source odd/Ptolemy wall.  No estimate or fitted constant enters.
+
+The strongest unconditional survivor is now formal: for every real `u,t`, either `t<=0`, the
+source odd wall is nonnegative, the fifth-root divided drop increases between squared scales
+`1` and `9`, or it violates the convex interpolation inequality at squared scale `4`.  Thus any
+literal source counterexample to the wall is a certified discrete counterexample to C4.
+
+Lean artifacts:
+
+- `GaloisForLFunctions/HilbertMetric/FifthRootDividedDropWall.lean`;
+- `GaloisForLFunctions/RHTower/ThetaCuspReflectedSourceFifthRootDividedDropWall.lean`;
+- `HilbertMetric.weighted_fifth_power_wall`;
+- `HilbertMetric.fifthRootConvexChord_forces_wall`;
+- `thetaCuspReflectedSourceOddParityWall_nonneg_of_fifthRootShape`;
+- hypothesis-free classification
+  `thetaCuspReflectedSourceOddParityWall_or_fifthRootShapeFailure`.
+
+Exact foreground checks and targeted module build pass after wiring both umbrellas.  Axiom audit
+reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
+August 2026 primary-literature search found no fifth-root divided-drop wall law.  Planat--Solé
+study a different logarithmic second-level concavity functional; Salazar studies order-moment
+Hankel recognition for other special functions; Michałowski still records the theta `PF_4`
+problem as open.  C4 itself remains open.  Its proof burden is now exact and source-specific:
+prove decrease and convexity of `G_u^(1/5)` on `(0,infinity)`, equivalently exclude the two
+formalized shape failures rather than optimize any scalar bound.
+
+### 2026-08-28 — C4 decrease closed globally; sole survivor is convexity
+
+The corpus's already-proved global correlation-angle concavity has a stronger consequence than
+its earlier three-point use.  Write the normalized fibre as
+
+```text
+P_u(t)/P_u(0) = cos(alpha_u(t)),      0 <= alpha_u(t) <= pi/2.
+```
+
+For `0<s<=t`, concavity and `alpha_u(0)=0` give
+
+```text
+(s/t) alpha_u(t) <= alpha_u(s).
+```
+
+Concavity of sine on `[0,pi]`, followed by its monotonicity on `[0,pi/2]`, gives
+
+```text
+(s/t) sin(alpha_u(t)/2) <= sin(alpha_u(s)/2).
+```
+
+Squaring and using `1-cos(alpha)=2 sin(alpha/2)^2` proves the exact continuum law
+
+```text
+(P_u(0)-P_u(t))/t^2 <= (P_u(0)-P_u(s))/s^2.
+```
+
+Thus both `G_u` and `G_u^(1/5)` are antitone on `(0,infinity)` for every real center `u`.
+This is unconditional and global, including modular-seam crossing; no tail split or source
+estimate is used.
+
+New Lean theorems:
+
+- `HilbertMetric.cosineDividedDrop_antitone_of_angleScaling`;
+- `antitoneOn_thetaCuspReflectedSourceDividedDrop`;
+- `antitoneOn_thetaCuspReflectedSourceDividedDropFifthRoot`;
+- sharpened hypothesis-free classification
+  `thetaCuspReflectedSourceOddParityWall_or_fifthRootConvexityFailure`.
+
+Consequently a positive-displacement negative odd wall can no longer escape through either of
+two shape failures: it must satisfy the strict convex-chord violation
+
+```text
+5 G_u(t^2)^(1/5) + 3 G_u(9t^2)^(1/5)
+  < 8 G_u(4t^2)^(1/5).
+```
+
+C4 is therefore half closed, and its remaining burden is pure convexity.  Exact targeted build
+and axiom audit pass; only `propext`, `Classical.choice`, and `Quot.sound` occur.  Repo-wide lint
+still fails solely on unrelated pre-existing unreachable modules; both new modules are reachable
+from their umbrellas.

@@ -1,8 +1,8 @@
 # HB event-horizon third-mass/AIME anti-alignment
 
 - **ID:** HC64
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE / CUBIC SOURCE CLASSIFICATION / HARD FRONTIER
+- **Stage:** 3-formalized
+- **Type:** THEOREM / CUBIC SOURCE CLASSIFICATION / HARD FRONTIER / LEAN-PROVED
 - **Routes:** HB
 - **Source:** Exact moving-event-horizon third mass parity jet; exact theta-mirror AIME chiral
   kernel defect; positive BM/AIME denominator laws
@@ -62,11 +62,20 @@ cancellation coefficient. This is a bounded, not exhaustive, priority claim.
 ## Gates
 
 - [x] 0 -> 1 in-progress: corpus gap, exact conjecture, hostile proof route, bounded literature audit
-- [ ] 1 -> 2 fully-proven: dependency-closed paper proof
-- [ ] 2 -> 3 formalized: closed Lean theorem, target build, axiom/lint audit, umbrella wire
+- [x] 1 -> 2 fully-proven: dependency-closed paper proof
+- [x] 2 -> 3 formalized: closed Lean theorem, target build, axiom/lint audit, umbrella wire
 - [ ] 3 -> 4 publication-ready: independent priority audit and standalone exposition
 
 ## Log
 
 - 2026-08-28 — Opened after corpus search reduced the actual cubic route to two explicit signed
   horizontal defects whose exact relative susceptibility had not been computed.
+- 2026-08-28 — Proved canonical susceptibility is strictly positive and the moving-event-horizon
+  third mass defect equals its negative times the theta-mirror AIME kernel defect. Off line their
+  product is strictly negative and this susceptibility is the unique exact cancellation
+  coefficient. The canonically compensated defect vanishes identically, closing the sign/passivity
+  exclusion attempt as a rigorous no-go. The uncompensated absorbed-seed cubic source is nonzero
+  exactly for nonzero seed on tilted fibres; universal extinction of either third-mass defect or
+  cubic source is RH. Direct Lean check and target-only build passed (`11891/11891`); eight public
+  theorem axiom audits report only `propext`, `Classical.choice`, and `Quot.sound`; umbrella wired.
+  Global lint reports only unrelated existing unreachable modules and no HC64 issue.

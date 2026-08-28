@@ -1,11 +1,12 @@
 # Support--grade inverse-semigroup fusion, reconstruction, and partial-isometry properness law
 
 - **ID:** ULF-RFHM-1
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** UNIVERSAL-LAW FIELD THEOREM / SUPPORT--HISTORY FUSION
 - **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [BRIDGE] [NATIVE-SUPPORT NO-GO]
   [INVERSE-SEMIGROUP FUSION] [JOINT RECONSTRUCTION] [EXACT CONSERVATION]
-  [PARTIAL-ISOMETRY PROPERNESS] [FUNCTIONAL-EQUATION NEUTRALITY] [NO LEAN IN THIS PASS]
+  [PARTIAL-ISOMETRY PROPERNESS] [FUNCTIONAL-EQUATION NEUTRALITY]
+  [LEAN-FORMALIZED] [AXIOM-AUDITED]
 
 ## 1. The doctrine mismatch
 
@@ -390,4 +391,34 @@ Those theories supply the ambient machinery.  They do not identify the HGT gener
 support/Kummer-history doctrine mismatch or prove the source-specific replacement gate in Section
 6.  No external novelty claim is made.
 
-No Lean was written or built in this research pass.
+## 9. Lean certification
+
+The complete displayed theorem surface is formalized unconditionally in
+`GaloisForLFunctions.HTGeometry.ConstitutiveRestrictionFormationHistory`, wired through
+`GaloisForLFunctions.HTGeometry.UniversalLawField`.
+
+- `semilatticeToGroup_trivial` and `groupQuotient_erases_support` certify the native-support
+  group-landing no-go.
+- `packet_mul_assoc`, `star_isInverseOf`, `inverse_unique`,
+  `idempotent_iff_exists_support`, `rangeSupport_mul`, `grade_conservation`, and
+  `range_grade_jointly_injective` certify the full restriction inverse-semigroup and exact
+  reconstruction laws.
+- `packetOperator_mul`, `adjoint_packetOperator`, `packetOperator_partialIsometry`,
+  `packetOperator_injective`, `packetOperator_uniform_separation`,
+  `norm_packetOperator_sub_ge_sqrt_two_of_grade_ne`, and
+  `packetOperator_compact_preimage_finite` certify the literal `ℓ²(E × G)` representation,
+  sharp norm separation, and properness.
+- `CompatibleSymmetry.mapPacket_bijective` and
+  `CompatibleSymmetry.unitary_conjugates_packetOperator` certify compatible functional-equation
+  automorphisms and information-neutral unitary transport.
+- `restrictionFormationHistory_capstone` packages faithfulness, separation, properness, and
+  symmetry covariance.
+
+Direct elaboration and targeted module build pass on the current toolchain. One batched
+`#print axioms` audit of declarations created for this card reports only the standard project
+axioms `propext`, `Classical.choice`, and `Quot.sound`.
+
+## Log
+
+- 2026-08-28 — full RFHM.1--RFHM.22 theorem surface formalized in Lean, umbrella-wired,
+  axiom-audited, and promoted to Stage 3.

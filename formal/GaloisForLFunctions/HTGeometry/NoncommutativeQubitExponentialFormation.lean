@@ -100,6 +100,15 @@ theorem qubitHamiltonian_exp_closed {b : ℝ} (hb : 0 < b) (t : ℝ) :
   simpa [K, smul_smul, div_eq_mul_inv, Complex.ofReal_cosh,
     Complex.ofReal_sinh] using h
 
+theorem trace_qubitHamiltonian_exp {b : ℝ} (hb : 0 < b) (t : ℝ) :
+    Matrix.trace (NormedSpace.exp (qubitHamiltonian b t)) =
+      ((2 * Real.cosh (qubitRadius b t) : ℝ) : ℂ) := by
+  rw [qubitHamiltonian_exp_closed hb, Matrix.trace_add,
+    Matrix.trace_smul, Matrix.trace_smul]
+  simp [Matrix.trace, qubitHamiltonian, QuantumAlg.pauliX,
+    QuantumAlg.pauliZ, Fin.sum_univ_two]
+  ring
+
 def qubitFreeEnergy (b t : ℝ) : ℝ :=
   Real.log (2 * Real.cosh (qubitRadius b t))
 
@@ -111,6 +120,13 @@ def qubitDensity (b t : ℝ) : QubitMatrix :=
 
 def qubitMean (b t : ℝ) : ℝ :=
   t / qubitRadius b t * Real.tanh (qubitRadius b t)
+
+theorem qubitFreeEnergy_eq_log_trace_exp {b : ℝ} (hb : 0 < b) (t : ℝ) :
+    qubitFreeEnergy b t =
+      Real.log (Matrix.trace
+        (NormedSpace.exp (qubitHamiltonian b t))).re := by
+  rw [trace_qubitHamiltonian_exp hb]
+  rfl
 
 theorem qubitLogDensity_isHermitian (b t : ℝ) :
     (qubitLogDensity b t).IsHermitian := by
@@ -154,6 +170,17 @@ theorem qubitDensity_eq_exp_neg_freeEnergy_smul_expHamiltonian (b t : ℝ) :
   rw [show Complex.exp z = (Real.exp (-qubitFreeEnergy b t) : ℂ) by
     rw [show z = ((-qubitFreeEnergy b t : ℝ) : ℂ) by simp [z],
       ← Complex.ofReal_exp]]
+
+theorem qubitDensity_eq_inv_trace_smul_expHamiltonian {b : ℝ}
+    (hb : 0 < b) (t : ℝ) :
+    qubitDensity b t =
+      (Matrix.trace (NormedSpace.exp (qubitHamiltonian b t)))⁻¹ •
+        NormedSpace.exp (qubitHamiltonian b t) := by
+  rw [qubitDensity_eq_exp_neg_freeEnergy_smul_expHamiltonian,
+    trace_qubitHamiltonian_exp hb, exp_neg_qubitFreeEnergy]
+  congr 1
+  push_cast
+  rw [one_div]
 
 theorem qubitDensity_closed {b : ℝ} (hb : 0 < b) (t : ℝ) :
     qubitDensity b t =

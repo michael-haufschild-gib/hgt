@@ -247,9 +247,7 @@ private theorem preDivisorRiggedPrimeWittPairing_linearCombination_self
   rw [preDivisorRiggedPrimeWittPairing_add_left hs,
     preDivisorRiggedPrimeWittPairing_add_right hs,
     preDivisorRiggedPrimeWittPairing_add_right hs]
-  simp only [preDivisorRiggedPrimeWittPairing_neg_left,
-    preDivisorRiggedPrimeWittPairing_neg_right,
-    preDivisorRiggedPrimeWittPairing_smul_left,
+  simp only [preDivisorRiggedPrimeWittPairing_smul_left,
     preDivisorRiggedPrimeWittPairing_smul_right]
   rw [preDivisorRiggedPrimeWittPairing_comm s y x]
   ring
@@ -665,15 +663,13 @@ private theorem preDivisorRiggedPrimePolarizedPairing_cross_eq_zero_of_self_eq_z
   · have hplus := hnonneg ((1 : ℝ) • x + (1 : ℝ) • y)
     have hminus := hnonneg ((1 : ℝ) • x + (-1 : ℝ) • y)
     rw [preDivisorRiggedPrimePolarizedPairing_linearCombination_self hs,
-      hx, hd0] at hplus hminus
-    dsimp [c]
-    dsimp [c, d] at hplus hminus
+      hx] at hplus hminus
+    change preDivisorRiggedPrimePolarizedPairing s y y = 0 at hd0
+    rw [hd0] at hplus hminus
     nlinarith
   · have hdpos : 0 < d := lt_of_le_of_ne hd (Ne.symm hd0)
     have htrial := hnonneg
       ((1 : ℝ) • x + (-(c / d)) • y)
-    rw [preDivisorRiggedPrimePolarizedPairing_linearCombination_self hs,
-      hx] at htrial
     have htrialEq :
         preDivisorRiggedPrimePolarizedPairing s
             ((1 : ℝ) • x + (-(c / d)) • y)
@@ -728,6 +724,140 @@ theorem preDivisorRiggedPrimePolarizedPairing_self_eq_zero_iff_radical_right
     exact hcross
   · intro ha
     exact ha (preDivisorRiggedPrimeFundamentalSymmetry s a)
+
+/-! ## Closed source-polarization package -/
+
+/-- The source-selected symmetry as an actual real-linear operator on the nuclear Köthe source. -/
+def preDivisorRiggedPrimeFundamentalSymmetryLinear
+    (s : ℂ) (hs : 0 < s.re ∧ s.re < 1) :
+    DeningerHeightKothe →ₗ[ℝ] DeningerHeightKothe where
+  toFun := preDivisorRiggedPrimeFundamentalSymmetry s
+  map_add' := preDivisorRiggedPrimeFundamentalSymmetry_add hs
+  map_smul' := preDivisorRiggedPrimeFundamentalSymmetry_smul s
+
+@[simp] theorem preDivisorRiggedPrimeFundamentalSymmetryLinear_apply
+    (s : ℂ) (hs : 0 < s.re ∧ s.re < 1) (a : DeningerHeightKothe) :
+    preDivisorRiggedPrimeFundamentalSymmetryLinear s hs a =
+      preDivisorRiggedPrimeFundamentalSymmetry s a := rfl
+
+/-- The fundamental symmetry preserves the rigged form on left fibres. -/
+theorem preDivisorRiggedPrimeFundamentalSymmetry_isometry_left
+    (s : ℂ) (hs0 : 0 < s.re) (hleft : s.re < 1 / 2)
+    (a b : DeningerHeightKothe) :
+    preDivisorRiggedPrimeWittPairing s
+        (preDivisorRiggedPrimeFundamentalSymmetry s a)
+        (preDivisorRiggedPrimeFundamentalSymmetry s b) =
+      preDivisorRiggedPrimeWittPairing s a b := by
+  have hs : 0 < s.re ∧ s.re < 1 :=
+    ⟨hs0, lt_trans hleft (by norm_num)⟩
+  have haxis := (preDivisorRiggedPrimeTimeAxis_negative_left s hs0 hleft).ne
+  rw [preDivisorRiggedPrimeFundamentalSymmetry_eq_timeReflection_left s hleft,
+    preDivisorRiggedPrimeFundamentalSymmetry_eq_timeReflection_left s hleft,
+    preDivisorRiggedPrimeTimeReflection_isometry hs haxis]
+
+/-- The fundamental symmetry preserves the rigged form on right fibres. -/
+theorem preDivisorRiggedPrimeFundamentalSymmetry_isometry_right
+    (s : ℂ) (hright : 1 / 2 < s.re) (hs1 : s.re < 1)
+    (a b : DeningerHeightKothe) :
+    preDivisorRiggedPrimeWittPairing s
+        (preDivisorRiggedPrimeFundamentalSymmetry s a)
+        (preDivisorRiggedPrimeFundamentalSymmetry s b) =
+      preDivisorRiggedPrimeWittPairing s a b := by
+  have hs : 0 < s.re ∧ s.re < 1 :=
+    ⟨lt_trans (by norm_num) hright, hs1⟩
+  have haxis := (preDivisorRiggedPrimeTimeAxis_positive_right s hright hs1).ne'
+  rw [preDivisorRiggedPrimeFundamentalSymmetry_eq_neg_timeReflection_right s hright,
+    preDivisorRiggedPrimeFundamentalSymmetry_eq_neg_timeReflection_right s hright,
+    preDivisorRiggedPrimeWittPairing_neg_left,
+    preDivisorRiggedPrimeWittPairing_neg_right,
+    preDivisorRiggedPrimeTimeReflection_isometry hs haxis]
+  ring
+
+/-- The positive polarization loses exactly the invisible real prime coefficients on the left. -/
+theorem preDivisorRiggedPrimePolarizedPairing_self_eq_zero_iff_prime_re_eq_zero_left
+    (s : ℂ) (hs0 : 0 < s.re) (hleft : s.re < 1 / 2)
+    (a : DeningerHeightKothe) :
+    preDivisorRiggedPrimePolarizedPairing s a a = 0 ↔
+      ∀ p : Nat.Primes,
+        (((a : DeningerPrimeLattice → ℂ)
+          (preDivisorRiggedPrimeAxis p)).re) = 0 := by
+  rw [preDivisorRiggedPrimePolarizedPairing_self_eq_zero_iff_radical_left
+      s hs0 hleft a,
+    preDivisorRiggedPrimeRadical_iff_left s hs0 hleft a]
+
+/-- The positive polarization loses exactly the invisible real prime coefficients on the right. -/
+theorem preDivisorRiggedPrimePolarizedPairing_self_eq_zero_iff_prime_re_eq_zero_right
+    (s : ℂ) (hright : 1 / 2 < s.re) (hs1 : s.re < 1)
+    (a : DeningerHeightKothe) :
+    preDivisorRiggedPrimePolarizedPairing s a a = 0 ↔
+      ∀ p : Nat.Primes,
+        (((a : DeningerPrimeLattice → ℂ)
+          (preDivisorRiggedPrimeAxis p)).re) = 0 := by
+  rw [preDivisorRiggedPrimePolarizedPairing_self_eq_zero_iff_radical_right
+      s hright hs1 a,
+    preDivisorRiggedPrimeRadical_iff_right s hright hs1 a]
+
+/--
+**SC source-polarization capstone.**  The two canonical prime axes produce an unconditional
+real-linear fundamental symmetry on every open-strip fibre.  It is involutive and rigged-form
+self-adjoint, and its reflection-even polarized form is nonnegative with exactly the previously
+classified coefficient radical on both sides of the critical wall.
+-/
+theorem preDivisorRiggedPrimeFundamentalSymmetry_capstone :
+    (∀ s : ℂ, 0 < s.re → s.re < 1 / 2 →
+      (∀ a : DeningerHeightKothe,
+        preDivisorRiggedPrimeFundamentalSymmetry s
+            (preDivisorRiggedPrimeFundamentalSymmetry s a) = a) ∧
+      (∀ a b : DeningerHeightKothe,
+        preDivisorRiggedPrimeWittPairing s
+            (preDivisorRiggedPrimeFundamentalSymmetry s a) b =
+          preDivisorRiggedPrimeWittPairing s a
+            (preDivisorRiggedPrimeFundamentalSymmetry s b)) ∧
+      (∀ a : DeningerHeightKothe,
+        0 ≤ preDivisorRiggedPrimePolarizedPairing s a a ∧
+          (preDivisorRiggedPrimePolarizedPairing s a a = 0 ↔
+            ∀ p : Nat.Primes,
+              (((a : DeningerPrimeLattice → ℂ)
+                (preDivisorRiggedPrimeAxis p)).re) = 0))) ∧
+    (∀ s : ℂ, 1 / 2 < s.re → s.re < 1 →
+      (∀ a : DeningerHeightKothe,
+        preDivisorRiggedPrimeFundamentalSymmetry s
+            (preDivisorRiggedPrimeFundamentalSymmetry s a) = a) ∧
+      (∀ a b : DeningerHeightKothe,
+        preDivisorRiggedPrimeWittPairing s
+            (preDivisorRiggedPrimeFundamentalSymmetry s a) b =
+          preDivisorRiggedPrimeWittPairing s a
+            (preDivisorRiggedPrimeFundamentalSymmetry s b)) ∧
+      (∀ a : DeningerHeightKothe,
+        0 ≤ preDivisorRiggedPrimePolarizedPairing s a a ∧
+          (preDivisorRiggedPrimePolarizedPairing s a a = 0 ↔
+            ∀ p : Nat.Primes,
+              (((a : DeningerPrimeLattice → ℂ)
+                (preDivisorRiggedPrimeAxis p)).re) = 0))) ∧
+    (∀ s : ℂ, ∀ a b : DeningerHeightKothe,
+      preDivisorRiggedPrimePolarizedPairing (preDivisorLineConj s) a b =
+        preDivisorRiggedPrimePolarizedPairing s a b) := by
+  constructor
+  · intro s hs0 hleft
+    have hs : 0 < s.re ∧ s.re < 1 :=
+      ⟨hs0, lt_trans hleft (by norm_num)⟩
+    exact ⟨preDivisorRiggedPrimeFundamentalSymmetry_sq_left s hs0 hleft,
+      preDivisorRiggedPrimeFundamentalSymmetry_isSelfAdjoint hs,
+      fun a => ⟨preDivisorRiggedPrimePolarizedPairing_self_nonneg_left
+          s hs0 hleft a,
+        preDivisorRiggedPrimePolarizedPairing_self_eq_zero_iff_prime_re_eq_zero_left
+          s hs0 hleft a⟩⟩
+  constructor
+  · intro s hright hs1
+    have hs : 0 < s.re ∧ s.re < 1 :=
+      ⟨lt_trans (by norm_num) hright, hs1⟩
+    exact ⟨preDivisorRiggedPrimeFundamentalSymmetry_sq_right s hright hs1,
+      preDivisorRiggedPrimeFundamentalSymmetry_isSelfAdjoint hs,
+      fun a => ⟨preDivisorRiggedPrimePolarizedPairing_self_nonneg_right
+          s hright hs1 a,
+        preDivisorRiggedPrimePolarizedPairing_self_eq_zero_iff_prime_re_eq_zero_right
+          s hright hs1 a⟩⟩
+  · exact preDivisorRiggedPrimePolarizedPairing_lineConj
 
 end
 

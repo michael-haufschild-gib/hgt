@@ -1,8 +1,8 @@
 # Source-horizontal rigged prime fundamental symmetry
 
 - **ID:** SC-RIGGED-PRIME-FUNDAMENTAL-SYMMETRY
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** `rh-current-frontier-map.md` · SC source-derived global polarization gate
 - **Statement:** The two canonical prime axes determine an explicit rank-one fundamental symmetry of the all-prime rigged form on every open-strip fibre; its polarized form is reflection-even, nonnegative, and has exactly the previously classified coefficient radical.
 
@@ -12,7 +12,7 @@ Close SC's source-derived global-polarization burden without selecting a Xi zero
 ## Gates
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea, Door passport sketch
 - [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorem `preDivisorRiggedPrimeFundamentalSymmetry_capstone`, `lake build` green, axiom audit PASS
+- [x] 2 → 3  formalized: Lean theorem `preDivisorRiggedPrimeFundamentalSymmetry_capstone`, `lake build` green, axiom audit PASS
 - [ ] 3 → 4  publication-ready: standalone paper (theorem + proof + Lean certificate + Door-2)
 
 ## Approach
@@ -33,7 +33,8 @@ For a left fibre, write `x = u + αr` with `B_s(u,r)=0`.  Existing global index-
 - **Exact killing theorem/mechanism:** A direct positive Hilbert-Gram pullback from the physical Möbius--theta source is blocked by the corpus Hilbert-Gram radical/closed-graph no-go, and no coefficient extraction into `DeningerHeightKothe` exists.
 - **Strongest positive survivor:** The already-proved exact index-one form itself canonically generates the missing global polarization by a source-selected rank-one reflection.
 - **New insight:** SC does not need an external Hilbert carrier for polarization.  Its negative time axis is already present in two literal prime coordinates; only Xi determinant/landing remains after this construction.
-- **Status:** Paper proof dependency-closed; Lean formalization in progress.
+- **Status:** Paper proof dependency-closed and formalized in `GaloisForLFunctions.RHTower.SourceHorizontalRiggedKreinFundamentalSymmetry`; exact leaf build and axiom audit pass.
 
 ## Log
 - 2026-08-28 — Frozen after corpus searches and hostile no-go audit; paper proof completed. `[PROVED HERE] [NOVELTY UNVERIFIED]`
+- 2026-08-28 — Formalized. Exact leaf build passed (`12925` jobs); audited capstone axioms are only `propext`, `Classical.choice`, and `Quot.sound`. Wired into `GaloisForLFunctions.RHTower` umbrella without building umbrella.

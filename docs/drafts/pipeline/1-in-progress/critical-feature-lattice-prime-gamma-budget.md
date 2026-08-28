@@ -34,9 +34,11 @@ Already Lean-proved:
 Needed source estimate: a lattice-window bound strong enough to imply that strict-right
 multiplicity is at most one eighth of total multiplicity.
 
-The formalized sharp receiver now uses the diagonal-subtracted budget directly: if the corrected
-lattice budget is at most `(4/25) N`, then strict-right multiplicity is at most `N/8`, hence at
-least `3N/4` copies lie on the critical line.
+The formalized strongest receiver now uses three adjacent lattice centers.  A positive Bernstein
+certificate gives five units of Hermitian mass per strict-right copy, hence `5/2` corrected-source
+charge after global holomorphic scalarization.  Therefore a corrected lattice ceiling
+`(5/16) N` implies strict-right multiplicity at most `N/8` and at least `3N/4` copies on the line.
+The earlier single-center receiver required the much smaller ceiling `(4/25) N`.
 
 ## Approach
 
@@ -74,7 +76,7 @@ least `3N/4` copies lie on the critical line.
       remaining failure is unrelated `HTGeometry.SteinbergIndexAvoidance` umbrella reachability)
 - [x] exact spectral classification of the corrected excess
 - [ ] construct a genuinely pre-divisor replacement for the zero-indexed critical-line subtraction
-- [ ] prove its pole--Gamma--von-Mangoldt upper bound at scale `(4/25) N`
+- [ ] prove its pole--Gamma--von-Mangoldt upper bound at scale `(5/16) N`
 
 ## No-go closure
 
@@ -146,3 +148,13 @@ zero-indexed subtraction is circular.
   critical-line projector.  Formalized the reverse comparison `excess <= offLineEnergy`, the
   fixed-channel zero iff RH theorem, and the nonempty lattice zero iff RH theorem.  Current
   `(4/25)N` target remains the 75% arithmetic core, not a proved source consequence.
+- 2026-08-28 — Formalized the three-center Hermitian quantum.  A 49-coefficient positive
+  Bernstein certificate proves the exact local floor `5`; the resulting global corrected-source
+  charge `5/2` moves the sufficient 75% arithmetic ceiling from `4/25` to `5/16`.  This is genuine
+  receiver progress but does not supply the missing pre-divisor arithmetic upper bound.
+- 2026-08-28 — Tested joint three-center holomorphic phase cancellation.  An exact `59/100`
+  certificate existed but required 121 rational Bernstein coefficients, compiled in roughly three
+  minutes, and could not lift to a source-only lattice inequality without divisor-dependent channel
+  selection.  Retired that implementation.  Preserved the strongest cheap positive survivor:
+  nearest-cell coercivity `3/5` and local three-center holomorphic quantum `689/250`, compiling in
+  22.6 seconds.  These local theorems are explicitly not claimed as a global budget improvement.

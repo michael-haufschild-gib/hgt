@@ -475,7 +475,7 @@ theorem thetaCuspReflectedSourceOddParityWall_global_or_stationary_flux_obstruct
       ∀ t : ℝ, 0 < t → 0 ≤ thetaCuspReflectedSourceOddParityWall u t
   · exact Or.inl hglobal
   · right
-    push_neg at hglobal
+    push Not at hglobal
     rcases hglobal with ⟨t, ht, hneg⟩
     exact
       exists_thetaCuspReflectedSourceOddParityWall_stationary_flux_amplification_of_neg
