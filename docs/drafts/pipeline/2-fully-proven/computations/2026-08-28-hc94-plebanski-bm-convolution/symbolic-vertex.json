@@ -1,0 +1,18 @@
+{
+  "coefficients_t2_t1_t0": [
+    "(r + 1)**2",
+    "(r + 1)*(curvature*r - curvature - 2)",
+    "-curvature*r + curvature + 1"
+  ],
+  "normalized_kernel": "(r*t + t - 1)*(curvature*r - curvature + r*t + t - 1)",
+  "opposite_charge_kernel": "2*curvature + 1",
+  "purpose": "route-selection evidence only; forbidden in Lean proofs",
+  "same_charge_kernel": "(2*t - 1)**2",
+  "universal_profile_independent_annihilators": [
+    {
+      "curvature": "-1/2",
+      "r": "-1"
+    }
+  ],
+  "verification_opposite_at_minus_half": "0"
+}

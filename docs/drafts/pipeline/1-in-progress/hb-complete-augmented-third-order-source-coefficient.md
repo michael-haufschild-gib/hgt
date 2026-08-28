@@ -150,3 +150,32 @@ the module. Both new modules are wired into `GaloisForLFunctions.RHTower`.
 vertex to the corner-renormalized BM response. The exact nonzero finite part above fixes the radial
 boundary datum; remaining work is to derive the interior projected radial integral and combine it
 with stationary `+-` response plus direct third variation before testing HC94-A.
+
+## Loop result HC94-A.3 — constant-curvature convolution proxy retired
+
+`[FALSIFIED]` The abstract `curvature : ℂ` Mellin kernel cannot be specialized to one constant and
+used as the physical AdS4 radial vertex. Lipstein–Nagy's exact plane-wave factor is
+
+`X(k1,k2) * (X(k1,k2) - 2i*(k1-k2)_w/(u-v))/2`,
+
+with `u-v=2z`. Chowdhury–Doran–Lipstein–Monteiro–Nagy–Singh's arbitrary-propagator vertex instead
+contains left/right `z` derivatives and acts on `P/z` and `Q/z`. Thus the curvature deformation is
+radial and operator-valued; the constant-curvature convolution omits source data essential to
+HC94. This is an exact parent-theory obstruction, not a numerical inference.
+
+Exploratory RunPod work on the retired proxy is recorded at
+`docs/drafts/pipeline/2-fully-proven/computations/2026-08-28-hc94-plebanski-bm-convolution/REPORT.md`.
+At 90 digits all 135 sampled `c=1` cases were nonzero; direct quadrature agreed with beta–`3F2`
+evaluation to `1.25e-95`. Exact symbolic elimination inside the proxy found a unique
+profile-independent annihilator `k=-h, c=-1/2`. This is not a physical cancellation because the
+physical coefficient is proportional to `1/z`. Computation is route-selection evidence only and
+is forbidden as a Lean dependency.
+
+`[BRIDGE]` The surviving representation is the radial deformed-kinematic operator itself, not a
+scalar Mellin moment. Further special-function scans of the constant-curvature proxy are retired.
+
+**Pivot HC94-A.4 / `[OPEN CORE]`.** Pull the physical Poincaré light-cone operator through the exact
+massless topological-black-hole/BM radial chart, apply its left/right derivatives to the fully
+corner-renormalized `Rpp` response and negative-helicity branch, and include the negative leg,
+gravity boundary/corner completion, and conserved left-QNM projection. Only this derived operator
+may be combined with stationary `+-` response and direct third variation to attack HC94-A.

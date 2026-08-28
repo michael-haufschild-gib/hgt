@@ -454,6 +454,48 @@ theorem exists_fixedSource_reparametrized_pairedShell_of_annulus
         norm_num [f, routeTFixedSourceAdjacentIntervalPacket,
           routeTFixedSourceAdjacentIntegrand])
 
+/-- Canonical-count form of paired annulus shell extraction.  The selected shell now belongs to
+one finite ladder fixed solely by the two annulus endpoints, before any physical base is chosen. -/
+theorem exists_fixedSource_reparametrized_pairedShell_of_annulus_canonicalCount
+    (L X k : ℕ) {T mu M N H R B U V : ℝ}
+    (hT : 1 < T) (hX : 1 ≤ X) (hM : 0 < M)
+    (hN : 0 < N) (hH : 0 < H) (hR : 0 < R)
+    (hB0 : 0 < B) (hU : 1 < U) (hUV : U ≤ V)
+    (hB : B ≤ ‖∫ y in {y : ℝ | U ≤ |y| ∧ |y| < V},
+      heathBrownWindowRelevantEligibleDyadicAggregate L X k T (mu / 120) M
+            ((1 : ℂ) + (y : ℝ) * Complex.I) *
+        (routeTNormalizedSmoothWindowMellin N R
+            ((1 : ℂ) + (y : ℝ) * Complex.I) -
+          routeTNormalizedSmoothWindowMellin N H
+            ((1 : ℂ) + (y : ℝ) * Complex.I))‖) :
+    ∃ j ∈ Finset.range (routeTOrdinateShellCount U V),
+      let T₁ := routeTComparableWidthLadder U V (j + 1)
+      let mu₁ := routeTHeightMatchedExponent T mu T₁
+      T₁ ∈ Set.Icc U V ∧
+      routeTComparableWidthLadder U V j ≤ 2 * T₁ ∧
+      T₁ ^ mu₁ = T ^ mu ∧
+      (B / 4) / (routeTOrdinateShellCount U V : ℝ) ≤
+        ‖routeTFixedSourceAdjacentIntervalPacket
+          L X k T₁ (mu₁ / 120) M N R H 1 T₁
+            (routeTComparableWidthLadder U V j)‖ := by
+  obtain ⟨J, hJ, hbelow, _habove, j, hj, hmem, hcomp, hmatch, hlarge⟩ :=
+    exists_fixedSource_reparametrized_pairedShell_of_annulus
+      L X k hT hX hM hN hH hR hB0 hU hUV hB
+  have hJle : J ≤ routeTOrdinateShellCount U V :=
+    routeTComparableWidthLadder_index_le_ordinateShellCount
+      (by linarith) hUV hJ hbelow
+  have hjCanonical : j ∈ Finset.range (routeTOrdinateShellCount U V) := by
+    rw [Finset.mem_range] at hj ⊢
+    exact hj.trans_le hJle
+  have hdenom : (B / 4) / (routeTOrdinateShellCount U V : ℝ) ≤
+      (B / 4) / (J : ℝ) := by
+    apply div_le_div_of_nonneg_left
+    · positivity
+    · exact_mod_cast hJ
+    · exact_mod_cast hJle
+  refine ⟨j, hjCanonical, hmem, hcomp, hmatch, ?_⟩
+  exact hdenom.trans hlarge
+
 /-- **Canonical cancellation-preserving prime-free annulus.**  Eventually one frozen Heath--Brown
 source works for every physical base in the block.  Prime-freeness forces a fixed positive paired
 defect on the literal annulus between the common central cutoff and `floor T`; reference-target
@@ -674,6 +716,92 @@ theorem exists_eventually_routeT_primeFree_fixedSource_commonMode_pairedShell :
       norm_num only [div_div]
       convert hlarge lambda hlambda hprimeFree using 1 <;> ring)
   simpa only using hshell
+
+/-- Canonical shell family for the common-mode paired annulus. -/
+def routeTCommonModeOrdinateShellCount (T : ℝ) : ℕ :=
+  routeTOrdinateShellCount
+    (routeTCommonModeCutoff (routeTPrimeGapPacketBase T))
+    (routeTPrimeGapPacketCutoff T : ℝ)
+
+/-- **Uniform finite-family form of the prime-free paired shell.**  Shell count and all shell
+endpoints depend only on the ambient height `T`, not on the physical base `lambda`.  Thus every
+prime-free base lands in one member of a single preselected finite family, with a common lower
+threshold suitable for spatial `L²/L⁴` summation. -/
+theorem exists_eventually_routeT_primeFree_fixedSource_commonMode_pairedShell_canonicalCount :
+    ∀ᶠ T : ℝ in atTop,
+      ∃ L : ℕ, 1 ≤ L ∧
+        L ≤ routeTPrimeGapPacketSupport T ∧
+        routeTPrimeGapPacketSupport T < (L + 1) ^ (60 : ℕ) ∧
+        (L : ℝ) ≤ T ^ (2 / 75 : ℝ) ∧
+        ∀ lambda ∈ Set.Icc (routeTPrimeGapPacketBase T)
+            (2 * routeTPrimeGapPacketBase T),
+          Chebyshev.theta
+                (lambda + 2 * (lambda * routeTPrimeGapPacketWidth lambda)) -
+              Chebyshev.theta lambda = 0 →
+          ∃ j ∈ Finset.range (routeTCommonModeOrdinateShellCount T),
+            let T₁ := routeTComparableWidthLadder
+              (routeTCommonModeCutoff (routeTPrimeGapPacketBase T))
+              (routeTPrimeGapPacketCutoff T : ℝ) (j + 1)
+            let mu₁ := routeTHeightMatchedExponent T (8 / 5 : ℝ) T₁
+            T₁ ∈ Set.Icc
+                (routeTCommonModeCutoff (routeTPrimeGapPacketBase T))
+                (routeTPrimeGapPacketCutoff T : ℝ) ∧
+              routeTComparableWidthLadder
+                  (routeTCommonModeCutoff (routeTPrimeGapPacketBase T))
+                  (routeTPrimeGapPacketCutoff T : ℝ) j ≤ 2 * T₁ ∧
+              T₁ ^ mu₁ = T ^ (8 / 5 : ℝ) ∧
+              ((((2 * Real.pi) *
+                  (routeTSmoothWindowCentralMargin *
+                    routeTCommonModeReferenceDensity / 2)) / 4) / 4) /
+                  (routeTCommonModeOrdinateShellCount T : ℝ) ≤
+                ‖routeTFixedSourceAdjacentIntervalPacket
+                  L (routeTPrimeGapPacketSupport T) 60 T₁ (mu₁ / 120)
+                  (routeTPrimeGapPacketBase T) lambda
+                  (lambda * routeTCommonModeReferenceRelativeWidth
+                    (routeTPrimeGapPacketBase T))
+                  (lambda * routeTPrimeGapPacketWidth lambda) 1 T₁
+                  (routeTComparableWidthLadder
+                    (routeTCommonModeCutoff (routeTPrimeGapPacketBase T))
+                    (routeTPrimeGapPacketCutoff T : ℝ) j)‖ := by
+  have hshell :=
+    exists_eventually_routeT_primeFree_fixedSource_commonMode_pairedShell
+  have hbaseTop : Tendsto routeTPrimeGapPacketBase atTop atTop := by
+    unfold routeTPrimeGapPacketBase
+    exact (tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 8 / 5)).atTop_div_const
+      (by norm_num)
+  have hbaseOne := hbaseTop.eventually_gt_atTop 1
+  filter_upwards [hshell, hbaseOne] with T hshellT hx
+  obtain ⟨L, hL, hLX, hXL, hLscale, hselected⟩ := hshellT
+  refine ⟨L, hL, hLX, hXL, hLscale, ?_⟩
+  intro lambda hlambda hprimeFree
+  obtain ⟨J, hJ, hbelow, _habove, j, hj, hmem, hcomp, hmatch, hlarge⟩ :=
+    hselected lambda hlambda hprimeFree
+  have hU0 : 0 < routeTCommonModeCutoff (routeTPrimeGapPacketBase T) := by
+    unfold routeTCommonModeCutoff
+    positivity
+  have hJle : J ≤ routeTCommonModeOrdinateShellCount T := by
+    exact routeTComparableWidthLadder_index_le_ordinateShellCount hU0
+      (hmem.1.trans hmem.2) hJ hbelow
+  have hjCanonical : j ∈ Finset.range (routeTCommonModeOrdinateShellCount T) := by
+    rw [Finset.mem_range] at hj ⊢
+    exact hj.trans_le hJle
+  have hdenom :
+      ((((2 * Real.pi) *
+          (routeTSmoothWindowCentralMargin *
+            routeTCommonModeReferenceDensity / 2)) / 4) / 4) /
+          (routeTCommonModeOrdinateShellCount T : ℝ) ≤
+        (((2 * Real.pi) *
+          (routeTSmoothWindowCentralMargin *
+            routeTCommonModeReferenceDensity / 2)) / 4) / 4 / (J : ℝ) := by
+    apply div_le_div_of_nonneg_left
+    · have hpi : 0 < Real.pi := Real.pi_pos
+      have hmargin := routeTSmoothWindowCentralMargin_pos
+      have hdensity := routeTCommonModeReferenceDensity_pos
+      positivity
+    · exact_mod_cast hJ
+    · exact_mod_cast hJle
+  refine ⟨j, hjCanonical, hmem, hcomp, hmatch, ?_⟩
+  exact hdenom.trans hlarge
 
 end
 

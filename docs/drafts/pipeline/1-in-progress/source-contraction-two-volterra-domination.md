@@ -227,3 +227,72 @@ Elementary exact structure (derived, to be Lean-recorded when used):
   the actual danger; this closes the transport/jet family of producer candidates entirely.
   Remaining untried carriers stand as at cycle 4: the singular-completion sewing build arc
   (Poisson-boundary mathlib gaps) and the partial-exclusion budget lane (zero-density/HCF).
+
+### Correction to Cycle 5 (2026-08-28, after cross-agent review)
+
+The cycle-5 "representation lesson" overclaimed. Corrected statement:
+
+- Lehmer pairs are on-line and RH-compatible; they are the *near-degeneracy margin* configuration
+  (de Bruijn–Newman/backward-flow relevance), not an RH failure mode. Actual failure = an
+  off-critical (nonreal-Ξ) zero quartet.
+- "Invisible at every order" is false for the complete hierarchy: the full pointwise Laguerre
+  family `L_n(t) ≥ 0 ∀n,t` characterizes the Laguerre–Pólya class (Csordas–Vishnyakova), hence
+  sees nonreal zeros — it is an RH-strength receiver, not blind. The corpus formalizes all-order
+  rigidity (`entire_eq_of_iteratedDeriv_eq`, `seamJet_zero_set_eq`,
+  `completedFluxTaylorCoeff_line_pair_all_eq_iff`,
+  `exists_completedFluxTaylorCoeff_line_pair_ne_of_re_ne_half`) against narrow finite-prefix
+  blindness (`finiteCorrectionDepth_divisorBlind`, `ccm_criticalClock_divisor_blindness`).
+- What the numerics support: low-order normalized wall observables (L₁, L₂) show no useful local
+  signature at the tested Lehmer window, and no fixed finite jet prefix determines the divisor.
+  The strategic verdict stands in corrected form: wall-jet approaches offer no producer because
+  finite prefixes are provably blind and the complete hierarchy is receiver-equivalent — the
+  finite-to-uniform wall again — not because jets "cannot see" nonreal zeros.
+
+### Formalization batch (2026-08-28) — no-gos and survivors landed in Lean
+
+Three new modules, all umbrella-wired, built, axioms standard (propext/Classical.choice/
+Quot.sound) on every theorem:
+
+1. `RHTower/ThetaTailKreinTiltDiagonalLaw.lean` — the rank-one survivor layer:
+   `normSq_xiCentTiltPlus_sub_normSq_xiCentTiltMinus` (the pointwise A2 law
+   `‖tilt₊‖² − ‖tilt₋‖² = 4c·Re(ξc′·conj ξc)`), line parity (`conj_xiCent_I_mul_ofReal`,
+   `conj_deriv_xiCent_I_mul_ofReal`), and the wall vanishing
+   `re_deriv_xiCent_mul_conj_xiCent_I_mul` (∂_σ|ξc|² = 0 on the line) with the squared-modulus
+   losslessness corollary.
+2. `RHTower/XiCentEulerAtomFactorization.lean` — the orbit-split survivor and the truncation
+   no-go, now exact: `xiCent_eq_riemannZeta_mul_eulerAtomFactor` (Euler-orbit factorization on
+   `Re w > −1/2`), `xiCentEulerAtomFactor_half` (the ζ-pole shadow zero of the single atom), and
+   `xiCentTwoAtomTruncation_witness_zero` — the two-atom causal truncation has the explicit
+   off-axis zero at `w = −1/2 + (π/log 2)·i` where the atom factor is nonzero, by exact
+   arithmetic (`2^{−iπ/log 2} = −1`); no numerics.
+3. `RHTower/ThetaTailKernelGeometricDeficitSplit.lean` — the CP/deficit foundation (see the new
+   card `theta-kernel-cp-deficit-domination`): orbit-shift parametrization, exact AM–GM split
+   `k = 2M + D`, manifest PSD of `M` on finite nonnegative node systems, and the deficit's
+   zero-diagonal/nonnegativity/symmetry.
+
+Not formalized, with reasons recorded: the C1 shape-class kill (needs six transcendental
+enclosures at complex rational points — queued, corpus-standard but laborious); the
+even-symmetrized truncation kills (no closed-form witness; numeric-only, flagged as such);
+the TP₅ break (sign certification of 5×5 theta determinants at 1e−12 margins — not worth the
+interval-arithmetic cost now); the single-atom integral identity
+`thetaBilateralLaplace-of-atom = xiCentEulerAtomFactor` (Mellin–Gamma computation, queued —
+would upgrade the factorization to the literal coefficient-faithful atom transform).
+
+### Cycle 7 (2026-08-28) — index/parity exploration: the near-miss programme opened
+
+Full exploration of the Class-C middle recorded on the new card
+`index-parity-near-miss-rigidity.md`. Deltas: the exact index dictionary κ_T = N_off(T) with the
+proportion/almost-all/finite/zero ladder and its owners; **C8 [CONJECTURE]: κ ∈ {0, ∞} — RH
+cannot fail finitely often** — four equivalent forms (generalized-Nevanlinna membership,
+polynomial×LP factorization, theta-density ODE-relation onto the LP cone), strictly weaker than
+RH, absent from refereed literature; the explicit κ = 1 analytic counterfeit
+`Ξ·(τ²−ρ²)(τ²−ρ̄²)/((τ²−γ₁²)(τ²−γ₂²))` proving any C8 proof must be arithmetic; the
+consequence-mining resource (finite κ ⟹ Lindelöf-grade upgrades + the anomaly is an exact
+κ-frequency Bohr polynomial). Two live attack surfaces: (A) Bohr recurrence/syndetic torus
+densities against positive-density one-sided source bounds — lands exactly on T2's "subhalf"
+frontier (κ=1 bad-set density = 1/2) with RBH's separated-sign machinery as the classifier;
+(B) C9, the function-field Perron–Frobenius template: SC's one-negative-square Krein fibres
+(Lorentz slot) + the manifestly cone-preserving `Z = Σ n^{−1/2}S_{log n}` (Frobenius slot) with
+the missing weld as open core, first test on the two-atom truncation against the Lean witness.
+Killed: shift-orbit amplification (window term), abstract Toeplitz/Smirnov dichotomy (S_κ
+exists), Pontryagin symmetry-compression (symmetry group too small), det-sign mod 2 (counting).

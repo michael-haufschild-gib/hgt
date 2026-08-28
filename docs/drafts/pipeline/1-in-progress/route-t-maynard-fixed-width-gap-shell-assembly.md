@@ -217,3 +217,35 @@ Not yet formalized. Frontier map remains read-only.
 - New hard core: prove the one-width high-tail measure theorem from `U_x=x^(1/8)` through the
   existing `mu<=8` derivative/grouping infrastructure.  This is the genuine large-values problem;
   no cutoff-order or constant optimisation can substitute for it.
+
+## 2026-08-28 cancellation-preserving paired-annulus and uniform-shell closure
+
+- `[FALSIFIED]` Separating reference and target high tails before localization is not a viable
+  high-ordinate receiver. It destroys the normalized-kernel cancellation; at the endpoint
+  `mu = 8` the resulting generic two-alternative exponent demand is false for every logarithmic
+  power. The route is retired in that form.
+- `[LEAN-CLOSED POSITIVE SURVIVOR]` Prime-freeness instead forces the norm of the **paired**
+  high-tail difference. An arbitrary-order, non-comparable paired-kernel tail theorem needs only
+  `H <= R`, so the existing order-50 cutoff removes the far tail without the historical
+  comparability hypothesis `R <= 2H`. The surviving defect is a literal finite two-sided annulus
+  between `routeTCommonModeCutoff x` and `routeTPrimeGapPacketCutoff T`.
+- `[LEAN-CLOSED]` Exact conjugate reflection sends that paired annulus to one positive ordinate
+  interval without splitting its kernel. Fixed-source height reparameterization then selects a
+  dyadic shell and preserves the support identity `T1^mu1 = T^(8/5)`.
+- `[LEAN-CLOSED]` The selector is canonicalized: every physical base `lambda` lands in one shell
+  from a single finite ladder depending only on ambient `T`, with one common lower threshold.
+  This removes the moving-shell quantifier obstruction before any spatial `L2/L4` summation.
+- Main capstone:
+  `exists_eventually_routeT_primeFree_fixedSource_commonMode_pairedShell_canonicalCount` in
+  `MaynardCommonModePairedAnnulus.lean`. Targeted module build passed; axiom audit reports only
+  `propext`, `Classical.choice`, and `Quot.sound`.
+- `[OPEN CORE]` Split this fixed shell family at the buffered height-matched exponent. Shells above
+  the buffer already carry paired-kernel negative-power `L2/L4`; shells below it require a new
+  analytic weld from the frozen common-mode shell into the corpus arbitrary-order physical-slice
+  receiver. Existing corpus proves the scalar reserve dichotomy but not this packet-level weld.
+  Natural-cell conversion and derivative-excised count must be performed after that split.
+- `[LITERATURE AUDIT / NOVELTY-UNCERTAIN]` No matching fixed-source, cancellation-preserving
+  prime-free annulus-to-uniform-shell theorem was found in Maynard's 2016 large-gap paper or
+  Guth--Maynard's 2026 large-value paper. Those sources treat sieve large gaps and Dirichlet-
+  polynomial large values, respectively, but do not state this interface. Keep novelty marked
+  uncertain until expert comparison and the buffered packet-level weld are complete.

@@ -2,7 +2,7 @@
 
 - **ID:** CLG-TTF-NFL-C5
 - **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Type:** FALSIFIED ON PAPER; POSITIVE SURVIVOR IN PROGRESS
 - **Source:** `rh-current-frontier-map.md`, Routes CLG/TTF, global C5 burden
 - **Statement:** For the completed-theta reflected product `P_u(t)`, the squared-displacement normalized decay flux `h_u(x) = -P_u'(sqrt x) / sqrt x` is log-convex on `x > 0`; equivalently its division-free residual `R_u(t) = 2 D_u(t)^2 - t D_u(t) J_u(t) + t^2 (D_u(t) K_u(t) - J_u(t)^2)` is nonnegative for `t > 0`, where `D_u = -P_u'`, `J_u = D_u'`, and `K_u = J_u'`.
 
@@ -55,7 +55,14 @@ The hard core is proving `R_u(t) ≥ 0` from the completed-theta atom–likeliho
 
 ## Pivot criterion and positive survivor
 
-If pointwise `R_u ≥ 0` fails for the completed source, retain the exact integrated decomposition
+Pointwise `R_u ≥ 0` fails for the completed source. Indeed, if the positive normalized flux
+`h_u` were globally log-convex, convexity of `log h_u` would give an exponential lower minorant
+on every terminal ray. Since `-2 d/dx P_u(sqrt x) = h_u(x)` and the product tends to zero, tail
+integration would give an exponential lower minorant for `P_u(sqrt x)`. This contradicts the
+corpus theorem that the completed reflected product decays faster than every exponential in the
+squared coordinate (`ThetaCuspReflectedSquaredBernsteinNoGo`).
+
+Retain the exact integrated decomposition
 
 `L_u(t) = [A_u(t) ∫₀ᵗ (D_u+sJ_u)²/D_u ds - (tD_u(t))²] + A_u(t) ∫₀ᵗ R_u(s)/D_u(s) ds`.
 
@@ -64,3 +71,4 @@ The bracket is nonnegative by Cauchy–Schwarz. This yields the sharp signed-res
 ## Log
 
 - 2026-08-28 — Created directly in `1-in-progress` after corpus-first derivation and hostile test against the strongest existing no-go.
+- 2026-08-28 — `[FALSIFIED ON PAPER]`: completed-source super-exponential squared tail is incompatible with global log-convexity of its positive normalized derivative. Pivoted to signed-residual cumulative balance; do not move to `5-failed` until killing theorem and dependency-closed positive survivor are formalized.

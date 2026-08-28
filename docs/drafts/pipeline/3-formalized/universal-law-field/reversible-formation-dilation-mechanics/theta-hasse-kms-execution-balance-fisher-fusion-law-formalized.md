@@ -1,11 +1,12 @@
 # Theta--Hasse--KMS execution balance — Lean formalization certificate
 
 - **Source card:**
-  `docs/drafts/pipeline/2-fully-proven/universal-law-field/reversible-formation-dilation-mechanics/theta-hasse-kms-execution-balance-fisher-fusion-law.md`
-- **Lean module:**
-  `formal/GaloisForLFunctions/HTGeometry/ConstitutiveThetaHasseKMSExecutionBalance.lean`
-- **Stage:** 3-formalized core
-- **Date:** 2026-08-11
+  `docs/drafts/pipeline/3-formalized/universal-law-field/reversible-formation-dilation-mechanics/theta-hasse-kms-execution-balance-fisher-fusion-law.md`
+- **Lean modules:**
+  `formal/GaloisForLFunctions/HTGeometry/ConstitutiveThetaHasseKMSExecutionBalance.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/ThetaHasseKMSContinuousAssembly.lean`
+- **Stage:** 3-formalized
+- **Completed:** 2026-08-28
 
 ## Certified declarations
 
@@ -27,25 +28,28 @@
 10. `finiteWeightedCovariance_sq_le_variance_mul_variance` proves finite Fisher-response control
     by weighted Cauchy--Schwarz.
 
+11. `ThetaHasseKMSContinuousAssembly.lean` adds literal theta-law averages, continuous covariance
+    differentiation and strict response, reflected half-line balance, unique central fibre,
+    intrinsic-image homeomorphism/properness, exact Popoviciu Fisher constants, common-recovery
+    composition, source-averaged purity/Shannon conservation, and normalized Fourier/Xi
+    reconstruction.
+
 ## Exact certification boundary
 
-Lean certifies geometric normalization, marked reconstruction, purity/entropy conservation,
-strict source response, reflected-balance selection, and finite Fisher covariance control. These
-are the algebraic/analytic core through which Hasse packet, reset execution, KMS state, and Fisher
-response fuse.
-
-The full continuous theta-source average, its Fourier/Xi identity, differentiation under the
-theta integral, explicit Popoviciu constants, and properness of the global balance map are not
-claimed by this certificate. Existing theta-source modules provide several analytic ingredients,
-but ULF-RFDM-2 remains only **core formalized** until those continuous statements are assembled in
-one Lean module.
+Lean certifies the full dependency-closed paper surface: geometric normalization, marked
+reconstruction, purity/entropy conservation, literal continuous theta-source averages,
+differentiation under the tilted integral, strict covariance response, exact reflected half-line
+balance, properness onto the intrinsic image, Fourier/Xi reconstruction, exact Fisher constants,
+and common-recovery composition. ULF-RFDM-2 has no remaining formal assembly obligation.
 
 ## Audit
 
 - Direct check:
   `lake env lean GaloisForLFunctions/HTGeometry/ConstitutiveThetaHasseKMSExecutionBalance.lean`
 - Final build:
-  `lake build GaloisForLFunctions.HTGeometry.ConstitutiveThetaHasseKMSExecutionBalance`
-- Umbrella import: `GaloisForLFunctions.HTGeometry`
+  `lake build GaloisForLFunctions.HTGeometry.ThetaHasseKMSContinuousAssembly`
+- Umbrella imports: `GaloisForLFunctions.HTGeometry.UniversalLawField`,
+  `GaloisForLFunctions.HTGeometry`
 - Axiom audit: only `propext`, `Classical.choice`, and `Quot.sound`
-- Formal lint: passed at certificate creation
+- Formal lint: new module is umbrella-reachable and contains no forbidden declaration; current
+  repository lint reports unrelated concurrently added unreachable modules.

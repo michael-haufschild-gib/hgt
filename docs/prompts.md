@@ -329,11 +329,9 @@ be efficient with lean. clean up after yourself. do not run large rebuilds. do n
 do not pivot on unanswered mathematical problems. your job is precisely to solve problems that neither our lean corpus nor literature have solved yet. use the hgt-fields-medalist skill workflow and heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ...
 
 ## Research 2
-**Goal:** Create novel and significant knowledge towards RH proof routes CCM-FU, D2, E, G, G-CE, P, SP-E, SCE, T1, T2, HC, CFI, PPM, HJ, BW, MSC, PEP, EWQ-V, LI from docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md
+**Goal:** Create novel and significant knowledge about the universal laws and principles of quantum recurrence.
 
-Novel and significant means: 
-1. It solves a mathematical problem neither our lean corpus nor literature have solved yet (as of August 2026).
-2. It closes the remaining proof burden towards an RH proof in lean.
+Novel and significant means: It solves a problem neither our lean corpus nor literature have solved yet (as of August 2026).
 
 **Lean rules:**
 1. Proofs must be unconditional and closed in lean, no premises, no hypotheses, no added axioms, ....
@@ -345,21 +343,31 @@ Novel and significant means:
 
 **Mandatory reasearch and conjecturing rules:** 
 1. always use the search tool for our lean corpus to find ideas, existing work. conjecture based on the lean corpus, not your training data which is behind our research in the lean corpus.
-2. be creative, do not get stuck on any classic route but research our lean corpus and let it guide you.
-3. always tackle the hardest mathematical problem that neither our lean corpus nor literature have solved yet. missing infrastructure or no existing proof is not reason to pivot but to build the infrastructure and to solve the open problem yourself.
-4. to create new knowledge use the hgt-fields-medalist skill workflow and heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ...  
+2. always tackle the hardest mathematical problem that neither our lean corpus nor literature have solved yet. missing infrastructure or no existing proof is not reason to pivot but to build the infrastructure and to solve the open problem yourself.
+3. to create new knowledge use the hgt-fields-medalist skill workflow and heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ...  
 
-goal is met when all routes are either a proven dead end or the RH proof is formalized in lean.
+goal is met when no further knowledge can be created.
 
 
-• 1. Arithmetic signed-incidence / Ward: CCM-FU, D2, E, G, G-CE, P, SP-E, SCE,
-     T1, T2, HC, CFI, PPM, HJ, BW, MSC, PEP, EWQ-V, LI.
+1. Arithmetic signed-incidence / Ward: CCM-FU, D2, E, G, G-CE, P, SP-E, SCE, T1, T2, HC, CFI, PPM, HJ, BW, MSC, PEP, EWQ-V, LI.
+2. Global spectral / cofinal operator selection: C1, NB/BD, F2, STC, CSB, O, Q, CLG/TTF, U, SV2, BSH, UEB, PBM, IRK, SEC, BPC, MPLF, W1C, K-RVM, GTA, APF, AKC, S6F, WS2.
+3. Singular descent / provenance / completion: CDC, L, TK, PSRC, SC, PCS, TCD, JAS, WBF, XST, NDS, KMSS.
+4. Nonlinear scattering / dynamical selection: HB, FZZ-P, RBH, PW-B.
 
-  2. Global spectral / cofinal operator selection: C1, NB/BD, F2, STC, CSB, O,
-     Q, CLG/TTF, U, SV2, BSH, UEB, PBM, IRK, SEC, BPC, MPLF, W1C, K-RVM, GTA,
-     APF, AKC, S6F, WS2.
+Reminder: 
+1. create new knowledge, do not just search and pivot when hitting an unsolved problem - solve it using conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ...
+2. always use the search tool for our lean corpus AND ALWAYS BASE YOUR CONJECTURES ON OUR LEAN CORPUS, YOUR TRAINING DATA IS OUTDATED
+3. WORK ONLY ON THE HARDEST MATHEMATICAL PROBLEMS, NOT ON OPTIMIZING SOME NUMBERS OR BOUNDS. HARD FRONTIER RESEARCH.
 
-  3. Singular descent / provenance / completion: CDC, L, TK, PSRC, SC, PCS,
-     TCD, JAS, WBF, XST, NDS, KMSS.
+## computations
 
-  4. Nonlinear scattering / dynamical selection: HB, FZZ-P, RBH, PW-B.
+question: are there any computations you could make that you do not already know the result of and that would significantly narrow for you where to point your research at or what research routes are a dead end?
+
+here is a runpod to run these computations on: ssh root\@216.81.151.68 -p 16020 -i \~/.ssh/id\_ed25519
+download results and document them in docs/drafts/pipeline/2-fully-proven/computations.
+do not use computations in any form in lean proofs, only take them to kill routes or identify new or sharpen research routes.
+optimize python code for multicore.
+
+once all computations are done, write a report in the folder with the results for future agents - no large diary, just enough to understand what you did compute, what the outcome and interpretation/consequences are
+
+good. hope this helped. continue now your lean work only without computations.

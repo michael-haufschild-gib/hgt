@@ -1,13 +1,13 @@
 # Theta--Hasse--KMS execution balance and Fisher fusion law
 
 - **ID:** ULF-RFDM-2
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** SOURCE-NATIVE FOUR-ORGAN FUSION / GLOBAL BALANCE COORDINATE
 - **Parent field:** Reversible Formation-Dilation Mechanics
 - **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [ONE PRE-ZERO SOURCE]
   [FUNCTIONAL-EQUATION ACTION] [COMMON RECOVERY] [PATH/STATE CONSERVATION]
   [GLOBAL REFLECTION BALANCE] [PROPER ONTO IMAGE] [FISHER RESPONSE]
-  [LEAN-CERTIFIED SCALAR/PAIR CORE] [CONTINUOUS THETA ASSEMBLY OPEN] [NOT RH]
+  [LEAN-CERTIFIED CONTINUOUS THETA ASSEMBLY] [NOT RH]
 
 ## 1. The mechanism
 
@@ -494,25 +494,31 @@ coupling by one HGT source:
  \tag{THK.40}
 \]
 
-## 13. Lean certification and remaining obligation
+## 13. Lean certification
 
-`ConstitutiveThetaHasseKMSExecutionBalance.lean` now certifies without placeholders:
+`ConstitutiveThetaHasseKMSExecutionBalance.lean` and
+`ThetaHasseKMSContinuousAssembly.lean` certify without placeholders:
 
 1. exact geometric packet normalization and adjacent-layer parameter recovery;
 2. purity/linear-entropy and Shannon/von-Neumann-entropy identities;
 3. strict monotonicity of the Hasse ratio and both execution statistics;
 4. unique reflected balance in every nondegenerate even two-point source fibre;
-5. finite weighted Fisher covariance control.
+5. continuous theta-law normalization, bounded statistic integrability, and differentiation under
+   the tilted integral;
+6. exact continuous covariance response and strict positivity;
+7. reflected half-line `sinh` formula, unique central balance, intrinsic-image homeomorphism, and
+   properness;
+8. continuous Cauchy--Schwarz and Popoviciu bounds with the exact constants in (THK.37)--(THK.38);
+9. composition with the theta--Hasse common-recovery marginal, reflection lift, and directed-KL
+   isometries;
+10. the normalized theta characteristic-function/Xi identity (THK.33), imported from and assembled
+    with the literal theta Fourier--Laplace theorem;
+11. source-averaged purity/Shannon conservation and the central-`sigma` selection interface.
 
 Certificate:
 `docs/drafts/pipeline/3-formalized/universal-law-field/reversible-formation-dilation-mechanics/theta-hasse-kms-execution-balance-fisher-fusion-law-formalized.md`.
 
-Remaining formal assembly:
-
-1. continuous theta normalization and differentiation under the tilted integral;
-2. global reflected-gap properness;
-3. explicit Popoviciu constants in (THK.37)--(THK.38);
-4. composition with the already-certified common-recovery lift.
-
-The literal theta integral/Fourier identity remains inherited from the existing theta source
-modules. It must be imported and assembled, never restated as an assumption.
+The literal theta integral/Fourier identity is inherited from existing theta-source modules and
+assembled directly; no restated hypothesis or card-local axiom is used. All declarations in the
+continuous assembly have the standard project axiom footprint only: `propext`,
+`Classical.choice`, and `Quot.sound`.

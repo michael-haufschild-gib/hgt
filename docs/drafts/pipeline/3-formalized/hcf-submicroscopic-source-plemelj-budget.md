@@ -1,10 +1,10 @@
 # HCF submicroscopic source Plemelj budget
 
 - **ID:** HCF-PLEMELJ-001
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** CANDIDATE
 - **Source:** `rh-current-frontier-map.md` · Route HCF corrected source budget
-- **Statement:** `[BRIDGE]` For every real center `t`, the HCF critical-line energy trace is the
+- **Statement:** `[BRIDGE] [PROVED HERE]` For every real center `t`, the HCF critical-line energy trace is the
   iterated source limit obtained by first taking `eta -> 0+` against the canonical compact cutoff
   `realCompactIntervalCutoff n`, then taking `n -> infinity`.  The prelimit uses only
   `boundaryDensity XiC eta`; consequently the corrected HCF lattice budget has a definition
@@ -37,8 +37,9 @@ with `4/25` stronger.  No implication from source scalarization to that estimate
 ## Gates
 
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea, Door passport sketch
-- [ ] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorem `tendsto_criticalFeatureSourcePlemeljTrace`, `lake build` green, `check_axioms.sh` PASS
+- [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
+- [x] 2 → 3  formalized: targeted `lake build` green; principal theorems use only standard
+  `propext`, `Classical.choice`, and `Quot.sound`
 - [ ] 3 → 4  publication-ready: standalone paper (theorem + proof + Lean certificate + Door-2)
 
 ## Approach
@@ -81,17 +82,44 @@ with `4/25` stronger.  No implication from source scalarization to that estimate
 - Source replacement alone gives no numerical gain.  Any claimed `21/100` estimate must bound
   the signed pole--Gamma/boundary defect, not the absolute values of its two leading terms.
 
+## Proof and formal certificate
+
+For each cutoff `n`, `tendsto_xiBoundaryDensity_setIntegral` gives the one-sided Plemelj limit.
+The cutoff support lies strictly inside the factorization ball, so its real-zero sum can be
+regrouped through the degenerate centered rectangle.  Exact analytic multiplicity converts that
+sum to the critical-line `XiZeroCopy` cutoff trace.  Dominated convergence applies because the
+cutoffs lie in `[0,1]` and `criticalLineCriticalFeatureEnergy_summable` supplies the majorant.
+Schwarz reflection converts the upper Xi boundary density to the lower continued source.  Zeros
+on a fixed lower horizontal line are countable, hence null, so the Lebesgue integrals agree without
+assuming a divisor-free line.
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/HedenmalmCriticalFeatureSourcePlemeljTrace.lean`.
+
+- `tendsto_iterated_criticalFeaturePoleGammaTrace`: infinite zero-independent source trace.
+- `tendsto_criticalFeatureSourcePlemeljCorrectedLatticeBudget`: budget-level replacement.
+- `criticalFeaturePrimeGammaOffLineLatticeBudget_eq_plemeljCovariance_add_vm`: exact new
+  source-only covariance identity `B_corrected = B_tilde + B_VM`.
+- `tendsto_correctedBudget_sub_plemeljCovariance_div`: `B_corrected - B_tilde = o(N)` when
+  `card K = o(N)`.
+
+The quantitative conjecture is now precisely
+`criticalFeaturePoleGammaPlemeljCovariance (K T) <= 21/100 * N(T) + o(N(T))`.
+No theorem in this card asserts it.
+
 ## No-go closure (mandatory when falsified)
 
 - **Exact killing theorem/mechanism:** pending
 - **Strongest positive survivor:** pending
 - **New insight:** pending
-- **Status:** local Plemelj core already exists in corpus; HCF cutoff instantiation and exhaustion
-  are the exact new bridge.  Paper proof dependency audit in progress; external novelty label
-  `[BRIDGE]`.
+- **Status:** positive survivor fully proved and formalized.  Separate quantitative covariance
+  ceiling remains open; external novelty label `[BRIDGE]`.
 
 ## Log
 
 - 2026-08-28 — created directly in `1-in-progress`; exact conjecture frozen after corpus and primary-literature audit.
 - 2026-08-28 — replaced unjustified full-line one-parameter interchange by dependency-closed
   compact-boundary limit followed by summable cutoff exhaustion.
+- 2026-08-28 — formalized positive-real-shift pole--Gamma Plemelj trace, exact corrected-budget
+  replacement, and new source-only covariance with `o(N)` discrepancy; targeted build and axiom
+  audit passed.
