@@ -536,9 +536,9 @@ omit [Nonempty m] [Nonempty n] in
         ((Fintype.card m : ℂ)⁻¹) • partialTraceLeft (X : Matrix (m × n) (m × n) ℂ)) :=
   rfl
 
+omit [Nonempty m] [Nonempty n] in
 /-- The normalized boundary reports land in the exact Hermitian traceless factor spaces
 `Herm₀(A) × Herm₀(B)`. -/
-omit [Nonempty m] [Nonempty n] in
 theorem normalizedHermitianBoundaryMap_mem_hermitianTracelessMatrices
     (X : hermitianJointTraceless (m := m) (n := n)) :
     (normalizedHermitianBoundaryMap X).1 ∈ hermitianTracelessMatrices m ∧

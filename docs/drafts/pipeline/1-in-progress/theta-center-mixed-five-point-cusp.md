@@ -1638,3 +1638,154 @@ constants. This is search-bounded novelty evidence, not exhaustive classificatio
 - 2026-08-28 — falsified independent fourth/sixth closure at `29/8`, retained direct eighth Fock
   gain, proved the full `29/8` chamber, and reduced native C20 to `0<x<72/1000` without modifying
   frontier map.
+
+**Attempted full `173/48` continuation and dyadic `1391/384` survivor `[PROVED HERE]`.**
+The next conjecture attacked the entire adjacent chamber
+```text
+173/48 ≤ A ≤ 29/8,       101/48 ≤ q ≤ 17/8
+```
+with the direct-eighth mechanism rather than reverting to an inherited marginal rectangle. Exact
+endpoint certificates falsified this full-width producer package. The dominant fourth atom supplies
+a floor strictly between `79` and `80` at the lower endpoint, while the tested joint reserve still
+fails at fourth floor `82` and only passes after an unavailable increase to `90`. The dominant sixth
+mass is near `292.5` there: a `288` budget already fails, whereas `280` would be needed for the tested
+reserve. Increasing the direct eighth coefficient from `440000` through `500000`, `600000`, and
+`800000` does not repair the exact lower-end reserve. Thus the current independent producer plus
+direct-Fock package cannot cross the full `173/48` chamber. This is a falsification of that package,
+not a no-go for native D1 or for alternative correlated producers.
+
+The strongest positive survivor is the adjacent exact dyadic chamber
+```text
+1391/384 ≤ A ≤ 29/8,       815/384 ≤ q ≤ 17/8,
+d = A - 1391/384 ∈ [0,1/384].
+```
+A new local tail certificate and Bell compilation prove
+```text
+1680 p < 1,
+fourth Bell retention = 9895/10000,
+sixth Bell inflation = 501/500,
+J₄^log > 1545/2 - 192A = 969/2 - 192q,
+J₆^log < (8016/125)(1135/4 - 480d)
+       = (8016/125)(2605/2 - 480q).
+```
+The sixth proof separates an exact degree-15 dominant certificate
+`dominant mass < 1133/4 - 480d` from an unconditional stable-tower bound `<1/2`. For the eighth
+producer, the exact dominant pair/single certificate proves that `61/20` times dominant pair mass
+is absorbed by dominant single mass. After all pair and higher-even losses, this leaves
+```text
+1725 A^8 exp(-3A) < eighth Fock odd weight,
+440000 A^8 exp(-3A) < J₈^log.
+```
+Using the fourth exponential floor
+```text
+(1/52450)(1-3d) < exp(-3A)
+```
+inside the eighth profile produces a strict exact degree-25 joint reserve across the whole dyadic
+window. Fourth, sixth, and eighth monotonicity lift the rational baseline to physical log jets.
+Dispatch to the proved `q≥17/8` chamber therefore proves native D1 for every `q≥815/384`.
+Finally,
+```text
+1391/384 < π exp(143/1000)
+```
+is proved by a finite Taylor lower certificate, yielding native D1 for every `x≥143/2000` and
+reducing the formally open positive C20 interval from `0<x<72/1000` to `0<x<143/2000`.
+
+**New Lean artifacts.**
+`RHTower/ThetaCuspLikelihoodScaleLocalBellCoolingOneThousandThreeHundredNinetyOneThreeHundredEightyFourths.lean`,
+`RHTower/ThetaCuspLikelihoodSixthStableTowerScaleOneThousandThreeHundredNinetyOneThreeHundredEightyFourthsBound.lean`,
+`RHTower/ThetaCuspLikelihoodFourthScaleOneThousandThreeHundredNinetyOneThreeHundredEightyFourthsExactAtomLower.lean`,
+`RHTower/ThetaCuspLikelihoodSixthScaleOneThousandThreeHundredNinetyOneThreeHundredEightyFourthsAffineBound.lean`,
+`RHTower/ThetaCuspLikelihoodEighthScaleOneThousandThreeHundredNinetyOneThreeHundredEightyFourthsFockFloor.lean`, and
+`RHTower/ThetaCuspFullReflectionEighthScaleOneThousandThreeHundredNinetyOneThreeHundredEightyFourthsDirectAffineJoint.lean`
+formalize the complete producer and reserve chain. All six are wired exactly once into the RHTower
+umbrella. Direct Lean checks pass; targeted capstone build passes (`9732/9732`). Representative
+axiom audits use only `propext`, `Classical.choice`, and `Quot.sound`.
+
+**Novelty audit (2026-08-28).** Required corpus searches found no `1391/384` tail/Bell chamber,
+`61/20` dominant-pair absorption law, `440000` literal eighth floor, direct degree-25 compact
+reserve, or `143/2000` D1 theorem. Targeted current literature search checked Planat--Solé's 2026
+second-level theta-kernel concavity theorem (arXiv:2608.19160), the 2026 theta-kernel blockwise
+positivity obstruction, xi derivative-positivity work, and current Hankel-criterion papers. None
+contains this normalized likelihood Fock-sector construction or these chamber constants. This is
+search-bounded novelty evidence, not exhaustive classification.
+
+- 2026-08-28 — falsified the full-width `173/48` direct-producer package, extracted and formalized
+  the `1391/384` dyadic survivor, and reduced native C20 to `0<x<143/2000` without modifying the
+  read-only frontier map.
+
+**Scale-local cubic Fock cooling and adjacent `695/192` chamber `[PROVED HERE]`.**
+Corpus inspection exposed that the global higher-even Fock estimate discarded the much stronger
+response available inside the current scale chamber. The new conditional cooling law is reusable:
+```text
+1670 r < 1
+  ⇒ higher-even sector tail < 1/200000
+  ⇒ eighth higher-even Fock loss ≤ 13/2.
+```
+This replaces the global response hypothesis `399r<1`, tail `<1/3000`, and loss `≤1300/3` without
+changing any source definition. At scale `A≥695/192`, a rational exponential certificate proves the
+required local response bound. The same local Bell compilation retains `9895/10000` of the ordinary
+fourth jet and inflates the sixth jet by at most `501/500`.
+
+A second independent sharpening resolves the stable sixth tower. Factoring its first stable atom
+from the geometric tail proves
+```text
+first stable Gaussian weight < 59/40000,
+remaining stable Gaussian tail ≤ 3/2000,
+stable sixth score tower < 1/4,
+```
+replacing the inherited `<1/2` loss. These two invariants open the exact adjacent dyadic chamber
+```text
+695/192 ≤ A ≤ 1391/384,       407/192 ≤ q ≤ 815/384,
+d = A - 695/192 ∈ [0,1/384].
+```
+The resulting physical producer bounds are
+```text
+J₄^log > 1545/2 - 192A = 969/2 - 192q,
+J₆^log < (8016/125)(2849/10 - 480d)
+       = (8016/125)(6512/5 - 480q).
+```
+The dominant pair/single comparison retains the sharp `61/20` absorption factor. Combining it with
+local cubic higher-even cooling yields
+```text
+2150 A^8 exp(-3A) < eighth Fock odd weight,
+550000 A^8 exp(-3A) < J₈^log.
+```
+The exact fourth exponential profile
+```text
+(1/52050)(1-3d) < exp(-3A)
+```
+then closes the literal degree-25 fourth/sixth/eighth compact reserve throughout the chamber.
+Monotonicity in each jet lifts the rational baseline certificate to the physical source jets.
+Dispatch to the prior `q≥815/384` theorem proves native D1 for every `q≥407/192`. The finite Taylor
+certificate
+```text
+695/192 < π exp(71/500)
+```
+therefore proves native D1 for every `x≥71/1000`, shrinking the formally open positive C20 interval
+to `0<x<71/1000`.
+
+**New Lean artifacts.**
+`RHTower/ThetaCuspLikelihoodEighthHigherEvenLocalCooling.lean` formalizes the reusable cubic
+response-to-Fock-loss law.
+`RHTower/ThetaCuspLikelihoodScaleLocalBellCoolingSixHundredNinetyFiveOneHundredNinetySeconds.lean`,
+`RHTower/ThetaCuspLikelihoodSixthStableTowerScaleSixHundredNinetyFiveOneHundredNinetySecondsBound.lean`,
+`RHTower/ThetaCuspLikelihoodFourthScaleSixHundredNinetyFiveOneHundredNinetySecondsExactAtomLower.lean`,
+`RHTower/ThetaCuspLikelihoodSixthScaleSixHundredNinetyFiveOneHundredNinetySecondsAffineBound.lean`,
+`RHTower/ThetaCuspLikelihoodEighthScaleSixHundredNinetyFiveOneHundredNinetySecondsFockFloor.lean`, and
+`RHTower/ThetaCuspFullReflectionEighthScaleSixHundredNinetyFiveOneHundredNinetySecondsDirectAffineJoint.lean`
+formalize the complete local producer, reserve, and source-threshold chain. All seven are wired
+exactly once into the RHTower umbrella. Direct Lean checks pass; targeted capstone build passes
+(`9739/9739`). Forbidden-declaration scan is empty. Representative axiom audits use only
+`propext`, `Classical.choice`, and `Quot.sound`. Global lint reports only unrelated concurrent
+unreachable modules; none is an artifact named here.
+
+**Novelty audit (2026-08-28).** Required corpus searches found no `1670r<1` cubic higher-even Fock
+cooling law, `13/2` local Fock-loss theorem, split stable-sixth `<1/4` theorem, `695/192` producer,
+`550000` literal eighth floor, or `71/1000` D1 theorem. Previously audited current literature on
+second-level theta-kernel concavity, theta-kernel blockwise positivity obstructions, xi derivative
+positivity, and Hankel criteria contains none of this normalized likelihood-sector mechanism or
+these constants. This is search-bounded novelty evidence, not exhaustive classification.
+
+- 2026-08-28 — extracted local cubic Fock cooling and split stable-sixth invariants, formalized the
+  `695/192` dyadic chamber, and reduced native C20 to `0<x<71/1000` without modifying the read-only
+  frontier map.

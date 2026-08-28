@@ -197,6 +197,50 @@ theorem tendsto_log_scalarSignalReturnTime_of_comparable
     exact (div_le_div_iff_of_pos_right hlogpos).2
       (Real.log_le_log hposSig htime')
 
+/-- A single exact zero after the cutoff uniformly bounds every positive-threshold first return,
+so its logarithmic shrinking-target exponent is zero. -/
+theorem tendsto_log_scalarSignalReturnTime_zero_of_exact_zero
+    (signal : ℝ → ℝ) {t₀ tau : ℝ}
+    (ht₀ : 0 < t₀) (ht₀tau : t₀ ≤ tau) (hzero : signal tau = 0) :
+    Tendsto
+      (fun delta : ℝ => Real.log (scalarSignalReturnTime signal t₀ delta) /
+        Real.log (1 / delta))
+      (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds 0) := by
+  have htau : 0 < tau := lt_of_lt_of_le ht₀ ht₀tau
+  have hreturn : ∀ {delta : ℝ}, 0 < delta →
+      (scalarSignalReturnSet signal t₀ delta).Nonempty ∧
+        scalarSignalReturnTime signal t₀ delta ≤ tau := by
+    intro delta hdelta
+    have hmem : tau ∈ scalarSignalReturnSet signal t₀ delta :=
+      ⟨ht₀tau, by rw [hzero]; exact hdelta⟩
+    exact ⟨⟨tau, hmem⟩,
+      csInf_le (bddBelow_scalarSignalReturnSet signal t₀ delta) hmem⟩
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le'
+    (tendsto_const_div_log_one_div (Real.log t₀))
+    (tendsto_const_div_log_one_div (Real.log tau)) ?_ ?_
+  · filter_upwards [self_mem_nhdsWithin,
+      Ioo_mem_nhdsGT (zero_lt_one' ℝ)] with delta hdelta hdelta1
+    have hlogpos : 0 < Real.log (1 / delta) := by
+      refine Real.log_pos ?_
+      rw [lt_div_iff₀ hdelta]
+      linarith [hdelta1.2]
+    have hr := hreturn hdelta
+    have hlower := le_scalarSignalReturnTime hr.1
+    exact (div_le_div_iff_of_pos_right hlogpos).2
+      (Real.log_le_log ht₀ hlower)
+  · filter_upwards [self_mem_nhdsWithin,
+      Ioo_mem_nhdsGT (zero_lt_one' ℝ)] with delta hdelta hdelta1
+    have hlogpos : 0 < Real.log (1 / delta) := by
+      refine Real.log_pos ?_
+      rw [lt_div_iff₀ hdelta]
+      linarith [hdelta1.2]
+    have hr := hreturn hdelta
+    have hlower := le_scalarSignalReturnTime hr.1
+    have htimepos : 0 < scalarSignalReturnTime signal t₀ delta :=
+      lt_of_lt_of_le ht₀ hlower
+    exact (div_le_div_iff_of_pos_right hlogpos).2
+      (Real.log_le_log htimepos hr.2)
+
 end
 
 end GaloisForLFunctions.HTGeometry

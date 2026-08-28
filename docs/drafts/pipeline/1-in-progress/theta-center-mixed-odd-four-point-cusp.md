@@ -260,3 +260,80 @@ axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`.  No added 
 Next open TCD core: replace this finite rank-four chamber by an all-order/cofinal singular
 Hardy/RKHS carrier with coefficient-faithful Xi landing.  Finite jet positivity, including the new
 global sixth law, does not itself select the Xi divisor.
+
+### 2026-08-28 — global reflection-even wall and odd stationary reduction
+
+`[NEW] [PAPER-PROVED] [LEAN-PROVED] [GLOBAL RANK-FOUR EVEN SECTOR CLOSED]`
+
+The local rank-four chamber left open whether the reflection-even determinant could fail at an
+intermediate separation.  A source-fibre argument now removes that possibility globally.  For one
+reflected completed-source fibre, write the normalized correlations as
+
+```text
+p(k t) = cos(theta(k t)),   k = 1,2,3.
+```
+
+The global reflected Riccati theorem makes `theta` increasing and concave.  Equal-step concavity
+gives
+
+```text
+(theta(t) + theta(3t))/2 <= theta(2t),
+theta(3t) <= 3 theta(t).
+```
+
+Two product-to-sum identities then compare the two half-angle products and prove
+
+```text
+(1 + p(3t))(1 + p(t)) - (p(t) + p(2t))^2 >= 0.
+```
+
+Rescaling gives positive semidefiniteness of every unnormalized source-fibre even block.  The
+center-mixed block is its integral against the nonnegative physical weight
+`r sinh(a r)`, so matrix-kernel integration proves the literal global wall
+
+```text
+thetaCuspCenterMixedEvenParityWall a t >= 0
+```
+
+for every `0 < a < 1/2` and `t >= 0`.  Hence the four-node equispaced Gram matrix is positive
+semidefinite exactly when the odd wall is nonnegative: the even wall is no longer an RH proof
+burden.
+
+The next conjecture loop attacked the surviving odd wall without numerical subdivision.  Tail
+positivity and the local cusp theorem first force any failure to an interior negative stationary
+point.  Global radial antitonicity additionally yields a new derivative law
+
+```text
+thetaCuspCenterMixedDensityFirstJet a t <= 0   (t > 0).
+```
+
+At a negative odd wall the middle equal-step drop must strictly dominate the first drop.  Combining
+this with the stationary wall equation proves that every failed rank-four packet forces one
+interior witness satisfying both
+
+```text
+F(t) - F(2t) > F(0) - F(t),
+0 <= F'(t) - 2 F'(2t),
+```
+
+and the exact three-scale stationary identity.  This isolates the remaining global core as an odd
+drop/decay incompatibility, not a second parity sector or an asymptotic chamber.
+
+Lean artifacts:
+
+- `HilbertMetric.toeplitzFourEvenParityWall_cos_nonneg_of_concave_step`;
+- `thetaCuspReflectedSourceEvenParityWall_nonneg`;
+- `thetaCuspCenterMixedEvenParityWall_nonneg_global`;
+- `thetaCuspCenterMixedGramFourEquispaced_posSemidef_iff_oddParityWall`;
+- `thetaCuspCenterMixedDensityFirstJet_nonpos_of_pos`;
+- `exists_thetaCuspCenterMixedOddStationary_obstruction_of_not_posSemidef`.
+
+August 2026 collision searches found no paper stating the reflected-source half-angle wall, its
+positive center-mixture closure, or the resulting rank-four odd-only equivalence.  Planat--Solé
+`arXiv:2608.19160` proves strict concavity of a different Laguerre expression attached to the
+classical Xi kernel and derives double Turán inequalities; it does not state this correlation-angle
+four-point theorem.  This is a literature-search conclusion, not a theorem of Lean.
+
+Open core: exclude the stationary odd drop/decay certificate for the literal center-mixed theta
+density.  Generic angle concavity alone does not control this sector, so the next attack must use
+the stronger completed-source Riccati/likelihood structure rather than a finite numerical chamber.

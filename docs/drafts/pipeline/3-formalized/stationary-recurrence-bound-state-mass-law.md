@@ -108,9 +108,12 @@ The conjecture fails if any of following occurs.
 
 ## External frontier audit
 
-- Wiener formula and Eberlein's 1955 theorem identify mean squared Fourier--Stieltjes transform
-  with sum of squared atom masses.  They therefore recover `sum_j w_j^2`, not directly
-  `(sum_j w_j)^2` as support edge of full survival-fidelity distribution.
+- Wiener formula identifies mean squared Fourier--Stieltjes transform with sum
+  of squared atom masses.  Eberlein decomposition more generally identifies
+  the strongly almost-periodic transform with the pure-point measure sector;
+  pure-point selection and its polynomial-statistic consequences are not a
+  novelty claim.  These results do not directly state `(sum_j w_j)^2` as the
+  connected support edge of full survival-fidelity distribution.
 - RAGE separates continuous and pure-point spectral subspaces through time-averaged compact
   observables.
 - Aloisio--Carvalho--de Oliveira--Santana, *Slow dynamics for self-adjoint semigroups and unitary
@@ -212,6 +215,12 @@ not used.
 
 ## Formal artifacts and audit
 
+- Unified module:
+  `GaloisForLFunctions.RHTower.UniversalStationaryRecurrenceLaw`.
+- Unified law:
+  `RHTower.universalStationarySurvivalRecurrenceLaw`, combining centered-window weak convergence,
+  exact pure-point scaling, interval support, exact upper edge and square-root recovery for every
+  probability spectral measure.
 - Module: `GaloisForLFunctions.RHTower.StationaryRecurrenceSupportIntervalLaw`.
 - Closed capstone:
   `RHTower.universalStationaryRecurrenceNoGapBoundStateMassLaw`.
@@ -227,6 +236,9 @@ not used.
 - Targeted `lake build GaloisForLFunctions.RHTower.StationaryRecurrenceSupportIntervalLaw` passes.
 - Axiom audit of nine load-bearing declarations reports only `propext`, `Classical.choice`, and
   `Quot.sound`; no project axioms or placeholders.
+- `lake env lean GaloisForLFunctions/RHTower/UniversalStationaryRecurrenceLaw.lean` and targeted
+  `lake build GaloisForLFunctions.RHTower.UniversalStationaryRecurrenceLaw` pass.  Axiom audit of
+  unified law reports only `propext`, `Classical.choice`, and `Quot.sound`.
 - Module is imported by `GaloisForLFunctions.RHTower`.  No umbrella build was run.
 - Project lint finds no defect in this module; it still reports unrelated un-wired modules created
   elsewhere in dirty shared worktree.

@@ -16,6 +16,8 @@ proof-assistant or internal-corpus references.
 
 | Paper block | Checked declaration(s) | Source |
 |---|---|---|
+| Universal stationary survival-recurrence law: arbitrary-spectrum centered-window weak convergence; exact scaling by squared total pure-point mass; one-interval support; recovery of pure-point mass from upper edge | `RHTower.universalStationarySurvivalRecurrenceLaw` | `UniversalStationaryRecurrenceLaw.lean` |
+| Universal completed-return occupation law: for every finite energy list, the small-target Haar exponent exists, equals projective orbit dimension and rational temporal rank, and plus exact balanced-relation rank equals `D-1`; includes all-degenerate boundary and local bi-Lipschitz metric stability | `HTGeometry.projectiveRecurrenceOccupation_constraint_conservation`; `HTGeometry.tendsto_log_completedPhaseReturnFraction_div_log`; `HTGeometry.tendsto_log_haar_biLipschitzReturn_div_log` | `UniversalRecurrenceOccupationConservationLaw.lean` |
 | Projective characters, detuning, relation lattice, temporal rank, hull dimension, character constancy, replica height, `tau+rho=D-1` | `HTGeometry.finiteProjectiveRecurrence_universalLaw` | `UniversalProjectiveRecurrenceCapstoneLaw.lean` |
 | Arbitrarily weak diagonal operator-Schmidt-rank-one interaction; uncoupled rank at most `m+n`; coupled rank `mn+m+n`; gain at least `mn`; norm budget; dimension-free Heisenberg bound; every positive full-support replica collision floor | `HTGeometry.exists_smallSeparableInteraction_temporalDimensionMultiplication` | `SeparableInteractionTemporalDimensionLaw.lean` |
 | General diagonal bipartite-interaction formulation used by proof narrative | `HTGeometry.exists_arbitrarilyWeak_bipartiteInteraction_fullRecurrenceCompletion` | `WeakInteractionRecurrenceSingularityLaw.lean` |
@@ -92,6 +94,10 @@ proof-assistant or internal-corpus references.
 | Reverse-water objective, two-sided logarithmic deadline and post-delay syndetic return | `RHTower.universalWeightedFloquetFidelityRecurrenceTime_rateDistortionSandwich` | `ProjectiveGaussianRateDistortion.lean` |
 | Observer edge-phase energy, graph zero set and capacity `D-c` | `RHTower.finite_quantum_observer_coherence_law` | `FiniteQuantumObserverCoherenceLaw.lean` |
 | Observer recurrence deadline and displacement bound | `RHTower.exists_finiteQuantumObserver_graphRank_distance_recurrence` | `FiniteQuantumObserverGraphRecurrenceBound.lean` |
+| Exact observer displacement identity and global two-sided equivalence with component-root chord energy | `RHTower.finiteQuantumObserverDistanceSq_eq_phaseEnergy`; `RHTower.observerPhaseEnergy_rootChordEnergy_comparable` | `FiniteQuantumObserverCoherenceLaw.lean`; `FiniteQuantumObserverGraphMetricEquivalence.lean` |
+| Exact observer first-return exponent `(r-1)/2` for visible rank `r≥2`, plus unconditional exponent-zero boundary ranks `r=0,1` | `RHTower.tendsto_log_finiteQuantumObserverReturnTime_of_graphNonVWA`; `RHTower.tendsto_log_finiteQuantumObserverReturnTime_zero_of_capacity_zero`; `RHTower.tendsto_log_finiteQuantumObserverReturnTime_zero_of_capacity_one` | `FiniteQuantumObserverFirstReturnExponentLaw.lean`; `FiniteQuantumObserverGraphExtremalityLaw.lean` |
+| One conull set on full simple-spectrum locus of every real-linear Hermitian family escaping balanced real spectral relations satisfies exact exponent `max(r-1,0)/2` simultaneously for every finite observer chosen afterward | `RHTower.ae_hasUniversalFiniteObserverFirstReturnLaw_simpleLocus`; supporting `HTGeometry.volume_vwa_sortedEdgeGapRatio_eq_zero`; `RHTower.ae_all_observerGraphGapRatio_not_vwa_simpleLocus` | `LinearSpectralGapRatioExtremality.lean`; `FiniteQuantumObserverGraphExtremalityLaw.lean` |
+| Unconditional static-local same-Hamiltonian capstone: for every path length `L≥8194`, one self-adjoint simple-spectrum onsite-plus-nearest-neighbour Hamiltonian on `2L` qubits has universal all-observer exponent and certified operator-norm two-gate lower ramp throughout explicit laboratory window | `RHTower.exists_nearestNeighborPath_growth_universalObserverLaw_of_length`; shifted premise-free form `RHTower.universalNearestNeighborPath_growth_universalObserverLaw` | `StaticLocalUniversalObserverRecurrenceLaw.lean` |
 | Arbitrary finite Hermitian Hamiltonian and physical density/effect family: same Born record either never exits or returns strictly after a witnessed exit, before least graph--resolution certified deadline | `RHTower.finiteHermitianBorn_positiveTarget_optimal_neverExits_or_postExit` | `FiniteHermitianBornPostExitRecurrenceLaw.lean` |
 | Unitary evolution preserves density matrices and trace-expectation displacement equals absolute Born-probability displacement | `RHTower.finiteHermitianEvolvedDensityMatrix`; `RHTower.finiteHermitian_traceExpectationNorm_eq_bornAbs`; `RHTower.finiteHermitianBornTotalDeviation_eq_expectation` | `FiniteHermitianBornPostExitRecurrenceLaw.lean` |
 | Generic connected graph-local upper completed-time Choi-target occupation and explicit padded-word union bound | `RHTower.connectedNetwork_completedTime_paddedCircuitTargets_generic` | `ConnectedNetworkStaticChoiComplexityPlateauLaw.lean` |
@@ -145,7 +151,8 @@ Section `Experimental tests and falsification targets` introduces no new
 mathematical theorem. Exact predictions in its nine protocols refer back to
 already traced declarations: full-process horizon instability, bound-state support edge, nine-level
 scalar/resolved witness, finite-observer graph law, generic subsystem
-rank/curvature and exact density, all-state support-stratified physical
+rank/curvature and exact density, universal observer-rank first-return sweep,
+all-state support-stratified physical
 local-path first-return exponent and vanishing-tail resolution singularity,
 finite-aperture spectroscopic circuit occupation, static-local exponential
 plateau, and nested path ramp/return/reflection. Conditional same-field protocol uses only
@@ -242,6 +249,14 @@ coarse cutoff, physical maximal exponent, simultaneous chartwise theorem and
 unconditional local capstones reports only
 `[propext, Classical.choice, Quot.sound]`; module is wired into HTGeometry
 umbrella and no umbrella build was run.
+Targeted 28 August build of
+`StaticLocalUniversalObserverRecurrenceLaw` passed.  Axiom audit of global
+linear gap-frame extremality, simultaneous full-simple-locus all-observer law,
+premise-free shifted local capstone and conventional `L≥8194` local capstone
+reports only `[propext, Classical.choice, Quot.sound]`.  New observer modules
+contain no `sorry`, `admit`, project `axiom`, `opaque` or `unsafe`
+declaration and are wired into theorem-area umbrellas; neither umbrella was
+built.
 Repository formal lint forbids `sorry`, `admit`, project `axiom`,
 `opaque` and `unsafe` declarations.
 

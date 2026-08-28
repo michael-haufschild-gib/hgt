@@ -4,21 +4,22 @@ Date: 28 August 2026.
 
 ## Verdict
 
-Mathematical center is now sharper and broader: quantum recurrence forms one
-carrier--action--quotient--record information hierarchy. Character actions
-give exact finite/countable existence criterion and capacity law; scalar
-survival has exact maximal system and clock quotients; resolved replicas
-recover full projective relation lattice; explicit nine-level pair proves
-strictness. Weak-interaction singularity, local-network saturation,
-thermodynamic extinction, observers, inference and complexity are
-consequences or realizations of this hierarchy.
-New spectrum-wide capstone strengthens carrier law: stationary
-survival-fidelity support of every probability spectrum is one interval
-ending at squared total pure-point mass.  Full law therefore recovers total
-bound-state weight exactly, unlike first moment, which recovers only atomic
-collision mass.  Pure-point no-gap mechanism has now been traced to
-Jessen--Wintner (1935); novelty claim is restricted to arbitrary mixed-spectrum
-edge/scaling/inversion package.
+Mathematical center is now one physical probability law. For every spectral
+measure of a normalized state, uniformly time-sampled Born survival
+probability converges to a stationary distribution. That distribution is
+exactly the normalized pure-point return law scaled by squared total
+pure-point mass; its support is one interval ending at that square, so the
+mass is recovered from observable support edge. Input mass is defined by a
+spectral projection and output law by time sampling before their equality is
+proved; neither side is a relabeling of the other. The statement covers
+arbitrary mixed spectral type.
+
+The earlier `alpha + rho = D - 1` identity is retained only as finite-spectrum
+geometry. It is Haar local dimension plus rank--nullity and cannot carry the
+paper's physical novelty. Carrier--constraint--observation--record laws now
+describe transformations of stationary return measure. Weak-interaction,
+local-network, thermodynamic, observer, inference and circuit results are
+consequences or stress tests, not competing headline claims.
 
 Manuscript is internally proof-closed and publication-shaped. External
 priority and specialist review remain necessary before submission; neither
@@ -61,9 +62,20 @@ asymptotic exponent experimentally certifiable from finite data.
 
 ## Strongest defensible claims
 
+**Capstone.** For every probability spectral measure, centered-time sampling
+of Born survival fidelity converges weakly. Complete limit measure equals the
+stationary law of normalized pure-point spectrum after multiplication by
+squared total pure-point mass. Its support is one interval ending at that
+square, and total pure-point mass is recovered by square root of upper edge.
+No discreteness, simple spectrum, nonresonance, locality, genericity,
+randomness, chaos or mixing premise enters. Wiener--Eberlein first-moment and
+Eberlein decomposition ancestry, together with Jessen--Wintner pure-point
+support ancestry, are credited. Candidate novelty is restricted to joined
+mixed-spectrum no-gap support and inverse edge.
+
 1. For every probability energy measure, including arbitrary mixed spectral
    type, stationary survival-fidelity support is exactly one closed interval
-   `[rho,p^2]`; `p` is total pure-point mass.  Upper endpoint belongs to
+   `[ell,p^2]`; `p` is total pure-point mass.  Upper endpoint belongs to
    support and dominates it, and `p` is square root of endpoint.  No spectral
    regularity, simplicity, finite support, genericity or locality enters.
 2. Finite and countable phase-law convergence is equivalent to convergence of

@@ -1,142 +1,132 @@
-\section{One recurrence problem, four structural laws}
+\section{The persistent-carrier law}
 
 The quantum recurrence theorem guarantees arbitrarily accurate returns for
-finite closed systems \cite{BocchieriLoinger1957}.  Quantitative work now
-bounds recurrence times for broad finite systems
-\cite{KotowskiOszmaniec2026,GuptaShort2026}, treats mixed states and
-many-body concentration \cite{GimenoSotoca2017,
-RiddellPagliaroliAlhambra2023}, and gives exact arithmetic criteria for
-Floquet recurrence \cite{AnandEtAl2026}.  Many-body recurrences have been
-observed in an isolated quantum gas \cite{RauerEtAl2018}, and coupled-qubit
-tests have been proposed \cite{KarimiEtAl2026}.
+finite closed systems \cite{BocchieriLoinger1957}.  Recent quantitative work
+bounds first-return times \cite{KotowskiOszmaniec2026,GuptaShort2026}; other
+work treats mixed states and many-body concentration
+\cite{GimenoSotoca2017,RiddellPagliaroliAlhambra2023}, exact arithmetic
+Floquet recurrence \cite{AnandEtAl2026}, and experimental many-body revivals
+\cite{RauerEtAl2018,KarimiEtAl2026}.
 
-Yet ``the recurrence time'' is not a sufficient organizing object.  It mixes
-four questions with different answers:
+Our starting question is not how to attach another exponent to a return
+curve.  It is what the full long-time distribution of a directly measurable
+Born probability remembers about the spectrum.  The answer is an exact
+carrier law for arbitrary spectral type.
+
+Let $H$ be a time-independent self-adjoint Hamiltonian, let $\psi$ be a
+normalized state and let $\mu$ be the probability spectral measure of $H$ in
+$\psi$.  The survival amplitude and Born survival probability are
+\begin{equation}
+ A_\mu(t)=\int_\R \ee^{-\ii tE}\,d\mu(E),
+ \qquad R_\mu(t)=|A_\mu(t)|^2.                       \label{eq:physicalsurvival}
+\end{equation}
+For $T>0$, write
+\begin{equation}
+ \mathscr R_{\mu,T}=(R_\mu)_*
+ \left(\frac{\mathbf 1_{[-T,T]}(t)}{2T}\,dt\right)  \label{eq:finite-return-law}
+\end{equation}
+for the probability distribution of $R_\mu(t)$ under uniform centered-time
+sampling.  Let $P_{\rm pp}(H)$ be the pure-point spectral projection, let
+$\mu_{\rm pp}$ be the restriction of $\mu$ to its atoms and put
+\begin{equation}
+ p=\mu_{\rm pp}(\R)=\langle\psi,P_{\rm pp}(H)\psi\rangle.
+                                                        \label{eq:boundmass-intro}
+\end{equation}
+When $p>0$, let $\bar\mu_{\rm pp}=p^{-1}\mu_{\rm pp}$ and let
+$S_p(x)=p^2x$ on $[0,1]$.
+
+\begin{theorem}[Universal stationary survival-recurrence law]
+\label{thm:boundstateedge}
+For every probability spectral measure $\mu$, the finite-window laws converge
+weakly,
+\begin{equation}
+ \mathscr R_{\mu,T}\Longrightarrow\mathscr R_\mu
+ \qquad(T\to\infty).                                 \label{eq:stationary-weak}
+\end{equation}
+If $p=0$, then $\mathscr R_\mu=\delta_0$.  If $p>0$, then
+\begin{equation}
+ \boxed{\mathscr R_\mu=(S_p)_*\mathscr R_{\bar\mu_{\rm pp}}}.  \label{eq:stationary-carrier}
+\end{equation}
+In both cases there is an $\ell_\mu\in[0,p^2]$ such that
+\begin{equation}
+ \boxed{\operatorname{supp}\mathscr R_\mu=[\ell_\mu,p^2]},
+ \qquad
+ \boxed{p=\sqrt{\max\operatorname{supp}\mathscr R_\mu}}.       \label{eq:boundstateedge}
+\end{equation}
+No discreteness, spectral simplicity, nonresonance, genericity, randomness,
+chaos, mixing or locality premise is required.
+\end{theorem}
+
+Equation \eqref{eq:stationary-carrier} is not a definition of the answer.
+The left side is obtained from the measured Born trace
+\eqref{eq:physicalsurvival} and limit \eqref{eq:finite-return-law}, including
+arbitrary absolutely continuous and singular continuous spectral parts.  The
+quantity $p$ on the right is fixed independently by the spectral projection
+in \eqref{eq:boundmass-intro}.  The equality of measures is therefore a
+prediction, not a chosen parametrization.  Weak convergence, removal of the
+continuous sector, connectedness of support and the endpoint formula are
+derived from the spectral theorem, exact gap-collision identities, compact
+moment determinacy and phase-orbit geometry.  The detailed proof appears in
+the appendix subsection ``No-gap stationary support and pure-point mass.''
+
+The first stationary moment is the classical Wiener--Eberlein quantity
+$\sum_E\mu(\{E\})^2$ \cite{Eberlein1955}.  More generally, the Eberlein
+decomposition identifies the strongly almost-periodic part of a
+Fourier--Stieltjes transform with the pure-point part of its measure
+\cite{StrungaruTerauds2016}.  We therefore do not claim pure-point selection
+itself as new.  Theorem
+\ref{thm:boundstateedge} determines the entire probability law and recovers
+the different quantity $p=\sum_E\mu(\{E\})$ from its support edge.  In the
+pure-point case, support-as-range-closure has classical ancestry in
+Jessen--Wintner \cite{JessenWintner1935}.  The claim made here is the
+no-gap interval support and exact inverse-edge law for arbitrary mixed
+spectral type, stated and proved together with the stationary measure
+identity from which it follows.
+
+The law is the paper's spine, not a bundle of unrelated claims.  Four
+operations determine the measured recurrence problem:
 \begin{equation}
  \boxed{
  \text{persistent carrier}
- \longrightarrow \text{phase action and relation hull}
- \longrightarrow \text{target metric and observer quotient}
- \longrightarrow \text{finite record}}
+ \longrightarrow \text{exact phase constraints}
+ \longrightarrow \text{preparation and observation}
+ \longrightarrow \text{finite record}.}
  \label{eq:fourquestions-new}
 \end{equation}
-Loss deletes transient coordinates.  Exact spectral relations cut the ambient
-phase torus down to the orbit actually visited.  State weights define how
-distance from return is measured, while an observer graph identifies phase
-differences that no selected probe can see.  A finite record is finally a
-restriction of this already reduced geometry, not a substitute for its
-completed arithmetic structure.
+Law I proves carrier selection, including the stationary theorem above.  Law
+II determines exact phase constraints.  Law III determines the quotient seen
+by a specified preparation, measurement or target.  Law IV determines what a
+finite record can identify.  In physical terms, loss selects the spectrum
+that survives.  Exact relations determine its
+completed phase orbit.  State support and measurement determine the return
+target actually seen.  Finite observation determines only a bounded-time
+record and need not identify the completed orbit.  Laws I--IV prove these four
+transformations.  Locality, circuit targets and thermodynamic limits are then
+stress tests of the same framework, not additional universal premises.
 
-This factorization is the paper's universal principle.  Its laws apply to lossy
-finite dynamics, arbitrary spectral measures, finite local many-body
-Hamiltonians, countable pure-point spectra and specified bounded
-infinite-chain models.  They do not claim that all such systems share one
-numerical timescale.  They identify which exact object controls each
-recurrence question and how that object changes under loss, interaction,
-measurement and finite observation.
+\subsection{Logical and empirical scope}
 
-\subsection{First-principles scope}
+Theorems are derived from displayed Hamiltonians, contractions, states,
+measurements, metrics and target families using standard spectral, compact-
+group, probability and operator-norm results.  A definition is never counted
+as evidence for a physical relation: in the central law, the input
+$\langle\psi,P_{\rm pp}(H)\psi\rangle$ and output
+$\mathscr R_\mu$ are specified independently before their relation is proved.
+Generic statements are marked generic; constructed examples display their
+assumptions; and no empirical model is promoted to a universal premise.
+Mathematical implications are proved in the appendices.  Experiments cannot
+prove an infinite-time limit or a theorem about all Hamiltonians.  They can
+test whether a device realizes the stated finite Hamiltonian and whether its
+measured finite-resolution consequences agree with the prediction.  A failed
+prediction is not reclassified as an unexplained sector of the law: it rejects
+the calibrated model, the measurement model, or both.  Section
+\ref{sec:experiments} gives protocols and keeps model calibration, finite-data
+inference and mathematical deduction separate.
 
-Every theorem either starts from an explicitly stated Hamiltonian or
-contraction, or proves existence inside an explicitly stated coefficient
-class.  States, effects, metrics and target classes are specified.  Deductions
-use Born rule, spectral decomposition, unitary evolution,
-compact-group characters, exact arithmetic relations, probability measures
-and operator-norm circuit approximation.  Randomness, chaos, eigenstate
-thermalization and random-matrix statistics are never hidden premises.
-Generic conclusions explicitly say generic; exact-model conclusions display
-their couplings.
-
-This is first-principles mathematics conditional only on those model axioms.
-It is not a microscopic derivation of a laboratory Hamiltonian from a more
-fundamental theory of matter.  Experiment therefore tests whether a device
-realizes stated carrier, spectrum, coupling graph and measurement map.  It
-cannot prove a mathematical implication, an infinite-time statement or a
-thermodynamic limit.  It can corroborate or falsify claim that physical
-device realizes stated model and its finite-system consequences.  Section
-\ref{sec:experiments} gives concrete protocols and separates mathematical
-derivation, model identification and empirical test.
-
-For a finite labelled energy list $E=(E_1,\ldots,E_D)$, global phase is
-unobservable, so use the balanced character group
-\begin{align}
- P_D&=\left\{k\in\Z^D:\sum_{j=1}^D k_j=0\right\},
- \label{eq:projectivecharacters-new}\\
- \mathcal D_E(k)&=\sum_{j=1}^D k_jE_j,
- \qquad \Rel_E=\ker\mathcal D_E,                       \label{eq:detuning-new}\\
- \tau(E)&=\dim_{\Q}\operatorname{span}_{\Q}
- \{E_j-E_1:2\le j\le D\},                            \label{eq:tau-new}\\
- \rho(E)&=\dim_{\Q}\operatorname{span}_{\Q}\Rel_E.  \label{eq:rho-new}
-\end{align}
-The relation lattice fixes the projective orbit closure
-\begin{equation}
- \Hull_E=\{z\in\T^D/\T:z^k=1\text{ for every }k\in\Rel_E\}. \label{eq:hull-new}
-\end{equation}
-Its Haar law is the ordinary completed phase ensemble.  For a probability
-spectral measure $\mu$, write $\Delta\mu$ for the law of $E-E'$ under two
-independent samples.  This difference law is the autocorrelation of the
-spectrum and the Fourier transform of the scalar survival fidelity.
-
-\begin{theorem}[Four-law recurrence architecture]
-\label{thm:hierarchy}
-The following statements hold simultaneously.
-\begin{enumerate}[leftmargin=1.65em]
-\item Every finite contraction has a unique persistent peripheral carrier;
-      all transient contributions vanish and late recurrence occurs entirely
-      on this carrier.  For every probability spectral measure, complete
-      stationary survival support is one interval whose upper edge is square
-      of total pure-point mass.
-\item Along any limiting family of centered uniform observation windows, a
-      finite phase law converges weakly if and only if every integer-character
-      action coefficient converges.  The same equivalence holds for countable
-      spectra using all finite-support characters.
-\item For every finite limiting phase law described by zero, finite and
-      dephased character actions, zero-action characters are exactly its
-      rational constraints and
-      \begin{equation}
-       \boxed{\text{temporal dimension}+\text{zero-action constraint rank}
-       =D-1.}                                         \label{eq:rankconservation}
-      \end{equation}
-\item Two spectral laws give the same scalar survival-return distribution
-      under every probability clock if and only if their difference measures
-      $\Delta\mu$ agree.  Dually, two probability clocks give the same scalar
-      return distributions for every spectrum if and only if their
-      reflection-symmetrized laws agree.
-\item Two finite labelled spectra have the same projective relation lattice
-      if and only if every resolved replica detector agrees.  This resolved
-      hierarchy is strictly more informative than all scalar survival data.
-\item On every open simple-spectrum chart of the full static
-      onsite-plus-nearest-neighbour $n$-qudit path family, one conull set of
-      Hamiltonians classifies physical first return simultaneously for every
-      normalized state: if exactly $s$ eigenlevels carry nonzero state weight,
-      the survival-fidelity first-return exponent is
-      $\max\{s-2,0\}/2$.  Arbitrarily small positive full-spectrum tails are
-      uniformly invisible above their weight scale for all times but still
-      activate the maximal exact-resolution exponent.
-\item Every bounded-time operator-norm tube around every finite Hermitian
-      Hamiltonian of dimension $D\ge3$ contains two commuting
-      simple-spectrum Hamiltonians with one common eigenbasis.  For every
-      one fixed normalized state cyclic in that basis, their physical
-      survival-fidelity first-return exponents are respectively $0$ and the
-      maximal value $(D-2)/2$.
-\end{enumerate}
-\end{theorem}
-
-Statements two and three are Law II's existence and capacity principles.
-They do not assume a
-limiting ensemble and then describe it: convergence of all character
-coefficients is necessary and sufficient for that ensemble to exist and be
-unique.  A phase direction cannot
-simultaneously be locked and carry independent temporal motion.  The fourth
-and fifth statements begin Law III by identifying two different information levels.  Scalar
-survival sees only an autocorrelation; resolved characters recover the
-relations themselves.  Sixth statement completes Law III: exact zeros in
-state's spectral weights delete phase directions, whereas positive weight
-values change comparison constants but not exponent.  Seventh statement is
-Law IV's sharp inference boundary:
-even complete bounded-time process information does not determine physical
-first-return exponent.  Weighted targets and observer coherences complete
-Law III below, while further record ambiguities complete Law IV.
+For a probability spectral measure $\mu$, write $\Delta\mu$ for the law of
+$E-E'$ under two independent samples.  This difference law is the
+autocorrelation of the spectrum and the Fourier transform of scalar survival
+fidelity.  It will delimit exactly what scalar recurrence records retain.
 
 \begin{table}[H]
 \centering
@@ -149,13 +139,14 @@ Law III below, while further record ambiguities complete Law IV.
 \toprule
 Law & Exact object & What it determines & Boundary it exposes \\
 \midrule
-I: carrier & persistent peripheral spectrum & attainable late return ceiling
-  and surviving collision law & transient spectral directions \\
-II: action & character actions and relation hull & phase-law existence,
-  temporal capacity, exact resonances and completed occupation & locked
-  relations remove temporal directions \\
+I: carrier & persistent peripheral or pure-point spectrum & complete
+  stationary survival law, support edge and late return ceiling & transient
+  and continuous spectral directions \\
+II: constraints & completed projective orbit and exact energy relations &
+  return-occupation exponent and conserved projective capacity & each exact
+  relation removes one independent temporal direction \\
 III: target & spectral support, weighted metric and measurement quotient &
-  return exponent, target cost, observer-visible rank, Born deadlines and
+  exact observer return exponent, target cost, observer-visible rank, Born deadlines and
   circuit-target occupation &
   scalar data discard labelled relations and clock orientation \\
 IV: record & full finite-horizon propagator tube & certified finite-time
@@ -206,9 +197,9 @@ autocorrelation completeness and failure are studied in related settings
 ]
 \node[box,fill=blue!7] (p) at (0,3.5)
   {persistent carrier\\surviving spectral mass};
-\node[box,fill=purple!7] (h) at (10.0,3.5)
+\node[box,fill=purple!7] (h) at (11.0,3.5)
   {projective phase hull\\relations and factorization};
-\node[box,fill=orange!9] (c) at (10.0,0)
+\node[box,fill=orange!9] (c) at (11.0,0)
   {target capacity\\returns, observers, circuits};
 \node[box,fill=green!8] (r) at (0,0)
   {finite-horizon information\\records and inference};
@@ -271,9 +262,7 @@ The statement covers nonnormal loss as well as unitary dynamics: transient
 modes disappear, while the semisimple peripheral packet retains all
 recurrence information.
 
-For a probability measure $\mu$ on energy, write
-$A_\mu(t)=\int e^{-itE}\,d\mu(E)$ and let
-$\Delta\mu$ be the law of $E-E'$ for independent samples from $\mu$.
+Let $\Delta\mu$ be the law of $E-E'$ for independent samples from $\mu$.
 
 \begin{theorem}[Arbitrary-spectrum collision hierarchy]
 \label{thm:stationary}
@@ -293,16 +282,14 @@ has density tending to zero.
 Pure-point and atomless spectra are extreme cases; mixed spectra remain
 covered by collision identity \eqref{eq:wienercollision}.
 
-The collision hierarchy determines a unique probability law
-$\mathscr R_\mu$ on $[0,1]$: for every continuous $f$,
+Equivalently, the weak limit in Theorem \ref{thm:boundstateedge} satisfies,
+for every continuous $f$,
 \begin{equation}
  \int f(x)\,d\mathscr R_\mu(x)
  =\lim_{T\to\infty}\frac1{2T}\int_{-T}^{T}
     f\bigl(|A_\mu(t)|^2\bigr)\,dt .                 \label{eq:stationarylaw}
 \end{equation}
-Let $\mu_{\rm pp}$ be restriction of $\mu$ to its atoms and put
-$p=\mu_{\rm pp}(\R)$.  When $p>0$, write
-$\bar\mu_{\rm pp}=p^{-1}\mu_{\rm pp}$ and enumerate it as
+When $p>0$, enumerate $\bar\mu_{\rm pp}$ as
 $\sum_iw_i\delta_{E_i}$.  On closure $\mathcal K_{\bar\mu_{\rm pp}}$ of
 ordered-gap orbit
 $t\mapsto(\exp[-\ii t(E_i-E_j)])_{i,j}$, define
@@ -315,68 +302,97 @@ $t\mapsto(\exp[-\ii t(E_i-E_j)])_{i,j}$, define
 \end{equation}
 Absolute summability makes this continuous even for infinitely many atoms.
 
-\begin{theorem}[No-gap stationary recurrence and bound-state-mass law]
-\label{thm:boundstateedge}
-For every probability energy measure there is a
-$\rho_\mu\in[0,p^2]$ such that
+The lower endpoint in \eqref{eq:boundstateedge} is explicit:
 \begin{equation}
- \boxed{\operatorname{supp}\mathscr R_\mu=[\rho_\mu,p^2]},
+ \ell_\mu=0\quad(p=0),
  \qquad
- \boxed{p=\sqrt{\max\operatorname{supp}\mathscr R_\mu}}. \label{eq:boundstateedge}
+ \ell_\mu=p^2\bigl(1-M_{\bar\mu_{\rm pp}}\bigr)\quad(p>0). \label{eq:boundstatescaling}
 \end{equation}
-If $p=0$, then $\mathscr R_\mu=\delta_0$ and $\rho_\mu=0$.  If $p>0$,
+Thus its value retains the relation geometry and maximal
+destructive-interference capacity of the normalized bound sector, while the
+upper edge retains only total bound-state population.
+
+\section{Law II: exact spectral constraints set return occupation}
+
+\subsection{Relations, completed motion and capacity}
+
+For a finite labelled energy list $E=(E_1,\ldots,E_D)$, quotient global phase
+by anchoring at $E_1$:
 \begin{equation}
- \mathscr R_\mu=(x\mapsto p^2x)_*\mathscr R_{\bar\mu_{\rm pp}},
+ \Phi_E(t)=\bigl(\ee^{-\ii t(E_2-E_1)},\ldots,
+ \ee^{-\ii t(E_D-E_1)}\bigr)\in\T^{D-1},
  \qquad
- \rho_\mu=p^2\bigl(1-M_{\bar\mu_{\rm pp}}\bigr).   \label{eq:boundstatescaling}
+ \Hull_E=\overline{\{\Phi_E(t):t\in\R\}}.            \label{eq:phaseorbit-new}
 \end{equation}
-Thus stationary survival support has no internal gap for finite, countably
-infinite, degenerate or rationally constrained pure-point spectra, and for
-arbitrary mixtures with continuous spectrum.
+Let $m_E$ be normalized Haar probability on $\Hull_E$.  For the maximum
+wrapped angular distance $d_{\T}$, define
+\begin{equation}
+ F_E(\varepsilon)=m_E\{z\in\Hull_E:
+ d_{\T}(z,\mathbf 1)<\varepsilon\},
+ \qquad
+ \alpha(E)=\lim_{\varepsilon\downarrow0}
+ \frac{\log F_E(\varepsilon)}{\log\varepsilon}.       \label{eq:alpha-new}
+\end{equation}
+Exact constraints and relative-energy rank are
+\begin{align}
+ P_D&=\left\{k\in\Z^D:\sum_{j=1}^D k_j=0\right\},
+ \label{eq:projectivecharacters-new}\\
+ \mathcal D_E(k)&=\sum_{j=1}^D k_jE_j,
+ \qquad \Rel_E=\ker\mathcal D_E,
+ \qquad
+ \rho(E)=\dim_{\Q}\operatorname{span}_{\Q}\Rel_E,   \label{eq:rho-new}\\
+ \tau(E)&=\dim_{\Q}\operatorname{span}_{\Q}
+ \{E_j-E_1:2\le j\le D\}.                            \label{eq:tau-new}
+\end{align}
+
+\begin{theorem}[Completed phase-volume law]
+\label{thm:return-constraint}
+For every $D\ge1$ and every real energy list $E$, the limit in
+\eqref{eq:alpha-new} exists and
+\begin{equation}
+ \alpha(E)=\dim\Hull_E=\tau(E),
+ \qquad \alpha(E)+\rho(E)=D-1.                      \label{eq:rankconservation}
+\end{equation}
+Here $\dim\Hull_E$ is real torus dimension.  The result includes all
+degeneracies and resonances.  If all energies coincide, then
+$F_E(\varepsilon)=1$, $\alpha(E)=0$ and $\rho(E)=D-1$.
 \end{theorem}
 
-Two different atomic summaries are involved.  Classical Wiener--Eberlein
-averaging gives
-$\int x\,d\mathscr R_\mu(x)=\sum_E\mu(\{E\})^2$
-\cite{Eberlein1955}; Theorem~\ref{thm:boundstateedge} instead recovers
-$(\sum_E\mu(\{E\}))^2=p^2$ from support maximum of full law.  Mean return
-therefore measures atomic collision, while extreme completed recurrence
-measures total bound-state mass.  Lower edge retains relation geometry and
-maximal destructive-interference capacity of normalized bound sector.
-
-\section{Law II: phase action converts constraints into temporal capacity}
-
-\subsection{Relations, action and capacity}
+This theorem turns completed phase volume into exact spectral arithmetic, but
+it is not presented as an independent phenomenological law: the first
+identity is local Haar dimension and the second is rank--nullity.  Classical
+return-rate/dimension relations have long been known under other dynamical
+hypotheses \cite{Gao1999,BarreiraSaussol2001,Saussol2006}.  What is useful
+here is premise completeness for every finite spectrum and its role inside
+the stationary carrier law.  Locally bi-Lipschitz phase metrics leave
+$\alpha(E)$ unchanged; using a nondegenerate squared physical deficit divides
+the exponent by two.  Appendix \ref{sec:proof-capstone} gives the proof.
 
 For a fixed finite spectrum observed on the centered window $[-T,T]$, the
-coefficient of character $k$ is
+mean of the phase observable $z\mapsto z^k$ is
 \begin{equation}
  \frac1{2T}\int_{-T}^{T}e^{-it\mathcal D_E(k)}\,dt
  =\sinc\!\bigl(T\mathcal D_E(k)\bigr).               \label{eq:characteraction}
 \end{equation}
 It equals one on an exact relation, decays to zero for a fixed nonzero
 detuning, and retains a nontrivial finite profile when detuning closes on the
-inverse-window scale.  These are the zero, dephased and finite-action regimes
-in Theorem \ref{thm:hierarchy}.  Character coefficients determine probability
-laws on compact phase groups, which is why their convergence is both
-necessary and sufficient rather than only a diagnostic.
+inverse-window scale.  These are the zero, dephased and finite-action regimes.
+Expectations of all continuous phase characters determine probability laws on
+compact phase groups, so their convergence is necessary and sufficient for
+weak convergence rather than merely diagnostic.
 
-\begin{theorem}[Projective phase-capacity law]
+\begin{theorem}[Resolved relation law]
 \label{thm:phasecapacity}
-For every finite real energy list,
-\begin{equation}
- \boxed{\tau(E)+\rho(E)=D-1.}                         \label{eq:phasecapacity}
-\end{equation}
-The temporal dimension of the completed projective phase law is exactly
-$\tau(E)$.  A balanced integer character is constant on that law precisely
+For every finite real energy list, a balanced integer character is constant
+on the completed phase law precisely
 when it belongs to $\Rel_E$.  At replica order $r$, a resolved detector sees
-exactly the locked characters whose positive coefficient mass is at most
+exactly the locked characters whose positive part has total weight at most
 $r$.
 \end{theorem}
 
-The identity is rank--nullity for the rational detuning map.  It turns an
-arithmetic perturbation into an exact conversion law: every relation removed
-from a fixed carrier becomes one additional temporal direction.
+Every independent relation removed from a fixed carrier creates one
+additional temporal direction by \eqref{eq:rankconservation}; resolved
+replicas determine which relations, not merely how many, remain.
 
 \begin{theorem}[Arbitrarily weak interaction singularity]
 \label{thm:interaction}
@@ -413,7 +429,7 @@ $D_C=\prod_{v\in C}q_v$.
 \begin{theorem}[Generic temporal rank of a local quantum network]
 \label{thm:path}
 There is a dense residual full-Lebesgue-measure set of interaction
-coefficients such that, simultaneously for every induced subsystem $S$,
+couplings such that, simultaneously for every induced subsystem $S$,
 \begin{equation}
  \boxed{\tau(H_S)=
  \sum_{C\in\pi_0(G[S])}\left(\prod_{v\in C}q_v-1\right).}
@@ -473,7 +489,7 @@ Normalization forces $1\le s_H(\psi)\le D$.
 
 \begin{theorem}[Same-Hamiltonian local saturation and all-state support law]
 \label{thm:local-clock-capstone}
-Let $n,q\ge2$, put $D=q^n$, and consider the full real coefficient space of
+Let $n,q\ge2$, put $D=q^n$, and consider the full real parameter space of
 Hermitian onsite-plus-nearest-neighbour Hamiltonians on the open $n$-site
 $q$-level path.  On every nonempty connected open simple-spectrum chart,
 one conull set of Hamiltonians simultaneously satisfies:
@@ -502,7 +518,7 @@ the collision mass and completed survival-fidelity moment equal the
 permutation floor;
 \item zero is the only exact anchored projective return time.
 \end{enumerate}
-One coefficient draw satisfies every clause; the Hamiltonian is not reselected
+One parameter choice satisfies every clause; the Hamiltonian is not reselected
 between rank, clock, collision and exact-return conclusions.
 \end{theorem}
 
@@ -577,26 +593,26 @@ $x\in\{0,1\}^N$, write
 
 \begin{theorem}[Exact commuting l-bit phase-capacity classification]
 \label{thm:lbit-classification-main}
-For every real coefficient family,
+For every real coupling family,
 \begin{equation}
  \boxed{\tau(E_J)=\dim_\Q\operatorname{span}_\Q
    \{J_S:S\ne\varnothing\}},
  \qquad
  \tau(E_J)+\rho(E_J)=2^N-1.                            \label{eq:lbit-rank-main}
 \end{equation}
-If only one-body coefficients occur, then $\tau(E_J)\le N$.  If every
+If only one-body couplings occur, then $\tau(E_J)\le N$.  If every
 nonzero support has diameter at most $R$, then
 \begin{equation}
  \tau(E_J)\le |\mathcal S_{N,R}|\le N\,2^{R+1},       \label{eq:lbit-range-main}
 \end{equation}
 where $\mathcal S_{N,R}$ is the family of nonempty allowed supports.  The first
-inequality is equality whenever allowed coefficients are rationally
-independent; one-body ceiling is attained.  If all nonconstant coefficients
+inequality is equality whenever allowed couplings are rationally
+independent; one-body ceiling is attained.  If all nonconstant couplings
 are rationally independent, then $\tau(E_J)=2^N-1$.
 \end{theorem}
 
 Walsh orthogonality recovers every $J_S$ from the complete energy packet, so
-coefficient span and gap span coincide.  Uniform product state
+coupling span and gap span coincide.  Uniform product state
 $|+\rangle^{\otimes N}$ has positive weight on every configuration and sees
 full rank; its all-order moments reach permutation floors exactly in the maximal
 case.  Contrast is therefore operational.  A fixed-range commuting family
@@ -684,13 +700,13 @@ No infinite-volume evolution or exchange of limits is used in this result.
 \begin{theorem}[One-network exhaustion]
 \label{thm:exhaustion}
 For a countable interaction network exhausted by strictly increasing finite
-connected volumes, there is one residual dense set of ambient coefficient
+connected volumes, there is one residual dense set of ambient coupling
 assignments for which every volume simultaneously has
 \begin{equation}
  \tau(H_{V_k})=\prod_{v\in V_k}q_v-1\longrightarrow\infty.
  \label{eq:exhaustionrank}
 \end{equation}
-The same simultaneous event has probability one for every coefficient law
+The same simultaneous event has probability one for every coupling law
 whose finite-volume restriction marginals are absolutely continuous with
 respect to Lebesgue measure.
 \end{theorem}
@@ -772,7 +788,7 @@ many-body system.
 The countable spectral theorem does not by itself produce an infinite local
 Hamiltonian.  A separate construction does.  Let $\Omega=\{\pm1\}^{\N}$ and
 let $\chi_S(\sigma)=\prod_{x\in S}\sigma_x$.  There is one explicit real
-coefficient field $(J_S)_{S\Subset\N}$ with
+coupling field $(J_S)_{S\Subset\N}$ with
 \begin{equation}
  \sum_{S\Subset\N}2^{\operatorname{diam}S}|J_S|<\infty.       \label{eq:lbitmass}
 \end{equation}
@@ -817,7 +833,7 @@ phenomena \cite{KimChandranAbanin2014,NandkishoreGopalakrishnanHuse2014,
 VasseurParameswaranMoore2015}.  Contribution here is exact coexistence of
 standard infinite-volume Hilbert dynamics, uniform thermodynamic
 completion, layer-by-layer phase activation and maximal finite-environment
-rational rank in one specified coefficient field.  It is an engineered
+rational rank in one specified coupling field.  It is an engineered
 diagonal l-bit model, not a theorem for a microscopic random-field chain and
 not an infinite-volume global-recurrence claim.
 
@@ -914,9 +930,64 @@ than $(Q+1)^{D-c}$, with squared displacement bounded by
 \end{equation}
 \end{theorem}
 
+Write $z_j(t)=e^{-itE_j}$.  For observer blocks $B_a$ and nonnegative weights
+$\lambda_a$, put
+\begin{align}
+ w_{ij}&=\sum_a\lambda_a |(B_a)_{ij}|^2,\nonumber\\
+ \mathcal E_{\rm obs}(t)
+   &=\sum_{i,j}w_{ij}|z_i(t)\overline{z_j(t)}-1|^2,\label{eq:observerenergy}\\
+ T_{\rm obs}(\delta;t_0)
+   &=\inf\{t\ge t_0:\mathcal E_{\rm obs}(t)<\delta\},
+   \qquad t_0>0.                                      \label{eq:observerreturntime}
+\end{align}
+Join $i$ and $j$ when $w_{ij}+w_{ji}>0$, let $G$ be resulting coherence
+graph, and put $r=D-c(G)$.  Signal \eqref{eq:observerenergy} is exactly total
+weighted squared Hilbert--Schmidt displacement of observer blocks.
+
+\begin{theorem}[Universal observer first-return law and static-local witness]
+\label{thm:universal-observer-exponent}
+The following statements hold.
+\begin{enumerate}[leftmargin=1.55em]
+\item If a finite real-linear Hermitian family escapes every nonconstant
+balanced real spectral relation, then outside a Lebesgue-null subset of its
+full simple-spectrum locus, one Hamiltonian satisfies, simultaneously for
+every finite choice of $\lambda_a\ge0$ and $B_a$ made after Hamiltonian is
+chosen,
+\begin{equation}
+ \boxed{\displaystyle
+ \lim_{\delta\downarrow0}
+ \frac{\log T_{\rm obs}(\delta;t_0)}{\log(1/\delta)}
+ =\frac{\max\{r-1,0\}}2.}                            \label{eq:observerexponent}
+\end{equation}
+This holds for every fixed cutoff $t_0>0$.
+\item Boundary cases require no genericity.  If $r=0$, observer displacement
+is identically zero.  If $r=1$, it has an exact zero at some time after every
+positive cutoff.  In both cases exponent in \eqref{eq:observerexponent} is
+zero.
+\item Let $\varepsilon_*=1/400$.  For every integer $L\ge8194$, there exists
+one self-adjoint, simple-spectrum, time-independent onsite-plus-nearest-
+neighbour Hamiltonian $H_L$ on path of $2L$ qubits that satisfies
+\eqref{eq:observerexponent} for every finite observer and, for every
+\begin{equation}
+ 2048\pi\varepsilon_*\le t\le\varepsilon_*L,
+ \qquad
+ \left\lfloor\frac{t}{256\pi\varepsilon_*}\right\rfloor
+ \le C^{\rm op}_{\varepsilon_*}(e^{-itH_L}).          \label{eq:observerramp}
+\end{equation}
+Here $C^{\rm op}_{\varepsilon_*}$ counts arbitrary support-certified
+two-qubit gates needed for operator-norm approximation; one-qubit gates are
+free.  Same $H_L$ supplies ramp and all-observer recurrence law.
+\end{enumerate}
+\end{theorem}
+
 Interaction rank and observer rank answer different questions: former counts
 phase directions generated by Hamiltonian, latter counts directions visible
-to chosen experiment.
+to chosen experiment.  The simultaneous quantifier in Theorem
+\ref{thm:universal-observer-exponent} is essential: exceptional Hamiltonians
+are removed once, before observer is selected.  Changing positive observer
+weights within one coherence graph changes comparison constants but not
+exponent; changing graph connectivity can change exponent without changing
+Hamiltonian.
 
 \subsection{Born records: escape and return seen by same observer}
 
@@ -975,9 +1046,9 @@ identifies expectation-value dynamics as a further direction
 \cite{KotowskiOszmaniec2026}; mixed-state recurrence bounds instead control
 state-space return \cite{GimenoSotoca2017}.  Theorem \ref{thm:bornreturn}
 addresses prescribed finite Born histories, with exit and return in same
-record and a deadline compressed by visible coherence graph.  Its novelty
-claim is this conjunction, not existence of expectation-value recurrence by
-itself.
+record and a deadline compressed by visible coherence graph.  Distinct
+content is this conjunction, not existence of expectation-value recurrence
+by itself.
 
 \subsection{Circuit targets and physical complexity}
 
@@ -1215,7 +1286,7 @@ compatibility literal.  On the countable qubit path, let
    a_{j,\alpha\beta}\sigma_j^\alpha\sigma_{j+1}^\beta,
  \qquad n\ge3,                                      \label{eq:samefieldH}
 \end{equation}
-where every $H_n(a)$ is the literal restriction of one coefficient field
+where every $H_n(a)$ is the literal restriction of one coupling field
 $a$.  Let $c$ be the nonscalar Pauli expansion of the infinite nested
 $P_{11}$ background in \eqref{eq:nestedH}, and give every onsite or edge
 coordinate at position $j$ the open radius
@@ -1248,7 +1319,7 @@ For $A\subseteq\T^{D_n-1}$, define centered completed occupation
 
 \begin{theorem}[Same-field finite-to-thermodynamic recurrence--complexity law]
 \label{thm:samefield}
-There exists one coefficient field $a$ in \eqref{eq:samefieldH} with following
+There exists one coupling field $a$ in \eqref{eq:samefieldH} with following
 properties.
 \begin{enumerate}[leftmargin=1.7em]
 \item It is coordinatewise close to nested background,
@@ -1355,7 +1426,7 @@ properties.
       Same field works simultaneously for every $M,r$, target family and
       $L$.  This clause is weaker in gate count but stronger in allowing
       arbitrary resolved Choi targets attached to circuit words.
-\item The same coefficients define a bounded self-adjoint element
+\item The same couplings define a bounded self-adjoint element
       $H_\infty(a)$ of standard qubit UHF algebra
       \cite{BratteliRobinson1997} and
       \begin{equation}
@@ -1667,7 +1738,27 @@ important for recurrence because an undetected detuning can become decisive
 only beyond the observation window.  Hamiltonian-learning and
 randomized-measurement methods provide established routes for model
 calibration and nonlinear observable estimation
-\cite{WangEtAl2017,ElbenEtAl2023}.  Nine direct tests follow from our laws.
+\cite{WangEtAl2017,ElbenEtAl2023}.  Ten direct tests follow from our laws.
+
+\paragraph{Stationary carrier scaling and bound-state edge.}
+Use a controllable trapped-plus-scattering system and prepare a state whose
+bound-sector population $p$ is measured independently by spectroscopy or
+state-selective release.  In a second protocol prepare the normalized
+bound-sector state itself.  Sample survival fidelity at randomized times in
+successively wider centered windows and reconstruct both empirical
+distributions with calibrated preparation and readout uncertainty.  Theorem
+\ref{thm:boundstateedge} predicts that multiplying every fidelity in the
+bound-sector distribution by $p^2$ gives the full-state stationary
+distribution.  It also predicts one interval of support with upper edge
+$p^2$.
+
+A distributional discrepancy after the measured $p^2$ rescaling, survival
+fidelity above $p^2$ plus full error budget, or a persistent resolved gap in
+the limiting support falsifies the claimed spectral model or its calibration.
+Finite data cannot certify an exact support edge or weak limit: a responsible
+test reports observation window, continuum leakage, unresolved detunings and
+confidence bands.  The protocol tests finite-window approach to the law; it
+does not turn agreement into proof of the universal quantifier.
 
 \paragraph{Full-process horizon-instability stress test.}
 Use a programmable three- or four-level system to realize two diagonal
@@ -1686,21 +1777,21 @@ That limitation is theorem's experimental content: experiment can exhibit
 finite-horizon indistinguishability followed by divergent return behavior,
 but cannot convert bounded evidence into proof of completed recurrence law.
 
-\paragraph{Bound-state mass from stationary return edge.}
-Use a controllable trapped-plus-scattering system and prepare state whose
-bound-sector population $p$ is measured independently by spectroscopy or
-state-selective release.  Sample survival fidelity at randomized times in
-successively wider centered windows and reconstruct empirical distribution,
-including calibrated preparation and readout uncertainty.  Theorem
-\ref{thm:boundstateedge} predicts upper support edge $p^2$ and no persistent
-internal gap.  Observation of fidelity above independently measured
-$p^2$ plus full error budget falsifies claimed spectral model or its
-calibration.  Persistent gap whose width stays above resolution as window
-grows likewise falsifies finite-system realization of predicted phase hull.
-Conversely, finite record cannot certify exact support edge: convergence
-claim requires model-specific bounds on unresolved detunings and continuum
-leakage.  Protocol therefore tests finite-window approach to law, not exact
-infinite-time statement.
+\paragraph{Phase-volume corollary on one programmable spectrum.}
+Use a programmable $D$-level system and keep $D$ fixed while imposing
+different numbers of exact balanced energy relations.  Ramsey interferometry
+or process reconstruction gives $\Phi_E(t)$.  Uniform-time samples and smooth
+inner/outer approximations to phase balls bracket $F_E(\varepsilon)$.  The
+completed-law prediction is
+\begin{equation}
+ \alpha(E)=D-1-\rho(E),                              \label{eq:experiment-capstone}
+\end{equation}
+where $\rho(E)$ is computed from programmed exact relations.  Adding one
+independent exact relation at fixed $D$ transfers one unit from $\alpha$ to
+$\rho$.  This is a test of the geometric corollary, not an independent route
+to validating the carrier law.  Finite data cannot certify rational
+independence or an asymptotic slope; report window, phase resolution,
+spectroscopic uncertainty and integer search aperture.
 
 \paragraph{Scalar blindness versus resolved recurrence.}
 Implement diagonal nine-level Hamiltonians with energies $E^+$ and $E^-$ in
@@ -1715,17 +1806,37 @@ disagreement.  A statistically significant scalar mismatch after calibrated
 errors would falsify claimed implementation; failure of resolved separation
 would falsify either Hamiltonian calibration or measurement map.
 
-\paragraph{Observer-graph quotient.}
-For one calibrated finite Hamiltonian, choose two probe families whose
-coherence graphs differ by a controlled bridge.  Prepare the same states,
-record the same Born observables, and compare return windows.  Theorem
-\ref{thm:observer} predicts which phase differences become visible, exact
-visible dimension $D-c$, and graph--resolution deadline.  Existing
-many-body recurrence experiments already illustrate why recurrence is
-observable-relative \cite{RauerEtAl2018}; the present law turns that qualitative
-choice into a rank and a finite certificate.  Finite data can test deadline
-and zero-set predictions but cannot certify absence of every unmeasured
-arithmetic relation.
+\paragraph{Observer-rank sweep on one unchanged Hamiltonian.}
+Program and calibrate one small simple-spectrum qudit chain, then freeze its
+Hamiltonian.  Realize several finite matrix-observer families whose coherence
+graphs have controlled visible ranks $r=0,1,2,\ldots$; graph engineering can
+be done by adding or deleting one measured coherence bridge while leaving
+dynamics unchanged.  After one fixed positive cutoff $t_0$, estimate first
+times $T_{\rm obs}(\delta;t_0)$ for decreasing displacement thresholds.
+Theorem \ref{thm:universal-observer-exponent} predicts ideal-model log--log
+slopes
+\[
+ 0,\ 0,\ \tfrac12,\ 1,\ \tfrac32,\ldots,
+ \qquad\text{in general }\frac{\max\{r-1,0\}}2.
+\]
+Within each graph, change all positive block weights over calibrated ranges:
+these changes may shift onset and multiplicative scale but must not change
+asymptotic slope.  A bridge joining two components raises $r$ by one and,
+above boundary cases, slope by one half.  Theorem \ref{thm:observer} supplies
+a separate finite graph--resolution deadline that can be checked at each
+threshold.  This is a direct same-device test of claim that detector
+connectivity, rather than detector strength, sets recurrence dimension.
+
+No universal finite-$\delta$ rate of convergence to asymptotic slope is
+claimed.  Finite data therefore cannot establish metric non-very-well-
+approximability, null-exception statement or limit in
+\eqref{eq:observerexponent}.  It can falsify calibrated finite model---for
+example by violating exact $r=0,1$ boundary behavior, finite deadline or a
+stable slope separation beyond full error budget---and can corroborate its
+finite-resolution consequences.  Existing many-body recurrence experiments
+already illustrate why recurrence is observable-relative
+\cite{RauerEtAl2018}; proposed sweep turns that qualitative dependence into
+one rank-controlled quantitative sequence.
 
 \paragraph{Local interaction reconstruction and return-density scaling.}
 On a programmable qudit chain or small interaction graph, perform calibrated
@@ -1813,8 +1924,8 @@ hard interval falsifies candidate realization or calibrated error model.
 Failure of heuristic compiler to find circuit is not hardness certificate;
 for experimentally accessible small $L$, test requires exhaustive net with
 independent discretization-error bound.  Since theorem selects Hamiltonian
-existentially, experiment additionally needs explicit calibrated coefficient
-witness.  Finite data cannot certify maximal projectivity or exponential law
+existentially, experiment additionally needs an explicit calibrated
+Hamiltonian.  Finite data cannot certify maximal projectivity or exponential law
 for all $L$, but can test physical mechanism and finite-volume implications.
 
 \paragraph{Complexity excursion, exact return and reflection.}
@@ -1830,9 +1941,9 @@ period grows rapidly with $L$, so useful near-term tests are small-volume
 checks of mechanism rather than direct evidence for thermodynamic limit.
 
 The same-field Theorem \ref{thm:samefield} is not itself a device blueprint.
-Its simultaneous coefficient selection is existential, and no finite
+Its simultaneous coupling selection is existential, and no finite
 experiment realizes UHF limit.  A laboratory test of that stronger theorem
-would first require one explicitly calibrated coefficient witness and
+would first require one explicitly calibrated set of couplings and
 finite-size error bounds for chosen observables.  With such witness, process
 reconstruction across increasing prefixes could estimate distance to scalar
 unitary circle, identify successive entries into closed $1/20$ return tube,
@@ -1855,41 +1966,50 @@ reflection instead of reporting one undifferentiated recurrence time.
 
 \section{Position relative to current results}
 
-Kronecker--Weyl phase occupation, consequences of rational independence, and
-all-order spectral-form-factor moments are established ingredients
-\cite{RiddellBertini2024,CamposVenutiOdavicHamma2026}.  Homometric structures
-with equal autocorrelation are classical
-\cite{RosenblattSeymour1982,GrimmBaake2008}.  The contribution is therefore
-not torus averaging or homometry in isolation.  Mathematical center is the
-joined persistent-phase factorization: carrier selection, an exact existence
-criterion for finite and countable phase laws, action--constraint capacity
-conversion, weighted and observer-dependent target geometry, maximal scalar
-system and clock quotients, complete resolved tomography, and a sharp
-finite-record boundary.  Explicit scalar--resolved separation shows why none
-of these layers can be collapsed into one return time.
-
 Classical Wiener--Eberlein theory identifies long-time mean squared
-Fourier--Stieltjes amplitude with sum of squared atomic masses
-\cite{Eberlein1955}.  Theorem~\ref{thm:boundstateedge} concerns different
-invariant of full stationary law: its support is necessarily connected and
-its maximum is square of total atomic mass.  It therefore distinguishes
-$\ell^2$ collision weight from $\ell^1$ bound-state weight and supplies exact
-inverse formula for latter.  In pure-point case, connected-support mechanism
-has classical ancestry: Jessen--Wintner support theorem identifies support of
-asymptotic law of a uniformly almost-periodic vector function with closure of
-its range, which is connected for a continuous real-time scalar orbit
-\cite{JessenWintner1935}.  Our claim is narrower: arbitrary mixed spectral
-measure reduces exactly to scaled pure-point carrier, giving full interval
-$[\rho,p^2]$ and inversion $p=\sqrt{\max\operatorname{supp}}$.  Targeted
-search found no source stating that mixed-spectrum support-edge package; this
-remains absence evidence, not proof of priority.
+Fourier--Stieltjes amplitude with sum of squared atomic masses, while the
+Eberlein decomposition matches the strongly almost-periodic component with
+the pure-point part of the underlying measure
+\cite{Eberlein1955,StrungaruTerauds2016}.  Thus pure-point selection and its
+extension to polynomial statistics are classical ingredients, not novelty
+claims.  Jessen--Wintner identify support of an asymptotic law of
+a uniformly almost-periodic vector function with closure of its range
+\cite{JessenWintner1935}; this supplies the pure-point connected-support
+ancestry.  Theorem~\ref{thm:boundstateedge} makes a different
+arbitrary-spectrum statement.  Centered-time survival laws always converge;
+their entire limit measure equals the normalized pure-point law scaled by
+$p^2$; its support is $[\ell_\mu,p^2]$; and the observable upper edge recovers
+total pure-point mass.  Only the joined no-gap support and inverse-edge result
+is advanced as candidate novelty.  Exact-object searches found no earlier
+statement of that result, but absence from a search is not proof of priority;
+no absolute priority claim is made.
+
+Relations between return rates and dimension are not new in themselves.
+Gao related mean recurrence statistics to information dimension, and
+Barreira--Saussol and Saussol proved return-rate/local-dimension identities
+under hyperbolic or rapid-mixing assumptions
+\cite{Gao1999,BarreiraSaussol2001,Saussol2006}.  Kronecker--Weyl phase
+occupation and consequences of rational independence are also established
+ingredients \cite{RiddellBertini2024,CamposVenutiOdavicHamma2026}.
+Accordingly, Theorem \ref{thm:return-constraint} is presented as a
+premise-complete finite-spectrum corollary, not as discovery of a new
+recurrence--dimension principle.  It identifies the dimension exactly from
+spectral arithmetic at degeneracies and resonances without mixing or
+typicality.
+
+Homometric structures with equal autocorrelation are classical
+\cite{RosenblattSeymour1982,GrimmBaake2008}.  Their role here is to prove a
+limit of scalar stationary data: even the entire survival trace can discard
+labelled relation geometry.  Resolved observations, local realizations and
+finite-record obstructions then determine how far the persistent-carrier law
+survives changes of observation and scale.
 
 First-return literature sets a sharper comparison.  Campos Venuti computes
 average spacing of fidelity-level crossings and explicitly distinguishes it
 from first recurrence; near exact return, calculation uses Gaussian
 approximation \cite{CamposVenuti2015}.  Gupta--Short obtain deterministic
 Dirichlet upper bounds, including $D-2$ phase exponent for continuous uniform
-recurrence, without matching generic lower law in local coefficient family
+recurrence, without a matching generic lower law in a local Hamiltonian family
 \cite{GuptaShort2026}.  Kotowski--Oszmaniec prove packing upper bounds and
 random-diagonal lower bounds and explicitly leave tight recurrence for
 physical dynamics generated by local noncommuting Hamiltonians open
@@ -1902,18 +2022,29 @@ $\max\{s-2,0\}/2$; arbitrary positive weights on same support change only
 finite comparison constants.  This upgrades effective-support upper bounds
 to an exact almost-everywhere physical law, including periodic one- and
 two-level boundary strata.  It does not cover every local Hamiltonian or give
-finite-resolution constants uniform over states or coefficient space.
+finite-resolution constants uniform over states or parameter space.
+Theorem \ref{thm:universal-observer-exponent} goes beyond state support in a
+different direction.  It gives exact exponent for arbitrary finite weighted
+matrix-observer families, with effective dimension $r=D-c(G)$ selected by
+observer coherence graph, and removes exceptional Hamiltonians once so every
+observer may be chosen afterward.  Its static-local clause proves existence
+of one bounded-degree one-dimensional Hamiltonian carrying this entire
+observer hierarchy and certified circuit-complexity ramp.  The cited
+first-return results do not contain the conjunction of an all-observer
+quantifier, graph-rank exponent and same-Hamiltonian local ramp.  Our result
+remains almost-everywhere/existential, asymptotic in resolution and
+does not provide uniform convergence rate or classify every local
+Hamiltonian.
 Kotowski--Oszmaniec also show that deleting a spectral tail gives a uniformly
 close effective-support orbit and use that fact for deterministic upper
 bounds.  Corollary \ref{cor:vanishing-tail} identifies complementary sharp
 boundary: a positive tail of total mass $\eta$ keeps ordinary survival deficit
 within $4\eta$ of eigenstate value for every time, but changes exact
 first-return exponent from zero to maximal on same generic local Hamiltonian.
-We found no prior unmeasured-recurrence theorem combining horizon-free scalar
+The contribution claimed here is the conjunction of horizon-free scalar
 closeness, exact coarse no-exit law, maximal asymptotic exponent activation and
-static bounded-degree locality.  Priority assertion concerns conjunction;
-effective-support continuity and metric Diophantine extremality are not
-claimed new separately.
+static bounded-degree locality.  Effective-support continuity and metric
+Diophantine extremality are not claimed as new separately.
 
 Theorem \ref{thm:horizon-instability} addresses a different inverse question.
 The cited recurrence bounds fix Hamiltonian and infer return behavior;
@@ -1921,10 +2052,10 @@ truncated Diophantine filling-time theory fixes finite arithmetic information
 and bounds torus coverage \cite{DumasFischler2022}.  Monitored first-detection
 recurrence instead inserts a projective test after each unitary step and can
 have quantized mean return time \cite{GrunbaumEtAl2013}; it is not unmeasured
-survival fidelity.  We found no prior theorem showing that every
-finite-horizon full-propagator neighborhood of every Hermitian Hamiltonian
+survival fidelity.  The cited results do not show that every finite-horizon
+full-propagator neighborhood of every Hermitian Hamiltonian
 contains, in one common eigenbasis and for same cyclic state, both zero and
-maximal physical first-return exponents.  Priority claim concerns this exact
+maximal physical first-return exponents.  Distinct content is this exact
 conjunction, not density of rational spectra, metric Diophantine extremality
 or Duhamel continuity separately.
 
@@ -1939,8 +2070,10 @@ That hierarchy has following physical realizations and consequences:
 \item generic maximal projective rank for every static finite interaction
       graph, simultaneous subsystem graph reconstruction, sharp same-draw
       $D-1$/$D-2$ first-hit clocks and all-state spectral-support fidelity
-      exponent $\max\{s-2,0\}/2$ on nearest-neighbour paths, exact
-      commuting-local compression boundary, and thermodynamic consequences;
+      exponent $\max\{s-2,0\}/2$ on nearest-neighbour paths; exact
+      all-observer exponent $\max\{r-1,0\}/2$ with one static local
+      Hamiltonian simultaneously carrying a circuit-complexity ramp; exact
+      commuting-local compression boundary; and thermodynamic consequences;
 \item complete countable-spectrum saturation under arbitrarily weak
       domain-preserving trace-class perturbations and along a separable
       interaction ray outside a countable exceptional set, together with a
@@ -1953,7 +2086,7 @@ That hierarchy has following physical realizations and consequences:
       finite static nearest-neighbour path with an early ramp and arbitrarily
       late continuous-circuit hard plateaux of width
       $2^{\lfloor L/2\rfloor}$ at near-Hilbert gate budget; plus one countable
-      nearest-neighbour coefficient field whose literal prefixes
+      nearest-neighbour coupling field whose literal prefixes
       share a laboratory complexity floor, near-Hilbert circuit-hard
       excursion--re-entry, syndetic projective recurrence, diverging
       consecutive projective-return gaps and compact-time convergence to one UHF
@@ -1993,8 +2126,8 @@ window using a finite low-order resonance census.  Finite-time equilibration
 already admits gap-degeneracy and inverse-resolution bounds
 \cite{ShortFarrelly2012}; finite temporal ensembles exhibit sinc-controlled
 late $1/T$ behavior and a minimum higher-order-gap crossover
-\cite{MarkEtAl2024}.  Our claim is narrower and different: we found no prior
-theorem that, for every deterministic finite spectrum including exact
+\cite{MarkEtAl2024}.  Our claim is narrower and different: the cited results
+do not prove that, for every deterministic finite spectrum including exact
 resonances, controls every translated window's physical operator-norm capture
 of complete continuous two-qubit circuit class by a persistent zero-action
 term plus explicit nonzero-action correction.  Same-field specialization
@@ -2013,8 +2146,8 @@ optimal bounds for every local system.  Nor does theorem prove exponential-durat
 growth, near-maximal saturation, typicality, translation invariance or
 infinite-volume recurrence.
 
-Theorem \ref{thm:exponentialplateau} addresses sharper finite-volume
-frontier.  We found no prior theorem combining one deterministic
+Theorem \ref{thm:exponentialplateau} addresses a sharper finite-volume
+frontier.  The cited results do not combine one deterministic
 time-independent nearest-neighbour path, arbitrary continuous two-qubit gate
 parameters, fixed operator error, a near-Hilbert gate budget, pointwise hard
 intervals of explicitly exponential width, and recurrent circuit re-entry.
@@ -2023,7 +2156,7 @@ Random-dynamics saturation theorem proves different stochastic statement
 upper algorithms and worst-case lower bounds for piecewise dynamics
 \cite{ChildsSu2019,HaahEtAl2023}; generic commuting two-local lower bounds
 need not be geometrically bounded degree \cite{LowEtAl2023}; recent
-coefficient-sensitive bounds use bounded-degree classical hard instances but
+coupling-strength-sensitive bounds use bounded-degree classical hard instances but
 optimize simulation cost rather than recurrent hard-interval geometry
 \cite{ZlokapaEtAl2026}.  Novelty claim is exact conjunction above, not Lie
 product formula, entropy covering, torus minimality or backward circuit
@@ -2049,7 +2182,7 @@ Hamiltonian-simulation lower bounds provide important comparison points.
 Worst-case one-dimensional piecewise local dynamics require nearly linear
 space--time gate count \cite{HaahEtAl2023}; generic commuting two-local
 Hamiltonians can require quadratic gate count at short time
-\cite{LowEtAl2023}; and recent coefficient-sensitive optimal lower bounds use
+\cite{LowEtAl2023}; and recent coupling-strength-sensitive optimal lower bounds use
 local bounded-degree classical hard instances, with time-independent
 unit-time constructions and piecewise-constant extensions to later times
 \cite{ZlokapaEtAl2026}.  Theorem \ref{thm:nestedramp} is complementary: it
@@ -2106,18 +2239,16 @@ Theorem \ref{thm:reflection}.
 
 \section{Synthesis: recurrence as persistent phase geometry}
 
-Four laws answer different versions of the same physical question.  Law I says
-whether any recurrent signal remains after loss and gives its exact ceiling.
-For arbitrary energy spectra it also proves stationary survival values have
-one interval of support whose upper edge is squared total bound-state mass.
-Law II says what completed motion is possible on the surviving carrier: relations
-are locked directions, temporal rank is complementary free capacity, and
-local interaction can convert one into the other.  Law III says which portion of
-that motion matters for a target or measurement.  Weights set accuracy cost;
-observer coherences set visible dimension; scalar survival and resolved
-replicas retain provably different information.  Law IV says where finite
-data stop: agreement throughout any prescribed horizon need not fix completed
-geometry or one later probability.
+The common invariant is the stationary return measure itself.  Theorem
+\ref{thm:boundstateedge} derives it from the actual Born survival trace and
+proves that only the persistent spectral carrier survives completed-time
+sampling.  Law I identifies that carrier under loss and arbitrary spectral
+type.  Law II determines the carrier's completed phase motion and exact
+constraints; \eqref{eq:rankconservation} is its dimension bookkeeping, not a
+replacement for the physical law.  Law III pushes the same phase motion
+through specified states, observers and circuit targets.  Law IV proves where
+finite data stop: agreement throughout any prescribed horizon need not fix
+the completed measure, its geometry or one later probability.
 
 This organization keeps apparently different results in one theory rather
 than one catalogue.  Generic local rank, return-density extinction, countable
@@ -2181,10 +2312,10 @@ implication.
 \section{Proof organization}
 
 Appendices give self-contained proofs in order used above.  They begin with
-finite contraction selection and arbitrary spectral measures, derive
-ordered-gap deficit identity, no-gap stationary support and exact
-bound-state-mass inversion, then prove
-character completeness, action--constraint conversion, scalar quotient and
+finite contraction selection and arbitrary spectral measures, derive the
+stationary carrier scaling, ordered-gap deficit identity, no-gap support and
+exact bound-state-mass inversion, then prove the completed phase-volume law,
+character completeness, exact-relation conversion, scalar quotient and
 resolved relation recovery, and verify strict nine-level witness directly.
 They then develop interaction conversion, static-path and arbitrary-graph
 genericity, sharp path phase clocks and physical survival-fidelity

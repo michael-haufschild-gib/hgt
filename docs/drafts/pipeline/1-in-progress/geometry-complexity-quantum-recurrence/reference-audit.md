@@ -2,13 +2,29 @@
 
 Audit date: 2026-08-28
 
-Scope: every one of the 45 entries now present in `references.tex`, plus every
+Scope: every entry now present in `references.tex`, plus every
 claim directly attached to a citation in `body.tex`. Previously retained but
 now unused entries remain listed only where removal history matters. Sources below are
 publisher records, author-hosted records, or arXiv records maintained from the
 authors' submissions. Search-result aggregators were not used as authority.
 
 ## Corrections made
+
+- Added and verified the three direct recurrence--dimension antecedents used
+  to delimit the capstone claim: Gao (1999), Barreira--Saussol (2001), and
+  Saussol (2006). DOI metadata and publisher records agree on authors, titles,
+  venues, years, and pages. The AIMS publisher page gives volume 15 for
+  Saussol; this resolves inconsistent third-party metadata reporting volume
+  16. These papers establish recurrence/local-dimension relations in chaotic,
+  hyperbolic, or rapidly mixing settings. They are cited as ancestry, not as
+  sources for the arbitrary-spectrum quantum conservation identity.
+- Updated `KotowskiOszmaniec2026` from arXiv-only metadata to the published
+  *Physical Review Letters* record, volume 137, article 060402,
+  DOI `10.1103/crwj-qfw5`; verified against APS DOI metadata.
+- Added publisher DOI `10.1103/kkz3-fthm` to `GuptaShort2026`, verified from
+  the authors' arXiv record and its journal reference.
+- Added DOI `10.22331/q-2026-04-20-2074` to `AnandEtAl2026`, verified against
+  the *Quantum* record.
 
 - `CamposVenutiOdavicHamma2026`: corrected Jovan Odavić's initial from `M.` to
   `J.`
@@ -42,8 +58,14 @@ authors' submissions. Search-result aggregators were not used as authority.
   `WangEtAl2017` and `ElbenEtAl2023`, supporting experimental calibration and
   randomized-measurement feasibility rather than any mathematical theorem
 - Added and verified `Eberlein1955` from AMS bibliographic record: author,
-  title, journal, volume, pages and DOI; cited only for classical
-  Fourier--Stieltjes atomic mean-square formula.
+  title, journal, volume, pages and DOI; cited for classical
+  Fourier--Stieltjes mean and decomposition ancestry.
+- Added and verified `StrungaruTerauds2016` from the journal record and author
+  repository: Nicolae Strungaru and Venta Terauds, *Journal of Statistical
+  Physics* 164, 1183--1216 (2016), DOI
+  `10.1007/s10955-016-1579-8`.  It explicitly states that Eberlein
+  decomposition of Fourier transforms matches pure-point/continuous measure
+  decomposition and is cited to prevent claiming pure-point selection as new.
 - Added and verified `ChildsSu2019` from journal and arXiv records; source
   supports nearest-neighbour product-formula simulation comparison, not new
   hard-plateau theorem
@@ -61,6 +83,21 @@ authors' submissions. Search-result aggregators were not used as authority.
   `recurrence-time bounds`; replaced vague claim that higher no-resonance
   conditions are difficult to verify with source-backed statement that
   chaotic and random-matrix models can exhibit violations or near violations
+- Rechecked `KotowskiOszmaniec2026` against arXiv v3 HTML on 28 August 2026.
+  Its theorem concerns pure-state trace-distance recurrence, deterministic
+  upper bounds and random-diagonal lower saturation; its conclusion explicitly
+  lists mixed states, expectation values and tight physical local
+  noncommuting dynamics as open directions.  This supports manuscript's
+  narrow frontier comparison for observer and local-Hamiltonian theorem.
+- Rechecked `GuptaShort2026` against arXiv v2 and published metadata: result
+  bounds simultaneous recurrence of all states using Dirichlet approximation;
+  it does not state observer-coherence graph exponent or same-Hamiltonian
+  all-observer law.
+- Wide primary-source search for `observer coherence graph first-return
+  exponent` found experimental recurrence blueprint and monitored/weakly
+  measured quantum-walk first-hitting literature, but no unmonitored matrix-
+  observer displacement theorem with exponent `max(r-1,0)/2`.  This records
+  absence evidence only, not proof of priority.
 
 ## Entry-by-entry verification
 
@@ -68,6 +105,7 @@ authors' submissions. Search-result aggregators were not used as authority.
 |---|---|---|
 | `BocchieriLoinger1957` | Verified: authors, title, *Phys. Rev.* 107, 337--338 (1957), DOI. | [APS](https://journals.aps.org/pr/abstract/10.1103/PhysRev.107.337) |
 | `Eberlein1955` | Verified: W. F. Eberlein, title, *Proc. Amer. Math. Soc.* 6, 310--312 (1955), MR 68030 and DOI. | [AMS DOI](https://doi.org/10.1090/S0002-9939-1955-0068030-2) |
+| `StrungaruTerauds2016` | Verified: N. Strungaru and V. Terauds, title, *J. Stat. Phys.* 164, 1183--1216 (2016), DOI; source explicitly identifies Fourier-side Eberlein decomposition with pure-point/continuous measure decomposition. | [DOI](https://doi.org/10.1007/s10955-016-1579-8); [author repository](https://hdl.handle.net/20.500.14078/2131) |
 | `JessenWintner1935` | Verified: Børge Jessen and Aurel Wintner, title, *Trans. Amer. Math. Soc.* 38(1), 48--88 (1935), DOI; Theorem 26 identifies support of the asymptotic law of a uniformly almost-periodic vector function with closure of its range. | [AMS primary PDF](https://www.ams.org/tran/1935-038-01/S0002-9947-1935-1501802-5/S0002-9947-1935-1501802-5.pdf) |
 | `KleinbockMargulis1998` | Verified: authors, title, *Annals of Mathematics* 148, 339--360 (1998), DOI; source proves extremality for nondegenerate manifolds used in first-hit argument. | [Annals/DOI](https://doi.org/10.2307/120997) |
 | `DumasFischler2022` | Verified: H. Scott Dumas and St\'ephane Fischler, title, *Qualitative Theory of Dynamical Systems* 21(4), article 103 (2022), DOI and arXiv identifier; source treats torus filling times under truncated Diophantine conditions. | [Springer](https://doi.org/10.1007/s12346-022-00637-3); [arXiv:2112.11786](https://arxiv.org/abs/2112.11786) |

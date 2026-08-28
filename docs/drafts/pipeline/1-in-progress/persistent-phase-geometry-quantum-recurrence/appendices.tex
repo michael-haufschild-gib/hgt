@@ -68,8 +68,10 @@ For every $r\ge1$,
    |\widehat\mu(t)|^{2r}\,dt
  =\nu^{*r}(\{0\}).
 \]
-Every continuous statistic of $|\widehat\mu(t)|^2\in[0,1]$ has a
-long-time mean.  At $r=1$, the mean is
+The centered-time empirical laws of $|\widehat\mu(t)|^2$ converge weakly to
+a unique probability measure $\mathscr R_\mu$ on $[0,1]$.  Equivalently,
+every continuous statistic of $|\widehat\mu(t)|^2$ has a long-time mean.  At
+$r=1$, the mean is
 $\sum_E\mu(\{E\})^2$.  Thus the stationary recurrent fidelity is exactly
 the point-spectrum collision mass.
 \end{theorem}
@@ -78,19 +80,24 @@ the point-spectrum collision mass.
 Expand the (2r)-fold product as the Fourier transform of $\nu^{*r}$.
 Ces\`aro averaging sends $\ee^{\ii t\omega}$ to the indicator of
 $\omega=0$; bounded convergence gives the formula.  Polynomial
-approximation on $[0,1]$ extends convergence from moments to every
-continuous statistic.
+approximation on $[0,1]$ extends convergence from moments to every continuous
+statistic.  The resulting limit is a positive normalized functional on
+$C([0,1])$, so the Riesz representation theorem gives a unique probability
+measure $\mathscr R_\mu$.  This is precisely weak convergence of the empirical
+laws.  Since $|\widehat\mu(-t)|^2=|\widehat\mu(t)|^2$, one-sided and centered
+uniform sampling give the same limit.
 \end{proof}
 
-\subsection{No-gap stationary support and bound-state mass}
+\subsection{No-gap stationary support and pure-point mass}
 
-We prove Theorem~\ref{thm:boundstateedge} directly from preceding collision
-law and compact phase geometry.  First suppose
-$\nu=\sum_iw_i\delta_{E_i}$ is a countably carried probability measure.  Its
+\begin{proof}[Proof of Theorem~\ref{thm:boundstateedge}]
+We argue from the preceding collision law and compact phase geometry.
+First suppose
+$\lambda=\sum_iw_i\delta_{E_i}$ is a countably carried probability measure.  Its
 weights are nonnegative and absolutely summable, with $\sum_iw_i=1$.  For
 every $t$, absolute convergence and Hilbert-space dispersion give
 \begin{align}
- 1-|A_\nu(t)|^2
+ 1-|A_\lambda(t)|^2
  &=\sum_{i,j}w_iw_j
    \bigl(1-\cos((E_i-E_j)t)\bigr).                  \label{eq:gapdefectidentity}
 \end{align}
@@ -98,26 +105,29 @@ Indeed, twice right side is weighted pairwise squared chord length of unit
 phases $\ee^{-\ii tE_i}$; expanding this length gives twice
 $1-|\sum_iw_i\ee^{-\ii tE_i}|^2$.
 
-Let $\mathcal K_\nu$ be closure of ordered-gap phase orbit in countable
+Let $\mathcal K_\lambda$ be closure of ordered-gap phase orbit in countable
 torus.  Orbit is continuous image of connected group $\R$, so its closure is
-compact and connected.  Haar measure on $\mathcal K_\nu$ has full support.
+compact and connected.  Haar measure on $\mathcal K_\lambda$ has full support.
 Nonnegative series
 \[
- D_\nu(z)=\sum_{i,j}w_iw_j(1-\operatorname{Re}z_{ij})
+ D_\lambda(z)=\sum_{i,j}w_iw_j(1-\operatorname{Re}z_{ij})
 \]
 converges uniformly, hence is continuous.  Its image is compact connected
-subset of $\R$, contains zero at identity and attains maximum $M_\nu$.
+subset of $\R$, contains zero at identity and attains maximum $M_\lambda$.
 Consequently
 \[
- D_\nu(\mathcal K_\nu)=[0,M_\nu].
+ D_\lambda(\mathcal K_\lambda)=[0,M_\lambda].
 \]
-Support of continuous pushforward of full-support Haar measure is exactly
-continuous image.  Equation~\eqref{eq:gapdefectidentity}, followed by
+Translation by the one-parameter orbit is uniquely ergodic on its closure,
+so centered-time occupation converges to Haar measure on
+$\mathcal K_\lambda$.  Support of a continuous pushforward of full-support
+Haar measure is exactly the continuous image.  Equation
+\eqref{eq:gapdefectidentity}, followed by
 reflection $d\mapsto1-d$, therefore gives
 \begin{equation}
- \operatorname{supp}\mathscr R_\nu=[1-M_\nu,1].     \label{eq:purepointsupport}
+ \operatorname{supp}\mathscr R_\lambda=[1-M_\lambda,1]. \label{eq:purepointsupport}
 \end{equation}
-Physical fidelity bounds imply $0\le M_\nu\le1$.
+Physical fidelity bounds imply $0\le M_\lambda\le1$.
 
 Now let $\mu$ have pure-point restriction $\mu_{\rm pp}$ of total mass $p$.
 For every $r\ge1$, singleton mass at zero of $r$-fold difference
@@ -138,6 +148,7 @@ $[p^2(1-M_{\bar\mu_{\rm pp}}),p^2]$.  If $p=0$, every positive moment
 vanishes, hence stationary law is $\delta_0$.  Both branches yield
 \eqref{eq:boundstateedge} and \eqref{eq:boundstatescaling}; nonnegativity of
 $p$ gives square-root inversion.
+\end{proof}
 
 \begin{theorem}[Pure-point, cyclic and atomless trichotomy]
 \leavevmode

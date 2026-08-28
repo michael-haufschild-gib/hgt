@@ -11,6 +11,7 @@ trap 'rm -f "$SCRATCH"' EXIT
 
 cat > "$SCRATCH" << 'EOF'
 import GaloisForLFunctions
+import GaloisForLFunctions.RHTower.XiKoszulSourceTranspositionClassification
 #print axioms GaloisForLFunctions.sigma_involutive
 #print axioms GaloisForLFunctions.cpow_inversion_scale
 #print axioms GaloisForLFunctions.norm_cpow_neg_eq_rpow_re
@@ -354,6 +355,11 @@ import GaloisForLFunctions
 #print axioms GaloisForLFunctions.familyPrimeBalance_apply_eq_zero_of_primeLogFrequency_eq_zero
 #print axioms GaloisForLFunctions.source_budget_one_sided_recession_nonnegative
 #print axioms GaloisForLFunctions.source_budget_two_sided_recession_zero
+#print axioms RHTower.nonempty_deningerCalderonWittKoszulCharacterLift_iff
+#print axioms RHTower.deningerCalderonWittKoszulTranspositionClassification
+#print axioms RHTower.not_nonempty_deningerCalderonWittOrderBlindCoefficientFaithfulCompletion
+#print axioms RHTower.deningerCalderonWittKoszulThetaSpinCompensation_universal
+#print axioms RHTower.everyXiCanonicalKoszulSignCupVanishesAtPrime_iff_riemannHypothesis
 EOF
 
 cd "$FORMAL_DIR"
@@ -367,8 +373,8 @@ NORMALIZED="$(printf '%s\n' "$OUT" | tr '\n' ' ' | sed 's/[[:space:]][[:space:]]
 AXIOM_LINES="$(printf '%s\n' "$NORMALIZED" | { grep -oE "depends on axioms: \\[[^]]*\\]" || true; })"
 NO_AXIOM_LINES="$(printf '%s\n' "$NORMALIZED" | { grep -oE "does not depend on any axioms" || true; })"
 AUDITED_COUNT="$(printf '%s\n%s\n' "$AXIOM_LINES" "$NO_AXIOM_LINES" | sed '/^$/d' | wc -l | tr -d ' ')"
-if [ "$AUDITED_COUNT" -ne 343 ]; then
-  echo "FAIL: expected 343 audited theorem outputs" >&2
+if [ "$AUDITED_COUNT" -ne 348 ]; then
+  echo "FAIL: expected 348 audited theorem outputs" >&2
   exit 1
 fi
 BAD_AXIOMS="$(printf '%s\n' "$AXIOM_LINES" \

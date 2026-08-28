@@ -3,6 +3,35 @@
 Date: 28 August 2026. Priority status: provisional pending independent search.
 No absolute “first” claim is authorized.
 
+## Capstone novelty boundary
+
+Capstone is now the universal stationary survival-recurrence law for arbitrary
+probability spectral measures. Its single physical input is the spectral
+measure of a normalized state. It proves: centered-time survival-fidelity laws
+converge weakly; complete limiting measure equals normalized pure-point law
+scaled by squared total pure-point mass; support is one interval ending at
+that square; and total pure-point mass is recovered from observable upper
+edge.
+
+Classical boundary is explicit. Wiener--Eberlein theory gives first stationary
+moment as sum of squared atomic masses, and Eberlein decomposition identifies
+the strongly almost-periodic component with the pure-point part of the
+underlying measure. Pure-point selection and its polynomial-statistic
+consequences are therefore not claimed new. Jessen--Wintner gives
+support-as-range-closure ancestry for uniformly almost-periodic pure-point
+motion. Candidate contribution is narrowed to the joined no-gap interval
+support and exact inverse-edge law for arbitrary mixed spectral type,
+including absolutely continuous and singular continuous parts. Exact-object
+searches found no source stating that result. This is absence evidence, not
+proof of priority; manuscript makes no absolute-first claim.
+
+The finite-spectrum identity `alpha + rho = D - 1` is demoted to a geometric
+corollary. It is local Haar dimension plus rank--nullity, not headline physical
+law. Gao, Barreira--Saussol and Saussol are cited as direct
+recurrence--dimension antecedents. Half-integer physical first-return
+exponents later require explicit quadratic target geometry and stated metric
+Diophantine genericity.
+
 ## Closest current literature
 
 1. Bocchieri--Loinger establishes finite-dimensional quantum recurrence
@@ -60,10 +89,12 @@ No absolute “first” claim is authorized.
    higher-order autocorrelations recover signals. These are direct parent
    literatures for scalar/resolved separation; homometry and higher-order
    reconstruction are not claimed new.
-10. Wiener--Eberlein theory identifies mean squared Fourier--Stieltjes
-    amplitude with sum of squared atomic masses.  It supplies the first
-    stationary moment, not connectedness of full survival-law support, its
-    exact upper endpoint, or inversion of total atomic mass from that edge.
+10. Wiener--Eberlein theory and modern treatments of Eberlein decomposition
+    supply mean-square selection and pure-point/continuous decomposition.
+    They are plausible antecedents of full polynomial-statistic selection.
+    The bounded claim left here is connectedness of full survival-law support,
+    its exact upper endpoint, and inversion of total atomic mass from that
+    edge.
 
 ## Second frozen-shape search, 27 August 2026
 
@@ -552,6 +583,46 @@ extremality are explicitly not claimed new separately.
 test of uniform `4η` envelope and resolution crossover while Hamiltonian stays
 fixed.  Finite apparatus cannot certify exact zero population or asymptotic
 exponent; it can falsify calibrated finite-system realization.
+
+### Q. Universal observer-rank first-return law
+
+**Closed theorem.**  For every finite real-linear Hermitian family whose
+spectra escape nonzero balanced real relations, failure of following law is
+Lebesgue-null on full simple-spectrum locus.  One Hamiltonian works
+simultaneously for every finite nonnegatively weighted matrix-observer family
+chosen afterward.  If observer coherence graph has `D` spectral vertices,
+`c` components and visible rank `r=D-c`, exact squared-displacement
+first-return exponent after every positive cutoff is `max(r-1,0)/2`.
+Ranks zero and one have exponent zero for every spectrum without genericity.
+For every `L≥8194`, one self-adjoint simple-spectrum static onsite-plus-
+nearest-neighbour Hamiltonian on `2L` qubits simultaneously satisfies entire
+all-observer law and explicit operator-norm circuit-complexity lower ramp.
+
+**Frontier comparison.**  Gimeno--Sotoca give finite-dimensional mixed-state
+recurrence upper bounds.  Gupta--Short and Kotowski--Oszmaniec give
+deterministic recurrence upper bounds; Kotowski--Oszmaniec also give lower
+bounds for random diagonal models and identify expectation-value recurrence
+and tight physical local noncommuting dynamics as open directions.  Existing
+observer-relative and graph-compressed results do not state exact
+first-return exponent selected by coherence-component rank, simultaneous
+quantification over every observer after Hamiltonian selection, or one
+static bounded-degree Hamiltonian carrying both observer hierarchy and
+circuit ramp.
+
+**Priority verdict.**  Strong likely-novel Law III centerpiece and best new
+unifier of observer dependence, exact recurrence scaling and static-local
+many-body dynamics.  Exact conjunction was not located as of 28 August 2026;
+priority remains absence evidence, not bibliographic proof.  Metric
+extremality, graph spanning-tree comparison and Dirichlet recurrence are not
+claimed new separately.
+
+**Experimental boundary.**  Same-device graph-rank sweep predicts slopes
+`0,0,1/2,1,3/2,...`; varying positive weights within graph must preserve slope,
+while adding bridge between components changes it.  Finite graph--resolution
+deadline is separately testable.  No uniform finite-threshold convergence
+rate is claimed, so finite data cannot prove asymptotic exponent,
+non-very-well-approximability or conull genericity; it can falsify calibrated
+finite-system realization and corroborate finite-resolution consequences.
 
 ## Novelty explicitly disclaimed
 
