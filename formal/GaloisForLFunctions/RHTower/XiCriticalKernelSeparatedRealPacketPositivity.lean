@@ -40,7 +40,7 @@ def xiRayLogDeriv (b : ℝ) : ℝ := xiRayLaplaceMoment b / xiRayLaplace b
 
 theorem integrable_xiRayLaplace (b : ℝ) :
     Integrable (fun x : ℝ => thetaCuspFullSource x * Real.exp (b * x)) := by
-  have h := integrable_exp_mul_thetaCuspFullSource b
+  have h := HedenmalmThetaSource.integrable_exp_mul_thetaCuspFullSource b
   apply h.congr
   filter_upwards with x
   exact mul_comm _ _
@@ -383,10 +383,9 @@ theorem xiRayLogDeriv_le {b : ℝ} (hb : xiRayUpperBase ≤ b) :
       (fun x : ℝ => (thetaEnvelopeUpper * Real.exp ((b + 9 / 2) * X - Real.pi * b ^ 2) * (X + 1))
         * (Real.exp X * Real.exp (-x))) (Ioi X) := by
     have h1 : IntegrableOn (fun x : ℝ => Real.exp (-x)) (Ioi X) := by
-      have := integrableOn_exp_mul_Ioi (a := (-1 : ℝ)) (by norm_num) X
-      apply this.congr_fun _ measurableSet_Ioi
-      intro x _
-      rw [neg_one_mul]
+      have h0 := integrableOn_exp_mul_Ioi (a := (-1 : ℝ)) (by norm_num) X
+      exact MeasureTheory.IntegrableOn.congr_fun h0
+        (fun x _ => by simp only [neg_one_mul]) measurableSet_Ioi
     exact ((h1.const_mul _).const_mul _)
   have htail : (∫ x in Ioi X, x * thetaCuspFullSource x * Real.exp (b * x))
       ≤ thetaEnvelopeUpper * Real.exp ((b + 9 / 2) * X - Real.pi * b ^ 2) * (X + 1) := by
@@ -412,6 +411,7 @@ theorem xiRayLogDeriv_le {b : ℝ} (hb : xiRayUpperBase ≤ b) :
       unfold HedenmalmThetaSource.thetaEnvelope
       rw [← Real.exp_add]
       norm_num
+      ring_nf
     have hXe : X + 1 ≤ Real.exp X := by
       have := Real.add_one_le_exp X
       linarith
@@ -454,8 +454,8 @@ theorem xiRayLogDeriv_le {b : ℝ} (hb : xiRayUpperBase ≤ b) :
         Real.exp_le_exp.mpr hexpineq
       have hfin : thetaEnvelopeLower * thetaEnvelope 2 * Real.exp b
           = thetaEnvelopeLower * Real.exp (9 - Real.pi * Real.exp 4 + b) := by
-        rw [hE2, ← Real.exp_add]
-        ring_nf
+        rw [hE2, mul_assoc]
+        simp only [← Real.exp_add]
       calc thetaEnvelopeUpper * Real.exp ((b + 9 / 2) * X - Real.pi * b ^ 2) * (X + 1)
           ≤ thetaEnvelopeLower *
               (Real.exp (Real.log xiRayEnvelopeRatio)
@@ -513,7 +513,7 @@ private theorem moment_reflected_le {b : ℝ} (hb : 0 < b) :
             · exact mul_nonneg (Real.exp_pos _).le (Real.exp_pos _).le
             · exact (Real.exp_pos _).le
         _ = Real.exp (-Real.pi) * Real.exp (-((2 * Real.pi - 11 / 2) * x)) := by
-            rw [← Real.exp_add, ← Real.exp_add, ← Real.exp_add]
+            simp only [← Real.exp_add]
             ring_nf
     calc x * thetaCuspFullSource x * Real.exp (-(b * x))
         ≤ x * thetaCuspFullSource x * 1 := by
@@ -534,9 +534,8 @@ private theorem moment_reflected_le {b : ℝ} (hb : 0 < b) :
     have h1 : IntegrableOn (fun x : ℝ => Real.exp (-(2 * Real.pi - 11 / 2) * x))
         (Ioi (0 : ℝ)) :=
       integrableOn_exp_mul_Ioi (by linarith) 0
-    apply (h1.const_mul _).congr_fun _ measurableSet_Ioi
-    intro x _
-    rw [neg_mul]
+    exact MeasureTheory.IntegrableOn.congr_fun (h1.const_mul _)
+      (fun x _ => by simp only [neg_mul]) measurableSet_Ioi
   have hint := MeasureTheory.setIntegral_mono_on
     ((integrable_xiRayLaplaceMoment (-b)).congr (by
       filter_upwards with x
@@ -642,7 +641,7 @@ private theorem mass_reflected_le {b : ℝ} (hb : 0 < b) :
           ≤ Real.exp (9 * x / 2) * Real.exp (-Real.pi * (1 + 2 * x)) :=
             mul_le_mul_of_nonneg_left hEbound (Real.exp_pos _).le
         _ = Real.exp (-Real.pi) * Real.exp (-((2 * Real.pi - 9 / 2) * x)) := by
-            rw [← Real.exp_add, ← Real.exp_add]
+            simp only [← Real.exp_add]
             ring_nf
     calc thetaCuspFullSource x * Real.exp (-(b * x))
         ≤ thetaCuspFullSource x * 1 :=
@@ -660,9 +659,8 @@ private theorem mass_reflected_le {b : ℝ} (hb : 0 < b) :
     have h1 : IntegrableOn (fun x : ℝ => Real.exp (-(2 * Real.pi - 9 / 2) * x))
         (Ioi (0 : ℝ)) :=
       integrableOn_exp_mul_Ioi (by linarith) 0
-    apply (h1.const_mul _).congr_fun _ measurableSet_Ioi
-    intro x _
-    rw [neg_mul]
+    exact MeasureTheory.IntegrableOn.congr_fun (h1.const_mul _)
+      (fun x _ => by simp only [neg_mul]) measurableSet_Ioi
   have hint := MeasureTheory.setIntegral_mono_on
     ((integrable_xiRayLaplace (-b)).congr (by
       filter_upwards with x

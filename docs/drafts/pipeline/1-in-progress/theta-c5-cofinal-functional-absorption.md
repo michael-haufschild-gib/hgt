@@ -61,18 +61,37 @@ mismatch square.
 
 ## Attack
 
-Differentiate the exact factorization
+The first structural attack is now closed in Lean. Differentiating the exact factorization
 
 ```text
 higherTail = firstFiber * R * (2 + R)
 ```
 
-twice. Substitute the corpus derivative chains for the first-atom log density and `R,R',R''` into
-the functional absorption budget. The target should become a source-pure polynomial/covariance
-inequality in the higher-likelihood spectral moments. Monotone likelihood ratio supplies the
-orientation, but is not assumed sufficient: if the resulting covariance has an uncontrolled
-third-moment term, pivot to the exact higher-likelihood cumulant Riccati hierarchy rather than to
-a generic moment bound.
+twice gives the literal infinite-tail laws
+
+```text
+D_tail = D_first * L - F_first * L',
+J_tail = J_first * L + 2 * D_first * L' - F_first * L'',
+L = R * (2 + R).
+```
+
+Substitution exposes an exact likelihood-convexity tax. In every first-fibre-rise chamber it is
+strictly positive:
+
+```text
+tax = -5*t^2*A_first*A_source*A_tail*F_first*L'' > 0.
+```
+
+Hence `L >= 0`, `L' <= 0`, and `L'' > 0` alone point in the wrong direction and cannot close
+the conjecture. Lean sharpens the open core to
+
+```text
+functionalBudget <= 0
+  iff likelihoodBaseBudget <= -tax.
+```
+
+Next attack must produce this strict negative reserve from the corpus first-atom log jets and
+higher-likelihood cumulant Riccati hierarchy. A generic monotone/convex sign argument is retired.
 
 Failure criterion: an exact theta-derived sign reversal of this budget. If found, retain the
 sharp scale chamber or equality classification and retire only the modular-center cofinal
@@ -118,16 +137,21 @@ the later all-rank and source-to-Weil joins.
 
 - `GaloisForLFunctions.HilbertMetric.FifthRootCurvatureMixture`
 - `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureTotalVariance`
+- `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureLikelihoodTax`
 - Main exact hard core:
   `thetaCuspReflectedSourceFifthRootCurvatureNumerator_zero_nonneg_iff_cofinalFunctionalBudget_nonpos`
 - Likelihood factorization:
   `thetaCuspCompletedProductFiberHigherTail_zero_eq_firstFiber_mul_likelihoodFactor`
+- Sharp replacement:
+  `thetaCuspCompletedProductFiberCofinalFunctionalBudget_nonpos_iff_base_le_neg_convexityTax`
 
 ## Gates
 
 - [x] corpus-derived statement and exact source coordinates
 - [x] explicit downstream RH chain with uncovered joins named
 - [x] total-variance identity, literal tail jets, chamber nonemptiness, and exact iff formalized
+- [x] infinite-tail product jets and strict likelihood-convexity tax formalized
+- [x] monotone/convex sign-only subroute retired with a formal sharp replacement hypothesis
 - [x] August 2026 primary-literature collision audit
 - [ ] prove or refute functional absorption sign from theta likelihood/cumulant structure
 - [ ] extend surviving sign mechanism off modular center and across complement chamber
@@ -138,3 +162,5 @@ the later all-rank and source-to-Weil joins.
 
 - 2026-08-29 — Opened after corpus search and exact Lean reduction. No computation entered the
   proof or the conjecture.
+- 2026-08-29 — Proved both cofinal product-jet laws and the exact positive convexity-tax
+  decomposition. Reduced the conjecture to a strict negative base reserve; no computation used.

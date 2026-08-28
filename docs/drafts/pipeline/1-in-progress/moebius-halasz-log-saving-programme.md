@@ -1770,3 +1770,43 @@ which is precisely the hypothesis shape of `Sieve/DyadicSecondEnvelopeClosed.hal
 and of `RHTower/WellSpacedSubset`.  What remains on this lane is the arithmetic of the composition —
 choosing `V₀` and `J`, and bounding the level-set cardinality by the large-values theorem — not any
 further structural bridge.
+
+## The large-values interface is COMPLETE — `exists_spaced_families_blockProduct_gramRows` (2026-08-29)
+
+Two further modules close the composition, both unconditional, axiom-clean and umbrella-wired.
+
+`Sieve/LogPolyBlockBridge` — the dyadic pieces *are* Huxley blocks:
+
+```text
+dyadicSegmentBlock_subset_Ico            block j ⊆ [2^j, 2·2^j)
+dyadicSegmentCoeff a M j                 the block's coefficients, extended by zero
+logPoly_dyadicSegmentBlock_eq_blockPoly  logPoly a (block j) w = blockPoly (2^j) coeff 0 (−2πw)
+logPoly_dyadicSegmentBlock_eq_inner      = ⟪dyadicDirRow (2^j) (−2πw), blockCoeff …⟫
+```
+
+The only content is the frequency normalisation `t = −2πw` at `σ = 0`; `logPoly` carries the phase
+`exp(2πi w log n)` and `blockPoly` carries `exp(−i t log n)`.
+
+`Sieve/BlockProductHalaszReady` — the capstone:
+
+```text
+exists_spaced_families_blockProduct_gramRows
+  ∃ one-spaced P₁ j, P₂ j ⊆ primeBlockLevelSet B G (2^j V₀) with
+    ∫_{|w| ≤ G} ‖primeBlockPoly B w · logPoly a [1,M] w‖²
+      ≤ V₀² · ∫_{|w| ≤ G} ‖logPoly a [1,M] w‖²
+        + ∑_{j < J} (2^{j+1}V₀)² · (⌊log₂ M⌋+1) ·
+            ∑_{i ≤ ⌊log₂ M⌋} ( ∑_{w ∈ P₁ j} ‖⟪dyadicDirRow (2^i) (−2πw), c_i⟫‖²
+                              + ∑_{w ∈ P₂ j} ‖⟪dyadicDirRow (2^i) (−2πw), c_i⟫‖² )
+```
+
+Every quantity on the right is now of the *exact* shape the corpus's large-values theorems bound:
+`halaszMontgomery_dyadic_explicit`, `halaszMontgomery_dyadic_log`,
+`huxley_multiblock_large_values`, `largeValues_dirPoly_finset`.  The three costs of the reduction
+are explicit and small: the factor `2` of the parity split, the factor `⌊log₂ M⌋+1` of the dyadic
+Cauchy–Schwarz, and the dyadic level split's own `∑_j (2^{j+1}V₀)²`.
+
+**No structural bridge remains on this route.**  What is left is the arithmetic: choose `V₀` and `J`
+from the block's Mertens mass, bound `#(P₁ j)` and `#(P₂ j)` by the large-values theorem applied on
+the level set `primeBlockLevelSet B G (2^j V₀)` (whose points are one-spaced *by construction*), and
+compare the resulting saving with the target `ε' h²`.  Since no step used a lower bound on the block
+scale `Q`, the `(log x)^{−1/5}` ceiling of the exact-Ramaré chain does not apply.

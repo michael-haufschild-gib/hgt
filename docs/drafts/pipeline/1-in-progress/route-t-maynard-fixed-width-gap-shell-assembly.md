@@ -249,3 +249,24 @@ Not yet formalized. Frontier map remains read-only.
   Guth--Maynard's 2026 large-value paper. Those sources treat sieve large gaps and Dirichlet-
   polynomial large values, respectively, but do not state this interface. Keep novelty marked
   uncertain until expert comparison and the buffered packet-level weld are complete.
+
+## 2026-08-29 common-mode exponent triage
+
+- `[FALSIFIED]` Direct summation of the present fixed-target shell bounds cannot reach the required
+  gap-moment exponent, even after replacing the corpus gap range by published exponent `13/25`.
+  The physical-block cap leaves exponent `1 + 13/25 = 38/25`, exceeding `3/2` by exactly `1/50`.
+  Unfreezing the paired-kernel gain, welding the current physical-slice estimate, and reciprocal
+  outer localization individually retain a bad region. These are exact rational exponent
+  obstructions; the computation grid only located them.
+- `[PAPER-PROVED]` Generic `L^2/L^4` rearrangement cannot supply the missing saving. For an interval
+  packet of `n` cells in a cyclic group large enough to avoid wraparound, pair-sum multiplicities
+  are `1,2,...,n-1,n,n-1,...,2,1`, hence its additive energy is
+  `n^2 + 2 * sum_{k=1}^{n-1} k^2 = (2*n^3+n)/3`. Thus the generic fourth moment genuinely has
+  cubic order. Finite searches only corroborated this exact identity.
+- `[POSITIVE SURVIVOR]` Any viable T2 successor must combine cancellation-preserving reciprocal
+  localization `s+g<=1` with a genuinely arithmetic selected-cell/bad-set estimate on all paired
+  low shells. Extending the existing selected-cell exponent law to all shells would close the
+  exponent model; existence of that arithmetic theorem is the new open core.
+- The exact rational exponent no-go and interval-packet energy identity are dependency-closed paper
+  statements suitable for Lean formalization without importing any grid, floating-point value, or
+  computed witness. They have not yet been formalized.

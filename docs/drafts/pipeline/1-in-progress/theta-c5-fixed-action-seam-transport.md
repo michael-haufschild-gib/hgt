@@ -96,3 +96,8 @@ sharp positive transport chamber or first sign-changing invariant before retirin
   `../5-failed/theta-c5-fixed-action-two-sign-transport.md`.  Surviving C5 work returns to the
   direct Gaussian-deviation three-zone chain, whose hard theta-specific core is the bulk
   accumulated-action/jet coupling.
+- 2026-08-29 — A broader independent scan over `0 <= u <= 20`, `10^-6 <= t <= 100` found no C5
+  failure and again placed the smallest seam-normalized sample at `u=0`. This does not revive the
+  retired two-sign decomposition and supplies no proof. It strengthens the case for attacking the
+  direct fixed-action Jacobian `B_u q_t - B_t q_u`, and for trying first to kill it by interval
+  sign tests along numerically solved exact-action level sets.
