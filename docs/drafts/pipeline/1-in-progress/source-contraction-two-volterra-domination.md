@@ -296,3 +296,14 @@ frontier (κ=1 bad-set density = 1/2) with RBH's separated-sign machinery as the
 the missing weld as open core, first test on the two-atom truncation against the Lean witness.
 Killed: shift-orbit amplification (window term), abstract Toeplitz/Smirnov dichotomy (S_κ
 exists), Pontryagin symmetry-compression (symmetry group too small), det-sign mod 2 (counting).
+
+### Cycle 8 (2026-08-28) — two-atom PF cone test executed: C9 weld retired, index residue kept
+
+Verdict on `index-parity-near-miss-rigidity.md`: the Lean witness is exactly the anti-Perron
+point at the critical cone weight (qualitative pass, three finite-section regimes measured,
+m-fold soft multiplicity = discretized zero lattice), but the mechanism has no producer power
+for the full operator (trivial-region-only cone bounds; single-shift sharpness accident; the
+Bohr-denseness no-go: 0 is unconditionally in the spectrum of every fixed-weight realization).
+Surviving residue: RH ⟺ the weight-indexed Wiener–Hopf Fredholm index is constant on (0,1/2);
+finite jump budget ⟺ C8. Attack surface B is closed into A/C8; the index frame is validated as
+Bohr-robust.

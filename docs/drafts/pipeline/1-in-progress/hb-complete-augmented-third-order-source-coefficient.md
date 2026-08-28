@@ -179,3 +179,50 @@ massless topological-black-hole/BM radial chart, apply its left/right derivative
 corner-renormalized `Rpp` response and negative-helicity branch, and include the negative leg,
 gravity boundary/corner completion, and conserved left-QNM projection. Only this derived operator
 may be combined with stationary `+-` response and direct third variation to attack HC94-A.
+
+## Loop result HC94-A.4 — scalar BM-radial physical vertex is impossible
+
+Jevicki--Suzuki's exact massless-topological-black-hole chart has `rho=r⁻¹`,
+`z_BM=1-rho²`, and Poincare radial coordinate `Z=rho*sigma`. Hence one BM radial fibre contains
+the full positive `Z` ray. The module
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMPhysicalPoincareRadialNoGo` proves the sharp
+classification: a scalar Poincare-radial profile factors through `z_BM` on the exterior iff it is
+constant on `Z>0`. Therefore `1/Z` does not descend. After inserting the physical self-dual
+coefficient `2i/(u-v)=i/Z`, an explicit unequal-charge plane-wave probe also has two distinct
+values at the same BM radius. This is a theorem-level retirement of every scalar BM-radial
+specialization of the physical Plebanski curvature term, not numerical evidence.
+
+The inverse-Jacobian module
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMPoincareRadialDerivativePullback` proves from actual
+chart derivatives that
+
+`partial_Z = rho*partial_sigma + (1-rho²)/sigma*partial_rho`.
+
+It annihilates the pulled-back Poincare `T,Y` coordinates and sends `Z` to one. Acting on a BM
+first radial jet whose BM derivative is `J` gives
+
+`-2*rho*(1-rho²)*J/sigma`.
+
+The existing nonzero corner finite part and its proved endpoint convergence imply, premise-free
+for every mode and Xi zero copy, an actual interior BM radius where the corner-renormalized second
+derivative is nonzero. At that radius the physical `partial_Z` action differs between
+`sigma=1` and `sigma=2`. Consequently even the actual corner-renormalized derivative carrier
+cannot factor through BM radius alone. The proof does not extend an endpoint value as a constant
+bulk jet.
+
+Targeted builds passed `11250/11250` and `11253/11253`. Headline theorem axiom audits returned only
+`propext`, `Classical.choice`, and `Quot.sound`. Both modules are wired into
+`GaloisForLFunctions.RHTower`. Global formal lint reported no finding in either module but remains
+red because unrelated concurrently present modules are not wired into their theorem-area
+umbrellas.
+
+**Positive survivor HC94-A.4-P.** The physical source is necessarily a two-coordinate
+Rindler/hyperbolic differential source. Exact one-variable BM Green data remain valid inputs, but
+only after tensor/harmonic reconstruction and the full inverse-Jacobian light-cone operator are
+retained.
+
+**Pivot HC94-A.5 / `[OPEN CORE]`.** Pull the remaining Poincare light-cone derivatives and the
+complete unequal-helicity deformed kinematic bracket through the exact chart; reconstruct the
+Birmingham--Mokhtari master modes to gauge-invariant metric components; then perform the
+hyperbolic-harmonic product, negative leg, boundary/corner completion, and conserved left-QNM
+projection. Scalar radial convolution is now formally excluded and must not be revisited.

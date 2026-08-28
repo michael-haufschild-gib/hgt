@@ -30,9 +30,10 @@ source is admissible.  Associated lattice source budget is the explicit pole--Ga
 raw jet minus `sum_{k in K} P_n(k)`.
 This closes source scalarization only.  The separate quantitative target is
 
-`B_corrected(K_T) <= 21/100 * N(T) + o(N(T))`,
+`B_corrected(K_T) <= 1452/4225 * N(T) + o(N(T))`,
 
-with `4/25` stronger.  No implication from source scalarization to that estimate is assumed.
+with `21/100` and `4/25` stronger.  No implication from source scalarization to that estimate is
+assumed.
 
 ## Gates
 
@@ -71,7 +72,7 @@ with `4/25` stronger.  No implication from source scalarization to that estimate
   moments are established subjects; no external novelty is claimed for boundary recovery.
   Corpus-specific HCF source instantiation was not found.  Near-critical mean-value results found
   in the literature use RH or additional small-gap hypotheses and cannot discharge the
-  unconditional `21/100` gate.
+  unconditional source-covariance gate.
 
 ## Hostile audit
 
@@ -79,7 +80,7 @@ with `4/25` stronger.  No implication from source scalarization to that estimate
   boundary-divisor theorem handles the finitely many zeros in each compact factorization.
 - Arbitrarily shallow off-line zeros are not ignored.  At each compact cutoff they occur in
   conjugate pairs and their boundary jump cancels before cutoff exhaustion.
-- Source replacement alone gives no numerical gain.  Any claimed `21/100` estimate must bound
+- Source replacement alone gives no numerical gain.  Any claimed quantitative estimate must bound
   the signed pole--Gamma/boundary defect, not the absolute values of its two leading terms.
 
 ## Proof and formal certificate
@@ -96,6 +97,9 @@ assuming a divisor-free line.
 Formal module:
 `formal/GaloisForLFunctions/RHTower/HedenmalmCriticalFeatureSourcePlemeljTrace.lean`.
 
+Canonical-window module:
+`formal/GaloisForLFunctions/RHTower/HedenmalmCriticalFeatureCanonicalHeightWindow.lean`.
+
 - `tendsto_iterated_criticalFeaturePoleGammaTrace`: infinite zero-independent source trace.
 - `tendsto_criticalFeatureSourcePlemeljCorrectedLatticeBudget`: budget-level replacement.
 - `criticalFeaturePrimeGammaOffLineLatticeBudget_eq_plemeljCovariance_add_vm`: exact new
@@ -104,7 +108,10 @@ Formal module:
   `card K = o(N)`.
 
 The quantitative conjecture is now precisely
-`criticalFeaturePoleGammaPlemeljCovariance (K T) <= 21/100 * N(T) + o(N(T))`.
+`criticalFeaturePoleGammaPlemeljCovariance (K T) <= 1452/4225 * N(T) + o(N(T))`.
+The canonical window `K_n = [-n-1,n+1] ∩ ℤ` is formalized; Riemann--von Mangoldt proves
+`card K_n / N(n) -> 0`, and `canonical_correctedBudget_ceiling_iff_plemeljCovariance_ceiling`
+proves exact equivalence of source and corrected ceilings at this constant.
 No theorem in this card asserts it.
 
 ## No-go closure (mandatory when falsified)
@@ -123,3 +130,6 @@ No theorem in this card asserts it.
 - 2026-08-28 — formalized positive-real-shift pole--Gamma Plemelj trace, exact corrected-budget
   replacement, and new source-only covariance with `o(N)` discrepancy; targeted build and axiom
   audit passed.
+- 2026-08-28 — separate exact three-center optimization raised the sufficient 75% source ceiling
+  from `21/100` to `1452/4225`; source Plemelj covariance reduction is unchanged, but its remaining
+  quantitative target is correspondingly weaker.

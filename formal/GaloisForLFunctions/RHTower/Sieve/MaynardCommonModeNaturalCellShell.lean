@@ -355,6 +355,86 @@ theorem eventually_routeT_commonMode_naturalCentralErrors_le :
   exact hsum.trans (hcostNatural.trans
     (by simpa only [P, U, R, x, X] using hcostT L hL hLX))
 
+/-- The natural common-mode cutoff eventually contains at least two unit cells. -/
+theorem eventually_two_le_routeTCommonModeNaturalCutoff :
+    ∀ᶠ T : ℝ in atTop,
+      2 ≤ routeTCommonModeNaturalCutoff (routeTPrimeGapPacketBase T) := by
+  have hbaseTop : Tendsto routeTPrimeGapPacketBase atTop atTop := by
+    unfold routeTPrimeGapPacketBase
+    exact (tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 8 / 5)).atTop_div_const
+      (by norm_num)
+  have hcutTop : Tendsto
+      (fun T : ℝ => routeTCommonModeCutoff (routeTPrimeGapPacketBase T))
+      atTop atTop :=
+    (tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 1 / 8)).comp hbaseTop
+  filter_upwards [hcutTop.eventually_ge_atTop 2] with T hT
+  exact Nat.le_floor hT
+
+/-- The natural common-mode cutoff and the canonical far cutoff leave a nondegenerate
+factor-two annulus, as required by literal natural-cell shell extraction. -/
+theorem eventually_two_mul_routeTCommonModeNaturalCutoff_le_primeGapPacketCutoff :
+    ∀ᶠ T : ℝ in atTop,
+      2 * routeTCommonModeNaturalCutoff (routeTPrimeGapPacketBase T) ≤
+        routeTPrimeGapPacketCutoff T := by
+  have hdecay :=
+    (tendsto_rpow_neg_atTop (by norm_num : (0 : ℝ) < 4 / 5)).const_mul 4
+  have hzero : (4 : ℝ) * 0 = 0 := by ring
+  rw [hzero] at hdecay
+  have hsmall := Filter.Tendsto.eventually_lt hdecay
+    (tendsto_const_nhds : Tendsto (fun _ : ℝ => (1 : ℝ)) atTop (nhds 1))
+      zero_lt_one
+  filter_upwards [hsmall, Filter.eventually_ge_atTop (2 : ℝ)] with T hsmallT hT
+  have hT0 : 0 < T := by linarith
+  have hbaseLe : routeTPrimeGapPacketBase T ≤ T ^ (8 / 5 : ℝ) := by
+    unfold routeTPrimeGapPacketBase
+    have hp : 0 ≤ T ^ (8 / 5 : ℝ) := Real.rpow_nonneg hT0.le _
+    linarith
+  have hbase0 : 0 ≤ routeTPrimeGapPacketBase T := by
+    unfold routeTPrimeGapPacketBase
+    positivity
+  have hcut0 : 0 ≤ routeTCommonModeCutoff (routeTPrimeGapPacketBase T) := by
+    unfold routeTCommonModeCutoff
+    positivity
+  have hcutLe : routeTCommonModeCutoff (routeTPrimeGapPacketBase T) ≤
+      T ^ (1 / 5 : ℝ) := by
+    unfold routeTCommonModeCutoff
+    calc
+      routeTPrimeGapPacketBase T ^ (1 / 8 : ℝ) ≤
+          (T ^ (8 / 5 : ℝ)) ^ (1 / 8 : ℝ) :=
+        Real.rpow_le_rpow hbase0 hbaseLe (by norm_num)
+      _ = T ^ (1 / 5 : ℝ) := by
+        rw [← Real.rpow_mul hT0.le]
+        congr 1
+        norm_num
+  have hcollapse : T ^ (1 / 5 : ℝ) = T * T ^ (-(4 / 5 : ℝ)) := by
+    calc
+      T ^ (1 / 5 : ℝ) = T ^ (1 + (-(4 / 5 : ℝ))) := by
+        norm_num
+      _ = T ^ (1 : ℝ) * T ^ (-(4 / 5 : ℝ)) := Real.rpow_add hT0 1 _
+      _ = T * T ^ (-(4 / 5 : ℝ)) := by rw [Real.rpow_one]
+  have hquarter : T ^ (1 / 5 : ℝ) ≤ T / 4 := by
+    rw [hcollapse]
+    have hnonneg : 0 ≤ T ^ (-(4 / 5 : ℝ)) := Real.rpow_nonneg hT0.le _
+    nlinarith
+  have hfloor : T / 2 ≤ (routeTPrimeGapPacketCutoff T : ℝ) := by
+    dsimp only [routeTPrimeGapPacketCutoff]
+    have hlt := Nat.lt_floor_add_one T
+    linarith
+  have hnaturalLe :
+      (routeTCommonModeNaturalCutoff (routeTPrimeGapPacketBase T) : ℝ) ≤
+        routeTCommonModeCutoff (routeTPrimeGapPacketBase T) := by
+    exact Nat.floor_le hcut0
+  have hreal :
+      (2 * routeTCommonModeNaturalCutoff (routeTPrimeGapPacketBase T) : ℕ) ≤
+        routeTPrimeGapPacketCutoff T := by
+    exact_mod_cast (calc
+      2 * (routeTCommonModeNaturalCutoff (routeTPrimeGapPacketBase T) : ℝ) ≤
+          2 * routeTCommonModeCutoff (routeTPrimeGapPacketBase T) := by gcongr
+      _ ≤ 2 * T ^ (1 / 5 : ℝ) := by gcongr
+      _ ≤ T / 2 := by linarith
+      _ ≤ (routeTPrimeGapPacketCutoff T : ℝ) := hfloor)
+  exact hreal
+
 /-- Canonical prime-free paired-tail producer whose common cutoff is a natural cell boundary. -/
 theorem exists_eventually_routeT_primeFree_fixedSource_commonMode_naturalPairedHighTail :
     ∀ᶠ T : ℝ in atTop,
@@ -534,6 +614,309 @@ theorem exists_eventually_routeT_primeFree_fixedSource_commonMode_naturalPairedH
       routeTCommonModeReferenceDensity_pos hwidthH hsupportH hsupportR
       hprimeFree href.le hleakage (by simpa only [x, X, H, R, U] using hlow)
   simpa only [x, X, H, R, U] using hresult
+
+/-- A nonzero paired annulus with natural endpoints lands directly in a literal natural-cell
+shell, retaining the reference-target difference through positive-wing and shell selection. -/
+theorem exists_fixedSource_naturalized_pairedShell_of_annulus_canonicalCount
+    (L X k U V : ℕ) {T mu M N H R B : ℝ}
+    (hT : 1 < T) (hX : 1 ≤ X) (hM : 0 < M)
+    (hN : 0 < N) (hH : 0 < H) (hR : 0 < R)
+    (hB0 : 0 < B) (hU : 2 ≤ U) (hUV : 2 * U ≤ V)
+    (hB : B ≤ ‖∫ y in {y : ℝ | (U : ℝ) ≤ |y| ∧ |y| < (V : ℝ)},
+      heathBrownWindowRelevantEligibleDyadicAggregate L X k T (mu / 120) M
+            ((1 : ℂ) + (y : ℝ) * Complex.I) *
+        (routeTNormalizedSmoothWindowMellin N R
+            ((1 : ℂ) + (y : ℝ) * Complex.I) -
+          routeTNormalizedSmoothWindowMellin N H
+            ((1 : ℂ) + (y : ℝ) * Complex.I))‖) :
+    ∃ j ∈ Finset.range (routeTOrdinateShellCount U V),
+      let A := routeTNaturalizedOrdinateLadder U V (j + 1)
+      let C := routeTNaturalizedOrdinateLadder U V j
+      let T₁ : ℝ := A
+      let mu₁ := routeTHeightMatchedExponent T mu T₁
+      1 < T₁ ∧ A < C ∧ C ≤ 2 * A ∧ T₁ ^ mu₁ = T ^ mu ∧
+        (B / 4) / (routeTOrdinateShellCount U V : ℝ) ≤
+          ‖routeTFixedSourceNaturalizedOrdinateShellPhysicalPacket
+            L X k T mu M N R H U V j 1‖ := by
+  let a : ℝ → ℂ := fun y =>
+    heathBrownWindowRelevantEligibleDyadicAggregate L X k T (mu / 120) M
+      ((1 : ℂ) + (y : ℝ) * Complex.I)
+  let f : ℝ → ℂ := fun y =>
+    heathBrownWindowRelevantEligibleDyadicAggregate L X k T (mu / 120) M
+      ((1 : ℂ) + (y : ℝ) * Complex.I) *
+      (routeTNormalizedSmoothWindowMellin N R
+          ((1 : ℂ) + (y : ℝ) * Complex.I) -
+        routeTNormalizedSmoothWindowMellin N H
+          ((1 : ℂ) + (y : ℝ) * Complex.I))
+  let P : ℝ := heathBrownWindowRelevantFixedPolylogBound L X k M 1
+  have haBound : ∀ y : ℝ, ‖a y‖ ≤ P := by
+    intro y
+    dsimp only [a, P]
+    exact norm_heathBrownWindowRelevantEligibleDyadicAggregate_le_fixedPolylog
+      L X k hX T (mu / 120) M 1 y hM (by norm_num)
+  have ha : Continuous a := by
+    dsimp only [a]
+    exact continuous_heathBrownWindowRelevantEligibleDyadicAggregate_line
+      L X k T (mu / 120) M 1
+  have hkR := integrable_routeTNormalizedSmoothWindowMellin_one hN hR
+  have hkH := integrable_routeTNormalizedSmoothWindowMellin_one hN hH
+  have hintR : Integrable (fun y : ℝ =>
+      a y * routeTNormalizedSmoothWindowMellin N R
+        ((1 : ℂ) + (y : ℝ) * Complex.I)) := by
+    exact hkR.bdd_mul ha.aestronglyMeasurable
+      (Filter.Eventually.of_forall haBound)
+  have hintH : Integrable (fun y : ℝ =>
+      a y * routeTNormalizedSmoothWindowMellin N H
+        ((1 : ℂ) + (y : ℝ) * Complex.I)) := by
+    exact hkH.bdd_mul ha.aestronglyMeasurable
+      (Filter.Eventually.of_forall haBound)
+  have hf : Integrable f := by
+    have hsub := hintR.sub hintH
+    refine hsub.congr (Filter.Eventually.of_forall fun y => ?_)
+    dsimp only [f, a, Pi.sub_apply]
+    ring
+  have hconj : ∀ y : ℝ, f (-y) = (starRingEnd ℂ) (f y) := by
+    intro y
+    dsimp only [f]
+    exact (conj_fixedSource_mul_adjacentKernel
+      L X k T (mu / 120) M N H R y).symm
+  have hU0 : (0 : ℝ) ≤ U := by positivity
+  have hUVreal : (U : ℝ) ≤ V := by exact_mod_cast (by omega : U ≤ V)
+  have hpositive : B / 4 ≤ ‖∫ y in (U : ℝ)..(V : ℝ), f y‖ :=
+    norm_intervalIntegral_positiveWing_ge_quarter_of_annulus_of_conj
+      hf hconj hB0 hU0 hUVreal (by simpa only [f] using hB)
+  have hpacket : B / 4 ≤ ‖routeTFixedSourceAdjacentIntervalPacket
+      L X k T (mu / 120) M N R H 1 U V‖ := by
+    convert hpositive using 1
+    all_goals
+      norm_num [f, routeTFixedSourceAdjacentIntervalPacket,
+        routeTFixedSourceAdjacentIntegrand]
+  exact exists_fixedSource_naturalized_pairedShell_of_naturalInterval_canonicalCount
+    L X k U V hT hN hH hR hU hUV (by positivity) hpacket
+
+/-- **Canonical natural-cell cancellation-preserving prime-free annulus.**  Eventually one frozen Heath--Brown
+source works for every physical base in the block.  Prime-freeness forces a fixed positive paired
+defect on the literal annulus between the common central cutoff and `floor T`; reference-target
+cancellation is retained pointwise throughout. -/
+theorem exists_eventually_routeT_primeFree_fixedSource_commonMode_naturalPairedAnnulus :
+    ∀ᶠ T : ℝ in atTop,
+      ∃ L : ℕ, 1 ≤ L ∧
+        L ≤ routeTPrimeGapPacketSupport T ∧
+        routeTPrimeGapPacketSupport T < (L + 1) ^ (60 : ℕ) ∧
+        (L : ℝ) ≤ T ^ (2 / 75 : ℝ) ∧
+        ∀ lambda ∈ Set.Icc (routeTPrimeGapPacketBase T)
+            (2 * routeTPrimeGapPacketBase T),
+          Chebyshev.theta
+                (lambda + 2 * (lambda * routeTPrimeGapPacketWidth lambda)) -
+              Chebyshev.theta lambda = 0 →
+          ((2 * Real.pi) *
+              (routeTSmoothWindowCentralMargin *
+                routeTCommonModeReferenceDensity / 2)) / 4 ≤
+            ‖∫ y in {y : ℝ |
+                (routeTCommonModeNaturalCutoff (routeTPrimeGapPacketBase T) : ℝ) ≤ |y| ∧
+                  |y| < (routeTPrimeGapPacketCutoff T : ℝ)},
+              heathBrownWindowRelevantEligibleDyadicAggregate
+                    L (routeTPrimeGapPacketSupport T) 60 T (1 / 75)
+                      (routeTPrimeGapPacketBase T)
+                    ((1 : ℂ) + (y : ℝ) * Complex.I) *
+                (routeTNormalizedSmoothWindowMellin lambda
+                    (lambda * routeTCommonModeReferenceRelativeWidth
+                      (routeTPrimeGapPacketBase T))
+                    ((1 : ℂ) + (y : ℝ) * Complex.I) -
+                  routeTNormalizedSmoothWindowMellin lambda
+                    (lambda * routeTPrimeGapPacketWidth lambda)
+                    ((1 : ℂ) + (y : ℝ) * Complex.I))‖ := by
+  have hpaired := exists_eventually_routeT_primeFree_fixedSource_commonMode_naturalPairedHighTail
+  have hfar := eventually_routeT_commonMode_pairedFarTail_le
+  have hcut := eventually_routeTCommonModeCutoff_le_primeGapPacketCutoff
+  filter_upwards [hpaired, hfar, hcut, Filter.eventually_ge_atTop (2 : ℝ)] with
+      T hpairedT hfarT hcutT hT
+  obtain ⟨L, hL, hLX, hXL, hLscale, hlarge⟩ := hpairedT
+  refine ⟨L, hL, hLX, hXL, hLscale, ?_⟩
+  intro lambda hlambda hprimeFree
+  let x : ℝ := routeTPrimeGapPacketBase T
+  let X : ℕ := routeTPrimeGapPacketSupport T
+  let R : ℝ := routeTCommonModeReferenceRelativeWidth x
+  let H : ℝ := routeTPrimeGapPacketWidth lambda
+  let U : ℝ := routeTCommonModeNaturalCutoff x
+  let V : ℝ := routeTPrimeGapPacketCutoff T
+  let a : ℝ → ℂ := fun y =>
+    heathBrownWindowRelevantEligibleDyadicAggregate L X 60 T (1 / 75) x
+      ((1 : ℂ) + (y : ℝ) * Complex.I)
+  let P : ℝ := heathBrownWindowRelevantFixedPolylogBound L X 60 x 1
+  have hx0 : 0 < x := by
+    dsimp only [x, routeTPrimeGapPacketBase]
+    have hT0 : 0 < T := by linarith
+    positivity
+  have hX : 1 ≤ X := by
+    apply Nat.ceil_pos.mpr
+    change 0 < 3 * x
+    positivity
+  have hlambda0 : 0 < lambda := hx0.trans_le hlambda.1
+  have hR0 : 0 < R := by
+    dsimp only [R]
+    exact routeTCommonModeReferenceRelativeWidth_pos hx0
+  have hH0 : 0 < H := by dsimp only [H, routeTPrimeGapPacketWidth]; positivity
+  have haBound : ∀ y : ℝ, ‖a y‖ ≤ P := by
+    intro y
+    dsimp only [a, P]
+    exact norm_heathBrownWindowRelevantEligibleDyadicAggregate_le_fixedPolylog
+      L X 60 hX T (1 / 75) x 1 y hx0 (by norm_num)
+  have ha : Continuous a := by
+    dsimp only [a]
+    exact continuous_heathBrownWindowRelevantEligibleDyadicAggregate_line
+      L X 60 T (1 / 75) x 1
+  have hkR := integrable_routeTNormalizedSmoothWindowMellin_one
+    hlambda0 (mul_pos hlambda0 hR0)
+  have hkH := integrable_routeTNormalizedSmoothWindowMellin_one
+    hlambda0 (mul_pos hlambda0 hH0)
+  have hintR : Integrable (fun y : ℝ =>
+      a y * routeTNormalizedSmoothWindowMellin lambda (lambda * R)
+        ((1 : ℂ) + (y : ℝ) * Complex.I)) := by
+    exact hkR.bdd_mul ha.aestronglyMeasurable
+      (Filter.Eventually.of_forall haBound)
+  have hintH : Integrable (fun y : ℝ =>
+      a y * routeTNormalizedSmoothWindowMellin lambda (lambda * H)
+        ((1 : ℂ) + (y : ℝ) * Complex.I)) := by
+    exact hkH.bdd_mul ha.aestronglyMeasurable
+      (Filter.Eventually.of_forall haBound)
+  have hlarge' :
+      ((2 * Real.pi) *
+          (routeTSmoothWindowCentralMargin * routeTCommonModeReferenceDensity / 2)) / 2 ≤
+        ‖maynardWidthHighTail a lambda (lambda * R) U -
+          maynardWidthHighTail a lambda (lambda * H) U‖ := by
+    simpa only [a, x, X, R, H, U] using hlarge lambda
+      (by simpa only [x] using hlambda) hprimeFree
+  have htail' :
+      (∫ y in {y : ℝ | V ≤ |y|},
+        ‖a y *
+          (routeTNormalizedSmoothWindowMellin lambda (lambda * R)
+              ((1 : ℂ) + (y : ℝ) * Complex.I) -
+            routeTNormalizedSmoothWindowMellin lambda (lambda * H)
+              ((1 : ℂ) + (y : ℝ) * Complex.I))‖) ≤
+        ((2 * Real.pi) *
+          (routeTSmoothWindowCentralMargin * routeTCommonModeReferenceDensity / 2)) / 4 := by
+    simpa only [a, x, X, R, H, V] using
+      hfarT L hL (by simpa only [X] using hLX) lambda
+        (by simpa only [x] using hlambda)
+  have hU0 : 0 ≤ U := by
+    dsimp only [U]
+    exact_mod_cast Nat.zero_le (routeTCommonModeNaturalCutoff x)
+  have hnaturalLe : U ≤ routeTCommonModeCutoff x := by
+    dsimp only [U, routeTCommonModeNaturalCutoff]
+    exact Nat.floor_le (Real.rpow_nonneg hx0.le _)
+  have hUV : U ≤ V := hnaturalLe.trans
+    (by simpa only [V, x] using hcutT)
+  have hannulus := commonMode_pairedHighTailDifference_localizes_annulus
+    a hintR hintH hU0 hUV hlarge' htail'
+  have hconst :
+      ((2 * Real.pi) *
+          (routeTSmoothWindowCentralMargin * routeTCommonModeReferenceDensity / 2)) / 2 -
+        ((2 * Real.pi) *
+          (routeTSmoothWindowCentralMargin * routeTCommonModeReferenceDensity / 2)) / 4 =
+      ((2 * Real.pi) *
+          (routeTSmoothWindowCentralMargin * routeTCommonModeReferenceDensity / 2)) / 4 := by
+    ring
+  rw [hconst] at hannulus
+  simpa only [a, x, X, R, H, U, V] using hannulus
+
+/-- **Unconditional natural-cell source insertion for Route T.**  One frozen source and one
+finite natural shell family are selected before the physical base varies.  Every prime-free base
+forces a nonzero member of that exact `Finset.Ico` family, with the paired kernel intact. -/
+theorem exists_eventually_routeT_primeFree_fixedSource_commonMode_naturalCellShell :
+    ∀ᶠ T : ℝ in atTop,
+      ∃ L : ℕ, 1 ≤ L ∧
+        L ≤ routeTPrimeGapPacketSupport T ∧
+        routeTPrimeGapPacketSupport T < (L + 1) ^ (60 : ℕ) ∧
+        (L : ℝ) ≤ T ^ (2 / 75 : ℝ) ∧
+        ∀ lambda ∈ Set.Icc (routeTPrimeGapPacketBase T)
+            (2 * routeTPrimeGapPacketBase T),
+          Chebyshev.theta
+                (lambda + 2 * (lambda * routeTPrimeGapPacketWidth lambda)) -
+              Chebyshev.theta lambda = 0 →
+          ∃ j ∈ Finset.range (routeTOrdinateShellCount
+              (routeTCommonModeNaturalCutoff (routeTPrimeGapPacketBase T))
+              (routeTPrimeGapPacketCutoff T)),
+            let A := routeTNaturalizedOrdinateLadder
+              (routeTCommonModeNaturalCutoff (routeTPrimeGapPacketBase T))
+              (routeTPrimeGapPacketCutoff T) (j + 1)
+            let C := routeTNaturalizedOrdinateLadder
+              (routeTCommonModeNaturalCutoff (routeTPrimeGapPacketBase T))
+              (routeTPrimeGapPacketCutoff T) j
+            let T₁ : ℝ := A
+            let mu₁ := routeTHeightMatchedExponent T (8 / 5 : ℝ) T₁
+            1 < T₁ ∧ A < C ∧ C ≤ 2 * A ∧
+              T₁ ^ mu₁ = T ^ (8 / 5 : ℝ) ∧
+              (((((2 * Real.pi) *
+                    (routeTSmoothWindowCentralMargin *
+                      routeTCommonModeReferenceDensity / 2)) / 4) / 4) /
+                  (routeTOrdinateShellCount
+                    (routeTCommonModeNaturalCutoff (routeTPrimeGapPacketBase T))
+                    (routeTPrimeGapPacketCutoff T) : ℝ)) ≤
+                ‖routeTFixedSourceNaturalizedOrdinateShellPhysicalPacket
+                  L (routeTPrimeGapPacketSupport T) 60 T (8 / 5 : ℝ)
+                  (routeTPrimeGapPacketBase T) lambda
+                  (lambda * routeTCommonModeReferenceRelativeWidth
+                    (routeTPrimeGapPacketBase T))
+                  (lambda * routeTPrimeGapPacketWidth lambda)
+                  (routeTCommonModeNaturalCutoff (routeTPrimeGapPacketBase T))
+                  (routeTPrimeGapPacketCutoff T) j 1‖ := by
+  have hannulus :=
+    exists_eventually_routeT_primeFree_fixedSource_commonMode_naturalPairedAnnulus
+  have hU := eventually_two_le_routeTCommonModeNaturalCutoff
+  have hUV :=
+    eventually_two_mul_routeTCommonModeNaturalCutoff_le_primeGapPacketCutoff
+  filter_upwards [hannulus, hU, hUV,
+      Filter.eventually_gt_atTop (1 : ℝ)] with T hannulusT hUT hUVT hT
+  obtain ⟨L, hL, hLX, hXL, hLscale, hlarge⟩ := hannulusT
+  refine ⟨L, hL, hLX, hXL, hLscale, ?_⟩
+  intro lambda hlambda hprimeFree
+  let x : ℝ := routeTPrimeGapPacketBase T
+  let X : ℕ := routeTPrimeGapPacketSupport T
+  let U : ℕ := routeTCommonModeNaturalCutoff x
+  let V : ℕ := routeTPrimeGapPacketCutoff T
+  let R : ℝ := routeTCommonModeReferenceRelativeWidth x
+  let H : ℝ := routeTPrimeGapPacketWidth lambda
+  let B : ℝ := ((2 * Real.pi) *
+    (routeTSmoothWindowCentralMargin * routeTCommonModeReferenceDensity / 2)) / 4
+  have hx0 : 0 < x := by
+    dsimp only [x, routeTPrimeGapPacketBase]
+    positivity
+  have hX : 1 ≤ X := by
+    apply Nat.ceil_pos.mpr
+    change 0 < 3 * x
+    positivity
+  have hlambda0 : 0 < lambda := hx0.trans_le hlambda.1
+  have hR0 : 0 < R := by
+    dsimp only [R]
+    exact routeTCommonModeReferenceRelativeWidth_pos hx0
+  have hH0 : 0 < H := by
+    dsimp only [H, routeTPrimeGapPacketWidth]
+    positivity
+  have hU' : 2 ≤ U := by simpa only [U, x] using hUT
+  have hUV' : 2 * U ≤ V := by simpa only [U, V, x] using hUVT
+  have hB0 : 0 < B := by
+    dsimp only [B]
+    positivity [routeTSmoothWindowCentralMargin_pos,
+      routeTCommonModeReferenceDensity_pos]
+  have hlarge' : B ≤ ‖∫ y in {y : ℝ | (U : ℝ) ≤ |y| ∧ |y| < (V : ℝ)},
+      heathBrownWindowRelevantEligibleDyadicAggregate
+            L X 60 T ((8 / 5 : ℝ) / 120) x
+            ((1 : ℂ) + (y : ℝ) * Complex.I) *
+        (routeTNormalizedSmoothWindowMellin lambda (lambda * R)
+            ((1 : ℂ) + (y : ℝ) * Complex.I) -
+          routeTNormalizedSmoothWindowMellin lambda (lambda * H)
+            ((1 : ℂ) + (y : ℝ) * Complex.I))‖ := by
+    rw [show (8 / 5 : ℝ) / 120 = 1 / 75 by norm_num]
+    simpa only [B, U, V, X, x, R, H] using hlarge lambda
+      (by simpa only [x] using hlambda) hprimeFree
+  have hshell :=
+    exists_fixedSource_naturalized_pairedShell_of_annulus_canonicalCount
+      L X 60 U V (T := T) (mu := (8 / 5 : ℝ)) (M := x) (N := lambda)
+        (H := lambda * H) (R := lambda * R) (B := B)
+        hT hX hx0 hlambda0 (mul_pos hlambda0 hH0) (mul_pos hlambda0 hR0)
+        hB0 hU' hUV' hlarge'
+  simpa only [x, X, U, V, R, H, B] using hshell
 
 end
 

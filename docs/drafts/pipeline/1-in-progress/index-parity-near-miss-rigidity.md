@@ -148,3 +148,94 @@ pins the eigenvalues. The number-field slots, all corpus-present but unwelded:
   boundary; attack surfaces A (Bohr-vs-subhalf) and B (PF/Lorentz weld, C9) named with their
   first tests; kill-list recorded. External audit: refereed literature empty on C8; one
   unrefereed claim flagged unverified; Π_κ-dB structure theory available (Kaltenbäck–Woracek).
+
+## Two-atom PF cone test — executed 2026-08-28 (verdict: weld retired, index residue extracted)
+
+Exact analysis + finite-section numerics (`computations/2026-08-28-two-volterra-domination-loop/
+pf_test.py`, `pf_check.py`). Setup: `Z₂ = I + q·S_{log 2}`, `q = 2^{−1/2}`, on `L²(e^{2βs}ds)`;
+`‖S_a‖_β = 2^β`; co-shift Laplace-frame-diagonal with symbol `1 + 2^{−1/2−w}`.
+
+**Qualitative PASS — the Lean witness is exactly a cone/index boundary phenomenon:**
+- Zeros of the symbol = (critical weight `β = 1/2`, where the cone radius `q·2^β` reaches 1) ×
+  (anti-Perron peripheral direction `e^{−aw} = −1`), giving `Re w = −1/2`, ordinate lattice
+  `π(2k+1)/log 2` — the witness `w₀ = −1/2 + iπ/log 2` is the anti-Perron point at critical
+  weight, diametrically opposite the Perron eigenvalue `1+q` (positive constant direction).
+- The weight transition is a Fredholm/winding index jump. Finite sections show the three
+  predicted regimes exactly: `β < 1/2`: smin → `1 − q·2^β` (measured 0.13124 → limit 0.1294);
+  `β = 1/2`: smin ∝ 1/N (measured halving per doubling), soft space m-fold degenerate
+  (0.04832749… with multiplicity — one soft mode per stride class = the discretized zero
+  lattice), carrier = stride-2m alternation (block-mean sign pattern −1,+1,… with slow
+  envelope) = continuum frequency `π/log 2`; `β > 1/2`: exponential collapse with
+  m-dimensional approximate kernel (index-jump regime).
+
+**Mechanism-power FAIL — C9's weld retired as a producer, three exact reasons:**
+1. For the full `Z = Σ n^{−1/2}S_{log n}` the cone/Neumann disc gives only the trivial region
+   `Σ_{n≥2} n^{−σ} < 1 ⟺ σ > s*`, `ζ(s*) = 2` (`s* ≈ 1.7286`) — weaker than elementary
+   zero-free regions. The two-atom exactness is a single-shift accident: there the spectrum IS
+   the full disc, so the disc bound is sharp only there, and the cone constrains no peripheral
+   direction (vacuous PF periphery).
+2. The operative cone positivity of zeta lives one level up — `Λ(n) ≥ 0` at the log-derivative
+   plus 3-4-1 — which IS the classical zero-free region; the PF frame adds nothing to it.
+3. **Bohr-denseness no-go (structural, decisive):** on every vertical line of the strip
+   `inf|ζ| = 0` (Bohr almost-zeros), so `0 ∈ σ` of every fixed-weight Wiener–Hopf realization
+   unconditionally — no spectral-membership/invertibility criterion at fixed weight can express
+   RH. Spectral-set frames are structurally incapable; only jump/index/eigen-defect data
+   (responding to actual zeros, not almost-zeros) can carry RH content.
+
+**Positive salvage:**
+- The weight-indexed Fredholm index `β ↦ ind(WH(ζ-symbol, weight β))` jumps exactly at off-line
+  zero abscissas: RH ⟺ the index function is constant on `(0, 1/2)`; finite total jump budget
+  ⟺ C8's finite κ. Attack surface B folds back into the index programme — its correct residue
+  is the index-jump locus, not PF invertibility.
+- Bohr-robustness of the index/section frame is now demonstrated concretely — validating the
+  Class-C representation against the operator-spectrum alternative.
+- Lean-able bricks queued: the two-atom winding/index-jump statement (winding of
+  `1 + q·2^β·e^{−iθ}` jumps at `q·2^β = 1`; elementary) alongside the existing witness theorem.
+
+## Attack surface A — first assault (2026-08-28): two halves closed, the third specified exactly
+
+**Formalized survivors (unconditional, axioms standard):**
+- `HTGeometry/HerglotzPoleIndexAnchor.lean` — the generic index dictionary anchors:
+  `re_one_div_sub` (Cauchy-atom real part = abscissa gap over squared distance),
+  `re_one_div_sub_neg_iff` (each right-half pole is detected by a strictly negative rank-one
+  Carathéodory diagonal at every node left of its abscissa), `re_lhpPoleSum_nonneg`, and
+  `isPSDKernel_lhpPoleSum` (stable pole configurations carry no negative squares — the
+  index-zero half of κ = N_off), assembled on the corpus's
+  `isPSDKernel_halfPlaneCaratheodory`.
+- `RHTower/ThetaTailKreinTiltSectionAnchor.lean` — the sesquilinear section identity
+  `2c(w+conj v)·B = tilt₊·conj tilt₊ − tilt₋·conj tilt₋` and `tiltGram_param_uniform`
+  (Gram differences at two tilt parameters are exact mutual rescalings: section inertia is
+  parameter-free).
+- `HTGeometry/CosineSublevelPeriodMeasure.lean` — the Bohr-negativity measure core:
+  `cos_sublevel_period_eq` ({cos ≤ −1/2} within a period is exactly the middle third) and
+  `volume_cos_sublevel_period` (= 2π/3): a single-frequency mean-zero anomaly spends exactly
+  one third of every period at depth half its amplitude. Queued bookkeeping: periodization to
+  the density statement on [0,U]; the general-κ L²/L∞ negative-density lemma
+  (density ≥ 1/(8κ) at depth ‖A‖₂/(4√(2κ)) — proof recorded here: mean-zero + Parseval +
+  ‖A‖∞ ≤ √(2κ)‖A‖₂ + Markov).
+
+**The anomaly law (paper-exact, unconditional inputs only):** under finite κ with top abscissa
+β, `(ψ(e^u) − e^u)·e^{−βu} = A(u) + E(u)` where `A` is the exact κ-frequency Bohr polynomial of
+the exceptional zeros and `density{|E| > δ} → 0` — using only the explicit formula and
+`Σ 1/|ρ|² < ∞` (windowed Chebyshev on the Besicovitch mean square; the on-line background dies
+in density under the `e^{−(β−1/2)u}` normalization). So finite-κ ⟺ the normalized prime
+fluctuation converges in density to a nonzero finite Bohr polynomial — **C10**, the distilled
+minimal target: refute that convergence for every β > 1/2. C10 ⟸ any unconditional one-sided
+carrier bound at density > 2/3 (κ=1; > 1 − 1/(8κ) generally); C10 ⟹ C8.
+
+**Audited carrier failure map (why each natural candidate misses):**
+ψ-direct one-sided at scale x^β — RH-strength (no unconditional second moments); quadratic /
+energy carriers — anomaly enters squared, blind; manifest Λ ≥ 0 monotonicity — main-term
+dominated, kills only β = 1 (attack A at β → 1 IS the classical zero-free-line mechanism);
+S(T) — exceptional-insensitive (O(1) jumps per zero); Littlewood/log|ζ| line-means —
+non-discriminating (both κ = 0 and finite κ give bounded integrals; keep the clean receiver:
+`∫₀^T log|ζ(σ₀+it)|dt = O(1) ⟺ finitely many zeros right of σ₀`); Odlyzko-style positive-test
+explicit-formula budgets — spent by on-line zeros, no finite-κ gain.
+
+**Landing.** The missing third piece — an unconditional positive-density one-sided prime-side
+bound at sub-main scale against a fixed known frequency — is exactly the corpus's
+signed-incidence frontier (T2 "signed subhalf continuation", E-lane sign supply, D2 windows),
+with a new consumer relation: those lanes' PARTIAL goals suffice for near-miss rigidity before
+their full goals are reached, and the target frequency being fixed/known permits Diophantine
+window tuning unavailable to the full lanes. Next cycle: mine the proved T2/E layers for any
+statement meeting the spec (one-sided, density > 2/3, sub-power scale, fixed frequency).
