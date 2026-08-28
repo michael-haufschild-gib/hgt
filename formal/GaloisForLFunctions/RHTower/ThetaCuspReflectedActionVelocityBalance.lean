@@ -208,6 +208,171 @@ theorem thetaCuspReflectedActionFifthRootCurvatureNumerator_nonneg_iff_actionVel
     exact Real.exp_lt_exp.mpr (thetaCuspReflectedLogAction_pos (u := u) ht)
   exact mul_nonneg_iff_of_pos_left hr
 
+theorem hasDerivAt_thetaCuspLogDecaySlope (x : ℝ) :
+    HasDerivAt thetaCuspLogDecaySlope (thetaCuspLogCurvature x) x := by
+  unfold thetaCuspLogDecaySlope thetaCuspLogCurvature
+  convert (hasDerivAt_iteratedDeriv_thetaCuspLogSource 1 x).neg using 1
+  all_goals rfl
+
+theorem hasDerivAt_thetaCuspLogCurvature (x : ℝ) :
+    HasDerivAt thetaCuspLogCurvature (thetaCuspLogCurvatureJet x) x := by
+  unfold thetaCuspLogCurvature thetaCuspLogCurvatureJet
+  convert (hasDerivAt_iteratedDeriv_thetaCuspLogSource 2 x).neg using 1
+  all_goals rfl
+
+/-- First centre jet of reflected log action. -/
+def thetaCuspReflectedLogCenterJetOne (u t : ℝ) : ℝ :=
+  thetaCuspLogDecaySlope (u + t) + thetaCuspLogDecaySlope (u - t) -
+    2 * thetaCuspLogDecaySlope u
+
+/-- Mixed centre/displacement jet of reflected log action. -/
+def thetaCuspReflectedLogCenterMixedJetOne (u t : ℝ) : ℝ :=
+  thetaCuspLogCurvature (u + t) - thetaCuspLogCurvature (u - t)
+
+/-- Centre derivative of the first centre jet. -/
+def thetaCuspReflectedLogCenterJetTwo (u t : ℝ) : ℝ :=
+  thetaCuspLogCurvature (u + t) + thetaCuspLogCurvature (u - t) -
+    2 * thetaCuspLogCurvature u
+
+/-- Centre derivative of the mixed centre/displacement jet. -/
+def thetaCuspReflectedLogCenterMixedJetTwo (u t : ℝ) : ℝ :=
+  thetaCuspLogCurvatureJet (u + t) - thetaCuspLogCurvatureJet (u - t)
+
+theorem hasDerivAt_thetaCuspReflectedLogAction_center (u t : ℝ) :
+    HasDerivAt (fun x => thetaCuspReflectedLogAction x t)
+      (thetaCuspReflectedLogCenterJetOne u t) u := by
+  have hc := (hasDerivAt_iteratedDeriv_thetaCuspLogSource 0 u).const_mul 2
+  have hp := (hasDerivAt_iteratedDeriv_thetaCuspLogSource 0 (u + t)).comp u
+    ((hasDerivAt_id u).add_const t)
+  have hm := (hasDerivAt_iteratedDeriv_thetaCuspLogSource 0 (u - t)).comp u
+    ((hasDerivAt_id u).sub_const t)
+  unfold thetaCuspReflectedLogAction thetaCuspReflectedLogCenterJetOne
+    thetaCuspLogDecaySlope
+  convert (hc.sub hp).sub hm using 1
+  all_goals first | rfl | (simp [sub_eq_add_neg] ; ring)
+
+theorem hasDerivAt_thetaCuspReflectedLogJetOne_center (u t : ℝ) :
+    HasDerivAt (fun x => thetaCuspReflectedLogJetOne x t)
+      (thetaCuspReflectedLogCenterMixedJetOne u t) u := by
+  have hp := (hasDerivAt_thetaCuspLogDecaySlope (u + t)).comp u
+    ((hasDerivAt_id u).add_const t)
+  have hm := (hasDerivAt_thetaCuspLogDecaySlope (u - t)).comp u
+    ((hasDerivAt_id u).sub_const t)
+  convert hp.sub hm using 1
+  all_goals first | rfl | simp [thetaCuspReflectedLogCenterMixedJetOne]
+
+theorem hasDerivAt_thetaCuspReflectedLogJetTwo_center (u t : ℝ) :
+    HasDerivAt (fun x => thetaCuspReflectedLogJetTwo x t)
+      (thetaCuspLogCurvatureJet (u + t) +
+        thetaCuspLogCurvatureJet (u - t)) u := by
+  have hp := (hasDerivAt_thetaCuspLogCurvature (u + t)).comp u
+    ((hasDerivAt_id u).add_const t)
+  have hm := (hasDerivAt_thetaCuspLogCurvature (u - t)).comp u
+    ((hasDerivAt_id u).sub_const t)
+  convert hp.add hm using 1
+  all_goals first | rfl | simp
+
+theorem hasDerivAt_thetaCuspReflectedLogCenterJetOne (u t : ℝ) :
+    HasDerivAt (fun x => thetaCuspReflectedLogCenterJetOne x t)
+      (thetaCuspReflectedLogCenterJetTwo u t) u := by
+  have hp := (hasDerivAt_thetaCuspLogDecaySlope (u + t)).comp u
+    ((hasDerivAt_id u).add_const t)
+  have hm := (hasDerivAt_thetaCuspLogDecaySlope (u - t)).comp u
+    ((hasDerivAt_id u).sub_const t)
+  have hc := hasDerivAt_thetaCuspLogDecaySlope u
+  convert (hp.add hm).sub (hc.const_mul 2) using 1
+  all_goals first | rfl | simp [thetaCuspReflectedLogCenterJetTwo]
+
+theorem hasDerivAt_thetaCuspReflectedLogCenterMixedJetOne (u t : ℝ) :
+    HasDerivAt (fun x => thetaCuspReflectedLogCenterMixedJetOne x t)
+      (thetaCuspReflectedLogCenterMixedJetTwo u t) u := by
+  have hp := (hasDerivAt_thetaCuspLogCurvature (u + t)).comp u
+    ((hasDerivAt_id u).add_const t)
+  have hm := (hasDerivAt_thetaCuspLogCurvature (u - t)).comp u
+    ((hasDerivAt_id u).sub_const t)
+  convert hp.sub hm using 1
+  all_goals first | rfl | simp [thetaCuspReflectedLogCenterMixedJetTwo]
+
+/-- Centre transport of action velocity after removing motion normal to an action level. -/
+def thetaCuspReflectedActionVelocityFixedActionCenterTransport (u t : ℝ) : ℝ :=
+  t * thetaCuspReflectedLogCenterMixedJetOne u t -
+    (thetaCuspReflectedLogJetOne u t + t * thetaCuspReflectedLogJetTwo u t) *
+      thetaCuspReflectedLogCenterJetOne u t /
+      thetaCuspReflectedLogJetOne u t
+
+/-- One-variable seam margin governing the first transverse velocity transport. -/
+def thetaCuspActionVelocitySeamTransverseMargin (t : ℝ) : ℝ :=
+  2 * (t * thetaCuspLogCurvatureJet t -
+    (thetaCuspLogCurvature t - thetaCuspLogCurvature 0) *
+      (1 + t * thetaCuspLogCurvature t / thetaCuspLogDecaySlope t))
+
+theorem thetaCuspReflectedActionVelocityFixedActionCenterTransport_zero (t : ℝ) :
+    thetaCuspReflectedActionVelocityFixedActionCenterTransport 0 t = 0 := by
+  have hs0 : thetaCuspLogDecaySlope 0 = 0 := by
+    have h := thetaCuspLogDecaySlope_neg 0
+    norm_num at h
+    linarith
+  unfold thetaCuspReflectedActionVelocityFixedActionCenterTransport
+    thetaCuspReflectedLogCenterMixedJetOne thetaCuspReflectedLogCenterJetOne
+    thetaCuspReflectedLogJetOne thetaCuspReflectedLogJetTwo
+  simp only [zero_add, zero_sub, thetaCuspLogCurvature_neg,
+    thetaCuspLogDecaySlope_neg, hs0]
+  ring
+
+theorem hasDerivAt_thetaCuspReflectedActionVelocityFixedActionCenterTransport_zero
+    {t : ℝ} (ht : 0 < t) :
+    HasDerivAt
+      (fun u => thetaCuspReflectedActionVelocityFixedActionCenterTransport u t)
+      (thetaCuspActionVelocitySeamTransverseMargin t) 0 := by
+  let A : ℝ → ℝ := fun u => thetaCuspReflectedLogJetOne u t
+  let B : ℝ → ℝ := fun u => thetaCuspReflectedLogJetTwo u t
+  let C : ℝ → ℝ := fun u => thetaCuspReflectedLogCenterJetOne u t
+  let M : ℝ → ℝ := fun u => thetaCuspReflectedLogCenterMixedJetOne u t
+  have hA : HasDerivAt A (thetaCuspReflectedLogCenterMixedJetOne 0 t) 0 := by
+    simpa only [A] using hasDerivAt_thetaCuspReflectedLogJetOne_center 0 t
+  have hB : HasDerivAt B
+      (thetaCuspLogCurvatureJet (0 + t) + thetaCuspLogCurvatureJet (0 - t)) 0 := by
+    simpa only [B] using hasDerivAt_thetaCuspReflectedLogJetTwo_center 0 t
+  have hC : HasDerivAt C (thetaCuspReflectedLogCenterJetTwo 0 t) 0 := by
+    simpa only [C] using hasDerivAt_thetaCuspReflectedLogCenterJetOne 0 t
+  have hM : HasDerivAt M (thetaCuspReflectedLogCenterMixedJetTwo 0 t) 0 := by
+    simpa only [M] using hasDerivAt_thetaCuspReflectedLogCenterMixedJetOne 0 t
+  have hAne : A 0 ≠ 0 := by
+    dsimp only [A]
+    exact (thetaCuspReflectedLogJetOne_pos 0 ht).ne'
+  have hraw := (hM.const_mul t).sub
+    (((hA.add (hB.const_mul t)).mul hC).div hA hAne)
+  have hs0 : thetaCuspLogDecaySlope 0 = 0 := by
+    have h := thetaCuspLogDecaySlope_neg 0
+    norm_num at h
+    linarith
+  have hj0 : thetaCuspLogCurvatureJet 0 = 0 := by
+    have h := thetaCuspLogCurvatureJet_neg 0
+    norm_num at h
+    linarith
+  have hs : 0 < thetaCuspLogDecaySlope t := by
+    simpa only [thetaCuspLogDecaySlope] using
+      neg_iteratedDeriv_one_thetaCuspLogSource_pos ht
+  refine (hraw.congr_of_eventuallyEq
+    (Filter.Eventually.of_forall fun u => ?_)).congr_deriv ?_
+  · rfl
+  · dsimp only [A, B, C, M] at *
+    unfold thetaCuspActionVelocitySeamTransverseMargin
+      thetaCuspReflectedLogCenterMixedJetOne
+      thetaCuspReflectedLogCenterMixedJetTwo
+      thetaCuspReflectedLogCenterJetOne
+      thetaCuspReflectedLogCenterJetTwo
+      thetaCuspReflectedLogJetOne thetaCuspReflectedLogJetTwo at *
+    simp only [zero_add, zero_sub, thetaCuspLogDecaySlope_neg,
+      thetaCuspLogCurvature_neg, thetaCuspLogCurvatureJet_neg,
+      hs0, hj0] at *
+    simp only [Pi.add_apply, Pi.mul_apply] at *
+    norm_num at *
+    rw [thetaCuspLogDecaySlope_neg, thetaCuspLogCurvature_neg]
+    field_simp [hs.ne']
+    ring
+
+
 end
 
 end RHTower

@@ -231,6 +231,322 @@ private theorem tendsto_routeTCommonModeCutoff_mul_reference_zero_naturalCell :
 
 /-- Rounding the common central cutoff downward to a natural endpoint preserves the complete
 two-width error budget. -/
+theorem eventually_routeT_commonMode_naturalCentralErrors_le_of_target :
+    ∀ᶠ T : ℝ in atTop, ∀ L : ℕ,
+      1 ≤ L → L ≤ routeTPrimeGapPacketSupport T →
+      ∀ H0 : ℝ, 0 < H0 →
+        H0 ≤ routeTCommonModeReferenceRelativeWidth (routeTPrimeGapPacketBase T) →
+      ∀ lambda ∈ Set.Icc (routeTPrimeGapPacketBase T)
+          (2 * routeTPrimeGapPacketBase T),
+        ‖maynardCentralWidthError
+          (fun y : ℝ =>
+            heathBrownWindowRelevantEligibleDyadicAggregate
+              L (routeTPrimeGapPacketSupport T) 60 T (1 / 75)
+                (routeTPrimeGapPacketBase T)
+              ((1 : ℂ) + (y : ℝ) * Complex.I))
+          lambda
+          (lambda * routeTCommonModeReferenceRelativeWidth
+            (routeTPrimeGapPacketBase T))
+          (routeTCommonModeNaturalCutoff (routeTPrimeGapPacketBase T) : ℝ)‖ +
+        ‖maynardCentralWidthError
+          (fun y : ℝ =>
+            heathBrownWindowRelevantEligibleDyadicAggregate
+              L (routeTPrimeGapPacketSupport T) 60 T (1 / 75)
+                (routeTPrimeGapPacketBase T)
+              ((1 : ℂ) + (y : ℝ) * Complex.I))
+          lambda (lambda * H0)
+          (routeTCommonModeNaturalCutoff (routeTPrimeGapPacketBase T) : ℝ)‖ ≤
+        ((2 * Real.pi) *
+          (routeTSmoothWindowCentralMargin * routeTCommonModeReferenceDensity / 2)) / 2 := by
+  have hbaseTop : Tendsto routeTPrimeGapPacketBase atTop atTop := by
+    unfold routeTPrimeGapPacketBase
+    exact (tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 8 / 5)).atTop_div_const
+      (by norm_num)
+  have hsmall := Tendsto.eventually_le_const (by norm_num : (0 : ℝ) < 1)
+    (tendsto_routeTCommonModeCutoff_mul_reference_zero_naturalCell.comp hbaseTop)
+  have hcost := eventually_routeT_commonMode_centralCost_le
+  have hbaseLarge : ∀ᶠ T : ℝ in atTop, 1 ≤ routeTPrimeGapPacketBase T :=
+    hbaseTop.eventually_ge_atTop 1
+  filter_upwards [hsmall, hcost, hbaseLarge,
+      eventually_gt_atTop (0 : ℝ)] with T hsmallT hcostT hx1 hT
+  intro L hL hLX H0 hH0Input hHReference lambda hlambda
+  let x : ℝ := routeTPrimeGapPacketBase T
+  let X : ℕ := routeTPrimeGapPacketSupport T
+  let P : ℝ := heathBrownWindowRelevantFixedPolylogBound L X 60 x 1
+  let U : ℝ := routeTCommonModeCutoff x
+  let Uₙ : ℝ := routeTCommonModeNaturalCutoff x
+  let R : ℝ := routeTCommonModeReferenceRelativeWidth x
+  let H : ℝ := H0
+  have hx1' : 1 ≤ x := by simpa only [x] using hx1
+  have hx0 : 0 < x := zero_lt_one.trans_le hx1'
+  have hlambda0 : 0 < lambda := hx0.trans_le hlambda.1
+  have hX : 1 ≤ X := by
+    apply Nat.ceil_pos.mpr
+    change 0 < 3 * x
+    positivity
+  have hP0 : 0 ≤ P := by
+    dsimp only [P]
+    exact (norm_nonneg
+      (heathBrownWindowRelevantEligibleDyadicAggregate L X 60 T (1 / 75) x
+        ((1 : ℂ) + (0 : ℝ) * Complex.I))).trans
+      (norm_heathBrownWindowRelevantEligibleDyadicAggregate_le_fixedPolylog
+        L X 60 hX T (1 / 75) x 1 0 hx0 (by norm_num))
+  have hU0 : 0 ≤ U := by dsimp only [U, routeTCommonModeCutoff]; positivity
+  have hUₙ0 : 0 ≤ Uₙ := by dsimp only [Uₙ]; positivity
+  have hUₙU : Uₙ ≤ U := by
+    dsimp only [Uₙ, routeTCommonModeNaturalCutoff, U]
+    exact Nat.floor_le hU0
+  have hR0 : 0 < R := by
+    dsimp only [R]
+    exact routeTCommonModeReferenceRelativeWidth_pos hx0
+  have hH0 : 0 < H := by simpa only [H] using hH0Input
+  have hHR : H ≤ R := by
+    simpa only [H, R, x] using hHReference
+  have hsmallR : Uₙ * (2 * (lambda * R) / lambda) ≤ 1 := by
+    have hUR : Uₙ * (2 * R) ≤ U * (2 * R) := by gcongr
+    have hcanonical : U * (2 * R) ≤ 1 := by
+      simpa only [Function.comp_apply, U, R, x] using hsmallT
+    have hphysical : Uₙ * (2 * (lambda * R) / lambda) = Uₙ * (2 * R) := by
+      field_simp [hlambda0.ne']
+    rw [hphysical]
+    exact hUR.trans hcanonical
+  have hsmallH : Uₙ * (2 * (lambda * H) / lambda) ≤ 1 := by
+    have hs : Uₙ * (2 * H) ≤ Uₙ * (2 * R) := by gcongr
+    have hsR : Uₙ * (2 * R) ≤ 1 := by
+      have hUR : Uₙ * (2 * R) ≤ U * (2 * R) := by gcongr
+      exact hUR.trans (by simpa only [Function.comp_apply, U, R, x] using hsmallT)
+    have hphysical : Uₙ * (2 * (lambda * H) / lambda) = Uₙ * (2 * H) := by
+      field_simp [hlambda0.ne']
+    rw [hphysical]
+    exact hs.trans hsR
+  let a : ℝ → ℂ := fun y : ℝ =>
+    heathBrownWindowRelevantEligibleDyadicAggregate L X 60 T (1 / 75) x
+      ((1 : ℂ) + (y : ℝ) * Complex.I)
+  have haBound : ∀ y, ‖a y‖ ≤ P := by
+    intro y
+    dsimp only [a, P]
+    exact norm_heathBrownWindowRelevantEligibleDyadicAggregate_le_fixedPolylog
+      L X 60 hX T (1 / 75) x 1 y hx0 (by norm_num)
+  have herrorR := norm_maynardCentralWidthError_le
+    a hP0 haBound hlambda0 (mul_pos hlambda0 hR0) hUₙ0 hsmallR
+  have herrorH := norm_maynardCentralWidthError_le
+    a hP0 haBound hlambda0 (mul_pos hlambda0 hH0) hUₙ0 hsmallH
+  have herrorR' : ‖maynardCentralWidthError a lambda (lambda * R) Uₙ‖ ≤
+      8 * P * Uₙ ^ 2 * R := by
+    convert herrorR using 1
+    field_simp [hlambda0.ne']
+  have herrorH' : ‖maynardCentralWidthError a lambda (lambda * H) Uₙ‖ ≤
+      8 * P * Uₙ ^ 2 * H := by
+    convert herrorH using 1
+    field_simp [hlambda0.ne']
+  have hfactor0 : 0 ≤ 8 * P * Uₙ ^ 2 := by positivity
+  have hsum : ‖maynardCentralWidthError a lambda (lambda * R) Uₙ‖ +
+      ‖maynardCentralWidthError a lambda (lambda * H) Uₙ‖ ≤
+      16 * P * Uₙ ^ 2 * R := by
+    calc
+      _ ≤ 8 * P * Uₙ ^ 2 * R + 8 * P * Uₙ ^ 2 * H :=
+        add_le_add herrorR' herrorH'
+      _ ≤ 8 * P * Uₙ ^ 2 * R + 8 * P * Uₙ ^ 2 * R := by
+        exact add_le_add le_rfl (mul_le_mul_of_nonneg_left hHR hfactor0)
+      _ = 16 * P * Uₙ ^ 2 * R := by ring
+  have hUscale : Uₙ ^ 2 ≤ U ^ 2 := by gcongr
+  have hcostNatural : 16 * P * Uₙ ^ 2 * R ≤ 16 * P * U ^ 2 * R := by
+    gcongr
+  exact hsum.trans (hcostNatural.trans
+    (by simpa only [P, U, R, x, X] using hcostT L hL hLX))
+
+private theorem tendsto_routeTCommonModeReferenceQuarterRatio_atTop :
+    Tendsto (fun x : ℝ => (1 / 4 : ℝ) /
+      routeTCommonModeReferenceRelativeWidth x) atTop atTop := by
+  let theta : ℝ := routeTPhysicalSliceHandoffTheta
+  let g : ℝ := 1 - theta
+  have hg : 0 < g := by
+    dsimp only [g, theta]
+    linarith [routeTPhysicalSliceHandoffTheta_lt_three_fourths]
+  have hcoeff : 0 < (1 / (16 * 2 ^ theta) : ℝ) := by positivity
+  have htop := (tendsto_rpow_atTop hg).const_mul_atTop hcoeff
+  have heq : ∀ᶠ x : ℝ in atTop,
+      (1 / 4 : ℝ) / routeTCommonModeReferenceRelativeWidth x =
+        (1 / (16 * 2 ^ theta) : ℝ) * x ^ g := by
+    filter_upwards [eventually_gt_atTop (0 : ℝ)] with x hx
+    unfold routeTCommonModeReferenceRelativeWidth
+    dsimp only [theta, g]
+    rw [Real.mul_rpow (by norm_num : (0 : ℝ) ≤ 2) hx.le,
+      Real.rpow_sub hx, Real.rpow_one]
+    field_simp
+    norm_num
+  apply htop.congr'
+  filter_upwards [heq] with x hx
+  exact hx.symm
+
+/-- The common reference itself leaves an arbitrarily large order-50 logarithmic denominator;
+therefore every narrower fixed target width shares the same density absorption. -/
+theorem eventually_routeTCommonMode_fixedTarget_tailLogRatio_ge_densityInverse :
+    ∀ᶠ T : ℝ in atTop,
+      ∀ H0 : ℝ, 0 < H0 →
+        H0 ≤ routeTCommonModeReferenceRelativeWidth (routeTPrimeGapPacketBase T) →
+        1 / routeTCommonModeReferenceDensity ≤
+          1 + Real.log ((1 / 4) / H0) / Real.log 2 := by
+  have hbaseTop : Tendsto routeTPrimeGapPacketBase atTop atTop := by
+    unfold routeTPrimeGapPacketBase
+    exact (tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 8 / 5)).atTop_div_const
+      (by norm_num)
+  have hratioTop := tendsto_routeTCommonModeReferenceQuarterRatio_atTop.comp hbaseTop
+  have hlogTop := Real.tendsto_log_atTop.comp hratioTop
+  have hlogTwo : 0 < Real.log 2 := Real.log_pos (by norm_num)
+  have hdivTop := hlogTop.atTop_div_const hlogTwo
+  have hthreshold := hdivTop.eventually_ge_atTop
+    (1 / routeTCommonModeReferenceDensity - 1)
+  filter_upwards [hthreshold, hbaseTop.eventually_ge_atTop 1] with T hq hx
+  simp only [Function.comp_apply] at hq
+  intro H0 hH0 hHR
+  have hR0 : 0 < routeTCommonModeReferenceRelativeWidth
+      (routeTPrimeGapPacketBase T) :=
+    routeTCommonModeReferenceRelativeWidth_pos (zero_lt_one.trans_le hx)
+  have hratio : (1 / 4 : ℝ) /
+        routeTCommonModeReferenceRelativeWidth (routeTPrimeGapPacketBase T) ≤
+      (1 / 4 : ℝ) / H0 := by gcongr
+  have hlog : Real.log ((1 / 4 : ℝ) /
+        routeTCommonModeReferenceRelativeWidth (routeTPrimeGapPacketBase T)) ≤
+      Real.log ((1 / 4 : ℝ) / H0) := by
+    exact Real.strictMonoOn_log.monotoneOn
+      (Set.mem_Ioi.mpr (div_pos (by norm_num) hR0))
+      (Set.mem_Ioi.mpr (div_pos (by norm_num) hH0)) hratio
+  have hdiv : Real.log ((1 / 4 : ℝ) /
+        routeTCommonModeReferenceRelativeWidth (routeTPrimeGapPacketBase T)) /
+        Real.log 2 ≤ Real.log ((1 / 4 : ℝ) / H0) / Real.log 2 :=
+    div_le_div_of_nonneg_right hlog hlogTwo.le
+  linarith
+
+theorem eventually_routeT_commonMode_fixedTarget_pairedFarTail_le :
+    ∀ᶠ T : ℝ in Filter.atTop,
+      ∀ L : ℕ, 1 ≤ L → L ≤ routeTPrimeGapPacketSupport T →
+      ∀ H0 : ℝ, 0 < H0 →
+        routeTPrimeGapPacketWidth (routeTPrimeGapPacketBase T) ≤ H0 →
+        H0 ≤ routeTCommonModeReferenceRelativeWidth (routeTPrimeGapPacketBase T) →
+      ∀ lambda ∈ Set.Icc (routeTPrimeGapPacketBase T)
+          (2 * routeTPrimeGapPacketBase T),
+        (∫ y in {y : ℝ | (routeTPrimeGapPacketCutoff T : ℝ) ≤ |y|},
+          ‖heathBrownWindowRelevantEligibleDyadicAggregate
+                L (routeTPrimeGapPacketSupport T) 60 T (1 / 75)
+                  (routeTPrimeGapPacketBase T)
+                ((1 : ℂ) + (y : ℝ) * Complex.I) *
+            (routeTNormalizedSmoothWindowMellin lambda
+                (lambda * routeTCommonModeReferenceRelativeWidth
+                  (routeTPrimeGapPacketBase T))
+                ((1 : ℂ) + (y : ℝ) * Complex.I) -
+              routeTNormalizedSmoothWindowMellin lambda
+                (lambda * H0)
+                ((1 : ℂ) + (y : ℝ) * Complex.I))‖) ≤
+          ((2 * Real.pi) *
+            (routeTSmoothWindowCentralMargin *
+              routeTCommonModeReferenceDensity / 2)) / 4 := by
+  obtain ⟨C, hC, htail⟩ :=
+    exists_integral_norm_fixedSource_mul_noncomparablePairedKernel_natOrder_tail_le
+      50 (by norm_num)
+  have hscalar :=
+    eventually_routeTPrimeGapPacket_orderFifty_scalar_cutoff_fixedWidth
+      (2 * C) (by positivity)
+  have hlog := eventually_routeTCommonMode_fixedTarget_tailLogRatio_ge_densityInverse
+  have hbaseTop : Tendsto routeTPrimeGapPacketBase atTop atTop := by
+    unfold routeTPrimeGapPacketBase
+    exact (tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 8 / 5)).atTop_div_const
+      (by norm_num)
+  have hrefSmall := hbaseTop.eventually
+    eventually_routeTCommonModeReferenceRelativeWidth_le_one_fourth
+  filter_upwards [hscalar, hlog, hrefSmall, hbaseTop.eventually_ge_atTop 16,
+      Filter.eventually_ge_atTop (2 : ℝ)] with
+      T hscalarT hlogT hrefSmallT hx16 hT
+  intro L hL hLX H0 hH0Input hwidth hHReference lambda hlambda
+  let x : ℝ := routeTPrimeGapPacketBase T
+  let X : ℕ := routeTPrimeGapPacketSupport T
+  let K : ℕ := routeTPrimeGapPacketCutoff T
+  let H : ℝ := H0
+  let R : ℝ := routeTCommonModeReferenceRelativeWidth x
+  let P : ℝ := heathBrownWindowRelevantFixedPolylogBound L X 60 x 1
+  let Q : ℝ := 1 + Real.log ((1 / 4) / H) / Real.log 2
+  have hx0 : 0 < x := by dsimp only [x]; linarith
+  have hx1 : 1 ≤ x := by dsimp only [x]; linarith
+  have hX : 1 ≤ X := by
+    apply Nat.ceil_pos.mpr
+    change 0 < 3 * x
+    positivity
+  have hlambda0 : 0 < lambda := hx0.trans_le hlambda.1
+  have hlambda1 : 1 ≤ lambda := hx1.trans hlambda.1
+  have hH0 : 0 < H := by simpa only [H] using hH0Input
+  have hR0 : 0 < R := by
+    dsimp only [R]
+    exact routeTCommonModeReferenceRelativeWidth_pos hx0
+  have hHR : H ≤ R := by
+    simpa only [H, R, x] using hHReference
+  have hHquarter : H ≤ 1 / 4 := by
+    exact hHR.trans (by simpa only [R, x] using hrefSmallT)
+  have hRone : R ≤ 1 := by
+    dsimp only [R, x]
+    exact hrefSmallT.trans (by norm_num)
+  have hphysicalOrder : lambda * H ≤ lambda * R :=
+    mul_le_mul_of_nonneg_left hHR hlambda0.le
+  have hphysicalR : lambda * R ≤ lambda := by
+    calc
+      lambda * R ≤ lambda * 1 := mul_le_mul_of_nonneg_left hRone hlambda0.le
+      _ = lambda := by ring
+  have hK : 0 < K := by
+    dsimp only [K, routeTPrimeGapPacketCutoff]
+    exact Nat.floor_pos.mpr (by linarith)
+  have htailBound := htail L X 60 T (1 / 75 : ℝ)
+    (M := x) (N := lambda) (H := lambda * H) (R := lambda * R) (U := K)
+    hX hx0 hlambda1 (mul_pos hlambda0 hH0) (mul_pos hlambda0 hR0)
+    hphysicalOrder hphysicalR (by exact_mod_cast hK)
+  have htailShape :
+      (∫ y in {y : ℝ | (K : ℝ) ≤ |y|},
+        ‖heathBrownWindowRelevantEligibleDyadicAggregate L X 60 T (1 / 75) x
+              ((1 : ℂ) + (y : ℝ) * Complex.I) *
+          (routeTNormalizedSmoothWindowMellin lambda (lambda * R)
+              ((1 : ℂ) + (y : ℝ) * Complex.I) -
+            routeTNormalizedSmoothWindowMellin lambda (lambda * H)
+              ((1 : ℂ) + (y : ℝ) * Complex.I))‖) ≤
+        P * (2 * C * (1 / H) ^ (51 : ℕ) * (K : ℝ) ^ (-(50 : ℝ))) := by
+    have hratioEq : lambda / (lambda * H) = 1 / H := by
+      field_simp [hlambda0.ne']
+    norm_num at htailBound ⊢
+    simpa only [P, hratioEq, one_div, inv_pow] using htailBound
+  have hscalarBound :
+      P * (2 * C * (1 / H) ^ (51 : ℕ) * (K : ℝ) ^ (-(50 : ℝ))) ≤
+        ((2 * Real.pi) * (routeTSmoothWindowCentralMargin / 4)) / (2 * Q) := by
+    simpa only [P, X, x, H, K, Q] using
+      hscalarT L hL (by simpa only [X] using hLX) H hH0 hHquarter
+        (by simpa only [H, x] using hwidth)
+  have hrho : 0 < routeTCommonModeReferenceDensity :=
+    routeTCommonModeReferenceDensity_pos
+  have hQlower : 1 / routeTCommonModeReferenceDensity ≤ Q := by
+    simpa only [H, Q, x] using hlogT H hH0
+      (by simpa only [H, x] using hHReference)
+  have hQ0 : 0 < Q := (div_pos zero_lt_one hrho).trans_le hQlower
+  have hrhoQ : 1 ≤ routeTCommonModeReferenceDensity * Q := by
+    have hmul := mul_le_mul_of_nonneg_left hQlower hrho.le
+    field_simp [hrho.ne'] at hmul
+    exact hmul
+  have hinvQ : 1 / Q ≤ routeTCommonModeReferenceDensity := by
+    exact (div_le_iff₀ hQ0).2 (by simpa only [one_mul] using hrhoQ)
+  have hmargin : 0 ≤ (2 * Real.pi) * routeTSmoothWindowCentralMargin / 8 := by
+    positivity [routeTSmoothWindowCentralMargin_pos]
+  have hfinal :
+      ((2 * Real.pi) * (routeTSmoothWindowCentralMargin / 4)) / (2 * Q) ≤
+        ((2 * Real.pi) *
+          (routeTSmoothWindowCentralMargin * routeTCommonModeReferenceDensity / 2)) / 4 := by
+    calc
+      ((2 * Real.pi) * (routeTSmoothWindowCentralMargin / 4)) / (2 * Q) =
+          ((2 * Real.pi) * routeTSmoothWindowCentralMargin / 8) * (1 / Q) := by
+            field_simp [hQ0.ne']
+            ring
+      _ ≤ ((2 * Real.pi) * routeTSmoothWindowCentralMargin / 8) *
+          routeTCommonModeReferenceDensity :=
+        mul_le_mul_of_nonneg_left hinvQ hmargin
+      _ = ((2 * Real.pi) *
+          (routeTSmoothWindowCentralMargin * routeTCommonModeReferenceDensity / 2)) / 4 := by
+        ring
+  exact htailShape.trans (hscalarBound.trans hfinal)
+
 theorem eventually_routeT_commonMode_naturalCentralErrors_le :
     ∀ᶠ T : ℝ in atTop, ∀ L : ℕ,
       1 ≤ L → L ≤ routeTPrimeGapPacketSupport T →
@@ -615,6 +931,313 @@ theorem exists_eventually_routeT_primeFree_fixedSource_commonMode_naturalPairedH
       hprimeFree href.le hleakage (by simpa only [x, X, H, R, U] using hlow)
   simpa only [x, X, H, R, U] using hresult
 
+theorem exists_eventually_routeT_primeFree_fixedSource_commonMode_fixedTarget_naturalPairedHighTail :
+    ∀ᶠ T : ℝ in atTop,
+      ∃ L : ℕ, 1 ≤ L ∧
+        L ≤ routeTPrimeGapPacketSupport T ∧
+        routeTPrimeGapPacketSupport T < (L + 1) ^ (60 : ℕ) ∧
+        (L : ℝ) ≤ T ^ (2 / 75 : ℝ) ∧
+        ∀ H0 : ℝ, 0 < H0 →
+          routeTPrimeGapPacketWidth (routeTPrimeGapPacketBase T) ≤ H0 →
+          H0 ≤ routeTCommonModeReferenceRelativeWidth (routeTPrimeGapPacketBase T) →
+          ∀ lambda ∈ Set.Icc (routeTPrimeGapPacketBase T)
+              (2 * routeTPrimeGapPacketBase T),
+            Chebyshev.theta (lambda + 2 * (lambda * H0)) -
+                Chebyshev.theta lambda = 0 →
+            ((2 * Real.pi) *
+                (routeTSmoothWindowCentralMargin *
+                  routeTCommonModeReferenceDensity / 2)) / 2 ≤
+              ‖maynardWidthHighTail
+                  (fun y : ℝ =>
+                    heathBrownWindowRelevantEligibleDyadicAggregate
+                      L (routeTPrimeGapPacketSupport T) 60 T (1 / 75)
+                        (routeTPrimeGapPacketBase T)
+                      ((1 : ℂ) + (y : ℝ) * Complex.I))
+                  lambda
+                  (lambda * routeTCommonModeReferenceRelativeWidth
+                    (routeTPrimeGapPacketBase T))
+                  (routeTCommonModeNaturalCutoff (routeTPrimeGapPacketBase T) : ℝ) -
+                maynardWidthHighTail
+                  (fun y : ℝ =>
+                    heathBrownWindowRelevantEligibleDyadicAggregate
+                      L (routeTPrimeGapPacketSupport T) 60 T (1 / 75)
+                        (routeTPrimeGapPacketBase T)
+                      ((1 : ℂ) + (y : ℝ) * Complex.I))
+                  lambda (lambda * H0)
+                  (routeTCommonModeNaturalCutoff (routeTPrimeGapPacketBase T) : ℝ)‖ := by
+  have hproducer :=
+    exists_eventually_routeT_primeFree_fixedSource_commonMode_naturalPairedHighTail
+  have hbaseTop : Tendsto routeTPrimeGapPacketBase atTop atTop := by
+    unfold routeTPrimeGapPacketBase
+    exact (tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 8 / 5)).atTop_div_const
+      (by norm_num)
+  have hmass := hbaseTop.eventually
+    eventually_routeT_commonMode_fixedReference_smooth_vonMangoldt_mass_lower
+  have hcentral := eventually_routeT_commonMode_naturalCentralErrors_le_of_target
+  have hrefSmall := hbaseTop.eventually
+    eventually_routeTCommonModeReferenceRelativeWidth_le_one_fourth
+  have hbaseLarge : ∀ᶠ T : ℝ in atTop, 16 ≤ routeTPrimeGapPacketBase T :=
+    hbaseTop.eventually_ge_atTop 16
+  have hscale : ∀ᶠ T : ℝ in atTop,
+      4 * (((2 ^ 120 : ℕ) : ℝ)) ≤ T ^ (119 / 75 : ℝ) :=
+    (tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 119 / 75)).eventually_ge_atTop
+      (4 * (((2 ^ 120 : ℕ) : ℝ)))
+  have hleakAll := eventually_routeT_primePowerLeakage_le_of_power_width_const
+    (theta := (31 / 80 : ℝ)) (epsilon :=
+      routeTSmoothWindowCentralMargin * routeTCommonModeReferenceDensity / 2)
+      (by norm_num) (by positivity [routeTSmoothWindowCentralMargin_pos,
+        routeTCommonModeReferenceDensity_pos])
+  rcases eventually_atTop.1 hleakAll with ⟨Q, hQ⟩
+  have hleakThreshold : ∀ᶠ T : ℝ in atTop,
+      Q ≤ routeTPrimeGapPacketBase T := hbaseTop.eventually_ge_atTop Q
+  filter_upwards [hproducer, hmass, hcentral, hrefSmall, hbaseLarge,
+      hscale, hleakThreshold, eventually_ge_atTop (2 : ℝ)] with
+      T hproducerT hmassT hcentralT hrefSmallT hbase16 hscaleT hthreshold hT
+  rcases hproducerT with ⟨L, hL, hLX, hXL, hLscale, _hold⟩
+  let x : ℝ := routeTPrimeGapPacketBase T
+  let X : ℕ := routeTPrimeGapPacketSupport T
+  have hT0 : 0 < T := by linarith
+  have hTone : 1 < T := by linarith
+  have hx0 : 0 < x := by
+    dsimp only [x, routeTPrimeGapPacketBase]
+    positivity
+  have hceilLower : 3 * x ≤ (X : ℝ) := by
+    dsimp only [X, routeTPrimeGapPacketSupport]
+    exact Nat.le_ceil _
+  refine ⟨L, hL, hLX, hXL, hLscale, ?_⟩
+  intro H0 hH0Input hwidthBase hHReference lambda hlambda hprimeFree
+  let H : ℝ := H0
+  let R : ℝ := routeTCommonModeReferenceRelativeWidth x
+  let U : ℝ := routeTCommonModeNaturalCutoff x
+  have hlambda0 : 0 < lambda := hx0.trans_le hlambda.1
+  have hlambda2 : 2 ≤ lambda := by linarith [hlambda.1, hbase16]
+  have hH0 : 0 < H := by simpa only [H] using hH0Input
+  have hR0 : 0 < R := by
+    dsimp only [R]
+    exact routeTCommonModeReferenceRelativeWidth_pos hx0
+  have hHR : H ≤ R := by simpa only [H, R, x] using hHReference
+  have hHquarter : H ≤ 1 / 4 :=
+    hHR.trans (by simpa only [R, x] using hrefSmallT)
+  have hRquarter : R ≤ 1 / 4 := by simpa only [R, x] using hrefSmallT
+  have hscaleLambda :
+      (((2 ^ (2 * 60) : ℕ) : ℝ)) * T ^ (1 / 75 : ℝ) ≤ lambda := by
+    have hmul :
+        (4 * (((2 ^ 120 : ℕ) : ℝ))) * (T ^ (1 / 75 : ℝ) / 4) ≤
+          T ^ (119 / 75 : ℝ) * (T ^ (1 / 75 : ℝ) / 4) :=
+      mul_le_mul_of_nonneg_right hscaleT
+        (div_nonneg (Real.rpow_nonneg hT0.le (1 / 75 : ℝ)) (by norm_num))
+    calc
+      (((2 ^ (2 * 60) : ℕ) : ℝ)) * T ^ (1 / 75 : ℝ) =
+          (4 * (((2 ^ 120 : ℕ) : ℝ))) * (T ^ (1 / 75 : ℝ) / 4) := by
+            norm_num; ring
+      _ ≤ T ^ (119 / 75 : ℝ) * (T ^ (1 / 75 : ℝ) / 4) := hmul
+      _ = T ^ (8 / 5 : ℝ) / 4 := by
+        rw [show T ^ (119 / 75 : ℝ) * (T ^ (1 / 75 : ℝ) / 4) =
+          (T ^ (119 / 75 : ℝ) * T ^ (1 / 75 : ℝ)) / 4 by ring,
+          ← Real.rpow_add hT0]
+        congr 2
+        norm_num
+      _ = x := by rfl
+      _ ≤ lambda := hlambda.1
+  have hwidthLambda : routeTPrimeGapPacketWidth lambda ≤ H := by
+    have hanti := Real.rpow_le_rpow_of_nonpos hx0 hlambda.1
+      (by norm_num : (-(49 / 80 : ℝ)) ≤ 0)
+    have hwidthx : routeTPrimeGapPacketWidth lambda ≤
+        routeTPrimeGapPacketWidth x := by
+      simpa only [routeTPrimeGapPacketWidth] using hanti
+    exact hwidthx.trans (by simpa only [H, x] using hwidthBase)
+  have hpowerEq : lambda ^ (31 / 80 : ℝ) =
+      lambda * routeTPrimeGapPacketWidth lambda := by
+    dsimp only [routeTPrimeGapPacketWidth]
+    calc
+      lambda ^ (31 / 80 : ℝ) = lambda ^ (1 + (-(49 / 80 : ℝ))) := by
+        congr 1
+        norm_num
+      _ = lambda ^ (1 : ℝ) * lambda ^ (-(49 / 80 : ℝ)) :=
+        Real.rpow_add hlambda0 1 (-(49 / 80 : ℝ))
+      _ = lambda * lambda ^ (-(49 / 80 : ℝ)) := by rw [Real.rpow_one]
+  have hphysicalLower : lambda ^ (31 / 80 : ℝ) ≤ lambda * H := by
+    rw [hpowerEq]
+    exact mul_le_mul_of_nonneg_left hwidthLambda hlambda0.le
+  have hphysicalH1 : 1 ≤ lambda * H :=
+    (Real.one_le_rpow (by linarith) (by norm_num)).trans hphysicalLower
+  have hphysicalHle : lambda * H ≤ lambda := by
+    calc
+      lambda * H ≤ lambda * 1 :=
+        mul_le_mul_of_nonneg_left (hHquarter.trans (by norm_num)) hlambda0.le
+      _ = lambda := by ring
+  have hwidthH : 1 ≤ 2 * (lambda * H) := by linarith
+  have hsupportQuarter : lambda + 2 * (lambda / 4) ≤ (X : ℝ) := by
+    calc
+      lambda + 2 * (lambda / 4) = (3 / 2 : ℝ) * lambda := by ring
+      _ ≤ (3 / 2 : ℝ) * (2 * x) :=
+        mul_le_mul_of_nonneg_left hlambda.2 (by norm_num)
+      _ = 3 * x := by ring
+      _ ≤ (X : ℝ) := hceilLower
+  have hHmul : lambda * H ≤ lambda / 4 := by
+    calc
+      lambda * H ≤ lambda * (1 / 4) :=
+        mul_le_mul_of_nonneg_left hHquarter hlambda0.le
+      _ = lambda / 4 := by ring
+  have hRmul : lambda * R ≤ lambda / 4 := by
+    calc
+      lambda * R ≤ lambda * (1 / 4) :=
+        mul_le_mul_of_nonneg_left hRquarter hlambda0.le
+      _ = lambda / 4 := by ring
+  have hsupportH : lambda + 2 * (lambda * H) ≤ (X : ℝ) := by
+    calc
+      lambda + 2 * (lambda * H) ≤ lambda + 2 * (lambda / 4) :=
+        add_le_add_right
+          (mul_le_mul_of_nonneg_left hHmul (by norm_num : (0 : ℝ) ≤ 2)) lambda
+      _ ≤ (X : ℝ) := hsupportQuarter
+  have hsupportR : lambda + 2 * (lambda * R) ≤ (X : ℝ) := by
+    calc
+      lambda + 2 * (lambda * R) ≤ lambda + 2 * (lambda / 4) :=
+        add_le_add_right
+          (mul_le_mul_of_nonneg_left hRmul (by norm_num : (0 : ℝ) ≤ 2)) lambda
+      _ ≤ (X : ℝ) := hsupportQuarter
+  have hleakage := hQ lambda (hthreshold.trans hlambda.1) (lambda * H)
+    hphysicalLower hphysicalHle
+  have href := hmassT lambda (by simpa only [x] using hlambda)
+  have hlow := hcentralT L hL (by simpa only [X] using hLX) H hH0
+    (by simpa only [H, x] using hHReference) lambda
+    (by simpa only [x] using hlambda)
+  have hresult := primeFree_forces_fixedSource_commonMode_highTailDifference
+    L X 60 hXL (T0 := T) (t := (1 / 75 : ℝ)) (x := x) (lambda := lambda)
+      (H := H) (R := R) (U := U) (rho := routeTCommonModeReferenceDensity)
+      hx0 hlambda hTone hscaleLambda hlambda2 hH0 hR0
+      routeTCommonModeReferenceDensity_pos hwidthH hsupportH hsupportR
+      (by simpa only [H] using hprimeFree) href.le hleakage
+      (by simpa only [x, X, H, R, U] using hlow)
+  simpa only [x, X, H, R, U] using hresult
+
+/-- A fixed target width satisfying the Route-T leakage floor reaches a literal natural-endpoint
+paired annulus, with target coefficients independent of the physical base. -/
+theorem exists_eventually_routeT_primeFree_fixedSource_commonMode_fixedTarget_naturalPairedAnnulus :
+    ∀ᶠ T : ℝ in atTop,
+      ∃ L : ℕ, 1 ≤ L ∧
+        L ≤ routeTPrimeGapPacketSupport T ∧
+        routeTPrimeGapPacketSupport T < (L + 1) ^ (60 : ℕ) ∧
+        (L : ℝ) ≤ T ^ (2 / 75 : ℝ) ∧
+        ∀ H0 : ℝ, 0 < H0 →
+          routeTPrimeGapPacketWidth (routeTPrimeGapPacketBase T) ≤ H0 →
+          H0 ≤ routeTCommonModeReferenceRelativeWidth (routeTPrimeGapPacketBase T) →
+          ∀ lambda ∈ Set.Icc (routeTPrimeGapPacketBase T)
+              (2 * routeTPrimeGapPacketBase T),
+            Chebyshev.theta (lambda + 2 * (lambda * H0)) -
+                Chebyshev.theta lambda = 0 →
+            ((2 * Real.pi) *
+                (routeTSmoothWindowCentralMargin *
+                  routeTCommonModeReferenceDensity / 2)) / 4 ≤
+              ‖∫ y in {y : ℝ |
+                  (routeTCommonModeNaturalCutoff (routeTPrimeGapPacketBase T) : ℝ) ≤ |y| ∧
+                    |y| < (routeTPrimeGapPacketCutoff T : ℝ)},
+                heathBrownWindowRelevantEligibleDyadicAggregate
+                      L (routeTPrimeGapPacketSupport T) 60 T (1 / 75)
+                        (routeTPrimeGapPacketBase T)
+                      ((1 : ℂ) + (y : ℝ) * Complex.I) *
+                  (routeTNormalizedSmoothWindowMellin lambda
+                      (lambda * routeTCommonModeReferenceRelativeWidth
+                        (routeTPrimeGapPacketBase T))
+                      ((1 : ℂ) + (y : ℝ) * Complex.I) -
+                    routeTNormalizedSmoothWindowMellin lambda (lambda * H0)
+                      ((1 : ℂ) + (y : ℝ) * Complex.I))‖ := by
+  have hpaired :=
+    exists_eventually_routeT_primeFree_fixedSource_commonMode_fixedTarget_naturalPairedHighTail
+  have hfar := eventually_routeT_commonMode_fixedTarget_pairedFarTail_le
+  have hcut := eventually_routeTCommonModeCutoff_le_primeGapPacketCutoff
+  filter_upwards [hpaired, hfar, hcut, Filter.eventually_ge_atTop (2 : ℝ)] with
+      T hpairedT hfarT hcutT hT
+  obtain ⟨L, hL, hLX, hXL, hLscale, hlarge⟩ := hpairedT
+  refine ⟨L, hL, hLX, hXL, hLscale, ?_⟩
+  intro H0 hH0Input hwidth hHReference lambda hlambda hprimeFree
+  let x : ℝ := routeTPrimeGapPacketBase T
+  let X : ℕ := routeTPrimeGapPacketSupport T
+  let R : ℝ := routeTCommonModeReferenceRelativeWidth x
+  let H : ℝ := H0
+  let U : ℝ := routeTCommonModeNaturalCutoff x
+  let V : ℝ := routeTPrimeGapPacketCutoff T
+  let a : ℝ → ℂ := fun y =>
+    heathBrownWindowRelevantEligibleDyadicAggregate L X 60 T (1 / 75) x
+      ((1 : ℂ) + (y : ℝ) * Complex.I)
+  let P : ℝ := heathBrownWindowRelevantFixedPolylogBound L X 60 x 1
+  have hx0 : 0 < x := by
+    dsimp only [x, routeTPrimeGapPacketBase]
+    have hT0 : 0 < T := by linarith
+    positivity
+  have hX : 1 ≤ X := by
+    apply Nat.ceil_pos.mpr
+    change 0 < 3 * x
+    positivity
+  have hlambda0 : 0 < lambda := hx0.trans_le hlambda.1
+  have hR0 : 0 < R := by
+    dsimp only [R]
+    exact routeTCommonModeReferenceRelativeWidth_pos hx0
+  have hH0 : 0 < H := by simpa only [H] using hH0Input
+  have haBound : ∀ y : ℝ, ‖a y‖ ≤ P := by
+    intro y
+    dsimp only [a, P]
+    exact norm_heathBrownWindowRelevantEligibleDyadicAggregate_le_fixedPolylog
+      L X 60 hX T (1 / 75) x 1 y hx0 (by norm_num)
+  have ha : Continuous a := by
+    dsimp only [a]
+    exact continuous_heathBrownWindowRelevantEligibleDyadicAggregate_line
+      L X 60 T (1 / 75) x 1
+  have hkR := integrable_routeTNormalizedSmoothWindowMellin_one
+    hlambda0 (mul_pos hlambda0 hR0)
+  have hkH := integrable_routeTNormalizedSmoothWindowMellin_one
+    hlambda0 (mul_pos hlambda0 hH0)
+  have hintR : Integrable (fun y : ℝ =>
+      a y * routeTNormalizedSmoothWindowMellin lambda (lambda * R)
+        ((1 : ℂ) + (y : ℝ) * Complex.I)) := by
+    exact hkR.bdd_mul ha.aestronglyMeasurable
+      (Filter.Eventually.of_forall haBound)
+  have hintH : Integrable (fun y : ℝ =>
+      a y * routeTNormalizedSmoothWindowMellin lambda (lambda * H)
+        ((1 : ℂ) + (y : ℝ) * Complex.I)) := by
+    exact hkH.bdd_mul ha.aestronglyMeasurable
+      (Filter.Eventually.of_forall haBound)
+  have hlarge' :
+      ((2 * Real.pi) *
+          (routeTSmoothWindowCentralMargin * routeTCommonModeReferenceDensity / 2)) / 2 ≤
+        ‖maynardWidthHighTail a lambda (lambda * R) U -
+          maynardWidthHighTail a lambda (lambda * H) U‖ := by
+    simpa only [a, x, X, R, H, U] using hlarge H0 hH0Input hwidth hHReference
+      lambda (by simpa only [x] using hlambda) hprimeFree
+  have htail' :
+      (∫ y in {y : ℝ | V ≤ |y|},
+        ‖a y *
+          (routeTNormalizedSmoothWindowMellin lambda (lambda * R)
+              ((1 : ℂ) + (y : ℝ) * Complex.I) -
+            routeTNormalizedSmoothWindowMellin lambda (lambda * H)
+              ((1 : ℂ) + (y : ℝ) * Complex.I))‖) ≤
+        ((2 * Real.pi) *
+          (routeTSmoothWindowCentralMargin * routeTCommonModeReferenceDensity / 2)) / 4 := by
+    simpa only [a, x, X, R, H, V] using
+      hfarT L hL (by simpa only [X] using hLX) H0 hH0Input hwidth hHReference
+        lambda (by simpa only [x] using hlambda)
+  have hU0 : 0 ≤ U := by
+    dsimp only [U]
+    exact_mod_cast Nat.zero_le (routeTCommonModeNaturalCutoff x)
+  have hnaturalLe : U ≤ routeTCommonModeCutoff x := by
+    dsimp only [U, routeTCommonModeNaturalCutoff]
+    exact Nat.floor_le (Real.rpow_nonneg hx0.le _)
+  have hUV : U ≤ V := hnaturalLe.trans
+    (by simpa only [V, x] using hcutT)
+  have hannulus := commonMode_pairedHighTailDifference_localizes_annulus
+    a hintR hintH hU0 hUV hlarge' htail'
+  have hconst :
+      ((2 * Real.pi) *
+          (routeTSmoothWindowCentralMargin * routeTCommonModeReferenceDensity / 2)) / 2 -
+        ((2 * Real.pi) *
+          (routeTSmoothWindowCentralMargin * routeTCommonModeReferenceDensity / 2)) / 4 =
+      ((2 * Real.pi) *
+          (routeTSmoothWindowCentralMargin * routeTCommonModeReferenceDensity / 2)) / 4 := by
+    ring
+  rw [hconst] at hannulus
+  simpa only [a, x, X, R, H, U, V] using hannulus
+
+
 /-- A nonzero paired annulus with natural endpoints lands directly in a literal natural-cell
 shell, retaining the reference-target difference through positive-wing and shell selection. -/
 theorem exists_fixedSource_naturalized_pairedShell_of_annulus_canonicalCount
@@ -917,6 +1540,210 @@ theorem exists_eventually_routeT_primeFree_fixedSource_commonMode_naturalCellShe
         hT hX hx0 hlambda0 (mul_pos hlambda0 hH0) (mul_pos hlambda0 hR0)
         hB0 hU' hUV' hlarge'
   simpa only [x, X, U, V, R, H, B] using hshell
+
+/-- Physical-base insertion and proportional dilation are exactly the same natural-cell packet. -/
+theorem routeTFixedSourceNaturalizedOrdinateShellPhysicalPacket_physicalScale
+    (L X k : ℕ) (T₀ mu₀ M lambda R H U V : ℝ) (j : ℕ) :
+    routeTFixedSourceNaturalizedOrdinateShellPhysicalPacket
+        L X k T₀ mu₀ M lambda (lambda * R) (lambda * H) U V j 1 =
+      routeTFixedSourceNaturalizedOrdinateShellPhysicalPacket
+        L X k T₀ mu₀ M 1 R H U V j lambda := by
+  simp only [routeTFixedSourceNaturalizedOrdinateShellPhysicalPacket,
+    maynardFixedAmbientPhysicalDefectPacket, one_mul, mul_one]
+
+/-- Unconditional fixed-target source insertion in the exact spatial-dilation coordinates needed
+by the natural-cell `L²/L⁴` estimates. -/
+theorem exists_eventually_routeT_primeFree_fixedSource_commonMode_fixedTarget_naturalCellShell :
+    ∀ᶠ T : ℝ in atTop,
+      ∃ L : ℕ, 1 ≤ L ∧
+        L ≤ routeTPrimeGapPacketSupport T ∧
+        routeTPrimeGapPacketSupport T < (L + 1) ^ (60 : ℕ) ∧
+        (L : ℝ) ≤ T ^ (2 / 75 : ℝ) ∧
+        ∀ H0 : ℝ, 0 < H0 →
+          routeTPrimeGapPacketWidth (routeTPrimeGapPacketBase T) ≤ H0 →
+          H0 ≤ routeTCommonModeReferenceRelativeWidth (routeTPrimeGapPacketBase T) →
+          ∀ lambda ∈ Set.Icc (routeTPrimeGapPacketBase T)
+              (2 * routeTPrimeGapPacketBase T),
+            Chebyshev.theta (lambda + 2 * (lambda * H0)) -
+                Chebyshev.theta lambda = 0 →
+            ∃ j ∈ Finset.range (routeTOrdinateShellCount
+                (routeTCommonModeNaturalCutoff (routeTPrimeGapPacketBase T))
+                (routeTPrimeGapPacketCutoff T)),
+              let A := routeTNaturalizedOrdinateLadder
+                (routeTCommonModeNaturalCutoff (routeTPrimeGapPacketBase T))
+                (routeTPrimeGapPacketCutoff T) (j + 1)
+              let C := routeTNaturalizedOrdinateLadder
+                (routeTCommonModeNaturalCutoff (routeTPrimeGapPacketBase T))
+                (routeTPrimeGapPacketCutoff T) j
+              let T₁ : ℝ := A
+              let mu₁ := routeTHeightMatchedExponent T (8 / 5 : ℝ) T₁
+              1 < T₁ ∧ A < C ∧ C ≤ 2 * A ∧
+                T₁ ^ mu₁ = T ^ (8 / 5 : ℝ) ∧
+                (((((2 * Real.pi) *
+                      (routeTSmoothWindowCentralMargin *
+                        routeTCommonModeReferenceDensity / 2)) / 4) / 4) /
+                    (routeTOrdinateShellCount
+                      (routeTCommonModeNaturalCutoff (routeTPrimeGapPacketBase T))
+                      (routeTPrimeGapPacketCutoff T) : ℝ)) ≤
+                  ‖routeTFixedSourceNaturalizedOrdinateShellPhysicalPacket
+                    L (routeTPrimeGapPacketSupport T) 60 T (8 / 5 : ℝ)
+                    (routeTPrimeGapPacketBase T) 1
+                    (routeTCommonModeReferenceRelativeWidth
+                      (routeTPrimeGapPacketBase T)) H0
+                    (routeTCommonModeNaturalCutoff (routeTPrimeGapPacketBase T))
+                    (routeTPrimeGapPacketCutoff T) j lambda‖ := by
+  have hannulus :=
+    exists_eventually_routeT_primeFree_fixedSource_commonMode_fixedTarget_naturalPairedAnnulus
+  have hU := eventually_two_le_routeTCommonModeNaturalCutoff
+  have hUV :=
+    eventually_two_mul_routeTCommonModeNaturalCutoff_le_primeGapPacketCutoff
+  filter_upwards [hannulus, hU, hUV,
+      Filter.eventually_gt_atTop (1 : ℝ)] with T hannulusT hUT hUVT hT
+  obtain ⟨L, hL, hLX, hXL, hLscale, hlarge⟩ := hannulusT
+  refine ⟨L, hL, hLX, hXL, hLscale, ?_⟩
+  intro H0 hH0Input hwidth hHReference lambda hlambda hprimeFree
+  let x : ℝ := routeTPrimeGapPacketBase T
+  let X : ℕ := routeTPrimeGapPacketSupport T
+  let U : ℕ := routeTCommonModeNaturalCutoff x
+  let V : ℕ := routeTPrimeGapPacketCutoff T
+  let R : ℝ := routeTCommonModeReferenceRelativeWidth x
+  let H : ℝ := H0
+  let B : ℝ := ((2 * Real.pi) *
+    (routeTSmoothWindowCentralMargin * routeTCommonModeReferenceDensity / 2)) / 4
+  have hx0 : 0 < x := by
+    dsimp only [x, routeTPrimeGapPacketBase]
+    positivity
+  have hX : 1 ≤ X := by
+    apply Nat.ceil_pos.mpr
+    change 0 < 3 * x
+    positivity
+  have hlambda0 : 0 < lambda := hx0.trans_le hlambda.1
+  have hR0 : 0 < R := by
+    dsimp only [R]
+    exact routeTCommonModeReferenceRelativeWidth_pos hx0
+  have hH0 : 0 < H := by simpa only [H] using hH0Input
+  have hU' : 2 ≤ U := by simpa only [U, x] using hUT
+  have hUV' : 2 * U ≤ V := by simpa only [U, V, x] using hUVT
+  have hB0 : 0 < B := by
+    dsimp only [B]
+    positivity [routeTSmoothWindowCentralMargin_pos,
+      routeTCommonModeReferenceDensity_pos]
+  have hlarge' : B ≤ ‖∫ y in {y : ℝ | (U : ℝ) ≤ |y| ∧ |y| < (V : ℝ)},
+      heathBrownWindowRelevantEligibleDyadicAggregate
+            L X 60 T ((8 / 5 : ℝ) / 120) x
+            ((1 : ℂ) + (y : ℝ) * Complex.I) *
+        (routeTNormalizedSmoothWindowMellin lambda (lambda * R)
+            ((1 : ℂ) + (y : ℝ) * Complex.I) -
+          routeTNormalizedSmoothWindowMellin lambda (lambda * H)
+            ((1 : ℂ) + (y : ℝ) * Complex.I))‖ := by
+    rw [show (8 / 5 : ℝ) / 120 = 1 / 75 by norm_num]
+    simpa only [B, U, V, X, x, R, H] using
+      hlarge H0 hH0Input hwidth hHReference lambda
+        (by simpa only [x] using hlambda) hprimeFree
+  have hshell :=
+    exists_fixedSource_naturalized_pairedShell_of_annulus_canonicalCount
+      L X 60 U V (T := T) (mu := (8 / 5 : ℝ)) (M := x) (N := lambda)
+        (H := lambda * H) (R := lambda * R) (B := B)
+        hT hX hx0 hlambda0 (mul_pos hlambda0 hH0) (mul_pos hlambda0 hR0)
+        hB0 hU' hUV' hlarge'
+  simpa only [x, X, U, V, R, H, B,
+    routeTFixedSourceNaturalizedOrdinateShellPhysicalPacket_physicalScale] using hshell
+
+
+/-- Common-mode defect threshold after paying only the canonical ordinate-shell selector. -/
+def routeTCommonModeNaturalCellDefectThreshold (T : ℝ) : ℝ :=
+  (((((2 * Real.pi) *
+      (routeTSmoothWindowCentralMargin * routeTCommonModeReferenceDensity / 2)) / 4) / 4) /
+    (routeTOrdinateShellCount
+      (routeTCommonModeNaturalCutoff (routeTPrimeGapPacketBase T))
+      (routeTPrimeGapPacketCutoff T) : ℝ))
+
+/-- One fixed-target common-mode natural-shell superlevel set. -/
+def routeTCommonModeFixedTargetNaturalShellBadSet
+    (T : ℝ) (L : ℕ) (H0 : ℝ) (j : ℕ) : Set ℝ :=
+  {lambda |
+    routeTCommonModeNaturalCellDefectThreshold T ≤
+      ‖routeTFixedSourceNaturalizedOrdinateShellPhysicalPacket
+        L (routeTPrimeGapPacketSupport T) 60 T (8 / 5 : ℝ)
+        (routeTPrimeGapPacketBase T) 1
+        (routeTCommonModeReferenceRelativeWidth (routeTPrimeGapPacketBase T)) H0
+        (routeTCommonModeNaturalCutoff (routeTPrimeGapPacketBase T))
+        (routeTPrimeGapPacketCutoff T) j lambda‖}
+
+/-- Finite natural-shell family selected before the physical base varies. -/
+def routeTCommonModeFixedTargetNaturalShellCover
+    (T : ℝ) (L : ℕ) (H0 : ℝ) : Set ℝ :=
+  ⋃ j ∈ Finset.range (routeTOrdinateShellCount
+      (routeTCommonModeNaturalCutoff (routeTPrimeGapPacketBase T))
+      (routeTPrimeGapPacketCutoff T)),
+    routeTCommonModeFixedTargetNaturalShellBadSet T L H0 j
+
+/-- Every admissible fixed-target prime-free base belongs to one member of a single finite
+natural-shell family fixed before the base varies. -/
+theorem exists_eventually_routeT_fixedTarget_primeFree_subset_commonModeNaturalShellCover :
+    ∀ᶠ T : ℝ in atTop,
+      ∃ L : ℕ, 1 ≤ L ∧
+        L ≤ routeTPrimeGapPacketSupport T ∧
+        routeTPrimeGapPacketSupport T < (L + 1) ^ (60 : ℕ) ∧
+        (L : ℝ) ≤ T ^ (2 / 75 : ℝ) ∧
+        ∀ H0 : ℝ, 0 < H0 →
+          routeTPrimeGapPacketWidth (routeTPrimeGapPacketBase T) ≤ H0 →
+          H0 ≤ routeTCommonModeReferenceRelativeWidth (routeTPrimeGapPacketBase T) →
+          routeTFixedWidthPrimeFreeBaseSet T H0 ⊆
+            routeTCommonModeFixedTargetNaturalShellCover T L H0 := by
+  filter_upwards [
+      exists_eventually_routeT_primeFree_fixedSource_commonMode_fixedTarget_naturalCellShell]
+      with T hsource
+  obtain ⟨L, hL, hLX, hXL, hLscale, hlarge⟩ := hsource
+  refine ⟨L, hL, hLX, hXL, hLscale, ?_⟩
+  intro H0 hH0 hwidth hHReference lambda hlambda
+  obtain ⟨j, hj, _hT₁, _hAC, _hCtwo, _hmatch, hlargej⟩ :=
+    hlarge H0 hH0 hwidth hHReference lambda hlambda.1 hlambda.2
+  unfold routeTCommonModeFixedTargetNaturalShellCover
+  apply Set.mem_iUnion_of_mem j
+  apply Set.mem_iUnion_of_mem hj
+  simpa only [routeTCommonModeFixedTargetNaturalShellBadSet,
+    routeTCommonModeNaturalCellDefectThreshold, Set.mem_setOf_eq] using hlargej
+
+/-- The fixed-target prime-free measure pays exactly one finite sum over the canonical natural
+shell family; no union over physical bases or target widths is introduced. -/
+theorem exists_eventually_volume_routeT_fixedTarget_primeFree_le_sum_commonModeNaturalShell :
+    ∀ᶠ T : ℝ in atTop,
+      ∃ L : ℕ, 1 ≤ L ∧
+        L ≤ routeTPrimeGapPacketSupport T ∧
+        routeTPrimeGapPacketSupport T < (L + 1) ^ (60 : ℕ) ∧
+        (L : ℝ) ≤ T ^ (2 / 75 : ℝ) ∧
+        ∀ H0 : ℝ, 0 < H0 →
+          routeTPrimeGapPacketWidth (routeTPrimeGapPacketBase T) ≤ H0 →
+          H0 ≤ routeTCommonModeReferenceRelativeWidth (routeTPrimeGapPacketBase T) →
+          (volume.restrict (Set.Icc (routeTPrimeGapPacketBase T)
+              (2 * routeTPrimeGapPacketBase T))).real
+              (routeTFixedWidthPrimeFreeBaseSet T H0) ≤
+            ∑ j ∈ Finset.range (routeTOrdinateShellCount
+                (routeTCommonModeNaturalCutoff (routeTPrimeGapPacketBase T))
+                (routeTPrimeGapPacketCutoff T)),
+              (volume.restrict (Set.Icc (routeTPrimeGapPacketBase T)
+                (2 * routeTPrimeGapPacketBase T))).real
+                (routeTCommonModeFixedTargetNaturalShellBadSet T L H0 j) := by
+  filter_upwards [
+      exists_eventually_routeT_fixedTarget_primeFree_subset_commonModeNaturalShellCover]
+      with T hcover
+  obtain ⟨L, hL, hLX, hXL, hLscale, hsub⟩ := hcover
+  refine ⟨L, hL, hLX, hXL, hLscale, ?_⟩
+  intro H0 hH0 hwidth hHReference
+  let μ := volume.restrict (Set.Icc (routeTPrimeGapPacketBase T)
+    (2 * routeTPrimeGapPacketBase T))
+  calc
+    μ.real (routeTFixedWidthPrimeFreeBaseSet T H0) ≤
+        μ.real (routeTCommonModeFixedTargetNaturalShellCover T L H0) :=
+      measureReal_mono (hsub H0 hH0 hwidth hHReference)
+    _ ≤ ∑ j ∈ Finset.range (routeTOrdinateShellCount
+          (routeTCommonModeNaturalCutoff (routeTPrimeGapPacketBase T))
+          (routeTPrimeGapPacketCutoff T)),
+        μ.real (routeTCommonModeFixedTargetNaturalShellBadSet T L H0 j) := by
+      unfold routeTCommonModeFixedTargetNaturalShellCover
+      exact measureReal_biUnion_finset_le _ _
+
 
 end
 

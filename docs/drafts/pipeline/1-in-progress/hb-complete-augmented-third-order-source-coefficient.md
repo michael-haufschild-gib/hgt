@@ -226,3 +226,63 @@ complete unequal-helicity deformed kinematic bracket through the exact chart; re
 Birmingham--Mokhtari master modes to gauge-invariant metric components; then perform the
 hyperbolic-harmonic product, negative leg, boundary/corner completion, and conserved left-QNM
 projection. Scalar radial convolution is now formally excluded and must not be revisited.
+
+## Loop result HC94-A.5 — full radial two-jet vertex and KI chiral reconstruction
+
+The module
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSelfDualDeformedTwoJetVertex` implements the literal
+two-leg bidifferential vertex of Chowdhury--Doran--Lipstein--Monteiro--Nagy--Singh Eq. (100), with
+the fixed `1/Z` denominator outside the left/right derivatives. The second pullback of a pure BM
+profile is
+
+`partial_Z^2 Phi = 2(1-rho^2)(4rho^2-1) sigma^-2 Phi'
+  + 4rho^2(1-rho^2)^2 sigma^-2 Phi''`.
+
+Thus the naive squared chain rule misses a forced first-jet connection term. After exact pullback,
+the complete vertex is an explicit Laurent polynomial of degree at most two in `sigma^-1`; the
+zeroth, first, and second coefficients retain separately the flat bracket, radial determinant,
+connection, genuine second-jet, and AdS-curvature contributions. Exchange symmetry and recovery
+of the existing bulk-to-boundary plane-wave vertex are proved. Direct `lake env lean` passed, and
+the targeted module build passed `11254/11254`.
+
+The scalar reconstruction module specializes Kodama--Ishibashi Eqs. (33)--(34) to the d=4
+massless `K=-1` background and converts to BM jets. It proves
+
+`2 rho Ztilde - (X+Y) = rho (k^2+2) Phi`,
+
+so all BM first-derivative terms cancel from the recovered master field. On every actual Xi fibre,
+`k^2+2` is nonzero, proved from the already-formalized nonzero real part of the analytically
+continued BM momentum. Hence the exact Xi hypergeometric monodromy mode is recovered from its
+gauge-invariant scalar metric orbit with no hypothesis. Direct Lean passed; targeted build passed
+`11259/11259`.
+
+The vector/chiral reconstruction module then specializes the source-free vector identity
+`epsilon^{ab} D_b OmegaTilde = r F^a`. For matched scalar and vector master jets it proves the
+unit-coefficient cancellation
+
+`rho^2 Ztilde_scalar - rho F_t_vector = Phi`.
+
+The stronger mismatch law shows the only derivative obstruction is the difference of the scalar
+and vector first jets. Differentiating reconstructed metric components twice introduces an
+arbitrary third BM derivative in each parity sector, but it cancels exactly: the chiral carrier
+recovers `(Phi,Phi',Phi'')` independently of every third-jet extension. Substitution into the full
+Eq. (100) pulled-back vertex is therefore identical to direct substitution of the BM master
+two-jets. The actual Xi carrier equals the corpus's exact monodromy mode, not a fitted amplitude.
+Direct `lake env lean` passed.
+
+**Novelty status.** Primary sources provide the KI scalar coefficients, vector master identity,
+and Plebanski vertex separately. Targeted corpus and literature searches found no prior statement
+of the scalar--vector unit-coefficient cancellation, its third-jet-independence, or the resulting
+exact BM-to-Eq.-(100) two-jet bridge. This is a bounded novelty audit, not an exhaustive claim.
+
+**Positive survivor HC94-A.5-P.** The missing master-to-metric radial bridge is closed. The
+surviving obstruction is now geometric rather than radial: a BM separated mode is not a Poincare
+plane wave. Therefore fixed transverse momenta cannot yet be attached to the reconstructed
+carrier. The actual remaining source must use the full inverse-Jacobian Poincare boundary
+derivatives on BM time/hyperbolic harmonics, followed by the harmonic product, negative leg,
+gravity corner completion, and conserved left-QNM projection.
+
+**Pivot HC94-A.6 / `[OPEN CORE]`.** Construct the full `partial_T`, `partial_Y`, `partial_Z`, and
+`partial_X` pullback on separated BM time/hyperbolic jets; lift the coordinate-space Plebanski
+bidifferential operator through that chart; then apply it to the exact chiral carrier two-jets.
+Do not reuse fixed Poincare plane-wave charges for a BM separated mode.
