@@ -1705,3 +1705,76 @@ lint, and axiom audit pass.
   critical-feature aperture was also tested: holomorphic polarization is identically `2pi`, so
   subtracting total multiplicity cancels every zero, not only critical-line copies.  That route
   supplies no positive corrected budget without the nonholomorphic Hermitian excess.
+
+## Shift-averaged collision removal and damped diagonal mask
+
+`[OWN CONJECTURE LEAN-PROVED] [PRE-DIVISOR MASK] [4/25 HEIGHT TRACE OPEN]`
+
+A fixed positive displacement in `(PS2)` can lose a zero when a translated predecessor has the
+same ordinate.  Averaging over any positive displacement interval removes this defect without a
+divisor-dependent choice.  At fixed `rho`, predecessor multiplicity is supported on finitely many
+real displacements because Xi has finitely many zeros in a compact horizontal slice.  Hence it
+vanishes almost everywhere and
+
+```text
+(b-a)^-1 integral_a^b eps * germ(rho,eps) d eps = ord_xi(rho).       (PS3)
+```
+
+The weighted form holds for every complex displacement weight.  In particular, W-H191's
+bichamber weight may be inserted after the source quotient is multiplied by `eps`; shrinking
+`[0,h]` then lands pointwise on multiplicity times exact cubic tensor norm square.  The endpoint
+average itself has a literal absolute-Euler form
+
+```text
+(b-a)^-1 integral_a^b [A(z)-A(z-eps)] W(eps) d eps,                 (PS4)
+```
+
+and agrees with the continued transgression throughout `Re(z-b)>1`.  Thus quotient formation,
+weighting, and displacement averaging precede divisor access.
+
+Hostile audit found that undamped radial integration of the shifted bichamber weight is invalid:
+at a critical-line point every fixed `eps>0` produces exponential radial growth.  The positive
+survivor is the universal joint damping split `exp(-3 eps r)=exp(-2 eps r) exp(-eps r)`.  Left and
+right damped bichamber features become the same exponential difference, so for horizontal depth
+`a>=0`
+
+```text
+D_eps(a,r)=r^2 [exp(-(a+eps)r)-exp(-(2a+eps/2)r)]^2.               (PS5)
+```
+
+The exact radial anomaly is
+
+```text
+eps^3 integral_0^infty D_eps(a,r) dr = F(a/eps),
+F(x)=2/(2x+2)^3 - 4/(3x+3/2)^3 + 2/(4x+1)^3.                      (PS6)
+```
+
+Lean proves simultaneous vertical-translation invariance, so `(PS5)` holds at every ordinate;
+`0<=F(x)<=115/108` for `x>=0`; `F(0)=115/108`; and `F(x)->0` as `x->infty`.  Therefore
+
+```text
+M(x)=(108/115)(115/108-F(x))                                     (PS7)
+```
+
+is a source-formed unit mask with `0<=M<=1`, `M(0)=0`, and
+`M(a/eps)->1` for every fixed `a>0`.  On every finite strict-right packet, one common
+pre-divisor shift recovers packet cardinality in the limit.  This removes fixed-shift collision,
+critical radial divergence, and diagonal-multiplicity contamination simultaneously.
+
+`(PS7)` is a mask, not a replacement counting quantum.  It must be coupled to the existing
+`32/25` critical-feature lattice frame; then a `4N/25` source ceiling still gives `R<=N/8` and
+the 75% receiver.  Legitimate remaining target is now concrete: construct height-local
+pole--Gamma--von-Mangoldt trace of the masked lattice frame and prove it is at most `4N/25+o(N)`.
+No such global mask--frame coupling or arithmetic ceiling is claimed here.
+
+Lean modules:
+
+- `XiWardCubicPositiveShiftAveragedMultiplicity.lean` proves `(PS3)`, arbitrary weighted landing,
+  `(PS4)`, and small-aperture cubic landing;
+- `XiWardCubicPositiveShiftDampedDiagonalSeparator.lean` proves `(PS5)`--`(PS7)`, arbitrary-ordinate
+  phase cancellation, exact radial integral, sharp range, and finite-packet recovery.
+
+- 2026-08-28 — originated shift averaging and universal `2+1` radial damping.  The first closes
+  translated-predecessor collisions; the second converts the divergent critical radial channel
+  into exact anomaly `115/(108 eps^3)`, whose normalized complement is a bounded source-only
+  diagonal mask.  This is a real structural advance, but not yet the global `4/25` estimate.

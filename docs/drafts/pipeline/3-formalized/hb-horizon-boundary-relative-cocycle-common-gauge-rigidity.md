@@ -1,6 +1,6 @@
 # HC92 — Horizon/boundary relative source-FE cocycle common-gauge rigidity
 
-Status: in progress
+Status: formalized in Lean
 
 Route: HB, with FZZ-P / RBH / PW-B relevance through detector-normalization rigidity
 
@@ -81,13 +81,37 @@ axioms.
   horizon/boundary relative source-FE cocycle classification, or its equivalence with RH. This is a
   bounded novelty audit, not a claim of exhaustive literature coverage.
 
+## Formal result
+
+Formal module:
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMRadiativeSourceFEHorizonBoundaryRelativeCocycleRigidity`
+
+Closed theorem:
+`hbXiPhaseSensitiveUnitRadiativeSourceFEHorizonBoundaryRelativeCocycleRigidity`.
+
+Proved unconditionally:
+
+- exact gamma-quotient Schwarz law `T(Cq) = conj(T(q))` and Xi-copy nonvanishing;
+- physical boundary response transport by a nonzero involutive boundary source-FE cocycle;
+- common-gauge invariant relative cocycle
+  `kappa_B^b(q) / kappa_H^b(q) = T(Rq) / conj(T(q))`;
+- for every nowhere-zero common gauge,
+  `kappa_B^b(q) = kappa_H^b(q) ↔ Re(q) = 1/2`;
+- existence of one global nowhere-zero common-gain gauge is equivalent to
+  `RiemannHypothesis`.
+
+Interpretation: HC91's phase-realification escape is completely classified. One detector can be
+realified by following its source phase, but a common rephasing cannot erase relative
+horizon/boundary FE holonomy. Remaining HB burden is now sharply physical: derive universal equality
+of those two gains from detector/locality/field equations without assuming critical-line placement.
+
 ## Lean audit checklist
 
-- [ ] Scratch proof with `lake env lean /tmp/hc92.lean`
-- [ ] No `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`
-- [ ] Closed theorem and `#print axioms` audit
-- [ ] Add new module and wire `GaloisForLFunctions.RHTower`
-- [ ] Targeted `lake build GaloisForLFunctions.RHTower.<HC92Module>` only
-- [ ] Run formal lint and confirm no HC92 finding
-- [ ] Promote card to `3-formalized` after dependency-closed audit
+- [x] Scratch proof with `lake env lean /tmp/hc92.lean`
+- [x] No `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`
+- [x] Closed theorem and `#print axioms` audit; only `propext`, `Classical.choice`, `Quot.sound`
+- [x] Add new module and wire `GaloisForLFunctions.RHTower`
+- [x] Targeted module build passed: 13097/13097 jobs
+- [x] Formal lint has no HC92 finding; reported failures are unrelated pre-existing unreachable modules
+- [x] Promote card to `3-formalized` after dependency-closed audit
 

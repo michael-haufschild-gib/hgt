@@ -88,7 +88,7 @@ theorem xiWardCubicShiftEndpointWeightedArithmeticAverage_eq_incrementAverage
   rw [ofReal_mul_xiWardCubicPositiveRealShiftArithmeticCovariance
     (z - (eps : ℂ)) hepspos.ne']
   congr 2
-  ring
+  ring_nf
 
 /-- The same endpoint average after source formation and meromorphic continuation. -/
 def xiWardCubicShiftEndpointWeightedContinuedAverage
