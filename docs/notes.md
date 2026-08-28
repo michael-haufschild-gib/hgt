@@ -1,43 +1,29 @@
-Under architectural—not literal syntactic—reading, strongest matches are:
+I read the frontier map end-to-end (all 884 lines: topology, 26 live branches, 31 candidates, the terminal table, cross-route conclusions, normalized verdict), then probed the Lean corpus with formal_tools.py research on the routes whose open cores looked most finite: LI's landing (riemannHypothesis_iff_forall_re_liPrimeArchShiftedMomentSource_nonneg is real and clean), the CLG/TTF C₅ complex (including today's two fresh no-go memories), G's Ward slack, the theta Bezoutian endpoint (riemannHypothesis_iff_posSemidef_thetaTailFirstMomentBezoutian), and the active HCF and T2 cards.
 
-| Route | Infinite/global | Pair or more | Nonphysical | Verdict |
-|---|---:|---:|---:|---|
-| **C1–TD** | Temperate spectral measure on Schwartz space | Two multiplicatively independent dilations | Analytic/spectral | **Strongest match** |
-| **CCM-FU** | Global completed source and unbounded Cesàro primitive | Prime–polar channels; four-unit incidence | Analytic/operator-theoretic | **Strong match** |
-| **P** | Whole second-Cartier orbit | Reflected/two-sided Krein structure | Operator/geometric | **Strong match** |
-| **SC** | Global Stokes/Seifert category | Prime–Gamma and paired Stokes data | Algebraic/categorical | **Strong candidate**, source construction missing |
-| **HJ** | All-order anchor-jet tower | Functional-equation/Schwarz pair | Projective-algebraic | **Strong candidate**, source law missing |
-| **AF** | Cofinal adaptive class-law orbit | Reflected occupation pair/family | Information-geometric/probabilistic | **Strong candidate**, global certificates missing |
+Gut feeling: the completed-theta positivity complex — CLG/TTF ∪ W2C ∪ S6F, with LI as a slice of the same cone
 
-The cleanest answer is **C1’s two-dilation branch (TD)**. Its mechanism is explicitly:
+If one lane in this corpus eventually carries a full unconditional RH proof in Lean, my bet is the theta-Bezoutian/Hankel positivity family, organized around one master conjecture: a total-positivity / likelihood-ratio-order law for the literal completed-theta partition measure, from which the entire finite-rank Bezoutian ladder follows at once.
 
-```text
-two independent dilations
-→ momentum symmetry
-→ unique positive temperate spectral measure
-→ real Xi-divisor carrier
-```
+Why this one, against the map's own skepticism that no label is close:
 
-It uses neither finite matrices as its essential endpoint nor a single scalar/object nor a physical landing. Lean states this in [TwoDilationSpectralRepresentation.lean](/Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/TwoDilationSpectralRepresentation.lean:57).
+1. The endpoint quantifier is entirely finite. riemannHypothesis_iff_posSemidef_thetaTailFirstMomentBezoutian needs PSD of every finite node matrix — Weil's criterion in coefficient-faithful theta form. No infinite completion (COMP), no singular landing (LAND), no divisor exhaustion, no charge descent remains on this receiver. The routes that die hardest in the map (L, JAS, RFHM, SC, WBF, R) all die at genuine infinite completion; this family never has to go there.
+2. The remaining mathematics contains no prime-cancellation hypothesis. Every signed-incidence route (T1, T2, D2, E, G, P, CCM-FU) terminates at a prime-vs-archimedean order bound — the wall the whole field has faced for a century (the map's ORD gate in naked form: G's cap, D2's 2Re(flux) − log t floor, T2's signed subhalf continuation). The theta complex's open cores are instead explicit inequalities about one fixed classical function: C₅(u,t) ≥ 0 (a logistic barrier 5t·y′ ≤ y(10+y) for an explicit defect), S6F's modular polynomial on 0 < x < 137/2000, then higher packets. The arithmetic input — theta's modularity — is already inside the kernel.
+3. Comparative advantage. This corpus's demonstrated unique skill is closing explicit special-function inequalities in Lean at industrial scale (order-24 centered closure, curvature on x ≥ 137/2000, even/coalesced walls, cusp jet = 1120 × Hankel determinant, the drained Gamma folder, the Mellin–Barnes engine). The route's difficulty profile matches the machine that's attacking it.
+4. Every step is numerically kill-testable, and the no-go machinery is visibly working: today's two no-gos (SecondLevelConcavityRiccatiFifthRootNoGo, FifthRootAtomLikelihoodRiccatiNoGo) proved that local/axiomatic mechanisms — cusp positivity + Riccati/angle concavity + jet signs through order six — cannot give global C₅, forcing the surviving attack onto the theta-specific nonlocal object (accumulated action via integral representation / likelihood-ratio order). That's healthy convergence, not stall.
+5. Dual payoff. A single numerically negative finite minor on physical nodes would disprove RH. This is the only frontier family where the disproof direction is equally alive and cheap.
 
-Borderline:
+The honest risk, stated first per house rules: the GORZ precedent. Jensen-polynomial hyperbolicity (Griffin–Ono–Rolen–Zagier) closed each fixed degree only asymptotically; the rank ladder here could likewise hold rank-by-rank with margins decaying to zero and no uniform mechanism short of RH itself. The map warns exactly this: "Rank-four closure would still not prove higher packets or cofinal passage." That risk is measurable (see tests below), which is why I still rank the lane first.
 
-- **U:** cofinal/infinite degree–mass tower and nonphysical core, but finite Hankel blocks remain essential.
-- **HC:** genuinely paired—two primes and two orientations—and nonphysical, but finite-window source pencils are essential.
-- **AP:** infinite power orbit and nonphysical, but generated by one power map.
-- **IRK:** nonphysical trace/Chern pair, but packaged as one zero-indexed \(K_0\) datum.
-- **IW:** uses a Weyl pair and is nonphysical, but each carrier is explicitly finite-dimensional.
 
-Do not satisfy all three:
+## step 1: precomputation
+Numerical pre-certification is complete — all four experiments ran on the pod (128 cores, mpmath, definitions transcribed literally from the Lean corpus and smoke-tested against ξ(½), λ₁, evenness, and the exact C₅ identities). Every assumption behind the gut-feeling pick survived, and two of the four experiments returned genuinely new structural information. Full results are in /root/precert/ on the pod, mirrored in the session scratchpad, and recorded in Serena memory research/numerical_precert_c5_bezoutian_tp_li_2026_08_28.
 
-- **D2:** global and nonphysical, but reduced to one positive-frequency tail.
-- **E:** infinite paired relation, but Lean explicitly requires a “physical relation.”
-- **G:** uses finite heads and boundary/physical landing machinery.
-- **L:** explicitly requires a physical reader/landing.
-- **O:** canonical finite heads are essential.
-- **Q:** explicit finite reduced matrices are essential.
-- **T:** finite-arithmetic remainder is essential.
-- **BW:** infinite and multi-object, but its certificate explicitly contains physical landing.
-- **PPM/OPUC:** finite collision or finite-section mechanism.
+1. C₅ ≥ 0 (the CLG/TTF rank-four gate) — passes, with sharp structure. Zero violations on 58,083 fibre points (u ∈ [0,6], t ∈ (10⁻³, 8]); y ∈ [0,2] exactly as the corpus claims. The margin C₅/A² ≈ 24 generically and its infimum 0 is attained only at the coalescence boundary t→0, at exact rate coeff(u)·t⁴ with coeff ≥ 633 (minimum at u=0, growing to ~10¹² by u=6). There is no interior near-zero manifold — the mid-scale failure mode of today's two no-go counterexamples does not occur for the literal theta source. Two proof-shaping discoveries: the criticality ratio G (C₅ ≥ 0 ⟺ G ≤ 1) tends to 1 identically at coalescence — the quadratic jets cancel exactly (34q² ≡ 34q²), which is the structural reason every local/jet mechanism provably fails — and G is monotone decreasing in t on every tested fibre. A theta-specific ∂ₜG ≤ 0 lemma would reduce the whole global inequality to the cusp jet the corpus has already closed.
 
-If “does not use something finite” is interpreted absolutely—no finite object anywhere—then **none** qualify. Under the meaningful criterion that the RH-bearing mechanism is not a finite truncation, the shortlist is **C1–TD, CCM-FU, P, SC, HJ, AF**.
+2. Bezoutian PSD ladder, ranks 2–20 (the GORZ red-flag test) — no genuine violation exists. 3,920 random node systems plus 8 adversarial descents: every "negative" the optimizer found was exactly the dps-80 conditioning floor, and all endpoints re-verified strictly positive-definite at dps 300. The margin decay with rank is analytic-kernel conditioning, not RH tension — so the honest red-flag metric is a sign flip surviving precision escalation, and there is none. Detection sensitivity is clean: nodes straddling γ₁ hold a stable margin ≈ 1.3×10⁻³ as Re → ½⁺.
+
+3. Total positivity of Φ breaks exactly at order 5 — the most interesting result. TP₂–TP₄: zero violations in 320k minors. TP₅: genuine violations (re-confirmed at dps 150, magnitude ~10⁻¹², at ordinary near-diagonal configurations), with more at orders 6–8. A finite break was forced a priori (Φ can't be PF∞ — its Laplace transform ξc is entire with zeros, contradicting Schoenberg), but its location is sharp: the theta kernel's free total-positivity budget ends at order 4 — exactly the rank-four wall. So the C₅ gate sits inside the generically-provable zone, while packets of order ≥ 5 provably cannot be closed by kernel total positivity — a numerical localization of precisely where RH-strength content begins, matching the frontier map's claim that rank-four closure won't give higher packets.
+
+4. LI health check — clean. λ_d > 0 for all d ≤ 300 (minimum ratio to the RH asymptotic: 0.953 at d ≈ 270, trending to 1), and both Hausdorff-side Hankel towers of the shifted moment germ are PD through size 12 once prs 150 (the tiny margins are atom clustering in u ∈ (0, 0.005], not RH tension).                                                                                                                                              
+Verdict on the gut feeling: strengthened, with one refinement. The pick's finite gate (C₅) is numerically safe, its tight region is compact with explicit structure to exploit, and the ladder shows no GORZ-style distresefinement: kernel total positivity is not the master mechanismbeyond order 4 — the master object has to be the reflected/Bezoutian positivity itself. Concrete next steps, in order: paper-attack ∂ₜG ≤ 0 from the corpus
+source signs (L₄>0, L₅<0, L₆>0) plus the strict second–sixth Hanriving the four-point odd wall from TP₄-order minors of translates (TP₄ would need its own Lean proof, but it's finite-order, non-RH-strength); and don't invest in TP_m mechanisms for m ≥ 5 — they're dead.

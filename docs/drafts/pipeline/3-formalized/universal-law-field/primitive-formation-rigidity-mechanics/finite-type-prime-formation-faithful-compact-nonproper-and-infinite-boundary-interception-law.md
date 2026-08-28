@@ -1,18 +1,45 @@
 # Finite-type prime formation is faithful but compactly nonproper, forcing infinite boundary interception
 
 - **ID:** ULF-PFRM-5
-- **Stage:** 2 -- fully proven on paper
+- **Stage:** 3 -- formalized in Lean 4
 - **Type:** THEOREM / GLOBAL FORMATION--PROPERNESS CLASSIFICATION
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [BRIDGE]`
   `[COFINAL FAITHFULNESS] [HILBERT-SCHMIDT COMPACTNESS] [NONCLOSED RANGE]`
   `[ADAPTIVE ESCAPE] [FINITE BOUNDARY PORT NO-GO] [INFINITE-RANK SURVIVOR]`
-  `[FUNCTIONAL-EQUATION INVARIANT] [NOT RH]`
-- **Formal status:** not Lean-formalized. The prime-log uniqueness input is Lean-certified; the
-  fused compactness/interception theorem is not yet an accepted AI proof under project rules.
+  `[FUNCTIONAL-EQUATION INVARIANT] [LEAN-FORMALIZED] [AXIOM-AUDITED] [NOT RH]`
+- **Formal status:** Lean-certified in
+  `formal/GaloisForLFunctions/HTGeometry/PrimeFormationCompactNonproper.lean` and exported through
+  `formal/GaloisForLFunctions/HTGeometry.lean`. Certification covers literal weighted prime
+  sampling, exact Hilbert--Schmidt energy, injectivity, nonclosed range, adaptive orthonormal
+  escape, compact-boundary no-go, survivor interception and nonfactorization, isometric transport,
+  and the concrete positive-aperture `PW²_σ` model with squared kernel norm `2σ`.
 - **Parents:**
   - `prime-jet-analytic-formation-transport-reporter-conservation-and-boundary-port-transmutation-law.md`;
   - `../formation-laplacian-properness-mechanics/source-response-laplacian-properness-pluecker-and-adaptive-escape-law.md`;
   - `formal/GaloisForLFunctions/RHTower/PrimeLogExponentialTypeUniqueness.lean`.
+
+### Lean certificate
+
+- Abstract formation: `primeFormationOperator_isHilbertSchmidt_and_hsNormSq`,
+  `primeFormationOperator_injective_of_finiteExponentialType`,
+  `primeFormationOperator_not_isClosed_range`,
+  `primeFormationOperator_exists_orthonormal_escape`, and
+  `primeFormationOperator_no_positive_lowerBound`.
+- Boundary classification: `primeFormation_compactBoundary_no_positive_joint_lowerBound`,
+  `boundary_intercepts_every_unit_primeNull_sequence`,
+  `boundary_not_isCompactOperator_of_joint_lowerBound`, and
+  `boundary_not_factors_through_of_joint_lowerBound`.
+- Neutral transport: `hsNormSq_formationIsometricTransport`,
+  `formationIsometricTransport_compact_injective_nonclosed`, and
+  `formationIsometricTransport_lowerBound_iff`.
+- Concrete Paley--Wiener realization: `primePaleyWienerEntire_eq_inner`,
+  `norm_primePaleyWienerKernel_sq`, `primePaleyWienerEntire_faithful`,
+  `primePaleyWienerSource_not_finiteDimensional`, and
+  `paleyWienerPrimeFormation_compact_injective_nonproper`.
+- Verification: direct leaf check and leaf-only `lake build` passed. One batched `#print axioms`
+  audit over every new theorem reports only `propext`, `Classical.choice`, and `Quot.sound`.
+  Formal lint reports no forbidden declaration in this module; repository-wide lint retains
+  unrelated pre-existing umbrella-reachability failures.
 
 ## 1. Purpose
 
@@ -313,3 +340,7 @@ germ and test `(FCP.14)`. The attempt must fail or prove all of:
 - 2026-08-12 -- formal prime-log uniqueness fused with weighted RKHS formation. Summable prime
   formation proved injective Hilbert--Schmidt with nonclosed range. All compact/finite boundary
   repairs killed; infinite-rank noncompact interception extracted as exact survivor.
+- 2026-08-28 -- full theorem family formalized unconditionally in Lean 4, including exact
+  Hilbert--Schmidt energy, compact-boundary obstruction, sharp liminf interception,
+  nonfactorization, isometric invariance, and literal `PW²_σ` realization. Leaf build and batched
+  axiom audit passed; card promoted to Stage 3.

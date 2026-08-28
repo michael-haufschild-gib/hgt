@@ -1,8 +1,8 @@
 # SC cofinal scalar-unitization dichotomy
 
 - **ID:** SC-CSUD-1
-- **Stage:** 2-fully-proven (awaiting move after Lean formalization)
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean 4)
 - **Source:** `rh-current-frontier-map.md` route SC; map is read-only
 - **Statement:** Every real scalar rescaling of the coefficient-faithful holomorphic SC reservoir that asymptotically restores centered-Xi parity must collapse its normalized central second jet; hence no such scalar spectral-shift family converges compact-open to `XiC / XiC 0`.
 
@@ -14,7 +14,7 @@ Close the full scalar spectral-shift/unitization escape class left after the fix
 
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea, Door passport sketch
 - [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorem `<name>`, `lake build` green, axiom audit PASS
+- [x] 2 → 3  formalized: Lean theorem `not_tendstoLocallyUniformly_normalizedXiC_of_cofinalRealScalarUnitization`, leaf `lake build` green, axiom audit PASS
 - [ ] 3 → 4  publication-ready: standalone paper (theorem + proof + Lean certificate + Door-2)
 
 ## Exact family
@@ -95,9 +95,21 @@ has strictly positive moment on the right.  Contradiction.  All dependencies are
 - **Exact killing theorem/mechanism:** real scalar shift parity forces `dimension × |scale| → 0`; the same rate annihilates the only surviving central quadratic compound.
 - **Strongest positive survivor:** complex phase-changing scalar shifts and genuinely matrix-valued/singular shifts are not covered.  They must control odd compounds by cross-degree phase cancellation rather than positive scalar damping.
 - **New insight:** SC scalar unitization has a cubic-parity/quadratic-curvature incompatibility, not merely the fixed-scale polarity failure already in corpus.
-- **Status:** dependency-closed paper proof; Lean formalization next.
+- **Status:** dependency-closed paper proof and unconditional Lean formalization complete.
+
+## Lean certificate
+
+- **Module:** `GaloisForLFunctions.RHTower.SourceHorizontalHolomorphicCofinalScalarUnitizationNoGo`
+- **Main no-go:** `RHTower.not_tendstoLocallyUniformly_normalizedXiC_of_cofinalRealScalarUnitization`
+- **Cubic rate law:** `RHTower.tendsto_dimension_mul_abs_scale_zero_of_cubicParityDefect`
+- **Exact quadratic identity:** `RHTower.iteratedDeriv_two_preDivisorRiggedPrimeHolomorphicScalarUnitizedDeterminant`
+- **Source check:** `lake env lean GaloisForLFunctions/RHTower/SourceHorizontalHolomorphicCofinalScalarUnitizationNoGo.lean` PASS
+- **Leaf audit:** `lake build GaloisForLFunctions.RHTower.SourceHorizontalHolomorphicCofinalScalarUnitizationNoGo` PASS (`13291/13291`)
+- **Axiom audit:** only `propext`, `Classical.choice`, and `Quot.sound`; no added axiom, premise, hypothesis, `sorry`, `admit`, `opaque`, or `unsafe` declaration
+- **Umbrella:** imported by `GaloisForLFunctions.RHTower`
 
 ## Log
 
 - 2026-08-28 — created directly in Stage 1 after corpus and primary-literature audit; frontier map left unchanged.
 - 2026-08-28 — C1 strengthened from nonnegative to arbitrary real scales; C1–C3 proved on paper with no open dependency.
+- 2026-08-28 — C1–C3 formalized unconditionally in Lean; source check, leaf build, and axiom audit passed; moved to Stage 3.

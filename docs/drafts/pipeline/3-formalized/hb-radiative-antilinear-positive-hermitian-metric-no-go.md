@@ -1,7 +1,7 @@
 # HB radiative anti-linear positive-Hermitian-metric no-go
 
 - **ID:** HC90
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** CONJECTURE / POSITIVE-METRIC SELECTION NO-GO
 - **Source:** read-only `rh-current-frontier-map.md` · HC89 radiative source-FE involution · finite Xi packets
 
@@ -19,8 +19,8 @@ fixed/source-independent metric data or reflection-real coordinate weights.
 ## Gates
 
 - [x] 0 → 1 in-progress: corpus audit; exact conjecture frozen
-- [ ] 1 → 2 fully-proven: dependency-closed paper proof and bounded primary-literature audit
-- [ ] 2 → 3 formalized: unconditional Lean theorem, targeted build, axiom and lint audit
+- [x] 1 → 2 fully-proven: dependency-closed paper proof and bounded primary-literature audit
+- [x] 2 → 3 formalized: unconditional Lean theorem, targeted build, axiom and lint audit
 - [ ] 3 → 4 publication-ready: independent mathematical/physical review and broader novelty search
 
 ## Corpus audit
@@ -127,10 +127,44 @@ fixed/reflection-real from local dynamics.
   explicit positive invariant energy, orbitwise positive cocycle metric, and off-line bright-pair
   cancellation. This is bounded, not exhaustive.
 
+## Formalization result
+
+Formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMRadiativeSourceFEPositiveHermitianMetricNoGo`.
+
+- Actual HC89 radiative cocycle is lifted to a conjugate-linear finite-packet transport with exact
+  coefficient and singleton formulas and an unconditional involution theorem.
+- `hbXiPeierlsFiniteHermitianForm` and its norm-square diagonal are proved sesquilinear,
+  conjugate-symmetric, nonnegative, and zero only on the zero packet.
+- Symmetrizing this form along actual radiative transport produces
+  `hbXiPhaseSensitiveUnitRadiativeSourceFEHermitianForm`. Lean proves both scalar laws, both
+  additive laws, conjugate symmetry, positive definiteness of its diagonal energy, and exact
+  antiunitary transport.
+- Cocycle modulus gives a strictly positive diagonal orbit weight with exact reflected gain
+  balance `h(Rq) |κrad(q)|² = h(q)`.
+- Closed theorem
+  `hbXiPhaseSensitiveUnitRadiativeSourceFEPositiveHermitianBrightCancellation` packages these
+  laws together with HC89's universal off-line nonzero bright-pair cancellation. It has no
+  external premise.
+
+Audit: direct `lake env lean` passed; targeted
+`lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMRadiativeSourceFEPositiveHermitianMetricNoGo`
+passed all 12,019 jobs. Representative `#print axioms` outputs contain only `propext`,
+`Classical.choice`, and `Quot.sound`. Formal lint reports only pre-existing unreachable modules
+and no HC90 finding. Module is wired into `GaloisForLFunctions.RHTower` without a full umbrella
+build.
+
 ## Open core after HC90
 
-Pending proof. Expected survivor: fixed/source-independent metric selection or reflection-real
-coordinate weight derivation, not positivity/Hermiticity alone.
+Positivity/Hermiticity is dead as a standalone selector: actual source/Green FE transport admits
+positive-definite antiunitary packet geometry and positive diagonal orbit weights on every
+reflection orbit, while off-line physical Ward channels remain bright and cancel coherently.
+
+Remaining burden is strictly structural: derive detector metric before inspecting divisor/source
+transport, prove that metric is fixed under source changes, or force coordinate weights to be
+reflection-real. Existing corpus equivalences show reflection-real nonzero transported weights
+recover RH; hardest next question is whether local detector/source algebra genuinely forces that
+reality, or admits a phase gauge that defeats it too.
 
 ## Log
 
