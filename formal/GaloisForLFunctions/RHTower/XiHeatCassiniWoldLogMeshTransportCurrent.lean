@@ -239,6 +239,90 @@ theorem xiHeatCassiniWoldResidualLogMeshCurrent_realNegativePhase_eq
   rw [← xiHeatCassiniWoldResidualLowerHardyKernel_ofReal]
   exact xiHeatCassiniWoldResidualLogMeshCurrent_negativePhase_eq (x : ℂ)
 
+def xiHeatCassiniPrimeLogMeshEdgeProbe (N j : ℕ) : ℂ :=
+  if j ≤ N then (xiHeatCassiniOrderedPrimeLogGap N : ℂ) else 0
+
+theorem xiHeatCassiniPrimeLogMeshEdgeProbe_lipschitz (N : ℕ) :
+    XiHeatCassiniPrimeLogMeshLipschitz 1
+      (xiHeatCassiniPrimeLogMeshEdgeProbe N) := by
+  intro j
+  by_cases hj : j ≤ N
+  · by_cases hjs : j + 1 ≤ N
+    · simp [xiHeatCassiniPrimeLogMeshEdgeProbe, hj, hjs,
+        xiHeatCassiniOrderedPrimeLogGap_nonneg j]
+    · have hjN : j = N := by omega
+      subst j
+      simp [xiHeatCassiniPrimeLogMeshEdgeProbe,
+        abs_of_nonneg (xiHeatCassiniOrderedPrimeLogGap_nonneg N)]
+  · have hjs : ¬j + 1 ≤ N := by omega
+    simp [xiHeatCassiniPrimeLogMeshEdgeProbe, hj, hjs,
+      xiHeatCassiniOrderedPrimeLogGap_nonneg j]
+
+theorem xiHeatCassiniWoldResidualLogMeshCurrentAtom_edgeProbe_self (N : ℕ) :
+    xiHeatCassiniWoldResidualLogMeshCurrentAtom
+        (xiHeatCassiniPrimeLogMeshEdgeProbe N) N =
+      (xiHeatCassiniOrderedWoldResidualLogDiscrepancy N : ℂ) *
+        (xiHeatCassiniOrderedPrimeLogGap N : ℂ) := by
+  simp [xiHeatCassiniWoldResidualLogMeshCurrentAtom,
+    xiHeatCassiniPrimeLogMeshEdgeProbe]
+
+theorem xiHeatCassiniWoldResidualLogMeshCurrentAtom_edgeProbe_of_ne
+    (N j : ℕ) (hjN : j ≠ N) :
+    xiHeatCassiniWoldResidualLogMeshCurrentAtom
+        (xiHeatCassiniPrimeLogMeshEdgeProbe N) j = 0 := by
+  rw [xiHeatCassiniWoldResidualLogMeshCurrentAtom]
+  by_cases hj : j ≤ N
+  · have hjs : j + 1 ≤ N := by omega
+    simp [xiHeatCassiniPrimeLogMeshEdgeProbe, hj, hjs]
+  · have hjs : ¬j + 1 ≤ N := by omega
+    simp [xiHeatCassiniPrimeLogMeshEdgeProbe, hj, hjs]
+
+/-- One Lipschitz cut reads one and only one residual coefficient. -/
+theorem xiHeatCassiniWoldResidualLogMeshCurrent_edgeProbe_eq (N : ℕ) :
+    xiHeatCassiniWoldResidualLogMeshCurrent
+        (xiHeatCassiniPrimeLogMeshEdgeProbe N) =
+      (xiHeatCassiniOrderedWoldResidualLogDiscrepancy N : ℂ) *
+        (xiHeatCassiniOrderedPrimeLogGap N : ℂ) := by
+  rw [xiHeatCassiniWoldResidualLogMeshCurrent,
+    tsum_eq_single N
+      (xiHeatCassiniWoldResidualLogMeshCurrentAtom_edgeProbe_of_ne N)]
+  exact xiHeatCassiniWoldResidualLogMeshCurrentAtom_edgeProbe_self N
+
+/-- **Coefficient faithfulness.**  If the transport current vanishes on every unit-Lipschitz
+prime-log observable, then every centered Wold residual coefficient vanishes. -/
+theorem xiHeatCassiniOrderedWoldResidualLogDiscrepancy_eq_zero_of_current_zero
+    (hcurrent : ∀ phi : ℕ → ℂ,
+      XiHeatCassiniPrimeLogMeshLipschitz 1 phi →
+        xiHeatCassiniWoldResidualLogMeshCurrent phi = 0)
+    (N : ℕ) :
+    xiHeatCassiniOrderedWoldResidualLogDiscrepancy N = 0 := by
+  have hread := hcurrent (xiHeatCassiniPrimeLogMeshEdgeProbe N)
+    (xiHeatCassiniPrimeLogMeshEdgeProbe_lipschitz N)
+  rw [xiHeatCassiniWoldResidualLogMeshCurrent_edgeProbe_eq] at hread
+  have hgap : (xiHeatCassiniOrderedPrimeLogGap N : ℂ) ≠ 0 := by
+    exact_mod_cast (sub_pos.mpr
+      (nthPrimeSubtype_log_strictMono (Nat.lt_succ_self N))).ne'
+  have hcoef : (xiHeatCassiniOrderedWoldResidualLogDiscrepancy N : ℂ) = 0 :=
+    (mul_eq_zero.mp hread).resolve_right hgap
+  exact_mod_cast hcoef
+
+/-- Global zero classification of the source-marked transport current. -/
+theorem forall_unitLipschitz_woldResidualLogMeshCurrent_eq_zero_iff :
+    (∀ phi : ℕ → ℂ,
+      XiHeatCassiniPrimeLogMeshLipschitz 1 phi →
+        xiHeatCassiniWoldResidualLogMeshCurrent phi = 0) ↔
+      ∀ N : ℕ, xiHeatCassiniOrderedWoldResidualLogDiscrepancy N = 0 := by
+  constructor
+  · exact fun h N =>
+      xiHeatCassiniOrderedWoldResidualLogDiscrepancy_eq_zero_of_current_zero h N
+  · intro hzero phi hphi
+    have hatom : xiHeatCassiniWoldResidualLogMeshCurrentAtom phi = 0 := by
+      funext N
+      simp [xiHeatCassiniWoldResidualLogMeshCurrentAtom, hzero N]
+    rw [xiHeatCassiniWoldResidualLogMeshCurrent, hatom]
+    simp
+
+
 end
 
 end RHTower

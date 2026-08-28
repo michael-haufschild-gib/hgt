@@ -545,3 +545,84 @@ for every `u>0`, `t>0`.  This is now the sole rank-four producer burden before t
 radial landing.  Global reflected Riccati/angle concavity controls three-point geometry but does
 not formally imply this four-point wall; the next conjecture must exploit coupled completed-source
 likelihood structure without separating atom pairs.
+
+### 2026-08-28 — literal-fibre cusp, positive return, and stationary flux rigidity
+
+`[NEW] [PAPER-PROVED] [LEAN-PROVED] [SOURCE-FIBRE MINIMUM PRINCIPLE] [EXACT FLUX LAW]`
+
+The next corpus-driven conjecture loop stayed on the literal completed-source fibre rather than
+weakening the rank-four target.  Put
+
+```text
+P_u(s) = thetaCuspFullSource(u+s) thetaCuspFullSource(u-s),
+D_u(s) = -P_u'(s) > 0,
+W_u(t) = (P_u(0)-P_u(3t))(P_u(0)-P_u(t))-(P_u(t)-P_u(2t))^2.
+```
+
+The global strict second--sixth reflection curvature is exactly the coalesced second--sixth
+Hankel determinant of `P_u`.  The abstract odd-wall cusp theorem therefore gives, for every
+center `u`, a right neighborhood on which `W_u(t)>0`.  At the other end, the completed source's
+superexponential envelope and modular evenness give
+
+```text
+P_u(t) -> 0,
+W_u(t) -> P_u(0)^2 > 0
+```
+
+as `t -> +infinity`.  Thus a negative literal fibre wall cannot be an endpoint phenomenon.  It
+forces a strictly interior negative local minimum.  Differentiating the wall with the positive
+decay flux gives the exact identity
+
+```text
+W_u'(t) = 3 A D_u(3t) + D_u(t) (T+2B) - 4 B D_u(2t),
+```
+
+where
+
+```text
+A = P_u(0)-P_u(t),
+B = P_u(t)-P_u(2t),
+T = P_u(0)-P_u(3t).
+```
+
+Consequently every hypothetical negative wall has a witness satisfying the stationary law
+
+```text
+4 B D_u(2t) = D_u(t)(T+2B) + 3 A D_u(3t).
+```
+
+Strict reflected radial monotonicity gives `A>0`, `B>0`, and `T>B`.  The positive residual term
+then forces the new dyadic retention obstruction
+
+```text
+3 D_u(t) / 4 < D_u(2t).
+```
+
+This is stronger than the earlier generic stationary derivative reversal: a rank-four source
+failure must simultaneously be negative, stationary, annularly concentrated, and retain this
+specific amount of completed decay flux at the doubled scale.  The law is exact and
+source-coupled; it does not arise from optimizing an external estimate.
+
+Lean artifact:
+
+- `GaloisForLFunctions/RHTower/ThetaCuspReflectedSourceOddStationary.lean`;
+- `exists_thetaCuspReflectedSourceOddParityWall_pos_right`;
+- `tendsto_thetaCuspReflectedSourceOddParityWall_atTop`;
+- `exists_thetaCuspReflectedSourceOddParityWall_stationary_neg_of_neg`;
+- `exists_thetaCuspReflectedSourceOddParityWall_stationary_flux_amplification_of_neg`.
+
+Exact foreground `lake env lean`, targeted
+`lake build GaloisForLFunctions.RHTower.ThetaCuspReflectedSourceOddStationary`, and umbrella wiring
+all pass.  Axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
+Two conjectures failed in the hostile pass.  Global reflected Riccati margin alone is not a
+four-point principle: abstract convex actions can obey that third-order differential inequality
+while their odd Ptolemy wall is negative.  Full positive definiteness of each Wigner/source fibre
+would imply the target by Hilbert-space Ptolemy, but the corpus's divisor-trace normal form leaves
+exactly an unresolved signed spectral orientation, so that assertion would merely rename the
+open problem.  The positive survivor is the minimum-principle/flux certificate above.
+
+Open core remains `W_u(t)>=0` for every `u>0,t>0`.  The next hard conjecture must collide the exact
+stationary balance and strict dyadic flux retention with the coupled atom--likelihood curvature;
+generic log-concavity, angle concavity, and separated atom-pair positivity have now been ruled out
+as sufficient mechanisms.

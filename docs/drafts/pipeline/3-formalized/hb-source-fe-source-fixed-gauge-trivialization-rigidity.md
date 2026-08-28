@@ -1,8 +1,8 @@
 # HB source-FE source-fixed gauge trivialization rigidity
 
 - **ID:** HC60
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE / SOURCE-GAUGE RIGIDITY / HARD FRONTIER
+- **Stage:** 3-formalized
+- **Type:** THEOREM / SOURCE-GAUGE RIGIDITY / HARD FRONTIER
 - **Source:** HC59 semilinear coherence; literal polarized source amplitude; rank-one anti-linear
   Hilbert 90
 - **Statement:** Literal source-FE cocycle is algebraically gauge-trivial on every Xi orbit, but no
@@ -67,11 +67,19 @@ classification or RH equivalence. Search is bounded, not exhaustive.
 ## Gates
 
 - [x] 0 -> 1 in-progress: corpus gap, exact conjecture, hostile proof route, bounded literature audit
-- [ ] 1 -> 2 fully-proven: dependency-closed paper proof
-- [ ] 2 -> 3 formalized: closed Lean theorem, target build, axiom/lint audit, umbrella wire
+- [x] 1 -> 2 fully-proven: dependency-closed paper proof
+- [x] 2 -> 3 formalized: closed Lean theorem, target build, axiom/lint audit, umbrella wire
 - [ ] 3 -> 4 publication-ready: independent priority audit and standalone exposition
 
 ## Log
 
 - 2026-08-28 — Opened after HC59 proved semilinear coherence iff RH and gauge search exposed
   unconditional Hilbert-90 triviality as the remaining normalization loophole.
+- 2026-08-28 — Proved an explicit nowhere-zero amplitude gauge trivializes the cocycle
+  unconditionally, while every source-fixed gauge is pointwise forced to be the identity off the
+  critical line. Consequently a global nowhere-zero source-fixed real cocycle trivialization exists
+  iff RH. Formalized in
+  `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceFESourceFixedGaugeTrivializationRigidity`.
+  Direct Lean check passed; target build passed (`12025/12025`); all nine public theorems audit to
+  standard axioms only (`propext`, `Classical.choice`, `Quot.sound`); umbrella import wired. Global
+  lint reports only unrelated umbrella-reachability failures and no HC60 violation.
