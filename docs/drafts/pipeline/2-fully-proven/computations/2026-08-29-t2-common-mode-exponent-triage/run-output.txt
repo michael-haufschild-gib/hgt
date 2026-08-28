@@ -1,0 +1,98 @@
+{
+  "elapsed_seconds": 2.7224936485290527,
+  "workers": 128,
+  "exhaustive": {
+    "q": 31,
+    "cardinality": 8,
+    "subsets_tested_after_translation_normalization": 2035800,
+    "maximum_additive_energy_found": 344,
+    "arithmetic_progression_energy": 344,
+    "maximum_equals_arithmetic_progression_energy": true,
+    "maximizers_in_normalized_search": 120,
+    "examples": [
+      [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      [
+        0,
+        2,
+        4,
+        6,
+        8,
+        10,
+        12,
+        14
+      ],
+      [
+        0,
+        3,
+        5,
+        8,
+        13,
+        18,
+        21,
+        26
+      ],
+      [
+        0,
+        4,
+        5,
+        9,
+        13,
+        18,
+        22,
+        27
+      ],
+      [
+        0,
+        5,
+        6,
+        10,
+        11,
+        16,
+        21,
+        26
+      ],
+      [
+        0,
+        6,
+        7,
+        12,
+        13,
+        18,
+        19,
+        25
+      ],
+      [
+        0,
+        7,
+        8,
+        14,
+        15,
+        22,
+        23,
+        30
+      ],
+      [
+        0,
+        8,
+        9,
+        10,
+        19,
+        20,
+        29,
+        30
+      ]
+    ],
+    "energy_over_cardinality_cubed": 0.671875
+  },
+  "anneal_best_ratio": 0.9868409007689491,
+  "output": "results"
+}
