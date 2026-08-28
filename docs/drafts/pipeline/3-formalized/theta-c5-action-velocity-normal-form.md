@@ -68,3 +68,8 @@ without a sign premise.
 - 2026-08-28 — paper proof closed, Lean formalization built, axiom audit passed.
 - 2026-08-28 — exact seam transverse-transport margin added and formalized; its global sign is the
   sharpened open source law.
+- 2026-08-29 — exact seam minor eliminated by the self-dual modular ODE and Bell transfer.  The
+  new formal theorem `thetaCuspActionVelocitySeam_curvature_sixth_lt_two_fourth_sq` proves
+  `A*C<2*B^2`, and `not_thetaCuspActionVelocitySeamLogMinor_nonneg` closes the forward-orientation
+  no-go.  Module `ThetaCuspActionVelocitySeamLogMinorNoGo` is wired and targeted-build green;
+  axiom audit reports only `propext`, `Classical.choice`, `Quot.sound`.

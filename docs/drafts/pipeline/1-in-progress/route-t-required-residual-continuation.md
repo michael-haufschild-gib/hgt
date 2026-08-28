@@ -153,3 +153,119 @@ with `lake env lean` passes. The module is wired into the RHTower umbrella. Targ
 passes. Axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`. Global formal
 lint reaches the module but fails on unrelated shared-tree umbrella reachability debt in existing
 Deninger, Gauss-Hodge, Suzuki, and `CriticalSchurIdealInertiaTransport` modules.
+
+## C5 — source-marked second-factorial Borel carrier
+
+### Corpus derivation and full RH chain
+
+`[CORPUS]` The lower-Hardy residual edge kernel is
+
+```text
+K(x) = sum_N R_N (exp(-i h_N x) - exp(-i h_(N+1) x)),
+h_N = log p_N,
+R_N = WoldPartialMass(N) - log p_N.
+```
+
+The corpus proves `R_N -> 0`, the unconditional decay
+`|R_N| <= B exp(-c sqrt(h_N))`, lower-ray coefficient faithfulness, all boundary jets, and the
+exact equivalence between RH and regularity of the forced residual continuation. It also proves
+that compact-open scalar reporters erase source charge and that ordinary upper Hardy reflection
+would require a false two-sided residual-variation bound. These results force any viable next
+carrier to retain individual prime edges while exploiting the actual Gevrey-2 boundary scale.
+
+Define the branch-free entire kernel
+
+```text
+Phi(u) = sum_{k >= 0} u^k / (k!)^2
+```
+
+and, for real boundary point `x`, the source-marked Borel germ
+
+```text
+B_x(xi) = sum_N R_N
+  (exp(-i h_N x) Phi(-i h_N xi)
+   - exp(-i h_(N+1) x) Phi(-i h_(N+1) xi)).
+```
+
+Its `k`th derivative at `xi = 0` is exactly the corpus residual edge jet divided by `k!`.
+Thus it preserves every source-labelled prime edge instead of projecting the residual to a
+scalar compact-open limit.
+
+The intended proof chain is exact:
+
+```text
+source-marked Borel germ and exact jet recovery
+  -> continuation along the positive normal Borel ray with uniform exponential type
+  -> Borel-Laplace reconstruction through 0 < Im z < 1/2
+  -> zero lateral Stokes jump for the physical lower-Hardy residual
+  -> requiredResidual is regular at every possible off-line Wold pole
+  -> riemannHypothesis_iff_requiredResidualContinuation_continuousAt
+  -> RH.
+```
+
+This is not a generic summability program: the required zero-Stokes statement is source-marked,
+and `XiHeatCassiniWoldRelativeOrbitLeakage` says that any off-line zero produces a nonzero residue
+in precisely this forced residual.
+
+### C5a — local carrier theorem
+
+`[CONJECTURE — PAPER PROVED, LEAN OPEN]` There is a radius `r > 0`, independent of `x`, such that
+the defining prime-edge series for `B_x(xi)` converges absolutely and locally uniformly on every
+compact subset of `R x {xi : |xi| < r}`. Hence `B_x` is holomorphic in `xi` there and its Taylor
+coefficients recover all lower-half residual edge jets with the second factorial normalization.
+
+Paper proof. For `0 <= h <= H`, termwise subtraction and
+`binom(2k,k) <= 4^k` give
+
+```text
+|Phi(-i h xi) - Phi(-i H xi)|
+  <= 2 (H-h) |xi| exp(2 sqrt(H |xi|)).
+```
+
+Also `|Phi(-i H xi)| <= exp(2 sqrt(H |xi|))`. Splitting an edge atom as
+
+```text
+exp(-i h x) (Phi(-i h xi) - Phi(-i H xi))
+  + (exp(-i h x) - exp(-i H x)) Phi(-i H xi)
+```
+
+bounds it on `|x| <= X` by
+
+```text
+C (H-h) (|xi| + X) exp(2 sqrt(H |xi|)).
+```
+
+Bertrand gives `H <= 2h` for consecutive prime logs, while corpus exponential-rate control gives
+`|R_N| <= B exp(-c sqrt(h))`. Choose, for example, `r = c^2/32`; then the atom is dominated on
+compact subdiscs by a constant times
+
+```text
+(H-h) exp(-(c/2) sqrt(h)).
+```
+
+The corpus reciprocal-height telescope proves this majorant summable. Weierstrass convergence
+gives holomorphy. Absolute local uniform convergence of the differentiated series permits
+termwise differentiation at zero, and `Phi^(k)(0) = 1/k!`, giving the exact jet identity.
+
+### C5b — remaining open core
+
+`[OPEN CORE]` Prove that every `B_x` continues along the positive normal Borel ray with the
+uniform exponential-type estimates needed for Borel-Laplace reconstruction throughout
+`0 < Im z < 1/2`, and prove that the two physical lateral sums have zero Stokes jump.
+
+`[HOSTILE AUDIT]` C5a alone cannot imply C5b. Gevrey-2 jets admit flat ambiguity, so local Borel
+holomorphy does not determine a continuation or its Stokes data. Declaring the germ entire would
+silently assume the missing theorem. Ordinary scalar reflection and compact-open limiting are
+already ruled out by the corpus no-go theorems. Conversely, any nonzero Stokes jump must be tested
+against the exact Wold-pole residue rather than discarded: off line, that jump is the expected
+carrier of source charge.
+
+### Novelty audit
+
+`[SOTA, checked 2026-08-29]` Searches of primary literature found general factorial/moment
+summability theory, Borel resummation and Stokes analysis for classical zeta transforms, and
+Bessel identities for Dirichlet series with Hecke functional equations. No source found the
+prime-edge Wold residual germ above, its exact jet-recovery law, or a Stokes/Wold-residue
+correspondence. Relevant adjacent sources: Lastra--Sanz--Sendra (arXiv:1603.00689),
+Jimenez-Garrido--Sanz (arXiv:1510.05844), Andersen (arXiv:2011.01110), and
+Berndt--Dixit--Gupta--Zaharescu (arXiv:2204.09887).

@@ -84,8 +84,7 @@ private theorem criticalFeaturePrimeGammaSourceDiagonal_re_eq_tsum_holomorphicSq
       rw [show xiWeilSharp F = F by
         simpa only [F] using xiWeilSharp_criticalFeatureCauchyKernelTest t]
       congr 2
-      apply tsum_congr
-      intro q
+      funext q
       ring
     _ = ∑' q : XiZeroCopy, ((F (xiSpectralPoint q)) ^ 2).re := by
       rw [Complex.re_tsum hsquare]

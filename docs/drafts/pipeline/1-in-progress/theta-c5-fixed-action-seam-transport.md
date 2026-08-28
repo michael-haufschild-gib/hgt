@@ -82,3 +82,17 @@ sharp positive transport chamber or first sign-changing invariant before retirin
   curvature-acceleration margin nonpositive for every `t>0`.  The identity and every chain-rule
   connector are unconditional in Lean; sign remains the source-specific open core.  This
   prevents hiding a two-variable transport claim behind generic Riccati positivity.
+- 2026-08-29 — **TWO-SIGN SUBROUTE RETIRED; parent fixed-action comparison remains open.** Exact
+  self-dual modular-ODE elimination gives the first
+  nonzero seam coefficient the opposite orientation.  If
+  `A=-ell''(0)`, `B=-ell''''(0)`, `C=-ell''''''(0)`, then the transverse margin has leading
+  coefficient `(A*C-2*B^2)/(6*A)`, while the literal completed-theta source satisfies the strict
+  law `A*C < 2*B^2`.  Thus `partial_u h(0,t)<0` for sufficiently small positive `t`; the proposed
+  global chamber `h<=0` is locally compatible, but its companion sufficient law
+  `partial_q(vh)>=0` has the wrong seam derivative and cannot prove barrier monotonicity by this
+  two-sign decomposition.  This does not refute direct fixed-action barrier monotonicity, whose
+  two terms may still compensate.  Exact no-go and sharp survivor are formalized in
+  `ThetaCuspActionVelocitySeamLogMinorNoGo.lean`; detailed retirement card:
+  `../5-failed/theta-c5-fixed-action-two-sign-transport.md`.  Surviving C5 work returns to the
+  direct Gaussian-deviation three-zone chain, whose hard theta-specific core is the bulk
+  accumulated-action/jet coupling.
