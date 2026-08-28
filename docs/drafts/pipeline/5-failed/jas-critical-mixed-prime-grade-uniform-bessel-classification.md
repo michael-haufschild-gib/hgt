@@ -1,8 +1,8 @@
 # JAS critical mixed prime-grade uniform Bessel classification
 
 - **ID:** JAS-CRIT-MIXED-UNIFORM-BESSEL
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Stage:** 5-failed
+- **Type:** RETIRED CONJECTURE
 - **Source:** strongest open core exposed by `jas-critical-mixed-prime-grade-incidence-law.md`
 - **Statement:** Critical graded singleton synthesis exists exactly when critical prime mass is uniformly bounded across grade fibers.
 
@@ -68,3 +68,15 @@ bounded by `||T||^2`.
 
 - 2026-08-28 — frozen after corpus and literature audits; exact uniform-fiber iff selected as hard
   open core.
+- 2026-08-29 — retired before formalization after endpoint-chain audit. It classifies normalized
+  critical Hilbert packets but does not construct coefficient-faithful actual theta-grade
+  identification or prime-support higher-compound sewing, the named JAS producer required before
+  `xiPrimePoissonReflectionSewing_iff_internalOnly` can force every Xi divisor onto the wall.
+
+## Retirement verdict
+
+- **Why terminal for present RH work:** even a complete iff theorem would leave every named JAS
+  source-to-sewing obligation unchanged.
+- **Positive survivor:** `jas-critical-mixed-prime-grade-incidence-law.md` already proves the useful
+  sharp obstruction and canonical collision-free synthesis.
+- **Status:** no additional RH-relevant positive salvage beyond that formalized theorem.
