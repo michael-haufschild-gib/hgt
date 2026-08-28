@@ -69,6 +69,14 @@ def thetaCuspReflectedSourceFifthRootProjectiveRatio (u t : ℝ) : ℝ :=
   let D := thetaCuspReflectedSourceDecayFlux u t
   (2 * A - t * D) / (t ^ 2 * (12 * A - t * D))
 
+/-- Dimensionless projective decrease defect.  Global angle concavity puts this variable in the
+nonnegative chamber; fifth-root curvature is exactly a logistic growth barrier for it. -/
+def thetaCuspReflectedSourceNormalizedProjectiveDecreaseDefect
+    (u t : ℝ) : ℝ :=
+  (2 * thetaCuspReflectedSourceFirstDrop u t -
+      t * thetaCuspReflectedSourceDecayFlux u t) /
+    thetaCuspReflectedSourceFirstDrop u t
+
 /-- Fifth-root curvature is five log-convexity numerators plus the squared decrease defect. -/
 theorem thetaCuspReflectedSourceFifthRootCurvatureNumerator_eq_five_logConvexity_add_sq
     (u t : ℝ) :
@@ -209,6 +217,102 @@ theorem thetaCuspReflectedSourceProjectiveDenominator_pos
   have hA := thetaCuspReflectedSourceFirstDrop_pos u ht
   have hdefect := thetaCuspReflectedSourceProjectiveDecreaseDefect_nonneg u ht
   nlinarith
+
+/-- The normalized projective decrease defect stays in its exact compact chamber `[0,2]` at
+every positive source scale. -/
+theorem thetaCuspReflectedSourceNormalizedProjectiveDecreaseDefect_mem_Icc
+    (u : ℝ) {t : ℝ} (ht : 0 < t) :
+    thetaCuspReflectedSourceNormalizedProjectiveDecreaseDefect u t ∈ Icc 0 2 := by
+  have hA := thetaCuspReflectedSourceFirstDrop_pos u ht
+  have hN := thetaCuspReflectedSourceProjectiveDecreaseDefect_nonneg u ht
+  have hD := thetaCuspReflectedSourceDecayFlux_pos u ht
+  unfold thetaCuspReflectedSourceNormalizedProjectiveDecreaseDefect
+  constructor
+  · exact div_nonneg hN hA.le
+  · rw [div_le_iff₀ hA]
+    nlinarith [mul_pos ht hD]
+
+/-- Exact velocity of the dimensionless projective decrease defect. -/
+theorem hasDerivAt_thetaCuspReflectedSourceNormalizedProjectiveDecreaseDefect
+    (u : ℝ) {t : ℝ} (ht : 0 < t) :
+    HasDerivAt (thetaCuspReflectedSourceNormalizedProjectiveDecreaseDefect u)
+      (((thetaCuspReflectedSourceDecayFlux u t -
+            t * thetaCuspReflectedSourceDecayFluxCurvature u t) *
+          thetaCuspReflectedSourceFirstDrop u t -
+        (2 * thetaCuspReflectedSourceFirstDrop u t -
+            t * thetaCuspReflectedSourceDecayFlux u t) *
+          thetaCuspReflectedSourceDecayFlux u t) /
+        thetaCuspReflectedSourceFirstDrop u t ^ 2) t := by
+  have hA := hasDerivAt_thetaCuspReflectedSourceFirstDrop u t
+  have hD := hasDerivAt_thetaCuspReflectedSourceDecayFlux u t
+  have hNraw := (hA.const_mul 2).sub ((hasDerivAt_id t).mul hD)
+  have hN : HasDerivAt
+      (fun s : ℝ =>
+        2 * thetaCuspReflectedSourceFirstDrop u s -
+          s * thetaCuspReflectedSourceDecayFlux u s)
+      (thetaCuspReflectedSourceDecayFlux u t -
+        t * thetaCuspReflectedSourceDecayFluxCurvature u t) t := by
+    refine (hNraw.congr_of_eventuallyEq
+      (Filter.Eventually.of_forall fun _ => rfl)).congr_deriv ?_
+    simp only [id_eq]
+    ring
+  exact hN.div hA (thetaCuspReflectedSourceFirstDrop_pos u ht).ne'
+
+/-- Exact logistic normal form for the fifth-root curvature numerator.  It turns the remaining
+rank-four sign into a differential growth barrier for one bounded, dimensionless source defect. -/
+theorem thetaCuspReflectedSourceFifthRootCurvatureNumerator_eq_logisticDefect
+    (u : ℝ) {t : ℝ} (ht : 0 < t) :
+    thetaCuspReflectedSourceFifthRootCurvatureNumerator u t =
+      thetaCuspReflectedSourceFirstDrop u t ^ 2 *
+        (thetaCuspReflectedSourceNormalizedProjectiveDecreaseDefect u t *
+            (10 + thetaCuspReflectedSourceNormalizedProjectiveDecreaseDefect u t) -
+          5 * t *
+            deriv (thetaCuspReflectedSourceNormalizedProjectiveDecreaseDefect u) t) := by
+  rw [(hasDerivAt_thetaCuspReflectedSourceNormalizedProjectiveDecreaseDefect u ht).deriv]
+  unfold thetaCuspReflectedSourceFifthRootCurvatureNumerator
+    thetaCuspReflectedSourceNormalizedProjectiveDecreaseDefect
+  have hAne := (thetaCuspReflectedSourceFirstDrop_pos u ht).ne'
+  field_simp [hAne]
+  ring
+
+/-- Pointwise `C₅` is equivalent to a logistic differential barrier for the normalized decrease
+defect.  This is the exact surviving global source inequality, with no normalization sign loss. -/
+theorem thetaCuspReflectedSourceFifthRootCurvatureNumerator_nonneg_iff_logisticDefect
+    (u : ℝ) {t : ℝ} (ht : 0 < t) :
+    0 ≤ thetaCuspReflectedSourceFifthRootCurvatureNumerator u t ↔
+      5 * t * deriv
+          (thetaCuspReflectedSourceNormalizedProjectiveDecreaseDefect u) t ≤
+        thetaCuspReflectedSourceNormalizedProjectiveDecreaseDefect u t *
+          (10 + thetaCuspReflectedSourceNormalizedProjectiveDecreaseDefect u t) := by
+  rw [thetaCuspReflectedSourceFifthRootCurvatureNumerator_eq_logisticDefect u ht]
+  have hApos := thetaCuspReflectedSourceFirstDrop_pos u ht
+  constructor
+  · intro h
+    have hbarrier := (mul_nonneg_iff_of_pos_left (sq_pos_of_pos hApos)).mp h
+    linarith
+  · intro h
+    exact mul_nonneg (sq_nonneg _) (by linarith)
+
+/-- Global `C₅` positivity is exactly the all-scale logistic barrier for the normalized source
+defect.  This is the source-side estimate left after the coalesced neighborhood is closed. -/
+theorem thetaCuspReflectedSourceFifthRootCurvatureNumerator_nonneg_all_iff_logisticDefect
+    (u : ℝ) :
+    (∀ t : ℝ, 0 < t →
+      0 ≤ thetaCuspReflectedSourceFifthRootCurvatureNumerator u t) ↔
+      ∀ t : ℝ, 0 < t →
+        5 * t * deriv
+            (thetaCuspReflectedSourceNormalizedProjectiveDecreaseDefect u) t ≤
+          thetaCuspReflectedSourceNormalizedProjectiveDecreaseDefect u t *
+            (10 + thetaCuspReflectedSourceNormalizedProjectiveDecreaseDefect u t) := by
+  constructor
+  · intro h t ht
+    exact
+      (thetaCuspReflectedSourceFifthRootCurvatureNumerator_nonneg_iff_logisticDefect
+        u ht).mp (h t ht)
+  · intro h t ht
+    exact
+      (thetaCuspReflectedSourceFifthRootCurvatureNumerator_nonneg_iff_logisticDefect
+        u ht).mpr (h t ht)
 
 /-- Exact projective derivative identity: fifth-root curvature is the negative projective
 velocity, up to a strictly positive factor. -/

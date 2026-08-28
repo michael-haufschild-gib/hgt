@@ -1,5 +1,9 @@
 import GaloisForLFunctions.RHTower.Sieve.MaynardFixedWidthAlignedOrdinateShell
+import GaloisForLFunctions.RHTower.Sieve.MaynardTrivialBoundaryShellCapStructural
+import GaloisForLFunctions.RHTower.Sieve.MaynardNaturalShellFirstExclusion
+import GaloisForLFunctions.RHTower.Sieve.MaynardFullAmplitudeMeasureAssembly
 import GaloisForLFunctions.RHTower.Sieve.MaynardDyadicBlockSpatialL4
+import GaloisForLFunctions.RHTower.Sieve.MaynardElevenFifthsTrivialBoundaryAtomExclusion
 import GaloisForLFunctions.HTGeometry.ThreeCircles
 
 noncomputable section
@@ -696,8 +700,8 @@ theorem eventually_routeT_canonicalNaturalShell_amplitudeBand_twoAlternative
       T₀ ^ (8 / 11 : ℝ) ≤ (A : ℝ) →
       (A : ℝ) ≤ T₀ → B ≤ 2 * A →
       0 < V →
-      heathBrownEligibleBoxCost L (routeTPrimeGapPacketSupport T₀) 60 *
-        (routeTPrimeGapPacketBase T₀ / (2 ^ 120 : ℝ)) ^ (-(1 : ℝ) / 4) ≤ V →
+      routeTTrivialBoundaryAmplitudeThreshold L (routeTPrimeGapPacketSupport T₀) 60
+        (routeTPrimeGapPacketBase T₀) ≤ V →
       ∀ (c : ℕ → ℝ),
       (∀ m : ℕ, c m ∈ Set.Icc (m : ℝ) ((m : ℝ) + 1)) →
       let T₁ : ℝ := A
@@ -716,7 +720,7 @@ theorem eventually_routeT_canonicalNaturalShell_amplitudeBand_twoAlternative
             (routeTAdaptiveCellAmplitude L (routeTPrimeGapPacketSupport T₀) 60
               (routeTPrimeGapPacketBase T₀) V) := by
   obtain ⟨C, hreceiver⟩ := Filter.eventually_atTop.1
-    (eventually_routeT_leftWindowRelevant_amplitudeBand_twoAlternative_elevenFifths q)
+    (eventually_routeT_leftWindowRelevant_amplitudeBand_twoAlternative_above_trivialBoundary_elevenFifths q)
   have hheight : ∀ᶠ T₀ : ℝ in Filter.atTop, C ≤ T₀ ^ (8 / 11 : ℝ) :=
     (tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 8 / 11)).eventually_ge_atTop C
   have hbaseTop : Tendsto routeTPrimeGapPacketBase atTop atTop := by
@@ -728,7 +732,7 @@ theorem eventually_routeT_canonicalNaturalShell_amplitudeBand_twoAlternative
     hbaseTop.eventually_ge_atTop ((2 ^ 120 : ℝ) + 1)
   filter_upwards [hheight, hbaseLarge, Filter.eventually_gt_atTop (1 : ℝ)] with
     T₀ hheightT hbase hT₀
-  intro L A B V hL hLX hXL hLscale hAlower hAupper hB hV hlow c hc
+  intro L A B V hL hLX hXL hLscale hAlower hAupper hB hV htrivial c hc
   let X : ℕ := routeTPrimeGapPacketSupport T₀
   let M : ℝ := routeTPrimeGapPacketBase T₀
   let T₁ : ℝ := A
@@ -810,8 +814,327 @@ theorem eventually_routeT_canonicalNaturalShell_amplitudeBand_twoAlternative
       exact hcm.2.trans (by simpa only [T₁, Nat.cast_mul, Nat.cast_ofNat] using hmTop)
   simpa only [X, M, T₁, mu₁, source] using
     (hreceiverT hX hL (by simpa only [X] using hXL) hXscale hLscaleShell
-      hmu.1 hmu.2 hlowCutoff hMbase hV (by simpa only [X, M] using hlow)
+      hmu.1 hmu.2 hlowCutoff hMbase hV (by simpa only [X, M] using htrivial)
       (by exact le_rfl) (Finset.Ico A B) hUrange c hc hordinate)
+
+
+/-- **Natural-shell equation-(111) with forced-second cancellation.**  Every positive amplitude
+band of a canonical integer shell has a uniform physical bad-measure bound at the original packet
+base.  The receiver runs at the lower shell height, while exact height matching keeps its scale
+equal to the original `T₀^(8/5)` support scale; hence adaptive amplitude cancels without changing
+the frozen source or the physical Mellin interval. -/
+theorem eventually_volume_routeT_canonicalNaturalShell_amplitudeBand_forcedSecond
+    (q : ℕ) {eta : ℝ} (heta : 0 < eta) :
+    ∀ᶠ T₀ : ℝ in Filter.atTop,
+      ∀ {L A B : ℕ} {R H D V : ℝ},
+      1 ≤ L → L ≤ routeTPrimeGapPacketSupport T₀ →
+      routeTPrimeGapPacketSupport T₀ < (L + 1) ^ 60 →
+      (L : ℝ) ≤ T₀ ^ (2 / 75 : ℝ) →
+      T₀ ^ (8 / 11 : ℝ) ≤ (A : ℝ) →
+      (A : ℝ) ≤ T₀ → B ≤ 2 * A →
+      0 < R → 0 < H → 0 < D → 0 < V →
+      routeTTrivialBoundaryAmplitudeThreshold L (routeTPrimeGapPacketSupport T₀) 60
+        (routeTPrimeGapPacketBase T₀) ≤ V →
+      4 * V * (T₀ ^ (8 / 5 : ℝ)) ^
+          (1 - routeTAdaptiveCellAmplitude L (routeTPrimeGapPacketSupport T₀) 60
+            (routeTPrimeGapPacketBase T₀) V) ≤
+        (D / 2) * (Real.log (A : ℝ)) ^ q →
+      ∀ (c : ℕ → ℝ),
+      (∀ m : ℕ, c m ∈ Set.Icc (m : ℝ) ((m : ℝ) + 1)) →
+      (∀ m ∈ Finset.Ico A B, ∀ u ∈ Set.Icc (0 : ℝ) 1,
+        ‖heathBrownWindowRelevantEligibleDyadicAggregate
+          L (routeTPrimeGapPacketSupport T₀) 60 (A : ℝ)
+            (routeTHeightMatchedExponent T₀ (8 / 5) (A : ℝ) / 120)
+            (routeTPrimeGapPacketBase T₀)
+            ((1 : ℂ) + (((m : ℝ) + u : ℝ) : ℂ) * Complex.I)‖ ≤
+          ‖heathBrownWindowRelevantEligibleDyadicAggregate
+            L (routeTPrimeGapPacketSupport T₀) 60 (A : ℝ)
+              (routeTHeightMatchedExponent T₀ (8 / 5) (A : ℝ) / 120)
+              (routeTPrimeGapPacketBase T₀)
+              ((1 : ℂ) + (c m : ℝ) * Complex.I)‖) →
+      let T₁ : ℝ := A
+      let mu₁ := routeTHeightMatchedExponent T₀ (8 / 5) T₁
+      let source : ℝ → ℂ := fun y =>
+        heathBrownWindowRelevantEligibleDyadicAggregate
+          L (routeTPrimeGapPacketSupport T₀) 60 T₁ (mu₁ / 120)
+            (routeTPrimeGapPacketBase T₀) ((1 : ℂ) + (y : ℝ) * Complex.I)
+      let band := maynardUnitCellAmplitudeBand (Finset.Ico A B) source c V
+      (volume.restrict (Set.Icc (routeTPrimeGapPacketBase T₀)
+          (2 * routeTPrimeGapPacketBase T₀))).real
+          {lambda | D ≤
+            ‖maynardFixedAmbientPhysicalDefectPacket band source lambda 1 R H 1‖} ≤
+        2 * ((128 *
+          (T₀ ^ eta * (A : ℝ) *
+            (T₀ ^ (8 / 5 : ℝ)) ^ routeTGapMomentNu) *
+          (1 + 2 * (1 + Real.log ((2 * A : ℕ) : ℝ)))) / (D / 2) ^ 2) := by
+  have hreceiver := eventually_routeT_canonicalNaturalShell_amplitudeBand_twoAlternative q
+  have henergy :=
+    eventually_routeTPrimeGapPacket_adaptive_second_count_cancellation_absorbed_sixty_trivialBoundary
+      heta
+  have hbaseTop : Tendsto routeTPrimeGapPacketBase atTop atTop := by
+    unfold routeTPrimeGapPacketBase
+    exact (tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 8 / 5)).atTop_div_const
+      (by norm_num)
+  have hbaseLarge : ∀ᶠ T₀ : ℝ in Filter.atTop,
+      (2 ^ 120 : ℝ) + 1 ≤ routeTPrimeGapPacketBase T₀ :=
+    hbaseTop.eventually_ge_atTop ((2 ^ 120 : ℝ) + 1)
+  filter_upwards [hreceiver, henergy, hbaseLarge,
+    Filter.eventually_gt_atTop (1 : ℝ)] with T₀ hreceiverT henergyT hbase hT₀
+  intro L A B R H D V hL hLX hXL hLscale hAlower hAupper hB hR hH hD hV
+    htrivial hthreshold c hc hmax
+  let X : ℕ := routeTPrimeGapPacketSupport T₀
+  let M : ℝ := routeTPrimeGapPacketBase T₀
+  let T₁ : ℝ := A
+  let mu₁ : ℝ := routeTHeightMatchedExponent T₀ (8 / 5) T₁
+  let Y : ℝ := T₀ ^ (8 / 5 : ℝ)
+  let alpha : ℝ := routeTAdaptiveCellAmplitude L X 60 M V
+  let source : ℝ → ℂ := fun y =>
+    heathBrownWindowRelevantEligibleDyadicAggregate L X 60 T₁ (mu₁ / 120) M
+      ((1 : ℂ) + (y : ℝ) * Complex.I)
+  let band : Finset ℕ := maynardUnitCellAmplitudeBand (Finset.Ico A B) source c V
+  have hT₁ : 1 < T₁ := by
+    have hpowOne : 1 < T₀ ^ (8 / 11 : ℝ) := by
+      have hmono := Real.strictMono_rpow_of_base_gt_one hT₀
+        (by norm_num : (0 : ℝ) < 8 / 11)
+      simpa using hmono
+    exact hpowOne.trans_le hAlower
+  have hY : 0 < Y := by dsimp only [Y]; positivity
+  have htwo := hreceiverT hL hLX hXL hLscale hAlower hAupper hB hV htrivial c hc
+  have hMcut : 1 < M / (2 ^ 120 : ℝ) := by
+    apply (one_lt_div (by positivity : (0 : ℝ) < 2 ^ 120)).2
+    dsimp only [M]
+    linarith
+  have hXgt : 1 < X := by
+    have hceil : 3 * M ≤ (X : ℝ) := by
+      dsimp only [X, M, routeTPrimeGapPacketSupport]
+      exact Nat.le_ceil _
+    have hXreal : (1 : ℝ) < X := by
+      dsimp only [M] at hceil
+      linarith
+    exact_mod_cast hXreal
+  have halphaBoundary : (1 + routeTGapMomentNu) / 2 ≤ alpha := by
+    dsimp only [alpha]
+    exact routeT_trivialCountBoundary_le_adaptive_of_threshold_le
+      L X 60 (by norm_num) hXgt
+        (by simpa only [Nat.reduceMul] using hMcut)
+        (by simpa only [X, M] using htrivial)
+  have hUrange : Finset.Ico A B ⊆ Finset.range (2 * A) := by
+    intro m hm
+    exact Finset.mem_range.mpr ((Finset.mem_Ico.mp hm).2.trans_le hB)
+  have hbandRange : band ⊆ Finset.range (2 * A) :=
+    (maynardUnitCellAmplitudeBand_subset (Finset.Ico A B) source c V).trans hUrange
+  have hsource : ∀ m ∈ band, ∀ u ∈ Set.Icc (0 : ℝ) 1,
+      ‖source ((m : ℝ) + u)‖ ≤ 2 * V := by
+    intro m hm u hu
+    have hmU : m ∈ Finset.Ico A B :=
+      maynardUnitCellAmplitudeBand_subset (Finset.Ico A B) source c V hm
+    have hmax' : ‖source ((m : ℝ) + u)‖ ≤ ‖source (c m)‖ := by
+      simpa only [source, X, M, T₁, mu₁] using hmax m hmU u hu
+    exact hmax'.trans (maynardUnitCellAmplitudeBand_upper
+      (U := Finset.Ico A B) (A := source) (c := c) hm)
+  have hcontinuous : Continuous source := by
+    dsimp only [source]
+    exact continuous_heathBrownWindowRelevantEligibleDyadicAggregate_line
+      L X 60 T₁ (mu₁ / 120) M 1
+  let countScale : ℝ := T₁ * Y ^ (1 + routeTGapMomentNu - 2 * alpha)
+  have hcountScale : 0 ≤ countScale := by
+    dsimp only [countScale]
+    exact mul_nonneg (zero_le_one.trans hT₁.le) (Real.rpow_nonneg hY.le _)
+  have henergyBound : M * V ^ 2 * countScale ≤
+      T₀ ^ eta * T₁ * Y ^ routeTGapMomentNu := by
+    simpa only [X, M, Y, alpha, countScale] using
+      (henergyT hLX (zero_le_one.trans hT₁.le) hV hcountScale
+        (by simpa only [X, M, alpha] using halphaBoundary) (by exact le_rfl))
+  have hmeasure :=
+    volume_maynardFixedAmbientPhysicalDefectPacket_large_le_parity_forced_second
+      (q := q) (K := A) (B := band) (a := source)
+      (x := M) (N := 1) (R := R) (H := H) (D := D) (V := V)
+      (T := T₁) (Y := Y) (alpha := alpha) (cellCount := 2 * A)
+      (by dsimp only [M]; linarith) (by norm_num) hR hH hD hV
+      (zero_le_one.trans hT₁.le) hY
+      (Real.log_nonneg hT₁.le) (routeTCellLogFactor_nonneg (2 * A))
+      hbandRange hbandRange hcontinuous hsource
+      (by simpa only [T₁, Y, X, M, alpha] using hthreshold)
+      (by simpa only [T₁, Y, X, M, mu₁, source, band, alpha,
+          rpow_routeTHeightMatchedExponent hT₀ hT₁] using htwo.1)
+      (by simpa only [T₁, Y, X, M, mu₁, source, band, alpha,
+          rpow_routeTHeightMatchedExponent hT₀ hT₁] using htwo.2)
+  have hcellLog : 0 ≤ 1 + 2 * (1 + Real.log ((2 * A : ℕ) : ℝ)) :=
+    routeTCellLogFactor_nonneg (2 * A)
+  have hnumer :
+      4 * (2 * M) * (4 * V) ^ 2 * countScale *
+          (1 + 2 * (1 + Real.log ((2 * A : ℕ) : ℝ))) ≤
+        128 * (T₀ ^ eta * T₁ * Y ^ routeTGapMomentNu) *
+          (1 + 2 * (1 + Real.log ((2 * A : ℕ) : ℝ))) := by
+    calc
+      4 * (2 * M) * (4 * V) ^ 2 * countScale *
+          (1 + 2 * (1 + Real.log ((2 * A : ℕ) : ℝ))) =
+        128 * (M * V ^ 2 * countScale) *
+          (1 + 2 * (1 + Real.log ((2 * A : ℕ) : ℝ))) := by ring
+      _ ≤ 128 * (T₀ ^ eta * T₁ * Y ^ routeTGapMomentNu) *
+          (1 + 2 * (1 + Real.log ((2 * A : ℕ) : ℝ))) :=
+        mul_le_mul_of_nonneg_right
+          (mul_le_mul_of_nonneg_left henergyBound (by norm_num)) hcellLog
+  have hquot :
+      (4 * (2 * M) * (4 * V) ^ 2 * countScale *
+          (1 + 2 * (1 + Real.log ((2 * A : ℕ) : ℝ)))) / (D / 2) ^ 2 ≤
+        (128 * (T₀ ^ eta * T₁ * Y ^ routeTGapMomentNu) *
+          (1 + 2 * (1 + Real.log ((2 * A : ℕ) : ℝ)))) / (D / 2) ^ 2 :=
+    div_le_div_of_nonneg_right hnumer (sq_nonneg (D / 2))
+  calc
+    (volume.restrict (Set.Icc (routeTPrimeGapPacketBase T₀)
+        (2 * routeTPrimeGapPacketBase T₀))).real
+        {lambda | D ≤
+          ‖maynardFixedAmbientPhysicalDefectPacket band source lambda 1 R H 1‖} ≤
+      2 * ((4 * (2 * M) * (4 * V) ^ 2 * countScale *
+          (1 + 2 * (1 + Real.log ((2 * A : ℕ) : ℝ)))) / (D / 2) ^ 2) := by
+      simpa only [M, countScale] using hmeasure
+    _ ≤ 2 * ((128 * (T₀ ^ eta * T₁ * Y ^ routeTGapMomentNu) *
+          (1 + 2 * (1 + Real.log ((2 * A : ℕ) : ℝ)))) / (D / 2) ^ 2) :=
+      mul_le_mul_of_nonneg_left hquot (by norm_num)
+    _ = 2 * ((128 *
+        (T₀ ^ eta * (A : ℝ) *
+          (T₀ ^ (8 / 5 : ℝ)) ^ routeTGapMomentNu) *
+        (1 + 2 * (1 + Real.log ((2 * A : ℕ) : ℝ)))) / (D / 2) ^ 2) := by
+      dsimp only [T₁, Y]
+
+
+/-- **Natural-shell base layer.**  The exact trivial-boundary amplitude also cancels on every
+height-matched integer shell.  The key shell fact is structural: `Ico A B` has at most `A` cells
+when `B ≤ 2A`, so its base layer is already the second-count scale at receiver height `A` even
+though source support and physical Mellin base remain frozen at `T₀`. -/
+theorem eventually_volume_routeT_canonicalNaturalShell_baseAmplitude
+    {eta : ℝ} (heta : 0 < eta) :
+    ∀ᶠ T₀ : ℝ in Filter.atTop,
+      ∀ {L A B : ℕ} {R H D : ℝ},
+      L ≤ routeTPrimeGapPacketSupport T₀ →
+      T₀ ^ (8 / 11 : ℝ) ≤ (A : ℝ) →
+      (A : ℝ) ≤ T₀ → B ≤ 2 * A →
+      0 < R → 0 < H → 0 < D →
+      ∀ (c : ℕ → ℝ),
+      (∀ m ∈ Finset.Ico A B, ∀ u ∈ Set.Icc (0 : ℝ) 1,
+        ‖heathBrownWindowRelevantEligibleDyadicAggregate
+          L (routeTPrimeGapPacketSupport T₀) 60 (A : ℝ)
+            (routeTHeightMatchedExponent T₀ (8 / 5) (A : ℝ) / 120)
+            (routeTPrimeGapPacketBase T₀)
+            ((1 : ℂ) + (((m : ℝ) + u : ℝ) : ℂ) * Complex.I)‖ ≤
+          ‖heathBrownWindowRelevantEligibleDyadicAggregate
+            L (routeTPrimeGapPacketSupport T₀) 60 (A : ℝ)
+              (routeTHeightMatchedExponent T₀ (8 / 5) (A : ℝ) / 120)
+              (routeTPrimeGapPacketBase T₀)
+              ((1 : ℂ) + (c m : ℝ) * Complex.I)‖) →
+      let T₁ : ℝ := A
+      let mu₁ := routeTHeightMatchedExponent T₀ (8 / 5) T₁
+      let source : ℝ → ℂ := fun y =>
+        heathBrownWindowRelevantEligibleDyadicAggregate
+          L (routeTPrimeGapPacketSupport T₀) 60 T₁ (mu₁ / 120)
+            (routeTPrimeGapPacketBase T₀) ((1 : ℂ) + (y : ℝ) * Complex.I)
+      let Vbase := routeTTrivialBoundaryAmplitudeThreshold
+        L (routeTPrimeGapPacketSupport T₀) 60 (routeTPrimeGapPacketBase T₀)
+      let base := maynardUnitCellBaseAmplitudeSet (Finset.Ico A B) source c Vbase
+      (volume.restrict (Set.Icc (routeTPrimeGapPacketBase T₀)
+          (2 * routeTPrimeGapPacketBase T₀))).real
+          {lambda | D ≤
+            ‖maynardFixedAmbientPhysicalDefectPacket base source lambda 1 R H 1‖} ≤
+        (32 * (T₀ ^ eta * (A : ℝ) *
+          (T₀ ^ (8 / 5 : ℝ)) ^ routeTGapMomentNu) *
+          (1 + 2 * (1 + Real.log ((2 * A : ℕ) : ℝ)))) / D ^ 2 := by
+  have henergy :=
+    eventually_routeTPrimeGapPacket_adaptive_second_count_cancellation_absorbed_sixty_trivialBoundary
+      heta
+  have hbaseTop : Tendsto routeTPrimeGapPacketBase atTop atTop := by
+    unfold routeTPrimeGapPacketBase
+    exact (tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 8 / 5)).atTop_div_const
+      (by norm_num)
+  have hbaseLarge : ∀ᶠ T₀ : ℝ in Filter.atTop,
+      (2 ^ 120 : ℝ) + 1 ≤ routeTPrimeGapPacketBase T₀ :=
+    hbaseTop.eventually_ge_atTop ((2 ^ 120 : ℝ) + 1)
+  filter_upwards [henergy, hbaseLarge,
+    Filter.eventually_gt_atTop (1 : ℝ)] with T₀ henergyT hbase hT₀
+  intro L A B R H D hLX hAlower hAupper hB hR hH hD c hmax
+  let X : ℕ := routeTPrimeGapPacketSupport T₀
+  let M : ℝ := routeTPrimeGapPacketBase T₀
+  let T₁ : ℝ := A
+  let mu₁ : ℝ := routeTHeightMatchedExponent T₀ (8 / 5) T₁
+  let Y : ℝ := T₀ ^ (8 / 5 : ℝ)
+  let source : ℝ → ℂ := fun y =>
+    heathBrownWindowRelevantEligibleDyadicAggregate L X 60 T₁ (mu₁ / 120) M
+      ((1 : ℂ) + (y : ℝ) * Complex.I)
+  let Vbase : ℝ := routeTTrivialBoundaryAmplitudeThreshold L X 60 M
+  let base : Finset ℕ :=
+    maynardUnitCellBaseAmplitudeSet (Finset.Ico A B) source c Vbase
+  let alpha : ℝ := routeTAdaptiveCellAmplitude L X 60 M Vbase
+  have hM : 1 ≤ M := by dsimp only [M]; linarith
+  have hMcut : 1 < M / (2 ^ 120 : ℝ) := by
+    apply (one_lt_div (by positivity : (0 : ℝ) < 2 ^ 120)).2
+    dsimp only [M]
+    linarith
+  have hVbase : 0 < Vbase := by
+    dsimp only [Vbase]
+    exact routeTTrivialBoundaryAmplitudeThreshold_pos L X 60 (by norm_num)
+      (by simpa only [Nat.reduceMul] using hMcut)
+  have hbaseRange : base ⊆ Finset.range (2 * A) := by
+    refine (Finset.filter_subset _ _).trans ?_
+    intro m hm
+    exact Finset.mem_range.mpr ((Finset.mem_Ico.mp hm).2.trans_le hB)
+  have hUcard : (Finset.Ico A B).card ≤ A := by
+    rw [Nat.card_Ico]
+    omega
+  have hbaseCardNat : base.card ≤ A :=
+    (Finset.card_le_card (Finset.filter_subset _ _)).trans hUcard
+  have hbaseCard : (base.card : ℝ) ≤ T₁ := by
+    dsimp only [T₁]
+    exact_mod_cast hbaseCardNat
+  have halphaEq : alpha = (1 + routeTGapMomentNu) / 2 := by
+    dsimp only [alpha, Vbase]
+    exact routeTAdaptiveCellAmplitude_trivialBoundaryThreshold L X 60
+      (by norm_num) (by simpa only [Nat.reduceMul] using hMcut)
+  have hsecond : (base.card : ℝ) ≤
+      T₁ * Y ^ (1 + routeTGapMomentNu - 2 * alpha) := by
+    have hexp : 1 + routeTGapMomentNu - 2 * alpha = 0 := by
+      rw [halphaEq]
+      ring
+    simpa only [hexp, Real.rpow_zero, mul_one] using hbaseCard
+  have henergyBound : M * Vbase ^ 2 * (base.card : ℝ) ≤
+      T₀ ^ eta * T₁ * Y ^ routeTGapMomentNu := by
+    simpa only [X, M, Y, Vbase, alpha] using
+      (henergyT hLX (Nat.cast_nonneg A) hVbase (Nat.cast_nonneg base.card)
+        (by simpa only [X, M, Vbase, alpha] using halphaEq.ge) hsecond)
+  have hsource : ∀ m ∈ base, ∀ u ∈ Set.Icc (0 : ℝ) 1,
+      ‖source ((m : ℝ) + u)‖ ≤ Vbase := by
+    intro m hm u hu
+    have hmU : m ∈ Finset.Ico A B := Finset.filter_subset _ _ hm
+    have hrepresentative : ‖source (c m)‖ < Vbase :=
+      (Finset.mem_filter.mp hm).2
+    have hmax' : ‖source ((m : ℝ) + u)‖ ≤ ‖source (c m)‖ := by
+      simpa only [source, X, M, T₁, mu₁] using hmax m hmU u hu
+    exact hmax'.trans hrepresentative.le
+  have hcontinuous : Continuous source := by
+    dsimp only [source]
+    exact continuous_heathBrownWindowRelevantEligibleDyadicAggregate_line
+      L X 60 T₁ (mu₁ / 120) M 1
+  have hmeasure :=
+    volume_maynardFixedAmbientPhysicalDefectPacket_large_le_card_of_source_bound
+      hM (by norm_num : (0 : ℝ) < 1) hR hH hVbase.le hD base hbaseRange
+        source hcontinuous hsource
+  have hcellLog : 0 ≤ 1 + 2 * (1 + Real.log ((2 * A : ℕ) : ℝ)) :=
+    routeTCellLogFactor_nonneg (2 * A)
+  have hnumer :
+      4 * (2 * M) * (2 * Vbase) ^ 2 * (base.card : ℝ) *
+          (1 + 2 * (1 + Real.log ((2 * A : ℕ) : ℝ))) ≤
+        32 * (T₀ ^ eta * T₁ * Y ^ routeTGapMomentNu) *
+          (1 + 2 * (1 + Real.log ((2 * A : ℕ) : ℝ))) := by
+    calc
+      4 * (2 * M) * (2 * Vbase) ^ 2 * (base.card : ℝ) *
+          (1 + 2 * (1 + Real.log ((2 * A : ℕ) : ℝ))) =
+        32 * (M * Vbase ^ 2 * (base.card : ℝ)) *
+          (1 + 2 * (1 + Real.log ((2 * A : ℕ) : ℝ))) := by ring
+      _ ≤ 32 * (T₀ ^ eta * T₁ * Y ^ routeTGapMomentNu) *
+          (1 + 2 * (1 + Real.log ((2 * A : ℕ) : ℝ))) :=
+        mul_le_mul_of_nonneg_right
+          (mul_le_mul_of_nonneg_left henergyBound (by norm_num)) hcellLog
+  have hquot := div_le_div_of_nonneg_right hnumer (sq_nonneg D)
+  simpa only [X, M, T₁, mu₁, Y, source, Vbase, base] using hmeasure.trans hquot
 
 
 end RHTower.Sieve

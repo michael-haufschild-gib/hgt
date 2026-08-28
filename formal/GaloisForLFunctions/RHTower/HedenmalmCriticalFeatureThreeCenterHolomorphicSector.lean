@@ -102,7 +102,7 @@ theorem three_fifths_mul_normSq_criticalFeatureCauchyKernelTest_le_re_sq
   rw [criticalFeatureCauchyKernelTest_eq t hz, hre, hnorm]
   have hnumerator : (3 / 5 : ℝ) * 4 * D ≤ 4 * (A ^ 2 - B ^ 2) := by
     dsimp only [D]
-    nlinarith
+    nlinarith only [hsector]
   calc
     (3 / 5 : ℝ) * (4 / D) = ((3 / 5 : ℝ) * 4 * D) / D ^ 2 := by
       field_simp [ne_of_gt hDpos]

@@ -1,8 +1,8 @@
 # HB source-FE empty-mode Fock-vacuum obstruction
 
 - **ID:** HC82
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE / REGULAR-FOCK EXISTENCE NO-GO + RH ENDPOINT
+- **Stage:** 3-formalized
+- **Type:** THEOREM / DIAGONAL SHALE NECESSITY + REGULAR-FOCK NO-GO + RH ENDPOINT
 - **Source:** read-only `rh-current-frontier-map.md` · HC79--HC81 source-FE Bogoliubov endpoint
 
 ## Goal
@@ -26,8 +26,8 @@ Universally over all Xi copies, existence is equivalent to RH.
 ## Gates
 
 - [x] 0 → 1 in-progress: corpus audit; exact conjecture frozen
-- [ ] 1 → 2 fully-proven: dependency-closed paper proof and bounded primary-literature audit
-- [ ] 2 → 3 formalized: unconditional Lean theorem, targeted build, axiom and lint audit
+- [x] 1 → 2 fully-proven: dependency-closed paper proof and bounded primary-literature audit
+- [x] 2 → 3 formalized: unconditional Lean theorem, targeted build, axiom and lint audit
 - [ ] 3 → 4 publication-ready: independent mathematical/physical review and broader novelty search
 
 ## Corpus audit
@@ -47,27 +47,30 @@ Universally over all Xi copies, existence is equivalent to RH.
   recurrences, and infinite occupation coefficients found no theorem proving this exact
   coefficient-level necessity or its source-FE/RH specialization.
 
-## Conjecture HC82-A: empty-mode replication no-go
+## Theorem HC82-A: diagonal empty-mode Shale necessity
 
-Let `r : Complex` be nonzero. No nonzero `psi : ell^2 (Nat →₀ Nat)` satisfies
+Let `r : Nat → Complex`. If a nonzero `psi : ell^2 (Nat →₀ Nat)` satisfies
 
-`psi(mu + single n 2) = r * psi(mu)`
+`psi(mu + single n 2) = r(n) * psi(mu)`
 
-for every occupation `mu` and every empty mode `n`.
+for every occupation `mu` and every empty mode `n`, then `∑ ‖r(n)‖² < ∞`.
+
+In particular, if `r(n)=r` is constant, such a nonzero vector exists only if `r=0`.
 
 ### Dependency-closed paper proof
 
 Assume `psi` is nonzero and choose an occupation `mu` with `psi(mu) ≠ 0`. Because `mu` has finite
 support, choose an injective sequence `j(k)` strictly above the supremum of that support. Then
-`mu(j(k))=0`, and the occupations `mu + 2 e_{j(k)}` are pairwise distinct. The recurrence makes all
-corresponding coefficients equal to the same nonzero number `r psi(mu)`. Restricting the square
-summable coefficient family along this injective sequence would make a nonzero constant sequence
-summable, contradiction.
+`mu(j(k))=0`, and the occupations `mu + 2 e_{j(k)}` are pairwise distinct. Restricting the square
+summable coefficient family along this injection proves summability of
+`‖r(j(k)) psi(mu)‖²`. Divide by the fixed positive number `‖psi(mu)‖²` to obtain square summability
+of the full tail of `r`; adding its finite prefix proves `∑ ‖r(n)‖² < ∞`. For a constant family,
+summability forces the constant to vanish.
 
 The proof deliberately does not assume the vacuum coefficient `psi(0)` is nonzero; it starts from
 an arbitrary nonzero coefficient. Thus no hidden cyclicity or Gaussian-product hypothesis enters.
 
-## Conjecture HC82-B: exact source-FE regular-vacuum classification
+## Theorem HC82-B: exact source-FE regular-vacuum classification
 
 Define `HBXiPeierlsUnitSourceFEHasRegularFockVacuum q` as existence of a nonzero vector in
 `HTGeometry.BosonicFock Nat` satisfying the normalized empty-mode pair recurrence with `r(q)`.
@@ -78,7 +81,7 @@ Then
 The reverse implication uses the ordinary occupation vacuum: when `r(q)=0`, it is supported only at
 the zero occupation, while `mu + 2e_n` is never zero for an empty mode.
 
-## Conjecture HC82-C: global RH and receiver endpoints
+## Theorem HC82-C: global RH and receiver endpoints
 
 Prove
 
@@ -101,7 +104,7 @@ information equilibrium, every-grade PW-B balance, and canonical-copy RBH leadin
 
 ## Expected route impact
 
-If proved, HC82 upgrades HC80 from a coefficient-level Hilbert--Schmidt obstruction to a direct
+HC82 upgrades HC80 from a coefficient-level Hilbert--Schmidt obstruction to a direct
 regular-Fock vector nonexistence theorem. Off wall, even the weakest empty-mode pair slice of the
 Bogoliubov vacuum equation has no nonzero normalizable solution. The ordinary-Fock escape is dead
 without importing Shale--Stinespring. The only survivor is an extended/nonregular representation;
@@ -127,14 +130,48 @@ derive a route receiver inside the extended representation.
   [*General Multimode Squeezed States*](https://arxiv.org/abs/quant-ph/0109020), develops finite- or
   general-multimode squeezed states and Bogoliubov decompositions, but no literal Xi source-FE
   coefficient, infinite repeated-ratio `ell^2` no-go, or RH equivalence.
-- `[NOVELTY CLAIM, BOUNDED]` Targeted primary-source and exact corpus searches found no theorem
-  coupling the literal Xi source-FE Bogoliubov ratio to the concrete occupation Hilbert space,
-  proving nonexistence from an arbitrary nonzero coefficient without a vacuum-overlap assumption,
-  or deriving the resulting route receiver and iff-RH endpoints. This is a bounded audit, not an
-  exhaustive literature claim.
+- `[NOVELTY CLAIM, BOUNDED]` Targeted primary-source and exact corpus searches found no Lean theorem
+  deriving square summability of an arbitrary diagonal pair-ratio family directly from this
+  empty-mode coefficient recurrence and an arbitrary nonzero occupation coefficient, nor any result
+  coupling that necessity theorem to the literal Xi source-FE ratio and deriving the route receiver
+  and iff-RH endpoints. This is a bounded audit, not an exhaustive literature claim.
 
-## Open core
+## Formalization result
 
-Formalize HC82-A directly in the corpus occupation space, specialize the ratio without denominator
-ambiguity, construct the wall vacuum, then audit dependencies and promote. If HC82-A fails in Lean,
-locate the exact combinatorial or `ell^2` loophole before changing the mathematical statement.
+Module:
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceFERegularFockVacuumObstruction`
+
+Lean proves unconditionally:
+
+- every nonzero occupation-Hilbert vector satisfying an arbitrary diagonal empty-mode pair
+  recurrence forces square summability of the complete ratio family;
+- a constant nonzero ratio admits no nonzero normalizable recurrence vector;
+- a nonzero constant-ratio recurrence vector exists iff the ratio is zero, with the ordinary
+  occupation vacuum providing the reverse implication;
+- the literal source-FE normalized ratio has a nonzero denominator and vanishes iff the HC79 pair
+  amplitude and partner occupation vanish iff the Xi copy lies on the critical wall;
+- universal existence over all Xi copies is equivalent to RH;
+- exact local equivalences with HB optical darkness, Deninger Ward cancellation, FZZ-P information
+  equilibrium, every-grade PW-B balance, and canonical-copy RBH leading balance.
+
+Audit:
+
+- direct `lake env lean` check: passed;
+- targeted `lake build
+  GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceFERegularFockVacuumObstruction`: passed
+  `12186/12186`;
+- `#print axioms` on diagonal necessity, constant existence classification, global iff-RH, and RBH
+  bridge: only standard `[propext, Classical.choice, Quot.sound]`;
+- formal lint: no finding in HC82 or its umbrella wiring; global failure remains only unrelated
+  pre-existing/shared unreachable modules.
+
+## Open core after HC82
+
+Ordinary occupation-Hilbert vacuum existence is dead off wall without importing
+Shale--Stinespring, and the result survives arbitrary diagonal ratios as an internal necessity
+theorem. The live escape is now genuinely nonregular: Lill-style extended Fock space, rigged states,
+or an unbounded/non-Riesz QNM synthesis. Hardest next producer is to formalize the extended-state
+quotient or renormalized coefficient law and decide whether the HB/FZZ-P/PW-B/RBH receiver remains
+defined there. If it does, prove whether receiver equilibrium still forces square summability; if it
+does not, retire the Fock endpoint and extract the exact representation-selection hypothesis needed
+for the physical route.

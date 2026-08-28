@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.SourceGradeJordanDataProcessing
 import GaloisForLFunctions.RHTower.SourceHorizontalEulerWoldIndependentKreinXiResidueTransport
+import GaloisForLFunctions.RHTower.SourceHorizontalEulerGammaCubicNegativeRenormalizedBudget
 
 /-!
 # Nonlinear source-grade Jordan selection through completed Xi residue

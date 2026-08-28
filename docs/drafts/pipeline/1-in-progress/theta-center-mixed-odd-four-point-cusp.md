@@ -891,6 +891,7 @@ New Lean artifacts:
 
 - `GaloisForLFunctions/HilbertMetric/FifthRootCurvatureCusp.lean`;
 - `GaloisForLFunctions/RHTower/ThetaCuspReflectedSourceFifthRootCurvature.lean`;
+- `HilbertMetric.fifthRootDividedDropCurvatureNumerator_even`;
 - `HilbertMetric.iteratedDeriv_eight_fifthRootDividedDropCurvatureNumerator_zero`;
 - `HilbertMetric.iteratedDeriv_fifthRootDividedDropCurvatureNumerator_zero_of_lt_eight`;
 - `HilbertMetric.exists_fifthRootDividedDropCurvatureNumerator_pos_right`;
@@ -902,10 +903,337 @@ New Lean artifacts:
 Both targeted module builds pass.  Axiom audit reports only `propext`, `Classical.choice`, and
 `Quot.sound`.  Proof engineering was profiled: separating the generic theorem from the RHTower
 import graph and replacing nested Leibniz normalization by the coordinate-multiplication jet
-recurrence reduced the measured successful check from `69.88s` to `6.30s`; import time fell
-from `58.6s` to `1.32s`, and tactic time from `4.07s` to `2.53s`, even after adding all
-lower-jet and positivity theorems.
+recurrence reduced the measured successful check from `69.88s` to a `6.30s` median across three
+runs; import time fell from `58.6s` to about `1.35s`, and tactic time from `4.07s` to `1.70s`,
+even after adding the curvature-numerator parity, all lower-jet, and positivity theorems.
 
 C4 remains open globally.  Exact surviving burden is now sharper: prove `C5(u,t)>=0` away from
 the already-closed coalescent neighborhood for every literal fibre, equivalently global
 antitonicity of the projective ratio.  Higher packets and cofinal escape remain downstream.
+
+### 2026-08-28 — logistic normalization of the exact global C5 obstruction
+
+`[NEW] [PAPER-PROVED] [LEAN-PROVED] [GLOBAL EXACT REDUCTION] [SOURCE-SPECIFIC]`
+
+The next corpus-driven conjecture loop normalized the already-proved projective decrease defect,
+instead of seeking another numerical chamber.  Put
+
+```text
+A(u,t) = P(u,0)-P(u,t),
+D(u,t) = -partial_t P(u,t),
+y(u,t) = (2A(u,t)-tD(u,t))/A(u,t).
+```
+
+For every literal source fibre and every `t>0`, global angle concavity and strict source drop give
+`0 <= y(u,t) <= 2`.  Direct differentiation and exact denominator cancellation yield
+
+```text
+C5(u,t) = A(u,t)^2 * (y(u,t) * (10+y(u,t)) - 5t * partial_t y(u,t)).
+```
+
+Consequently the unresolved sign has the hypothesis-free pointwise form
+
+```text
+C5(u,t) >= 0  <->  5t * partial_t y(u,t) <= y(u,t) * (10+y(u,t)).
+```
+
+This is not another receiver: it exposes the precise source-growth estimate still needed.  A
+failure must make one nonnegative bounded defect grow faster than its logistic barrier at a
+positive intermediate scale, while the coalesced neighborhood is already protected.  The next
+hard conjecture should derive this barrier from the completed atom--likelihood decomposition, or
+construct a literal-source counterexample and retire rank four.
+
+An August 2026 primary-literature search found no normalized projective-defect logistic law.
+Planat--Solé's second-level concavity theorem concerns a different local Laguerre expression, and
+Michałowski's de Bruijn--Newman study explicitly leaves global `PF_4` open while certifying a
+computational `PF_5` failure.
+
+New Lean artifacts in
+`GaloisForLFunctions/RHTower/ThetaCuspReflectedSourceFifthRootCurvature.lean`:
+
+- `thetaCuspReflectedSourceNormalizedProjectiveDecreaseDefect`;
+- `thetaCuspReflectedSourceNormalizedProjectiveDecreaseDefect_mem_Icc`;
+- `hasDerivAt_thetaCuspReflectedSourceNormalizedProjectiveDecreaseDefect`;
+- `thetaCuspReflectedSourceFifthRootCurvatureNumerator_eq_logisticDefect`;
+- `thetaCuspReflectedSourceFifthRootCurvatureNumerator_nonneg_iff_logisticDefect`;
+- `thetaCuspReflectedSourceFifthRootCurvatureNumerator_nonneg_all_iff_logisticDefect`.
+
+Exact foreground `lake env lean` and targeted module build pass.  No umbrella build was run.
+
+### 2026-08-28 — second-level concavity bridge killed exactly
+
+`[NEW] [PAPER-PROVED] [LEAN-PROVED] [NO-GO] [POSITIVE SURVIVOR]`
+
+The tempting source-independent bridge from Planat--Solé second-level concavity to C5 is false.
+The obstruction is structural rather than a failed numerical estimate.  Take the positive even
+kernel
+
+```text
+F(r) = exp(-r^4),                 s(x) = F(sqrt x) = exp(-x^2).
+```
+
+Its first Laguerre expression is exactly
+
+```text
+s'(x)^2 - s(x)s''(x) = 2 exp(-2x^2),
+```
+
+so the second-level logarithmic curvature is the global strict identity
+
+```text
+partial_x^2 log(s'^2-ss'') = -4 < 0.
+```
+
+However its centered reflected product is `P(t)=F(t)F(-t)=exp(-2t^4)`.  At `t=1/2`, direct exact
+reduction of the same C5 numerator used by the literal theta fibre gives
+
+```text
+4 C5(P,1/2) = 85p^2 - 185p + 96 < 0,       p = exp(-1/8).
+```
+
+The sign follows from the elementary rational enclosure `7/8 < p < 1`; no sampled value,
+interval computation, or fitted cutoff enters.  Thus even positivity, radial-square provenance,
+positive first Laguerre expression, and global strict second-level concavity do not force
+fifth-root divided-drop convexity.  Conceptually, the local Laguerre law permits quartic
+flatness: the divided drop then begins at first order in the squared scale and its fifth root has
+the concave exponent `1/5`.
+
+This retires the Planat--Solé theorem as a standalone route to C5.  The strongest positive
+survivor is exact: any use of second-level concavity must retain additional completed-theta data
+that excludes quartic flatness and controls two-endpoint transport.  In the current corpus those
+data are the strict second--sixth source Hankel curvature plus the completed atom--likelihood
+decomposition.  The hard source-specific logistic barrier remains open; it cannot be outsourced
+to the published one-point theorem.
+
+Lean artifact:
+
+- `GaloisForLFunctions/HilbertMetric/SecondLevelConcavityFifthRootNoGo.lean`;
+- `quadraticGaussianRadialProfile_secondLevelLogCurvature`;
+- `quarticGaussianReflectedProfile_fifthRootCurvature_neg`;
+- closed existential capstone
+  `exists_secondLevelStrict_kernel_with_fifthRootCurvatureFailure`.
+
+August 2026 literature search found the Planat--Solé theta theorem and general log-concavity
+literature, but no statement of this bridge or quartic-Gaussian obstruction.  Exact foreground
+Lean check passes; the leaf is wired into the HilbertMetric umbrella.  Frontier map was not
+edited.
+
+### 2026-08-28 — combined second-level/Riccati/local-C5 bridge killed
+
+`[NEW] [PAPER-PROVED] [LEAN-PROVED] [NO-GO] [POSITIVE SURVIVOR]`
+
+The quartic-Gaussian no-go above does not satisfy the global projective-angle law, so it only
+kills second-level concavity in isolation.  A hostile second pass closes that escape.  Take
+
+```text
+F(t) = exp(-(t^2+t^4/10+t^6/2)),
+s(x) = F(sqrt x) = exp(-(x+x^2/10+x^3/2)),
+P(t) = F(t)F(-t) = exp(-q(t)),
+q(t) = 2t^2+t^4/5+t^6.
+```
+
+This one kernel simultaneously satisfies every source-independent condition presently available
+to the C5 bridge.
+
+First, its Laguerre expression factorizes exactly as
+
+```text
+s'(x)^2-s(x)s''(x) = (1/5+3x) exp(-2(x+x^2/10+x^3/2)),
+```
+
+and hence, for every `x>=0`,
+
+```text
+partial_x^2 log(s'^2-ss'') = -9/(1/5+3x)^2 - 2(1/5+3x) < 0.
+```
+
+Second, writing `q1=q'`, `q2=q''`, and `q3=q'''`, the exact Riccati margin is
+
+```text
+2q1(t)q2(t)-q3(t)
+ = (t/25)(680-2360t^2+7296t^4+1920t^6+9000t^8) >= 0
+```
+
+on the full nonnegative half-line.  The quadratic core is strictly positive because
+
+```text
+7296(680-2360y+7296y^2) = (7296y-1180)^2 + 3568880.
+```
+
+The corpus Riccati transport therefore gives concavity of the normalized correlation angle on
+every interval `[0,T]`.
+
+Third, the reflected center jets are exact:
+
+```text
+P''(0) = -4,    P^(4)(0) = 216/5,    P^(6)(0) = -1392,
+P''(0)P^(6)(0)-P^(4)(0)^2 = 92544/25 > 0.
+```
+
+Thus the generic cusp theorem forces C5 to be strictly positive on a punctured right
+neighborhood of zero.  This excludes the quartic-flatness mechanism from the first no-go.
+
+Nevertheless C5 reverses sign later.  At `t=sqrt(1/2)`, set
+`r=exp(47/40)-1`.  Exact action reduction gives
+
+```text
+C5(P,t)/P(t)^2 = 24r^2-(613/16)r-3481/100 < 0.
+```
+
+The sign is certified without sampled numerics: the order-ten exponential remainder at `47/80`
+proves `exp(47/40)<81/25`, hence `1<r<56/25`; the displayed quadratic is increasing there and is
+already negative at `56/25`.
+
+Therefore strict second-level Laguerre concavity, global Riccati/angle concavity, and a positive
+coalesced C5 chamber do not jointly imply global C5.  This is the strongest source-independent
+bridge no-go presently exposed by the corpus.  The positive survivor is correspondingly sharp:
+any C5 proof must use nonlocal information specific to the completed-theta atom--likelihood
+factorization, strong enough to prevent this intermediate-scale sign reversal.  The remaining
+hard target is the literal-source logistic defect law, not another local jet or angle condition.
+
+Lean artifact:
+
+- `GaloisForLFunctions/HilbertMetric/SecondLevelConcavityRiccatiFifthRootNoGo.lean`;
+- `sexticGaussianCorrelationAngle_concaveOn`;
+- `cubicGaussianRadialProfile_secondLevel_strict`;
+- `sexticGaussianReflectedProfile_secondSixthHankel`;
+- `exists_sexticGaussianReflectedProfile_fifthRootCurvature_pos_right`;
+- `sexticGaussianReflectedProfile_fifthRootCurvature_neg`;
+- closed existential capstone
+  `exists_secondLevelStrict_angleConcave_localC5Pos_kernel_with_globalC5Failure`.
+
+Exact foreground source check and targeted leaf build pass.  Axiom audit reports only standard
+Lean foundations (`propext`, `Classical.choice`, `Quot.sound`).  Leaf contains no forbidden proof
+tokens and is wired into the HilbertMetric umbrella.  No umbrella build was run.  Frontier map was
+not edited in this work.
+
+### 2026-08-28 — literal reflected likelihood orientation closed through six
+
+`[NEW] [PAPER-PROVED] [LEAN-PROVED] [POSITIVE SURVIVOR]`
+
+The source-coordinate likelihood corpus already proves
+
+```text
+L4(x)>0,    L5(x)<0,    L6(x)>0                 (x>=0),
+```
+
+but had not transported these orientations to the two-ended reflected likelihood action.  Define
+
+```text
+ell4(u,t) = -L4(u+t)-L4(u-t),
+ell5(u,t) =  L5(u-t)-L5(u+t),
+ell6(u,t) = -L6(u+t)-L6(u-t).
+```
+
+Exact chain rules prove `ell3'=ell4`, `ell4'=ell5`, and `ell5'=ell6`.  Since `L6>0`, the source
+fifth jet `L5` is strictly increasing on `[0,infinity)`.  Therefore, throughout `0<t<=u`,
+
+```text
+ell4(u,t)<0,    ell5(u,t)<0,    ell6(u,t)<0.
+```
+
+Together with the existing first-three-jet theorem, the literal completed-theta likelihood
+action now has six consecutive strictly negative displacement jets on the open same-half-line
+chamber.  This is genuine new source information, but the matched six-jet counterexample above
+proves it cannot by itself close C5.  Its value is diagnostic: it rules out sign failure through
+order six and forces the surviving proof to exploit an integrated action--jet relation or exact
+partition-measure transport.
+
+Lean artifact:
+
+- `GaloisForLFunctions/RHTower/ThetaCuspReflectedLikelihoodSixJetOrientation.lean`;
+- `hasDerivAt_thetaCuspReflectedLikelihoodCumulantJetThree` through
+  `hasDerivAt_thetaCuspReflectedLikelihoodCumulantJetFive`;
+- `strictMonoOn_thetaCuspLikelihoodSourceLogPartitionJetFive`;
+- `thetaCuspReflectedLikelihoodCumulantJetFour_neg` through
+  `thetaCuspReflectedLikelihoodCumulantJetSix_neg`;
+- capstone `thetaCuspReflectedLikelihoodCumulantJets_one_to_six_neg`.
+
+Exact foreground source check and targeted leaf build pass.  Axiom audit reports only standard
+Lean foundations (`propext`, `Classical.choice`, `Quot.sound`).  Leaf is wired into the RHTower
+umbrella; no umbrella build was run.  Frontier map was not edited in this work.
+
+### 2026-08-28 — current six-jet atom--likelihood architecture is insufficient
+
+`[NEW] [PAPER-PROVED] [LEAN-PROVED] [NO-GO] [POSITIVE SURVIVOR]`
+
+The preceding counterexample can be split so that it reproduces the full reflected likelihood
+orientation through the corpus's sixth-jet frontier, together with every Riccati channel sign.
+Write
+
+```text
+q(t) = 2t^2+t^4/5+t^6 = q_atom(t)+q_like(t),
+q_atom(t) = 201t^2/100+21t^4/100+101t^6/100,
+q_like(t) = -(t^2+t^4+t^6)/100.
+```
+
+Then `P=exp(-q)` factorizes exactly as
+
+```text
+P(t) = exp(-q_atom(t)) * exp(-q_like(t)).
+```
+
+For every `t>0`, the atom jets one and two are positive, while likelihood action and likelihood
+jets one through six are strictly negative.  The likelihood interference factor is therefore
+strictly greater than one, exactly as in the completed-source factorization.  Moreover its
+Riccati margin is the positive polynomial
+
+```text
+M_like(t) = 2 q_like'(t) q_like''(t)-q_like'''(t)
+          = (t/1250)(301+1508t^2+30t^4+48t^6+45t^8) > 0.
+```
+
+Let
+
+```text
+M_atom = 2 q_atom' q_atom''-q_atom''',
+C_cross = 2(q_atom' q_like''+q_like' q_atom'').
+```
+
+Exactly as in the literal corpus, `M_atom>0`, `C_cross<0`, and the atom strictly dominates the
+negative mixed channel.  The domination has the closed certificate
+
+```text
+M_atom(t)+C_cross(t)
+ = (t/1250)(33699-119508t^2+364770t^4+95952t^6+449955t^8) > 0,
+```
+
+where
+
+```text
+364770(33699-119508y+364770y^2)
+  = (364770y-59754)^2+8721843714.
+```
+
+The total Riccati margin decomposes identically into atom, likelihood, and cross channels.  Thus
+this example satisfies the whole pointwise sign architecture now available in
+`ThetaCuspLikelihoodGapCumulantRiccati`, `ThetaCuspAtomLikelihoodCrossDomination`, and the source
+likelihood orientations through order six, not merely the total angle law.  It simultaneously
+retains strict radial second-level concavity, local C5 positivity, and the later strict C5 failure
+at `t=sqrt(1/2)`.
+
+Therefore the current six-jet atom--likelihood package cannot imply C5, even after all known
+component margins and sharp cross domination are combined.  This kills both the natural shortcut
+of feeding the completed Riccati proof directly into the logistic defect inequality and any
+attempt to repair it by adjoining only the already-known likelihood orientations through six.
+
+The strongest positive survivor is a genuinely nonlocal atom--likelihood constraint coupling
+the accumulated action `q` (which enters through `exp(q)-1`) to its first two displacement jets.
+Equivalently, the next theorem must control the logistic defect velocity itself.  Additional
+pointwise signs through the current sixth-jet frontier cannot suffice.  Higher likelihood
+structure is useful only if it supplies this integrated action--jet coupling, not as another
+isolated sign.
+
+Lean artifact:
+
+- `GaloisForLFunctions/HilbertMetric/FifthRootAtomLikelihoodRiccatiNoGo.lean`;
+- `riccatiNoGoLikelihoodRiccatiMargin_pos`;
+- `neg_riccatiNoGoAtomLikelihoodCross_lt_atomMargin`;
+- `riccatiNoGoTotalRiccatiMargin_decomposition`;
+- closed capstone
+  `atomLikelihoodRiccatiSignArchitecture_with_localC5_does_not_force_globalC5`.
+
+Exact foreground source check and targeted leaf build pass.  Axiom audit reports only standard
+Lean foundations (`propext`, `Classical.choice`, `Quot.sound`).  Leaf contains no forbidden proof
+tokens and is wired into the HilbertMetric umbrella.  No umbrella build was run.  Frontier map was
+not edited in this work.

@@ -421,7 +421,7 @@ bound the cofinal normalized reporter tower or derive RH selection.
 - [x] exact counterexample to depth-only selection
 - [x] external parent audit
 - [x] hostile scope audit
-- [ ] Lean formalization
+- [x] Lean formalization
 - [ ] source-normal cofinal reporter bound
 - [ ] RH selection
 
@@ -429,3 +429,9 @@ bound the cofinal normalized reporter tower or derive RH selection.
 
 - 2026-08-12 -- depth-only properness conjecture falsified; conjugate work/capacity conservation,
   recovery invariance, Gram prediction, and exact depth-invisibility family proved on paper.
+- 2026-08-28 -- formalized unconditionally in
+  `GaloisForLFunctions.HTGeometry.ConstitutiveConjugateFormationReciprocity`; imported by
+  `GaloisForLFunctions.HTGeometry.UniversalLawField`. Direct Lean check and targeted leaf build
+  passed. Axiom audit covered all 70 new declarations and found only standard dependencies
+  (`propext`, `Classical.choice`, `Quot.sound`) or subsets. Formal lint confirms module is reachable;
+  remaining unreachable-module findings are unrelated concurrent work.

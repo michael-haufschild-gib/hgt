@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HTGeometry.PrimeRadialTwoPacketPrimitiveRigidity
 import GaloisForLFunctions.HTGeometry.StokesFirstQuadrantTotalExact
 import GaloisForLFunctions.HTGeometry.AdditiveNoiseAbsoluteContinuity
 import GaloisForLFunctions.HTGeometry.FiniteJetLawDeterministicGauge

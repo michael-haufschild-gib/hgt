@@ -469,3 +469,23 @@ norms in `(SG7)`--`(SG8a)` and derive `(SG10)` from
 `quadraticCongruenceRootSumTotal_causalGCDReduction`.  The analytic estimate `(SG9)` belongs on
 paper and should not be encoded as an assumed formal interface.  No Lean or build process was run
 for this audit.
+
+## Lean exactness audit -- 2026-08-28
+
+Corpus now certifies the finite structural surface in
+`RHTower/CommonProfileBooleanAnchorCurvature.lean` and the
+`RHTower/SquarefreeShearKernel*.lean` suite: `(CG2)`, `(CG5)`, `(CG7)`, `(CG9)--(CG12)`,
+`(SG1)--(SG8a)`, literal CRT/Fourier transport, rank, inertia, and sharp operator norms.
+
+Card is not yet Stage-3 exact. Remaining literal obligations are:
+
+1. arithmetic `B_(c,r,h)` reduction `(CG1)` and its exact `Eresp` specialization;
+2. physical-profile/vacuum identities `(CG3)--(CG4)` and joined law `(CG6)` with card's declared
+   normalizations;
+3. protected-anchor cross-colour row identity `(SG10)` as the card's literal specialization of
+   `quadraticCongruenceRootSumTotal_causalAnchor`;
+4. an exact theorem statement for `(SG9)`. Current `<<_(A,rho)` notation does not declare the
+   window class, constants, or quantifier order, so an assumption wrapper or guessed constant would
+   not be a faithful formalization.
+
+No Lean file was changed or rechecked during this read-only audit. Card remains Stage 2.

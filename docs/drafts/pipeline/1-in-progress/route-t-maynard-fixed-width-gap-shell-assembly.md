@@ -119,3 +119,101 @@ Not yet formalized. Frontier map remains read-only.
 - Remaining C2 core is measure-theoretic/analytic rather than combinatorial: apply base `L²`,
   positive-band second-count `L²`, and independent `L⁴/R*` bounds to every literal cover member,
   then sum the finite family and feed ordered-prime gap occupancy.
+
+## 2026-08-28 natural-cell spatial and trivial-boundary closure
+
+- Real-endpoint shells have been replaced by a ceiling-naturalized dyadic ladder. Every high shell
+  is an exact integer-cell interval before physical base varies, telescopes exactly, has length at
+  least two, and lies in a receiver band of ratio at most two. Equation-(111), equation-(112), and
+  parity fibres now act on the literal same packet.
+- A canonical prime-free cover by one low packet and finitely many fixed-source natural high shells
+  is Lean-closed. No endpoint trimming, moving cell family, or terminal short shell remains.
+- The historical low-amplitude seam was genuine: transition-strip receiver covered only
+  `mu ≤ 19/9`, while the physical high-band receiver reached `mu ≤ 11/5` only from `alpha ≥ 3/4`.
+  Corpus exponent audit showed the latter floor was non-sharp. The over-height zeta/log atom
+  exclusion, subheight selection, colored fibre Montgomery estimate, global label sum, physical
+  cutoff parity transport, and amplitude-band receiver are now Lean-closed from the exact
+  trivial-count boundary `(1 + nu)/2` through `mu ≤ 11/5`.
+- Consequently every positive natural-shell amplitude band has a frozen-source, original-base,
+  amplitude-free forced-second bad-measure bound. The exact trivial-boundary base layer has the
+  matching bound because `card (Ico A B) ≤ A` whenever `B ≤ 2A`.
+- Remaining C2 core: combine the base layer and finitely many positive bands at the literal
+  rung/shell defect threshold, use the already-proved selector budget to discharge every band
+  first-exclusion premise, and sum the finite natural-shell cover. The independent `L⁴/R*` theorem
+  is retained as equation-(112), but no longer needed to patch a low-amplitude receiver gap.
+
+## 2026-08-28 whole-shell amplitude closure
+
+- The canonical amplitude cap is now structural rather than endpoint-specific. For every fixed
+  polynomial support exponent `mu < 4`, the complete frozen-source polylog envelope is strictly
+  below the exact trivial-boundary base times the canonical dyadic depth. Thus `mu = 11/5` is an
+  interior case, and no extra endpoint band is needed.
+- Exact base-plus-band bad-set assembly is Lean-closed for arbitrary fixed-source physical packets.
+  A large whole packet lies either in the base bad set or in one of finitely many band bad sets at
+  threshold `D/(2Q)`; restricted real measures add with no independence assumption.
+- One literal selector inequality now excludes the first Maynard receiver simultaneously on every
+  exact trivial-boundary band. This is proved from the adaptive-envelope cancellation, not by a
+  three-quarter amplitude floor.
+- The whole canonical natural-shell equation-(111) is Lean-closed: base and every positive band
+  have amplitude-free forced-second bounds, and their finite bad measures assemble into the full
+  packet bound.
+- The actual fixed-width rung/shell selector theorem has been welded to this result. At defect
+  `((D_floor / rungCount) / 2) / shellCount`, rung loss, ordinate-shell loss, amplitude depth, and
+  degree-60 box cost are all discharged internally. No amplitude-band, cap, or selector premise
+  survives in `eventually_volume_routeT_fixedWidth_canonicalNaturalShell_full_forcedSecond`.
+- Remaining C2/C3 burden is outside amplitude decomposition: sum these whole-shell bounds over the
+  finite rung/natural-shell cover, add the low packet, then combine with ordered-prime occupancy
+  without losing the strict sub-`3/2` moment exponent.
+
+## 2026-08-28 hostile low-packet audit and common-mode replacement
+
+- `[FALSIFIED]` The natural-cutoff low-cell cube does **not** close the actual fixed-width cover
+  uniformly.  Its hypothesis `K * 2R/N <= 1` holds at the terminal target width but fails on the
+  early wide rungs.  Consequently the isolated `11/5`, order-500 phase arithmetic is not an actual
+  cover theorem and is not counted as Route-T progress.
+- `[CONJECTURE]` Replace the whole width ladder by one fixed-reference common-mode split.  At one
+  physical block with left endpoint `x`, put
+
+  `r_x = 8 * x^(routeTPhysicalSliceHandoffTheta - 1)` and `U_x = x^(1/8)`.
+
+  For `lambda in [x,2x]`, both additive widths `lambda*r_x` and `lambda*H0` are proportional to
+  `lambda`, so the source packet remains frozen before `lambda` varies.  On `[-U_x,U_x]`, write
+  each normalized Mellin kernel as the common point-mass character `lambda^(iy)` plus its width
+  error.  The common character cancels exactly between reference and target.
+- `[PAPER-PROVED]` The resulting endpoint defect has the exact decomposition
+
+  `Full_r - Full_H = (Low_r - Low_H) + (High_r - High_H)`,
+
+  where `High_w` is the full one-width integral minus its central `[-U_x,U_x]` integral.  If the
+  full defect has norm at least `B` and the two low errors have total norm at most `B/2`, then
+  `B/4 <= ||High_r||` or `B/4 <= ||High_H||`.  Proof: triangle inequality gives
+  `B/2 <= ||High_r|| + ||High_H||`, followed by a two-term pigeonhole.  No width telescope or rung
+  loss occurs.
+- `[PAPER-PROVED]` The low errors are uniformly negligible on the literal Route-T schedule.  The
+  corpus kernel estimate gives
+
+  `||Low_w|| <= 8 * P_x * U_x^2 * w`,
+
+  with `P_x` the frozen-source polylog envelope.  For `H0 <= r_x`, their sum is at most
+  `16 * P_x * U_x^2 * r_x = 128 * P_x * x^(theta-3/4)`.  The corpus proves `theta < 3/4`, and its
+  fixed-envelope absorption theorem makes `P_x` smaller than every positive power, so this tends
+  to zero.  The common-band premise also holds because `U_x*r_x = 8*x^(theta-7/8) -> 0`.
+- `[PAPER-PROVED]` The fixed reference has uniform positive density.  For
+  `R=lambda*r_x`, let `z=lambda+R/2`.  Eventually `R<=lambda/4`; the corpus every-base handoff
+  theta-mass interval at `z` lies inside the central plateau `[lambda+R/2,lambda+3R/2]`.  Since
+  `lambda in [x,2x]`, one has `lambda^theta >= R/16`.  Hence the reference smooth von Mangoldt mass
+  is at least
+
+  `routeTSmoothWindowCentralMargin * R / 262144`.
+
+  Together with the already-closed prime-power leakage theorem, a prime-free target supplies a
+  fixed endpoint defect `B>0`.  Therefore every prime-free base lies in one reference high-tail
+  bad set, common to all target widths in the block, or in its own target high-tail bad set.
+- `[NOVELTY-UNCERTAIN]` Maynard's 2012 paper uses a width-independent `A(y)` calibrated at a
+  reference scale and then proves its reference error small.  The fixed-source, fixed-relative
+  reference formulation above, with a single reference exceptional set charged across all target
+  widths and no width telescope, was not located in the audited literature.  Do not label it new
+  until the full `mu in (11/5,8]` tail receiver and external comparison are complete.
+- New hard core: prove the one-width high-tail measure theorem from `U_x=x^(1/8)` through the
+  existing `mu<=8` derivative/grouping infrastructure.  This is the genuine large-values problem;
+  no cutoff-order or constant optimisation can substitute for it.

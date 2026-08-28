@@ -221,3 +221,45 @@ zero-indexed subtraction is circular.
   bounded von Mangoldt channel contributes `o(N)`.  Thus the requested `4/25` theorem is equivalent
   up to `o(N)` to a pole--Gamma/thin-contour upper bound.  Prime-window optimization and further
   receiver constants cannot close this leading target.
+- 2026-08-28 — Corrected provenance of that reduction: `pole--Gamma minus thin contour` is not a
+  genuinely archimedean remainder.  The thin contour is source-defined, but it still contains the
+  complete continued prime current and its leading cancellation against pole--Gamma.  Only the
+  safe-line von Mangoldt lattice term was proved `o(N)`.  Calling the surviving difference an
+  archimedean contour budget would hide, rather than solve, the RH-bearing source cancellation.
+- 2026-08-28 — Hostile-audited five cubic successors.  Walsh sign averaging recovers matrix trace
+  only after target vectors exist; polar--Gamma wall transport loses the second-order signal;
+  Gaussian pair covariance has fatal horizontal contour growth, while its rational Cauchy repair
+  introduces crossing poles; and jointly holomorphic reflection--Loewner landing is excluded by
+  the existing sesquiholomorphic no-go.  No source-only covariance survived these tests.
+- 2026-08-28 — The new negative Euler third-jet channel is genuine pre-divisor information: its
+  coefficient is exactly `1/3`, and Wold subtraction leaves a positive summable cubic defect.
+  However, every completed residue transport currently takes `q : XiRightZeroCopy` before
+  scalarization.  The natural completed normalization tends to zero; the raw defect has the right
+  sign but exceeds the wall--Xi cubic magnitude by more than factor `2000`.  A source-derived
+  contraction remains absent.
+- 2026-08-28 — The joint prime-depth Hilbert source gives an unconditional source-to-Xi scalar
+  landing, but only through an off-diagonal Krein pairing of distinct source and co-source vectors.
+  Primitive labels cancel at the final pairing, positivity/Loewner order is not transported, and
+  the balanced cross-term is nonsummable.  It therefore cannot instantiate the required positive
+  covariance `B_tilde`.
+- 2026-08-28 — Strongest live aggregate survivor: the shifted-Xi Pick kernel on a fixed Euler ray
+  has exact negative index equal to the uncancelled strict-right divisor count and uses a
+  divisor-independent sampling set.  It still lacks height localization and a submicroscopic
+  eigenvalue quantum; negative eigenvalues can collapse as zeros approach the line.  Viable next
+  theorem must combine this index localization with a source-derived cubic scale integral, not a
+  pointwise matrix restriction (already RH-equivalent) or scalar Bohr square (which changes
+  coefficient-linear von Mangoldt mass into its square).
+- 2026-08-28 — `[PAPER-PROVED] [LEAN-PROVED] [BRIDGE]` Replaced the quadratic-envelope
+  Gamma--Slepian cutoff `1/(8(E+1)^2)` by the linear cutoff `1/(2(E+1))` for the rank problem.
+  Every nonpositive restricted-Weil block injects into the resulting strictly smaller peripheral
+  source head.  The abstract sharpness theorem
+  `coercivityCoefficient_le_of_scalarEnvelope_only` proves that scalar-envelope information alone
+  cannot certify a coercivity coefficient exceeding `1-E*eps`; further constant optimization is
+  therefore terminal.  This is a real internal reduction, not a `75%` theorem and not claimed as
+  novel mathematics.  Viable continuation must use signed prime--polar remainder structure (or a
+  direct height-local Morse/index identity), not another scalar norm envelope.
+- 2026-08-28 — Performance audit separated expensive quarter-loss and overcompensation consequences
+  from the foundational source-aligned finite block.  Targeted foundation elaboration fell from
+  `42.45s` before the earlier import split, through `23.17s`, to `7.46s`; consequence leaf checks
+  independently in `12.55s`.  This removes unrelated proof cost from arbitrary-accuracy consumers
+  without changing theorem statements or axioms.

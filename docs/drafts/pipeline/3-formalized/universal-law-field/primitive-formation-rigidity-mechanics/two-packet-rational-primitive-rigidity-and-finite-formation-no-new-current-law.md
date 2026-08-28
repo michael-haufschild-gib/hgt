@@ -1,12 +1,13 @@
 # Two-packet rational primitive rigidity and finite-formation no-new-current law
 
 - **ID:** ULF-PFRM-1
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** ROUTE-INDEPENDENT FORMATION-RIGIDITY THEOREM + ARITHMETIC COROLLARY
 - **Source:** `../../../1-in-progress/prime-additive-differential-field-primitive-rigidity.md`
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [CHARACTERISTIC ZERO]`
   `[TWO-PACKET FREENESS] [RATIONAL DENOMINATORS CLOSED] [FINITE FORMATION RIGIDITY]`
-  `[GENERAL MECHANISM] [ARITHMETIC COROLLARY] [NOVELTY UNVERIFIED] [NOT RH] [NO LEAN YET]`
+  `[GENERAL MECHANISM] [ARITHMETIC COROLLARY] [LEAN-FORMALIZED] [AXIOM-AUDITED]`
+  `[NOVELTY UNVERIFIED] [NOT RH]`
 - **Statement:** In a differential realization admitting two disjoint algebraically free packet
   copies, every packet-additive element of a finitely generated rational differential field is a
   finite constant-coefficient linear combination of source jets.  For prime-radial arithmetic
@@ -438,7 +439,35 @@ specialist review; the abstract rational Cauchy theorem is classical.
 5. **The theorem forces the missing completion. -- False.** It proves precisely that completion or
    a new source direction is necessary; existence remains a separate theorem.
 
-## 10. Gates
+## 10. Lean formalization
+
+Formal modules:
+
+- `formal/GaloisForLFunctions/HTGeometry/TwoPacketRationalPrimitiveRigidity.lean`
+  proves rational Cauchy rigidity and finite rational formation linearity.
+- `formal/GaloisForLFunctions/HTGeometry/TwoPacketRationalPrimitiveDomainRigidity.lean`
+  proves denominator-safe transport when packet restrictions exist only on the source domain.
+- `formal/GaloisForLFunctions/HTGeometry/PrimeRadialTwoPacketPrimitiveRigidity.lean`
+  proves the literal two-packet prime restriction lemma, arbitrary-subspace intersection law,
+  fixed-basis coefficient uniqueness, and finite-formation corollary.
+
+Primary certificates:
+
+- `freeCoordinate_rational_additive_eq_linear`
+- `twoPacketRationalFormation_domain_eq_linear`
+- `primeRadial_two_disjoint_infinite_packets_jet_free`
+- `primeRadial_differentialField_primitive_rigidity`
+- `finite_primeRadial_jetCoefficients_unique`
+- `finite_rational_formation_no_new_primeAdditive_current`
+
+Verification:
+
+- direct Lean checks passed for all three modules;
+- targeted builds passed for both new dependent leaves;
+- axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`;
+- formal lint found no forbidden declaration in these modules.
+
+## 11. Gates
 
 - [x] rational primitive theorem proved without evaluation at a possible pole
 - [x] denominator restriction obstruction closed by packet freeness
@@ -447,7 +476,7 @@ specialist review; the abstract rational Cauchy theorem is classical.
 - [x] exact intersection law `(PFR.18)` proved on paper
 - [x] characteristic, coefficient-base, packet-size, and completion countermodels recorded
 - [x] broad internal and external collision audit
-- [ ] Lean formalization of Theorems 2.1, 3.1, and the arithmetic packet corollary
+- [x] Lean formalization of Theorems 2.1, 3.1, and the arithmetic packet corollary
 - [ ] publication-level specialist priority review
 - [x] construct a source-generated infinite primitive completion escaping Corollary 5.1
 
@@ -461,3 +490,7 @@ invariant is exact cofinal formation depth.
 - 2026-08-12 -- solved the denominator obstruction by evaluating only after two-packet freeness;
   proved the formal rational Cauchy theorem by differentiating in independent packet coordinates;
   promoted the exact arithmetic intersection law to Stage 2.
+- 2026-08-28 -- formalized rational Cauchy rigidity, exact domain-level denominator transport,
+  literal disjoint-prime packet freeness, arbitrary profile-subspace primitive intersection,
+  fixed-basis coefficient uniqueness, and finite rational no-new-current corollary; direct checks,
+  targeted builds, and batched axiom audit passed; promoted to Stage 3.
