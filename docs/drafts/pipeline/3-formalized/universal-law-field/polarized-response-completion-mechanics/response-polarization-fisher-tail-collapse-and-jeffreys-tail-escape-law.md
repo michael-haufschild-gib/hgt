@@ -1,9 +1,9 @@
 # Response polarization, Fisher-tail collapse, and Jeffreys-tail escape law
 
 - **ID:** ULF-PRCM-1
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** THEOREM / FIVE-ORGAN FUSION / COMPLETION NO-GO
-- **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [LEAN PENDING] [NOT RH]`
+- **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [LEAN-FORMALIZED] [AXIOM-AUDITED] [NOT RH]`
 - **Statement:** A single response density can have vanishing positive tail diameter and infinite
   reciprocal-work tail diameter; every nonconstant finite escort family realizes this separation,
   and common recovery preserves it exactly.
@@ -486,8 +486,9 @@ work moves it into an unbounded deficit fibre.
   Theorem 1.2 gives an unconditional global formation/properness law.
 - **New open core:** an RH selector must bound complete reciprocal work or prove observer
   sufficiency.  Positive/Fisher compactness and recurrence cannot substitute for that premise.
-- **Lean status:** paper proof dependency-closed; formalization intentionally remains a Stage-2
-  gate in the current research pass.
+- **Lean status:** formalized unconditionally in
+  `ResponsePolarizationFisherTailJeffreysEscape.lean` and
+  `ResponsePolarizationBinaryWitness.lean`; all new public declarations axiom-audited.
 
 ## 7. Literature and priority audit
 
@@ -519,10 +520,18 @@ cross-organ mechanism and the resulting selection no-go.
 - [x] global reflected properness and observed-plus-deficit selection
 - [x] sharp binary countermodel
 - [x] hostile correctness and literature audit
-- [ ] Lean formalization
+- [x] Lean formalization
 - [ ] literal arithmetic source realization
 
 ## Log
 
 - 2026-08-12 — dependency-closed paper proof completed after full universal-law and Lean-corpus
   search found local Fisher and Jeffreys properness separately but not their dual-completion law.
+- 2026-08-28 — formalized `(RPC.1)`–`(RPC.29a)` across
+  `ResponsePolarizationFisherTailJeffreysEscape.lean` and
+  `ResponsePolarizationBinaryWitness.lean`: abstract response polarization, exact finite-escort
+  tail bounds and properness, common recovery, observer deficit, and sharp binary witness. Both
+  modules pass direct Lean checks and single-module Lake builds. One batched audit of all new public
+  declarations reports only standard axioms `propext`, `Classical.choice`, and `Quot.sound`.
+  Formal lint reports no forbidden declarations or reachability defects for either new module; its
+  remaining failures are unrelated pre-existing umbrella-reachability gaps.

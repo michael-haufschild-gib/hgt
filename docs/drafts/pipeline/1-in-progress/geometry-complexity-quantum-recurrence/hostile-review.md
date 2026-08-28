@@ -4,6 +4,34 @@ Date: 28 August 2026.
 
 ## Verdict
 
+### Conceded scope corrections
+
+Three criticisms are valid and now change manuscript structure.
+
+1. **Engineered infinite-chain scope.** Same-field UHF theorem uses an
+   absolutely summable, position-dependent coupling profile. It proves an
+   existence/compatibility statement, not a translation-invariant,
+   finite-density, typical, or material thermodynamic law. Abstract,
+   theorem title, synthesis, and experiment section now say this explicitly.
+   Finite-volume generic nearest-neighbour results remain separate.
+2. **No universal finite-`T` rate.** Arbitrary-spectrum weak convergence and
+   support-edge recovery have no model-free finite-window rate. Manuscript now
+   adds exact finite-spectrum fixed-moment certificate
+   `|M_m(T)-C_m| <= min(1, 1/(T delta_m))`, conditional on a calibrated lower
+   bound for every nonzero order-`m` replica detuning. Unresolved detunings are
+   declared a failed certificate, not assigned zero/nonzero status by fiat.
+3. **Physical grounding.** Closed-system stationary theorem is no longer
+   allowed to stand in for an open-device law. Manuscript defines density
+   matrices, effects, Born probabilities and operational distance, then proves
+   a concrete normalized reset-mixture Kraus model with exact affine response,
+   one-step error at most `1-r`, and `N`-step device-to-ideal error at most
+   `N(1-r)`. This is a calibrated finite-horizon bridge, not a general
+   decoherence theory.
+
+Support topology is also separated from accessible mass: endpoint membership
+does not provide a volume-uniform lower occupation bound, and finite-volume
+return-density extinction does not alone imply weak convergence to `delta_0`.
+
 Mathematical center is now one physical probability law. For every spectral
 measure of a normalized state, uniformly time-sampled Born survival
 probability converges to a stationary distribution. That distribution is

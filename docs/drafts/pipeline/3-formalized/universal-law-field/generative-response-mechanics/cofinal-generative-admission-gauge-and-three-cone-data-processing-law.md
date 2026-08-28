@@ -1,9 +1,10 @@
 # Cofinal generative admission gauge and three-cone data-processing law
 
 - **ID:** `ulf-grm-cofinal-generative-admission-gauge`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** THEOREM / ROUTE-INDEPENDENT MECHANISM
-- **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [ROUTE-INDEPENDENT] [INFINITE/COFINAL] [LEAN CORE CERTIFIED] [NOT RH]`
+- **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [ROUTE-INDEPENDENT] [INFINITE/COFINAL]`
+  `[LEAN-CLOSED] [TARGETED BUILD PASSED] [AXIOM AUDIT PASSED] [NOT RH]`
 - **Active claim:** Finite positive-null response detects only the norm-closed contingent tangent
   cone. Actual one-sided source admission is controlled by a stricter negative-density gauge whose
   reciprocal is the exact perturbation radius and which contracts under every positive comparison.
@@ -352,7 +353,7 @@ HGT source/observer problem.
 - [x] promote to Stage 2;
 - [x] formalize reciprocal feasibility, positive-map data processing, exact finite/contingent
   equivalence, conserved probability countermodel, and cofinal spectral collapse;
-- [ ] formalize the full `ell^1` closure identity and Fourier uniqueness clause;
+- [x] formalize the full `ell^1` closure identity and Fourier uniqueness clause;
 - [ ] only after Lean, test literal arithmetic source gauge and comparison positivity.
 
 ## Log
@@ -366,3 +367,9 @@ HGT source/observer problem.
   `HTGeometry.CofinalGenerativeAdmission` certifies the algebraic/cofinal core and an actual
   mass-one, mass-zero-tangent probability countermodel. Full `ell^1` closure and Fourier uniqueness
   remain explicit formal boundaries rather than silently certified claims.
+- 2026-08-28 — `HTGeometry.CofinalGenerativeAdmissionClosure` closes both formal boundaries in the
+  actual normed `ell^1` space: corrected finite-support radial directions prove the exact closure
+  identity, while finite positive/negative atomic measures plus characteristic-function uniqueness
+  prove coefficient faithfulness for every injective real frequency family. Direct Lean check and
+  targeted module build passed; all 36 new declarations use only `propext`, `Classical.choice`, and
+  `Quot.sound`.

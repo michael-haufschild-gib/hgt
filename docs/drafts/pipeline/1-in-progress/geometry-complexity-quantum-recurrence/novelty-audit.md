@@ -3,6 +3,25 @@
 Date: 28 August 2026. Priority status: provisional pending independent search.
 No absolute “first” claim is authorized.
 
+## Scope correction after physical-relevance review
+
+- `FiniteWindowReplicaCollisionResolution` closes a manuscript-level
+  finite-`T` gap with exact fixed-moment error
+  `min(1, 1/(T delta_m))`. Sinc decay and inverse-detuning convergence are
+  established ingredients; this rate is not promoted as separate novelty.
+- `FiniteQuantumOperationalMemoryLaw` and
+  `FiniteKrausRecurrenceFutureFanLaw` provide a rigorous Born-probability
+  bridge for one explicit reset-mixture channel. Standard Kraus/GKSL physics
+  is not a novelty claim. Purpose is falsifiability and correct scope.
+- `ThermodynamicSameFieldUHFRecurrenceComplexityLaw` is henceforth described
+  as an engineered absolutely summable finite-to-infinite witness. Its
+  conjunction may be new, but it is not evidence for translation-invariant,
+  finite-density, typical or experimentally generic matter.
+- Central stationary support theorem remains a mathematical claim for closed
+  self-adjoint dynamics. Support edge is topological; manuscript does not
+  infer a volume-uniform return mass, finite observation deadline, or weak
+  `delta_0` thermodynamic law from support alone.
+
 ## Capstone novelty boundary
 
 Capstone is now the universal stationary survival-recurrence law for arbitrary

@@ -12,6 +12,10 @@ trap 'rm -f "$SCRATCH"' EXIT
 cat > "$SCRATCH" << 'EOF'
 import GaloisForLFunctions
 import GaloisForLFunctions.RHTower.XiKoszulSourceTranspositionClassification
+import GaloisForLFunctions.RHTower.XiReducedConductorRoosRegulatorClassification
+import GaloisForLFunctions.RHTower.XiNodalConductorHolonomyNaturalityClassification
+import GaloisForLFunctions.RHTower.SourceHorizontalFinitePortStokesCapacity
+import GaloisForLFunctions.RHTower.SourceHorizontalRiggedKreinPhaseObject
 #print axioms GaloisForLFunctions.sigma_involutive
 #print axioms GaloisForLFunctions.cpow_inversion_scale
 #print axioms GaloisForLFunctions.norm_cpow_neg_eq_rpow_re
@@ -360,6 +364,23 @@ import GaloisForLFunctions.RHTower.XiKoszulSourceTranspositionClassification
 #print axioms RHTower.not_nonempty_deningerCalderonWittOrderBlindCoefficientFaithfulCompletion
 #print axioms RHTower.deningerCalderonWittKoszulThetaSpinCompensation_universal
 #print axioms RHTower.everyXiCanonicalKoszulSignCupVanishesAtPrime_iff_riemannHypothesis
+#print axioms RHTower.xiReducedMultiplicityConductorNearbyClass_lineConj
+#print axioms RHTower.nonempty_xiReducedConductorRoosRegulator_iff_riemannHypothesis
+#print axioms RHTower.xiThetaTerminalMultiplicityCutLogGain_two
+#print axioms RHTower.canonicalXiOrientedConductorRoosRegulator
+#print axioms RHTower.xiConductorRoosRegulator_orientationClassification
+#print axioms RHTower.xiThetaTerminalArithmeticNearbyMonodromyTwo
+#print axioms RHTower.xiThetaTerminalArithmeticNearbyMonodromyTwo_eq_picardLefschetz_iff
+#print axioms RHTower.everyXiThetaTerminalArithmeticNearbyMonodromyTwo_eq_picardLefschetz_iff_riemannHypothesis
+#print axioms RHTower.sigNeg_le_of_finiteOnePortSumPullback
+#print axioms RHTower.sourceZeroHorizontalSharedReservoir_twoOrientation_finitePort_obstruction
+#print axioms RHTower.GlobalPuiseuxWittFinitePort.not_both_sourceZeroHorizontal_orientations_land_in_finiteGlobalWitt
+#print axioms RHTower.GlobalPuiseuxWittFinitePort.xiOffLineFiniteGlobalWittPortExhaustion
+#print axioms RHTower.abs_preDivisorRiggedPrimeWittPairing_le
+#print axioms RHTower.preDivisorRiggedPrimeWittPairing_lineConj
+#print axioms RHTower.preDivisorRiggedPrimeWittGram_eq_sharedReservoirMatrix
+#print axioms RHTower.preDivisorRiggedPrimeWittPairing_unboundedNegativeIndex_right
+#print axioms RHTower.preDivisorRiggedPrimeWittPhaseObject_capstone
 EOF
 
 cd "$FORMAL_DIR"
@@ -373,8 +394,8 @@ NORMALIZED="$(printf '%s\n' "$OUT" | tr '\n' ' ' | sed 's/[[:space:]][[:space:]]
 AXIOM_LINES="$(printf '%s\n' "$NORMALIZED" | { grep -oE "depends on axioms: \\[[^]]*\\]" || true; })"
 NO_AXIOM_LINES="$(printf '%s\n' "$NORMALIZED" | { grep -oE "does not depend on any axioms" || true; })"
 AUDITED_COUNT="$(printf '%s\n%s\n' "$AXIOM_LINES" "$NO_AXIOM_LINES" | sed '/^$/d' | wc -l | tr -d ' ')"
-if [ "$AUDITED_COUNT" -ne 348 ]; then
-  echo "FAIL: expected 348 audited theorem outputs" >&2
+if [ "$AUDITED_COUNT" -ne 365 ]; then
+  echo "FAIL: expected 365 audited theorem outputs" >&2
   exit 1
 fi
 BAD_AXIOMS="$(printf '%s\n' "$AXIOM_LINES" \
@@ -407,4 +428,4 @@ if [ -n "$SORRY_HITS" ]; then
   exit 1
 fi
 
-echo "PASS: Tier A/B elementary theorems axiom-clean (allowed subset of $EXPECTED), no sorry (343 theorem outputs audited)."
+echo "PASS: Tier A/B elementary theorems axiom-clean (allowed subset of $EXPECTED), no sorry (365 theorem outputs audited)."

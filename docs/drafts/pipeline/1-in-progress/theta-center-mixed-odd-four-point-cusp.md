@@ -337,3 +337,211 @@ four-point theorem.  This is a literature-search conclusion, not a theorem of Le
 Open core: exclude the stationary odd drop/decay certificate for the literal center-mixed theta
 density.  Generic angle concavity alone does not control this sector, so the next attack must use
 the stronger completed-source Riccati/likelihood structure rather than a finite numerical chamber.
+
+### 2026-08-28 — strict center-mixed first jet and concentrated stationary obstruction
+
+`[NEW] [PAPER-PROVED] [LEAN-PROVED] [GLOBAL STRICT SHAPE LAW]`
+
+The nonpositive first-jet law left open derivative flatness away from the reflection center.  The
+completed-source factorization removes it.  Pointwise on the full physical radial support,
+
+```text
+Phi'(r/2+t) Phi(r/2-t) - Phi(r/2+t) Phi'(r/2-t)
+  = Phi(r/2+t) Phi(r/2-t) (L'(r/2+t)-L'(r/2-t)) < 0,
+```
+
+where `L = log Phi`.  Strict global concavity of `L`, positivity of `Phi`, and positivity of
+`r sinh(a r)` make the complete derivative-product integrand negative for every `r>0`, `a>0`, and
+`t>0`.  An open-support set-integral argument preserves strictness rather than only weak order:
+
+```text
+thetaCuspCenterMixedDensityFirstJet a t < 0.
+```
+
+Consequently the physical center-mixed density is strictly decreasing on the entire nonnegative
+displacement ray.  Feeding strict monotonicity back into the odd wall sharpens every hypothetical
+negative witness.  With
+
+```text
+A = F(0)-F(t),   B = F(t)-F(2t),   T = F(0)-F(3t),
+```
+
+one has `A+B<T`; hence wall negativity `B^2>A*T` forces the stronger scale-free concentration law
+
+```text
+A * (A+B) < B^2.
+```
+
+At the stationary witness, strict negativity of `F'(t)` and `F'(3t)` upgrades the former weak
+dyadic defect to
+
+```text
+0 < F'(t) - 2 F'(2t).
+```
+
+Thus any rank-four failure now requires simultaneous strict annular drop concentration, strict
+dyadic decay reversal, and the exact three-scale stationary equation.
+
+Lean artifacts:
+
+- `thetaCuspCenterMixedDensityFirstJet_lt_zero`;
+- `strictAntiOn_thetaCuspCenterMixedDensity`;
+- `thetaCuspCenterMixedOddParityWall_neg_forces_twoStepDrop_product_lt_middleDrop_sq`;
+- strengthened `exists_thetaCuspCenterMixedOddStationary_obstruction_of_not_posSemidef`.
+
+August 2026 exact-title and formula searches found no external statement of this strict
+center-mixture derivative law or its stationary rank-four concentration consequence.  The closest
+current result remains Planat--Solé, `arXiv:2608.19160`, on strict log-concavity of a different first
+Laguerre expression; it does not state a center-mixture jet sign or this four-point obstruction.
+This is a literature-search conclusion, not a theorem of Lean.
+
+Open core: prove that the literal theta derivative-product mixture cannot realize this simultaneous
+concentration/decay certificate.  Source angle concavity by itself still permits excessive loss of
+the third equal-step increment; the next conjecture must retain the completed likelihood curvature
+inside the positive radial mixture.
+
+### 2026-08-28 — global coalesced speed wall and exact Ptolemy reformulation
+
+`[NEW] [PAPER-PROVED] [LEAN-PROVED] [GLOBAL DIFFERENTIAL WALL] [EXACT GEOMETRIC REDUCTION]`
+
+The next conjecture loop tested whether the odd wall follows from generic correlation-angle
+concavity, convexity of the reflected logarithmic action, or pointwise positive definiteness of a
+source-product fibre.  Hostile algebra rejects the first mechanism: a profile can have decreasing
+angle increments and increasing logarithmic-action increments while losing enough of the third
+increment to make the odd wall negative.  The corpus's exact Wigner product-fibre normal form
+rejects the second shortcut as too strong: positivity of the full fibre transform is precisely an
+unresolved spectral-orientation sign, not a consequence already available before RH.
+
+The positive survivor is a new global differential consequence of the completed order-three
+theorem.  For every physical aperture and every `y >= 0`, write `F` for the actual center-mixed
+density.  Global nonnegativity of the three-point determinant along `0,x,x+y`, together with its
+double zero at `x=0`, forces its second coalesced jet to be nonnegative:
+
+```text
+(-F''(0)) * (F(0)^2 - F(y)^2) - F(0) * F'(y)^2 >= 0.
+```
+
+This upgrades the previous local and eventual coalesced walls to the full displacement ray.  Since
+`F(0)>F(y)>0` for `y>0`, division gives the global correlation-angle speed law
+
+```text
+F'(y)^2 / (F(0)^2 - F(y)^2) <= (-F''(0)) / F(0).
+```
+
+The stationary rank-four obstruction now carries this wall at its interior witness in addition to
+strict annular concentration and strict dyadic decay reversal.
+
+The same loop exposes an exact nonpositive-curvature formulation.  Define the intrinsic center
+chord
+
+```text
+d_a(t) = sqrt(F_a(0) - F_a(t)).
+```
+
+For every `t>=0`, direct square-root polarization proves
+
+```text
+oddParityWall(a,t) >= 0
+  iff d_a(2t)^2 <= d_a(t)^2 + d_a(t) d_a(3t).
+```
+
+The right side is precisely Ptolemy's inequality on the ordered equispaced packet
+`0,t,2t,3t`.  Since the reflection-even block is already globally positive, the complete
+center-mixed rank-four Gram matrix is positive semidefinite if and only if this intrinsic theta
+chord is Ptolemaic on that packet.  This identifies the surviving CLG/TTF obstruction as a literal
+four-point curvature defect rather than another determinant expression.
+
+Lean artifacts:
+
+- `thetaCuspCenterMixedGlobalCoalescedWall_nonneg`;
+- `thetaCuspCenterMixedCorrelationAngleSpeedSq_le_center`;
+- `thetaCuspCenterMixedChord`;
+- `thetaCuspCenterMixedOddParityWall_nonneg_iff_ptolemy`;
+- `thetaCuspCenterMixedGramFourEquispaced_posSemidef_iff_ptolemy`;
+- strengthened `exists_thetaCuspCenterMixedOddStationary_obstruction_of_not_posSemidef`.
+
+Exact targeted builds passed for
+`GaloisForLFunctions.RHTower.ThetaCuspCenterMixedGlobalCoalescedWall`,
+`GaloisForLFunctions.RHTower.ThetaCuspCenterMixedPtolemyWall`, and the strengthened stationary
+module.  Axiom audits report only `propext`, `Classical.choice`, and `Quot.sound`.
+
+August 2026 corpus and literature searches found no statement of the global theta coalesced speed
+wall or this Hedenmalm rank-four/Ptolemy equivalence.  Foertsch--Lytchak--Schroeder
+(`arXiv:0705.1042`) studies Ptolemy geometry and nonpositive curvature abstractly, without this
+theta autocorrelation tangent.  Planat--Solé (`arXiv:2608.19160`) studies a different Laguerre
+expression and does not contain either theorem.  This is a collision-search conclusion, not a
+theorem of Lean.
+
+Open core: prove Ptolemy for the intrinsic theta chord using the exact autocorrelation-tangent and
+completed likelihood structure.  Neither generic angle concavity nor generic convex logarithmic
+action suffices; the next attack must control how radial `L2` mixing transports fibrewise
+four-point curvature.
+
+### 2026-08-28 — Ptolemy law of total variance and radial failure descent
+
+`[NEW] [PAPER-PROVED] [LEAN-PROVED] [NONLINEAR MIXTURE TRANSPORT] [EXACT SOURCE DESCENT]`
+
+The radial-mixing conjecture is now closed exactly.  For one completed-source fibre set
+
+```text
+A_u = P_u(0) - P_u(t),
+B_u = P_u(t) - P_u(2t),
+T_u = P_u(0) - P_u(3t),
+W_u = A_u T_u - B_u^2,
+```
+
+where `P_u(s) = thetaCuspFullSource(u+s) thetaCuspFullSource(u-s)`.  Strict radial monotonicity
+gives `A_u>0` for `t>0`.  Polarization of two fibres has the exact decomposition
+
+```text
+A_u T_v + A_v T_u - 2 B_u B_v
+  = (A_v/A_u) W_u + (A_u/A_v) W_v
+      + A_u A_v (B_u/A_u - B_v/A_v)^2.
+```
+
+This is a Ptolemy law of total variance: both normalized fibre defects survive with positive
+weights, while disagreement between normalized middle drops contributes a square.  Therefore the
+nonlinear odd wall is closed under every positive radial mixture despite not being linear or
+convex in the original four correlation values.
+
+For the literal Hedenmalm density, product-space integration of the weighted polarization kernel
+is exactly twice the physical odd wall.  Hence nonnegative fibre walls for positive source centers
+imply the physical center-mixed wall.  Contrapositively, every negative physical wall descends to
+some genuine `u>0` completed-source fibre with a negative wall.  Cross-centre alignment and radial
+mixing are no longer independent obstructions.
+
+Lean artifacts:
+
+- `thetaCuspReflectedSourcePtolemyPolarization_eq_defects_add_ratioSq`;
+- `thetaCuspReflectedSourcePtolemyPolarization_nonneg`;
+- `integral_thetaCuspCenterMixedPtolemyPolarizationKernel`;
+- `thetaCuspCenterMixedOddParityWall_nonneg_of_sourceFibres`;
+- `exists_thetaCuspReflectedSourceOddParityWall_neg_of_centerMixed_neg`.
+
+Exact `lake env lean` and targeted module build pass for
+`GaloisForLFunctions.RHTower.ThetaCuspCenterMixedPtolemyTransport`.  Axiom audit reports only
+`propext`, `Classical.choice`, and `Quot.sound`.
+
+Two stronger shortcuts failed before this survivor was isolated.  Monotonicity of ordinary
+curvature `P''/P` leaves a signed integral balance and does not by itself imply the required TP2
+minor.  Pointwise positive definiteness of every symmetrized atom-pair channel is also unavailable:
+the corpus proves a strictly negative first--second cross signed-second entry.  These failures rule
+out generic Riccati and atomwise-PSD substitutions; the remaining theorem must use the completed
+source as a coupled object.
+
+August 2026 exact-formula searches found no external Ptolemy-mixture identity of this form.  The
+classical Schoenberg theory connects positive-definite kernels with Hilbert chord metrics, and
+Foertsch--Lytchak--Schroeder study abstract Ptolemy spaces, but neither gives this defect
+polarization or theta radial transport.  This is a collision-search conclusion, not a Lean
+theorem.
+
+Open core: prove
+
+```text
+thetaCuspReflectedSourceOddParityWall u t >= 0
+```
+
+for every `u>0`, `t>0`.  This is now the sole rank-four producer burden before the already-proved
+radial landing.  Global reflected Riccati/angle concavity controls three-point geometry but does
+not formally imply this four-point wall; the next conjecture must exploit coupled completed-source
+likelihood structure without separating atom pairs.

@@ -1,9 +1,9 @@
 # Wold-profile response polarization, reconstruction, and properness law
 
 - **ID:** ULF-PRCM-3
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** THEOREM / LITERAL SOURCE REALIZATION / THREE-ORGAN FUSION / RECONSTRUCTION
-- **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [LEAN PENDING] [PRE-ZERO] [NOT RH]`
+- **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [LEAN-FORMALIZED] [PRE-ZERO] [NOT RH]`
 - **Statement:** The literal all-order Wold prime-clock profile is the negative primitive of a
   positive even response density, and its existing polar work is exactly a constant multiple of
   complete reflected PRCM work; work reconstructs both current and response.
@@ -333,6 +333,19 @@ density, PRCM identity, or reconstruction theorem.
 No external novelty claim is needed.  New mathematical leverage is the exact source-level fusion:
 one response law now generates and reconstructs three previously separate frontier organs.
 
+### Lean formalization
+
+`RHTower/SourceHorizontalWoldProfileResponsePolarization.lean` certifies the literal all-order
+response series, removable `cosh - sinh/u` formula, positivity and exact zero locus, current
+primitive, symmetric reflected-work fusion, quartic properness interface, full-ray unboundedness,
+profile/current reconstruction, differentiated response reconstruction, and exact
+quadratic/cubic/quartic transmutation series.  Module is imported by both
+`HTGeometry/UniversalLawField.lean` and theorem-area umbrella `RHTower.lean`.
+
+Direct Lean check and targeted module build pass.  All 34 new public declarations were audited and
+use only standard axioms `[propext, Classical.choice, Quot.sound]`.  Formal lint reports no issue
+for this module; remaining unreachable-module reports belong to unrelated concurrent work.
+
 ## 11. Gates
 
 - [x] entire positive response density
@@ -343,11 +356,13 @@ one response law now generates and reconstructs three previously separate fronti
 - [x] quadratic/cubic/quartic jet transmutation
 - [x] fourth-organ preservation/loss prediction
 - [x] hostile corpus audit
-- [ ] Lean formalization
+- [x] Lean formalization
 - [ ] pre-zero complete-work budget
 
 ## Log
 
 - 2026-08-12 — source profile differentiated after PRCM frontier mapping; exact three-organ fusion
   and reconstruction theorem proved on paper.
-
+- 2026-08-28 — formalized WPR.4--WPR.15 unconditionally in
+  `RHTower/SourceHorizontalWoldProfileResponsePolarization.lean`; direct check, targeted build,
+  axiom audit, umbrella wiring, and lint gate completed; promoted to Stage 3.

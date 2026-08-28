@@ -21,8 +21,13 @@ authors' submissions. Search-result aggregators were not used as authority.
 - Updated `KotowskiOszmaniec2026` from arXiv-only metadata to the published
   *Physical Review Letters* record, volume 137, article 060402,
   DOI `10.1103/crwj-qfw5`; verified against APS DOI metadata.
-- Added publisher DOI `10.1103/kkz3-fthm` to `GuptaShort2026`, verified from
-  the authors' arXiv record and its journal reference.
+- Removed false journal metadata and DOI `10.1103/kkz3-fthm` from
+  `GuptaShort2026`. APS assigns that DOI and *Phys. Rev. A* 114, 012208 to
+  “Fermion doubling in Dirac quantum walks,” not to the recurrence preprint.
+  `GuptaShort2026` is now cited only by verified arXiv record 2604.14995.
+- Added the foundational open-system references of Gorini--Kossakowski--
+  Sudarshan and Lindblad. Titles, venues, volumes, pages, years and DOI
+  metadata were checked against AIP and Springer/DOI publisher records.
 - Added DOI `10.22331/q-2026-04-20-2074` to `AnandEtAl2026`, verified against
   the *Quantum* record.
 
@@ -89,7 +94,7 @@ authors' submissions. Search-result aggregators were not used as authority.
   lists mixed states, expectation values and tight physical local
   noncommuting dynamics as open directions.  This supports manuscript's
   narrow frontier comparison for observer and local-Hamiltonian theorem.
-- Rechecked `GuptaShort2026` against arXiv v2 and published metadata: result
+- Rechecked `GuptaShort2026` against arXiv v2: result
   bounds simultaneous recurrence of all states using Dirichlet approximation;
   it does not state observer-coherence graph exponent or same-Hamiltonian
   all-observer law.
@@ -112,7 +117,9 @@ authors' submissions. Search-result aggregators were not used as authority.
 | `GrunbaumEtAl2013` | Verified: four authors, title, *Communications in Mathematical Physics* 320, 543--569 (2013), DOI and arXiv identifier; abstract explicitly inserts a projective return measurement after each unitary step and states integer-or-infinite expected first return in recurrent case. | [Springer](https://doi.org/10.1007/s00220-012-1645-2); [arXiv:1202.3903](https://arxiv.org/abs/1202.3903) |
 | `CamposVenuti2015` | Verified: author, title, arXiv identifier, year. | [arXiv:1509.04352](https://arxiv.org/abs/1509.04352) |
 | `KotowskiOszmaniec2026` | Verified: authors, title, arXiv identifier, current version 3, year. | [arXiv:2601.10409](https://arxiv.org/abs/2601.10409) |
-| `GuptaShort2026` | Verified: authors, title, *Phys. Rev. A* 114, 012208 (2026), arXiv identifier. | [arXiv:2604.14995](https://arxiv.org/abs/2604.14995) |
+| `GuptaShort2026` | Verified: authors, title and arXiv identifier. No journal publication is asserted. Previously attached APS DOI was checked and found to belong to an unrelated paper. | [arXiv:2604.14995](https://arxiv.org/abs/2604.14995); [unrelated APS record](https://journals.aps.org/pra/abstract/10.1103/kkz3-fthm) |
+| `GoriniKossakowskiSudarshan1976` | Verified: authors, title, *J. Math. Phys.* 17, 821--825 (1976), DOI. | [AIP/DOI](https://doi.org/10.1063/1.522979) |
+| `Lindblad1976` | Verified: author, title, *Commun. Math. Phys.* 48, 119--130 (1976), DOI. | [Springer/DOI](https://doi.org/10.1007/BF01608499) |
 | `AnandEtAl2026` | Verified: four authors, title, *Quantum* 10, 2074 (2026). | [Quantum](https://quantum-journal.org/papers/q-2026-04-20-2074/) |
 | `RauerEtAl2018` | Verified: title, six-author paper, *Science* 360, 307--310 (2018), DOI. | [arXiv:1705.08231](https://arxiv.org/abs/1705.08231) |
 | `KarimiEtAl2026` | Verified: four authors, journal title, *Phys. Rev. Research* 8, L012062 (2026). | [APS](https://journals.aps.org/prresearch/abstract/10.1103/wv9h-x14y) |

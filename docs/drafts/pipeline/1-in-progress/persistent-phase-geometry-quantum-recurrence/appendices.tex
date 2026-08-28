@@ -88,6 +88,67 @@ laws.  Since $|\widehat\mu(-t)|^2=|\widehat\mu(t)|^2$, one-sided and centered
 uniform sampling give the same limit.
 \end{proof}
 
+\subsection{Finite-window and operational calibration}
+
+\begin{proof}[Proof of Theorem~\ref{thm:finite-window-moments}]
+The multinomial theorem gives the exact finite expansion
+\begin{equation}
+ \left|\sum_{j=1}^{D}w_j\ee^{-itE_j}\right|^{2m}
+ =\sum_{p,q\in\mathcal P_m}a_{p,q}\ee^{-it\Omega_{p,q}}.
+                                                        \label{eq:replica-expansion-proof}
+\end{equation}
+Symmetric normalized integration sends each exponential to
+$\sinc(T\Omega_{p,q})$, with value one at zero.  Splitting zero and nonzero
+detunings therefore yields
+\begin{equation}
+ \frac1{2T}\int_{-T}^{T}
+ \left|\sum_jw_j\ee^{-itE_j}\right|^{2m}dt
+ =C_m+\sum_{\Omega_{p,q}\ne0}
+ a_{p,q}\sinc(T\Omega_{p,q}).                       \label{eq:replica-sinc-proof}
+\end{equation}
+All $a_{p,q}$ are nonnegative, and a second application of the multinomial
+theorem gives
+$\sum_{p,q}a_{p,q}=(\sum_jw_j)^{2m}=1$.  For $x\ne0$,
+$|\sinc x|\le\min\{1,|x|^{-1}\}$.  The assumed detuning floor consequently
+bounds the absolute value of every nonresonant reporter by
+$\min\{1,(T\delta_m)^{-1}\}$.  The triangle inequality and
+$\sum_{\Omega_{p,q}\ne0}a_{p,q}\le1$ prove
+\eqref{eq:finite-moment-rate}.
+\end{proof}
+
+\begin{proof}[Proof of Proposition~\ref{prop:reset-noise}]
+Choose an orthonormal basis $(|j\rangle)_{j=1}^{D}$ and a basis vector
+$|\star\rangle$ representing $\rho_\star$.  The operators
+\begin{equation}
+ K_0=\sqrt r\,U,\qquad
+ K_j=\sqrt{1-r}\,|\star\rangle\!\langle j|
+ \quad(1\le j\le D)                                 \label{eq:reset-kraus-proof}
+\end{equation}
+satisfy $\sum_{j=0}^{D}K_j^*K_j=I$.  Their operator-sum channel is precisely
+\eqref{eq:reset-channel}.  Linearity of trace proves
+\eqref{eq:reset-born}.  Since every effect probability lies in $[0,1]$,
+\begin{equation}
+ |p_E(\Phi_r(\rho))-p_E(\mathcal U(\rho))|
+ =(1-r)|p_E(\rho_\star)-p_E(\mathcal U(\rho))|
+ \le1-r.
+\end{equation}
+Taking supremum over effects proves \eqref{eq:reset-onestep}.
+
+Every normalized Kraus channel contracts $d_{\rm op}$: pull an effect back
+through the adjoint channel and use definition
+\eqref{eq:operational-distance}.  The triangle inequality, this contraction,
+and the one-step estimate give
+\begin{align*}
+ d_{\rm op}(\Phi_r^{N+1}(\rho),\mathcal U^{N+1}(\rho))
+ &\le d_{\rm op}(\Phi_r(\Phi_r^N(\rho)),
+                  \Phi_r(\mathcal U^N(\rho)))\\
+ &\quad+d_{\rm op}(\Phi_r(\mathcal U^N(\rho)),
+                    \mathcal U(\mathcal U^N(\rho)))\\
+ &\le d_{\rm op}(\Phi_r^N(\rho),\mathcal U^N(\rho))+(1-r).
+\end{align*}
+Induction from $N=0$ proves \eqref{eq:reset-iterate}.
+\end{proof}
+
 \subsection{No-gap stationary support and pure-point mass}
 
 \begin{proof}[Proof of Theorem~\ref{thm:boundstateedge}]
@@ -695,10 +756,13 @@ Finite contraction threshold and coupled post-burn-in deadline & Main Law I;
 Appendix Section I.1 \\
 Stationary point-spectrum scaling and collision hierarchy & Main Law I;
 Appendix Section I.2 \\
+Finite-window survival-moment certificate and calibrated reset-noise bridge &
+Main Theorem~\ref{thm:finite-window-moments} and
+Proposition~\ref{prop:reset-noise}; Appendix Section I.3 \\
 No-gap stationary support and exact bound-state-mass inversion & Main
-Theorem~\ref{thm:boundstateedge}; Appendix Section I.3 \\
+Theorem~\ref{thm:boundstateedge}; Appendix Section I.4 \\
 Countable pure-point recurrence, cyclic exact return and atomless boundary &
-Main Law I; Appendix Section I.3 \\
+Main Law I; Appendix Section I.4 \\
 Generic static nearest-neighbour qudit maximality and exact return frequency &
 Main Theorem~\ref{thm:path}; Appendix Section L \\
 Exact finite-volume thermodynamic return-density extinction and rates & Main
