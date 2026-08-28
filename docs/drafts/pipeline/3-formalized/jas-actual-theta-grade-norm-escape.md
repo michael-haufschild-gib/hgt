@@ -1,8 +1,8 @@
 # JAS actual completed-theta grade norm escape
 
 - **ID:** JAS-ACTUAL-THETA-GRADE-ESCAPE
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** `JointAncestryCompletedThetaAllGradeMellinChain` plus the formalized injective-grade JAS survivor
 - **Statement:** Actual completed-theta Mellin-grade norms tend to infinity; consequently no bounded synthesis can identify the canonical injective prime grading with those actual grades.
 
@@ -27,8 +27,8 @@ compounds.
 ## Gates
 
 - [x] 0 → 1  in-progress: corpus search, frozen theorem, exact RH chain, hostile audit
-- [ ] 1 → 2  fully-proven: dependency-closed proof
-- [ ] 2 → 3  formalized: direct check, leaf build, axiom audit, umbrella import
+- [x] 1 → 2  fully-proven: dependency-closed proof
+- [x] 2 → 3  formalized: direct check, leaf build, axiom audit, umbrella import
 - [ ] 3 → 4  publication-ready: standalone theorem, proof, certificate, Door-2 audit
 
 ## Frozen conjecture
@@ -52,6 +52,40 @@ compounds.
   `l2Single` preserves norm. Images of unit coordinate vectors under a bounded synthesis are
   uniformly bounded, contradicting cofinal grade-norm escape under `natEquivPrimes`.
 
+## Dependency-closed proof
+
+Set
+`c = ∫ x in Set.Icc (1 : ℝ) 2, thetaCuspFullSource x ^ 2`. Positivity and continuity of
+`thetaCuspFullSource` give `0 < c`. The exact representative theorem identifies grade `r` with
+`x ↦ exp (r * x) * thetaCuspFullSource x`. Therefore, for every natural `r`,
+
+`||jointAncestryCompletedThetaGradeL2 r||²`
+`≥ ∫ x in Set.Icc 1 2, exp (2 * (r : ℝ) * x) * thetaCuspFullSource x ^ 2`
+`≥ exp (2 * r) * c`.
+
+The right side tends to `+∞`, hence so does the grade norm. For prime `p`, the actual weighted
+packet is an `l2Single` whose Hilbert-space value is the critical singleton character multiplied
+by grade norm at `natEquivPrimes.symm p`. Both `l2Single` and that singleton character are
+norm-preserving/unit-norm, so packet norm equals grade norm. If a bounded linear synthesis `T`
+mapped every unit prime basis vector to its actual packet, every packet norm would be at most
+`||T||`. Choosing the prime corresponding to a sufficiently large grade contradicts norm escape.
+
+## Lean certificate
+
+- Module: `GaloisForLFunctions.RHTower.JointAncestryActualThetaGradeNormEscape`
+- Theorems:
+  - `jasActualThetaPositiveIntervalMass_pos`
+  - `norm_sq_jointAncestryCompletedThetaGradeL2`
+  - `tendsto_norm_jointAncestryCompletedThetaGradeL2_atTop`
+  - `not_JASCriticalPrimeActualThetaInjectiveGradeSynthesis`
+- Direct check:
+  `lake env lean GaloisForLFunctions/RHTower/JointAncestryActualThetaGradeNormEscape.lean`
+- Leaf audit:
+  `lake build GaloisForLFunctions.RHTower.JointAncestryActualThetaGradeNormEscape`
+- Axioms for all four certificate theorems:
+  `[propext, Classical.choice, Quot.sound]` only.
+- Wired into `GaloisForLFunctions.RHTower` umbrella; umbrella build intentionally not run.
+
 ## Hostile audit
 
 - Result does not construct the required unbounded closed sewing and therefore is route-killing,
@@ -68,3 +102,6 @@ compounds.
 ## Log
 
 - 2026-08-29 — frozen after corpus-based RH-chain and hostile audits.
+- 2026-08-29 — dependency-closed proof completed and formalized; direct Lean check, leaf build,
+  axiom audit, and umbrella wiring passed. Bounded actual-grade identification retired; unbounded
+  support-cutting higher-compound sewing remains live.

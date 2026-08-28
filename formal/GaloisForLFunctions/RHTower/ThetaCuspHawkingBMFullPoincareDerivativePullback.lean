@@ -1,5 +1,4 @@
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMKIVectorChiralReconstruction
-import GaloisForLFunctions.RHTower.GaussHodgeWeilDeviationMoment
 import GaloisForLFunctions.HTGeometry.TanhSubstitution
 
 /-!
@@ -300,7 +299,7 @@ theorem exists_fixedPoincareTimeCharge_for_BMTimeEigenJet_iff
 theorem thetaCuspHawkingTopologicalBlackHoleQNMPlus_xi_ne_zero
     (n : ℕ) (q : XiZeroCopy) :
     thetaCuspHawkingTopologicalBlackHoleQNMPlus n (xiSpectralPoint q) ≠ 0 := by
-  have hstrip := abs_xiSpectralPoint_im_lt_half q
+  have hstrip := abs_im_xiSpectralPoint_lt_half q
   rw [abs_lt] at hstrip
   have hn : 0 ≤ (n : ℝ) := Nat.cast_nonneg n
   have hdamped :

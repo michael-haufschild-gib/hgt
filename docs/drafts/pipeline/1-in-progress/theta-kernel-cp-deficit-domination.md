@@ -86,3 +86,46 @@ separation < σ₀ — the close-pair displacement regime the HCF no-go named. N
 targets: shrink σ₀ (sharper diagonal slab, both-endpoint ρ), and the coincident-limit jet
 strata (razor-thin near x = 0; encodes central-value margins; needs certified numerics —
 queued, not claimed).
+
+## CP-1 status update: [LEAN-PROVED] (2026-08-29)
+
+The separated-packet theorem is formalized, unconditional and premise-free, in
+`formal/GaloisForLFunctions/RHTower/ThetaTailSeparatedPacketPositivity.lean`
+(umbrella-wired; all theorems on axioms propext/Classical.choice/Quot.sound; module built,
+9651 jobs). The Lean surface:
+
+- `thetaEnvelope_le_of_le` — the envelope is antitone on `[1,∞)` (from the corpus shift law).
+- `integral_Ioi_id_mul_exp_neg_mul`, `integrableOn_Ioi_id_mul_exp_neg_mul` — half-line first
+  Laplace moment `∫ s·e^{−cs} = 1/c²` (mathlib gap at this phrasing; via `Γ(2) = 1`).
+- `integrableOn_thetaTailOrbit` — the orbit integrand is integrable on the half line
+  (public replacement for the split module's private lemma; envelope majorant).
+- `thetaTailKernel_nonneg_of_one_le` — entrywise nonnegativity on `[1,∞)²`.
+- `thetaTailFirstMomentKernel_le_ceiling` — the off-diagonal Laplace ceiling
+  `k(x,t) ≤ (C_u²/π)(x+t+1)E(x)E(t)e^{−2t}`.
+- `thetaTailDiagonalFloor`, `thetaTailDiagonalFloor_pos`, `thetaTailDiagonalFloor_le` — the
+  one-slab diagonal floor `k(y,y) ≥ 2C_l²e^{−8π}·y·e^{−2y}·E(y)²`.
+- `ratio_identity_abstract` (private) — the division-free core of the correlation-constant
+  identity, with the two exponential relations abstracted; kills the exp-bookkeeping cleanly.
+- `poly_vs_exp` (private) — `(x+t+1)² ≤ 9xt·e^{t−x}` on `1 ≤ x ≤ t` (the log-vs-linear step).
+- `thetaTailFirstMomentKernel_sq_le` — the squared correlation master
+  `k(x,t)² ≤ (K·e^{−(t−x)/2})²·k(x,x)k(t,t)`, `K = thetaTailPacketRatioConstant`.
+- `thetaTailFirstMomentKernel_le_corr` — the unsquared correlation bound.
+- `thetaTailPacketRatioConstant`, `thetaTailPacketSeparation` (`= 2·log(1+2K)`), positivity.
+- `geom_row_sum_le` (private) — off-diagonal geometric row sums `≤ 2q/(1−q)`.
+- **`thetaTailFirstMomentKernel_separatedPacket_quadraticForm_nonneg`** — the main theorem:
+  for every `σ ≥ thetaTailPacketSeparation`, every packet `x : ℕ → ℝ` with `x 0 ≥ 1` and
+  `x (m+1) ≥ x m + σ`, every `n` and every real vector `a`,
+  `0 ≤ Σ_{i,j<n} a i·a j·k(x i, x j)`.
+
+Relation to the endpoint catalogue: `riemannHypothesis_iff_posSemidef_thetaTailFirstMomentBezoutian`
+(`ThetaTailFirstMomentDoubleLaplace`) makes PSD of this kernel's Bezoutian transform on all
+finite node systems exactly RH; this theorem is the first unconditional off-diagonal stratum of
+that source-side condition — the burden now lives entirely in the sub-threshold (close-pair)
+regime, exactly where the HCF displacement warning predicted. Labels: [LEAN-PROVED];
+[NOVELTY UNVERIFIED] as new-to-corpus mathematics about a corpus-native object (the kernel has
+no literature presence; no external priority claim made).
+
+Next quantitative targets (unchanged): shrink the threshold (sharper slab, both-endpoint decay
+rate, non-lossy `x+t+1 ≤ 3t`), extend the node domain below 1 via the reflection seam, and the
+close-pair regime itself (CP-1's genuine frontier); the coincident-jet strata remain parked
+(razor-thin margins near x = 0, need certified numerics).

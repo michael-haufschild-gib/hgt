@@ -1855,3 +1855,17 @@ building either umbrella. Five audited capstones depend only on `propext`, `Clas
 caused by sixteen unrelated umbrella-reachability failures in the shared worktree. The formal
 certificate covers normalized collapse/prism identity and compatible chain-level serial maps;
 literal arithmetic formation realization remains open, and no RH claim is made.
+
+## Session 2026-08-29 addition (higher-arity serial observer formation)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-DOFM-1 | Augmented finite-family formation complexes; erasure and retention short/long exact sequences; two-leg recovery; chain and homology Euler conservation; connecting-map naturality; neutral higher lifts; positive Hodge realization | `HTGeometry.HigherAritySerialObserverFormation` |
+
+Scratch and project-path elaboration and one targeted leaf build pass. No umbrella, theorem-area,
+or project build was run. Module is wired into `HTGeometry.UniversalLawField` and `HTGeometry`
+without building either umbrella. Eighteen audited capstones depend only on `propext`,
+`Classical.choice`, and `Quot.sound`. Repository lint reaches the module and reports no defect in
+it; its nonzero status is caused by unrelated shared-worktree umbrella-reachability failures.
+Certificate includes full finite-support homology Euler cancellation, canonical comparison-quotient
+transport under injective lifts, and harmonic rank/zero-locus realization; no RH claim is made.

@@ -1,14 +1,14 @@
 # Higher-arity serial observer kernel/retention complexes and long-exact formation law
 
 - **ID:** ULF-DOFM-1
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / HIGHER-ARITY FIELD LAW
 - **Programme:** `../../../1-in-progress/universal-law-field/derived-observer-formation-mechanics/field-programme.md`
 - **Parents:** ULF-TFIM-1 and ULF-TFIM-2
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [HIGHER ARITY]`
   `[TWO SHORT-EXACT COMPLEXES] [TWO LONG-EXACT SEQUENCES]`
   `[KERNEL ERASURE] [RETENTION COMPARISON] [SERIAL NATURALITY]`
-  `[TWO-LEG FIVE-TERM RECOVERY] [NOT RH] [LEAN OPEN: READ-ONLY AUDIT]`
+  `[TWO-LEG FIVE-TERM RECOVERY] [LEAN-FORMALIZED] [AXIOM-AUDITED] [NOT RH]`
 - **Statement:** A finite family of formation legs and two serial observers canonically determine
   an erasure complex and a retention-comparison complex.  Two short exact sequences of augmented
   incidence complexes yield long exact formation-homology laws.  Their two-leg boundary recovers
@@ -438,19 +438,31 @@ next gate is not another binary example.  It is one of:
 
 ## 12. Lean status
 
-The Lean corpus contains chain complexes, homology, submodules, quotients, and long exact sequence
-machinery, but the present formation complexes and comparison diagrams are not packaged.  Per the
-active goal, this was a read-only audit: no Lean file was written and no build was run.
+Formalized unconditionally in
+`formal/GaloisForLFunctions/HTGeometry/HigherAritySerialObserverFormation.lean`.  Certificate
+includes augmented coefficient complexes and boundary-square law; literal erasure and retention
+short exact sequences; both long exact homology sequences and natural connecting maps; exact
+two-leg recovery; chain and homology Euler conservation over full finite support; neutral-lift
+kernel, intersection, quotient-transport, chain-isomorphism, and homology-isomorphism laws; and
+positive real/complex Hodge realization with metric-independent rank and zero-rank statements.
+
+Direct scratch and project-path elaboration pass.  Targeted leaf build
+`lake build GaloisForLFunctions.HTGeometry.HigherAritySerialObserverFormation` passes.  Eighteen
+audited capstones depend only on `propext`, `Classical.choice`, and `Quot.sound`.  Repository lint
+reaches the module through both umbrellas and reports no defect in it; nonzero lint status comes
+only from unrelated shared-worktree umbrella-reachability failures.  No umbrella build was run.
 
 ## Gates
 
 - [x] 0 -> 1: typed higher complexes, serial comparison, and two-leg calibration
 - [x] 1 -> 2: both short exact sequences, both long exact sequences, Euler laws, naturality, and
   sharp scope proof
-- [ ] 2 -> 3: Lean construction of augmented formation complexes and exact-sequence capstone
+- [x] 2 -> 3: Lean construction of augmented formation complexes and exact-sequence capstone
 - [ ] 3 -> 4: literal arithmetic higher-family realization and source-action theorem
 
 ## Log
 
 - 2026-08-14 -- higher-arity serial observer law closed on paper; DOFM Conjecture B proved for
   finite linear formation families.
+- 2026-08-29 -- Lean certificate completed, axiom-audited, leaf-built, wired into
+  `HTGeometry.UniversalLawField` and `HTGeometry`, and promoted to Stage 3.
