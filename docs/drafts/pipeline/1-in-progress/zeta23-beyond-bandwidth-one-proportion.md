@@ -1776,5 +1776,130 @@ Lean modules:
 
 - 2026-08-28 — originated shift averaging and universal `2+1` radial damping.  The first closes
   translated-predecessor collisions; the second converts the divergent critical radial channel
-  into exact anomaly `115/(108 eps^3)`, whose normalized complement is a bounded source-only
+  into exact anomaly `115/(108 eps^3)`, whose normalized complement is a bounded finite-packet
   diagonal mask.  This is a real structural advance, but not yet the global `4/25` estimate.
+
+### Entire-scalarization audit of the damped mask
+
+`[OWN CONJECTURE LEAN-PROVED] [NO-GO] [POSITIVE SURVIVOR: CROSSING-POLE/STOKES SOURCE]`
+
+The phrase “source-only diagonal mask” above is too strong if read as existence of a holomorphic
+source covariance.  The mask is obtained from a source-formed shifted bichamber density and is an
+exact finite-divisor-packet landing, but its reflection-graph restriction is real-valued and
+nonconstant.  For every `eps>0`, Lean proves
+
+```text
+not exists entire F : C x C -> C,
+  F(1-z,z) = M(Re(z)/eps) for every z.                              (PS8)
+```
+
+Indeed the pullback `g(z)=F(1-z,z)` and its pointwise conjugate would both be entire, forcing `g`
+constant, while `M(0)=0<M(1)`.  Thus `(PS7)` does not by itself instantiate the required
+pre-divisor covariance `B_tilde`; more profile optimization or entire-kernel interpolation is
+terminal busywork.
+
+The positive survivor is exact: a valid source realization must leave ordinary entire
+scalarization, using either a real Stokes/Wirtinger boundary defect or the fixed crossing poles in
+the corpus rational Cauchy-pair kernel.  Positive-shift arithmetic covariance is the natural
+source term for those prescribed pole crossings.  Missing theorem is now the pole-safe contour
+identity and its height-local source bound, not diagonal separation.
+
+Lean module `XiWardCubicPositiveShiftDampedDiagonalSeparatorNoGo.lean` proves `(PS8)` for every
+positive source shift without additional axioms.
+
+### Scale-free prime Stokes projector for the HCF subtraction
+
+`[OWN CONJECTURE LEAN-PROVED] [POSITIVE SURVIVOR] [HCF FRONTIER MOVED]`
+
+The real Stokes survivor forced by `(PS8)` exists in the current corpus.  Let
+
+```text
+J(t) = 8 t sum_p log(p) p^(-1-2|t|).
+```
+
+The previously proved prime-residue law gives `J(0)=0`, `J(0+) = 4`, and `J(0-) = -4`.  New Lean
+proof establishes that `J` is continuous at every `t != 0`, using its continuation
+
+```text
+J(t) = 8 t Re P_cont(1+2|t|).
+```
+
+Consequently its normalized Stokes charge
+
+```text
+jump_J(t) = (right boundary value at t - left boundary value at t) / 8
+```
+
+exists uniquely and satisfies
+
+```text
+jump_J(t) = 1  if t=0,
+            0  if t!=0.                                           (PS9)
+```
+
+This is scale-free: an off-line displacement has zero local charge however small it is.  No
+divisor-dependent aperture, thin-strip width, Abel parameter, or entire scalarization is used.
+For every continuous real weight `W`, Lean proves the coefficient-faithful product law
+
+```text
+jump_(J W)(t) = W(0)  if t=0,
+                0     if t!=0.                                    (PS10)
+```
+
+Thus multiplication occurs before the Stokes jump and returns one copy of the feature weight,
+not a quadratic multiplicity residue.  Specializing `(PS10)` to the HCF critical Cauchy feature
+gives exactly `criticalLineCriticalFeatureEnergy` copy by copy.  The new lattice budget
+
+```text
+criticalFeaturePrimeGammaStokesOffLineLatticeBudget(K)
+```
+
+is proved identically equal to the established corrected HCF off-line lattice budget.  It removes
+the line channel by the unique prime Stokes jump rather than the divisor-isolating thin contour or
+exterior Abel projector.
+
+This closes the qualitative source/diagonal mechanism requested at submicroscopic displacement.
+It does **not** prove the quantitative `21N/100` (or stronger `4N/25`) ceiling.  Exact remaining
+HCF target is now narrower: realize the height-local infinite weighted Stokes trace directly as a
+pole--Gamma source current and bound that current by `21N/100+o(N)`.  Diagonal selection,
+multiplicity degree, and aperture collision are no longer the open pieces.
+
+Lean module `HedenmalmStokesPrimeJumpProjector.lean` proves `(PS9)`, `(PS10)`, finite-packet
+coefficient landing, HCF feature specialization, and exact equality of the Stokes-corrected and
+existing HCF lattice budgets.  Targeted build and axiom audit pass; dependencies are only
+`propext`, `Classical.choice`, and `Quot.sound`.
+
+### Explicit polar--Gamma counterjump closure
+
+`[OWN CONJECTURE LEAN-PROVED] [POSITIVE SURVIVOR] [HCF FRONTIER MOVED]`
+
+The source cancellation is now explicit on both sides.  Write
+
+```text
+K(t) = gammaSewnMobiusApertureStokesOrientedPolarCountercurrent(t),
+```
+
+the corpus higher-valuation/rational--Gamma countercurrent.  Lean proves `K` continuous at every
+nonzero depth, normalized jump `-1` at depth zero, and normalized jump `0` elsewhere.  Therefore
+the prime jump and polar--Gamma counterjump cancel identically at every depth:
+
+```text
+jump_J(t) + jump_K(t) = 0.                                      (PS11)
+```
+
+For every continuous real weight `W`, the pre-jump product has charge `-W(0)` on the wall and
+zero off it.  With the HCF critical Cauchy feature this is exactly minus the linear critical-line
+energy, copy by copy.  Consequently
+
+```text
+criticalFeaturePoleGammaStokesOffLineLatticeBudget(Kset)
+  = criticalFeaturePrimeGammaOffLineLatticeBudget(Kset).        (PS12)
+```
+
+This is stronger than the prime-jump-only formulation: critical-line subtraction is represented
+by the explicit completed higher-valuation/Gamma boundary defect, with no aperture or Abel scale.
+It still does **not** construct the required zero-independent infinite covariance: the present HCF
+weight and trace land on `XiZeroCopy`.  Remaining source theorem is exact evaluation of that
+height-local weighted polar--Gamma Stokes trace from pole/Gamma/von-Mangoldt data, followed by the
+`21N/100+o(N)` ceiling (`4N/25+o(N)` is the stronger target).  `(PS11)`--`(PS12)` remove the local
+counterterm and multiplicity ambiguity; they do not supply that global quantitative estimate.

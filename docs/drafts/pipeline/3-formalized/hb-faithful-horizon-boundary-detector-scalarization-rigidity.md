@@ -1,6 +1,6 @@
 # HC93 — Faithful horizon/boundary detector scalarization rigidity
 
-Status: in progress
+Status: formalized
 
 Route: HB, with shared FZZ-P / RBH / PW-B Ward relevance
 
@@ -70,13 +70,36 @@ Prove:
 - Targeted searches for horizon/boundary detector-channel scalarization and faithful linear mixing
   found no statement of this classification or RH equivalence. This is a bounded novelty audit.
 
+## Formal result
+
+Module:
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMRadiativeSourceFEFaithfulDetectorScalarizationRigidity`
+
+The closed theorem `hbXiRadiativeFaithfulDetectorScalarizationRigidity` proves all five clauses of
+HC93 for the actual HC92 source-FE horizon/boundary cocycles. In particular:
+
+- any injective detector that scalarizes the two-channel cocycle forces `Re(q) = 1 / 2`;
+- off the critical line, a linear detector scalarizes the cocycle if and only if it kills the
+  horizon basis vector or kills the boundary basis vector;
+- local faithful scalarizability is equivalent to the critical-line condition; and
+- existence of a copy-dependent globally faithful detector scalarization is equivalent to
+  `RiemannHypothesis`.
+
+Thus arbitrary nonscalar and singular linear detector compression is exhausted. Rank loss is the
+only off-line scalarization mechanism, and it works precisely by deleting one complete physical
+channel. The live HB burden is now literal augmented-source dynamics / pre-divisor source law
+forcing faithful copywise darkness, not detector normalization or channel mixing.
+
+Audit: direct Lean check passed; targeted build passed 13,098/13,098; `#print axioms` reports only
+`propext`, `Classical.choice`, and `Quot.sound`; formal lint reports no HC93 finding (its failures are
+pre-existing unreachable modules outside this card).
+
 ## Lean audit checklist
 
-- [ ] Foreground scratch proof with `lake env lean /tmp/hc93.lean`
-- [ ] No `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`
-- [ ] Closed theorem and `#print axioms` audit
-- [ ] Add module and wire `GaloisForLFunctions.RHTower`
-- [ ] Targeted module build only
-- [ ] Formal lint has no HC93 finding
-- [ ] Promote to `3-formalized`
-
+- [x] Foreground scratch proof with `lake env lean /tmp/hc93.lean`
+- [x] No `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`
+- [x] Closed theorem and `#print axioms` audit
+- [x] Add module and wire `GaloisForLFunctions.RHTower`
+- [x] Targeted module build only
+- [x] Formal lint has no HC93 finding
+- [x] Promote to `3-formalized`

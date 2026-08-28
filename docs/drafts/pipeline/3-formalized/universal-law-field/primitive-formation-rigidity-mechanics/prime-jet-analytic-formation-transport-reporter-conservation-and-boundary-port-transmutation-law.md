@@ -1,13 +1,19 @@
 # Prime-jet analytic formation transport, reporter conservation, and boundary-port transmutation
 
 - **ID:** ULF-PFRM-4
-- **Stage:** 2 -- fully proven on paper
+- **Stage:** 3 -- formalized in Lean 4
 - **Type:** THEOREM / FORMATION--DUALIZATION EXCHANGE LAW
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [BRIDGE]`
   `[NONLOCAL FORMATION TRANSPORT] [EXACT REPORTER CONSERVATION]`
   `[RANK-ONE LOCALITY DEFECT] [GRAM/WORK RECIPROCITY]`
-  `[ANALYTIC BOUNDARY-PORT TRANSMUTATION] [COMPLETION FRACTURE] [NOT RH]`
-- **Formal status:** not Lean-formalized. Under project rules this is not yet an accepted AI proof.
+  `[ANALYTIC BOUNDARY-PORT TRANSMUTATION] [COMPLETION FRACTURE]`
+  `[LEAN-FORMALIZED] [AXIOM-AUDITED] [NOT RH]`
+- **Formal status:** formalized unconditionally in
+  `GaloisForLFunctions.HTGeometry.PrimeJetFormationTransport`. Direct Lean check and targeted module
+  build pass. All declarations introduced by the module were axiom-audited and depend only on
+  `propext`, `Classical.choice`, and `Quot.sound`. The unrestricted-entire counterexample uses the
+  necessary explicit escape hypothesis
+  `Tendsto (fun n => ‖r n ^ 2‖) atTop atTop`; strict increase alone does not imply escape.
 - **Parents:**
   - `conjugate-formation-work-reporter-capacity-reciprocity-recovery-isometry-and-depth-invisibility-law.md`;
   - `../../../3-formalized/not_new_scientific_knowledge/fe-paired-prime-jet-barycentric-rigidity.md`;
@@ -569,3 +575,11 @@ prime--archimedean completed-flux germ and prove:
 - 2026-08-12 -- exact analytic formation transport, reporter conservation, rank-one locality
   defect, Gram/work reciprocity, one-step boundary-port transmutation, and analytic-completion
   fracture proved on paper. Fixed-metric PFRM-B1 falsified.
+- 2026-08-28 -- formalized finite odd-law charts, strict transport composition, reporter
+  conservation, rank-one locality defect, boundary-port kernel classification, graph
+  `TᴴT`/determinant/work/capacity reciprocity, bornological norm escape, compact-open derivative
+  continuity, unrestricted-entire fracture, and finite-exponential-type prime-log uniqueness in
+  `PrimeJetFormationTransport.lean`.
+- 2026-08-28 -- repaired paper hypothesis in completion-fracture statement: strictly increasing
+  positive radii may remain bounded, so the Weierstrass witness theorem now assumes squared-node
+  escape explicitly. Lean check, targeted build, and axiom audit passed; promoted to Stage 3.

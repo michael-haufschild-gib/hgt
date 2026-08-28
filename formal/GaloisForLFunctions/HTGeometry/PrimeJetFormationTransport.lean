@@ -2,8 +2,12 @@ import GaloisForLFunctions.RHTower.FEPairedPrimeJetBarycentricRigidity
 import GaloisForLFunctions.RHTower.CenteredRealEvenPolynomialDensity
 import GaloisForLFunctions.RHTower.DeningerArithmeticContinuousJets
 import GaloisForLFunctions.RHTower.PrimeLogExponentialTypeUniqueness
+import GaloisForLFunctions.RHTower.PrimeBarycentricCoefficientDivergence
+import GaloisForLFunctions.RHTower.PrimeBarycentricProjectiveEscape
+import GaloisForLFunctions.HTGeometry.ConstitutiveConjugateFormationReciprocity
 import GaloisForLFunctions.HTGeometry.LowDegreeVanishing
 import GaloisForLFunctions.HTGeometry.LogDerivUniformLimit
+import GaloisForLFunctions.HTGeometry.ReturnExcisedOptimalDesignCoareaLaw
 import GaloisForLFunctions.HTGeometry.WeierstrassPaddedGenusProduct
 
 /-!
@@ -19,14 +23,14 @@ infinite-sampling counterexample explicitly assumes escaping squared nodes; stri
 does not imply this and is insufficient.
 -/
 
-open scoped BigOperators
+open scoped BigOperators ComplexConjugate
 
 namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
 open Polynomial
-open RHTower
+open _root_.RHTower
 
 /-- Degree-`< n` square-coordinate factor of an odd polynomial law `z Q(z²)`. -/
 abbrev PrimeJetOddLaw (n : ℕ) := Polynomial.degreeLT ℂ n
@@ -746,6 +750,458 @@ theorem primeJetEnhancedMap_inclusion_graph {n : ℕ} (r : Fin n → ℂ)
         ((primeJetSampleEquiv r hr0 hr2inj).symm y)) =
       primeJetOriginReporter n ((primeJetSampleEquiv r hr0 hr2inj).symm y)
     simp [primeJetOriginReporter, primeJetLawInclusion_apply]
+
+/-! ## Hilbert graph determinant and work--capacity reciprocity -/
+
+/-- Standard Hilbert space containing a source vector and one terminal port. -/
+abbrev PrimeJetGraphSpace (n : ℕ) := EuclideanSpace ℂ (Fin n ⊕ Unit)
+
+/-- Riesz normal to the graph of `y ↦ ∑ᵢ τᵢyᵢ`. -/
+def primeJetGraphNormal {n : ℕ} (τ : Fin n → ℂ) : PrimeJetGraphSpace n :=
+  WithLp.toLp 2 fun j => Sum.elim (fun i => -star (τ i)) (fun _ => 1) j
+
+/-- Normalized terminal reporter `η(y,z)=z-∑ᵢ τᵢyᵢ`. -/
+def primeJetGraphReporter {n : ℕ} (τ : Fin n → ℂ) :
+    StrongDual ℂ (PrimeJetGraphSpace n) :=
+  (InnerProductSpace.toDual ℂ (PrimeJetGraphSpace n)) (primeJetGraphNormal τ)
+
+theorem primeJetGraphReporter_apply {n : ℕ} (τ : Fin n → ℂ)
+    (x : PrimeJetGraphSpace n) :
+    primeJetGraphReporter τ x = x (Sum.inr ()) - ∑ i, τ i * x (Sum.inl i) := by
+  rw [primeJetGraphReporter, InnerProductSpace.toDual_apply_apply,
+    inner_toLp_eq_finiteComplexInner]
+  simp [primeJetGraphNormal, finiteComplexInner]
+  ring
+
+/-- Positive real scalar shared by graph determinant, reporter capacity, and inverse work. -/
+def primeJetGraphDeterminantScalar {n : ℕ} (τ : Fin n → ℂ) : ℝ :=
+  1 + ∑ i, ‖τ i‖ ^ 2
+
+theorem primeJetGraphDeterminantScalar_pos {n : ℕ} (τ : Fin n → ℂ) :
+    0 < primeJetGraphDeterminantScalar τ := by
+  unfold primeJetGraphDeterminantScalar
+  positivity
+
+/-- Reporter norm is exactly the rank-one graph determinant scalar. -/
+theorem primeJetGraphReporter_norm_sq {n : ℕ} (τ : Fin n → ℂ) :
+    ‖primeJetGraphReporter τ‖ ^ 2 = primeJetGraphDeterminantScalar τ := by
+  rw [primeJetGraphReporter, LinearIsometryEquiv.norm_map, primeJetGraphNormal,
+    PiLp.norm_sq_eq_of_L2]
+  simp [primeJetGraphDeterminantScalar, add_comm]
+
+/-- Point on the graph of the terminal reporter. -/
+def primeJetGraphPoint {n : ℕ} (τ : Fin n → ℂ) (y : Fin n → ℂ) :
+    PrimeJetGraphSpace n :=
+  WithLp.toLp 2 fun j => Sum.elim y (fun _ => ∑ i, τ i * y i) j
+
+/-- Unit terminal basis vector. -/
+def primeJetTerminalVector (n : ℕ) : PrimeJetGraphSpace n :=
+  EuclideanSpace.single (Sum.inr ()) 1
+
+/-- Formation graph as the exact kernel of its normalized reporter. -/
+def primeJetGraph {n : ℕ} (τ : Fin n → ℂ) :
+    Submodule ℂ (PrimeJetGraphSpace n) :=
+  LinearMap.ker (primeJetGraphReporter τ : PrimeJetGraphSpace n →ₗ[ℂ] ℂ)
+
+theorem primeJetGraphPoint_mem {n : ℕ} (τ : Fin n → ℂ) (y : Fin n → ℂ) :
+    primeJetGraphPoint τ y ∈ primeJetGraph τ := by
+  rw [primeJetGraph, LinearMap.mem_ker]
+  change primeJetGraphReporter τ (primeJetGraphPoint τ y) = 0
+  rw [primeJetGraphReporter_apply]
+  simp [primeJetGraphPoint]
+
+theorem mem_primeJetGraph_iff {n : ℕ} (τ : Fin n → ℂ)
+    (x : PrimeJetGraphSpace n) :
+    x ∈ primeJetGraph τ ↔ x (Sum.inr ()) = ∑ i, τ i * x (Sum.inl i) := by
+  rw [primeJetGraph, LinearMap.mem_ker]
+  change primeJetGraphReporter τ x = 0 ↔ _
+  rw [primeJetGraphReporter_apply, sub_eq_zero]
+
+@[simp] theorem primeJetGraphReporter_terminal {n : ℕ} (τ : Fin n → ℂ) :
+    primeJetGraphReporter τ (primeJetTerminalVector n) = 1 := by
+  rw [primeJetGraphReporter_apply]
+  simp [primeJetTerminalVector]
+
+theorem primeJetGraphReporter_ne_zero {n : ℕ} (τ : Fin n → ℂ) :
+    primeJetGraphReporter τ ≠ 0 := by
+  intro h
+  have hterminal := congrArg
+    (fun f : StrongDual ℂ (PrimeJetGraphSpace n) => f (primeJetTerminalVector n)) h
+  simp at hterminal
+
+theorem primeJetTerminalVector_not_mem_graph {n : ℕ} (τ : Fin n → ℂ) :
+    primeJetTerminalVector n ∉ primeJetGraph τ := by
+  rw [primeJetGraph, LinearMap.mem_ker]
+  simp
+
+/-- Matrix of the graph embedding `T(y)=(y,τy)`. -/
+def primeJetGraphEmbeddingMatrix {n : ℕ} (τ : Fin n → ℂ) :
+    Matrix (Fin n ⊕ Unit) (Fin n) ℂ :=
+  fun j i => Sum.elim (fun k => if k = i then 1 else 0) (fun _ => τ i) j
+
+/-- Rank-one Gram matrix `TᴴT=I+τ⁺τ`. -/
+def primeJetGraphGram {n : ℕ} (τ : Fin n → ℂ) :
+    Matrix (Fin n) (Fin n) ℂ :=
+  1 + Matrix.vecMulVec (star τ) τ
+
+theorem primeJetGraphEmbeddingMatrix_conjTranspose_mul {n : ℕ} (τ : Fin n → ℂ) :
+    (primeJetGraphEmbeddingMatrix τ).conjTranspose * primeJetGraphEmbeddingMatrix τ =
+      primeJetGraphGram τ := by
+  classical
+  ext i j
+  simp [Matrix.mul_apply, Matrix.conjTranspose_apply, primeJetGraphEmbeddingMatrix,
+    primeJetGraphGram, Matrix.vecMulVec_apply, Matrix.one_apply, eq_comm]
+
+/-- Matrix determinant lemma for the graph Gram matrix. -/
+theorem primeJetGraphGram_det {n : ℕ} (τ : Fin n → ℂ) :
+    (primeJetGraphGram τ).det = 1 + τ ⬝ᵥ star τ := by
+  simpa [primeJetGraphGram] using
+    (det_add_smul_vecMulVec_self_star
+      (M := (1 : Matrix (Fin n) (Fin n) ℂ)) (by simp) (star τ) 1)
+
+/-- Exact determinant `det(TᴴT)=1+‖τ‖²`. -/
+theorem primeJetGraphGram_det_eq_scalar {n : ℕ} (τ : Fin n → ℂ) :
+    (primeJetGraphGram τ).det = (primeJetGraphDeterminantScalar τ : ℂ) := by
+  rw [primeJetGraphGram_det]
+  simp only [dotProduct, Pi.star_apply]
+  calc
+    1 + ∑ i, τ i * star (τ i) =
+        1 + ∑ i, ((‖τ i‖ ^ 2 : ℝ) : ℂ) := by
+      congr 1
+      apply Finset.sum_congr rfl
+      intro i _
+      rw [Complex.sq_norm]
+      apply Complex.ext
+      · simp [Complex.normSq_apply]
+      · simp [Complex.normSq_apply]
+        ring
+    _ = (primeJetGraphDeterminantScalar τ : ℂ) := by
+      unfold primeJetGraphDeterminantScalar
+      push_cast
+      rfl
+
+theorem primeJetGraphGram_det_eq_reporter_norm_sq {n : ℕ} (τ : Fin n → ℂ) :
+    (primeJetGraphGram τ).det = ((‖primeJetGraphReporter τ‖ ^ 2 : ℝ) : ℂ) := by
+  rw [primeJetGraphGram_det_eq_scalar, primeJetGraphReporter_norm_sq]
+
+/-- Terminal squared distance to the graph, equivalently least formation work. -/
+theorem primeJetGraphFormationWork {n : ℕ} (τ : Fin n → ℂ) :
+    conjugateFormationWork (primeJetGraph τ) (primeJetTerminalVector n) =
+      (primeJetGraphDeterminantScalar τ)⁻¹ := by
+  have h := conjugateFormationWork_ker_mul_norm_sq
+    (primeJetGraphReporter τ) (primeJetGraphReporter_ne_zero τ) (primeJetTerminalVector n)
+  rw [primeJetGraphReporter_norm_sq, primeJetGraphReporter_terminal,
+    norm_one, one_pow] at h
+  change conjugateFormationWork (primeJetGraph τ) (primeJetTerminalVector n) *
+    primeJetGraphDeterminantScalar τ = 1 at h
+  have hp := primeJetGraphDeterminantScalar_pos τ
+  calc
+    conjugateFormationWork (primeJetGraph τ) (primeJetTerminalVector n) =
+        (conjugateFormationWork (primeJetGraph τ) (primeJetTerminalVector n) *
+          primeJetGraphDeterminantScalar τ) *
+            (primeJetGraphDeterminantScalar τ)⁻¹ := by
+      rw [mul_assoc, mul_inv_cancel₀ hp.ne', mul_one]
+    _ = (primeJetGraphDeterminantScalar τ)⁻¹ := by rw [h, one_mul]
+
+theorem primeJetGraphTerminalDistance_sq {n : ℕ} (τ : Fin n → ℂ) :
+    _root_.HTGeometry.ConstraintRelativity.quotientDistance
+        (primeJetGraph τ) (primeJetTerminalVector n) ^ 2 =
+      (primeJetGraphDeterminantScalar τ)⁻¹ := by
+  exact primeJetGraphFormationWork τ
+
+/-- Least normalized reporter capacity is the graph determinant. -/
+theorem primeJetGraphReporterCapacity {n : ℕ} (τ : Fin n → ℂ) :
+    conjugateReporterCapacity (primeJetGraph τ) (primeJetTerminalVector n) =
+      primeJetGraphDeterminantScalar τ := by
+  rw [primeJetGraph, conjugateReporterCapacity_ker_eq_norm_ratio
+    (primeJetGraphReporter τ) (primeJetGraphReporter_ne_zero τ) (by simp),
+    primeJetGraphReporter_norm_sq, primeJetGraphReporter_terminal,
+    norm_one, one_pow, div_one]
+
+/-- Exact work--capacity reciprocity for graph formation. -/
+theorem primeJetGraph_work_mul_capacity {n : ℕ} (τ : Fin n → ℂ) :
+    conjugateFormationWork (primeJetGraph τ) (primeJetTerminalVector n) *
+      conjugateReporterCapacity (primeJetGraph τ) (primeJetTerminalVector n) = 1 := by
+  rw [primeJetGraphFormationWork, primeJetGraphReporterCapacity]
+  exact inv_mul_cancel₀ (primeJetGraphDeterminantScalar_pos τ).ne'
+
+/-- Every coordinate atom gives a sharp lower bound on graph-reporter norm. -/
+theorem primeJetGraphCoefficient_norm_le_reporter_norm {n : ℕ}
+    (τ : Fin n → ℂ) (i : Fin n) :
+    ‖τ i‖ ≤ ‖primeJetGraphReporter τ‖ := by
+  let e : PrimeJetGraphSpace n := EuclideanSpace.single (Sum.inl i) 1
+  have hbound := (primeJetGraphReporter τ).le_opNorm e
+  have heval : primeJetGraphReporter τ e = -τ i := by
+    rw [primeJetGraphReporter_apply]
+    simp [e]
+  rw [heval, norm_neg] at hbound
+  simpa [e] using hbound
+
+/-! ### Specialization to the one-step prime-jet transport -/
+
+/-- Coefficient vector of the terminal Lagrange reporter. -/
+def primeJetTailCoefficientVector {n : ℕ} (r : Fin (n + 1) → ℂ) : Fin n → ℂ :=
+  fun i => primeJetTailWeight r i
+
+@[simp] theorem primeJetTailCoefficientVector_apply {n : ℕ}
+    (r : Fin (n + 1) → ℂ) (i : Fin n) :
+    primeJetTailCoefficientVector r i = primeJetTailWeight r i := rfl
+
+/-- Hilbert realization of the actual one-step formation graph. -/
+def primeJetOneStepHilbertGraphPoint {n : ℕ} (r : Fin (n + 1) → ℂ)
+    (hr0 : ∀ i, r i ≠ 0) (hr2inj : Function.Injective fun i => r i ^ 2)
+    (y : Fin n → ℂ) : PrimeJetGraphSpace n :=
+  WithLp.toLp 2 fun j =>
+    Sum.elim y (fun _ => primeJetTailReporter r hr0 hr2inj y) j
+
+theorem primeJetOneStepHilbertGraphPoint_mem {n : ℕ} (r : Fin (n + 1) → ℂ)
+    (hr0 : ∀ i, r i ≠ 0) (hr2inj : Function.Injective fun i => r i ^ 2)
+    (y : Fin n → ℂ) :
+    primeJetOneStepHilbertGraphPoint r hr0 hr2inj y ∈
+      primeJetGraph (primeJetTailCoefficientVector r) := by
+  rw [primeJetGraph, LinearMap.mem_ker]
+  change primeJetGraphReporter (primeJetTailCoefficientVector r)
+    (primeJetOneStepHilbertGraphPoint r hr0 hr2inj y) = 0
+  rw [primeJetGraphReporter_apply]
+  change primeJetTailReporter r hr0 hr2inj y -
+    ∑ i, primeJetTailCoefficientVector r i * y i = 0
+  rw [primeJetTailReporter_eq_sum]
+  simp [primeJetTailCoefficientVector]
+
+theorem primeJetTailGraphGram_det {n : ℕ} (r : Fin (n + 1) → ℂ) :
+    (primeJetGraphGram (primeJetTailCoefficientVector r)).det =
+      ((1 + ∑ i, ‖primeJetTailWeight r i‖ ^ 2 : ℝ) : ℂ) := by
+  simpa [primeJetGraphDeterminantScalar, primeJetTailCoefficientVector] using
+    primeJetGraphGram_det_eq_scalar (primeJetTailCoefficientVector r)
+
+theorem primeJetTailGraphFormationWork {n : ℕ} (r : Fin (n + 1) → ℂ) :
+    conjugateFormationWork (primeJetGraph (primeJetTailCoefficientVector r))
+        (primeJetTerminalVector n) =
+      (1 + ∑ i, ‖primeJetTailWeight r i‖ ^ 2)⁻¹ := by
+  simpa [primeJetGraphDeterminantScalar, primeJetTailCoefficientVector] using
+    primeJetGraphFormationWork (primeJetTailCoefficientVector r)
+
+/-! ## Bornological consequences -/
+
+/-- Divergent responses on uniformly bounded coordinates force reporter norms to diverge. -/
+theorem primeJetReporterNorm_tendsto_atTop_of_bounded_coordinates
+    {I H : Type*} [NormedAddCommGroup H] [NormedSpace ℂ H]
+    {l : Filter I} (reporter : I → StrongDual ℂ H) (x : I → H) {M : ℝ}
+    (hM : 0 < M) (hx : ∀ᶠ i in l, ‖x i‖ ≤ M)
+    (hvalue : Filter.Tendsto (fun i => ‖reporter i (x i)‖) l Filter.atTop) :
+    Filter.Tendsto (fun i => ‖reporter i‖) l Filter.atTop := by
+  refine Filter.tendsto_atTop.2 ?_
+  intro b
+  have hlarge := (Filter.tendsto_atTop.1 hvalue) (M * max b 0)
+  filter_upwards [hx, hlarge] with i hxi hlargei
+  have himage : ‖reporter i (x i)‖ ≤ ‖reporter i‖ * M :=
+    (reporter i).le_opNorm (x i) |>.trans
+      (mul_le_mul_of_nonneg_left hxi (norm_nonneg _))
+  have hscaled : M * max b 0 ≤ M * ‖reporter i‖ := by
+    simpa [mul_comm] using hlargei.trans himage
+  have hmax : max b 0 ≤ ‖reporter i‖ := by nlinarith
+  exact (le_max_left b 0).trans hmax
+
+/-- Reporter-norm escape is equivalent here to collapse of squared formation work. -/
+theorem primeJetFormationWork_tendsto_zero_of_reporterNorm_atTop
+    {I H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
+    {l : Filter I} (reporter : I → StrongDual ℂ H) (x : I → H)
+    (hne : ∀ i, reporter i ≠ 0) (hvalue : ∀ i, reporter i (x i) = 1)
+    (hnorm : Filter.Tendsto (fun i => ‖reporter i‖) l Filter.atTop) :
+    Filter.Tendsto (fun i =>
+      conjugateFormationWork (LinearMap.ker (reporter i : H →ₗ[ℂ] ℂ)) (x i))
+      l (nhds 0) := by
+  have hwork (i : I) :
+      conjugateFormationWork (LinearMap.ker (reporter i : H →ₗ[ℂ] ℂ)) (x i) =
+        (‖reporter i‖⁻¹) ^ 2 := by
+    have h := conjugateFormationWork_ker_mul_norm_sq (reporter i) (hne i) (x i)
+    rw [hvalue i, norm_one, one_pow] at h
+    have hp : 0 < ‖reporter i‖ := norm_pos_iff.mpr (hne i)
+    calc
+      conjugateFormationWork (LinearMap.ker (reporter i : H →ₗ[ℂ] ℂ)) (x i) =
+          (conjugateFormationWork
+            (LinearMap.ker (reporter i : H →ₗ[ℂ] ℂ)) (x i) *
+            ‖reporter i‖ ^ 2) * (‖reporter i‖ ^ 2)⁻¹ := by
+        rw [mul_assoc, mul_inv_cancel₀ (pow_ne_zero 2 hp.ne'), mul_one]
+      _ = (‖reporter i‖ ^ 2)⁻¹ := by rw [h, one_mul]
+      _ = (‖reporter i‖⁻¹) ^ 2 := by rw [inv_pow]
+  have hinv := hnorm.inv_tendsto_atTop
+  have hsquare := hinv.pow 2
+  convert hsquare using 1
+  · funext i
+    rw [hwork]
+    simp
+  · simp
+
+/-- Arithmetic specialization: every fixed prime coefficient magnitude escapes. -/
+theorem primeJetPrimeCoefficientMagnitude_tendsto_atTop
+    (p₀ : ℕ) (hp₀ : p₀.Prime) :
+    Filter.Tendsto (_root_.RHTower.primeBarycentricCoefficientMagnitude p₀)
+      Filter.atTop Filter.atTop :=
+  _root_.RHTower.tendsto_primeBarycentricCoefficientMagnitude_atTop p₀ hp₀
+
+/-- Arithmetic specialization: fixed-prime coefficient directions escape projectively. -/
+theorem primeJetPrimeProjectiveRatio_tendsto_atTop
+    (p q : ℕ) (hp : p.Prime) (hq : q.Prime) (hpq : p < q) :
+    Filter.Tendsto (_root_.RHTower.primeBarycentricProjectiveRatio p q)
+      Filter.atTop Filter.atTop :=
+  _root_.RHTower.tendsto_primeBarycentricProjectiveRatio_atTop p q hp hq hpq
+
+/-! ## Analytic completion fracture -/
+
+/-- Odd part of a polynomial. -/
+def primeJetOddPolynomial (P : Polynomial ℂ) : Polynomial ℂ :=
+  (2 : ℂ)⁻¹ • (P - P.comp (-Polynomial.X))
+
+theorem primeJetOddPolynomial_eval_neg (P : Polynomial ℂ) (z : ℂ) :
+    (primeJetOddPolynomial P).eval (-z) = -(primeJetOddPolynomial P).eval z := by
+  simp [primeJetOddPolynomial, Polynomial.eval_comp]
+  ring
+
+/-- Odd polynomials are compact-open dense in odd entire functions. -/
+theorem exists_primeJetOddPolynomial_tendstoLocallyUniformly
+    {f : ℂ → ℂ} (hf : Differentiable ℂ f) (hodd : ∀ z, f (-z) = -f z) :
+    ∃ P : ℕ → Polynomial ℂ,
+      (∀ n z, (P n).eval (-z) = -(P n).eval z) ∧
+      TendstoLocallyUniformly (fun n z => (P n).eval z) f Filter.atTop := by
+  let T : ℕ → Polynomial ℂ := fun n => _root_.RHTower.entireTaylorPolynomial f n
+  have hT : TendstoLocallyUniformly (fun n z => (T n).eval z) f Filter.atTop :=
+    _root_.RHTower.entireTaylorPolynomial_tendstoLocallyUniformly hf
+  have hneg := _root_.RHTower.tendstoLocallyUniformly_functionNegPullback hT
+  have hsub := hT.sub hneg
+  have hc := _root_.RHTower.tendstoLocallyUniformly_const_index ((2 : ℂ)⁻¹)
+  have hmul := tendstoLocallyUniformly_mul hc hsub continuous_const
+    (hf.continuous.sub (hf.continuous.comp continuous_neg))
+  refine ⟨fun n => primeJetOddPolynomial (T n),
+    fun n => primeJetOddPolynomial_eval_neg (T n), ?_⟩
+  convert hmul using 1
+  · funext n z
+    simp [primeJetOddPolynomial, Polynomial.eval_comp,
+      _root_.RHTower.functionNegPullback]
+  · funext z
+    simp only [Pi.sub_apply, _root_.RHTower.functionNegPullback]
+    rw [hodd]
+    field_simp
+    ring
+
+/-- Origin derivative as a continuous compact-open reporter on entire functions. -/
+def primeJetCompactOpenOriginReporter :
+    _root_.RHTower.DeningerCompactOpenEntire →L[ℂ] ℂ :=
+  _root_.RHTower.deningerCompactOpenJet 0 1
+
+@[simp] theorem primeJetCompactOpenOriginReporter_apply
+    (F : _root_.RHTower.DeningerCompactOpenEntire) :
+    primeJetCompactOpenOriginReporter F = deriv (F : ℂ → ℂ) 0 := by
+  simp [primeJetCompactOpenOriginReporter, _root_.RHTower.deningerCompactOpenJet_apply,
+    iteratedDeriv_one]
+
+/-- Sharp first-derivative Cauchy estimate at the origin. -/
+theorem primeJetOriginReporter_cauchy {f : ℂ → ℂ} (hf : Differentiable ℂ f)
+    {R ε : ℝ} (hR : 0 < R) (hbound : ∀ z : ℂ, ‖z‖ ≤ R → ‖f z‖ ≤ ε) :
+    ‖deriv f 0‖ ≤ ε / R := by
+  exact norm_deriv_le_of_forall_norm_le (c := 0) (R := R) (ε := ε)
+    (δ := R) (z := 0) hf hR
+    (fun w hw => hbound w (by simpa using hw)) (by simp)
+
+/-- Cauchy constant `R⁻¹` is attained by `z ↦ z/R`. -/
+theorem primeJetOriginReporter_cauchy_sharp {R : ℝ} (hR : 0 < R) :
+    ∃ f : ℂ → ℂ, Differentiable ℂ f ∧
+      (∀ z : ℂ, ‖z‖ ≤ R → ‖f z‖ ≤ 1) ∧
+      ‖deriv f 0‖ = R⁻¹ := by
+  let f : ℂ → ℂ := fun z => z / (R : ℂ)
+  refine ⟨f, differentiable_id.div_const (R : ℂ), ?_, ?_⟩
+  · intro z hz
+    dsimp [f]
+    rw [norm_div, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hR]
+    exact (div_le_one hR).mpr hz
+  · have hder : HasDerivAt f ((R : ℂ)⁻¹) 0 := by
+      simpa [f, div_eq_mul_inv] using
+        (hasDerivAt_id (𝕜 := ℂ) (x := (0 : ℂ))).mul_const ((R : ℂ)⁻¹)
+    rw [hder.deriv, norm_inv, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hR]
+
+/-- Odd entire witness annihilating every escaping reflected sample while retaining derivative one. -/
+def primeJetInfiniteSampleWitness (r : ℕ → ℂ) (z : ℂ) : ℂ :=
+  z * weierstrassGenusProduct (fun n => r n ^ 2) (z ^ 2)
+
+theorem differentiable_primeJetInfiniteSampleWitness {r : ℕ → ℂ}
+    (hescape : Filter.Tendsto (fun n => ‖r n ^ 2‖) Filter.atTop Filter.atTop)
+    (hr0 : ∀ n, r n ≠ 0) :
+    Differentiable ℂ (primeJetInfiniteSampleWitness r) := by
+  exact differentiable_id.mul
+    ((differentiable_weierstrassGenusProduct hescape
+      (fun n => pow_ne_zero 2 (hr0 n))).comp (differentiable_id.pow 2))
+
+theorem primeJetInfiniteSampleWitness_odd (r : ℕ → ℂ) (z : ℂ) :
+    primeJetInfiniteSampleWitness r (-z) = -primeJetInfiniteSampleWitness r z := by
+  simp [primeJetInfiniteSampleWitness]
+
+theorem primeJetInfiniteSampleWitness_sample_zero {r : ℕ → ℂ}
+    (hescape : Filter.Tendsto (fun n => ‖r n ^ 2‖) Filter.atTop Filter.atTop)
+    (hr0 : ∀ n, r n ≠ 0) (n : ℕ) :
+    primeJetInfiniteSampleWitness r (r n) = 0 := by
+  rw [primeJetInfiniteSampleWitness]
+  have hz : weierstrassGenusProduct (fun k => r k ^ 2) (r n ^ 2) = 0 :=
+    (weierstrassGenusProduct_eq_zero_iff hescape
+      (fun k => pow_ne_zero 2 (hr0 k)) (r n ^ 2)).mpr ⟨n, rfl⟩
+  rw [hz, mul_zero]
+
+theorem primeJetInfiniteSampleWitness_hasDerivAt_one {r : ℕ → ℂ}
+    (hescape : Filter.Tendsto (fun n => ‖r n ^ 2‖) Filter.atTop Filter.atTop)
+    (hr0 : ∀ n, r n ≠ 0) :
+    HasDerivAt (primeJetInfiniteSampleWitness r) 1 0 := by
+  have hg : Differentiable ℂ
+      (fun z : ℂ => weierstrassGenusProduct (fun n => r n ^ 2) (z ^ 2)) :=
+    (differentiable_weierstrassGenusProduct hescape
+      (fun n => pow_ne_zero 2 (hr0 n))).comp (differentiable_id.pow 2)
+  have hmul := (hasDerivAt_id (𝕜 := ℂ) (x := (0 : ℂ))).mul
+    hg.differentiableAt.hasDerivAt
+  have hfun : (id * fun z : ℂ =>
+      weierstrassGenusProduct (fun n => r n ^ 2) (z ^ 2)) =
+      primeJetInfiniteSampleWitness r := by
+    funext z
+    rfl
+  rw [hfun] at hmul
+  simpa [weierstrassGenusProduct_at_zero] using hmul
+
+/-- Corrected completion fracture: escaping nonzero radii are not faithful on unrestricted odd
+entire functions.  Strict increase without escape is intentionally not used. -/
+theorem exists_oddEntire_infiniteSamples_zero_deriv_one
+    (r : ℕ → ℂ) (hescape : Filter.Tendsto (fun n => ‖r n ^ 2‖) Filter.atTop Filter.atTop)
+    (hr0 : ∀ n, r n ≠ 0) :
+    ∃ f : ℂ → ℂ, Differentiable ℂ f ∧
+      (∀ z, f (-z) = -f z) ∧
+      (∀ n, f (r n) - f (-r n) = 0) ∧ HasDerivAt f 1 0 := by
+  refine ⟨primeJetInfiniteSampleWitness r,
+    differentiable_primeJetInfiniteSampleWitness hescape hr0,
+    primeJetInfiniteSampleWitness_odd r, ?_,
+    primeJetInfiniteSampleWitness_hasDerivAt_one hescape hr0⟩
+  intro n
+  rw [primeJetInfiniteSampleWitness_odd,
+    primeJetInfiniteSampleWitness_sample_zero hescape hr0]
+  simp
+
+/-- Every finite reflected sample set misses a law with nonzero origin reporter. -/
+theorem exists_primeJetFiniteSamples_zero_reporter_ne_zero {n : ℕ}
+    (r : Fin n → ℂ) (hr0 : ∀ i, r i ≠ 0) :
+    ∃ Q : PrimeJetOddLaw (n + 1), primeJetOldSampleMap r Q = 0 ∧
+      primeJetOriginReporter (n + 1) Q ≠ 0 :=
+  ⟨primeJetBoundaryLaw r, primeJetOldSampleMap_boundaryLaw r,
+    primeJetOriginReporter_boundaryLaw_ne_zero r hr0⟩
+
+/-- Prime-log reflected sampling is faithful on odd entire functions of finite exponential type. -/
+theorem eq_zero_of_odd_exponentialType_of_primeLog_reflectedSamples
+    {f : ℂ → ℂ} (hf : Differentiable ℂ f) (hodd : ∀ z, f (-z) = -f z)
+    {A C : ℝ} (hA : 0 ≤ A) (hC : 1 ≤ C)
+    (hgrow : ∀ z : ℂ, ‖f z‖ ≤ C * Real.exp (A * ‖z‖))
+    (hsample : ∀ p : ℕ, p.Prime →
+      f (Real.log p) - f (-Real.log p) = 0) :
+    f = 0 := by
+  apply _root_.RHTower.eq_zero_of_exponentialType_of_primeLog_zeros hf hA hC hgrow
+  intro p hp
+  have hs := hsample p hp
+  rw [hodd] at hs
+  have htwo : (2 : ℂ) * f (Real.log p) = 0 := by linear_combination hs
+  exact (mul_eq_zero.mp htwo).resolve_left (by norm_num)
 
 end
 

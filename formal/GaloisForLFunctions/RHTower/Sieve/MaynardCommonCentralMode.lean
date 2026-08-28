@@ -153,6 +153,113 @@ theorem integral_adjacentNormalizedMellin_eq_lowErrors_add_highTails
           a ha hN hH]
     _ = _ := by ring
 
+/-- On the symmetric central band, subtracting the two endpoint kernels is exactly the difference
+of their central errors: the width-independent point-mass mode cancels before localization. -/
+theorem intervalIntegral_adjacentNormalizedMellin_eq_centralError_sub
+    (a : ℝ → ℂ) (ha : Continuous a) {N H R U : ℝ}
+    (hN : 0 < N) (hH : 0 < H) (hR : 0 < R) :
+    (∫ y in (-U)..U,
+      a y *
+        (routeTNormalizedSmoothWindowMellin N R
+            ((1 : ℂ) + (y : ℝ) * Complex.I) -
+          routeTNormalizedSmoothWindowMellin N H
+            ((1 : ℂ) + (y : ℝ) * Complex.I))) =
+      maynardCentralWidthError a N R U -
+        maynardCentralWidthError a N H U := by
+  rw [maynardCentralWidthError, maynardCentralWidthError]
+  rw [← intervalIntegral.integral_sub]
+  · apply intervalIntegral.integral_congr
+    intro y _hy
+    ring
+  · exact (ha.mul
+      ((continuous_routeTNormalizedSmoothWindowMellin_line hN hR (by norm_num)).sub
+        (Continuous.const_cpow (by fun_prop)
+          (Or.inl (by exact_mod_cast hN.ne'))))).intervalIntegrable _ _
+  · exact (ha.mul
+      ((continuous_routeTNormalizedSmoothWindowMellin_line hN hH (by norm_num)).sub
+        (Continuous.const_cpow (by fun_prop)
+          (Or.inl (by exact_mod_cast hN.ne'))))).intervalIntegrable _ _
+
+/-- Exact symmetric-tail identity for any integrable complex function. -/
+theorem setIntegral_abs_ge_eq_integral_sub_intervalIntegral
+    (f : ℝ → ℂ) (hf : Integrable f) {U : ℝ} (hU : 0 ≤ U) :
+    (∫ y in {y : ℝ | U ≤ |y|}, f y) =
+      (∫ y : ℝ, f y) - ∫ y in (-U)..U, f y := by
+  let tail : Set ℝ := {y : ℝ | U ≤ |y|}
+  have htailMeas : MeasurableSet tail :=
+    measurableSet_le measurable_const continuous_abs.measurable
+  have hcomp : tailᶜ = Set.Ioo (-U) U := by
+    ext y
+    simp [tail, Set.mem_Ioo, abs_lt]
+  have hcompIntegral : (∫ y in tailᶜ, f y) = ∫ y in (-U)..U, f y := by
+    rw [hcomp, MeasureTheory.setIntegral_congr_set MeasureTheory.Ioo_ae_eq_Ioc,
+      ← intervalIntegral.integral_of_le (by linarith : -U ≤ U)]
+  have hsplit : (∫ y in tail, f y) + ∫ y in tailᶜ, f y = ∫ y : ℝ, f y :=
+    integral_add_compl htailMeas hf
+  calc
+    (∫ y in {y : ℝ | U ≤ |y|}, f y) = ∫ y in tail, f y := by rfl
+    _ = (∫ y : ℝ, f y) - ∫ y in tailᶜ, f y := by
+      rw [← hsplit]
+      ring
+    _ = (∫ y : ℝ, f y) - ∫ y in (-U)..U, f y := by rw [hcompIntegral]
+
+/-- The paired high-tail difference is literally the paired normalized-kernel integral outside
+the common central band. -/
+theorem maynardWidthHighTail_sub_eq_setIntegral
+    (a : ℝ → ℂ) {N H R U : ℝ}
+    (hintR : Integrable (fun y : ℝ =>
+      a y * routeTNormalizedSmoothWindowMellin N R
+        ((1 : ℂ) + (y : ℝ) * Complex.I)))
+    (hintH : Integrable (fun y : ℝ =>
+      a y * routeTNormalizedSmoothWindowMellin N H
+        ((1 : ℂ) + (y : ℝ) * Complex.I)))
+    (hU : 0 ≤ U) :
+    maynardWidthHighTail a N R U - maynardWidthHighTail a N H U =
+      ∫ y in {y : ℝ | U ≤ |y|},
+        a y *
+          (routeTNormalizedSmoothWindowMellin N R
+              ((1 : ℂ) + (y : ℝ) * Complex.I) -
+            routeTNormalizedSmoothWindowMellin N H
+              ((1 : ℂ) + (y : ℝ) * Complex.I)) := by
+  let fR : ℝ → ℂ := fun y =>
+    a y * routeTNormalizedSmoothWindowMellin N R
+      ((1 : ℂ) + (y : ℝ) * Complex.I)
+  let fH : ℝ → ℂ := fun y =>
+    a y * routeTNormalizedSmoothWindowMellin N H
+      ((1 : ℂ) + (y : ℝ) * Complex.I)
+  let f : ℝ → ℂ := fun y => fR y - fH y
+  have hfR : Integrable fR := by simpa only [fR] using hintR
+  have hfH : Integrable fH := by simpa only [fH] using hintH
+  have hf : Integrable f := by
+    dsimp only [f]
+    change Integrable (fR - fH)
+    exact hfR.sub hfH
+  have hfull : (∫ y : ℝ, fR y) - ∫ y : ℝ, fH y = ∫ y : ℝ, f y := by
+    rw [← integral_sub hfR hfH]
+  have hcentral : (∫ y in (-U)..U, fR y) - ∫ y in (-U)..U, fH y =
+      ∫ y in (-U)..U, f y := by
+    rw [← intervalIntegral.integral_sub hfR.intervalIntegrable hfH.intervalIntegrable]
+  have houter := setIntegral_abs_ge_eq_integral_sub_intervalIntegral f hf hU
+  rw [maynardWidthHighTail, maynardWidthHighTail]
+  calc
+    ((∫ y : ℝ, fR y) - ∫ y in (-U)..U, fR y) -
+        ((∫ y : ℝ, fH y) - ∫ y in (-U)..U, fH y) =
+      ((∫ y : ℝ, fR y) - ∫ y : ℝ, fH y) -
+        ((∫ y in (-U)..U, fR y) - ∫ y in (-U)..U, fH y) := by ring
+    _ = (∫ y : ℝ, f y) - ∫ y in (-U)..U, f y := by rw [hfull, hcentral]
+    _ = ∫ y in {y : ℝ | U ≤ |y|}, f y := houter.symm
+    _ = ∫ y in {y : ℝ | U ≤ |y|},
+        a y *
+          (routeTNormalizedSmoothWindowMellin N R
+              ((1 : ℂ) + (y : ℝ) * Complex.I) -
+            routeTNormalizedSmoothWindowMellin N H
+              ((1 : ℂ) + (y : ℝ) * Complex.I)) := by
+      apply MeasureTheory.setIntegral_congr_fun
+        (measurableSet_le measurable_const continuous_abs.measurable)
+      intro y _hy
+      dsimp only [f, fR, fH]
+      ring
+
 /-- A bounded source pays only `8 P U² (W/N)` for one central width error. -/
 theorem norm_maynardCentralWidthError_le
     (a : ℝ → ℂ) {P N W U : ℝ}
@@ -225,6 +332,46 @@ theorem commonMode_highTail_dichotomy
   by_contra h
   push Not at h
   linarith
+
+/-- Cancellation-preserving replacement for the two-tail pigeonhole.  Small central errors force
+the *paired* high-tail difference itself to remain large; separating its two endpoints is neither
+necessary nor harmless for the buffered receiver. -/
+theorem commonMode_highTailDifference_lower
+    {lowR lowH highR highH : ℂ} {B : ℝ}
+    (hlarge : B ≤ ‖(lowR - lowH) + (highR - highH)‖)
+    (hlow : ‖lowR‖ + ‖lowH‖ ≤ B / 2) :
+    B / 2 ≤ ‖highR - highH‖ := by
+  have hlowDiff : ‖lowR - lowH‖ ≤ B / 2 :=
+    (norm_sub_le lowR lowH).trans hlow
+  have htotal : B ≤ ‖lowR - lowH‖ + ‖highR - highH‖ :=
+    hlarge.trans (norm_add_le _ _)
+  linarith
+
+/-- A large endpoint defect with small central errors forces a large paired high-tail defect.
+This retains the normalized reference-target kernel cancellation which is lost by the older
+two-tail disjunction. -/
+theorem large_adjacentNormalizedMellin_forces_commonMode_highTailDifference
+    (a : ℝ → ℂ) (ha : Continuous a) {N H R U B : ℝ}
+    (hN : 0 < N) (hH : 0 < H) (hR : 0 < R)
+    (hintR : Integrable (fun y : ℝ ↦
+      a y * routeTNormalizedSmoothWindowMellin N R
+        ((1 : ℂ) + (y : ℝ) * Complex.I)))
+    (hintH : Integrable (fun y : ℝ ↦
+      a y * routeTNormalizedSmoothWindowMellin N H
+        ((1 : ℂ) + (y : ℝ) * Complex.I)))
+    (hlarge : B ≤ ‖∫ y : ℝ,
+      a y *
+        (routeTNormalizedSmoothWindowMellin N R
+            ((1 : ℂ) + (y : ℝ) * Complex.I) -
+          routeTNormalizedSmoothWindowMellin N H
+            ((1 : ℂ) + (y : ℝ) * Complex.I))‖)
+    (hlow : ‖maynardCentralWidthError a N R U‖ +
+        ‖maynardCentralWidthError a N H U‖ ≤ B / 2) :
+    B / 2 ≤ ‖maynardWidthHighTail a N R U -
+      maynardWidthHighTail a N H U‖ := by
+  rw [integral_adjacentNormalizedMellin_eq_lowErrors_add_highTails
+    a ha hN hH hR hintR hintH] at hlarge
+  exact commonMode_highTailDifference_lower hlarge hlow
 
 /-- A large endpoint defect with small central errors forces one reference or target high tail. -/
 theorem large_adjacentNormalizedMellin_forces_commonMode_highTail
@@ -770,10 +917,10 @@ theorem eventually_routeT_commonMode_centralErrors_le :
       _ = 16 * P * U ^ 2 * R := by ring
   exact hsum.trans (by simpa only [P, U, R, x, X] using hcostT L hL hLX)
 
-/-- Prime-freeness at any physical base in a dyadic block forces one of two high tails after the
-Heath--Brown source has been frozen at the block's left endpoint.  No width ladder or selected
-intermediate rung remains. -/
-theorem primeFree_forces_fixedSource_commonMode_highTail
+/-- Prime-freeness at any physical base in a dyadic block forces the paired high-tail difference
+after the Heath--Brown source has been frozen at the block's left endpoint.  No width ladder,
+selected intermediate rung, or cancellation-destroying endpoint pigeonhole remains. -/
+theorem primeFree_forces_fixedSource_commonMode_highTailDifference
     (L X k : ℕ) (hXL : X < (L + 1) ^ k) {T0 t x lambda H R U rho : ℝ}
     (hx : 0 < x) (hlambda : lambda ∈ Set.Icc x (2 * x))
     (hT0 : 1 < T0)
@@ -805,14 +952,13 @@ theorem primeFree_forces_fixedSource_commonMode_highTail
               ((1 : ℂ) + (y : ℝ) * Complex.I))
           lambda (lambda * H) U‖ ≤
           ((2 * Real.pi) * (routeTSmoothWindowCentralMargin * rho / 2)) / 2) :
-    ((2 * Real.pi) * (routeTSmoothWindowCentralMargin * rho / 2)) / 4 ≤
-        ‖maynardWidthHighTail
+    ((2 * Real.pi) * (routeTSmoothWindowCentralMargin * rho / 2)) / 2 ≤
+      ‖maynardWidthHighTail
           (fun y : ℝ =>
             heathBrownWindowRelevantEligibleDyadicAggregate L X k T0 t x
               ((1 : ℂ) + (y : ℝ) * Complex.I))
-          lambda (lambda * R) U‖ ∨
-      ((2 * Real.pi) * (routeTSmoothWindowCentralMargin * rho / 2)) / 4 ≤
-        ‖maynardWidthHighTail
+          lambda (lambda * R) U -
+        maynardWidthHighTail
           (fun y : ℝ =>
             heathBrownWindowRelevantEligibleDyadicAggregate L X k T0 t x
               ((1 : ℂ) + (y : ℝ) * Complex.I))
@@ -871,14 +1017,16 @@ theorem primeFree_forces_fixedSource_commonMode_highTail
     have hrecut' := hrecut
     norm_num at hrecut'
     exact hphysical.trans_eq (congrArg norm hrecut')
-  exact large_adjacentNormalizedMellin_forces_commonMode_highTail
+  exact large_adjacentNormalizedMellin_forces_commonMode_highTailDifference
     a ha hlambda0 hHphysical hRphysical hintR hintH hlarge (by simpa only [a] using hlow)
 
-/-- Canonical Route-T prime-free cover with no width ladder.  One common reference tail and the
-literal target tail are the only survivors above the central cutoff `x^(1/8)`. -/
-theorem exists_eventually_routeT_primeFree_fixedSource_commonMode_twoTail :
+/-- Canonical Route-T prime-free paired-tail producer.  The common-reference and literal-target
+tails remain subtracted above the central cutoff `x^(1/8)`, preserving their normalized-kernel
+cancellation for the buffered receiver. -/
+theorem exists_eventually_routeT_primeFree_fixedSource_commonMode_pairedHighTail :
     ∀ᶠ T : ℝ in atTop,
       ∃ L : ℕ, 1 ≤ L ∧
+        L ≤ routeTPrimeGapPacketSupport T ∧
         routeTPrimeGapPacketSupport T < (L + 1) ^ (60 : ℕ) ∧
         (L : ℝ) ≤ T ^ (2 / 75 : ℝ) ∧
         ∀ lambda ∈ Set.Icc (routeTPrimeGapPacketBase T)
@@ -888,8 +1036,8 @@ theorem exists_eventually_routeT_primeFree_fixedSource_commonMode_twoTail :
               Chebyshev.theta lambda = 0 →
           ((2 * Real.pi) *
               (routeTSmoothWindowCentralMargin *
-                routeTCommonModeReferenceDensity / 2)) / 4 ≤
-              ‖maynardWidthHighTail
+                routeTCommonModeReferenceDensity / 2)) / 2 ≤
+            ‖maynardWidthHighTail
                 (fun y : ℝ =>
                   heathBrownWindowRelevantEligibleDyadicAggregate
                     L (routeTPrimeGapPacketSupport T) 60 T (1 / 75)
@@ -898,11 +1046,8 @@ theorem exists_eventually_routeT_primeFree_fixedSource_commonMode_twoTail :
                 lambda
                 (lambda * routeTCommonModeReferenceRelativeWidth
                   (routeTPrimeGapPacketBase T))
-                (routeTCommonModeCutoff (routeTPrimeGapPacketBase T))‖ ∨
-            ((2 * Real.pi) *
-              (routeTSmoothWindowCentralMargin *
-                routeTCommonModeReferenceDensity / 2)) / 4 ≤
-              ‖maynardWidthHighTail
+                (routeTCommonModeCutoff (routeTPrimeGapPacketBase T)) -
+              maynardWidthHighTail
                 (fun y : ℝ =>
                   heathBrownWindowRelevantEligibleDyadicAggregate
                     L (routeTPrimeGapPacketSupport T) 60 T (1 / 75)
@@ -1001,7 +1146,8 @@ theorem exists_eventually_routeT_primeFree_fixedSource_commonMode_twoTail :
   have hLXreal : (L : ℝ) ≤ (X : ℝ) := by
     exact hLscale'.trans (hleftBase.trans (by linarith [hceilLower, hx0]))
   have hLX : L ≤ X := by exact_mod_cast hLXreal
-  refine ⟨L, hL, by simpa only [X] using hXL, hLscale', ?_⟩
+  refine ⟨L, hL, by simpa only [X] using hLX,
+    by simpa only [X] using hXL, hLscale', ?_⟩
   intro lambda hlambda hprimeFree
   let H : ℝ := routeTPrimeGapPacketWidth lambda
   let R : ℝ := routeTCommonModeReferenceRelativeWidth x
@@ -1092,7 +1238,7 @@ theorem exists_eventually_routeT_primeFree_fixedSource_commonMode_twoTail :
   have href := hmassT lambda (by simpa only [x] using hlambda)
   have hlow := hcentralT L hL (by simpa only [X] using hLX) lambda
     (by simpa only [x] using hlambda)
-  have hresult := primeFree_forces_fixedSource_commonMode_highTail
+  have hresult := primeFree_forces_fixedSource_commonMode_highTailDifference
     L X 60 hXL (T0 := T) (t := (1 / 75 : ℝ)) (x := x) (lambda := lambda)
       (H := H) (R := R) (U := U) (rho := routeTCommonModeReferenceDensity)
       hx0 hlambda hTone hscaleLambda hlambda2 hH0 hR0
