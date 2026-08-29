@@ -300,3 +300,9 @@ Key endpoint theorems:
 `eventually_thetaCuspReflectedSourceFifthRootCurvatureVelocity_zero_pos`.
 Exact survivor theorem:
 `exists_thetaCuspReflectedSourceFifthRootCurvatureVelocity_zero_compactCore`.
+
+Audit: direct source checking and the targeted module build pass. `#print axioms` for the
+normalized limit, both endpoint signs, and exact compact-core theorem reports only `propext`,
+`Classical.choice`, and `Quot.sound`. Repository lint finds no defect in this module or its umbrella
+reachability; its global exit remains nonzero only because of unrelated pre-existing/concurrent
+unwired modules elsewhere in `RHTower` and `HTGeometry`.

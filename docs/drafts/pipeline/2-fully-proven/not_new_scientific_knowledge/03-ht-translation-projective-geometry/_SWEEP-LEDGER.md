@@ -666,3 +666,42 @@ The Euler derivation raises pole order without moving the orbit, so the top inde
 6. the scaling action `S_a` on `W_q`, the stabilizer `H_r`, `q^ℤ ⊆ H_r`, injectivity of
    `H_r/q^ℤ → Sym(Supp)` and the bound `s!`;
 7. the realization theorem: `r_K = ∑_{u ∈ K} e_(α_u)` has stabilizer exactly `K`.
+
+### Card 6 progress (2026-08-29) — the hypertranscendence half is Lean-closed
+
+Three new modules, all axiom-clean and wired into the umbrella:
+
+- `HTGeometry/QOrbitResidue.lean` — **`qOrbitResidue q a d C = ∑ᶠ n, (q^{-d})^n · polePart C (a q^n) d`**,
+  its evaluation as a finite sum, **`qOrbitResidue_ratFuncScale_sub`** (the residue annihilates every
+  dilation coboundary) and **`not_dilationTelescoped_of_qOrbitResidue_ne_zero`**.  This is the
+  general Chen–Singer obstruction; the corpus previously had only the two-adjacent-points special
+  case `RationalPolePart.no_dilationTelescoper_of_orbit_mass`.
+- `HTGeometry/QOrbitResidueEuler.lean` — additivity and scalar homogeneity of the residue,
+  **`qOrbitResidue_ratFuncEulerOp`** (`ρ_(d+1)(δf) = −(d+1)ρ_(d+1)(f) − d·a·ρ_d(f)`), the vanishing
+  of all Euler jets above the top level, the exact top-level formula
+  `ρ_(D+j)(δ^j r) = (∏_{i<j} −(D+i)a)·ρ_D(r)`, and
+  **`not_dilationTelescoped_eulerCombination`**: no nonzero constant-coefficient Euler polynomial of
+  a function with a nonzero top residue is `q`-summable.  This is condition (Q).
+- `HTGeometry/QPrimitiveResidueHypertranscendence.lean` — **`no_jetTelescoper_of_top_qOrbitResidue`**
+  and **`hypertranscendentalOver_of_qPrimitive_top_residue`**: if `σ u − u = r` in `k((w))` with
+  `r ∈ k(w)` having a nonzero top `q`-residue on one orbit, then `u` is differentially transcendental
+  over `k(w)`.
+
+The Adamczewski–Dreyfus–Hardouin dependency is therefore discharged for this equation: the corpus's
+own exact Ostrowski criterion (`differentialIndependent_of_oneVariable_primitive`) plus the new
+residue calculus replaces it.
+
+**What card 6 still needs.**
+
+1. **The hard half of Chen–Singer**: all `q`-discrete residues vanish (and the constant obstruction
+   is absent) ⟹ `r` is `q`-summable.  Needed to identify the card's `H_r = {a : S_a[r] = [r]}` with
+   the residue-defined stabilizer, and to get "`d_a` rational" from `a ∈ H_r`.  Route: partial
+   fractions over `k(x)` — decomposition into a polynomial part plus `(x−α)^{-d}` terms — then
+   explicit telescoping inside each (orbit, order) block plus `q^N ≠ 1` for the monomials and
+   `q^{-d} ≠ 1` for the poles at `0`.  Neither mathlib nor the corpus has partial fractions yet.
+2. The defect equation `(σ−1)d_a = S_a r − r` and the σ-invariant-Laurent-series step
+   (`exists_C_of_innerDilation_eq_self` already gives it).
+3. The stabilizer group theory: `q^ℤ ⊆ H_r`, injectivity of `H_r/q^ℤ → Sym(Supp_q[r])`, the `s!`
+   bound.
+4. The realization theorem for `r_K = ∑_{u ∈ K} x/(x−α_u)`.
+5. The additive entire-plane corollary (`F(z) = f(e^{2πiz})`, `Stab_DA(F) = ℤ + τℤ`).

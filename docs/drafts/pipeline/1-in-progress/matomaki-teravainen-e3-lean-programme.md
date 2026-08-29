@@ -2184,3 +2184,37 @@ Watt--Deshouillers--Iwaniec core is narrowed to the intermediate range
 `N < T < 2AN'²`.  All new declarations audit to `propext`, `Classical.choice`, and
 `Quot.sound` only.  M6/M7 and both Route-E cards remain open until that intermediate range and
 the final amplification/exponent assembly are formalized.
+
+### M6/M7, brick 35 — exact Lemma 3.5 over-height envelopes (2026-08-29)
+
+`Sieve/MatomakiTeravainenLemma35OverHeight.lean`, unconditional, axiom-clean,
+umbrella-wired, upgrades brick 33 from a matching residual estimate to both literal source
+envelopes in Lemma 3.5(i)--(ii):
+
+```text
+mtLemma35OverHeightConst
+    explicit absolute constant
+integral_mtLemma35_overHeight_le_residualEnergy
+    shared explicit residual estimate, with exact coefficient-energy normalization
+mtWattCoefficientMaxSq
+    genuine finite maximum of |aₙ|² on `(A,2A]`
+sum_normSq_mtWattCoefficientBlock_le_max
+    ∑_{A<n≤2A}|aₙ|² ≤ A max_{A<n≤2A}|aₙ|²
+integral_mtWatt_lemma35_overHeight
+    T ≤ N and ε > 0 imply the Lemma 3.5(i) Watt envelope
+integral_mtDI_lemma35_overHeight
+    T ≤ N and ε > 0 imply
+    ∫_{T/2}^{T}|N(1+it)|⁴|A(1+it)|²dt
+      ≤ C T^ε
+        ((T + A²T^(1/2) + A^(5/4)T^(3/4))/(N²A)
+          + (T+A)/(T⁴A))
+        (1/A)∑_{A<n≤2A}|aₙ|²
+```
+
+The proofs algebraically embed brick 33's explicit `T⁻⁴` estimate into the source residual,
+use the exact dyadic-cardinality maximum bound for Watt, add each nonnegative main term, and use
+`T^ε ≥ 1`; they introduce no analytic premise.  All new declarations audit to `propext`,
+`Classical.choice`, and `Quot.sound` only.  This discharges both exact source statements throughout
+`T ≤ N`.  Remaining deep range stays exactly
+`N < T < 2AN'²`, followed by source amplification and exponent assembly; no Route-E card is yet
+eligible for Stage 3.

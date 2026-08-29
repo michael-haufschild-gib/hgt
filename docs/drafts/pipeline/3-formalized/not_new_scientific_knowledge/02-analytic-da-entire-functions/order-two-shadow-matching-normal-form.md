@@ -184,14 +184,29 @@ sufficiency direction is recorded by its value and its `w`-derivative through th
 `∂_x F = F_w α' v`, `∂_v F = F_w α`, which is exactly what "an arbitrary algebraic branch in its
 two displayed arguments" means.
 
-### Residue
+### Residue closed (2026-08-29)
 
-The `[PROVED]` zero-free-primitive boundary exclusion still needs two imported classical theorems
-that the corpus does not yet own:
+Both imported classical theorems are now Lean-proved in the corpus, unconditionally
+(`#print axioms` = `propext, Classical.choice, Quot.sound`):
 
-1. **Gol'dberg's theorem** — every entire solution of a first-order algebraic differential equation
-   has finite order of growth;
-2. Hadamard factorization for a zero-free entire function of finite order (`W = exp P`).
+| Classical input | Lean name |
+|---|---|
+| **Gol'dberg**: an entire solution of a first-order algebraic ODE has finite order | `HTGeometry.GoldbergFiniteOrder.finiteOrderEnvelope_of_algebraic_relation` |
+| its quantitative core: the central index is polynomially bounded | `HTGeometry.GoldbergCentralIndex.exists_centralIndex_le_pow_of_relation` |
+| Hadamard for a zero-free entire function of finite order | `HTGeometry.FiniteOrderHadamard.exists_polynomial_exp_of_ne_zero_of_growth` (already owned) |
+| a primitive inherits the finite-order envelope | `HTGeometry.ZeroFreePrimitiveExclusion.finiteOrderEnvelope_of_deriv` |
+| **the boundary exclusion itself** | `HTGeometry.ZeroFreePrimitiveExclusion.exists_polynomial_exp_of_zeroFree_primitive` |
 
-Item 2 is close to the corpus's Hadamard/Weierstrass stack.  Item 1 is a genuine gap and is
-tracked in the folder's `_STAGE3-LEDGER.md`.  Until both are Lean-closed the card stays at stage 2.
+The last statement is exactly the card's `[PROVED]` paragraph: a nowhere-vanishing entire `W` whose
+derivative satisfies a first-order algebraic differential relation is `exp P` for a polynomial `P`,
+and consequently satisfies the first-order relation `W' = P'·W` itself, so its differential order is
+one and it cannot be a counterexample.
+
+Gol'dberg's proof runs through the corpus's Wiman--Valiron apparatus.  The one piece that had to be
+added is *density*: the Wiman--Valiron selection previously produced good radii beyond every bound,
+which is not enough to bound the central index at every radius.  The Borel exceptional set has
+measure at most `borelWindow α - 1`, so a good radius exists inside every window of that length; the
+bound is now threaded through `WimanValironSelection`, `WimanValironSmallDefect`,
+`TopSymbolWimanPlace` and `WimanPlaceRoot`.  At such a place the top symbol is small, which bounds
+the logarithmic derivative by a quotient of the coefficient polynomials — hence by a power of the
+radius — and the logarithmic derivative is within a factor two of the central index.

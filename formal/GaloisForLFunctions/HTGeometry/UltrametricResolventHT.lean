@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.EulerPolePartCalculus
 import GaloisForLFunctions.HTGeometry.QDifferenceLaurentOneVariable
 import GaloisForLFunctions.HTGeometry.GeometricKallenLehmannHypertranscendence
+import GaloisForLFunctions.HTGeometry.ScaledDerivationTransfer
 
 /-!
 # The one-loop resolvent of an ultrametric spectrum
@@ -27,15 +28,22 @@ noncomputable section
 variable {k : Type*} [Field k]
 
 /-- The numerator of the two-shell defect after clearing both shell denominators. -/
+def resolventDefectNum (p m : ℕ) : Polynomial k :=
+  Polynomial.C ((p : k) - 2) * (Polynomial.X + Polynomial.C ((p : k))) ^ m
+    + (Polynomial.X + 1) ^ m
+
+/-- The common denominator of the two shells. -/
+def resolventDen (p m : ℕ) : Polynomial k :=
+  (Polynomial.X + 1) ^ m * (Polynomial.X + Polynomial.C ((p : k))) ^ m
+
+/-- The numerator of the increment in the twisted coordinate. -/
 def resolventNum (p m : ℕ) : Polynomial k :=
-  -((Polynomial.C ((p : k) - 2) * (Polynomial.X + Polynomial.C ((p : k))) ^ m
-      + (Polynomial.X + 1) ^ m) * Polynomial.X ^ (m - 1))
+  -(resolventDefectNum p m * Polynomial.X ^ (m - 1))
 
 /-- The increment of the resolvent equation in the twisted coordinate. -/
 def resolventIncrement (p m : ℕ) : RatFunc k :=
   algebraMap (Polynomial k) (RatFunc k) (resolventNum p m)
-    / algebraMap (Polynomial k) (RatFunc k)
-      ((Polynomial.X + 1) ^ m * (Polynomial.X + Polynomial.C ((p : k))) ^ m)
+    / algebraMap (Polynomial k) (RatFunc k) (resolventDen p m)
 
 theorem shellA_ne_zero [CharZero k] {p : ℕ} (hp : 1 < p) :
     ((Polynomial.X + 1 : Polynomial k)).eval (-(p : k)) ≠ 0 := by
@@ -75,7 +83,7 @@ theorem resolventIncrement_mul_shellA [CharZero k] {p : ℕ} (hp : 1 < p) (m : �
       have := congrArg (fun P : Polynomial k => P.eval (-1)) h
       simp only [Polynomial.eval_zero] at this
       exact shellB_ne_zero hp this))
-  rw [resolventIncrement, hlin, ← map_pow, map_mul]
+  rw [resolventIncrement, resolventDen, hlin, ← map_pow, map_mul]
   field_simp
 
 theorem resolventIncrement_mul_shellB [CharZero k] {p : ℕ} (hp : 1 < p) (m : ℕ) :
@@ -99,7 +107,7 @@ theorem resolventIncrement_mul_shellB [CharZero k] {p : ℕ} (hp : 1 < p) (m : �
       have := congrArg (fun P : Polynomial k => P.eval (-1)) h
       simp only [Polynomial.eval_zero] at this
       exact shellB_ne_zero hp this))
-  rw [resolventIncrement, hlin, ← map_pow, map_mul]
+  rw [resolventIncrement, resolventDen, hlin, ← map_pow, map_mul]
   field_simp
 
 /-! ## The principal parts of the increment -/
@@ -107,7 +115,7 @@ theorem resolventIncrement_mul_shellB [CharZero k] {p : ℕ} (hp : 1 < p) (m : �
 theorem eval_resolventNum_A [CharZero k] (p m : ℕ) (hm : 0 < m) :
     (resolventNum (k := k) p m).eval (-1)
       = -(((p : k) - 2) * ((p : k) - 1) ^ m * (-1) ^ (m - 1)) := by
-  rw [resolventNum]
+  rw [resolventNum, resolventDefectNum]
   simp only [Polynomial.eval_neg, Polynomial.eval_mul, Polynomial.eval_add, Polynomial.eval_pow,
     Polynomial.eval_X, Polynomial.eval_C, Polynomial.eval_one]
   rw [show ((-1 : k) + 1) = 0 from by ring, zero_pow (by omega : m ≠ 0), add_zero]
@@ -116,7 +124,7 @@ theorem eval_resolventNum_A [CharZero k] (p m : ℕ) (hm : 0 < m) :
 theorem eval_resolventNum_B [CharZero k] (p m : ℕ) (hm : 0 < m) :
     (resolventNum (k := k) p m).eval (-(p : k))
       = -((1 - (p : k)) ^ m * (-(p : k)) ^ (m - 1)) := by
-  rw [resolventNum]
+  rw [resolventNum, resolventDefectNum]
   simp only [Polynomial.eval_neg, Polynomial.eval_mul, Polynomial.eval_add, Polynomial.eval_pow,
     Polynomial.eval_X, Polynomial.eval_C, Polynomial.eval_one]
   rw [show (-(p : k) + (p : k)) = 0 from by ring, zero_pow (by omega : m ≠ 0), mul_zero, zero_add,
@@ -187,8 +195,8 @@ theorem regularAt_resolventIncrement [CharZero k] {p : ℕ} (m : ℕ) {c : k}
     (hA : c + 1 ≠ 0) (hB : c + (p : k) ≠ 0) :
     RegularAt (resolventIncrement (k := k) p m) c := by
   refine regularAt_of_repr (P := resolventNum p m)
-    (Q := (Polynomial.X + 1) ^ m * (Polynomial.X + Polynomial.C ((p : k))) ^ m) ?_ rfl
-  rw [Polynomial.eval_mul, Polynomial.eval_pow, Polynomial.eval_pow]
+    (Q := resolventDen p m) ?_ rfl
+  rw [resolventDen, Polynomial.eval_mul, Polynomial.eval_pow, Polynomial.eval_pow]
   refine mul_ne_zero (pow_ne_zero _ ?_) (pow_ne_zero _ ?_)
   · rw [Polynomial.eval_add, Polynomial.eval_X, Polynomial.eval_one]
     exact hA
@@ -427,13 +435,16 @@ theorem qDifferenceSolution_spec_zero (b : k) (hb : b ≠ 0) (ρ : LaurentSeries
     (hres : ∀ n : ℤ, n ≠ 0 → 1 - b ^ n ≠ 0) (h0 : ρ.coeff 0 = 0) :
     qDifferenceSolution 1 b ρ - innerDilation b hb (qDifferenceSolution 1 b ρ) = ρ := by
   refine HahnSeries.coeff_inj.mp (funext fun n => ?_)
-  rw [HahnSeries.coeff_sub, coeff_innerDilation, coeff_qDifferenceSolution,
-    coeff_qDifferenceSolution, one_mul]
+  rw [HahnSeries.coeff_sub, coeff_innerDilation, coeff_qDifferenceSolution]
   by_cases hn : n = 0
   · subst hn
     rw [zpow_zero, h0]
     simp
-  · field_simp [hres n hn]
+  · have hne : (1 : k) - 1 * b ^ n ≠ 0 := by
+      rw [one_mul]
+      exact hres n hn
+    field_simp
+    exact mul_div_cancel_right₀ _ (hres n hn)
 
 theorem eval_zero_resolventNum [CharZero k] (p : ℕ) {m : ℕ} (hm : 1 < m) :
     (resolventNum (k := k) p m).eval 0 = 0 := by
@@ -443,9 +454,9 @@ theorem eval_zero_resolventNum [CharZero k] (p : ℕ) {m : ℕ} (hm : 1 < m) :
 
 theorem coeff_zero_resolventIncrement [CharZero k] {p : ℕ} (hp : 1 < p) {m : ℕ} (hm : 1 < m) :
     (algebraMap (RatFunc k) (LaurentSeries k) (resolventIncrement (k := k) p m)).coeff 0 = 0 := by
-  have hQ : (((Polynomial.X + 1) ^ m * (Polynomial.X + Polynomial.C ((p : k))) ^ m :
-      Polynomial k)).eval 0 ≠ 0 := by
-    rw [Polynomial.eval_mul, Polynomial.eval_pow, Polynomial.eval_pow, Polynomial.eval_add,
+  have hQ : ((resolventDen p m : Polynomial k)).eval 0 ≠ 0 := by
+    rw [resolventDen, Polynomial.eval_mul, Polynomial.eval_pow, Polynomial.eval_pow,
+      Polynomial.eval_add,
       Polynomial.eval_add, Polynomial.eval_X, Polynomial.eval_one, Polynomial.eval_C, zero_add,
       zero_add, one_pow, one_mul]
     exact pow_ne_zero _ (natCast_ne_zero_of_one_lt hp)
@@ -488,6 +499,148 @@ theorem differentialIndependent_resolventGerm [CharZero k] {p : ℕ} (hp : 1 < p
     (resolventGerm p m) (resolventIncrement p m) (resolventGerm_shift hp hm) ?_
   intro c hc y
   exact no_resolvent_telescoper hp (by omega) c hc y
+
+/-! ## The resolvent trace in the untwisted coordinate -/
+
+/-- The two-shell rational defect. -/
+def resolventDefect (p m : ℕ) : RatFunc k :=
+  algebraMap (Polynomial k) (RatFunc k) (resolventDefectNum p m)
+    / algebraMap (Polynomial k) (RatFunc k) (resolventDen p m)
+
+theorem resolventIncrement_eq (p m : ℕ) :
+    resolventIncrement (k := k) p m
+      = -(resolventDefect (k := k) p m * (RatFunc.X : RatFunc k) ^ (m - 1)) := by
+  rw [resolventIncrement, resolventDefect, resolventNum, map_neg, map_mul, map_pow,
+    RatFunc.algebraMap_X, neg_div, div_mul_eq_mul_div]
+
+/-- The resolvent trace: the germ in the untwisted coordinate. -/
+def resolventTrace [CharZero k] (p m : ℕ) : LaurentSeries k :=
+  resolventGerm p m * (algebraMap (RatFunc k) (LaurentSeries k) ((RatFunc.X : RatFunc k) ^ (m - 1)))⁻¹
+
+theorem algebraMap_X_pow_ne_zero (j : ℕ) :
+    algebraMap (RatFunc k) (LaurentSeries k) ((RatFunc.X : RatFunc k) ^ j) ≠ 0 := by
+  rw [map_pow, algebraMap_ratFuncX, laurentCoord]
+  refine pow_ne_zero _ ?_
+  intro h
+  have := congrArg (fun x : LaurentSeries k => x.coeff 1) h
+  rw [HahnSeries.coeff_single_same, HahnSeries.coeff_zero] at this
+  exact one_ne_zero this
+
+theorem resolventGerm_eq_trace_mul [CharZero k] (p m : ℕ) :
+    resolventGerm (k := k) p m
+      = algebraMap (RatFunc k) (LaurentSeries k) ((RatFunc.X : RatFunc k) ^ (m - 1))
+        * resolventTrace p m := by
+  rw [resolventTrace, mul_comm (resolventGerm (k := k) p m), ← mul_assoc,
+    mul_inv_cancel₀ (algebraMap_X_pow_ne_zero (m - 1)), one_mul]
+
+set_option maxHeartbeats 2000000 in
+set_option synthInstance.maxHeartbeats 400000 in
+/-- **The one-loop resolvent trace is hypertranscendental** over `k(x)` for the Euler
+derivation. -/
+theorem hypertranscendentalOver_resolventTrace [CharZero k] {p : ℕ} (hp : 1 < p) {m : ℕ}
+    (hm : 1 < m) :
+    letI := cylinderDifferential (1 : k)
+    letI := innerDifferential (k := k)
+    HypertranscendentalOver (RatFunc k) (resolventTrace (k := k) p m) := by
+  letI := cylinderDifferential (1 : k)
+  letI := innerDifferential (k := k)
+  haveI := IsScalarTower.of_algebraMap_eq (R := k) (S := RatFunc k) (A := LaurentSeries k)
+    fun c => by
+      rw [algebraMap_k_laurentSeries]
+      exact (algebraMap_const_laurentSeries c).symm
+  haveI hcz : CharZero (LaurentSeries k) :=
+    charZero_of_injective_algebraMap (algebraMap k (LaurentSeries k)).injective
+  intro hDA
+  have hcompat : ∀ y : RatFunc k,
+      (innerDifferential (k := k)).deriv (algebraMap (RatFunc k) (LaurentSeries k) y)
+        = algebraMap (RatFunc k) (LaurentSeries k) ((cylinderDifferential (1 : k)).deriv y) := by
+    intro y
+    rw [innerDifferential_deriv, cylinderDifferential_deriv, cylDeriv_one_eq_ratFuncEulerOp,
+      algebraMap_ratFuncEulerOp]
+  have hDAgerm := differentialAlgebraicOver_base_mul (K := RatFunc k) (L := LaurentSeries k)
+    (cylinderDifferential (1 : k)) (innerDifferential (k := k))
+    ((RatFunc.X : RatFunc k) ^ (m - 1)) hcompat hDA
+  rw [← resolventGerm_eq_trace_mul] at hDAgerm
+  exact (hypertranscendentalOver_iff_differentialIndependent_singleton (RatFunc k)
+    (resolventGerm (k := k) p m)).mpr (differentialIndependent_resolventGerm hp hm) hDAgerm
+
+/-! ## The scale-defect equation -/
+
+theorem shellA_poly_ne_zero (p m : ℕ) :
+    algebraMap (Polynomial k) (RatFunc k) ((Polynomial.X + 1 : Polynomial k) ^ m) ≠ 0 := by
+  refine RatFunc.algebraMap_ne_zero (pow_ne_zero _ ?_)
+  intro h
+  have hc := congrArg (fun P : Polynomial k => P.coeff 1) h
+  simp [Polynomial.coeff_one] at hc
+
+theorem shellB_poly_ne_zero (p m : ℕ) :
+    algebraMap (Polynomial k) (RatFunc k)
+      ((Polynomial.X + Polynomial.C ((p : k)) : Polynomial k) ^ m) ≠ 0 := by
+  refine RatFunc.algebraMap_ne_zero (pow_ne_zero _ ?_)
+  intro h
+  have hc := congrArg (fun P : Polynomial k => P.coeff 1) h
+  simp [Polynomial.coeff_C] at hc
+
+/-- **The defect is the two-shell sum** `(p−2)/(x+1)^m + 1/(x+p)^m`. -/
+theorem resolventDefect_eq (p m : ℕ) :
+    resolventDefect (k := k) p m
+      = algebraMap k (RatFunc k) (((p : k)) - 2) / ((RatFunc.X : RatFunc k) + 1) ^ m
+        + 1 / ((RatFunc.X : RatFunc k) + algebraMap k (RatFunc k) ((p : k))) ^ m := by
+  have hlinA : ((RatFunc.X : RatFunc k) + 1) ^ m
+      = algebraMap (Polynomial k) (RatFunc k) ((Polynomial.X + 1) ^ m) := by
+    rw [map_pow, map_add, RatFunc.algebraMap_X, map_one]
+  have hlinB : ((RatFunc.X : RatFunc k) + algebraMap k (RatFunc k) ((p : k))) ^ m
+      = algebraMap (Polynomial k) (RatFunc k) ((Polynomial.X + Polynomial.C ((p : k))) ^ m) := by
+    rw [map_pow, map_add, RatFunc.algebraMap_X, RatFunc.algebraMap_C]
+    rfl
+  have hA0 := shellA_poly_ne_zero (k := k) p m
+  have hB0 := shellB_poly_ne_zero (k := k) p m
+  have hA : ((algebraMap (Polynomial k) (RatFunc k) (Polynomial.X + 1)) ^ m) ≠ 0 := by
+    rw [← map_pow]; exact hA0
+  have hB : ((algebraMap (Polynomial k) (RatFunc k)
+      (Polynomial.X + Polynomial.C ((p : k)))) ^ m) ≠ 0 := by
+    rw [← map_pow]; exact hB0
+  rw [resolventDefect, resolventDefectNum, resolventDen, hlinA, hlinB, map_mul, map_add, map_mul,
+    map_pow, map_pow, RatFunc.algebraMap_C, div_add_div _ _ hA hB,
+    show (RatFunc.C ((p : k) - 2) : RatFunc k) = algebraMap k (RatFunc k) ((p : k) - 2) from rfl]
+  congr 1
+  ring
+
+theorem innerDilation_algebraMap_X_pow (b : k) (hb : b ≠ 0) (j : ℕ) :
+    innerDilation b hb (algebraMap (RatFunc k) (LaurentSeries k) ((RatFunc.X : RatFunc k) ^ j))
+      = algebraMap k (LaurentSeries k) (b ^ j)
+        * algebraMap (RatFunc k) (LaurentSeries k) ((RatFunc.X : RatFunc k) ^ j) := by
+  rw [map_pow, algebraMap_ratFuncX, laurentCoord, HahnSeries.single_pow, one_pow,
+    show (j • (1 : ℤ)) = (j : ℤ) from by simp]
+  refine HahnSeries.coeff_inj.mp (funext fun n => ?_)
+  rw [coeff_innerDilation, algebraMap_k_laurentSeries, coeff_C_mul_hahn]
+  by_cases h : n = (j : ℤ)
+  · subst h
+    rw [HahnSeries.coeff_single_same, zpow_natCast]
+  · rw [HahnSeries.coeff_single_of_ne h, mul_zero, mul_zero]
+
+set_option maxHeartbeats 1000000 in
+/-- **The exact scale-defect theorem**: `Q(x) = (p−2)/(x+1)^m + 1/(x+p)^m + p^(1−m)·Q(x/p)`. -/
+theorem resolventTrace_constraint [CharZero k] {p : ℕ} (hp : 1 < p) {m : ℕ} (hm : 1 < m) :
+    resolventTrace (k := k) p m
+      = algebraMap (RatFunc k) (LaurentSeries k) (resolventDefect p m)
+        + algebraMap k (LaurentSeries k) ((((p : k))⁻¹) ^ (m - 1))
+          * innerDilation ((p : k))⁻¹ (inv_ne_zero (natCast_ne_zero_of_one_lt hp))
+            (resolventTrace p m) := by
+  have hq := inv_ne_zero (natCast_ne_zero_of_one_lt (k := k) hp)
+  have hh : algebraMap (RatFunc k) (LaurentSeries k) ((RatFunc.X : RatFunc k) ^ (m - 1)) ≠ 0 :=
+    algebraMap_X_pow_ne_zero (m - 1)
+  have hshift := resolventGerm_shift (k := k) hp hm
+  rw [resolventGerm_eq_trace_mul, map_mul, innerDilation_algebraMap_X_pow] at hshift
+  rw [resolventIncrement_eq, map_neg, map_mul] at hshift
+  refine mul_left_cancel₀ hh ?_
+  rw [mul_add, ← mul_assoc, mul_comm
+    (algebraMap (RatFunc k) (LaurentSeries k) ((RatFunc.X : RatFunc k) ^ (m - 1)))
+    (algebraMap k (LaurentSeries k) ((((p : k))⁻¹) ^ (m - 1))), mul_assoc]
+  rw [show algebraMap (RatFunc k) (LaurentSeries k)
+      ((RatFunc.X : RatFunc k) ^ (m - 1)) * resolventTrace (k := k) p m
+      = resolventGerm p m from (resolventGerm_eq_trace_mul p m).symm]
+  linear_combination -hshift + resolventGerm_eq_trace_mul (k := k) p m
 
 end
 

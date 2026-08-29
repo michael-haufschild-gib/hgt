@@ -345,20 +345,6 @@ theorem serreQ8TopY_orbit_eq_two_point :
       change serreQ8JAlgEquiv (serreQ8IAlgPow (0 : ZMod 4) serreQ8TopY) = -serreQ8TopY
       rw [serreQ8IAlgPow_topY, serreQ8JAlgEquiv_apply, serreQ8J_topY]
 
-/-- **Field-selected monomial source law.**  The literal Artin representation of Serre's field
-is induced from a degree-one character of the stabilizer of the literal carrier `√41`; the
-same carrier has precisely the two reflected values `±√41`.  Thus field realization, source
-selection, quartic induction, and the two quotient orientations are one source statement. -/
-theorem serreQ8ArtinRepresentation_exists_induced_from_topY_stabilizer :
-    ∃ ψ : GaloisForLFunctions.LinearCharacter
-      (MulAction.stabilizer (Gal(K3/ℚ)) serreQ8TopY),
-      (Representation.ind
-        (MulAction.stabilizer (Gal(K3/ℚ)) serreQ8TopY).subtype
-        (GaloisForLFunctions.linearCharacterRepresentation ψ)).Equiv
-        serreQ8ArtinRepresentation := by
-  rw [← serreQ8CyclicSubgroup_eq_stabilizer_topY]
-  exact ⟨serreQ8CyclicSubgroupCharacter, serreQ8InducedRepresentationEquiv⟩
-
 /-- First channel intertwining on the actual Galois subgroup. -/
 def serreQ8FirstChannelIntertwining :
     (GaloisForLFunctions.linearCharacterRepresentation serreQ8CyclicSubgroupCharacter).IntertwiningMap
@@ -454,6 +440,20 @@ noncomputable def serreQ8InducedRepresentationEquiv :
       apply LinearMap.ext
       intro v
       exact Rep.hom_comm_apply serreQ8MonomialToArtin g v)
+
+/-- **Field-selected monomial source law.**  The literal Artin representation of Serre's field
+is induced from a degree-one character of the stabilizer of the literal carrier `√41`; the
+same carrier has precisely the two reflected values `±√41`.  Thus field realization, source
+selection, quartic induction, and the two quotient orientations are one source statement. -/
+theorem serreQ8ArtinRepresentation_exists_induced_from_topY_stabilizer :
+    ∃ ψ : GaloisForLFunctions.LinearCharacter
+      (MulAction.stabilizer (Gal(K3/ℚ)) serreQ8TopY),
+      Nonempty ((Representation.ind
+        (MulAction.stabilizer (Gal(K3/ℚ)) serreQ8TopY).subtype
+        (GaloisForLFunctions.linearCharacterRepresentation ψ)).Equiv
+        serreQ8ArtinRepresentation) := by
+  rw [← serreQ8CyclicSubgroup_eq_stabilizer_topY]
+  exact ⟨serreQ8CyclicSubgroupCharacter, ⟨serreQ8InducedRepresentationEquiv⟩⟩
 
 /-- The reflected source channel is the inverse order-four character. -/
 theorem q8OrderFourCharacter_neg_apply (i : ZMod 4) :

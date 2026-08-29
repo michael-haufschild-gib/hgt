@@ -4371,3 +4371,58 @@ Classical.choice, Quot.sound]`.
 This closes the extension-stable reducible and imprimitive branches.  The density residue is now
 the finite primitive branch and the ordinary-PV finite-orbit-to-algebraicity bridge, together with
 the independent sigma-delta torsor/fixed-field descent needed by the parameterized endgame.
+
+## Differential-closure jet-rank premise discharged (2026-08-29)
+
+`DifferentiallyClosedNoUniversalJetRelation.lean` proves
+
+```text
+noUniversalJetRelation_of_isDifferentiallyClosed
+```
+
+directly from differential closedness.  A nonzero finite linear differential operator is realized
+as a nonzero element of a finite polynomial algebra carrying the truncated free-jet derivation;
+Kolchin's Nullstellensatz supplies a differential point where it remains nonzero.  Thus no
+infinite-rank-over-constants premise is needed.  `BesselOrderDifferentialClosureObstruction.lean`
+instantiates this as the closed theorem
+
+```text
+constants_noUniversalJetRelation
+```
+
+for the actual differential closure of the complex constants.
+`DifferentiallyClosedCassidyMonoidDichotomy.lean` consequently removes all ambient field premises
+from the Cassidy monoid dichotomy: differential closedness now supplies characteristic zero,
+algebraic closedness of the field and its differential constants, and the jet-rank statement.
+Targeted compilation and the two concrete axiom audits pass with only `[propext,
+Classical.choice, Quot.sound]`.
+
+This discharges the structural differential-closure side of the improper Cassidy branch.  It does
+not assert the missing Bessel-specific tangent-density producer.  The exact remaining density
+obligations are the finite primitive branch and ordinary-PV finite-orbit-to-algebraicity bridge;
+sigma-delta torsor/fixed-field descent remains independently required for the PPV endpoint.
+
+## Finite automorphism orbit now forces algebraicity (2026-08-29)
+
+`FiniteAutomorphismOrbitAlgebraicity.lean` closes the abstract ordinary-PV
+finite-orbit-to-algebraicity implication named above.  For a finite automorphism-stable packet it
+constructs the genuine monic orbit product, proves every coefficient is automorphism-fixed,
+descends those coefficients through the fixed-field property, and obtains a nonzero base
+polynomial vanishing at the selected carrier.  Its direct endpoint is
+
+```text
+isAlgebraic_of_finite_automorphismOrbit
+```
+
+which takes finiteness of the full `K`-automorphism orbit—not a preselected packet—and concludes
+`IsAlgebraic K x` once the ambient automorphism fixed field is exactly `K`.  Targeted source/build
+checks pass; every new theorem audits to `[propext, Classical.choice, Quot.sound]` only.  Combined
+with `modifiedBesselKOrderMero_transcendental`, this makes any correctly instantiated finite-orbit
+branch contradictory.
+
+The theorem deliberately does not assume away the remaining concrete work.  Stage 3 still needs
+the constructed Bessel PPV quotient's sigma-delta torsor/fixed-field descent, the identification of
+the actual meromorphic Bessel solution with that carrier, and the ordinary determinant-one group
+classification showing that the finite primitive branch gives a finite orbit.  The reducible and
+imprimitive branches are already excluded; the infinite primitive branch must yield the required
+determinant-one density.  None of these may remain premises of the final theorem.

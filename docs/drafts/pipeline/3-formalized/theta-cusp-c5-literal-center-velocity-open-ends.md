@@ -70,6 +70,16 @@ gives qualitative `0<delta≤T` with
   `eventually_thetaCuspReflectedSourceFifthRootCurvatureVelocity_zero_pos`
 - Exact reduction:
   `exists_thetaCuspReflectedSourceFifthRootCurvatureVelocity_zero_compactCore`
+- Direct source audit:
+  `lake env lean GaloisForLFunctions/RHTower/ThetaCuspFifthRootCurvatureVelocityFarTail.lean`
+  passed.
+- Targeted final audit:
+  `lake build GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureVelocityFarTail` passed.
+- `#print axioms` on the normalized limit, both endpoint signs, and compact-core equivalence
+  reports only `propext`, `Classical.choice`, and `Quot.sound`.
+- Repository lint reports no forbidden declaration or reachability defect for this module. Its
+  repository-wide exit remains nonzero because of unrelated pre-existing/concurrent unwired
+  modules in `RHTower` and `HTGeometry`.
 
 ## Novelty audit
 
@@ -83,3 +93,4 @@ first-summand tail method, but no fifth-root divided-drop velocity theorem or co
 
 - 2026-08-29 — conjectured from exact corpus likelihood and log-jet tail laws
 - 2026-08-29 — paper proof closed; seam and cofinal tail formalized; compact reduction proved
+- 2026-08-29 — direct Lean, targeted module build, axiom, and reachability audits completed

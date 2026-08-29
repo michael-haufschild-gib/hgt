@@ -216,3 +216,38 @@ The exact module build and capstone axiom audit pass.
 - B. Adamczewski, T. Dreyfus, and C. Hardouin,
   *Hypertranscendence and linear difference equations*,
   <https://arxiv.org/abs/1910.01874>.
+
+## Lean status
+
+Formalized unconditionally in `formal/GaloisForLFunctions/HTGeometry/`, for an arbitrary field of
+characteristic zero, every `p ≥ 2` and every `m ≥ 2`.  The Adamczewski–Dreyfus–Hardouin theorem is
+**not** imported: hypertranscendence is proved from the corpus's automorphism-family criterion,
+after multiplying by the monomial `x^(m−1)` — an eigenvector of the dilation with eigenvalue
+`p^(1−m)` — which converts the affine `q`-difference equation into a pure additive shift.
+
+| Card statement | Lean theorem |
+|---|---|
+| the two-shell defect `(p−2)/(x+1)^m + 1/(x+p)^m` | `resolventDefect`, `resolventDefect_eq` (`UltrametricResolventHT`) |
+| `(5)` `Q(x) = (p−2)/(x+1)^m + 1/(x+p)^m + p^(1−m)Q(x/p)` | `resolventTrace_constraint` |
+| `(8)`–`(9)` rigidity of the constraint | `ultrametricResolventSusceptibility_unique` (corpus) together with `coeff_resolventTrace` |
+| `(10)` the forced Taylor coefficient | `coeff_resolventTrace_eq_susceptibility` (`NegativeBinomialShell`), matching `ultrametricResolventCoefficient` |
+| the Taylor coefficients of the defect itself | `coeff_algebraMap_resolventDefect` |
+| **`(11)` `Q_(p,m)` is hypertranscendental over `k(x)` for the Euler derivation `x d/dx`** | `hypertranscendentalOver_resolventTrace` |
+| the twisted germ and its shift equation | `resolventGerm`, `resolventGerm_shift`, `differentialIndependent_resolventGerm` |
+
+The obstruction is new infrastructure, since the two poles `−1` and `−p` lie in **one**
+multiplicative orbit and the unique-orbit lemma does not apply:
+
+| Module | Content |
+|---|---|
+| `RationalPolePart` | principal-part coefficients of a rational function (translation + Laurent expansion): additivity, vanishing at regular points, finite support along a multiplicative orbit, the dilation law `polePart (g(qx)) c d = q^(−d)polePart g (qc) d`, and **`no_dilationTelescoper_of_orbit_mass`** — a coboundary's top-order principal parts telescope, so a nonzero weighted orbit sum forbids a telescoper |
+| `EulerPolePartCalculus` | the Euler operator acts on the expansion at `c` as `(t+c)d/dt`; the `J`-th jet multiplies the top part by `∏_{i<J} −c(m+i)`; reading a top part off an explicit representation |
+| `NegativeBinomialShell` | the expansion of `1/(x+a)^m` as a rescaled negative binomial series, and the resulting defect and trace coefficients |
+
+For the resolvent the weighted sum of the two top-order principal parts is
+`(m)_J·(−1)^(m−1)·(p−1)²/p ≠ 0` — the same `(p−1)²` resonance that closed the Mahler lane.
+
+`#print axioms hypertranscendentalOver_resolventTrace` → `propext, Classical.choice, Quot.sound`.
+
+The mode-resolved de Sitter realization `(12)`–`(14)` is an affine change of variable of the same
+germ, and the bilateral-shell discussion `(15)`–`(16)` makes no hypertranscendence claim.

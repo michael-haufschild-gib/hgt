@@ -1648,3 +1648,137 @@ matching sharp upper law for the specific linear Barban--Vehov weight, uniformly
 moduli; existing `GrahamMeanSquare` and `HarmonicWeightedGrahamMeanSquare` give unconditional but
 coarse upper bounds. Full/omitted differentiated long-tail evaluation, mixed-cross summation, and
 published PRZZ providers remain open.
+
+## Brick 5af — general-order Selberg log-monomials CLOSED, and a structural correction to the
+## direct/dual/cross route (2026-08-29)
+
+### What landed
+
+Three axiom-clean leaves replace the whole ad-hoc order-by-order ladder of this lane:
+
+* `RHTower/Sieve/HarmonicLogWindowGeneralMoment.lean` — the Abel weight `(log t)^m / t` is antitone
+  beyond `4^m` (`antitoneOn_logPowDivId_pow_four`, using only `log 4 > 1`), hence
+  **`exists_abs_harmonicLogWindowMoment_zero_sub_primitive_le`**
+  (`|∑_{d≤N}(log d)^m/d − (log(N+1))^{m+1}/(m+1)| ≤ C_m` for `N ≥ 4^m`) and
+  **`tendsto_harmonicLogWindowMoment_natDiv_div_log_pow`**
+  (`M_m(N/c)/(log N)^{m+1} → 1/(m+1)`) at **every** order `m`.  This supersedes the separate
+  `m = 0,1,2,3` files (`HarmonicLogWindowLowerMoments`, `HarmonicLogWindowMoments`,
+  `HarmonicLogWindowThirdMoment`, `HarmonicLogMomentAsymptotics`).
+* `RHTower/Sieve/SelbergLogPowerHarmonicGeneral.lean` — the alternating binomial identity
+  `∑_{s≤m}(−1)^s C(m,s)/(s+1) = 1/(m+1)` (`sum_choose_alternating_div_succ`), the one-shift
+  harmonic power sum `selbergShiftedLogPowerHarmonic` with
+  **`tendsto_selbergShiftedLogPowerHarmonic`** (`→ 1/(m+1)`), and the capstone
+  **`tendsto_selbergLogPowerHarmonicMain_div_log_pow`**:
+  `selbergLogPowerHarmonicMain q r a b N / (log N)^{q+r+1} → (q+1)(r+1)/(q+r+1)` for every `(q,r)`
+  and every pair of dilations.
+* `RHTower/Sieve/SelbergLogPowerGeneralAsymptotic.lean` —
+  `tendsto_selbergPrincipalScaledLogPowerModel_div_log_pow`,
+  `tendsto_selbergCorrectionScaledLogPowerTerm`,
+  `tendsto_tsum_selbergCorrectionScaledLogPowerTerm`, and the capstone
+
+  ```text
+  tendsto_selbergOriginalLogMonomial_div_log_pow (0 < i) (0 < j) :
+     selbergOriginalLogMonomial i j N / (log N)^{i+j-1}  →  i·j/(i+j-1).
+  ```
+
+  **Graham's Selberg diagonal at every pair of positive logarithmic powers.**  The previously
+  available instances were only `(1,1)`, `(1,2)`, `(2,2)`, `(1,4)`, `(2,3)`.
+
+All three pass `lake env lean` and exact leaf `lake build` with **no warnings**.
+
+### The structural correction: the min-log family is a detour, and the direct/dual/cross split is divergent
+
+While scoping the min-log family `selbergOriginalMinLogMonomial i j k`
+(`∑ c(m,n) A^i B^j min(A,B)^k`, `A = log(N/m)`) that the included/omitted long-energy boundary
+needs, the following came out — and it invalidates the assumption that the long tail is a small
+correction.
+
+**(1) The min-log monomials are one order larger than the pure-log ones.**  Write
+`G(Y) := ∑_{q,r ≤ Y} μ(q)μ(r)(q,r)/(qr)`.  Selberg's diagonalization
+`(q,r) = ∑_{d | (q,r)} φ(d)` gives `G(Y) = ∑_{d ≤ Y} φ(d)·(∑_{q ≤ Y, d | q} μ(q)/q)² ≥ 0`, and the
+single dyadic block `d ∈ (Y/2, Y]` already contributes `∑ μ²(d)φ(d)/d² ≍ 1`.  So
+
+```text
+G(Y) ≍ 1        (bounded away from 0, not o(1)).
+```
+
+Layer-caking `min(A,B) = ∫_0^∞ 1_{t<A} 1_{t<B} dt` and writing `Y = M e^{-t}`, `A = t + log(Y/q)`:
+
+```text
+S(1,1,1) = ∫_0^ℓ [ t²·G(Me^{-t}) + 2t·H(Me^{-t}) + I(Me^{-t}) ] dt,   ℓ = log M,
+```
+
+with `I(Y) ~ log Y` (Graham) and `|H| ≤ √(G·I) ≪ √(log Y)` by Cauchy–Schwarz.  Hence
+**`S(1,1,1) ≍ ℓ³`**, whereas every pure-log monomial of the same total degree is `≍ ℓ²`.
+The general shape is `S(i,j,κ) ≍ ℓ^{i+j+κ}` for `κ ≥ 1`, one power **above** the pure-log law
+`S(i,j,0) ~ (ij/(i+j−1))ℓ^{i+j−1}`, and the leading constant is an arithmetic integral of Möbius
+partial sums (`∫_0^∞ M(e^u)² du`-type), not a rational number.
+
+**(2) Consequence: the corpus's long energy dominates its short energy.**  With the linear
+mollifier `w(q) = μ(q)log(M/q)/ℓ`, the included base boundary is
+`ℓ·S(1,1,0) − S(2,1,0) − S(1,2,0) + S(1,1,1)`, so after the `ℓ²` normalization
+
+```text
+short energy  ≍ 1,        long energy  ≍ ℓ  →  ∞.
+```
+
+So `levinsonCriticalDetectorLongEnergy` is **not** a small correction; it is the dominant term of
+the direct-head diagonal.
+
+**(3) Why that is not a contradiction — and what it forces.**  For the classical twisted second
+moment (Balasubramanian–Conrey–Heath-Brown)
+
+```text
+∫_0^T ζ(½+it)ζ(½−it)(h/k)^{-it} dt = T·((h,k)/√(hk))·( log(T(h,k)²/(2πhk)) + 2γ − 1 ) + …,
+```
+
+the per-pair weight is `log T − log[h,k] + log(h,k)`.  The **direct** AFE head alone gives, for the
+same pair, the weight `log x − log[h,k] + log min(h,k)`, and the reflected head gives
+`log y − log[h,k] + log min(h,k)`.  Therefore
+
+```text
+(direct) + (dual) − (full)  =  2·log min(h,k) − log(hk)  =  −log( max(h,k)/min(h,k) ),
+```
+
+i.e. **the direct/reflected cross term carries the exact weight `+log(max/min) = |A − B|`**, and
+`|A−B| = A + B − 2·min(A,B)`.  The divergent `min(A,B)` mass of the direct and reflected diagonals
+is cancelled, exactly, by the cross term.
+
+**This is a no-go for the current sub-route.**  Bricks 5y, 5z, 5aa produce `ℓ¹`-coefficient
+*upper bounds* for the cross integral.  An upper bound can never cancel a divergence: the cross
+must be evaluated with its leading term and its sign, to the same order `ℓ` as the long energy.
+Any amount of further sharpening of `levinsonCriticalDetectorLongEnergy` alone is wasted, because
+the quantity it belongs to is not convergent on its own.
+
+### Corrected arithmetic plan for brick 5
+
+Evaluate the *combination*, not the three pieces.  Concretely, prove the twisted second moment with
+its classical main term and feed the result into the Selberg diagonal.  The arithmetic layer that
+this needs is exactly two families, both of *normal* order:
+
+| family | statement | state |
+|---|---|---|
+| pure-log | `∑_{m,n≤N} c(m,n)·log(N/m)^i log(N/n)^j  ~  (ij/(i+j−1))·(log N)^{i+j−1}` | **CLOSED 2026-08-29** (`tendsto_selbergOriginalLogMonomial_div_log_pow`) |
+| gcd-log | `∑_{m,n≤N} c(m,n)·log(N/m)^i log(N/n)^j·log(m,n)  ~  (ij/((i+j−1)(i+j)))·(log N)^{i+j}` | **OPEN — next target** |
+
+The gcd-log constant is derived by peeling one prime from the gcd,
+`log(m,n) = ∑_{p|m, p|n} log p`, rescaling to `N/p`, and using Mertens
+`∑_{p≤x} log p / p ~ log x`; the inner Selberg form contributes
+`ij·(log(N/p))^{i+j−1}/(i+j−1)`, and `∫_0^L ij(L−u)^{i+j−1}/(i+j−1) du = ij·L^{i+j}/((i+j−1)(i+j))`.
+
+**Verification against Young's theorem.**  With `P(x)=x`, `Q=1`, `R=0` the full weight
+`log T − 2ℓ + A + B + 2log(m,n) + 2γ − 1` gives
+
+```text
+(log T − 2ℓ)/ℓ + (S(2,1,0)+S(1,2,0))/ℓ² + 2·(ℓ²/2)/ℓ² = (1/θ − 2) + 2 + 1 = 1 + 1/θ,
+```
+
+which is exactly `c(P,Q,R,θ) = 1 + (1/θ)∫₀¹∫₀¹ (d/dx[e^{Rx}P(x+u)Q(v+x)]|₀)² du dv` at those
+parameters.  The two families above therefore suffice for the whole mollified main term.
+
+### What this means for the min-log modules already in the tree
+
+`SelbergMinLog*`, `DifferentiatedBarbanVehov*Included*`/`*Omitted*` and
+`SmoothAFEZetaCriticalDetectorLong*` remain correct theorems; they are simply not on the shortest
+path any more, and their target (a sharp evaluation of `levinsonCriticalDetectorLongEnergy` alone)
+cannot close brick 5 by itself.  They stay as corpus assets.

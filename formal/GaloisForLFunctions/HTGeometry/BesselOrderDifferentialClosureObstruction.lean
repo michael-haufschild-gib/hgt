@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.BesselOrderImprimitivityBaseField
 import GaloisForLFunctions.HTGeometry.DifferentiallyClosedAlgClosed
+import GaloisForLFunctions.HTGeometry.DifferentiallyClosedNoUniversalJetRelation
 
 /-!
 # Concrete Bessel obstructions over a differential closure of the constants
@@ -47,6 +48,11 @@ theorem deriv_slope_eq_zero (s : ℝ) : Differential.deriv (slope s) = 0 := by
 /-- The concrete constant extension used below is differentially closed. -/
 theorem constants_isDifferentiallyClosed : IsDifferentiallyClosed Constants := by
   infer_instance
+
+/-- No nonzero finite linear differential operator annihilates every element of the concrete
+differential closure. -/
+theorem constants_noUniversalJetRelation : NoUniversalJetRelation Constants :=
+  noUniversalJetRelation_of_isDifferentiallyClosed
 
 /-- No rational Riccati solution exists over the actual differential closure of the complex
 constants, for every physical Bessel slope. -/

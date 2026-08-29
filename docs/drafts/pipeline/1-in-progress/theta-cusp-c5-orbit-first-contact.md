@@ -234,3 +234,83 @@ It involves only actual action, actual first jet, and explicit first-atom curvat
 - 2026-08-29 — Formalized convex action--terminal-velocity law, universal exponential C5
   coefficient positivity, and exact strict second-likelihood reserve.  Second and third likelihood
   cumulants are no longer open `C5-VP1` premises.
+
+## Global adapted physical-cone attack
+
+[CORPUS] In lowering-adapted source-positive coordinates
+
+`r = U + 3B`, `b = B`, `k = Q + 3/8 - 3B^2/8 = gap/16`,
+
+the actual positive theta orbit satisfies `b>0`, `r>5b`, `0<k<5/4`, and
+`0<k-3/8+3b^2/8=Q`.  Here `r>5b` is exactly
+the global clock law `v>(2/5)z`, while `k<5/4` is the global discriminant-gap law `gap<20`.
+The existing strict thin-clock counterexample has `k=25/4`, so it does not test this physical
+component.  Lowest-weight reduction remains unavailable: exact C5 orientation genuinely depends
+on `b`.
+
+[LITERATURE] Planat--Solé's 2026 second-level concavity controls a lower Laguerre expression, and
+Salazar's order-moment transport concerns variation in moment order.  Neither states the spatial
+log-cumulant covariant below or an adapted real-orbit separator.
+
+**[CONJECTURE C5-ADAPTED-PHYSICAL-CONE]** Every real adapted state satisfying
+
+`0 < b`, `5b < r`, `0 < k`, `k < 5/4`, `0 < k-3/8+3b^2/8`
+
+has strictly positive corrected exact-completed C5 slope.  Equivalently, the source-positive
+polynomial `modularThetaSourcePositiveC5ExactCompletedSeamSlopePolynomial`, after the exact adapted
+automorphism, is positive on this open cone.
+
+Exact proof chain:
+
+`C5-ADAPTED-PHYSICAL-CONE`
+→ `dΩ/dx>0` on the full positive theta orbit by the covariant Lie law
+→ `Ω(x)>Ω(0)=0` for every `x>0`
+→ completed C5 direct fixed-action orientation at every positive centre
+→ compact/tail rank-four and Ptolemy assembly
+→ CLG/TTF or Weil-polarization positivity
+→ RH.
+
+Hostile falsifier: one exact adapted state with `0<b`, `5b<r`, `0<k<5/4`, positive reconstructed
+`Q`, and nonpositive corrected
+slope.  Such a witness kills every remaining proof based only on known pointwise physical-cone
+inequalities; the positive survivor would then have to be history-dependent actual-orbit
+incidence.
+
+## Adapted physical-cone result
+
+**[ROUTE KILLED IN LEAN]** `C5-ADAPTED-PHYSICAL-CONE` is false even with strict positivity of all
+source coordinates.  The exact corrected-C5 seam polynomial is negative at physical gap `X=9`.
+Perturbing by `U=3ε`, `B=ε`, `Q=3/16` for sufficiently small `ε>0` gives
+
+`U,B,Q>0`, `0<gap=9-6ε²<20`, `5B<U+3B`, and `correctedSlope<0`.
+
+Therefore no static first-contact proof using only lower-clock, source-positivity, and gap-cap
+inequalities can close C5 orientation.  Strongest positive survivor is an exact transition wall:
+the seam polynomial has a zero at some `X∈(9,191/10)`, since it is negative at `9` and positive on
+the established chamber `[191/10,20)`.  Remaining live core must either couple this cap with the
+independent refined projective clock/scale chamber, prove actual theta orbit stays on positive side
+of this separator, or construct a stronger dynamical invariant excluding the negative-slope
+component.
+
+Lean:
+`GaloisForLFunctions.HTGeometry.ExactCompletedC5AdaptedPhysicalConeNoGo`.
+
+## Refined projective-cone result
+
+**[ROUTE KILLED IN LEAN]** The corpus's stronger refined projective inequalities also fail when
+used without the independent gap cap.  Along the exact reconstructed ray
+
+`R=10`, `z=s`, `v=131s/320`,
+`U=131s/32`, `B=63s/32`, `gap=100(1-s²)`,
+
+every sufficiently small `s>0` satisfies source positivity, `0<z<3/10`, both refined parabolic
+clock walls, and `191/10+(37/5)z²<R²`.  The ray tends to the exact `X=100` seam where corrected C5
+slope is negative, so continuity supplies a strict negative interior witness.
+
+Thus refined projective clocks and scale floor alone cannot orient C5.  Combined with the prior
+capped lower-clock no-go, this isolates the strongest surviving static premise: positivity on the
+**joint** chamber imposing both `gap<20` and refined scale/projective laws.  This joint premise is
+not killed by either counterexample; actual-orbit history remains the alternative.
+
+Lean:
+`GaloisForLFunctions.HTGeometry.ExactCompletedC5RefinedParabolicConeNoGo`.

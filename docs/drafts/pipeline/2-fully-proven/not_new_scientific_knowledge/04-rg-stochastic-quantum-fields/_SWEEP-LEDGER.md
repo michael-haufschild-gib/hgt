@@ -626,3 +626,23 @@ rational functions, all unconditional:
 
 This replaces the unique-orbit-pole lemma in the case that matters for the one-loop resolvent card,
 where the two poles `−1` and `−p` lie in one orbit.
+
+### One-loop resolvent card PROMOTED (10 of 17)
+
+`ultrametric-one-loop-resolvent-hypertranscendence` is at stage 3.  New modules:
+`RationalPolePart` (principal-part calculus + the orbit-mass obstruction), `EulerPolePartCalculus`
+(Euler jets of a pole), `UltrametricResolventHT` (the germ, the scale-defect equation, and
+hypertranscendence over `k(x)`), `NegativeBinomialShell` (shell expansions; the displayed Taylor
+coefficients, identified with the corpus's `ultrametricResolventCoefficient`).
+
+Remaining stage-2 cards and their real gates:
+
+| Card | Gate |
+|---|---|
+| `de-sitter-ultrametric-detailed-balance-hypertranscendence` | the algebraic half is the promoted Mahler germ; needs analytic composition-closure of DA germs to transfer HT from the Boltzmann coordinate to `H` |
+| `exact-rational-rg-generation-dichotomy` | Ritt's theorem + the analytic Poincaré theorem |
+| `exact-rg-clock-hypertranscendence-equivalence` | a differentially algebraic germ category with analytic local inversion |
+| `gadc-tree-population-rg-clock-hypertranscendence` | Becker–Bergweiler/Fernandes classification |
+| `noisy-binary-tree-channel-rg-clock-hypertranscendence` | the same classification |
+| `rg-tower-differential-incoherence-obstruction` | analytic local inversion + Boshernitzan–Rubel |
+| `erosion-threshold` | the second-moment law `V(σ)`; the headline `G19` is not proved on paper |
