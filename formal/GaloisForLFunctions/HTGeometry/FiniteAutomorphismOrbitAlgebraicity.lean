@@ -143,6 +143,16 @@ theorem isAlgebraic_of_finite_automorphismOrbit
       simpa only [S, Set.Finite.mem_toFinset] using hzRange
   exact isAlgebraic_of_finite_stable_automorphism_orbit hx hstable hfixed
 
+/-- A transcendental element has an infinite full automorphism orbit whenever the automorphism
+fixed field is the base field. -/
+theorem infinite_automorphismOrbit_of_transcendental
+    {x : L} (hx : Transcendental K x)
+    (hfixed : ∀ y : L, (∀ σ : L ≃ₐ[K] L, σ y = y) →
+      ∃ k : K, algebraMap K L k = y) :
+    (Set.range (fun σ : L ≃ₐ[K] L => σ x)).Infinite := by
+  intro hfinite
+  exact hx (isAlgebraic_of_finite_automorphismOrbit hfinite hfixed)
+
 end
 
 end GaloisForLFunctions.HTGeometry
