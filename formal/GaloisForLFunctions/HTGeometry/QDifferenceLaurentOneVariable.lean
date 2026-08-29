@@ -193,7 +193,7 @@ theorem no_jetTelescoper_simplePole [CharZero k] (β : k) (hβ : β ≠ 0)
 
 /-! ## Hypertranscendence for a monomial twist -/
 
-theorem ratFuncScale_X_zpow (β : k) (hβ : β ≠ 0) (m : ℕ) :
+theorem ratFuncScale_X_zpow (β : k) (hβ : β ≠ 0) (m : ℤ) :
     ratFuncScale β hβ ((RatFunc.X : RatFunc k) ^ m)
       = algebraMap k (RatFunc k) (β ^ m) * (RatFunc.X : RatFunc k) ^ m := by
   have hX : ratFuncScale β hβ (RatFunc.X : RatFunc k)
@@ -205,7 +205,7 @@ theorem ratFuncScale_X_zpow (β : k) (hβ : β ≠ 0) (m : ℕ) :
           algebraMap (Polynomial k) (RatFunc k) 1 from by rw [map_one, div_one],
       ratFuncScale_div, polyScale_X, map_one, map_one, div_one, div_one, map_mul]
     congr 1
-  rw [map_pow, hX, mul_pow, map_pow]
+  rw [map_zpow₀, hX, mul_zpow, map_zpow₀]
 
 set_option maxHeartbeats 1000000 in
 /-- **Hypertranscendence for a monomial-twisted first-order equation.**  If the multiplier of the
@@ -213,7 +213,7 @@ homogeneous equation is a power of the dilation parameter and the twisted increm
 pole at `1` with no other pole on the orbit of `1`, then every Laurent solution is differentially
 transcendental over `k(w)`. -/
 theorem hypertranscendentalOver_of_monomialTwist [CharZero k]
-    (β : k) (hβ : β ≠ 0) (hβtor : ∀ n : ℤ, n ≠ 0 → β ^ n ≠ 1) (m : ℕ)
+    (β : k) (hβ : β ≠ 0) (hβtor : ∀ n : ℤ, n ≠ 0 → β ^ n ≠ 1) (m : ℤ)
     (p₀ : k) (hp₀ : p₀ ≠ 0) (A S : Polynomial k) (hS : S.eval p₀ ≠ 0) (hA : A.eval p₀ ≠ 0)
     (hreg : ∀ n : ℤ, n ≠ 0 →
       RegularAt (toRF A / (toRF (Polynomial.X - Polynomial.C p₀) * toRF S)) (p₀ * β ^ n))

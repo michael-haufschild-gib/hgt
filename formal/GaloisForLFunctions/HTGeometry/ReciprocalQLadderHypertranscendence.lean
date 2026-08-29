@@ -23,7 +23,7 @@ noncomputable section
 variable {k : Type*} [Field k]
 
 theorem qLadder_increment_eq :
-    -((1 / (1 + (RatFunc.X : RatFunc k))) * (RatFunc.X : RatFunc k) ^ 1)
+    -((1 / (1 + (RatFunc.X : RatFunc k))) * (RatFunc.X : RatFunc k) ^ (1 : ℤ))
       = toRF (-Polynomial.X)
         / (toRF (Polynomial.X - Polynomial.C (-1 : k)) * toRF 1) := by
   have hX : (RatFunc.X : RatFunc k) = toRF Polynomial.X := RatFunc.algebraMap_X.symm
@@ -36,7 +36,7 @@ theorem qLadder_increment_eq :
     exact map_add _ _ _
   rw [hden, show toRF (1 : Polynomial k) = 1 from map_one _, mul_one,
     show toRF (-Polynomial.X : Polynomial k) = -(RatFunc.X : RatFunc k) from by
-      rw [hX]; exact map_neg _ _, pow_one]
+      rw [hX]; exact map_neg _ _, zpow_one]
   field_simp
 
 set_option maxHeartbeats 1000000 in
@@ -45,14 +45,14 @@ set_option maxHeartbeats 1000000 in
 differentially transcendental over `k(x)`. -/
 theorem hypertranscendentalOver_qLadderResolvent [CharZero k] (β : k) (hβ : β ≠ 0)
     (hβtor : ∀ n : ℤ, n ≠ 0 → β ^ n ≠ 1) (R : LaurentSeries k)
-    (hR : R - algebraMap k (LaurentSeries k) (β ^ 1) * innerDilation β hβ R
+    (hR : R - algebraMap k (LaurentSeries k) (β ^ (1 : ℤ)) * innerDilation β hβ R
       = algebraMap (RatFunc k) (LaurentSeries k) (1 / (1 + (RatFunc.X : RatFunc k)))) :
     letI := cylinderDifferential (1 : k)
     letI := innerDifferential (k := k)
     HypertranscendentalOver (RatFunc k) R := by
   letI := cylinderDifferential (1 : k)
   letI := innerDifferential (k := k)
-  refine hypertranscendentalOver_of_monomialTwist β hβ hβtor 1 (-1) (by norm_num)
+  refine hypertranscendentalOver_of_monomialTwist β hβ hβtor (1 : ℤ) (-1) (by norm_num)
     (-Polynomial.X) 1 (by simp) (by simp) ?_ _ R hR qLadder_increment_eq
   intro n hn
   refine regularAt_simplePoleQuotient _ _ _ _ ?_ (by simp)
@@ -67,7 +67,7 @@ theorem hypertranscendentalOver_qLadderResolvent [CharZero k] (β : k) (hβ : β
 
 theorem qLadder_increment_eq_general (c₀ c₁ : k) :
     -((algebraMap k (RatFunc k) c₀ / (algebraMap k (RatFunc k) c₁ + (RatFunc.X : RatFunc k)))
-        * (RatFunc.X : RatFunc k) ^ 1)
+        * (RatFunc.X : RatFunc k) ^ (1 : ℤ))
       = toRF (-(Polynomial.C c₀) * Polynomial.X)
         / (toRF (Polynomial.X - Polynomial.C (-c₁)) * toRF 1) := by
   have hX : (RatFunc.X : RatFunc k) = toRF Polynomial.X := RatFunc.algebraMap_X.symm
@@ -84,8 +84,8 @@ theorem qLadder_increment_eq_general (c₀ c₁ : k) :
       rw [hX, algebraMap_eq_toRF_C,
         show toRF (-(Polynomial.C c₀) * Polynomial.X)
           = toRF (-(Polynomial.C c₀)) * toRF Polynomial.X from map_mul _ _ _,
-        show toRF (-(Polynomial.C c₀)) = -toRF (Polynomial.C c₀) from map_neg _ _],
-    pow_one]
+        show toRF (-(Polynomial.C c₀)) = -toRF (Polynomial.C c₀) from map_neg _ _]]
+  rw [zpow_one (RatFunc.X : RatFunc k)]
   ring
 
 set_option maxHeartbeats 1000000 in
@@ -95,7 +95,7 @@ transcendental over `k(x)`, both for the Euler derivation and for the ordinary o
 theorem hypertranscendentalOver_onePoleQLadder [CharZero k] (β : k) (hβ : β ≠ 0)
     (hβtor : ∀ n : ℤ, n ≠ 0 → β ^ n ≠ 1) (c₀ c₁ : k) (hc₀ : c₀ ≠ 0) (hc₁ : c₁ ≠ 0)
     (R : LaurentSeries k)
-    (hR : R - algebraMap k (LaurentSeries k) (β ^ 1) * innerDilation β hβ R
+    (hR : R - algebraMap k (LaurentSeries k) (β ^ (1 : ℤ)) * innerDilation β hβ R
       = algebraMap (RatFunc k) (LaurentSeries k)
         (algebraMap k (RatFunc k) c₀ / (algebraMap k (RatFunc k) c₁ + RatFunc.X))) :
     letI := cylinderDifferential (1 : k)
@@ -103,7 +103,7 @@ theorem hypertranscendentalOver_onePoleQLadder [CharZero k] (β : k) (hβ : β �
     HypertranscendentalOver (RatFunc k) R := by
   letI := cylinderDifferential (1 : k)
   letI := innerDifferential (k := k)
-  refine hypertranscendentalOver_of_monomialTwist β hβ hβtor 1 (-c₁) (by simpa using hc₁)
+  refine hypertranscendentalOver_of_monomialTwist β hβ hβtor (1 : ℤ) (-c₁) (by simpa using hc₁)
     (-(Polynomial.C c₀) * Polynomial.X) 1 (by simp) ?_ ?_ _ R hR
     (qLadder_increment_eq_general c₀ c₁)
   · simp only [Polynomial.eval_mul, Polynomial.eval_neg, Polynomial.eval_C, Polynomial.eval_X]
@@ -122,7 +122,7 @@ theorem hypertranscendentalOver_onePoleQLadder [CharZero k] (β : k) (hβ : β �
 theorem hypertranscendentalOver_onePoleQLadder_ordinary [CharZero k] (β : k) (hβ : β ≠ 0)
     (hβtor : ∀ n : ℤ, n ≠ 0 → β ^ n ≠ 1) (c₀ c₁ : k) (hc₀ : c₀ ≠ 0) (hc₁ : c₁ ≠ 0)
     (R : LaurentSeries k)
-    (hR : R - algebraMap k (LaurentSeries k) (β ^ 1) * innerDilation β hβ R
+    (hR : R - algebraMap k (LaurentSeries k) (β ^ (1 : ℤ)) * innerDilation β hβ R
       = algebraMap (RatFunc k) (LaurentSeries k)
         (algebraMap k (RatFunc k) c₀ / (algebraMap k (RatFunc k) c₁ + RatFunc.X))) :
     letI := ratFuncOrdinaryDifferential (k := k)

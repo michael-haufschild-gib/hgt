@@ -1300,3 +1300,37 @@ New modules (all in `RHTower/Sieve/`, all axiom-clean):
 `TypeIBound`, `DivisorSquareMoment`, `DirichletConvolutionRearrange`.
 
 Project card: `docs/drafts/pipeline/1-in-progress/kubalalika-weighted-tail-lean.md`.
+
+## CARD 11 (`regular-variation-weighted-steinhaus-ldp`) — parts 3, 4, 5 CLOSED (2026-08-29)
+
+Details in `docs/drafts/pipeline/1-in-progress/steinhaus-ldp-lean.md`.  Summary:
+
+- **Part 4** (the small-coherence trichotomy) is complete.  The scaling identity
+  `Λ_α(λ) = λ^{1/α}∫₀^{λ^{−1/α}} log I₀(w_α(u))du` removes `λ` from the integrand entirely, so the
+  super-critical regime is "a truncated integral converges" and the critical one is a logarithmic
+  Cesàro limit.  An abstract Legendre power law (`tendsto_rvRate_div_rpow`) covers the sub- and
+  super-critical lines at once; the critical line needs its own tilt because of the slowly varying
+  factor.
+- **Part 5** (the high-coherence endpoint) is complete, and required proving the SHARP Bessel
+  asymptotic `√x e^{−x}I₀(x) → 1/√(2π)` by Laplace's method (the corpus owned only two envelopes
+  with non-matching constants).
+- **S9**: Karamata's uniform convergence theorem, Potter's bound and the prime Karamata law
+  `∑_{p≤X}(log p)p^{−α}L(p) ∼ X^{1−α}L(X)/(1−α)` are all Lean-proved.  This was a complete
+  mathlib gap (there is no regular-variation theory in mathlib).
+
+New modules (all axiom-clean, all wired):
+  HTGeometry: `SteinhausScalingIdentity`, `IntegralLogCesaro`, `SteinhausSharpAsymptotic`,
+    `SlowShiftUniform`, `SlowlyVarying`
+  RHTower: `SteinhausRatePowerAsymptotic`, `SteinhausSuperConstant`, `SteinhausSupercriticalLimit`,
+    `SteinhausCriticalCumulant`, `SteinhausCriticalRate`, `SteinhausEndpointCumulant`,
+    `SteinhausEndpointRate`, `PrimeShellWeightedSum`, `PrimePowerSumBound`, `PrimeKaramataHead`,
+    `PrimeKaramataShell`, `PrimeKaramataDarboux`, `PrimeKaramataBody`, `PrimeKaramata`
+
+CARD 11 REMAINING: `(10)`/`(12)` (the normalized weights and the cumulant limit — both now
+immediate consequences of the Karamata law plus the UCT and PNT), then S8, the LDP itself.  The
+planar LDP reduces to a one-dimensional Cramér/Gärtner–Ellis statement for `R_X = |Y_X|` because the
+law is rotation invariant.
+
+CARD 12 (`kubalalika-parity-weighted-near-diagonal-tail`) — unchanged this session; see
+`kubalalika-weighted-tail-lean.md`.  62 modules; what remains is the per-block multiplication, the
+per-block orientation choice, the block-count summation and the instantiation at `T = u^16`.

@@ -1,8 +1,8 @@
 # Prime-power centered-mark finite-monodromy route to RH
 
 - **ID:** `prime-power-centered-mark-finite-monodromy-rh`
-- **Stage:** 1-in-progress
-- **Type:** `[CONJECTURE] [RH ROUTE] [LARGE OUTLANDISH DETOUR]`
+- **Stage:** 5-failed
+- **Type:** `[FALSIFIED] [RETIRED RH ROUTE] [LEAN-PROVED NO-GO]`
 - **Source:** the degree-one Euler prime-power ray, local Adams dilation, completed
   prime--Gamma constraint, and finite-monodromy/torsion infrastructure
 - **Lean:** `formal/GaloisForLFunctions/RHTower/PrimePowerCenteredMarkRH.lean`
@@ -110,5 +110,73 @@ spectrum.  It only has to identify two centered prime-power marks at the same hy
 - [x] base Adams acts by exact powering
 - [x] one finite collision at each right-half zero proved sufficient for RH
 - [x] bare right-half collision certificate proved equivalent to RH
-- [ ] completed source produces a finite level collision without divisor-location input
-- [ ] compose the source producer with the formal endpoint and audit axioms
+- [x] completed source producer classified: source-first and faithful collision is impossible
+- [x] route retired by the source/receiver terminal certificate
+
+## PPM-NG1 source/receiver terminal conjecture (2026-08-29)
+
+**Exact chain attacked.** The remaining PPM chain is
+
+```text
+centered Euler ray
+  -> divisor-independent finite quotient or finite monodromy
+  -> equality of two actual centered-mark powers on a hypothetical right Xi fibre
+  -> right-half contraction contradiction
+  -> RH.
+```
+
+**Conjecture.** For every integer base `p > 1`:
+
+1. the complete power orbit `a ↦ u_p(s)^a` is injective at every right-half spectral label;
+2. any quotient that identifies two such powers is necessarily non-faithful to the actual
+   centered marks, so its quotient collision cannot supply the scalar equality required by the
+   RH endpoint;
+3. the canonical Big-Witt Frobenius orbit is already injective on every hypothetical right
+   completed-Xi fibre;
+4. after restricting collision to right Xi fibres, the statement is exactly RH and is vacuous
+   in the RH direction.
+
+The positive survivor is global collision rigidity: one genuine equality
+`u_p(s)^a = u_p(s)^b`, with `a < b`, forces `Re(s)=1/2`.
+
+**Dependency-closed paper proof.** `u_p(s)` is a complex exponential and hence nonzero. Equality
+of its `a`th and `b`th powers gives equality of the corresponding norm powers. For a positive
+real radius different from one, natural powering is injective, contradicting `a < b`; therefore
+`|u_p(s)|=1`. The proved exact norm law then gives `Re(s)=1/2`. On the strict right half-plane the
+norm is strictly below one, so all natural powers are pairwise distinct. If an injective quotient
+map identified two powers, injectivity would recover the forbidden scalar equality; hence every
+collision-producing quotient loses precisely the faithfulness needed by the endpoint. The
+existing Big-Witt comparison proves the same injectivity for the canonical dyadic Frobenius
+orbit, while `XiRightPrimePowerMarkCollision p <-> RH` proves that zero-restriction imports the
+entire unresolved theorem.
+
+**Novelty audit.** Internal corpus searches for centered-mark collision, Big-Witt Frobenius
+preperiodicity, finite monodromy, reflection, and quotient faithfulness found the endpoint and the
+canonical orbit-injectivity theorem, but no theorem closing the producer/receiver fork. External
+search found Putnam-type nonperiodicity and work on zeta values or zeros on vertical arithmetic
+progressions, but no centered Euler-mark/Big-Witt source--receiver classification. Novelty remains
+subject to expert review; the formal claim is the route-level terminal classification above.
+
+## No-go closure
+
+- **Exact killing theorem/mechanism:** `primePowerCenteredMark_source_receiver_terminal` proves
+  the exhaustive PPM fork. Actual centered-mark power orbits are injective at every right-half
+  label. An injective quotient cannot identify levels; any quotient collision therefore destroys
+  the exact scalar faithfulness required by the RH endpoint. Canonical Big-Witt Frobenius is also
+  injective on every hypothetical right completed-Xi fibre. Restricting the collision assertion to
+  Xi zeros yields `XiRightPrimePowerMarkCollision 2 <-> RiemannHypothesis`, so that alternative is
+  a receiver, not an independent source producer.
+- **Strongest positive survivor:** `centeredPrimeMark_re_eq_half_of_pow_eq` classifies every genuine
+  finite collision: for any `p > 1`, equality of two distinct natural powers of the centered mark
+  forces `Re(s)=1/2`.
+- **New insight:** finite monodromy cannot be obtained by quotienting the source-correct Adams ray
+  while retaining the mark equality that makes PPM work. Any viable successor must introduce a
+  different source invariant and a new RH endpoint; it is no longer PPM.
+- **Status:** dependency-closed paper proof and Lean proof complete in
+  `GaloisForLFunctions.RHTower.PrimePowerCenteredMarkSourceReceiverNoGo`. Targeted build passed;
+  all new theorems use only `propext`, `Classical.choice`, and `Quot.sound`. Repository lint reports
+  unrelated pre-existing umbrella reachability failures, none involving this module.
+
+## Log
+
+- 2026-08-29 — PPM retired after source/receiver and quotient-faithfulness classification.

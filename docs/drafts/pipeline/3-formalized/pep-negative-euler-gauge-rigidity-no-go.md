@@ -1,8 +1,8 @@
 # PEP negative-Euler gauge rigidity no-go
 
 - **ID:** PEP-NEG-EULER-GAUGE-NOGO
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** `rh-current-frontier-map.md` · route PEP
 - **Statement:** Every exponent-zero, source-faithful Euler gauge is a holomorphic unit on the positive half-plane, so it preserves pointwise analyticity and the complete signed divisor of the canonical all-negative Helson sheet; pole-freeness on `1/2 < Re(s) < 1` before or after any such gauge is equivalent to RH.
 
@@ -25,8 +25,8 @@ Thus PEP's remaining `LAND` premise is not an intermediate lemma but RH itself.
 ## Gates
 
 - [x] 0 → 1 in-progress: exact source, proof chain, killing theorem, and Lean attack identified
-- [ ] 1 → 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3 formalized: Lean theorem suite, targeted `lake build` green, axiom audit clean
+- [x] 1 → 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
+- [x] 2 → 3 formalized: Lean theorem suite, targeted `lake build` green, axiom audit clean
 - [ ] 3 → 4 publication-ready: standalone paper (theorem + proof + Lean certificate + Door-2)
 
 ## Frozen theorem suite
@@ -43,6 +43,9 @@ Thus PEP's remaining `LAND` premise is not an intermediate lemma but RH itself.
    `Re(ρ) ≥ 1/2`, the gauged sheet has exactly the negative zeta multiplicity.
 5. Local cancellation classification: if an analytic multiplier makes the negative sheet analytic
    at such a zero, that multiplier must vanish there; consequently it is not a projective unit.
+6. `exists_exponentZeroGaugeCanonicalNegativeEulerSheetPoleFreeRightStrip_iff_rh`: the closed
+   terminal statement that even existence of one admissibly gauged pole-free negative sheet is
+   equivalent to RH.
 
 ## Approach
 
@@ -61,6 +64,37 @@ zero contradicts the corpus's strict negative meromorphic order. The same argume
 would reflect analyticity by division, contradicting the canonical pole; therefore every canceling
 multiplier vanishes at the pole.
 
+## Proof
+
+**[PROVED HERE]** Fix an exponent-zero Euler gauge `U`. Corpus construction gives, at every
+`Re(z) > 0`, both `AnalyticAt U z` and `U(z) ≠ 0`. If `f` is analytic at `z`, then `U f` is analytic
+there. Conversely, continuity of `U` and `U(z) ≠ 0` make `U` nonzero on a neighborhood of `z`; if
+`U f` is analytic, division by `U` on that neighborhood proves that `f` is analytic. This proves
+pointwise analyticity equivalence. Existing isodivisorial continuation gives the stronger exact
+order identity `ord_z(U f) = ord_z(f)`.
+
+Assume RH and take `s` with `1/2 < Re(s) < 1`. The denominator `ζ(s)` is nonzero by the corpus's
+right-strip RH criterion. Both quotient factors are analytic at `s`: `s ≠ 1` follows from the upper
+strip inequality, while `2s ≠ 1` follows from the strict lower inequality. Hence `ζ(2s)/ζ(s)` is
+analytic. Conversely, if RH fails, the same criterion supplies a zero `ρ` with
+`1/2 < Re(ρ) < 1`. Canonical divisor polarity gives
+`ord_ρ(ζ(2s)/ζ(s)) = -ord_ρ(ζ) < 0`, so the negative sheet is not analytic at `ρ`. Therefore its
+strict-right-strip pole-freeness is equivalent to RH. Pointwise gauge equivalence proves the same
+criterion for every exponent-zero gauge. Identity gauge is exponent-zero, so even existence of one
+such gauged pole-free sheet is equivalent to RH.
+
+Finally let `u` be any analytic multiplier at a right-half zeta zero `ρ`. If `u(ρ) ≠ 0`, the same
+local division argument says analyticity of `u · ζ(2s)/ζ(s)` would imply analyticity of the negative
+sheet, contradicting its negative order. Thus every analytic pole-canceling multiplier satisfies
+`u(ρ) = 0`; it is not an analytic unit. This also explains opposite-sheet norm complementarity:
+its positive-sheet multiplier cancels precisely by carrying the zero divisor, so the paired norm
+has erased the polarity it was supposed to orient.
+
+Hostile audit: strict inequalities exclude both quotient singular loci `s = 1` and `2s = 1`;
+totalized division at a zero cannot create a false proof because the contradiction uses local
+meromorphic order; no gauge, zero, or unproved continuation is assumed. All inputs are established
+corpus theorems.
+
 ## No-go closure
 
 - **Exact killing theorem/mechanism:** source-faithful exponent-zero/projective gauges are analytic
@@ -71,7 +105,11 @@ multiplier vanishes at the pole.
 - **New insight:** PEP cannot obtain `LAND` through projective gauge freedom. Any successful
   cancellation must introduce precisely the forbidden zero divisor, abandoning source-faithful
   projective-unit transport and changing the route.
-- **Status:** paper proof under hostile audit; Lean dependencies already present in corpus.
+- **Status:** formalized in
+  `GaloisForLFunctions.RHTower.ProjectiveEulerNegativeSheetGaugeNoGo`; direct Lean check and
+  targeted module build pass. Axiom audit reports only `propext`, `Classical.choice`, and
+  `Quot.sound`. Repository-wide lint reports unrelated pre-existing umbrella-reachability failures;
+  it reports no banned declaration in this module, which is wired into `RHTower.lean`.
 
 ## Novelty audit
 
@@ -86,3 +124,5 @@ not evade this no-go.
 ## Log
 
 - 2026-08-29 — frozen from corpus-first audit of PEP; exact RH chain and killing theorem recorded
+- 2026-08-29 — `[PROVED HERE]`; hostile audit closed; scratch Lean proof passes
+- 2026-08-29 — Lean theorem suite closed; targeted build and axiom audit pass; PEP retired

@@ -12,7 +12,7 @@ Already promoted (before this sweep): `ht-remote-quartet-compact-open-field-invi
 | 2 | da-ht-topological-interlacing-law | **PROMOTED 2026-08-29** | — (Runge's theorem built from scratch) |
 | 3 | ht-c28-minimal-handle-collapse | OPEN | per-handle collapse citations (Weierstrass addition, holonomic, integration closure, vdPS, Hardouin–Singer) |
 | 4 | ht-da-translation-spectrum-countability | **PROMOTED 2026-08-29** | — |
-| 5 | ht-exact-da-translation-stabilizer | OPEN | Ostrowski no-finite-basis theorem; tail-gcd; locally cyclic realization |
+| 5 | ht-exact-da-translation-stabilizer | **PROMOTED 2026-08-29** | — (Ostrowski replaced by eventual-gap hypertranscendence) |
 | 6 | ht-q-residue-spectrum-classification | OPEN | ADH rational-or-HT; Chen–Singer q-discrete residues |
 | 7 | hypertranscendental-maximal-finite-horizon-galois-law | OPEN | binomial degree + S_D normal closure transport |
 | 8 | indeterminate-moment-fiber-prevalent-translation-ht | OPEN | prevalence, product probe, parametric transversality |
@@ -209,3 +209,108 @@ Card capstones: `dense_daCompactOpenLocus`, `isMeagre_daCompactOpenLocus`,
 card needing a *generic* / *dense* / *prevalent* hypertranscendence statement in a function space
 (cards 8, 13, and the density half of 9) can quote `dense_htCompactOpenLocus` and
 `isGδ_htCompactOpenLocus` instead of rebuilding a Baire argument.
+
+## Card 5 — CLOSED (2026-08-29)
+
+The Ostrowski dependence is gone.  The open sub-problem recorded above — that
+`FormalHypertranscendence.aeval_survives` needs a *global* gap inequality `r·b_k + 2W < b_{k+1}`
+while an arbitrary relation has unbounded `(r, W)` — is now solved:
+
+**`GaloisForLFunctions.HTGeometry.hypertranscendental_of_eventualGap`** — a smooth function whose
+Taylor series is supported on a strictly increasing sequence with *eventually* superlinear gaps and
+infinitely many nonzero coefficients is hypertranscendental.
+
+The circularity breaks because the prefix removal is done *after* the relation is fixed: the prefix
+is a polynomial of degree `b_K`, adding it is an invertible triangular jet substitution
+(`FormalJetPrefixShift`), and the substituted relation's degree data grows only linearly in `b_K`
+(`JetMonomialDegreeBounds`), which the gaps outrun.  **Reusable by every other card that needs
+hypertranscendence of a lacunary series with unprescribed coefficients.**
+
+New modules: `JetMonomialDegreeBounds`, `FormalJetPrefixShift`, `EventualGapHypertranscendence`,
+`GapSeriesEntireCarrier`, `GapExponentialCarrier`, `RationalDenominatorLadder`,
+`LadderPrimeFrequencies`, `TailGcd`, `ExponentialSumMinimalOrder`,
+`LocallyCyclicTranslationStabilizer`.  All axiom-clean.
+
+Other reusable assets this card left behind:
+- `TailGcd.tailGcd` / `dvd_tailGcd_iff` — gcd of an infinite tail of a sequence (mathlib gap).
+- `RationalDenominatorLadder.exists_denLadder` — every subgroup of `ℚ` containing `1` is a union of
+  cyclic groups along a divisibility ladder (mathlib gap).
+- `ExponentialSumMinimalOrder.minimal_constCoeffOrder_expSum` — the minimal constant-coefficient
+  order of a finite exponential sum is its number of modes.
+- `LocallyCyclicTranslationStabilizer.isLocallyCyclic_iff_subset_ratLine` — locally cyclic subgroups
+  of `ℂ` are exactly the rational lines.
+- `GapSeriesEntireCarrier` / `GapExponentialCarrier` — a complete gap-series calculus: entire
+  carrier, Taylor coefficients, dilation/difference law, finite-support collapse to an exponential
+  polynomial, hypertranscendence.
+
+## Card 13 survey (2026-08-29) — the card's Lean-status section is stale
+
+`random-holomorphic-maximal-translation-ht-law` claims the tree "does not formalize random
+holomorphic functions ... or countable differential-support avoidance as one theorem".  That is no
+longer true.  The corpus already owns the card's **main theorem**:
+
+- `HTGeometry/RandomAffineJetPacketFreeness.lean` —
+  `HasAbsolutelyContinuousFiniteAffineJetLaws` (the card's hypothesis (ND), in a stronger
+  multivariate affine-palette form), `measure_compl_preimage_affineJetPacketGenericSet_eq_zero`,
+  `ae_affineOrbit_no_polynomialDifferentialRelation`,
+  **`ae_translationOrbit_no_polynomialDifferentialRelation`** — for every countable injectively
+  coded set of shifts, finite-jet absolute continuity gives almost-sure freeness of every finite
+  family of distinct translates.
+- `HTGeometry/FiniteJetLawDeterministicGauge.lean` — `HasAbsolutelyContinuousFiniteAffineJetLaws.add_const`
+  and `ae_translationOrbit_no_polynomialDifferentialRelation_add_const`: the card's
+  **finite-deterministic-passport stability**.
+- `HTGeometry/ComplexPolynomialZeroMeasure.lean` — the zero set of a nonzero complex multivariate
+  polynomial is Lebesgue-null; `HTGeometry/FiniteJetPolynomialAvoidance.lean` — the absolutely
+  continuous pullback statement.
+- `HTGeometry/EvaluationMinorGeneralDomain.lean` — the card's evaluation lemma (a linearly
+  independent finite family of functions has a nonsingular evaluation minor at distinct points).
+- `HTGeometry/AdditiveNoiseAbsoluteContinuity.lean` — `map_add_const_absolutelyContinuous`,
+  `map_snd_add_noise_prod_absolutelyContinuous` (absolute continuity survives independent additive
+  noise).
+- `HTGeometry/BoundedComplexCoefficientProbability.lean` — `complexSquareProbability`, absolutely
+  continuous, and the clamp that is a.s. the identity;
+  `HTGeometry/InfiniteProductFiniteHead.lean` — `map_countableProductHead_infinitePi`;
+  `HTGeometry/BoundedRandomEntireSeries.lean` — `boundedRandomEntireSource`, a *total* entire
+  random series (clamped coefficients, no almost-sure convergence needed).
+
+**What is missing is a model.**  No declaration in the tree verifies
+`HasAbsolutelyContinuousFiniteAffineJetLaws` for any concrete random source, so the capstones are
+so far vacuously applicable.  Remaining work for card 13:
+
+1. prove `HasAbsolutelyContinuousFiniteAffineJetLaws` for `boundedRandomEntireSource` under
+   `Measure.infinitePi (fun _ => complexSquareProbability)` — the jet packet is a linear image of
+   the coefficient sequence, its first `N` coordinates go through an invertible confluent
+   Vandermonde (Hermite) matrix, and the tail is independent additive noise;
+2. the planar Gaussian instance `∑ ξₙ zⁿ/√(n!)` (needs a.s. entirety of a Gaussian series);
+3. assemble the card's statements (2), (3), (9), (12), (14).
+
+### Card 13 build plan (started 2026-08-29)
+
+Landed so far:
+- `HTGeometry/OneDimJetEvalBridge.lean` — **`multiIndexJetEvalCLM_oneDim`**: in one coordinate the
+  canonical multi-index jet observation of `oneDimMultivariateEntireOfDifferentiable g hg` is
+  `iteratedDeriv (a 0) g (x 0)`.  (Route: `orderedPartialJetEvalCLM_congr_of_wordMultiplicity_eq`
+  to a constant word, then `ContinuousLinearMap.iteratedFDeriv_comp_right` along `proj 0`.)
+- `HTGeometry/InfinitePiSumSplit.lean` — **`map_sumPiEquivProdPi_infinitePi`** (an infinite product
+  law indexed by a sum type is the product of the two block laws; mathlib gap) and
+  **`map_headTail_infinitePi`** (the first `N` coordinates and the rest are independent, with
+  `Measure.pi` on the head).  Route: `Measure.eq_infinitePi` + `Finset.toLeft/toRight` +
+  `Finset.prod_disjSum`, then `Measure.infinitePi_map_piCongrLeft`, `MeasurableEquiv.map_symm_map`
+  and `Measure.infinitePi_eq_pi`.
+
+Still to build:
+1. `entireOfCoeffs` head/tail split: `entireOfCoeffs a z = ∑_{n<N} aₙ zⁿ + Tₙ(a∘(N+·)) z` with the
+   tail entire and depending only on the shifted coefficients (`sum_add_tsum_nat_add` +
+   `summable_of_orderTwo_bound`).
+2. Additivity of the one-coordinate embedding `oneDimMultivariateEntireOfDifferentiable`, so the
+   jet packet splits as `A·(first N coefficients) + (tail observation)`.
+3. Confluent Vandermonde: for pairwise distinct points `q_(row,i)` and orders `orders i`, the
+   `N × N` matrix of `(d/dz)^j zⁿ |_{q}` (`N = ∑_(row,i) orders i`) is invertible — because a
+   polynomial of degree `< N` vanishing to those orders is divisible by a degree-`N` product.
+4. Measurability of `x ↦ Ψ(F x)`: the tails go to `0` locally uniformly, so the jet packet is the
+   pointwise limit of the finite-head observations.
+5. `HasAbsolutelyContinuousFiniteAffineJetLaws (Measure.infinitePi (fun _ => complexSquareProbability))
+   (fun h => oneDimTranslationFrame (shift h)) boundedRandomEntireSource`, via
+   `map_headTail_infinitePi`, `PiMeasureAbsoluteContinuity`, the invertible linear image, and
+   `map_snd_add_noise_prod_absolutelyContinuous`.
+6. The card capstones, plus the planar Gaussian instance (needs a.s. entirety of `∑ ξₙ zⁿ/√(n!)`).

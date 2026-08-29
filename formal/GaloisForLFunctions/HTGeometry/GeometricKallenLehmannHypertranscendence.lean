@@ -1,4 +1,7 @@
 import GaloisForLFunctions.HTGeometry.QDifferenceInhomogeneousHT
+import GaloisForLFunctions.HTGeometry.RamifiedLaurentTransfer
+import GaloisForLFunctions.HTGeometry.MultiplicativeDependenceRoot
+import GaloisForLFunctions.HTGeometry.GeometricKallenLehmannResponse
 
 /-!
 # The geometric Källén–Lehmann response is hypertranscendental
@@ -232,6 +235,305 @@ theorem hypertranscendentalOver_propagatorGerm [CharZero k] (a b w : k)
     exact mul_left_cancel₀ (by norm_num : (-1 : k) ≠ 0) h1
   · rw [← propagator_inhomogeneity_eq w]
     exact propagatorGerm_equation a b hb _ R hR
+
+/-! ## The response of a geometric spectrum, for every multiplier pair -/
+
+theorem complex_zpow_real_ne_one {β : ℝ} (hβ₀ : 0 < β) (hβ₁ : β ≠ 1) (n : ℤ) (hn : n ≠ 0) :
+    ((β : ℂ)) ^ n ≠ 1 := by
+  intro h
+  have hreal : (β : ℝ) ^ n = 1 := by
+    have hcast : (((β : ℝ) ^ n : ℝ) : ℂ) = 1 := by
+      push_cast
+      exact h
+    exact_mod_cast hcast
+  have hlog := congrArg Real.log hreal
+  rw [Real.log_zpow, Real.log_one] at hlog
+  have hlogβ : Real.log β ≠ 0 := by
+    intro hz
+    exact hβ₁ (by
+      have := Real.exp_log hβ₀
+      rw [hz, Real.exp_zero] at this
+      exact this.symm)
+  rcases mul_eq_zero.mp hlog with h' | h'
+  · exact hn (by exact_mod_cast h')
+  · exact hlogβ h'
+
+set_option maxHeartbeats 1000000 in
+/-- **The response of a geometric Källén--Lehmann spectrum is hypertranscendental, for every pair
+of multipliers in `(0,1)`.**  Either the multipliers are multiplicatively independent, and the
+two-variable model applies, or both are powers of a common positive real, and the ramified
+one-variable model applies. -/
+theorem hypertranscendentalOver_geometricResponse (a b : ℝ) (ha₀ : 0 < a) (ha₁ : a < 1)
+    (hb₀ : 0 < b) (hb₁ : b < 1) (R : LaurentSeries ℂ)
+    (hbC : ((b : ℂ)) ≠ 0)
+    (hR : R - algebraMap ℂ (LaurentSeries ℂ) ((a : ℂ)) * innerDilation ((b : ℂ)) hbC R
+      = algebraMap (RatFunc ℂ) (LaurentSeries ℂ)
+        (algebraMap ℂ (RatFunc ℂ) ((1 - a : ℝ) : ℂ)
+          / toRF (Polynomial.C 1 - Polynomial.X))) :
+    letI : Differential (RatFunc ℂ) := cylinderDifferential (1 : ℂ)
+    letI := innerDifferential (k := ℂ)
+    HypertranscendentalOver (RatFunc ℂ) R := by
+  letI : Differential (RatFunc ℂ) := cylinderDifferential (1 : ℂ)
+  letI := innerDifferential (k := ℂ)
+  have haC : ((a : ℂ)) ≠ 0 := by
+    simpa using ne_of_gt ha₀
+  have hwC : ((1 - a : ℝ) : ℂ) ≠ 0 :=
+    Complex.ofReal_ne_zero.mpr (by intro h; linarith [sub_eq_zero.mp h])
+  rcases multIndependent_or_commonRoot ha₀ ha₁ hb₀ hb₁ with hind | ⟨β, p, q, hβ₀, hq, hβq, hβp⟩
+  · refine hypertranscendentalOver_of_qDifference_simplePole ((a : ℂ)) ((b : ℂ)) haC hbC ?_ 1
+      one_ne_zero (-(Polynomial.C ((1 - a : ℝ) : ℂ))) 1 (by simp) ?_ ?_ R ?_
+    · intro m n hmn
+      refine hind m n ?_
+      have hcast : (((b : ℝ) ^ m : ℝ) : ℂ) = (((a : ℝ) ^ n : ℝ) : ℂ) := by
+        push_cast
+        exact hmn
+      exact_mod_cast hcast
+    · simp only [Polynomial.eval_neg, Polynomial.eval_C, neg_ne_zero]
+      exact hwC
+    · intro n hn
+      refine regularAt_simplePoleQuotient _ _ _ _ ?_ (by simp)
+      simp only [Polynomial.eval_sub, Polynomial.eval_X, Polynomial.eval_C, one_mul]
+      intro h
+      refine complex_zpow_real_ne_one hb₀ (by linarith) n hn ?_
+      linear_combination h
+    · rw [hR]
+      congr 1
+      rw [algebraMap_eq_toRF_C]
+      rw [show (Polynomial.C 1 - Polynomial.X : Polynomial ℂ)
+          = -(Polynomial.X - Polynomial.C 1) from by ring,
+        show toRF (-(Polynomial.X - Polynomial.C 1) : Polynomial ℂ)
+          = -toRF (Polynomial.X - Polynomial.C 1) from map_neg _ _,
+        show toRF (1 : Polynomial ℂ) = 1 from map_one _, mul_one,
+        show toRF (-(Polynomial.C ((1 - a : ℝ) : ℂ)) : Polynomial ℂ)
+          = -toRF (Polynomial.C ((1 - a : ℝ) : ℂ)) from map_neg _ _]
+      field_simp
+  · have hβC : ((β : ℂ)) ≠ 0 := by simpa using ne_of_gt hβ₀
+    have hβ₁ : β ≠ 1 := by
+      intro h
+      rw [h, one_pow] at hβq
+      linarith
+    have hbeq : ((b : ℂ)) = ((β : ℂ)) ^ q := by
+      rw [← hβq]
+      push_cast
+      ring
+    have haeq : ((a : ℂ)) = ((β : ℂ)) ^ p := by
+      rw [← hβp]
+      push_cast
+      ring
+    refine hypertranscendentalOver_of_ramifiedMonomialTwist ((β : ℂ)) hβC ?_ p q hq
+      (((1 - a : ℝ) : ℂ)) hwC R ?_
+    · intro n hn
+      exact complex_zpow_real_ne_one hβ₀ hβ₁ n hn
+    · have hgen : ∀ (c : ℂ) (hc : c ≠ 0), c = ((β : ℂ)) ^ q →
+          (R - algebraMap ℂ (LaurentSeries ℂ) ((a : ℂ)) * innerDilation c hc R
+            = algebraMap (RatFunc ℂ) (LaurentSeries ℂ)
+              (algebraMap ℂ (RatFunc ℂ) ((1 - a : ℝ) : ℂ)
+                / toRF (Polynomial.C 1 - Polynomial.X))) →
+          R - algebraMap ℂ (LaurentSeries ℂ) (((β : ℂ)) ^ p)
+              * innerDilation (((β : ℂ)) ^ q) (pow_ne_zero q hβC) R
+            = algebraMap (RatFunc ℂ) (LaurentSeries ℂ)
+              (algebraMap ℂ (RatFunc ℂ) ((1 - a : ℝ) : ℂ)
+                / toRF (Polynomial.C 1 - Polynomial.X)) := by
+        rintro c hc rfl h
+        rw [← haeq]
+        exact h
+      exact hgen _ hbC hbeq hR
+
+/-! ## The propagator for every multiplier pair -/
+
+theorem innerDilation_propagatorGerm (R : LaurentSeries k) :
+    innerDilation (-1) (by norm_num : (-1 : k) ≠ 0) (propagatorGerm R)
+      = (HahnSeries.single 1 1 : LaurentSeries k) * R := by
+  have hgen : ∀ (c : k) (hc : c ≠ 0), c = 1 → innerDilation c hc R = R := by
+    rintro c hc rfl
+    refine HahnSeries.coeff_inj.mp (funext fun n => ?_)
+    rw [coeff_innerDilation, one_zpow, one_mul]
+  rw [propagatorGerm, map_mul, map_neg, innerDilation_single_one, innerDilation_innerDilation,
+    hgen _ _ (by ring),
+    show (HahnSeries.C (-1 : k) : LaurentSeries k) = -1 from by
+      rw [map_neg, map_one]]
+  ring
+
+set_option maxHeartbeats 1000000 in
+/-- **Hypertranscendence of the response gives hypertranscendence of the propagator.**  Reciprocal
+inversion is a dilation followed by multiplication by the coordinate, and both preserve
+differential transcendence over `k(z)`. -/
+theorem hypertranscendentalOver_propagatorGerm_of_response [CharZero k] {R : LaurentSeries k}
+    (hR : @HypertranscendentalOver (RatFunc k) (LaurentSeries k) _ _ _
+      (innerDifferential (k := k)) R) :
+    @HypertranscendentalOver (RatFunc k) (LaurentSeries k) _ _ _
+      (innerDifferential (k := k)) (propagatorGerm R) := by
+  letI := innerDifferential (k := k)
+  letI : Differential (RatFunc k) := cylinderDifferential (1 : k)
+  haveI := IsScalarTower.of_algebraMap_eq (R := k) (S := RatFunc k) (A := LaurentSeries k)
+    fun c => by
+      rw [algebraMap_k_laurentSeries]
+      exact (algebraMap_const_laurentSeries c).symm
+  haveI : DifferentialAlgebra (RatFunc k) (LaurentSeries k) :=
+    ⟨fun y => by
+      rw [innerDifferential_deriv, cylinderDifferential_deriv, cylDeriv_one_eq_ratFuncEulerOp,
+        algebraMap_ratFuncEulerOp]⟩
+  haveI : CharZero (LaurentSeries k) :=
+    charZero_of_injective_algebraMap (algebraMap k (LaurentSeries k)).injective
+  intro hDA
+  refine hR ?_
+  have h1 := differentialAlgebraicOver_innerDilation (-1) (by norm_num : (-1 : k) ≠ 0) hDA
+  rw [innerDilation_propagatorGerm] at h1
+  have hprod : ((HahnSeries.single 1 1 : LaurentSeries k) * R)
+      * algebraMap (RatFunc k) (LaurentSeries k) (RatFunc.X : RatFunc k)⁻¹ = R := by
+    rw [algebraMap_ratFuncX_inv]
+    have hone : (HahnSeries.single (1 : ℤ) (1 : k) : LaurentSeries k)
+        * HahnSeries.single (-1) 1 = 1 := by
+      rw [HahnSeries.single_mul_single]
+      norm_num
+    calc (HahnSeries.single (1 : ℤ) (1 : k) * R) * HahnSeries.single (-1) 1
+        = (HahnSeries.single (1 : ℤ) (1 : k) * HahnSeries.single (-1) 1) * R := by ring
+      _ = R := by rw [hone, one_mul]
+  have hmem : R ∈ differentialAdjoin (RatFunc k)
+      ({(HahnSeries.single 1 1 : LaurentSeries k) * R} : Set (LaurentSeries k)) := by
+    have h2 := mul_mem (subset_differentialAdjoin (RatFunc k)
+      ({(HahnSeries.single 1 1 : LaurentSeries k) * R} : Set (LaurentSeries k)) rfl)
+      (IntermediateField.algebraMap_mem
+        (differentialAdjoin (RatFunc k)
+          ({(HahnSeries.single 1 1 : LaurentSeries k) * R} : Set (LaurentSeries k)))
+        (RatFunc.X : RatFunc k)⁻¹)
+    rwa [hprod] at h2
+  exact differentialAlgebraicOver_of_mem_differentialAdjoin_singleton h1 hmem
+
+/-! ## The rational inhomogeneity as a geometric series -/
+
+theorem algebraMap_polynomial_laurent_coeff (p : Polynomial k) (n : ℤ) :
+    (algebraMap (RatFunc k) (LaurentSeries k)
+        (algebraMap (Polynomial k) (RatFunc k) p)).coeff n
+      = if n < 0 then 0 else p.coeff n.natAbs :=
+  coeff_algebraMap_polynomial p n
+
+theorem coeff_ofPowerSeries_mk (f : ℕ → k) (n : ℤ) :
+    (HahnSeries.ofPowerSeries ℤ k (PowerSeries.mk f)).coeff n
+      = if n < 0 then 0 else f n.natAbs := by
+  rw [PowerSeries.coeff_coe]
+  by_cases h : n < 0
+  · simp [h]
+  · simp [h]
+
+theorem algebraMap_oneSubX :
+    algebraMap (RatFunc k) (LaurentSeries k)
+        (toRF (Polynomial.C 1 - Polynomial.X : Polynomial k))
+      = 1 - HahnSeries.single 1 1 := by
+  refine HahnSeries.coeff_inj.mp (funext fun n => ?_)
+  rw [toRF, algebraMap_polynomial_laurent_coeff, HahnSeries.coeff_sub, HahnSeries.coeff_one,
+    HahnSeries.coeff_single]
+  by_cases hneg : n < 0
+  · rw [if_pos hneg, if_neg (by omega : ¬ n = 0), if_neg (by omega : ¬ n = 1)]
+    ring
+  · rw [if_neg hneg]
+    by_cases h0 : n = 0
+    · subst h0
+      simp [Polynomial.coeff_sub, Polynomial.coeff_C, Polynomial.coeff_X]
+    · by_cases h1 : n = 1
+      · subst h1
+        simp [Polynomial.coeff_sub, Polynomial.coeff_X, Polynomial.coeff_one]
+      · have hn0 : n.natAbs ≠ 0 := by omega
+        have hn1 : n.natAbs ≠ 1 := by omega
+        simp [h0, h1, Polynomial.coeff_sub, Polynomial.coeff_C, Polynomial.coeff_X, hn0,
+          Ne.symm hn1, Polynomial.coeff_one]
+
+theorem oneSubX_mul_geometric (w : k) :
+    (1 - HahnSeries.single 1 1 : LaurentSeries k)
+        * HahnSeries.ofPowerSeries ℤ k (PowerSeries.mk fun _ => w)
+      = HahnSeries.C w := by
+  refine HahnSeries.coeff_inj.mp (funext fun n => ?_)
+  rw [sub_mul, one_mul, HahnSeries.coeff_sub, coeff_ofPowerSeries_mk,
+    show ((HahnSeries.single (1 : ℤ) (1 : k) : LaurentSeries k)
+        * HahnSeries.ofPowerSeries ℤ k (PowerSeries.mk fun _ => w)).coeff n
+      = (HahnSeries.ofPowerSeries ℤ k (PowerSeries.mk fun _ => w)).coeff (n - 1) from by
+      have := HahnSeries.coeff_mul_single_add (a := n - 1) (b := 1)
+        (r := (1 : k)) (x := HahnSeries.ofPowerSeries ℤ k (PowerSeries.mk fun _ => w))
+      rw [sub_add_cancel, mul_one] at this
+      rw [mul_comm]
+      exact this,
+    coeff_ofPowerSeries_mk, HahnSeries.C_apply, HahnSeries.coeff_single]
+  by_cases hneg : n < 0
+  · rw [if_pos hneg, if_pos (by omega : n - 1 < 0), if_neg (by omega : ¬ n = 0)]
+    ring
+  · by_cases h0 : n = 0
+    · subst h0
+      norm_num
+    · have h1 : ¬ (n - 1 < 0) := by omega
+      rw [if_neg hneg, if_neg h1, if_neg h0]
+      simp
+
+theorem algebraMap_oneSubInv_eq_geometric (w : k) :
+    algebraMap (RatFunc k) (LaurentSeries k)
+        (algebraMap k (RatFunc k) w / toRF (Polynomial.C 1 - Polynomial.X))
+      = HahnSeries.ofPowerSeries ℤ k (PowerSeries.mk fun _ => w) := by
+  have hne : toRF (Polynomial.C 1 - Polynomial.X : Polynomial k) ≠ 0 := by
+    refine RatFunc.algebraMap_ne_zero ?_
+    intro h
+    have hcoeff := congrArg (fun p : Polynomial k => p.coeff 1) h
+    simp [Polynomial.coeff_sub, Polynomial.coeff_X, Polynomial.coeff_one] at hcoeff
+  have himg : (1 - HahnSeries.single 1 1 : LaurentSeries k) ≠ 0 := by
+    rw [← algebraMap_oneSubX]
+    intro hzero
+    exact hne ((map_eq_zero_iff _ (algebraMap (RatFunc k) (LaurentSeries k)).injective).mp hzero)
+  refine mul_right_cancel₀ himg ?_
+  rw [mul_comm (HahnSeries.ofPowerSeries ℤ k (PowerSeries.mk fun _ => w)),
+    oneSubX_mul_geometric, ← algebraMap_oneSubX, ← map_mul, div_mul_cancel₀ _ hne,
+    algebraMap_const_laurentSeries, HahnSeries.C_apply]
+
+/-! ## The corpus's geometric response as a complex Laurent series -/
+
+/-- The response of the geometric Källén--Lehmann spectrum, as a complex Laurent series. -/
+def geometricResponseLaurent (a b : ℝ) : LaurentSeries ℂ :=
+  HahnSeries.ofPowerSeries ℤ ℂ
+    (PowerSeries.map (algebraMap ℝ ℂ) (_root_.HTGeometry.geometricKallenLehmannResponse a b))
+
+theorem coeff_geometricResponseLaurent (a b : ℝ) (n : ℤ) :
+    (geometricResponseLaurent a b).coeff n
+      = if n < 0 then 0 else ((_root_.HTGeometry.geometricKallenLehmannMoment a b n.natAbs : ℝ) : ℂ) := by
+  rw [geometricResponseLaurent, PowerSeries.coeff_coe]
+  by_cases h : n < 0
+  · simp [h]
+  · simp [h, PowerSeries.coeff_map, _root_.HTGeometry.geometricKallenLehmannResponse]
+
+set_option maxHeartbeats 1000000 in
+/-- **The complex response satisfies the exact self-similarity constraint.** -/
+theorem geometricResponseLaurent_equation (a b : ℝ) (ha₀ : 0 < a) (ha₁ : a < 1) (hb₀ : 0 < b)
+    (hb₁ : b < 1) (hbC : ((b : ℂ)) ≠ 0) :
+    geometricResponseLaurent a b
+        - algebraMap ℂ (LaurentSeries ℂ) ((a : ℂ))
+          * innerDilation ((b : ℂ)) hbC (geometricResponseLaurent a b)
+      = algebraMap (RatFunc ℂ) (LaurentSeries ℂ)
+        (algebraMap ℂ (RatFunc ℂ) ((1 - a : ℝ) : ℂ) / toRF (Polynomial.C 1 - Polynomial.X)) := by
+  rw [algebraMap_oneSubInv_eq_geometric]
+  refine HahnSeries.coeff_inj.mp (funext fun n => ?_)
+  rw [HahnSeries.coeff_sub, algebraMap_k_laurentSeries, coeff_C_mul_hahn, coeff_innerDilation,
+    coeff_geometricResponseLaurent]
+  rw [coeff_ofPowerSeries_mk]
+  by_cases h : n < 0
+  · simp [h]
+  · have hres : (1 : ℝ) - a * b ^ n.natAbs ≠ 0 := by
+      have hble : b ^ n.natAbs ≤ 1 := pow_le_one₀ (le_of_lt hb₀) (le_of_lt hb₁)
+      have hpos : 0 < b ^ n.natAbs := pow_pos hb₀ _
+      nlinarith
+    have hmoment : ((_root_.HTGeometry.geometricKallenLehmannMoment a b n.natAbs : ℝ) : ℂ)
+        = (((1 - a : ℝ) : ℂ)) / (((1 - a * b ^ n.natAbs : ℝ) : ℂ)) := by
+      rw [_root_.HTGeometry.geometricKallenLehmannMoment]
+      push_cast
+      ring
+    have hresC : (((1 - a * b ^ n.natAbs : ℝ) : ℂ)) ≠ 0 := by
+      simpa using hres
+    rw [hmoment, ← zpow_natCast ((b : ℂ)) n.natAbs,
+      show ((n.natAbs : ℕ) : ℤ) = n from Int.natAbs_of_nonneg (by omega)]
+    have hbz : ((b : ℂ)) ^ n = (((b ^ n.natAbs : ℝ) : ℂ)) := by
+      rw [← zpow_natCast ((b : ℂ)) n.natAbs,
+        show ((n.natAbs : ℕ) : ℤ) = n from Int.natAbs_of_nonneg (by omega)]
+      push_cast
+      ring
+    rw [hbz]
+    field_simp
+    push_cast
+    ring
 
 end
 

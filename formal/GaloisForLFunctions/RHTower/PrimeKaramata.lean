@@ -148,68 +148,85 @@ theorem tendsto_rvWeightSum {α : ℝ} (hα0 : 0 ≤ α) (hα1 : α < 1) {L : �
           mul_le_mul_of_nonneg_right hle hD0.le
       _ = η / 8 := by field_simp
   -- put it together
+  clear_value A P h Sup Slow
+  -- the two coefficient bounds
+  have hSup0 : 0 ≤ Sup := by
+    rw [hSup]
+    refine Finset.sum_nonneg fun j _ => ?_
+    exact Real.rpow_nonneg (karamataNode_pos hv₀0 hv₀1 N j).le _
+  have hNP0 : (0 : ℝ) ≤ (N : ℝ) * P := (mul_pos hNR hP0).le
+  have hPh0 : (0 : ℝ) ≤ P * h := (mul_pos hP0 hh0).le
+  have hεNP : (0 : ℝ) ≤ ε * ((N : ℝ) * P) := mul_nonneg hε0.le hNP0
+  have hεPh : (0 : ℝ) ≤ ε * (P * h) := mul_nonneg hε0.le hPh0
+  have hcoeffUp : (∑ j ∈ Finset.range N, karamataNode v₀ N j ^ (-α) * (1 + ε) * (h + 2 * ε))
+      ≤ A + η / 2 := by
+    have hsm : (∑ j ∈ Finset.range N, karamataNode v₀ N j ^ (-α) * (1 + ε) * (h + 2 * ε))
+        = Sup * ((1 + ε) * (h + 2 * ε)) := by
+      rw [hSup, Finset.sum_mul]
+      exact Finset.sum_congr rfl fun j _ => by ring
+    have hid : Sup * ((1 + ε) * (h + 2 * ε))
+        = (1 + ε) * (Sup * h) + (2 * ε) * ((1 + ε) * Sup) := by ring
+    rw [hsm, hid]
+    have b1 : (1 + ε) * (Sup * h) ≤ (1 + ε) * (A + P * h) :=
+      mul_le_mul_of_nonneg_left hUp (add_nonneg zero_le_one hε0.le)
+    have hsup2 : (1 + ε) * Sup ≤ 2 * ((N : ℝ) * P) := by
+      have h1 : (1 + ε) * Sup ≤ 2 * Sup := by nlinarith only [hSup0, hε1]
+      linarith only [h1, hSupbound]
+    have b2 : (2 * ε) * ((1 + ε) * Sup) ≤ (2 * ε) * (2 * ((N : ℝ) * P)) :=
+      mul_le_mul_of_nonneg_left hsup2 (mul_nonneg zero_le_two hε0.le)
+    have b4 : ε * (A + P * h) + (2 * ε) * (2 * ((N : ℝ) * P)) ≤ η / 8 := by
+      have heq : ε * (A + P * h) + (2 * ε) * (2 * ((N : ℝ) * P))
+          = ε * (A + P * h + 4 * (N : ℝ) * P) := by ring
+      rw [heq]
+      exact hεbound
+    have e2 : (1 + ε) * (A + P * h) = (A + P * h) + ε * (A + P * h) := by ring
+    linarith only [b1, b2, b4, hPh, hη, e2.le, e2.ge]
+  have hcoeffLo : A - η / 2 ≤
+      (∑ j ∈ Finset.range N, karamataNode v₀ N (j + 1) ^ (-α) * (1 - ε) * (h - 2 * ε)) := by
+    have hsm : (∑ j ∈ Finset.range N, karamataNode v₀ N (j + 1) ^ (-α) * (1 - ε) * (h - 2 * ε))
+        = Slow * ((1 - ε) * (h - 2 * ε)) := by
+      rw [hSlow, Finset.sum_mul]
+      exact Finset.sum_congr rfl fun j _ => by ring
+    have hid : Slow * ((1 - ε) * (h - 2 * ε))
+        = (1 - ε) * (Slow * h) - (2 * ε) * ((1 - ε) * Slow) := by ring
+    rw [hsm, hid]
+    set B : ℝ := (1 - v₀ ^ (1 - α)) * A - P * h with hB
+    have hv₀pow : (0 : ℝ) ≤ v₀ ^ (1 - α) := Real.rpow_nonneg hv₀0.le _
+    have hBle : B ≤ A := by
+      have hprod : (0 : ℝ) ≤ v₀ ^ (1 - α) * A := mul_nonneg hv₀pow hA0.le
+      rw [hB]
+      nlinarith only [hprod, hPh0]
+    have hBge : A - η / 4 ≤ B := by
+      rw [hB]
+      nlinarith only [hIdef, hPh]
+    have b1 : (1 - ε) * B ≤ (1 - ε) * (Slow * h) :=
+      mul_le_mul_of_nonneg_left hLo (sub_nonneg.2 hε1.le)
+    have hslow2 : (1 - ε) * Slow ≤ (N : ℝ) * P := by
+      have h1 : (1 - ε) * Slow ≤ Slow := by nlinarith only [hSlow0, hε0]
+      linarith only [h1, hSlowbound]
+    have b2 : (2 * ε) * ((1 - ε) * Slow) ≤ (2 * ε) * ((N : ℝ) * P) :=
+      mul_le_mul_of_nonneg_left hslow2 (mul_nonneg zero_le_two hε0.le)
+    have e3 : (1 - ε) * B = B - ε * B := by ring
+    have b3 : ε * B ≤ ε * A := mul_le_mul_of_nonneg_left hBle hε0.le
+    have b4 : ε * A + (2 * ε) * ((N : ℝ) * P) ≤ η / 8 := by
+      have heq : ε * (A + P * h + 4 * (N : ℝ) * P)
+          = ε * A + (2 * ε) * ((N : ℝ) * P) + (ε * (P * h) + 2 * (ε * ((N : ℝ) * P))) := by ring
+      rw [heq] at hεbound
+      linarith only [hεbound, hεNP, hεPh]
+    linarith only [b1, b2, b3, b4, hBge, hη, e3.le, e3.ge]
   have hshells := karamata_shells_bounds hα0 hL hv₀0 hv₀1 hN0 hε0 hε1
   filter_upwards [hshells, hwbound, eventually_gt_atTop (0 : ℝ)] with X hXsh hXhead hX0
   have hLX : 0 < L X := hL.pos _ hX0
   have hXpow : (0 : ℝ) < X ^ (1 - α) := Real.rpow_pos_of_pos hX0 _
-  have hden : (0 : ℝ) < X ^ (1 - α) * L X := by positivity
+  have hden : (0 : ℝ) < X ^ (1 - α) * L X := mul_pos hXpow hLX
   have hheadv : primeLogSum (rvPrimeWeight α L) 0 (v₀ * X)
       ≤ (η / 4) * (X ^ (1 - α) * L X) := by
-    refine le_trans (primeLogSum_head_mono hL (by positivity) ?_) hXhead
-    nlinarith [hv₀w, hX0.le]
+    exact le_trans (primeLogSum_head_mono hL (mul_pos hv₀0 hX0).le
+      (mul_le_mul_of_nonneg_right hv₀w hX0.le)) hXhead
   have hdecomp := rvWeightSum_decomp (α := α) (L := L) hv₀0 hv₀1 hN0 hX0
   have hheadnn : 0 ≤ primeLogSum (rvPrimeWeight α L) 0 (v₀ * X) := by
     refine primeLogSum_nonneg le_rfl fun p _ h1 _ => ?_
     exact rvPrimeWeight_nonneg hL (lt_of_le_of_lt le_rfl h1)
-  -- the two coefficient bounds
-  have hSup0 : 0 ≤ Sup := by
-    refine Finset.sum_nonneg fun j _ => ?_
-    exact Real.rpow_nonneg (karamataNode_pos hv₀0 hv₀1 N j).le _
-  have hcoeffUp : (∑ j ∈ Finset.range N, karamataNode v₀ N j ^ (-α) * (1 + ε) * (h + 2 * ε))
-      ≤ A + η / 2 := by
-    have hid : (∑ j ∈ Finset.range N, karamataNode v₀ N j ^ (-α) * (1 + ε) * (h + 2 * ε))
-        = (1 + ε) * (Sup * h) + (2 * ε) * ((1 + ε) * Sup) := by
-      have hsm : (∑ j ∈ Finset.range N, karamataNode v₀ N j ^ (-α) * (1 + ε) * (h + 2 * ε))
-          = Sup * ((1 + ε) * (h + 2 * ε)) := by
-        rw [hSup, Finset.sum_mul]
-        exact Finset.sum_congr rfl fun j _ => by ring
-      rw [hsm]; ring
-    rw [hid]
-    have b1 : (1 + ε) * (Sup * h) ≤ (1 + ε) * (A + P * h) :=
-      mul_le_mul_of_nonneg_left hUp (by linarith)
-    have b2 : (2 * ε) * ((1 + ε) * Sup) ≤ (2 * ε) * (2 * ((N : ℝ) * P)) := by
-      refine mul_le_mul_of_nonneg_left ?_ (by linarith)
-      nlinarith [hSupbound, hSup0, hε1, hε0]
-    have b4 : ε * (A + P * h) + (2 * ε) * (2 * ((N : ℝ) * P)) ≤ η / 8 := by
-      nlinarith [hεbound]
-    nlinarith [b1, b2, b4, hPh, hη]
-  have hcoeffLo : A - η / 2 ≤
-      (∑ j ∈ Finset.range N, karamataNode v₀ N (j + 1) ^ (-α) * (1 - ε) * (h - 2 * ε)) := by
-    have hid : (∑ j ∈ Finset.range N, karamataNode v₀ N (j + 1) ^ (-α) * (1 - ε) * (h - 2 * ε))
-        = (1 - ε) * (Slow * h) - (2 * ε) * ((1 - ε) * Slow) := by
-      have hsm : (∑ j ∈ Finset.range N, karamataNode v₀ N (j + 1) ^ (-α) * (1 - ε) * (h - 2 * ε))
-          = Slow * ((1 - ε) * (h - 2 * ε)) := by
-        rw [hSlow, Finset.sum_mul]
-        exact Finset.sum_congr rfl fun j _ => by ring
-      rw [hsm]; ring
-    rw [hid]
-    set B : ℝ := (1 - v₀ ^ (1 - α)) * A - P * h with hB
-    have hv₀pow : (0 : ℝ) ≤ v₀ ^ (1 - α) := Real.rpow_nonneg hv₀0.le _
-    have hBle : B ≤ A := by
-      rw [hB]
-      nlinarith [hv₀pow, hA0, hPh, hP0, hh0]
-    have hBge : A - η / 4 ≤ B := by
-      rw [hB]
-      nlinarith [hIdef, hPh]
-    have b1 : (1 - ε) * B ≤ (1 - ε) * (Slow * h) :=
-      mul_le_mul_of_nonneg_left hLo (by linarith)
-    have b2 : (2 * ε) * ((1 - ε) * Slow) ≤ (2 * ε) * ((N : ℝ) * P) := by
-      refine mul_le_mul_of_nonneg_left ?_ (by linarith)
-      nlinarith [hSlowbound, hSlow0, hε1, hε0]
-    have b3 : B - ε * A ≤ (1 - ε) * B := by nlinarith [hBle, hε0.le]
-    have b4 : ε * A + (2 * ε) * ((N : ℝ) * P) ≤ η / 8 := by
-      nlinarith [hεbound, hP0, hh0, hA0]
-    nlinarith [b1, b2, b3, b4, hBge, hη]
   have hupper : rvWeightSum α L X ≤ (A + 3 * η / 4) * (X ^ (1 - α) * L X) := by
     have h1 := hXsh.2
     have h2 : (∑ j ∈ Finset.range N, karamataNode v₀ N j ^ (-α) * (1 + ε)
@@ -219,7 +236,7 @@ theorem tendsto_rvWeightSum {α : ℝ} (hα0 : 0 ≤ α) (hα1 : α < 1) {L : �
       rw [← hh]
       exact hcoeffUp
     rw [hdecomp]
-    nlinarith [hheadv, h1, h2, hden]
+    linarith only [hheadv, h1, h2]
   have hlower : (A - η / 2) * (X ^ (1 - α) * L X) ≤ rvWeightSum α L X := by
     have h1 := hXsh.1
     have h2 : (A - η / 2) * (X ^ (1 - α) * L X)
@@ -229,13 +246,13 @@ theorem tendsto_rvWeightSum {α : ℝ} (hα0 : 0 ≤ α) (hα1 : α < 1) {L : �
       rw [← hh]
       exact hcoeffLo
     rw [hdecomp]
-    linarith [hheadnn, h1, h2]
+    linarith only [hheadnn, h1, h2]
   rw [Real.dist_eq, abs_lt]
   constructor
-  · rw [lt_sub_iff_add_lt, ← sub_lt_iff_lt_add', lt_div_iff₀ hden]
-    nlinarith [hlower, hden, hη]
+  · rw [lt_sub_iff_add_lt, lt_div_iff₀ hden]
+    nlinarith only [hlower, hden, hη]
   · rw [sub_lt_iff_lt_add, div_lt_iff₀ hden]
-    nlinarith [hupper, hden, hη]
+    nlinarith only [hupper, hden, hη]
 
 end
 

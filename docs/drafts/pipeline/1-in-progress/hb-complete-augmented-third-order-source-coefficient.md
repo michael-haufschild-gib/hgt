@@ -1594,3 +1594,81 @@ Exact remaining RH chain after C-A.9t4d:
 
 `actual balanced BM ++- coefficient extraction from the now-literal first/second defect moments ->
 negative BM leg -> conserved left-QNM projection -> HC94 -> RH`.
+
+## Conjecture C-A.9u — actual balanced coefficient extraction
+
+`[CORPUS-DERIVED] [ACTIVE]` Corpus search finds the pointwise exhaustive actual-source identity,
+both standard-measure defect moments, both literal compact-domain Green theorems, and both exact
+`constant affine family + rapidly decaying mixed remainder` cusp closures.  It finds no theorem
+integrating the exhaustive identity itself.  This is now the earliest source-faithful seam.
+
+For every pair of actual completed-Poincare legs in the existing absolute-convergence chamber and
+every truncation height `Y >= 1`, define literal standard-domain scalar and balanced-spin-two
+moments.  Prove the exact finite-height identity
+
+`balancedMoment(Y) - bochnerCoefficient * scalarMoment(Y)
+  = secondPairedCuspTop(Y)
+    + (gradientShift + 1) * firstPairedCuspTop(Y)`.
+
+Here each existing defect moment already contains the factor `2` occurring in the pointwise
+exhaustive decomposition.
+
+No regularized value, boundary current, or coefficient may be defined by this equality.  Both
+moments must be the actual iterated integrals of the existing Poincare densities.  The theorem
+must follow by integrating `d4BM_actualBalancedSpinTwoDensity_exhaustiveDefectDecomposition`,
+proving compact-domain integrability, and substituting the already-closed first/second Fubini and
+Green identities.
+
+Exact RH proof chain closed by this conjecture:
+
+`actual balanced moment extraction -> existing zero analytic-family finite parts of both paired
+cusp currents -> actual completed balanced ++- coefficient -> negative BM leg -> conserved
+left-QNM projection -> HC94 source/clock factorization -> horizon-boundary relative-cocycle gain
+equality -> Re(s)=1/2 on every Xi fibre -> RH`.
+
+Hostile route-kill criterion: if the integrated pointwise decomposition acquires any non-cusp,
+Fubini, or tensor-normalization remainder, the claimed actual coefficient is false and the HB
+balanced-source route is retired before QNM work.  Primary-source audit through 2026-08-29 finds
+general regularized automorphic integration in Zagier and Edwards, but no source-normalized
+completed-Poincare balanced Maass coefficient or this finite-height identity.
+
+`[PAPER-PROVED] [LEAN-PROVED] [SIGNIFICANT PREMISE DISCHARGED]` C-A.9u is closed.  Lean defines
+the literal scalar and balanced-spin-two hyperbolic densities from the actual completed-Poincare
+source and their genuine set integrals over the standard truncated modular domain.  Compact-cell
+continuity proves both densities integrable.  Integrating the existing exhaustive pointwise tensor
+identity, and then substituting the already-closed first and second Green--Stokes identities, gives
+for every subtype height `Y : {Y : R // 1 <= Y}`:
+
+`balancedMoment(Y) - bochnerCoefficient * scalarMoment(Y)
+  = secondPairedCuspTop(Y) + (gradientShift + 1) * firstPairedCuspTop(Y)`.
+
+The same left side is also proved equal to the two literal paired-coordinate Green bulks.  No
+noncusp, Fubini, tensor-normalization, regularity, boundary, or newly postulated coefficient
+remainder survives.  This proves the finite-height coefficient extraction before any finite-part
+operation; the two already-classified cusp currents are the complete obstruction.
+
+Headline Lean theorems are
+`d4BM_actualBalancedSpinTwoTruncatedMoment_defect_decomposition`,
+`d4BM_actualBalancedSpinTwoTruncatedMoment_eq_pairedCuspTop`, and
+`d4BM_actualBalancedSpinTwoTruncatedMoment_eq_pairedTruncatedBulk` in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualBalancedSpinTwoCoefficientExtraction`,
+wired into `RHTower`.  Direct Lean passes; targeted build `12475/12475` passes.  Axiom audit reports
+only `propext`, `Classical.choice`, and `Quot.sound`.  Formal lint finds no forbidden declaration
+and confirms the new module is reachable; its exit failure is unrelated shared-worktree
+umbrella-reachability debt.  Formalized card:
+`../3-formalized/hb-actual-balanced-spin-two-coefficient-extraction.md`.
+
+Exact remaining RH chain after C-A.9u:
+
+`existing zero finite parts of both paired cusp currents -> actual completed balanced ++-
+coefficient -> negative BM leg -> conserved left-QNM projection -> HC94 source/clock
+factorization -> horizon-boundary relative-cocycle gain equality -> Re(s)=1/2 on every Xi fibre
+-> RH`.
+
+The hostile corpus audit also fixes the next admissible representation: the balanced scalar
+coefficient is Weyl-even and cannot carry source orientation by itself.  Two-branch source-faithful
+covariance is impossible off the critical line; signed four-sector scalarization cancels the
+off-wall detector; and unrestricted response correction is vacuous.  Therefore the next hard core
+must retain the actual negative BM leg and conserved left-QNM/source incidence until the
+horizon-boundary relative cocycle is formed.  Replacing it by a scalar gain equality would be
+circular because that equality is already RH-equivalent in the corpus.

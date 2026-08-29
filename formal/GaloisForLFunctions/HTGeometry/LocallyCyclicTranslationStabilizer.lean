@@ -1,9 +1,11 @@
 import GaloisForLFunctions.HTGeometry.DifferentialAlgebraicAntiderivative
 import GaloisForLFunctions.HTGeometry.EntireExponentialCompositionDA
 import GaloisForLFunctions.HTGeometry.EntireMultiplicativeTranslationDefectCountability
+import GaloisForLFunctions.HTGeometry.ExponentialSumMinimalOrder
 import GaloisForLFunctions.HTGeometry.GapExponentialCarrier
 import GaloisForLFunctions.HTGeometry.HypertranscendencePolynomial
 import GaloisForLFunctions.HTGeometry.LadderPrimeFrequencies
+import GaloisForLFunctions.HTGeometry.TailGcd
 
 /-!
 # Exact differential-algebraic translation stabilizers
@@ -54,6 +56,32 @@ theorem expPhase_pow_eq_one_iff {α : ℂ} (hα : α ≠ 0) (n : ℕ) (h : ℂ) 
     refine ⟨m, ?_⟩
     field_simp
     linear_combination hm
+
+/-- A shift whose integer multiples along a frequency tail are integer multiples of `α` is a
+rational multiple of `α`, with denominator dividing the whole tail. -/
+theorem exists_rat_of_tail_intMultiple {b : ℕ → ℕ} (hbpos : ∀ k, 0 < b k) {α h : ℂ} (hα : α ≠ 0)
+    {N : ℕ} (hN : ∀ k, N ≤ k → ∃ m : ℤ, (((b k : ℕ)) : ℂ) * h = (m : ℂ) * α) :
+    ∃ q : ℚ, h = (q : ℂ) * α ∧ ∀ k, N ≤ k → q.den ∣ b k := by
+  obtain ⟨m, hm⟩ := hN N le_rfl
+  have hbN : (((b N : ℕ)) : ℂ) ≠ 0 := Nat.cast_ne_zero.2 (hbpos N).ne'
+  have hqh : h = (((m : ℚ) / (((b N : ℕ)) : ℚ) : ℚ) : ℂ) * α := by
+    have hcast : ((((m : ℚ) / (((b N : ℕ)) : ℚ)) : ℚ) : ℂ) = (m : ℂ) / (((b N : ℕ)) : ℂ) := by
+      push_cast
+      ring
+    rw [hcast, div_mul_eq_mul_div, ← hm]
+    field_simp
+  refine ⟨(m : ℚ) / (((b N : ℕ)) : ℚ), hqh, fun k hk => ?_⟩
+  obtain ⟨m', hm'⟩ := hN k hk
+  have hcancel : (((b k : ℕ)) : ℂ) * ((((m : ℚ) / (((b N : ℕ)) : ℚ)) : ℚ) : ℂ) = (m' : ℂ) := by
+    rw [hqh, ← mul_assoc] at hm'
+    exact mul_right_cancel₀ hα hm'
+  have hQ : (((b k : ℕ)) : ℚ) * ((m : ℚ) / (((b N : ℕ)) : ℚ)) = (m' : ℚ) := by
+    have hc : ((((((b k : ℕ)) : ℚ) * ((m : ℚ) / (((b N : ℕ)) : ℚ))) : ℚ) : ℂ)
+        = (((m' : ℚ)) : ℂ) := by
+      push_cast
+      exact_mod_cast hcancel
+    exact_mod_cast hc
+  exact (exists_intCast_natMul_iff_den_dvd (hbpos k) _).1 ⟨m', hQ⟩
 
 /-! ### The carrier attached to a ladder -/
 
@@ -196,6 +224,102 @@ theorem eq_ratLine_of_locallyCyclic {H : AddSubgroup ℂ} (hlc : IsLocallyCyclic
   rw [hcast, ← hm, ← hn]
   field_simp
 
+/-- **A rational line is locally cyclic.**  A subgroup of `ℂ` all of whose elements are rational
+multiples of one nonzero `α` has every finitely generated subgroup cyclic: the generators lie in a
+single cyclic group `(α/L)ℤ`, and subgroups of `ℤ` are cyclic. -/
+theorem isLocallyCyclic_of_subset_ratLine {H : AddSubgroup ℂ} {α : ℂ} (hα : α ≠ 0)
+    (hsub : ∀ h ∈ H, ∃ q : ℚ, h = (q : ℂ) * α) : IsLocallyCyclic H := by
+  classical
+  intro T hT
+  have hall : ∀ x : ℂ, ∃ q : ℚ, x ∈ H → x = (q : ℂ) * α := by
+    intro x
+    by_cases hx : x ∈ H
+    · obtain ⟨q, hq⟩ := hsub x hx
+      exact ⟨q, fun _ => hq⟩
+    · exact ⟨0, fun h => absurd h hx⟩
+  choose qq hqq using hall
+  set L : ℕ := T.lcm (fun x => (qq x).den) with hL
+  have hLpos : 0 < L := by
+    refine Nat.pos_of_ne_zero ?_
+    rw [hL, Ne, Finset.lcm_eq_zero_iff]
+    rintro ⟨i, -, hz⟩
+    exact (qq i).den_nz hz
+  have hL0 : ((L : ℕ) : ℂ) ≠ 0 := Nat.cast_ne_zero.2 hLpos.ne'
+  set φ : ℤ →+ ℂ := AddMonoidHom.mk' (fun n => (n : ℂ) * (α / (L : ℕ)))
+    (fun x y => by push_cast; ring) with hφ
+  have hφapp : ∀ n : ℤ, φ n = (n : ℂ) * (α / (L : ℕ)) := fun _ => rfl
+  have hTφ : (T : Set ℂ) ⊆ (φ.range : Set ℂ) := by
+    intro x hx
+    have hxT : x ∈ T := hx
+    have hxH : x ∈ H := hT hx
+    obtain ⟨t, ht⟩ : (qq x).den ∣ L := Finset.dvd_lcm hxT
+    have hden : (((qq x).den : ℕ) : ℚ) ≠ 0 := Nat.cast_ne_zero.2 (qq x).den_nz
+    have ht0 : ((t : ℕ) : ℚ) ≠ 0 := by
+      intro hc
+      rw [Nat.cast_eq_zero] at hc
+      rw [hc, Nat.mul_zero] at ht
+      exact hLpos.ne' ht
+    set n : ℤ := (qq x).num * (t : ℤ) with hn
+    have hkey : (((qq x).den : ℕ) : ℚ) * qq x = ((qq x).num : ℚ) := Rat.den_mul_eq_num _
+    have hQ : ((n : ℤ) : ℚ) / ((L : ℕ) : ℚ) = qq x := by
+      rw [hn, ht]
+      push_cast
+      rw [div_eq_iff (mul_ne_zero hden ht0),
+        show qq x * ((((qq x).den : ℕ) : ℚ) * ((t : ℕ) : ℚ))
+          = ((((qq x).den : ℕ) : ℚ) * qq x) * ((t : ℕ) : ℚ) by ring, hkey]
+    have hC : ((n : ℤ) : ℂ) / ((L : ℕ) : ℂ) = ((qq x : ℚ) : ℂ) := by
+      have h1 := congrArg (fun y : ℚ => (y : ℂ)) hQ
+      push_cast at h1
+      exact h1
+    refine ⟨n, ?_⟩
+    rw [hφapp]
+    conv_rhs => rw [hqq x hxH]
+    rw [← hC]
+    field_simp
+  have hclos : AddSubgroup.closure (T : Set ℂ) ≤ φ.range :=
+    (AddSubgroup.closure_le _).2 hTφ
+  obtain ⟨a, ha⟩ := Int.subgroup_cyclic (AddSubgroup.comap φ (AddSubgroup.closure (T : Set ℂ)))
+  refine ⟨φ a, le_antisymm ?_ ?_⟩
+  · intro x hx
+    obtain ⟨n, rfl⟩ := hclos hx
+    have hn : n ∈ AddSubgroup.comap φ (AddSubgroup.closure (T : Set ℂ)) :=
+      AddSubgroup.mem_comap.2 hx
+    rw [ha, AddSubgroup.mem_closure_singleton] at hn
+    obtain ⟨m, hm⟩ := hn
+    refine AddSubgroup.mem_zmultiples_iff.2 ⟨m, ?_⟩
+    rw [← hm, map_zsmul]
+  · rw [AddSubgroup.zmultiples_le]
+    have haK : a ∈ AddSubgroup.comap φ (AddSubgroup.closure (T : Set ℂ)) := by
+      rw [ha, AddSubgroup.mem_closure_singleton]
+      exact ⟨1, one_smul _ _⟩
+    exact AddSubgroup.mem_comap.1 haK
+
+/-- The subgroup of `ℂ` obtained by scaling a subgroup of `ℚ` by a nonzero complex number. -/
+def ratLineSubgroup (α : ℂ) (S : AddSubgroup ℚ) : AddSubgroup ℂ where
+  carrier := {h : ℂ | ∃ q ∈ S, h = (q : ℂ) * α}
+  zero_mem' := ⟨0, S.zero_mem, by simp⟩
+  add_mem' := by
+    rintro x y ⟨q, hq, rfl⟩ ⟨r, hr, rfl⟩
+    exact ⟨q + r, S.add_mem hq hr, by push_cast; ring⟩
+  neg_mem' := by
+    rintro x ⟨q, hq, rfl⟩
+    exact ⟨-q, S.neg_mem hq, by push_cast; ring⟩
+
+theorem isLocallyCyclic_ratLineSubgroup {α : ℂ} (hα : α ≠ 0) (S : AddSubgroup ℚ) :
+    IsLocallyCyclic (ratLineSubgroup α S) :=
+  isLocallyCyclic_of_subset_ratLine hα (by rintro h ⟨q, -, rfl⟩; exact ⟨q, rfl⟩)
+
+theorem mem_ratLineSubgroup_self {α : ℂ} {S : AddSubgroup ℚ} (h1 : (1 : ℚ) ∈ S) :
+    α ∈ ratLineSubgroup α S := ⟨1, h1, by simp⟩
+
+/-- **Local cyclicity is exactly the rational-line condition.**  For a subgroup of `ℂ` with a
+distinguished nonzero element, being locally cyclic is the same as lying in the rational line
+through that element. -/
+theorem isLocallyCyclic_iff_subset_ratLine {H : AddSubgroup ℂ} {α : ℂ} (hαH : α ∈ H) (hα : α ≠ 0) :
+    IsLocallyCyclic H ↔ ∀ h ∈ H, ∃ q : ℚ, h = (q : ℂ) * α :=
+  ⟨fun hlc _ hh => eq_ratLine_of_locallyCyclic hlc hαH hα hh,
+    isLocallyCyclic_of_subset_ratLine hα⟩
+
 /-- **Exact realization of every nonzero locally cyclic subgroup.**  Every nonzero locally cyclic
 additive subgroup of `ℂ` is the exact differential-algebraic translation stabilizer of an entire
 hypertranscendental function. -/
@@ -325,6 +449,85 @@ theorem expGapFun_defect_finite_or_hypertranscendental (hstrict : StrictMono b)
   · exact Or.inr fun hDA => hcase
       ((differentiallyAlgebraic_expGapFun_defect_iff hstrict hgap
         (entireCoeffs_gapCoeff_ladderCoeff hstrict.injective) (ladderCoeff_ne_zero b) hβ h).1 hDA)
+
+/-- **The tail-gcd formula.**  The stabilizer is the increasing union of the cyclic groups
+generated by `α / g_N`, where `g_N` is the greatest common divisor of the frequency tail. -/
+theorem daTranslationStabilizer_expGapFun_eq_tailGcd (hstrict : StrictMono b)
+    (hbpos : ∀ k, 0 < b k) (hgap : ∀ C : ℕ, ∀ᶠ k in atTop, C * b k < b (k + 1))
+    {α : ℂ} (hα : α ≠ 0) :
+    daTranslationStabilizer (expGapFun b (ladderCoeff b) (2 * (Real.pi : ℂ) * Complex.I / α))
+      = ⋃ N : ℕ, {h : ℂ | ∃ m : ℤ, ((tailGcd b N : ℕ) : ℂ) * h = (m : ℂ) * α} := by
+  rw [daTranslationStabilizer_expGapFun_eq hstrict hgap hα]
+  ext h
+  simp only [Set.mem_iUnion, Set.mem_setOf_eq]
+  constructor
+  · rintro ⟨N, hN⟩
+    obtain ⟨q, hqh, hden⟩ := exists_rat_of_tail_intMultiple hbpos hα hN
+    have hgpos : 0 < tailGcd b N := tailGcd_pos hbpos N
+    obtain ⟨m, hm⟩ := (exists_intCast_natMul_iff_den_dvd hgpos q).2
+      ((dvd_tailGcd_iff hbpos N q.den).2 hden)
+    refine ⟨N, m, ?_⟩
+    have hc : ((tailGcd b N : ℕ) : ℂ) * (q : ℂ) = (m : ℂ) := by
+      have := congrArg (fun x : ℚ => (x : ℂ)) hm
+      push_cast at this
+      exact this
+    rw [hqh, ← mul_assoc, hc]
+  · rintro ⟨N, m, hm⟩
+    refine ⟨N, fun k hk => ?_⟩
+    obtain ⟨t, ht⟩ := tailGcd_dvd hbpos hk
+    refine ⟨(t : ℤ) * m, ?_⟩
+    rw [ht]
+    push_cast
+    rw [mul_comm ((tailGcd b N : ℕ) : ℂ) (t : ℂ), mul_assoc, hm]
+    ring
+
+/-- **The spectral rank of a differentially algebraic defect.**  Every differentially algebraic
+translation defect of an exponential gap carrier is a finite exponential sum, and the minimal
+constant-coefficient linear differential equation it satisfies has order exactly the number of
+active modes. -/
+theorem expGapFun_defect_minimalOrder (hstrict : StrictMono b) {β : ℂ} (hβ : β ≠ 0) (h : ℂ)
+    {K : ℕ} (hK : ∀ k, K ≤ k → Complex.exp (β * h) ^ (b k) = 1) :
+    ∃ s : Finset ℕ,
+      ((fun z => expGapFun b (ladderCoeff b) β (z + h) - expGapFun b (ladderCoeff b) β z)
+        = fun z => ∑ k ∈ s, (ladderCoeff b k * (Complex.exp (β * h) ^ (b k) - 1))
+            * Complex.exp ((β * ((b k : ℕ) : ℂ)) * z)) ∧
+      ∀ P : Polynomial ℂ, P ≠ 0 →
+        (∀ z, constCoeffApply P (fun z => expGapFun b (ladderCoeff b) β (z + h)
+          - expGapFun b (ladderCoeff b) β z) z = 0) → s.card ≤ P.natDegree := by
+  classical
+  set cc : ℕ → ℂ := fun k => ladderCoeff b k * (Complex.exp (β * h) ^ (b k) - 1) with hcc
+  set lam : ℕ → ℂ := fun k => β * ((b k : ℕ) : ℂ) with hlam
+  set s : Finset ℕ := (Finset.range K).filter (fun k => cc k ≠ 0) with hs
+  have hrange : (fun z => expGapFun b (ladderCoeff b) β (z + h) - expGapFun b (ladderCoeff b) β z)
+      = fun z => ∑ k ∈ Finset.range K, cc k * Complex.exp (lam k * z) := by
+    rw [expGapFun_translationDefect hstrict.injective
+      (entireCoeffs_gapCoeff_ladderCoeff hstrict.injective) β h]
+    exact expGapFun_eq_finsetSum (c := cc) hstrict.injective (K := K)
+      (fun k hk => by rw [hcc]; simp only [hK k hk, sub_self, mul_zero]) β
+  have hfilter : ∀ z : ℂ, ∑ k ∈ s, cc k * Complex.exp (lam k * z)
+      = ∑ k ∈ Finset.range K, cc k * Complex.exp (lam k * z) := by
+    intro z
+    refine Finset.sum_subset (Finset.filter_subset _ _) fun x hx hxs => ?_
+    have : cc x = 0 := by
+      by_contra hc
+      exact hxs (Finset.mem_filter.2 ⟨hx, hc⟩)
+    rw [this, zero_mul]
+  have heq : (fun z => expGapFun b (ladderCoeff b) β (z + h) - expGapFun b (ladderCoeff b) β z)
+      = fun z => ∑ k ∈ s, cc k * Complex.exp (lam k * z) := by
+    rw [hrange]
+    funext z
+    exact (hfilter z).symm
+  refine ⟨s, heq, fun P hP hann => ?_⟩
+  have hinj : Set.InjOn lam (s : Set ℕ) := by
+    intro x _ y _ hxy
+    rw [hlam] at hxy
+    have : ((b x : ℕ) : ℂ) = ((b y : ℕ) : ℂ) := mul_left_cancel₀ hβ hxy
+    exact hstrict.injective (Nat.cast_injective this)
+  have ha : ∀ k ∈ s, cc k ≠ 0 := fun k hk => (Finset.mem_filter.1 hk).2
+  refine card_le_natDegree_of_constCoeffApply_eq_zero s lam hinj cc ha hP ?_
+  intro z
+  have := hann z
+  rwa [heq] at this
 
 /-! ### The multiplicative form -/
 

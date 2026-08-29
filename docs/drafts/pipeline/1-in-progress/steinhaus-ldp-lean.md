@@ -517,3 +517,50 @@ merely measurable weight.
 Remaining for `(9)`: the body — the shell sandwich on `(aX, bX]` (UCT for `L(t)/L(X)`, monotonicity
 of `v^{−α}`, PNT for `θ(bX) − θ(aX)`), and the Darboux/Riemann-sum assembly over `N` uniform blocks
 of `[v₀, 1]`.
+
+## `(9)` CLOSED — the prime Karamata law (2026-08-29)
+
+**`RHTower.tendsto_rvWeightSum`** (axiom-clean, wired):
+```
+0 ≤ α < 1, L slowly varying  ⟹  W_X / (X^{1−α} L(X)) → 1/(1−α)
+```
+with `W_X = ∑_{p ≤ X}(log p)p^{−α}L(p)`.  This is the card's `(9)`.
+
+Four more modules complete the chain:
+
+`RHTower/PrimeKaramataShell.lean` — **`karamata_shell_bounds`**: on `(aX, bX]` with `0 < a ≤ b ≤ 1`,
+```
+b^{−α}(1−ε)((b−a)−2ε)·X^{1−α}L(X) ≤ ∑_{p∈shell}(log p)F(p)
+                                   ≤ a^{−α}(1+ε)((b−a)+2ε)·X^{1−α}L(X).
+```
+The weight factors as `X^{−α}L(X)·(t/X)^{−α}·(L(t)/L(X))`: the power factor is antitone
+(`Real.rpow_le_rpow_of_nonpos`), the slowly varying factor is `1 ± ε` by the UCT, and the shell mass
+is `(b−a)X ± 2εX` by PNT (`a + b ≤ 2` is what turns `ε(a+b)X` into `2εX`).  `ε < 1` is needed so
+that the lower constant stays nonnegative.
+
+`RHTower/PrimeKaramataDarboux.lean` — `primeLogSum_chain` (the shell analogue of
+`sum_integral_adjacent_intervals`), `integral_rpow_neg_unit`, and **`rpow_darboux`**: the two Riemann
+sums of `v^{−α}` on `[v₀,1]` bracket the integral.  Proved by the affine substitution
+`v = v₀ + hu` (`intervalIntegral.integral_comp_mul_add`) reducing to mathlib's unit-step
+`AntitoneOn.integral_le_sum` / `AntitoneOn.sum_le_integral`.
+
+`RHTower/PrimeKaramataBody.lean` — `karamataNode`, its monotonicity/endpoints,
+**`karamata_shells_bounds`** (the shell sandwich summed over the partition, via
+`Filter.eventually_all_finset`) and **`rvWeightSum_decomp`** (`W_X` = head + the `N` shells, via
+the chain lemma and `Finset.sum_range_succ'`).
+
+`RHTower/PrimeKaramata.lean` — `primeLogSum_head_mono`, `karamata_darboux_gap`
+(`Sup − Slow = v₀^{−α} − 1` by `Finset.sum_range_sub'`), and the assembly.
+
+TRAPS (cost several rebuilds, worth recording):
+- the numeric endgame must be done with `linarith only` / `nlinarith only`.  With the full context
+  (which holds the shell inequality, the decomposition and the Darboux bracket) plain `linarith`
+  times out in the simplex — even on `0 ≤ 1 + ε`;
+- `clear_value` on the `set` variables is required before the endgame, and every statement proved
+  from their DEFINITION (`hSup0`, the `hnodes` rfl) must come before it;
+- purely numeric facts that do not mention `X` must be proved BEFORE `filter_upwards`, otherwise
+  they inherit the huge context;
+- prefer term-mode `add_nonneg zero_le_one hε0.le` over `by linarith` for trivial side goals.
+
+Remaining on S9: `(10)` (`d_X a_{p,X} → w_α(v)` uniformly, now immediate from `(9)` plus the UCT and
+`π(X) ∼ X/log X`) and `(12)`.  Then S8.

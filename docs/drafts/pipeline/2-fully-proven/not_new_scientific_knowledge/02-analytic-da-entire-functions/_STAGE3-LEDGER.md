@@ -49,10 +49,11 @@ Goal: unconditional Lean formalization of every card in this folder, then promot
 | # | Theorem | Cards that need it |
 |---|---|---|
 | I1 | Gol'dberg: an entire solution of a first-order ADE has finite order | 3, 14 |
-| I2 | Hadamard: zero-free entire of finite order is `exp P` | 3 |
+| ~~I2~~ | ~~Hadamard: zero-free entire of finite order is `exp P`~~ — **already owned**: `HTGeometry.FiniteOrderHadamard.exists_polynomial_exp_of_ne_zero_of_growth` | 3 |
 | I3 | Clunie composition growth `T(r, f∘g)/T(r,g) → ∞` | 11, 12, 13, 14 |
 | I4 | Briot–Bouquet classification of autonomous first-order meromorphic solutions | 14, 15 |
 | I5 | Nevanlinna second main theorem with ramification (≤ 2 totally ramified finite values) | 9 |
+| ~~I11~~ | **CLOSED (2026-08-29)** — the general logarithmic-derivative lemma `m(r,f'/f) = O(log⁺T(R,f) + log(1/(R−r)) + log R)` — the single input the corpus's `SecondMainTheoremChain` still needs, and the common prerequisite of I1, I3, I5, I6, I7 | 3, 7, 8, 9, 10, 11, 12, 13, 14, 15 |
 | I6 | Steinmetz reduction / Huang–Ng Thm 3 | 7, 10 |
 | I7 | Valiron–Zimogljad–Strelitz order-two growth wall | 8 |
 | I8 | Ostrowski finite-coefficient-basis theorem for DA Dirichlet series | 16 |
@@ -214,3 +215,114 @@ beyond this card (they are the quantitative core of Picard/Montel).
   New: `VandermondePhaseJet`, `JetProjectiveLimit` (abstract finite jet carrier), `ExponentialPolynomialCarrier`.
   Reusable: uniform lower bound for an invertible matrix, Vandermonde jet inversion over unit phases,
   the abstract `JetEval` functional-projective limit, exponential-polynomial recession.
+
+## The logarithmic-derivative lemma (I11): route and progress
+
+The corpus already owns everything on either side of it:
+
+- `HTGeometry.LogDerivPoissonJensen.logDeriv_poissonJensen` — Nevanlinna's starting identity,
+  `f'/f` = divisor sum + differentiated Herglotz average;
+- `HTGeometry.LogDerivPoissonJensen.norm_logDeriv_le_characteristic` — the pointwise bound
+  `‖f'/f‖ ≤ ‖divisor sum‖ + (2R/(R−|w|)²)·(2T(R,f) + C₀)`;
+- `HTGeometry.SecondMainTheoremSeparation.sum_proximity_le_of_meromorphic` and
+  `HTGeometry.SecondMainTheoremChain.mul_characteristic_le_sum_logCounting_add_proximity` — the
+  second main theorem *up to* the residual proximity term.
+
+The corpus's existing integration of the pointwise bound (`LogDerivativeProximity`) costs `log 2`
+per divisor point, i.e. `O(n(R,f)) = O(T(R,f))` — too large for a second main theorem.  The fix is
+the classical `α`-power trick with a fixed `α ∈ (0,1)`:
+
+```text
+log⁺ x = (1/α)·log⁺(x^α) ≤ (1/α)·log(1 + x^α),   (x+y)^α ≤ x^α + y^α,
+```
+
+so the `n(R)` divisor terms enter the average only through `log n(R) = O(log T(R,f))`.  The step that
+makes this work is a bound on the circle average of `‖w − u‖^{-α}` that is **uniform in `u`**.
+
+**Built (2026-08-29)** — `HTGeometry/NegPowerCircleAverage.lean`, unconditional and axiom-clean:
+
+| Step | Lean name |
+|---|---|
+| `|sin|^{-α}` is interval-integrable on `[0,π/2]`, `[π/2,π]`, `[0,π]`, `[0,2π]`, and (by periodicity) on every interval | `intervalIntegrable_abs_sin_rpow_neg_left/_right/_pi/_two_pi`, `intervalIntegrable_abs_sin_rpow_neg` |
+| the constant `C_α = ∫_0^{2π}|sin|^{-α}` and its shift invariance | `sinNegPowerConst`, `sinNegPowerConst_nonneg`, `integral_abs_sin_rpow_neg_shift` |
+| **`‖r e^{iθ} − u‖ ≥ r·|sin(θ − arg u)|`** — the distance to a circle point is at least the distance to the line through `0` and `u` | `norm_circle_sub_ge` |
+| the zero set of a shifted sine is countable, hence null | `countable_sin_shift_eq_zero` |
+| **the uniform circle bound `∫_0^{2π}‖r e^{iθ} − u‖^{-α}dθ ≤ C_α·r^{-α}`, with `C_α` independent of `u`** | `intervalIntegral_norm_circle_sub_rpow_neg_le` |
+
+**Also built (2026-08-29)** — the remaining two self-contained pieces:
+
+| Step | Lean name | Module |
+|---|---|---|
+| `y ↦ log(1+y)` is concave on `[0,∞)`; `log⁺ y ≤ log(1+y) ≤ y` | `concaveOn_log_one_add`, `posLog_le_log_one_add`, `log_one_add_le`, `posLog_le_self` | `HTGeometry/PosLogRpowAverage.lean` |
+| `log⁺(y^α) = α·log⁺ y` | `posLog_rpow` | same |
+| **Jensen for `log(1+·)`**: `⨍ log(1+G) ≤ log(1 + ⨍G)` | `average_log_one_add_le` | same |
+| **the `α`-power `log⁺` estimate `⨍ log⁺F ≤ (1/α)·log(1 + ⨍F^α)`** | `average_posLog_le_log_one_add_average_rpow` | same |
+| `(∑ f_i)^α ≤ ∑ f_i^α` for `0 < α ≤ 1` | `rpow_sum_le_sum_rpow` | `HTGeometry/NegPowerCircleAverage.lean` |
+| interval integrability of the circle kernel | `intervalIntegrable_norm_circle_sub_rpow_neg` | same |
+| **the divisor-kernel `α`-power average**: `∫_0^{2π}(∑_u m_u(‖w−u‖⁻¹ + (R−r)⁻¹))^α dθ ≤ (∑_u m_u^α)·(C_α r^{-α} + 2π(R−r)^{-α})` | `intervalIntegral_kernelSum_rpow_le` | same |
+
+**Assembled (2026-08-29)** — `HTGeometry/AlphaProximityEstimate.lean` and
+`HTGeometry/LogDerivProximityBound.lean`, unconditional and axiom-clean:
+
+| Step | Lean name |
+|---|---|
+| the normalised arc measure and `⨍ h ∂arc = (2π)⁻¹∫_0^{2π} h` | `arcMeasure`, `arcMeasure_univ`, `arcMeasure_real_univ`, `average_arcMeasure` |
+| interval-integral form of the `α`-power `log⁺` estimate | `intervalIntegral_posLog_le_log_one_add_rpow` |
+| **the `α`-power proximity estimate**: a function bounded a.e. on the circle by a divisor-kernel sum plus `B` has `(2π)⁻¹∫log⁺ ≤ (1/α)log(1 + (2π)⁻¹(∑m_u^α)(C_α r^{-α} + 2π(R−r)^{-α}) + B^α)` | `circleAverage_posLog_le_of_kernel_bound` |
+| **the Blaschke reflection factor is `≤ 1/(R−r)`** on the circle of radius `r` | `norm_blaschke_reflection_le` |
+| **the estimate for the Poisson–Jensen kernel itself** (finsum divisor term, weights `|n_u|`) | `circleAverage_posLog_le_of_poissonJensen` |
+| the angles of a circle hitting a point / a finite set are countable, hence null | `countable_circle_preimage_point`, `countable_circle_preimage_finset` |
+
+**I11 CLOSED (2026-08-29)** — `HTGeometry/LogDerivProximityBound.lean`:
+
+```text
+circleAverage_posLog_logDeriv_le_of_entire :
+  0 < α → α < 1 → 0 < r → r < R → 1 ≤ R →
+  Differentiable ℂ f → (∀ z, meromorphicOrderAt f z ≠ ⊤) →
+  (∀ u ∈ sphere 0 |R|, MeromorphicOn.divisor f (closedBall 0 |R|) u = 0) →
+  (2π)⁻¹ ∫_0^{2π} log⁺‖(f'/f)(re^{iθ})‖ dθ
+    ≤ (1/α)·log(1 + (2π)⁻¹·(∑ᶠ_u |n_u|^α)·(C_α r^{-α} + 2π(R−r)^{-α})
+        + (2R/(R−r)²·(2T(R,f) + C₀))^α)
+```
+
+unconditional, `#print axioms` = `propext, Classical.choice, Quot.sound`.  Supporting lemma:
+`ne_zero_of_divisor_eq_zero`.
+
+**Trap recorded (it is why the specialization must assume `f` entire).**  `MeromorphicOn.divisor f U w = 0` together with
+`meromorphicOrderAt f w ≠ ⊤` gives `meromorphicOrderAt f w = 0`, but that does **not** by itself give
+`AnalyticAt ℂ f w` and `f w ≠ 0` — the value at the single point `w` is invisible to
+`meromorphicOrderAt`.  Continuity at `w` is needed (`MeromorphicAt.analyticAt`).  So the
+specialization is stated for an entire `f`, which is exactly the case every card in this folder
+needs.
+
+### The second main theorem: state of the chain
+
+**The corpus already owns the SMT in exactly the shape I11 feeds** — this was missed by the earlier
+survey and is the key structural fact:
+
+```text
+SecondMainTheoremChain.mul_characteristic_le_of_separated :
+  q·T(r,f) ≤ ∑_j N(r,a_j) + ∑_j m(r, f'/(f − a_j)) + m(r, 1/f') + constants
+```
+
+so step 2 of the old plan is **not needed**: the separation estimate has already been converted into
+the per-value logarithmic derivatives.
+
+**Bridged (2026-08-29)** — `HTGeometry/LogDerivProximityBound.lean`:
+
+```text
+proximity_logDeriv_sub_const_le :
+  proximity (fun z => deriv f z / (f z - a)) ⊤ r ≤ (the I11 bound for f - a)
+```
+
+i.e. I11 now bounds each summand of the middle group of the corpus SMT, for entire `f`.
+
+**What is left of the second main theorem:**
+
+1. **the counting bridge** — `∑ᶠ_u |n_u|^α ≤ ∑ᶠ_u |n_u| = n(R,1/f)` (as `|n|^α ≤ |n|` for `|n| ≥ 1`,
+   `α ≤ 1`), and `n(r,1/f)·log(R/r) ≤ N(R,1/f) ≤ T(R,f) + O(1)`, which converts the I11 bound into
+   `S(r,f) = O(log⁺T(R,f) + log(1/(R−r)) + log R)`;
+2. **the ramification term** `m(r, 1/f')` — absorb via `m(r,1/f') = T(r,f') − N(r,1/f') + O(1)` and
+   `T(r,f') ≤ 2T(r,f) + m(r,f'/f) + O(1)`; for a totally ramified family this is what turns
+   `N(r,a_j)` into the truncated `N̄(r,a_j) ≤ (1/2)N(r,a_j)` and yields **`q ≤ 2` totally ramified
+   finite values for an entire function** (I5), closing card 9.

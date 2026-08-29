@@ -4125,3 +4125,36 @@ For the concrete order recurrence, remaining group work is now: instantiate the 
 no-new-constants producer on the parameterized Picard--Vessiot carrier, prove inverse/adjoint
 stability `hGinv`, and prove `hdense`.  `hGdetK`, `hGdet0`, and the independent closure-determinant
 premise no longer remain mathematical inputs.
+
+## Galois monoid inverse and adjoint stability (2026-08-29)
+
+`GaloisDifferentialPointGroup.lean` and `GaloisMonoidGroupStructure.lean`, both unconditional and
+umbrella-wired, close the formerly independent `hGinv` group-law obligation:
+
+```text
+galoisAutAtK_injective
+galoisAutAtK_surjective_of_pvGeneration
+    a tensor differential point specializes the torsor to a genuine automorphism
+exists_inverse_tensorDifferentialPoint
+    the inverse automorphism reconstructs an inverse tensor differential point
+galoisMonoid_exists_inverse_mem
+    inverses propagate from specialization generators through the generated monoid
+conj_mem_matrixTangentM_vanishingIdeal
+galoisMonoid_detOne_inverse_adjoint
+    conjugation by that inverse preserves the determinant-one Kolchin tangent space
+```
+
+Source checks, targeted builds, and axiom audits pass with only
+`[propext, Classical.choice, Quot.sound]`.  This does **not** smuggle the Picard--Vessiot structure
+in as an unconditional card conclusion: the concrete Bessel instantiation must still construct the
+parameterized Picard--Vessiot carrier and discharge its sigma-simplicity, no-new-constants,
+comparison-algebra invariance, and generation properties.  Once those structural facts are
+instantiated, `hGinv` follows as a theorem rather than an extra premise.
+
+The exact remaining card-specific residue is therefore:
+
+1. construct the concrete parameterized Picard--Vessiot carrier with no new sigma constants and
+   prove the comparison jet algebra is fixed by the tensor difference action;
+2. prove `hdense` for the determinant-one Galois group of the Bessel order recurrence.
+
+Until both are discharged in Lean, this card remains at Stage 2.

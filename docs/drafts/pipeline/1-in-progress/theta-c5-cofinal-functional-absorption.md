@@ -367,3 +367,27 @@ the later all-rank and source-to-Weil joins.
   atom/likelihood architecture, yet later C5 is strictly negative. Therefore charge positivity or
   monotonicity cannot imply the stationary envelope. The live `C5-RB1` burden is now exclusively a
   theta-specific nonlocal upper comparison. No computation entered any proof.
+- 2026-08-29 — Froze `C5-FLC1`, a corpus-derived stationary flux-curvature classification.  Write
+  `A` for accumulated source drop, `D=A'`, `J=D'`, `K=J'`, and
+  `x=t*D/A`, `y=t*J/D`.  Corpus angle concavity gives `0 < x <= 2`.  At a negative local minimum of
+  `C5/A^2`, the exact intrinsic stationary law eliminates `K`.  The proposed exact certificate is
+
+  ```text
+  d := -(24 - 9*x + 5*x*y - 4*x^2) > 0,
+  125*x^2 * (t^2*(D*K-J^2)-t*D*J+2*D^2)/D^2
+    = -20*(x-2)^2*(x^2+36)
+      -5*d*(5*x^2-24*x+48) - 5*d^2 < 0.
+  ```
+
+  The left side is the division-free logarithmic curvature of the positive normalized squared
+  flux `D(t)/t` in `t^2`.  Thus every hypothetical center-C5 failure is forced into strict local
+  flux log-concavity at its canonical negative intrinsic witness.  This kills any attempt to
+  obtain the missing `C5-RB1` upper envelope from local flux log-convexity, even after restricting
+  to the exact stationary failure locus; the surviving proof must compare this quantified
+  negative local curvature with cumulative earlier theta flux.  RH chain remains
+  `C5-FLC1 classification -> nonlocal exclusion of its strict-negative chamber -> modular-center
+  C5 -> off-center/rank-four -> higher packets/no-escape -> CLG/TTF or Weil -> RH`.
+  Falsifier: failure of the displayed polynomial identity after substituting corpus definitions
+  and the exact intrinsic stationary law.  August 2026 searches found reverse-hazard elasticity
+  and generic log-concavity literature, but no stationary fifth-root certificate or theta-source
+  analogue.  No computation enters the conjecture.
