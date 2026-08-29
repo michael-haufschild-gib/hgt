@@ -234,9 +234,13 @@ theorem bernsteinCompletedCompactMeasure_univ (H : ℝ → ℝ)
   rw [bernsteinCompletedCompactMeasure, Measure.add_apply, bernsteinCompactMeasure_univ,
     Measure.smul_apply, Measure.dirac_apply' _ MeasurableSet.univ]
   simp only [Set.indicator_of_mem (Set.mem_univ _), Pi.one_apply, smul_eq_mul, mul_one]
-  rw [← ENNReal.ofReal_add hstep0]
-  congr 1
-  linarith
+  calc
+    ENNReal.ofReal (H (((n + 1 : ℕ) : ℝ)⁻¹)) +
+        ENNReal.ofReal (L - H (((n + 1 : ℕ) : ℝ)⁻¹)) =
+        ENNReal.ofReal (H (((n + 1 : ℕ) : ℝ)⁻¹) +
+          (L - H (((n + 1 : ℕ) : ℝ)⁻¹))) :=
+      (ENNReal.ofReal_add hstep0 (sub_nonneg.mpr hstepL)).symm
+    _ = ENNReal.ofReal L := by congr 1; ring
 
 /-- Fixed-mass compact probability approximant. -/
 noncomputable def bernsteinProbabilityMeasure (H : ℝ → ℝ)
@@ -268,7 +272,8 @@ theorem integral_bernsteinProbabilityMeasure_gridMoment (H : ℝ → ℝ)
   have hfidirac : Integrable f
       (ENNReal.ofReal (L - H (((n + 1 : ℕ) : ℝ)⁻¹)) •
         Measure.dirac (⟨0, by simp⟩ : HausdorffSourceSpace)) := by
-    exact integrable_of_continuous _ hfcont
+    refine (integrable_dirac ?_).smul_measure ENNReal.ofReal_ne_top
+    exact ENNReal.coe_lt_top
   change ∫ z, f z ∂((ENNReal.ofReal L)⁻¹ •
     bernsteinCompletedCompactMeasure H hH L n) = _
   rw [integral_smul_measure, bernsteinCompletedCompactMeasure,

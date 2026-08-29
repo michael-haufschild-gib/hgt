@@ -56,7 +56,6 @@ noncomputable def adjoinRootTensorRingEquiv (f : k[X]) :
     have halg : (algebraMap k[X] (k[X] ⊗[k] A)) f = f ⊗ₜ[k] (1 : A) := rfl
     rw [halg, tensorPolyEquiv_includeLeft]
   congr 1
-  exact hval
 
 /-- **A reduced algebra stays reduced after base change along a monic separable polynomial.** -/
 theorem isReduced_adjoinRoot_tensor_of_separable [IsReduced A] {f : k[X]}

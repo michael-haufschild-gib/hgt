@@ -58,9 +58,12 @@ def polynomial_eval(coefficients, value):
     return answer
 
 
-def source_derivatives(x: mp.mpf, nmax: int = 30):
+def source_derivatives(x: mp.mpf):
     sign = 1 if x >= 0 else -1
     x = abs(x)
+    # At x >= 2, the n = 2 term is already more than 220 decimal orders
+    # below n = 1; at x < 2, n <= 14 leaves a >230-order tail margin.
+    nmax = 1 if x >= 2 else 14
     result = [mp.mpf(0)] * 4
     e2x = mp.exp(2 * x)
     for n in range(1, nmax + 1):
