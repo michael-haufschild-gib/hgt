@@ -414,6 +414,144 @@ theorem hypertranscendentalOver_of_qDifference_cotModel [CharZero k]
     ({ (HahnSeries.C : LaurentSeries k →+* QLaurent k) with
         commutes' := fun _ => rfl } : LaurentSeries k →ₐ[RatFunc k] QLaurent k)
 
+/-! ## The general simple-pole inhomogeneity -/
+
+set_option maxHeartbeats 1000000 in
+/-- **No constant-coefficient jet character of a simple-pole increment `-w/h` is a dilation
+coboundary in the base.** -/
+theorem no_jetTelescoper_simplePole_twoVariable [CharZero k] (a b : k) (ha : a ≠ 0) (hb : b ≠ 0)
+    (hqtor : ∀ n : ℤ, n ≠ 0 → b ^ n ≠ 1) (p₀ : k) (hp₀ : p₀ ≠ 0)
+    (A S : Polynomial k) (hS : S.eval p₀ ≠ 0) (hA : A.eval p₀ ≠ 0)
+    (hreg : ∀ n : ℤ, n ≠ 0 →
+      RegularAt (toRF A / (toRF (Polynomial.X - Polynomial.C p₀) * toRF S)) (p₀ * b ^ n)) :
+    letI := qBaseDifferential (0 : k)
+    ∀ c : (Unit × ℕ) →₀ k, c ≠ 0 → ∀ y : QBase k,
+      qBaseDilation a b ha hb y - y ≠
+        Finsupp.linearCombination (QBase k)
+          (fun p : Unit × ℕ => differentialJet p.2
+            (algebraMap (RatFunc k) (QBase k)
+              (-(toRF A / (toRF (Polynomial.X - Polynomial.C p₀) * toRF S)))
+              * (RatFunc.X : QBase k)⁻¹))
+          (Finsupp.mapRange (algebraMap k (QBase k)) (map_zero _) c) := by
+  letI : Differential (RatFunc k) := cylinderDifferential (1 : k)
+  letI := qBaseDifferential (0 : k)
+  intro c hc y heq
+  obtain ⟨α, N, hαN, hcomb⟩ := exists_eulerCombination_of_jetCombination c hc
+    (-(toRF A / (toRF (Polynomial.X - Polynomial.C p₀) * toRF S)))
+  rw [hcomb] at heq
+  have hXne : (RatFunc.X : QBase k) ≠ 0 := RatFunc.X_ne_zero
+  have hXX : (RatFunc.X : QBase k)⁻¹ * RatFunc.X = 1 := inv_mul_cancel₀ hXne
+  have hmul : qBaseDilation a b ha hb y * RatFunc.X - y * RatFunc.X
+      = algebraMap (RatFunc k) (QBase k)
+        (eulerCombination α N (-(toRF A / (toRF (Polynomial.X - Polynomial.C p₀) * toRF S)))) := by
+    have h := congrArg (fun t : QBase k => t * (RatFunc.X : QBase k)) heq
+    simpa [sub_mul, mul_assoc, hXX] using h
+  have hainv : algebraMap (RatFunc k) (QBase k) (algebraMap k (RatFunc k) a)
+      * algebraMap (RatFunc k) (QBase k) (algebraMap k (RatFunc k) a⁻¹) = 1 := by
+    rw [← map_mul, ← map_mul, mul_inv_cancel₀ ha, map_one, map_one]
+  have key : algebraMap (RatFunc k) (QBase k) (algebraMap k (RatFunc k) a)
+      * qBaseDilation a b ha hb (y * RatFunc.X) - y * RatFunc.X
+      = algebraMap (RatFunc k) (QBase k)
+        (eulerCombination α N (-(toRF A / (toRF (Polynomial.X - Polynomial.C p₀) * toRF S)))) := by
+    rw [← hmul, map_mul, qBaseDilation, ratFuncTwist_X]
+    have hassoc : algebraMap (RatFunc k) (QBase k) (algebraMap k (RatFunc k) a)
+        * (qBaseDilation a b ha hb y
+          * (algebraMap (RatFunc k) (QBase k) (algebraMap k (RatFunc k) a⁻¹) * RatFunc.X))
+        = (algebraMap (RatFunc k) (QBase k) (algebraMap k (RatFunc k) a)
+          * algebraMap (RatFunc k) (QBase k) (algebraMap k (RatFunc k) a⁻¹))
+          * (qBaseDilation a b ha hb y * RatFunc.X) := by ring
+    rw [show (ratFuncTwist ((ratFuncScale b hb : RatFunc k →ₐ[k] RatFunc k) :
+        RatFunc k →+* RatFunc k) (ratFuncScale_injective b hb)
+        (algebraMap k (RatFunc k) a⁻¹) (by simpa using inv_ne_zero ha)) y
+        = qBaseDilation a b ha hb y from rfl, hassoc, hainv, one_mul]
+  obtain ⟨m₀, hm₀⟩ := exists_twistedCoboundary_of_ratFuncTwist
+    ((ratFuncScale b hb : RatFunc k →ₐ[k] RatFunc k) : RatFunc k →+* RatFunc k)
+    (ratFuncScale_injective b hb) (algebraMap k (RatFunc k) a⁻¹) (by simpa using inv_ne_zero ha)
+    (algebraMap k (RatFunc k) a)
+    (eulerCombination α N (-(toRF A / (toRF (Polynomial.X - Polynomial.C p₀) * toRF S))))
+    (y * RatFunc.X) key
+  refine not_twistedDilationTelescoped_simplePole b a p₀ hb ha hp₀ hqtor A S hS hA hreg α N hαN
+    ⟨-m₀, ?_⟩
+  rw [eulerCombination_neg] at hm₀
+  have hcoe : ((ratFuncScale b hb : RatFunc k →ₐ[k] RatFunc k) : RatFunc k →+* RatFunc k) m₀
+      = ratFuncScale b hb m₀ := rfl
+  rw [hcoe] at hm₀
+  rw [map_neg]
+  linear_combination hm₀
+
+set_option maxHeartbeats 1000000 in
+/-- **Hypertranscendence of a first-order inhomogeneous `q`-difference equation with a simple-pole
+inhomogeneity.**  For multiplicatively independent multipliers, every Laurent solution of
+`R - a R(bz) = A / ((z - p₀) S)`, with `A` and `S` nonzero at `p₀ ≠ 0` and no other pole of the
+inhomogeneity on the orbit of `p₀`, is differentially transcendental over `k(z)`. -/
+theorem hypertranscendentalOver_of_qDifference_simplePole [CharZero k]
+    (a b : k) (ha : a ≠ 0) (hb : b ≠ 0)
+    (hind : ∀ m n : ℤ, b ^ m = a ^ n → m = 0 ∧ n = 0)
+    (p₀ : k) (hp₀ : p₀ ≠ 0) (A S : Polynomial k) (hS : S.eval p₀ ≠ 0) (hA : A.eval p₀ ≠ 0)
+    (hreg : ∀ n : ℤ, n ≠ 0 →
+      RegularAt (toRF A / (toRF (Polynomial.X - Polynomial.C p₀) * toRF S)) (p₀ * b ^ n))
+    (R : LaurentSeries k)
+    (hR : R - algebraMap k (LaurentSeries k) a * innerDilation b hb R
+      = algebraMap (RatFunc k) (LaurentSeries k)
+        (toRF A / (toRF (Polynomial.X - Polynomial.C p₀) * toRF S))) :
+    letI : Differential (RatFunc k) := cylinderDifferential (1 : k)
+    letI := innerDifferential (k := k)
+    HypertranscendentalOver (RatFunc k) R := by
+  letI : Differential (RatFunc k) := cylinderDifferential (1 : k)
+  letI := innerDifferential (k := k)
+  letI := qBaseDifferential (0 : k)
+  letI := qDifferential (0 : k)
+  letI := qEmbedAlgebra (k := k)
+  letI : Algebra (RatFunc k) (QLaurent k) :=
+    ((HahnSeries.C : LaurentSeries k →+* QLaurent k).comp
+      (algebraMap (RatFunc k) (LaurentSeries k))).toAlgebra
+  haveI := IsScalarTower.of_algebraMap_eq (R := RatFunc k) (S := QBase k) (A := QLaurent k)
+    fun w => (qEmbed_algebraMap_coeff w).symm
+  haveI : DifferentialAlgebra (QBase k) (QLaurent k) :=
+    ⟨fun x => (qEmbed_twoCylDerivation 0 x).symm⟩
+  haveI : CharZero (QLaurent k) :=
+    charZero_of_injective_algebraMap (algebraMap k (QLaurent k)).injective
+  have hqtor : ∀ n : ℤ, n ≠ 0 → b ^ n ≠ 1 := by
+    intro n hn h
+    exact hn (hind n 0 (by simpa using h)).1
+  have hu := differentialIndependent_of_qDifference_primitive a b 0 ha hb hind
+    (HahnSeries.C R * hCoordInv k)
+    (algebraMap (RatFunc k) (QBase k)
+        (-(toRF A / (toRF (Polynomial.X - Polynomial.C p₀) * toRF S)))
+      * (RatFunc.X : QBase k)⁻¹)
+    (qDilation_C_mul_hCoordInv a b ha hb R _ hR)
+    (no_jetTelescoper_simplePole_twoVariable a b ha hb hqtor p₀ hp₀ A S hS hA hreg)
+  have hmem : (HahnSeries.C R : QLaurent k) * hCoordInv k
+      ∈ differentialAdjoin (QBase k) ({(HahnSeries.C R : QLaurent k)} : Set (QLaurent k)) := by
+    have h1 : (HahnSeries.C R : QLaurent k)
+        ∈ differentialAdjoin (QBase k) ({(HahnSeries.C R : QLaurent k)} : Set (QLaurent k)) :=
+      subset_differentialAdjoin (QBase k) _ rfl
+    have h2 : hCoordInv k
+        ∈ differentialAdjoin (QBase k) ({(HahnSeries.C R : QLaurent k)} : Set (QLaurent k)) := by
+      have hq : hCoordInv k = algebraMap (QBase k) (QLaurent k) ((RatFunc.X : QBase k)⁻¹) :=
+        qEmbed_hCoordInv.symm
+      rw [hq]
+      exact IntermediateField.algebraMap_mem _ _
+    exact mul_mem h1 h2
+  have hCR : HypertranscendentalOver (QBase k) (HahnSeries.C R : QLaurent k) := by
+    intro hDA
+    exact differentialAlgebraicOver_of_mem_differentialAdjoin_singleton hDA hmem hu
+  have hCRsmall : HypertranscendentalOver (RatFunc k) (HahnSeries.C R : QLaurent k) := fun hDA =>
+    hCR (differentialAlgebraicOver_mono hDA)
+  intro hDAR
+  refine hCRsmall ?_
+  intro hindep
+  refine hDAR ?_
+  have hcomp : (fun p : Unit × ℕ => differentialJet p.2 (HahnSeries.C R : QLaurent k))
+      = (HahnSeries.C : LaurentSeries k →+* QLaurent k) ∘
+        (fun p : Unit × ℕ => differentialJet p.2 R) := by
+    funext p
+    exact differentialJet_C 0 R p.2
+  rw [DifferentialIndependent, hcomp] at hindep
+  exact hindep.of_comp
+    ({ (HahnSeries.C : LaurentSeries k →+* QLaurent k) with
+        commutes' := fun _ => rfl } : LaurentSeries k →ₐ[RatFunc k] QLaurent k)
+
 end
 
 end GaloisForLFunctions.HTGeometry

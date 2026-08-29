@@ -1,7 +1,7 @@
 # A quasianalytic one-phase field has a polynomial projective boundary
 
 - **ID:** `quasianalytic-one-phase-bezout-boundary-law`
-- **Stage:** 2-fully-proven / paper proof complete
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / GENERAL HYPERTRANSCENDENCE LANDSCAPE
 - **Scientific status:** `[PROVED] [BRIDGE]`
 - **Statement:** Let `E` be a meromorphic coefficient field with an injective complete Laurent
@@ -236,12 +236,32 @@ for new scientific knowledge and is classified as a proved bridge. Its scientifi
 an unnecessary resurgent-resolution hypothesis from concrete one-phase HT fields and to isolate the
 multiphase ideal as the genuine open boundary.
 
-## 8. Lean status
+## 8. Lean status — **complete (2026-08-29)**
 
-The tree contains polynomial gcd/Bezout infrastructure and several finite projective-limit lemmas,
-but no general upper Poincare field interface, translated complete-asymptotic jet object, or
-functional-projective convergence theorem. The whole claim is not formalized, so the card remains in
-stage 2.
+Every step is Lean-proved unconditionally; `#print axioms` gives only
+`propext, Classical.choice, Quot.sound` for each statement below.
+
+| Card step | Lean name | Module |
+|---|---|---|
+| upper Poincare element: nonzero first Laurent monomial | `LeadingPoincareMonomial` | `HTGeometry/UpperPoincareGrowth.lean` |
+| `|z+iS|` is comparable to the height on a tube | `norm_translate_comparable` | same |
+| two-sided comparison of integer powers of comparable reals | `zpow_two_sided_of_comparable` | same |
+| **Section 1**: an element and its reciprocal grow polynomially on upper vertical tubes | `exists_tube_two_sided_polyGrowth`, `exists_axis_polyGrowth`, `exists_axis_polyGrowth_inv` | same |
+| **Section 2**, gcd normalization `(7)`: gcd factorization + Bezout identity over `E[U]` | `exists_primitive_normalization` | `HTGeometry/OnePhaseBezoutBoundary.lean` |
+| `(10)`: a phase polynomial with coefficients of polynomial growth has polynomial growth | `norm_phasePoly_le` | same |
+| **Section 2**, `(9)`: Bezout survival `max_j |R_j(iS)| >= C S^{-M}` | `exists_bezout_survival`, `survival_of_bezout` | same |
+| `(12)`: translated polynomial jets of height-independent degree | `TranslatedJets` | same |
+| **Section 3**, `(13)`--`(17)`: normalisation, compactness, nonzero polynomial functional-projective limit, locally uniform | `exists_polynomial_projective_limit` | same |
+| **Section 4**, `(19)`: terminal one-point boundary of a polynomial tuple, uniform on closed balls | `tendsto_translate_div_pow`, `tendstoUniformlyOn_translate_div_pow`, `norm_translate_div_pow_sub_coeff_le` | `HTGeometry/PolynomialProjectiveBoundary.lean` |
+| the limit vector is nonzero | `coeff_top_ne_zero_of_natDegree_eq`, `exists_coeff_sup_ne_zero` | both |
+| **the carrier chain `(20)`** `E(u) -> C[z] -> C` | `onePhase_polynomial_projective_boundary` | `HTGeometry/OnePhaseBezoutBoundary.lean` |
+
+Modelling note.  Section 1's closure of the asymptotic map under the field operations is an
+*assumption* of the card, not one of its proofs; accordingly the Lean statements take the translated
+jets of the residual components as data (`TranslatedJets`) exactly as the card takes them from the
+assumed closure.  Everything the card *proves* — the polynomial growth of an element and of its
+reciprocal from a nonzero leading monomial, the gcd/Bezout normalisation, the survival estimate, the
+compactness limit and the terminal boundary — is proved in Lean with no additional hypotheses.
 
 ## Gates
 
@@ -253,4 +273,4 @@ stage 2.
 - [x] terminal one-point boundary proved
 - [x] smallest and degenerate cases attacked
 - [x] parent-theory gate applied; classified BRIDGE
-- [ ] complete unconditional Lean formalization
+- [x] complete unconditional Lean formalization

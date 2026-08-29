@@ -187,6 +187,20 @@ theorem qDilation_C_C (a b : k) (ha : a ≠ 0) (hb : b ≠ 0) (c : k) :
     · simp [HahnSeries.C_apply, hm]
   · simp [HahnSeries.C_apply, hn]
 
+theorem innerDilation_innerDilation (c d : k) (hc : c ≠ 0) (hd : d ≠ 0) (f : LaurentSeries k) :
+    innerDilation c hc (innerDilation d hd f) = innerDilation (c * d) (mul_ne_zero hc hd) f := by
+  refine HahnSeries.coeff_inj.mp (funext fun n => ?_)
+  rw [coeff_innerDilation, coeff_innerDilation, coeff_innerDilation, mul_zpow, mul_assoc]
+
+theorem innerDilation_single_one (c : k) (hc : c ≠ 0) :
+    innerDilation c hc (HahnSeries.single 1 1 : LaurentSeries k)
+      = HahnSeries.C c * HahnSeries.single 1 1 := by
+  refine HahnSeries.coeff_inj.mp (funext fun n => ?_)
+  rw [coeff_innerDilation, coeff_C_mul]
+  by_cases h : n = 1
+  · subst h; simp
+  · rw [HahnSeries.coeff_single_of_ne h, mul_zero, mul_zero]
+
 end
 
 end GaloisForLFunctions.HTGeometry

@@ -430,3 +430,38 @@ reduces to the *algebraic* independence criterion through `σ(δⁿx) = δⁿx +
 this becomes `σ(δⁿx) = p^{-n}(δⁿx + δⁿb)`, an affine action with a nonconstant multiplier per jet.
 So cards 8, 9, 11 need the twisted-commutation form of the criterion, which is the parameterized
 Galois content of ADH proper.  That is the next construction.
+
+### Card 10 promoted; the Euler/ordinary bridge; card 7's propagator
+
+**Card 10 is at stage 3.**  Its file now carries a Lean-status table and lives in
+`3-formalized/not_new_scientific_knowledge/04-rg-stochastic-quantum-fields/`.  Everything the card
+proves is formalized except the two inputs it itself quotes (the Gesztesy--Karwowski--Zhao soliton
+spectrum and the Källén--Lehmann/Wightman reconstruction): the reciprocal mass sequence and its
+strict growth, the logarithmic counting bound and local finiteness, the affine constraint with its
+unique one-sided solution, hypertranscendence of the response for both derivations, the geometric
+de Sitter principal-series frequencies, and the Mahler-clock identity.
+
+New since the last entry:
+
+* `HTGeometry/EulerOrdinaryDerivationBridge.lean` — **differential algebraicity over `k(z)` is the
+  same notion for `z d/dz` and for `d/dz`.**  Both directions, by the finite-transcendence-degree
+  criterion: the differential field generated for one derivation is closed under the other because
+  the two differ by a unit of the base field.  This is what lets a card whose claim is about the
+  ordinary derivative be discharged by a criterion that is natural for the Euler operator.
+* `HTGeometry/ReciprocalQLadderMassSpectrum.lean` — the mass sequence, the counting bound, the
+  de Sitter frequencies, the Mahler clock.
+* `QDifferenceInhomogeneousHT.hypertranscendentalOver_of_qDifference_simplePole` — the two-variable
+  criterion now accepts *any* simple-pole inhomogeneity, not just the cotangent model.
+* `GeometricKallenLehmannHypertranscendence.propagatorGerm_equation` and
+  `hypertranscendentalOver_propagatorGerm` — **card 7's item 4**: reciprocal inversion
+  `G(-1/z) = -z R(z)` turns the response equation into the same shape with multiplier `a/b` and a
+  reflected pole, so the criterion applies again; no transport lemma is needed.
+* `HTGeometry/RamifiedLaurentTransfer.lean` — the substitution `z = w^q` on Laurent series and on
+  rational functions, its compatibility with dilations (`β^q ↦ β`) and with the Euler operator
+  (multiplication by `q`), and the rescaled derivation for which the ramification is a
+  *differential* homomorphism.
+
+Card 7's residue is now only the multiplicatively dependent case: given `a^q = b^p` with `p, q`
+coprime, Bezout gives `β = a^u b^v` with `β^q = b` and `β^p = a`, so the one-variable engine applies
+in the ramified coordinate; what remains is to transport hypertranscendence back along `ramify`,
+for which the pieces above are in place.

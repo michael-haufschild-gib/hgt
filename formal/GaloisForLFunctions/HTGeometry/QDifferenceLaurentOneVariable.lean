@@ -167,14 +167,6 @@ theorem exists_eulerCombination_of_jetCombination_oneVar (c : (Unit × ℕ) →�
         exact hn (Finset.mem_image.mpr ⟨((), n), Finsupp.mem_support_iff.mpr hne, rfl⟩)
       simp [hzero]
 
-/-- Regularity of a simple-pole quotient away from its poles. -/
-theorem regularAt_simplePoleQuotient (A S : Polynomial k) (p₀ w : k)
-    (hden : (Polynomial.X - Polynomial.C p₀).eval w ≠ 0) (hS : S.eval w ≠ 0) :
-    RegularAt (toRF A / (toRF (Polynomial.X - Polynomial.C p₀) * toRF S)) w :=
-  ⟨A, (Polynomial.X - Polynomial.C p₀) * S, by
-    rw [Polynomial.eval_mul]
-    exact mul_ne_zero hden hS, by rw [map_mul]⟩
-
 /-- **No constant-coefficient jet character of a simple-pole increment is a dilation
 coboundary.** -/
 theorem no_jetTelescoper_simplePole [CharZero k] (β : k) (hβ : β ≠ 0)

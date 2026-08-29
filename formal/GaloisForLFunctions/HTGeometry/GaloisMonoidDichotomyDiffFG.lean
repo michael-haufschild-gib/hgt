@@ -98,9 +98,6 @@ theorem isomonodromy_or_sl2_galoisMonoid_jetAdjoin
     (Z : Matrix (Fin 2) (Fin 2) (R ⊗[K] R)) (hZE : ∀ i j, Z i j ∈ E)
     (hZ : leftFundamental K Y * Z = rightFundamental K Y)
     (hHdet : ∀ h ∈ galoisMonoid E Z hZE (tensorDifferentialPoints E hEδ), h.det = 1)
-    (hclosuredet : ∀ h ∈ matrixZeroSet (C := C) (A := C)
-        (matrixVanishingIdeal (galoisMonoid E Z hZE (tensorDifferentialPoints E hEδ))),
-      h.det = 1)
     (hdense : ∀ W : Matrix (Fin 2) (Fin 2) C, W.trace = 0 →
       W ∈ Submodule.span C
         ((matrixTangentM (matrixVanishingIdeal
@@ -126,7 +123,7 @@ theorem isomonodromy_or_sl2_galoisMonoid_jetAdjoin
   set G := galoisMonoid E Z hZE (tensorDifferentialPoints E hEδ) with hG
   have hGone : (1 : Matrix (Fin 2) (Fin 2) C) ∈ G := Submonoid.one_mem _
   have hGmul : ∀ a ∈ G, ∀ b ∈ G, a * b ∈ G := fun _ ha _ hb => Submonoid.mul_mem _ ha hb
-  rcases cassidy_monoid_dichotomy hrank hGmul hGone hHdet hclosuredet hdense G hGdetK hGdet0
+  rcases cassidy_monoid_dichotomy hrank hGmul hGone hHdet hdense G hGdetK hGdet0
     hGinv with hfull | ⟨n, Lop, i₀, hi₀, hL, hGL⟩
   · exact Or.inl hfull
   · refine Or.inr ?_
@@ -170,10 +167,6 @@ theorem isomonodromy_or_sl2_galoisMonoid_detOne_jetAdjoin
     (hYrec : ∀ j, σR (Y 1 j) = algebraMap K R a₁ * Y 1 j + algebraMap K R a₀ * Y 0 j)
     (Z : Matrix (Fin 2) (Fin 2) (R ⊗[K] R)) (hZE : ∀ i j, Z i j ∈ E)
     (hZ : leftFundamental K Y * Z = rightFundamental K Y)
-    (hclosuredet : ∀ h ∈ matrixZeroSet (C := C) (A := C)
-        (matrixVanishingIdeal
-          {h ∈ galoisMonoid E Z hZE (tensorDifferentialPoints E hEδ) | h.det = 1}),
-      h.det = 1)
     (hdense : ∀ W : Matrix (Fin 2) (Fin 2) C, W.trace = 0 →
       W ∈ Submodule.span C
         ((matrixTangentM (matrixVanishingIdeal
@@ -203,7 +196,7 @@ theorem isomonodromy_or_sl2_galoisMonoid_detOne_jetAdjoin
   have hH1one : (1 : Matrix (Fin 2) (Fin 2) C) ∈ {h ∈ G | h.det = 1} :=
     ⟨hGone, Matrix.det_one⟩
   rcases cassidy_monoid_dichotomy hrank (fun a ha bb hbb => mul_mem_detOne hGmul ha hbb)
-    hH1one (fun h hh => hh.2) hclosuredet hdense G hGdetK hGdet0 hGinv with
+    hH1one (fun h hh => hh.2) hdense G hGdetK hGdet0 hGinv with
     hfull | ⟨n, Lop, i₀, hi₀, hL, hGL⟩
   · exact Or.inl hfull
   · refine Or.inr ?_

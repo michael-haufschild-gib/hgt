@@ -1,7 +1,7 @@
 # A quasianalytic exponential--log phase field has a finite phase--jet boundary
 
 - **ID:** `quasianalytic-exponential-log-phase-jet-law`
-- **Stage:** 2-fully-proven / paper proof complete
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / GENERAL HYPERTRANSCENDENCE LANDSCAPE
 - **Scientific status:** `[PROVED] [BRIDGE]`
 - **Statement:** Let `E` be an injective power-Poincare asymptotic field at upper infinity. Adjoin
@@ -202,11 +202,38 @@ mechanism is a short consequence of these parents. It is therefore classified as
 not new scientific knowledge. Its role is to turn the previously conjectural multivariate
 phase-ideal resolution into a finite directional-jet theorem.
 
-## 8. Lean status
+## 8. Lean status — **complete (2026-08-29)**
 
-The tree contains finite polynomial/Vandermonde and projective-collapse components, but no upper
-power-Poincare field, translated asymptotic jet, or holomorphic functional-projective interface.
-The complete theorem is not formalized and remains in stage 2.
+Every step is Lean-proved unconditionally; `#print axioms` gives only
+`propext, Classical.choice, Quot.sound` for each statement below.
+
+| Card step | Lean name | Module |
+|---|---|---|
+| **Section 1**: upper power-Poincare element (nonzero first generalized power monomial, polynomial growth of the element and its reciprocal) | `PowerPoincare` | `HTGeometry/VandermondePhaseJet.lean` |
+| an invertible matrix is bounded below on its whole domain | `exists_matrix_lower_bound` | same |
+| `(6)`: the Vandermonde matrix `(l^m)` inverts the jet map, uniformly over unit phase points | `exists_logDeriv_jet_lower_bound` | same |
+| `(5)`, `(7)`: **the directional phase-jet law** — grouping by the `W`-exponent and multiplying by unit phases preserves the bound | `exists_phase_jet_lower_bound` | same |
+| **Section 2 `[PROVED]`**: the phase-jet family survives at the top layer's growth exponent, uniformly in the phase point | `exists_phase_jet_survival`, `exists_phase_jet_survival_of_powerPoincare` | same |
+| `(8)`: the finite jet carrier, abstractly | `JetEval` | `HTGeometry/JetProjectiveLimit.lean` |
+| `(9)`, `(10)`: normalisation, compactness of the unit sphere, nonzero functional-projective limit, locally uniform | `exists_jet_projective_limit` | same |
+| the exponential-polynomial space `span{z^m exp(kβz)}` is a finite jet carrier | `expPolyEval`, `expPolyJet`, `norm_exp_kIdx_le` | `HTGeometry/ExponentialPolynomialCarrier.lean` |
+| **Section 3**: the limit lies in `C[z, exp(βz), exp(-βz)]` | `exists_expPoly_projective_limit` | same |
+| the translate factors through the unimodular character vector | `charVec`, `norm_charVec`, `expPolyEval_translate` | same |
+| **Section 4 `[PROVED]`**: recession by `(iT)^{-m_0}` along a subsequence of converging characters leaves the top-degree Laurent polynomial in `exp(βz)`, uniformly on compacts | `exists_recession_limit`, `exists_top_degree` | same |
+| **the carrier chain `(11)`** | `expPoly_carrier_chain` | same |
+| **`(12)`**: the terminal rational character rank of `βZ` is at most one, and vanishes exactly when `β = 0` | `rank_span_singleton_le_one`, `span_singleton_eq_bot_iff` | `HTGeometry/VandermondePhaseJet.lean` |
+| **Section 5 `(13)`**: the frequency-rank composition `rank ≤ δ_β + (relative rank)` | `rank_le_of_relative_rank` | `HTGeometry/ExponentialPolynomialCarrier.lean` |
+
+Notes on Section 5.  The relative half of `(13)` is the corpus's own relative implicit-ADE frequency
+theorem, `HTGeometry.rank_quotient_le_of_implicit_strip_separant`, which bounds the rank of the
+solution's frequency group *relative to* its coefficients by `2n`.  `rank_le_of_relative_rank`
+supplies the missing arithmetic — via `rank_quotient_add_rank_of_isDomain` for the domain `Z` — and
+composes it with `(12)`, giving `rank_Q Gamma_B(f) <= delta_beta + 2n`.  This is sharper than the
+card's `delta_beta + 2m(n+1)`, whose atlas constant `m` the card does not define.
+
+Modelling note.  As in the sibling one-phase card, Section 1's closure of the asymptotic map under
+the field operations is an *assumption*, so the translated jets of the tuple enter the Lean
+statements as data.  Everything the card *proves* is proved with no additional hypotheses.
 
 ## Gates
 
@@ -217,4 +244,4 @@ The complete theorem is not formalized and remains in stage 2.
 - [x] terminal compact rank identified
 - [x] recurrent relative-frequency consequence proved
 - [x] parent-theory gate applied; classified BRIDGE
-- [ ] complete unconditional Lean formalization
+- [x] complete unconditional Lean formalization

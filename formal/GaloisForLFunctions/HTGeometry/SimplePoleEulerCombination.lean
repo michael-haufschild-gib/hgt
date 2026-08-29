@@ -248,6 +248,32 @@ theorem not_regularAt_eulerCombination_simplePole [CharZero K] (p₀ : K) (hp₀
   · rw [eval_polyScale, mul_one]
     exact hA
 
+/-- **The twisted orbit obstruction for a simple-pole Euler combination.**  A nonzero Euler
+combination of a function with a simple pole at `p₀` and no other pole on the orbit `p₀ q^ℤ` is not
+a twisted dilation coboundary. -/
+theorem not_twistedDilationTelescoped_simplePole [CharZero K] (q γ p₀ : K) (hq : q ≠ 0)
+    (hγ : γ ≠ 0) (hp₀ : p₀ ≠ 0) (hqtor : ∀ n : ℤ, n ≠ 0 → q ^ n ≠ 1)
+    (A S : Polynomial K) (hS : S.eval p₀ ≠ 0) (hA : A.eval p₀ ≠ 0)
+    (hreg : ∀ n : ℤ, n ≠ 0 →
+      RegularAt (toRF A / (toRF (Polynomial.X - Polynomial.C p₀) * toRF S)) (p₀ * q ^ n))
+    (a : ℕ → K) (r : ℕ) (har : a r ≠ 0) :
+    ¬ ∃ y : RatFunc K,
+      eulerCombination a r (toRF A / (toRF (Polynomial.X - Polynomial.C p₀) * toRF S))
+        = algebraMap K (RatFunc K) γ * ratFuncScale q hq y - y := by
+  refine not_twistedDilationTelescoped_of_unique_multOrbit_pole q p₀ γ hq hp₀ hγ hqtor _ ?_ ?_
+  · exact not_regularAt_eulerCombination_simplePole p₀ hp₀ A S hS hA a r har
+  · intro n hn
+    exact regularAt_eulerCombination a r (hreg n hn)
+
+/-- Regularity of a simple-pole quotient away from its poles. -/
+theorem regularAt_simplePoleQuotient (A S : Polynomial K) (p₀ w : K)
+    (hden : (Polynomial.X - Polynomial.C p₀).eval w ≠ 0) (hS : S.eval w ≠ 0) :
+    RegularAt (toRF A / (toRF (Polynomial.X - Polynomial.C p₀) * toRF S)) w :=
+  ⟨A, (Polynomial.X - Polynomial.C p₀) * S, by
+    rw [Polynomial.eval_mul]
+    exact mul_ne_zero hden hS, by rw [map_mul]⟩
+
+
 end
 
 end GaloisForLFunctions.HTGeometry

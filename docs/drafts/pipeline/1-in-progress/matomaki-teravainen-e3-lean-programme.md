@@ -2134,11 +2134,24 @@ integral_Icc_normSq_mtWattCoefficientBlock_le_general_affine
 integral_mtWatt_overHeight_le_generalAffine
     ∫_{T/2}^{T} |N|⁴|A|²
       ≤ (2(6π+1)/T)⁴ · (generalMeanSquareConst + T·generalMeanSquareRate)
+mtWatt_weightedMass_term_le, mtWatt_plainMass_term_le
+    exact pointwise A⁻¹ and A⁻² costs on the dyadic coefficient support
+sum_normSq_mtWattCoefficientBlock_eq
+    the restricted block energy is exactly ∑_{A<n≤2A} |aₙ|²
+generalMeanSquareConst_mtWattCoefficientBlock_le_energy
+    generalMeanSquareConst ≤ (5πe/A) ∑_{A<n≤2A} |aₙ|²
+generalMeanSquareRate_mtWattCoefficientBlock_le_energy
+    generalMeanSquareRate ≤ (5π/(2A²)) ∑_{A<n≤2A} |aₙ|²
+integral_mtWatt_overHeight_le_energy
+    ∫_{T/2}^{T} |N|⁴|A|²
+      ≤ (2(6π+1)/T)⁴ · (5πe/A + 5πT/(2A²)) · ∑_{A<n≤2A} |aₙ|²
 ```
 
 This derives the source's `T⁻⁴` residual branch directly from corpus Kuzmin--Landau and the affine
-mean-square theorem; no Watt, Deshouillers--Iwaniec, spectral, or large-value premise remains when
-the factor exceeds the height.  Remaining M6/M7 core is now precisely the complementary
-sub-height regime `N ≤ T`, where the published argument uses the deep twisted moments.  Final card
-closure still requires that regime plus the source amplification and exponent arithmetic; no card
-is promoted by this brick alone.
+mean-square theorem, including the literal coefficient-energy normalization used in the
+Deshouillers--Iwaniec form.  Every declaration has only `propext`, `Classical.choice`, and
+`Quot.sound` in its axiom audit.  No Watt, Deshouillers--Iwaniec, spectral, or large-value premise
+remains when the factor exceeds the height.  Remaining M6/M7 core is now precisely the
+complementary sub-height regime `N ≤ T`, where the published argument uses the deep twisted
+moments.  Final card closure still requires that regime plus the source amplification and exponent
+arithmetic; no card is promoted by this brick alone.

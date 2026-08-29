@@ -46,6 +46,19 @@ theorem detPoly_mem_matrixVanishingIdeal {H : Set (Matrix (Fin 2) (Fin 2) C)}
       * h ((1 : Fin 2), (0 : Fin 2)).1 ((1 : Fin 2), (0 : Fin 2)).2 - 1 = 0
   rw [hd, sub_self]
 
+/-- Every point of the differential zero set of a determinant-one family still has determinant
+one.  This removes the closure-determinant premise from the Cassidy endgame. -/
+theorem det_eq_one_of_mem_matrixZeroSet_vanishingIdeal
+    {H : Set (Matrix (Fin 2) (Fin 2) C)}
+    (hHdet : ∀ h ∈ H, h.det = 1)
+    {g : Matrix (Fin 2) (Fin 2) C}
+    (hg : g ∈ matrixZeroSet (C := C) (A := C) (matrixVanishingIdeal H)) :
+    g.det = 1 := by
+  have h := hg (detPoly (C := C)) (detPoly_mem_matrixVanishingIdeal hHdet)
+  rw [evalOver_detPoly] at h
+  rw [Matrix.det_fin_two]
+  exact sub_eq_zero.mp h
+
 /-- Tangent directions of a set of determinant-one matrices are traceless. -/
 theorem trace_eq_zero_of_mem_matrixTangentM {H : Set (Matrix (Fin 2) (Fin 2) C)}
     (hHdet : ∀ h ∈ H, h.det = 1)
@@ -66,7 +79,6 @@ theorem cassidy_monoid_dichotomy [IsAlgClosed C] [CharZero C]
     (hH : ∀ a ∈ H, ∀ b ∈ H, a * b ∈ H)
     (hHone : (1 : Matrix (Fin 2) (Fin 2) C) ∈ H)
     (hHdet : ∀ h ∈ H, h.det = 1)
-    (hdet : ∀ h ∈ matrixZeroSet (C := C) (A := C) (matrixVanishingIdeal H), h.det = 1)
     (hdense : ∀ Z : Matrix (Fin 2) (Fin 2) C, Z.trace = 0 →
       Z ∈ Submodule.span C
         ((matrixTangentM (matrixVanishingIdeal H)
@@ -98,7 +110,8 @@ theorem cassidy_monoid_dichotomy [IsAlgClosed C] [CharZero C]
     (fun A hA => trace_eq_zero_of_mem_matrixTangentM hHdet hA)
     (fun A hA B hB => bracket_mem_matrixTangentM _ htrans hIS hA hB)
     hdense G hGdetK hGdet0 hGinv with hfull | hlin
-  · exact Or.inl (sl2_of_full_tangent_vanishingIdeal hrank hH hHone hdet hfull)
+  · exact Or.inl (sl2_of_full_tangent_vanishingIdeal hrank hH hHone
+      (fun h hh => det_eq_one_of_mem_matrixZeroSet_vanishingIdeal hHdet hh) hfull)
   · exact Or.inr hlin
 
 end

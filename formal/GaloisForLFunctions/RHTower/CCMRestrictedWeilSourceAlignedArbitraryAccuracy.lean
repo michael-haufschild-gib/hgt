@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.CCMRestrictedWeilSourceAlignedFiniteBlock
+import GaloisForLFunctions.RHTower.CCMRestrictedWeilSourceAlignedFiniteBlockConsequences
 
 /-!
 # Arbitrarily accurate source-aligned finite reduction

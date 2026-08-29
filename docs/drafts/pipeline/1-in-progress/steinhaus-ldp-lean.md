@@ -377,3 +377,143 @@ All eight new modules are axiom-clean (`propext, Classical.choice, Quot.sound` o
 Remaining: part `5` (the high-coherence endpoint, which needs the SHARP Bessel asymptotic
 `log I₀(x) = x − ½log(2πx) + o(1)`; the corpus owns only the two non-matching envelopes), `S8` (the
 LDP / Gärtner–Ellis), and `S9` (prime Karamata).
+
+## PART 5 CLOSED — the high-coherence endpoint (2026-08-29)
+
+The card's `(27)` in its SHARP form was the missing input: the corpus owned only two envelopes with
+non-matching constants (`x − log(2π√x) ≤ log I₀(x) ≤ x + log√(π/(2x))`), which give `O(1)`, not
+`o(1)`.  Laplace's method now supplies the exact constant.
+
+`HTGeometry/SteinhausSharpAsymptotic.lean` (new; the only mathlib import added is
+`Analysis.SpecialFunctions.Gaussian.GaussianIntegral`):
+- `cos_sub_one_eq : cos y − 1 = −2 sin²(y/2)` (from `Real.sin_sq_eq_half_sub`) and
+  `cos_sub_one_le : |y| ≤ π → cos y − 1 ≤ −2y²/π²` (Jordan, `Real.mul_le_sin`);
+- `tendsto_sin_div_nhdsNE : sin y/y → 1`, from `hasDerivAt_iff_tendsto_slope` at `Real.sin`;
+- `gaussKernel x u = exp(x(cos(u/√x) − 1))`, `gaussWindow x = Ioc(−π√x, π√x)`, `gaussIndicator`;
+  `gaussKernel_eq : = exp(−2(√x·sin(u/(2√x)))²)` — the half-angle form that makes the pointwise
+  limit `exp(−u²/2)` a one-line composition;
+- **`tendsto_integral_gaussIndicator`**: dominated convergence with bound `exp(−2u²/π²)` gives
+  `∫ gaussIndicator x → √(2π)`;
+- `integral_gaussIndicator_eq`: for `x > 0` that integral IS `2π·√x·e^{−x}·I₀(x)`, via the linear
+  substitution `u = √x t` and `Function.Periodic.intervalIntegral_add_eq` moving `[−π,π]` to
+  `[0,2π]`, then the corpus's `steinhausLaplace_eq_intervalIntegral`;
+- **`tendsto_sqrt_mul_exp_neg_mul_steinhausLaplace : √x·e^{−x}·I₀(x) → 1/√(2π)`** and
+  **`tendsto_steinhausLogLaplace_sub_sharp : log I₀(x) − x + ½log(2πx) → 0`**.
+
+`RHTower/SteinhausEndpointCumulant.lean`:
+- `le_weightProfile : 1 − α ≤ w_α(v)` on `(0,1]`, which is why NO dominated convergence is needed
+  in the mixture: `λ w_α(v) ≥ λ(1−α)` uniformly, so the error of the sharp asymptotic is uniformly
+  small on the whole profile;
+- `rvCumulant_deficit_eq` — the deficit is EXACTLY `∫₀¹ e(λ w_α(v)) dv`, using
+  `∫₀¹ w_α = 1` and `∫₀¹ log w_α = log(1−α)+α`.  The pointwise split needs
+  `integral_congr_ae` (not `integral_congr`): it fails at the single point `v = 0`, where
+  `w_α(0) = 0` and `Real.log 0 = 0`;
+- **`tendsto_rvCumulant_deficit`** — the card's `(29)`.
+
+`RHTower/SteinhausEndpointRate.lean`:
+- `endpointTarget α ε = ½log(1/ε) + ½log(π(1−α)) − (1−α)/2`, `endpointTilt ε = 1/(2ε)`;
+- **`endpoint_tilt_value_le`** — `−λε + ½log(2πλ) ≤ −½ + ½log(π/ε)` for every `λ > 0`, which is
+  `log z ≤ z − 1` at `z = 2λε`.  This is the ENTIRE optimality argument: no calculus;
+- `endpoint_tilt_value_eq`, `endpointTarget_eq`, `tendsto_endpointTarget_atTop`;
+- **`tendsto_rvRate_endpoint`**: `I_α(1−ε) − endpointTarget α ε → 0`.  Tilts below `λ₀` need no
+  asymptotic at all — they contribute at most `λ₀`, while the target diverges, so
+  `tendsto_endpointTarget_atTop` disposes of them.
+
+All three modules axiom-clean and wired.  **Parts 3, 4 and 5 of the card are now completely
+Lean-proved.**  Remaining: `S8` (the LDP and Gärtner–Ellis, parts 1 and 2) and `S9` (prime
+Karamata, `(9)`–`(10)`).
+
+## S9 opened — Karamata's uniform convergence theorem and Potter's bound (2026-08-29)
+
+Searches first (`formal_tools.py research`): "slowly varying function regular variation Karamata
+uniform convergence", "uniform convergence theorem for slowly varying additive shift measurable",
+"prime number theorem chebyshev theta asymptotic equivalent x", "partial summation Abel prime sum
+log p times f p".  The corpus has PNT (`chebyshevTheta_eventually_relative`,
+`chebyshev_asymptotic`, `chebyshevTheta_sub_id_isBigO`) but NO regular-variation framework at all —
+`RapidlyVarying` in `RapidConvexCurvatureResonance.lean` is a different (lattice) notion.
+
+`HTGeometry/SlowShiftUniform.lean` — **the mathlib gap, additive form**.
+`IsSlowShift h` = `h` measurable and `h(x+u) − h(x) → 0` for every fixed `u`.
+- `shiftBadSet h c x = {v ∈ [0,2] : c < |h(x+v) − h(x)|}`, measurable (the `|·|` set is written as
+  a union of two `measurableSet_lt`s: `Measurable.abs` is NOT in scope under narrow imports);
+- **`tendsto_volume_shiftBadSet`** — its measure tends to `0`, by dominated convergence on the
+  indicator along `atTop` (which is countably generated);
+- **`isSlowShift_uniform_unit`** — the classical selection argument: for `u ∈ [0,1]` the sets
+  `C = (·+u)⁻¹(good set at x) ∩ [0,2−u]` and `D = (good set at x+u) ∩ [0,2−u]` each miss at most
+  `1/4` of an interval of length `2−u ≥ 1`, so they meet; at a common point `w` the identity
+  `x + (w+u) = (x+u) + w` telescopes `h(x+u) − h(x)` into two controlled shifts.  Everything is
+  done in `ℝ≥0∞` with `≤` only (no truncated subtraction): disjointness would give
+  `2(2−u) ≤ (2−u) + 1/2`, contradiction.
+- `abs_sub_le_of_unit_steps` — chaining `k` unit steps via `Finset.sum_range_sub`;
+- **`isSlowShift_uniform_nonneg`**, **`isSlowShift_uniform`** (shifts in `[−U, U]`);
+- **`isSlowShift_potter : |h y − h x| ≤ (y − x + 2)δ`** for `y ≥ x ≥ X₀(δ)`.
+
+`HTGeometry/SlowlyVarying.lean` — the multiplicative form.
+`IsSlowlyVarying L` = measurable, positive on `(0,∞)`, `L(cx)/L(x) → 1` for each `c > 0`.
+- `slowLog L t = log L(e^t)` and `isSlowShift_slowLog` — the exponential bridge;
+- **`isSlowlyVarying_uniform_log`** and **`isSlowlyVarying_uniform`**:
+  `|L(cx)/L(x) − 1| ≤ ε` eventually, uniformly for `c` in any `[a,b]` with `a > 0`.  The passage
+  from `|log r| ≤ log(1+ε)` to `|r − 1| ≤ ε` uses `1/(1+ε) ≥ 1 − ε`;
+- **`isSlowlyVarying_potter`**: for `y ≥ x ≥ X₀`,
+  `e^{−2δ}(x/y)^δ ≤ L(y)/L(x) ≤ e^{2δ}(y/x)^δ`.
+
+All axiom-clean and wired into `HTGeometry.lean`.  This is exactly the input the card's `(9)`–`(10)`
+need, and it is reusable well beyond this card (it is the whole Karamata layer).
+
+### Remaining on S9 (the prime Karamata law `(9)`)
+
+`W_X = Σ_{p≤X}(log p)p^{−α}L(p) ∼ X^{1−α}L(X)/(1−α)`.  Plan, now that UCT and Potter are available:
+1. split `(0,1]` at a threshold `v₀`; on `[v₀,1]` use `N` uniform blocks `(v_{j−1}X, v_jX]`;
+2. on each block `F(vX) = X^{−α}L(X)·v^{−α}·(L(vX)/L(X))` with the ratio in `[1−ε,1+ε]` by UCT and
+   `v^{−α}` varying by at most `(1 + 1/(Nv₀))^α`;
+3. `Σ_{p∈(aX,bX]} log p = θ(bX) − θ(aX) = (b−a)X(1+o(1))` by the corpus's PNT;
+4. the head `v < v₀` is `≪ X^{1−α}L(X)v₀^{1−α−δ}` by Potter, which vanishes as `v₀ → 0`.
+Then `(10)` is immediate and `(12)` follows by the same two estimates.
+
+### Remaining on S8 (the LDP)
+
+The planar LDP reduces to a ONE-dimensional one.  `Y_X` is rotation invariant, so
+`Y_X =_d R_X e^{iΘ}` with `Θ` uniform and independent; for an open `G` a ball around `z₀` contains a
+polar box, so the angular factor is a CONSTANT and does not affect the exponent, while for closed
+`F` the norm map is proper, so `{|z| : z ∈ F}` is closed and the two rate infima agree.  Hence only
+Cramér/Gärtner–Ellis on `ℝ` is needed, for `R_X = |Y_X|`, whose limiting cgf is `Λ_α(λ)` for
+`λ ≥ 0` (the `I₀` polynomial factor is exponentially negligible by the sharp asymptotic already
+proved) and `0` for `λ ≤ 0`, hence differentiable everywhere with Legendre transform `I_α`.
+
+## S9, batch 2: the prime shell calculus and the Karamata head (2026-08-29)
+
+Three more axiom-clean modules, all wired into `RHTower.lean`.
+
+`RHTower/PrimeShellWeightedSum.lean` — the device that replaces Riemann–Stieltjes integration for a
+merely measurable weight.
+- `primeLogSum f a b = ∑_{p ∈ (⌊a⌋, ⌊b⌋]} log p · f p`;
+- `mem_shell_of_mem_filter` — membership converts to the REAL shell `a < p ≤ b`
+  (`Nat.floor_lt` / `Nat.le_floor_iff`; the `0 ≤ b` side condition is recovered from
+  `1 ≤ ⌊b⌋₊` via `Nat.floor_of_nonpos`);
+- **`primeLogSum_le` / `le_primeLogSum`** — the two-sided sandwich by the Chebyshev shell mass
+  `θ(b) − θ(a)`, using the corpus's `chebyshevTheta_sub_eq_shellSum`;
+- `primeLogSum_add` (shells add), `primeLogSum_nonneg`.
+
+`RHTower/PrimePowerSumBound.lean` — a new mathlib-gap estimate.
+- `chebyshevTheta_mono`, `chebyshevTheta_nonneg`,
+  **`exists_chebyshevTheta_le_linear : θ(x) ≤ Cx`** for `x ≥ 1` (PNT at `ε = 1` plus monotonicity
+  below the threshold — the corpus owned only the `ψ` version);
+- **`exists_primeLogSum_rpow_le`**: for `0 < β < 1`,
+  `∑_{p ≤ Y}(log p)p^{−β} ≤ K_β Y^{1−β}` with `K_β = C·2^β/(1 − 2^{β−1})`.
+  Proved by HALVING INDUCTION (`Nat.strong_induction_on` on `⌊Y⌋₊`): the top shell `(Y/2, Y]` costs
+  `(Y/2)^{−β}θ(Y) ≤ C2^βY^{1−β}` and the rest is the same statement at `Y/2`, contracting by
+  `2^{β−1} < 1`.  No Abel summation, no differentiability of the weight.
+
+`RHTower/PrimeKaramataHead.lean`
+- `rvPrimeWeight α L t = t^{−α}L(t)`, `rvWeightSum α L X = primeLogSum (rvPrimeWeight α L) 0 X`
+  (the card's `W_X`);
+- **`exists_karamata_head_bound`**: for every `ε > 0` there is `v₀ ∈ (0,1)` with
+  `∑_{p ≤ v₀X}(log p)F(p) ≤ ε X^{1−α}L(X)` eventually.
+  The mechanism: at `δ = (1−α)/2` and `β = α+δ`, Potter gives `L(t) ≤ L(X)e^{2δ}(X/t)^δ` for
+  `X₀ ≤ t ≤ X`, so the head above `X₀` is `≤ L(X)e^{2δ}X^δ·K_β(v₀X)^{1−β}
+  = K_βe^{2δ}v₀^{1−β}·X^{1−α}L(X)` because `δ + 1 − β = 1 − α` exactly.  The fixed initial segment
+  `p ≤ X₀` is a CONSTANT, and `X^{1−α}L(X) → ∞` because Potter also gives `L(X) ≫ X^{−δ}`.
+
+Remaining for `(9)`: the body — the shell sandwich on `(aX, bX]` (UCT for `L(t)/L(X)`, monotonicity
+of `v^{−α}`, PNT for `θ(bX) − θ(aX)`), and the Darboux/Riemann-sum assembly over `N` uniform blocks
+of `[v₀, 1]`.

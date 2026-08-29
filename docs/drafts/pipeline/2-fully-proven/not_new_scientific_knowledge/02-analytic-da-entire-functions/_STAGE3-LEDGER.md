@@ -10,8 +10,8 @@ Goal: unconditional Lean formalization of every card in this folder, then promot
 | 1 | supergaussian-wide-newton-plateau-monomialization | elementary (Newton envelope + Wiman face) | **DONE → 3-formalized** (2026-08-29) |
 | 2 | finite-jet-nonidentifiability-ht | Hölder (owned) | **DONE → 3-formalized** (2026-08-29) |
 | 3 | order-two-shadow-matching-normal-form | algebraic core DONE; needs Gol'dberg + zero-free Hadamard | PARTIAL |
-| 4 | quasianalytic-one-phase-bezout-boundary-law | Poincaré field + Bezout + compactness | TODO |
-| 5 | quasianalytic-exponential-log-phase-jet-law | + Vandermonde | TODO |
+| 4 | quasianalytic-one-phase-bezout-boundary-law | all steps closed | **DONE → 3-formalized** (2026-08-29) |
+| 5 | quasianalytic-exponential-log-phase-jet-law | all steps closed | **DONE → 3-formalized** (2026-08-29) |
 | 6 | exponential-tower-exact-differential-order | both halves closed | **DONE → 3-formalized** (2026-08-29) |
 | 7 | first-order-meromorphic-compression-matching | Steinmetz + 3-field factorization | TODO |
 | 8 | entire-heat-multiplicative-da-order-three-floor | Valiron–Zimogljad–Strelitz | TODO |
@@ -206,3 +206,11 @@ beyond this card (they are the quantitative core of Picard/Montel).
 - 2026-08-29 — **card 6 closed and promoted**: Bohr → Pólya II → growth-depth → `cd₊(F_n)=n`.
   New: `ModularDiskChart`, `BohrCoveringCircle`, `PolyaCompositionMaximum`,
   `IterExpExponentComparison`, `CompositionGrowthHeight`, `CompositionDepth`.
+- 2026-08-29 — **card `quasianalytic-one-phase-bezout-boundary-law` closed and promoted**.
+  New: `PolynomialProjectiveBoundary`, `UpperPoincareGrowth`, `OnePhaseBezoutBoundary`.
+  Reusable: gcd/Bezout normalisation over `K[X]`, finite-dimensional coefficient-sphere compactness
+  with locally uniform polynomial limits, terminal projective boundary of a polynomial.
+- 2026-08-29 — **card `quasianalytic-exponential-log-phase-jet-law` closed and promoted**.
+  New: `VandermondePhaseJet`, `JetProjectiveLimit` (abstract finite jet carrier), `ExponentialPolynomialCarrier`.
+  Reusable: uniform lower bound for an invertible matrix, Vandermonde jet inversion over unit phases,
+  the abstract `JetEval` functional-projective limit, exponential-polynomial recession.

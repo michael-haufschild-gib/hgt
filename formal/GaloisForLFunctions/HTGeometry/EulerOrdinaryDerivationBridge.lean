@@ -113,13 +113,11 @@ theorem differentialAlgebraicOver_ordinary_of_euler [CharZero k] {x : LaurentSer
       _ _ _ cE dE daE _ _ hx
   have daO : @DifferentialAlgebra (RatFunc k) (LaurentSeries k) _ _ _
       (ratFuncOrdinaryDifferential (k := k)) (innerOrdinaryDifferential (k := k)) :=
-    ⟨fun y => by
-      show (innerOrdinaryDifferential (k := k)).deriv
-          (algebraMap (RatFunc k) (LaurentSeries k) y)
-        = algebraMap (RatFunc k) (LaurentSeries k)
-          ((ratFuncOrdinaryDifferential (k := k)).deriv y)
-      rw [innerOrdinaryDifferential_deriv, ratFuncOrdinaryDifferential_deriv,
-        algebraMap_ratFuncDerivative]⟩
+    @DifferentialAlgebra.mk (RatFunc k) (LaurentSeries k) _ _ _
+      (ratFuncOrdinaryDifferential (k := k)) (innerOrdinaryDifferential (k := k))
+      (fun y => by
+        rw [innerOrdinaryDifferential_deriv, ratFuncOrdinaryDifferential_deriv,
+          algebraMap_ratFuncDerivative])
   have hclosedO : @DerivationClosed (RatFunc k) (LaurentSeries k) _ _ _
       (innerOrdinaryDifferential (k := k)) S := by
     intro y hy
@@ -133,6 +131,68 @@ theorem differentialAlgebraicOver_ordinary_of_euler [CharZero k] {x : LaurentSer
   exact @differentialAlgebraicOver_of_mem_derivationClosed_finiteTrdeg (RatFunc k)
     (LaurentSeries k) _ _ _ (ratFuncOrdinaryDifferential (k := k))
     (innerOrdinaryDifferential (k := k)) daO hcz S hclosedO hfin x hxS
+
+set_option maxHeartbeats 1000000 in
+set_option synthInstance.maxHeartbeats 400000 in
+/-- The converse transfer: the Euler derivation is the coordinate times the ordinary one. -/
+theorem differentialAlgebraicOver_euler_of_ordinary [CharZero k] {x : LaurentSeries k}
+    (hx : letI := innerOrdinaryDifferential (k := k)
+      DifferentialAlgebraicOver (RatFunc k) x) :
+    letI := innerDifferential (k := k)
+    DifferentialAlgebraicOver (RatFunc k) x := by
+  letI dO := innerOrdinaryDifferential (k := k)
+  letI cO := ratFuncOrdinaryDifferential (k := k)
+  haveI := IsScalarTower.of_algebraMap_eq (R := k) (S := RatFunc k) (A := LaurentSeries k)
+    fun c => by
+      rw [algebraMap_k_laurentSeries]
+      exact (algebraMap_const_laurentSeries c).symm
+  haveI hcz : CharZero (LaurentSeries k) :=
+    charZero_of_injective_algebraMap (algebraMap k (LaurentSeries k)).injective
+  haveI daO : @DifferentialAlgebra (RatFunc k) (LaurentSeries k) _ _ _ cO dO :=
+    @DifferentialAlgebra.mk (RatFunc k) (LaurentSeries k) _ _ _ cO dO
+      (fun y => by
+        rw [innerOrdinaryDifferential_deriv, ratFuncOrdinaryDifferential_deriv,
+          algebraMap_ratFuncDerivative])
+  set S : IntermediateField (RatFunc k) (LaurentSeries k) :=
+    @differentialAdjoin (RatFunc k) (LaurentSeries k) _ _ _ dO ({x} : Set (LaurentSeries k))
+    with hS
+  have hxS : x ∈ S := @subset_differentialAdjoin (RatFunc k) (LaurentSeries k) _ _ _ dO _ x rfl
+  have hclosedO : @DerivationClosed (RatFunc k) (LaurentSeries k) _ _ _ dO S :=
+    @derivationClosed_differentialAdjoin (RatFunc k) (LaurentSeries k) _ _ cO dO _ daO _
+  have hfin : Algebra.trdeg (RatFunc k) S < Cardinal.aleph0 :=
+    @differentialAdjoin_trdeg_lt_aleph0_of_differentialAlgebraic (RatFunc k) (LaurentSeries k)
+      _ _ _ cO dO daO _ _ hx
+  have daE : @DifferentialAlgebra (RatFunc k) (LaurentSeries k) _ _ _
+      (cylinderDifferential (1 : k)) (innerDifferential (k := k)) :=
+    @DifferentialAlgebra.mk (RatFunc k) (LaurentSeries k) _ _ _
+      (cylinderDifferential (1 : k)) (innerDifferential (k := k))
+      (fun y => by
+        rw [innerDifferential_deriv, cylinderDifferential_deriv, cylDeriv_one_eq_ratFuncEulerOp,
+          algebraMap_ratFuncEulerOp])
+  have hclosedE : @DerivationClosed (RatFunc k) (LaurentSeries k) _ _ _
+      (innerDifferential (k := k)) S := by
+    intro y hy
+    have hy' : (innerDifferential (k := k)).deriv y
+        = algebraMap (RatFunc k) (LaurentSeries k) RatFunc.X
+          * (innerOrdinaryDifferential (k := k)).deriv y := by
+      rw [innerOrdinaryDifferential_deriv, algebraMap_ratFuncX, innerDifferential_deriv,
+        laurentCoord, ← mul_assoc, HahnSeries.single_mul_single, mul_one]
+      norm_num
+    show (innerDifferential (k := k)).deriv y ∈ S
+    rw [hy']
+    exact mul_mem (IntermediateField.algebraMap_mem _ _) (hclosedO hy)
+  exact @differentialAlgebraicOver_of_mem_derivationClosed_finiteTrdeg (RatFunc k)
+    (LaurentSeries k) _ _ _ (cylinderDifferential (1 : k)) (innerDifferential (k := k)) daE hcz
+    S hclosedE hfin x hxS
+
+/-- **Hypertranscendence for the Euler derivation gives hypertranscendence for the ordinary
+one.** -/
+theorem hypertranscendentalOver_ordinary_of_euler [CharZero k] {x : LaurentSeries k}
+    (hx : letI := innerDifferential (k := k)
+      HypertranscendentalOver (RatFunc k) x) :
+    letI := innerOrdinaryDifferential (k := k)
+    HypertranscendentalOver (RatFunc k) x :=
+  fun hDA => hx (differentialAlgebraicOver_euler_of_ordinary hDA)
 
 end
 

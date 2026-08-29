@@ -4083,3 +4083,45 @@ recorded in `docs/drafts/pipeline/1-in-progress/ritt-raudenbush-several-variable
 
 Nothing in the residue is general differential Galois theory.  All three remaining items are
 properties of the Galois group of the specific order recurrence.
+
+## Kolchin-closure determinant premise removed (2026-08-29)
+
+`CassidyMonoidDichotomy.det_eq_one_of_mem_matrixZeroSet_vanishingIdeal` proves that every point of
+the differential zero set of a determinant-one family still has determinant one: the determinant
+polynomial belongs to the family's full vanishing ideal, so its evaluation vanishes at every point
+of that zero set.  Consequently the independent `hclosuredet` premise has been removed from
+`cassidy_monoid_dichotomy` and from all four ordinary/differentially-finitely-generated Galois
+endgames, including `isomonodromy_or_sl2_galoisMonoid_detOne_jetAdjoin`.
+
+Direct checks and targeted builds pass.  The new lemma and every affected capstone audit to only
+`[propext, Classical.choice, Quot.sound]`.  Remaining card-specific inputs are now `hdense` and the
+three full-Galois-monoid structure facts `hGdetK`, `hGdet0`, `hGinv`; no separate closure determinant
+hypothesis remains.
+
+## Root-determinant group hypotheses reduced to the Casoratian (2026-08-29)
+
+`GaloisMonoidRootDeterminant.lean`, unconditional and umbrella-wired, proves:
+
+```text
+comparisonMatrix_det_pow_eq_one_of_balanced
+    equal m-th powers of the two tensor Casoratians force (det Z)^m = 1
+comparisonMatrix_det_sq_eq_one_of_neg_one_system
+    det A = -1 plus the no-new-constants theorem force (det Z)^2 = 1
+galoisMatrixAt_det_pow_eq_one
+galoisMonoid_det_pow_eq_one
+    the relation propagates through every specialization and the generated Galois monoid
+galoisMonoid_det_ne_zero_of_sq_eq_one
+galoisMonoid_det_mem_differentialConstants_of_sq_eq_one
+    at order two, `hGdet0` and `hGdetK` are consequences
+```
+
+Thus the card's Casoratian calculation is now a Lean theorem: a system of determinant `-1` has a
+comparison determinant squaring to one as soon as its Picard--Vessiot no-new-constants property is
+inserted, and that single relation discharges both determinant premises throughout the generated
+Galois monoid.  Source check, targeted build, and all axiom audits pass with only
+`[propext, Classical.choice, Quot.sound]`.
+
+For the concrete order recurrence, remaining group work is now: instantiate the existing
+no-new-constants producer on the parameterized Picard--Vessiot carrier, prove inverse/adjoint
+stability `hGinv`, and prove `hdense`.  `hGdetK`, `hGdet0`, and the independent closure-determinant
+premise no longer remain mathematical inputs.

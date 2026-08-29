@@ -1,7 +1,7 @@
 # Reciprocal q-ladder bound spectrum gives a positive local HT quantum field
 
 - **ID:** `reciprocal-q-ladder-kallen-lehmann-field`
-- **Stage:** 2-fully-proven / parent-derived bridge
+- **Stage:** 3-formalized / parent-derived bridge
 - **Type:** THEOREM (paper) / POSITIVE QFT EXISTENCE BRIDGE / COSMOLOGY SPECTRAL BRIDGE
 - **Scientific status:** `[PROVED HERE] [POSITIVE LOCAL WIGHTMAN FIELD]`
   `[HYPERTRANSCENDENTAL TWO-POINT RESPONSE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
@@ -256,14 +256,51 @@ the parents.  It is classified conservatively as a parent-derived physical bridg
 scientific knowledge.  Its role is to establish physical reality and to isolate the genuinely new
 open theorem: a positive common interacting dynamics relating `(23a)` and `(23b)`.
 
-## Lean boundary
+## Lean status
 
-The live HTGeometry corpus already formalizes geometric Kallen--Lehmann moment positivity,
-one-shell affine constraints, boundary selection, and finite Wick-reduced negative controls.  The
-new chain uses the external infinite-soliton theorem, analytic Kallen--Lehmann reconstruction, and
-the external difference-Galois theorem.  Formalizing `(13)` alone would duplicate existing finite
-constraint infrastructure and would not establish `(9)` or `(18)`.  No Lean edit or build is
-justified.
+All statements below are unconditional: no `sorry`, no added axioms.  Each audits to
+`[propext, Classical.choice, Quot.sound]`.
+
+The card's hypertranscendence route through the product `P_r` of `(14)`--`(17)` is *not* the one
+formalized: the inhomogeneous equation `(13)` is attacked directly, which is shorter and avoids the
+Riccati transfer entirely.  The infrastructure is the `q`-difference hypertranscendence stack built
+for this folder.
+
+New modules:
+
+| Module | Role |
+|---|---|
+| `HTGeometry/HahnDilation.lean` | dilations, gradings and twists of Hahn series; a faithful character forces the invariants to be the constants |
+| `HTGeometry/SimplePoleEulerCombination.lean` | the Euler operator preserves regularity; a nonzero Euler combination of a function with a simple pole at `p₀ ≠ 0` has a pole there |
+| `HTGeometry/TwistedDilationOrbitObstruction.lean` | `γ k(qX) − k(X) = r` has no rational solution on a single-pole orbit |
+| `HTGeometry/QDifferenceLaurentOneVariable.lean` | the one-variable Laurent model, the Ostrowski criterion in it, and hypertranscendence for a monomial twist |
+| `HTGeometry/EulerOrdinaryDerivationBridge.lean` | differential algebraicity over `k(z)` is the same notion for `z d/dz` and for `d/dz` |
+| `HTGeometry/ReciprocalQLadderHypertranscendence.lean` | the card's response and its hypertranscendence |
+| `HTGeometry/ReciprocalQLadderMassSpectrum.lean` | the reciprocal mass sequence, its counting bound, the de Sitter frequencies and the Mahler clock |
+
+| Card statement | Lean theorem |
+|---|---|
+| `(6)`--`(7)` the reciprocal mass sequence | `GaloisForLFunctions.HTGeometry.reciprocalMass`, `reciprocalMass_pos` |
+| the spectrum escapes to infinity | `reciprocalMass_strictMono` |
+| `(8)` logarithmic counting, hence polynomially bounded Källén--Lehmann data | `index_le_log_of_reciprocalMass_le`, `finite_reciprocalMass_le` |
+| `(13)` the exact affine constraint has a solution | `qDifferenceSolution`, `qDifferenceSolution_spec` |
+| the boundary condition selects it | `qDifferenceSolution_unique`, `coeff_qDifferenceSolution_eq_zero_of_neg` |
+| `(16)` hypertranscendence of the response | `hypertranscendentalOver_qLadderResolvent` |
+| `(18)` the same after the affine momentum change `(11)`, which only moves the pole | `hypertranscendentalOver_onePoleQLadder` |
+| `(16)`, `(18)` for the ordinary derivation | `hypertranscendentalOver_onePoleQLadder_ordinary` (via `differentialAlgebraicOver_euler_of_ordinary`) |
+| `(19)`--`(21)` geometric de Sitter principal-series frequencies | `principalFrequency_eq` |
+| `(22)` the production sum is a Mahler clock | `clock_term_eq` |
+
+Two inputs stay cited rather than formalized, exactly as the card states them: the infinite-soliton
+theorem of Gesztesy--Karwowski--Zhao, which supplies the negative spectrum `(3)`, and the standard
+Källén--Lehmann/Wightman reconstruction, which turns the positive polynomially bounded weight into
+the generalized free field `(9)`.  Neither is a step of the card's own argument; both are parent
+theorems.
+
+The hypertranscendence input the card quotes from Adamczewski--Dreyfus--Hardouin is **no longer
+external**: `hypertranscendentalOver_of_monomialTwist` proves the `q`-difference dichotomy needed
+here from the corpus's own differential Ostrowski criterion, in the one-variable Laurent model whose
+invariants are the constants.
 
 ## Primary literature
 
@@ -288,4 +325,5 @@ justified.
 - [x] exact de Sitter principal-series geometric clock derived
 - [x] Gaussian/interacting boundary stated
 - [x] parent-theory equivalence and conservative novelty verdict stated
-- [x] live Lean corpus checked; no wrapper build opened
+- [x] live Lean corpus checked
+- [x] hypertranscendence and the mass-spectrum corollaries formalized in Lean
