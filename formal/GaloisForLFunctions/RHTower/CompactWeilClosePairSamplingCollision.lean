@@ -11,8 +11,10 @@ limit equal to derivative energy.
 
 This is a source-independent obstruction for compact-Weil and zero-sampling arguments: an
 unrenormalized scalar sampling form loses one independent close-pair channel at order two. It
-cannot obtain separation-uniform multiplicity resolution from point values alone. All statements
-are unconditional; no zero data or numerical result enters this module.
+cannot obtain separation-uniform multiplicity resolution from point values alone. The split and
+collision laws are unconditional. The quadratic law records its mathematically necessary
+`HasDerivAt` premise explicitly; a downstream compact-Weil application must construct that
+profile and discharge differentiability internally.
 -/
 
 open Filter Topology

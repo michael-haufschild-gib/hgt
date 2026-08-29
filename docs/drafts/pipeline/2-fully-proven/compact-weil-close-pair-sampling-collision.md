@@ -2,8 +2,12 @@
 
 ## Status
 
-Paper proof and unconditional Lean formalization complete:
-`GaloisForLFunctions.RHTower.CompactWeilClosePairSamplingCollision`.
+Paper proof complete. Lean formalization of the algebraic split and collision identities is
+unconditional in `GaloisForLFunctions.RHTower.CompactWeilClosePairSamplingCollision`, but the
+quadratic derivative law still takes `hf : HasDerivAt f d x`. Under the pipeline's strict
+no-premise gate this hypothesis must be produced for a concrete compact-Weil profile inside Lean;
+Hilbert structure alone cannot imply differentiability of an arbitrary function. Stage 3 remains
+open until that concrete profile and its differentiability are constructed.
 
 ## Statement
 

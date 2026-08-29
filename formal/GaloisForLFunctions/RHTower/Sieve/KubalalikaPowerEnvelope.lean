@@ -10,7 +10,7 @@ The mixed second/third-derivative Vaughan block envelope is bounded by an explic
 
 namespace RHTower.Sieve
 
-open Finset RHTower
+open Finset ArithmeticFunction RHTower
 
 noncomputable section
 
@@ -414,6 +414,321 @@ theorem typeIIHybridVaughanRootEnvelope_le_power {T r : ℝ} (hT : 0 < T) (hr : 
   have h3 := sqrt_vaughan_third_le hT hr hB
   have h4 := sqrt_two_sq_div_le (B := B) hU
   linarith [h1.le, h1.ge, h2, h3, h4]
+
+
+/-! ### The dyadic block count -/
+
+theorem natLogTwo_succ_le_two_mul_one_add_log {N : ℕ} (hN : 1 ≤ N) :
+    ((Nat.log 2 N : ℝ) + 1) ≤ 2 * (1 + Real.log N) := by
+  have hN0 : (0 : ℝ) < (N : ℝ) := by exact_mod_cast hN
+  have hN1 : (1 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
+  have hpowNat : 2 ^ Nat.log 2 N ≤ N := Nat.pow_log_le_self 2 (by omega)
+  have hpow : ((2 : ℝ)) ^ (Nat.log 2 N) ≤ (N : ℝ) := by exact_mod_cast hpowNat
+  have hlog : (Nat.log 2 N : ℝ) * Real.log 2 ≤ Real.log N := by
+    have h := Real.log_le_log (by positivity) hpow
+    rwa [Real.log_pow] at h
+  have h2 : (1 : ℝ) / 2 ≤ Real.log 2 := by
+    have := Real.log_two_gt_d9
+    linarith
+  have hnn : (0 : ℝ) ≤ (Nat.log 2 N : ℝ) := Nat.cast_nonneg _
+  have hlogN : (0 : ℝ) ≤ Real.log N := Real.log_nonneg hN1
+  nlinarith only [hlog, h2, hnn, hlogN]
+
+/-! ### The explicit power envelope of the mixed hybrid Vaughan block -/
+
+/-- The explicit monomial envelope of the mixed second/third-derivative hybrid Vaughan block. -/
+def kubalalikaBlockPower (D T r : ℝ) (A B U V : ℕ) : ℝ :=
+  D * (1 + Real.log B) ^ 4 *
+    ((A : ℝ) ^ (1 / 3 : ℝ) * (T * r) ^ (1 / 6 : ℝ) * Real.sqrt (U * V)
+      + (B : ℝ) ^ (3 / 2 : ℝ) * (T * r) ^ (-(1 / 2) : ℝ)
+      + (B : ℝ) * (V : ℝ) ^ (-(1 / 2) : ℝ)
+      + (T * r) ^ (1 / 4 : ℝ) * (B : ℝ) ^ (3 / 4 : ℝ) * (U : ℝ) ^ (-(1 / 2) : ℝ)
+      + (B : ℝ) * (U : ℝ) ^ (-(1 / 2) : ℝ))
+
+/-- The scalar shape of the Type-I total: two aggregates weighted by logarithms. -/
+theorem typeI_scalar_bound {s a b p q : ℝ} (hs : 1 ≤ s) (hp : 0 ≤ p) (hq : 0 ≤ q)
+    (_hla : 0 ≤ a) (_hlb : 0 ≤ b)
+    (hA1 : a ≤ 400000 * p + 748 * q * s) (hA2 : b ≤ 400000 * p + 748 * q * s) :
+    s * a + 2 * s * b ≤ 1200000 * s ^ 2 * (p + q) := by
+  have hs0 : (0 : ℝ) ≤ s := le_trans zero_le_one hs
+  have h1 : s * a ≤ s * (400000 * p + 748 * q * s) := mul_le_mul_of_nonneg_left hA1 hs0
+  have h2 : 2 * s * b ≤ 2 * s * (400000 * p + 748 * q * s) :=
+    mul_le_mul_of_nonneg_left hA2 (by positivity)
+  have hss : s ≤ s ^ 2 := by nlinarith only [hs, hs0]
+  have hsp : 1200000 * s * p ≤ 1200000 * s ^ 2 * p := by
+    have := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hss (by norm_num : (0:ℝ) ≤ 1200000)) hp
+    linarith
+  have hsq : 2244 * q * s ^ 2 ≤ 1200000 * s ^ 2 * q := by
+    have hsqn : (0 : ℝ) ≤ s ^ 2 := sq_nonneg s
+    nlinarith only [hq, hsqn]
+  nlinarith only [h1, h2, hsp, hsq]
+
+/-- **The Type-I total in explicit power form.** -/
+theorem secondThirdMixedVaughanTypeIEnvelope_le_power {T r : ℝ} (hT : 0 < T) (hr : 0 < r)
+    {A B U V : ℕ} (hA : 1 ≤ A) (hAB : A ≤ B) (hU : 1 ≤ U) (hV : 1 ≤ V) (hUVB : U * V ≤ B) :
+    secondThirdMixedVaughanTypeIEnvelope T r A B U V
+      ≤ 1200000 * (1 + Real.log B) ^ 2 *
+          ((A : ℝ) ^ (1 / 3 : ℝ) * (T * r) ^ (1 / 6 : ℝ) * Real.sqrt (U * V)
+            + (B : ℝ) ^ (3 / 2 : ℝ) * (T * r) ^ (-(1 / 2) : ℝ)) := by
+  have hB : 1 ≤ B := le_trans hA hAB
+  have hB1 : (1 : ℝ) ≤ (B : ℝ) := by exact_mod_cast hB
+  have hUV1 : 1 ≤ U * V := by simpa using Nat.mul_le_mul hU hV
+  have hUV1R : (1 : ℝ) ≤ ((U * V : ℕ) : ℝ) := by exact_mod_cast hUV1
+  have hV1R : (1 : ℝ) ≤ (V : ℝ) := by exact_mod_cast hV
+  have hUVB' : ((U * V : ℕ) : ℝ) ≤ (B : ℝ) := by exact_mod_cast hUVB
+  have hVB : V ≤ B := le_trans (by simpa [mul_comm] using Nat.mul_le_mul_left V hU) hUVB
+  have hVB' : (V : ℝ) ≤ (B : ℝ) := by exact_mod_cast hVB
+  set s : ℝ := 1 + Real.log B with hsdef
+  have hlogB : (0 : ℝ) ≤ Real.log B := Real.log_nonneg hB1
+  have hs : (1 : ℝ) ≤ s := by rw [hsdef]; linarith
+  set P : ℝ := (A : ℝ) ^ (1 / 3 : ℝ) * (T * r) ^ (1 / 6 : ℝ) * Real.sqrt (U * V) with hPdef
+  set Q : ℝ := (B : ℝ) ^ (3 / 2 : ℝ) * (T * r) ^ (-(1 / 2) : ℝ) with hQdef
+  have hP0 : (0 : ℝ) ≤ P := by rw [hPdef]; positivity
+  have hQ0 : (0 : ℝ) ≤ Q := by rw [hQdef]; positivity
+  -- the two logarithmic weights
+  have hlogUV : Real.log ((U * V : ℕ) : ℝ) ≤ s := by
+    have := Real.log_le_log (by positivity) hUVB'
+    rw [hsdef]; linarith
+  have hlogUV0 : (0 : ℝ) ≤ Real.log ((U * V : ℕ) : ℝ) := Real.log_nonneg hUV1R
+  -- coefficient bounds
+  have hC1 : 0 ≤ secondThirdMixedFibreMainCoefficient T r A := by
+    rw [secondThirdMixedFibreMainCoefficient]
+    exact add_nonneg (sharpThirdDerivativeFibreFirstCoefficient_nonneg hT hr hA)
+      (Real.sqrt_nonneg _)
+  have hC1le := secondThirdMixedFibreMainCoefficient_le hT hr hA
+  have hFt0 : 0 ≤ fibreTail T r B := fibreTail_nonneg T r B
+  have hFtle := fibreTail_le_power hT hr hB
+  have hFtle' : fibreTail T r B ≤ 748 * Q := by rw [hQdef]; linarith [hFtle]
+  -- the two square roots
+  have hsqUV : Real.sqrt ((U * V : ℕ) : ℝ) = Real.sqrt ((U : ℝ) * (V : ℝ)) := by
+    push_cast; ring_nf
+  have hsqV : Real.sqrt (V : ℝ) ≤ Real.sqrt ((U : ℝ) * (V : ℝ)) := by
+    refine Real.sqrt_le_sqrt ?_
+    have hU1R : (1 : ℝ) ≤ (U : ℝ) := by exact_mod_cast hU
+    nlinarith only [hU1R, hV1R]
+  have hAX : (0 : ℝ) ≤ (A : ℝ) ^ (1 / 3 : ℝ) * (T * r) ^ (1 / 6 : ℝ) := by positivity
+  -- the two aggregates
+  have hAgg : ∀ K : ℕ, 1 ≤ K → Real.sqrt K ≤ Real.sqrt ((U : ℝ) * (V : ℝ)) →
+      ((K : ℝ)) ≤ (B : ℝ) →
+      secondThirdMixedAggregateEnvelope T r A B K ≤ 400000 * P + 748 * Q * s := by
+    intro K hK hKsq hKB
+    have hinv : invSum K ≤ 1 + Real.log K := invSum_le_one_add_log hK
+    have hK1 : (1 : ℝ) ≤ (K : ℝ) := by exact_mod_cast hK
+    have hlogK : Real.log K ≤ Real.log B := Real.log_le_log (by positivity) hKB
+    have hinvs : invSum K ≤ s := by rw [hsdef]; linarith
+    have hinv0 : (0 : ℝ) ≤ invSum K := invSum_nonneg K
+    have hstep1 : 4 * secondThirdMixedFibreMainCoefficient T r A * Real.sqrt K
+        ≤ 400000 * P := by
+      have h1 : 4 * secondThirdMixedFibreMainCoefficient T r A
+          ≤ 400000 * ((A : ℝ) ^ (1 / 3 : ℝ) * (T * r) ^ (1 / 6 : ℝ)) := by
+        nlinarith only [hC1le]
+      have h2 : (0 : ℝ) ≤ 4 * secondThirdMixedFibreMainCoefficient T r A := by linarith
+      calc 4 * secondThirdMixedFibreMainCoefficient T r A * Real.sqrt K
+          ≤ 400000 * ((A : ℝ) ^ (1 / 3 : ℝ) * (T * r) ^ (1 / 6 : ℝ)) * Real.sqrt K :=
+            mul_le_mul_of_nonneg_right h1 (Real.sqrt_nonneg _)
+        _ ≤ 400000 * ((A : ℝ) ^ (1 / 3 : ℝ) * (T * r) ^ (1 / 6 : ℝ))
+              * Real.sqrt ((U : ℝ) * (V : ℝ)) :=
+            mul_le_mul_of_nonneg_left hKsq (by positivity)
+        _ = 400000 * P := by rw [hPdef]; ring
+    have hstep2 : fibreTail T r B * invSum K ≤ 748 * Q * s := by
+      calc fibreTail T r B * invSum K ≤ (748 * Q) * invSum K :=
+            mul_le_mul_of_nonneg_right hFtle' hinv0
+        _ ≤ (748 * Q) * s := mul_le_mul_of_nonneg_left hinvs (by positivity)
+        _ = 748 * Q * s := by ring
+    rw [secondThirdMixedAggregateEnvelope]
+    linarith
+  have hUVsq : Real.sqrt ((U * V : ℕ) : ℝ) ≤ Real.sqrt ((U : ℝ) * (V : ℝ)) := by
+    push_cast
+    exact le_rfl
+  have hAggUV := hAgg (U * V) hUV1 hUVsq hUVB'
+  have hAggV := hAgg V hV hsqV hVB'
+  have hnn1 : (0 : ℝ) ≤ secondThirdMixedAggregateEnvelope T r A B (U * V) := by
+    rw [secondThirdMixedAggregateEnvelope]
+    exact add_nonneg (by positivity) (mul_nonneg hFt0 (invSum_nonneg _))
+  have hnn2 : (0 : ℝ) ≤ secondThirdMixedAggregateEnvelope T r A B V := by
+    rw [secondThirdMixedAggregateEnvelope]
+    exact add_nonneg (by positivity) (mul_nonneg hFt0 (invSum_nonneg _))
+  rw [secondThirdMixedVaughanTypeIEnvelope]
+  have hbase := typeI_scalar_bound (s := s) hs hP0 hQ0 hnn1 hnn2 hAggUV hAggV
+  have hw1 : Real.log ((U * V : ℕ) : ℝ) * secondThirdMixedAggregateEnvelope T r A B (U * V)
+      ≤ s * secondThirdMixedAggregateEnvelope T r A B (U * V) :=
+    mul_le_mul_of_nonneg_right hlogUV hnn1
+  have hw2 : 2 * Real.log B * secondThirdMixedAggregateEnvelope T r A B V
+      ≤ 2 * s * secondThirdMixedAggregateEnvelope T r A B V := by
+    refine mul_le_mul_of_nonneg_right ?_ hnn2
+    rw [hsdef]; linarith
+  have hcast : Real.log ((U : ℕ) * (V : ℕ) : ℕ) = Real.log ((U * V : ℕ) : ℝ) := by norm_num
+  push_cast at hw1 ⊢
+  linarith
+
+theorem sqrt_le_self_of_one_le {x : ℝ} (hx : 1 ≤ x) : Real.sqrt x ≤ x := by
+  have hx0 : (0 : ℝ) ≤ x := le_trans zero_le_one hx
+  calc Real.sqrt x ≤ Real.sqrt (x ^ 2) := Real.sqrt_le_sqrt (by nlinarith only [hx, hx0])
+    _ = x := Real.sqrt_sq hx0
+
+/-- The root envelope in a single logarithmic power. -/
+theorem kubalalikaRootPower_le {T r : ℝ} (hT : 0 < T) (hr : 0 < r) {B U V : ℕ} (hB : 1 ≤ B) :
+    kubalalikaRootPower T r B U V
+      ≤ 64 * (1 + Real.log B) *
+          ((B : ℝ) ^ (3 / 2 : ℝ) * (T * r) ^ (-(1 / 2) : ℝ)
+            + (B : ℝ) * (V : ℝ) ^ (-(1 / 2) : ℝ)
+            + (T * r) ^ (1 / 4 : ℝ) * (B : ℝ) ^ (3 / 4 : ℝ) * (U : ℝ) ^ (-(1 / 2) : ℝ)
+            + (B : ℝ) * (U : ℝ) ^ (-(1 / 2) : ℝ)) := by
+  have hB1 : (1 : ℝ) ≤ (B : ℝ) := by exact_mod_cast hB
+  have hlogB : (0 : ℝ) ≤ Real.log B := Real.log_nonneg hB1
+  set s : ℝ := 1 + Real.log B with hsdef
+  have hs : (1 : ℝ) ≤ s := by rw [hsdef]; linarith
+  have hsqrts : Real.sqrt s ≤ s := sqrt_le_self_of_one_le hs
+  set P2 : ℝ := (B : ℝ) ^ (3 / 2 : ℝ) * (T * r) ^ (-(1 / 2) : ℝ) with hP2
+  set P3 : ℝ := (B : ℝ) * (V : ℝ) ^ (-(1 / 2) : ℝ) with hP3
+  set P4 : ℝ := (T * r) ^ (1 / 4 : ℝ) * (B : ℝ) ^ (3 / 4 : ℝ) * (U : ℝ) ^ (-(1 / 2) : ℝ) with hP4
+  set P5 : ℝ := (B : ℝ) * (U : ℝ) ^ (-(1 / 2) : ℝ) with hP5
+  have h2 : (0 : ℝ) ≤ P2 := by rw [hP2]; positivity
+  have h3 : (0 : ℝ) ≤ P3 := by rw [hP3]; positivity
+  have h4 : (0 : ℝ) ≤ P4 := by rw [hP4]; positivity
+  have h5 : (0 : ℝ) ≤ P5 := by rw [hP5]; positivity
+  have hrew : kubalalikaRootPower T r B U V = P3 + 64 * P4 + 9 * P2 * Real.sqrt s + 2 * P5 := by
+    rw [kubalalikaRootPower, hP2, hP3, hP4, hP5, hsdef]
+    ring
+  rw [hrew]
+  have hkey : 9 * P2 * Real.sqrt s ≤ 9 * P2 * s :=
+    mul_le_mul_of_nonneg_left hsqrts (by positivity)
+  nlinarith only [hkey, h2, h3, h4, h5, hs]
+
+/-- **The Type-II total in explicit power form.** -/
+theorem typeIIHybridPieceEnvelope_le_power {C T r : ℝ} (hC : 0 < C) (hT : 0 < T) (hr : 0 < r)
+    {A B U V : ℕ} (hA : 1 ≤ A) (hB : 1 ≤ B) (hU : 1 ≤ U) (hV : 1 ≤ V) (hBA : B ≤ 2 * A) :
+    typeIIHybridPieceEnvelope C T r A B B U V
+      ≤ 512 * Real.sqrt C * (1 + Real.log B) ^ 4 *
+          ((B : ℝ) ^ (3 / 2 : ℝ) * (T * r) ^ (-(1 / 2) : ℝ)
+            + (B : ℝ) * (V : ℝ) ^ (-(1 / 2) : ℝ)
+            + (T * r) ^ (1 / 4 : ℝ) * (B : ℝ) ^ (3 / 4 : ℝ) * (U : ℝ) ^ (-(1 / 2) : ℝ)
+            + (B : ℝ) * (U : ℝ) ^ (-(1 / 2) : ℝ)) := by
+  have hB1 : (1 : ℝ) ≤ (B : ℝ) := by exact_mod_cast hB
+  have hlogB : (0 : ℝ) ≤ Real.log B := Real.log_nonneg hB1
+  set s : ℝ := 1 + Real.log B with hsdef
+  have hs : (1 : ℝ) ≤ s := by rw [hsdef]; linarith
+  have hs0 : (0 : ℝ) ≤ s := le_trans zero_le_one hs
+  set S : ℝ := (B : ℝ) ^ (3 / 2 : ℝ) * (T * r) ^ (-(1 / 2) : ℝ)
+      + (B : ℝ) * (V : ℝ) ^ (-(1 / 2) : ℝ)
+      + (T * r) ^ (1 / 4 : ℝ) * (B : ℝ) ^ (3 / 4 : ℝ) * (U : ℝ) ^ (-(1 / 2) : ℝ)
+      + (B : ℝ) * (U : ℝ) ^ (-(1 / 2) : ℝ) with hSdef
+  have hS0 : (0 : ℝ) ≤ S := by rw [hSdef]; positivity
+  -- the dyadic block count
+  have h1 : ((Nat.log 2 B : ℝ) + 1) ≤ 2 * s := natLogTwo_succ_le_two_mul_one_add_log hB
+  have h10 : (0 : ℝ) ≤ ((Nat.log 2 B : ℝ) + 1) := by positivity
+  -- the polylogarithmic factor
+  have hCs : (0 : ℝ) ≤ 4 * Real.sqrt C * s ^ 2 := by positivity
+  have hsqC : (Real.sqrt C) ^ 2 = C := Real.sq_sqrt hC.le
+  have hrad : 8 * C * Real.log B * typeIIPolylogEnvelope B ≤ (4 * Real.sqrt C * s ^ 2) ^ 2 := by
+    have hpoly : typeIIPolylogEnvelope B ≤ 2 * s ^ 3 := by
+      rw [typeIIPolylogEnvelope, ← hsdef]
+      have hs3 : (1 : ℝ) ≤ s ^ 3 := by
+        nlinarith only [hs, hs0, mul_nonneg (sub_nonneg.2 hs) (mul_nonneg hs0 hs0)]
+      linarith
+    have hpoly0 : (0 : ℝ) ≤ typeIIPolylogEnvelope B := typeIIPolylogEnvelope_nonneg B
+    have hstep1 : 8 * C * Real.log B ≤ 8 * C * s := by
+      have : Real.log B ≤ s := by rw [hsdef]; linarith
+      nlinarith only [this, hC]
+    have hstep10 : (0 : ℝ) ≤ 8 * C * Real.log B := by positivity
+    have hchain : 8 * C * Real.log B * typeIIPolylogEnvelope B ≤ (8 * C * s) * (2 * s ^ 3) := by
+      calc 8 * C * Real.log B * typeIIPolylogEnvelope B
+          ≤ (8 * C * s) * typeIIPolylogEnvelope B :=
+            mul_le_mul_of_nonneg_right hstep1 hpoly0
+        _ ≤ (8 * C * s) * (2 * s ^ 3) := mul_le_mul_of_nonneg_left hpoly (by positivity)
+    have hval : (4 * Real.sqrt C * s ^ 2) ^ 2 = (8 * C * s) * (2 * s ^ 3) := by
+      have : (4 * Real.sqrt C * s ^ 2) ^ 2 = 16 * (Real.sqrt C) ^ 2 * s ^ 4 := by ring
+      rw [this, hsqC]; ring
+    rw [hval]
+    exact hchain
+  have h2 : Real.sqrt (8 * C * Real.log B * typeIIPolylogEnvelope B)
+      ≤ 4 * Real.sqrt C * s ^ 2 := by
+    calc Real.sqrt (8 * C * Real.log B * typeIIPolylogEnvelope B)
+        ≤ Real.sqrt ((4 * Real.sqrt C * s ^ 2) ^ 2) := Real.sqrt_le_sqrt hrad
+      _ = 4 * Real.sqrt C * s ^ 2 := Real.sqrt_sq hCs
+  have h20 : (0 : ℝ) ≤ Real.sqrt (8 * C * Real.log B * typeIIPolylogEnvelope B) :=
+    Real.sqrt_nonneg _
+  -- the root envelope
+  have h3 : typeIIHybridVaughanRootEnvelope T r A B U V ≤ 64 * s * S := by
+    refine le_trans (typeIIHybridVaughanRootEnvelope_le_power hT hr hA hB hU hV hBA) ?_
+    rw [hSdef, hsdef]
+    exact kubalalikaRootPower_le hT hr hB
+  have h30 : (0 : ℝ) ≤ typeIIHybridVaughanRootEnvelope T r A B U V :=
+    typeIIHybridVaughanRootEnvelope_nonneg T r A B U V
+  rw [typeIIHybridPieceEnvelope]
+  have hprod : Real.sqrt (8 * C * Real.log B * typeIIPolylogEnvelope B)
+      * typeIIHybridVaughanRootEnvelope T r A B U V
+      ≤ (4 * Real.sqrt C * s ^ 2) * (64 * s * S) :=
+    mul_le_mul h2 h3 h30 hCs
+  have hall : ((Nat.log 2 B : ℝ) + 1) *
+      (Real.sqrt (8 * C * Real.log B * typeIIPolylogEnvelope B)
+        * typeIIHybridVaughanRootEnvelope T r A B U V)
+      ≤ (2 * s) * ((4 * Real.sqrt C * s ^ 2) * (64 * s * S)) :=
+    mul_le_mul h1 hprod (mul_nonneg h20 h30) (by positivity)
+  refine le_trans hall (le_of_eq ?_)
+  ring
+
+/-- **The mixed hybrid Vaughan block estimate in explicit monomial form.**
+
+With the dyadic parameter taken equal to the block endpoint, the whole envelope collapses to a
+single logarithmic power times the five monomials
+`A^{1/3}X^{1/6}√(UV)`, `B^{3/2}X^{-1/2}`, `B V^{-1/2}`, `X^{1/4}B^{3/4}U^{-1/2}` and `B U^{-1/2}`,
+where `X = T r`. -/
+theorem exists_norm_sum_vonMangoldt_ndPhaseExp_le_kubalalika_power :
+    ∃ D : ℝ, 0 < D ∧ ∀ {T r : ℝ} {A B U V : ℕ},
+      0 < T → 0 < r → 1 ≤ A → A ≤ B → B ≤ 2 * A → 1 ≤ U → 1 ≤ V → U < A →
+      U * V ≤ A → 8 * r ≤ (A : ℝ) →
+      T * r * ((U * V : ℕ) : ℝ) ^ 3 ≤ 72 * Real.pi * (A : ℝ) ^ 4 →
+      (∀ b ∈ Finset.Icc 1 (U * V),
+        fibreKernel T r A ≤
+            secondThirdMixedFibreMainCoefficient T r A * (b : ℝ) ^ (-(1 / 2 : ℝ)) →
+          nearDiagonalLambda T (r / b) ((((A - 1) / b + 1 : ℕ)) : ℝ) ≤ 1) →
+      ‖∑ n ∈ Finset.Ico A B, ((vonMangoldt n : ℝ) : ℂ) * ndPhaseExp T r n‖
+        ≤ kubalalikaBlockPower D T r A B U V := by
+  obtain ⟨C, hC0, hblock⟩ := exists_norm_sum_vonMangoldt_ndPhaseExp_le_secondThird_mixed_hybrid
+  refine ⟨1200000 + 512 * Real.sqrt C, by positivity, ?_⟩
+  intro T r A B U V hT hr hA hAB hBA hU hV hUA hUVA h8 hcurv hsecond
+  have hB : 1 ≤ B := le_trans hA hAB
+  have hUVB : U * V ≤ B := le_trans hUVA hAB
+  have hVUV : V ≤ U * V := by simpa [mul_comm] using Nat.mul_le_mul_left V hU
+  have hVB : V ≤ B := le_trans hVUV hUVB
+  have hbound := hblock (L := B) hT hr hA hAB hBA (by omega) hB hU hV hUA hUVA hUVB hVB h8
+    hcurv hsecond
+  refine le_trans hbound ?_
+  have hI := secondThirdMixedVaughanTypeIEnvelope_le_power hT hr hA hAB hU hV hUVB
+  have hII := typeIIHybridPieceEnvelope_le_power hC0 hT hr hA hB hU hV hBA
+  have hB1 : (1 : ℝ) ≤ (B : ℝ) := by exact_mod_cast hB
+  have hlogB : (0 : ℝ) ≤ Real.log B := Real.log_nonneg hB1
+  rw [vaughanSecondThirdMixedHybridBlockEnvelope, kubalalikaBlockPower]
+  set s : ℝ := 1 + Real.log B with hsdef
+  set P1 : ℝ := (A : ℝ) ^ (1 / 3 : ℝ) * (T * r) ^ (1 / 6 : ℝ) * Real.sqrt (U * V) with hP1
+  set P2 : ℝ := (B : ℝ) ^ (3 / 2 : ℝ) * (T * r) ^ (-(1 / 2) : ℝ) with hP2
+  set P3 : ℝ := (B : ℝ) * (V : ℝ) ^ (-(1 / 2) : ℝ) with hP3
+  set P4 : ℝ := (T * r) ^ (1 / 4 : ℝ) * (B : ℝ) ^ (3 / 4 : ℝ) * (U : ℝ) ^ (-(1 / 2) : ℝ) with hP4
+  set P5 : ℝ := (B : ℝ) * (U : ℝ) ^ (-(1 / 2) : ℝ) with hP5
+  have hs : (1 : ℝ) ≤ s := by rw [hsdef]; linarith
+  have hs0 : (0 : ℝ) ≤ s := le_trans zero_le_one hs
+  have h1 : (0 : ℝ) ≤ P1 := by rw [hP1]; positivity
+  have h2 : (0 : ℝ) ≤ P2 := by rw [hP2]; positivity
+  have h3 : (0 : ℝ) ≤ P3 := by rw [hP3]; positivity
+  have h4 : (0 : ℝ) ≤ P4 := by rw [hP4]; positivity
+  have h5 : (0 : ℝ) ≤ P5 := by rw [hP5]; positivity
+  have hs24 : s ^ 2 ≤ s ^ 4 := by
+    nlinarith only [hs, hs0, sq_nonneg s, sq_nonneg (s ^ 2 - 1), sq_nonneg (s - 1)]
+  have hsum : (0 : ℝ) ≤ P1 + P2 + P3 + P4 + P5 := by linarith
+  have hstep1 : 1200000 * s ^ 2 * (P1 + P2)
+      ≤ 1200000 * s ^ 4 * (P1 + P2 + P3 + P4 + P5) := by
+    have ha : (1200000 : ℝ) * s ^ 2 ≤ 1200000 * s ^ 4 := by linarith
+    have hb : P1 + P2 ≤ P1 + P2 + P3 + P4 + P5 := by linarith
+    exact mul_le_mul ha hb (by linarith) (by positivity)
+  have hstep2 : 512 * Real.sqrt C * s ^ 4 * (P2 + P3 + P4 + P5)
+      ≤ 512 * Real.sqrt C * s ^ 4 * (P1 + P2 + P3 + P4 + P5) := by
+    refine mul_le_mul_of_nonneg_left (by linarith) ?_
+    positivity
+  have hsplit : (1200000 + 512 * Real.sqrt C) * s ^ 4 * (P1 + P2 + P3 + P4 + P5)
+      = 1200000 * s ^ 4 * (P1 + P2 + P3 + P4 + P5)
+        + 512 * Real.sqrt C * s ^ 4 * (P1 + P2 + P3 + P4 + P5) := by ring
+  linarith
 
 end
 

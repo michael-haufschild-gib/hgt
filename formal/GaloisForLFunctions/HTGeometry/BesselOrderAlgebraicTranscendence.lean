@@ -25,7 +25,7 @@ private theorem shiftedOuterCoeff_ne_zero {q : Polynomial (Polynomial ℂ)} {i :
         Polynomial.C ((Polynomial.X + Polynomial.C (1 : ℂ)).coeff 0) := by
       intro heq
       have := congrArg (fun p : Polynomial ℂ => p.coeff 1) heq
-      simpa at this
+      simp at this
     exact hnot h.2
 
 private theorem eventually_shiftedOuterCoeff_eval_ne_zero

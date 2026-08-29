@@ -4256,3 +4256,23 @@ this constructed quotient: derive the comparison-algebra decomposition and fixed
 from sigma-delta simplicity, instead of assuming sigma-simplicity, a basis, generation, or no-new
 constants.  Concrete determinant-one density, including finite primitive exclusion, remains the
 independent group-classification gap.  Both must be discharged before Stage 3 promotion.
+
+## Algebraic finite-branch obstruction closed analytically (2026-08-29)
+
+`BesselOrderAlgebraicTranscendence.lean` proves, without a growth hypothesis, that every nonzero
+polynomial relation over `ℂ[X]` forces polynomial growth of its roots on the positive integer ray.
+It applies this Cauchy bound to the actual meromorphic Bessel carrier and obtains
+
+```text
+modifiedBesselKOrderMero_transcendental
+```
+
+for every `s > 0`.  The contradiction uses the already formalized factorial recurrence lower bound;
+no asymptotic computation or special-function axiom enters.  Source check and targeted module build
+pass, and both new public theorems audit to `[propext, Classical.choice, Quot.sound]`.
+
+This supplies the analytic input that excludes a finite ordinary Picard--Vessiot group once the
+finite-group-to-algebraicity Galois bridge is instantiated.  It does not by itself prove Zariski
+density: the finite-orbit bridge and the irreducible/non-imprimitive/infinite subgroup
+classification still have to be closed in Lean.  Those obligations, plus parameterized
+torsor/fixed-field descent, remain forbidden as premises of the final theorem.

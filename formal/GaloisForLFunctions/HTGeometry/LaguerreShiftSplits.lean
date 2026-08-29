@@ -95,51 +95,53 @@ theorem natDegree_ne_card_roots_succ {q : ℝ[X]} (hq : q ≠ 0) :
     q.natDegree ≠ q.roots.card + 1 := by
   classical
   intro hcard
-  set R : ℝ[X] := (Multiset.map (fun a => X - C a) q.roots).prod with hR
-  have hRdeg : R.natDegree = q.roots.card := by
-    rw [hR]
-    exact natDegree_multiset_prod_X_sub_C_eq_card _
   obtain ⟨g, hg⟩ := prod_multiset_X_sub_C_dvd q
-  have hR0 : R ≠ 0 := by
+  have hRdeg : (Multiset.map (fun a : ℝ => X - C a) q.roots).prod.natDegree = q.roots.card :=
+    natDegree_multiset_prod_X_sub_C_eq_card _
+  have hR0 : (Multiset.map (fun a : ℝ => X - C a) q.roots).prod ≠ 0 := by
     intro h0
-    rw [hR] at h0
-    rw [hR, h0] at hRdeg
-    simp at hRdeg
-    exact hq (by rw [hg, hR, h0, zero_mul])
+    exact hq (by rw [hg, h0, zero_mul])
   have hg0 : g ≠ 0 := by
     intro h0
     exact hq (by rw [hg, h0, mul_zero])
-  have hdeg : q.natDegree = R.natDegree + g.natDegree := by
-    rw [hg, natDegree_mul hR0 hg0]
+  have hdeg : q.natDegree
+      = (Multiset.map (fun a : ℝ => X - C a) q.roots).prod.natDegree + g.natDegree := by
+    conv_lhs => rw [hg]
+    exact natDegree_mul hR0 hg0
   have hgdeg : g.natDegree = 1 := by omega
-  have hgsplit : g.Splits := Polynomial.splits_of_natDegree_le_one (by omega)
+  have hgsplit : g.Splits := Polynomial.Splits.of_natDegree_le_one (by omega)
   have hgroots : g.roots.card = 1 := by
     rw [splits_iff_card_roots] at hgsplit
     omega
   obtain ⟨r, hr⟩ : ∃ r, r ∈ g.roots := by
     rw [← Multiset.card_pos_iff_exists_mem, hgroots]
     norm_num
-  have hgr : (X - C r : ℝ[X]) ∣ g := by
-    rw [dvd_iff_isRoot]
-    exact (mem_roots hg0).1 hr |>.2
-  set c : ℕ := Multiset.count r q.roots with hc
-  have hcR : ((X - C r) ^ c : ℝ[X]) ∣ R := by
-    have hle : Multiset.replicate c r ≤ q.roots := Multiset.le_count_iff_replicate_le.1 (le_refl c)
-    have hmap : Multiset.map (fun a : ℝ => X - C a) (Multiset.replicate c r)
-        = Multiset.replicate c (X - C r : ℝ[X]) := Multiset.map_replicate _ _ _
-    have := Multiset.prod_dvd_prod_of_le (Multiset.map_le_map hle (f := fun a : ℝ => X - C a))
-    rw [hmap, Multiset.prod_replicate] at this
-    exact this
-  have hcq : ((X - C r) ^ (c + 1) : ℝ[X]) ∣ q := by
-    rw [hg, pow_succ]
-    exact mul_dvd_mul hcR hgr
-  have hle : c + 1 ≤ rootMultiplicity r q := (le_rootMultiplicity_iff hq).2 hcq
-  rw [← count_roots] at hle
+  have hgr : (X - C r : ℝ[X]) ∣ g := dvd_iff_isRoot.2 ((mem_roots hg0).1 hr)
+  have hcR : ((X - C r) ^ (Multiset.count r q.roots) : ℝ[X])
+      ∣ (Multiset.map (fun a : ℝ => X - C a) q.roots).prod := by
+    have hle : Multiset.replicate (Multiset.count r q.roots) r ≤ q.roots :=
+      Multiset.le_count_iff_replicate_le.1 (le_refl _)
+    have hmap : Multiset.map (fun a : ℝ => X - C a)
+        (Multiset.replicate (Multiset.count r q.roots) r)
+        = Multiset.replicate (Multiset.count r q.roots) (X - C r : ℝ[X]) :=
+      Multiset.map_replicate _ _ _
+    have hdd := Multiset.prod_dvd_prod_of_le
+      (Multiset.map_le_map hle (f := fun a : ℝ => X - C a))
+    rw [hmap, Multiset.prod_replicate] at hdd
+    exact hdd
+  have hcq : ((X - C r) ^ (Multiset.count r q.roots + 1) : ℝ[X]) ∣ q := by
+    have hmm := mul_dvd_mul hcR hgr
+    rw [← pow_succ] at hmm
+    nth_rewrite 2 [hg]
+    exact hmm
+  have hle2 : Multiset.count r q.roots + 1 ≤ rootMultiplicity r q :=
+    (le_rootMultiplicity_iff hq).2 hcq
+  rw [← count_roots] at hle2
   omega
 
 /-! ### The main theorem -/
 
-theorem laguerreShift_ne_zero {β : ℝ} {p : ℝ[X]} (hp : p ≠ 0) (hn : 1 ≤ p.natDegree) :
+theorem laguerreShift_ne_zero {β : ℝ} {p : ℝ[X]} (hn : 1 ≤ p.natDegree) :
     laguerreShift β p ≠ 0 := by
   intro h0
   have hderiv : derivative p = C β * p := by
@@ -155,6 +157,90 @@ theorem laguerreShift_ne_zero {β : ℝ} {p : ℝ[X]} (hp : p ≠ 0) (hn : 1 ≤
       rw [natDegree_C_mul (by simpa using hβ)]
     rw [hderiv, this] at hdlt
     omega
+
+
+/-- The distinct roots of `p` interleave with the roots of the shift. -/
+theorem card_roots_toFinset_le_laguerreShift_sdiff_succ (β : ℝ) (p : ℝ[X]) :
+    p.roots.toFinset.card
+      ≤ ((laguerreShift β p).roots.toFinset \ p.roots.toFinset).card + 1 := by
+  classical
+  rcases eq_or_ne (laguerreShift β p) 0 with hq | hq
+  · have hdeg : p.natDegree = 0 := by
+      by_contra h
+      exact laguerreShift_ne_zero (β := β) (p := p) (by omega) hq
+    have h1 : p.roots.toFinset.card ≤ Multiset.card p.roots := Multiset.toFinset_card_le _
+    have h2 := p.card_roots'
+    omega
+  have hp : p ≠ 0 := by
+    intro h0
+    exact hq (by rw [h0]; simp [laguerreShift])
+  refine Finset.card_le_sdiff_of_interleaved fun x hx y hy hxy _ => ?_
+  rw [Multiset.mem_toFinset, mem_roots hp] at hx hy
+  obtain ⟨z, hz1, hz2⟩ := exists_root_laguerreShift_of_lt (β := β) hxy hx hy
+  refine ⟨z, ?_, hz1.1, hz1.2⟩
+  rw [Multiset.mem_toFinset, mem_roots hq]
+  exact hz2
+
+/-- Counted with multiplicity, the shift loses at most one root. -/
+theorem card_roots_le_laguerreShift (β : ℝ) (p : ℝ[X]) :
+    Multiset.card p.roots ≤ Multiset.card (laguerreShift β p).roots + 1 := by
+  classical
+  rcases eq_or_ne (laguerreShift β p) 0 with hq | hq
+  · have hdeg : p.natDegree = 0 := by
+      by_contra h
+      exact laguerreShift_ne_zero (β := β) (p := p) (by omega) hq
+    have h2 := p.card_roots'
+    omega
+  have hp : p ≠ 0 := by
+    intro h0
+    exact hq (by rw [h0]; simp [laguerreShift])
+  calc
+    Multiset.card p.roots = ∑ x ∈ p.roots.toFinset, p.roots.count x :=
+      (Multiset.toFinset_sum_count_eq _).symm
+    _ = ∑ x ∈ p.roots.toFinset, (p.roots.count x - 1 + 1) :=
+      (Eq.symm <| Finset.sum_congr rfl fun _ hx => tsub_add_cancel_of_le <|
+        Nat.succ_le_iff.2 <| Multiset.count_pos.2 <| Multiset.mem_toFinset.1 hx)
+    _ = (∑ x ∈ p.roots.toFinset, (p.rootMultiplicity x - 1)) + p.roots.toFinset.card := by
+      simp only [Finset.sum_add_distrib, Finset.card_eq_sum_ones, count_roots]
+    _ ≤ (∑ x ∈ p.roots.toFinset, (laguerreShift β p).rootMultiplicity x) +
+          (((laguerreShift β p).roots.toFinset \ p.roots.toFinset).card + 1) :=
+      add_le_add
+        (Finset.sum_le_sum fun _ _ => le_rootMultiplicity_laguerreShift hp hq _)
+        (card_roots_toFinset_le_laguerreShift_sdiff_succ β p)
+    _ ≤ (∑ x ∈ p.roots.toFinset, (laguerreShift β p).roots.count x) +
+          ((∑ x ∈ (laguerreShift β p).roots.toFinset \ p.roots.toFinset,
+            (laguerreShift β p).roots.count x) + 1) := by
+      simp only [← count_roots, Finset.card_eq_sum_ones]
+      gcongr with x hx
+      rw [Nat.succ_le_iff, Multiset.count_pos, ← Multiset.mem_toFinset]
+      exact (Finset.mem_sdiff.1 hx).1
+    _ = Multiset.card (laguerreShift β p).roots + 1 := by
+      rw [← add_assoc, ← Finset.sum_union Finset.disjoint_sdiff,
+        Finset.union_sdiff_self_eq_union, ← Multiset.toFinset_sum_count_eq,
+        ← Finset.sum_subset Finset.subset_union_right]
+      intro x _ hx₂
+      simpa only [Multiset.mem_toFinset, Multiset.count_eq_zero] using hx₂
+
+theorem natDegree_laguerreShift_le (β : ℝ) (p : ℝ[X]) :
+    (laguerreShift β p).natDegree ≤ p.natDegree := by
+  refine le_trans (natDegree_sub_le _ _) (max_le ?_ ?_)
+  · exact le_trans (natDegree_derivative_le p) (Nat.sub_le _ _)
+  · exact natDegree_C_mul_le β p
+
+/-- **The Laguerre shift preserves real-rootedness.** -/
+theorem splits_laguerreShift {p : ℝ[X]} (hp : p.Splits) (β : ℝ) :
+    (laguerreShift β p).Splits := by
+  classical
+  rcases eq_or_ne (laguerreShift β p) 0 with hq | hq
+  · rw [hq]
+    exact Polynomial.Splits.of_natDegree_le_one (by simp)
+  rw [splits_iff_card_roots] at hp ⊢
+  have hupper : Multiset.card (laguerreShift β p).roots ≤ (laguerreShift β p).natDegree :=
+    card_roots' _
+  have hlower := card_roots_le_laguerreShift β p
+  have hdq := natDegree_laguerreShift_le β p
+  have hne := natDegree_ne_card_roots_succ hq
+  omega
 
 end
 
