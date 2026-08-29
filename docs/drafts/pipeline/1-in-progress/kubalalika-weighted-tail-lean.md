@@ -785,3 +785,66 @@ The `m`-range is `[T/L², T(1+ε)]` and, after the swap, for fixed `r` it starts
 - `KP4` the `r`-sum through `sum_rpow_neg_subcritical_le` / `sum_rpow_neg_tail_le`
   (`Σ r^{-5/6}`, `Σ r^{-3/4}`, `Σ r^{-1}`, `Σ r^{-3/2}`);
 - `KP5` the card's `(5)`: `‖E_Λ(T)‖ = O(T^{53/54}(log T)^C)`.
+
+## The card is closed (2026-08-29)
+
+All five remaining layers landed.  `E_Λ(T) = O(T^{15/16}(log T)^6)`, hence the card's `(5)` with
+room to spare.  Seven new modules; every declaration axiom-clean.
+
+### KP1 — the envelope as explicit monomials (`Sieve/KubalalikaPowerEnvelope.lean`)
+
+Constants come only from `π ≤ 4` and `π > 3`:
+```
+sharpThird₁       ≤ 87552 A^{1/3}X^{1/6}          C₁ = sharpThird₁ + √(fibreKernel·sharpThird₂)
+sharpThird₂       ≤ 218880 A^{7/6}X^{-1/6}           ≤ 10^5 A^{1/3}X^{1/6}
+fibreKernel       ≤ 250 X^{1/2}A^{-1/2}           fibreTail ≤ 748 B^{3/2}X^{-1/2}
+RootEnv ≤ B V^{-1/2} + 64 X^{1/4}B^{3/4}U^{-1/2} + 9 B^{3/2}X^{-1/2}√(1+log B) + 2 B U^{-1/2}
+```
+Taking the dyadic parameter `L` equal to the block endpoint `B` collapses the whole envelope to
+```
+‖block‖ ≤ D (1+log B)^4 (A^{1/3}X^{1/6}√(UV) + B^{3/2}X^{-1/2} + B V^{-1/2}
+             + X^{1/4}B^{3/4}U^{-1/2} + B U^{-1/2}).
+```
+The mechanism that makes this work: `√(1+log B) ≤ 1+log B`, `1+(1+log B)^3 ≤ 2(1+log B)^3` and
+`Nat.log 2 B + 1 ≤ 2(1+log B)` put every logarithm into ONE power of `1+log B`, so the four
+separate polylogarithmic sources never have to be tracked individually.
+
+### KP2 — the second-derivative fibre condition (`Sieve/KubalalikaFibreCondition.lean`)
+
+This was the one hypothesis that is genuinely FALSE without using the crossover assumption: for
+`b` near `UV = T^{5/8}` the requirement `T r b² ≤ 36π A³` fails by logarithms.  The resolution is
+that the fibre condition is an IMPLICATION whose premise `fibreKernel ≤ C₁ b^{-1/2}` already caps
+`b ≤ 1600·36π·A^{5/3}(Tr)^{-2/3}`.  Substituting,
+```
+X b² ≤ (1600·36π)² A^{10/3} X^{-1/3},
+```
+which is below `36π A³` as soon as `(1600²·36π)³ A ≤ X`.  Written in the cube roots `p = A^{1/3}`,
+`q = X^{1/3}` every step is polynomial: the hypothesis becomes `6.25·10^6 q²β ≤ 10^{10} c p⁵`, the
+goal `q³β² ≤ c p⁹`, and the separation `10^9 p ≤ q` closes it.  `10^{27} A ≤ T r` suffices, and it
+holds because `A ≤ 4T` while `r ≥ T^{1/4}`.
+
+### KP3 — the dyadic assembly (`Sieve/KubalalikaDyadic.lean`)
+
+The `m`-range is a filter, not an interval, but `filter_shiftCeil_eq_Ico` turns it into
+`[A₀, mHi+1)`.  The truncated endpoints `c j = min b (a·2^j)` give a partition with `c 0 = a`,
+`c R = b` at `R = ⌊log₂ b⌋+1`, and every block satisfies `B ≤ 2A` — including the truncated last
+one, where both endpoints equal `b`.
+
+### KP4 — the harmonic total (`Sieve/KubalalikaRSum.lean`)
+
+```
+Σ_{T^{1/4} ≤ r ≤ 2T^{3/4}} scalePower(T,r)/r ≤ 30 T^{15/16}(1+log T),
+```
+from `Σ r^{-5/6} ≤ 6 rHi^{1/6}+1`, `Σ r^{-3/4} ≤ 4 rHi^{1/4}+1`, `Σ r^{-3/2} ≤ 3 rLo^{-1/2}` and
+two harmonic sums.  All five totals land at `T^{15/16}` — this is precisely what the separate
+choice of `U` and `V` buys.
+
+### KP5 — the tail (`Sieve/KubalalikaTailBound.lean`)
+
+`KubalalikaLarge T` is three inequalities: `10^{112} ≤ T`, `32(1+log T)² ≤ T^{1/4}` and
+`100(1+log T)^8 ≤ T^{3/8}`.  From them alone `KubalalikaLarge.block_conditions` produces all five
+scalar hypotheses (`U < A`, `UV ≤ A`, `8r ≤ A`, the curvature bound, `10^{27}A ≤ Tr`) for every
+dyadic block and every shift in range.  The final chain is
+```
+‖E_Λ(T)‖ ≤ Σ_r (G r + log mHi)/r ≤ 116640 D₀ T^{15/16}(1+log T)^6 + 6 T^{15/16}(1+log T)^6.
+```

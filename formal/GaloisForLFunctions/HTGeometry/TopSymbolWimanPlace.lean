@@ -33,8 +33,9 @@ theorem exists_radius_norm_topSymbol_le
     (hdeg : ∀ p ∈ S, p.1 + p.2 ≤ d)
     (hrel : ∀ w : ℂ,
       ∑ p ∈ S, (A p).eval w * (coeffFun a w) ^ p.1 * (deriv (coeffFun a) w) ^ p.2 = 0)
-    {η ε : ℝ} (hη : 0 < η) (hε : 0 < ε) (R : ℝ) :
-    ∃ y, R ≤ y ∧ ∃ z : ℂ, ‖z‖ = Real.exp y ∧
+    {η ε : ℝ} (hη : 0 < η) (hε : 0 < ε) :
+    ∃ M : ℝ, ∀ R : ℝ, ∃ y, R ≤ y ∧
+      y ≤ max R M + Nevanlinna.borelWindow (1 / 4) + 1 ∧ ∃ z : ℂ, ‖z‖ = Real.exp y ∧
       ‖∑ p ∈ S.filter (fun p => p.1 + p.2 = d),
           (A p).eval z * (deriv (coeffFun a) z / coeffFun a z) ^ p.2‖ ≤ η ∧
       ‖z * deriv (coeffFun a) z / coeffFun a z - (centralIndex a (Real.exp y) : ℂ)‖
@@ -48,8 +49,10 @@ theorem exists_radius_norm_topSymbol_le
   have hKpos : (0 : ℝ) < K := by linarith
   set n : ℕ := D + d with hndef
   have hε2 : (0 : ℝ) < η / (K * (1 + ε) ^ n) := by positivity
-  obtain ⟨y, hy, z, hz, hdom, hpow, hbound⟩ :=
-    exists_radius_dominates_and_defect_le_eps ha hn₀ htrans hε hε2 n n (K / η + 1) (max R 0)
+  obtain ⟨M, hM⟩ :=
+    exists_radius_dominates_and_defect_le_eps ha hn₀ htrans hε hε2 n n (K / η + 1)
+  refine ⟨max M 0, fun R => ?_⟩
+  obtain ⟨y, hy, hyM, z, hz, hdom, hpow, hbound⟩ := hM (max R 0)
   have hy0 : (0 : ℝ) ≤ y := le_trans (le_max_right R 0) hy
   have hz1 : (1 : ℝ) ≤ ‖z‖ := by
     rw [hz]
@@ -162,7 +165,11 @@ theorem exists_radius_norm_topSymbol_le
           rw [hsplitn]
           ring
   -- assemble
-  refine ⟨y, le_trans (le_max_left R 0) hy, z, hz, ?_, hbound⟩
+  refine ⟨y, le_trans (le_max_left R 0) hy, ?_, z, hz, ?_, hbound⟩
+  · have heq : max (max R 0) M = max R (max M 0) := by
+      rw [max_assoc, max_comm (0 : ℝ) M]
+    rw [heq] at hyM
+    exact hyM
   have hmain := norm_topSymbol_le (A := fun p => (A p).eval z) (F := coeffFun a z)
     (W := deriv (coeffFun a) z) (d := d) hfne hf1 hdeg (hrel z)
   refine le_trans hmain ?_

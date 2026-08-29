@@ -64,7 +64,7 @@ theorem orderBesselRiccatiPolynomial_no_solution
       (C c * S * C k * q.comp S).natDegree =
           (C (c * k) * (S * q.comp S)).natDegree := by
             rw [map_mul]
-            ring
+            ring_nf
       _ = (S * q.comp S).natDegree :=
         Polynomial.natDegree_C_mul (mul_ne_zero hc hk0)
       _ = S.natDegree + (q.comp S).natDegree :=
@@ -84,7 +84,7 @@ theorem orderBesselRiccatiPolynomial_no_solution
         (C k * (q.comp S).comp S * C k).natDegree =
             (C (k * k) * (q.comp S).comp S).natDegree := by
               rw [map_mul]
-              ring
+              ring_nf
         _ = ((q.comp S).comp S).natDegree :=
           Polynomial.natDegree_C_mul (mul_ne_zero hk0 hk0)
         _ = q.natDegree := by

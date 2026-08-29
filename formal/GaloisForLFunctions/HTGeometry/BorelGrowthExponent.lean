@@ -141,3 +141,47 @@ theorem exists_ge_log_lt_two_mul_rpow (hmono : Monotone T) (hT1 : ∀ r, 1 ≤ T
 end
 
 end GaloisForLFunctions.Nevanlinna
+
+namespace GaloisForLFunctions.Nevanlinna
+
+open MeasureTheory Set
+
+variable {T : ℝ → ℝ} {α : ℝ}
+
+/-- The window length inside which the Borel growth lemma at exponent `α` always finds a good
+radius: one more than the measure bound for the exceptional set. -/
+noncomputable def borelWindow (α : ℝ) : ℝ :=
+  ((1 - ENNReal.ofReal (((2 : ℝ) ^ α)⁻¹))⁻¹).toReal + 1
+
+theorem one_le_borelWindow (α : ℝ) : 1 ≤ borelWindow α := by
+  have h := ENNReal.toReal_nonneg (a := (1 - ENNReal.ofReal (((2 : ℝ) ^ α)⁻¹))⁻¹)
+  rw [borelWindow]
+  linarith
+
+/-- **A Borel-good radius inside every window of length `borelWindow α`.**  The exceptional set has
+measure at most `borelWindow α - 1`, so it cannot cover a window of that length. -/
+theorem exists_mem_Icc_lt_two_mul_rpow_window (hmono : Monotone T) (hT1 : ∀ r, 1 ≤ T r)
+    (hα : 0 < α) (R : ℝ) :
+    ∃ x ∈ Set.Icc R (R + borelWindow α), T (x + (T x) ^ (-α)) < 2 * T x := by
+  by_contra hcon
+  push_neg at hcon
+  have hbad : Set.Icc R (R + borelWindow α)
+      ⊆ {r : ℝ | R ≤ r ∧ 2 * T r ≤ T (r + (T r) ^ (-α))} := by
+    intro r hr
+    exact ⟨hr.1, hcon r hr⟩
+  have hvol := measure_mono (μ := volume) hbad
+  rw [Real.volume_Icc] at hvol
+  have hle := le_trans hvol (borel_growth_monotone_rpow hmono hT1 hα R)
+  have hc1 : ((2 : ℝ) ^ α)⁻¹ < 1 := dyadic_ratio_lt_one hα
+  have hlt : ENNReal.ofReal (((2 : ℝ) ^ α)⁻¹) < 1 := by
+    rw [show (1 : ℝ≥0∞) = ENNReal.ofReal 1 by simp]
+    exact ENNReal.ofReal_lt_ofReal_iff (by norm_num) |>.mpr hc1
+  have hEne : (1 - ENNReal.ofReal (((2 : ℝ) ^ α)⁻¹))⁻¹ ≠ ⊤ :=
+    ENNReal.inv_ne_top.mpr (ne_of_gt (tsub_pos_iff_lt.mpr hlt))
+  have hsub : R + borelWindow α - R = borelWindow α := by ring
+  rw [hsub, ← ENNReal.ofReal_toReal hEne] at hle
+  have hreal := (ENNReal.ofReal_le_ofReal_iff ENNReal.toReal_nonneg).mp hle
+  rw [borelWindow] at hreal
+  linarith
+
+end GaloisForLFunctions.Nevanlinna

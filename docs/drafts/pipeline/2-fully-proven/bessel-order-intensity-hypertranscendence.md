@@ -4296,3 +4296,78 @@ builds, and the two new theorems audit to `[propext, Classical.choice, Quot.soun
 This does not discharge the two remaining producers: sigma-delta torsor/fixed-field descent, and
 ordinary determinant-one density including the finite primitive branch.  Neither is moved into the
 final theorem as a premise.
+
+## Isomonodromy obstruction survives constant-field extension (2026-08-29)
+
+`BesselOrderIsomonodromyBaseField.lean` carries the full degree-at-infinity proof over `F(X)` for
+every characteristic-zero field `F`, including the scalar connection equations and the companion
+matrix form:
+
+```text
+FieldShift.besselOrder_no_rational_delta_structure
+FieldShift.besselOrder_no_matrix_delta_structure
+FieldShift.matrixDeriv_besselOrderCompanion
+FieldShift.besselOrder_no_matrix_isomonodromy
+```
+
+The Bessel coefficient and its degree-one law are constructed over `F`; no embedding into `ℂ` or
+analytic argument is used.  With the total coordinate derivation on `F(X)`, the last theorem is the
+literal isomonodromy equation output by the Galois dichotomy.  Thus extending the constants to the
+corpus's differential closure cannot create either a rational Riccati solution or a rational
+Bessel connection.  This discharges both base-field obstructions in the exact field where the
+parameterized Galois dichotomy runs.
+Direct check, targeted build, and axiom audit pass with only `[propext, Classical.choice,
+Quot.sound]`; module is umbrella-wired.
+
+Remaining producers are unchanged: construct sigma-delta torsor/fixed-field descent for the
+concrete PPV quotient, and prove ordinary determinant-one density including exclusion of the finite
+primitive branch.  Neither is admitted as a premise.
+
+## Concrete differential-closure premises discharged (2026-08-29)
+
+`BesselOrderDifferentialClosureObstruction.lean` now instantiates the generic constant-field
+results in the corpus's actual differential closure of `ℂ`, with the zero derivation on the complex
+constant field and physical slope `2 / s`.  It proves, as closed universal statements for every
+`s > 0`:
+
+```text
+modifiedBesselOrder_no_riccati_in_differentialClosure
+modifiedBesselOrder_no_isomonodromy_in_differentialClosure
+```
+
+The module proves internally that the closure is characteristic zero and differentially closed,
+that the embedded physical slope is nonzero, and that its derivation vanishes.  None of those facts
+is retained as a theorem premise.  Source check, targeted build, and all new axiom audits pass with
+only `[propext, Classical.choice, Quot.sound]`; the module is umbrella-wired.
+
+This removes the final ambient-field and differential-constant hypotheses from the concrete
+obstruction boundary.  It does not manufacture the two independent missing producers:
+sigma-delta torsor/fixed-field descent for the constructed PPV quotient, and determinant-one
+Zariski density including the finite primitive branch.  Both still must be proved before promotion.
+
+## Imprimitivity obstruction survives constant-field extension (2026-08-29)
+
+`BesselOrderImprimitivityBaseField.lean` generalizes the global discriminant/orbit proof from
+`ℂ(X)` to `F(X)` for every algebraically closed characteristic-zero field `F`:
+
+```text
+FieldShift.orderBessel_no_imprimitive_pair
+```
+
+The proof uses the generic rational-shift Riccati obstruction, the even-valuation square criterion,
+and degree at infinity.  Its import surface is rational-shift algebra only; it does not pull in the
+analytic Bessel stack.  `BesselOrderDifferentialClosureObstruction.lean` instantiates it as the
+closed theorem
+
+```text
+modifiedBesselOrder_no_imprimitive_pair_in_differentialClosure
+```
+
+for every physical slope `2 / s`, proving algebraic closedness of the differential closure
+internally.  No constant-field descent or algebraic-closedness hypothesis remains at the concrete
+boundary.  Source checks, targeted builds, and both axiom audits pass with only `[propext,
+Classical.choice, Quot.sound]`.
+
+This closes the extension-stable reducible and imprimitive branches.  The density residue is now
+the finite primitive branch and the ordinary-PV finite-orbit-to-algebraicity bridge, together with
+the independent sigma-delta torsor/fixed-field descent needed by the parameterized endgame.

@@ -68,8 +68,9 @@ theorem exists_radius_defect_le_eps
     (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0)
     (htrans : ∀ M : ℕ, ∃ n, M ≤ n ∧ a n ≠ 0)
     {α β : ℝ} (hα : 0 < α) (hαβ : α < β / 2) (hβ23 : β < 2 / 3) (hlow : 1 + α < 2 * β)
-    {ε ε₂ : ℝ} (hε : 0 < ε) (hε₂ : 0 < ε₂) (dpow : ℕ) (R : ℝ) :
-    ∃ y, R ≤ y ∧ ∃ z : ℂ, ‖z‖ = Real.exp y ∧
+    {ε ε₂ : ℝ} (hε : 0 < ε) (hε₂ : 0 < ε₂) (dpow : ℕ) :
+    ∃ M : ℝ, ∀ R : ℝ, ∃ y, R ≤ y ∧
+      y ≤ max R M + Nevanlinna.borelWindow α + 1 ∧ ∃ z : ℂ, ‖z‖ = Real.exp y ∧
       maxTerm a (Real.exp y) ≤ ‖coeffFun a z‖ ∧
       ((centralIndex a (Real.exp y) : ℝ)) ^ dpow ≤ ε₂ * ‖coeffFun a z‖ ∧
       ‖z * deriv (coeffFun a) z / coeffFun a z - (centralIndex a (Real.exp y) : ℂ)‖
@@ -91,6 +92,7 @@ theorem exists_radius_defect_le_eps
     tendsto_natCast_atTop_atTop.comp ((tendsto_centralIndex_atTop ha htrans).comp
       Real.tendsto_exp_atTop)
   obtain ⟨R'', hR''⟩ := eventually_atTop.mp (hdiv.eventually_ge_atTop T₀)
+  refine ⟨max R'' 0, fun R => ?_⟩
   -- the scale rule
   have hpos : ∀ t : ℝ, 1 ≤ t → 0 < t ^ β := fun t ht => Real.rpow_pos_of_pos (by linarith) β
   have hle2 : ∀ t : ℝ, 1 ≤ t → t ^ β ≤ 2 * t := by
@@ -104,15 +106,16 @@ theorem exists_radius_defect_le_eps
     rw [Real.rpow_zero] at h0
     linarith
   obtain ⟨x, d, s, H, L, h, N, hxR', hxd, hH, hs, hN0, hsdef, hHdef, hN2, hN4, hLdef, hhdef,
-      hdouble, y, hy, z, hz, hfz, hbound⟩ :=
+      hdouble, hxW, hdH, y, hy, z, hz, hfz, hbound⟩ :=
     exists_radius_point_wiman_valiron_selected ha hn₀ hα (fun t : ℝ => t ^ β) hpos hle2 hone
-      (max (max R R'') 0)
+      (max R (max R'' 0))
   subst hsdef
   -- the scale of the selected radius
   have hν0 : (0 : ℝ) ≤ ((centralIndex a (Real.exp x) : ℕ) : ℝ) := Nat.cast_nonneg _
   have hxR'' : R'' ≤ x :=
-    le_trans (le_max_right R R'') (le_trans (le_max_left (max R R'') 0) hxR')
-  have hx0 : (0 : ℝ) ≤ x := le_trans (le_max_right (max R R'') 0) hxR'
+    le_trans (le_trans (le_max_left R'' 0) (le_max_right R (max R'' 0))) hxR'
+  have hx0 : (0 : ℝ) ≤ x :=
+    le_trans (le_trans (le_max_right R'' 0) (le_max_right R (max R'' 0))) hxR'
   have hT : T₀ ≤ ((centralIndex a (Real.exp x) : ℕ) : ℝ) := hR'' x hxR''
   have ht2' : T₀ ≤ ((centralIndex a (Real.exp x) : ℝ)) + 1 := by linarith
   obtain ⟨htail', hsmall', hpow', ht2⟩ := hT₀ _ ht2'
@@ -189,10 +192,11 @@ theorem exists_radius_defect_le_eps
         ≤ Real.log (maxTerm a (Real.exp y)) := by linarith
     have hexp := Real.exp_le_exp.mpr hle
     rwa [Real.exp_add, Real.exp_log hc₀, Real.exp_log hμy0] at hexp
-  refine ⟨y, ?_, z, hz, hfz, ?_, ?_⟩
-  · have h2 : R ≤ x :=
-      le_trans (le_max_left R R'') (le_trans (le_max_left (max R R'') 0) hxR')
+  refine ⟨y, ?_, ?_, z, hz, hfz, ?_, ?_⟩
+  · have h2 : R ≤ x := le_trans (le_max_left R (max R'' 0)) hxR'
     have h3 := hy.1
+    linarith
+  · have h4 := hy.2
     linarith
   · -- the power of the central index is beaten by the modulus
     have hνy2 : ((centralIndex a (Real.exp y) : ℝ))
@@ -248,15 +252,15 @@ theorem exists_radius_defect_le_eps
 four, so the estimate holds with no exponent parameters at all. -/
 theorem exists_radius_defect_le_eps_of_transcendental
     (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0)
-    (htrans : ∀ M : ℕ, ∃ n, M ≤ n ∧ a n ≠ 0) {ε ε₂ : ℝ} (hε : 0 < ε) (hε₂ : 0 < ε₂) (dpow : ℕ)
-    (R : ℝ) :
-    ∃ y, R ≤ y ∧ ∃ z : ℂ, ‖z‖ = Real.exp y ∧
+    (htrans : ∀ M : ℕ, ∃ n, M ≤ n ∧ a n ≠ 0) {ε ε₂ : ℝ} (hε : 0 < ε) (hε₂ : 0 < ε₂) (dpow : ℕ) :
+    ∃ M : ℝ, ∀ R : ℝ, ∃ y, R ≤ y ∧
+      y ≤ max R M + Nevanlinna.borelWindow (1 / 4) + 1 ∧ ∃ z : ℂ, ‖z‖ = Real.exp y ∧
       maxTerm a (Real.exp y) ≤ ‖coeffFun a z‖ ∧
       ((centralIndex a (Real.exp y) : ℝ)) ^ dpow ≤ ε₂ * ‖coeffFun a z‖ ∧
       ‖z * deriv (coeffFun a) z / coeffFun a z - (centralIndex a (Real.exp y) : ℂ)‖
         ≤ ε * (centralIndex a (Real.exp y) : ℝ) :=
   exists_radius_defect_le_eps ha hn₀ htrans (α := 1 / 4) (β := 13 / 20)
-    (by norm_num) (by norm_num) (by norm_num) (by norm_num) hε hε₂ dpow R
+    (by norm_num) (by norm_num) (by norm_num) (by norm_num) hε hε₂ dpow
 
 /-- **The Wiman point also dominates every power of the radius.**  Pushing the bound `R` out makes
 the modulus of the function at the selected point exceed any prescribed multiple of any prescribed
@@ -265,18 +269,24 @@ every term of lower total degree. -/
 theorem exists_radius_dominates_and_defect_le_eps
     (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0)
     (htrans : ∀ M : ℕ, ∃ n, M ≤ n ∧ a n ≠ 0) {ε ε₂ : ℝ} (hε : 0 < ε) (hε₂ : 0 < ε₂)
-    (k dpow : ℕ) (C R : ℝ) :
-    ∃ y, R ≤ y ∧ ∃ z : ℂ, ‖z‖ = Real.exp y ∧
+    (k dpow : ℕ) (C : ℝ) :
+    ∃ M : ℝ, ∀ R : ℝ, ∃ y, R ≤ y ∧
+      y ≤ max R M + Nevanlinna.borelWindow (1 / 4) + 1 ∧ ∃ z : ℂ, ‖z‖ = Real.exp y ∧
       C * ‖z‖ ^ k ≤ ‖coeffFun a z‖ ∧
       ((centralIndex a (Real.exp y) : ℝ)) ^ dpow ≤ ε₂ * ‖coeffFun a z‖ ∧
       ‖z * deriv (coeffFun a) z / coeffFun a z - (centralIndex a (Real.exp y) : ℂ)‖
         ≤ ε * (centralIndex a (Real.exp y) : ℝ) := by
   obtain ⟨r₀, hr₀⟩ := eventually_atTop.mp
     ((tendsto_maxTerm_div_pow_atTop ha htrans k).eventually_ge_atTop C)
-  obtain ⟨y, hy, z, hz, hfz, hpow, hbound⟩ :=
-    exists_radius_defect_le_eps_of_transcendental ha hn₀ htrans hε hε₂ dpow
-      (max R (Real.log (max r₀ 1)))
-  refine ⟨y, le_trans (le_max_left _ _) hy, z, hz, ?_, hpow, hbound⟩
+  obtain ⟨M, hM⟩ := exists_radius_defect_le_eps_of_transcendental ha hn₀ htrans hε hε₂ dpow
+  refine ⟨max M (Real.log (max r₀ 1)), fun R => ?_⟩
+  obtain ⟨y, hy, hyM, z, hz, hfz, hpow, hbound⟩ := hM (max R (Real.log (max r₀ 1)))
+  refine ⟨y, le_trans (le_max_left _ _) hy, ?_, z, hz, ?_, hpow, hbound⟩
+  · have heq : max (max R (Real.log (max r₀ 1))) M
+        = max R (max M (Real.log (max r₀ 1))) := by
+      rw [max_assoc, max_comm (Real.log (max r₀ 1)) M]
+    rw [heq] at hyM
+    exact hyM
   have hyge : Real.log (max r₀ 1) ≤ y := le_trans (le_max_right _ _) hy
   have hmax1 : (0 : ℝ) < max r₀ 1 := lt_of_lt_of_le one_pos (le_max_right _ _)
   have hexp : max r₀ 1 ≤ Real.exp y := by

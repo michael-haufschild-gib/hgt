@@ -1,4 +1,6 @@
 import GaloisForLFunctions.HTGeometry.BesselOrderRiccatiBaseField
+import GaloisForLFunctions.HTGeometry.DifferentialJacobiFormula
+import GaloisForLFunctions.HTGeometry.RatFuncShiftDerivationCommute
 import Mathlib.Data.Matrix.Basic
 
 /-!
@@ -212,6 +214,35 @@ theorem besselOrder_no_matrix_delta_structure {c : F} (hc : c ≠ 0)
   simp only [map_add, map_mul] at h3 h4
   exact besselOrder_no_rational_delta_structure hc (B 0 0) (B 0 1)
     (by linear_combination h3) (by linear_combination h4)
+
+variable [Differential F]
+
+/-- The total derivative of the Bessel companion, when its slope is a differential constant. -/
+theorem matrixDeriv_besselOrderCompanion {c : F} (hc : Differential.deriv c = 0) :
+    letI := coordinateTotalDifferential (K := F)
+    matrixDeriv (besselOrderCompanion c) = besselOrderCompanionDeriv c := by
+  letI := coordinateTotalDifferential (K := F)
+  have hd : Differential.deriv (orderShiftCoeff c) = algebraMap F (RatFunc F) c := by
+    change coordinateTotalDerivation (orderShiftCoeff c) = algebraMap F (RatFunc F) c
+    rw [orderShiftCoeff, coordinateTotalDerivation_algebraMap, polyTotalDeriv_apply]
+    simp [Polynomial.derivative_mul, coeffDeriv_mul, coeffDeriv_add, coeffDeriv_X,
+      coeffDeriv_C, hc]
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [matrixDeriv, besselOrderCompanion, besselOrderCompanionDeriv, hd]
+
+/-- No parameterized connection is created by extending the constant field. -/
+theorem besselOrder_no_matrix_isomonodromy {c : F} (hc : c ≠ 0)
+    (hcδ : Differential.deriv c = 0) :
+    letI := coordinateTotalDifferential (K := F)
+    ¬ ∃ B : Matrix (Fin 2) (Fin 2) (RatFunc F),
+      B.map ratShift * besselOrderCompanion c =
+        matrixDeriv (besselOrderCompanion c) + besselOrderCompanion c * B := by
+  letI := coordinateTotalDifferential (K := F)
+  rintro ⟨B, hB⟩
+  apply besselOrder_no_matrix_delta_structure hc B
+  rw [← matrixDeriv_besselOrderCompanion hcδ, hB]
+  abel
 
 end
 

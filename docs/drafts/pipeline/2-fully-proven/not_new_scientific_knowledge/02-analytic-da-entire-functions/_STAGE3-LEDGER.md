@@ -15,7 +15,7 @@ Goal: unconditional Lean formalization of every card in this folder, then promot
 | 6 | exponential-tower-exact-differential-order | both halves closed | **DONE → 3-formalized** (2026-08-29) |
 | 7 | first-order-meromorphic-compression-matching | Steinmetz + 3-field factorization | TODO |
 | 8 | entire-heat-multiplicative-da-order-three-floor | Valiron–Zimogljad–Strelitz | TODO |
-| 9 | drifting-periodic-primitive-ramification-exclusion | reduction DONE (`DriftPeriodicRamification`); needs I5 + I4 | PARTIAL |
+| 9 | drifting-periodic-primitive-ramification-exclusion | closed with `card_totallyRamified_le_four` | **DONE → 3-formalized** (2026-08-29) |
 | 10 | entire-composition-hypertranscendence-or-law | Steinmetz reduction / Huang–Ng Thm 3 | TODO |
 | 11 | first-order-composition-two-defect-decomposition | Clunie + trdeg observability | TODO |
 | 12 | autonomous-cap-derivative-shadow-law | Clunie + trdeg observability | TODO |
@@ -50,7 +50,7 @@ Goal: unconditional Lean formalization of every card in this folder, then promot
 |---|---|---|
 | I1 | Gol'dberg: an entire solution of a first-order ADE has finite order | 3, 14 |
 | ~~I2~~ | ~~Hadamard: zero-free entire of finite order is `exp P`~~ — **already owned**: `HTGeometry.FiniteOrderHadamard.exists_polynomial_exp_of_ne_zero_of_growth` | 3 |
-| I3 | Clunie composition growth `T(r, f∘g)/T(r,g) → ∞` | 11, 12, 13, 14 |
+| ~~I3~~ | **CLOSED (2026-08-29)** — `HTGeometry.ClunieCompositionGrowth.exists_clunie_composition_growth` and `not_eventually_characteristic_comp_le` | 11, 12, 13, 14 |
 | I4 | Briot–Bouquet classification of autonomous first-order meromorphic solutions | 14, 15 |
 | ~~I5~~ | **CLOSED (2026-08-29)** — Nevanlinna ramification: `HTGeometry.NevanlinnaRamification.card_totallyRamified_le_four` gives `q ≤ 4` for an entire function, which is all card 9 needs | 9 |
 | ~~I11~~ | **CLOSED (2026-08-29)** — the general logarithmic-derivative lemma `m(r,f'/f) = O(log⁺T(R,f) + log(1/(R−r)) + log R)` — the single input the corpus's `SecondMainTheoremChain` still needs, and the common prerequisite of I1, I3, I5, I6, I7 | 3, 7, 8, 9, 10, 11, 12, 13, 14, 15 |
@@ -556,3 +556,69 @@ extra assumption but a consequence of the drift, by an argument that needs **no 
   `T(r, cz) = O(log r)` give `T(r,W) ≥ c·r − O(log r)`, hence both growth hypotheses.
 
 That periodic-zero counting bound is the last piece before card 9 promotes.
+
+## The Nevanlinna stack after card 9 (2026-08-29)
+
+Card 9 is promoted.  The build left behind a general Nevanlinna layer that the remaining cards can
+use directly; every item is unconditional and axiom-clean.
+
+| Statement | Lean name | Module |
+|---|---|---|
+| `log⁺‖f w‖ ≤ (R+r)/(R−r)·(2T(R,f)+K)` for entire `f`, `‖w‖ ≤ r < R` | `posLog_norm_le_characteristic` | `MaxModulusCharacteristicBound` |
+| Cauchy estimate along a *sequence* of radii | `iteratedDeriv_eq_zero_of_frequently_growth` | idem |
+| `T(r,f) = O(log r)` along some sequence ⟹ `f` is a polynomial | `exists_polynomial_of_frequently_characteristic_le_log` | idem |
+| **not a polynomial ⟹ `T(r,f)/log r → ∞`** | `tendsto_characteristic_div_log_atTop` | idem |
+| the two Borel growth hypotheses from transcendence alone | `charMajorant_growth_of_not_polynomial` | idem |
+| the SMT error term is `o(T)` along a sequence of good radii | `exists_good_radii_error_negligible` | `NevanlinnaErrorNegligible` |
+| finitely many zeros ⟹ `N(r,0,f) ≤ M log r + C` | `exists_logCounting_le_of_finite_zeros` | `FiniteZeroCounting` |
+| **classical SMT** `(q−2)T(r,f) ≤ ∑ N(r,a_j,f) + S(r,f) + C` | `exists_sub_two_characteristic_le_sum_logCounting` | `ValuePreimageInfinite` |
+| **transcendental entire ⟹ some value has infinitely many preimages** | `exists_infinite_preimage_of_not_polynomial` | idem |
+| lattice of zeros ⟹ linear characteristic growth | `logCounting_zero_ge_of_lattice_zeros`, `exists_characteristic_ge_of_lattice_zeros` | `LatticeZeroCounting` |
+
+The reverse maximum-modulus bound was the missing keystone; the corpus already owned
+`NevanlinnaTranslationBoundary.posLog_norm_le_poissonBoundary_add_poleGreen`, whose pole term
+vanishes for entire functions, and `PoissonJensen.circleAverage_abs_log_norm_le_characteristic`.
+
+### Next: I3 (Clunie composition growth)
+
+The route is now fixed and needs no minimum-modulus argument:
+
+1. `f` transcendental ⟹ some value `a` has `n` distinct preimages `b_1, …, b_n`
+   (`exists_infinite_preimage_of_not_polynomial` + `Set.Infinite.exists_subset_card_eq`);
+2. at a point where `g = b_j`, `analyticOrderAt (f∘g − a) ≥ analyticOrderAt (g − b_j)` — factor
+   `f − a = (w − b_j)^m h` and compose;
+3. hence `N(r, a, f∘g) ≥ ∑_j N(r, b_j, g)`, by `logCounting_le` on divisors;
+4. the classical SMT for `g` at the `n` separated values `b_j` gives
+   `(n−2)T(r,g) ≤ ∑_j N(r,b_j,g) + S(r,g) + C`;
+5. the first main theorem gives `N(r,a,f∘g) ≤ T(r,f∘g) + C`;
+6. `exists_good_radii_error_negligible` kills `S(r,g)` along a sequence of radii.
+
+Result: for every `n`, `T(r,f∘g) ≥ (n−3)·T(r,g) − C` along a sequence of radii tending to infinity —
+the limsup form, which is what the algebraicity contradiction in cards 11–14 consumes.
+
+## I3 CLOSED (2026-08-29)
+
+```text
+exists_clunie_composition_growth :
+  f, g entire and not polynomials → ∀ n,
+  ∃ C, ∃ᶠ r in atTop, (n − 3)·T(r,g) ≤ T(r, f∘g) + C
+
+not_eventually_characteristic_comp_le :
+  f, g entire and not polynomials → ∀ c d,
+  ¬ (∀ᶠ r, T(r, f∘g) ≤ c·T(r,g) + d·log r + d)
+```
+
+both unconditional and axiom-clean.  Supporting modules:
+
+* `CompositionValueCounting.analyticOrderAt_le_comp` — a `b`-point of `g` is an `a`-point of `f∘g`
+  of at least the same multiplicity, by factoring `f − a = (w − b)^k h` and composing;
+* `CompositionValueCounting.sum_logCounting_le_logCounting_comp` — `∑_j N(r, b_j, g) ≤ N(r, a, f∘g)`
+  for an injective family of `f`-preimages of `a`;
+* `ClunieCompositionGrowth.meromorphicOrderAt_comp_sub_const_ne_top` — a composition of
+  transcendental entire functions is nowhere locally constant, via mathlib's open-mapping
+  dichotomy `AnalyticAt.eventually_constant_or_nhds_le_map_nhds`.
+
+No minimum-modulus estimate and no Pólya inequality is used; the Nevanlinna route is strictly
+shorter.  What cards 11–14 still need beyond this is the *algebraic* half: that an element algebraic
+over a field generated by finitely many derivatives of `g` has characteristic `O(T(r,g) + log r)`,
+and the differential-field transcendence-degree bookkeeping of the card statements.

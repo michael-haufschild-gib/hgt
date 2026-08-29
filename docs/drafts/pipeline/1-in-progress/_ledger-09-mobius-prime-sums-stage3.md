@@ -23,7 +23,7 @@
 | 9 | kubalalika-unweighted-near-diagonal-tail | (1)–(5) incl. van der Corput | TODO |
 | 10 | square-aperture-von-mangoldt-correlation-energy | reverse implication (Schoenfeld) | TODO |
 | 11 | regular-variation-weighted-steinhaus-ldp | Gärtner–Ellis LDP + endpoints | TODO |
-| 12 | kubalalika-parity-weighted-near-diagonal-tail | phase stability + parity reduction + tail | TODO |
+| 12 | kubalalika-parity-weighted-near-diagonal-tail | phase stability + parity reduction + tail | **DONE — promoted to 3-formalized** |
 | 13 | halasz-ghs-adaptive-coarea-completion | (H1)–(H2), Lemmas A–F, (MR1) | TODO |
 
 ## Corpus assets located (do not rebuild)
@@ -1359,3 +1359,27 @@ Reusable mathlib gaps closed on the way (all wired, all axiom-clean):
 
 REMAINING in `09-mobius-prime-sums`: card 12 only
 (`kubalalika-parity-weighted-near-diagonal-tail`).
+
+## Card 12 CLOSED — folder drained (2026-08-29)
+
+`kubalalika-parity-weighted-near-diagonal-tail` is at stage 3.  The stage-2 folder
+`09-mobius-prime-sums` is now empty and has been removed; all 13 cards are promoted.
+
+Seven new modules, all axiom-clean (`propext, Classical.choice, Quot.sound`), all wired into
+`GaloisForLFunctions.RHTower`:
+
+| Module | Content |
+|---|---|
+| `RHTower/Sieve/KubalalikaPowerEnvelope.lean` | every piece of the mixed second/third-derivative hybrid Vaughan envelope bounded by an explicit monomial; `kubalalikaBlockPower`; the capstone `exists_norm_sum_vonMangoldt_ndPhaseExp_le_kubalalika_power` |
+| `RHTower/Sieve/KubalalikaFibreCondition.lean` | `nearDiagonalLambda_le_one_of_fibre_crossover`: the second-derivative fibre condition follows from the crossover hypothesis alone once `10^27 A ≤ T r` |
+| `RHTower/Sieve/KubalalikaBlockScale.lean` | `kubalalikaScalePower`, `kubalalikaBlockPower_le_scale`: the substitution `U ≍ T^{1/2}`, `V ≍ T^{1/8}` |
+| `RHTower/Sieve/KubalalikaDyadic.lean` | `sum_Ico_monotone_partition`, `norm_sum_Ico_le_of_blocks`: truncated dyadic partition of `[a,b)` into `⌊log₂ b⌋+1` blocks with `B ≤ 2A` |
+| `RHTower/Sieve/KubalalikaRSum.lean` | `sum_kubalalikaScalePower_div_le`: the five harmonic totals, all at `T^{15/16}` |
+| `RHTower/Sieve/KubalalikaLargeScale.lean` | `KubalalikaLarge`, `eventually_kubalalikaLarge`, `KubalalikaLarge.block_conditions`: every scalar side condition of the block estimate from three explicit inequalities in `T` |
+| `RHTower/Sieve/KubalalikaTailBound.lean` | `exists_norm_kubalalikaWeightedTail_le`, `kubalalikaWeightedTail_isBigO`, `kubalalikaWeightedTail_isLittleO` |
+
+Result proved, STRONGER than the card's `(5)`:
+```
+‖E_Λ(T)‖ ≤ D · T^{15/16} (1 + log T)^6   for all large T,
+E_Λ = O(T^{53/54} (log T)^6) = o(T).
+```

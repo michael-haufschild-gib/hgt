@@ -1,7 +1,7 @@
 # Laguerre--Pólya and Jensen hyperbolicity blindness of a maximal HT power pro-field
 
 - **ID:** `laguerre-polya-jensen-profield-blindness`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) — `[PROVED HERE] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Lane:** general hypertranscendence; real-rootedness; Jensen--Pólya boundary
 - **Statement:** One functional-equation-even maximal-HT power pro-field has an order-one
@@ -180,21 +180,53 @@ The combined result is a useful exact route boundary, but after erasing project 
 is a direct assembly of classical Laguerre--Pólya/Jensen theory with rational multiplication.  It
 fails the parent-theory and anti-theatre novelty gates and is not new scientific knowledge.
 
-## Lean status
+## Lean status (2026-08-29)
 
-`formal/GaloisForLFunctions/RHTower/XiLaguerrePolya.lean` formalizes the one-way implication from RH
-to a project `LaguerrePolya` predicate for the real xi restriction.  That predicate is tailored to
-pointwise convergence with two derivatives, sufficient for the first Laguerre inequality; it is not
-the full classical locally uniform class and does not include Jensen's all-polynomial
-characterization.  The tree also lacks the infinite even canonical product, rational quartet
-surgery as an entire function, its exact off-real divisor, and differential power pro-fields.  No
-partial theorem is promoted.  Stage 3 requires the complete unconditional statement in Lean.
+**Complete and unconditional.**  Capstone:
+`GaloisForLFunctions.HTGeometry.exists_powerNormalizationProfield_laguerrePolyaJensenBlindness`
+(`formal/GaloisForLFunctions/HTGeometry/LaguerrePolyaJensenProfieldBlindness.lean`).  For every
+strict divisibility ladder `D` it produces one `θ` such that the even surgery family
+`kreinEvenSurgeryFunction θ k` satisfies, at every `k`:
+
+- entire, even, Schwarz-real, order-one envelope;
+- the exact divisor: the zeros are the unselected `±Λ_n(θ)` together with the `4k` points
+  `±t_i, ±conj(t_i)`, whose `k` quartets are distinct (`EvenSurgeryPoleSeparated`) and off-real
+  (`0 < im t_i`);
+- equality of every algebraic power-translation level with the base, of the complete inverse system
+  along `D`, and of its logarithmic-residue intersection;
+- maximal translation differential independence of the logarithmic-derivative translate family;
+- `k = 0` is Laguerre--Pólya and **every** Jensen polynomial `J^d` of its real Taylor coefficients
+  splits over `ℝ`; every `k ≥ 1` is **not** Laguerre--Pólya and **some** Jensen polynomial fails to
+  split.
+
+The classical Jensen/Laguerre--Pólya input was built from scratch rather than assumed:
+
+| Layer | Module | Content |
+|---|---|---|
+| Laguerre shift | `HTGeometry/LaguerreShiftSplits.lean` | `splits_laguerreShift` (`p ↦ p' − βp` preserves real-rootedness) via the exponential gauge, Rolle, the multiplicity drop, and `natDegree_ne_card_roots_succ` |
+| Reversal | `HTGeometry/SplitsReflect.lean` | `Splits.reflect`: coefficient reversal preserves splitting over any field |
+| Hermite--Poulain | `HTGeometry/HermitePoulain.lean` | `diffOpApply` in `Module.End ℝ ℝ[X]` and `splits_diffOpApply` |
+| Jensen algebra | `HTGeometry/JensenPolynomialSplits.lean` | `jensenReverse`, `jensenPoly`, `diffOpApply_X_pow`, `splits_jensenPoly_of_splits` |
+| Hurwitz | `HTGeometry/HurwitzClosedZeroLocus.lean` | sphere-domination zero planting and `zero_mem_closed_of_tendstoLocallyUniformly` |
+| Limits | `HTGeometry/RealRootedCoefficientLimit.lean` | `splits_of_tendsto_coeff`: real-rootedness is closed under bounded-degree coefficient limits |
+| Jensen limits | `HTGeometry/JensenPolynomialLimit.lean` | `splits_jensenPoly_of_tendsto_coeff` |
+| The class | `HTGeometry/LaguerrePolyaClass.lean` | `LaguerrePolya`, `splits_jensenPoly_of_laguerrePolya`, `im_eq_zero_of_laguerrePolya` |
+| Base function | `HTGeometry/EvenCanonicalProductLaguerrePolya.lean` | `laguerrePolya_movingEvenCanonicalProduct` |
+| Converse | `HTGeometry/JensenScaledWeight.lean`, `HTGeometry/LaguerrePolyaJensenConverse.lean` | `jensenWeight`, `splits_comp_C_mul_X`, `laguerrePolya_of_splits_jensenPoly` |
+| Real coefficients | `HTGeometry/RealTaylorCoefficients.lean` | `realTaylorCoeff`, `exists_jensenPoly_not_splits_of_nonreal_zero` |
+
+The pro-field half is the pre-existing
+`HTGeometry.PowerNormalizationProfieldKreinBlindness.exists_powerNormalizationProfield_allEvenKreinIndex`
+stack (with `MovingEvenCanonicalSurgery`, `EvenSurgeryPoleSeparationWitnesses`,
+`KreinEscapePowerFieldInvariance`).
+
+All declarations are axiom-clean: `propext`, `Classical.choice`, `Quot.sound`.
 
 ## Gates
 
 - [x] 0 -> 1: exact real-rootedness selector and same-pro-field falsifying family isolated
 - [x] 1 -> 2: complete unconditional paper proof
-- [ ] 2 -> 3: complete unconditional theorem formalized in Lean
+- [x] 2 -> 3: complete unconditional theorem formalized in Lean
 - [ ] 3 -> 4: optional bridge publication/integration
 
 ## Log
@@ -203,3 +235,5 @@ partial theorem is promoted.  Stage 3 requires the complete unconditional statem
   maximal-HT canonical product and rational off-real quartet surgery.
 - 2026-07-11 -- Downgraded after parent-theory attack: the route consequence is exact, but the
   mechanism is classical Jensen theory plus rational gauge and is not new scientific knowledge.
+- 2026-08-29 -- Formalized unconditionally in Lean 4 and promoted to stage 3: both directions of
+  Jensen's theorem, the Laguerre--Pólya class, and the full pro-field blindness capstone.

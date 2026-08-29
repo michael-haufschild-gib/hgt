@@ -608,3 +608,21 @@ the **same `(p−1)²` resonance** that closed the Mahler lane.  So the card red
 the orbit-mass obstruction (top-order pole coefficients via translation + Laurent expansion, the
 `ratFuncAddTranslationCompHom` substitution, and the finite telescoping sum) plus the Euler-jet
 pole calculus `δ^J[(x+c)^(−m)] = c^J(m)_J(x+c)^(−m−J) + lower order`.
+
+### The orbit-mass obstruction is built
+
+`RationalPolePart` and `EulerPolePartCalculus` now carry a complete principal-part calculus for
+rational functions, all unconditional:
+
+| Theorem | Content |
+|---|---|
+| `polePart` | the coefficient of `(x−c)^(−d)`, read off the Laurent expansion at the origin of the translate; additive, and `polePart (a·g) = a·polePart g` |
+| `polePart_eq_zero_of_regularAt`, `polePart_eq_zero_of_regularAt_mul_pow` | principal parts vanish at regular points, and above the pole order |
+| `finite_support_polePart_multOrbit` | along a multiplicative orbit only finitely many principal parts are nonzero |
+| `polePart_ratFuncScale` | the dilation law `polePart (g(qx)) c d = q^(−d)·polePart g (qc) d` |
+| **`no_dilationTelescoper_of_orbit_mass`** | **the obstruction**: for a coboundary the `λ`-weighted sum of top-order principal parts along an orbit telescopes to zero, so an inhomogeneity whose two adjacent top-order parts have nonzero weighted sum is not a coboundary |
+| `polePart_eulerOp`, `polePart_eulerOp_iterate` | the Euler operator acts on the expansion at `c` as `(t+c)d/dt`; the `J`-th jet multiplies the top part by `∏_{i<J} −c(m+i)` and raises the order by `J` |
+| `polePart_top_of_repr` | the top part from an explicit regular representation |
+
+This replaces the unique-orbit-pole lemma in the case that matters for the one-loop resolvent card,
+where the two poles `−1` and `−p` lie in one orbit.

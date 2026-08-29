@@ -49,7 +49,8 @@ Conjecture loop:
 
 - C-A.9x-a: **LEAN-PROVED** full two-shift Ramanujan divisor-product identity, including absolute
   convergence and exact four-zeta quotient on the negative-shift chamber.
-- C-A.9x-b: exact two-`K` Mellin product identity.
+- C-A.9x-b: **LEAN-PROVED** exact complex two-`K` Mellin product identity on the sharp
+  absolute-convergence chamber.
 - C-A.9x-c: literal unfolded regularized family equals the classical four-`Lambda` product.
 - C-A.9x-d: actual four-`Lambda` family cannot equal the canonical four-`XiC` family.
 
@@ -114,3 +115,12 @@ and its forced pre-integration pole-fill survivor, not the classical scalar form
    Gamma((lambda-mu+nu)/2) Gamma((lambda-mu-nu)/2)`.
   Hostile checks of all four Gamma arguments reduce to the same chamber; no continuation or
   unproved boundary interchange is used.  Status: **PAPER-PROVED**; exact Lean formalization active.
+- 2026-08-29 — C-A.9x-b closed in
+  `ThetaCuspHawkingBMEisensteinTwoKBesselMellinProduct.lean`.  The formal theorem
+  `integral_cpow_mul_modifiedBesselKOrder_mul_modifiedBesselKOrder` proves the full complex
+  four-Gamma formula under `|Re mu| + |Re nu| < Re s`.  Lean also forced and verified the stronger
+  infrastructure: full complex hyperbolic Beta transform, determinant-two plane separation,
+  invertible-linear-map transport of absolute convergence, whole-line exponential Schlaefli
+  representation, and exact norm evaluation closing the three-variable Fubini passage.  Direct
+  `lake env lean` passed.  Status: **LEAN-PROVED**.  Remaining route-kill gate is C-A.9x-c/d, the
+  literal actual-family unfolding and its comparison with the canonical four-`XiC` vertex.

@@ -29,7 +29,7 @@ Borel growth lemma at exponent `α` applied to `y ↦ nu(e^y) + 1`; the exponent
 may be taken far longer than the classical `1/nu`. -/
 theorem exists_ge_centralIndex_no_double (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0)
     {α : ℝ} (hα : 0 < α) (R : ℝ) :
-    ∃ x, R ≤ x ∧
+    ∃ x, R ≤ x ∧ x ≤ R + Nevanlinna.borelWindow α ∧
       ((centralIndex a (Real.exp (x
           + (((centralIndex a (Real.exp x) : ℝ)) + 1) ^ (-α))) : ℝ) + 1)
         < 2 * (((centralIndex a (Real.exp x) : ℝ)) + 1) := by
@@ -42,7 +42,9 @@ theorem exists_ge_centralIndex_no_double (ha : EntireCoeffs a) {n₀ : ℕ} (hn�
     intro y
     have : (0 : ℝ) ≤ ((centralIndex a (Real.exp y) : ℕ) : ℝ) := Nat.cast_nonneg _
     linarith
-  exact Nevanlinna.exists_ge_lt_two_mul_rpow hmono hT1 hα R
+  obtain ⟨x, hx, hlt⟩ :=
+    Nevanlinna.exists_mem_Icc_lt_two_mul_rpow_window hmono hT1 hα R
+  exact ⟨x, hx.1, hx.2, hlt⟩
 
 /-! ## The sampling hypothesis -/
 
@@ -148,8 +150,9 @@ theorem exists_good_parameters (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n�
       ((centralIndex a (Real.exp (d + 2 * H)) : ℝ)) + 1
         < 2 * (((centralIndex a (Real.exp x) : ℝ)) + 1) ∧
       2 * H * ((centralIndex a (Real.exp (d + 2 * H)) : ℝ)
-          - (centralIndex a (Real.exp x) : ℝ)) / s < d - x := by
-  obtain ⟨x, hxR, hnd⟩ := exists_ge_centralIndex_no_double ha hn₀ hα R
+          - (centralIndex a (Real.exp x) : ℝ)) / s < d - x ∧
+      x ≤ R + Nevanlinna.borelWindow α ∧ d + 2 * H ≤ x + 1 := by
+  obtain ⟨x, hxR, hxW, hnd⟩ := exists_ge_centralIndex_no_double ha hn₀ hα R
   have hν0 : (0 : ℝ) ≤ ((centralIndex a (Real.exp x) : ℕ) : ℝ) := Nat.cast_nonneg _
   have ht1 : (1 : ℝ) ≤ ((centralIndex a (Real.exp x) : ℝ)) + 1 := by linarith
   have ht : (0 : ℝ) < ((centralIndex a (Real.exp x) : ℝ)) + 1 := by linarith
@@ -162,9 +165,20 @@ theorem exists_good_parameters (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n�
     (((centralIndex a (Real.exp x) : ℝ)) + 1) ^ (-α)
       * scale (((centralIndex a (Real.exp x) : ℝ)) + 1)
       / (8 * (((centralIndex a (Real.exp x) : ℝ)) + 1)),
-    N, hxR, by linarith, by positivity, hs, hN0, rfl, rfl, hN2, hN4, ?_, ?_⟩
+    N, hxR, by linarith, by positivity, hs, hN0, rfl, rfl, hN2, hN4, ?_, ?_, hxW, ?_⟩
   · exact centralIndex_lt_two_mul_of_no_double ha hn₀ hσ hs rfl hnd (hle _ ht1)
   · exact hsmall_of_no_double ha hn₀ hσ hs rfl hnd (hle _ ht1)
+  · have hσ1 : (((centralIndex a (Real.exp x) : ℝ)) + 1) ^ (-α) ≤ 1 :=
+      Real.rpow_le_one_of_one_le_of_nonpos ht1 (by linarith)
+    have hsle : scale (((centralIndex a (Real.exp x) : ℝ)) + 1)
+        ≤ 2 * (((centralIndex a (Real.exp x) : ℝ)) + 1) := hle _ ht1
+    have hHle : (((centralIndex a (Real.exp x) : ℝ)) + 1) ^ (-α)
+        * scale (((centralIndex a (Real.exp x) : ℝ)) + 1)
+        / (8 * (((centralIndex a (Real.exp x) : ℝ)) + 1))
+        ≤ (((centralIndex a (Real.exp x) : ℝ)) + 1) ^ (-α) / 4 := by
+      rw [div_le_iff₀ (by linarith : (0:ℝ) < 8 * (((centralIndex a (Real.exp x) : ℝ)) + 1))]
+      nlinarith [hσ.le, hsle, ht]
+    linarith
 
 /-- **The Wiman--Valiron estimate holds at radii beyond every bound.**  Combining the parameter
 selection with the tail form of the estimate: for every admissible scale rule and every `R` there is
@@ -184,6 +198,7 @@ theorem exists_radius_point_wiman_valiron_selected (ha : EntireCoeffs a) {n₀ :
       2 * s ≤ (N : ℝ) ∧ (N : ℝ) ≤ 4 * s ∧ L = 2 * s / H ∧ h = H / 2 ∧
       ((centralIndex a (Real.exp (d + 2 * H)) : ℝ)) + 1
         < 2 * (((centralIndex a (Real.exp x) : ℝ)) + 1) ∧
+      x ≤ R + Nevanlinna.borelWindow α ∧ d + 2 * H ≤ x + 1 ∧
       ∃ y ∈ Icc (x + H) (d + H), ∃ z : ℂ, ‖z‖ = Real.exp y ∧
         maxTerm a (Real.exp y) ≤ ‖coeffFun a z‖ ∧
         ‖z * deriv (coeffFun a) z / coeffFun a z - (centralIndex a (Real.exp y) : ℂ)‖
@@ -200,10 +215,10 @@ theorem exists_radius_point_wiman_valiron_selected (ha : EntireCoeffs a) {n₀ :
               * (Real.sqrt (2 * (N : ℝ) + 1)
                 + 2 * ((1 + (N : ℝ) / (4 * L)) / ((N : ℝ) / (4 * L))
                     * Real.exp (-(((N : ℝ) + 1) * ((N : ℝ) / (4 * L))))))) := by
-  obtain ⟨x, d, s, H, N, hxR, hxd, hH, hs, hN0, hsdef, hHdef, hN2, hN4, hdouble, hsmall⟩ :=
-    exists_good_parameters ha hn₀ hα scale hpos hle hone R
+  obtain ⟨x, d, s, H, N, hxR, hxd, hH, hs, hN0, hsdef, hHdef, hN2, hN4, hdouble, hsmall, hxW,
+      hdH⟩ := exists_good_parameters ha hn₀ hα scale hpos hle hone R
   refine ⟨x, d, s, H, 2 * s / H, H / 2, N, hxR, hxd, hH, hs, hN0, hsdef, hHdef, hN2, hN4, rfl, rfl,
-    hdouble, ?_⟩
+    hdouble, hxW, hdH, ?_⟩
   exact exists_radius_point_wiman_valiron_tail ha hn₀ hxd hH hs rfl rfl hsmall hN0 hN2 hN4
 
 end GaloisForLFunctions.HTGeometry

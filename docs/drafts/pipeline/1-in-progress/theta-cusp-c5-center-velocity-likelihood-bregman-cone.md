@@ -188,3 +188,71 @@ the newly proved cubic cancellation, the separate fixed-action adaptive-reserve 
 and the literal eighth-order C5 seam opening. August 2026 primary-literature search finds the
 Planat--Solé second-level Xi-kernel concavity theorem, but no fifth-root curvature velocity,
 likelihood-reserve substitution, or fourth-order defect theorem.
+
+## 2026-08-29 closure of master-reserved branch
+
+Status: conjecture proved; sufficient branch killed; sharp defect survivor formalized.
+
+The smooth seam proxy equal to `thetaCuspCenterFifthRootVelocityMasterReservedCore` for every
+`t > 0` vanishes through order three and has exact fourth jet
+
+`120 * k * (G₃ + 6 * G₂) < 0`.
+
+The hostile falsifiers are discharged: the literal action core is proved odd and hence has zero
+fourth jet, while the positive-ray master identity is transferred only after constructing a
+two-sided smooth proxy. Taylor's theorem then gives punctured-right negativity. Therefore
+
+`∀ t > 0, 0 ≤ thetaCuspCenterFifthRootVelocityMasterReservedCore t`
+
+is false, killing the entire master-reserved sufficient route to `C5-VP1`.
+
+Strongest positive survivor: the reserve error is now classified exactly. Replacing the literal
+third likelihood jet by the uniform bound `-G₃ > 6G₂` preserves the cubic cancellation but creates
+the first uncancelled seam term one order later. Thus a viable center-velocity proof must retain the
+full third likelihood channel or use a correction whose fourth jet cancels
+`120 * k * (G₃ + 6G₂)` exactly. No fixed uniform six-curvature reserve can close this gate.
+
+Lean module:
+`GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureVelocityMasterReservedSeamNoGo`.
+Route-kill theorem:
+`not_forall_thetaCuspCenterFifthRootVelocityMasterReservedCore_nonneg`.
+Exact survivor theorem:
+`thetaCuspCenterFifthRootVelocityMasterReservedSeamProxy_seamJetClassification`.
+
+## 2026-08-29 conjecture C5-VP1-literal-velocity-far-tail
+
+Status: frozen for paper and Lean attack; intended outcome is discharge of the full noncompact
+literal-velocity premise.
+
+Put `S(t) = thetaCuspSingleAtomReflectionScale 1 t`,
+`r(t) = exp(thetaCuspReflectedLogAction 0 t) - 1`, and let `q₁,q₂,q₃` be the first three
+literal reflected log jets at center. Conjecture:
+
+`thetaCuspReflectedActionFifthRootVelocityCore r(t) t q₁(t) q₂(t) q₃(t)`
+`  / (r(t) * t^2 * S(t)^3) -> 320` as `t -> +∞`.
+
+Consequently the literal center velocity is strictly positive on a cofinal tail.
+
+Proof chain being shortened:
+
+`cofinal literal center-velocity positivity`
+`→ confine C5-VP1 radial-monotonicity burden to one compact annulus`
+`→ modular-center C5`
+`→ fixed-action transport + higher packets + no escape`
+`→ CLG/TTF or Weil polarization positivity`
+`→ RH`.
+
+Corpus mechanism: the exact first-atom likelihood factorization gives
+`q₁/S -> 4`, while the already formalized far-tail jet laws give `q₂/S -> 8` and
+`q₃/S -> 16`. The source action diverges, so `1/r -> 0`; also `1/t -> 0` and `1/S -> 0`.
+After division by `r*t^2*S^3`, every term vanishes except the cubic term
+`5*(q₁/S)^3 -> 5*4^3 = 320`.
+
+Hostile falsifier: a higher-likelihood first jet surviving at scale `S`, failure of action-radius
+divergence, or another action-core monomial surviving cubic normalization. Each is testable by an
+exact limit, with no computation or numerical cutoff.
+
+Novelty audit: corpus search finds the cofinal sign only for completed C5 seam orientation and for
+the C5 numerator itself, not for literal center velocity. Planat--Solé (arXiv:2608.19160) proves
+second-level concavity of the Xi kernel using a first-summand tail analysis, but does not state a
+fifth-root divided-drop velocity law or the normalized coefficient `320`.

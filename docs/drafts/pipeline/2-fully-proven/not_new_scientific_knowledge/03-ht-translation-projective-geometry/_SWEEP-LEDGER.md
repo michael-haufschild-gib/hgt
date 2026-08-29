@@ -16,7 +16,7 @@ Already promoted (before this sweep): `ht-remote-quartet-compact-open-field-invi
 | 6 | ht-q-residue-spectrum-classification | OPEN | ADH rational-or-HT; Chen–Singer q-discrete residues |
 | 7 | hypertranscendental-maximal-finite-horizon-galois-law | OPEN | binomial degree + S_D normal closure transport |
 | 8 | indeterminate-moment-fiber-prevalent-translation-ht | OPEN | prevalence, product probe, parametric transversality |
-| 9 | laguerre-polya-jensen-profield-blindness | OPEN | LP class, Jensen's theorem, even canonical product, quartet surgery |
+| 9 | laguerre-polya-jensen-profield-blindness | **PROMOTED 2026-08-29** | — (both directions of Jensen's theorem built from the Laguerre shift) |
 | 10 | poincare-constraint-order-recession | OPEN | unit-cost cascade ord_DA(f^[n]) = n; affine invariance; Bergweiler |
 | 11 | projective-horizon-hankel-secant-stratification | OPEN | catalecticant/secant identification, codimension 2k-1, Sing(C_k)=C_{k+1} |
 | 12 | projective-ht-generic-pv-curvature-core | OPEN | Wilczynski normalization; Picard–Vessiot SL_N; invariant field |
@@ -578,3 +578,91 @@ Landed (all axiom-clean, all wired into `GaloisForLFunctions.HTGeometry`):
    with every Jensen polynomial hyperbolic, and `k ≥ 1` is not (its inserted quartet zeros are
    off-real, `movingEvenCanonicalSurgeryProduct_inserted_zero_analyticOrderAt`), hence some Jensen
    polynomial fails.
+
+## Card 9 — CLOSED (2026-08-29)
+
+`GaloisForLFunctions.HTGeometry.exists_powerNormalizationProfield_laguerrePolyaJensenBlindness`.
+All thirteen new modules are axiom-clean and wired into the umbrella.  The three items still listed
+as missing above are now all done:
+
+1. `laguerrePolya_movingEvenCanonicalProduct` — the partial products
+   `∏_{n<N} (1 − X/Λ_n)(1 + X/Λ_n)` split, and `Summable.hasProdUniformlyOn_nat_one_add` on every
+   compact set plus `tendsto_finset_range` turns the `Finset ℕ`-indexed product into an
+   `atTop`-indexed locally uniform limit.
+2. `laguerrePolya_of_splits_jensenPoly` — the converse.  `jensenScaled c d = J^d(X/d)` splits by
+   `splits_comp_C_mul_X`, and Tannery's theorem against the majorant `∑ |c_i| R^i` (which is itself
+   extracted from the entire power series by `summable_norm_iff` and a geometric comparison) gives
+   the locally uniform convergence to `∑ c_i z^i`.
+3. Assembly against `exists_powerNormalizationProfield_allEvenKreinIndex`, using
+   `movingEvenCanonicalSurgeryProduct_empty` for the `k = 0` identification and the exact-divisor
+   package for the off-real zeros at `k ≥ 1`.  The `local instance` block of the Krein module has to
+   be re-enabled with `attribute [local instance]` in any importer.
+
+**Reusable beyond this card:**
+- `splits_laguerreShift`, `splits_diffOpApply` (Hermite–Poulain), `Splits.reflect`,
+  `splits_comp_C_mul_X` — a complete real-rootedness calculus, none of it in mathlib.
+- `natDegree_ne_card_roots_succ` — a real polynomial never misses exactly one root.
+- `splits_of_tendsto_coeff` — real-rootedness is closed under coefficientwise limits of bounded
+  degree (via the new `HTGeometry` Hurwitz layer).
+- `LaguerrePolya` with both directions of Jensen's theorem; `realTaylorCoeff` and
+  `exists_jensenPoly_not_splits_of_nonreal_zero` for any Schwarz-real entire function.
+- `HTGeometry/HurwitzClosedZeroLocus.lean` — the closed-zero-locus transfer at the `HTGeometry`
+  layer, so no `HTGeometry` module has to reach into `RHTower` for Hurwitz any more.
+
+## Card 6 — route found (2026-08-29): ADH is not needed
+
+`ht-q-residue-spectrum-classification` was recorded as blocked on Adamczewski–Dreyfus–Hardouin's
+rational-or-hypertranscendental dichotomy.  It is not: the corpus already owns an **exact** criterion
+that supersedes it for this equation.
+
+`HTGeometry.SourceLogarithmicBoundary.automorphismFamily_differentialIndependent_iff_no_constant_simultaneous_jet_telescoping`
+states, for a family of additive primitives `x` with base increments `b` under automorphisms
+`sigma` (with `tau` on the base),
+
+```text
+DifferentialIndependent K x  ↔  ∀ c ≠ 0, ∀ k : K, ∃ i, tau i k - k ≠ ∑_j c_(i,j) · δ^j (b i)
+```
+
+Instantiate with `I = Unit`, `C = ℂ`, `K = RatFunc ℂ` under the Euler derivation `δ = x d/dx`,
+`L =` Laurent series at `0` with the same derivation, `sigma = ` dilation by `q`, `x = f` and
+`b = r`.  All the structural hypotheses are routine: the Euler derivation commutes with dilation,
+constants are fixed, and the `sigma`-invariants of `LaurentSeries ℂ` are the constants because `q`
+is not a root of unity.  Hypertranscendence of `f` therefore reduces to the purely algebraic
+
+> **(Q)** if `[r] ≠ 0` in `W_q = ℂ(x)/(σ−1)ℂ(x)` then no nonzero finite combination
+> `∑_j c_j δ^j r` is `q`-summable.
+
+**The `q`-residue calculus needed for (Q).**  On the partial-fraction basis `e_(α,d) = (x−α)^{-d}`
+with `α ≠ 0`,
+
+```text
+σ e_(α,d) = q^{-d} e_(α/q, d)
+```
+
+so each pair (`q^ℤ`-orbit of `α`, pole order `d`) is one block, and the σ-invariant functional on
+that block is the **`q`-discrete residue**
+
+```text
+ρ_(O,d)(v) = ∑_n q^{-dn} v_n     (α_n = α_0 q^n),
+```
+
+whose vanishing characterises `(σ−1)`-images inside the block.  Poles at `0` are always summable
+(`σ(x^{-d}) = q^{-d} x^{-d}` and `q^{-d} ≠ 1`), and monomials `x^N` with `N ≥ 1` are summable
+(`q^N ≠ 1`), so the only remaining obstruction is the constant term — excluded by `r(0) = 0`.
+The Euler derivation raises pole order without moving the orbit, so the top index `J` of a nonzero
+`c` produces a nonvanishing residue at pole order `d + J`; that is exactly (Q).
+
+**Remaining Lean work for card 6**, in order:
+
+1. the `q`-dilation ring automorphism of `RatFunc ℂ` and the Euler derivation on it, with
+   `σ ∘ δ = δ ∘ σ`;
+2. partial fractions over `ℂ(x)`: the decomposition into a polynomial part and `(x−α)^{-d}` terms
+   (check mathlib first — this may need building);
+3. the `q`-discrete residue functionals, their `σ`-invariance, and the characterisation of
+   `(σ−1)ℂ(x)` by their vanishing (Chen–Singer);
+4. the Euler-jet pole-order computation giving (Q);
+5. instantiation of the exact Ostrowski criterion for `L = LaurentSeries ℂ`, giving items (1)–(3)
+   of the card;
+6. the scaling action `S_a` on `W_q`, the stabilizer `H_r`, `q^ℤ ⊆ H_r`, injectivity of
+   `H_r/q^ℤ → Sym(Supp)` and the bound `s!`;
+7. the realization theorem: `r_K = ∑_{u ∈ K} e_(α_u)` has stabilizer exactly `K`.

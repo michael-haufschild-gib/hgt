@@ -1,9 +1,9 @@
 # Kubalalika Parity-Weighted Near-Diagonal Tail
 
 - **ID:** `kubalalika-parity-weighted-near-diagonal-tail`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / RH-disproof proof repair
-- **Scientific status:** `[PROVED HERE] [BRIDGE] [NOT YET FORMALIZED] [NOT AN RH DISPROOF ALONE]`
+- **Scientific status:** `[PROVED HERE] [BRIDGE] [LEAN-PROVED] [NOT AN RH DISPROOF ALONE]`
 - **Sources:** Granville--Ramaré, *Explicit bounds on exponential sums and the scarcity of
   squarefree binomial coefficients*, Theorems 9 and 9'; Babu--Sankaranarayanan,
   *On an estimate of a certain non-linear exponential sum*, Theorem 1; Tatenda Kubalalika,
@@ -174,6 +174,36 @@ disproof. The same parity condition changes the small-offset Fourier main term f
 square wave, and the corrected large-`n` linear term cancels the small-`n` Landau--Gonek term exactly;
 see `../needs-audit/kubalalika-parity-corrected-main-term-cancellation.md`.
 
+## Lean formalization map
+
+Every statement of the theorem is unconditionally proved in Lean 4 (axiom audit: only
+`propext, Classical.choice, Quot.sound`).  Build log:
+`docs/drafts/pipeline/1-in-progress/kubalalika-weighted-tail-lean.md`.
+
+The Lean chain proves the stronger exponent `15/16` (`= 0.9375 < 53/54 = 0.98148`), because the
+two Vaughan parameters are chosen SEPARATELY — `U ≍ T^{1/2}`, `V ≍ T^{1/8}` — and are then
+independent of the shift `r`.  Equation `(5)` follows with room to spare.
+
+| Card item | Lean declaration | Module |
+|---|---|---|
+| `E_Λ(T)` itself | `weightedNearDiagonalTail`, `kubalalikaWeightedTail` | `RHTower/Sieve/WeightedTailDef.lean` |
+| parity reduction (odd/even `r`, powers of two) | `norm_sum_even_set_le`, `norm_sum_parity_set_le`, `norm_weightedTail_le_of_blockBound` | `RHTower/Sieve/ParityGeneralSet.lean` |
+| reciprocal-phase stability `(1)` and the block estimate feeding `(2)`–`(4)` | `exists_norm_sum_vonMangoldt_ndPhaseExp_le_secondThird_mixed_hybrid` | `RHTower/Sieve/VaughanSecondThirdMixedHybridBlock.lean` |
+| block envelope in explicit monomials | `kubalalikaBlockPower`, `exists_norm_sum_vonMangoldt_ndPhaseExp_le_kubalalika_power` | `RHTower/Sieve/KubalalikaPowerEnvelope.lean` |
+| the four root terms and the Type-I/Type-II totals | `typeIIHybridVaughanRootEnvelope_le_power`, `secondThirdMixedVaughanTypeIEnvelope_le_power`, `typeIIHybridPieceEnvelope_le_power` | `RHTower/Sieve/KubalalikaPowerEnvelope.lean` |
+| second-derivative fibre condition discharged | `nearDiagonalLambda_le_one_of_fibre_crossover`, `exists_norm_sum_vonMangoldt_ndPhaseExp_le_kubalalika_power'` | `RHTower/Sieve/KubalalikaFibreCondition.lean` |
+| the parameter substitution `U ≍ T^{1/2}`, `V ≍ T^{1/8}` | `kubalalikaScalePower`, `kubalalikaBlockPower_le_scale` | `RHTower/Sieve/KubalalikaBlockScale.lean` |
+| dyadic decomposition of the `m`-range | `sum_Ico_monotone_partition`, `norm_sum_Ico_le_of_blocks` | `RHTower/Sieve/KubalalikaDyadic.lean` |
+| the harmonic `r`-total `(6)`–`(8)` | `sum_kubalalikaScalePower_div_le` | `RHTower/Sieve/KubalalikaRSum.lean` |
+| every scalar side condition of the block estimate | `KubalalikaLarge`, `eventually_kubalalikaLarge`, `KubalalikaLarge.block_conditions` | `RHTower/Sieve/KubalalikaLargeScale.lean` |
+| **`(5)`** | `exists_norm_kubalalikaWeightedTail_le`, `kubalalikaWeightedTail_isBigO` | `RHTower/Sieve/KubalalikaTailBound.lean` |
+| **`(5)`, the `o(T)` form** | `kubalalikaWeightedTail_isLittleO` | `RHTower/Sieve/KubalalikaTailBound.lean` |
+
+Mathlib gaps closed on the way, all reusable: the truncated dyadic partition of an integer
+interval into blocks with `B ≤ 2A`; the explicit power form of the mixed second/third-derivative
+Vaughan envelope; and the statement that a fixed multiple of a fixed power of `1 + log x` is
+eventually below every positive power of `x`.
+
 ## Gates
 
 - [x] Original invalid insertion of `Lambda(m)` rejected.
@@ -185,6 +215,9 @@ see `../needs-audit/kubalalika-parity-corrected-main-term-cancellation.md`.
 - [x] Even-`r` contribution reduced entirely to powers of two.
 - [x] Weighted tail proved `o(T)` with exponent `53/54`.
 - [x] Do not formalize as an RH-disproof dependency: the corrected main terms cancel.
+- [x] Unconditional Lean 4 proof of `(5)`, with the stronger exponent `15/16`.
+- [x] Axiom audit: `propext, Classical.choice, Quot.sound` only.
+- [x] All seven new modules wired into `GaloisForLFunctions.RHTower`.
 
 ## Log
 
@@ -193,3 +226,9 @@ see `../needs-audit/kubalalika-parity-corrected-main-term-cancellation.md`.
   exponent-pair bounds.
 - 2026-07-17 -- Restored the parity condition omitted in the source. It costs only powers-of-two
   corrections in the tail estimate, but it is decisive for the main term.
+- 2026-08-29 -- Formalized. The exponent budget was recomputed with `U` and `V` chosen separately:
+  `U = ⌈T^{1/2}⌉`, `V = ⌈T^{1/8}⌉`, both independent of `r`, equalise the three surviving
+  harmonic totals at `T^{15/16}`.  With `U = V` the same budget gives exactly `T` and the argument
+  fails by a hair.  The second-derivative fibre condition, false for the naive range, is
+  dischargeable from the crossover hypothesis alone once `T r` dominates the block scale `A` by an
+  absolute factor.
