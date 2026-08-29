@@ -101,3 +101,90 @@ it destroys the exact even-source cancellations responsible for the eighth-order
 Therefore the live proof attempt retains the differential coupling `D' = E`,
 `E' = 2 likelihoodJetTwo`, and its strict support-gap cooling instead of replacing them by
 independent bounds.
+
+## 2026-08-29 closure of stripped first-atom-curvature branch
+
+Status: sufficient branch killed; exact seam-essential likelihood survivor formalized.
+
+The attempted premise
+
+`∀ t > 0, 0 ≤ thetaCuspCenterFifthRootVelocityFirstAtomCurvatureCore t`
+
+is false. Write
+
+- `k = thetaCuspReflectedLogJetTwo 0 0`,
+- `B = 2 * thetaCuspBornWittenLogCurvature 1 0`,
+- `G = thetaCuspLikelihoodSourceLogPartitionJetTwo 0`.
+
+The new seam identity is `k = B - 2G`, with `k > 0` and `G > 0`. The stripped core vanishes
+through order two and has exact third seam jet
+
+`15 * k * (k - B) = -30 * k * G < 0`.
+
+Taylor transfer proves it is strictly negative throughout a punctured right neighborhood of the
+modular seam. Hence the route
+
+`global stripped-core nonnegativity → strict center velocity → C5-VP1`
+
+is killed unconditionally, not merely left unsupported.
+
+Strongest positive survivor: the exact second-likelihood correction discarded by the failed
+reduction vanishes through order two, has third seam jet `30 * k * G > 0`, and its third jet sums
+with the stripped core's third jet to exactly zero. The likelihood channel is therefore
+seam-essential. A viable proof of `C5-VP1-velocity` must retain this cancellation and attack the
+next surviving jet/full master-reserved core; it cannot prove the stripped core separately.
+
+Lean module:
+`GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureVelocityFirstAtomCurvatureSeamNoGo`.
+Key route-kill theorem:
+`not_forall_thetaCuspCenterFifthRootVelocityFirstAtomCurvatureCore_nonneg`.
+Key survivor theorem:
+`iteratedDeriv_three_thetaCuspCenterFirstAtomCore_add_secondLikelihoodCorrection_eq_zero`.
+
+## 2026-08-29 conjecture C5-VP1-master-reserve-seam
+
+Status: frozen for paper attack; intended outcome is a branch-level no-go.
+
+Let
+
+- `k = thetaCuspReflectedLogJetTwo 0 0`,
+- `G₂ = thetaCuspLikelihoodSourceLogPartitionJetTwo 0`,
+- `G₃ = thetaCuspLikelihoodSourceLogPartitionJetThree 0`.
+
+Conjecture: the full master-reserved center-velocity core has exact fourth seam jet
+
+`120 * k * (G₃ + 6 * G₂) < 0`,
+
+and is therefore negative throughout a punctured right neighborhood of the modular seam. Hence
+the sufficient premise
+
+`∀ t > 0, 0 ≤ thetaCuspCenterFifthRootVelocityMasterReservedCore t`
+
+is false.
+
+Proof chain under test:
+
+`global master-reserved-core nonnegativity`
+`→ strict modular-center C5 velocity`
+`→ center C5 by seam anchoring and radial monotonicity`
+`→ fixed-action transport and higher-packet assembly`
+`→ CLG/TTF or Weil polarization positivity`
+`→ RH`.
+
+The corpus forces the conjecture. On the positive ray,
+
+`master = literal action + 10 * radius * t^2 * (G₃(t) + 6*G₂(t))`.
+
+The literal center action core is odd, so its fourth seam jet vanishes. Radius has second seam jet
+`k`; the product rule therefore gives the displayed coefficient. Strict support-gap cooling gives
+`G₃ + 6*G₂ < 0`, while completed-source curvature gives `k > 0`.
+
+Hostile falsifier: any missing fourth-order contribution from the literal action core, or failure
+of smooth extension of the positive-ray identity to the seam. The proof must establish parity and
+the right-germ extension explicitly; it may not infer derivatives from a one-sided equality.
+
+Novelty audit: corpus search finds no master-reserved-core seam classification. It contains only
+the newly proved cubic cancellation, the separate fixed-action adaptive-reserve fifth-order no-go,
+and the literal eighth-order C5 seam opening. August 2026 primary-literature search finds the
+Planat--Solé second-level Xi-kernel concavity theorem, but no fifth-root curvature velocity,
+likelihood-reserve substitution, or fourth-order defect theorem.

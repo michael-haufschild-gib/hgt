@@ -208,3 +208,34 @@ the remaining adjective in item 2 is exactly **interacting**, not merely field-t
 - M. L. Mendoza-Martinez, J. A. Vallejo, and W. A. Zuniga-Galindo,
   *Acausal quantum theory for non-Archimedean scalar fields*,
   <https://arxiv.org/abs/1805.08613>.
+
+## Lean status
+
+Formalized unconditionally in `formal/GaloisForLFunctions/HTGeometry/`, for an arbitrary field of
+characteristic zero and every integer `p ≥ 2`.  The Adamczewski–Dreyfus–Hardouin theorem is **not**
+imported: the hypertranscendence is proved from the corpus's own automorphism-family Ostrowski
+criterion, with the Mahler pair made to commute by the twisting coordinate.
+
+| Card statement | Lean theorem |
+|---|---|
+| `(2)` the reduced trace `(p−2)w + (p−1)²Σ_{n≥1}p^{n−1}w^{p^n}` | `traceSeries`, `coeff_traceSeries_pow` (`MahlerTraceGerm`) |
+| `(3)` `K(w) = (p−2)w + w^p + p·K(w^p)` | `traceSeries_mahler_equation` |
+| `(4)` rigidity: the constraint has a unique solution | `traceSeries_unique` (`MahlerTraceCard`) |
+| `K_p ∉ ℂ(w)` (lacunary support) | `traceSeries_not_ratFunc` |
+| `(5)` **`K_p` is hypertranscendental over `k(w)` for the Euler derivation `w d/dw`** | `hypertranscendentalOver_traceSeries_kw` |
+| the same, over the perfect two-variable base | `hypertranscendentalOver_traceSeries_euler`, `hypertranscendentalOver_traceGerm` |
+| `(6)` `ζ_p(u) = (p−2) + (p−1)²u/(1−pu)` | `zetaSeries_eq_algebraMap` (`UltrametricSpectralZeta`) |
+| `(7)` the Dirichlet reporter is DA while the thermal reporter is HT | `differentialAlgebraicOver_zetaSeries` together with `hypertranscendentalOver_traceSeries_kw` |
+
+Supporting layers, all new in this pass: `MahlerPerfectBase` (the `p`-perfect rational base, on
+which the substitution is an automorphism), `MahlerPerfectEmbedding`, `MahlerPerfectDerivation`,
+`MahlerCommutingDerivation` (`δ = h⁻¹·θ` commutes with `σ` exactly), `MahlerPerfectDifferentialBridge`,
+`MahlerOstrowski` (the criterion in the Mahler model), `MahlerRationalNoTelescoper` (no rational
+solution of a two-term inhomogeneous Mahler equation unless the resonance `λa+b` vanishes),
+`MahlerIncrementJets`, `MahlerPerfectNoTelescoper`, `MahlerBaseNoTelescoper`,
+`ScaledDerivationTransfer`.
+
+`#print axioms hypertranscendentalOver_traceSeries_kw` → `propext, Classical.choice, Quot.sound`.
+
+The physical discussion (`(8)`, the free-field realization, and the open interacting completion)
+is context, not a mathematical claim of the card.

@@ -568,3 +568,43 @@ verbatim — no jet rescaling, no operator binomial.
 For the three cards the increment is `−((p−2)w + w^p)·h⁻¹`, whose `j`-th jet contributes
 `a = −c(p−2)`, `b = −c·p^j` at multiplier `λ = p^{j+1}`; the resonance is
 `λa + b = −c·p^j·(p−1)² ≠ 0`, so the telescoper is excluded for every `p ≥ 2`.
+
+### Thermal Mahler card PROMOTED; the next q-difference gate
+
+`ultrametric-thermal-mahler-hypertranscendence` is at stage 3: the germ, its Mahler equation,
+rigidity, irrationality, hypertranscendence over `k(w)` for the Euler derivation, the rational
+closed form of the spectral zeta series, and the DA/HT reporter split are all Lean-proved
+(`MahlerTraceGerm`, `MahlerTraceCard`, `UltrametricSpectralZeta`).
+
+**Next: `ultrametric-one-loop-resolvent-hypertranscendence`.**  Its equation
+
+```text
+Q(x) = (p−2)/(x+1)^m + 1/(x+p)^m + p^(1−m) Q(x/p)
+```
+
+is a *q*-difference equation with `q = 1/p`.  Multiplying by the monomial `z^(m−1)` — an
+eigenvector of the dilation with eigenvalue `p^(1−m)` — turns it into a pure shift
+`σu = u − ρ·z^(m−1)` in the **one-variable** Laurent model already built for cards 7 and 10, so
+the criterion applies with no second coordinate.
+
+The obstruction is *not* the unique-orbit pole lemma: the two poles `−1` and `−p` lie in the same
+multiplicative orbit.  What is needed is the **orbit-mass obstruction**: writing `A_n` for the
+coefficient of the top-order pole of `k` at the orbit point `q^n a`, the coboundary equation gives
+`γq^(−d)A_(n+1) − A_n = B_n`, and summing against the weights `λ^n`, `λ = γq^(−d)`, telescopes to
+
+```text
+Σ_n λ^n B_n = 0     for every rational coboundary.
+```
+
+For the resolvent increment the top-order coefficients sit at `n = 0` (the point `−1`) and
+`n = −1` (the point `−p`), with values `(p−2)(m)_J(−1)^(m−1)` and `p^J(m)_J(−p)^(m−1)`, and
+`λ = p^(m+J)`; the weighted sum is
+
+```text
+(m)_J(−1)^(m−1)·[(p−2) + 1/p] = (m)_J(−1)^(m−1)(p−1)²/p ≠ 0,
+```
+
+the **same `(p−1)²` resonance** that closed the Mahler lane.  So the card reduces to formalizing
+the orbit-mass obstruction (top-order pole coefficients via translation + Laurent expansion, the
+`ratFuncAddTranslationCompHom` substitution, and the finite telescoping sum) plus the Euler-jet
+pole calculus `δ^J[(x+c)^(−m)] = c^J(m)_J(x+c)^(−m−J) + lower order`.

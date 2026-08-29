@@ -73,10 +73,11 @@ The proof is a direct application of quasi-periodic drift and the classical Neva
 1. Classical Nevanlinna second main theorem with ramification.
 2. Classical Briot--Bouquet classification, as recorded in A. E. Eremenko, *Meromorphic solutions of algebraic differential equations*, Russian Math. Surveys 37:4 (1982), 61--95.
 
-## Formalization (2026-08-29) — reduction complete, one classical import open
+## Formalization (2026-08-29) — complete
 
-`formal/GaloisForLFunctions/HTGeometry/DriftPeriodicRamification.lean`, wired into
-`GaloisForLFunctions.HTGeometry`.  Unconditional; `#print axioms` gives only
+`formal/GaloisForLFunctions/HTGeometry/DriftPeriodicRamification.lean` and
+`formal/GaloisForLFunctions/HTGeometry/DriftRamificationExclusion.lean`, both wired into
+`GaloisForLFunctions.HTGeometry`.  Every statement is unconditional; `#print axioms` gives only
 `propext, Classical.choice, Quot.sound`.
 
 | Card step | Lean name |
@@ -86,16 +87,34 @@ The proof is a direct application of quasi-periodic drift and the classical Neva
 | **`W'` is `T`-periodic** | `deriv_drift_periodic`, `deriv_drift_zsmul` |
 | **`a` totally ramified ⟹ so is `a + nC`** | `totallyRamified_add_zsmul` |
 | the values `a + nC` are pairwise distinct | `drift_values_injective` |
-| **arbitrarily many totally ramified finite values** | `exists_finset_totallyRamified_card_ge` |
+| arbitrarily many totally ramified finite values | `exists_finset_totallyRamified_card_ge` |
+| **the theorem: no totally ramified finite value** | `not_totallyRamified_of_drift` |
+| **quadratic matching consequence** | `not_quadratic_matching_of_drift` |
+| the normal form `c₀z + M(e^{αz})` drifts by `c₀·2πi/α` | `drift_of_exp_normalForm` |
 
-So the whole card-specific content is Lean-closed.  The single remaining input is the classical
-bound it contradicts:
+The Nevanlinna ramification bound the proof contradicts is itself now Lean-proved, unconditionally,
+as `card_totallyRamified_le_four` in
+`formal/GaloisForLFunctions/HTGeometry/NevanlinnaRamification.lean`: an entire function has at most
+four pairwise separated totally ramified finite values.  Four rather than the sharp two is
+deliberate — the drift supplies arbitrarily many ramified values, so any finite bound closes the
+card, and the constant `4` is what the clean form `(q/2 − 2)·T(r,f) ≤ S(r,f) + O(1)` of the second
+main theorem gives without the sharpening.  The full chain behind it is recorded in the folder
+ledger under **I5**.
 
-> **Nevanlinna ramification bound.**  A nonconstant entire function has at most two totally
-> ramified finite values.
+Two points of the informal proof needed correction or supplementation in Lean:
 
-Elementary routes were examined and rejected: the value-omitting case (`W' ` zero-free) does follow
-from Picard, and the finite-order case follows from the periodic-cylinder normal form
-`u = U(e^{2πiz/T})` with `U` rational; but the general case genuinely needs the second main theorem
-with ramification.  That theorem is now the tracked infrastructure item **I5** in the folder ledger,
-together with **I4** (Briot–Bouquet), which the autonomous first-order corollary needs.
+* `TotallyRamified W a` as formalised (`∀ z, W z = a → W' z = 0`) is also satisfied by a value `W`
+  omits.  The affine case `W(z) = (C/T)z + W(0)` is therefore handled separately, by exhibiting the
+  `a`-point `(a − W(0))·T/C` at which `W' = C/T ≠ 0`.
+* The ramification bound needs `W` transcendental, in the form of two growth conditions on its
+  characteristic.  These are not extra hypotheses here but consequences of the drift, by an argument
+  that avoids Picard's theorem entirely: `g(z) := W(z) − (C/T)z − W(0)` vanishes at every lattice
+  point `nT`, so `N(r, 0, g) ≥ (log 2)(r/‖T‖ − 2)` (`logCounting_zero_ge_of_lattice_zeros`); the
+  first main theorem converts this into a linear lower bound for `T(r,g)`
+  (`exists_characteristic_ge_of_lattice_zeros`), and subtracting the affine part costs only a
+  logarithm (`drift_characteristic_growth`).  If instead `g ≡ 0` then `W` is affine, the case
+  already dealt with.
+
+The autonomous first-order corollary quotes the Briot–Bouquet classification, as the card's own
+reference list records; the two steps that follow it — that the normal form drifts, and that the
+drift excludes the quadratic matching residue — are the Lean statements above.

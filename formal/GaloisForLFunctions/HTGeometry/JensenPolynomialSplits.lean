@@ -48,7 +48,9 @@ theorem natDegree_jensenReverse_le (c : ℕ → ℝ) (d : ℕ) :
     (jensenReverse c d).natDegree ≤ d := by
   refine Polynomial.natDegree_sum_le_of_forall_le _ _ fun i _ => ?_
   refine le_trans (Polynomial.natDegree_mul_le) ?_
-  simpa using le_trans (Polynomial.natDegree_X_pow_le _) (Nat.sub_le _ _)
+  have h1 : (C (c i * (d.descFactorial i : ℝ))).natDegree = 0 := Polynomial.natDegree_C _
+  have h2 : ((X : ℝ[X]) ^ (d - i)).natDegree = d - i := Polynomial.natDegree_X_pow _
+  omega
 
 theorem diffOpApply_X_pow (P : ℝ[X]) (d : ℕ) :
     diffOpApply P (X ^ d) = jensenReverse (fun i => P.coeff i) d := by
@@ -62,14 +64,18 @@ theorem diffOpApply_X_pow (P : ℝ[X]) (d : ℕ) :
     rw [← mul_assoc, ← Polynomial.C_mul]
   have hA : ∑ i ∈ Finset.range (P.natDegree + 1), g i
       = ∑ i ∈ Finset.range (max P.natDegree d + 1), g i := by
-    refine Finset.sum_subset (Finset.range_subset.2 (by omega)) fun i _ hi => ?_
+    have hsub : Finset.range (P.natDegree + 1) ⊆ Finset.range (max P.natDegree d + 1) :=
+      Finset.range_mono (by omega)
+    refine Finset.sum_subset hsub fun i _ hi => ?_
     have : P.natDegree < i := by
       simpa [Finset.mem_range, Nat.lt_succ_iff] using hi
     rw [hg]
     simp [Polynomial.coeff_eq_zero_of_natDegree_lt this]
   have hB : ∑ i ∈ Finset.range (d + 1), g i
       = ∑ i ∈ Finset.range (max P.natDegree d + 1), g i := by
-    refine Finset.sum_subset (Finset.range_subset.2 (by omega)) fun i _ hi => ?_
+    have hsub : Finset.range (d + 1) ⊆ Finset.range (max P.natDegree d + 1) :=
+      Finset.range_mono (by omega)
+    refine Finset.sum_subset hsub fun i _ hi => ?_
     have hd : d < i := by
       simpa [Finset.mem_range, Nat.lt_succ_iff] using hi
     have hzero : d.descFactorial i = 0 := Nat.descFactorial_eq_zero_iff_lt.2 hd
@@ -95,9 +101,9 @@ theorem jensenPoly_div_factorial (γ : ℕ → ℝ) (d : ℕ) :
   have hfac : ((i.factorial : ℝ)) ≠ 0 := by
     exact_mod_cast Nat.factorial_ne_zero i
   have hdesc : (d.descFactorial i : ℝ) = (i.factorial : ℝ) * (d.choose i : ℝ) := by
-    exact_mod_cast congrArg (Nat.cast : ℕ → ℝ) (Nat.descFactorial_eq_factorial_mul_choose d i)
-  field_simp [hdesc]
-  ring
+    exact_mod_cast Nat.descFactorial_eq_factorial_mul_choose d i
+  rw [hdesc]
+  field_simp
 
 end
 

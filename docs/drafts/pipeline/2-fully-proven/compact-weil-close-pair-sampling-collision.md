@@ -5,9 +5,19 @@
 Paper proof complete. Lean formalization of the algebraic split and collision identities is
 unconditional in `GaloisForLFunctions.RHTower.CompactWeilClosePairSamplingCollision`, but the
 quadratic derivative law still takes `hf : HasDerivAt f d x`. Under the pipeline's strict
-no-premise gate this hypothesis must be produced for a concrete compact-Weil profile inside Lean;
-Hilbert structure alone cannot imply differentiability of an arbitrary function. Stage 3 remains
-open until that concrete profile and its differentiability are constructed.
+no-premise gate, Hilbert structure alone cannot imply differentiability of an arbitrary function.
+The generic quantifier and a hypothesis-free derivative conclusion are incompatible, so this
+exact generic card cannot enter Stage 3 under that gate.
+
+The corpus-owned profile `ccmGuinandWeilPolarCompactLaplace 1`, restricted to the real spectral
+axis, is now handled in
+`GaloisForLFunctions.RHTower.CompactWeilConcreteProfileCollision`. Its exported split, collision,
+differentiability, and normalized quadratic-limit theorems have no Hilbert or differentiability
+premises: the codomain is concretely `ℂ`, and differentiability is proved from the compact-support
+integral. All four declarations are targeted-built and depend only on `propext`,
+`Classical.choice`, and `Quot.sound`. This discharges the structural hypotheses for that actual
+profile. It does not prove arbitrary functions differentiable, so the generic card remains at
+Stage 2 rather than silently replacing its quantifier by a special case.
 
 ## Statement
 

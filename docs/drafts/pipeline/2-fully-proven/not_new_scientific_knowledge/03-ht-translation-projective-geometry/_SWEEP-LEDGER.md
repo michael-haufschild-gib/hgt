@@ -522,3 +522,59 @@ What is genuinely missing is the Jensen half.  The reduction is:
   sign, `Σ_j j!·(γ_j/j!)·C(d,j) x^j = Σ_j C(d,j) γ_j x^j = J^d_F(x)` has only real zeros.  Neither
   Schur composition nor multiplier sequences are in mathlib or the corpus; this is the layer to
   build.
+
+## Card 9 — the Laguerre–Pólya / Jensen layer (2026-08-29)
+
+The route through Grace/apolarity is abandoned.  `P(D)[X^d] = ∑_j d^{(j)} a_j X^{d-j}` is the
+coefficient reversal of the Jensen polynomial of `P`, so Schur composition reduces to
+**Hermite–Poulain**, which reduces to the **Laguerre shift lemma**: `p ↦ p' − βp` preserves
+real-rootedness.  That lemma is elementary (exponential gauge + Rolle + a multiplicity count), so
+the whole classical input is now built from scratch.
+
+Landed (all axiom-clean, all wired into `GaloisForLFunctions.HTGeometry`):
+
+- `HTGeometry/LaguerreShiftSplits.lean` — `laguerreShift β p = p' − βp`; the gauge derivative
+  identity, the interior Rolle root, the multiplicity drop `mult_x p − 1 ≤ mult_x (Lp)`,
+  `natDegree_ne_card_roots_succ` (**a real polynomial can never miss exactly one root**, which
+  removes the classical analysis-at-infinity step), and **`splits_laguerreShift`**.
+- `HTGeometry/SplitsReflect.lean` — **`Splits.reflect`**: reversing the coefficient order preserves
+  splitting over any field (mathlib gap).
+- `HTGeometry/HermitePoulain.lean` — `diffOpApply h p = (aeval derivative h) p` in
+  `Module.End ℝ ℝ[X]`, its multiplicativity, and **`splits_diffOpApply`** (Hermite–Poulain).
+- `HTGeometry/JensenPolynomialSplits.lean` — `jensenReverse`, `jensenPoly`,
+  `diffOpApply_X_pow` (the reversal identity), and **`splits_jensenPoly_of_splits`**.
+- `HTGeometry/HurwitzClosedZeroLocus.lean` — the Rouché-free sphere-domination zero-planting lemma
+  and **`zero_mem_closed_of_tendstoLocallyUniformly`** in the `HTGeometry` layer.  (`RHTower`
+  already owned an entire-function copy in `RHTower/LocallyUniformZeroTransfer.lean`; `HTGeometry`
+  may not import `RHTower`, and editing that file would stale the whole Xi olean stack, so the
+  proof was re-laid at the correct layer instead.)
+- `HTGeometry/RealRootedCoefficientLimit.lean` — `im_eq_zero_of_splits`,
+  `splits_of_forall_complex_root_real`, and **`splits_of_tendsto_coeff`**: real-rootedness is
+  closed under coefficientwise limits of bounded degree.
+- `HTGeometry/JensenPolynomialLimit.lean` — `coeff_jensenPoly`, `natDegree_jensenPoly_le`,
+  **`splits_jensenPoly_of_tendsto_coeff`**.
+- `HTGeometry/LaguerrePolyaClass.lean` — `polyEvalC`, the iterated-derivative transfer
+  `tendstoLocallyUniformly_iterate_deriv`, the class `LaguerrePolya`, coefficient convergence,
+  **`splits_jensenPoly_of_laguerrePolya`** (Jensen's theorem, forward direction) and
+  **`im_eq_zero_of_laguerrePolya`** (a nonzero Laguerre–Pólya function has only real zeros).
+
+### What card 9 still needs
+
+1. **`movingEvenCanonicalProduct θ ∈ LaguerrePolya`.**  Its partial products are the real
+   polynomials `∏_{n<N} (1 − X²/Λ_n²)`, each split with roots `±Λ_n`; the corpus already owns the
+   locally uniform product convergence (`RHTower.canonicalProductE1Indexed_hasProdLocallyUniformlyOn`,
+   `movingEvenCanonicalProduct_eq_tprod`), so what is missing is only the passage from the
+   `Finset ℕ`-indexed `HasProdLocallyUniformlyOn` to the `atTop`-indexed sequence of `Finset.range`
+   partial products, plus the identification of those partial products with `polyEvalC`.
+2. **Jensen's converse**: all `jensenPoly c d` split ⟹ the entire function `∑ c_j z^j` is
+   Laguerre–Pólya.  Route: `jensenScaled c d := (jensenPoly c d).comp (C (d:ℝ)⁻¹ * X)` splits for
+   `d ≥ 1`, and `d^{(j)}/d^j → 1` with `d^{(j)}/d^j ≤ 1` gives a dominated locally uniform
+   convergence `jensenScaled c d → ∑ c_j z^j`.
+3. **Assembly.**  `HTGeometry.PowerNormalizationProfieldKreinBlindness.exists_powerNormalizationProfield_allEvenKreinIndex`
+   already delivers card 9's items (3) and (4) verbatim — one `θ`, one entire even Schwarz-real
+   order-one family with prescribed quartet surgery, equal power-translation fields at every level,
+   equal complete inverse systems and equal intersections, and maximal translation differential
+   independence.  Card 9's capstone replaces `HasExactKreinIndex` by: `k = 0` is Laguerre–Pólya
+   with every Jensen polynomial hyperbolic, and `k ≥ 1` is not (its inserted quartet zeros are
+   off-real, `movingEvenCanonicalSurgeryProduct_inserted_zero_analyticOrderAt`), hence some Jensen
+   polynomial fails.

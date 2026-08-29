@@ -4276,3 +4276,23 @@ finite-group-to-algebraicity Galois bridge is instantiated.  It does not by itse
 density: the finite-orbit bridge and the irreducible/non-imprimitive/infinite subgroup
 classification still have to be closed in Lean.  Those obligations, plus parameterized
 torsor/fixed-field descent, remain forbidden as premises of the final theorem.
+
+## Riccati irreducibility survives every constant-field extension (2026-08-29)
+
+`BesselOrderRiccatiBaseField.lean` generalizes the denominator/degree argument from `ℂ(X)` to
+`F(X)` for every field `F`.  It proves
+
+```text
+FieldShift.orderBesselRiccatiPolynomial_no_solution
+FieldShift.orderBesselRiccati_no_ratFunc_solution
+```
+
+for every nonzero slope.  `BesselOrderRiccati.lean` now reuses the generic polynomial theorem
+instead of duplicating its proof.  This discharges rational Riccati irreducibility after extending
+the constants to the differential closure used by the parameterized Galois endgame; the proof no
+longer depends on `F = ℂ` or even on characteristic zero.  Both modules pass direct and targeted
+builds, and the two new theorems audit to `[propext, Classical.choice, Quot.sound]`.
+
+This does not discharge the two remaining producers: sigma-delta torsor/fixed-field descent, and
+ordinary determinant-one density including the finite primitive branch.  Neither is moved into the
+final theorem as a premise.

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.BesselOrderMeromorphic
+import GaloisForLFunctions.HTGeometry.BesselOrderRiccatiBaseField
 import GaloisForLFunctions.HTGeometry.HolderShiftElimination
 
 /-!
@@ -33,86 +34,7 @@ theorem orderBesselRiccatiPolynomial_no_solution
     (h : p * p.comp (X + C 1) -
         (C c * (X + C 1)) * p * q.comp (X + C 1) -
         q * q.comp (X + C 1) = 0) : False := by
-  let S : Polynomial ℂ := X + C 1
-  have hSdeg : S.natDegree = 1 := by
-    simpa [S] using Polynomial.natDegree_X_add_C (1 : ℂ)
-  have hqs : q.comp S ≠ 0 := comp_X_add_C_one_ne_zero hq
-  have hcshift : IsCoprime (p.comp S) (q.comp S) := by
-    obtain ⟨a, b, hab⟩ := hco
-    refine ⟨a.comp S, b.comp S, ?_⟩
-    have hc := congrArg (fun t : Polynomial ℂ => t.comp S) hab
-    simpa only [Polynomial.add_comp, Polynomial.mul_comp, one_comp] using hc
-  have hdivprod : q.comp S ∣ p * p.comp S := by
-    refine ⟨C c * S * p + q, ?_⟩
-    dsimp [S] at h ⊢
-    linear_combination h
-  have hdivp : q.comp S ∣ p :=
-    hcshift.symm.dvd_of_dvd_mul_right hdivprod
-  obtain ⟨r, hr⟩ := hdivp
-  have hfactored : q.comp S *
-      (r * (q.comp S).comp S * r.comp S -
-        (C c * S) * r * q.comp S - q) = 0 := by
-    rw [hr] at h
-    dsimp [S] at h ⊢
-    simp only [Polynomial.mul_comp] at h
-    linear_combination h
-  have hres : r * (q.comp S).comp S * r.comp S -
-      (C c * S) * r * q.comp S - q = 0 :=
-    (mul_eq_zero.mp hfactored).resolve_left hqs
-  have hrq : r ∣ q := by
-    refine ⟨r.comp S * (q.comp S).comp S - C c * S * q.comp S, ?_⟩
-    calc
-      q = r * (q.comp S).comp S * r.comp S - (C c * S) * r * q.comp S := by
-        exact (sub_eq_zero.mp hres).symm
-      _ = r * (r.comp S * (q.comp S).comp S - C c * S * q.comp S) := by ring
-  have hrp : r ∣ p := by
-    rw [hr]
-    exact dvd_mul_left _ _
-  have hrunit : IsUnit r := hco.isUnit_of_dvd' hrp hrq
-  obtain ⟨k, hk, hkr⟩ := Polynomial.isUnit_iff.mp hrunit
-  have hk0 : k ≠ 0 := by simpa only [isUnit_iff_ne_zero] using hk
-  have hs2q : (q.comp S).comp S ≠ 0 := comp_X_add_C_one_ne_zero hqs
-  have hS0 : S ≠ 0 := by
-    intro hzero
-    rw [hzero, Polynomial.natDegree_zero] at hSdeg
-    omega
-  have hdegreeLeft : ((C c * S) * r * q.comp S).natDegree = q.natDegree + 1 := by
-    rw [← hkr]
-    calc
-      (C c * S * C k * q.comp S).natDegree =
-          (C (c * k) * (S * q.comp S)).natDegree := by
-            rw [map_mul]
-            ring
-      _ = (S * q.comp S).natDegree :=
-        Polynomial.natDegree_C_mul (mul_ne_zero hc hk0)
-      _ = S.natDegree + (q.comp S).natDegree :=
-        Polynomial.natDegree_mul hS0 hqs
-      _ = q.natDegree + 1 := by
-        rw [Polynomial.natDegree_comp, hSdeg]
-        omega
-  have heq : (C c * S) * r * q.comp S =
-      r * (q.comp S).comp S * r.comp S - q := by
-    linear_combination -hres
-  have hdegreeRight :
-      (r * (q.comp S).comp S * r.comp S - q).natDegree ≤ q.natDegree := by
-    apply le_trans (Polynomial.natDegree_sub_le _ _)
-    apply max_le
-    · rw [← hkr, Polynomial.C_comp]
-      calc
-        (C k * (q.comp S).comp S * C k).natDegree =
-            (C (k * k) * (q.comp S).comp S).natDegree := by
-              rw [map_mul]
-              ring
-        _ = ((q.comp S).comp S).natDegree :=
-          Polynomial.natDegree_C_mul (mul_ne_zero hk0 hk0)
-        _ = q.natDegree := by
-          rw [Polynomial.natDegree_comp, Polynomial.natDegree_comp, hSdeg]
-          omega
-        _ ≤ q.natDegree := le_rfl
-    · exact le_rfl
-  have hdegreeContradiction := hdegreeLeft
-  rw [heq] at hdegreeContradiction
-  omega
+  exact FieldShift.orderBesselRiccatiPolynomial_no_solution hc hq hco h
 
 /-- The Bessel Riccati equation has no solution in `ℂ(X)` for any nonzero slope. -/
 theorem orderBesselRiccati_no_ratFunc_solution {c : ℂ} (hc : c ≠ 0) :
