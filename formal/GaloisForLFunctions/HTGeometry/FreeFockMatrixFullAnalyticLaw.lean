@@ -308,6 +308,67 @@ theorem freeFockMatrixPoissonProfile_tendsto_atomMass
     rw [hstar]
     ring
 
+/-- General-energy scaled Ward equation.  With `D = -iyG(a+iy)` and
+`X = y Im G(a+iy)`, one has
+`Dᴴ (y²I + η(X)) D = y²X`.  Unlike the imaginary-axis Dyson equation, this identity remains
+positive at every real energy. -/
+theorem freeFockMatrixScaledAtomProfile_ward
+    (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
+    (hker : HasTrivialCommonKernel A) (a y : ℝ) (hy : 0 < y) :
+    (freeFockMatrixScaledAtomProfile A hA hker a y)ᴴ *
+        ((y ^ 2 : ℂ) • (1 : Matrix I I ℂ) +
+          matrixSemicircleCovariance A
+            (freeFockMatrixPoissonProfile A hA hker a y)) *
+        freeFockMatrixScaledAtomProfile A hA hker a y =
+      (y ^ 2 : ℂ) • freeFockMatrixPoissonProfile A hA hker a y := by
+  let z : ℂ := (a : ℂ) + (y : ℂ) * Complex.I
+  let G : Matrix I I ℂ := freeFockMatrixStieltjes A hA hker z
+  let H : Matrix I I ℂ := matrixHermitianImaginaryPart G
+  let D : Matrix I I ℂ := freeFockMatrixScaledAtomProfile A hA hker a y
+  let X : Matrix I I ℂ := freeFockMatrixPoissonProfile A hA hker a y
+  let Q : Matrix I I ℂ := (y : ℂ) • (1 : Matrix I I ℂ) +
+    matrixSemicircleCovariance A H
+  let c : ℂ := -Complex.I * (y : ℂ)
+  have hres := freeFockMatrixDysonResidual_upperHalfPlane A hA hker z (by
+    simpa [z] using hy)
+  have hdyson :
+      (z • (1 : Matrix I I ℂ) + matrixSemicircleCovariance A G) * G = -1 := by
+    rw [freeFockMatrixDysonResidual] at hres
+    change 1 + (z • (1 : Matrix I I ℂ) + matrixSemicircleCovariance A G) * G = 0 at hres
+    exact eq_neg_of_add_eq_zero_right hres
+  have hward : Gᴴ * Q * G = H := by
+    simpa [Q, z, G, H] using matrixSemicircleDyson_ward A G z hdyson
+  have hD : D = c • G := by rfl
+  have hX : X = (y : ℂ) • H := by
+    rfl
+  have hshift :
+      (y ^ 2 : ℂ) • (1 : Matrix I I ℂ) + matrixSemicircleCovariance A X =
+        (y : ℂ) • Q := by
+    rw [hX, matrixSemicircleCovariance_smul]
+    simp only [Q]
+    module
+  change Dᴴ * ((y ^ 2 : ℂ) • (1 : Matrix I I ℂ) +
+      matrixSemicircleCovariance A X) * D = (y ^ 2 : ℂ) • X
+  rw [hshift, hD, hX, Matrix.conjTranspose_smul]
+  calc
+    (star c • Gᴴ) * ((y : ℂ) • Q) * (c • G) =
+        (star c * (y : ℂ) * c) • (Gᴴ * Q * G) := by
+      simp only [Matrix.smul_mul, Matrix.mul_smul, smul_smul, Matrix.mul_assoc]
+      congr 1 <;> ring
+    _ = (star c * (y : ℂ) * c) • H := by rw [hward]
+    _ = (y ^ 3 : ℂ) • H := by
+      congr 1
+      dsimp only [c]
+      simp only [map_mul, map_neg, Complex.star_def, Complex.conj_I,
+        Complex.conj_ofReal]
+      have hI : Complex.I ^ 2 = (-1 : ℂ) := by norm_num
+      ring_nf
+      rw [hI]
+      ring
+    _ = (y ^ 2 : ℂ) • ((y : ℂ) • H) := by
+      rw [smul_smul]
+      congr 1
+
 theorem coeff_matrixDysonFormalVectorSeries
     (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
     (x : I → ℂ) (n : ℕ) :

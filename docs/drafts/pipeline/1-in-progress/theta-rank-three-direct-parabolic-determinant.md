@@ -61,6 +61,11 @@ rank-three D1 gate. Cofinal/all-order landing remains separate.
   star coefficient to vanish, while the positive lowest-weight string `Fr=0`, `Hr=2r` forces the
   same coefficient to be negative. Formal module:
   `PolynomialODEJetRankThreeSourcePositiveInfiniteContravariantNoGo`.
+- `[FALSIFIED][LEAN-PROVED]` Restricting to an adapted-graded proper carrier containing the actual
+  source D1 also cannot rescue a positive scalar-contravariant form. D1 has a nonzero positive
+  adapted-weight boundary component; repeated lowering gives an exact finite vacuum string that
+  forces the star coefficient to vanish and then violates positive definiteness. Formal module:
+  `PolynomialODEJetRankThreeSourcePositiveD1CyclicContravariantNoGo`.
 - `[FALSIFIED — diagnostic]` Raw coefficientwise matrix-Bernstein positivity cannot explain
   `H_X`: every scale-square coefficient matrix has negative leading rank-two/rank-three pivots and
   every scale-cube coefficient matrix has negative determinant. Cross-scale cancellation is
@@ -85,13 +90,14 @@ toward the upper ratio wall.
 
 Verdict: `SURVIVES PRELIMINARY ATTACK`.
 
-`[OPEN CORE]` Finite truncations and scalar-contravariant forms on the full infinite polynomial
-carrier are impossible. A representation-theoretic survivor must first construct a proper
-physical invariant carrier excluding the affine vacuum extension or a genuinely non-scalar
-adjoint law; otherwise use a nontrivial direct congruence mixing scale layers. Try to force an
-indefinite rank-three restriction at a rational interior state before using any survivor for
-positivity. Raw coefficientwise Gram/SOS remains dead. Then derive clock second variation and
-prove the outer upper-wall polynomial positive.
+`[OPEN CORE]` Finite truncations, the full infinite polynomial carrier, and every adapted-graded
+proper carrier containing actual D1 are impossible for scalar contravariance. The last scalar
+escape hatch is a non-graded source-`sl2`-stable carrier; finite Cartan spectral projection may
+force adapted-component closure automatically and kill it. Otherwise a representation survivor
+must use a genuinely non-scalar adjoint law, localization/completion outside the polynomial
+carrier, or an indefinite form. Direct work should use a nontrivial congruence mixing scale layers.
+Raw coefficientwise Gram/SOS remains dead. Then derive clock second variation and prove the outer
+upper-wall polynomial positive.
 
 ## Representation lesson
 
@@ -117,3 +123,7 @@ coefficient hierarchy.
   forces scalar star coefficient `0`, while the positive lowest-weight string forces it `<0`.
   Surviving representation must be proper/localized or non-scalar; direct cross-scale congruence
   remains the clean survivor.
+- 2026-08-29 — Adapted-graded proper carriers containing actual source D1 killed unconditionally:
+  a boundary-detected positive-weight component lowers to a finite vacuum string incompatible with
+  positive scalar contravariance. Only automatic-grading, non-scalar/localized/indefinite, or direct
+  cross-scale survivors remain.

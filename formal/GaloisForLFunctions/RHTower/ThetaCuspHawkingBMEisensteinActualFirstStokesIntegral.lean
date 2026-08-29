@@ -679,5 +679,171 @@ theorem d4BM_actualFirstStokesHorizontalBulk_eq_arc
   rw [d4BM_actualFirstStokesHorizontalLowerBulk_eq_arc,
     d4BM_actualFirstStokesHorizontalUpperBulk_eq_zero P Q hY, add_zero]
 
+theorem d4BMModularArcHeight_zero : d4BMModularArcHeight 0 = 1 := by
+  norm_num [d4BMModularArcHeight]
+
+theorem d4BMModularArcHeight_half :
+    d4BMModularArcHeight (1 / 2) = d4BMModularArcFloor := rfl
+
+theorem d4BMModularSideRadius_arcHeight
+    {x : ℝ} (hx : x ∈ Set.Icc (0 : ℝ) (1 / 2)) :
+    d4BMModularSideRadius (d4BMModularArcHeight x) = x := by
+  have hxfull : x ∈ Set.Icc (-(1 / 2 : ℝ)) (1 / 2) := ⟨by linarith [hx.1], hx.2⟩
+  unfold d4BMModularSideRadius
+  rw [d4BMModularArcHeight_sq hxfull]
+  ring_nf
+  exact Real.sqrt_sq hx.1
+
+theorem hasDerivAt_d4BMModularArcHeight
+    {x : ℝ} (hx : x ∈ Set.Ioo (0 : ℝ) (1 / 2)) :
+    HasDerivAt d4BMModularArcHeight
+      (-x / d4BMModularArcHeight x) x := by
+  have hpos : 0 < 1 - x ^ 2 := by nlinarith [hx.1, hx.2, sq_nonneg (x + 1 / 2)]
+  have hinner : HasDerivAt (fun q : ℝ => 1 - q ^ 2) (-2 * x) x := by
+    have h := (hasDerivAt_const x (1 : ℝ)).sub ((hasDerivAt_id x).pow 2)
+    have hfun : ((fun _ : ℝ => 1) - id ^ 2) = (fun q : ℝ => 1 - q ^ 2) := by
+      funext q
+      rfl
+    rw [hfun] at h
+    exact h.congr_deriv (by norm_num)
+  have hsqrt := hinner.sqrt hpos.ne'
+  unfold d4BMModularArcHeight
+  convert hsqrt using 1
+  field_simp [Real.sqrt_ne_zero'.2 hpos]
+
+theorem continuous_d4BMModularArcHeight : Continuous d4BMModularArcHeight := by
+  unfold d4BMModularArcHeight
+  fun_prop
+
+def d4BMActualFirstStokesHorizontalArcHeightFlux
+    (P Q : D4BMEisensteinAbsoluteConvergenceParameter) (y : ℝ) : ℂ :=
+  d4BMActualFirstStokesHorizontalCurrentAt P Q (-d4BMModularSideRadius y) y -
+    d4BMActualFirstStokesHorizontalCurrentAt P Q (d4BMModularSideRadius y) y
+
+def d4BMActualFirstStokesHorizontalArcParameterFlux
+    (P Q : D4BMEisensteinAbsoluteConvergenceParameter) (x : ℝ) : ℂ :=
+  (x / d4BMModularArcHeight x) •
+    (d4BMActualFirstStokesHorizontalCurrentAt P Q (-x) (d4BMModularArcHeight x) -
+      d4BMActualFirstStokesHorizontalCurrentAt P Q x (d4BMModularArcHeight x))
+
+/-- Exact change of variables from horizontal height slices to the right-half circular arc.
+This is the orientation-sensitive step absent from the previous pointwise boundary pairing. -/
+theorem d4BM_actualFirstStokesHorizontalArc_changeOfVariables
+    (P Q : D4BMEisensteinAbsoluteConvergenceParameter) :
+    (∫ y in d4BMModularArcFloor..1,
+        d4BMActualFirstStokesHorizontalArcHeightFlux P Q y) =
+      ∫ x in 0..(1 / 2),
+        d4BMActualFirstStokesHorizontalArcParameterFlux P Q x := by
+  let g : ℝ → ℂ := d4BMActualFirstStokesHorizontalArcHeightFlux P Q
+  have hsubst := intervalIntegral.integral_deriv_smul_comp_of_deriv_nonpos
+    (g := g) (a := (0 : ℝ)) (b := (1 / 2 : ℝ))
+    (f := d4BMModularArcHeight)
+    (f' := fun x => -x / d4BMModularArcHeight x)
+    continuous_d4BMModularArcHeight.continuousOn
+    (by
+      intro x hx
+      have hx' : x ∈ Set.Ioo (0 : ℝ) (1 / 2) := by simpa using hx
+      exact hasDerivAt_d4BMModularArcHeight hx')
+    (by
+      intro x hx
+      have hx' : x ∈ Set.Ioo (0 : ℝ) (1 / 2) := by simpa using hx
+      have harcpos : 0 < d4BMModularArcHeight x := by
+        apply d4BMModularArcHeight_pos_of_mem
+        constructor <;> linarith [hx'.1, hx'.2]
+      exact div_nonpos_of_nonpos_of_nonneg (by linarith [hx'.1]) harcpos.le)
+  have hsubst' :
+      (∫ x in 0..(1 / 2),
+          (-x / d4BMModularArcHeight x) • (g ∘ d4BMModularArcHeight) x) =
+        ∫ y in 1..d4BMModularArcFloor, g y := by
+    rw [d4BMModularArcHeight_zero, d4BMModularArcHeight_half] at hsubst
+    exact hsubst
+  have hleft :
+      (∫ x in 0..(1 / 2),
+          (-x / d4BMModularArcHeight x) • (g ∘ d4BMModularArcHeight) x) =
+        -(∫ x in 0..(1 / 2),
+          d4BMActualFirstStokesHorizontalArcParameterFlux P Q x) := by
+    rw [← intervalIntegral.integral_neg]
+    apply intervalIntegral.integral_congr
+    intro x hx
+    have hxI : x ∈ Set.Icc (0 : ℝ) (1 / 2) := by
+      simpa [uIcc_of_le (by norm_num : (0 : ℝ) ≤ 1 / 2)] using hx
+    have hradius := d4BMModularSideRadius_arcHeight hxI
+    unfold g d4BMActualFirstStokesHorizontalArcHeightFlux
+      d4BMActualFirstStokesHorizontalArcParameterFlux
+    simp only [Function.comp_apply, hradius]
+    rw [show -x / d4BMModularArcHeight x =
+        -(x / d4BMModularArcHeight x) by ring, neg_smul]
+  have hright :
+      (∫ y in 1..d4BMModularArcFloor, g y) =
+        -(∫ y in d4BMModularArcFloor..1, g y) :=
+    intervalIntegral.integral_symm d4BMModularArcFloor 1
+  have hneg :
+      -(∫ x in 0..(1 / 2),
+          d4BMActualFirstStokesHorizontalArcParameterFlux P Q x) =
+        -(∫ y in d4BMModularArcFloor..1,
+          d4BMActualFirstStokesHorizontalArcHeightFlux P Q y) := by
+    calc
+      _ = ∫ x in 0..(1 / 2),
+          (-x / d4BMModularArcHeight x) • (g ∘ d4BMModularArcHeight) x := hleft.symm
+      _ = ∫ y in 1..d4BMModularArcFloor, g y := hsubst'
+      _ = -(∫ y in d4BMModularArcFloor..1, g y) := hright
+      _ = -(∫ y in d4BMModularArcFloor..1,
+          d4BMActualFirstStokesHorizontalArcHeightFlux P Q y) := rfl
+  exact (neg_inj.mp hneg).symm
+
+theorem d4BM_actualFirstStokesRadialCurrent_eq_components
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P Q : D4BMEisensteinAbsoluteConvergenceParameter) :
+    d4BMActualFirstStokesRadialCurrent z P Q =
+      (z.x : ℂ) * d4BMActualFirstStokesHorizontalCurrent z P Q +
+        (z.y : ℂ) * d4BMActualFirstStokesVerticalCurrent z P Q := by
+  unfold d4BMActualFirstStokesRadialCurrent
+    d4BMActualFirstStokesHorizontalCurrent d4BMActualFirstStokesVerticalCurrent
+  rw [d4BM_completedPoincareRadialFirstJet_eq_gradientContraction z P,
+    d4BM_completedPoincareRadialFirstJet_eq_gradientContraction z Q]
+  ring
+
+def d4BMActualFirstStokesCircularBoundaryFlux
+    (P Q : D4BMEisensteinAbsoluteConvergenceParameter) (x : ℝ) : ℂ :=
+  (x / d4BMModularArcHeight x) •
+      (d4BMActualFirstStokesHorizontalCurrentAt P Q (-x) (d4BMModularArcHeight x) -
+        d4BMActualFirstStokesHorizontalCurrentAt P Q x (d4BMModularArcHeight x)) -
+    d4BMActualFirstStokesVerticalCurrentAt P Q (-x) (d4BMModularArcHeight x) -
+    d4BMActualFirstStokesVerticalCurrentAt P Q x (d4BMModularArcHeight x)
+
+/-- The exact oriented circular flux vanishes pointwise after both half-arcs are paired.  This is
+the radial inversion law with the Jacobian and outward-normal signs made literal. -/
+theorem d4BM_actualFirstStokesCircularBoundaryFlux_eq_zero
+    (P Q : D4BMEisensteinAbsoluteConvergenceParameter)
+    {x : ℝ} (hx : x ∈ Set.Icc (0 : ℝ) (1 / 2)) :
+    d4BMActualFirstStokesCircularBoundaryFlux P Q x = 0 := by
+  have hxfull : x ∈ Set.Icc (-(1 / 2 : ℝ)) (1 / 2) := ⟨by linarith [hx.1], hx.2⟩
+  have hxneg : -x ∈ Set.Icc (-(1 / 2 : ℝ)) (1 / 2) := ⟨by linarith [hx.2], by linarith [hx.1]⟩
+  have harcpos := d4BMModularArcHeight_pos_of_mem hxfull
+  have harchalf := d4BMModularArcHeight_half_le hxfull
+  have hpair := d4BM_actualFirstStokesRadialCurrentAt_arc_pair_eq_zero P Q hx
+  have hneg := d4BM_actualFirstStokesRadialCurrent_eq_components
+    (d4BMStokesCoordinate (-x) (d4BMModularArcHeight x)) P Q
+  have hpos := d4BM_actualFirstStokesRadialCurrent_eq_components
+    (d4BMStokesCoordinate x (d4BMModularArcHeight x)) P Q
+  change
+    d4BMActualFirstStokesRadialCurrentAt P Q (-x) (d4BMModularArcHeight x) = _
+      at hneg
+  change
+    d4BMActualFirstStokesRadialCurrentAt P Q x (d4BMModularArcHeight x) = _
+      at hpos
+  simp only [d4BMStokesCoordinate, max_eq_left harchalf] at hneg hpos
+  rw [hneg, hpos] at hpair
+  unfold d4BMActualFirstStokesCircularBoundaryFlux
+  rw [Complex.real_smul, Complex.ofReal_div]
+  unfold d4BMActualFirstStokesHorizontalCurrentAt
+    d4BMActualFirstStokesVerticalCurrentAt
+  simp only [d4BMStokesCoordinate, max_eq_left harchalf]
+  have harcC : (d4BMModularArcHeight x : ℂ) ≠ 0 := by
+    exact_mod_cast harcpos.ne'
+  push_cast at hpair ⊢
+  field_simp [harcC]
+  linear_combination -hpair
+
 end
 end RHTower

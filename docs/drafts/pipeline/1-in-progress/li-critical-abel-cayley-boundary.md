@@ -1,7 +1,7 @@
 # LI critical Abel--Cayley boundary
 
 - **ID:** LI-CAB1
-- **Stage:** 1-in-progress (aggregate adjacent-flux sign only; LI-CAB1.NG, LI-CAB1.SW, LI-CAB2, LI-CAB3, and LI-CAB4 are formalized)
+- **Stage:** 1-in-progress (interior aggregate adjacent-flux sign only; LI-CAB1.NG, LI-CAB1.SW, LI-CAB2, LI-CAB3, LI-CAB4, and LI-CAB4.NG are formalized)
 - **Type:** CONJECTURE + NO-GO CLASSIFICATION
 - **Source:** Lean-corpus synthesis of `LiEvenSquarePrimeGammaCrossBalanceCriterion`, `XiShiftedHardEdgePrimeGammaSourceDisintegration`, `CayleyLaguerreFourier`, and `OddEulerCombTemperedAdmissionWall`
 - **Statement:** At hard-edge mass `a = 1/2`, the first even-Li cross density has Fourier profile proportional to `exp (-|ξ|/2) * (1 - |ξ|/2)`, so its isolated absolute von-Mangoldt prime leg is not summable; only the completed Abel prime--polar finite part can carry the LI capital.
@@ -177,3 +177,57 @@ This conjecture significantly reduces the proof burden: only one summable, sourc
 - 2026-08-29 — Formalized `LiEvenCrossAllModeLaguerreClock`: every critical LI square-defect density has exact Fourier profile `(pi/4) exp(-|xi|/2) (P_(2n+2)''-P_(2n+2)')(|xi|)`. Targeted module check/build passed; capstone axioms are only `propext`, `Classical.choice`, `Quot.sound`. All-mode transform ambiguity is closed; only completed arithmetic sign remains.
 - 2026-08-29 — Formalized `LiEvenCrossCompletedAbelLanding`: for every `a > 1/2`, the all-mode clock is an absolutely convergent prime reporter inside the exact completed hard-edge identity; divisor-level dominated convergence lands the joint completed expression at `a = 1/2`; its real part is exactly one eighth of the LI square source. Lean proves RH iff all endpoint values are nonnegative. Targeted module build passed; capstone axioms are only `propext`, `Classical.choice`, `Quot.sound`. Remaining burden is arithmetic sign, not regularization.
 - 2026-08-29 — Formalized `LiEvenCrossCompletedAbelMassFlow`: every squared-mass atom is one even Chebyshev defect; actual Xi resolvent transport differentiates it into the exact adjacent odd Chebyshev current; a reciprocal-square majorant differentiates the full divisor sum; the real flow starts right-continuously at zero. The LI route now closes from one aggregate current sign on `(0,1/4]`, with no atomwise or convergence surrogate.
+
+## Proved no-go LI-CAB4.NG: exterior-flow sign reversal
+
+Corpus search of `XiShiftedHankelFarRightPositiveDefinite`, `XiShiftedMomentFarRightAsymptotic`, and `XiShiftedCanonicalAdmissionAdaptiveArithmeticSourceFlow` suggested the strongest possible early route kill. The conjecture tested was:
+
+`Phi_n(w^2) <= 0 for every n and w > 1/2`
+`=> propagate a far-right zero anchor backward to v=1/4`
+`=> G_n(1/4) >= 0`
+`=> LI-CAB3`
+`=> RiemannHypothesis`.
+
+Lean disproves the first line for every mode. In unit coordinate `t=v*lambda_q(v)`, define
+
+`P_n(t) = (1-T_(n+1)(2t-1)^2)/2`.
+
+The exact atom current is
+
+`lambda_q(v) * (1-t) * P_n'(t)`,
+
+and its complete real sum is the Xi moment functional of `(1-X)P_n'`. After the corpus far-right normalization `2w/log(w)`, this current converges to the arcsine moment of `(1-X)P_n'`. Lean proves the exact integration-by-parts identity
+
+`2 L_arc((1-X)(X P)') = L_arc(P)`.
+
+Since
+
+`P_n/X = 2(1-X) U_n(2X-1)^2`,
+
+the limiting current is strictly positive. Therefore `Phi_n(w^2)>0` eventually for every `n`. In the absolutely convergent window `w>1/2`, the same current is exactly one literal rational--Gamma-minus-von-Mangoldt completed arithmetic source. Both zero-side and source-side all-exterior nonpositivity laws are formally impossible.
+
+This kills exterior backward propagation and also shows why no far-right zero anchor exists at the needed normalization. Strongest positive survivor is the universal strictly positive arcsine current energy. Open route-closing burden is unchanged but sharply localized: LI-CAB5 must be proved on the interior interval `0<v<=1/4`; it cannot be imported from a global exterior sign law.
+
+- 2026-08-29 — Formalized `LiEvenCrossCompletedAbelExteriorFlowNoGo`: exact polynomial current/source identity, arcsine integration by parts, strict all-mode limiting energy, eventual exterior positivity, and both current/source nonpositivity no-go theorems. Targeted module build passed; audited axioms are only `propext`, `Classical.choice`, `Quot.sound`.
+
+## Frozen conjecture LI-CAB6: positive interior germ and first-zero reduction
+
+Corpus search of `SquaredXiCompleteMonotonicity`, `SuzukiCoalescingXiSourceRate`, `XiSquaredEulerApertureHilbertCorrelation`, and the Chebyshev product law `two_mul_T_mul_U_pred` gives the exact proposed boundary trace
+
+`Phi_n(v) -> 2(n+1)^2 Re(xiShiftedReciprocalMoment(0,0)) > 0`
+
+as `v -> 0+`, for every mode `n`. The unit flux quotient should simplify exactly to
+
+`-(n+1)(1-X)U_(2n+1)(2X-1)`,
+
+whose value at `X=0` is `2(n+1)^2`; the central zeroth Xi moment is a summable nonempty sum of strictly positive oriented reciprocal-square masses.
+
+Exact proof chain:
+
+`positive all-mode current germ + no zero of Phi_n on (0,1/4]`
+`=> Phi_n > 0 on (0,1/4] by continuity and first crossing`
+`=> LI-CAB5`
+`=> LI-CAB3`
+`=> RiemannHypothesis`.
+
+Conversely, any LI-CAB5 failure must force a genuine positive-mass zero of the exact Xi moment functional; failure cannot emerge from the singular zero anchor. Proving the limit and first-zero classification significantly replaces a sign inequality touching `v=0` by a zero-exclusion problem on positive mass. A witnessed zero/negative crossing would kill the monotone-flow route; exclusion closes it.
