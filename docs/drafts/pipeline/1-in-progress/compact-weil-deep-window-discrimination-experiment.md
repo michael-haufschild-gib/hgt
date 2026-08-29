@@ -23,6 +23,11 @@ the proposed Landau--Widom law
 
 and the numerically entangled alternative proportional to `4*pi*exp(2L)`?
 
+A second, more structural question is whether the Fourier transforms of the actual finite-window
+ground vectors develop real zeros locked to the low Riemann-zero ordinates as `L` grows. This is
+the unverified spectral mechanism needed by the Connes--Consani--Moscovici program after fixed
+window simplicity: small energy alone does not imply zero-by-zero locking.
+
 ## Trial family
 
 Use the orthonormal even Dirichlet modes
@@ -46,6 +51,8 @@ This avoids a dense, catastrophically ill-conditioned high-precision eigensolve.
    the geometric prime--Gamma formula as an independent check.
 5. Treat disagreement, lack of stabilization, or dependence on truncation as a killed experiment,
    not evidence about RH.
+6. For ground-zero locking, separate genuine numerator zeros from the removable Dirichlet-basis
+   poles/common cosine factor; report missing roots and gap-normalized offsets, not visual plots.
 
 ## Possible outcomes
 

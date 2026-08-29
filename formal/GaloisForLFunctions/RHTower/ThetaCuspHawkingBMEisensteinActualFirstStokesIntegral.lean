@@ -351,6 +351,12 @@ def d4BMActualFirstStokesVerticalDivergenceAt
     (P Q : D4BMEisensteinAbsoluteConvergenceParameter) (x y : ℝ) : ℂ :=
   d4BMActualFirstStokesVerticalDivergence (d4BMStokesCoordinate x y) P Q
 
+theorem d4BMUpperHalfPlaneCoordinate_eq_of_xy
+    {z w : D4BMUpperHalfPlaneCoordinate} (hx : z.x = w.x) (hy : z.y = w.y) : z = w := by
+  cases z
+  cases w
+  simp_all
+
 theorem d4BMModularArcHeight_pos_of_mem
     {x : ℝ} (hx : x ∈ Set.Icc (-(1 / 2)) (1 / 2)) :
     0 < d4BMModularArcHeight x := by
@@ -378,8 +384,9 @@ theorem d4BMModularArcHeight_sq
 theorem d4BMStokesCoordinate_eq_of_half_le
     (x y : ℝ) (hy : (1 / 2 : ℝ) ≤ y) :
     d4BMStokesCoordinate x y = ⟨x, y, lt_of_lt_of_le (by norm_num) hy⟩ := by
-  unfold d4BMStokesCoordinate
-  rw [max_eq_left hy]
+  apply d4BMUpperHalfPlaneCoordinate_eq_of_xy
+  · rfl
+  · exact max_eq_left hy
 
 theorem d4BMStokesCoordinate_arc_unitCircle
     {x : ℝ} (hx : x ∈ Set.Icc (-(1 / 2)) (1 / 2)) :
@@ -389,7 +396,8 @@ theorem d4BMStokesCoordinate_arc_unitCircle
     have hxlo : -(1 / 2 : ℝ) ≤ x := hx.1
     have hxhi : x ≤ (1 / 2 : ℝ) := hx.2
     have hsq := d4BMModularArcHeight_sq hx
-    have hsqrt := Real.sqrt_nonneg (1 - x ^ 2)
+    have hsqrt : 0 ≤ d4BMModularArcHeight x := by
+      exact Real.sqrt_nonneg (1 - x ^ 2)
     nlinarith [sq_nonneg (x + 1 / 2), sq_nonneg (1 / 2 - x)]
   change x ^ 2 + max (d4BMModularArcHeight x) (1 / 2) ^ 2 = 1
   rw [max_eq_left harc, d4BMModularArcHeight_sq hx]
@@ -401,9 +409,20 @@ theorem d4BMStokesCoordinate_arc_invert
         (d4BMStokesCoordinate x (d4BMModularArcHeight x)) =
       d4BMStokesCoordinate (-x) (d4BMModularArcHeight x) := by
   have hcircle := d4BMStokesCoordinate_arc_unitCircle hx
-  unfold d4BMEisensteinInvertCoordinate
-  rw [hcircle]
-  simp [d4BMStokesCoordinate]
+  apply d4BMUpperHalfPlaneCoordinate_eq_of_xy
+  · change
+      -(d4BMStokesCoordinate x (d4BMModularArcHeight x)).x /
+          ((d4BMStokesCoordinate x (d4BMModularArcHeight x)).x ^ 2 +
+            (d4BMStokesCoordinate x (d4BMModularArcHeight x)).y ^ 2) = -x
+    rw [hcircle]
+    simp [d4BMStokesCoordinate]
+  · change
+      (d4BMStokesCoordinate x (d4BMModularArcHeight x)).y /
+          ((d4BMStokesCoordinate x (d4BMModularArcHeight x)).x ^ 2 +
+            (d4BMStokesCoordinate x (d4BMModularArcHeight x)).y ^ 2) =
+        (d4BMStokesCoordinate (-x) (d4BMModularArcHeight x)).y
+    rw [hcircle]
+    simp [d4BMStokesCoordinate]
 
 /-- Pointwise cancellation of the two oriented radial currents along the circular boundary. -/
 theorem d4BM_actualFirstStokesRadialCurrentAt_arc_pair_eq_zero
@@ -423,6 +442,242 @@ theorem d4BM_actualFirstStokesRadialCurrentAt_arc_pair_eq_zero
       (d4BMStokesCoordinate x (d4BMModularArcHeight x)) P Q = 0
   rw [hinv]
   ring
+
+theorem d4BMModularArcHeight_half_le
+    {x : ℝ} (hx : x ∈ Set.Icc (-(1 / 2)) (1 / 2)) :
+    (1 / 2 : ℝ) ≤ d4BMModularArcHeight x := by
+  have hxlo : -(1 / 2 : ℝ) ≤ x := hx.1
+  have hxhi : x ≤ (1 / 2 : ℝ) := hx.2
+  have hsq := d4BMModularArcHeight_sq hx
+  have hsqrt : 0 ≤ d4BMModularArcHeight x := Real.sqrt_nonneg _
+  nlinarith [sq_nonneg (x + 1 / 2), sq_nonneg (1 / 2 - x)]
+
+theorem d4BMModularArcHeight_le_one
+    {x : ℝ} (hx : x ∈ Set.Icc (-(1 / 2)) (1 / 2)) :
+    d4BMModularArcHeight x ≤ 1 := by
+  have hsq := d4BMModularArcHeight_sq hx
+  have hsqrt : 0 ≤ d4BMModularArcHeight x := Real.sqrt_nonneg _
+  nlinarith [sq_nonneg x]
+
+theorem d4BMActualFirstStokesVerticalDivergenceSlice_eq_at
+    (P Q : D4BMEisensteinAbsoluteConvergenceParameter)
+    (x y : ℝ) (hy : (1 / 2 : ℝ) ≤ y) :
+    d4BMActualFirstStokesVerticalDivergenceSlice
+        (d4BMStokesCoordinate x 1) P Q y =
+      d4BMActualFirstStokesVerticalDivergenceAt P Q x y := by
+  have hy0 : 0 < y := lt_of_lt_of_le (by norm_num) hy
+  let zy : D4BMUpperHalfPlaneCoordinate := ⟨x, y, hy0⟩
+  have hcoord : d4BMStokesCoordinate x y = zy := by
+    exact d4BMStokesCoordinate_eq_of_half_le x y hy
+  unfold d4BMActualFirstStokesVerticalDivergenceAt
+  rw [hcoord]
+  rfl
+
+theorem d4BMActualFirstStokesVerticalCurrentSlice_eq_at
+    (P Q : D4BMEisensteinAbsoluteConvergenceParameter)
+    (x y : ℝ) (hy : (1 / 2 : ℝ) ≤ y) :
+    d4BMActualFirstStokesVerticalCurrentSlice
+        (d4BMStokesCoordinate x 1) P Q y =
+      d4BMActualFirstStokesVerticalCurrentAt P Q x y := by
+  have hy0 : 0 < y := lt_of_lt_of_le (by norm_num) hy
+  let zy : D4BMUpperHalfPlaneCoordinate := ⟨x, y, hy0⟩
+  have hcoord : d4BMStokesCoordinate x y = zy := by
+    exact d4BMStokesCoordinate_eq_of_half_le x y hy
+  unfold d4BMActualFirstStokesVerticalCurrentAt
+  rw [hcoord]
+  rfl
+
+/-- Literal vertical part of the Euclidean divergence integral over the truncated modular
+fundamental domain. -/
+def d4BMActualFirstStokesVerticalBulk
+    (P Q : D4BMEisensteinAbsoluteConvergenceParameter) (Y : ℝ) : ℂ :=
+  ∫ x in (-(1 / 2 : ℝ))..(1 / 2),
+    ∫ y in d4BMModularArcHeight x..Y,
+      d4BMActualFirstStokesVerticalDivergenceAt P Q x y
+
+/-- Vertical FTC on every genuine modular-domain fibre. -/
+theorem d4BM_actualFirstStokesVerticalBulk_eq_boundary
+    (P Q : D4BMEisensteinAbsoluteConvergenceParameter)
+    {Y : ℝ} (hY : 1 ≤ Y) :
+    d4BMActualFirstStokesVerticalBulk P Q Y =
+      ∫ x in (-(1 / 2 : ℝ))..(1 / 2),
+        (d4BMActualFirstStokesVerticalCurrentAt P Q x Y -
+          d4BMActualFirstStokesVerticalCurrentAt P Q x
+            (d4BMModularArcHeight x)) := by
+  unfold d4BMActualFirstStokesVerticalBulk
+  apply intervalIntegral.integral_congr
+  intro x hx
+  have hxI : x ∈ Set.Icc (-(1 / 2 : ℝ)) (1 / 2) := by
+    simpa [uIcc_of_le (by norm_num : (-(1 / 2 : ℝ)) ≤ 1 / 2)] using hx
+  have harcpos := d4BMModularArcHeight_pos_of_mem hxI
+  have hYpos : 0 < Y := lt_of_lt_of_le (by norm_num) hY
+  have harcleY : d4BMModularArcHeight x ≤ Y :=
+    (d4BMModularArcHeight_le_one hxI).trans hY
+  change
+    (∫ y in d4BMModularArcHeight x..Y,
+      d4BMActualFirstStokesVerticalDivergenceAt P Q x y) = _
+  calc
+    (∫ y in d4BMModularArcHeight x..Y,
+        d4BMActualFirstStokesVerticalDivergenceAt P Q x y) =
+        ∫ y in d4BMModularArcHeight x..Y,
+          d4BMActualFirstStokesVerticalDivergenceSlice
+            (d4BMStokesCoordinate x 1) P Q y := by
+      apply intervalIntegral.integral_congr
+      intro y hy
+      have hyI : y ∈ Set.Icc (d4BMModularArcHeight x) Y := by
+        simpa [uIcc_of_le harcleY] using hy
+      have hyhalf : (1 / 2 : ℝ) ≤ y :=
+        (d4BMModularArcHeight_half_le hxI).trans hyI.1
+      exact (d4BMActualFirstStokesVerticalDivergenceSlice_eq_at
+        P Q x y hyhalf).symm
+    _ = d4BMActualFirstStokesVerticalCurrentSlice
+          (d4BMStokesCoordinate x 1) P Q Y -
+        d4BMActualFirstStokesVerticalCurrentSlice
+          (d4BMStokesCoordinate x 1) P Q (d4BMModularArcHeight x) :=
+      intervalIntegral_d4BMActualFirstStokesVerticalDivergenceSlice_eq_sub
+        (d4BMStokesCoordinate x 1) P Q harcpos hYpos
+    _ = d4BMActualFirstStokesVerticalCurrentAt P Q x Y -
+        d4BMActualFirstStokesVerticalCurrentAt P Q x
+          (d4BMModularArcHeight x) := by
+      rw [d4BMActualFirstStokesVerticalCurrentSlice_eq_at P Q x Y
+          (by linarith),
+        d4BMActualFirstStokesVerticalCurrentSlice_eq_at P Q x
+          (d4BMModularArcHeight x) (d4BMModularArcHeight_half_le hxI)]
+
+/-- Horizontal radius of the circular boundary at height `y`. -/
+def d4BMModularSideRadius (y : ℝ) : ℝ := Real.sqrt (1 - y ^ 2)
+
+theorem d4BMStokesCoordinate_right_eq_translate_left (y : ℝ) :
+    d4BMStokesCoordinate (1 / 2) y =
+      d4BMEisensteinTranslateCoordinate (d4BMStokesCoordinate (-(1 / 2)) y) := by
+  apply d4BMUpperHalfPlaneCoordinate_eq_of_xy
+  · norm_num [d4BMStokesCoordinate, d4BMEisensteinTranslateCoordinate]
+  · rfl
+
+theorem d4BM_actualFirstStokesHorizontalCurrentAt_verticalSides
+    (P Q : D4BMEisensteinAbsoluteConvergenceParameter) (y : ℝ) :
+    d4BMActualFirstStokesHorizontalCurrentAt P Q (1 / 2) y =
+      d4BMActualFirstStokesHorizontalCurrentAt P Q (-(1 / 2)) y := by
+  unfold d4BMActualFirstStokesHorizontalCurrentAt
+  rw [d4BMStokesCoordinate_right_eq_translate_left,
+    d4BM_actualFirstStokesHorizontalCurrent_translate]
+
+theorem intervalIntegral_d4BMActualFirstStokesHorizontalDivergenceAt_eq_sub
+    (P Q : D4BMEisensteinAbsoluteConvergenceParameter)
+    (y a b : ℝ) (_hy : (1 / 2 : ℝ) ≤ y) :
+    (∫ x in a..b, d4BMActualFirstStokesHorizontalDivergenceAt P Q x y) =
+      d4BMActualFirstStokesHorizontalCurrentAt P Q b y -
+        d4BMActualFirstStokesHorizontalCurrentAt P Q a y := by
+  let z := d4BMStokesCoordinate 0 y
+  have hcoord (x : ℝ) : d4BMHorizontalCoordinate z x = d4BMStokesCoordinate x y := by
+    apply d4BMUpperHalfPlaneCoordinate_eq_of_xy <;> rfl
+  calc
+    (∫ x in a..b, d4BMActualFirstStokesHorizontalDivergenceAt P Q x y) =
+        ∫ x in a..b,
+          d4BMActualFirstStokesHorizontalDivergence
+            (d4BMHorizontalCoordinate z x) P Q := by
+      apply intervalIntegral.integral_congr
+      intro x _hx
+      simpa [d4BMActualFirstStokesHorizontalDivergenceAt] using
+        congrArg (fun w => d4BMActualFirstStokesHorizontalDivergence w P Q)
+          (hcoord x).symm
+    _ = d4BMActualFirstStokesHorizontalCurrent
+          (d4BMHorizontalCoordinate z b) P Q -
+        d4BMActualFirstStokesHorizontalCurrent
+          (d4BMHorizontalCoordinate z a) P Q :=
+      intervalIntegral_d4BMActualFirstStokesHorizontalDivergence_eq_sub z P Q a b
+    _ = d4BMActualFirstStokesHorizontalCurrentAt P Q b y -
+        d4BMActualFirstStokesHorizontalCurrentAt P Q a y := by
+      unfold d4BMActualFirstStokesHorizontalCurrentAt
+      rw [hcoord, hcoord]
+
+/-- Horizontal divergence over the two side slivers below height one.  The central interval is
+excluded because the standard modular domain satisfies `x^2 + y^2 ≥ 1`. -/
+def d4BMActualFirstStokesHorizontalLowerBulk
+    (P Q : D4BMEisensteinAbsoluteConvergenceParameter) : ℂ :=
+  ∫ y in d4BMModularArcFloor..1,
+    ((∫ x in (-(1 / 2 : ℝ))..(-d4BMModularSideRadius y),
+        d4BMActualFirstStokesHorizontalDivergenceAt P Q x y) +
+      ∫ x in d4BMModularSideRadius y..(1 / 2),
+        d4BMActualFirstStokesHorizontalDivergenceAt P Q x y)
+
+/-- Horizontal divergence over the full strip above height one. -/
+def d4BMActualFirstStokesHorizontalUpperBulk
+    (P Q : D4BMEisensteinAbsoluteConvergenceParameter) (Y : ℝ) : ℂ :=
+  ∫ y in 1..Y,
+    ∫ x in (-(1 / 2 : ℝ))..(1 / 2),
+      d4BMActualFirstStokesHorizontalDivergenceAt P Q x y
+
+def d4BMActualFirstStokesHorizontalBulk
+    (P Q : D4BMEisensteinAbsoluteConvergenceParameter) (Y : ℝ) : ℂ :=
+  d4BMActualFirstStokesHorizontalLowerBulk P Q +
+    d4BMActualFirstStokesHorizontalUpperBulk P Q Y
+
+theorem d4BM_actualFirstStokesHorizontalLowerBulk_eq_arc
+    (P Q : D4BMEisensteinAbsoluteConvergenceParameter) :
+    d4BMActualFirstStokesHorizontalLowerBulk P Q =
+      ∫ y in d4BMModularArcFloor..1,
+        (d4BMActualFirstStokesHorizontalCurrentAt P Q
+            (-d4BMModularSideRadius y) y -
+          d4BMActualFirstStokesHorizontalCurrentAt P Q
+            (d4BMModularSideRadius y) y) := by
+  unfold d4BMActualFirstStokesHorizontalLowerBulk
+  apply intervalIntegral.integral_congr
+  intro y hy
+  have hfloorHalf : (1 / 2 : ℝ) ≤ d4BMModularArcFloor :=
+    le_of_lt d4BMModularArcFloor_gt_half
+  have hfloorOne : d4BMModularArcFloor ≤ 1 := by
+    exact d4BMModularArcHeight_le_one (by constructor <;> norm_num)
+  have hyI : y ∈ Set.Icc d4BMModularArcFloor 1 := by
+    simpa [uIcc_of_le hfloorOne] using hy
+  have hyhalf : (1 / 2 : ℝ) ≤ y := hfloorHalf.trans hyI.1
+  change
+    (∫ x in (-(1 / 2 : ℝ))..(-d4BMModularSideRadius y),
+        d4BMActualFirstStokesHorizontalDivergenceAt P Q x y) +
+      (∫ x in d4BMModularSideRadius y..(1 / 2),
+        d4BMActualFirstStokesHorizontalDivergenceAt P Q x y) = _
+  rw [intervalIntegral_d4BMActualFirstStokesHorizontalDivergenceAt_eq_sub
+      P Q y (-(1 / 2)) (-d4BMModularSideRadius y) hyhalf,
+    intervalIntegral_d4BMActualFirstStokesHorizontalDivergenceAt_eq_sub
+      P Q y (d4BMModularSideRadius y) (1 / 2) hyhalf,
+    d4BM_actualFirstStokesHorizontalCurrentAt_verticalSides P Q y]
+  ring
+
+theorem d4BM_actualFirstStokesHorizontalUpperBulk_eq_zero
+    (P Q : D4BMEisensteinAbsoluteConvergenceParameter)
+    {Y : ℝ} (hY : 1 ≤ Y) :
+    d4BMActualFirstStokesHorizontalUpperBulk P Q Y = 0 := by
+  unfold d4BMActualFirstStokesHorizontalUpperBulk
+  calc
+    (∫ y in 1..Y,
+        ∫ x in (-(1 / 2 : ℝ))..(1 / 2),
+          d4BMActualFirstStokesHorizontalDivergenceAt P Q x y) =
+        ∫ _y in 1..Y, (0 : ℂ) := by
+      apply intervalIntegral.integral_congr
+      intro y hy
+      have hyI : y ∈ Set.Icc (1 : ℝ) Y := by
+        simpa [uIcc_of_le hY] using hy
+      change
+        (∫ x in (-(1 / 2 : ℝ))..(1 / 2),
+          d4BMActualFirstStokesHorizontalDivergenceAt P Q x y) = 0
+      rw [intervalIntegral_d4BMActualFirstStokesHorizontalDivergenceAt_eq_sub
+          P Q y (-(1 / 2)) (1 / 2) (by linarith [hyI.1]),
+        d4BM_actualFirstStokesHorizontalCurrentAt_verticalSides]
+      ring
+    _ = 0 := by simp
+
+theorem d4BM_actualFirstStokesHorizontalBulk_eq_arc
+    (P Q : D4BMEisensteinAbsoluteConvergenceParameter)
+    {Y : ℝ} (hY : 1 ≤ Y) :
+    d4BMActualFirstStokesHorizontalBulk P Q Y =
+      ∫ y in d4BMModularArcFloor..1,
+        (d4BMActualFirstStokesHorizontalCurrentAt P Q
+            (-d4BMModularSideRadius y) y -
+          d4BMActualFirstStokesHorizontalCurrentAt P Q
+            (d4BMModularSideRadius y) y) := by
+  unfold d4BMActualFirstStokesHorizontalBulk
+  rw [d4BM_actualFirstStokesHorizontalLowerBulk_eq_arc,
+    d4BM_actualFirstStokesHorizontalUpperBulk_eq_zero P Q hY, add_zero]
 
 end
 end RHTower

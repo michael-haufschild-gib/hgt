@@ -2,6 +2,8 @@ import GaloisForLFunctions.HTGeometry.FreeFockMatrixValuedSpectralLaw
 import GaloisForLFunctions.HTGeometry.MatrixSemicircleAnalyticLaw
 import GaloisForLFunctions.HTGeometry.CompactMomentReflectionSymmetry
 import GaloisForLFunctions.HTGeometry.MatrixQuadraticFormDetermination
+import GaloisForLFunctions.HTGeometry.MatrixSemicircleWardIdentity
+import GaloisForLFunctions.HTGeometry.FiniteChannelGramSpectralPeeling
 
 /-!
 # Full vector analytic law of a finite matrix semicircle
@@ -213,6 +215,98 @@ theorem freeFockMatrixImaginaryAxisProfile_dyson
     rw [hI]
     ring
   · ring
+
+/-- General-energy scaled Stieltjes profile `D_{a,y} = -iy G(a+iy)`.  Its boundary value is the
+matrix atom mass at `a`. -/
+def freeFockMatrixScaledAtomProfile
+    (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
+    (hker : HasTrivialCommonKernel A) (a y : ℝ) : Matrix I I ℂ :=
+  (-Complex.I * (y : ℂ)) •
+    freeFockMatrixStieltjes A hA hker
+      ((a : ℂ) + (y : ℂ) * Complex.I)
+
+/-- Positive Poisson profile `X_{a,y} = y Im G(a+iy)`. -/
+def freeFockMatrixPoissonProfile
+    (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
+    (hker : HasTrivialCommonKernel A) (a y : ℝ) : Matrix I I ℂ :=
+  y • matrixHermitianImaginaryPart
+    (freeFockMatrixStieltjes A hA hker
+      ((a : ℂ) + (y : ℂ) * Complex.I))
+
+/-- The scaled Stieltjes profile converges to the atom matrix at every real energy. -/
+theorem freeFockMatrixScaledAtomProfile_tendsto_atomMass
+    (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
+    (hker : HasTrivialCommonKernel A) (a : ℝ) :
+    Tendsto (freeFockMatrixScaledAtomProfile A hA hker a)
+      (nhdsWithin 0 {0}ᶜ)
+      (nhds (freeFockMatrixAtomMass A hA hker a)) := by
+  apply finiteMatrix_tendsto_of_tendsto_entries
+  intro i
+  intro j
+  have hboundary := freeFockMatrixStieltjes_atom_boundary A hA hker a i j
+  have hconst : Tendsto (fun _y : ℝ => -Complex.I)
+      (nhdsWithin 0 {0}ᶜ) (nhds (-Complex.I)) := tendsto_const_nhds
+  have h := hconst.mul hboundary
+  convert h using 1
+  · funext y
+    simp only [freeFockMatrixScaledAtomProfile, Matrix.smul_apply, smul_eq_mul]
+    ring
+  · congr 1
+    have hI : Complex.I ^ 2 = (-1 : ℂ) := by norm_num
+    ring_nf
+    rw [hI]
+    ring
+
+/-- Every positive-height Poisson profile is positive definite. -/
+theorem freeFockMatrixPoissonProfile_posDef
+    (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
+    (hker : HasTrivialCommonKernel A) (a y : ℝ) (hy : 0 < y) :
+    (freeFockMatrixPoissonProfile A hA hker a y).PosDef := by
+  rw [freeFockMatrixPoissonProfile]
+  exact Matrix.PosDef.smul (α := ℝ)
+    (freeFockMatrixStieltjes_hermitianImaginaryPart_posDef A hA hker
+      ((a : ℂ) + (y : ℂ) * Complex.I) (by simpa using hy)) hy
+
+/-- The positive Poisson profile has the same atom-mass boundary as the scaled complex profile. -/
+theorem freeFockMatrixPoissonProfile_tendsto_atomMass
+    (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
+    (hker : HasTrivialCommonKernel A) (a : ℝ) :
+    Tendsto (freeFockMatrixPoissonProfile A hA hker a)
+      (nhdsWithin 0 {0}ᶜ)
+      (nhds (freeFockMatrixAtomMass A hA hker a)) := by
+  let D := freeFockMatrixScaledAtomProfile A hA hker a
+  let M := freeFockMatrixAtomMass A hA hker a
+  have hD : Tendsto D (nhdsWithin 0 {0}ᶜ) (nhds M) :=
+    freeFockMatrixScaledAtomProfile_tendsto_atomMass A hA hker a
+  have hM : M.PosSemidef := freeFockMatrixAtomMass_posSemidef A hA hker a
+  apply finiteMatrix_tendsto_of_tendsto_entries
+  intro i
+  intro j
+  have hentry (p q : I) : Continuous (fun X : Matrix I I ℂ => X p q) := by
+    fun_prop
+  have hij : Tendsto (fun y => D y i j) (nhdsWithin 0 {0}ᶜ) (nhds (M i j)) :=
+    (hentry i j).continuousAt.tendsto.comp hD
+  have hji : Tendsto (fun y => D y j i) (nhdsWithin 0 {0}ᶜ) (nhds (M j i)) :=
+    (hentry j i).continuousAt.tendsto.comp hD
+  have hhalf : Tendsto
+      (fun y => (2 : ℂ)⁻¹ * (D y i j + star (D y j i)))
+      (nhdsWithin 0 {0}ᶜ)
+      (nhds ((2 : ℂ)⁻¹ * (M i j + star (M j i)))) :=
+    tendsto_const_nhds.mul (hij.add hji.star)
+  convert hhalf using 1
+  · funext y
+    simp only [D, freeFockMatrixScaledAtomProfile,
+      freeFockMatrixPoissonProfile, matrixHermitianImaginaryPart,
+      Matrix.smul_apply, Matrix.sub_apply, Matrix.conjTranspose_apply,
+      RCLike.star_def, Complex.star_def, Complex.real_smul, map_neg, map_mul,
+      Complex.conj_ofReal, smul_eq_mul]
+    rw [show (starRingEnd ℂ) Complex.I = -Complex.I by norm_num]
+    ring
+  · have hstar := congrFun (congrFun hM.isHermitian.eq i) j
+    simp only [Matrix.conjTranspose_apply] at hstar
+    change 𝓝 (M i j) = 𝓝 ((2 : ℂ)⁻¹ * (M i j + star (M j i)))
+    rw [hstar]
+    ring
 
 theorem coeff_matrixDysonFormalVectorSeries
     (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
