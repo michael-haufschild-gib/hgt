@@ -845,5 +845,125 @@ theorem d4BM_actualFirstStokesCircularBoundaryFlux_eq_zero
   field_simp [harcC]
   linear_combination -hpair
 
+theorem intervalIntegral_d4BMActualFirstStokesVerticalDivergenceAt_eq_sub
+    (P Q : D4BMEisensteinAbsoluteConvergenceParameter)
+    (x a b : ℝ) (ha : (1 / 2 : ℝ) ≤ a) (hb : (1 / 2 : ℝ) ≤ b) :
+    (∫ y in a..b, d4BMActualFirstStokesVerticalDivergenceAt P Q x y) =
+      d4BMActualFirstStokesVerticalCurrentAt P Q x b -
+        d4BMActualFirstStokesVerticalCurrentAt P Q x a := by
+  have ha0 : 0 < a := lt_of_lt_of_le (by norm_num) ha
+  have hb0 : 0 < b := lt_of_lt_of_le (by norm_num) hb
+  calc
+    (∫ y in a..b, d4BMActualFirstStokesVerticalDivergenceAt P Q x y) =
+        ∫ y in a..b,
+          d4BMActualFirstStokesVerticalDivergenceSlice
+            (d4BMStokesCoordinate x 1) P Q y := by
+      apply intervalIntegral.integral_congr
+      intro y hy
+      have hyhalf : (1 / 2 : ℝ) ≤ y := by
+        rcases mem_uIcc.mp hy with hab | hba
+        · exact ha.trans hab.1
+        · exact hb.trans hba.1
+      exact (d4BMActualFirstStokesVerticalDivergenceSlice_eq_at
+        P Q x y hyhalf).symm
+    _ = d4BMActualFirstStokesVerticalCurrentSlice
+          (d4BMStokesCoordinate x 1) P Q b -
+        d4BMActualFirstStokesVerticalCurrentSlice
+          (d4BMStokesCoordinate x 1) P Q a :=
+      intervalIntegral_d4BMActualFirstStokesVerticalDivergenceSlice_eq_sub
+        (d4BMStokesCoordinate x 1) P Q ha0 hb0
+    _ = d4BMActualFirstStokesVerticalCurrentAt P Q x b -
+        d4BMActualFirstStokesVerticalCurrentAt P Q x a := by
+      rw [d4BMActualFirstStokesVerticalCurrentSlice_eq_at P Q x b hb,
+        d4BMActualFirstStokesVerticalCurrentSlice_eq_at P Q x a ha]
+
+/-- Literal paired-coordinate integral of the vertical divergence on both halves of the truncated
+modular domain and the horizontal divergence on both lower side slivers.  The omitted upper-strip
+horizontal integral is identically zero by
+`d4BM_actualFirstStokesHorizontalUpperBulk_eq_zero`. -/
+def d4BMActualFirstStokesPairedTruncatedBulk
+    (P Q : D4BMEisensteinAbsoluteConvergenceParameter) (Y : ℝ) : ℂ :=
+  ∫ x in 0..(1 / 2),
+    ((∫ y in d4BMModularArcHeight x..Y,
+        d4BMActualFirstStokesVerticalDivergenceAt P Q (-x) y) +
+      (∫ y in d4BMModularArcHeight x..Y,
+        d4BMActualFirstStokesVerticalDivergenceAt P Q x y) +
+      (x / d4BMModularArcHeight x) •
+        ((∫ q in (-(1 / 2 : ℝ))..(-x),
+            d4BMActualFirstStokesHorizontalDivergenceAt P Q q
+              (d4BMModularArcHeight x)) +
+          ∫ q in x..(1 / 2),
+            d4BMActualFirstStokesHorizontalDivergenceAt P Q q
+              (d4BMModularArcHeight x)))
+
+def d4BMActualFirstStokesPairedCuspTop
+    (P Q : D4BMEisensteinAbsoluteConvergenceParameter) (Y : ℝ) : ℂ :=
+  ∫ x in 0..(1 / 2),
+    (d4BMActualFirstStokesVerticalCurrentAt P Q (-x) Y +
+      d4BMActualFirstStokesVerticalCurrentAt P Q x Y)
+
+/-- Literal two-dimensional Green theorem on the truncated standard modular domain.  Every
+vertical fibre and both curved side slivers are actual iterated interval integrals; FTC, translation,
+the arc Jacobian, and inversion leave exactly the paired cusp-top current. -/
+theorem d4BM_actualFirstStokesPairedTruncatedBulk_eq_cuspTop
+    (P Q : D4BMEisensteinAbsoluteConvergenceParameter)
+    {Y : ℝ} (hY : 1 ≤ Y) :
+    d4BMActualFirstStokesPairedTruncatedBulk P Q Y =
+      d4BMActualFirstStokesPairedCuspTop P Q Y := by
+  unfold d4BMActualFirstStokesPairedTruncatedBulk
+    d4BMActualFirstStokesPairedCuspTop
+  apply intervalIntegral.integral_congr
+  intro x hx
+  have hxI : x ∈ Set.Icc (0 : ℝ) (1 / 2) := by
+    simpa [uIcc_of_le (by norm_num : (0 : ℝ) ≤ 1 / 2)] using hx
+  have hxfull : x ∈ Set.Icc (-(1 / 2 : ℝ)) (1 / 2) := ⟨by linarith [hxI.1], hxI.2⟩
+  have harchalf := d4BMModularArcHeight_half_le hxfull
+  have hYhalf : (1 / 2 : ℝ) ≤ Y := by linarith
+  change
+    (∫ y in d4BMModularArcHeight x..Y,
+        d4BMActualFirstStokesVerticalDivergenceAt P Q (-x) y) +
+      (∫ y in d4BMModularArcHeight x..Y,
+        d4BMActualFirstStokesVerticalDivergenceAt P Q x y) +
+      (x / d4BMModularArcHeight x) •
+        ((∫ q in (-(1 / 2 : ℝ))..(-x),
+            d4BMActualFirstStokesHorizontalDivergenceAt P Q q
+              (d4BMModularArcHeight x)) +
+          ∫ q in x..(1 / 2),
+            d4BMActualFirstStokesHorizontalDivergenceAt P Q q
+              (d4BMModularArcHeight x)) = _
+  rw [intervalIntegral_d4BMActualFirstStokesVerticalDivergenceAt_eq_sub
+      P Q (-x) (d4BMModularArcHeight x) Y harchalf hYhalf,
+    intervalIntegral_d4BMActualFirstStokesVerticalDivergenceAt_eq_sub
+      P Q x (d4BMModularArcHeight x) Y harchalf hYhalf,
+    intervalIntegral_d4BMActualFirstStokesHorizontalDivergenceAt_eq_sub
+      P Q (d4BMModularArcHeight x) (-(1 / 2)) (-x) harchalf,
+    intervalIntegral_d4BMActualFirstStokesHorizontalDivergenceAt_eq_sub
+      P Q (d4BMModularArcHeight x) x (1 / 2) harchalf,
+    d4BM_actualFirstStokesHorizontalCurrentAt_verticalSides P Q
+      (d4BMModularArcHeight x)]
+  have hflux := d4BM_actualFirstStokesCircularBoundaryFlux_eq_zero P Q hxI
+  unfold d4BMActualFirstStokesCircularBoundaryFlux at hflux
+  rw [Complex.real_smul] at hflux ⊢
+  linear_combination hflux
+
+/-- Pointwise hyperbolic-measure form of the actual first defect on every literal integration
+coordinate.  This is the exact density bridge needed before any Fubini interchange. -/
+theorem d4BM_actualFirstStokesDefectDensity_div_heightSq_eq_divergenceAt
+    (P Q : D4BMEisensteinAbsoluteConvergenceParameter)
+    (x y : ℝ) (hy : (1 / 2 : ℝ) ≤ y) :
+    (2 * d4BMActualFirstStokesDefectDensity (d4BMStokesCoordinate x y) P Q) /
+        (y : ℂ) ^ 2 =
+      d4BMActualFirstStokesHorizontalDivergenceAt P Q x y +
+        d4BMActualFirstStokesVerticalDivergenceAt P Q x y := by
+  have h := d4BM_actualFirstStokesDefectDensity_eq_divergence
+    (d4BMStokesCoordinate x y) P Q
+  have hy0 : (y : ℂ) ≠ 0 := by
+    exact_mod_cast (lt_of_lt_of_le (by norm_num) hy).ne'
+  unfold d4BMActualFirstStokesHorizontalDivergenceAt
+    d4BMActualFirstStokesVerticalDivergenceAt
+  simp only [d4BMStokesCoordinate, max_eq_left hy] at h ⊢
+  rw [h]
+  field_simp
+
 end
 end RHTower

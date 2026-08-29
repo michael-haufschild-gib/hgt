@@ -66,6 +66,11 @@ rank-three D1 gate. Cofinal/all-order landing remains separate.
   adapted-weight boundary component; repeated lowering gives an exact finite vacuum string that
   forces the star coefficient to vanish and then violates positive definiteness. Formal module:
   `PolynomialODEJetRankThreeSourcePositiveD1CyclicContravariantNoGo`.
+- `[FALSIFIED][LEAN-PROVED]` Dropping the grading assumption does not rescue a scalar carrier.
+  Every source-`E,F`-stable polynomial submodule is automatically adapted-graded: `H=[E,F]`
+  preserves it, and finite distinct-eigenvalue extraction recovers each adapted component. Thus no
+  source-`sl2`-stable polynomial carrier containing D1 admits a positive scalar-contravariant form.
+  Formal module: `PolynomialODEJetRankThreeSourcePositiveD1ScalarContravariantNoGo`.
 - `[FALSIFIED — diagnostic]` Raw coefficientwise matrix-Bernstein positivity cannot explain
   `H_X`: every scale-square coefficient matrix has negative leading rank-two/rank-three pivots and
   every scale-cube coefficient matrix has negative determinant. Cross-scale cancellation is
@@ -84,20 +89,29 @@ rank-three D1 gate. Cofinal/all-order landing remains separate.
 
 ## Active conjecture and hostile verdict
 
-`[CONJECTURE]` On the refined parabolic cone, normalized D1 is increasing in scale slack and
-strictly concave in `w`; its two `w` endpoint faces are positive, with the outer face decreasing
-toward the upper ratio wall.
+`[CONJECTURE TCD-D1-BOUNDARY-FLUX]` For every `0 < x < 137/2000`, if the literal raw theta D1
+vanishes at `x`, then its canonical rank-three null-line boundary crossing is strictly positive.
 
-Verdict: `SURVIVES PRELIMINARY ATTACK`.
+Exact proof chain:
 
-`[OPEN CORE]` Finite truncations, the full infinite polynomial carrier, and every adapted-graded
-proper carrier containing actual D1 are impossible for scalar contravariance. The last scalar
-escape hatch is a non-graded source-`sl2`-stable carrier; finite Cartan spectral projection may
-force adapted-component closure automatically and kill it. Otherwise a representation survivor
-must use a genuinely non-scalar adjoint law, localization/completion outside the polynomial
-carrier, or an indefinite form. Direct work should use a nontrivial congruence mixing scale layers.
-Raw coefficientwise Gram/SOS remains dead. Then derive clock second variation and prove the outer
-upper-wall polynomial positive.
+`positive singular-face boundary flux`
+`⇔ global strict native D1 on x ≥ 0`
+`→ finite TCD/S6F rank-three gate`
+`→ cofinal all-order Hankel/Bezoutian landing`
+`→ Weil positivity`
+`→ RH`.
+
+The first equivalence is already Lean-proved in
+`ThetaCuspFullReflectionEighthBoundaryKreinFirstCrossing`. Therefore this conjecture closes the
+whole finite gate rather than improving a numerical chamber. A theta-state singular face with
+nonpositive crossing kills the first-crossing/TCD route.
+
+Verdict: `ACTIVE — EXACT ROUTE-CLOSING CORE`.
+
+`[OPEN CORE]` Eliminate one projective coordinate using the singular equation inside the
+Lean-proved refined `(R,z,v)` cone, then orient the resulting boundary-crossing polynomial. Generic
+finite Hankel geometry cannot orient it: a strict-head singular negative-crossing witness is
+already formalized. Theta source dynamics are indispensable.
 
 ## Representation lesson
 
@@ -127,3 +141,10 @@ coefficient hierarchy.
   a boundary-detected positive-weight component lowers to a finite vacuum string incompatible with
   positive scalar contravariance. Only automatic-grading, non-scalar/localized/indefinite, or direct
   cross-scale survivors remain.
+- 2026-08-29 — Automatic grading proved by finite Cartan spectral extraction. This kills every
+  positive scalar-contravariant source-`sl2` polynomial carrier containing D1, including all
+  non-graded proper carriers. Only non-scalar/localized/indefinite or direct cross-scale survivors
+  remain.
+- 2026-08-29 — Replaced stronger-than-needed global drift/concavity target by exact
+  `TCD-D1-BOUNDARY-FLUX`: positive canonical flux on every singular face is already equivalent in
+  Lean to global strict D1 and therefore closes finite TCD/S6F gate outright.

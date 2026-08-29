@@ -1,0 +1,521 @@
+{
+  "L": "1.6",
+  "modes": 200,
+  "ground_zero_count": 1800,
+  "tail_zero_count": 400,
+  "digits": 225,
+  "rayleigh_ground_truncation": "4.7886139720058411522885822291926394920862572358734982848291420538654022699193340653596481097161096489467936134576578080275084111197787150299840471668580529066467108147681732112653701206469810393221929366547397734639e-121",
+  "fixed_vector_tail_contribution": "3.2055039170805724059631240727073926996511219331026651732899008443833566305668871110084639495645899212663787088987566107150839137078788096698608380924106477127838705103721892216600265176779483108675899308714613761932e-121",
+  "fixed_vector_total": "7.9941178890864135582517063019000321917373791689761634581190428982487589004862211763681120592806995702131723223564144187425923248276575246998448852592687006194305813251403624329253966383249293501897828675262011496572e-121",
+  "minus_log_fixed_vector_total": "276.5340902449029359718670070331882733477",
+  "coefficient_l2_error": "0",
+  "timings": {
+    "sampling_seconds": 0.32382774353027344,
+    "gram_seconds": 0.31491875648498535,
+    "eigensolve_seconds": 14.632560014724731
+  },
+  "locking": {
+    "cutoff_T_star": "154.142433282416983937720308076",
+    "target_zero_count": 55,
+    "matched_root_count": 55,
+    "max_gap_normalized_offset": "2.43048607020120348e-45",
+    "median_gap_normalized_offset": "2.86604139181812881e-72",
+    "records": [
+      {
+        "index": 1,
+        "zeta_ordinate": "14.1347251417346937904572519836",
+        "root_found": true,
+        "transform_root": "14.1347251417346937904572519836",
+        "absolute_offset": "4.42235052801054747e-117",
+        "gap_normalized_offset": "6.42100855117503553e-118",
+        "residual": "4.2472307e-183"
+      },
+      {
+        "index": 2,
+        "zeta_ordinate": "21.0220396387715549926284795939",
+        "root_found": true,
+        "transform_root": "21.0220396387715549926284795939",
+        "absolute_offset": "1.17116298380781175e-113",
+        "gap_normalized_offset": "2.93611541319017989e-114",
+        "residual": "3.4300367e-184"
+      },
+      {
+        "index": 3,
+        "zeta_ordinate": "25.0108575801456887632137909926",
+        "root_found": true,
+        "transform_root": "25.0108575801456887632137909926",
+        "absolute_offset": "1.42372588575979217e-111",
+        "gap_normalized_offset": "3.56929272452410701e-112",
+        "residual": "1.0081407e-183"
+      },
+      {
+        "index": 4,
+        "zeta_ordinate": "30.4248761258595132103118975306",
+        "root_found": true,
+        "transform_root": "30.4248761258595132103118975306",
+        "absolute_offset": "1.95964334165729715e-108",
+        "gap_normalized_offset": "7.80676715492518822e-109",
+        "residual": "5.0431849e-186"
+      },
+      {
+        "index": 5,
+        "zeta_ordinate": "32.9350615877391896906623689641",
+        "root_found": true,
+        "transform_root": "32.9350615877391896906623689641",
+        "absolute_offset": "4.84503545323705669e-107",
+        "gap_normalized_offset": "1.93015039199892361e-107",
+        "residual": "7.0299523e-184"
+      },
+      {
+        "index": 6,
+        "zeta_ordinate": "37.5861781588256712572177634807",
+        "root_found": true,
+        "transform_root": "37.5861781588256712572177634807",
+        "absolute_offset": "1.18269592598583141e-104",
+        "gap_normalized_offset": "3.54893151514388443e-105",
+        "residual": "3.4782602e-184"
+      },
+      {
+        "index": 7,
+        "zeta_ordinate": "40.9187190121474951873981269146",
+        "root_found": true,
+        "transform_root": "40.9187190121474951873981269146",
+        "absolute_offset": "1.66308876907365946e-102",
+        "gap_normalized_offset": "6.90549887382124727e-103",
+        "residual": "7.3101351e-185"
+      },
+      {
+        "index": 8,
+        "zeta_ordinate": "43.3270732809149995194961221654",
+        "root_found": true,
+        "transform_root": "43.3270732809149995194961221654",
+        "absolute_offset": "2.67627665381846628e-101",
+        "gap_normalized_offset": "1.11124708209480887e-101",
+        "residual": "1.1554706e-184"
+      },
+      {
+        "index": 9,
+        "zeta_ordinate": "48.0051508811671597279424727494",
+        "root_found": true,
+        "transform_root": "48.0051508811671597279424727494",
+        "absolute_offset": "1.77646891522495248e-98",
+        "gap_normalized_offset": "1.00440289463925984e-98",
+        "residual": "1.80287e-185"
+      },
+      {
+        "index": 10,
+        "zeta_ordinate": "49.7738324776723021819167846786",
+        "root_found": true,
+        "transform_root": "49.7738324776723021819167846786",
+        "absolute_offset": "2.23263646956832787e-97",
+        "gap_normalized_offset": "1.26231678668446894e-97",
+        "residual": "1.7546158e-188"
+      },
+      {
+        "index": 11,
+        "zeta_ordinate": "52.9703214777144606441472966089",
+        "root_found": true,
+        "transform_root": "52.9703214777144606441472966089",
+        "absolute_offset": "5.09720574178998449e-96",
+        "gap_normalized_offset": "1.5946263984399e-96",
+        "residual": "4.4775121e-185"
+      },
+      {
+        "index": 12,
+        "zeta_ordinate": "56.4462476970633948043677594767",
+        "root_found": true,
+        "transform_root": "56.4462476970633948043677594767",
+        "absolute_offset": "5.05888582356549567e-94",
+        "gap_normalized_offset": "1.74396451550415621e-94",
+        "residual": "1.1380203e-184"
+      },
+      {
+        "index": 13,
+        "zeta_ordinate": "59.347044002602353079653648675",
+        "root_found": true,
+        "transform_root": "59.347044002602353079653648675",
+        "absolute_offset": "6.40671101398064315e-92",
+        "gap_normalized_offset": "4.31505492666686092e-92",
+        "residual": "1.2846908e-184"
+      },
+      {
+        "index": 14,
+        "zeta_ordinate": "60.8317785246098098442599018245",
+        "root_found": true,
+        "transform_root": "60.8317785246098098442599018245",
+        "absolute_offset": "3.11674210516682961e-91",
+        "gap_normalized_offset": "2.09919151132338016e-91",
+        "residual": "5.7750383e-185"
+      },
+      {
+        "index": 15,
+        "zeta_ordinate": "65.1125440480816066608750542532",
+        "root_found": true,
+        "transform_root": "65.1125440480816066608750542532",
+        "absolute_offset": "4.11033695677732073e-89",
+        "gap_normalized_offset": "2.08936460597140512e-89",
+        "residual": "2.8144982e-185"
+      },
+      {
+        "index": 16,
+        "zeta_ordinate": "67.0798105294941737144788288965",
+        "root_found": true,
+        "transform_root": "67.0798105294941737144788288965",
+        "absolute_offset": "8.47043258992001271e-88",
+        "gap_normalized_offset": "4.30568642832665045e-88",
+        "residual": "4.6840816e-186"
+      },
+      {
+        "index": 17,
+        "zeta_ordinate": "69.5464017111739792529268575266",
+        "root_found": true,
+        "transform_root": "69.5464017111739792529268575266",
+        "absolute_offset": "1.32403883186901983e-86",
+        "gap_normalized_offset": "5.3678892623272853e-87",
+        "residual": "6.1310654e-186"
+      },
+      {
+        "index": 18,
+        "zeta_ordinate": "72.0671576744819075825221079698",
+        "root_found": true,
+        "transform_root": "72.0671576744819075825221079698",
+        "absolute_offset": "1.78537948886082973e-85",
+        "gap_normalized_offset": "7.08271453027891889e-86",
+        "residual": "9.7125944e-185"
+      },
+      {
+        "index": 19,
+        "zeta_ordinate": "75.704690699083933168326916762",
+        "root_found": true,
+        "transform_root": "75.704690699083933168326916762",
+        "absolute_offset": "4.9531814235809457e-83",
+        "gap_normalized_offset": "3.43935256125564942e-83",
+        "residual": "1.7364778e-185"
+      },
+      {
+        "index": 20,
+        "zeta_ordinate": "77.1448400688748053726826648563",
+        "root_found": true,
+        "transform_root": "77.1448400688748053726826648563",
+        "absolute_offset": "4.52854545817724927e-82",
+        "gap_normalized_offset": "3.14449705924243886e-82",
+        "residual": "4.8348985e-185"
+      },
+      {
+        "index": 21,
+        "zeta_ordinate": "79.3373750202493679227635928771",
+        "root_found": true,
+        "transform_root": "79.3373750202493679227635928771",
+        "absolute_offset": "2.16450977177839284e-81",
+        "gap_normalized_offset": "9.87217909763034826e-82",
+        "residual": "2.5371931e-185"
+      },
+      {
+        "index": 22,
+        "zeta_ordinate": "82.9103808540860301831648374948",
+        "root_found": true,
+        "transform_root": "82.9103808540860301831648374948",
+        "absolute_offset": "1.87877355055735826e-79",
+        "gap_normalized_offset": "1.02940171365321673e-79",
+        "residual": "1.4174733e-184"
+      },
+      {
+        "index": 23,
+        "zeta_ordinate": "84.7354929805170501057353112068",
+        "root_found": true,
+        "transform_root": "84.7354929805170501057353112068",
+        "absolute_offset": "2.6646431106165282e-78",
+        "gap_normalized_offset": "1.45998871632462321e-78",
+        "residual": "4.4973333e-185"
+      },
+      {
+        "index": 24,
+        "zeta_ordinate": "87.4252746131252294065316678509",
+        "root_found": true,
+        "transform_root": "87.4252746131252294065316678509",
+        "absolute_offset": "1.05963194342854024e-76",
+        "gap_normalized_offset": "7.65720423663408211e-77",
+        "residual": "9.792279e-188"
+      },
+      {
+        "index": 25,
+        "zeta_ordinate": "88.8091112076344654236823480795",
+        "root_found": true,
+        "transform_root": "88.8091112076344654236823480795",
+        "absolute_offset": "3.96416686584297933e-76",
+        "gap_normalized_offset": "2.86462063626004338e-76",
+        "residual": "3.06395e-185"
+      },
+      {
+        "index": 26,
+        "zeta_ordinate": "92.4918992705584842962597252418",
+        "root_found": true,
+        "transform_root": "92.4918992705584842962597252418",
+        "absolute_offset": "1.86078759972216026e-74",
+        "gap_normalized_offset": "8.61697240701099047e-75",
+        "residual": "9.6112415e-185"
+      },
+      {
+        "index": 27,
+        "zeta_ordinate": "94.6513440405198869665979258152",
+        "root_found": true,
+        "transform_root": "94.6513440405198869665979258152",
+        "absolute_offset": "1.05132576411103791e-72",
+        "gap_normalized_offset": "8.62244094715695757e-73",
+        "residual": "9.2759366e-185"
+      },
+      {
+        "index": 28,
+        "zeta_ordinate": "95.8706342282453097587410292192",
+        "root_found": true,
+        "transform_root": "95.8706342282453097587410292192",
+        "absolute_offset": "3.49453614665875829e-72",
+        "gap_normalized_offset": "2.86604139181812881e-72",
+        "residual": "9.9530588e-185"
+      },
+      {
+        "index": 29,
+        "zeta_ordinate": "98.8311942181936922333244201386",
+        "root_found": true,
+        "transform_root": "98.8311942181936922333244201386",
+        "absolute_offset": "2.83624341587036188e-71",
+        "gap_normalized_offset": "1.14058499350802064e-71",
+        "residual": "8.3007475e-185"
+      },
+      {
+        "index": 30,
+        "zeta_ordinate": "101.31785100573139122878544794",
+        "root_found": true,
+        "transform_root": "101.31785100573139122878544794",
+        "absolute_offset": "6.83524570760321736e-70",
+        "gap_normalized_offset": "2.83892615982027447e-70",
+        "residual": "2.9649757e-186"
+      },
+      {
+        "index": 31,
+        "zeta_ordinate": "103.725538040478339416398408109",
+        "root_found": true,
+        "transform_root": "103.725538040478339416398408109",
+        "absolute_offset": "2.51187098817161225e-68",
+        "gap_normalized_offset": "1.45946944565792841e-68",
+        "residual": "9.9581146e-186"
+      },
+      {
+        "index": 32,
+        "zeta_ordinate": "105.446623052326094493670832414",
+        "root_found": true,
+        "transform_root": "105.446623052326094493670832414",
+        "absolute_offset": "2.55627433248075749e-67",
+        "gap_normalized_offset": "1.4852690685722398e-67",
+        "residual": "5.6967634e-185"
+      },
+      {
+        "index": 33,
+        "zeta_ordinate": "107.168611184276407515123351963",
+        "root_found": true,
+        "transform_root": "107.168611184276407515123351963",
+        "absolute_offset": "7.6112749243669174e-67",
+        "gap_normalized_offset": "4.4200507443372649e-67",
+        "residual": "1.6356101e-185"
+      },
+      {
+        "index": 34,
+        "zeta_ordinate": "111.02953554316967452465645031",
+        "root_found": true,
+        "transform_root": "111.02953554316967452465645031",
+        "absolute_offset": "2.40181952147103324e-64",
+        "gap_normalized_offset": "2.84197415070061697e-64",
+        "residual": "1.7644952e-186"
+      },
+      {
+        "index": 35,
+        "zeta_ordinate": "111.874659176992637085612078717",
+        "root_found": true,
+        "transform_root": "111.874659176992637085612078717",
+        "absolute_offset": "8.72592376579901735e-64",
+        "gap_normalized_offset": "1.03250263234585315e-63",
+        "residual": "1.7444316e-185"
+      },
+      {
+        "index": 36,
+        "zeta_ordinate": "114.320220915452712765890937276",
+        "root_found": true,
+        "transform_root": "114.320220915452712765890937276",
+        "absolute_offset": "4.17468445048129005e-63",
+        "gap_normalized_offset": "2.18975785093875888e-63",
+        "residual": "8.2357199e-185"
+      },
+      {
+        "index": 37,
+        "zeta_ordinate": "116.226680320857554382160804312",
+        "root_found": true,
+        "transform_root": "116.226680320857554382160804312",
+        "absolute_offset": "2.47004387816868104e-62",
+        "gap_normalized_offset": "1.29561839668133966e-62",
+        "residual": "5.7874618e-185"
+      },
+      {
+        "index": 38,
+        "zeta_ordinate": "118.790782865976217322979139703",
+        "root_found": true,
+        "transform_root": "118.790782865976217322979139703",
+        "absolute_offset": "2.94314261389423043e-61",
+        "gap_normalized_offset": "1.14782562791693109e-61",
+        "residual": "3.7055374e-188"
+      },
+      {
+        "index": 39,
+        "zeta_ordinate": "121.37012500242064591894553297",
+        "root_found": true,
+        "transform_root": "121.37012500242064591894553297",
+        "absolute_offset": "1.55703414428801487e-59",
+        "gap_normalized_offset": "9.87524517466870157e-60",
+        "residual": "1.1645458e-186"
+      },
+      {
+        "index": 40,
+        "zeta_ordinate": "122.946829293552588200817460331",
+        "root_found": true,
+        "transform_root": "122.946829293552588200817460331",
+        "absolute_offset": "1.98202784540111974e-58",
+        "gap_normalized_offset": "1.51301075873021387e-58",
+        "residual": "5.3569692e-186"
+      },
+      {
+        "index": 41,
+        "zeta_ordinate": "124.256818554345767184732007966",
+        "root_found": true,
+        "transform_root": "124.256818554345767184732007966",
+        "absolute_offset": "3.88768764531960937e-58",
+        "gap_normalized_offset": "2.96772482162615013e-58",
+        "residual": "5.3123237e-185"
+      },
+      {
+        "index": 42,
+        "zeta_ordinate": "127.516683879596495124279323767",
+        "root_found": true,
+        "transform_root": "127.516683879596495124279323767",
+        "absolute_offset": "5.02516833221278292e-57",
+        "gap_normalized_offset": "2.43701203261495549e-57",
+        "residual": "1.6342781e-185"
+      },
+      {
+        "index": 43,
+        "zeta_ordinate": "129.578704199956050985768033906",
+        "root_found": true,
+        "transform_root": "129.578704199956050985768033906",
+        "absolute_offset": "1.37645972423524718e-55",
+        "gap_normalized_offset": "9.12176287042298565e-56",
+        "residual": "4.9072648e-185"
+      },
+      {
+        "index": 44,
+        "zeta_ordinate": "131.087688530932656723566372462",
+        "root_found": true,
+        "transform_root": "131.087688530932656723566372462",
+        "absolute_offset": "7.34660413967264083e-55",
+        "gap_normalized_offset": "4.86857549734659078e-55",
+        "residual": "9.1364857e-186"
+      },
+      {
+        "index": 45,
+        "zeta_ordinate": "133.497737202997586450130492043",
+        "root_found": true,
+        "transform_root": "133.497737202997586450130492043",
+        "absolute_offset": "1.04187025506224861e-53",
+        "gap_normalized_offset": "8.27687460098174477e-54",
+        "residual": "3.681152e-185"
+      },
+      {
+        "index": 46,
+        "zeta_ordinate": "134.756509753373871331326064157",
+        "root_found": true,
+        "transform_root": "134.756509753373871331326064157",
+        "absolute_offset": "2.68933149605029734e-53",
+        "gap_normalized_offset": "2.13647135477046705e-53",
+        "residual": "1.9608877e-187"
+      },
+      {
+        "index": 47,
+        "zeta_ordinate": "138.11604205453344320019155519",
+        "root_found": true,
+        "transform_root": "138.11604205453344320019155519",
+        "absolute_offset": "7.92581144559424342e-52",
+        "gap_normalized_offset": "4.89197221434035332e-52",
+        "residual": "8.4355229e-186"
+      },
+      {
+        "index": 48,
+        "zeta_ordinate": "139.736208952121388950450046523",
+        "root_found": true,
+        "transform_root": "139.736208952121388950450046523",
+        "absolute_offset": "1.37321835588353671e-50",
+        "gap_normalized_offset": "9.8970802742399742e-51",
+        "residual": "1.2691938e-185"
+      },
+      {
+        "index": 49,
+        "zeta_ordinate": "141.123707404021123761940353818",
+        "root_found": true,
+        "transform_root": "141.123707404021123761940353818",
+        "absolute_offset": "4.77335749661573368e-50",
+        "gap_normalized_offset": "3.44026149368321756e-50",
+        "residual": "2.9622118e-185"
+      },
+      {
+        "index": 50,
+        "zeta_ordinate": "143.111845807620632739405123869",
+        "root_found": true,
+        "transform_root": "143.111845807620632739405123869",
+        "absolute_offset": "1.12803882937313652e-49",
+        "gap_normalized_offset": "5.67384457405395455e-50",
+        "residual": "8.2783798e-187"
+      },
+      {
+        "index": 51,
+        "zeta_ordinate": "146.000982486765518547402507596",
+        "root_found": true,
+        "transform_root": "146.000982486765518547402507596",
+        "absolute_offset": "3.09858714922625597e-48",
+        "gap_normalized_offset": "2.17936736021173663e-48",
+        "residual": "1.0486232e-185"
+      },
+      {
+        "index": 52,
+        "zeta_ordinate": "147.42276534255960204952118501",
+        "root_found": true,
+        "transform_root": "147.42276534255960204952118501",
+        "absolute_offset": "1.80605497168355562e-47",
+        "gap_normalized_offset": "1.27027482735741059e-47",
+        "residual": "1.7919623e-185"
+      },
+      {
+        "index": 53,
+        "zeta_ordinate": "150.053520420784880351432467237",
+        "root_found": true,
+        "transform_root": "150.053520420784880351432467237",
+        "absolute_offset": "8.25926001706841611e-46",
+        "gap_normalized_offset": "9.47448393622854562e-46",
+        "residual": "2.5519179e-186"
+      },
+      {
+        "index": 54,
+        "zeta_ordinate": "150.925257612241466761852524678",
+        "root_found": true,
+        "transform_root": "150.925257612241466761852524678",
+        "absolute_offset": "2.11874510071155283e-45",
+        "gap_normalized_offset": "2.43048607020120348e-45",
+        "residual": "5.3843558e-186"
+      },
+      {
+        "index": 55,
+        "zeta_ordinate": "153.024693811198896198256544255",
+        "root_found": true,
+        "transform_root": "153.024693811198896198256544255",
+        "absolute_offset": "2.51418354029661521e-45",
+        "gap_normalized_offset": "2.24934665459806446e-45",
+        "residual": "2.6758228e-185"
+      }
+    ]
+  }
+}

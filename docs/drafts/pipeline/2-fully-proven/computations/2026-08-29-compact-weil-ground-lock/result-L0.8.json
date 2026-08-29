@@ -1,0 +1,62 @@
+{
+  "L": "0.8",
+  "modes": 24,
+  "ground_zero_count": 300,
+  "tail_zero_count": 100,
+  "digits": 100,
+  "rayleigh_ground_truncation": "2.21980010791692877580675368764734307778571369665789933559371788975610589980997548744111090e-17",
+  "fixed_vector_tail_contribution": "2.16043126771566631137808861251680731787178903481484770421591818923359445073178146879832642e-19",
+  "fixed_vector_total": "2.24140442059408543892053457377251115096443158700604781263587707164844184431729330212909416e-17",
+  "minus_log_fixed_vector_total": "38.33684393801808279198689467157551795916",
+  "coefficient_l2_error": "2.8574684782056874555e-101",
+  "timings": {
+    "sampling_seconds": 0.023062944412231445,
+    "gram_seconds": 0.003587961196899414,
+    "eigensolve_seconds": 0.015044212341308594
+  },
+  "locking": {
+    "cutoff_T_star": "31.1208205549434713400926323981",
+    "target_zero_count": 4,
+    "matched_root_count": 4,
+    "max_gap_normalized_offset": "2.12364389206161922e-7",
+    "median_gap_normalized_offset": "2.32748950317889893e-10",
+    "records": [
+      {
+        "index": 1,
+        "zeta_ordinate": "14.1347251417346937904572519836",
+        "root_found": true,
+        "transform_root": "14.134725141734750861133227828",
+        "absolute_offset": "5.70706759758444538e-14",
+        "gap_normalized_offset": "8.28634673215489859e-15",
+        "residual": "1.8100195e-93"
+      },
+      {
+        "index": 2,
+        "zeta_ordinate": "21.0220396387715549926284795939",
+        "root_found": true,
+        "transform_root": "21.0220396387994712975506018341",
+        "absolute_offset": "2.79163049221222402e-11",
+        "gap_normalized_offset": "6.99864103411678177e-12",
+        "residual": "3.6303093e-95"
+      },
+      {
+        "index": 3,
+        "zeta_ordinate": "25.0108575801456887632137909926",
+        "root_found": true,
+        "transform_root": "25.0108575810740819520777870915",
+        "absolute_offset": "9.28393188863996099e-10",
+        "gap_normalized_offset": "2.32748950317889893e-10",
+        "residual": "8.8484941e-94"
+      },
+      {
+        "index": 4,
+        "zeta_ordinate": "30.4248761258595132103118975306",
+        "root_found": true,
+        "transform_root": "30.4248762736533268141577367277",
+        "absolute_offset": "1.47793813603845839e-7",
+        "gap_normalized_offset": "2.12364389206161922e-7",
+        "residual": "3.0519638e-94"
+      }
+    ]
+  }
+}

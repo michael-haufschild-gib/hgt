@@ -2,8 +2,9 @@
 
 ## Status
 
-Stage 1 computational experiment. Numerical evidence only; no computed value may be used as a
-Lean premise or as a paper proof.
+Structural experiment complete; deep-window asymptotic discrimination remains open. Numerical
+evidence only; no computed value may be used as a Lean premise or as a paper proof. Full report:
+`../2-fully-proven/computations/2026-08-29-compact-weil-ground-lock/REPORT.md`.
 
 ## Exact question
 
@@ -65,3 +66,13 @@ This avoids a dense, catastrophically ill-conditioned high-precision eigensolve.
 
 Only exact algebraic identities exposed by the experiment may be formalized. Numerical values,
 zero tables, fitted constants, and observed signs remain outside Lean proofs.
+
+## Outcome
+
+Ground transforms lock every tested ordinate below saturation height through `L=1.8`, but a hostile
+close-pair deformation exposes cubic conditioning and eventual two-root-to-one-root collapse while
+the scalar floor barely moves. This kills the inference from tiny ground energy to
+multiplicity-exact cofinal locking. The unconditional survivor—the exact average/difference split
+and quadratic loss of the difference channel—was formalized in
+`CompactWeilClosePairSamplingCollision.lean`. Route continuation should test a derivative/Hermite
+sampling head, not add more scalar floor digits.

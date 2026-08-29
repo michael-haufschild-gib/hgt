@@ -69,10 +69,10 @@ The capstone and its two key existence theorems report only
   arXiv:1709.08394, Theorem 6.3.
 - No audited source treats this theta D1 cyclic carrier or derives this vacuum-string obstruction.
 
-## Surviving proof burden
+## Subsequent closure
 
-An arbitrary source-`sl2`-stable carrier need not assume adapted-component closure. The immediate
-hard frontier is to prove that closure automatically by finite spectral projection for the Cartan
-operator. If successful, every scalar proper-carrier rescue dies. Remaining representation routes
-would then require a non-scalar adjoint law, localization/completion outside the polynomial carrier,
-or an indefinite form. Direct cross-scale determinant geometry remains unaffected.
+`S6G-D1-AUTO-GRADE` proves that every source-`E,F`-stable polynomial submodule automatically has
+the adapted-component closure assumed here. Therefore the unrestricted scalar proper-carrier route
+is now dead. Remaining representation routes require a non-scalar adjoint law,
+localization/completion outside the polynomial carrier, or an indefinite form. Direct cross-scale
+determinant geometry remains unaffected.

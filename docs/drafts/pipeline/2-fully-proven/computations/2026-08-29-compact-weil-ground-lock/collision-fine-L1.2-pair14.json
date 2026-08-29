@@ -1,0 +1,570 @@
+{
+  "L": "1.2",
+  "modes": 70,
+  "pair_left_index": 14,
+  "left_ordinate": "60.831778524609809844259901824524003802910090451219",
+  "original_gap": "4.2807655234717968166151524286597012264380588439475",
+  "results": [
+    {
+      "delta_label": "original",
+      "delta": "4.2807655234717968166151524286597012264380588439475",
+      "fixed_vector_total": "9.2138597630927824422763846427408795579808656677427827556909139564521537283198256193960282154966770205380391364478028042812598248586352458487e-49",
+      "minus_log_fixed_vector_total": "110.6059607102915862046576053656209562897",
+      "matched_root_count": 16,
+      "max_gap_normalized_offset": "5.65229980606969689e-20",
+      "pair_records": [
+        {
+          "index": 14,
+          "zeta_ordinate": "60.8317785246098098442599018245",
+          "root_found": true,
+          "transform_root": "60.8317785246098098442601379164",
+          "absolute_offset": "2.36091923588128807e-22",
+          "gap_normalized_offset": "1.59012887549026145e-22",
+          "residual": "1.7566546e-144"
+        },
+        {
+          "index": 15,
+          "zeta_ordinate": "65.1125440480816066608750542532",
+          "root_found": true,
+          "transform_root": "65.1125440480816066608846261003",
+          "absolute_offset": "9.57184712102400046e-21",
+          "gap_normalized_offset": "4.86555696010795396e-21",
+          "residual": "1.9582109e-144"
+        }
+      ],
+      "timings": {
+        "sampling_seconds": 0.046221256256103516,
+        "gram_seconds": 0.03511333465576172,
+        "eigensolve_seconds": 0.4097623825073242
+      }
+    },
+    {
+      "delta_label": "1",
+      "delta": "1.0",
+      "fixed_vector_total": "1.1666815636328341629450999405550318924957761064261461929054638707911424008140611951653961273896362079182558909086634816823241100612664824429e-48",
+      "minus_log_fixed_vector_total": "110.3699210151403117524627960128807932875",
+      "matched_root_count": 16,
+      "max_gap_normalized_offset": "7.77063022768010769e-21",
+      "pair_records": [
+        {
+          "index": 14,
+          "zeta_ordinate": "60.8317785246098098442599018245",
+          "root_found": true,
+          "transform_root": "60.8317785246098098442646038348",
+          "absolute_offset": "4.70201029142978538e-21",
+          "gap_normalized_offset": "4.70201029142978538e-21",
+          "residual": "1.31061e-145"
+        },
+        {
+          "index": 15,
+          "zeta_ordinate": "61.8317785246098098442599018245",
+          "root_found": true,
+          "transform_root": "61.8317785246098098442638756127",
+          "absolute_offset": "3.97378815678841208e-21",
+          "gap_normalized_offset": "3.97378815678841208e-21",
+          "residual": "2.1906996e-144"
+        }
+      ],
+      "timings": {
+        "sampling_seconds": 0.045702219009399414,
+        "gram_seconds": 0.03369927406311035,
+        "eigensolve_seconds": 0.41051650047302246
+      }
+    },
+    {
+      "delta_label": "1e-1",
+      "delta": "0.1",
+      "fixed_vector_total": "1.2466581311798792098933011157851318335625889303679605743146943335842514478564324412997297196810411985564003629982678622548699136514822402350e-48",
+      "minus_log_fixed_vector_total": "110.3036179876264560681758723855252537143",
+      "matched_root_count": 16,
+      "max_gap_normalized_offset": "4.80985352209212788e-18",
+      "pair_records": [
+        {
+          "index": 14,
+          "zeta_ordinate": "60.8317785246098098442599018245",
+          "root_found": true,
+          "transform_root": "60.8317785246098098447408871767",
+          "absolute_offset": "4.80985352209212788e-19",
+          "gap_normalized_offset": "4.80985352209212788e-18",
+          "residual": "1.5127818e-144"
+        },
+        {
+          "index": 15,
+          "zeta_ordinate": "60.9317785246098098442599018245",
+          "root_found": true,
+          "transform_root": "60.9317785246098098447129334166",
+          "absolute_offset": "4.530315920697619e-19",
+          "gap_normalized_offset": "4.530315920697619e-18",
+          "residual": "2.0124581e-145"
+        }
+      ],
+      "timings": {
+        "sampling_seconds": 0.04571270942687988,
+        "gram_seconds": 0.032430171966552734,
+        "eigensolve_seconds": 0.4098491668701172
+      }
+    },
+    {
+      "delta_label": "1e-2",
+      "delta": "0.01",
+      "fixed_vector_total": "1.2550004572057031377689520976213998529845176659097649440368818598662240889704148661640059779158211332033480100890621386688183958774700861584e-48",
+      "minus_log_fixed_vector_total": "110.2969485268231788064934650241574533610",
+      "matched_root_count": 16,
+      "max_gap_normalized_offset": "4.82075633434126394e-15",
+      "pair_records": [
+        {
+          "index": 14,
+          "zeta_ordinate": "60.8317785246098098442599018245",
+          "root_found": true,
+          "transform_root": "60.8317785246098098924674651679",
+          "absolute_offset": "4.82075633434126394e-17",
+          "gap_normalized_offset": "4.82075633434126394e-15",
+          "residual": "8.1946621e-145"
+        },
+        {
+          "index": 15,
+          "zeta_ordinate": "60.8417785246098098442599018245",
+          "root_found": true,
+          "transform_root": "60.8417785246098098921533932962",
+          "absolute_offset": "4.78934914716453757e-17",
+          "gap_normalized_offset": "4.78934914716453757e-15",
+          "residual": "5.625896e-145"
+        }
+      ],
+      "timings": {
+        "sampling_seconds": 0.04565834999084473,
+        "gram_seconds": 0.03373527526855469,
+        "eigensolve_seconds": 0.4092550277709961
+      }
+    },
+    {
+      "delta_label": "1e-4",
+      "delta": "0.0001",
+      "fixed_vector_total": "1.2559220685690141220237543893361794639304089338306039083100696065529031956948658487299659206633406379302946356187442971029307549318342168358e-48",
+      "minus_log_fixed_vector_total": "110.2962144449108642578712066076956259227",
+      "matched_root_count": 16,
+      "max_gap_normalized_offset": "4.82195694897548683e-9",
+      "pair_records": [
+        {
+          "index": 14,
+          "zeta_ordinate": "60.8317785246098098442599018245",
+          "root_found": true,
+          "transform_root": "60.8317785246102920399547993732",
+          "absolute_offset": "4.82195694897548683e-13",
+          "gap_normalized_offset": "4.82195694897548683e-9",
+          "residual": "1.9347382e-144"
+        },
+        {
+          "index": 15,
+          "zeta_ordinate": "60.8318785246098098442599018245",
+          "root_found": true,
+          "transform_root": "60.8318785246102920081421604281",
+          "absolute_offset": "4.8216388225860361e-13",
+          "gap_normalized_offset": "4.8216388225860361e-9",
+          "residual": "1.3227884e-144"
+        }
+      ],
+      "timings": {
+        "sampling_seconds": 0.04566144943237305,
+        "gram_seconds": 0.029645919799804688,
+        "eigensolve_seconds": 0.4080038070678711
+      }
+    },
+    {
+      "delta_label": "1e-8",
+      "delta": "0.00000001",
+      "fixed_vector_total": "1.2559266685812223561726230972968477170949852408522400150814855766032086149607921617048537621692926193650065140855024775367963617161441168575e-48",
+      "minus_log_fixed_vector_total": "110.2962107822602116089896387670447122931",
+      "matched_root_count": 15,
+      "max_gap_normalized_offset": "0.499974078598653241",
+      "pair_records": [
+        {
+          "index": 14,
+          "zeta_ordinate": "60.8317785246098098442599018245",
+          "root_found": true,
+          "transform_root": "60.8317785296095506302464342333",
+          "absolute_offset": "4.99974078598653241e-9",
+          "gap_normalized_offset": "0.499974078598653241",
+          "residual": "2.9282639e-144"
+        },
+        {
+          "index": 15,
+          "zeta_ordinate": "60.8317785346098098442599018245",
+          "root_found": false,
+          "transform_root": "",
+          "absolute_offset": "",
+          "gap_normalized_offset": "",
+          "residual": ""
+        }
+      ],
+      "timings": {
+        "sampling_seconds": 0.04442095756530762,
+        "gram_seconds": 0.02829432487487793,
+        "eigensolve_seconds": 0.4089505672454834
+      }
+    },
+    {
+      "delta_label": "1e-9",
+      "delta": "0.000000001",
+      "fixed_vector_total": "1.2554603292233507106414388200992160402695947146084699118123661865874691871389803732619166704436008014141926775315090527089743705220219824449e-48",
+      "minus_log_fixed_vector_total": "110.2965821621898196117111829637664812171",
+      "matched_root_count": 16,
+      "max_gap_normalized_offset": "9642768.18150842331",
+      "pair_records": [
+        {
+          "index": 14,
+          "zeta_ordinate": "60.8317785246098098442599018245",
+          "root_found": true,
+          "transform_root": "60.8317785251098098184987196086",
+          "absolute_offset": "4.99999974238817784e-10",
+          "gap_normalized_offset": "0.499999974238817784",
+          "residual": "3.2971294e-145"
+        },
+        {
+          "index": 15,
+          "zeta_ordinate": "60.8317785256098098442599018245",
+          "root_found": true,
+          "transform_root": "60.8414212937913182675653092698",
+          "absolute_offset": "0.00964276818150842331",
+          "gap_normalized_offset": "9642768.18150842331",
+          "residual": "2.0106607e-144"
+        }
+      ],
+      "timings": {
+        "sampling_seconds": 0.045566558837890625,
+        "gram_seconds": 0.031089067459106445,
+        "eigensolve_seconds": 0.41042327880859375
+      }
+    },
+    {
+      "delta_label": "3e-10",
+      "delta": "0.0000000003",
+      "fixed_vector_total": "1.2507172474699254082375066909798468644761673523704767284449247462443352322259197536517239884356570047213749448606959990167114550991635765047e-48",
+      "minus_log_fixed_vector_total": "110.3003672789831552324245080911561885089",
+      "matched_root_count": 16,
+      "max_gap_normalized_offset": "356702430.855634946",
+      "pair_records": [
+        {
+          "index": 14,
+          "zeta_ordinate": "60.8317785246098098442599018245",
+          "root_found": true,
+          "transform_root": "60.8317785247598098440644907471",
+          "absolute_offset": "1.49999999804588923e-10",
+          "gap_normalized_offset": "0.499999999348629742",
+          "residual": "6.9241481e-145"
+        },
+        {
+          "index": 15,
+          "zeta_ordinate": "60.8317785249098098442599018245",
+          "root_found": true,
+          "transform_root": "60.9387892541665003280675013107",
+          "absolute_offset": "0.107010729256690484",
+          "gap_normalized_offset": "356702430.855634946",
+          "residual": "8.1212623e-145"
+        }
+      ],
+      "timings": {
+        "sampling_seconds": 0.04475235939025879,
+        "gram_seconds": 0.02820611000061035,
+        "eigensolve_seconds": 0.40875935554504395
+      }
+    },
+    {
+      "delta_label": "1e-10",
+      "delta": "0.0000000001",
+      "fixed_vector_total": "1.2105133937447594146164412836876090803336479205271764045379486130596956668027644690302088992227227138848073542190871397322096974323413560500e-48",
+      "minus_log_fixed_vector_total": "110.3330399017410490142603761030471697894",
+      "matched_root_count": 16,
+      "max_gap_normalized_offset": "9528895908.41437466",
+      "pair_records": [
+        {
+          "index": 14,
+          "zeta_ordinate": "60.8317785246098098442599018245",
+          "root_found": true,
+          "transform_root": "60.831778524659809844258927906",
+          "absolute_offset": "4.99999999990260815e-11",
+          "gap_normalized_offset": "0.499999999990260815",
+          "residual": "3.1209481e-144"
+        },
+        {
+          "index": 15,
+          "zeta_ordinate": "60.8317785247098098442599018245",
+          "root_found": true,
+          "transform_root": "61.7846681155512473101720596573",
+          "absolute_offset": "0.952889590841437466",
+          "gap_normalized_offset": "9528895908.41437466",
+          "residual": "8.1440279e-145"
+        }
+      ],
+      "timings": {
+        "sampling_seconds": 0.04477715492248535,
+        "gram_seconds": 0.030530929565429688,
+        "eigensolve_seconds": 0.4086592197418213
+      }
+    },
+    {
+      "delta_label": "3e-11",
+      "delta": "0.00000000003",
+      "fixed_vector_total": "8.8651112638885983067830197138134938624151149492380711259062731364986099105166641344144882525430090464317382453318268434814830799988304285739e-49",
+      "minus_log_fixed_vector_total": "110.6445460663427698231362008030051617306",
+      "matched_root_count": 15,
+      "max_gap_normalized_offset": "0.49999999999584451",
+      "pair_records": [
+        {
+          "index": 14,
+          "zeta_ordinate": "60.8317785246098098442599018245",
+          "root_found": false,
+          "transform_root": "",
+          "absolute_offset": "",
+          "gap_normalized_offset": "",
+          "residual": ""
+        },
+        {
+          "index": 15,
+          "zeta_ordinate": "60.8317785246398098442599018245",
+          "root_found": true,
+          "transform_root": "60.8317785246248098442600264892",
+          "absolute_offset": "1.49999999998753353e-11",
+          "gap_normalized_offset": "0.49999999999584451",
+          "residual": "4.9651994e-145"
+        }
+      ],
+      "timings": {
+        "sampling_seconds": 0.04452061653137207,
+        "gram_seconds": 0.029430150985717773,
+        "eigensolve_seconds": 0.4075477123260498
+      }
+    },
+    {
+      "delta_label": "1e-11",
+      "delta": "0.00000000001",
+      "fixed_vector_total": "2.6597067065727853079515442940092030124061174653294493031058901360130876223716344038637172652025500278831801144001841788644442803240608318290e-49",
+      "minus_log_fixed_vector_total": "111.8484537006807100327048582489360939216",
+      "matched_root_count": 15,
+      "max_gap_normalized_offset": "0.499999999998406687",
+      "pair_records": [
+        {
+          "index": 14,
+          "zeta_ordinate": "60.8317785246098098442599018245",
+          "root_found": false,
+          "transform_root": "",
+          "absolute_offset": "",
+          "gap_normalized_offset": "",
+          "residual": ""
+        },
+        {
+          "index": 15,
+          "zeta_ordinate": "60.8317785246198098442599018245",
+          "root_found": true,
+          "transform_root": "60.8317785246148098442599177577",
+          "absolute_offset": "4.99999999998406687e-12",
+          "gap_normalized_offset": "0.499999999998406687",
+          "residual": "2.9419139e-144"
+        }
+      ],
+      "timings": {
+        "sampling_seconds": 0.04473590850830078,
+        "gram_seconds": 0.030456066131591797,
+        "eigensolve_seconds": 0.4083528518676758
+      }
+    },
+    {
+      "delta_label": "3e-12",
+      "delta": "0.000000000003",
+      "fixed_vector_total": "3.2517990137604452204088949077039138118757467808021251905029031079872302174477537080075884995634342170969589254279164119552923550400879071244e-50",
+      "minus_log_fixed_vector_total": "113.9500462638133609049422392019916534815",
+      "matched_root_count": 15,
+      "max_gap_normalized_offset": "0.499999999999512317",
+      "pair_records": [
+        {
+          "index": 14,
+          "zeta_ordinate": "60.8317785246098098442599018245",
+          "root_found": false,
+          "transform_root": "",
+          "absolute_offset": "",
+          "gap_normalized_offset": "",
+          "residual": ""
+        },
+        {
+          "index": 15,
+          "zeta_ordinate": "60.8317785246128098442599018245",
+          "root_found": true,
+          "transform_root": "60.8317785246113098442599032876",
+          "absolute_offset": "1.49999999999853695e-12",
+          "gap_normalized_offset": "0.499999999999512317",
+          "residual": "3.2882297e-144"
+        }
+      ],
+      "timings": {
+        "sampling_seconds": 0.045033931732177734,
+        "gram_seconds": 0.03405332565307617,
+        "eigensolve_seconds": 0.4079263210296631
+      }
+    },
+    {
+      "delta_label": "1e-12",
+      "delta": "0.000000000001",
+      "fixed_vector_total": "6.6320274645685572980451088831217628632352552437566626507119666549082483281088296724942868736452198265130053750786107841924600897218003039556e-51",
+      "minus_log_fixed_vector_total": "115.5399291836522852123740798073858339881",
+      "matched_root_count": 15,
+      "max_gap_normalized_offset": "0.499999999999829578",
+      "pair_records": [
+        {
+          "index": 14,
+          "zeta_ordinate": "60.8317785246098098442599018245",
+          "root_found": false,
+          "transform_root": "",
+          "absolute_offset": "",
+          "gap_normalized_offset": "",
+          "residual": ""
+        },
+        {
+          "index": 15,
+          "zeta_ordinate": "60.8317785246108098442599018245",
+          "root_found": true,
+          "transform_root": "60.8317785246103098442599019949",
+          "absolute_offset": "4.99999999999829578e-13",
+          "gap_normalized_offset": "0.499999999999829578",
+          "residual": "1.1840353e-145"
+        }
+      ],
+      "timings": {
+        "sampling_seconds": 0.04589962959289551,
+        "gram_seconds": 0.033262014389038086,
+        "eigensolve_seconds": 0.40755605697631836
+      }
+    },
+    {
+      "delta_label": "1e-14",
+      "delta": "0.00000000000001",
+      "fixed_vector_total": "3.3195957573170316257505493688775461007839706795013234303876875759392570652821554276128190551219805109550967744296724034086392774983606592150e-51",
+      "minus_log_fixed_vector_total": "116.2319967270255319014562188121551939087",
+      "matched_root_count": 15,
+      "max_gap_normalized_offset": "0.499999999999137377",
+      "pair_records": [
+        {
+          "index": 14,
+          "zeta_ordinate": "60.8317785246098098442599018245",
+          "root_found": false,
+          "transform_root": "",
+          "absolute_offset": "",
+          "gap_normalized_offset": "",
+          "residual": ""
+        },
+        {
+          "index": 15,
+          "zeta_ordinate": "60.8317785246098198442599018245",
+          "root_found": true,
+          "transform_root": "60.8317785246098148442599018332",
+          "absolute_offset": "4.99999999999137377e-15",
+          "gap_normalized_offset": "0.499999999999137377",
+          "residual": "1.6063337e-145"
+        }
+      ],
+      "timings": {
+        "sampling_seconds": 0.044677019119262695,
+        "gram_seconds": 0.03205418586730957,
+        "eigensolve_seconds": 0.4077284336090088
+      }
+    },
+    {
+      "delta_label": "1e-16",
+      "delta": "1.0e-16",
+      "fixed_vector_total": "3.3192636381646537923420274895037233648648828349915177296488856351955199038247540848925177164381401943813025100482960887230461241892852220975e-51",
+      "minus_log_fixed_vector_total": "116.2320967801017819961268296181890024897",
+      "matched_root_count": 15,
+      "max_gap_normalized_offset": "0.499999999913899513",
+      "pair_records": [
+        {
+          "index": 14,
+          "zeta_ordinate": "60.8317785246098098442599018245",
+          "root_found": false,
+          "transform_root": "",
+          "absolute_offset": "",
+          "gap_normalized_offset": "",
+          "residual": ""
+        },
+        {
+          "index": 15,
+          "zeta_ordinate": "60.8317785246098099442599018245",
+          "root_found": true,
+          "transform_root": "60.8317785246098098942599018331",
+          "absolute_offset": "4.99999999913899513e-17",
+          "gap_normalized_offset": "0.499999999913899513",
+          "residual": "7.2465963e-145"
+        }
+      ],
+      "timings": {
+        "sampling_seconds": 0.044904232025146484,
+        "gram_seconds": 0.03128814697265625,
+        "eigensolve_seconds": 0.40796566009521484
+      }
+    },
+    {
+      "delta_label": "1e-32",
+      "delta": "1.0e-32",
+      "fixed_vector_total": "3.3192636049494082591590164389374567391872615407441822688502428137765425094776206934781877126200725253022586486508630441608222138343400741198e-51",
+      "minus_log_fixed_vector_total": "116.2320967901085935423583082982150922726",
+      "matched_root_count": 15,
+      "max_gap_normalized_offset": "861004.204805194244",
+      "pair_records": [
+        {
+          "index": 14,
+          "zeta_ordinate": "60.8317785246098098442599018245",
+          "root_found": false,
+          "transform_root": "",
+          "absolute_offset": "",
+          "gap_normalized_offset": "",
+          "residual": ""
+        },
+        {
+          "index": 15,
+          "zeta_ordinate": "60.8317785246098098442599018245",
+          "root_found": true,
+          "transform_root": "60.8317785246098098442599018331",
+          "absolute_offset": "8.61004204805194244e-27",
+          "gap_normalized_offset": "861004.204805194244",
+          "residual": "3.1975389e-144"
+        }
+      ],
+      "timings": {
+        "sampling_seconds": 0.04438638687133789,
+        "gram_seconds": 0.029050827026367188,
+        "eigensolve_seconds": 0.4078035354614258
+      }
+    },
+    {
+      "delta_label": "1e-64",
+      "delta": "1.0e-64",
+      "fixed_vector_total": "3.3192636049494082591590164389374579579861790065660509594717249745274829460043921475727148035349780176695313360366558308877815075329000675701e-51",
+      "minus_log_fixed_vector_total": "116.2320967901085935423583082982150919054",
+      "matched_root_count": 15,
+      "max_gap_normalized_offset": "8.61004704805194244e+37",
+      "pair_records": [
+        {
+          "index": 14,
+          "zeta_ordinate": "60.8317785246098098442599018245",
+          "root_found": false,
+          "transform_root": "",
+          "absolute_offset": "",
+          "gap_normalized_offset": "",
+          "residual": ""
+        },
+        {
+          "index": 15,
+          "zeta_ordinate": "60.8317785246098098442599018245",
+          "root_found": true,
+          "transform_root": "60.8317785246098098442599018331",
+          "absolute_offset": "8.61004704805194244e-27",
+          "gap_normalized_offset": "8.61004704805194244e+37",
+          "residual": "9.2720173e-145"
+        }
+      ],
+      "timings": {
+        "sampling_seconds": 0.04473733901977539,
+        "gram_seconds": 0.02971029281616211,
+        "eigensolve_seconds": 0.4087209701538086
+      }
+    }
+  ]
+}

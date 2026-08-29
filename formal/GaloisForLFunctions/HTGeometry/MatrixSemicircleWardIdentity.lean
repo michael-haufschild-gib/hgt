@@ -29,6 +29,33 @@ theorem matrixSemicircleCovariance_conjTranspose
   simp only [Matrix.conjTranspose_mul, Matrix.conjTranspose_conjTranspose,
     Matrix.mul_assoc]
 
+/-- Hermitian matrix-semicircle covariance is self-adjoint for the trace pairing. -/
+theorem matrixSemicircleCovariance_trace_duality
+    (A : K → Matrix I I ℂ) (hA : ∀ k, (A k).IsHermitian)
+    (P Q : Matrix I I ℂ) :
+    (matrixSemicircleCovariance A P * Q).trace =
+      (P * matrixSemicircleCovariance A Q).trace := by
+  simp only [matrixSemicircleCovariance, Finset.sum_mul, Matrix.mul_sum,
+    Matrix.trace_sum]
+  apply Finset.sum_congr rfl
+  intro k _hk
+  rw [hA k]
+  calc
+    ((A k * P * A k) * Q).trace =
+        ((A k * P) * (A k * Q)).trace := by congr 1; noncomm_ring
+    _ = ((A k * Q) * A k * P).trace := Matrix.trace_mul_cycle (A k) P (A k * Q)
+    _ = (P * ((A k * Q) * A k)).trace := Matrix.trace_mul_comm ((A k * Q) * A k) P
+    _ = (P * (A k * Q * A k)).trace := rfl
+
+/-- Matrix-semicircle covariance preserves positive semidefiniteness. -/
+theorem matrixSemicircleCovariance_posSemidef
+    (A : K → Matrix I I ℂ) {X : Matrix I I ℂ} (hX : X.PosSemidef) :
+    (matrixSemicircleCovariance A X).PosSemidef := by
+  rw [matrixSemicircleCovariance]
+  apply Matrix.PosSemidef.sum
+  intro k _hk
+  exact hX.mul_mul_conjTranspose_same (A k)
+
 /-- Full matrix Ward identity.  If `G` solves
 `(zI + η(G))G = -I`, then
 `Gᴴ (Im(z)I + η(Im G)) G = Im G`. -/

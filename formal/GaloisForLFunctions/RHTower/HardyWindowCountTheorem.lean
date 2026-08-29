@@ -1144,6 +1144,7 @@ theorem exists_many_distinct_line_zeros_dyadic_sixth :
   have hY2 : (2 : ℝ) ≤ Y := by
     rw [hYdef]
     nlinarith [hD08, hCF, mul_nonneg (le_of_lt hD0pos) hCF]
+  clear_value D0 Y
   refine ⟨1 / (384 * D0 * (CF + 1) + 1), one_div_pos.mpr (by
       nlinarith [hD08, hCF, mul_nonneg (le_of_lt hD0pos) hCF]),
     max (max TC 16) (Y ^ 96), ?_, fun T hT => ?_⟩
@@ -1152,8 +1153,8 @@ theorem exists_many_distinct_line_zeros_dyadic_sixth :
   have hT16 : (16 : ℝ) ≤ T := le_trans (le_trans (le_max_right _ _) (le_max_left _ _)) hT
   have hTTC : TC ≤ T := le_trans (le_trans (le_max_left _ _) (le_max_left _ _)) hT
   have hTY : Y ^ 96 ≤ T := le_trans (le_max_right _ _) hT
-  have hT0 : (0 : ℝ) < T := by linarith
-  have hT1 : (1 : ℝ) ≤ T := by linarith
+  have hT0 : (0 : ℝ) < T := by linarith only [hT16]
+  have hT1 : (1 : ℝ) ≤ T := by linarith only [hT16]
   have hL1 : (1 : ℝ) ≤ 1 + Real.log T := by
     have := Real.log_nonneg hT1
     linarith

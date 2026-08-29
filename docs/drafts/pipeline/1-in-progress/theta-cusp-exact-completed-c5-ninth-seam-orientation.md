@@ -2,7 +2,7 @@
 
 - **ID:** CLG-TTF-C5-exact-seam-nine
 - **Stage:** 1-in-progress
-- **Type:** CONJECTURE / ROUTE FALSIFIER
+- **Type:** FORMALISED REDUCTION / OPEN GLOBAL MONOTONICITY / ROUTE FALSIFIER
 - **Source:** Corpus split `c5CompletedCompensationMargin_eq_adaptive_add_residual`, the adaptive fifth-seam no-go, and direct-J equivalence `thetaCuspReflectedActionC5FixedActionJacobian_pos_iff_completedCompensation`
 
 ## RH proof chain
@@ -45,11 +45,19 @@ Corpus theorem `c5CompletedCompensationMargin_eq_adaptive_add_residual` restores
 
 ## Attack
 
-- [ ] Prove source-independent exact cleared-expression ninth-jet classification in `HTGeometry`.
-- [ ] Instantiate it with the literal completed theta source and prove the connector to `c5CompletedCompensationMargin`.
+- [x] Prove source-independent exact cleared-expression ninth-jet classification in `HTGeometry`.
+- [x] Instantiate it with the literal completed theta source and prove the connector to `c5CompletedCompensationMargin`.
 - [ ] Prove or falsify `Ω>0` using corpus modular-ODE/source-positive coordinates, without numerical computation.
-- [ ] If positive, derive punctured seam positivity and direct-J orientation; if negative, close route with exact counter-orientation and strongest positive survivor.
+- [x] Derive punctured compensation/direct-J positivity from `Ω>0`, and prove this chamber unconditionally for all sufficiently small positive centres.
 
 ## Log
 
 - 2026-08-29 — Conjecture extracted from corpus exact residual split after formal adaptive fifth-seam no-go. Explicit RH passport and route-kill criterion fixed before proof attempt.
+- 2026-08-29 — Formalised universal cancellation through order eight and exact ninth jet `80640 Ω`; connected cleared germ to literal completed margin and direct-J iff.
+- 2026-08-29 — Discovered and formalised decisive projective reduction. With
+  `K₆=A*C-B²-18*A²*B+24*A⁴`, exactly
+  `Ω=A*K₆'-4*A'*K₆=A⁵*(K₆/A⁴)'`. Corpus already proves `A>0` and `K₆>0`, so the remaining global burden is strict increase of the normalized positive sixth curvature, not a free seven-jet inequality.
+- 2026-08-29 — Formalised arbitrary-centre slope
+  `Ω' = A²D-5ABC+4B³-18A³C+36A²B²-AEG+6BEF-2AF²-3CE²-18A²EF+72ABE²`.
+  At the modular centre all odd corrections vanish, so existing theorem `thetaCuspC5FixedActionSeamLogValue_pos` gives `Ω'(0)>0`. Hence `Ω(u)>0` for every sufficiently small `u>0`, and each such centre has a punctured positive literal direct-J displacement chamber.
+- 2026-08-29 — Open core sharpened: prove or refute strict projective monotonicity of `thetaCuspC5ExactSeamSixthInvariant / thetaCuspLogCurvature^4` on the full positive orbit. One nonpositive derivative value kills this direct-J seam route at that centre; global strict positivity closes its local mathematical burden.

@@ -1359,3 +1359,34 @@ arc orientation is a genuine route-killing defect.  Exact chain remains
 
 `literal actual truncated Green/Stokes -> actual balanced BM ++- coefficient -> negative BM leg ->
 conserved left-QNM projection -> HC94 -> RH`.
+
+`[PAPER-PROVED] [LEAN-PROVED] [HARD FRONTIER CLOSED]` Corpus-derived conjecture C-A.9t3c
+closes the literal two-dimensional first Green theorem.  The formal domain uses the exact standard
+modular geometry: two side slivers below height one and the full strip above it.  New local normal
+convergence proves continuity of the completed vertical second-jet slice, enabling vertical FTC.
+Horizontal FTC, translation, and the exact substitution
+`y = sqrt(1-x^2)` supply the lower-arc Jacobian.  Pairing the two half-arcs turns the oriented
+horizontal and vertical flux into the radial current, which inversion annihilates pointwise.
+Consequently the actual paired iterated divergence integral equals exactly the paired cusp-top
+current for every truncation height `Y >= 1`; no integrability premise, proxy field, boundary
+hypothesis, or regularity axiom is used.  The pointwise hyperbolic-measure identity also identifies
+the actual first Stokes defect divided by `y^2` with the sum of these two genuine divergence
+components.
+
+This is formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualFirstStokesIntegral`, wired into
+RHTower. Direct Lean and targeted build `12467/12467` pass. Axiom audits of local normal
+continuity, arc substitution, oriented circular cancellation, the literal truncated Green theorem,
+and the hyperbolic defect-density bridge report only `propext`, `Classical.choice`, and
+`Quot.sound`. Formal lint finds only unrelated pre-existing umbrella-reachability debt.
+
+**C-A.9t3d hard core (corpus-derived conjecture; active).** Prove joint compact-cell
+measurability/integrability and Fubini for the actual value and first-jet Poincare fields, then show
+the coordinate-split literal divergence integral of C-A.9t3c is the standard truncated hyperbolic
+integral of the actual first Stokes defect.  This is the exact coefficient interface: success turns
+the already-closed cusp finite part into the first moment reduction `G = d V`; failure of Fubini or
+local normal convergence kills the analytic regularization route rather than permitting the
+abstract zero-defect completion.  Exact chain:
+
+`actual defect Fubini -> first moment reduction -> second full-Hessian Green/Stokes -> actual
+balanced BM ++- coefficient -> negative BM leg -> conserved left-QNM projection -> HC94 -> RH`.

@@ -106,84 +106,56 @@ theorem divisors_filter_dvd_natAbs {r : ℕ} (hr : r ≠ 0) (u : ℤ) :
   · rintro ⟨⟨hdu, hdr⟩, -⟩
     exact ⟨⟨hdr, hr⟩, hdu⟩
 
-/-- Frequencies divisible by `d` reindex the unrestricted nonzero frequencies. -/
-theorem finsum_nonzero_mul_eq_finsum_dvd {M : Type*} [AddCommMonoid M] {d : ℕ} (hd : d ≠ 0)
-    (G : ℤ → M) :
-    (∑ᶠ (v : ℤ) (_ : v ≠ 0), G (v * d)) =
-      ∑ᶠ (u : ℤ) (_ : u ≠ 0 ∧ (d : ℤ) ∣ u), G u := by
+/-- Frequencies divisible by `d` reindex the unrestricted frequencies. -/
+theorem tsum_dvd_eq_tsum_mul {d : ℕ} (hd : d ≠ 0) (G : ℤ → ℂ) :
+    (∑' u : ℤ, (if (d : ℤ) ∣ u then G u else 0)) = ∑' v : ℤ, G (v * d) := by
+  classical
   have hd' : (d : ℤ) ≠ 0 := Nat.cast_ne_zero.mpr hd
-  have hinj : Set.InjOn (fun v : ℤ => v * (d : ℤ)) {v : ℤ | v ≠ 0} := by
-    intro a _ b _ hab
-    exact mul_right_cancel₀ hd' hab
-  have hset : (fun v : ℤ => v * (d : ℤ)) '' {v : ℤ | v ≠ 0} =
-      {u : ℤ | u ≠ 0 ∧ (d : ℤ) ∣ u} := by
-    ext u
-    simp only [Set.mem_image, Set.mem_setOf_eq]
-    constructor
-    · rintro ⟨v, hv, rfl⟩
-      exact ⟨mul_ne_zero hv hd', dvd_mul_left _ _⟩
-    · rintro ⟨hu, w, rfl⟩
-      refine ⟨w, ?_, mul_comm _ _⟩
-      intro h0
-      exact hu (by rw [h0, mul_zero])
-  have himg := finsum_mem_image (f := G) hinj
-  rw [hset] at himg
-  exact himg.symm
+  have hinj : Function.Injective (fun v : ℤ => v * (d : ℤ)) := fun a b hab =>
+    mul_right_cancel₀ hd' hab
+  have hsupp : Function.support (fun u : ℤ => if (d : ℤ) ∣ u then G u else 0) ⊆
+      Set.range (fun v : ℤ => v * (d : ℤ)) := by
+    intro u hu
+    simp only [Function.mem_support, ne_eq, ite_eq_right_iff, not_forall] at hu
+    obtain ⟨hdu, -⟩ := hu
+    obtain ⟨w, rfl⟩ := hdu
+    exact ⟨w, mul_comm _ _⟩
+  have h := hinj.tsum_eq (f := fun u : ℤ => if (d : ℤ) ∣ u then G u else 0) hsupp
+  rw [← h]
+  refine tsum_congr fun v => ?_
+  rw [if_pos (dvd_mul_left (d : ℤ) v)]
 
 /-- **Primitivity by Möbius inversion.**  A frequency sum restricted to frequencies coprime to a
 modulus is the Möbius transform of the unrestricted sums over its divisor sublattices. -/
-theorem finsum_coprime_eq_sum_divisors_moebius {r : ℕ} (hr : r ≠ 0) (G : ℤ → ℂ)
-    (hG : (Function.support G).Finite) :
-    (∑ᶠ (u : ℤ) (_ : u ≠ 0 ∧ (u.natAbs).Coprime r), G u) =
-      ∑ d ∈ r.divisors, ((moebius d : ℤ) : ℂ) * ∑ᶠ (v : ℤ) (_ : v ≠ 0), G (v * d) := by
+theorem tsum_coprime_eq_sum_divisors_moebius {r : ℕ} (hr : r ≠ 0) (G : ℤ → ℂ)
+    (hG : Summable G) :
+    (∑' u : ℤ, (if (u.natAbs).Coprime r then G u else 0)) =
+      ∑ d ∈ r.divisors, ((moebius d : ℤ) : ℂ) * ∑' v : ℤ, G (v * d) := by
   classical
-  set A : Set ℤ := {u : ℤ | u ≠ 0} with hA
-  set Cop : Set ℤ := {u : ℤ | (u.natAbs).Coprime r} with hCop
-  have hfin : ∀ (S : Set ℤ) (z : ℂ),
-      Function.HasFiniteSupport (fun u : ℤ => z * S.indicator G u) := by
-    intro S z
-    refine hG.subset fun u hu => ?_
-    simp only [Function.mem_support, ne_eq, mul_eq_zero, not_or] at hu
-    have hne : S.indicator G u ≠ 0 := hu.2
-    exact fun h0 => hne (by simp [Set.indicator_apply, h0])
-  have hlhs : (∑ᶠ (u : ℤ) (_ : u ≠ 0 ∧ (u.natAbs).Coprime r), G u) =
-      ∑ᶠ (u : ℤ), (A ∩ Cop).indicator G u := finsum_mem_def _ _
-  have hrhs : ∀ d ∈ r.divisors,
-      ((moebius d : ℤ) : ℂ) * (∑ᶠ (v : ℤ) (_ : v ≠ 0), G (v * d)) =
-        ∑ᶠ (u : ℤ), ((moebius d : ℤ) : ℂ) *
-          (A ∩ {u : ℤ | (d : ℤ) ∣ u}).indicator G u := by
+  have hindicator : ∀ d : ℕ, (fun u : ℤ => if (d : ℤ) ∣ u then G u else 0) =
+      Set.indicator {u : ℤ | (d : ℤ) ∣ u} G := by
+    intro d
+    funext u
+    rw [Set.indicator_apply]
+    rfl
+  have hsummable : ∀ d ∈ r.divisors,
+      Summable (fun u : ℤ => ((moebius d : ℤ) : ℂ) * (if (d : ℤ) ∣ u then G u else 0)) := by
+    intro d _
+    refine Summable.mul_left _ ?_
+    rw [hindicator d]
+    exact hG.indicator _
+  have hback : ∀ d ∈ r.divisors,
+      ((moebius d : ℤ) : ℂ) * (∑' v : ℤ, G (v * d)) =
+        ∑' u : ℤ, ((moebius d : ℤ) : ℂ) * (if (d : ℤ) ∣ u then G u else 0) := by
     intro d hd
-    have hset : (∑ᶠ (u : ℤ) (_ : u ≠ 0 ∧ (d : ℤ) ∣ u), G u) =
-        ∑ᶠ (u : ℤ), (A ∩ {u : ℤ | (d : ℤ) ∣ u}).indicator G u := finsum_mem_def _ _
-    rw [finsum_nonzero_mul_eq_finsum_dvd (Nat.pos_of_mem_divisors hd).ne' G, hset, mul_finsum]
-  rw [hlhs, Finset.sum_congr rfl hrhs,
-    ← finsum_sum_comm r.divisors
-      (fun (u : ℤ) (d : ℕ) => ((moebius d : ℤ) : ℂ) *
-        (A ∩ {u : ℤ | (d : ℤ) ∣ u}).indicator G u)
-      (fun d _ => hfin _ _)]
-  refine finsum_congr fun u => ?_
-  by_cases hu : u = 0
-  · subst hu
-    have hzero : ∀ d : ℕ, (A ∩ {v : ℤ | (d : ℤ) ∣ v}).indicator G 0 = 0 := by
-      intro d
-      rw [Set.indicator_of_notMem]
-      simp [hA]
-    simp only [hzero, mul_zero, Finset.sum_const_zero]
-    rw [Set.indicator_of_notMem]
-    simp [hA]
-  · have hind : ∀ d : ℕ, (A ∩ {v : ℤ | (d : ℤ) ∣ v}).indicator G u =
-        if (d : ℤ) ∣ u then G u else 0 := by
-      intro d
-      by_cases hd : (d : ℤ) ∣ u
-      · rw [Set.indicator_of_mem
-          (show u ∈ A ∩ {v : ℤ | (d : ℤ) ∣ v} from ⟨hu, hd⟩) G, if_pos hd]
-      · rw [Set.indicator_of_notMem (by simp [hd]), if_neg hd]
-    simp only [hind, mul_ite, mul_zero, ← Finset.sum_filter]
-    rw [divisors_filter_dvd_natAbs hr u, ← Finset.sum_mul, sum_divisors_moebius_complex]
-    by_cases hcop : (u.natAbs).Coprime r
-    · rw [if_pos hcop, one_mul,
-        Set.indicator_of_mem (show u ∈ A ∩ Cop from ⟨hu, hcop⟩) G]
-    · rw [if_neg hcop, zero_mul, Set.indicator_of_notMem (by simp [hCop, hcop])]
+    rw [tsum_mul_left, tsum_dvd_eq_tsum_mul (Nat.pos_of_mem_divisors hd).ne' G]
+  rw [Finset.sum_congr rfl hback, ← Summable.tsum_finsetSum hsummable]
+  refine tsum_congr fun u => ?_
+  simp only [mul_ite, mul_zero, ← Finset.sum_filter]
+  rw [divisors_filter_dvd_natAbs hr u, ← Finset.sum_mul, sum_divisors_moebius_complex]
+  by_cases hcop : (u.natAbs).Coprime r
+  · rw [if_pos hcop, if_pos hcop, one_mul]
+  · rw [if_neg hcop, if_neg hcop, zero_mul]
 
 /-! ## The anchored responses -/
 
@@ -198,10 +170,22 @@ theorem quadraticCongruenceRootCountTotal_cast_ne_zero {n : ℕ} (hn : n ≠ 0) 
     ((quadraticCongruenceRootCountTotal n h : ℕ) : ℂ) ≠ 0 :=
   Nat.cast_ne_zero.2 (quadraticCongruenceRootCountTotal_pos hn h).ne'
 
+/-- The nonzero-frequency response term at modulus `q`: the frequency weight at the reduced
+frequency times the root response. -/
+noncomputable def responseTerm (F : ℚ → ℂ) (q : ℕ) (h : ℤ) (u : ℤ) : ℂ :=
+  if u = 0 then 0 else F ((u : ℚ) / (q : ℚ)) * quadraticCongruenceRootSumTotal q h u
+
+@[simp] theorem responseTerm_zero (F : ℚ → ℂ) (q : ℕ) (h : ℤ) :
+    responseTerm F q h 0 = 0 := if_pos rfl
+
+theorem responseTerm_of_ne_zero (F : ℚ → ℂ) (q : ℕ) (h : ℤ) {u : ℤ} (hu : u ≠ 0) :
+    responseTerm F q h u = F ((u : ℚ) / (q : ℚ)) * quadraticCongruenceRootSumTotal q h u :=
+  if_neg hu
+
 /-- The unnormalized anchored response at modulus `q`: the complete nonzero-frequency root sum
-against a frequency weight. -/
+against the frequency weight. -/
 noncomputable def anchoredResponseRaw (F : ℚ → ℂ) (q : ℕ) (h : ℤ) : ℂ :=
-  ∑ᶠ (u : ℤ) (_ : u ≠ 0), F ((u : ℚ) / (q : ℚ)) * quadraticCongruenceRootSumTotal q h u
+  ∑' u : ℤ, responseTerm F q h u
 
 /-- `A_(q,h)`: the anchored response normalized by the root count. -/
 noncomputable def anchoredResponse (F : ℚ → ℂ) (q : ℕ) (h : ℤ) : ℂ :=
@@ -210,77 +194,55 @@ noncomputable def anchoredResponse (F : ℚ → ℂ) (q : ℕ) (h : ℤ) : ℂ :
 /-- `B_(c,r,h)`: the anchored response along frequencies primitive on the future remainder `r`,
 normalized by the anchor and remainder root counts. -/
 noncomputable def primitiveAnchoredResponse (F : ℚ → ℂ) (c r : ℕ) (h : ℤ) : ℂ :=
-  (∑ᶠ (u : ℤ) (_ : u ≠ 0 ∧ (u.natAbs).Coprime r),
-      F ((u : ℚ) / ((c * r : ℕ) : ℚ)) * quadraticCongruenceRootSumTotal (c * r) h u) /
+  (∑' u : ℤ, (if (u.natAbs).Coprime r then responseTerm F (c * r) h u else 0)) /
     ((quadraticCongruenceRootCountTotal c h : ℂ) *
       (quadraticCongruenceRootCountTotal r h : ℂ))
 
-/-- The frequency weight attached to a fixed nondegenerate modulus has finite support. -/
-theorem support_frequencyWeight_finite {n : ℕ} (hn : n ≠ 0) (h : ℤ) {F : ℚ → ℂ}
-    (hF : (Function.support F).Finite) :
-    (Function.support (fun u : ℤ =>
-      F ((u : ℚ) / (n : ℚ)) * quadraticCongruenceRootSumTotal n h u)).Finite := by
-  have hn' : ((n : ℕ) : ℚ) ≠ 0 := Nat.cast_ne_zero.mpr hn
-  have hinj : Function.Injective (fun u : ℤ => (u : ℚ) / ((n : ℕ) : ℚ)) := by
-    intro a b hab
-    simp only at hab
-    rw [div_eq_div_iff hn' hn'] at hab
-    exact_mod_cast mul_right_cancel₀ hn' hab
-  refine Set.Finite.subset (Set.Finite.preimage hinj.injOn hF) ?_
-  intro u hu
-  have hne : F ((u : ℚ) / ((n : ℕ) : ℚ)) ≠ 0 := by
-    intro h0
-    exact hu (by simp [h0])
-  exact hne
-
-/-- Removing a complementary divisor from the modulus and the frequency leaves the root count of
-the removed part times the unrestricted response at the reduced modulus. -/
-theorem finsum_alias_shift {c r d : ℕ} (hc : c ≠ 0) (hr : Squarefree r) (hd : d ∣ r)
-    (hcr : c.Coprime r) (h : ℤ) (F : ℚ → ℂ) :
-    (∑ᶠ (v : ℤ) (_ : v ≠ 0),
-        F (((v * d : ℤ) : ℚ) / ((c * r : ℕ) : ℚ)) *
-          quadraticCongruenceRootSumTotal (c * r) h (v * d)) =
-      (quadraticCongruenceRootCountTotal d h : ℂ) * anchoredResponseRaw F (c * (r / d)) h := by
+/-- **Reduced-frequency response term.**  Removing a complementary divisor from the modulus and
+from the frequency multiplies the response term by the root count of the removed part. -/
+theorem responseTerm_mul {c r d : ℕ} (hc : c ≠ 0) (hr : Squarefree r) (hd : d ∣ r)
+    (hcr : c.Coprime r) (h : ℤ) (F : ℚ → ℂ) (v : ℤ) :
+    responseTerm F (c * r) h (v * d) =
+      (quadraticCongruenceRootCountTotal d h : ℂ) * responseTerm F (c * (r / d)) h v := by
   have hd0 : d ≠ 0 := ne_zero_of_dvd_ne_zero hr.ne_zero hd
   have hq0 : r / d ≠ 0 := by
     have := Nat.div_pos (Nat.le_of_dvd (Nat.pos_of_ne_zero hr.ne_zero) hd)
       (Nat.pos_of_ne_zero hd0)
     exact this.ne'
+  rcases eq_or_ne v 0 with rfl | hv
+  · simp
+  have hvd : v * (d : ℤ) ≠ 0 := mul_ne_zero hv (Nat.cast_ne_zero.mpr hd0)
   have hsplit : c * r = c * (r / d) * d := by
     rw [mul_assoc, Nat.div_mul_cancel hd]
-  have hfreq : ∀ v : ℤ,
-      ((v * d : ℤ) : ℚ) / ((c * r : ℕ) : ℚ) = (v : ℚ) / ((c * (r / d) : ℕ) : ℚ) := by
-    intro v
+  have hfreq : ((v * d : ℤ) : ℚ) / ((c * r : ℕ) : ℚ) = (v : ℚ) / ((c * (r / d) : ℕ) : ℚ) := by
     have hdq : ((d : ℕ) : ℚ) ≠ 0 := Nat.cast_ne_zero.mpr hd0
     have hcq : ((c : ℕ) : ℚ) ≠ 0 := Nat.cast_ne_zero.mpr hc
     have hrq : (((r / d : ℕ) : ℕ) : ℚ) ≠ 0 := Nat.cast_ne_zero.mpr hq0
     rw [hsplit]
     push_cast
     field_simp
-  have hterm : ∀ v : ℤ,
-      F (((v * d : ℤ) : ℚ) / ((c * r : ℕ) : ℚ)) *
-          quadraticCongruenceRootSumTotal (c * r) h (v * d) =
-        (quadraticCongruenceRootCountTotal d h : ℂ) *
-          (F ((v : ℚ) / ((c * (r / d) : ℕ) : ℚ)) *
-            quadraticCongruenceRootSumTotal (c * (r / d)) h v) := by
-    intro v
-    rw [hfreq v, quadraticCongruenceRootSumTotal_causalAnchor hc hr hd hcr h v]
-    ring
-  rw [finsum_congr fun v => finsum_congr fun _ => hterm v]
-  rw [anchoredResponseRaw, mul_finsum_cond]
+  rw [responseTerm_of_ne_zero _ _ _ hvd, responseTerm_of_ne_zero _ _ _ hv, hfreq,
+    quadraticCongruenceRootSumTotal_causalAnchor hc hr hd hcr h v]
+  ring
+
+/-- The reduced-frequency sublattice sum is the root count of the removed part times the
+unrestricted response at the reduced modulus. -/
+theorem tsum_responseTerm_mul {c r d : ℕ} (hc : c ≠ 0) (hr : Squarefree r) (hd : d ∣ r)
+    (hcr : c.Coprime r) (h : ℤ) (F : ℚ → ℂ) :
+    (∑' v : ℤ, responseTerm F (c * r) h (v * d)) =
+      (quadraticCongruenceRootCountTotal d h : ℂ) * anchoredResponseRaw F (c * (r / d)) h := by
+  rw [anchoredResponseRaw, ← tsum_mul_left]
+  exact tsum_congr fun v => responseTerm_mul hc hr hd hcr h F v
 
 /-- **`(CG1)`.**  The primitive anchored response is the Möbius transform of the unrestricted
 anchored responses at the reduced moduli. -/
 theorem primitiveAnchoredResponse_eq_sum_divisors_moebius
     {c r : ℕ} (hc : c ≠ 0) (hr : Squarefree r) (hcr : c.Coprime r) (h : ℤ)
-    (F : ℚ → ℂ) (hF : (Function.support F).Finite) :
+    (F : ℚ → ℂ) (hF : Summable (responseTerm F (c * r) h)) :
     primitiveAnchoredResponse F c r h =
       ∑ d ∈ r.divisors, ((moebius d : ℤ) : ℂ) * anchoredResponse F (c * (r / d)) h := by
   classical
-  have hcr0 : c * r ≠ 0 := Nat.mul_ne_zero hc hr.ne_zero
-  have hnum := finsum_coprime_eq_sum_divisors_moebius hr.ne_zero
-    (fun u : ℤ => F ((u : ℚ) / ((c * r : ℕ) : ℚ)) * quadraticCongruenceRootSumTotal (c * r) h u)
-    (support_frequencyWeight_finite hcr0 h hF)
+  have hnum := tsum_coprime_eq_sum_divisors_moebius hr.ne_zero (responseTerm F (c * r) h) hF
   rw [primitiveAnchoredResponse, hnum, Finset.sum_div]
   refine Finset.sum_congr rfl fun d hd => ?_
   obtain ⟨hdr, -⟩ := Nat.mem_divisors.1 hd
@@ -300,8 +262,7 @@ theorem primitiveAnchoredResponse_eq_sum_divisors_moebius
   have hcountcq : quadraticCongruenceRootCountTotal (c * (r / d)) h =
       quadraticCongruenceRootCountTotal c h * quadraticCongruenceRootCountTotal (r / d) h :=
     quadraticCongruenceRootCountTotal_mul hc hq0 hcq h
-  have hshift := finsum_alias_shift hc hr hdr hcr h F
-  rw [hshift, anchoredResponse, hcountcq, hmulcount]
+  rw [tsum_responseTerm_mul hc hr hdr hcr h F, anchoredResponse, hcountcq, hmulcount]
   have hCc : ((quadraticCongruenceRootCountTotal c h : ℕ) : ℂ) ≠ 0 :=
     quadraticCongruenceRootCountTotal_cast_ne_zero hc h
   have hCq : ((quadraticCongruenceRootCountTotal (r / d) h : ℕ) : ℂ) ≠ 0 :=
@@ -365,7 +326,7 @@ noncomputable def futureResponse (F : ℚ → ℂ) (c N : ℕ) (h : ℤ) : ℂ :
 survival law of the future packet collapses them to one signed occupancy response per divisor. -/
 theorem futureResponse_eq_sum_divisors
     {c N : ℕ} (hc : c ≠ 0) (hN : Squarefree N) (hcN : c.Coprime N) (h : ℤ)
-    (F : ℚ → ℂ) (hF : (Function.support F).Finite) :
+    (F : ℚ → ℂ) (hF : ∀ q : ℕ, Summable (responseTerm F q h)) :
     futureResponse F c N h =
       ∑ e ∈ N.divisors,
         ((moebius e : ℤ) : ℂ) * rootDensity e h * anchoredResponse F (c * e) h := by
@@ -379,7 +340,7 @@ theorem futureResponse_eq_sum_divisors
     obtain ⟨hrN, -⟩ := Nat.mem_divisors.1 hr
     have hrsq : Squarefree r := hN.squarefree_of_dvd hrN
     have hcr : c.Coprime r := hcN.coprime_dvd_right hrN
-    rw [primitiveAnchoredResponse_eq_sum_divisors_moebius hc hrsq hcr h F hF,
+    rw [primitiveAnchoredResponse_eq_sum_divisors_moebius hc hrsq hcr h F (hF (c * r)),
       Finset.mul_sum]
     exact Finset.sum_congr rfl fun d _ => by ring
   rw [futureResponse, Finset.sum_congr rfl hstep,
