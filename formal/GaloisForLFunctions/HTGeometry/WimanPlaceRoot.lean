@@ -88,8 +88,9 @@ theorem exists_radius_wiman_place
     (hm : 1 ≤ m) (hmd : m ≤ d) (hmem : (d - m, m) ∈ S)
     (htopdeg : ∀ p ∈ S, p.1 + p.2 = d → p.2 ≤ m)
     (hAne : A (d - m, m) ≠ 0)
-    {η ε : ℝ} (hη : 0 < η) (hε : 0 < ε) (R : ℝ) :
-    ∃ y, R ≤ y ∧ ∃ z : ℂ, ‖z‖ = Real.exp y ∧
+    {η ε : ℝ} (hη : 0 < η) (hε : 0 < ε) :
+    ∃ M : ℝ, ∀ R : ℝ, ∃ y, R ≤ y ∧
+      y ≤ max R M + Nevanlinna.borelWindow (1 / 4) + 1 ∧ ∃ z : ℂ, ‖z‖ = Real.exp y ∧
       ‖z * deriv (coeffFun a) z / coeffFun a z - (centralIndex a (Real.exp y) : ℂ)‖
         ≤ ε * (centralIndex a (Real.exp y) : ℝ) ∧
       ∃ r : ℂ, (∑ p ∈ S.filter (fun p => p.1 + p.2 = d), (A p).eval z * r ^ p.2) = 0 ∧
@@ -99,8 +100,9 @@ theorem exists_radius_wiman_place
   have hcb0 : (0 : ℝ) ≤ cb := by
     rw [hcbdef]
     exact NNReal.coe_nonneg _
-  obtain ⟨y, hy, z, hz, htop, hbound⟩ :=
-    exists_radius_norm_topSymbol_le ha hn₀ htrans hdeg hrel hη hε (max R (Real.log (cb + 1)))
+  obtain ⟨M, hM⟩ := exists_radius_norm_topSymbol_le ha hn₀ htrans hdeg hrel hη hε
+  refine ⟨max M (Real.log (cb + 1)), fun R => ?_⟩
+  obtain ⟨y, hy, hyM, z, hz, htop, hbound⟩ := hM (max R (Real.log (cb + 1)))
   -- the top coefficient does not vanish at the selected point
   have hzcb : cb < ‖z‖ := by
     have hlog : Real.log (cb + 1) ≤ y := le_trans (le_max_right R _) hy
@@ -132,7 +134,12 @@ theorem exists_radius_wiman_place
   obtain ⟨r, hroot, hdist⟩ :=
     exists_root_pow_dist_le hQ1 (deriv (coeffFun a) z / coeffFun a z)
   rw [hnat, hlead] at hdist
-  refine ⟨y, le_trans (le_max_left R _) hy, z, hz, hbound, r, ?_, ?_⟩
+  refine ⟨y, le_trans (le_max_left R _) hy, ?_, z, hz, hbound, r, ?_, ?_⟩
+  · have heq : max (max R (Real.log (cb + 1))) M
+        = max R (max M (Real.log (cb + 1))) := by
+      rw [max_assoc, max_comm (Real.log (cb + 1)) M]
+    rw [heq] at hyM
+    exact hyM
   · have := hroot
     rw [Polynomial.IsRoot, eval_topSymbolPoly] at this
     exact this

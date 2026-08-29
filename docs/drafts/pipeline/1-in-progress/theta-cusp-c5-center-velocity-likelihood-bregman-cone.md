@@ -256,3 +256,47 @@ Novelty audit: corpus search finds the cofinal sign only for completed C5 seam o
 the C5 numerator itself, not for literal center velocity. Planat--Solé (arXiv:2608.19160) proves
 second-level concavity of the Xi kernel using a first-summand tail analysis, but does not state a
 fifth-root divided-drop velocity law or the normalized coefficient `320`.
+
+## 2026-08-29 closure of C5-VP1 literal-velocity open ends
+
+Status: conjecture proved; seam and cofinal-tail premises discharged; exact compact-annulus
+reduction formalized.
+
+Let `S(t)` be the first-atom reflection scale, `r(t)` the center action radius, and `q₁,q₂,q₃`
+the literal center reflected log jets. The complete likelihood factorization gives
+
+- `q₁/S → 4`, including a new exact first-jet tail transfer;
+- `q₂/S → 8` and `q₃/S → 16` from the completed log-jet tail laws;
+- `1/t → 0`, `1/S → 0`, and `1/r → 0`.
+
+Exact normalization of the literal action core then gives
+
+`actionCore(r,t,q₁,q₂,q₃) / (r*t²*S³) → 320`.
+
+All noncubic monomials vanish. The sole survivor is `5*(q₁/S)³`, hence
+`5*4³ = 320 > 0`. Since `r*t²*S³` is eventually positive, literal modular-center C5 velocity is
+strictly positive on a cofinal tail.
+
+The other open end is now closed as well. For the generic C5 numerator `W`, even smoothness gives
+`W⁽ʲ⁾(0)=0` for `j<8`, while the completed second--sixth Hankel margin gives `W⁽⁸⁾(0)>0`.
+Continuity makes `W⁽⁸⁾` positive near the seam. Repeated strict-monotonicity descent gives
+`W⁽⁷⁾, W⁽⁵⁾, W⁽³⁾, W' > 0` on a common punctured right neighborhood. Since `W'` is the literal
+C5 velocity, the seam velocity premise is discharged unconditionally.
+
+Strongest survivor: there exist qualitative, uncomputed `0 < delta ≤ T` such that
+
+`(∀ t>0, velocity(0,t)>0) ↔ (∀ t∈[delta,T], velocity(0,t)>0)`.
+
+Thus no seam or cofinal-tail analysis remains in C5-VP1. The exact remaining velocity problem is
+one compact physical annulus. This is a significant proof-burden reduction but not global center
+velocity positivity and not RH.
+
+Lean module:
+`GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureVelocityFarTail`.
+Key limit theorem:
+`tendsto_thetaCuspCenterFifthRootVelocityActionCore_normalized`.
+Key endpoint theorems:
+`exists_thetaCuspReflectedSourceFifthRootCurvatureVelocity_zero_pos_right` and
+`eventually_thetaCuspReflectedSourceFifthRootCurvatureVelocity_zero_pos`.
+Exact survivor theorem:
+`exists_thetaCuspReflectedSourceFifthRootCurvatureVelocity_zero_compactCore`.

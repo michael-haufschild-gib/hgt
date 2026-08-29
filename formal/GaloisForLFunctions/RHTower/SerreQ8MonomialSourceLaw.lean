@@ -275,6 +275,90 @@ theorem serreQ8CyclicSubgroup_index : serreQ8CyclicSubgroup.index = 2 := by
   rw [hgalcard] at hcard
   omega
 
+/-- The quartic source is selected by the literal arithmetic carrier `√41`: it is exactly
+the subgroup fixing that carrier, not a freely chosen cyclic subgroup of `Q₈`. -/
+theorem serreQ8CyclicSubgroup_eq_stabilizer_topY :
+    serreQ8CyclicSubgroup =
+      MulAction.stabilizer (Gal(K3/ℚ)) serreQ8TopY := by
+  apply Subgroup.ext
+  intro g
+  constructor
+  · intro hg
+    rw [MulAction.mem_stabilizer_iff]
+    change g serreQ8TopY = serreQ8TopY
+    change serreQ8_galoisEquivQ8 g ∈ q8CyclicSubgroup at hg
+    rcases hg with ⟨i, hi⟩
+    have hgi : g = serreQ8_galoisEquivQ8.symm (q8CyclicEmbedding i) := by
+      apply serreQ8_galoisEquivQ8.injective
+      simpa using hi.symm
+    rw [hgi]
+    change serreQ8IAlgPow (Multiplicative.toAdd i) serreQ8TopY = serreQ8TopY
+    exact serreQ8IAlgPow_topY _
+  · intro hg
+    rw [MulAction.mem_stabilizer_iff] at hg
+    change g serreQ8TopY = serreQ8TopY at hg
+    change serreQ8_galoisEquivQ8 g ∈ q8CyclicSubgroup
+    rcases hq : serreQ8_galoisEquivQ8 g with i | i
+    · refine ⟨Multiplicative.ofAdd i, ?_⟩
+      change q8CyclicEmbedding (Multiplicative.ofAdd i) = QuaternionGroup.a i
+      rfl
+    · exfalso
+      have hg' := hg
+      rw [← serreQ8_galoisEquivQ8.symm_apply_apply g, hq] at hg'
+      change serreQ8JAlgEquiv (serreQ8IAlgPow i serreQ8TopY) = serreQ8TopY at hg'
+      rw [serreQ8IAlgPow_topY, serreQ8JAlgEquiv_apply, serreQ8J_topY] at hg'
+      apply serreQ8TopY_ne_zero
+      rw [eq_comm] at hg'
+      have hsum : serreQ8TopY + serreQ8TopY = 0 :=
+        eq_neg_iff_add_eq_zero.mp hg'
+      have htwice : (2 : K3) * serreQ8TopY = 0 := by
+        rw [two_mul]
+        exact hsum
+      exact (mul_eq_zero.mp htwice).resolve_left (by
+        letI : CharZero K3 :=
+          charZero_of_injective_algebraMap (algebraMap ℚ K3).injective
+        norm_num)
+
+/-- The arithmetic carrier `√41` has the two-point Galois orbit `{√41, -√41}`.
+Together with `serreQ8CyclicSubgroup_eq_stabilizer_topY`, this makes both the cyclic
+source and its nontrivial reflection orientation source-selected. -/
+theorem serreQ8TopY_orbit_eq_two_point :
+    MulAction.orbit (Gal(K3/ℚ)) serreQ8TopY =
+      ({serreQ8TopY, -serreQ8TopY} : Set K3) := by
+  ext z
+  constructor
+  · rintro ⟨g, rfl⟩
+    change g serreQ8TopY ∈ ({serreQ8TopY, -serreQ8TopY} : Set K3)
+    rcases hq : serreQ8_galoisEquivQ8 g with i | i
+    · left
+      rw [← serreQ8_galoisEquivQ8.symm_apply_apply g, hq]
+      change serreQ8IAlgPow i serreQ8TopY = serreQ8TopY
+      exact serreQ8IAlgPow_topY _
+    · right
+      rw [← serreQ8_galoisEquivQ8.symm_apply_apply g, hq]
+      change serreQ8JAlgEquiv (serreQ8IAlgPow i serreQ8TopY) = -serreQ8TopY
+      rw [serreQ8IAlgPow_topY, serreQ8JAlgEquiv_apply, serreQ8J_topY]
+  · intro hz
+    rcases hz with rfl | rfl
+    · exact ⟨1, by simp⟩
+    · refine ⟨serreQ8_galoisEquivQ8.symm (QuaternionGroup.xa 0), ?_⟩
+      change serreQ8JAlgEquiv (serreQ8IAlgPow (0 : ZMod 4) serreQ8TopY) = -serreQ8TopY
+      rw [serreQ8IAlgPow_topY, serreQ8JAlgEquiv_apply, serreQ8J_topY]
+
+/-- **Field-selected monomial source law.**  The literal Artin representation of Serre's field
+is induced from a degree-one character of the stabilizer of the literal carrier `√41`; the
+same carrier has precisely the two reflected values `±√41`.  Thus field realization, source
+selection, quartic induction, and the two quotient orientations are one source statement. -/
+theorem serreQ8ArtinRepresentation_exists_induced_from_topY_stabilizer :
+    ∃ ψ : GaloisForLFunctions.LinearCharacter
+      (MulAction.stabilizer (Gal(K3/ℚ)) serreQ8TopY),
+      (Representation.ind
+        (MulAction.stabilizer (Gal(K3/ℚ)) serreQ8TopY).subtype
+        (GaloisForLFunctions.linearCharacterRepresentation ψ)).Equiv
+        serreQ8ArtinRepresentation := by
+  rw [← serreQ8CyclicSubgroup_eq_stabilizer_topY]
+  exact ⟨serreQ8CyclicSubgroupCharacter, serreQ8InducedRepresentationEquiv⟩
+
 /-- First channel intertwining on the actual Galois subgroup. -/
 def serreQ8FirstChannelIntertwining :
     (GaloisForLFunctions.linearCharacterRepresentation serreQ8CyclicSubgroupCharacter).IntertwiningMap

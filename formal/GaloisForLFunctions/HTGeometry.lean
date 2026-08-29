@@ -12451,3 +12451,5 @@ import GaloisForLFunctions.HTGeometry.JensenScaledWeight
 import GaloisForLFunctions.HTGeometry.LaguerrePolyaJensenConverse
 import GaloisForLFunctions.HTGeometry.RealTaylorCoefficients
 import GaloisForLFunctions.HTGeometry.LaguerrePolyaJensenProfieldBlindness
+import GaloisForLFunctions.HTGeometry.QOrbitResidue
+import GaloisForLFunctions.HTGeometry.QOrbitResidueEuler

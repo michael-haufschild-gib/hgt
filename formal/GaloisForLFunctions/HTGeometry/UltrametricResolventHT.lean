@@ -363,6 +363,7 @@ theorem no_resolvent_telescoper [CharZero k] {p : ℕ} (hp : 1 < p) {m : ℕ} (h
       show (-1 : k) * (((p : k))⁻¹) ^ (-1 : ℤ) = -(p : k)
       rw [zpow_neg, zpow_one, inv_inv]
       ring
+    rw [hpole (-1 : k) (m + J), hpole (multOrbit ((p : k))⁻¹ (-1 : k) (-1)) (m + J), horb]
     have hsumA : ∑ q ∈ c.support,
         c q * polePart (ratFuncEulerOp^[q.2] (resolventIncrement (k := k) p m)) (-1) (m + J)
         = c ((), J) * (jetFactor (-1 : k) m J
@@ -392,10 +393,6 @@ theorem no_resolvent_telescoper [CharZero k] {p : ℕ} (hp : 1 < p) {m : ℕ} (h
     have hzp : (((p : k))⁻¹) ^ (((m + J : ℕ)) : ℤ) = (((p : k))⁻¹) ^ (m + J) := by
       rw [zpow_natCast]
     rw [hzp]
-    have hbracket : -(((p : k) - 2) * (-1 : k) ^ (m - 1))
-        + (((p : k))⁻¹) ^ (m + J) * (((p : k)) ^ J * jetFactor (-1 : k) m J
-          * -((-(p : k)) ^ (m - 1))) / jetFactor (-1 : k) m J
-        = 0 → False := fun _ => False.elim (by trivial)
     have hfac : jetFactor (-1 : k) m J ≠ 0 := jetFactor_A_ne_zero hm J
     have hpow : ((-(p : k)) ^ (m - 1)) = (-1 : k) ^ (m - 1) * ((p : k)) ^ (m - 1) := by
       rw [← neg_one_mul, mul_pow]
@@ -405,14 +402,9 @@ theorem no_resolvent_telescoper [CharZero k] {p : ℕ} (hp : 1 < p) {m : ℕ} (h
           * (c ((), J) * (((p : k)) ^ J * jetFactor (-1 : k) m J * -((-(p : k)) ^ (m - 1))))
         = -(c ((), J) * jetFactor (-1 : k) m J * (-1 : k) ^ (m - 1)
             * ((((p : k)) - 1) ^ 2 / (p : k))) := by
-      rw [hpow]
-      have hpm : (((p : k))⁻¹) ^ (m + J) * (((p : k)) ^ J * ((p : k)) ^ (m - 1))
-          = ((p : k))⁻¹ := by
-        rw [show m + J = (m - 1) + 1 + J from by omega, pow_add, pow_add, pow_succ]
-        field_simp
-        ring
-      field_simp
-      ring_nf
+      rw [hpow, inv_pow,
+        show ((p : k)) ^ (m + J) = ((p : k)) ^ (m - 1) * ((p : k)) ^ J * (p : k) from by
+          rw [show m + J = (m - 1) + J + 1 from by omega, pow_succ, pow_add]]
       field_simp
       ring
     rw [hkey]
@@ -428,6 +420,74 @@ theorem no_resolvent_telescoper [CharZero k] {p : ℕ} (hp : 1 < p) {m : ℕ} (h
       refine mul_ne_zero (mul_ne_zero (mul_ne_zero hcJ hfac) hsign) ?_
       exact div_ne_zero (pow_ne_zero _ hp1) hpk
     exact hne (by linear_combination -hzero)
+
+/-! ## The germ and its hypertranscendence -/
+
+theorem qDifferenceSolution_spec_zero (b : k) (hb : b ≠ 0) (ρ : LaurentSeries k)
+    (hres : ∀ n : ℤ, n ≠ 0 → 1 - b ^ n ≠ 0) (h0 : ρ.coeff 0 = 0) :
+    qDifferenceSolution 1 b ρ - innerDilation b hb (qDifferenceSolution 1 b ρ) = ρ := by
+  refine HahnSeries.coeff_inj.mp (funext fun n => ?_)
+  rw [HahnSeries.coeff_sub, coeff_innerDilation, coeff_qDifferenceSolution,
+    coeff_qDifferenceSolution, one_mul]
+  by_cases hn : n = 0
+  · subst hn
+    rw [zpow_zero, h0]
+    simp
+  · field_simp [hres n hn]
+
+theorem eval_zero_resolventNum [CharZero k] (p : ℕ) {m : ℕ} (hm : 1 < m) :
+    (resolventNum (k := k) p m).eval 0 = 0 := by
+  rw [resolventNum]
+  simp only [Polynomial.eval_neg, Polynomial.eval_mul, Polynomial.eval_pow, Polynomial.eval_X]
+  rw [zero_pow (by omega : m - 1 ≠ 0), mul_zero, neg_zero]
+
+theorem coeff_zero_resolventIncrement [CharZero k] {p : ℕ} (hp : 1 < p) {m : ℕ} (hm : 1 < m) :
+    (algebraMap (RatFunc k) (LaurentSeries k) (resolventIncrement (k := k) p m)).coeff 0 = 0 := by
+  have hQ : (((Polynomial.X + 1) ^ m * (Polynomial.X + Polynomial.C ((p : k))) ^ m :
+      Polynomial k)).eval 0 ≠ 0 := by
+    rw [Polynomial.eval_mul, Polynomial.eval_pow, Polynomial.eval_pow, Polynomial.eval_add,
+      Polynomial.eval_add, Polynomial.eval_X, Polynomial.eval_one, Polynomial.eval_C, zero_add,
+      zero_add, one_pow, one_mul]
+    exact pow_ne_zero _ (natCast_ne_zero_of_one_lt hp)
+  rw [resolventIncrement, coeff_zero_algebraMap_div _ _ hQ, eval_zero_resolventNum p hm,
+    zero_div]
+
+/-- The germ solving the ultrametric resolvent constraint, in the twisted coordinate. -/
+def resolventGerm [CharZero k] (p m : ℕ) : LaurentSeries k :=
+  qDifferenceSolution 1 (((p : k))⁻¹)
+    (-(algebraMap (RatFunc k) (LaurentSeries k) (resolventIncrement p m)))
+
+theorem resolventGerm_shift [CharZero k] {p : ℕ} (hp : 1 < p) {m : ℕ} (hm : 1 < m) :
+    innerDilation ((p : k))⁻¹ (inv_ne_zero (natCast_ne_zero_of_one_lt hp))
+        (resolventGerm p m)
+      = resolventGerm (k := k) p m
+        + algebraMap (RatFunc k) (LaurentSeries k) (resolventIncrement p m) := by
+  have hres : ∀ n : ℤ, n ≠ 0 → 1 - (((p : k))⁻¹) ^ n ≠ 0 := by
+    intro n hn hcon
+    exact inv_natCast_zpow_ne_one (k := k) hp hn (by linear_combination -hcon)
+  have h0 : (-(algebraMap (RatFunc k) (LaurentSeries k)
+      (resolventIncrement (k := k) p m))).coeff 0 = 0 := by
+    rw [HahnSeries.coeff_neg, coeff_zero_resolventIncrement hp hm, neg_zero]
+  have h := qDifferenceSolution_spec_zero (((p : k))⁻¹)
+    (inv_ne_zero (natCast_ne_zero_of_one_lt hp))
+    (-(algebraMap (RatFunc k) (LaurentSeries k) (resolventIncrement (k := k) p m))) hres h0
+  rw [resolventGerm]
+  linear_combination -h
+
+set_option maxHeartbeats 2000000 in
+/-- **The one-loop resolvent germ is differentially transcendental** over `k(x)` in the twisted
+coordinate. -/
+theorem differentialIndependent_resolventGerm [CharZero k] {p : ℕ} (hp : 1 < p) {m : ℕ}
+    (hm : 1 < m) :
+    letI := cylinderDifferential (1 : k)
+    letI := innerDifferential (k := k)
+    DifferentialIndependent (RatFunc k) (fun _ : Unit => resolventGerm (k := k) p m) := by
+  refine differentialIndependent_of_oneVariable_primitive (((p : k))⁻¹)
+    (inv_ne_zero (natCast_ne_zero_of_one_lt hp))
+    (fun n hn => inv_natCast_zpow_ne_one (k := k) hp hn)
+    (resolventGerm p m) (resolventIncrement p m) (resolventGerm_shift hp hm) ?_
+  intro c hc y
+  exact no_resolvent_telescoper hp (by omega) c hc y
 
 end
 

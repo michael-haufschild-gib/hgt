@@ -108,9 +108,10 @@ theorem exists_radius_wimanFace
   set Rthr : ℝ := max (growthRadius P) (max Rν 1) with hRthrdef
   have hRthr1 : (1 : ℝ) ≤ Rthr := le_trans (le_max_right Rν 1) (le_max_right _ _)
   have hRthrpos : (0 : ℝ) < Rthr := by linarith
-  obtain ⟨y, hy, z, hz, htop, hdefect⟩ :=
+  obtain ⟨Mw, hMw⟩ :=
     exists_radius_norm_topSymbol_le ha hn₀ htrans hdeg hrel
-      (η := η) (ε := 1 / 2) hη (by norm_num) (max (max R 0) (Real.log Rthr))
+      (η := η) (ε := 1 / 2) hη (by norm_num)
+  obtain ⟨y, hy, -, z, hz, htop, hdefect⟩ := hMw (max (max R 0) (Real.log Rthr))
   set r : ℝ := Real.exp y with hrdef
   have hy0 : (0 : ℝ) ≤ y := le_trans (le_trans (le_max_right R 0) (le_max_left _ _)) hy
   have hr1 : (1 : ℝ) ≤ r := Real.one_le_exp hy0
