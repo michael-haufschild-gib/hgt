@@ -1,0 +1,1 @@
+verified: seam order-seven coefficient is positive; P2 termwise sign route is killed; no base-margin counterexample found

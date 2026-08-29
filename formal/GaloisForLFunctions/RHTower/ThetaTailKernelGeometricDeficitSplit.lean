@@ -295,6 +295,79 @@ theorem thetaTailDeficitKernel_comm (x t : ℝ) :
       -(Real.sqrt (t + s) - Real.sqrt (x + s)) by ring, neg_sq,
     mul_comm (thetaCuspFullSource (x + s))]
 
+/-- The deficit is strictly positive away from its zero diagonal on the nonnegative orbit. -/
+theorem thetaTailDeficitKernel_pos {x t : ℝ}
+    (hx : 0 ≤ x) (ht : 0 ≤ t) (hxt : x ≠ t) :
+    0 < thetaTailDeficitKernel x t := by
+  let f : ℝ → ℝ := fun s =>
+    (Real.sqrt (x + s) - Real.sqrt (t + s)) ^ 2 *
+      (thetaCuspFullSource (x + s) * thetaCuspFullSource (t + s))
+  have hint : IntegrableOn f (Ioi (0 : ℝ)) := by
+    simpa only [f] using integrableOn_orbitDeficit hx ht
+  have hnonneg : 0 ≤ᵐ[volume.restrict (Ioi (0 : ℝ))] f := by
+    filter_upwards with s
+    exact mul_nonneg (sq_nonneg _)
+      (mul_nonneg (HedenmalmThetaSource.thetaCuspFullSource_pos _).le
+        (HedenmalmThetaSource.thetaCuspFullSource_pos _).le)
+  have hcontinuous : Continuous f := by
+    dsimp only [f]
+    have hsource : Continuous thetaCuspFullSource := contDiff_thetaCuspFullSource.continuous
+    fun_prop
+  have hopen : IsOpen (Function.support f ∩ Ioi (0 : ℝ)) :=
+    hcontinuous.isOpen_support.inter isOpen_Ioi
+  unfold thetaTailDeficitKernel
+  apply (setIntegral_pos_iff_support_of_nonneg_ae hnonneg hint).2
+  apply hopen.measure_pos (volume : Measure ℝ)
+  refine ⟨1, ?_, by norm_num⟩
+  change f 1 ≠ 0
+  have hsqrt : Real.sqrt (x + 1) ≠ Real.sqrt (t + 1) := by
+    intro heq
+    have hsquare := congrArg (fun u : ℝ => u ^ 2) heq
+    rw [Real.sq_sqrt (by linarith), Real.sq_sqrt (by linarith)] at hsquare
+    apply hxt
+    linarith
+  dsimp only [f]
+  exact mul_ne_zero (pow_ne_zero 2 (sub_ne_zero.mpr hsqrt))
+    (mul_ne_zero (HedenmalmThetaSource.thetaCuspFullSource_pos _).ne'
+      (HedenmalmThetaSource.thetaCuspFullSource_pos _).ne')
+
+/-- The deficit component is strictly indefinite on every distinct nonnegative two-node packet.
+Consequently it cannot be proved positive semidefinite and added termwise to the geometric Gram;
+the RH-bearing endpoint requires genuine domination by the geometric component. -/
+theorem thetaTailDeficitKernel_twoNode_quadraticForm_neg {x t : ℝ}
+    (hx : 0 ≤ x) (ht : 0 ≤ t) (hxt : x ≠ t) :
+    thetaTailDeficitKernel x x + thetaTailDeficitKernel t t -
+        thetaTailDeficitKernel x t - thetaTailDeficitKernel t x < 0 := by
+  rw [thetaTailDeficitKernel_self, thetaTailDeficitKernel_self,
+    thetaTailDeficitKernel_comm t x]
+  have hpos := thetaTailDeficitKernel_pos hx ht hxt
+  linarith
+
+/-- Two-node compression of the theta-tail deficit component. -/
+def thetaTailDeficitTwoPointMatrix (x t : ℝ) : Matrix (Fin 2) (Fin 2) ℝ :=
+  !![thetaTailDeficitKernel x x, thetaTailDeficitKernel x t;
+     thetaTailDeficitKernel t x, thetaTailDeficitKernel t t]
+
+/-- Every distinct nonnegative two-node deficit compression has negative determinant. -/
+theorem thetaTailDeficitTwoPointMatrix_det_neg {x t : ℝ}
+    (hx : 0 ≤ x) (ht : 0 ≤ t) (hxt : x ≠ t) :
+    (thetaTailDeficitTwoPointMatrix x t).det < 0 := by
+  rw [thetaTailDeficitTwoPointMatrix, Matrix.det_fin_two_of,
+    thetaTailDeficitKernel_self, thetaTailDeficitKernel_self,
+    thetaTailDeficitKernel_comm t x]
+  have hpos := thetaTailDeficitKernel_pos hx ht hxt
+  nlinarith [sq_pos_of_pos hpos]
+
+/-- **Deficit PSD no-go.**  The entrywise-positive, zero-diagonal deficit is not a positive
+semidefinite kernel even on two nodes. Any proof of the RH-equivalent theta-tail kernel must use
+quantitative domination by the geometric Gram rather than positivity of each summand. -/
+theorem thetaTailDeficitTwoPointMatrix_not_posSemidef {x t : ℝ}
+    (hx : 0 ≤ x) (ht : 0 ≤ t) (hxt : x ≠ t) :
+    ¬ (thetaTailDeficitTwoPointMatrix x t).PosSemidef := by
+  intro hpos
+  exact (not_lt_of_ge hpos.det_nonneg)
+    (thetaTailDeficitTwoPointMatrix_det_neg hx ht hxt)
+
 end
 
 end RHTower

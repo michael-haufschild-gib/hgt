@@ -276,6 +276,53 @@ theorem eigenvalues_kraus_sum_eq_weighted_sum
     ring
   exact_mod_cast hcomplex
 
+set_option maxHeartbeats 800000 in
+/-- A bistochastic Kraus image cannot decrease the determinant of a positive-definite matrix. -/
+theorem det_le_det_of_bistochasticKraus_sum
+    (B : κ → Matrix d d ℂ) {X Y : Matrix d d ℂ}
+    (hX : X.PosDef) (hY : Y.PosDef)
+    (hYX : Y = ∑ k, B k * X * (B k)ᴴ)
+    (htrace : ∑ k, (B k)ᴴ * B k = 1)
+    (hunital : ∑ k, B k * (B k)ᴴ = 1) :
+    X.det ≤ Y.det := by
+  classical
+  let w : d → d → ℝ := bistochasticKrausEigenWeight B hX.isHermitian hY.isHermitian
+  have hrow (i : d) : ∑ j, w i j = 1 :=
+    sum_bistochasticKrausEigenWeight_row B hX.isHermitian hY.isHermitian hunital i
+  have hcolumn (j : d) : ∑ i, w i j = 1 :=
+    sum_bistochasticKrausEigenWeight_column B hX.isHermitian hY.isHermitian htrace j
+  have htransport (i : d) :
+      hY.isHermitian.eigenvalues i = ∑ j, w i j * hX.isHermitian.eigenvalues j :=
+    eigenvalues_kraus_sum_eq_weighted_sum B hX.isHermitian hY.isHermitian hYX i
+  have hrow_log (i : d) :
+      ∑ j, w i j * Real.log (hX.isHermitian.eigenvalues j) ≤
+        Real.log (hY.isHermitian.eigenvalues i) := by
+    have h := weighted_log_le_log_weighted_sum
+      (w i) hX.isHermitian.eigenvalues
+      (fun j => bistochasticKrausEigenWeight_nonneg B hX.isHermitian hY.isHermitian i j)
+      (hrow i) hX.eigenvalues_pos
+    rwa [← htransport i] at h
+  have hlogs :
+      ∑ j, Real.log (hX.isHermitian.eigenvalues j) ≤
+        ∑ i, Real.log (hY.isHermitian.eigenvalues i) := by
+    have hsum := Finset.sum_le_sum fun i (_hi : i ∈ Finset.univ) => hrow_log i
+    rw [Finset.sum_comm] at hsum
+    have hleft :
+        ∑ j, ∑ i, w i j * Real.log (hX.isHermitian.eigenvalues j) =
+          ∑ j, Real.log (hX.isHermitian.eigenvalues j) := by
+      apply Finset.sum_congr rfl
+      intro j _hj
+      rw [← Finset.sum_mul, hcolumn j, one_mul]
+    rwa [hleft] at hsum
+  have hprod :
+      ∏ j, hX.isHermitian.eigenvalues j ≤ ∏ i, hY.isHermitian.eigenvalues i := by
+    have hexp := Real.exp_le_exp.mpr hlogs
+    rw [Real.exp_sum, Real.exp_sum] at hexp
+    simpa only [Real.exp_log (hX.eigenvalues_pos _), Real.exp_log (hY.eigenvalues_pos _)]
+      using hexp
+  rw [hX.isHermitian.det_eq_prod_eigenvalues, hY.isHermitian.det_eq_prod_eigenvalues]
+  exact_mod_cast hprod
+
 end
 
 end GaloisForLFunctions.HTGeometry

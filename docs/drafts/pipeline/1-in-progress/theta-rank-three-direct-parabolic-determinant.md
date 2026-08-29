@@ -45,8 +45,17 @@ rank-three D1 gate. Cofinal/all-order landing remains separate.
 - `[LOCAL-RESEARCH]` Exact principal-minor reconstruction on the refined cone finds complete
   scale-velocity Hankel matrix `H_X` strictly positive definite: all diagonal, rank-two, and
   rank-three half-prism certificates are positive. This opens a Loewner/Jacobi proof of scale
-  increase, pending a compact computation-free Gram or Schur decomposition. Report:
+  increase. Report:
   `../2-fully-proven/computations/2026-08-29-s6f-jacobi-variation/REPORT.md`.
+- `[PROVED HERE][FORMALIZED]` The source-positive vector field belongs to an exact polynomial
+  `sl₂` triple. In adapted coordinates `r=U+3B`, `b=B`,
+  `k=Q+3/8-3B²/8`, its companion lowering field is exactly `∂b`, the scale field has
+  weights `(1/2,1/2,1)`, and the source dynamics have a three-equation normal form. Formal module:
+  `PolynomialODEJetRankThreeSourcePositiveSl2`.
+- `[FALSIFIED — diagnostic]` Raw coefficientwise matrix-Bernstein positivity cannot explain
+  `H_X`: every scale-square coefficient matrix has negative leading rank-two/rank-three pivots and
+  every scale-cube coefficient matrix has negative determinant. Cross-scale cancellation is
+  essential. Report: `../2-fully-proven/computations/2026-08-29-s6f-sl2-scale-structure/REPORT.md`.
 - `[FALSIFIED — diagnostic]` Global reflected-fibre positive definiteness and its all-order Bochner
   completion fail at a six-point Toeplitz section. Finite-order-five positive definiteness survives
   21.12 million arbitrary-packet attacks and remains a stronger alternate route to D1. Report:
@@ -67,9 +76,12 @@ toward the upper ratio wall.
 
 Verdict: `SURVIVES PRELIMINARY ATTACK`.
 
-`[OPEN CORE]` Derive a compact source Gram/SOS or Schur-complement decomposition proving
-`H_X ≻ 0`, use Loewner/Jacobi monotonicity for scale reduction, then derive clock second variation
-without a Bernstein table and prove the single outer upper-wall polynomial positive.
+`[OPEN CORE]` Construct the exact contravariant/Shapovalov form on the finite reflected-jet
+`sl₂` module and try to make its rank-three restriction indefinite at a rational interior state.
+If it survives, prove positivity on the refined cone and use Loewner/Jacobi monotonicity for scale
+reduction. A viable alternate is a nontrivial congruence mixing scale layers; raw coefficientwise
+Gram/SOS is dead. Then derive clock second variation and prove the outer upper-wall polynomial
+positive.
 
 ## Representation lesson
 
@@ -87,3 +99,4 @@ coefficient hierarchy.
   and exact Lean theorem; active core moved from drift positivity to direct D1 positivity.
 - 2026-08-29 — Exact hostile tests killed all-order reflected-fibre Bochner completion at six
   points and opened strict Loewner scale velocity as conceptual D1 scale mechanism.
+- 2026-08-29 — Exact `sl₂` source structure formalized; raw matrix-Bernstein Gram killed.

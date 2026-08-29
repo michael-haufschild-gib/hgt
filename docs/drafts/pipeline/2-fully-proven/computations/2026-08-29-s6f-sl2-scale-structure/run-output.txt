@@ -1,0 +1,139 @@
+{
+  "chain_rule_identity_exact": true,
+  "coefficientwise_matrix_bernstein": {
+    "layers": {
+      "0": {
+        "count": 312,
+        "degrees": [
+          23,
+          12
+        ],
+        "negative_leading_pivots": [
+          0,
+          0,
+          0
+        ],
+        "signature_sha256": "3895f9febab4f264786563b896e6d5f8dcdf1b303edccda6e24b32c92f04d3fe",
+        "zero_leading_pivots": [
+          0,
+          0,
+          0
+        ]
+      },
+      "1": {
+        "count": 299,
+        "degrees": [
+          22,
+          12
+        ],
+        "negative_leading_pivots": [
+          0,
+          0,
+          0
+        ],
+        "signature_sha256": "de61cad8e2f04ae123d31b968eee2e4b1bb3df1928d8de5d03d7882245ff83ca",
+        "zero_leading_pivots": [
+          0,
+          0,
+          0
+        ]
+      },
+      "2": {
+        "count": 286,
+        "degrees": [
+          21,
+          12
+        ],
+        "negative_leading_pivots": [
+          0,
+          286,
+          286
+        ],
+        "signature_sha256": "fe7bd2abac23888f26d1b14dd6470b529972180834df459f8ac75d8bd75dd8fa",
+        "zero_leading_pivots": [
+          286,
+          0,
+          0
+        ]
+      },
+      "3": {
+        "count": 273,
+        "degrees": [
+          20,
+          12
+        ],
+        "negative_leading_pivots": [
+          0,
+          0,
+          273
+        ],
+        "signature_sha256": "cc133fe5a6cca3b1b7a8a17eaaab98a6fd8c02bd436fb575cfc1e34b0ed35e86",
+        "zero_leading_pivots": [
+          273,
+          273,
+          0
+        ]
+      },
+      "4": {
+        "count": 260,
+        "degrees": [
+          19,
+          12
+        ],
+        "negative_leading_pivots": [
+          0,
+          0,
+          0
+        ],
+        "signature_sha256": "4338c8635ed708b5b17eb173737f1cb26890fde890885217541bc4ba847cf8d7",
+        "zero_leading_pivots": [
+          260,
+          260,
+          260
+        ]
+      },
+      "5": {
+        "count": 247,
+        "degrees": [
+          18,
+          12
+        ],
+        "negative_leading_pivots": [
+          0,
+          0,
+          0
+        ],
+        "signature_sha256": "ae09b7cc4350b1952a0a1db2dfaa05883745edd27b4c5eb80aa8f3f27977cfa9",
+        "zero_leading_pivots": [
+          247,
+          247,
+          247
+        ]
+      }
+    },
+    "question": "is H_X a nonnegative scalar combination of PSD Bernstein coefficient matrices?",
+    "survives": false
+  },
+  "scope": "diagnostic only; forbidden as Lean input",
+  "sl2_relations_exact": {
+    "[e,f]=h": true,
+    "[h,e]=2e": true,
+    "[h,f]=-2f": true
+  },
+  "source_coordinates": {
+    "actions": {
+      "V_b": "b**2 + 4*k - 1",
+      "V_k": "-2*k*(-2*b + r)",
+      "V_r": "2*(b*r + 8*k)",
+      "W_b": "1",
+      "W_k": "0",
+      "W_r": "0"
+    },
+    "b": "B",
+    "k": "Q+3/8-3B^2/8 = gap/16",
+    "r": "U+3B",
+    "scale_velocity_m0_factor": "(3*b**2 + 8*k)*(3*b**2 + 8*k - 3)/32"
+  },
+  "source_scale_identity": "X*d/dX = (U/2)dU + (B/2)dB + (Q+3/8)dQ",
+  "workers": 6
+}

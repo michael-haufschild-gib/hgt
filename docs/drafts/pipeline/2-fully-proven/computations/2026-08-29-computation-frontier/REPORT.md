@@ -9,9 +9,14 @@ Status: research triage; computations are diagnostic only and forbidden as Lean 
   scale increase, clock-square concavity, seam/outer reduction, failure of higher alternating
   derivatives, and irreducibility of naive source/gap factorization. Refined-cone follow-up killed
   global wall and upper-wall clock monotonicity while isolating one univariate outer-face decrease.
+  Exact structure mining then found and Lean formalized a hidden `sl₂` triple. Raw
+  coefficientwise matrix-Bernstein positivity was killed; cross-scale cancellation is essential.
 - **CLG/TTF:** broad source scans and fixed-action Jacobian scans survived. Exact stationary-locus
   follow-up found the literal modular-center velocity positive at all 79,999 tested radii and no
-  stationary root, selecting direct radial monotonicity as a stronger proof target.
+  stationary root, selecting direct radial monotonicity as a stronger proof target. First-atom
+  compensation is now formal. Exact likelihood interpolation killed monotone improvement but
+  opened a convex tangent bridge: `M''(λ)≥0` plus `M'(0)≥-M(0)/5` would close literal
+  full-theta far-tail compensation.
 - **T2:** killed present direct finite-shell exponent claim and generic `L2/L4` repairs. Surviving
   mechanism needs target-reciprocal localization plus a genuinely arithmetic selected-cell law.
 - **C1:** current global-mean carrier misses its theta scalar target by a large stable margin.
@@ -22,24 +27,22 @@ Status: research triage; computations are diagnostic only and forbidden as Lean 
 
 ## Ranked next campaigns
 
-1. **S6F determinant identity mining — major opening found.** Exact principal-minor reconstruction
-   finds the signed even-jet scale velocity `H_X` strictly positive definite on the full refined
-   cone: three diagonal, three rank-two, and one rank-three certificate all pass. This opens a
-   Loewner/Jacobi proof of D1 scale increase. Next computation is only compact Gram/SOS or Schur
-   decomposition mining; raw coefficient formalization is forbidden. Global reflected-fibre
-   Bochner completion was separately killed at six points, while finite-order-five positivity
-   survives as an alternate rank-three target.
-2. **CLG velocity decomposition.** Derive exact seam-normalized and one-atom cusp-normalized forms
-   of the already formal velocity, then search the compact transition for likelihood-coordinate
-   Bernstein/SOS decompositions. One exact negative physical point kills global radial
-   monotonicity but leaves stationary-reserve fallback alive.
+1. **CLG likelihood tangent bridge — major opening found.** Derive exact formulas for
+   `M''(λ)` and `M'(0)+M(0)/5`. Try first to falsify their sign from the known cumulant chamber.
+   If both survive algebraically, prove them without numeric input; together with formal
+   first-atom compensation they close the literal full-theta far tail. Generic positive-jet and
+   monotonicity arguments are dead.
+2. **S6F contravariant-form attack.** Build the finite reflected-jet module under the now-formal
+   `sl₂` triple and solve for its invariant/contravariant form exactly. Try to kill positivity at
+   one rational point of the refined cone. If it survives, seek a symbolic congruence mixing scale
+   layers. Raw matrix-Bernstein coefficient Gram and all-order reflected-fibre positivity are dead.
 3. **C1 strict separation design.** Use exact rational head sums and analytic tail envelopes to
    choose a small cutoff with disjoint source/target intervals. This is route-kill preparation;
    final strict inequality must be reproved without importing decimal output.
-4. **HCF source Plemelj renderer.** Implement validated compact-contour/quadrature evaluation of the
-   zero-independent covariance and its canonical-window normalization. A verified asymptotic
-   crossing above `7936/21125` would kill current three-quarter sufficient gate; staying below only
-   sharpens a conjecture. Current corpus has definitions but no validated numerical renderer.
+4. **HCF source Plemelj renderer, only after discretization theorem.** Current covariance is a
+   nested `limUnder` object. Prove a convergent zero-independent quadrature/Galerkin realization
+   before numerical evaluation. Without that theorem, a truncation tests a different object and
+   cannot kill HCF.
 5. **O and F2 certified finite models.** First prove or numerically validate convergent Galerkin
    realizations of Gamma--Slepian head and Sonin projection. Only then compute extremal finite-head
    overcompensation or truncated common-zero compatibility. Arbitrary truncations test different

@@ -99,3 +99,22 @@ route; the Gaussian theorem remains mandatory positive salvage.
   the lower-order correction to `57z>10w(z+2)`. Formalized as
   `ThetaCuspFixedActionC5ExactFirstAtomTailCore`. Remaining open core is the likelihood-interference
   lift and literal-theta tail assembly; the unrestricted lower-scale chamber is not claimed.
+
+## Decisive likelihood-lift conjecture
+
+For `0<t<u` and `6<=pi*exp(2u)`, the completed atom-plus-likelihood action has strictly positive
+fixed-action C5 compensation when its action, three displacement jets, and three centre-flow jets
+are taken from the corpus-exact additive factorization.
+
+Success closes the literal theta far-tail direct-J chamber, leaving only local/compact assembly
+before the modular seam → Ptolemy packet wall → cofinal no-escape → Weil/CLG positivity → RH chain.
+Failure kills first-atom perturbative lifting as a global far-tail method; required positive
+survivor is then a sharp failure chamber/tax invariant feeding the corpus's cofinal chord-reserve
+route. Merely decomposing the cross terms or proving further isolated jet signs will not count as
+closing this conjecture.
+
+- 2026-08-29 — corpus search found exact additive action, negative likelihood displacement jets,
+  Riccati cross domination, and no C5 likelihood lift. Proved all three missing likelihood
+  centre-flow channels strictly positive and identified them as literal centre derivatives in
+  `ThetaCuspFixedActionC5LikelihoodCenterFlow`. Nonlinear compensation conjecture above remains
+  decisive open core.

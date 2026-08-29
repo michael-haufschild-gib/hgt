@@ -32,3 +32,16 @@ Novelty audit through 2026-08-29 found generic Toda/Hankel determinant variation
 
 ## Log
 - 2026-08-29 — created directly in 1-in-progress after corpus and literature audit; frontier map left unchanged.
+- 2026-08-29 — **Conjecture admission rule.** Every further conjecture on this card must cite a
+  `scripts/formal_tools.py research` corpus result and state its complete implication chain to one
+  of: (i) global D1, (ii) a rigorous TCD no-go, or (iii) the cofinal Hardy/Bezoutian landing and
+  Weil positivity.  Local identities which do not remove one of those burdens are not research
+  targets.
+- 2026-08-29 — Lean-closed Jacobi--Krein reduction identifies the singular-face projective drift
+  with the canonical null-line crossing form.  Exact chain now under attack:
+  `source crossing > 0 at every D1 zero` -> `no first zero` -> `global rank-three D1` ->
+  `all-order Krein crossing/cofinal Hardy or completed Bezoutian cone` -> `Weil positivity` -> RH.
+- 2026-08-29 — killed the apparent center-mixed three-node shortcut after corpus audit.  Existing
+  unconditional PSD concerns the *integrated* Hedenmalm center-mixed density; D1 is the
+  pointwise-center determinant, and determinant formation does not commute with that integral.
+  It therefore supplies no source-pointwise crossing sign or global D1 theorem.

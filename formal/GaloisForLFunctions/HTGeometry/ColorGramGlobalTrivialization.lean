@@ -436,20 +436,26 @@ abbrev PositiveGramRecord := {H : Matrix (Fin 2) (Fin 2) ℂ // H.PosDef}
 
 theorem continuous_colorEventNormal : Continuous colorEventNormal := by
   refine continuous_pi fun i => ?_
-  fin_cases i <;>
-    simp only [colorEventNormal, colorMinor01, colorMinor02, colorMinor12,
-      Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Fin.isValue,
-      Matrix.cons_val_two, Matrix.tail_cons] <;>
+  fin_cases i
+  · show Continuous fun X : ColorEventMatrix => star (colorMinor12 X)
+    unfold colorMinor12
+    fun_prop
+  · show Continuous fun X : ColorEventMatrix => -star (colorMinor02 X)
+    unfold colorMinor02
+    fun_prop
+  · show Continuous fun X : ColorEventMatrix => star (colorMinor01 X)
+    unfold colorMinor01
     fun_prop
 
 theorem continuous_colorEventFrame : Continuous colorEventFrame := by
   refine continuous_matrix fun i j => ?_
-  fin_cases j <;>
-    simp only [colorEventFrame, colorEventFrameWithThird, Fin.isValue, if_true, if_false,
-      reduceCtorEq, one_ne_zero] <;>
-    first
-      | fun_prop
-      | exact (continuous_apply i).comp continuous_colorEventNormal
+  fin_cases j
+  · show Continuous fun X : ColorEventMatrix => X i 0
+    fun_prop
+  · show Continuous fun X : ColorEventMatrix => X i 1
+    fun_prop
+  · show Continuous fun X : ColorEventMatrix => colorEventNormal X i
+    exact (continuous_apply i).comp continuous_colorEventNormal
 
 theorem continuous_posDef_gramDiagOne :
     Continuous fun H : PositiveGramRecord => ((gramDiagOne H.1 : ℝ) : ℂ) := by
@@ -473,7 +479,9 @@ theorem continuous_posDef_gramDiagTwo :
   refine Complex.continuous_ofReal.comp (Real.continuous_sqrt.comp ?_)
   refine Continuous.div ?_ ?_ hzero
   · exact (Complex.continuous_re.comp hdet).comp continuous_subtype_val
-  · exact (Complex.continuous_re.comp ((continuous_apply_apply 0 0))).comp continuous_subtype_val
+  · have hentry : Continuous fun H : Matrix (Fin 2) (Fin 2) ℂ => H 0 0 :=
+      continuous_apply_apply (0 : Fin 2) (0 : Fin 2)
+    exact (Complex.continuous_re.comp hentry).comp continuous_subtype_val
 
 theorem continuous_posDef_gramCholesky :
     Continuous fun H : PositiveGramRecord => gramCholesky H.1 := by
@@ -482,7 +490,7 @@ theorem continuous_posDef_gramCholesky :
   refine continuous_matrix fun i j => ?_
   fin_cases i <;> fin_cases j <;>
     simp only [gramCholesky, Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one,
-      Matrix.head_cons, Fin.zero_eta, Fin.mk_one, Fin.isValue]
+      Fin.zero_eta, Fin.mk_one, Fin.isValue]
   · exact continuous_posDef_gramDiagOne
   · exact Continuous.div
       (((continuous_apply_apply (0 : Fin 2) (1 : Fin 2)).comp continuous_subtype_val))
@@ -510,8 +518,7 @@ theorem continuous_posDef_gramFrameInverse :
   refine continuous_matrix fun i j => ?_
   fin_cases i <;> fin_cases j <;>
     simp only [gramFrameInverse, Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one,
-      Matrix.head_cons, Fin.zero_eta, Fin.mk_one, Fin.isValue, Matrix.cons_val_two,
-      Matrix.tail_cons]
+      Fin.zero_eta, Fin.mk_one, Fin.isValue]
   · exact continuous_posDef_gramDiagOne.inv₀ hrne
   · exact ((((continuous_apply_apply (0 : Fin 2) (1 : Fin 2)).comp
       continuous_subtype_val)).div
@@ -525,14 +532,19 @@ theorem continuous_posDef_gramFrameInverse :
   · exact continuous_const
   · exact (continuous_posDef_gramDiagOne.mul continuous_posDef_gramDiagTwo).inv₀ hrt
 
+set_option maxHeartbeats 1000000 in
 theorem continuous_colorTransporter :
     Continuous fun X : ColorRegularLocus => colorTransporter X.1 := by
   have hgram : Continuous fun X : ColorRegularLocus =>
       (⟨colorGramMatrix X.1, X.2⟩ : PositiveGramRecord) :=
-    Continuous.subtype_mk (continuous_colorGramMatrix.comp continuous_subtype_val) _
-  exact (continuous_colorEventFrame.comp continuous_subtype_val).mul
-    (continuous_posDef_gramFrameInverse.comp hgram)
+    Continuous.subtype_mk (continuous_colorGramMatrix.comp continuous_subtype_val)
+      (fun X => X.2)
+  have hinv := continuous_posDef_gramFrameInverse.comp hgram
+  have hframe : Continuous fun X : ColorRegularLocus => colorEventFrame X.1 :=
+    continuous_colorEventFrame.comp continuous_subtype_val
+  simpa only [colorTransporter, Function.comp_def] using hframe.matrix_mul hinv
 
+set_option maxHeartbeats 1000000 in
 /-- **The global product decomposition is a homeomorphism.** -/
 def colorRegularHomeomorph :
     ColorRegularLocus ≃ₜ (Matrix.specialUnitaryGroup (Fin 3) ℂ × PositiveGramRecord) where
@@ -543,7 +555,7 @@ def colorRegularHomeomorph :
     · exact Continuous.subtype_mk (continuous_colorGramMatrix.comp continuous_subtype_val) _
   continuous_invFun := by
     refine Continuous.subtype_mk ?_ _
-    exact (continuous_subtype_val.comp continuous_fst).mul
+    exact (continuous_subtype_val.comp continuous_fst).matrix_mul
       (continuous_posDef_gramSection.comp continuous_snd)
 
 end Continuity

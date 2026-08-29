@@ -1263,3 +1263,31 @@ phased Maass words.  Exact chain remains
 `local-normal signed full-second-jet tail -> actual/canonical raise-lower weld -> literal truncated
 Green/Stokes -> full cusp current finite part -> actual balanced BM ++- coefficient -> negative BM
 leg -> conserved left-QNM projection -> HC94 -> RH`.
+
+`[PAPER-PROVED] [LEAN-PROVED] [HARD FRONTIER CLOSED]` Corpus-derived conjecture C-A.9t2b2a
+removes the apparent need for a separate local-normal-convergence proof for the pure vertical
+second-jet family.  Uniform exterior-cusp exponential bounds are proved for the signed modified
+Bessel factor, the square-root Whittaker value, and its genuine first radial jet.  Together with
+the corpus coefficient bound, they establish summability of the weighted value and first-jet
+families.  Lean then differentiates the actual infinite signed tail in the vertical direction,
+the horizontal direction, horizontally through the vertical first jet, and horizontally through
+the horizontal first jet.  Hence the actual tail has certified value, `x`, `y`, `xx`, and `xy`
+jets; its missing `yy` field can be recovered algebraically from the existing Poincare
+eigen-equation, reducing the weld burden from five independently convergent derivative families
+to four.  This is formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualSignedFirstJetWeld`, wired into
+RHTower, and passes direct Lean plus targeted build `12464/12464`.  Axiom audits of both uniform
+majorants and all four infinite-series derivative theorems report only `propext`,
+`Classical.choice`, and `Quot.sound`.
+
+**Remaining A.9t2b2b hard core.** Construct the canonical scalar cusp second jet from those four
+genuine derivatives and recover `yy` from the eigen-equation; prove that its literal
+`R_2 R_0`/`L_(-2) L_0` evaluations equal the canonical `.raise`/`.lower` completed cusp legs.
+The constant sector must close by the existing zero-frequency `cpow` two-step Maass identities,
+and the nonzero sector by C-A.9t2b1 termwise mode normalization plus C-A.9t2b2a summability.  This
+is the decisive weld: success closes A.9t2b, while any mismatch in constant-sector normalization,
+tail phase, or chirality kills the proposed cusp-current route.  Exact chain:
+
+`actual/canonical Maass weld -> literal truncated Green/Stokes -> full cusp current finite part ->
+actual balanced BM ++- coefficient -> negative BM leg -> conserved left-QNM projection -> HC94 ->
+RH`.

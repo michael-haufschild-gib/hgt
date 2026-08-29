@@ -1,7 +1,7 @@
 # LI critical Abel--Cayley boundary
 
 - **ID:** LI-CAB1
-- **Stage:** 1-in-progress (completed-Abel survivor only; LI-CAB1.NG is formalized)
+- **Stage:** 1-in-progress (arithmetic sign producer only; LI-CAB1.NG, LI-CAB1.SW, LI-CAB2, and LI-CAB3 are formalized)
 - **Type:** CONJECTURE + NO-GO CLASSIFICATION
 - **Source:** Lean-corpus synthesis of `LiEvenSquarePrimeGammaCrossBalanceCriterion`, `XiShiftedHardEdgePrimeGammaSourceDisintegration`, `CayleyLaguerreFourier`, and `OddEulerCombTemperedAdmissionWall`
 - **Statement:** At hard-edge mass `a = 1/2`, the first even-Li cross density has Fourier profile proportional to `exp (-|ξ|/2) * (1 - |ξ|/2)`, so its isolated absolute von-Mangoldt prime leg is not summable; only the completed Abel prime--polar finite part can carry the LI capital.
@@ -72,17 +72,17 @@ Lagarias' Weil-functional treatment and generalized Li arithmetic formulas alrea
 4. Formalize the positive survivor `(1-u^2) U_n(u)^2 / 2`; if the exact Chebyshev identity is missing, prove it without numerical specialization.
 5. Continue with completed Abel prime--polar finite-part positivity; do not split the critical prime leg again.
 
-## Frozen conjecture LI-CAB2: all-mode Laguerre clock
+## Proved theorem LI-CAB2: all-mode Laguerre clock
 
-Corpus search found `routeUFourierIntegral_cosineSquareKernel` in `CayleyLaguerreFourier` and the exact real Cayley--Chebyshev phase law in `XiShiftedHardEdgeMehlerHeine`. For `m = 2(n+1)`, define
+Corpus search found `routeUFourierIntegral_cosineSquareKernel` in `CayleyLaguerreFourier` and the exact real Cayley--Chebyshev phase law in `XiShiftedHardEdgeMehlerHeine`. Let `P_m` be the corpus associated-Laguerre polynomial for `m = 2(n+1)`, and define
 
-`Q_m(r) = sum_{j=1}^m (-1)^(j+1) choose(m,j) r^(j-1)/(j-1)!`.
+`Q_n(r) = P_m''(r) - P_m'(r)`.
 
-The conjectured exact no-`2pi` transform is
+Lean proves the exact no-`2pi` transform
 
-`Fourier(density_n)(xi) = (pi/4) exp(-|xi|/2) Q_m(|xi|)`.
+`Fourier(density_n)(xi) = (pi/4) exp(-|xi|/2) Q_n(|xi|)`.
 
-This is not a standalone transform exercise. Its fixed RH chain is
+The proof constructs a dominated Fourier differentiation bridge for the polynomial-weighted Cauchy kernel, identifies the unit-scale square defect with the differentiated corpus cosine-square transform, handles positive, negative, and zero frequencies, and then dilates to critical half-mass. Its fixed RH chain is
 
 `all-mode exact clock`
 `=> explicit literal completed prime--polar--Gamma finite part for every LI mode`
@@ -90,17 +90,44 @@ This is not a standalone transform exercise. Its fixed RH chain is
 `=> even Li positivity`
 `=> RiemannHypothesis`.
 
-Proof route: identify the unit-scale density with `(1+x^2)/2` times the corpus cosine-square defect, prove the weighted Fourier differentiation bridge, simplify the associated-Laguerre jet, and then dilate to critical half-mass. Failure of the bridge triggers construction of that analysis; it does not justify a route pivot.
+LI-CAB2 eliminates the all-mode Fourier and regularization-coordinate ambiguity. The route now lives or dies on one hard producer: prove that the jointly completed prime--polar--Gamma functional is nonnegative on every explicit finite clock `Q_n`, or exhibit a mode with negative completed value and retire the LI route.
+
+## Proved theorem LI-CAB3: completed Abel landing
+
+For every mode `n` and hard-edge mass `a > 1/2`, Lean polarizes the corpus completed-density theorem `tsum_routeUHardEdgeRationalTestSq_eq_density` at the reciprocal lifts of `U_n` and `(1-X)U_n`. Its prime reporter is the absolutely convergent series obtained from the exact general-mass clock
+
+`Fourier(density_(n,a))(xi) = (pi*a/2) exp(-a*|xi|) Q_n(2*a*|xi|)`.
+
+At divisor level, a summable reciprocal-square majorant gives dominated convergence through `a = 1/2`. Hence the jointly completed polar--Gamma--prime expression has a right limit as `a -> 1/2`, equal to the ordinary divisor value there. Lean proves the exact normalization
+
+`Re(divisorValue_(n,1/2)) = Re(liPrimeArchEvenSquareSource_n) / 8`
+
+and the capstone equivalence
+
+`RiemannHypothesis <-> forall n, 0 <= Re(divisorValue_(n,1/2))`.
+
+Fixed proof chain:
+
+`exact absolutely convergent Abel family and critical landing`
+`=> no undefined prime/polar/Gamma splitting remains`
+`=> completed sign is one explicit Laguerre-clock limit inequality`
+`=> LI common-reversal cross-capital positivity`
+`=> even Li positivity`
+`=> RiemannHypothesis`.
+
+This removes the entire regularization burden. No undefined subtraction survives: the remaining proof burden is exactly the arithmetic sign of an explicit ordinary-limit family. Proving that sign closes the LI route and RH; a negative mode kills the route.
 
 ## No-go closure
 
 - **Exact killing mechanism:** critical Fourier decay contributes exactly `n^(-1/2)`; the explicit-formula coefficient contributes the other `n^(-1/2)`, leaving a non-summable harmonic von-Mangoldt boundary multiplied by an eventually growing Laguerre factor.
 - **Strongest positive survivor:** bounded nonnegative Cayley square-defect density and completed Abel prime--polar finite part.
 - **New insight:** heat filtering removes degree growth but simultaneously lands on the absolute-convergence wall; degree cancellation and critical divergence are the same boundary event.
-- **Status:** LI-CAB1.NG and its all-mode nonnegative square-defect survivor are proved in Lean. Open core is completed Abel prime--polar--Gamma finite-part positivity for every mode.
+- **Status:** LI-CAB1.NG, LI-CAB1.SW, LI-CAB2, and LI-CAB3 are proved in Lean. Regularization, Fourier identification, endpoint existence, and normalization are closed. Open core is the arithmetic nonnegativity of every explicit completed Abel endpoint; by the formal capstone, this is equivalent to RH.
 
 ## Log
 
 - 2026-08-29 — Created from mandatory Lean-corpus search. Small-time wedge rejected because it lacked an all-time/capital completion chain. Absolute capital-tail route rejected by LI-CAB1.NG; completed Abel finite part retained.
 - 2026-08-29 — Formalized `LiEvenCrossCriticalAbelBoundaryNoGo`: exact zeroth-mode LI density identification, all-mode square-defect/nonnegativity survivor, critical Fourier law, exact literal prime-leg weight, and non-summability. Targeted module build passed; axioms are only `propext`, `Classical.choice`, `Quot.sound`. Route remains open only at completed finite-part positivity.
 - 2026-08-29 — Formalized `LiEvenCrossCayleySquareDefectPrimeSignWall`: every mode lies exactly in `[0,1/2]`; the zeroth-mode Fourier profile is negative exactly for `2 < |xi|`, vanishes exactly at `|xi| = 2`, and its signed normalized and literal prime legs are not summable in natural order. This kills both physical-density-to-Fourier-positivity and ordinary signed-prime-sum shortcuts. Surviving producer is strictly the jointly completed Abel/Hadamard prime--polar--Gamma finite part.
+- 2026-08-29 — Formalized `LiEvenCrossAllModeLaguerreClock`: every critical LI square-defect density has exact Fourier profile `(pi/4) exp(-|xi|/2) (P_(2n+2)''-P_(2n+2)')(|xi|)`. Targeted module check/build passed; capstone axioms are only `propext`, `Classical.choice`, `Quot.sound`. All-mode transform ambiguity is closed; only completed arithmetic sign remains.
+- 2026-08-29 — Formalized `LiEvenCrossCompletedAbelLanding`: for every `a > 1/2`, the all-mode clock is an absolutely convergent prime reporter inside the exact completed hard-edge identity; divisor-level dominated convergence lands the joint completed expression at `a = 1/2`; its real part is exactly one eighth of the LI square source. Lean proves RH iff all endpoint values are nonnegative. Targeted module build passed; capstone axioms are only `propext`, `Classical.choice`, `Quot.sound`. Remaining burden is arithmetic sign, not regularization.

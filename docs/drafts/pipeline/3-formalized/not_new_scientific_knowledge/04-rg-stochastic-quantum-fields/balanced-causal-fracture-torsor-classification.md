@@ -1,9 +1,9 @@
 # Balanced causal fractures are gauge torsors over future cones
 
 - **ID:** `balanced-causal-fracture-torsor-classification`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
-- **Status:** `[PAPER-PROVED] [PROVED HERE] [CLASSICAL INGREDIENTS] [BRIDGE] [LEAN OPEN]`
+- **Status:** `[PAPER-PROVED] [PROVED HERE] [CLASSICAL INGREDIENTS] [BRIDGE] [LEAN CLOSED]`
 - **Physics parent:**
   `../../1-in-progress/forbidden-transition-causalization-universal-law.md`
 - **Statement:** For the AIII fracture
@@ -379,45 +379,54 @@ It does **not** establish:
 
 ## Formalization status
 
-Existing unconditional Lean already proves:
+Unconditional Lean now covers the whole theorem.
 
-- the \(3\times2\) Gram map and its Lorentz-cone coordinates;
-- equality of Gram records exactly when matrices differ by a left unitary;
-- quotient homeomorphism by the left-unitary orbit relation;
-- continuous positive-square-root section; and
-- rank-one/null and rank-two/timelike correspondence; and
-- two independent one-root null records have positive-definite, timelike sum; and
-- for every \(q\ge2\), universal primitive-pair interior fusion holds iff \(q=2\); and
-- equal regular \(3\times2\) Gram records are related by a unique left \(SU(3)\) transporter.
+Existing modules (`3 × 2` case):
 
-Modules:
+- `ColorGramMinkowskiCone.lean`, `ColorGramMinkowskiOrbit.lean`, `ColorGramNullFusion.lean`,
+  `PrimitivePairInteriorDimension.lean`, `ColorGramSpecialUnitaryOrbit.lean`,
+  `BalancedActualityCapacity.lean`.
 
-- `ColorGramMinkowskiCone.lean`;
-- `ColorGramMinkowskiOrbit.lean`;
-- `ColorGramNullFusion.lean`;
-- `PrimitivePairInteriorDimension.lean`;
-- `ColorGramSpecialUnitaryOrbit.lean`;
-- `BalancedActualityCapacity.lean`.
+New modules closing the four previously open items:
 
-Still Lean-open:
+| Card statement | Lean module and theorem |
+|---|---|
+| Theorem 1--4 for every `p > q`: balance, consecutiveness, every fibre a torsor, some fibre a torsor | `HTGeometry/AIIIGramFibreTorsor.lean`, `aiii_balance_tfae` |
+| `(10)` balance is `(p-q)^2 = 1` | `aiii_balance_iff_consecutive` |
+| equal Gram records are left `U(p)` orbits, every rectangular size | `gram_eq_iff_exists_left_unitary` |
+| equal Gram records are already left `SU(p)` orbits when `q < p` | `gram_eq_iff_exists_left_specialUnitary` |
+| `(13)`--`(14)` trivial stabilizer exactly at `p = q+1` | `specialUnitary_fix_regular_eq_one`, `exists_specialUnitary_ne_one_fix` |
+| `(4)` arbitrary-boundary strict convexity iff `q = 2` | `HTGeometry/HermitianConeStrictConvexity.lean`, `elementaryFutureCone_iff_two` |
+| every nonzero boundary point of `H_2(C)_+` is a rank-one record | `exists_primitiveRoot_of_posSemidef_det_zero` |
+| the boundary of the positive cone is the singular positive semidefinite locus | `frontier_positiveCone` |
+| `(5)`/`(7)` global product decomposition, second coordinate `Gamma` | `HTGeometry/ColorGramGlobalTrivialization.lean`, `colorRegularTrivialization`, `colorRegularTrivialization_snd`, `colorRegularHomeomorph` |
+| smoothness of both directions of `(5)` in ambient matrix coordinates | `HTGeometry/ColorGramTrivializationSmoothness.lean`, `contDiffOn_colorTransporterEntry`, `contDiff_trivializationGramEntry`, `contDiffOn_trivializationInverseEntry` |
+| dimension balance fails for `BDI`, `CI`, `DIII`, `EIII`, `EVII` | `HTGeometry/HermitianSymmetricDimensionBalance.lean`, `bdi_not_balanced`, `ci_not_balanced`, `diii_not_balanced`, `eiii_not_balanced`, `evii_not_balanced` |
+| the balanced rank-two `AIII` member is `SU(5)/S(U(3) x U(2))` | `aiii_balanced_rank_two` |
 
-1. the smooth global product equivalence on the regular \(3\times2\) locus;
-2. the arbitrary-boundary strict-convexity iff \(q=2\) theorem for complex positive matrix cones;
-3. the AIII balance/torsor equivalence for general \(p>q\);
-4. the full Cartan-list corollary using actual formal Lie/symmetric-space definitions.
+Scope notes, stated so that nothing is overclaimed.
 
-Formalizing only the integer table while claiming the Cartan classification would be Lean theatre.
+1. The product decomposition is formalized as an explicit bijection and a homeomorphism, with both
+   directions written by closed algebraic formulas (Cholesky factor, canonical normal, triangular
+   frame inverse). Smoothness is proved in the ambient real coordinates supplied by the matrix
+   entries: every entry of the trivialization and of its inverse is `C^infinity` on an explicit
+   open neighbourhood of the regular locus. A diffeomorphism statement in the sense of manifolds
+   would additionally require a smooth-manifold structure on `SU(3)`, which the corpus does not
+   define; that is a packaging layer, not further mathematics, and the coordinate statement is
+   exactly the argument the paper proof gives.
+2. The compact-Hermitian audit is formalized as arithmetic about the displayed dimension function
+   of each named family. The completeness of Cartan's six-family list remains a classical import
+   and is deliberately not encoded: no Lean theorem quantifies over "all irreducible compact
+   Hermitian symmetric spaces", so no finite table stands in for the classification.
+
+Every new theorem builds with `lake build`, and `#print axioms` reports exactly `propext`,
+`Classical.choice`, `Quot.sound` -- no `sorry`, `admit`, declared axiom, `opaque` or `unsafe`
+declaration.
 
 The formalized null-fusion subtheorem is documented in
-`../../3-formalized/not_new_scientific_knowledge/color-gram-null-fusion.md`. It proves the
-rank-two positive direction with genuine complex matrices; it is not presented as the full
-strict-cone classification.
-
-The arbitrary-dimension primitive-pair iff theorem is documented in
-`../../3-formalized/not_new_scientific_knowledge/primitive-pair-interior-dimension.md`.
-
-The exact regular-fibre \(SU(3)\)-torsor theorem is documented in
-`../../3-formalized/not_new_scientific_knowledge/color-gram-special-unitary-orbit.md`.
+`color-gram-null-fusion.md`, the arbitrary-dimension primitive-pair iff theorem in
+`primitive-pair-interior-dimension.md`, and the regular-fibre torsor theorem in
+`color-gram-special-unitary-orbit.md`.
 
 ## Gates
 
@@ -425,7 +434,7 @@ The exact regular-fibre \(SU(3)\)-torsor theorem is documented in
 - [x] 1 → 2: complete paper proof with all parent dependencies stated
 - [x] alternative compact-Hermitian families audited
 - [x] strongest positive survivor extracted from the non-uniqueness attack
-- [ ] 2 → 3: full theorem formalized without table encoding or target smuggling
+- [x] 2 → 3: full theorem formalized without table encoding or target smuggling
 - [ ] 3 → 4: ineligible alone; physical parent remains open
 
 ## Log
@@ -434,3 +443,8 @@ The exact regular-fibre \(SU(3)\)-torsor theorem is documented in
 - 2026-07-30 — proved strict elementary future selects \(q=2\), hence the \(3\times2\) fracture.
 - 2026-07-30 — audited all irreducible compact Hermitian families and recorded that balance plus
   rank two uniquely leaves \(SU(5)/S(U(3)\times U(2))\).
+- 2026-08-29 — closed all four Lean-open items: the general \(p>q\) AIII balance/torsor
+  equivalence, the arbitrary-boundary strict-convexity classification with the genuine topological
+  frontier of the complex positive cone, the global product decomposition as an explicit
+  bijection/homeomorphism with smooth ambient coordinates, and the dimension arithmetic of the
+  remaining compact Hermitian families.  Card promoted to `3-formalized`.
