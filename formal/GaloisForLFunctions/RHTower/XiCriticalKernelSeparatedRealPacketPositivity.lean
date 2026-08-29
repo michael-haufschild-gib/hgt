@@ -1841,14 +1841,14 @@ theorem posSemidef_thetaTailFirstMomentBezoutian_separatedRealPacket
     ring
   refine Matrix.PosSemidef.of_dotProduct_mulVec_nonneg hherm (fun cv => ?_)
   have hquad := hK.dotProduct_mulVec_nonneg
-    (fun j => ((xiRayLaplace (x j) : ℝ) : ℂ) * cv j)
+    (fun j : Fin n => ((xiRayLaplace (x j) : ℝ) : ℂ) * cv j)
   have hval : star cv ⬝ᵥ (Matrix.of fun j k : Fin n =>
       thetaTailFirstMomentBezoutian ((x j : ℝ) : ℂ)
         ((starRingEnd ℂ) ((x k : ℝ) : ℂ))).mulVec cv
-      = star (fun j => ((xiRayLaplace (x j) : ℝ) : ℂ) * cv j) ⬝ᵥ
+      = star (fun j : Fin n => ((xiRayLaplace (x j) : ℝ) : ℂ) * cv j) ⬝ᵥ
           (Matrix.of fun j k : Fin n =>
             criticalLogDerivKernel ((x j : ℝ) : ℂ) ((x k : ℝ) : ℂ)).mulVec
-          (fun j => ((xiRayLaplace (x j) : ℝ) : ℂ) * cv j) := by
+          (fun j : Fin n => ((xiRayLaplace (x j) : ℝ) : ℂ) * cv j) := by
     simp only [dotProduct, Matrix.mulVec, Matrix.of_apply, Pi.star_apply, RCLike.star_def]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [Finset.mul_sum, Finset.mul_sum]

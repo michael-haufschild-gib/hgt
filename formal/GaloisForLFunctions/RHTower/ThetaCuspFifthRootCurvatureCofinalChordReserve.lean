@@ -231,9 +231,16 @@ theorem thetaCuspCompletedProductFiberCofinalFunctionalBudget_eq_drops_mul_reser
           (thetaCuspCompletedProductFiberCofinalLikelihoodDriftReserveAtZero t -
             thetaCuspCompletedProductFiberCofinalLikelihoodTaxDensityAtZero t) := by
   rw [thetaCuspCompletedProductFiberCofinalFunctionalBudget_eq_drift_add_twoTaxes ht,
-    thetaCuspCompletedProductFiberCofinalLikelihoodDriftBudget_eq_drops_mul_reserve,
-    thetaCuspCompletedProductFiberCofinalLikelihoodTaxes_eq_neg_drops_mul_density]
-  ring
+    thetaCuspCompletedProductFiberCofinalLikelihoodDriftBudget_eq_drops_mul_reserve]
+  calc
+    _ = thetaCuspCompletedProductFiberFirstDrop 0 t *
+          thetaCuspCompletedProductFiberHigherTailDrop 0 t *
+            thetaCuspCompletedProductFiberCofinalLikelihoodDriftReserveAtZero t +
+        (thetaCuspCompletedProductFiberCofinalLikelihoodSlopeSquareTaxAtZero t +
+          thetaCuspCompletedProductFiberCofinalLikelihoodConvexityTaxAtZero t) := by ring
+    _ = _ := by
+      rw [thetaCuspCompletedProductFiberCofinalLikelihoodTaxes_eq_neg_drops_mul_density]
+      ring
 
 /-- Exact all-positive-radius source identity: C5 equals nonlocal chord reserve minus the two
 likelihood tax densities.  No first-fibre-rise hypothesis remains. -/
@@ -276,6 +283,9 @@ theorem thetaCuspCompletedProductFiberCofinalLikelihoodTaxDensityAtZero_pos
     exact sq_pos_of_pos (thetaCuspSourceTerm_one_pos_of_pos ht)
   have hLone := thetaCuspCompletedProductFiberCofinalLikelihoodFactorJetOne_neg ht
   have hLtwo := thetaCuspCompletedProductFiberCofinalLikelihoodFactorJetTwo_pos ht
+  have hLoneSq :
+      0 < thetaCuspCompletedProductFiberCofinalLikelihoodFactorJetOne t ^ 2 :=
+    sq_pos_of_neg hLone
   unfold thetaCuspCompletedProductFiberCofinalLikelihoodTaxDensityAtZero
   have hslope : 0 <
       4 * t ^ 2 * thetaCuspCompletedProductFiberAmplitude 1 0 t ^ 2 *
@@ -312,10 +322,16 @@ theorem thetaCuspCompletedProductFiberCofinalFunctionalBudget_nonpos_iff_taxDens
   · intro h
     by_contra hle
     have hsub :
-        0 < thetaCuspCompletedProductFiberCofinalLikelihoodDriftReserveAtZero t -
-          thetaCuspCompletedProductFiberCofinalLikelihoodTaxDensityAtZero t :=
-      sub_pos.mpr (lt_of_not_ge hle)
-    exact (not_lt_of_ge h) (mul_neg_of_neg_of_pos hab hsub)
+        thetaCuspCompletedProductFiberCofinalLikelihoodDriftReserveAtZero t -
+          thetaCuspCompletedProductFiberCofinalLikelihoodTaxDensityAtZero t < 0 :=
+      sub_neg.mpr (lt_of_not_ge hle)
+    have hprod : 0 <
+        thetaCuspCompletedProductFiberFirstDrop 0 t *
+          thetaCuspCompletedProductFiberHigherTailDrop 0 t *
+            (thetaCuspCompletedProductFiberCofinalLikelihoodDriftReserveAtZero t -
+              thetaCuspCompletedProductFiberCofinalLikelihoodTaxDensityAtZero t) :=
+      mul_pos_of_neg_of_neg hab hsub
+    exact (not_lt_of_ge h) hprod
   · intro h
     exact mul_nonpos_of_nonpos_of_nonneg hab.le (sub_nonneg.mpr h)
 

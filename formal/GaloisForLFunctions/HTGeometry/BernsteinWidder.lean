@@ -144,9 +144,12 @@ theorem tendsto_bernsteinMesh_zero :
       filter_upwards [eventually_ge_atTop b] with a ha
       omega
     have h := (tendsto_const_div_atTop_nhds_zero_nat (1 : ℝ)).comp hshift
-    simpa only [Function.comp_apply, Nat.cast_add, Nat.cast_one, one_div] using h
+    convert h using 1
+    funext n
+    norm_num [Function.comp_def]
   · filter_upwards with n
-    exact inv_pos.mpr (by positivity)
+    show 0 < (((n + 1 : ℕ) : ℝ))⁻¹
+    positivity
 
 /-- The lower mesh point `floor(t(n+1))/(n+1)` converges to `t`. -/
 theorem tendsto_bernsteinFloorMesh (t : ℝ) (ht : 0 ≤ t) :
@@ -162,7 +165,9 @@ theorem tendsto_bernsteinFloorMesh (t : ℝ) (ht : 0 ≤ t) :
       filter_upwards [eventually_ge_atTop b] with a ha
       omega
     have h := (tendsto_const_div_atTop_nhds_zero_nat (1 : ℝ)).comp hshift
-    simpa only [d, Function.comp_apply, Nat.cast_add, Nat.cast_one] using h
+    convert h using 1
+    funext n
+    norm_num [d, Function.comp_def]
   have hlower : ∀ n : ℕ, t - 1 / d n ≤ s n := by
     intro n
     have hfloor := Nat.lt_floor_add_one (t * d n)
@@ -172,7 +177,7 @@ theorem tendsto_bernsteinFloorMesh (t : ℝ) (ht : 0 ≤ t) :
       calc
         t = (t * d n) / d n := by field_simp
         _ < (((⌊t * d n⌋₊ : ℕ) : ℝ) + 1) / d n :=
-          (div_lt_div_iff₀ hd).2 hfloor
+          (div_lt_div_iff₀ hd hd).2 (by simpa only [mul_one] using mul_lt_mul_of_pos_right hfloor hd)
         _ = ((⌊t * d n⌋₊ : ℕ) : ℝ) / d n + 1 / d n := by ring
     linarith
   have hupper : ∀ n : ℕ, s n ≤ t := by
@@ -187,6 +192,93 @@ theorem tendsto_bernsteinFloorMesh (t : ℝ) (ht : 0 ≤ t) :
     tendsto_of_tendsto_of_tendsto_of_le_of_le' hlowerlim tendsto_const_nhds
       (Eventually.of_forall hlower) (Eventually.of_forall hupper)
   exact hs
+
+/-- Real-power test function on the compact Laplace coordinate. -/
+def bernsteinRpowTest (t : ℝ) (ht : 0 < t) :
+    BoundedContinuousFunction HausdorffSourceSpace ℝ :=
+  BoundedContinuousFunction.mkOfCompact
+    ⟨fun z => (z : ℝ) ^ t, by fun_prop (disch := positivity)⟩
+
+@[simp] theorem bernsteinRpowTest_apply (t : ℝ) (ht : 0 < t)
+    (z : HausdorffSourceSpace) : bernsteinRpowTest t ht z = (z : ℝ) ^ t := rfl
+
+/-- Real powers decrease with the exponent on the compact unit interval. -/
+theorem hausdorff_rpow_antitone_exponent (z : HausdorffSourceSpace) {s t : ℝ}
+    (hs : 0 ≤ s) (hst : s ≤ t) : (z : ℝ) ^ t ≤ (z : ℝ) ^ s := by
+  rcases eq_or_lt_of_le z.property.1 with hz | hz
+  · rw [← hz]
+    by_cases ht0 : t = 0
+    · subst t
+      have hs0 : s = 0 := le_antisymm hst hs
+      simp [hs0]
+    · have ht : 0 < t := lt_of_le_of_ne (hs.trans hst) (Ne.symm ht0)
+      rw [Real.zero_rpow ht.ne']
+      exact Real.rpow_nonneg (by norm_num) s
+  · exact Real.rpow_le_rpow_of_exponent_ge hz z.property.2 hst
+
+/-- Missing mass is placed at the compactification point `z=0`; positive real-power moments do
+not see it. -/
+def bernsteinCompletedCompactMeasure (H : ℝ → ℝ) (hH : CompletelyMonotoneDiff H)
+    (L : ℝ) (n : ℕ) : Measure HausdorffSourceSpace :=
+  bernsteinCompactMeasure H hH n +
+    ENNReal.ofReal (L - H (((n + 1 : ℕ) : ℝ)⁻¹)) •
+      Measure.dirac (⟨0, by simp⟩ : HausdorffSourceSpace)
+
+theorem bernsteinCompletedCompactMeasure_univ (H : ℝ → ℝ)
+    (hH : CompletelyMonotoneDiff H) {L : ℝ} (hL : 0 ≤ L)
+    (hbound : ∀ t : ℝ, 0 < t → H t ≤ L) (n : ℕ) :
+    bernsteinCompletedCompactMeasure H hH L n Set.univ = ENNReal.ofReal L := by
+  have hstep0 : 0 ≤ H (((n + 1 : ℕ) : ℝ)⁻¹) :=
+    completelyMonotoneDiff_nonneg hH (by positivity)
+  have hstepL : H (((n + 1 : ℕ) : ℝ)⁻¹) ≤ L := hbound _ (by positivity)
+  rw [bernsteinCompletedCompactMeasure, Measure.add_apply, bernsteinCompactMeasure_univ,
+    Measure.smul_apply, Measure.dirac_apply' _ MeasurableSet.univ]
+  simp only [Set.indicator_of_mem (Set.mem_univ _), Pi.one_apply, smul_eq_mul, mul_one]
+  rw [← ENNReal.ofReal_add hstep0]
+  congr 1
+  linarith
+
+/-- Fixed-mass compact probability approximant. -/
+noncomputable def bernsteinProbabilityMeasure (H : ℝ → ℝ)
+    (hH : CompletelyMonotoneDiff H) (L : ℝ) (hL : 0 < L)
+    (hbound : ∀ t : ℝ, 0 < t → H t ≤ L) (n : ℕ) :
+    ProbabilityMeasure HausdorffSourceSpace :=
+  ⟨(ENNReal.ofReal L)⁻¹ • bernsteinCompletedCompactMeasure H hH L n, by
+    constructor
+    rw [Measure.smul_apply, bernsteinCompletedCompactMeasure_univ H hH hL.le hbound,
+      smul_eq_mul]
+    exact ENNReal.inv_mul_cancel
+      (by simp [ENNReal.ofReal_eq_zero, not_le, hL]) ENNReal.ofReal_ne_top⟩
+
+theorem integral_bernsteinProbabilityMeasure_gridMoment (H : ℝ → ℝ)
+    (hH : CompletelyMonotoneDiff H) {L : ℝ} (hL : 0 < L)
+    (hbound : ∀ t : ℝ, 0 < t → H t ≤ L) (n : ℕ) {m : ℕ} (hm : 0 < m) :
+    (∫ z : HausdorffSourceSpace,
+        (z : ℝ) ^ ((m : ℝ) / ((n + 1 : ℕ) : ℝ))
+          ∂(bernsteinProbabilityMeasure H hH L hL hbound n :
+            ProbabilityMeasure HausdorffSourceSpace)) =
+      L⁻¹ * H (((m + 1 : ℕ) : ℝ) / ((n + 1 : ℕ) : ℝ)) := by
+  let f : HausdorffSourceSpace → ℝ := fun z =>
+    (z : ℝ) ^ ((m : ℝ) / ((n + 1 : ℕ) : ℝ))
+  have hfcont : Continuous f := by
+    dsimp [f]
+    fun_prop (disch := positivity)
+  have hficompact : Integrable f (bernsteinCompactMeasure H hH n) :=
+    integrable_of_continuous _ hfcont
+  have hfidirac : Integrable f
+      (ENNReal.ofReal (L - H (((n + 1 : ℕ) : ℝ)⁻¹)) •
+        Measure.dirac (⟨0, by simp⟩ : HausdorffSourceSpace)) := by
+    exact integrable_of_continuous _ hfcont
+  change ∫ z, f z ∂((ENNReal.ofReal L)⁻¹ •
+    bernsteinCompletedCompactMeasure H hH L n) = _
+  rw [integral_smul_measure, bernsteinCompletedCompactMeasure,
+    integral_add_measure hficompact hfidirac, integral_smul_measure, integral_dirac]
+  have hzero : f (⟨0, by simp⟩ : HausdorffSourceSpace) = 0 := by
+    dsimp [f]
+    rw [Real.zero_rpow]
+    positivity
+  rw [hzero, smul_zero, add_zero, bernsteinCompactMeasure_gridMoment H hH n hm,
+    ENNReal.toReal_inv, ENNReal.toReal_ofReal hL.le, smul_eq_mul]
 
 end
 
