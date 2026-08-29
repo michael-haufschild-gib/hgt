@@ -255,18 +255,78 @@ the complete residual jet series, and holomorphy on that disc. Direct foreground
 the targeted module build pass. Axiom audit reports only `propext`, `Classical.choice`, and
 `Quot.sound`. Global lint is blocked only by unrelated pre-existing umbrella reachability debt.
 
+### C5a.5 — source-ordered safe-ray Borel--Laplace reconstruction
+
+`[LEAN-PROVED]` The negative real ray of `Phi`, corresponding to the physical lower half-plane,
+has a canonical global continuation only after preserving source order. For `s >= 0`, define
+
+```text
+B^-_x(s) = sum_N R_N
+  (exp(-i h_N x) Phi(-h_N s)
+   - exp(-i h_(N+1) x) Phi(-h_(N+1) s)).
+```
+
+There is `r>0` such that `B^-_x(s)=B_x(-i s)` for `0 <= s < r`; hence `B^-` is a genuine
+continuation of C5a's local Borel germ, not a separately assigned sum. Moreover, for every
+`x in R` and `y>=0`,
+
+```text
+integral_0^infinity exp(-t) B^-_x(y t) dt
+  = xiHeatCassiniWoldResidualLowerHardyKernel(x - i y).
+```
+
+The key corpus-derived cancellation is the exact Bessel identity
+
+```text
+Phi(-r) = J_0(2 sqrt(r)),  r >= 0.
+```
+
+The corpus derivative recurrence and `|J_1(u)| <= |u|/2` imply the adjacent-height bound
+
+```text
+|Phi(-h s) - Phi(-H s)| <= 2 (H-h) s,  0 <= h <= H.
+```
+
+Together with the physical phase-chord bound this gives the source atom majorant
+
+```text
+|R_N| (h_(N+1)-h_N) (|x| + 2s).
+```
+
+Its source factor is summable by the existing Wold residual prime-log total-variation theorem;
+after `s=yt`, its remaining factor is integrable against `exp(-t)`. Tonelli therefore applies in
+source order. The scalar identity
+
+```text
+integral_0^infinity exp(-t) Phi(wt) dt = exp(w)
+```
+
+then reconstructs each lower-Hardy edge exactly. This also proves why raw coefficientwise Fubini
+is the wrong global continuation: it destroys the adjacent-source gap before Bessel oscillation
+can expose it.
+
+Formalized in
+`formal/GaloisForLFunctions/RHTower/XiHeatCassiniWoldResidualBorelBessel.lean`,
+`formal/GaloisForLFunctions/RHTower/XiHeatCassiniWoldResidualBorelLaplace.lean`, and
+`formal/GaloisForLFunctions/RHTower/XiHeatCassiniWoldResidualBorelSourceLaplace.lean`.
+Direct foreground elaboration and targeted builds pass. Closed-axiom audit reports only
+`propext`, `Classical.choice`, and `Quot.sound`.
+
 ### C5b — remaining open core
 
-`[OPEN CORE]` Prove that every `B_x` continues along the positive normal Borel ray with the
-uniform exponential-type estimates needed for Borel-Laplace reconstruction throughout
-`0 < Im z < 1/2`, and prove that the two physical lateral sums have zero Stokes jump.
+`[OPEN CORE, SHARPENED]` The full safe negative-ray continuation and lower-half-plane
+Borel--Laplace reconstruction are now closed by C5a.5. Prove continuation from the same local germ
+along the positive normal Borel ray with the exponential-type control needed for
+`0 < Im z < 1/2`, identify both lateral sums source-by-source, and prove their Stokes jump is zero.
+This is now the first unproved arrow in the stated RH chain.
 
-`[HOSTILE AUDIT]` C5a alone cannot imply C5b. Gevrey-2 jets admit flat ambiguity, so local Borel
-holomorphy does not determine a continuation or its Stokes data. Declaring the germ entire would
-silently assume the missing theorem. Ordinary scalar reflection and compact-open limiting are
-already ruled out by the corpus no-go theorems. Conversely, any nonzero Stokes jump must be tested
-against the exact Wold-pole residue rather than discarded: off line, that jump is the expected
-carrier of source charge.
+`[HOSTILE AUDIT]` C5a.5 removes safe-side reconstruction but cannot imply C5b. Gevrey-2 jets admit
+flat ambiguity, so agreement on one ray does not determine continuation across the singular
+normal direction or its lateral Stokes data. The Bessel gap estimate is oscillatory only on the
+proved negative ray; replacing it by absolute growth on the positive ray loses summability.
+Ordinary scalar reflection and compact-open limiting remain ruled out by corpus no-go theorems.
+Conversely, any nonzero Stokes jump must be tested against the exact Wold-pole residue rather than
+discarded: off line, that jump is the expected carrier of source charge.
 
 ### Novelty audit
 

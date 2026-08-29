@@ -1134,3 +1134,193 @@ theorem xiRayLogDeriv_ge {b : ℝ} (hb : xiRayLowerBase ≤ b) :
   linarith [htarget]
 
 end RHTower
+
+namespace RHTower
+
+/-! ## Correlation decay on multiplicatively separated nodes -/
+
+private theorem log_div_self_antitone {a c : ℝ} (ha : Real.exp 1 ≤ a) (hac : a ≤ c) :
+    Real.log c / c ≤ Real.log a / a := by
+  have ha0 : 0 < a := lt_of_lt_of_le (Real.exp_pos 1) ha
+  have hc0 : 0 < c := lt_of_lt_of_le ha0 hac
+  have hla : 1 ≤ Real.log a := (Real.le_log_iff_exp_le ha0).mpr ha
+  have hkey : a * Real.log c ≤ c * Real.log a := by
+    have h1 : Real.log c - Real.log a ≤ c / a - 1 := by
+      have h := Real.log_le_sub_one_of_pos (show 0 < c / a from div_pos hc0 ha0)
+      rwa [Real.log_div (ne_of_gt hc0) (ne_of_gt ha0)] at h
+    have h2 : a * (Real.log c - Real.log a) ≤ c - a := by
+      have h3 := mul_le_mul_of_nonneg_left h1 ha0.le
+      have h4 : a * (c / a - 1) = c - a := by
+        field_simp
+      linarith [h4 ▸ h3]
+    have h5 : c - a ≤ (c - a) * Real.log a := by
+      nlinarith [hla, hac]
+    nlinarith [h2, h5]
+  rw [div_le_div_iff₀ hc0 ha0]
+  linarith [hkey]
+
+private theorem one_add_two_le_four_pow (d : ℕ) : (1 : ℝ) + 2 * d ≤ 4 ^ d := by
+  induction d with
+  | zero => norm_num
+  | succ m ih =>
+    have h4 : (1 : ℝ) ≤ 4 ^ m := one_le_pow₀ (by norm_num)
+    have hstep : (4 : ℝ) ^ (m + 1) = 4 * 4 ^ m := by ring
+    push_cast
+    nlinarith [ih]
+
+private theorem exp_one_le_packetBase : Real.exp 1 ≤ xiRayPacketBase := by
+  have h1 := Real.exp_one_lt_d9
+  have h2 := xiRayPacketBase_ge
+  linarith
+
+private theorem xiRayLogDeriv_pos_of_packetBase {u : ℝ} (hu : xiRayPacketBase ≤ u) :
+    0 < xiRayLogDeriv u := by
+  have hu0 : 0 < u := lt_of_lt_of_le (by linarith [xiRayPacketBase_ge]) hu
+  have hlow := xiRayLogDeriv_ge (le_trans xiRayLowerBase_le_packetBase hu)
+  have hlog : 1 ≤ Real.log u := by
+    rw [Real.le_log_iff_exp_le hu0]
+    linarith [exp_one_le_packetBase]
+  linarith
+
+private theorem packet_corr {u v : ℝ} (hu : xiRayPacketBase ≤ u) (hv : xiRayPacketBase ≤ v)
+    {d : ℕ} (hgap : xiRayPacketBase ^ (2 * d) * u ≤ v) :
+    (xiRayLogDeriv u + xiRayLogDeriv v) / (u + v)
+      ≤ 32 * (2 / xiRayPacketBase) ^ d *
+        (Real.sqrt (xiRayLogDeriv u / u) * Real.sqrt (xiRayLogDeriv v / v)) := by
+  have hR256 := xiRayPacketBase_ge
+  have hR0 : (0 : ℝ) < xiRayPacketBase := by linarith
+  have hR1 : (1 : ℝ) ≤ xiRayPacketBase := by linarith
+  have hu0 : (0 : ℝ) < u := by linarith
+  have hv0 : (0 : ℝ) < v := by linarith
+  have huv : u ≤ v := by
+    have hpow : (1 : ℝ) ≤ xiRayPacketBase ^ (2 * d) := one_le_pow₀ hR1
+    nlinarith
+  have hueexp : Real.exp 1 ≤ u := le_trans exp_one_le_packetBase hu
+  have hru_le := xiRayLogDeriv_le (le_trans xiRayUpperBase_le_packetBase hu)
+  have hru_ge := xiRayLogDeriv_ge (le_trans xiRayLowerBase_le_packetBase hu)
+  have hrv_le := xiRayLogDeriv_le (le_trans xiRayUpperBase_le_packetBase hv)
+  have hrv_ge := xiRayLogDeriv_ge (le_trans xiRayLowerBase_le_packetBase hv)
+  have hlogu1 : 1 ≤ Real.log u := (Real.le_log_iff_exp_le hu0).mpr hueexp
+  have hlogv1 : 1 ≤ Real.log v :=
+    (Real.le_log_iff_exp_le hv0).mpr (le_trans hueexp huv)
+  have hloguv : Real.log u ≤ Real.log v := Real.log_le_log hu0 huv
+  set q : ℝ := 2 / xiRayPacketBase with hqdef
+  have hq0 : 0 < q := div_pos (by norm_num) hR0
+  -- the log-ratio contraction
+  have hkey : Real.log v / v ≤ q ^ (2 * d) * (Real.log u / u) := by
+    have hRu0 : (0 : ℝ) < xiRayPacketBase ^ (2 * d) * u :=
+      mul_pos (pow_pos hR0 _) hu0
+    have hRue : Real.exp 1 ≤ xiRayPacketBase ^ (2 * d) * u := by
+      have hpow : (1 : ℝ) ≤ xiRayPacketBase ^ (2 * d) := one_le_pow₀ hR1
+      nlinarith
+    have step1 : Real.log v / v
+        ≤ Real.log (xiRayPacketBase ^ (2 * d) * u) / (xiRayPacketBase ^ (2 * d) * u) :=
+      log_div_self_antitone hRue hgap
+    have step2 : Real.log (xiRayPacketBase ^ (2 * d) * u)
+        = 2 * d * Real.log xiRayPacketBase + Real.log u := by
+      rw [Real.log_mul (ne_of_gt (pow_pos hR0 _)) (ne_of_gt hu0), Real.log_pow]
+      push_cast
+      ring
+    have hlogR : Real.log xiRayPacketBase ≤ Real.log u := Real.log_le_log hR0 hu
+    have hlogR0 : 0 ≤ Real.log xiRayPacketBase := Real.log_nonneg hR1
+    have step3 : 2 * d * Real.log xiRayPacketBase + Real.log u
+        ≤ 4 ^ d * Real.log u := by
+      have h1 : 2 * (d : ℝ) * Real.log xiRayPacketBase ≤ 2 * d * Real.log u := by
+        apply mul_le_mul_of_nonneg_left hlogR
+        positivity
+      have h2 : (1 + 2 * (d : ℝ)) * Real.log u ≤ 4 ^ d * Real.log u := by
+        apply mul_le_mul_of_nonneg_right (one_add_two_le_four_pow d)
+        linarith
+      nlinarith
+    have step4 : Real.log (xiRayPacketBase ^ (2 * d) * u) / (xiRayPacketBase ^ (2 * d) * u)
+        ≤ (4 ^ d * Real.log u) / (xiRayPacketBase ^ (2 * d) * u) := by
+      apply div_le_div_of_nonneg_right _ hRu0.le
+      rw [step2]
+      exact step3
+    have step5 : (4 ^ d * Real.log u) / (xiRayPacketBase ^ (2 * d) * u)
+        = q ^ (2 * d) * (Real.log u / u) := by
+      rw [hqdef, div_pow, show ((2 : ℝ)) ^ (2 * d) = 4 ^ d by
+        rw [pow_mul]
+        norm_num]
+      field_simp
+    calc Real.log v / v
+        ≤ Real.log (xiRayPacketBase ^ (2 * d) * u) / (xiRayPacketBase ^ (2 * d) * u) := step1
+      _ ≤ (4 ^ d * Real.log u) / (xiRayPacketBase ^ (2 * d) * u) := step4
+      _ = q ^ (2 * d) * (Real.log u / u) := step5
+  set A : ℝ := Real.log v / v with hAdef
+  set B : ℝ := Real.log u / u with hBdef
+  have hA0 : 0 ≤ A := div_nonneg (by linarith) hv0.le
+  have hB0 : 0 ≤ B := div_nonneg (by linarith) hu0.le
+  -- the square-root form of the contraction
+  have hsqrt : A ≤ q ^ d * Real.sqrt (B * A) := by
+    have h1 : A * A ≤ (q ^ (2 * d) * B) * A := mul_le_mul_of_nonneg_right hkey hA0
+    have h2 : Real.sqrt (A * A) ≤ Real.sqrt ((q ^ (2 * d) * B) * A) :=
+      Real.sqrt_le_sqrt h1
+    have h3 : Real.sqrt (A * A) = A := Real.sqrt_mul_self hA0
+    have h4 : (q ^ (2 * d) * B) * A = (q ^ d) ^ 2 * (B * A) := by
+      rw [show 2 * d = d * 2 from Nat.mul_comm 2 d, pow_mul]
+      ring
+    have h5 : Real.sqrt ((q ^ d) ^ 2 * (B * A))
+        = q ^ d * Real.sqrt (B * A) := by
+      rw [Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq (pow_nonneg hq0.le _)]
+    calc A = Real.sqrt (A * A) := h3.symm
+      _ ≤ Real.sqrt ((q ^ (2 * d) * B) * A) := h2
+      _ = Real.sqrt ((q ^ d) ^ 2 * (B * A)) := by rw [h4]
+      _ = q ^ d * Real.sqrt (B * A) := h5
+  -- kernel numerator and diagonal comparison
+  have hKnum : (xiRayLogDeriv u + xiRayLogDeriv v) / (u + v) ≤ 4 * Real.log v / v := by
+    have hnum : xiRayLogDeriv u + xiRayLogDeriv v ≤ 4 * Real.log v := by
+      have h1 : xiRayLogDeriv u ≤ Real.log v + 1 := by linarith
+      have h2 : xiRayLogDeriv v ≤ Real.log v + 1 := by linarith
+      linarith
+    have hnum0 : 0 ≤ xiRayLogDeriv u + xiRayLogDeriv v := by
+      have := xiRayLogDeriv_pos_of_packetBase hu
+      have := xiRayLogDeriv_pos_of_packetBase hv
+      linarith
+    calc (xiRayLogDeriv u + xiRayLogDeriv v) / (u + v)
+        ≤ (xiRayLogDeriv u + xiRayLogDeriv v) / v := by
+          apply div_le_div_of_nonneg_left hnum0 hv0
+          linarith
+      _ ≤ (4 * Real.log v) / v := div_le_div_of_nonneg_right hnum hv0.le
+      _ = 4 * Real.log v / v := by ring
+  -- diagonal square roots dominate the (1/8)-scaled log data
+  have hDu : B / 8 ≤ xiRayLogDeriv u / u := by
+    have h1 : Real.log u / 8 / u ≤ xiRayLogDeriv u / u :=
+      div_le_div_of_nonneg_right hru_ge hu0.le
+    have h2 : B / 8 = Real.log u / 8 / u := by
+      rw [hBdef]
+      ring
+    rw [h2]
+    exact h1
+  have hDv : A / 8 ≤ xiRayLogDeriv v / v := by
+    have h1 : Real.log v / 8 / v ≤ xiRayLogDeriv v / v :=
+      div_le_div_of_nonneg_right hrv_ge hv0.le
+    have h2 : A / 8 = Real.log v / 8 / v := by
+      rw [hAdef]
+      ring
+    rw [h2]
+    exact h1
+  have hsq8 : Real.sqrt (B / 8) * Real.sqrt (A / 8) = Real.sqrt (B * A) / 8 := by
+    rw [← Real.sqrt_mul (by linarith : (0 : ℝ) ≤ B / 8)]
+    have h1 : B / 8 * (A / 8) = B * A * (1 / 64) := by ring
+    rw [h1, Real.sqrt_mul (mul_nonneg hB0 hA0),
+      show (1 : ℝ) / 64 = (1 / 8) ^ 2 by norm_num,
+      Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ (1 : ℝ) / 8)]
+    ring
+  have h3 : Real.sqrt (B / 8) * Real.sqrt (A / 8)
+      ≤ Real.sqrt (xiRayLogDeriv u / u) * Real.sqrt (xiRayLogDeriv v / v) :=
+    mul_le_mul (Real.sqrt_le_sqrt hDu) (Real.sqrt_le_sqrt hDv)
+      (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
+  calc (xiRayLogDeriv u + xiRayLogDeriv v) / (u + v)
+      ≤ 4 * Real.log v / v := hKnum
+    _ = 4 * A := by rw [hAdef]; ring
+    _ ≤ 4 * (q ^ d * Real.sqrt (B * A)) := by
+        linarith [mul_le_mul_of_nonneg_left hsqrt (by norm_num : (0 : ℝ) ≤ 4)]
+    _ = 32 * q ^ d * (Real.sqrt (B * A) / 8) := by ring
+    _ = 32 * q ^ d * (Real.sqrt (B / 8) * Real.sqrt (A / 8)) := by rw [hsq8]
+    _ ≤ 32 * q ^ d *
+          (Real.sqrt (xiRayLogDeriv u / u) * Real.sqrt (xiRayLogDeriv v / v)) := by
+        exact mul_le_mul_of_nonneg_left h3
+          (mul_nonneg (by norm_num) (pow_nonneg hq0.le d))
+
+end RHTower

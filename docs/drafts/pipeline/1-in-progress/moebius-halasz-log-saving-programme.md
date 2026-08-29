@@ -1810,3 +1810,58 @@ from the block's Mertens mass, bound `#(P₁ j)` and `#(P₂ j)` by the large-va
 the level set `primeBlockLevelSet B G (2^j V₀)` (whose points are one-spaced *by construction*), and
 compare the resulting saving with the target `ε' h²`.  Since no step used a lower bound on the block
 scale `Q`, the `(log x)^{−1/5}` ceiling of the exact-Ramaré chain does not apply.
+
+## The annulus estimate is now an explicit, existential-free inequality (2026-08-29)
+
+Three further modules complete the large-values route from the interface to a closed inequality.
+All unconditional, axiom-clean, umbrella-wired.
+
+### `Sieve/PrimeBlockLevelSetCount` — how many frequencies a level set can hold
+
+```text
+primeBlockPoly_eq_logPoly        primeBlockPoly B = logPoly moebiusCoeff B   (definitional)
+primeBlockPoly_eq_inner          for B ⊆ [N,2N):  = ⟪dyadicDirRow N (−2πw), blockCoeff N (μ·1_B) 0⟫
+normSq_moebiusBlockCoeff_le      ‖blockCoeff N (μ·1_B) 0‖² ≤ #B
+card_le_of_mem_primeBlockLevelSet
+    **Huxley's two-term density estimate on a prime-block level set**: a one-spaced family inside
+    `{|w| ≤ G : N^{−σ} ≤ ‖primeBlockPoly B w‖}` has
+      #P ≤ (6594624·(2πG)·E³·N^{6σ−2} + 2E·N^{2σ})·(1 + 12π(1 + log(4πG+1)))
+    whenever #B ≤ E/N and 2400E ≤ N^{1/2−2σ}.
+```
+
+The rescaling `w ↦ −2πw` is what carries a `logPoly` frequency to a `dyadicDirRow` frequency; it
+*improves* one-spacing to `2π`-spacing.
+
+### `Sieve/HalaszMontgomeryLogPolyBlock` — Halász–Montgomery at an arbitrary line
+
+The corpus's `halaszMontgomery_blockPoly_real_finset_explicit` is stated only on `σ = 1`; the
+parameter is carried inertly through `inner_dyadicDirRow_blockCoeff`, so the `σ`-general form is a
+copy of the proof:
+
+```text
+halaszMontgomery_blockPoly_real_finset_sigma    …the same bound for every σ (the Möbius form needs σ = 0)
+halaszMontgomery_logPoly_finset                 …for a logPoly supported in a dyadic range,
+                                                over a one-spaced family of spread ≤ 2G
+sum_normSq_logPoly_Icc_le_halaszMontgomery      …and for the whole initial segment [1,M],
+                                                at the cost of the dyadic factor ⌊log₂ M⌋+1
+```
+
+### `Sieve/BlockProductHalaszExplicit` — the closed inequality
+
+```text
+halaszBlockBound a M G U i C     the Halász–Montgomery bound for one dyadic cofactor block
+halaszBlockBound_mono            monotone in the frequency count
+integral_normSq_blockProduct_le_halaszMontgomery
+    ∫_{|w| ≤ G} ‖primeBlockPoly B w · logPoly a [1,M] w‖²
+      ≤ V₀² ∫_{|w| ≤ G} ‖logPoly a [1,M] w‖²
+        + ∑_{j<J} (2^{j+1}V₀)² · 2 · (⌊log₂ M⌋+1) · ∑_{i ≤ ⌊log₂ M⌋} halaszBlockBound a M G U i (C j)
+```
+
+given only a count `C j ≥ 1` valid for every one-spaced family inside the `j`-th level set —
+which `card_le_of_mem_primeBlockLevelSet` supplies.  **No existential and no sup bound on the prime
+block appear in the conclusion**, which is exactly what the exact-Ramaré route could not achieve:
+its ceiling came from replacing `‖primeBlockPoly‖` by a sup, and this route replaces it by rarity.
+
+**What is left on this lane is numerology, not structure**: choose `V₀`, `J`, `E`, `σ_j` and `U`
+from the block's Mertens mass and the window `G ≍ M/h`, and compare the resulting saving with the
+target `ε′h²`.  Every inequality needed for that comparison is now a Lean theorem.

@@ -464,3 +464,32 @@ spin-two triple overlap, not an arbitrary spin-two tensor and not the existing s
 vertex alone.  Remaining hard burden is to derive the precise Maass raising/lowering realization
 of this local word for modular Eisenstein principal-series legs and then complete its trilinear
 coefficient.
+
+## Loop HC94-A.9b — tensor-to-Maass bridge
+
+`[CORPUS-LED CONJECTURE]` The balanced local spin word from HC94-A.9a should be the two-step Maass
+word `R_2 R_0` paired with `L_(-2) L_0`.  This is forced by the corpus full second jet and by the
+geometric spin `+2/-2` classification: each Maass step changes modular weight by two, so the
+traceless Hessian lies at modular weights `+4/-4`.
+
+`[PAPER-PROVED] [LEAN-PROVED]` On every complete BM second jet and arbitrary complex horizon scale,
+Lean proves
+
+`R_2 R_0 = -(connection-corrected covariant spinMinus)`,
+
+`L_(-2) L_0 = -(connection-corrected covariant spinPlus)`.
+
+For a pure traceless jet the connection terms vanish, the two operators recover
+`-spinMinus,-spinPlus`, and the complete pulled Eq. (63) source factors exactly through their
+product.  This is formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMPlebanskiMaassSecondJetBridge`, wired into the
+RHTower umbrella.  Direct Lean and targeted build pass `12048/12048`; headline axiom audits report
+only `propext`, `Classical.choice`, and `Quot.sound`.
+
+**Positive survivor HC94-A.9b-P.** The angular burden is no longer an unspecified polarized
+vertex.  It is the regularized modular-weight `(4,-4,0)` triple projection of two completed Maass
+steps on the diagonal positive leg against the negative leg.  Because the positive leg is
+diagonal, the balanced product is twice the covariant traceless-Hessian contraction; its
+antisymmetric tensor obstruction cancels.  The next hard problem is an exact regularized weighted
+Bochner/Stokes reduction to the existing completed scalar triple-Eisenstein vertex, including the
+cusp boundary audit.
