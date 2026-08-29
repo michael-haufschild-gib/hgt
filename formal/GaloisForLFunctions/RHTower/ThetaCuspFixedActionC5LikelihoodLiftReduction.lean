@@ -17,16 +17,19 @@ Its RH proof chain is:
 
 The exact atom-plus-likelihood action is differentiated in the centre and identified with the
 intrinsic completed-source transport.  More importantly, the complete third likelihood channel is
-proved strictly favorable: it adds
+proved quantitatively favorable: it adds
 
   t^2 * (completed first jet * positive centre jet
     - negative third likelihood jet * positive centre-action jet)
 
-to velocity-slope transport.  Hence literal far-tail direct-J orientation follows from a lower-jet
-margin in which every third-displacement/second-centre likelihood term has been removed.  Convex
-source geometry then controls all five remaining adverse likelihood quantities by the single
-positive master loss `-thetaCuspReflectedLikelihoodCumulantJetTwo`.  The open tail burden is
-therefore one scalar atom-versus-likelihood domination, rather than an independent five-jet bound.
+to velocity-slope transport.  The support gap forces its mixed second-centre jet to exceed six
+times the adverse master curvature, so literal compensation recovers more than thirty master
+units after the C5 coefficient is applied.  Convex source geometry controls all five remaining
+adverse likelihood quantities by the single positive master loss
+`-thetaCuspReflectedLikelihoodCumulantJetTwo`.  The open tail burden is therefore one scalar
+atom-versus-likelihood domination with a quantified highest-channel reserve, rather than an
+independent seven-jet bound.  A sharper adaptive law shows curvature cools faster than
+`exp (-thetaCuspSingleAtomReflectionScale 1 x)` and gives exact reflected-endpoint coupling.
 -/
 
 namespace RHTower
@@ -51,6 +54,268 @@ theorem strictConvexOn_thetaCuspLikelihoodSourceLogPartition :
     exact strictMonoOn_thetaCuspLikelihoodSourceLogPartitionJetOne
       (show x ∈ Set.Ici 0 by simpa only [Set.mem_Ici] using hx.le)
       (show y ∈ Set.Ici 0 by simpa only [Set.mem_Ici] using hy.le) hxy
+
+/-- Source likelihood curvature cools at a strict rate set by the first-atom scale.  This is the
+sharp support-gap coupling between the sole adverse master curvature and its favorable centre
+transport. -/
+theorem two_mul_scale_mul_thetaCuspLikelihoodSourceLogPartitionJetTwo_lt_neg_jetThree
+    {x : ℝ} (hx : 0 ≤ x) :
+    2 * thetaCuspSingleAtomReflectionScale 1 x *
+        thetaCuspLikelihoodSourceLogPartitionJetTwo x <
+      -thetaCuspLikelihoodSourceLogPartitionJetThree x := by
+  let A := thetaCuspSingleAtomReflectionScale 1 x
+  let m := thetaCuspLikelihoodMean (thetaCuspLikelihoodCoordinate x)
+  let v := thetaCuspLikelihoodVariance (thetaCuspLikelihoodCoordinate x)
+  let k := thetaCuspLikelihoodThirdCumulant (thetaCuspLikelihoodCoordinate x)
+  have hA : 3 < A := by
+    simpa only [A] using
+      three_lt_thetaCuspSingleAtomReflectionScale (n := 1) (by norm_num) hx
+  have hA0 : 0 < A := by linarith
+  have hm : 0 < m := by
+    simpa only [m] using thetaCuspLikelihoodMean_pos
+      (thetaCuspLikelihoodCoordinate_pos hx)
+  have hv : 0 < v := by
+    simpa only [v] using thetaCuspLikelihoodVariance_pos
+      (thetaCuspLikelihoodCoordinate_pos hx)
+  have hk : 2 * v < k := by
+    simpa only [v, k] using
+      two_mul_thetaCuspLikelihoodVariance_lt_thirdCumulant_coordinate hx
+  have hk' : A ^ 2 * (2 * v) < A ^ 2 * k :=
+    mul_lt_mul_of_pos_left hk (sq_pos_of_pos hA0)
+  have hbracket :
+      0 < A ^ 2 * (k - v) - 3 * A * v + A * m + m := by
+    have hgap : 0 < A * v * (A - 3) := by positivity
+    nlinarith
+  unfold thetaCuspLikelihoodSourceLogPartitionJetTwo
+    thetaCuspLikelihoodSourceLogPartitionJetThree
+  dsimp only [A, m, v, k] at hA0 hbracket ⊢
+  nlinarith [mul_pos hA0 hbracket]
+
+/-- Constant-rate corollary of adaptive support-gap cooling. -/
+theorem six_mul_thetaCuspLikelihoodSourceLogPartitionJetTwo_lt_neg_jetThree
+    {x : ℝ} (hx : 0 ≤ x) :
+    6 * thetaCuspLikelihoodSourceLogPartitionJetTwo x <
+      -thetaCuspLikelihoodSourceLogPartitionJetThree x := by
+  have hA := three_lt_thetaCuspSingleAtomReflectionScale
+    (n := 1) (by norm_num) hx
+  have hcurv := thetaCuspLikelihoodSourceLogPartitionJetTwo_pos hx
+  have hadaptive :=
+    two_mul_scale_mul_thetaCuspLikelihoodSourceLogPartitionJetTwo_lt_neg_jetThree hx
+  have hscale : 6 * thetaCuspLikelihoodSourceLogPartitionJetTwo x <
+      2 * thetaCuspSingleAtomReflectionScale 1 x *
+        thetaCuspLikelihoodSourceLogPartitionJetTwo x := by
+    nlinarith
+  exact lt_trans hscale hadaptive
+
+/-- Adaptively renormalized likelihood curvature is strictly decreasing. -/
+theorem strictAntiOn_expScale_mul_thetaCuspLikelihoodSourceLogPartitionJetTwo :
+    StrictAntiOn (fun x : ℝ =>
+      Real.exp (thetaCuspSingleAtomReflectionScale 1 x) *
+        thetaCuspLikelihoodSourceLogPartitionJetTwo x) (Set.Ici 0) := by
+  apply strictAntiOn_of_deriv_neg (convex_Ici 0)
+  · intro x hx
+    have hA := hasDerivAt_thetaCuspSingleAtomReflectionScale_one x
+    have hexp := hA.exp
+    have hh := hasDerivAt_thetaCuspLikelihoodSourceLogPartitionJetTwo
+      (thetaCuspLikelihoodCoordinate_pos hx)
+    exact (hexp.mul hh).continuousAt.continuousWithinAt
+  · intro x hx
+    rw [interior_Ici] at hx
+    have hA := hasDerivAt_thetaCuspSingleAtomReflectionScale_one x
+    have hexp := hA.exp
+    have hh := hasDerivAt_thetaCuspLikelihoodSourceLogPartitionJetTwo
+      (thetaCuspLikelihoodCoordinate_pos hx.le)
+    have hderiv := hexp.mul hh
+    change deriv ((fun y : ℝ =>
+      Real.exp (thetaCuspSingleAtomReflectionScale 1 y)) *
+        thetaCuspLikelihoodSourceLogPartitionJetTwo) x < 0
+    rw [hderiv.deriv]
+    have hcool :=
+      two_mul_scale_mul_thetaCuspLikelihoodSourceLogPartitionJetTwo_lt_neg_jetThree
+        hx.le
+    have hexppos := Real.exp_pos (thetaCuspSingleAtomReflectionScale 1 x)
+    nlinarith
+
+/-- Adaptive endpoint likelihood curvature separation across a reflected packet. -/
+theorem expScaleWeighted_thetaCuspLikelihoodSourceLogPartitionJetTwo_plus_lt_minus
+    {u t : ℝ} (ht : 0 < t) (htu : t ≤ u) :
+    Real.exp (thetaCuspSingleAtomReflectionScale 1 (u + t)) *
+        thetaCuspLikelihoodSourceLogPartitionJetTwo (u + t) <
+      Real.exp (thetaCuspSingleAtomReflectionScale 1 (u - t)) *
+        thetaCuspLikelihoodSourceLogPartitionJetTwo (u - t) := by
+  exact strictAntiOn_expScale_mul_thetaCuspLikelihoodSourceLogPartitionJetTwo
+    (show u - t ∈ Set.Ici (0 : ℝ) by simp only [Set.mem_Ici]; linarith)
+    (show u + t ∈ Set.Ici (0 : ℝ) by simp only [Set.mem_Ici]; linarith)
+    (by linarith)
+
+/-- Adaptive curvature endpoint separation in displacement-normalized form. -/
+theorem expScaleGap_mul_thetaCuspLikelihoodSourceLogPartitionJetTwo_plus_lt_minus
+    {u t : ℝ} (ht : 0 < t) (htu : t ≤ u) :
+    Real.exp (thetaCuspSingleAtomReflectionScale 1 (u + t) -
+        thetaCuspSingleAtomReflectionScale 1 (u - t)) *
+        thetaCuspLikelihoodSourceLogPartitionJetTwo (u + t) <
+      thetaCuspLikelihoodSourceLogPartitionJetTwo (u - t) := by
+  have hsep :=
+    expScaleWeighted_thetaCuspLikelihoodSourceLogPartitionJetTwo_plus_lt_minus ht htu
+  have heq :
+      Real.exp (thetaCuspSingleAtomReflectionScale 1 (u + t)) =
+        Real.exp (thetaCuspSingleAtomReflectionScale 1 (u - t)) *
+          Real.exp (thetaCuspSingleAtomReflectionScale 1 (u + t) -
+            thetaCuspSingleAtomReflectionScale 1 (u - t)) := by
+    rw [← Real.exp_add]
+    congr 1
+    ring
+  rw [heq] at hsep
+  have hcommon :=
+    Real.exp_pos (thetaCuspSingleAtomReflectionScale 1 (u - t))
+  have hsep' :
+      Real.exp (thetaCuspSingleAtomReflectionScale 1 (u - t)) *
+          (Real.exp (thetaCuspSingleAtomReflectionScale 1 (u + t) -
+              thetaCuspSingleAtomReflectionScale 1 (u - t)) *
+            thetaCuspLikelihoodSourceLogPartitionJetTwo (u + t)) <
+        Real.exp (thetaCuspSingleAtomReflectionScale 1 (u - t)) *
+          thetaCuspLikelihoodSourceLogPartitionJetTwo (u - t) := by
+    simpa only [mul_assoc] using hsep
+  by_contra hnot
+  have hle : thetaCuspLikelihoodSourceLogPartitionJetTwo (u - t) ≤
+      Real.exp (thetaCuspSingleAtomReflectionScale 1 (u + t) -
+          thetaCuspSingleAtomReflectionScale 1 (u - t)) *
+        thetaCuspLikelihoodSourceLogPartitionJetTwo (u + t) := le_of_not_gt hnot
+  have hmul := mul_le_mul_of_nonneg_left hle hcommon.le
+  exact (not_lt_of_ge hmul) hsep'
+
+/-- The mixed-centre channel retains the adaptive support-gap fraction of master curvature loss. -/
+theorem expScaleGap_sub_one_mul_neg_reflectedJetTwo_lt_mixedJetOne
+    {u t : ℝ} (ht : 0 < t) (htu : t ≤ u) :
+    let E := Real.exp (thetaCuspSingleAtomReflectionScale 1 (u + t) -
+      thetaCuspSingleAtomReflectionScale 1 (u - t))
+    (E - 1) * (-thetaCuspReflectedLikelihoodCumulantJetTwo u t) <
+      (E + 1) * c5LikelihoodScaleMixedJetOne u t := by
+  dsimp only
+  have hsep :=
+    expScaleGap_mul_thetaCuspLikelihoodSourceLogPartitionJetTwo_plus_lt_minus ht htu
+  unfold thetaCuspReflectedLikelihoodCumulantJetTwo
+    c5LikelihoodScaleMixedJetOne
+  nlinarith
+
+/-- Scale-weighted master curvature exposed by adaptive support-gap cooling. -/
+def c5LikelihoodAdaptiveMasterCurvature (u t : ℝ) : ℝ :=
+  2 * thetaCuspSingleAtomReflectionScale 1 (u + t) *
+      thetaCuspLikelihoodSourceLogPartitionJetTwo (u + t) +
+    2 * thetaCuspSingleAtomReflectionScale 1 (u - t) *
+      thetaCuspLikelihoodSourceLogPartitionJetTwo (u - t)
+
+/-- Adaptive cooling summed over both reflected endpoints gives a quantitative lower bound for
+the favorable highest mixed-centre channel. -/
+theorem adaptiveMasterCurvature_lt_c5LikelihoodScaleMixedJetTwo
+    {u t : ℝ} (ht : 0 ≤ t) (htu : t ≤ u) :
+    c5LikelihoodAdaptiveMasterCurvature u t <
+      c5LikelihoodScaleMixedJetTwo u t := by
+  have hplus :=
+    two_mul_scale_mul_thetaCuspLikelihoodSourceLogPartitionJetTwo_lt_neg_jetThree
+      (show 0 ≤ u + t by linarith)
+  have hminus :=
+    two_mul_scale_mul_thetaCuspLikelihoodSourceLogPartitionJetTwo_lt_neg_jetThree
+      (show 0 ≤ u - t by linarith)
+  unfold c5LikelihoodAdaptiveMasterCurvature c5LikelihoodScaleMixedJetTwo
+  linarith
+
+/-- Universal consequence: highest mixed-centre gain exceeds six times the sole adverse master
+curvature. -/
+theorem six_mul_neg_reflectedJetTwo_lt_c5LikelihoodScaleMixedJetTwo
+    {u t : ℝ} (ht : 0 ≤ t) (htu : t ≤ u) :
+    6 * (-thetaCuspReflectedLikelihoodCumulantJetTwo u t) <
+      c5LikelihoodScaleMixedJetTwo u t := by
+  have hplus := six_mul_thetaCuspLikelihoodSourceLogPartitionJetTwo_lt_neg_jetThree
+    (show 0 ≤ u + t by linarith)
+  have hminus := six_mul_thetaCuspLikelihoodSourceLogPartitionJetTwo_lt_neg_jetThree
+    (show 0 ≤ u - t by linarith)
+  unfold thetaCuspReflectedLikelihoodCumulantJetTwo
+    c5LikelihoodScaleMixedJetTwo
+  linarith
+
+/-- Exponentially renormalized likelihood curvature is strictly decreasing. -/
+theorem strictAntiOn_expSix_mul_thetaCuspLikelihoodSourceLogPartitionJetTwo :
+    StrictAntiOn (fun x : ℝ => Real.exp (6 * x) *
+      thetaCuspLikelihoodSourceLogPartitionJetTwo x) (Set.Ici 0) := by
+  apply strictAntiOn_of_deriv_neg (convex_Ici 0)
+  · intro x hx
+    have hexp : HasDerivAt (fun y : ℝ => Real.exp (6 * y))
+        (6 * Real.exp (6 * x)) x := by
+      convert ((hasDerivAt_id x).const_mul 6).exp using 1 <;>
+        simp [mul_comm]
+    have hh := hasDerivAt_thetaCuspLikelihoodSourceLogPartitionJetTwo
+      (thetaCuspLikelihoodCoordinate_pos hx)
+    exact (hexp.mul hh).continuousAt.continuousWithinAt
+  · intro x hx
+    rw [interior_Ici] at hx
+    have hexp : HasDerivAt (fun y : ℝ => Real.exp (6 * y))
+        (6 * Real.exp (6 * x)) x := by
+      convert ((hasDerivAt_id x).const_mul 6).exp using 1 <;>
+        simp [mul_comm]
+    have hh := hasDerivAt_thetaCuspLikelihoodSourceLogPartitionJetTwo
+      (thetaCuspLikelihoodCoordinate_pos hx.le)
+    have hderiv := hexp.mul hh
+    change deriv ((fun y : ℝ => Real.exp (6 * y)) *
+      thetaCuspLikelihoodSourceLogPartitionJetTwo) x < 0
+    rw [hderiv.deriv]
+    have hcool :=
+      six_mul_thetaCuspLikelihoodSourceLogPartitionJetTwo_lt_neg_jetThree hx.le
+    have hexppos := Real.exp_pos (6 * x)
+    nlinarith
+
+/-- Endpoint likelihood curvature has strict exponential separation across a reflected packet. -/
+theorem expWeighted_thetaCuspLikelihoodSourceLogPartitionJetTwo_plus_lt_minus
+    {u t : ℝ} (ht : 0 < t) (htu : t ≤ u) :
+    Real.exp (6 * (u + t)) *
+        thetaCuspLikelihoodSourceLogPartitionJetTwo (u + t) <
+      Real.exp (6 * (u - t)) *
+        thetaCuspLikelihoodSourceLogPartitionJetTwo (u - t) := by
+  exact strictAntiOn_expSix_mul_thetaCuspLikelihoodSourceLogPartitionJetTwo
+    (show u - t ∈ Set.Ici (0 : ℝ) by simp only [Set.mem_Ici]; linarith)
+    (show u + t ∈ Set.Ici (0 : ℝ) by simp only [Set.mem_Ici]; linarith)
+    (by linarith)
+
+/-- Curvature endpoint separation in displacement-normalized form. -/
+theorem expTwelve_mul_thetaCuspLikelihoodSourceLogPartitionJetTwo_plus_lt_minus
+    {u t : ℝ} (ht : 0 < t) (htu : t ≤ u) :
+    Real.exp (12 * t) *
+        thetaCuspLikelihoodSourceLogPartitionJetTwo (u + t) <
+      thetaCuspLikelihoodSourceLogPartitionJetTwo (u - t) := by
+  have hsep :=
+    expWeighted_thetaCuspLikelihoodSourceLogPartitionJetTwo_plus_lt_minus ht htu
+  have heq : Real.exp (6 * (u + t)) =
+      Real.exp (6 * (u - t)) * Real.exp (12 * t) := by
+    rw [← Real.exp_add]
+    congr 1
+    ring
+  rw [heq] at hsep
+  have hcommon := Real.exp_pos (6 * (u - t))
+  have hsep' : Real.exp (6 * (u - t)) *
+        (Real.exp (12 * t) *
+          thetaCuspLikelihoodSourceLogPartitionJetTwo (u + t)) <
+      Real.exp (6 * (u - t)) *
+        thetaCuspLikelihoodSourceLogPartitionJetTwo (u - t) := by
+    simpa only [mul_assoc] using hsep
+  by_contra hnot
+  have hle : thetaCuspLikelihoodSourceLogPartitionJetTwo (u - t) ≤
+      Real.exp (12 * t) *
+        thetaCuspLikelihoodSourceLogPartitionJetTwo (u + t) := le_of_not_gt hnot
+  have hmul := mul_le_mul_of_nonneg_left hle hcommon.le
+  exact (not_lt_of_ge hmul) hsep'
+
+/-- The first mixed-centre channel retains an explicit exponential fraction of the master
+curvature loss. -/
+theorem expTwelve_sub_one_mul_neg_reflectedJetTwo_lt_mixedJetOne
+    {u t : ℝ} (ht : 0 < t) (htu : t ≤ u) :
+    (Real.exp (12 * t) - 1) *
+        (-thetaCuspReflectedLikelihoodCumulantJetTwo u t) <
+      (Real.exp (12 * t) + 1) * c5LikelihoodScaleMixedJetOne u t := by
+  have hsep :=
+    expTwelve_mul_thetaCuspLikelihoodSourceLogPartitionJetTwo_plus_lt_minus ht htu
+  unfold thetaCuspReflectedLikelihoodCumulantJetTwo
+    c5LikelihoodScaleMixedJetOne
+  nlinarith
 
 /-- Strict convexity makes reflected likelihood action a genuine negative tax. -/
 theorem thetaCuspReflectedLikelihoodCumulantAction_neg
@@ -435,6 +700,73 @@ theorem c5CompletedVelocitySlopeLowerJetNumerator_lt
   dsimp only [a, s, γ, ν] at hgain ⊢
   linarith
 
+/-- Quantitative highest-channel reserve: the source support gap pays more than six master
+curvature units inside completed velocity-slope transport. -/
+theorem six_mul_masterCurvature_lt_completedVelocitySlopeGain
+    {u t : ℝ} (ht : 0 < t) (htu : t < u)
+    (hscale : 6 ≤ thetaCuspSingleAtomReflectionScale 1 u) :
+    6 * t ^ 2 * thetaCuspCompletedReflectedCumulantJetOne u t *
+        (-thetaCuspReflectedLikelihoodCumulantJetTwo u t) <
+      c5CompletedVelocitySlopeCenterNumerator u t -
+        c5CompletedVelocitySlopeLowerJetNumerator u t := by
+  let a := thetaCuspCompletedReflectedCumulantJetOne u t
+  let y := -thetaCuspReflectedLikelihoodCumulantJetTwo u t
+  let s := c5CompletedScaleActionJetOne u t
+  let c := thetaCuspReflectedLikelihoodCumulantJetThree u t
+  let n := c5LikelihoodScaleMixedJetTwo u t
+  have ha : 0 < a := by
+    simpa only [a] using c5CompletedActionJetOne_pos ht htu
+  have hs : 0 < s := by
+    simpa only [s] using c5CompletedScaleActionJetOne_pos ht htu hscale
+  have hc : c < 0 := by
+    simpa only [c] using thetaCuspReflectedLikelihoodCumulantJetThree_neg ht htu.le
+  have hn : 6 * y < n := by
+    simpa only [y, n] using
+      six_mul_neg_reflectedJetTwo_lt_c5LikelihoodScaleMixedJetTwo ht.le htu.le
+  have hayn : 6 * a * y < a * n := by
+    have hmul := mul_lt_mul_of_pos_left hn ha
+    nlinarith
+  have hcs : c * s < 0 := mul_neg_of_neg_of_pos hc hs
+  have hinner : 6 * a * y < a * n - c * s := by linarith
+  have hmul := mul_lt_mul_of_pos_left hinner (sq_pos_of_pos ht)
+  unfold c5CompletedVelocitySlopeCenterNumerator
+    c5CompletedVelocitySlopeLowerJetNumerator
+    thetaCuspCompletedReflectedCumulantJetThree c5CompletedScaleMixedJetTwo
+  dsimp only [a, y, s, c, n] at hmul ⊢
+  nlinarith
+
+/-- Sharp adaptive form of the highest-channel reserve. -/
+theorem adaptiveMasterCurvature_lt_completedVelocitySlopeGain
+    {u t : ℝ} (ht : 0 < t) (htu : t < u)
+    (hscale : 6 ≤ thetaCuspSingleAtomReflectionScale 1 u) :
+    t ^ 2 * thetaCuspCompletedReflectedCumulantJetOne u t *
+        c5LikelihoodAdaptiveMasterCurvature u t <
+      c5CompletedVelocitySlopeCenterNumerator u t -
+        c5CompletedVelocitySlopeLowerJetNumerator u t := by
+  let a := thetaCuspCompletedReflectedCumulantJetOne u t
+  let z := c5LikelihoodAdaptiveMasterCurvature u t
+  let s := c5CompletedScaleActionJetOne u t
+  let c := thetaCuspReflectedLikelihoodCumulantJetThree u t
+  let n := c5LikelihoodScaleMixedJetTwo u t
+  have ha : 0 < a := by
+    simpa only [a] using c5CompletedActionJetOne_pos ht htu
+  have hs : 0 < s := by
+    simpa only [s] using c5CompletedScaleActionJetOne_pos ht htu hscale
+  have hc : c < 0 := by
+    simpa only [c] using thetaCuspReflectedLikelihoodCumulantJetThree_neg ht htu.le
+  have hn : z < n := by
+    simpa only [z, n] using
+      adaptiveMasterCurvature_lt_c5LikelihoodScaleMixedJetTwo ht.le htu.le
+  have hazn : a * z < a * n := mul_lt_mul_of_pos_left hn ha
+  have hcs : c * s < 0 := mul_neg_of_neg_of_pos hc hs
+  have hinner : a * z < a * n - c * s := by linarith
+  have hmul := mul_lt_mul_of_pos_left hinner (sq_pos_of_pos ht)
+  unfold c5CompletedVelocitySlopeCenterNumerator
+    c5CompletedVelocitySlopeLowerJetNumerator
+    thetaCuspCompletedReflectedCumulantJetThree c5CompletedScaleMixedJetTwo
+  dsimp only [a, z, s, c, n] at hmul ⊢
+  nlinarith
+
 /-- Literal completed compensation margin in atom-plus-likelihood coordinates. -/
 def c5CompletedCompensationMargin (u t : ℝ) : ℝ :=
   let q := thetaCuspCompletedReflectedCumulantAction u t
@@ -451,6 +783,19 @@ def c5CompletedLowerJetCompensationMargin (u t : ℝ) : ℝ :=
   let P₂ := c5CompletedVelocitySlopeLowerJetNumerator u t
   5 * P₂ - (14 + 10 * v + 8 * v / (Real.exp q - 1)) * H
 
+/-- Lower-jet margin with the universal support-gap portion of the highest likelihood reserve put
+back.  Positivity of this sharper margin is sufficient for literal direct-J orientation. -/
+def c5CompletedMasterReservedCompensationMargin (u t : ℝ) : ℝ :=
+  c5CompletedLowerJetCompensationMargin u t +
+    30 * t ^ 2 * thetaCuspCompletedReflectedCumulantJetOne u t *
+      (-thetaCuspReflectedLikelihoodCumulantJetTwo u t)
+
+/-- Sharp adaptive support-gap reserve put back into the lower-jet compensation margin. -/
+def c5CompletedAdaptiveReservedCompensationMargin (u t : ℝ) : ℝ :=
+  c5CompletedLowerJetCompensationMargin u t +
+    5 * t ^ 2 * thetaCuspCompletedReflectedCumulantJetOne u t *
+      c5LikelihoodAdaptiveMasterCurvature u t
+
 /-- Lower-jet margin is strict lower bound for literal completed compensation. -/
 theorem c5CompletedLowerJetCompensationMargin_lt
     {u t : ℝ} (ht : 0 < t) (htu : t < u)
@@ -460,6 +805,31 @@ theorem c5CompletedLowerJetCompensationMargin_lt
   have hP := c5CompletedVelocitySlopeLowerJetNumerator_lt ht htu hscale
   unfold c5CompletedLowerJetCompensationMargin c5CompletedCompensationMargin
   linarith
+
+/-- Quantitative highest-channel theorem strengthens the old sign-only lower margin by thirty
+master-curvature units in the literal C5 compensation. -/
+theorem c5CompletedMasterReservedCompensationMargin_lt
+    {u t : ℝ} (ht : 0 < t) (htu : t < u)
+    (hscale : 6 ≤ thetaCuspSingleAtomReflectionScale 1 u) :
+    c5CompletedMasterReservedCompensationMargin u t <
+      c5CompletedCompensationMargin u t := by
+  have hgain :=
+    six_mul_masterCurvature_lt_completedVelocitySlopeGain ht htu hscale
+  unfold c5CompletedMasterReservedCompensationMargin
+    c5CompletedLowerJetCompensationMargin c5CompletedCompensationMargin
+  nlinarith
+
+/-- Adaptive support-gap reserve is a strict lower bound for literal completed compensation. -/
+theorem c5CompletedAdaptiveReservedCompensationMargin_lt
+    {u t : ℝ} (ht : 0 < t) (htu : t < u)
+    (hscale : 6 ≤ thetaCuspSingleAtomReflectionScale 1 u) :
+    c5CompletedAdaptiveReservedCompensationMargin u t <
+      c5CompletedCompensationMargin u t := by
+  have hgain :=
+    adaptiveMasterCurvature_lt_completedVelocitySlopeGain ht htu hscale
+  unfold c5CompletedAdaptiveReservedCompensationMargin
+    c5CompletedLowerJetCompensationMargin c5CompletedCompensationMargin
+  nlinarith
 
 /-- Centre derivative of completed atom-plus-likelihood action. -/
 theorem hasDerivAt_thetaCuspCompletedReflectedCumulantAction_center
@@ -617,6 +987,29 @@ theorem thetaCuspReflectedActionC5FixedActionJacobian_pos_of_lowerJetCompensatio
     ht htu]
   exact lt_trans hlower
     (c5CompletedLowerJetCompensationMargin_lt ht htu hscale)
+
+/-- Support-gap reserved compensation closes literal far-tail direct-J orientation.  This is the
+strongest current one-scalar endpoint of the likelihood lift. -/
+theorem thetaCuspReflectedActionC5FixedActionJacobian_pos_of_masterReservedCompensation
+    {u t : ℝ} (ht : 0 < t) (htu : t < u)
+    (hscale : 6 ≤ thetaCuspSingleAtomReflectionScale 1 u)
+    (hreserve : 0 < c5CompletedMasterReservedCompensationMargin u t) :
+    0 < thetaCuspReflectedActionC5FixedActionJacobian u t := by
+  rw [thetaCuspReflectedActionC5FixedActionJacobian_pos_iff_completedCompensation
+    ht htu]
+  exact lt_trans hreserve
+    (c5CompletedMasterReservedCompensationMargin_lt ht htu hscale)
+
+/-- Adaptive support-gap reserved compensation closes literal far-tail direct-J orientation. -/
+theorem thetaCuspReflectedActionC5FixedActionJacobian_pos_of_adaptiveReservedCompensation
+    {u t : ℝ} (ht : 0 < t) (htu : t < u)
+    (hscale : 6 ≤ thetaCuspSingleAtomReflectionScale 1 u)
+    (hreserve : 0 < c5CompletedAdaptiveReservedCompensationMargin u t) :
+    0 < thetaCuspReflectedActionC5FixedActionJacobian u t := by
+  rw [thetaCuspReflectedActionC5FixedActionJacobian_pos_iff_completedCompensation
+    ht htu]
+  exact lt_trans hreserve
+    (c5CompletedAdaptiveReservedCompensationMargin_lt ht htu hscale)
 
 end
 

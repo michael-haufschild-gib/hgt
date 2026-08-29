@@ -117,6 +117,29 @@ Fixed proof chain:
 
 This removes the entire regularization burden. No undefined subtraction survives: the remaining proof burden is exactly the arithmetic sign of an explicit ordinary-limit family. Proving that sign closes the LI route and RH; a negative mode kills the route.
 
+## Frozen conjecture LI-CAB4: completed-Abel mass-ray positivity
+
+Set
+
+`F_n(a) = Re(liEvenCrossDivisorAbelValue a n)`.
+
+Corpus search now fixes the direct route-closing target
+
+`forall n a, 1/2 <= a -> 0 <= F_n(a)`.
+
+This is based on four existing corpus facts: LI-CAB3 gives continuity and the exact endpoint; `hasDerivAt_xiShiftedReciprocalMoment` gives the full Möbius-mass derivative ladder; `re_xiShiftedReciprocalMoment_pos_sharpFarRay` supplies unconditional degree-dependent far-ray positivity; and the Cayley identity writes each atom as
+
+`2 r (1-r) U_n(1-2r)^2`, with `r = 1/(1+a^2*lambda)`.
+
+The proof attempt must establish inward invariance of this exact completed cone under the actual mass flow, not positivity of a proxy or a finite list of moments. Fixed proof chain:
+
+`completed-Abel mass-ray positivity`
+`=> F_n(1/2) >= 0 for every n`
+`=> LI-CAB3 endpoint criterion`
+`=> RiemannHypothesis`.
+
+This conjecture closes the LI route if proved. If the exact dilation generator admits a positive-to-negative crossing compatible with all unconditional Xi constraints, that crossing theorem kills mass propagation as a proof mechanism and forces the route back to direct critical arithmetic cancellation. Generic moment or coefficient counterexamples do not count; the obstruction must apply to this exact LI family and actual completed-source flow.
+
 ## No-go closure
 
 - **Exact killing mechanism:** critical Fourier decay contributes exactly `n^(-1/2)`; the explicit-formula coefficient contributes the other `n^(-1/2)`, leaving a non-summable harmonic von-Mangoldt boundary multiplied by an eventually growing Laguerre factor.

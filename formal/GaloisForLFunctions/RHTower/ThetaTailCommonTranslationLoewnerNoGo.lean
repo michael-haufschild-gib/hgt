@@ -20,6 +20,16 @@ theta-tail first-moment kernel. -/
 def thetaTailCommonTranslationGenerator (a x t : ℝ) : ℝ :=
   (x + t + 2 * a) * thetaCuspFullSource (x + a) * thetaCuspFullSource (t + a)
 
+theorem continuous_thetaTailCommonTranslationGenerator (x t : ℝ) :
+    Continuous fun a : ℝ => thetaTailCommonTranslationGenerator a x t := by
+  unfold thetaTailCommonTranslationGenerator
+  exact (((continuous_const.add continuous_const).add
+    (continuous_const.mul continuous_id)).mul
+      (contDiff_thetaCuspFullSource.continuous.comp
+        (continuous_const.add continuous_id))).mul
+      (contDiff_thetaCuspFullSource.continuous.comp
+        (continuous_const.add continuous_id))
+
 /-- Fixed integrand whose moving lower cut is common translation of the theta-tail kernel. -/
 def thetaTailCommonTranslationIntegrand (x t r : ℝ) : ℝ :=
   (x + t + 2 * r) * thetaCuspFullSource (x + r) * thetaCuspFullSource (t + r)
@@ -175,23 +185,107 @@ def thetaTailCommonTranslationWitnessQuadratic (u : ℝ) : ℝ :=
       2 * c0 * c1 * thetaTailFirstMomentKernel u (1 + u) +
     c1 ^ 2 * thetaTailFirstMomentKernel (1 + u) (1 + u)
 
-theorem hasDerivAt_thetaTailCommonTranslationWitnessQuadratic (u : ℝ) :
-    HasDerivAt thetaTailCommonTranslationWitnessQuadratic
-      (-(let c0 : ℝ := 3 * thetaCuspFullSource 2
-          let c1 : ℝ := -2 * thetaCuspFullSource 1
-          c0 ^ 2 * thetaTailCommonTranslationGenerator u 0 0 +
-              2 * c0 * c1 * thetaTailCommonTranslationGenerator u 0 1 +
-            c1 ^ 2 * thetaTailCommonTranslationGenerator u 1 1)) u := by
+/-- Moving-cut integrand of the fixed scalar witness compression. -/
+def thetaTailCommonTranslationWitnessIntegrand (u : ℝ) : ℝ :=
   let c0 : ℝ := 3 * thetaCuspFullSource 2
   let c1 : ℝ := -2 * thetaCuspFullSource 1
-  have h00 := hasDerivAt_thetaTailFirstMomentKernel_commonShift u 0 0
-  have h01 := hasDerivAt_thetaTailFirstMomentKernel_commonShift u 0 1
-  have h11 := hasDerivAt_thetaTailFirstMomentKernel_commonShift u 1 1
-  have hsum := ((h00.const_mul (c0 ^ 2)).add
-    (h01.const_mul (2 * c0 * c1))).add
-    (h11.const_mul (c1 ^ 2))
-  simpa only [thetaTailCommonTranslationWitnessQuadratic, c0, c1,
-    zero_add] using hsum.congr_deriv (by ring)
+  c0 ^ 2 * thetaTailCommonTranslationGenerator u 0 0 +
+      2 * c0 * c1 * thetaTailCommonTranslationGenerator u 0 1 +
+    c1 ^ 2 * thetaTailCommonTranslationGenerator u 1 1
+
+theorem integrable_thetaTailCommonTranslationWitnessIntegrand :
+    Integrable thetaTailCommonTranslationWitnessIntegrand := by
+  let c0 : ℝ := 3 * thetaCuspFullSource 2
+  let c1 : ℝ := -2 * thetaCuspFullSource 1
+  have hg00 : Integrable (fun u : ℝ =>
+      thetaTailCommonTranslationGenerator u 0 0) :=
+    (integrable_thetaTailCommonTranslationIntegrand 0 0).congr
+      (Filter.Eventually.of_forall fun _ => rfl)
+  have hg01 : Integrable (fun u : ℝ =>
+      thetaTailCommonTranslationGenerator u 0 1) :=
+    (integrable_thetaTailCommonTranslationIntegrand 0 1).congr
+      (Filter.Eventually.of_forall fun _ => rfl)
+  have hg11 : Integrable (fun u : ℝ =>
+      thetaTailCommonTranslationGenerator u 1 1) :=
+    (integrable_thetaTailCommonTranslationIntegrand 1 1).congr
+      (Filter.Eventually.of_forall fun _ => rfl)
+  have h00 : Integrable (fun u : ℝ =>
+      c0 ^ 2 * thetaTailCommonTranslationGenerator u 0 0) :=
+    hg00.const_mul (c0 ^ 2)
+  have h01 : Integrable (fun u : ℝ =>
+      2 * c0 * c1 * thetaTailCommonTranslationGenerator u 0 1) :=
+    hg01.const_mul (2 * c0 * c1)
+  have h11 : Integrable (fun u : ℝ =>
+      c1 ^ 2 * thetaTailCommonTranslationGenerator u 1 1) :=
+    hg11.const_mul (c1 ^ 2)
+  unfold thetaTailCommonTranslationWitnessIntegrand
+  exact (h00.add h01).add h11
+
+theorem thetaTailCommonTranslationWitnessQuadratic_eq_tail (u : ℝ) :
+    thetaTailCommonTranslationWitnessQuadratic u =
+      ∫ r in Ioi u, thetaTailCommonTranslationWitnessIntegrand r := by
+  let c0 : ℝ := 3 * thetaCuspFullSource 2
+  let c1 : ℝ := -2 * thetaCuspFullSource 1
+  have h00 : IntegrableOn (thetaTailCommonTranslationIntegrand 0 0) (Ioi u) :=
+    (integrable_thetaTailCommonTranslationIntegrand 0 0).integrableOn
+  have h01 : IntegrableOn (thetaTailCommonTranslationIntegrand 0 1) (Ioi u) :=
+    (integrable_thetaTailCommonTranslationIntegrand 0 1).integrableOn
+  have h11 : IntegrableOn (thetaTailCommonTranslationIntegrand 1 1) (Ioi u) :=
+    (integrable_thetaTailCommonTranslationIntegrand 1 1).integrableOn
+  rw [thetaTailCommonTranslationWitnessQuadratic]
+  rw [show thetaTailFirstMomentKernel u u =
+        ∫ r in Ioi u, thetaTailCommonTranslationIntegrand 0 0 r by
+      simpa only [zero_add] using thetaTailFirstMomentKernel_commonShift_eq_tail u 0 0,
+    show thetaTailFirstMomentKernel u (1 + u) =
+        ∫ r in Ioi u, thetaTailCommonTranslationIntegrand 0 1 r by
+      simpa only [zero_add] using thetaTailFirstMomentKernel_commonShift_eq_tail u 0 1,
+    show thetaTailFirstMomentKernel (1 + u) (1 + u) =
+        ∫ r in Ioi u, thetaTailCommonTranslationIntegrand 1 1 r by
+      simpa only using thetaTailFirstMomentKernel_commonShift_eq_tail u 1 1]
+  let F00 : ℝ → ℝ := fun r =>
+    c0 ^ 2 * thetaTailCommonTranslationIntegrand 0 0 r
+  let F01 : ℝ → ℝ := fun r =>
+    2 * c0 * c1 * thetaTailCommonTranslationIntegrand 0 1 r
+  let F11 : ℝ → ℝ := fun r =>
+    c1 ^ 2 * thetaTailCommonTranslationIntegrand 1 1 r
+  have hF00 : IntegrableOn F00 (Ioi u) := h00.const_mul (c0 ^ 2)
+  have hF01 : IntegrableOn F01 (Ioi u) := h01.const_mul (2 * c0 * c1)
+  have hF11 : IntegrableOn F11 (Ioi u) := h11.const_mul (c1 ^ 2)
+  calc
+    _ = (∫ r in Ioi u, F00 r) + (∫ r in Ioi u, F01 r) +
+        ∫ r in Ioi u, F11 r := by
+      simp only [F00, F01, F11, integral_const_mul, c0, c1]
+    _ = (∫ r in Ioi u, (F00 + F01) r) + ∫ r in Ioi u, F11 r :=
+      congrArg (fun z : ℝ => z + ∫ r in Ioi u, F11 r)
+        (integral_add hF00 hF01).symm
+    _ = ∫ r in Ioi u, ((F00 + F01) + F11) r :=
+      (integral_add (hF00.add hF01) hF11).symm
+    _ = ∫ r in Ioi u, thetaTailCommonTranslationWitnessIntegrand r := by
+      apply integral_congr_ae
+      filter_upwards with r
+      simp only [F00, F01, F11, Pi.add_apply,
+        thetaTailCommonTranslationWitnessIntegrand,
+        thetaTailCommonTranslationGenerator, thetaTailCommonTranslationIntegrand,
+        c0, c1]
+
+theorem hasDerivAt_thetaTailCommonTranslationWitnessQuadratic (u : ℝ) :
+    HasDerivAt thetaTailCommonTranslationWitnessQuadratic
+      (-thetaTailCommonTranslationWitnessIntegrand u) u := by
+  have hcont : Continuous thetaTailCommonTranslationWitnessIntegrand := by
+    unfold thetaTailCommonTranslationWitnessIntegrand
+    exact ((continuous_const.mul
+      (continuous_thetaTailCommonTranslationGenerator 0 0)).add
+      (continuous_const.mul
+        (continuous_thetaTailCommonTranslationGenerator 0 1))).add
+      (continuous_const.mul
+        (continuous_thetaTailCommonTranslationGenerator 1 1))
+  have hd := hasDerivAt_integral_Ioi_real
+    (f := thetaTailCommonTranslationWitnessIntegrand) (c := u - 1) (y := u)
+    (by linarith) integrable_thetaTailCommonTranslationWitnessIntegrand.integrableOn
+    (hcont.stronglyMeasurableAtFilter volume (𝓝 u)) hcont.continuousAt
+  exact hd.congr_of_eventuallyEq
+    (Filter.Eventually.of_forall fun y =>
+      thetaTailCommonTranslationWitnessQuadratic_eq_tail y)
 
 private theorem exists_right_gt_of_hasDerivAt_pos_at
     {f : ℝ → ℝ} {f' a : ℝ} (h : HasDerivAt f f' a) (hf' : 0 < f') :
@@ -222,13 +316,13 @@ theorem exists_thetaTailFirstMomentKernel_commonShift_difference_quadraticForm_n
               thetaTailFirstMomentKernel (1 + b) (1 + b)) < 0 := by
   have hgen := thetaTailCommonTranslationGenerator_explicit_quadraticForm_neg
   have hderiv := hasDerivAt_thetaTailCommonTranslationWitnessQuadratic 1
-  have hderivPos : 0 < deriv thetaTailCommonTranslationWitnessQuadratic 1 := by
-    rw [hderiv.deriv]
-    simpa only using neg_pos.mpr hgen
+  have hderivPos : 0 < -thetaTailCommonTranslationWitnessIntegrand 1 := by
+    simpa only [thetaTailCommonTranslationWitnessIntegrand] using neg_pos.mpr hgen
   obtain ⟨b, hb, hrise⟩ := exists_right_gt_of_hasDerivAt_pos_at hderiv hderivPos
   refine ⟨b, hb, ?_⟩
-  change thetaTailCommonTranslationWitnessQuadratic 1 -
-      thetaTailCommonTranslationWitnessQuadratic b < 0
+  dsimp [thetaTailCommonTranslationWitnessQuadratic] at hrise
+  norm_num at hrise ⊢
+  ring_nf at hrise ⊢
   linarith
 
 end

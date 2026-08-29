@@ -143,15 +143,60 @@ highest-jet calculation.  They are classified as a bridge, not candidate new sci
 
 ## Lean status
 
-The tree defines `DifferentialIndependent` and elementary jet-shift preservation, but no Schwarzian
-operator, differential rational-function order, highest-jet substitution theorem, or rational
-function-field automorphism package for this statement.  No partial stage-3 claim is justified.
+The whole theorem is formalized, over a characteristic-zero base field taken with the jet-shift
+derivation, in the corpus's standard model of a free differential family
+(`DifferentialPolynomial`, `FreeCoordinateRationalField`).
+
+New modules:
+
+- `HTGeometry/FreeFamilyJetShift.lean` — the free differential rational field
+  `C<Y_a : a in ι>` on a family: `FreeFamilyJetField`, `familyJet`, the family jet-shift
+  derivation and its `Differential` instance, `differentialJet_familyJet_zero`.
+- `HTGeometry/SchwarzianFamilyCoordinates.lean` — the Schwarzian of each family member, the exact
+  packet support `schwarzianSupport` of its jets, the leading jet derivative
+  `freeCoordinateDerivation_differentialJet_familySchwarzian_top`, the Schwarzian coordinate
+  system `familySchwarzianSystem`, its block-diagonal Jacobian, its algebraic independence
+  `algebraicIndependent_familySchwarzianSystem`, its generation
+  `familySchwarzianSystem_adjoin_eq_top`, and the coordinate change
+  `familySchwarzianBasisEquiv`.
+- `HTGeometry/SchwarzianProjectiveErosionTower.lean` — the tower.
+
+| Card statement | Lean theorem |
+|---|---|
+| item 1, every level is a differentially independent family | `differentialIndependent_erosionGenerator` |
+| item 2, strict descent | `erosionGenerator_notMem_succ`, `erosionLevel_lt_of_nonempty` |
+| item 3, `depth_Y(R) >= 3n` for nonbase `R` in `F_n` | `notMem_lowJetField_of_mem_erosionLevel` |
+| item 3, exact order addition `3n + r` | `schwarzianIter_mem_lowJetField_iff` |
+| item 4, `intersection F_n = K` | `iInf_erosionLevel` |
+| item 5, naturality in the index set (translation orbits) | `map_relabelIndex_erosionLevel`, `relabelIndex_schwarzianSubstitution` |
+| the level-`n+1` field sits inside the level-`n` field | `erosionLevel_antitone` |
+| the level intersection with the low-order jets is trivial | `erosionLevel_inf_lowJetField` |
+
+Supporting theorems built on the way: `familyJet_mem_gradedSchwarzianGenerators` (the graded
+solve-for-the-top-jet recursion), `map_familySchwarzianBasisEquiv_lowJetField` (the coordinate
+change preserves each low-order jet field), `mem_lowJetField_of_schwarzianSubstitution` (the
+substitution raises jet order by exactly three), and `schwarzianSubstitution_deriv` (the
+substitution is a differential homomorphism).
+
+`#print axioms` on each capstone reports exactly `propext`, `Classical.choice`, `Quot.sound`.
+
+### Remaining generality
+
+The formalized base is a characteristic-zero field of differential constants: the jet-shift
+derivation kills the coefficients.  The card states the theorem over an arbitrary differential
+field `(K, D)`.  The proof uses no property of `D` on the base — the Schwarzian, its jets, and the
+whole order calculus involve only rational coefficients — but a Lean statement in that generality
+needs the total differential-polynomial derivation `differentialPolynomialOverDerivation` in place
+of the jet shift, together with integer-linear analogues of `derivationStable`,
+`extendFreeCoordinatePolynomialDerivation_lie` and `derivationIntertwiner`.  That is the single
+item still open on this card.
 
 ## Gates
 
 - [x] 0 -> 1: exact candidate, parent boundary, attacks, and RH scope isolated
 - [x] 1 -> 2: complete unconditional paper proof
-- [ ] 2 -> 3: complete unconditional theorem formalized in Lean
+- [ ] 2 -> 3: complete unconditional theorem formalized in Lean (items 1-5 done over a constant
+      base; the arbitrary differential base remains)
 - [ ] 3 -> 4: publication-ready preprint and independent novelty audit
 
 ## Log
@@ -162,3 +207,6 @@ function-field automorphism package for this statement.  No partial stage-3 clai
 - 2026-07-11 -- Proved the exact depth law, strict tower, trivial intersection, and translation
   preservation.  Downgraded after parent comparison: the proof is an iterated application of the
   effective differential-Luroth highest-jet calculation.
+- 2026-08-29 -- Formalized items 1-5 unconditionally over a constant base: the family Schwarzian
+  coordinate change, the exact order-addition law, strict descent, trivial intersection, level
+  independence and index naturality.  Remaining: the arbitrary differential base.

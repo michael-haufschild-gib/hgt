@@ -43,19 +43,14 @@ theorem matrixDysonFormalVectorSeriesLaurent_isIntegral_ratFunc
   have hc : IsIntegral (RatFunc ℂ)
       (algebraMap (RatFunc ℂ) (LaurentSeries ℂ)
         (algebraMap ℂ (RatFunc ℂ) c)) := isIntegral_algebraMap
-  have hcTower : IsIntegral (RatFunc ℂ)
-      (algebraMap ℂ (LaurentSeries ℂ) c) := by
-    rw [IsScalarTower.algebraMap_apply ℂ (RatFunc ℂ) (LaurentSeries ℂ)]
-    exact hc
-  have hC : ((PowerSeries.C c : PowerSeries ℂ) : LaurentSeries ℂ) =
-      algebraMap ℂ (LaurentSeries ℂ) c := by
-    rw [← PowerSeries.algebraMap_apply]
-    exact (IsScalarTower.algebraMap_apply ℂ (PowerSeries ℂ)
-      (LaurentSeries ℂ) c).symm
+  have hC : algebraMap (RatFunc ℂ) (LaurentSeries ℂ)
+        (algebraMap ℂ (RatFunc ℂ) c) =
+      ((PowerSeries.C c : PowerSeries ℂ) : LaurentSeries ℂ) := by
+    simpa using (RatFunc.coe_coe (Polynomial.C c)).symm
   have hc' : IsIntegral (RatFunc ℂ)
       (((PowerSeries.C c : PowerSeries ℂ) : LaurentSeries ℂ)) := by
-    rw [hC]
-    exact hcTower
+    rw [← hC]
+    exact hc
   exact hc'.mul
     (matrixDysonFormalSeriesLaurent_isIntegral_ratFunc A i j)
 
@@ -152,6 +147,178 @@ theorem matrixDysonFormalVectorSeries_absoluteSummableAt
       gcongr
       exact matrixDysonFormalVectorSeries_coeff_bound A hA x n
     _ = c * q ^ n := by simp [q, norm_pow, mul_pow]; ring
+
+set_option maxHeartbeats 3000000 in
+theorem compactMomentGeneratingFunction_freeFockVector_eq_formalAbsoluteEval
+    (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
+    (hker : HasTrivialCommonKernel A) (x : I → ℂ) (u : ℂ)
+    (hu : ‖u‖ * freeFockMatrixSpectralRadius A < 1) :
+    compactMomentGeneratingFunction
+        (freeFockVectorSpectralMeasure A hA hker x) u =
+      (matrixDysonFormalVectorSeries A x).absoluteEval (u ^ 2) := by
+  let R := freeFockMatrixSpectralRadius A
+  have hR : 0 < R := freeFockMatrixSpectralRadius_pos A
+  have hq0 : 0 ≤ ‖u‖ * R := mul_nonneg (norm_nonneg _) hR.le
+  have hsq : R ^ 2 * ‖u ^ 2‖ < 1 := by
+    rw [norm_pow]
+    calc
+      R ^ 2 * ‖u‖ ^ 2 = (‖u‖ * R) ^ 2 := by ring
+      _ < 1 ^ 2 := (sq_lt_sq₀ hq0 zero_le_one).mpr hu
+      _ = 1 := one_pow 2
+  have habs := matrixDysonFormalVectorSeries_absoluteSummableAt
+    A hA x (u ^ 2) hsq
+  have heven : Summable (fun n : ℕ =>
+      (freeFockVectorMoment A x (2 * n) : ℂ) * u ^ (2 * n)) := by
+    convert habs.summable using 1
+    funext n
+    rw [coeff_matrixDysonFormalVectorSeries A hA, pow_mul]
+  have hodd : Summable (fun n : ℕ =>
+      (freeFockVectorMoment A x (2 * n + 1) : ℂ) * u ^ (2 * n + 1)) := by
+    simp [freeFockVectorMoment_odd A hA]
+  rw [compactMomentGeneratingFunction_freeFockVector_eq_tsum A hA hker x u hu]
+  rw [← tsum_even_add_odd heven hodd]
+  simp [freeFockVectorMoment_odd A hA]
+  rw [PowerSeries.absoluteEval]
+  apply tsum_congr
+  intro n
+  rw [coeff_matrixDysonFormalVectorSeries A hA, pow_mul]
+
+theorem freeFockVector_exterior_stieltjes_relation
+    (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
+    (hker : HasTrivialCommonKernel A) (x : I → ℂ) :
+    ∃ P : Polynomial (Polynomial ℂ), P.leadingCoeff ≠ 0 ∧
+      ∀ z : ℂ, freeFockMatrixSpectralRadius A < ‖z‖ →
+        reciprocalStieltjesRelation P
+          (freeFockVectorSpectralMeasure A hA hker x) z = 0 := by
+  obtain ⟨P, hPlead, hPformal⟩ :=
+    matrixDysonFormalVectorSeries_exists_bivariateRelation A x
+  refine ⟨P, hPlead, fun z hz => ?_⟩
+  have hz0 : z ≠ 0 := by
+    intro hzero
+    rw [hzero, norm_zero] at hz
+    linarith [freeFockMatrixSpectralRadius_pos A]
+  let u : ℂ := z⁻¹
+  have hu0 : u ≠ 0 := inv_ne_zero hz0
+  have hu : ‖u‖ * freeFockMatrixSpectralRadius A < 1 := by
+    change ‖z⁻¹‖ * freeFockMatrixSpectralRadius A < 1
+    rw [norm_inv]
+    simpa [div_eq_mul_inv, mul_comm] using
+      (div_lt_one (norm_pos_iff.mpr hz0)).mpr hz
+  have hM := compactMomentGeneratingFunction_freeFockVector_eq_formalAbsoluteEval
+    A hA hker x u hu
+  have hrel := PowerSeries.polynomial_relation_absoluteEval P
+    (matrixDysonFormalVectorSeries A x) (u ^ 2)
+    (matrixDysonFormalVectorSeries_absoluteSummableAt A hA x (u ^ 2) (by
+      have hR := freeFockMatrixSpectralRadius_pos A
+      have hq0 : 0 ≤ ‖u‖ * freeFockMatrixSpectralRadius A :=
+        mul_nonneg (norm_nonneg _) hR.le
+      rw [norm_pow]
+      calc
+        freeFockMatrixSpectralRadius A ^ 2 * ‖u‖ ^ 2 =
+            (‖u‖ * freeFockMatrixSpectralRadius A) ^ 2 := by ring
+        _ < 1 ^ 2 := (sq_lt_sq₀ hq0 zero_le_one).mpr hu
+        _ = 1 := one_pow 2)) hPformal
+  have hS := freeFockVectorStieltjes_eq_neg_mul_mgf A hA hker x u hu0
+  have hzinv : u⁻¹ = z := by simp [u]
+  rw [hzinv] at hS
+  have hMstieltjes :
+      compactMomentGeneratingFunction
+          (freeFockVectorSpectralMeasure A hA hker x) u =
+        -z * freeFockVectorStieltjes A hA hker x z := by
+    have hzu : z * u = 1 := by simp [u, hz0]
+    calc
+      compactMomentGeneratingFunction
+          (freeFockVectorSpectralMeasure A hA hker x) u =
+          (z * u) * compactMomentGeneratingFunction
+            (freeFockVectorSpectralMeasure A hA hker x) u := by rw [hzu, one_mul]
+      _ = -z * (-u * compactMomentGeneratingFunction
+            (freeFockVectorSpectralMeasure A hA hker x) u) := by ring
+      _ = -z * freeFockVectorStieltjes A hA hker x z := by rw [← hS]
+  change P.eval₂ (Polynomial.evalRingHom (z⁻¹ ^ 2))
+      (-z * freeFockVectorStieltjes A hA hker x z) = 0
+  have hu2 : u ^ 2 = z⁻¹ ^ 2 := by simp [u]
+  rw [← hu2, ← hMstieltjes, hM]
+  exact hrel
+
+theorem freeFockVector_upperHalfPlane_stieltjes_relation
+    (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
+    (hker : HasTrivialCommonKernel A) (x : I → ℂ) :
+    ∃ P : Polynomial (Polynomial ℂ), P.leadingCoeff ≠ 0 ∧
+      ∀ z : ℂ, 0 < z.im →
+        reciprocalStieltjesRelation P
+          (freeFockVectorSpectralMeasure A hA hker x) z = 0 := by
+  obtain ⟨P, hPlead, hPext⟩ :=
+    freeFockVector_exterior_stieltjes_relation A hA hker x
+  refine ⟨P, hPlead, ?_⟩
+  let U : Set ℂ := {z | 0 < z.im}
+  let z₀ : ℂ := (freeFockMatrixSpectralRadius A + 1) * Complex.I
+  have hz₀U : z₀ ∈ U := by
+    change 0 < z₀.im
+    simp [z₀]
+    linarith [freeFockMatrixSpectralRadius_pos A]
+  have hz₀ext : freeFockMatrixSpectralRadius A < ‖z₀‖ := by
+    dsimp [z₀]
+    rw [norm_mul, show ((freeFockMatrixSpectralRadius A : ℂ) + 1) =
+      ((freeFockMatrixSpectralRadius A + 1 : ℝ) : ℂ) by push_cast; ring,
+      Complex.norm_real, Real.norm_eq_abs, Complex.norm_I, mul_one,
+      abs_of_pos (by linarith [freeFockMatrixSpectralRadius_pos A])]
+    linarith
+  have hseed : Filter.Eventually
+      (fun z => reciprocalStieltjesRelation P
+        (freeFockVectorSpectralMeasure A hA hker x) z = 0) (nhds z₀) := by
+    have hopen : IsOpen {z : ℂ | freeFockMatrixSpectralRadius A < ‖z‖} :=
+      isOpen_lt continuous_const continuous_norm
+    filter_upwards [hopen.mem_nhds hz₀ext] with z hz
+    exact hPext z hz
+  have hrelAnalytic : AnalyticOnNhd ℂ
+      (reciprocalStieltjesRelation P
+        (freeFockVectorSpectralMeasure A hA hker x)) U :=
+    (reciprocalStieltjesRelation_differentiableOn P
+      (freeFockVectorSpectralMeasure A hA hker x)).analyticOnNhd
+      (isOpen_lt continuous_const Complex.continuous_im)
+  have hzeroAnalytic : AnalyticOnNhd ℂ (fun _z : ℂ => (0 : ℂ)) U :=
+    analyticOnNhd_const
+  have hEq := hrelAnalytic.eqOn_of_preconnected_of_eventuallyEq hzeroAnalytic
+    (convex_halfSpace_im_gt 0).isPreconnected hz₀U hseed
+  intro z hz
+  exact hEq hz
+
+/-- An atomless arbitrary-vector free-Fock spectral law is purely absolutely continuous. -/
+theorem freeFockVectorSpectralMeasure_absolutelyContinuous
+    (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
+    (hker : HasTrivialCommonKernel A) (x : I → ℂ)
+    (hatom : ∀ a : ℝ,
+      freeFockVectorSpectralMeasure A hA hker x {a} = 0) :
+    freeFockVectorSpectralMeasure A hA hker x ≪ volume := by
+  letI : NullSingletonClass (freeFockVectorSpectralMeasure A hA hker x) := ⟨hatom⟩
+  obtain ⟨P, hPlead, hP⟩ :=
+    freeFockVector_upperHalfPlane_stieltjes_relation A hA hker x
+  exact atomless_reciprocal_algebraic_stieltjes_absolutelyContinuous
+    (freeFockVectorSpectralMeasure A hA hker x) P hPlead hP
+
+/-- Vanishing of the polarized atom matrix annihilates every vector-state atom. -/
+theorem freeFockVectorSpectralMeasure_singleton_eq_zero_of_matrixAtomMass_eq_zero
+    (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
+    (hker : HasTrivialCommonKernel A) (a : ℝ)
+    (hzero : freeFockMatrixAtomMass A hA hker a = 0) (x : I → ℂ) :
+    freeFockVectorSpectralMeasure A hA hker x {a} = 0 := by
+  have hq := star_dotProduct_freeFockMatrixAtomMass_mulVec A hA hker a x
+  rw [hzero, Matrix.zero_mulVec, dotProduct_zero] at hq
+  have hr : (freeFockVectorSpectralMeasure A hA hker x {a}).toReal = 0 := by
+    simpa [freeFockVectorAtomMass] using hq.symm
+  exact (ENNReal.toReal_eq_zero_iff _).mp hr |>.resolve_right
+    (measure_ne_top (freeFockVectorSpectralMeasure A hA hker x) {a})
+
+/-- Zero matrix atom mass at every energy gives absolute continuity in every vector state. -/
+theorem freeFockVectorSpectralMeasure_absolutelyContinuous_of_matrixAtomMass_eq_zero
+    (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
+    (hker : HasTrivialCommonKernel A)
+    (hatom : ∀ a : ℝ, freeFockMatrixAtomMass A hA hker a = 0)
+    (x : I → ℂ) :
+    freeFockVectorSpectralMeasure A hA hker x ≪ volume :=
+  freeFockVectorSpectralMeasure_absolutelyContinuous A hA hker x fun a =>
+    freeFockVectorSpectralMeasure_singleton_eq_zero_of_matrixAtomMass_eq_zero
+      A hA hker a (hatom a) x
 
 end
 

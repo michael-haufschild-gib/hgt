@@ -207,6 +207,12 @@ def point_record(u_value, tau_value):
     actual_adversarial = margin + 5 * actual_y * unit_min
     actual_tangent = margin + 5 * derivative
     required_cap = mp.inf if unit_min >= 0 else margin / (-5 * unit_min)
+    channel_scales = tuple(max(mp.mpf(1), abs(atom[i]), abs(full[i])) for i in range(7))
+    h_scale = max(mp.mpf(1), abs(atom[1] * t * atom[5]),
+                  abs((atom[1] + t * atom[2]) * atom[4]))
+    derivative_scale = max(mp.mpf(1), abs(derivative),
+                           sum(abs(coefficients[name] * value) for name, value in zip(
+                               ("dq", "da", "db", "dc", "ds", "dm", "dn"), likelihood)))
     return {
         "u": u,
         "tau": tau,
@@ -225,6 +231,9 @@ def point_record(u_value, tau_value):
         "actual_adversarial": actual_adversarial,
         "actual_tangent": actual_tangent,
         "required_cap": required_cap,
+        "channel_scales": channel_scales,
+        "h_scale": h_scale,
+        "derivative_scale": derivative_scale,
     }
 
 
@@ -283,17 +292,25 @@ def consider(summary, record):
         summary["actual_tangent_failures"] += 1
     likelihood = record["likelihood"]
     coefficients = record["coefficients"]
-    resolution = mp.power(10, -mp.mp.dps / 2)
+    # Full-minus-atom channels can lose roughly half the working digits at large scale.
+    # One-third-DPS relative tolerance classifies those cancellation-level residues only.
+    resolution = mp.power(10, -mp.mp.dps / 3)
+    scales = record["channel_scales"]
     # At large u the higher atoms lie below working precision, so exact zeros are accepted.
     # Only a wrong sign larger than the precision floor is a failure.
     good_signs = (
-        record["H"] < resolution and likelihood[0] <= resolution and
-        likelihood[1] <= resolution and likelihood[2] <= resolution and
-        likelihood[3] <= resolution and likelihood[4] >= -resolution and
-        likelihood[5] >= -resolution and likelihood[6] >= -resolution and
-        coefficients["dq"] < resolution and coefficients["dc"] < resolution and
-        coefficients["dn"] > -resolution and
-        abs(record["derivative_error"]) <= resolution * max(1, abs(record["actual_tangent"]))
+        record["H"] <= resolution * record["h_scale"] and
+        likelihood[0] <= resolution * scales[0] and
+        likelihood[1] <= resolution * scales[1] and
+        likelihood[2] <= resolution * scales[2] and
+        likelihood[3] <= resolution * scales[3] and
+        likelihood[4] >= -resolution * scales[4] and
+        likelihood[5] >= -resolution * scales[5] and
+        likelihood[6] >= -resolution * scales[6] and
+        coefficients["dq"] <= resolution * max(1, abs(coefficients["dq"])) and
+        coefficients["dc"] <= resolution * max(1, abs(coefficients["dc"])) and
+        coefficients["dn"] >= -resolution * max(1, abs(coefficients["dn"])) and
+        abs(record["derivative_error"]) <= resolution * record["derivative_scale"]
     )
     if not good_signs:
         summary["sign_failures"] += 1

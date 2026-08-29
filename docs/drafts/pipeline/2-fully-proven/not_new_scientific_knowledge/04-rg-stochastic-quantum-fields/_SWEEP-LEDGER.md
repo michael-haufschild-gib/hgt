@@ -10,7 +10,7 @@ Rules: no hypotheses wrapping unproven input; no umbrella builds; `lake env lean
 | 2 | balanced-causal-fracture-torsor-classification | DONE — AIIIGramFibreTorsor, HermitianConeStrictConvexity, ColorGramGlobalTrivialization, ColorGramTrivializationSmoothness, HermitianSymmetricDimensionBalance | **PROMOTED** |
 | 3 | common-profile-boolean-anchor-curvature | (CG1),(CG3),(CG4),(CG6),(SG10),(SG9) | TODO |
 | 4 | coherence-graph-volume-recurrence-exponent-law | (1),(2),(3) + rank-zero boundary | TODO |
-| 5 | schwarzian-projective-erosion-tower | Schwarzian tower depth law, strict descent, intersection = K | TODO |
+| 5 | schwarzian-projective-erosion-tower | items 1-5 DONE over a constant base (`FreeFamilyJetShift`, `SchwarzianFamilyCoordinates`, `SchwarzianProjectiveErosionTower`); residue: arbitrary differential base needs the total derivation + integer-linear derivation helpers | NEARLY |
 | 6 | bbm-pullback-completion-purely-continuous-law | pullback completion unitary + reducing-subspace lemma + dilation a.c. | TODO |
 | 7 | q-geometric-generalized-free-field-hypertranscendence | moments, positivity, self-similarity, Hankel, + ADH q-difference dichotomy | TODO |
 | 8 | ultrametric-thermal-mahler-hypertranscendence | (3) constraint + uniqueness (done?), non-rationality, HT | TODO |
@@ -83,3 +83,53 @@ Ambient object: `FreeCoordinateRationalField C (ι × ℕ)` with the family jet-
    relation `2 q' q''' − 3 (q'')² − 2 s (q')² = 0`.
 8. Item 5 (translation orbits) is the same statement for `ι` a translation orbit; the Schwarzian
    tower commutes with the index relabelling.
+
+## Card 5 residue: exact obstruction (2026-08-29)
+
+`HTGeometry/RationalDerivationTools.lean` is built and green: `ratOfIntDerivation`,
+`derivationEqualizerSubfield`, `derivation_eq_of_agree_on_algebraMap`, `derivationStableOf`,
+`adjoin_le_derivationStableOf`, `derivationIntertwinerOf`.  These are the base-derivation-tolerant
+replacements for `derivationStable` and the intertwiner used in the tower.
+
+The single remaining obstruction is instance plumbing, not mathematics: building
+`Differential (FractionRing (MvPolynomial (ι x N) C))` from
+`differentialPolynomialOverDerivation` via `fractionRingDerivation` hits a
+`Module Q (FractionRing ...)` diamond (`OreLocalization.instModuleOfIsScalarTower` versus
+`Algebra.toModule`).  Two routes to try next:
+
+1. build the derivation at base `Z` with `Ring.toIntAlgebra` on both the polynomial ring and its
+   fraction field, supplying `IsScalarTower Z P F` by hand;
+2. define the derivation on the fraction field directly by `Derivation.mk'` on `IsFractionRing.mk'`
+   representatives with the quotient rule, bypassing `fractionRingDerivation`.
+
+Once the instance exists, the three tower modules need `[Differential C]` added and the four uses of
+`derivationStable`/`derivationIntertwiner` swapped for the `...Of` variants.
+
+## Card 4 reconnaissance (2026-08-29)
+
+The corpus's `FiniteQuantumObserverGraph*` lane proves a *continuous-time* first-return law with
+exponent `(r-1)/2` (`HasUniversalFiniteObserverFirstReturnLaw`), where `r = Fintype.card
+(graphNonRoot G)` and `card_graphNonRoot` gives `r = |V| - c(G)`.  The card's law is the
+*discrete-time* one with exponent `r`, so it is a different theorem sharing the machinery.
+
+Reusable pieces found:
+
+- torus model `Fin d → UnitAddCircle` with `volume`, phases `fourier 1 (x j)`
+  (`ProjectiveWeightedCoherence.lean`);
+- `pivotDifferenceEquiv` — the measure-preserving pivot coordinate change, the template for the
+  forest coordinate change;
+- `projectiveWaterBox`, `volumeReal_projectiveWaterBox`,
+  `norm_fourier_one_sub_one_le_two_pi_mul_norm` — circle chord/box estimates
+  (`ProjectiveWeightedTargetVolumeLower.lean`);
+- `graphComponentRoot`, `graphNonRoot`, `card_graphNonRoot`, `graphRootChordEnergy` and the
+  two-sided comparability `observerPhaseEnergy_rootChordEnergy_comparable`
+  (`FiniteQuantumObserverGraphMetricEquivalence.lean`);
+- `measureReal_torusProjectiveWeightedCoherenceTarget_zsmul_preimage` — every nonzero integer clock
+  preserves the target measure, the discrete-time avoidance engine
+  (`ProjectiveWeightedCoherenceAvoidance.lean`);
+- `ae_hasUniversalFiniteObserverFirstReturnLaw` — the almost-every-spectrum template.
+
+Still to build for card 4: a spanning forest with parent map and path length, the forest
+coordinate change as a measure-preserving torus automorphism, the exact two-sided volume law `(1)`,
+the discrete minimax exponent `(2)`, the Borel--Cantelli almost-every exponent `(3)`, and the
+rank-zero boundary `(4)`.

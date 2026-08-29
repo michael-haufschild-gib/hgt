@@ -7,7 +7,11 @@
   `GaloisForLFunctions.RHTower.ThetaCuspFixedActionC5LikelihoodLiftReduction`
 - **Main theorems:** `c5CompletedVelocitySlopeLowerJetNumerator_lt`,
   `c5LikelihoodLowerJetSingleMasterReduction`,
-  `thetaCuspReflectedActionC5FixedActionJacobian_pos_of_lowerJetCompensation`
+  `two_mul_scale_mul_thetaCuspLikelihoodSourceLogPartitionJetTwo_lt_neg_jetThree`,
+  `six_mul_thetaCuspLikelihoodSourceLogPartitionJetTwo_lt_neg_jetThree`,
+  `expTwelve_sub_one_mul_neg_reflectedJetTwo_lt_mixedJetOne`,
+  `adaptiveMasterCurvature_lt_completedVelocitySlopeGain`,
+  `thetaCuspReflectedActionC5FixedActionJacobian_pos_of_adaptiveReservedCompensation`
 
 ## Decisive conjecture and RH passport
 
@@ -80,17 +84,57 @@ This changes the open far-tail problem from independent control of seven likelih
 one scalar atom-versus-`y` domination. It is a strict proof-burden reduction; it does not claim the
 completed tail sign.
 
-## Exact remaining core
-
-Prove
+Third, the likelihood support gap proves an adaptive strict curvature-cooling law on the full
+physical half-line, with constant rate six as a corollary:
 
 ```text
-0 < c5CompletedLowerJetCompensationMargin u t
+2*A(x)*F₂(x) < -F₃(x),
+x ↦ exp(A(x))*F₂(x) is strictly decreasing,
+6*F₂(x) < -F₃(x),
+x ↦ exp(6x)*F₂(x) is strictly decreasing.
 ```
 
-throughout the physical tail, using the single-master cone above and exact first-atom compensation.
-Equivalently, prove the atom reserve absorbs `y=-b` after preserving the seam-order cancellations.
-The corpus-guided candidate is a convex likelihood homotopy plus its exact atom-tangent reserve.
+Consequently reflected endpoints obey
+
+```text
+exp(12t)*F₂(u+t) < F₂(u-t),
+(exp(12t)-1)*y < (exp(12t)+1)*m.
+```
+
+Thus favorable mixed-centre curvature `m` retains an explicit positive fraction of adverse master
+loss `y`; it cannot degenerate independently. This is a structural support-gap consequence, not a
+computed or optimized tail constant.
+
+More decisively, summing adaptive cooling over both reflected endpoints proves
+
+```text
+Z = 2*A(u+t)*F₂(u+t) + 2*A(u-t)*F₂(u-t) < n,
+6*y < n,
+t²*a_completed*Z < P_full-P_lower.
+```
+
+After the C5 coefficient `5` is restored, literal compensation is therefore strictly larger than
+
+```text
+lower-jet compensation + 5*t²*a_completed*Z,
+```
+
+and in particular larger than `lower-jet compensation + 30*t²*a_completed*y`. Earlier reduction
+discarded this full third channel; adaptive reserved compensation retains its guaranteed portion.
+
+## Exact remaining core
+
+Prove the strictly weaker reserved endpoint
+
+```text
+0 < c5CompletedAdaptiveReservedCompensationMargin u t
+```
+
+throughout the physical tail, using the single-master cone, adaptive third-channel reserve, and
+exact first-atom compensation. Equivalently, prove the atom reserve absorbs only the residual
+likelihood tax after the guaranteed `Z` payment. The corpus-guided candidate is a convex likelihood
+homotopy plus its exact atom-tangent reserve, now with the strongest source-forced third channel
+retained rather than discarded.
 If either fails algebraically, retire the perturbative lift and export the sharp obstruction to the
 cofinal chord-reserve route.
 
@@ -98,8 +142,9 @@ cofinal chord-reserve route.
 
 Corpus research used the exact atom-plus-likelihood factorization, negative likelihood displacement
 jets, positive likelihood centre jets, strict monotonicity of likelihood score and third source jet,
-and exact first-atom compensation. No existing corpus theorem supplied the action--jet hierarchy,
-single-master reduction, or favorable complete third-channel lift.
+the likelihood support-gap third-cumulant inequality, and exact first-atom compensation. No existing
+corpus theorem supplied the action--jet hierarchy, single-master reduction, adaptive cooling law,
+exponential master-to-mixed coupling, or quantitative complete third-channel lift.
 
 Primary-source searches through 2026-08-29 found classical Hermite--Hadamard inequalities but no
 theta-cusp likelihood fixed-action C5 theorem, no seven-to-one likelihood-channel reduction, and no
@@ -113,4 +158,3 @@ claim of exhaustive bibliographic certainty.
 - `lake build GaloisForLFunctions.RHTower.ThetaCuspFixedActionC5LikelihoodLiftReduction` passed.
 - Axiom audit for main theorems: only `propext`, `Classical.choice`, and `Quot.sound`.
 - Both modules are wired into their umbrellas; no umbrella or full build was run.
-

@@ -347,19 +347,869 @@ theorem summable_d4BMCompletedEisensteinWeightedSignedWhittakerHorizontalSecondJ
     u nu negative x 2 0 Y).mul_left (-(2 * Real.pi : ℂ) ^ 2)
   apply h.congr
   intro N
+  have hrate : d4BMSignedFourierRate negative N ^ 2 =
+      -(2 * Real.pi : ℂ) ^ 2 * ((N + 1 : ℕ) : ℂ) ^ 2 := by
+    unfold d4BMSignedFourierRate
+    rw [show ((d4BMFourierSign negative : ℂ) *
+        (d4BMPositiveFourierScale N : ℂ) * Complex.I) ^ 2 =
+      (d4BMFourierSign negative : ℂ) ^ 2 *
+        (d4BMPositiveFourierScale N : ℂ) ^ 2 * Complex.I ^ 2 by ring,
+      Complex.I_sq]
+    cases negative <;> norm_num [d4BMFourierSign, d4BMPositiveFourierScale]
+    all_goals ring
   unfold d4BMCompletedEisensteinWeightedSignedWhittakerHorizontalSecondJet
     d4BMSignedWhittakerModeHorizontalSecondJet
-    d4BMSignedFourierRate
     d4BMSignedWhittakerMode
     d4BMCompletedEisensteinSignedSqrtWhittakerSummand
     d4BMWhittakerP0 d4BMPositiveFourierScale
-  cases negative <;> norm_num [d4BMFourierSign]
-  all_goals rw [show
-    ((2 * Real.pi : ℂ) * (((N : ℝ) + 1 : ℝ) : ℂ) * Complex.I) ^ 2 =
-      ((2 * Real.pi : ℂ) * (((N : ℝ) + 1 : ℝ) : ℂ)) ^ 2 *
-        Complex.I ^ 2 by ring, Complex.I_sq]
-  all_goals push_cast
-  all_goals ring
+  rw [hrate]
+  push_cast
+  ring
+
+theorem summable_d4BMCompletedEisensteinWeightedSignedWhittakerMixedSecondJet
+    (u nu : ℂ) (negative : Bool) (x : ℝ)
+    (Y : {y : ℝ // 1 ≤ y}) :
+    Summable (fun N : ℕ =>
+      d4BMCompletedEisensteinWeightedSignedWhittakerMixedSecondJet
+        u negative N nu x Y) := by
+  let C := d4BMSignedWhittakerLocalFirstJetConstant Y nu
+  let M : ℕ → ℝ := fun N =>
+    (2 * Real.pi * C) *
+      (‖d4BMCompletedEisensteinWhittakerCoefficient u ⟨N + 1, by omega⟩ *
+          ((N + 1 : ℕ) : ℂ) ^ 2‖ *
+        Real.exp (-(((N : ℝ) + 1) / 2)))
+  have hM : Summable M :=
+    (summable_d4BMCompletedEisensteinCoefficientIndexExpHalf u 2).mul_left
+      (2 * Real.pi * C)
+  apply Summable.of_norm_bounded hM
+  intro N
+  have hYmem : (Y : ℝ) ∈ Ioo (1 / 2 : ℝ) (2 * (Y : ℝ)) := by
+    constructor <;> linarith [Y.2]
+  have hfirst :=
+    norm_d4BMWhittakerP0FirstJet_signed_local_le Y hYmem N nu
+  rw [show d4BMCompletedEisensteinWeightedSignedWhittakerMixedSecondJet
+        u negative N nu x Y =
+      d4BMCompletedEisensteinWhittakerCoefficient u ⟨N + 1, by omega⟩ *
+        (d4BMSignedFourierRate negative N *
+          (d4BMCompletedEisensteinFourierPhase negative N x *
+            d4BMWhittakerP0FirstJet
+              (d4BMPositiveFourierScale N) nu Y)) by rfl,
+    norm_mul, norm_mul, norm_mul, norm_d4BMSignedFourierRate,
+    d4BM_norm_completedEisensteinFourierPhase, one_mul]
+  calc
+    _ ≤ ‖d4BMCompletedEisensteinWhittakerCoefficient
+            u ⟨N + 1, by omega⟩‖ *
+          (2 * Real.pi * ((N : ℝ) + 1)) *
+            (C * ((N : ℝ) + 1) *
+              Real.exp (-(((N : ℝ) + 1) / 2))) := by
+          have hnonneg :
+              0 ≤ ‖d4BMCompletedEisensteinWhittakerCoefficient
+                  u ⟨N + 1, by omega⟩‖ *
+                (2 * Real.pi * ((N : ℝ) + 1)) := by positivity
+          simpa only [C, mul_assoc] using
+            mul_le_mul_of_nonneg_left hfirst hnonneg
+    _ = M N := by
+          have hnNorm : ‖(((N + 1 : ℕ) : ℂ))‖ = (N : ℝ) + 1 := by
+            rw [Complex.norm_natCast]
+            norm_num [Real.norm_eq_abs, abs_of_nonneg]
+          simp only [M, norm_mul, norm_pow, hnNorm]
+          ring
+
+/-- Arithmetic coefficient times the genuine vertical second jet of one signed mode. -/
+def d4BMCompletedEisensteinWeightedSignedWhittakerVerticalSecondJet
+    (u : ℂ) (negative : Bool) (N : ℕ) (nu : ℂ) (x : ℝ)
+    (Y : D4BMPositiveReal) : ℂ :=
+  d4BMCompletedEisensteinWhittakerCoefficient u ⟨N + 1, by omega⟩ *
+    d4BMSignedWhittakerModeVerticalSecondJet negative N nu x Y
+
+/-- Vertical second jets are algebraically reconstructed from value and horizontal second jets. -/
+theorem d4BM_weightedSignedWhittakerVerticalSecondJet_eq_eigenReconstruction
+    (u : ℂ) (negative : Bool) (N : ℕ) (nu : ℂ) (x : ℝ)
+    (Y : D4BMPositiveReal) :
+    d4BMCompletedEisensteinWeightedSignedWhittakerVerticalSecondJet
+        u negative N nu x Y =
+      ((nu ^ 2 - 1 / 4) / (Y : ℂ) ^ 2) *
+          d4BMCompletedEisensteinWeightedSignedWhittakerMode
+            u negative N nu x Y -
+        d4BMCompletedEisensteinWeightedSignedWhittakerHorizontalSecondJet
+          u negative N nu x Y := by
+  have heigen := d4BM_signedWhittakerMode_secondJet_eigenEquation
+    negative N nu x Y
+  have hYne : (Y : ℂ) ≠ 0 := by exact_mod_cast Y.2.ne'
+  have hsolve :
+      d4BMSignedWhittakerModeVerticalSecondJet negative N nu x Y =
+        ((nu ^ 2 - 1 / 4) / (Y : ℂ) ^ 2) *
+            d4BMSignedWhittakerMode negative N nu x Y -
+          d4BMSignedWhittakerModeHorizontalSecondJet negative N nu x Y := by
+    have hY2ne : (Y : ℂ) ^ 2 ≠ 0 := pow_ne_zero 2 hYne
+    have hsum :
+        d4BMSignedWhittakerModeHorizontalSecondJet negative N nu x Y +
+            d4BMSignedWhittakerModeVerticalSecondJet negative N nu x Y =
+          ((nu ^ 2 - 1 / 4) *
+            d4BMSignedWhittakerMode negative N nu x Y) / (Y : ℂ) ^ 2 := by
+      apply (eq_div_iff hY2ne).2
+      simpa only [mul_comm] using heigen
+    calc
+      _ = (d4BMSignedWhittakerModeHorizontalSecondJet negative N nu x Y +
+            d4BMSignedWhittakerModeVerticalSecondJet negative N nu x Y) -
+          d4BMSignedWhittakerModeHorizontalSecondJet negative N nu x Y := by ring
+      _ = ((nu ^ 2 - 1 / 4) *
+            d4BMSignedWhittakerMode negative N nu x Y) / (Y : ℂ) ^ 2 -
+          d4BMSignedWhittakerModeHorizontalSecondJet negative N nu x Y := by rw [hsum]
+      _ = ((nu ^ 2 - 1 / 4) / (Y : ℂ) ^ 2) *
+            d4BMSignedWhittakerMode negative N nu x Y -
+          d4BMSignedWhittakerModeHorizontalSecondJet negative N nu x Y := by ring
+  unfold d4BMCompletedEisensteinWeightedSignedWhittakerVerticalSecondJet
+    d4BMCompletedEisensteinWeightedSignedWhittakerMode
+    d4BMCompletedEisensteinWeightedSignedWhittakerHorizontalSecondJet
+  rw [hsolve]
+  ring
+
+theorem summable_d4BMCompletedEisensteinWeightedSignedWhittakerVerticalSecondJet
+    (u nu : ℂ) (negative : Bool) (x : ℝ)
+    (Y : {y : ℝ // 1 ≤ y}) :
+    Summable (fun N : ℕ =>
+      d4BMCompletedEisensteinWeightedSignedWhittakerVerticalSecondJet
+        u negative N nu x ⟨Y, zero_lt_one.trans_le Y.2⟩) := by
+  let Yp : D4BMPositiveReal := ⟨Y, zero_lt_one.trans_le Y.2⟩
+  have hvalue :=
+    (summable_d4BMCompletedEisensteinWeightedSignedWhittakerMode
+      u nu negative x Y).mul_left ((nu ^ 2 - 1 / 4) / (Y : ℂ) ^ 2)
+  have hxx :=
+    summable_d4BMCompletedEisensteinWeightedSignedWhittakerHorizontalSecondJet
+      u nu negative x Y
+  apply (hvalue.sub hxx).congr
+  intro N
+  exact (d4BM_weightedSignedWhittakerVerticalSecondJet_eq_eigenReconstruction
+    u negative N nu x Yp).symm
+
+/-- Full componentwise `tsum` jet of one signed canonical Whittaker tail. -/
+def d4BMCompletedEisensteinSignedTailFullSecondJet
+    (u nu : ℂ) (negative : Bool) (x : ℝ)
+    (Y : {y : ℝ // 1 ≤ y}) : D4BMFullSecondJet where
+  first :=
+    { value := ∑' N : ℕ,
+        d4BMCompletedEisensteinWeightedSignedWhittakerMode
+          u negative N nu x Y
+      tau := 0
+      horizonX := ∑' N : ℕ,
+        d4BMCompletedEisensteinWeightedSignedWhittakerHorizontalFirstJet
+          u negative N nu x Y
+      sigma := ∑' N : ℕ,
+        d4BMCompletedEisensteinWeightedSignedWhittakerVerticalFirstJet
+          u negative N nu x Y
+      xi := 0 }
+  tauTau := 0
+  tauHorizonX := 0
+  tauSigma := 0
+  tauXi := 0
+  horizonXHorizonX := ∑' N : ℕ,
+    d4BMCompletedEisensteinWeightedSignedWhittakerHorizontalSecondJet
+      u negative N nu x Y
+  horizonXSigma := ∑' N : ℕ,
+    d4BMCompletedEisensteinWeightedSignedWhittakerMixedSecondJet
+      u negative N nu x Y
+  horizonXXi := 0
+  sigmaSigma := ∑' N : ℕ,
+    d4BMCompletedEisensteinWeightedSignedWhittakerVerticalSecondJet
+      u negative N nu x ⟨Y, zero_lt_one.trans_le Y.2⟩
+  sigmaXi := 0
+  xiXi := 0
+
+/-- Literal raising commutes with the absolutely convergent signed full-second-jet sum. -/
+theorem d4BM_maassRaise_signedTailFullSecondJet_eq_tsum
+    (u nu : ℂ) (negative : Bool) (x : ℝ)
+    (Y : {y : ℝ // 1 ≤ y}) :
+    d4BMMaassRaiseTwoRaiseZeroOnFullSecondJet (Y : ℂ)
+        (d4BMCompletedEisensteinSignedTailFullSecondJet
+          u nu negative x Y) =
+      ∑' N : ℕ,
+        d4BMCompletedEisensteinWhittakerCoefficient u ⟨N + 1, by omega⟩ *
+          d4BMMaassRaiseTwoRaiseZeroOnFullSecondJet (Y : ℂ)
+            (d4BMActualSignedWhittakerModeFullSecondJet
+              negative N nu x ⟨Y, zero_lt_one.trans_le Y.2⟩) := by
+  let Yp : D4BMPositiveReal := ⟨Y, zero_lt_one.trans_le Y.2⟩
+  let yy : ℕ → ℂ := fun N =>
+    d4BMCompletedEisensteinWeightedSignedWhittakerVerticalSecondJet
+      u negative N nu x Yp
+  let xx : ℕ → ℂ := fun N =>
+    d4BMCompletedEisensteinWeightedSignedWhittakerHorizontalSecondJet
+      u negative N nu x Y
+  let xy : ℕ → ℂ := fun N =>
+    d4BMCompletedEisensteinWeightedSignedWhittakerMixedSecondJet
+      u negative N nu x Y
+  let y1 : ℕ → ℂ := fun N =>
+    d4BMCompletedEisensteinWeightedSignedWhittakerVerticalFirstJet
+      u negative N nu x Y
+  let x1 : ℕ → ℂ := fun N =>
+    d4BMCompletedEisensteinWeightedSignedWhittakerHorizontalFirstJet
+      u negative N nu x Y
+  let a : ℕ → ℂ := fun N => yy N - xx N + 2 * Complex.I * xy N
+  let b : ℕ → ℂ := fun N => y1 N + Complex.I * x1 N
+  have hyy : Summable yy := by
+    exact summable_d4BMCompletedEisensteinWeightedSignedWhittakerVerticalSecondJet
+      u nu negative x Y
+  have hxx : Summable xx := by
+    exact summable_d4BMCompletedEisensteinWeightedSignedWhittakerHorizontalSecondJet
+      u nu negative x Y
+  have hxy : Summable xy := by
+    exact summable_d4BMCompletedEisensteinWeightedSignedWhittakerMixedSecondJet
+      u nu negative x Y
+  have hy1 : Summable y1 := by
+    exact summable_d4BMCompletedEisensteinWeightedSignedWhittakerVerticalFirstJet
+      u nu negative x Y
+  have hx1 : Summable x1 := by
+    exact summable_d4BMCompletedEisensteinWeightedSignedWhittakerHorizontalFirstJet
+      u nu negative x Y
+  have ha : Summable a := (hyy.sub hxx).add (hxy.mul_left (2 * Complex.I))
+  have hb : Summable b := hy1.add (hx1.mul_left Complex.I)
+  calc
+    d4BMMaassRaiseTwoRaiseZeroOnFullSecondJet (Y : ℂ)
+        (d4BMCompletedEisensteinSignedTailFullSecondJet u nu negative x Y) =
+      (Y : ℂ) ^ 2 * (∑' N : ℕ, a N) +
+        2 * (Y : ℂ) * (∑' N : ℕ, b N) := by
+          unfold d4BMMaassRaiseTwoRaiseZeroOnFullSecondJet
+            d4BMCompletedEisensteinSignedTailFullSecondJet
+          simp only [a, b, yy, xx, xy, y1, x1]
+          rw [(hyy.sub hxx).tsum_add (hxy.mul_left (2 * Complex.I)),
+            hyy.tsum_sub hxx, tsum_mul_left,
+            hy1.tsum_add (hx1.mul_left Complex.I), tsum_mul_left]
+    _ = ∑' N : ℕ,
+        ((Y : ℂ) ^ 2 * a N + 2 * (Y : ℂ) * b N) := by
+          rw [← tsum_mul_left, ← tsum_mul_left]
+          exact ((ha.mul_left ((Y : ℂ) ^ 2)).tsum_add
+            (hb.mul_left (2 * (Y : ℂ)))).symm
+    _ = ∑' N : ℕ,
+        d4BMCompletedEisensteinWhittakerCoefficient u ⟨N + 1, by omega⟩ *
+          d4BMMaassRaiseTwoRaiseZeroOnFullSecondJet (Y : ℂ)
+            (d4BMActualSignedWhittakerModeFullSecondJet
+              negative N nu x Yp) := by
+          apply tsum_congr
+          intro N
+          unfold a b yy xx xy y1 x1
+          unfold d4BMCompletedEisensteinWeightedSignedWhittakerVerticalSecondJet
+            d4BMCompletedEisensteinWeightedSignedWhittakerHorizontalSecondJet
+            d4BMCompletedEisensteinWeightedSignedWhittakerMixedSecondJet
+            d4BMCompletedEisensteinWeightedSignedWhittakerVerticalFirstJet
+            d4BMCompletedEisensteinWeightedSignedWhittakerHorizontalFirstJet
+            d4BMMaassRaiseTwoRaiseZeroOnFullSecondJet
+            d4BMActualSignedWhittakerModeFullSecondJet
+          ring
+
+/-- Literal lowering commutes with the absolutely convergent signed full-second-jet sum. -/
+theorem d4BM_maassLower_signedTailFullSecondJet_eq_tsum
+    (u nu : ℂ) (negative : Bool) (x : ℝ)
+    (Y : {y : ℝ // 1 ≤ y}) :
+    d4BMMaassLowerNegTwoLowerZeroOnFullSecondJet (Y : ℂ)
+        (d4BMCompletedEisensteinSignedTailFullSecondJet
+          u nu negative x Y) =
+      ∑' N : ℕ,
+        d4BMCompletedEisensteinWhittakerCoefficient u ⟨N + 1, by omega⟩ *
+          d4BMMaassLowerNegTwoLowerZeroOnFullSecondJet (Y : ℂ)
+            (d4BMActualSignedWhittakerModeFullSecondJet
+              negative N nu x ⟨Y, zero_lt_one.trans_le Y.2⟩) := by
+  let Yp : D4BMPositiveReal := ⟨Y, zero_lt_one.trans_le Y.2⟩
+  let yy : ℕ → ℂ := fun N =>
+    d4BMCompletedEisensteinWeightedSignedWhittakerVerticalSecondJet
+      u negative N nu x Yp
+  let xx : ℕ → ℂ := fun N =>
+    d4BMCompletedEisensteinWeightedSignedWhittakerHorizontalSecondJet
+      u negative N nu x Y
+  let xy : ℕ → ℂ := fun N =>
+    d4BMCompletedEisensteinWeightedSignedWhittakerMixedSecondJet
+      u negative N nu x Y
+  let y1 : ℕ → ℂ := fun N =>
+    d4BMCompletedEisensteinWeightedSignedWhittakerVerticalFirstJet
+      u negative N nu x Y
+  let x1 : ℕ → ℂ := fun N =>
+    d4BMCompletedEisensteinWeightedSignedWhittakerHorizontalFirstJet
+      u negative N nu x Y
+  let a : ℕ → ℂ := fun N => yy N - xx N - 2 * Complex.I * xy N
+  let b : ℕ → ℂ := fun N => y1 N - Complex.I * x1 N
+  have hyy : Summable yy := by
+    exact summable_d4BMCompletedEisensteinWeightedSignedWhittakerVerticalSecondJet
+      u nu negative x Y
+  have hxx : Summable xx := by
+    exact summable_d4BMCompletedEisensteinWeightedSignedWhittakerHorizontalSecondJet
+      u nu negative x Y
+  have hxy : Summable xy := by
+    exact summable_d4BMCompletedEisensteinWeightedSignedWhittakerMixedSecondJet
+      u nu negative x Y
+  have hy1 : Summable y1 := by
+    exact summable_d4BMCompletedEisensteinWeightedSignedWhittakerVerticalFirstJet
+      u nu negative x Y
+  have hx1 : Summable x1 := by
+    exact summable_d4BMCompletedEisensteinWeightedSignedWhittakerHorizontalFirstJet
+      u nu negative x Y
+  have ha : Summable a := (hyy.sub hxx).sub (hxy.mul_left (2 * Complex.I))
+  have hb : Summable b := hy1.sub (hx1.mul_left Complex.I)
+  calc
+    d4BMMaassLowerNegTwoLowerZeroOnFullSecondJet (Y : ℂ)
+        (d4BMCompletedEisensteinSignedTailFullSecondJet u nu negative x Y) =
+      (Y : ℂ) ^ 2 * (∑' N : ℕ, a N) +
+        2 * (Y : ℂ) * (∑' N : ℕ, b N) := by
+          unfold d4BMMaassLowerNegTwoLowerZeroOnFullSecondJet
+            d4BMCompletedEisensteinSignedTailFullSecondJet
+          simp only [a, b, yy, xx, xy, y1, x1]
+          rw [(hyy.sub hxx).tsum_sub (hxy.mul_left (2 * Complex.I)),
+            hyy.tsum_sub hxx, tsum_mul_left,
+            hy1.tsum_sub (hx1.mul_left Complex.I), tsum_mul_left]
+    _ = ∑' N : ℕ,
+        ((Y : ℂ) ^ 2 * a N + 2 * (Y : ℂ) * b N) := by
+          rw [← tsum_mul_left, ← tsum_mul_left]
+          exact ((ha.mul_left ((Y : ℂ) ^ 2)).tsum_add
+            (hb.mul_left (2 * (Y : ℂ)))).symm
+    _ = ∑' N : ℕ,
+        d4BMCompletedEisensteinWhittakerCoefficient u ⟨N + 1, by omega⟩ *
+          d4BMMaassLowerNegTwoLowerZeroOnFullSecondJet (Y : ℂ)
+            (d4BMActualSignedWhittakerModeFullSecondJet
+              negative N nu x Yp) := by
+          apply tsum_congr
+          intro N
+          unfold a b yy xx xy y1 x1
+          unfold d4BMCompletedEisensteinWeightedSignedWhittakerVerticalSecondJet
+            d4BMCompletedEisensteinWeightedSignedWhittakerHorizontalSecondJet
+            d4BMCompletedEisensteinWeightedSignedWhittakerMixedSecondJet
+            d4BMCompletedEisensteinWeightedSignedWhittakerVerticalFirstJet
+            d4BMCompletedEisensteinWeightedSignedWhittakerHorizontalFirstJet
+            d4BMMaassLowerNegTwoLowerZeroOnFullSecondJet
+            d4BMActualSignedWhittakerModeFullSecondJet
+          ring
+
+/-- The literal signed-tail raising operator is exactly the canonical phased word; negative
+frequency exchanges radial raising and lowering. -/
+theorem d4BM_maassRaise_signedTailFullSecondJet_eq_phasedWord
+    (u nu : ℂ) (negative : Bool) (x : ℝ)
+    (Y : {y : ℝ // 1 ≤ y}) :
+    d4BMMaassRaiseTwoRaiseZeroOnFullSecondJet (Y : ℂ)
+        (d4BMCompletedEisensteinSignedTailFullSecondJet
+          u nu negative x Y) =
+      d4BMCompletedEisensteinPhasedMaassWord
+        (!negative) negative u nu x Y := by
+  let Yp : D4BMPositiveReal := ⟨Y, zero_lt_one.trans_le Y.2⟩
+  rw [d4BM_maassRaise_signedTailFullSecondJet_eq_tsum,
+    d4BMCompletedEisensteinPhasedMaassWord_eq_expansion_tsum]
+  apply tsum_congr
+  intro N
+  change d4BMCompletedEisensteinWhittakerCoefficient u ⟨N + 1, by omega⟩ *
+      d4BMMaassRaiseTwoRaiseZeroOnFullSecondJet (Yp : ℂ)
+        (d4BMActualSignedWhittakerModeFullSecondJet negative N nu x Yp) =
+    d4BMCompletedEisensteinPhasedMaassExpansionSummand
+      (!negative) negative u nu x Yp N
+  rw [d4BMCompletedEisensteinPhasedMaassExpansionSummand_eq_mode]
+  cases negative
+  · change d4BMCompletedEisensteinWhittakerCoefficient u ⟨N + 1, by omega⟩ *
+        d4BMMaassRaiseTwoRaiseZeroOnFullSecondJet (Yp : ℂ)
+          (d4BMActualSignedWhittakerModeFullSecondJet false N nu x Yp) =
+      d4BMCompletedEisensteinWhittakerCoefficient u ⟨N + 1, by omega⟩ *
+        (d4BMCompletedEisensteinFourierPhase false N x *
+          d4BMPositiveFrequencyRaiseTwoRaiseZeroMode
+            (d4BMPositiveFourierScale N) nu Yp)
+    rw [d4BM_actualPositiveWhittakerMode_raise_eq_phase_mul]
+  · change d4BMCompletedEisensteinWhittakerCoefficient u ⟨N + 1, by omega⟩ *
+        d4BMMaassRaiseTwoRaiseZeroOnFullSecondJet (Yp : ℂ)
+          (d4BMActualSignedWhittakerModeFullSecondJet true N nu x Yp) =
+      d4BMCompletedEisensteinWhittakerCoefficient u ⟨N + 1, by omega⟩ *
+        (d4BMCompletedEisensteinFourierPhase true N x *
+          d4BMPositiveFrequencyLowerNegTwoLowerZeroMode
+            (d4BMPositiveFourierScale N) nu Yp)
+    rw [d4BM_actualNegativeWhittakerMode_raise_eq_phase_mul_lower]
+
+/-- The literal signed-tail lowering operator is exactly the opposite canonical phased word. -/
+theorem d4BM_maassLower_signedTailFullSecondJet_eq_phasedWord
+    (u nu : ℂ) (negative : Bool) (x : ℝ)
+    (Y : {y : ℝ // 1 ≤ y}) :
+    d4BMMaassLowerNegTwoLowerZeroOnFullSecondJet (Y : ℂ)
+        (d4BMCompletedEisensteinSignedTailFullSecondJet
+          u nu negative x Y) =
+      d4BMCompletedEisensteinPhasedMaassWord
+        negative negative u nu x Y := by
+  let Yp : D4BMPositiveReal := ⟨Y, zero_lt_one.trans_le Y.2⟩
+  rw [d4BM_maassLower_signedTailFullSecondJet_eq_tsum,
+    d4BMCompletedEisensteinPhasedMaassWord_eq_expansion_tsum]
+  apply tsum_congr
+  intro N
+  change d4BMCompletedEisensteinWhittakerCoefficient u ⟨N + 1, by omega⟩ *
+      d4BMMaassLowerNegTwoLowerZeroOnFullSecondJet (Yp : ℂ)
+        (d4BMActualSignedWhittakerModeFullSecondJet negative N nu x Yp) =
+    d4BMCompletedEisensteinPhasedMaassExpansionSummand
+      negative negative u nu x Yp N
+  rw [d4BMCompletedEisensteinPhasedMaassExpansionSummand_eq_mode]
+  cases negative
+  · change d4BMCompletedEisensteinWhittakerCoefficient u ⟨N + 1, by omega⟩ *
+        d4BMMaassLowerNegTwoLowerZeroOnFullSecondJet (Yp : ℂ)
+          (d4BMActualSignedWhittakerModeFullSecondJet false N nu x Yp) =
+      d4BMCompletedEisensteinWhittakerCoefficient u ⟨N + 1, by omega⟩ *
+        (d4BMCompletedEisensteinFourierPhase false N x *
+          d4BMPositiveFrequencyLowerNegTwoLowerZeroMode
+            (d4BMPositiveFourierScale N) nu Yp)
+    rw [d4BM_actualPositiveWhittakerMode_lower_eq_phase_mul]
+  · change d4BMCompletedEisensteinWhittakerCoefficient u ⟨N + 1, by omega⟩ *
+        d4BMMaassLowerNegTwoLowerZeroOnFullSecondJet (Yp : ℂ)
+          (d4BMActualSignedWhittakerModeFullSecondJet true N nu x Yp) =
+      d4BMCompletedEisensteinWhittakerCoefficient u ⟨N + 1, by omega⟩ *
+        (d4BMCompletedEisensteinFourierPhase true N x *
+          d4BMPositiveFrequencyRaiseTwoRaiseZeroMode
+            (d4BMPositiveFourierScale N) nu Yp)
+    rw [d4BM_actualNegativeWhittakerMode_lower_eq_phase_mul_raise]
+
+/-- Full two-sided nonzero-frequency second jet before the cusp-leg factor `2`. -/
+def d4BMCompletedEisensteinFullSignedTailFullSecondJet
+    (u : ℂ) (x : ℝ) (Y : {y : ℝ // 1 ≤ y}) : D4BMFullSecondJet :=
+  let Jp := d4BMCompletedEisensteinSignedTailFullSecondJet u u false x Y
+  let Jn := d4BMCompletedEisensteinSignedTailFullSecondJet u u true x Y
+  { first :=
+      { value := Jp.first.value + Jn.first.value
+        tau := 0
+        horizonX := Jp.first.horizonX + Jn.first.horizonX
+        sigma := Jp.first.sigma + Jn.first.sigma
+        xi := 0 }
+    tauTau := 0
+    tauHorizonX := 0
+    tauSigma := 0
+    tauXi := 0
+    horizonXHorizonX := Jp.horizonXHorizonX + Jn.horizonXHorizonX
+    horizonXSigma := Jp.horizonXSigma + Jn.horizonXSigma
+    horizonXXi := 0
+    sigmaSigma := Jp.sigmaSigma + Jn.sigmaSigma
+    sigmaXi := 0
+    xiXi := 0 }
+
+theorem d4BM_maassRaise_fullSignedTailFullSecondJet_eq_fullSignedRaiseWord
+    (u : ℂ) (x : ℝ) (Y : {y : ℝ // 1 ≤ y}) :
+    d4BMMaassRaiseTwoRaiseZeroOnFullSecondJet (Y : ℂ)
+        (d4BMCompletedEisensteinFullSignedTailFullSecondJet u x Y) =
+      d4BMCompletedEisensteinFullSignedRaiseWord u u x Y := by
+  let Jp := d4BMCompletedEisensteinSignedTailFullSecondJet u u false x Y
+  let Jn := d4BMCompletedEisensteinSignedTailFullSecondJet u u true x Y
+  have hsplit :
+      d4BMMaassRaiseTwoRaiseZeroOnFullSecondJet (Y : ℂ)
+          (d4BMCompletedEisensteinFullSignedTailFullSecondJet u x Y) =
+        d4BMMaassRaiseTwoRaiseZeroOnFullSecondJet (Y : ℂ) Jp +
+          d4BMMaassRaiseTwoRaiseZeroOnFullSecondJet (Y : ℂ) Jn := by
+    unfold d4BMCompletedEisensteinFullSignedTailFullSecondJet
+      d4BMMaassRaiseTwoRaiseZeroOnFullSecondJet Jp Jn
+    ring
+  rw [hsplit,
+    d4BM_maassRaise_signedTailFullSecondJet_eq_phasedWord,
+    d4BM_maassRaise_signedTailFullSecondJet_eq_phasedWord]
+  rfl
+
+theorem d4BM_maassLower_fullSignedTailFullSecondJet_eq_fullSignedLowerWord
+    (u : ℂ) (x : ℝ) (Y : {y : ℝ // 1 ≤ y}) :
+    d4BMMaassLowerNegTwoLowerZeroOnFullSecondJet (Y : ℂ)
+        (d4BMCompletedEisensteinFullSignedTailFullSecondJet u x Y) =
+      d4BMCompletedEisensteinFullSignedLowerWord u u x Y := by
+  let Jp := d4BMCompletedEisensteinSignedTailFullSecondJet u u false x Y
+  let Jn := d4BMCompletedEisensteinSignedTailFullSecondJet u u true x Y
+  have hsplit :
+      d4BMMaassLowerNegTwoLowerZeroOnFullSecondJet (Y : ℂ)
+          (d4BMCompletedEisensteinFullSignedTailFullSecondJet u x Y) =
+        d4BMMaassLowerNegTwoLowerZeroOnFullSecondJet (Y : ℂ) Jp +
+          d4BMMaassLowerNegTwoLowerZeroOnFullSecondJet (Y : ℂ) Jn := by
+    unfold d4BMCompletedEisensteinFullSignedTailFullSecondJet
+      d4BMMaassLowerNegTwoLowerZeroOnFullSecondJet Jp Jn
+    ring
+  rw [hsplit,
+    d4BM_maassLower_signedTailFullSecondJet_eq_phasedWord,
+    d4BM_maassLower_signedTailFullSecondJet_eq_phasedWord]
+  rfl
+
+/-- Literal full-second-jet evaluation of a positive-height complex power. -/
+theorem d4BM_zeroFrequency_fullSecondJet_cpow
+    (w : ℂ) {Y : ℝ} (hY : 0 < Y) :
+    (Y : ℂ) ^ 2 * (w * (w - 1) * (Y : ℂ) ^ (w - 2)) +
+        2 * (Y : ℂ) * (w * (Y : ℂ) ^ (w - 1)) =
+      w * (w + 1) * (Y : ℂ) ^ w := by
+  have h1 := d4BM_zeroFrequency_cpow_mul_deriv w hY
+  have hm := d4BM_zeroFrequency_cpow_mul_deriv (w - 1) hY
+  have hm' :
+      (Y : ℂ) * ((w - 1) * (Y : ℂ) ^ (w - 2)) =
+        (w - 1) * (Y : ℂ) ^ (w - 1) := by
+    have hshift : w - 1 - 1 = w - 2 := by ring
+    simpa only [hshift] using hm
+  calc
+    (Y : ℂ) ^ 2 * (w * (w - 1) * (Y : ℂ) ^ (w - 2)) +
+        2 * (Y : ℂ) * (w * (Y : ℂ) ^ (w - 1)) =
+      w * (Y : ℂ) *
+          ((Y : ℂ) * ((w - 1) * (Y : ℂ) ^ (w - 2))) +
+        2 * ((Y : ℂ) * (w * (Y : ℂ) ^ (w - 1))) := by ring
+    _ = w * (Y : ℂ) * ((w - 1) * (Y : ℂ) ^ (w - 1)) +
+        2 * ((Y : ℂ) * (w * (Y : ℂ) ^ (w - 1))) := by rw [hm']
+    _ = (w - 1) * ((Y : ℂ) * (w * (Y : ℂ) ^ (w - 1))) +
+        2 * ((Y : ℂ) * (w * (Y : ℂ) ^ (w - 1))) := by ring
+    _ = (w - 1) * (w * (Y : ℂ) ^ w) + 2 * (w * (Y : ℂ) ^ w) := by rw [h1]
+    _ = w * (w + 1) * (Y : ℂ) ^ w := by ring
+
+def d4BMCompletedEisensteinCuspConstantFirstJetTerm
+    (u : ℂ) (epsilon : Bool) (Y : ℝ) : ℂ :=
+  let w := d4BMCompletedEisensteinCuspWeylExponent u epsilon
+  d4BMCompletedEisensteinCuspConstantCoefficient u epsilon *
+    (w * (Y : ℂ) ^ (w - 1))
+
+def d4BMCompletedEisensteinCuspConstantSecondJetTerm
+    (u : ℂ) (epsilon : Bool) (Y : ℝ) : ℂ :=
+  let w := d4BMCompletedEisensteinCuspWeylExponent u epsilon
+  d4BMCompletedEisensteinCuspConstantCoefficient u epsilon *
+    (w * (w - 1) * (Y : ℂ) ^ (w - 2))
+
+/-- Genuine zero-frequency full second jet of both Weyl powers. -/
+def d4BMCompletedEisensteinCuspConstantFullSecondJet
+    (u : ℂ) (Y : ℝ) : D4BMFullSecondJet where
+  first :=
+    { value := d4BMCompletedEisensteinCuspConstantPart .scalar u Y
+      tau := 0
+      horizonX := 0
+      sigma :=
+        d4BMCompletedEisensteinCuspConstantFirstJetTerm u false Y +
+          d4BMCompletedEisensteinCuspConstantFirstJetTerm u true Y
+      xi := 0 }
+  tauTau := 0
+  tauHorizonX := 0
+  tauSigma := 0
+  tauXi := 0
+  horizonXHorizonX := 0
+  horizonXSigma := 0
+  horizonXXi := 0
+  sigmaSigma :=
+    d4BMCompletedEisensteinCuspConstantSecondJetTerm u false Y +
+      d4BMCompletedEisensteinCuspConstantSecondJetTerm u true Y
+  sigmaXi := 0
+  xiXi := 0
+
+theorem d4BM_maassRaise_cuspConstantFullSecondJet_eq_constantPart
+    (u : ℂ) {Y : ℝ} (hY : 0 < Y) :
+    d4BMMaassRaiseTwoRaiseZeroOnFullSecondJet (Y : ℂ)
+        (d4BMCompletedEisensteinCuspConstantFullSecondJet u Y) =
+      d4BMCompletedEisensteinCuspConstantPart .raise u Y := by
+  have h0 := d4BM_zeroFrequency_fullSecondJet_cpow
+    (d4BMCompletedEisensteinCuspWeylExponent u false) hY
+  have h1 := d4BM_zeroFrequency_fullSecondJet_cpow
+    (d4BMCompletedEisensteinCuspWeylExponent u true) hY
+  unfold d4BMMaassRaiseTwoRaiseZeroOnFullSecondJet
+    d4BMCompletedEisensteinCuspConstantFullSecondJet
+    d4BMCompletedEisensteinCuspConstantFirstJetTerm
+    d4BMCompletedEisensteinCuspConstantSecondJetTerm
+    d4BMCompletedEisensteinCuspConstantPart
+    d4BMCompletedEisensteinCuspConstantTerm
+    d4BMCompletedEisensteinCuspConstantMaassFactor
+  linear_combination
+    d4BMCompletedEisensteinCuspConstantCoefficient u false * h0 +
+      d4BMCompletedEisensteinCuspConstantCoefficient u true * h1
+
+theorem d4BM_maassLower_cuspConstantFullSecondJet_eq_constantPart
+    (u : ℂ) {Y : ℝ} (hY : 0 < Y) :
+    d4BMMaassLowerNegTwoLowerZeroOnFullSecondJet (Y : ℂ)
+        (d4BMCompletedEisensteinCuspConstantFullSecondJet u Y) =
+      d4BMCompletedEisensteinCuspConstantPart .lower u Y := by
+  have h0 := d4BM_zeroFrequency_fullSecondJet_cpow
+    (d4BMCompletedEisensteinCuspWeylExponent u false) hY
+  have h1 := d4BM_zeroFrequency_fullSecondJet_cpow
+    (d4BMCompletedEisensteinCuspWeylExponent u true) hY
+  unfold d4BMMaassLowerNegTwoLowerZeroOnFullSecondJet
+    d4BMCompletedEisensteinCuspConstantFullSecondJet
+    d4BMCompletedEisensteinCuspConstantFirstJetTerm
+    d4BMCompletedEisensteinCuspConstantSecondJetTerm
+    d4BMCompletedEisensteinCuspConstantPart
+    d4BMCompletedEisensteinCuspConstantTerm
+    d4BMCompletedEisensteinCuspConstantMaassFactor
+  linear_combination
+    d4BMCompletedEisensteinCuspConstantCoefficient u false * h0 +
+      d4BMCompletedEisensteinCuspConstantCoefficient u true * h1
+
+/-- Full canonical scalar cusp jet: both Weyl powers plus twice the two-sided Whittaker jet. -/
+def d4BMCompletedEisensteinCanonicalCuspFullSecondJet
+    (u : ℂ) (x : ℝ) (Y : {y : ℝ // 1 ≤ y}) : D4BMFullSecondJet :=
+  let Jc := d4BMCompletedEisensteinCuspConstantFullSecondJet u Y
+  let Jt := d4BMCompletedEisensteinFullSignedTailFullSecondJet u x Y
+  { first :=
+      { value := Jc.first.value + 2 * Jt.first.value
+        tau := 0
+        horizonX := 2 * Jt.first.horizonX
+        sigma := Jc.first.sigma + 2 * Jt.first.sigma
+        xi := 0 }
+    tauTau := 0
+    tauHorizonX := 0
+    tauSigma := 0
+    tauXi := 0
+    horizonXHorizonX := 2 * Jt.horizonXHorizonX
+    horizonXSigma := 2 * Jt.horizonXSigma
+    horizonXXi := 0
+    sigmaSigma := Jc.sigmaSigma + 2 * Jt.sigmaSigma
+    sigmaXi := 0
+    xiXi := 0 }
+
+theorem d4BM_maassRaise_canonicalCuspFullSecondJet_eq_cuspLeg
+    (u : ℂ) (x : ℝ) (Y : {y : ℝ // 1 ≤ y}) :
+    d4BMMaassRaiseTwoRaiseZeroOnFullSecondJet (Y : ℂ)
+        (d4BMCompletedEisensteinCanonicalCuspFullSecondJet u x Y) =
+      d4BMCompletedEisensteinCuspLeg .raise u x Y := by
+  let Jc := d4BMCompletedEisensteinCuspConstantFullSecondJet u Y
+  let Jt := d4BMCompletedEisensteinFullSignedTailFullSecondJet u x Y
+  have hsplit :
+      d4BMMaassRaiseTwoRaiseZeroOnFullSecondJet (Y : ℂ)
+          (d4BMCompletedEisensteinCanonicalCuspFullSecondJet u x Y) =
+        d4BMMaassRaiseTwoRaiseZeroOnFullSecondJet (Y : ℂ) Jc +
+          2 * d4BMMaassRaiseTwoRaiseZeroOnFullSecondJet (Y : ℂ) Jt := by
+    unfold d4BMCompletedEisensteinCanonicalCuspFullSecondJet
+      d4BMCompletedEisensteinCuspConstantFullSecondJet
+      d4BMMaassRaiseTwoRaiseZeroOnFullSecondJet Jc Jt
+    simp only [d4BMCompletedEisensteinCuspConstantFullSecondJet]
+    ring
+  rw [hsplit, d4BM_maassRaise_cuspConstantFullSecondJet_eq_constantPart
+    u (zero_lt_one.trans_le Y.2),
+    d4BM_maassRaise_fullSignedTailFullSecondJet_eq_fullSignedRaiseWord]
+  rfl
+
+theorem d4BM_maassLower_canonicalCuspFullSecondJet_eq_cuspLeg
+    (u : ℂ) (x : ℝ) (Y : {y : ℝ // 1 ≤ y}) :
+    d4BMMaassLowerNegTwoLowerZeroOnFullSecondJet (Y : ℂ)
+        (d4BMCompletedEisensteinCanonicalCuspFullSecondJet u x Y) =
+      d4BMCompletedEisensteinCuspLeg .lower u x Y := by
+  let Jc := d4BMCompletedEisensteinCuspConstantFullSecondJet u Y
+  let Jt := d4BMCompletedEisensteinFullSignedTailFullSecondJet u x Y
+  have hsplit :
+      d4BMMaassLowerNegTwoLowerZeroOnFullSecondJet (Y : ℂ)
+          (d4BMCompletedEisensteinCanonicalCuspFullSecondJet u x Y) =
+        d4BMMaassLowerNegTwoLowerZeroOnFullSecondJet (Y : ℂ) Jc +
+          2 * d4BMMaassLowerNegTwoLowerZeroOnFullSecondJet (Y : ℂ) Jt := by
+    unfold d4BMCompletedEisensteinCanonicalCuspFullSecondJet
+      d4BMCompletedEisensteinCuspConstantFullSecondJet
+      d4BMMaassLowerNegTwoLowerZeroOnFullSecondJet Jc Jt
+    simp only [d4BMCompletedEisensteinCuspConstantFullSecondJet]
+    ring
+  rw [hsplit, d4BM_maassLower_cuspConstantFullSecondJet_eq_constantPart
+    u (zero_lt_one.trans_le Y.2),
+    d4BM_maassLower_fullSignedTailFullSecondJet_eq_fullSignedLowerWord]
+  rfl
+
+theorem d4BM_canonicalCuspFullSecondJet_value_eq_cuspLeg
+    (u : ℂ) (x : ℝ) (Y : {y : ℝ // 1 ≤ y}) :
+    (d4BMCompletedEisensteinCanonicalCuspFullSecondJet u x Y).first.value =
+      d4BMCompletedEisensteinCuspLeg .scalar u x Y := by
+  unfold d4BMCompletedEisensteinCanonicalCuspFullSecondJet
+    d4BMCompletedEisensteinFullSignedTailFullSecondJet
+    d4BMCompletedEisensteinSignedTailFullSecondJet
+    d4BMCompletedEisensteinCuspConstantFullSecondJet
+    d4BMCompletedEisensteinCuspLeg
+    d4BMCompletedEisensteinCuspTailPart
+    d4BMCompletedEisensteinFullSignedZeroWord
+  rw [d4BMCompletedEisensteinSignedSqrtWhittakerTail_eq_weightedMode_tsum,
+    d4BMCompletedEisensteinSignedSqrtWhittakerTail_eq_weightedMode_tsum]
+
+theorem hasDerivAt_d4BMCompletedEisensteinCanonicalCuspLeg_horizontal
+    (u : ℂ) (x : ℝ) (Y : {y : ℝ // 1 ≤ y}) :
+    HasDerivAt
+      (fun q : ℝ => d4BMCompletedEisensteinCuspLeg .scalar u q Y)
+      (d4BMCompletedEisensteinCanonicalCuspFullSecondJet u x Y).first.horizonX x := by
+  have hp := hasDerivAt_d4BMCompletedEisensteinSignedSqrtWhittakerTail_horizontal
+    u u false x Y
+  have hn := hasDerivAt_d4BMCompletedEisensteinSignedSqrtWhittakerTail_horizontal
+    u u true x Y
+  have ht := (hp.add hn).const_mul (2 : ℂ)
+  simpa [d4BMCompletedEisensteinCuspLeg,
+    d4BMCompletedEisensteinCuspTailPart,
+    d4BMCompletedEisensteinFullSignedZeroWord,
+    d4BMCompletedEisensteinCanonicalCuspFullSecondJet,
+    d4BMCompletedEisensteinFullSignedTailFullSecondJet,
+    d4BMCompletedEisensteinSignedTailFullSecondJet,
+    d4BMCompletedEisensteinSignedSqrtWhittakerHorizontalFirstJetTail] using ht
+
+theorem hasDerivAt_d4BMCompletedEisensteinCanonicalCuspLeg_vertical
+    (u : ℂ) (x : ℝ) (Y : {y : ℝ // 1 ≤ y}) :
+    HasDerivAt
+      (fun q : ℝ => d4BMCompletedEisensteinCuspLeg .scalar u x q)
+      (d4BMCompletedEisensteinCanonicalCuspFullSecondJet u x Y).first.sigma Y := by
+  let w0 := d4BMCompletedEisensteinCuspWeylExponent u false
+  let w1 := d4BMCompletedEisensteinCuspWeylExponent u true
+  have hc0 := (GaloisForLFunctions.RHTower.hasDerivAt_cpow_ofReal
+      (zero_lt_one.trans_le Y.2) :
+    HasDerivAt (fun q : ℝ => (q : ℂ) ^ w0)
+      (w0 * (Y : ℂ) ^ (w0 - 1)) Y).const_mul
+        (d4BMCompletedEisensteinCuspConstantCoefficient u false)
+  have hc1 := (GaloisForLFunctions.RHTower.hasDerivAt_cpow_ofReal
+      (zero_lt_one.trans_le Y.2) :
+    HasDerivAt (fun q : ℝ => (q : ℂ) ^ w1)
+      (w1 * (Y : ℂ) ^ (w1 - 1)) Y).const_mul
+        (d4BMCompletedEisensteinCuspConstantCoefficient u true)
+  have hp := hasDerivAt_d4BMCompletedEisensteinSignedSqrtWhittakerTail_vertical
+    u u false x Y
+  have hn := hasDerivAt_d4BMCompletedEisensteinSignedSqrtWhittakerTail_vertical
+    u u true x Y
+  have h := (hc0.add hc1).add ((hp.add hn).const_mul (2 : ℂ))
+  have hfun :
+      (fun q : ℝ => d4BMCompletedEisensteinCuspLeg .scalar u x q) =ᶠ[𝓝 (Y : ℝ)]
+        (((fun q : ℝ =>
+            d4BMCompletedEisensteinCuspConstantCoefficient u false * (q : ℂ) ^ w0) +
+          (fun q : ℝ =>
+            d4BMCompletedEisensteinCuspConstantCoefficient u true * (q : ℂ) ^ w1)) +
+          fun q : ℝ => 2 *
+            (d4BMCompletedEisensteinSignedSqrtWhittakerTail u u false x 0 0 q +
+              d4BMCompletedEisensteinSignedSqrtWhittakerTail u u true x 0 0 q)) := by
+    exact Filter.Eventually.of_forall fun q => by
+      unfold d4BMCompletedEisensteinCuspLeg
+        d4BMCompletedEisensteinCuspConstantPart
+        d4BMCompletedEisensteinCuspConstantTerm
+        d4BMCompletedEisensteinCuspConstantMaassFactor
+        d4BMCompletedEisensteinCuspTailPart
+        d4BMCompletedEisensteinFullSignedZeroWord w0 w1
+      simp only [Pi.add_apply]
+      ring
+  have h' := h.congr_of_eventuallyEq hfun
+  refine h'.congr_deriv ?_
+  unfold d4BMCompletedEisensteinCanonicalCuspFullSecondJet
+    d4BMCompletedEisensteinCuspConstantFullSecondJet
+    d4BMCompletedEisensteinCuspConstantFirstJetTerm
+    d4BMCompletedEisensteinFullSignedTailFullSecondJet
+    d4BMCompletedEisensteinSignedTailFullSecondJet
+    d4BMCompletedEisensteinSignedSqrtWhittakerVerticalFirstJetTail w0 w1
+  ring
+
+theorem hasDerivAt_d4BMCanonicalCuspHorizontalFirstJet_horizontal
+    (u : ℂ) (x : ℝ) (Y : {y : ℝ // 1 ≤ y}) :
+    HasDerivAt
+      (fun q : ℝ =>
+        (d4BMCompletedEisensteinCanonicalCuspFullSecondJet u q Y).first.horizonX)
+      (d4BMCompletedEisensteinCanonicalCuspFullSecondJet u x Y).horizonXHorizonX x := by
+  have hp :=
+    hasDerivAt_d4BMCompletedEisensteinSignedSqrtWhittakerHorizontalFirstJetTail_horizontal
+      u u false x Y
+  have hn :=
+    hasDerivAt_d4BMCompletedEisensteinSignedSqrtWhittakerHorizontalFirstJetTail_horizontal
+      u u true x Y
+  have h := (hp.add hn).const_mul (2 : ℂ)
+  simpa [d4BMCompletedEisensteinCanonicalCuspFullSecondJet,
+    d4BMCompletedEisensteinFullSignedTailFullSecondJet,
+    d4BMCompletedEisensteinSignedTailFullSecondJet,
+    d4BMCompletedEisensteinSignedSqrtWhittakerHorizontalFirstJetTail,
+    d4BMCompletedEisensteinSignedSqrtWhittakerHorizontalSecondJetTail] using h
+
+theorem hasDerivAt_d4BMCanonicalCuspVerticalFirstJet_horizontal
+    (u : ℂ) (x : ℝ) (Y : {y : ℝ // 1 ≤ y}) :
+    HasDerivAt
+      (fun q : ℝ =>
+        (d4BMCompletedEisensteinCanonicalCuspFullSecondJet u q Y).first.sigma)
+      (d4BMCompletedEisensteinCanonicalCuspFullSecondJet u x Y).horizonXSigma x := by
+  have hp :=
+    hasDerivAt_d4BMCompletedEisensteinSignedSqrtWhittakerVerticalFirstJetTail_horizontal
+      u u false x Y
+  have hn :=
+    hasDerivAt_d4BMCompletedEisensteinSignedSqrtWhittakerVerticalFirstJetTail_horizontal
+      u u true x Y
+  have ht := (hp.add hn).const_mul (2 : ℂ)
+  simpa [d4BMCompletedEisensteinCanonicalCuspFullSecondJet,
+    d4BMCompletedEisensteinCuspConstantFullSecondJet,
+    d4BMCompletedEisensteinFullSignedTailFullSecondJet,
+    d4BMCompletedEisensteinSignedTailFullSecondJet,
+    d4BMCompletedEisensteinSignedSqrtWhittakerVerticalFirstJetTail,
+    d4BMCompletedEisensteinSignedSqrtWhittakerMixedSecondJetTail] using ht
+
+theorem d4BM_signedTailFullSecondJet_eigenEquation
+    (u nu : ℂ) (negative : Bool) (x : ℝ)
+    (Y : {y : ℝ // 1 ≤ y}) :
+    (Y : ℂ) ^ 2 *
+        ((d4BMCompletedEisensteinSignedTailFullSecondJet
+            u nu negative x Y).horizonXHorizonX +
+          (d4BMCompletedEisensteinSignedTailFullSecondJet
+            u nu negative x Y).sigmaSigma) =
+      (nu ^ 2 - 1 / 4) *
+        (d4BMCompletedEisensteinSignedTailFullSecondJet
+          u nu negative x Y).first.value := by
+  let Yp : D4BMPositiveReal := ⟨Y, zero_lt_one.trans_le Y.2⟩
+  let v : ℕ → ℂ := fun N =>
+    d4BMCompletedEisensteinWeightedSignedWhittakerMode
+      u negative N nu x Y
+  let xx : ℕ → ℂ := fun N =>
+    d4BMCompletedEisensteinWeightedSignedWhittakerHorizontalSecondJet
+      u negative N nu x Y
+  let yy : ℕ → ℂ := fun N =>
+    d4BMCompletedEisensteinWeightedSignedWhittakerVerticalSecondJet
+      u negative N nu x Yp
+  have hv : Summable v := by
+    exact summable_d4BMCompletedEisensteinWeightedSignedWhittakerMode
+      u nu negative x Y
+  have hxx : Summable xx := by
+    exact summable_d4BMCompletedEisensteinWeightedSignedWhittakerHorizontalSecondJet
+      u nu negative x Y
+  have hyy : Summable yy := by
+    exact summable_d4BMCompletedEisensteinWeightedSignedWhittakerVerticalSecondJet
+      u nu negative x Y
+  unfold d4BMCompletedEisensteinSignedTailFullSecondJet
+  change (Y : ℂ) ^ 2 * ((∑' N : ℕ, xx N) + ∑' N : ℕ, yy N) =
+    (nu ^ 2 - 1 / 4) * ∑' N : ℕ, v N
+  rw [← hxx.tsum_add hyy, ← tsum_mul_left, ← tsum_mul_left]
+  apply tsum_congr
+  intro N
+  unfold v xx yy
+  unfold d4BMCompletedEisensteinWeightedSignedWhittakerMode
+    d4BMCompletedEisensteinWeightedSignedWhittakerHorizontalSecondJet
+    d4BMCompletedEisensteinWeightedSignedWhittakerVerticalSecondJet
+  linear_combination
+    d4BMCompletedEisensteinWhittakerCoefficient u ⟨N + 1, by omega⟩ *
+      d4BM_signedWhittakerMode_secondJet_eigenEquation negative N nu x Yp
+
+theorem d4BM_zeroFrequency_secondJet_cpow_eigenEquation
+    (w : ℂ) {Y : ℝ} (hY : 0 < Y) :
+    (Y : ℂ) ^ 2 * (w * (w - 1) * (Y : ℂ) ^ (w - 2)) =
+      w * (w - 1) * (Y : ℂ) ^ w := by
+  have hfull := d4BM_zeroFrequency_fullSecondJet_cpow w hY
+  have hfirst := d4BM_zeroFrequency_cpow_mul_deriv w hY
+  linear_combination hfull - 2 * hfirst
+
+theorem d4BM_cuspConstantFullSecondJet_eigenEquation
+    (u : ℂ) {Y : ℝ} (hY : 0 < Y) :
+    (Y : ℂ) ^ 2 *
+        (d4BMCompletedEisensteinCuspConstantFullSecondJet u Y).sigmaSigma =
+      (u ^ 2 - 1 / 4) *
+        (d4BMCompletedEisensteinCuspConstantFullSecondJet u Y).first.value := by
+  let w0 := d4BMCompletedEisensteinCuspWeylExponent u false
+  let w1 := d4BMCompletedEisensteinCuspWeylExponent u true
+  have h0 := d4BM_zeroFrequency_secondJet_cpow_eigenEquation w0 hY
+  have h1 := d4BM_zeroFrequency_secondJet_cpow_eigenEquation w1 hY
+  have hw0 : w0 * (w0 - 1) = u ^ 2 - 1 / 4 := by
+    simp [w0, d4BMCompletedEisensteinCuspWeylExponent, d4BMCuspSign]
+    ring
+  have hw1 : w1 * (w1 - 1) = u ^ 2 - 1 / 4 := by
+    simp [w1, d4BMCompletedEisensteinCuspWeylExponent, d4BMCuspSign]
+    ring
+  rw [hw0] at h0
+  rw [hw1] at h1
+  unfold d4BMCompletedEisensteinCuspConstantFullSecondJet
+    d4BMCompletedEisensteinCuspConstantSecondJetTerm
+    d4BMCompletedEisensteinCuspConstantPart
+    d4BMCompletedEisensteinCuspConstantTerm
+    d4BMCompletedEisensteinCuspConstantMaassFactor
+  simp only [mul_one]
+  dsimp [w0, w1] at h0 h1 hw0 hw1
+  rw [hw0, hw1]
+  linear_combination
+    d4BMCompletedEisensteinCuspConstantCoefficient u false * h0 +
+      d4BMCompletedEisensteinCuspConstantCoefficient u true * h1
+
+theorem d4BM_fullSignedTailFullSecondJet_eigenEquation
+    (u : ℂ) (x : ℝ) (Y : {y : ℝ // 1 ≤ y}) :
+    (Y : ℂ) ^ 2 *
+        ((d4BMCompletedEisensteinFullSignedTailFullSecondJet u x Y).horizonXHorizonX +
+          (d4BMCompletedEisensteinFullSignedTailFullSecondJet u x Y).sigmaSigma) =
+      (u ^ 2 - 1 / 4) *
+        (d4BMCompletedEisensteinFullSignedTailFullSecondJet u x Y).first.value := by
+  have hp := d4BM_signedTailFullSecondJet_eigenEquation u u false x Y
+  have hn := d4BM_signedTailFullSecondJet_eigenEquation u u true x Y
+  unfold d4BMCompletedEisensteinFullSignedTailFullSecondJet
+  linear_combination hp + hn
+
+theorem d4BM_canonicalCuspFullSecondJet_eigenEquation
+    (u : ℂ) (x : ℝ) (Y : {y : ℝ // 1 ≤ y}) :
+    (Y : ℂ) ^ 2 *
+        ((d4BMCompletedEisensteinCanonicalCuspFullSecondJet u x Y).horizonXHorizonX +
+          (d4BMCompletedEisensteinCanonicalCuspFullSecondJet u x Y).sigmaSigma) =
+      (u ^ 2 - 1 / 4) *
+        (d4BMCompletedEisensteinCanonicalCuspFullSecondJet u x Y).first.value := by
+  have hc := d4BM_cuspConstantFullSecondJet_eigenEquation
+    u (zero_lt_one.trans_le Y.2)
+  have ht := d4BM_fullSignedTailFullSecondJet_eigenEquation u x Y
+  unfold d4BMCompletedEisensteinCanonicalCuspFullSecondJet
+  linear_combination hc + 2 * ht
 
 end
 end RHTower

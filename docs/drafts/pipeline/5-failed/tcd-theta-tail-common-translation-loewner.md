@@ -1,8 +1,8 @@
 # TCD theta-tail common-translation Loewner propagation
 
 - **ID:** TCD-CTL
-- **Stage:** 1-in-progress
-- **Type:** HARD ROUTE-KILL TEST
+- **Stage:** 5-failed
+- **Type:** PROVEN ROUTE NO-GO; POSITIVE SURVIVOR RETAINED
 - **Corpus source:** `scripts/formal_tools.py research` results for
   `theta tail common translation Loewner derivative generator determinant shift-tail`, together
   with `thetaTailFirstMomentKernel_eq_shiftTail` and the all-plane theta-tail Bezoutian endpoint.
@@ -45,3 +45,17 @@ must use nonlocal finite-shift cancellation, not an infinitesimal Loewner flow.
 
 - 2026-08-29 — conjecture admitted from exact corpus shift-tail identity and all-plane Bezoutian
   endpoint; frontier map remains read-only.
+- 2026-08-29 — route killed unconditionally in Lean.  The common-shift derivative is exactly
+  `-G_a`.  Every distinct two-node compression of `G_a` has determinant
+  `-(x-t)^2 f(x+a)^2 f(t+a)^2 < 0`.  More strongly, a closed local-rise argument produces an
+  actual finite shift `b>1` for which the kernel difference from cut `1` has a strictly negative
+  quadratic direction.
+
+## Positive survivor
+
+Mixed-sign extension cannot follow from any Loewner-decreasing common-translation flow, even
+locally and even on the positive node pair `{0,1}` after shifting to cut `1`.  A successful TCD
+closure must therefore retain nonlocal cancellation across the full shift interval, use a
+different non-common transport, or attack the all-plane kernel directly.  The exact moving-cut
+identity, derivative law, universal negative determinant, and actual finite-shift witness are all
+formalized in `ThetaTailCommonTranslationLoewnerNoGo`.
