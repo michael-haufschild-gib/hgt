@@ -185,7 +185,6 @@ theorem hasDerivAt_d4BMPoincareSeedHorizontalSecondJet_horizontal
     apply hBraw.congr_deriv
     simp only [Pi.pow_apply]
     norm_num
-    push_cast
     field_simp [hQne]
     ring
   have hBX : BX = d4BMSeedH2HorizontalDerivativeCoefficient z s p := by
@@ -533,7 +532,6 @@ theorem hasDerivAt_d4BMPoincareSeedHorizontalSecondJetVerticalSlice
     apply hBraw.congr_deriv
     simp only [Pi.pow_apply]
     norm_num
-    push_cast
     field_simp [hQne]
     ring
   have hf := hasDerivAt_d4BMPoincareSeed_vertical z s p
@@ -649,7 +647,6 @@ theorem hasDerivAt_d4BMPoincareSeedMixedSecondJetVerticalSlice
     apply hTraw.congr_deriv
     simp only [Pi.pow_apply]
     norm_num
-    push_cast
     field_simp [hQne]
     ring
   let VY : ℂ :=
@@ -818,10 +815,10 @@ private lemma d4BM_abs_c_cubed_abs_u_div_quadratic_sq_le
         (|(p.pair.1 : ℝ)| ^ 2 / d4BMPoincareQuadratic z p.pair) *
           (|(p.pair.1 : ℝ)| * |d4BMPoincareHorizontalLinear z p| /
             d4BMPoincareQuadratic z p.pair) := by
-              field_simp [hQ.ne'] <;> ring
+              field_simp [hQ.ne']
     _ ≤ (1 / z.y ^ 2) * (1 / z.y) := by
       exact mul_le_mul h1 h2 (by positivity) (by positivity)
-    _ = 1 / z.y ^ 3 := by field_simp [z.y_pos.ne'] <;> ring
+    _ = 1 / z.y ^ 3 := by field_simp [z.y_pos.ne']
 
 private lemma d4BM_abs_c_cubed_abs_u_cubed_div_quadratic_cubed_le
     (z : D4BMUpperHalfPlaneCoordinate)
@@ -839,9 +836,9 @@ private lemma d4BM_abs_c_cubed_abs_u_cubed_div_quadratic_cubed_le
           d4BMPoincareQuadratic z p.pair ^ 3 =
         (|(p.pair.1 : ℝ)| * |d4BMPoincareHorizontalLinear z p| /
           d4BMPoincareQuadratic z p.pair) ^ 3 := by
-            field_simp [hQ.ne'] <;> ring
+            field_simp [hQ.ne']
     _ ≤ (1 / z.y) ^ 3 := by exact pow_le_pow_left₀ hnonneg h 3
-    _ = 1 / z.y ^ 3 := by field_simp [z.y_pos.ne'] <;> ring
+    _ = 1 / z.y ^ 3 := by field_simp [z.y_pos.ne']
 
 private lemma d4BM_abs_c_fourth_mul_y_div_quadratic_sq_le
     (z : D4BMUpperHalfPlaneCoordinate)
@@ -856,10 +853,10 @@ private lemma d4BM_abs_c_fourth_mul_y_div_quadratic_sq_le
     |(p.pair.1 : ℝ)| ^ 4 * z.y /
           d4BMPoincareQuadratic z p.pair ^ 2 =
         (|(p.pair.1 : ℝ)| ^ 2 / d4BMPoincareQuadratic z p.pair) ^ 2 * z.y := by
-            field_simp [hQ.ne'] <;> ring
+            field_simp [hQ.ne']
     _ ≤ (1 / z.y ^ 2) ^ 2 * z.y := by
       exact mul_le_mul_of_nonneg_right (pow_le_pow_left₀ hnonneg h 2) z.y_pos.le
-    _ = 1 / z.y ^ 3 := by field_simp [z.y_pos.ne'] <;> ring
+    _ = 1 / z.y ^ 3 := by field_simp [z.y_pos.ne']
 
 private lemma d4BM_abs_c_fourth_abs_u_sq_mul_y_div_quadratic_cubed_le
     (z : D4BMUpperHalfPlaneCoordinate)
@@ -879,11 +876,11 @@ private lemma d4BM_abs_c_fourth_abs_u_sq_mul_y_div_quadratic_cubed_le
         (|(p.pair.1 : ℝ)| ^ 2 / d4BMPoincareQuadratic z p.pair) ^ 2 *
           (|d4BMPoincareHorizontalLinear z p| ^ 2 /
             d4BMPoincareQuadratic z p.pair) * z.y := by
-              field_simp [hQ.ne'] <;> ring
+              field_simp [hQ.ne']
     _ ≤ (1 / z.y ^ 2) ^ 2 * 1 * z.y := by
       gcongr
       exact z.y_pos.le
-    _ = 1 / z.y ^ 3 := by field_simp [z.y_pos.ne'] <;> ring
+    _ = 1 / z.y ^ 3 := by field_simp [z.y_pos.ne']
 
 private lemma norm_d4BMSeedH1Coefficient_le
     (z : D4BMUpperHalfPlaneCoordinate) (s : ℂ)
@@ -1065,6 +1062,865 @@ private lemma norm_d4BMSeedH2VerticalDerivativeCoefficient_le
     ‖a - b‖ ≤ ‖a‖ + ‖b‖ := norm_sub_le _ _
     _ ≤ 4 * ‖s‖ / z.y ^ 3 + 16 * ‖s‖ * ‖s + 1‖ / z.y ^ 3 := add_le_add ha hb
     _ = (4 * ‖s‖ + 16 * ‖s‖ * ‖s + 1‖) / z.y ^ 3 := by ring
+
+/-- Fixed spectral constant controlling the actual `xxx` Poincare seed jet. -/
+def d4BMHorizontalThirdJetNormConstant (s : ℂ) : ℝ :=
+  4 * ‖s‖ + 24 * ‖s‖ * ‖s + 1‖ +
+    2 * ‖s‖ * (2 * ‖s‖ + 4 * ‖s‖ * ‖s + 1‖)
+
+/-- Fixed spectral constant controlling the actual `xxy` Poincare seed jet. -/
+def d4BMHorizontalHorizontalVerticalThirdJetNormConstant (s : ℂ) : ℝ :=
+  4 * ‖s‖ + 16 * ‖s‖ * ‖s + 1‖ +
+    3 * ‖s‖ * (2 * ‖s‖ + 4 * ‖s‖ * ‖s + 1‖)
+
+/-- Fixed spectral constant controlling the actual `xyy` Poincare seed jet. -/
+def d4BMHorizontalVerticalVerticalThirdJetNormConstant (s : ℂ) : ℝ :=
+  2 * ‖s‖ ^ 2 * ‖s - 1‖ + d4BMHorizontalThirdJetNormConstant s
+
+lemma d4BMHorizontalThirdJetNormConstant_nonneg (s : ℂ) :
+    0 ≤ d4BMHorizontalThirdJetNormConstant s := by
+  unfold d4BMHorizontalThirdJetNormConstant
+  positivity
+
+lemma d4BMHorizontalHorizontalVerticalThirdJetNormConstant_nonneg (s : ℂ) :
+    0 ≤ d4BMHorizontalHorizontalVerticalThirdJetNormConstant s := by
+  unfold d4BMHorizontalHorizontalVerticalThirdJetNormConstant
+  positivity
+
+lemma d4BMHorizontalVerticalVerticalThirdJetNormConstant_nonneg (s : ℂ) :
+    0 ≤ d4BMHorizontalVerticalVerticalThirdJetNormConstant s := by
+  unfold d4BMHorizontalVerticalVerticalThirdJetNormConstant
+  exact add_nonneg (by positivity) (d4BMHorizontalThirdJetNormConstant_nonneg s)
+
+lemma norm_d4BMPoincareSeedHorizontalThirdJet_le
+    (z : D4BMUpperHalfPlaneCoordinate) (s : ℂ)
+    (p : D4BMPrimitiveIntegerPair) :
+    ‖d4BMPoincareSeedHorizontalThirdJet z s p‖ ≤
+      (d4BMHorizontalThirdJetNormConstant s / z.y ^ 3) *
+        ‖d4BMPoincareSeed z s p‖ := by
+  have hA := norm_d4BMSeedH2HorizontalDerivativeCoefficient_le z s p
+  have hB := norm_d4BMSeedH1Coefficient_le z s p
+  have hH2 := norm_d4BMPoincareSeedHorizontalSecondJet_le z s p
+  have hBupper : 0 ≤ 2 * ‖s‖ / z.y :=
+    div_nonneg (mul_nonneg (by norm_num) (norm_nonneg s)) z.y_pos.le
+  unfold d4BMPoincareSeedHorizontalThirdJet
+  calc
+    ‖d4BMSeedH2HorizontalDerivativeCoefficient z s p *
+          d4BMPoincareSeed z s p +
+        d4BMSeedH1Coefficient z s p *
+          d4BMPoincareSeedHorizontalSecondJet z s p‖ ≤
+      ‖d4BMSeedH2HorizontalDerivativeCoefficient z s p *
+          d4BMPoincareSeed z s p‖ +
+        ‖d4BMSeedH1Coefficient z s p *
+          d4BMPoincareSeedHorizontalSecondJet z s p‖ := norm_add_le _ _
+    _ = ‖d4BMSeedH2HorizontalDerivativeCoefficient z s p‖ *
+          ‖d4BMPoincareSeed z s p‖ +
+        ‖d4BMSeedH1Coefficient z s p‖ *
+          ‖d4BMPoincareSeedHorizontalSecondJet z s p‖ := by
+            rw [norm_mul, norm_mul]
+    _ ≤ ((4 * ‖s‖ + 24 * ‖s‖ * ‖s + 1‖) / z.y ^ 3) *
+          ‖d4BMPoincareSeed z s p‖ +
+        (2 * ‖s‖ / z.y) *
+          (((2 * ‖s‖ + 4 * ‖s‖ * ‖s + 1‖) / z.y ^ 2) *
+            ‖d4BMPoincareSeed z s p‖) := by
+      apply add_le_add
+      · exact mul_le_mul_of_nonneg_right hA (norm_nonneg _)
+      · exact mul_le_mul hB hH2 (norm_nonneg _) hBupper
+    _ = (d4BMHorizontalThirdJetNormConstant s / z.y ^ 3) *
+        ‖d4BMPoincareSeed z s p‖ := by
+      unfold d4BMHorizontalThirdJetNormConstant
+      field_simp [z.y_pos.ne']
+
+lemma norm_d4BMPoincareSeedHorizontalHorizontalVerticalThirdJet_le
+    (z : D4BMUpperHalfPlaneCoordinate) (s : ℂ)
+    (p : D4BMPrimitiveIntegerPair) :
+    ‖d4BMPoincareSeedHorizontalHorizontalVerticalThirdJet z s p‖ ≤
+      (d4BMHorizontalHorizontalVerticalThirdJetNormConstant s / z.y ^ 3) *
+        ‖d4BMPoincareSeed z s p‖ := by
+  have hA := norm_d4BMSeedH2VerticalDerivativeCoefficient_le z s p
+  have hB := norm_d4BMSeedV1Coefficient_le z s p
+  have hH2 := norm_d4BMPoincareSeedHorizontalSecondJet_le z s p
+  have hBupper : 0 ≤ 3 * ‖s‖ / z.y :=
+    div_nonneg (mul_nonneg (by norm_num) (norm_nonneg s)) z.y_pos.le
+  unfold d4BMPoincareSeedHorizontalHorizontalVerticalThirdJet
+  calc
+    ‖d4BMSeedH2VerticalDerivativeCoefficient z s p *
+          d4BMPoincareSeed z s p +
+        d4BMSeedV1Coefficient z s p *
+          d4BMPoincareSeedHorizontalSecondJet z s p‖ ≤
+      ‖d4BMSeedH2VerticalDerivativeCoefficient z s p *
+          d4BMPoincareSeed z s p‖ +
+        ‖d4BMSeedV1Coefficient z s p *
+          d4BMPoincareSeedHorizontalSecondJet z s p‖ := norm_add_le _ _
+    _ = ‖d4BMSeedH2VerticalDerivativeCoefficient z s p‖ *
+          ‖d4BMPoincareSeed z s p‖ +
+        ‖d4BMSeedV1Coefficient z s p‖ *
+          ‖d4BMPoincareSeedHorizontalSecondJet z s p‖ := by
+            rw [norm_mul, norm_mul]
+    _ ≤ ((4 * ‖s‖ + 16 * ‖s‖ * ‖s + 1‖) / z.y ^ 3) *
+          ‖d4BMPoincareSeed z s p‖ +
+        (3 * ‖s‖ / z.y) *
+          (((2 * ‖s‖ + 4 * ‖s‖ * ‖s + 1‖) / z.y ^ 2) *
+            ‖d4BMPoincareSeed z s p‖) := by
+      apply add_le_add
+      · exact mul_le_mul_of_nonneg_right hA (norm_nonneg _)
+      · exact mul_le_mul hB hH2 (norm_nonneg _) hBupper
+    _ = (d4BMHorizontalHorizontalVerticalThirdJetNormConstant s / z.y ^ 3) *
+        ‖d4BMPoincareSeed z s p‖ := by
+      unfold d4BMHorizontalHorizontalVerticalThirdJetNormConstant
+      field_simp [z.y_pos.ne']
+
+lemma norm_d4BMPoincareSeedHorizontalVerticalVerticalThirdJet_le
+    (z : D4BMUpperHalfPlaneCoordinate) (s : ℂ)
+    (p : D4BMPrimitiveIntegerPair) :
+    ‖d4BMPoincareSeedHorizontalVerticalVerticalThirdJet z s p‖ ≤
+      (d4BMHorizontalVerticalVerticalThirdJetNormConstant s / z.y ^ 3) *
+        ‖d4BMPoincareSeed z s p‖ := by
+  let C : ℂ := s * (s - 1) / (z.y : ℂ) ^ 2
+  have hC : ‖C‖ = ‖s‖ * ‖s - 1‖ / z.y ^ 2 := by
+    dsimp only [C]
+    rw [norm_div, norm_mul, norm_pow]
+    simp only [Complex.norm_real, Real.norm_eq_abs, abs_of_pos z.y_pos]
+  have hfirst := norm_d4BMPoincareSeedHorizontalFirstJet_le z s p
+  have hthird := norm_d4BMPoincareSeedHorizontalThirdJet_le z s p
+  have hCnonneg : 0 ≤ ‖s‖ * ‖s - 1‖ / z.y ^ 2 := by positivity
+  unfold d4BMPoincareSeedHorizontalVerticalVerticalThirdJet
+  change ‖C * d4BMPoincareSeedHorizontalFirstJet z s p -
+      d4BMPoincareSeedHorizontalThirdJet z s p‖ ≤ _
+  calc
+    ‖C * d4BMPoincareSeedHorizontalFirstJet z s p -
+        d4BMPoincareSeedHorizontalThirdJet z s p‖ ≤
+      ‖C * d4BMPoincareSeedHorizontalFirstJet z s p‖ +
+        ‖d4BMPoincareSeedHorizontalThirdJet z s p‖ := norm_sub_le _ _
+    _ = ‖C‖ * ‖d4BMPoincareSeedHorizontalFirstJet z s p‖ +
+        ‖d4BMPoincareSeedHorizontalThirdJet z s p‖ := by rw [norm_mul]
+    _ ≤ (‖s‖ * ‖s - 1‖ / z.y ^ 2) *
+          ((2 * ‖s‖ / z.y) * ‖d4BMPoincareSeed z s p‖) +
+        (d4BMHorizontalThirdJetNormConstant s / z.y ^ 3) *
+          ‖d4BMPoincareSeed z s p‖ := by
+      rw [hC]
+      exact add_le_add (mul_le_mul_of_nonneg_left hfirst hCnonneg) hthird
+    _ = (d4BMHorizontalVerticalVerticalThirdJetNormConstant s / z.y ^ 3) *
+        ‖d4BMPoincareSeed z s p‖ := by
+      unfold d4BMHorizontalVerticalVerticalThirdJetNormConstant
+      field_simp [z.y_pos.ne']
+
+/-- Horizontal-disc majorant for the `xxx` seed series. -/
+def d4BMHorizontalThirdJetHorizontalLocalMajorant
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter)
+    (p : D4BMPrimitiveIntegerPair) : ℝ :=
+  ((d4BMHorizontalThirdJetNormConstant P.s / z.y ^ 3) * 3 ^ P.s.re) *
+    ‖d4BMPoincareSeed z P.s p‖
+
+/-- Horizontal-disc majorant for the `xxy` seed series. -/
+def d4BMHorizontalHorizontalVerticalThirdJetHorizontalLocalMajorant
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter)
+    (p : D4BMPrimitiveIntegerPair) : ℝ :=
+  ((d4BMHorizontalHorizontalVerticalThirdJetNormConstant P.s / z.y ^ 3) *
+      3 ^ P.s.re) * ‖d4BMPoincareSeed z P.s p‖
+
+lemma summable_d4BMHorizontalThirdJetHorizontalLocalMajorant
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) :
+    Summable (d4BMHorizontalThirdJetHorizontalLocalMajorant z P) := by
+  exact (summable_d4BMPoincareSeed z P).norm.mul_left _
+
+lemma summable_d4BMHorizontalHorizontalVerticalThirdJetHorizontalLocalMajorant
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) :
+    Summable
+      (d4BMHorizontalHorizontalVerticalThirdJetHorizontalLocalMajorant z P) := by
+  exact (summable_d4BMPoincareSeed z P).norm.mul_left _
+
+/-- The actual horizontal second-jet series differentiates termwise to the genuine `xxx` sum. -/
+theorem hasDerivAt_tsum_d4BMPoincareSeedHorizontalSecondJet_horizontal
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) :
+    HasDerivAt
+      (fun x : ℝ => ∑' p : D4BMPrimitiveIntegerPair,
+        d4BMPoincareSeedHorizontalSecondJet
+          (d4BMHorizontalCoordinate z x) P.s p)
+      (∑' p : D4BMPrimitiveIntegerPair,
+        d4BMPoincareSeedHorizontalThirdJet z P.s p) z.x := by
+  let t : Set ℝ := Ioo (z.x - z.y) (z.x + z.y)
+  let g : D4BMPrimitiveIntegerPair → ℝ → ℂ := fun p x =>
+    d4BMPoincareSeedHorizontalSecondJet (d4BMHorizontalCoordinate z x) P.s p
+  let g' : D4BMPrimitiveIntegerPair → ℝ → ℂ := fun p x =>
+    d4BMPoincareSeedHorizontalThirdJet (d4BMHorizontalCoordinate z x) P.s p
+  let M := d4BMHorizontalThirdJetHorizontalLocalMajorant z P
+  have hM : Summable M := summable_d4BMHorizontalThirdJetHorizontalLocalMajorant z P
+  have hK : 0 ≤ d4BMHorizontalThirdJetNormConstant P.s / z.y ^ 3 :=
+    div_nonneg (d4BMHorizontalThirdJetNormConstant_nonneg P.s)
+      (pow_nonneg z.y_pos.le 3)
+  have hderiv : ∀ p, ∀ x ∈ t, HasDerivAt (g p) (g' p x) x := by
+    intro p x hx
+    simpa [g, g', d4BMHorizontalCoordinate] using
+      hasDerivAt_d4BMPoincareSeedHorizontalSecondJet_horizontal
+        (d4BMHorizontalCoordinate z x) P.s p
+  have hbound : ∀ p, ∀ x ∈ t, ‖g' p x‖ ≤ M p := by
+    intro p x hx
+    calc
+      ‖g' p x‖ ≤ (d4BMHorizontalThirdJetNormConstant P.s / z.y ^ 3) *
+          ‖d4BMPoincareSeed (d4BMHorizontalCoordinate z x) P.s p‖ := by
+        dsimp only [g']
+        simpa [d4BMHorizontalCoordinate] using
+          norm_d4BMPoincareSeedHorizontalThirdJet_le
+            (d4BMHorizontalCoordinate z x) P.s p
+      _ ≤ (d4BMHorizontalThirdJetNormConstant P.s / z.y ^ 3) *
+          (3 ^ P.s.re * ‖d4BMPoincareSeed z P.s p‖) :=
+        mul_le_mul_of_nonneg_left (norm_d4BMPoincareSeed_horizontal_le z P p hx) hK
+      _ = M p := by
+        simp [M, d4BMHorizontalThirdJetHorizontalLocalMajorant]
+        ring
+  have hzmem : z.x ∈ t := by
+    dsimp only [t]
+    constructor <;> linarith [z.y_pos]
+  have hbase : Summable fun p => g p z.x := by
+    simpa [g, d4BMHorizontalCoordinate] using
+      summable_d4BMPoincareSeedHorizontalSecondJet z P
+  have h := hasDerivAt_tsum_of_isPreconnected hM isOpen_Ioo isPreconnected_Ioo
+    hderiv hbound hzmem hbase hzmem
+  simpa [g, g', d4BMHorizontalCoordinate] using h
+
+/-- The actual mixed second-jet series differentiates horizontally to the genuine `xxy` sum. -/
+theorem hasDerivAt_tsum_d4BMPoincareSeedMixedSecondJet_horizontal
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) :
+    HasDerivAt
+      (fun x : ℝ => ∑' p : D4BMPrimitiveIntegerPair,
+        d4BMPoincareSeedMixedSecondJet
+          (d4BMHorizontalCoordinate z x) P.s p)
+      (∑' p : D4BMPrimitiveIntegerPair,
+        d4BMPoincareSeedHorizontalHorizontalVerticalThirdJet z P.s p) z.x := by
+  let t : Set ℝ := Ioo (z.x - z.y) (z.x + z.y)
+  let g : D4BMPrimitiveIntegerPair → ℝ → ℂ := fun p x =>
+    d4BMPoincareSeedMixedSecondJet (d4BMHorizontalCoordinate z x) P.s p
+  let g' : D4BMPrimitiveIntegerPair → ℝ → ℂ := fun p x =>
+    d4BMPoincareSeedHorizontalHorizontalVerticalThirdJet
+      (d4BMHorizontalCoordinate z x) P.s p
+  let M := d4BMHorizontalHorizontalVerticalThirdJetHorizontalLocalMajorant z P
+  have hM : Summable M :=
+    summable_d4BMHorizontalHorizontalVerticalThirdJetHorizontalLocalMajorant z P
+  have hK : 0 ≤
+      d4BMHorizontalHorizontalVerticalThirdJetNormConstant P.s / z.y ^ 3 :=
+    div_nonneg
+      (d4BMHorizontalHorizontalVerticalThirdJetNormConstant_nonneg P.s)
+      (pow_nonneg z.y_pos.le 3)
+  have hderiv : ∀ p, ∀ x ∈ t, HasDerivAt (g p) (g' p x) x := by
+    intro p x hx
+    simpa [g, g', d4BMHorizontalCoordinate] using
+      hasDerivAt_d4BMPoincareSeedMixedSecondJet_horizontal
+        (d4BMHorizontalCoordinate z x) P.s p
+  have hbound : ∀ p, ∀ x ∈ t, ‖g' p x‖ ≤ M p := by
+    intro p x hx
+    calc
+      ‖g' p x‖ ≤
+          (d4BMHorizontalHorizontalVerticalThirdJetNormConstant P.s / z.y ^ 3) *
+            ‖d4BMPoincareSeed (d4BMHorizontalCoordinate z x) P.s p‖ := by
+        dsimp only [g']
+        simpa [d4BMHorizontalCoordinate] using
+          norm_d4BMPoincareSeedHorizontalHorizontalVerticalThirdJet_le
+            (d4BMHorizontalCoordinate z x) P.s p
+      _ ≤ (d4BMHorizontalHorizontalVerticalThirdJetNormConstant P.s / z.y ^ 3) *
+          (3 ^ P.s.re * ‖d4BMPoincareSeed z P.s p‖) :=
+        mul_le_mul_of_nonneg_left (norm_d4BMPoincareSeed_horizontal_le z P p hx) hK
+      _ = M p := by
+        simp [M, d4BMHorizontalHorizontalVerticalThirdJetHorizontalLocalMajorant]
+        ring
+  have hzmem : z.x ∈ t := by
+    dsimp only [t]
+    constructor <;> linarith [z.y_pos]
+  have hbase : Summable fun p => g p z.x := by
+    simpa [g, d4BMHorizontalCoordinate] using summable_d4BMPoincareSeedMixedSecondJet z P
+  have h := hasDerivAt_tsum_of_isPreconnected hM isOpen_Ioo isPreconnected_Ioo
+    hderiv hbound hzmem hbase hzmem
+  simpa [g, g', d4BMHorizontalCoordinate] using h
+
+private lemma d4BM_inv_cube_vertical_local_le
+    (z : D4BMUpperHalfPlaneCoordinate) {y : ℝ}
+    (hy : y ∈ Ioo (z.y / 2) (2 * z.y)) :
+    1 / y ^ 3 ≤ 8 / z.y ^ 3 := by
+  have hy0 : 0 < y := by linarith [z.y_pos, hy.1]
+  have hpow : z.y ^ 3 ≤ (2 * y) ^ 3 :=
+    pow_le_pow_left₀ z.y_pos.le (by linarith [hy.1]) 3
+  apply (div_le_div_iff₀ (pow_pos hy0 3) (pow_pos z.y_pos 3)).2
+  norm_num
+  calc
+    z.y ^ 3 ≤ (2 * y) ^ 3 := hpow
+    _ = 8 * y ^ 3 := by ring
+
+/-- Vertical-strip majorant for the `xxy` seed series. -/
+def d4BMHorizontalHorizontalVerticalThirdJetVerticalLocalMajorant
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter)
+    (p : D4BMPrimitiveIntegerPair) : ℝ :=
+  ((8 * d4BMHorizontalHorizontalVerticalThirdJetNormConstant P.s / z.y ^ 3) *
+      (2 ^ P.s.re * 4 ^ P.s.re)) * ‖d4BMPoincareSeed z P.s p‖
+
+/-- Vertical-strip majorant for the `xyy` seed series. -/
+def d4BMHorizontalVerticalVerticalThirdJetVerticalLocalMajorant
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter)
+    (p : D4BMPrimitiveIntegerPair) : ℝ :=
+  ((8 * d4BMHorizontalVerticalVerticalThirdJetNormConstant P.s / z.y ^ 3) *
+      (2 ^ P.s.re * 4 ^ P.s.re)) * ‖d4BMPoincareSeed z P.s p‖
+
+lemma summable_d4BMHorizontalHorizontalVerticalThirdJetVerticalLocalMajorant
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) :
+    Summable
+      (d4BMHorizontalHorizontalVerticalThirdJetVerticalLocalMajorant z P) := by
+  exact (summable_d4BMPoincareSeed z P).norm.mul_left _
+
+lemma summable_d4BMHorizontalVerticalVerticalThirdJetVerticalLocalMajorant
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) :
+    Summable (d4BMHorizontalVerticalVerticalThirdJetVerticalLocalMajorant z P) := by
+  exact (summable_d4BMPoincareSeed z P).norm.mul_left _
+
+/-- The horizontal second-jet vertical slice differentiates termwise to the genuine `xxy` sum. -/
+theorem hasDerivAt_tsum_d4BMPoincareSeedHorizontalSecondJet_vertical
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) :
+    HasDerivAt
+      (fun y : ℝ => ∑' p : D4BMPrimitiveIntegerPair,
+        d4BMPoincareSeedHorizontalSecondJetVerticalSlice z P.s p y)
+      (∑' p : D4BMPrimitiveIntegerPair,
+        d4BMPoincareSeedHorizontalHorizontalVerticalThirdJet z P.s p) z.y := by
+  let t : Set ℝ := Ioo (z.y / 2) (2 * z.y)
+  let g : D4BMPrimitiveIntegerPair → ℝ → ℂ := fun p y =>
+    d4BMPoincareSeedHorizontalSecondJetVerticalSlice z P.s p y
+  let g' : D4BMPrimitiveIntegerPair → ℝ → ℂ := fun p y =>
+    if hy0 : 0 < y then
+      d4BMPoincareSeedHorizontalHorizontalVerticalThirdJet ⟨z.x, y, hy0⟩ P.s p
+    else 0
+  let M := d4BMHorizontalHorizontalVerticalThirdJetVerticalLocalMajorant z P
+  have hM : Summable M :=
+    summable_d4BMHorizontalHorizontalVerticalThirdJetVerticalLocalMajorant z P
+  have hderiv : ∀ p, ∀ y ∈ t, HasDerivAt (g p) (g' p y) y := by
+    intro p y hy
+    have hy0 : 0 < y := by linarith [z.y_pos, hy.1]
+    let zy : D4BMUpperHalfPlaneCoordinate := ⟨z.x, y, hy0⟩
+    have h := hasDerivAt_d4BMPoincareSeedHorizontalSecondJetVerticalSlice zy P.s p
+    have hfun : d4BMPoincareSeedHorizontalSecondJetVerticalSlice zy P.s p =
+        d4BMPoincareSeedHorizontalSecondJetVerticalSlice z P.s p := by
+      funext v
+      rfl
+    rw [hfun] at h
+    simpa only [g, g', zy, dif_pos hy0] using h
+  have hbound : ∀ p, ∀ y ∈ t, ‖g' p y‖ ≤ M p := by
+    intro p y hy
+    have hy0 : 0 < y := by linarith [z.y_pos, hy.1]
+    let zy : D4BMUpperHalfPlaneCoordinate := ⟨z.x, y, hy0⟩
+    have hnorm :=
+      norm_d4BMPoincareSeedHorizontalHorizontalVerticalThirdJet_le zy P.s p
+    have hinv := d4BM_inv_cube_vertical_local_le z hy
+    have hK := d4BMHorizontalHorizontalVerticalThirdJetNormConstant_nonneg P.s
+    have hcoef : d4BMHorizontalHorizontalVerticalThirdJetNormConstant P.s / y ^ 3 ≤
+        8 * d4BMHorizontalHorizontalVerticalThirdJetNormConstant P.s / z.y ^ 3 := by
+      calc
+        d4BMHorizontalHorizontalVerticalThirdJetNormConstant P.s / y ^ 3 =
+            d4BMHorizontalHorizontalVerticalThirdJetNormConstant P.s * (1 / y ^ 3) := by ring
+        _ ≤ d4BMHorizontalHorizontalVerticalThirdJetNormConstant P.s *
+            (8 / z.y ^ 3) := mul_le_mul_of_nonneg_left hinv hK
+        _ = 8 * d4BMHorizontalHorizontalVerticalThirdJetNormConstant P.s /
+            z.y ^ 3 := by ring
+    calc
+      ‖g' p y‖ ≤
+          (d4BMHorizontalHorizontalVerticalThirdJetNormConstant P.s / y ^ 3) *
+            ‖d4BMPoincareSeed zy P.s p‖ := by
+              simpa only [g', zy, dif_pos hy0] using hnorm
+      _ ≤ (8 * d4BMHorizontalHorizontalVerticalThirdJetNormConstant P.s / z.y ^ 3) *
+          ‖d4BMPoincareSeedVerticalSlice z P.s p y‖ := by
+        apply mul_le_mul hcoef le_rfl (norm_nonneg _)
+        exact div_nonneg (mul_nonneg (by norm_num) hK) (pow_nonneg z.y_pos.le 3)
+      _ ≤ (8 * d4BMHorizontalHorizontalVerticalThirdJetNormConstant P.s / z.y ^ 3) *
+          ((2 ^ P.s.re * 4 ^ P.s.re) * ‖d4BMPoincareSeed z P.s p‖) :=
+        mul_le_mul_of_nonneg_left (norm_d4BMPoincareSeed_vertical_le z P p hy)
+          (div_nonneg (mul_nonneg (by norm_num) hK) (pow_nonneg z.y_pos.le 3))
+      _ = M p := by
+        simp [M, d4BMHorizontalHorizontalVerticalThirdJetVerticalLocalMajorant]
+        ring
+  have hymem : z.y ∈ t := by
+    dsimp only [t]
+    constructor <;> linarith [z.y_pos]
+  have hbase : Summable fun p => g p z.y := by
+    simpa only [g, d4BM_poincareSeedHorizontalSecondJetVerticalSlice_at_height] using
+      summable_d4BMPoincareSeedHorizontalSecondJet z P
+  have h := hasDerivAt_tsum_of_isPreconnected hM isOpen_Ioo isPreconnected_Ioo
+    hderiv hbound hymem hbase hymem
+  simpa only [g, g', dif_pos z.y_pos,
+    d4BM_poincareSeedHorizontalSecondJetVerticalSlice_at_height] using h
+
+/-- The mixed second-jet vertical slice differentiates termwise to the genuine `xyy` sum. -/
+theorem hasDerivAt_tsum_d4BMPoincareSeedMixedSecondJet_vertical
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) :
+    HasDerivAt
+      (fun y : ℝ => ∑' p : D4BMPrimitiveIntegerPair,
+        d4BMPoincareSeedMixedSecondJetVerticalSlice z P.s p y)
+      (∑' p : D4BMPrimitiveIntegerPair,
+        d4BMPoincareSeedHorizontalVerticalVerticalThirdJet z P.s p) z.y := by
+  let t : Set ℝ := Ioo (z.y / 2) (2 * z.y)
+  let g : D4BMPrimitiveIntegerPair → ℝ → ℂ := fun p y =>
+    d4BMPoincareSeedMixedSecondJetVerticalSlice z P.s p y
+  let g' : D4BMPrimitiveIntegerPair → ℝ → ℂ := fun p y =>
+    if hy0 : 0 < y then
+      d4BMPoincareSeedHorizontalVerticalVerticalThirdJet ⟨z.x, y, hy0⟩ P.s p
+    else 0
+  let M := d4BMHorizontalVerticalVerticalThirdJetVerticalLocalMajorant z P
+  have hM : Summable M :=
+    summable_d4BMHorizontalVerticalVerticalThirdJetVerticalLocalMajorant z P
+  have hderiv : ∀ p, ∀ y ∈ t, HasDerivAt (g p) (g' p y) y := by
+    intro p y hy
+    have hy0 : 0 < y := by linarith [z.y_pos, hy.1]
+    let zy : D4BMUpperHalfPlaneCoordinate := ⟨z.x, y, hy0⟩
+    have h := hasDerivAt_d4BMPoincareSeedMixedSecondJetVerticalSlice zy P.s p
+    have hfun : d4BMPoincareSeedMixedSecondJetVerticalSlice zy P.s p =
+        d4BMPoincareSeedMixedSecondJetVerticalSlice z P.s p := by
+      funext v
+      rfl
+    rw [hfun] at h
+    simpa only [g, g', zy, dif_pos hy0] using h
+  have hbound : ∀ p, ∀ y ∈ t, ‖g' p y‖ ≤ M p := by
+    intro p y hy
+    have hy0 : 0 < y := by linarith [z.y_pos, hy.1]
+    let zy : D4BMUpperHalfPlaneCoordinate := ⟨z.x, y, hy0⟩
+    have hnorm := norm_d4BMPoincareSeedHorizontalVerticalVerticalThirdJet_le zy P.s p
+    have hinv := d4BM_inv_cube_vertical_local_le z hy
+    have hK := d4BMHorizontalVerticalVerticalThirdJetNormConstant_nonneg P.s
+    have hcoef : d4BMHorizontalVerticalVerticalThirdJetNormConstant P.s / y ^ 3 ≤
+        8 * d4BMHorizontalVerticalVerticalThirdJetNormConstant P.s / z.y ^ 3 := by
+      calc
+        d4BMHorizontalVerticalVerticalThirdJetNormConstant P.s / y ^ 3 =
+            d4BMHorizontalVerticalVerticalThirdJetNormConstant P.s * (1 / y ^ 3) := by ring
+        _ ≤ d4BMHorizontalVerticalVerticalThirdJetNormConstant P.s *
+            (8 / z.y ^ 3) := mul_le_mul_of_nonneg_left hinv hK
+        _ = 8 * d4BMHorizontalVerticalVerticalThirdJetNormConstant P.s /
+            z.y ^ 3 := by ring
+    calc
+      ‖g' p y‖ ≤ (d4BMHorizontalVerticalVerticalThirdJetNormConstant P.s / y ^ 3) *
+          ‖d4BMPoincareSeed zy P.s p‖ := by
+            simpa only [g', zy, dif_pos hy0] using hnorm
+      _ ≤ (8 * d4BMHorizontalVerticalVerticalThirdJetNormConstant P.s / z.y ^ 3) *
+          ‖d4BMPoincareSeedVerticalSlice z P.s p y‖ := by
+        apply mul_le_mul hcoef le_rfl (norm_nonneg _)
+        exact div_nonneg (mul_nonneg (by norm_num) hK) (pow_nonneg z.y_pos.le 3)
+      _ ≤ (8 * d4BMHorizontalVerticalVerticalThirdJetNormConstant P.s / z.y ^ 3) *
+          ((2 ^ P.s.re * 4 ^ P.s.re) * ‖d4BMPoincareSeed z P.s p‖) :=
+        mul_le_mul_of_nonneg_left (norm_d4BMPoincareSeed_vertical_le z P p hy)
+          (div_nonneg (mul_nonneg (by norm_num) hK) (pow_nonneg z.y_pos.le 3))
+      _ = M p := by
+        simp [M, d4BMHorizontalVerticalVerticalThirdJetVerticalLocalMajorant]
+        ring
+  have hymem : z.y ∈ t := by
+    dsimp only [t]
+    constructor <;> linarith [z.y_pos]
+  have hbase : Summable fun p => g p z.y := by
+    simpa only [g, d4BM_poincareSeedMixedSecondJetVerticalSlice_at_height] using
+      summable_d4BMPoincareSeedMixedSecondJet z P
+  have h := hasDerivAt_tsum_of_isPreconnected hM isOpen_Ioo isPreconnected_Ioo
+    hderiv hbound hymem hbase hymem
+  simpa only [g, g', dif_pos z.y_pos,
+    d4BM_poincareSeedMixedSecondJetVerticalSlice_at_height] using h
+
+/-- Raw actual `xxx` jet of the primitive-pair Poincare series. -/
+def d4BMRawPoincareHorizontalThirdJet
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) : ℂ :=
+  (1 / 2 : ℂ) * ∑' p : D4BMPrimitiveIntegerPair,
+    d4BMPoincareSeedHorizontalThirdJet z P.s p
+
+/-- Raw actual `xxy` jet of the primitive-pair Poincare series. -/
+def d4BMRawPoincareHorizontalHorizontalVerticalThirdJet
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) : ℂ :=
+  (1 / 2 : ℂ) * ∑' p : D4BMPrimitiveIntegerPair,
+    d4BMPoincareSeedHorizontalHorizontalVerticalThirdJet z P.s p
+
+/-- Raw actual `xyy` jet of the primitive-pair Poincare series. -/
+def d4BMRawPoincareHorizontalVerticalVerticalThirdJet
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) : ℂ :=
+  (1 / 2 : ℂ) * ∑' p : D4BMPrimitiveIntegerPair,
+    d4BMPoincareSeedHorizontalVerticalVerticalThirdJet z P.s p
+
+/-- Raw vertical slice of the horizontal second jet. -/
+def d4BMRawPoincareHorizontalSecondJetVerticalSlice
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) (y : ℝ) : ℂ :=
+  (1 / 2 : ℂ) * ∑' p : D4BMPrimitiveIntegerPair,
+    d4BMPoincareSeedHorizontalSecondJetVerticalSlice z P.s p y
+
+/-- Raw vertical slice of the mixed second jet. -/
+def d4BMRawPoincareMixedSecondJetVerticalSlice
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) (y : ℝ) : ℂ :=
+  (1 / 2 : ℂ) * ∑' p : D4BMPrimitiveIntegerPair,
+    d4BMPoincareSeedMixedSecondJetVerticalSlice z P.s p y
+
+theorem hasDerivAt_d4BMRawPoincareHorizontalSecondJet_horizontal
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) :
+    HasDerivAt
+      (fun x : ℝ => d4BMRawPoincareHorizontalSecondJet
+        (d4BMHorizontalCoordinate z x) P)
+      (d4BMRawPoincareHorizontalThirdJet z P) z.x := by
+  have h :=
+    (hasDerivAt_tsum_d4BMPoincareSeedHorizontalSecondJet_horizontal z P).const_mul
+      (1 / 2 : ℂ)
+  simpa [d4BMRawPoincareHorizontalSecondJet,
+    d4BMRawPoincareHorizontalThirdJet, d4BMHorizontalCoordinate] using h
+
+theorem hasDerivAt_d4BMRawPoincareMixedSecondJet_horizontal
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) :
+    HasDerivAt
+      (fun x : ℝ => d4BMRawPoincareMixedSecondJet
+        (d4BMHorizontalCoordinate z x) P)
+      (d4BMRawPoincareHorizontalHorizontalVerticalThirdJet z P) z.x := by
+  have h :=
+    (hasDerivAt_tsum_d4BMPoincareSeedMixedSecondJet_horizontal z P).const_mul
+      (1 / 2 : ℂ)
+  simpa [d4BMRawPoincareMixedSecondJet,
+    d4BMRawPoincareHorizontalHorizontalVerticalThirdJet,
+    d4BMHorizontalCoordinate] using h
+
+theorem hasDerivAt_d4BMRawPoincareHorizontalSecondJetVerticalSlice
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) :
+    HasDerivAt (d4BMRawPoincareHorizontalSecondJetVerticalSlice z P)
+      (d4BMRawPoincareHorizontalHorizontalVerticalThirdJet z P) z.y := by
+  have h :=
+    (hasDerivAt_tsum_d4BMPoincareSeedHorizontalSecondJet_vertical z P).const_mul
+      (1 / 2 : ℂ)
+  change HasDerivAt
+    (fun y => d4BMRawPoincareHorizontalSecondJetVerticalSlice z P y)
+    (d4BMRawPoincareHorizontalHorizontalVerticalThirdJet z P) z.y
+  simpa [d4BMRawPoincareHorizontalSecondJetVerticalSlice,
+    d4BMRawPoincareHorizontalHorizontalVerticalThirdJet] using h
+
+theorem hasDerivAt_d4BMRawPoincareMixedSecondJetVerticalSlice
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) :
+    HasDerivAt (d4BMRawPoincareMixedSecondJetVerticalSlice z P)
+      (d4BMRawPoincareHorizontalVerticalVerticalThirdJet z P) z.y := by
+  have h :=
+    (hasDerivAt_tsum_d4BMPoincareSeedMixedSecondJet_vertical z P).const_mul
+      (1 / 2 : ℂ)
+  change HasDerivAt
+    (fun y => d4BMRawPoincareMixedSecondJetVerticalSlice z P y)
+    (d4BMRawPoincareHorizontalVerticalVerticalThirdJet z P) z.y
+  simpa [d4BMRawPoincareMixedSecondJetVerticalSlice,
+    d4BMRawPoincareHorizontalVerticalVerticalThirdJet] using h
+
+/-- Completed actual `xxx` jet. -/
+def d4BMCompletedPoincareHorizontalThirdJet
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) : ℂ :=
+  reflectedCompletedLambda (2 * P.s) * d4BMRawPoincareHorizontalThirdJet z P
+
+/-- Completed actual `xxy` jet. -/
+def d4BMCompletedPoincareHorizontalHorizontalVerticalThirdJet
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) : ℂ :=
+  reflectedCompletedLambda (2 * P.s) *
+    d4BMRawPoincareHorizontalHorizontalVerticalThirdJet z P
+
+/-- Completed actual `xyy` jet. -/
+def d4BMCompletedPoincareHorizontalVerticalVerticalThirdJet
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) : ℂ :=
+  reflectedCompletedLambda (2 * P.s) *
+    d4BMRawPoincareHorizontalVerticalVerticalThirdJet z P
+
+/-- Completed vertical slice of the horizontal second jet. -/
+def d4BMCompletedPoincareHorizontalSecondJetVerticalSlice
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) (y : ℝ) : ℂ :=
+  reflectedCompletedLambda (2 * P.s) *
+    d4BMRawPoincareHorizontalSecondJetVerticalSlice z P y
+
+/-- Completed vertical slice of the mixed second jet. -/
+def d4BMCompletedPoincareMixedSecondJetVerticalSlice
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) (y : ℝ) : ℂ :=
+  reflectedCompletedLambda (2 * P.s) *
+    d4BMRawPoincareMixedSecondJetVerticalSlice z P y
+
+@[simp] theorem d4BM_completedPoincareHorizontalSecondJetVerticalSlice_at_height
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) :
+    d4BMCompletedPoincareHorizontalSecondJetVerticalSlice z P z.y =
+      d4BMCompletedPoincareHorizontalSecondJet z P := by
+  rfl
+
+@[simp] theorem d4BM_completedPoincareMixedSecondJetVerticalSlice_at_height
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) :
+    d4BMCompletedPoincareMixedSecondJetVerticalSlice z P z.y =
+      d4BMCompletedPoincareMixedSecondJet z P := by
+  rfl
+
+theorem hasDerivAt_d4BMCompletedPoincareHorizontalSecondJet_horizontal
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) :
+    HasDerivAt
+      (fun x : ℝ => d4BMCompletedPoincareHorizontalSecondJet
+        (d4BMHorizontalCoordinate z x) P)
+      (d4BMCompletedPoincareHorizontalThirdJet z P) z.x := by
+  have h := (hasDerivAt_d4BMRawPoincareHorizontalSecondJet_horizontal z P).const_mul
+    (reflectedCompletedLambda (2 * P.s))
+  simpa [d4BMCompletedPoincareHorizontalSecondJet,
+    d4BMCompletedPoincareHorizontalThirdJet] using h
+
+theorem hasDerivAt_d4BMCompletedPoincareMixedSecondJet_horizontal
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) :
+    HasDerivAt
+      (fun x : ℝ => d4BMCompletedPoincareMixedSecondJet
+        (d4BMHorizontalCoordinate z x) P)
+      (d4BMCompletedPoincareHorizontalHorizontalVerticalThirdJet z P) z.x := by
+  have h := (hasDerivAt_d4BMRawPoincareMixedSecondJet_horizontal z P).const_mul
+    (reflectedCompletedLambda (2 * P.s))
+  simpa [d4BMCompletedPoincareMixedSecondJet,
+    d4BMCompletedPoincareHorizontalHorizontalVerticalThirdJet] using h
+
+theorem hasDerivAt_d4BMCompletedPoincareHorizontalSecondJetVerticalSlice
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) :
+    HasDerivAt (d4BMCompletedPoincareHorizontalSecondJetVerticalSlice z P)
+      (d4BMCompletedPoincareHorizontalHorizontalVerticalThirdJet z P) z.y := by
+  have h :=
+    (hasDerivAt_d4BMRawPoincareHorizontalSecondJetVerticalSlice z P).const_mul
+      (reflectedCompletedLambda (2 * P.s))
+  change HasDerivAt
+    (fun y => d4BMCompletedPoincareHorizontalSecondJetVerticalSlice z P y)
+    (d4BMCompletedPoincareHorizontalHorizontalVerticalThirdJet z P) z.y
+  simpa [d4BMCompletedPoincareHorizontalSecondJetVerticalSlice,
+    d4BMCompletedPoincareHorizontalHorizontalVerticalThirdJet] using h
+
+theorem hasDerivAt_d4BMCompletedPoincareMixedSecondJetVerticalSlice
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) :
+    HasDerivAt (d4BMCompletedPoincareMixedSecondJetVerticalSlice z P)
+      (d4BMCompletedPoincareHorizontalVerticalVerticalThirdJet z P) z.y := by
+  have h :=
+    (hasDerivAt_d4BMRawPoincareMixedSecondJetVerticalSlice z P).const_mul
+      (reflectedCompletedLambda (2 * P.s))
+  change HasDerivAt
+    (fun y => d4BMCompletedPoincareMixedSecondJetVerticalSlice z P y)
+    (d4BMCompletedPoincareHorizontalVerticalVerticalThirdJet z P) z.y
+  simpa [d4BMCompletedPoincareMixedSecondJetVerticalSlice,
+    d4BMCompletedPoincareHorizontalVerticalVerticalThirdJet] using h
+
+theorem d4BM_completedPoincareVerticalSlice_eq_at
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter)
+    {y : ℝ} (hy : 0 < y) :
+    d4BMCompletedPoincareVerticalSlice z P y =
+      d4BMCompletedEisensteinPoincareSeries ⟨z.x, y, hy⟩ P := by
+  rfl
+
+theorem d4BM_completedPoincareHorizontalSecondJetVerticalSlice_eq_at
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter)
+    {y : ℝ} (hy : 0 < y) :
+    d4BMCompletedPoincareHorizontalSecondJetVerticalSlice z P y =
+      d4BMCompletedPoincareHorizontalSecondJet ⟨z.x, y, hy⟩ P := by
+  rfl
+
+theorem d4BM_completedPoincareVerticalSecondJetSlice_eq_eigenSlice
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter)
+    {y : ℝ} (hy : 0 < y) :
+    d4BMCompletedPoincareVerticalSecondJetSlice z P y =
+      P.s * (P.s - 1) / (y : ℂ) ^ 2 *
+          d4BMCompletedPoincareVerticalSlice z P y -
+        d4BMCompletedPoincareHorizontalSecondJetVerticalSlice z P y := by
+  let zy : D4BMUpperHalfPlaneCoordinate := ⟨z.x, y, hy⟩
+  rw [d4BMCompletedPoincareVerticalSecondJetSlice_eq_at z P hy,
+    d4BM_completedPoincareVerticalSlice_eq_at z P hy,
+    d4BM_completedPoincareHorizontalSecondJetVerticalSlice_eq_at z P hy]
+  have heig :=
+    d4BM_completedEisensteinPoincareSeries_hyperbolicLaplacian_eq_eigenvalue zy P
+  have hyne : (y : ℂ) ≠ 0 := by exact_mod_cast hy.ne'
+  dsimp only [zy] at heig ⊢
+  field_simp [hyne]
+  linear_combination heig
+
+/-- Completed actual `yyy` jet, forced by vertical differentiation of the genuine eigen equation. -/
+def d4BMCompletedPoincareVerticalThirdJet
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) : ℂ :=
+  (-2 * P.s * (P.s - 1) / (z.y : ℂ) ^ 3) *
+      d4BMCompletedEisensteinPoincareSeries z P +
+    (P.s * (P.s - 1) / (z.y : ℂ) ^ 2) *
+      d4BMCompletedPoincareVerticalFirstJet z P -
+    d4BMCompletedPoincareHorizontalHorizontalVerticalThirdJet z P
+
+/-- The actual vertical second jet has the genuine vertically differentiated eigen derivative. -/
+theorem hasDerivAt_d4BMCompletedPoincareVerticalSecondJetSlice
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) :
+    HasDerivAt (d4BMCompletedPoincareVerticalSecondJetSlice z P)
+      (d4BMCompletedPoincareVerticalThirdJet z P) z.y := by
+  let C : ℝ → ℂ := fun y => P.s * (P.s - 1) / (y : ℂ) ^ 2
+  have hy : (z.y : ℂ) ≠ 0 := by exact_mod_cast z.y_pos.ne'
+  have hidR : HasDerivAt (fun y : ℝ => y) 1 z.y := hasDerivAt_id z.y
+  have hid : HasDerivAt (fun y : ℝ => (y : ℂ)) 1 z.y := hidR.ofReal_comp
+  have hCraw :=
+    (hasDerivAt_const z.y (P.s * (P.s - 1))).div (hid.pow 2) (pow_ne_zero 2 hy)
+  have hC : HasDerivAt C
+      (-2 * P.s * (P.s - 1) / (z.y : ℂ) ^ 3) z.y := by
+    dsimp only [C]
+    apply hCraw.congr_deriv
+    simp only [Pi.pow_apply]
+    norm_num
+    field_simp [hy]
+  have hF := hasDerivAt_d4BMCompletedPoincareVerticalSlice z P
+  have hH2 := hasDerivAt_d4BMCompletedPoincareHorizontalSecondJetVerticalSlice z P
+  have hderiv := (hC.mul hF).sub hH2
+  have heq : d4BMCompletedPoincareVerticalSecondJetSlice z P =ᶠ[𝓝 z.y]
+      fun y => C y * d4BMCompletedPoincareVerticalSlice z P y -
+        d4BMCompletedPoincareHorizontalSecondJetVerticalSlice z P y := by
+    filter_upwards [Ioi_mem_nhds z.y_pos] with y hypos
+    exact d4BM_completedPoincareVerticalSecondJetSlice_eq_eigenSlice z P hypos
+  have hfinal := heq.hasDerivAt_iff.mpr hderiv
+  simpa only [C, d4BMCompletedPoincareVerticalThirdJet,
+    d4BMCompletedPoincareVerticalSlice_at_height,
+    d4BM_completedPoincareHorizontalSecondJetVerticalSlice_at_height] using hfinal
+
+/-- Horizontal-disc majorant for the `xyy` seed series. -/
+def d4BMHorizontalVerticalVerticalThirdJetHorizontalLocalMajorant
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter)
+    (p : D4BMPrimitiveIntegerPair) : ℝ :=
+  ((d4BMHorizontalVerticalVerticalThirdJetNormConstant P.s / z.y ^ 3) *
+      3 ^ P.s.re) * ‖d4BMPoincareSeed z P.s p‖
+
+lemma summable_d4BMHorizontalVerticalVerticalThirdJetHorizontalLocalMajorant
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) :
+    Summable (d4BMHorizontalVerticalVerticalThirdJetHorizontalLocalMajorant z P) := by
+  exact (summable_d4BMPoincareSeed z P).norm.mul_left _
+
+/-- The vertical second-jet series differentiates horizontally to the genuine `xyy` sum. -/
+theorem hasDerivAt_tsum_d4BMPoincareSeedVerticalSecondJet_horizontal
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) :
+    HasDerivAt
+      (fun x : ℝ => ∑' p : D4BMPrimitiveIntegerPair,
+        d4BMPoincareSeedVerticalSecondJet (d4BMHorizontalCoordinate z x) P.s p)
+      (∑' p : D4BMPrimitiveIntegerPair,
+        d4BMPoincareSeedHorizontalVerticalVerticalThirdJet z P.s p) z.x := by
+  let t : Set ℝ := Ioo (z.x - z.y) (z.x + z.y)
+  let g : D4BMPrimitiveIntegerPair → ℝ → ℂ := fun p x =>
+    d4BMPoincareSeedVerticalSecondJet (d4BMHorizontalCoordinate z x) P.s p
+  let g' : D4BMPrimitiveIntegerPair → ℝ → ℂ := fun p x =>
+    d4BMPoincareSeedHorizontalVerticalVerticalThirdJet
+      (d4BMHorizontalCoordinate z x) P.s p
+  let M := d4BMHorizontalVerticalVerticalThirdJetHorizontalLocalMajorant z P
+  have hM : Summable M :=
+    summable_d4BMHorizontalVerticalVerticalThirdJetHorizontalLocalMajorant z P
+  have hK : 0 ≤ d4BMHorizontalVerticalVerticalThirdJetNormConstant P.s / z.y ^ 3 :=
+    div_nonneg (d4BMHorizontalVerticalVerticalThirdJetNormConstant_nonneg P.s)
+      (pow_nonneg z.y_pos.le 3)
+  have hderiv : ∀ p, ∀ x ∈ t, HasDerivAt (g p) (g' p x) x := by
+    intro p x hx
+    simpa [g, g', d4BMHorizontalCoordinate] using
+      hasDerivAt_d4BMPoincareSeedVerticalSecondJet_horizontal
+        (d4BMHorizontalCoordinate z x) P.s p
+  have hbound : ∀ p, ∀ x ∈ t, ‖g' p x‖ ≤ M p := by
+    intro p x hx
+    calc
+      ‖g' p x‖ ≤ (d4BMHorizontalVerticalVerticalThirdJetNormConstant P.s / z.y ^ 3) *
+          ‖d4BMPoincareSeed (d4BMHorizontalCoordinate z x) P.s p‖ := by
+        dsimp only [g']
+        simpa [d4BMHorizontalCoordinate] using
+          norm_d4BMPoincareSeedHorizontalVerticalVerticalThirdJet_le
+            (d4BMHorizontalCoordinate z x) P.s p
+      _ ≤ (d4BMHorizontalVerticalVerticalThirdJetNormConstant P.s / z.y ^ 3) *
+          (3 ^ P.s.re * ‖d4BMPoincareSeed z P.s p‖) :=
+        mul_le_mul_of_nonneg_left (norm_d4BMPoincareSeed_horizontal_le z P p hx) hK
+      _ = M p := by
+        simp [M, d4BMHorizontalVerticalVerticalThirdJetHorizontalLocalMajorant]
+        ring
+  have hzmem : z.x ∈ t := by
+    dsimp only [t]
+    constructor <;> linarith [z.y_pos]
+  have hbase : Summable fun p => g p z.x := by
+    simpa [g, d4BMHorizontalCoordinate] using summable_d4BMPoincareSeedVerticalSecondJet z P
+  have h := hasDerivAt_tsum_of_isPreconnected hM isOpen_Ioo isPreconnected_Ioo
+    hderiv hbound hzmem hbase hzmem
+  simpa [g, g', d4BMHorizontalCoordinate] using h
+
+theorem hasDerivAt_d4BMRawPoincareVerticalSecondJet_horizontal
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) :
+    HasDerivAt
+      (fun x : ℝ => d4BMRawPoincareVerticalSecondJet
+        (d4BMHorizontalCoordinate z x) P)
+      (d4BMRawPoincareHorizontalVerticalVerticalThirdJet z P) z.x := by
+  have h :=
+    (hasDerivAt_tsum_d4BMPoincareSeedVerticalSecondJet_horizontal z P).const_mul
+      (1 / 2 : ℂ)
+  simpa [d4BMRawPoincareVerticalSecondJet,
+    d4BMRawPoincareHorizontalVerticalVerticalThirdJet,
+    d4BMHorizontalCoordinate] using h
+
+theorem hasDerivAt_d4BMCompletedPoincareVerticalSecondJet_horizontal
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) :
+    HasDerivAt
+      (fun x : ℝ => d4BMCompletedPoincareVerticalSecondJet
+        (d4BMHorizontalCoordinate z x) P)
+      (d4BMCompletedPoincareHorizontalVerticalVerticalThirdJet z P) z.x := by
+  have h := (hasDerivAt_d4BMRawPoincareVerticalSecondJet_horizontal z P).const_mul
+    (reflectedCompletedLambda (2 * P.s))
+  simpa [d4BMCompletedPoincareVerticalSecondJet,
+    d4BMCompletedPoincareHorizontalVerticalVerticalThirdJet] using h
+
+/-- Horizontally differentiated completed eigen equation. -/
+theorem d4BM_completedPoincare_thirdJet_horizontalEigenEquation
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) :
+    (z.y : ℂ) ^ 2 *
+        (d4BMCompletedPoincareHorizontalThirdJet z P +
+          d4BMCompletedPoincareHorizontalVerticalVerticalThirdJet z P) =
+      P.s * (P.s - 1) * d4BMCompletedPoincareHorizontalFirstJet z P := by
+  let C : ℂ := P.s * (P.s - 1) / (z.y : ℂ) ^ 2
+  let F : ℝ → ℂ := fun x =>
+    d4BMCompletedEisensteinPoincareSeries (d4BMHorizontalCoordinate z x) P
+  let H2 : ℝ → ℂ := fun x =>
+    d4BMCompletedPoincareHorizontalSecondJet (d4BMHorizontalCoordinate z x) P
+  let V2 : ℝ → ℂ := fun x =>
+    d4BMCompletedPoincareVerticalSecondJet (d4BMHorizontalCoordinate z x) P
+  have hy : (z.y : ℂ) ≠ 0 := by exact_mod_cast z.y_pos.ne'
+  have hfun : V2 = fun x => C * F x - H2 x := by
+    funext x
+    have heig :=
+      d4BM_completedEisensteinPoincareSeries_hyperbolicLaplacian_eq_eigenvalue
+        (d4BMHorizontalCoordinate z x) P
+    dsimp only [V2, H2, F, C, d4BMHorizontalCoordinate] at heig ⊢
+    field_simp [hy]
+    linear_combination heig
+  have hV2 := hasDerivAt_d4BMCompletedPoincareVerticalSecondJet_horizontal z P
+  have hF := hasDerivAt_d4BMCompletedEisensteinPoincareSeries_horizontal z P
+  have hH2 := hasDerivAt_d4BMCompletedPoincareHorizontalSecondJet_horizontal z P
+  have hRhs := (hF.const_mul C).sub hH2
+  change HasDerivAt V2
+      (d4BMCompletedPoincareHorizontalVerticalVerticalThirdJet z P) z.x at hV2
+  have heq : ((fun x => C * F x) - H2) =ᶠ[𝓝 z.x]
+      (fun x => C * F x - H2 x) := Filter.Eventually.of_forall fun x => rfl
+  have hRhs' := heq.hasDerivAt_iff.mp hRhs
+  rw [hfun] at hV2
+  have hunique := hV2.unique hRhs'
+  dsimp only [C] at hunique
+  field_simp [hy] at hunique ⊢
+  linear_combination hunique
 
 end
 end RHTower

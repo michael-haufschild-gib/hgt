@@ -11,11 +11,11 @@ Already promoted (earlier session): `collision-regular-relative-yang-baxter-cham
 
 | # | Card | Lean obligation | Status |
 |---|---|---|---|
-| 1 | bounded-syntax-singular-ade-prime-capacity-law | Ritt order bound `kappa(P) <= ord(P)` (replaces Harrison-Trainor–Klys–Moosa entirely), Kolchin frequency ineq `(14)`, cofinal prime growth `(19)` | TODO |
+| 1 | bounded-syntax-singular-ade-prime-capacity-law | DONE — `BoundedSyntaxPrimeCapacity`, `BoundedSyntaxStripPrimeBudget` | **PROMOTED** |
 | 2 | diagonal-projective-ht-local-qft | DONE — `FlipDiagonalScattering` | **PROMOTED** |
 | 3 | non-difference-projective-ht-yang-baxter-control | DONE — `CorcoranDeLeeuwModelOne`, `UnipotentDiagonalizationObstruction`, `DifferenceFormReparametrisation`, `SingleGeneratorDifferentialDegree`, `AnchoredProjectiveEntryField` | **PROMOTED** |
 | 4 | relative-modular-hypertranscendental-scattering-carrier | DONE — `RelativeModularScattering` | **PROMOTED** |
-| 5 | two-state-regular-quantum-projective-da-rigidity | **classification-free route**: Sutherland equation ⇒ projective first-order rational ODE ⇒ finite trdeg ⇒ projectively DA, in every dimension; plus positive-metric cut `H*=-H` and the `B=RP` convention boundary | TODO |
+| 5 | two-state-regular-quantum-projective-da-rigidity | IN PROGRESS — algebraic core DONE (`ThreeParticleLegsRing`, `SutherlandLinearisation`, `MatrixEntriesInSubfield`, `SutherlandProjectiveAlgebraicity`); analytic half remains | IN PROGRESS |
 
 ## Route notes (established before any Lean was written)
 
@@ -75,3 +75,47 @@ classification input.  Corpus interface:
   conjugations and unitarity of their product; the incoming Fock form `(9)`; the reality law
   `J_in M J_in = M⁻¹`; and the factorizing multiplier with its boost invariance and the
   two-particle chamber identification.  Non-vacuity is proved (complex conjugation, free case).
+- 2026-08-29 — card 1 promoted.  Harrison-Trainor–Klys–Moosa Thm 6.1 is not needed at all: below
+  the minimal differential order the jets are algebraically independent, so a nonzero relation on
+  the first `n+1` jets forces `differentialOrder ≤ n`, hence `kolchinJetCapacity ≤ n` and
+  `B(n,d) = n`.  The frequency half was already unconditional in the corpus
+  (`AutonomousCarrierRegularity.rank_bohrHullFrequencies_le_of_stripAnnihilator`, rank ≤ 2n, clean
+  axiom audit) — the ledger's earlier plan to redo Ritt's separant induction was unnecessary.
+  New: `exists_primeCounting_gt` (π unbounded from the infinitude of primes alone) and the budget
+  chain `π N ≤ 2 n_N ⇒ orders unbounded`.
+  Trap hit: `AlgebraicIndependent.comp _ hinj` diverges in higher-order unification — always name
+  the embedding explicitly (see [[lean-comp-underscore-loop]]).
+
+## Card 5 build state (2026-08-29)
+
+**Done and compiling (axiom-clean):**
+- `HTGeometry/ThreeParticleLegsRing.lean` — `legLeft` / `legRight` over any commutative ring, and
+  `eq_smul_one_of_legRight_eq_legLeft`: the kernel of the identity Sutherland map is exactly the
+  scalars.  Pure index combinatorics, three instantiations of the entrywise identity.
+- `HTGeometry/SutherlandLinearisation.lean` — `sutherlandSolve`, an **explicit** linear left
+  inverse of `Z ↦ legRight Z − legLeft Z` anchored at a base label (no basis, no rank argument,
+  no choice), with `sutherlandSolve (legRight Z − legLeft Z) = Z − Z_anchor • 1`; the normalised
+  endomorphism `sutherlandOp` with `sutherlandOp 1 = id`; its linear-map packaging; its matrix
+  `sutherlandMatrix` with `sutherlandMatrix_mulVec` and `sutherlandMatrix_one = 1`.
+- `HTGeometry/MatrixEntriesInSubfield.lean` — `EntriesIn S A` and closure under `+ − * •`, legs,
+  `single`, `det`, `updateRow`, `adjugate`, `inv`, `mulVec`.
+- `HTGeometry/SutherlandProjectiveAlgebraicity.lean` —
+  `entrywiseDeriv_mem_adjoin_of_sutherland` and `differentialAlgebraicOver_entry_of_sutherland`:
+  for a matrix `Y` over a differential field anchored at `Y p = 1`, satisfying the Sutherland
+  identity with a constant `H`, with `det (sutherlandMatrix u₀ Y) ≠ 0`, every entry is
+  differentially algebraic over the coefficient field.  **Every state dimension, no
+  classification.**
+
+**Numerically pre-certified (exact rationals, `Fin 2`):** `rank L_I = 15` (kernel dimension one),
+`rank L_X = 15` for `X` near `I` and for random `X`, but `rank L_P = 12` — so the kernel condition
+genuinely fails at the flip and the near-identity (regularity) hypothesis is essential.
+
+**Remaining:**
+1. matrix-valued derivative toolkit (`HasMatrixDerivAt`, product rule, leg rule);
+2. differentiate the difference-form braid Yang--Baxter equation in the second parameter at zero to
+   obtain the Sutherland identity, with `H = Ř′ 0`;
+3. choose a ball around `0` on which the anchor entry and `det (sutherlandMatrix)` are nonvanishing
+   (both equal `1` at `a = 0`);
+4. transfer to `meroField U` through `analyticMeroElement` (ring-hom transfer of
+   `sutherlandMatrix` and `det`), then apply `differentialAlgebraicOver_entry_of_sutherland` and
+   the corpus bridge `differentialAlgebraicOver_analyticMeroElement_iff`.

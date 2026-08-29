@@ -62,3 +62,10 @@ Corpus theorem `c5CompletedCompensationMargin_eq_adaptive_add_residual` restores
   At the modular centre all odd corrections vanish, so existing theorem `thetaCuspC5FixedActionSeamLogValue_pos` gives `Ω'(0)>0`. Hence `Ω(u)>0` for every sufficiently small `u>0`, and each such centre has a punctured positive literal direct-J displacement chamber.
 - 2026-08-29 — Open core sharpened: prove or refute strict projective monotonicity of `thetaCuspC5ExactSeamSixthInvariant / thetaCuspLogCurvature^4` on the full positive orbit. One nonpositive derivative value kills this direct-J seam route at that centre; global strict positivity closes its local mathematical burden.
 - 2026-08-29 — Killed chamber-only slope proof. The odd-corrected exact C5 slope polynomial admits a state with strict `U,B,Q>0` and strict reconstructed gap but negative value; `not_forall_strictSourcePositiveChamber_c5ExactCompletedSeamSlope_pos` formally refutes the universal sign implication. Therefore abstract source-positive coordinate inequalities cannot establish global `Ω'>0`. Positive survivor is exact seam factorization into `normalizedSourceJet(0)^6` times the fixed-action C5 seam polynomial; remaining attack must use actual modular-orbit incidence/dynamics or a stronger orbit invariant. See `../3-formalized/theta-cusp-exact-completed-c5-slope-chamber-no-go.md`.
+- 2026-08-29 — Killed uniform source-positive-flow barrier. Exact covariant law
+  `Q*Lie(Ωc)=Sc+11*(f₁-(B/2)f₀)*Ωc` identifies boundary-crossing sign with corrected slope. Seam
+  `X=100` has positive mass/gap and `U',B'>0`, `Q'=0`, but `Ωc=0` and `Lie(Ωc)<0`.
+  Source-positive dynamics therefore do not make the orientation region invariant. Open core is now
+  actual physical-orbit first-contact transversality, recorded in
+  `theta-cusp-c5-orbit-first-contact.md`; see formal no-go card
+  `../3-formalized/theta-cusp-c5-source-positive-flow-inward-barrier-no-go.md`.

@@ -22,6 +22,8 @@ constants.  This is the property that makes a Hahn series field a difference fie
 extra invariants.
 -/
 
+set_option linter.unusedSectionVars false
+
 namespace GaloisForLFunctions.HTGeometry
 
 open HahnSeries Multiplicative
@@ -237,7 +239,7 @@ theorem hahnDerivation_apply (μ : Γ →+ R) (f : HahnSeries Γ R) :
     hahnDerivation μ f = hahnGrade μ f := rfl
 
 /-- The differential ring structure on a Hahn series ring given by an additive character. -/
-noncomputable def hahnDifferential (μ : Γ →+ R) : Differential (HahnSeries Γ R) :=
+@[reducible] noncomputable def hahnDifferential (μ : Γ →+ R) : Differential (HahnSeries Γ R) :=
   ⟨hahnDerivation μ⟩
 
 /-- Dilations commute with gradings: both act diagonally on coefficients. -/
@@ -260,7 +262,7 @@ theorem eq_single_zero_of_support_subset {f : HahnSeries Γ R} (h : f.support �
   · have : f.coeff g = 0 := by
       by_contra hne
       exact hg (h (by simpa [HahnSeries.mem_support] using hne))
-    simp [this, HahnSeries.coeff_single, hg]
+    simp [this, hg]
 
 /-- **The invariants of a faithful dilation are the constants.**  If the exponential character is
 nontrivial at every nonzero exponent, a Hahn series fixed by the dilation is supported at the
@@ -280,7 +282,7 @@ theorem hahnDilation_eq_self_iff_single [NoZeroDivisors R] {χ : Multiplicative 
     have hsupp : g = 0 := by
       rw [h] at hg
       by_contra hne
-      simp [HahnSeries.mem_support, HahnSeries.coeff_single, hne] at hg
+      simp [HahnSeries.mem_support, hne] at hg
     subst hsupp
     simp
 
@@ -360,5 +362,133 @@ theorem hahnTwistHom_apply (φ : R →+* R) (χ : Multiplicative Γ →* Rˣ) (f
     hahnTwistHom φ χ f = hahnTwist φ χ f := rfl
 
 end Twist
+
+section CoeffMap
+
+variable [CommRing R]
+
+/-- The coefficientwise extension of an additive operator on the coefficient ring. -/
+def hahnCoeffMap (D : R →+ R) (f : HahnSeries Γ R) : HahnSeries Γ R where
+  coeff g := D (f.coeff g)
+  isPWO_support' := by
+    refine f.isPWO_support.mono ?_
+    intro g hg
+    simp only [Function.mem_support] at hg ⊢
+    intro h
+    exact hg (by simp [h])
+
+@[simp]
+theorem coeff_hahnCoeffMap (D : R →+ R) (f : HahnSeries Γ R) (g : Γ) :
+    (hahnCoeffMap D f).coeff g = D (f.coeff g) := rfl
+
+theorem support_hahnCoeffMap_subset (D : R →+ R) (f : HahnSeries Γ R) :
+    (hahnCoeffMap D f).support ⊆ f.support := by
+  intro g hg
+  simp only [HahnSeries.mem_support, coeff_hahnCoeffMap] at hg ⊢
+  intro h
+  exact hg (by simp [h])
+
+theorem hahnCoeffMap_add (D : R →+ R) (x y : HahnSeries Γ R) :
+    hahnCoeffMap D (x + y) = hahnCoeffMap D x + hahnCoeffMap D y := by
+  ext g; simp
+
+theorem hahnCoeffMap_zero (D : R →+ R) : hahnCoeffMap D (0 : HahnSeries Γ R) = 0 := by
+  ext g; simp
+
+/-- **A coefficient derivation extends to a derivation of the Hahn series ring.** -/
+theorem hahnCoeffMap_leibniz (D : R →+ R) (hD : ∀ x y : R, D (x * y) = D x * y + x * D y)
+    (x y : HahnSeries Γ R) :
+    hahnCoeffMap D (x * y) = hahnCoeffMap D x * y + x * hahnCoeffMap D y := by
+  classical
+  ext a
+  rw [coeff_hahnCoeffMap,
+    coeff_mul_of_support_subset x.isPWO_support y.isPWO_support subset_rfl subset_rfl a,
+    HahnSeries.coeff_add,
+    coeff_mul_of_support_subset x.isPWO_support y.isPWO_support
+      (support_hahnCoeffMap_subset D x) subset_rfl a,
+    coeff_mul_of_support_subset x.isPWO_support y.isPWO_support subset_rfl
+      (support_hahnCoeffMap_subset D y) a,
+    map_sum, ← Finset.sum_add_distrib]
+  exact Finset.sum_congr rfl fun p _ => hD _ _
+
+theorem hahnCoeffMap_one (D : R →+ R) (hD : ∀ x y : R, D (x * y) = D x * y + x * D y) :
+    hahnCoeffMap D (1 : HahnSeries Γ R) = 0 := by
+  have h := hD 1 1
+  rw [mul_one, mul_one, one_mul] at h
+  have h0 : (0 : R) + D 1 = D 1 + D 1 := by rw [zero_add]; exact h
+  have hD1 : D 1 = 0 := (add_right_cancel h0).symm
+  ext g
+  by_cases hg : g = 0
+  · subst hg; simp [HahnSeries.coeff_one, hD1]
+  · simp [HahnSeries.coeff_one, hg]
+
+/-- A coefficient operator commuting with the coefficient twist commutes with the twisted
+dilation. -/
+theorem hahnTwist_hahnCoeffMap (φ : R →+* R) (χ : Multiplicative Γ →* Rˣ) (D : R →+ R)
+    (hcomm : ∀ x : R, φ (D x) = D (φ x))
+    (hlin : ∀ (g : Γ) (x : R), D ((χ (ofAdd g) : R) * x) = (χ (ofAdd g) : R) * D x)
+    (f : HahnSeries Γ R) :
+    hahnTwist φ χ (hahnCoeffMap D f) = hahnCoeffMap D (hahnTwist φ χ f) := by
+  ext g
+  rw [coeff_hahnTwist, coeff_hahnCoeffMap, coeff_hahnCoeffMap, coeff_hahnTwist, hlin, hcomm]
+
+/-- The twisted dilation commutes with a grading whose character values are fixed by the
+coefficient twist. -/
+theorem hahnTwist_hahnGrade (φ : R →+* R) (χ : Multiplicative Γ →* Rˣ) (μ : Γ →+ R)
+    (hfix : ∀ g : Γ, φ (μ g) = μ g) (f : HahnSeries Γ R) :
+    hahnTwist φ χ (hahnGrade μ f) = hahnGrade μ (hahnTwist φ χ f) := by
+  ext g
+  rw [coeff_hahnTwist, coeff_hahnGrade, coeff_hahnGrade, coeff_hahnTwist, map_mul, hfix]
+  ring
+
+/-- The coefficientwise operator as an additive homomorphism. -/
+def hahnCoeffMapHom (D : R →+ R) : HahnSeries Γ R →+ HahnSeries Γ R where
+  toFun := hahnCoeffMap D
+  map_zero' := hahnCoeffMap_zero D
+  map_add' := hahnCoeffMap_add D
+
+@[simp]
+theorem hahnCoeffMapHom_apply (D : R →+ R) (f : HahnSeries Γ R) :
+    hahnCoeffMapHom D f = hahnCoeffMap D f := rfl
+
+end CoeffMap
+
+section CoeffRingHom
+
+variable {S : Type*} [CommRing R] [CommRing S]
+
+/-- The coefficientwise application of a ring homomorphism, as a ring homomorphism of Hahn
+series. -/
+def hahnMapRingHom (f : R →+* S) : HahnSeries Γ R →+* HahnSeries Γ S where
+  toFun x := x.map f
+  map_one' := by
+    ext g
+    by_cases h : g = 0
+    · subst h; simp [HahnSeries.coeff_one, HahnSeries.map_coeff]
+    · simp [HahnSeries.coeff_one, HahnSeries.map_coeff, h]
+  map_mul' x y := by
+    ext g
+    simp only [HahnSeries.map_coeff]
+    exact congrArg (fun t : HahnSeries Γ S => t.coeff g) (HahnSeries.map_mul (f : R →ₙ+* S))
+  map_zero' := by ext g; simp [HahnSeries.map_coeff]
+  map_add' x y := by ext g; simp [HahnSeries.map_coeff]
+
+@[simp]
+theorem coeff_hahnMapRingHom (f : R →+* S) (x : HahnSeries Γ R) (g : Γ) :
+    (hahnMapRingHom (Γ := Γ) f x).coeff g = f (x.coeff g) :=
+  HahnSeries.map_coeff x f g
+
+/-- The coefficient map intertwines two twisted dilations whose data correspond. -/
+theorem hahnMapRingHom_hahnTwist (ψ : R →+* S) (φ : R →+* R) (φ' : S →+* S)
+    (χ : Multiplicative Γ →* Rˣ) (χ' : Multiplicative Γ →* Sˣ)
+    (hφ : ∀ x : R, ψ (φ x) = φ' (ψ x))
+    (hχ : ∀ g : Γ, ψ (χ (ofAdd g) : R) = (χ' (ofAdd g) : S))
+    (f : HahnSeries Γ R) :
+    hahnMapRingHom ψ (hahnTwist φ χ f) = hahnTwist φ' χ' (hahnMapRingHom ψ f) := by
+  ext g
+  rw [coeff_hahnMapRingHom, coeff_hahnTwist, coeff_hahnTwist, coeff_hahnMapRingHom, map_mul,
+    hχ, hφ]
+
+end CoeffRingHom
 
 end GaloisForLFunctions.HTGeometry

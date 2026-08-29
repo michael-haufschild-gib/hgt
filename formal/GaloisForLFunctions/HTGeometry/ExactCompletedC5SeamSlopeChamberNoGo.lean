@@ -1,22 +1,26 @@
 import GaloisForLFunctions.HTGeometry.PolynomialODEJetC5FixedActionSeamClosure
 
 /-!
-# Exact completed C5 slope: optimized cumulants and chamber no-go
+# Exact completed C5 slope: optimized cumulants, chamber and flow no-go
 
 This module replaces recursive Lie-derivative expansion by explicit division-free cumulant
 numerators through order eight.  It constructs the odd-corrected derivative of the exact completed
 C5 orientation, proves its seam factorization, and transports it through the Lyapunov and
-source-positive charts.
+source-positive charts. Integer cumulant coefficients are additive scalar multiples, and the
+source Lie operator is packaged as a derivation, so high-order proofs use exact Leibniz laws rather
+than recursive polynomial expansion.
 
 The intended RH chain was: strict source-positive chamber inequalities force corrected-slope
 positivity; corrected-slope positivity forces global growth of exact completed C5 orientation;
 that supplies local direct fixed-action Jacobian orientation at every centre; compact/tail assembly
 crosses the seam/rank-four Ptolemy wall; cofinal no-escape yields CLG/TTF or Weil positivity and RH.
 
-The final theorem kills the first implication: even with every source-positive coordinate and the
-reconstructed gap strictly positive, corrected completed C5 slope can be negative.  Therefore no
-proof using only this chamber's coordinate signs can close the route.  Positive survivor: actual
-modular-orbit equations, or a stronger orbit invariant, are indispensable.
+The first no-go kills the chamber implication: even with every source-positive coordinate and the
+reconstructed gap strictly positive, corrected completed C5 slope can be negative. The stronger
+no-go proves the exact covariant boundary law and exhibits an orientation seam with positive mass
+and gap, inward `U,B` velocities, zero `Q` velocity, but strictly negative orientation derivative.
+Thus neither chamber signs nor the autonomous field alone supply a uniform first-contact barrier.
+Positive survivor: actual physical-orbit incidence, or a stronger orbit invariant, is indispensable.
 -/
 
 open Complex Real
@@ -59,55 +63,55 @@ def clearedLogJetTwo {R : Type*} [CommRing R] (f : ℕ → R) : R :=
 
 /-- Division-free numerator `f₀³ (log f)'''`. -/
 def clearedLogJetThree {R : Type*} [CommRing R] (f : ℕ → R) : R :=
-  f 0 ^ 2 * f 3 - 3 * f 0 * f 1 * f 2 + 2 * f 1 ^ 3
+  f 0 ^ 2 * f 3 - 3 • (f 0 * f 1 * f 2) + 2 • f 1 ^ 3
 
 /-- Division-free numerator `f₀⁴ (log f)⁽⁴⁾`. -/
 def clearedLogJetFour {R : Type*} [CommRing R] (f : ℕ → R) : R :=
-  f 0 ^ 3 * f 4 - 4 * f 0 ^ 2 * f 1 * f 3 -
-    3 * f 0 ^ 2 * f 2 ^ 2 + 12 * f 0 * f 1 ^ 2 * f 2 - 6 * f 1 ^ 4
+  f 0 ^ 3 * f 4 - 4 • (f 0 ^ 2 * f 1 * f 3) -
+    3 • (f 0 ^ 2 * f 2 ^ 2) + 12 • (f 0 * f 1 ^ 2 * f 2) - 6 • f 1 ^ 4
 
 /-- Division-free numerator `f₀⁵ (log f)⁽⁵⁾`. -/
 def clearedLogJetFive {R : Type*} [CommRing R] (f : ℕ → R) : R :=
-  f 0 ^ 4 * f 5 - 5 * f 0 ^ 3 * f 1 * f 4 -
-    10 * f 0 ^ 3 * f 2 * f 3 + 20 * f 0 ^ 2 * f 1 ^ 2 * f 3 +
-    30 * f 0 ^ 2 * f 1 * f 2 ^ 2 - 60 * f 0 * f 1 ^ 3 * f 2 +
-    24 * f 1 ^ 5
+  f 0 ^ 4 * f 5 - 5 • (f 0 ^ 3 * f 1 * f 4) -
+    10 • (f 0 ^ 3 * f 2 * f 3) + 20 • (f 0 ^ 2 * f 1 ^ 2 * f 3) +
+    30 • (f 0 ^ 2 * f 1 * f 2 ^ 2) - 60 • (f 0 * f 1 ^ 3 * f 2) +
+    24 • f 1 ^ 5
 
 /-- Division-free numerator `f₀⁶ (log f)⁽⁶⁾`. -/
 def clearedLogJetSix {R : Type*} [CommRing R] (f : ℕ → R) : R :=
-  f 0 ^ 5 * f 6 - 6 * f 0 ^ 4 * f 1 * f 5 -
-    15 * f 0 ^ 4 * f 2 * f 4 - 10 * f 0 ^ 4 * f 3 ^ 2 +
-    30 * f 0 ^ 3 * f 1 ^ 2 * f 4 + 120 * f 0 ^ 3 * f 1 * f 2 * f 3 +
-    30 * f 0 ^ 3 * f 2 ^ 3 - 120 * f 0 ^ 2 * f 1 ^ 3 * f 3 -
-    270 * f 0 ^ 2 * f 1 ^ 2 * f 2 ^ 2 + 360 * f 0 * f 1 ^ 4 * f 2 -
-    120 * f 1 ^ 6
+  f 0 ^ 5 * f 6 - 6 • (f 0 ^ 4 * f 1 * f 5) -
+    15 • (f 0 ^ 4 * f 2 * f 4) - 10 • (f 0 ^ 4 * f 3 ^ 2) +
+    30 • (f 0 ^ 3 * f 1 ^ 2 * f 4) + 120 • (f 0 ^ 3 * f 1 * f 2 * f 3) +
+    30 • (f 0 ^ 3 * f 2 ^ 3) - 120 • (f 0 ^ 2 * f 1 ^ 3 * f 3) -
+    270 • (f 0 ^ 2 * f 1 ^ 2 * f 2 ^ 2) + 360 • (f 0 * f 1 ^ 4 * f 2) -
+    120 • f 1 ^ 6
 
 /-- Division-free numerator `f₀⁷ (log f)⁽⁷⁾`. -/
 def clearedLogJetSeven {R : Type*} [CommRing R] (f : ℕ → R) : R :=
-  f 0 ^ 6 * f 7 - 7 * f 0 ^ 5 * f 1 * f 6 -
-    21 * f 0 ^ 5 * f 2 * f 5 + 42 * f 0 ^ 4 * f 1 ^ 2 * f 5 -
-    35 * f 0 ^ 5 * f 3 * f 4 + 210 * f 0 ^ 4 * f 1 * f 2 * f 4 -
-    210 * f 0 ^ 3 * f 1 ^ 3 * f 4 + 140 * f 0 ^ 4 * f 1 * f 3 ^ 2 +
-    210 * f 0 ^ 4 * f 2 ^ 2 * f 3 - 1260 * f 0 ^ 3 * f 1 ^ 2 * f 2 * f 3 +
-    840 * f 0 ^ 2 * f 1 ^ 4 * f 3 - 630 * f 0 ^ 3 * f 1 * f 2 ^ 3 +
-    2520 * f 0 ^ 2 * f 1 ^ 3 * f 2 ^ 2 - 2520 * f 0 * f 1 ^ 5 * f 2 +
-    720 * f 1 ^ 7
+  f 0 ^ 6 * f 7 - 7 • (f 0 ^ 5 * f 1 * f 6) -
+    21 • (f 0 ^ 5 * f 2 * f 5) + 42 • (f 0 ^ 4 * f 1 ^ 2 * f 5) -
+    35 • (f 0 ^ 5 * f 3 * f 4) + 210 • (f 0 ^ 4 * f 1 * f 2 * f 4) -
+    210 • (f 0 ^ 3 * f 1 ^ 3 * f 4) + 140 • (f 0 ^ 4 * f 1 * f 3 ^ 2) +
+    210 • (f 0 ^ 4 * f 2 ^ 2 * f 3) - 1260 • (f 0 ^ 3 * f 1 ^ 2 * f 2 * f 3) +
+    840 • (f 0 ^ 2 * f 1 ^ 4 * f 3) - 630 • (f 0 ^ 3 * f 1 * f 2 ^ 3) +
+    2520 • (f 0 ^ 2 * f 1 ^ 3 * f 2 ^ 2) - 2520 • (f 0 * f 1 ^ 5 * f 2) +
+    720 • f 1 ^ 7
 
 /-- Division-free numerator `f₀⁸ (log f)⁽⁸⁾`. -/
 def clearedLogJetEight {R : Type*} [CommRing R] (f : ℕ → R) : R :=
-  f 0 ^ 7 * f 8 - 8 * f 0 ^ 6 * f 1 * f 7 -
-    28 * f 0 ^ 6 * f 2 * f 6 + 56 * f 0 ^ 5 * f 1 ^ 2 * f 6 -
-    56 * f 0 ^ 6 * f 3 * f 5 + 336 * f 0 ^ 5 * f 1 * f 2 * f 5 -
-    336 * f 0 ^ 4 * f 1 ^ 3 * f 5 - 35 * f 0 ^ 6 * f 4 ^ 2 +
-    560 * f 0 ^ 5 * f 1 * f 3 * f 4 + 420 * f 0 ^ 5 * f 2 ^ 2 * f 4 -
-    2520 * f 0 ^ 4 * f 1 ^ 2 * f 2 * f 4 + 1680 * f 0 ^ 3 * f 1 ^ 4 * f 4 +
-    560 * f 0 ^ 5 * f 2 * f 3 ^ 2 - 1680 * f 0 ^ 4 * f 1 ^ 2 * f 3 ^ 2 -
-    5040 * f 0 ^ 4 * f 1 * f 2 ^ 2 * f 3 +
-    13440 * f 0 ^ 3 * f 1 ^ 3 * f 2 * f 3 -
-    6720 * f 0 ^ 2 * f 1 ^ 5 * f 3 - 630 * f 0 ^ 4 * f 2 ^ 4 +
-    10080 * f 0 ^ 3 * f 1 ^ 2 * f 2 ^ 3 -
-    25200 * f 0 ^ 2 * f 1 ^ 4 * f 2 ^ 2 +
-    20160 * f 0 * f 1 ^ 6 * f 2 - 5040 * f 1 ^ 8
+  f 0 ^ 7 * f 8 - 8 • (f 0 ^ 6 * f 1 * f 7) -
+    28 • (f 0 ^ 6 * f 2 * f 6) + 56 • (f 0 ^ 5 * f 1 ^ 2 * f 6) -
+    56 • (f 0 ^ 6 * f 3 * f 5) + 336 • (f 0 ^ 5 * f 1 * f 2 * f 5) -
+    336 • (f 0 ^ 4 * f 1 ^ 3 * f 5) - 35 • (f 0 ^ 6 * f 4 ^ 2) +
+    560 • (f 0 ^ 5 * f 1 * f 3 * f 4) + 420 • (f 0 ^ 5 * f 2 ^ 2 * f 4) -
+    2520 • (f 0 ^ 4 * f 1 ^ 2 * f 2 * f 4) + 1680 • (f 0 ^ 3 * f 1 ^ 4 * f 4) +
+    560 • (f 0 ^ 5 * f 2 * f 3 ^ 2) - 1680 • (f 0 ^ 4 * f 1 ^ 2 * f 3 ^ 2) -
+    5040 • (f 0 ^ 4 * f 1 * f 2 ^ 2 * f 3) +
+    13440 • (f 0 ^ 3 * f 1 ^ 3 * f 2 * f 3) -
+    6720 • (f 0 ^ 2 * f 1 ^ 5 * f 3) - 630 • (f 0 ^ 4 * f 2 ^ 4) +
+    10080 • (f 0 ^ 3 * f 1 ^ 2 * f 2 ^ 3) -
+    25200 • (f 0 ^ 2 * f 1 ^ 4 * f 2 ^ 2) +
+    20160 • (f 0 * f 1 ^ 6 * f 2) - 5040 • f 1 ^ 8
 
 /-- Cleared exact derivative of the ninth-order completed C5 seam orientation. -/
 def c5ExactCompletedSeamSlopeCleared {R : Type*} [CommRing R]
@@ -154,7 +158,7 @@ theorem eval_modularThetaODENormalizedC5ExactCompletedSeamSlopePolynomial_seam
     clearedLogJetFour clearedLogJetFive clearedLogJetSix clearedLogJetSeven
     clearedLogJetEight
   dsimp only
-  simp only [map_sub, map_mul, map_pow, map_add, map_neg, map_ofNat]
+  simp only [map_sub, map_mul, map_pow, map_add, map_neg, map_ofNat, map_nsmul]
   rw [hnorm 0, hnorm 1, hnorm 2, hnorm 3, hnorm 4, hnorm 5, hnorm 6,
     hnorm 7, hnorm 8]
   rw [h1, h3, h5, h7]
@@ -200,7 +204,7 @@ theorem modularThetaGeneralLyapunov_c5ExactCompletedSeamSlopePolynomial :
     clearedLogJetFour clearedLogJetFive clearedLogJetSix clearedLogJetSeven
     clearedLogJetEight
   dsimp only
-  simp only [map_sub, map_mul, map_pow, map_add, map_neg, map_ofNat]
+  simp only [map_sub, map_mul, map_pow, map_add, map_neg, map_ofNat, map_nsmul]
   rw [modularThetaGeneralLyapunov_normalizedSourceJet 0,
     modularThetaGeneralLyapunov_normalizedSourceJet 1,
     modularThetaGeneralLyapunov_normalizedSourceJet 2,
@@ -222,7 +226,7 @@ theorem modularThetaSourcePositiveChart_c5ExactCompletedSeamSlopePolynomial :
     clearedLogJetFour clearedLogJetFive clearedLogJetSix clearedLogJetSeven
     clearedLogJetEight
   dsimp only
-  simp only [map_sub, map_mul, map_pow, map_add, map_neg, map_ofNat]
+  simp only [map_sub, map_mul, map_pow, map_add, map_neg, map_ofNat, map_nsmul]
   rw [modularThetaSourcePositiveChart_sourceJet 0,
     modularThetaSourcePositiveChart_sourceJet 1,
     modularThetaSourcePositiveChart_sourceJet 2,
@@ -333,6 +337,422 @@ theorem not_forall_strictSourcePositiveChamber_c5ExactCompletedSeamSlope_pos :
   obtain ⟨v, hv, hgap, hslope⟩ :=
     exists_strictSourcePositiveChamber_eval_c5ExactCompletedSeamSlope_neg
   linarith [h v hv hgap]
+
+private theorem modularThetaSourcePositiveLie_normalizedSourceJet (n : ℕ) :
+    modularThetaSourcePositiveLie
+        (modularThetaSourcePositiveNormalizedSourceJet n) =
+      modularThetaSourcePositiveNormalizedSourceJet (n + 1) -
+        MvPolynomial.C (1 / 2 : ℂ) * MvPolynomial.X .B *
+          modularThetaSourcePositiveNormalizedSourceJet n := by
+  rw [modularThetaSourcePositiveNormalizedSourceJet]
+  unfold modularThetaSourcePositiveNormalizedLie
+  ring
+
+private def modularThetaSourcePositiveLieLinearMap :
+    ModularThetaSourcePositivePolynomial →ₗ[ℂ]
+      ModularThetaSourcePositivePolynomial :=
+  ∑ i, (MvPolynomial.pderiv i).toLinearMap.smulRight
+    (modularThetaSourcePositiveVectorField i)
+
+private theorem modularThetaSourcePositiveLieLinearMap_apply
+    (P : ModularThetaSourcePositivePolynomial) :
+    modularThetaSourcePositiveLieLinearMap P = modularThetaSourcePositiveLie P := by
+  unfold modularThetaSourcePositiveLieLinearMap modularThetaSourcePositiveLie
+  rfl
+
+/-- The source-positive polynomial Lie operator, packaged as a genuine derivation. -/
+def modularThetaSourcePositiveLieDerivation : Derivation ℂ
+    ModularThetaSourcePositivePolynomial ModularThetaSourcePositivePolynomial :=
+  Derivation.mk' modularThetaSourcePositiveLieLinearMap (by
+    intro P Q
+    rw [modularThetaSourcePositiveLieLinearMap_apply,
+      modularThetaSourcePositiveLieLinearMap_apply,
+      modularThetaSourcePositiveLieLinearMap_apply,
+      modularThetaSourcePositiveLie_mul]
+    simp only [smul_eq_mul]
+    ring)
+
+@[simp] theorem modularThetaSourcePositiveLieDerivation_apply
+    (P : ModularThetaSourcePositivePolynomial) :
+    modularThetaSourcePositiveLieDerivation P = modularThetaSourcePositiveLie P := by
+  unfold modularThetaSourcePositiveLieDerivation
+  exact modularThetaSourcePositiveLieLinearMap_apply P
+
+private theorem modularThetaSourcePositiveLie_clearedLogJetTwo :
+    let f := modularThetaSourcePositiveNormalizedSourceJet
+    f 0 * modularThetaSourcePositiveLie (clearedLogJetTwo f) =
+      clearedLogJetThree f +
+        2 *
+          (f 1 - MvPolynomial.C (1 / 2 : ℂ) * MvPolynomial.X .B * f 0) *
+          clearedLogJetTwo f := by
+  dsimp only
+  rw [← modularThetaSourcePositiveLieDerivation_apply]
+  unfold clearedLogJetTwo clearedLogJetThree
+  simp only [map_sub, Derivation.leibniz, Derivation.leibniz_pow]
+  simp only [modularThetaSourcePositiveLieDerivation_apply,
+    nsmul_eq_mul, smul_eq_mul]
+  rw [modularThetaSourcePositiveLie_normalizedSourceJet 0,
+    modularThetaSourcePositiveLie_normalizedSourceJet 1,
+    modularThetaSourcePositiveLie_normalizedSourceJet 2]
+  ring
+
+private theorem modularThetaSourcePositiveLie_clearedLogJetThree :
+    let f := modularThetaSourcePositiveNormalizedSourceJet
+    f 0 * modularThetaSourcePositiveLie (clearedLogJetThree f) =
+      clearedLogJetFour f +
+        3 *
+          (f 1 - MvPolynomial.C (1 / 2 : ℂ) * MvPolynomial.X .B * f 0) *
+          clearedLogJetThree f := by
+  dsimp only
+  rw [← modularThetaSourcePositiveLieDerivation_apply]
+  unfold clearedLogJetThree clearedLogJetFour
+  simp only [map_sub, map_add, map_nsmul, Derivation.leibniz,
+    Derivation.leibniz_pow]
+  simp only [modularThetaSourcePositiveLieDerivation_apply,
+    nsmul_eq_mul, smul_eq_mul]
+  rw [modularThetaSourcePositiveLie_normalizedSourceJet 0,
+    modularThetaSourcePositiveLie_normalizedSourceJet 1,
+    modularThetaSourcePositiveLie_normalizedSourceJet 2,
+    modularThetaSourcePositiveLie_normalizedSourceJet 3]
+  ring
+
+private theorem modularThetaSourcePositiveLie_clearedLogJetFour :
+    let f := modularThetaSourcePositiveNormalizedSourceJet
+    f 0 * modularThetaSourcePositiveLie (clearedLogJetFour f) =
+      clearedLogJetFive f +
+        4 *
+          (f 1 - MvPolynomial.C (1 / 2 : ℂ) * MvPolynomial.X .B * f 0) *
+          clearedLogJetFour f := by
+  dsimp only
+  rw [← modularThetaSourcePositiveLieDerivation_apply]
+  unfold clearedLogJetFour clearedLogJetFive
+  simp only [map_sub, map_add, map_nsmul, Derivation.leibniz,
+    Derivation.leibniz_pow]
+  simp only [modularThetaSourcePositiveLieDerivation_apply,
+    nsmul_eq_mul, smul_eq_mul]
+  rw [modularThetaSourcePositiveLie_normalizedSourceJet 0,
+    modularThetaSourcePositiveLie_normalizedSourceJet 1,
+    modularThetaSourcePositiveLie_normalizedSourceJet 2,
+    modularThetaSourcePositiveLie_normalizedSourceJet 3,
+    modularThetaSourcePositiveLie_normalizedSourceJet 4]
+  ring
+
+private theorem modularThetaSourcePositiveLie_clearedLogJetFive :
+    let f := modularThetaSourcePositiveNormalizedSourceJet
+    f 0 * modularThetaSourcePositiveLie (clearedLogJetFive f) =
+      clearedLogJetSix f +
+        5 *
+          (f 1 - MvPolynomial.C (1 / 2 : ℂ) * MvPolynomial.X .B * f 0) *
+          clearedLogJetFive f := by
+  dsimp only
+  rw [← modularThetaSourcePositiveLieDerivation_apply]
+  unfold clearedLogJetFive clearedLogJetSix
+  simp only [map_sub, map_add, map_nsmul, Derivation.leibniz,
+    Derivation.leibniz_pow]
+  simp only [modularThetaSourcePositiveLieDerivation_apply,
+    nsmul_eq_mul, smul_eq_mul]
+  rw [modularThetaSourcePositiveLie_normalizedSourceJet 0,
+    modularThetaSourcePositiveLie_normalizedSourceJet 1,
+    modularThetaSourcePositiveLie_normalizedSourceJet 2,
+    modularThetaSourcePositiveLie_normalizedSourceJet 3,
+    modularThetaSourcePositiveLie_normalizedSourceJet 4,
+    modularThetaSourcePositiveLie_normalizedSourceJet 5]
+  ring
+
+private theorem modularThetaSourcePositiveLie_clearedLogJetSix :
+    let f := modularThetaSourcePositiveNormalizedSourceJet
+    f 0 * modularThetaSourcePositiveLie (clearedLogJetSix f) =
+      clearedLogJetSeven f +
+        6 *
+          (f 1 - MvPolynomial.C (1 / 2 : ℂ) * MvPolynomial.X .B * f 0) *
+          clearedLogJetSix f := by
+  dsimp only
+  rw [← modularThetaSourcePositiveLieDerivation_apply]
+  unfold clearedLogJetSix clearedLogJetSeven
+  simp only [map_sub, map_add, map_nsmul, Derivation.leibniz,
+    Derivation.leibniz_pow]
+  simp only [modularThetaSourcePositiveLieDerivation_apply,
+    nsmul_eq_mul, smul_eq_mul]
+  rw [modularThetaSourcePositiveLie_normalizedSourceJet 0,
+    modularThetaSourcePositiveLie_normalizedSourceJet 1,
+    modularThetaSourcePositiveLie_normalizedSourceJet 2,
+    modularThetaSourcePositiveLie_normalizedSourceJet 3,
+    modularThetaSourcePositiveLie_normalizedSourceJet 4,
+    modularThetaSourcePositiveLie_normalizedSourceJet 5,
+    modularThetaSourcePositiveLie_normalizedSourceJet 6]
+  ring
+
+private theorem modularThetaSourcePositiveLie_clearedLogJetSeven :
+    let f := modularThetaSourcePositiveNormalizedSourceJet
+    f 0 * modularThetaSourcePositiveLie (clearedLogJetSeven f) =
+      clearedLogJetEight f +
+        7 *
+          (f 1 - MvPolynomial.C (1 / 2 : ℂ) * MvPolynomial.X .B * f 0) *
+          clearedLogJetSeven f := by
+  dsimp only
+  rw [← modularThetaSourcePositiveLieDerivation_apply]
+  unfold clearedLogJetSeven clearedLogJetEight
+  simp only [map_sub, map_add, map_nsmul, Derivation.leibniz,
+    Derivation.leibniz_pow]
+  simp only [modularThetaSourcePositiveLieDerivation_apply,
+    nsmul_eq_mul, smul_eq_mul]
+  rw [modularThetaSourcePositiveLie_normalizedSourceJet 0,
+    modularThetaSourcePositiveLie_normalizedSourceJet 1,
+    modularThetaSourcePositiveLie_normalizedSourceJet 2,
+    modularThetaSourcePositiveLie_normalizedSourceJet 3,
+    modularThetaSourcePositiveLie_normalizedSourceJet 4,
+    modularThetaSourcePositiveLie_normalizedSourceJet 5,
+    modularThetaSourcePositiveLie_normalizedSourceJet 6,
+    modularThetaSourcePositiveLie_normalizedSourceJet 7]
+  ring
+
+/-- Division-free exact completed C5 orientation in cleared log-cumulant coordinates. -/
+def c5ExactCompletedSeamOrientationCleared {R : Type*} [CommRing R]
+    (p2 p3 p4 p5 p6 p7 : R) : R :=
+  -p2 ^ 2 * p7 + 3 • (p2 * p6 * p3) + 2 • (p2 * p4 * p5) -
+    4 • (p4 ^ 2 * p3) - 18 • (p2 ^ 3 * p5) + 36 • (p2 ^ 2 * p4 * p3)
+
+/-- Four-state normalized-source polynomial for exact completed C5 orientation. -/
+def modularThetaODENormalizedC5ExactCompletedSeamOrientationPolynomial :
+    ModularThetaODEPolynomial :=
+  let f := modularThetaODENormalizedSourceJet
+  c5ExactCompletedSeamOrientationCleared
+    (clearedLogJetTwo f) (clearedLogJetThree f) (clearedLogJetFour f)
+    (clearedLogJetFive f) (clearedLogJetSix f) (clearedLogJetSeven f)
+
+/-- Lyapunov-chart polynomial for exact completed C5 orientation. -/
+def modularThetaLyapunovC5ExactCompletedSeamOrientationPolynomial :
+    ModularThetaLyapunovPolynomial :=
+  let f := modularThetaLyapunovNormalizedSourceJet
+  c5ExactCompletedSeamOrientationCleared
+    (clearedLogJetTwo f) (clearedLogJetThree f) (clearedLogJetFour f)
+    (clearedLogJetFive f) (clearedLogJetSix f) (clearedLogJetSeven f)
+
+/-- Source-positive polynomial for exact completed C5 orientation. -/
+def modularThetaSourcePositiveC5ExactCompletedSeamOrientationPolynomial :
+    ModularThetaSourcePositivePolynomial :=
+  let f := modularThetaSourcePositiveNormalizedSourceJet
+  c5ExactCompletedSeamOrientationCleared
+    (clearedLogJetTwo f) (clearedLogJetThree f) (clearedLogJetFour f)
+    (clearedLogJetFive f) (clearedLogJetSix f) (clearedLogJetSeven f)
+
+/-- Four-state quotient transports exact completed C5 orientation without expansion. -/
+theorem modularThetaGeneralLyapunov_c5ExactCompletedSeamOrientationPolynomial :
+    modularThetaGeneralLyapunovPullback
+        modularThetaLyapunovC5ExactCompletedSeamOrientationPolynomial =
+      modularThetaODENormalizedC5ExactCompletedSeamOrientationPolynomial := by
+  unfold modularThetaLyapunovC5ExactCompletedSeamOrientationPolynomial
+    modularThetaODENormalizedC5ExactCompletedSeamOrientationPolynomial
+    c5ExactCompletedSeamOrientationCleared clearedLogJetTwo clearedLogJetThree
+    clearedLogJetFour clearedLogJetFive clearedLogJetSix clearedLogJetSeven
+  dsimp only
+  simp only [map_sub, map_mul, map_pow, map_add, map_neg, map_nsmul]
+  rw [modularThetaGeneralLyapunov_normalizedSourceJet 0,
+    modularThetaGeneralLyapunov_normalizedSourceJet 1,
+    modularThetaGeneralLyapunov_normalizedSourceJet 2,
+    modularThetaGeneralLyapunov_normalizedSourceJet 3,
+    modularThetaGeneralLyapunov_normalizedSourceJet 4,
+    modularThetaGeneralLyapunov_normalizedSourceJet 5,
+    modularThetaGeneralLyapunov_normalizedSourceJet 6,
+    modularThetaGeneralLyapunov_normalizedSourceJet 7]
+
+/-- Source-positive chart transports exact completed C5 orientation without expansion. -/
+theorem modularThetaSourcePositiveChart_c5ExactCompletedSeamOrientationPolynomial :
+    modularThetaSourcePositiveChartPullback
+        modularThetaLyapunovC5ExactCompletedSeamOrientationPolynomial =
+      modularThetaSourcePositiveC5ExactCompletedSeamOrientationPolynomial := by
+  unfold modularThetaLyapunovC5ExactCompletedSeamOrientationPolynomial
+    modularThetaSourcePositiveC5ExactCompletedSeamOrientationPolynomial
+    c5ExactCompletedSeamOrientationCleared clearedLogJetTwo clearedLogJetThree
+    clearedLogJetFour clearedLogJetFive clearedLogJetSix clearedLogJetSeven
+  dsimp only
+  simp only [map_sub, map_mul, map_pow, map_add, map_neg, map_nsmul]
+  rw [modularThetaSourcePositiveChart_sourceJet 0,
+    modularThetaSourcePositiveChart_sourceJet 1,
+    modularThetaSourcePositiveChart_sourceJet 2,
+    modularThetaSourcePositiveChart_sourceJet 3,
+    modularThetaSourcePositiveChart_sourceJet 4,
+    modularThetaSourcePositiveChart_sourceJet 5,
+    modularThetaSourcePositiveChart_sourceJet 6,
+    modularThetaSourcePositiveChart_sourceJet 7]
+
+/-- Exact completed C5 orientation vanishes on every four-state algebraic seam. -/
+theorem eval_modularThetaODENormalizedC5ExactCompletedSeamOrientationPolynomial_seam
+    (R : ℂ) :
+    MvPolynomial.eval (modularThetaODESeamState R)
+      modularThetaODENormalizedC5ExactCompletedSeamOrientationPolynomial = 0 := by
+  have h1 := eval_modularThetaODESourceJet_seam_odd_zero R 0
+  have h3 := eval_modularThetaODESourceJet_seam_odd_zero R 1
+  have h5 := eval_modularThetaODESourceJet_seam_odd_zero R 2
+  have h7 := eval_modularThetaODESourceJet_seam_odd_zero R 3
+  have hnorm (n : ℕ) :
+      MvPolynomial.eval (modularThetaODESeamState R)
+          (modularThetaODENormalizedSourceJet n) =
+        MvPolynomial.eval (modularThetaODESeamState R)
+          (modularThetaODESourceJet n) := by
+    have hfac := congrArg (MvPolynomial.eval (modularThetaODESeamState R))
+      (modularThetaODESourceJet_eq_X_H_mul_normalized n)
+    simpa [modularThetaODESeamState] using hfac.symm
+  unfold modularThetaODENormalizedC5ExactCompletedSeamOrientationPolynomial
+    c5ExactCompletedSeamOrientationCleared clearedLogJetTwo clearedLogJetThree
+    clearedLogJetFour clearedLogJetFive clearedLogJetSix clearedLogJetSeven
+  dsimp only
+  simp only [map_sub, map_mul, map_pow, map_add, map_neg, map_nsmul]
+  rw [hnorm 0, hnorm 1, hnorm 2, hnorm 3, hnorm 4, hnorm 5, hnorm 6,
+    hnorm 7]
+  rw [h1, h3, h5, h7]
+  simp only [nsmul_eq_mul]
+  ring
+
+/-- The source-positive `X=100` algebraic seam lies exactly on the completed C5 orientation
+boundary. -/
+theorem eval_modularThetaSourcePositiveC5ExactCompletedSeamOrientationPolynomial_hundred_eq_zero :
+    MvPolynomial.eval (modularThetaSourcePositiveSeamState 100)
+      modularThetaSourcePositiveC5ExactCompletedSeamOrientationPolynomial = 0 := by
+  rw [← modularThetaSourcePositiveChart_c5ExactCompletedSeamOrientationPolynomial]
+  have hstate : modularThetaSourcePositiveSeamState 100 =
+      modularThetaSourcePositiveSeamState ((10 : ℝ) ^ 2) := by norm_num
+  rw [hstate, eval_modularThetaSourcePositiveChartPullback_seam]
+  rw [← eval_modularThetaGeneralLyapunovPullback_seam,
+    modularThetaGeneralLyapunov_c5ExactCompletedSeamOrientationPolynomial,
+    eval_modularThetaODENormalizedC5ExactCompletedSeamOrientationPolynomial_seam]
+
+private def modularThetaSourcePositiveScaledLieLinearMap :
+    ModularThetaSourcePositivePolynomial →ₗ[ℂ]
+      ModularThetaSourcePositivePolynomial :=
+  modularThetaSourcePositiveLieDerivation.toLinearMap.smulRight
+    (modularThetaSourcePositiveNormalizedSourceJet 0)
+
+private theorem modularThetaSourcePositiveScaledLieLinearMap_apply
+    (P : ModularThetaSourcePositivePolynomial) :
+    modularThetaSourcePositiveScaledLieLinearMap P =
+      modularThetaSourcePositiveNormalizedSourceJet 0 *
+        modularThetaSourcePositiveLie P := by
+  unfold modularThetaSourcePositiveScaledLieLinearMap
+  simp only [LinearMap.smulRight_apply, smul_eq_mul]
+  change modularThetaSourcePositiveLieLinearMap P *
+      modularThetaSourcePositiveNormalizedSourceJet 0 = _
+  rw [modularThetaSourcePositiveLieLinearMap_apply]
+  ring
+
+/-- Lie derivative scaled by source mass; still a derivation because the coefficient ring is
+commutative. This packaging prevents recursive expansion of high cumulants. -/
+private def modularThetaSourcePositiveScaledLieDerivation : Derivation ℂ
+    ModularThetaSourcePositivePolynomial ModularThetaSourcePositivePolynomial :=
+  Derivation.mk' modularThetaSourcePositiveScaledLieLinearMap (by
+    intro P Q
+    rw [modularThetaSourcePositiveScaledLieLinearMap_apply,
+      modularThetaSourcePositiveScaledLieLinearMap_apply,
+      modularThetaSourcePositiveScaledLieLinearMap_apply,
+      modularThetaSourcePositiveLie_mul]
+    simp only [smul_eq_mul]
+    ring)
+
+@[simp] private theorem modularThetaSourcePositiveScaledLieDerivation_apply
+    (P : ModularThetaSourcePositivePolynomial) :
+    modularThetaSourcePositiveScaledLieDerivation P =
+      modularThetaSourcePositiveNormalizedSourceJet 0 *
+        modularThetaSourcePositiveLie P := by
+  unfold modularThetaSourcePositiveScaledLieDerivation
+  exact modularThetaSourcePositiveScaledLieLinearMap_apply P
+
+/-- Exact weight-eleven covariant Lie law. On the orientation boundary the correction term
+vanishes, so the physical vector-field derivative has exactly the sign of the corrected C5
+slope whenever source mass is positive. -/
+theorem modularThetaSourcePositive_c5ExactCompletedSeamOrientation_covariantLie :
+    modularThetaSourcePositiveNormalizedSourceJet 0 *
+        modularThetaSourcePositiveLie
+          modularThetaSourcePositiveC5ExactCompletedSeamOrientationPolynomial =
+      modularThetaSourcePositiveC5ExactCompletedSeamSlopePolynomial +
+        11 *
+          (modularThetaSourcePositiveNormalizedSourceJet 1 -
+            MvPolynomial.C (1 / 2 : ℂ) * MvPolynomial.X .B *
+              modularThetaSourcePositiveNormalizedSourceJet 0) *
+          modularThetaSourcePositiveC5ExactCompletedSeamOrientationPolynomial := by
+  rw [← modularThetaSourcePositiveScaledLieDerivation_apply]
+  unfold modularThetaSourcePositiveC5ExactCompletedSeamOrientationPolynomial
+    modularThetaSourcePositiveC5ExactCompletedSeamSlopePolynomial
+    c5ExactCompletedSeamOrientationCleared c5ExactCompletedSeamSlopeCleared
+  dsimp only
+  simp only [map_neg, map_sub, map_add, map_nsmul, Derivation.leibniz,
+    Derivation.leibniz_pow]
+  simp only [modularThetaSourcePositiveScaledLieDerivation_apply,
+    nsmul_eq_mul, smul_eq_mul]
+  rw [modularThetaSourcePositiveLie_clearedLogJetTwo,
+    modularThetaSourcePositiveLie_clearedLogJetThree,
+    modularThetaSourcePositiveLie_clearedLogJetFour,
+    modularThetaSourcePositiveLie_clearedLogJetFive,
+    modularThetaSourcePositiveLie_clearedLogJetSix,
+    modularThetaSourcePositiveLie_clearedLogJetSeven]
+  ring
+
+/-- At the `X=100` orientation boundary, the exact source-positive vector-field derivative of
+completed C5 orientation is strictly negative. -/
+theorem eval_modularThetaSourcePositiveLie_c5ExactCompletedSeamOrientation_hundred_re_neg :
+    (MvPolynomial.eval (modularThetaSourcePositiveSeamState 100)
+      (modularThetaSourcePositiveLie
+        modularThetaSourcePositiveC5ExactCompletedSeamOrientationPolynomial)).re < 0 := by
+  have horientation :=
+    eval_modularThetaSourcePositiveC5ExactCompletedSeamOrientationPolynomial_hundred_eq_zero
+  have hslope :=
+    eval_modularThetaSourcePositiveC5ExactCompletedSeamSlopePolynomial_hundred_re_neg
+  have hid := congrArg (MvPolynomial.eval (modularThetaSourcePositiveSeamState 100))
+    modularThetaSourcePositive_c5ExactCompletedSeamOrientation_covariantLie
+  simp only [map_mul, map_add, map_sub, MvPolynomial.eval_C,
+    MvPolynomial.eval_X] at hid
+  rw [horientation] at hid
+  norm_num only [mul_zero, add_zero] at hid
+  have hmass :
+      MvPolynomial.eval (modularThetaSourcePositiveSeamState 100)
+          (modularThetaSourcePositiveNormalizedSourceJet 0) = 47 / 8 := by
+    norm_num [modularThetaSourcePositiveNormalizedSourceJet,
+      modularThetaSourcePositiveSeamState]
+  rw [hmass] at hid
+  have hre := congrArg Complex.re hid
+  norm_num [Complex.mul_re] at hre
+  linarith
+
+/-- At the same boundary witness, source mass and reconstructed gap are positive, the vector field
+points strictly into positive `U` and `B`, and its `Q` velocity vanishes. -/
+theorem modularThetaSourcePositiveVectorField_hundred_seam_geometry :
+    0 < (modularThetaSourcePositiveSeamState 100 .Q).re ∧
+    0 < (MvPolynomial.eval (modularThetaSourcePositiveSeamState 100)
+      modularThetaSourcePositiveGap).re ∧
+    0 < (MvPolynomial.eval (modularThetaSourcePositiveSeamState 100)
+      (modularThetaSourcePositiveVectorField .U)).re ∧
+    0 < (MvPolynomial.eval (modularThetaSourcePositiveSeamState 100)
+      (modularThetaSourcePositiveVectorField .B)).re ∧
+    MvPolynomial.eval (modularThetaSourcePositiveSeamState 100)
+      (modularThetaSourcePositiveVectorField .Q) = 0 := by
+  norm_num [modularThetaSourcePositiveSeamState, modularThetaSourcePositiveGap,
+    modularThetaSourcePositiveVectorField]
+
+/-- Exact uniform-flow route kill: even on a positive-mass, positive-gap orientation boundary where
+the source-positive vector field enters both positive chamber coordinates and preserves `Q` to
+first order, completed C5 orientation can point strictly outward. Thus source-positive dynamics
+alone do not furnish a universal invariant-region or first-contact barrier. -/
+theorem not_forall_sourcePositiveC5OrientationBoundary_flow_inward :
+    ¬ ∀ v : ModularThetaSourcePositiveState → ℂ,
+      0 < (v .Q).re →
+      0 < (MvPolynomial.eval v modularThetaSourcePositiveGap).re →
+      0 < (MvPolynomial.eval v
+        (modularThetaSourcePositiveVectorField .U)).re →
+      0 < (MvPolynomial.eval v
+        (modularThetaSourcePositiveVectorField .B)).re →
+      MvPolynomial.eval v (modularThetaSourcePositiveVectorField .Q) = 0 →
+      MvPolynomial.eval v
+        modularThetaSourcePositiveC5ExactCompletedSeamOrientationPolynomial = 0 →
+      0 ≤ (MvPolynomial.eval v
+        (modularThetaSourcePositiveLie
+          modularThetaSourcePositiveC5ExactCompletedSeamOrientationPolynomial)).re := by
+  intro h
+  obtain ⟨hQ, hgap, hU, hB, hQvel⟩ :=
+    modularThetaSourcePositiveVectorField_hundred_seam_geometry
+  have hinward := h (modularThetaSourcePositiveSeamState 100)
+    hQ hgap hU hB hQvel
+    eval_modularThetaSourcePositiveC5ExactCompletedSeamOrientationPolynomial_hundred_eq_zero
+  linarith [
+    eval_modularThetaSourcePositiveLie_c5ExactCompletedSeamOrientation_hundred_re_neg]
 
 end
 

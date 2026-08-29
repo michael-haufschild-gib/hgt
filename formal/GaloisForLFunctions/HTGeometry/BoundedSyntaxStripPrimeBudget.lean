@@ -15,6 +15,8 @@ namespace GaloisForLFunctions.HTGeometry
 
 open GaloisForLFunctions
 
+open scoped BoundedContinuousFunction
+
 /-- **The prime budget of a bounded-syntax carrier.**  A strip carrier with an exact-order-`n`
 autonomous annihilator whose frequency group retains `π N` independent prime directions obeys
 `π N ≤ 2 n`. -/

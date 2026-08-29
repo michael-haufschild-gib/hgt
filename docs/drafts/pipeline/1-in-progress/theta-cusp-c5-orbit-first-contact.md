@@ -46,9 +46,9 @@ is strictly positive.
 
 - [x] Chamber signs alone fail: exact corrected slope is negative at a strict source-positive
   chamber state.
-- [ ] Test strongest replacement: completed C5 orientation is an invariant-region barrier for the
+- [x] Test strongest replacement: completed C5 orientation is an invariant-region barrier for the
   exact source-positive polynomial vector field.
-- [ ] If uniform barrier fails, formalize exact counterexample and strongest positive survivor.
+- [x] If uniform barrier fails, formalize exact counterexample and strongest positive survivor.
 - [ ] Attack remaining physical-incidence statement using exact orbit identities, not numerical
   computation.
 
@@ -73,3 +73,8 @@ substitute closes the RH chain.
 - 2026-08-29 — Extracted exact first-contact replacement after formal failure of global
   chamber-only slope positivity. RH passport and hostile uniform-flow falsifier fixed before Lean
   proof attempt.
+- 2026-08-29 — Uniform-flow replacement killed in Lean. Exact law
+  `Q*Lie(Ωc)=Sc+11*(f₁-(B/2)f₀)*Ωc` reduces every orientation-boundary crossing to corrected-slope
+  sign. At seam `X=100`, mass/gap are positive, `U',B'>0`, `Q'=0`, yet `Ωc=0` and `Lie(Ωc)<0`.
+  Therefore physical theta-orbit incidence or a stronger orbit invariant is mandatory. See
+  `../3-formalized/theta-cusp-c5-source-positive-flow-inward-barrier-no-go.md`.

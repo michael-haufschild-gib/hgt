@@ -342,6 +342,113 @@ private theorem no_small_x_sixth {T D0 CF Y : ℝ} (hT0 : 0 < T) (hCF : 0 ≤ CF
       mul_nonneg (le_of_lt hD0pos) (by norm_num : (0 : ℝ) ≤ 4624 ^ 3)]
   linarith only [h7, h9, h10]
 
+private theorem sixth_final_count {T D0 CF Y x M4 : ℝ} {K : ℕ}
+    {S : Finset ℕ} {τS : Finset ℝ}
+    (hT0 : 0 < T) (hT1 : 1 ≤ T) (hCF : 0 ≤ CF)
+    (hD0pos : 0 < D0) (hD08 : 8 ≤ D0) (hY2 : 2 ≤ Y)
+    (hroot : Y ≤ T ^ ((1 : ℝ) / 96))
+    (hLsq : (1 + Real.log T) ^ 2 ≤ 4624 * T ^ ((1 : ℝ) / 32))
+    (hYdef : Y = 9248 * D0 + 384 * D0 * (CF + 1) * 4624 ^ 3 + 2)
+    (hpow7 : (T ^ ((1 : ℝ) / 96)) ^ (7 : ℕ) = T ^ ((7 : ℝ) / 96))
+    (hM4def : M4 = (CF + 1) * T * (1 + Real.log T) ^ 4)
+    (hDL2pos : 0 < D0 * (1 + Real.log T) ^ 2)
+    (hxK : x ≤ 2 * (K : ℝ))
+    (hxval : T ^ ((1 : ℝ) / 6) = x * (D0 * (1 + Real.log T) ^ 2))
+    (hKR0 : (0 : ℝ) < (K : ℝ)) (hKne : (K : ℝ) ≠ 0)
+    (hScount : (T / 8) ^ 2 ≤ (S.card : ℝ) * ((T / K) * M4))
+    (hτScard : S.card ≤ 2 * τS.card + 1) :
+    1 / (384 * D0 * (CF + 1) + 1) * T ^ ((1 : ℝ) / 6) / (1 + Real.log T) ^ 6
+      ≤ (τS.card : ℝ) := by
+  have hlog0 : (0 : ℝ) ≤ Real.log T := Real.log_nonneg hT1
+  have hL1 : (1 : ℝ) ≤ 1 + Real.log T := by linarith only [hlog0]
+  have hL0 : (0 : ℝ) < 1 + Real.log T := by linarith only [hL1]
+  -- the counting arithmetic
+  have hcard : (K : ℝ) ≤ 64 * (S.card : ℝ) * (CF + 1) * (1 + Real.log T) ^ 4 := by
+    have h1 : (T / 8) ^ 2 * (K : ℝ) ≤ (S.card : ℝ) * ((T / K) * M4) * (K : ℝ) :=
+      mul_le_mul_of_nonneg_right hScount hKR0.le
+    have h2 : (S.card : ℝ) * ((T / K) * M4) * (K : ℝ) = (S.card : ℝ) * (T * M4) := by
+      have hTK : T / K * (K : ℝ) = T := div_mul_cancel₀ T hKne
+      calc (S.card : ℝ) * ((T / K) * M4) * (K : ℝ)
+          = (S.card : ℝ) * M4 * (T / K * (K : ℝ)) := by ring
+        _ = (S.card : ℝ) * M4 * T := by rw [hTK]
+        _ = (S.card : ℝ) * (T * M4) := by ring
+    have h3 : (T / 8) ^ 2 * (K : ℝ) = T ^ 2 * ((K : ℝ) / 64) := by ring
+    rw [h2, h3] at h1
+    have h4 : (S.card : ℝ) * (T * M4)
+        = T ^ 2 * ((S.card : ℝ) * (CF + 1) * (1 + Real.log T) ^ 4) := by
+      rw [hM4def]
+      ring
+    rw [h4] at h1
+    have h5 := le_of_mul_le_mul_left h1 (pow_pos hT0 2)
+    linarith only [h5]
+  have himg1 : (1 : ℝ) ≤ (τS.card : ℝ) := by
+    by_contra h0
+    have h0lt : (τS.card : ℝ) < 1 := not_le.mp h0
+    have h0' : τS.card = 0 := by
+      by_contra h1
+      have h2 : 1 ≤ τS.card := Nat.one_le_iff_ne_zero.mpr h1
+      have h3 : (1 : ℝ) ≤ (τS.card : ℝ) := by exact_mod_cast h2
+      linarith only [h0lt, h3]
+    have h1 : (S.card : ℝ) ≤ 2 * (τS.card : ℝ) + 1 := by exact_mod_cast hτScard
+    have h1' : ((τS.card : ℕ) : ℝ) = 0 := by exact_mod_cast h0'
+    rw [h1'] at h1
+    have hS1 : (S.card : ℝ) ≤ 1 := by linarith only [h1]
+    have hK64 : (K : ℝ) ≤ 64 * (CF + 1) * (1 + Real.log T) ^ 4 := by
+      have hpos : (0 : ℝ) ≤ 64 * ((CF + 1) * (1 + Real.log T) ^ 4) :=
+        mul_nonneg (by norm_num)
+          (mul_nonneg (by linarith only [hCF]) (le_of_lt (pow_pos hL0 4)))
+      have h4 := mul_le_mul_of_nonneg_right hS1 hpos
+      calc (K : ℝ) ≤ 64 * (S.card : ℝ) * (CF + 1) * (1 + Real.log T) ^ 4 := hcard
+        _ = (S.card : ℝ) * (64 * ((CF + 1) * (1 + Real.log T) ^ 4)) := by ring
+        _ ≤ 1 * (64 * ((CF + 1) * (1 + Real.log T) ^ 4)) := h4
+        _ = 64 * (CF + 1) * (1 + Real.log T) ^ 4 := by ring
+    have hxb : x ≤ 128 * (CF + 1) * (1 + Real.log T) ^ 4 := by
+      calc x ≤ 2 * (K : ℝ) := hxK
+        _ ≤ 2 * (64 * (CF + 1) * (1 + Real.log T) ^ 4) := by linarith only [hK64]
+        _ = 128 * (CF + 1) * (1 + Real.log T) ^ 4 := by ring
+    have hT6 : T ^ ((1 : ℝ) / 6) ≤ 128 * D0 * (CF + 1) * (1 + Real.log T) ^ 6 := by
+      have h2 := mul_le_mul_of_nonneg_right hxb (le_of_lt hDL2pos)
+      calc T ^ ((1 : ℝ) / 6) = x * (D0 * (1 + Real.log T) ^ 2) := hxval
+        _ ≤ 128 * (CF + 1) * (1 + Real.log T) ^ 4 * (D0 * (1 + Real.log T) ^ 2) := h2
+        _ = 128 * D0 * (CF + 1) * (1 + Real.log T) ^ 6 := by ring
+    exact no_small_x_sixth hT0 hCF hD0pos hD08 hY2 hroot hLsq hL0 hYdef hpow7 hT6
+  have hcard3 : (S.card : ℝ) ≤ 3 * (τS.card : ℝ) := by
+    have h1 : (S.card : ℝ) ≤ 2 * (τS.card : ℝ) + 1 := by exact_mod_cast hτScard
+    linarith only [h1, himg1]
+  have hxbound : x ≤ 384 * (τS.card : ℝ) * (CF + 1) * (1 + Real.log T) ^ 4 := by
+    have hpos : (0 : ℝ) ≤ 64 * ((CF + 1) * (1 + Real.log T) ^ 4) :=
+      mul_nonneg (by norm_num)
+        (mul_nonneg (by linarith only [hCF]) (le_of_lt (pow_pos hL0 4)))
+    have h3 := mul_le_mul_of_nonneg_right hcard3 hpos
+    have h2 : 64 * (S.card : ℝ) * (CF + 1) * (1 + Real.log T) ^ 4
+        ≤ 64 * (3 * (τS.card : ℝ)) * (CF + 1) * (1 + Real.log T) ^ 4 := by
+      calc 64 * (S.card : ℝ) * (CF + 1) * (1 + Real.log T) ^ 4
+          = (S.card : ℝ) * (64 * ((CF + 1) * (1 + Real.log T) ^ 4)) := by ring
+        _ ≤ 3 * (τS.card : ℝ) * (64 * ((CF + 1) * (1 + Real.log T) ^ 4)) := h3
+        _ = 64 * (3 * (τS.card : ℝ)) * (CF + 1) * (1 + Real.log T) ^ 4 := by ring
+    calc x ≤ 2 * (K : ℝ) := hxK
+      _ ≤ 2 * (64 * (S.card : ℝ) * (CF + 1) * (1 + Real.log T) ^ 4) := by
+          linarith only [hcard]
+      _ ≤ 2 * (64 * (3 * (τS.card : ℝ)) * (CF + 1) * (1 + Real.log T) ^ 4) := by
+          linarith only [h2]
+      _ = 384 * (τS.card : ℝ) * (CF + 1) * (1 + Real.log T) ^ 4 := by ring
+  have hfinal2 : T ^ ((1 : ℝ) / 6)
+      ≤ 384 * D0 * (CF + 1) * (τS.card : ℝ) * (1 + Real.log T) ^ 6 := by
+    have h2 := mul_le_mul_of_nonneg_right hxbound (le_of_lt hDL2pos)
+    calc T ^ ((1 : ℝ) / 6) = x * (D0 * (1 + Real.log T) ^ 2) := hxval
+      _ ≤ 384 * (τS.card : ℝ) * (CF + 1) * (1 + Real.log T) ^ 4
+          * (D0 * (1 + Real.log T) ^ 2) := h2
+      _ = 384 * D0 * (CF + 1) * (τS.card : ℝ) * (1 + Real.log T) ^ 6 := by ring
+  rw [div_le_iff₀ (pow_pos hL0 6), div_mul_eq_mul_div, one_mul,
+    div_le_iff₀ (by nlinarith [hD08, hCF, mul_nonneg (le_of_lt hD0pos) hCF] :
+      (0 : ℝ) < 384 * D0 * (CF + 1) + 1)]
+  have hcl : (0 : ℝ) ≤ (τS.card : ℝ) * (1 + Real.log T) ^ 6 :=
+    mul_nonneg (Nat.cast_nonneg _) (le_of_lt (pow_pos hL0 6))
+  calc T ^ ((1 : ℝ) / 6)
+      ≤ 384 * D0 * (CF + 1) * (τS.card : ℝ) * (1 + Real.log T) ^ 6 := hfinal2
+    _ ≤ (τS.card : ℝ) * (1 + Real.log T) ^ 6 * (384 * D0 * (CF + 1) + 1) := by
+        linarith only [hcl]
+
 /-- **Sixth-root many distinct critical-line ordinates.**  Unconditionally, at least
 `c · T^{1/6} / (1 + log T)⁶` distinct ordinates in `(T, 2T]` carry critical-line zeros
 `ζ(1/2 + iτ) = 0`, for all large `T`. -/
@@ -524,92 +631,9 @@ theorem exists_many_distinct_line_zeros_dyadic_sixth :
     exists_heavyFinset_sq hK1 hT0 hM40 hCdyadic hM4dyadic hEwin hgap
   obtain ⟨τS, hτSmem, hτScard⟩ := exists_distinct_ordinates hT0 hK1 S hSzero
   refine ⟨τS, hτSmem, ?_⟩
-  -- the counting arithmetic
-  have hcard : (K : ℝ) ≤ 64 * (S.card : ℝ) * (CF + 1) * (1 + Real.log T) ^ 4 := by
-    have h1 : (T / 8) ^ 2 * (K : ℝ) ≤ (S.card : ℝ) * ((T / K) * M4) * (K : ℝ) :=
-      mul_le_mul_of_nonneg_right hScount hKR0.le
-    have h2 : (S.card : ℝ) * ((T / K) * M4) * (K : ℝ) = (S.card : ℝ) * (T * M4) := by
-      have hTK : T / K * (K : ℝ) = T := div_mul_cancel₀ T hKne
-      calc (S.card : ℝ) * ((T / K) * M4) * (K : ℝ)
-          = (S.card : ℝ) * M4 * (T / K * (K : ℝ)) := by ring
-        _ = (S.card : ℝ) * M4 * T := by rw [hTK]
-        _ = (S.card : ℝ) * (T * M4) := by ring
-    have h3 : (T / 8) ^ 2 * (K : ℝ) = T ^ 2 * ((K : ℝ) / 64) := by ring
-    rw [h2, h3] at h1
-    have h4 : (S.card : ℝ) * (T * M4)
-        = T ^ 2 * ((S.card : ℝ) * (CF + 1) * (1 + Real.log T) ^ 4) := by
-      rw [hM4def]
-      ring
-    rw [h4] at h1
-    have h5 := le_of_mul_le_mul_left h1 (pow_pos hT0 2)
-    linarith only [h5]
-  have himg1 : (1 : ℝ) ≤ (τS.card : ℝ) := by
-    by_contra h0
-    have h0lt : (τS.card : ℝ) < 1 := not_le.mp h0
-    have h0' : τS.card = 0 := by
-      by_contra h1
-      have h2 : 1 ≤ τS.card := Nat.one_le_iff_ne_zero.mpr h1
-      have h3 : (1 : ℝ) ≤ (τS.card : ℝ) := by exact_mod_cast h2
-      linarith only [h0lt, h3]
-    have h1 : (S.card : ℝ) ≤ 2 * (τS.card : ℝ) + 1 := by exact_mod_cast hτScard
-    have h1' : ((τS.card : ℕ) : ℝ) = 0 := by exact_mod_cast h0'
-    rw [h1'] at h1
-    have hS1 : (S.card : ℝ) ≤ 1 := by linarith only [h1]
-    have hK64 : (K : ℝ) ≤ 64 * (CF + 1) * (1 + Real.log T) ^ 4 := by
-      have hpos : (0 : ℝ) ≤ 64 * ((CF + 1) * (1 + Real.log T) ^ 4) :=
-        mul_nonneg (by norm_num)
-          (mul_nonneg (by linarith only [hCF]) (le_of_lt (pow_pos hL0 4)))
-      have h4 := mul_le_mul_of_nonneg_right hS1 hpos
-      calc (K : ℝ) ≤ 64 * (S.card : ℝ) * (CF + 1) * (1 + Real.log T) ^ 4 := hcard
-        _ = (S.card : ℝ) * (64 * ((CF + 1) * (1 + Real.log T) ^ 4)) := by ring
-        _ ≤ 1 * (64 * ((CF + 1) * (1 + Real.log T) ^ 4)) := h4
-        _ = 64 * (CF + 1) * (1 + Real.log T) ^ 4 := by ring
-    have hxb : x ≤ 128 * (CF + 1) * (1 + Real.log T) ^ 4 := by
-      calc x ≤ 2 * (K : ℝ) := hxK
-        _ ≤ 2 * (64 * (CF + 1) * (1 + Real.log T) ^ 4) := by linarith only [hK64]
-        _ = 128 * (CF + 1) * (1 + Real.log T) ^ 4 := by ring
-    have hT6 : T ^ ((1 : ℝ) / 6) ≤ 128 * D0 * (CF + 1) * (1 + Real.log T) ^ 6 := by
-      have h2 := mul_le_mul_of_nonneg_right hxb (le_of_lt hDL2pos)
-      calc T ^ ((1 : ℝ) / 6) = x * (D0 * (1 + Real.log T) ^ 2) := hxval
-        _ ≤ 128 * (CF + 1) * (1 + Real.log T) ^ 4 * (D0 * (1 + Real.log T) ^ 2) := h2
-        _ = 128 * D0 * (CF + 1) * (1 + Real.log T) ^ 6 := by ring
-    exact no_small_x_sixth hT0 hCF hD0pos hD08 hY2 hroot hLsq hL0 hYdef hpow7 hT6
-  have hcard3 : (S.card : ℝ) ≤ 3 * (τS.card : ℝ) := by
-    have h1 : (S.card : ℝ) ≤ 2 * (τS.card : ℝ) + 1 := by exact_mod_cast hτScard
-    linarith only [h1, himg1]
-  have hxbound : x ≤ 384 * (τS.card : ℝ) * (CF + 1) * (1 + Real.log T) ^ 4 := by
-    have hpos : (0 : ℝ) ≤ 64 * ((CF + 1) * (1 + Real.log T) ^ 4) :=
-      mul_nonneg (by norm_num)
-        (mul_nonneg (by linarith only [hCF]) (le_of_lt (pow_pos hL0 4)))
-    have h3 := mul_le_mul_of_nonneg_right hcard3 hpos
-    have h2 : 64 * (S.card : ℝ) * (CF + 1) * (1 + Real.log T) ^ 4
-        ≤ 64 * (3 * (τS.card : ℝ)) * (CF + 1) * (1 + Real.log T) ^ 4 := by
-      calc 64 * (S.card : ℝ) * (CF + 1) * (1 + Real.log T) ^ 4
-          = (S.card : ℝ) * (64 * ((CF + 1) * (1 + Real.log T) ^ 4)) := by ring
-        _ ≤ 3 * (τS.card : ℝ) * (64 * ((CF + 1) * (1 + Real.log T) ^ 4)) := h3
-        _ = 64 * (3 * (τS.card : ℝ)) * (CF + 1) * (1 + Real.log T) ^ 4 := by ring
-    calc x ≤ 2 * (K : ℝ) := hxK
-      _ ≤ 2 * (64 * (S.card : ℝ) * (CF + 1) * (1 + Real.log T) ^ 4) := by
-          linarith only [hcard]
-      _ ≤ 2 * (64 * (3 * (τS.card : ℝ)) * (CF + 1) * (1 + Real.log T) ^ 4) := by
-          linarith only [h2]
-      _ = 384 * (τS.card : ℝ) * (CF + 1) * (1 + Real.log T) ^ 4 := by ring
-  have hfinal2 : T ^ ((1 : ℝ) / 6)
-      ≤ 384 * D0 * (CF + 1) * (τS.card : ℝ) * (1 + Real.log T) ^ 6 := by
-    have h2 := mul_le_mul_of_nonneg_right hxbound (le_of_lt hDL2pos)
-    calc T ^ ((1 : ℝ) / 6) = x * (D0 * (1 + Real.log T) ^ 2) := hxval
-      _ ≤ 384 * (τS.card : ℝ) * (CF + 1) * (1 + Real.log T) ^ 4
-          * (D0 * (1 + Real.log T) ^ 2) := h2
-      _ = 384 * D0 * (CF + 1) * (τS.card : ℝ) * (1 + Real.log T) ^ 6 := by ring
-  rw [div_le_iff₀ (pow_pos hL0 6), div_mul_eq_mul_div, one_mul,
-    div_le_iff₀ (by nlinarith [hD08, hCF, mul_nonneg (le_of_lt hD0pos) hCF] :
-      (0 : ℝ) < 384 * D0 * (CF + 1) + 1)]
-  have hcl : (0 : ℝ) ≤ (τS.card : ℝ) * (1 + Real.log T) ^ 6 :=
-    mul_nonneg (Nat.cast_nonneg _) (le_of_lt (pow_pos hL0 6))
-  calc T ^ ((1 : ℝ) / 6)
-      ≤ 384 * D0 * (CF + 1) * (τS.card : ℝ) * (1 + Real.log T) ^ 6 := hfinal2
-    _ ≤ (τS.card : ℝ) * (1 + Real.log T) ^ 6 * (384 * D0 * (CF + 1) + 1) := by
-        linarith only [hcl]
+  exact sixth_final_count hT0 hT1 hCF hD0pos hD08 hY2 hroot hLsq hYdef hpow7
+    hM4def hDL2pos hxK hxval hKR0 hKne hScount hτScard
+
 
 /-- **Sixth-root census difference.**  Unconditionally, the number of critical-line zeros of
 `xi` with ordinate in `(T, 2T]`, counted with multiplicity, is at least
@@ -684,6 +708,8 @@ theorem exists_sixthRoot_le_xiPosCriticalZeroCount :
       ≤ c * (T / 2) ^ ((1 : ℝ) / 6) / (1 + Real.log (T / 2)) ^ 6 := hfinal
     _ ≤ (xiPosCriticalZeroCount T : ℝ) - (xiPosCriticalZeroCount (T / 2) : ℝ) := hspec
     _ ≤ (xiPosCriticalZeroCount T : ℝ) := by linarith only [hcnn]
+
+
 
 end
 

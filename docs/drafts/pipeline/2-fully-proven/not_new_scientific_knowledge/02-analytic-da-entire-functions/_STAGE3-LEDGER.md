@@ -7,7 +7,7 @@ Goal: unconditional Lean formalization of every card in this folder, then promot
 
 | # | Card | Hard classical input | Status |
 |---|---|---|---|
-| 1 | supergaussian-wide-newton-plateau-monomialization | elementary (Newton envelope + Wiman face) | TODO |
+| 1 | supergaussian-wide-newton-plateau-monomialization | elementary (Newton envelope + Wiman face) | **DONE → 3-formalized** (2026-08-29) |
 | 2 | finite-jet-nonidentifiability-ht | Hölder (owned: `hypertranscendental_gamma`) | TODO |
 | 3 | order-two-shadow-matching-normal-form | pure differential algebra | TODO |
 | 4 | quasianalytic-one-phase-bezout-boundary-law | Poincaré field + Bezout + compactness | TODO |
@@ -46,3 +46,5 @@ Goal: unconditional Lean formalization of every card in this folder, then promot
 
 ## Log
 - 2026-08-29 — ledger created; all 22 cards read; corpus reconnaissance done.
+- 2026-08-29 — card 1 closed: `SuperGaussianNewtonPlateau`, `SuperGaussianMonomialization`,
+  `SuperGaussianAutonomousFace`; axioms clean; promoted to `3-formalized`.

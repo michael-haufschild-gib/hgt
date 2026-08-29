@@ -299,3 +299,37 @@ other pole on the orbit `b^Z`.
 irrational; (iii) the `h`-adic coefficient extraction of step 3; (iv) the multiplicatively
 dependent case `s = -p/q`, where instead `K = C(w)`, `w = z^{1/q}`, `h = w^{-p}`, and the
 obstruction is the *untwisted* one on the `q` distinct orbits of the `q`-th roots of unity.
+
+### ADH gate: build state
+
+Landed and umbrella-wired (all clean under `lake env lean`, no warnings):
+
+1. `HTGeometry/HahnDilation.lean` — Hahn series carry a dilation `hahnScale`/`hahnDilation` for
+   every exponential character of the value group, a grading `hahnGrade` with the Leibniz rule and
+   the resulting `hahnDerivation`/`hahnDifferential`, the coefficient twist `hahnTwist`, the
+   coefficientwise operator `hahnCoeffMap` with its Leibniz rule, the coefficient ring map
+   `hahnMapRingHom`, and all the commutation laws between them.  The two headline facts are
+   `hahnDilation_eq_self_iff_single` and `exists_single_of_hahnDilation_eq_self`: a faithful
+   character forces the invariants to be the constants.  Also `coeff_mul_of_support_subset`
+   (mathlib has only the one-sided versions).
+2. `HTGeometry/TwistedDilationOrbitObstruction.lean` — `γ k(qX) - k(X) = r` has no rational
+   solution when `r` has a single pole on the orbit `p₀ q^Z`, and the cotangent-model corollary.
+3. `HTGeometry/TwistedRatFuncLaurent.lean` — the twisted dilation `ratFuncTwist φ q` of `K(X)`
+   (coordinate scaled by `q`, coefficients moved by `φ`), its Laurent expansion
+   `algebraMap_ratFuncTwist`, and the descent `exists_twistedCoboundary_of_ratFuncTwist`: a
+   constant that is a twisted coboundary in `K(X)` is already one in `K`.
+4. `HTGeometry/QDifferenceLaurentModel.lean` — the ambient field `k((z))((h))` with the dilation
+   `z ↦ bz`, `h ↦ a⁻¹h` (`qDilation`) and the derivation `δz = z`, `δh = sh` (`qDerivation`,
+   `qDifferential`), their commutation, and `exists_C_C_of_qDilation_eq_self`: **the invariants are
+   the constants whenever `bᵐ = aⁿ` forces `m = n = 0`.**  This is the `hfixed` hypothesis that
+   every previous corpus reduction (double sine included) had to carry.
+
+Remaining for card 7, in order: (a) `qEmbed : k(z)(h) → k((z))((h))` and its intertwining with the
+dilations (needs only the two compatibilities `algebraMap ∘ ratFuncScale = innerDilation ∘
+algebraMap` and the constant expansion, both instances of `algebraMap_ratFuncTwist`); (b) the
+derivation compatibility `DifferentialAlgebra` (Euler operator versus Euler grading, by the
+agreeing-Leibniz-operators argument, polynomials first, then the quotient rule); (c) the response
+`R` as an element of `k((z))` with its functional equation, `u := R h⁻¹`, and the increment
+`-r h⁻¹`; (d) `hnot` via (3) + (2); (e) the multiplicatively dependent case `aⁿ = bᵐ`, where the
+base is the ramified `k(w)`, `w = z^{1/n}`, and the obstruction is the untwisted one on the `n`
+distinct orbits of the `n`-th roots of unity.

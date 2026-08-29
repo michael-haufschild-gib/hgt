@@ -1,8 +1,8 @@
 # Countability and Complexity Escape of DA Translation Spectra
 
 - **ID:** ht-da-translation-spectrum-countability
-- **Stage:** 2-fully-proven / not new scientific knowledge
-- **Type:** THEOREM (paper) / BRIDGE
+- **Stage:** 3-formalized / not new scientific knowledge
+- **Type:** THEOREM (Lean) / BRIDGE
 - **Scientific status:** `[BRIDGE]` — correct, but routine from Mahler's 1971 normalization theorem plus one-variable meromorphic identity
 - **Statement:** If a meromorphic function `F` on `C` is hypertranscendental over `C(z)`, then the subgroup of shifts `h` for which `F(z+h)-F(z)` is differentially algebraic is countable. More sharply, DA defects at accumulating shifts must have unbounded differential order or unbounded total jet degree.
 
@@ -24,7 +24,7 @@ The theorem would show that an HT function may carry dense DA translation constr
 - [x] Significance gate: the countable-or-total law is structurally useful.
 - [x] Parent-theory gate: **FAILS scientific novelty.** Mahler's countable normalization makes countability a routine analytic-family corollary; bounded-complexity discreteness is a routine determinantal rank-locus argument.
 - [x] Literature and rediscovery gates: coherent-family theory, Mahler normalization, difference-property theory, and fixed-shift DA literature checked.
-- [ ] Formalization: not prioritized because scientific novelty failed.
+- [x] Formalization: complete and unconditional in Lean 4 (see **Lean status** below).
 
 ## Complexity strata
 
@@ -161,3 +161,50 @@ Primary parent: K. Mahler, *A remark on algebraic differential equations*, Rend.
 - 2026-07-10 - Strengthened from entire to meromorphic functions. The evaluation-minor and lowest-shift-order proof survives moving poles by working over meromorphic function fields.
 - 2026-07-10 - Removed coefficient degree from the complexity measure using autonomous reduction. Also corrected the rigidity statement from an exclusive dichotomy to the precise implication `accumulation => F is DA`.
 - 2026-07-10 - Parent-killed by Mahler's 1971 integer-coefficient normalization theorem. Downgraded to `[BRIDGE]`; the finite-stencil extension is recorded only as infrastructure for the next classification problem.
+
+## Lean status (2026-08-29)
+
+Fully formalized unconditionally in Lean 4, for sources analytic off an arbitrary **closed
+countable** singular set — a class that contains every meromorphic function on `C`.  The
+dependency-closed implementation is:
+
+- `HTGeometry/DomainJetRelationLocus.lean` — the bounded-complexity `(n,d)` sample-minor
+  certificate for `DifferentiallyAlgebraicOn f Ω` on an arbitrary open preconnected domain, with
+  sample nodes placed inside a disc of `Ω`
+  (`differentiallyAlgebraicOn_iff_forall_coordinateMinor_det_eq_zero`);
+- `HTGeometry/DomainTranslationSlopeMinor.lean` — the `h⁻¹`-normalized translation-defect minor on
+  a domain, its continuity at `h = 0`, the diagonal factorization away from `0`, antiderivative
+  closure on a domain (`differentiallyAlgebraicOn_of_deriv`) and the uniform branch
+  (`differentiallyAlgebraicOn_deriv_of_uniform_domain_translation_relations`);
+- `HTGeometry/MeromorphicTranslationDefectCountability.lean` — the singular-set bookkeeping, the
+  shift-analytic minor determinant, and the capstone
+  `countable_defectDAStabilizer`: for `S` closed and countable, `F` analytic on `Sᶜ` and
+  `¬ DifferentiallyAlgebraicOn F Sᶜ`, the set of shifts `h` with
+  `DifferentiallyAlgebraicOn (fun z => F (z + h) - F z) (defectDomain S h)` is countable;
+- `HTGeometry/MeromorphicTranslationComplexityEscape.lean` — the fixed-complexity stratum
+  (`HasDifferentialRelationOfComplexityOn`), a sample disc whose nodes avoid a prescribed countable
+  set, the accumulation theorem
+  `differentiallyAlgebraicOn_of_boundedComplexity_defects_accumulate` and the complexity-escape
+  corollary `not_exists_injective_tendsto_boundedComplexity_defect`;
+- `HTGeometry/MeromorphicMultiplicativeTranslationDefect.lean` — the domain logarithmic-derivative
+  equivalence `differentiallyAlgebraicOn_logDeriv_iff`, relation extension from a subdomain, and
+  the multiplicative capstone `countable_multDefectDAStabilizer`;
+- `HTGeometry/StencilJetExpansion.lean` — a local affine chain rule for iterated derivatives, the
+  stencil moments, and the moment formula `iteratedDeriv_stencilShiftProfile_zero` together with
+  the `k`-fold removable division `dslopeIterZero`;
+- `HTGeometry/DifferentialAlgebraicOnSum.lean` — additive closure of differential algebraicity on a
+  domain (constants, binary sums, finite sums, scalar multiples);
+- `HTGeometry/StencilTranslationDefectCountability.lean` — the finite-stencil extension:
+  `countable_stencilDAStabilizer` (countable parameter set when the source is
+  hypertranscendental, with `M_m = 0` for `m < k` and `M_k ≠ 0`) and
+  `stencilDAStabilizer_eq_univ_of_differentiallyAlgebraicOn` (all of `C` when the source is
+  differentially algebraic).
+
+The already-owned entire case is `HTGeometry/EntireTranslationDefectCountability.lean`
+(`countable_differentiallyAlgebraic_translationDefect`) and
+`HTGeometry/EntireMultiplicativeTranslationDefectCountability.lean`.
+
+No `sorry`, `admit`, new axiom or heartbeat increase is used.  Targeted `lake env lean` and
+`lake build` of each new module pass; axiom audits of every new capstone report only `propext`,
+`Classical.choice` and `Quot.sound`.  All new modules are wired into
+`GaloisForLFunctions.HTGeometry`.

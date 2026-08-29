@@ -626,7 +626,8 @@ theorem stencilDAStabilizer_eq_univ_of_differentiallyAlgebraicOn {F : ℂ → �
   have hshiftDA : ∀ l : Fin J,
       DifferentiallyAlgebraicOn (fun z => F (z + lam l * h)) (stencilDomain S lam h) := by
     intro l
-    exact (hFDA.comp_add_const (lam l * h)).mono (hsub l)
+    obtain ⟨n, P, hP0, hPv⟩ := DifferentiallyAlgebraicOn.comp_add_const hFDA (lam l * h)
+    exact ⟨n, P, hP0, fun z hz => hPv z (hsub l hz)⟩
   have hterm : ∀ l : Fin J,
       AnalyticOnNhd ℂ (fun z => c l * F (z + lam l * h)) (stencilDomain S lam h) := by
     intro l z hz

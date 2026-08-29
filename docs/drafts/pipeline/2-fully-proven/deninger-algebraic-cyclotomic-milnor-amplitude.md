@@ -1368,3 +1368,48 @@ Targeted module build passed.  Axiom audit:
 
 Card remains Stage 2: covering descent over `𝓞 K`, finite generation of the tame kernel, and
 Moore reciprocity remain.
+
+### Canonical integral basis and matrix size reduction (2026-08-29)
+
+Two further unconditional modules remove arbitrary coordinate and matrix hypotheses:
+
+- `NumberFieldIntegerBasis.lean` reindexes `RingOfIntegers.basis K` by
+  `Fin (Module.finrank ℚ K)`.  Its index equivalence is proved from
+  `Module.finrank_eq_card_chooseBasisIndex` and `RingOfIntegers.rank`; no basis is supplied as data.
+- `NumberFieldIntegerMatrixReduction.lean` applies the concrete covering radius entrywise.  It
+  produces, with one field-dependent radius, both arbitrary integral matrix approximants and a
+  strict-upper approximant whose completed matrix is upper unitriangular over `𝓞 K` with determinant
+  exactly `1`.
+
+The latter is the exact integral unipotent witness used by Hermite/Siegel size reduction.  No
+integrality, upper-triangularity, unimodularity, determinant, per-place selection, or common-radius
+hypothesis remains external.
+
+Both targeted module builds passed.  Axiom audits:
+`[propext, Classical.choice, Quot.sound]`.  Both modules are umbrella-wired.
+
+Card remains Stage 2: the induction assembling these witnesses into full covering descent, the
+finite-generation bridge for the tame kernel, and Moore reciprocity remain.
+
+### Number-ring Steinberg finite generation (2026-08-29)
+
+`NumberFieldSteinbergFiniteGeneration.lean` now specializes the existing ring-level generation
+theorems without external premises:
+
+```text
+numberFieldInteger_steinbergGroup_fin3_fg
+    Group.FG (SteinbergGroup (𝓞 K) (Fin 3))
+
+numberFieldInteger_elementaryGroup_fin3_fg
+    Group.FG (elementaryGroup (𝓞 K) (Fin 3))
+```
+
+`Module.Finite ℤ (𝓞 K)` is inferred from the number-field structure.  The rank-three root-index
+condition is discharged from `Fintype.card (Fin 3) = 3`, not retained as a hypothesis.
+
+Targeted module build passed.  Axiom audit:
+`[propext, Classical.choice, Quot.sound]`.  Umbrella-wired.
+
+Card remains Stage 2.  Finite generation of the Steinberg source is closed; still required are full
+`𝓞 K` covering/presentation, identification and centrality of the relevant tame-kernel quotient,
+and Moore reciprocity.

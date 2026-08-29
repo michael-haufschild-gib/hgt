@@ -1,7 +1,7 @@
 # Super-Gaussian Series Have Arbitrarily Wide Monomial Newton Plateaux
 
 - **ID:** supergaussian-wide-newton-plateau-monomialization
-- **Stage:** 2-fully-proven / not new scientific knowledge
+- **Stage:** 3-formalized / not new scientific knowledge
 - **Type:** THEOREM (paper) / BRIDGE / CONSTRAINT REDUCTION
 - **Scientific status:** `[BRIDGE]` — an exact maximum-term convexity theorem whose ADE corollary is the classical Wiman-Valiron dominant-face obstruction
 - **Statement:** Faster-than-every-Gaussian Taylor decay forces arbitrarily wide logarithmic-radius intervals on which every fixed jet is exponentially close to one Taylor monomial.
@@ -16,7 +16,7 @@ Replace exceptional-set Wiman-Valiron approximation by a coefficient-exact monom
 - [x] Uniform approximation proved for every fixed finite jet and every argument on the selected circles.
 - [x] Autonomous ADE principal-face corollary proved.
 - [x] Parent-theory gate: **FAILS scientific novelty.** The plateau theorem is elementary Newton-envelope theory; the face corollary is contained in the classical Wiman-Valiron dominant-term framework.
-- [ ] Formalization: not attempted. The card cannot enter `3-formalized` without a complete unconditional Lean proof of the whole theorem.
+- [x] Formalization: **complete and unconditional in Lean 4** (see the Formalization section).
 
 ## Setup
 
@@ -168,3 +168,64 @@ Every infinite-spectrum entire-complex-time lattice heat anchor has the monomial
 ## Log
 
 - 2026-07-11 — Proved wide Newton plateaux and uniform finite-jet monomialization; identified the ADE face corollary as classical Wiman-Valiron parent theory.
+
+## Formalization (2026-08-29) — complete
+
+Three new `HTGeometry` modules, wired into `GaloisForLFunctions.HTGeometry`.  Every theorem is
+unconditional: `#print axioms` gives only `propext, Classical.choice, Quot.sound`.
+
+### `HTGeometry/SuperGaussianNewtonPlateau.lean` — Theorem 1 (1)
+
+| Card step | Lean name |
+|---|---|
+| the hypothesis `(SG)` | `SuperGaussianCoeffs` |
+| `(SG)` forces entireness | `entireCoeffs_of_superGaussian` |
+| `log mu(r) <= log C_A + (log r)^2/(4A)` | `maxTerm_le_of_superGaussian` |
+| `mu(r) >= |a_{n_0}| r^{n_0}` | `log_maxTerm_ge` |
+| **`nu(e^T) <= D/T + T/A` for every `A`** | `centralIndex_le_of_superGaussian` |
+| the central index escapes to infinity | `exists_radius_le_centralIndex` |
+| the strict-increase count | `add_le_centralIndex_of_strict` |
+| **arbitrarily wide plateaux at arbitrarily high index** | `exists_wide_plateau` |
+
+The formal route replaces the card's enumeration of active indices and transition slopes by the
+equivalent *constancy interval of the central index*: `nu` is a nondecreasing integer function, the
+super-Gaussian bound makes it grow more slowly than every fixed linear rate in `log r`, and a
+pigeonhole on `⌈T/B⌉` equally spaced heights produces a constancy interval of any prescribed width
+`B` beyond any prescribed index.  A constancy interval of `nu` is exactly a plateau of the
+logarithmic Newton envelope.
+
+### `HTGeometry/SuperGaussianMonomialization.lean` — Theorem 1 (2)–(3)
+
+| Card step | Lean name |
+|---|---|
+| `|m − n|` | `idxDist` |
+| step 2, above / below the plateau index | `term_le_of_centralIndex_right`, `term_le_of_centralIndex_left` |
+| **step 2, `(8)`: mid-plateau separation `e^{−|m−n| W/2}`** | `term_le_midplateau` |
+| the summable weight `(4k)^j e^{−k}` and its constant `C_j` | `tailWeight`, `tailConst`, `summable_tailWeight` |
+| the two-sided tail sum | `tsum_tailWeight_idxDist_le` |
+| termwise Taylor expansion of the `j`-th jet | `hasSum_iteratedDeriv_taylor` |
+| the falling-factorial comparison | `descFactorial_le_mul_pow` |
+| **step 3, `(2)`–`(3)`: `‖f^{(j)}(z) − (n)_j a_n z^{n−j}‖ ≤ C_j e^{−W/3}·(n)_j|a_n|r^{n−j}`** | `norm_iteratedDeriv_sub_monomial_le` |
+| `(n)_j/n^j → 1`, quantitatively | `pow_succ_le_descFactorial_bound`, `descFactorial_relative_defect` |
+| **Theorem 1 assembled: every fixed jet monomializes to any accuracy** | `exists_monomialization` |
+| the package used by Theorem 2 | `exists_monomialization_package` |
+
+### `HTGeometry/SuperGaussianAutonomousFace.lean` — Theorem 2
+
+| Card step | Lean name |
+|---|---|
+| `(1+δ)^D ≤ 1 + 3^D δ` | `one_add_pow_le` |
+| a product of near-unit factors is near unit | `norm_pow_sub_one_le`, `norm_prod_pow_sub_one_le` |
+| `d(γ)`, `w(γ)` | `jetDeg`, `jetWt` |
+| the off-face ratio estimate | `monomial_face_ratio_le` |
+| **`(10)`: the top-degree minimal-weight face sums to zero** | `autonomous_face_sum_eq_zero` |
+| the face is nonempty for a nonzero `P` | `exists_autonomous_face_nonempty_sum_eq_zero` |
+
+The formal proof of `(10)` is the quantitative version of the card's limit argument: at the
+mid-plateau radius `t` with `x = a_n z^n` and `η = n/z`, every jet is `x η^j` up to a relative error
+`δ`, so the differential polynomial becomes `Σ_γ c_γ x^{d(γ)} η^{w(γ)} C_γ` with `‖C_γ − 1‖ ≤
+(1+δ)^D − 1`; the plateau package supplies `|x| ≥ 1`, `|η| ≤ ρ` and `t^q ≤ ρ|x|`, which make every
+off-face monomial smaller than the face monomial by the factor `ρ`.  Letting `δ, ρ → 0` gives
+`‖Σ_{face} c_γ‖ ≤ ε` for every `ε`.
+
+No hypothesis was added and no numerical computation was used.

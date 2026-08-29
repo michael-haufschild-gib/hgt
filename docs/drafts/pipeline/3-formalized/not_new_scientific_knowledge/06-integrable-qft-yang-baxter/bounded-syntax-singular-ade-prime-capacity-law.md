@@ -1,7 +1,7 @@
 # Bounded ADE syntax has a universal prime-frequency capacity
 
 - **ID:** `bounded-syntax-singular-ade-prime-capacity-law`
-- **Stage:** 2-fully-proven / paper proof complete
+- **Stage:** 3-formalized / not_new_scientific_knowledge
 - **Type:** THEOREM (paper) / POSITIVE COMPLEXITY LAW / GENERAL HT LANDSCAPE
 - **Scientific status:** `[PROVED] [SEARCH] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Statement:** For every differential-order bound `n` and polynomial-degree bound `d`, there is
@@ -269,13 +269,69 @@ separate singular Kolchin-frequency theorem already proved in this pipeline. The
 useful because it turns the vague escape word “singular” into a concrete positive resource law, but
 it is a direct parent-theory bridge and fails the scientific-novelty gate.
 
-## 9. Lean status
+## 9. The parent theorem is not needed: `B(n,d) = n`
 
-The current Lean tree has no characteristic-set theory for differential polynomial ideals, minimal
-prime differential decomposition, Kolchin jet dimension, Bohr hull, covering dimension, or
-Pontryagin duality sufficient to formalize `(15)`. Adding a theorem-shaped wrapper around the
-numerical implication `(18)` would not formalize this claim. The complete unconditional paper proof
-belongs in stage 2; movement to stage 3 requires a full unconditional Lean formalization.
+The uniform characteristic-set theorem `(4)` was used only to produce *some* finite bound.  The
+bound is in fact the order itself, with no nonstandard input and no dependence on the degree.
+
+`[PROVED]` Let `x` be an element of a differential field extension of a coefficient field `K` of
+characteristic zero, and suppose a nonzero polynomial in the first `n+1` jets
+`x, x', ..., x^(n)` vanishes.  Then the minimal differential order of `x` is at most `n`, hence
+
+```text
+kappa(x) <= n.                                                            (6')
+```
+
+Proof.  Strictly below the minimal differential order the jets are algebraically independent over
+`K`.  If the minimal order exceeded `n`, the first `n+1` jets would be algebraically independent,
+and no nonzero polynomial could annihilate them.  The Kolchin jet capacity is at most the minimal
+differential order, so `(6')` follows.
+
+This is exactly the statement `(6)` needs, applied to the generic point of a minimal prime
+differential component: such a generic point is an element of a differential field extension
+annihilated by `P`, and `dim V_(P,m)` is its `m`-th jet rank.  So every component obeys the same
+bound, singular components included, and one may take
+
+```text
+B(n,d) = n.                                                               (5')
+```
+
+Consequently `(18)` sharpens to `pi(N) <= 2 n_N`: the *order alone* must grow along a cofinal
+prime exhaustion.  Increasing the degree is not an escape mechanism for a scalar autonomous
+equation in one differential indeterminate; item 4 of section 7 is therefore withdrawn as an
+escape route, while remaining correct as a statement about what the parent theorem alone gives.
+
+## 10. Lean formalization
+
+Formalized unconditionally in
+`formal/GaloisForLFunctions/HTGeometry/BoundedSyntaxPrimeCapacity.lean` and
+`formal/GaloisForLFunctions/HTGeometry/BoundedSyntaxStripPrimeBudget.lean`.
+
+- `differentialOrder_le_of_jetRelation` proves `(6')` for an arbitrary differential field
+  extension of an arbitrary coefficient field: a nonzero `MvPolynomial (Fin (n+1))` relation on
+  the jets forces the minimal differential order down to `n`.  The mechanism is the corpus's
+  `algebraicIndepOn_jets_lt_differentialOrder`.
+- `differentialAlgebraicOver_of_jetRelation` supplies the differential algebraicity such a
+  relation implies, and `kolchinJetCapacity_le_of_jetRelation` combines the two with the corpus's
+  `kolchinJetCapacity_le_differentialOrder` to give `kappa(x) <= n`.
+- `boundedSyntaxCapacity n d = n` and `kolchinJetCapacity_le_boundedSyntaxCapacity` record `(5')`:
+  the universal capacity of the bounded-syntax class, uniform over all coefficient fields and
+  independent of the degree.
+- The frequency law `(14)`--`(15)` is the corpus's unconditional
+  `rank_bohrHullFrequencies_le_of_stripAnnihilator`: a holomorphic uniformly almost-periodic
+  function on a vertical strip satisfying there a nonzero autonomous algebraic differential
+  equation of exact order `n` has frequency group of rational rank at most `2n`.  Its axiom audit
+  is clean.
+- `primeCounting_le_two_mul_of_stripAnnihilator` is `(18)`: a strip carrier retaining `pi(N)`
+  rationally independent prime directions in its frequency group obeys `pi(N) <= 2 n`.
+- `exists_primeCounting_gt` proves that the prime-counting function is unbounded, from the
+  infinitude of the primes alone, and `exists_lt_order_of_primeBudget` together with
+  `not_bddAbove_order_of_primeBudget` prove `(19)`: no uniform syntax bound survives a cofinal
+  prime exhaustion.
+
+Direct Lean checks, targeted leaf builds and umbrella wiring done.  Axiom audit of every capstone
+above — including the imported frequency law — reports only `propext`, `Classical.choice`, and
+`Quot.sound`.
 
 ## Gates
 
@@ -286,4 +342,5 @@ belongs in stage 2; movement to stage 3 requires a full unconditional Lean forma
 - [x] cofinal prime-growth consequence proved
 - [x] singular, coefficient, arity, and degenerate boundaries attacked
 - [x] exact parent theorem located and novelty rejected
-- [ ] complete unconditional Lean formalization
+- [x] parent theorem eliminated: the capacity bound is the order itself, `B(n,d) = n`
+- [x] complete unconditional Lean formalization, targeted leaf builds, and axiom gate
