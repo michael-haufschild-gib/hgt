@@ -1,7 +1,7 @@
 # Common-profile Boolean response and anchor-curvature identity
 
 - **ID:** `common-profile-boolean-anchor-curvature`
-- **Stage:** `2-fully-proven`
+- **Stage:** `3-formalized`
 - **Type:** `[PAPER-PROVED] [BRIDGE] [REDISCOVERED] [POSITIVE SALVAGE]`
 - **Source:** `critical-multiplicative-compensated-cancellation-rh.md`, `(PF1)`, `(AC13)`,
   `(AC24)`
@@ -281,7 +281,7 @@ anchor and every `y : Real`; no analytic, RH, or physical-profile hypothesis bel
 - [x] Completed the response, occupancy, and common-Gram paper proof.
 - [x] Hostile sign, source-independence, and circularity audit.
 - [x] Classified under standard Boolean Möbius inversion and Gram polarization.
-- [ ] Exact Lean theorem and axiom gate.
+- [x] Exact Lean theorem and axiom gate.
 
 
 ## Fourier-side strengthening: signed shear tensor and density-induced rank collapse
@@ -489,3 +489,109 @@ Card is not yet Stage-3 exact. Remaining literal obligations are:
    not be a faithful formalization.
 
 No Lean file was changed or rechecked during this read-only audit. Card remains Stage 2.
+
+## Exact statement of `(SG9)`
+
+The asymptotic notation of the original `(SG9)` paragraph is replaced by the following exact
+statement, which is what the bounded-variation argument actually proves and is now formalized.
+
+For a Schwartz profile `W` put
+
+```text
+Z=sum_(m!=0)1/m^2,
+C(W)=|hat(W)(0)|+p_2(hat(W)) Z,
+```
+
+where `p_2` is the second Schwartz seminorm of the transform.  Then for every modulus `l>=1` and
+every gap `h`,
+
+```text
+|delta_h(e_l)|<=nu_h(l) l C(W).                          (SG9a)
+```
+
+For a fixed modulus `q>=1`, a finite set `H` of gaps, and any finite set `B` of primes `p<2P`
+coprime to `q` with `|B|<=P`,
+
+```text
+sum_(h in H)sum_(p in B)|delta_h(e_(pq))|
+ <=sum_(h in H)4 nu_h(q) q P^2 C(W_h).                    (SG9b)
+```
+
+`(SG9b)` is `(SG9)` with every constant exhibited: the factor `2^omega(q)` of the original is the
+bound `nu_h(q)<=2^omega(q)`, and the `log(M)^(O(1))/M^2` of the original is the size of `C(W_h)`
+for the specific physical profile of the source card.  That size is a statement about the source
+construction and belongs to it, not to this card.
+
+## Lean formalization
+
+Every statement is unconditional: no `sorry`, no added axioms, no hypothesis interface.  Each
+capstone audits to `[propext, Classical.choice, Quot.sound]`.
+
+New modules (area `GaloisForLFunctions.RHTower`):
+
+| Module | Role |
+|---|---|
+| `RHTower/CommonProfileAnchorResponseMobius.lean` | anchored and primitive responses, `(CG1)`, arithmetic `(CG2)`, `(SG10)` |
+| `RHTower/CommonProfilePoissonVacuum.lean` | integer residue classes, the physical occupancy, Poisson summation on the root progressions, `(PF1)` |
+| `RHTower/CommonProfileVacuumJoin.lean` | the frequency weight of a Schwartz profile, `(PF1)` in the anchored normalization, the sieved occupancy, `(CG3)`, `(CG4)` |
+| `RHTower/CommonProfileGlobalCurvatureJoin.lean` | Boolean avoidance coordinates, `(CG8)`, the global gap join `(CG6)`, and realizability of the common profile |
+| `RHTower/CommonProfileDefectBound.lean` | the frequency tail mass, the exact `(SG9a)` defect bound and the exact crossing bound `(SG9b)` |
+
+Dictionary:
+
+| Paper object | Lean name |
+|---|---|
+| `nu_h(q)` | `RHTower.quadraticCongruenceRootCountTotal` |
+| `S_(q,h)(u)` | `RHTower.quadraticCongruenceRootSumTotal` |
+| `theta_h(q)` | `RHTower.rootDensity` |
+| `V_N(h)` | `RHTower.survivalProduct` |
+| `w_(N,h)(r)` | `RHTower.bernoulliWeight` |
+| `A_(q,h)` | `RHTower.anchoredResponse` |
+| `B_(c,r,h)` | `RHTower.primitiveAnchoredResponse` |
+| `Eresp_(c,N,h)` | `RHTower.futureResponse` |
+| `beta_h(e_l)` | `RHTower.occupancy` |
+| `delta_h(e_l)` | `RHTower.occupancyDefect` |
+| `J_h` | `𝓕 (W : ℝ → ℂ) 0` |
+| `P_N(m)` | `RHTower.sieveIndicator` |
+| sieved occupancy of `(CG3)` | `RHTower.siftedOccupancy` |
+| `a_p(m)` Boolean avoidance weights | `RHTower.avoidanceCoordinate` |
+| `Energy(S)` | `RHTower.commonProfileSiftedEnergy` |
+| `C(W)` of `(SG9a)` | `RHTower.profileConstant` |
+
+Theorems:
+
+| Card statement | Lean theorem |
+|---|---|
+| `(CG1)` | `RHTower.primitiveAnchoredResponse_eq_sum_divisors_moebius` |
+| `(CG2)` | `RHTower.futureResponse_eq_sum_divisors` |
+| complete Bernoulli mass | `RHTower.sum_divisors_bernoulliWeight` |
+| `(PF1)` | `RHTower.occupancyDefect_eq_tsum`, `RHTower.anchoredResponse_schwartz` |
+| `(CG3)` | `RHTower.futureResponse_schwartz_eq` |
+| `(CG4)` | `RHTower.rootDensity_mul_futureResponse_schwartz` |
+| `(CG5)` | `RHTower.commonGramBooleanAnchorCurvature` |
+| `(CG6)` | `RHTower.sum_gaps_rootDensity_mul_futureResponse` |
+| `(CG7)` | `RHTower.commonGramBooleanAnchorCurvature` (arbitrary real coordinates) |
+| `(CG8)` | `RHTower.commonAnchorWeight_avoidance` |
+| `(CG9)`--`(CG12)` | `RHTower.rankOneCommonGramCurvature_eq_one_add_two_mul`, `RHTower.exists_rankOneCommonGramCurvature_eq`, `RHTower.emptyAnchorCommonGramCurvature_nonneg` |
+| `(SG1)`--`(SG8a)` | `RHTower.SquarefreeShearKernel*` suite |
+| `(SG9a)` | `RHTower.norm_occupancyDefect_le` |
+| `(SG9b)` | `RHTower.sum_crossing_norm_occupancyDefect_le` |
+| `(SG10)` | `RHTower.protectedAnchorRow_eq`, `RHTower.protectedAnchorFrequency_eq` |
+
+Supporting results built on the way: `RHTower.Int.sumByResidueClasses` (an integer analogue of
+`Nat.sumByResidueClasses`), `RHTower.tsum_coprime_eq_sum_divisors_moebius` (primitivity by Möbius
+inversion of a summable frequency family), `RHTower.sum_divisors_moebius_dvd_eq_sieve` (finite
+inclusion--exclusion for the packet), and `RHTower.exists_schwartz_interpolating` — every finitely
+supported datum on the integers is the integer sampling of a Schwartz profile, so the
+common-profile hypotheses of `(CG3)`--`(CG6)` are not vacuous.
+
+Scope notes:
+
+- The physical profile is a Schwartz function on the line; `(PF1)` is Poisson summation on the
+  root progressions of the modulus, reusing the corpus's affine Poisson layer
+  (`cglAffineResidue_tsum_eq_tsum_fourier_addChar`) and its standard additive-character bridge.
+- `(CG1)`--`(CG2)` are proved for an arbitrary frequency weight whose nonzero-frequency response is
+  summable; the Schwartz weight satisfies that at every modulus
+  (`RHTower.summable_responseTerm_schwartz`).
+- `(CG6)` is stated for a finitely supported Gram packet and any finite gap set containing all
+  index differences; the gap sum is then finite and exactly the double Gram sum.

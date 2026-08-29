@@ -124,7 +124,7 @@ theorem summable_finsetSum {ι M : Type*} [AddCommMonoid M] [TopologicalSpace M]
     Summable fun b : ℤ => ∑ i ∈ s, f i b := by
   classical
   induction s using Finset.induction_on with
-  | empty => simpa using summable_zero
+  | empty => simp
   | @insert i s hi ih =>
       have h1 : Summable (f i) := hf i (Finset.mem_insert_self i s)
       have h2 : Summable fun b : ℤ => ∑ j ∈ s, f j b :=

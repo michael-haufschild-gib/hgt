@@ -51,10 +51,14 @@ theorem matrixSemicircleCovariance_trace_duality
 theorem matrixSemicircleCovariance_posSemidef
     (A : K → Matrix I I ℂ) {X : Matrix I I ℂ} (hX : X.PosSemidef) :
     (matrixSemicircleCovariance A X).PosSemidef := by
+  classical
   rw [matrixSemicircleCovariance]
-  apply Matrix.PosSemidef.sum
-  intro k _hk
-  exact hX.mul_mul_conjTranspose_same (A k)
+  induction (Finset.univ : Finset K) using Finset.induction_on with
+  | empty =>
+      simpa using hX.smul (α := ℝ) (a := (0 : ℝ)) le_rfl
+  | @insert k s hk ih =>
+      rw [Finset.sum_insert hk]
+      exact (hX.mul_mul_conjTranspose_same (A k)).add ih
 
 /-- Full matrix Ward identity.  If `G` solves
 `(zI + η(G))G = -I`, then

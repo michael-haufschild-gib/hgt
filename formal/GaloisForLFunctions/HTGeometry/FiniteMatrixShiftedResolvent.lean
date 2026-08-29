@@ -17,6 +17,46 @@ noncomputable section
 
 variable {n : Type*} [Fintype n] [DecidableEq n]
 
+/-- Real trace pairing of two positive-semidefinite matrices on any finite index type is
+nonnegative. -/
+theorem fintypeMatrix_re_trace_mul_nonneg_of_posSemidef
+    {A B : Matrix n n ℂ} (hA : A.PosSemidef) (hB : B.PosSemidef) :
+    0 ≤ ((A * B).trace).re := by
+  let U : Matrix n n ℂ := hB.isHermitian.eigenvectorUnitary
+  let D : Matrix n n ℂ :=
+    diagonal (fun i => (hB.isHermitian.eigenvalues i : ℂ))
+  let C : Matrix n n ℂ := Uᴴ * A * U
+  have hspec : B = U * D * Uᴴ := by
+    simpa [U, D, Matrix.star_eq_conjTranspose] using
+      isHermitian_eq_conj_diagonal hB.isHermitian
+  have hC : C.PosSemidef := by
+    simpa [C, Matrix.conjTranspose_conjTranspose] using
+      hA.mul_mul_conjTranspose_same Uᴴ
+  have htraceEq : (A * B).trace = (C * D).trace := by
+    rw [hspec]
+    calc
+      (A * (U * D * Uᴴ)).trace = ((D * Uᴴ) * A * U).trace := by
+        rw [show A * (U * D * Uᴴ) = (A * U) * (D * Uᴴ) by noncomm_ring,
+          Matrix.trace_mul_comm]
+        congr 1; noncomm_ring
+      _ = (D * C).trace := by congr 1; simp [C, Matrix.mul_assoc]
+      _ = (C * D).trace := Matrix.trace_mul_comm D C
+  rw [htraceEq]
+  have htrace : 0 ≤ (C * D).trace := by
+    rw [Matrix.trace]
+    apply Finset.sum_nonneg
+    intro i _hi
+    simp only [Matrix.diag_apply, Matrix.mul_apply, D, Matrix.diagonal_apply]
+    rw [Finset.sum_eq_single i]
+    · simp only [if_pos]
+      exact mul_nonneg hC.diag_nonneg (by
+        exact_mod_cast hB.eigenvalues_nonneg i)
+    · intro j _hj hji
+      simp [hji]
+    · intro hi
+      simp at hi
+  exact (RCLike.nonneg_iff.mp htrace).1
+
 /-- Spectral formula for a real scalar shift of a finite Hermitian matrix. -/
 theorem shiftedHermitian_inv_eq_spectral {H : Matrix n n ℂ} (hH : H.IsHermitian) (c : ℝ)
     (hc : ∀ i, hH.eigenvalues i + c ≠ 0) :
@@ -131,6 +171,20 @@ theorem shiftedPosSemidef_inv_sub_posSemidef {H : Matrix n n ℂ} (hH : H.PosSem
     (add_pos_of_nonneg_of_pos (hH.eigenvalues_nonneg i) ha)).2
       (by simpa [add_comm] using
         add_le_add_left hab (hH.isHermitian.eigenvalues i)))
+
+/-- Positive trace pairings inherit antitonicity of shifted inverses. -/
+theorem re_trace_mul_shiftedPosSemidef_inv_le
+    {H P : Matrix n n ℂ} (hH : H.PosSemidef) (hP : P.PosSemidef)
+    {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) :
+    ((P * (H + (b : ℂ) • (1 : Matrix n n ℂ))⁻¹).trace).re ≤
+      ((P * (H + (a : ℂ) • (1 : Matrix n n ℂ))⁻¹).trace).re := by
+  have hdiff := shiftedPosSemidef_inv_sub_posSemidef hH ha hab
+  have hnonneg := fintypeMatrix_re_trace_mul_nonneg_of_posSemidef hP hdiff
+  rw [Matrix.mul_sub, Matrix.trace_sub] at hnonneg
+  change 0 ≤
+    ((P * (H + (a : ℂ) • (1 : Matrix n n ℂ))⁻¹).trace).re -
+      ((P * (H + (b : ℂ) • (1 : Matrix n n ℂ))⁻¹).trace).re at hnonneg
+  linarith
 
 /-- Spectral cutoff `H(H + εI)⁻¹` for a finite matrix. -/
 def finiteMatrixResolventCutoff (H : Matrix n n ℂ) (ε : ℝ) : Matrix n n ℂ :=

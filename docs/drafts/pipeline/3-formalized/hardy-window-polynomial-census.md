@@ -57,3 +57,34 @@ K ≤ T^{1/6−ε}; the heavy count is `√K/polylog`, optimized inside the corp
 at K = T^{1/8} giving T^{1/16}. Raising the exponent needs a genuinely better window
 first moment (e.g. a windowed second-moment asymptotic — the classical route to ≫ T),
 which is the next open layer if this lane is pushed further.
+
+---
+
+## Upgrade: the sixth-root census (same session, second pass)
+
+**Claim.** Unconditionally, `N₀(T) ≥ c · T^{1/6} / (1 + log T)⁶` for all large `T`, with
+the dyadic-difference form. [LEAN-PROVED]; axioms propext / Classical.choice / Quot.sound.
+
+**What changed.** The counting step was upgraded from per-window capping to Cauchy–Schwarz
+over the heavy set: `(Σ_S m_k)² ≤ |S|·Σ_S m_k²`, with `m_k² ≤ H·m4_k` and the window fourth
+moments summing (by interval additivity) to the dyadic fourth moment.  This gives
+`(T/8)² ≤ |S|·H·M4`, i.e. a heavy count linear in `K` instead of `√K`.  The sign-change gap
+condition `ME²·M4 < (T/8K)³` tolerates `K` up to `T^{1/6}/polylog`, realized as
+`K = ⌊T^{1/6}/(D₀(1+log T)²)⌋` with `D₀ = 512(CE²+1)(CF+1)+8` (rpow-based; the nested-sqrt
+`T^{1/8}` choice of the first pass was suboptimal).  Exponent `1/6` is the exact ceiling of
+this route: the gap forces `K³ < √T/polylog` as long as the window mean is the trivial
+`O(T^{3/4})`.  Beating `1/6` requires a windowed second- or fourth-moment asymptotic
+(Hardy–Littlewood's mechanism for `N₀ ≫ T`).
+
+**New module** `GaloisForLFunctions/RHTower/HardySixthRootCensus.lean` (umbrella-wired;
+the shared lemmas `window_fourth_le`, `exists_distinct_ordinates`,
+`one_add_log_pow_four_le_sixteenth` were de-privatized in `HardyWindowCountTheorem.lean`):
+`exists_heavyFinset_sq` (Cauchy–Schwarz pigeonhole), `gap_of_key` (K-generic gap),
+`nested_four_sqrt_eq_rpow`, `log_sq_le_rpow` (`(1+log T)² ≤ 4624·T^{1/32}`), capstones
+`exists_many_distinct_line_zeros_dyadic_sixth`,
+`exists_sixthRoot_le_xiPosCriticalZeroCount_sub`,
+`exists_sixthRoot_le_xiPosCriticalZeroCount`.
+
+**Honest assessment.** Still quantitatively subsumed by Hardy–Littlewood 1921 (`N₀ ≫ T`) —
+not new mathematics.  New-to-corpus; the machine-checked-polynomial-census priority claim
+remains [NOVELTY UNVERIFIED].

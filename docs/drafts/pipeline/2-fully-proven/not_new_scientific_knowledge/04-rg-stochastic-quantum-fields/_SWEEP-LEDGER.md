@@ -8,7 +8,7 @@ Rules: no hypotheses wrapping unproven input; no umbrella builds; `lake env lean
 |---|---|---|---|
 | 1 | thermodynamic-divisor-charge-finite-ancestor-or-boundary-index | DONE — `RHTower/ThermodynamicBoundaryIndexCarrier.lean` | **PROMOTED** |
 | 2 | balanced-causal-fracture-torsor-classification | DONE — AIIIGramFibreTorsor, HermitianConeStrictConvexity, ColorGramGlobalTrivialization, ColorGramTrivializationSmoothness, HermitianSymmetricDimensionBalance | **PROMOTED** |
-| 3 | common-profile-boolean-anchor-curvature | (CG1),(CG3),(CG4),(CG6),(SG10),(SG9) | TODO |
+| 3 | common-profile-boolean-anchor-curvature | DONE — `CommonProfileAnchorResponseMobius`, `CommonProfilePoissonVacuum`, `CommonProfileVacuumJoin`, `CommonProfileGlobalCurvatureJoin`, `CommonProfileDefectBound` | **PROMOTED** |
 | 4 | coherence-graph-volume-recurrence-exponent-law | DONE — `RootedForestShear`, `CircleChordBall`, `CoherenceGraphVolumeLaw`, `CoherenceGraphRecurrenceExponent` | **PROMOTED** |
 | 5 | schwarzian-projective-erosion-tower | DONE over an arbitrary differential base — `DifferentialFieldLocus`, `FreeFamilyJetShift`, `SchwarzianFamilyCoordinates`, `SchwarzianProjectiveErosionTower` | **PROMOTED** |
 | 6 | bbm-pullback-completion-purely-continuous-law | pullback completion unitary + reducing-subspace lemma + dilation a.c. | TODO |
@@ -27,6 +27,12 @@ Rules: no hypotheses wrapping unproven input; no umbrella builds; `lake env lean
 ## Log
 - 2026-08-29 — ledger created; all 17 cards read; named modules confirmed present in tree.
 - 2026-08-29 — cards 1 and 2 promoted.
+- 2026-08-29 — card 3 promoted.  `(CG1)`, arithmetic `(CG2)`, `(PF1)` by Poisson summation on the
+  root progressions, `(CG3)`, `(CG4)`, `(CG6)`, `(CG8)`, `(SG10)`, and an exact `(SG9)` replacing the
+  `<<_(A,rho)` notation.  Reused the corpus's `ChenGuptaLiAffinePoisson` layer (affine Poisson +
+  `stdAddChar` bridge) rather than rebuilding it; the ℤ residue-class decomposition
+  `Int.sumByResidueClasses` was the missing piece.  Also proved that the common-profile hypothesis
+  is realizable (`exists_schwartz_interpolating`), so `(CG3)`--`(CG6)` are not vacuous.
 - 2026-08-29 — card 5 promoted: the whole tower now lives over an arbitrary characteristic-zero
   differential base.  The route that worked: never ascribe a `Derivation ℚ`/`Derivation ℤ` type at a
   concrete `FractionRing` (the `Module ℚ`/`Module ℤ` instances of the Ore localization are not

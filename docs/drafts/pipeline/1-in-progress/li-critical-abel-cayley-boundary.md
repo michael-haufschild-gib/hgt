@@ -210,19 +210,19 @@ This kills exterior backward propagation and also shows why no far-right zero an
 
 - 2026-08-29 — Formalized `LiEvenCrossCompletedAbelExteriorFlowNoGo`: exact polynomial current/source identity, arcsine integration by parts, strict all-mode limiting energy, eventual exterior positivity, and both current/source nonpositivity no-go theorems. Targeted module build passed; audited axioms are only `propext`, `Classical.choice`, `Quot.sound`.
 
-## Frozen conjecture LI-CAB6: positive interior germ and first-zero reduction
+## Proved theorem LI-CAB6: positive interior germ and first-zero reduction
 
-Corpus search of `SquaredXiCompleteMonotonicity`, `SuzukiCoalescingXiSourceRate`, `XiSquaredEulerApertureHilbertCorrelation`, and the Chebyshev product law `two_mul_T_mul_U_pred` gives the exact proposed boundary trace
+Corpus search of `SquaredXiCompleteMonotonicity`, `SuzukiCoalescingXiSourceRate`, `XiSquaredEulerApertureHilbertCorrelation`, and the Chebyshev product law `two_mul_T_mul_U_pred` gives the exact boundary trace
 
 `Phi_n(v) -> 2(n+1)^2 Re(xiShiftedReciprocalMoment(0,0)) > 0`
 
-as `v -> 0+`, for every mode `n`. The unit flux quotient should simplify exactly to
+as `v -> 0+`, for every mode `n`. Lean proves that the unit flux quotient simplifies exactly to
 
 `-(n+1)(1-X)U_(2n+1)(2X-1)`,
 
 whose value at `X=0` is `2(n+1)^2`; the central zeroth Xi moment is a summable nonempty sum of strictly positive oriented reciprocal-square masses.
 
-Exact proof chain:
+The resulting exact proof chain is:
 
 `positive all-mode current germ + no zero of Phi_n on (0,1/4]`
 `=> Phi_n > 0 on (0,1/4] by continuity and first crossing`
@@ -230,4 +230,6 @@ Exact proof chain:
 `=> LI-CAB3`
 `=> RiemannHypothesis`.
 
-Conversely, any LI-CAB5 failure must force a genuine positive-mass zero of the exact Xi moment functional; failure cannot emerge from the singular zero anchor. Proving the limit and first-zero classification significantly replaces a sign inequality touching `v=0` by a zero-exclusion problem on positive mass. A witnessed zero/negative crossing would kill the monotone-flow route; exclusion closes it.
+Conversely, any LI-CAB5 failure forces a genuine positive-mass zero of the exact Xi moment functional; failure cannot emerge from the singular zero anchor. The limit and first-zero classification replace a sign inequality touching `v=0` by a zero-exclusion problem on positive mass. A witnessed zero/negative crossing kills the monotone-flow route; exclusion closes it.
+
+- 2026-08-29 — Formalized `LiEvenCrossCompletedAbelInteriorFirstZero`: exact odd-Chebyshev flux quotient, polynomial Xi-moment landing at zero, strictly positive all-mode boundary trace, continuity, first-zero classification, and RH consequence of all-mode interior zero-exclusion. Remaining burden is the explicit positive-mass zero-exclusion theorem.

@@ -4,6 +4,7 @@ import GaloisForLFunctions.HTGeometry.CompactMomentReflectionSymmetry
 import GaloisForLFunctions.HTGeometry.MatrixQuadraticFormDetermination
 import GaloisForLFunctions.HTGeometry.MatrixSemicircleWardIdentity
 import GaloisForLFunctions.HTGeometry.FiniteChannelGramSpectralPeeling
+import GaloisForLFunctions.HTGeometry.FiniteMatrixShiftedResolvent
 
 /-!
 # Full vector analytic law of a finite matrix semicircle
@@ -215,6 +216,115 @@ theorem freeFockMatrixImaginaryAxisProfile_dyson
     rw [hI]
     ring
   · ring
+
+/-- Right-hand form of the positive imaginary-axis Dyson equation. -/
+theorem freeFockMatrixImaginaryAxisProfile_dyson_right
+    (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
+    (hker : HasTrivialCommonKernel A) (y : ℝ) (hy : 0 < y) :
+    freeFockMatrixImaginaryAxisProfile A hA hker y *
+        (matrixSemicircleCovariance A
+            (freeFockMatrixImaginaryAxisProfile A hA hker y) +
+          (y ^ 2 : ℂ) • (1 : Matrix I I ℂ)) =
+      (y ^ 2 : ℂ) • (1 : Matrix I I ℂ) := by
+  let X := freeFockMatrixImaginaryAxisProfile A hA hker y
+  have hXH : Xᴴ = X :=
+    (freeFockMatrixImaginaryAxisProfile_posDef A hA hker y hy).isHermitian.eq
+  have hleft := freeFockMatrixImaginaryAxisProfile_dyson A hA hker y hy
+  have hstar := congrArg Matrix.conjTranspose hleft
+  simpa only [X, Matrix.conjTranspose_mul, Matrix.conjTranspose_add,
+    matrixSemicircleCovariance_conjTranspose, hXH, Matrix.conjTranspose_smul,
+    Matrix.conjTranspose_one, map_pow, RCLike.star_def, Complex.star_def,
+    Complex.conj_ofReal] using hstar
+
+/-- Rescaled positive profile `Y_y = y⁻²X_y`. -/
+def freeFockMatrixImaginaryAxisScaledProfile
+    (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
+    (hker : HasTrivialCommonKernel A) (y : ℝ) : Matrix I I ℂ :=
+  ((y ^ 2 : ℂ)⁻¹) • freeFockMatrixImaginaryAxisProfile A hA hker y
+
+/-- The scaled profile is the inverse of the covariance-regularized Dyson matrix. -/
+theorem freeFockMatrixImaginaryAxisScaledProfile_eq_inv
+    (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
+    (hker : HasTrivialCommonKernel A) (y : ℝ) (hy : 0 < y) :
+    freeFockMatrixImaginaryAxisScaledProfile A hA hker y =
+      (matrixSemicircleCovariance A
+          (freeFockMatrixImaginaryAxisProfile A hA hker y) +
+        (y ^ 2 : ℂ) • (1 : Matrix I I ℂ))⁻¹ := by
+  let X := freeFockMatrixImaginaryAxisProfile A hA hker y
+  let c : ℂ := (y ^ 2 : ℂ)
+  have hc : c ≠ 0 := by
+    dsimp only [c]
+    exact_mod_cast pow_ne_zero 2 hy.ne'
+  have hleft :
+      (matrixSemicircleCovariance A X + c • (1 : Matrix I I ℂ)) * X =
+        c • (1 : Matrix I I ℂ) := by
+    simpa [X, c] using freeFockMatrixImaginaryAxisProfile_dyson A hA hker y hy
+  symm
+  apply Matrix.inv_eq_right_inv
+  change (matrixSemicircleCovariance A X + c • (1 : Matrix I I ℂ)) *
+      (c⁻¹ • X) = 1
+  rw [Matrix.mul_smul, hleft, smul_smul, inv_mul_cancel₀ hc, one_smul]
+
+/-- Exact zero-energy boundary equation `X_y η(Y_y) = I - X_y`. -/
+theorem freeFockMatrixImaginaryAxisProfile_mul_covariance_scaled
+    (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
+    (hker : HasTrivialCommonKernel A) (y : ℝ) (hy : 0 < y) :
+    freeFockMatrixImaginaryAxisProfile A hA hker y *
+        matrixSemicircleCovariance A
+          (freeFockMatrixImaginaryAxisScaledProfile A hA hker y) =
+      (1 : Matrix I I ℂ) - freeFockMatrixImaginaryAxisProfile A hA hker y := by
+  let X := freeFockMatrixImaginaryAxisProfile A hA hker y
+  let c : ℂ := (y ^ 2 : ℂ)
+  have hc : c ≠ 0 := by
+    dsimp only [c]
+    exact_mod_cast pow_ne_zero 2 hy.ne'
+  have hright :
+      X * (matrixSemicircleCovariance A X + c • (1 : Matrix I I ℂ)) =
+        c • (1 : Matrix I I ℂ) := by
+    simpa [X, c] using freeFockMatrixImaginaryAxisProfile_dyson_right A hA hker y hy
+  have hcore : X * matrixSemicircleCovariance A X = c • ((1 : Matrix I I ℂ) - X) := by
+    calc
+      X * matrixSemicircleCovariance A X =
+          X * (matrixSemicircleCovariance A X + c • (1 : Matrix I I ℂ)) - c • X := by
+        rw [Matrix.mul_add, Matrix.mul_smul, Matrix.mul_one]
+        abel
+      _ = c • (1 : Matrix I I ℂ) - c • X := by rw [hright]
+      _ = c • ((1 : Matrix I I ℂ) - X) := by module
+  change X * matrixSemicircleCovariance A (c⁻¹ • X) =
+    (1 : Matrix I I ℂ) - X
+  rw [matrixSemicircleCovariance_smul, Matrix.mul_smul, hcore,
+    smul_smul, inv_mul_cancel₀ hc, one_smul]
+
+/-- Cutoff Ward trace identity at zero energy. -/
+theorem freeFockMatrixImaginaryAxis_cutoff_trace_identity
+    (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
+    (hker : HasTrivialCommonKernel A) (y δ : ℝ) (hy : 0 < y) :
+    (finiteMatrixResolventCutoff
+          (freeFockMatrixImaginaryAxisProfile A hA hker y) δ *
+        ((1 : Matrix I I ℂ) -
+          freeFockMatrixImaginaryAxisProfile A hA hker y)).trace =
+      (matrixSemicircleCovariance A
+          (finiteMatrixResolventCutoff
+              (freeFockMatrixImaginaryAxisProfile A hA hker y) δ *
+            freeFockMatrixImaginaryAxisProfile A hA hker y) *
+        freeFockMatrixImaginaryAxisScaledProfile A hA hker y).trace := by
+  let X := freeFockMatrixImaginaryAxisProfile A hA hker y
+  let Y := freeFockMatrixImaginaryAxisScaledProfile A hA hker y
+  let R := finiteMatrixResolventCutoff X δ
+  have hboundary : X * matrixSemicircleCovariance A Y =
+      (1 : Matrix I I ℂ) - X := by
+    simpa [X, Y] using
+      freeFockMatrixImaginaryAxisProfile_mul_covariance_scaled A hA hker y hy
+  change (R * ((1 : Matrix I I ℂ) - X)).trace =
+    (matrixSemicircleCovariance A (R * X) * Y).trace
+  rw [← hboundary]
+  calc
+    (R * (X * matrixSemicircleCovariance A Y)).trace =
+        ((R * X) * matrixSemicircleCovariance A Y).trace := by
+      congr 1
+      noncomm_ring
+    _ = (matrixSemicircleCovariance A (R * X) * Y).trace :=
+      (matrixSemicircleCovariance_trace_duality A hA (R * X) Y).symm
 
 /-- General-energy scaled Stieltjes profile `D_{a,y} = -iy G(a+iy)`.  Its boundary value is the
 matrix atom mass at `a`. -/
