@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.DifferentialAlgebraicAntiderivative
 import GaloisForLFunctions.HTGeometry.EntireExponentialCompositionDA
 import GaloisForLFunctions.HTGeometry.EntireMultiplicativeTranslationDefectCountability
 import GaloisForLFunctions.HTGeometry.GapExponentialCarrier
+import GaloisForLFunctions.HTGeometry.HypertranscendencePolynomial
 import GaloisForLFunctions.HTGeometry.LadderPrimeFrequencies
 
 /-!
@@ -47,15 +48,12 @@ theorem expPhase_pow_eq_one_iff {α : ℂ} (hα : α ≠ 0) (n : ℕ) (h : ℂ) 
   constructor
   · rintro ⟨m, hm⟩
     refine ⟨m, ?_⟩
-    have : (n : ℂ) * h * (2 * (Real.pi : ℂ) * Complex.I)
-        = (m : ℂ) * α * (2 * (Real.pi : ℂ) * Complex.I) := by
-      field_simp at hm
-      linear_combination hm
-    exact mul_right_cancel₀ hpi this
+    field_simp at hm
+    linear_combination hm
   · rintro ⟨m, hm⟩
     refine ⟨m, ?_⟩
     field_simp
-    linear_combination (2 * (Real.pi : ℂ) * Complex.I) * hm
+    linear_combination hm
 
 /-! ### The carrier attached to a ladder -/
 
@@ -179,7 +177,7 @@ theorem eq_ratLine_of_locallyCyclic {H : AddSubgroup ℂ} (hlc : IsLocallyCyclic
     rcases hx with rfl | rfl
     exacts [hαH, hh])
   have hcoe : (({α, h} : Finset ℂ) : Set ℂ) = {α, h} := by
-    simp
+    simp only [Finset.coe_insert, Finset.coe_singleton]
   have hαz : α ∈ AddSubgroup.zmultiples g := by
     rw [← hg]
     exact AddSubgroup.subset_closure (by rw [hcoe]; exact Set.mem_insert _ _)
@@ -207,7 +205,7 @@ theorem exists_daTranslationStabilizer_eq_of_locallyCyclic {H : AddSubgroup ℂ}
       daTranslationStabilizer F = (H : Set ℂ) := by
   set S : AddSubgroup ℚ :=
     { carrier := {q : ℚ | ((q : ℂ) * α) ∈ H}
-      zero_mem' := by simpa using H.zero_mem
+      zero_mem' := by simp
       add_mem' := by
         intro x y hx hy
         simp only [Set.mem_setOf_eq] at *
@@ -232,6 +230,102 @@ theorem exists_daTranslationStabilizer_eq_of_locallyCyclic {H : AddSubgroup ℂ}
     obtain ⟨q, rfl⟩ := eq_ratLine_of_locallyCyclic hlc hαH hα hx
     exact ⟨q, hx, rfl⟩
 
+/-! ### The stabilizer as a subgroup, and the tail description -/
+
+/-- **The differential-algebraic translation stabilizer of an entire function is an additive
+subgroup**, by the cocycle identity `Δ_{x+y} = (Δ_y)(·+x) + Δ_x` and its negative counterpart. -/
+def daTranslationSubgroup {F : ℂ → ℂ} (hF : Differentiable ℂ F) : AddSubgroup ℂ where
+  carrier := daTranslationStabilizer F
+  zero_mem' := by
+    show DifferentiallyAlgebraic fun z => F (z + 0) - F z
+    have hz : (fun z => F (z + 0) - F z) = fun _ : ℂ => (0 : ℂ) := by
+      funext z
+      rw [add_zero, sub_self]
+    rw [hz]
+    exact differentiallyAlgebraic_const 0
+  add_mem' := by
+    intro x y hx hy
+    show DifferentiallyAlgebraic fun z => F (z + (x + y)) - F z
+    have h1 : DifferentiallyAlgebraic (fun z => F (z + x + y) - F (z + x)) :=
+      (show DifferentiallyAlgebraic fun z => F (z + y) - F z from hy).comp_add_const x
+    have h2 : DifferentiallyAlgebraic (fun z => F (z + x) - F z) := hx
+    have hA1 : AnalyticOnNhd ℂ (fun z => F (z + x + y) - F (z + x)) Set.univ :=
+      Complex.analyticOnNhd_univ_iff_differentiable.2
+        ((hF.comp ((differentiable_id.add_const x).add_const y)).sub
+          (hF.comp (differentiable_id.add_const x)))
+    have hA2 : AnalyticOnNhd ℂ (fun z => F (z + x) - F z) Set.univ :=
+      Complex.analyticOnNhd_univ_iff_differentiable.2
+        ((hF.comp (differentiable_id.add_const x)).sub hF)
+    have hsum : (fun z => F (z + (x + y)) - F z)
+        = fun z => (F (z + x + y) - F (z + x)) + (F (z + x) - F z) := by
+      funext z
+      rw [show z + (x + y) = z + x + y by ring]
+      ring
+    rw [hsum]
+    exact differentiallyAlgebraic_add hA1 hA2 h1 h2
+  neg_mem' := by
+    intro x hx
+    show DifferentiallyAlgebraic fun z => F (z + -x) - F z
+    have h1 : DifferentiallyAlgebraic (fun z => F (z + -x + x) - F (z + -x)) :=
+      (show DifferentiallyAlgebraic fun z => F (z + x) - F z from hx).comp_add_const (-x)
+    have hA1 : AnalyticOnNhd ℂ (fun z => F (z + -x + x) - F (z + -x)) Set.univ :=
+      Complex.analyticOnNhd_univ_iff_differentiable.2
+        ((hF.comp ((differentiable_id.add_const (-x)).add_const x)).sub
+          (hF.comp (differentiable_id.add_const (-x))))
+    have hA0 : AnalyticOnNhd ℂ (fun _ : ℂ => (0 : ℂ)) Set.univ :=
+      Complex.analyticOnNhd_univ_iff_differentiable.2 (differentiable_const 0)
+    have hEq : (fun z => F (z + -x) - F z)
+        = fun z => (0 : ℂ) - (F (z + -x + x) - F (z + -x)) := by
+      funext z
+      rw [show z + -x + x = z by ring]
+      ring
+    rw [hEq]
+    exact differentiallyAlgebraic_sub hA0 hA1 (differentiallyAlgebraic_const 0) h1
+
+@[simp] theorem mem_daTranslationSubgroup {F : ℂ → ℂ} (hF : Differentiable ℂ F) (h : ℂ) :
+    h ∈ daTranslationSubgroup hF ↔ DifferentiallyAlgebraic fun z => F (z + h) - F z := Iff.rfl
+
+/-- **The tail description of the stabilizer.**  For an exponential gap carrier with eventually
+superlacunary frequencies the stabilizer is the increasing union of the eventual-period groups: the
+shift `h` is admissible exactly when `b_k · h` is an integer multiple of `α` for every large `k`. -/
+theorem daTranslationStabilizer_expGapFun_eq (hstrict : StrictMono b)
+    (hgap : ∀ C : ℕ, ∀ᶠ k in atTop, C * b k < b (k + 1)) {α : ℂ} (hα : α ≠ 0) :
+    daTranslationStabilizer (expGapFun b (ladderCoeff b) (2 * (Real.pi : ℂ) * Complex.I / α))
+      = ⋃ N : ℕ, {h : ℂ | ∀ k, N ≤ k → ∃ m : ℤ, ((b k : ℕ) : ℂ) * h = (m : ℂ) * α} := by
+  have hpi : (2 * (Real.pi : ℂ) * Complex.I) ≠ 0 := by
+    simp [Real.pi_ne_zero, Complex.I_ne_zero]
+  ext h
+  rw [mem_daTranslationStabilizer_expGapFun_iff hstrict hgap (div_ne_zero hpi hα), Set.mem_iUnion]
+  constructor
+  · rintro ⟨K, hK⟩
+    exact ⟨K, fun k hk => (expPhase_pow_eq_one_iff hα (b k) h).1 (hK k hk)⟩
+  · rintro ⟨N, hN⟩
+    exact ⟨N, fun k hk => (expPhase_pow_eq_one_iff hα (b k) h).2 (hN k hk)⟩
+
+/-- **The finite-or-hypertranscendental dichotomy.**  A translation defect of an exponential gap
+carrier is either a finite exponential sum or hypertranscendental; no infinite differentially
+algebraic defect occurs. -/
+theorem expGapFun_defect_finite_or_hypertranscendental (hstrict : StrictMono b)
+    (hgap : ∀ C : ℕ, ∀ᶠ k in atTop, C * b k < b (k + 1)) {β : ℂ} (hβ : β ≠ 0) (h : ℂ) :
+    (∃ K : ℕ, (fun z => expGapFun b (ladderCoeff b) β (z + h)
+        - expGapFun b (ladderCoeff b) β z)
+      = fun z => ∑ k ∈ Finset.range K,
+          (ladderCoeff b k * (Complex.exp (β * h) ^ (b k) - 1))
+            * Complex.exp ((β * ((b k : ℕ) : ℂ)) * z))
+    ∨ Hypertranscendental (fun z => expGapFun b (ladderCoeff b) β (z + h)
+        - expGapFun b (ladderCoeff b) β z) := by
+  classical
+  by_cases hcase : ∃ K : ℕ, ∀ k, K ≤ k → Complex.exp (β * h) ^ (b k) = 1
+  · obtain ⟨K, hK⟩ := hcase
+    refine Or.inl ⟨K, ?_⟩
+    rw [expGapFun_translationDefect hstrict.injective
+      (entireCoeffs_gapCoeff_ladderCoeff hstrict.injective) β h]
+    exact expGapFun_eq_finsetSum (c := fun k => ladderCoeff b k * (Complex.exp (β * h) ^ (b k) - 1))
+      hstrict.injective (K := K) (fun k hk => by rw [hK k hk, sub_self, mul_zero]) β
+  · exact Or.inr fun hDA => hcase
+      ((differentiallyAlgebraic_expGapFun_defect_iff hstrict hgap
+        (entireCoeffs_gapCoeff_ladderCoeff hstrict.injective) (ladderCoeff_ne_zero b) hβ h).1 hDA)
+
 /-! ### The multiplicative form -/
 
 /-- **Multiplicative realization.**  The same subgroup is the exact stabilizer of the multiplicative
@@ -243,8 +337,8 @@ theorem exists_daMultiplicativeStabilizer_eq_ratLine {α : ℂ} (hα : α ≠ 0)
   obtain ⟨F, hd, -, hht, hst⟩ := exists_daTranslationStabilizer_eq_ratLine hα S h1
   refine ⟨fun z => Complex.exp (F z), hd.cexp, fun z => Complex.exp_ne_zero _, ?_, ?_⟩
   · intro hDA
-    have hG : AnalyticOnNhd ℂ (fun z => Complex.exp (F z)) Set.univ := fun z _ =>
-      (hd.cexp z).analyticAt
+    have hG : AnalyticOnNhd ℂ (fun z => Complex.exp (F z)) Set.univ :=
+      Complex.analyticOnNhd_univ_iff_differentiable.2 hd.cexp
     have hlog := (differentiallyAlgebraic_logDeriv_iff hG
       (fun z => Complex.exp_ne_zero _)).2 hDA
     have hderiv : (fun z => deriv (fun z => Complex.exp (F z)) z / Complex.exp (F z))
@@ -267,8 +361,8 @@ theorem exists_daMultiplicativeStabilizer_eq_ratLine {α : ℂ} (hα : α ≠ 0)
       set u : ℂ → ℂ := fun z => F (z + h) - F z with hu
       have hud : Differentiable ℂ u :=
         (hd.comp (differentiable_id.add_const h)).sub hd
-      have hK : AnalyticOnNhd ℂ (fun z => Complex.exp (u z)) Set.univ := fun z _ =>
-        (hud.cexp z).analyticAt
+      have hK : AnalyticOnNhd ℂ (fun z => Complex.exp (u z)) Set.univ :=
+        Complex.analyticOnNhd_univ_iff_differentiable.2 hud.cexp
       have hlog := (differentiallyAlgebraic_logDeriv_iff hK
         (fun z => Complex.exp_ne_zero _)).2 hDA
       have hderiv : (fun z => deriv (fun z => Complex.exp (u z)) z / Complex.exp (u z))
@@ -280,8 +374,47 @@ theorem exists_daMultiplicativeStabilizer_eq_ratLine {α : ℂ} (hα : α ≠ 0)
       exact differentiallyAlgebraic_of_deriv hlog
     · intro hDA
       refine differentiallyAlgebraic_cexp_comp ?_ hDA
-      intro z _
-      exact ((hd.comp (differentiable_id.add_const h)).sub hd z).analyticAt
+      exact Complex.analyticOnNhd_univ_iff_differentiable.2
+        ((hd.comp (differentiable_id.add_const h)).sub hd)
+
+end
+
+end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+noncomputable section
+
+/-! ### The `ℚ` stabilizer is proper and non-discrete -/
+
+/-- **The dense proper example.**  The rational stabilizer is a proper subgroup of `ℂ` containing
+nonzero shifts of arbitrarily small size: differential-algebraic constraints exist at shifts
+accumulating at `0` while the function and every off-subgroup defect stay hypertranscendental. -/
+theorem exists_daTranslationStabilizer_eq_rat_proper_accumulating :
+    ∃ F : ℂ → ℂ, Differentiable ℂ F ∧ Function.Periodic F 1 ∧ Hypertranscendental F ∧
+      daTranslationStabilizer F = {h : ℂ | ∃ q : ℚ, h = (q : ℂ)} ∧
+      daTranslationStabilizer F ≠ Set.univ ∧
+      ∀ ε : ℝ, 0 < ε → ∃ h ∈ daTranslationStabilizer F, h ≠ 0 ∧ ‖h‖ < ε := by
+  obtain ⟨F, hd, hper, hht, hst⟩ := exists_daTranslationStabilizer_eq_rat
+  refine ⟨F, hd, hper, hht, hst, ?_, ?_⟩
+  · intro huniv
+    have hI : Complex.I ∈ daTranslationStabilizer F := by rw [huniv]; trivial
+    rw [hst] at hI
+    obtain ⟨q, hq⟩ := hI
+    have him : Complex.I.im = 0 := by rw [hq, Complex.ratCast_im]
+    rw [Complex.I_im] at him
+    exact one_ne_zero him
+  · intro ε hε
+    obtain ⟨n, hn⟩ := exists_nat_one_div_lt hε
+    refine ⟨((1 / ((n : ℚ) + 1) : ℚ) : ℂ), ?_, ?_, ?_⟩
+    · rw [hst]
+      exact ⟨1 / ((n : ℚ) + 1), rfl⟩
+    · rw [Ne, Rat.cast_eq_zero]
+      exact (by positivity : (0 : ℚ) < 1 / ((n : ℚ) + 1)).ne'
+    · rw [Complex.norm_ratCast]
+      have hval : ((1 / ((n : ℚ) + 1) : ℚ) : ℝ) = 1 / ((n : ℝ) + 1) := by push_cast; ring
+      rw [hval, abs_of_pos (by positivity)]
+      exact hn
 
 end
 

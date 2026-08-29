@@ -1,7 +1,7 @@
 # Literal second Bochner--Stokes integral and Fubini bridge
 
 - **ID:** C-A.9t4d
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** ../1-in-progress/hb-complete-augmented-third-order-source-coefficient.md
 - **Statement:** The standard truncated hyperbolic moment of the actual second Stokes defect equals the actual paired second-current cusp top for every truncation height at least one.
@@ -22,7 +22,7 @@ would kill HB before QNM work.
 
 - [x] 0 → 1 in-progress: exact source current, domain, and route-kill tests fixed
 - [x] 1 → 2 fully-proven: complete paper proof below, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3 formalized: Lean theorem, targeted build, and axiom audit pending
+- [x] 2 → 3 formalized: Lean theorem, targeted build, and axiom audit complete
 - [ ] 3 → 4 publication-ready: standalone paper pending
 
 ## Frontier audit
@@ -78,6 +78,25 @@ C-A.9t4c then decomposes this cusp top exactly into its affine zero-frequency fa
 decaying remainder, with finite part zero and remainder limit zero. No analytic, Fubini, boundary,
 or decay premise remains.
 
+## Lean formalization
+
+Formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualSecondStokesIntegral`, wired into
+`GaloisForLFunctions.RHTower`. Headline unconditional theorems:
+
+- `d4BM_actualSecondStokesTruncatedDefectMoment_eq_pairedCuspTop`;
+- `d4BM_actualSecondStokesTruncatedDefectMoment_eq_pairedTruncatedBulk`.
+
+The module proves compact-cell normal convergence and joint continuity of actual mixed and third
+completed-Poincare jets, current/divergence continuity and integrability, standard set-integral
+Fubini, fibrewise FTC, side translation cancellation, arc change of variables, inversion
+cancellation, and the final standard-measure identity. Direct Lean passes. Targeted module build
+passes at `12474/12474`. Axiom audit reports only `propext`, `Classical.choice`, and
+`Quot.sound`. Formal lint finds no forbidden declaration; reported umbrella-reachability errors
+are unrelated pre-existing debt.
+
 ## Log
 
 - 2026-08-29 — corpus and literature audit; hostile verdict `[BRIDGE]`; dependency-complete paper proof closed
+- 2026-08-29 — C-A.9t4d formalized, wired, targeted build and axiom audit passed
+

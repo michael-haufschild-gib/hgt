@@ -68,6 +68,7 @@ import GaloisForLFunctions.HilbertMetric.FifthRootCurvatureMixture
 import GaloisForLFunctions.HilbertMetric.SecondLevelConcavityFifthRootNoGo
 import GaloisForLFunctions.HilbertMetric.SecondLevelConcavityRiccatiFifthRootNoGo
 import GaloisForLFunctions.HilbertMetric.FifthRootAtomLikelihoodRiccatiNoGo
+import GaloisForLFunctions.HilbertMetric.RiccatiChargeFifthRootNoGo
 
 /-!
 # Hilbert-metric theorem area

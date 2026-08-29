@@ -1567,3 +1567,30 @@ standard-measure identification kills HB before QNM work.  Exact chain:
 `literal second modular Green/Stokes + standard-measure Fubini -> vanishing second defect moment ->
 actual balanced BM ++- coefficient -> negative BM leg -> conserved left-QNM projection -> HC94 ->
 RH`.
+
+`[PAPER-PROVED] [LEAN-PROVED] [SIGNIFICANT PREMISE DISCHARGED]` C-A.9t4d is closed. Lean proves
+joint compact-cell continuity of the actual mixed and all four third completed-Poincare jets by
+source-level normal convergence. Hence the second Bochner current and both divergences are
+continuous and integrable on the genuine truncated modular domain. Standard set-integral Fubini,
+fibrewise FTC, translation cancellation, exact circular change of variables, and inversion
+anti-invariance give, for every `Y ≥ 1`,
+
+`standard hyperbolic second-defect moment(Y) = actual paired cusp-top current(Y)`
+
+and simultaneously
+
+`standard hyperbolic second-defect moment(Y) = literal paired-coordinate Green bulk(Y)`.
+
+The headline Lean theorems are
+`d4BM_actualSecondStokesTruncatedDefectMoment_eq_pairedCuspTop` and
+`d4BM_actualSecondStokesTruncatedDefectMoment_eq_pairedTruncatedBulk` in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualSecondStokesIntegral`, wired into
+`RHTower`. Direct Lean and targeted build `12474/12474` pass. Axiom audit reports only `propext`,
+`Classical.choice`, and `Quot.sound`. Formal lint finds no forbidden declaration; its remaining
+umbrella-reachability failures are unrelated pre-existing debt. The formalized card is
+`../3-formalized/hb-literal-second-stokes-integral-fubini.md`.
+
+Exact remaining RH chain after C-A.9t4d:
+
+`actual balanced BM ++- coefficient extraction from the now-literal first/second defect moments ->
+negative BM leg -> conserved left-QNM projection -> HC94 -> RH`.

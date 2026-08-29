@@ -208,7 +208,7 @@ theorem not_regularAt_one_eulerCombination_simplePole [CharZero K] (A S : Polyno
 theorem polyScale_linFac_shift (p₀ : K) :
     polyScale p₀ (Polynomial.X - Polynomial.C p₀) = Polynomial.C p₀ * linFac K := by
   rw [polyScale_eq_comp, linFac]
-  simp [Polynomial.sub_comp, Polynomial.mul_comp]
+  simp [Polynomial.sub_comp]
   ring
 
 set_option maxHeartbeats 1000000 in

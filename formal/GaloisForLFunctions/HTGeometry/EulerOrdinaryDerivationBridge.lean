@@ -194,6 +194,51 @@ theorem hypertranscendentalOver_ordinary_of_euler [CharZero k] {x : LaurentSerie
     HypertranscendentalOver (RatFunc k) x :=
   fun hDA => hx (differentialAlgebraicOver_euler_of_ordinary hDA)
 
+/-! ## Rescaling the derivation by a unit of the base -/
+
+set_option maxHeartbeats 1000000 in
+set_option synthInstance.maxHeartbeats 400000 in
+/-- **Rescaling the derivation of `k((z))` by a nonzero rational function does not change
+differential algebraicity over `k(z)`.**  The differential field generated for one derivation is
+closed under the other. -/
+theorem differentialAlgebraicOver_scaledDeriv [CharZero k]
+    (C₁ C₂ : Differential (RatFunc k)) (D₁ D₂ : Differential (LaurentSeries k)) (u : RatFunc k)
+    (hcompat₁ : ∀ y : RatFunc k, D₁.deriv (algebraMap (RatFunc k) (LaurentSeries k) y)
+      = algebraMap (RatFunc k) (LaurentSeries k) (C₁.deriv y))
+    (hcompat₂ : ∀ y : RatFunc k, D₂.deriv (algebraMap (RatFunc k) (LaurentSeries k) y)
+      = algebraMap (RatFunc k) (LaurentSeries k) (C₂.deriv y))
+    (hscale : ∀ f : LaurentSeries k,
+      D₁.deriv f = algebraMap (RatFunc k) (LaurentSeries k) u * D₂.deriv f)
+    {x : LaurentSeries k}
+    (hx : @DifferentialAlgebraicOver (RatFunc k) (LaurentSeries k) _ _ _ D₂ x) :
+    @DifferentialAlgebraicOver (RatFunc k) (LaurentSeries k) _ _ _ D₁ x := by
+  haveI := IsScalarTower.of_algebraMap_eq (R := k) (S := RatFunc k) (A := LaurentSeries k)
+    fun c => by
+      rw [algebraMap_k_laurentSeries]
+      exact (algebraMap_const_laurentSeries c).symm
+  haveI hcz : CharZero (LaurentSeries k) :=
+    charZero_of_injective_algebraMap (algebraMap k (LaurentSeries k)).injective
+  haveI da₂ : @DifferentialAlgebra (RatFunc k) (LaurentSeries k) _ _ _ C₂ D₂ :=
+    @DifferentialAlgebra.mk (RatFunc k) (LaurentSeries k) _ _ _ C₂ D₂ (fun y => hcompat₂ y)
+  haveI da₁ : @DifferentialAlgebra (RatFunc k) (LaurentSeries k) _ _ _ C₁ D₁ :=
+    @DifferentialAlgebra.mk (RatFunc k) (LaurentSeries k) _ _ _ C₁ D₁ (fun y => hcompat₁ y)
+  set S : IntermediateField (RatFunc k) (LaurentSeries k) :=
+    @differentialAdjoin (RatFunc k) (LaurentSeries k) _ _ _ D₂ ({x} : Set (LaurentSeries k))
+    with hS
+  have hxS : x ∈ S := @subset_differentialAdjoin (RatFunc k) (LaurentSeries k) _ _ _ D₂ _ x rfl
+  have hclosed₂ : @DerivationClosed (RatFunc k) (LaurentSeries k) _ _ _ D₂ S :=
+    @derivationClosed_differentialAdjoin (RatFunc k) (LaurentSeries k) _ _ C₂ D₂ _ da₂ _
+  have hfin : Algebra.trdeg (RatFunc k) S < Cardinal.aleph0 :=
+    @differentialAdjoin_trdeg_lt_aleph0_of_differentialAlgebraic (RatFunc k) (LaurentSeries k)
+      _ _ _ C₂ D₂ da₂ _ _ hx
+  have hclosed₁ : @DerivationClosed (RatFunc k) (LaurentSeries k) _ _ _ D₁ S := by
+    intro y hy
+    show D₁.deriv y ∈ S
+    rw [hscale]
+    exact mul_mem (IntermediateField.algebraMap_mem _ _) (hclosed₂ hy)
+  exact @differentialAlgebraicOver_of_mem_derivationClosed_finiteTrdeg (RatFunc k)
+    (LaurentSeries k) _ _ _ C₁ D₁ da₁ hcz S hclosed₁ hfin x hxS
+
 end
 
 end GaloisForLFunctions.HTGeometry

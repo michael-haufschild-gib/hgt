@@ -22,7 +22,7 @@ noncomputable section
 
 variable {k : Type*} [Field k]
 
-theorem qLadder_increment_eq (β : k) :
+theorem qLadder_increment_eq :
     -((1 / (1 + (RatFunc.X : RatFunc k))) * (RatFunc.X : RatFunc k) ^ 1)
       = toRF (-Polynomial.X)
         / (toRF (Polynomial.X - Polynomial.C (-1 : k)) * toRF 1) := by
@@ -53,7 +53,7 @@ theorem hypertranscendentalOver_qLadderResolvent [CharZero k] (β : k) (hβ : β
   letI := cylinderDifferential (1 : k)
   letI := innerDifferential (k := k)
   refine hypertranscendentalOver_of_monomialTwist β hβ hβtor 1 (-1) (by norm_num)
-    (-Polynomial.X) 1 (by simp) (by simp) ?_ _ R hR (qLadder_increment_eq β)
+    (-Polynomial.X) 1 (by simp) (by simp) ?_ _ R hR qLadder_increment_eq
   intro n hn
   refine regularAt_simplePoleQuotient _ _ _ _ ?_ (by simp)
   simp only [Polynomial.eval_sub, Polynomial.eval_X, Polynomial.eval_C, sub_neg_eq_add]

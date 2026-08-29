@@ -261,6 +261,8 @@ the later all-rank and source-to-Weil joins.
 - `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureIntrinsicAcceleration`
 - `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureIntrinsicFourthTuran`
 - `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureIntrinsicRiccatiBudget`
+- `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureRiccatiBackwardDrift`
+- `GaloisForLFunctions.HilbertMetric.RiccatiChargeFifthRootNoGo`
 - Main exact hard core:
   `thetaCuspReflectedSourceFifthRootCurvatureNumerator_zero_nonneg_iff_cofinalFunctionalBudget_nonpos`
 - Likelihood factorization:
@@ -308,6 +310,8 @@ the later all-rank and source-to-Weil joins.
 - [x] intrinsic drop-square normalization and two-distinct-critical-overspend law formalized
 - [x] fourth jet eliminated at intrinsic minima; exact Riccati compensation and perfect-square
   cost law formalized
+- [x] lower-drift/charge-positivity/charge-monotonicity closure mechanism retired with a smooth
+  analytic countermodel; exact nonlocal theta charge envelope retained
 - [x] August 2026 primary-literature collision audit
 - [ ] prove or refute negative-minimum Riccati-budget upper envelope `C5-RB1` from literal theta
   action/likelihood structure
@@ -357,3 +361,9 @@ the later all-rank and source-to-Weil joins.
   remaining attack must upper-control this literal source Wronskian using nonlocal chord,
   likelihood, or modular-ODE structure; local Riccati/fourth-Turan signs alone have wrong
   orientation. No new conjecture was introduced and no computation entered any proof.
+- 2026-08-29 — Killed the last lower-drift shortcut. The corpus sextic countermodel has its
+  conjugated Riccati charge strictly increasing from zero on the whole physical ray, global
+  nonnegative Riccati margin, seam-positive C5, and the previously formalized six-jet
+  atom/likelihood architecture, yet later C5 is strictly negative. Therefore charge positivity or
+  monotonicity cannot imply the stationary envelope. The live `C5-RB1` burden is now exclusively a
+  theta-specific nonlocal upper comparison. No computation entered any proof.

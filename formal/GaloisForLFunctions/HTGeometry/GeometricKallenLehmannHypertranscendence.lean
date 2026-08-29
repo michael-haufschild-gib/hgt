@@ -27,14 +27,14 @@ theorem oneSubInv_eq_cotModel_add_const [CharZero k] (w : k) :
     rw [← map_neg]
     congr 1
     rw [linFac]
-    ring
+    ring_nf
   have h := cotModel_sub_const (-(w / 2))
   have h2 : (2 : k) * -(w / 2) = -w := by ring
   rw [h2] at h
   have hsum : cotModel (-(w / 2)) + algebraMap k (RatFunc k) (w / 2)
       = algebraMap k (RatFunc k) (-w) / toRF (linFac k) := by
     rw [← h, map_neg]
-    ring
+    ring_nf
   rw [hneg, div_neg, hsum, map_neg, neg_div]
 
 /-! ## The Laurent solution of the inhomogeneous equation -/
@@ -75,7 +75,7 @@ theorem qDifferenceSolution_unique (a b : k) (hb : b ≠ 0) (ρ R : LaurentSerie
   simp only [HahnSeries.coeff_sub, algebraMap_k_laurentSeries, coeff_C_mul_hahn,
     coeff_innerDilation] at h
   rw [coeff_qDifferenceSolution, eq_div_iff (hres m), ← h]
-  ring
+  ring_nf
 
 /-- The multiplicative independence of the multipliers rules out every resonance. -/
 theorem no_resonance_of_multIndependent {a b : k} (ha : a ≠ 0)
@@ -117,7 +117,7 @@ def propagatorGerm (R : LaurentSeries k) : LaurentSeries k :=
 
 /-- **The propagator germ satisfies the reciprocal `q`-difference equation.**  Reciprocal inversion
 turns the multiplier `a` into `a/b` and reflects the inhomogeneity. -/
-theorem propagatorGerm_equation (a b : k) (ha : a ≠ 0) (hb : b ≠ 0) (r : RatFunc k)
+theorem propagatorGerm_equation (a b : k) (hb : b ≠ 0) (r : RatFunc k)
     (R : LaurentSeries k)
     (hR : R - algebraMap k (LaurentSeries k) a * innerDilation b hb R
       = algebraMap (RatFunc k) (LaurentSeries k) r) :
@@ -135,7 +135,7 @@ theorem propagatorGerm_equation (a b : k) (ha : a ≠ 0) (hb : b ≠ 0) (r : Rat
           * innerDilation (-1 * b) (by simpa using mul_ne_zero hmone hb) R) := by
     rw [propagatorGerm, map_mul, map_neg, innerDilation_single_one, innerDilation_innerDilation,
       algebraMap_k_laurentSeries]
-    ring
+    ring_nf
   rw [hdil, propagatorGerm]
   have hbne : algebraMap k (LaurentSeries k) b ≠ 0 := by
     simpa [algebraMap_k_laurentSeries] using C_ne_zero_of_ne_zero hb
@@ -153,7 +153,7 @@ theorem propagatorGerm_equation (a b : k) (ha : a ≠ 0) (hb : b ≠ 0) (r : Rat
             - algebraMap k (LaurentSeries k) a
               * innerDilation (-1 * b) (by simpa using mul_ne_zero hmone hb) R) := by
         rw [← mul_assoc, hab]
-        ring
+        ring_nf
     _ = -(HahnSeries.single 1 1 : LaurentSeries k)
           * algebraMap (RatFunc k) (LaurentSeries k) (ratFuncScale (-1) hmone r) := by
         rw [hrefl]
@@ -189,7 +189,7 @@ theorem propagator_inhomogeneity_eq (w : k) :
         show toRF (-(Polynomial.C w) * Polynomial.X)
           = toRF (-(Polynomial.C w)) * toRF Polynomial.X from map_mul _ _ _,
         show toRF (-(Polynomial.C w)) = -toRF (Polynomial.C w) from map_neg _ _]]
-  ring
+  ring_nf
 
 set_option maxHeartbeats 1000000 in
 /-- **The Euclidean propagator of the geometric spectrum is hypertranscendental.**  Reciprocal
@@ -231,7 +231,7 @@ theorem hypertranscendentalOver_propagatorGerm [CharZero k] (a b w : k)
       linear_combination h
     exact mul_left_cancel₀ (by norm_num : (-1 : k) ≠ 0) h1
   · rw [← propagator_inhomogeneity_eq w]
-    exact propagatorGerm_equation a b ha hb _ R hR
+    exact propagatorGerm_equation a b hb _ R hR
 
 end
 

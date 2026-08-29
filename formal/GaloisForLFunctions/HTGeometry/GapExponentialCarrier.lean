@@ -44,19 +44,21 @@ theorem expGapFun_translationDefect (hinj : Function.Injective b)
 
 /-- A finitely supported exponential gap carrier is a finite exponential sum, hence differentially
 algebraic. -/
+theorem expGapFun_eq_finsetSum (hinj : Function.Injective b) {K : ℕ}
+    (hfin : ∀ k, K ≤ k → c k = 0) (β : ℂ) :
+    expGapFun b c β = fun z => ∑ k ∈ Finset.range K, c k * Complex.exp ((β * (b k : ℂ)) * z) := by
+  funext z
+  show gapFun b c (Complex.exp (β * z)) = _
+  rw [gapFun_eq_finsetSum hinj hfin]
+  refine Finset.sum_congr rfl fun k _ => ?_
+  rw [← Complex.exp_nat_mul]
+  congr 2
+  ring
+
 theorem differentiallyAlgebraic_expGapFun_of_finite (hinj : Function.Injective b) {K : ℕ}
     (hfin : ∀ k, K ≤ k → c k = 0) (β : ℂ) :
     DifferentiallyAlgebraic (expGapFun b c β) := by
-  have heq : expGapFun b c β
-      = fun z => ∑ k ∈ Finset.range K, c k * Complex.exp ((β * (b k : ℂ)) * z) := by
-    funext z
-    show gapFun b c (Complex.exp (β * z)) = _
-    rw [gapFun_eq_finsetSum hinj hfin]
-    refine Finset.sum_congr rfl fun k _ => ?_
-    rw [← Complex.exp_nat_mul]
-    congr 2
-    ring
-  rw [heq]
+  rw [expGapFun_eq_finsetSum hinj hfin β]
   exact differentiallyAlgebraic_finset_expSum (Finset.range K) c (fun k => β * (b k : ℂ))
 
 /-- **Hypertranscendence of the exponential gap carrier.** -/

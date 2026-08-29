@@ -206,6 +206,58 @@ theorem ramify_deriv [CharZero k] (q : ℕ) (hq : 0 < q) (f : LaurentSeries k) :
     show (HahnSeries.C ((q : k)⁻¹) : LaurentSeries k) * HahnSeries.C (q : k) = 1 from by
       rw [← map_mul, inv_mul_cancel₀ hqne, map_one], one_mul]
 
+/-! ## Transport of hypertranscendence along the ramification -/
+
+theorem ramify_aeval {ι : Type*} (q : ℕ) (hq : 0 < q) (v : ι → LaurentSeries k)
+    (p : MvPolynomial ι (RatFunc k)) :
+    ramify q hq (MvPolynomial.aeval v p)
+      = MvPolynomial.aeval (fun i => ramify q hq (v i))
+        (MvPolynomial.map (ratFuncPow q hq) p) := by
+  induction p using MvPolynomial.induction_on with
+  | C a => simp [ramify_algebraMap]
+  | add p₁ p₂ h₁ h₂ => simp [h₁, h₂]
+  | mul_X p i h => simp [h]
+
+/-- The jets of a ramified series for the rescaled derivation are the ramified jets. -/
+theorem differentialJet_ramify [CharZero k] (q : ℕ) (hq : 0 < q) (n : ℕ) (f : LaurentSeries k) :
+    @differentialJet (LaurentSeries k) _ (ramifiedDifferential (k := k) q) n (ramify q hq f)
+      = ramify q hq (@differentialJet (LaurentSeries k) _ (innerDifferential (k := k)) n f) := by
+  induction n generalizing f with
+  | zero => rfl
+  | succ n ih =>
+      show @differentialJet (LaurentSeries k) _ (ramifiedDifferential (k := k) q) n
+          ((ramifiedDifferential (k := k) q).deriv (ramify q hq f))
+        = ramify q hq (@differentialJet (LaurentSeries k) _ (innerDifferential (k := k)) n
+          ((innerDifferential (k := k)).deriv f))
+      rw [ramify_deriv q hq f]
+      exact ih _
+
+set_option maxHeartbeats 1000000 in
+/-- **The ramification transports differential algebraicity.**  If a Laurent series is
+differentially algebraic over `k(z)`, its ramified image is differentially algebraic over `k(w)`
+for the rescaled derivation. -/
+theorem differentialAlgebraicOver_ramify [CharZero k] (q : ℕ) (hq : 0 < q) {R : LaurentSeries k}
+    (hR : @DifferentialAlgebraicOver (RatFunc k) (LaurentSeries k) _ _ _
+      (innerDifferential (k := k)) R) :
+    @DifferentialAlgebraicOver (RatFunc k) (LaurentSeries k) _ _ _
+      (ramifiedDifferential (k := k) q) (ramify q hq R) := by
+  intro hind
+  refine hR ?_
+  rw [DifferentialIndependent, algebraicIndependent_iff] at hind ⊢
+  intro p hp
+  have hramify := congrArg (ramify q hq) hp
+  rw [map_zero, ramify_aeval] at hramify
+  have hjets : (fun i : Unit × ℕ => ramify q hq
+      (@differentialJet (LaurentSeries k) _ (innerDifferential (k := k)) i.2 R))
+      = fun i : Unit × ℕ => @differentialJet (LaurentSeries k) _
+        (ramifiedDifferential (k := k) q) i.2 (ramify q hq R) := by
+    funext i
+    exact (differentialJet_ramify q hq i.2 R).symm
+  rw [hjets] at hramify
+  have hmap := hind (MvPolynomial.map (ratFuncPow q hq) p) hramify
+  have hinj : Function.Injective (ratFuncPow q hq) := RingHom.injective (ratFuncPow q hq)
+  exact MvPolynomial.map_injective _ hinj hmap
+
 end
 
 end GaloisForLFunctions.HTGeometry
