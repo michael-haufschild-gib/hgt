@@ -101,3 +101,64 @@ sharp positive transport chamber or first sign-changing invariant before retirin
   retired two-sign decomposition and supplies no proof. It strengthens the case for attacking the
   direct fixed-action Jacobian `B_u q_t - B_t q_u`, and for trying first to kill it by interval
   sign tests along numerically solved exact-action level sets.
+- 2026-08-29 — **DIRECT JACOBIAN SURVIVES TARGETED HOSTILE ATTACK.** A 160-digit run evaluated
+  the analytic Jacobian `B_u q_t - B_t q_u` itself at 694,800 deterministic and 200,000 randomized
+  points on `10^-7 <= u <= 20`, `10^-5 <= t <= 100`; every reported sign was strict positive.
+  Apparent large-action negatives at 50--80 digits vanished and stabilized positive at 120--200
+  digits, so they were cancellation artifacts. This is evidence only. Computation-free module
+  `ThetaCuspFixedActionC5Jacobian.lean` now proves the exact two-jet balance, both partial
+  derivative formulas, the determinant/Jacobian identity, and forced seam zero `J(0,t)=0`.
+  Sharpened open core: prove the desingularized transverse sign `J(u,t)/u > 0` for `u,t>0`, using
+  exact seam variation, compact modular/likelihood bulk certificate, and large-action asymptotics.
+- 2026-08-29 — **SEAM SURVIVOR SHARPENED; GLOBAL CENTRE MONOTONICITY KILLED.** Reflection and
+  one exact differentiation give
+  `J_u(0,t)=q_t(F_a q_tuu+F_b q_ttuu)-q_uu(F_t+F_a q_tt+F_b q_ttt)`; every `F_q`
+  contribution cancels.  Exact formal series algebra shows this scalar begins at order `t^5`.
+  With `A=-L2`, `B=-L4`, `C=-L6`, `D=-L8`, its leading numerator is
+  `A^2*D - 18*A^3*C + 36*A^2*B^2 - 5*A*B*C + 4*B^3`.
+  The previously proved reverse velocity law supplies the positive block
+  `18*A^2*(2*B^2-A*C)`, explaining why the two-sign subroute fails while direct transport can
+  survive.  RunPod scan at 240 decimal digits tested 633,332 values on
+  `10^-8 <= t <= 100`; all reported `J_u(0,t)>0`.  A checkpoint at 80 digits produced a false
+  negative at `t=50`, while 160/240/480 digits stabilized positive.  Conversely, selected
+  240-digit values at `t=10^-3` prove computationally that `J(u,t)/u` is neither globally
+  increasing nor decreasing in `u`: it falls to `0.2523` of seam value at `u=0.5`, then rises
+  above `21` times seam value at `u=2`, before the far-tail collapse.  Thus no one-dimensional
+  centre-monotonicity reduction remains.  Full diagnostic record:
+  `../2-fully-proven/computations/2026-08-29-c5-fixed-action-jacobian-seam/REPORT.md`.
+  Computation-free Lean now proves all required centre parities, exact oddness of `J`, and exact
+  evenness of the algebraic quotient `J/u`; no computed value is imported.  Current proof plan is
+  three-region: local bivariate Taylor chamber, compact middle inequality, first-atom tail.
+- 2026-08-29 — **EXACT LOCAL CERTIFICATE TARGET DISCOVERED; SCALE-HALF-LINE SHORTCUT KILLED.**
+  Exact rational modular elimination identifies the `t^5` numerator as
+  `-3*P12(X)/(4096*(X-6)^6)`, `X=R^2`.  It is not positive on every `X>191/10`: a later positive
+  root near `56.86` makes the large-scale sign reverse.  On the actual already-proved window
+  `191/10<X<20`, however, the full numerator has 13 strictly positive rational Bernstein
+  coefficients.  This selects a finite computation-free proof target using existing exact scale
+  bounds and shows compensation with the reverse minor is essential.  Diagnostic record:
+  `../2-fully-proven/computations/2026-08-29-modular-seam-certificate-discovery/REPORT.md`.
+  No coefficient or computation is admissible in Lean until the identity and sign proof are
+  independently rederived on paper.
+- 2026-08-29 — **DIRECT SEAM GERM AND FIBREWISE CHAMBER FORMALIZED.** Computation-free Lean proves
+  the squared-radius centre linearization has zero jets below nine and positive ninth jet, equals
+  the actual direct-J centre derivative for `t>0`, and yields both positive centre derivative and
+  an actual punctured positive-centre direct-J chamber for every sufficiently small positive `t`.
+  This is fibrewise; uniform two-variable control as `t→0` remains.
+- 2026-08-29 — **EXACT COMPENSATION LAW FORMALIZED.** With division-free fixed-action transport
+  numerators `H` for `v` and `P` for `v*w`,
+  `4rJ = 5P-(14+10v+8v/r)H`. Hence direct-J positivity is exactly the single compensated
+  inequality `(14+10v+8v/r)H < 5P`; independent signs of `H` and `P` are neither required nor
+  admissible after the seam no-go. Formal card:
+  `../3-formalized/theta-cusp-fixed-action-c5-jacobian-compensation.md`. Full RH passport remains
+  direct-J → fixed-action reflection centre → Ptolemy/rank-four packets → cofinal Weil/CLG
+  positivity → RH.
+- 2026-08-29 — **PURE HYPERBOLIC GAUSSIAN FIRST-ATOM CORE FORMALIZED.** For
+  `q=2A(cosh(2t)-1)`, `A>3`, `t>0`, the exact compensated margin
+  `5P-(14+10v+8v/(exp(q)-1))H` is strictly positive. The proof derives a sharp Bose-radius lower
+  tangent and reduces the whole sign to one globally positive hyperbolic odd-series certificate;
+  no computation enters Lean. This closes the pure Gaussian subcore of the planned far-tail
+  chamber, not the exact rational first-atom correction or likelihood perturbation. Formal card:
+  `../3-formalized/theta-cusp-fixed-action-c5-hyperbolic-gaussian-tail-core.md`. Next hard burden is
+  to prove that the corpus-exact correction
+  `-log(1-lambda(A)(cosh(2t)-1))` preserves compensation on its physical same-half-line domain,
+  then lift through the likelihood factorization.

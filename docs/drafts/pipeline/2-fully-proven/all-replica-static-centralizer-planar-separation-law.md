@@ -685,3 +685,36 @@ So `(25)` at `r > 1` genuinely needs the matrix Dyson equation -- existence, uni
 Stieltjes regularity giving absolute continuity of the matrix-valued semicircle law -- which is the
 Kargin input the card already cites as external.  The card's remaining Lean content is therefore
 exactly two named imports, not one import and one instantiation.
+
+## Lean progress -- the concrete fixed-shell Theorem C is closed (2026-08-29)
+
+Two umbrella-wired, axiom-clean modules close the first of those two imports:
+
+- `HTGeometry/PauliChainReplicaAnnealedDephasing.lean` turns every ordered off-histogram replica
+  pair into its balanced nonzero spectral character and proves finite-matrix operator-norm
+  dephasing on the card's own nearest-neighbour Pauli shell.
+- `HTGeometry/PauliChainReplicaSpectralPropagation.lean` constructs the gauge-invariant sorted
+  rank-one spectral projectors, their tensor-replica projector entries, and the physical
+  Liouville-mode coefficients.  Degenerate shell directions are extended by zero; simple-spectrum
+  projector entries are uniformly bounded by one.
+
+The literal card statement is
+`pauliChainReplicaAnnealedPropagator_sub_averagedCentralizer_l2_opNorm_tendsto_zero`:
+
+```lean
+theorem pauliChainReplicaAnnealedPropagator_sub_averagedCentralizer_l2_opNorm_tendsto_zero
+    (k r : ℕ) :
+    Tendsto (fun t : ℝ => ‖Matrix.toEuclideanCLM
+      (pauliChainReplicaAnnealedPropagator k r t -
+        pauliChainReplicaAveragedCentralizerProjector k r)‖)
+      (cocompact ℝ) (nhds 0)
+```
+
+`pauliChainReplicaAnnealedPropagator_sub_averagedCentralizerProjector` proves that subtracting the
+equal-histogram moving-centralizer sum is exactly the off-histogram oscillatory expansion, not an
+abstract proxy.  This is equation `(19)` for every finite replica order on the fixed shell.
+
+All new declarations depend only on `propext`, `Classical.choice`, and `Quot.sound`.  Remaining
+card obligation is now only `(25)` for `r > 1`: full non-diagonal matrix-semicircle absolute
+continuity and its replicated Pauli/Hall instantiation.  The card remains at Stage 2 until that
+last obligation and separation `(26)` are assembled.

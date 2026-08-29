@@ -919,6 +919,11 @@ def thetaCuspModularODEState
   | .R => thetaModularR
   | .P => thetaModularP
 
+/-- The modular-lambda coordinate is centered at the self-dual seam. -/
+@[simp] theorem thetaCuspModularODEState_Z_zero :
+    thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z 0 = 0 := by
+  simpa [thetaCuspModularODEState] using thetaModularZ_zero
+
 /-- Riccati drift obtained by absorbing the mixed modular coordinate `RZ` into `P`. -/
 def thetaCuspModularDrift (x : ℝ) : ℂ :=
   thetaCuspModularODEState HTGeometry.ModularThetaODEState.P x +

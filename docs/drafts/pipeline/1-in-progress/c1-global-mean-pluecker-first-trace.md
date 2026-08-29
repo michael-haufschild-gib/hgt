@@ -238,3 +238,18 @@ Verification update: direct `lake env lean` PASS; exact module-only `lake build`
 (`12792/12792`); expanded axiom audit PASS with only `propext`, `Classical.choice`, `Quot.sound`.
 Formal lint reaches this module from `RHTower` and reports no forbidden declaration here; global
 exit remains red only for unrelated concurrent unreachable sieve modules.
+
+## 2026-08-29 hostile scalar-landing computation
+
+Nested multicore evaluation of literal Lean formulas converged to trace
+`0.015633836564185256`, while independently evaluated theta target is
+`0.02310499311541897`. Stable difference `-0.0074711565512337146` is too large to plausibly be
+truncation error. Independent packet transcription and theta quadrature checks pass. Diagnostic
+report:
+`../2-fully-proven/computations/2026-08-29-c1-scalar-landing-hostile/REPORT.md`.
+
+Status: current global-mean carrier is `COMPUTATIONALLY KILLED, FORMAL NO-GO PENDING`. Do not retire
+card until strict mismatch is proved without numerical input. Most promising proof is exact finite
+packet head plus analytic cofinal tail bound for
+`rawFirstMoment - packetSelfCollision`; 32% relative margin makes this materially sharper target
+than prior generic `8/125` ceiling.

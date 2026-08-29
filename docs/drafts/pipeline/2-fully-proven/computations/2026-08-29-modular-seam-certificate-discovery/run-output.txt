@@ -1,0 +1,5 @@
+{
+  "c5_shift_positive": false,
+  "c5_q_shift_positive": false,
+  "s6f_seam_shift_positive": true
+}

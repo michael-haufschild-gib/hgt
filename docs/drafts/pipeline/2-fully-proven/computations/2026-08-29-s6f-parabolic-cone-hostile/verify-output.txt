@@ -1,0 +1,1 @@
+verified: parabolic wall is positive/decreasing/convex; alternating order 3 fails

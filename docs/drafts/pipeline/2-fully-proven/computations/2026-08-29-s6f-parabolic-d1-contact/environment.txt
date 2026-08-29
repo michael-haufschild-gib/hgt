@@ -1,0 +1,4 @@
+Linux 2052ac7867f4 6.8.0-138-generic #138-Ubuntu SMP PREEMPT_DYNAMIC Fri Jul 31 22:41:49 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+128
+Python 3.12.3 (main, Aug 14 2025, 17:47:21) [GCC 13.3.0]
+sympy 1.13.3

@@ -41,3 +41,8 @@ Find an exact source-derived one-crossing invariant for the raw order-nine deriv
 ## Log
 
 - 2026-08-29 — created after second-pass computation audit exposed raw-unimodality as a distinct endpoint proof strategy.
+- 2026-08-29 — Follow-up dense scan at 2,000,001 points again found exactly one sampled raw
+  derivative sign change, now bracketed by `[0.0544456495, 0.05444568375]`, and one sampled raw
+  second-derivative sign change near `0.03041768`. Arb proves a positive derivative chamber before
+  the candidate maximum and a negative chamber after it but does not isolate uniqueness. Raw
+  monotonicity is therefore rejected; one-crossing/unimodality remains the exact source-pure target.

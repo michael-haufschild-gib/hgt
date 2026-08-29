@@ -20,6 +20,28 @@ noncomputable section
 def CompletelyMonotoneOn (H : ℝ → ℝ) : Prop :=
   CompletelyMonotoneDiff H ∧ ContinuousOn H (Ioi 0)
 
+theorem completelyMonotoneDiff_congr_Ioi {F G : ℝ → ℝ}
+    (hFG : EqOn F G (Ioi 0)) (hF : CompletelyMonotoneDiff F) :
+    CompletelyMonotoneDiff G := by
+  intro k delta hdelta t ht
+  have hiter : (fwdDiff delta)^[k] G t = (fwdDiff delta)^[k] F t := by
+    rw [fwdDiff_iter_eq_sum_shift, fwdDiff_iter_eq_sum_shift]
+    apply Finset.sum_congr rfl
+    intro j hj
+    congr 2
+    symm
+    apply hFG
+    rw [mem_Ioi]
+    exact add_pos_of_pos_of_nonneg ht (nsmul_nonneg hdelta.le j)
+  rw [hiter]
+  exact hF k delta hdelta t ht
+
+theorem CompletelyMonotoneOn.congr_Ioi {F G : ℝ → ℝ}
+    (hF : CompletelyMonotoneOn F) (hFG : EqOn F G (Ioi 0)) :
+    CompletelyMonotoneOn G := by
+  refine ⟨completelyMonotoneDiff_congr_Ioi hFG hF.1, ?_⟩
+  exact hF.2.congr fun x hx => (hFG hx).symm
+
 /-- The mesh-`1/(n+1)` sample used in the Bernstein compactness argument. -/
 def bernsteinSampleSequence (H : ℝ → ℝ) (n m : ℕ) : ℝ :=
   H ((m + 1 : ℕ) / (n + 1 : ℕ))
@@ -187,7 +209,8 @@ theorem tendsto_bernsteinFloorMesh (t : ℝ) (ht : 0 ≤ t) :
     rw [div_le_iff₀ hd]
     exact Nat.floor_le (mul_nonneg ht hd.le)
   have hlowerlim : Tendsto (fun n => t - 1 / d n) atTop (𝓝 t) := by
-    convert tendsto_const_nhds.sub hmesh using 1 <;> simp
+    convert tendsto_const_nhds.sub hmesh using 1
+    simp
   have hs : Tendsto s atTop (𝓝 t) :=
     tendsto_of_tendsto_of_tendsto_of_le_of_le' hlowerlim tendsto_const_nhds
       (Eventually.of_forall hlower) (Eventually.of_forall hupper)
@@ -225,7 +248,7 @@ def bernsteinCompletedCompactMeasure (H : ℝ → ℝ) (hH : CompletelyMonotoneD
       Measure.dirac (⟨0, by simp⟩ : HausdorffSourceSpace)
 
 theorem bernsteinCompletedCompactMeasure_univ (H : ℝ → ℝ)
-    (hH : CompletelyMonotoneDiff H) {L : ℝ} (hL : 0 ≤ L)
+    (hH : CompletelyMonotoneDiff H) {L : ℝ}
     (hbound : ∀ t : ℝ, 0 < t → H t ≤ L) (n : ℕ) :
     bernsteinCompletedCompactMeasure H hH L n Set.univ = ENNReal.ofReal L := by
   have hstep0 : 0 ≤ H (((n + 1 : ℕ) : ℝ)⁻¹) :=
@@ -249,7 +272,7 @@ noncomputable def bernsteinProbabilityMeasure (H : ℝ → ℝ)
     ProbabilityMeasure HausdorffSourceSpace :=
   ⟨(ENNReal.ofReal L)⁻¹ • bernsteinCompletedCompactMeasure H hH L n, by
     constructor
-    rw [Measure.smul_apply, bernsteinCompletedCompactMeasure_univ H hH hL.le hbound,
+    rw [Measure.smul_apply, bernsteinCompletedCompactMeasure_univ H hH hbound,
       smul_eq_mul]
     exact ENNReal.inv_mul_cancel
       (by simp [ENNReal.ofReal_eq_zero, not_le, hL]) ENNReal.ofReal_ne_top⟩
@@ -284,6 +307,365 @@ theorem integral_bernsteinProbabilityMeasure_gridMoment (H : ℝ → ℝ)
     positivity
   rw [hzero, smul_zero, add_zero, bernsteinCompactMeasure_gridMoment H hH n hm,
     ENNReal.toReal_inv, ENNReal.toReal_ofReal hL.le, smul_eq_mul]
+
+/-- Compact Bernstein--Widder theorem.  A continuous completely monotone profile with finite
+right limit at zero is the full real-power moment profile of a finite measure on `[0,1]`. -/
+theorem exists_compactLaplaceMeasure_of_completelyMonotoneOn
+    {H : ℝ → ℝ} {L : ℝ} (hH : CompletelyMonotoneOn H)
+    (hlim : Tendsto H (nhdsWithin (0 : ℝ) (Ioi 0)) (𝓝 L)) :
+    ∃ rho : Measure HausdorffSourceSpace, IsFiniteMeasure rho ∧
+      ∀ t : ℝ, 0 < t → H t = ∫ z : HausdorffSourceSpace, (z : ℝ) ^ t ∂rho := by
+  have hL0 : 0 ≤ L := by
+    apply isClosed_Ici.mem_of_tendsto hlim
+    filter_upwards [self_mem_nhdsWithin] with t ht
+    exact completelyMonotoneDiff_nonneg hH.1 ht
+  rcases eq_or_lt_of_le hL0 with hLzero | hL
+  · subst L
+    refine ⟨0, by infer_instance, fun t ht => ?_⟩
+    have hle := completelyMonotoneDiff_le_zeroLimit hH.1 hlim ht
+    have hnonneg := completelyMonotoneDiff_nonneg hH.1 ht
+    simp only [integral_zero_measure]
+    linarith
+  · have hbound : ∀ t : ℝ, 0 < t → H t ≤ L := fun t ht =>
+      completelyMonotoneDiff_le_zeroLimit hH.1 hlim ht
+    let P : ℕ → ProbabilityMeasure HausdorffSourceSpace :=
+      fun n => bernsteinProbabilityMeasure H hH.1 L hL hbound n
+    obtain ⟨Q, hQ⟩ := exists_clusterPt_of_compactSpace (Filter.map P atTop)
+    have hmoment : ∀ t : ℝ, 0 < t →
+        ∫ z : HausdorffSourceSpace, (z : ℝ) ^ t ∂(Q : Measure HausdorffSourceSpace) =
+          L⁻¹ * H t := by
+      intro t ht
+      let m : ℕ → ℕ := fun n => ⌊t * ((n + 1 : ℕ) : ℝ)⌋₊
+      let s : ℕ → ℝ := fun n => (m n : ℝ) / ((n + 1 : ℕ) : ℝ)
+      have hs : Tendsto s atTop (𝓝 t) := by
+        simpa only [s, m] using tendsto_bernsteinFloorMesh t ht.le
+      have hmesh : Tendsto (fun n : ℕ => (1 : ℝ) / ((n + 1 : ℕ) : ℝ))
+          atTop (𝓝 0) := by
+        simpa only [one_div] using
+          (tendsto_nhdsWithin_iff.mp tendsto_bernsteinMesh_zero).1
+      have hargUpper : Tendsto (fun n : ℕ =>
+          (((m n + 1 : ℕ) : ℝ) / ((n + 1 : ℕ) : ℝ))) atTop (𝓝 t) := by
+        have hsum : Tendsto (fun n => s n + 1 / ((n + 1 : ℕ) : ℝ))
+            atTop (𝓝 t) := by simpa using hs.add hmesh
+        convert hsum using 1
+        funext n
+        dsimp [s]
+        push_cast
+        ring
+      have hargLower : Tendsto (fun n : ℕ =>
+          (((m n + 2 : ℕ) : ℝ) / ((n + 1 : ℕ) : ℝ))) atTop (𝓝 t) := by
+        have htwo : Tendsto (fun n : ℕ => (2 : ℝ) *
+            ((1 : ℝ) / ((n + 1 : ℕ) : ℝ))) atTop (𝓝 0) := by
+          simpa using hmesh.const_mul 2
+        have hsum : Tendsto (fun n => s n + 2 * (1 / ((n + 1 : ℕ) : ℝ)))
+            atTop (𝓝 t) := by simpa using hs.add htwo
+        convert hsum using 1
+        funext n
+        dsimp [s]
+        push_cast
+        ring
+      have hcont : ContinuousAt H t :=
+        (hH.2 t ht).continuousAt (Ioi_mem_nhds ht)
+      have hupperLim : Tendsto (fun n : ℕ =>
+          L⁻¹ * H (((m n + 1 : ℕ) : ℝ) / ((n + 1 : ℕ) : ℝ)))
+          atTop (𝓝 (L⁻¹ * H t)) :=
+        (hcont.tendsto.comp hargUpper).const_mul _
+      have hlowerLim : Tendsto (fun n : ℕ =>
+          L⁻¹ * H (((m n + 2 : ℕ) : ℝ) / ((n + 1 : ℕ) : ℝ)))
+          atTop (𝓝 (L⁻¹ * H t)) :=
+        (hcont.tendsto.comp hargLower).const_mul _
+      obtain ⟨N, hN⟩ := exists_nat_gt (1 / t)
+      have hmpos : ∀ᶠ n in atTop, 0 < m n := by
+        filter_upwards [eventually_ge_atTop N] with n hn
+        have hcast : (N : ℝ) ≤ ((n + 1 : ℕ) : ℝ) := by
+          exact_mod_cast (le_trans hn (Nat.le_add_right n 1))
+        have hmul : 1 < t * ((n + 1 : ℕ) : ℝ) := by
+          have htN : 1 < t * (N : ℝ) := by
+            have := mul_lt_mul_of_pos_left hN ht
+            field_simp at this
+            exact this
+          exact lt_of_lt_of_le htN (mul_le_mul_of_nonneg_left hcast ht.le)
+        have hnlt : ¬ m n < 1 := by
+          change ¬ ⌊t * ((n + 1 : ℕ) : ℝ)⌋₊ < 1
+          rw [Nat.floor_lt (mul_nonneg ht.le (by positivity))]
+          exact not_lt.mpr (by simpa using hmul.le)
+        omega
+      have hsqueeze : ∀ᶠ n in atTop,
+          L⁻¹ * H (((m n + 2 : ℕ) : ℝ) / ((n + 1 : ℕ) : ℝ)) ≤
+            ∫ z : HausdorffSourceSpace, (z : ℝ) ^ t ∂(P n : Measure _) ∧
+          (∫ z : HausdorffSourceSpace, (z : ℝ) ^ t ∂(P n : Measure _)) ≤
+            L⁻¹ * H (((m n + 1 : ℕ) : ℝ) / ((n + 1 : ℕ) : ℝ)) := by
+        filter_upwards [hmpos] with n hmn
+        have hden : 0 < (((n + 1 : ℕ) : ℝ)) := by positivity
+        have hs0 : 0 ≤ s n := div_nonneg (by positivity) hden.le
+        have hst : s n ≤ t := by
+          dsimp [s]
+          rw [div_le_iff₀ hden]
+          exact Nat.floor_le (mul_nonneg ht.le hden.le)
+        have htNext : t ≤ ((m n + 1 : ℕ) : ℝ) / ((n + 1 : ℕ) : ℝ) := by
+          apply le_of_lt
+          rw [lt_div_iff₀ hden]
+          simpa only [m, Nat.cast_add, Nat.cast_one] using
+            Nat.lt_floor_add_one (t * ((n + 1 : ℕ) : ℝ))
+        have hflow : Integrable (fun z : HausdorffSourceSpace =>
+            (z : ℝ) ^ (((m n + 1 : ℕ) : ℝ) / ((n + 1 : ℕ) : ℝ)))
+            (P n : Measure _) := by
+          apply integrable_of_continuous
+          fun_prop (disch := positivity)
+        have hft : Integrable (fun z : HausdorffSourceSpace => (z : ℝ) ^ t)
+            (P n : Measure _) := by
+          apply integrable_of_continuous
+          fun_prop (disch := positivity)
+        have hfup : Integrable (fun z : HausdorffSourceSpace =>
+            (z : ℝ) ^ (s n)) (P n : Measure _) := by
+          apply integrable_of_continuous
+          fun_prop (disch := positivity)
+        have hlower : (∫ z : HausdorffSourceSpace,
+              (z : ℝ) ^ (((m n + 1 : ℕ) : ℝ) / ((n + 1 : ℕ) : ℝ)) ∂(P n : Measure _)) ≤
+            ∫ z : HausdorffSourceSpace, (z : ℝ) ^ t ∂(P n : Measure _) := by
+          apply integral_mono hflow hft
+          intro z
+          exact hausdorff_rpow_antitone_exponent z ht.le htNext
+        have hupper : (∫ z : HausdorffSourceSpace, (z : ℝ) ^ t ∂(P n : Measure _)) ≤
+            ∫ z : HausdorffSourceSpace, (z : ℝ) ^ (s n) ∂(P n : Measure _) := by
+          apply integral_mono hft hfup
+          intro z
+          exact hausdorff_rpow_antitone_exponent z hs0 hst
+        dsimp [P] at hlower hupper ⊢
+        rw [integral_bernsteinProbabilityMeasure_gridMoment H hH.1 hL hbound n
+          (show 0 < m n + 1 by omega)] at hlower
+        rw [show s n = (m n : ℝ) / ((n + 1 : ℕ) : ℝ) by rfl,
+          integral_bernsteinProbabilityMeasure_gridMoment H hH.1 hL hbound n hmn] at hupper
+        exact ⟨hlower, hupper⟩
+      have htend : Tendsto (fun n : ℕ =>
+          ∫ z : HausdorffSourceSpace, (z : ℝ) ^ t ∂(P n : Measure _))
+          atTop (𝓝 (L⁻¹ * H t)) :=
+        tendsto_of_tendsto_of_tendsto_of_le_of_le' hlowerLim hupperLim
+          (hsqueeze.mono fun _ h => h.1) (hsqueeze.mono fun _ h => h.2)
+      have hfunctional := ProbabilityMeasure.continuous_integral_boundedContinuousFunction
+        (bernsteinRpowTest t ht)
+      have hcluster : ClusterPt
+          (∫ z : HausdorffSourceSpace, (z : ℝ) ^ t ∂(Q : Measure _))
+          (Filter.map (fun n : ℕ =>
+            ∫ z : HausdorffSourceSpace, (z : ℝ) ^ t ∂(P n : Measure _)) atTop) := by
+        have hmap := hQ.map hfunctional.continuousAt tendsto_map
+        rw [Filter.map_map] at hmap
+        change ClusterPt
+          ((fun mu : ProbabilityMeasure HausdorffSourceSpace =>
+            ∫ z : HausdorffSourceSpace, (z : ℝ) ^ t ∂(mu : Measure _)) Q)
+          (Filter.map ((fun mu : ProbabilityMeasure HausdorffSourceSpace =>
+            ∫ z : HausdorffSourceSpace, (z : ℝ) ^ t ∂(mu : Measure _)) ∘ P) atTop)
+        exact hmap
+      exact eq_of_clusterPt_of_tendsto_seq hcluster htend
+    let rho : Measure HausdorffSourceSpace := ENNReal.ofReal L • (Q : Measure _)
+    have hrhoFinite : IsFiniteMeasure rho := by
+      dsimp [rho]
+      letI : IsProbabilityMeasure (Q : Measure HausdorffSourceSpace) := Q.2
+      constructor
+      rw [Measure.smul_apply, smul_eq_mul]
+      rw [measure_univ, mul_one]
+      exact ENNReal.ofReal_lt_top
+    refine ⟨rho, hrhoFinite, fun t ht => ?_⟩
+    dsimp [rho]
+    rw [integral_smul_measure, ENNReal.toReal_ofReal hL.le, smul_eq_mul,
+      hmoment t ht]
+    field_simp
+
+/-- Positive part of the compact Laplace coordinate. -/
+def positiveHausdorffSource : Set HausdorffSourceSpace :=
+  {z | 0 < (z : ℝ)}
+
+theorem measurableSet_positiveHausdorffSource : MeasurableSet positiveHausdorffSource := by
+  change MeasurableSet ((fun z : HausdorffSourceSpace => (z : ℝ)) ⁻¹' Ioi 0)
+  exact measurableSet_Ioi.preimage continuous_subtype_val.measurable
+
+/-- Inverse exponential compactification `z ↦ -log z`.  Its value at `z=0` is irrelevant because
+the source is restricted to the positive compact coordinate before mapping. -/
+def inverseLaplaceCompactification (z : HausdorffSourceSpace) : ℝ :=
+  -Real.log (z : ℝ)
+
+theorem measurable_inverseLaplaceCompactification :
+    Measurable inverseLaplaceCompactification := by
+  unfold inverseLaplaceCompactification
+  fun_prop
+
+/-- Push a compact real-power source back to the nonnegative Laplace half-line. -/
+def bernsteinHalfLineMeasure (rho : Measure HausdorffSourceSpace) : Measure ℝ :=
+  Measure.map inverseLaplaceCompactification (rho.restrict positiveHausdorffSource)
+
+instance bernsteinHalfLineMeasure_isFinite (rho : Measure HausdorffSourceSpace)
+    [IsFiniteMeasure rho] : IsFiniteMeasure (bernsteinHalfLineMeasure rho) :=
+  Measure.isFiniteMeasure_map _ _
+
+theorem bernsteinHalfLineMeasure_carried_Ici (rho : Measure HausdorffSourceSpace) :
+    bernsteinHalfLineMeasure rho (Ici (0 : ℝ))ᶜ = 0 := by
+  rw [bernsteinHalfLineMeasure, Measure.map_apply measurable_inverseLaplaceCompactification
+    measurableSet_Ici.compl]
+  rw [Measure.restrict_apply
+    (measurableSet_Ici.compl.preimage measurable_inverseLaplaceCompactification)]
+  apply measure_mono_null _ (measure_empty)
+  rintro z ⟨hzneg, hzpos⟩
+  have hzpos' : 0 < (z : ℝ) := hzpos
+  have hzlog : Real.log (z : ℝ) ≤ 0 := Real.log_nonpos hzpos'.le z.property.2
+  simp only [mem_preimage, mem_compl_iff, mem_Ici, not_le,
+    inverseLaplaceCompactification] at hzneg
+  exact (not_lt_of_ge (neg_nonneg.mpr hzlog) hzneg).elim
+
+theorem integral_bernsteinHalfLineMeasure_laplace
+    (rho : Measure HausdorffSourceSpace) [IsFiniteMeasure rho]
+    {t : ℝ} (ht : 0 < t) :
+    (∫ r : ℝ, Real.exp (-t * r) ∂bernsteinHalfLineMeasure rho) =
+      ∫ z : HausdorffSourceSpace, (z : ℝ) ^ t ∂rho := by
+  rw [bernsteinHalfLineMeasure, integral_map
+    measurable_inverseLaplaceCompactification.aemeasurable]
+  · change (∫ z : HausdorffSourceSpace in positiveHausdorffSource,
+      Real.exp (-t * inverseLaplaceCompactification z) ∂rho) = _
+    rw [← integral_indicator measurableSet_positiveHausdorffSource]
+    apply integral_congr_ae
+    filter_upwards with z
+    by_cases hz : z ∈ positiveHausdorffSource
+    · rw [Set.indicator_of_mem hz]
+      have hzpos : 0 < (z : ℝ) := hz
+      rw [Real.rpow_def_of_pos hzpos]
+      unfold inverseLaplaceCompactification
+      congr 1
+      ring
+    · rw [Set.indicator_of_notMem hz]
+      have hz0 : (z : ℝ) = 0 := le_antisymm (not_lt.mp hz) z.property.1
+      rw [hz0, Real.zero_rpow ht.ne']
+  · fun_prop
+
+/-- **Bernstein--Widder representation.**  Every continuous completely monotone profile on the
+positive half-line with finite right limit at zero is the Laplace transform of a finite positive
+measure carried by `[0,∞)`. -/
+theorem exists_finiteLaplaceMeasure_of_completelyMonotoneOn
+    {H : ℝ → ℝ} {L : ℝ} (hH : CompletelyMonotoneOn H)
+    (hlim : Tendsto H (nhdsWithin (0 : ℝ) (Ioi 0)) (𝓝 L)) :
+    ∃ tau : Measure ℝ, IsFiniteMeasure tau ∧ tau (Ici (0 : ℝ))ᶜ = 0 ∧
+      ∀ t : ℝ, 0 < t → H t = ∫ r : ℝ, Real.exp (-t * r) ∂tau := by
+  obtain ⟨rho, hrho, hmoment⟩ :=
+    exists_compactLaplaceMeasure_of_completelyMonotoneOn hH hlim
+  letI : IsFiniteMeasure rho := hrho
+  refine ⟨bernsteinHalfLineMeasure rho, inferInstance,
+    bernsteinHalfLineMeasure_carried_Ici rho, fun t ht => ?_⟩
+  rw [integral_bernsteinHalfLineMeasure_laplace rho ht]
+  exact hmoment t ht
+
+/-! ## Converse: finite positive Laplace transforms are completely monotone -/
+
+/-- Real Laplace transform of a positive measure. -/
+def finiteRealLaplace (tau : Measure ℝ) (t : ℝ) : ℝ :=
+  ∫ r : ℝ, Real.exp (-t * r) ∂tau
+
+theorem integrable_finiteRealLaplace_differenceKernel
+    (tau : Measure ℝ) [IsFiniteMeasure tau] (htau : tau (Ici (0 : ℝ))ᶜ = 0)
+    {t delta : ℝ} (ht : 0 < t) (hdelta : 0 < delta) (k : ℕ) :
+    Integrable (fun r : ℝ =>
+      Real.exp (-t * r) * (Real.exp (-delta * r) - 1) ^ k) tau := by
+  have hae : ∀ᵐ r ∂tau, r ∈ Ici (0 : ℝ) := ae_iff.mpr htau
+  refine Integrable.mono' (integrable_const (1 : ℝ)) (by fun_prop) ?_
+  filter_upwards [hae] with r hr
+  have htr : 0 ≤ t * r := mul_nonneg ht.le hr
+  have hdr : 0 ≤ delta * r := mul_nonneg hdelta.le hr
+  have he1 : Real.exp (-t * r) ≤ 1 := Real.exp_le_one_iff.mpr (by nlinarith)
+  have he2 : Real.exp (-delta * r) ≤ 1 := Real.exp_le_one_iff.mpr (by nlinarith)
+  have habs : |Real.exp (-delta * r) - 1| ≤ 1 := by
+    rw [abs_of_nonpos (sub_nonpos.mpr he2)]
+    linarith [Real.exp_pos (-delta * r)]
+  rw [Real.norm_eq_abs, abs_mul, abs_pow, abs_of_pos (Real.exp_pos _)]
+  exact mul_le_one₀ he1 (pow_nonneg (abs_nonneg _) _)
+    (pow_le_one₀ (abs_nonneg _) habs)
+
+/-- Exact finite-difference kernel identity for a finite positive Laplace transform. -/
+theorem fwdDiff_iter_finiteRealLaplace
+    (tau : Measure ℝ) [IsFiniteMeasure tau] (htau : tau (Ici (0 : ℝ))ᶜ = 0)
+    {delta : ℝ} (hdelta : 0 < delta) (k : ℕ) {t : ℝ} (ht : 0 < t) :
+    (fwdDiff delta)^[k] (finiteRealLaplace tau) t =
+      ∫ r : ℝ, Real.exp (-t * r) * (Real.exp (-delta * r) - 1) ^ k ∂tau := by
+  induction k generalizing t with
+  | zero =>
+      simp [finiteRealLaplace]
+  | succ k ih =>
+      rw [Function.iterate_succ_apply', fwdDiff, ih (by linarith), ih ht]
+      rw [← integral_sub
+        (integrable_finiteRealLaplace_differenceKernel tau htau (by linarith) hdelta k)
+        (integrable_finiteRealLaplace_differenceKernel tau htau ht hdelta k)]
+      apply integral_congr_ae
+      filter_upwards with r
+      have hexp : Real.exp (-(t + delta) * r) =
+          Real.exp (-t * r) * Real.exp (-delta * r) := by
+        rw [← Real.exp_add]
+        congr 1
+        ring
+      rw [hexp, pow_succ]
+      ring
+
+/-- Every finite positive half-line Laplace transform is completely monotone in finite-difference
+form. -/
+theorem completelyMonotoneDiff_finiteRealLaplace
+    (tau : Measure ℝ) [IsFiniteMeasure tau] (htau : tau (Ici (0 : ℝ))ᶜ = 0) :
+    CompletelyMonotoneDiff (finiteRealLaplace tau) := by
+  intro k delta hdelta t ht
+  rw [fwdDiff_iter_finiteRealLaplace tau htau hdelta k ht]
+  rw [← integral_const_mul]
+  apply integral_nonneg_of_ae
+  have hae : ∀ᵐ r ∂tau, r ∈ Ici (0 : ℝ) := ae_iff.mpr htau
+  filter_upwards [hae] with r hr
+  have hdr : 0 ≤ delta * r := mul_nonneg hdelta.le hr
+  have he : Real.exp (-delta * r) ≤ 1 := Real.exp_le_one_iff.mpr (by nlinarith)
+  have hpow : 0 ≤ (1 - Real.exp (-delta * r)) ^ k := pow_nonneg (sub_nonneg.mpr he) _
+  have hsign : (-1 : ℝ) ^ k * (Real.exp (-delta * r) - 1) ^ k =
+      (1 - Real.exp (-delta * r)) ^ k := by
+    rw [← mul_pow]
+    congr 1
+    ring
+  change 0 ≤ (-1 : ℝ) ^ k *
+    (Real.exp (-t * r) * (Real.exp (-delta * r) - 1) ^ k)
+  rw [show (-1 : ℝ) ^ k *
+      (Real.exp (-t * r) * (Real.exp (-delta * r) - 1) ^ k) =
+      Real.exp (-t * r) *
+        ((-1 : ℝ) ^ k * (Real.exp (-delta * r) - 1) ^ k) by ring,
+    hsign]
+  exact mul_nonneg (Real.exp_pos _).le hpow
+
+/-- A finite positive half-line Laplace transform is continuous on the closed right half-line. -/
+theorem continuousOn_finiteRealLaplace
+    (tau : Measure ℝ) [IsFiniteMeasure tau] (htau : tau (Ici (0 : ℝ))ᶜ = 0) :
+    ContinuousOn (finiteRealLaplace tau) (Ici 0) := by
+  intro t ht
+  have hae : ∀ᵐ r ∂tau, r ∈ Ici (0 : ℝ) := ae_iff.mpr htau
+  unfold finiteRealLaplace
+  refine tendsto_integral_filter_of_dominated_convergence (fun _ => (1 : ℝ)) ?_ ?_
+      (integrable_const 1) ?_
+  · filter_upwards with s
+    fun_prop
+  · filter_upwards [self_mem_nhdsWithin] with s hs
+    filter_upwards [hae] with r hr
+    rw [Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
+    have hr0 : 0 ≤ r := hr
+    exact Real.exp_le_one_iff.mpr (by nlinarith [mul_nonneg hs hr0])
+  · filter_upwards with r
+    have hc : Continuous (fun s : ℝ => Real.exp (-s * r)) := by fun_prop
+    exact (hc.tendsto t).mono_left inf_le_left
+
+/-- At zero, a finite positive Laplace transform tends to total mass. -/
+theorem tendsto_finiteRealLaplace_nhdsGT_zero
+    (tau : Measure ℝ) [IsFiniteMeasure tau] (htau : tau (Ici (0 : ℝ))ᶜ = 0) :
+    Tendsto (finiteRealLaplace tau) (nhdsWithin (0 : ℝ) (Ioi 0))
+      (𝓝 (tau Set.univ).toReal) := by
+  have hcont := continuousOn_finiteRealLaplace tau htau 0 (by simp)
+  have htend := hcont.mono Ioi_subset_Ici_self
+  have htend' : Tendsto (finiteRealLaplace tau) (nhdsWithin (0 : ℝ) (Ioi 0))
+      (𝓝 (finiteRealLaplace tau 0)) := htend
+  convert htend' using 1
+  simp [finiteRealLaplace, integral_const, measureReal_def]
+
+/-- The finite positive Laplace cone is exactly inside the continuous completely monotone cone. -/
+theorem completelyMonotoneOn_finiteRealLaplace
+    (tau : Measure ℝ) [IsFiniteMeasure tau] (htau : tau (Ici (0 : ℝ))ᶜ = 0) :
+    CompletelyMonotoneOn (finiteRealLaplace tau) := by
+  exact ⟨completelyMonotoneDiff_finiteRealLaplace tau htau,
+    (continuousOn_finiteRealLaplace tau htau).mono Ioi_subset_Ici_self⟩
 
 end
 

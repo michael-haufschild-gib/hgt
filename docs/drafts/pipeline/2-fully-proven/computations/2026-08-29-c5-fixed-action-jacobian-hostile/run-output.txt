@@ -1,0 +1,52 @@
+{
+  "elapsed_seconds": 168.46307921409607,
+  "environment": {
+    "mpmath": "1.4.1",
+    "numpy": "2.5.2",
+    "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.39",
+    "python": "3.12.3",
+    "workers": 128
+  },
+  "grid": {
+    "count": 694800,
+    "negative_count": 0,
+    "negative_first_100": [],
+    "positive_count": 694800,
+    "smallest_log10_abs": -2.3206510451505472e+104,
+    "smallest_point": [
+      20.0,
+      100.0,
+      1,
+      "1.08923363361494917452527868531e-232065104515054726888715191761431723164166686586031127552921127323597083003125762543717210799254707348065"
+    ],
+    "zero_count": 0
+  },
+  "grid_shape": [
+    579,
+    1200
+  ],
+  "parameters": {
+    "dps": 160,
+    "output": "results",
+    "random_points": 200000,
+    "seed": 20260829,
+    "t_points": 900,
+    "u_points": 400,
+    "workers": 128
+  },
+  "random": {
+    "count": 200000,
+    "negative_count": 0,
+    "negative_first_100": [],
+    "positive_count": 200000,
+    "smallest_log10_abs": -1.8350845224285022e+104,
+    "smallest_point": [
+      19.944281824342795,
+      99.9383395619042,
+      1,
+      "6.40172308056028313680607545187e-183508452242850217174948663244110100615099580331289738597376324548599414984418350309228330102050752246824"
+    ],
+    "zero_count": 0
+  },
+  "scope": "diagnostic only; forbidden as input to Lean proofs"
+}

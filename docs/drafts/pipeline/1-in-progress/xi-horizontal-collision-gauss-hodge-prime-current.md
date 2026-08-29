@@ -38,6 +38,12 @@ pair of charge two. Required input is absolute, not density-normalized.
    two-orientation completion gauge equals the square of the odd fixed-first-trace Gamma
    Bockstein, with exact Gauss coefficient. On an actual retained Xi multiplicity copy, one
    vanishes iff the other does. Prime labels and both reflection orientations survive.
+9. **Filtered Gamma-six positive-diagonal landing.** Failed and classified exactly. The literal
+   filtered boundary flux is strictly positive and prime-summable at every positive depth. One
+   off-line Gauss--Hodge copy is positive and nonsummable, while a critical copy is zero. Hence
+   bounded positive diagonal landing, even with copy-dependent depth and bound, is equivalent to
+   RH; literal coefficientwise equality is impossible for every copy. Prime-label retention alone
+   cannot carry the missing multiplicity/horizontal datum.
 
 ## Formal files
 
@@ -53,9 +59,17 @@ before that boundary (`tsum 0 = 0`) was fixed with explicit `tsum_zero`.
 
 ## Exact open producer
 
-Prove unconditionally that the positive derivative-free Gamma-six suspension-determinant source
-resolvent trace is prime-summable. By the new completion weld, an equivalent source-side target is
-loss-zero landing of the same two orientations in one fixed trace-one ideal. Generic Frechet
-nuclearity, shifted ideals, damping, `q>1` Schatten admission, determinant regularization, or
-`o(N(T))` estimates cannot supply this endpoint.
+Positive bounded prime-diagonal comparison with filtered Gamma-six flux is now terminal, and exact
+coefficientwise identification is false. Any surviving HC producer must change trace-ideal class
+through an unbounded, signed, off-diagonal, singular, window-coupled, or genuinely
+multiplicity-bearing source transform, then identify that transform coefficient-faithfully with
+the Gauss--Hodge current. Directly proving prime summability of the derivative-free
+Gamma-six/Gauss--Hodge resolvent trace remains an exact RH receiver, not an independent source
+estimate. Generic Frechet nuclearity, shifted ideals, damping, `q>1` Schatten admission,
+determinant regularization, positive diagonal majorization, or `o(N(T))` estimates cannot supply
+the endpoint.
 
+Formal no-go:
+`formal/GaloisForLFunctions/RHTower/XiGammaSixFilteredBoundaryDiagonalLandingNoGo.lean`.
+Direct elaboration and targeted build pass; closed-axiom audit reports only `propext`,
+`Classical.choice`, and `Quot.sound`.

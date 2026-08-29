@@ -1,0 +1,32 @@
+{
+  "outer": {
+    "candidate_values_ascending": [
+      {
+        "eta": "1",
+        "value": "11257833495.13001"
+      },
+      {
+        "eta": "0",
+        "value": "11282112296.43546"
+      }
+    ],
+    "critical_root_count_exact": 0,
+    "critical_roots_numeric": [],
+    "degree": 24,
+    "endpoint_derivative_signs": {
+      "eta_0": "negative",
+      "eta_1": "negative"
+    },
+    "factor_coefficient": "63/178405961588244985132285746181186892047843328000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "factor_degrees": [
+      [
+        24,
+        1
+      ]
+    ],
+    "terms": 25
+  },
+  "scope": "diagnostic only; forbidden as Lean input",
+  "seam_independent_of_eta": true,
+  "seam_sign": "positive"
+}

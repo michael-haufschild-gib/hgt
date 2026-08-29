@@ -1,0 +1,165 @@
+{
+  "actual_endpoint_ode": {
+    "endpoint_X": "19.84463374893491606858162038979765508946",
+    "endpoint_v": "0.1208908995980973813211671292247982616369",
+    "endpoint_z": "0.2927702799515840419051565804840555610553",
+    "seam_X": "19.15707179797043648662464552678601263306",
+    "x": "0.0685",
+    "z_lt_one_third": true
+  },
+  "caps": [
+    {
+      "bernstein": {
+        "coefficient_sha256": "eb6bd5e3d3fccdb5b31354783235d50f986900ebb7ae0cf21809fa87d3144478",
+        "count": 10584,
+        "degrees": [
+          13,
+          26,
+          27
+        ],
+        "maximum": "352739532097425/2048",
+        "minimum": "-158005614207157001523/3164635136",
+        "minimum_index": [
+          13,
+          12,
+          27
+        ],
+        "negative_count": 3518,
+        "nonnegative": false,
+        "positive": false,
+        "zero_count": 14
+      },
+      "power_coeff_negative_count": 1493,
+      "power_coeff_nonnegative": false,
+      "power_coeff_zero_count": 0,
+      "term_count": 2940,
+      "z_cap": "1"
+    },
+    {
+      "bernstein": {
+        "coefficient_sha256": "9fd6ff3a5c995a18fedda8f5d3caa03e0bde5a9d01576eb706df84f9a2b12466",
+        "count": 10584,
+        "degrees": [
+          13,
+          26,
+          27
+        ],
+        "maximum": "352739532097425/2048",
+        "minimum": "-3372690316520624255757/111669149696",
+        "minimum_index": [
+          13,
+          24,
+          27
+        ],
+        "negative_count": 819,
+        "nonnegative": false,
+        "positive": false,
+        "zero_count": 0
+      },
+      "power_coeff_negative_count": 1493,
+      "power_coeff_nonnegative": false,
+      "power_coeff_zero_count": 0,
+      "term_count": 2940,
+      "z_cap": "1/2"
+    },
+    {
+      "bernstein": {
+        "coefficient_sha256": "ca0292795c6da01839cc3d8d67ede3b84886faa507953d4ff4812a3cfba813b8",
+        "count": 10584,
+        "degrees": [
+          13,
+          26,
+          27
+        ],
+        "maximum": "352739532097425/2048",
+        "minimum": "-21433553765280519289174017980593139/11297181459240000000000000",
+        "minimum_index": [
+          0,
+          26,
+          27
+        ],
+        "negative_count": 6,
+        "nonnegative": false,
+        "positive": false,
+        "zero_count": 0
+      },
+      "power_coeff_negative_count": 1493,
+      "power_coeff_nonnegative": false,
+      "power_coeff_zero_count": 0,
+      "term_count": 2940,
+      "z_cap": "1/3"
+    },
+    {
+      "bernstein": {
+        "coefficient_sha256": "9f4aa5b24a730e219a2fdec6f25224a3730af47c06864a1f546ba2c31d2ea602",
+        "count": 10584,
+        "degrees": [
+          13,
+          26,
+          27
+        ],
+        "maximum": "352739532097425/2048",
+        "minimum": "296487801305704902474928369878771818463874446876888524465541/34359738368000000000000000000000000000000000000000",
+        "minimum_index": [
+          0,
+          26,
+          27
+        ],
+        "negative_count": 0,
+        "nonnegative": true,
+        "positive": true,
+        "zero_count": 0
+      },
+      "power_coeff_negative_count": 1493,
+      "power_coeff_nonnegative": false,
+      "power_coeff_zero_count": 0,
+      "term_count": 2940,
+      "z_cap": "3/10"
+    },
+    {
+      "bernstein": {
+        "coefficient_sha256": "e8bbe82df19858b41ba40699937a7783786b9c9d5c84479c20bd37bd01b70015",
+        "count": 10584,
+        "degrees": [
+          13,
+          26,
+          27
+        ],
+        "maximum": "352739532097425/2048",
+        "minimum": "48325364532380259470089177854443193708347501057852706739/1776308649528226802416196787162316800000000000",
+        "minimum_index": [
+          0,
+          26,
+          0
+        ],
+        "negative_count": 0,
+        "nonnegative": true,
+        "positive": true,
+        "zero_count": 0
+      },
+      "power_coeff_negative_count": 1493,
+      "power_coeff_nonnegative": false,
+      "power_coeff_zero_count": 0,
+      "term_count": 2940,
+      "z_cap": "1/4"
+    }
+  ],
+  "certificate_degree": 66,
+  "certificate_terms": 1120,
+  "normalized_drift_degree": 40,
+  "normalized_drift_terms": 1120,
+  "random_full_simplex": {
+    "eligible_Q_positive": 1840825,
+    "minimum": -29101058471.5775,
+    "samples": 2000000,
+    "witness": {
+      "X": 19.998908959892773,
+      "y": 0.9985644284973153,
+      "z": 0.4650472714552931
+    }
+  },
+  "scope": "diagnostic only; forbidden as Lean input",
+  "sympy": "1.13.3",
+  "triangle_factor": "drift / R = z * certificate(X,z,y), v=z*y",
+  "workers": 5
+}

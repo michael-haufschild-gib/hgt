@@ -58,3 +58,86 @@ Planat--Solé, *Second-Level Concavity of the Riemann Ξ Kernel* (arXiv:2608.191
 ## Log
 
 - 2026-08-29 — computation-free projective derivative bridge derived, formalized, targeted-build verified, and reduced to exact physical-orbit sign core.
+- 2026-08-29 — A 2,000,001-point/27,400-Arb-box hostile follow-up found no negative drift;
+  Arb certified all boxes from `0.00211` to `137/2000` and failed only near seam. Exact parity audit
+  explains that failure: raw D1, projective D1, and `Q` are even; projective drift is odd and
+  vanishes exactly at zero. These facts are now unconditional Lean theorems, independent of the
+  run. Sharpened open core is positivity of desingularized drift `N(x)/x` on the finite interval,
+  with exact second variation as seam value. Computation report:
+  `../2-fully-proven/computations/2026-08-29-s6f-projective-drift-unimodality/REPORT.md`.
+- 2026-08-29 — Exact rational recurrence discovery computed the physical-flow derivative of the
+  projective drift at an arbitrary algebraic seam scale `X`.  After `X=191/10+Y`, all 15
+  coefficients of its degree-14 numerator are strictly positive.  Thus the actual drift has the
+  correct strict inward seam orientation; unresolved work begins with extending this sign along
+  the physical orbit, not resolving the forced seam cancellation.  Diagnostic record:
+  `../2-fully-proven/computations/2026-08-29-modular-seam-certificate-discovery/REPORT.md`.
+  The same exact recurrence kills local absolute monotonicity: the third physical-flow derivative
+  has all shifted coefficients strictly negative, while the fifth has all shifted coefficients
+  strictly positive.  The surviving local candidate is alternating/Stieltjes-like odd-jet
+  structure.  Paper rederivation and computation-free Lean formalization remain pending.
+- 2026-08-29 — Normalized-clock search factors exact physical drift as
+  `projectiveDrift/R = z*C(X,z,y)`, with `v=z*y`. Whole physical simplex is false: exact rational
+  state `X=199989/10000`, `z=465/1000`, `y=999/1000` has `Q>0` and negative `C`. For chamber
+  `191/10<=X<=20`, `0<=y<=1`, `0<=z<=3/10`, all 10,584 exact diagnostic Bernstein coefficients
+  are positive. This certificate is reconnaissance and is forbidden as Lean input. Report:
+  `../2-fully-proven/computations/2026-08-29-s6f-normalized-chamber-search/REPORT.md`.
+- 2026-08-29 — Trajectory-localization survivor was independently rederived and formalized without
+  computational input. New module
+  `ThetaCuspFullReflectionEighthProjectiveClockChamber` sharpens theta mass to `<2173/2000`, proves
+  seam scale squared `<360000/18769`, bounds modular-lambda speed by `600/137`, and proves
+  `-Z(x)<3/10` for every `0<x<137/2000`. Targeted module build and axiom audit pass. Remaining open
+  core is now only computation-free positivity of `C` on this rational chamber, followed by
+  existing derivative bridge. Next kill attempt must find compact algebraic decomposition or an
+  exact counterexample inside `z<3/10`; copying computed coefficient table into Lean is forbidden.
+- 2026-08-29 — Exact coordinate-monotonicity attack partially succeeds and sharply compresses open
+  core. On normalized cube, diagnostic Bernstein certificates make `C` strictly increasing in
+  `X` and nonincreasing in `z`; monotonicity in `y` is false. Thus chamber positivity reduces to
+  degree-27 boundary polynomial `C(191/10,3/10,y)`, whose 28 univariate Bernstein coefficients are
+  all strictly positive. Independent exact verifier passes. Report:
+  `../2-fully-proven/computations/2026-08-29-s6f-monotonicity-hostile/REPORT.md`. Computed
+  coefficients remain forbidden in Lean. New paper target is two compact derivative-sign
+  decompositions plus one degree-27 univariate positive decomposition, not original
+  three-variable 10,584-coefficient table.
+- 2026-08-29 — Thin-clock-cone attack materially sharpens physical orbit. Exact modular ODE proves,
+  without computational input, `(2/5)z < v < (1/2)z` throughout `0<x<137/2000`; theorem is
+  formalized as `thetaCuspModularProjectiveClocks_mem_thinCone`. Lower wall is global consequence
+  of discriminant gap `<20`; upper wall uses increasing scale square `>191/10`, existing
+  `z<3/10`, and strict clock simplex. Independent RunPod diagnostics then find `C>0` not only for
+  `X<=20` but on full half-cone `X>=191/10`, `0<=z<=3/10`, `2/5<=y<=1/2`; `C` is concave in `y`
+  there, while direct `y` monotonicity remains false. Exact verifier passes. Report:
+  `../2-fully-proven/computations/2026-08-29-s6f-thin-clock-cone/REPORT.md`. Computed certificates
+  remain forbidden in Lean. Open core is now conceptual proof of one half-cone polynomial sign;
+  no upper scale bound is needed.
+- 2026-08-29 — Failure-driven wall iteration sharpens actual clock ratio again, now entirely by
+  paper algebra and Lean: `13/32 < y < 7/16` on `0<x<137/2000`. Lower wall uses exact source gap
+  `A<(600/137)^2<96/5`; upper wall then uses lower ratio, `X>191/10`, and `z<3/10`. Main theorem
+  `thetaCuspModularProjectiveClocks_mem_sharpThinCone` passes direct Lean, exact-module build, and
+  axiom audit. New RunPod hostile search kills ordinary danger-slack and intrinsic ratio-only
+  shortcuts: `(B,Q,U)=(1,1,5/2)` has negative projective drift despite `2B<U<3B`, so physical
+  amplitude cap is essential. On formal sharp cone, direct `y` monotonicity revives: diagnostics
+  find `C_X>0`, `C_z<=0`, and `C_y>0`, reducing remaining sign to exact corner
+  `C(191/10,3/10,13/32)>0`. Tables remain forbidden in Lean. Report:
+  `../2-fully-proven/computations/2026-08-29-s6f-conceptual-certificate-search/REPORT.md`.
+- 2026-08-29 — Failure of the positive-Laplace/Vandermonde interpretation led to a stronger
+  ODE-native survivor. Exact paper algebra and Lean now prove the parabolic physical cone
+  `(13/32+z^2/32)z < v < (33/80+z^2/12)z` and
+  `191/10+(147/20)z^2 < X`. Main theorem
+  `thetaCuspModularProjectiveClocks_mem_parabolicThinCone` passes scratch, tree source, exact-module
+  build, and axiom audit. No computed result enters it.
+- 2026-08-29 — Exact RunPod hostile test kills the hoped-for increasing and completely monotone
+  parabolic drift laws. On the formal lower wall, diagnostic `C_p` is positive, strictly decreasing,
+  strictly convex in `w=z^2`, and increasing in scale slack; the sign-corrected third derivative is
+  already mixed. Ordinary outer-slack coefficients are mixed as well. Strong survivor reduces the
+  trajectory-faithful diagnostic minimum to outer corner
+  `(X,z,y)=(39523/2000,3/10,1309/3200)`. Remaining paper core is a conceptual proof of the combined
+  signs `dC_p/dS>0`, `dC_p/dw<0` and that corner sign, not a Stieltjes hierarchy. Independent exact
+  verifier passes. Report:
+  `../2-fully-proven/computations/2026-08-29-s6f-parabolic-cone-hostile/REPORT.md`.
+- 2026-08-29 — Direct determinant hostile test supersedes projective drift as the primary finite
+  route without falsifying it. Native D1 itself is diagnostically positive on the full old
+  parabolic cone, increasing/convex in scale slack and concave in `w=z²`; the alternating hierarchy
+  fails at order four, and source/gap-coordinate factorization is irreducible. A computation-free
+  ODE proof then sharpened the physical cone to
+  `v<(33/80+z²/16)z`, `X>191/10+(37/5)z²`, now Lean-proved. Active successor card:
+  `theta-rank-three-direct-parabolic-determinant.md`. Computation report:
+  `../2-fully-proven/computations/2026-08-29-s6f-parabolic-d1-contact/REPORT.md`.

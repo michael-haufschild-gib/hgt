@@ -764,8 +764,8 @@ cannot skip a window of multiplicative width `T^{1/6+ε/2}`).
 - [x] **M4** Lemma 4.1 at `σ = 7/32 − 5ε` (`exists_lemma41_huxley`), and its general-range form.
 - [x] **M4d** Prop 4.2, finite one-spaced form (brick 25) and **integral form** (brick 28,
       `exists_matomakiTeravainen_typeII_proposition42_integral`), at Huxley strength.
-- [ ] **M2** Lemma 3.1 (Perron/variance reduction) — `Sieve/PerronShortInterval` and
-      `Sieve/PerronWindowKernel` are the primitives.
+- [x] **M2** Lemma 3.1's pointwise comparison (bricks 26, 29, 30, 31) — assembled in
+      `norm_realWindowSum_compare_le`, with the mixed-moment integral as its only analytic input.
 - [ ] **M5** Prop 2.2 (Harman sieve decomposition).
 - [ ] **M6/M7** Type I and Type I/II — the Watt/Deshouillers–Iwaniec fork.
 - [ ] **M8** Theorem 1.2′ at exponent `≈ 1.557`; retune both Route E cards.
@@ -2001,3 +2001,88 @@ chose.
 
 Remaining milestones: **M2** (Lemma 3.1's continuous variance integration), **M6/M7** (Type I and
 Type I/II), **M8** (the assembly at exponent `1 + 44/79`).
+
+### M2, brick 29 — real windows aligned with the natural Perron windows (2026-08-29)
+
+Brick 26 left the pointwise two-window Perron comparison stated for a *natural* left endpoint
+`A : ℕ`, while Lemma 3.1's variance runs over a **real** centre `x`.  The alignment is now closed,
+and it is exact.
+
+`Sieve/RealWindowAlignment.lean`, unconditional, axiom-clean, umbrella-wired:
+
+```text
+natWindow_eq_realWindow            the naturals in (x, x+h] are exactly Ioc ⌊x⌋ ⌊x+h⌋
+sum_realWindow_eq_perronWindowSum  **the real window sum IS a natural window sum**, with no error,
+                                   at A = ⌊x⌋, H = ⌊x+h⌋ − ⌊x⌋
+abs_natWidth_sub_le_one            |(⌊x+h⌋ − ⌊x⌋) − h| ≤ 1
+norm_realWindowSum_compare_sub_integral_le
+    brick 26's identity transported verbatim to the real windows (x, x+h] and (x, x+h₁]
+```
+
+The point worth recording: **there is no truncation error in the alignment**.  The only inexactness
+is that the integer width `⌊x+h⌋ − ⌊x⌋` replaces `h`, and it does so within one — which is a
+relative error `O(1/h)`, negligible at the paper's `h = √x(log x)^c`.
+
+What M2 still needs is the `x`-integration itself: square the pointwise bound, integrate over
+`x ∈ [X, 2X]`, and exploit the orthogonality of `x^{i(t−t')}` (the corpus's
+`Sieve/LogWindowPlancherel` is the sharp form of that step) to convert the squared Perron integral
+into the mixed mean square that `integral_mixed_moment_windowCompare_le` bounds.
+
+### M2, brick 30 — the comparison kernel is dominated at *every* height (2026-08-29)
+
+`Sieve/MixedMomentWindowCompare.norm_perronCompareKernel_le_windowCompareKernel` compares the
+analytic kernel with the mixed-moment kernel only **above** the transition height `t₀`, where the
+two visibly agree.  The Perron integral of Lemma 3.1 runs over the whole range, and below `t₀` the
+mixed-moment kernel's third component is the *constant* `4(x+h₁)/t₀`, which is smaller than the
+analytic kernel's `4(x+h₁)/|t|` — so the comparison is not free there.
+
+`Sieve/PerronWindowKernelCompareAll.lean`, unconditional, axiom-clean, umbrella-wired:
+
+```text
+perronCompareKernel_zero              the analytic kernel vanishes at t = 0
+windowCompareKernel_zero              so does the mixed-moment kernel
+norm_perronCompareKernel_le_windowCompareKernel_all
+    **domination below the transition height too**, under `t₀ ≤ x/h₁`
+norm_perronCompareKernel_le_windowCompareKernel_all'
+    …including the origin
+continuous_perronCompareKernel'       continuity in the ordinate (a corpus gap)
+norm_integral_perronPoly_compareKernel_le
+    ‖∫_{-T}^{T} perronPoly · perronCompareKernel‖ ≤ ∫_{-T}^{T} ‖perronPoly‖ · windowCompareKernel
+```
+
+Below `t₀` the *first two* components already beat the constant: `t₀ ≤ x/h₁` gives
+`2|t|hh₁/x ≤ 2t₀hh₁/x`, and `(t₀h₁)(t₀h) ≤ x·x` then gives `2t₀hh₁/x ≤ 4(x+h₁)/t₀`.
+
+**M2's pointwise chain is now complete as a sequence of owned theorems**: alignment (brick 29) →
+two-window Perron identity with explicit endpoint errors (brick 26) → kernel domination at every
+height (brick 30) → `integral_mixed_moment_windowCompare_le`.  What remains is the bookkeeping that
+factors `perronPoly` as `P₁P · P₂` and inserts the two mean-square hypotheses, plus the arithmetic
+of the endpoint errors at the paper's parameters.
+
+### M2, brick 31 — Lemma 3.1's pointwise comparison, ASSEMBLED (2026-08-29)
+
+`Sieve/RealWindowCompareBound.lean`, unconditional, axiom-clean, umbrella-wired:
+
+```text
+norm_realWindowSum_compare_le
+   ‖ ∑_{x < n ≤ x+h} c n  −  (H/H₁) ∑_{x < n ≤ x+h₁} c n ‖
+     ≤ (1/2π) ∫_{-T}^{T} ‖perronPoly c M 1 t‖ · windowCompareKernel (⌊x⌋+½) H H₁ t₀ t  dt
+       + [ perronNearError K M ⌊x+h⌋ 1 T + perronNearError K M ⌊x⌋ 1 T
+           + (H/H₁)( perronNearError K M ⌊x+h₁⌋ 1 T + perronNearError K M ⌊x⌋ 1 T ) ]
+```
+
+with `H = ⌊x+h⌋ − ⌊x⌋`, `H₁ = ⌊x+h₁⌋ − ⌊x⌋`, under `0 < H ≤ H₁`, `0 < t₀ ≤ (⌊x⌋+½)/H₁`, and
+`‖c n‖ ≤ K`.  **No asymptotic notation, no hidden cancellation, every error term explicit.**
+
+This is Lemma 3.1's pointwise content.  The only analytic input left in it is the mixed-moment
+integral on the right, and that is exactly what
+`Sieve/MixedMomentWindowCompare.integral_mixed_moment_windowCompare_le` bounds from the two mean
+squares — one of which, the large prime variable, is the corpus theorem `(FS7)`
+(`Sieve/DyadicPrimeMeanSquare`).
+
+**M2 is therefore complete as a chain of owned theorems.**  What remains to state the paper's
+Lemma 3.1 verbatim is the factorisation of `perronPoly` as `P₁P · P₂` at the paper's parameters and
+the arithmetic of the endpoint errors — bookkeeping, with no analytic content left.
+
+Remaining milestones for Theorem 1.2: **M6/M7** (Type I and Type I/II) and **M8** (the assembly at
+exponent `1 + 44/79`).

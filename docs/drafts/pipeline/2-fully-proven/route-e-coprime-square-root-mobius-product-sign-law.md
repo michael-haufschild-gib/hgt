@@ -9248,3 +9248,32 @@ bound*, which the computation above shows is impossible.
 should no longer be read as the route to the card's Hall capacity: their hypothesis
 `#sources ≤ (#S)²/((X+H)·balancedMomentConst y)` is unreachable for a source set of Brun–Titchmarsh
 size.  The bounded-multiplicity marker family supersedes them.
+
+## CORRECTION: the corpus's Möbius mean square already reaches every exponent (2026-08-29)
+
+Every statement on this card that the corpus's short-interval mean square "reaches only
+`log L ≥ (log X)^{9/10}`" is **stale**.  Two theorems, both unconditional and `#print axioms`-clean,
+give it at *every* exponent in `(0,1)`:
+
+```text
+RHTower.Sieve.averagedMeanSquare_moebius_cardLength_all
+    {β : ℝ} : 0 < β → β < 1 →
+      AveragedMeanSquare (fun n => (μ n : ℝ)) (cardLength β)          -- Sieve/TwoRangeAssembly
+
+RHTower.Sieve.averagedMeanSquare_moebius_scaledLength_all
+    {c β : ℝ} : 0 < c → c ≤ 1 → 0 < β → β < 1 →
+      AveragedMeanSquare (fun n => (μ n : ℝ)) (scaledLength c β)      -- Sieve/ScaledTwoRangeWindow
+```
+
+with `cardLength β x = exp((log x)^β)` and `scaledLength c β = c · cardLength β`.  The `9/10` figure
+belongs to the older `Sieve/MoebiusMeanSquare.averagedMeanSquare_moebius_cardLength`, which the
+two-range assembly superseded; the two names are different, so the old one is still in the tree and
+still says `9/10`.
+
+**Consequence for the window gate.**  The exponent range is no longer a constraint anywhere on this
+card: `β = 2/3` — indeed any `β > 0` — is available now.  What remains is the *normalisation* gap,
+not the exponent: the corpus's `AveragedMeanSquare` is the fibre form, and the marker construction
+consumes the integer-start form `DyadicTranslates.dyadicMeanSquare`.  The sibling Hall-law card
+closed without that bridge, by covering the window with tiles instead
+(`Sieve/WindowTiling`, `Sieve/FreeScaleCover`, `Sieve/RouteEMarkerHallLaw`), and the same
+substitution is what this card's schedule now needs.

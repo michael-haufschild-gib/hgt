@@ -143,3 +143,57 @@ Only numeric inputs: π > 3, 2 ≤ e ≤ 4-level facts; everything else symbolic
 ## Loop log
 
 - 2026-08-29: card opened; Gates 1–3 recorded; paper proof complete (Gate 4). Lean next.
+
+## Status: [LEAN-PROVED] (2026-08-29)
+
+BZ-1 is formalized, unconditional and premise-free, in two umbrella-wired modules
+(all listed theorems audited on axioms propext/Classical.choice/Quot.sound; built via
+`lake build`, 10904 jobs; lint clean):
+
+`formal/GaloisForLFunctions/RHTower/XiCriticalKernelSeparatedRealPacketPositivity.lean`
+(the real-ray analytic layer):
+- `xiRayLaplace`, `xiRayLaplaceMoment`, `xiRayLogDeriv` — the real bilateral Laplace data of
+  the theta-cusp source, with integrability and the exponential floor `xiRayLaplace_ge`,
+  positivity `xiRayLaplace_pos`.
+- `xiCent_ofReal`, `deriv_xiCent_ofReal`, `logDeriv_xiCent_ofReal` — on the real ray the
+  centered Xi function, its derivative, and its logarithmic derivative are the real Laplace
+  transform, moment, and quotient (so ξ(1/2+b) > 0 on the whole real ray, for free).
+- `xiRayEnvelopeRatio`, `one_le_xiRayEnvelopeRatio` (γ ≥ 1 extracted from the envelope
+  sandwich at x = 1 — no structural constant needed), `xiRayUpperBase`, `xiRayLowerBase`,
+  `xiRayPacketBase` (= R_u + R_l), `xiRayPacketBase_ge` (≥ 256).
+- **`xiRayLogDeriv_le`** — r(b) ≤ log b + 1 for b ≥ R_u (split at X = log b; unit-rate
+  pointwise tail majorant `(X+u)e^{−ru} ≤ (X+1)e^{−u}` avoids all shifted integrals).
+- **`xiRayLogDeriv_ge`** — (log b)/8 ≤ r(b) for b ≥ R_l (even-splitting via
+  `integral_comp_neg_Iic`; reflected mass/moment ≤ C_u; saddle slab at
+  x₂ = (1/2)log(b/2π) of width 1/2; ceiling S ≤ C_u·Y·e^{cY} at Y = (log b)/4).
+
+`formal/GaloisForLFunctions/RHTower/XiBezoutianSeparatedRealPacketPosSemidef.lean`
+(correlation, Gershgorin, and the matrix strata):
+- `log t/t` antitone device (a·log c ≤ c·log a), `1+2d ≤ 4^d`, and the private correlation
+  bound: on nodes u ≤ v with v ≥ R₀^{2d}·u,
+  K₀(u,v) ≤ 32·(2/R₀)^d·√(K₀(u,u))·√(K₀(v,v)).
+- **`xiRayCriticalKernel_separatedPacket_quadraticForm_nonneg`** — the real quadratic form of
+  `(L(x)+L(y))/(x+y)` is ≥ 0 on every packet with `x 0 ≥ R₀`, `x(m+1) ≥ R₀²·x m`
+  (scaled Gershgorin, geometric row sums, threshold 64q ≤ 1−q at q = 2/R₀ ≤ 1/128).
+- `criticalLogDerivKernel_ofReal_eq` — the corpus's RH-critical kernel at real nodes is the
+  real Laplace-quotient kernel.
+- **`posSemidef_criticalLogDerivKernel_separatedRealPacket`** — complex `Matrix.PosSemidef`
+  of `[criticalLogDerivKernel (x j) (x k)]` on every separated packet (Hermitian + re/im
+  decomposition into two real forms; imaginary part vanishes by kernel symmetry).
+- **`posSemidef_thetaTailFirstMomentBezoutian_separatedRealPacket`** — PSD of the literal
+  Bezoutian matrices `[thetaTailFirstMomentBezoutian (x j) (conj (x k))]` (congruence by the
+  positive diagonal ξ(1/2+x_j) = xiRayLaplace (x j) via `xiCentBezoutian_eq_mul_criticalKernel`).
+- **`posSemidef_thetaTailFirstMomentBezoutian_packet_nodes`** — the instantiation in the
+  literal quantifier shape of `riemannHypothesis_iff_posSemidef_thetaTailFirstMomentBezoutian`.
+
+Frontier consequence: the corpus's negative-packet no-go sharpens to — an RH-detecting
+negative packet must use complex-node geometry, or at least three real-ray modes with base
+below R₀ or some consecutive ratio below R₀².  Combined with the corpus's n ≤ 2 all-gap
+theorems, the real-node RH content is now localized to the Euler-edge/close-ratio regime,
+exactly parallel to CP-1's close-pair localization on the kernel side.
+
+Labels: [LEAN-PROVED]; [NOVELTY UNVERIFIED] (new-to-corpus about corpus-native objects;
+nearest literature is diagonal-only — Re ξ'/ξ positivity notes and the Csordas–Varga
+Laguerre/Turán lineage; no external priority claim).  Next quantitative targets: shrink R₀
+(both-endpoint slabs; sharper S-ceiling), the LOG-LIP conjecture (all real 2×2 minors),
+n = 3 all-gap via the corpus's cubic-determinant reduction, and complex displaced packets.

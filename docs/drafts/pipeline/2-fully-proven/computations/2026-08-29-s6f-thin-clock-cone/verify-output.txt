@@ -1,0 +1,1 @@
+verified: exact thin-cone concavity and half-ray positivity for X >= 191/10

@@ -3314,3 +3314,772 @@ classification statement:
 
 That is the remaining programme for item (b).  Everything downstream of it — the classification, the
 group step, the operator, the endgame — is now unconditional in the tree.
+
+## Lean progress — geometric reducedness in characteristic zero (a mathlib gap) (2026-08-29)
+
+The Galois-correspondence half of the endgame carries one instance hypothesis it cannot yet
+discharge: `[IsReduced E]` for the constants algebra `E ⊆ R ⊗_K R`.  The card previously recorded
+this as "Cartier's theorem for the Galois group scheme".  **It is not**: `E` is a subalgebra of
+`R ⊗_K R`, so it is enough that the *tensor square of the Picard–Vessiot ring* is reduced, and `R`
+is reduced because it is `σ`-simple (`isReduced_of_isSigmaSimple`).  What is needed is therefore the
+purely commutative statement
+
+> over a field of characteristic zero, a reduced algebra stays reduced after base change,
+
+which is Cartier-free.  Mathlib has the class `Algebra.IsGeometricallyReduced` but **no instance for
+a perfect base field**, so the first half of that statement was a genuine mathlib gap.  It is now
+closed, unconditionally and axiom-clean, in three new modules wired into `HTGeometry`.
+
+### `SeparableAdjoinRootReduced`
+
+```text
+isReduced_adjoinRoot_of_separable
+    **A reduced, f monic and separable ⟹ A[X]/(f) reduced**
+```
+
+Prime by prime: reduce a nilpotent modulo the monic `f`, leaving a representative of degree
+`< deg f`; over the fraction field of `A/P` the polynomial `f` stays monic of the same degree and
+stays separable, hence squarefree, hence *radical* in a unique factorisation domain, so it divides
+the representative — and the degree bound forces the representative to vanish there.  Every
+coefficient therefore lies in every prime, hence in the nilradical, hence is zero.
+
+### `AdjoinRootTensorBaseChange`
+
+```text
+tensorPolyEquiv k A                        k[X] ⊗_k A ≃ₐ[k] A[X]
+tensorPolyEquiv_includeLeft                and it sends p ⊗ 1 to p.map (algebraMap k A)
+adjoinRootTensorRingEquiv f                **AdjoinRoot f ⊗_k A ≃+* AdjoinRoot (f.map …)**
+isReduced_adjoinRoot_tensor_of_separable   hence reducedness survives that base change
+```
+
+The two algebra maps `k[X] → A[X]` agree because they agree on `X` (`Polynomial.algHom_ext`), and
+the ideal bookkeeping is `Ideal.map_span` twice through mathlib's
+`Algebra.TensorProduct.quotientTensorEquiv`.
+
+### `GeometricallyReducedCharZero`
+
+```text
+isReduced_tensor_of_finiteDimensional
+    a reduced algebra stays reduced after base change to a finite **separable** extension
+isGeometricallyReduced_of_charZero
+    **instance**: over a field of characteristic zero every reduced algebra is geometrically reduced
+```
+
+A finitely generated subalgebra of the algebraic closure is finite over `k`, hence a field, hence —
+by the primitive element theorem, available because characteristic zero makes every algebraic
+extension separable — of the form `AdjoinRoot (minpoly k α)`; mathlib's
+`IsReduced.tensorProduct_of_flat_of_forall_fg` assembles the finitely generated pieces.
+
+### What this leaves
+
+Two things, both now precisely named:
+
+1. `R ⊗_K R` reduced for `R` reduced over a characteristic-zero `K` — the *non-algebraic* half.
+   With a separating transcendence basis (available in characteristic zero) it reduces to
+   `D[X]/(g)` over the domain `D = F ⊗_K K(t₁,…,t_r)`, and
+   `isReduced_adjoinRoot_of_separable` finishes; the missing steps are the identification of
+   `F ⊗_K K(t)` with a localisation of `F[t]` and the reduction of a Noetherian reduced algebra to
+   its finitely many minimal primes.
+2. The improper branch of `cassidy_group_dichotomy`, as recorded above.
+
+### The purely transcendental step — `TensorFractionRingDomain` (2026-08-29)
+
+```text
+tensorBaseHom                     the base change F ⊗_k P → F ⊗_k Q
+exists_denominator_clears         **one nonzero denominator carries any element of F ⊗_k Q into
+                                  the image of F ⊗_k P**
+tensorBaseHom_injective           the base change is injective (P → Q is, and F is k-flat)
+isDomain_tensor_of_isFractionRing **F ⊗_k Q is a domain whenever F ⊗_k P is**, for Q a fraction
+                                  ring of the domain P
+```
+
+Applied to `P = k[t₁,…,t_r]` this says the base change of a domain along a purely transcendental
+extension is a domain — the half of "reduced stays reduced" that the algebraic step
+(`isReduced_adjoinRoot_of_separable`) cannot see.  No Nullstellensatz, no Cartier, no smoothness:
+the whole proof is that `1 ⊗ q` is a unit and clearing denominators commutes with the tensor.
+
+Unconditional, axiom-clean, wired into `HTGeometry`.
+
+### The reducedness input is CLOSED (2026-08-29)
+
+Two further modules finish the chain, so the endgame's instance hypothesis `[IsReduced E]` is no
+longer an input at all.
+
+`TensorReducedCharZero`
+
+```text
+isReduced_tensor_of_isAlgebraic          a reduced algebra stays reduced after base change to an
+                                         algebraic field extension (characteristic zero)
+isReduced_tensor_of_algebraic_over_domain
+    the assembly step, with the intermediate field kept **abstract** — an `IntermediateField`
+    coercion produces a scalar-action diamond that blocks the nested tensor's ring instance
+isReduced_tensor_field_of_charZero
+    **F ⊗_k L is reduced for any two field extensions of a characteristic-zero field**
+```
+
+The proof is the separating transcendence basis: `M = k(t)` with `t` a transcendence basis of `L`,
+`F ⊗_k M` a domain by `isDomain_tensor_of_isFractionRing` (through
+`MvPolynomial.algebraTensorAlgEquiv` and `AlgebraicIndependent.aevalEquivField`), and `L` algebraic
+over `M`, so `isReduced_tensor_of_isAlgebraic` applies over `M` and `cancelBaseChange` transports
+the conclusion back.
+
+`TensorReducedGeneral`
+
+```text
+injective_toPi_minimalPrimes             a reduced ring embeds in the product of its minimal quotients
+isReduced_tensor_of_isNoetherianRing     hence base change of a Noetherian reduced ring is decided by
+                                         its finitely many minimal quotients
+isReduced_tensor_field_algebra_of_charZero
+isReduced_tensorProduct_of_charZero
+    **the tensor product of two reduced algebras over a field of characteristic zero is reduced**
+isReduced_tensorSquare_of_charZero
+isReduced_subalgebra_tensorSquare_of_charZero
+    **hence every subalgebra of `R ⊗_K R` is reduced** — in particular the constants algebra `E`
+```
+
+Mathlib's `IsReduced.tensorProduct_of_flat_of_forall_fg` reduces the general case to finitely
+generated, hence Noetherian, subalgebras; `minimalPrimes.finite_of_isNoetherianRing` and
+`Algebra.TensorProduct.piRight` do the rest.
+
+**Consequence for the card.**  `isomonodromy_of_no_riccati_of_linearRelation`'s `[IsReduced E]`,
+`PointsSeparate` and `PointsSeparateModule` are now all dischargeable from
+`isReduced_of_isSigmaSimple` alone: the Picard–Vessiot ring is `σ`-simple, hence reduced, hence its
+tensor square is reduced, hence so is `E`.  Cartier's theorem is **not needed anywhere**.
+
+Item (b)'s residue is therefore exactly two statements: the improper branch of
+`cassidy_group_dichotomy`, and the instantiation of the general lemmas at the concrete
+Picard–Vessiot data of the order recurrence.
+
+## Lean progress — the improper branch: the characteristic-zero Cartier mechanism (2026-08-29)
+
+The three needs recorded above for item (b) have been replaced by a single elementary mechanism, and
+two thirds of it are now Lean-closed.  **Kolchin smoothness (Cartier) is not needed as an input**:
+in characteristic zero the whole content is that the vanishing ideal of a set with everywhere-full
+tangent space is closed under partial derivatives, and differentiation lowers the total degree.
+
+### Why the one-parameter route is dead
+
+The route through the unipotent line `k = {t : 1 + t·e ∈ H}` cannot work, and the obstruction is
+structural rather than technical.  `k` is a Kolchin-closed additive submonoid, but its tangent space
+at `0` is computed from the *radical* ideal `I(k)`, and knowing the tangent space of `H` at `1`
+gives only `T_0(k) ⊆ T_1(H) ∩ C·e`, an upper bound.  Slices do not inherit tangent spaces, and the
+pullback of a radical ideal along the line need not be radical — the family `{t² = 0}` is a
+Kolchin-closed additive monoid with full tangent space at `0` and is not `C`.  Every variant of the
+route (Cassidy's additive classification, dual-number thickening, iterated jets) fails at the same
+point.  **The argument must be run on the three-dimensional group itself.**
+
+### `MonoidTangentTranslation` — the Lie algebra at every point
+
+```text
+linearisationForm_eq_zero_of_dualMatrix_mem      the ε-part of a dual-number point is the linearisation
+dualMatrix_translate_mem_zeroSet                 g + ε(g·Z) is a point whenever g is and Z is tangent at 1
+linearisationForm_translate_eq_zero
+exists_traceless_mul_eq_of_trace_adjugate_zero   {W : tr(adj(g)·W) = 0} = g·sl₂ when det g = 1
+linearisationForm_eq_zero_of_trace_adjugate_zero
+    **the linearisation of every defining equation at every point of the monoid annihilates the
+    whole tangent space of SL₂ there**
+```
+
+Only closure of the zero set under multiplication *over the dual numbers* is used — no inverses, no
+bi-dual numbers, no Hopf ideal.
+
+### `FreeJetTangentClosure` — the characteristic-zero engine
+
+```text
+totalDegree_pderiv_lt, exists_pderiv_ne_zero, vars_pderiv_subset
+NoUniversalJetRelation C     no nonzero linear jet relation holds for every element of C
+pderiv_mem_vanishing_of_full_tangent
+    **full tangent space at every point ⟹ the vanishing ideal is closed under ∂_v**
+eq_zero_of_pderiv_closed, eq_zero_of_vanishing_of_full_tangent
+    **hence the vanishing ideal is zero**
+```
+
+The linearisation restricted to one indeterminate is a linear jet operator in that coordinate; over
+a field admitting no universal jet relation it must vanish coefficientwise, which is exactly
+`∂_v Q ∈ I(T)`.  The induction is on total degree: a variable-free polynomial vanishing at one point
+of `T` is zero.
+
+### `Sl2BigCellCartier` — the codimension-one obstruction, removed
+
+The tangent space of `SL₂` at `g` is a *hyperplane* in the four matrix coordinates, so the engine
+cannot run there — `det X − 1` is a nonzero element of every vanishing ideal with full `sl₂` tangent
+space.  The fix is a single multiplication:
+
+```text
+linearisationForm_mul                            Leibniz for the linearisation
+trace_adjugate_mul_fin_two                       g₁₁W₀₀ − g₀₁W₁₀ − g₁₀W₀₁ + g₀₀W₁₁
+bigCellPoints S, bigCellIdeal S
+X_mul_mem_of_mem_bigCellIdeal                    X₀₀·Q vanishes on the whole monoid
+linearisationForm_eq_zero_of_mem_bigCellIdeal
+    **the tangent space of the big cell, in the three coordinates X₀₀, X₀₁, X₁₀, is everything**
+bigCellIdeal_eq_zero
+    **no nonzero differential polynomial in those three coordinates vanishes on the big cell**
+```
+
+The projection of the tangent hyperplane onto `(W₀₀, W₀₁, W₁₀)` is surjective as soon as
+`g₀₀ ≠ 0` — solve the hyperplane equation for `W₁₁` — so the three-coordinate tangent space is full
+even though the four-coordinate one is not.  `X₀₀·Q` vanishes on the whole zero set (on the big cell
+because `Q` does, off it because the factor does), so it lies in the vanishing ideal, and Leibniz
+transports its linearisation back to `Q`'s after dividing by `g₀₀ ≠ 0`.
+
+All three modules are unconditional, axiom-clean and wired into `HTGeometry`.
+
+### What item (b) now is
+
+Two steps, both bookkeeping rather than new mathematics:
+
+1. **Eliminate the fourth coordinate.**  For `P` in the vanishing ideal produce `N` and a
+   differential polynomial `Q` in `X₀₀, X₀₁, X₁₀` with `Q(g) = g₀₀^N · P(g)` for every `g ∈ SL₂` with
+   `g₀₀ ≠ 0`.  The mechanism is `X₁₁^{(k)} = θ_k / X₀₀^{k+1}` with `θ_0 = 1 + X₀₁X₁₀` and
+   `θ_{k+1} = X₀₀·δθ_k − (k+1)·X₀₀'·θ_k`, realised as an `MvPolynomial.aeval` into
+   `Localization.Away X₀₀` — no differential structure on the localization is needed.
+   `bigCellIdeal_eq_zero` then forces `Q = 0`, hence `P` vanishes on the whole big cell of `SL₂`.
+2. **Generate.**  Every element of `SL₂` is a product of two elements with nonzero upper-left entry,
+   so the monoid property upgrades the big cell to all of `SL₂`.
+
+### The improper branch is CLOSED in Lean (2026-08-29)
+
+The two remaining bookkeeping steps are done, and the classification statement they were needed for
+is now a theorem in the tree.
+
+`Sl2BigCellElimination`
+
+```text
+bigCellIndex, bigCellCoord, bigCellTriple      the three big-cell coordinates
+elimA, elimTheta
+    θ₀ = 1 + X₀₁X₁₀,  θ_{k+1} = X₀₀·δθ_k − (k+1)·X₀₀′·θ_k
+evalOver_elimTheta
+    **θ_k(g) = g₀₀^{k+1} · δ^k(g₁₁) at every point of `SL₂`**
+elimPoint, elimHom
+exists_bigCell_elimination
+    **for every `P` there are `N` and a differential polynomial `Q` in `X₀₀, X₀₁, X₁₀` with
+    `Q(g) = g₀₀^N · P(g)` at every `g ∈ SL₂` with `g₀₀ ≠ 0`**
+```
+
+The substitution `X₁₁^{(k)} ↦ θ_k / X₀₀^{k+1}` is performed on the *jet variables*, so it is an
+ordinary `MvPolynomial.eval₂Hom` into `Localization.Away X₀₀` — **no differential structure on the
+localization is needed**, which is what makes the step short.  `IsLocalization.surj` clears the
+denominator and `IsLocalization.Away.lift` evaluates, the identification of the lifted substitution
+with evaluation at `g` being one `MvPolynomial.ringHom_ext`.
+
+`Sl2CassidyImproperBranch`
+
+```text
+lowerUnipotent, lowerUnipotent_mul, exists_bigCell_factorisation
+    **every element of `SL₂` is a product of two elements with invertible upper-left entry**
+mem_of_det_eq_one_of_ne_zero                  the big cell lies in the monoid
+sl2_of_full_tangent
+    **a differential algebraic monoid in `SL₂` whose tangent space at the identity is all of `sl₂`
+    is the whole of `SL₂`**
+```
+
+The factorisation is `g = (g·u(t))·u(−t)` with `u(t)` lower unipotent and `t = (1 − g₀₀)/g₀₁` when
+`g₀₁ ≠ 0` (and `g` already in the big cell otherwise, since `g₀₀g₁₁ = 1` there).
+
+Hypotheses of `sl2_of_full_tangent`, all of them properties of the object rather than added
+assumptions: the zero set contains `1`, is closed under multiplication over `C` and over the dual
+numbers, lies in `SL₂`, is defined by its full vanishing ideal, its tangent space at `1` is all of
+`sl₂`, and the base field admits no universal linear jet relation (`NoUniversalJetRelation`, which
+fails only when the field is finite-dimensional over its constants).
+
+Unconditional, axiom-clean, wired into `HTGeometry`.
+
+### What item (b) now is
+
+One statement, and it is no longer a classification:
+
+> the parameterized Galois group of the order recurrence, as the zero set of its vanishing ideal, is
+> a monoid over every differential `C`-algebra (it is a group scheme), and `H = SL₂` contradicts
+> differential algebraicity of `K_ν(s)`.
+
+The first half is the Hopf-ideal property of `E`, which the corpus's `TorsorDecomposition` and
+`adjoin_tensor_comparison_eq_top` supply; the second is the differential transcendence degree of the
+Picard–Vessiot extension of `SL₂`.
+
+### `UniversalJetRelationRank` — the base-field hypothesis, discharged (2026-08-29)
+
+```text
+InfiniteConstantRank C
+    for every `n`, `C` carries `n + 1` elements with no nontrivial relation over the constants
+noUniversalJetRelation_of_infiniteConstantRank
+    **hence `NoUniversalJetRelation C`**
+```
+
+A universal jet relation says the whole field solves one monic scalar equation of the order of the
+relation's top nonzero coefficient, and the corpus's `card_le_of_no_constantRelation_scalar` caps
+the independent solutions of such an equation by that order.  So the only hypothesis of
+`sl2_of_full_tangent` that is not a property of the zero set itself is now a statement about the
+base field that every differentially closed field satisfies.
+
+## Lean progress — the full-group branch: a scalar orbit kills every differential relation (2026-08-29)
+
+With the improper branch closed, item (b)'s residue is *"a full parameterized Galois group is
+incompatible with a differentially algebraic solution"*.  Its mechanism is now Lean-proved, and it
+needs neither the torsor decomposition nor differential dimension theory: a full group contains
+`diag(c, c⁻¹)` for every `c ≠ 0`, so the relation satisfied by the solution `y` is satisfied by
+**every scalar multiple** `c·y`, and a differential polynomial cannot vanish on a whole scalar orbit
+unless it is zero.
+
+### `DifferentialPolynomialNonRoot` — a mathlib-gap lemma
+
+```text
+differentialPolynomialEvalOver_generic   evaluating at the generic point returns the polynomial
+scalarDiffFieldExt C                     `C⟨y⟩` as a differential field extension of `C`
+exists_evalOver_ne_zero
+    **a nonzero differential polynomial over a differentially closed field has a non-root**
+```
+
+Differential closedness is stated for *systems of equations*, and an inequation is an equation in
+one more indeterminate: `F(x) ≠ 0` is `t·F(x) = 1`.  That auxiliary system has a solution over the
+free differential field `C⟨y⟩` — at the generic point `F` evaluates to itself, which is nonzero —
+so `IsDifferentiallyClosed.exists_point_finite` descends it to `C`.
+
+### `DifferentialPolynomialSubfieldDescent`
+
+```text
+differentialJet_algebraMap        jets of a point of the subfield stay in the subfield
+linearPush φ, coeff_linearPush, evalOver_linearPush
+eq_zero_of_evalOver_subfield_eq_zero
+    **a differential polynomial over `L` vanishing at every point of a differentially closed
+    subfield `C` is zero**
+```
+
+Evaluation at a point of `C` is `C`-linear in the coefficients, so a `C`-linear functional
+`φ : L → C` pushes a polynomial over `L` to one over `C` with the same values up to `φ`; each of
+those is zero by the non-root lemma, and `Module.Projective.exists_dual_ne_zero` separates the
+coefficients.
+
+### `DifferentialPolynomialScaling`
+
+```text
+scaleSubst y F                    the substitution `u ↦ y·u`
+evalOver_scaleSubst               its values are the values of `F` at scaled points
+scaleSubst_scaleSubst             **`scaleSubst y⁻¹ ∘ scaleSubst y = id`** — substitution is
+                                  functorial and the generic point is the identity
+eq_zero_of_evalOver_scaled_subfield_eq_zero
+    **a differential polynomial vanishing at every nonzero scaled point `y·c`, `c ∈ C`, is zero**
+```
+
+The excluded origin costs one multiplication by the indeterminate.  Invertibility of the scaling is
+what turns "vanishes on the orbit" into "is zero": no leading-coefficient extraction and no
+triangular-matrix inversion is needed, because `differentialPolynomialEvalOver` composes.
+
+**Consequence.**  If the parameterized Galois group of the order recurrence is all of `SL₂` over the
+(differentially closed) constants, then no nonzero differential polynomial annihilates a solution
+entry — the solution is differentially transcendental, which is the card's conclusion in that
+branch.  What remains of item (b) is the *transport*: from `F(y) = 0` and a Galois element `g`,
+derive `F((Y·g)₀₀) = 0`, i.e. that the Galois action fixes the coefficient field of the relation.
+
+### `MatrixTranslationZeroSet` — the monoid hypothesis over the constants, discharged (2026-08-29)
+
+```text
+matrixRightTranslate b P, evalOver_matrixRightTranslate
+matrixLeftTranslate a P,  evalOver_matrixLeftTranslate
+matrixVanishingIdeal H, subset_matrixZeroSet_vanishingIdeal
+mul_mem_matrixZeroSet_vanishingIdeal
+    **the zero set of the vanishing ideal of a multiplicative set of matrices is multiplicative**
+```
+
+Right and left translation by a fixed matrix are `C`-linear in the matrix entries, hence are
+evaluations of the differential polynomial ring in itself; the classical two-step argument then runs
+with no topology at all: right translation by a point of `H` keeps the vanishing ideal, so a point
+of the zero set kills it there; the resulting left translate again lies in the vanishing ideal, and
+the second point of the zero set finishes.
+
+This discharges `sl2_of_full_tangent`'s `hmulC` for the vanishing ideal of the Galois monoid, and
+`hrad` is definitional for a vanishing ideal.  The three hypotheses that remain to be produced from
+the parameterized Galois data are `hone` (immediate), `hdet` (`H ⊆ SL₂`), and `hmul` **over the dual
+numbers** — the group-functor property, which is where the Hopf structure of `E` enters.
+
+### The transport is already in the tree
+
+`DifferenceGaloisIrreducibility.galoisAutAt` is the Galois automorphism attached to a differential
+point of `E`, built from `TorsorDecomposition.tensorDecompositionEquiv`, and
+`galoisAutAt_fundamental` is exactly `σ_χ(Y) = Y · galoisMatrixAt χ`.  So the branch-(a) chain is
+
+```text
+F(y) = 0,  F ≠ 0 over K
+  ⟹ F(σ_χ y) = 0 for every differential point χ         (σ_χ fixes K and commutes with δ)
+  ⟹ F(c·y) = 0 whenever diag(c, c⁻¹) is a Galois matrix
+  ⟹ F = 0                                                (eq_zero_of_evalOver_scaled_subfield_eq_zero)
+```
+
+and the only step not yet Lean-closed is that a *full* group supplies those diagonal matrices as
+actual points `χ`, rather than merely as points of the Kolchin closure — which is again the
+group-functor property of `E`.
+
+### The Hopf/group-functor gate is REMOVED (2026-08-29)
+
+The dual-number monoid hypothesis of `sl2_of_full_tangent` was the last structural input the improper
+branch needed, and it is now unnecessary.  Only one consequence of it was ever used — that a point
+of the zero set carries a tangent direction at the identity to a first-order deformation of itself —
+and that consequence follows from *left-translation stability of the defining ideal*, which for a
+vanishing ideal is the elementary two-step argument.
+
+`MatrixTranslationPolynomial` (translation over an arbitrary differential base algebra)
+
+```text
+matrixLeftTranslate a P, matrixRightTranslate b P
+evalOver_matrixLeftTranslate, evalOver_matrixRightTranslate
+    **evaluating the translate at a matrix over any differential `C`-algebra is evaluating the
+    original at the translated matrix**
+evalOver_matrixLeftTranslate_self, evalOver_matrixRightTranslate_self
+```
+
+`MatrixTranslationZeroSet`
+
+```text
+matrixVanishingIdeal H, subset_matrixZeroSet_vanishingIdeal
+leftTranslate_mem_matrixVanishingIdeal
+    **left translation by a point of the zero set preserves the vanishing ideal of a monoid**
+mul_mem_matrixZeroSet_vanishingIdeal
+```
+
+`MonoidTangentTranslation`
+
+```text
+TangentTranslates S hone                     the only property the derivation-closure argument uses
+tangentTranslates_of_mul                     …from closure over the dual numbers
+dualNumberDifferentialAlgebra                the dual numbers as a differential `C`-algebra
+tangentTranslates_of_leftTranslate           …**from left-translation stability alone**
+```
+
+`Sl2CassidyImproperBranch`
+
+```text
+sl2_of_full_tangent_vanishingIdeal
+    **a multiplicative set of determinant-one matrices containing the identity, whose Kolchin
+    closure has all of `sl₂` as tangent space at the identity, has the whole of `SL₂` in its
+    closure**
+```
+
+Its hypotheses are, in full: the base field admits no universal linear jet relation; `H` is closed
+under multiplication and contains `1`; the closure lies in `SL₂`; the tangent space at `1` is all of
+`sl₂`.  **No dual numbers, no radicality, no Hopf or group-scheme structure appears anywhere.**
+
+### What item (b) now is
+
+The galoisMonoid is a monoid containing `1` by construction, and lies in `SL₂` because `det Z = 1`
+in the torsor.  So `sl2_of_full_tangent_vanishingIdeal` applies to it verbatim, and the improper
+branch of the classification is closed for the actual object.  Item (b)'s residue is the endgame
+bookkeeping: instantiate `cassidy_group_dichotomy` and `isomonodromy_of_no_riccati_of_linearRelation`
+at the Picard–Vessiot data of the order recurrence, and in the full-tangent branch feed
+`galoisAutAt_fundamental` into `eq_zero_of_evalOver_scaled_subfield_eq_zero`.
+
+## Lean progress — the group law of the difference Galois group (2026-08-29)
+
+Bracket closure (`hbr` of `cassidy_group_dichotomy`) is the one hypothesis that the left-translation
+trick above cannot supply: it is genuinely second order, and `bracket_mem_zeroSet_of_one` asks for
+closure of the zero set under multiplication over the *bi-dual* numbers.  That is the group-functor
+property, and its source is a single algebraic identity, now Lean-proved.
+
+`TripleTensorCocycle`
+
+```text
+tensor12, tensor23, tensor13                the three inclusions R ⊗ R → R ⊗ R ⊗ R
+tripleFundamental₁ / ₂ / ₃                  the three copies of the fundamental matrix
+map_leftFundamental_tensor12 …              six definitional identifications
+torsor_cocycle
+    **Z₁₃ = Z₁₂ · Z₂₃ inside the triple tensor product**
+```
+
+The proof is three instances of the torsor relation pushed forward along the three inclusions —
+`Y₁Z₁₂ = Y₂`, `Y₂Z₂₃ = Y₃`, `Y₁Z₁₃ = Y₃` — and cancellation of the invertible `Y₁`.  Unconditional,
+axiom-clean, umbrella-wired.
+
+### What the cocycle still needs to become the group law
+
+`hbr` follows once the two images `ι₁₂(E)` and `ι₂₃(E)` are linearly disjoint over `C` inside the
+triple tensor product, since then `P(Z₁₃) = 0` descends to `P(Z ⊙ Z) = 0` in `E ⊗_C E`, which is
+exactly the statement that the defining ideal is a **bi-ideal** — and a bi-ideal makes the zero set
+a monoid over *every* base algebra, the dual and bi-dual numbers included.
+
+That disjointness is the torsor decomposition applied twice:
+
+```text
+    R ⊗_K R ⊗_K R  ≅  (R ⊗_C E) ⊗_K R  ≅  R ⊗_C E ⊗_C E ,
+```
+
+each step being `TorsorDecomposition.tensorDecompositionEquiv`, and `E ⊗_C E ↪ R ⊗_C E ⊗_C E`
+because `C` is a field.  Both `hgen` and `hindep` are already hypotheses of the endgame theorem, so
+no new input is required — only the composition.
+
+## Lean progress — bracket closure without the bi-dual numbers (2026-08-29)
+
+The route through the triple-tensor cocycle is **not needed**.  Bracket closure — the last structural
+hypothesis of `cassidy_group_dichotomy` besides Zariski density — follows from first-order data
+alone, through the left-invariant derivations of the jet ring.
+
+`LeftInvariantJetDerivation`
+
+```text
+rightMulEntry Z q                       the entries of 𝐗·Z as differential polynomials
+leftInvariantDeriv Z                    the derivation 𝐗_{ij}^{(k)} ↦ δ^k((𝐗·Z)_{ij})
+evalOver_rightMulEntry, evalOver_differentialJet, leftInvariantDeriv_C, deriv_mul_poly
+evalOver_leftInvariantDeriv
+    **its value at `x` is the ε-part of the value of the polynomial at `x + ε(x·Z)`** — i.e. the
+    linearisation at `x` in the translated direction
+leftInvariantDeriv_deriv                E_W ∘ δ = δ ∘ E_W
+differentialJet_sub
+leftInvariantDeriv_commutator
+    **⁅E_Y, E_Z⁆ = E_{Y·Z − Z·Y}**
+leftInvariantDeriv_mem_of_tangentTranslates
+    **E_Z preserves the defining ideal** when the tangent directions translate and the ideal is the
+    full vanishing ideal of its zero set
+bracket_mem_matrixTangentM
+    **Y·Z − Z·Y is tangent whenever Y and Z are**
+```
+
+The mechanism in one line: `E_Z` kills the ideal because `Λ_{P,x}(x·Z) = 0` at every point — which
+is exactly `TangentTranslates` — so `E_Y(E_Z P)` and `E_Z(E_Y P)` are again killed at the identity,
+and their difference is `E_{[Y,Z]}P`, whose value at `1` is `Λ_{P,1}([Y,Z])`.
+
+**No dual-number multiplicativity, no bi-dual numbers, no Hopf ideal, no torsor.**  All of it rests
+on `TangentTranslates`, which for the vanishing ideal of a monoid is the two-step left-translation
+argument.
+
+### What item (b) now is
+
+`cassidy_group_dichotomy` has four structural hypotheses.  Three are now theorems for the vanishing
+ideal of a monoid inside `SL₂`:
+
+| hypothesis | source |
+|---|---|
+| `hone` | `subset_matrixZeroSet_vanishingIdeal` |
+| `htr` | `trace_eq_zero_of_mem_zeroSet`, from `detPoly ∈ S` |
+| `hbr` | **`bracket_mem_matrixTangentM`** |
+| `hdense` | `sl2_of_dense`, whose residue is `L ≠ 0` — Zariski density, an item-(a) fact |
+
+and the improper branch is `sl2_of_full_tangent_vanishingIdeal`.  What is left is the Zariski-density
+input and the instantiation at the Picard–Vessiot data of the order recurrence.
+
+### `CassidyMonoidDichotomy` — the dichotomy, assembled (2026-08-29)
+
+```text
+detPoly_mem_matrixVanishingIdeal        the determinant equation is in the ideal
+trace_eq_zero_of_mem_matrixTangentM     hence tangent directions are traceless
+cassidy_monoid_dichotomy
+    **for a multiplicative set `H` of determinant-one matrices containing `1`:
+     either `SL₂` lies in the Kolchin closure of `H`,
+     or one nonzero linear differential operator annihilates every entry of every element of `G`**
+```
+
+Unconditional, axiom-clean, umbrella-wired.  Its hypotheses are now exactly:
+
+* `H` multiplicative, `1 ∈ H`, `det = 1` on `H` and on its closure;
+* the base field admits no universal linear jet relation;
+* **Zariski density** `hdense`, and the three `G`-hypotheses of the group step
+  (`det g` a constant, `det g ≠ 0`, and adjoint stability of the tangent space).
+
+`htr` and `hbr` are gone — they are theorems now.  What remains for item (b) is `hdense` together
+with `L ≠ 0` (both supplied by `sl2_of_dense` from item (a)'s irreducibility and non-imprimitivity)
+and the instantiation at the Picard–Vessiot data of the order recurrence.
+
+### `GaloisMonoidDichotomyEndgame` — the alternative the card consumes (2026-08-29)
+
+```text
+isomonodromy_or_sl2_galoisMonoid
+    **either the Kolchin closure of the Galois monoid contains all of `SL₂`,
+     or the difference equation carries a connection over the base**
+```
+
+Unconditional, axiom-clean, umbrella-wired.  It is `cassidy_monoid_dichotomy` fed into
+`isomonodromy_of_no_riccati_of_differentiallyClosed`, with the passage from a linear jet relation on
+the group entries to the scalar-stabiliser constraint supplied by
+`deriv_eq_zero_of_scalarSpan_of_linear` (the relation forces `x′ = 0`, which is the `m = 1`,
+`aa = 0` instance of the endgame's hypothesis).
+
+Its inputs are exactly the Picard–Vessiot package the corpus already names — `E`, its basis, `hgen`,
+`hindep`, `σ`-compatibility, `σ`-simplicity, the absence of a base Riccati solution, the fundamental
+matrix and the comparison matrix — together with
+
+* `det = 1` on the Galois monoid and on its Kolchin closure;
+* Zariski density `hdense`;
+* the three group-step hypotheses `hGdetK`, `hGdet0`, `hGinv`.
+
+**Both branches are card conclusions.**  The second is the isomonodromy statement the card already
+refutes for the order recurrence.  The first says the Galois monoid is Kolchin-dense in `SL₂`, and
+then `eq_zero_of_evalOver_scaled_subfield_eq_zero` (this session) forbids any nonzero differential
+relation on a solution entry, because the group contains `diag(c, c⁻¹)` for every `c ≠ 0` and
+`galoisAutAt_fundamental` transports the relation along it.
+
+Item (b) is therefore reduced to: the Zariski-density input `hdense` (an item-(a) consequence, via
+`sl2_of_dense`, whose own residue is `L ≠ 0`), the three group-step hypotheses, and the construction
+of the Picard–Vessiot package for the concrete order recurrence.
+
+### The determinant normalisation, resolved (2026-08-29)
+
+The order recurrence's companion matrix has `det A = −a₀ = −1`, so the Casoratian `w = det Y`
+satisfies `σw = −w`.  There is no `c ∈ ℂ(ν)` with `σc = −c` — such a `c` is `σ²`-invariant, hence a
+constant, hence `c = −c = 0` — so `w ∉ K` and the comparison matrix's determinant is **not** `1`.
+It is, however, a square root of one:
+
+```text
+    σ(w²) = w² ⟹ w² ∈ C (no new constants) ⟹ (det Z)² = (1 ⊗ w²)(w² ⊗ 1)⁻¹ = 1 ,
+```
+
+the last step because `w² ∈ C ⊆ K` is `K`-balanced.  So the Galois monoid lies in
+`{g : (det g)² = 1}`, not in `SL₂`, and the corpus's Cassidy chain — which reads tracelessness off
+`detPoly ∈ S` — does not apply to it verbatim.
+
+**The fix costs nothing**, because Cassidy's classification takes the Lie algebra and the group as
+*independent* inputs: run the tangent-space half on the determinant-one part and the group half on
+the whole monoid.
+
+```text
+mul_mem_detOne                              the determinant-one part of a matrix monoid is a monoid
+isomonodromy_or_sl2_galoisMonoid_detOne
+    **either `SL₂` lies in the Kolchin closure of the determinant-one part of the Galois monoid,
+     or the equation carries a connection over the base**
+```
+
+Unconditional, axiom-clean, umbrella-wired.  `htr` is again free — `detPoly` lies in the vanishing
+ideal of the determinant-one part by construction — and `hbr`, `hone` and the improper branch are
+unchanged.  The Zariski-density input is now density of the determinant-one part in `SL₂`, which is
+the form item (a) naturally produces.
+
+## Lean progress — the Picard–Vessiot package: `E`, `hEδ` and `hgen` (2026-08-29)
+
+Two of the three remaining inputs of the endgame are now *constructed* rather than assumed.
+
+`ComparisonJetAlgebra`
+
+```text
+tensorJet k                             the iterated derivation of the tensor square
+comparisonJetGens Z                     all jets of the entries of the comparison matrix
+comparisonJetCore Z, comparisonJetAlgebra Z w
+comparisonJetCore_deriv_stable          the jet algebra is derivation-stable
+det_mem_comparisonJetCore               and contains `det Z`
+comparisonJetAlgebra_deriv_stable
+    **`E := C⟨Z_ij⟩[w]` is derivation-stable** — the inverse determinant contributes
+    `δw = −δ(det Z)·w²`, and `δ(det Z)` is already in the core
+adjoin_comparisonJetAlgebra_eq_top
+    **`hgen`: the tensor square is generated over `C` by the left copy together with `E`**
+```
+
+Unconditional, axiom-clean, umbrella-wired.  `E` is the `C`-subalgebra generated by every jet of
+every entry of the comparison matrix together with the inverse of its determinant; its entries and
+their derivatives are `σ`-constants by
+`ParameterizedTensorTorsor.exists_parameterized_tensor_comparison_matrix`, so `E` is a subalgebra of
+constants, and `hZE` is `mem_comparisonJetAlgebra_entry`.
+
+### The residue of item (b), current
+
+| endgame input | status |
+|---|---|
+| `E`, `hZE`, `hEδ` | **constructed** (`ComparisonJetAlgebra`) |
+| `hgen` | **constructed** |
+| `IsReduced E` | `isReduced_subalgebra_tensorSquare_of_charZero` |
+| `Z`, `hZ`, `IsUnit Z.det` | `exists_parameterized_tensor_comparison_matrix` |
+| `hric` | `BesselOrderRiccati` |
+| `Algebra.FiniteType C E` | **open** — finitely many jets suffice exactly when the parameterized group is finite-dimensional, which is the case under the differential-algebraicity assumption |
+| basis of `E` and `hindep` | `Module.Basis.ofVectorSpace` plus `basisIndependentOver_of_constants` |
+| `hdense`, `hGdetK`, `hGdet0`, `hGinv` | item (a) inputs |
+
+### `TensorBasisIndependence` — `hindep`, constructed (2026-08-29)
+
+```text
+linearIndependent_of_basisIndependentOver
+    `BasisIndependentOver` is linear independence (`Algebra.smul_def`)
+linearIndependent_constants_basis
+    **a `C`-basis of a subalgebra of `σ`-constants is linearly independent over `R`**
+```
+
+Unconditional, axiom-clean, umbrella-wired.  The corpus's
+`basisIndependentOver_of_constants` forces the coefficients of a vanishing combination of constants
+to be `σ`-constants; the no-new-constants property of the Picard–Vessiot ring then puts them in `C`,
+where the basis is independent by construction.  Its hypotheses are `σ`-simplicity of `R`, the
+constancy of `E`, and no new constants — all standing properties of the Picard–Vessiot setting.
+
+### The residue of item (b), current
+
+| endgame input | status |
+|---|---|
+| `E`, `hZE`, `hEδ`, `hgen` | **constructed** (`ComparisonJetAlgebra`) |
+| basis of `E` | `Module.Basis.ofVectorSpace` |
+| `hindep` | **constructed** (`TensorBasisIndependence`) |
+| `IsReduced E` | `isReduced_subalgebra_tensorSquare_of_charZero` |
+| `Z`, `hZ`, `IsUnit Z.det` | `exists_parameterized_tensor_comparison_matrix` |
+| `hric` | `BesselOrderRiccati` |
+| `Algebra.FiniteType C E` | **open** — equivalent to finitely many jets of `Z` generating, i.e. to the parameterized group being finite dimensional; this is a *consequence* of the differential-algebraicity assumption the card argues from, not an unconditional fact |
+| `hdense`, `hGdetK`, `hGdet0`, `hGinv` | item (a) inputs |
+
+## Consolidated status of item (b) after this session (2026-08-29)
+
+The card's header still reads "the exact Dreyfus higher-order classification theorem remains
+unformalized".  That is now a substantial understatement of what the tree holds.  The classification
+itself — both branches — is proved; what remains is card-specific input, not general theory.
+
+**Proved this session, all unconditional and `#print axioms`-clean:**
+
+| module | content |
+|---|---|
+| `MonoidTangentTranslation` | the linearisation at every point kills `g·sl₂`; `TangentTranslates` and its two producers |
+| `FreeJetTangentClosure` | full tangent space ⟹ vanishing ideal closed under `∂_v` ⟹ zero |
+| `Sl2BigCellCartier` | the codimension-one obstruction removed in three coordinates |
+| `Sl2BigCellElimination` | `X₁₁^{(k)} = θ_k/X₀₀^{k+1}` as a plain `eval₂Hom` into `Localization.Away X₀₀` |
+| `Sl2CassidyImproperBranch` | **`sl2_of_full_tangent`** and its hypothesis-lean form `sl2_of_full_tangent_vanishingIdeal` |
+| `UniversalJetRelationRank` | the base-field hypothesis from infinite rank over the constants |
+| `MatrixTranslationPolynomial`, `MatrixTranslationZeroSet` | left/right translation; the zero set of a monoid's vanishing ideal is a monoid |
+| `LeftInvariantJetDerivation` | `⁅E_Y, E_Z⁆ = E_{Y·Z − Z·Y}` ⟹ **bracket closure with no bi-dual numbers** |
+| `CassidyMonoidDichotomy` | `htr`, `hbr`, `hone` discharged; the dichotomy for a matrix monoid |
+| `GaloisMonoidDichotomyEndgame` | **`isomonodromy_or_sl2_galoisMonoid`** and its determinant-one form |
+| `TripleTensorCocycle` | `Z₁₃ = Z₁₂·Z₂₃` — the group law (kept; no longer on the critical path) |
+| `DifferentialPolynomialNonRoot` | **a nonzero differential polynomial over a differentially closed field has a non-root** (mathlib gap) |
+| `DifferentialPolynomialSubfieldDescent`, `DifferentialPolynomialScaling` | vanishing on a scalar orbit forces zero |
+| `ComparisonJetAlgebra` | `E`, `hZE`, `hEδ`, `hgen` **constructed** |
+| `TensorBasisIndependence` | `hindep` **constructed** |
+
+**The residue, exactly.**
+
+1. `Algebra.FiniteType C E` — `E` is generated by all jets of `Z`, so this says finitely many jets
+   suffice, i.e. the parameterized group is finite dimensional.  It is a *consequence* of the
+   differential-algebraicity assumption the card argues from, so it enters as a DA-side input,
+   not as an unconditional fact.
+2. `hdense` for the determinant-one part — Zariski density, an item-(a) consequence via
+   `sl2_of_dense`, whose own residue is `L ≠ 0`.
+3. `hGdetK`, `hGdet0`, `hGinv` — the three group-step hypotheses.
+
+Nothing in the residue is general differential Galois theory any more; all three are properties of
+the specific Galois group of the order recurrence.
+
+## `Algebra.FiniteType C E` is CLOSED (2026-08-29)
+
+The first item of the residue recorded above is discharged, not by proving finite type — it is not
+provable, and it was the wrong hypothesis — but by removing the need for it.
+
+`E = comparisonJetAlgebra Z w` is generated by all `∂`-jets of five elements: the four entries of
+the comparison matrix and the inverse determinant.  That is *differential* finite generation, and it
+is the hypothesis Kolchin's Nullstellensatz actually needs.  The corpus now owns that theorem, and
+with it the whole engine underneath:
+
+* **`RittRaudenbushFinitelyMany.radDiffFG_differentialPolynomial_fin`** — the Ritt–Raudenbush basis
+  theorem in finitely many differential indeterminates over a differential field of characteristic
+  zero.  A mathlib gap; the corpus previously had only the one-indeterminate case over a field.
+* **`KolchinNullstellensatzDiffFG.exists_differentialAlgHom_ne_zero_of_diffFG`** — Kolchin's
+  Nullstellensatz for a differentially finitely generated differentially reduced algebra over a
+  differentially closed field.
+* **`TensorDifferentialPointsDiffFG.eq_zero_of_forall_mem_tensorDifferentialPoints_of_jetAdjoin`** —
+  the separation property of the endgame, from a jet presentation.
+* **`GaloisMonoidDichotomyDiffFG.isomonodromy_or_sl2_galoisMonoid_jetAdjoin`** and its
+  determinant-one form — the endgame dichotomy with `[Algebra.FiniteType C E]` replaced by the jet
+  presentation.
+* **`ComparisonJetAlgebraDiffFG.adjoin_comparisonJetGeneratorsTwo`** — the jet presentation itself,
+  proved from `Z.det * w = 1`.
+
+The programme, its route and the two places where the mathematics came out stronger than planned are
+recorded in `docs/drafts/pipeline/1-in-progress/ritt-raudenbush-several-variables.md`.
+
+### Residue of item (b), updated
+
+| input | status |
+|---|---|
+| Cassidy's dichotomy, both branches | **closed** |
+| bracket closure, tracelessness, improper branch, jet elimination | **closed** |
+| `E`, `hZE`, `hEδ`, `hgen`, `hindep` | **constructed** |
+| `Algebra.FiniteType C E` | **removed** — replaced by the jet presentation, which is a theorem |
+| `hdense` for the determinant-one part | open — an item-(a) consequence via `sl2_of_dense`, whose own residue is `L ≠ 0` |
+| `hGdetK`, `hGdet0`, `hGinv` | open — the three group-step hypotheses |
+
+Nothing in the residue is general differential Galois theory.  All three remaining items are
+properties of the Galois group of the specific order recurrence.

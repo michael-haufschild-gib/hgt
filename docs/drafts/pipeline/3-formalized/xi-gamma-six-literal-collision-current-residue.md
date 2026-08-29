@@ -109,3 +109,12 @@ vanishing after depth scaling, and the universal residue `log 2/m²`. Source che
 `FORMALIZED; SURVIVES HOSTILE ATTACK`. The theorem proves the filtered-current route has a
 nonzero anomaly; a valid HC-to-Gauss--Hodge weld must cancel or transport it by genuinely new
 source structure.
+
+## Subsequent diagonal-landing audit
+
+`[LEAN-PROVED, 2026-08-29]` The positive bounded coefficientwise weld is now ruled out. Filtered
+flux is strictly positive and prime-summable at positive depth, whereas Gauss--Hodge mass is zero
+on a critical Xi copy and nonsummable off line. Bounded diagonal landing is exactly RH-strength,
+and literal equality is impossible copywise. See
+`formal/GaloisForLFunctions/RHTower/XiGammaSixFilteredBoundaryDiagonalLandingNoGo.lean` and the
+stage-5 card `hc-filtered-gamma-six-diagonal-landing-no-go.md`.

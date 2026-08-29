@@ -1,7 +1,6 @@
 import GaloisForLFunctions.RHTower.XiHeatCassiniWoldResidualBorelSourceLaplace
 import GaloisForLFunctions.RHTower.XiHeatCassiniWoldResidualUpperAbscissa
 import GaloisForLFunctions.RHTower.XiHeatCassiniWoldCriticalGraphNoGo
-import GaloisForLFunctions.HTGeometry.NevanlinnaPickGramSplitting
 
 /-!
 # Positive-ray Tonelli obstruction for the Route-T residual Borel carrier
@@ -20,6 +19,14 @@ open scoped BigOperators
 namespace RHTower
 
 noncomputable section
+
+private theorem integral_ofReal_eq
+    {α : Type*} [MeasurableSpace α] {μ : Measure α} {f : α → ℝ}
+    (hf : Integrable f μ) :
+    (∫ x, ((f x : ℝ) : ℂ) ∂μ) = ((∫ x, f x ∂μ : ℝ) : ℂ) := by
+  rw [← Complex.ofRealCLM_apply,
+    ← ContinuousLinearMap.integral_comp_comm Complex.ofRealCLM hf]
+  rfl
 
 /-- Real positive-axis form of the second-factorial Borel kernel. -/
 def secondFactorialBorelRealKernel (r : ℝ) : ℝ :=
@@ -184,7 +191,7 @@ private theorem integral_exp_neg_mul_secondFactorialBorelRealKernel (w : ℝ) :
       secondFactorialBorelKernel_ofReal]
     push_cast
     rfl] at hc
-  rw [GaloisForLFunctions.HTGeometry.integral_ofReal_eq hr] at hc
+  rw [integral_ofReal_eq hr] at hc
   rw [← Complex.ofReal_exp] at hc
   exact Complex.ofReal_injective hc
 

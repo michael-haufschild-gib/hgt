@@ -1,0 +1,1969 @@
+{
+  "barrier_numerators": {
+    "cube_records": {
+      "lower": {
+        "bernstein": {
+          "coefficient_sha256": "b3dcc83f535fa04adee519c259bd479a803c558d2b84a324ad80add1660a9bb8",
+          "count": 6,
+          "degrees": [
+            1,
+            2
+          ],
+          "maximum": "59913/100000",
+          "minimum": "0",
+          "minimum_index": [
+            1,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": false,
+          "zero_count": 2
+        },
+        "degrees": [
+          1,
+          2
+        ],
+        "power": {
+          "count": 4,
+          "maximum": "46413/100000",
+          "minimum": "-27/200",
+          "negative_count": 1,
+          "positive_count": 3,
+          "zero_count": 0
+        },
+        "terms": 4
+      },
+      "upper_negative": {
+        "bernstein": {
+          "coefficient_sha256": "20ad74857fa0c09c60d93b894663871e174cba32ff59b56fa816b5a00317eebc",
+          "count": 6,
+          "degrees": [
+            1,
+            2
+          ],
+          "maximum": "2",
+          "minimum": "601/500",
+          "minimum_index": [
+            0,
+            2
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        "degrees": [
+          1,
+          2
+        ],
+        "power": {
+          "count": 4,
+          "maximum": "71/40",
+          "minimum": "-573/1000",
+          "negative_count": 2,
+          "positive_count": 2,
+          "zero_count": 0
+        },
+        "terms": 4
+      }
+    },
+    "lower_formula": "3*(9*X*Z**2 - 5*X + 100)/100",
+    "upper_formula": "(4*X*Z**2 - 3*X + 36)/12"
+  },
+  "corners": {
+    "S0_T0_Y0": "44930721761399243867884080088512237/687194767360000000000000",
+    "S0_T0_Y1": "19402618139810464810884569136013881/274877906944000000000000",
+    "S0_T1_Y0": "128788789730539622247221834899626787224357695369050629592438323681543291441591/4096000000000000000000000000000000000000000000000000000000000000000",
+    "S0_T1_Y1": "8445311169059400746698612209516216304592559243721791073419/268435456000000000000000000000000000000000000000",
+    "S1_T0_Y0": "231278466372375/2048",
+    "S1_T0_Y1": "125760988663275/1024",
+    "S1_T1_Y0": "272460704508719654933884878743897346132049506921/5000000000000000000000000000000000000",
+    "S1_T1_Y1": "18109287626337543253250573199/327680000000000000"
+  },
+  "half_ray_X_ge_191_over_10": {
+    "C": {
+      "S_degree": 13,
+      "all_coefficients_nonnegative_on_TY_cube": true,
+      "all_coefficients_positive_on_TY_cube": true,
+      "coefficient_records": [
+        {
+          "coefficient_sha256": "8866264a132f7891541ee7110d4656bb522ef3a864a35920d85830ade03f80ec",
+          "count": 756,
+          "degrees": [
+            26,
+            27
+          ],
+          "maximum": "19402618139810464810884569136013881/274877906944000000000000",
+          "minimum": "128788789730539622247221834899626787224357695369050629592438323681543291441591/4096000000000000000000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "0294d852c7fe24d3b05685c92ae50d5b7e0a6811e3005a61448a0cff2b1f1c65",
+          "count": 756,
+          "degrees": [
+            26,
+            27
+          ],
+          "maximum": "1221912096610131583280518973001867/27487790694400000000000",
+          "minimum": "8069850258393893052217844494376430925964275179637901629517888102364013500213/409600000000000000000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "de135e56f08e7277521a0d1ca0b1eb0507d8c572d716e0e78b39953619827c00",
+          "count": 756,
+          "degrees": [
+            26,
+            27
+          ],
+          "maximum": "17631316823045410383652291846863/1374389534720000000000",
+          "minimum": "114788913477660406298848609126204200530233267288858588641405023205327036129/20480000000000000000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "cd9729c861939bffbef13b3b5155209d59be08424f3a072ef003045e150e2f72",
+          "count": 756,
+          "degrees": [
+            26,
+            27
+          ],
+          "maximum": "61792152087184491970798992453/27487790694400000000",
+          "minimum": "1965627688378620904524625865490502596050795203025362988779448669934360903/2048000000000000000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "eb44491d2c3873ab6b7dd63f5f29f72f2aa2508e6de9a0c1057ee16d1826619f",
+          "count": 756,
+          "degrees": [
+            26,
+            27
+          ],
+          "maximum": "1469649543469524216357174039/5497558138880000000",
+          "minimum": "9064791707434449042698600956072739917836407609454044640356240992440633/81920000000000000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "ef1cd2c57e1b49fb086b7b325167d874dda26eba4a7554109fb0f7f4484df7fb",
+          "count": 756,
+          "degrees": [
+            26,
+            27
+          ],
+          "maximum": "62822173388429165466133377/2748779069440000000",
+          "minimum": "373315693216915315781872130437625112497077595989324738776368218691967/40960000000000000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "60c66bd7d54d6cfc659216bacb3b425e8ad6f8868fe34bc9c1aecf7709d9a1e7",
+          "count": 756,
+          "degrees": [
+            26,
+            27
+          ],
+          "maximum": "99843152305827716653221/68719476736000000",
+          "minimum": "569779165771125147422041299529856171477399646260180760376021847979/1024000000000000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "4ebe01a30b302a415cab1c908a8201f1acf7571794ac32ac979693ab05909f77",
+          "count": 756,
+          "degrees": [
+            26,
+            27
+          ],
+          "maximum": "481787807620579024203/6871947673600000",
+          "minimum": "2645703566574149074255432038813113368886302944916902039265702869/102400000000000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "c19372b0075b9ef51d96ba6c848d08bbce26c596c51ecf34067b2f4fd5977d69",
+          "count": 756,
+          "degrees": [
+            26,
+            27
+          ],
+          "maximum": "1427305417440725763/549755813888000",
+          "minimum": "38065272479705866619194078726300809546715544625223464594142977/40960000000000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "24dc5bd411e43a97e63e38972ece4e3a7443f8fdbaa71592954858d90c6023ff",
+          "count": 756,
+          "degrees": [
+            26,
+            27
+          ],
+          "maximum": "4055360389446009/54975581388800",
+          "minimum": "21361938959598223319921625920923094864658768690257025363783/819200000000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "e43fa18b6f2d3a4085bf91aae3d1d7bb4f411807cfb2de6231672b712e28c2e1",
+          "count": 756,
+          "degrees": [
+            26,
+            27
+          ],
+          "maximum": "21694737704823/13743895347200",
+          "minimum": "115059354665679136257821995275528880077268736192063744313/204800000000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "fe8091f7ebc5e640f7a22fb4c9ba68efcb1f0ec14180fa00f0cb7e09bf08b321",
+          "count": 756,
+          "degrees": [
+            26,
+            27
+          ],
+          "maximum": "33211829121/1374389534720",
+          "minimum": "179948097047934733296635045295173713347373414847451039/20480000000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "50feb6d9784f75af77bc945c68908b40c189b11cbeb89c7e7407949343f54055",
+          "count": 756,
+          "degrees": [
+            26,
+            27
+          ],
+          "maximum": "64845861/274877906944",
+          "minimum": "360900656462802458460644950511201100857026264416843/4096000000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "1dab8fa3541dafb2e0c21bbcd43d85c8e4ad04de292edfe4be2f3d3959481709",
+          "count": 756,
+          "degrees": [
+            26,
+            27
+          ],
+          "maximum": "150675/137438953472",
+          "minimum": "172007726709467344821694980522317131193995710921/409600000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        }
+      ],
+      "nested_hash": "513537716a38633949b1d733d1545eec0e2687917048521e20f187b38048411b"
+    },
+    "dC_dS": {
+      "S_degree": 12,
+      "all_coefficients_nonnegative_on_TY_cube": true,
+      "all_coefficients_positive_on_TY_cube": true,
+      "coefficient_records": [
+        {
+          "coefficient_sha256": "0294d852c7fe24d3b05685c92ae50d5b7e0a6811e3005a61448a0cff2b1f1c65",
+          "count": 756,
+          "degrees": [
+            26,
+            27
+          ],
+          "maximum": "1221912096610131583280518973001867/27487790694400000000000",
+          "minimum": "8069850258393893052217844494376430925964275179637901629517888102364013500213/409600000000000000000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "edc2abe5acab07d688876e06066ad36ef7aa68ed197c21dd24ec261682d8e5ad",
+          "count": 756,
+          "degrees": [
+            26,
+            27
+          ],
+          "maximum": "17631316823045410383652291846863/687194767360000000000",
+          "minimum": "114788913477660406298848609126204200530233267288858588641405023205327036129/10240000000000000000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "c1a6f22edbd4c0a4b1c1235a449042af1f151eb12f512e8b96896aa13f23b4d2",
+          "count": 756,
+          "degrees": [
+            26,
+            27
+          ],
+          "maximum": "185376456261553475912396977359/27487790694400000000",
+          "minimum": "5896883065135862713573877596471507788152385609076088966338346009803082709/2048000000000000000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "8111aed7982a831c12a1d060d77844ce78b2f12df71c09a466d7cbbdc89f5099",
+          "count": 756,
+          "degrees": [
+            26,
+            27
+          ],
+          "maximum": "1469649543469524216357174039/1374389534720000000",
+          "minimum": "9064791707434449042698600956072739917836407609454044640356240992440633/20480000000000000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "4e14626ef3d9506d649adcf5308b3f38e1501ff06ead714fd3a159938e3e98bc",
+          "count": 756,
+          "degrees": [
+            26,
+            27
+          ],
+          "maximum": "62822173388429165466133377/549755813888000000",
+          "minimum": "373315693216915315781872130437625112497077595989324738776368218691967/8192000000000000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "8165cadb1032d53ac4d39cff3ccd84d8453c7a53bbd062b99374f7e1bcfe7984",
+          "count": 756,
+          "degrees": [
+            26,
+            27
+          ],
+          "maximum": "299529456917483149959663/34359738368000000",
+          "minimum": "1709337497313375442266123898589568514432198938780542281128065543937/512000000000000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "2b803f7255caa85ab3c5771f2f52b1f7ba23f2a38695536a4f5552d117c0dcad",
+          "count": 756,
+          "degrees": [
+            26,
+            27
+          ],
+          "maximum": "3372514653344053169421/6871947673600000",
+          "minimum": "18519924966019043519788024271691793582204120614418314274859920083/102400000000000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "bb11b8671c84f021bf08ba97e894117279677db24276922736c918fad89882c3",
+          "count": 756,
+          "degrees": [
+            26,
+            27
+          ],
+          "maximum": "1427305417440725763/68719476736000",
+          "minimum": "38065272479705866619194078726300809546715544625223464594142977/5120000000000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "7b347780c60c0e2ee1ad83c0accd9350382edc54a126b3c211d98175fee72f8e",
+          "count": 756,
+          "degrees": [
+            26,
+            27
+          ],
+          "maximum": "36498243505014081/54975581388800",
+          "minimum": "192257450636384009879294633288307853781928918212313228274047/819200000000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "f52755f4d8ddf49728cf05d3311a004c6e83cc3e3f043ad8981b83f7a3b9a157",
+          "count": 756,
+          "degrees": [
+            26,
+            27
+          ],
+          "maximum": "21694737704823/1374389534720",
+          "minimum": "115059354665679136257821995275528880077268736192063744313/20480000000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "7c2366e60fb64897db7fd9154962c948315549a6150634cb02020dcfb1af4e7b",
+          "count": 756,
+          "degrees": [
+            26,
+            27
+          ],
+          "maximum": "365330120331/1374389534720",
+          "minimum": "1979429067527282066262985498246910846821107563321961429/20480000000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "7dacf596e49bc4d3b8779676ef2f89be33c38a5bb294b55784afa4d5aa74b31f",
+          "count": 756,
+          "degrees": [
+            26,
+            27
+          ],
+          "maximum": "194537583/68719476736",
+          "minimum": "1082701969388407375381934851533603302571078793250529/1024000000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "aad424ef57d8568641e4a27abf15cf8903ba8da54a947c503dac9766a07793e9",
+          "count": 756,
+          "degrees": [
+            26,
+            27
+          ],
+          "maximum": "1958775/137438953472",
+          "minimum": "2236100447223075482682034746790122705521944241973/409600000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        }
+      ],
+      "nested_hash": "2b6296d78dad8b6bb435ba7a21126a2edecfb9e31dbfc6daabb9fac5b4597afb"
+    },
+    "lower_y_wall": {
+      "S_degree": 13,
+      "all_coefficients_nonnegative_on_TY_cube": true,
+      "all_coefficients_positive_on_TY_cube": true,
+      "coefficient_records": [
+        {
+          "coefficient_sha256": "7eb60bedb6c21e047e22da94661dfc73f7f462dee2388e977ef3e16b0f65e72b",
+          "count": 27,
+          "degrees": [
+            26,
+            0
+          ],
+          "maximum": "44930721761399243867884080088512237/687194767360000000000000",
+          "minimum": "128788789730539622247221834899626787224357695369050629592438323681543291441591/4096000000000000000000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "197609ee7bd722930970d21c8a3b427218fbec8d701381153c42d1cf6f91c71e",
+          "count": 27,
+          "degrees": [
+            26,
+            0
+          ],
+          "maximum": "2793073143919847860634049018902919/68719476736000000000000",
+          "minimum": "8069850258393893052217844494376430925964275179637901629517888102364013500213/409600000000000000000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "4578a96d05baef93de9bd51832a08a05a98a79829f06db877f8d1316f9bb8414",
+          "count": 27,
+          "degrees": [
+            26,
+            0
+          ],
+          "maximum": "39676074817414084513650270202251/3435973836800000000000",
+          "minimum": "114788913477660406298848609126204200530233267288858588641405023205327036129/20480000000000000000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "36c8276e2a258724260da4b931a503bee93f32bc0ed071dfb21be78a8bc0453e",
+          "count": 27,
+          "degrees": [
+            26,
+            0
+          ],
+          "maximum": "27311318992226382284443841541/13743895347200000000",
+          "minimum": "1965627688378620904524625865490502596050795203025362988779448669934360903/2048000000000000000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "c2b8db266acad461a5ba062ac4a5fb026436a87ca6f264001b248931195879e1",
+          "count": 27,
+          "degrees": [
+            26,
+            0
+          ],
+          "maximum": "3183660265182774460197064323/13743895347200000000",
+          "minimum": "9064791707434449042698600956072739917836407609454044640356240992440633/81920000000000000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "fd806bf73dbdc3460788e1e13af97fe01975b1327c80c70a44f28f420e5f0e56",
+          "count": 27,
+          "degrees": [
+            26,
+            0
+          ],
+          "maximum": "133321292415702937248134229/6871947673600000000",
+          "minimum": "373315693216915315781872130437625112497077595989324738776368218691967/40960000000000000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "3d17c8bebf656c6f5f54da07022895f658985028b979bf797dc238dbdf4d7656",
+          "count": 27,
+          "degrees": [
+            26,
+            0
+          ],
+          "maximum": "207900253199165463342297/171798691840000000",
+          "minimum": "569779165771125147422041299529856171477399646260180760376021847979/1024000000000000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "2eaa38b5c59d4acef52010603f77549b0c8d4753c7d2a63bec08220f9a25d76d",
+          "count": 27,
+          "degrees": [
+            26,
+            0
+          ],
+          "maximum": "988980857606414060631/17179869184000000",
+          "minimum": "2645703566574149074255432038813113368886302944916902039265702869/102400000000000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "04e18afafa20b1e24d800b478d7d2d36658eaa784c9bd63b1e47f2e1c6ca6ed5",
+          "count": 27,
+          "degrees": [
+            26,
+            0
+          ],
+          "maximum": "2912385519146819007/1374389534720000",
+          "minimum": "38065272479705866619194078726300809546715544625223464594142977/40960000000000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "3997a7c8f4a804d4f4496728c0ebfee602a4d2b4a6c034cc2c3fdebf5779b1cc",
+          "count": 27,
+          "degrees": [
+            26,
+            0
+          ],
+          "maximum": "8314086200499213/137438953472000",
+          "minimum": "21361938959598223319921625920923094864658768690257025363783/819200000000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "32fdbaf6f523e663321fea252ec4531fc164662130a87eb4ec213e01c6e74e11",
+          "count": 27,
+          "degrees": [
+            26,
+            0
+          ],
+          "maximum": "45133390554771/34359738368000",
+          "minimum": "115059354665679136257821995275528880077268736192063744313/204800000000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "df66eefdc92d304483b4b64ecdf56e3655cfd26d99d5a34ed1fbe4cc1a6f9853",
+          "count": 27,
+          "degrees": [
+            26,
+            0
+          ],
+          "maximum": "70502689797/3435973836800",
+          "minimum": "179948097047934733296635045295173713347373414847451039/20480000000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "8666c9d2bffa4d3fc047b52c99c013078c4f6a15f9ece6ae04aea9145e3994e1",
+          "count": 27,
+          "degrees": [
+            26,
+            0
+          ],
+          "maximum": "140486697/687194767360",
+          "minimum": "360900656462802458460644950511201100857026264416843/4096000000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "2bca389d417e5f92dd2d76389ac8d5b08c4bc648db4a4e0a961effaa91767e36",
+          "count": 27,
+          "degrees": [
+            26,
+            0
+          ],
+          "maximum": "66435/68719476736",
+          "minimum": "172007726709467344821694980522317131193995710921/409600000000000000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        }
+      ],
+      "nested_hash": "ce6c090204cb7436be86c610888f5867bca0e2b9e6c6d53ef09c238ad41af263"
+    },
+    "minus_d2C_dY2": {
+      "S_degree": 13,
+      "all_coefficients_nonnegative_on_TY_cube": true,
+      "all_coefficients_positive_on_TY_cube": false,
+      "coefficient_records": [
+        {
+          "coefficient_sha256": "cf93e53d0d4d2f3d2679890ecd1c909b83c65c8132f1f42c76fad33d983b3b9d",
+          "count": 702,
+          "degrees": [
+            26,
+            25
+          ],
+          "maximum": "467596524210972848246339059379928303643575355205831100987/335544320000000000000000000000000000000000000000",
+          "minimum": "0",
+          "minimum_index": [
+            0,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": false,
+          "zero_count": 52
+        },
+        {
+          "coefficient_sha256": "883b73152bf538f712c4c8f52ad8ef1853fe9927abb842951a70a88da1bba523",
+          "count": 702,
+          "degrees": [
+            26,
+            25
+          ],
+          "maximum": "3225029184448584799293888273833963369977430133006154527/4194304000000000000000000000000000000000000000",
+          "minimum": "0",
+          "minimum_index": [
+            0,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": false,
+          "zero_count": 52
+        },
+        {
+          "coefficient_sha256": "8865b98763fbea58a1c43b9fefcd8ef77385804abacf1f2045a4d00d6179f284",
+          "count": 702,
+          "degrees": [
+            26,
+            25
+          ],
+          "maximum": "330582519544643452197364461203023707406392937084370103/1677721600000000000000000000000000000000000000",
+          "minimum": "0",
+          "minimum_index": [
+            0,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": false,
+          "zero_count": 52
+        },
+        {
+          "coefficient_sha256": "12962b5f5d4e15397859132ad01e792c4d98bcd0740d229cb72144566aa74f7f",
+          "count": 702,
+          "degrees": [
+            26,
+            25
+          ],
+          "maximum": "2619394110523992466690252105660067637335081457865323/83886080000000000000000000000000000000000000",
+          "minimum": "0",
+          "minimum_index": [
+            0,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": false,
+          "zero_count": 52
+        },
+        {
+          "coefficient_sha256": "e68be6869eeccc998b610e75c9b9258dccae736e5ac6584713d834e02dee5ebd",
+          "count": 702,
+          "degrees": [
+            26,
+            25
+          ],
+          "maximum": "17760395082087241022935092973751007517522404730520536742736875772759/5120000000000000000000000000000000000000000000000000000000000",
+          "minimum": "0",
+          "minimum_index": [
+            0,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": false,
+          "zero_count": 52
+        },
+        {
+          "coefficient_sha256": "064ba235e3a6b51837c25e37978a2281919808a59018182544f759a666be7b8b",
+          "count": 702,
+          "degrees": [
+            26,
+            25
+          ],
+          "maximum": "765759832609618891165373432638954989293202646768261458495258217041/2560000000000000000000000000000000000000000000000000000000000",
+          "minimum": "0",
+          "minimum_index": [
+            0,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": false,
+          "zero_count": 52
+        },
+        {
+          "coefficient_sha256": "2e04add05846e75f19b30e09d35c026fa0489f4e642ce5b525f5e0855a5067b4",
+          "count": 702,
+          "degrees": [
+            26,
+            25
+          ],
+          "maximum": "1249295248751979629149892376310276801332201753048941994847800117/64000000000000000000000000000000000000000000000000000000000",
+          "minimum": "0",
+          "minimum_index": [
+            0,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": false,
+          "zero_count": 52
+        },
+        {
+          "coefficient_sha256": "8c75562d68283a2ced5a4bf7d3a57eca4e574182d0fa724ad2178b957f124398",
+          "count": 702,
+          "degrees": [
+            26,
+            25
+          ],
+          "maximum": "6223400413689752903074936813755163306122364827767605111768587/6400000000000000000000000000000000000000000000000000000000",
+          "minimum": "0",
+          "minimum_index": [
+            0,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": false,
+          "zero_count": 52
+        },
+        {
+          "coefficient_sha256": "ebb8fc6e133baaa69753911c9f1550d6d992ea8c83e882e5d22e6deb913f75ab",
+          "count": 702,
+          "degrees": [
+            26,
+            25
+          ],
+          "maximum": "197082230099306715421563697257372227103064750467644649177/5324800000000000000000000000000000000000000000000000000",
+          "minimum": "0",
+          "minimum_index": [
+            0,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": false,
+          "zero_count": 52
+        },
+        {
+          "coefficient_sha256": "9effc6bcc3485ca4cec55ede6d8048b4d30da781cb797198d0555044218b13a0",
+          "count": 702,
+          "degrees": [
+            26,
+            25
+          ],
+          "maximum": "2823709006339510250724015824271357287252478829190705583/2662400000000000000000000000000000000000000000000000000",
+          "minimum": "0",
+          "minimum_index": [
+            0,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": false,
+          "zero_count": 52
+        },
+        {
+          "coefficient_sha256": "04ff5a44c550449764e03d4704e2978a300263b30e57cd48a49e01e7c631098b",
+          "count": 702,
+          "degrees": [
+            26,
+            25
+          ],
+          "maximum": "14810997437718518083033376641494439676389138428634113/665600000000000000000000000000000000000000000000000000",
+          "minimum": "0",
+          "minimum_index": [
+            0,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": false,
+          "zero_count": 52
+        },
+        {
+          "coefficient_sha256": "baaaf90c2344fc7e7b4e78415ac2b87aeaf75c305b97435b5e1cfb6382549e02",
+          "count": 702,
+          "degrees": [
+            26,
+            25
+          ],
+          "maximum": "43092336654694212423542697185683753009212205209/133120000000000000000000000000000000000000000000000",
+          "minimum": "0",
+          "minimum_index": [
+            0,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": false,
+          "zero_count": 52
+        },
+        {
+          "coefficient_sha256": "52f674b5fa3c5ac6f41f2c00af9666e2355c09d7e86c118ee33239aa6f1e073c",
+          "count": 702,
+          "degrees": [
+            26,
+            25
+          ],
+          "maximum": "19558591091555929882994230232076335063674107/6656000000000000000000000000000000000000000000000",
+          "minimum": "0",
+          "minimum_index": [
+            0,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": false,
+          "zero_count": 52
+        },
+        {
+          "coefficient_sha256": "66a3f9dc30538e0b54c7242852d389c184ef68225add89d83b88f9752c9524e6",
+          "count": 702,
+          "degrees": [
+            26,
+            25
+          ],
+          "maximum": "1282413049377643878580789029377236011951/102400000000000000000000000000000000000000000000",
+          "minimum": "0",
+          "minimum_index": [
+            0,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": false,
+          "zero_count": 52
+        }
+      ],
+      "nested_hash": "f10e565eed84867d1fb09866815dc367c381ecba7b75c948b64b4e9f40c7b369"
+    },
+    "minus_dC_dT": {
+      "S_degree": 13,
+      "all_coefficients_nonnegative_on_TY_cube": true,
+      "all_coefficients_positive_on_TY_cube": false,
+      "coefficient_records": [
+        {
+          "coefficient_sha256": "b4d8677305a2d37009f1237cc102556bcd462d0532c631c1e7520640d211e943",
+          "count": 728,
+          "degrees": [
+            25,
+            27
+          ],
+          "maximum": "55776791799681511567062935120373804063823453051271598085263/987842478080000000000000000000000000000000000000",
+          "minimum": "0",
+          "minimum_index": [
+            0,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": false,
+          "zero_count": 28
+        },
+        {
+          "coefficient_sha256": "282738239c0db98f0654f07bd5c43c856de789373325cb4b91ef05cff362a8e9",
+          "count": 728,
+          "degrees": [
+            25,
+            27
+          ],
+          "maximum": "37966123546936171583684572940910418123529394591148028916519/1086626725888000000000000000000000000000000000000",
+          "minimum": "0",
+          "minimum_index": [
+            0,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": false,
+          "zero_count": 28
+        },
+        {
+          "coefficient_sha256": "4086e8a524e838c8f52133702e7a5992dcb788192c3da50c2c2c85a8c2a479f2",
+          "count": 728,
+          "degrees": [
+            25,
+            27
+          ],
+          "maximum": "542017350538384844916381258735192080366549393470697053587/54331336294400000000000000000000000000000000000",
+          "minimum": "0",
+          "minimum_index": [
+            0,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": false,
+          "zero_count": 28
+        },
+        {
+          "coefficient_sha256": "3d766c89d6410d953930beaead4dd011c6bf120a123662adc676f6307d6d450c",
+          "count": 728,
+          "degrees": [
+            25,
+            27
+          ],
+          "maximum": "6624038747233643488773580988959551392034398928333591/3803193540608000000000000000000000000000000",
+          "minimum": "0",
+          "minimum_index": [
+            0,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": false,
+          "zero_count": 28
+        },
+        {
+          "coefficient_sha256": "1b3c3a47249ba43cbb650a0852b4ecfb8f8f2a04eb73b18f82993e2bb9c15297",
+          "count": 728,
+          "degrees": [
+            25,
+            27
+          ],
+          "maximum": "31603647701363440240222484297688977413465684041321/152127741624320000000000000000000000000000",
+          "minimum": "0",
+          "minimum_index": [
+            0,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": false,
+          "zero_count": 28
+        },
+        {
+          "coefficient_sha256": "d807c6d722338c9272a38f97b0727331a543c7598ab80cc3397dcc86e1425e51",
+          "count": 728,
+          "degrees": [
+            25,
+            27
+          ],
+          "maximum": "1362623145697615470918664225173260689784779014159/76063870812160000000000000000000000000000",
+          "minimum": "0",
+          "minimum_index": [
+            0,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": false,
+          "zero_count": 28
+        },
+        {
+          "coefficient_sha256": "332766c1283f2df01b7f0b207b014ddb1addb7dc4605cb781b0b64a62eebc218",
+          "count": 728,
+          "degrees": [
+            25,
+            27
+          ],
+          "maximum": "2194427053890202668144292203419907728545826043/1901596770304000000000000000000000000000",
+          "minimum": "0",
+          "minimum_index": [
+            0,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": false,
+          "zero_count": 28
+        },
+        {
+          "coefficient_sha256": "3f1cc07e83d0e8beed4174d5b101aec3576ee4e0b6682df2d02f1f7f7eed71c7",
+          "count": 728,
+          "degrees": [
+            25,
+            27
+          ],
+          "maximum": "215341244283438424696206559804842772042401753/3803193540608000000000000000000000000000",
+          "minimum": "0",
+          "minimum_index": [
+            0,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": false,
+          "zero_count": 28
+        },
+        {
+          "coefficient_sha256": "386b519a468f670a04fc2bd3df94d33f69cbc4a70ed0335d3ed8455d4068f7f4",
+          "count": 728,
+          "degrees": [
+            25,
+            27
+          ],
+          "maximum": "464399320375321636094134992658238456898747/217325345177600000000000000000000000000",
+          "minimum": "0",
+          "minimum_index": [
+            0,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": false,
+          "zero_count": 28
+        },
+        {
+          "coefficient_sha256": "e1cb9cedaad91c048b01906960aa0b7b439e5a2dcb5d6537ab18eb8fcd8bcd76",
+          "count": 728,
+          "degrees": [
+            25,
+            27
+          ],
+          "maximum": "268480021904629203648336969977158915173/4346506903552000000000000000000000000",
+          "minimum": "0",
+          "minimum_index": [
+            0,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": false,
+          "zero_count": 28
+        },
+        {
+          "coefficient_sha256": "d4820d16a55a5107d93c9c2b1fedf47d8f95837d588f25c6ef8d2200cc153405",
+          "count": 728,
+          "degrees": [
+            25,
+            27
+          ],
+          "maximum": "10184543383960031833213518091131063141/7606387081216000000000000000000000000",
+          "minimum": "0",
+          "minimum_index": [
+            0,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": false,
+          "zero_count": 28
+        },
+        {
+          "coefficient_sha256": "e188f3fece5c051cb87fe14ea1a2bde5cb92bb8bef1bcd87c6c88a05c6d4d3b3",
+          "count": 728,
+          "degrees": [
+            25,
+            27
+          ],
+          "maximum": "15708612319298276248930675613246283/760638708121600000000000000000000000",
+          "minimum": "0",
+          "minimum_index": [
+            0,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": false,
+          "zero_count": 28
+        },
+        {
+          "coefficient_sha256": "5ef6635dd822b83a01bc7be9e24044ec952cefd7e912f1915a507517e8c68089",
+          "count": 728,
+          "degrees": [
+            25,
+            27
+          ],
+          "maximum": "30764175957100078815390924536991/152127741624320000000000000000000000",
+          "minimum": "0",
+          "minimum_index": [
+            0,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": false,
+          "zero_count": 28
+        },
+        {
+          "coefficient_sha256": "764b2ffc6c83d5b0fac055bba89bb0986865d90c3f90fcbc8aa3bf122552d15f",
+          "count": 728,
+          "degrees": [
+            25,
+            27
+          ],
+          "maximum": "14307292092361482171986763117/15212774162432000000000000000000000",
+          "minimum": "0",
+          "minimum_index": [
+            0,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": false,
+          "zero_count": 28
+        }
+      ],
+      "nested_hash": "923504eb857f49c89bb4d9f27c1638acf27e4f32d81302e31d8180a2d7f73896"
+    },
+    "upper_y_wall": {
+      "S_degree": 13,
+      "all_coefficients_nonnegative_on_TY_cube": true,
+      "all_coefficients_positive_on_TY_cube": true,
+      "coefficient_records": [
+        {
+          "coefficient_sha256": "c1c43e70cbe8f7616ce295dc17b832b51e6058ab606817fc4ea73540c7666698",
+          "count": 27,
+          "degrees": [
+            26,
+            0
+          ],
+          "maximum": "19402618139810464810884569136013881/274877906944000000000000",
+          "minimum": "8445311169059400746698612209516216304592559243721791073419/268435456000000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "4ccb7de6c40390109eebde63db5595adde4990d8a54f755cd705beb2ba0d4ced",
+          "count": 27,
+          "degrees": [
+            26,
+            0
+          ],
+          "maximum": "1221912096610131583280518973001867/27487790694400000000000",
+          "minimum": "542568485574517293808280566335183670970209993805147966217/26843545600000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "801bc3974bbd81c64deec04e649cb2afb4d7f38d698122beb889bdb82abd695c",
+          "count": 27,
+          "degrees": [
+            26,
+            0
+          ],
+          "maximum": "17631316823045410383652291846863/1374389534720000000000",
+          "minimum": "7908490026845669388478517214968807855162621623243016061/1342177280000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "9ed98e48b26e18778c66bb0ed78e358de9ff92d0b093bda1140a6bbbbb0a6622",
+          "count": 27,
+          "degrees": [
+            26,
+            0
+          ],
+          "maximum": "61792152087184491970798992453/27487790694400000000",
+          "minimum": "138751219095856347750700329558290552438503770845897427/134217728000000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "2d821eea0b83cf53d445a1859aa84756b2a666c4c6c7a4c48159f0476db38794",
+          "count": 27,
+          "degrees": [
+            26,
+            0
+          ],
+          "maximum": "1469649543469524216357174039/5497558138880000000",
+          "minimum": "655405461957893517307519309916465917703659356620997/5368709120000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "4a0a5dbc3f8a0481a9bb985774d1035b1099c332e75ad529d83374e140c52f1b",
+          "count": 27,
+          "degrees": [
+            26,
+            0
+          ],
+          "maximum": "62822173388429165466133377/2748779069440000000",
+          "minimum": "27610274048022058316869866323315265370690440989403/2684354560000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "7f43bc26ebada8251a463c6292a44089752421e9e35ffee1432410c8c553735d",
+          "count": 27,
+          "degrees": [
+            26,
+            0
+          ],
+          "maximum": "99843152305827716653221/68719476736000000",
+          "minimum": "42949123244924827916855356951281844447208043711/67108864000000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "21824987f3f1c55a5f4186ac6a3eb4dfbe1982a1b3250ea585847061cc2cbb74",
+          "count": 27,
+          "degrees": [
+            26,
+            0
+          ],
+          "maximum": "481787807620579024203/6871947673600000",
+          "minimum": "201732093103803408228616168065736884132365721/6710886400000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "b361d51a59c77ad5fde32bfaebc24d1adb2b06915aef0ae0e7c2e3e878b9c41f",
+          "count": 27,
+          "degrees": [
+            26,
+            0
+          ],
+          "maximum": "1427305417440725763/549755813888000",
+          "minimum": "2900283534127374716847736727020566888500493/2684354560000000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "2e07ce96e1cb54d5f76c604cd2621fa01b3994f7fe259293e43bb90cb74d7967",
+          "count": 27,
+          "degrees": [
+            26,
+            0
+          ],
+          "maximum": "4055360389446009/54975581388800",
+          "minimum": "1601758657221260963442276231302383309347/53687091200000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "210dfe052950c431b366fb0304b4f576c5c96773c16c7d654f0bcfb9128f4155",
+          "count": 27,
+          "degrees": [
+            26,
+            0
+          ],
+          "maximum": "21694737704823/13743895347200",
+          "minimum": "8378466765359802552366243304142280117/13421772800000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "71bb21b896b806c24f056cbd169eecdfeae071a92a74bee41d1f8acea5b55ed2",
+          "count": 27,
+          "degrees": [
+            26,
+            0
+          ],
+          "maximum": "33211829121/1374389534720",
+          "minimum": "12652255342434902714185416078082251/1342177280000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "ad26bf8b83294f954a49b8f73bd2bcb67e478a24bc078d896b94b6e24ced19ae",
+          "count": 27,
+          "degrees": [
+            26,
+            0
+          ],
+          "maximum": "64845861/274877906944",
+          "minimum": "24560207636496524710586577091887/268435456000000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        },
+        {
+          "coefficient_sha256": "bd67626e40bb9fc80f9fa533a4eab3046f2c7e45b3781968448adabac15c9561",
+          "count": 27,
+          "degrees": [
+            26,
+            0
+          ],
+          "maximum": "150675/137438953472",
+          "minimum": "11395957675263243897759613389/26843545600000000000000000000000000",
+          "minimum_index": [
+            26,
+            0
+          ],
+          "negative_count": 0,
+          "nonnegative": true,
+          "positive": true,
+          "zero_count": 0
+        }
+      ],
+      "nested_hash": "a392532de6dd32354696dc50d3e1f7043a4bf4bc4b481681b50941dd4ce839ad"
+    }
+  },
+  "records": {
+    "C": {
+      "bernstein": {
+        "coefficient_sha256": "3e1d56ba1b56d77bdf0260b99865a4e42623568ec55aa32ec182a64cc43dbf54",
+        "count": 10584,
+        "degrees": [
+          13,
+          26,
+          27
+        ],
+        "maximum": "125760988663275/1024",
+        "minimum": "128788789730539622247221834899626787224357695369050629592438323681543291441591/4096000000000000000000000000000000000000000000000000000000000000000",
+        "minimum_index": [
+          0,
+          26,
+          0
+        ],
+        "negative_count": 0,
+        "nonnegative": true,
+        "positive": true,
+        "zero_count": 0
+      },
+      "degrees": [
+        13,
+        26,
+        27
+      ],
+      "power": {
+        "count": 2940,
+        "maximum": "44930721761399243867884080088512237/687194767360000000000000",
+        "minimum": "-393870019654267227910982925163001538909/8589934592000000000000000000",
+        "negative_count": 1469,
+        "positive_count": 1471,
+        "zero_count": 0
+      },
+      "terms": 2940
+    },
+    "boundary_P": {
+      "bernstein": {
+        "coefficient_sha256": "4b9203ced560abc121bdf734ec601c641b6010961fd40f7ecb0e8b028679a812",
+        "count": 28,
+        "degrees": [
+          27
+        ],
+        "maximum": "74668282520409702968749943106553369145830106681150264234840860328563861861/2361560924160000000000000000000000000000000000000000000000000000",
+        "minimum": "128788789730539622247221834899626787224357695369050629592438323681543291441591/4096000000000000000000000000000000000000000000000000000000000000000",
+        "minimum_index": [
+          0
+        ],
+        "negative_count": 0,
+        "nonnegative": true,
+        "positive": true,
+        "zero_count": 0
+      },
+      "degrees": [
+        27
+      ],
+      "power": {
+        "count": 28,
+        "maximum": "128788789730539622247221834899626787224357695369050629592438323681543291441591/4096000000000000000000000000000000000000000000000000000000000000000",
+        "minimum": "-297556953795487806128356498566003117317730327272553925607793180660654387993/512000000000000000000000000000000000000000000000000000000000000000",
+        "negative_count": 14,
+        "positive_count": 14,
+        "zero_count": 0
+      },
+      "terms": 28
+    },
+    "boundary_dP": {
+      "bernstein": {
+        "coefficient_sha256": "6a1a8dcf34dd6c84940409cd557473ce479945e55501699a7ada8977bda6b7bc",
+        "count": 27,
+        "degrees": [
+          26
+        ],
+        "maximum": "5230945944692435594770208919114059696437770597505797108315023227220246920881/8192000000000000000000000000000000000000000000000000000000000000000",
+        "minimum": "-214708915794215307567820835758783568451597461577613836183/335544320000000000000000000000000000000000000000",
+        "minimum_index": [
+          26
+        ],
+        "negative_count": 13,
+        "nonnegative": false,
+        "positive": false,
+        "zero_count": 0
+      },
+      "degrees": [
+        26
+      ],
+      "power": {
+        "count": 27,
+        "maximum": "5230945944692435594770208919114059696437770597505797108315023227220246920881/8192000000000000000000000000000000000000000000000000000000000000000",
+        "minimum": "-297556953795487806128356498566003117317730327272553925607793180660654387993/256000000000000000000000000000000000000000000000000000000000000000",
+        "negative_count": 14,
+        "positive_count": 13,
+        "zero_count": 0
+      },
+      "terms": 27
+    },
+    "boundary_minus_d2P": {
+      "bernstein": {
+        "coefficient_sha256": "aea7ddcb35164621954bbd6569bba696bc0adc208ddeeec88c7ee651c8f57fc2",
+        "count": 26,
+        "degrees": [
+          25
+        ],
+        "maximum": "467596524210972848246339059379928303643575355205831100987/335544320000000000000000000000000000000000000000",
+        "minimum": "297556953795487806128356498566003117317730327272553925607793180660654387993/256000000000000000000000000000000000000000000000000000000000000000",
+        "minimum_index": [
+          0
+        ],
+        "negative_count": 0,
+        "nonnegative": true,
+        "positive": true,
+        "zero_count": 0
+      },
+      "degrees": [
+        25
+      ],
+      "power": {
+        "count": 26,
+        "maximum": "297556953795487806128356498566003117317730327272553925607793180660654387993/256000000000000000000000000000000000000000000000000000000000000000",
+        "minimum": "-542953448097522463939379143116945833703388521953469104897379380627668653/81920000000000000000000000000000000000000000000000000000000000000",
+        "negative_count": 12,
+        "positive_count": 14,
+        "zero_count": 0
+      },
+      "terms": 26
+    },
+    "boundary_minus_dP": {
+      "bernstein": {
+        "coefficient_sha256": "26cb31088056b48a908f6d8d3c9fe92eece2b10a41bb9f20cfa24e40620b2e3e",
+        "count": 27,
+        "degrees": [
+          26
+        ],
+        "maximum": "214708915794215307567820835758783568451597461577613836183/335544320000000000000000000000000000000000000000",
+        "minimum": "-5230945944692435594770208919114059696437770597505797108315023227220246920881/8192000000000000000000000000000000000000000000000000000000000000000",
+        "minimum_index": [
+          0
+        ],
+        "negative_count": 14,
+        "nonnegative": false,
+        "positive": false,
+        "zero_count": 0
+      },
+      "degrees": [
+        26
+      ],
+      "power": {
+        "count": 27,
+        "maximum": "297556953795487806128356498566003117317730327272553925607793180660654387993/256000000000000000000000000000000000000000000000000000000000000000",
+        "minimum": "-5230945944692435594770208919114059696437770597505797108315023227220246920881/8192000000000000000000000000000000000000000000000000000000000000000",
+        "negative_count": 13,
+        "positive_count": 14,
+        "zero_count": 0
+      },
+      "terms": 27
+    },
+    "dC_dS": {
+      "bernstein": {
+        "coefficient_sha256": "99db5d562bbcfe1cdc9863ffc5c82c9a4e193b06216e76dac75eaab5ecd1efcf",
+        "count": 9828,
+        "degrees": [
+          12,
+          26,
+          27
+        ],
+        "maximum": "2178416936666421/32768",
+        "minimum": "72628652325545037469960600449387878333678476616741114665660992921276121501917/4096000000000000000000000000000000000000000000000000000000000000000",
+        "minimum_index": [
+          0,
+          26,
+          0
+        ],
+        "negative_count": 0,
+        "nonnegative": true,
+        "positive": true,
+        "zero_count": 0
+      },
+      "degrees": [
+        12,
+        26,
+        27
+      ],
+      "power": {
+        "count": 2730,
+        "maximum": "25137658295278630745706441170126271/687194767360000000000000",
+        "minimum": "-218949293323491018788862441851665818303/8589934592000000000000000000",
+        "negative_count": 1364,
+        "positive_count": 1366,
+        "zero_count": 0
+      },
+      "terms": 2730
+    },
+    "dC_dT": {
+      "bernstein": {
+        "coefficient_sha256": "cd8c5862e7343b64bfe253770b8823991202a9da7e85d3968ba1ae8c1f56e692",
+        "count": 10192,
+        "degrees": [
+          13,
+          25,
+          27
+        ],
+        "maximum": "0",
+        "minimum": "-32301007509831784532857480733883/331612160000000000000",
+        "minimum_index": [
+          13,
+          21,
+          27
+        ],
+        "negative_count": 9800,
+        "nonnegative": false,
+        "positive": false,
+        "zero_count": 392
+      },
+      "degrees": [
+        13,
+        25,
+        27
+      ],
+      "power": {
+        "count": 2912,
+        "maximum": "152752367045676774317713391673075401640531/2684354560000000000000000000000",
+        "minimum": "-393870019654267227910982925163001538909/4294967296000000000000000000",
+        "negative_count": 1469,
+        "positive_count": 1443,
+        "zero_count": 0
+      },
+      "terms": 2912
+    },
+    "dC_dY": {
+      "bernstein": {
+        "coefficient_sha256": "7ee215a60bcf0d720e5bd61e7298ad87b8b96033b74c23075982accce5e10cb8",
+        "count": 10206,
+        "degrees": [
+          13,
+          26,
+          26
+        ],
+        "maximum": "20243510954175/2048",
+        "minimum": "-214708915794215307567820835758783568451597461577613836183/335544320000000000000000000000000000000000000000",
+        "minimum_index": [
+          0,
+          26,
+          26
+        ],
+        "negative_count": 176,
+        "nonnegative": false,
+        "positive": false,
+        "zero_count": 0
+      },
+      "degrees": [
+        13,
+        26,
+        26
+      ],
+      "power": {
+        "count": 2744,
+        "maximum": "7151647176253836318654685503044931/1374389534720000000000000",
+        "minimum": "-121263535962445820332465947416914058931/17179869184000000000000000000",
+        "negative_count": 1382,
+        "positive_count": 1362,
+        "zero_count": 0
+      },
+      "terms": 2744
+    },
+    "minus_d2C_dY2": {
+      "bernstein": {
+        "coefficient_sha256": "a3605430ce4b320a34ee4b6cf605bb317840b7ed62d69096894d761d5c47cbfe",
+        "count": 9828,
+        "degrees": [
+          13,
+          26,
+          25
+        ],
+        "maximum": "7439502742545702005153390169/3276800000000000000",
+        "minimum": "0",
+        "minimum_index": [
+          0,
+          0,
+          0
+        ],
+        "negative_count": 0,
+        "nonnegative": true,
+        "positive": false,
+        "zero_count": 728
+      },
+      "degrees": [
+        13,
+        26,
+        25
+      ],
+      "power": {
+        "count": 2548,
+        "maximum": "512453883587448481623507051549058437/268435456000000000000000000",
+        "minimum": "-517507512008016356374911791856894282429/536870912000000000000000000000",
+        "negative_count": 1264,
+        "positive_count": 1284,
+        "zero_count": 0
+      },
+      "terms": 2548
+    },
+    "minus_dC_dY": {
+      "bernstein": {
+        "coefficient_sha256": "874b9b9743528a15b307ddee7b989e0073873ab2abf7f67dee06c74e1151d3a4",
+        "count": 10206,
+        "degrees": [
+          13,
+          26,
+          26
+        ],
+        "maximum": "214708915794215307567820835758783568451597461577613836183/335544320000000000000000000000000000000000000000",
+        "minimum": "-20243510954175/2048",
+        "minimum_index": [
+          13,
+          0,
+          0
+        ],
+        "negative_count": 10030,
+        "nonnegative": false,
+        "positive": false,
+        "zero_count": 0
+      },
+      "degrees": [
+        13,
+        26,
+        26
+      ],
+      "power": {
+        "count": 2744,
+        "maximum": "121263535962445820332465947416914058931/17179869184000000000000000000",
+        "minimum": "-7151647176253836318654685503044931/1374389534720000000000000",
+        "negative_count": 1362,
+        "positive_count": 1382,
+        "zero_count": 0
+      },
+      "terms": 2744
+    }
+  },
+  "scope": "diagnostic only; forbidden as Lean input",
+  "thin_cone": "X=191/10+(9/10)S, z=(3/10)T, y=2/5+(1/10)Y",
+  "workers": 6
+}

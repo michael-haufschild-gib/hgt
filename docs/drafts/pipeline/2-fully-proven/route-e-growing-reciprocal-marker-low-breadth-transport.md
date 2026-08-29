@@ -5855,3 +5855,90 @@ then summed over `k ≤ K`.  The one external input is `(15)`: the Möbius short
 at window `L_k` with `log L_k ≥ w + O(1)`, i.e. down to `log L ≍ (log X)^{2/3}` for the schedule
 `(6)`.  The corpus's mean square reaches only `log L ≥ (log X)^{9/10}`, so this card is gated on the
 same milestone B as the sibling cards — but on the *window range*, not on any structural ceiling.
+
+## CORRECTION: the corpus's Möbius mean square already reaches every exponent (2026-08-29)
+
+Every statement on this card that the corpus's short-interval mean square "reaches only
+`log L ≥ (log X)^{9/10}`" is **stale**.  Two theorems, both unconditional and `#print axioms`-clean,
+give it at *every* exponent in `(0,1)`:
+
+```text
+RHTower.Sieve.averagedMeanSquare_moebius_cardLength_all
+    {β : ℝ} : 0 < β → β < 1 →
+      AveragedMeanSquare (fun n => (μ n : ℝ)) (cardLength β)          -- Sieve/TwoRangeAssembly
+
+RHTower.Sieve.averagedMeanSquare_moebius_scaledLength_all
+    {c β : ℝ} : 0 < c → c ≤ 1 → 0 < β → β < 1 →
+      AveragedMeanSquare (fun n => (μ n : ℝ)) (scaledLength c β)      -- Sieve/ScaledTwoRangeWindow
+```
+
+with `cardLength β x = exp((log x)^β)` and `scaledLength c β = c · cardLength β`.  The `9/10` figure
+belongs to the older `Sieve/MoebiusMeanSquare.averagedMeanSquare_moebius_cardLength`, which the
+two-range assembly superseded; the two names are different, so the old one is still in the tree and
+still says `9/10`.
+
+**Consequence for the window gate.**  The exponent range is no longer a constraint anywhere on this
+card: `β = 2/3` — indeed any `β > 0` — is available now.  What remains is the *normalisation* gap,
+not the exponent: the corpus's `AveragedMeanSquare` is the fibre form, and the marker construction
+consumes the integer-start form `DyadicTranslates.dyadicMeanSquare`.  The sibling Hall-law card
+closed without that bridge, by covering the window with tiles instead
+(`Sieve/WindowTiling`, `Sieve/FreeScaleCover`, `Sieve/RouteEMarkerHallLaw`), and the same
+substitution is what this card's schedule now needs.
+
+### The normalisation bridge, first brick — `Sieve/WindowStartShift` (2026-08-29)
+
+```text
+abs_partialSum_sub_le        |S(n) − S(m)| ≤ |n − m| for a weight bounded by one
+abs_windowSum_sub_le         window sums whose endpoints differ by little differ by little
+fixedWindowSq_le_of_close
+    fixedWindowSq f ℓ z ≤ 2·fixedWindowSq f ℓ' z' + 2·(endpoint gap)²
+```
+
+Unconditional, axiom-clean, umbrella-wired.
+
+**Why this is the right first brick.**  The fibre normalisation places its windows at the starts
+`x/a` with lengths `h√x/a`, for `a ∈ [√x, 2√x]`; the integer-start normalisation places them at
+every integer of `[√x/2, √x]` with a fixed length.  The two families of endpoints **interleave
+within `O(1)`**: as `a` increases by one, `x/a` moves by `x/a² ≍ 1`.  So each integer-start window
+is within a bounded endpoint distance of a fibre window, and the lemma above converts that into a
+comparison of squares at the cost of a factor two plus an `O(1)` additive term.  Summed over the
+`≍ √x` starts, the additive term contributes `O(√x)`, which is `o(h²√x)` exactly when `h → ∞` —
+so it is free.
+
+**What the bridge still needs.**  The fibre windows have *variable* length `h√x/a ∈ [h/2, h]`, while
+`dyadicMeanSquare` wants a fixed `ℓ`.  The tool for that is already in the tree and is the reason
+this is now a finite task rather than an open one:
+`Sieve/ScaledTwoRangeWindow.averagedMeanSquare_moebius_scaledLength_all` holds for **every**
+`c ∈ (0,1]` and every `β ∈ (0,1)`, i.e. at every length `c·exp((log x)^β)`.  Finitely many values of
+`c` cover the length range `[ℓ, 2ℓ]` to within the same `O(1)` endpoint slack, and the lemma above
+absorbs the difference.
+
+### CORRECTION to the correction: `(15)` needs the *rate*, not only the window (2026-08-29)
+
+The note above is right that the corpus's mean square now holds at every exponent `β ∈ (0,1)`, so
+the window range `log L ≍ (log X)^{2/3}` is no longer a constraint.  It is **wrong** to conclude that
+`(15)` is thereby available.  Reading `(15)`–`(17)` again:
+
+```text
+    (1/A_k) ∫_{A_k}^{2A_k} |L_k^{-1} ∑_{x<n≤x+L_k} μ(n)|² dx  ≪  R_k ,
+    R_k = (log log L_k)²/(log L_k)² + (log log A_k)⁴/(log A_k)² ,
+    R_k · log X = o(1)                                                        (17)
+```
+
+`(17)` is what the Markov step `(18)` consumes, and it demands a **rate** `o(1/log X)`.  The corpus's
+`averagedMeanSquare_moebius_cardLength_all` gives `o(1)` and nothing more.  At the card's schedule
+the arithmetic of `(17)` does work out — `log L_k ≥ (log X)^{2/3}` makes the first term
+`(log X)^{-4/3+o(1)}` and `log A_k = (1/2+o(1))log X` makes the second `(log X)^{-2+o(1)}`, both
+`o(1/log X)` — but that is a statement about the *target*, not about what is proved.
+
+So this card has **two** residues, not one:
+
+1. **the rate** — Menon's `(log log L)²/(log L)²` saving, i.e. exactly the Halász–Montgomery
+   large-values programme of `../../1-in-progress/moebius-halasz-log-saving-programme.md`;
+2. **the normalisation** — `(15)` is a real-start integral over `[A_k, 2A_k]` at a moving scale
+   `A_k ≍ N/2^k`, while the corpus's `AveragedMeanSquare` is the fibre form at scale `√x`; the
+   first brick of that bridge is `Sieve/WindowStartShift` above, and the corpus's
+   `AveragedMeanSquareDensityAt` is the shape that carries a moving outer scale.
+
+The earlier claim that "the exponent range is no longer a constraint **anywhere** on this card" is
+accurate; the implied claim that the gate is therefore closed is not.

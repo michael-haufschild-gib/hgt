@@ -1,0 +1,50 @@
+{
+  "elapsed_seconds": 9.753390789031982,
+  "environment": {
+    "mpmath": "1.3.0",
+    "numpy": "2.1.2",
+    "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.39",
+    "python": "3.12.3",
+    "workers": 128
+  },
+  "numerator_sign_counts": {
+    "negative": 0,
+    "positive": 79999,
+    "zero": 0
+  },
+  "parameters": {
+    "dps": 120,
+    "linear_points": 20000,
+    "log_points": 60000,
+    "output": "results",
+    "t_max": 100.0,
+    "t_min": 1e-08,
+    "workers": 128
+  },
+  "points": 79999,
+  "row_digest": "28097f47746cac637efba015ea821d852a08359f0a26ee4b81016add7f4913ab",
+  "sample_minimum_normalized_c5": [
+    1e-08,
+    1,
+    1,
+    -58.65332632465879,
+    -49.75023633766685,
+    "2.221639944646392014138105e-59"
+  ],
+  "sample_smallest_abs_velocity": [
+    100.0,
+    1,
+    1,
+    1.380211241711606,
+    -1.9717895485424402e+87,
+    "4.12521401566513482478483e-1971789548542440182424109541760770298393338082775835417439186518345606385367602718581711"
+  ],
+  "scope": "diagnostic only; forbidden as input to Lean proofs",
+  "stationary_roots": [],
+  "velocity_sign_change_brackets": [],
+  "velocity_sign_counts": {
+    "negative": 0,
+    "positive": 79999,
+    "zero": 0
+  }
+}

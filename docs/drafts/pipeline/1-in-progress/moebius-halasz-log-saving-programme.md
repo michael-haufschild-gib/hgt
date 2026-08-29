@@ -1865,3 +1865,540 @@ its ceiling came from replacing `‖primeBlockPoly‖` by a sup, and this route 
 **What is left on this lane is numerology, not structure**: choose `V₀`, `J`, `E`, `σ_j` and `U`
 from the block's Mertens mass and the window `G ≍ M/h`, and compare the resulting saving with the
 target `ε′h²`.  Every inequality needed for that comparison is now a Lean theorem.
+
+## CORRECTION: the premise of this card is stale (2026-08-29)
+
+This card was opened because "the corpus proves it at windows `exp((log x)^β)`, `β > 9/10`, with
+rate `Θ(1/log log x)`".  The exponent half of that is no longer true.
+`Sieve/TwoRangeAssembly.averagedMeanSquare_moebius_cardLength_all` and
+`Sieve/ScaledTwoRangeWindow.averagedMeanSquare_moebius_scaledLength_all` give the Möbius
+short-interval mean square at **every** `β ∈ (0,1)`, unconditionally and axiom-clean — so the
+`(log x)^{9/10}` wall, and with it the whole "window range" motivation, is gone.
+
+What the card's three client cards still want from this lane is the **rate**, not the window:
+`o(1/log x)` rather than `o(1)`.  The Halász–Montgomery large-values route recorded above is
+therefore still the right target, but its statement of purpose should be read as *rate only*.  The
+numerology that remains — choosing `V₀`, `J`, `E`, `σ_j`, `U` — is unchanged, and the ceiling
+analysis of the exact-Ramaré chain (which capped at `(log x)^{-1/5}`) still stands as the reason the
+large-values route is needed.
+
+## CORRECTION: the bound `(T)` this card is waiting for is already in the tree (2026-08-29)
+
+The card states that the distance side is owned but that "what it does **not** own is a good uniform
+bound", and names as sufficient the classical
+
+```text
+    |ζ(σ + it)| ≥ c (log|t|)^{-7}     for σ ≥ 1, |t| ≥ t₀ .                          (T)
+```
+
+The corpus owns it, with exponent `11` in place of `7`:
+
+```text
+RHTower.exists_lower_bound_riemannZeta_near_one_line :
+  ∃ c t₀, 0 < c ∧ 9 ≤ t₀ ∧ ∀ σ t, 1 ≤ σ → σ ≤ 5/4 → t₀ ≤ |t| →
+    c / (Real.log |t|)^11 ≤ ‖riemannZeta (σ + t·I)‖
+```
+
+in `RHTower/ZetaOneLineLogPowerLowerBound.lean`, unconditional and `#print axioms`-clean, proved by
+the three-four-one inequality at the shifted abscissa `σ + 1/(log|t|)^14`.  The exponent is not
+load-bearing: the card's own computation gives `e^{−M} ≍ (log log L)^{7}/log L` from exponent `7`
+and `(log log L)^{11}/log L` from exponent `11`, and both square to
+`(log L)^{-2+o(1)} = (log x)^{-2β+o(1)}`, which is `o(1/log x)` for every `β > 1/2` — the
+`exists_antiscale_frame` figure of `(log log log x − C)/4` is simply superseded.
+
+**What the lane actually still needs**, therefore, is the passage
+
+```text
+    ∑_{p ≤ x} cos(t log p)/p  ≥  log‖ζ(σ + it)‖ − C ,     σ = 1 + 1/log x ,
+```
+
+which turns `(T)` into the pretentious-distance lower bound
+`D(μ, n^{it}; x)² ≥ log log x − 11 log log|t| − C` through the identity already owned as
+`ZetaLineLowerBound.pretentiousDistSq_neg_one_eq` / `primeCosPlusSum_eq`, and then the Halász step
+`M ↦ (1 + M)e^{−M}`.  Both are Mertens-and-Euler-product bookkeeping over an owned analytic input,
+not a missing theorem.
+
+## The distance side is now closed at every frequency — `RHTower/PrimeCosSumHighFreq` (2026-08-29)
+
+The frequency restriction on `primeCosPlusSum_ge_low_freq` was never used by its argument: the only
+place `t` enters is the value of `ζ` at the single point `1 + 1/log x + it`.  Stating the theorem
+with that value as the hypothesis removes the restriction, and feeding it the corpus's own
+power-of-log bound closes the distance side over the whole horizon.
+
+```text
+primeCosPlusSum_ge_of_zeta_lower
+    c ≤ ‖ζ(1 + 1/log x + it)‖  ⟹
+      log log x + log c + 2·meisselMertensConst − C₀ ≤ primeCosPlusSum t x
+    (no restriction on t)
+
+exists_primeCosPlusSum_ge_high_freq
+    ∃ C t₀, 9 ≤ t₀ ∧ ∀ x t, e⁴ ≤ x → t₀ ≤ |t| →
+      **log log x − 11·log log|t| − C ≤ primeCosPlusSum t x**
+```
+
+Unconditional, axiom-clean, umbrella-wired.  This is exactly
+
+```text
+    D(μ, n^{it}; x)² ≥ log log x − 11 log log|t| − C ,
+```
+
+the classical shape Halász's theorem consumes, and it supersedes the `exists_antiscale_frame`
+figure `(log log log x − C)/4` that the card recorded as the ceiling.
+
+**What remains on this lane** is therefore only the Halász step itself: turn
+`M = min_{|t| ≤ T} D(μ, n^{it}; x)²` into the mean-value bound `(1 + M)e^{−M}`.  With `T` polynomial
+in `log L` the theorem above gives `M ≥ log log L − 11 log log log L − C`, hence
+`e^{−M} ≪ (log log L)^{11}/log L` and the squared saving `(log L)^{−2+o(1)}` — which is `o(1/log x)`
+for every window exponent `β > 1/2`, and in particular at the growing-marker card's `β = 2/3`.
+
+## A constraint the numerology must respect — and it may be fatal to the route as assembled (2026-08-29)
+
+Before choosing `V₀, J, E, σ_j, U`, note what `Sieve/PrimeBlockLevelSetCount` actually asks for.
+
+```text
+card_le_of_mem_primeBlockLevelSet
+  (hB : B ⊆ Ico N (2N)) (hmass : #B ≤ E / N) (hthr : 2400·E ≤ N^{1/2 − 2σ})
+  (P one-spaced, P ⊆ primeBlockLevelSet B G (N^{−σ})) :
+    #P ≤ (6594624·(2πG)·E³·N^{6σ−2} + 2E·N^{2σ})·(1 + 12π(1 + log(4πG+1)))
+```
+
+`hmass` forces `E ≥ N·#B`, and for a *prime* block `#B ≍ N/log N`, so `E ≳ N²/log N`.  Then `hthr`
+reads
+
+```text
+    2400·N²/log N ≤ N^{1/2 − 2σ}   ⟺   N^{3/2 + 2σ} ≤ (log N)/2400   ⟺   σ ≤ −3/4 + o(1) ,
+```
+
+i.e. the level `V = N^{−σ}` must satisfy **`V ≥ N^{3/4}`**.  The trivial sup of `primeBlockPoly` is
+`#B ≍ N^{1−o(1)}`, so the estimate is available only for levels within `N^{1/4}` of the trivial
+bound — precisely the range where largeness is trivially rare.
+
+The Ramaré route needs rarity at levels near the `L²` size `√(#B) ≍ N^{1/2−o(1)}`, which is **below**
+the admissible range.  So as currently stated the level-set count does not reach the levels the
+route consumes, and `integral_normSq_blockProduct_le_halaszMontgomery`'s hypothesis `hC` would have
+to be supplied by something else there.
+
+Two things to check before spending more on the numerology:
+
+1. whether `hthr` is an artifact of the corpus's proof (Huxley's `R ≪ GNV^{−2} + TG³NV^{−6}` is
+   genuinely useful down to `V ≍ N^{1/2}`, so the restriction looks like a near-diagonal condition
+   introduced by the packaging, not by the mathematics);
+2. failing that, whether `Sieve/DyadicSecondEnvelopeClosed.halaszMontgomery_dyadic_explicit` or
+   `Sieve/HuxleyRangeLargeValues` covers the missing level range directly — the capstone takes the
+   count `C j` as an opaque hypothesis, so any source will do.
+
+This is recorded because a green build never shows a hypothesis is non-vacuous, and the arithmetic
+above is the kind that is cheap to redo and expensive to discover twice.
+
+## The level-range obstruction is removed — `Sieve/LevelSetCountFromHalasz` (2026-08-29)
+
+The `2400·E ≤ N^{1/2 − 2σ}` restriction analysed above is an artifact of the packaging, not of the
+mathematics: the Halász–Montgomery inequality itself carries no such hypothesis, and the level-set
+count follows from it directly.
+
+```text
+card_le_levelSet_blockPoly (N) (hN) (c) (sigma)
+  {S : Finset ℝ} {delta U T V Kmax}
+  (spacing `delta`, spread `T`, `3U ≤ 4πN`, `logDyadicLambda N T ≤ 1`,
+   `#S ≤ Kmax`, `1 ≤ Kmax`, and `V ≤ ‖blockPoly N c sigma t‖` on `S`) :
+    #S · (V² − (1 + 214√T + 1536·N/√U)·‖blockCoeff N c sigma‖²)
+      ≤ (N + (12πN/delta)·(1 + log Kmax))·‖blockCoeff N c sigma‖²
+```
+
+Unconditional, axiom-clean, umbrella-wired.  It is stated multiplicatively so that no positivity of
+the denominator is needed to state it; a level `V` beating the **diagonal** term
+`(1 + 214√T + 1536N/√U)·‖c‖²` turns it into a genuine count.
+
+**Consequence.**  The admissible level range is now `V² > (1 + 214√T + 1536N/√U)·‖c‖²`, i.e. a level
+a factor `≍ T^{1/4}` above the `L²` size `‖c‖` — not the `N^{3/4}` of
+`card_le_of_mem_primeBlockLevelSet`, which was a factor `N^{1/4}` above the *trivial* size.  The
+`√T` is the honest Halász–Montgomery far-term and is what the frequency cut `G` has to be chosen
+against; `U` can be taken as large as `4πN/3` to make the third term `O(√N)`.
+
+So `integral_normSq_blockProduct_le_halaszMontgomery`'s count hypothesis `hC` has a source at every
+level the Ramaré route actually uses, and the numerology can proceed against the diagonal threshold
+rather than against `N^{3/4}`.
+
+## CORRECTION: the level-range barrier is real, and it lives in the envelope (2026-08-29)
+
+The note above claims the `N^{3/4}` restriction is "an artifact of the packaging" and that
+`card_le_levelSet_blockPoly` removes it.  **The theorem is correct but the claim is wrong**: the new
+count reproduces the same barrier, and so does the Huxley route.  The culprit is the same term in
+both.
+
+`halaszMontgomery_dyadic_explicit` bounds the Gram sum by
+
+```text
+    (N + (12πN/δ)(1 + log K) + K·(1 + 214√T + 1536·N/√U))·‖a‖² ,     3U ≤ 4πN .
+```
+
+The cap `3U ≤ 4πN` forces `1536·N/√U ≥ 1536√(3N/4π) ≈ 750√N`, so the *diagonal* coefficient of `K`
+is at least `750√N·‖a‖²`.  A level-set count therefore needs
+
+```text
+    V² > 750√N·‖a‖²  ,   i.e.   V ≳ N^{1/4}·‖a‖ ,
+```
+
+a factor `N^{1/4}` **above the `L²` size** of the coefficient vector.  For the prime block
+(`‖a‖² = #B ≍ N/log N`) that is exactly the `V ≳ N^{3/4}` computed above; for
+`huxley_range_large_values`, whose polynomial sits at `σ = 1` so that `‖a‖² ≍ D²/N`, the hypothesis
+`hthresh` reads `V ≳ 47·J·D/N^{1/4}` — again a factor `N^{1/4}` above `‖a‖ = D/√N`.  The two
+statements differ only in normalisation; the gap is identical.
+
+**This is not what the classical inequality says.**  Montgomery–Vaughan's form of
+Halász–Montgomery, proved through the Hilbert inequality, has no `K√N` diagonal term at all: for a
+`δ`-spaced family it gives `∑_r |F(t_r)|² ≪ (N + δ^{-1}log(...))‖a‖²`, which is useful right down to
+`V ≍ ‖a‖`.  The `1536N/√U` is a defect of the corpus's *second envelope*
+(`logDyadicSecondEnvelope`), not of the mathematics.
+
+**So the real task on this lane is to sharpen the envelope**, not to choose parameters.  Until then
+neither the Gram-row count nor the Huxley range count reaches the levels the Ramaré route consumes,
+and `integral_normSq_blockProduct_le_halaszMontgomery` has no usable source for `hC` there.
+`Sieve/LevelSetCountFromHalasz` remains correct and is the right *shape* — it will deliver the
+levels as soon as the envelope loses its `N/√U`.
+
+### The envelope defect, located exactly (2026-08-29)
+
+```text
+logDyadicLambda N t          = t / (2π) / (2N)²        = t/(8πN²)
+logDyadicSecondEnvelope N U T = 256·( N·√(16·λ(N,T)) + λ(N,U)^{−1/2} )
+                              ≈ 214√T + 1536·N/√U
+```
+
+The `√N` enters through `λ(N,U)^{−1/2} = N√(8π/U)` **together with the cap** carried by the Gram-row
+inequality itself:
+
+```text
+Sieve/HalaszMontgomeryDyadic   (hnear : 3·U ≤ 4π·N)
+Sieve/HuxleyClosedLargeValues  sets U := 4πN/3, i.e. the cap with equality
+```
+
+Two facts worth recording, because they say where the work is:
+
+1. **`logDyadicSecondEnvelope_le` does not need `hnear`.**  It asks only `0 < U`, `0 ≤ T`.  So the
+   numeric envelope is fine for every `U`; the cap lives in the Gram-row bound, and it is what forces
+   `N/√U ≥ 750√N`.  If the underlying second-derivative range really allows `U ≍ N²` — which is what
+   `λ(N,U) ≤ 1` suggests, since `λ(N,U) = U/(8πN²)` — then `N/√U ≍ 1` and the barrier disappears
+   outright.  **Tracing `hnear` to its source in `HalaszMontgomeryDyadic` and relaxing it to
+   `U ≲ N²` is therefore the first thing to try**, and it is a bounded task, not a new theorem.
+2. **The corpus already owns Hilbert's inequality**:
+   `Sieve/HilbertBilinear.hilbert_bilinear_bound` — the Montgomery–Vaughan bilinear bound
+   `‖∑_{m,n} x_m x̄_n K(m,n)‖ ≤ (1 + 3π)·Q‖x‖²` for the harmonic kernel.  That is the standard route
+   to a Halász–Montgomery envelope with **no** `K√N` diagonal term at all, i.e. to a large-values
+   count usable down to `V ≍ ‖a‖`.  If (1) fails, this is the replacement.
+
+Either way the task is now named and local: **remove the `N/√U` from the diagonal coefficient of `K`
+in the Gram-row bound.**  Everything downstream — `card_le_levelSet_blockPoly`,
+`integral_normSq_blockProduct_le_halaszMontgomery`, and the numerology — is already in place and
+takes the improved count as an opaque input.
+
+## CORRECTION (final, this session): the envelope is sharp, the threshold is classical, and the route survives (2026-08-29)
+
+Tracing `hnear` to its source settles the two previous notes, both of which were wrong in part.
+
+**`hnear` is not relaxable.**  In `Sieve/HuxleyLargeValues.norm_inner_dyadicDirRow_le_huxley` the
+hypothesis is used to license *Kusmin–Landau* on the near range `|Δ| ≤ U`: the phase
+`Δ·log n/2π` has derivative `Δ/(2πn) ∈ [Δ/(4πN), Δ/(2πN)]`, and Kusmin–Landau needs it below `1/2`,
+which is exactly `3U ≤ 4πN` up to constants.  There is no `U ≍ N²` version.
+
+**The `√N` is not a defect either.**  At `|Δ| ≍ N` the sum `∑_{n≍N} n^{iΔ}` genuinely has size
+`≍ √N` — that is stationary phase, and the second-derivative envelope is reproducing the truth.  So
+`B ≍ 214√T + 750√N` is essentially sharp, and the resulting threshold
+
+```text
+    V² ≳ 2·B·‖a‖²   ,  i.e.   V ≳ N^{1/4}·‖a‖
+```
+
+is the **classical** Halász–Montgomery limitation, not a corpus artifact.  (The literature's way
+past it is Huxley's `F³` trick, which the corpus does implement — the
+`1648656·T·D⁴/(N²(V/J)⁴)` term of `huxley_range_large_values` is its sixth-moment shape.)
+
+**And the route survives it.**  What matters is the threshold against the *trivial* size, not against
+`‖a‖`.  For a prime block, `‖a‖² = #B ≍ N/log N` and the trivial size is `#B ≍ N/log N`, so
+
+```text
+    V₀ ≍ √(750·√N·N/log N) ≍ 27·N^{3/4}/√log N ,      V₀ / trivial ≍ N^{−1/4}√log N ,
+```
+
+and the level-split's first term is smaller than the trivial one by `V₀²/trivial² ≍ N^{−1/2}log N` —
+a **power** of the block scale, hence far more than the `1/log x` the cards need.
+
+**So the numerology is back on, with one binding constraint made explicit.**  With `T = 4πG` and
+`G ≍ M/h ≍ x^{1/2−o(1)}`, the envelope's two terms compare as `√G` versus `√N`: the `√G` term
+dominates unless `N = Q ≳ G^{1/2} ≍ x^{1/4}`.  The block scale must therefore be taken as a *power
+of `x`* — which the card already notes is allowed, since no step of this route bounds `Q` from
+below.  Choosing `Q ≍ x^{1/4}` puts the two terms in balance and is the natural starting point.
+
+### The count in the form the numerology consumes (2026-08-29)
+
+```text
+card_le_levelSet_blockPoly_of_threshold
+  (spacing `delta`, spread `T`, `3U ≤ 4πN`, `logDyadicLambda N T ≤ 1`, `#S ≤ Kmax`,
+   `V ≤ ‖blockPoly N c σ t‖` on `S`, and the threshold
+     2·(1 + 214√T + 1536·N/√U)·‖blockCoeff N c σ‖² ≤ V²) :
+    #S ≤ 2·(N + (12πN/delta)(1 + log Kmax))·‖blockCoeff N c σ‖² / V²
+```
+
+Unconditional, axiom-clean, umbrella-wired.  This is the classical `N‖a‖²/V²` count, with the
+Kuzmin–Landau logarithm and a factor two, valid at every level beating twice the diagonal term —
+i.e. at every `V ≳ N^{1/4}‖a‖`, which by the analysis above is a factor `N^{1/4}` *below* the
+trivial size for a prime block.
+
+It is the shape `integral_normSq_blockProduct_le_halaszMontgomery`'s hypothesis `hC` asks for: with
+`C j := 2(N + 12πN(1 + log Kmax))‖a‖²/(2^j V₀)²`, the block-product estimate becomes an explicit
+function of `V₀, J, N, G, U` alone, and the remaining choice is the five parameters against the
+constraint `Q ≳ G^{1/2} ≍ x^{1/4}` recorded above.
+
+## Executing the numerology: it does not close as structured (2026-08-29)
+
+With the count now explicit, the five parameters can be pushed through.  The result is negative, and
+the reason is structural rather than a bad choice, so it is recorded in full.
+
+**Instantiation.**  Prime block `B ⊆ [Q, 2Q)`, so `‖a‖² = ‖blockCoeff Q (μ·1_B) 0‖² ≤ #B ≍ Q/log Q`;
+frequency spread `T = 4πG`, spacing `δ = 2π` after the `w ↦ −2πw` rescaling, `Kmax = 2G+1`;
+`U i = 4π·2^i/3` per cofactor block (the single `U` of the capstone must be indexed by `i`, since
+`hnear : ∀ i, 3U ≤ 4π·2^i` is forced down to `U = O(1)` by `i = 0`).  Then
+
+```text
+    C_j ≍ 2·Q·#B·L / (2^j V₀)²  ,        L = 1 + 12π(1 + log(2G+1)) ≍ 12π log G .
+```
+
+**The top level.**  `J` is chosen minimal with `#B ≤ 2^J V₀`, so `2^{J−1}V₀ ≍ #B` and
+
+```text
+    C_{J−1} ≍ Q·#B·L/(#B)² ≍ L·log Q ≍ log G · log Q .
+```
+
+The level-`j` contribution to the split is `≍ (2^{j+1}V₀)² · (∑_{w ∈ P_j} ‖L_a(w)‖²)`, and even with
+the *trivial* bound `∑_{w∈P_j}‖L_a‖² ≤ C_j·M²` in place of the Halász–Montgomery one, the top level
+gives
+
+```text
+    ≍ 4(#B)² · C_{J−1} · M²  ≍  (#B)² M² · log G log Q ,
+```
+
+against a trivial bound for the whole integral of `sup‖P_B‖² · ∫‖L_a‖² ≍ (#B)²·M²`.  **The top level
+alone exceeds the trivial bound by `log G·log Q`.**  The Halász–Montgomery bound in place of the
+trivial one only makes it worse, by the dyadic factor `log₂M + 1`.
+
+**Why this is structural.**  The split pays `(2^{j+1}V₀)²` — the *square of the level* — against the
+*measure* of the level set, and at the top level the level is the trivial sup `#B`, where the measure
+bound `C ≍ log G log Q` is far above the `ε′` one would need.  A saving can only come from a level
+set that is empty, i.e. from a genuine bound `sup_{|w| ≤ G}‖primeBlockPoly B w‖ ≪ #B`.  That is
+exactly the **sup bound** the card records as the ceiling of the exact-Ramaré route and that this
+large-values route was introduced to avoid.
+
+**So the large-values route does not remove the sup, it relocates it**: the level-split needs the top
+level to be void, and voiding it is the sup bound.  Two consequences worth acting on:
+
+1. the correct target on this lane is a *sup* bound `‖primeBlockPoly B w‖ ≤ ρ·#B` with `ρ = o(1)`
+   away from `w = 0` — which is false pointwise for a full prime block (Kronecker), so it must be a
+   statement about the level *measure* at the top, not about the sup;
+2. equivalently, one needs the count `C` at `V ≍ #B` to be `o(1)` — i.e. an estimate strictly
+   stronger than `N‖a‖²/V²`, which at `V = ‖a‖·√N`-scale is exactly the Halász–Montgomery limit.
+
+This should be checked before more work on this lane: the arithmetic above is elementary, but it is
+the first time the numerology has actually been run, and it contradicts the card's earlier claim
+that only the arithmetic remained.
+
+## The redirection: for `μ` the Halász input is `(T)` itself, through `1/ζ` (2026-08-29)
+
+The large-values route is dead as structured (previous section).  The remaining route does **not**
+need Halász's theorem for general multiplicative functions, because for the Möbius function the
+generating series is `1/ζ` and the pretentious input is available in closed form.
+
+Halász's mechanism is `|F(1 + δ + it)| ≪ (log x)·e^{−D(f, n^{it}; x)²}`, obtained from the Euler
+product and the identity `∑_p Re f(p)p^{−σ−it}/p = log log x − D² + O(1)`.  For `f = μ` that whole
+step collapses:
+
+```text
+    F_μ(s) = ∑ μ(n) n^{−s} = 1/ζ(s) ,
+    |F_μ(1 + δ + it)| = 1/|ζ(1 + δ + it)| ≤ (log|t|)^{11}/c        (T) ,
+```
+
+against the trivial size `∑ n^{−1−δ} ≍ 1/δ ≍ log x`.  The saving is therefore
+`(log|t|)^{11}/log x`, which is exactly the `e^{−M}` of Halász with
+`M ≍ log log x − 11 log log|t|` — the bound `exists_primeCosPlusSum_ge_high_freq` gives, and now by
+two independent routes.
+
+**So the lane's remaining chain is Gallagher + Perron + `(T)`, not Halász theory:**
+
+| step | status |
+|---|---|
+| Gallagher/Plancherel: short-interval mean square ↦ `∫|F|²` over the window's frequency range | `Sieve/LogWindowPlancherel`, `Sieve/LogWindowDiscreteTransfer` |
+| Perron truncation of `1/ζ` to the Dirichlet polynomial `∑_{n ≤ X} μ(n)n^{−it}` | `PNTPlus` Perron/Mellin layer, `Sieve/PerronCompare*` |
+| the pointwise bound on the truncated series | **`(T)` — owned** (`exists_lower_bound_riemannZeta_near_one_line`) |
+| low frequency `|t| ≤ t₀` | `ZetaLineLowerBound.exists_pos_le_norm_riemannZeta_low_freq` |
+
+The only genuinely missing link is the *truncation*: `(T)` bounds `1/ζ`, while Gallagher consumes
+the finite polynomial, and the difference is the Perron tail.  That is the same contour step the
+corpus already performs in `Sieve/PerronCompareSharp` and `Sieve/RealWindowCompareBound`, at the
+same abscissa `1 + 1/log x`.
+
+This replaces the level-split as the target of this card.  It is also *why* the distance-side work
+above was worth doing: it is the statement that survives the redirection, and it is what the
+low-frequency range still needs.
+
+### First brick of the redirected chain — `RHTower/ZetaOneLineUniformLower` (2026-08-29)
+
+The Perron contour needs the bound on `1/ζ` at **every** frequency, and the corpus's two bounds
+covered only `|t| ≥ t₀` and `|t| ≤ 1`.  The gap is a compact band on which `ζ` is continuous and
+zero-free — the pole is excluded because the frequency is bounded away from zero there — so a
+minimum argument closes it.
+
+```text
+exists_pos_lower_bound_riemannZeta_band
+    on `1 ≤ σ ≤ 5/4`, `1 ≤ t ≤ t₀`, `ζ` has a positive minimum modulus
+exists_uniform_lower_bound_riemannZeta
+    ∃ c > 0, ∀ σ t, 1 < σ → σ ≤ 5/4 →
+      c / (log(|t| + e))^11 ≤ ‖ζ(σ + t·I)‖
+exists_uniform_upper_bound_inv_riemannZeta
+    **∃ K > 0, ∀ σ t, 1 < σ → σ ≤ 5/4 →
+      ‖ζ(σ + t·I)⁻¹‖ ≤ K·(log(|t| + e))^11**
+```
+
+Unconditional, axiom-clean, umbrella-wired.  The three ranges are `(T)` above `t₀`, the compact band
+between, and `exists_pos_le_norm_riemannZeta_low_freq` below `1`; negative frequencies come from
+`riemannZeta_conj`.
+
+The second statement is the Möbius generating series bounded along the whole shifted line — exactly
+what the Perron step consumes, and the first link of the `Gallagher + Perron + (T)` chain that
+replaces the level-split.
+
+### The series bound — `RHTower/MoebiusPartialSumBound` (2026-08-29)
+
+```text
+norm_LSeries_moebius_le_uniform
+    ∃ K > 0, ∀ σ t, 1 < σ → σ ≤ 5/4 →
+      ‖LSeries μ (σ + t·I)‖ ≤ K·(log(|t| + e))^11
+```
+
+Unconditional, axiom-clean, umbrella-wired.  The corpus already owned
+`LSeries_moebius_eq_inv_riemannZeta` (in `RHTower/SquarefreeMoebiusNormalization`, used in half a
+dozen modules), so this is `exists_uniform_upper_bound_inv_riemannZeta` transported across it — no
+new analysis.
+
+**What the remaining truncation step needs.**  The Halász layer wants the bound on the *finite*
+polynomial `∑_{n ≤ N} μ(n)n^{−σ−it}`, not on the series.  At the shifted abscissa the difference is
+elementary rather than a contour argument:
+
+```text
+    ∑_{n ≤ N} μ(n)n^{−s} = LSeries μ s − ∑_{n > N} μ(n)n^{−s} ,
+    ‖tail‖ ≤ ∑_{n > N} n^{−σ} ≤ N^{1−σ}/(σ − 1) ,
+```
+
+and at `σ = 1 + 1/log N` the tail bound is `e^{−1}·log N` — polylogarithmic, of the same order as
+the main term.  So the sup hypothesis of
+`Sieve/HalaszMeanSquare.integral_norm_dirPoly_halasz_on` is reachable with
+`M ≍ (log(|t|+e))^{11} + log N`, **without** the `t`-uniform Perron truncation the general theory
+would need.  Note the Abel-summation route does *not* work here: it produces a factor `1 + |t|`,
+useless for `|t|` up to `N`.
+
+### The abscissa is the whole content of the truncation step (2026-08-29)
+
+```text
+norm_moebius_le_one                     ‖μ(n)‖ ≤ 1
+norm_moebius_partialSum_le_trivial      the truncated polynomial is dominated termwise by ∑ n^{−σ}
+```
+
+Both unconditional, axiom-clean, umbrella-wired.  The second is the *baseline*, and writing it down
+settles where the saving can come from.
+
+At `σ = 1 + 1/log N` the trivial bound is `∑_{n ≤ N} n^{−σ} ≍ log N`, and the tail of the full series
+is `N^{1−σ}/(σ−1) = e^{−1}·log N` — **the same order**.  So at that abscissa the `1/ζ` bound buys
+nothing: the tail alone is as large as the trivial bound.
+
+Taking `σ = 1 + A/log N` instead:
+
+```text
+    trivial  ≍ (1 − e^{−A})·log N / A  ≍  log N / A ,
+    tail     ≤ e^{−A}·log N / A ,
+    ‖∑_{n ≤ N} μ(n)n^{−σ−it}‖ ≤ K(log(|t|+e))^{11} + e^{−A}·log N / A ,
+```
+
+so the saving over trivial is `A·K(log(|t|+e))^{11}/log N + e^{−A}`.  Choosing `A ≍ log log N` makes
+the second term `(log N)^{−B}` for any prescribed `B`, and the first `≍ (log log N)^{12}/log N` for
+`|t|` polylogarithmic — a genuine `1/log N` saving.
+
+**So the truncation step is not a contour argument; it is a choice of abscissa**, `σ = 1 + A/log N`
+with `A ≍ log log N`, followed by the (standard, elementary) transfer of the mean square from that
+abscissa back to `σ = 1`.  That transfer is the only analytic step still owed on this chain.
+
+### The abscissa transfer, in Lean (2026-08-29)
+
+```text
+norm_partialSum_le_abscissa_shift (a) (N) (hσ : 1 ≤ σ) (t) :
+  ‖∑_{n ≤ N} term a (1 + t·I) n‖ ≤ N^{σ−1} · ∑_{n ≤ N} ‖term a (σ + t·I) n‖
+```
+
+Unconditional, axiom-clean, umbrella-wired.  With `σ = 1 + A/log N` the cost is exactly `e^A`, so
+the shifted-abscissa saving has to beat `e^A` — which is the constraint that fixes `A`.  Combined
+with the previous section: at `σ = 1 + A/log N`,
+
+```text
+    ‖∑_{n≤N} μ(n)n^{−σ−it}‖ ≤ K(log(|t|+e))^{11} + e^{−A}·log N/A ,
+```
+
+so transferring back to the one-line costs `e^A` and gives
+
+```text
+    ‖∑_{n≤N} μ(n)n^{−1−it}‖ ≲ e^A·K(log(|t|+e))^{11} + log N/A ,
+```
+
+against the trivial `log N`.  The second term already saves `1/A`; the first is affordable while
+`e^A(log(|t|+e))^{11} ≪ log N`.  So `A ≍ log log N` is the balance point, `A` cannot be taken large
+enough for a power saving, and the honest ceiling of this elementary route is a saving of
+`1/log log N` — **not** the `(log log L/log L)²` the card needs.
+
+**Consequence.**  The elementary abscissa shift is not enough by itself; the `1/ζ` bound must be
+used inside the Perron integral rather than through a pointwise transfer.  That is the genuine
+analytic step, and it is now isolated: everything on either side of it is a theorem in the tree.
+
+### The zeta bound inside the contour — `exists_norm_moebius_perron_integrand_le` (2026-08-29)
+
+```text
+∃ K > 0, ∀ N σ t, 1 ≤ N → 1 < σ → σ ≤ 5/4 →
+  ‖ζ(σ+t·I)⁻¹ · N^{σ+t·I} / (σ+t·I)‖
+    ≤ K·(log(|t|+e))^{11}·N^σ / ‖σ+t·I‖
+```
+
+Unconditional, axiom-clean, umbrella-wired.  This is the previous section's missing step in its
+usable form: the uniform bound on `1/ζ` applied *inside* the Perron integrand rather than through a
+pointwise abscissa transfer, so the `1/|s|` decay of the kernel is retained.
+
+With `σ = 1 + 1/log N` the integrand is `≤ e·K·(log(|t|+e))^{11}/‖σ+t·I‖`, so the vertical integral
+over `|t| ≤ T` is `≪ (log T)^{12}` — against the trivial `N^σ ≍ N`.  That is the saving the abscissa
+transfer could not produce, and it is available because the kernel's `1/|s|` was kept.
+
+**What remains on the chain** is the truncated Perron formula itself — the corpus's
+`Sieve/PerronNearDiagonal.norm_sum_Icc_sub_perron_integral_near_le` — instantiated at `a = μ`, plus
+Gallagher.  Both ends are now theorems; this was the analytic step in between.
+
+### The Perron formula at `μ`, and an honest limit of this chain (2026-08-29)
+
+```text
+norm_mertens_sub_perron_integral_le (N) (hσ : 1 ≤ σ) (hT : 0 < T) :
+  ‖∑_{n ≤ N} μ(n) − (1/2π)∫_{−T}^{T} F_N(σ+it)·((N+½)^{σ+it}/(σ+it)) dt‖
+    ≤ (N+½)^σ·(5(1+log N) + 4(1+log N))/(πT)
+```
+
+Unconditional, axiom-clean, umbrella-wired — the corpus's general truncated Perron formula
+instantiated at `c = μ`, `B = 1`, `M = N`.
+
+**But note what it gives and what it does not.**  Its integrand is the *finite polynomial* `F_N`, not
+`1/ζ`; replacing one by the other costs the tail `N^{1−σ}/(σ−1)`, which is harmless at `σ > 1`.  So
+this chain — Perron + tail + `exists_norm_moebius_perron_integrand_le` — yields bounds on the
+**Mertens sum** `∑_{n ≤ N} μ(n)`, i.e. PNT-type results, which the corpus already owns
+(`Sieve/ChebyshevPNT`, `PNTPlus`).
+
+The card's `(15)` is a different functional: the *short-interval mean square*, reached by Gallagher
+from the mean square of the polynomial on the line `σ = 1`.  There the series does not converge
+absolutely, `F(1+it) ≠ 1/ζ(1+it)` without a limiting argument, and the abscissa shift that would
+restore convergence carries the `1/log log N` ceiling recorded above.
+
+**So the honest statement of this lane's residue** is: the pieces assembled here (uniform `1/ζ`, the
+distance bound at every frequency, the Perron integrand bound, the Perron formula at `μ`) are the
+right ingredients and are now theorems, but joining them to the *mean square* needs the
+Matomäki–Radziwiłł argument itself — the same input the sibling cards are gated on — rather than a
+further elementary step.  Both routes examined this session (level-split, pointwise transfer) have
+been measured to their ceilings and neither reaches it.

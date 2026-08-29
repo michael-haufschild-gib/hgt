@@ -1,0 +1,1 @@
+verified: sampled C5 positive; every reported stationary root has positive C5

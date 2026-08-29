@@ -528,3 +528,645 @@ not the analytic statement that Zagier cusp regularization realizes zero first a
 defects.  That boundary assertion is now the unique remaining angular obstruction.  It must be
 proved from Eisenstein constant terms and analytic continuation; it cannot be inserted as a
 hypothesis.
+
+## Loop HC94-A.9d — cusp constant terms and infinite differentiated tails
+
+`[CORPUS]` The corpus contained an integer-exponent Hadamard finite-part theorem and a general
+Tannery theorem for summably dominated complex packets, but no spectral-family cusp finite part
+and no differentiated infinite Eisenstein-tail limit.
+
+`[PAPER-PROVED] [LEAN-PROVED]` Every diagonal triple-Eisenstein boundary exponent has form
+
+`1/2 + (epsilonOne+epsilonTwo)u + epsilonThree v`.
+
+Encoding its doubled constant and `u,v` coefficients gives an affine exponent whose constant
+coordinate is always `1`.  Hence no boundary exponent is identically zero as a spectral family.
+The analytic-family finite part--coefficient extraction before spectral specialization--therefore
+annihilates both Stokes boundary currents for arbitrary constant-term coefficients.  Accidental
+numerical exponent zero on a resonance hyperplane creates no analytic-continuation anomaly.  This
+is formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinCuspAnalyticFinitePart`; targeted build
+passes `12050/12050` and headline axiom audits are kernel-only.
+
+`[PAPER-PROVED] [LEAN-PROVED]` For the nonconstant part, a new packet subtype carries arbitrary
+jet degree `m`, complex coefficients, and the exact weighted summability certificate supplied by
+
+`Y^m exp(-(n+1)Y) <= m! (2/(n+1))^m exp(-(n+1)Y/2)`.
+
+Lean proves the full infinite packet tends to zero by a parameter-independent Tannery majorant.
+This is not a finite-mode or termwise-only statement and is stable under every fixed derivative
+order needed by the two Stokes currents.  It is formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinCuspExponentialJetTail`; targeted build
+passes `12055/12055`, with only `propext`, `Classical.choice`, and `Quot.sound` in the axiom audit.
+
+**Open source-specific seam.** Construct the actual completed weight `0,+/-4` Eisenstein
+Whittaker coefficient packet and prove its weighted summability, then identify the first and
+second cusp currents with the constant-family plus this admitted tail.  Once that seam is closed,
+both Stokes defects vanish and HC94-A.9c becomes the actual regularized polarized coefficient,
+ready for negative-leg and left-QNM projection.
+
+## Loop HC94-A.9e — arbitrary-order Bessel exterior envelope
+
+`[CORPUS]` The corpus already defined the modified Bessel function `K_nu(s)` at arbitrary complex
+order by its Schlaefli integral, but its exterior exponential estimate covered only order one.
+The actual completed weight `0,+/-4` Eisenstein Whittaker modes require arbitrary spectral order
+and finite order shifts produced by Maass operators.
+
+`[CORPUS-LED CONJECTURE]` For positive real `s` and arbitrary `nu : C`, the Schlaefli integral,
+`cosh(t) >= 1+t^2/2`, and a completed Gaussian square should give the uniform bound
+
+`||K_nu(s)|| <= exp(-s) * exp(||nu||^2/(2s)) * sqrt(2*pi/s)`.
+
+This closes the analytic decay input in the fixed chain
+
+`KI chiral carrier -> pulled Eq. (63) -> balanced Maass word -> completed weight 0,+/-4
+Eisenstein Whittaker tails -> vanishing cusp Stokes defects -> actual polarized coefficient ->
+negative leg -> conserved left-QNM coefficient -> HC94 clock defect -> RH`.
+
+`[PAPER-PROVED] [LEAN-PROVED]` The conjectured estimate follows directly from the corpus
+Schlaefli representation and an exact shifted-Gaussian integral.  It is formalized without
+premises beyond the positive-argument subtype in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMBesselOrderExteriorEnvelope`, wired into RHTower,
+and passes direct Lean plus targeted build `12058/12058`.  The headline axiom audit reports only
+`propext`, `Classical.choice`, and `Quot.sound`.
+
+**Open source-specific seam.** Bound the complex divisor-sum Whittaker coefficients by a fixed
+polynomial in the Fourier index and combine that bound with this envelope to construct the actual
+weight `0,+/-4` differentiated tail packet.  This is source identification, not another abstract
+decay surrogate.
+
+## Loop HC94-A.9f — actual Eisenstein divisor coefficient admission
+
+`[CORPUS]` Corpus search found exact positive-real `cpow` norm laws, divisor positivity/cardinality
+bounds, and arbitrary-real polynomial--exponential summability.  It contained no definition or
+summability theorem for the actual completed Eisenstein Whittaker arithmetic coefficient.
+
+`[CORPUS-LED CONJECTURE]` At centered parameter `u=s-1/2`, define
+
+`a_u(n) = n^u * sum_(d|n) d^(-2u)`.
+
+For positive `n`, divisor inequalities should imply
+
+`||a_u(n)|| <= n^(3*|Re u|+1)`,
+
+which is enough to admit every fixed differentiated arithmetic packet into the existing infinite
+cusp-tail summability class.  Its fixed proof-chain contribution is
+
+`balanced Maass word -> actual weight 0,+/-4 Whittaker tails -> vanishing cusp Stokes defects ->
+actual polarized coefficient -> negative leg -> conserved left-QNM coefficient -> HC94 clock
+defect -> RH`.
+
+`[PAPER-PROVED] [LEAN-PROVED]` Every positive divisor satisfies `1 <= d <= n`; exact complex-power
+norms then bound the `n^u` factor by `n^|Re u|`, each `d^(-2u)` by `n^(2|Re u|)`, and divisor
+cardinality by `n`.  The claimed envelope follows.  Arbitrary-real polynomial growth is summable
+after the cusp exponential, yielding the exact weighted certificate for every jet degree and an
+actual `D4BMCuspExponentialJetTailPacket`.  This is formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinWhittakerArithmeticEnvelope`, wired into
+RHTower, and passes direct Lean plus targeted build `12059/12059`.  Headline axiom audits report
+only `propext`, `Classical.choice`, and `Quot.sound`.
+
+**Open source-specific seam.** Replace the abstract exponential kernel by the actual Bessel-valued
+Whittaker kernel and prove the full infinite weight-zero tail tends to zero.  Then use the corpus
+Bessel order recurrence to transport this statement through the two Maass steps to weights
+`+4` and `-4`.
+
+## Loop HC94-A.9g — actual infinite Bessel-valued Whittaker tails
+
+`[CORPUS]` Corpus search exposed its Tannery theorem, polynomial--exponential zero-limit lemma,
+and the new arbitrary-order Bessel envelope from HC94-A.9e.  The remaining source was the literal
+Bessel kernel at `2*pi*n*Y`; replacing it by a bare exponential would not identify the Eisenstein
+Whittaker expansion.
+
+`[CORPUS-LED CONJECTURE]` At every positive index and `Y>=1`, the arbitrary-order envelope should
+simplify to
+
+`||K_nu(2*pi*n*Y)|| <= exp(||nu||^2/2) * exp(-n*Y)`.
+
+Combined with HC94-A.9f, this should make the full infinite Bessel-valued jet tail tend to zero for
+every complex arithmetic parameter, arbitrary fixed complex Bessel order, and every fixed jet
+degree.  Its fixed contribution remains
+
+`balanced Maass word -> actual weight 0,+/-4 Whittaker tails -> vanishing cusp Stokes defects ->
+actual polarized coefficient -> negative leg -> conserved left-QNM coefficient -> HC94 clock
+defect -> RH`.
+
+`[PAPER-PROVED] [LEAN-PROVED]` Since `2*pi*n*Y>=n*Y>=1`, the leading exponential improves to
+`exp(-nY)`, the spectral correction is bounded by `exp(||nu||^2/2)`, and the square-root factor is
+at most one.  The actual divisor coefficient envelope supplies a single summable dominator after
+absorbing every fixed `Y`-power.  Corpus Tannery then proves convergence of the entire infinite
+complex series, not termwise or finite-mode convergence.  This is formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinWhittakerBesselTail`, wired into RHTower,
+and passes direct Lean plus targeted build `12066/12066`.  Headline axiom audits report only
+`propext`, `Classical.choice`, and `Quot.sound`.
+
+**Open source-specific seam.** Expand the two actual Maass steps into their finite Bessel-order
+shift words using the corpus recurrence, then show the weight `+4` and `-4` tails are finite linear
+combinations of the just-proved arbitrary-order tails.  This will leave only identification of the
+first and second Stokes currents with constant terms plus these nonconstant tails.
+
+## Loop HC94-A.9h — real-argument derivative of arbitrary-order Bessel K
+
+`[CORPUS]` Corpus search found the Schlaefli definition, entire dependence on complex order, and
+the exact order recurrence, but no derivative theorem in the positive real argument.  This is the
+derivative used by literal Maass raising/lowering of a Whittaker mode.
+
+`[CORPUS-LED CONJECTURE]` Differentiation under the Schlaefli integral and
+`cosh(t)cosh(nu*t)=(cosh((nu+1)t)+cosh((nu-1)t))/2` should give
+
+`d/ds K_nu(s) = -(K_(nu+1)(s)+K_(nu-1)(s))/2`.
+
+Its fixed proof-chain contribution is
+
+`balanced Maass word -> literal two-step action on actual Bessel Whittaker modes -> weight
+0,+/-4 cusp Stokes closure -> actual polarized coefficient -> negative leg -> conserved left-QNM
+coefficient -> HC94 clock defect -> RH`.
+
+`[PAPER-PROVED] [LEAN-PROVED]` On a neighborhood of positive base argument `s`, every nearby
+argument is bounded below by `s/2`.  Positivity of `cosh` therefore dominates the derivative
+integrand by the same derivative kernel at `s/2`; its integrability follows from the adjacent-order
+product-to-sum identity and the corpus integrability theorem.  Dominated differentiation yields
+the exact displayed formula.  This is formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMBesselArgumentDerivative`, wired into RHTower, and
+passes direct Lean plus targeted build `12068/12068`.  The headline axiom audit reports only
+`propext`, `Classical.choice`, and `Quot.sound`.
+
+**Open source-specific seam.** Compose this argument derivative twice with the exact positive- and
+negative-frequency Maass radial operators.  The resulting finite word contains index powers up to
+two and Bessel orders shifted by at most two; extend the actual-tail Tannery theorem to those fixed
+index powers and conclude both weight `+4` and `-4` nonconstant currents vanish.
+
+## Loop HC94-A.9i — polynomial-index actual Whittaker tails
+
+`[CORPUS]` The actual Bessel-tail theorem from HC94-A.9g handled every fixed cusp-height power,
+while the literal Maass expansion necessarily creates Fourier-index powers.  Corpus search found
+no source-specific theorem admitting those powers, but did expose the arithmetic polynomial
+envelope and arbitrary-real polynomial--exponential summability.
+
+`[CORPUS-LED CONJECTURE]` For arbitrary fixed natural degrees `j,m`, complex arithmetic parameter
+`u`, and Bessel order `nu`, the literal series
+
+`sum_(n>=1) a_u(n) n^j Y^m K_nu(2*pi*nY)`
+
+should tend to zero as `Y -> infinity`.  This directly supplies every term in the two-step Maass
+word and contributes through
+
+`Bessel argument derivative -> exact weight +/-4 finite shift word -> vanishing nonconstant
+Stokes currents -> actual polarized coefficient -> negative leg -> conserved left-QNM coefficient
+-> HC94 clock defect -> RH`.
+
+`[PAPER-PROVED] [LEAN-PROVED]` Multiplication by `n^j` only increases the real polynomial exponent
+in HC94-A.9f.  The Bessel envelope from HC94-A.9g and polynomial height absorption then give a
+single summable Tannery majorant.  Lean proves the result for all fixed `j,m`, stronger than the
+Maass need `j,m<=2`.  This is formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinPolynomialWhittakerTail`, wired into
+RHTower, and passes direct Lean plus targeted build `12069/12069`.  Headline axiom audits report
+only `propext`, `Classical.choice`, and `Quot.sound`.
+
+**Open source-specific seam.** Compute and formalize the exact two positive-frequency words
+`R_2 R_0` and `L_(-2) L_0` on `sqrt(Y) K_u(2*pi*nY)e(nx)`, using HC94-A.9h and the corpus order
+recurrence.  Each resulting finite combination is now already admitted and vanishes at the cusp.
+
+## Loop HC94-A.9j — literal square-root Whittaker normalization
+
+`[CORPUS]` The completed nonconstant Eisenstein mode carries `sqrt(Y)`.  The integer-height tail
+classes from HC94-A.9i therefore did not by themselves identify the literal source, despite being
+strong enough for every natural jet.  Corpus search supplied the cofinal square-root limit.
+
+`[CORPUS-LED CONJECTURE]` On the positive cusp,
+
+`sqrt(Y) Y^m = (sqrt(Y)/Y) Y^(m+1)`
+
+and `sqrt(Y)/Y -> 0`; hence every literal square-root-normalized polynomial-index Whittaker tail
+should vanish.  This closes exact source normalization in
+
+`two-step Maass word -> literal weight +/-4 tails -> Stokes closure -> actual polarized
+coefficient -> negative leg -> left-QNM -> HC94 -> RH`.
+
+`[PAPER-PROVED] [LEAN-PROVED]` Lean proves the exact series factorization through the next
+integer-height jet and the cofinal identity `sqrt(Y)/Y=1/sqrt(Y)`.  Combining both zero limits
+proves the full square-root-normalized tail vanishes for arbitrary fixed index and height degrees.
+This is formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinSqrtWhittakerTail`, wired into RHTower,
+and passes direct Lean plus targeted build `12070/12070`.  The headline axiom audit reports only
+`propext`, `Classical.choice`, and `Quot.sound`.
+
+**Open source-specific seam.** Only the exact two-step Maass algebra remains before the
+nonconstant weight `+4` and `-4` cusp currents are closed: prove each word is a finite linear
+combination of the now-admitted literal square-root tails with order/index shifts at most two.
+
+## Loop HC94-A.9k — literal two-step Maass Whittaker words
+
+`[CORPUS]` Corpus search fixed the Maass convention and supplied the new Bessel argument derivative
+from HC94-A.9h.  The remaining source calculation was the literal action on
+`sqrt(Y) K_nu(cY)e(nx)`, including Fourier differentiation signs; no abstract weight label could
+substitute for this calculation.
+
+`[CORPUS-LED CONJECTURE]` For positive frequency, composing
+
+`R_k=Y*d/dY-cY+k/2`, `L_k=Y*d/dY+cY-k/2`
+
+should express both `R_2 R_0` and `L_(-2) L_0` as finite words in
+`sqrt(Y)(cY)^j K_(nu+ell)(cY)` with `j<=2`, `|ell|<=2`.  HC94-A.9j then forces the full completed
+nonconstant tails to vanish.  Its fixed chain is
+
+`balanced local Maass word -> literal completed weight +/-4 cusp tails -> Stokes closure -> actual
+polarized coefficient -> negative leg -> conserved left-QNM coefficient -> HC94 clock defect -> RH`.
+
+`[PAPER-PROVED] [LEAN-PROVED]` Lean differentiates the square-root Bessel mode, proves both first
+steps, differentiates those exact words, and verifies the two second-step coefficient tables
+through orders `nu+/-2`.  Substitution `c=2*pi*n` turns the words into finite combinations of the
+already admitted square-root/index tails.  Lean then proves both complete infinite nonconstant
+weight `+4` and `-4` tails tend to zero.  This is formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinLiteralMaassWhittakerWord`, wired into
+RHTower, and passes direct Lean plus targeted build `12071/12071`.  Headline axiom audits report
+only `propext`, `Classical.choice`, and `Quot.sound`.
+
+**Open analytic seam.** Stokes boundary currents contain mixed products of these exponentially
+decaying tails with completed Eisenstein constant terms `Y^(1/2+/-u)`.  Prove decay survives every
+such arbitrary complex-power multiplier.  Only after that may constant-family finite-part
+vanishing and nonconstant tails be combined into zero first and second Stokes defects.
+
+## Loop HC94-A.9l — active mixed constant/tail Stokes burden
+
+`[CORPUS]` Corpus search supplies arbitrary-real polynomial--exponential summability and the exact
+positive-real complex-power norm laws.  It does not yet contain the mixed completed-Eisenstein
+cusp-current statement.
+
+`[CORPUS-LED CONJECTURE] [ACTIVE]` For every spectral constant-term exponent `w : C`, multiplying
+either literal two-step tail from HC94-A.9k by `Y^w` still tends to zero at the cusp.  More
+generally, every finite product containing at least one nonconstant Maass tail and any fixed number
+of completed constant-term powers has zero analytic-family finite part.  The proof must retain an
+exponential tail rate or dominate `Y^(Re w)` by a canonical natural jet; qualitative convergence
+alone is insufficient.
+
+Fixed contribution:
+
+`literal weight +/-4 tails + completed constant terms -> zero first/second Stokes defects ->
+actual balanced polarized coefficient -> negative leg -> conserved left-QNM coefficient -> HC94
+clock defect -> RH`.
+
+**Named open core.** Formalize canonical arbitrary-complex-power absorption for the literal
+Maass-tail words, then assemble all constant/nonconstant boundary sectors.  Do not claim the
+Stokes defects closed before this mixed-product theorem is proved.
+
+`[PAPER-PROVED] [LEAN-PROVED] [BRIDGE]` Choose `M = ceil |Re w|`.  For `Y>=1`, the corpus
+positive-real complex-cpow norm law gives `||Y^w/Y^M||<=1`, while increasing the literal
+Whittaker height degree from `m` to `m+M` absorbs `Y^M` exactly term-by-term in the infinite
+series.  A bounded multiplier therefore preserves the already-proved zero cusp limit.  Lean
+proves this for every complex `w`, every index/height degree, and both complete literal
+`R_2 R_0` and `L_(-2) L_0` tails.  This is formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinMixedConstantWhittakerTail`, wired into
+RHTower, and passes direct Lean plus targeted build `12072/12072`.  Headline axiom audits report
+only `propext`, `Classical.choice`, and `Quot.sound`.
+
+## Loop HC94-A.9m — active full Stokes-sector assembly
+
+`[CORPUS]` Corpus now contains two logically complementary closures: analytic-family finite part
+kills every diagonal triple constant-term boundary monomial, and HC94-A.9l kills arbitrary
+complex constant powers multiplying either literal nonconstant two-step Maass tail.  It does not
+yet identify the complete first and second Stokes currents with an exhaustive sum of those
+sectors.
+
+`[CORPUS-LED CONJECTURE] [ACTIVE]` Expand each completed Eisenstein leg as its two Weyl constant
+terms plus actual Whittaker part.  Every boundary sector is then either all-constant, hence killed
+by the analytic-family finite-part theorem, or contains a nonconstant factor, hence killed by
+HC94-A.9l and stability under finite products.  Consequently both actual Stokes defects vanish
+under the same analytic-family regularization and the physical balanced-spin moment equals the
+already formalized Bochner polynomial times the completed scalar vertex.
+
+Fixed contribution:
+
+`zero actual first/second Stokes defects -> actual balanced polarized coefficient -> negative BM
+leg -> conserved left-QNM coefficient -> HC94 clock defect -> RH`.
+
+**Named open core.** Formalize an exhaustive source-faithful boundary-sector decomposition,
+including every Fourier-sign sector.  Do not replace it by an abstract pair whose finite-part
+definition discards the nonconstant component by construction.
+
+`[PAPER-PROVED] [LEAN-PROVED] [BRIDGE]` Two modules close this source-faithful cusp burden.
+`ThetaCuspHawkingBMEisensteinSignedMaassWhittakerTail` restores both Fourier signs with the exact
+unit phases `exp(+/-2*pi*i*n*x)`, proves the signed infinite Tannery tails at every horocycle
+coordinate, and proves the sign swap: negative-frequency raising is positive-frequency lowering
+at reflected weight, and conversely.  Arbitrary complex powers times the full signed weight
+`0,+4,-4` tails all vanish.  Targeted build passes `12073/12073`.
+
+`ThetaCuspHawkingBMEisensteinFullCuspSectorAssembly` then uses the canonical completed constant
+coefficients `Lambda(2u)` and `Lambda(1+2u)`, the literal factor two on the signed Whittaker part,
+and proves from the corpus cpow derivative that both zero-frequency two-step words act on `Y^w`
+by `w(w+1)`.  The normalized current
+
+`Y^(-1) * raised(u) * lowered(u) * scalar(v)`
+
+has one all-constant sector plus exactly seven mixed groups.  Lean proves all seven groups tend to
+zero, and proves the all-constant exponent specializes exactly to the existing affine
+analytic-family exponent, whose finite part is zero.  The `Y^(-1)` normalization is essential:
+it lowers the three half-powers from `3/2` to the correct Stokes constant coordinate `1/2`.
+Targeted build passes `12076/12076`.  Headline axiom audits for both modules report only
+`propext`, `Classical.choice`, and `Quot.sound`.
+
+## Loop HC94-A.9n — active Poincare/Fourier identification and truncated Stokes theorem
+
+`[CORPUS]` Corpus now closes every cusp sector of the canonical completed-Eisenstein Fourier
+model, but the completed scalar vertex remains defined directly by its four Xi factors.  Search
+finds no theorem identifying the constructed Fourier model with a completed nonholomorphic
+Eisenstein Poincare sum, and no truncated modular-domain Green/Stokes theorem specialized to the
+two weighted Maass reductions.
+
+`[CORPUS-LED CONJECTURE] [ACTIVE]` Construct the actual completed Eisenstein series from its
+Poincare sum in a convergence chamber, prove its Fourier expansion equals the canonical cusp model,
+and analytically continue the resulting truncated-domain identities.  The two boundary terms are
+then exactly the current closed in HC94-A.9m, so both physical Stokes defects vanish and the actual
+balanced-spin moment equals the Bochner polynomial times the regularized scalar triple vertex.
+
+Fixed contribution:
+
+`actual Poincare/Fourier equality + truncated Stokes -> zero physical defects -> actual balanced
+polarized coefficient -> negative BM leg -> conserved left-QNM coefficient -> HC94 clock defect
+-> RH`.
+
+**Named open core.** Formalize an honest modular quotient/fundamental-domain integration theorem,
+absolute convergence and termwise Fourier unfolding in a right half-plane, then meromorphic
+continuation to the analytic family.  Cusp-sector closure alone is not the Stokes theorem.
+
+`[PAPER-PROVED] [LEAN-PROVED] [BRIDGE]` First convergence-chamber gate is now closed.  For
+`z=x+i y`, `y>0`, Lean defines the honest primitive-pair denominator
+
+`Q_z(c,d)=(c y)^2+(c x+d)^2`
+
+and proves the explicit positive-definite coercivity law
+
+`(1+|c|)(1+|d|) <= D_z Q_z(c,d)`
+
+for every nonzero integer pair.  The corpus one-dimensional integer-power theorem then gives
+absolute summability of `(y/Q_z(c,d))^s` over all primitive pairs whenever `Re(s)>1`.  The
+completed normalization `Lambda(2s)/2` is therefore an actual absolutely convergent series, not a
+formal Fourier declaration.  Lean also classifies the `c=0` primitive pairs as exactly `(0,+1)`
+and `(0,-1)` and proves their total seed is `2 y^s`, so the factor `1/2` recovers the canonical
+leading term.  This is formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinPoincareAbsoluteConvergence`, wired into
+RHTower, and passes direct Lean plus targeted build `12086/12086`.  Headline axiom audits report
+only `propext`, `Classical.choice`, and `Quot.sound`.  Global lint still reports unrelated
+concurrently-created modules missing from umbrellas; this module itself is reachable.
+
+**Remaining A.9n core.** Split off the two first-row terms, unfold the `c != 0` primitive tail into
+translation/Fourier modes, prove the Bessel--divisor coefficient formula in `Re(s)>1`, then prove
+the truncated modular Green/Stokes identity there before continuation.  Convergence alone does not
+identify the Poincare sum with HC94-A.9m's cusp model.
+
+`[PAPER-PROVED] [LEAN-PROVED] [BRIDGE]` The quotient-sensitive fixed-denominator unfolding is now
+closed without a Schwartz or pointwise Poisson premise.  For each positive denominator `Q`, Lean
+defines the reduced-residue sum of the genuine `L¹` integer periodization of
+
+`K_{y,s}(t)=(y²+t²)^(-s)`.
+
+Corpus coercivity and the integrable `(1+|t|)^(-3/2)` majorant prove `K_{y,s} ∈ L¹(ℝ)` throughout
+`Re(s)>1`.  Exact L¹ periodization then gives every `m`-th Fourier coefficient as
+
+`c_Q(m) * Fourier(K_{y,s})(m)`,
+
+with the finite phase sum identified with the corpus Ramanujan sum.  Including the Poincare
+scaling proves the exact coefficient
+
+`y^s Q^(-2s) c_Q(m) Fourier(K_{y,s})(m)`.
+
+This is formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinPoincareRamanujanUnfolding`, wired into
+RHTower, and passes direct Lean plus targeted build `12210/12210`.  Headline axiom audits report
+only `propext`, `Classical.choice`, and `Quot.sound`.
+
+**Remaining A.9n analytic core.** Prove the exact complex-parameter Gamma--Bessel evaluation of
+`Fourier(K_{y,s})(m)` (including the distinct zero mode), reindex the honest primitive-pair tail
+onto these fixed-denominator slices, and sum the Ramanujan coefficients to the divisor/zeta
+quotient.  This is the next hard gate in the fixed chain
+
+`Poincare/Fourier equality -> truncated Stokes -> zero physical defects -> actual balanced
+polarized coefficient -> negative BM leg -> conserved left-QNM coefficient -> HC94 clock defect
+-> RH`.
+
+`[PAPER-PROVED] [LEAN-PROVED] [HARD FRONTIER CLOSED]` The geometric reindexing from the actual
+primitive-pair Poincare series to the fixed-denominator Ramanujan slices is now exact.  For every
+positive denominator `Q`, Lean constructs the explicit Euclidean quotient/remainder equivalence
+
+`{unit residue mod Q} x Z ≃ {d : Z // gcd(Q,d)=1}`,
+
+identifies the fixed slice with the honest coprime-integer primitive-pair sum, and then identifies
+the denominator sum with the full positive-first-coordinate primitive subseries.  Negation gives
+an exact equivalence between positive and negative first coordinates, while the two zero-first-
+coordinate primitive pairs supply the constant term.  Absolute summability of the corpus
+Poincare series licenses every `tsum` reindexing.  The resulting headline identity is
+
+`rawEisensteinPoincareSeries(z,s)
+   = y^s + sum_{Q>0} positivePrimitiveCuspSlice(z,s,Q,x)`.
+
+This is formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinPrimitiveCuspReindexing`, wired into
+RHTower, and passes direct Lean plus targeted build `12298/12298`.  Headline axiom audits report
+only `propext`, `Classical.choice`, and `Quot.sound`.
+
+**Remaining A.9n analytic assembly core.** Prove genuine Fourier integration of the actual raw
+Poincare function commutes with the denominator `tsum`, using summable unit-cell `L1` norms rather
+than defining the coefficient by its closed formula.  Then combine the already-proved fixed-slice
+Ramanujan unfolding, Cauchy-power Fourier--Bessel transform, and Ramanujan divisor/zeta series to
+identify the actual completed coefficient with the canonical Whittaker coefficient.  The fixed
+route-killing chain is
+
+`genuine raw Poincare coefficient -> completed Whittaker identity -> Fourier uniqueness ->
+truncated modular Green/Stokes defects -> actual balanced polarized BM coefficient -> negative
+BM leg -> conserved left-QNM projection -> HC94 clock defect -> RH`.
+
+`[PAPER-PROVED] [LEAN-PROVED] [HARD FRONTIER CLOSED]` Genuine positive Fourier coefficients of
+the actual Poincare function are now identified with the canonical completed Whittaker modes.  A
+new quantitative Tonelli theorem and the exact unit-cell contraction
+
+`integral_(0,1] ||periodize(f)|| <= integral_R ||f||`
+
+give the fixed-denominator estimate
+
+`integral_(0,1] ||slice_Q|| <= C(z,s) Q^(1-2 Re(s))`.
+
+Since `Re(s)>1`, these norms are summable.  Fourier integration therefore commutes with the actual
+denominator `tsum`; no coefficient is defined by its expected formula and no pointwise Poisson or
+uniform-convergence premise is inserted.  Exact Ramanujan, Bessel, Gamma, zeta, and complex-power
+cancellation then proves for every positive `n`
+
+`integral_(0,1] e(-nx) E_completed(x+iy,s) dx
+   = 2 a_(s-1/2)(n) sqrt(y) K_(s-1/2)(2 pi n y)`.
+
+This is formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualFourierCoefficient`, wired into
+RHTower, and passes direct Lean plus targeted build `12311/12311`.  Headline axiom audits report
+only `propext`, `Classical.choice`, and `Quot.sound`.
+
+**Remaining Fourier-uniqueness core.** Close the zero mode by the corpus-derived conjecture
+
+`sum_{Q>=1} c_Q(0) Q^(-2s) = zeta(2s-1) / zeta(2s)`,
+
+then close negative modes by exact sign symmetry and apply Fourier uniqueness to the actual
+completed Poincare function.  This is the last coefficient gate before truncated modular
+Green/Stokes, in the fixed chain
+
+`all actual Poincare coefficients -> Fourier uniqueness -> truncated modular Green/Stokes
+defects -> actual balanced polarized BM coefficient -> negative BM leg -> conserved left-QNM
+projection -> HC94 clock defect -> RH`.
+
+`[PAPER-PROVED] [LEAN-PROVED] [HARD FRONTIER CLOSED]` Corpus-derived composite-modulus
+Ramanujan arithmetic is now closed, including its exact denominator Dirichlet series.  The new
+proof first identifies the unit-residue indicator with the corpus Möbius common-divisor kernel,
+then proves arbitrary-divisor additive-character orthogonality by an explicit equivalence between
+`Fin (N / d)` and the `d`-divisible stratum of `ZMod N`.  This yields, for every positive modulus
+`Q` and frequency `m`,
+
+`c_Q(m) = sum_{d | gcd(m,Q)} d * mu(Q/d)`.
+
+For positive natural frequency `n`, the resulting coefficient is the Dirichlet convolution of a
+finite divisor seed with Möbius.  Mathlib's arithmetic-function `LSeries` multiplication and the
+corpus Möbius--zeta inverse therefore give the exact, premise-free identity in `Re(w)>1`,
+
+`sum_{Q>=1} c_Q(n) / Q^w = (sum_{d|n} d^(1-w)) / zeta(w)`.
+
+The specialization `w = 2s` is packaged using the already-certified Eisenstein absolute-
+convergence chamber, so no extra summability or nonvanishing hypothesis remains.  This is
+formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinRamanujanDirichletSeries`, wired into
+RHTower, and passes direct Lean plus targeted build `12293/12293`.  Headline axiom audits report
+only `propext`, `Classical.choice`, and `Quot.sound`.
+
+**Remaining A.9n coefficient-assembly core.** Reindex the honest primitive-pair Poincare tail onto
+the fixed-denominator slices; combine fixed-slice Ramanujan unfolding, the exact Cauchy-power
+Fourier--Bessel transform, and the divisor/zeta series above; then identify every actual Poincare
+Fourier coefficient with the canonical completed Eisenstein Whittaker coefficient.  Fourier
+uniqueness is the next route-killing gate before any Green/Stokes work.  The full chain remains
+
+`exact Poincare coefficient -> Fourier uniqueness -> truncated modular Green/Stokes defects ->
+actual balanced polarized BM coefficient -> negative BM leg -> conserved left-QNM projection ->
+HC94 clock defect -> RH`.
+
+`[PAPER-PROVED] [LEAN-PROVED] [HARD FRONTIER CLOSED]` Conjecture C-A.9s closes the noncusp
+boundary obstruction for the actual completed Poincare series.  Lean proves seedwise translation
+laws for both first jets and the unit-semicircle inversion law
+
+`radialJet(Sz,p) = -radialJet(z, rotate(p))`.
+
+Absolute summability lifts these laws through the primitive-pair `tsum`.  For any two completed
+Poincare eigenfunctions, Lean also proves the exact pointwise Green--Lagrange identity; its
+interior source vanishes identically for an equal-eigenvalue pair.  Consequently the paired
+vertical Green currents cancel under `T`, the paired circular radial Green currents cancel under
+`S`, the complete noncusp paired defect is zero, and the paired modular boundary current is
+exactly the top cusp current.  These are properties of the actual infinite series, not abstract
+automorphy premises.  This is formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualGreenBoundaryCancellation`, wired
+into RHTower, and passes direct Lean plus targeted build `12316/12316`.  Axiom audits report only
+`propext`, `Classical.choice`, and `Quot.sound`.
+
+**Remaining A.9t hard core.** Prove the literal two-dimensional Green/Stokes integral on the
+explicit truncated modular region and identify its surviving top-edge integral with the
+already-closed completed full cusp current/analytic-family finite part.  Noncusp geometry and
+interior equal-eigenvalue source are now zero before integration.  Exact chain:
+
+`cusp-only Green/Stokes integral -> full cusp current finite part -> actual balanced BM ++-
+coefficient -> negative BM leg -> conserved left-QNM projection -> HC94 clock defect -> RH`.
+
+`[PAPER-PROVED] [LEAN-PROVED] [HARD FRONTIER CLOSED]` The full archimedean transform left by the
+Ramanujan unfolding is now closed for the actual complex convergence chamber `Re(s)>1`.  Lean
+proves absolute integrability of the two-variable Mellin--Gaussian kernel and the legal Fubini
+swap, evaluates its spatial section with the corpus Gaussian Fourier theorem, and proves by the
+scaled logarithmic substitution that
+
+`integral_0^infinity t^(nu-1) exp(-a(y^2 t + xi^2/t)) dt
+   = 2 (xi/y)^nu K_nu(2 a y xi)`.
+
+Consequently every nonzero real frequency has the exact formula
+
+`Fourier[(y^2+x^2)^(-s)](m)
+   = (2 pi^s / Gamma(s)) (|m|/y)^(s-1/2) K_(s-1/2)(2 pi y |m|)`,
+
+and the zero mode is separately identified by its exact Gamma-power formula.  No pointwise
+Poisson, Schwartz, Fubini, or Bessel premise is assumed.  This is formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCauchyPowerFourierBessel`, wired into RHTower, and
+passes direct Lean plus targeted build `12213/12213`.  Headline axiom audits report only `propext`,
+`Classical.choice`, and `Quot.sound`.
+
+**Remaining A.9n arithmetic/geometric core.** Reindex the honest primitive-pair tail onto the
+fixed-denominator slices, prove the Ramanujan Dirichlet series equals the divisor/zeta quotient,
+and assemble the resulting coefficients into the canonical completed Eisenstein Fourier model.
+Then prove the truncated modular Green/Stokes identity and continuation.  The fixed chain remains
+
+`Poincare/Fourier equality -> truncated Stokes -> zero physical defects -> actual balanced
+polarized coefficient -> negative BM leg -> conserved left-QNM coefficient -> HC94 clock defect
+-> RH`.
+
+`[PAPER-PROVED] [LEAN-PROVED] [BRIDGE]` The actual completed Poincare zero Fourier coefficient is
+now the canonical two-Weyl-term constant part.  Corpus Möbius arithmetic identifies the zero
+Ramanujan coefficient as the convolution `id * mu`; exact arithmetic-function L-series
+multiplication therefore proves
+
+`sum_{Q>=1} c_Q(0) Q^(-2s) = zeta(2s-1) / zeta(2s)`.
+
+The genuine Poincare coefficient integral consequently equals its raw zeta-ratio formula.  The
+corpus zero Cauchy-power transform then cancels Gamma, zeta, pi, and height powers against
+`Lambda(2s)`, yielding exactly
+
+`Lambda(2s) y^s + Lambda(2s-1) y^(1-s)`.
+
+Lean identifies this expression definitionally with
+`d4BMCompletedEisensteinCuspConstantPart .scalar (s-1/2) y`.  This is formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualZeroFourierCoefficient`, wired into
+RHTower, and passes direct Lean plus targeted build `12312/12312`.  Headline axiom audits report
+only `propext`, `Classical.choice`, and `Quot.sound`.
+
+**Remaining A.9n hard core.** Negative-frequency symmetry and Fourier uniqueness are now finite
+coefficient assembly, while route survival depends on the honest modular-domain theorem.  Prove
+Poincare modular invariance, the weight-zero eigen-equation, and Green's identity on an explicit
+truncated fundamental domain; identify every boundary term with the already-closed full cusp
+current.  The contribution chain is fixed:
+
+`actual modular Green/Stokes defects -> actual balanced polarized BM coefficient -> negative BM
+leg -> conserved left-QNM projection -> ++- source coefficient -> HC94 clock defect -> RH`.
+
+`[PAPER-PROVED] [LEAN-PROVED] [HARD FRONTIER CLOSED]` Conjecture C-A.9p closes honest modular
+generator invariance for the actual primitive-pair Poincare series.  Translation is reindexed by
+the primitive-pair equivalence `(c,d) -> (c,d+c)` and inversion by `(c,d) -> (d,-c)`.  Lean proves
+the exact seed laws and both raw and completed `T : z -> z+1` and `S : z -> -1/z` invariance,
+without a modularity premise.  This is formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinModularGeneratorInvariance`, wired into
+RHTower, and passes direct Lean plus targeted build `12313/12313`.  Axiom audits report only
+`propext`, `Classical.choice`, and `Quot.sound`.
+
+`[PAPER-PROVED] [LEAN-PROVED] [HARD FRONTIER CLOSED]` Conjecture C-A.9q proves the genuine
+horizontal and vertical first and second derivatives of every primitive seed and the exact
+hyperbolic eigen-equation
+
+`y^2 (partial_x^2 + partial_y^2) (y / |cz+d|^2)^s
+  = s(s-1) (y / |cz+d|^2)^s`.
+
+At `s=1/2+u`, the eigenvalue is exactly the corpus geometric eigenvalue `u^2-1/4`.  The headline
+theorem packages all four `HasDerivAt` certificates with the PDE, excluding merely formal jets.
+This is formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinPoincareSeedEigenEquation`, wired into
+RHTower, and passes direct Lean plus targeted build `12314/12314`.  Axiom audits report only
+`propext`, `Classical.choice`, and `Quot.sound`.
+
+`[PAPER-PROVED] [LEAN-PROVED] [HARD FRONTIER CLOSED]` Conjecture C-A.9r lifts the seed equation to
+the actual infinite completed primitive-pair Poincare series in the exact existing chamber
+`Re(s)>1`.  New local normal-convergence laws compare horizontal seed norms with `3^Re(s)` times
+the base seed and vertical seed norms with `2^Re(s) 4^Re(s)` times the base seed; all first and
+second jet multipliers are uniformly seed-bounded on the corresponding half-plane
+neighborhoods.  Corpus absolute convergence and `hasDerivAt_tsum_of_isPreconnected` then justify
+both differentiations term by term.  Lean proves
+
+`y^2 (partial_x^2 + partial_y^2) E*(z,s) = s(s-1) E*(z,s)`
+
+for the actual completed Poincare series, together with the centered `u^2-1/4` form.  No stronger
+convergence chamber or differentiability hypothesis is assumed.  This is formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualEigenEquation`, wired into RHTower,
+and passes direct Lean plus targeted build `12315/12315`.  Headline and termwise-derivative axiom
+audits report only `propext`, `Classical.choice`, and `Quot.sound`.
+
+**Remaining A.9s hard core.** Combine actual `S/T` invariance and the actual completed
+eigen-equation on an explicit truncated modular fundamental domain; prove Green's identity and
+identify every paired vertical, circular, and cusp boundary flux with the corpus full cusp
+current.  This is now the earliest route-killing gate.  Exact chain:
+
+`truncated modular Green/Stokes identity -> zero/controlled physical boundary defects -> actual
+balanced polarized BM ++- coefficient -> negative BM leg -> conserved left-QNM projection ->
+HC94 clock defect -> RH`.
