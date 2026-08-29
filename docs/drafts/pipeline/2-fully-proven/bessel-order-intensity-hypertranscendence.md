@@ -4412,6 +4412,9 @@ polynomial vanishing at the selected carrier.  Its direct endpoint is
 
 ```text
 isAlgebraic_of_finite_automorphismOrbit
+infinite_automorphismOrbit_of_transcendental
+isAlgebraic_of_finite_automorphismGroup
+not_finite_automorphismGroup_of_transcendental
 ```
 
 which takes finiteness of the full `K`-automorphism orbit—not a preselected packet—and concludes
@@ -4426,3 +4429,21 @@ the actual meromorphic Bessel solution with that carrier, and the ordinary deter
 classification showing that the finite primitive branch gives a finite orbit.  The reducible and
 imprimitive branches are already excluded; the infinite primitive branch must yield the required
 determinant-one density.  None of these may remain premises of the final theorem.
+
+`FiniteDifferenceGaloisAlgebraicity.lean` further specializes the orbit product to arbitrary
+automorphism subgroups and then to the corpus's actual ordinary-PV symmetry group
+`differenceAut`.  In particular:
+
+```text
+isAlgebraic_of_finite_differenceAut
+not_finite_differenceAut_of_transcendental
+finite_differenceAut_of_finite_galoisRepresentation_range
+galoisRepresentation_range_infinite_of_transcendental
+```
+
+Thus the finite ordinary difference-Galois branch itself—not merely finiteness of the full field
+automorphism group—is incompatible with a transcendental carrier once subgroup invariant-field
+descent is available.  The module is umbrella-wired, its targeted build passes, and all four new
+theorems audit to `[propext, Classical.choice, Quot.sound]`.  Remaining bridge is now exactly the
+PPV invariant-field/torsor theorem plus embedding of the actual meromorphic carrier into that PV
+field; finite-orbit polynomial algebra is closed.

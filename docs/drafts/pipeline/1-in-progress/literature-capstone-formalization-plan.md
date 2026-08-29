@@ -392,3 +392,48 @@ umbrella build.  This closes the **actual Q8 number-field and Galois-group** por
 literature witness.  The remaining Q8 obligation is no longer field theory: formalize the source’s
 global epsilon-factor calculation that the unique irreducible two-dimensional Artin factor has
 root number `-1`, then connect it to the existing Deninger parity endpoint.
+
+## 2026-08-29 primary-source correction: literal Q8 root-number witness
+
+`[FALSIFIED]` The 2026-08-19 “Q8 witness audit correction” above (lines 214--263 at the time of
+this entry) reverses the source record.  Its claim that the legacy radical field was
+unauthenticated and that a different “Serre witness” was Example 1.3 is false.  Do not use that
+section as evidence for a root number.
+
+`[LITERATURE]` The primary published source is A. Shankar, A. Södergren, and N. Templier,
+[*Sato--Tate equidistribution of certain families of Artin L-functions*, Example 1.3(ii)](https://doi.org/10.1017/fms.2019.18).
+It explicitly states that
+
+```text
+K = Q(sqrt((5 + sqrt(5)) * (41 + 6 * sqrt(41))))
+```
+
+is quaternionic over `Q`, contains `Q(sqrt 5, sqrt 41)`, and that the unique irreducible
+2-dimensional Artin representation `rho_K` has root number `-1`.  This is exactly
+`deningerQ8RootNumberNegOneTopField`, not the separate `SerreQ8TopField` construction.
+
+`[LEAN-PROVED]` `DeningerQ8ActualArtinEulerProduct.lean` now attaches the source-selected
+literal field to the corpus’s genuine finite-place Artin Euler product, using the already proved
+facts
+
+```lean
+deningerQ8RootNumberNegOne_isGalois
+deningerQ8RootNumberNegOne_galoisEquivQ8
+```
+
+It proves only unconditional source-side facts: holomorphy and nonvanishing on the
+absolute-convergence half-plane.  Its exact new declarations are
+
+```lean
+deningerQ8ActualArtinEulerProduct
+differentiableOn_deningerQ8ActualArtinEulerProduct
+deningerQ8ActualArtinEulerProduct_ne_zero_of_mem_artinEulerAbsoluteHalfPlane
+```
+
+`[OPEN CORE]` The paper asserts the global root number but does not supply a Lean-ready local
+factor table.  The remaining theorem is a literal global Artin epsilon calculation for this
+field: construct the inducing order-four Hecke character on a quadratic subfield, prove its local
+conductors and epsilon factors at every ramified and archimedean place, and prove their global
+product is `-1`.  Neither finite-place Euler-product convergence nor the source citation can
+replace that calculation.  The prior attribution to Fiorilli--Jouve and the claim that a distinct
+Serre polynomial supplied this witness are retracted.

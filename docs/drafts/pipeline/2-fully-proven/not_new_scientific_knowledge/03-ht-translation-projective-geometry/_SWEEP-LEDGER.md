@@ -705,3 +705,69 @@ residue calculus replaces it.
    bound.
 4. The realization theorem for `r_K = ∑_{u ∈ K} x/(x−α_u)`.
 5. The additive entire-plane corollary (`F(z) = f(e^{2πiz})`, `Stab_DA(F) = ℤ + τℤ`).
+
+### Card 6 — the Chen–Singer criterion is now Lean-complete (2026-08-29)
+
+Both halves of the `q`-summability criterion are proved, so items 1–3 of the card and the lattice
+containment of item 4 are closed.  Eight further modules, all axiom-clean and wired:
+
+- `HTGeometry/PrincipalPartMonomial.lean` — `invLinPow α d = (x−α)^{-d}`, its principal-part
+  coefficients (a Kronecker delta) and its regularity away from `α`.
+- `HTGeometry/PrincipalPartDecomposition.lean` — `principalPartSum`, and
+  **`exists_principalPart_decomposition`**: over an algebraically closed field every rational
+  function is a polynomial plus a finite combination of principal-part monomials whose coefficients
+  are exactly its `polePart`s.  (Proved by induction on the denominator degree, peeling
+  `A = P(α)/Q₁(α)` at a root of multiplicity `m`; mathlib's `Polynomial.PartialFractions` is not in
+  a usable shape for this.)
+- `HTGeometry/PrincipalPartScale.lean` — `ratFuncScale q (invLinPow γ d) = q^{-d}·invLinPow (γ/q) d`.
+- `HTGeometry/QBlockTelescoper.lean` — `blockCoeff`, its telescoping recursion and vanishing outside
+  the window, and **`ratFuncScale_blockTelescoper_sub`**: a block with vanishing `q`-discrete
+  residue is exactly a dilation coboundary.
+- `HTGeometry/QSummabilityFromResidues.lean` — the block-removal induction
+  `exists_dilationTelescoper_principalPartSum`, the polynomial case
+  `exists_dilationTelescoper_polynomial`, and **`exists_dilationTelescoper_of_qOrbitResidue_vanish`**
+  (Chen–Singer, converse half).
+- `HTGeometry/QOrbitResidueTop.lean` — `polePart_eq_zero_of_poleOrder_lt`,
+  `qOrbitResidue_eq_zero_of_natDegree_lt` and **`exists_top_qOrbitResidue`**: a nonzero residue has
+  a top level, which is what the hypertranscendence criterion consumes.
+- `HTGeometry/QPrimitiveExistence.lean` — `qPrimitive` and **`innerDilation_qPrimitive`**: the
+  coefficientwise solution of `f(qx) − f(x) = r(x)`.
+- `HTGeometry/QResidueSpectrum.lean` — `QSummable`, `qPrimitiveOf`, `qDefect`, and the card's
+  items: **`hypertranscendentalOver_qPrimitiveOf`** (item 1),
+  **`hypertranscendentalOver_qDefect`** (item 3 and `Spec_DA ⊆ H_r`),
+  **`differentialAlgebraicOver_qDefect`** (`H_r ⊆ Spec_DA`), and
+  **`qSummable_ratFuncScale_zpow_sub`** (`q^ℤ ⊆ H_r`).
+
+**Still open on card 6:**
+1. finiteness of `H_r/q^ℤ` and the bound `s!` — needs the residue support as a finite subset of
+   `E_q` and the injection `H_r/q^ℤ → Sym(Supp)`;
+2. the realization theorem: `r_K = ∑_{u ∈ K} x/(x−α_u)` has stabilizer exactly `K`;
+3. the additive entire-plane corollary `Stab_DA(F) = ℤ + τℤ`.
+
+### Card 6 — stabilizer and realization closed (2026-08-29)
+
+Two further modules, axiom-clean and wired:
+
+- `HTGeometry/QResidueStabilizer.lean` — **`qOrbitResidue_ratFuncScale`**
+  (`ρ_(α,d)(S_a r) = a^{-d}·ρ_(aα,d)(r)`), `qOrbitResidue_eq_of_qSummable`, the residue support
+  `residueSupport q r`, **`mul_mem_residueSupport`** (the stabilizer permutes the residue support),
+  `residueSupport_subset_orbit_poles`, and **`qSummableStabilizer_eq_pole_div`**: every element of
+  the stabilizer is a pole of `r` divided by a fixed residue-support point, times a power of `q`.
+  This is the card's item 4/5 finiteness: `H_r` meets only finitely many `q`-orbits, and the map
+  `a ↦ a·α₀` embeds `H_r/q^ℤ` into the (finite) set of residue-support orbits, so
+  `|H_r/q^ℤ| ≤ s ≤ s!`.
+- `HTGeometry/SimplePoleUnit.lean` — the normalized unit `x/(x−α)` and its complete principal-part
+  calculus, the realization increment `simplePoleSum S = ∑_{α∈S} x/(x−α)`, the exact residue
+  computation `ρ_(γ,1)(r_S) = γ` on the orbit union and `0` off it
+  (**`residueSupport_simplePoleSum`**), and the capstone
+  **`qSummable_ratFuncScale_simplePoleSum_sub_iff`**: for a finite set `S` of points in distinct
+  `q`-orbits whose orbit union is division-closed, the summability stabilizer of `r_S` is *exactly*
+  that orbit union.  This is the card's realization theorem: every finite subgroup of `E_q` is the
+  exact DA scaling spectrum modulo `q^ℤ`.
+
+**Card 6 status.**  Items 1, 2 (both directions), 3, 4, 5 and the realization theorem are Lean-proved
+unconditionally.  The only remaining piece is the *additive entire-plane consequence*:
+`F(z) = f(e^{2πiz})` is meromorphic on `ℂ`, and `Stab_DA(F) = {h : e^{2πih} ∈ H_r}`, so a one-point
+residue class gives `Stab_DA(F) = ℤ + τℤ`.  That needs the analytic transfer of DA/HT through
+`exp`/`log`; the corpus assets to use are `HTGeometry.MeroExponentialGauge`,
+`HTGeometry.AnalyticJetFieldBridge` and `HTGeometry.MeromorphicRatFuncTranslation`.

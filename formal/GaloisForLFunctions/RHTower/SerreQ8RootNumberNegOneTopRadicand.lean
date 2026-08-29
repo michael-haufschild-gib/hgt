@@ -3,17 +3,20 @@ import GaloisForLFunctions.RHTower.DeningerQ8RootNumberNegOneTopRadicand
 /-!
 # The literal Serre quaternionic radical field
 
-The legacy `DeningerQ8RootNumberNegOne` tower is a proved `Q8` field but its
-root-number attribution is not source-authenticated.  The actual witness used
-by Deninger's Theorem 2.13 is Serre's field: the root field of
+The `DeningerQ8RootNumberNegOne` tower is a source-attested `Q8` root-number
+minus-one witness, although its global epsilon calculation is not yet in Lean.
+This leaf formalizes a traditional Serre radical presentation, the root field of
 
 `X^8 - 205 X^6 + 13940 X^4 - 378225 X^2 + 3404025`.
 
-This leaf constructs an equivalent degree-eight radical tower.  Its top
+This leaf constructs another degree-eight radical tower.  Its top
 generator is `sqrt ((5 + sqrt 5) * (41 + sqrt 205))`; dividing that generator
 by two gives the displayed Serre polynomial.  The proof here is wholly
 algebraic: the top radicand is nonsquare by a relative-norm descent to the
 already-proved nonsquareness of `41` in `ℚ(sqrt 5)`.
+
+No equality between this radical presentation and the `41 + 6 * sqrt 41`
+presentation is asserted in this file.
 
 The global Artin epsilon-factor calculation proving root number `-1` remains a
 separate, genuinely analytic-arithmetic formalization obligation.

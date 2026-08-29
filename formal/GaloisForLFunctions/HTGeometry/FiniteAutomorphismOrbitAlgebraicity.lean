@@ -153,6 +153,26 @@ theorem infinite_automorphismOrbit_of_transcendental
   intro hfinite
   exact hx (isAlgebraic_of_finite_automorphismOrbit hfinite hfixed)
 
+/-- A finite full automorphism group forces every element to be algebraic when its fixed field is
+the base field. -/
+theorem isAlgebraic_of_finite_automorphismGroup
+    {x : L} [Finite (L ≃ₐ[K] L)]
+    (hfixed : ∀ y : L, (∀ σ : L ≃ₐ[K] L, σ y = y) →
+      ∃ k : K, algebraMap K L k = y) :
+    IsAlgebraic K x :=
+  isAlgebraic_of_finite_automorphismOrbit (Set.finite_range _) hfixed
+
+/-- A transcendental element rules out finiteness of the full automorphism group when its fixed
+field is the base field. -/
+theorem not_finite_automorphismGroup_of_transcendental
+    {x : L} (hx : Transcendental K x)
+    (hfixed : ∀ y : L, (∀ σ : L ≃ₐ[K] L, σ y = y) →
+      ∃ k : K, algebraMap K L k = y) :
+    ¬ Finite (L ≃ₐ[K] L) := by
+  intro hfinite
+  letI : Finite (L ≃ₐ[K] L) := hfinite
+  exact hx (isAlgebraic_of_finite_automorphismGroup hfixed)
+
 end
 
 end GaloisForLFunctions.HTGeometry

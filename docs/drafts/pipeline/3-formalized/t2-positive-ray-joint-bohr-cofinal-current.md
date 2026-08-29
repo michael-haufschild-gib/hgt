@@ -1,8 +1,8 @@
 # Positive-ray joint Bohr cofinal current
 
 - **ID:** T2-JOINT-B2
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean 4)
 - **Source:** `rh-current-frontier-map.md` · route T2
 - **Statement:** At positive Borel height `y = 1/10`, the terminal-plus-edge finite Route-T2 currents are Cauchy in Bohr mean square. Equivalently, their exact Abel increments have square-summable source coefficients.
 
@@ -113,8 +113,29 @@ must use extra arithmetic structure rather than Hilbert completion alone.
 - [x] 0 → 1: exact claim, corpus/literature audit, hostile verdict, RH chain
 - [x] paper proof dependency-closed after final corpus/literature hostile recheck
 - [x] 1 → 2: exact theorem statement and proof audit complete
-- [ ] 2 → 3: Lean module, targeted build, axiom audit, umbrella wiring
+- [x] 2 → 3: Lean module, targeted build, axiom audit, umbrella wiring
+
+## Lean formalization [CLOSED]
+
+Module: `GaloisForLFunctions.RHTower.XiHeatCassiniWoldPositiveTenthJointBohrCofinality`.
+
+- `summable_xiHeatCassiniOrderedPrimeLogGap_sq_mul_positiveFifthHeight` proves the weighted
+  ordered-prime log-gap square sum from the formal Route-T Hoheisel estimate.
+- `summable_woldCoeff_sq_mul_positiveFifthHeight` proves the matching weighted Wold square sum.
+- `xiHeatCassiniWoldResidualBorelUpperRayFiniteRenormalizedCurrent_positiveTenth_eq_abel` identifies
+  the existing terminal--edge--holonomy cutoff with its exact residual-increment exponential sum.
+- `summable_norm_sq_xiHeatCassiniWoldPositiveTenthJointCoefficient` proves exact Abel coefficient
+  square summability.
+- `tendsto_xiHeatCassiniWoldPositiveTenthJointCurrent_tail_cesaro_normSq` proves exact finite-tail
+  Bohr Parseval.
+- `xiHeatCassiniWoldPositiveTenthJointCurrent_bohrCauchy` closes uniform cofinal mean-square
+  control at height `1/10`.
+
+Audit: direct Lean check passed; targeted module build passed; `#print axioms` reports only
+`propext`, `Classical.choice`, and `Quot.sound`; umbrella wired. Global lint reports only pre-existing
+unreachable modules outside this card.
 
 ## Log
 
 - 2026-08-29 — conjectured from T2 finite Abel transport plus formal Hoheisel exponent; raw absolute and separately terminal routes rejected before proof work.
+- 2026-08-29 — exact theorem formalized and audited; T2 positive-ray joint cofinal-control premise discharged. Remaining wall is coefficient-faithful analytic evaluation from the Bohr completion.

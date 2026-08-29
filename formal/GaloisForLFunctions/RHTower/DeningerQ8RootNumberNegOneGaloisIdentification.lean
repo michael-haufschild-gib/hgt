@@ -9,9 +9,9 @@ eight explicit automorphisms.  This leaf proves the stronger statement that
 their multiplication table is the actual `QuaternionGroup 2` table, hence
 identifies the field's `ℚ`-Galois group with `Q₈`.
 
-No root-number claim is made here: its historical `RootNumberNegOne` filename is
-not an arithmetic certificate.  The global Artin epsilon-factor calculation for
-the distinct Serre witness is a separate analytic-arithmetic input.
+No root-number claim is made here: its historical `RootNumberNegOne` filename
+is not an arithmetic certificate.  The global Artin epsilon-factor calculation
+for this literal field is a separate analytic-arithmetic input.
 -/
 
 namespace RHTower

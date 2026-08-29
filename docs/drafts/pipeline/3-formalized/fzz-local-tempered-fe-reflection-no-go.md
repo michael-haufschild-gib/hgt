@@ -1,8 +1,8 @@
 # FZZ local tempered functional-equation reflection no-go
 
 - **ID:** FZZ-LOCAL-TEMPERED-FE-NOGO
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** `FZZCigarParityDelaySourceContinuation.lean` · `RiemannSourceNonlocalSingularCompletionLaw.lean` · route FZZ-P
 - **Statement:** Any spectrally independent local reparametrization of the literal FZZ parity-delay source that implements Mellin reflection at grades one and two has reciprocal delay map and a uniquely forced ultraviolet weight growing faster than every polynomial; hence no polynomially tempered local FZZ/GFZZ producer can implement the required same-source functional-equation reflection.
 
@@ -18,7 +18,7 @@ This is source-pure: source is the corpus-proved literal FZZ Fermi delay `1 / (e
 
 - [x] 0 → 1 in-progress: well-posed, source-pure, attack idea, Door passport sketch
 - [x] 1 → 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3 formalized: Lean theorem, targeted `lake build` green, axiom audit PASS
+- [x] 2 → 3 formalized: Lean theorem, targeted `lake build` green, axiom audit PASS
 - [ ] 3 → 4 publication-ready: standalone paper (theorem + proof + Lean certificate + Door-2)
 
 ## Approach
@@ -66,9 +66,22 @@ No unproved analytic, arithmetic, divisor, or RH premise remains.
 - **Exact killing theorem/mechanism:** two Mellin grades force reciprocal delay and a unique same-source weight; its ultraviolet values dominate every polynomial, contradicting local finite-action/polynomial tempering.
 - **Strongest positive survivor:** exact reciprocal-map, all-integer-grade bootstrap, unique-weight, and involutive two-ended singularity classification. Any FZZ-P survivor must be nonlocal or superpolynomially singular.
 - **New insight:** distinguishes harmless unitary doubled-sector swaps from source-faithful scalar reflection. Reflection complexity cannot be hidden in a local finite-action FZZ weight.
-- **Status:** dependency-closed paper proof; corpus and literature hostile audit complete; Lean formalization next.
+- **Status:** dependency-closed paper proof and Lean formalization complete in `ThetaCuspHawkingFZZParityLocalTemperedFEReflectionNoGo.lean`.
+
+## Lean certificate
+
+- Exact reciprocal rigidity: `FZZCigarParityLocalFEReflectionData.energyMap_eq_inv`.
+- Unique weight and two-ended involution: `weight_eq`, `weight_mul_inv_eq_one`.
+- All-integer-grade bootstrap: `all_nat_grades`.
+- Beyond-all-polynomial survivor: `polynomial_isLittleO_uvWeight`.
+- Closed route kill: `no_polynomiallyTempered_FZZCigarParityLocalFEReflectionData`.
+- Direct `lake env lean` check: PASS.
+- Targeted `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingFZZParityLocalTemperedFEReflectionNoGo`: PASS (`8785/8785`).
+- Axiom audit for all named theorems: only `propext`, `Classical.choice`, `Quot.sound`.
+- Wired into `GaloisForLFunctions.RHTower` umbrella. Global lint remains red only on unrelated pre-existing unreachable modules; new module is reachable and absent from lint errors.
 
 ## Log
 
 - 2026-08-29 — created directly in 1-in-progress after corpus audit rejected generic bounded-unitary conjecture as already false by the doubled-sector bypass.
 - 2026-08-29 — paper proof completed; moved to 2-fully-proven.
+- 2026-08-29 — Lean formalization, targeted build, axiom audit, wiring, and lint reachability audit completed; moved to 3-formalized.

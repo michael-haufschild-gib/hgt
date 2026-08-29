@@ -74,8 +74,9 @@ theorem tendsto_characteristic_atTop_of_not_polynomial {g : ℂ → ℂ} (hg : D
 of every derivative up to order `n` is a fixed multiple of `T(r,g)`, and the logarithmic-derivative
 proximities of `g` and of the shifts `g - b i` are negligible. -/
 theorem exists_radii_jet_bound_and_error {g : ℂ → ℂ} (hg : Differentiable ℂ g)
-    (hgnp : ¬ ∃ p : Polynomial ℂ, ∀ z : ℂ, g z = p.eval z) (n : ℕ) {N : ℕ} (b : Fin N → ℂ) :
-    ∃ (rn : ℕ → ℝ) (C : ℝ), Tendsto rn atTop atTop ∧ 0 ≤ C ∧
+    (hgnp : ¬ ∃ p : Polynomial ℂ, ∀ z : ℂ, g z = p.eval z) (n : ℕ) {N : ℕ} (b : Fin N → ℂ)
+    {Z : Set ℝ} (hZ : MeasureTheory.volume Z = 0) :
+    ∃ (rn : ℕ → ℝ) (C : ℝ), Tendsto rn atTop atTop ∧ (∀ k, rn k ∉ Z) ∧ 0 ≤ C ∧
       (∀ᶠ k in atTop, ∀ j ≤ n,
         characteristic (iteratedDeriv j g) ⊤ (rn k)
           ≤ 2 ^ (n + 1) * characteristic g ⊤ (rn k) + C) ∧
@@ -180,7 +181,8 @@ theorem exists_radii_jet_bound_and_error {g : ℂ → ℂ} (hg : Differentiable 
     · filter_upwards [eventually_ge_atTop (1 : ℝ)] with r hr
       exact div_le_div_of_nonneg_left (Real.log_nonneg hr)
         (by linarith [one_le_charMajorant g r]) (hUgeCM r)
-  obtain ⟨rn, hrntop, hneg⟩ := exists_good_radii_family F hFd hFo hUmono hU1 hUdom hUlog hUtop
+  obtain ⟨rn, hrntop, hrnZ, hneg⟩ :=
+    exists_good_radii_family F hFd hFo hUmono hU1 hUdom hUlog hUtop hZ
   set E : ℝ → ℝ := fun r => ∑ i, proximity (fun z => deriv (F i) z / F i z) ⊤ r with hEdef
   have hEnn : ∀ r, 0 ≤ E r := fun r =>
     Finset.sum_nonneg fun i _ => ValueDistribution.proximity_nonneg r
@@ -287,7 +289,7 @@ theorem exists_radii_jet_bound_and_error {g : ℂ → ℂ} (hg : Differentiable 
     rw [hC₂]
     have := hKb0
     positivity
-  refine ⟨rn, 2 ^ n * (C₂ / C₁), hrntop, by positivity, ?_, ?_⟩
+  refine ⟨rn, 2 ^ n * (C₂ / C₁), hrntop, hrnZ, by positivity, ?_, ?_⟩
   · filter_upwards [hneg (1 / C₁) (by positivity), hrntop.eventually_ge_atTop (1 : ℝ)]
       with k hEk hrk
     intro j hj

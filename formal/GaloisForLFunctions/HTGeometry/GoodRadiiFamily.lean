@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.RamificationSubstitution
 import GaloisForLFunctions.HTGeometry.LogPolyNegligible
+import GaloisForLFunctions.HTGeometry.BorelGoodRadiiAvoiding
 
 /-!
 # A common sequence of good radii for a finite family
@@ -22,12 +23,13 @@ theorem exists_good_radii_family {ι : Type*} [Fintype ι] (F : ι → ℂ → �
     {U : ℝ → ℝ} (hUmono : Monotone U) (hU1 : ∀ s, 1 ≤ U s)
     (hUdom : ∀ i, ∀ s, 1 ≤ s → characteristic (F i) ⊤ s ≤ U s)
     (hUlog : Tendsto (fun r => Real.log r / U r) atTop (nhds 0))
-    (hUtop : Tendsto U atTop atTop) :
-    ∃ rn : ℕ → ℝ, Tendsto rn atTop atTop ∧
+    (hUtop : Tendsto U atTop atTop)
+    {Z : Set ℝ} (hZ : MeasureTheory.volume Z = 0) :
+    ∃ rn : ℕ → ℝ, Tendsto rn atTop atTop ∧ (∀ n, rn n ∉ Z) ∧
       ∀ ε : ℝ, 0 < ε → ∀ᶠ n in atTop,
         (∑ i, proximity (fun z => deriv (F i) z / F i z) ⊤ (rn n)) ≤ ε * U (rn n) := by
   classical
-  obtain ⟨rn, hrntop, hrn⟩ := exists_good_radius_seq hUmono hU1
+  obtain ⟨rn, hrntop, hrn⟩ := exists_good_radius_seq_avoiding hUmono hU1 hZ
   have hCex : ∀ i : ι, ∃ C : ℝ, 0 ≤ C ∧ ∀ r : ℝ, 1 ≤ r → U (r + (U r)⁻¹) < 2 * U r →
       (2 * π)⁻¹ * ∫ θ in (0 : ℝ)..(2 * π),
         Real.posLog ‖logDeriv (F i) ((r : ℂ) * Complex.exp (θ * Complex.I))‖
@@ -42,12 +44,12 @@ theorem exists_good_radii_family {ι : Type*} [Fintype ι] (F : ι → ℂ → �
   have hq0 : 0 < q := by
     have : (0 : ℝ) ≤ (Fintype.card ι : ℝ) := Nat.cast_nonneg _
     rw [hq]; linarith
-  refine ⟨rn, hrntop, fun ε hε => ?_⟩
+  refine ⟨rn, hrntop, fun n => (hrn n).2.1, fun ε hε => ?_⟩
   refine eventually_le_of_log_poly_bound_filter (ρ := fun n => rn n) (C := Cmax) (k := 4)
     (c := q) hCmax0 (by omega) hq0 ?_ ?_ ?_ ?_ ?_ hε
   · filter_upwards [hrntop.eventually_ge_atTop (1 : ℝ)] with n hn
     set r : ℝ := rn n with hrdef
-    have hgood := (hrn n).2
+    have hgood := (hrn n).2.2
     have hU1r : (1 : ℝ) ≤ U r := hU1 r
     have hlogpos : 0 ≤ Real.log (1 + Cmax * (r + 1) ^ 4 * (U r + 1) ^ 4) := by
       refine Real.log_nonneg ?_

@@ -15,8 +15,10 @@ a square root of `205` in `ℚ(√5)`, contradicted by the exact coefficient pro
 in the preceding module.
 
 The constructed degree-eight field is now separately proved Galois with group
-`Q₈`.  No source has authenticated root number `-1` for it; that claim belongs
-to a distinct Serre field and remains a separate formalization obligation.
+`Q₈`.  Shankar--Södergren--Templier, Example 1.3(ii), state that its
+two-dimensional Artin representation has root number `-1`; that literature
+statement is not yet a Lean theorem.  The global epsilon-factor calculation
+remains a separate formalization obligation.
 -/
 
 open Polynomial

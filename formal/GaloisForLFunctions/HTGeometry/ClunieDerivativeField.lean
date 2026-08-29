@@ -25,8 +25,9 @@ open scoped Topology
 theorem not_eventually_characteristic_comp_le_jet {f g : ℂ → ℂ}
     (hf : Differentiable ℂ f) (hg : Differentiable ℂ g)
     (hfnp : ¬ ∃ p : Polynomial ℂ, ∀ z : ℂ, f z = p.eval z)
-    (hgnp : ¬ ∃ p : Polynomial ℂ, ∀ z : ℂ, g z = p.eval z) (n : ℕ) (c d : ℝ) :
-    ¬ (∀ᶠ r in atTop, characteristic (fun w => f (g w)) ⊤ r
+    (hgnp : ¬ ∃ p : Polynomial ℂ, ∀ z : ℂ, g z = p.eval z) (n : ℕ) (c d : ℝ)
+    {Z : Set ℝ} (hZ : MeasureTheory.volume Z = 0) :
+    ¬ (∀ᶠ r in atTop, r ∉ Z → characteristic (fun w => f (g w)) ⊤ r
         ≤ c * (∑ j ∈ Finset.range (n + 1), characteristic (iteratedDeriv j g) ⊤ r)
           + d * Real.log r + d) := by
   classical
@@ -88,8 +89,8 @@ theorem not_eventually_characteristic_comp_le_jet {f g : ℂ → ℂ}
     exact MeromorphicAt.MeromorphicOn.codiscreteWithin_setOf_ne_zero hmero fun u _ => hgd u
   -- the second main theorem and the common radii
   obtain ⟨Csmt, hsmt⟩ := exists_sub_two_characteristic_le_sum_logCounting hg A hδpos hsep hg0
-  obtain ⟨rn, Cjet, hrntop, hCjet0, hjet, herr⟩ :=
-    exists_radii_jet_bound_and_error hg hgnp n A
+  obtain ⟨rn, Cjet, hrntop, hrnZ, hCjet0, hjet, herr⟩ :=
+    exists_radii_jet_bound_and_error hg hgnp n A hZ
   -- the first main theorem for the composite
   have hcomp : Differentiable ℂ fun w => f (g w) := fun x => (hf (g x)).comp x (hg x)
   have hmcomp : Meromorphic (fun w => f (g w)) := fun z => (hcomp.analyticAt z).meromorphicAt
@@ -121,7 +122,8 @@ theorem not_eventually_characteristic_comp_le_jet {f g : ℂ → ℂ}
     positivity
   have hfinal : ∀ᶠ k in atTop, characteristic g ⊤ (rn k) ≤ 2 * D * Real.log (rn k) + 2 * D := by
     filter_upwards [hrntop.eventually hbound, hjet, herr 1 one_pos,
-      hrntop.eventually_ge_atTop (1 : ℝ)] with k hb hj he hr1
+      hrntop.eventually_ge_atTop (1 : ℝ)] with k hb0 hj he hr1
+    have hb := hb0 (hrnZ k)
     have hsmtk := hsmt (rn k) hr1 (hcod (rn k))
     have hbridge := sum_logCounting_le_logCounting_comp hf hg A hAinj hfA hgo hco hr1
     have hfmtk := hfmt (rn k) hr1
@@ -133,7 +135,7 @@ theorem not_eventually_characteristic_comp_le_jet {f g : ℂ → ℂ}
           characteristic (iteratedDeriv j g) ⊤ (rn k)
             ≤ 2 ^ (n + 1) * characteristic g ⊤ (rn k) + Cjet := by
         intro j hjmem
-        exact hj j (by omega_nat <;> exact Nat.lt_succ_iff.mp (Finset.mem_range.mp hjmem))
+        exact hj j (Nat.lt_succ_iff.mp (Finset.mem_range.mp hjmem))
       have h := Finset.sum_le_sum hb'
       rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul] at h
       push_cast at h
@@ -168,8 +170,15 @@ theorem not_eventually_characteristic_comp_le_jet {f g : ℂ → ℂ}
     have hMle : (M₀ + 1) * characteristic g ⊤ (rn k)
         ≤ ((N : ℝ) - 3) * characteristic g ⊤ (rn k) :=
       mul_le_mul_of_nonneg_right hM₀ge hT0
-    nlinarith [hNsub, hb, hcabs, hdlog, hKale, hCsmtle, hMle, hT0, hlog0, hCjet0,
-      abs_nonneg c, abs_nonneg d, abs_nonneg Ka, abs_nonneg Csmt]
+    have hcj : (0 : ℝ) ≤ |c| * ((n : ℝ) + 1) * Cjet :=
+      mul_nonneg (mul_nonneg (abs_nonneg c) (by positivity)) hCjet0
+    have hdD : |d| ≤ D := by
+      rw [hD]
+      linarith [abs_nonneg Ka, abs_nonneg Csmt, hcj]
+    have hlogD : |d| * Real.log (rn k) ≤ 2 * D * Real.log (rn k) :=
+      mul_le_mul_of_nonneg_right (by linarith) hlog0
+    linarith [hNsub, hb, hcabs, hdlog, hKale, hCsmtle, hMle, hT0, hlog0, hcj, hlogD,
+      abs_nonneg d, abs_nonneg Ka, abs_nonneg Csmt]
   -- but the characteristic outgrows every logarithm
   have hcontra : ∀ᶠ k in atTop, 2 * D * Real.log (rn k) + 2 * D < characteristic g ⊤ (rn k) := by
     have hev := (hdiv.comp hrntop).eventually_ge_atTop (2 * D + 2 * D + 1)

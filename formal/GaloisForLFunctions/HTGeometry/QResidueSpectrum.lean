@@ -134,6 +134,82 @@ theorem differentialAlgebraicOver_qDefect {q : K} (hq : q ≠ 0)
   rw [hval]
   exact differentialAlgebraicOver_algebraMap _
 
+
+theorem ratFuncScale_ratFuncScale {b c : K} (hb : b ≠ 0) (hc : c ≠ 0) (f : RatFunc K) :
+    ratFuncScale b hb (ratFuncScale c hc f) = ratFuncScale (b * c) (mul_ne_zero hb hc) f := by
+  refine RatFunc.induction_on (P := fun f => ratFuncScale b hb (ratFuncScale c hc f)
+    = ratFuncScale (b * c) (mul_ne_zero hb hc) f) f ?_
+  intro P S _
+  rw [ratFuncScale_div, ratFuncScale_div, ratFuncScale_div, polyScale_polyScale,
+    polyScale_polyScale]
+
+theorem ratFuncScale_comm {b c : K} (hb : b ≠ 0) (hc : c ≠ 0) (f : RatFunc K) :
+    ratFuncScale b hb (ratFuncScale c hc f) = ratFuncScale c hc (ratFuncScale b hb f) := by
+  rw [ratFuncScale_ratFuncScale, ratFuncScale_ratFuncScale]
+  refine RatFunc.induction_on (P := fun f => ratFuncScale (b * c) (mul_ne_zero hb hc) f
+    = ratFuncScale (c * b) (mul_ne_zero hc hb) f) f ?_
+  intro P S _
+  rw [ratFuncScale_div, ratFuncScale_div, mul_comm]
+
+theorem QSummable.neg {q : K} (hq : q ≠ 0) {s : RatFunc K} (h : QSummable q hq s) :
+    QSummable q hq (-s) := by
+  obtain ⟨k, hk⟩ := h
+  exact ⟨-k, by rw [hk, map_neg]; ring⟩
+
+theorem QSummable.scale {q b : K} (hq : q ≠ 0) (hb : b ≠ 0) {s : RatFunc K}
+    (h : QSummable q hq s) : QSummable q hq (ratFuncScale b hb s) := by
+  obtain ⟨k, hk⟩ := h
+  refine ⟨ratFuncScale b hb k, ?_⟩
+  rw [hk, map_sub, ratFuncScale_comm]
+
+theorem qSummable_iterate_sub {q : K} (hq : q ≠ 0) (r : RatFunc K) (m : ℕ) :
+    QSummable q hq ((ratFuncScale q hq)^[m] r - r) := by
+  induction m with
+  | zero => exact ⟨0, by simp⟩
+  | succ m ih =>
+      obtain ⟨k, hk⟩ := ih
+      refine ⟨k + (ratFuncScale q hq)^[m] r, ?_⟩
+      rw [Function.iterate_succ_apply', map_add]
+      linear_combination hk
+
+theorem ratFuncScale_pow_eq_iterate {q : K} (hq : q ≠ 0) (m : ℕ) (f : RatFunc K) :
+    ratFuncScale (q ^ m) (pow_ne_zero m hq) f = (ratFuncScale q hq)^[m] f := by
+  induction m generalizing f with
+  | zero =>
+      rw [Function.iterate_zero_apply]
+      exact ratFuncScale_of_eq_one (pow_ne_zero 0 hq) (pow_zero q) f
+  | succ m ih =>
+      rw [Function.iterate_succ_apply', ← ih, ratFuncScale_ratFuncScale]
+      refine RatFunc.induction_on (P := fun f => ratFuncScale (q ^ (m + 1)) (pow_ne_zero _ hq) f
+        = ratFuncScale (q * q ^ m) (mul_ne_zero hq (pow_ne_zero m hq)) f) f ?_
+      intro P S _
+      rw [ratFuncScale_div, ratFuncScale_div, pow_succ, mul_comm q (q ^ m)]
+
+/-- **The structural lattice is contained in the summability stabilizer.** -/
+theorem qSummable_ratFuncScale_zpow_sub {q : K} (hq : q ≠ 0) (r : RatFunc K) (n : ℤ) :
+    QSummable q hq (ratFuncScale (q ^ n) (zpow_ne_zero n hq) r - r) := by
+  have hnat : ∀ m : ℕ, QSummable q hq (ratFuncScale (q ^ m) (pow_ne_zero m hq) r - r) := by
+    intro m
+    rw [ratFuncScale_pow_eq_iterate hq m r]
+    exact qSummable_iterate_sub hq r m
+  have hinv : ∀ m : ℕ,
+      QSummable q hq (ratFuncScale ((q ^ m)⁻¹) (inv_ne_zero (pow_ne_zero m hq)) r - r) := by
+    intro m
+    have hcancel : ratFuncScale ((q ^ m)⁻¹) (inv_ne_zero (pow_ne_zero m hq))
+        (ratFuncScale (q ^ m) (pow_ne_zero m hq) r) = r :=
+      ratFuncScale_scale_inv (q ^ m) (pow_ne_zero m hq) r
+    have hstep := ((hnat m).scale hq (inv_ne_zero (pow_ne_zero m hq))).neg hq
+    rw [map_sub, hcancel] at hstep
+    have hrw : -(r - ratFuncScale ((q ^ m)⁻¹) (inv_ne_zero (pow_ne_zero m hq)) r)
+        = ratFuncScale ((q ^ m)⁻¹) (inv_ne_zero (pow_ne_zero m hq)) r - r := by ring
+    rwa [hrw] at hstep
+  rcases n with m | m
+  · have hz : (q : K) ^ (Int.ofNat m) = q ^ m := zpow_natCast q m
+    simpa [hz] using hnat m
+  · have hz : (q : K) ^ (Int.negSucc m) = (q ^ (m + 1))⁻¹ := by
+      rw [zpow_negSucc]
+    simpa [hz] using hinv (m + 1)
+
 end
 
 end GaloisForLFunctions.HTGeometry

@@ -1782,3 +1782,195 @@ parameters.  The two families above therefore suffice for the whole mollified ma
 `SmoothAFEZetaCriticalDetectorLong*` remain correct theorems; they are simply not on the shortest
 path any more, and their target (a sharp evaluation of `levinsonCriticalDetectorLongEnergy` alone)
 cannot close brick 5 by itself.  They stay as corpus assets.
+
+## Brick 5ag — the gcd-logarithmic Selberg family: dilations, diagonal weight, harmonic main
+## (2026-08-29)
+
+Four further axiom-clean leaves build the corrected route's second family.  Everything below passes
+direct `lake env lean`, exact leaf `lake build` with **no warnings**, and a declaration-local
+`#print axioms` reporting only `propext, Classical.choice, Quot.sound`; all are wired into
+`RHTower.lean` (no umbrella build was run).
+
+* `RHTower/Sieve/SelbergDilatedLogMonomial.lean`
+  - **`exists_abs_selbergPrincipalScaledLogPowerModel_le`** — one envelope
+    `|P(q+1,r+1,a,b,N)| ≤ M·(log N)^{q+r+1}` valid at **every** pair of dilations (extracted from
+    the inline estimate that `SelbergLogPowerCorrectionAsymptotics` previously used only for the
+    correction indices);
+  - `selbergOriginalDilatedLogMonomial i j a b N` =
+    `∑_{m ≤ N/a, n ≤ N/b} c(m,n)·log(N/(am))^i·log(N/(bn))^j`, with
+    **`selbergOriginalDilatedLogMonomial_eq_correction_scaled`**, the exact Euler-correction
+    decomposition `∑_{d,e} corr(d,e)·P(i,j,ad,be,N)`.
+
+* `RHTower/Sieve/SelbergDilatedLogMonomialAsymptotic.lean`
+  - **`tendsto_selbergOriginalDilatedLogMonomial_div_log_pow`** — every fixed pair of dilations has
+    the *undilated* leading coefficient `(q+1)(r+1)/(q+r+1)`;
+  - **`exists_abs_selbergOriginalDilatedLogMonomial_le`** — one envelope for the whole dilated
+    family, uniform in `(a,b)`.  (This is what any prime-peeling comparison needs.)
+
+* `RHTower/Sieve/SelbergGcdLogHarmonicMain.lean`
+  - `selbergGcdLogHarmonicMain q r a b N` = `∑_{d ≤ N/max(a,b)} (q+1)(r+1)·log d·A_d^q·B_d^r / d`;
+  - **`tendsto_selbergGcdLogHarmonicMain_div_log_pow`** —
+
+    ```text
+    selbergGcdLogHarmonicMain q r a b N / (log N)^{q+r+2}  →  (q+1)(r+1)/((q+r+1)(q+r+2)),
+    ```
+
+    i.e. with `i = q+1`, `j = r+1` exactly the predicted `i·j/((i+j−1)(i+j))`.  The proof is the
+    identity `log d = (log N − log a) − log(N/(a d))`, which turns the model into the two ordinary
+    harmonic mains of brick 5af at consecutive degrees.
+
+* `RHTower/Sieve/SelbergGcdLogPrincipalCollapse.lean`
+  - `selbergDiagonalLogReciprocalCoeff` (`log d / d` on the diagonal — the `s`-derivative at `s = 1`
+    of the diagonal Euler factor `1/(1 − p^{s−1}XY/p)`), its double-sum collapse, the gcd-log
+    principal coefficient `𝒫^{log} = diag(log d/d) ∗ (μ/·)⊗(μ/·)`, and
+  - **`selbergGcdLogPrincipalCoeff_weighted_logPower_eq_scaledModel`** — the exact rectangular
+    collapse `∑_{r,s} 𝒫^{log}(r,s)·W = ∑_{d ≤ N/max(a,b)} (log d/d)·K_i(N/(ad))·K_j(N/(bd))`,
+    mirroring the ordinary principal collapse.
+
+### What the gcd-log family still owes
+
+The Leibniz identity for the two-parameter family `c_s(m,n) = μ(m)μ(n)(m,n)^s/(mn)` is
+
+```text
+c·log(m,n)  =  corr ∗ 𝒫^{log}  +  corr^{log} ∗ 𝒫,      corr^{log} := ∂_s corr_s |_{s=1},
+```
+
+with `corr_s = c_s ∗ mp^{-1} ∗ diag_s^{-1}` and `diag_s^{-1}(m,n) = μ(m)m^{s-2}·[m = n]`, so
+`corr^{log}` is a concrete bivariate function.  Its local factor is
+
+```text
+(log p / p²)·XY(X + Y − 2XY)/((1−X/p)(1−Y/p)),
+```
+
+so `‖corr^{log}‖₁ ≪ ∑_p log p / p² < ∞`.  Only the **summability** is needed (not the mass): the
+second term is then `O((log N)^{i+j−1}) = o((log N)^{i+j})` by the dilated envelope above.  That
+summability proof is the analogue of the existing `SelbergEulerCorrectionCoefficient*` chain and is
+the next target, together with the harmonic replacement for `𝒫^{log}`.
+
+**Why the prime-peel alternative was rejected.**  Peeling `log(m,n) = ∑_{d|(m,n)} Λ(d)` needs the
+`p`-coprime Selberg form uniformly in `p`.  The two-dimensional recursion
+`Ŝ^{(p)}(a,b) = Ŝ(a,b) + (1/p)[Ŝ^{(p)}(ap,b) + Ŝ^{(p)}(a,bp) − Ŝ^{(p)}(ap,bp)]` contracts only for
+`p > 3`, and no weighted sup-norm fixes `p = 2` (the operator's triangle bound is `3/p`, and the
+true `ℓ¹` norm of the local inverse needs the analyticity of `1/(1 − (X+Y−XY)/p)` on the closed
+polydisc — true, but not elementary).  The one-dimensional kernel recursion
+`K^{(p)}_{q+1}(Y) = K_{q+1}(Y) + (1/p)K^{(p)}_{q+1}(Y/p)` *does* contract for every `p ≥ 2`, which
+is why the `diag(log d/d)` route is the right one: it keeps the whole `p`-dependence inside a
+one-dimensional kernel.
+
+## Brick 5ah — gcd-logarithmic harmonic replacement closed (2026-08-29)
+
+`RHTower/Sieve/SelbergGcdLogHarmonicReplacement.lean` (axiom-clean, no warnings, wired):
+
+* **`exists_kernelProduct_close`** — the reusable pointwise input, isolated for the first time:
+  for every `δ > 0` there is `K ≥ 2` such that for all cutoffs `Y, Z ≥ K`
+
+  ```text
+  |K_{q+1}(Y)·K_{r+1}(Z) − (q+1)(r+1)·(log Y)^q (log Z)^r| ≤ δ·(log Y)^q (log Z)^r,
+  ```
+
+  a **relative** bound, so it applies to any weight.  (The corresponding estimate was previously
+  inlined inside `SelbergLogPowerPrincipalAsymptotics` and unusable elsewhere.)
+* `selbergGcdLogPrincipalScaledLogPowerModel_sub_harmonicMain` — single-sum form of the error;
+* **`tendsto_selbergGcdLogPrincipalScaledLogPowerModel_sub_harmonic_div_log_pow_zero`** —
+  the harmonic replacement, error `o((log N)^{q+r+2})`;
+* **`tendsto_selbergGcdLogPrincipalScaledLogPowerModel_div_log_pow`** —
+
+  ```text
+  ∑_{d ≤ N/max(a,b)} (log d/d)·K_{q+1}(N/(ad))·K_{r+1}(N/(bd)) / (log N)^{q+r+2}
+      →  (q+1)(r+1)/((q+r+1)(q+r+2)).
+  ```
+
+So the **whole principal side of the gcd-logarithmic family is closed**, at every pair of
+logarithmic powers and every pair of dilations.
+
+### The single remaining step of the gcd-log family
+
+`‖corr^{log}‖₁ < ∞`, where
+
+```text
+corr^{log} = c^{log} ∗ mp⁻¹ ∗ diag⁻¹ + c ∗ mp⁻¹ ∗ diagInvLog,
+  mp⁻¹(r,s) = 1/(rs),   diag⁻¹(d,d) = μ(d)/d,   diagInvLog(d,d) = μ(d)·log d/d.
+```
+
+Only summability is needed, not the mass: with it, the Leibniz identity
+`c·log(m,n) = corr ∗ 𝒫^{log} + corr^{log} ∗ 𝒫` plus the dilated envelope
+`exists_abs_selbergOriginalDilatedLogMonomial_le` makes the second term `O((log N)^{i+j−1})`,
+and dominated convergence over `corr` turns the first into
+`i·j/((i+j−1)(i+j))·(log N)^{i+j}`.
+
+The summability is the exact analogue of `summable_selbergEulerCorrectionCoeff` and should reuse
+`summableFiberPushforward` from `SelbergEulerCorrectionCoefficientMass.lean`; the local factor to
+parameterize is
+
+```text
+(log p / p²)·XY(X + Y − 2XY)/((1 − X/p)(1 − Y/p)).
+```
+
+## Session summary (2026-08-29)
+
+Nine axiom-clean leaves landed, all wired into `RHTower.lean`, all passing exact leaf `lake build`
+with no warnings and `#print axioms` with only `propext, Classical.choice, Quot.sound`:
+
+| # | module | capstone |
+|---|---|---|
+| 1 | `Sieve/HarmonicLogWindowGeneralMoment` | `tendsto_harmonicLogWindowMoment_natDiv_div_log_pow` (all orders) |
+| 2 | `Sieve/SelbergLogPowerHarmonicGeneral` | `tendsto_selbergLogPowerHarmonicMain_div_log_pow` |
+| 3 | `Sieve/SelbergLogPowerGeneralAsymptotic` | `tendsto_selbergOriginalLogMonomial_div_log_pow` (**Graham at every `(i,j)`**) |
+| 4 | `Sieve/SelbergDilatedLogMonomial` | `exists_abs_selbergPrincipalScaledLogPowerModel_le`, dilated decomposition |
+| 5 | `Sieve/SelbergDilatedLogMonomialAsymptotic` | `tendsto_selbergOriginalDilatedLogMonomial_div_log_pow`, dilated envelope |
+| 6 | `Sieve/SelbergGcdLogHarmonicMain` | `tendsto_selbergGcdLogHarmonicMain_div_log_pow` |
+| 7 | `Sieve/SelbergGcdLogPrincipalCollapse` | `selbergGcdLogPrincipalCoeff_weighted_logPower_eq_scaledModel` |
+| 8 | `Sieve/SelbergGcdLogHarmonicReplacement` | `tendsto_selbergGcdLogPrincipalScaledLogPowerModel_div_log_pow` |
+
+plus the structural correction of brick 5af (the direct/reflected cross must be evaluated, not
+bounded).
+
+## The explicit shape of `corr^{log}` (worked out 2026-08-29, for the next session)
+
+`corr^{log}` is the derivation of the bivariate-multiplicative correction: for coprime pairs
+
+```text
+corr^{log}(ac, bd) = corr^{log}(a,b)·corr(c,d) + corr(a,b)·corr^{log}(c,d),
+```
+
+so `corr^{log}(m,n) = ∑_p corr^{log}(p^{a_p}, p^{b_p})·∏_{q≠p} corr(q^{a_q}, q^{b_q})`, i.e.
+`corr^{log} = ∑_p L_p ⊗ corr^{(p)}` with `corr^{(p)}` the correction with the `p`-fibre deleted.
+In the corpus's `(r,u,v)`-pushforward parameterization (`selbergCorrectionWeight`), `corr^{(p)}` is
+just the sub-sum over squarefree supports `r` with `p ∤ r`, so `‖corr^{(p)}‖₁ ≤ ‖corr‖₁` for free.
+
+**The local factor is completely explicit.**  From
+`corr_p(s) = E_p(s)·(1 − p^{s−1}XY/p)/((1−X/p)(1−Y/p))`, `E_p(s) = 1 − X/p − Y/p + p^{s−1}XY/p`,
+
+```text
+∂_s corr_p(s)|_{s=1} = (log p / p²)·XY(X + Y − 2XY)/((1−X/p)(1−Y/p)),
+```
+
+whose coefficients are
+
+```text
+L_p(p^α, p^β) = (log p)·p^{-2-α-β}·( p³·[α≥2, β≥1] + p³·[α≥1, β≥2] − 2p⁴·[α≥2, β≥2] ).
+```
+
+Summing geometric series (`∑_{α≥2} p^{-α} ≤ 2p^{-2}`, `∑_{β≥1} p^{-β} ≤ 2p^{-1}`):
+
+```text
+‖L_p‖₁ ≤ (log p / p²)·(4 + 4 + 8) = 16 log p / p²,        ∑_p 16 log p / p² < ∞.
+```
+
+Hence `‖corr^{log}‖₁ ≤ (∑_p 16 log p/p²)·‖corr‖₁ < ∞`, which is all the route needs.
+
+**Sanity check of the leading coefficient.**  The `XY` coefficient of `corr_p` is `−1/p²`
+(consistent with the corpus's `selbergCorrectionWeight r u v = (μ(r)/r²)A_r(u)A_r(v)`), and
+`L_p` starts at degree three with coefficient `log p / p²` — one degree higher, as it must be, since
+`corr^{log}` has no `XY` term.
+
+**Why no other derivation works.**  A weight `w(m,n)` is additive over bivariate Dirichlet
+convolution iff `w(m,n) = α log m + β log n`; `log(m,n)` is not of that form, so the `s`-derivative
+of the Euler product is the only route.  (What *is* available for free: `f ↦ f·log(mn)` is a
+genuine derivation, and `Λ₂(diag)(d,d) = 2 log d/d = 2·diag_log`, which gives
+`𝒫^{log} = ½[Λ₂(𝒫) − diag ∗ Λ₂(mp)]` — useful as a cross-check but not a substitute, because
+`Λ₂(c)` is the *pure-log* weight `log(mn)`, not the gcd weight.)
+
+Note also, for the `Λ₂(mp)` collapse if it is ever needed: the `μ·log` kernel is elementary,
+`K̃_i(Y) = ∑_{u≤Y} (μ(u) log u / u)·log(Y/u)^i = log Y·K_i(Y) − K_{i+1}(Y)`, so it needs no new
+Möbius theory.

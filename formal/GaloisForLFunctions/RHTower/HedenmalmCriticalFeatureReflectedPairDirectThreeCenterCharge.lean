@@ -124,7 +124,8 @@ theorem finite_strictRight_card_mul_reflectedDirectThreeCenterCharge_le_offLineL
   have hdisjoint : Disjoint S R := by
     rw [Finset.disjoint_left]
     intro q hqS hqR
-    rw [R, Finset.mem_image] at hqR
+    change q ∈ S.image xiZeroCopyLineConjEquiv at hqR
+    rw [Finset.mem_image] at hqR
     obtain ⟨p, hpS, hpq⟩ := hqR
     subst q
     have hp := hright p hpS
@@ -134,15 +135,18 @@ theorem finite_strictRight_card_mul_reflectedDirectThreeCenterCharge_le_offLineL
   have hcardR : R.card = S.card := by
     exact Finset.card_image_of_injective S xiZeroCopyLineConjEquiv.injective
   have hcardU : U.card = 2 * S.card := by
-    rw [U, Finset.card_union_of_disjoint hdisjoint, hcardR]
+    change (S ∪ R).card = 2 * S.card
+    rw [Finset.card_union_of_disjoint hdisjoint, hcardR]
     omega
   have hoffU : ∀ q ∈ U, (q.1 : ℂ).re ≠ 1 / 2 := by
     intro q hqU
-    rw [U, Finset.mem_union] at hqU
+    change q ∈ S ∪ R at hqU
+    rw [Finset.mem_union] at hqU
     rcases hqU with hqS | hqR
     · exact xiZeroCopy_re_ne_half_of_I_mul_xiSpectralPoint_re_ne_zero q
         (ne_of_gt (hright q hqS))
-    · rw [R, Finset.mem_image] at hqR
+    · change q ∈ S.image xiZeroCopyLineConjEquiv at hqR
+      rw [Finset.mem_image] at hqR
       obtain ⟨p, hpS, rfl⟩ := hqR
       apply xiZeroCopy_re_ne_half_of_I_mul_xiSpectralPoint_re_ne_zero
       rw [I_mul_xiSpectralPoint_lineConj_re]
@@ -152,10 +156,12 @@ theorem finite_strictRight_card_mul_reflectedDirectThreeCenterCharge_le_offLineL
       round (xiSpectralPoint q).re ∈ K ∧
       round (xiSpectralPoint q).re + 1 ∈ K := by
     intro q hqU
-    rw [U, Finset.mem_union] at hqU
+    change q ∈ S ∪ R at hqU
+    rw [Finset.mem_union] at hqU
     rcases hqU with hqS | hqR
     · exact hcenters q hqS
-    · rw [R, Finset.mem_image] at hqR
+    · change q ∈ S.image xiZeroCopyLineConjEquiv at hqR
+      rw [Finset.mem_image] at hqR
       obtain ⟨p, hpS, rfl⟩ := hqR
       have hre : (xiSpectralPoint (xiZeroCopyLineConjEquiv p)).re =
           (xiSpectralPoint p).re := by
