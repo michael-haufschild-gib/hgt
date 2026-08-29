@@ -34,15 +34,9 @@ theorem periodMultiplier_zpow_ne_one {τ : ℂ} (hτ : τ.im ≠ 0) {n : ℤ} (h
   obtain ⟨k, hk⟩ := hcon
   have hpi : (Real.pi : ℂ) ≠ 0 := by
     exact_mod_cast Real.pi_ne_zero
-  have hI : (Complex.I : ℂ) ≠ 0 := Complex.I_ne_zero
   have hnτ : (n : ℂ) * τ = (k : ℂ) := by
-    have h2 : (2 : ℂ) * Real.pi * Complex.I ≠ 0 := by
-      refine mul_ne_zero (mul_ne_zero two_ne_zero hpi) hI
     field_simp at hk
-    rcases mul_eq_mul_right_iff.1 (by linear_combination hk : ((n : ℂ) * τ) * (2 * Real.pi * Complex.I)
-        = (k : ℂ) * (2 * Real.pi * Complex.I)) with h | h
-    · exact h
-    · exact absurd h h2
+    exact hk
   have him : ((n : ℂ) * τ).im = 0 := by
     rw [hnτ]
     simp
@@ -74,6 +68,63 @@ theorem exp_mem_zpow_iff_lattice {τ : ℂ} (h : ℂ) :
     refine ⟨m, ?_⟩
     rw [periodMultiplier_zpow, Complex.exp_eq_exp_iff_exists_int]
     exact ⟨k, by ring⟩
+
+
+theorem mem_orbitUnion_one_iff {q : ℂ} (hq : q ≠ 0) (γ : ℂ) :
+    γ ∈ orbitUnion q ({1} : Finset ℂ) ↔ γ ≠ 0 ∧ ∃ n : ℤ, γ = q ^ n := by
+  constructor
+  · rintro ⟨hγ, n, hn⟩
+    refine ⟨hγ, -n, ?_⟩
+    rw [Finset.mem_singleton] at hn
+    rw [zpow_neg]
+    have hqn : q ^ n ≠ 0 := zpow_ne_zero n hq
+    field_simp
+    exact hn
+  · rintro ⟨hγ, n, rfl⟩
+    refine ⟨hγ, -n, ?_⟩
+    rw [Finset.mem_singleton, ← zpow_add₀ hq]
+    simp
+  
+theorem orbitUnion_one_div_closed {q : ℂ} (hq : q ≠ 0) :
+    ∀ x ∈ orbitUnion q ({1} : Finset ℂ), ∀ y ∈ orbitUnion q ({1} : Finset ℂ),
+      x / y ∈ orbitUnion q ({1} : Finset ℂ) := by
+  intro x hx y hy
+  obtain ⟨hx0, n, rfl⟩ := (mem_orbitUnion_one_iff hq x).1 hx
+  obtain ⟨hy0, m, rfl⟩ := (mem_orbitUnion_one_iff hq y).1 hy
+  refine (mem_orbitUnion_one_iff hq _).2 ⟨div_ne_zero hx0 hy0, n - m, ?_⟩
+  rw [zpow_sub₀ hq]
+
+/-- **Every rank-two lattice is an exact summability stabilizer.**  For the one-point residue class
+`r = x/(x−1)` the scaling stabilizer is exactly the multiplicative orbit `q^ℤ`, whose additive
+pullback under `h ↦ exp(2πih)` is the lattice `ℤ + τℤ`. -/
+theorem qSummable_simplePoleUnit_one_iff_lattice {τ : ℂ} (hτ : τ.im ≠ 0) (h : ℂ) :
+    QSummable (periodMultiplier τ) (periodMultiplier_ne_zero τ)
+        (ratFuncScale (Complex.exp (2 * Real.pi * Complex.I * h)) (Complex.exp_ne_zero _)
+            (simplePoleSum ({1} : Finset ℂ)) - simplePoleSum ({1} : Finset ℂ))
+      ↔ ∃ m k : ℤ, h = (m : ℂ) * τ + (k : ℂ) := by
+  set q : ℂ := periodMultiplier τ with hqdef
+  have hq : q ≠ 0 := periodMultiplier_ne_zero τ
+  have hqtor : ∀ n : ℤ, n ≠ 0 → q ^ n ≠ 1 := fun n hn => periodMultiplier_zpow_ne_one hτ hn
+  have hS0 : ∀ α ∈ ({1} : Finset ℂ), α ≠ 0 := by
+    intro α hα
+    rw [Finset.mem_singleton] at hα
+    rw [hα]
+    exact one_ne_zero
+  have hSorb : ∀ α ∈ ({1} : Finset ℂ), ∀ β ∈ ({1} : Finset ℂ), ∀ n : ℤ, α = β * q ^ n → n = 0 := by
+    intro α hα β hβ n hn
+    rw [Finset.mem_singleton] at hα hβ
+    rw [hα, hβ, one_mul] at hn
+    by_contra hcon
+    exact hqtor n hcon hn.symm
+  rw [qSummable_ratFuncScale_simplePoleSum_sub_iff hq hqtor hS0 hSorb ⟨1, Finset.mem_singleton_self 1⟩
+    (orbitUnion_one_div_closed hq) (Complex.exp_ne_zero _)]
+  rw [mem_orbitUnion_one_iff hq]
+  constructor
+  · rintro ⟨-, n, hn⟩
+    exact (exp_mem_zpow_iff_lattice h).1 ⟨n, hn⟩
+  · intro hlat
+    obtain ⟨n, hn⟩ := (exp_mem_zpow_iff_lattice h).2 hlat
+    exact ⟨Complex.exp_ne_zero _, n, hn⟩
 
 end
 

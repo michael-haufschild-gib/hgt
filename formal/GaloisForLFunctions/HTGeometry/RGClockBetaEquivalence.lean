@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.AffineFirstOrderDifferentialAlgebraicity
 import GaloisForLFunctions.HTGeometry.DifferentialAdjoinFiniteTrdeg
 import GaloisForLFunctions.HTGeometry.FiniteDifferentialCircuitBoundary
+import GaloisForLFunctions.HTGeometry.ScaledDerivationTransfer
 
 /-!
 # The exact RG clock and the exact beta field
@@ -90,7 +91,7 @@ theorem differentialAlgebraicOver_clock_iff_beta {c : F} (hc : c ≠ 0) {κ β �
         ⟨_, ha⟩ ⟨0, IntermediateField.zero_mem _⟩ ?_
       show κ′ = (algebraMap F L c / β) * κ + 0
       field_simp
-      linear_combination -hβ
+      linear_combination hβ
   · constructor
     · intro hκDA
       have hmemκ : κ ∈ differentialAdjoin F ({κ} : Set L) := subset_differentialAdjoin F ({κ} : Set L) rfl
@@ -115,6 +116,31 @@ theorem differentialAlgebraicOver_clock_iff_beta {c : F} (hc : c ≠ 0) {κ β �
       show κ′ = (algebraMap F L c * τ′) * κ + 0
       rw [add_zero]
       linear_combination -hτ
+
+/-! ## The chart change -/
+
+set_option maxHeartbeats 1000000 in
+/-- **Chart change.**  If a derivation-closed intermediate field of finite transcendence degree
+carries a second derivation obtained from the first by scaling with one of its own elements, then
+differential algebraicity over that field for the second derivation implies differential
+algebraicity over the base for the first.  This is the algebraic form of "differentially algebraic
+germs are closed under composition with a differentially algebraic change of variable". -/
+theorem differentialAlgebraicOver_of_scaled_over_intermediate
+    (D₁ D₂ : Differential L) (E : IntermediateField F L)
+    (hE₁ : @DerivationClosed F L _ _ _ D₁ E) (hE₂ : @DerivationClosed F L _ _ _ D₂ E)
+    (hcompat₁ : ∀ y : F, D₁.deriv (algebraMap F L y) = algebraMap F L (y′))
+    (u : E) (hscale : ∀ y : L, D₂.deriv y = (u : L) * D₁.deriv y)
+    (htr : Algebra.trdeg F E < Cardinal.aleph0)
+    {x : L} (hx : @DifferentialAlgebraicOver E L _ _ _ D₂ x) :
+    @DifferentialAlgebraicOver F L _ _ _ D₁ x := by
+  have hx₁ : @DifferentialAlgebraicOver E L _ _ _ D₁ x :=
+    @differentialAlgebraicOver_scaled E L _ _ _ _
+      (@derivationClosedDifferential F L _ _ _ D₂ E hE₂)
+      (@derivationClosedDifferential F L _ _ _ D₁ E hE₁) D₂ D₁ u
+      (fun y => rfl) (fun y => rfl) hscale x hx
+  haveI : @DifferentialAlgebra F L _ _ _ _ D₁ := ⟨fun y => hcompat₁ y⟩
+  exact @differentialAlgebraicOver_of_intermediate_trdeg_lt_aleph0 F L _ _ _ _ D₁ _ _ E hE₁ htr
+    x hx₁
 
 end
 

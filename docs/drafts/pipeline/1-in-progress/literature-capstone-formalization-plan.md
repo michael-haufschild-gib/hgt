@@ -437,3 +437,39 @@ conductors and epsilon factors at every ramified and archimedean place, and prov
 product is `-1`.  Neither finite-place Euler-product convergence nor the source citation can
 replace that calculation.  The prior attribution to Fiorilli--Jouve and the claim that a distinct
 Serre polynomial supplied this witness are retracted.
+
+## 2026-08-29 fixed-base separation of the two Q8 radical presentations
+
+`[LEAN-PROVED]` `Q8PresentationSquareClassSeparation.lean` closes the immediate
+cross-presentation question raised by the primary-source correction.  Put
+
+```text
+A = (5 + sqrt(5)) * (41 + 6 * sqrt(41))
+B = (5 + sqrt(5)) * (41 + sqrt(205))
+```
+
+over the common base `F = Q(sqrt(5), sqrt(41))`.  Lean proves
+
+```lean
+serreQ8TopRadicand_div_deningerQ8RootNumberNegOneTopRadicand_not_square
+  (w : F) : w ^ 2 ≠ B / A
+```
+
+The proof is not a coefficient comparison masquerading as field theory.  It computes the quotient's
+relative norm as `36/5` and trace as `(3362 - 492*sqrt(5))/205`; a hypothetical square gives a
+fixed trace whose square is either `82/5` or
+`(3362 - 984*sqrt(5))/205`.  Both are then ruled out using the literal `1, sqrt(5)` coordinate
+rigidity already proved for the first quadratic field.
+
+`[FALSIFIED]` Any planned Frankenstein transport that identifies these two top radicals by a
+multiplier in their shared biquadratic base is false.  In particular,
+`SerreQ8MonomialSourceLaw.lean` cannot be moved to the source-selected
+`41 + 6*sqrt(41)` field by the ordinary Kummer square-class transport.
+
+`[BRIDGE]` Fröhlich's 1972 theorem, *Artin-root numbers and normal integral bases for quaternion
+fields* ([bibliographic record](https://eudml.org/doc/142165)), supplies the surviving literature
+mechanism: for a tame quaternion extension over `Q`, normal-integral-basis freeness is equivalent
+to root number `+1` for the unique symplectic character.  Thus a source proof that the selected
+field is tame and its integer ring is not free over `Z[Q8]` would force the required `-1` sign and
+simultaneously provide the Galois-module obstruction.  This is not formalized: the corpus lacks a
+literal ring-of-integers, ramification, and locally-free-class framework for the selected field.

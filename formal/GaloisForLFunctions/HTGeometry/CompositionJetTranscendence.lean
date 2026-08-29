@@ -42,8 +42,9 @@ theorem not_algebraic_comp_over_jet {f g : ℂ → ℂ} (hf : Differentiable ℂ
     fun i z => (haan i z (Set.mem_univ z)).meromorphicAt
   have hcomp : Differentiable ℂ fun w => f (g w) := fun x => (hf (g x)).comp x (hg x)
   have hcompan : AnalyticOnNhd ℂ (fun w => f (g w)) (Set.univ : Set ℂ) :=
-    fun x _ => (hcomp x).analyticAt
-  have hcompm : Meromorphic (fun w => f (g w)) := fun z => (hcomp z).meromorphicAt
+    hcomp.differentiableOn.analyticOnNhd isOpen_univ
+  have hcompm : Meromorphic (fun w => f (g w)) :=
+    fun z => (hcompan z (Set.mem_univ z)).meromorphicAt
   -- the top coefficient is not identically zero, so its zero set is countable
   have hadiff : Differentiable ℂ (a N) := fun x => (haan N x (Set.mem_univ x)).differentiableAt
   have haorder : ∀ z, meromorphicOrderAt (a N) z ≠ ⊤ := by
@@ -96,6 +97,7 @@ theorem not_algebraic_comp_over_jet {f g : ℂ → ℂ} (hf : Differentiable ℂ
     rw [habs] at hzn
     exact ⟨z, hcon, hzn⟩
   have hroot := proximity_le_of_root_characteristic_top hN hr hcompm ham hcirc hrel
+  rw [← hCn] at hroot
   have hTeq : characteristic (fun w => f (g w)) ⊤ r
       = proximity (fun w => f (g w)) ⊤ r := by
     rw [GaloisForLFunctions.Nevanlinna.characteristic_top_eq_proximity_of_analyticOnNhd hcompan]
@@ -120,6 +122,10 @@ theorem not_algebraic_comp_over_jet {f g : ℂ → ℂ} (hf : Differentiable ℂ
   rw [hjetsum] at hsum
   have hlog0 : 0 ≤ Real.log r := Real.log_nonneg hr
   have hKlog : 0 ≤ (N : ℝ) := Nat.cast_nonneg _
-  nlinarith [hroot, hsum, hlog0, hK0, hKlog]
+  have hCn0 : 0 ≤ Cn := le_trans (abs_nonneg _) (le_max_left _ _)
+  have hlogN0 : 0 ≤ Real.log (N : ℝ) := Real.log_nonneg (by exact_mod_cast hN)
+  have hprod : 0 ≤ (Real.log (N : ℝ) + (N : ℝ) * Cn) * Real.log r :=
+    mul_nonneg (add_nonneg hlogN0 (mul_nonneg hKlog hCn0)) hlog0
+  nlinarith [hroot, hsum, hlog0, hK0, hKlog, hCn0, hlogN0, hprod]
 
 end GaloisForLFunctions.HTGeometry

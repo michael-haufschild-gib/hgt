@@ -163,6 +163,220 @@ theorem tsum_geomTailOne_le {p : ℕ} (hp : 2 ≤ p) :
     by_contra hnot
     exact hne (geomTailOne_support x hnot)
 
+/-- The explicit majorant of the differentiated local factor. -/
+def selbergCorrectionLogMajorant (p α β : ℕ) : ℝ :=
+  (Real.log (p : ℝ) / (p : ℝ) ^ 2) *
+    (geomTailTwo p α * geomTailOne p β + geomTailOne p α * geomTailTwo p β +
+      2 * (geomTailTwo p α * geomTailTwo p β))
+
+/-- **The differentiated local factor is dominated termwise by the explicit majorant.** -/
+theorem abs_selbergCorrectionLogLocal_le {p : ℕ} (hp : 2 ≤ p) (α β : ℕ) :
+    |selbergCorrectionLogLocal p α β| ≤ selbergCorrectionLogMajorant p α β := by
+  have hpR : (0 : ℝ) < (p : ℝ) := by
+    have : (2 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hp
+    linarith
+  have hlogp : 0 ≤ Real.log (p : ℝ) := by
+    refine Real.log_nonneg ?_
+    have : (2 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hp
+    linarith
+  have hcoef : 0 ≤ Real.log (p : ℝ) / (p : ℝ) ^ 2 := by positivity
+  have hA : (if 2 ≤ α ∧ 1 ≤ β then (p : ℝ) ^ 3 else 0) / (p : ℝ) ^ (2 + α + β) =
+      (1 / (p : ℝ) ^ 2) * (geomTailTwo p α * geomTailOne p β) := by
+    rw [geomTailTwo, geomTailOne]
+    by_cases hab : 2 ≤ α ∧ 1 ≤ β
+    · rw [if_pos hab, if_pos hab.1, if_pos hab.2]
+      field_simp
+      ring
+    · rw [if_neg hab]
+      rcases not_and_or.mp hab with h | h
+      · rw [if_neg h]; simp
+      · rw [if_neg h]; simp
+  have hB : (if 1 ≤ α ∧ 2 ≤ β then (p : ℝ) ^ 3 else 0) / (p : ℝ) ^ (2 + α + β) =
+      (1 / (p : ℝ) ^ 2) * (geomTailOne p α * geomTailTwo p β) := by
+    rw [geomTailTwo, geomTailOne]
+    by_cases hab : 1 ≤ α ∧ 2 ≤ β
+    · rw [if_pos hab, if_pos hab.1, if_pos hab.2]
+      field_simp
+      ring
+    · rw [if_neg hab]
+      rcases not_and_or.mp hab with h | h
+      · rw [if_neg h]; simp
+      · rw [if_neg h]; simp
+  have hC : (if 2 ≤ α ∧ 2 ≤ β then 2 * (p : ℝ) ^ 4 else 0) / (p : ℝ) ^ (2 + α + β) =
+      (1 / (p : ℝ) ^ 2) * (2 * (geomTailTwo p α * geomTailTwo p β)) := by
+    simp only [geomTailTwo]
+    by_cases hab : 2 ≤ α ∧ 2 ≤ β
+    · rw [if_pos hab, if_pos hab.1, if_pos hab.2]
+      field_simp
+      ring
+    · rw [if_neg hab]
+      rcases not_and_or.mp hab with h | h
+      · rw [if_neg h]; simp
+      · rw [if_neg h]; simp
+  have hsplit : selbergCorrectionLogLocal p α β =
+      Real.log (p : ℝ) * ((1 / (p : ℝ) ^ 2) * (geomTailTwo p α * geomTailOne p β) +
+        (1 / (p : ℝ) ^ 2) * (geomTailOne p α * geomTailTwo p β) -
+        (1 / (p : ℝ) ^ 2) * (2 * (geomTailTwo p α * geomTailTwo p β))) := by
+    rw [selbergCorrectionLogLocal, ← hA, ← hB, ← hC]
+    field_simp
+  rw [hsplit, selbergCorrectionLogMajorant, abs_mul, abs_of_nonneg hlogp]
+  have hnn1 : 0 ≤ geomTailTwo p α * geomTailOne p β :=
+    mul_nonneg (geomTailTwo_nonneg p α) (geomTailOne_nonneg p β)
+  have hnn2 : 0 ≤ geomTailOne p α * geomTailTwo p β :=
+    mul_nonneg (geomTailOne_nonneg p α) (geomTailTwo_nonneg p β)
+  have hnn3 : 0 ≤ geomTailTwo p α * geomTailTwo p β :=
+    mul_nonneg (geomTailTwo_nonneg p α) (geomTailTwo_nonneg p β)
+  have hinv : (0 : ℝ) < 1 / (p : ℝ) ^ 2 := by positivity
+  have hbound : |(1 / (p : ℝ) ^ 2) * (geomTailTwo p α * geomTailOne p β) +
+      (1 / (p : ℝ) ^ 2) * (geomTailOne p α * geomTailTwo p β) -
+      (1 / (p : ℝ) ^ 2) * (2 * (geomTailTwo p α * geomTailTwo p β))| ≤
+      (1 / (p : ℝ) ^ 2) * (geomTailTwo p α * geomTailOne p β +
+        geomTailOne p α * geomTailTwo p β +
+        2 * (geomTailTwo p α * geomTailTwo p β)) := by
+    rw [abs_le]
+    constructor <;> nlinarith [hnn1, hnn2, hnn3, hinv]
+  calc
+    Real.log (p : ℝ) * |(1 / (p : ℝ) ^ 2) * (geomTailTwo p α * geomTailOne p β) +
+        (1 / (p : ℝ) ^ 2) * (geomTailOne p α * geomTailTwo p β) -
+        (1 / (p : ℝ) ^ 2) * (2 * (geomTailTwo p α * geomTailTwo p β))|
+        ≤ Real.log (p : ℝ) * ((1 / (p : ℝ) ^ 2) * (geomTailTwo p α * geomTailOne p β +
+            geomTailOne p α * geomTailTwo p β +
+            2 * (geomTailTwo p α * geomTailTwo p β))) :=
+      mul_le_mul_of_nonneg_left hbound hlogp
+    _ = Real.log (p : ℝ) / (p : ℝ) ^ 2 *
+        (geomTailTwo p α * geomTailOne p β + geomTailOne p α * geomTailTwo p β +
+          2 * (geomTailTwo p α * geomTailTwo p β)) := by ring
+
+private theorem summable_pair_TwoOne {p : ℕ} (hp : 2 ≤ p) :
+    Summable (fun ab : ℕ × ℕ => geomTailTwo p ab.1 * geomTailOne p ab.2) :=
+  (summable_geomTailTwo hp).mul_of_nonneg (summable_geomTailOne hp)
+    (fun i => geomTailTwo_nonneg p i) (fun i => geomTailOne_nonneg p i)
+
+private theorem summable_pair_OneTwo {p : ℕ} (hp : 2 ≤ p) :
+    Summable (fun ab : ℕ × ℕ => geomTailOne p ab.1 * geomTailTwo p ab.2) :=
+  (summable_geomTailOne hp).mul_of_nonneg (summable_geomTailTwo hp)
+    (fun i => geomTailOne_nonneg p i) (fun i => geomTailTwo_nonneg p i)
+
+private theorem summable_pair_TwoTwo {p : ℕ} (hp : 2 ≤ p) :
+    Summable (fun ab : ℕ × ℕ => geomTailTwo p ab.1 * geomTailTwo p ab.2) :=
+  (summable_geomTailTwo hp).mul_of_nonneg (summable_geomTailTwo hp)
+    (fun i => geomTailTwo_nonneg p i) (fun i => geomTailTwo_nonneg p i)
+
+theorem selbergCorrectionLogMajorant_nonneg {p : ℕ} (hp : 2 ≤ p) (α β : ℕ) :
+    0 ≤ selbergCorrectionLogMajorant p α β := by
+  have hlogp : 0 ≤ Real.log (p : ℝ) := by
+    refine Real.log_nonneg ?_
+    have : (2 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hp
+    linarith
+  have hpR : (0 : ℝ) < (p : ℝ) := by
+    have : (2 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hp
+    linarith
+  rw [selbergCorrectionLogMajorant]
+  have h1 := mul_nonneg (geomTailTwo_nonneg p α) (geomTailOne_nonneg p β)
+  have h2 := mul_nonneg (geomTailOne_nonneg p α) (geomTailTwo_nonneg p β)
+  have h3 := mul_nonneg (geomTailTwo_nonneg p α) (geomTailTwo_nonneg p β)
+  have hc : 0 ≤ Real.log (p : ℝ) / (p : ℝ) ^ 2 := by positivity
+  nlinarith [h1, h2, h3, hc]
+
+theorem summable_selbergCorrectionLogMajorant {p : ℕ} (hp : 2 ≤ p) :
+    Summable (fun ab : ℕ × ℕ => selbergCorrectionLogMajorant p ab.1 ab.2) := by
+  have h := (((summable_pair_TwoOne hp).add (summable_pair_OneTwo hp)).add
+    ((summable_pair_TwoTwo hp).mul_left 2)).mul_left
+      (Real.log (p : ℝ) / (p : ℝ) ^ 2)
+  refine h.congr ?_
+  intro ab
+  rw [selbergCorrectionLogMajorant]
+
+/-- **The differentiated local factor has `ℓ¹` mass at most `16 log p / p²`.** -/
+theorem tsum_selbergCorrectionLogMajorant_le {p : ℕ} (hp : 2 ≤ p) :
+    (∑' ab : ℕ × ℕ, selbergCorrectionLogMajorant p ab.1 ab.2) ≤
+      16 * Real.log (p : ℝ) / (p : ℝ) ^ 2 := by
+  have hlogp : 0 ≤ Real.log (p : ℝ) := by
+    refine Real.log_nonneg ?_
+    have : (2 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hp
+    linarith
+  have hpR : (0 : ℝ) < (p : ℝ) := by
+    have : (2 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hp
+    linarith
+  have hc : 0 ≤ Real.log (p : ℝ) / (p : ℝ) ^ 2 := by positivity
+  have hTO : (∑' ab : ℕ × ℕ, geomTailTwo p ab.1 * geomTailOne p ab.2) ≤ 4 := by
+    rw [← (summable_geomTailTwo hp).tsum_mul_tsum (summable_geomTailOne hp)
+      (summable_pair_TwoOne hp)]
+    have h1 := tsum_geomTailTwo_le hp
+    have h2 := tsum_geomTailOne_le hp
+    have hnn1 : 0 ≤ ∑' α : ℕ, geomTailTwo p α :=
+      tsum_nonneg fun α => geomTailTwo_nonneg p α
+    have hnn2 : 0 ≤ ∑' β : ℕ, geomTailOne p β :=
+      tsum_nonneg fun β => geomTailOne_nonneg p β
+    nlinarith [h1, h2, hnn1, hnn2]
+  have hOT : (∑' ab : ℕ × ℕ, geomTailOne p ab.1 * geomTailTwo p ab.2) ≤ 4 := by
+    rw [← (summable_geomTailOne hp).tsum_mul_tsum (summable_geomTailTwo hp)
+      (summable_pair_OneTwo hp)]
+    have h1 := tsum_geomTailOne_le hp
+    have h2 := tsum_geomTailTwo_le hp
+    have hnn1 : 0 ≤ ∑' α : ℕ, geomTailOne p α :=
+      tsum_nonneg fun α => geomTailOne_nonneg p α
+    have hnn2 : 0 ≤ ∑' β : ℕ, geomTailTwo p β :=
+      tsum_nonneg fun β => geomTailTwo_nonneg p β
+    nlinarith [h1, h2, hnn1, hnn2]
+  have hTT : (∑' ab : ℕ × ℕ, geomTailTwo p ab.1 * geomTailTwo p ab.2) ≤ 4 := by
+    rw [← (summable_geomTailTwo hp).tsum_mul_tsum (summable_geomTailTwo hp)
+      (summable_pair_TwoTwo hp)]
+    have h1 := tsum_geomTailTwo_le hp
+    have hnn1 : 0 ≤ ∑' α : ℕ, geomTailTwo p α :=
+      tsum_nonneg fun α => geomTailTwo_nonneg p α
+    nlinarith [h1, hnn1]
+  have hexpand : (∑' ab : ℕ × ℕ, selbergCorrectionLogMajorant p ab.1 ab.2) =
+      (Real.log (p : ℝ) / (p : ℝ) ^ 2) *
+        ((∑' ab : ℕ × ℕ, geomTailTwo p ab.1 * geomTailOne p ab.2) +
+          (∑' ab : ℕ × ℕ, geomTailOne p ab.1 * geomTailTwo p ab.2) +
+          2 * (∑' ab : ℕ × ℕ, geomTailTwo p ab.1 * geomTailTwo p ab.2)) := by
+    calc
+      (∑' ab : ℕ × ℕ, selbergCorrectionLogMajorant p ab.1 ab.2)
+          = ∑' ab : ℕ × ℕ, (Real.log (p : ℝ) / (p : ℝ) ^ 2) *
+              (geomTailTwo p ab.1 * geomTailOne p ab.2 +
+                geomTailOne p ab.1 * geomTailTwo p ab.2 +
+                2 * (geomTailTwo p ab.1 * geomTailTwo p ab.2)) :=
+            tsum_congr fun ab => by rw [selbergCorrectionLogMajorant]
+      _ = (Real.log (p : ℝ) / (p : ℝ) ^ 2) *
+            ∑' ab : ℕ × ℕ, (geomTailTwo p ab.1 * geomTailOne p ab.2 +
+              geomTailOne p ab.1 * geomTailTwo p ab.2 +
+              2 * (geomTailTwo p ab.1 * geomTailTwo p ab.2)) := tsum_mul_left
+      _ = _ := by
+            congr 1
+            rw [((summable_pair_TwoOne hp).add (summable_pair_OneTwo hp)).tsum_add
+                ((summable_pair_TwoTwo hp).mul_left 2),
+              (summable_pair_TwoOne hp).tsum_add (summable_pair_OneTwo hp),
+              tsum_mul_left]
+  rw [hexpand]
+  have hsum : (∑' ab : ℕ × ℕ, geomTailTwo p ab.1 * geomTailOne p ab.2) +
+      (∑' ab : ℕ × ℕ, geomTailOne p ab.1 * geomTailTwo p ab.2) +
+      2 * (∑' ab : ℕ × ℕ, geomTailTwo p ab.1 * geomTailTwo p ab.2) ≤ 16 := by
+    linarith [hTO, hOT, hTT]
+  calc
+    (Real.log (p : ℝ) / (p : ℝ) ^ 2) *
+        ((∑' ab : ℕ × ℕ, geomTailTwo p ab.1 * geomTailOne p ab.2) +
+          (∑' ab : ℕ × ℕ, geomTailOne p ab.1 * geomTailTwo p ab.2) +
+          2 * (∑' ab : ℕ × ℕ, geomTailTwo p ab.1 * geomTailTwo p ab.2))
+        ≤ (Real.log (p : ℝ) / (p : ℝ) ^ 2) * 16 :=
+      mul_le_mul_of_nonneg_left hsum hc
+    _ = 16 * Real.log (p : ℝ) / (p : ℝ) ^ 2 := by ring
+
+/-- **Absolute summability of the differentiated local factor, with its mass bound.** -/
+theorem summable_abs_selbergCorrectionLogLocal {p : ℕ} (hp : 2 ≤ p) :
+    Summable (fun ab : ℕ × ℕ => |selbergCorrectionLogLocal p ab.1 ab.2|) := by
+  refine Summable.of_nonneg_of_le (fun ab => abs_nonneg _) (fun ab => ?_)
+    (summable_selbergCorrectionLogMajorant hp)
+  exact abs_selbergCorrectionLogLocal_le hp ab.1 ab.2
+
+theorem tsum_abs_selbergCorrectionLogLocal_le {p : ℕ} (hp : 2 ≤ p) :
+    (∑' ab : ℕ × ℕ, |selbergCorrectionLogLocal p ab.1 ab.2|) ≤
+      16 * Real.log (p : ℝ) / (p : ℝ) ^ 2 := by
+  refine le_trans ?_ (tsum_selbergCorrectionLogMajorant_le hp)
+  exact Summable.tsum_le_tsum (fun ab => abs_selbergCorrectionLogLocal_le hp ab.1 ab.2)
+    (summable_abs_selbergCorrectionLogLocal hp)
+    (summable_selbergCorrectionLogMajorant hp)
+
 end
 
 end RHTower.Sieve
