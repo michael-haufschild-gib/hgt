@@ -534,7 +534,8 @@ private theorem moment_reflected_le {b : ℝ} (hb : 0 < b) :
     have h1 : IntegrableOn (fun x : ℝ => Real.exp (-(2 * Real.pi - 11 / 2) * x))
         (Ioi (0 : ℝ)) :=
       integrableOn_exp_mul_Ioi (by linarith) 0
-    exact MeasureTheory.IntegrableOn.congr_fun (h1.const_mul _)
+    exact MeasureTheory.IntegrableOn.congr_fun
+      (h1.const_mul (thetaEnvelopeUpper * Real.exp (-Real.pi)))
       (fun x _ => by simp only [neg_mul]) measurableSet_Ioi
   have hint := MeasureTheory.setIntegral_mono_on
     ((integrable_xiRayLaplaceMoment (-b)).congr (by
@@ -552,7 +553,7 @@ private theorem moment_reflected_le {b : ℝ} (hb : 0 < b) :
           = ∫ x in Ioi (0 : ℝ), Real.exp (-(2 * Real.pi - 11 / 2) * x) := by
         apply MeasureTheory.setIntegral_congr_fun measurableSet_Ioi
         intro x _
-        rw [neg_mul]
+        simp only [neg_mul]
       rw [h4, h3]
       rw [mul_zero, Real.exp_zero]
       field_simp
@@ -592,7 +593,7 @@ private theorem moment_reflected_le {b : ℝ} (hb : 0 < b) :
       = ∫ x in Ioi (0 : ℝ), x * thetaCuspFullSource x * Real.exp (-b * x) := by
     apply MeasureTheory.setIntegral_congr_fun measurableSet_Ioi
     intro x _
-    rw [neg_mul]
+    simp only [neg_mul]
   rw [hcongr]
   calc (∫ x in Ioi (0 : ℝ), x * thetaCuspFullSource x * Real.exp (-b * x))
       ≤ ∫ x in Ioi (0 : ℝ), (thetaEnvelopeUpper * Real.exp (-Real.pi))
@@ -601,7 +602,7 @@ private theorem moment_reflected_le {b : ℝ} (hb : 0 < b) :
             = ∫ x in Ioi (0 : ℝ), x * thetaCuspFullSource x * Real.exp (-(b * x)) := by
           apply MeasureTheory.setIntegral_congr_fun measurableSet_Ioi
           intro x _
-          rw [neg_mul]
+          simp only [neg_mul]
         rw [hcongr2]
         exact hint
     _ = (thetaEnvelopeUpper * Real.exp (-Real.pi)) * (1 / (2 * Real.pi - 11 / 2)) := hval
@@ -659,7 +660,8 @@ private theorem mass_reflected_le {b : ℝ} (hb : 0 < b) :
     have h1 : IntegrableOn (fun x : ℝ => Real.exp (-(2 * Real.pi - 9 / 2) * x))
         (Ioi (0 : ℝ)) :=
       integrableOn_exp_mul_Ioi (by linarith) 0
-    exact MeasureTheory.IntegrableOn.congr_fun (h1.const_mul _)
+    exact MeasureTheory.IntegrableOn.congr_fun
+      (h1.const_mul (thetaEnvelopeUpper * Real.exp (-Real.pi)))
       (fun x _ => by simp only [neg_mul]) measurableSet_Ioi
   have hint := MeasureTheory.setIntegral_mono_on
     ((integrable_xiRayLaplace (-b)).congr (by
@@ -677,7 +679,7 @@ private theorem mass_reflected_le {b : ℝ} (hb : 0 < b) :
           = ∫ x in Ioi (0 : ℝ), Real.exp (-(2 * Real.pi - 9 / 2) * x) := by
         apply MeasureTheory.setIntegral_congr_fun measurableSet_Ioi
         intro x _
-        rw [neg_mul]
+        simp only [neg_mul]
       rw [h4, h3, mul_zero, Real.exp_zero]
       field_simp
     rw [h2]
@@ -769,6 +771,7 @@ private theorem laplace_even_split (b : ℝ) :
   unfold xiRayLaplace
   linarith [hsplit, hreflect]
 
+set_option maxHeartbeats 1600000 in
 /-- Beyond `xiRayLowerBase`, the real-ray logarithmic derivative of the centered Xi function
 is at least `(log b)/8`. -/
 theorem xiRayLogDeriv_ge {b : ℝ} (hb : xiRayLowerBase ≤ b) :
@@ -788,6 +791,7 @@ theorem xiRayLogDeriv_ge {b : ℝ} (hb : xiRayLowerBase ≤ b) :
   have hb9216 : (9216 : ℝ) ≤ b := le_trans xiRayLowerBase_ge hb
   have hb0 : (0 : ℝ) < b := by linarith
   set L := Real.log b with hLdef
+  clear_value L
   have hlog2π0 : 0 ≤ Real.log (2 * Real.pi) := Real.log_nonneg (by nlinarith [Real.pi_gt_three])
   have hL8 : 2 * Real.log (2 * Real.pi) + 2 * Real.exp 1 + 8 ≤ L := by
     have h1 : Real.log ((2 * Real.pi) ^ 2 * Real.exp (2 * Real.exp 1 + 8)) ≤ L := by
@@ -799,6 +803,7 @@ theorem xiRayLogDeriv_ge {b : ℝ} (hb : xiRayLowerBase ≤ b) :
   have hL12 : (12 : ℝ) ≤ L := by linarith
   have hL0 : (0 : ℝ) < L := by linarith
   set Y := L / 4 with hYdef
+  clear_value Y
   have hY2 : (2 : ℝ) ≤ Y := by rw [hYdef]; linarith
   have hY0 : (0 : ℝ) < Y := by linarith
   have hLb : L ≤ b / 2 := by
@@ -812,7 +817,9 @@ theorem xiRayLogDeriv_ge {b : ℝ} (hb : xiRayLowerBase ≤ b) :
     unfold xiRayLowerBase at hb
     linarith
   set c := b + 9 / 2 with hcdef
+  clear_value c
   set x₂ := Real.log (b / (2 * Real.pi)) / 2 with hx₂def
+  clear_value x₂
   have hb2π : (0 : ℝ) < b / (2 * Real.pi) := div_pos hb0 h2π0
   have hlogb2π : Real.log (b / (2 * Real.pi)) = L - Real.log (2 * Real.pi) := by
     rw [hLdef, Real.log_div (ne_of_gt hb0) (ne_of_gt h2π0)]
@@ -830,10 +837,15 @@ theorem xiRayLogDeriv_ge {b : ℝ} (hb : xiRayLowerBase ≤ b) :
   set A' : ℝ := ∫ x in Ioi (0 : ℝ), x * thetaCuspFullSource x * Real.exp (-(b * x)) with hA'def
   set Zp : ℝ := ∫ x in Ioi (0 : ℝ), thetaCuspFullSource x * Real.exp (b * x) with hZpdef
   set Z' : ℝ := ∫ x in Ioi (0 : ℝ), thetaCuspFullSource x * Real.exp (-(b * x)) with hZ'def
-  have hA'le : A' ≤ thetaEnvelopeUpper := moment_reflected_le hb0
-  have hZ'le : Z' ≤ thetaEnvelopeUpper := mass_reflected_le hb0
-  have hNsplit : xiRayLaplaceMoment b = A - A' := moment_even_split b
-  have hZsplit : xiRayLaplace b = Zp + Z' := laplace_even_split b
+  clear_value A A' Zp Z'
+  have hA'le : A' ≤ thetaEnvelopeUpper := by
+    rw [hA'def]; exact moment_reflected_le hb0
+  have hZ'le : Z' ≤ thetaEnvelopeUpper := by
+    rw [hZ'def]; exact mass_reflected_le hb0
+  have hNsplit : xiRayLaplaceMoment b = A - A' := by
+    rw [hAdef, hA'def]; exact moment_even_split b
+  have hZsplit : xiRayLaplace b = Zp + Z' := by
+    rw [hZpdef, hZ'def]; exact laplace_even_split b
   have hintZp : IntegrableOn (fun x : ℝ => thetaCuspFullSource x * Real.exp (b * x))
       (Ioi (0 : ℝ)) := (integrable_xiRayLaplace b).integrableOn
   have hintA : IntegrableOn (fun x : ℝ => x * thetaCuspFullSource x * Real.exp (b * x))
@@ -844,8 +856,10 @@ theorem xiRayLogDeriv_ge {b : ℝ} (hb : xiRayLowerBase ≤ b) :
     intro t ht ht'
     exact absurd ht.2 (not_le.mpr ht')
   set S : ℝ := ∫ x in Ioc (0 : ℝ) Y, thetaCuspFullSource x * Real.exp (b * x) with hSdef
-  have hS0 : 0 ≤ S :=
-    setIntegral_nonneg measurableSet_Ioc fun x _ => laplace_integrand_nonneg b x
+  clear_value S
+  have hS0 : 0 ≤ S := by
+    rw [hSdef]
+    exact setIntegral_nonneg measurableSet_Ioc fun x _ => laplace_integrand_nonneg b x
   have hZpsplit : S + (∫ x in Ioi Y, thetaCuspFullSource x * Real.exp (b * x)) = Zp := by
     rw [hSdef, hZpdef, ← hIoiu, MeasureTheory.setIntegral_union hdisj measurableSet_Ioi
       (hintZp.mono_set (by rw [← hIoiu]; exact subset_union_left))
@@ -895,16 +909,21 @@ theorem xiRayLogDeriv_ge {b : ℝ} (hb : xiRayLowerBase ≤ b) :
         have h1 : Real.exp (-Real.pi * Real.exp (2 * x)) ≤ 1 := by
           have h := Real.exp_le_exp.mpr
             (show -Real.pi * Real.exp (2 * x) ≤ 0 by
-              nlinarith [Real.pi_pos, Real.exp_pos (2 * x)])
+              rw [neg_mul]
+              exact neg_nonpos.mpr (mul_nonneg Real.pi_pos.le (Real.exp_pos _).le))
           rwa [Real.exp_zero] at h
-        nlinarith [Real.exp_pos (9 * x / 2)]
+        calc Real.exp (9 * x / 2) * Real.exp (-Real.pi * Real.exp (2 * x))
+            ≤ Real.exp (9 * x / 2) * 1 :=
+              mul_le_mul_of_nonneg_left h1 (Real.exp_pos _).le
+          _ = Real.exp (9 * x / 2) := mul_one _
       have hpack : Real.exp (9 * x / 2) * Real.exp (b * x) = Real.exp ((b + 9 / 2) * x) := by
         rw [← Real.exp_add]
         ring_nf
       have hcx : Real.exp ((b + 9 / 2) * x) ≤ Real.exp (c * Y) := by
         apply Real.exp_le_exp.mpr
         rw [hcdef]
-        nlinarith
+        have h92 : (0 : ℝ) ≤ b + 9 / 2 := by linarith
+        exact mul_le_mul_of_nonneg_left hxY h92
       calc thetaCuspFullSource x * Real.exp (b * x)
           ≤ (thetaEnvelopeUpper * thetaEnvelope x) * Real.exp (b * x) :=
             mul_le_mul_of_nonneg_right hΦ (Real.exp_pos _).le
@@ -918,13 +937,15 @@ theorem xiRayLogDeriv_ge {b : ℝ} (hb : xiRayLowerBase ≤ b) :
     have hconstint : IntegrableOn (fun _ : ℝ => thetaEnvelopeUpper * Real.exp (c * Y))
         (Ioc (0 : ℝ) Y) := by
       apply integrableOn_const
-      rw [Real.volume_Ioc]
-      exact ENNReal.ofReal_ne_top
+      · rw [Real.volume_Ioc]
+        exact ENNReal.ofReal_ne_top
+      · exact enorm_ne_top
     have hSle' := MeasureTheory.setIntegral_mono_on
       (hintZp.mono_set Ioc_subset_Ioi_self) hconstint measurableSet_Ioc hpoint
     rw [MeasureTheory.setIntegral_const, MeasureTheory.measureReal_def, Real.volume_Ioc,
       ENNReal.toReal_ofReal (by linarith : (0 : ℝ) ≤ Y - 0), sub_zero, smul_eq_mul] at hSle'
-    calc S ≤ Y * (thetaEnvelopeUpper * Real.exp (c * Y)) := hSle'
+    calc S = ∫ x in Ioc (0 : ℝ) Y, thetaCuspFullSource x * Real.exp (b * x) := hSdef
+      _ ≤ Y * (thetaEnvelopeUpper * Real.exp (c * Y)) := hSle'
       _ = thetaEnvelopeUpper * Y * Real.exp (c * Y) := by ring
   have hslab : thetaEnvelopeLower / 2 * Real.exp (b * x₂ - Real.exp 1 * b / 2) ≤ Zp := by
     have hpoint : ∀ x ∈ Ioc x₂ (x₂ + 1 / 2),
@@ -953,10 +974,9 @@ theorem xiRayLogDeriv_ge {b : ℝ} (hb : xiRayLowerBase ≤ b) :
             exact h3
           have h7 : Real.pi * (Real.exp 1 * (b / (2 * Real.pi))) = Real.exp 1 * b / 2 := by
             field_simp
-            ring
           linarith
         have h2 : Real.exp (-(Real.exp 1 * b / 2)) ≤ Real.exp (-Real.pi * Real.exp (2 * x)) :=
-          Real.exp_le_exp.mpr (by nlinarith)
+          Real.exp_le_exp.mpr (by linarith [h5])
         calc Real.exp (-(Real.exp 1 * b / 2))
             ≤ Real.exp (-Real.pi * Real.exp (2 * x)) := h2
           _ = 1 * Real.exp (-Real.pi * Real.exp (2 * x)) := (one_mul _).symm
@@ -991,7 +1011,7 @@ theorem xiRayLogDeriv_ge {b : ℝ} (hb : xiRayLowerBase ≤ b) :
       rw [hZpdef]
       apply MeasureTheory.setIntegral_mono_set hintZp
         (Filter.Eventually.of_forall fun x => laplace_integrand_nonneg b x)
-        (HasSubset.Subset.eventuallyLE hsubset)
+        (LE.le.eventuallyLE hsubset)
     nlinarith [h, hsub]
   have hZpb : thetaEnvelopeLower / 2 * Real.exp b ≤ Zp := by
     have h1 : b ≤ b * x₂ - Real.exp 1 * b / 2 := by nlinarith [hx₂e]

@@ -47,8 +47,9 @@ twice, substitute into the fifth-root total-variance budget, and use the corpus 
 - **Strongest positive survivor:** exact sharp replacement
 
   ```text
+  functionalBudget = driftBudget + slopeSquareTax + convexityTax,
   functionalBudget <= 0
-    iff likelihoodBaseBudget <= -convexityTax.
+    iff driftBudget <= -(slopeSquareTax + convexityTax).
   ```
 
   The literal cofinal tail also satisfies
@@ -58,6 +59,12 @@ twice, substitute into the fifth-root total-variance budget, and use the corpus 
   J_tail = J_first*L + 2*D_first*L' - F_first*L''.
   ```
 
+  Lean also proves `L' < 0` and
+
+  ```text
+  slopeSquareTax = -4*t^2*A_first*A_tail*F_first^2*(L')^2 > 0.
+  ```
+
 - **New insight:** Infinite-tail regularity is not open, and likelihood convexity is not a helpful
   sign. Remaining C5 core is a strict negative-reserve theorem for the base budget. Any surviving
   proof must exploit quantitative covariance/cumulant cancellation from the theta likelihood
@@ -65,7 +72,9 @@ twice, substitute into the fifth-root total-variance budget, and use the corpus 
 - **Status:** Dependency-closed Lean theorems in
   `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureLikelihoodTax`, especially
   `thetaCuspCompletedProductFiberCofinalLikelihoodConvexityTaxAtZero_pos` and
-  `thetaCuspCompletedProductFiberCofinalFunctionalBudget_nonpos_iff_base_le_neg_convexityTax`.
+  `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureLikelihoodSlopeTax`, especially
+  `thetaCuspCompletedProductFiberCofinalLikelihoodSlopeSquareTaxAtZero_pos` and
+  `thetaCuspCompletedProductFiberCofinalFunctionalBudget_nonpos_iff_drift_le_neg_twoTaxes`.
   Parent cofinal functional-absorption conjecture remains open.
 
 ## Log

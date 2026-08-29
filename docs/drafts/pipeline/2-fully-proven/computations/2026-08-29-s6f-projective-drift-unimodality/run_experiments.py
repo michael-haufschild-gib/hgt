@@ -208,6 +208,15 @@ def init_arb(bits: int):
     ctx.prec = bits
 
 
+def arb_poly_eval(coefficients, x):
+    from flint import arb
+
+    answer = arb(0)
+    for coefficient in reversed(coefficients):
+        answer = answer * x + arb(coefficient)
+    return answer
+
+
 def arb_box(task):
     from flint import arb
 
@@ -226,7 +235,7 @@ def arb_box(task):
         ):
             base = amplitude * (exponent * x - c).exp()
             for order in range(11):
-                f[order] += base * poly_eval(polynomials[order], c)
+                f[order] += base * arb_poly_eval(polynomials[order], c)
     for order, radius in enumerate(TAIL_RADII):
         f[order] += arb(0, radius)
     determinant, raw_derivative, raw_second = reflected_rank_three_jets(f)

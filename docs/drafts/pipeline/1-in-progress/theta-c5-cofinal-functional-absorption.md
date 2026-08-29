@@ -83,14 +83,18 @@ tax = -5*t^2*A_first*A_source*A_tail*F_first*L'' > 0.
 ```
 
 Hence `L >= 0`, `L' <= 0`, and `L'' > 0` alone point in the wrong direction and cannot close
-the conjecture. Lean sharpens the open core to
+the conjecture. Corpus antitonicity together with strict positivity of the second likelihood jet
+also forces `L' < 0`. Expanding its square exposes a second strictly positive tax:
 
 ```text
+baseBudget = driftBudget + slopeSquareTax,
+slopeSquareTax = -4*t^2*A_first*A_tail*F_first^2*(L')^2 > 0,
+functionalBudget = driftBudget + slopeSquareTax + convexityTax,
 functionalBudget <= 0
-  iff likelihoodBaseBudget <= -tax.
+  iff driftBudget <= -(slopeSquareTax + convexityTax).
 ```
 
-Next attack must produce this strict negative reserve from the corpus first-atom log jets and
+Next attack must produce this larger strict negative reserve from the corpus first-atom log jets and
 higher-likelihood cumulant Riccati hierarchy. A generic monotone/convex sign argument is retired.
 
 Failure criterion: an exact theta-derived sign reversal of this budget. If found, retain the
@@ -138,12 +142,13 @@ the later all-rank and source-to-Weil joins.
 - `GaloisForLFunctions.HilbertMetric.FifthRootCurvatureMixture`
 - `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureTotalVariance`
 - `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureLikelihoodTax`
+- `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureLikelihoodSlopeTax`
 - Main exact hard core:
   `thetaCuspReflectedSourceFifthRootCurvatureNumerator_zero_nonneg_iff_cofinalFunctionalBudget_nonpos`
 - Likelihood factorization:
   `thetaCuspCompletedProductFiberHigherTail_zero_eq_firstFiber_mul_likelihoodFactor`
 - Sharp replacement:
-  `thetaCuspCompletedProductFiberCofinalFunctionalBudget_nonpos_iff_base_le_neg_convexityTax`
+  `thetaCuspCompletedProductFiberCofinalFunctionalBudget_nonpos_iff_drift_le_neg_twoTaxes`
 
 ## Gates
 
@@ -151,6 +156,7 @@ the later all-rank and source-to-Weil joins.
 - [x] explicit downstream RH chain with uncovered joins named
 - [x] total-variance identity, literal tail jets, chamber nonemptiness, and exact iff formalized
 - [x] infinite-tail product jets and strict likelihood-convexity tax formalized
+- [x] strict likelihood decrease and positive slope-square tax formalized
 - [x] monotone/convex sign-only subroute retired with a formal sharp replacement hypothesis
 - [x] August 2026 primary-literature collision audit
 - [ ] prove or refute functional absorption sign from theta likelihood/cumulant structure
@@ -164,3 +170,5 @@ the later all-rank and source-to-Weil joins.
   proof or the conjecture.
 - 2026-08-29 — Proved both cofinal product-jet laws and the exact positive convexity-tax
   decomposition. Reduced the conjecture to a strict negative base reserve; no computation used.
+- 2026-08-29 — Proved strict negativity of the cofinal likelihood slope and split a second
+  positive slope-square tax. Remaining hard core is the drift reserve paying both taxes.

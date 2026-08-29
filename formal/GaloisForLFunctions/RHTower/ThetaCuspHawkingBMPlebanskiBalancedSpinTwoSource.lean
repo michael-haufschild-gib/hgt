@@ -150,7 +150,9 @@ theorem ads4PlebanskiJacobiDoubleBracket_unitPureSpinTwo_ne_zero
     exact inv_ne_zero (ne_of_gt (Real.cosh_pos xi))
   have hb : (d4BMRindlerRapiditySech (xi : ℝ) : ℂ) ≠ 0 := by
     exact_mod_cast hbR
-  field_simp [hb]
+  simpa only [mul_one] using
+    (div_ne_zero (neg_ne_zero.mpr (pow_ne_zero 2 hb)) (by norm_num) :
+      -(d4BMRindlerRapiditySech (xi : ℝ) : ℂ) ^ 2 / 64 ≠ 0)
 
 end
 

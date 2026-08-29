@@ -426,3 +426,41 @@ factorization -> RH endpoint`.
 spin weights, identify the required raising/lowering word on each Eisenstein leg, and prove its
 completed trilinear coefficient.  Generic integration-by-parts or scalar-eigenvalue arguments are
 retired; only principal-series intertwining can close this burden.
+
+## Loop HC94-A.9a — exact balanced spin-two word
+
+`[CORPUS-LED CONJECTURE]` The complete second-jet pullback and scalar-polarization no-go suggest
+that the pure traceless horizon-Hessian sector should factor through the product of its local
+`+2` and `-2` components.  This is the first tensor word required by the separated Eq. (63) source,
+and it feeds the existing HC94-A.9 chain before negative-leg and left-QNM projection.
+
+`[PAPER-PROVED] [LEAN-PROVED]` At `sigma=1`, define
+
+`spinPlus = f_xx-f_sigmasigma+2i*f_xsigma`,
+
+`spinMinus = f_xx-f_sigmasigma-2i*f_xsigma`.
+
+For the unique pure traceless Hessian with prescribed `spinPlus,spinMinus` and zero value/first
+jet, Lean recovers both components exactly and proves its entire scalar two-jet signature equals
+that of the zero jet.  At every positive rapidity and every inverse-UV scale, the diagonal
+BM-pulled Plebanski source is exactly
+
+`-sech(xi)^2 * spinPlus * spinMinus / 64`.
+
+The unit balanced pair is nonzero at every positive rapidity.  Hence this sector contains exactly
+one local `+2` and one local `-2` factor; it cannot be replaced by scalar Laplacian data.  This is
+formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMPlebanskiBalancedSpinTwoSource`, wired into the
+RHTower umbrella.  Direct Lean and targeted build pass `12047/12047`.  Headline axiom audits
+report only `propext`, `Classical.choice`, and `Quot.sound`.
+
+**Scope boundary.** Vanishing first jet makes these local components coincide with covariant
+traceless-Hessian components at the chart point.  A generic separated Eisenstein leg has
+connection corrections; the theorem identifies its required balanced tensor word but does not
+yet prove the completed Maass-raised trilinear coefficient.
+
+**Positive survivor HC94-A.9a-P.** The first unavoidable angular projection is a balanced
+spin-two triple overlap, not an arbitrary spin-two tensor and not the existing scalar completed
+vertex alone.  Remaining hard burden is to derive the precise Maass raising/lowering realization
+of this local word for modular Eisenstein principal-series legs and then complete its trilinear
+coefficient.
