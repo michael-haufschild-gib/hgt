@@ -391,3 +391,31 @@ the later all-rank and source-to-Weil joins.
   and the exact intrinsic stationary law.  August 2026 searches found reverse-hazard elasticity
   and generic log-concavity literature, but no stationary fifth-root certificate or theta-source
   analogue.  No computation enters the conjecture.
+
+## C5-FLC1 result — 2026-08-29
+
+`C5-FLC1` is proved and formalized. The displayed stationary identity is exact, its right side is
+strictly negative throughout the full corpus chamber `0 < x <= 2`, and the left side is formally
+identified with the second squared-coordinate derivative of
+`log(D(sqrt x)/sqrt x)`. Consequently every hypothetical negative intrinsic-C5 local minimum is
+strictly normalized-flux log-concave.
+
+This kills stationary/projective local flux-log-convexity as an independent closure mechanism for
+`C5-RB1`: the existing local chamber forces the opposite curvature sign at precisely every
+failure witness. The positive survivor is sharper and genuinely nonlocal—exclude this quantified
+strict-negative curvature chamber using cumulative earlier theta flux, likelihood history, or the
+modular source ODE. Lean proves that nonnegative local log curvature at all such hypothetical
+minima is already equivalent to global modular-center C5.
+
+New artifact:
+`GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureIntrinsicFluxLogConcavity`, with main
+theorems
+`stationary_c5_fluxLogCurvature_certificate`,
+`thetaCuspReflectedSourceSquaredNormalizedDecayFluxLogCurvature_neg_of_intrinsicBalance_localMin_neg`,
+`thetaCuspReflectedSourceFifthRootCurvatureNumerator_zero_failure_forces_normalizedFluxLogCurvature_neg`,
+and
+`thetaCuspReflectedSourceFifthRootCurvatureNumerator_zero_nonneg_all_iff_intrinsicMin_normalizedFluxLogCurvature_nonneg`.
+
+RH chain remains
+`nonlocal exclusion of strict-negative C5-FLC1 chamber -> modular-center C5 -> off-center/direct-J
+rank four -> higher packets/no escape -> CLG/TTF or Weil positivity -> RH`.

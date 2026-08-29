@@ -4158,3 +4158,47 @@ The exact remaining card-specific residue is therefore:
 2. prove `hdense` for the determinant-one Galois group of the Bessel order recurrence.
 
 Until both are discharged in Lean, this card remains at Stage 2.
+
+## Comparison-jet structural hypotheses eliminated (2026-08-29)
+
+`ComparisonJetAlgebraFixed.lean` proves that the tensor difference automorphism fixes every tensor
+jet of the comparison matrix, the chosen inverse determinant, and therefore every element of
+`comparisonJetAlgebra Z w`.  `GaloisComparisonJetGroupStructure.lean` then combines this with
+`comparisonJetAlgebra_deriv_stable`, `adjoin_comparisonJetAlgebra_eq_top`, and
+`linearIndependent_constants_basis` to derive inverse-adjoint stability directly for the
+comparison-jet Galois monoid.
+
+Consequently `hEσ`, `hEδ`, `hgen`, and `hindep` are no longer exposed premises at the Bessel
+endgame boundary.  Both modules pass source checks, targeted builds, and axiom audits with only
+`[propext, Classical.choice, Quot.sound]`.
+
+The genuine remaining structure is now narrower: construct a parameterized Picard--Vessiot carrier
+which is sigma-simple and has no new sigma constants (the existing sigma-delta-simple quotient is
+not enough by itself), then prove determinant-one Zariski density for the concrete Bessel order
+system.  These hypotheses must be discharged, not carried into the final theorem.
+
+## Sigma-delta simplicity now suffices for point injectivity (2026-08-29)
+
+`GaloisDifferentialPointGroup.lean` now proves
+`galoisAutAtK_injective_of_sigmaDeltaSimple`: at a tensor differential point, the specialization
+kernel is stable under both the difference automorphism and the derivation.  Hence the existing
+sigma-delta-simple parameterized quotient already forces injectivity.  The inverse-point proof was
+factored through this exact injectivity property, yielding
+`exists_inverse_tensorDifferentialPoint_of_sigmaDeltaSimple` while preserving the sigma-simple API.
+
+Source check, targeted module build, and axiom audits pass with only
+`[propext, Classical.choice, Quot.sound]`.  Sigma-simplicity is therefore no longer needed for the
+inverse construction itself.  It remains used only by the current tensor constants/basis
+independence theorem; replacing that use by the parameterized torsor theorem, together with proving
+no new sigma constants, is the precise remaining PPV structural gap.  Concrete determinant-one
+Zariski density remains the second gap.  Neither may appear as a premise of the final Bessel theorem.
+
+## Density audit: Burnside does not discharge `hdense` (2026-08-29)
+
+The current Lean route cannot infer Zariski density from irreducibility plus
+`no_imprimitive_pair` alone.  Burnside's theorem proves that the matrix-algebra span is all of
+`M₂`, but finite primitive subgroups of `SL₂` can also have that span while remaining Zariski
+non-dense.  Therefore no unconditional `hdense` theorem may use Burnside as the missing implication.
+The exact density proof must additionally exclude the finite primitive branch (or formalize the
+relevant algebraic-subgroup classification).  This is part of the concrete Dreyfus/ordinary-PV
+classification residue, alongside the parameterized torsor/no-new-constants construction.

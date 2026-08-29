@@ -149,3 +149,60 @@ Remaining RH proof chain is unchanged:
 → `compact/far-tail and rank-four/Ptolemy assembly`
 → `CLG/TTF or Weil positivity`
 → `RH`.
+
+## Modular-center velocity attack
+
+[CORPUS] `ThetaCuspFifthRootCurvatureStationaryLocus` proves every negative modular-center C5
+failure has an interior witness where the literal numerator velocity vanishes.  The same corpus
+gives the exact half-line factorization
+
+`thetaCuspFullSource(t) = firstAtom(t) * LikelihoodPartition(B(t))`
+
+and theta-specific support-gap cumulant inequalities, including strict positivity of the third
+cumulant and `2 * normalizedMoment₂ < cumulant₃`.  Existing fixed-action likelihood reductions
+require `t ≤ u` and therefore do not cover the modular centre `u=0<t`.
+
+[LITERATURE] Planat--Solé's 2026 second-level concavity theorem controls a lower theta-kernel
+Laguerre expression.  Corpus countermodels prove that second-level concavity and its Riccati
+strengthening do not force fifth-root curvature.  No published fifth-root velocity law was found.
+
+**[CONJECTURE C5-VP1]** For every `t>0`,
+
+`0 < thetaCuspReflectedSourceFifthRootCurvatureVelocity 0 t`.
+
+Exact proof chain:
+
+`C5-VP1`
+→ no negative stationary witness
+→ modular-center source C5 at every radius
+→ off-center/direct-J rank-four assembly
+→ higher-packet no-escape
+→ CLG/TTF or Weil positivity
+→ RH.
+
+Falsifier: one positive `t` with nonpositive literal velocity.  Current attack substitutes the
+first-atom plus likelihood-cumulant log jets into the division-free velocity, then uses the sharp
+spectral support edge rather than generic moment positivity.  If those inequalities do not force
+the sign, classify the exact residual inequality and build an unconditional countermodel to kill
+that proof architecture before returning to actual theta-orbit incidence.
+
+## Modular-center velocity likelihood-reserve result
+
+**[SIGNIFICANT PREMISE DISCHARGED IN LEAN]** The literal center velocity is exactly a positive
+source-product square times an action three-jet core.  Its third likelihood channel is
+`-10*(exp(action)-1)*t²*g₃`.  The theta-specific strict support-gap theorem
+`6*g₂ < -g₃` proves that this channel pays strictly more than the reserve
+`60*(exp(action)-1)*t²*g₂` for every `t>0`.
+
+Consequently the entire third-cumulant burden has been removed from `C5-VP1`: nonnegativity of the
+explicit `thetaCuspCenterFifthRootVelocityMasterReservedCore`, which contains no third likelihood
+jet, implies strict positivity of the literal modular-center velocity.  The remaining open premise
+uses only action, the first two center jets, and the explicit first-atom third jet.  Proving it for
+all `t>0` closes `C5-VP1`; off-center/direct-J and downstream RH joins remain open.  See
+`../3-formalized/theta-cusp-c5-center-velocity-likelihood-reserve.md`.
+
+## Log
+
+- 2026-08-29 — Formalized exact source-square normalization, center likelihood-jet decomposition,
+  and strict six-curvature support-gap reserve.  Third likelihood cumulant is no longer an open
+  `C5-VP1` premise.

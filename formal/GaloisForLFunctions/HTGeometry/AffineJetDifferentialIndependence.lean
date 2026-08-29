@@ -155,12 +155,15 @@ def relationPattern {d : ℕ} {Λ : Type*} {n : ℕ} (lab : Fin n → Λ) (hlab 
       Subtype.ext (Prod.ext h1 h3)
     exact (relationDecoratedSupport P).equivFin.symm.injective h4
 
-/-- **Determinant avoidance is differential independence.**  A source avoiding every finite
-decorated determinant of a noncolliding countable affine family satisfies no nonzero differential
-relation with polynomial coefficients among its pullbacks along distinct frames. -/
-theorem exists_affineJetRelationValue_ne_zero {d : ℕ} (hd : 0 < d) {Λ : Type*} [Countable Λ]
-    (frame : Λ → ((Fin d → ℂ) ≃ᴬ[ℂ] (Fin d → ℂ))) (hframe : Function.Injective frame)
-    {f : MultivariateEntire d} (hf : f ∈ affineJetPacketGenericSet hd frame hframe)
+/-- **Determinant avoidance is differential independence, for any chosen witness family.**  A
+source avoiding every chosen finite decorated determinant of a noncolliding countable affine family
+satisfies no nonzero differential relation with polynomial coefficients among its pullbacks along
+distinct frames. -/
+theorem exists_affineJetRelationValue_ne_zero_of_witness {d : ℕ} {Λ : Type*} [Countable Λ]
+    (frame : Λ → ((Fin d → ℂ) ≃ᴬ[ℂ] (Fin d → ℂ)))
+    (witness : ∀ p : FiniteMultivariateAffineJetPattern Λ d,
+      MultivariateAffinePatternWitness frame p)
+    {f : MultivariateEntire d} (hf : f ∈ multivariateAffinePatternResidualSet frame witness)
     {n : ℕ} (lab : Fin n → Λ) (hlab : Function.Injective lab)
     {P : MvPolynomial (RelationJetVar d n) (MvPolynomial (Fin d) ℂ)} (hP : P ≠ 0) :
     ∃ z : Fin d → ℂ, affineJetRelationValue (fun i => frame (lab i)) f P z ≠ 0 := by
@@ -170,7 +173,7 @@ theorem exists_affineJetRelationValue_ne_zero {d : ℕ} (hd : 0 < d) {Λ : Type*
     fun z => not_not.mp fun h => hcon ⟨z, h⟩
   set S := relationDecoratedSupport P with hS
   set pat := relationPattern lab hlab P with hpat
-  set wit := affineJetPacketWitness hd frame hframe pat with hwit
+  set wit := witness pat with hwit
   set enum := S.equivFin.symm with henum
   have hdet := hf pat
   rw [multivariateAffinePatternDefect, Set.mem_setOf_eq,
@@ -219,6 +222,18 @@ theorem exists_affineJetRelationValue_ne_zero {d : ℕ} (hd : 0 < d) {Λ : Type*
     simp only [this]
     exact MvPolynomial.mem_support_iff.mp (mem_relationDecoratedSupport.mp hp₀).2
   exact hb₀ (by rw [hczero]; rfl)
+
+/-- **Determinant avoidance is differential independence.**  A source avoiding every finite
+decorated determinant of a noncolliding countable affine family satisfies no nonzero differential
+relation with polynomial coefficients among its pullbacks along distinct frames. -/
+theorem exists_affineJetRelationValue_ne_zero {d : ℕ} (hd : 0 < d) {Λ : Type*} [Countable Λ]
+    (frame : Λ → ((Fin d → ℂ) ≃ᴬ[ℂ] (Fin d → ℂ))) (hframe : Function.Injective frame)
+    {f : MultivariateEntire d} (hf : f ∈ affineJetPacketGenericSet hd frame hframe)
+    {n : ℕ} (lab : Fin n → Λ) (hlab : Function.Injective lab)
+    {P : MvPolynomial (RelationJetVar d n) (MvPolynomial (Fin d) ℂ)} (hP : P ≠ 0) :
+    ∃ z : Fin d → ℂ, affineJetRelationValue (fun i => frame (lab i)) f P z ≠ 0 :=
+  exists_affineJetRelationValue_ne_zero_of_witness frame
+    (affineJetPacketWitness hd frame hframe) hf lab hlab hP
 
 end
 

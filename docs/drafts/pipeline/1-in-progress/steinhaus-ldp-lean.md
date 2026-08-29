@@ -564,3 +564,141 @@ TRAPS (cost several rebuilds, worth recording):
 
 Remaining on S9: `(10)` (`d_X a_{p,X} → w_α(v)` uniformly, now immediate from `(9)` plus the UCT and
 `π(X) ∼ X/log X`) and `(12)`.  Then S8.
+
+## `(10)` and `(12)` CLOSED (2026-08-29)
+
+`RHTower/RVNormalizedWeight.lean` — the card's `(10)`.
+- `rvPrimeCount X = π(⌊X⌋)`, `rvNormReal α L X t = d_X·(log t)t^{−α}L(t)/W_X`;
+- **`rvNormReal_eq`** — the EXACT four-factor decomposition
+  `rvNormReal = w_α(t/X) · [π(X)/(X/log X)]·[log t/log X]·[L(t)/L(X)]·[X^{1−α}L(X)/((1−α)W_X)]`,
+  proved by `field_simp` after splitting `(t/X)^{−α}` and `X^{1−α}`;
+- `two_factor_bounds`, `four_factor_bounds` — a product of four factors in `[1−c, 1+c]` lies in
+  `[(1−c)^4, (1+c)^4]`;
+- `tendsto_rvPrimeCount_ratio` (the corpus's `tendsto_primeCounting_ratio`),
+  `tendsto_rvWeightSum_inv` (the reciprocal Karamata ratio);
+- **`rvNormReal_bounds`**: `(1−c)^4 w_α(t/X) ≤ d_X a_{p,X} ≤ (1+c)^4 w_α(t/X)` uniformly on
+  `(aX, bX]`.  The `log t/log X` factor is uniform because `log(t/X)` stays in `[log a, log b]`.
+
+`RHTower/PrimeCountShell.lean` — the UNWEIGHTED prime shell: `primeCountSum`, `primeShellCard`,
+**`primeShellCard_bounds`** (`(θ(b)−θ(a))/log b ≤ #shell ≤ (θ(b)−θ(a))/log a`), the two sandwiches
+and the chain lemma.  This is what replaces `π(bX) − π(aX)`: only `θ` and `π(X)` are needed.
+
+`RHTower/RVCumulantAverage.lean`
+- **`steinhausLogLaplace_mono`** — the one-circle cumulant is monotone on `[0,∞)` (from
+  `steinhausLogLaplace_scale_le` and nonnegativity; no new convexity work);
+- `rvCumulantAverage`, `rvNormReal_nonneg`, **`rvCumulantAverage_head_le`** — the head of the
+  average is `≤ λ·d_X·W_{v₀X}/W_X`, purely from `log I₀(x) ≤ x`;
+- `tendsto_chebyshevTheta_div`, `tendsto_log_shift_ratio`, `tendsto_rvPrimeCount_ratio_inv`, and
+  **`tendsto_shell_card_ratio`**: `#(aX, bX]/d_X → b − a`.  Proved by squeezing
+  `#·log X/X` between the two `θ`-quotients and multiplying by `(X/log X)/d_X → 1`;
+- `antitone_darboux` (the general antitone Darboux bracket), `rvProfileCumulant`,
+  `antitoneOn_rvProfileCumulant`, `integral_rvProfileCumulant_head_le` and
+  `integral_rvProfileCumulant_split`.
+
+`RHTower/RVCumulantLimit.lean`
+- `weightProfile_antitone`, `rvUpSum`/`rvLoSum` (the DISTORTED Riemann sums, continuous in the
+  distortion parameter `c`), `rvDarboux_gap`;
+- `rvCumulantAverage_decomp`, **`rvCumulantAverage_shell_bounds`**;
+- **`tendsto_rvCumulantAverage`** — the card's `(12)`:
+  `(1/d_X)∑_{p ≤ X} log I₀(λ d_X a_{p,X}) → Λ_α(λ)` for every `λ ≥ 0`.
+
+The design point that made `(12)` tractable: the distortion `(1±c)^4` sits INSIDE `log I₀`, so it
+cannot be pulled out multiplicatively.  Instead the finitely many Riemann terms are treated as a
+continuous function of `c` and `c` is chosen AFTER `v₀` and `N` — no uniform continuity, no
+Lipschitz estimate for `log I₀` is needed.
+
+**S9 is complete.**  Remaining for card 11: S8, the LDP itself (parts 1 and 2).
+
+## S8 opened — the complex Steinhaus sum and the Chernoff bound (2026-08-29)
+
+`HTGeometry/SteinhausComplexSum.lean`
+- `steinhausSum a x = ∑ a_i ζ_i` (the card's `Y_X`), `steinhausRotProj a s x = Re(Y e^{−is})`,
+  `steinhausRotProj_eq_re`;
+- `steinhausPhase_add_coe` — the phase shift `ζ(y + s) = ζ(y)e^{is}`, by
+  `QuotientAddGroup.induction_on` and `fourier_coe_apply`;
+- **`integral_exp_rot`** — the rotated one-circle Laplace transform EQUALS the unrotated one, by
+  `MeasureTheory.integral_add_right_eq_self` (Haar translation invariance).  This is the only
+  probabilistic input;
+- **`integral_exp_steinhausRotProj`** — hence `E[e^{r Re(Y e^{−is})}] = ∏ I₀(r a_i)` for EVERY `s`;
+- `rot_re_eq : Re(z e^{−is}) = ‖z‖cos(arg z − s)` and
+  **`steinhausLaplace_norm_eq_rot_average`**: `I₀(t‖z‖) = (1/2π)∫₀^{2π} e^{t Re(z e^{−is})} ds`
+  (the substitution `u = arg z − s` plus `Function.Periodic.intervalIntegral_add_eq`);
+- **`integral_steinhausLaplace_norm`**: `E[I₀(t‖Y‖)] = ∏ I₀(t a_i)`, by Fubini
+  (`integral_integral_swap`; integrability from continuity plus the uniform bound
+  `|Re(Y e^{−is})| ≤ ∑|a_i|`).
+
+This is the step that makes the whole upper bound sharp: NO covering of the circle of directions is
+needed, and no `cos(π/K)` loss.
+
+`RHTower/SteinhausChernoff.lean`
+- `steinhausLaplace_mono` (monotone on `[0,∞)`, from the log version);
+- `continuous_steinhausSum_norm`, `measurableSet_normGe`;
+- **`meas_norm_ge_mul_le`**: `P(‖Y‖ ≥ q)·I₀(tq) ≤ ∏ I₀(t a_i)` for `t, q ≥ 0`.  Markov applied to
+  the monotone function `x ↦ I₀(t‖Y(x)‖)`, whose integral is the Laplace product.
+
+Remaining for S8: instantiate at `a = a_{p,X}`, `t = λ d_X` (using `(12)` and the sharp Bessel
+asymptotic `log I₀(y) = y − ½log(2πy) + o(1)` to get `(1/d_X)log I₀(λ d_X q) → λq`), giving
+`limsup (1/d_X) log P(|Y_X| ≥ q) ≤ Λ_α(λ) − λq` for every `λ ≥ 0`, hence `≤ −I_α(q)`.  Then the
+LOWER bound (exponential tilting of the product of circle laws plus a tilted weak law), and finally
+the planar LDP by the rotation-invariance reduction recorded above.
+
+## The large-deviation UPPER bound closed (2026-08-29)
+
+`RHTower/RVSteinhausModel.lean` — the card's model, instantiated.
+- `rvPrimeFinset X`, `rvWeightFun α L X` (the `a_{p,X}`), `rvPrimeCount_mul_rvWeightFun`
+  (`d_X a_{p,X} = rvNormReal`), **`sum_rvWeightFun = 1`**, `rvWeightFun_nonneg`,
+  `sum_steinhausLogLaplace_rvWeightFun` (the tilted cumulant sum IS the prime average of `(12)`);
+- `rvDeviationProb α L X q = P(‖Y_X‖ ≥ q)`, `rvDeviationProb_le_one`, and
+  **`rvDeviationProb_pos`** — strictly positive for `q < 1`, because `{‖Y‖ > q}` is OPEN and
+  contains the all-aligned point (where `‖Y‖ = ∑ a_i = 1`), and Haar is open-positive;
+- **`log_rvDeviationProb_le`** — the Chernoff bound in log form:
+  `log P ≤ ∑_p log I₀(λ d_X a_{p,X}) − log I₀(λ d_X q)`;
+- `tendsto_steinhausLogLaplace_div_id : log I₀(y)/y → 1` (from the sharp asymptotic),
+  `tendsto_rvPrimeCount_atTop`, `tendsto_rvPrimeCount_logI0 : log I₀(λ d_X q)/d_X → λq`;
+- **`eventually_log_rvDeviationProb_le`**: for every `0 < q < 1` and every `ε > 0`,
+  ```
+  (1/d_X) log P(|Y_X| ≥ q) ≤ −I_α(q) + ε   eventually.
+  ```
+  A near-optimal tilt is extracted from `exists_lt_of_lt_csSup`; it is automatically nonzero
+  because the value at `λ = 0` is `0 < I_α(q) − ε/2`.
+
+This is the `limsup` half of the card's `(5)`.  Everything it uses — `(12)`, the sharp Bessel
+asymptotic, the rotational Laplace identity — is now Lean-proved.
+
+REMAINING for card 11:
+1. the `liminf` half of `(5)`: exponential tilting of the product of circle laws, a tilted weak law
+   of large numbers (Chebyshev on the tilted variance `∑ a_p²(log I₀)''(λ d_X a_p)`), and the
+   change-of-measure inequality;
+2. part `1`, the planar LDP, via the rotation-invariance reduction: the radial LDP transfers
+   because the norm map is proper (closed sets stay closed) and every open set contains a polar box
+   whose angular factor is a constant.
+
+## The lower-bound route, designed (2026-08-29)
+
+The tilted measure is NOT needed.  The three-way split of the exact exponential moment does the
+whole job, because both side pieces can be compared with the SAME product formula at a different
+tilt:
+
+```
+∫ e^{tW} dμ = ∏ I₀(t a_i)                                  (the corpus identity)
+∫_{W<q}   e^{tW} dμ ≤ e^{(t−s)q}   ∏ I₀(s a_i)   (s < t)
+∫_{W>q+δ} e^{tW} dμ ≤ e^{(t−u)(q+δ)} ∏ I₀(u a_i) (u > t)
+⇒ ∫_{q≤W≤q+δ} e^{tW} dμ ≥ ∏I₀(t a_i) − (both sides)
+⇒ P(W ≥ q) ≥ e^{−t(q+δ)} ∫_{q≤W≤q+δ} e^{tW} dμ.
+```
+At `t = λd_X`, `s = λ'd_X`, `u = λ''d_X` the two side pieces are exponentially smaller exactly when
+
+* `(Λ_α(λ) − Λ_α(λ'))/(λ − λ') > q`  (chord slope on the left of `λ` exceeds `q`), and
+* `(Λ_α(λ'') − Λ_α(λ))/(λ'' − λ) < q + δ` (chord slope on the right is below `q+δ`).
+
+Both hold for `λ` near the maximiser of `λq − Λ_α(λ)` PROVIDED `Λ_α` is differentiable with
+`Λ'_α(λ*) = q` — which is the card's `(16)`.  So the remaining layer is:
+
+- `S8-a` `|(log I₀)'| ≤ 1` (the tilted mean of a variable bounded by one);
+- `S8-b` `Λ'_α(λ) = ∫₀¹ w_α(v) m(λ w_α(v)) dv` by differentiation under the integral, dominated by
+  `w_α ∈ L¹` — this is exactly the card's `(16)`;
+- `S8-c` `Λ'_α` is continuous and strictly increasing from `0` to `∫₀¹ w_α = 1`, hence hits every
+  `q ∈ (0,1)`;
+- `S8-d` the three-way split above, and `P(‖Y‖ ≥ q) ≥ P(W ≥ q)` since `‖Y‖ ≥ Re Y`;
+- `S8-e` assembly: `liminf (1/d_X) log P(|Y_X| ≥ q) ≥ −I_α(q)`, then the card's `(5)` and, by the
+  rotation-invariance reduction, the planar LDP of part `1`.

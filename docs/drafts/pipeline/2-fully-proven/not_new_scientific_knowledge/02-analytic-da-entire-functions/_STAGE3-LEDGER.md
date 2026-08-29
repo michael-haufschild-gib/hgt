@@ -317,12 +317,136 @@ proximity_logDeriv_sub_const_le :
 
 i.e. I11 now bounds each summand of the middle group of the corpus SMT, for entire `f`.
 
-**What is left of the second main theorem:**
+**Counting bridge DONE (2026-08-29)** — `HTGeometry/DivisorMassCounting.lean` and
+`HTGeometry/LogDerivCountingBound.lean`:
 
-1. **the counting bridge** — `∑ᶠ_u |n_u|^α ≤ ∑ᶠ_u |n_u| = n(R,1/f)` (as `|n|^α ≤ |n|` for `|n| ≥ 1`,
-   `α ≤ 1`), and `n(r,1/f)·log(R/r) ≤ N(R,1/f) ≤ T(R,f) + O(1)`, which converts the I11 bound into
-   `S(r,f) = O(log⁺T(R,f) + log(1/(R−r)) + log R)`;
-2. **the ramification term** `m(r, 1/f')` — absorb via `m(r,1/f') = T(r,f') − N(r,1/f') + O(1)` and
+| Step | Lean name |
+|---|---|
+| `(|n|:ℝ)^α ≤ (|n|:ℝ)` for an integer `n` and `0 < α ≤ 1` | `rpow_abs_intCast_le` |
+| **the divisor mass splits into the two pole masses**: `∑ᶠ|n_u| = poleMultiplicityMass f R + poleMultiplicityMass f⁻¹ R` (via `MeromorphicOn.divisor_inv` and `posPart_add_negPart`) | `divisorMass_eq_add` |
+| **the counting bridge** `log 2 · ∑ᶠ|n_u| ≤ N(2R,f) + N(2R,1/f)` — the corpus's `log_two_mul_poleMultiplicityMass_le_logCounting` applied to `f` *and* to `f⁻¹` | `log_two_mul_divisorMass_le_logCounting` |
+| `∑ᶠ|n_u|^α ≤ ∑ᶠ|n_u|` | `divisorMass_rpow_le` |
+| **the logarithmic-derivative estimate against the counting functions** | `circleAverage_posLog_logDeriv_le_counting` |
+
+The corpus already owned the mass bound in its *pole* form; applying it to `f⁻¹` supplies the zero
+form, so no new potential theory was needed.
+
+**What is left of the second main theorem:**
+2. **SMT side conditions for an entire `f`: DONE (2026-08-29)** — `HTGeometry/SecondMainTheoremEntire.lean`.
+   `mul_characteristic_le_of_separated_entire` discharges every meromorphy hypothesis of the corpus
+   SMT (sums, differences, quotients and inverses of meromorphic germs are meromorphic, and `f'` is
+   entire); `exists_mul_characteristic_le_of_separated_entire` additionally discharges the
+   first-main-theorem defect `hfmt` through the corpus's `characteristic_top_le_characteristic_coe`,
+   taking `K = ∑_j |K_j|`.  The only hypothesis left is `hcod`: `f'` does not vanish identically
+   near the circle.
+3. **the ramification term: DONE (2026-08-29)** — `HTGeometry/RamificationTermBound.lean`.
+
+   | Step | Lean name |
+   |---|---|
+   | **inequality 2** `m(r,1/g) ≤ T(r,g) + C − N(r,1/g)` (first main theorem for `g`) | `proximity_inv_top_le` |
+   | the first main theorem in the direction `T(r,a₀) ≤ T(r,f) + C` (the corpus owned only the opposite one) | `characteristic_coe_le_characteristic_top` |
+   | **inequality 3** `T(r,f') ≤ 2T(r,f) + m(r,f'/f)` | **already corpus-owned**: `SmallGrowthDerivative.smallGrowth_characteristic_deriv_le` |
+   | **the assembled bound** `(q/2 − 2)·T(r,f) ≤ ∑_j m(r,f'/(f−a_j)) + m(r,f'/f) + C` | `totallyRamified_characteristic_bound` |
+
+   Inequality 3 needed no work at all: the corpus already had it for general meromorphic `f`.
+   The old plan's `m(r, 1/f')` — absorb via `m(r,1/f') = T(r,f') − N(r,1/f') + O(1)` and
    `T(r,f') ≤ 2T(r,f) + m(r,f'/f) + O(1)`; for a totally ramified family this is what turns
-   `N(r,a_j)` into the truncated `N̄(r,a_j) ≤ (1/2)N(r,a_j)` and yields **`q ≤ 2` totally ramified
-   finite values for an entire function** (I5), closing card 9.
+   `N(r,a_j)` into the truncated `N̄(r,a_j) ≤ (1/2)N(r,a_j)`.
+
+**Scope note for card 9 (found 2026-08-29).**  Card 9 does *not* need the sharp bound.
+`DriftPeriodicRamification.exists_finset_totallyRamified_card_ge` produces *arbitrarily large finite
+sets* of totally ramified values, so **any** finite bound closes it.  The lossy chain
+
+```text
+N(r,1/f') ≥ (1/2)∑_j N(r,a_j)   [each a_j-point has multiplicity m ≥ 2, so f' vanishes to order m−1 ≥ m/2]
+m(r,1/f') = T(r,f') − N(r,1/f') + O(1)
+T(r,f')   ≤ 2T(r,f) + m(r,f'/f) + O(1)
+```
+
+fed into the corpus SMT gives `(q/2 − 2)·T(r,f) ≤ S(r,f) + C`, hence `q ≤ 4` — enough.  This avoids
+the truncated counting function `N̄` and the ramification-counting identity entirely.
+
+**First displayed inequality, pointwise part: DONE (2026-08-29)** —
+`HTGeometry/TotallyRamifiedOrder.lean`:
+
+| Step | Lean name |
+|---|---|
+| at an `a`-point of a totally ramified value, `order(f − a) = m ≥ 2` and `order(f') = m − 1` | `order_deriv_of_totallyRamified` |
+| **the pointwise divisor inequality `order(f − a) ≤ 2·order(f')`** | `order_le_two_mul_order_deriv` |
+
+built on mathlib's `analyticOrderAt_deriv_of_pos` and `AnalyticAt.analyticOrderAt_eq_zero`.
+
+**Divisor form: DONE (2026-08-29)** — same module:
+
+| Step | Lean name |
+|---|---|
+| for an entire `g` of finite order everywhere, `divisor g U u = (analyticOrderAt g u).toNat` | `divisor_eq_analyticOrder_toNat` |
+| away from an `a`-point the shifted divisor vanishes | `divisor_sub_eq_zero_of_ne` |
+| the divisor of `f'` is nonnegative | `divisor_deriv_nonneg` |
+| **pointwise**: `divisor(f − a) ≤ 2·divisor(f')` at a totally ramified `a` | `divisor_sub_le_two_mul_divisor_deriv` |
+| **summed over distinct values** (at most one is attained at any point) | `sum_divisor_sub_le_two_mul_divisor_deriv` |
+
+**Inequality 1 COMPLETE (2026-08-29)** — `sum_logCounting_le_two_mul_logCounting_deriv`:
+
+```text
+∑_j 𝑁(divisor(f − a_j)) (r) ≤ 2 · 𝑁(divisor f') (r)
+```
+
+for finitely many distinct totally ramified values of an entire `f`, obtained by integrating the
+summed pointwise divisor inequality against the corpus's
+`smallGrowth_locallyFinsupp_logCounting_mono` (`logCounting` is an additive hom, so `map_sum` and
+`map_nsmul` do the rest).
+
+**Value-distribution form DONE (2026-08-29)** — `divisor_posPart_eq_self` (an entire function's
+divisor is its own positive part) plus mathlib's `ValueDistribution.logCounting_coe` /
+`logCounting_zero` give
+
+```text
+sum_logCounting_value_le_two_mul_logCounting_deriv_zero :
+  ∑_j N(r, a_j) ≤ 2 · N(r, 1/f')
+```
+
+for an entire `f` and finitely many distinct totally ramified values.  **Inequality 1 is closed.**
+
+## I5 (Nevanlinna ramification) — the single remaining step
+
+Everything is in place except the asymptotic conclusion.  The pieces:
+
+```text
+totallyRamified_characteristic_bound :
+  (q/2 − 2)·T(r,f) ≤ ∑_j m(r, f'/(f − a_j)) + m(r, f'/f) + C
+proximity_logDeriv_sub_const_le / circleAverage_posLog_logDeriv_le_counting :
+  each m(·) ≤ (1/α)·log(1 + (2π)⁻¹(log 2)⁻¹(N(2R,f) + N(2R,1/f))(C_α r^{-α} + 2π(R−r)^{-α}) + B^α)
+```
+
+**Correction found while starting this step (2026-08-29) — the doubling was fatal.**  The counting
+bridge as first built (`log_two_mul_divisorMass_le_logCounting`, inherited from the corpus's
+`log_two_mul_poleMultiplicityMass_le_logCounting`) evaluates the counting function at **`2R`**.  The
+Borel lemma controls `T` only across a step of size `1/T(r)`, never across a doubling — and
+`T(2r,f)/T(r,f)` is genuinely unbounded for infinite order.  So no choice of `R` could have made the
+argument close.
+
+Fixed by generalising the corpus proof from the ratio `2` to an arbitrary ratio:
+`HTGeometry/PoleMassRatioRadius.lean`
+
+| Step | Lean name |
+|---|---|
+| pole mass in `|z| ≤ R` versus the counting function at any `R' > R`, with loss `log(R'/R)` | `log_ratio_mul_poleMultiplicityMass_le_logCounting` |
+| **the counting bridge at an arbitrary larger radius** | `log_ratio_mul_divisorMass_le_logCounting` |
+
+Since only the *logarithm* of the divisor mass enters the final estimate, a ratio as small as
+`1 + 1/(r T(r))` costs only `O(log r + log T(r))` — harmless.
+
+**The step.**  Put `R := r + 1/T(r,f)`, so `(R − r)^{-α} = T(r,f)^α`.  The corpus's Borel lemma —
+`HTGeometry.BorelGrowthMonotone.borel_growth_monotone` (exceptional set of measure ≤ 2 where
+`2T(r) ≤ T(r + 1/T(r))`), or `BorelGrowthExponent.borel_growth_monotone_rpow` at exponent `α` —
+gives `T(R,f) < 2T(r,f)` off a set of finite measure.  Feed the counting bridge at ratio
+`R'/R` with `R' ≤ r + 1/T(r)` rather than at `2R`.  Then every `N` and `B` in the I11 bound is
+`O(T(r,f))`, so the whole right-hand side is `O(log T(r,f) + log r)`, i.e. `S(r,f) = o(T(r,f))`.
+With `q ≥ 5` the left-hand side is `≥ (1/2)T(r,f)`, contradicting `T(r,f) → ∞` for a transcendental
+`f`.  Hence **`q ≤ 4`**, which is I5 and closes card 9 (which needs only *some* finite bound —
+see the scope note above).
+
+Corpus assets for this step (do not rebuild):
+`BorelGrowthLemma.borel_growth`, `BorelGrowthMonotone.borel_growth_monotone`,
+`BorelGrowthExponent.borel_growth_monotone_rpow`, `borel_growth_monotone_rpow_ne_top`.

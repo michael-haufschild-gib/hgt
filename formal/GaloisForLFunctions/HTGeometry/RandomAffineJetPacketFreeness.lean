@@ -68,16 +68,15 @@ theorem eval_finiteAffineJetPacketDeterminant {d : ℕ} {Λ : Type*}
 
 /-- Every chosen finite determinant is genuinely nonzero; the escaping source in the witness
 certifies this before the coordinate reindexing. -/
-theorem finiteAffineJetPacketDeterminant_ne_zero {d : ℕ} (hd : 0 < d) {Λ : Type*}
-    (frame : Λ → ((Fin d → ℂ) ≃ᴬ[ℂ] (Fin d → ℂ))) (hframe : Function.Injective frame)
-    (p : FiniteMultivariateAffineJetPattern Λ d) :
-    finiteAffineJetPacketDeterminant p
-      (affineJetPacketWitness hd frame hframe p).base ≠ 0 := by
-  have hD : multivariateCoefficientPatternDeterminant
-      (affineJetPacketWitness hd frame hframe p).base
+theorem finiteAffineJetPacketDeterminant_ne_zero_of_witness {d : ℕ} {Λ : Type*}
+    (frame : Λ → ((Fin d → ℂ) ≃ᴬ[ℂ] (Fin d → ℂ)))
+    (p : FiniteMultivariateAffineJetPattern Λ d)
+    (wit : MultivariateAffinePatternWitness frame p) :
+    finiteAffineJetPacketDeterminant p wit.base ≠ 0 := by
+  have hD : multivariateCoefficientPatternDeterminant wit.base
       p.coordinateExponent p.jetExponent ≠ 0 := by
     intro hzero
-    have hescape := (affineJetPacketWitness hd frame hframe p).escapes
+    have hescape := wit.escapes
     rw [hzero] at hescape
     simp at hescape
   exact (MvPolynomial.rename_injective
@@ -85,6 +84,27 @@ theorem finiteAffineJetPacketDeterminant_ne_zero {d : ℕ} (hd : 0 < d) {Λ : Ty
       (MultivariateAffinePatternRow p × MultivariateAffinePatternJet p))
     (Fintype.equivFin
       (MultivariateAffinePatternRow p × MultivariateAffinePatternJet p)).injective).ne hD
+
+theorem finiteAffineJetPacketDeterminant_ne_zero {d : ℕ} (hd : 0 < d) {Λ : Type*}
+    (frame : Λ → ((Fin d → ℂ) ≃ᴬ[ℂ] (Fin d → ℂ))) (hframe : Function.Injective frame)
+    (p : FiniteMultivariateAffineJetPattern Λ d) :
+    finiteAffineJetPacketDeterminant p
+      (affineJetPacketWitness hd frame hframe p).base ≠ 0 :=
+  finiteAffineJetPacketDeterminant_ne_zero_of_witness frame p _
+
+/-- Membership in a chosen residual set is nonvanishing of every chosen pattern determinant. -/
+theorem mem_multivariateAffinePatternResidualSet_iff {d : ℕ} {Λ : Type*}
+    (frame : Λ → ((Fin d → ℂ) ≃ᴬ[ℂ] (Fin d → ℂ)))
+    (witness : ∀ p : FiniteMultivariateAffineJetPattern Λ d,
+      MultivariateAffinePatternWitness frame p)
+    (f : MultivariateEntire d) :
+    f ∈ multivariateAffinePatternResidualSet frame witness ↔
+      ∀ p : FiniteMultivariateAffineJetPattern Λ d,
+        MvPolynomial.eval
+            (multivariateAffinePatternObservationCLM frame p (witness p).base f)
+            (multivariateCoefficientPatternDeterminant
+              (witness p).base p.coordinateExponent p.jetExponent) ≠ 0 :=
+  Iff.rfl
 
 /-- Finite-jet nondegeneracy for a random entire source along an affine palette.  Every finite
 rectangular mixed-jet packet read at pairwise distinct affine-image points is measurable and has

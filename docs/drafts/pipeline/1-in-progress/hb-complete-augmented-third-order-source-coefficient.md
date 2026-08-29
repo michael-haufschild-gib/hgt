@@ -1672,3 +1672,158 @@ off-wall detector; and unrestricted response correction is vacuous.  Therefore t
 must retain the actual negative BM leg and conserved left-QNM/source incidence until the
 horizon-boundary relative cocycle is formed.  Replacing it by a scalar gain equality would be
 circular because that equality is already RH-equivalent in the corpus.
+
+## Conjecture C-A.9v — direct scalar-landing no-go and RSZ necessity
+
+`[CORPUS-DERIVED] [ACTIVE]` Hostile corpus audit corrects the last displayed chain.  C-A.9u and
+the two zero cusp finite parts determine the balanced finite part only as the Bochner polynomial
+times the still-undetermined actual scalar triple finite part.  Corpus search finds the canonical
+four-`XiC` vertex and the actual completed Poincare series, but no theorem identifying the actual
+regularized scalar triple moment with that vertex.  Moreover, actual external completion uses
+`Lambda(2s)`, while the canonical vertex uses pole-filled
+`xi(w) = w(w-1)Lambda(w)/2`; direct equality without the four elementary pole-fill factors is
+false.
+
+Conjecture C-A.9v therefore predicts a sharp no-go and positive survivor:
+
+1. construct the finite-part extraction law for an arbitrary complex-linear height finite-part
+   reporter by applying it to the literal C-A.9u identity;
+2. prove the exact canonical-landing residual identity
+
+   `balancedResidual = bochnerCoefficient * scalarResidual + cuspResidual`;
+3. exhibit a closed absolute-convergence-chamber witness with zero first/second cusp data that
+   satisfies the extraction law but misses the canonical balanced vertex;
+4. at a nonzero-Bochner anchor, prove canonical balanced landing is equivalent to canonical scalar
+   landing.  This is the strongest positive survivor: the genuine pole-filled
+   Rankin--Selberg--Zagier scalar identity is necessary and sufficient for this angular landing.
+
+Exact RH chain tested by this conjecture:
+
+`C-A.9u + zero cusp finite parts -> claimed direct actual/canonical balanced ++- landing ->
+negative BM leg -> conserved left-QNM projection -> HC94 source/clock factorization ->
+horizon-boundary relative-cocycle gain equality -> Re(s)=1/2 on every Xi fibre -> RH`.
+
+Route-kill criterion: one boundary-free extraction datum in the actual absolute-convergence
+parameter chamber that violates canonical landing kills the direct implication before negative-BM
+work.  The HB route may survive only through the positive replacement chain
+
+`genuine pole-filled scalar RSZ identity -> C-A.9u -> actual canonical balanced ++- coefficient ->
+negative BM -> left-QNM -> HC94 cocycle -> RH`.
+
+Primary-source audit through 2026-08-29 confirms Zagier's regularized triple-Eisenstein formula
+(Zagier, <https://people.mpim-bonn.mpg.de/zagier/files/rankin-selberg/fulltext.pdf>, p. 431), its
+modern regularized-integral extension (Wu, <https://arxiv.org/abs/1810.09437>), and standard
+raising/lowering triple-product theory, but finds neither this source-normalized HB residual
+classification nor the actual balanced-spin-two necessity theorem.  Novelty claim is restricted
+to that classification and route no-go, not the classical scalar RSZ formula.
+
+`[FALSIFIED] [PAPER-PROVED] [LEAN-PROVED] [ROUTE KILLED]` C-A.9v kills the direct
+C-A.9u-to-canonical landing.  For every complex-linear height finite-part reporter, Lean proves the
+exact residual classification
+
+`balancedCanonicalResidual = bochnerCoefficient * scalarCanonicalResidual + cuspResidual`.
+
+Hence, when both actual cusp finite parts vanish and the Bochner multiplier is nonzero, canonical
+balanced landing is equivalent to the missing pole-filled scalar RSZ identity.  A closed
+boundary-free extraction datum at the actual chamber point `s=t=2`, where the multiplier is `-4`,
+satisfies C-A.9u but misses canonical landing.  The independent normalization audit is sharper:
+the classical completed-Lambda RSZ value is nonzero at `s=t=2`, while the canonical four-Xi value
+is exactly ten times it.  Direct equality therefore fails at a regular point, not only at a pole.
+
+This is formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinScalarLandingNoGo`, wired into `RHTower`.
+Headline theorems are `d4BM_actualBalancedCanonicalLandingResidual_eq`,
+`d4BM_actualBoundaryFreeCanonicalBalancedLanding_iff_scalarRSZ`,
+`d4BM_directScalarLanding_from_zeroCusp_not_forced`, and
+`d4BM_canonicalScalarVertex_ne_classicalCompletedRSZ_at_two`.  Direct Lean and targeted build
+`12476/12476` pass.  Axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.
+Formal lint finds the new module reachable and no forbidden declaration; its exit failure is
+unrelated shared-worktree umbrella debt.  Formalized survivor card:
+`../3-formalized/hb-scalar-landing-necessity-no-go.md`; failed route card:
+`../5-failed/hb-direct-balanced-scalar-landing.md`.
+
+Exact surviving RH chain after C-A.9v:
+
+`genuine pole-filled scalar Rankin--Selberg--Zagier identity for the actual completed Poincare
+triple -> C-A.9u -> actual canonical balanced ++- coefficient -> negative BM leg -> conserved
+left-QNM projection -> HC94 source/clock factorization -> horizon-boundary relative-cocycle gain
+equality -> Re(s)=1/2 on every Xi fibre -> RH`.
+
+## Conjecture C-A.9w — analytic-family finite part does not descend through specialization
+
+`[CORPUS-DERIVED] [ACTIVE]` Hostile audit of C-A.9v finds a representation error earlier than
+the scalar RSZ identity.  The corpus finite part is the coefficient of an affine height exponent
+that is *identically* zero as a spectral family.  C-A.9v instead permits a reporter on the
+specialized height function.  Those objects cannot agree on resonance hyperplanes: specialization
+forgets whether a zero numerical exponent was identically zero or only became zero accidentally.
+
+At the actual absolute-convergence-chamber point `s=2,t=4`, hence shifted parameters
+`u=3/2,v=7/2`, the nonzero corpus boundary label `(1,2,-1)` specializes to
+
+`1/2 + 2u - v = 0`.
+
+Conjecture C-A.9w predicts the strongest factorization obstruction.  Let `F0` be unit mass at the
+identically-zero affine exponent and `F1` unit mass at `(1,2,-1)`.  Prove:
+
+1. `F0` and `F1` evaluate to the same height function for every height at this chamber point;
+2. their analytic-family finite parts are respectively `1` and `0`;
+3. consequently no function on specialized height functions—not even a nonlinear one—can recover
+   the analytic-family finite part on every affine family;
+4. equivalently, exhibit a specialization-kernel element on which analytic-family finite part is
+   nonzero, and prove the exact quotient descent criterion identifying this kernel condition as
+   necessary and sufficient.
+
+Exact RH proof chain tested by this conjecture:
+
+`analytic-family cusp finite part -> claimed height-only reporter after spectral specialization ->
+C-A.9v scalar RSZ residual classification -> actual canonical balanced ++- source -> negative BM
+leg -> conserved left-QNM projection -> HC94 source/clock factorization -> horizon-boundary
+relative-cocycle gain equality -> Re(s)=1/2 on every Xi fibre -> RH`.
+
+Route-kill criterion: the two closed families above kill pointwise finite-part factorization and
+invalidate any C-A.9v interpretation of a height-only reporter as Zagier analytic-family
+regularization.  Strongest positive survivor:
+
+`parameter-family meromorphic regularization before specialization -> genuine pole-filled scalar
+RSZ identity as a meromorphic family -> C-A.9u -> actual canonical balanced ++- source -> negative
+BM -> left-QNM -> HC94 cocycle -> RH`.
+
+General regularized Rankin--Selberg theory performs meromorphic continuation in spectral
+parameters before evaluation; the audited literature and corpus do not state this exact
+source-normalized specialization-kernel obstruction or its quotient classification.
+
+`[FALSIFIED] [PAPER-PROVED] [LEAN-PROVED] [ROUTE KILLED]` C-A.9w closes exactly as predicted,
+and the factorization obstruction is stronger than linear-reporting failure.  Lean packages
+spectral specialization as a complex-linear map from formal affine-exponent families to height
+profiles and analytic-family finite part as evaluation at the identically-zero affine label.  It
+then proves the general exact descent criterion
+
+`(there exists any reporter h with h o specialization = finitePart)
+  <-> ker(specialization) <= ker(finitePart)`.
+
+At the closed actual chamber point `s=2,t=4`, unit mass at affine label `0` and unit mass at the
+nonzero actual boundary label `(1,2,-1)` specialize to the same height profile for every real
+height because both numerical exponents are zero.  Their analytic-family finite parts are `1` and
+`0`.  Their difference therefore belongs to the specialization kernel but has finite part exactly
+one.  The required kernel inclusion fails, so no height-profile reporter—even arbitrary and
+nonlinear—recovers analytic-family finite part after specialization.
+
+This retires the pointwise C-A.9v representation, not its valid residual algebra.  C-A.9v must now
+be read only as a theorem about abstract height-linear reporters; it cannot model the corpus
+analytic-family regularization uniformly.  The strongest positive survivor is forced:
+
+`meromorphic parameter-family regularization before specialization -> pole-filled scalar RSZ as a
+meromorphic identity -> C-A.9u balanced source -> negative BM -> left-QNM -> HC94 cocycle -> RH`.
+
+Formalization:
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinCuspFinitePartSpecializationNoGo`, wired
+into `RHTower`.  Headline theorems are
+`d4BM_zero_and_accidentalZero_families_same_specialized_profile`,
+`d4BM_linearReporter_factorsThrough_iff_ker_le`,
+`d4BM_cuspSpecialization_ker_not_le_finitePart_ker`, and
+`d4BM_cuspAnalyticFamilyFinitePart_not_factorThrough_specializedHeight`.  Direct Lean passes;
+targeted build `12477/12477` passes.  Axiom audit reports only `propext`, `Classical.choice`, and
+`Quot.sound`.  Formal lint finds the module reachable and no forbidden declaration; its exit
+failure is unrelated shared-worktree umbrella debt.  Formalized survivor card:
+`../3-formalized/hb-cusp-finite-part-specialization-kernel-no-go.md`; failed-route card:
+`../5-failed/hb-pointwise-cusp-finite-part-specialization.md`.

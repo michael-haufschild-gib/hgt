@@ -314,3 +314,73 @@ Still to build:
    `map_headTail_infinitePi`, `PiMeasureAbsoluteContinuity`, the invertible linear image, and
    `map_snd_add_noise_prod_absolutelyContinuous`.
 6. The card capstones, plus the planar Gaussian instance (needs a.s. entirety of `∑ ξₙ zⁿ/√(n!)`).
+
+### Card 13 — the model is built (2026-08-29)
+
+**`GaloisForLFunctions.HTGeometry.hasAbsolutelyContinuousFiniteAffineJetLaws_boundedRandomEntire`**
+— the clamped independent-coefficient random entire series realizes the finite-jet nondegeneracy
+hypothesis (ND) for every countable palette of translations.  The corpus's abstract capstones are
+therefore no longer vacuously applicable, and
+**`ae_translationOrbit_free_boundedRandomEntire`** and
+**`ae_translationOrbit_free_boundedRandomEntire_add_const`** are unconditional statements about a
+concrete random entire function.  All axiom-clean.
+
+New modules and what they own:
+- `OneDimJetEvalBridge` — `multiIndexJetEvalCLM_oneDim`: a one-coordinate multi-index jet is an
+  iterated derivative.
+- `OneDimTranslationJetPacket` — `pullback_oneDimTranslationFrame`,
+  `multivariateAffinePatternObservationCLM_oneDim`, `packetPoint`, `packetOrder`: a translation jet
+  packet reads derivatives at translated base points.
+- `ConfluentVanishingPolynomial` — `polynomial_eq_zero_of_jets_vanish` (a polynomial of degree below
+  the total vanishing order that vanishes to those orders at distinct points is zero) and
+  `sum_count_le_card`.
+- `PacketHermiteSurjectivity` — `multiIndexBelowOneEquiv`, `card_patternJet`,
+  `card_coordinate_eq_sum_orders`, `packetHermiteMap`, and **`surjective_packetHermiteMap`**: the
+  square Hermite evaluation of the first `N` monomials at the packet nodes is bijective.
+- `InfinitePiSumSplit` — **`map_sumPiEquivProdPi_infinitePi`** (an infinite product law indexed by a
+  sum type is the product of the block laws — a mathlib gap) and **`map_headTail_infinitePi`**.
+- `BoundedRandomEntireStructure` — joint continuity of the clamped series, continuity of the source
+  map, and the head–tail split of the series.
+- `BoundedRandomEntireTail`, `RandomEntireTailSource` — the tail is `z^N` times another clamped
+  series, entire, and a continuous family of sources.
+- `RandomEntirePacketSplit` — **`finiteAffineJetPacketObservation_split`**: the packet is the
+  Hermite image of the clamped head plus a function of the shifted coordinates.
+- `RandomEntireJetLawNondegeneracy`, `RandomEntireTranslationOrbitFreeness` — the measure assembly
+  and the card capstones.
+
+**Still open on card 13:**
+1. the planar Gaussian instance `∑ ξₙ zⁿ/√(n!)` (needs a.s. entirety of a Gaussian series and
+   nondegeneracy of complex Gaussian jet covariances);
+2. the *finite Taylor conditioning* claim in its exact form.  The corpus's
+   `HasAbsolutelyContinuousFiniteAffineJetLaws` asks for absolute continuity at **every** admissible
+   base, and the conditioned residual `z^{L+1}·(…)` genuinely fails it at a packet with a node at
+   `0`.  The card's own proof handles this by choosing the evaluation points nonzero, so the
+   faithful formalization needs a witness layer (`affineJetPacketWitness`) that can avoid a
+   prescribed finite set of nodes.  `ae_translationOrbit_free_boundedRandomEntire_add_const`
+   already gives the deterministic-gauge half.
+
+### Card 13 — next steps (precise)
+
+Landed: `HTGeometry/AffineFramePacketAvoidance.lean` —
+**`exists_base_separating_avoiding_and_eval_ne_zero`**: a separating base can additionally be chosen
+so that every packet node avoids a prescribed finite set of values (an affine automorphism has a
+non-constant coordinate, so landing on a fixed point is a nontrivial condition).
+
+Remaining chain for the *finite Taylor conditioning* statement:
+1. a witness structure carrying `packet_nonzero` (nodes ∉ a prescribed finite set) and its
+   existence, mirroring `nonempty_separatedMultivariateAffinePatternWitness` but calling
+   `exists_base_separating_avoiding_and_eval_ne_zero`;
+2. **generalize** `AffineJetDifferentialIndependence.exists_affineJetRelationValue_ne_zero` to an
+   arbitrary witness family `wit : ∀ p, MultivariateAffinePatternWitness frame p` and
+   `f ∈ multivariateAffinePatternResidualSet frame wit`, keeping the present statement as a
+   corollary so no call site changes; the same for
+   `RandomAffineJetPacketFreeness.measure_compl_preimage_affineJetPacketGenericSet_eq_zero`;
+3. the tail source `z^{L}·(clamped series)` has absolutely continuous jet packets at every base
+   whose nodes are nonzero — same Hermite argument with the monomials `X^{L+n}`, injective because
+   `z^L` is a unit at nonzero nodes;
+4. the conditioning capstone.
+
+Remaining for the planar Gaussian instance: a.s. entirety of `∑ ξₙ zⁿ/√(n!)` (Borel–Cantelli with
+Gaussian tails), then the same head/tail architecture with the Gaussian coefficient law in place of
+`complexSquareProbability` (`ComplexGaussianObservables.complexGaussian_absolutelyContinuous` and
+`PiMeasureAbsoluteContinuity` supply the absolute continuity).

@@ -443,9 +443,8 @@ theorem algEquiv_symm_commutes_deriv (φ : R ≃ₐ[K] R)
   apply φ.injective
   rw [φ.apply_symm_apply, hφδ, φ.apply_symm_apply]
 
-/-- Every differential torsor point has an inverse differential point, with inverse Galois
-matrix. -/
-theorem exists_inverse_tensorDifferentialPoint
+/-- A differential torsor point gives an injective endomorphism of a sigma-delta-simple ring. -/
+theorem galoisAutAtK_injective_of_sigmaDeltaSimple
     (E : Subalgebra C (R ⊗[K] R)) {ι : Type*}
     (b : Module.Basis ι C E)
     (hgen : Algebra.adjoin C
@@ -456,10 +455,45 @@ theorem exists_inverse_tensorDifferentialPoint
     (hconstC : ∀ x : C, σR (algebraMap C R x) = algebraMap C R x)
     (hEσ : ∀ e ∈ E, differenceTensorEquiv σK σR hcompat e = e)
     (hEδ : ∀ e ∈ E, tensorSquareDerivation (K := K) e ∈ E)
-    (hsimple : IsSigmaSimple σR)
-    (hnew : ∀ x : R, σR x = x → ∃ c : C, x = algebraMap C R c)
+    (hsimple : IsSigmaDeltaSimple σR)
+    (χ : E →ₐ[C] C)
+    (hχ : χ ∈ tensorDifferentialPoints (K := K) (C := C) E hEδ) :
+    Function.Injective (galoisAutAtK E b hgen hindep χ) := by
+  let φ := galoisAutAtK E b hgen hindep χ
+  have hcommσ : ∀ x : R, φ (σR x) = σR (φ x) :=
+    galoisAutAtK_sigma E b hgen hindep hcompat hconstC hEσ χ
+  have hcommδ : ∀ x : R, φ (Differential.deriv x) = Differential.deriv (φ x) := by
+    intro x
+    exact galoisAutAt_deriv E b hgen hindep hEδ χ hχ x
+  have hker : IsSigmaDeltaIdeal σR (RingHom.ker φ) := by
+    refine ⟨?_, ?_⟩
+    · intro x hx
+      rw [RingHom.mem_ker] at hx ⊢
+      rw [hcommσ, hx, map_zero]
+    · intro x hx
+      rw [RingHom.mem_ker] at hx ⊢
+      rw [hcommδ, hx, map_zero]
+  rcases hsimple (RingHom.ker φ) hker with hbot | htop
+  · exact (RingHom.injective_iff_ker_eq_bot φ).mpr hbot
+  · exact False.elim ((RingHom.ker_ne_top φ) htop)
+
+/-- An injective differential torsor specialization has an inverse differential point, with
+inverse Galois matrix. -/
+theorem exists_inverse_tensorDifferentialPoint_of_injective
+    (E : Subalgebra C (R ⊗[K] R)) {ι : Type*}
+    (b : Module.Basis ι C E)
+    (hgen : Algebra.adjoin C
+      (Set.range (algebraMap R (R ⊗[K] R)) ∪ (E : Set (R ⊗[K] R))) = ⊤)
+    (hindep : LinearIndependent R (fun i => ((b i : E) : R ⊗[K] R)))
+    {σK : K ≃+* K} {σR : R ≃+* R}
+    (hcompat : ∀ x : K, σR (algebraMap K R x) = algebraMap K R (σK x))
+    (hconstC : ∀ x : C, σR (algebraMap C R x) = algebraMap C R x)
+    (hEσ : ∀ e ∈ E, differenceTensorEquiv σK σR hcompat e = e)
+    (hEδ : ∀ e ∈ E, tensorSquareDerivation (K := K) e ∈ E)
     (χ : E →ₐ[C] C)
     (hχ : χ ∈ tensorDifferentialPoints (K := K) (C := C) E hEδ)
+    (hinjective : Function.Injective (galoisAutAtK E b hgen hindep χ))
+    (hnew : ∀ x : R, σR x = x → ∃ c : C, x = algebraMap C R c)
     (Y : Matrix (Fin 2) (Fin 2) R)
     (Z : Matrix (Fin 2) (Fin 2) (R ⊗[K] R)) (hZE : ∀ i j, Z i j ∈ E)
     (hZ : leftFundamental K Y * Z = rightFundamental K Y)
@@ -471,8 +505,7 @@ theorem exists_inverse_tensorDifferentialPoint
       galoisMatrixAt E Z hZE χ * galoisMatrixAt E Z hZE χ' = 1 := by
   classical
   let f := galoisAutAtK E b hgen hindep χ
-  have hfinj : Function.Injective f :=
-    galoisAutAtK_injective E b hgen hindep hcompat hconstC hEσ hsimple χ
+  have hfinj : Function.Injective f := hinjective
   have hfsurj : Function.Surjective f :=
     galoisAutAtK_surjective_of_pvGeneration E b hgen hindep χ Y Z hZE hZ hGdet u hu htop
   let Φ : R ≃ₐ[K] R := AlgEquiv.ofBijective f ⟨hfinj, hfsurj⟩
@@ -543,6 +576,69 @@ theorem exists_inverse_tensorDifferentialPoint
   rw [Matrix.map_one (algebraMap C R) (map_zero (algebraMap C R)) (map_one (algebraMap C R))]
   change (GR * GR') i j = (1 : Matrix (Fin 2) (Fin 2) R) i j
   exact hp
+
+/-- Every differential torsor point over a sigma-simple ring has an inverse differential point,
+with inverse Galois matrix. -/
+theorem exists_inverse_tensorDifferentialPoint
+    (E : Subalgebra C (R ⊗[K] R)) {ι : Type*}
+    (b : Module.Basis ι C E)
+    (hgen : Algebra.adjoin C
+      (Set.range (algebraMap R (R ⊗[K] R)) ∪ (E : Set (R ⊗[K] R))) = ⊤)
+    (hindep : LinearIndependent R (fun i => ((b i : E) : R ⊗[K] R)))
+    {σK : K ≃+* K} {σR : R ≃+* R}
+    (hcompat : ∀ x : K, σR (algebraMap K R x) = algebraMap K R (σK x))
+    (hconstC : ∀ x : C, σR (algebraMap C R x) = algebraMap C R x)
+    (hEσ : ∀ e ∈ E, differenceTensorEquiv σK σR hcompat e = e)
+    (hEδ : ∀ e ∈ E, tensorSquareDerivation (K := K) e ∈ E)
+    (hsimple : IsSigmaSimple σR)
+    (hnew : ∀ x : R, σR x = x → ∃ c : C, x = algebraMap C R c)
+    (χ : E →ₐ[C] C)
+    (hχ : χ ∈ tensorDifferentialPoints (K := K) (C := C) E hEδ)
+    (Y : Matrix (Fin 2) (Fin 2) R)
+    (Z : Matrix (Fin 2) (Fin 2) (R ⊗[K] R)) (hZE : ∀ i j, Z i j ∈ E)
+    (hZ : leftFundamental K Y * Z = rightFundamental K Y)
+    (hGdet : IsUnit (galoisMatrixAt E Z hZE χ).det)
+    (u : R) (hu : Y.det * u = 1)
+    (htop : Algebra.adjoin K
+      (Set.range (fun p : Fin 2 × Fin 2 => Y p.1 p.2) ∪ {u}) = ⊤) :
+    ∃ χ' ∈ tensorDifferentialPoints (K := K) (C := C) E hEδ,
+      galoisMatrixAt E Z hZE χ * galoisMatrixAt E Z hZE χ' = 1 := by
+  exact exists_inverse_tensorDifferentialPoint_of_injective E b hgen hindep hcompat hconstC
+    hEσ hEδ χ hχ
+    (galoisAutAtK_injective E b hgen hindep hcompat hconstC hEσ hsimple χ)
+    hnew Y Z hZE hZ hGdet u hu htop
+
+/-- Every differential torsor point over a sigma-delta-simple ring has an inverse differential
+point, with inverse Galois matrix. -/
+theorem exists_inverse_tensorDifferentialPoint_of_sigmaDeltaSimple
+    (E : Subalgebra C (R ⊗[K] R)) {ι : Type*}
+    (b : Module.Basis ι C E)
+    (hgen : Algebra.adjoin C
+      (Set.range (algebraMap R (R ⊗[K] R)) ∪ (E : Set (R ⊗[K] R))) = ⊤)
+    (hindep : LinearIndependent R (fun i => ((b i : E) : R ⊗[K] R)))
+    {σK : K ≃+* K} {σR : R ≃+* R}
+    (hcompat : ∀ x : K, σR (algebraMap K R x) = algebraMap K R (σK x))
+    (hconstC : ∀ x : C, σR (algebraMap C R x) = algebraMap C R x)
+    (hEσ : ∀ e ∈ E, differenceTensorEquiv σK σR hcompat e = e)
+    (hEδ : ∀ e ∈ E, tensorSquareDerivation (K := K) e ∈ E)
+    (hsimple : IsSigmaDeltaSimple σR)
+    (hnew : ∀ x : R, σR x = x → ∃ c : C, x = algebraMap C R c)
+    (χ : E →ₐ[C] C)
+    (hχ : χ ∈ tensorDifferentialPoints (K := K) (C := C) E hEδ)
+    (Y : Matrix (Fin 2) (Fin 2) R)
+    (Z : Matrix (Fin 2) (Fin 2) (R ⊗[K] R)) (hZE : ∀ i j, Z i j ∈ E)
+    (hZ : leftFundamental K Y * Z = rightFundamental K Y)
+    (hGdet : IsUnit (galoisMatrixAt E Z hZE χ).det)
+    (u : R) (hu : Y.det * u = 1)
+    (htop : Algebra.adjoin K
+      (Set.range (fun p : Fin 2 × Fin 2 => Y p.1 p.2) ∪ {u}) = ⊤) :
+    ∃ χ' ∈ tensorDifferentialPoints (K := K) (C := C) E hEδ,
+      galoisMatrixAt E Z hZE χ * galoisMatrixAt E Z hZE χ' = 1 := by
+  exact exists_inverse_tensorDifferentialPoint_of_injective E b hgen hindep hcompat hconstC
+    hEσ hEδ χ hχ
+    (galoisAutAtK_injective_of_sigmaDeltaSimple E b hgen hindep hcompat hconstC hEσ hEδ
+      hsimple χ hχ)
+    hnew Y Z hZE hZ hGdet u hu htop
 
 end
 

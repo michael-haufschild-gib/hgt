@@ -1,7 +1,7 @@
 # A geometric Källén--Lehmann spectrum gives a Gaussian field with hypertranscendental propagator
 
 - **ID:** `q-geometric-generalized-free-field-hypertranscendence`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / `[BRIDGE]`
 - **Scientific status:** `[PROVED FROM PUBLISHED PARENT THEOREMS]`
   `[NOT NEW SCIENTIFIC KNOWLEDGE]`
@@ -166,19 +166,48 @@ positive successor is the Wick-reduced relative Kolchin profile in the parent ca
 - E. Koelink and W. Van Assche, *Leonhard Euler and a q-analogue of the logarithm*,
   <https://arxiv.org/abs/0709.1788>.
 
-## Lean boundary
+## Lean status
 
-The companion formalization target is the unconditional part not requiring the full published
-difference-Galois theorem:
+All statements below are unconditional: no `sorry`, no added axioms.  Each audits to
+`[propext, Classical.choice, Quot.sound]`.
 
-- the explicit moment formula;
-- the positive atomic realization;
-- the exact power-series self-similarity constraint;
-- strict positivity of every finite Hankel determinant;
-- escape from every fixed finite spectral width.
+**The Adamczewski--Dreyfus--Hardouin input is no longer external.**  The `q`-difference dichotomy
+this card needs is proved inside the corpus, from its own differential Ostrowski criterion, in a
+Laurent model whose invariants are the constants.  Two models are needed and both are built:
+`k((z))((h))` when the multipliers are multiplicatively independent, and the ramified `k((w))`,
+`w = z^(1/q)`, when they are not — there `a = β^p`, `b = β^q` for a common positive real `β`
+produced by Bézout, and the twisting element `w^(-p)` is already rational.
 
-The actual HT conclusion must remain paper-proved until the Adamczewski--Dreyfus--Hardouin
-`q`-difference dichotomy and the rational/Puiseux descent are formalized in Lean.
+New modules:
+
+| Module | Role |
+|---|---|
+| `HTGeometry/HahnDilation.lean` | dilations, gradings, twists and coefficient maps of Hahn series; a faithful character forces the invariants to be the constants |
+| `HTGeometry/TwistedDilationOrbitObstruction.lean`, `HTGeometry/SimplePoleEulerCombination.lean` | the orbit obstruction for a twisted coboundary, and the pole of a nonzero Euler combination at a simple pole |
+| `HTGeometry/TwistedRatFuncLaurent.lean` | the twisted dilation of `K(X)` and the Laurent descent of a twisted coboundary |
+| `HTGeometry/QDifferenceLaurentModel.lean`, `QDifferenceRatFuncEmbedding.lean`, `QDifferenceEulerCompat.lean`, `QDifferenceOstrowski.lean` | the two-variable model `k((z))((h))`, its base `k(z)(h)`, the Euler/Laurent comparison, and the criterion instantiated |
+| `HTGeometry/QDifferenceInhomogeneousHT.lean` | hypertranscendence for a first-order inhomogeneous `q`-difference equation with a simple-pole inhomogeneity |
+| `HTGeometry/QDifferenceLaurentOneVariable.lean` | the one-variable model and the monomial twist |
+| `HTGeometry/RamifiedLaurentTransfer.lean` | the substitution `z = w^q`, its compatibilities, and the transport of hypertranscendence back |
+| `HTGeometry/MultiplicativeDependenceRoot.lean` | two reals in `(0,1)` are multiplicatively independent or powers of a common root |
+| `HTGeometry/EulerOrdinaryDerivationBridge.lean` | differential algebraicity over `k(z)` is the same for `z d/dz` and for `d/dz` |
+| `HTGeometry/GeometricKallenLehmannHypertranscendence.lean` | the card's response, its propagator, and their hypertranscendence |
+
+| Card statement | Lean theorem |
+|---|---|
+| `(2)`, `(5)` the positive atomic weight and its total mass | `HTGeometry.geometricKallenLehmannWeight_nonneg`, `HTGeometry.geometricKallenLehmannMoment` (existing corpus) |
+| `(6)` the response and its moments | `geometricResponseLaurent`, `coeff_geometricResponseLaurent` |
+| `(7)` the exact self-similarity constraint | `geometricResponseLaurent_equation`; over `ℝ`, `HTGeometry.geometricKallenLehmannResponse_selfSimilarity` and `_unique` |
+| nonrationality via infinitely many poles | superseded: hypertranscendence is proved directly |
+| the ADH dichotomy `(16)` | `hypertranscendentalOver_of_qDifference_simplePole` (independent multipliers), `hypertranscendentalOver_of_ramifiedMonomialTwist` (dependent) |
+| **item 3**: `R` is hypertranscendental over `ℂ(z)` | `hypertranscendentalOver_geometricResponseLaurent` (Euler), `…_ordinary` (`d/dz`) |
+| the Euler-versus-`d/dz` equivalence | `differentialAlgebraicOver_ordinary_of_euler`, `differentialAlgebraicOver_euler_of_ordinary` |
+| **item 4**: `(10)` `G(-1/z) = -zR(z)` and hypertranscendence of the propagator | `propagatorGerm`, `propagatorGerm_equation`, `hypertranscendentalOver_geometricPropagator`, `…_ordinary` |
+| strict Hankel positivity, escape from any finite width | `HTGeometry.det_momentHankelMatrix_geometricKallenLehmannMoment_pos`, `HTGeometry.geometricKallenLehmannMoment_not_fixedSpectralWidthLocalClosure` (existing corpus) |
+
+Item 2 — that the Källén--Lehmann weight `(2)` defines a generalized free Wightman field whose
+connected functions vanish above order two — is the classical parent construction the card cites
+(Duetsch--Rehren); it is quoted, not reproved.
 
 ## Gates
 
@@ -187,5 +216,5 @@ The actual HT conclusion must remain paper-proved until the Adamczewski--Dreyfus
 - [x] Gaussian/noninteraction no-go explicit
 - [x] special functions and RH absent from the statement
 - [x] parent-theory reduction recorded
-- [ ] published difference-Galois theorem formalized in Lean
-- [ ] full HT statement formalized in Lean
+- [x] published difference-Galois theorem formalized in Lean (proved internally, not imported)
+- [x] full HT statement formalized in Lean, for every `0<a,b<1` and for both derivations

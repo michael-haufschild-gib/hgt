@@ -429,13 +429,13 @@ theorem algebraMap_oneSubX :
   · rw [if_neg hneg]
     by_cases h0 : n = 0
     · subst h0
-      simp [Polynomial.coeff_sub, Polynomial.coeff_C, Polynomial.coeff_X]
+      simp [Polynomial.coeff_sub, Polynomial.coeff_X]
     · by_cases h1 : n = 1
       · subst h1
         simp [Polynomial.coeff_sub, Polynomial.coeff_X, Polynomial.coeff_one]
       · have hn0 : n.natAbs ≠ 0 := by omega
         have hn1 : n.natAbs ≠ 1 := by omega
-        simp [h0, h1, Polynomial.coeff_sub, Polynomial.coeff_C, Polynomial.coeff_X, hn0,
+        simp [h0, h1, Polynomial.coeff_sub, Polynomial.coeff_X, hn0,
           Ne.symm hn1, Polynomial.coeff_one]
 
 theorem oneSubX_mul_geometric (w : k) :
@@ -512,28 +512,66 @@ theorem geometricResponseLaurent_equation (a b : ℝ) (ha₀ : 0 < a) (ha₁ : a
   rw [coeff_ofPowerSeries_mk]
   by_cases h : n < 0
   · simp [h]
-  · have hres : (1 : ℝ) - a * b ^ n.natAbs ≠ 0 := by
+  · rw [if_neg h, if_neg h]
+    have hres : (1 : ℝ) - a * b ^ n.natAbs ≠ 0 := by
       have hble : b ^ n.natAbs ≤ 1 := pow_le_one₀ (le_of_lt hb₀) (le_of_lt hb₁)
       have hpos : 0 < b ^ n.natAbs := pow_pos hb₀ _
       nlinarith
-    have hmoment : ((_root_.HTGeometry.geometricKallenLehmannMoment a b n.natAbs : ℝ) : ℂ)
-        = (((1 - a : ℝ) : ℂ)) / (((1 - a * b ^ n.natAbs : ℝ) : ℂ)) := by
-      rw [_root_.HTGeometry.geometricKallenLehmannMoment]
-      push_cast
-      ring
-    have hresC : (((1 - a * b ^ n.natAbs : ℝ) : ℂ)) ≠ 0 := by
-      simpa using hres
-    rw [hmoment, ← zpow_natCast ((b : ℂ)) n.natAbs,
-      show ((n.natAbs : ℕ) : ℤ) = n from Int.natAbs_of_nonneg (by omega)]
+    have hresC : (((1 - a * b ^ n.natAbs : ℝ) : ℂ)) ≠ 0 := Complex.ofReal_ne_zero.mpr hres
     have hbz : ((b : ℂ)) ^ n = (((b ^ n.natAbs : ℝ) : ℂ)) := by
-      rw [← zpow_natCast ((b : ℂ)) n.natAbs,
-        show ((n.natAbs : ℕ) : ℤ) = n from Int.natAbs_of_nonneg (by omega)]
-      push_cast
-      ring
-    rw [hbz]
+      have hn : ((n.natAbs : ℕ) : ℤ) = n := Int.natAbs_of_nonneg (by omega)
+      calc ((b : ℂ)) ^ n = ((b : ℂ)) ^ ((n.natAbs : ℕ) : ℤ) := by rw [hn]
+        _ = ((b : ℂ)) ^ (n.natAbs : ℕ) := zpow_natCast _ _
+        _ = (((b ^ n.natAbs : ℝ) : ℂ)) := by push_cast; ring
+    rw [_root_.HTGeometry.geometricKallenLehmannMoment, hbz]
+    rw [show (((1 - a) / (1 - a * b ^ n.natAbs) : ℝ) : ℂ)
+        = ((1 - a : ℝ) : ℂ) / ((1 - a * b ^ n.natAbs : ℝ) : ℂ) from by push_cast; ring]
     field_simp
     push_cast
     ring
+
+/-! ## The card's statements -/
+
+set_option maxHeartbeats 1000000 in
+/-- **The mass-resolvent response of a geometric Källén--Lehmann spectrum is hypertranscendental
+over `ℂ(z)`**, for every pair of multipliers in `(0,1)`, for the Euler derivation. -/
+theorem hypertranscendentalOver_geometricResponseLaurent (a b : ℝ) (ha₀ : 0 < a) (ha₁ : a < 1)
+    (hb₀ : 0 < b) (hb₁ : b < 1) :
+    letI : Differential (RatFunc ℂ) := cylinderDifferential (1 : ℂ)
+    letI := innerDifferential (k := ℂ)
+    HypertranscendentalOver (RatFunc ℂ) (geometricResponseLaurent a b) := by
+  have hbC : ((b : ℂ)) ≠ 0 := by simpa using ne_of_gt hb₀
+  exact hypertranscendentalOver_geometricResponse a b ha₀ ha₁ hb₀ hb₁ _ hbC
+    (geometricResponseLaurent_equation a b ha₀ ha₁ hb₀ hb₁ hbC)
+
+/-- The same conclusion for the ordinary derivation, which is the card's statement. -/
+theorem hypertranscendentalOver_geometricResponseLaurent_ordinary (a b : ℝ) (ha₀ : 0 < a)
+    (ha₁ : a < 1) (hb₀ : 0 < b) (hb₁ : b < 1) :
+    letI := ratFuncOrdinaryDifferential (k := ℂ)
+    letI := innerOrdinaryDifferential (k := ℂ)
+    HypertranscendentalOver (RatFunc ℂ) (geometricResponseLaurent a b) :=
+  hypertranscendentalOver_ordinary_of_euler
+    (hypertranscendentalOver_geometricResponseLaurent a b ha₀ ha₁ hb₀ hb₁)
+
+set_option maxHeartbeats 1000000 in
+/-- **The Euclidean momentum propagator of the geometric spectrum is hypertranscendental**, for
+every pair of multipliers in `(0,1)`, for both derivations. -/
+theorem hypertranscendentalOver_geometricPropagator (a b : ℝ) (ha₀ : 0 < a) (ha₁ : a < 1)
+    (hb₀ : 0 < b) (hb₁ : b < 1) :
+    letI : Differential (RatFunc ℂ) := cylinderDifferential (1 : ℂ)
+    letI := innerDifferential (k := ℂ)
+    HypertranscendentalOver (RatFunc ℂ) (propagatorGerm (geometricResponseLaurent a b)) :=
+  hypertranscendentalOver_propagatorGerm_of_response
+    (hypertranscendentalOver_geometricResponseLaurent a b ha₀ ha₁ hb₀ hb₁)
+
+/-- The propagator statement for the ordinary derivation. -/
+theorem hypertranscendentalOver_geometricPropagator_ordinary (a b : ℝ) (ha₀ : 0 < a) (ha₁ : a < 1)
+    (hb₀ : 0 < b) (hb₁ : b < 1) :
+    letI := ratFuncOrdinaryDifferential (k := ℂ)
+    letI := innerOrdinaryDifferential (k := ℂ)
+    HypertranscendentalOver (RatFunc ℂ) (propagatorGerm (geometricResponseLaurent a b)) :=
+  hypertranscendentalOver_ordinary_of_euler
+    (hypertranscendentalOver_geometricPropagator a b ha₀ ha₁ hb₀ hb₁)
 
 end
 
