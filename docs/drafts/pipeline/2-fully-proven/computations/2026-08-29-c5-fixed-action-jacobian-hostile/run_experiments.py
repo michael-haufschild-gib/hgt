@@ -258,7 +258,7 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", default="results")
     parser.add_argument("--workers", type=int, default=max(1, os.cpu_count() or 1))
-    parser.add_argument("--dps", type=int, default=70)
+    parser.add_argument("--dps", type=int, default=160)
     parser.add_argument("--u-points", type=int, default=400)
     parser.add_argument("--t-points", type=int, default=900)
     parser.add_argument("--random-points", type=int, default=200_000)

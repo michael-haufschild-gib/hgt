@@ -34,7 +34,12 @@ where mathematical knowledge is missing use the /hgtl7 skill to create it.
 /goal
 
 formalize UNCONDITIONALLY in lean any proven theorem from all these cards: 
-- docs/drafts/pipeline/2-fully-proven (including subfolders)
+- docs/drafts/pipeline/2-fully-proven/bessel-order-intensity-hypertranscendence.md
+- docs/drafts/pipeline/2-fully-proven/deninger-algebraic-cyclotomic-milnor-amplitude.md
+- docs/drafts/pipeline/2-fully-proven/route-e-cofactor-amplified-e3-token-supply.md
+- docs/drafts/pipeline/2-fully-proven/route-e-coprime-square-root-mobius-product-sign-law.md
+- docs/drafts/pipeline/2-fully-proven/route-e-forbidden-support-e3-stability.md
+- docs/drafts/pipeline/2-fully-proven/route-e-growing-reciprocal-marker-low-breadth-transport.md
   
 add missing infrastructure, lean proofs, everything needed to mark a card as fully done and move it to stage 3 of the pipeline - no simplifications. 
 
@@ -371,3 +376,32 @@ optimize python code for multicore.
 once all computations are done, write a report in the folder with the results for future agents - no large diary, just enough to understand what you did compute, what the outcome and interpretation/consequences are
 
 good. hope this helped. continue now your lean work only without computations.
+
+
+## computation research
+
+**Goal:** Create novel and significant knowledge for our rh research.
+
+Use computations and formalize lean to discover new routes, kill routes, sharpen routes, discharge premises and finally close a formal RH proof chain.
+
+**Lean rules:**
+1. Proofs must be unconditional and closed in lean, no premises, no hypotheses, no added axioms, ....
+2. Always build in the foreground, 1 process per single agent.
+3. No computational results can be used in lean proof - computations only support ideas and guidance.
+4. Always use  lake env lean \<file>  and only lake build \<module> for the final audit. Do not forget to wire new modules into the umbrellas.
+5. do not run full builds. check in scratch, build only oleans that are needed, wire finished modules into their umbrella but do not run full umbrella builds.
+6. make sure you don't leave stale lean processes running - clean up after yourself.
+
+**Mandatory reasearch and conjecturing rules:** 
+1. always use the search tool for our lean corpus to find ideas, existing work. conjecture based on the lean corpus, not your training data which is behind our research in the lean corpus.
+2. always tackle the hardest mathematical problem that neither our lean corpus nor literature have solved yet. missing infrastructure or no existing proof is not reason to pivot but to build the infrastructure and to solve the open problem yourself.
+3. to create new knowledge use the hgt-fields-medalist skill workflow and heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ...  
+
+**Mandatory computation rules:**
+1. Computations run always on runpod: ssh root\@216.81.151.68 -p 16020 -i \~/.ssh/id\_ed25519
+2. optimize python code for multicore.
+3. download results and document them in docs/drafts/pipeline/2-fully-proven/computations.
+4. Only compute things you cannot already predict the result of.
+5. Do not run hours long computations.
+
+goal is met when RH proof is formalized.

@@ -493,3 +493,38 @@ diagonal, the balanced product is twice the covariant traceless-Hessian contract
 antisymmetric tensor obstruction cancels.  The next hard problem is an exact regularized weighted
 Bochner/Stokes reduction to the existing completed scalar triple-Eisenstein vertex, including the
 cusp boundary audit.
+
+## Loop HC94-A.9c — exact completed coefficient and exhaustive cusp defect
+
+`[CORPUS-LED CONJECTURE]` Combine the existing completed scalar triple-Eisenstein vertex with the
+diagonal Maass word from HC94-A.9b.  For repeated-leg geometric eigenvalue `lambda=u^2-1/4`,
+projecting-leg eigenvalue `mu=v^2-1/4`, and `d=mu/2-lambda`, the zero-defect regularized coefficient
+should be
+
+`2*d*(d+1)-lambda^2`.
+
+This contributes through the fixed chain
+
+`KI chiral carrier -> pulled Eq. (63) -> balanced Maass word -> completed angular coefficient ->
+negative leg -> conserved left-QNM coefficient -> HC94 clock defect -> RH`.
+
+`[PAPER-PROVED] [LEAN-PROVED]` Let `V,G,H` be scalar, gradient, and full-Hessian trilinear moments.
+The balanced traceless-spin moment is `2H-lambda^2 V`.  Lean proves without premises the exact
+identity
+
+`(2H-lambda^2 V) - (2d(d+1)-lambda^2)V
+ = 2(H-(d+1)G) + 2(d+1)(G-dV)`.
+
+Therefore two Stokes defects are exhaustive: no third tensor invariant can obstruct scalar-vertex
+reduction in the diagonal channel.  The canonical zero-defect Stokes completion is formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCompletedBalancedSpinTwoEisensteinVertex`; it equals
+the displayed polynomial times the existing diagonal completed scalar vertex, has the explicit
+four-Xi factorization, and preserves Weyl reflection in both spectral parameters.  Module is
+wired into RHTower.  Direct Lean and targeted build pass `12049/12049`; headline axiom audits
+report only `propext`, `Classical.choice`, and `Quot.sound`.
+
+**Scope boundary / open core.** This closes the algebraic and representation-theoretic coefficient,
+not the analytic statement that Zagier cusp regularization realizes zero first and second Stokes
+defects.  That boundary assertion is now the unique remaining angular obstruction.  It must be
+proved from Eisenstein constant terms and analytic continuation; it cannot be inserted as a
+hypothesis.

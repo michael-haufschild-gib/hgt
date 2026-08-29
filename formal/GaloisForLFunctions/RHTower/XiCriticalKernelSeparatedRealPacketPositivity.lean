@@ -1324,3 +1324,559 @@ private theorem packet_corr {u v : ℝ} (hu : xiRayPacketBase ≤ u) (hv : xiRay
           (mul_nonneg (by norm_num) (pow_nonneg hq0.le d))
 
 end RHTower
+
+namespace RHTower
+
+/-! ## Separated-packet positivity of the real critical kernel -/
+
+private theorem diag_eq {u : ℝ} (hu : u ≠ 0) :
+    (xiRayLogDeriv u + xiRayLogDeriv u) / (u + u) = xiRayLogDeriv u / u := by
+  rw [div_eq_div_iff (by simpa [two_mul] using mul_ne_zero (two_ne_zero) hu) hu]
+  ring
+
+private theorem geom_row_sum_le' {q : ℝ} (hq0 : 0 ≤ q) (hq1 : q < 1) (n i : ℕ) :
+    ∑ j ∈ (Finset.range n).erase i, q ^ Nat.dist i j ≤ 2 * (q / (1 - q)) := by
+  have h1q : (0 : ℝ) < 1 - q := by linarith
+  have htail : ∀ m : ℕ, ∑ k ∈ Finset.range m, q ^ (k + 1) ≤ q / (1 - q) := by
+    intro m
+    have hgeom : ∑ k ∈ Finset.range m, q ^ k ≤ 1 / (1 - q) := by
+      rw [geom_sum_eq (ne_of_lt hq1) m,
+        show (q ^ m - 1) / (q - 1) = (1 - q ^ m) / (1 - q) by
+          rw [← neg_div_neg_eq]; ring_nf]
+      have h0 : (0 : ℝ) ≤ q ^ m := by positivity
+      have hnum : (1 : ℝ) - q ^ m ≤ 1 := by linarith
+      have := mul_le_mul_of_nonneg_right hnum (inv_nonneg.mpr h1q.le)
+      simpa [div_eq_mul_inv] using this
+    have hstep : ∑ k ∈ Finset.range m, q ^ (k + 1) =
+        q * ∑ k ∈ Finset.range m, q ^ k := by
+      rw [Finset.mul_sum]
+      exact Finset.sum_congr rfl fun k _ => by rw [pow_succ]; ring
+    rw [hstep]
+    calc q * ∑ k ∈ Finset.range m, q ^ k ≤ q * (1 / (1 - q)) :=
+          mul_le_mul_of_nonneg_left hgeom hq0
+      _ = q / (1 - q) := by ring
+  have hsplit : (Finset.range n).erase i =
+      Finset.range (min i n) ∪ Finset.Ico (i + 1) n := by
+    ext j
+    simp only [Finset.mem_erase, Finset.mem_range, Finset.mem_union, Finset.mem_Ico,
+      lt_min_iff]
+    omega
+  have hdisj : Disjoint (Finset.range (min i n)) (Finset.Ico (i + 1) n) := by
+    rw [Finset.disjoint_left]
+    intro j hj hj'
+    simp only [Finset.mem_range, lt_min_iff] at hj
+    simp only [Finset.mem_Ico] at hj'
+    omega
+  rw [hsplit, Finset.sum_union hdisj]
+  have hleft : ∑ j ∈ Finset.range (min i n), q ^ Nat.dist i j ≤ q / (1 - q) := by
+    have hcongr : ∑ j ∈ Finset.range (min i n), q ^ Nat.dist i j =
+        ∑ j ∈ Finset.range (min i n), q ^ (i - j) := by
+      refine Finset.sum_congr rfl fun j hj => ?_
+      simp only [Finset.mem_range, lt_min_iff] at hj
+      rw [Nat.dist_eq_sub_of_le_right (by omega)]
+    rw [hcongr]
+    calc ∑ j ∈ Finset.range (min i n), q ^ (i - j)
+        ≤ ∑ j ∈ Finset.range (min i n), q ^ (min i n - 1 - j + 1) := by
+          refine Finset.sum_le_sum fun j hj => ?_
+          simp only [Finset.mem_range, lt_min_iff] at hj
+          exact pow_le_pow_of_le_one hq0 hq1.le (by omega)
+      _ = ∑ k ∈ Finset.range (min i n), q ^ (k + 1) :=
+          Finset.sum_range_reflect (fun k => q ^ (k + 1)) (min i n)
+      _ ≤ q / (1 - q) := htail _
+  have hright : ∑ j ∈ Finset.Ico (i + 1) n, q ^ Nat.dist i j ≤ q / (1 - q) := by
+    have hcongr : ∑ j ∈ Finset.Ico (i + 1) n, q ^ Nat.dist i j =
+        ∑ k ∈ Finset.range (n - (i + 1)), q ^ (k + 1) := by
+      rw [Finset.sum_Ico_eq_sum_range]
+      refine Finset.sum_congr rfl fun k _ => ?_
+      rw [Nat.dist_eq_sub_of_le (by omega)]
+      congr 1
+      omega
+    rw [hcongr]
+    exact htail _
+  linarith
+
+/-- **Separated real-packet positivity of the critical logarithmic-derivative kernel.**
+For every real node packet with base at least `xiRayPacketBase` and consecutive
+multiplicative ratio at least `xiRayPacketBase ^ 2`, every length, and every real
+coefficient vector, the quadratic form of the real critical kernel `(L(x)+L(y))/(x+y)`
+is nonnegative.  Unconditional. -/
+theorem xiRayCriticalKernel_separatedPacket_quadraticForm_nonneg
+    {x : ℕ → ℝ} (hbase : xiRayPacketBase ≤ x 0)
+    (hstep : ∀ m, xiRayPacketBase ^ 2 * x m ≤ x (m + 1)) (n : ℕ) (a : ℕ → ℝ) :
+    0 ≤ ∑ i ∈ Finset.range n, ∑ j ∈ Finset.range n,
+      a i * a j * ((xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j)) := by
+  have hR256 := xiRayPacketBase_ge
+  have hR0 : (0 : ℝ) < xiRayPacketBase := by linarith
+  have hR1 : (1 : ℝ) ≤ xiRayPacketBase := by linarith
+  have hgap : ∀ i j : ℕ, i ≤ j → xiRayPacketBase ^ (2 * (j - i)) * x i ≤ x j := by
+    intro i j hij
+    induction j with
+    | zero =>
+      have h0 : i = 0 := Nat.le_zero.mp hij
+      subst h0
+      simp
+    | succ m ih =>
+      rcases Nat.lt_or_ge i (m + 1) with hlt | hge
+      · have him : i ≤ m := by omega
+        have h1 := ih him
+        have h2 := hstep m
+        have hcast : 2 * (m + 1 - i) = 2 * (m - i) + 2 := by omega
+        rw [hcast, pow_add]
+        have hpow0 : (0 : ℝ) ≤ xiRayPacketBase ^ 2 := sq_nonneg _
+        calc xiRayPacketBase ^ (2 * (m - i)) * xiRayPacketBase ^ 2 * x i
+            = xiRayPacketBase ^ 2 * (xiRayPacketBase ^ (2 * (m - i)) * x i) := by ring
+          _ ≤ xiRayPacketBase ^ 2 * x m := mul_le_mul_of_nonneg_left h1 hpow0
+          _ ≤ x (m + 1) := h2
+      · have h0 : i = m + 1 := by omega
+        subst h0
+        simp
+  have hone : ∀ i : ℕ, xiRayPacketBase ≤ x i := by
+    intro i
+    have h := hgap 0 i (Nat.zero_le i)
+    have hpow : (1 : ℝ) ≤ xiRayPacketBase ^ (2 * (i - 0)) := one_le_pow₀ hR1
+    have hx0pos : (0 : ℝ) < x 0 := lt_of_lt_of_le hR0 hbase
+    calc xiRayPacketBase ≤ x 0 := hbase
+      _ = 1 * x 0 := (one_mul _).symm
+      _ ≤ xiRayPacketBase ^ (2 * (i - 0)) * x 0 :=
+          mul_le_mul_of_nonneg_right hpow hx0pos.le
+      _ ≤ x i := h
+  have hxpos : ∀ i : ℕ, (0 : ℝ) < x i := fun i => lt_of_lt_of_le hR0 (hone i)
+  have hrpos : ∀ i : ℕ, 0 < xiRayLogDeriv (x i) := fun i =>
+    xiRayLogDeriv_pos_of_packetBase (hone i)
+  have hKnn : ∀ i j : ℕ, 0 ≤ (xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j) :=
+    fun i j => div_nonneg (by linarith [hrpos i, hrpos j])
+      (by linarith [hxpos i, hxpos j])
+  have hq0 : (0 : ℝ) < 2 / xiRayPacketBase := div_pos (by norm_num) hR0
+  have hq128 : 2 / xiRayPacketBase ≤ 1 / 128 := by
+    have h := div_le_div_of_nonneg_left (by norm_num : (0 : ℝ) ≤ 2)
+      (by norm_num : (0 : ℝ) < 256) hR256
+    calc 2 / xiRayPacketBase ≤ 2 / 256 := h
+      _ = 1 / 128 := by norm_num
+  have hq1 : 2 / xiRayPacketBase < 1 := by linarith
+  have h1q : (0 : ℝ) < 1 - 2 / xiRayPacketBase := by linarith
+  have hqK : 32 * (2 * (2 / xiRayPacketBase / (1 - 2 / xiRayPacketBase))) ≤ 1 := by
+    have h2 : 32 * (2 * (2 / xiRayPacketBase / (1 - 2 / xiRayPacketBase)))
+        = 64 * (2 / xiRayPacketBase) / (1 - 2 / xiRayPacketBase) := by ring
+    rw [h2, div_le_one h1q]
+    linarith
+  have hdiag : ∀ i : ℕ, (xiRayLogDeriv (x i) + xiRayLogDeriv (x i)) / (x i + x i)
+      = xiRayLogDeriv (x i) / x i := fun i => diag_eq (ne_of_gt (hxpos i))
+  have hcorr : ∀ i j : ℕ, i < j →
+      (xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j)
+        ≤ 32 * (2 / xiRayPacketBase) ^ (j - i) *
+          (Real.sqrt ((xiRayLogDeriv (x i) + xiRayLogDeriv (x i)) / (x i + x i)) *
+            Real.sqrt ((xiRayLogDeriv (x j) + xiRayLogDeriv (x j)) / (x j + x j))) := by
+    intro i j hij
+    have h := packet_corr (hone i) (hone j) (d := j - i) (hgap i j hij.le)
+    rw [hdiag i, hdiag j]
+    exact h
+  set b : ℕ → ℝ := fun i => |a i| *
+    Real.sqrt ((xiRayLogDeriv (x i) + xiRayLogDeriv (x i)) / (x i + x i)) with hbdef
+  have hbsq : ∀ i : ℕ, b i ^ 2 = a i ^ 2 *
+      ((xiRayLogDeriv (x i) + xiRayLogDeriv (x i)) / (x i + x i)) := by
+    intro i
+    rw [hbdef]
+    have h := hKnn i i
+    rw [mul_pow, sq_abs, Real.sq_sqrt h]
+  have hpair : ∀ i j : ℕ, i ≠ j →
+      -(32 * (2 / xiRayPacketBase) ^ Nat.dist i j * ((b i ^ 2 + b j ^ 2) / 2)) ≤
+        a i * a j * ((xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j)) := by
+    have hmain : ∀ i j : ℕ, i < j →
+        -(32 * (2 / xiRayPacketBase) ^ Nat.dist i j * ((b i ^ 2 + b j ^ 2) / 2)) ≤
+          a i * a j * ((xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j)) := by
+      intro i j hij
+      have hk := hcorr i j hij
+      have hknn := hKnn i j
+      have hdist : Nat.dist i j = j - i := Nat.dist_eq_sub_of_le hij.le
+      have habs : -(|a i| * |a j| *
+          ((xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j))) ≤
+          a i * a j * ((xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j)) := by
+        have h1 : -(|a i| * |a j|) ≤ a i * a j := by
+          rw [← abs_mul]
+          exact neg_abs_le _
+        have h2 := mul_le_mul_of_nonneg_right h1 hknn
+        calc -(|a i| * |a j| *
+            ((xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j)))
+            = -(|a i| * |a j|) *
+                ((xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j)) := by ring
+          _ ≤ a i * a j *
+                ((xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j)) := h2
+      have hup : |a i| * |a j| *
+          ((xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j)) ≤
+          32 * (2 / xiRayPacketBase) ^ (j - i) * (b i * b j) := by
+        have h2 := mul_le_mul_of_nonneg_left hk
+          (show (0 : ℝ) ≤ |a i| * |a j| by positivity)
+        calc |a i| * |a j| *
+            ((xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j))
+            ≤ |a i| * |a j| * (32 * (2 / xiRayPacketBase) ^ (j - i) *
+                (Real.sqrt ((xiRayLogDeriv (x i) + xiRayLogDeriv (x i)) / (x i + x i)) *
+                  Real.sqrt ((xiRayLogDeriv (x j) + xiRayLogDeriv (x j)) / (x j + x j)))) :=
+              h2
+          _ = 32 * (2 / xiRayPacketBase) ^ (j - i) * (b i * b j) := by
+              rw [hbdef]
+              ring
+      have hamgm : b i * b j ≤ (b i ^ 2 + b j ^ 2) / 2 := by
+        nlinarith [sq_nonneg (b i - b j)]
+      have hKq : (0 : ℝ) ≤ 32 * (2 / xiRayPacketBase) ^ (j - i) :=
+        mul_nonneg (by norm_num) (pow_nonneg hq0.le _)
+      rw [hdist]
+      have h8 := mul_le_mul_of_nonneg_left hamgm hKq
+      calc -(32 * (2 / xiRayPacketBase) ^ (j - i) * ((b i ^ 2 + b j ^ 2) / 2))
+          ≤ -(32 * (2 / xiRayPacketBase) ^ (j - i) * (b i * b j)) := by linarith
+        _ ≤ -(|a i| * |a j| *
+              ((xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j))) := by
+            linarith
+        _ ≤ a i * a j *
+              ((xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j)) := habs
+    intro i j hij
+    rcases Nat.lt_or_ge i j with hlt | hge
+    · exact hmain i j hlt
+    · have hlt : j < i := by omega
+      have h := hmain j i hlt
+      rw [Nat.dist_comm]
+      calc -(32 * (2 / xiRayPacketBase) ^ Nat.dist j i * ((b i ^ 2 + b j ^ 2) / 2))
+          = -(32 * (2 / xiRayPacketBase) ^ Nat.dist j i * ((b j ^ 2 + b i ^ 2) / 2)) := by
+            ring
+        _ ≤ a j * a i * ((xiRayLogDeriv (x j) + xiRayLogDeriv (x i)) / (x j + x i)) := h
+        _ = a i * a j * ((xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j)) := by
+            rw [add_comm (xiRayLogDeriv (x j)), add_comm (x j)]
+            ring
+  have hrow : ∀ i : ℕ,
+      ∑ j ∈ (Finset.range n).erase i,
+        32 * (2 / xiRayPacketBase) ^ Nat.dist i j ≤ 1 := by
+    intro i
+    rw [← Finset.mul_sum]
+    have hg := geom_row_sum_le' hq0.le hq1 n i
+    have h2 : (32 : ℝ) * (2 * (2 / xiRayPacketBase / (1 - 2 / xiRayPacketBase))) ≤ 1 := hqK
+    calc (32 : ℝ) * ∑ j ∈ (Finset.range n).erase i,
+          (2 / xiRayPacketBase) ^ Nat.dist i j
+        ≤ 32 * (2 * (2 / xiRayPacketBase / (1 - 2 / xiRayPacketBase))) :=
+          mul_le_mul_of_nonneg_left hg (by norm_num)
+      _ ≤ 1 := h2
+  have hexpand : ∑ i ∈ Finset.range n, ∑ j ∈ Finset.range n,
+      a i * a j * ((xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j)) =
+      ∑ i ∈ Finset.range n, (b i ^ 2 +
+        ∑ j ∈ (Finset.range n).erase i,
+          a i * a j * ((xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j))) := by
+    refine Finset.sum_congr rfl fun i hi => ?_
+    rw [← Finset.add_sum_erase _ _ hi]
+    congr 1
+    rw [hbsq i]
+    ring
+  rw [hexpand]
+  have hlower : ∀ i ∈ Finset.range n,
+      b i ^ 2 - (∑ j ∈ (Finset.range n).erase i,
+          32 * (2 / xiRayPacketBase) ^ Nat.dist i j * ((b i ^ 2 + b j ^ 2) / 2)) ≤
+        b i ^ 2 + ∑ j ∈ (Finset.range n).erase i,
+          a i * a j * ((xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j)) := by
+    intro i _
+    have h := Finset.sum_le_sum (s := (Finset.range n).erase i)
+      (f := fun j => -(32 * (2 / xiRayPacketBase) ^ Nat.dist i j *
+        ((b i ^ 2 + b j ^ 2) / 2)))
+      (g := fun j => a i * a j *
+        ((xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j)))
+      (fun j hj => hpair i j (by
+        simp only [Finset.mem_erase] at hj
+        exact fun hij => hj.1 (hij.symm)))
+    rw [Finset.sum_neg_distrib] at h
+    linarith
+  have hswap : ∑ i ∈ Finset.range n, ∑ j ∈ (Finset.range n).erase i,
+      32 * (2 / xiRayPacketBase) ^ Nat.dist i j * b j ^ 2 =
+      ∑ i ∈ Finset.range n, ∑ j ∈ (Finset.range n).erase i,
+        32 * (2 / xiRayPacketBase) ^ Nat.dist i j * b i ^ 2 := by
+    rw [Finset.sum_comm' (t' := Finset.range n)
+      (s' := fun j => (Finset.range n).erase j)
+      (by
+        intro i j
+        simp only [Finset.mem_erase, Finset.mem_range]
+        omega)]
+    refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun i _ => ?_
+    rw [Nat.dist_comm]
+  have hW : ∑ i ∈ Finset.range n, ∑ j ∈ (Finset.range n).erase i,
+      32 * (2 / xiRayPacketBase) ^ Nat.dist i j *
+        ((b i ^ 2 + b j ^ 2) / 2) ≤ ∑ i ∈ Finset.range n, b i ^ 2 := by
+    have hsplit : ∀ i, ∑ j ∈ (Finset.range n).erase i,
+        32 * (2 / xiRayPacketBase) ^ Nat.dist i j *
+          ((b i ^ 2 + b j ^ 2) / 2) =
+        (∑ j ∈ (Finset.range n).erase i,
+          32 * (2 / xiRayPacketBase) ^ Nat.dist i j * b i ^ 2) / 2 +
+        (∑ j ∈ (Finset.range n).erase i,
+          32 * (2 / xiRayPacketBase) ^ Nat.dist i j * b j ^ 2) / 2 := by
+      intro i
+      rw [Finset.sum_div, Finset.sum_div, ← Finset.sum_add_distrib]
+      exact Finset.sum_congr rfl fun j _ => by ring
+    have hA : ∑ i ∈ Finset.range n, ∑ j ∈ (Finset.range n).erase i,
+        32 * (2 / xiRayPacketBase) ^ Nat.dist i j * b i ^ 2 ≤
+        ∑ i ∈ Finset.range n, b i ^ 2 := by
+      refine Finset.sum_le_sum fun i _ => ?_
+      have h1 : ∑ j ∈ (Finset.range n).erase i,
+          32 * (2 / xiRayPacketBase) ^ Nat.dist i j * b i ^ 2 =
+          (∑ j ∈ (Finset.range n).erase i,
+            32 * (2 / xiRayPacketBase) ^ Nat.dist i j) * b i ^ 2 := by
+        rw [Finset.sum_mul]
+      rw [h1]
+      have h2 : (0 : ℝ) ≤ b i ^ 2 := sq_nonneg _
+      calc (∑ j ∈ (Finset.range n).erase i,
+            32 * (2 / xiRayPacketBase) ^ Nat.dist i j) * b i ^ 2
+          ≤ 1 * b i ^ 2 := mul_le_mul_of_nonneg_right (hrow i) h2
+        _ = b i ^ 2 := one_mul _
+    calc ∑ i ∈ Finset.range n, ∑ j ∈ (Finset.range n).erase i,
+          32 * (2 / xiRayPacketBase) ^ Nat.dist i j *
+            ((b i ^ 2 + b j ^ 2) / 2)
+        = (∑ i ∈ Finset.range n, ∑ j ∈ (Finset.range n).erase i,
+            32 * (2 / xiRayPacketBase) ^ Nat.dist i j * b i ^ 2) / 2 +
+          (∑ i ∈ Finset.range n, ∑ j ∈ (Finset.range n).erase i,
+            32 * (2 / xiRayPacketBase) ^ Nat.dist i j * b j ^ 2) / 2 := by
+          rw [Finset.sum_div, Finset.sum_div, ← Finset.sum_add_distrib]
+          exact Finset.sum_congr rfl fun i _ => hsplit i
+      _ = ∑ i ∈ Finset.range n, ∑ j ∈ (Finset.range n).erase i,
+            32 * (2 / xiRayPacketBase) ^ Nat.dist i j * b i ^ 2 := by
+          rw [hswap]
+          ring
+      _ ≤ ∑ i ∈ Finset.range n, b i ^ 2 := hA
+  have hfinal : ∑ i ∈ Finset.range n, (b i ^ 2 -
+      ∑ j ∈ (Finset.range n).erase i,
+        32 * (2 / xiRayPacketBase) ^ Nat.dist i j * ((b i ^ 2 + b j ^ 2) / 2)) ≤
+      ∑ i ∈ Finset.range n, (b i ^ 2 +
+        ∑ j ∈ (Finset.range n).erase i,
+          a i * a j * ((xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j))) :=
+    Finset.sum_le_sum hlower
+  have hleft : 0 ≤ ∑ i ∈ Finset.range n, (b i ^ 2 -
+      ∑ j ∈ (Finset.range n).erase i,
+        32 * (2 / xiRayPacketBase) ^ Nat.dist i j * ((b i ^ 2 + b j ^ 2) / 2)) := by
+    rw [Finset.sum_sub_distrib]
+    have h1 := hW
+    linarith
+  linarith
+
+end RHTower
+
+namespace RHTower
+
+/-! ## Matrix positivity: the critical-kernel and Bezoutian strata -/
+
+/-- The critical logarithmic-derivative kernel at real nodes is the real Laplace-quotient
+kernel of the theta-cusp source. -/
+theorem criticalLogDerivKernel_ofReal_eq {u v : ℝ} :
+    criticalLogDerivKernel (u : ℂ) (v : ℂ)
+      = (((xiRayLogDeriv u + xiRayLogDeriv v) / (u + v) : ℝ) : ℂ) := by
+  unfold criticalLogDerivKernel
+  rw [logDeriv_xiCent_ofReal u, logDeriv_xiCent_ofReal v, Complex.conj_ofReal,
+    Complex.conj_ofReal, ← Complex.ofReal_add, ← Complex.ofReal_add, Complex.ofReal_div]
+
+private theorem packet_le {x : ℕ → ℝ} (hbase : xiRayPacketBase ≤ x 0)
+    (hstep : ∀ m, xiRayPacketBase ^ 2 * x m ≤ x (m + 1)) :
+    ∀ i : ℕ, xiRayPacketBase ≤ x i := by
+  have hR256 := xiRayPacketBase_ge
+  have hR0 : (0 : ℝ) < xiRayPacketBase := by linarith
+  intro i
+  induction i with
+  | zero => exact hbase
+  | succ m ih =>
+    have h1 := hstep m
+    have hxm : 0 < x m := lt_of_lt_of_le hR0 ih
+    have hsq : xiRayPacketBase ≤ xiRayPacketBase ^ 2 := by nlinarith
+    have h2 : xiRayPacketBase ≤ xiRayPacketBase ^ 2 * x m := by nlinarith
+    linarith
+
+/-- **Separated real packets give positive semidefinite critical-kernel matrices.**
+An arbitrary-rank unconditional positivity stratum of the RH-critical kernel family. -/
+theorem posSemidef_criticalLogDerivKernel_separatedRealPacket
+    {x : ℕ → ℝ} (hbase : xiRayPacketBase ≤ x 0)
+    (hstep : ∀ m, xiRayPacketBase ^ 2 * x m ≤ x (m + 1)) (n : ℕ) :
+    (Matrix.of fun j k : Fin n =>
+      criticalLogDerivKernel ((x j : ℝ) : ℂ) ((x k : ℝ) : ℂ)).PosSemidef := by
+  classical
+  set KR : ℕ → ℕ → ℝ := fun i j =>
+    (xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j) with hKRdef
+  have hentry : ∀ j k : Fin n,
+      criticalLogDerivKernel ((x j : ℝ) : ℂ) ((x k : ℝ) : ℂ)
+        = ((KR (j : ℕ) (k : ℕ) : ℝ) : ℂ) :=
+    fun j k => criticalLogDerivKernel_ofReal_eq
+  have hKRsymm : ∀ i j : ℕ, KR i j = KR j i := by
+    intro i j
+    rw [hKRdef]
+    dsimp only
+    rw [add_comm (xiRayLogDeriv (x i)), add_comm (x i)]
+  have hfin : ∀ c : ℕ → ℝ,
+      0 ≤ ∑ j : Fin n, ∑ k : Fin n, c (j : ℕ) * c (k : ℕ) * KR (j : ℕ) (k : ℕ) := by
+    intro c
+    have hcore := xiRayCriticalKernel_separatedPacket_quadraticForm_nonneg hbase hstep n c
+    have houter : (∑ j : Fin n, ∑ k : Fin n, c (j : ℕ) * c (k : ℕ) * KR (j : ℕ) (k : ℕ))
+        = ∑ i ∈ Finset.range n, ∑ j ∈ Finset.range n, c i * c j * KR i j := by
+      rw [← Fin.sum_univ_eq_sum_range
+        (fun i => ∑ j ∈ Finset.range n, c i * c j * KR i j) n]
+      refine Finset.sum_congr rfl fun j _ => ?_
+      rw [← Fin.sum_univ_eq_sum_range (fun k => c (j : ℕ) * c k * KR (j : ℕ) k) n]
+    rw [houter]
+    exact hcore
+  have hherm : (Matrix.of fun j k : Fin n =>
+      criticalLogDerivKernel ((x j : ℝ) : ℂ) ((x k : ℝ) : ℂ)).IsHermitian := by
+    ext j k
+    rw [Matrix.conjTranspose_apply, Matrix.of_apply, Matrix.of_apply, hentry, hentry,
+      RCLike.star_def, Complex.conj_ofReal]
+    exact congrArg _ (hKRsymm (k : ℕ) (j : ℕ))
+  refine Matrix.PosSemidef.of_dotProduct_mulVec_nonneg hherm (fun cv => ?_)
+  set cre : ℕ → ℝ := fun i => if h : i < n then (cv ⟨i, h⟩).re else 0 with hcre
+  set cim : ℕ → ℝ := fun i => if h : i < n then (cv ⟨i, h⟩).im else 0 with hcim
+  have hcre_eq : ∀ j : Fin n, cre (j : ℕ) = (cv j).re := by
+    intro j
+    rw [hcre]
+    dsimp only
+    rw [dif_pos j.isLt]
+  have hcim_eq : ∀ j : Fin n, cim (j : ℕ) = (cv j).im := by
+    intro j
+    rw [hcim]
+    dsimp only
+    rw [dif_pos j.isLt]
+  have hval : star cv ⬝ᵥ (Matrix.of fun j k : Fin n =>
+      criticalLogDerivKernel ((x j : ℝ) : ℂ) ((x k : ℝ) : ℂ)).mulVec cv
+      = ∑ j : Fin n, ∑ k : Fin n,
+          ((KR (j : ℕ) (k : ℕ) : ℝ) : ℂ) * ((starRingEnd ℂ) (cv j) * cv k) := by
+    simp only [dotProduct, Matrix.mulVec, Matrix.of_apply, Pi.star_apply, RCLike.star_def]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl fun k _ => ?_
+    rw [hentry]
+    ring
+  rw [hval]
+  have hre : (∑ j : Fin n, ∑ k : Fin n,
+      ((KR (j : ℕ) (k : ℕ) : ℝ) : ℂ) * ((starRingEnd ℂ) (cv j) * cv k)).re
+      = (∑ j : Fin n, ∑ k : Fin n, cre (j : ℕ) * cre (k : ℕ) * KR (j : ℕ) (k : ℕ))
+        + ∑ j : Fin n, ∑ k : Fin n, cim (j : ℕ) * cim (k : ℕ) * KR (j : ℕ) (k : ℕ) := by
+    rw [Complex.re_sum, ← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    rw [Complex.re_sum, ← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl fun k _ => ?_
+    rw [hcre_eq, hcre_eq, hcim_eq, hcim_eq]
+    simp only [Complex.mul_re, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im,
+      Complex.conj_re, Complex.conj_im]
+    ring
+  have him : (∑ j : Fin n, ∑ k : Fin n,
+      ((KR (j : ℕ) (k : ℕ) : ℝ) : ℂ) * ((starRingEnd ℂ) (cv j) * cv k)).im = 0 := by
+    have hterm : ∀ j k : Fin n,
+        (((KR (j : ℕ) (k : ℕ) : ℝ) : ℂ) * ((starRingEnd ℂ) (cv j) * cv k)).im
+        = KR (j : ℕ) (k : ℕ) * ((cv j).re * (cv k).im - (cv j).im * (cv k).re) := by
+      intro j k
+      simp only [Complex.mul_im, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
+        Complex.conj_re, Complex.conj_im]
+      ring
+    have hstep1 : (∑ j : Fin n, ∑ k : Fin n,
+        ((KR (j : ℕ) (k : ℕ) : ℝ) : ℂ) * ((starRingEnd ℂ) (cv j) * cv k)).im
+        = ∑ j : Fin n, ∑ k : Fin n,
+            KR (j : ℕ) (k : ℕ) * ((cv j).re * (cv k).im - (cv j).im * (cv k).re) := by
+      rw [Complex.im_sum]
+      refine Finset.sum_congr rfl fun j _ => ?_
+      rw [Complex.im_sum]
+      exact Finset.sum_congr rfl fun k _ => hterm j k
+    rw [hstep1]
+    have hanti : ∀ j k : Fin n,
+        KR (j : ℕ) (k : ℕ) * ((cv j).re * (cv k).im - (cv j).im * (cv k).re)
+        = -(KR (k : ℕ) (j : ℕ) * ((cv k).re * (cv j).im - (cv k).im * (cv j).re)) := by
+      intro j k
+      rw [hKRsymm (j : ℕ) (k : ℕ)]
+      ring
+    have hS2 : (∑ j : Fin n, ∑ k : Fin n,
+        KR (j : ℕ) (k : ℕ) * ((cv j).re * (cv k).im - (cv j).im * (cv k).re))
+        = -(∑ j : Fin n, ∑ k : Fin n,
+            KR (j : ℕ) (k : ℕ) * ((cv j).re * (cv k).im - (cv j).im * (cv k).re)) := by
+      calc (∑ j : Fin n, ∑ k : Fin n,
+          KR (j : ℕ) (k : ℕ) * ((cv j).re * (cv k).im - (cv j).im * (cv k).re))
+          = ∑ k : Fin n, ∑ j : Fin n,
+              KR (j : ℕ) (k : ℕ) * ((cv j).re * (cv k).im - (cv j).im * (cv k).re) :=
+            Finset.sum_comm
+        _ = ∑ k : Fin n, ∑ j : Fin n,
+              -(KR (k : ℕ) (j : ℕ) * ((cv k).re * (cv j).im - (cv k).im * (cv j).re)) := by
+            refine Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun j _ => ?_
+            exact hanti j k
+        _ = -(∑ k : Fin n, ∑ j : Fin n,
+              KR (k : ℕ) (j : ℕ) * ((cv k).re * (cv j).im - (cv k).im * (cv j).re)) := by
+            simp only [Finset.sum_neg_distrib]
+    linarith [hS2]
+  rw [Complex.le_def]
+  constructor
+  · rw [hre]
+    simp only [Complex.zero_re]
+    have h1 := hfin cre
+    have h2 := hfin cim
+    linarith
+  · rw [him]
+    simp only [Complex.zero_im]
+
+/-- **Separated real packets give positive semidefinite Bezoutian matrices**: an
+arbitrary-rank unconditional positivity stratum of the theta tail first-moment Bezoutian
+family, whose positivity at all finite node systems of the cofinal Euler half-plane is
+equivalent to the Riemann hypothesis. -/
+theorem posSemidef_thetaTailFirstMomentBezoutian_separatedRealPacket
+    {x : ℕ → ℝ} (hbase : xiRayPacketBase ≤ x 0)
+    (hstep : ∀ m, xiRayPacketBase ^ 2 * x m ≤ x (m + 1)) (n : ℕ) :
+    (Matrix.of fun j k : Fin n =>
+      thetaTailFirstMomentBezoutian ((x j : ℝ) : ℂ)
+        ((starRingEnd ℂ) ((x k : ℝ) : ℂ))).PosSemidef := by
+  have hK := posSemidef_criticalLogDerivKernel_separatedRealPacket hbase hstep n
+  have hone := packet_le hbase hstep
+  have hhalf : ∀ j : Fin n, 1 / 2 < (((x j : ℝ) : ℂ)).re := by
+    intro j
+    simp only [Complex.ofReal_re]
+    linarith [hone (j : ℕ), xiRayPacketBase_ge]
+  have hentry : ∀ j k : Fin n,
+      thetaTailFirstMomentBezoutian ((x j : ℝ) : ℂ) ((starRingEnd ℂ) ((x k : ℝ) : ℂ))
+        = ((xiRayLaplace (x j) : ℝ) : ℂ) * ((xiRayLaplace (x k) : ℝ) : ℂ) *
+          criticalLogDerivKernel ((x j : ℝ) : ℂ) ((x k : ℝ) : ℂ) := by
+    intro j k
+    have h := xiCentBezoutian_eq_mul_criticalKernel (hhalf j) (hhalf k)
+    unfold thetaTailFirstMomentBezoutian
+    rw [h, xiCent_ofReal, xiCent_ofReal, Complex.conj_ofReal]
+  have hherm : (Matrix.of fun j k : Fin n =>
+      thetaTailFirstMomentBezoutian ((x j : ℝ) : ℂ)
+        ((starRingEnd ℂ) ((x k : ℝ) : ℂ))).IsHermitian := by
+    ext j k
+    rw [Matrix.conjTranspose_apply, Matrix.of_apply, Matrix.of_apply, hentry, hentry,
+      criticalLogDerivKernel_ofReal_eq, criticalLogDerivKernel_ofReal_eq,
+      RCLike.star_def]
+    simp only [map_mul, Complex.conj_ofReal]
+    rw [show ((xiRayLogDeriv (x k) + xiRayLogDeriv (x j)) / (x k + x j) : ℝ)
+        = ((xiRayLogDeriv (x j) + xiRayLogDeriv (x k)) / (x j + x k) : ℝ) by
+      rw [add_comm (xiRayLogDeriv (x k)), add_comm (x k)]]
+    ring
+  refine Matrix.PosSemidef.of_dotProduct_mulVec_nonneg hherm (fun cv => ?_)
+  have hquad := hK.dotProduct_mulVec_nonneg
+    (fun j => ((xiRayLaplace (x j) : ℝ) : ℂ) * cv j)
+  have hval : star cv ⬝ᵥ (Matrix.of fun j k : Fin n =>
+      thetaTailFirstMomentBezoutian ((x j : ℝ) : ℂ)
+        ((starRingEnd ℂ) ((x k : ℝ) : ℂ))).mulVec cv
+      = star (fun j => ((xiRayLaplace (x j) : ℝ) : ℂ) * cv j) ⬝ᵥ
+          (Matrix.of fun j k : Fin n =>
+            criticalLogDerivKernel ((x j : ℝ) : ℂ) ((x k : ℝ) : ℂ)).mulVec
+          (fun j => ((xiRayLaplace (x j) : ℝ) : ℂ) * cv j) := by
+    simp only [dotProduct, Matrix.mulVec, Matrix.of_apply, Pi.star_apply, RCLike.star_def]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    rw [Finset.mul_sum, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun k _ => ?_
+    rw [hentry]
+    simp only [map_mul, Complex.conj_ofReal]
+    ring
+  rw [hval]
+  exact hquad
+
+/-- Instantiation in the literal quantifier shape of the Bezoutian Riemann-hypothesis
+criterion: every separated real packet, read as a node system of the cofinal Euler
+half-plane, yields a positive semidefinite criterion matrix. -/
+theorem posSemidef_thetaTailFirstMomentBezoutian_packet_nodes
+    {x : ℕ → ℝ} (hbase : xiRayPacketBase ≤ x 0)
+    (hstep : ∀ m, xiRayPacketBase ^ 2 * x m ≤ x (m + 1)) (n : ℕ)
+    (w : Fin n → {W : ℂ // 1 / 2 < W.re}) (hw : ∀ j, (w j : ℂ) = ((x j : ℝ) : ℂ)) :
+    (Matrix.of fun j k =>
+      thetaTailFirstMomentBezoutian ((w j : ℂ))
+        ((starRingEnd ℂ) ((w k : ℂ)))).PosSemidef := by
+  have heq : (Matrix.of fun j k : Fin n =>
+      thetaTailFirstMomentBezoutian ((w j : ℂ)) ((starRingEnd ℂ) ((w k : ℂ))))
+      = Matrix.of fun j k : Fin n =>
+        thetaTailFirstMomentBezoutian ((x j : ℝ) : ℂ)
+          ((starRingEnd ℂ) ((x k : ℝ) : ℂ)) := by
+    ext j k
+    rw [Matrix.of_apply, Matrix.of_apply, hw j, hw k]
+  rw [heq]
+  exact posSemidef_thetaTailFirstMomentBezoutian_separatedRealPacket hbase hstep n
+
+end RHTower
