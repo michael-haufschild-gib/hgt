@@ -1,7 +1,7 @@
 # LI critical Abel--Cayley boundary
 
 - **ID:** LI-CAB1
-- **Stage:** 1-in-progress (arithmetic sign producer only; LI-CAB1.NG, LI-CAB1.SW, LI-CAB2, and LI-CAB3 are formalized)
+- **Stage:** 1-in-progress (aggregate adjacent-flux sign only; LI-CAB1.NG, LI-CAB1.SW, LI-CAB2, LI-CAB3, and LI-CAB4 are formalized)
 - **Type:** CONJECTURE + NO-GO CLASSIFICATION
 - **Source:** Lean-corpus synthesis of `LiEvenSquarePrimeGammaCrossBalanceCriterion`, `XiShiftedHardEdgePrimeGammaSourceDisintegration`, `CayleyLaguerreFourier`, and `OddEulerCombTemperedAdmissionWall`
 - **Statement:** At hard-edge mass `a = 1/2`, the first even-Li cross density has Fourier profile proportional to `exp (-|ξ|/2) * (1 - |ξ|/2)`, so its isolated absolute von-Mangoldt prime leg is not summable; only the completed Abel prime--polar finite part can carry the LI capital.
@@ -117,35 +117,57 @@ Fixed proof chain:
 
 This removes the entire regularization burden. No undefined subtraction survives: the remaining proof burden is exactly the arithmetic sign of an explicit ordinary-limit family. Proving that sign closes the LI route and RH; a negative mode kills the route.
 
-## Frozen conjecture LI-CAB4: completed-Abel mass-ray positivity
+## Proved theorem LI-CAB4: completed-Abel mass-flow reduction
 
-Set
+Use squared-mass time `v = a^2` and set
 
-`F_n(a) = Re(liEvenCrossDivisorAbelValue a n)`.
+`c_q(v) = 2 v * xiShiftedReciprocalSquare v q - 1`.
 
-Corpus search now fixes the direct route-closing target
+Lean proves, for every actual multiplicity-labelled Xi zero atom,
 
-`forall n a, 1/2 <= a -> 0 <= F_n(a)`.
+`liEvenCrossSquareMassAtom v n q = (1 - T_(2n+2)(c_q(v))) / 4`
 
-This is based on four existing corpus facts: LI-CAB3 gives continuity and the exact endpoint; `hasDerivAt_xiShiftedReciprocalMoment` gives the full Möbius-mass derivative ladder; `re_xiShiftedReciprocalMoment_pos_sharpFarRay` supplies unconditional degree-dependent far-ray positivity; and the Cayley identity writes each atom as
+and the exact actual-source transport law
 
-`2 r (1-r) U_n(1-2r)^2`, with `r = 1/(1+a^2*lambda)`.
+`c_q'(v) = (1-c_q(v)^2)/(2v) = 2 lambda_q(v) (1-v lambda_q(v))`.
 
-The proof attempt must establish inward invariance of this exact completed cone under the actual mass flow, not positivity of a proxy or a finite list of moments. Fixed proof chain:
+The missing polynomial identity `T_m' = m U_(m-1)` is proved from the corpus Chebyshev recurrences. Consequently the atom velocity is exactly
 
-`completed-Abel mass-ray positivity`
-`=> F_n(1/2) >= 0 for every n`
+`((n+1)/(8v)) * (T_(2n+3)(c_q(v)) - T_(2n+1)(c_q(v)))`.
+
+A locally uniform reciprocal-square majorant justifies differentiating the complete Xi divisor sum. If
+
+`G_n(v) = Re(liEvenCrossSquareMassValue v n)`
+
+and `Phi_n(v)` is the real part of the summed adjacent flux above, Lean proves
+
+`G_n'(v) = Phi_n(v)` for every `v > 0`, `G_n(0)=0`, and `G_n(v) -> 0` as `v -> 0+`.
+
+This removes every atomwise, truncation, convergence, and hidden zero-anchor ambiguity from mass propagation.
+
+## Frozen conjecture LI-CAB5: aggregate adjacent-flux positivity
+
+Direct route-closing target:
+
+`forall n v, 0 < v -> v <= 1/4 -> 0 <= Phi_n(v)`.
+
+Exact proof chain:
+
+`aggregate adjacent-flux positivity on 0 < v <= 1/4`
+`=> G_n is nondecreasing from its right-continuous zero anchor`
+`=> G_n(1/4) >= 0 for every n`
+`=> liEvenCrossDivisorAbelValue (1/2) n has nonnegative real part`
 `=> LI-CAB3 endpoint criterion`
 `=> RiemannHypothesis`.
 
-This conjecture closes the LI route if proved. If the exact dilation generator admits a positive-to-negative crossing compatible with all unconditional Xi constraints, that crossing theorem kills mass propagation as a proof mechanism and forces the route back to direct critical arithmetic cancellation. Generic moment or coefficient counterexamples do not count; the obstruction must apply to this exact LI family and actual completed-source flow.
+This conjecture significantly reduces the proof burden: only one summable, source-native odd adjacent-mode current remains. Proving it closes LI and RH. An actual-Xi negative integrated crossing on `(0,1/4]` kills this flow route and forces direct critical arithmetic cancellation. Generic Cayley paths, finite moment lists, and proxy measures do not count.
 
 ## No-go closure
 
 - **Exact killing mechanism:** critical Fourier decay contributes exactly `n^(-1/2)`; the explicit-formula coefficient contributes the other `n^(-1/2)`, leaving a non-summable harmonic von-Mangoldt boundary multiplied by an eventually growing Laguerre factor.
 - **Strongest positive survivor:** bounded nonnegative Cayley square-defect density and completed Abel prime--polar finite part.
 - **New insight:** heat filtering removes degree growth but simultaneously lands on the absolute-convergence wall; degree cancellation and critical divergence are the same boundary event.
-- **Status:** LI-CAB1.NG, LI-CAB1.SW, LI-CAB2, and LI-CAB3 are proved in Lean. Regularization, Fourier identification, endpoint existence, and normalization are closed. Open core is the arithmetic nonnegativity of every explicit completed Abel endpoint; by the formal capstone, this is equivalent to RH.
+- **Status:** LI-CAB1.NG, LI-CAB1.SW, LI-CAB2, LI-CAB3, and LI-CAB4 are proved in Lean. Regularization, Fourier identification, endpoint existence, normalization, exact mass generator, aggregate differentiation, and zero anchor are closed. Open core is LI-CAB5's real aggregate adjacent-flux sign on `(0,1/4]`.
 
 ## Log
 
@@ -154,3 +176,4 @@ This conjecture closes the LI route if proved. If the exact dilation generator a
 - 2026-08-29 — Formalized `LiEvenCrossCayleySquareDefectPrimeSignWall`: every mode lies exactly in `[0,1/2]`; the zeroth-mode Fourier profile is negative exactly for `2 < |xi|`, vanishes exactly at `|xi| = 2`, and its signed normalized and literal prime legs are not summable in natural order. This kills both physical-density-to-Fourier-positivity and ordinary signed-prime-sum shortcuts. Surviving producer is strictly the jointly completed Abel/Hadamard prime--polar--Gamma finite part.
 - 2026-08-29 — Formalized `LiEvenCrossAllModeLaguerreClock`: every critical LI square-defect density has exact Fourier profile `(pi/4) exp(-|xi|/2) (P_(2n+2)''-P_(2n+2)')(|xi|)`. Targeted module check/build passed; capstone axioms are only `propext`, `Classical.choice`, `Quot.sound`. All-mode transform ambiguity is closed; only completed arithmetic sign remains.
 - 2026-08-29 — Formalized `LiEvenCrossCompletedAbelLanding`: for every `a > 1/2`, the all-mode clock is an absolutely convergent prime reporter inside the exact completed hard-edge identity; divisor-level dominated convergence lands the joint completed expression at `a = 1/2`; its real part is exactly one eighth of the LI square source. Lean proves RH iff all endpoint values are nonnegative. Targeted module build passed; capstone axioms are only `propext`, `Classical.choice`, `Quot.sound`. Remaining burden is arithmetic sign, not regularization.
+- 2026-08-29 — Formalized `LiEvenCrossCompletedAbelMassFlow`: every squared-mass atom is one even Chebyshev defect; actual Xi resolvent transport differentiates it into the exact adjacent odd Chebyshev current; a reciprocal-square majorant differentiates the full divisor sum; the real flow starts right-continuously at zero. The LI route now closes from one aggregate current sign on `(0,1/4]`, with no atomwise or convergence surrogate.

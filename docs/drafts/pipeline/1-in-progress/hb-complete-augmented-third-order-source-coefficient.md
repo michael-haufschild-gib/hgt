@@ -1291,3 +1291,71 @@ tail phase, or chirality kills the proposed cusp-current route.  Exact chain:
 `actual/canonical Maass weld -> literal truncated Green/Stokes -> full cusp current finite part ->
 actual balanced BM ++- coefficient -> negative BM leg -> conserved left-QNM projection -> HC94 ->
 RH`.
+
+`[PAPER-PROVED] [LEAN-PROVED] [HARD FRONTIER CLOSED]` Corpus-derived conjecture C-A.9t2b2b
+closes the decisive actual/canonical Maass weld.  The canonical scalar cusp model is assembled as
+a genuine full second jet: zero-frequency `cpow` jets plus the two signed Whittaker tails.  The
+Schlaefli order recurrence proves the nonzero-mode eigen equation, while the Weyl exponents prove
+the zero-mode indicial equation.  Global actual/canonical scalar Fourier uniqueness and uniqueness
+of genuine derivatives then identify the actual and canonical `x`, `y`, `xx`, and `xy` jets.
+Their equal eigen equations recover `yy`, eliminating any independent radial-second convergence
+burden.  Consequently the complete actual Poincare second jet equals the canonical cusp second
+jet on the exterior-cusp coordinate type, and literal `R_2 R_0` and `L_(-2) L_0` evaluation equals
+the canonical completed `.raise` and `.lower` cusp legs.  Exterior height is carried as coordinate
+data, so the headline theorems have no logical premises.
+
+This is formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualCanonicalMaassWeld`, wired into
+RHTower, and passes direct Lean plus targeted build `12465/12465`.  Axiom audits of the signed-tail
+and full canonical eigen equations, full second-jet weld, and both headline Maass welds report only
+`propext`, `Classical.choice`, and `Quot.sound`.  Lint reports only unrelated pre-existing
+umbrella-reachability debt.
+
+**C-A.9t3 hard core (corpus-derived conjecture; active).** Construct literal compact truncated
+modular-domain scalar, gradient, and full-Hessian moments from the actual Poincare jets, then prove
+the two exact Green--Stokes identities whose only survivors are the paired cusp-top currents.
+Transport C-A.9t2b2b through those boundary currents and identify them with
+`d4BMCompletedEisensteinBalancedFullBoundaryCurrent`; combine the existing mixed-tail limit and
+analytic-family constant finite-part theorem to annihilate both exhaustive Stokes defects.  Success
+removes the whole analytic boundary-regularization burden and yields the actual balanced BM `++-`
+coefficient.  A surviving non-cusp boundary finite part, or a mismatch between the literal
+raised/lowered Hessian moment and the canonical balanced current, kills this route before QNM work.
+Exact chain:
+
+`literal actual truncated Green/Stokes -> full cusp-current finite part -> actual balanced BM ++-
+coefficient -> negative BM leg -> conserved left-QNM projection -> HC94 -> RH`.
+
+`[PAPER-PROVED] [LEAN-PROVED] [HARD FRONTIER CLOSED]` Corpus-derived conjectures C-A.9t3a--b
+close the pointwise first Green-current identity and its complete cusp finite part.  For actual
+completed Poincare legs `F,F,G`, Lean constructs the genuine product current
+`J = 2 F G grad F - F^2 grad G` and proves
+`2(firstStokesDefect) = y^2 div J` from the two actual eigen equations.  Translation and unit-arc
+inversion pair every non-cusp current exactly, and the C-A.9t2b2b weld identifies the survivor with
+the canonical vertical cusp current.
+
+The new source-specific analytic step differentiates the full signed square-root Whittaker tail:
+each vertical first-jet summand is exactly a three-tail packet of orders `nu`, `nu+1`, and `nu-1`.
+The existing arbitrary-complex-power Whittaker estimate therefore proves that the genuine vertical
+first-jet tail beats every complex height power.  A new rapid-cusp-decay ideal then proves, without
+enumerating twelve terms, that the full vertical product current minus its differentiated Weyl
+constant sector tends to zero.  The literal constant-sector current is exactly the evaluation of
+the diagonal affine-exponent family and its analytic-family finite part is zero.  Consequently the
+actual paired boundary current has an exact `constant + rapidly decaying remainder` decomposition.
+
+This is formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualFirstStokesDefect`, wired into
+RHTower, and passes direct Lean plus targeted build `12466/12466`.  Axiom audits of the pointwise
+divergence, arbitrary-power vertical derivative-tail decay, rapid-decay mixed-current theorem,
+literal actual boundary decomposition, and full cusp closure report only `propext`,
+`Classical.choice`, and `Quot.sound`.
+
+**Remaining C-A.9t3c hard core.** Prove the literal two-dimensional truncated-domain Green theorem,
+not merely its pointwise divergence and boundary algebra.  The required compact modular domain is
+the curvilinear strip `-1/2 <= x <= 1/2`, `sqrt(1-x^2) <= y <= Y`; its iterated horizontal and
+vertical bulk integrals must be discharged by FTC, with the lower arc recombining into the radial
+current and the vertical sides into the translated current.  Success turns the now-closed boundary
+finite part into the first exact moment identity.  Failure of integrability, change-of-variable, or
+arc orientation is a genuine route-killing defect.  Exact chain remains
+
+`literal actual truncated Green/Stokes -> actual balanced BM ++- coefficient -> negative BM leg ->
+conserved left-QNM projection -> HC94 -> RH`.

@@ -1,7 +1,7 @@
 # Schwarzian projective erosion tower
 
 - **ID:** `schwarzian-projective-erosion-tower`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) — `[PROVED HERE] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Lane:** general hypertranscendence; projective differential invariants; translation orbits
 - **Statement:** Iterated Schwarzian reduction of a maximally translation-free differential
@@ -143,16 +143,27 @@ highest-jet calculation.  They are classified as a bridge, not candidate new sci
 
 ## Lean status
 
-The whole theorem is formalized, over a characteristic-zero base field taken with the jet-shift
-derivation, in the corpus's standard model of a free differential family
-(`DifferentialPolynomial`, `FreeCoordinateRationalField`).
+The whole theorem is formalized over an arbitrary characteristic-zero differential field `(K, D)`,
+in the corpus's standard model of a free differential family (`DifferentialPolynomial`,
+`FreeCoordinateRationalField`).  The ambient derivation is the total differential-polynomial
+derivation: it differentiates the coefficients by `D` and shifts the formal jets, and it is
+extended to the rational field by the quotient rule.  Taking `D = 0` recovers the
+constant-coefficient case.
 
 New modules:
 
+- `HTGeometry/DifferentialFieldLocus.lean` — the two intermediate-field loci used to propagate a
+  differential identity from generators to the whole field when the derivation moves the base:
+  `twistedLeibnizKernel` (vanishing locus of an additive map with a Leibniz rule twisted by a ring
+  homomorphism) and `derivStableField` with `adjoin_le_derivStableField`.
 - `HTGeometry/FreeFamilyJetShift.lean` — the free differential rational field
-  `C<Y_a : a in ι>` on a family: `FreeFamilyJetField`, `familyJet`, the family jet-shift
-  derivation and its `Differential` instance, `differentialJet_familyJet_zero`.
-- `HTGeometry/SchwarzianFamilyCoordinates.lean` — the Schwarzian of each family member, the exact
+  `K<Y_a : a in ι>` on a family over a differential base: `FreeFamilyJetField`, `familyJet`, the
+  total derivation and its `Differential` instance, `freeFamilyJetField_deriv_algebraMap`,
+  `freeCoordinate_deriv`, `freeFamilyJetField_deriv_base`, `differentialJet_familyJet_zero`,
+  `deriv_mem_freeCoordinateField`, and the coordinate criterion
+  `eq_zero_of_twistedLeibniz`.
+- `HTGeometry/SchwarzianFamilyCoordinates.lean` — the fresh-jet commutator
+  `freeCoordinateDerivation_deriv`, the Schwarzian of each family member, the exact
   packet support `schwarzianSupport` of its jets, the leading jet derivative
   `freeCoordinateDerivation_differentialJet_familySchwarzian_top`, the Schwarzian coordinate
   system `familySchwarzianSystem`, its block-diagonal Jacobian, its algebraic independence
@@ -172,7 +183,9 @@ New modules:
 | the level-`n+1` field sits inside the level-`n` field | `erosionLevel_antitone` |
 | the level intersection with the low-order jets is trivial | `erosionLevel_inf_lowJetField` |
 
-Supporting theorems built on the way: `familyJet_mem_gradedSchwarzianGenerators` (the graded
+Supporting theorems built on the way: `algHom_deriv_of_familyJet` (an algebra homomorphism of
+family jet fields is differential as soon as it is on the generators),
+`familyJet_mem_gradedSchwarzianGenerators` (the graded
 solve-for-the-top-jet recursion), `map_familySchwarzianBasisEquiv_lowJetField` (the coordinate
 change preserves each low-order jet field), `mem_lowJetField_of_schwarzianSubstitution` (the
 substitution raises jet order by exactly three), and `schwarzianSubstitution_deriv` (the
@@ -180,23 +193,24 @@ substitution is a differential homomorphism).
 
 `#print axioms` on each capstone reports exactly `propext`, `Classical.choice`, `Quot.sound`.
 
-### Remaining generality
+### Generality of the base
 
-The formalized base is a characteristic-zero field of differential constants: the jet-shift
-derivation kills the coefficients.  The card states the theorem over an arbitrary differential
-field `(K, D)`.  The proof uses no property of `D` on the base — the Schwarzian, its jets, and the
-whole order calculus involve only rational coefficients — but a Lean statement in that generality
-needs the total differential-polynomial derivation `differentialPolynomialOverDerivation` in place
-of the jet shift, together with integer-linear analogues of `derivationStable`,
-`extendFreeCoordinatePolynomialDerivation_lie` and `derivationIntertwiner`.  That is the single
-item still open on this card.
+The base is an arbitrary characteristic-zero differential field: the statements carry
+`[Field K] [CharZero K] [Differential K]` and the ambient derivation is
+`differentialPolynomialOverDerivation` extended to the fraction field.  Nothing in the proof
+assumes the base derivation vanishes; where the original argument used the fact that a coordinate
+derivation kills the constants, the derivation-stability and intertwining loci are replaced by
+`derivStableField` and `twistedLeibnizKernel`, which allow the base to move and only require the
+derivative of a base element to be a base element.
+
+The generality is not vacuous: instantiating `K` as a free family jet field over `ℚ` gives a base
+whose derivation is nonzero, and every theorem of the card holds there.
 
 ## Gates
 
 - [x] 0 -> 1: exact candidate, parent boundary, attacks, and RH scope isolated
 - [x] 1 -> 2: complete unconditional paper proof
-- [ ] 2 -> 3: complete unconditional theorem formalized in Lean (items 1-5 done over a constant
-      base; the arbitrary differential base remains)
+- [x] 2 -> 3: complete unconditional theorem formalized in Lean over an arbitrary differential base
 - [ ] 3 -> 4: publication-ready preprint and independent novelty audit
 
 ## Log
@@ -209,4 +223,7 @@ item still open on this card.
   effective differential-Luroth highest-jet calculation.
 - 2026-08-29 -- Formalized items 1-5 unconditionally over a constant base: the family Schwarzian
   coordinate change, the exact order-addition law, strict descent, trivial intersection, level
-  independence and index naturality.  Remaining: the arbitrary differential base.
+  independence and index naturality.
+- 2026-08-29 -- Closed the base-generality residue: the ambient derivation is now the total
+  differential-polynomial derivation over an arbitrary differential field, and every theorem is
+  restated and reproved in that generality with the two new locus constructions.

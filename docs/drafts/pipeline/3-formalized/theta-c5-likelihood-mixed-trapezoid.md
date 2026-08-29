@@ -1,6 +1,6 @@
 # Theta C5 likelihood mixed-jet trapezoid
 
-Status: `[PAPER-PROVED]` `[NOVELTY UNVERIFIED]`
+Status: `[FORMALIZED]` `[NOVELTY UNVERIFIED]`
 
 ## Exact claim
 
@@ -46,4 +46,7 @@ three-jet cone.
 - `[CORPUS]` Fifth likelihood source jet is strictly negative; required derivative identities and
   upper Hermite--Hadamard inequality are formal.
 - No computation enters proof.
-- Lean status before promotion: not yet formalized.
+- Lean module:
+  `GaloisForLFunctions.RHTower.ThetaCuspFixedActionC5LikelihoodMixedTrapezoid`.
+- Direct Lean and exact target build passed; axiom audit reports only `propext`,
+  `Classical.choice`, and `Quot.sound`.

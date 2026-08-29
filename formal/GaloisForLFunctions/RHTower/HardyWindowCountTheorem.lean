@@ -331,7 +331,7 @@ private theorem one_add_log_pow_four_le_sixteenth {T : ℝ} (hT : 1 ≤ T) :
 /-! ## The numeric gap for the `⌊T^{1/8}⌋`-window partition -/
 
 set_option maxHeartbeats 3200000 in
-private theorem numeric_gap {T CE CF : ℝ} (hCE : 0 ≤ CE) (hCF : 0 ≤ CF)
+private theorem numeric_gap {T CE CF : ℝ} (_hCE : 0 ≤ CE) (hCF : 0 ≤ CF)
     (hTD : (512 * 21381376 * (CE ^ 2 + 1) * (CF + 1) + 74000 ^ 2 * (CF + 1)
       + 21381376 + 5) ^ 16 ≤ T) :
     (CE * (Real.sqrt T * Real.sqrt (Real.sqrt T))) ^ 2
@@ -553,10 +553,10 @@ theorem exists_many_distinct_line_zeros_dyadic :
       rw [h1, div_mul_eq_mul_div]
       congr 1
       ring
-    calc Real.sqrt ((T / K) * M4) = Real.sqrt ((Real.sqrt (CF + 1) * T
-          * (1 + Real.log T) ^ 2 / Real.sqrt (K : ℝ)) ^ 2) := by rw [hval]
-      _ = Real.sqrt (CF + 1) * T * (1 + Real.log T) ^ 2 / Real.sqrt (K : ℝ) :=
-          Real.sqrt_sq (by positivity)
+    have heq : Real.sqrt ((T / K) * M4)
+        = Real.sqrt (CF + 1) * T * (1 + Real.log T) ^ 2 / Real.sqrt (K : ℝ) := by
+      rw [← hval, Real.sqrt_sq (by positivity)]
+    exact le_of_eq heq
   have hsK0 : (0 : ℝ) < Real.sqrt (K : ℝ) := Real.sqrt_pos.mpr hKR0
   have hcount : s4 ≤ 16 * (S.card : ℝ) * Real.sqrt (CF + 1) * (1 + Real.log T) ^ 2 := by
     have h2 : T / 8 ≤ (S.card : ℝ)
@@ -646,7 +646,7 @@ theorem exists_many_distinct_line_zeros_dyadic :
         _ = 73984 ^ 2 * (CF + 1) := by rw [hCFsq]
     rw [hDdef] at hs4D
     have hpos1 : (0 : ℝ) ≤ 512 * 21381376 * (CE ^ 2 + 1) * (CF + 1) := by positivity
-    have hgap2 : 73984 ^ 2 * (CF + 1) + 21381376 ≤ 74000 ^ 2 * (CF + 1) := by
+    have hgap2 : 73984 ^ 2 * (CF + 1) ≤ 74000 ^ 2 * (CF + 1) := by
       linarith only [hCF]
     linarith only [hs4D, h4, hpos1, hgap2]
   have hfin : s4 ≤ 48 * (τS.card : ℝ)
@@ -668,7 +668,7 @@ theorem exists_many_distinct_line_zeros_dyadic :
         linarith only [hlog2pos]
       exact mul_le_mul_of_nonneg_left h4 (by positivity)
     linarith only [hs4bound, h1, h3]
-  rw [← hs1def, ← hs2def, ← hs3def, ← hs4def, div_le_iff₀ hlog2pos]
+  rw [div_le_iff₀ hlog2pos]
   have hkey2 : 1 / (48 * (Real.sqrt (CF + 1) + 1)) * s4
       ≤ 1 / (48 * (Real.sqrt (CF + 1) + 1))
         * (48 * (τS.card : ℝ) * ((Real.sqrt (CF + 1) + 1) * (1 + Real.log T) ^ 2)) :=
@@ -678,9 +678,442 @@ theorem exists_many_distinct_line_zeros_dyadic :
       * (48 * (τS.card : ℝ) * ((Real.sqrt (CF + 1) + 1) * (1 + Real.log T) ^ 2))
       = (τS.card : ℝ) * (1 + Real.log T) ^ 2 := by
     field_simp
-    ring
   rw [hsimp] at hkey2
   exact hkey2
+
+end
+
+end RHTower
+
+namespace RHTower
+
+noncomputable section
+
+/-! ## Injection into the critical-line census -/
+
+set_option maxHeartbeats 800000 in
+/-- Distinct ordinates in `(T, 2T]` carrying critical-line zeros inject into the census
+difference between heights `2T` and `T`. -/
+theorem xiPosCriticalZeroCount_add_card_le {T : ℝ} (hT0 : 0 < T) (τS : Finset ℝ)
+    (hmem : ∀ τ ∈ τS, T < τ ∧ τ ≤ 2 * T ∧ riemannZeta (linePt τ) = 0) :
+    xiPosCriticalZeroCount T + τS.card ≤ xiPosCriticalZeroCount (2 * T) := by
+  classical
+  set A : Finset ℂ := (stripFinsetPos T).filter (fun z => z.re = 1 / 2) with hA
+  set B : Finset ℂ := (stripFinsetPos (2 * T)).filter (fun z => z.re = 1 / 2) with hB
+  set C : Finset ℂ := τS.image linePt with hCdef
+  have hxiz : ∀ τ ∈ τS, xi (linePt τ) = 0 := by
+    intro τ hτ
+    rw [xi_line_eq_zero_iff_hardyZ]
+    have hnorm := norm_riemannZeta_line_eq_abs_hardyZ τ
+    rw [(hmem τ hτ).2.2, norm_zero] at hnorm
+    exact abs_eq_zero.mp hnorm.symm
+  have hCB : C ⊆ B := by
+    intro z hz
+    rw [hCdef, Finset.mem_image] at hz
+    obtain ⟨τ, hτ, rfl⟩ := hz
+    rw [hB, Finset.mem_filter, mem_stripFinsetPos]
+    obtain ⟨h1, h2, _⟩ := hmem τ hτ
+    refine ⟨⟨linePt_re_pos τ, linePt_re_lt_one τ, ?_, ?_, hxiz τ hτ⟩, linePt_re τ⟩
+    · rw [linePt_im]; linarith
+    · rw [linePt_im]; exact h2
+  have hAB : A ⊆ B :=
+    Finset.filter_subset_filter _ (stripFinsetPos_subset (by linarith))
+  have hdisj : Disjoint A C := by
+    rw [Finset.disjoint_right]
+    intro z hz
+    rw [hCdef, Finset.mem_image] at hz
+    obtain ⟨τ, hτ, rfl⟩ := hz
+    rw [hA, Finset.mem_filter, mem_stripFinsetPos]
+    rintro ⟨⟨_, _, _, him, _⟩, _⟩
+    rw [linePt_im] at him
+    linarith [(hmem τ hτ).1]
+  have hcardC : C.card = τS.card := by
+    rw [hCdef]
+    refine Finset.card_image_of_injOn ?_
+    intro a _ b _ hab
+    have h := congrArg Complex.im hab
+    rwa [linePt_im, linePt_im] at h
+  have hCcount : C.card ≤ ∑ z ∈ C, (analyticOrderAt xi z).toNat := by
+    have h1 : ∀ z ∈ C, 1 ≤ (analyticOrderAt xi z).toNat := by
+      intro z hz
+      rw [hCdef, Finset.mem_image] at hz
+      obtain ⟨τ, hτ, rfl⟩ := hz
+      exact Nat.one_le_iff_ne_zero.mpr (xi_order_toNat_ne_zero (hxiz τ hτ))
+    calc C.card = ∑ _z ∈ C, 1 := by rw [Finset.sum_const, smul_eq_mul, mul_one]
+      _ ≤ ∑ z ∈ C, (analyticOrderAt xi z).toNat := Finset.sum_le_sum h1
+  have hunion : ∑ z ∈ A ∪ C, (analyticOrderAt xi z).toNat
+      = ∑ z ∈ A, (analyticOrderAt xi z).toNat + ∑ z ∈ C, (analyticOrderAt xi z).toNat :=
+    Finset.sum_union hdisj
+  have hmono : ∑ z ∈ A ∪ C, (analyticOrderAt xi z).toNat
+      ≤ ∑ z ∈ B, (analyticOrderAt xi z).toNat :=
+    Finset.sum_le_sum_of_subset (Finset.union_subset hAB hCB)
+  rw [xiPosCriticalZeroCount, xiPosCriticalZeroCount, ← hA, ← hB]
+  omega
+
+/-- **The critical-line census difference grows polynomially.**  Unconditionally, the number
+of critical-line zeros of `xi` with ordinate in `(T, 2T]`, counted with multiplicity, is at
+least `c · T^{1/16} / (1 + log T)²` for all large `T`. -/
+theorem exists_sixteenthRoot_le_xiPosCriticalZeroCount_sub :
+    ∃ c : ℝ, 0 < c ∧ ∃ T₁ : ℝ, 1 ≤ T₁ ∧ ∀ T : ℝ, T₁ ≤ T →
+      c * Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt T))) / (1 + Real.log T) ^ 2
+        ≤ (xiPosCriticalZeroCount (2 * T) : ℝ) - (xiPosCriticalZeroCount T : ℝ) := by
+  obtain ⟨c, hc, T₁, hT₁, h⟩ := exists_many_distinct_line_zeros_dyadic
+  refine ⟨c, hc, T₁, hT₁, fun T hT => ?_⟩
+  obtain ⟨τS, hmemS, hcard⟩ := h T hT
+  have hT0 : (0 : ℝ) < T := by linarith
+  have hinj := xiPosCriticalZeroCount_add_card_le hT0 τS hmemS
+  have hcast : (xiPosCriticalZeroCount T : ℝ) + (τS.card : ℝ)
+      ≤ (xiPosCriticalZeroCount (2 * T) : ℝ) := by exact_mod_cast hinj
+  linarith [hcard, hcast]
+
+set_option maxHeartbeats 800000 in
+/-- **A polynomial lower bound for the critical-line census.**  Unconditionally, the number of
+critical-line zeros of `xi` with ordinate in `(0, T]`, counted with multiplicity, is at least
+`c · T^{1/16} / (1 + log T)²` for all large `T` — a polynomial strengthening of the
+logarithmic Hardy census. -/
+theorem exists_sixteenthRoot_le_xiPosCriticalZeroCount :
+    ∃ c : ℝ, 0 < c ∧ ∃ T₁ : ℝ, 1 ≤ T₁ ∧ ∀ T : ℝ, T₁ ≤ T →
+      c * Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt T))) / (1 + Real.log T) ^ 2
+        ≤ (xiPosCriticalZeroCount T : ℝ) := by
+  obtain ⟨c, hc, T₁, hT₁, h⟩ := exists_sixteenthRoot_le_xiPosCriticalZeroCount_sub
+  refine ⟨c / 2, by positivity, max (2 * T₁) 2, ?_, fun T hT => ?_⟩
+  · have h1 := le_max_right (2 * T₁) 2
+    linarith
+  have hT2 : (2 : ℝ) ≤ T := le_trans (le_max_right _ _) hT
+  have hT20 : (0 : ℝ) < T / 2 := by linarith
+  have hhalf : T₁ ≤ T / 2 := by
+    have h1 := le_trans (le_max_left (2 * T₁) 2) hT
+    linarith
+  have hspec := h (T / 2) hhalf
+  rw [show 2 * (T / 2) = T by ring] at hspec
+  have hl1 : (0 : ℝ) ≤ Real.log (T / 2) := Real.log_nonneg (by linarith)
+  have hl2 : Real.log (T / 2) ≤ Real.log T := Real.log_le_log hT20 (by linarith)
+  have hp1 : (0 : ℝ) < 1 + Real.log (T / 2) := by linarith
+  have hp2 : (0 : ℝ) < 1 + Real.log T := by linarith
+  have hlogc : (1 + Real.log (T / 2)) ^ 2 ≤ (1 + Real.log T) ^ 2 :=
+    pow_le_pow_left₀ hp1.le (by linarith) 2
+  have hchain : Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt T)))
+      ≤ 2 * Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt (T / 2)))) := by
+    set u : ℝ := Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt (T / 2)))) with hu
+    have hu0 : 0 ≤ u := Real.sqrt_nonneg _
+    have h1 : u ^ 2 = Real.sqrt (Real.sqrt (Real.sqrt (T / 2))) := by
+      rw [hu, Real.sq_sqrt (Real.sqrt_nonneg _)]
+    have h2 : (u ^ 2) ^ 2 = Real.sqrt (Real.sqrt (T / 2)) := by
+      rw [h1, Real.sq_sqrt (Real.sqrt_nonneg _)]
+    have h3 : ((u ^ 2) ^ 2) ^ 2 = Real.sqrt (T / 2) := by
+      rw [h2, Real.sq_sqrt (Real.sqrt_nonneg _)]
+    have h4 : (((u ^ 2) ^ 2) ^ 2) ^ 2 = T / 2 := by
+      rw [h3, Real.sq_sqrt hT20.le]
+    have h5 : u ^ 16 = T / 2 := by
+      have h6 : u ^ 16 = (((u ^ 2) ^ 2) ^ 2) ^ 2 := by ring
+      rw [h6, h4]
+    have hTle : T ≤ (2 * u) ^ 16 := by
+      have h7 : (2 * u) ^ 16 = 65536 * u ^ 16 := by ring
+      rw [h7, h5]
+      linarith
+    have hmono2 : Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt T)))
+        ≤ Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt ((2 * u) ^ 16)))) :=
+      Real.sqrt_le_sqrt (Real.sqrt_le_sqrt (Real.sqrt_le_sqrt (Real.sqrt_le_sqrt hTle)))
+    rwa [sqrt_sq_chain (by positivity : (0 : ℝ) ≤ 2 * u)] at hmono2
+  have hlogsq1 : (0 : ℝ) < (1 + Real.log T) ^ 2 := pow_pos hp2 2
+  have hlogsq2 : (0 : ℝ) < (1 + Real.log (T / 2)) ^ 2 := pow_pos hp1 2
+  have hfinal : c / 2 * Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt T)))
+      / (1 + Real.log T) ^ 2
+      ≤ c * Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt (T / 2))))
+        / (1 + Real.log (T / 2)) ^ 2 := by
+    rw [div_le_div_iff₀ hlogsq1 hlogsq2]
+    have hprod : Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt T)))
+        * (1 + Real.log (T / 2)) ^ 2
+        ≤ (2 * Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt (T / 2)))))
+          * (1 + Real.log T) ^ 2 :=
+      mul_le_mul hchain hlogc hlogsq2.le (by positivity)
+    have hscale := mul_le_mul_of_nonneg_left hprod (by positivity : (0 : ℝ) ≤ c / 2)
+    calc c / 2 * Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt T)))
+          * (1 + Real.log (T / 2)) ^ 2
+        = c / 2 * (Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt T)))
+          * (1 + Real.log (T / 2)) ^ 2) := by ring
+      _ ≤ c / 2 * ((2 * Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt (T / 2)))))
+          * (1 + Real.log T) ^ 2) := hscale
+      _ = c * Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt (T / 2))))
+          * (1 + Real.log T) ^ 2 := by ring
+  have hcnn : (0 : ℝ) ≤ (xiPosCriticalZeroCount (T / 2) : ℝ) := Nat.cast_nonneg _
+  calc c / 2 * Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt T))) / (1 + Real.log T) ^ 2
+      ≤ c * Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt (T / 2))))
+        / (1 + Real.log (T / 2)) ^ 2 := hfinal
+    _ ≤ (xiPosCriticalZeroCount T : ℝ) - (xiPosCriticalZeroCount (T / 2) : ℝ) := hspec
+    _ ≤ (xiPosCriticalZeroCount T : ℝ) := by linarith
+
+end
+
+end RHTower
+
+namespace RHTower
+
+noncomputable section
+
+/-! ## Cauchy–Schwarz counting over the heavy windows
+
+The per-window mass cap `m_k ≤ √(H·M4)` wastes the fourth moment: summing the caps over the
+heavy set and applying Cauchy–Schwarz to the *sum* instead gives `(T/8)² ≤ |S| · H · M4`,
+a quadratically stronger count.  With the trivial window mean this lifts the census exponent
+from `T^{1/16}` to `T^{1/6}`, the ceiling of this route. -/
+
+set_option maxHeartbeats 1600000 in
+/-- **Heavy-window pigeonhole with Cauchy–Schwarz counting.**  If the dyadic second moment is
+at least `T/4`, the dyadic fourth moment is at most `M4`, and every window mean is at most
+`ME` with `ME² M4` losing to the cube of the heaviness threshold, then a family of windows —
+each carrying a critical-line zero — exists with `(T/8)² ≤ |S| · (T/K) · M4`. -/
+private theorem exists_heavyFinset_sq {T : ℝ} {K : ℕ} (hK1 : 1 ≤ K) (hT0 : 0 < T)
+    {M4 ME : ℝ} (hM4 : 0 < M4)
+    (hC : T / 4 ≤ ∫ τ in T..(2 * T), (hardyZ τ) ^ 2)
+    (h4tot : (∫ τ in T..(2 * T), (hardyZ τ) ^ 4) ≤ M4)
+    (hE : ∀ k : ℕ, k < K →
+      |∫ τ in (T + k * (T / K))..(T + ((k + 1 : ℕ) : ℝ) * (T / K)), hardyZ τ| ≤ ME)
+    (hgap : ME ^ 2 * M4 < (T / (8 * K)) ^ 3) :
+    ∃ S : Finset ℕ,
+      (∀ k ∈ S, k < K ∧ ∃ τ, ((T + k * (T / K) ≤ τ ∧ τ ≤ T + ((k + 1 : ℕ) : ℝ) * (T / K)) ∧
+        riemannZeta (linePt τ) = 0)) ∧
+      (T / 8) ^ 2 ≤ (S.card : ℝ) * ((T / K) * M4) := by
+  classical
+  have hKR0 : (0 : ℝ) < (K : ℝ) := by exact_mod_cast hK1
+  have hTK0 : (0 : ℝ) < T / K := by positivity
+  have h4win := window_fourth_le hK1 hT0 h4tot
+  set a : ℕ → ℝ := fun k => T + k * (T / K) with hadef
+  have ha_le : ∀ k : ℕ, a k ≤ a (k + 1) := by
+    intro k
+    rw [hadef]
+    dsimp only
+    push_cast
+    nlinarith [hTK0]
+  set m : ℕ → ℝ := fun k => ∫ τ in (a k)..(a (k + 1)), (hardyZ τ) ^ 2 with hmdef
+  set m4 : ℕ → ℝ := fun k => ∫ τ in (a k)..(a (k + 1)), (hardyZ τ) ^ 4 with hm4def
+  have hm0 : ∀ k : ℕ, 0 ≤ m k := by
+    intro k
+    rw [hmdef]
+    exact intervalIntegral.integral_nonneg (ha_le k) (fun u _ => sq_nonneg _)
+  have hm40' : ∀ k : ℕ, 0 ≤ m4 k := by
+    intro k
+    rw [hm4def]
+    exact intervalIntegral.integral_nonneg (ha_le k) (fun u _ => by positivity)
+  have hpart : ∑ k ∈ range K, m k = ∫ τ in T..(2 * T), (hardyZ τ) ^ 2 := by
+    have h := intervalIntegral.sum_integral_adjacent_intervals
+      (f := fun τ => (hardyZ τ) ^ 2) (μ := volume)
+      (a := fun k : ℕ => T + k * (T / K)) (n := K)
+      (fun k _ => ((continuous_hardyZ.pow 2).intervalIntegrable _ _))
+    have hz : T + ((0 : ℕ) : ℝ) * (T / K) = T := by push_cast; ring
+    have hK' : T + (K : ℝ) * (T / K) = 2 * T := by field_simp; ring
+    rw [hz, hK'] at h
+    simp only [hmdef, hadef]
+    exact h
+  have hpart4 : ∑ k ∈ range K, m4 k = ∫ τ in T..(2 * T), (hardyZ τ) ^ 4 := by
+    have h := intervalIntegral.sum_integral_adjacent_intervals
+      (f := fun τ => (hardyZ τ) ^ 4) (μ := volume)
+      (a := fun k : ℕ => T + k * (T / K)) (n := K)
+      (fun k _ => ((continuous_hardyZ.pow 4).intervalIntegrable _ _))
+    have hz : T + ((0 : ℕ) : ℝ) * (T / K) = T := by push_cast; ring
+    have hK' : T + (K : ℝ) * (T / K) = 2 * T := by field_simp; ring
+    rw [hz, hK'] at h
+    simp only [hm4def, hadef]
+    exact h
+  set Θ : ℝ := T / (8 * K) with hΘdef
+  have hΘ0 : (0 : ℝ) < Θ := by positivity
+  set S : Finset ℕ := (range K).filter (fun k => Θ ≤ m k) with hSdef
+  have hSmem : ∀ k ∈ S, k < K ∧ Θ ≤ m k := fun k hk =>
+    ⟨Finset.mem_range.mp (Finset.mem_filter.mp hk).1, (Finset.mem_filter.mp hk).2⟩
+  refine ⟨S, fun k hk => ⟨(hSmem k hk).1, ?_⟩, ?_⟩
+  · -- the sign-change detector on a heavy window
+    have hkK := (hSmem k hk).1
+    have hΘm := (hSmem k hk).2
+    have hΘm' : Θ ≤ ∫ τ in (a k)..(a (k + 1)), (hardyZ τ) ^ 2 := by
+      simpa only [hmdef] using hΘm
+    have hgap' : (∫ τ in (a k)..(a (k + 1)), hardyZ τ) ^ 2 * M4 < Θ ^ 3 := by
+      have h2 := hE k hkK
+      have h3 : |∫ τ in (a k)..(a (k + 1)), hardyZ τ| ≤ ME := by
+        rw [hadef]
+        dsimp only
+        exact h2
+      have h4' := abs_le.mp h3
+      have h1 : (∫ τ in (a k)..(a (k + 1)), hardyZ τ) ^ 2 ≤ ME ^ 2 := by
+        nlinarith [h4'.1, h4'.2]
+      have h5 : (∫ τ in (a k)..(a (k + 1)), hardyZ τ) ^ 2 * M4 ≤ ME ^ 2 * M4 :=
+        mul_le_mul_of_nonneg_right h1 hM4.le
+      calc (∫ τ in (a k)..(a (k + 1)), hardyZ τ) ^ 2 * M4 ≤ ME ^ 2 * M4 := h5
+        _ < (T / (8 * K)) ^ 3 := hgap
+        _ = Θ ^ 3 := by rw [hΘdef]
+    have h4' : (∫ τ in (a k)..(a (k + 1)), (hardyZ τ) ^ 4) ≤ M4 := by
+      have h := h4win k hkK
+      rw [hadef]
+      dsimp only
+      exact h
+    obtain ⟨τ, hτ, hz⟩ := exists_riemannZeta_line_zero_of_hardyZ_fourth_moment_gap
+      (α := a k) (β := a (k + 1)) (S := Θ) (F := M4) (ha_le k) hΘ0 hΘm' h4' hgap'
+    refine ⟨τ, ⟨?_, ?_⟩, hz⟩
+    · have h := hτ.1
+      rw [hadef] at h
+      exact h
+    · have h := hτ.2
+      rw [hadef] at h
+      exact h
+  · -- the Cauchy–Schwarz weight bound
+    have hlight : ∑ k ∈ (range K).filter (fun k => ¬ Θ ≤ m k), m k ≤ T / 8 := by
+      have h1 : ∀ k ∈ (range K).filter (fun k => ¬ Θ ≤ m k), m k ≤ Θ := by
+        intro k hk
+        have := (Finset.mem_filter.mp hk).2
+        linarith [lt_of_not_ge this]
+      have h2 := Finset.sum_le_card_nsmul _ _ _ h1
+      rw [nsmul_eq_mul] at h2
+      have h3 : (((range K).filter (fun k => ¬ Θ ≤ m k)).card : ℝ) ≤ (K : ℝ) := by
+        exact_mod_cast le_trans (Finset.card_filter_le _ _)
+          (le_of_eq (Finset.card_range K))
+      have h4' : (((range K).filter (fun k => ¬ Θ ≤ m k)).card : ℝ) * Θ ≤ (K : ℝ) * Θ :=
+        mul_le_mul_of_nonneg_right h3 hΘ0.le
+      have h5 : (K : ℝ) * Θ = T / 8 := by
+        rw [hΘdef]
+        field_simp
+      linarith
+    have hheavy : T / 8 ≤ ∑ k ∈ S, m k := by
+      have h := Finset.sum_filter_add_sum_filter_not (range K) (fun k => Θ ≤ m k) m
+      have hC' : T / 4 ≤ ∑ k ∈ range K, m k := by
+        rw [hpart]
+        exact hC
+      rw [hSdef]
+      linarith [hlight, hC', h]
+    have hsq : ∀ k ∈ S, (m k) ^ 2 ≤ (T / K) * m4 k := by
+      intro k hk
+      have hle := ha_le k
+      have hlen : a (k + 1) - a k = T / K := by
+        rw [hadef]
+        dsimp only
+        push_cast
+        ring
+      have hf : MeasureTheory.IntegrableOn (fun τ => (hardyZ τ) ^ 2)
+          (Set.Ioc (a k) (a (k + 1))) MeasureTheory.volume :=
+        (continuous_hardyZ.pow 2).integrableOn_Ioc
+      have hf2 : MeasureTheory.IntegrableOn (fun τ => ((hardyZ τ) ^ 2) ^ 2)
+          (Set.Ioc (a k) (a (k + 1))) MeasureTheory.volume := by
+        have h : MeasureTheory.IntegrableOn (fun τ => (hardyZ τ) ^ 4)
+            (Set.Ioc (a k) (a (k + 1))) MeasureTheory.volume :=
+          (continuous_hardyZ.pow 4).integrableOn_Ioc
+        exact MeasureTheory.IntegrableOn.congr_fun h (fun τ _ => by ring)
+          measurableSet_Ioc
+      have h2 := GaloisForLFunctions.HTGeometry.sq_integral_le_length_mul hle hf hf2
+      have hcongr : (∫ τ in Set.Ioc (a k) (a (k + 1)), ((hardyZ τ) ^ 2) ^ 2)
+          = ∫ τ in Set.Ioc (a k) (a (k + 1)), (hardyZ τ) ^ 4 := by
+        apply MeasureTheory.setIntegral_congr_fun measurableSet_Ioc
+        intro τ _
+        ring
+      rw [hcongr, hlen] at h2
+      have hIoc1 : (∫ τ in (a k)..(a (k + 1)), (hardyZ τ) ^ 2)
+          = ∫ τ in Set.Ioc (a k) (a (k + 1)), (hardyZ τ) ^ 2 :=
+        intervalIntegral.integral_of_le hle
+      have hIoc2 : (∫ τ in (a k)..(a (k + 1)), (hardyZ τ) ^ 4)
+          = ∫ τ in Set.Ioc (a k) (a (k + 1)), (hardyZ τ) ^ 4 :=
+        intervalIntegral.integral_of_le hle
+      have h8 : m k = ∫ τ in Set.Ioc (a k) (a (k + 1)), (hardyZ τ) ^ 2 := by
+        rw [hmdef]
+        dsimp only
+        exact hIoc1
+      have h9 : m4 k = ∫ τ in Set.Ioc (a k) (a (k + 1)), (hardyZ τ) ^ 4 := by
+        rw [hm4def]
+        dsimp only
+        exact hIoc2
+      rw [h8, h9]
+      exact h2
+    have hCS := Finset.sum_mul_sq_le_sq_mul_sq S (fun _ => (1 : ℝ)) m
+    simp only [one_mul, one_pow] at hCS
+    rw [Finset.sum_const, nsmul_eq_mul, mul_one] at hCS
+    have hsum2 : ∑ k ∈ S, (m k) ^ 2 ≤ (T / K) * ∑ k ∈ S, m4 k := by
+      calc ∑ k ∈ S, (m k) ^ 2 ≤ ∑ k ∈ S, (T / K) * m4 k := Finset.sum_le_sum hsq
+        _ = (T / K) * ∑ k ∈ S, m4 k := by rw [Finset.mul_sum]
+    have hsub4 : ∑ k ∈ S, m4 k ≤ ∑ k ∈ range K, m4 k := by
+      refine Finset.sum_le_sum_of_subset_of_nonneg ?_ (fun i _ _ => hm40' i)
+      rw [hSdef]
+      exact Finset.filter_subset _ _
+    have htot : ∑ k ∈ S, m4 k ≤ M4 := by
+      rw [hpart4] at hsub4
+      linarith [h4tot]
+    have hTsq : (T / 8) ^ 2 ≤ (∑ k ∈ S, m k) ^ 2 := by
+      have h0 : (0 : ℝ) ≤ T / 8 := by positivity
+      exact pow_le_pow_left₀ h0 hheavy 2
+    have hcard0 : (0 : ℝ) ≤ (S.card : ℝ) := Nat.cast_nonneg _
+    calc (T / 8) ^ 2 ≤ (∑ k ∈ S, m k) ^ 2 := hTsq
+      _ ≤ (S.card : ℝ) * ∑ k ∈ S, (m k) ^ 2 := hCS
+      _ ≤ (S.card : ℝ) * ((T / K) * ∑ k ∈ S, m4 k) :=
+          mul_le_mul_of_nonneg_left hsum2 hcard0
+      _ ≤ (S.card : ℝ) * ((T / K) * M4) := by
+          have h1 : (T / K) * ∑ k ∈ S, m4 k ≤ (T / K) * M4 :=
+            mul_le_mul_of_nonneg_left htot hTK0.le
+          exact mul_le_mul_of_nonneg_left h1 hcard0
+
+set_option maxHeartbeats 1600000 in
+/-- The moment gap for the sign-change detector follows from the key coefficient inequality
+`512 K³ CE² (CF+1) (1+log T)⁴ < √T`. -/
+private theorem gap_of_key {T CE CF : ℝ} {K : ℕ} (hT0 : 0 < T) (hK1 : 1 ≤ K)
+    (hkey : 512 * (K : ℝ) ^ 3 * CE ^ 2 * (CF + 1) * (1 + Real.log T) ^ 4 < Real.sqrt T) :
+    (CE * (Real.sqrt T * Real.sqrt (Real.sqrt T))) ^ 2
+        * ((CF + 1) * T * (1 + Real.log T) ^ 4)
+      < (T / (8 * (K : ℝ))) ^ 3 := by
+  have hKR0 : (0 : ℝ) < (K : ℝ) := by exact_mod_cast hK1
+  have hs1pos : (0 : ℝ) < Real.sqrt T := Real.sqrt_pos.mpr hT0
+  have hs1sq : Real.sqrt T ^ 2 = T := Real.sq_sqrt hT0.le
+  have hs2sq : Real.sqrt (Real.sqrt T) ^ 2 = Real.sqrt T :=
+    Real.sq_sqrt (Real.sqrt_nonneg T)
+  have hmean : (CE * (Real.sqrt T * Real.sqrt (Real.sqrt T))) ^ 2
+      = CE ^ 2 * (T * Real.sqrt T) := by
+    rw [mul_pow, mul_pow, hs1sq, hs2sq]
+  have hΘcube : (T / (8 * (K : ℝ))) ^ 3 = T ^ 3 / (512 * (K : ℝ) ^ 3) := by
+    rw [div_pow]
+    congr 1
+    ring
+  rw [hmean, hΘcube, lt_div_iff₀ (by positivity : (0 : ℝ) < 512 * (K : ℝ) ^ 3)]
+  have hT3 : T ^ 3 = T ^ 2 * Real.sqrt T ^ 2 := by rw [hs1sq]; ring
+  rw [hT3]
+  have hlhs : CE ^ 2 * (T * Real.sqrt T) * ((CF + 1) * T * (1 + Real.log T) ^ 4)
+      * (512 * (K : ℝ) ^ 3)
+      = (512 * (K : ℝ) ^ 3 * CE ^ 2 * (CF + 1) * (1 + Real.log T) ^ 4)
+        * (Real.sqrt T * T ^ 2) := by ring
+  rw [hlhs]
+  have hstep := mul_lt_mul_of_pos_right hkey (mul_pos hs1pos (pow_pos hT0 2))
+  calc (512 * (K : ℝ) ^ 3 * CE ^ 2 * (CF + 1) * (1 + Real.log T) ^ 4)
+        * (Real.sqrt T * T ^ 2)
+      < Real.sqrt T * (Real.sqrt T * T ^ 2) := hstep
+    _ = T ^ 2 * Real.sqrt T ^ 2 := by ring
+
+/-! ## Iterated square roots as real powers -/
+
+private theorem nested_four_sqrt_eq_rpow {T : ℝ} (hT0 : 0 ≤ T) :
+    Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt T))) = T ^ ((1 : ℝ) / 16) := by
+  have h1 : Real.sqrt T = T ^ ((1 : ℝ) / 2) := Real.sqrt_eq_rpow T
+  have h2 : Real.sqrt (Real.sqrt T) = T ^ ((1 : ℝ) / 4) := by
+    rw [h1, Real.sqrt_eq_rpow, ← Real.rpow_mul hT0]
+    congr 1
+    norm_num
+  have h3 : Real.sqrt (Real.sqrt (Real.sqrt T)) = T ^ ((1 : ℝ) / 8) := by
+    rw [h2, Real.sqrt_eq_rpow, ← Real.rpow_mul hT0]
+    congr 1
+    norm_num
+  rw [h3, Real.sqrt_eq_rpow, ← Real.rpow_mul hT0]
+  congr 1
+  norm_num
+
+private theorem log_sq_le_rpow {T : ℝ} (hT1 : 1 ≤ T) :
+    (1 + Real.log T) ^ 2 ≤ 4624 * T ^ ((1 : ℝ) / 32) := by
+  have hT0 : (0 : ℝ) < T := by linarith
+  have h4 := one_add_log_pow_four_le_sixteenth hT1
+  rw [nested_four_sqrt_eq_rpow hT0.le] at h4
+  have hval : Real.sqrt (21381376 * T ^ ((1 : ℝ) / 16)) = 4624 * T ^ ((1 : ℝ) / 32) := by
+    rw [show (21381376 : ℝ) = 4624 ^ 2 by norm_num,
+      Real.sqrt_mul (by positivity) _,
+      Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ 4624),
+      Real.sqrt_eq_rpow, ← Real.rpow_mul hT0.le]
+    congr 2
+    norm_num
+  calc (1 + Real.log T) ^ 2
+      = Real.sqrt (((1 + Real.log T) ^ 2) ^ 2) := (Real.sqrt_sq (by positivity)).symm
+    _ ≤ Real.sqrt (21381376 * T ^ ((1 : ℝ) / 16)) := Real.sqrt_le_sqrt (by
+        calc ((1 + Real.log T) ^ 2) ^ 2 = (1 + Real.log T) ^ 4 := by ring
+          _ ≤ 21381376 * T ^ ((1 : ℝ) / 16) := h4)
+    _ = 4624 * T ^ ((1 : ℝ) / 32) := hval
 
 end
 

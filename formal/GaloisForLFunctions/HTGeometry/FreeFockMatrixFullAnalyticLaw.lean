@@ -1,5 +1,7 @@
 import GaloisForLFunctions.HTGeometry.FreeFockMatrixValuedSpectralLaw
 import GaloisForLFunctions.HTGeometry.MatrixSemicircleAnalyticLaw
+import GaloisForLFunctions.HTGeometry.CompactMomentReflectionSymmetry
+import GaloisForLFunctions.HTGeometry.MatrixQuadraticFormDetermination
 
 /-!
 # Full vector analytic law of a finite matrix semicircle
@@ -9,7 +11,7 @@ Dyson branch.  Consequently every vector spectral measure has an algebraic Stiel
 If the matrix atom mass vanishes, all vector measures are atomless and hence absolutely continuous.
 -/
 
-open scoped BigOperators Matrix LaurentSeries RatFunc
+open scoped BigOperators Matrix LaurentSeries RatFunc ComplexOrder
 open Filter Topology Matrix MeasureTheory
 
 namespace GaloisForLFunctions.HTGeometry
@@ -74,6 +76,143 @@ theorem freeFockVectorMoment_odd
     freeFockInner_vacuum_left]
   simp_rw [freeFockPower_vacuumCoefficient_odd A hA]
   simp
+
+/-- Every vector spectral law of a centered matrix semicircle is invariant under reflection. -/
+theorem freeFockVectorSpectralMeasure_map_neg
+    (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
+    (hker : HasTrivialCommonKernel A) (x : I → ℂ) :
+    Measure.map (fun t : ℝ => -t)
+        (freeFockVectorSpectralMeasure A hA hker x) =
+      freeFockVectorSpectralMeasure A hA hker x := by
+  apply HTGeometry.map_neg_eq_self_of_compact_moments
+    (freeFockMatrixSpectralRadius_pos A)
+    (freeFockVectorSpectralMeasure_carried A hA hker x)
+    (fun k => (freeFockVectorSpectralMeasure_hasMoments A hA hker x k).1)
+  intro k
+  have hneg : (fun t : ℝ => (-t) ^ k) =
+      fun t : ℝ => (-1 : ℝ) ^ k * t ^ k := by
+    funext t
+    rw [show -t = (-1 : ℝ) * t by ring, mul_pow]
+  rw [hneg, integral_const_mul,
+    (freeFockVectorSpectralMeasure_hasMoments A hA hker x k).2]
+  obtain ⟨n, hn | hn⟩ := Nat.even_or_odd' k
+  · subst k
+    simp [pow_mul]
+  · subst k
+    rw [freeFockVectorMoment_odd A hA x n]
+    simp
+
+/-- The Stieltjes transform of every vector law is purely imaginary on the punctured imaginary
+axis. -/
+theorem freeFockVectorStieltjes_re_imaginaryAxis_eq_zero
+    (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
+    (hker : HasTrivialCommonKernel A) (x : I → ℂ) (y : ℝ) (hy : y ≠ 0) :
+    (freeFockVectorStieltjes A hA hker x ((y : ℂ) * Complex.I)).re = 0 := by
+  rw [freeFockVectorStieltjes]
+  rw [HTGeometry.stieltjesTransform_re_eq_conjPoisson]
+  · have hden : ∀ t : ℝ, t ^ 2 + y ^ 2 ≠ 0 := by
+      intro t ht
+      have hy2 : 0 < y ^ 2 := sq_pos_of_ne_zero hy
+      nlinarith [sq_nonneg t]
+    have hmeas : AEStronglyMeasurable (fun t : ℝ => t / (t ^ 2 + y ^ 2))
+        (freeFockVectorSpectralMeasure A hA hker x) :=
+      (continuous_id.div ((continuous_id.pow 2).add (continuous_const.pow 2)) hden)
+        |>.aestronglyMeasurable
+    simpa using HTGeometry.integral_eq_zero_of_map_neg_eq_self
+      (freeFockVectorSpectralMeasure_map_neg A hA hker x)
+      (f := fun t : ℝ => t / (t ^ 2 + y ^ 2)) hmeas (fun t => by ring)
+  · apply HTGeometry.integrable_cauchy_kernel
+    simpa using hy
+
+/-- The matrix Stieltjes transform is skew-Hermitian on the positive imaginary axis. -/
+theorem freeFockMatrixStieltjes_conjTranspose_imaginaryAxis
+    (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
+    (hker : HasTrivialCommonKernel A) (y : ℝ) (hy : 0 < y) :
+    (freeFockMatrixStieltjes A hA hker ((y : ℂ) * Complex.I))ᴴ =
+      -freeFockMatrixStieltjes A hA hker ((y : ℂ) * Complex.I) := by
+  apply conjTranspose_eq_neg_of_quadraticForm_re_eq_zero
+  intro x
+  rw [star_dotProduct_freeFockMatrixStieltjes_mulVec A hA hker]
+  · exact freeFockVectorStieltjes_re_imaginaryAxis_eq_zero A hA hker x y hy.ne'
+  · simpa using hy
+
+/-- Positive imaginary-axis Dyson profile `X_y = -iy G(iy)`. -/
+def freeFockMatrixImaginaryAxisProfile
+    (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
+    (hker : HasTrivialCommonKernel A) (y : ℝ) : Matrix I I ℂ :=
+  (-Complex.I * (y : ℂ)) •
+    freeFockMatrixStieltjes A hA hker ((y : ℂ) * Complex.I)
+
+/-- The imaginary-axis profile is the positive scalar multiple of the Herglotz imaginary part. -/
+theorem freeFockMatrixImaginaryAxisProfile_eq_smul_hermitianImaginaryPart
+    (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
+    (hker : HasTrivialCommonKernel A) (y : ℝ) (hy : 0 < y) :
+    freeFockMatrixImaginaryAxisProfile A hA hker y =
+      y • matrixHermitianImaginaryPart
+        (freeFockMatrixStieltjes A hA hker ((y : ℂ) * Complex.I)) := by
+  rw [freeFockMatrixImaginaryAxisProfile, matrixHermitianImaginaryPart,
+    freeFockMatrixStieltjes_conjTranspose_imaginaryAxis A hA hker y hy]
+  ext i j
+  apply Complex.ext <;>
+    simp [Matrix.smul_apply, Matrix.sub_apply, Matrix.neg_apply,
+      Complex.mul_re, Complex.mul_im] <;> ring
+
+/-- Every positive-height imaginary-axis profile is positive definite. -/
+theorem freeFockMatrixImaginaryAxisProfile_posDef
+    (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
+    (hker : HasTrivialCommonKernel A) (y : ℝ) (hy : 0 < y) :
+    (freeFockMatrixImaginaryAxisProfile A hA hker y).PosDef := by
+  rw [freeFockMatrixImaginaryAxisProfile_eq_smul_hermitianImaginaryPart
+    A hA hker y hy]
+  exact Matrix.PosDef.smul (α := ℝ)
+    (freeFockMatrixStieltjes_hermitianImaginaryPart_posDef A hA hker
+      ((y : ℂ) * Complex.I) (by simpa using hy)) hy
+
+/-- Positive imaginary-axis Dyson equation in the nonsingular form
+`(η(X_y) + y²I)X_y = y²I`. -/
+theorem freeFockMatrixImaginaryAxisProfile_dyson
+    (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
+    (hker : HasTrivialCommonKernel A) (y : ℝ) (hy : 0 < y) :
+    (matrixSemicircleCovariance A
+        (freeFockMatrixImaginaryAxisProfile A hA hker y) +
+      (y ^ 2 : ℂ) • (1 : Matrix I I ℂ)) *
+        freeFockMatrixImaginaryAxisProfile A hA hker y =
+      (y ^ 2 : ℂ) • (1 : Matrix I I ℂ) := by
+  let z : ℂ := (y : ℂ) * Complex.I
+  let G : Matrix I I ℂ := freeFockMatrixStieltjes A hA hker z
+  let c : ℂ := -Complex.I * (y : ℂ)
+  have hres := freeFockMatrixDysonResidual_upperHalfPlane A hA hker z (by
+    simpa [z] using hy)
+  have hDG : (z • (1 : Matrix I I ℂ) + matrixSemicircleCovariance A G) * G = -1 := by
+    rw [freeFockMatrixDysonResidual] at hres
+    change 1 + (z • (1 : Matrix I I ℂ) + matrixSemicircleCovariance A G) * G = 0 at hres
+    exact eq_neg_of_add_eq_zero_right hres
+  have hX : freeFockMatrixImaginaryAxisProfile A hA hker y = c • G := by
+    rfl
+  have hfactor :
+      matrixSemicircleCovariance A
+          (freeFockMatrixImaginaryAxisProfile A hA hker y) +
+        (y ^ 2 : ℂ) • (1 : Matrix I I ℂ) =
+      c • (z • (1 : Matrix I I ℂ) + matrixSemicircleCovariance A G) := by
+    rw [hX, matrixSemicircleCovariance_smul]
+    ext i j
+    simp only [Matrix.add_apply, Matrix.smul_apply, smul_eq_mul]
+    dsimp only [c, z]
+    have hI : Complex.I ^ 2 = (-1 : ℂ) := by norm_num
+    ring_nf
+    rw [hI]
+    ring
+  rw [hfactor, hX]
+  rw [Matrix.smul_mul, Matrix.mul_smul, smul_smul, hDG]
+  ext i j
+  simp only [Matrix.smul_apply, Matrix.neg_apply, Matrix.one_apply, smul_eq_mul]
+  dsimp only [c]
+  have hI : Complex.I ^ 2 = (-1 : ℂ) := by norm_num
+  split_ifs
+  · ring_nf
+    rw [hI]
+    ring
+  · ring
 
 theorem coeff_matrixDysonFormalVectorSeries
     (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)

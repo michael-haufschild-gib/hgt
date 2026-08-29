@@ -54,6 +54,11 @@ Convexity converts the full-mixture problem into a first-atom tangent-reserve pr
 consequence is tested separately in
 `../2026-08-29-c5-likelihood-tangent-reserve/REPORT.md`.
 
+Follow-up `../2026-08-29-c5-likelihood-curvature-topology/REPORT.md` corrects the far-tail precision
+boundary and materially sharpens convexity: validated high-precision computation selects
+`M'''(lambda)>0` plus the endpoint inequality `M''(0)>=0`, which together imply the displayed global
+convexity target. Raw subtraction below higher-atom scale is not a valid sign test.
+
 ## Reproduction
 
 RunPod used 128 workers, one BLAS thread per worker, and 120 decimal digits.  Wall time was 62.7

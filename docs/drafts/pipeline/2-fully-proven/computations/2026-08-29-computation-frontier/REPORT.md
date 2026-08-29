@@ -15,8 +15,11 @@ Status: research triage; computations are diagnostic only and forbidden as Lean 
   follow-up found the literal modular-center velocity positive at all 79,999 tested radii and no
   stationary root, selecting direct radial monotonicity as a stronger proof target. First-atom
   compensation is now formal. Exact likelihood interpolation killed monotone improvement but
-  opened a convex tangent bridge: `M''(λ)≥0` plus `M'(0)≥-M(0)/5` would close literal
-  full-theta far-tail compensation.
+  opened a convex tangent bridge. Subsequent cone audit killed pointwise-sign/pairwise-cone closure,
+  and adaptive-reserved positivity was killed by an exact negative fifth seam germ. Literal full
+  compensation retains a formal strictly positive third-channel residual. Amplitude-stable
+  curvature topology now sharpens the homotopy bridge to `M'''(λ)>0`, `M''(0)≥0`, and
+  `M'(0)≥-M(0)/5`; first two reduce convexity to one endpoint formula.
 - **T2:** killed present direct finite-shell exponent claim and generic `L2/L4` repairs. Surviving
   mechanism needs target-reciprocal localization plus a genuinely arithmetic selected-cell law.
 - **C1:** current global-mean carrier misses its theta scalar target by a large stable margin.
@@ -27,11 +30,11 @@ Status: research triage; computations are diagnostic only and forbidden as Lean 
 
 ## Ranked next campaigns
 
-1. **CLG likelihood tangent bridge — major opening found.** Derive exact formulas for
-   `M''(λ)` and `M'(0)+M(0)/5`. Try first to falsify their sign from the known cumulant chamber.
-   If both survive algebraically, prove them without numeric input; together with formal
-   first-atom compensation they close the literal full-theta far tail. Generic positive-jet and
-   monotonicity arguments are dead.
+1. **CLG endpoint-curvature bridge — major opening found.** Derive exact formulas for
+   `M'''(λ)`, `M''(0)`, and `M'(0)+M(0)/5`. Factor the dominant second-atom amplitudes before any
+   tail estimate; raw subtraction is numerically invalid there. If all three survive algebraically,
+   formal first-atom compensation closes the literal full-theta far tail. Generic positive-jet,
+   monotonicity, coarse-cone, and positive adaptive-reservation arguments are dead.
 2. **S6F contravariant-form attack.** Build the finite reflected-jet module under the now-formal
    `sl₂` triple and solve for its invariant/contravariant form exactly. Try to kill positivity at
    one rational point of the refined cone. If it survives, seek a symbolic congruence mixing scale

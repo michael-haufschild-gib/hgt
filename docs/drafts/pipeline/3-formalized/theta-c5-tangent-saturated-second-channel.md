@@ -1,6 +1,6 @@
 # Theta C5 tangent: saturated second channel is adverse
 
-Status: `[PAPER-PROVED]` `[NOVELTY UNVERIFIED]`
+Status: `[FORMALIZED]` `[NOVELTY UNVERIFIED]`
 
 ## Exact claim
 
@@ -71,4 +71,7 @@ close the tangent theorem.
   slope positivity are already formal in the fixed-action C5 and reflected Riccati modules.
 - Standard convexity, log-sum-exp, exponential-family, and monotone-likelihood-ratio theory does not
   determine this source-specific C5 coefficient; no external priority claim is made.
-- Lean status before promotion: not yet formalized.
+- Lean module:
+  `GaloisForLFunctions.RHTower.ThetaCuspFixedActionC5TangentSaturatedSecondChannel`.
+- Direct Lean and exact target build passed; axiom audit reports only `propext`,
+  `Classical.choice`, and `Quot.sound`.

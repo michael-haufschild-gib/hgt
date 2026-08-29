@@ -52,6 +52,15 @@ rank-three D1 gate. Cofinal/all-order landing remains separate.
   `k=Q+3/8-3B²/8`, its companion lowering field is exactly `∂b`, the scale field has
   weights `(1/2,1/2,1)`, and the source dynamics have a three-equation normal form. Formal module:
   `PolynomialODEJetRankThreeSourcePositiveSl2`.
+- `[FALSIFIED][LEAN-PROVED]` A nonconstant finite graded Shapovalov carrier for this exact
+  `sl₂` action cannot exist. Any finite homogeneous polynomial carrier has nonnegative Cartan
+  weights with at least one positive weight, but `[E,F]=H` forces Cartan trace zero. Formal module:
+  `PolynomialODEJetRankThreeSourcePositiveFiniteModuleNoGo`.
+- `[FALSIFIED][LEAN-PROVED]` Passing to the full infinite polynomial carrier does not rescue any
+  positive scalar-contravariant form. The affine vacuum extension `E1=0`, `FB=-1` forces its scalar
+  star coefficient to vanish, while the positive lowest-weight string `Fr=0`, `Hr=2r` forces the
+  same coefficient to be negative. Formal module:
+  `PolynomialODEJetRankThreeSourcePositiveInfiniteContravariantNoGo`.
 - `[FALSIFIED — diagnostic]` Raw coefficientwise matrix-Bernstein positivity cannot explain
   `H_X`: every scale-square coefficient matrix has negative leading rank-two/rank-three pivots and
   every scale-cube coefficient matrix has negative determinant. Cross-scale cancellation is
@@ -76,12 +85,13 @@ toward the upper ratio wall.
 
 Verdict: `SURVIVES PRELIMINARY ATTACK`.
 
-`[OPEN CORE]` Construct the exact contravariant/Shapovalov form on the finite reflected-jet
-`sl₂` module and try to make its rank-three restriction indefinite at a rational interior state.
-If it survives, prove positivity on the refined cone and use Loewner/Jacobi monotonicity for scale
-reduction. A viable alternate is a nontrivial congruence mixing scale layers; raw coefficientwise
-Gram/SOS is dead. Then derive clock second variation and prove the outer upper-wall polynomial
-positive.
+`[OPEN CORE]` Finite truncations and scalar-contravariant forms on the full infinite polynomial
+carrier are impossible. A representation-theoretic survivor must first construct a proper
+physical invariant carrier excluding the affine vacuum extension or a genuinely non-scalar
+adjoint law; otherwise use a nontrivial direct congruence mixing scale layers. Try to force an
+indefinite rank-three restriction at a rational interior state before using any survivor for
+positivity. Raw coefficientwise Gram/SOS remains dead. Then derive clock second variation and
+prove the outer upper-wall polynomial positive.
 
 ## Representation lesson
 
@@ -100,3 +110,10 @@ coefficient hierarchy.
 - 2026-08-29 — Exact hostile tests killed all-order reflected-fibre Bochner completion at six
   points and opened strict Loewner scale velocity as conceptual D1 scale mechanism.
 - 2026-08-29 — Exact `sl₂` source structure formalized; raw matrix-Bernstein Gram killed.
+- 2026-08-29 — Finite graded contravariant-form route killed unconditionally: Cartan weights are
+  nonnegative, while finite `[E,F]=H` trace must vanish. Positive survivor is necessarily
+  infinite graded with convergence, or a direct cross-scale congruence.
+- 2026-08-29 — Full infinite scalar-contravariant carrier killed unconditionally: vacuum extension
+  forces scalar star coefficient `0`, while the positive lowest-weight string forces it `<0`.
+  Surviving representation must be proper/localized or non-scalar; direct cross-scale congruence
+  remains the clean survivor.

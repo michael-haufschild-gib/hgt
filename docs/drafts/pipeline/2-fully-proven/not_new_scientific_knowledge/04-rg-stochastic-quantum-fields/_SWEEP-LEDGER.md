@@ -9,8 +9,8 @@ Rules: no hypotheses wrapping unproven input; no umbrella builds; `lake env lean
 | 1 | thermodynamic-divisor-charge-finite-ancestor-or-boundary-index | DONE — `RHTower/ThermodynamicBoundaryIndexCarrier.lean` | **PROMOTED** |
 | 2 | balanced-causal-fracture-torsor-classification | DONE — AIIIGramFibreTorsor, HermitianConeStrictConvexity, ColorGramGlobalTrivialization, ColorGramTrivializationSmoothness, HermitianSymmetricDimensionBalance | **PROMOTED** |
 | 3 | common-profile-boolean-anchor-curvature | (CG1),(CG3),(CG4),(CG6),(SG10),(SG9) | TODO |
-| 4 | coherence-graph-volume-recurrence-exponent-law | (1),(2),(3) + rank-zero boundary | TODO |
-| 5 | schwarzian-projective-erosion-tower | items 1-5 DONE over a constant base (`FreeFamilyJetShift`, `SchwarzianFamilyCoordinates`, `SchwarzianProjectiveErosionTower`); residue: arbitrary differential base needs the total derivation + integer-linear derivation helpers | NEARLY |
+| 4 | coherence-graph-volume-recurrence-exponent-law | DONE — `RootedForestShear`, `CircleChordBall`, `CoherenceGraphVolumeLaw`, `CoherenceGraphRecurrenceExponent` | **PROMOTED** |
+| 5 | schwarzian-projective-erosion-tower | DONE over an arbitrary differential base — `DifferentialFieldLocus`, `FreeFamilyJetShift`, `SchwarzianFamilyCoordinates`, `SchwarzianProjectiveErosionTower` | **PROMOTED** |
 | 6 | bbm-pullback-completion-purely-continuous-law | pullback completion unitary + reducing-subspace lemma + dilation a.c. | TODO |
 | 7 | q-geometric-generalized-free-field-hypertranscendence | moments, positivity, self-similarity, Hankel, + ADH q-difference dichotomy | TODO |
 | 8 | ultrametric-thermal-mahler-hypertranscendence | (3) constraint + uniqueness (done?), non-rationality, HT | TODO |
@@ -27,6 +27,14 @@ Rules: no hypotheses wrapping unproven input; no umbrella builds; `lake env lean
 ## Log
 - 2026-08-29 — ledger created; all 17 cards read; named modules confirmed present in tree.
 - 2026-08-29 — cards 1 and 2 promoted.
+- 2026-08-29 — card 5 promoted: the whole tower now lives over an arbitrary characteristic-zero
+  differential base.  The route that worked: never ascribe a `Derivation ℚ`/`Derivation ℤ` type at a
+  concrete `FractionRing` (the `Module ℚ`/`Module ℤ` instances of the Ore localization are not
+  defeq to `Algebra.toModule`); instead phrase every statement with the `Differential` postfix `′`
+  and use the two locus constructions of `DifferentialFieldLocus`.
+- 2026-08-29 — card 4 promoted: `(1)` two-sided volume law, `(2)` minimax exponent, `(3)` almost-sure
+  exponent (Borel--Cantelli over rational exponents), and the full rank-zero boundary
+  (`volume = 1`, `universalDeadline = 1`, `firstReturn = 1`) are unconditional in Lean.
 
 ## Blocker analysis (2026-08-29)
 
@@ -133,3 +141,54 @@ Still to build for card 4: a spanning forest with parent map and path length, th
 coordinate change as a measure-preserving torus automorphism, the exact two-sided volume law `(1)`,
 the discrete minimax exponent `(2)`, the Borel--Cantelli almost-every exponent `(3)`, and the
 rank-zero boundary `(4)`.
+
+## Card 4 progress (2026-08-29)
+
+Built and green, all axiom-clean:
+
+- `RHTower/RootedForestShear.lean` — `RootedForest` (parent, depth, strict descent, roots fixed),
+  the forest shear as an additive automorphism `shearEquiv`, its continuity and
+  `measurePreserving_shear`, the forest graph and the walk chord bound
+  `norm_sub_le_walk_length_mul`.
+- `RHTower/CircleChordBall.lean` — `chordBall`, squeezed between metric balls by the two-sided
+  chord estimate; `ofReal_le_volume_chordBall` (`δ/π ≤ ·`) and `volume_chordBall_le` (`· ≤ δ/2`),
+  matching the card's circle constants exactly.
+- `RHTower/CoherenceGraphVolumeLaw.lean` — `graphChordEnergy`, `ForestChart` (parent edge per
+  nonroot plus a forest walk per graph edge), `ForestChart.constant` = `K_F`,
+  `graphChordEnergy_le_of_shear_le`, `shear_le_of_graphChordEnergy_le`, the forest box and its
+  volume, and the capstone `volume_graphChordEnergy_sublevel_bounds`, which is exactly the card's
+  `(1)`.  The rank-zero boundary is `graphChordEnergy_eq_zero_of_rank_zero` and
+  `volume_graphChordEnergy_sublevel_eq_one_of_rank_zero`.
+
+Remaining for card 4:
+
+1. integer-clock invariance of the sublevel target (mirror
+   `measureReal_torusProjectiveWeightedCoherenceTarget_zsmul_preimage`);
+2. the Dirichlet pigeonhole upper deadline in forest coordinates (mirror
+   `exists_graphRelativeEnergy_phase_approximation`);
+3. the minimax exponent `(2)` from 1 + 2 and the volume law;
+4. the Borel--Cantelli almost-every exponent `(3)`.
+
+## Card 4: next steps, precisely (2026-08-29)
+
+`RHTower/CoherenceGraphRecurrenceExponent.lean` is built and green: `energyTarget`,
+`measure_energyTarget_zsmul_preimage` (integer-clock Haar invariance via
+`Measure.measurePreserving_zsmul`), `energyHitUnion`, `measure_energyHitUnion_le`, and
+`exists_avoiding_energyTarget` — the minimax *lower* half, which converts the volume law into
+"`N` is not a universal deadline once `N · vol(target) < 1`".
+
+Remaining:
+
+1. **Pigeonhole upper deadline.**  Reuse
+   `RHTower.exists_fin_simultaneous_integer_approximation_quantitative`
+   (`CCMPrimePoleFiniteCoherence.lean`: common denominator at most `(Q+1)^d`, every coordinate
+   within `1/(Q+1)` of an integer).  Apply it to the `rank`-many reals given by representatives of
+   the nonroot forest chords `T.shear x v`; use `AddCircle.norm_eq` (`‖(y : AddCircle 1)‖ =
+   |y − round y|`) to convert the approximation into `‖T.shear ((n : ℤ) • x) v‖ ≤ 1/(Q+1)`, then
+   `norm_fourier_one_sub_one_le_two_pi_mul_norm` and `graphChordEnergy_le_of_shear_le`.  Needs
+   `T.shear ((n : ℤ) • x) = (n : ℤ) • T.shear x`, which is `map_zsmul` on `shearEquiv`.
+2. **Minimax exponent `(2)`** from 1 and `exists_avoiding_energyTarget` plus the two-sided volume
+   law: define `IsUniversalDeadline` and the least such `N`, then take logarithms.
+3. **Almost-every exponent `(3)`**: first Borel--Cantelli against `ε_n = n^(-1/r-γ)` using
+   `measure_energyTarget_zsmul_preimage` and the upper volume bound, then intersect over positive
+   rational `γ` and combine with the deadline of step 1.

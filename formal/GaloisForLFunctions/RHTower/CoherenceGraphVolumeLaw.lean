@@ -95,6 +95,7 @@ theorem norm_chord_le_of_shear_le {T : RootedForest V} {src tgt : E → V}
     rw [norm_shear_chord T x hdq, hq] at this
     rwa [norm_sub_rev]
 
+omit [Fintype V] in
 /-- **Small forest chords give small chord energy.** -/
 theorem graphChordEnergy_le_of_shear_le {T : RootedForest V} {src tgt : E → V}
     (chart : ForestChart T src tgt) {a : E → ℝ} (ha : ∀ e, 0 ≤ a e)
@@ -219,6 +220,130 @@ theorem ofReal_le_volume_graphChordEnergy_le {T : RootedForest V} {src tgt : E �
   rw [Finset.prod_ite, Finset.prod_const_one, one_mul, Finset.prod_const,
     ENNReal.ofReal_pow (by positivity)]
   rfl
+
+/-- **Upper volume bound.**  Chord energy at most `ε²` forces every forest chord below
+`ε / √a_f`, so the sublevel set sits inside a product of chord balls. -/
+theorem volume_graphChordEnergy_le {T : RootedForest V} {src tgt : E → V}
+    (chart : ForestChart T src tgt) {a : E → ℝ} (ha : ∀ e, 0 ≤ a e)
+    (hpos : ∀ v, T.depth v ≠ 0 → 0 < a (chart.edgeAt v))
+    {ε : ℝ} (hε : 0 ≤ ε) :
+    volume {x : V → UnitAddCircle | graphChordEnergy src tgt a x ≤ ε ^ 2} ≤
+      ENNReal.ofReal (∏ v : V, if T.depth v = 0 then 1
+        else ε / (2 * Real.sqrt (a (chart.edgeAt v)))) := by
+  have hsub : {x : V → UnitAddCircle | graphChordEnergy src tgt a x ≤ ε ^ 2} ⊆
+      (T.shear : (V → UnitAddCircle) → (V → UnitAddCircle)) ⁻¹'
+        (forestBox T fun v => ε / Real.sqrt (a (chart.edgeAt v))) := by
+    intro x hx
+    rw [shear_preimage_forestBox]
+    intro v hv
+    exact shear_le_of_graphChordEnergy_le chart ha x hε hx hv (hpos v hv)
+  refine le_trans (measure_mono hsub) ?_
+  rw [volume_shear_preimage, volume_forestBox,
+    ENNReal.ofReal_prod_of_nonneg (fun v _ => ?_)]
+  · refine Finset.prod_le_prod' fun v _ => ?_
+    by_cases h : T.depth v = 0
+    · simp [h]
+    · simp only [h, ↓reduceIte]
+      have hspos : 0 < Real.sqrt (a (chart.edgeAt v)) := Real.sqrt_pos.2 (hpos v h)
+      have hbound := volume_chordBall_le
+        (δ := ε / Real.sqrt (a (chart.edgeAt v))) (by positivity)
+      have heq : ε / Real.sqrt (a (chart.edgeAt v)) / 2
+          = ε / (2 * Real.sqrt (a (chart.edgeAt v))) := by
+        field_simp
+      rwa [heq] at hbound
+  · by_cases h : T.depth v = 0
+    · simp [h]
+    · simp only [h, ↓reduceIte]
+      have hspos : 0 < Real.sqrt (a (chart.edgeAt v)) := Real.sqrt_pos.2 (hpos v h)
+      positivity
+
+/-- **The forest-coordinate volume law.**  For every rooted spanning forest chart, the Haar measure
+of the chord-energy sublevel set is squeezed between `(ε / (π √K_F))^r` and
+`ε^r / (2^r ∏_f √a_f)`, where `r` is the number of nonroot vertices. -/
+theorem volume_graphChordEnergy_sublevel_bounds {T : RootedForest V} {src tgt : E → V}
+    (chart : ForestChart T src tgt) {a : E → ℝ} (ha : ∀ e, 0 ≤ a e)
+    (hpos : ∀ v, T.depth v ≠ 0 → 0 < a (chart.edgeAt v))
+    (hK : 0 < chart.constant a) {ε : ℝ} (hε : 0 ≤ ε)
+    (hsmall : ε ≤ Real.pi * Real.sqrt (chart.constant a)) :
+    ENNReal.ofReal ((ε / (Real.pi * Real.sqrt (chart.constant a))) ^ T.rank) ≤
+        volume {x : V → UnitAddCircle | graphChordEnergy src tgt a x ≤ ε ^ 2} ∧
+      volume {x : V → UnitAddCircle | graphChordEnergy src tgt a x ≤ ε ^ 2} ≤
+        ENNReal.ofReal (∏ v : V, if T.depth v = 0 then 1
+          else ε / (2 * Real.sqrt (a (chart.edgeAt v)))) := by
+  refine ⟨?_, volume_graphChordEnergy_le chart ha hpos hε⟩
+  have hKs : 0 < Real.sqrt (chart.constant a) := Real.sqrt_pos.2 hK
+  set δ : ℝ := ε / Real.sqrt (chart.constant a) with hδdef
+  have hδ : 0 ≤ δ := by positivity
+  have hδpi : δ ≤ Real.pi := by
+    rw [hδdef, div_le_iff₀ hKs]
+    nlinarith [hsmall]
+  have hsq : Real.sqrt (chart.constant a) ^ 2 = chart.constant a :=
+    Real.sq_sqrt (le_of_lt hK)
+  have hδsq : δ ^ 2 = ε ^ 2 / chart.constant a := by
+    rw [hδdef, div_pow, hsq]
+  have henergy : chart.constant a * δ ^ 2 = ε ^ 2 := by
+    rw [hδsq]
+    field_simp
+  have hmain := ofReal_le_volume_graphChordEnergy_le chart ha hδ hδpi
+  rw [henergy] at hmain
+  have hratio : δ / Real.pi = ε / (Real.pi * Real.sqrt (chart.constant a)) := by
+    rw [hδdef]
+    field_simp
+  rwa [hratio] at hmain
+
+/-! ## The rank-zero boundary -/
+
+omit [Fintype E] in
+theorem RootedForest.depth_eq_zero_of_rank_zero {T : RootedForest V} (h : T.rank = 0) (v : V) :
+    T.depth v = 0 := by
+  by_contra hv
+  have hmem : v ∈ Finset.univ.filter fun w => T.depth w ≠ 0 := by
+    simp [hv]
+  have : (Finset.univ.filter fun w => T.depth w ≠ 0).Nonempty := ⟨v, hmem⟩
+  rw [RootedForest.rank, Finset.card_eq_zero] at h
+  exact absurd h (Finset.nonempty_iff_ne_empty.1 this)
+
+omit [Fintype E] in
+theorem RootedForest.forestGraph_not_adj_of_rank_zero {T : RootedForest V} (h : T.rank = 0)
+    (p q : V) : ¬ (T.forestGraph).Adj p q := by
+  rintro ⟨hne, hpq⟩
+  rcases hpq with hp | hq
+  · have hpp : T.parent p = p := T.parent_root p (T.depth_eq_zero_of_rank_zero h p)
+    rw [hpp] at hp
+    exact hne hp
+  · have hqp : T.parent q = q := T.parent_root q (T.depth_eq_zero_of_rank_zero h q)
+    rw [hqp] at hq
+    exact hne hq.symm
+
+omit [Fintype E] in
+theorem RootedForest.eq_of_walk_of_rank_zero {T : RootedForest V} (h : T.rank = 0)
+    {u v : V} (w : (T.forestGraph).Walk u v) : u = v := by
+  induction w with
+  | nil => rfl
+  | cons hadj _ _ => exact absurd hadj (T.forestGraph_not_adj_of_rank_zero h _ _)
+
+/-- **The rank-zero boundary.**  A coherence graph of rank zero has identically vanishing chord
+energy, so every phase vector is exactly recurrent. -/
+theorem graphChordEnergy_eq_zero_of_rank_zero {T : RootedForest V} {src tgt : E → V}
+    (chart : ForestChart T src tgt) (h : T.rank = 0) (a : E → ℝ) (x : V → UnitAddCircle) :
+    graphChordEnergy src tgt a x = 0 := by
+  rw [graphChordEnergy]
+  refine Finset.sum_eq_zero fun e _ => ?_
+  have hst : src e = tgt e := T.eq_of_walk_of_rank_zero h (chart.walk e)
+  rw [hst]
+  simp
+
+/-- At rank zero every sublevel set is the whole torus. -/
+theorem volume_graphChordEnergy_sublevel_eq_one_of_rank_zero {T : RootedForest V}
+    {src tgt : E → V} (chart : ForestChart T src tgt) (h : T.rank = 0) (a : E → ℝ) (ε : ℝ) :
+    volume {x : V → UnitAddCircle | graphChordEnergy src tgt a x ≤ ε ^ 2} = 1 := by
+  have huniv : {x : V → UnitAddCircle | graphChordEnergy src tgt a x ≤ ε ^ 2} = Set.univ := by
+    ext x
+    simp only [Set.mem_setOf_eq, Set.mem_univ, iff_true]
+    rw [graphChordEnergy_eq_zero_of_rank_zero chart h a x]
+    positivity
+  rw [huniv]
+  simp
 
 end
 

@@ -1211,5 +1211,252 @@ theorem d4BM_canonicalCuspFullSecondJet_eigenEquation
   unfold d4BMCompletedEisensteinCanonicalCuspFullSecondJet
   linear_combination hc + 2 * ht
 
+/-- Upper-half-plane points in the exterior cusp, with the height condition carried by the
+coordinate rather than exposed as a theorem hypothesis. -/
+abbrev D4BMExteriorCuspCoordinate :=
+  {z : D4BMUpperHalfPlaneCoordinate // 1 ≤ z.y}
+
+def d4BMExteriorCuspHeight (Z : D4BMExteriorCuspCoordinate) :
+    {y : ℝ // 1 ≤ y} :=
+  ⟨Z.1.y, Z.2⟩
+
+theorem d4BM_actualCanonical_exterior_value_eq
+    (Z : D4BMExteriorCuspCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) :
+    d4BMCompletedEisensteinPoincareSeries Z.1 P =
+      d4BMCompletedEisensteinCuspLeg .scalar (P.s - 1 / 2)
+        Z.1.x (d4BMExteriorCuspHeight Z) := by
+  have h := d4BM_actualCompletedPoincare_eq_canonicalCuspLeg Z.1 P Z.1.x
+  simpa [d4BMCompletedEisensteinHorizontalFunction,
+    d4BMHorizontalCoordinate, d4BMExteriorCuspHeight] using h
+
+theorem d4BM_actualCanonical_exterior_horizontalFirstJet_eq
+    (Z : D4BMExteriorCuspCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) (x : ℝ) :
+    d4BMCompletedPoincareHorizontalFirstJet
+        (d4BMHorizontalCoordinate Z.1 x) P =
+      (d4BMCompletedEisensteinCanonicalCuspFullSecondJet
+        (P.s - 1 / 2) x (d4BMExteriorCuspHeight Z)).first.horizonX := by
+  have ha : HasDerivAt
+      (fun q : ℝ => d4BMCompletedEisensteinPoincareSeries
+        (d4BMHorizontalCoordinate Z.1 q) P)
+      (d4BMCompletedPoincareHorizontalFirstJet
+        (d4BMHorizontalCoordinate Z.1 x) P) x := by
+    simpa [d4BMHorizontalCoordinate] using
+      hasDerivAt_d4BMCompletedEisensteinPoincareSeries_horizontal
+        (d4BMHorizontalCoordinate Z.1 x) P
+  have hc := hasDerivAt_d4BMCompletedEisensteinCanonicalCuspLeg_horizontal
+    (P.s - 1 / 2) x (d4BMExteriorCuspHeight Z)
+  have hfun :
+      (fun q : ℝ => d4BMCompletedEisensteinPoincareSeries
+        (d4BMHorizontalCoordinate Z.1 q) P) =
+      (fun q : ℝ => d4BMCompletedEisensteinCuspLeg .scalar
+        (P.s - 1 / 2) q (d4BMExteriorCuspHeight Z)) := by
+    funext q
+    simpa [d4BMCompletedEisensteinHorizontalFunction,
+      d4BMExteriorCuspHeight] using
+        d4BM_actualCompletedPoincare_eq_canonicalCuspLeg Z.1 P q
+  rw [hfun] at ha
+  exact ha.unique hc
+
+theorem d4BM_actualCanonical_exterior_horizontalSecondJet_eq
+    (Z : D4BMExteriorCuspCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) (x : ℝ) :
+    d4BMCompletedPoincareHorizontalSecondJet
+        (d4BMHorizontalCoordinate Z.1 x) P =
+      (d4BMCompletedEisensteinCanonicalCuspFullSecondJet
+        (P.s - 1 / 2) x (d4BMExteriorCuspHeight Z)).horizonXHorizonX := by
+  have ha : HasDerivAt
+      (fun q : ℝ => d4BMCompletedPoincareHorizontalFirstJet
+        (d4BMHorizontalCoordinate Z.1 q) P)
+      (d4BMCompletedPoincareHorizontalSecondJet
+        (d4BMHorizontalCoordinate Z.1 x) P) x := by
+    simpa [d4BMHorizontalCoordinate] using
+      hasDerivAt_d4BMCompletedPoincareHorizontalFirstJet_horizontal
+        (d4BMHorizontalCoordinate Z.1 x) P
+  have hc := hasDerivAt_d4BMCanonicalCuspHorizontalFirstJet_horizontal
+    (P.s - 1 / 2) x (d4BMExteriorCuspHeight Z)
+  have hfun :
+      (fun q : ℝ => d4BMCompletedPoincareHorizontalFirstJet
+        (d4BMHorizontalCoordinate Z.1 q) P) =
+      (fun q : ℝ =>
+        (d4BMCompletedEisensteinCanonicalCuspFullSecondJet
+          (P.s - 1 / 2) q (d4BMExteriorCuspHeight Z)).first.horizonX) := by
+    funext q
+    exact d4BM_actualCanonical_exterior_horizontalFirstJet_eq Z P q
+  rw [hfun] at ha
+  exact ha.unique hc
+
+theorem d4BM_actualCanonical_exterior_verticalSlice_eventuallyEq
+    (Z : D4BMExteriorCuspCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) :
+    d4BMCompletedPoincareVerticalSlice Z.1 P =ᶠ[𝓝 Z.1.y]
+      (fun q : ℝ => d4BMCompletedEisensteinCuspLeg .scalar
+        (P.s - 1 / 2) Z.1.x q) := by
+  filter_upwards [eventually_gt_nhds Z.1.y_pos] with q hq
+  let zq : D4BMUpperHalfPlaneCoordinate := ⟨Z.1.x, q, hq⟩
+  calc
+    d4BMCompletedPoincareVerticalSlice Z.1 P q =
+        d4BMCompletedEisensteinPoincareSeries zq P := by rfl
+    _ = d4BMCompletedEisensteinHorizontalFunction zq P Z.1.x := by rfl
+    _ = d4BMCompletedEisensteinCuspLeg .scalar
+        (P.s - 1 / 2) Z.1.x q := by
+      simpa [zq] using
+        d4BM_actualCompletedPoincare_eq_canonicalCuspLeg zq P Z.1.x
+
+theorem d4BM_actualCanonical_exterior_verticalFirstJet_eq
+    (Z : D4BMExteriorCuspCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) :
+    d4BMCompletedPoincareVerticalFirstJet Z.1 P =
+      (d4BMCompletedEisensteinCanonicalCuspFullSecondJet
+        (P.s - 1 / 2) Z.1.x (d4BMExteriorCuspHeight Z)).first.sigma := by
+  have ha := hasDerivAt_d4BMCompletedPoincareVerticalSlice Z.1 P
+  have hc := hasDerivAt_d4BMCompletedEisensteinCanonicalCuspLeg_vertical
+    (P.s - 1 / 2) Z.1.x (d4BMExteriorCuspHeight Z)
+  have hc' := hc.congr_of_eventuallyEq
+    (d4BM_actualCanonical_exterior_verticalSlice_eventuallyEq Z P)
+  exact ha.unique hc'
+
+def d4BMExteriorCuspHorizontalCoordinate
+    (Z : D4BMExteriorCuspCoordinate) (x : ℝ) : D4BMExteriorCuspCoordinate :=
+  ⟨d4BMHorizontalCoordinate Z.1 x, by
+    simpa [d4BMHorizontalCoordinate] using Z.2⟩
+
+theorem d4BM_actualCanonical_exterior_verticalFirstJet_horizontal_eq
+    (Z : D4BMExteriorCuspCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) (x : ℝ) :
+    d4BMCompletedPoincareVerticalFirstJet
+        (d4BMHorizontalCoordinate Z.1 x) P =
+      (d4BMCompletedEisensteinCanonicalCuspFullSecondJet
+        (P.s - 1 / 2) x (d4BMExteriorCuspHeight Z)).first.sigma := by
+  simpa [d4BMExteriorCuspHorizontalCoordinate, d4BMExteriorCuspHeight,
+    d4BMHorizontalCoordinate] using
+      d4BM_actualCanonical_exterior_verticalFirstJet_eq
+        (d4BMExteriorCuspHorizontalCoordinate Z x) P
+
+theorem d4BM_actualCanonical_exterior_mixedSecondJet_eq
+    (Z : D4BMExteriorCuspCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) (x : ℝ) :
+    d4BMCompletedPoincareMixedSecondJet
+        (d4BMHorizontalCoordinate Z.1 x) P =
+      (d4BMCompletedEisensteinCanonicalCuspFullSecondJet
+        (P.s - 1 / 2) x (d4BMExteriorCuspHeight Z)).horizonXSigma := by
+  have ha : HasDerivAt
+      (fun q : ℝ => d4BMCompletedPoincareVerticalFirstJet
+        (d4BMHorizontalCoordinate Z.1 q) P)
+      (d4BMCompletedPoincareMixedSecondJet
+        (d4BMHorizontalCoordinate Z.1 x) P) x := by
+    simpa [d4BMHorizontalCoordinate] using
+      hasDerivAt_d4BMCompletedPoincareVerticalFirstJet_horizontal
+        (d4BMHorizontalCoordinate Z.1 x) P
+  have hc := hasDerivAt_d4BMCanonicalCuspVerticalFirstJet_horizontal
+    (P.s - 1 / 2) x (d4BMExteriorCuspHeight Z)
+  have hfun :
+      (fun q : ℝ => d4BMCompletedPoincareVerticalFirstJet
+        (d4BMHorizontalCoordinate Z.1 q) P) =
+      (fun q : ℝ =>
+        (d4BMCompletedEisensteinCanonicalCuspFullSecondJet
+          (P.s - 1 / 2) q (d4BMExteriorCuspHeight Z)).first.sigma) := by
+    funext q
+    exact d4BM_actualCanonical_exterior_verticalFirstJet_horizontal_eq Z P q
+  rw [hfun] at ha
+  exact ha.unique hc
+
+theorem d4BM_actualCanonical_exterior_verticalSecondJet_eq
+    (Z : D4BMExteriorCuspCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) :
+    d4BMCompletedPoincareVerticalSecondJet Z.1 P =
+      (d4BMCompletedEisensteinCanonicalCuspFullSecondJet
+        (P.s - 1 / 2) Z.1.x (d4BMExteriorCuspHeight Z)).sigmaSigma := by
+  have hactual :=
+    d4BM_completedEisensteinPoincareSeries_hyperbolicLaplacian_eq_eigenvalue Z.1 P
+  have hcanonical := d4BM_canonicalCuspFullSecondJet_eigenEquation
+    (P.s - 1 / 2) Z.1.x (d4BMExteriorCuspHeight Z)
+  have hcanonicalValue := d4BM_canonicalCuspFullSecondJet_value_eq_cuspLeg
+    (P.s - 1 / 2) Z.1.x (d4BMExteriorCuspHeight Z)
+  have hvalue := d4BM_actualCanonical_exterior_value_eq Z P
+  have hxx : d4BMCompletedPoincareHorizontalSecondJet Z.1 P =
+      (d4BMCompletedEisensteinCanonicalCuspFullSecondJet
+        (P.s - 1 / 2) Z.1.x (d4BMExteriorCuspHeight Z)).horizonXHorizonX := by
+    simpa [d4BMHorizontalCoordinate] using
+      d4BM_actualCanonical_exterior_horizontalSecondJet_eq Z P Z.1.x
+  have hlambda :
+      (P.s - 1 / 2) ^ 2 - 1 / 4 = P.s * (P.s - 1) := by ring
+  have hheight : ((d4BMExteriorCuspHeight Z : ℝ) : ℂ) = (Z.1.y : ℂ) := rfl
+  rw [hlambda] at hcanonical
+  rw [hcanonicalValue] at hcanonical
+  rw [hheight] at hcanonical
+  rw [hvalue, hxx] at hactual
+  have hmul :
+      (Z.1.y : ℂ) ^ 2 * d4BMCompletedPoincareVerticalSecondJet Z.1 P =
+        (Z.1.y : ℂ) ^ 2 *
+          (d4BMCompletedEisensteinCanonicalCuspFullSecondJet
+            (P.s - 1 / 2) Z.1.x (d4BMExteriorCuspHeight Z)).sigmaSigma := by
+    linear_combination hactual - hcanonical
+  exact mul_left_cancel₀
+    (pow_ne_zero 2 (Complex.ofReal_ne_zero.mpr (ne_of_gt Z.1.y_pos))) hmul
+
+/-- **Actual/canonical exterior-cusp second-jet weld.**  Global Fourier uniqueness and genuine
+derivative uniqueness determine every first and mixed/horizontal second component.  The two exact
+eigen equations then determine the remaining radial second component. -/
+theorem d4BM_actualCompletedPoincareFullSecondJet_eq_canonicalCuspFullSecondJet
+    (Z : D4BMExteriorCuspCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) :
+    d4BMActualCompletedPoincareFullSecondJet Z.1 P =
+      d4BMCompletedEisensteinCanonicalCuspFullSecondJet
+        (P.s - 1 / 2) Z.1.x (d4BMExteriorCuspHeight Z) := by
+  have hvalue := d4BM_actualCanonical_exterior_value_eq Z P
+  have hx : d4BMCompletedPoincareHorizontalFirstJet Z.1 P =
+      (d4BMCompletedEisensteinCanonicalCuspFullSecondJet
+        (P.s - 1 / 2) Z.1.x (d4BMExteriorCuspHeight Z)).first.horizonX := by
+    simpa [d4BMHorizontalCoordinate] using
+      d4BM_actualCanonical_exterior_horizontalFirstJet_eq Z P Z.1.x
+  have hy := d4BM_actualCanonical_exterior_verticalFirstJet_eq Z P
+  have hxx : d4BMCompletedPoincareHorizontalSecondJet Z.1 P =
+      (d4BMCompletedEisensteinCanonicalCuspFullSecondJet
+        (P.s - 1 / 2) Z.1.x (d4BMExteriorCuspHeight Z)).horizonXHorizonX := by
+    simpa [d4BMHorizontalCoordinate] using
+      d4BM_actualCanonical_exterior_horizontalSecondJet_eq Z P Z.1.x
+  have hxy : d4BMCompletedPoincareMixedSecondJet Z.1 P =
+      (d4BMCompletedEisensteinCanonicalCuspFullSecondJet
+        (P.s - 1 / 2) Z.1.x (d4BMExteriorCuspHeight Z)).horizonXSigma := by
+    simpa [d4BMHorizontalCoordinate] using
+      d4BM_actualCanonical_exterior_mixedSecondJet_eq Z P Z.1.x
+  have hyy := d4BM_actualCanonical_exterior_verticalSecondJet_eq Z P
+  unfold d4BMActualCompletedPoincareFullSecondJet
+    d4BMActualCompletedPoincareFullFirstJet
+  rw [hvalue, hx, hy, hxx, hxy, hyy]
+  rw [← d4BM_canonicalCuspFullSecondJet_value_eq_cuspLeg
+    (P.s - 1 / 2) Z.1.x (d4BMExteriorCuspHeight Z)]
+  rfl
+
+/-- **Literal exterior-cusp raising weld.**  The actual completed Poincare second jet, acted on by
+the genuine two-step Maass raising operator, is exactly the canonical completed weight `+4` cusp
+leg.  The exterior height condition is data of `Z`, so the theorem has no logical premise. -/
+theorem d4BM_actualCompletedPoincareRaiseLeg_eq_canonicalCuspLeg
+    (Z : D4BMExteriorCuspCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) :
+    d4BMActualCompletedPoincareRaiseLeg Z.1 P =
+      d4BMCompletedEisensteinCuspLeg .raise (P.s - 1 / 2)
+        Z.1.x (d4BMExteriorCuspHeight Z) := by
+  unfold d4BMActualCompletedPoincareRaiseLeg
+  rw [d4BM_actualCompletedPoincareFullSecondJet_eq_canonicalCuspFullSecondJet Z P]
+  exact d4BM_maassRaise_canonicalCuspFullSecondJet_eq_cuspLeg
+    (P.s - 1 / 2) Z.1.x (d4BMExteriorCuspHeight Z)
+
+/-- **Literal exterior-cusp lowering weld.**  The actual completed Poincare second jet, acted on by
+the genuine two-step Maass lowering operator, is exactly the canonical completed weight `-4` cusp
+leg, again with no logical premise. -/
+theorem d4BM_actualCompletedPoincareLowerLeg_eq_canonicalCuspLeg
+    (Z : D4BMExteriorCuspCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) :
+    d4BMActualCompletedPoincareLowerLeg Z.1 P =
+      d4BMCompletedEisensteinCuspLeg .lower (P.s - 1 / 2)
+        Z.1.x (d4BMExteriorCuspHeight Z) := by
+  unfold d4BMActualCompletedPoincareLowerLeg
+  rw [d4BM_actualCompletedPoincareFullSecondJet_eq_canonicalCuspFullSecondJet Z P]
+  exact d4BM_maassLower_canonicalCuspFullSecondJet_eq_cuspLeg
+    (P.s - 1 / 2) Z.1.x (d4BMExteriorCuspHeight Z)
+
 end
 end RHTower

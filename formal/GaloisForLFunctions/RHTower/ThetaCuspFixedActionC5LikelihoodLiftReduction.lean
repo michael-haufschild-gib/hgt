@@ -91,6 +91,38 @@ theorem two_mul_scale_mul_thetaCuspLikelihoodSourceLogPartitionJetTwo_lt_neg_jet
   dsimp only [A, m, v, k] at hA0 hbracket ⊢
   nlinarith [mul_pos hA0 hbracket]
 
+/-- On the structural tail, likelihood curvature cools faster than three first-atom scale units.
+This closed strengthening is the lower-order half of the fifth/fourth seam comparison. -/
+theorem three_mul_scale_mul_thetaCuspLikelihoodSourceLogPartitionJetTwo_lt_neg_jetThree :
+    ∀ x : ℝ,
+      0 ≤ x →
+      6 ≤ thetaCuspSingleAtomReflectionScale 1 x →
+      3 * thetaCuspSingleAtomReflectionScale 1 x *
+          thetaCuspLikelihoodSourceLogPartitionJetTwo x <
+        -thetaCuspLikelihoodSourceLogPartitionJetThree x := by
+  intro x hx hscale
+  let A := thetaCuspSingleAtomReflectionScale 1 x
+  let m := thetaCuspLikelihoodMean (thetaCuspLikelihoodCoordinate x)
+  let v := thetaCuspLikelihoodVariance (thetaCuspLikelihoodCoordinate x)
+  let k := thetaCuspLikelihoodThirdCumulant (thetaCuspLikelihoodCoordinate x)
+  have hA0 : 0 < A := by dsimp only [A] at hscale ⊢; linarith
+  have hm : 0 < m := by
+    simpa only [m] using thetaCuspLikelihoodMean_pos
+      (thetaCuspLikelihoodCoordinate_pos hx)
+  have hv : 0 < v := by
+    simpa only [v] using thetaCuspLikelihoodVariance_pos
+      (thetaCuspLikelihoodCoordinate_pos hx)
+  have hk : 2 * v < k := by
+    simpa only [v, k] using
+      two_mul_thetaCuspLikelihoodVariance_lt_thirdCumulant_coordinate hx
+  have hk' : A ^ 3 * (2 * v) < A ^ 3 * k :=
+    mul_lt_mul_of_pos_left hk (pow_pos hA0 3)
+  have hgap : 0 ≤ A ^ 2 * v * (A - 6) := by positivity
+  unfold thetaCuspLikelihoodSourceLogPartitionJetTwo
+    thetaCuspLikelihoodSourceLogPartitionJetThree
+  dsimp only [A, m, v, k] at hscale hA0 hm hv hk hk' hgap ⊢
+  nlinarith
+
 /-- Constant-rate corollary of adaptive support-gap cooling. -/
 theorem six_mul_thetaCuspLikelihoodSourceLogPartitionJetTwo_lt_neg_jetThree
     {x : ℝ} (hx : 0 ≤ x) :

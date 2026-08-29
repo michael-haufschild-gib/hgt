@@ -1,0 +1,36 @@
+{
+  "elapsed_seconds": 30.335484743118286,
+  "first_negative": [],
+  "first_third_negative": [],
+  "minimum": {
+    "A": "6.0",
+    "normalized": "7.05219759493647195045941886998059811577748735029185619216779e-20",
+    "normalized_third": "1.67975332111180470958736564872872301566184725138428433900635",
+    "scale": "4.15621678624511127341843217683525778034062957925421931745113e-41",
+    "second": "2.93104620239923664570108805042460519268393929950605707782992e-60",
+    "sign": 1,
+    "t": "3.235147916893274e-11",
+    "tau": "9.999999999999999587823328e-11",
+    "third": "5.82229294089161884220080796075752638064296712185166947953608e-58",
+    "third_scale": "3.46615950551473021037905519212764101092916105734135274862667e-58",
+    "third_sign": 1,
+    "u": "0.323514791689327413334525"
+  },
+  "negative": 0,
+  "parameters": {
+    "a_points": 500,
+    "dps": 120,
+    "max_a": 10000000000.0,
+    "output": "asymptotic-results.json",
+    "t_points": 500,
+    "workers": 128
+  },
+  "points": 248815,
+  "positive": 248815,
+  "question": "sign of leading second-atom coefficient of M'' after exact amplitude removal",
+  "scope": "diagnostic only; forbidden as Lean input",
+  "third_negative": 0,
+  "third_positive": 248815,
+  "third_unresolved": 0,
+  "unresolved": 0
+}

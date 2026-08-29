@@ -124,19 +124,33 @@ discarded this full third channel; adaptive reserved compensation retains its gu
 
 ## Exact remaining core
 
-Prove the strictly weaker reserved endpoint
+Global positivity of `c5CompletedAdaptiveReservedCompensationMargin` is false: its denominator-
+cleared fifth seam germ is strictly negative because `F₃+2AF₂<0`. The literal completed margin
+instead has the exact decomposition
 
 ```text
-0 < c5CompletedAdaptiveReservedCompensationMargin u t
+completed margin = adaptive reserved margin + positive third-channel residual.
 ```
 
-throughout the physical tail, using the single-master cone, adaptive third-channel reserve, and
-exact first-atom compensation. Equivalently, prove the atom reserve absorbs only the residual
-likelihood tax after the guaranteed `Z` payment. The corpus-guided candidate is a convex likelihood
-homotopy plus its exact atom-tangent reserve, now with the strongest source-forced third channel
-retained rather than discarded.
-If either fails algebraically, retire the perturbative lift and export the sharp obstruction to the
-cofinal chord-reserve route.
+Thus the sharp direct endpoint is
+
+```text
+-residual < c5CompletedAdaptiveReservedCompensationMargin u t.
+```
+
+A distinct sufficient homotopy route remains live. Computation with higher-atom amplitude removed
+selects the smaller source obligations
+
+```text
+M'''(lambda)>0,
+M''(0)>=0,
+M'(0)>=-M(0)/5.
+```
+
+First two make exact first-atom-to-full interpolation convex; third and formal first-atom
+compensation then prove full tail positivity. These signs are conjectural and no computed value may
+enter Lean. If their source algebra fails, retain the residual-aware direct endpoint or export the
+sharp seam obstruction to cofinal chord reserve.
 
 ## Corpus and literature audit
 

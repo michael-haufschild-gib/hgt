@@ -20,7 +20,7 @@ noncomputable section
 
 open scoped Differential
 
-variable {C ι : Type*} [Field C] [CharZero C]
+variable {C ι : Type*} [Field C] [CharZero C] [Differential C]
 
 /-! ## Coordinate subfields -/
 
@@ -29,13 +29,13 @@ def lowJetField (C ι : Type*) [Field C] (k : ℕ) :
     IntermediateField C (FreeFamilyJetField C ι) :=
   freeCoordinateField C (ι × ℕ) {p | p.2 < k}
 
-omit [CharZero C] in
+omit [Differential C] [CharZero C] in
 theorem lowJetField_zero : lowJetField C ι 0 = ⊥ := by
   have : {p : ι × ℕ | p.2 < 0} = (∅ : Set (ι × ℕ)) := by
     ext p; simp
   rw [lowJetField, this, freeCoordinateField_empty]
 
-omit [CharZero C] in
+omit [Differential C] [CharZero C] in
 theorem lowJetField_mono {k l : ℕ} (h : k ≤ l) : lowJetField C ι k ≤ lowJetField C ι l := by
   rw [lowJetField, lowJetField, freeCoordinateField, freeCoordinateField,
     IntermediateField.adjoin_le_iff]
@@ -43,6 +43,7 @@ theorem lowJetField_mono {k l : ℕ} (h : k ≤ l) : lowJetField C ι k ≤ lowJ
   have hp' : p.2 < k := hp
   exact IntermediateField.subset_adjoin _ _ ⟨p, by simp only [Set.mem_setOf_eq]; omega, rfl⟩
 
+omit [Differential C] in
 /-- Coordinate subfields meet in the subfield of the common coordinates. -/
 theorem freeCoordinateField_inf (S T : Set (ι × ℕ)) :
     freeCoordinateField C (ι × ℕ) S ⊓ freeCoordinateField C (ι × ℕ) T =
@@ -62,20 +63,11 @@ theorem freeCoordinateField_inf (S T : Set (ι × ℕ)) :
       rintro _ ⟨p, hp, rfl⟩
       exact IntermediateField.subset_adjoin _ _ ⟨p, hp.2, rfl⟩
 
-omit [CharZero C] in
-/-- A general form of derivation stability: an adjoined set whose members and derivatives lie in a
-field `L` generates a subfield of `L` stable under the derivation. -/
-theorem adjoin_le_derivationStable_of_mem {E : Type*} [Field E] [Algebra C E]
-    {S : Set E} {L : IntermediateField C E} {D : Derivation C E E}
-    (h : ∀ x ∈ S, x ∈ L ∧ D x ∈ L) :
-    IntermediateField.adjoin C S ≤ derivationStable L D := by
-  rw [IntermediateField.adjoin_le_iff]
-  exact fun x hx => h x hx
-
 /-! ## The graded solve-for-the-top-jet recursion -/
 
 /-- The level-`j` graded Schwarzian generators of one packet. -/
-def gradedSchwarzianGenerators (C : Type*) {ι : Type*} [Field C] (a : ι) (j : ℕ) :
+def gradedSchwarzianGenerators (C : Type*) {ι : Type*} [Field C] [Differential C] (a : ι)
+    (j : ℕ) :
     Set (FreeFamilyJetField C ι) :=
   (fun i : ℕ => familyJet C a i) '' {i | i ≤ 2} ∪
     (fun i : ℕ => differentialJet i (familySchwarzian C a)) '' {i | i ≤ j}
@@ -111,13 +103,14 @@ theorem familyJet_mem_gradedSchwarzianGenerators (a : ι) :
           (pow_mem (hbase 0 2 (by omega)) 2)) (hbase 0 1 (by omega))
   | succ j ih =>
       have hstable : IntermediateField.adjoin C (gradedSchwarzianGenerators C a j) ≤
-          derivationStable (IntermediateField.adjoin C (gradedSchwarzianGenerators C a (j + 1)))
-            (freeFamilyJetShift C ι) := by
-        refine adjoin_le_derivationStable_of_mem ?_
+          derivStableField (IntermediateField.adjoin C (gradedSchwarzianGenerators C a (j + 1)))
+            (deriv_algebraMap_mem
+              (IntermediateField.adjoin C (gradedSchwarzianGenerators C a (j + 1)))) := by
+        refine adjoin_le_derivStableField ?_
         rintro x (⟨i, hi, rfl⟩ | ⟨i, hi, rfl⟩)
         · have hi' : i ≤ 2 := hi
           refine ⟨hbase (j + 1) i hi, ?_⟩
-          rw [freeFamilyJetShift_familyJet]
+          rw [familyJet_deriv]
           rcases Nat.lt_or_ge i 2 with h | h
           · exact hbase (j + 1) (i + 1) (by omega)
           · have hi2 : i = 2 := by omega
@@ -132,13 +125,13 @@ theorem familyJet_mem_gradedSchwarzianGenerators (a : ι) :
             exact h3
         · have hi' : i ≤ j := hi
           refine ⟨hschw (j + 1) i (by omega), ?_⟩
-          rw [show freeFamilyJetShift C ι (differentialJet i (familySchwarzian C a))
+          rw [show (differentialJet i (familySchwarzian C a))′
               = differentialJet (i + 1) (familySchwarzian C a) from by
-            rw [differentialJet_succ, freeFamilyJetField_deriv_apply]]
+            rw [differentialJet_succ]]
           exact hschw (j + 1) (i + 1) (by omega)
       have hj := hstable ih
-      have hshift : freeFamilyJetShift C ι (familyJet C a (j + 3)) = familyJet C a (j + 4) :=
-        freeFamilyJetShift_familyJet a (j + 3)
+      have hshift : (familyJet C a (j + 3))′ = familyJet C a (j + 4) :=
+        familyJet_deriv a (j + 3)
       have hmem := hj.2
       rw [hshift] at hmem
       exact (show j + 1 + 3 = j + 4 from by omega) ▸ hmem
@@ -159,18 +152,20 @@ def jetShiftThree (C ι : Type*) [Field C] [CharZero C] :
     FreeFamilyJetField C ι →ₐ[C] FreeFamilyJetField C ι :=
   freeCoordinateBasisEval (algebraicIndependent_shiftedFreeCoordinate C ι)
 
+omit [Differential C] in
 @[simp]
 theorem jetShiftThree_freeCoordinate (p : ι × ℕ) :
     jetShiftThree C ι (freeCoordinate C (ι × ℕ) p) =
       freeCoordinate C (ι × ℕ) (p.1, p.2 + 3) :=
   freeCoordinateBasisEval_freeCoordinate _ p
 
+omit [Differential C] in
 theorem jetShiftThree_injective : Function.Injective (jetShiftThree C ι) :=
   freeCoordinateBasisEval_injective _
 
 /-- **The Schwarzian substitution.**  It sends the `m`-th jet of a generator to the `m`-th jet of
 that generator's Schwarzian. -/
-def schwarzianSubstitution (C ι : Type*) [Field C] [CharZero C] :
+def schwarzianSubstitution (C ι : Type*) [Field C] [CharZero C] [Differential C] :
     FreeFamilyJetField C ι →ₐ[C] FreeFamilyJetField C ι :=
   ((familySchwarzianBasisEquiv C ι).toAlgHom).comp (jetShiftThree C ι)
 
@@ -217,11 +212,12 @@ def derivationIntertwiner {E E' : Type*} [Field E] [Field E'] [Algebra C E] [Alg
     rw [map_inv₀, Derivation.leibniz_inv, Derivation.leibniz_inv, hx, smul_eq_mul, smul_eq_mul,
       map_mul, map_neg, map_pow, map_inv₀]
 
-omit [CharZero C] in
+omit [Differential C] [CharZero C] in
 theorem mem_derivationIntertwiner_iff {E E' : Type*} [Field E] [Field E'] [Algebra C E]
     [Algebra C E'] {T : E →ₐ[C] E'} {D₁ : Derivation C E E} {D₂ : Derivation C E' E'} {f : E} :
     f ∈ derivationIntertwiner T D₁ D₂ ↔ D₂ (T f) = T (D₁ f) := Iff.rfl
 
+omit [Differential C] in
 /-- An intertwining checked on the coordinates holds everywhere. -/
 theorem derivationIntertwiner_eq_top {E' : Type*} [Field E'] [Algebra C E']
     {T : FreeFamilyJetField C ι →ₐ[C] E'}
@@ -235,22 +231,43 @@ theorem derivationIntertwiner_eq_top {E' : Type*} [Field E'] [Algebra C E']
   rintro _ ⟨p, -, rfl⟩
   exact h p
 
+/-- The intertwining defect of an algebra homomorphism between family jet fields. -/
+theorem algHom_deriv_of_familyJet {κ : Type*} (T : FreeFamilyJetField C ι →ₐ[C]
+    FreeFamilyJetField C κ)
+    (hgen : ∀ (a : ι) (m : ℕ), (T (familyJet C a m))′ = T (familyJet C a (m + 1)))
+    (f : FreeFamilyJetField C ι) : (T f)′ = T (f′) := by
+  set W : FreeFamilyJetField C ι → FreeFamilyJetField C κ := fun g => (T g)′ - T (g′) with hW
+  have hadd : ∀ x y, W (x + y) = W x + W y := by
+    intro x y
+    simp only [hW, map_add]
+    ring
+  have hleib : ∀ x y, W (x * y) = (T : FreeFamilyJetField C ι →+* FreeFamilyJetField C κ) x * W y +
+      (T : FreeFamilyJetField C ι →+* FreeFamilyJetField C κ) y * W x := by
+    intro x y
+    simp only [hW, RingHom.coe_coe, Derivation.leibniz, smul_eq_mul, map_add, map_mul]
+    ring
+  have hbase : ∀ c : C, W (algebraMap C (FreeFamilyJetField C ι) c) = 0 := by
+    intro c
+    simp only [hW, AlgHom.commutes, freeFamilyJetField_deriv_base, sub_self]
+  have hcoord : ∀ p : ι × ℕ, W (freeCoordinate C (ι × ℕ) p) = 0 := by
+    rintro ⟨a, m⟩
+    have hj : freeCoordinate C (ι × ℕ) (a, m) = familyJet C a m := rfl
+    simp only [hW, hj, familyJet_deriv, hgen a m, sub_self]
+  have h := eq_zero_of_twistedLeibniz W
+    (T : FreeFamilyJetField C ι →+* FreeFamilyJetField C κ) hadd hleib hbase hcoord f
+  rw [hW] at h
+  simp only [sub_eq_zero] at h
+  exact h
+
 /-- **The Schwarzian substitution is a differential homomorphism.** -/
 theorem schwarzianSubstitution_deriv (f : FreeFamilyJetField C ι) :
     (schwarzianSubstitution C ι f)′ = schwarzianSubstitution C ι (f′) := by
-  have htop : derivationIntertwiner (schwarzianSubstitution C ι)
-      (freeFamilyJetShift C ι) (freeFamilyJetShift C ι) = ⊤ := by
-    refine derivationIntertwiner_eq_top ?_
-    rintro ⟨a, m⟩
-    show freeFamilyJetShift C ι (schwarzianSubstitution C ι (familyJet C a m))
-      = schwarzianSubstitution C ι (freeFamilyJetShift C ι (familyJet C a m))
-    rw [freeFamilyJetShift_familyJet, schwarzianSubstitution_familyJet,
-      schwarzianSubstitution_familyJet, ← freeFamilyJetField_deriv_apply, ← differentialJet_succ]
-  have hf : f ∈ derivationIntertwiner (schwarzianSubstitution C ι)
-      (freeFamilyJetShift C ι) (freeFamilyJetShift C ι) := by
-    rw [htop]; trivial
-  exact hf
+  refine algHom_deriv_of_familyJet _ ?_ f
+  intro a m
+  rw [schwarzianSubstitution_familyJet, schwarzianSubstitution_familyJet,
+    ← differentialJet_succ]
 
+omit [Differential C] in
 /-- **The three-jet shift lowers coordinate derivations by three.** -/
 theorem freeCoordinateDerivation_jetShiftThree (a : ι) (m : ℕ)
     (f : FreeFamilyJetField C ι) :
@@ -279,6 +296,7 @@ theorem freeCoordinateDerivation_jetShiftThree (a : ι) (m : ℕ)
     rw [htop]; trivial
   exact hf
 
+omit [Differential C] in
 /-- The three-jet shift reflects membership in the low-order coordinate field. -/
 theorem mem_lowJetField_of_jetShiftThree {k : ℕ} {g : FreeFamilyJetField C ι}
     (hg : jetShiftThree C ι g ∈ lowJetField C ι (k + 3)) :
@@ -298,7 +316,7 @@ theorem mem_lowJetField_of_jetShiftThree {k : ℕ} {g : FreeFamilyJetField C ι}
 
 /-! ## The coordinate change preserves the low-order fields -/
 
-omit [CharZero C] in
+omit [Differential C] [CharZero C] in
 theorem freeCoordinateField_mono {S T : Set (ι × ℕ)} (h : S ⊆ T) :
     freeCoordinateField C (ι × ℕ) S ≤ freeCoordinateField C (ι × ℕ) T := by
   rw [freeCoordinateField, freeCoordinateField, IntermediateField.adjoin_le_iff]
@@ -399,7 +417,7 @@ theorem map_schwarzianSubstitution_lowJetField_le (k : ℕ) :
 /-! ## The erosion tower -/
 
 /-- The `n`-fold Schwarzian substitution. -/
-def schwarzianIter (C ι : Type*) [Field C] [CharZero C] :
+def schwarzianIter (C ι : Type*) [Field C] [CharZero C] [Differential C] :
     ℕ → (FreeFamilyJetField C ι →ₐ[C] FreeFamilyJetField C ι)
   | 0 => AlgHom.id C _
   | n + 1 => (schwarzianIter C ι n).comp (schwarzianSubstitution C ι)
@@ -411,7 +429,10 @@ theorem schwarzianIter_injective (n : ℕ) :
     Function.Injective (schwarzianIter C ι n) := by
   induction n with
   | zero => exact fun x y h => h
-  | succ n ih => exact ih.comp schwarzianSubstitution_injective
+  | succ n ih =>
+      intro x y h
+      rw [schwarzianIter_succ_apply, schwarzianIter_succ_apply] at h
+      exact schwarzianSubstitution_injective (ih h)
 
 theorem schwarzianIter_deriv (n : ℕ) (f : FreeFamilyJetField C ι) :
     (schwarzianIter C ι n f)′ = schwarzianIter C ι n (f′) := by
@@ -428,11 +449,12 @@ theorem schwarzianIter_differentialJet (n m : ℕ) (f : FreeFamilyJetField C ι)
   | succ m ih => rw [differentialJet_succ, ih, schwarzianIter_deriv, ← differentialJet_succ]
 
 /-- The `n`-th level of the Schwarzian erosion tower. -/
-def erosionLevel (C ι : Type*) [Field C] [CharZero C] (n : ℕ) :
+def erosionLevel (C ι : Type*) [Field C] [CharZero C] [Differential C] (n : ℕ) :
     IntermediateField C (FreeFamilyJetField C ι) := (schwarzianIter C ι n).fieldRange
 
 /-- The `n`-th Schwarzian iterate of a generator. -/
-def erosionGenerator (C : Type*) {ι : Type*} [Field C] [CharZero C] (a : ι) (n : ℕ) :
+def erosionGenerator (C : Type*) {ι : Type*} [Field C] [CharZero C] [Differential C] (a : ι)
+    (n : ℕ) :
     FreeFamilyJetField C ι := schwarzianIter C ι n (familyJet C a 0)
 
 theorem erosionGenerator_mem (a : ι) (n : ℕ) :
@@ -490,6 +512,7 @@ theorem notMem_lowJetField_of_mem_erosionLevel {n : ℕ} {R : FreeFamilyJetField
 
 /-! ## Strict descent -/
 
+omit [Differential C] in
 theorem familyJet_notMem_bot (a : ι) (m : ℕ) :
     familyJet C a m ∉ (⊥ : IntermediateField C (FreeFamilyJetField C ι)) := by
   intro hmem
@@ -605,7 +628,7 @@ theorem schwarzianIter_mem_lowJetField_iff (n k : ℕ) (g : FreeFamilyJetField C
   · intro hg
     exact map_schwarzianIter_lowJetField_le n k ((IntermediateField.mem_map _).2 ⟨g, hg, rfl⟩)
 
-omit [CharZero C] in
+omit [Differential C] [CharZero C] in
 theorem algebraicIndependent_relabelFreeCoordinate {κ : Type*} (e : ι ≃ κ) :
     AlgebraicIndependent C
       (fun p : ι × ℕ => freeCoordinate C (κ × ℕ) (e p.1, p.2)) := by
@@ -615,6 +638,7 @@ theorem algebraicIndependent_relabelFreeCoordinate {κ : Type*} (e : ι ≃ κ) 
     exact Prod.ext h.1 h.2
   exact (algebraicIndependent_freeCoordinate C (κ × ℕ)).comp _ hinj
 
+omit [Differential C] in
 theorem relabelFreeCoordinate_adjoin_eq_top {κ : Type*} (e : ι ≃ κ) :
     IntermediateField.adjoin C
       (Set.range (fun p : ι × ℕ => freeCoordinate C (κ × ℕ) (e p.1, p.2))) = ⊤ := by
@@ -625,7 +649,7 @@ theorem relabelFreeCoordinate_adjoin_eq_top {κ : Type*} (e : ι ≃ κ) :
   exact IntermediateField.subset_adjoin _ _ ⟨(e.symm q.1, q.2), by simp⟩
 
 /-- Relabelling the index set of a free differential family. -/
-def relabelIndex (C : Type*) {ι κ : Type*} [Field C] [CharZero C] (e : ι ≃ κ) :
+def relabelIndex (C : Type*) {ι κ : Type*} [Field C] [CharZero C] [Differential C] (e : ι ≃ κ) :
     FreeFamilyJetField C ι ≃ₐ[C] FreeFamilyJetField C κ :=
   freeCoordinateBasisEquiv (algebraicIndependent_relabelFreeCoordinate e)
     (relabelFreeCoordinate_adjoin_eq_top e)
@@ -637,18 +661,10 @@ theorem relabelIndex_familyJet {κ : Type*} (e : ι ≃ κ) (a : ι) (m : ℕ) :
 
 theorem relabelIndex_deriv {κ : Type*} (e : ι ≃ κ) (f : FreeFamilyJetField C ι) :
     (relabelIndex C e f)′ = relabelIndex C e (f′) := by
-  have htop : derivationIntertwiner (C := C) ((relabelIndex C e).toAlgHom)
-      (freeFamilyJetShift C ι) (freeFamilyJetShift C κ) = ⊤ := by
-    refine derivationIntertwiner_eq_top ?_
-    rintro ⟨a, m⟩
-    show freeFamilyJetShift C κ (relabelIndex C e (familyJet C a m))
-      = relabelIndex C e (freeFamilyJetShift C ι (familyJet C a m))
-    rw [relabelIndex_familyJet, freeFamilyJetShift_familyJet, freeFamilyJetShift_familyJet,
-      relabelIndex_familyJet]
-  have hf : f ∈ derivationIntertwiner (C := C) ((relabelIndex C e).toAlgHom)
-      (freeFamilyJetShift C ι) (freeFamilyJetShift C κ) := by
-    rw [htop]; trivial
-  exact hf
+  refine algHom_deriv_of_familyJet ((relabelIndex C e).toAlgHom) ?_ f
+  intro a m
+  show (relabelIndex C e (familyJet C a m))′ = relabelIndex C e (familyJet C a (m + 1))
+  rw [relabelIndex_familyJet, relabelIndex_familyJet, familyJet_deriv]
 
 theorem relabelIndex_differentialJet {κ : Type*} (e : ι ≃ κ) (m : ℕ)
     (f : FreeFamilyJetField C ι) :
@@ -697,6 +713,7 @@ def algHomEqualizer {E E' : Type*} [Field E] [Field E'] [Algebra C E] [Algebra C
     simp only [Set.mem_setOf_eq] at hx ⊢
     rw [map_inv₀, map_inv₀, hx]
 
+omit [Differential C] in
 /-- Two algebra homomorphisms out of a free family jet field agreeing on the coordinates are
 equal. -/
 theorem algHom_ext_freeCoordinate {E' : Type*} [Field E'] [Algebra C E']

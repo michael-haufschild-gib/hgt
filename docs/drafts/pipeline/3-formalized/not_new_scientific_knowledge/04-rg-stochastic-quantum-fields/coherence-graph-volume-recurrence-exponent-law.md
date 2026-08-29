@@ -1,7 +1,7 @@
 # Coherence-graph volume and recurrence-exponent law
 
 - **ID:** `coherence-graph-volume-recurrence-exponent-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / GRAPH OPTIMALITY / METRIC-DIOPHANTINE BRIDGE
 - **Source:** extracted positive survivor from
   `mixed-state-coherence-graph-recurrence-dimension-law.md`
@@ -178,12 +178,68 @@ shrinking target.
 4. **“Hilbert--Schmidt distance is operational.”** Not established by this card; a separate
    operational transfer theorem is required.
 
-Verdict: `SURVIVES AS A SUPPORTING BRIDGE`. `[OPEN CORE]` is exact Lean formalization of
-`(1)`--`(3)` and the rank-zero boundary.
+Verdict: `SURVIVES AS A SUPPORTING BRIDGE`. The former `[OPEN CORE]` -- exact Lean formalization
+of `(1)`--`(3)` and the rank-zero boundary -- is closed unconditionally.
+
+## Lean formalization
+
+All statements are unconditional: no `sorry`, no added axioms, no hypothesis interfaces.
+Each capstone audits to `[propext, Classical.choice, Quot.sound]`.
+
+Modules (area `GaloisForLFunctions.RHTower`):
+
+| Module | Role |
+|---|---|
+| `RHTower/RootedForestShear.lean` | rooted forest, the shear/unshear monomial torus automorphism, its measure invariance |
+| `RHTower/CircleChordBall.lean` | two-sided Haar mass of a circle chord ball, `δ/π ≤ · ≤ δ/2` |
+| `RHTower/CoherenceGraphVolumeLaw.lean` | `Phi_a`, forest chart, the volume law `(1)`, rank-zero energy vanishing |
+| `RHTower/CoherenceGraphRecurrenceExponent.lean` | deadlines, the minimax exponent `(2)`, Borel--Cantelli, the almost-sure exponent `(3)`, rank-zero boundary |
+
+Dictionary:
+
+| Paper object | Lean name |
+|---|---|
+| `Phi_a(z)` | `RHTower.graphChordEnergy` |
+| spanning forest `F` with roots | `RHTower.RootedForest` + `RHTower.ForestChart` |
+| `r = |V| - c(G)` | `RHTower.RootedForest.rank` |
+| `K_F = ∑_e a_e ℓ_e²` | `RHTower.ForestChart.constant` |
+| `C_F = (2^r ∏_f √a_f)^{-1}` | `RHTower.ForestChart.upperConstant` |
+| `mu_a(epsilon)` | `volume {x | graphChordEnergy src tgt a x ≤ ε ^ 2}` |
+| `T_a(epsilon)` | `RHTower.universalDeadline` |
+| `tau_a(epsilon; omega)` | `RHTower.firstReturn` |
+| forest-coordinate automorphism | `RHTower.shearEquiv`, `RHTower.measurePreserving_shear` |
+| `delta/pi ≤ Haar{|z-1| ≤ delta} ≤ delta/2` | `RHTower.ofReal_le_volume_chordBall`, `RHTower.volume_chordBall_le` |
+
+Theorems:
+
+| Card item | Lean theorem |
+|---|---|
+| `(1)` two-sided volume law | `RHTower.volume_graphChordEnergy_sublevel_bounds` |
+| `(4)` pigeonhole upper deadline | `RHTower.isUniversalDeadline_pigeonhole`, `RHTower.universalDeadline_le_pow`, `RHTower.universalDeadline_le_of_lt_one` |
+| minimax lower deadline | `RHTower.lt_universalDeadline_of_mass_lt_one`, `RHTower.lt_universalDeadline_quantitative` |
+| `(2)` minimax exponent | `RHTower.tendsto_log_universalDeadline` |
+| exact returns are null | `RHTower.volume_zeroEnergy_eq_zero`, `RHTower.ae_forall_pos_graphChordEnergy` |
+| Borel--Cantelli step | `RHTower.ae_eventually_lt_graphChordEnergy` |
+| first return diverges | `RHTower.eventually_le_firstReturn` |
+| `(3)` almost-sure exponent | `RHTower.ae_tendsto_log_firstReturn` |
+| rank-zero volume | `RHTower.volume_graphChordEnergy_sublevel_eq_one_of_rank_zero` |
+| rank-zero deadline and return | `RHTower.universalDeadline_eq_one_of_rank_zero`, `RHTower.firstReturn_eq_one_of_rank_zero` |
+
+Scope notes:
+
+- The phase torus is `V → UnitAddCircle` and the chord uses the first character `fourier 1`,
+  so `‖fourier 1 (x u) - fourier 1 (x v)‖` is exactly `|z_u - z_v|`.
+- The Lean rank is `#{v | depth v ≠ 0}`, the number of nonroot vertices of the chosen rooted
+  spanning forest, which equals `|V| - c(G)` for any spanning forest with one root per component.
+- The Borel--Cantelli step is stated for every real exponent `s` with `s·r > 1` and is
+  intersected over the rationals in `ae_tendsto_log_firstReturn`, so the almost-sure exponent is
+  exact rather than one-sided.
+- `(1)` is proved with the paper's constants: the lower bound is
+  `(ε/(π√K_F))^r` and the upper bound is the forest product `∏_{f∈F} ε/(2√a_f)`.
 
 ## Gates
 
 - [x] 0 → 1: exact theorem and dependency-closed paper proof
 - [x] 1 → 2: exact-object literature audit and formal statement normalization
-- [ ] 2 → 3: unconditional Lean theorem and axiom audit
+- [x] 2 → 3: unconditional Lean theorem and axiom audit
 - [ ] 3 → 4: integrate only after operational transfer theorem is proved
