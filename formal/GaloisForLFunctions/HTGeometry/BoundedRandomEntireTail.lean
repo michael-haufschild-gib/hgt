@@ -46,6 +46,30 @@ theorem differentiable_boundedRandomEntireTail (N : ℕ) (y : ℕ → ℂ) :
   rw [heq]
   exact (differentiable_pow N).mul (differentiable_entireOfCoeffs (tailCoeff_orderTwo N y))
 
+theorem summable_tailCoeff_term (L : ℕ) (y : ℕ → ℂ) (z : ℂ) :
+    Summable (fun n : ℕ => tailCoeff L y n * z ^ (n + L)) := by
+  have hbase : Summable (fun n : ℕ => tailCoeff L y n * z ^ n) :=
+    summable_of_orderTwo_bound (tailCoeff_orderTwo L y) z
+  have := hbase.mul_left (z ^ L)
+  refine this.congr fun n => ?_
+  rw [pow_add]
+  ring
+
+/-- The tail splits again at every further index. -/
+theorem boundedRandomEntireTail_split (N L : ℕ) (y : ℕ → ℂ) (z : ℂ) :
+    boundedRandomEntireTail L y z
+      = (∑ n ∈ Finset.range N, tailCoeff L y n * z ^ (n + L))
+        + boundedRandomEntireTail (N + L) (fun k => y (k + N)) z := by
+  have hsum := summable_tailCoeff_term L y z
+  have hsplit := (hsum.sum_add_tsum_nat_add N).symm
+  have hL : boundedRandomEntireTail L y z = ∑' n : ℕ, tailCoeff L y n * z ^ (n + L) := rfl
+  have hR : boundedRandomEntireTail (N + L) (fun k => y (k + N)) z
+      = ∑' n : ℕ, tailCoeff L y (n + N) * z ^ (n + N + L) := by
+    rw [boundedRandomEntireTail]
+    refine tsum_congr fun n => ?_
+    rw [tailCoeff, show n + (N + L) = n + N + L by omega]
+  rw [hL, hR, hsplit]
+
 end
 
 end GaloisForLFunctions.HTGeometry

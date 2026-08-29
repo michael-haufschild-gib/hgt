@@ -207,6 +207,148 @@ theorem surjective_packetHermiteMap {shift : H → ℂ} {p : FiniteMultivariateA
     Function.Surjective (packetHermiteMap shift p base) :=
   LinearMap.injective_iff_surjective.1 (injective_packetHermiteMap hinj)
 
+/-! ### The monomial-shifted Hermite map -/
+
+/-- Evaluating the iterated derivative of a weighted monomial sum. -/
+theorem eval_iterate_derivative_weightedSum {N : ℕ} (a : Fin N → ℂ) (m : Fin N → ℕ)
+    (j : ℕ) (w : ℂ) :
+    ((⇑derivative)^[j] (∑ n : Fin N, C (a n) * X ^ (m n))).eval w
+      = ∑ n : Fin N, a n * (((⇑derivative)^[j] (X ^ (m n) : Polynomial ℂ)).eval w) := by
+  have hpow : ∀ Q : Polynomial ℂ, (⇑derivative)^[j] Q
+      = ((derivative : Polynomial ℂ →ₗ[ℂ] Polynomial ℂ) ^ j) Q :=
+    fun Q => (Module.End.pow_apply derivative j Q).symm
+  rw [hpow, map_sum, Polynomial.eval_finsetSum]
+  refine Finset.sum_congr rfl fun n _ => ?_
+  rw [show (C (a n) * X ^ (m n) : Polynomial ℂ) = (a n) • (X ^ (m n) : Polynomial ℂ) from
+    (Polynomial.smul_eq_C_mul _).symm, map_smul, Polynomial.eval_smul, smul_eq_mul, hpow]
+
+/-- The square Hermite evaluation of the monomials `X^{n+L}` at the packet nodes. -/
+def packetShiftedHermiteMap (shift : H → ℂ) (p : FiniteMultivariateAffineJetPattern H 1)
+    (base : MultivariateAffinePatternRow p → Fin 1 → ℂ) (wt : ℕ → ℂ) (L : ℕ) :
+    (Fin (affineJetPacketFiniteCoordinateCount p) → ℂ) →ₗ[ℂ]
+      (Fin (affineJetPacketFiniteCoordinateCount p) → ℂ) where
+  toFun c k := ∑ n : Fin (affineJetPacketFiniteCoordinateCount p),
+    (c n * wt (n : ℕ)) *
+      (((⇑derivative)^[packetOrder p
+          ((Fintype.equivFin (MultivariateAffinePatternRow p ×
+            MultivariateAffinePatternJet p)).symm k)]
+        (X ^ ((n : ℕ) + L) : Polynomial ℂ)).eval
+        (packetPoint shift p base
+          ((Fintype.equivFin (MultivariateAffinePatternRow p ×
+            MultivariateAffinePatternJet p)).symm k)))
+  map_add' c d := by
+    funext k
+    simp only [Pi.add_apply]
+    rw [← Finset.sum_add_distrib]
+    exact Finset.sum_congr rfl fun n _ => by rw [add_mul, add_mul]
+  map_smul' r c := by
+    funext k
+    simp only [Pi.smul_apply, RingHom.id_apply, smul_eq_mul]
+    rw [Finset.mul_sum]
+    exact Finset.sum_congr rfl fun n _ => by ring
+
+theorem packetShiftedHermiteMap_apply (shift : H → ℂ)
+    (p : FiniteMultivariateAffineJetPattern H 1)
+    (base : MultivariateAffinePatternRow p → Fin 1 → ℂ) (wt : ℕ → ℂ) (L : ℕ)
+    (c : Fin (affineJetPacketFiniteCoordinateCount p) → ℂ)
+    (k : Fin (affineJetPacketFiniteCoordinateCount p)) :
+    packetShiftedHermiteMap shift p base wt L c k
+      = ∑ n : Fin (affineJetPacketFiniteCoordinateCount p),
+        (c n * wt (n : ℕ)) *
+          (((⇑derivative)^[packetOrder p
+              ((Fintype.equivFin (MultivariateAffinePatternRow p ×
+                MultivariateAffinePatternJet p)).symm k)]
+            (X ^ ((n : ℕ) + L) : Polynomial ℂ)).eval
+            (packetPoint shift p base
+              ((Fintype.equivFin (MultivariateAffinePatternRow p ×
+                MultivariateAffinePatternJet p)).symm k))) := rfl
+
+theorem injective_packetShiftedHermiteMap {shift : H → ℂ}
+    {p : FiniteMultivariateAffineJetPattern H 1}
+    {base : MultivariateAffinePatternRow p → Fin 1 → ℂ} (wt : ℕ → ℂ) (L : ℕ)
+    (hwt : ∀ n, wt n ≠ 0)
+    (hinj : Function.Injective
+      (fun q : MultivariateAffinePatternRow p × Fin p.frameCount =>
+        (fun h => oneDimTranslationFrame (shift h)) (p.frameCode q.2) (base q.1)))
+    (hne : ∀ q : MultivariateAffinePatternRow p × Fin p.frameCount,
+      packetNode shift p base q ≠ 0) :
+    Function.Injective (packetShiftedHermiteMap shift p base wt L) := by
+  classical
+  rcases Nat.eq_zero_or_pos (affineJetPacketFiniteCoordinateCount p) with hN0 | hNpos
+  · intro u v _
+    funext n
+    rw [hN0] at n
+    exact absurd n.isLt (by omega)
+  rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
+  intro c hc
+  set ε := Fintype.equivFin
+    (MultivariateAffinePatternRow p × MultivariateAffinePatternJet p) with hε
+  set Q : Polynomial ℂ :=
+    ∑ n : Fin (affineJetPacketFiniteCoordinateCount p),
+      C (c n * wt (n : ℕ)) * X ^ (n : ℕ) with hQ
+  have hcoeff : ∀ n : Fin (affineJetPacketFiniteCoordinateCount p),
+      Q.coeff (n : ℕ) = c n * wt (n : ℕ) := by
+    intro n
+    rw [hQ, Polynomial.finsetSum_coeff, Finset.sum_eq_single n]
+    · rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, if_pos rfl, mul_one]
+    · intro m _ hmn
+      rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow,
+        if_neg (fun hcc => hmn (Fin.ext hcc.symm)), mul_zero]
+    · intro h
+      exact absurd (Finset.mem_univ n) h
+  have hdeg : Q.natDegree < affineJetPacketFiniteCoordinateCount p := by
+    have hle : Q.natDegree ≤ affineJetPacketFiniteCoordinateCount p - 1 := by
+      rw [hQ]
+      refine Polynomial.natDegree_sum_le_of_forall_le _ _ fun n _ => ?_
+      refine le_trans (Polynomial.natDegree_C_mul_le _ _) ?_
+      rw [Polynomial.natDegree_X_pow]
+      omega
+    omega
+  have hprod : (X ^ L : Polynomial ℂ) * Q
+      = ∑ n : Fin (affineJetPacketFiniteCoordinateCount p),
+        C (c n * wt (n : ℕ)) * X ^ ((n : ℕ) + L) := by
+    rw [hQ, Finset.mul_sum]
+    exact Finset.sum_congr rfl fun n _ => by rw [pow_add]; ring
+  have hvan : ∀ q : MultivariateAffinePatternRow p × Fin p.frameCount, ∀ j, j < p.orders q.2 →
+      ((⇑derivative)^[j] ((X ^ L : Polynomial ℂ) * Q)).eval (packetNode shift p base q) = 0 := by
+    intro q j hj
+    set a : MultiIndexBelow 1 (p.orders q.2) :=
+      (multiIndexBelowOneEquiv (p.orders q.2)).symm ⟨j, hj⟩ with ha
+    set k : MultivariateAffinePatternRow p × MultivariateAffinePatternJet p :=
+      (q.1, ⟨q.2, a⟩) with hk
+    have horder : packetOrder p k = j := by
+      rw [hk, packetOrder, ha]
+      simp [multiIndexBelowOneEquiv]
+    have hpoint : packetPoint shift p base k = packetNode shift p base q := rfl
+    have hzero := congrFun hc (ε k)
+    rw [packetShiftedHermiteMap_apply, Pi.zero_apply] at hzero
+    rw [← hε, Equiv.symm_apply_apply, horder, hpoint] at hzero
+    rw [hprod, eval_iterate_derivative_weightedSum]
+    exact hzero
+  have hQzero : Q = 0 :=
+    polynomial_eq_zero_of_shifted_jets_vanish (packetNode shift p base)
+      (injective_packetNode hinj) hne (fun q => p.orders q.2) L
+      (by rw [← card_coordinate_eq_sum_orders]; exact hdeg) hvan
+  funext n
+  have hcn := hcoeff n
+  rw [hQzero, Polynomial.coeff_zero] at hcn
+  rcases mul_eq_zero.1 hcn.symm with h | h
+  · simpa using h
+  · exact absurd h (hwt _)
+
+/-- **Shifted packet Hermite surjectivity at nonzero nodes.** -/
+theorem surjective_packetShiftedHermiteMap {shift : H → ℂ}
+    {p : FiniteMultivariateAffineJetPattern H 1}
+    {base : MultivariateAffinePatternRow p → Fin 1 → ℂ} (wt : ℕ → ℂ) (L : ℕ)
+    (hwt : ∀ n, wt n ≠ 0)
+    (hinj : Function.Injective
+      (fun q : MultivariateAffinePatternRow p × Fin p.frameCount =>
+        (fun h => oneDimTranslationFrame (shift h)) (p.frameCode q.2) (base q.1)))
+    (hne : ∀ q : MultivariateAffinePatternRow p × Fin p.frameCount,
+      packetNode shift p base q ≠ 0) :
+    Function.Surjective (packetShiftedHermiteMap shift p base wt L) :=
+  LinearMap.injective_iff_surjective.1 (injective_packetShiftedHermiteMap wt L hwt hinj hne)
+
 end
 
 end GaloisForLFunctions.HTGeometry

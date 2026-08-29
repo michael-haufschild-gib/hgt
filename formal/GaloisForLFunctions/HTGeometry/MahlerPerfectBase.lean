@@ -167,7 +167,7 @@ theorem mahlerHom_ramifiedLevelHom (p : ℕ) (hp : 1 < p) (n : ℕ) (r : RatFunc
 theorem mahlerHom_mem_perfectBase (p : ℕ) (hp : 1 < p) {x : HahnSeries ℚ k}
     (hx : x ∈ perfectBase p hp) : mahlerHom p (by omega) x ∈ perfectBase p hp := by
   obtain ⟨n, r, rfl⟩ := hx
-  rw [ramifiedLevelHom_add p hp n 1 r, mahlerHom_ramifiedLevelHom]
+  rw [ramifiedLevelHom_add p hp n 1 r, mahlerHom_ramifiedLevelHom p hp]
   exact ⟨n, _, rfl⟩
 
 /-- The Mahler substitution restricted to the perfect base. -/

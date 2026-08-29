@@ -20,7 +20,7 @@ Already promoted (before this sweep): `ht-remote-quartet-compact-open-field-invi
 | 10 | poincare-constraint-order-recession | OPEN | unit-cost cascade ord_DA(f^[n]) = n; affine invariance; Bergweiler |
 | 11 | projective-horizon-hankel-secant-stratification | OPEN | catalecticant/secant identification, codimension 2k-1, Sing(C_k)=C_{k+1} |
 | 12 | projective-ht-generic-pv-curvature-core | OPEN | Wilczynski normalization; Picard–Vessiot SL_N; invariant field |
-| 13 | random-holomorphic-maximal-translation-ht-law | OPEN | random entire functions, finite-jet absolute continuity, GAF nondegeneracy |
+| 13 | random-holomorphic-maximal-translation-ht-law | **PROMOTED 2026-08-29** | — (two models built, incl. the planar Gaussian) |
 
 ## Shared infrastructure built
 - `HTGeometry/DomainJetRelationLocus.lean` — the (n,d) jet-minor certificate for
@@ -384,3 +384,141 @@ Remaining for the planar Gaussian instance: a.s. entirety of `∑ ξₙ zⁿ/√
 Gaussian tails), then the same head/tail architecture with the Gaussian coefficient law in place of
 `complexSquareProbability` (`ComplexGaussianObservables.complexGaussian_absolutelyContinuous` and
 `PiMeasureAbsoluteContinuity` supply the absolute continuity).
+
+### Card 13 — the conditioning half is closed (2026-08-29)
+
+**`ae_translationOrbit_free_randomEntireTail_add_const`** — fixing any finite prefix of the
+coefficients and adding any deterministic entire passport leaves the translation orbit of the
+residual random source almost surely differentially free.  This is the card's *finite Taylor
+conditioning* statement.
+
+The obstruction was that the residual `z^L·(…)` has a genuinely degenerate jet packet at a node at
+the origin, while the corpus's `HasAbsolutelyContinuousFiniteAffineJetLaws` demands absolute
+continuity at *every* admissible base.  Resolved exactly as the card's own proof does — by choosing
+the evaluation nodes away from the origin:
+
+- `AffineFramePacketAvoidance` — `exists_avoid_poly`,
+  **`exists_base_separating_avoiding_and_eval_ne_zero`**.
+- `AvoidingAffineJetPacketWitness` — **`exists_separatedWitness_avoiding`**,
+  `avoidingAffineJetPacketWitness` and its packet-injectivity and avoidance lemmas.
+- Two corpus theorems were **generalized in place** (old statements kept as corollaries, so no call
+  site changed): `AffineJetDifferentialIndependence.exists_affineJetRelationValue_ne_zero_of_witness`
+  and `RandomAffineJetPacketFreeness.measure_compl_preimage_residualSet_eq_zero`, plus
+  `finiteAffineJetPacketDeterminant_ne_zero_of_witness` and
+  `mem_multivariateAffinePatternResidualSet_iff`.
+- `ConfluentVanishingPolynomial.polynomial_eq_zero_of_shifted_jets_vanish` — the monomial factor is
+  a unit at nonzero nodes, so it contributes no root multiplicity.
+- `PacketHermiteSurjectivity.packetShiftedHermiteMap` / `surjective_packetShiftedHermiteMap`.
+- `BoundedRandomEntireTail.boundedRandomEntireTail_split`,
+  `RandomEntireTailPacketSplit.finiteAffineJetPacketObservation_tail_split`.
+- `AvoidingRandomAffineJetFreeness` — `HasAvoidingAbsolutelyContinuousFiniteAffineJetLaws`,
+  `ae_affineOrbit_free_of_avoidingJetLaws`, and the tail's node-avoiding nondegeneracy.
+- `RandomEntireConditionedOrbitFreeness` — the capstone.
+
+**Card 13's last open item: the planar Gaussian instance.**  Plan (all pieces checked against the
+corpus first):
+1. `complexGaussianProbability : Measure ℂ` — the pushforward of `gaussianReal 0 1 ×ˢ gaussianReal 0 1`
+   through `Complex.measurableEquivRealProd.symm`, mirroring `complexSquareProbability`; a genuine
+   probability measure (the existing `ComplexGaussianObservables.complexGaussian` is a density that
+   is deliberately *not* claimed to have total mass one, so it cannot feed `Measure.infinitePi`);
+2. almost-sure polynomial bound `|xₙ| ≤ n` eventually — Chebyshev (`variance_gaussianReal`) plus
+   Borel–Cantelli, both in mathlib;
+3. the entire carrier of `∑ xₙ zⁿ/√(n!)` on that event via `EntireCoeffs`/`coeffFun` (more flexible
+   than the order-two interface used for the clamped model), with `n·rⁿ/√(n!) → 0` from
+   `n²·(r²)ⁿ/n! → 0`;
+4. the same head/tail packet split; the divergence set is a tail event, so `Measure.map_congr`
+   reduces to the linear model almost everywhere.
+
+### Card 13 — Gaussian instance, landed so far (2026-08-29)
+
+- `ComplexGaussianCoefficientProbability` — `complexGaussianProbability` (a genuine probability
+  measure, unlike the existing density-only `ComplexGaussianObservables.complexGaussian`), its
+  Lebesgue absolute continuity, the finite product version, and the Chebyshev tail
+  `measure_norm_ge_le`.
+- `GaussianCoefficientTail` — `gaussianCoefficientLaw`, `summable_gaussianTailBound` and
+  **`ae_eventually_norm_le_index`**: almost surely `‖xₙ‖ < n` for all large `n` (Chebyshev plus the
+  first Borel–Cantelli lemma).
+- `GaussianEntireCarrier` — `gafCoeff`, `tendsto_pow_div_sqrt_factorial`,
+  **`entireCoeffs_gafCoeff`** (the polynomial-growth event gives entire coefficients) and the total
+  source `gaussianEntireSource` (the series where it converges, `0` elsewhere).
+- `PacketHermiteSurjectivity.packetShiftedHermiteMap` was generalized to carry an arbitrary
+  nonvanishing weight sequence, so the same surjectivity serves the clamped model
+  (`(4·n!)⁻¹`) and the Gaussian model (`(√(n!))⁻¹`).
+
+Remaining for the Gaussian instance:
+1. the tail carrier `gaussianTailFun N y = z^N · coeffFun (yₖ/√((k+N)!))` and its entire
+   coefficients on the tail-goodness event (a tail-measurable event, so it is a function of the
+   shifted coordinates alone);
+2. locally uniform convergence of the partial sums of an `EntireCoeffs` series, transported to the
+   compact-open source space, giving **`packet ∘ source` measurable as a pointwise limit** — the
+   Gaussian source is not continuous in the coefficients, so the clamped model's continuity route
+   is unavailable and this limit argument replaces it;
+3. the head/tail packet split and the absolute-continuity assembly, identical to the clamped case
+   with `Measure.map_congr` absorbing the null divergence set.
+
+### Card 13 — CLOSED (2026-08-29)
+
+Both models are built and the card is at stage 3.
+
+- Model 1 (the card's family `(14)`): the clamped independent-coefficient series —
+  `hasAbsolutelyContinuousFiniteAffineJetLaws_boundedRandomEntire`,
+  `ae_translationOrbit_free_boundedRandomEntire`.
+- Finite Taylor conditioning: `ae_translationOrbit_free_randomEntireTail_add_const`, via the new
+  node-avoiding witness layer (`exists_base_separating_avoiding_and_eval_ne_zero`,
+  `exists_separatedWitness_avoiding`, `ae_affineOrbit_free_of_avoidingJetLaws`).
+- Model 2 (the card's `(9)`): the planar Gaussian entire function `∑ ξₙ zⁿ/√(n!)` —
+  `complexGaussianProbability`, `ae_eventually_norm_le_index` (Chebyshev + Borel–Cantelli),
+  `gaussianEntireSource`, `hasAvoidingAbsolutelyContinuousFiniteAffineJetLaws_gaussianEntireSource`,
+  **`ae_translationOrbit_free_gaussianEntireSource`** and its `add_const` form.
+
+**Reusable beyond this card:**
+- `InfinitePiSumSplit.map_sumPiEquivProdPi_infinitePi` — an infinite product law indexed by a sum
+  type is the product of the two block laws (mathlib gap), and the head/tail specialization.
+- `EntireCoeffsPartialSumSource` — partial sums of an entire coefficient series converge in the
+  compact-open source space; the standard way to get measurability of jet observations of a random
+  entire function that is *not* continuous in its coefficients.
+- `AffineFramePacketAvoidance` / `AvoidingAffineJetPacketWitness` — escaping witnesses whose packet
+  nodes avoid a prescribed finite set; needed by any source with a fixed vanishing point.
+- `ComplexGaussianCoefficientProbability` — a complex Gaussian *probability* law (the pre-existing
+  `ComplexGaussianObservables.complexGaussian` is a density whose total mass is deliberately not
+  claimed, so it cannot feed `Measure.infinitePi`).
+
+## Survey of the nine remaining cards (2026-08-29)
+
+Every remaining card needs one classical theorem the corpus does not own.  What each is actually
+blocked on, after searching the tree:
+
+| # | Card | The one missing classical input | Corpus support already present |
+|---|---|---|---|
+| 1 | combination-mode-reducibility-baker-bridge | effective Baker–Wüstholz | qualitative Baker only (`general-baker-closed`) |
+| 3 | ht-c28-minimal-handle-collapse | Weierstrass addition theorem; Padé stabilization | C07 (`PRecursiveDFinite`) and C05 (`differentiallyAlgebraic_of_deriv`) are owned; the (II)/(III) rows are classifications, not theorems |
+| 6 | ht-q-residue-spectrum-classification | Adamczewski–Dreyfus–Hardouin rational-or-HT; Chen–Singer q-discrete residues | `QDifferenceInhomogeneousHT` proves two first-order inhomogeneous HT theorems |
+| 7 | hypertranscendental-maximal-finite-horizon-galois-law | primitivity of the critical geometric monodromy | everything else discharged (`CriticalSchurCollisionSupportBound`) |
+| 8 | indeterminate-moment-fiber-prevalent-translation-ht | the Nevanlinna N-extremal matrix (the parent card in `nad/` is blocked on the same input) and prevalence | `NevExtremalFamily`, `CauchyMomentFlatness`, `MomentFunctionalPositivity`, `StieltjesTransformPick` |
+| 9 | laguerre-polya-jensen-profield-blindness | **Schur's composition theorem** (equivalently Pólya–Schur for the binomial multiplier) | the whole pro-field/surgery layer is owned — see below |
+| 10 | poincare-constraint-order-recession | Bergweiler's Poincaré-HT theorem; the cascade jet-independence hypothesis | `PoincareRecession.exactDifferentialOrder_iterate_of_separation`, `EntirePoincareExtension` |
+| 11 | projective-horizon-hankel-secant-stratification | codimension and singular locus of Hankel determinantal varieties; rational singularities | the exact rank/recurrence core is formalized |
+| 12 | projective-ht-generic-pv-curvature-core | *differential* Picard–Vessiot with group `SL_N` | only *difference* PV is present |
+
+### Card 9 is the most tractable, and its structural half is already owned
+
+The stage-3 sibling `07-functional-analysis-operator-theory/power-normalization-profield-krein-blindness.md`
+formalizes exactly card 9's architecture — `P_N(F) = ℂ(z)⟨T_h(F^N)⟩`, rational-gauge invariance at
+every power level, termwise equality of the complete inverse system, its logarithmic-residue
+intersection, maximal translation differential independence, and the functional-equation-even
+entire order-one Schwarz-real realizations with prescribed divisor surgery
+(`HTGeometry.PowerNormalizationProfieldKreinBlindness`, `MovingDivisorEvenProduct`,
+`EvenSurgeryPoleSeparationWitnesses`, `KreinEscapePowerFieldInvariance`).  Card 9 replaces the Krein
+index by Laguerre–Pólya membership, so items (3) and (4) of its theorem are structurally owned.
+
+What is genuinely missing is the Jensen half.  The reduction is:
+
+* `J^{d,n}_F` hyperbolic for all `d,n` ⟹ `F ∈ LP` is **easy**: `J^{d,0}(z/d) → F(z)` locally
+  uniformly because `C(d,j)/d^j → 1/j!`, and a rescaled hyperbolic polynomial is still real-rooted,
+  so `F` is a locally uniform limit of real-rooted real polynomials.  This gives the card's
+  `E_(θ,k)` half by contraposition.
+* `F ∈ LP` ⟹ every `J^{d,n}_F` hyperbolic is **Schur's composition theorem**: with
+  `f = Σ γ_j x^j/j!` real-rooted and `g = (1+x)^d = Σ C(d,j) x^j` real-rooted with all roots of one
+  sign, `Σ_j j!·(γ_j/j!)·C(d,j) x^j = Σ_j C(d,j) γ_j x^j = J^d_F(x)` has only real zeros.  Neither
+  Schur composition nor multiplier sequences are in mathlib or the corpus; this is the layer to
+  build.

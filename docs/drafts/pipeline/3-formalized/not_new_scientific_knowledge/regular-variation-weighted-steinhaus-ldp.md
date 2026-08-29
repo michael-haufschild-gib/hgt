@@ -1,9 +1,9 @@
 # Regular-variation weighted Steinhaus large-deviation law
 
 - **ID:** `regular-variation-weighted-steinhaus-ldp`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / PROBABILISTIC COMPARISON MODEL / RATE-FUNCTION FOUNDATION
-- **Scientific status:** `[PAPER-PROVED] [BRIDGE] [NOT THE DETERMINISTIC PRIME-LOG LAW]`
+- **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [BRIDGE] [NOT THE DETERMINISTIC PRIME-LOG LAW]`
 - **Feeds:**
   `../../1-in-progress/prime-log-kronecker-coherence-capacity-conjecture.md`
 
@@ -317,16 +317,39 @@ which is `(8)`.
 - The new frontier remains the signed prime-product spectral pressure at moment depth
   `k asymp pi(X)` and observation entropy `log T asymp pi(X)`.
 
-## Lean plan
+## Lean formalization map
 
-1. Reuse the existing prime-counting and weighted-prime-sum asymptotic surface where available.
-2. Add a reusable triangular-array logarithmic-mgf convergence interface.
-3. Build the two-dimensional Gärtner--Ellis specialization if mathlib does not provide it.
-4. Define the circle Bessel cumulant through its Haar integral, avoiding dependence on a special-
-   function library for the LDP core.
-5. Formalize the three endpoint regimes separately; identify `I_0` with the integral-defined
-   cumulant only after the probability theorem is closed.
-6. Run one narrow leaf check after the full theorem batch, followed by one final module audit.
+Every statement of the theorem is unconditionally proved in Lean 4 (axiom audit: only
+`propext, Classical.choice, Quot.sound`).  Build log: `docs/drafts/pipeline/1-in-progress/steinhaus-ldp-lean.md`.
+
+| Card item | Lean declaration | Module |
+|---|---|---|
+| `w_α`, `∫₀¹ w_α = 1` | `weightProfile`, `integral_weightProfile` | `HTGeometry/SteinhausWeightProfile.lean` |
+| `Λ_α`, finiteness `(11)`–`(12)` | `rvCumulant`, `intervalIntegrable_rvCumulant_integrand`, `rvCumulant_le` | `HTGeometry/SteinhausWeightProfile.lean` |
+| `I_α = Λ_α^*` | `rvRate` | `RHTower/SteinhausRateFunction.lean` |
+| part 3 (continuity, strict monotonicity, `I_α(0)=0`, blow-up) | `rvRate_zero`, `rvRate_pos`, `rvRate_strictMono`, `continuousOn_rvRate`, `tendsto_rvRate_atTop` | `RHTower/SteinhausRatePositive.lean`, `RHTower/SteinhausRateStrictMono.lean`, `RHTower/SteinhausProfileLogIntegral.lean` |
+| `(17)` `log I₀(x)/x² → 1/4` | `tendsto_steinhausLogLaplace_div_sq` | `RHTower/SteinhausCumulantTaylor.lean` |
+| `(18)`, `(6)` line 1 (`α<1/2`) | `tendsto_rvCumulant_div_sq`, `tendsto_rvRate_div_sq` | `RHTower/SteinhausSubcritical*.lean` |
+| scaling identity | `rvCumulant_eq_rpow_mul_tail` | `HTGeometry/SteinhausScalingIdentity.lean` |
+| Legendre power law | `tendsto_rvRate_div_rpow` | `RHTower/SteinhausRatePowerAsymptotic.lean` |
+| `(20)`, `(23)`, `(6)` line 2 (`α=1/2`) | `tendsto_rvCumulant_crit`, `tendsto_rvRate_crit` | `RHTower/SteinhausCriticalCumulant.lean`, `RHTower/SteinhausCriticalRate.lean` |
+| `(24)`–`(26)`, `(7)`, `(6)` line 3 (`α>1/2`) | `rvSuperConst`, `tendsto_rvCumulant_div_rpow_super`, `rvLegConst_inv_eq`, `tendsto_rvRate_div_rpow_super` | `RHTower/SteinhausSuperConstant.lean`, `RHTower/SteinhausSupercriticalLimit.lean` |
+| `(27)` sharp | `tendsto_steinhausLogLaplace_sub_sharp` | `HTGeometry/SteinhausSharpAsymptotic.lean` |
+| `(28)` | `integral_log_weightProfile` | `RHTower/SteinhausProfileLogIntegral.lean` |
+| `(29)`, `(8)` = part 5 | `tendsto_rvCumulant_deficit`, `tendsto_rvRate_endpoint` | `RHTower/SteinhausEndpointCumulant.lean`, `RHTower/SteinhausEndpointRate.lean` |
+| `(16)` | `hasDerivAt_rvCumulant`, `continuous_rvCumulantDeriv`, `strictMono_rvCumulantDeriv`, `exists_rvCumulantDeriv_eq` | `RHTower/SteinhausCumulantDeriv.lean` |
+| Karamata UCT, Potter | `isSlowShift_uniform`, `isSlowlyVarying_uniform`, `isSlowlyVarying_potter` | `HTGeometry/SlowShiftUniform.lean`, `HTGeometry/SlowlyVarying.lean` |
+| `(9)` prime Karamata | `tendsto_rvWeightSum` | `RHTower/PrimeKaramata.lean` |
+| `(10)` | `rvNormReal_bounds` | `RHTower/RVNormalizedWeight.lean` |
+| `(12)` | `tendsto_rvCumulantAverage` | `RHTower/RVCumulantLimit.lean` |
+| `(13)` | `integral_exp_weightedSteinhausProjection`, `integral_exp_steinhausRotProj`, `integral_steinhausLaplace_norm` | `HTGeometry/SteinhausLaplaceProduct.lean`, `HTGeometry/SteinhausComplexSum.lean` |
+| `(5)` = part 2 | `tendsto_log_rvDeviationProb` | `RHTower/RVDeviationLower.lean` |
+| `(4)` = part 1 (planar LDP) | `isLDP_rvLaw`, `rvPlanarRate` | `RHTower/RVPlanarLDP.lean`, `RHTower/SteinhausExtendedRate.lean` |
+
+Mathlib gaps closed on the way, all reusable: Karamata's uniform convergence theorem and Potter's
+bound (there is no regular-variation theory in mathlib); the sharp Laplace asymptotic of `I₀`; the
+logarithmic Cesàro theorem; the sub-critical prime power sum `∑_{p≤Y}(log p)p^{−β} ≪ Y^{1−β}`; the
+Chebyshev linear bound for `θ`; and the first large-deviation principle in the corpus.
 
 ## Gates
 
@@ -338,6 +361,6 @@ which is `(8)`.
 - [x] novelty honesty: classified as bridge
 - [x] exact finite Haar-product Laplace identity, evenness, positivity, and exponential envelopes
   formalized in `HTGeometry/SteinhausLaplaceProduct.lean`
-- [ ] Lean probability and convex-duality infrastructure
-- [ ] unconditional Lean theorem batch
-- [ ] narrow leaf check and final module audit
+- [x] Lean probability and convex-duality infrastructure
+- [x] unconditional Lean theorem batch
+- [x] narrow leaf check and final module audit

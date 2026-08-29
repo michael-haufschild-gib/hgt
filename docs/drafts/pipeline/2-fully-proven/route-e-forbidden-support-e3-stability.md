@@ -552,3 +552,20 @@ So `(FS14)` reads `|Q_i − u_i| ≪ √(u_iℓ_i)(log u_i)^{1.557} = u_i^{1/2}N
 conclusion, since only the `u_i^{1/2}N^{o(1)}` form is used downstream.  Also note that §6.1 does
 **not** avoid Watt/Deshouillers–Iwaniec: its Type I sums are handled by §5.1.  The Harman route (§5)
 is therefore the one to formalise.
+
+## Lean progress update (2026-08-29) — exact remaining Lemma 3.5 range
+
+Two unconditional, axiom-clean modules now discharge both elementary sides of the Watt/DI hybrid
+moment:
+
+- `Sieve/MatomakiTeravainenWattDIOverHeight.lean`: `T ≤ N`;
+- `Sieve/MatomakiTeravainenWattProductMeanSquare.lean`: `2AN'² ≤ T`, with
+  `(5πe+5π/2)(T/A²)∑_{A<n≤2A}|aₙ|²`.
+
+The latter uses an exact Perron-to-`dirPoly` factorization and multiplicative Young, so it retains
+no Watt/DI, spectral, or large-value premise.  Axiom audit is only `propext`,
+`Classical.choice`, and `Quot.sound`.
+
+The shared analytic gap with the cofactor card is therefore no longer all of `N ≤ T`: it is
+exactly the intermediate range `N < T < 2AN'²`, plus amplification and final exponent
+bookkeeping for Matomäki--Teräväinen Theorem 1.2.  Card remains Stage 2.

@@ -59,11 +59,11 @@ theorem mul_characteristic_le_of_separated_entire
 discharged.**  The only remaining hypothesis is that `f'` does not vanish identically near the
 circle. -/
 theorem exists_mul_characteristic_le_of_separated_entire
-    {f : ℂ → ℂ} {q : ℕ} (A : Fin q → ℂ) {δ r : ℝ} (hδ : 0 < δ) (hr : r ≠ 0)
+    {f : ℂ → ℂ} {q : ℕ} (A : Fin q → ℂ) {δ : ℝ} (hδ : 0 < δ)
     (hsep : ∀ i j : Fin q, i ≠ j → δ ≤ ‖A i - A j‖)
-    (hf : Differentiable ℂ f)
-    (hcod : ∀ᶠ z in codiscreteWithin (sphere (0 : ℂ) |r|), deriv f z ≠ 0) :
-    ∃ K : ℝ, 0 ≤ K ∧
+    (hf : Differentiable ℂ f) :
+    ∃ K : ℝ, 0 ≤ K ∧ ∀ r : ℝ, r ≠ 0 →
+      (∀ᶠ z in codiscreteWithin (sphere (0 : ℂ) |r|), deriv f z ≠ 0) →
       (q : ℝ) * characteristic f ⊤ r
         ≤ (∑ j, logCounting f (A j : WithTop ℂ) r)
           + (∑ j, proximity (fun z => deriv f z / (f z - A j)) ⊤ r)
@@ -81,7 +81,7 @@ theorem exists_mul_characteristic_le_of_separated_entire
   have hKle : ∀ j, Kj j ≤ K :=
     fun j => le_trans (le_abs_self _)
       (Finset.single_le_sum (fun i _ => abs_nonneg (Kj i)) (Finset.mem_univ j))
-  refine ⟨K, hK0, ?_⟩
+  refine ⟨K, hK0, fun r hr hcod => ?_⟩
   refine mul_characteristic_le_of_separated_entire A hδ hr hsep hf ?_ hcod
   intro j
   have hg : Meromorphic ((f - fun _ : ℂ => A j) : ℂ → ℂ) := by

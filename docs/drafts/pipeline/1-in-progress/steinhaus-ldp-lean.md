@@ -702,3 +702,123 @@ Both hold for `λ` near the maximiser of `λq − Λ_α(λ)` PROVIDED `Λ_α` is
 - `S8-d` the three-way split above, and `P(‖Y‖ ≥ q) ≥ P(W ≥ q)` since `‖Y‖ ≥ Re Y`;
 - `S8-e` assembly: `liminf (1/d_X) log P(|Y_X| ≥ q) ≥ −I_α(q)`, then the card's `(5)` and, by the
   rotation-invariance reduction, the planar LDP of part `1`.
+
+## `(16)` CLOSED — the cumulant derivative (2026-08-29)
+
+`RHTower/SteinhausCumulantDeriv.lean` (axiom-clean, wired):
+- **`abs_deriv_steinhausLogLaplace_le_one`** — `|m| ≤ 1`, from mathlib's `ProbabilityTheory.deriv_cgf`
+  at the corpus's `mem_interior_integrableExpSet`: the derivative is the tilted mean of the circle
+  projection, and `|proj| ≤ 1`.  (To rewrite inside `deriv` the cgf identity must be turned into a
+  FUNCTION equality by `funext` first.)
+- `rvCumulantDeriv α lam = ∫₀¹ w_α(v) m(λ w_α(v)) dv` and
+  **`hasDerivAt_rvCumulant`** — differentiation under the integral
+  (`intervalIntegral.hasDerivAt_integral_of_dominated_loc_of_deriv_le`, dominating function
+  `w_α ∈ L¹`).  This is the card's `(16)`;
+- `deriv_rvCumulant`, `differentiable_rvCumulant`, `rvCumulantDeriv_zero`;
+- **`continuous_rvCumulantDeriv`** — dominated convergence again, along `𝓝 λ`;
+- **`strictConvexOn_rvCumulant`** — strict convexity, from the pointwise strict convexity of
+  `log I₀` and `intervalIntegral.intervalIntegral_pos_of_pos_on` applied to the defect;
+- **`strictMono_rvCumulantDeriv`** (`StrictConvexOn.strictMonoOn_deriv`),
+  `rvCumulant_div_le_rvCumulantDeriv` (`ConvexOn.slope_le_deriv` from the origin), and
+- **`exists_rvCumulantDeriv_eq`**: for every `q ∈ (0,1)` there is `λ* > 0` with `Λ'_α(λ*) = q`.
+  The upper end comes from the corpus's linear lower envelope `cλ + log μ_c ≤ Λ_α(λ)`, which forces
+  `Λ_α(λ)/λ > q` for large `λ`, and the chord bound then forces `Λ'_α(λ) > q`.
+
+With `(16)` in hand the lower bound's three-way split has all its inputs:
+`StrictConvexOn.deriv_lt_slope` turns `Λ'(λ') ≥ q` into `chord(λ',λ) > q`, and
+`StrictConvexOn.slope_lt_deriv` turns `Λ'(λ'') ≤ q+δ` into `chord(λ,λ'') < q+δ`.
+
+## PART 2 CLOSED — the card's `(5)` (2026-08-29)
+
+**`RHTower.tendsto_log_rvDeviationProb`** (axiom-clean, wired):
+```
+0 ≤ α < 1, L slowly varying, 0 < q < 1
+  ⟹  (1/d_X) log P(|Y_X| ≥ q) → −I_α(q).
+```
+
+Two new modules complete it.
+
+`RHTower/SteinhausThreeWaySplit.lean` — Cramér's lower bound WITHOUT constructing a tilted measure.
+- `continuous_weightedSteinhausProjection`, `integrable_exp_weighted`;
+- **`integral_low_le`**: `∫_{W<q} e^{tW} ≤ e^{(t−s)q} ∏ I₀(s a_i)` for `s ≤ t` (on `{W<q}` the
+  factor `e^{(t−s)W}` is at most `e^{(t−s)q}`);
+- **`integral_high_le`**: the mirror bound at a larger tilt `u ≥ t`;
+- `steinhausSum_re`, `meas_proj_le_meas_norm` (`‖Y‖ ≥ Re Y`);
+- **`le_meas_band`**: partitioning `ℝ` into `{W<q}`, `{q ≤ W ≤ q+δ}`, `{W>q+δ}`
+  (`integral_add_compl` + `integral_inter_add_sdiff`) and using `e^{tW} ≤ e^{t(q+δ)}` on the band,
+  ```
+  e^{−t(q+δ)}(∏I₀(t a) − e^{(t−s)q}∏I₀(s a) − e^{(t−u)(q+δ)}∏I₀(u a)) ≤ P(W ≥ q).
+  ```
+
+`RHTower/RVDeviationLower.lean`
+- `prod_steinhausLaplace_eq_exp` (the Laplace product IS `exp` of the prime average),
+  `le_rvDeviationProb` (the band bound instantiated at the model);
+- **`eventually_le_log_rvDeviationProb`**: the three tilts are chosen by
+  `Λ'_α(λ') = q+δ/4`, `Λ'_α(λ) = q+δ/2`, `Λ'_α(λ'') = q+3δ/4` (`exists_rvCumulantDeriv_eq`), so
+  `StrictConvexOn.deriv_lt_slope` and `StrictConvexOn.slope_lt_deriv` give the two chord conditions
+  `chord(λ',λ) > q` and `chord(λ,λ'') < q+δ` — hence both outer pieces are exponentially smaller
+  and the band keeps at least half the mass.  The value at the chosen tilt is
+  `−λ(q+δ) + Λ_α(λ) ≥ −I_α(q) − λδ`, and `λ ≤ λ₀` uniformly for `δ` below a fixed threshold, which
+  is what lets `δ` be chosen after `ε`;
+- **`tendsto_log_rvDeviationProb`** — the two halves combined.
+
+Remaining for card 11: part `1`, the planar LDP, by the rotation-invariance reduction.
+
+## Part 1 (the planar LDP) — the design, frozen (2026-08-29)
+
+Corpus search run first ("large deviation rate limit log probability divided by speed tendsto"):
+there is still NO LDP machinery anywhere in the corpus or mathlib, so the definition is ours.
+
+**Formulation (log-free).**  Lean's `Real.log 0 = 0` makes the classical `limsup (1/d) log μ(F)`
+statement false at null sets, so the LDP is stated in exponential form, which is equivalent:
+```
+structure IsLDP (l) (μ : ι → Measure ℂ) (d : ι → ℝ) (J : ℂ → ℝ≥0∞) where
+  upper : ∀ F, IsClosed F → ∀ c : ℝ, (∀ z ∈ F, ENNReal.ofReal c < J z) →
+            ∀ᶠ i in l, (μ i F).toReal ≤ exp (−(c * d i))
+  lower : ∀ G, IsOpen G → ∀ z ∈ G, ∀ c : ℝ, J z < ENNReal.ofReal c →
+            ∀ᶠ i in l, exp (−(c * d i)) ≤ (μ i G).toReal
+```
+The rate is the corpus's `rvPlanarRate` (already built: `I_α(‖z‖)` inside the disk, `⊤` outside).
+
+**Upper bound.**  `‖Y_X‖ ≤ 1` always, so `μ(F) = μ(F ∩ closedBall 0 1)`; that intersection is
+COMPACT, so `r₀ = min{‖w‖ : w ∈ F}` is attained, and `μ(F) ≤ P(‖Y‖ ≥ r₀)`.  Then
+`c < J(w₀) = I_α(r₀)` and the deviation upper bound finishes.  The boundary case `r₀ = 1` is
+handled by monotonicity plus `I_α(q) → ∞`: choose `q < 1` with `I_α(q) > c`.
+
+**Lower bound.**  Needs only ONE new probabilistic fact: the law of `Y_X` is rotation invariant,
+because the diagonal translation `(x_i) ↦ (x_i + s)` preserves the product Haar measure and
+`steinhausSum a (x + s) = e^{is} steinhausSum a x` (`steinhausPhase_add_coe`).  Then for `z ∈ G`
+with `B(z,r) ⊆ G`, the annulus `A = {‖z‖ ≤ ‖w‖ < ‖z‖ + r/2}` is covered by `K` rotations of
+`B(z,r)`, so `μ(B(z,r)) ≥ μ(A)/K`; and `μ(A) ≥ ½ P(‖Y‖ ≥ ‖z‖)` eventually because
+`I_α` is STRICTLY increasing (`rvRate_strictMono`), so `P(‖Y‖ ≥ ‖z‖+r/2)` is exponentially
+smaller.  The constant `K` costs only `log K / d_X → 0`.
+
+## PART 1 CLOSED — the planar LDP.  CARD 11 IS COMPLETE (2026-08-29)
+
+`HTGeometry/SteinhausRotationInvariance.lean`
+- `steinhausSum_add_const` and **`measure_steinhausSum_rot`** — the law of `Y` is rotation
+  invariant, because the diagonal translation preserves the product Haar measure
+  (`measurePreserving_add_right` applies directly: the product measure is already known to be
+  add-right-invariant);
+- `norm_exp_ofReal_mul_I_sub_one_le : ‖e^{is} − 1‖ ≤ |s|` (via `2|sin(s/2)|`);
+- **`exists_angle_close`** — the `K`-th roots of unity are a `2π/K`-net of the unit circle.  The
+  index is `⌈tK⌉₊ − 1` with `t = (arg ζ + π)/2π ∈ (0,1]`, which lands in `[0,K)` with no modular
+  arithmetic at all;
+- **`annulus_subset_iUnion_balls`** — `{‖z‖ ≤ ‖w‖ ≤ ‖z‖+r/2}` is covered by `K` rotations of
+  `B(z,r)` once `K > 4π‖z‖/r`; the centre is found as `ζ = w conj z/(‖w‖‖z‖)`, for which
+  `ζz = (‖z‖/‖w‖)w` and hence `‖w − ζz‖ = ‖w‖ − ‖z‖`.
+
+`RHTower/RVPlanarLDP.lean`
+- `rvLaw`, `rvLaw_apply`, the `IsProbabilityMeasure` instance, and the log-free `IsLDP` structure;
+- `rvDeviationProb_le_exp`, `exp_le_rvDeviationProb` — `(5)` in exponential form;
+- `norm_steinhausSum_le_one` (the model lives in the closed unit disk),
+  **`rvLaw_upper`**: `F ∩ closedBall 0 1` is COMPACT, so the minimal modulus `r₀` is attained;
+  `c < J(w₀)` gives `c < I_α(r₀)` when `r₀ < 1`, and when `r₀ ≥ 1` a `q < 1` with `I_α(q) > c`
+  exists because `I_α(q) → ∞`.  The case `r₀ = 0` is vacuous: `ENNReal.ofReal c < 0` is false;
+- `measure_ball_rot`, `measure_annulus_le_nsmul` (`μ(annulus) ≤ K μ(ball)`),
+  `one_sub_le_rvLaw_ball_zero`, `rvLaw_lower_zero`, and **`rvLaw_lower`**: with
+  `I_α(‖z‖) < c₁ < min(c, I_α(‖z‖+r/2)) < c₂ < I_α(‖z‖+r/2)` the annulus keeps half of
+  `P(‖Y‖ ≥ ‖z‖)` and the covering constant `K` is absorbed because `c > c₁`;
+- **`isLDP_rvLaw`** — the card's part `1`.
+
+**All five parts of the card are now unconditionally Lean-proved and axiom-clean.**

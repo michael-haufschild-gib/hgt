@@ -4202,3 +4202,57 @@ non-dense.  Therefore no unconditional `hdense` theorem may use Burnside as the 
 The exact density proof must additionally exclude the finite primitive branch (or formalize the
 relevant algebraic-subgroup classification).  This is part of the concrete Dreyfus/ordinary-PV
 classification residue, alongside the parameterized torsor/no-new-constants construction.
+
+## Tensor flip removes all PPV hypotheses from inverse stability (2026-08-29)
+
+`ComparisonJetAlgebraFlip.lean` gives the comparison algebra its canonical antipode: tensor-factor
+swap.  From `leftFundamental Y * Z = rightFundamental Y`, flipping factors and cancelling the
+invertible left fundamental matrix proves
+
+```text
+Z * flip(Z) = 1,        flip(Z) * Z = 1.
+```
+
+For the order-two root-determinant carrier, `w = det Z`; the adjugate formula puts every entry of
+`flip(Z)` back in `comparisonJetAlgebra Z w`.  Tensor flip commutes with the tensor-square
+derivation, preserves every comparison jet, and therefore sends every differential point `χ` to a
+differential point `χ ∘ flip` whose Galois matrix is the inverse of the matrix at `χ`.
+
+Consequently `comparisonJetGaloisMonoid_detOne_inverse_adjoint` now has no basis, generation,
+sigma-simplicity, no-new-constants, or sigma-invariance premise.  Its only data are the actual
+comparison equation and inverse-determinant identities.  Source checks and targeted builds pass;
+all new declarations audit to `[propext, Classical.choice, Quot.sound]` or a subset.
+
+This closes `hGinv` independently of PPV existence.  Remaining PPV work is exactly what the
+isomonodromy branch still consumes: construct the sigma-delta torsor/decomposition needed to turn
+differential points into specializations and prove fixed-field descent, without exposing
+sigma-simplicity or no-new-constants as final hypotheses.  Concrete determinant-one Zariski density,
+including exclusion of the finite primitive branch, remains the second gap.  Neither may appear as
+a premise of the final Bessel theorem.
+
+## Concrete parameterized PV quotient constructed (2026-08-29)
+
+`ParameterizedPicardVessiotSystem.lean` now constructs, from any invertible differential difference
+system, the determinant-localized differential jet coordinate ring and its parameterized
+Picard--Vessiot quotient.  In particular it proves:
+
+```text
+jetFundamentalMatrix_det_ne_zero
+ppvLocalizationDerivation_algebraMap
+sigmaJetCoordHom_jetFundamentalDet
+ppvSigma_ppvFundamental
+ppvSigma_commutes
+exists_parameterizedPicardVessiot_system
+```
+
+The construction supplies the ring, total quotient-rule derivation, invertible difference action,
+commuting `σ`/`δ` structure, invertible fundamental matrix, and proper maximal sigma-delta quotient.
+No pre-existing extension ring or simplicity premise remains in PPV *existence*.  Source check,
+targeted build, and axiom audit pass with only `[propext, Classical.choice, Quot.sound]`; module is
+wired into `HTGeometry.lean` without building that umbrella.
+
+The remaining PPV-side gap is now specifically the parameterized torsor/fixed-field theorem for
+this constructed quotient: derive the comparison-algebra decomposition and fixed-field descent
+from sigma-delta simplicity, instead of assuming sigma-simplicity, a basis, generation, or no-new
+constants.  Concrete determinant-one density, including finite primitive exclusion, remains the
+independent group-classification gap.  Both must be discharged before Stage 3 promotion.

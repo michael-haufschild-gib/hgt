@@ -536,3 +536,22 @@ for any band `B` of odd primes with `∑_{p ∈ B} 1/p ≤ 1/8`.
 Matomäki–Teräväinen Theorem 1.2 (`docs/drafts/pipeline/1-in-progress/matomaki-teravainen-e3-lean-programme.md`).
 Both this card and `route-e-forbidden-support-e3-stability` are gated on exactly that one theorem;
 nothing else in either card is unformalized.
+
+## Lean progress update (2026-08-29) — elementary Lemma 3.5 regimes closed
+
+`Sieve/MatomakiTeravainenWattDIOverHeight.lean` closes the branch `T ≤ N`.
+`Sieve/MatomakiTeravainenWattProductMeanSquare.lean` now closes the disjoint full-product
+long-height branch `2AN'² ≤ T` with the exact source-energy estimate
+
+```text
+∫_{T/2}^{T}|N(1+it)|⁴|A(1+it)|²dt
+  ≤ (5πe+5π/2)(T/A²)∑_{A<n≤2A}|aₙ|².
+```
+
+The proof factors the exact Watt product into a finite Dirichlet polynomial and applies the
+lossless multiplicative Young inequality; no Watt/DI, spectral, or large-value hypothesis is
+retained.  Axiom audit: `propext`, `Classical.choice`, `Quot.sound` only.
+
+Remaining shared analytic gap is now precisely the intermediate regime
+`N < T < 2AN'²` of Matomäki--Teräväinen Lemma 3.5, followed by its amplification and
+Theorem 1.2 exponent assembly.  Card remains Stage 2.

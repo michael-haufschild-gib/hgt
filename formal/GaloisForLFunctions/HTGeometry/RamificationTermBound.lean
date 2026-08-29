@@ -76,21 +76,18 @@ totally ramified values,
 The right-hand side is the Nevanlinna error term `S(r,f)`, so the number of totally ramified values
 is bounded as soon as `S(r,f) = o(T(r,f))`. -/
 theorem totallyRamified_characteristic_bound {f : ℂ → ℂ} (hf : Differentiable ℂ f)
-    {q : ℕ} (A : Fin q → ℂ) {δ r : ℝ} (hδ : 0 < δ) (hr : 1 ≤ r)
+    {q : ℕ} (A : Fin q → ℂ) {δ : ℝ} (hδ : 0 < δ)
     (hsep : ∀ i j : Fin q, i ≠ j → δ ≤ ‖A i - A j‖)
     (hram : ∀ j, ∀ z, f z = A j → deriv f z = 0)
     (hfa : ∀ j, ∀ z, meromorphicOrderAt (fun w => f w - A j) z ≠ ⊤)
     (hfd : ∀ z, meromorphicOrderAt (deriv f) z ≠ ⊤)
-    (hforder : ∀ z, meromorphicOrderAt f z ≠ ⊤)
-    (hcod : ∀ᶠ z in codiscreteWithin (sphere (0 : ℂ) |r|), deriv f z ≠ 0) :
-    ∃ C : ℝ, ((q : ℝ) / 2 - 2) * characteristic f ⊤ r
+    (hforder : ∀ z, meromorphicOrderAt f z ≠ ⊤) :
+    ∃ C : ℝ, ∀ r : ℝ, 1 ≤ r →
+      (∀ᶠ z in codiscreteWithin (sphere (0 : ℂ) |r|), deriv f z ≠ 0) →
+      ((q : ℝ) / 2 - 2) * characteristic f ⊤ r
       ≤ (∑ j, proximity (fun z => deriv f z / (f z - A j)) ⊤ r)
         + proximity (fun z => deriv f z / f z) ⊤ r + C := by
   classical
-  have hr0 : r ≠ 0 := by
-    intro h
-    rw [h] at hr
-    linarith
   have hmf : Meromorphic f := fun z => (hf.analyticAt z).meromorphicAt
   have hinj : Function.Injective A := by
     intro i j hij
@@ -99,8 +96,19 @@ theorem totallyRamified_characteristic_bound {f : ℂ → ℂ} (hf : Differentia
     rw [hij, sub_self, norm_zero] at this
     linarith
   -- the second main theorem
-  obtain ⟨K, hK0, hsmt⟩ :=
-    exists_mul_characteristic_le_of_separated_entire A hδ hr0 hsep hf hcod
+  obtain ⟨K, hK0, hsmt⟩ := exists_mul_characteristic_le_of_separated_entire A hδ hsep hf
+  set Kv : ℝ := ∑ j, ((Real.posLog ‖A j‖ + Real.log 2)
+      + max |Real.log ‖((f - fun _ : ℂ => A j) : ℂ → ℂ) 0‖|
+          |Real.log ‖meromorphicTrailingCoeffAt ((f - fun _ : ℂ => A j) : ℂ → ℂ) 0‖|) with hKv
+  refine ⟨K * (q : ℝ) + (q : ℝ) * Real.posLog (2 / δ)
+      + Real.posLog ((q : ℝ) * (2 / δ)) + Real.log 2 + Real.log (q : ℝ)
+      + max |Real.log ‖deriv f 0‖| |Real.log ‖meromorphicTrailingCoeffAt (deriv f) 0‖|
+      + Kv / 2, fun r hr hcod => ?_⟩
+  have hr0 : r ≠ 0 := by
+    intro h
+    rw [h] at hr
+    linarith
+  have hsmtr := hsmt r hr0 hcod
   -- inequality 1
   have hineq1 := sum_logCounting_value_le_two_mul_logCounting_deriv_zero hf A hinj hram hfa hfd hr
   -- inequality 2
@@ -122,9 +130,6 @@ theorem totallyRamified_characteristic_bound {f : ℂ → ℂ} (hf : Differentia
     have hsplit : characteristic f (A j : WithTop ℂ) r
         = proximity f (A j : WithTop ℂ) r + logCounting f (A j : WithTop ℂ) r := rfl
     linarith
-  set Kv : ℝ := ∑ j, ((Real.posLog ‖A j‖ + Real.log 2)
-      + max |Real.log ‖((f - fun _ : ℂ => A j) : ℂ → ℂ) 0‖|
-          |Real.log ‖meromorphicTrailingCoeffAt ((f - fun _ : ℂ => A j) : ℂ → ℂ) 0‖|) with hKv
   have hsumN : (∑ j, logCounting f (A j : WithTop ℂ) r)
       ≤ (q : ℝ) * characteristic f ⊤ r + Kv := by
     have h := Finset.sum_le_sum (fun j (_ : j ∈ (Finset.univ : Finset (Fin q))) => hNj j)
@@ -132,10 +137,6 @@ theorem totallyRamified_characteristic_bound {f : ℂ → ℂ} (hf : Differentia
       nsmul_eq_mul] at h
     rw [hKv]
     exact h
-  refine ⟨K * (q : ℝ) + (q : ℝ) * Real.posLog (2 / δ)
-      + Real.posLog ((q : ℝ) * (2 / δ)) + Real.log 2 + Real.log (q : ℝ)
-      + max |Real.log ‖deriv f 0‖| |Real.log ‖meromorphicTrailingCoeffAt (deriv f) 0‖|
-      + Kv / 2, ?_⟩
-  linarith [hsmt, hineq1, hineq2, hineq3, hsumN]
+  linarith [hsmtr, hineq1, hineq2, hineq3, hsumN]
 
 end GaloisForLFunctions.HTGeometry

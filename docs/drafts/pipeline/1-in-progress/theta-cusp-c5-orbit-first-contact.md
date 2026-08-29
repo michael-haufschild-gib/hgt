@@ -206,3 +206,31 @@ all `t>0` closes `C5-VP1`; off-center/direct-J and downstream RH joins remain op
 - 2026-08-29 — Formalized exact source-square normalization, center likelihood-jet decomposition,
   and strict six-curvature support-gap reserve.  Third likelihood cumulant is no longer an open
   `C5-VP1` premise.
+
+## Modular-center second-likelihood reserve result
+
+**[SIGNIFICANT PREMISE DISCHARGED IN LEAN]** Substitute the exact center identity
+`q₂=2*(firstAtomCurvature-g₂)` into the master-reserved core.  Lean proves the exact decomposition
+
+`masterReservedCore`
+`= firstAtomCurvatureCore + 2t*g₂*(R*(30t+15t*q₁-1)+3t*q₁)`.
+
+The coefficient is strictly positive for every `t>0`.  Mechanism is structural: positive theta
+log-curvature makes center action convex and gives `0<A≤t*q₁`; if the displayed affine coefficient
+is negative, that sign itself forces action velocity into the regime where
+`exp(A)-1<3t*q₁`, reversing the adverse product and leaving a strict positive reserve.
+
+Thus second likelihood curvature is strictly favorable.  Together with the preceding support-gap
+theorem, all second and third likelihood cumulants have been removed from `C5-VP1`.  Exact remaining
+premise is
+
+`0 ≤ thetaCuspCenterFifthRootVelocityFirstAtomCurvatureCore(t)` for every `t>0`.
+
+It involves only actual action, actual first jet, and explicit first-atom curvature/third jet.  See
+`../3-formalized/theta-cusp-c5-center-velocity-second-likelihood-reserve.md`.
+
+## Log
+
+- 2026-08-29 — Formalized convex action--terminal-velocity law, universal exponential C5
+  coefficient positivity, and exact strict second-likelihood reserve.  Second and third likelihood
+  cumulants are no longer open `C5-VP1` premises.

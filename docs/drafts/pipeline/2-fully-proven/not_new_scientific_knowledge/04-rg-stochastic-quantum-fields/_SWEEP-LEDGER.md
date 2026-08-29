@@ -545,3 +545,26 @@ Remaining in this lane: the base derivation compatibility (the analogue of `qEmb
 for `mahlerEmbed`), the criterion instantiation, and the non-telescoping obstruction — for cards 8,
 9 and 11 the latter is that `λ·y(w^p) − y(w) = ρ` has no rational solution, the formal solution
 being supported on `{p^k}` with geometrically growing coefficients.
+
+### Mahler lane: the criterion is instantiated and the obstruction is proved
+
+The lane turned on one observation: the Euler derivation `θ` and the Mahler substitution `σ` obey
+`θσ = p·σθ`, but the twisting coordinate satisfies `σ(h⁻¹) = p·h⁻¹`, so **`δ := h⁻¹·θ` commutes
+with `σ` exactly**.  With that derivation the corpus's automorphism-family criterion applies
+verbatim — no jet rescaling, no operator binomial.
+
+| Module | Content |
+|---|---|
+| `MahlerPerfectBase` | the ramified tower `k(w^{1/pⁿ})` inside the Hahn field, its union (the `p`-perfect rational base `F`), and `σ|F` as an **automorphism** — the smallest base on which the substitution is invertible |
+| `MahlerPerfectEmbedding` | general twisted dilation `ratFuncTwistEquiv` of `K(h)`; the two-variable base `F(h)`, its substitution, and the Hahn expansion; the base substitution is the restriction of the ambient one |
+| `MahlerPerfectDerivation` | the Euler operator preserves every ramified level (`p^{-n}` times the level Euler operator), hence the perfect base is a differential field |
+| `MahlerCommutingDerivation` | `δ = h⁻¹·θ`, its Leibniz rule, and **`σδ = δσ`** |
+| `MahlerPerfectDifferentialBridge` | `F(h)` is a differential subfield for `δ`; the coefficient derivation is the restriction of the ambient one |
+| `MahlerOstrowski` | `σ` as a ring automorphism of the ambient (inverse substitution `w ↦ w^{1/p}`), constants, and **`differentialIndependent_of_mahler_primitive`** — the Ostrowski criterion in the Mahler model |
+| `MahlerRationalNoTelescoper` | **a rational solution of `λ·z(w^p) − z(w) = ρ` is a polynomial** (the reduced denominator would divide its own `p`-fold expansion), and the lacunary coefficient descent: for `ρ = a·w^N + b·w^{pN}` a solution exists **iff `λa + b = 0`** |
+| `MahlerIncrementJets` | jets of an increment `A·h⁻¹`: the twisting coordinate is a constant of `δ`, so `δʲ(A·h⁻¹) = (θʲA)·h^{−(j+1)}` |
+| `MahlerPerfectNoTelescoper` | **`no_perfectBase_telescoper`**: `p^m·σ(z) − z ≠ a·w + b·w^p` in the perfect base whenever `p^m a + b ≠ 0` — every element is rational at some level, and the level equation is the one just ruled out |
+
+For the three cards the increment is `−((p−2)w + w^p)·h⁻¹`, whose `j`-th jet contributes
+`a = −c(p−2)`, `b = −c·p^j` at multiplier `λ = p^{j+1}`; the resonance is
+`λa + b = −c·p^j·(p−1)² ≠ 0`, so the telescoper is excluded for every `p ≥ 2`.

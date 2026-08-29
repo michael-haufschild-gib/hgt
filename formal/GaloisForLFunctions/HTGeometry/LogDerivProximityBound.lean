@@ -220,6 +220,41 @@ theorem circleAverage_posLog_logDeriv_le_of_entire {α : ℝ} (hα0 : 0 < α) (h
 
 
 open ValueDistribution in
+/-- The proximity of `f'/f` is the `log⁺` circle average of the logarithmic derivative. -/
+theorem proximity_logDeriv_eq {f : ℂ → ℂ} {r : ℝ} :
+    proximity (fun z => deriv f z / f z) ⊤ r
+      = (2 * π)⁻¹ * ∫ θ in (0 : ℝ)..(2 * π),
+          Real.posLog ‖logDeriv f ((r : ℂ) * Complex.exp (θ * Complex.I))‖ := by
+  rw [proximity_top, Real.circleAverage, smul_eq_mul]
+  congr 1
+  refine intervalIntegral.integral_congr fun θ _ => ?_
+  have hcm : circleMap 0 r θ = (r : ℂ) * Complex.exp (θ * Complex.I) := by
+    rw [circleMap, zero_add]
+  rw [hcm]
+  simp [logDeriv]
+
+open ValueDistribution in
+/-- The proximity of `f'/(f − a)` is the `log⁺` circle average of the logarithmic derivative of the
+shift `f − a`. -/
+theorem proximity_logDeriv_sub_const_eq {f : ℂ → ℂ} (hf : Differentiable ℂ f) (a : ℂ) {r : ℝ} :
+    proximity (fun z => deriv f z / (f z - a)) ⊤ r
+      = (2 * π)⁻¹ * ∫ θ in (0 : ℝ)..(2 * π),
+          Real.posLog ‖logDeriv (fun w => f w - a)
+            ((r : ℂ) * Complex.exp (θ * Complex.I))‖ := by
+  have hderiv : ∀ z : ℂ, deriv (fun w => f w - a) z = deriv f z := fun z => by
+    simp [deriv_sub_const]
+  have hlog : ∀ z : ℂ, logDeriv (fun w => f w - a) z = deriv f z / (f z - a) := by
+    intro z
+    rw [logDeriv]
+    simp [hderiv z]
+  rw [proximity_top, Real.circleAverage, smul_eq_mul]
+  congr 1
+  refine intervalIntegral.integral_congr fun θ _ => ?_
+  rw [hlog]
+  congr 2
+  rw [circleMap, zero_add]
+
+open ValueDistribution in
 /-- **The proximity of `f'/(f − a)` for an entire `f`**, in the form the corpus's second main
 theorem consumes.  This is the logarithmic-derivative estimate applied to the shift `f − a`. -/
 theorem proximity_logDeriv_sub_const_le {α : ℝ} (hα0 : 0 < α) (hα1 : α < 1)

@@ -2,7 +2,7 @@
 
 - **ID:** `random-holomorphic-maximal-translation-ht-law`
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper) — `[PROVED HERE] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
+- **Type:** THEOREM (Lean) — `[PROVED HERE] [FORMALIZED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Lane:** general hypertranscendence; random holomorphic functions; probabilistic route boundary
 - **Statement:** A random entire function with absolutely continuous finite-jet laws has, almost
   surely, a differentially algebraically independent orbit under every prescribed countable set of
@@ -243,21 +243,91 @@ Adjacent primary sources:
 - B. Adamczewski, T. Dreyfus, and C. Hardouin, *Hypertranscendence and linear difference equations*,
   arXiv:1910.01874, for deterministic transformal-HT parent theory.
 
-## Lean status
+## Lean status (2026-08-29)
 
-The formal tree contains finite differential-monomial and algebraic-independence infrastructure,
-complex Gaussian probability components in mathlib, and finite Hermite interpolation.  It does not
-formalize random holomorphic functions, Gaussian analytic functions, almost-sure compact-open
-convergence, arbitrary finite-jet covariance nonsingularity, or countable differential-support
-avoidance as one theorem.  A finite determinant lemma would not formalize this claim, so stage 3 is
-not justified.
+Fully formalized unconditionally in Lean 4.  The earlier assessment is superseded: the abstract
+half was already in the tree, and what was missing was a model — no declaration verified the
+finite-jet nondegeneracy hypothesis for any concrete random source, so the capstones were
+vacuously applicable.  Two models are now built, including the planar Gaussian one.
+
+### The abstract half (already owned, now non-vacuous)
+
+`HTGeometry/RandomAffineJetPacketFreeness.lean` and `HTGeometry/AffineJetDifferentialIndependence.lean`
+carry hypothesis `(ND)` (`HasAbsolutelyContinuousFiniteAffineJetLaws`, in a stronger multivariate
+affine-palette form), the null-support theorem, and
+`ae_translationOrbit_no_polynomialDifferentialRelation`.  Two of their theorems were **generalized
+in place** to an arbitrary witness family, with the original statements kept as corollaries:
+`exists_affineJetRelationValue_ne_zero_of_witness` and
+`measure_compl_preimage_residualSet_eq_zero`.
+
+### The one-coordinate translation dictionary
+
+- `HTGeometry/OneDimJetEvalBridge.lean` — `multiIndexJetEvalCLM_oneDim`: a one-coordinate
+  multi-index jet is an ordinary iterated derivative.
+- `HTGeometry/OneDimTranslationJetPacket.lean` — a translation jet packet reads derivatives at
+  translated base points (`packetPoint`, `packetOrder`).
+- `HTGeometry/ConfluentVanishingPolynomial.lean` — `polynomial_eq_zero_of_jets_vanish` and its
+  monomial-shifted form.
+- `HTGeometry/PacketHermiteSurjectivity.lean` — `multiIndexBelowOneEquiv`,
+  `card_coordinate_eq_sum_orders`, and **`surjective_packetShiftedHermiteMap`**: the square Hermite
+  evaluation of `N` weighted monomials at the packet nodes is bijective.
+- `HTGeometry/InfinitePiSumSplit.lean` — **`map_sumPiEquivProdPi_infinitePi`** (an infinite product
+  law indexed by a sum type is the product of the block laws; a mathlib gap) and
+  **`map_headTail_infinitePi`**.
+
+### Model 1: independent absolutely continuous coefficients — the card's family `(14)`
+
+`HTGeometry/BoundedRandomEntireStructure.lean`, `BoundedRandomEntireTail.lean`,
+`RandomEntireTailSource.lean`, `RandomEntirePacketSplit.lean`,
+`RandomEntireJetLawNondegeneracy.lean`, `RandomEntireTranslationOrbitFreeness.lean`:
+**`hasAbsolutelyContinuousFiniteAffineJetLaws_boundedRandomEntire`** and
+**`ae_translationOrbit_free_boundedRandomEntire`**, plus the deterministic-gauge stability
+`ae_translationOrbit_free_boundedRandomEntire_add_const`.
+
+### Finite Taylor conditioning `(11)`–`(13)`
+
+The conditioned residual `z^{L}·(…)` has a genuinely degenerate jet packet at a node at the origin,
+so — exactly as the card's own proof does — the evaluation nodes are chosen away from it:
+
+- `HTGeometry/AffineFramePacketAvoidance.lean` — **`exists_base_separating_avoiding_and_eval_ne_zero`**;
+- `HTGeometry/AvoidingAffineJetPacketWitness.lean` — **`exists_separatedWitness_avoiding`**;
+- `HTGeometry/AvoidingRandomAffineJetFreeness.lean` —
+  `HasAvoidingAbsolutelyContinuousFiniteAffineJetLaws` and
+  **`ae_affineOrbit_free_of_avoidingJetLaws`**;
+- `HTGeometry/RandomEntireConditionedOrbitFreeness.lean` —
+  **`ae_translationOrbit_free_randomEntireTail_add_const`**.
+
+### Model 2: the planar Gaussian entire function `(9)`
+
+- `HTGeometry/ComplexGaussianCoefficientProbability.lean` — `complexGaussianProbability`, a genuine
+  complex Gaussian *probability* law, absolutely continuous, with a Chebyshev tail bound.
+- `HTGeometry/GaussianCoefficientTail.lean` — **`ae_eventually_norm_le_index`**: almost surely
+  `‖ξₙ‖ < n` for all large `n` (Chebyshev plus the first Borel–Cantelli lemma).
+- `HTGeometry/GaussianEntireCarrier.lean` — `tendsto_pow_div_sqrt_factorial`,
+  `entireCoeffs_gafCoeff`, and the total source `gaussianEntireSource` (the series `∑ ξₙ zⁿ/√(n!)`
+  where it converges, `0` on the null divergence set).
+- `HTGeometry/EntireCoeffsPartialSumSource.lean` — partial sums of an entire coefficient series
+  converge in the compact-open source space, hence so do their jet packets.  The Gaussian source is
+  not continuous in the coefficients, so this pointwise-limit argument replaces continuity and
+  supplies measurability.
+- `HTGeometry/GaussianEntirePacketSplit.lean` — the polynomial-growth event is a tail event, and the
+  series splits into its polynomial head plus a tail in the shifted coordinates alone.
+- `HTGeometry/GaussianJetLawNondegeneracy.lean` —
+  **`hasAvoidingAbsolutelyContinuousFiniteAffineJetLaws_gaussianEntireSource`**.
+- `HTGeometry/GaussianTranslationOrbitFreeness.lean` —
+  **`ae_translationOrbit_free_gaussianEntireSource`** and
+  **`ae_translationOrbit_free_gaussianEntireSource_add_const`**.
+
+No `sorry`, `admit`, new axiom or heartbeat increase beyond explicit local `maxHeartbeats` raises.
+Every new module is wired into `GaloisForLFunctions.HTGeometry`, `lake build` passes on each, and
+axiom audits of every capstone report only `propext`, `Classical.choice` and `Quot.sound`.
 
 ## Gates
 
 - [x] 0 -> 1: finite-jet nondegeneracy and countable translation target stated
 - [x] 1 -> 2: maximal orbit theorem, planar GEF example, and finite-conditioning stability proved
 - [x] broad GAF/random-series/HT literature audit; classified as a bridge
-- [ ] 2 -> 3: complete unconditional theorem formalized in Lean
+- [x] 2 -> 3: complete unconditional theorem formalized in Lean (2026-08-29)
 - [ ] 3 -> 4: closed by failed novelty gate
 
 ## Log

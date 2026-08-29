@@ -2155,3 +2155,32 @@ remains when the factor exceeds the height.  Remaining M6/M7 core is now precise
 complementary sub-height regime `N ≤ T`, where the published argument uses the deep twisted
 moments.  Final card closure still requires that regime plus the source amplification and exponent
 arithmetic; no card is promoted by this brick alone.
+
+### M6/M7, brick 34 — full-product long-height branch (2026-08-29)
+
+`Sieve/MatomakiTeravainenWattProductMeanSquare.lean`, unconditional, axiom-clean,
+umbrella-wired:
+
+```text
+perronPoly_eq_dirPoly_twistedTruncCoeff
+    exact Perron-polynomial / finite-dirPoly bridge
+sum_norm_mtWattUnitCoeff_le_one
+    reciprocal ℓ¹ mass on (N,N'] is at most one when N' ≤ 2N
+sum_norm_sq_mtWattDataCoeff_le_energy
+    data block has ℓ² mass at most A⁻² ∑_{A<n≤2A}|aₙ|²
+sum_norm_sq_mtWattProductDirCoeff_le_energy
+    multiplicative Young transports that energy through both unit blocks without divisor loss
+mtWattProduct_eq_dirPoly
+    exact three-factor Watt product as Young-compatible Dirichlet polynomial
+integral_mtWatt_longHeight_le_energy
+    2AN'² ≤ T implies
+    ∫_{T/2}^{T}|N(1+it)|⁴|A(1+it)|²dt
+      ≤ (5πe+5π/2)(T/A²)∑_{A<n≤2A}|aₙ|²
+```
+
+Thus ordinary affine mean square closes the second elementary side of Lemma 3.5 whenever the
+*complete product length* lies below the height.  Together with brick 33, the genuine
+Watt--Deshouillers--Iwaniec core is narrowed to the intermediate range
+`N < T < 2AN'²`.  All new declarations audit to `propext`, `Classical.choice`, and
+`Quot.sound` only.  M6/M7 and both Route-E cards remain open until that intermediate range and
+the final amplification/exponent assembly are formalized.

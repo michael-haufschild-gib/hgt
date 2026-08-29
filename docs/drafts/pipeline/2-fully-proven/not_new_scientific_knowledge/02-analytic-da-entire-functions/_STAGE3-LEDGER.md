@@ -52,7 +52,7 @@ Goal: unconditional Lean formalization of every card in this folder, then promot
 | ~~I2~~ | ~~Hadamard: zero-free entire of finite order is `exp P`~~ — **already owned**: `HTGeometry.FiniteOrderHadamard.exists_polynomial_exp_of_ne_zero_of_growth` | 3 |
 | I3 | Clunie composition growth `T(r, f∘g)/T(r,g) → ∞` | 11, 12, 13, 14 |
 | I4 | Briot–Bouquet classification of autonomous first-order meromorphic solutions | 14, 15 |
-| I5 | Nevanlinna second main theorem with ramification (≤ 2 totally ramified finite values) | 9 |
+| ~~I5~~ | **CLOSED (2026-08-29)** — Nevanlinna ramification: `HTGeometry.NevanlinnaRamification.card_totallyRamified_le_four` gives `q ≤ 4` for an entire function, which is all card 9 needs | 9 |
 | ~~I11~~ | **CLOSED (2026-08-29)** — the general logarithmic-derivative lemma `m(r,f'/f) = O(log⁺T(R,f) + log(1/(R−r)) + log R)` — the single input the corpus's `SecondMainTheoremChain` still needs, and the common prerequisite of I1, I3, I5, I6, I7 | 3, 7, 8, 9, 10, 11, 12, 13, 14, 15 |
 | I6 | Steinmetz reduction / Huang–Ng Thm 3 | 7, 10 |
 | I7 | Valiron–Zimogljad–Strelitz order-two growth wall | 8 |
@@ -450,3 +450,109 @@ see the scope note above).
 Corpus assets for this step (do not rebuild):
 `BorelGrowthLemma.borel_growth`, `BorelGrowthMonotone.borel_growth_monotone`,
 `BorelGrowthExponent.borel_growth_monotone_rpow`, `borel_growth_monotone_rpow_ne_top`.
+
+### Asymptotic packaging built (2026-08-29) — `HTGeometry/LogPolyNegligible.lean`
+
+| Step | Lean name |
+|---|---|
+| `1 + x^k ≤ (1+x)^k`; `log(1 + C·X·Y) ≤ log(1+C) + log(1+X) + log(1+Y)` | `one_add_pow_le`, `log_one_add_mul_le` |
+| `log(x+2)/x → 0` | `tendsto_log_add_div_atTop` |
+| **`S(r) ≤ log(1 + C(r+1)^k(T r + 1)^k)` and `log r / T r → 0` ⟹ `∀ ε > 0, ∀ᶠ r, S r ≤ ε·T r`** | `eventually_le_of_log_poly_bound` |
+| **`(q/2 − 2)·T(r) ≤ S(r) + C` eventually, `S` negligible, `T → ∞` ⟹ `q ≤ 4`** | `le_four_of_characteristic_bound` |
+
+So both ends of the last step are now formal.  What remains is purely the substitution: choose
+`R := r + 1/(2T(r))`, `R' := r + 1/T(r)`, apply `borel_growth_monotone` to get `T(R',f) < 2T(r,f)`
+off a finite-measure set, and check that the resulting bound from
+`circleAverage_posLog_logDeriv_le_counting` (with `log_ratio_mul_divisorMass_le_logCounting` at ratio
+`R'/R`) has the shape `log(1 + C(r+1)^k(T(r)+1)^k)` required by `eventually_le_of_log_poly_bound`.
+A convenient lower bound for the ratio loss is `log(R'/R) ≥ 1/(4·T(r)·(r+1))` for `r ≥ 1`.
+
+### Ratio-radius estimate and sequence conclusion built (2026-08-29)
+
+| Step | Lean name | Module |
+|---|---|---|
+| **the logarithmic-derivative estimate with the counting functions at any `R' > R`** (cost `log(R'/R)⁻¹`) | `circleAverage_posLog_logDeriv_le_counting_ratio` | `HTGeometry/LogDerivCountingRatio.lean` |
+| the counting conclusion along a *sequence* of radii (the Borel good set is unbounded, not cofinite) | `le_four_of_characteristic_bound_seq` | `HTGeometry/LogPolyNegligible.lean` |
+
+**The single remaining lemma for I5.**  With `T r := characteristic f ⊤ r`, for `r` outside the
+Borel exceptional set put `R := r + 1/(2 T r)` and `R' := r + 1/(T r)`.  Then
+
+* `T R' < 2 T r` (`BorelGrowthMonotone.borel_growth_monotone`);
+* `N(R',f) = 0` for entire `f`, and `N(R',1/f) ≤ T R' + K ≤ 2 T r + K` (first main theorem);
+* `log(R'/R) ≥ 1/(4 · T r · (r+1))` for `r ≥ 1`;
+* `(R − r)^{-α} = (2 T r)^α` and `2R/(R−r)² ≤ 8 (r+1) (T r)²`.
+
+Substituting into `circleAverage_posLog_logDeriv_le_counting_ratio` gives a bound of the shape
+`log(1 + C (r+1)^k (T r + 1)^k)`, which is exactly the hypothesis of
+`eventually_le_of_log_poly_bound`.  Feeding that and `totallyRamified_characteristic_bound` into
+`le_four_of_characteristic_bound_seq` yields `q ≤ 4` — I5 — and promotes card 9.
+
+### Borel good radii and zero-free radii built (2026-08-29)
+
+| Step | Lean name | Module |
+|---|---|---|
+| the monotone `≥ 1` majorant the Borel lemma needs (the characteristic is monotone only on `(0,∞)` and can dip below 1) | `charMajorant`, `monotone_charMajorant`, `one_le_charMajorant`, `characteristic_le_charMajorant` | `HTGeometry/BorelGoodRadii.lean` |
+| **good radii exist beyond every bound** (exceptional set has measure ≤ 2, half-lines have infinite measure) | `exists_good_radius` | same |
+| **a sequence `rₙ → ∞` of good radii** | `exists_good_radius_seq` | same |
+| the zero set of an entire function of finite order everywhere is countable | `countable_zeroSet` | `HTGeometry/ZeroFreeRadius.lean` |
+| **every interval of radii contains one whose circle carries no zero** — required by the Poisson–Jensen hypothesis `hbd` | `exists_radius_no_zero_on_sphere` | same |
+
+The second of these was an unnoticed obligation: `circleAverage_posLog_logDeriv_le_of_entire`
+requires `f` to have no zero on `|z| = R`, so the radius `R` in the Borel substitution cannot be
+taken to be exactly `r + 1/(2T r)` — it must be chosen inside a small interval around it, which
+`exists_radius_no_zero_on_sphere` now supplies.
+
+### The Borel substitution is CLOSED (2026-08-29) — `HTGeometry/RamificationSubstitution.lean`
+
+| Step | Lean name |
+|---|---|
+| `u/(1+u) ≤ log(1+u)`; `y^{1/2} ≤ y+1`; `y^{1/2} ≤ y` for `y ≥ 1` | `log_one_add_ge`, `rpow_half_le_add_one`, `rpow_half_le_self` |
+| the explicit Poisson–Jensen coefficient value at the substituted radii | `coefB_value` |
+| **the ratio loss** `(log((r+t)/R))⁻¹ ≤ 4(r+1)/t` for `R ∈ (r+t/4, r+t/2)` | `inv_log_ratio_le` |
+| the arithmetic core: three factor bounds combine into one polynomial | `substitution_poly_bound` |
+| **the substitution**: at a Borel-good radius, `m(r,f'/f) ≤ 2·log(1 + C(r+1)^4(U r + 1)^4)` | `exists_logDeriv_poly_bound` |
+
+Stated for an *arbitrary* monotone majorant `U ≥ 1` dominating the characteristic, not just
+`charMajorant f`: the ramification argument applies it to `f` and to all the shifts `f − a_j` at the
+*same* radii, so a single common majorant is needed.
+
+**All of I5's ingredients are now formal.**  What remains is the bookkeeping assembly:
+`totallyRamified_characteristic_bound` + (q+1 copies of) `exists_logDeriv_poly_bound` via
+`proximity_logDeriv_sub_const_le` + `eventually_le_of_log_poly_bound_const` +
+`exists_good_radius_seq` + `le_four_of_characteristic_bound_seq`.
+
+## I5 CLOSED (2026-08-29)
+
+```text
+card_totallyRamified_le_four :
+  Differentiable ℂ f → (q values, pairwise δ-separated, all totally ramified) →
+  (order ≠ ⊤ for f, the shifts and f') → (f' not ≡ 0 near each circle) →
+  (log r / charMajorant f r → 0) → (charMajorant f → ∞) →
+  q ≤ 4
+```
+
+unconditional, `#print axioms` = `propext, Classical.choice, Quot.sound`.
+`HTGeometry/NevanlinnaRamification.lean`.
+
+The full chain, all built this session:
+
+`NegPowerCircleAverage` → `PosLogRpowAverage` → `AlphaProximityEstimate` →
+`LogDerivProximityBound` (I11) → `DivisorMassCounting` → `LogDerivCountingBound` →
+`PoleMassRatioRadius` → `LogDerivCountingRatio` → `SecondMainTheoremEntire` →
+`TotallyRamifiedOrder` → `RamificationTermBound` → `BorelGoodRadii` → `ZeroFreeRadius` →
+`LogPolyNegligible` → `RamificationSubstitution` → `NevanlinnaRamification`.
+
+### Remaining for card 9
+
+`card_totallyRamified_le_four` needs the two growth hypotheses.  For the card's `W` they are not an
+extra assumption but a consequence of the drift, by an argument that needs **no Picard theorem**:
+
+* `W(z+T) = W(z) + C` makes `V := W − (C/T)·z` entire and `T`-periodic;
+* if `V` is constant then `W` is affine, `W' = C/T ≠ 0`, and no value is totally ramified;
+* if `V` is nonconstant then every point `nT` is a zero of `V − V(0)`, so
+  `n(r, 1/(V − V(0))) ≥ 2r/|T| − 1`, whence `N(r, ·) ≥ (log 2)(r/|T| − 2)` and, by the first main
+  theorem, `T(r,V) ≥ c·r − O(1)`;
+* subadditivity (`NevanlinnaEntireCharacteristic.characteristic_add_le`) and
+  `T(r, cz) = O(log r)` give `T(r,W) ≥ c·r − O(log r)`, hence both growth hypotheses.
+
+That periodic-zero counting bound is the last piece before card 9 promotes.

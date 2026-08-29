@@ -727,3 +727,61 @@ Card 12: 62 modules, all axiom-clean, all wired into `RHTower.lean`.
 Remaining: multiply the per-block factors together (`EA ≤ 2CP log L`, `EB ≤ 2(B/P)(2+log B)³`,
 the two gap sums above), take the better orientation per block, sum over the `log₂ L + 1` blocks,
 and instantiate at `T = u^{16}`, `A ≍ u^{16}/L²`, `B ≍ 2u^{16}`, `U = V = ⌈u^4⌉`.
+
+## The parameter choice that closes the card: `U ≍ T^{1/2}`, `V ≍ T^{1/8}`, both independent of `r` (2026-08-29)
+
+The frontier module is `Sieve/VaughanSecondThirdMixedHybridBlock.lean`,
+`exists_norm_sum_vonMangoldt_ndPhaseExp_le_secondThird_mixed_hybrid`, whose envelope is
+```
+vaughanSecondThirdMixedHybridBlockEnvelope C T r A B L U V
+  = log(UV)·Env(UV) + 2 log B·Env(V) + typeIIHybridPieceEnvelope C T r A B L U V
+Env(K)  = 4·C₁(T,r,A)·√K + fibreTail(T,r,B)·invSum K
+C₁      = sharpThird₁ + √(fibreKernel · sharpThird₂)
+RootEnv = √(B²/V) + √(2000√(Tr)B²√B/(AU)) + √(20πB³/(Tr)·invSum B) + √(2B²/U)
+```
+Reading off the exponents on a dyadic block `A ≍ B ≍ M`, with `X = Tr`:
+```
+sharpThird₁              ≍ M^{1/3}X^{1/6}
+√(fibreKernel·sharpThird₂) ≍ (X^{1/2}M^{-1/2} · M^{7/6}X^{-1/6})^{1/2} = M^{1/3}X^{1/6}   (SAME order)
+fibreTail                ≍ M^{3/2}X^{-1/2}
+RootEnv                  ≍ M/√V + X^{1/4}M^{3/4}/√U + M^{3/2}X^{-1/2} + M/√U
+```
+so, up to `L^C`, one block costs
+```
+G ≍ M^{1/3}X^{1/6}√(UV) + M^{3/2}X^{-1/2} + M/√V + X^{1/4}M^{3/4}/√U.
+```
+
+**The key discovery: `U` and `V` must be chosen SEPARATELY, and then they can be taken independent
+of `r`.**  With `U = V = W` the balance gives `G ≍ T^{5/6}r^{2/9}`, whose harmonic `r`-total over
+`r ≤ T^{3/4}` is EXACTLY `T` — the argument fails by a hair.  Taking `U = T^{a}`, `V = T^{b}` and
+summing `Σ_r G(r)/r` over `T^{1/4} ≤ r ≤ T^{3/4}` first (`M ≍ T`, `X = Tr`) gives the three
+exponents
+```
+term1 = T^{5/8 + (a+b)/2},   term2 = T^{1 − b/2},   term3 = T^{19/16 − a/2},
+```
+(the fourth term totals `T^{7/8}`), and equalising them gives
+
+  **`a = 1/2`, `b = 1/8`, common value `T^{15/16}`.**
+
+So `U = ⌈T^{1/2}⌉`, `V = ⌈T^{1/8}⌉` — no `r`-dependence at all, which removes the whole
+"optimise per `r`" layer the earlier budget assumed.
+
+Side conditions at these values (`A ∈ [T/L², 2T]` after the dyadic split in `m`, `r ≤ T^{3/4}`):
+- `UV ≍ T^{5/8} ≤ A` ✓ for large `T`; `U < A` ✓; `V ≤ L`, `UV ≤ L` ✓ (`L ≍ 2T`);
+- `8r ≤ A` ⟸ `8T^{3/4} ≤ T/L²` ⟸ `8L² ≤ T^{1/4}` ✓;
+- curvature `T r (UV)³ ≤ 72π A⁴` ⟸ `T^{29/8} ≤ 72π T⁴/L⁸` ⟸ `L⁸ ≤ T^{3/8}` ✓.
+The `m`-range is `[T/L², T(1+ε)]` and, after the swap, for fixed `r` it starts at
+`max(T/L², r/ε)`, so `A ≥ T/L²` ALWAYS — which is what makes the curvature condition survive.
+
+`T^{15/16} < T^{53/54}`, so the card's `(5)` follows with room to spare.
+
+### Remaining layers
+
+- `KP1` bound each envelope piece by an explicit power: `C₁ ≤ 10^5 A^{1/3}(Tr)^{1/6}`
+  (using `(72π)^{-1/6} ≤ 1`, `√(36π) ≥ 10`, `(1152π)^{1/6} ≤ 4`), `fibreTail ≤ 682 B^{3/2}(Tr)^{-1/2}`,
+  and the four root terms as above;
+- `KP2` discharge the scalar hypotheses of the frontier theorem at `U = ⌈T^{1/2}⌉`, `V = ⌈T^{1/8}⌉`;
+- `KP3` dyadic assembly in `m` over `O(log T)` blocks;
+- `KP4` the `r`-sum through `sum_rpow_neg_subcritical_le` / `sum_rpow_neg_tail_le`
+  (`Σ r^{-5/6}`, `Σ r^{-3/4}`, `Σ r^{-1}`, `Σ r^{-3/2}`);
+- `KP5` the card's `(5)`: `‖E_Λ(T)‖ = O(T^{53/54}(log T)^C)`.

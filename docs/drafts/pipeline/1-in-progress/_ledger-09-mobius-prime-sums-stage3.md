@@ -1334,3 +1334,28 @@ law is rotation invariant.
 CARD 12 (`kubalalika-parity-weighted-near-diagonal-tail`) — unchanged this session; see
 `kubalalika-weighted-tail-lean.md`.  62 modules; what remains is the per-block multiplication, the
 per-block orientation choice, the block-count summation and the instantiation at `T = u^16`.
+
+## CARD 11 CLOSED — `regular-variation-weighted-steinhaus-ldp` at stage 3 (2026-08-29)
+
+All five parts of the card are unconditionally Lean-proved and axiom-clean; the card carries a full
+statement→declaration→module table and now lives in `3-formalized/not_new_scientific_knowledge/`.
+
+Headline declarations: `isLDP_rvLaw` (part 1), `tendsto_log_rvDeviationProb` (part 2, the card's
+`(5)`), `rvRate_strictMono`/`continuousOn_rvRate`/`tendsto_rvRate_atTop` (part 3),
+`tendsto_rvRate_div_sq`/`tendsto_rvRate_crit`/`tendsto_rvRate_div_rpow_super` (part 4),
+`tendsto_rvRate_endpoint` (part 5).
+
+Reusable mathlib gaps closed on the way (all wired, all axiom-clean):
+- **Karamata's uniform convergence theorem and Potter's bound** — `HTGeometry/SlowShiftUniform.lean`,
+  `HTGeometry/SlowlyVarying.lean`.  There is no regular-variation theory in mathlib at all.
+- **The sharp Laplace asymptotic of `I₀`** (`√x e^{−x}I₀(x) → 1/√(2π)`) —
+  `HTGeometry/SteinhausSharpAsymptotic.lean`.
+- **The logarithmic Cesàro theorem** — `HTGeometry/IntegralLogCesaro.lean`.
+- **`∑_{p≤Y}(log p)p^{−β} ≪ Y^{1−β}`** and the Chebyshev linear bound for `θ` —
+  `RHTower/PrimePowerSumBound.lean`.
+- **The prime Karamata law** `∑_{p≤X}(log p)p^{−α}L(p) ∼ X^{1−α}L(X)/(1−α)` —
+  `RHTower/PrimeKaramata.lean`.
+- **The first large-deviation principle in the corpus** — `RHTower/RVPlanarLDP.lean`.
+
+REMAINING in `09-mobius-prime-sums`: card 12 only
+(`kubalalika-parity-weighted-near-diagonal-tail`).
