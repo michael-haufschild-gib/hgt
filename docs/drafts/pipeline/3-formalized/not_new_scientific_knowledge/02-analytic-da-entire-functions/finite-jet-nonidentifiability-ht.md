@@ -1,7 +1,7 @@
 # Finite-jet nonidentifiability of hypertranscendence
 
 - **ID:** finite-jet-nonidentifiability-ht
-- **Stage:** 2-fully-proven (not new scientific knowledge; third audit 2026-07-12)
+- **Stage:** 3-formalized (not new scientific knowledge; third audit 2026-07-12; Lean 2026-08-29)
 - **Type:** CANDIDATE THEOREM
 - **Source:** `ht-c15-finite-sampling-nonidentifiability`; Hölder; Hermite interpolation
 - **Statement:** The finite-jet map from entire hypertranscendental functions is surjective; every finite
@@ -179,7 +179,7 @@ nonidentifiability theorem, or show that this is too immediate to count as a sig
 - [ ] 1 -> 2 fully-proven: team audits source/significance; Turing voted proof-correct/structural BRIDGE
   (chat id=1712); Wheeler voted proof-correct/PROMOTE bridge (chat id=1724); Professor source/significance vote
   still pending.
-- [ ] 2 -> 3 formalized: Hermite interpolation plus abstract closure of DA field; Hölder imported as axiom.
+- [x] 2 -> 3 formalized: **complete and unconditional in Lean 4**; Hölder is *proved* in the corpus (`hypertranscendental_invGamma`), not imported as an axiom.
 - [ ] 3 -> 4 publication-ready: short note on finite-observation limits for HT and function/value
   decoupling.
 
@@ -369,3 +369,51 @@ Stage moves to 2-fully-proven/not_new_scientific_knowledge. The Lean gate (2 →
 and needs a `Hypertranscendental Complex.Gamma` (Hölder) interface; note the tree now has an
 unconditional `hypertranscendental_riemannZeta`, so the DA/HT vocabulary is exercised — the
 Hölder import is the only missing brick for formalizing these gatekeepers.
+
+## Formalization (2026-08-29) — complete
+
+Two new `HTGeometry` modules, wired into `GaloisForLFunctions.HTGeometry`.  `#print axioms` gives
+only `propext, Classical.choice, Quot.sound` for every statement below: nothing is imported as an
+axiom, and in particular **Hölder's theorem is proved, not assumed** — the corpus theorem
+`HTGeometry.hypertranscendental_invGamma` is unconditional.
+
+### `HTGeometry/EntireTaylorUniformApproximation.lean`
+
+The density statement needed by the finite-linear-observation theorem.
+
+| Step | Lean name |
+|---|---|
+| the `n`-th Taylor partial sum as a `Polynomial ℂ` | `taylorPoly`, `eval_taylorPoly` |
+| Cauchy's estimate at radius `2R` gives a geometric bound on the ball of radius `R` | `exists_taylor_geometric_bound` |
+| **polynomials approximate every entire function uniformly on every closed ball** | `tendstoUniformlyOn_taylorPoly` |
+
+### `HTGeometry/FiniteJetNonidentifiability.lean`
+
+| Card statement | Lean name |
+|---|---|
+| every polynomial is DA | `differentiallyAlgebraic_polynomial` |
+| the entire perturbation `λ·A/Γ` | `gammaPerturbation`, `differentiable_gammaPerturbation` |
+| `λ·A/Γ` is HT (Hölder + cancellation of the polynomial multiplier) | `hypertranscendental_gammaPerturbation` |
+| `P + λ·A/Γ` is HT | `hypertranscendental_polynomial_add_gammaPerturbation` |
+| the family is a genuine punctured affine line | `gammaPerturbation_injective`, `polynomial_add_gammaPerturbation_injective` |
+| the perturbation is invisible to the prescribed jets | `iteratedDeriv_gammaPerturbation_jetModulus_eq_zero`, `iteratedDeriv_add_gammaPerturbation` |
+| **Theorem `[PROVED HERE]`: multi-point finite-jet two-realization** | `exists_multipoint_finiteJet_da_and_ht` |
+| **Strengthening: invisible HT perturbations of a DA germ on a domain** | `not_differentiallyAlgebraicOn_add_jetPerturbation`, `iteratedDeriv_add_jetPerturbation_eq` |
+| the deterministic adaptive protocol and its transcript | `JetQuery`, `jetRun`, `jetQueries` |
+| agreeing jets give the same transcript | `jetRun_congr` |
+| **Adaptive theorem `[PROVED HERE]`: every halting transcript has a DA and an HT realizer** | `exists_jetRun_da_and_ht` |
+| linearity and compact-open continuity of a finite observation | `ObsAdditive`, `ObsHomogeneous`, `ObsContinuous`, `obs_zero`, `obs_finset_sum` |
+| **Finite-linear theorem `[PROVED HERE]`: `L⁻¹(v)` holds a DA point and a punctured affine line of HT points** | `exists_finiteLinearObservation_da_and_ht` |
+
+Notes on faithfulness.
+
+* The multi-point Hermite interpolation the card imports is the corpus theorem
+  `HTGeometry.exists_polynomial_iteratedDeriv_eval_eq`; the modulus `A = ∏ (z−a_i)^{m_i+1}` is
+  `HTGeometry.jetModulus`.
+* The strengthening is proved on an arbitrary domain `U` with an arbitrary analytic, nowhere
+  vanishing, differentially algebraic multiplier `B` — a strictly larger class than the card's
+  `B ∈ C(z)^*`.
+* Continuity of `L` is expressed sequentially, for uniform convergence on closed balls; this is
+  implied by continuity for the compact-open topology of `H(ℂ)`, so the hypothesis is weaker and
+  the theorem correspondingly stronger.  The Runge/density step is replaced by the honest
+  Taylor-partial-sum approximation proved in `EntireTaylorUniformApproximation`.

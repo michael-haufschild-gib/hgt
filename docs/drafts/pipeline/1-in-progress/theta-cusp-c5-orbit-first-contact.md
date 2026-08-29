@@ -49,8 +49,9 @@ is strictly positive.
 - [x] Test strongest replacement: completed C5 orientation is an invariant-region barrier for the
   exact source-positive polynomial vector field.
 - [x] If uniform barrier fails, formalize exact counterexample and strongest positive survivor.
-- [ ] Attack remaining physical-incidence statement using exact orbit identities, not numerical
+- [x] Close cofinal physical-incidence burden by exact spectral condensation, not numerical
   computation.
+- [ ] Attack compact physical-incidence statement using exact orbit identities.
 
 Candidate falsifier for uniform barrier: algebraic seam `X=100`. Odd normalized source jets vanish,
 so orientation is zero; corpus seam factorization makes corrected slope negative. The exact Lie-law
@@ -64,9 +65,10 @@ seam, so physical initial-value/incidence data is logically indispensable.
 
 ## Open core
 
-**[OPEN CORE]** After the uniform-flow audit, prove or refute
-`C5-ORBIT-FIRST-CONTACT` on the actual modular theta trajectory. No chamber-only or arbitrary-flow
-substitute closes the RH chain.
+**[OPEN CORE]** Prove or refute `C5-ORBIT-FIRST-CONTACT` on the remaining compact segment of the
+actual modular theta trajectory. Cofinal positivity is unconditional: Lean proves
+`Ω(x)/scale(x)^4 → 36864`, hence `Ω(x)>0` beyond some threshold. No chamber-only or arbitrary-flow
+substitute closes the compact incidence gap.
 
 ## Log
 
@@ -78,3 +80,9 @@ substitute closes the RH chain.
   sign. At seam `X=100`, mass/gap are positive, `U',B'>0`, `Q'=0`, yet `Ωc=0` and `Lie(Ωc)<0`.
   Therefore physical theta-orbit incidence or a stronger orbit invariant is mandatory. See
   `../3-formalized/theta-cusp-c5-source-positive-flow-inward-barrier-no-go.md`.
+- 2026-08-29 — Discharged entire far-tail burden in Lean. Fixed spectral-gap cooling gives
+  super-polynomial extinction of normalized likelihood moments and cumulants through order seven;
+  all likelihood log jets are `o(scale)`. First-atom normalized jets converge to
+  `4,8,16,32,64,128`, forcing exact normalized C5 orientation limit `36864` and cofinal strict
+  positivity. Remaining open core is compact actual-orbit incidence. See
+  `../3-formalized/theta-cusp-c5-exact-completed-seam-far-tail.md`.

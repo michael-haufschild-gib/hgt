@@ -192,7 +192,7 @@ theorem exists_small_ne_zero_of_entire {Θ : ℂ → ℂ} (hΘ : Differentiable 
   linarith
 
 /-- A polynomial as an element of the compact-open holomorphic space. -/
-def holoCOofPolynomial (hΩ : IsOpen Ω) (B : Polynomial ℂ) : HoloCO Ω := by
+def holoCOofPolynomial (_hΩ : IsOpen Ω) (B : Polynomial ℂ) : HoloCO Ω := by
   classical
   refine ⟨⟨fun z : ↥Ω => B.eval (z : ℂ), by fun_prop⟩, ?_⟩
   show DifferentiableOn ℂ (holoExtend Ω (fun z : ↥Ω => B.eval (z : ℂ))) Ω
@@ -275,10 +275,9 @@ theorem exists_tendsto_notMem_daCompactOpenStratum (hΩ : IsOpen Ω) (hne : Ω.N
       simp only [Matrix.of_apply, Matrix.submatrix_apply, Matrix.vandermonde_apply,
         Equiv.symm_apply_apply]
       rw [Finset.prod_congr rfl fun c _ => by rw [hjvone i c], prod_geometricJet_pow]
-    rw [hΘdef]
-    simp only []
-    rw [hmat, Matrix.det_submatrix_equiv_self, Ne, Matrix.det_vandermonde_ne_zero_iff]
-    exact hainj.comp e2.symm.injective
+    simp only [hΘdef]
+    rw [hmat, Matrix.det_submatrix_equiv_self]
+    exact Matrix.det_vandermonde_ne_zero_iff.2 (hainj.comp e2.symm.injective)
   -- `Θ` is entire
   have hjvdiff : ∀ (i : JetExponent n d) (c : Fin (n + 2)),
       Differentiable ℂ fun t : ℂ => jv t i c := by
@@ -287,31 +286,54 @@ theorem exists_tendsto_notMem_daCompactOpenStratum (hΩ : IsOpen Ω) (hne : Ω.N
     | zero => simpa [hjvdef] using (differentiable_const (a i))
     | succ e =>
         simp only [hjvdef, Fin.cons_succ]
-        exact differentiable_const.add ((differentiable_id).mul differentiable_const)
+        exact (differentiable_const _).add
+          ((differentiable_id).mul (differentiable_const _))
   have hΘdiff : Differentiable ℂ Θ := by
     have hentry : ∀ i j : JetExponent n d,
         Differentiable ℂ fun t : ℂ => ∏ c : Fin (n + 2), (jv t i c) ^ (j c : ℕ) := by
       intro i j
+      have heq : (fun t : ℂ => ∏ c : Fin (n + 2), (jv t i c) ^ (j c : ℕ))
+          = ∏ c : Fin (n + 2), (fun t : ℂ => (jv t i c) ^ (j c : ℕ)) := by
+        funext t
+        simp [Finset.prod_apply]
+      rw [heq]
       exact Differentiable.finsetProd fun c _ => ((hjvdiff i c).pow _)
     have hsum : Differentiable ℂ fun t : ℂ =>
         ∑ σ : Equiv.Perm (JetExponent n d), (Equiv.Perm.sign σ : ℂ) *
           ∏ i : JetExponent n d, ∏ c : Fin (n + 2), (jv t (σ i) c) ^ ((i : JetExponent n d) c : ℕ) := by
-      refine Differentiable.finsetSum fun σ _ => ?_
-      exact differentiable_const.mul (Differentiable.finsetProd fun i _ => hentry (σ i) i)
+      have heq : (fun t : ℂ =>
+          ∑ σ : Equiv.Perm (JetExponent n d), (Equiv.Perm.sign σ : ℂ) *
+            ∏ i : JetExponent n d, ∏ c : Fin (n + 2),
+              (jv t (σ i) c) ^ ((i : JetExponent n d) c : ℕ))
+          = ∑ σ : Equiv.Perm (JetExponent n d), fun t : ℂ => (Equiv.Perm.sign σ : ℂ) *
+            ∏ i : JetExponent n d, ∏ c : Fin (n + 2),
+              (jv t (σ i) c) ^ ((i : JetExponent n d) c : ℕ) := by
+        funext t
+        simp [Finset.sum_apply]
+      rw [heq]
+      refine Differentiable.sum fun σ _ => ?_
+      refine (differentiable_const _).mul ?_
+      have heq2 : (fun t : ℂ => ∏ i : JetExponent n d, ∏ c : Fin (n + 2),
+            (jv t (σ i) c) ^ ((i : JetExponent n d) c : ℕ))
+          = ∏ i : JetExponent n d, fun t : ℂ => ∏ c : Fin (n + 2),
+            (jv t (σ i) c) ^ ((i : JetExponent n d) c : ℕ) := by
+        funext t
+        simp [Finset.prod_apply]
+      rw [heq2]
+      exact Differentiable.finsetProd fun i _ => hentry (σ i) i
     have hrw : Θ = fun t : ℂ =>
         ∑ σ : Equiv.Perm (JetExponent n d), (Equiv.Perm.sign σ : ℂ) *
-          ∏ i : JetExponent n d, ∏ c : Fin (n + 2), (jv t (σ i) c) ^ ((i : JetExponent n d) c : ℕ) := by
+          ∏ i : JetExponent n d, ∏ c : Fin (n + 2),
+            (jv t (σ i) c) ^ ((i : JetExponent n d) c : ℕ) := by
       funext t
-      rw [hΘdef]
-      simpa only [] using Matrix.det_apply'
-        (M := (Matrix.of fun i j : JetExponent n d => ∏ c : Fin (n + 2), (jv t i c) ^ (j c : ℕ)))
+      simp only [hΘdef]
+      exact Matrix.det_apply' _
     rw [hrw]
     exact hsum
   -- the actual jet-sample matrix of the perturbed function
   have hΘeq : ∀ t : ℂ, Θ t = (jetSampleMatrix (holoCOFun (F + t • Pel)) n d a).det := by
     intro t
-    rw [hΘdef]
-    simp only []
+    simp only [hΘdef]
     congr 1
     ext i j
     simp only [Matrix.of_apply, jetSampleMatrix, jetMon]
@@ -324,8 +346,6 @@ theorem exists_tendsto_notMem_daCompactOpenStratum (hΩ : IsOpen Ω) (hne : Ω.N
         rw [iteratedDeriv_holoCOFun_add_smul hΩ F Pel t (hamem i) (e : ℕ), hPeldef,
           iteratedDeriv_holoCOofPolynomial hΩ B (hamem i) (e : ℕ),
           hB i (e : ℕ) (Nat.lt_succ_iff.1 e.2)]
-        simp only [hudef]
-        ring
   -- small shifts with nonvanishing determinant
   have hchoice : ∀ k : ℕ, ∃ t : ℂ, ‖t‖ < 1 / (k + 1) ∧ Θ t ≠ 0 := by
     intro k
@@ -333,7 +353,8 @@ theorem exists_tendsto_notMem_daCompactOpenStratum (hΩ : IsOpen Ω) (hne : Ω.N
   choose t ht htne using hchoice
   have htend : Tendsto t atTop (𝓝 0) := by
     refine squeeze_zero_norm (fun k => (ht k).le) ?_
-    simpa using tendsto_one_div_add_atTop_nhds_zero_nat
+    exact Filter.Tendsto.congr (fun k => by rw [one_div])
+      tendsto_one_div_add_atTop_nhds_zero_nat
   refine ⟨fun k => F + t k • Pel, ?_, fun k hk => ?_⟩
   · have h1 : Tendsto (fun k => t k • Pel) atTop (𝓝 ((0 : ℂ) • Pel)) :=
       htend.smul tendsto_const_nhds
@@ -353,6 +374,48 @@ theorem isNowhereDense_daCompactOpenStratum (hΩ : IsOpen Ω) (hne : Ω.Nonempty
     hGtend (isOpen_interior.mem_nhds hF)
   obtain ⟨k, hk⟩ := hmem.exists
   exact hGnot k (interior_subset hk)
+
+
+/-! ## Meagreness of the differentially algebraic locus -/
+
+/-- **The differentially algebraic locus is meagre.** -/
+theorem isMeagre_daCompactOpenLocus (hΩ : IsOpen Ω) (hconn : IsPreconnected Ω)
+    (hne : Ω.Nonempty) : IsMeagre (daCompactOpenLocus Ω) := by
+  rw [daCompactOpenLocus_eq_iUnion hΩ hconn hne]
+  refine isMeagre_iUnion fun q => ?_
+  exact (isNowhereDense_daCompactOpenStratum hΩ hne q.1 q.2).isMeagre
+
+/-- **The hypertranscendental locus is a dense `Gδ`.** -/
+theorem isGδ_htCompactOpenLocus (hΩ : IsOpen Ω) (hconn : IsPreconnected Ω) (hne : Ω.Nonempty) :
+    IsGδ ((daCompactOpenLocus Ω)ᶜ) := by
+  have hrw : (daCompactOpenLocus Ω)ᶜ = ⋂ q : ℕ × ℕ, (daCompactOpenStratum Ω q.1 q.2)ᶜ := by
+    rw [daCompactOpenLocus_eq_iUnion hΩ hconn hne, Set.compl_iUnion]
+  rw [hrw]
+  exact IsGδ.iInter_of_isOpen fun q => (isClosed_daCompactOpenStratum hΩ q.1 q.2).isOpen_compl
+
+theorem dense_htCompactOpenLocus (hΩ : IsOpen Ω) (hconn : IsPreconnected Ω) (hne : Ω.Nonempty) :
+    Dense ((daCompactOpenLocus Ω)ᶜ) := by
+  haveI := baireSpace_holoCO hΩ
+  exact dense_of_mem_residual (isMeagre_daCompactOpenLocus hΩ hconn hne)
+
+/-! ## The continuous phase-selector law -/
+
+/-- **No continuous map separates two dense classes.**  A continuous map into a Hausdorff space
+which is constant on a dense set is that constant everywhere; in particular, if it is constant on
+each of two dense sets, the two constants agree and the map is constant. -/
+theorem eq_const_of_continuous_of_dense_eqOn {X Y : Type*} [TopologicalSpace X]
+    [TopologicalSpace Y] [T2Space Y] {A : Set X} (hA : Dense A) {Φ : X → Y} (hΦ : Continuous Φ)
+    {a : Y} (hAc : ∀ x ∈ A, Φ x = a) : Φ = fun _ => a :=
+  hΦ.ext_on hA continuous_const (fun x hx => hAc x hx)
+
+theorem const_eq_const_of_continuous_of_dense {X Y : Type*} [TopologicalSpace X]
+    [TopologicalSpace Y] [T2Space Y] {A B : Set X} (hA : Dense A) {Φ : X → Y}
+    (hΦ : Continuous Φ) {a b : Y} (hAc : ∀ x ∈ A, Φ x = a) (hBc : ∀ x ∈ B, Φ x = b)
+    (hBne : B.Nonempty) : a = b := by
+  obtain ⟨x, hx⟩ := hBne
+  have hconst := eq_const_of_continuous_of_dense_eqOn hA hΦ hAc
+  have h1 : Φ x = a := by rw [hconst]
+  rw [← h1, hBc x hx]
 
 end
 

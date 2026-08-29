@@ -1922,5 +1922,131 @@ theorem d4BM_completedPoincare_thirdJet_horizontalEigenEquation
   field_simp [hy] at hunique ⊢
   linear_combination hunique
 
+/-- Vertical-strip majorant for the mixed derivative of the horizontal first jet. -/
+def d4BMMixedSecondJetVerticalLocalMajorant
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter)
+    (p : D4BMPrimitiveIntegerPair) : ℝ :=
+  ((4 * (4 * ‖P.s‖ + 6 * ‖P.s‖ ^ 2) / z.y ^ 2) *
+      (2 ^ P.s.re * 4 ^ P.s.re)) * ‖d4BMPoincareSeed z P.s p‖
+
+lemma summable_d4BMMixedSecondJetVerticalLocalMajorant
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) :
+    Summable (d4BMMixedSecondJetVerticalLocalMajorant z P) := by
+  exact (summable_d4BMPoincareSeed z P).norm.mul_left _
+
+/-- The horizontal first-jet vertical slice differentiates termwise to the mixed second jet. -/
+theorem hasDerivAt_tsum_d4BMPoincareSeedHorizontalFirstJet_vertical
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) :
+    HasDerivAt
+      (fun y : ℝ => ∑' p : D4BMPrimitiveIntegerPair,
+        d4BMPoincareSeedHorizontalFirstJetVerticalSlice z P.s p y)
+      (∑' p : D4BMPrimitiveIntegerPair,
+        d4BMPoincareSeedMixedSecondJet z P.s p) z.y := by
+  let t : Set ℝ := Ioo (z.y / 2) (2 * z.y)
+  let g : D4BMPrimitiveIntegerPair → ℝ → ℂ := fun p y =>
+    d4BMPoincareSeedHorizontalFirstJetVerticalSlice z P.s p y
+  let g' : D4BMPrimitiveIntegerPair → ℝ → ℂ := fun p y =>
+    if hy0 : 0 < y then d4BMPoincareSeedMixedSecondJet ⟨z.x, y, hy0⟩ P.s p else 0
+  let M := d4BMMixedSecondJetVerticalLocalMajorant z P
+  have hM : Summable M := summable_d4BMMixedSecondJetVerticalLocalMajorant z P
+  have hderiv : ∀ p, ∀ y ∈ t, HasDerivAt (g p) (g' p y) y := by
+    intro p y hy
+    have hy0 : 0 < y := by linarith [z.y_pos, hy.1]
+    let zy : D4BMUpperHalfPlaneCoordinate := ⟨z.x, y, hy0⟩
+    have h := hasDerivAt_d4BMPoincareSeedHorizontalFirstJetVerticalSlice zy P.s p
+    have hfun : d4BMPoincareSeedHorizontalFirstJetVerticalSlice zy P.s p =
+        d4BMPoincareSeedHorizontalFirstJetVerticalSlice z P.s p := by
+      funext v
+      rfl
+    rw [hfun] at h
+    simpa only [g, g', zy, dif_pos hy0] using h
+  have hbound : ∀ p, ∀ y ∈ t, ‖g' p y‖ ≤ M p := by
+    intro p y hy
+    have hy0 : 0 < y := by linarith [z.y_pos, hy.1]
+    let zy : D4BMUpperHalfPlaneCoordinate := ⟨z.x, y, hy0⟩
+    have hnorm := norm_d4BMPoincareSeedMixedSecondJet_le zy P.s p
+    have hinvSq : 1 / y ^ 2 ≤ 4 / z.y ^ 2 := by
+      have hpow : z.y ^ 2 ≤ (2 * y) ^ 2 :=
+        pow_le_pow_left₀ z.y_pos.le (by linarith [hy.1]) 2
+      apply (div_le_div_iff₀ (sq_pos_of_pos hy0) (sq_pos_of_pos z.y_pos)).2
+      norm_num
+      calc
+        z.y ^ 2 ≤ (2 * y) ^ 2 := hpow
+        _ = 4 * y ^ 2 := by ring
+    have hK : 0 ≤ 4 * ‖P.s‖ + 6 * ‖P.s‖ ^ 2 := by positivity
+    have hcoef : (4 * ‖P.s‖ + 6 * ‖P.s‖ ^ 2) / y ^ 2 ≤
+        4 * (4 * ‖P.s‖ + 6 * ‖P.s‖ ^ 2) / z.y ^ 2 := by
+      calc
+        (4 * ‖P.s‖ + 6 * ‖P.s‖ ^ 2) / y ^ 2 =
+            (4 * ‖P.s‖ + 6 * ‖P.s‖ ^ 2) * (1 / y ^ 2) := by ring
+        _ ≤ (4 * ‖P.s‖ + 6 * ‖P.s‖ ^ 2) * (4 / z.y ^ 2) :=
+          mul_le_mul_of_nonneg_left hinvSq hK
+        _ = 4 * (4 * ‖P.s‖ + 6 * ‖P.s‖ ^ 2) / z.y ^ 2 := by ring
+    calc
+      ‖g' p y‖ ≤ ((4 * ‖P.s‖ + 6 * ‖P.s‖ ^ 2) / y ^ 2) *
+          ‖d4BMPoincareSeed zy P.s p‖ := by
+            simpa only [g', zy, dif_pos hy0] using hnorm
+      _ ≤ (4 * (4 * ‖P.s‖ + 6 * ‖P.s‖ ^ 2) / z.y ^ 2) *
+          ‖d4BMPoincareSeedVerticalSlice z P.s p y‖ := by
+        apply mul_le_mul hcoef le_rfl (norm_nonneg _)
+        exact div_nonneg (mul_nonneg (by norm_num) hK) (sq_nonneg _)
+      _ ≤ (4 * (4 * ‖P.s‖ + 6 * ‖P.s‖ ^ 2) / z.y ^ 2) *
+          ((2 ^ P.s.re * 4 ^ P.s.re) * ‖d4BMPoincareSeed z P.s p‖) :=
+        mul_le_mul_of_nonneg_left (norm_d4BMPoincareSeed_vertical_le z P p hy)
+          (div_nonneg (mul_nonneg (by norm_num) hK) (sq_nonneg _))
+      _ = M p := by
+        simp [M, d4BMMixedSecondJetVerticalLocalMajorant]
+        ring
+  have hymem : z.y ∈ t := by
+    dsimp only [t]
+    constructor <;> linarith [z.y_pos]
+  have hbase : Summable fun p => g p z.y := by
+    simpa only [g, d4BM_poincareSeedHorizontalFirstJetVerticalSlice_at_height] using
+      summable_d4BMPoincareSeedHorizontalFirstJet z P
+  have h := hasDerivAt_tsum_of_isPreconnected hM isOpen_Ioo isPreconnected_Ioo
+    hderiv hbound hymem hbase hymem
+  simpa only [g, g', dif_pos z.y_pos,
+    d4BM_poincareSeedHorizontalFirstJetVerticalSlice_at_height] using h
+
+/-- Raw vertical slice of the actual horizontal first jet. -/
+def d4BMRawPoincareHorizontalFirstJetVerticalSlice
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) (y : ℝ) : ℂ :=
+  (1 / 2 : ℂ) * ∑' p : D4BMPrimitiveIntegerPair,
+    d4BMPoincareSeedHorizontalFirstJetVerticalSlice z P.s p y
+
+/-- Completed vertical slice of the actual horizontal first jet. -/
+def d4BMCompletedPoincareHorizontalFirstJetVerticalSlice
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) (y : ℝ) : ℂ :=
+  reflectedCompletedLambda (2 * P.s) *
+    d4BMRawPoincareHorizontalFirstJetVerticalSlice z P y
+
+@[simp] theorem d4BM_completedPoincareHorizontalFirstJetVerticalSlice_at_height
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) :
+    d4BMCompletedPoincareHorizontalFirstJetVerticalSlice z P z.y =
+      d4BMCompletedPoincareHorizontalFirstJet z P := by
+  rfl
+
+theorem hasDerivAt_d4BMCompletedPoincareHorizontalFirstJetVerticalSlice
+    (z : D4BMUpperHalfPlaneCoordinate)
+    (P : D4BMEisensteinAbsoluteConvergenceParameter) :
+    HasDerivAt (d4BMCompletedPoincareHorizontalFirstJetVerticalSlice z P)
+      (d4BMCompletedPoincareMixedSecondJet z P) z.y := by
+  have h :=
+    ((hasDerivAt_tsum_d4BMPoincareSeedHorizontalFirstJet_vertical z P).const_mul
+      (1 / 2 : ℂ)).const_mul (reflectedCompletedLambda (2 * P.s))
+  change HasDerivAt
+    (fun y => d4BMCompletedPoincareHorizontalFirstJetVerticalSlice z P y)
+    (d4BMCompletedPoincareMixedSecondJet z P) z.y
+  simpa [d4BMCompletedPoincareHorizontalFirstJetVerticalSlice,
+    d4BMRawPoincareHorizontalFirstJetVerticalSlice,
+    d4BMCompletedPoincareMixedSecondJet,
+    d4BMRawPoincareMixedSecondJet] using h
+
 end
 end RHTower

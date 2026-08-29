@@ -333,3 +333,40 @@ agreeing-Leibniz-operators argument, polynomials first, then the quotient rule);
 `-r h⁻¹`; (d) `hnot` via (3) + (2); (e) the multiplicatively dependent case `aⁿ = bᵐ`, where the
 base is the ramified `k(w)`, `w = z^{1/n}`, and the obstruction is the untwisted one on the `n`
 distinct orbits of the `n`-th roots of unity.
+
+### ADH gate: the criterion is closed (generic multiplier pair)
+
+`HTGeometry/QDifferenceInhomogeneousHT.lean` now proves, unconditionally,
+
+> `hypertranscendentalOver_of_qDifference_cotModel` — let `a, b` be nonzero elements of a
+> characteristic-zero field with `bᵐ = aⁿ` only for `m = n = 0`, let `r = cotModel cc + γ₀` with
+> `cc ≠ 0`, and let `R` be a Laurent series with `R - a·R(bz) = r`.  Then `R` is differentially
+> transcendental over `k(z)` for the Euler derivation.
+
+This is the `q`-difference case of the Adamczewski–Dreyfus–Hardouin dichotomy in the shape the
+five cards need, and it is proved from the corpus's own differential Ostrowski criterion rather
+than imported.  The chain, with the modules that carry it:
+
+| Step | Module |
+|---|---|
+| Hahn dilations, gradings, twists, invariants | `HahnDilation` |
+| twisted orbit obstruction `γk(qX) − k(X) = r` | `TwistedDilationOrbitObstruction` |
+| Laurent descent of a twisted coboundary | `TwistedRatFuncLaurent` |
+| ambient `k((z))((h))`, its dilation and derivation, invariants = constants | `QDifferenceLaurentModel` |
+| base `k(z)(h)` and its embedding | `QDifferenceRatFuncEmbedding` |
+| Euler operator = Laurent grading, in one and two variables | `QDifferenceEulerCompat` |
+| the Ostrowski criterion instantiated in the model | `QDifferenceOstrowski` |
+| jets of `−r/h`, no telescoper, the shift identity, the transfer | `QDifferenceInhomogeneousHT` |
+
+Choosing `δ h = 0` (legitimate: any derivation commuting with the dilation may be used) removes the
+shifted-operator binomial that the naive `h = z^s` normalization would need — the jets of the
+increment are then literally the Euler jets of `r` divided by `h`.
+
+**What card 7 still needs.**  (i) `(1−a)/(1−z) = cotModel(−(1−a)/2) + (1−a)/2`; (ii) the corpus's
+`geometricKallenLehmannResponse` (a `PowerSeries ℝ`) transported to `LaurentSeries ℂ` with its
+self-similarity identity in the form `R − a·R(bz) = r`; (iii) the equivalence of hypertranscendence
+for `z d/dz` and for `d/dz`; (iv) the propagator transfer `G(−1/z) = −z R(z)`; (v) the
+multiplicatively *dependent* case `aⁿ = bᵐ`, where the whole argument runs in the single ramified
+variable `w = z^{1/n}` (no second coordinate is needed, since `h = w^{−m}` is already rational) and
+the only new ingredient is that a nonzero constant-coefficient Euler combination of a function with
+a simple pole at `ζ` has a pole there — the pole-order-increases-by-one lemma.

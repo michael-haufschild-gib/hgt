@@ -15,7 +15,7 @@ Already promoted (earlier session): `collision-regular-relative-yang-baxter-cham
 | 2 | diagonal-projective-ht-local-qft | DONE — `FlipDiagonalScattering` | **PROMOTED** |
 | 3 | non-difference-projective-ht-yang-baxter-control | DONE — `CorcoranDeLeeuwModelOne`, `UnipotentDiagonalizationObstruction`, `DifferenceFormReparametrisation`, `SingleGeneratorDifferentialDegree`, `AnchoredProjectiveEntryField` | **PROMOTED** |
 | 4 | relative-modular-hypertranscendental-scattering-carrier | DONE — `RelativeModularScattering` | **PROMOTED** |
-| 5 | two-state-regular-quantum-projective-da-rigidity | IN PROGRESS — algebraic core DONE (`ThreeParticleLegsRing`, `SutherlandLinearisation`, `MatrixEntriesInSubfield`, `SutherlandProjectiveAlgebraicity`); analytic half remains | IN PROGRESS |
+| 5 | two-state-regular-quantum-projective-da-rigidity | DONE — `ThreeParticleLegsRing`, `SutherlandLinearisation`, `MatrixEntriesInSubfield`, `SutherlandProjectiveAlgebraicity`, `MatrixHasDerivAt`, `BraidYangBaxterSutherland`, `AnalyticMatrixGerm`, `RegularBraidProjectiveDA`, `RegularQuantumAnchorCut` | **PROMOTED** |
 
 ## Route notes (established before any Lean was written)
 
@@ -110,12 +110,12 @@ classification input.  Corpus interface:
 `rank L_X = 15` for `X` near `I` and for random `X`, but `rank L_P = 12` — so the kernel condition
 genuinely fails at the flip and the near-identity (regularity) hypothesis is essential.
 
-**Remaining:**
-1. matrix-valued derivative toolkit (`HasMatrixDerivAt`, product rule, leg rule);
-2. differentiate the difference-form braid Yang--Baxter equation in the second parameter at zero to
-   obtain the Sutherland identity, with `H = Ř′ 0`;
-3. choose a ball around `0` on which the anchor entry and `det (sutherlandMatrix)` are nonvanishing
-   (both equal `1` at `a = 0`);
-4. transfer to `meroField U` through `analyticMeroElement` (ring-hom transfer of
-   `sutherlandMatrix` and `det`), then apply `differentialAlgebraicOver_entry_of_sutherland` and
-   the corpus bridge `differentialAlgebraicOver_analyticMeroElement_iff`.
+**All four remaining steps are now done** — `MatrixHasDerivAt` (matrix product/leg derivative
+rules), `BraidYangBaxterSutherland.sutherland_of_braid` (differentiating the braid equation at the
+anchor), `AnalyticMatrixGerm` (germ transfer of sums, products, legs, derivative, and pointwise
+evaluation), and `RegularBraidProjectiveDA.exists_jetRelation_normalized_of_regular_braid` (the
+analytic capstone).  Invertibility of the Sutherland system is obtained by evaluating its
+determinant at the anchor, where the matrix is the identity — no ball-shrinking argument is needed
+beyond the chart hypothesis that the anchor entry does not vanish.
+
+**PACKAGE COMPLETE: 9/9 cards in `3-formalized`.**

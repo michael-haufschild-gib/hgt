@@ -70,6 +70,11 @@ theorem sutherlandSolve_legRight_sub_legLeft (u₀ : κ)
 
 variable [Fintype κ]
 
+/-- The Sutherland source term built from a matrix and a constant. -/
+def sutherlandSource (X H : Matrix (κ × κ) (κ × κ) R) :
+    Matrix (TripleIndex κ) (TripleIndex κ) R :=
+  legRight H * (legLeft X * legRight X) - (legLeft X * legRight X) * legLeft H
+
 /-- The Sutherland endomorphism at `X`, normalised so that it is the identity at `X = 1`. -/
 def sutherlandOp (u₀ : κ) (X Z : Matrix (κ × κ) (κ × κ) R) :
     Matrix (κ × κ) (κ × κ) R :=
@@ -156,5 +161,70 @@ theorem sutherlandMatrix_one (u₀ : κ) :
   · rw [Matrix.one_apply_ne h, Matrix.single_apply, if_neg]
     rintro ⟨h1, h2⟩
     exact h (Prod.ext h1.symm h2.symm)
+
+section Map
+
+variable {S : Type*} [CommRing S]
+
+omit [Fintype κ] in
+theorem legLeft_map (f : R →+* S) (A : Matrix (κ × κ) (κ × κ) R) :
+    (legLeft A).map f = legLeft (A.map f) := by
+  ext i j
+  simp only [Matrix.map_apply, legLeft_apply]
+  rw [map_mul]
+  congr 1
+  by_cases h : i.2.2 = j.2.2 <;> simp [Matrix.one_apply, h]
+
+omit [Fintype κ] in
+theorem legRight_map (f : R →+* S) (A : Matrix (κ × κ) (κ × κ) R) :
+    (legRight A).map f = legRight (A.map f) := by
+  ext i j
+  simp only [Matrix.map_apply, legRight_apply]
+  rw [map_mul]
+  congr 1
+  by_cases h : i.1 = j.1 <;> simp [Matrix.one_apply, h]
+
+omit [Fintype κ] in
+theorem sutherlandSolve_map (f : R →+* S) (u₀ : κ)
+    (W : Matrix (TripleIndex κ) (TripleIndex κ) R) :
+    (HTGeometry.sutherlandSolve u₀ W).map f =
+      HTGeometry.sutherlandSolve u₀ (W.map f) := by
+  ext q r
+  simp only [Matrix.map_apply, HTGeometry.sutherlandSolve, Matrix.of_apply]
+  by_cases h1 : q.1 = r.1 <;> by_cases h2 : q.2 = r.2 <;>
+    simp [h1, h2, map_add, map_neg]
+
+theorem sutherlandSource_map (f : R →+* S) (X H : Matrix (κ × κ) (κ × κ) R) :
+    (sutherlandSource X H).map f = sutherlandSource (X.map f) (H.map f) := by
+  rw [sutherlandSource, sutherlandSource,
+    Matrix.map_sub (f := ⇑f) (fun a b => map_sub f a b), Matrix.map_mul, Matrix.map_mul,
+    Matrix.map_mul, Matrix.map_mul, legLeft_map, legRight_map, legLeft_map, legRight_map]
+
+theorem sutherlandOp_map (f : R →+* S) (u₀ : κ) (X Z : Matrix (κ × κ) (κ × κ) R) :
+    (sutherlandOp u₀ X Z).map f = sutherlandOp u₀ (X.map f) (Z.map f) := by
+  rw [sutherlandOp, sutherlandOp,
+    Matrix.map_add (f := ⇑f) (fun a b => map_add f a b), sutherlandSolve_map,
+    Matrix.map_sub (f := ⇑f) (fun a b => map_sub f a b), Matrix.map_mul,
+    Matrix.map_mul, legLeft_map, legLeft_map, legRight_map, legRight_map]
+  congr 1
+  ext i j
+  simp only [Matrix.map_apply, Matrix.smul_apply, smul_eq_mul, map_mul]
+  by_cases h : i = j <;> simp [Matrix.one_apply, h]
+
+omit [Fintype κ] in
+theorem single_map (f : R →+* S) (i₀ j₀ : κ × κ) :
+    (Matrix.single i₀ j₀ (1 : R)).map f = Matrix.single i₀ j₀ (1 : S) := by
+  ext i j
+  by_cases h : i₀ = i ∧ j₀ = j <;> simp [h]
+
+theorem sutherlandMatrix_map (f : R →+* S) (u₀ : κ) (X : Matrix (κ × κ) (κ × κ) R) :
+    (sutherlandMatrix u₀ X).map f = sutherlandMatrix u₀ (X.map f) := by
+  ext t s
+  simp only [Matrix.map_apply, sutherlandMatrix, Matrix.of_apply]
+  have h := congrFun (congrFun (sutherlandOp_map f u₀ X (Matrix.single s.1 s.2 1)) t.1) t.2
+  rw [Matrix.map_apply] at h
+  rw [h, single_map]
+
+end Map
 
 end GaloisForLFunctions.HTGeometry

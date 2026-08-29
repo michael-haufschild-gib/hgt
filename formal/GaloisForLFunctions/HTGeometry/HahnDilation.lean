@@ -489,6 +489,10 @@ theorem hahnMapRingHom_hahnTwist (ψ : R →+* S) (φ : R →+* R) (φ' : S →+
   rw [coeff_hahnMapRingHom, coeff_hahnTwist, coeff_hahnTwist, coeff_hahnMapRingHom, map_mul,
     hχ, hφ]
 
+theorem coeff_C_mul_hahn (c : R) (x : HahnSeries Γ R) (g : Γ) :
+    ((HahnSeries.C c : HahnSeries Γ R) * x).coeff g = c * x.coeff g := by
+  rw [mul_comm, HahnSeries.C_apply, HahnSeries.coeff_mul_single_zero, mul_comm]
+
 end CoeffRingHom
 
 end GaloisForLFunctions.HTGeometry

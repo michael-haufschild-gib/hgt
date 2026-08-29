@@ -87,6 +87,28 @@ theorem differentiallyAlgebraicOn_const_mul {U : Set ℂ} (hUo : IsOpen U) (hUc 
   differentiallyAlgebraicOn_mul hUo hUc hUne hUinf analyticOnNhd_const hf
     (differentiallyAlgebraicOn_const U c) hfDA
 
+
+/-- **Congruence on an open domain.**  Differential algebraicity only depends on the values on an
+open set.  (This restates `DifferentiallyAlgebraicOn.congr`, which is only reachable through the
+`RHTower` import chain, off that stack.) -/
+theorem differentiallyAlgebraicOn_of_eqOn {f g : ℂ → ℂ} {U : Set ℂ} (hU : IsOpen U)
+    (heq : Set.EqOn f g U) (hf : DifferentiallyAlgebraicOn f U) :
+    DifferentiallyAlgebraicOn g U := by
+  obtain ⟨n, P, hP0, hPv⟩ := hf
+  refine ⟨n, P, hP0, fun z hz => ?_⟩
+  have hev : f =ᶠ[nhds z] g := by
+    filter_upwards [hU.mem_nhds hz] with w hw using heq hw
+  have hjet : (Fin.cons z (fun j : Fin (n + 1) => iteratedDeriv (j : ℕ) g z) : Fin (n + 2) → ℂ)
+      = Fin.cons z (fun j : Fin (n + 1) => iteratedDeriv (j : ℕ) f z) := by
+    funext i
+    induction i using Fin.cases with
+    | zero => simp
+    | succ j =>
+        simp only [Fin.cons_succ]
+        exact (Filter.EventuallyEq.iteratedDeriv_eq (j : ℕ) hev).symm
+  rw [hjet]
+  exact hPv z hz
+
 end
 
 end GaloisForLFunctions.HTGeometry

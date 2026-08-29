@@ -150,3 +150,48 @@ The matching PDE is the algebraic form of the standard partial-matching criterio
 1. A. Isidori, A. J. Krener, C. Gori-Giorgi, and S. Monaco, *The Observability of Cascade Connected Nonlinear Systems*, IFAC Proceedings Volumes 14 (1981), 337--342.
 2. Y. Wang and E. D. Sontag, *Orders of Input/Output Differential Equations and State-Space Dimensions*, SIAM J. Control Optim. 33 (1995), 1102--1126.
 3. L.-W. Liao and C.-C. Yang, *On the growth and factorization of entire solutions of algebraic differential equations*, Ann. Acad. Sci. Fenn. Math. 25 (2000), 73--84.
+
+## Formalization (2026-08-29) — algebraic core complete
+
+`formal/GaloisForLFunctions/HTGeometry/OrderTwoShadowMatching.lean`, wired into
+`GaloisForLFunctions.HTGeometry`.  Unconditional; `#print axioms` gives only
+`propext, Classical.choice, Quot.sound`.
+
+The state system is formalized over an arbitrary commutative ring with the coordinate derivations
+`∂_z, ∂_x, ∂_v, ∂_y` (mathlib `Derivation ℤ K K`), the branch `A` with `∂_z A = ∂_v A = 0`, and the
+inner right-hand side `R`.
+
+| Card step | Lean name |
+|---|---|
+| the state derivation `D = ∂_z + v ∂_x + R ∂_v + A v ∂_y` | `shadowD` |
+| `D y = A v`, `D v = R`, `D A = v C` | `shadowD_y`, `shadowD_v`, `shadowD_A` |
+| `C = A_x + A_y A` | `shadowC` |
+| **`D²y = C v² + A R`** | `shadowD_sq_y` |
+| **the exact three-jet determinant `J = v²(2A_xC − AC_x) + A A_x(vR_v − R) − A²R_x`** | `shadow_determinant` |
+| `u = A_x/A`, `Ω = u² − u_x − A u_y` | `shadowU`, `shadowOmega` |
+| **the curvature identity `A²Ω = 2A_xC − AC_x`** | `shadowOmega_mul_sq` |
+| **the exact matching PDE: `J = 0 ↔ R_x − u(vR_v − R) = v²Ω`** | `shadow_determinant_eq_zero_iff` |
+| separable branch: `u = α'/α`, `Ω = u² − u_x` | `shadowU_separable`, `shadowOmega_separable` |
+| **sufficiency: `R = −u v² + α⁻¹F(z, αv)` solves the PDE** | `separable_normalForm_solves` |
+| **the characteristic first integral `α(R + u v²)`** | `separable_firstIntegral_identity` |
+| **completeness: PDE ⟺ `(∂_x − u v ∂_v)(α(R + u v²)) = 0`** | `separable_pde_iff_firstIntegral` |
+| the axioms are consistent and non-degenerate (`ℚ[z,x,v,y]`, `A = xy`, `R = z + xv`) | `shadow_state_axioms_nondegenerate` |
+
+`separable_pde_iff_firstIntegral` is the exact algebraic content of "the general solution is
+`R = −u v² + α⁻¹F(z, αv)`": the matching PDE holds precisely when `α(R + u v²)` is a first integral
+of the characteristic field, i.e. a function of `z` and `w = α(x)v` alone.  The branch `F` in the
+sufficiency direction is recorded by its value and its `w`-derivative through the chain rule
+`∂_x F = F_w α' v`, `∂_v F = F_w α`, which is exactly what "an arbitrary algebraic branch in its
+two displayed arguments" means.
+
+### Residue
+
+The `[PROVED]` zero-free-primitive boundary exclusion still needs two imported classical theorems
+that the corpus does not yet own:
+
+1. **Gol'dberg's theorem** — every entire solution of a first-order algebraic differential equation
+   has finite order of growth;
+2. Hadamard factorization for a zero-free entire function of finite order (`W = exp P`).
+
+Item 2 is close to the corpus's Hadamard/Weierstrass stack.  Item 1 is a genuine gap and is
+tracked in the folder's `_STAGE3-LEDGER.md`.  Until both are Lean-closed the card stays at stage 2.

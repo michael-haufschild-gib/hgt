@@ -1413,3 +1413,60 @@ Targeted module build passed.  Axiom audit:
 Card remains Stage 2.  Finite generation of the Steinberg source is closed; still required are full
 `𝓞 K` covering/presentation, identification and centrality of the relevant tame-kernel quotient,
 and Moore reciprocity.
+
+### Minimal primitive vector over `𝓞 K` (2026-08-29)
+
+`LatticeSubsetMinimum.lean` strengthens the shortest-vector compactness lemma from a whole discrete
+submodule to every nonempty subset of that lattice.  This distinction is necessary: primitive
+vectors over a non-PID Dedekind domain are not a submodule.
+
+`NumberFieldPrimitiveLattice.lean` then constructs the coordinatewise mixed-embedding lattice
+
+```text
+numberFieldIntegerVectorLattice K n
+    ⊆ Fin n → mixedEmbedding.mixedSpace K
+```
+
+identifies it homeomorphically with the finite product of mathlib's concrete integer lattices,
+derives its discrete topology, proves the primitive subset nonempty, and obtains:
+
+```text
+exists_numberFieldInteger_minimalPrimitiveVector
+    a primitive a : Fin n → 𝓞 K minimizing the mixed-embedding product norm
+
+exists_numberFieldInteger_minimalPrimitiveVector_detOneFirstCol
+    the same a together with β over 𝓞 K, det β = 1, first column β = a
+```
+
+No PID assumption, arbitrary lattice, discreteness premise, primitive-vector existence premise, or
+basis-extension premise remains.
+
+Both targeted module builds passed.  Axiom audits:
+`[propext, Classical.choice, Quot.sound]`.  Both modules are umbrella-wired.
+
+Card remains Stage 2.  Remaining covering brick: transport this minimum from the standard mixed norm
+to each positive balanced order form and carry the resulting block induction through the existing
+size-reduction witness.  Arithmetic bridge and Moore reciprocity remain afterward.
+
+### Positive order-form primitive minimum (2026-08-29)
+
+Three unconditional modules close the previously retained frame/form hypotheses:
+
+- `NumberFieldMixedVectorCoordinates.lean` reindexes the mixed-embedding lattice basis by
+  `Fin (finrank ℚ K)`, flattens `n` copies to `Fin (n * finrank ℚ K)`, and proves that embedded
+  algebraic-integer vectors have exactly their canonical integral-basis coefficients.
+- `NumberFieldPositiveFormPrimitiveMinimum.lean` factors every positive-definite matrix through an
+  invertible Euclidean Jacobi frame and applies lattice-subset minimization.  It returns an actual
+  primitive `a : Fin n → 𝓞 K`, a determinant-one matrix with first column `a`, and the direct
+  quadratic-form minimum inequality.
+- `NumberFieldOrderFormPrimitiveMinimum.lean` specializes this to every point of the positive
+  balanced order cone for the canonical basis of `𝓞 K`.
+
+Thus no arbitrary coordinates, continuous linear equivalence, lattice, discreteness, minimizer, or
+positive-definiteness premise remains in the order-form minimum.  All three targeted module builds
+passed; axiom audits are `[propext, Classical.choice, Quot.sound]`; all are umbrella-wired without
+building the umbrella.
+
+Card remains Stage 2.  The exact next open implication is the block induction converting this
+minimum plus `exists_numberFieldInteger_unipotentUpperReduction` into order-Siegel covering.  The
+later arithmetic obligations remain tame-kernel finite generation and Moore reciprocity.

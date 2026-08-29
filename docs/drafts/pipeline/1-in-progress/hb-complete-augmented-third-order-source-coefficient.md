@@ -1466,3 +1466,40 @@ This is formalized in
 RHTower.  Direct Lean and targeted build `12470/12470` pass.  Axiom audits of the actual
 Maass/full-Hessian identity and exhaustive actual defect decomposition report only `propext`,
 `Classical.choice`, and `Quot.sound`.
+
+**C-A.9t4b hard core (corpus-derived conjecture).**  Differentiate the genuine actual Poincare
+second jet through its locally normally convergent series, derive the horizontal and vertical
+differentiated eigen equations, and prove that the sole second Stokes defect from C-A.9t4a is a
+literal divergence of the second Bochner current.  Success removes the entire pointwise interior
+premise before the second modular Green--Stokes theorem; failure of third-jet normal convergence
+or of the Bochner identity kills HB at the actual-source level.  Exact chain:
+
+`actual third jets -> second defect = divergence -> second modular Green/Stokes -> actual balanced
+BM ++- coefficient -> negative BM leg -> conserved left-QNM projection -> HC94 -> RH`.
+
+`[PAPER-PROVED] [LEAN-PROVED] [SIGNIFICANT PREMISE DISCHARGED]` C-A.9t4b is closed.  Lean
+constructs the genuine `xxx`, `xxy`, `xyy`, and eigen-forced `yyy` completed Poincare jets.  A
+single geometric `y^-3` majorant proves the needed horizontal and vertical local normal
+convergence, so every derivative used below is an actual derivative of the completed source.
+Differentiating both actual eigen equations then supplies the two third-order relations needed by
+the Bochner calculation.
+
+For the genuine hyperbolic energy
+`e = y^2 (F_x^2 + F_y^2)`, Lean constructs both derivatives of `e` and the literal current
+`K = G grad(e) - e grad(G)`.  The exact pointwise identity is
+
+`2 * actualSecondStokesDefectDensity = y^2 * (horizontalDivergence K + verticalDivergence K)`.
+
+Thus the entire interior Bochner premise is discharged without a regularity premise, proxy jet,
+boundary hypothesis, or added axiom.  The only remaining obstruction before extraction of the
+actual balanced BM `++-` coefficient is the literal second modular-boundary/cusp finite-part
+theorem for this current.
+
+This is formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualThirdJet` and
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualSecondStokesCurrent`, both wired
+into RHTower.  Direct Lean passes; targeted builds pass at `12471/12471` and `12472/12472`.
+Axiom audits of the completed third derivatives, differentiated eigen equations, both current
+derivatives, the Bochner identity, and the headline defect-divergence theorem report only
+`propext`, `Classical.choice`, and `Quot.sound`.  Formal lint reports no forbidden declaration;
+remaining umbrella-reachability messages are unrelated pre-existing debt.

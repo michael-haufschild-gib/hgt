@@ -9,7 +9,7 @@ Already promoted (before this sweep): `ht-remote-quartet-compact-open-field-invi
 | # | Card | State | Blocking mathematics |
 |---|---|---|---|
 | 1 | combination-mode-reducibility-baker-bridge | OPEN | Baker–Wüstholz effective bound; Dirichlet pigeonhole no-go; Hankel support-≤d lemma |
-| 2 | da-ht-topological-interlacing-law | OPEN | O(Ω) Fréchet/Baire; DA locus closed+empty interior; Runge density; H²(D) density (Hölder owned) |
+| 2 | da-ht-topological-interlacing-law | **IN PROGRESS** | only Runge (DA density in the compact-open topology) remains; everything else is Lean-closed |
 | 3 | ht-c28-minimal-handle-collapse | OPEN | per-handle collapse citations (Weierstrass addition, holonomic, integration closure, vdPS, Hardouin–Singer) |
 | 4 | ht-da-translation-spectrum-countability | **PROMOTED 2026-08-29** | — |
 | 5 | ht-exact-da-translation-stabilizer | OPEN | Ostrowski no-finite-basis theorem; tail-gcd; locally cyclic realization |
@@ -56,3 +56,131 @@ Already promoted (before this sweep): `ht-remote-quartet-compact-open-field-invi
   stage 3: meromorphic (closed-countable-singular-set) countability, bounded-complexity
   accumulation, complexity escape, multiplicative corollary, and the finite-stencil extension in
   both directions.  Eight new Lean modules, all axiom-clean.
+
+## Card 2 progress (2026-08-29)
+
+Lean-closed so far:
+- `HTGeometry/HolomorphicCompactOpenDomain.lean` — `HoloCO Ω` (holomorphic functions on an open
+  `Ω ⊆ ℂ` as a closed complex subspace of `C(↥Ω, ℂ)`), complete/completely metrizable/Baire,
+  `ContinuousAdd`/`ContinuousSMul`, and continuity of every fixed jet
+  (`continuous_holoCOJet`).
+- `HTGeometry/DifferentialAlgebraicCompactOpenMeagre.lean` — the bounded-complexity strata
+  `daCompactOpenStratum`, their closedness, `daCompactOpenLocus_eq_iUnion`, and the **empty
+  interior** theorem via the explicit geometric jet configuration
+  `v (i,c) = a i ^ ((d+1)^(c+1))`, whose jet-sample matrix is a Vandermonde matrix after the
+  base-`(d+1)` digit bijection `finFunctionFinEquiv`.  Consequences: `isMeagre_daCompactOpenLocus`,
+  `isGδ_htCompactOpenLocus`, `dense_htCompactOpenLocus`, and the abstract selector-collapse laws.
+- `HTGeometry/HardyDifferentialAlgebraicInterlacing.lean` — the full Hardy half:
+  `dense_hardyDALocus` (polynomial truncations of `lp` sequences),
+  `memℓp_diskCoeff_reciprocalGammaEntire` and the bounded hypertranscendental carrier
+  `hardyHTCarrier`, `dense_compl_hardyDALocus` (at most one exceptional scalar per point), and
+  `hardy_phase_selector_collapse`.
+
+**Remaining for card 2: Runge's theorem.**  `DA(Ω)` dense in the compact-open topology needs
+"rational functions with poles off `Ω` are dense in `O(Ω)`", which is in neither mathlib nor the
+corpus (the corpus only owns the half-plane one-generator case).  Planned build:
+1. Cauchy integral formula on a rectangle (from mathlib's rectangle Cauchy theorem plus the
+   winding number of a rectangle boundary);
+2. the grid/edge-cancellation contour `Γ ⊆ Ω ∖ K` with `g = (2πi)⁻¹ ∮_Γ g(w)/(w−z) dw` on `K`;
+3. Riemann-sum approximation giving rational functions with poles on `Γ`;
+4. pole pushing along chains in `ℂ ∖ K`, and the `Ω`-hull reduction making every bounded
+   component of `ℂ ∖ K` meet `ℂ ∖ Ω`.
+
+## Corpus survey for the remaining cards' deep inputs (2026-08-29)
+
+Findings that change the effort estimates:
+
+- **Rectangle contour calculus is owned.**  `HTGeometry/RectangleResidue.lean` (namespace `RHTower`)
+  has `rectIntegral`, `rectangle_winding`, `rectIntegral_cauchyKernel` (`= 2πi` for a strict
+  interior point), `rectIntegral_eq_zero_of_analyticOnNhd`, `rectIntegral_add`,
+  `rectIntegral_const_mul`, `rectIntegral_congr`, `rectIntegral_finsetSum`; and
+  `RHTower/RectangleLocalCauchyFormula.lean` has the local Cauchy formula on a rectangle.
+  **Step 1 of the Runge build is therefore already done.**
+- **Picard–Vessiot exists but only for difference systems**: `DifferenceSystemPicardVessiot`,
+  `ParameterizedPicardVessiotExistence`, `DifferencePicardVessiotConstants`.  Card 12 needs the
+  *differential* PV theory with group `SL_N`, which is not present.
+- **A large superlacunary-hypertranscendence stack exists**: `FormalHypertranscendence.aeval_survives`
+  (formal HT of a gap series, with `(r,W)`-dependent global gap hypotheses),
+  `TaylorFormalBridge.hypertranscendental_of_aeval_survives`,
+  `LogSuperlacunaryMagnitudeHypertranscendence.hypertranscendental_of_eventually_logSuperlacunary`,
+  `MagnitudeIntegerDominance`, `BalancedCoefficient.gap_series_no_polynomial_relation`,
+  `hypertranscendental_add_polynomial_iff`.
+  This is the natural substitute for **Ostrowski** in card 5: the card's carrier
+  `F(z) = Σ c_k e^{2πi n_k z}` is `G(e^{2πi z})` for the entire gap series `G(w) = Σ c_k w^{n_k}`,
+  so coefficient algebraic independence can be replaced by a frequency-side superlacunarity
+  hypothesis.  **Open sub-problem:** `aeval_survives` needs the gap inequality
+  `∀k, r·b_k + 2W < b_{k+1}` globally in `k`, while an arbitrary relation has unbounded `(r,W)`;
+  truncating the prefix by a polynomial changes `W`, so an *eventual*-gap version of
+  `aeval_survives` (or a prefix-tolerant probe) is the missing piece.
+- **Effective Baker–Wüstholz is NOT owned** (only qualitative/general Baker), so card 1's Lemma R(ii)
+  stays blocked on the `effective-baker-matveev-project`.
+- **Full symmetric horizon monodromy is conditional on primitivity**:
+  `CriticalSchurCollisionSupportBound.criticalGeometricMonodromy_eq_top_of_isPreprimitive`
+  ("everything except primitivity is now discharged") and
+  `OccupationSubsetPrimitivity.criticalOccupationRootAction_isPreprimitive` (only for `m ≠ n`).
+  Card 7 is blocked on primitivity of the actual critical geometric monodromy.
+
+## Runge build — state (2026-08-29)
+
+`HTGeometry/RungeGridContour.lean` (built, axiom-clean, wired into the umbrella) now contains:
+
+- `hEdge`, `vEdge`, `rectIntegral_eq_edges` — the four-edge decomposition of `RHTower.rectIntegral`;
+- `gridCorner`, `gridSquare`, `gridRect`, `gridH`, `gridV`, `gridRect_eq_edges`;
+- `shiftUp`, `shiftRight`, `hCoeff`, `vCoeff` and **`sum_gridRect_eq_edges`** — the edge-cancellation
+  identity: a finite sum of grid-square contour integrals equals a signed sum of edge integrals;
+- `GridSelects`, `hCoeff_eq_zero_of_mem`, `vCoeff_eq_zero_of_mem`,
+  `hEdge_avoids_of_hCoeff_ne_zero`, `vEdge_avoids_of_vCoeff_ne_zero` — a surviving edge misses `K`;
+- `uIcc_reProdIm_gridSquare`, `analyticOnNhd_cauchyKernelMul`,
+  `gridRect_cauchyKernel_eq_zero`, `gridRect_cauchyKernel_eq_value` — the Cauchy kernel on one
+  grid square (`0` off the square, `2πi·F z` strictly inside).
+
+Also built (axiom-clean, wired):
+- `HTGeometry/IntervalRiemannSum.lean` — `uniformNode`, `uniformNode_last`,
+  `uniformNode_succ_sub`, and `norm_intervalIntegral_sub_uniformRiemannSum_le`
+  (left-endpoint Riemann sums with an oscillation bound).
+- `HTGeometry/RungeEdgeRiemann.lean` — `edgeCauchyIntegral`, `edgeCauchyRiemann`,
+  `continuousOn_edgeCauchyIntegrand`, and **`exists_edgeCauchyRiemann_approx`**: for `Z` compact
+  and disjoint from a compact parametrized edge, the Cauchy-kernel edge integral is uniformly
+  `ε`-approximated on `Z` by a rational function of `z` with simple poles at the nodes of the edge.
+- In `RungeGridContour.lean`: `dist_le_two_mul_of_mem_gridSquare`, **`exists_gridSelection`**
+  (a mesh `s < s₀` and the finite selected set `S` with `GridSelects S s K` and every selected
+  square inside `Ω`), `floor_grid_lt`, `grid_index_unique`, and **`sum_gridRect_cauchyKernel`**
+  (the representation `∑_{p∈S} gridRect (F(·)(·−z)⁻¹) = 2πi·F z` for `z` off the grid lines whose
+  own square is selected).
+
+Remaining stages, in order:
+4b. **Assembly of the contour representation.**  For `K ⊆ Ω` compact pick `s` with
+   `s√2 < dist(K, Ωᶜ)`; let `S` = squares meeting `K` (finite since `K` is bounded).  Then every
+   selected square is inside `Ω`, and for `z ∈ K` off the grid lines exactly one selected square
+   contains `z` strictly and no other square contains `z` at all, so
+   `F z = (2πi)⁻¹ Σ_{p∈S} gridRect (F(·)(·−z)⁻¹) s p`.  Combine with `sum_gridRect_eq_edges`.
+5. **Extension to all of `K`** — *simplified*: no continuity of the contour functional is needed.
+   For `z ∈ K` put `m = ⌊z.re/s⌋`, `n = ⌊z.im/s⌋`; the square `(m,n)` contains `z`, hence is
+   selected, and `z` is a limit of points `z_j` strictly inside it.  Each `z_j` is off the grid
+   lines with `(⌊z_j.re/s⌋, ⌊z_j.im/s⌋) = (m,n) ∈ S`, so the representation applies at `z_j`; the
+   estimate `|F(z_j) − R(z_j)| ≤ ε` then passes to `z` because `F` and the rational `R` (poles on
+   `Γ`, and `dist(K,Γ) > 0`) are both continuous at `z`.
+6. **Riemann sums** — DONE (`exists_edgeCauchyRiemann_approx`).
+7. **Pole pushing.**  `1/(z−a) = Σ (a−b)ⁿ/(z−b)ⁿ⁺¹` uniformly on `K` when `|a−b| < dist(b,K)`;
+   chain along a component of `ℂ ∖ K`; to `∞` (giving polynomials) on the unbounded component.
+8. **The `Ω`-hull.**  `K̂ := ℂ ∖ (union of the components of ℂ∖K that are unbounded or meet ℂ∖Ω)`
+   is compact, contains `K`, is contained in `Ω`, and every component of `ℂ ∖ K̂` is unbounded or
+   meets `ℂ ∖ Ω`.
+9. **Assembly**: `DA(Ω)` dense in the compact-open topology; finish card 2 and promote.
+
+### Runge simplification (2026-08-29): no `Ω`-hull, no pole-pushing chains
+
+Select the grid squares by **`gridSquare s p ⊆ Ω` and `gridSquare s p ⊆ ball 0 R`**, not by
+"meets `K`".  Then:
+
+* every square meeting `K` is still selected (choose `2s < dist(K, ℂ∖Ω)` and `K ⊆ ball 0 (R/2)`),
+  so `GridSelects` holds and the contour representation applies at every point of `K`;
+* the bounded components of `ℂ∖K` that lie inside `Ω` are *filled* by selected squares, so no
+  surviving edge encircles them — this is exactly what the `Ω`-hull was for;
+* a surviving edge has a neighbouring square that is either **not inside `Ω`** — and then that
+  square contains a point `b ∉ Ω` within `2s` of the edge, while `dist(b, K) ≥ dist(K, ℂ∖Ω)`, so a
+  **single** geometric-series step pushes the pole to `b` — or **not inside `ball 0 R`** — and then
+  the edge is at distance `≥ R/2` from `K`, so a single expansion in powers of `z` pushes the pole
+  to `∞`, producing a polynomial.
+
+So stages 7 (chaining) and 8 (hull) collapse to two truncated geometric series.

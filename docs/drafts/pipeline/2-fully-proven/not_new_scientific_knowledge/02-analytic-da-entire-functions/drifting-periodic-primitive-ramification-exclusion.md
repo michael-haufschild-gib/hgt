@@ -73,3 +73,29 @@ The proof is a direct application of quasi-periodic drift and the classical Neva
 1. Classical Nevanlinna second main theorem with ramification.
 2. Classical Briot--Bouquet classification, as recorded in A. E. Eremenko, *Meromorphic solutions of algebraic differential equations*, Russian Math. Surveys 37:4 (1982), 61--95.
 
+## Formalization (2026-08-29) — reduction complete, one classical import open
+
+`formal/GaloisForLFunctions/HTGeometry/DriftPeriodicRamification.lean`, wired into
+`GaloisForLFunctions.HTGeometry`.  Unconditional; `#print axioms` gives only
+`propext, Classical.choice, Quot.sound`.
+
+| Card step | Lean name |
+|---|---|
+| total ramification of a value | `TotallyRamified` |
+| `W(z + nT) = W(z) + nC` for every `n ∈ ℤ` | `drift_zsmul` |
+| **`W'` is `T`-periodic** | `deriv_drift_periodic`, `deriv_drift_zsmul` |
+| **`a` totally ramified ⟹ so is `a + nC`** | `totallyRamified_add_zsmul` |
+| the values `a + nC` are pairwise distinct | `drift_values_injective` |
+| **arbitrarily many totally ramified finite values** | `exists_finset_totallyRamified_card_ge` |
+
+So the whole card-specific content is Lean-closed.  The single remaining input is the classical
+bound it contradicts:
+
+> **Nevanlinna ramification bound.**  A nonconstant entire function has at most two totally
+> ramified finite values.
+
+Elementary routes were examined and rejected: the value-omitting case (`W' ` zero-free) does follow
+from Picard, and the finite-order case follows from the periodic-cylinder normal form
+`u = U(e^{2πiz/T})` with `U` rational; but the general case genuinely needs the second main theorem
+with ramification.  That theorem is now the tracked infrastructure item **I5** in the folder ledger,
+together with **I4** (Briot–Bouquet), which the autonomous first-order corollary needs.
