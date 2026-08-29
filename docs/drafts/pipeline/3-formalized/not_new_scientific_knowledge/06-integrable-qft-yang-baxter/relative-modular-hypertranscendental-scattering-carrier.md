@@ -1,7 +1,7 @@
 # Hypertranscendental scattering is a relative modular-conjugation invariant
 
 - **ID:** `relative-modular-hypertranscendental-scattering-carrier`
-- **Stage:** 2-fully-proven / not_new_scientific_knowledge
+- **Stage:** 3-formalized / not_new_scientific_knowledge
 - **Type:** BRIDGE THEOREM / ALGEBRAIC QFT / PHYSICAL ONTOLOGY
 - **Scientific status:** `[PROVED FROM PARENT AQFT] [DIRECT CONSEQUENCE]`
   `[NOT NEW SCIENTIFIC KNOWLEDGE]`
@@ -194,11 +194,45 @@ Hamiltonian or boost flow misses the interaction carrier in this class.
    correlation bound from the differential complexity of `(14)`, or conversely constrain its
    Kolchin strata from modular inclusions. No such theorem is proved here.
 
-## Lean boundary
+## Lean formalization
 
-Formalizing `(7)` as multiplication of two involutions would be wrapper theatre. The
-load-bearing inputs are external operator-algebraic scattering and modular theorems. No Lean edit
-or build is justified by this bridge.
+Formalized unconditionally in
+`formal/GaloisForLFunctions/HTGeometry/RelativeModularScattering.lean`.
+
+Møller operators and conjugations are real-linear isometric equivalences of complex normed
+spaces; `IsComplexLinearMap` and `IsConjugateLinearMap` separate the unitary from the antiunitary
+half, so "antiunitary" is a proved property here, not a label.
+
+- `incomingConjugation`, `interactingConjugation` and `physicalScattering` are `(4)`, `(5)`
+  and `(6)` verbatim.
+- `physicalScattering_eq_incoming_comp_interacting` proves `(7)`, `S_phys = J_in J`, from the
+  single fact that `J_0` is an involution; `interactingConjugation_eq_incoming_comp_scattering`
+  proves the companion factorization `J = J_in S_phys` with no hypothesis at all.
+- `IsConjugateLinearMap.comp` proves that a product of two antiunitaries is complex linear;
+  `incomingConjugation_conjugateLinear` and `interactingConjugation_conjugateLinear` prove that
+  both factors of `(7)` are antiunitary, and `physicalScattering_complexLinear` that the relative
+  modular operator is unitary.  `isComplexLinearMap_symm` supplies the inverse-Møller step.
+- `incoming_form_physicalScattering` proves `(9)`, `V_in^* S_phys V_in = V_out^* V_in`.
+- `incomingConjugation_involutive` and `incomingConjugation_conj_physicalScattering` prove
+  `(14)`--`(15)`: the relative modular unitary obeys `J_in M_W J_in = M_W^{-1}`, which for a
+  unitary is `M_W^*`.  `interactingConjugation_free`, `physicalScattering_free`,
+  `conjLIE_conjugateLinear` and `conjLIE_involutive` show the hypotheses are realized — complex
+  conjugation is an antiunitary involution and the free case `V_out = V_in` satisfies the
+  involution hypothesis on `J` — so none of these statements is vacuous.
+- `factorizingMultiplier` is `(10)`.  `factorizingMultiplier_translate` proves that it depends
+  only on rapidity differences, which is the exact algebraic content of `(8)`: a common boost adds
+  no interacting information.  `factorizingMultiplier_two_chamber` and
+  `factorizingMultiplier_two_diagonal` prove `(11)`: on a two-particle chamber the relative
+  modular multiplier is literally the input two-particle scattering function, so the two
+  descriptions generate the same differential field and the Kolchin signatures coincide.
+
+Direct Lean check, targeted leaf build and umbrella wiring done.  Axiom audit of every capstone
+above reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
+The operator-algebraic inputs the card *cites* — Bisognano--Wichmann, existence of the Møller
+operators, asymptotic completeness, and the explicit form of Lechner's factorizing multiplier —
+remain published theorems.  What is formalized is every identity the card itself derives from
+them.
 
 ## Primary literature
 
@@ -219,5 +253,7 @@ or build is justified by this bridge.
 - [x] factorizing multiparticle multiplier identified
 - [x] HT corollary derived from the existing local-QFT construction
 - [x] novelty rejected for the bridge itself
+- [x] exact Lean theorems, targeted leaf build, and axiom gate; antiunitarity, the relative
+  modular identity, the reality law, and boost invariance of the factorizing multiplier proved
 - [ ] nontrivial modular/Kolchin locality inequality
 - [ ] compact-local connected-sector transfer

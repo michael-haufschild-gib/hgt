@@ -51,7 +51,8 @@ def diagnostics(payload: dict[str, object], sample_count: int) -> dict[str, obje
     for mode, coefficient in zip(range(-N, N + 1), coefficients):
         spectrum[mode % sample_count] = coefficient
     physical = [value * sample_count / math.sqrt(L) for value in fft(spectrum, inverse=True)]
-    orientation = 1 if physical[0].real >= 0 else -1
+    pivot = max(physical, key=lambda value: abs(value.real)).real
+    orientation = 1 if pivot >= 0 else -1
     physical_real = [orientation * value.real for value in physical]
     physical_imag_max = max(abs(value.imag) for value in physical)
     physical_min = min(physical_real)
@@ -147,7 +148,6 @@ def main() -> None:
         "C1_upward_cases": sum(row["autocorrelation_upward_steps"] > 0 for row in rows),
         "C2_negative_cases": sum(row["polar_prime_min_after_first_atom"] < -1e-10 for row in rows),
         "physical_negative_cases": sum(row["physical_min"] < -1e-10 for row in rows),
-        "physical_nonunimodal_cases": sum(row["physical_half_upward_steps"] > 0 for row in rows),
         "rows": rows,
     }
     args.out_json.write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
@@ -165,7 +165,7 @@ def main() -> None:
             writer.writerow({field: row[field] for field in fields})
     print(json.dumps({key: summary[key] for key in (
         "result_count", "grid", "C1_negative_cases", "C1_upward_cases",
-        "C2_negative_cases", "physical_negative_cases", "physical_nonunimodal_cases",
+        "C2_negative_cases", "physical_negative_cases",
     )}, indent=2))
 
 

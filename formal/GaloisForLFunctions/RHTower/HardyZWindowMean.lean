@@ -151,7 +151,6 @@ theorem integral_hardyDirectSeries_eq_window {a b : ℝ} (hab : a ≤ b) {x : �
   simp_rw [intervalIntegral.integral_of_le hab]
   exact hs.tsum_eq.symm
 
-set_option maxHeartbeats 1600000 in
 theorem exists_abs_integral_hardyDirectSeries_le_window :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ {T a b x : ℝ}, 16 ≤ T → T ≤ a → a ≤ b → b ≤ 2 * T → 1 ≤ x →
       |∫ τ in a..b, (∑' n : ℕ, hardyDirectTerm x n τ)|
@@ -244,7 +243,6 @@ theorem exists_abs_integral_hardyDirectSeries_le_window :
 
 /-! ## The window mean of Hardy's `Z` -/
 
-set_option maxHeartbeats 1600000 in
 /-- **The mean of Hardy's `Z` over every subwindow of a dyadic block is `O(T^{3/4})`.** -/
 theorem exists_abs_integral_hardyZ_window_le :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ {T a b : ℝ}, 16 ≤ T → T ≤ a → a ≤ b → b ≤ 2 * T →
@@ -270,6 +268,7 @@ theorem exists_abs_integral_hardyZ_window_le :
   have hsqs1 : (1 : ℝ) ≤ Real.sqrt s := by
     rw [show (1 : ℝ) = Real.sqrt 1 by simp]
     exact Real.sqrt_le_sqrt (by linarith)
+  clear_value s x
   have hZint : IntervalIntegrable hardyZ volume a b :=
     continuous_hardyZ.intervalIntegrable _ _
   have hDint : IntervalIntegrable (fun τ : ℝ => ∑' n : ℕ, hardyDirectTerm x n τ)
@@ -333,7 +332,7 @@ theorem exists_abs_integral_hardyZ_window_le :
       _ ≤ 2 * 1 := by nlinarith
       _ = 2 := by ring
   have hdirbd := hdirect hT ha hab hb hx1
-  rw [hsqx] at hdirbd
+  rw [← hs, hsqx] at hdirbd
   have hKsT : 9 * K / s * T = 9 * K * s := by
     field_simp
     nlinarith [hs2]
@@ -348,7 +347,8 @@ theorem exists_abs_integral_hardyZ_window_le :
       exact htailT
     linarith [hdirbd]
   have hsss : (1 : ℝ) * s ≤ s * Real.sqrt s := by
-    nlinarith [hsqs1, hs0.le]
+    have h1 : s * 1 ≤ s * Real.sqrt s := mul_le_mul_of_nonneg_left hsqs1 hs0.le
+    linarith only [h1]
   calc |∫ τ in a..b, hardyZ τ|
       ≤ CD * (s * Real.sqrt s + s * Real.sqrt s)
         + (9 * K / s + Real.sqrt x * Real.exp (1 / 4) * Real.exp (-(T ^ 2))) * T := hsplitbd
@@ -359,10 +359,18 @@ theorem exists_abs_integral_hardyZ_window_le :
         linarith [hexpbd]
     _ ≤ 2 * CD * (s * Real.sqrt s) + 9 * K * (s * Real.sqrt s)
           + 2 * (s * Real.sqrt s) := by
-        have h9 : 9 * K * s ≤ 9 * K * (s * Real.sqrt s) := by
-          nlinarith [hK, hsss]
+        have hs_le : s ≤ s * Real.sqrt s := by
+          have h1 : s * 1 ≤ s * Real.sqrt s :=
+            mul_le_mul_of_nonneg_left hsqs1 hs0.le
+          rwa [mul_one] at h1
+        have h9 : 9 * K * s ≤ 9 * K * (s * Real.sqrt s) :=
+          mul_le_mul_of_nonneg_left hs_le (by linarith only [hK])
         have h2' : (2 : ℝ) ≤ 2 * (s * Real.sqrt s) := by
-          nlinarith [hsss, hs4]
+          have h1 : (1 : ℝ) ≤ s * Real.sqrt s := by
+            have h2 : (1 : ℝ) * 1 ≤ s * Real.sqrt s :=
+              mul_le_mul (by linarith only [hs4]) hsqs1 (by norm_num) hs0.le
+            linarith only [h2]
+          linarith only [h1]
         linarith
     _ = (2 * CD + 9 * K + 2) * (s * Real.sqrt s) := by ring
 

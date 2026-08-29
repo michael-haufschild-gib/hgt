@@ -1,7 +1,7 @@
 # Every self-adjoint BBM pullback completion remains purely continuous
 
 - **ID:** `bbm-pullback-completion-purely-continuous-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** DIRECT HILBERT--PÓLYA OPERATOR VERDICT / POSITIVE DOMAIN LAW
 - **Scientific status:** `[PROVED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Route status:** The exact Bender--Brody--Muller pullback metric and similarity cannot be repaired
@@ -217,4 +217,63 @@ It is therefore a useful direct Hilbert--Pólya closure theorem, not new scienti
 - [x] dilation spectral type computed by logarithmic and Fourier unitaries.
 - [x] BBM point-spectrum consequence derived.
 - [x] compact and trace-class repairs excluded.
-- [ ] construct a noncompact source-selected arithmetic coupling satisfying `(16)`.
+- [x] every proven theorem of the card formalized unconditionally in Lean and axiom-audited.
+- [ ] 3 -> 4: construct a noncompact source-selected arithmetic coupling satisfying `(16)`.  This
+      is the open positive programme the card identifies, not a theorem of the card.
+
+## Lean status
+
+All statements below are unconditional: no `sorry`, no added axioms.  Each audits to
+`[propext, Classical.choice, Quot.sound]`.
+
+New modules:
+
+| Module | Role |
+|---|---|
+| `HTGeometry/SelfAdjointResolvent.lean` | the unbounded self-adjoint resolvent theorem and the reducing-subspace lemma |
+| `HTGeometry/PullbackCompletion.lean` | the pullback norm, the isometric descent onto the range, and the identification of the completion with the closure of the range |
+| `HTGeometry/DilationSpectralType.lean` | multiplication symbols with null level sets have no eigenvectors; unitary invariance of that property |
+| `HTGeometry/ResolventCompactness.lean` | the resolvent as a bounded operator, its adjoint, and the compactness exclusions |
+| `RHTower/BBMPullbackCompletionVerdict.lean` | the composite verdict |
+| `RHTower/DilationGeneratorNoPointSpectrum.lean` | the dilation generator, its spectral diagonalization, and the verdict for it |
+
+| Card statement | Lean theorem |
+|---|---|
+| `(3)` the pullback norm `‖[f]‖_eta = ‖Delta f‖` | `GaloisForLFunctions.HTGeometry.pullbackNorm_mk` |
+| `(4)` the completion is the closure of the range | `pullbackSpace`, `injective_pullbackEmbedding`, `norm_pullbackEmbedding`, `closure_range_pullbackEmbedding`, `completeSpace_pullbackSpace` |
+| reducing-subspace lemma `(6)`--`(8)` | `mem_of_shiftedMap_eq` |
+| resolvent bijectivity used in `(6)` | `bijective_shiftedMap` (with `norm_sub_smul_lower_bound`, `isClosed_range_shiftedMap`, `orthogonal_range_shiftedMap_eq_bot`) |
+| `(12)` no eigenvectors for a multiplication symbol | `hasNoEigenvector_of_multiplication`, `volume_dilationSymbol_level_eq_zero` |
+| `(12)` transported through the two unitaries | `hasNoEigenvector_unitaryConjugate` |
+| the point-spectrum verdict of §3 | `RHTower.pullbackCompletion_hasNoEigenvector`, `RHTower.pullbackCompletion_multiplication_hasNoEigenvector` |
+| the reducing conclusion of §3 | `RHTower.pullbackCompletion_resolvent_mem` |
+| `(9)`--`(11)` the spectral diagonalization of `A` | `RHTower.physicalToSpectralUnitary`, `RHTower.dilationGenerator`, `RHTower.dilationGenerator_eq_unitaryConjugate` |
+| `(12)` for the dilation generator itself | `RHTower.hasNoEigenvector_dilationGenerator` |
+| §3 verdict for the dilation generator | `RHTower.pullbackCompletion_dilation_hasNoEigenvector`, `RHTower.pullbackCompletion_dilation_resolvent_mem` |
+| `A` is self-adjoint | `RHTower.isSelfAdjoint_dilationGenerator` |
+| §5 `A` has no compact resolvent | `RHTower.not_isCompactOperator_resolvent_dilationGenerator` |
+| §5 no bounded perturbation has one | `RHTower.not_isCompactOperator_boundedPerturbation_dilationGenerator` |
+
+The resolvent theorem for unbounded self-adjoint operators (`|Im z| ‖x‖ ≤ ‖A x - z x‖`, closed
+range, trivial orthogonal complement of the range, hence bijectivity of `A - z` at nonreal `z`) is
+not in mathlib and is built here.
+
+### Section 5 without the essential spectrum
+
+The compact and trace-class exclusions are proved in the elementary form that avoids Weyl's theorem
+and Kato--Rosenblum entirely.  `GaloisForLFunctions.HTGeometry.not_isCompactOperator_resolventCLM`
+shows that an eigenvector-free self-adjoint operator has no compact resolvent: the compact positive
+operator `R* R` has a norm-attaining eigenvector, which the two resolvent equations turn into an
+eigenvector of the operator itself.
+`GaloisForLFunctions.HTGeometry.not_isCompactOperator_of_boundedPerturbation` then transports that
+along the second resolvent identity, so no bounded perturbation — in particular no compact or
+trace-class one — can produce a compact resolvent.  This is exactly the card's conclusion that a
+viable arithmetic coupling must be noncompact.
+
+The dilation generator is defined by its spectral diagonalization, which is the standard rigorous
+definition of the self-adjoint realization of the formal expression `xp + px`, since that
+expression is only symmetric on a core.  The physical-to-spectral unitary is the corpus's
+logarithmic Jacobian (`suzukiPositiveHalfLineUnitary`) followed by its Mellin--Fourier unitary
+(`archimedeanMellinUnitary`), so `(9)`--`(11)` are exactly the composite
+`RHTower.physicalToSpectralUnitary`, and self-adjointness comes from the corpus's
+`maximalRealL2Mul_isSelfAdjoint` transported by unitary conjugation.

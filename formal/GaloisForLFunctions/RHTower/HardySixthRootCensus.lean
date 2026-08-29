@@ -25,12 +25,11 @@ heavy set and applying Cauchy–Schwarz to the *sum* instead gives `(T/8)² ≤ 
 a quadratically stronger count.  With the trivial window mean this lifts the census exponent
 from `T^{1/16}` to `T^{1/6}`, the ceiling of this route. -/
 
-set_option maxHeartbeats 1600000 in
 /-- **Heavy-window pigeonhole with Cauchy–Schwarz counting.**  If the dyadic second moment is
 at least `T/4`, the dyadic fourth moment is at most `M4`, and every window mean is at most
 `ME` with `ME² M4` losing to the cube of the heaviness threshold, then a family of windows —
 each carrying a critical-line zero — exists with `(T/8)² ≤ |S| · (T/K) · M4`. -/
-private theorem exists_heavyFinset_sq {T : ℝ} {K : ℕ} (hK1 : 1 ≤ K) (hT0 : 0 < T)
+theorem exists_heavyFinset_sq {T : ℝ} {K : ℕ} (hK1 : 1 ≤ K) (hT0 : 0 < T)
     {M4 ME : ℝ} (hM4 : 0 < M4)
     (hC : T / 4 ≤ ∫ τ in T..(2 * T), (hardyZ τ) ^ 2)
     (h4tot : (∫ τ in T..(2 * T), (hardyZ τ) ^ 4) ≤ M4)
@@ -212,7 +211,6 @@ private theorem exists_heavyFinset_sq {T : ℝ} {K : ℕ} (hK1 : 1 ≤ K) (hT0 :
             mul_le_mul_of_nonneg_left htot hTK0.le
           exact mul_le_mul_of_nonneg_left h1 hcard0
 
-set_option maxHeartbeats 1600000 in
 /-- The moment gap for the sign-change detector follows from the key coefficient inequality
 `512 K³ CE² (CF+1) (1+log T)⁴ < √T`. -/
 private theorem gap_of_key {T CE CF : ℝ} {K : ℕ} (hT0 : 0 < T) (hK1 : 1 ≤ K)
@@ -263,7 +261,7 @@ private theorem nested_four_sqrt_eq_rpow {T : ℝ} (hT0 : 0 ≤ T) :
   congr 1
   norm_num
 
-private theorem log_sq_le_rpow {T : ℝ} (hT1 : 1 ≤ T) :
+theorem log_sq_le_rpow {T : ℝ} (hT1 : 1 ≤ T) :
     (1 + Real.log T) ^ 2 ≤ 4624 * T ^ ((1 : ℝ) / 32) := by
   have hT0 : (0 : ℝ) < T := by linarith
   have h4 := one_add_log_pow_four_le_sixteenth hT1
@@ -290,7 +288,60 @@ namespace RHTower
 
 noncomputable section
 
-set_option maxHeartbeats 3200000 in
+private theorem no_small_x_sixth {T D0 CF Y : ℝ} (hT0 : 0 < T) (hCF : 0 ≤ CF)
+    (hD0pos : 0 < D0) (hD08 : 8 ≤ D0) (hY2 : 2 ≤ Y)
+    (hroot : Y ≤ T ^ ((1 : ℝ) / 96))
+    (hLsq : (1 + Real.log T) ^ 2 ≤ 4624 * T ^ ((1 : ℝ) / 32))
+    (hL0 : 0 < 1 + Real.log T)
+    (hYdef : Y = 9248 * D0 + 384 * D0 * (CF + 1) * 4624 ^ 3 + 2)
+    (hpow7 : (T ^ ((1 : ℝ) / 96)) ^ (7 : ℕ) = T ^ ((7 : ℝ) / 96))
+    (hT6 : T ^ ((1 : ℝ) / 6) ≤ 128 * D0 * (CF + 1) * (1 + Real.log T) ^ 6) :
+    False := by
+  have hL6 : (1 + Real.log T) ^ 6 ≤ 4624 ^ 3 * T ^ ((3 : ℝ) / 32) := by
+    have ha : ((1 + Real.log T) ^ 2) ^ 3 ≤ (4624 * T ^ ((1 : ℝ) / 32)) ^ 3 :=
+      pow_le_pow_left₀ (le_of_lt (pow_pos hL0 2)) hLsq 3
+    have hb : ((1 + Real.log T) ^ 2) ^ 3 = (1 + Real.log T) ^ 6 := by ring
+    have hc : (4624 * T ^ ((1 : ℝ) / 32)) ^ 3
+        = 4624 ^ 3 * (T ^ ((1 : ℝ) / 32)) ^ 3 := by ring
+    have hd : (T ^ ((1 : ℝ) / 32)) ^ (3 : ℕ) = T ^ ((3 : ℝ) / 32) := by
+      rw [← Real.rpow_natCast (T ^ ((1 : ℝ) / 32)) 3, ← Real.rpow_mul hT0.le]
+      congr 1
+      norm_num
+    rw [hb, hc, hd] at ha
+    exact ha
+  have hcomb : T ^ ((1 : ℝ) / 6)
+      ≤ (128 * D0 * (CF + 1) * 4624 ^ 3) * T ^ ((3 : ℝ) / 32) := by
+    have hpos : (0 : ℝ) ≤ 128 * D0 * (CF + 1) :=
+      mul_nonneg (mul_nonneg (by norm_num) (le_of_lt hD0pos))
+        (by linarith only [hCF])
+    calc T ^ ((1 : ℝ) / 6) ≤ 128 * D0 * (CF + 1) * (1 + Real.log T) ^ 6 := hT6
+      _ ≤ 128 * D0 * (CF + 1) * (4624 ^ 3 * T ^ ((3 : ℝ) / 32)) :=
+          mul_le_mul_of_nonneg_left hL6 hpos
+      _ = (128 * D0 * (CF + 1) * 4624 ^ 3) * T ^ ((3 : ℝ) / 32) := by ring
+  have hsplit2 : T ^ ((7 : ℝ) / 96) * T ^ ((3 : ℝ) / 32) = T ^ ((1 : ℝ) / 6) := by
+    rw [← Real.rpow_add hT0]
+    congr 1
+    norm_num
+  have h7 : T ^ ((7 : ℝ) / 96) ≤ 128 * D0 * (CF + 1) * 4624 ^ 3 := by
+    have h8 := hcomb
+    rw [← hsplit2] at h8
+    exact le_of_mul_le_mul_right h8 (Real.rpow_pos_of_pos hT0 _)
+  have h9 : Y ≤ T ^ ((7 : ℝ) / 96) := by
+    have ha : Y ^ 1 ≤ Y ^ 7 := pow_le_pow_right₀ (by linarith only [hY2]) (by norm_num)
+    have hb : Y ^ 7 ≤ (T ^ ((1 : ℝ) / 96)) ^ 7 :=
+      pow_le_pow_left₀ (by linarith only [hY2]) hroot 7
+    rw [pow_one] at ha
+    calc Y ≤ Y ^ 7 := ha
+      _ ≤ (T ^ ((1 : ℝ) / 96)) ^ 7 := hb
+      _ = T ^ ((7 : ℝ) / 96) := hpow7
+  have h10 : 128 * D0 * (CF + 1) * 4624 ^ 3 + 2 ≤ Y := by
+    rw [hYdef]
+    linarith only [hD08,
+      mul_nonneg (mul_nonneg (le_of_lt hD0pos) hCF)
+        (by norm_num : (0 : ℝ) ≤ 4624 ^ 3),
+      mul_nonneg (le_of_lt hD0pos) (by norm_num : (0 : ℝ) ≤ 4624 ^ 3)]
+  linarith only [h7, h9, h10]
+
 /-- **Sixth-root many distinct critical-line ordinates.**  Unconditionally, at least
 `c · T^{1/6} / (1 + log T)⁶` distinct ordinates in `(T, 2T]` carry critical-line zeros
 `ζ(1/2 + iτ) = 0`, for all large `T`. -/
@@ -452,22 +503,23 @@ theorem exists_many_distinct_line_zeros_dyadic_sixth :
     refine le_trans (hF (by linarith)) ?_
     rw [hM4def]
     have h1 : (0 : ℝ) ≤ T * (1 + Real.log T) ^ 4 := by positivity
-    nlinarith
+    linarith only [h1]
   have hEwin : ∀ k : ℕ, k < K →
       |∫ τ in (T + k * (T / K))..(T + ((k + 1 : ℕ) : ℝ) * (T / K)), hardyZ τ|
         ≤ CE * (Real.sqrt T * Real.sqrt (Real.sqrt T)) := by
     intro k hkK
     have hk1K : ((k : ℝ) + 1) ≤ (K : ℝ) := by exact_mod_cast hkK
     refine hE hT16 ?_ ?_ ?_
-    · have h0 : (0 : ℝ) ≤ (k : ℝ) * (T / K) := by positivity
-      linarith
+    · have h0 : (0 : ℝ) ≤ (k : ℝ) * (T / K) :=
+        mul_nonneg (Nat.cast_nonneg k) hTK0.le
+      linarith only [h0]
     · push_cast
-      nlinarith [hTK0]
+      linarith only [hTK0]
     · push_cast
       have h1 : ((k : ℝ) + 1) * (T / K) ≤ (K : ℝ) * (T / K) :=
         mul_le_mul_of_nonneg_right hk1K hTK0.le
       have h2 : (K : ℝ) * (T / K) = T := by field_simp
-      linarith
+      linarith only [h1, h2.le, h2.ge]
   obtain ⟨S, hSzero, hScount⟩ :=
     exists_heavyFinset_sq hK1 hT0 hM40 hCdyadic hM4dyadic hEwin hgap
   obtain ⟨τS, hτSmem, hτScard⟩ := exists_distinct_ordinates hT0 hK1 S hSzero
@@ -521,50 +573,7 @@ theorem exists_many_distinct_line_zeros_dyadic_sixth :
       calc T ^ ((1 : ℝ) / 6) = x * (D0 * (1 + Real.log T) ^ 2) := hxval
         _ ≤ 128 * (CF + 1) * (1 + Real.log T) ^ 4 * (D0 * (1 + Real.log T) ^ 2) := h2
         _ = 128 * D0 * (CF + 1) * (1 + Real.log T) ^ 6 := by ring
-    have hL6 : (1 + Real.log T) ^ 6 ≤ 4624 ^ 3 * T ^ ((3 : ℝ) / 32) := by
-      have ha : ((1 + Real.log T) ^ 2) ^ 3 ≤ (4624 * T ^ ((1 : ℝ) / 32)) ^ 3 :=
-        pow_le_pow_left₀ (le_of_lt (pow_pos hL0 2)) hLsq 3
-      have hb : ((1 + Real.log T) ^ 2) ^ 3 = (1 + Real.log T) ^ 6 := by ring
-      have hc : (4624 * T ^ ((1 : ℝ) / 32)) ^ 3
-          = 4624 ^ 3 * (T ^ ((1 : ℝ) / 32)) ^ 3 := by ring
-      have hd : (T ^ ((1 : ℝ) / 32)) ^ (3 : ℕ) = T ^ ((3 : ℝ) / 32) := by
-        rw [← Real.rpow_natCast (T ^ ((1 : ℝ) / 32)) 3, ← Real.rpow_mul hT0.le]
-        congr 1
-        norm_num
-      rw [hb, hc, hd] at ha
-      exact ha
-    have hcomb : T ^ ((1 : ℝ) / 6)
-        ≤ (128 * D0 * (CF + 1) * 4624 ^ 3) * T ^ ((3 : ℝ) / 32) := by
-      have hpos : (0 : ℝ) ≤ 128 * D0 * (CF + 1) :=
-        mul_nonneg (mul_nonneg (by norm_num) (le_of_lt hD0pos))
-          (by linarith only [hCF])
-      calc T ^ ((1 : ℝ) / 6) ≤ 128 * D0 * (CF + 1) * (1 + Real.log T) ^ 6 := hT6
-        _ ≤ 128 * D0 * (CF + 1) * (4624 ^ 3 * T ^ ((3 : ℝ) / 32)) :=
-            mul_le_mul_of_nonneg_left hL6 hpos
-        _ = (128 * D0 * (CF + 1) * 4624 ^ 3) * T ^ ((3 : ℝ) / 32) := by ring
-    have hsplit2 : T ^ ((7 : ℝ) / 96) * T ^ ((3 : ℝ) / 32) = T ^ ((1 : ℝ) / 6) := by
-      rw [← Real.rpow_add hT0]
-      congr 1
-      norm_num
-    have h7 : T ^ ((7 : ℝ) / 96) ≤ 128 * D0 * (CF + 1) * 4624 ^ 3 := by
-      have h8 := hcomb
-      rw [← hsplit2] at h8
-      exact le_of_mul_le_mul_right h8 (Real.rpow_pos_of_pos hT0 _)
-    have h9 : Y ≤ T ^ ((7 : ℝ) / 96) := by
-      have ha : Y ^ 1 ≤ Y ^ 7 := pow_le_pow_right₀ (by linarith only [hY2]) (by norm_num)
-      have hb : Y ^ 7 ≤ (T ^ ((1 : ℝ) / 96)) ^ 7 :=
-        pow_le_pow_left₀ (by linarith only [hY2]) hroot 7
-      rw [pow_one] at ha
-      calc Y ≤ Y ^ 7 := ha
-        _ ≤ (T ^ ((1 : ℝ) / 96)) ^ 7 := hb
-        _ = T ^ ((7 : ℝ) / 96) := hpow7
-    have h10 : 128 * D0 * (CF + 1) * 4624 ^ 3 + 2 ≤ Y := by
-      rw [hYdef]
-      linarith only [hD08,
-        mul_nonneg (mul_nonneg (le_of_lt hD0pos) hCF)
-          (by norm_num : (0 : ℝ) ≤ 4624 ^ 3),
-        mul_nonneg (le_of_lt hD0pos) (by norm_num : (0 : ℝ) ≤ 4624 ^ 3)]
-    linarith only [h7, h9, h10]
+    exact no_small_x_sixth hT0 hCF hD0pos hD08 hY2 hroot hLsq hL0 hYdef hpow7 hT6
   have hcard3 : (S.card : ℝ) ≤ 3 * (τS.card : ℝ) := by
     have h1 : (S.card : ℝ) ≤ 2 * (τS.card : ℝ) + 1 := by exact_mod_cast hτScard
     linarith only [h1, himg1]
@@ -618,7 +627,6 @@ theorem exists_sixthRoot_le_xiPosCriticalZeroCount_sub :
       ≤ (xiPosCriticalZeroCount (2 * T) : ℝ) := by exact_mod_cast hinj
   linarith only [hcard, hcast]
 
-set_option maxHeartbeats 800000 in
 /-- **A sixth-root lower bound for the critical-line census.**  Unconditionally, the number
 of critical-line zeros of `xi` with ordinate in `(0, T]`, counted with multiplicity, is at
 least `c · T^{1/6} / (1 + log T)⁶` for all large `T` — the ceiling of the window-pigeonhole

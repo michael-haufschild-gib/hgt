@@ -1,0 +1,339 @@
+import GaloisForLFunctions.HTGeometry.PolynomialODEJetC5FixedActionSeamClosure
+
+/-!
+# Exact completed C5 slope: optimized cumulants and chamber no-go
+
+This module replaces recursive Lie-derivative expansion by explicit division-free cumulant
+numerators through order eight.  It constructs the odd-corrected derivative of the exact completed
+C5 orientation, proves its seam factorization, and transports it through the Lyapunov and
+source-positive charts.
+
+The intended RH chain was: strict source-positive chamber inequalities force corrected-slope
+positivity; corrected-slope positivity forces global growth of exact completed C5 orientation;
+that supplies local direct fixed-action Jacobian orientation at every centre; compact/tail assembly
+crosses the seam/rank-four Ptolemy wall; cofinal no-escape yields CLG/TTF or Weil positivity and RH.
+
+The final theorem kills the first implication: even with every source-positive coordinate and the
+reconstructed gap strictly positive, corrected completed C5 slope can be negative.  Therefore no
+proof using only this chamber's coordinate signs can close the route.  Positive survivor: actual
+modular-orbit equations, or a stronger orbit invariant, are indispensable.
+-/
+
+open Complex Real
+
+namespace HTGeometry
+
+noncomputable section
+
+private theorem continuousAt_mvPolynomial_eval_curve
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (P : MvPolynomial ι ℂ) (g : ι → ℝ → ℂ) (x : ℝ)
+    (hg : ∀ j, ContinuousAt (g j) x) :
+    ContinuousAt (fun s => MvPolynomial.eval (fun j => g j s) P) x := by
+  induction P using MvPolynomial.induction_on with
+  | C a => simpa using (continuousAt_const : ContinuousAt (fun _ : ℝ => a) x)
+  | add p q hp hq =>
+      have hf : (fun s => MvPolynomial.eval (fun j => g j s) (p + q)) =
+          fun s => MvPolynomial.eval (fun j => g j s) p +
+            MvPolynomial.eval (fun j => g j s) q := by
+        funext s
+        simp
+      rw [hf]
+      convert hp.add hq using 1
+      ext s
+      rfl
+  | mul_X p i hp =>
+      have hf : (fun s => MvPolynomial.eval (fun j => g j s)
+          (p * MvPolynomial.X i)) =
+          fun s => MvPolynomial.eval (fun j => g j s) p * g i s := by
+        funext s
+        simp
+      rw [hf]
+      convert hp.mul (hg i) using 1
+      ext s
+      rfl
+
+/-- Division-free numerator `f₀² (log f)''`. -/
+def clearedLogJetTwo {R : Type*} [CommRing R] (f : ℕ → R) : R :=
+  f 0 * f 2 - f 1 ^ 2
+
+/-- Division-free numerator `f₀³ (log f)'''`. -/
+def clearedLogJetThree {R : Type*} [CommRing R] (f : ℕ → R) : R :=
+  f 0 ^ 2 * f 3 - 3 * f 0 * f 1 * f 2 + 2 * f 1 ^ 3
+
+/-- Division-free numerator `f₀⁴ (log f)⁽⁴⁾`. -/
+def clearedLogJetFour {R : Type*} [CommRing R] (f : ℕ → R) : R :=
+  f 0 ^ 3 * f 4 - 4 * f 0 ^ 2 * f 1 * f 3 -
+    3 * f 0 ^ 2 * f 2 ^ 2 + 12 * f 0 * f 1 ^ 2 * f 2 - 6 * f 1 ^ 4
+
+/-- Division-free numerator `f₀⁵ (log f)⁽⁵⁾`. -/
+def clearedLogJetFive {R : Type*} [CommRing R] (f : ℕ → R) : R :=
+  f 0 ^ 4 * f 5 - 5 * f 0 ^ 3 * f 1 * f 4 -
+    10 * f 0 ^ 3 * f 2 * f 3 + 20 * f 0 ^ 2 * f 1 ^ 2 * f 3 +
+    30 * f 0 ^ 2 * f 1 * f 2 ^ 2 - 60 * f 0 * f 1 ^ 3 * f 2 +
+    24 * f 1 ^ 5
+
+/-- Division-free numerator `f₀⁶ (log f)⁽⁶⁾`. -/
+def clearedLogJetSix {R : Type*} [CommRing R] (f : ℕ → R) : R :=
+  f 0 ^ 5 * f 6 - 6 * f 0 ^ 4 * f 1 * f 5 -
+    15 * f 0 ^ 4 * f 2 * f 4 - 10 * f 0 ^ 4 * f 3 ^ 2 +
+    30 * f 0 ^ 3 * f 1 ^ 2 * f 4 + 120 * f 0 ^ 3 * f 1 * f 2 * f 3 +
+    30 * f 0 ^ 3 * f 2 ^ 3 - 120 * f 0 ^ 2 * f 1 ^ 3 * f 3 -
+    270 * f 0 ^ 2 * f 1 ^ 2 * f 2 ^ 2 + 360 * f 0 * f 1 ^ 4 * f 2 -
+    120 * f 1 ^ 6
+
+/-- Division-free numerator `f₀⁷ (log f)⁽⁷⁾`. -/
+def clearedLogJetSeven {R : Type*} [CommRing R] (f : ℕ → R) : R :=
+  f 0 ^ 6 * f 7 - 7 * f 0 ^ 5 * f 1 * f 6 -
+    21 * f 0 ^ 5 * f 2 * f 5 + 42 * f 0 ^ 4 * f 1 ^ 2 * f 5 -
+    35 * f 0 ^ 5 * f 3 * f 4 + 210 * f 0 ^ 4 * f 1 * f 2 * f 4 -
+    210 * f 0 ^ 3 * f 1 ^ 3 * f 4 + 140 * f 0 ^ 4 * f 1 * f 3 ^ 2 +
+    210 * f 0 ^ 4 * f 2 ^ 2 * f 3 - 1260 * f 0 ^ 3 * f 1 ^ 2 * f 2 * f 3 +
+    840 * f 0 ^ 2 * f 1 ^ 4 * f 3 - 630 * f 0 ^ 3 * f 1 * f 2 ^ 3 +
+    2520 * f 0 ^ 2 * f 1 ^ 3 * f 2 ^ 2 - 2520 * f 0 * f 1 ^ 5 * f 2 +
+    720 * f 1 ^ 7
+
+/-- Division-free numerator `f₀⁸ (log f)⁽⁸⁾`. -/
+def clearedLogJetEight {R : Type*} [CommRing R] (f : ℕ → R) : R :=
+  f 0 ^ 7 * f 8 - 8 * f 0 ^ 6 * f 1 * f 7 -
+    28 * f 0 ^ 6 * f 2 * f 6 + 56 * f 0 ^ 5 * f 1 ^ 2 * f 6 -
+    56 * f 0 ^ 6 * f 3 * f 5 + 336 * f 0 ^ 5 * f 1 * f 2 * f 5 -
+    336 * f 0 ^ 4 * f 1 ^ 3 * f 5 - 35 * f 0 ^ 6 * f 4 ^ 2 +
+    560 * f 0 ^ 5 * f 1 * f 3 * f 4 + 420 * f 0 ^ 5 * f 2 ^ 2 * f 4 -
+    2520 * f 0 ^ 4 * f 1 ^ 2 * f 2 * f 4 + 1680 * f 0 ^ 3 * f 1 ^ 4 * f 4 +
+    560 * f 0 ^ 5 * f 2 * f 3 ^ 2 - 1680 * f 0 ^ 4 * f 1 ^ 2 * f 3 ^ 2 -
+    5040 * f 0 ^ 4 * f 1 * f 2 ^ 2 * f 3 +
+    13440 * f 0 ^ 3 * f 1 ^ 3 * f 2 * f 3 -
+    6720 * f 0 ^ 2 * f 1 ^ 5 * f 3 - 630 * f 0 ^ 4 * f 2 ^ 4 +
+    10080 * f 0 ^ 3 * f 1 ^ 2 * f 2 ^ 3 -
+    25200 * f 0 ^ 2 * f 1 ^ 4 * f 2 ^ 2 +
+    20160 * f 0 * f 1 ^ 6 * f 2 - 5040 * f 1 ^ 8
+
+/-- Cleared exact derivative of the ninth-order completed C5 seam orientation. -/
+def c5ExactCompletedSeamSlopeCleared {R : Type*} [CommRing R]
+    (p2 p3 p4 p5 p6 p7 p8 : R) : R :=
+  -p2 ^ 2 * p8 + 5 * p2 * p4 * p6 - 4 * p4 ^ 3 - 18 * p2 ^ 3 * p6 +
+    36 * p2 ^ 2 * p4 ^ 2 + p2 * p3 * p7 - 6 * p4 * p3 * p5 +
+    2 * p2 * p5 ^ 2 + 3 * p6 * p3 ^ 2 - 18 * p2 ^ 2 * p3 * p5 +
+    72 * p2 * p4 * p3 ^ 2
+
+/-- Four-state modular polynomial for exact odd-corrected C5 orientation slope. -/
+def modularThetaODENormalizedC5ExactCompletedSeamSlopePolynomial :
+    ModularThetaODEPolynomial :=
+  let f := modularThetaODENormalizedSourceJet
+  c5ExactCompletedSeamSlopeCleared
+    (clearedLogJetTwo f) (clearedLogJetThree f) (clearedLogJetFour f)
+    (clearedLogJetFive f) (clearedLogJetSix f) (clearedLogJetSeven f)
+    (clearedLogJetEight f)
+
+/-- On every algebraic seam, exact odd-corrected slope is source-sixth-power times the existing
+direct fixed-action C5 seam polynomial. -/
+theorem eval_modularThetaODENormalizedC5ExactCompletedSeamSlopePolynomial_seam
+    (R : ℂ) :
+    MvPolynomial.eval (modularThetaODESeamState R)
+        modularThetaODENormalizedC5ExactCompletedSeamSlopePolynomial =
+      MvPolynomial.eval (modularThetaODESeamState R)
+          (modularThetaODENormalizedSourceJet 0) ^ 6 *
+        MvPolynomial.eval (modularThetaODESeamState R)
+          modularThetaODENormalizedC5FixedActionSeamPolynomial := by
+  have h1 := eval_modularThetaODESourceJet_seam_odd_zero R 0
+  have h3 := eval_modularThetaODESourceJet_seam_odd_zero R 1
+  have h5 := eval_modularThetaODESourceJet_seam_odd_zero R 2
+  have h7 := eval_modularThetaODESourceJet_seam_odd_zero R 3
+  have hnorm (n : ℕ) :
+      MvPolynomial.eval (modularThetaODESeamState R)
+          (modularThetaODENormalizedSourceJet n) =
+        MvPolynomial.eval (modularThetaODESeamState R)
+          (modularThetaODESourceJet n) := by
+    have hfac := congrArg (MvPolynomial.eval (modularThetaODESeamState R))
+      (modularThetaODESourceJet_eq_X_H_mul_normalized n)
+    simpa [modularThetaODESeamState] using hfac.symm
+  unfold modularThetaODENormalizedC5ExactCompletedSeamSlopePolynomial
+    modularThetaODENormalizedC5FixedActionSeamPolynomial
+    c5ExactCompletedSeamSlopeCleared clearedLogJetTwo clearedLogJetThree
+    clearedLogJetFour clearedLogJetFive clearedLogJetSix clearedLogJetSeven
+    clearedLogJetEight
+  dsimp only
+  simp only [map_sub, map_mul, map_pow, map_add, map_neg, map_ofNat]
+  rw [hnorm 0, hnorm 1, hnorm 2, hnorm 3, hnorm 4, hnorm 5, hnorm 6,
+    hnorm 7, hnorm 8]
+  rw [h1, h3, h5, h7]
+  norm_num only [mul_zero, zero_mul, add_zero, zero_add, sub_zero, zero_sub,
+    zero_pow, pow_succ]
+  ring
+
+/-- The exact corrected C5 slope polynomial is negative on a source-positive universal seam. -/
+theorem eval_modularThetaODENormalizedC5ExactCompletedSeamSlopePolynomial_ten_re_neg :
+    (MvPolynomial.eval (modularThetaODESeamState 10)
+      modularThetaODENormalizedC5ExactCompletedSeamSlopePolynomial).re < 0 := by
+  rw [eval_modularThetaODENormalizedC5ExactCompletedSeamSlopePolynomial_seam,
+    eval_modularThetaODENormalizedC5FixedActionSeamPolynomial_seam]
+  rw [eval_modularThetaODENormalizedSourceJet_zero]
+  norm_num [modularThetaODESeamState, modularThetaC5FixedActionSeamPolynomial]
+
+/-- Lyapunov-chart exact corrected C5 slope polynomial. -/
+def modularThetaLyapunovC5ExactCompletedSeamSlopePolynomial :
+    ModularThetaLyapunovPolynomial :=
+  let f := modularThetaLyapunovNormalizedSourceJet
+  c5ExactCompletedSeamSlopeCleared
+    (clearedLogJetTwo f) (clearedLogJetThree f) (clearedLogJetFour f)
+    (clearedLogJetFive f) (clearedLogJetSix f) (clearedLogJetSeven f)
+    (clearedLogJetEight f)
+
+/-- Source-positive-chart exact corrected C5 slope polynomial. -/
+def modularThetaSourcePositiveC5ExactCompletedSeamSlopePolynomial :
+    ModularThetaSourcePositivePolynomial :=
+  let f := modularThetaSourcePositiveNormalizedSourceJet
+  c5ExactCompletedSeamSlopeCleared
+    (clearedLogJetTwo f) (clearedLogJetThree f) (clearedLogJetFour f)
+    (clearedLogJetFive f) (clearedLogJetSix f) (clearedLogJetSeven f)
+    (clearedLogJetEight f)
+
+/-- Four-state quotient transports exact corrected C5 slope without expansion. -/
+theorem modularThetaGeneralLyapunov_c5ExactCompletedSeamSlopePolynomial :
+    modularThetaGeneralLyapunovPullback
+        modularThetaLyapunovC5ExactCompletedSeamSlopePolynomial =
+      modularThetaODENormalizedC5ExactCompletedSeamSlopePolynomial := by
+  unfold modularThetaLyapunovC5ExactCompletedSeamSlopePolynomial
+    modularThetaODENormalizedC5ExactCompletedSeamSlopePolynomial
+    c5ExactCompletedSeamSlopeCleared clearedLogJetTwo clearedLogJetThree
+    clearedLogJetFour clearedLogJetFive clearedLogJetSix clearedLogJetSeven
+    clearedLogJetEight
+  dsimp only
+  simp only [map_sub, map_mul, map_pow, map_add, map_neg, map_ofNat]
+  rw [modularThetaGeneralLyapunov_normalizedSourceJet 0,
+    modularThetaGeneralLyapunov_normalizedSourceJet 1,
+    modularThetaGeneralLyapunov_normalizedSourceJet 2,
+    modularThetaGeneralLyapunov_normalizedSourceJet 3,
+    modularThetaGeneralLyapunov_normalizedSourceJet 4,
+    modularThetaGeneralLyapunov_normalizedSourceJet 5,
+    modularThetaGeneralLyapunov_normalizedSourceJet 6,
+    modularThetaGeneralLyapunov_normalizedSourceJet 7,
+    modularThetaGeneralLyapunov_normalizedSourceJet 8]
+
+/-- Source-positive chart transports exact corrected C5 slope without expansion. -/
+theorem modularThetaSourcePositiveChart_c5ExactCompletedSeamSlopePolynomial :
+    modularThetaSourcePositiveChartPullback
+        modularThetaLyapunovC5ExactCompletedSeamSlopePolynomial =
+      modularThetaSourcePositiveC5ExactCompletedSeamSlopePolynomial := by
+  unfold modularThetaLyapunovC5ExactCompletedSeamSlopePolynomial
+    modularThetaSourcePositiveC5ExactCompletedSeamSlopePolynomial
+    c5ExactCompletedSeamSlopeCleared clearedLogJetTwo clearedLogJetThree
+    clearedLogJetFour clearedLogJetFive clearedLogJetSix clearedLogJetSeven
+    clearedLogJetEight
+  dsimp only
+  simp only [map_sub, map_mul, map_pow, map_add, map_neg, map_ofNat]
+  rw [modularThetaSourcePositiveChart_sourceJet 0,
+    modularThetaSourcePositiveChart_sourceJet 1,
+    modularThetaSourcePositiveChart_sourceJet 2,
+    modularThetaSourcePositiveChart_sourceJet 3,
+    modularThetaSourcePositiveChart_sourceJet 4,
+    modularThetaSourcePositiveChart_sourceJet 5,
+    modularThetaSourcePositiveChart_sourceJet 6,
+    modularThetaSourcePositiveChart_sourceJet 7,
+    modularThetaSourcePositiveChart_sourceJet 8]
+
+/-- Corrected C5 slope is negative at source-positive seam scale `X=100`. -/
+theorem eval_modularThetaSourcePositiveC5ExactCompletedSeamSlopePolynomial_hundred_re_neg :
+    (MvPolynomial.eval (modularThetaSourcePositiveSeamState 100)
+      modularThetaSourcePositiveC5ExactCompletedSeamSlopePolynomial).re < 0 := by
+  rw [← modularThetaSourcePositiveChart_c5ExactCompletedSeamSlopePolynomial]
+  have hstate : modularThetaSourcePositiveSeamState 100 =
+      modularThetaSourcePositiveSeamState ((10 : ℝ) ^ 2) := by norm_num
+  rw [hstate]
+  rw [eval_modularThetaSourcePositiveChartPullback_seam]
+  rw [← eval_modularThetaGeneralLyapunovPullback_seam,
+    modularThetaGeneralLyapunov_c5ExactCompletedSeamSlopePolynomial]
+  exact eval_modularThetaODENormalizedC5ExactCompletedSeamSlopePolynomial_ten_re_neg
+
+/-- A strict source-positive chamber perturbation of the negative `X=100` seam. -/
+def modularThetaSourcePositiveC5SlopeChamberPerturbation (ε : ℝ) :
+    ModularThetaSourcePositiveState → ℂ
+  | .U => ε
+  | .B => ε
+  | .Q => 47 / 8
+
+/-- Strict positivity of all source-positive coordinates and reconstructed gap does not force
+positivity of the exact odd-corrected completed C5 seam slope. -/
+theorem exists_strictSourcePositiveChamber_eval_c5ExactCompletedSeamSlope_neg :
+    ∃ v : ModularThetaSourcePositiveState → ℂ,
+      (∀ i, 0 < (v i).re) ∧
+      0 < (MvPolynomial.eval v modularThetaSourcePositiveGap).re ∧
+      (MvPolynomial.eval v
+        modularThetaSourcePositiveC5ExactCompletedSeamSlopePolynomial).re < 0 := by
+  let g : ModularThetaSourcePositiveState → ℝ → ℂ :=
+    fun i ε => modularThetaSourcePositiveC5SlopeChamberPerturbation ε i
+  let f : ℝ → ℝ := fun ε =>
+    (MvPolynomial.eval (fun i => g i ε)
+      modularThetaSourcePositiveC5ExactCompletedSeamSlopePolynomial).re
+  have hg : ∀ i, ContinuousAt (g i) 0 := by
+    intro i
+    cases i
+    · simpa [g, modularThetaSourcePositiveC5SlopeChamberPerturbation] using
+        Complex.continuous_ofReal.continuousAt
+    · simpa [g, modularThetaSourcePositiveC5SlopeChamberPerturbation] using
+        Complex.continuous_ofReal.continuousAt
+    · simpa [g, modularThetaSourcePositiveC5SlopeChamberPerturbation] using
+        (continuousAt_const : ContinuousAt (fun _ : ℝ => (47 / 8 : ℂ)) 0)
+  have hcomplex : ContinuousAt
+      (fun ε => MvPolynomial.eval (fun i => g i ε)
+        modularThetaSourcePositiveC5ExactCompletedSeamSlopePolynomial) 0 :=
+    continuousAt_mvPolynomial_eval_curve
+      modularThetaSourcePositiveC5ExactCompletedSeamSlopePolynomial g 0 hg
+  have hfcont : ContinuousAt f 0 := by
+    dsimp only [f]
+    change ContinuousAt
+      (Complex.re ∘ fun ε => MvPolynomial.eval (fun i => g i ε)
+        modularThetaSourcePositiveC5ExactCompletedSeamSlopePolynomial) 0
+    exact Complex.continuous_re.continuousAt.comp hcomplex
+  have hgzero : (fun i => g i 0) = modularThetaSourcePositiveSeamState 100 := by
+    funext i
+    cases i <;>
+      norm_num [g, modularThetaSourcePositiveC5SlopeChamberPerturbation,
+        modularThetaSourcePositiveSeamState]
+  have hfzero : f 0 < 0 := by
+    simpa only [f, hgzero] using
+      eval_modularThetaSourcePositiveC5ExactCompletedSeamSlopePolynomial_hundred_re_neg
+  have hnegEventually : ∀ᶠ ε in nhds (0 : ℝ), f ε < 0 :=
+    hfcont.eventually (Iio_mem_nhds hfzero)
+  obtain ⟨δ, hδ, hnear⟩ := Metric.eventually_nhds_iff.mp hnegEventually
+  let ε : ℝ := min (δ / 2) (1 / 2)
+  have hε : 0 < ε := by
+    exact lt_min (by linarith) (by norm_num)
+  have hεhalf : ε ≤ 1 / 2 := by
+    exact min_le_right _ _
+  have hεδ : ε < δ := by
+    have hle : ε ≤ δ / 2 := min_le_left _ _
+    linarith
+  have hfε : f ε < 0 := by
+    apply hnear
+    simpa [Real.dist_eq, abs_of_pos hε] using hεδ
+  refine ⟨fun i => g i ε, ?_, ?_, ?_⟩
+  · intro i
+    cases i <;>
+      simp [g, modularThetaSourcePositiveC5SlopeChamberPerturbation, hε]
+  · simp only [modularThetaSourcePositiveGap, map_sub, map_add, map_mul, map_pow,
+      MvPolynomial.eval_C, MvPolynomial.eval_X]
+    simp [g, modularThetaSourcePositiveC5SlopeChamberPerturbation]
+    have hεsq : ((ε : ℂ) ^ 2).re = ε ^ 2 := by
+      norm_num [pow_two, Complex.mul_re]
+    rw [hεsq]
+    nlinarith [mul_nonneg hε.le (sub_nonneg.mpr hεhalf)]
+  · exact hfε
+
+/-- Exact route kill: no universal implication from strict source-positive chamber signs and gap
+positivity to positivity of the odd-corrected exact completed C5 slope can hold. -/
+theorem not_forall_strictSourcePositiveChamber_c5ExactCompletedSeamSlope_pos :
+    ¬ ∀ v : ModularThetaSourcePositiveState → ℂ,
+      (∀ i, 0 < (v i).re) →
+      0 < (MvPolynomial.eval v modularThetaSourcePositiveGap).re →
+      0 < (MvPolynomial.eval v
+        modularThetaSourcePositiveC5ExactCompletedSeamSlopePolynomial).re := by
+  intro h
+  obtain ⟨v, hv, hgap, hslope⟩ :=
+    exists_strictSourcePositiveChamber_eval_c5ExactCompletedSeamSlope_neg
+  linarith [h v hv hgap]
+
+end
+
+end HTGeometry

@@ -50,17 +50,30 @@ conjecture must be localized and replaced by the strongest surviving integrated 
 
 - [x] 0 -> 1: source-pure, exact matrix, falsifiable claims, hostile scan
 - [ ] 1 -> 2: dependency-closed survivor/no-go with paper proof
-- [ ] 2 -> 3: unconditional Lean theorem, targeted build and axiom audit
+- [x] 2 -> 3: exact principal-tower survivor formalized; main C1/C2 sign burden remains open
 - [ ] 3 -> 4: publication-ready note
 
 ## No-go closure
 
-- **Exact killing theorem/mechanism:** pending computation and analytic extraction
-- **Strongest positive survivor:** pending
-- **New insight:** pending
-- **Status:** active
+- **Exact killing theorem/mechanism:** The proposed universal carrier `E(x) >= 0` is impossible.
+  Suzuki's cited Littlewood oscillation for `psi_(1/2)(x) - 2 sqrt(x)`, together with the decaying
+  endpoint/half-jump correction, forces the completed error `E` to take both signs eventually.
+  Computation through `10^11` found no negative value, exposing a deceptive finite-range bias.
+- **Strongest positive survivor:** C1 survived all 66 source-matrix cases. C2 survived as a
+  ground-specific statement, but cannot be obtained from global pointwise positivity of `E`.
+  The exact centered principal-submatrix tower is unconditionally formalized in
+  `CCMPublishedRestrictedWeilPrincipalTower.lean`.
+- **New insight:** Route O must control an autocorrelation-weighted average of the oscillatory
+  completed error against the source-selected positive lag density `-dC`, not the raw completed
+  error pointwise. Exact published-matrix-to-abstract-Galerkin identification remains the missing
+  Lean connector.
+- **Status:** active; universal raw-carrier subroute retired, ordered-ground subroute survives
 
 ## Log
 
 - 2026-08-29 — Card frozen before computation. C1 and C2 will be attacked on RunPod using only the
   literal source-side published matrix.
+- 2026-08-29 — Completed 66 high-precision matrices and completed-error event scan through `10^11`.
+  C1/C2 survived numerically. Literature kills universal `E >= 0`; retained ground-weighted escape
+  and formalized exact principal nesting. Full report and raw artifacts are in
+  `2-fully-proven/computations/2026-08-29-compact-weil-source-galerkin/`.

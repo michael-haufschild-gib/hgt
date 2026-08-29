@@ -1,0 +1,14 @@
+segments 25/100
+segments 50/100
+segments 75/100
+segments 100/100
+{
+  "limit": 100000000,
+  "prime_count": 5761455,
+  "higher_prime_power_count": 1404,
+  "minimum": 0.0,
+  "minimum_at_integer": 1,
+  "final_completed_error": 2.8670813066382834,
+  "negative_found": false,
+  "elapsed_seconds": 0.3254389762878418
+}

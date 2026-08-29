@@ -17,6 +17,14 @@ noncomputable section
 
 variable {n : Type*} [Fintype n] [DecidableEq n]
 
+/-- Matrix inversion is continuous at every nonsingular complex matrix on an arbitrary finite
+index type. -/
+theorem continuousAt_fintypeMatrix_inv_of_det_ne_zero
+    {H : Matrix n n ℂ} (hdet : H.det ≠ 0) :
+    ContinuousAt (fun M : Matrix n n ℂ => M⁻¹) H := by
+  simp_rw [Matrix.inv_def, Ring.inverse_eq_inv]
+  fun_prop
+
 /-- Real trace pairing of two positive-semidefinite matrices on any finite index type is
 nonnegative. -/
 theorem fintypeMatrix_re_trace_mul_nonneg_of_posSemidef
@@ -190,6 +198,43 @@ theorem re_trace_mul_shiftedPosSemidef_inv_le
 def finiteMatrixResolventCutoff (H : Matrix n n ℂ) (ε : ℝ) : Matrix n n ℂ :=
   H * (H + (ε : ℂ) • (1 : Matrix n n ℂ))⁻¹
 
+/-- A fixed positive shift followed by matrix inversion is continuous at every positive-semidefinite
+source. -/
+theorem continuousAt_shiftedPosSemidef_inv
+    {H : Matrix n n ℂ} (hH : H.PosSemidef) {ε : ℝ} (hε : 0 < ε) :
+    ContinuousAt
+      (fun X : Matrix n n ℂ => (X + (ε : ℂ) • (1 : Matrix n n ℂ))⁻¹) H := by
+  have hshiftPos :
+      (H + (ε : ℂ) • (1 : Matrix n n ℂ)).PosDef := by
+    simpa [add_comm] using
+      (Matrix.PosDef.one.smul (α := ℝ) hε).add_posSemidef hH
+  have hdet : (H + (ε : ℂ) • (1 : Matrix n n ℂ)).det ≠ 0 := by
+    have hunit : IsUnit (H + (ε : ℂ) • (1 : Matrix n n ℂ)) := hshiftPos.isUnit
+    exact isUnit_iff_ne_zero.mp ((Matrix.isUnit_iff_isUnit_det _).mp hunit)
+  have hadd : ContinuousAt
+      (fun X : Matrix n n ℂ => X + (ε : ℂ) • (1 : Matrix n n ℂ)) H := by
+    fun_prop
+  simpa only [Function.comp_def] using ContinuousAt.comp
+    (f := fun X : Matrix n n ℂ => X + (ε : ℂ) • (1 : Matrix n n ℂ))
+    (g := fun X : Matrix n n ℂ => X⁻¹) (x := H)
+    (continuousAt_fintypeMatrix_inv_of_det_ne_zero hdet) hadd
+
+/-- A fixed positive resolvent cutoff depends continuously on its positive-semidefinite source. -/
+theorem continuousAt_finiteMatrixResolventCutoff
+    {H : Matrix n n ℂ} (hH : H.PosSemidef) {ε : ℝ} (hε : 0 < ε) :
+    ContinuousAt (fun X : Matrix n n ℂ => finiteMatrixResolventCutoff X ε) H := by
+  unfold finiteMatrixResolventCutoff
+  exact continuousAt_id.mul (continuousAt_shiftedPosSemidef_inv hH hε)
+
+/-- A convergent matrix family remains convergent after any fixed positive resolvent cutoff. -/
+theorem tendsto_finiteMatrixResolventCutoff_comp
+    {α : Type*} [TopologicalSpace α] {l : Filter α}
+    {X : α → Matrix n n ℂ} {H : Matrix n n ℂ}
+    (hX : Tendsto X l (𝓝 H)) (hH : H.PosSemidef) {ε : ℝ} (hε : 0 < ε) :
+    Tendsto (fun x => finiteMatrixResolventCutoff (X x) ε) l
+      (𝓝 (finiteMatrixResolventCutoff H ε)) :=
+  (continuousAt_finiteMatrixResolventCutoff hH hε).tendsto.comp hX
+
 /-- A positive-semidefinite cutoff is the unitary conjugate of `λ / (λ + ε)`. -/
 theorem finiteMatrixResolventCutoff_eq_spectral {H : Matrix n n ℂ} (hH : H.PosSemidef)
     {ε : ℝ} (hε : 0 < ε) :
@@ -250,10 +295,16 @@ theorem finiteMatrixResolventCutoff_posSemidef {H : Matrix n n ℂ} (hH : H.PosS
   exact_mod_cast mul_nonneg (hH.eigenvalues_nonneg i)
     (inv_nonneg.mpr (add_nonneg (hH.eigenvalues_nonneg i) hε.le))
 
-/-- Multiplying a positive regularized cutoff by its source remains positive semidefinite. -/
-theorem finiteMatrixResolventCutoff_mul_posSemidef {H : Matrix n n ℂ} (hH : H.PosSemidef)
-    {ε : ℝ} (hε : 0 < ε) :
-    (finiteMatrixResolventCutoff H ε * H).PosSemidef := by
+/-- Spectral form of a positive cutoff multiplied by its source. -/
+theorem finiteMatrixResolventCutoff_mul_eq_spectral
+    {H : Matrix n n ℂ} (hH : H.PosSemidef) {ε : ℝ} (hε : 0 < ε) :
+    finiteMatrixResolventCutoff H ε * H =
+      (hH.isHermitian.eigenvectorUnitary : Matrix n n ℂ) *
+        diagonal (fun i =>
+          (((hH.isHermitian.eigenvalues i *
+            (hH.isHermitian.eigenvalues i + ε)⁻¹ *
+            hH.isHermitian.eigenvalues i) : ℝ) : ℂ)) *
+        (hH.isHermitian.eigenvectorUnitary : Matrix n n ℂ)ᴴ := by
   let U : Matrix n n ℂ := hH.isHermitian.eigenvectorUnitary
   have hUU : Uᴴ * U = 1 := by
     simpa [U, Matrix.star_eq_conjTranspose] using
@@ -272,33 +323,38 @@ theorem finiteMatrixResolventCutoff_mul_posSemidef {H : Matrix n n ℂ} (hH : H.
   have hspec : H = U * diagonal (fun i => (hH.isHermitian.eigenvalues i : ℂ)) * Uᴴ := by
     simpa [U, Matrix.star_eq_conjTranspose] using
       isHermitian_eq_conj_diagonal hH.isHermitian
-  have heq : finiteMatrixResolventCutoff H ε * H =
+  change finiteMatrixResolventCutoff H ε * H =
       U * diagonal (fun i =>
         (((hH.isHermitian.eigenvalues i *
           (hH.isHermitian.eigenvalues i + ε)⁻¹ *
+          hH.isHermitian.eigenvalues i) : ℝ) : ℂ)) * Uᴴ
+  calc
+    finiteMatrixResolventCutoff H ε * H =
+        (U * diagonal (fun i =>
+          (((hH.isHermitian.eigenvalues i *
+            (hH.isHermitian.eigenvalues i + ε)⁻¹) : ℝ) : ℂ)) * Uᴴ) *
+        (U * diagonal (fun i => (hH.isHermitian.eigenvalues i : ℂ)) * Uᴴ) :=
+      congrArg₂ (fun X Y : Matrix n n ℂ => X * Y) hcut hspec
+    _ = U * (diagonal (fun i =>
+        (((hH.isHermitian.eigenvalues i *
+          (hH.isHermitian.eigenvalues i + ε)⁻¹) : ℝ) : ℂ)) *
+      diagonal (fun i => (hH.isHermitian.eigenvalues i : ℂ))) * Uᴴ := by
+      exact hconj _ _
+    _ = U * diagonal (fun i =>
+        (((hH.isHermitian.eigenvalues i *
+          (hH.isHermitian.eigenvalues i + ε)⁻¹ *
           hH.isHermitian.eigenvalues i) : ℝ) : ℂ)) * Uᴴ := by
-    calc
-      finiteMatrixResolventCutoff H ε * H =
-          (U * diagonal (fun i =>
-            (((hH.isHermitian.eigenvalues i *
-              (hH.isHermitian.eigenvalues i + ε)⁻¹) : ℝ) : ℂ)) * Uᴴ) *
-          (U * diagonal (fun i => (hH.isHermitian.eigenvalues i : ℂ)) * Uᴴ) :=
-        congrArg₂ (fun X Y : Matrix n n ℂ => X * Y) hcut hspec
-      _ = U * (diagonal (fun i =>
-          (((hH.isHermitian.eigenvalues i *
-            (hH.isHermitian.eigenvalues i + ε)⁻¹) : ℝ) : ℂ)) *
-        diagonal (fun i => (hH.isHermitian.eigenvalues i : ℂ))) * Uᴴ := by
-        exact hconj _ _
-      _ = U * diagonal (fun i =>
-          (((hH.isHermitian.eigenvalues i *
-            (hH.isHermitian.eigenvalues i + ε)⁻¹ *
-            hH.isHermitian.eigenvalues i) : ℝ) : ℂ)) * Uᴴ := by
-        rw [Matrix.diagonal_mul_diagonal]
-        congr 2
-        funext i
-        push_cast
-        rfl
-  rw [heq]
+      rw [Matrix.diagonal_mul_diagonal]
+      congr 2
+      funext i
+      push_cast
+      rfl
+
+/-- Multiplying a positive regularized cutoff by its source remains positive semidefinite. -/
+theorem finiteMatrixResolventCutoff_mul_posSemidef {H : Matrix n n ℂ} (hH : H.PosSemidef)
+    {ε : ℝ} (hε : 0 < ε) :
+    (finiteMatrixResolventCutoff H ε * H).PosSemidef := by
+  rw [finiteMatrixResolventCutoff_mul_eq_spectral hH hε]
   apply Matrix.PosSemidef.mul_mul_conjTranspose_same
   apply Matrix.PosSemidef.diagonal
   intro i
@@ -326,6 +382,101 @@ theorem finiteMatrixResolventCutoff_trace_re {H : Matrix n n ℂ} (hH : H.PosSem
         (hH.isHermitian.eigenvalues i + ε)⁻¹) : ℝ) : ℂ)) * Uᴴ).trace.re = _
   rw [Matrix.trace_mul_cycle, hUU, Matrix.one_mul, Matrix.trace_diagonal]
   norm_cast
+
+private theorem tendsto_complex_spectralCutoff_mul (a : ℝ) :
+    Tendsto (fun ε : ℝ => (a : ℂ) * ((a : ℂ) + (ε : ℂ))⁻¹ * (a : ℂ))
+      (𝓝[Ioi 0] 0) (𝓝 (a : ℂ)) := by
+  have hid : Tendsto (fun ε : ℝ => (ε : ℂ)) (𝓝[Ioi 0] 0) (𝓝 0) :=
+    Complex.continuous_ofReal.continuousAt.tendsto.comp
+      (tendsto_id.mono_right inf_le_left)
+  by_cases ha : a = 0
+  · simp [ha]
+  · have haC : (a : ℂ) ≠ 0 := by exact_mod_cast ha
+    have hconst : Tendsto (fun _ : ℝ => (a : ℂ))
+        (𝓝[Ioi 0] 0) (𝓝 (a : ℂ)) := tendsto_const_nhds
+    have hden : Tendsto (fun ε : ℝ => (a : ℂ) + (ε : ℂ))
+        (𝓝[Ioi 0] 0) (𝓝 (a : ℂ)) := by
+      simpa using hconst.add hid
+    simpa using (hconst.mul (hden.inv₀ haC)).mul hconst
+
+omit [Fintype n] in
+private theorem tendsto_diagonal_spectralCutoff_mul (eig : n → ℝ) :
+    Tendsto (fun ε : ℝ => diagonal (fun i =>
+        (((eig i * (eig i + ε)⁻¹ * eig i) : ℝ) : ℂ)))
+      (𝓝[Ioi 0] 0)
+      (𝓝 (diagonal (fun i => (eig i : ℂ)))) := by
+  apply tendsto_pi_nhds.mpr
+  intro i
+  apply tendsto_pi_nhds.mpr
+  intro j
+  by_cases hij : i = j
+  · subst j
+    simpa [Matrix.diagonal_apply] using tendsto_complex_spectralCutoff_mul (eig i)
+  · simp [hij]
+
+private theorem tendsto_conjugate_diagonal_spectralCutoff_mul
+    (eig : n → ℝ) (U : Matrix n n ℂ) :
+    Tendsto (fun ε : ℝ => U * diagonal (fun i =>
+        (((eig i * (eig i + ε)⁻¹ * eig i) : ℝ) : ℂ)) * Uᴴ)
+      (𝓝[Ioi 0] 0)
+      (𝓝 (U * diagonal (fun i => (eig i : ℂ)) * Uᴴ)) := by
+  apply tendsto_pi_nhds.mpr
+  intro i
+  apply tendsto_pi_nhds.mpr
+  intro j
+  have hsum : Tendsto
+      (fun ε : ℝ => ∑ k, (U i k *
+        (((eig k * (eig k + ε)⁻¹ * eig k) : ℝ) : ℂ)) * Uᴴ k j)
+      (𝓝[Ioi 0] 0)
+      (𝓝 (∑ k, (U i k * (eig k : ℂ)) * Uᴴ k j)) := by
+    apply tendsto_finsetSum
+    intro k _hk
+    exact (tendsto_const_nhds.mul (by
+      simpa using tendsto_complex_spectralCutoff_mul (eig k))).mul
+        tendsto_const_nhds
+  simpa [Matrix.mul_apply, Matrix.diagonal_apply] using hsum
+
+private theorem eventuallyEq_finiteMatrixResolventCutoff_mul_spectral
+    {H : Matrix n n ℂ} (hH : H.PosSemidef) :
+    (fun ε : ℝ => finiteMatrixResolventCutoff H ε * H) =ᶠ[𝓝[Ioi 0] 0]
+      (fun ε : ℝ =>
+        (hH.isHermitian.eigenvectorUnitary : Matrix n n ℂ) *
+          diagonal (fun i =>
+            (((hH.isHermitian.eigenvalues i *
+              (hH.isHermitian.eigenvalues i + ε)⁻¹ *
+              hH.isHermitian.eigenvalues i) : ℝ) : ℂ)) *
+          (hH.isHermitian.eigenvectorUnitary : Matrix n n ℂ)ᴴ) := by
+  filter_upwards [self_mem_nhdsWithin] with ε hε
+  exact finiteMatrixResolventCutoff_mul_eq_spectral hH hε
+
+/-- A regularized cutoff multiplied by its source converges back to that source. -/
+theorem tendsto_finiteMatrixResolventCutoff_mul
+    {H : Matrix n n ℂ} (hH : H.PosSemidef) :
+    Tendsto (fun ε : ℝ => finiteMatrixResolventCutoff H ε * H)
+      (𝓝[Ioi 0] 0) (𝓝 H) := by
+  have hconj :
+      Tendsto (fun ε : ℝ =>
+        (hH.isHermitian.eigenvectorUnitary : Matrix n n ℂ) *
+          diagonal (fun i =>
+            (((hH.isHermitian.eigenvalues i *
+              (hH.isHermitian.eigenvalues i + ε)⁻¹ *
+              hH.isHermitian.eigenvalues i) : ℝ) : ℂ)) *
+          (hH.isHermitian.eigenvectorUnitary : Matrix n n ℂ)ᴴ)
+        (𝓝[Ioi 0] 0)
+        (𝓝 ((hH.isHermitian.eigenvectorUnitary : Matrix n n ℂ) *
+          diagonal (fun i => (hH.isHermitian.eigenvalues i : ℂ)) *
+          (hH.isHermitian.eigenvectorUnitary : Matrix n n ℂ)ᴴ)) :=
+    tendsto_conjugate_diagonal_spectralCutoff_mul
+      hH.isHermitian.eigenvalues hH.isHermitian.eigenvectorUnitary
+  have hspec : H =
+      (hH.isHermitian.eigenvectorUnitary : Matrix n n ℂ) *
+        diagonal (fun i => (hH.isHermitian.eigenvalues i : ℂ)) *
+        (hH.isHermitian.eigenvectorUnitary : Matrix n n ℂ)ᴴ := by
+    simpa [Matrix.star_eq_conjTranspose] using
+      isHermitian_eq_conj_diagonal hH.isHermitian
+  rw [← hspec] at hconj
+  exact Filter.Tendsto.congr'
+    (eventuallyEq_finiteMatrixResolventCutoff_mul_spectral hH).symm hconj
 
 /-- As regularization decreases to zero, cutoff trace converges to matrix rank. -/
 theorem tendsto_finiteMatrixResolventCutoff_trace_re_rank

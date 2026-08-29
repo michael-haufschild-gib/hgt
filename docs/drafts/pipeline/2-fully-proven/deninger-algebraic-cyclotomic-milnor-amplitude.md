@@ -1343,3 +1343,28 @@ use.
 | the covering descent itself over `𝒪_F` | to build — the Hermite/Siegel induction: a minimal primitive vector, the split above, and size reduction by the covering radius |
 | `SL_n(𝒪_F)` f.p. ⟹ `K₂(𝒪_F)` f.g. | owned |
 | Moore's reciprocity | the remaining classical producer |
+
+### Concrete number-field covering radius (2026-08-29)
+
+`formal/GaloisForLFunctions/HTGeometry/NumberFieldIntegerCoveringRadius.lean` discharges the
+structural basis/span premise left implicit by `LatticeCoveringRadius`:
+
+```text
+exists_numberFieldInteger_coveringRadius
+    ∃ R ≥ 0, ∀ x : mixedEmbedding.mixedSpace K,
+      ∃ a : 𝓞 K, ‖x - mixedEmbedding K (a : K)‖ ≤ R
+
+exists_numberFieldInteger_coordinateCoveringRadius
+    the same algebraic integer simultaneously approximates every real and complex place coordinate
+```
+
+The witness is an actual algebraic integer, obtained by rewriting the integral span of mathlib's
+`mixedEmbedding.latticeBasis` as `mixedEmbedding.integerLattice`.  Thus no arbitrary Hilbert-space
+basis, lattice-span equality, density hypothesis, or ambient-norm-to-place-bound hypothesis remains
+in the size-reduction input.
+
+Targeted module build passed.  Axiom audit:
+`[propext, Classical.choice, Quot.sound]`.  Umbrella-wired.
+
+Card remains Stage 2: covering descent over `𝓞 K`, finite generation of the tame kernel, and
+Moore reciprocity remain.

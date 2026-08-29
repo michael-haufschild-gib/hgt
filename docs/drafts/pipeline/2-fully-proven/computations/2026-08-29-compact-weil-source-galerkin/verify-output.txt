@@ -1,0 +1,26 @@
+{
+  "campaign_result_count": 66,
+  "all_ground_eigenvalues_positive": true,
+  "all_rank_sequences_antitone": true,
+  "maximum_formula_quadrature_error": 1.7262662547992364e-219,
+  "maximum_eigen_residual": 1.2647766188116476e-219,
+  "maximum_component_sum_error": 4.1353828157233825e-221,
+  "maximum_even_parity_error_double": 0.0,
+  "C1_negative_cases": 0,
+  "C1_upward_cases": 0,
+  "C2_negative_cases": 0,
+  "completed_error_limits": [
+    100000000,
+    10000000000,
+    100000000000
+  ],
+  "completed_error_minima": [
+    0.9240844906388218,
+    0.9240844906388218,
+    0.9240844906388218
+  ],
+  "reference_prime_counts_reproduced": true,
+  "independent_1e8_segmentation_reproduced": true,
+  "failures": [],
+  "passed": true
+}

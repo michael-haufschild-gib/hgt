@@ -88,3 +88,39 @@ the shared lemmas `window_fourth_le`, `exists_distinct_ordinates`,
 **Honest assessment.** Still quantitatively subsumed by Hardy–Littlewood 1921 (`N₀ ≫ T`) —
 not new mathematics.  New-to-corpus; the machine-checked-polynomial-census priority claim
 remains [NOVELTY UNVERIFIED].
+
+---
+
+## Upgrade 2: the two-sevenths census via the resonance-graded window mean
+
+**Claim.** Unconditionally, `N₀(T) ≥ c · T^{2/7} / (1 + log T)⁹` for all large `T`, with the
+dyadic-difference form. [LEAN-PROVED]; axioms propext / Classical.choice / Quot.sound.
+
+**The new analytic brick** (`HardyZWindowMeanSharp.lean`, ~1300 lines, compiles at default
+heartbeats): the sharp window mean
+`|∫_a^b Z| ≤ C(T^{1/4}(1+log T) + (b−a)T^{-1/4} + √x + (b−a)T/x)` for every window
+`[a,b] ⊆ [T,2T]` and cutoff `1 ≤ x ≤ e^T`.  Mechanism: on a window, the phase rate of the
+`m`-th direct term is `log(√(τ/2π)/m) + O(1/T)`; the first-derivative van der Corput test is
+graded by the logarithmic distance of `m` to the moving resonance band `[√(a/2π), √(b/2π)]`,
+and the near-resonant sums close by a harmonic telescope (`-log(1−u) ≥ u` + `Σ 1/k ≤ 1+log`)
+— no dyadic shells.  The `O((b−a)/√T + 1)` crossing terms take the second-derivative test at
+`T^{1/4}` each; the far terms keep the graded-by-1 test against the cutoff weight sum `√x`.
+
+**The census step** (`HardyTwoSeventhCensus.lean`, compiles at default heartbeats): at
+`x = T^{8/7}` and `K = ⌊T^{2/7}/(D(1+log T)⁵)⌋` windows the per-window mean is
+`≤ 6·CS·D·(1+log T)⁵·T^{4/7}`, the gap `512K³ME²(CF+1)L⁴ < T²` closes with a factor `L` to
+spare, and the Cauchy–Schwarz heavy count gives `K/(64(CF+1)L⁴)` zeros per dyadic block.
+Capstones: `exists_many_distinct_line_zeros_dyadic_twoSeventh`,
+`exists_twoSeventhRoot_le_xiPosCriticalZeroCount_sub`,
+`exists_twoSeventhRoot_le_xiPosCriticalZeroCount`.
+
+**Ceiling of this pass.** `2/7` is forced by `√x`-vs-`(b−a)T/x` balancing (`x=((b−a)T)^{2/3}`
+gives mean `((b−a)T)^{1/3}`, gap `H > T^{5/7}`).  The remaining losses to `N₀ ≫ T`: the
+crude `O(T/x)` pointwise dual-edge bound (treating the reflected edge oscillatorily would
+allow `x ≈ √T`), and the fourth-moment Cauchy–Schwarz in the counting.  Both are now the
+precisely-localized open layers.
+
+**Engineering.** All five Hardy census modules now compile with ZERO `maxHeartbeats`
+escalations (user directive): `linarith only`, explicit `mul_le_mul` chains, and
+per-block private lemmas replace context-wide `nlinarith`; the sharp module builds in 40 s
+against ~570 s for the earlier escalated files.

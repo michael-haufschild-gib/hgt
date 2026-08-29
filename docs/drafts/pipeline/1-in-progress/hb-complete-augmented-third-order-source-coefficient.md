@@ -1086,6 +1086,27 @@ Poisson, Schwartz, Fubini, or Bessel premise is assumed.  This is formalized in
 passes direct Lean plus targeted build `12213/12213`.  Headline axiom audits report only `propext`,
 `Classical.choice`, and `Quot.sound`.
 
+**C-A.9t4b hard core (corpus-derived conjecture; active).**  Corpus search finds no actual third
+Poincare jets or second Bochner current, while C-A.9t4a proves that this is now the sole remaining
+coefficient obstruction.  Construct the four genuine third jets of the actual completed Poincare
+series by local normal convergence in the existing `Re(s) > 1` chamber.  Differentiate the actual
+eigen equation in both coordinates and use those identities to prove the exact hyperbolic Bochner
+law for the gradient-energy scalar.  For
+
+`A = y^2 (F_x^2 + F_y^2)` and `K = G grad(A) - A grad(G)`,
+
+prove unconditionally and pointwise
+
+`2 (H - (mu/2-lambda+1) Ggrad) = y^2 div(K)`.
+
+Success turns the sole second Stokes defect into a literal boundary divergence and reduces the
+actual balanced coefficient to one already-understood modular-domain Green theorem plus cusp
+finite part.  Failure of third-jet normal convergence or the curvature shift `+1` kills HB before
+boundary or QNM work.  Exact chain:
+
+`actual second defect = divergence -> second modular Green/Stokes -> actual balanced BM ++-
+coefficient -> negative BM leg -> conserved left-QNM projection -> HC94 -> RH`.
+
 **Remaining A.9n arithmetic/geometric core.** Reindex the honest primitive-pair tail onto the
 fixed-denominator slices, prove the Ramanujan Dirichlet series equals the divisor/zeta quotient,
 and assemble the resulting coefficients into the canonical completed Eisenstein Fourier model.
@@ -1390,3 +1411,58 @@ abstract zero-defect completion.  Exact chain:
 
 `actual defect Fubini -> first moment reduction -> second full-Hessian Green/Stokes -> actual
 balanced BM ++- coefficient -> negative BM leg -> conserved left-QNM projection -> HC94 -> RH`.
+
+`[PAPER-PROVED] [LEAN-PROVED] [SIGNIFICANT PREMISE DISCHARGED]` Corpus-derived conjecture
+C-A.9t3d closes the standard-measure first-moment interface.  A single compact-cell summable
+majorant now controls the actual completed Poincare value and every pure first/second jet, proving
+joint continuity and integrability of the two actual Green-current divergence components on the
+standard truncated modular domain.  Genuine product-measure Fubini holds in both coordinate
+orders.  Exact horizontal-slice classification below and above the unit arc identifies the
+horizontal set integral with the two-sliver/full-strip literal bulk, while the vertical set
+integral is the literal vertical bulk.  The actual hyperbolic first-Stokes defect moment therefore
+equals their sum.  Folding the lower arc, using translation on the side walls, and the literal
+Green theorem from C-A.9t3c identify this standard moment exactly with the paired cusp-top current;
+equivalently it equals the existing paired truncated bulk.  Thus no abstract defect, proxy
+integral, Fubini premise, measurability premise, or regularity premise remains between the actual
+Poincare source and the first moment reduction.
+
+This is formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualFirstStokesFubini`, wired into
+RHTower.  Direct Lean and targeted module build `12469/12469` pass.  Axiom audits of both Fubini
+orders, the standard-moment/bulk identity, the bulk/cusp identity, and the two headline standard
+moment identities report only `propext`, `Classical.choice`, and `Quot.sound`.
+
+**C-A.9t4a hard core (corpus-derived conjecture; active).**  The corpus now contains both the
+literal actual Maass legs and the abstract exhaustive two-defect coefficient identity, but no
+theorem identifies their product with the actual covariant full-Hessian density.  Prove pointwise
+that
+
+`(R_2 R_0 F)(L_(-2) L_0 F) G = 2 G |Hess_hyp F|^2 - lambda^2 F^2 G`,
+
+using the genuine actual Poincare second jet and its eigen equation.  Then instantiate the abstract
+defect decomposition to show that failure of the actual balanced `++-` coefficient is exactly the
+sum of the already-closed first defect and one literal second defect.  Success eliminates every
+possible tensor-normalization or hidden-component mismatch and reduces coefficient production to
+one second Green--Stokes boundary theorem.  Failure kills HB before any third-jet or QNM work.
+Exact chain:
+
+`actual Maass/full-Hessian seam -> sole second Stokes defect -> actual balanced BM ++- coefficient
+-> negative BM leg -> conserved left-QNM projection -> HC94 -> RH`.
+
+`[PAPER-PROVED] [LEAN-PROVED] [SIGNIFICANT PREMISE DISCHARGED]` Corpus-derived conjecture
+C-A.9t4a closes the actual Maass/full-Hessian seam.  Lean constructs all three orthonormal
+hyperbolic covariant-Hessian components from the genuine actual Poincare second jet and proves
+that the literal raised/lowered product is their balanced bilinear square minus the squared trace.
+The actual eigen equation identifies that trace with `lambda F`, so multiplication by the
+projecting actual leg gives exactly `2 H - lambda^2 V`, with no proxy field or geometric premise.
+Instantiating the corpus exhaustive coefficient identity then proves pointwise that the complete
+actual balanced-source coefficient defect is exactly the literal second Stokes defect plus the
+literal first defect closed by C-A.9t3.  This rules out every hidden Hessian component and
+normalization mismatch and leaves one analytic obstruction: the second defect's boundary finite
+part.
+
+This is formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualSecondStokesDefect`, wired into
+RHTower.  Direct Lean and targeted build `12470/12470` pass.  Axiom audits of the actual
+Maass/full-Hessian identity and exhaustive actual defect decomposition report only `propext`,
+`Classical.choice`, and `Quot.sound`.

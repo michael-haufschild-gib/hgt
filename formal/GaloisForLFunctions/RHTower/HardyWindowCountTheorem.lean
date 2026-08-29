@@ -23,7 +23,6 @@ noncomputable section
 
 /-! ## The abstract window pigeonhole -/
 
-set_option maxHeartbeats 1600000 in
 /-- **Heavy-window pigeonhole.**  If the dyadic second moment of Hardy's `Z` is at least
 `T/4`, every window of the `K`-partition has fourth moment at most `M4` and first moment at
 most `ME` in modulus, and `ME² M4` loses to the cube of the heaviness threshold `T/(8K)`,
@@ -330,7 +329,6 @@ theorem one_add_log_pow_four_le_sixteenth {T : ℝ} (hT : 1 ≤ T) :
 
 /-! ## The numeric gap for the `⌊T^{1/8}⌋`-window partition -/
 
-set_option maxHeartbeats 3200000 in
 private theorem numeric_gap {T CE CF : ℝ} (_hCE : 0 ≤ CE) (hCF : 0 ≤ CF)
     (hTD : (512 * 21381376 * (CE ^ 2 + 1) * (CF + 1) + 74000 ^ 2 * (CF + 1)
       + 21381376 + 5) ^ 16 ≤ T) :
@@ -368,14 +366,19 @@ private theorem numeric_gap {T CE CF : ℝ} (_hCE : 0 ≤ CE) (hCF : 0 ≤ CF)
       exact Real.sqrt_le_sqrt (Real.sqrt_le_sqrt (Real.sqrt_le_sqrt
         (Real.sqrt_le_sqrt hTD')))
     rwa [sqrt_sq_chain (by linarith : (0 : ℝ) ≤ D + 1)] at hmono
+  clear_value D s1 s2 s3 s4
   have hs4pos : (0 : ℝ) < s4 := by linarith
-  have hs3pos : (0 : ℝ) < s3 := by nlinarith [hs4sq]
-  have hs2pos : (0 : ℝ) < s2 := by nlinarith [hs3sq]
-  have hs1pos : (0 : ℝ) < s1 := by nlinarith [hs2sq]
+  have hs3pos : (0 : ℝ) < s3 := hs4sq ▸ pow_pos hs4pos 2
+  have hs2pos : (0 : ℝ) < s2 := hs3sq ▸ pow_pos hs3pos 2
+  have hs1pos : (0 : ℝ) < s1 := hs2sq ▸ pow_pos hs2pos 2
+  have hs45 : (5 : ℝ) ≤ s4 := by linarith only [hs4D, hD4]
+  have hs325 : (25 : ℝ) ≤ s3 := by
+    have h6 : (5 : ℝ) ^ 2 ≤ s4 ^ 2 := pow_le_pow_left₀ (by norm_num) hs45 2
+    linarith only [h6, hs4sq.le, hs4sq.ge]
   set K : ℕ := ⌊s3⌋₊ with hKdef
   have hKle : (K : ℝ) ≤ s3 := Nat.floor_le hs3pos.le
   have hK1 : 1 ≤ K := Nat.le_floor (by
-    exact_mod_cast (by nlinarith [hs4sq, hs4D, hD4] : (1 : ℝ) ≤ s3))
+    exact_mod_cast (by linarith only [hs325] : (1 : ℝ) ≤ s3))
   have hKR0 : (0 : ℝ) < (K : ℝ) := by exact_mod_cast hK1
   -- the key coefficient inequality
   have hlog4 := one_add_log_pow_four_le_sixteenth hT1
@@ -409,9 +412,10 @@ private theorem numeric_gap {T CE CF : ℝ} (_hCE : 0 ≤ CE) (hCF : 0 ≤ CF)
       rw [hfactor]
       have hcoef : 512 * 21381376 * CE ^ 2 * (CF + 1) < s4 := by
         have h3 : 512 * 21381376 * CE ^ 2 * (CF + 1)
-            ≤ 512 * 21381376 * (CE ^ 2 + 1) * (CF + 1) := by nlinarith
+            ≤ 512 * 21381376 * (CE ^ 2 + 1) * (CF + 1) := by
+          linarith only [hCF]
         rw [hDdef] at hs4D
-        nlinarith [sq_nonneg 74000, hCF]
+        linarith only [h3, hs4D, hCF]
       have h5 : (512 * 21381376 * CE ^ 2 * (CF + 1)) * s4 < s4 * s4 :=
         mul_lt_mul_of_pos_right hcoef hs4pos
       have h6 := mul_lt_mul_of_pos_right h5 (pow_pos hs3pos 3)
@@ -445,7 +449,45 @@ private theorem numeric_gap {T CE CF : ℝ} (_hCE : 0 ≤ CE) (hCF : 0 ≤ CF)
 
 /-! ## The polynomial zero count -/
 
-set_option maxHeartbeats 3200000 in
+private theorem no_small_count_s4 {CE CF s4 L2 : ℝ} (hCF : 0 ≤ CF) (hs4pos : 0 < s4)
+    (hs4D : 512 * 21381376 * (CE ^ 2 + 1) * (CF + 1) + 74000 ^ 2 * (CF + 1)
+        + 21381376 + 5 ≤ s4)
+    (hbound : s4 ≤ 16 * (Real.sqrt (CF + 1) * L2))
+    (hlogsq : L2 ≤ 4624 * Real.sqrt s4) : False := by
+  have hs40 : (0 : ℝ) ≤ s4 := hs4pos.le
+  have hsq4pos : (0 : ℝ) < Real.sqrt s4 := Real.sqrt_pos.mpr hs4pos
+  have h2 : Real.sqrt s4 * Real.sqrt s4 = s4 := Real.mul_self_sqrt hs40
+  have hsCF0 : (0 : ℝ) ≤ Real.sqrt (CF + 1) := Real.sqrt_nonneg _
+  have h1 : s4 ≤ 16 * Real.sqrt (CF + 1) * (4624 * Real.sqrt s4) := by
+    have hstep : Real.sqrt (CF + 1) * L2
+        ≤ Real.sqrt (CF + 1) * (4624 * Real.sqrt s4) :=
+      mul_le_mul_of_nonneg_left hlogsq hsCF0
+    calc s4 ≤ 16 * (Real.sqrt (CF + 1) * L2) := hbound
+      _ ≤ 16 * (Real.sqrt (CF + 1) * (4624 * Real.sqrt s4)) := by
+          linarith only [hstep]
+      _ = 16 * Real.sqrt (CF + 1) * (4624 * Real.sqrt s4) := by ring
+  have h3 : Real.sqrt s4 ≤ 73984 * Real.sqrt (CF + 1) := by
+    have hcross : Real.sqrt s4 * Real.sqrt s4
+        ≤ (73984 * Real.sqrt (CF + 1)) * Real.sqrt s4 := by
+      calc Real.sqrt s4 * Real.sqrt s4 = s4 := h2
+        _ ≤ 16 * Real.sqrt (CF + 1) * (4624 * Real.sqrt s4) := h1
+        _ = (73984 * Real.sqrt (CF + 1)) * Real.sqrt s4 := by ring
+    exact le_of_mul_le_mul_right hcross hsq4pos
+  have hCFsq : Real.sqrt (CF + 1) * Real.sqrt (CF + 1) = CF + 1 :=
+    Real.mul_self_sqrt (by linarith)
+  have h4 : s4 ≤ 73984 ^ 2 * (CF + 1) := by
+    have h5 : Real.sqrt s4 * Real.sqrt s4
+        ≤ (73984 * Real.sqrt (CF + 1)) * (73984 * Real.sqrt (CF + 1)) :=
+      mul_le_mul h3 h3 (Real.sqrt_nonneg _) (by positivity)
+    calc s4 = Real.sqrt s4 * Real.sqrt s4 := h2.symm
+      _ ≤ (73984 * Real.sqrt (CF + 1)) * (73984 * Real.sqrt (CF + 1)) := h5
+      _ = 73984 ^ 2 * (Real.sqrt (CF + 1) * Real.sqrt (CF + 1)) := by ring
+      _ = 73984 ^ 2 * (CF + 1) := by rw [hCFsq]
+  have hpos1 : (0 : ℝ) ≤ 512 * 21381376 * (CE ^ 2 + 1) * (CF + 1) := by positivity
+  have hgap2 : 73984 ^ 2 * (CF + 1) ≤ 74000 ^ 2 * (CF + 1) := by
+    linarith only [hCF]
+  linarith only [hs4D, h4, hpos1, hgap2]
+
 /-- **Polynomially many distinct critical-line zero ordinates in every dyadic block.**
 Unconditionally, at least `c · T^{1/16}/(1+log T)²` distinct ordinates `τ ∈ (T, 2T]` carry
 critical-line zeros `ζ(1/2 + iτ) = 0`, for all large `T`. -/
@@ -488,9 +530,13 @@ theorem exists_many_distinct_line_zeros_dyadic :
       exact Real.sqrt_le_sqrt (Real.sqrt_le_sqrt (Real.sqrt_le_sqrt
         (Real.sqrt_le_sqrt hTD)))
     rwa [sqrt_sq_chain (by linarith : (0 : ℝ) ≤ D + 1)] at hmono
+  clear_value s1 s2 s3 s4
   have hs4pos : (0 : ℝ) < s4 := by linarith
-  have hs3pos : (0 : ℝ) < s3 := by nlinarith [hs4sq]
-  have hs32 : (2 : ℝ) ≤ s3 := by nlinarith [hs4sq, hs4D, hD4]
+  have hs3pos : (0 : ℝ) < s3 := hs4sq ▸ pow_pos hs4pos 2
+  have hs32 : (2 : ℝ) ≤ s3 := by
+    have hs45 : (5 : ℝ) ≤ s4 := by linarith only [hs4D, hD4]
+    have h6 : (5 : ℝ) ^ 2 ≤ s4 ^ 2 := pow_le_pow_left₀ (by norm_num) hs45 2
+    linarith only [h6, hs4sq.le, hs4sq.ge]
   set K : ℕ := ⌊s3⌋₊ with hKdef
   have hKle : (K : ℝ) ≤ s3 := Nat.floor_le hs3pos.le
   have hK1 : 1 ≤ K := Nat.le_floor (by exact_mod_cast (by linarith : (1 : ℝ) ≤ s3))
@@ -512,7 +558,7 @@ theorem exists_many_distinct_line_zeros_dyadic :
     refine le_trans (hF (by linarith)) ?_
     rw [hM4def]
     have h1 : (0 : ℝ) ≤ T * (1 + Real.log T) ^ 4 := by positivity
-    nlinarith
+    linarith only [h1]
   have h4win := window_fourth_le hK1 hT0 hM4dyadic
   have hEwin : ∀ k : ℕ, k < K →
       |∫ τ in (T + k * (T / K))..(T + ((k + 1 : ℕ) : ℝ) * (T / K)), hardyZ τ|
@@ -571,7 +617,7 @@ theorem exists_many_distinct_line_zeros_dyadic :
           * Real.sqrt (K : ℝ)
           = (S.card : ℝ) * (Real.sqrt (CF + 1) * T * (1 + Real.log T) ^ 2) := by
         field_simp
-      linarith [h5 ▸ h4]
+      linarith only [h4, h5.le, h5.ge]
     have hs4K : s4 / 2 ≤ Real.sqrt (K : ℝ) := by
       have h4 : (s4 / 2) ^ 2 ≤ (K : ℝ) := by
         have h5 : (s4 / 2) ^ 2 = s3 / 4 := by rw [← hs4sq]; ring
@@ -583,14 +629,22 @@ theorem exists_many_distinct_line_zeros_dyadic :
         ≤ (S.card : ℝ) * (Real.sqrt (CF + 1) * T * (1 + Real.log T) ^ 2) := by
       have h8 : (T / 8) * (s4 / 2) ≤ (T / 8) * Real.sqrt (K : ℝ) :=
         mul_le_mul_of_nonneg_left hs4K (by positivity)
-      linarith
-    nlinarith [hT0, h7]
+      linarith only [h8, h3]
+    have h9 : T * (s4 / 16)
+        ≤ T * ((S.card : ℝ) * (Real.sqrt (CF + 1) * (1 + Real.log T) ^ 2)) := by
+      linarith only [h7]
+    have h10 := le_of_mul_le_mul_left h9 hT0
+    linarith only [h10]
   have hcardcast : (S.card : ℝ) ≤ 2 * (τS.card : ℝ) + 1 := by exact_mod_cast hτScard
   have hlog2pos : (0 : ℝ) < (1 + Real.log T) ^ 2 := by positivity
   have hs4bound : s4 ≤ (32 * (τS.card : ℝ) + 16)
       * (Real.sqrt (CF + 1) * (1 + Real.log T) ^ 2) := by
     have hb : (0 : ℝ) ≤ Real.sqrt (CF + 1) * (1 + Real.log T) ^ 2 := by positivity
-    nlinarith [hcount, hcardcast]
+    have h1 : (S.card : ℝ) * (16 * (Real.sqrt (CF + 1) * (1 + Real.log T) ^ 2))
+        ≤ (2 * (τS.card : ℝ) + 1)
+          * (16 * (Real.sqrt (CF + 1) * (1 + Real.log T) ^ 2)) :=
+      mul_le_mul_of_nonneg_right hcardcast (by linarith only [hb])
+    linarith only [hcount, h1]
   have hlogsq : (1 + Real.log T) ^ 2 ≤ 4624 * Real.sqrt s4 := by
     have h1 := one_add_log_pow_four_le_sixteenth hT1
     rw [← hs1def, ← hs2def, ← hs3def, ← hs4def] at h1
@@ -615,40 +669,11 @@ theorem exists_many_distinct_line_zeros_dyadic :
       linarith only [h0lt, h3]
     have hz : ((τS.card : ℕ) : ℝ) = 0 := by exact_mod_cast h0'
     rw [hz] at hs4bound
-    have hsq4pos : (0 : ℝ) < Real.sqrt s4 := Real.sqrt_pos.mpr hs4pos
-    have h2 : Real.sqrt s4 * Real.sqrt s4 = s4 := Real.mul_self_sqrt hs40
-    have hsCF0 : (0 : ℝ) ≤ Real.sqrt (CF + 1) := Real.sqrt_nonneg _
-    have h1 : s4 ≤ 16 * Real.sqrt (CF + 1) * (4624 * Real.sqrt s4) := by
-      have hstep : Real.sqrt (CF + 1) * (1 + Real.log T) ^ 2
-          ≤ Real.sqrt (CF + 1) * (4624 * Real.sqrt s4) :=
-        mul_le_mul_of_nonneg_left hlogsq hsCF0
+    have hb16 : s4 ≤ 16 * (Real.sqrt (CF + 1) * (1 + Real.log T) ^ 2) := by
       calc s4 ≤ (32 * 0 + 16) * (Real.sqrt (CF + 1) * (1 + Real.log T) ^ 2) := hs4bound
         _ = 16 * (Real.sqrt (CF + 1) * (1 + Real.log T) ^ 2) := by ring
-        _ ≤ 16 * (Real.sqrt (CF + 1) * (4624 * Real.sqrt s4)) := by
-            linarith only [hstep]
-        _ = 16 * Real.sqrt (CF + 1) * (4624 * Real.sqrt s4) := by ring
-    have h3 : Real.sqrt s4 ≤ 73984 * Real.sqrt (CF + 1) := by
-      have hcross : Real.sqrt s4 * Real.sqrt s4
-          ≤ (73984 * Real.sqrt (CF + 1)) * Real.sqrt s4 := by
-        calc Real.sqrt s4 * Real.sqrt s4 = s4 := h2
-          _ ≤ 16 * Real.sqrt (CF + 1) * (4624 * Real.sqrt s4) := h1
-          _ = (73984 * Real.sqrt (CF + 1)) * Real.sqrt s4 := by ring
-      exact le_of_mul_le_mul_right hcross hsq4pos
-    have hCFsq : Real.sqrt (CF + 1) * Real.sqrt (CF + 1) = CF + 1 :=
-      Real.mul_self_sqrt (by linarith)
-    have h4 : s4 ≤ 73984 ^ 2 * (CF + 1) := by
-      have h5 : Real.sqrt s4 * Real.sqrt s4
-          ≤ (73984 * Real.sqrt (CF + 1)) * (73984 * Real.sqrt (CF + 1)) :=
-        mul_le_mul h3 h3 (Real.sqrt_nonneg _) (by positivity)
-      calc s4 = Real.sqrt s4 * Real.sqrt s4 := h2.symm
-        _ ≤ (73984 * Real.sqrt (CF + 1)) * (73984 * Real.sqrt (CF + 1)) := h5
-        _ = 73984 ^ 2 * (Real.sqrt (CF + 1) * Real.sqrt (CF + 1)) := by ring
-        _ = 73984 ^ 2 * (CF + 1) := by rw [hCFsq]
     rw [hDdef] at hs4D
-    have hpos1 : (0 : ℝ) ≤ 512 * 21381376 * (CE ^ 2 + 1) * (CF + 1) := by positivity
-    have hgap2 : 73984 ^ 2 * (CF + 1) ≤ 74000 ^ 2 * (CF + 1) := by
-      linarith only [hCF]
-    linarith only [hs4D, h4, hpos1, hgap2]
+    exact no_small_count_s4 hCF hs4pos (by linarith only [hs4D]) hb16 hlogsq
   have hfin : s4 ≤ 48 * (τS.card : ℝ)
       * ((Real.sqrt (CF + 1) + 1) * (1 + Real.log T) ^ 2) := by
     have hb : (0 : ℝ) ≤ Real.sqrt (CF + 1) * (1 + Real.log T) ^ 2 := by positivity
@@ -691,7 +716,6 @@ noncomputable section
 
 /-! ## Injection into the critical-line census -/
 
-set_option maxHeartbeats 800000 in
 /-- Distinct ordinates in `(T, 2T]` carrying critical-line zeros inject into the census
 difference between heights `2T` and `T`. -/
 theorem xiPosCriticalZeroCount_add_card_le {T : ℝ} (hT0 : 0 < T) (τS : Finset ℝ)
@@ -766,7 +790,6 @@ theorem exists_sixteenthRoot_le_xiPosCriticalZeroCount_sub :
       ≤ (xiPosCriticalZeroCount (2 * T) : ℝ) := by exact_mod_cast hinj
   linarith [hcard, hcast]
 
-set_option maxHeartbeats 800000 in
 /-- **A polynomial lower bound for the critical-line census.**  Unconditionally, the number of
 critical-line zeros of `xi` with ordinate in `(0, T]`, counted with multiplicity, is at least
 `c · T^{1/16} / (1 + log T)²` for all large `T` — a polynomial strengthening of the

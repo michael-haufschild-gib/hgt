@@ -1,7 +1,7 @@
 # A non-difference Yang--Baxter family carries intrinsic projective HT but violates positive-metric unitarity
 
 - **ID:** `non-difference-projective-ht-yang-baxter-control`
-- **Stage:** 2-fully-proven / not_new_scientific_knowledge
+- **Stage:** 3-formalized / not_new_scientific_knowledge
 - **Type:** THEOREM / YANG--BAXTER CONTROL / PHYSICAL NO-GO BOUNDARY
 - **Scientific status:** `[PROVED SPECIALIZATION] [NOT A RELATIVISTIC QFT] [NOT NEW AS A CONSTRUCTION]`
 - **Scope:** general analytic hypertranscendental clocks in a regular `4 x 4` quantum
@@ -212,13 +212,57 @@ product-diagonal under positive unitarity.  The classification corollary upgrade
 basis, but it still does not yield a no-go for the physical quantum lane or a move to at least three
 internal states.
 
-## Lean boundary
+## Lean formalization
 
-No Lean edit is justified.  The Yang--Baxter theorem is imported from the published
-classification; the remaining arguments are finite matrix specialization and analytic physical
-gates.  Existing HTGeometry projective tomography already formalizes the reusable finite quotient
-structure.  A wrapper around this unphysical control would add no new unconditional theorem
-surface.
+Formalized unconditionally in
+`formal/GaloisForLFunctions/HTGeometry/CorcoranDeLeeuwModelOne.lean`,
+`formal/GaloisForLFunctions/HTGeometry/UnipotentDiagonalizationObstruction.lean`,
+`formal/GaloisForLFunctions/HTGeometry/DifferenceFormReparametrisation.lean`,
+`formal/GaloisForLFunctions/HTGeometry/SingleGeneratorDifferentialDegree.lean`, and
+`formal/GaloisForLFunctions/HTGeometry/AnchoredProjectiveEntryField.lean`.
+
+The Yang--Baxter property is **proved, not imported**.  `modelOneR A f g` is `(1)` over an
+arbitrary commutative ring, with `f = delta F` and `g = delta G` free scalars and `A` free; the
+identity is established for the whole family, so the published classification is no longer an
+input to anything on this card.
+
+- `modelOneBraid_adjacentBraid` proves the adjacent spectral braid equation for the braid form
+  `R * P` at the three increment pairs produced by a common pair of clocks at three spectral
+  points, which is exactly the non-difference substitution `f_1 + f_3 = f_(uw)`.
+- `modelOneR_quantumYangBaxter` transports it to
+  `R_12(u,v) R_13(u,w) R_23(v,w) = R_23(v,w) R_13(u,w) R_12(u,v)` on the literal three-particle
+  legs, through the corpus's right-flip bridge `rightFlip_adjacentBraid_iff_quantumYangBaxter`.
+- `modelOneR_regular` proves `(2)`, `R(u,u) = P`, and `modelOneBraid_regular` proves the braid
+  anchor `check S(u,u) = 1`; `smul_one_ne_neg_flip` proves that no scalar multiple of the identity
+  is `-P`, which is the exact zero-rapidity mismatch of the third physical failure.
+- `modelOneR_braidingUnitarity` proves the algebraic inversion identity
+  `R_12(u,v) R_21(v,u) = 1` for every `A`.
+- `modelOneBraid_sub_one_sq` proves `(8)`, `N_H^2 = 0`, and `modelOneR_sq` proves `(9)`,
+  `R_H^2 = 1 + (delta F + delta G)(E_12 + E_13)` with a square-zero, nonzero increment factor.
+- `not_isDiagonalizableMatrix_modelOneR` proves the intrinsic-mixing statement: whenever
+  `delta F + delta G` is nonzero, `R_H` is similar to no diagonal matrix at all, so in particular
+  no constant one-particle gauge `U tensor U` diagonalizes it.  The mechanism is
+  `eq_one_of_isDiagonalizableMatrix_of_sub_one_sq`: a diagonalizable matrix with `(M-1)^2 = 0`
+  is the identity.
+- `modelOneR_not_metric_isometry` proves the first physical failure, `Q`-unitarity is impossible
+  for every positive-definite metric `Q`.  The route is elementary and uses no spectral theorem:
+  the invariance identity at `M^2` and at `M^4` differ by exactly the quadratic term, forcing
+  `K^dagger Q K = 0`, which positive definiteness forbids.
+- `deriv_eq_of_difference_reparametrisation` proves `(10)`--`(11)` on any open set and without
+  assuming that `H` is differentiable: the first identity forces `deriv rho` to take one common
+  value, and the second transports that to `deriv H`.
+  `not_exists_difference_reparametrisation_of_hypertranscendental` is the second physical failure:
+  a hypertranscendental clock admits no analytic reparametrization to difference form, because a
+  constant derivative makes `H` affine and hence differentially algebraic.
+- `differentialAdjoin_pivotEntryFamily_modelOneR` proves `(5)`--`(6)`: after anchoring the second
+  spectral parameter, the pivot-normalized entry family generates exactly `K<H>`, and
+  `pivotEntryFamily_smul` proves that scalar normalization cannot remove it.
+  `anchoredModelOne_projectiveField_degree` adds the degree statement
+  `dtrdeg_K K<H> = 1` for a hypertranscendental increment, through the reusable
+  `differentialTranscendenceDegree_differentialAdjoin_singleton_eq_one`.
+
+Direct Lean checks and targeted leaf builds passed.  Axiom audit of every capstone above reports
+only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Primary literature
 
@@ -237,6 +281,8 @@ surface.
 - [x] exact no-reparametrization-to-difference proof
 - [x] quantum/braid convention and zero-rapidity mismatch isolated
 - [x] construction novelty rejected
+- [x] exact Lean theorems, targeted leaf builds, and axiom gate; the Yang--Baxter property is
+  proved for the whole arbitrary-function family rather than imported
 - [x] adjacent/quantum convention map and zero-anchor split proved
 - [ ] physical quantum positive-unitary slice extracted from the exact `4 x 4` classification
 - [ ] physical intrinsically mixing projective-HT S-matrix

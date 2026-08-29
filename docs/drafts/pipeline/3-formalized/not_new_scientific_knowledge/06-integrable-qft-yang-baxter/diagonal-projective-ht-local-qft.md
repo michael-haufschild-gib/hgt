@@ -1,7 +1,7 @@
 # A two-species local QFT has projective HT without noncommuting scattering
 
 - **ID:** `diagonal-projective-ht-local-qft`
-- **Stage:** 2-fully-proven / not_new_scientific_knowledge
+- **Stage:** 3-formalized / not_new_scientific_knowledge
 - **Type:** THEOREM / CONSTRUCTIVE MATRIX QFT / ANTI-THEATRE CONTROL
 - **Scientific status:** `[PROVED] [PHYSICALLY REAL] [NOT NEW AS A CONSTRUCTION]`
 - **Scope:** general hypertranscendental scattering in a two-species local relativistic QFT;
@@ -217,12 +217,53 @@ state dimension open, such that:
 Tensoring `(5)` with a DA non-diagonal model, taking a direct sum, or applying a constant basis
 change does not clear this gate: each operation merely hides a decomposable HT diagonal sector.
 
-## Lean boundary
+## Lean formalization
 
-The new content is the analytic-QFT instantiation of existing theorems and the semantic separation
-in `(16)`.  The finite identities `(11)`--`(15)` are elementary specializations of the existing
-matrix and projective Wigner--Smith modules.  A new Lean wrapper would add no reusable theorem
-surface.  No Lean edit or build is justified for this control.
+Formalized unconditionally in
+`formal/GaloisForLFunctions/HTGeometry/FlipDiagonalScattering.lean`, on top of the
+`UnipotentDiagonalizationObstruction` / `AnchoredProjectiveEntryField` /
+`SingleGeneratorDifferentialDegree` layers built for the sibling control card.
+
+`flipDiagonal ω = P · diagonal ω` is `(4)`--`(7)` over an arbitrary commutative ring: one
+coefficient per ordered pair, exchange of the two tensor factors.
+
+- `flipDiagonal_adjacentBraid` proves the adjacent spectral braid equation for **arbitrary**
+  coefficient functions -- no symmetry, regularity or analyticity -- because both sides send
+  `e_a ⊗ e_b ⊗ e_c` to the same product of three coefficients times `e_c ⊗ e_b ⊗ e_a`.
+  `flipDiagonal_quantumYangBaxter` transports it to the quantum Yang--Baxter equation on the
+  `12`, `13`, `23` legs.  The Yang--Baxter half of the Alazzawi--Lechner input is therefore
+  proved here, not cited.
+- `flipDiagonal_eq_neg_pairFlip` and `flipDiagonal_cddCoefficient_neg_one` prove `(8)`,
+  `S(0) = -F`, and `flipDiagonal_cddCoefficient_ne_neg_pairFlip` proves that the model is a
+  genuine interaction whenever `h` is not the constant `-1`.
+- `pairFlip_mul_diagonal_comm`, `flipDiagonal_mul_flipDiagonal` and `flipDiagonal_comm` prove
+  `(15)`: symmetric coefficients make the flip commute with the diagonal, the product of two
+  flip-diagonal operators is the diagonal product, and the whole channel algebra is commutative.
+- `flipDiagonal_inv` and `flipDiagonal_logDerivConnection` prove that
+  `S⁻¹ ∂S = diag(logDeriv ω)` for any nonvanishing coefficients, and `cdd_logDerivConnection`
+  specialises it to `(11)`: `A = diag(u, 0, 0, 0)` with `u = h′/h`, because the logarithmic
+  derivative of the constant `-1` vanishes.
+- `trace_singleChannel` proves `tr A = u` and `tracelessPartOf_singleChannel` proves `(12)`,
+  `A° = diag(3u/4, -u/4, -u/4, -u/4)`; `tracelessPartOf_eq_matrixTracelessPartField` and
+  `wignerSmithOf_eq_matrixWignerSmith` identify the arbitrary-index definitions used here with
+  the corpus's `Fin (n+1)` ones.
+- `cdd_relativeDelay` proves `(14)`: the difference of the two leading Wigner--Smith reporters is
+  exactly `-i u`.  `cdd_relativeDelay_hypertranscendental` is the transfer `(13)`: a nonzero
+  hypertranscendental coefficient has a hypertranscendental logarithmic current, so the single
+  relative reporter is HT.
+- `differentialAdjoin_pivotEntryFamily_cdd` proves `(9)`: anchoring the pivot at one of the
+  constant channels, every entry ratio is `0`, `1` or `-h`, so the projective field is exactly
+  `K<h>`; `pivotEntryFamily_smul` proves that a common scalar CDD factor cannot remove it.
+  `cdd_projectiveField_degree` adds `dtrdeg_K P_S = 1` for a hypertranscendental coefficient.
+
+Direct Lean check, targeted leaf build and umbrella wiring done.  Axiom audit of every capstone
+above reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
+The analytic reconstruction inputs -- the Alazzawi--Lechner analytic intertwiner theorem, modular
+nuclearity above a finite splitting distance, the resulting hyperfinite type-III_1 local algebras,
+and asymptotic completeness -- remain cited published theorems, exactly as on the sibling cards of
+this package.  What is formalized here is every algebraic and differential-algebraic statement the
+card itself proves.
 
 ## Primary literature
 
@@ -244,5 +285,7 @@ surface.  No Lean edit or build is justified for this control.
 - [x] explicit HT relative Wigner--Smith reporter
 - [x] commuting-channel anti-theatre diagnosis
 - [x] novelty rejected for the construction itself
+- [x] exact Lean theorems, targeted leaf build, and axiom gate; the Yang--Baxter property is
+  proved for arbitrary flip-diagonal coefficients rather than imported
 - [ ] positive-unitary intrinsically mixing projective-HT scattering, with state dimension open
 - [ ] independent analytic and operator-algebraic review

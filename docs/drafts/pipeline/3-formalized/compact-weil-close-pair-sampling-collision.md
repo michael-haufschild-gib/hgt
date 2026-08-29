@@ -2,7 +2,8 @@
 
 ## Status
 
-Paper proof complete. Lean formalization: `CompactWeilClosePairSamplingCollision`.
+Paper proof and unconditional Lean formalization complete:
+`GaloisForLFunctions.RHTower.CompactWeilClosePairSamplingCollision`.
 
 ## Statement
 
