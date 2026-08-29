@@ -497,6 +497,7 @@ import GaloisForLFunctions.RHTower.RVCumulantAverage
 import GaloisForLFunctions.RHTower.RVCumulantLimit
 import GaloisForLFunctions.RHTower.SteinhausChernoff
 import GaloisForLFunctions.RHTower.RVSteinhausModel
+import GaloisForLFunctions.RHTower.SteinhausCumulantDeriv
 import GaloisForLFunctions.RHTower.BesselJOneEnvelope
 import GaloisForLFunctions.RHTower.BesselJOneRecurrence
 import GaloisForLFunctions.RHTower.BesselJZeroConstant

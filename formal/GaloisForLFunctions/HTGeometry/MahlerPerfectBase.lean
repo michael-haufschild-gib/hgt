@@ -162,6 +162,50 @@ theorem mahlerHom_ramifiedLevelHom (p : ℕ) (hp : 1 < p) (n : ℕ) (r : RatFunc
   field_simp
   ring
 
+/-! ## The Mahler substitution is an automorphism of the perfect base -/
+
+theorem mahlerHom_mem_perfectBase (p : ℕ) (hp : 1 < p) {x : HahnSeries ℚ k}
+    (hx : x ∈ perfectBase p hp) : mahlerHom p (by omega) x ∈ perfectBase p hp := by
+  obtain ⟨n, r, rfl⟩ := hx
+  rw [ramifiedLevelHom_add p hp n 1 r, mahlerHom_ramifiedLevelHom]
+  exact ⟨n, _, rfl⟩
+
+/-- The Mahler substitution restricted to the perfect base. -/
+def perfectBaseHom (p : ℕ) (hp : 1 < p) : perfectBase (k := k) p hp →+* perfectBase (k := k) p hp :=
+  RingHom.codRestrict ((mahlerHom p (by omega)).comp (perfectBase p hp).subtype)
+    (perfectBase p hp) (fun x => mahlerHom_mem_perfectBase p hp x.2)
+
+@[simp]
+theorem perfectBaseHom_coe (p : ℕ) (hp : 1 < p) (x : perfectBase (k := k) p hp) :
+    ((perfectBaseHom p hp x : HahnSeries ℚ k)) = mahlerHom p (by omega) (x : HahnSeries ℚ k) :=
+  rfl
+
+theorem perfectBaseHom_bijective (p : ℕ) (hp : 1 < p) :
+    Function.Bijective (perfectBaseHom (k := k) p hp) := by
+  constructor
+  · intro x y hxy
+    have h : mahlerHom p (by omega : 0 < p) (x : HahnSeries ℚ k)
+        = mahlerHom p (by omega) (y : HahnSeries ℚ k) := congrArg Subtype.val hxy
+    exact Subtype.ext ((mahlerHom p (by omega : 0 < p)).injective h)
+  · rintro ⟨y, n, r, rfl⟩
+    refine ⟨⟨ramifiedLevelHom p (by omega) (n + 1) r, ⟨n + 1, r, rfl⟩⟩, ?_⟩
+    exact Subtype.ext (mahlerHom_ramifiedLevelHom p hp n r)
+
+/-- **The Mahler substitution is an automorphism of the `p`-perfect rational base.** -/
+def perfectBaseEquiv (p : ℕ) (hp : 1 < p) :
+    perfectBase (k := k) p hp ≃+* perfectBase (k := k) p hp :=
+  RingEquiv.ofBijective _ (perfectBaseHom_bijective p hp)
+
+@[simp]
+theorem perfectBaseEquiv_coe (p : ℕ) (hp : 1 < p) (x : perfectBase (k := k) p hp) :
+    ((perfectBaseEquiv p hp x : HahnSeries ℚ k)) = mahlerHom p (by omega) (x : HahnSeries ℚ k) :=
+  rfl
+
+/-- The `w`-coordinate itself lives in the perfect base. -/
+theorem ratFuncToHahn_mem_perfectBase (p : ℕ) (hp : 1 < p) (r : RatFunc k) :
+    ratFuncToHahn r ∈ perfectBase p hp :=
+  ⟨0, r, ramifiedLevelHom_zero p (by omega) r⟩
+
 end
 
 end GaloisForLFunctions.HTGeometry

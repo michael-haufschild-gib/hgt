@@ -178,6 +178,98 @@ theorem continuous_rvCumulantDeriv {α : ℝ} (hα : α < 1) : Continuous (rvCum
   filter_upwards [this] with x hx
   exact hx
 
+
+/-- **The regular-variation cumulant is strictly convex.** -/
+theorem strictConvexOn_rvCumulant {α : ℝ} (hα : α < 1) :
+    StrictConvexOn ℝ univ (rvCumulant α) := by
+  refine ⟨convex_univ, ?_⟩
+  intro x _ y _ hxy a b ha hb hab
+  have hpt : ∀ v ∈ Ioo (0 : ℝ) 1,
+      0 < (a * steinhausLogLaplace (x * weightProfile α v)
+            + b * steinhausLogLaplace (y * weightProfile α v))
+          - steinhausLogLaplace ((a * x + b * y) * weightProfile α v) := by
+    intro v hv
+    have hw : 0 < weightProfile α v := weightProfile_pos hα hv.1
+    have hne : x * weightProfile α v ≠ y * weightProfile α v := by
+      intro h
+      exact hxy (by
+        have := mul_right_cancel₀ hw.ne' h
+        exact this)
+    have hstrict := strictConvexOn_steinhausLogLaplace.2 (mem_univ (x * weightProfile α v))
+      (mem_univ (y * weightProfile α v)) hne ha hb hab
+    simp only [smul_eq_mul] at hstrict
+    have hid : a * (x * weightProfile α v) + b * (y * weightProfile α v)
+        = (a * x + b * y) * weightProfile α v := by ring
+    rw [hid] at hstrict
+    linarith
+  have hint1 := intervalIntegrable_rvCumulant_integrand hα x
+  have hint2 := intervalIntegrable_rvCumulant_integrand hα y
+  have hint3 := intervalIntegrable_rvCumulant_integrand hα (a * x + b * y)
+  have hintD : IntervalIntegrable
+      (fun v : ℝ => (a * steinhausLogLaplace (x * weightProfile α v)
+        + b * steinhausLogLaplace (y * weightProfile α v))
+        - steinhausLogLaplace ((a * x + b * y) * weightProfile α v)) volume 0 1 :=
+    ((hint1.const_mul a).add (hint2.const_mul b)).sub hint3
+  have hpos := intervalIntegral.intervalIntegral_pos_of_pos_on hintD hpt (by norm_num)
+  rw [intervalIntegral.integral_sub (((hint1.const_mul a).add (hint2.const_mul b))) hint3,
+    intervalIntegral.integral_add (hint1.const_mul a) (hint2.const_mul b),
+    intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul] at hpos
+  simp only [smul_eq_mul]
+  rw [rvCumulant, rvCumulant, rvCumulant]
+  linarith
+
+theorem strictMono_rvCumulantDeriv {α : ℝ} (hα : α < 1) : StrictMono (rvCumulantDeriv α) := by
+  have hmono := (strictConvexOn_rvCumulant hα).strictMonoOn_deriv
+    (fun x _ => (differentiable_rvCumulant hα) x)
+  intro x y hxy
+  have h := hmono (mem_univ x) (mem_univ y) hxy
+  rw [deriv_rvCumulant hα, deriv_rvCumulant hα] at h
+  exact h
+
+/-- The chord from the origin is below the derivative. -/
+theorem rvCumulant_div_le_rvCumulantDeriv {α : ℝ} (hα : α < 1) {lam : ℝ} (hlam : 0 < lam) :
+    rvCumulant α lam / lam ≤ rvCumulantDeriv α lam := by
+  have hslope := (strictConvexOn_rvCumulant hα).convexOn.slope_le_deriv (mem_univ (0 : ℝ))
+    (mem_univ lam) hlam ((differentiable_rvCumulant hα) lam)
+  rw [deriv_rvCumulant hα] at hslope
+  rw [slope_def_field, rvCumulant_zero, sub_zero, sub_zero] at hslope
+  exact hslope
+
+/-- **The derivative attains every value in `(0,1)`.**  This is the card's `(16)`. -/
+theorem exists_rvCumulantDeriv_eq {α : ℝ} (hα : α < 1) {q : ℝ} (hq0 : 0 < q) (hq1 : q < 1) :
+    ∃ lam : ℝ, 0 < lam ∧ rvCumulantDeriv α lam = q := by
+  obtain ⟨c, hqc, hc1⟩ := exists_between hq1
+  have hc0 : 0 < c := lt_trans hq0 hqc
+  set K : ℝ := Real.log (arcMass c) with hK
+  obtain ⟨lam₁, hlam₁⟩ : ∃ lam₁ : ℝ, 0 < lam₁ ∧ q * lam₁ < c * lam₁ + K := by
+    have hgap : 0 < c - q := by linarith
+    obtain ⟨M, hM⟩ := exists_nat_gt ((-K) / (c - q))
+    refine ⟨max ((M : ℝ) + 1) 1, lt_of_lt_of_le one_pos (le_max_right _ _), ?_⟩
+    have hM1 : (-K) / (c - q) < (M : ℝ) + 1 := by linarith [hM]
+    rw [div_lt_iff₀ hgap] at hM1
+    have hle : (M : ℝ) + 1 ≤ max ((M : ℝ) + 1) 1 := le_max_left _ _
+    nlinarith [hM1, hle, hgap]
+  obtain ⟨hlam₁0, hlam₁1⟩ := hlam₁
+  have hbig : q < rvCumulantDeriv α lam₁ := by
+    have hlow := le_rvCumulant hα hc1 hlam₁0.le
+    have hdiv : q < rvCumulant α lam₁ / lam₁ := by
+      rw [lt_div_iff₀ hlam₁0]
+      rw [hK] at hlam₁1
+      linarith [hlow]
+    exact lt_of_lt_of_le hdiv (rvCumulant_div_le_rvCumulantDeriv hα hlam₁0)
+  have hcont : ContinuousOn (rvCumulantDeriv α) (Icc 0 lam₁) :=
+    (continuous_rvCumulantDeriv hα).continuousOn
+  have hmem : q ∈ Icc (rvCumulantDeriv α 0) (rvCumulantDeriv α lam₁) := by
+    rw [rvCumulantDeriv_zero]
+    exact ⟨hq0.le, hbig.le⟩
+  obtain ⟨lam, hlam, hval⟩ := intermediate_value_Icc hlam₁0.le hcont hmem
+  refine ⟨lam, ?_, hval⟩
+  rcases eq_or_lt_of_le hlam.1 with h0 | hpos
+  · exfalso
+    rw [← h0, rvCumulantDeriv_zero] at hval
+    linarith
+  · exact hpos
+
 end
 
 end HTGeometry

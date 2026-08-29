@@ -125,6 +125,48 @@ def HasAbsolutelyContinuousFiniteAffineJetLaws
 /-- **Probability-one affine jet-packet genericity.**  If every chosen finite jet packet is
 measurable and has law absolutely continuous with respect to complex Lebesgue measure, a random
 source avoids all relation determinants almost surely. -/
+theorem measure_compl_preimage_residualSet_eq_zero
+    {Ω Λ : Type*} [MeasurableSpace Ω] [Countable Λ] (μ : Measure Ω)
+    {d : ℕ}
+    (frame : Λ → ((Fin d → ℂ) ≃ᴬ[ℂ] (Fin d → ℂ)))
+    (witness : ∀ p : FiniteMultivariateAffineJetPattern Λ d,
+      MultivariateAffinePatternWitness frame p)
+    (F : Ω → MultivariateEntire d)
+    (hmeas : ∀ p : FiniteMultivariateAffineJetPattern Λ d,
+      Measurable (fun ω => finiteAffineJetPacketObservation frame p
+        (witness p).base (F ω)))
+    (hAC : ∀ p : FiniteMultivariateAffineJetPattern Λ d,
+      (Measure.map (fun ω => finiteAffineJetPacketObservation frame p
+        (witness p).base (F ω)) μ).AbsolutelyContinuous
+        (volume : Measure (Fin (affineJetPacketFiniteCoordinateCount p) → ℂ))) :
+    μ (F ⁻¹' multivariateAffinePatternResidualSet frame witness)ᶜ = 0 := by
+  let n : FiniteMultivariateAffineJetPattern Λ d → ℕ :=
+    fun p => affineJetPacketFiniteCoordinateCount p
+  let X : ∀ p : FiniteMultivariateAffineJetPattern Λ d,
+      Ω → (Fin (n p) → ℂ) :=
+    fun p ω => finiteAffineJetPacketObservation frame p (witness p).base (F ω)
+  let P : ∀ p : FiniteMultivariateAffineJetPattern Λ d,
+      MvPolynomial (Fin (n p)) ℂ :=
+    fun p => finiteAffineJetPacketDeterminant p (witness p).base
+  have hnull : μ {ω | ∃ p, MvPolynomial.eval (X p ω) (P p) = 0} = 0 :=
+    measure_exists_mvPolynomial_eval_eq_zero_of_countable μ n X
+      (fun p => hmeas p) (fun p => hAC p) P
+      (fun p => finiteAffineJetPacketDeterminant_ne_zero_of_witness frame p (witness p))
+  have hbad : (F ⁻¹' multivariateAffinePatternResidualSet frame witness)ᶜ =
+      {ω | ∃ p, MvPolynomial.eval (X p ω) (P p) = 0} := by
+    ext ω
+    simp only [Set.mem_compl_iff, Set.mem_preimage, Set.mem_setOf_eq]
+    rw [mem_multivariateAffinePatternResidualSet_iff]
+    simp only [not_forall, Classical.not_not]
+    apply exists_congr
+    intro p
+    rw [eval_finiteAffineJetPacketDeterminant frame p (witness p).base (F ω)]
+  rw [hbad]
+  exact hnull
+
+/-- **Probability-one affine jet-packet genericity.**  If every chosen finite jet packet is
+measurable and has law absolutely continuous with respect to complex Lebesgue measure, a random
+source avoids all relation determinants almost surely. -/
 theorem measure_compl_preimage_affineJetPacketGenericSet_eq_zero
     {Ω Λ : Type*} [MeasurableSpace Ω] [Countable Λ] (μ : Measure Ω)
     {d : ℕ} (hd : 0 < d)
@@ -137,33 +179,9 @@ theorem measure_compl_preimage_affineJetPacketGenericSet_eq_zero
       (Measure.map (fun ω => finiteAffineJetPacketObservation frame p
         (affineJetPacketWitness hd frame hframe p).base (F ω)) μ).AbsolutelyContinuous
         (volume : Measure (Fin (affineJetPacketFiniteCoordinateCount p) → ℂ))) :
-    μ (F ⁻¹' affineJetPacketGenericSet hd frame hframe)ᶜ = 0 := by
-  let n : FiniteMultivariateAffineJetPattern Λ d → ℕ :=
-    fun p => affineJetPacketFiniteCoordinateCount p
-  let X : ∀ p : FiniteMultivariateAffineJetPattern Λ d,
-      Ω → (Fin (n p) → ℂ) :=
-    fun p ω => finiteAffineJetPacketObservation frame p
-      (affineJetPacketWitness hd frame hframe p).base (F ω)
-  let P : ∀ p : FiniteMultivariateAffineJetPattern Λ d,
-      MvPolynomial (Fin (n p)) ℂ :=
-    fun p => finiteAffineJetPacketDeterminant p
-      (affineJetPacketWitness hd frame hframe p).base
-  have hnull : μ {ω | ∃ p, MvPolynomial.eval (X p ω) (P p) = 0} = 0 :=
-    measure_exists_mvPolynomial_eval_eq_zero_of_countable μ n X
-      (fun p => hmeas p) (fun p => hAC p) P
-      (fun p => finiteAffineJetPacketDeterminant_ne_zero hd frame hframe p)
-  have hbad : (F ⁻¹' affineJetPacketGenericSet hd frame hframe)ᶜ =
-      {ω | ∃ p, MvPolynomial.eval (X p ω) (P p) = 0} := by
-    ext ω
-    simp only [Set.mem_compl_iff, Set.mem_preimage, Set.mem_setOf_eq]
-    rw [mem_affineJetPacketGenericSet_iff]
-    simp only [not_forall, Classical.not_not]
-    apply exists_congr
-    intro p
-    rw [eval_finiteAffineJetPacketDeterminant frame p
-      (affineJetPacketWitness hd frame hframe p).base (F ω)]
-  rw [hbad]
-  exact hnull
+    μ (F ⁻¹' affineJetPacketGenericSet hd frame hframe)ᶜ = 0 :=
+  measure_compl_preimage_residualSet_eq_zero μ frame
+    (affineJetPacketWitness hd frame hframe) F hmeas hAC
 
 /-- Finite-jet-law form of probability-one affine jet-packet genericity. -/
 theorem measure_compl_preimage_affineJetPacketGenericSet_eq_zero_of_finiteJetLaws
