@@ -109,7 +109,7 @@ theorem young_rvLegConst {p A q lam : ℝ} (hp : 1 < p) (hA : 0 < A) (hq : 0 ≤
   have hconj : Real.HolderConjugate p (p / (p - 1)) :=
     (Real.holderConjugate_iff_eq_conjExponent hp).mpr rfl
   have hy := Real.young_inequality (s * lam) (q / s) hconj
-  have hab : s * lam * (q / s) = lam * q := by field_simp; ring
+  have hab : s * lam * (q / s) = lam * q := by field_simp
   rw [hab] at hy
   have h1 : |s * lam| ^ p / p = A * lam ^ p := by
     rw [abs_of_nonneg (by positivity : (0 : ℝ) ≤ s * lam), Real.mul_rpow hs0.le hlam]
@@ -134,7 +134,6 @@ theorem young_rvLegConst {p A q lam : ℝ} (hp : 1 < p) (hA : 0 < A) (hq : 0 ≤
     have hPk : (0 : ℝ) < p ^ (1 / (p - 1)) := Real.rpow_pos_of_pos hp0 _
     have hAk : (0 : ℝ) < A ^ (1 / (p - 1)) := Real.rpow_pos_of_pos hA _
     field_simp
-    ring
   rw [h1, h2] at hy
   exact hy
 
@@ -189,6 +188,55 @@ theorem eventually_rvRate_le_pow {α p A'' : ℝ} (hα : α < 1) (hp : 1 < p) (h
       rw [hid] at hslope
       have hneg : lam * q - lam * m ≤ 0 := by nlinarith [hpos, hqm]
       linarith
+
+
+/-- **The Legendre transform of a power law.**  If the cumulant is asymptotically `A λ^p` at the
+origin with `p > 1` and `A > 0`, the rate function is asymptotically
+`(p−1) p^{−p/(p−1)} A^{−1/(p−1)} q^{p/(p−1)}`. -/
+theorem tendsto_rvRate_div_rpow {α p A : ℝ} (hα : α < 1) (hp : 1 < p) (hA : 0 < A)
+    (h : Tendsto (fun lam : ℝ => rvCumulant α lam / lam ^ p) (𝓝[>] (0 : ℝ)) (𝓝 A)) :
+    Tendsto (fun q : ℝ => rvRate α q / q ^ (p / (p - 1))) (𝓝[>] (0 : ℝ))
+      (𝓝 (rvLegConst p A)) := by
+  have hcont := continuousAt_rvLegConst (p := p) hA
+  refine tendsto_order.2 ⟨?_, ?_⟩
+  · intro c hc
+    -- pick `A' > A` still above `c`
+    have hev : ∀ᶠ B in 𝓝[>] A, c < rvLegConst p B := by
+      refine (hcont.continuousWithinAt (s := Ioi A)).tendsto.eventually ?_
+      exact eventually_gt_nhds hc
+    obtain ⟨A', hA'c, hA'gt⟩ := (hev.and self_mem_nhdsWithin).exists
+    have hA'0 : 0 < A' := lt_trans hA hA'gt
+    have hcum : ∀ᶠ lam in 𝓝[>] (0 : ℝ), rvCumulant α lam ≤ A' * lam ^ p := by
+      filter_upwards [h.eventually (eventually_lt_nhds hA'gt), self_mem_nhdsWithin] with
+        lam hlt hlam0
+      have hlam : (0 : ℝ) < lam := hlam0
+      have hpow : (0 : ℝ) < lam ^ p := Real.rpow_pos_of_pos hlam _
+      rw [div_lt_iff₀ hpow] at hlt
+      linarith
+    filter_upwards [eventually_le_rvRate_pow hα hp hA'0 hcum, self_mem_nhdsWithin] with q hqle hq0
+    have hq : (0 : ℝ) < q := hq0
+    have hpow : (0 : ℝ) < q ^ (p / (p - 1)) := Real.rpow_pos_of_pos hq _
+    rw [lt_div_iff₀ hpow]
+    nlinarith [hqle, hA'c, hpow]
+  · intro c hc
+    have hev : ∀ᶠ B in 𝓝[<] A, rvLegConst p B < c := by
+      exact (hcont.continuousWithinAt (s := Iio A)).tendsto.eventually
+        (p := fun y : ℝ => y < c) (eventually_lt_nhds hc)
+    have hpos : ∀ᶠ B in 𝓝[<] A, 0 < B :=
+      (eventually_gt_nhds hA).filter_mono nhdsWithin_le_nhds
+    obtain ⟨A'', ⟨hA''c, hA''0⟩, hA''lt⟩ := ((hev.and hpos).and self_mem_nhdsWithin).exists
+    have hcum : ∀ᶠ lam in 𝓝[>] (0 : ℝ), A'' * lam ^ p ≤ rvCumulant α lam := by
+      filter_upwards [h.eventually (eventually_gt_nhds hA''lt), self_mem_nhdsWithin] with
+        lam hlt hlam0
+      have hlam : (0 : ℝ) < lam := hlam0
+      have hpow : (0 : ℝ) < lam ^ p := Real.rpow_pos_of_pos hlam _
+      rw [lt_div_iff₀ hpow] at hlt
+      linarith
+    filter_upwards [eventually_rvRate_le_pow hα hp hA''0 hcum, self_mem_nhdsWithin] with q hqle hq0
+    have hq : (0 : ℝ) < q := hq0
+    have hpow : (0 : ℝ) < q ^ (p / (p - 1)) := Real.rpow_pos_of_pos hq _
+    rw [div_lt_iff₀ hpow]
+    nlinarith [hqle, hA''c, hpow]
 
 end
 

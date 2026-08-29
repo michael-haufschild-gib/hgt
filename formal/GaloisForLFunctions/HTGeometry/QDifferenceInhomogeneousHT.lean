@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.QDifferenceOstrowski
-import GaloisForLFunctions.HTGeometry.TwistedDilationOrbitObstruction
+import GaloisForLFunctions.HTGeometry.SimplePoleEulerCombination
 import GaloisForLFunctions.HTGeometry.DoubleSineCylinderHypertranscendence
 
 /-!
@@ -220,63 +220,6 @@ theorem exists_eulerCombination_of_jetCombination (c : (Unit × ℕ) →₀ k) (
       simp [this]
 
 /-! ## The absence of a telescoper -/
-
-theorem ratFuncEulerOp_algebraMap (γ : k) : ratFuncEulerOp (algebraMap k (RatFunc k) γ) = 0 := by
-  have h : algebraMap k (RatFunc k) γ
-      = algebraMap (Polynomial k) (RatFunc k) (Polynomial.C γ) := by
-    rw [IsScalarTower.algebraMap_apply k (Polynomial k) (RatFunc k), Polynomial.algebraMap_eq]
-  rw [ratFuncEulerOp, h, ratFuncDerivative_algebraMap, Polynomial.derivative_C, map_zero, mul_zero]
-
-theorem ratFuncEulerOp_iterate_zero (n : ℕ) : ratFuncEulerOp^[n] (0 : RatFunc k) = 0 := by
-  induction n with
-  | zero => simp
-  | succ n ih => rw [Function.iterate_succ_apply', ih, ratFuncEulerOp, map_zero, mul_zero]
-
-theorem ratFuncEulerOp_iterate_add (n : ℕ) (w v : RatFunc k) :
-    ratFuncEulerOp^[n] (w + v) = ratFuncEulerOp^[n] w + ratFuncEulerOp^[n] v := by
-  induction n with
-  | zero => simp
-  | succ n ih =>
-      rw [Function.iterate_succ_apply', Function.iterate_succ_apply',
-        Function.iterate_succ_apply', ih, ratFuncEulerOp, ratFuncEulerOp, ratFuncEulerOp,
-        map_add, mul_add]
-
-theorem eulerCombination_add (α : ℕ → k) (N : ℕ) (w v : RatFunc k) :
-    eulerCombination α N (w + v) = eulerCombination α N w + eulerCombination α N v := by
-  rw [eulerCombination, eulerCombination, eulerCombination, ← Finset.sum_add_distrib]
-  refine Finset.sum_congr rfl fun i _ => ?_
-  rw [← mul_add, ratFuncEulerOp_iterate_add]
-
-theorem eulerCombination_algebraMap (α : ℕ → k) (N : ℕ) (γ : k) :
-    eulerCombination α N (algebraMap k (RatFunc k) γ)
-      = algebraMap k (RatFunc k) (α 0 * γ) := by
-  rw [eulerCombination, Finset.sum_eq_single 0]
-  · rw [Function.iterate_zero_apply, toRF, ← Polynomial.algebraMap_eq,
-      ← IsScalarTower.algebraMap_apply k (Polynomial k) (RatFunc k), ← map_mul]
-  · intro i _ hi
-    obtain ⟨j, rfl⟩ := Nat.exists_eq_succ_of_ne_zero hi
-    rw [Function.iterate_succ_apply, ratFuncEulerOp_algebraMap, ratFuncEulerOp_iterate_zero,
-      mul_zero]
-  · intro h
-    exact absurd (Finset.mem_range.mpr (Nat.succ_pos N)) h
-
-theorem cotModel_neg (c : k) : cotModel (-c) = -cotModel c := by
-  rw [cotModel, cotModel, ← neg_div]
-  congr 1
-  rw [← map_neg]
-  congr 1
-  rw [map_neg, neg_mul]
-
-theorem eulerCombination_neg (α : ℕ → k) (N : ℕ) (w : RatFunc k) :
-    eulerCombination α N (-w) = -eulerCombination α N w := by
-  have h := eulerCombination_add α N w (-w)
-  rw [add_neg_cancel] at h
-  have hz : eulerCombination α N (0 : RatFunc k) = 0 := by
-    rw [eulerCombination]
-    refine Finset.sum_eq_zero fun i _ => ?_
-    rw [ratFuncEulerOp_iterate_zero, mul_zero]
-  rw [hz] at h
-  linear_combination -h
 
 theorem ratFuncTwist_X (φ : RatFunc k →+* RatFunc k) (hφ : Function.Injective φ)
     (q : RatFunc k) (hq : q ≠ 0) :

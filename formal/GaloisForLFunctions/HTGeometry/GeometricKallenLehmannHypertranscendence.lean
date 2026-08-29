@@ -18,21 +18,6 @@ noncomputable section
 
 variable {k : Type*} [Field k]
 
-theorem algebraMap_eq_toRF_C (x : k) : algebraMap k (RatFunc k) x = toRF (Polynomial.C x) := by
-  rw [toRF, ← Polynomial.algebraMap_eq, ← IsScalarTower.algebraMap_apply]
-
-/-- The cotangent model differs from a constant by a simple pole. -/
-theorem cotModel_sub_const (c : k) :
-    cotModel c - algebraMap k (RatFunc k) c
-      = algebraMap k (RatFunc k) (2 * c) / toRF (linFac k) := by
-  have hlin : toRF (linFac k) ≠ 0 := RatFunc.algebraMap_ne_zero linFac_ne_zero
-  rw [cotModel, algebraMap_eq_toRF_C, algebraMap_eq_toRF_C, eq_div_iff hlin, sub_mul,
-    div_mul_cancel₀ _ hlin, ← map_mul, ← map_sub]
-  congr 1
-  rw [linFac]
-  simp only [map_mul, map_ofNat, Polynomial.C_1, mul_one]
-  ring
-
 /-- The simple pole `w/(1-X)` is a cotangent model plus a constant. -/
 theorem oneSubInv_eq_cotModel_add_const [CharZero k] (w : k) :
     algebraMap k (RatFunc k) w / toRF (Polynomial.C 1 - Polynomial.X)
@@ -52,56 +37,76 @@ theorem oneSubInv_eq_cotModel_add_const [CharZero k] (w : k) :
     ring
   rw [hneg, div_neg, hsum, map_neg, neg_div]
 
-/-! ## The geometric series realization -/
+/-! ## The Laurent solution of the inhomogeneous equation -/
 
-theorem coeff_ofPowerSeries_mk (f : ℕ → k) (n : ℤ) :
-    (HahnSeries.ofPowerSeries ℤ k (PowerSeries.mk f)).coeff n
-      = if n < 0 then 0 else f n.natAbs := by
-  rw [PowerSeries.coeff_coe]
-  by_cases h : n < 0
-  · simp [h]
-  · simp [h]
-
-theorem algebraMap_linFacInv (w : k) :
-    algebraMap (RatFunc k) (LaurentSeries k)
-        (algebraMap k (RatFunc k) w / toRF (Polynomial.C 1 - Polynomial.X))
-      = HahnSeries.ofPowerSeries ℤ k (PowerSeries.mk (fun _ => w)) := by
-  have hne : toRF (Polynomial.C (1 : k) - Polynomial.X) ≠ 0 := by
-    refine RatFunc.algebraMap_ne_zero ?_
+/-- The coefficientwise solution of `R - a R(bz) = ρ`. -/
+def qDifferenceSolution (a b : k) (ρ : LaurentSeries k) : LaurentSeries k where
+  coeff m := ρ.coeff m / (1 - a * b ^ m)
+  isPWO_support' := by
+    refine ρ.isPWO_support.mono ?_
+    intro m hm
+    simp only [Function.mem_support] at hm ⊢
     intro h
-    have := congrArg (fun p : Polynomial k => p.coeff 1) h
-    simp at this
-  have himg : algebraMap (RatFunc k) (LaurentSeries k) (toRF (Polynomial.C 1 - Polynomial.X))
-      = 1 - HahnSeries.single 1 1 := by
-    have hcoe : algebraMap (RatFunc k) (LaurentSeries k)
-        (algebraMap (Polynomial k) (RatFunc k) (Polynomial.C 1 - Polynomial.X))
-        = HahnSeries.ofPowerSeries ℤ k
-          ((Polynomial.C 1 - Polynomial.X : Polynomial k) : PowerSeries k) :=
-      (RatFunc.coe_coe _).symm
-    rw [toRF, hcoe]
-    refine HahnSeries.coeff_inj.mp (funext fun n => ?_)
-    rw [PowerSeries.coeff_coe, HahnSeries.coeff_sub, HahnSeries.coeff_one,
-      HahnSeries.coeff_single]
-    by_cases h : n < 0
-    · simp [h, (by omega : n ≠ 0), (by omega : n ≠ 1)]
-    · have hnat : ((Polynomial.C 1 - Polynomial.X : Polynomial k) : PowerSeries k) = 1 - PowerSeries.X := by
-        push_cast
-        simp
-      rw [if_neg h, hnat]
-      by_cases h0 : n = 0
-      · subst h0; simp
-      · by_cases h1 : n = 1
-        · subst h1; simp
-        · have : n.natAbs ≠ 0 := by omega
-          have h1' : n.natAbs ≠ 1 := by omega
-          simp [h0, h1, this, h1', PowerSeries.coeff_X]
-  have hmul : (1 - HahnSeries.single (1 : ℤ) (1 : k))
-      * HahnSeries.ofPowerSeries ℤ k (PowerSeries.mk (fun _ => w))
-      = HahnSeries.ofPowerSeries ℤ k (PowerSeries.mk (fun n => if n = 0 then w else 0)) := by
-    refine HahnSeries.coeff_inj.mp (funext fun n => ?_)
-    rw [sub_mul, one_mul, coeff_ofPowerSeries_mk, coeff_ofPowerSeries_mk]
-    sorry
-  sorry
+    exact hm (by simp [h])
+
+@[simp]
+theorem coeff_qDifferenceSolution (a b : k) (ρ : LaurentSeries k) (m : ℤ) :
+    (qDifferenceSolution a b ρ).coeff m = ρ.coeff m / (1 - a * b ^ m) := rfl
+
+/-- **Every Laurent series is the defect of a first-order inhomogeneous `q`-difference
+equation**, as soon as no `a bᵐ` equals one; the solution is then unique. -/
+theorem qDifferenceSolution_spec (a b : k) (hb : b ≠ 0) (ρ : LaurentSeries k)
+    (hres : ∀ m : ℤ, 1 - a * b ^ m ≠ 0) :
+    qDifferenceSolution a b ρ
+        - algebraMap k (LaurentSeries k) a * innerDilation b hb (qDifferenceSolution a b ρ)
+      = ρ := by
+  refine HahnSeries.coeff_inj.mp (funext fun m => ?_)
+  rw [HahnSeries.coeff_sub, algebraMap_k_laurentSeries, coeff_C_mul_hahn, coeff_innerDilation,
+    coeff_qDifferenceSolution]
+  field_simp
+  rw [mul_div_assoc, div_self (hres m), mul_one]
+
+theorem qDifferenceSolution_unique (a b : k) (hb : b ≠ 0) (ρ R : LaurentSeries k)
+    (hres : ∀ m : ℤ, 1 - a * b ^ m ≠ 0)
+    (hR : R - algebraMap k (LaurentSeries k) a * innerDilation b hb R = ρ) :
+    R = qDifferenceSolution a b ρ := by
+  refine HahnSeries.coeff_inj.mp (funext fun m => ?_)
+  have h := congrArg (fun x : LaurentSeries k => x.coeff m) hR
+  simp only [HahnSeries.coeff_sub, algebraMap_k_laurentSeries, coeff_C_mul_hahn,
+    coeff_innerDilation] at h
+  rw [coeff_qDifferenceSolution, eq_div_iff (hres m), ← h]
+  ring
+
+/-- The multiplicative independence of the multipliers rules out every resonance. -/
+theorem no_resonance_of_multIndependent {a b : k} (ha : a ≠ 0)
+    (hind : ∀ m n : ℤ, b ^ m = a ^ n → m = 0 ∧ n = 0) (m : ℤ) : 1 - a * b ^ m ≠ 0 := by
+  intro h
+  have hbm : b ^ m = a ^ (-1 : ℤ) := by
+    have ha' : a ≠ 0 := ha
+    field_simp
+    linear_combination -h
+  exact absurd (hind m (-1) hbm).2 (by norm_num)
+
+/-! ## The hypertranscendence of the geometric response -/
+
+set_option maxHeartbeats 1000000 in
+/-- **The response of a geometric spectrum is hypertranscendental.**  For multiplicatively
+independent multipliers, the unique Laurent solution of `R - a R(bz) = w/(1-z)` with `w ≠ 0` is
+differentially transcendental over `k(z)`. -/
+theorem hypertranscendentalOver_qDifferenceSolution [CharZero k] (a b w : k)
+    (ha : a ≠ 0) (hb : b ≠ 0) (hw : w ≠ 0)
+    (hind : ∀ m n : ℤ, b ^ m = a ^ n → m = 0 ∧ n = 0) :
+    letI : Differential (RatFunc k) := cylinderDifferential (1 : k)
+    letI := innerDifferential (k := k)
+    HypertranscendentalOver (RatFunc k)
+      (qDifferenceSolution a b (algebraMap (RatFunc k) (LaurentSeries k)
+        (algebraMap k (RatFunc k) w / toRF (Polynomial.C 1 - Polynomial.X)))) := by
+  letI : Differential (RatFunc k) := cylinderDifferential (1 : k)
+  letI := innerDifferential (k := k)
+  refine hypertranscendentalOver_of_qDifference_cotModel a b ha hb hind (-(w / 2)) (w / 2)
+    (by simpa using hw) _ ?_
+  rw [qDifferenceSolution_spec a b hb _ (no_resonance_of_multIndependent ha hind),
+    ← oneSubInv_eq_cotModel_add_const w]
 
 end
 

@@ -19,8 +19,10 @@ The first no-go kills the chamber implication: even with every source-positive c
 reconstructed gap strictly positive, corrected completed C5 slope can be negative. The stronger
 no-go proves the exact covariant boundary law and exhibits an orientation seam with positive mass
 and gap, inward `U,B` velocities, zero `Q` velocity, but strictly negative orientation derivative.
-Thus neither chamber signs nor the autonomous field alone supply a uniform first-contact barrier.
-Positive survivor: actual physical-orbit incidence, or a stronger orbit invariant, is indispensable.
+The third no-go perturbs that seam into the strict adapted physical thin-clock cone
+`5B < U+3B < 6B`. Thus neither chamber signs, static clock localization, nor the autonomous field
+alone supply a uniform first-contact barrier. Positive survivor: centre-anchored physical-orbit
+incidence, or a stronger dynamical invariant, is indispensable.
 -/
 
 open Complex Real
@@ -250,6 +252,32 @@ theorem eval_modularThetaSourcePositiveC5ExactCompletedSeamSlopePolynomial_hundr
     modularThetaGeneralLyapunov_c5ExactCompletedSeamSlopePolynomial]
   exact eval_modularThetaODENormalizedC5ExactCompletedSeamSlopePolynomial_ten_re_neg
 
+private theorem eventually_eval_c5ExactCompletedSeamSlope_neg_of_tendsto_hundred
+    (g : ModularThetaSourcePositiveState → ℝ → ℂ)
+    (hg : ∀ i, ContinuousAt (g i) 0)
+    (hgzero : (fun i => g i 0) = modularThetaSourcePositiveSeamState 100) :
+    ∀ᶠ ε in nhds (0 : ℝ),
+      (MvPolynomial.eval (fun i => g i ε)
+        modularThetaSourcePositiveC5ExactCompletedSeamSlopePolynomial).re < 0 := by
+  have hcomplex : ContinuousAt
+      (fun ε => MvPolynomial.eval (fun i => g i ε)
+        modularThetaSourcePositiveC5ExactCompletedSeamSlopePolynomial) 0 :=
+    continuousAt_mvPolynomial_eval_curve
+      modularThetaSourcePositiveC5ExactCompletedSeamSlopePolynomial g 0 hg
+  have hreal : ContinuousAt
+      (fun ε => (MvPolynomial.eval (fun i => g i ε)
+        modularThetaSourcePositiveC5ExactCompletedSeamSlopePolynomial).re) 0 := by
+    change ContinuousAt
+      (Complex.re ∘ fun ε => MvPolynomial.eval (fun i => g i ε)
+        modularThetaSourcePositiveC5ExactCompletedSeamSlopePolynomial) 0
+    exact Complex.continuous_re.continuousAt.comp hcomplex
+  have hzero :
+      (MvPolynomial.eval (fun i => g i 0)
+        modularThetaSourcePositiveC5ExactCompletedSeamSlopePolynomial).re < 0 := by
+    rw [hgzero]
+    exact eval_modularThetaSourcePositiveC5ExactCompletedSeamSlopePolynomial_hundred_re_neg
+  exact hreal.eventually (Iio_mem_nhds hzero)
+
 /-- A strict source-positive chamber perturbation of the negative `X=100` seam. -/
 def modularThetaSourcePositiveC5SlopeChamberPerturbation (ε : ℝ) :
     ModularThetaSourcePositiveState → ℂ
@@ -267,9 +295,6 @@ theorem exists_strictSourcePositiveChamber_eval_c5ExactCompletedSeamSlope_neg :
         modularThetaSourcePositiveC5ExactCompletedSeamSlopePolynomial).re < 0 := by
   let g : ModularThetaSourcePositiveState → ℝ → ℂ :=
     fun i ε => modularThetaSourcePositiveC5SlopeChamberPerturbation ε i
-  let f : ℝ → ℝ := fun ε =>
-    (MvPolynomial.eval (fun i => g i ε)
-      modularThetaSourcePositiveC5ExactCompletedSeamSlopePolynomial).re
   have hg : ∀ i, ContinuousAt (g i) 0 := by
     intro i
     cases i
@@ -279,28 +304,13 @@ theorem exists_strictSourcePositiveChamber_eval_c5ExactCompletedSeamSlope_neg :
         Complex.continuous_ofReal.continuousAt
     · simpa [g, modularThetaSourcePositiveC5SlopeChamberPerturbation] using
         (continuousAt_const : ContinuousAt (fun _ : ℝ => (47 / 8 : ℂ)) 0)
-  have hcomplex : ContinuousAt
-      (fun ε => MvPolynomial.eval (fun i => g i ε)
-        modularThetaSourcePositiveC5ExactCompletedSeamSlopePolynomial) 0 :=
-    continuousAt_mvPolynomial_eval_curve
-      modularThetaSourcePositiveC5ExactCompletedSeamSlopePolynomial g 0 hg
-  have hfcont : ContinuousAt f 0 := by
-    dsimp only [f]
-    change ContinuousAt
-      (Complex.re ∘ fun ε => MvPolynomial.eval (fun i => g i ε)
-        modularThetaSourcePositiveC5ExactCompletedSeamSlopePolynomial) 0
-    exact Complex.continuous_re.continuousAt.comp hcomplex
   have hgzero : (fun i => g i 0) = modularThetaSourcePositiveSeamState 100 := by
     funext i
     cases i <;>
       norm_num [g, modularThetaSourcePositiveC5SlopeChamberPerturbation,
         modularThetaSourcePositiveSeamState]
-  have hfzero : f 0 < 0 := by
-    simpa only [f, hgzero] using
-      eval_modularThetaSourcePositiveC5ExactCompletedSeamSlopePolynomial_hundred_re_neg
-  have hnegEventually : ∀ᶠ ε in nhds (0 : ℝ), f ε < 0 :=
-    hfcont.eventually (Iio_mem_nhds hfzero)
-  obtain ⟨δ, hδ, hnear⟩ := Metric.eventually_nhds_iff.mp hnegEventually
+  obtain ⟨δ, hδ, hnear⟩ := Metric.eventually_nhds_iff.mp
+    (eventually_eval_c5ExactCompletedSeamSlope_neg_of_tendsto_hundred g hg hgzero)
   let ε : ℝ := min (δ / 2) (1 / 2)
   have hε : 0 < ε := by
     exact lt_min (by linarith) (by norm_num)
@@ -309,7 +319,9 @@ theorem exists_strictSourcePositiveChamber_eval_c5ExactCompletedSeamSlope_neg :
   have hεδ : ε < δ := by
     have hle : ε ≤ δ / 2 := min_le_left _ _
     linarith
-  have hfε : f ε < 0 := by
+  have hfε :
+      (MvPolynomial.eval (fun i => g i ε)
+        modularThetaSourcePositiveC5ExactCompletedSeamSlopePolynomial).re < 0 := by
     apply hnear
     simpa [Real.dist_eq, abs_of_pos hε] using hεδ
   refine ⟨fun i => g i ε, ?_, ?_, ?_⟩
@@ -337,6 +349,88 @@ theorem not_forall_strictSourcePositiveChamber_c5ExactCompletedSeamSlope_pos :
   obtain ⟨v, hv, hgap, hslope⟩ :=
     exists_strictSourcePositiveChamber_eval_c5ExactCompletedSeamSlope_neg
   linarith [h v hv hgap]
+
+/-- Perturb the negative `X=100` seam into the adapted thin-clock cone
+`5B < U+3B < 6B`. -/
+def modularThetaSourcePositiveC5SlopeThinClockPerturbation (ε : ℝ) :
+    ModularThetaSourcePositiveState → ℂ
+  | .U => (5 / 2 : ℝ) * ε
+  | .B => ε
+  | .Q => 47 / 8
+
+/-- The strict adapted thin-clock cone still meets the negative corrected-C5-slope chamber.
+
+On the physical orbit the corpus identities `r=Rz`, `B=R(z-v)/3` turn
+`(2/5)z<v<(1/2)z` into `5B<r<6B`, where `r=U+3B`.  This theorem proves that those
+static inequalities, even together with positivity of every source coordinate and reconstructed
+gap, do not force the first-contact slope sign. -/
+theorem exists_strictSourcePositiveThinClockCone_eval_c5ExactCompletedSeamSlope_neg :
+    ∃ v : ModularThetaSourcePositiveState → ℂ,
+      (∀ i, 0 < (v i).re) ∧
+      0 < (MvPolynomial.eval v modularThetaSourcePositiveGap).re ∧
+      5 * (v .B).re < (v .U).re + 3 * (v .B).re ∧
+      (v .U).re + 3 * (v .B).re < 6 * (v .B).re ∧
+      (MvPolynomial.eval v
+        modularThetaSourcePositiveC5ExactCompletedSeamSlopePolynomial).re < 0 := by
+  let g : ModularThetaSourcePositiveState → ℝ → ℂ :=
+    fun i ε => modularThetaSourcePositiveC5SlopeThinClockPerturbation ε i
+  have hg : ∀ i, ContinuousAt (g i) 0 := by
+    intro i
+    cases i
+    · simpa [g, modularThetaSourcePositiveC5SlopeThinClockPerturbation] using
+        Complex.continuous_ofReal.continuousAt.const_mul (5 / 2 : ℂ)
+    · simpa [g, modularThetaSourcePositiveC5SlopeThinClockPerturbation] using
+        Complex.continuous_ofReal.continuousAt
+    · simpa [g, modularThetaSourcePositiveC5SlopeThinClockPerturbation] using
+        (continuousAt_const : ContinuousAt (fun _ : ℝ => (47 / 8 : ℂ)) 0)
+  have hgzero : (fun i => g i 0) = modularThetaSourcePositiveSeamState 100 := by
+    funext i
+    cases i <;>
+      norm_num [g, modularThetaSourcePositiveC5SlopeThinClockPerturbation,
+        modularThetaSourcePositiveSeamState]
+  obtain ⟨δ, hδ, hnear⟩ := Metric.eventually_nhds_iff.mp
+    (eventually_eval_c5ExactCompletedSeamSlope_neg_of_tendsto_hundred g hg hgzero)
+  let ε : ℝ := min (δ / 2) (1 / 2)
+  have hε : 0 < ε := lt_min (by linarith) (by norm_num)
+  have hεhalf : ε ≤ 1 / 2 := min_le_right _ _
+  have hεδ : ε < δ := by
+    have hle : ε ≤ δ / 2 := min_le_left _ _
+    linarith
+  have hslope :
+      (MvPolynomial.eval (fun i => g i ε)
+        modularThetaSourcePositiveC5ExactCompletedSeamSlopePolynomial).re < 0 := by
+    apply hnear
+    simpa [Real.dist_eq, abs_of_pos hε] using hεδ
+  refine ⟨fun i => g i ε, ?_, ?_, ?_, ?_, hslope⟩
+  · intro i
+    cases i <;>
+      simp [g, modularThetaSourcePositiveC5SlopeThinClockPerturbation, hε]
+  · simp only [modularThetaSourcePositiveGap, map_sub, map_add, map_mul, map_pow,
+      MvPolynomial.eval_C, MvPolynomial.eval_X]
+    simp [g, modularThetaSourcePositiveC5SlopeThinClockPerturbation]
+    have hεsq : ((ε : ℂ) ^ 2).re = ε ^ 2 := by
+      norm_num [pow_two, Complex.mul_re]
+    rw [hεsq]
+    nlinarith [mul_nonneg hε.le (sub_nonneg.mpr hεhalf)]
+  · simp [g, modularThetaSourcePositiveC5SlopeThinClockPerturbation]
+    linarith
+  · simp [g, modularThetaSourcePositiveC5SlopeThinClockPerturbation]
+    linarith
+
+/-- Exact route kill: physical thin-clock inequalities alone cannot supply the corrected C5
+first-contact barrier, so any surviving proof must use a genuinely dynamical orbit invariant. -/
+theorem not_forall_strictSourcePositiveThinClockCone_c5ExactCompletedSeamSlope_pos :
+    ¬ ∀ v : ModularThetaSourcePositiveState → ℂ,
+      (∀ i, 0 < (v i).re) →
+      0 < (MvPolynomial.eval v modularThetaSourcePositiveGap).re →
+      5 * (v .B).re < (v .U).re + 3 * (v .B).re →
+      (v .U).re + 3 * (v .B).re < 6 * (v .B).re →
+      0 < (MvPolynomial.eval v
+        modularThetaSourcePositiveC5ExactCompletedSeamSlopePolynomial).re := by
+  intro h
+  obtain ⟨v, hv, hgap, hlower, hupper, hslope⟩ :=
+    exists_strictSourcePositiveThinClockCone_eval_c5ExactCompletedSeamSlope_neg
+  linarith [h v hv hgap hlower hupper]
 
 private theorem modularThetaSourcePositiveLie_normalizedSourceJet (n : ℕ) :
     modularThetaSourcePositiveLie

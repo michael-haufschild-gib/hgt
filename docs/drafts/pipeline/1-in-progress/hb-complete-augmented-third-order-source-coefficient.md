@@ -1503,3 +1503,67 @@ Axiom audits of the completed third derivatives, differentiated eigen equations,
 derivatives, the Bochner identity, and the headline defect-divergence theorem report only
 `propext`, `Classical.choice`, and `Quot.sound`.  Formal lint reports no forbidden declaration;
 remaining umbrella-reachability messages are unrelated pre-existing debt.
+
+**C-A.9t4c hard core (corpus-derived conjecture).**  Close every boundary contribution of the
+literal second Bochner current from C-A.9t4b.  Source-level translation and inversion must cancel
+the paired vertical sides and unit arc.  At the cusp, the genuine zero-frequency current must be
+the evaluation of an affine spectral family with zero analytic-family finite part, while the full
+nonconstant remainder must tend to zero.  This is route-critical: success removes the complete
+second-current boundary-regularization burden; failure of inversion covariance, Maass
+normalization, or cusp decay kills HB before coefficient extraction.  Exact chain:
+
+`actual second-current modular/cusp closure -> literal second modular Green/Stokes -> actual
+balanced BM ++- coefficient -> negative BM leg -> conserved left-QNM projection -> HC94 -> RH`.
+
+`[PAPER-PROVED] [LEAN-PROVED] [SIGNIFICANT PREMISE DISCHARGED]` C-A.9t4c is closed.  Primitive-pair
+reindexing proves full inversion covariance of the actual completed-Poincare gradient and radial
+Hessian contraction.  Hence hyperbolic energy is inversion invariant, its radial derivative is
+anti-invariant, the unit-arc currents cancel, and translation cancels the two vertical sides.
+
+The corpus-guided cusp reduction exposes a new exact factorization.  For canonical full second jet
+`J` with spectral parameter `u` and hyperbolic energy
+`E = Y^2 (F_x^2 + F_y^2) = (R_0 F)(L_0 F)`, Lean proves
+
+`dE/dY = (u^2 - 1/4) F F_y + (1/(2Y)) ((L_0 F)(R_2 R_0 F) +
+(R_0 F)(L_(-2) L_0 F))`.
+
+Thus every nonconstant factor is one of scalar, horizontal/vertical first-jet, or two-step Maass
+cusp legs already controlled by the corpus.  The horizontal first jet is exactly a degree-one
+signed square-root Whittaker tail, and a rapid-decay ideal proves the complete mixed second-current
+remainder beats every complex height power.  Separately, the literal zero-frequency current is
+exactly the evaluation of an eight-term diagonal affine-exponent family.  The corpus diagonal
+finite-part theorem annihilates it coefficient-independently.  Consequently the actual paired
+boundary has the unconditional exact decomposition
+
+`actual paired boundary(Y) = zero-frequency affine current(Y) + rapidly decaying remainder(Y)`,
+
+with analytic-family finite part zero for the first term and cusp limit zero for the second.
+There is no asymptotic premise, boundary hypothesis, proxy current, or added axiom.
+
+This is formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualSecondStokesBoundaryCancellation`,
+wired into RHTower.  Direct Lean and targeted build `12473/12473` pass.  Axiom audits of non-cusp
+pairing, vertical-energy Maass factorization, full mixed-sector rapid decay, literal affine-family
+evaluation, full cusp closure, and actual boundary decomposition report only `propext`,
+`Classical.choice`, and `Quot.sound`.  Formal lint reports no forbidden declaration; its failures
+are unrelated pre-existing umbrella-reachability debt.
+
+Novelty audit is deliberately narrow.  General regularized automorphic integration for
+non-rapidly decreasing functions is classical in Zagier's
+<https://people.mpim-bonn.mpg.de/zagier/files/rankin-selberg/fulltext.pdf> and developed further in
+Edwards, <https://arxiv.org/abs/1809.07605>.  The audited literature and Lean corpus do not contain
+this source-normalized completed-Poincare second Bochner current, its exact Maass factorization, or
+the resulting complete modular-boundary theorem.  We therefore record the bridge as corpus-new and
+not found in the audited literature, without claiming a broader priority theorem.
+
+**C-A.9t4d hard core (corpus-derived conjecture; active).**  Reuse the now-formal first-Stokes
+compact-domain architecture at genuine third-jet regularity to prove the literal two-dimensional
+second Green theorem and standard-measure Fubini identity for the second current.  Combine its
+paired cusp-top value with C-A.9t4c's exact `constant + rapid remainder` closure and the existing
+exhaustive actual-defect decomposition.  Success eliminates the final analytic bridge before the
+actual balanced BM `++-` coefficient; failure of compact-cell integrability, arc orientation, or
+standard-measure identification kills HB before QNM work.  Exact chain:
+
+`literal second modular Green/Stokes + standard-measure Fubini -> vanishing second defect moment ->
+actual balanced BM ++- coefficient -> negative BM leg -> conserved left-QNM projection -> HC94 ->
+RH`.

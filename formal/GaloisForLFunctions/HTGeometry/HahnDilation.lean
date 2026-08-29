@@ -242,6 +242,14 @@ theorem hahnDerivation_apply (μ : Γ →+ R) (f : HahnSeries Γ R) :
 @[reducible] noncomputable def hahnDifferential (μ : Γ →+ R) : Differential (HahnSeries Γ R) :=
   ⟨hahnDerivation μ⟩
 
+/-- The differential ring structure given by an additive character rescaled by a series. -/
+@[reducible] noncomputable def hahnScaledDifferential (μ : Γ →+ R) (u : HahnSeries Γ R) :
+    Differential (HahnSeries Γ R) :=
+  ⟨u • hahnDerivation μ⟩
+
+theorem hahnScaledDifferential_deriv (μ : Γ →+ R) (u f : HahnSeries Γ R) :
+    (hahnScaledDifferential μ u).deriv f = u * hahnGrade μ f := rfl
+
 /-- Dilations commute with gradings: both act diagonally on coefficients. -/
 theorem hahnScale_hahnGrade (χ : Multiplicative Γ →* Rˣ) (μ : Γ →+ R) (f : HahnSeries Γ R) :
     hahnScale χ (hahnGrade μ f) = hahnGrade μ (hahnScale χ f) := by

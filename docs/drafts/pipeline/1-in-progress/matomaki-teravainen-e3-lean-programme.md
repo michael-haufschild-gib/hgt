@@ -2086,3 +2086,59 @@ the arithmetic of the endpoint errors — bookkeeping, with no analytic content 
 
 Remaining milestones for Theorem 1.2: **M6/M7** (Type I and Type I/II) and **M8** (the assembly at
 exponent `1 + 44/79`).
+
+### M2, brick 32 — Proposition-2.2 Perron factorization (2026-08-29)
+
+`Sieve/MatomakiTeravainenPerronFactorization.lean`, unconditional, axiom-clean, umbrella-wired:
+
+```text
+arithmeticFunction_mul_eq_lseriesConvolution
+    arithmetic-function multiplication is literal `LSeries.convolution` on coefficients
+perronPoly_eq_LSeries_of_support
+    a Perron cutoff containing the full support is the corresponding finite `LSeries`
+mtRealIntervalAF_support_nat
+    the canonical cutoff `⌈U⌉₊` contains every interval-supported coefficient
+perronPoly_arithmeticFunction_mul
+    exact two-factor Perron factorization at the product cutoff
+MTTypeIPieceData.perronPoly_factorization
+MTTypeI_II_PieceData.perronPoly_factorization
+MTTypeIIPieceData.perronPoly_factorization
+    exact factorization of every Proposition-2.2 piece into its source Dirichlet factors
+```
+
+All cutoffs are explicit ceilings of the actual real support endpoints.  The Type-I/II identity
+retains all three factors and the left-associated convolution/product structure; no factor is
+absorbed or simplified away.  Thus brick 31's `perronPoly` is now connected exactly to the
+Dirichlet factors used by the mean-value estimates.
+
+Remaining milestones for Theorem 1.2: the analytic **M6/M7** Type-I and Type-I/II estimates, then
+the **M8** all-interval E3 assembly.  The two Route-E cards stay in Stage 2 until that final theorem
+is instantiated with every scale and support condition discharged.
+
+### M6/M7, brick 33 — Watt--Deshouillers--Iwaniec over-height branch (2026-08-29)
+
+Source audit of §§5.1--5.2 isolates the remaining common input as Lemma 3.5: Watt's and
+Deshouillers--Iwaniec's twisted fourth moments.  The paper itself splits their proof at the length
+`N` of the unit-coefficient factor.  The entire branch `T ≤ N` is now closed in
+`Sieve/MatomakiTeravainenWattDIOverHeight.lean`, unconditional, axiom-clean, umbrella-wired:
+
+```text
+mtWattUnitBlock, mtWattCoefficientBlock
+    exact Perron-line carriers on `(N,N']` and `(A,2A]`
+mtWattUnitBlock_eq_sum_Ico
+    literal finite Dirichlet-block identity
+norm_mtWattUnitBlock_le_over_height
+    ‖N(1+it)‖ ≤ 2(6π+1)/T for T/2 ≤ t ≤ T ≤ N
+integral_Icc_normSq_mtWattCoefficientBlock_le_general_affine
+    arbitrary coefficient block paid by its exact affine masses
+integral_mtWatt_overHeight_le_generalAffine
+    ∫_{T/2}^{T} |N|⁴|A|²
+      ≤ (2(6π+1)/T)⁴ · (generalMeanSquareConst + T·generalMeanSquareRate)
+```
+
+This derives the source's `T⁻⁴` residual branch directly from corpus Kuzmin--Landau and the affine
+mean-square theorem; no Watt, Deshouillers--Iwaniec, spectral, or large-value premise remains when
+the factor exceeds the height.  Remaining M6/M7 core is now precisely the complementary
+sub-height regime `N ≤ T`, where the published argument uses the deep twisted moments.  Final card
+closure still requires that regime plus the source amplification and exponent arithmetic; no card
+is promoted by this brick alone.

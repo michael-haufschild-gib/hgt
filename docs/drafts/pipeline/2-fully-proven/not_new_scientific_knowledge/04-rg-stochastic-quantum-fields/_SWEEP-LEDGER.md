@@ -370,3 +370,63 @@ multiplicatively *dependent* case `aⁿ = bᵐ`, where the whole argument runs i
 variable `w = z^{1/n}` (no second coordinate is needed, since `h = w^{−m}` is already rational) and
 the only new ingredient is that a nonzero constant-coefficient Euler combination of a function with
 a simple pole at `ζ` has a pole there — the pole-order-increases-by-one lemma.
+
+### Card 7: the response is Lean-hypertranscendental (generic multipliers)
+
+`HTGeometry/GeometricKallenLehmannHypertranscendence.lean` closes the card's own headline for every
+multiplicatively independent multiplier pair:
+
+> `hypertranscendentalOver_qDifferenceSolution` — for `a, b ≠ 0` with `bᵐ = aⁿ` only trivially, and
+> `w ≠ 0`, the unique Laurent solution of `R − a·R(bz) = w/(1−z)` is differentially transcendental
+> over `k(z)` for the Euler derivation.  Axioms: `propext`, `Classical.choice`, `Quot.sound`.
+
+Supporting: `qDifferenceSolution` (coefficientwise solution), `qDifferenceSolution_spec` (it solves
+the equation), `qDifferenceSolution_unique` (there is no other Laurent solution — so the corpus's
+`geometricKallenLehmannResponse` *is* this series once transported to a field), and
+`no_resonance_of_multIndependent` (`a bᵐ ≠ 1`), plus the identification
+`w/(1−z) = cotModel(−w/2) + w/2`.
+
+Card 7's residue is now exactly: the multiplicatively dependent case, the Euler-versus-`d/dz`
+transfer (the corpus's `ClockChangeTriangular.isHypertranscendentalOver_clockRescale_iff` is the
+tool — it needs a bridge between `IsDifferentiallyAlgebraicOver` and `DifferentialAlgebraicOver`),
+the transport of the real response to `LaurentSeries ℂ`, and the propagator substitution.
+
+### The one-variable engine, and card 10's headline
+
+Two more modules, both umbrella-wired, both auditing to the standard three axioms:
+
+* `HTGeometry/SimplePoleEulerCombination.lean` — the Euler operator preserves regularity
+  (`regularAt_ratFuncEulerOp`, `regularAt_eulerCombination`); the principal part of a quotient with
+  a single linear factor splits off (`exists_regularAt_sub_principalPart`); and **a nonzero
+  constant-coefficient Euler combination of a rational function with a simple pole at any `p₀ ≠ 0`
+  has a pole there** (`not_regularAt_eulerCombination_simplePole`).  This generalizes the corpus's
+  cotangent-model computation, which was tied to a pole at `1` with the specific numerator
+  `c(X+1)`; the general case follows by splitting off the principal part and dilating the
+  coordinate.
+* `HTGeometry/QDifferenceLaurentOneVariable.lean` — when the multiplier of the homogeneous equation
+  is a *power of the dilation parameter*, no second coordinate is needed: `k((w))` with `w ↦ βw`
+  already has constant invariants (`exists_C_of_innerDilation_eq_self`), the criterion instantiates
+  (`differentialIndependent_of_oneVariable_primitive`), and
+  **`hypertranscendentalOver_of_monomialTwist`** concludes hypertranscendence from a simple-pole
+  increment with a single pole on its orbit.
+
+`HTGeometry/ReciprocalQLadderHypertranscendence.lean` applies it to **card 10**:
+
+> `hypertranscendentalOver_qLadderResolvent` — every Laurent solution of `R(x) − β·R(βx) = 1/(1+x)`
+> with `β` not a root of unity is differentially transcendental over `k(x)`.
+
+That is the card's `(13) ⟹ (16)`, and it is *shorter* than the card's own route: the card passes
+through the product `P_r` and the Riccati transfer `(14)–(17)`, which are not needed — the
+inhomogeneous equation is attacked directly.
+
+**Card type map for the ADH group.**  Cards 7 and 10 are `q`-difference (dilation `z ↦ bz`) and are
+now served.  Cards 8, 9 and 11 are **Mahler** (`z ↦ z^p`): there the natural ambient is the Hahn
+field with `ℚ`-exponents, where `z ↦ z^p` *is* an automorphism and the invariants are again the
+constants (an invariant would have an infinite descending support).  But no nonzero grading
+commutes with it — additive maps are `ℚ`-linear, so `μ(pγ) = pμ(γ) = μ(γ)` forces `μ = 0` — and the
+Euler derivation instead satisfies `δσ = p·σδ`.  The corpus's criterion needs commutation, and the
+short proof of `automorphismFamily_differentialIndependent_of_no_constant_simultaneous_jet_telescoping`
+reduces to the *algebraic* independence criterion through `σ(δⁿx) = δⁿx + δⁿb`; in the twisted case
+this becomes `σ(δⁿx) = p^{-n}(δⁿx + δⁿb)`, an affine action with a nonconstant multiplier per jet.
+So cards 8, 9, 11 need the twisted-commutation form of the criterion, which is the parameterized
+Galois content of ADH proper.  That is the next construction.

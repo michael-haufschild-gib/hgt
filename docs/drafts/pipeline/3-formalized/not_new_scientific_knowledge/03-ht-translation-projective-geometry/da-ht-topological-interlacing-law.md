@@ -2,7 +2,7 @@
 
 - **ID:** `da-ht-topological-interlacing-law`
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper) — `[PROVED HERE] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
+- **Type:** THEOREM (Lean) — `[PROVED HERE] [FORMALIZED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Lane:** general hypertranscendence; compact-open and Hardy topologies; continuous-selector no-go
 - **Statement:** On every connected complex domain, the DA functions over `C(z)` are dense and
   meagre in the compact-open holomorphic space, while the HT functions are dense and comeagre.  In
@@ -236,20 +236,77 @@ Primary adjacent sources:
   B. Adamus, *On the differential transcendentality of the Morita p-adic gamma function*,
   arXiv:2109.11448.
 
-## Lean status
+## Lean status (2026-08-29)
 
-The formal tree contains finite polynomial/Hermite interpolation, abstract differential-field
-closure components, complex analysis, and some Hardy/Fourier infrastructure.  It does not contain
-the Frechet/Baire structure of `O(Omega)`, Runge approximation in this generality, Holder's theorem,
-or analytic `H^2(D)` as one theorem surface.  A finite-jet wrapper would not formalize the complete
-claim, so stage 3 is not justified.
+Fully formalized unconditionally in Lean 4.  Every gap listed in the earlier assessment has been
+closed, including **Runge's theorem**, which was in neither mathlib nor the corpus.
+
+Compact-open half:
+
+- `HTGeometry/HolomorphicCompactOpenDomain.lean` — `HoloCO Ω`, the holomorphic functions on an open
+  `Ω ⊆ ℂ` as a closed complex subspace of the compact-open space `C(↥Ω, ℂ)`; complete, completely
+  metrizable, Baire; `ContinuousAdd`/`ContinuousSMul`; and `continuous_holoCOJet` — every fixed jet
+  is a continuous functional.
+- `HTGeometry/DifferentialAlgebraicCompactOpenMeagre.lean` — the bounded-complexity strata
+  `daCompactOpenStratum`, `isClosed_daCompactOpenStratum`, `daCompactOpenLocus_eq_iUnion`, and
+  `exists_tendsto_notMem_daCompactOpenStratum` / `isNowhereDense_daCompactOpenStratum` — the
+  empty-interior half, proved with the explicit geometric jet configuration
+  `v (i,c) = a i ^ ((d+1)^(c+1))`, whose jet-sample matrix becomes a nonsingular Vandermonde matrix
+  under the base-`(d+1)` digit bijection.  Consequences: `isMeagre_daCompactOpenLocus`,
+  `isGδ_htCompactOpenLocus`, `dense_htCompactOpenLocus`, and the abstract selector-collapse laws
+  `eq_const_of_continuous_of_dense_eqOn`, `const_eq_const_of_continuous_of_dense`.
+
+Runge's theorem (new, not in mathlib):
+
+- `HTGeometry/RungeGridContour.lean` — the four-edge decomposition of `RHTower.rectIntegral`, the
+  grid, the **edge-cancellation identity** `sum_gridRect_eq_edges`, the fact that a surviving edge
+  misses `K`, the Cauchy kernel on a grid square, and the contour representation
+  `sum_gridRect_cauchyKernel`.
+- `HTGeometry/IntervalRiemannSum.lean` — uniform left-endpoint Riemann sums with an oscillation
+  bound.
+- `HTGeometry/RungeEdgeRiemann.lean` — `exists_edgeCauchyRiemann_approx`: uniform rational
+  approximation of a Cauchy-kernel edge integral on a compact set disjoint from the edge.
+- `HTGeometry/RungePolePush.lean` — both pole-pushing steps with explicit error identities:
+  `exists_polePush_small` (to a nearby point outside `Ω`) and `exists_infPush_small` (to infinity,
+  giving polynomials).
+- `HTGeometry/RungeApproxClass.lean` — the approximation bookkeeping `ApproxOn` and the class
+  `RungeDA Ω` of functions analytic *and* differentially algebraic on `Ω`, with its closure
+  properties.
+- `HTGeometry/RungeSelection.lean`, `RungeEdgeApprox.lean`, `RungeDensity.lean` — the selection rule
+  (squares **contained** in `Ω` and in a large ball), which fills the bounded components of `ℂ∖K`
+  lying inside `Ω` and thereby removes both the `Ω`-hull and the pole-pushing chains of the
+  classical proof; and the capstone
+  **`approxOn_rungeDA_of_analyticOnNhd`**: every function analytic on a domain is uniformly
+  approximable on every compact subset by functions analytic and differentially algebraic on the
+  whole domain.
+- `HTGeometry/RungeCompactOpenDensity.lean` — an explicit compact exhaustion, and the card's
+  compact-open statements: `dense_daCompactOpenLocus`, `compactOpen_interlacing`,
+  `exists_mem_both_of_isOpen`, `compactOpen_phase_selector_collapse`.
+
+Hardy half:
+
+- `HTGeometry/HardyDifferentialAlgebraicInterlacing.lean` — `dense_hardyDALocus` (polynomial
+  truncations of `lp` sequences), the bounded hypertranscendental Hardy carrier
+  `hardyHTCarrier` built from the entire reciprocal Gamma function
+  (`memℓp_diskCoeff_reciprocalGammaEntire`, `not_differentiallyAlgebraicOn_hardyHTCarrier`),
+  `dense_compl_hardyDALocus` (at most one exceptional scalar per point), and
+  `hardy_phase_selector_collapse`.
+
+Supporting general layers added on the way: `HTGeometry/DomainJetRelationLocus.lean` (the `(n,d)`
+jet-minor certificate on an arbitrary open preconnected domain) and
+`HTGeometry/DifferentialAlgebraicOnSum.lean` (constants, sums, finite sums, scalar multiples and
+`differentiallyAlgebraicOn_of_eqOn` for `DifferentiallyAlgebraicOn`).
+
+No `sorry`, `admit`, new axiom or heartbeat increase is used.  Targeted `lake env lean` and
+`lake build` of every new module pass, all modules are wired into `GaloisForLFunctions.HTGeometry`,
+and axiom audits of every capstone report only `propext`, `Classical.choice` and `Quot.sound`.
 
 ## Gates
 
 - [x] 0 -> 1: arbitrary-constant coefficient obstruction reduced to countable monomial supports
 - [x] 1 -> 2: meagreness, both density theorems, Hardy corollary, and continuous-selector law proved
 - [x] parent-theory and primary-literature audit; classified as a bridge
-- [ ] 2 -> 3: complete unconditional theorem formalized in Lean
+- [x] 2 -> 3: complete unconditional theorem formalized in Lean
 - [ ] 3 -> 4: closed by failed novelty gate
 
 ## Log

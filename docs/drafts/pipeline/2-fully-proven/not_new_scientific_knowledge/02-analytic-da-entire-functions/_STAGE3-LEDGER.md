@@ -12,7 +12,7 @@ Goal: unconditional Lean formalization of every card in this folder, then promot
 | 3 | order-two-shadow-matching-normal-form | algebraic core DONE; needs Gol'dberg + zero-free Hadamard | PARTIAL |
 | 4 | quasianalytic-one-phase-bezout-boundary-law | Poincaré field + Bezout + compactness | TODO |
 | 5 | quasianalytic-exponential-log-phase-jet-law | + Vandermonde | TODO |
-| 6 | exponential-tower-exact-differential-order | half 1 CLOSED; half 2 = Pólya growth-depth | TODO |
+| 6 | exponential-tower-exact-differential-order | both halves closed | **DONE → 3-formalized** (2026-08-29) |
 | 7 | first-order-meromorphic-compression-matching | Steinmetz + 3-field factorization | TODO |
 | 8 | entire-heat-multiplicative-da-order-three-floor | Valiron–Zimogljad–Strelitz | TODO |
 | 9 | drifting-periodic-primitive-ramification-exclusion | reduction DONE (`DriftPeriodicRamification`); needs I5 + I4 | PARTIAL |
@@ -161,20 +161,24 @@ The corpus's Böttcher lane already owns the modular machinery:
   `Bottcher.CrossRatioOmittingBridge.spherical_normal_of_omitting_lift`.
 
 Chain to build (refined 2026-08-29 — **no hyperbolic geometry and no normal-families limit
-argument are needed**):
+argument are needed**).  **Steps 1–3 are now Lean-closed** in
+`HTGeometry/ModularDiskChart.lean` and `HTGeometry/BohrCoveringCircle.lean`:
 
-1. **A compact section of `λ` over a compact set.**  `λ` is a covering map onto `ℂ∖{0,1}`
+1. ✅ **A compact section of `λ` over a compact set** — `modularDisk`, `analyticOnNhd_modularDisk`,
+   `exists_modularDisk_eq`, `isOpen_modularDisk_image`, `exists_radius_lt_one_modularDisk_covers`.  `λ` is a covering map onto `ℂ∖{0,1}`
    (`isCoveringMap_lambdaPunct`), hence a surjective local homeomorphism; so for every compact
    `K ⊆ ℂ∖{0,1}` there is a compact `L ⊆ ℍ` with `K ⊆ λ(L)`.  Consequently
    `s₀(K) := sup_{τ ∈ L} |cayley τ| < 1`.
-2. **Uniform Schottky on a compact base set.**  Let `f : ball 0 1 → ℂ∖{0,1}` be holomorphic with
+2. ✅ **Uniform Schottky on a compact base set** — `cayley_cayleyInv`, `normSq_blaschke_identity`,
+   `norm_le_of_blaschke_le`, `exists_bound_of_omitting_compact_base`.  Let `f : ball 0 1 → ℂ∖{0,1}` be holomorphic with
    `f 0 ∈ K`.  Lift with `omitting_lift_member_based` to `g : 𝔻 → 𝔻` with `g 0 = cayley τ₀`,
    `τ₀ ∈ L`, so `|g 0| ≤ s₀`.  Schwarz–Pick gives
    `|g z| ≤ (s₀ + ρ)/(1 + s₀ ρ) =: s < 1` for `|z| ≤ ρ`, whence
    `|f z| ≤ Ψ(K, ρ) := max_{|w| ≤ s} |λ(cayleyInv w)|`, a finite constant.
    (Only a *compact base set* is needed — the full Schottky theorem, with its cusp asymptotics for
    `λ`, is **not** required.)
-3. **Bohr's circle-covering theorem.**  If the circles `|w| = t` and `|w| = t/2` both miss a value
+3. ✅ **Bohr's circle-covering theorem** — `bohrBase`, `isCompact_bohrBase`,
+   `exists_covered_circle`.  If the circles `|w| = t` and `|w| = t/2` both miss a value
    of `φ`, say `w₁, w₂`, then `ψ := (φ − w₂)/(w₁ − w₂)` omits `0` and `1` and its value at the
    origin satisfies `1/3 ≤ |ψ(0)| ≤ 1` **and** `|ψ(0) − 1| = |w₁|/|w₁ − w₂| ≥ 2/3`, so `ψ(0)` lies
    in the fixed compact `K = {|w| ∈ [1/3, 1], |w − 1| ≥ 2/3}` of `ℂ∖{0,1}`.  Step 2 then bounds
@@ -196,3 +200,9 @@ beyond this card (they are the quantitative core of Picard/Montel).
 - 2026-08-29 — card 2 closed: `EntireTaylorUniformApproximation`, `FiniteJetNonidentifiability`.
 - 2026-08-29 — card 3 algebraic core landed (`OrderTwoShadowMatching`); residue = Gol'dberg + Hadamard.
 - 2026-08-29 — card 9 reduction landed (`DriftPeriodicRamification`); SMT programme planned.
+- 2026-08-29 — Schottky (compact base) and **Bohr's circle-covering theorem** Lean-closed:
+  `HTGeometry/ModularDiskChart.lean`, `HTGeometry/BohrCoveringCircle.lean`; axioms clean.
+  Remaining for card 6: Pólya's Theorem II and the composition-depth induction.
+- 2026-08-29 — **card 6 closed and promoted**: Bohr → Pólya II → growth-depth → `cd₊(F_n)=n`.
+  New: `ModularDiskChart`, `BohrCoveringCircle`, `PolyaCompositionMaximum`,
+  `IterExpExponentComparison`, `CompositionGrowthHeight`, `CompositionDepth`.

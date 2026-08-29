@@ -1,7 +1,7 @@
 # Affine-exponential cascade depth equals minimal algebraic-differential order
 
 - **ID:** `exponential-tower-exact-differential-order`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Scientific status:** `[PROVED] [SUBSUMED]` by `../not_new_scientific_knowledge/asymptotically-exponential-algebraic-cascade-unit-cost.md`
 - **Lane:** general hypertranscendence; canonical DA boundary family
@@ -187,7 +187,7 @@ The completed xi function has finite order, whereas every nontrivial affine-expo
 - [x] Significance: exact all-order equality and canonical sharp family.
 - [x] Parent-theory audit: Otsubo 1980 checked in full and does not subsume the theorem.
 - [ ] Literature audit: full-text search beyond metadata.
-- [ ] 2 -> 3: Lean formalization, only after novelty gate and numerical pre-certification rule can both be satisfied.
+- [x] 2 -> 3: **complete and unconditional Lean formalization** of both halves (2026-08-29).
 
 ## Primary references checked
 
@@ -228,7 +228,7 @@ jets transform by `jetAffineSub`, whose inverse is the substitution for `(a⁻¹
 In particular `E_1 = exp`, `E_{n+1} = exp ∘ E_n` is the case `a_j = 0`, `b_j = c_j = 1`, so
 `ord_DA(E_n) = n` is a specialization.
 
-### Half 2 — `cd_+(F_n) = n`: open, route fixed
+### Half 2 — `cd_+(F_n) = n`: **closed** (2026-08-29)
 
 The composition-depth half is not yet formalized.  The corpus has no notion of positive lower order
 or of composition depth, and no Pólya growth-depth lemma.  What it *does* have is the geometric core
@@ -286,3 +286,54 @@ card's "polynomial and affine factors do not count".
 4. Then the induction over `List.Sublist` (head = outermost factor) gives
    `CompositionDepthAtLeast F k → GrowthHeightAtLeast F k`, and
    `not_growthHeightAtLeast_affExpCascade` closes `cd_+(F_n) ≤ n`.
+
+---
+
+## Formalization complete (2026-08-29)
+
+`#print axioms` gives only `propext, Classical.choice, Quot.sound` for every statement below.
+
+### Correction to the route recorded above
+
+The gate stated above — "a quantitative minimum-modulus floor" — is **the wrong tool and cannot
+work**.  A circle floor for the *outer* function is useless at the iterated-exponential scale: for
+`g = h = exp` the minimum modulus of `g` on `|w| = t` is `e^{−t}`, so the floor produced by
+`RHTower/EntireMinimumModulus` is smaller than `1`, whereas the conclusion needs a modulus of size
+`exp_{k+1}`.
+
+Pólya's own proof (*On an integral function of an integral function*, J. London Math. Soc. 1 (1926),
+12–15, Theorem II) uses a **circle-covering** theorem instead:
+
+> **Bohr (1923), generalising Landau (1922).**  For `0 < ρ < 1` there is `C(ρ) > 0` such that if `φ`
+> is regular on `|z| ≤ 1`, `φ(0) = 0` and `max_{|z|=ρ}|φ| = 1`, then some circle `|w| = t` with
+> `t ≥ C(ρ)` consists entirely of values of `φ`.
+
+Applied to `φ(ζ) = h(rζ)/H`, this makes the image of `|z| < r` under `h` contain a whole circle of
+radius `≥ c·H`, and the maximum modulus of `g` on the disc of that radius is attained on it.
+
+### New modules
+
+| Step | Module / Lean name |
+|---|---|
+| the modular covering in the disc chart, its open-mapping property, and the lift of a compact set of values into a fixed sub-disc | `HTGeometry/ModularDiskChart.lean`: `modularDisk`, `analyticOnNhd_modularDisk`, `exists_modularDisk_eq`, `isOpen_modularDisk_image`, `exists_radius_lt_one_modularDisk_covers` |
+| **Schottky's bound over a compact base set** (modular lift + Schwarz–Pick; no limiting argument) | `cayley_cayleyInv`, `normSq_blaschke_identity`, `norm_le_of_blaschke_le`, `exists_bound_of_omitting_compact_base` |
+| **Bohr's circle-covering theorem** | `HTGeometry/BohrCoveringCircle.lean`: `bohrBase`, `isCompact_bohrBase`, `exists_covered_circle` |
+| the maximum modulus is attained on the boundary circle | `HTGeometry/PolyaCompositionMaximum.lean`: `exists_sphere_max` |
+| **Pólya's Theorem II** `F(r) ≥ G(c·H(r/2))` | `exists_polya_constant` |
+| lowering the exponent absorbs a constant factor / a fractional power inside a tower | `HTGeometry/IterExpExponentComparison.lean`: `exists_exponent_iterExp_le_const_mul`, `exists_exponent_iterExp_le_rpow` |
+| **the growth-depth step** `GrowthHeightAtLeast g j → GrowthHeightAtLeast h k → GrowthHeightAtLeast (g∘h) (k+j)` | `HTGeometry/CompositionGrowthHeight.lean`: `growthHeightAtLeast_comp_add` |
+| a nonconstant entire function grows at least linearly, hence has growth height `≥ 0` | `exists_linear_lower_bound_of_nonconstant`, `growthHeightAtLeast_zero_of_nonconstant` |
+| `cd₊` and the growth-depth lemma | `HTGeometry/CompositionDepth.lean`: `CompositionDepthAtLeast`, `growthHeightAtLeast_entireCascade`, `growthHeightAtLeast_of_compositionDepth` |
+| every affine-exponential factor has positive lower order | `positiveLowerOrder_affExp`, `nonconstant_affExp`, `differentiable_affExp` |
+| **`cd₊(F_n) = n`** | `compositionDepthAtLeast_affExpCascade`, `not_compositionDepthAtLeast_affExpCascade` |
+| **the card's theorem: `ord_DA(F_n) = cd₊(F_n) = n`** | `exactOrder_and_compositionDepth_affExpCascade` |
+| **the iterated exponential `E_n`** | `exactOrder_and_compositionDepth_expTower` |
+
+`CompositionDepthAtLeast F k` is the card's notion verbatim: `F` factors as a composition of
+nonconstant entire maps at least `k` of which have positive lower order; polynomial and affine
+factors may appear in the decomposition but do not count.  The upper bound
+`¬ CompositionDepthAtLeast F_{m+1} (m+2)` comes from the corpus growth bound
+`not_growthHeightAtLeast_affExpCascade` through the growth-depth lemma.
+
+As with half 1, only `b_j ≠ 0` and `c_j ≠ 0` are needed — the card's reality and positivity
+assumptions on `a_j, b_j, c_j` are not used.

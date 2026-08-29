@@ -86,3 +86,66 @@ substitute closes the compact incidence gap.
   `4,8,16,32,64,128`, forcing exact normalized C5 orientation limit `36864` and cofinal strict
   positivity. Remaining open core is compact actual-orbit incidence. See
   `../3-formalized/theta-cusp-c5-exact-completed-seam-far-tail.md`.
+- 2026-08-29 — Killed static adapted thin-clock replacement. Physical identities
+  `r=Rz`, `B=R(z-v)/3` translate the corpus clock cone `(2/5)z<v<(1/2)z` into
+  `5B<r<6B`. Lean now constructs a strict source-positive, positive-gap state inside exactly this
+  cone with negative corrected C5 slope. Therefore no implication from these pointwise orbit
+  inequalities can prove first-contact orientation. Strongest survivor is genuinely dynamical:
+  use centre initial data and an invariant/history law that excludes the negative component of the
+  orientation boundary. See
+  `../5-failed/theta-cusp-c5-static-thin-clock-first-contact.md`.
+
+## Lowest-weight reduction attack
+
+[CORPUS] `modularThetaSourcePositiveSl2R` and `modularThetaSourcePositiveSl2K` are annihilated by
+the source lowering field; in adapted coordinates the lowering field is `-∂/∂b`. The physical
+variables satisfy `r=Rz>0` and `k=R²(1-z²)/16>0`, while `k` decreases on the positive orbit.
+
+[LITERATURE] Ramanujan--Serre theory supplies differential closure of modular and quasimodular
+forms, but no real-orbit separator for this C5 covariant. Current order-moment/Hankel
+total-positivity theorems require a positive moment representation in the varied order and do not
+apply to this spatial log-cumulant derivative. The 2024 Ramanujan-vector-field invariant-curve
+preprint was withdrawn and concerned positive-characteristic algebraic curves, not this real theta
+orbit.
+
+[CONJECTURE C5-LOWEST-WEIGHT-REDUCTION] The cleared exact completed C5 orientation polynomial is a
+lowest-weight vector for the source `sl₂` action:
+
+`Lie(sl2F, Ω_clear) = 0`.
+
+Equivalently, after the exact adapted-coordinate automorphism, `Ω_clear` is independent of `b`.
+Since it vanishes on the full algebraic seam `r=0`, it must factor as `r * P(r,k)`. If the remaining
+two-variable factor is positive on the physical region `r>0`, `0<k≤k(0)`, this closes
+
+`lowest-weight factorization`
+→ `Ω>0` on full positive theta orbit
+→ `completed C5 direct-J orientation at every centre`
+→ `compact/far-tail assembly and rank-four/Ptolemy wall`
+→ `CLG/TTF or Weil-polarization positivity`
+→ `RH`.
+
+[OPEN CORE] Prove or refute the exact lowering identity. If it survives, classify the resulting
+two-variable factor and its sign on the centre-anchored monotone `(r,k)` trajectory.
+
+## Lowest-weight attack result
+
+**[FALSIFIED IN LEAN]** `C5-LOWEST-WEIGHT-REDUCTION` is false. At zero-scale seam
+`U=B=0`, `Q=-3/8`, physical source field and `sl₂F` agree on every polynomial observable.
+Orientation vanishes there, but exact covariant Lie law gives
+
+`eval(sl₂F(Ω_clear)) = (-3/8)^5 * modularThetaC5FixedActionSeamPolynomial(0) > 0`.
+
+Therefore adapted orientation genuinely depends on clock `b`; no factorization through `(r,k)` can
+close compact incidence. Positive survivor is explicit lowest-weight anomaly: surviving proof must
+retain `b` dynamics or construct invariant carrying same fixed-action C5 charge. See
+`../3-formalized/theta-cusp-c5-lowest-weight-anomaly.md` and
+`../5-failed/theta-cusp-c5-lowest-weight-reduction.md`.
+
+Remaining RH proof chain is unchanged:
+
+`compact centre-anchored C5 first-contact incidence`
+→ `global Ω>0`
+→ `completed C5 direct-J orientation`
+→ `compact/far-tail and rank-four/Ptolemy assembly`
+→ `CLG/TTF or Weil positivity`
+→ `RH`.

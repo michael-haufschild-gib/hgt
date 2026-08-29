@@ -35,6 +35,22 @@ theorem uniformNode_succ_sub {a b : ℝ} {N : ℕ} (hN : 0 < N) (i : ℕ) :
   field_simp
   ring
 
+theorem uniformNode_mem_Icc {a b : ℝ} (hab : a ≤ b) {N : ℕ} (hN : 0 < N) {i : ℕ} (hi : i ≤ N) :
+    uniformNode a b N i ∈ Set.Icc a b := by
+  have hNne : (0:ℝ) < (N : ℝ) := by exact_mod_cast hN
+  have hi' : (i : ℝ) ≤ (N : ℝ) := by exact_mod_cast hi
+  have h0 : (0:ℝ) ≤ (i : ℝ) := Nat.cast_nonneg i
+  have hba : (0:ℝ) ≤ b - a := by linarith
+  constructor
+  · simp only [uniformNode]
+    have : 0 ≤ (i : ℝ) * (b - a) / N := by positivity
+    linarith
+  · simp only [uniformNode]
+    have hle : (i : ℝ) * (b - a) / N ≤ (b - a) := by
+      rw [div_le_iff₀ hNne]
+      nlinarith
+    linarith
+
 /-- **Uniform Riemann-sum estimate.**  If the integrand deviates by at most `η` from its
 left-endpoint value on each cell of the uniform partition, the integral differs from the
 left-endpoint Riemann sum by at most `(b − a) η`. -/

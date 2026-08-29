@@ -9,7 +9,7 @@ Already promoted (before this sweep): `ht-remote-quartet-compact-open-field-invi
 | # | Card | State | Blocking mathematics |
 |---|---|---|---|
 | 1 | combination-mode-reducibility-baker-bridge | OPEN | Baker–Wüstholz effective bound; Dirichlet pigeonhole no-go; Hankel support-≤d lemma |
-| 2 | da-ht-topological-interlacing-law | **IN PROGRESS** | only Runge (DA density in the compact-open topology) remains; everything else is Lean-closed |
+| 2 | da-ht-topological-interlacing-law | **PROMOTED 2026-08-29** | — (Runge's theorem built from scratch) |
 | 3 | ht-c28-minimal-handle-collapse | OPEN | per-handle collapse citations (Weierstrass addition, holonomic, integration closure, vdPS, Hardouin–Singer) |
 | 4 | ht-da-translation-spectrum-countability | **PROMOTED 2026-08-29** | — |
 | 5 | ht-exact-da-translation-stabilizer | OPEN | Ostrowski no-finite-basis theorem; tail-gcd; locally cyclic realization |
@@ -161,12 +161,17 @@ Remaining stages, in order:
    estimate `|F(z_j) − R(z_j)| ≤ ε` then passes to `z` because `F` and the rational `R` (poles on
    `Γ`, and `dist(K,Γ) > 0`) are both continuous at `z`.
 6. **Riemann sums** — DONE (`exists_edgeCauchyRiemann_approx`).
-7. **Pole pushing.**  `1/(z−a) = Σ (a−b)ⁿ/(z−b)ⁿ⁺¹` uniformly on `K` when `|a−b| < dist(b,K)`;
-   chain along a component of `ℂ ∖ K`; to `∞` (giving polynomials) on the unbounded component.
-8. **The `Ω`-hull.**  `K̂ := ℂ ∖ (union of the components of ℂ∖K that are unbounded or meet ℂ∖Ω)`
-   is compact, contains `K`, is contained in `Ω`, and every component of `ℂ ∖ K̂` is unbounded or
-   meets `ℂ ∖ Ω`.
-9. **Assembly**: `DA(Ω)` dense in the compact-open topology; finish card 2 and promote.
+7. **Pole pushing** — DONE.  `HTGeometry/RungePolePush.lean` (built, axiom-clean, wired):
+   `polePushSum`, `infPushSum`, `polePush_identity`, `infPush_identity`,
+   `norm_polePush_error`, `norm_infPush_error`, **`exists_polePush_small`** (uniform approximation
+   on `K` of `(·−a)⁻¹` by rational functions with a single pole at a nearby `b`) and
+   **`exists_infPush_small`** (by polynomials, for a far pole).
+8. **The `Ω`-hull** — ELIMINATED by the selection-rule simplification above.
+9. **Assembly** (the only remaining stage): choose `R` with `K ⊆ ball 0 (R/2)` and `s` with
+   `2s < dist(K, ℂ∖Ω)` and `4s < R`; set `S := {p | gridSquare s p ⊆ Ω ∧ gridSquare s p ⊆ ball 0 R}`
+   (finite, and `GridSelects S s K`); apply `sum_gridRect_cauchyKernel` +
+   `sum_gridRect_eq_edges` + `exists_edgeCauchyRiemann_approx` + the two pole pushes; conclude
+   `DA(Ω)` dense in the compact-open topology and promote card 2.
 
 ### Runge simplification (2026-08-29): no `Ω`-hull, no pole-pushing chains
 
@@ -184,3 +189,23 @@ Select the grid squares by **`gridSquare s p ⊆ Ω` and `gridSquare s p ⊆ bal
   to `∞`, producing a polynomial.
 
 So stages 7 (chaining) and 8 (hull) collapse to two truncated geometric series.
+
+## Card 2 — CLOSED (2026-08-29)
+
+Runge's theorem is now Lean-proved in the corpus:
+**`GaloisForLFunctions.HTGeometry.approxOn_rungeDA_of_analyticOnNhd`** — on an open preconnected
+nonempty infinite `Ω ⊆ ℂ`, every `F` analytic on `Ω` is, on every compact `K ⊆ Ω`, a uniform limit
+of functions that are analytic *and* differentially algebraic on all of `Ω` (in fact rational with
+poles off `Ω`, plus polynomials).  Modules: `RungeGridContour`, `IntervalRiemannSum`,
+`RungeEdgeRiemann`, `RungePolePush`, `RungeApproxClass`, `RungeSelection`, `RungeEdgeApprox`,
+`RungeDensity`, `RungeCompactOpenDensity`.
+
+Card capstones: `dense_daCompactOpenLocus`, `isMeagre_daCompactOpenLocus`,
+`isGδ_htCompactOpenLocus`, `dense_htCompactOpenLocus`, `compactOpen_interlacing`,
+`exists_mem_both_of_isOpen`, `compactOpen_phase_selector_collapse`, `dense_hardyDALocus`,
+`dense_compl_hardyDALocus`, `hardy_phase_selector_collapse`.  All axiom-clean.
+
+**Reusable for the rest of the sweep:** Runge means "DA is dense in `O(Ω)`" is now a lemma, so any
+card needing a *generic* / *dense* / *prevalent* hypertranscendence statement in a function space
+(cards 8, 13, and the density half of 9) can quote `dense_htCompactOpenLocus` and
+`isGδ_htCompactOpenLocus` instead of rebuilding a Baire argument.

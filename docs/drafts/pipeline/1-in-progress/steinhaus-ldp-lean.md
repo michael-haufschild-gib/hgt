@@ -305,3 +305,75 @@ Chain:
 
 Card 11: 18 modules.  Remaining: the critical (`α = 1/2`) and super-critical (`α > 1/2`) lines of
 part `4`, part `5`, the LDP (`S8`), and Karamata (`S9`).
+
+## PART 4 CLOSED — all three regimes (2026-08-29)
+
+The critical and super-critical lines of `(6)` are now Lean-proved, and the mechanism that closed
+both is a single exact identity.
+
+### The scaling identity (the step that removes `λ` from the integrand)
+
+`HTGeometry/SteinhausScalingIdentity.lean` — **`rvCumulant_eq_rpow_mul_tail`**:
+```
+Λ_α(λ) = λ^{1/α} · ∫₀^{λ^{−1/α}} log I₀(w_α(u)) du      (0 < α < 1, λ > 0)
+```
+because `λ · w_α(λ^{1/α} u) = w_α(u)` identically (`mul_weightProfile_rpow`).  The substitution is
+the LINEAR map `v = λ^{1/α} u`, so `intervalIntegral.smul_integral_comp_mul_left` does it in one
+step.  Every small-tilt asymptotic of `Λ_α` is therefore a large-interval asymptotic of the FIXED
+integrand `rvTailIntegral`.  Also holds `tendsto_rpow_neg_inv_atTop`.
+
+### The abstract Legendre power law
+
+`RHTower/SteinhausRatePowerAsymptotic.lean` — `rvLegConst p A = (p−1)p^{−p/(p−1)}A^{−1/(p−1)}`,
+`rvLegTilt p A q = (q/(pA))^{1/(p−1)}`, and
+- **`rvLegTilt_value`**: `λq − Aλ^p = rvLegConst p A · q^{p/(p−1)}` EXACTLY at that tilt (because
+  `Aλ^p = λq/p` there);
+- **`young_rvLegConst`**: `λq ≤ Aλ^p + rvLegConst p A · q^{p/(p−1)}`, i.e. mathlib's
+  `Real.young_inequality` at `a = (pA)^{1/p}λ`, `b = q(pA)^{−1/p}`;
+- `eventually_le_rvRate_pow` / `eventually_rvRate_le_pow` — the two halves, the second using the
+  corpus's `rvCumulant_slope_mono` to kill every tilt beyond `δ`;
+- **`tendsto_rvRate_div_rpow`**: `Λ_α(λ)/λ^p → A` ⟹ `I_α(q)/q^{p/(p−1)} → rvLegConst p A`.
+This is `p = 2` for the sub-critical regime and `p = 1/α` for the super-critical one, so the two
+lines of `(6)` are the SAME theorem at two exponents.
+
+### Super-critical (`1/2 < α < 1`)
+
+`RHTower/SteinhausSuperConstant.lean` — the fixed integrand `u ↦ log I₀(w_α(u))` is integrable on
+`(0,∞)`: near `0` it is `≤ w_α(u)` (integrable for `α < 1`), near `∞` it is `≤ w_α(u)²/2`
+(integrable for `2α > 1`).  `rvSuperConst α = ∫_{(0,∞)}` is the card's `K_α`;
+`tendsto_rvTailIntegral` is `intervalIntegral_tendsto_integral_Ioi`.
+
+`RHTower/SteinhausSupercriticalLimit.lean` — `rvSuperConst_pos`,
+**`tendsto_rvCumulant_div_rpow_super`** (`Λ_α(λ)/λ^{1/α} → K_α`, the card's `(25)`),
+`rvLegConst_inv_eq` (`rvLegConst (1/α) K = (1−α)α^{α/(1−α)}K^{−α/(1−α)}` — the card's `(7)`), and
+**`tendsto_rvRate_div_rpow_super`**: `I_α(q)/q^{1/(1−α)} → C_α`.
+
+### Critical (`α = 1/2`)
+
+`HTGeometry/IntegralLogCesaro.lean` — **`tendsto_logAverage_atTop_of_tendsto`**: `u·f(u) → c`
+implies `(∫₁^R f)/log R → c`.  Proved by transporting the corpus's
+`tendsto_intervalAverage_atTop_of_tendsto` along `u = e^t` with
+`intervalIntegral.integral_deriv_smul_comp`.  Fully reusable.
+
+`RHTower/SteinhausCriticalCumulant.lean` — the integrand truncated below `1` (so it is globally
+continuous, which the substitution lemma demands), `tendsto_mul_truncCritIntegrand`
+(`u·h(u) → 1/16`, because `x = u^{−1/2}/2` gives `u = 1/(4x²)` and `log I₀(x)/x² → 1/4`), and
+**`tendsto_rvCumulant_crit`**: `Λ_{1/2}(λ)/(λ² log(1/λ)) → 1/8`, the card's `(20)`.
+
+`RHTower/SteinhausCriticalRate.lean` — the Legendre transform of a power law WITH a slowly varying
+factor, which the abstract `p`-law cannot see:
+- `critTilt A q = q/(2A log(1/q))` and **`critTilt_value`**: its value is EXACTLY
+  `q²/log(1/q) · critLowerProfile A (log(1/q))` with
+  `critLowerProfile A t = 1/(4A) − (log t + log 2A)/(4At)`.  No estimate is used — the identity is
+  what makes the lower half a one-line limit;
+- `eventually_rvRate_crit_le_profile` — the upper half, splitting the tilt range at `q/A`: below it
+  `log(1/λ) ≥ log(1/q) + log A` caps every tilt by `q²/(4A(log(1/q)+log A))`; above it the value is
+  already negative because `log(1/λ) ≥ 1` on `(0, e^{−1}]`; beyond `δ` the slope kills it;
+- **`tendsto_rvRate_crit`**: `I_{1/2}(q)·log(1/q)/q² → 2`, the card's `(23)`.
+
+All eight new modules are axiom-clean (`propext, Classical.choice, Quot.sound` only) and wired into
+`RHTower.lean` / `HTGeometry.lean`.
+
+Remaining: part `5` (the high-coherence endpoint, which needs the SHARP Bessel asymptotic
+`log I₀(x) = x − ½log(2πx) + o(1)`; the corpus owns only the two non-matching envelopes), `S8` (the
+LDP / Gärtner–Ellis), and `S9` (prime Karamata).
