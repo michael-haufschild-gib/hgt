@@ -1170,3 +1170,96 @@ current.  This is now the earliest route-killing gate.  Exact chain:
 `truncated modular Green/Stokes identity -> zero/controlled physical boundary defects -> actual
 balanced polarized BM ++- coefficient -> negative BM leg -> conserved left-QNM projection ->
 HC94 clock defect -> RH`.
+
+`[PAPER-PROVED] [LEAN-PROVED] [HARD FRONTIER CLOSED]` Conjecture C-A.9s proves the exact
+noncusp modular Green-boundary cancellation for actual completed Poincare eigenfunctions.  Lean
+derives first-jet translation and inversion laws from primitive-pair reindexing, the radial-jet
+sign reversal on the unit semicircle, the Green--Lagrange interior identity, and pointwise
+cancellation of paired vertical and circular boundary currents.  The resulting truncated boundary
+record reduces the whole paired boundary current exactly to the top cusp current.  This is
+formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualGreenBoundaryCancellation`, wired
+into RHTower, and passes direct Lean plus targeted build `12316/12316`.  Headline axiom audits
+report only `propext`, `Classical.choice`, and `Quot.sound`.  Literal two-dimensional Stokes
+integration was deliberately not encoded in this pointwise boundary theorem.
+
+`[PAPER-PROVED] [LEAN-PROVED] [HARD FRONTIER CLOSED]` Corpus-derived conjecture C-A.9t1 closes
+the actual Poincare-to-canonical signed Fourier weld.  The missing negative half is forced by the
+primitive-pair reflection involution `(c,d) -> (c,-d)`, which proves horizontal evenness of the
+actual sum and equality of genuine positive and negative unit-cell coefficients.  A new local
+normal-convergence argument proves continuity of the actual second horizontal jet.  Corpus
+pointwise `C^2` Fourier inversion then classifies every integer coefficient, reindexes the full
+integer lattice into its nonnegative and negative-successor halves, and identifies the result
+term-by-term with the canonical full signed Whittaker tail.  Lean proves globally, for every
+horizontal coordinate and every existing absolute-convergence parameter,
+
+`actual completed primitive-pair Poincare series
+  = d4BMCompletedEisensteinCuspLeg .scalar (s-1/2)`.
+
+This is formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualSignedFourierUniqueness`, wired into
+RHTower, and passes direct Lean plus targeted build `12461/12461`.  Axiom audits of negative-mode
+symmetry, second-jet continuity, pointwise Fourier inversion, and global equality report only
+`propext`, `Classical.choice`, and `Quot.sound`.
+
+**Remaining A.9t2 hard core.** Differentiate the global actual-to-canonical scalar equality in
+both horizontal and height variables, identify actual Maass-raised/lowered top-edge legs with the
+canonical `.raise`/`.lower` cusp legs, and prove the literal two-dimensional Green/Stokes theorem
+on the explicit truncated modular region.  This is the earliest route-killing gate because it is
+the first theorem that turns the actual modular eigenfunction into the already-closed balanced
+full cusp current.  Exact chain:
+
+`actual scalar/jet cusp weld -> literal truncated Green/Stokes -> full cusp current finite part ->
+actual balanced BM ++- coefficient -> negative BM leg -> conserved left-QNM projection -> HC94 ->
+RH`.
+
+`[PAPER-PROVED] [LEAN-PROVED] [HARD FRONTIER CLOSED]` Corpus-derived conjecture C-A.9t2a
+constructs the previously missing actual mixed derivative.  For every primitive Poincare seed,
+Lean proves that horizontally differentiating its genuine vertical first jet gives the explicit
+`partial_x partial_y` jet.  A sharp-enough unconditional estimate
+
+`norm(partial_x partial_y seed) <= ((4 norm(s) + 6 norm(s)^2) / y^2) norm(seed)`
+
+puts it on the same summability scale as both pure second jets.  Existing horizontal local
+comparison and absolute primitive-pair convergence then justify termwise differentiation in the
+exact chamber `Re(s)>1`.  The result is lifted through raw and completed sums and packaged with
+the already-certified value, first jets, and pure second jets as an actual
+`D4BMFullSecondJet`.  Its literal corpus `R_2 R_0` and `L_(-2) L_0` evaluations are therefore now
+closed differential expressions, not formal proxies.  This is formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualMixedDerivative`, wired into
+RHTower, and passes direct Lean plus targeted build `12462/12462`.  Headline axiom audits report
+only `propext`, `Classical.choice`, and `Quot.sound`.
+
+**Remaining A.9t2b hard core.** Prove the exact equality between these literal actual
+`R_2 R_0`/`L_(-2) L_0` evaluations and
+`d4BMCompletedEisensteinCuspLeg .raise/.lower (s-1/2)`.  Corpus research shows the finite
+single-mode Bessel derivative identities and arbitrary polynomial-index summability already
+exist, but local normal convergence for differentiating the full signed square-root Whittaker
+tail has not yet been assembled.  This is now the exact earliest open core.  Full chain:
+
+`actual full second jet -> canonical raise/lower weld -> literal truncated Green/Stokes -> full
+cusp current finite part -> actual balanced BM ++- coefficient -> negative BM leg -> conserved
+left-QNM projection -> HC94 -> RH`.
+
+`[PAPER-PROVED] [LEAN-PROVED] [HARD FRONTIER CLOSED]` Corpus-derived conjecture C-A.9t2b1
+closes the mode-level route-killing test for the actual Maass weld.  Lean reconstructs the genuine
+second radial derivative of `sqrt(Y) K_nu(cY)` from the differentiated first raising word, then
+derives an independent lowering-word reconstruction by uniqueness of the derivative.  These
+certificates produce genuine signed two-variable full second jets.  Literal full-jet evaluation
+proves all four chirality/frequency laws: positive modes send `R_2 R_0` to the existing raising
+word and `L_(-2) L_0` to the lowering word, while negative modes exchange those two words exactly.
+Thus no sign or connection-term obstruction kills the signed `++-` route.  This is formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualMaassModeJet`, wired into RHTower,
+and passes direct Lean plus targeted build `12463/12463`.  Axiom audits of both radial
+reconstructions and all four signed normalization theorems report only `propext`,
+`Classical.choice`, and `Quot.sound`.
+
+**Remaining A.9t2b2 hard core.** Lift the four exact mode identities through the infinite actual
+Eisenstein coefficient sum.  Required theorem is local-normal convergence of the signed
+square-root Whittaker value, first-jet, and second-jet families on every positive-height
+neighborhood, followed by termwise differentiation and exact identification with the canonical
+phased Maass words.  Exact chain remains
+
+`local-normal signed full-second-jet tail -> actual/canonical raise-lower weld -> literal truncated
+Green/Stokes -> full cusp current finite part -> actual balanced BM ++- coefficient -> negative BM
+leg -> conserved left-QNM projection -> HC94 -> RH`.

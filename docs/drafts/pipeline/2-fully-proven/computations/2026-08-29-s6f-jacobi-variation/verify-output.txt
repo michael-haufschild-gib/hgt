@@ -1,0 +1,1 @@
+verified: every principal-minor certificate is strictly positive

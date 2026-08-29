@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.FreeFockMatrixSemicircleCoordinateLaw
 import GaloisForLFunctions.HTGeometry.CompactDeterminacy
 import GaloisForLFunctions.HTGeometry.ComplexQuadraticPolarization
+import GaloisForLFunctions.HTGeometry.PositiveConeDeterminantMonotone
 import GaloisForLFunctions.HTGeometry.StieltjesAtomMassBoundary
 
 /-!
@@ -1314,6 +1315,150 @@ theorem freeFockMatrixMomentGeneratingFunction_dyson
     _ = (if i = j then 1 else 0) + u ^ 2 *
         (matrixSemicircleCovariance A M * M) i j := by rw [hProdEval]
 
+/-- Matrix coefficient of the `n`th free-Fock vacuum moment. -/
+def freeFockMatrixMomentCoefficient
+    (A : K → Matrix I I ℂ) (n : ℕ) : Matrix I I ℂ :=
+  fun i j ↦ freeFockPower A j n (i, [])
+
+theorem freeFockInner_vacuumSuperposition_powerSuperposition
+    (A : K → Matrix I I ℂ) (x : I → ℂ) (n : ℕ) :
+    freeFockInner (freeFockVacuumSuperposition x)
+        (freeFockPowerSuperposition A x n) =
+      star x ⬝ᵥ (freeFockMatrixMomentCoefficient A n).mulVec x := by
+  simp only [freeFockVacuumSuperposition, freeFockPowerSuperposition,
+    freeFockInner_finset_sum_left, freeFockInner_finset_sum_right,
+    freeFockInner_smul_left, freeFockInner_smul_right,
+    freeFockInner_vacuum_left, dotProduct, Matrix.mulVec,
+    freeFockMatrixMomentCoefficient, Finset.mul_sum]
+  conv_lhs => rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro i hi
+  apply Finset.sum_congr rfl
+  intro j hj
+  rw [Pi.star_apply]
+  ring
+
+theorem freeFockInner_vacuumSuperposition_powerSuperposition_im
+    (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
+    (x : I → ℂ) (n : ℕ) :
+    (freeFockInner (freeFockVacuumSuperposition x)
+      (freeFockPowerSuperposition A x n)).im = 0 := by
+  let z := freeFockInner (freeFockVacuumSuperposition x)
+    (freeFockPowerSuperposition A x n)
+  have hright := freeFockInner_powerSuperposition A hA x n 0
+  have hright' : freeFockInner (freeFockPowerSuperposition A x n)
+      (freeFockVacuumSuperposition x) = z := by
+    simpa [z, freeFockPowerSuperposition_zero] using hright
+  have hconj := freeFockInner_conj_symm
+    (freeFockVacuumSuperposition x) (freeFockPowerSuperposition A x n)
+  have hz : z = star z := by
+    calc
+      z = star (freeFockInner (freeFockPowerSuperposition A x n)
+          (freeFockVacuumSuperposition x)) := hconj
+      _ = star z := by rw [hright']
+  have him := congrArg Complex.im hz
+  change z.im = 0
+  have him' : z.im = -z.im := by simpa using him
+  linarith
+
+/-- Every matrix moment coefficient has the intended arbitrary-vector vacuum quadratic form. -/
+theorem star_dotProduct_freeFockMatrixMomentCoefficient_mulVec
+    (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
+    (x : I → ℂ) (n : ℕ) :
+    star x ⬝ᵥ (freeFockMatrixMomentCoefficient A n).mulVec x =
+      (freeFockVectorMoment A x n : ℂ) := by
+  rw [← freeFockInner_vacuumSuperposition_powerSuperposition]
+  unfold freeFockVectorMoment
+  apply Complex.ext
+  · simp
+  · simp [freeFockInner_vacuumSuperposition_powerSuperposition_im A hA x n]
+
+theorem tsum_finset_comm_of_summable
+    {J : Type*} (s : Finset J) (f : J → ℕ → ℂ)
+    (hf : ∀ j ∈ s, Summable (f j)) :
+    (∑ j ∈ s, ∑' n, f j n) = ∑' n, ∑ j ∈ s, f j n := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simp
+  | @insert j s hjs ih =>
+      rw [Finset.sum_insert hjs,
+        ih (fun i hi ↦ hf i (Finset.mem_insert_of_mem hi))]
+      simp only [Finset.sum_insert hjs]
+      exact ((hf j (Finset.mem_insert_self j s)).tsum_add
+        (summable_sum (s := s)
+          (fun i hi ↦ hf i (Finset.mem_insert_of_mem hi)))).symm
+
+/-- The full moment-generating matrix has every vector spectral MGF as its quadratic form. -/
+theorem star_dotProduct_freeFockMatrixMomentGeneratingFunction_mulVec
+    (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
+    (hker : HasTrivialCommonKernel A) (x : I → ℂ) (u : ℂ)
+    (hu : ‖u‖ * freeFockMatrixSpectralRadius A < 1) :
+    star x ⬝ᵥ (freeFockMatrixMomentGeneratingFunction A hA hker u).mulVec x =
+      compactMomentGeneratingFunction
+        (freeFockVectorSpectralMeasure A hA hker x) u := by
+  let f : I → I → ℕ → ℂ := fun i j n ↦
+    star (x i) *
+      (PowerSeries.coeff n (matrixDysonResolventSeries A i j) * u ^ n) * x j
+  have huR : freeFockSpectralRadius A * ‖u‖ < 1 := by
+    calc
+      freeFockSpectralRadius A * ‖u‖ ≤
+          freeFockMatrixSpectralRadius A * ‖u‖ := by
+        gcongr
+        exact freeFockSpectralRadius_le_matrixSpectralRadius A
+      _ = ‖u‖ * freeFockMatrixSpectralRadius A := by ring
+      _ < 1 := hu
+  have hcoeff : ∀ i j, Summable (fun n : ℕ ↦
+      PowerSeries.coeff n (matrixDysonResolventSeries A i j) * u ^ n) := by
+    intro i j
+    exact (matrixDysonResolventSeries_entry_absoluteSummableAt
+      A hA i j u huR).summable
+  have hf : ∀ i j, Summable (f i j) := by
+    intro i j
+    exact ((hcoeff i j).mul_left (star (x i))).mul_right (x j)
+  rw [compactMomentGeneratingFunction_freeFockVector_eq_tsum A hA hker x u hu]
+  calc
+    star x ⬝ᵥ (freeFockMatrixMomentGeneratingFunction A hA hker u).mulVec x =
+        ∑ i : I, ∑ j : I, star (x i) *
+          freeFockMatrixMomentGeneratingFunction A hA hker u i j * x j := by
+      simp only [dotProduct, Matrix.mulVec, Pi.star_apply]
+      apply Finset.sum_congr rfl
+      intro i hi
+      rw [Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro j hj
+      ring
+    _ = ∑ i : I, ∑ j : I, ∑' n, f i j n := by
+      apply Finset.sum_congr rfl
+      intro i hi
+      apply Finset.sum_congr rfl
+      intro j hj
+      rw [freeFockMatrixMomentGeneratingFunction_eq_absoluteEval A hA hker u hu i j,
+        PowerSeries.absoluteEval]
+      rw [← tsum_mul_left, ← tsum_mul_right]
+    _ = ∑ i : I, ∑' n, ∑ j : I, f i j n := by
+      apply Finset.sum_congr rfl
+      intro i hi
+      exact tsum_finset_comm_of_summable Finset.univ (f i)
+        (fun j hj ↦ hf i j)
+    _ = ∑' n, ∑ i : I, ∑ j : I, f i j n := by
+      exact tsum_finset_comm_of_summable Finset.univ
+        (fun i n ↦ ∑ j : I, f i j n)
+        (fun i hi ↦ summable_sum (fun j hj ↦ hf i j))
+    _ = ∑' n, (freeFockVectorMoment A x n : ℂ) * u ^ n := by
+      apply tsum_congr
+      intro n
+      rw [← star_dotProduct_freeFockMatrixMomentCoefficient_mulVec A hA x n]
+      simp only [f, dotProduct, Matrix.mulVec, freeFockMatrixMomentCoefficient,
+        Finset.mul_sum, Pi.star_apply]
+      rw [Finset.sum_mul]
+      apply Finset.sum_congr rfl
+      intro i hi
+      rw [Finset.sum_mul]
+      apply Finset.sum_congr rfl
+      intro j hj
+      rw [coeff_matrixDysonResolventSeries_eq_freeFockPower_entry A hA]
+      ring
+
 /-- Stieltjes transform of the spectral measure generated by an arbitrary internal vector. -/
 def freeFockVectorStieltjes
     (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
@@ -1364,6 +1509,35 @@ theorem freeFockMatrixStieltjes_inv_eq_neg_mul_absoluteEval
       -u * (matrixDysonResolventSeries A i j).absoluteEval u := by
   rw [freeFockMatrixStieltjes_inv_eq_neg_mul_mgf A hA hker u hu0 i j,
     freeFockMatrixMomentGeneratingFunction_eq_absoluteEval A hA hker u hu i j]
+
+/-- On the exterior convergence region, the full matrix Stieltjes transform has every vector
+Stieltjes transform as its quadratic form. -/
+theorem star_dotProduct_freeFockMatrixStieltjes_mulVec_exterior
+    (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
+    (hker : HasTrivialCommonKernel A) (x : I → ℂ) (z : ℂ)
+    (hz : freeFockMatrixSpectralRadius A < ‖z‖) :
+    star x ⬝ᵥ (freeFockMatrixStieltjes A hA hker z).mulVec x =
+      freeFockVectorStieltjes A hA hker x z := by
+  have hz0 : z ≠ 0 := fun hzero ↦ by
+    rw [hzero, norm_zero] at hz
+    linarith [freeFockMatrixSpectralRadius_pos A]
+  let u : ℂ := z⁻¹
+  have hu0 : u ≠ 0 := inv_ne_zero hz0
+  have hu : ‖u‖ * freeFockMatrixSpectralRadius A < 1 := by
+    rw [show u = z⁻¹ by rfl, norm_inv]
+    simpa [div_eq_mul_inv, mul_comm] using
+      (div_lt_one (norm_pos_iff.mpr hz0)).mpr hz
+  have huinv : u⁻¹ = z := by simp [u]
+  have hG : freeFockMatrixStieltjes A hA hker z =
+      (-u) • freeFockMatrixMomentGeneratingFunction A hA hker u := by
+    ext i j
+    have hij := freeFockMatrixStieltjes_inv_eq_neg_mul_mgf
+      A hA hker u hu0 i j
+    simpa only [huinv, Matrix.smul_apply, smul_eq_mul] using hij
+  rw [hG, Matrix.smul_mulVec, dotProduct_smul,
+    star_dotProduct_freeFockMatrixMomentGeneratingFunction_mulVec A hA hker x u hu]
+  simpa only [huinv, smul_eq_mul] using
+    (freeFockVectorStieltjes_eq_neg_mul_mgf A hA hker x u hu0).symm
 
 /-- Cleared matrix Dyson residual for the sign convention `∫ (t-z)⁻¹ dμ(t)`. -/
 def freeFockMatrixDysonResidual
@@ -1448,6 +1622,129 @@ theorem freeFockMatrixStieltjes_differentiableOn
   have hcI : DifferentiableAt ℂ
       (fun _w : ℂ ↦ Complex.I * (4 : ℂ)⁻¹) z := differentiableAt_const _
   exact ((hc.mul (hpp.sub hmp)).sub (hcI.mul (hpi.sub hmi))).differentiableWithinAt
+
+set_option maxHeartbeats 1000000 in
+/-- Throughout the upper half-plane, the full matrix Stieltjes transform has every vector
+Stieltjes transform as its quadratic form. -/
+theorem star_dotProduct_freeFockMatrixStieltjes_mulVec
+    (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
+    (hker : HasTrivialCommonKernel A) (x : I → ℂ) (z : ℂ) (hz : 0 < z.im) :
+    star x ⬝ᵥ (freeFockMatrixStieltjes A hA hker z).mulVec x =
+      freeFockVectorStieltjes A hA hker x z := by
+  let U : Set ℂ := {w | 0 < w.im}
+  let F : ℂ → ℂ := fun w ↦
+    star x ⬝ᵥ (freeFockMatrixStieltjes A hA hker w).mulVec x
+  let S : ℂ → ℂ := freeFockVectorStieltjes A hA hker x
+  let z₀ : ℂ := (freeFockMatrixSpectralRadius A + 1) * Complex.I
+  have hz₀U : z₀ ∈ U := by
+    change 0 < z₀.im
+    simp [z₀]
+    linarith [freeFockMatrixSpectralRadius_pos A]
+  have hz₀ext : freeFockMatrixSpectralRadius A < ‖z₀‖ := by
+    dsimp [z₀]
+    rw [norm_mul, show ((freeFockMatrixSpectralRadius A : ℂ) + 1) =
+      ((freeFockMatrixSpectralRadius A + 1 : ℝ) : ℂ) by push_cast; ring,
+      Complex.norm_real, Real.norm_eq_abs, Complex.norm_I, mul_one,
+      abs_of_pos (by linarith [freeFockMatrixSpectralRadius_pos A])]
+    linarith
+  have hseed : Filter.Eventually (fun w ↦ F w = S w) (nhds z₀) := by
+    have hopen : IsOpen {w : ℂ | freeFockMatrixSpectralRadius A < ‖w‖} :=
+      isOpen_lt continuous_const continuous_norm
+    filter_upwards [hopen.mem_nhds hz₀ext] with w hw
+    exact star_dotProduct_freeFockMatrixStieltjes_mulVec_exterior
+      A hA hker x w hw
+  have hFdiff : DifferentiableOn ℂ F U := by
+    intro w hw
+    have hentry : ∀ i j, DifferentiableAt ℂ
+        (fun q ↦ freeFockMatrixStieltjes A hA hker q i j) w := fun i j ↦
+      (freeFockMatrixStieltjes_differentiableOn A hA hker i j w hw).differentiableAt
+        ((isOpen_lt continuous_const Complex.continuous_im).mem_nhds hw)
+    dsimp only [F]
+    simp only [dotProduct, Matrix.mulVec]
+    have hinner : ∀ i, DifferentiableAt ℂ
+        (fun q ↦ ∑ j : I,
+          freeFockMatrixStieltjes A hA hker q i j * x j) w := by
+      intro i
+      have hs := DifferentiableAt.sum (𝕜 := ℂ) (x := w)
+        (A := fun j q ↦ freeFockMatrixStieltjes A hA hker q i j * x j)
+        (u := (Finset.univ : Finset I)) (fun j hj ↦
+          (hentry i j).mul (differentiableAt_const _))
+      exact hs.congr_of_eventuallyEq
+        (Filter.Eventually.of_forall fun q ↦ by simp)
+    have houter := DifferentiableAt.sum (𝕜 := ℂ) (x := w)
+      (A := fun i q ↦ star (x i) *
+        ∑ j : I, freeFockMatrixStieltjes A hA hker q i j * x j)
+      (u := (Finset.univ : Finset I)) (fun i hi ↦
+        (differentiableAt_const _).mul (hinner i))
+    exact houter.differentiableWithinAt.congr_of_eventuallyEq
+      (Filter.Eventually.of_forall fun q ↦ by simp) (by simp)
+  have hSdiff : DifferentiableOn ℂ S U := by
+    intro w hw
+    exact (HTGeometry.stieltjes_hasDerivAt w hw).differentiableAt.differentiableWithinAt
+  have hEq := hFdiff.analyticOnNhd
+      (isOpen_lt continuous_const Complex.continuous_im) |>.eqOn_of_preconnected_of_eventuallyEq
+        (hSdiff.analyticOnNhd (isOpen_lt continuous_const Complex.continuous_im))
+        (convex_halfSpace_im_gt 0).isPreconnected hz₀U hseed
+  exact hEq hz
+
+omit [DecidableEq K] in
+theorem star_dotProduct_conjTranspose_mulVec_eq_star
+    (M : Matrix I I ℂ) (x : I → ℂ) :
+    star x ⬝ᵥ Mᴴ.mulVec x = star (star x ⬝ᵥ M.mulVec x) := by
+  simp only [dotProduct, Matrix.mulVec, Pi.star_apply, RCLike.star_def, map_sum, map_mul,
+    Matrix.conjTranspose_apply, Finset.sum_mul, Finset.mul_sum]
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro i hi
+  apply Finset.sum_congr rfl
+  intro j hj
+  simp
+  ring
+
+/-- Hermitian imaginary part `(M - Mᴴ)/(2i)`. -/
+def matrixHermitianImaginaryPart (M : Matrix I I ℂ) : Matrix I I ℂ :=
+  (-Complex.I / 2) • (M - Mᴴ)
+
+omit [DecidableEq K] in
+theorem matrixHermitianImaginaryPart_conjTranspose (M : Matrix I I ℂ) :
+    (matrixHermitianImaginaryPart M)ᴴ = matrixHermitianImaginaryPart M := by
+  ext i j
+  simp [matrixHermitianImaginaryPart, Matrix.conjTranspose_apply, Complex.star_def]
+  ring
+
+omit [DecidableEq K] in
+theorem star_dotProduct_matrixHermitianImaginaryPart_mulVec
+    (M : Matrix I I ℂ) (x : I → ℂ) :
+    star x ⬝ᵥ (matrixHermitianImaginaryPart M).mulVec x =
+      ((star x ⬝ᵥ M.mulVec x).im : ℂ) := by
+  rw [matrixHermitianImaginaryPart, Matrix.smul_mulVec, dotProduct_smul,
+    Matrix.sub_mulVec, dotProduct_sub,
+    star_dotProduct_conjTranspose_mulVec_eq_star]
+  rw [smul_eq_mul]
+  apply Complex.ext <;> simp [Complex.star_def] <;> ring
+
+/-- The imaginary part of the matrix Stieltjes transform is strictly positive definite in the
+upper half-plane. -/
+theorem freeFockMatrixStieltjes_hermitianImaginaryPart_posDef
+    (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
+    (hker : HasTrivialCommonKernel A) (z : ℂ) (hz : 0 < z.im) :
+    (matrixHermitianImaginaryPart
+      (freeFockMatrixStieltjes A hA hker z)).PosDef := by
+  apply Matrix.PosDef.of_dotProduct_mulVec_pos
+  · exact matrixHermitianImaginaryPart_conjTranspose _
+  · intro x hx
+    rw [star_dotProduct_matrixHermitianImaginaryPart_mulVec,
+      star_dotProduct_freeFockMatrixStieltjes_mulVec A hA hker x z hz]
+    apply Complex.zero_lt_real.mpr
+    have hmassReal : 0 <
+        ((freeFockVectorSpectralMeasure A hA hker x) Set.univ).toReal := by
+      rw [freeFockVectorSpectralMeasure_totalMass]
+      simpa only [Complex.sq_norm] using dotProduct_star_self_pos hx
+    have hmass : 0 < (freeFockVectorSpectralMeasure A hA hker x) Set.univ :=
+      (ENNReal.toReal_pos_iff.mp hmassReal).1
+    exact HTGeometry.stieltjesTransform_im_pos z hz hmass
+      (HTGeometry.integrable_cauchy_kernel
+        (freeFockVectorSpectralMeasure A hA hker x) (ne_of_gt hz))
 
 set_option maxHeartbeats 1000000 in
 theorem freeFockMatrixDysonResidual_entry_differentiableOn
@@ -1580,61 +1877,105 @@ theorem matrixSemicircleCovariance_freeFockMatrixAtomMass_mul_eq_zero
     apply nhdsWithin_mono
     intro y hy
     simpa only [Set.mem_compl_iff, Set.mem_singleton_iff] using (ne_of_gt hy)
-  have hH : Tendsto H (𝓝[>] (0 : ℝ)) (𝓝 (Complex.I • M)) := by
-    rw [tendsto_pi_nhds]
-    intro i
-    rw [tendsto_pi_nhds]
-    intro j
+  have hH (i j : I) : Tendsto (fun y ↦ H y i j) (𝓝[>] (0 : ℝ))
+      (𝓝 ((Complex.I • M) i j)) := by
     have hij := (freeFockMatrixStieltjes_atom_boundary A hA hker a i j).mono_left
       hright_le
     simpa only [H, G, z, Matrix.smul_apply, smul_eq_mul] using hij
-  have hpoly : Continuous
-      (fun X : Matrix I I ℂ ↦ matrixSemicircleCovariance A X * X) := by
-    fun_prop
-  have hleft : Tendsto
-      (fun y ↦ matrixSemicircleCovariance A (H y) * H y)
+  have hCov (i j : I) : Tendsto
+      (fun y ↦ matrixSemicircleCovariance A (H y) i j)
+      (𝓝[>] (0 : ℝ)) (𝓝 (matrixSemicircleCovariance A (Complex.I • M) i j)) := by
+    have hsum : Tendsto
+        (fun y ↦ ∑ k : K, ∑ q : I,
+          (∑ p : I, A k i p * H y p q) * star (A k j q))
+        (𝓝[>] (0 : ℝ))
+        (𝓝 (∑ k : K, ∑ q : I,
+          (∑ p : I, A k i p * (Complex.I • M) p q) * star (A k j q))) := by
+      apply tendsto_finsetSum
+      intro k hk
+      apply tendsto_finsetSum
+      intro q hq
+      apply Tendsto.mul
+      · apply tendsto_finsetSum
+        intro p hp
+        exact tendsto_const_nhds.mul (hH p q)
+      · exact tendsto_const_nhds
+    simpa only [matrixSemicircleCovariance, Matrix.sum_apply, Matrix.mul_apply,
+      Matrix.conjTranspose_apply] using hsum
+  have hleft (i j : I) : Tendsto
+      (fun y ↦ (matrixSemicircleCovariance A (H y) * H y) i j)
       (𝓝[>] (0 : ℝ))
-      (𝓝 (matrixSemicircleCovariance A (Complex.I • M) * (Complex.I • M))) :=
-    hpoly.continuousAt.tendsto.comp hH
+      (𝓝 ((matrixSemicircleCovariance A (Complex.I • M) * (Complex.I • M)) i j)) := by
+    simp only [Matrix.mul_apply]
+    apply tendsto_finsetSum
+    intro p hp
+    exact (hCov i p).mul (hH p j)
   have hscaled : ∀ᶠ y : ℝ in 𝓝[>] 0,
       matrixSemicircleCovariance A (H y) * H y =
         -(((y : ℂ) ^ 2) • (1 : Matrix I I ℂ) +
           ((y : ℂ) * z y) • H y) := by
     filter_upwards [self_mem_nhdsWithin] with y hy
     have hres := freeFockMatrixDysonResidual_upperHalfPlane A hA hker (z y) (by
-      simpa only [z, Complex.add_im, Complex.ofReal_im, zero_add, Complex.mul_im,
-        Complex.I_re, mul_zero, Complex.ofReal_re, Complex.I_im, mul_one] using hy)
+      simpa [z, Complex.mul_im] using hy)
+    have hcore : matrixSemicircleCovariance A (G y) * G y =
+        -(1 + (z y) • G y) := by
+      ext i j
+      have hresij := congr_fun (congr_fun hres i) j
+      simp only [freeFockMatrixDysonResidual, G, Matrix.add_apply,
+        Matrix.one_apply, Matrix.smul_apply, smul_eq_mul, Matrix.mul_apply,
+        Matrix.neg_apply, Matrix.zero_apply, add_mul, Finset.sum_add_distrib] at hresij ⊢
+      have hdiag :
+          (∑ x : I, (z y * if i = x then 1 else 0) * G y x j) = z y * G y i j := by
+        rw [Finset.sum_eq_single i]
+        · simp
+        · intro x hx hxi
+          rw [if_neg (Ne.symm hxi)]
+          simp
+        · intro hi
+          exact absurd (Finset.mem_univ i) hi
+      rw [hdiag] at hresij
+      linear_combination hresij
     rw [matrixSemicircleCovariance_smul]
+    simp only [H, Matrix.smul_mul, Matrix.mul_smul, smul_smul]
+    rw [hcore]
     ext i j
-    have hresij := congr_fun (congr_fun hres i) j
-    simp only [freeFockMatrixDysonResidual, G, H, Matrix.add_apply,
-      Matrix.one_apply, Matrix.smul_apply, smul_eq_mul, Matrix.mul_apply,
-      Matrix.neg_apply, Finset.mul_sum, Finset.sum_add_distrib] at hresij ⊢
-    linear_combination ((y : ℂ) ^ 2) * hresij
+    simp only [Matrix.smul_apply, Matrix.neg_apply, Matrix.add_apply,
+      Matrix.one_apply, smul_eq_mul]
+    ring
   have hy0 : Tendsto (fun y : ℝ ↦ (y : ℂ)) (𝓝[>] 0) (𝓝 0) := by
     have h : ContinuousAt (fun y : ℝ ↦ (y : ℂ)) 0 := by fun_prop
+    change Tendsto _ (𝓝 0 ⊓ 𝓟 (Set.Ioi 0)) (𝓝 0)
     exact h.tendsto.mono_left inf_le_left
   have hz : Tendsto z (𝓝[>] 0) (𝓝 (a : ℂ)) := by
     have h : ContinuousAt z 0 := by
       dsimp only [z]
       fun_prop
+    change Tendsto _ (𝓝 0 ⊓ 𝓟 (Set.Ioi 0)) (𝓝 (a : ℂ))
     simpa only [z, Complex.ofReal_zero, zero_mul, add_zero] using
       h.tendsto.mono_left inf_le_left
-  have hright : Tendsto
-      (fun y : ℝ ↦ -(((y : ℂ) ^ 2) • (1 : Matrix I I ℂ) +
-        ((y : ℂ) * z y) • H y))
-      (𝓝[>] 0) (𝓝 (0 : Matrix I I ℂ)) := by
-    convert ((hy0.pow 2).smul tendsto_const_nhds |>.add
-      ((hy0.mul hz).smul hH)).neg using 1 <;> simp
-  have hzero : Tendsto
-      (fun y ↦ matrixSemicircleCovariance A (H y) * H y)
-      (𝓝[>] (0 : ℝ)) (𝓝 (0 : Matrix I I ℂ)) :=
-    hright.congr' (hscaled.mono fun _ h ↦ h.symm)
-  have hlimit : matrixSemicircleCovariance A (Complex.I • M) * (Complex.I • M) = 0 :=
-    tendsto_nhds_unique hleft hzero
+  have hlimit : matrixSemicircleCovariance A (Complex.I • M) * (Complex.I • M) = 0 := by
+    ext i j
+    have hright : Tendsto
+        (fun y : ℝ ↦ (-(((y : ℂ) ^ 2) • (1 : Matrix I I ℂ) +
+          ((y : ℂ) * z y) • H y)) i j)
+        (𝓝[>] 0) (𝓝 0) := by
+      have hδ : Tendsto
+          (fun _y : ℝ ↦ (if i = j then 1 else 0 : ℂ))
+          (𝓝[>] 0) (𝓝 (if i = j then 1 else 0 : ℂ)) := tendsto_const_nhds
+      simpa only [Matrix.neg_apply, Matrix.add_apply, Matrix.smul_apply,
+        Matrix.one_apply, smul_eq_mul, Matrix.zero_apply, pow_two, zero_mul,
+        add_zero, neg_zero] using
+        (((hy0.pow 2).mul hδ).add
+          ((hy0.mul hz).mul (hH i j))).neg
+    have hzero : Tendsto
+        (fun y ↦ (matrixSemicircleCovariance A (H y) * H y) i j)
+        (𝓝[>] (0 : ℝ)) (𝓝 0) :=
+      hright.congr' (hscaled.mono fun y h ↦ congr_fun (congr_fun h i) j |>.symm)
+    exact tendsto_nhds_unique (hleft i j) hzero
   rw [matrixSemicircleCovariance_smul] at hlimit
-  simpa only [Matrix.smul_mul, Matrix.mul_smul, smul_smul, Complex.I_mul_I,
-    neg_one_smul] using hlimit
+  simp only [Matrix.smul_mul, Matrix.mul_smul, smul_smul, Complex.I_mul_I,
+    neg_one_smul] at hlimit
+  exact neg_eq_zero.mp hlimit
 
 end
 

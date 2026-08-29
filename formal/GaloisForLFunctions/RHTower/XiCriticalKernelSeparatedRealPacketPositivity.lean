@@ -481,7 +481,7 @@ private theorem log_le_div_exp {b : ℝ} (hb : 0 < b) : Real.log b ≤ b / Real.
   rw [Real.log_div (ne_of_gt hb) (Real.exp_ne_zero 1), Real.log_exp] at h
   linarith
 
-private theorem moment_reflected_le {b : ℝ} (hb : 0 < b) :
+theorem moment_reflected_le {b : ℝ} (hb : 0 < b) :
     ∫ x in Ioi (0 : ℝ), x * thetaCuspFullSource x * Real.exp (-(b * x))
       ≤ thetaEnvelopeUpper := by
   have hrate : (0 : ℝ) < 2 * Real.pi - 11 / 2 := by nlinarith [Real.pi_gt_three]
@@ -608,7 +608,7 @@ private theorem moment_reflected_le {b : ℝ} (hb : 0 < b) :
     _ = (thetaEnvelopeUpper * Real.exp (-Real.pi)) * (1 / (2 * Real.pi - 11 / 2)) := hval
     _ ≤ thetaEnvelopeUpper := hsmall
 
-private theorem mass_reflected_le {b : ℝ} (hb : 0 < b) :
+theorem mass_reflected_le {b : ℝ} (hb : 0 < b) :
     ∫ x in Ioi (0 : ℝ), thetaCuspFullSource x * Real.exp (-(b * x)) ≤ thetaEnvelopeUpper := by
   have hrate : (0 : ℝ) < 2 * Real.pi - 11 / 2 := by nlinarith [Real.pi_gt_three]
   have hpoint : ∀ x ∈ Ioi (0 : ℝ), thetaCuspFullSource x * Real.exp (-(b * x))
@@ -720,7 +720,7 @@ private theorem mass_reflected_le {b : ℝ} (hb : 0 < b) :
     _ = (thetaEnvelopeUpper * Real.exp (-Real.pi)) * (1 / (2 * Real.pi - 9 / 2)) := hval
     _ ≤ thetaEnvelopeUpper := hsmall
 
-private theorem moment_even_split (b : ℝ) :
+theorem moment_even_split (b : ℝ) :
     xiRayLaplaceMoment b
       = (∫ x in Ioi (0 : ℝ), x * thetaCuspFullSource x * Real.exp (b * x))
         - ∫ x in Ioi (0 : ℝ), x * thetaCuspFullSource x * Real.exp (-(b * x)) := by
@@ -747,7 +747,7 @@ private theorem moment_even_split (b : ℝ) :
   unfold xiRayLaplaceMoment
   linarith [hsplit, hreflect]
 
-private theorem laplace_even_split (b : ℝ) :
+theorem laplace_even_split (b : ℝ) :
     xiRayLaplace b
       = (∫ x in Ioi (0 : ℝ), thetaCuspFullSource x * Real.exp (b * x))
         + ∫ x in Ioi (0 : ℝ), thetaCuspFullSource x * Real.exp (-(b * x)) := by

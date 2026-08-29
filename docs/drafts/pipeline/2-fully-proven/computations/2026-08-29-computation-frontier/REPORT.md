@@ -22,11 +22,13 @@ Status: research triage; computations are diagnostic only and forbidden as Lean 
 
 ## Ranked next campaigns
 
-1. **S6F determinant identity mining — highest immediate payoff.** Search rational low-rank Gram,
-   Schur-complement, Jacobi-variation, and known-gap decompositions for `dD1/dS` and
-   `-d²D1/dw²`; separately factor the univariate outer-face derivative after translations at both
-   endpoints. Success gives computation-free identities to prove independently. Failure retires a
-   specified decomposition ansatz, not direct D1.
+1. **S6F determinant identity mining — major opening found.** Exact principal-minor reconstruction
+   finds the signed even-jet scale velocity `H_X` strictly positive definite on the full refined
+   cone: three diagonal, three rank-two, and one rank-three certificate all pass. This opens a
+   Loewner/Jacobi proof of D1 scale increase. Next computation is only compact Gram/SOS or Schur
+   decomposition mining; raw coefficient formalization is forbidden. Global reflected-fibre
+   Bochner completion was separately killed at six points, while finite-order-five positivity
+   survives as an alternate rank-three target.
 2. **CLG velocity decomposition.** Derive exact seam-normalized and one-atom cusp-normalized forms
    of the already formal velocity, then search the compact transition for likelihood-coordinate
    Bernstein/SOS decompositions. One exact negative physical point kills global radial

@@ -88,3 +88,14 @@ route; the Gaussian theorem remains mandatory positive salvage.
 
 - 2026-08-29 — conjecture originated from exact corpus action/factor/jet theorems and the proved
   Gaussian compensation core; explicit RH passport recorded before proof work.
+- 2026-08-29 — formalized exact centre-scale jets, sharp scale contraction
+  `-6lambda<delta(lambda)<-2lambda`, action superquadraticity, inherited `30+72z` Bose floor,
+  strict negative velocity centre transport for `A>=6, r>1/2`, and reduction of full
+  compensation to one rational-hyperbolic base sign. Promoted as
+  `ThetaCuspFixedActionC5ExactFirstAtomTailReduction`; base sign remains open.
+- 2026-08-29 — proved the rational-hyperbolic base sign and full exact first-atom compensation on
+  the physical far-tail chamber `0<t<=u`, `6<=pi*exp(2u)`. New ingredients are sharp physical
+  reflection-strength envelopes, an exact Gaussian-reserve decomposition, and cancellation of
+  the lower-order correction to `57z>10w(z+2)`. Formalized as
+  `ThetaCuspFixedActionC5ExactFirstAtomTailCore`. Remaining open core is the likelihood-interference
+  lift and literal-theta tail assembly; the unrestricted lower-scale chamber is not claimed.

@@ -42,6 +42,15 @@ rank-three D1 gate. Cofinal/all-order landing remains separate.
   the diagnostic minimum to endpoint faces; the outer face is strictly decreasing in wall
   interpolation and minimizes at its upper corner. No output is admissible in the proof. Report:
   `../2-fully-proven/computations/2026-08-29-s6f-parabolic-d1-contact/REPORT.md`.
+- `[LOCAL-RESEARCH]` Exact principal-minor reconstruction on the refined cone finds complete
+  scale-velocity Hankel matrix `H_X` strictly positive definite: all diagonal, rank-two, and
+  rank-three half-prism certificates are positive. This opens a Loewner/Jacobi proof of scale
+  increase, pending a compact computation-free Gram or Schur decomposition. Report:
+  `../2-fully-proven/computations/2026-08-29-s6f-jacobi-variation/REPORT.md`.
+- `[FALSIFIED — diagnostic]` Global reflected-fibre positive definiteness and its all-order Bochner
+  completion fail at a six-point Toeplitz section. Finite-order-five positive definiteness survives
+  21.12 million arbitrary-packet attacks and remains a stronger alternate route to D1. Report:
+  `../2-fully-proven/computations/2026-08-29-reflected-fibre-positive-definite/REPORT.md`.
 - `[FALSIFIED]` Naive factorization in source-positive or reconstructed-gap coordinates: D1 and
   its leading rank-two minor are irreducible over `QQ` there.
 - `[FALSIFIED]` A higher alternating clock hierarchy: sign-corrected order four is already mixed.
@@ -58,9 +67,9 @@ toward the upper ratio wall.
 
 Verdict: `SURVIVES PRELIMINARY ATTACK`.
 
-`[OPEN CORE]` Derive the scale first-variation and clock second-variation signs from the determinant
-and modular ODE without expanding a Bernstein table, then prove the single outer upper-wall
-polynomial positive by a short source inequality or determinant identity.
+`[OPEN CORE]` Derive a compact source Gram/SOS or Schur-complement decomposition proving
+`H_X ≻ 0`, use Loewner/Jacobi monotonicity for scale reduction, then derive clock second variation
+without a Bernstein table and prove the single outer upper-wall polynomial positive.
 
 ## Representation lesson
 
@@ -76,3 +85,5 @@ coefficient hierarchy.
   and factorization/hierarchy kills independently verified.
 - 2026-08-29 — Dangerous upper-clock and scale faces tightened by a computation-free paper proof
   and exact Lean theorem; active core moved from drift positivity to direct D1 positivity.
+- 2026-08-29 — Exact hostile tests killed all-order reflected-fibre Bochner completion at six
+  points and opened strict Loewner scale velocity as conceptual D1 scale mechanism.

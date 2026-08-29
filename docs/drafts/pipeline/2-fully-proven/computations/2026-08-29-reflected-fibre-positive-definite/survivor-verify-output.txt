@@ -1,0 +1,1 @@
+verified: full-PD kill and finite-order survivor signs are internally consistent

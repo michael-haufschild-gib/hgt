@@ -1,7 +1,7 @@
 # Thermodynamic divisor charge is a finite ancestor or a nonliftable boundary index
 
 - **ID:** `thermodynamic-divisor-charge-finite-ancestor-or-boundary-index`
-- **Stage:** 2-fully-proven / finite-ancestor core formalized in Lean
+- **Stage:** 3-formalized
 - **Type:** THEOREM / POSITIVE OPERATOR-ALGEBRAIC CARRIER CLASSIFICATION
 - **Scientific status:** `[PROVED; BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Source:** positive successor to `finite-prime-af-topological-charge-no-nucleation`; separate from
@@ -209,16 +209,40 @@ that produces only a zero bulk charge has not yet constructed the required objec
 
 ## 8. Lean surface
 
-`formal/GaloisForLFunctions/RHTower/PrimeQuasiLocalCharge.lean` now proves the finite positive implication
+`formal/GaloisForLFunctions/RHTower/PrimeQuasiLocalCharge.lean` proves the finite positive
+implication
 
 ```text
-PrimeQuasiLocalCharge.nonzero_winding_has_finiteAncestor.
+PrimeQuasiLocalCharge.nonzero_winding_has_finiteAncestor,
 ```
 
-It uses the actual Kronecker determinant and integer winding APIs. The boundary-index equivalence
-`(8)` is a standard consequence of six-term exactness and remains on paper because operator
-K-theory is not available in the current Lean environment. No abstract K-theory axiom has been
-introduced.
+from the actual Kronecker determinant and integer winding APIs.
+
+`formal/GaloisForLFunctions/RHTower/ThermodynamicBoundaryIndexCarrier.lean` proves the
+boundary-index half unconditionally. The exact segment `E -> Q -> J` of the six-term sequence is
+recorded as a structure carrying only exactness at the middle term, `boundary.ker = lift.range`;
+every theorem below is derived from that single equation and nothing else. No K-theory axiom,
+`sorry`, `admit`, `opaque`, or `unsafe` declaration is used, and `#print axioms` on each theorem
+reports exactly `propext`, `Classical.choice`, `Quot.sound`.
+
+| Card statement | Lean theorem |
+|---|---|
+| `(8)`, `partial[u] != 0 iff [u] not in image(pi_*)` | `ThermodynamicBoundaryIndex.ExactSegment.boundary_ne_zero_iff_not_mem_liftRange` |
+| complementary form: zero boundary iff liftable | `ThermodynamicBoundaryIndex.ExactSegment.boundary_eq_zero_iff_mem_liftRange` |
+| section 5, every lifted symbol has zero boundary | `ThermodynamicBoundaryIndex.ExactSegment.boundary_lift` |
+| sections 1-2 dichotomy: a regular completion carries no boundary charge | `ThermodynamicBoundaryIndex.ExactSegment.lift_surjective_iff_boundary_trivial` |
+| a nonzero index forces a genuinely singular completion | `ThermodynamicBoundaryIndex.ExactSegment.not_surjective_lift_of_boundary_ne_zero` |
+| the index is a complete invariant of the nonliftable class | `ThermodynamicBoundaryIndex.ExactSegment.quotientLiftRangeEquivBoundaryRange` |
+| two symbols share an index iff they differ by a liftable symbol | `ThermodynamicBoundaryIndex.ExactSegment.boundary_eq_iff_sub_mem_liftRange` |
+| `(11)` index identity forces nonliftability | `ThermodynamicBoundaryIndex.multiplicity_ne_zero_iff_not_mem_liftRange` |
+| the multiplicity is uniquely determined | `ThermodynamicBoundaryIndex.index_unique` |
+| section 3.4 contour additivity of charges | `ThermodynamicBoundaryIndex.HasIndex.add` |
+| a liftable contour symbol has multiplicity zero | `ThermodynamicBoundaryIndex.HasIndex.eq_zero_of_mem_liftRange` |
+
+The remaining external input is the existence of the six-term sequence for a C*-extension. It is
+imported parent theory and is *not* encoded as a Lean hypothesis of any theorem above: each theorem
+quantifies over an arbitrary exact segment of abelian groups, which is exactly the hypothesis its
+paper proof uses.
 
 ## 9. Parent boundary
 
@@ -237,5 +261,14 @@ knowledge.
 - [x] reconciled against existing formal weld, torsion-seam, SEM, and corona surfaces
 - [x] lifted unit and phase symbols excluded
 - [x] finite positive theorem formalized in Lean
+- [x] boundary-index equivalence, index identity, uniqueness, and contour additivity formalized
+- [x] standard-axiom audit on every new theorem
 - [ ] construct `u_Gamma` from the completed source without divisor input
 - [ ] prove the reflection-polarized support theorem
+
+## Log
+
+- 2026-08-29 -- formalized `(8)`, the regular/singular dichotomy, the complete-invariant quotient
+  isomorphism, the `(11)` index identity with uniqueness, and contour additivity in
+  `RHTower/ThermodynamicBoundaryIndexCarrier.lean`; module builds and passes the standard-axiom
+  audit.  Card promoted to `3-formalized`.

@@ -64,6 +64,58 @@ private theorem xiRayLogDeriv_pos_of_packetBase {u : ℝ} (hu : xiRayPacketBase 
     linarith [exp_one_le_packetBase]
   linarith
 
+/-- Log-ratio contraction across a multiplicative gap: beyond a ratio
+`xiRayPacketBase ^ (2d)`, the function `log t / t` contracts by `(2/xiRayPacketBase)^(2d)`. -/
+theorem xiRayLog_div_self_contraction {u v : ℝ} (hu : xiRayPacketBase ≤ u)
+    {d : ℕ} (hgap : xiRayPacketBase ^ (2 * d) * u ≤ v) :
+    Real.log v / v ≤ (2 / xiRayPacketBase) ^ (2 * d) * (Real.log u / u) := by
+  have hR256 := xiRayPacketBase_ge
+  have hR0 : (0 : ℝ) < xiRayPacketBase := by linarith
+  have hR1 : (1 : ℝ) ≤ xiRayPacketBase := by linarith
+  have hu0 : (0 : ℝ) < u := by linarith
+  have hRu0 : (0 : ℝ) < xiRayPacketBase ^ (2 * d) * u :=
+    mul_pos (pow_pos hR0 _) hu0
+  have hRue : Real.exp 1 ≤ xiRayPacketBase ^ (2 * d) * u := by
+    have hpow : (1 : ℝ) ≤ xiRayPacketBase ^ (2 * d) := one_le_pow₀ hR1
+    have hue : Real.exp 1 ≤ u := le_trans exp_one_le_packetBase hu
+    nlinarith
+  have step1 : Real.log v / v
+      ≤ Real.log (xiRayPacketBase ^ (2 * d) * u) / (xiRayPacketBase ^ (2 * d) * u) :=
+    log_div_self_antitone hRue hgap
+  have step2 : Real.log (xiRayPacketBase ^ (2 * d) * u)
+      = 2 * d * Real.log xiRayPacketBase + Real.log u := by
+    rw [Real.log_mul (ne_of_gt (pow_pos hR0 _)) (ne_of_gt hu0), Real.log_pow]
+    push_cast
+    ring
+  have hlogR : Real.log xiRayPacketBase ≤ Real.log u := Real.log_le_log hR0 hu
+  have hlogR0 : 0 ≤ Real.log xiRayPacketBase := Real.log_nonneg hR1
+  have hlogu1 : 1 ≤ Real.log u := (Real.le_log_iff_exp_le hu0).mpr
+    (le_trans exp_one_le_packetBase hu)
+  have step3 : 2 * d * Real.log xiRayPacketBase + Real.log u
+      ≤ 4 ^ d * Real.log u := by
+    have h1 : 2 * (d : ℝ) * Real.log xiRayPacketBase ≤ 2 * d * Real.log u := by
+      apply mul_le_mul_of_nonneg_left hlogR
+      positivity
+    have h2 : (1 + 2 * (d : ℝ)) * Real.log u ≤ 4 ^ d * Real.log u := by
+      apply mul_le_mul_of_nonneg_right (one_add_two_le_four_pow d)
+      linarith
+    nlinarith
+  have step4 : Real.log (xiRayPacketBase ^ (2 * d) * u) / (xiRayPacketBase ^ (2 * d) * u)
+      ≤ (4 ^ d * Real.log u) / (xiRayPacketBase ^ (2 * d) * u) := by
+    apply div_le_div_of_nonneg_right _ hRu0.le
+    rw [step2]
+    exact step3
+  have step5 : (4 ^ d * Real.log u) / (xiRayPacketBase ^ (2 * d) * u)
+      = (2 / xiRayPacketBase) ^ (2 * d) * (Real.log u / u) := by
+    rw [div_pow, show ((2 : ℝ)) ^ (2 * d) = 4 ^ d by
+      rw [pow_mul]
+      norm_num]
+    field_simp
+  calc Real.log v / v
+      ≤ Real.log (xiRayPacketBase ^ (2 * d) * u) / (xiRayPacketBase ^ (2 * d) * u) := step1
+    _ ≤ (4 ^ d * Real.log u) / (xiRayPacketBase ^ (2 * d) * u) := step4
+    _ = (2 / xiRayPacketBase) ^ (2 * d) * (Real.log u / u) := step5
+
 private theorem packet_corr {u v : ℝ} (hu : xiRayPacketBase ≤ u) (hv : xiRayPacketBase ≤ v)
     {d : ℕ} (hgap : xiRayPacketBase ^ (2 * d) * u ≤ v) :
     (xiRayLogDeriv u + xiRayLogDeriv v) / (u + v)
@@ -90,45 +142,8 @@ private theorem packet_corr {u v : ℝ} (hu : xiRayPacketBase ≤ u) (hv : xiRay
   have hq0 : 0 < q := div_pos (by norm_num) hR0
   -- the log-ratio contraction
   have hkey : Real.log v / v ≤ q ^ (2 * d) * (Real.log u / u) := by
-    have hRu0 : (0 : ℝ) < xiRayPacketBase ^ (2 * d) * u :=
-      mul_pos (pow_pos hR0 _) hu0
-    have hRue : Real.exp 1 ≤ xiRayPacketBase ^ (2 * d) * u := by
-      have hpow : (1 : ℝ) ≤ xiRayPacketBase ^ (2 * d) := one_le_pow₀ hR1
-      nlinarith
-    have step1 : Real.log v / v
-        ≤ Real.log (xiRayPacketBase ^ (2 * d) * u) / (xiRayPacketBase ^ (2 * d) * u) :=
-      log_div_self_antitone hRue hgap
-    have step2 : Real.log (xiRayPacketBase ^ (2 * d) * u)
-        = 2 * d * Real.log xiRayPacketBase + Real.log u := by
-      rw [Real.log_mul (ne_of_gt (pow_pos hR0 _)) (ne_of_gt hu0), Real.log_pow]
-      push_cast
-      ring
-    have hlogR : Real.log xiRayPacketBase ≤ Real.log u := Real.log_le_log hR0 hu
-    have hlogR0 : 0 ≤ Real.log xiRayPacketBase := Real.log_nonneg hR1
-    have step3 : 2 * d * Real.log xiRayPacketBase + Real.log u
-        ≤ 4 ^ d * Real.log u := by
-      have h1 : 2 * (d : ℝ) * Real.log xiRayPacketBase ≤ 2 * d * Real.log u := by
-        apply mul_le_mul_of_nonneg_left hlogR
-        positivity
-      have h2 : (1 + 2 * (d : ℝ)) * Real.log u ≤ 4 ^ d * Real.log u := by
-        apply mul_le_mul_of_nonneg_right (one_add_two_le_four_pow d)
-        linarith
-      nlinarith
-    have step4 : Real.log (xiRayPacketBase ^ (2 * d) * u) / (xiRayPacketBase ^ (2 * d) * u)
-        ≤ (4 ^ d * Real.log u) / (xiRayPacketBase ^ (2 * d) * u) := by
-      apply div_le_div_of_nonneg_right _ hRu0.le
-      rw [step2]
-      exact step3
-    have step5 : (4 ^ d * Real.log u) / (xiRayPacketBase ^ (2 * d) * u)
-        = q ^ (2 * d) * (Real.log u / u) := by
-      rw [hqdef, div_pow, show ((2 : ℝ)) ^ (2 * d) = 4 ^ d by
-        rw [pow_mul]
-        norm_num]
-      field_simp
-    calc Real.log v / v
-        ≤ Real.log (xiRayPacketBase ^ (2 * d) * u) / (xiRayPacketBase ^ (2 * d) * u) := step1
-      _ ≤ (4 ^ d * Real.log u) / (xiRayPacketBase ^ (2 * d) * u) := step4
-      _ = q ^ (2 * d) * (Real.log u / u) := step5
+    rw [hqdef]
+    exact xiRayLog_div_self_contraction hu hgap
   set A : ℝ := Real.log v / v with hAdef
   set B : ℝ := Real.log u / u with hBdef
   have hA0 : 0 ≤ A := div_nonneg (by linarith) hv0.le
@@ -216,7 +231,7 @@ private theorem diag_eq {u : ℝ} (hu : u ≠ 0) :
   rw [div_eq_div_iff (by simpa [two_mul] using mul_ne_zero (two_ne_zero) hu) hu]
   ring
 
-private theorem geom_row_sum_le' {q : ℝ} (hq0 : 0 ≤ q) (hq1 : q < 1) (n i : ℕ) :
+theorem natDist_geom_row_sum_le {q : ℝ} (hq0 : 0 ≤ q) (hq1 : q < 1) (n i : ℕ) :
     ∑ j ∈ (Finset.range n).erase i, q ^ Nat.dist i j ≤ 2 * (q / (1 - q)) := by
   have h1q : (0 : ℝ) < 1 - q := by linarith
   have htail : ∀ m : ℕ, ∑ k ∈ Finset.range m, q ^ (k + 1) ≤ q / (1 - q) := by
@@ -428,7 +443,7 @@ theorem xiRayCriticalKernel_separatedPacket_quadraticForm_nonneg
         32 * (2 / xiRayPacketBase) ^ Nat.dist i j ≤ 1 := by
     intro i
     rw [← Finset.mul_sum]
-    have hg := geom_row_sum_le' hq0.le hq1 n i
+    have hg := natDist_geom_row_sum_le hq0.le hq1 n i
     have h2 : (32 : ℝ) * (2 * (2 / xiRayPacketBase / (1 - 2 / xiRayPacketBase))) ≤ 1 := hqK
     calc (32 : ℝ) * ∑ j ∈ (Finset.range n).erase i,
           (2 / xiRayPacketBase) ^ Nat.dist i j
