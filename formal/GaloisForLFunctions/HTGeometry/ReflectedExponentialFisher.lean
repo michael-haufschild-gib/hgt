@@ -393,6 +393,182 @@ theorem formationJeffreys_tilt (t : ℝ)
   rw [hEq2, integral_const_mul, F.integral_stat_mul_sinh t hint1 hint1', deriv_cgf ht]
   field_simp
 
+/-! ## The Fisher limit -/
+
+theorem tendsto_sinh_mul_div (c : ℝ) :
+    Filter.Tendsto (fun t : ℝ => Real.sinh (t * c) / t) (nhdsWithin 0 {(0:ℝ)}ᶜ) (nhds c) := by
+  have h : HasDerivAt (fun t : ℝ => Real.sinh (t * c)) (Real.cosh (0 * c) * (1 * c)) 0 :=
+    (Real.hasDerivAt_sinh (0 * c)).comp 0 ((hasDerivAt_id 0).mul_const c)
+  have h' := h.tendsto_slope_zero
+  simp only [zero_mul, Real.cosh_zero, one_mul] at h'
+  refine h'.congr fun t => ?_
+  simp [Real.sinh_zero, div_eq_inv_mul]
+
+theorem tendsto_sinhSq_div (c : ℝ) :
+    Filter.Tendsto (fun t : ℝ => Real.sinh (t * c) ^ 2 / (t ^ 2 * Real.cosh (t * c)))
+      (nhdsWithin 0 {(0:ℝ)}ᶜ) (nhds (c ^ 2)) := by
+  have h1 : Filter.Tendsto (fun t : ℝ => (Real.sinh (t * c) / t) ^ 2)
+      (nhdsWithin 0 {(0:ℝ)}ᶜ) (nhds (c ^ 2)) := (tendsto_sinh_mul_div c).pow 2
+  have h2 : Filter.Tendsto (fun t : ℝ => Real.cosh (t * c))
+      (nhdsWithin 0 {(0:ℝ)}ᶜ) (nhds 1) := by
+    have : Filter.Tendsto (fun t : ℝ => Real.cosh (t * c)) (nhds 0) (nhds (Real.cosh (0 * c))) :=
+      (Real.continuous_cosh.comp (continuous_id.mul continuous_const)).tendsto 0
+    simpa using this.mono_left nhdsWithin_le_nhds
+  have := h1.div h2 one_ne_zero
+  rw [div_one] at this
+  refine this.congr fun t => ?_
+  show (Real.sinh (t * c) / t) ^ 2 / Real.cosh (t * c)
+      = Real.sinh (t * c) ^ 2 / (t ^ 2 * Real.cosh (t * c))
+  rw [div_pow, div_div]
+
+/-- The Fisher energy density is dominated near the origin. -/
+theorem sinhSq_div_le (t c : ℝ) (ht : t ≠ 0) {δ : ℝ} (hδ : 0 < δ) (htδ : |t| ≤ δ) :
+    |Real.sinh (t * c) ^ 2 / (t ^ 2 * Real.cosh (t * c))| ≤ c ^ 2 * Real.cosh (δ * c) := by
+  have hc : 0 < Real.cosh (t * c) := Real.cosh_pos _
+  have ht2 : 0 < t ^ 2 := by positivity
+  have hsinh : |Real.sinh (t * c)| ≤ |t * c| * Real.cosh (t * c) := by
+    rcases le_total 0 (t * c) with h | h
+    · rw [abs_of_nonneg (Real.sinh_nonneg_iff.mpr h), abs_of_nonneg h]
+      exact sinh_le_mul_cosh h
+    · rw [abs_of_nonpos (Real.sinh_nonpos_iff.mpr h), abs_of_nonpos h]
+      have hle := sinh_le_mul_cosh (show (0:ℝ) ≤ -(t * c) by linarith)
+      rw [Real.sinh_neg, Real.cosh_neg] at hle
+      linarith
+  have hcm : Real.cosh (t * c) ≤ Real.cosh (δ * c) := by
+    refine Real.cosh_le_cosh.mpr ?_
+    rw [abs_mul, abs_mul, abs_of_pos hδ]
+    exact mul_le_mul_of_nonneg_right htδ (abs_nonneg c)
+  rw [abs_div, abs_of_pos (by positivity : (0:ℝ) < t ^ 2 * Real.cosh (t * c)), abs_pow,
+    div_le_iff₀ (by positivity)]
+  have hkey : |Real.sinh (t * c)| ^ 2 ≤ (|t| * |c|) ^ 2 * Real.cosh (t * c) ^ 2 := by
+    rw [← abs_mul]
+    nlinarith [abs_nonneg (Real.sinh (t * c)), hsinh, (Real.cosh_pos (t * c)).le,
+      abs_nonneg (t * c)]
+  calc |Real.sinh (t * c)| ^ 2 ≤ (|t| * |c|) ^ 2 * Real.cosh (t * c) ^ 2 := hkey
+    _ = t ^ 2 * c ^ 2 * Real.cosh (t * c) * Real.cosh (t * c) := by
+        rw [mul_pow, sq_abs, sq_abs]; ring
+    _ ≤ t ^ 2 * c ^ 2 * Real.cosh (t * c) * Real.cosh (δ * c) :=
+        mul_le_mul_of_nonneg_left hcm (by positivity)
+    _ = c ^ 2 * Real.cosh (δ * c) * (t ^ 2 * Real.cosh (t * c)) := by ring
+
+theorem integrable_sq_mul_cosh (δ : ℝ)
+    (hmem : δ ∈ interior (integrableExpSet F.stat F.base))
+    (hmem' : -δ ∈ interior (integrableExpSet F.stat F.base)) :
+    Integrable (fun x => (F.stat x) ^ 2 * Real.cosh (δ * F.stat x)) F.base := by
+  have h1 := integrable_pow_mul_exp_of_mem_interior_integrableExpSet hmem 2
+  have h2 := integrable_pow_mul_exp_of_mem_interior_integrableExpSet hmem' 2
+  have hsum := (h1.add h2).div_const 2
+  refine hsum.congr (Filter.Eventually.of_forall fun x => ?_)
+  show (F.stat x ^ 2 * Real.exp (δ * F.stat x) + F.stat x ^ 2 * Real.exp (-δ * F.stat x)) / 2
+      = F.stat x ^ 2 * Real.cosh (δ * F.stat x)
+  rw [Real.cosh_eq, show -(δ * F.stat x) = -δ * F.stat x by ring]
+  ring
+
+/-- `(LPC.42)`, dominated-convergence core. -/
+theorem tendsto_integral_fisherDensity (δ : ℝ) (hδ : 0 < δ)
+    (hmem : δ ∈ interior (integrableExpSet F.stat F.base))
+    (hmem' : -δ ∈ interior (integrableExpSet F.stat F.base)) :
+    Filter.Tendsto
+      (fun t => ∫ x, Real.sinh (t * F.stat x) ^ 2 / (t ^ 2 * Real.cosh (t * F.stat x)) ∂F.base)
+      (nhdsWithin 0 {(0:ℝ)}ᶜ) (nhds (∫ x, (F.stat x) ^ 2 ∂F.base)) := by
+  have hball : ∀ᶠ t : ℝ in nhdsWithin 0 {(0:ℝ)}ᶜ, |t| ≤ δ := by
+    refine Filter.Eventually.filter_mono nhdsWithin_le_nhds ?_
+    have : Metric.ball (0:ℝ) δ ∈ nhds (0:ℝ) := Metric.ball_mem_nhds 0 hδ
+    filter_upwards [this] with t ht
+    rw [Metric.mem_ball, Real.dist_eq, sub_zero] at ht
+    exact ht.le
+  have hne : ∀ᶠ t : ℝ in nhdsWithin 0 {(0:ℝ)}ᶜ, t ≠ 0 := self_mem_nhdsWithin
+  refine MeasureTheory.tendsto_integral_filter_of_dominated_convergence
+    (fun x => (F.stat x) ^ 2 * Real.cosh (δ * F.stat x)) ?_ ?_
+    (F.integrable_sq_mul_cosh δ hmem hmem') ?_
+  · filter_upwards with t
+    exact (((Real.continuous_sinh.measurable.comp
+      (measurable_const.mul F.measurable_stat)).pow_const 2).div
+      ((Real.continuous_cosh.measurable.comp
+        (measurable_const.mul F.measurable_stat)).const_mul _)).aestronglyMeasurable
+  · filter_upwards [hball, hne] with t htδ ht
+    filter_upwards with x
+    rw [Real.norm_eq_abs]
+    exact sinhSq_div_le t (F.stat x) ht hδ htδ
+  · filter_upwards with x
+    exact tendsto_sinhSq_div (F.stat x)
+
+/-- **Theorem 8.1, `(LPC.42)`.**  The second-order coherence response is four times the second
+moment of the statistic. -/
+theorem tendsto_coherenceWork_div_sq (δ : ℝ) (hδ : 0 < δ)
+    (hmem : δ ∈ interior (integrableExpSet F.stat F.base))
+    (hmem' : -δ ∈ interior (integrableExpSet F.stat F.base))
+    (hzero : (0:ℝ) ∈ interior (integrableExpSet F.stat F.base))
+    (hsub : ∀ t : ℝ, |t| ≤ δ → Integrable (fun x => Real.exp (t * F.stat x)) F.base) :
+    Filter.Tendsto (fun t => coherenceWork (F.tilt t) (F.tilt (-t)) / t ^ 2)
+      (nhdsWithin 0 {(0:ℝ)}ᶜ) (nhds (4 * ∫ x, (F.stat x) ^ 2 ∂F.base)) := by
+  have hball : ∀ᶠ t : ℝ in nhdsWithin 0 {(0:ℝ)}ᶜ, |t| ≤ δ := by
+    refine Filter.Eventually.filter_mono nhdsWithin_le_nhds ?_
+    filter_upwards [Metric.ball_mem_nhds (0:ℝ) hδ] with t ht
+    rw [Metric.mem_ball, Real.dist_eq, sub_zero] at ht
+    exact ht.le
+  have hmgf1 : Filter.Tendsto (fun t : ℝ => 4 / mgf F.stat F.base t)
+      (nhdsWithin 0 {(0:ℝ)}ᶜ) (nhds 4) := by
+    have hcont : ContinuousAt (mgf F.stat F.base) 0 :=
+      (differentiableAt_mgf hzero).continuousAt
+    have h0 : mgf F.stat F.base 0 = 1 := by simp [mgf]
+    have := (hcont.tendsto).mono_left (nhdsWithin_le_nhds (s := {(0:ℝ)}ᶜ))
+    rw [h0] at this
+    have hdiv := (tendsto_const_nhds (x := (4:ℝ))
+      (f := nhdsWithin (0:ℝ) {(0:ℝ)}ᶜ)).div this one_ne_zero
+    rw [div_one] at hdiv
+    exact hdiv
+  have hprod := hmgf1.mul (F.tendsto_integral_fisherDensity δ hδ hmem hmem')
+  rw [show (4 : ℝ) * ∫ x, (F.stat x) ^ 2 ∂F.base
+      = 4 * ∫ x, (F.stat x) ^ 2 ∂F.base from rfl] at hprod
+  refine hprod.congr' ?_
+  filter_upwards [hball] with t htδ
+  rw [F.coherenceWork_tilt t (hsub t htδ), mul_div_assoc, ← integral_div]
+  congr 1
+  refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
+  show Real.sinh (t * F.stat x) ^ 2 / (t ^ 2 * Real.cosh (t * F.stat x))
+      = Real.sinh (t * F.stat x) ^ 2 / Real.cosh (t * F.stat x) / t ^ 2
+  rw [div_div, mul_comm (Real.cosh (t * F.stat x))]
+
+/-- `(LPC.38)`  The reflected statistic has vanishing mean. -/
+theorem integral_stat_eq_zero : ∫ x, F.stat x ∂F.base = 0 := by
+  by_cases hint : Integrable F.stat F.base
+  · have hmap := integral_map (μ := F.base) (φ := F.reflection) (f := F.stat)
+      F.measurable_reflection.aemeasurable
+      (by rw [F.map_base]; exact F.measurable_stat.aestronglyMeasurable)
+    rw [F.map_base] at hmap
+    have hodd : ∫ x, F.stat (F.reflection x) ∂F.base = -∫ x, F.stat x ∂F.base := by
+      rw [← integral_neg]
+      exact integral_congr_ae (Filter.Eventually.of_forall fun x => F.stat_odd x)
+    rw [hodd] at hmap
+    linarith [hmap]
+  · rw [integral_undef hint]
+
+/-- `(LPC.42)`  The second cumulant at the neutral point is the second moment. -/
+theorem iteratedDeriv_two_cumulant_zero
+    (hzero : (0:ℝ) ∈ interior (integrableExpSet F.stat F.base)) :
+    iteratedDeriv 2 (cgf F.stat F.base) 0 = ∫ x, (F.stat x) ^ 2 ∂F.base := by
+  have hderiv0 : deriv (cgf F.stat F.base) 0 = 0 := by
+    rw [deriv_cgf_zero hzero, F.integral_stat_eq_zero, zero_div]
+  rw [iteratedDeriv_two_cgf_eq_integral hzero, hderiv0]
+  have hmgf0 : mgf F.stat F.base 0 = 1 := by simp [mgf]
+  rw [hmgf0, div_one]
+  refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
+  simp
+
+/-- **Theorem 8.1, `(LPC.42)`.**  The second-order coherence response is four times the Fisher
+information of the tilt family. -/
+theorem tendsto_coherenceWork_div_sq_cumulant (δ : ℝ) (hδ : 0 < δ)
+    (hmem : δ ∈ interior (integrableExpSet F.stat F.base))
+    (hmem' : -δ ∈ interior (integrableExpSet F.stat F.base))
+    (hzero : (0:ℝ) ∈ interior (integrableExpSet F.stat F.base))
+    (hsub : ∀ t : ℝ, |t| ≤ δ → Integrable (fun x => Real.exp (t * F.stat x)) F.base) :
+    Filter.Tendsto (fun t => coherenceWork (F.tilt t) (F.tilt (-t)) / t ^ 2)
+      (nhdsWithin 0 {(0:ℝ)}ᶜ)
+      (nhds (4 * iteratedDeriv 2 (cgf F.stat F.base) 0)) := by
+  rw [F.iteratedDeriv_two_cumulant_zero hzero]
+  exact F.tendsto_coherenceWork_div_sq δ hδ hmem hmem' hzero hsub
+
 end ReflectedExponentialFamily
 
 end

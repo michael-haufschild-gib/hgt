@@ -35,8 +35,12 @@ theorem sum_upperHalfPlaneIndicator (p : ℂ[X]) :
   | empty => simp
   | @cons z s ih =>
       by_cases hz : 0 < z.im
-      · simp [upperHalfPlaneIndicator, hz, ih, add_comm]
-      · simp [upperHalfPlaneIndicator, hz, ih]
+      · simp only [Multiset.map_cons, Multiset.sum_cons]
+        rw [ih]
+        simp [upperHalfPlaneIndicator, hz, add_comm]
+      · simp only [Multiset.map_cons, Multiset.sum_cons]
+        rw [ih]
+        simp [upperHalfPlaneIndicator, hz]
 
 /-- Every root of a nonzero-parameter member has nonzero imaginary part. -/
 theorem finiteEPolynomial_root_im_ne_zero

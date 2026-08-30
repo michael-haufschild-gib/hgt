@@ -99,6 +99,18 @@ theorem complexMatrixRowRealification_posDef
   exact (complexMatrixRealification_posDef hA).conjTranspose_mul_mul_same
     doubledRealConjugation_mulVec_injective
 
+omit [DecidableEq n] in
+/-- Column-convention Hermitian congruence evaluates on the adjoint-transformed vector. -/
+theorem star_dotProduct_complex_square_congr_mulVec
+    (A G : Matrix n n ℂ) (x : n → ℂ) :
+    star x ⬝ᵥ (G * A * Gᴴ).mulVec x =
+      star (Gᴴ.mulVec x) ⬝ᵥ A.mulVec (Gᴴ.mulVec x) := by
+  rw [Matrix.star_mulVec, Matrix.conjTranspose_conjTranspose]
+  rw [show (G * A * Gᴴ).mulVec x =
+      G.mulVec (A.mulVec (Gᴴ.mulVec x)) by
+    simp only [← Matrix.mulVec_mulVec]]
+  rw [Matrix.dotProduct_mulVec]
+
 end
 
 end GaloisForLFunctions.HTGeometry
