@@ -148,3 +148,31 @@ coefficient hierarchy.
 - 2026-08-29 — Replaced stronger-than-needed global drift/concavity target by exact
   `TCD-D1-BOUNDARY-FLUX`: positive canonical flux on every singular face is already equivalent in
   Lean to global strict D1 and therefore closes finite TCD/S6F gate outright.
+
+## 2026-08-30 finite matrix-channel contravariant route kill
+
+`[FALSIFIED][LEAN-PROVED]` No nonempty finite channel dimension admits a positive-definite
+matrix-valued contravariant source-`sl₂` carrier containing actual D1, for either canonical left or
+right action of an arbitrary matrix coefficient. The D1-generated vacuum string supplies nonzero
+`u,v` with `Eu=0`, `Fv=u`, and `Ev≠0`. Contravariance on `(u,v)` makes the positive-definite matrix
+`⟨u,u⟩` annihilate the coefficient, so invertibility forces that coefficient to vanish;
+contravariance on `(v,Ev)` then forces the positive-definite matrix `⟨Ev,Ev⟩` to vanish.
+
+Formal capstone:
+`modularThetaSourcePositive_no_D1_finiteMatrixContravariantCarrier` in
+`PolynomialODEJetRankThreeSourcePositiveD1MatrixContravariantNoGo`.
+
+Exact proof-chain consequence: the proposed finite non-scalar representation step
+
+```text
+finite positive matrix-channel source-sl₂ carrier containing D1
+→ Gram/Shapovalov positivity for native rank-three D1
+→ finite TCD/S6F gate
+→ cofinal all-order landing
+→ Weil positivity
+→ RH
+```
+
+is impossible. Remaining representation-theoretic survivors must be genuinely infinite-channel,
+localized/singular, or indefinite/Krein. Direct cross-scale Hankel/singular-face geometry remains
+the clean positive survivor and `TCD-D1-BOUNDARY-FLUX` remains the route-closing open core.

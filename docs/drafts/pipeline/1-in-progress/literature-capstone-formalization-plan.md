@@ -1052,3 +1052,105 @@ This closes exactly one literature sub-arrow of Burnol 6.25.  It does not
 prove the reverse Mellin/Paley--Wiener reconstruction, `P_a = Y_aᗮ`, a
 source-selected complement equality, or RH.  Those remain the genuine
 Burnol endpoint obstruction.
+
+## 2026-08-30 Q8 Fröhlich finite sign certificate
+
+`[LITERATURE]` Direct inspection of Fröhlich, *Artin-Root Numbers and Normal Integral Bases for
+Quaternion Fields* (Invent. Math. 17 (1972), Theorem 6(i)), sharpens the epsilon obligation for the
+actual SST Example 1.3(ii) field.  For a quaternion field `N` whose maximal abelian subfield is an
+odd-discriminant biquadratic field `K` and whose ramified primes are all `1 mod 4`, Fröhlich proves
+
+```text
+W_N = alpha_K * beta_K.
+```
+
+For `K = Q(sqrt 5, sqrt 41)`, the three quadratic discriminants are `5, 41, 205` and
+`Delta(K) = 205`.  Taking `d_1 = 5`, `d_2 = 41`, `d_3 = 205` gives
+`f_1 = 41`, `f_2 = 5`, `f_3 = 1`.  Hence
+
+```text
+alpha_K = (41 / 5) = 1,
+beta_K  = [41 / 5] [5 / 41] [1 / 205] = [5 / 41] = -1.
+```
+
+The last equality is an exact quartic-residue calculation:
+`5^10 = -1 mod 41`.  It is independent of choice of primitive quartic character because `5` is a
+quadratic residue modulo `41`, so the two conjugate primitive quartic characters agree there.
+Therefore `alpha_K * beta_K = -1`.
+
+`[CONJECTURE Q8-FS1]` Formalize this finite residue certificate on the literal primes `5` and `41`,
+then formalize the specialized Fröhlich Theorem 6 bridge identifying it with the global Artin root
+number of `deningerQ8ActualArtinRepresentation`.
+
+`[HOSTILE AUDIT]` The finite calculation alone is not the Artin root-number theorem.  A definition
+which merely names `alpha_K * beta_K` as a root number is circular and rejected.  The surviving
+open bridge must prove Fröhlich's equality from an independently defined global Artin epsilon
+factor (or an equivalent normal-integral-basis class theorem), and must also identify the literal
+field's maximal abelian subfield, odd tame ramification, and discriminants.  The existing Q8 Galois
+and monomial laws close only the first identification.
+
+## 2026-08-30 Q8 maximal-abelian fixed-field bridge
+
+`[CONJECTURE Q8-MAXAB]` Let `N` be the literal degree-eight radical field and let
+`K = Q(sqrt 5, sqrt 41)` be the embedded second field in its defining tower.  Then
+
+```text
+K = N^{<q8C>} = N^{Z(Gal(N/Q))} = N^{[Gal(N/Q),Gal(N/Q)]}.
+```
+
+Consequently `K` is the maximal abelian subextension required by Fröhlich's Theorem 6(i).
+
+`[DEPENDENCY-CLOSED PAPER PROOF]` The literal automorphism `q8C` fixes the entire embedded second
+field (`q8C_of`) and sends the nonzero top radical to its negative (`q8C_root`), so it is nontrivial.
+The proved identity `q8C^2 = 1` therefore gives `orderOf(q8C) = 2` and
+`|<q8C>| = 2`.  The tower has `[N:K] = 2`.  Thus `K` is contained in `N^{<q8C>}` and both have
+relative degree two in `N`; Artin's fixed-field degree formula forces equality.
+
+Under the proved equivalence `Gal(N/Q) ≃ Q8`, `q8C` is the element `a 2`.  Direct use of the four
+Q8 multiplication laws shows
+
+```text
+Z(Q8) = <a 2> = [Q8,Q8].
+```
+
+Indeed `a 2` commutes with every `a i` and `xa i`; conversely a central `a i` must commute with
+`xa 0`, forcing `i = 0 or 2`, while a central `xa i` would have to commute with `a 1`, which is
+impossible.  The quotient by `<a 2>` is the Klein four group, so the commutator is contained in
+`<a 2>`; the commutator of `a 1` and `xa 0` is `a 2`, giving the reverse containment.  Transporting
+these subgroup equalities through the actual Galois equivalence proves the displayed fixed-field
+identity.  Finally, the fixed field of the commutator is the maximal subextension with abelian
+Galois quotient by the Galois correspondence.
+
+`[HOSTILE AUDIT]` This theorem proves no epsilon factor and no sign.  It closes exactly the
+maximal-abelian-field premise of Fröhlich's theorem.  Root number `-1` still requires literal
+ramification/tameness and discriminant identification plus an independently defined global epsilon
+factor and the specialized Fröhlich equality.  No definition may identify the finite sign with the
+root number by fiat.
+
+## 2026-08-30 Q8 maximal-abelian fixed-field bridge — closed
+
+`[LEAN-PROVED]` `DeningerQ8ActualMaximalAbelianField.lean` proves the full `Q8-MAXAB` statement on
+the literal radical tower:
+
+```text
+Q(sqrt 5, sqrt 41)
+  = N^{<q8C>}
+  = N^{Z(Gal(N/Q))}
+  = N^{[Gal(N/Q),Gal(N/Q)]}.
+```
+
+It also proves that `Gal(N/Q)/<q8C>` is abelian and the universal property
+`<q8C> ≤ H` for every normal `H` with abelian quotient.  Thus this is an exact maximal-abelian
+identification, not merely a degree-four fixed field.  The proof derives `orderOf(q8C)=2`, the
+relative degree-two fixed-field equality, `Z(Q8)=<a 2>`, `[Q8,Q8]=Z(Q8)`, and transports both
+subgroups through the actual Galois equivalence.
+
+Direct source checking and the targeted leaf build pass.  Axiom audit reports only `propext`,
+`Classical.choice`, and `Quot.sound`.  The leaf is wired into `RHTower.lean`; no umbrella build was
+run.
+
+`[OPEN CORE]` Fröhlich's remaining field hypotheses are now sharply isolated: prove the literal
+number-field discriminants and odd tame ramification (including which primes ramify), then prove the
+specialized epsilon/root-number equality from an independently defined global Artin epsilon factor.
+The finite sign calculation and maximal-abelian field are both closed; neither is being renamed as
+the missing global epsilon bridge.

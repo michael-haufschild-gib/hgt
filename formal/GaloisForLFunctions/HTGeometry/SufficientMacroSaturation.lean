@@ -31,15 +31,18 @@ variable {X : Type*} [Fintype X] [DecidableEq X] (b T : X → ℝ)
 /-- `(FCAP.26)`  Partition function of a finite one-parameter exponential family. -/
 def partition (θ : ℝ) : ℝ := ∑ x, b x * Real.exp (θ * T x)
 
+omit [DecidableEq X] in
 theorem partition_pos (hb : ∀ x, 0 < b x) [Nonempty X] (θ : ℝ) : 0 < partition b T θ :=
   Finset.sum_pos (fun x _ => mul_pos (hb x) (Real.exp_pos _)) ⟨Classical.arbitrary X, by simp⟩
 
 /-- `(FCAP.26)`  The exponential-family packet. -/
 def packet (θ : ℝ) : X → ℝ := fun x => b x * Real.exp (θ * T x) / partition b T θ
 
+omit [DecidableEq X] in
 theorem packet_nonneg (hb : ∀ x, 0 < b x) [Nonempty X] (θ : ℝ) (x : X) : 0 ≤ packet b T θ x :=
   div_nonneg (mul_nonneg (hb x).le (Real.exp_nonneg _)) (partition_pos b T hb θ).le
 
+omit [DecidableEq X] in
 theorem packet_sum (hb : ∀ x, 0 < b x) [Nonempty X] (θ : ℝ) : ∑ x, packet b T θ x = 1 := by
   have h : ∑ x, packet b T θ x
       = (∑ x, b x * Real.exp (θ * T x)) / partition b T θ := by
@@ -54,6 +57,7 @@ def sumStat (d : ℕ) : (Fin d → X) → ℝ := fun x => ∑ j, T (x j)
 /-- The finite image of the sum statistic. -/
 def statImage (d : ℕ) : Finset ℝ := Finset.univ.image (sumStat T d)
 
+omit [DecidableEq X] in
 theorem sumStat_mem (d : ℕ) (x : Fin d → X) : sumStat T d x ∈ statImage T d :=
   Finset.mem_image_of_mem _ (Finset.mem_univ x)
 
@@ -64,6 +68,7 @@ abbrev MacroAlphabet (d : ℕ) := {t : ℝ // t ∈ statImage T d}
 def fibreWeight (d : ℕ) (t : ℝ) : ℝ :=
   ∑ x ∈ Finset.univ.filter (fun x : Fin d → X => sumStat T d x = t), ∏ j, b (x j)
 
+omit [DecidableEq X] in
 theorem fibreWeight_pos (hb : ∀ x, 0 < b x) (d : ℕ) {t : ℝ} (ht : t ∈ statImage T d) :
     0 < fibreWeight b T d t := by
   obtain ⟨x, -, hx⟩ := Finset.mem_image.mp ht
@@ -78,6 +83,7 @@ def macroPacket (d : ℕ) (θ : ℝ) : MacroAlphabet T d → ℝ :=
 def recoveryWeight (d : ℕ) (t : ℝ) (x : Fin d → X) : ℝ :=
   if sumStat T d x = t then (∏ j, b (x j)) / fibreWeight b T d t else 0
 
+omit [DecidableEq X] in
 theorem tensorPower_packet (hb : ∀ x, 0 < b x) [Nonempty X] (θ : ℝ) (d : ℕ) (x : Fin d → X) :
     tensorPower d (packet b T θ) x
       = (∏ j, b (x j)) * Real.exp (θ * sumStat T d x) / partition b T θ ^ d := by
@@ -91,6 +97,7 @@ theorem tensorPower_packet (hb : ∀ x, 0 < b x) [Nonempty X] (θ : ℝ) (d : �
   congr 2
   rw [sumStat, Finset.mul_sum]
 
+omit [DecidableEq X] in
 /-- **`(FCAP.31)`.**  The sum statistic pushes the product packet onto the macro law. -/
 theorem sum_fibre_tensorPower (hb : ∀ x, 0 < b x) [Nonempty X] (θ : ℝ) (d : ℕ)
     (t : MacroAlphabet T d) :
@@ -101,6 +108,7 @@ theorem sum_fibre_tensorPower (hb : ∀ x, 0 < b x) [Nonempty X] (θ : ℝ) (d :
   have hxt : sumStat T d x = t.1 := (Finset.mem_filter.mp hx).2
   rw [tensorPower_packet b T hb θ d x, hxt]
 
+omit [DecidableEq X] in
 /-- `(FCAP.30)`  The recovery kernel is a probability kernel. -/
 theorem sum_recoveryWeight (hb : ∀ x, 0 < b x) (d : ℕ) (t : MacroAlphabet T d) :
     ∑ x : Fin d → X, recoveryWeight b T d t.1 x = 1 := by
@@ -112,6 +120,7 @@ theorem sum_recoveryWeight (hb : ∀ x, 0 < b x) (d : ℕ) (t : MacroAlphabet T 
     ← fibreWeight]
   exact div_self hpos.ne'
 
+omit [DecidableEq X] in
 /-- **`(FCAP.32)`.**  Common recovery reconstructs the independent product. -/
 theorem sum_macro_recovery (hb : ∀ x, 0 < b x) [Nonempty X] (θ : ℝ) (d : ℕ) (x : Fin d → X) :
     ∑ t : MacroAlphabet T d, recoveryWeight b T d t.1 x * macroPacket b T d θ t
@@ -163,6 +172,7 @@ def recoveryKernel (hb : ∀ x, 0 < b x) (d : ℕ) :
     · exact le_rfl
   column_sum t := sum_recoveryWeight b T hb d t
 
+omit [DecidableEq X] in
 theorem statKernel_applyReal (hb : ∀ x, 0 < b x) [Nonempty X] (θ : ℝ) (d : ℕ) :
     (statKernel T d).toFinitePositiveKernel.applyReal (tensorPower d (packet b T θ))
       = macroPacket b T d θ := by
@@ -176,6 +186,7 @@ theorem statKernel_applyReal (hb : ∀ x, 0 < b x) [Nonempty X] (θ : ℝ) (d : 
   · rw [if_pos h.symm, if_pos h, one_mul]
   · rw [if_neg (fun h' => h h'.symm), if_neg h, zero_mul]
 
+omit [DecidableEq X] in
 theorem recoveryKernel_applyReal (hb : ∀ x, 0 < b x) [Nonempty X] (θ : ℝ) (d : ℕ) :
     (recoveryKernel b T hb d).toFinitePositiveKernel.applyReal (macroPacket b T d θ)
       = tensorPower d (packet b T θ) := by
@@ -183,6 +194,7 @@ theorem recoveryKernel_applyReal (hb : ∀ x, 0 < b x) [Nonempty X] (θ : ℝ) (
   rw [FinitePositiveKernel.applyReal]
   exact sum_macro_recovery b T hb θ d x
 
+omit [DecidableEq X] in
 theorem macroPacket_nonneg (hb : ∀ x, 0 < b x) [Nonempty X] (d : ℕ) (θ : ℝ)
     (t : MacroAlphabet T d) : 0 ≤ macroPacket b T d θ t := by
   rw [← statKernel_applyReal b T hb θ d]
@@ -221,6 +233,7 @@ theorem finitePacketAffinity_macroPacket (hb : ∀ x, 0 < b x) [Nonempty X] (d :
 
 /-! ## Product marginals -/
 
+omit [DecidableEq X] in
 theorem sum_tensorPower_mul_single (p : X → ℝ) (d : ℕ) (j₀ : Fin d) (F : X → ℝ)
     (hp1 : ∑ y, p y = 1) :
     ∑ x : Fin d → X, tensorPower d p x * F (x j₀) = ∑ y, p y * F y := by
@@ -248,6 +261,7 @@ theorem sum_tensorPower_mul_single (p : X → ℝ) (d : ℕ) (j₀ : Fin d) (F :
     Finset.sum_congr rfl fun y _ => by rw [hh]; exact if_pos rfl
   rw [Finset.prod_congr rfl hone, Finset.prod_const_one, mul_one, hj]
 
+omit [DecidableEq X] in
 theorem sum_tensorPower_mul_pair (p : X → ℝ) (d : ℕ) {j k : Fin d} (hjk : j ≠ k)
     (F G : X → ℝ) (hp1 : ∑ y, p y = 1) :
     ∑ x : Fin d → X, tensorPower d p x * (F (x j) * G (x k))
@@ -312,6 +326,7 @@ theorem sum_tensorPower_mul_pair (p : X → ℝ) (d : ℕ) {j k : Fin d} (hjk : 
 def fisherInfo {Y : Type*} [Fintype Y] (q : Y → ℝ) (f : Y → ℝ) : ℝ :=
   ∑ y, q y * (f y - ∑ z, q z * f z) ^ 2
 
+omit [DecidableEq X] in
 theorem sum_macroPacket_mul (hb : ∀ x, 0 < b x) [Nonempty X] (d : ℕ) (θ : ℝ) (g : ℝ → ℝ) :
     ∑ t : MacroAlphabet T d, macroPacket b T d θ t * g t.1
       = ∑ x : Fin d → X, tensorPower d (packet b T θ) x * g (sumStat T d x) := by
@@ -337,6 +352,7 @@ theorem sum_macroPacket_mul (hb : ∀ x, 0 < b x) [Nonempty X] (d : ℕ) (θ : �
     rw [(Finset.mem_filter.mp hx).2]
   rw [Finset.sum_congr rfl hinner, ← Finset.sum_mul, sum_fibre_tensorPower b T hb θ d t]
 
+omit [DecidableEq X] in
 /-- **`(FCAP.35)`.**  The macro Fisher information is `d` times the one-packet Fisher
 information. -/
 theorem fisherInfo_macroPacket (hb : ∀ x, 0 < b x) [Nonempty X] (d : ℕ) (θ : ℝ) :
@@ -408,30 +424,35 @@ variable {X : Type*} [Fintype X] [DecidableEq X] {b T : X → ℝ}
   (R : Equiv.Perm X) (hR : ∀ x, R (R x) = x) (hb : ∀ x, b (R x) = b x) (hT : ∀ x, T (R x) = -T x)
 
 include hb hT in
+omit [DecidableEq X] in
 /-- `(FCAP.37)`  The partition function is reflection symmetric. -/
 theorem partition_reflect (θ : ℝ) : partition b T (-θ) = partition b T θ := by
   rw [partition, partition, ← Equiv.sum_comp R (fun x => b x * Real.exp (θ * T x))]
   exact Finset.sum_congr rfl fun x _ => by rw [hb x, hT x]; ring_nf
 
 include hb hT in
+omit [DecidableEq X] in
 /-- `(FCAP.37)`  Reflection reverses the canonical parameter. -/
 theorem packet_reflect (θ : ℝ) (x : X) : packet b T (-θ) x = packet b T θ (R x) := by
   rw [packet, packet, partition_reflect R hb hT θ, hb x, hT x]
   ring_nf
 
 include hT in
+omit [Fintype X] [DecidableEq X] in
 theorem sumStat_reflect (d : ℕ) (x : Fin d → X) :
     sumStat T d (fun j => R (x j)) = -sumStat T d x := by
   rw [sumStat, sumStat, ← Finset.sum_neg_distrib]
   exact Finset.sum_congr rfl fun j _ => hT (x j)
 
-include hR hT in
+include hT in
+omit [DecidableEq X] in
 theorem statImage_neg_mem {d : ℕ} {t : ℝ} (ht : t ∈ statImage T d) : -t ∈ statImage T d := by
   obtain ⟨x, -, hx⟩ := Finset.mem_image.mp ht
   refine Finset.mem_image.mpr ⟨fun j => R (x j), Finset.mem_univ _, ?_⟩
   rw [sumStat_reflect R hT d x, hx]
 
 include hR hb hT in
+omit [DecidableEq X] in
 /-- `(FCAP.38)`  The fibre weight is reflection symmetric. -/
 theorem fibreWeight_reflect (d : ℕ) (t : ℝ) :
     fibreWeight b T d (-t) = fibreWeight b T d t := by
@@ -457,10 +478,11 @@ theorem fibreWeight_reflect (d : ℕ) (t : ℝ) :
     exact Finset.prod_congr rfl fun j _ => (hb (x j)).symm
 
 include hR hb hT in
+omit [DecidableEq X] in
 /-- `(FCAP.37)`  The macro law reverses the canonical parameter. -/
 theorem macroPacket_reflect (d : ℕ) (θ : ℝ) (t : MacroAlphabet T d) :
     macroPacket b T d (-θ) t
-      = macroPacket b T d θ ⟨-t.1, statImage_neg_mem R hR hT t.2⟩ := by
+      = macroPacket b T d θ ⟨-t.1, statImage_neg_mem R hT t.2⟩ := by
   rw [macroPacket, macroPacket, partition_reflect R hb hT θ]
   show fibreWeight b T d t.1 * Real.exp (-θ * t.1) / partition b T θ ^ d
     = fibreWeight b T d (-t.1) * Real.exp (θ * -t.1) / partition b T θ ^ d
@@ -468,6 +490,7 @@ theorem macroPacket_reflect (d : ℕ) (θ : ℝ) (t : MacroAlphabet T d) :
   ring_nf
 
 include hR hb hT in
+omit [DecidableEq X] in
 /-- `(FCAP.38)`  The recovery kernel is reflection equivariant. -/
 theorem recoveryWeight_reflect (d : ℕ) (t : ℝ) (x : Fin d → X) :
     recoveryWeight b T d (-t) (fun j => R (x j)) = recoveryWeight b T d t x := by

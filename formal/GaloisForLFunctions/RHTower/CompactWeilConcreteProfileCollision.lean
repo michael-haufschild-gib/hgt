@@ -55,4 +55,28 @@ theorem tendsto_ccmGuinandWeilPolarCompactLaplaceReal_differenceEnergy_div_sq (x
   exact tendsto_compactWeilClosePair_differenceEnergy_div_sq
     (differentiableAt_ccmGuinandWeilPolarCompactLaplaceReal x).hasDerivAt
 
+/-- Closed compact-Weil collision package for the actual corpus profile. The complex Hilbert
+target, real differentiability, derivative, and compact-support source are all constructed above;
+the theorem retains no structural or differentiability premise. -/
+theorem ccmGuinandWeilPolarCompactLaplaceReal_closePairCollision_closed (x h : ℝ) :
+    compactWeilClosePairSamplingEnergy ccmGuinandWeilPolarCompactLaplaceReal x h =
+        (1 / 2 : ℝ) *
+            ‖ccmGuinandWeilPolarCompactLaplaceReal x +
+              ccmGuinandWeilPolarCompactLaplaceReal (x + h)‖ ^ 2 +
+          (1 / 2 : ℝ) *
+            compactWeilClosePairDifferenceEnergy ccmGuinandWeilPolarCompactLaplaceReal x h ∧
+      compactWeilClosePairSamplingEnergy ccmGuinandWeilPolarCompactLaplaceReal x 0 =
+        2 * ‖ccmGuinandWeilPolarCompactLaplaceReal x‖ ^ 2 ∧
+      DifferentiableAt ℝ ccmGuinandWeilPolarCompactLaplaceReal x ∧
+      Tendsto
+        (fun r : ℝ =>
+          compactWeilClosePairDifferenceEnergy
+              ccmGuinandWeilPolarCompactLaplaceReal x r / r ^ 2)
+        (𝓝[≠] (0 : ℝ))
+        (𝓝 (‖deriv ccmGuinandWeilPolarCompactLaplaceReal x‖ ^ 2)) := by
+  exact ⟨ccmGuinandWeilPolarCompactLaplaceReal_samplingEnergy_split x h,
+    ccmGuinandWeilPolarCompactLaplaceReal_samplingEnergy_collision x,
+    differentiableAt_ccmGuinandWeilPolarCompactLaplaceReal x,
+    tendsto_ccmGuinandWeilPolarCompactLaplaceReal_differenceEnergy_div_sq x⟩
+
 end RHTower

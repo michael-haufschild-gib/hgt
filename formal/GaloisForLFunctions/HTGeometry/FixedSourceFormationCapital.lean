@@ -30,11 +30,13 @@ variable {S X : Type*} [Fintype S] [DecidableEq S] [Fintype X] [DecidableEq X]
 /-- `(FCAP.5)`  Hellinger affinity of two finite packets. -/
 def finitePacketAffinity (u v : X → ℝ) : ℝ := renyiOverlap (1 / 2) u v
 
+omit [DecidableEq X] in
 theorem finitePacketAffinity_eq_sum (u v : X → ℝ) :
     finitePacketAffinity u v = ∑ x, u x ^ (1/2 : ℝ) * v x ^ (1/2 : ℝ) := by
   rw [finitePacketAffinity, renyiOverlap]
   norm_num
 
+omit [DecidableEq S] in
 /-- **Theorem 2.1, `(FCAP.7)`.**  A fixed source can only form independent depth by paying
 multiplicative affinity. -/
 theorem ExactFormation.finitePacketAffinity_le {E : FiniteExperiment S} {F : FiniteExperiment X}
@@ -49,6 +51,7 @@ theorem ExactFormation.finitePacketAffinity_le {E : FiniteExperiment S} {F : Fin
   rw [hpow] at hdp
   exact hdp
 
+omit [DecidableEq S] in
 /-- **Theorem 2.3, `(FCAP.13b)`.**  The whole Rényi capital spectrum obeys the same law. -/
 theorem ExactFormation.renyiOverlap_le {α : ℝ} (h0 : 0 < α) (h1 : α < 1)
     {E : FiniteExperiment S} {F : FiniteExperiment X} {d : ℕ} (A : ExactFormation E F d) :
@@ -61,6 +64,7 @@ theorem ExactFormation.renyiOverlap_le {α : ℝ} (h0 : 0 < α) (h1 : α < 1)
   rw [hpow] at hdp
   exact hdp
 
+omit [DecidableEq S] in
 /-- **`(FCAP.8)`.**  The exact depth bound. -/
 theorem ExactFormation.depth_le {E : FiniteExperiment S} {F : FiniteExperiment X} {d : ℕ}
     (A : ExactFormation E F d)
@@ -79,7 +83,8 @@ theorem ExactFormation.depth_le {E : FiniteExperiment S} {F : FiniteExperiment X
   rw [le_div_iff_of_neg hloga]
   exact hlog
 
-theorem finitePacketAffinity_eq_sum_sqrt {u v : X → ℝ} (hu : ∀ x, 0 ≤ u x) (hv : ∀ x, 0 ≤ v x) :
+omit [DecidableEq X] in
+theorem finitePacketAffinity_eq_sum_sqrt {u v : X → ℝ} (_huhu : ∀ x, 0 ≤ u x) (_hvhv : ∀ x, 0 ≤ v x) :
     finitePacketAffinity u v = ∑ x, Real.sqrt (u x) * Real.sqrt (v x) := by
   rw [finitePacketAffinity_eq_sum]
   exact Finset.sum_congr rfl fun x _ => by
@@ -94,6 +99,7 @@ def constantKernel (Y : Type*) [Fintype Y] (q : Y → ℝ) (hq : ∀ y, 0 ≤ q 
   nonneg y _ := hq y
   column_sum _ := hq1
 
+omit [DecidableEq S] in
 theorem constantKernel_applyReal {Y : Type*} [Fintype Y] {q : Y → ℝ} (hq : ∀ y, 0 ≤ q y)
     (hq1 : ∑ y, q y = 1) {r : S → ℝ} (hr : ∑ x, r x = 1) :
     (constantKernel (S := S) Y q hq hq1).toFinitePositiveKernel.applyReal r = q := by
@@ -167,6 +173,7 @@ def singularFormation (E : FiniteExperiment S) (F : FiniteExperiment X) (d : ℕ
     rw [Finset.sum_congr rfl fun x _ => hterm x, ← Finset.mul_sum, E.sum₁, mul_one]
     rfl
 
+omit [DecidableEq S] in
 /-- **Theorem 3.1.**  A fixed source finances unbounded independent target depth exactly when the
 target is neutral or the source marks are mutually singular. -/
 theorem forall_depth_formation_iff (E : FiniteExperiment S) (F : FiniteExperiment X) :
@@ -211,11 +218,14 @@ def finitePacketHellinger (u v : X → ℝ) : ℝ :=
   ‖(WithLp.toLp 2 fun x => Real.sqrt (u x) : EuclideanSpace ℝ X)
     - (WithLp.toLp 2 fun x => Real.sqrt (v x))‖
 
+omit [DecidableEq X] in
 theorem finitePacketHellinger_nonneg (u v : X → ℝ) : 0 ≤ finitePacketHellinger u v := norm_nonneg _
 
+omit [DecidableEq X] in
 theorem finitePacketHellinger_symm (u v : X → ℝ) : finitePacketHellinger u v = finitePacketHellinger v u :=
   norm_sub_rev _ _
 
+omit [DecidableEq X] in
 theorem finitePacketHellinger_triangle (u v w : X → ℝ) :
     finitePacketHellinger u w ≤ finitePacketHellinger u v + finitePacketHellinger v w := by
   have h : (WithLp.toLp 2 fun x => Real.sqrt (u x) : EuclideanSpace ℝ X)
@@ -227,6 +237,7 @@ theorem finitePacketHellinger_triangle (u v w : X → ℝ) :
   rw [finitePacketHellinger, h]
   exact norm_add_le _ _
 
+omit [DecidableEq X] in
 theorem finitePacketHellinger_sq {u v : X → ℝ} (hu : ∀ x, 0 ≤ u x) (hv : ∀ x, 0 ≤ v x)
     (hu1 : ∑ x, u x = 1) (hv1 : ∑ x, v x = 1) :
     finitePacketHellinger u v ^ 2 = 2 - 2 * finitePacketAffinity u v := by
@@ -246,11 +257,13 @@ theorem finitePacketHellinger_sq {u v : X → ℝ} (hu : ∀ x, 0 ≤ u x) (hv :
   rw [Finset.sum_add_distrib, Finset.sum_sub_distrib, hu1, hv1, ← Finset.mul_sum]
   ring
 
+omit [DecidableEq X] in
 theorem finitePacketHellinger_eq_sqrt {u v : X → ℝ} (hu : ∀ x, 0 ≤ u x) (hv : ∀ x, 0 ≤ v x)
     (hu1 : ∑ x, u x = 1) (hv1 : ∑ x, v x = 1) :
     finitePacketHellinger u v = Real.sqrt (2 - 2 * finitePacketAffinity u v) := by
   rw [← finitePacketHellinger_sq hu hv hu1 hv1, Real.sqrt_sq (finitePacketHellinger_nonneg u v)]
 
+omit [DecidableEq S] [DecidableEq X] in
 /-- Hellinger distance is monotone under a Markov kernel. -/
 theorem finitePacketHellinger_markovDataProcessing (K : FiniteMarkovKernel S X)
     {u v : S → ℝ} (hu : ∀ x, 0 ≤ u x) (hv : ∀ x, 0 ≤ v x)
@@ -271,6 +284,7 @@ theorem finitePacketHellinger_markovDataProcessing (K : FiniteMarkovKernel S X)
   unfold finitePacketAffinity
   linarith
 
+omit [DecidableEq S] in
 /-- **Theorem 3.2, `(FCAP.17)`.**  No fixed overlapping source admits asymptotically exact
 nonneutral target formation at unbounded depth. -/
 theorem approximate_properness (E : FiniteExperiment S) (F : FiniteExperiment X) (d : ℕ)
@@ -329,7 +343,7 @@ theorem no_common_kernel (K : FiniteMarkovKernel (Fin 2) (Fin 2))
   have e₁ := congrFun h₁ 0
   rw [FinitePositiveKernel.applyReal] at e₀ e₁
   simp only [Fin.sum_univ_two, srcZero, srcOne, tgtZero, tgtOne,
-    Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons] at e₀ e₁
+    Matrix.cons_val_zero, Matrix.cons_val_one] at e₀ e₁
   have hw₁ := K.nonneg 0 1
   linarith
 
@@ -341,7 +355,7 @@ theorem affinity_lt : finitePacketAffinity srcZero srcOne < finitePacketAffinity
   have ht' : ∀ x, (0:ℝ) ≤ tgtOne x := fun x => by fin_cases x <;> norm_num [tgtOne]
   rw [finitePacketAffinity_eq_sum_sqrt hs hs', finitePacketAffinity_eq_sum_sqrt ht ht']
   simp only [Fin.sum_univ_two, srcZero, srcOne, tgtZero, tgtOne,
-    Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons]
+    Matrix.cons_val_zero, Matrix.cons_val_one]
   have hL : Real.sqrt (9/10) * Real.sqrt (1/10) + Real.sqrt (1/10) * Real.sqrt (9/10)
       = 3/5 := by
     rw [← Real.sqrt_mul (by norm_num), ← Real.sqrt_mul (by norm_num)]
@@ -362,6 +376,7 @@ end LikelihoodCounterexample
 
 /-! ## §10  Selection corollary -/
 
+omit [DecidableEq S] in
 /-- **`(FCAP.47)`, `(FCAP.48)`.**  A fixed *overlapping* source that finances unbounded independent
 depth of an identifiable reflected family forces neutral displacement. -/
 theorem selection_of_cofinal {I : Type*} [Zero I] (P : I → FiniteExperiment X)

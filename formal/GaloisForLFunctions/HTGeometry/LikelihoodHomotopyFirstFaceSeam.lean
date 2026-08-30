@@ -82,6 +82,17 @@ def c5FirstShiftedFacePotentialGerm
     (fun x => iteratedDeriv 2 g (u - x) - iteratedDeriv 2 g (u + x))
     (fun x => 2 * g u - g (u + x) - g (u - x)) t
 
+/-- Smooth potentials generate a globally smooth first shifted-face germ. -/
+theorem contDiff_c5FirstShiftedFacePotentialGerm
+    (f g : ℝ → ℝ) (u : ℝ) (hf : ContDiff ℝ ∞ f) (hg : ContDiff ℝ ∞ g) :
+    ContDiff ℝ ∞ (c5FirstShiftedFacePotentialGerm f g u) := by
+  have hfj (n : ℕ) : ContDiff ℝ ∞ (iteratedDeriv n f) :=
+    contDiff_top_iteratedDeriv_real f hf n
+  have hgj (n : ℕ) : ContDiff ℝ ∞ (iteratedDeriv n g) :=
+    contDiff_top_iteratedDeriv_real g hg n
+  unfold c5FirstShiftedFacePotentialGerm c5FirstShiftedFaceGerm
+  fun_prop
+
 theorem c5FirstShiftedFaceGerm_seamJetClassification
     (a b s m da db ds dm dq : ℝ → ℝ)
     (ha : ContDiffAt ℝ ∞ a 0) (hb : ContDiffAt ℝ ∞ b 0)
@@ -278,7 +289,7 @@ theorem c5FirstShiftedFaceGerm_seamJetClassification
       norm_num [hH₀j, habj, hxm0, hxm1, hxm2, hxm3, hxm4,
         realScalarJetConvolution, realScalarJetId,
         Finset.sum_range_succ, Nat.choose, ha0, ha1, ha2, ha3, hb0, hb1, hb2,
-        hs0, hs1, hs2, hs3, hs4, hm0, hm1, hm2, hm3] <;> ring
+        hs0, hs1, hs2, hs3, hs4, hm0, hm1, hm2, hm3]; ring
   have hH₀five : iteratedDeriv 5 H₀ 0 = 10 * (a₁ * s₄ - 2 * a₃ * s₂) := by
     rw [hH₀j]
     norm_num [habj, hxm0, hxm1, hxm2, hxm3, hxm4,
@@ -293,7 +304,7 @@ theorem c5FirstShiftedFaceGerm_seamJetClassification
         realScalarJetId, Finset.sum_range_succ, Nat.choose,
         ha0, ha1, ha2, ha3, hb0, hb1, hb2, hs0, hs1, hs2, hs3, hs4,
         hm0, hm1, hm2, hm3, hda0, hda1, hda2, hda3, hdb0, hdb1, hdb2,
-        hds0, hds1, hds2, hds3, hds4, hdm0, hdm1, hdm2, hdm3] <;> ring
+        hds0, hds1, hds2, hds3, hds4, hdm0, hdm1, hdm2, hdm3]; ring
   have hH₁five : iteratedDeriv 5 H₁ 0 =
       10 * (d₁ * s₄ + a₁ * e₄ - 2 * d₃ * s₂ - 2 * a₃ * e₂) := by
     rw [hH₁j]
@@ -496,64 +507,88 @@ theorem c5FirstShiftedFacePotentialGerm_seamJetClassification
     ring
   have ha0 : iteratedDeriv 0 a 0 = 0 := by simp [a, iteratedDeriv_zero]
   have ha1 : iteratedDeriv 1 a 0 = -2 * iteratedDeriv 2 f u := by
-    convert hodd f hf 1 1 using 1 <;> norm_num [a] <;> ring
+    convert hodd f hf 1 1 using 1
+    all_goals norm_num [a]
   have ha2 : iteratedDeriv 2 a 0 = 0 := by
-    convert hodd f hf 1 2 using 1 <;> norm_num [a] <;> ring
+    convert hodd f hf 1 2 using 1
+    all_goals norm_num [a]
   have ha3 : iteratedDeriv 3 a 0 = -2 * iteratedDeriv 4 f u := by
-    convert hodd f hf 1 3 using 1 <;> norm_num [a] <;> ring
+    convert hodd f hf 1 3 using 1
+    all_goals norm_num [a]
   have hb0 : iteratedDeriv 0 b 0 = -2 * iteratedDeriv 2 f u := by
-    simp [b, iteratedDeriv_zero] <;> ring
+    simp [b, iteratedDeriv_zero]; ring
   have hb1 : iteratedDeriv 1 b 0 = 0 := by
-    convert hnegEven f hf 2 1 using 1 <;> norm_num [b] <;> ring
+    convert hnegEven f hf 2 1 using 1
+    all_goals norm_num [b]
   have hb2 : iteratedDeriv 2 b 0 = -2 * iteratedDeriv 4 f u := by
-    convert hnegEven f hf 2 2 using 1 <;> norm_num [b] <;> ring
-  have hs0 : iteratedDeriv 0 s 0 = 0 := by simp [s, iteratedDeriv_zero] <;> ring
+    convert hnegEven f hf 2 2 using 1
+    all_goals norm_num [b]
+  have hs0 : iteratedDeriv 0 s 0 = 0 := by simp [s, iteratedDeriv_zero]; ring
   have hs1 : iteratedDeriv 1 s 0 = 0 := by
-    convert hcenter f hf 1 1 (by norm_num) using 1 <;> norm_num [s] <;> ring
+    convert hcenter f hf 1 1 (by norm_num) using 1
+    all_goals norm_num [s]
   have hs2 : iteratedDeriv 2 s 0 = -2 * iteratedDeriv 3 f u := by
-    convert hcenter f hf 1 2 (by norm_num) using 1 <;> norm_num [s] <;> ring
+    convert hcenter f hf 1 2 (by norm_num) using 1
+    all_goals norm_num [s]
   have hs3 : iteratedDeriv 3 s 0 = 0 := by
-    convert hcenter f hf 1 3 (by norm_num) using 1 <;> norm_num [s] <;> ring
+    convert hcenter f hf 1 3 (by norm_num) using 1
+    all_goals norm_num [s]
   have hs4 : iteratedDeriv 4 s 0 = -2 * iteratedDeriv 5 f u := by
-    convert hcenter f hf 1 4 (by norm_num) using 1 <;> norm_num [s] <;> ring
+    convert hcenter f hf 1 4 (by norm_num) using 1
+    all_goals norm_num [s]
   have hm0 : iteratedDeriv 0 m 0 = 0 := by simp [m, iteratedDeriv_zero]
   have hm1 : iteratedDeriv 1 m 0 = -2 * iteratedDeriv 3 f u := by
-    convert hodd f hf 2 1 using 1 <;> norm_num [m] <;> ring
+    convert hodd f hf 2 1 using 1
+    all_goals norm_num [m]
   have hm2 : iteratedDeriv 2 m 0 = 0 := by
-    convert hodd f hf 2 2 using 1 <;> norm_num [m] <;> ring
+    convert hodd f hf 2 2 using 1
+    all_goals norm_num [m]
   have hm3 : iteratedDeriv 3 m 0 = -2 * iteratedDeriv 5 f u := by
-    convert hodd f hf 2 3 using 1 <;> norm_num [m] <;> ring
+    convert hodd f hf 2 3 using 1
+    all_goals norm_num [m]
   have hda0 : iteratedDeriv 0 da 0 = 0 := by simp [da, iteratedDeriv_zero]
   have hda1 : iteratedDeriv 1 da 0 = -2 * iteratedDeriv 2 g u := by
-    convert hodd g hg 1 1 using 1 <;> norm_num [da] <;> ring
+    convert hodd g hg 1 1 using 1
+    all_goals norm_num [da]
   have hda2 : iteratedDeriv 2 da 0 = 0 := by
-    convert hodd g hg 1 2 using 1 <;> norm_num [da] <;> ring
+    convert hodd g hg 1 2 using 1
+    all_goals norm_num [da]
   have hda3 : iteratedDeriv 3 da 0 = -2 * iteratedDeriv 4 g u := by
-    convert hodd g hg 1 3 using 1 <;> norm_num [da] <;> ring
+    convert hodd g hg 1 3 using 1
+    all_goals norm_num [da]
   have hdb0 : iteratedDeriv 0 db 0 = -2 * iteratedDeriv 2 g u := by
-    simp [db, iteratedDeriv_zero] <;> ring
+    simp [db, iteratedDeriv_zero]; ring
   have hdb1 : iteratedDeriv 1 db 0 = 0 := by
-    convert hnegEven g hg 2 1 using 1 <;> norm_num [db] <;> ring
+    convert hnegEven g hg 2 1 using 1
+    all_goals norm_num [db]
   have hdb2 : iteratedDeriv 2 db 0 = -2 * iteratedDeriv 4 g u := by
-    convert hnegEven g hg 2 2 using 1 <;> norm_num [db] <;> ring
-  have hds0 : iteratedDeriv 0 ds 0 = 0 := by simp [ds, iteratedDeriv_zero] <;> ring
+    convert hnegEven g hg 2 2 using 1
+    all_goals norm_num [db]
+  have hds0 : iteratedDeriv 0 ds 0 = 0 := by simp [ds, iteratedDeriv_zero]; ring
   have hds1 : iteratedDeriv 1 ds 0 = 0 := by
-    convert hcenter g hg 1 1 (by norm_num) using 1 <;> norm_num [ds] <;> ring
+    convert hcenter g hg 1 1 (by norm_num) using 1
+    all_goals norm_num [ds]
   have hds2 : iteratedDeriv 2 ds 0 = -2 * iteratedDeriv 3 g u := by
-    convert hcenter g hg 1 2 (by norm_num) using 1 <;> norm_num [ds] <;> ring
+    convert hcenter g hg 1 2 (by norm_num) using 1
+    all_goals norm_num [ds]
   have hds3 : iteratedDeriv 3 ds 0 = 0 := by
-    convert hcenter g hg 1 3 (by norm_num) using 1 <;> norm_num [ds] <;> ring
+    convert hcenter g hg 1 3 (by norm_num) using 1
+    all_goals norm_num [ds]
   have hds4 : iteratedDeriv 4 ds 0 = -2 * iteratedDeriv 5 g u := by
-    convert hcenter g hg 1 4 (by norm_num) using 1 <;> norm_num [ds] <;> ring
+    convert hcenter g hg 1 4 (by norm_num) using 1
+    all_goals norm_num [ds]
   have hdm0 : iteratedDeriv 0 dm 0 = 0 := by simp [dm, iteratedDeriv_zero]
   have hdm1 : iteratedDeriv 1 dm 0 = -2 * iteratedDeriv 3 g u := by
-    convert hodd g hg 2 1 using 1 <;> norm_num [dm] <;> ring
+    convert hodd g hg 2 1 using 1
+    all_goals norm_num [dm]
   have hdm2 : iteratedDeriv 2 dm 0 = 0 := by
-    convert hodd g hg 2 2 using 1 <;> norm_num [dm] <;> ring
+    convert hodd g hg 2 2 using 1
+    all_goals norm_num [dm]
   have hdm3 : iteratedDeriv 3 dm 0 = -2 * iteratedDeriv 5 g u := by
-    convert hodd g hg 2 3 using 1 <;> norm_num [dm] <;> ring
+    convert hodd g hg 2 3 using 1
+    all_goals norm_num [dm]
   have hdq0 : iteratedDeriv 0 dq 0 = 0 := by
-    simp [dq, iteratedDeriv_zero] <;> ring
+    simp [dq, iteratedDeriv_zero]; ring
   have hmain := c5FirstShiftedFaceGerm_seamJetClassification
     a b s m da db ds dm dq ha hb hs hm hda hdb hds hdm hdq
     (-2 * iteratedDeriv 2 f u) (-2 * iteratedDeriv 4 f u)

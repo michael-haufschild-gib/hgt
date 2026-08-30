@@ -207,11 +207,13 @@ def garblingOp (b : ℝ) (m : E) : E →L[ℝ] E :=
   ContinuousLinearMap.id ℝ E -
     ((1 - Real.sqrt (1 - ‖m‖ ^ 2 / b)) / ‖m‖ ^ 2) • ((innerSL ℝ m).smulRight m)
 
+omit [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] in
 theorem garblingOp_apply (b : ℝ) (m z : E) :
     garblingOp b m z
       = z - (((1 - Real.sqrt (1 - ‖m‖ ^ 2 / b)) / ‖m‖ ^ 2) * ⟪m, z⟫) • m := by
   simp [garblingOp, ContinuousLinearMap.smulRight_apply, smul_smul]
 
+omit [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] in
 theorem inner_garblingOp (b : ℝ) (m z t : E) :
     ⟪garblingOp b m z, t⟫ = ⟪z, garblingOp b m t⟫ := by
   rw [garblingOp_apply, garblingOp_apply, inner_sub_left, inner_sub_right,
@@ -219,6 +221,7 @@ theorem inner_garblingOp (b : ℝ) (m z t : E) :
   rw [real_inner_comm z m]
   ring
 
+omit [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] in
 theorem norm_sq_garblingOp {b : ℝ} (hb : 0 < b) {m : E} (hm : ‖m‖ ^ 2 ≤ b) (t : E) :
     ‖garblingOp b m t‖ ^ 2 = ‖t‖ ^ 2 - ⟪m, t⟫ ^ 2 / b := by
   have hQ : (0:ℝ) ≤ ‖m‖ ^ 2 := sq_nonneg _
@@ -326,9 +329,8 @@ theorem gaussianGarbling_comp {b : ℝ} (hb : 0 < b) {m : E} (hm : ‖m‖ ^ 2 �
       = charFun (gaussianReal c 1) (⟪m, t⟫ / Real.sqrt b) := by
     rw [charFun_apply_real]
     refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
-    congr 2
     push_cast
-    ring
+    ring_nf
   rw [hchar, charFun_gaussianReal, ← Complex.exp_add, ← Complex.exp_add]
   congr 1
   have hA : (‖garblingOp b m t‖ : ℝ) ^ 2 = ‖t‖ ^ 2 - ⟪m, t⟫ ^ 2 / b :=
@@ -414,11 +416,12 @@ theorem stdGaussian_piLp_shift (d : ℕ) (g : F) :
     Measure.map_map (by fun_prop) (by fun_prop)]
   rfl
 
+omit [InnerProductSpace ℝ F] [FiniteDimensional ℝ F] [MeasurableSpace F] [BorelSpace F] in
 /-- Total signal energy of the `d`-fold concatenated packet. -/
 theorem norm_sq_packetPow (d : ℕ) (g : F) :
     ‖(WithLp.toLp 2 fun _ : Fin d => g : PiLp 2 fun _ : Fin d => F)‖ ^ 2 = d * ‖g‖ ^ 2 := by
   rw [PiLp.norm_sq_eq_of_L2]
-  simp [Finset.sum_const, mul_comm]
+  simp [Finset.sum_const]
 
 /-- **Theorem 3.1, `(CDS.15)`.**  Exact rate classification: the source of capital `b` forms `d`
 independent copies of the Gaussian genesis packet with signal `g` exactly when `d‖g‖² ≤ b`. -/

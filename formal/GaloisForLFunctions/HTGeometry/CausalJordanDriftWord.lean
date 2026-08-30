@@ -761,7 +761,7 @@ theorem partitionResponse_weightMeasure (q : A → ℝ≥0∞) (X : A → ℝ) (
   refine tsum_congr fun a => ?_
   rw [lintegral_smul_measure, lintegral_dirac, smul_eq_mul]
 
-theorem driftTilt_weightMeasure_singleton (q : A → ℝ≥0∞) {X : A → ℝ} (hX : Measurable X)
+theorem driftTilt_weightMeasure_singleton (q : A → ℝ≥0∞) {X : A → ℝ} (_hXhX : Measurable X)
     (u : ℝ) (a : A) :
     driftTilt (weightMeasure q) X u {a} = q a * ENNReal.ofReal (Real.exp (u * X a)) := by
   rw [driftTilt, withDensity_apply _ (measurableSet_singleton a),

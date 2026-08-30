@@ -88,7 +88,8 @@ theorem thetaCuspC5FirstFaceAtomBounds
     rw [show 2 * q + 3 = 2 * S by rw [hSq]; ring]
     have hPscaled : (2 * S) * 3 < (2 * S) * P :=
       mul_lt_mul_of_pos_left hP h2S
-    convert hPscaled using 1 <;> ring
+    convert hPscaled using 1
+    all_goals ring
   have hfourth : thetaCuspBornWittenLogFourthDerivative 1 u <
       2 * S * thetaCuspBornWittenLogThirdDerivative 1 u := by
     unfold thetaCuspBornWittenLogFourthDerivative

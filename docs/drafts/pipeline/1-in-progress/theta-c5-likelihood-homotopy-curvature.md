@@ -64,7 +64,8 @@ derivatives. None supplies the nonlinear seven-jet C5/Bose compensation curvatur
 - The complete `n=2` atom-plus-ray ordinary reserve for `F5+6*A*F4` has an exact rational
   numerator whose expansion in `A-6` has only positive coefficients. At `A=6`, computed
   `n>=3` ordinary opposition is `2.01e-10` of that reserve.
-- **Verdict:** `SURVIVES PRELIMINARY ATTACK`.
+- **Verdict:** Fixed Bose four-face Conjecture K is `FALSIFIED`; broader direct weighted-balance
+  route remains open.
 
 ## Open core
 
@@ -257,3 +258,20 @@ remains before the convex likelihood lift can close.
   endpoint region.  Direct checks and targeted final-module build pass.  Axiom audit reports only
   `propext`, `Classical.choice`, and `Quot.sound`.  Global lint finds no local forbidden declaration;
   it remains red only on unrelated pre-existing umbrella-reachability failures.
+- 2026-08-30 — `[LEAN-PROVED ROUTE KILL + POSITIVE SURVIVOR]` Conjecture K is false. At
+  first-atom endpoint `l=0`, literal first fixed Bose face vanishes through seam order six and has
+  exact seventh derivative `3360*thetaCuspC5FirstFaceSeamObstruction(u)`. New source theorem proves
+  this obstruction strictly positive at every scale-six seam. Smooth potential splitting,
+  literal-face identification, and Taylor--Lagrange then force that face positive for every
+  sufficiently small admissible displacement, contradicting cone's required nonpositivity.
+  Unconditional capstone `thetaCuspC5LikelihoodHomotopy_conjectureK_false` kills full universal
+  claim, not a sampled parameter or adaptive-shift variant. Positive survivor is exact
+  seventh-order seam classification and local positivity theorem. Therefore no route requiring
+  four individually nonpositive fixed Bose faces can establish `M'''>0`; surviving C5 proof must
+  attack full weighted three-term balance with cancellation or use a different sign architecture.
+  Independent `M''(0)>=0` burden is unchanged. Formalization: `LikelihoodHomotopyFirstFaceSeam`,
+  `ThetaCuspLikelihoodHomotopyFirstFaceObstruction`, and
+  `ThetaCuspLikelihoodHomotopyBoseFirstFaceSeamNoGo`. Targeted build passes; axiom audit reports
+  only `propext`, `Classical.choice`, and `Quot.sound`. Primary-literature audit found no matching
+  fixed Bose cone or seam law; Chouikha's complete monotonicity (arXiv:1409.1498) and Planat--Solé's
+  second-level theta-kernel concavity (arXiv:2608.19160) concern different inequalities.

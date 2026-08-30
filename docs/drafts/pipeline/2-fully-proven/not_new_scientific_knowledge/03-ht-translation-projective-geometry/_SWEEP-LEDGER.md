@@ -1478,3 +1478,42 @@ lower bound for a fixed finite set of prime logarithms, tracked as
 `1-in-progress/effective-baker-matveev-linear-forms.md`.  Everything the card deduces *from* it is
 now Lean-closed, so the card promotes by a single application of
 `summable_modeDivisor_of_diophantine` once the bound lands.
+
+### 2026-08-30 (later) — three of the four remaining blockers advanced, with corpus search first
+
+**Hankel determinantal geometry (card 11).**  The corpus already owned the catalecticant theorem:
+`RHTower/DeningerHankelHigherRankGroebner.finiteHankelSecantIdeal_eq_parameterization_ker` says the
+ideal of `(r+1)`-minors of a finite Hankel matrix *is* the kernel of the `r`-atom moment
+parameterization, with a degree-lex Gröbner basis and primeness.  What was missing was the
+dimension, now built:
+
+- `HTGeometry/SecantMomentIndependence.lean` — the Hermite functional and its rigidity, the
+  confluent Vandermonde determinant, and **`algebraicIndependent_secantMomentPoly`**: the first `2r`
+  moments of `r` atoms are algebraically independent.
+- `HTGeometry/HankelSecantDimension.lean` — the atomic Hankel factorization `H = Vᵀ D V`,
+  **`det_secantMomentHankel_ne_zero`** (Prony inversion), and
+  **`algebraicIndependent_hankelSecantQuotient`**: `2r` coefficient coordinates stay algebraically
+  independent modulo the determinantal ideal.  With the ambient `2m−1` and `r = m−k` this is the
+  card's `codim C_k = 2k−1`.
+
+**Bergweiler / Poincaré recession (card 10).**  The corpus already owned
+`ExponentialTowerUnitCost.exactDifferentialOrder_expTower` — the `n`-fold exponential has
+differential order exactly `n`, **unconditionally**.  `HTGeometry/ExponentialPoincareRecession.lean`
+(new) transfers it to the approximants: **`exactDifferentialOrder_poincareApprox_exp`**.  Since
+`Complex.exp` solves the autonomous first-order equation `f′ = f`, the card's recession law now holds
+with no residual hypothesis for an explicit member of its class.  The HT half is reduced, on the
+card, to one named theorem (the composition-decomposition law) with a complete proof recorded.
+
+**étale/Kummer classification (card 7's blocker).**  The corpus already owned the torus Kummer
+theory (`TorusKummerExponents`, `UfdPowerDescent`, `TorusChartConnectedCover`,
+`AffineSpaceEtaleRankOne`) and `CriticalSourceKummerObstruction`.  The missing link — the
+codimension-one condition — is now `HTGeometry/UnramifiedRadicalCriterion.lean`
+(**`dvd_of_addVal_pow_mul_unit`** and its base-ring forms), so the Kummer half of the parent card's
+step 4 is closed end to end.
+
+Follow-up the same day: `HTGeometry/HankelSecantDimension.lean` was extended to the exact
+transcendence degree (**`trdeg_hankelSecantQuotient = 2r`**, both bounds), and
+`HTGeometry/DeterminantalJacobi.lean` was added — the finite-product Leibniz rule, **Jacobi's
+formula for a derivation** (absent from mathlib), the fact that a derivation of a `(t+1)`-minor lies
+in the ideal of `t`-minors, and hence **`C_{k+1} ⊆ Sing(C_k)`**.  Card 11's `(6)` is now an
+equality and one containment of `(7)` is closed.

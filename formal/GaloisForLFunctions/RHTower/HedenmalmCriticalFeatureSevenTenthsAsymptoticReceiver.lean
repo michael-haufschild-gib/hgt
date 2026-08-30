@@ -33,12 +33,12 @@ theorem tendsto_card_criticalFeatureCanonicalFiveCenterLatticeWindow_div_zeroCou
       (fun n : ℕ =>
         ((criticalFeatureCanonicalFiveCenterLatticeWindow n).card : ℝ) /
           criticalFeatureCanonicalZeroCount n)
-      atTop (𝒩 0) := by
+      atTop (𝓝 0) := by
   have hmajor : Tendsto
       (fun n : ℕ =>
         2 * (((criticalFeatureCanonicalLatticeWindow n).card : ℝ) /
           criticalFeatureCanonicalZeroCount n))
-      atTop (𝒩 0) := by
+      atTop (𝓝 0) := by
     simpa using
       tendsto_const_nhds.mul
         tendsto_card_criticalFeatureCanonicalLatticeWindow_div_zeroCount
@@ -49,9 +49,10 @@ theorem tendsto_card_criticalFeatureCanonicalFiveCenterLatticeWindow_div_zeroCou
     rw [card_criticalFeatureCanonicalFiveCenterLatticeWindow,
       card_criticalFeatureCanonicalLatticeWindow]
     push_cast
-    rw [div_le_iff₀ hN]
     have hn : (0 : ℝ) ≤ n := Nat.cast_nonneg n
-    nlinarith
+    rw [show 2 * ((2 * (n : ℝ) + 3) / criticalFeatureCanonicalZeroCount n) =
+        (2 * (2 * (n : ℝ) + 3)) / criticalFeatureCanonicalZeroCount n by ring]
+    exact div_le_div_of_nonneg_right (by nlinarith) hN.le
 
 /-- On the widened five-center window, corrected budget and source-only Plemelj covariance still
 differ by `o(N)`. -/
@@ -63,7 +64,7 @@ theorem tendsto_canonicalFiveCenter_correctedBudget_sub_plemeljCovariance_div :
             criticalFeaturePoleGammaPlemeljCovariance
               (criticalFeatureCanonicalFiveCenterLatticeWindow n)) /
           criticalFeatureCanonicalZeroCount n)
-      atTop (𝒩 0) :=
+      atTop (𝓝 0) :=
   tendsto_correctedBudget_sub_plemeljCovariance_div
     criticalFeatureCanonicalFiveCenterLatticeWindow criticalFeatureCanonicalZeroCount
     eventually_criticalFeatureCanonicalZeroCount_pos
@@ -81,6 +82,16 @@ theorem canonicalFiveCenter_correctedBudget_ceiling_iff_plemeljCovariance_ceilin
           (criticalFeatureCanonicalFiveCenterLatticeWindow n)) c :=
   criticalFeatureCanonicalAsymptoticUpper_iff_of_sub_div_tendsto_zero
     tendsto_canonicalFiveCenter_correctedBudget_sub_plemeljCovariance_div
+
+/-- A deliberately coarse rational lower bound for the reflected five-center charge.  This keeps
+the asymptotic receiver independent of the charge's large exact denominator. -/
+theorem fortyFourFifths_le_criticalFeatureShallowReflectedFiveCenterCharge :
+    (44 / 5 : ℝ) ≤ criticalFeatureShallowReflectedFiveCenterCharge := by
+  rw [criticalFeatureShallowReflectedFiveCenterCharge,
+    criticalFeatureShallowDirectFiveCenterCharge]
+  have hmain : (5 : ℝ) ≤ 23232 / 4225 := by norm_num
+  have htail : (0 : ℝ) ≤ 32 / 221 := by norm_num
+  nlinarith
 
 /-- The old `21 / 100` source ceiling, together with the already-proved deep-band density-zero
 law, forces the canonical 75% conclusion eventually. -/
@@ -112,9 +123,28 @@ theorem eventually_three_quarters_line_of_canonicalFiveCenter_plemelj_twentyOneH
     (div_lt_iff₀ hN).mp hdeepN
   have hQ : 0 < criticalFeatureShallowReflectedFiveCenterCharge :=
     criticalFeatureShallowReflectedFiveCenterCharge_pos
-  have hscaled := mul_le_mul_of_nonneg_left hbudgetN (inv_nonneg.mpr hQ.le)
-  norm_num [criticalFeatureShallowReflectedFiveCenterCharge,
-    criticalFeatureShallowDirectFiveCenterCharge] at hscaled ⊢
+  have hInv : (1 / criticalFeatureShallowReflectedFiveCenterCharge : ℝ) ≤ 5 / 44 := by
+    rw [div_le_iff₀ hQ]
+    nlinarith [fortyFourFifths_le_criticalFeatureShallowReflectedFiveCenterCharge]
+  have hbudgetN' :
+      criticalFeaturePrimeGammaOffLineLatticeBudget
+          (criticalFeatureCanonicalFiveCenterLatticeWindow n) ≤
+        (11 / 50) * criticalFeatureCanonicalZeroCount n := by
+    have hc : (21 / 100 : ℝ) + 1 / 100 = 11 / 50 := by norm_num
+    rwa [hc] at hbudgetN
+  have hscaled :
+      (1 / criticalFeatureShallowReflectedFiveCenterCharge) *
+          criticalFeaturePrimeGammaOffLineLatticeBudget
+            (criticalFeatureCanonicalFiveCenterLatticeWindow n) ≤
+        (1 / 40) * criticalFeatureCanonicalZeroCount n := by
+    calc
+      _ ≤ (5 / 44) * criticalFeaturePrimeGammaOffLineLatticeBudget
+          (criticalFeatureCanonicalFiveCenterLatticeWindow n) :=
+        mul_le_mul_of_nonneg_right hInv
+          (primeGammaOffLineLatticeBudget_nonneg _)
+      _ ≤ (5 / 44) * ((11 / 50) * criticalFeatureCanonicalZeroCount n) :=
+        mul_le_mul_of_nonneg_left hbudgetN' (by norm_num)
+      _ = (1 / 40) * criticalFeatureCanonicalZeroCount n := by ring
   nlinarith
 
 /-- The stronger historical `4 / 25` source target is an immediate corollary of the new hybrid
@@ -130,7 +160,9 @@ theorem eventually_three_quarters_line_of_canonicalFiveCenter_plemelj_fourTwenty
   intro eps heps
   have h := hsource (eps + 1 / 20) (by norm_num; linarith)
   filter_upwards [h] with n hn
-  convert hn using 1 <;> ring
+  have heq : (4 / 25 : ℝ) + (eps + 1 / 20) = 21 / 100 + eps := by ring
+  rw [heq] at hn
+  exact hn
 
 end
 

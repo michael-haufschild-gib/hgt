@@ -1764,3 +1764,56 @@ targeted leaf build, and axiom audit pass; both new declarations use only
 Card remains Stage 2.  The remaining geometric reduction obligations are the adjacent
 diagonal-ratio/greedy bound and finite overlap.  Arithmetic obligations remain tame-kernel finite
 generation and Moore reciprocity.
+
+### Archimedean bounded-overlap finiteness engine (2026-08-30)
+
+`NumberFieldIntegerFiniteness.lean` proves that algebraic integers with bounded mixed Minkowski
+embedding form a finite set, extends this entrywise to matrices, and exposes separate real-place
+and complex-place bounds.  Discreteness, properness, and injectivity all come from the actual
+number-field integer lattice; no lattice or finiteness premise is retained.
+
+`NumberFieldArchimedeanBoundedOverlap.lean` proves the analytic half for both local types.  A real
+or Hermitian congruence carrying a form with coercivity constant `c > 0` to a form whose diagonal
+is bounded by `C` has every congruence-matrix entry bounded by `sqrt (C / c)`.  Combining this at
+all infinite places with mixed-lattice finiteness proves that all integral congruence matrices
+admitting common archimedean coercivity/diagonal bounds form a finite set.
+
+Both direct checks and targeted leaf builds pass.  Every new declaration audits to
+`[propext, Classical.choice, Quot.sound]`; both modules are umbrella-wired without an umbrella
+build.  Card remains Stage 2: the bounded-overlap implication is now complete, but the adjacent
+diagonal-ratio/greedy reduction must still produce uniform coercivity and diagonal constants for
+the actual reduced domain.  Tame-kernel finite generation and Moore reciprocity remain afterward.
+
+### Hermitian Siegel infrastructure for tame-kernel finite generation (2026-08-30)
+
+`ComplexSiegelSet.lean` and `ComplexSiegelQuasiDiagonal.lean` supply the complex-place counterpart
+of the corpus's real Siegel interface:
+
+- `ComplexJacobiData`, `exists_complexJacobiData` represent every positive-definite Hermitian form
+  as `Uᴴ diag(d) U` with a positive real diagonal; diagonal reality is derived from complex-order
+  positivity.
+- `ComplexJacobiData.det_eq_one`, `inv_upper`, `IsSiegel`, `d_le_pow`, and `d_le_pow_n` derive the
+  determinant, inverse-triangularity, and dimension-wide ordered diagonal comparison.
+- `ComplexJacobiData.quadForm_eq` and `exists_complexSiegel_quasiDiagonal` give one uniform lower
+  bound for every Hermitian Siegel quadratic form by its weighted diagonal form.  Compactness of
+  the bounded complex unipotent ball constructs the inverse bound internally.
+- `ComplexCongruenceDiagonal.lean` extracts the shared exact identity identifying a diagonal entry
+  of `γᴴ A γ` with the quadratic form on a column of `γ`; the number-field overlap module now uses
+  this smaller common dependency.
+- `ComplexSiegelEntryBound.lean` proves the exact Hermitian Jacobi diagonal formula,
+  `ComplexJacobiData.form_diag_le_siegel`, and `complex_siegel_entry_bound`, the complex counterpart
+  of the real congruence-entry estimate used by leading-minor comparison.
+- `ComplexSiegelWeightedIsometry.lean` strips the Jacobi factors from a Hermitian congruence and
+  proves the exact diagonal weighted-isometry law plus its sharp single-entry consequence.
+- `ComplexSiegelIsometryVanishing.lean` constructs the weighted conjugate-transpose inverse,
+  proves it is the actual inverse, and establishes triangular vanishing across an ordered weight
+  gap.  It also supplies the complex matrix-product entry norm bound needed to transport control
+  back to the integral conjugator.
+- `ComplexJacobiLeadingMinors.lean` proves leading blocks preserve Hermitian Jacobi form, computes
+  full and leading determinants as the corresponding positive real diagonal products, and shows
+  leading truncations inherit all complex Siegel bounds.
+
+Both direct checks and targeted builds pass; every new declaration audits to
+`[propext, Classical.choice, Quot.sound]`.  Modules are umbrella-wired without an umbrella build.
+Card remains Stage 2: next geometric obligation is mixed real/complex leading-minor comparison and
+greedy covering, followed by finite overlap, tame-kernel finite generation, and Moore reciprocity.

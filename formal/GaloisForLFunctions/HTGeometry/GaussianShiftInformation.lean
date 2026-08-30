@@ -132,9 +132,11 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDim
 def onbMeasurableEquiv {n : ℕ} (b : OrthonormalBasis (Fin n) ℝ E) : (Fin n → ℝ) ≃ᵐ E :=
   (onbEquiv b).toHomeomorph.toMeasurableEquiv
 
+omit [FiniteDimensional ℝ E] in
 @[simp] theorem onbMeasurableEquiv_apply {n : ℕ} (b : OrthonormalBasis (Fin n) ℝ E)
     (x : Fin n → ℝ) : onbMeasurableEquiv b x = onbEquiv b x := rfl
 
+omit [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] in
 theorem inner_onbEquiv {n : ℕ} (b : OrthonormalBasis (Fin n) ℝ E) (m : E) (x : Fin n → ℝ) :
     ⟪m, onbEquiv b x⟫ = ∑ i, x i * (b.repr m).ofLp i := by
   rw [onbEquiv_apply, inner_sum]
@@ -234,7 +236,7 @@ theorem lintegral_exp_inner_stdGaussian (t : E) :
     ← Finset.sum_div, hnorm]
 
 /-- **`(GQF.15)`.**  The Rényi integral of a Gaussian shift pair. -/
-theorem lintegral_cameronMartin_rpow {α : ℝ} (hα0 : 0 ≤ α) (hα1 : α ≤ 1) (m : E) :
+theorem lintegral_cameronMartin_rpow {α : ℝ} (_hα0 : 0 ≤ α) (hα1 : α ≤ 1) (m : E) :
     ∫⁻ x, (ENNReal.ofReal (Real.exp (⟪m, x⟫ - ‖m‖ ^ 2 / 2))) ^ (1 - α) ∂(stdGaussian E)
       = ENNReal.ofReal (Real.exp (-(α * (1 - α) * ‖m‖ ^ 2 / 2))) := by
   have hβ : (0:ℝ) ≤ 1 - α := by linarith

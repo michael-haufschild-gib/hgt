@@ -46,8 +46,7 @@ structure RightEdge (f : ℝ → ℝ) (r σ : ℝ) : Prop where
   edge : ∃ ε > 0, ∀ᵐ t, t ∈ Set.Ioo (r - ε) r → 0 < σ * f t
 
 theorem volume_map_neg_self : Measure.map (fun x : ℝ => -x) volume = volume := by
-  have h := Real.smul_map_volume_mul_left (a := (-1 : ℝ)) (by norm_num)
-  simpa using h
+  simp
 
 theorem measurePreserving_subLeft (t : ℝ) :
     MeasurePreserving (fun s : ℝ => t - s) volume volume := by
@@ -565,7 +564,7 @@ theorem laplace_eventResponse {δ b T : ℝ} (hT : 0 < T) {z : ℂ} (hz : z ≠ 
     rw [eventResponse]
     by_cases h1 : t ∈ Set.Ico (b - δ) (b - δ + T) <;>
       by_cases h2 : t ∈ Set.Ico b (b + T) <;>
-      simp [Set.indicator_of_mem, Set.indicator_of_notMem, h1, h2] <;> push_cast <;> ring
+      simp [Set.indicator_of_mem, Set.indicator_of_notMem, h1, h2]
   simp_rw [hfun]
   rw [integral_const_mul, integral_sub (integrable_expWindow (b - δ) T z)
     (integrable_expWindow b T z), integral_indicator measurableSet_Ico,

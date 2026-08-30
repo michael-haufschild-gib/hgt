@@ -41,6 +41,7 @@ variable {ι : Type*} [Fintype ι] {K : Type*} [NormedAddCommGroup K] [InnerProd
 def fusedMap (A : ∀ i, K →ₗ[ℝ] H i) : K →ₗ[ℝ] PiLp 2 H :=
   (WithLp.linearEquiv 2 ℝ (∀ i, H i)).symm.toLinearMap ∘ₗ LinearMap.pi A
 
+omit [Fintype ι] [FiniteDimensional ℝ K] [∀ (i : ι), FiniteDimensional ℝ (H i)] in
 @[simp] theorem fusedMap_ofLp (A : ∀ i, K →ₗ[ℝ] H i) (u : K) (i : ι) :
     (fusedMap A u).ofLp i = A i u := rfl
 
@@ -51,6 +52,7 @@ def fusedRange (A : ∀ i, K →ₗ[ℝ] H i) : Submodule ℝ (PiLp 2 H) := Line
 def historyVector (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ i, H i) : PiLp 2 H :=
   WithLp.toLp 2 fun i => localOptimalHistory A x i
 
+omit [Fintype ι] [FiniteDimensional ℝ K] in
 @[simp] theorem historyVector_ofLp (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ i, H i) (i : ι) :
     (historyVector A x).ofLp i = localOptimalHistory A x i := rfl
 
@@ -58,6 +60,7 @@ def historyVector (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ i, H i) : PiLp 2 H :=
 def inheritedResidual (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ i, H i) : PiLp 2 H :=
   WithLp.toLp 2 fun i => x i - localOptimalHistory A x i
 
+omit [Fintype ι] [FiniteDimensional ℝ K] in
 @[simp] theorem inheritedResidual_ofLp (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ i, H i) (i : ι) :
     (inheritedResidual A x).ofLp i = x i - localOptimalHistory A x i := rfl
 
@@ -65,22 +68,26 @@ def inheritedResidual (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ i, H i) : PiLp 2 H
 def genesisSignal (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ i, H i) : PiLp 2 H :=
   historyVector A x - (fusedRange A).starProjection (historyVector A x)
 
+omit [FiniteDimensional ℝ K] in
 theorem genesisSignal_mem_orthogonal (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ i, H i) :
     genesisSignal A x ∈ (fusedRange A)ᗮ :=
   Submodule.sub_starProjection_mem_orthogonal _
 
+omit [FiniteDimensional ℝ K] in
 theorem starProjection_le_of_mem (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ i, H i)
     {w : PiLp 2 H} (hw : w ∈ fusedRange A) :
     ‖genesisSignal A x‖ ≤ ‖historyVector A x - w‖ := by
   rw [genesisSignal, Submodule.starProjection_minimal]
   exact ciInf_le ⟨0, Set.forall_mem_range.mpr fun _ => norm_nonneg _⟩ (⟨w, hw⟩ : fusedRange A)
 
+omit [FiniteDimensional ℝ K] in
 /-- `(GQF.5)`  `E_sep = ‖ℓ‖²`. -/
 theorem norm_sq_inheritedResidual (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ i, H i) :
     ‖inheritedResidual A x‖ ^ 2 = separateEnergy A x := by
   rw [PiLp.norm_sq_eq_of_L2, separateEnergy]
   exact Finset.sum_congr rfl fun i _ => by rw [inheritedResidual_ofLp]
 
+omit [FiniteDimensional ℝ K] in
 /-- `(GQF.5)`  `Q = ‖g‖²` is the quotient--fusion genesis. -/
 theorem norm_sq_genesisSignal (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ i, H i) :
     ‖genesisSignal A x‖ ^ 2 = generatedEnergy A x := by
@@ -101,6 +108,7 @@ theorem norm_sq_genesisSignal (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ i, H i) :
   · refine ciInf_le_of_le (bddBelow_generatedRange A x) u₀ ?_
     rw [hkey u₀, hu₀, ← genesisSignal]
 
+omit [FiniteDimensional ℝ K] in
 theorem genesisSignal_ofLp_mem (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ i, H i) (i : ι) :
     (genesisSignal A x).ofLp i ∈ LinearMap.range (A i) := by
   obtain ⟨u₀, hu₀⟩ : ∃ u : K, fusedMap A u
@@ -130,6 +138,7 @@ theorem norm_sq_inheritedResidual_add_genesisSignal (A : ∀ i, K →ₗ[ℝ] H 
     norm_sq_genesisSignal]
   ring
 
+omit [FiniteDimensional ℝ K] in
 /-- **`(GQF.6)`.**  The shared energy is the inherited energy plus the genesis energy. -/
 theorem sharedEnergy_eq_norm_sq (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ i, H i) :
     sharedEnergy A x = ‖inheritedResidual A x‖ ^ 2 + ‖genesisSignal A x‖ ^ 2 := by
@@ -226,6 +235,7 @@ theorem gaussianRenyiIntegral_eq_exp_neg_capital {α : ℝ} (hα0 : 0 ≤ α) (h
     gaussianRenyiIntegral α v = ENNReal.ofReal (Real.exp (-gaussianCapital α v)) := by
   rw [gaussianRenyiIntegral_eq hα0 hα1, gaussianCapital]
 
+omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] in
 /-- `(GQF.11)`  Bhattacharyya formation capital. -/
 theorem gaussianCapital_half (v : E) : gaussianCapital (1 / 2) v = ‖v‖ ^ 2 / 8 := by
   rw [gaussianCapital]
@@ -360,7 +370,7 @@ theorem le_stdGaussianCDF_neg {t : ℝ} (ht : 0 ≤ t) :
 theorem stdGaussianCDF_neg_pos {t : ℝ} (ht : 0 ≤ t) : 0 < stdGaussianCDF (-t) :=
   lt_of_lt_of_le (by positivity) (le_stdGaussianCDF_neg ht)
 
-theorem sqrt_mul_div_self {Q : ℝ} (hQ : 0 ≤ Q) {d : ℝ} (hd : 0 < d) :
+theorem sqrt_mul_div_self {Q : ℝ} (_hQhQ : 0 ≤ Q) {d : ℝ} (hd : 0 < d) :
     Real.sqrt (d * Q) / d = Real.sqrt Q / Real.sqrt d := by
   rw [Real.sqrt_mul hd.le,
     div_eq_div_iff hd.ne' (Real.sqrt_ne_zero'.mpr hd)]
@@ -502,6 +512,7 @@ theorem starProjection_linearIsometryEquiv {F : Type*} [NormedAddCommGroup F]
   rw [this]
   exact hzero
 
+omit [Fintype ι] [FiniteDimensional ℝ K] in
 /-- `(GQF.30)`  Equivariance of the locally optimal history. -/
 theorem localOptimalHistory_equivariant (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ i, H i)
     (U : ∀ i, H i ≃ₗᵢ[ℝ] H i) (V : K ≃ₗᵢ[ℝ] K)
@@ -518,6 +529,7 @@ theorem localOptimalHistory_equivariant (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ 
     rw [← h, LinearIsometryEquiv.symm_apply_apply]
   exact starProjection_linearIsometryEquiv _ (U i) hinv hinv' (x i)
 
+omit [FiniteDimensional ℝ K] in
 /-- **`(GQF.31)`.**  The genesis energy is invariant under an equivariant orthogonal action. -/
 theorem generatedEnergy_equivariant (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ i, H i)
     (U : ∀ i, H i ≃ₗᵢ[ℝ] H i) (V : K ≃ₗᵢ[ℝ] K)
@@ -558,15 +570,21 @@ variable {ι : Type*} [Fintype ι] {K : Type*} [NormedAddCommGroup K] [InnerProd
 def coordRange (A : ∀ i, K →ₗ[ℝ] H i) : Submodule ℝ (PiLp 2 H) where
   carrier := {v | ∀ i, v.ofLp i ∈ LinearMap.range (A i)}
   add_mem' := fun hv hw i => Submodule.add_mem _ (hv i) (hw i)
-  zero_mem' := fun i => Submodule.zero_mem _
+  zero_mem' := fun _ii => Submodule.zero_mem _
   smul_mem' := fun c _ hv i => Submodule.smul_mem _ c (hv i)
 
+omit [Fintype ι] [FiniteDimensional ℝ K] [∀ (i : ι), FiniteDimensional ℝ (H i)]
+  [∀ (i : ι), BorelSpace (H i)] [(i : ι) → MeasurableSpace (H i)] in
 theorem mem_coordRange {A : ∀ i, K →ₗ[ℝ] H i} {v : PiLp 2 H} :
     v ∈ coordRange A ↔ ∀ i, v.ofLp i ∈ LinearMap.range (A i) := Iff.rfl
 
+omit [∀ (i : ι), BorelSpace (H i)] in
+omit [FiniteDimensional ℝ K] [(i : ι) → MeasurableSpace (H i)] in
 theorem genesisSignal_mem_coordRange (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ i, H i) :
     genesisSignal A x ∈ coordRange A := genesisSignal_ofLp_mem A x
 
+omit [∀ (i : ι), BorelSpace (H i)] in
+omit [(i : ι) → MeasurableSpace (H i)] in
 theorem inheritedResidual_mem_orthogonal (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ i, H i) :
     inheritedResidual A x ∈ (coordRange A)ᗮ := by
   rw [Submodule.mem_orthogonal]
@@ -575,6 +593,8 @@ theorem inheritedResidual_mem_orthogonal (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀
   refine Finset.sum_eq_zero fun i _ => ?_
   exact (Submodule.sub_starProjection_mem_orthogonal (K := LinearMap.range (A i)) (x i)) _ (hw i)
 
+omit [∀ (i : ι), BorelSpace (H i)] in
+omit [(i : ι) → MeasurableSpace (H i)] in
 theorem starProjection_coordRange_split (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ i, H i) :
     (coordRange A).starProjection (inheritedResidual A x + genesisSignal A x)
       = genesisSignal A x := by
@@ -585,6 +605,8 @@ theorem starProjection_coordRange_split (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ 
   rw [hsub, real_inner_comm]
   exact (Submodule.mem_orthogonal _ _).mp (inheritedResidual_mem_orthogonal A x) w hw
 
+omit [∀ (i : ι), BorelSpace (H i)] in
+omit [(i : ι) → MeasurableSpace (H i)] in
 theorem starProjection_coordRange_orthogonal_split (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ i, H i) :
     ((coordRange A)ᗮ).starProjection (inheritedResidual A x + genesisSignal A x)
       = inheritedResidual A x := by
@@ -596,6 +618,7 @@ theorem starProjection_coordRange_orthogonal_split (A : ∀ i, K →ₗ[ℝ] H i
   exact (Submodule.mem_orthogonal _ _).mp
     (Submodule.le_orthogonal_orthogonal _ (genesisSignal_mem_coordRange A x)) w hw
 
+omit [FiniteDimensional ℝ K] in
 /-- **Theorem 2.1, `(GQF.9)`.**  The Gaussian packet of `ℓ + g` factorizes, under the orthogonal
 splitting `H = R ⊕ Rᗮ`, into the independent product of the genesis packet and the inherited
 packet. -/
@@ -632,16 +655,20 @@ theorem gaussianPacket_factorization (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ i, 
     Measure.map_map (by fun_prop) (by fun_prop)]
   congr 1
   funext p
-  simp only [Function.comp_apply, Prod.map_apply]
+  simp only [Function.comp_apply]
   rw [Submodule.orthogonalDecomposition_apply]
   rfl
 
+omit [∀ (i : ι), BorelSpace (H i)] in
+omit [(i : ι) → MeasurableSpace (H i)] in
 theorem coe_orthogonalProjectionOnto_genesis (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ i, H i) :
     (((coordRange A).orthogonalProjectionOnto
         (inheritedResidual A x + genesisSignal A x) : ↥(coordRange A)) : PiLp 2 H)
       = genesisSignal A x := by
   rw [Submodule.coe_orthogonalProjectionOnto_apply, starProjection_coordRange_split]
 
+omit [∀ (i : ι), BorelSpace (H i)] in
+omit [(i : ι) → MeasurableSpace (H i)] in
 theorem coe_orthogonalProjectionOnto_inherited (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ i, H i) :
     ((((coordRange A)ᗮ).orthogonalProjectionOnto
         (inheritedResidual A x + genesisSignal A x) : ↥((coordRange A)ᗮ)) : PiLp 2 H)
@@ -665,9 +692,13 @@ theorem gaussianAffinity_fused (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ i, H i) :
 def fusedIsometry (U : ∀ i, H i ≃ₗᵢ[ℝ] H i) : PiLp 2 H ≃ₗᵢ[ℝ] PiLp 2 H :=
   LinearIsometryEquiv.piLpCongrRight 2 U
 
+omit [∀ (i : ι), FiniteDimensional ℝ (H i)] [∀ (i : ι), BorelSpace (H i)] in
+omit [(i : ι) → MeasurableSpace (H i)] in
 @[simp] theorem fusedIsometry_ofLp (U : ∀ i, H i ≃ₗᵢ[ℝ] H i) (v : PiLp 2 H) (i : ι) :
     (fusedIsometry U v).ofLp i = U i (v.ofLp i) := rfl
 
+omit [FiniteDimensional ℝ K] [∀ (i : ι), BorelSpace (H i)] in
+omit [(i : ι) → MeasurableSpace (H i)] in
 /-- **`(GQF.30)`.**  The genesis signal transforms equivariantly. -/
 theorem genesisSignal_equivariant (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ i, H i)
     (U : ∀ i, H i ≃ₗᵢ[ℝ] H i) (V : K ≃ₗᵢ[ℝ] K)

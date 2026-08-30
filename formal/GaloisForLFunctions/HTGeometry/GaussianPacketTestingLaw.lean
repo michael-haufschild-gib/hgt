@@ -110,7 +110,7 @@ theorem gaussianReal_Ioi (a : ℝ) :
   have hmap : (gaussianReal 0 1).map (fun x : ℝ => -x) = gaussianReal 0 1 := by
     simpa using gaussianReal_map_neg (μ := (0:ℝ)) (v := 1)
   have hpre : (fun x : ℝ => -x) ⁻¹' Set.Ioi a = Set.Iio (-a) := by
-    ext x; simp [lt_neg]
+    ext x; simp
   calc gaussianReal 0 1 (Set.Ioi a)
       = ((gaussianReal 0 1).map (fun x : ℝ => -x)) (Set.Ioi a) := by rw [hmap]
     _ = gaussianReal 0 1 ((fun x : ℝ => -x) ⁻¹' Set.Ioi a) :=
@@ -235,6 +235,7 @@ def onbEquiv {n : ℕ} (b : OrthonormalBasis (Fin n) ℝ E) : (Fin n → ℝ) �
   (PiLp.continuousLinearEquiv 2 ℝ (fun _ : Fin n => ℝ)).symm.trans
     b.repr.symm.toContinuousLinearEquiv
 
+omit [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] in
 theorem onbEquiv_apply {n : ℕ} (b : OrthonormalBasis (Fin n) ℝ E) (x : Fin n → ℝ) :
     onbEquiv b x = ∑ i, x i • b i := by
   have h1 : onbEquiv b x = b.repr.symm (WithLp.toLp 2 x) := rfl

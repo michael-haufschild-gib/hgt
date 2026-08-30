@@ -1209,3 +1209,33 @@ recursion that proves the confinement theorem.
 model would carry it); **14 and 15** need Briot–Bouquet; **8** the Valiron–Zimogljad–Strelitz growth
 wall; **19** Cartwright/O'Brien; **20** Schwartz surface flows; **21** Hardouin–Singer PPV; **22**
 Taubes' Weinstein conjecture.
+
+## Card 17 formalization plan (in progress, 2026-08-30)
+
+`arithmetic-entire-heat-da-finite-spectrum` — the missing classical input is **Pólya–Popken
+denominator control**, which the corpus did not own. Mechanism (Mahler's induction, as recalled by
+Krattenthaler–Rivoal arXiv:2502.09259): the weight `Δ_q = C^q ∏_{j ≤ q} A_j^{⌊q/j⌋}` is a
+denominator for the `q`-th coefficient, where `A_j` is the absolute norm of the `j`-th indicial
+value. Floor exponents are superadditive, `⌊i/j⌋ + ⌊i'/j⌋ ≤ ⌊(i+i')/j⌋`, which is exactly what the
+convolution in the nonlinear part of the coefficient recursion needs; and `∑_{j≤q} q/j ≤ q(1+log q)`
+gives `log Δ_q = O(q log² q) = o(q²)`, which beats the super-Gaussian Cauchy bound `|a_n| ≤ M e^{-n²}`.
+
+Built and wired (all axiom-clean, `lake build` green):
+- `HTGeometry/MahlerDenominatorScale.lean` — `mahlerScale`, `mahlerScale_mul_dvd`,
+  `mahlerScale_dvd_of_le`, `mahlerScale_succ_dvd`, `sum_div_le_harmonic`, `log_mahlerScale_le`.
+- `HTGeometry/AlgebraicDenominator.lean` — `DenBy` API, `exists_denBy`, `rat_isAlgebraic_int`,
+  `exists_norm_denominator` (the absolute norm is a denominator for the inverse, of size the
+  product of the conjugate moduli).
+- `HTGeometry/MahlerDenominatorSeries.lean` — `MahlerDen` (graded: vanishing order `t` plus weight
+  `e·Δ_{n-t}`), shift additivity under multiplication, `MahlerDen.aeval`,
+  `exists_taylorDefect_const` (the Taylor defect gains two shifts, constant independent of the
+  weight data), `boundedDenSubsemiring`.
+- `HTGeometry/PolyaPopkenDenominator.lean` — `exists_mahlerDen_of_nondegenerate_eulerADE`: the full
+  denominator recursion in the corpus's Euler-jet framework.
+
+Remaining for the card: conjugate Maillet (naturality of the Euler ADE under an embedding of the
+coefficient field, then `NonlinearMailletUnconditional`), the Liouville assembly with
+`AlgebraicIntegerSeparation.inv_pow_le_norm_embedding`, and the analytic side (super-Gaussian
+Cauchy bound; `RGTowerCoherence.differentiallyAlgebraicOn_comp` with the logarithm chart to move
+the DA hypothesis from the spatial fibre to the ordinary generating function, then Mahler integer
+normalization and `ordinaryToEulerADE`).

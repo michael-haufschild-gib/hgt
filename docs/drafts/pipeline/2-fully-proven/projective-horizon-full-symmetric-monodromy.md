@@ -6880,3 +6880,34 @@ Both changed leaves pass direct checks and targeted builds.  Axiom audits of bot
 report only `[propext, Classical.choice, Quot.sound]`; the new leaf is umbrella-wired without an
 umbrella build.  Concrete block-fibre étaleness, global connectedness, and Kummer/block elimination
 remain open, so this card is not yet promotable.
+
+## Lean progress — the codimension-one condition of a radical extension
+
+`HTGeometry/UnramifiedRadicalCriterion.lean` (built, wired, axiom-clean) supplies the one step that
+`UfdPowerDescent` states in prose but does not prove — "a radical extension `z^r = a` is unramified
+at a prime exactly when that prime's multiplicity in `a` is divisible by `r`":
+
+```text
+dvd_of_addVal_pow_mul_unit
+    ** w(p) = 1, w(b) = 0, z^r = p^k·b   ⟹   r ∣ k **
+dvd_of_radical_root_of_unramified          the same over a base ring
+not_exists_radical_root_of_not_dvd         the sharp obstruction form
+```
+
+The proof is one application of multiplicativity of the valuation, `r·w(z) = w(a) = k`, with the
+`⊤` branch of `ℕ∞` handled separately.
+
+With it the `E4`–`E6` chain of the endgame is complete at the level of general theorems:
+
+```text
+everywhere-unramified cyclic radical extension
+  → every prime multiplicity divisible by r        UnramifiedRadicalCriterion   ** NEW **
+  → a = u · gʳ                                     UfdPowerDescent.exists_unit_mul_pow_of_forall_dvd_count
+  → u is an r-th power iff both torus exponents are divisible by r
+                                                   TorusKummerExponents.exists_pow_eq_torusUnit_iff
+  → no nontrivial exponent pair survives           CriticalSourceKummerObstruction
+```
+
+so what remains card-specific is only the passage from a nontrivial block of the monodromy action to
+such a radical extension — the étale-cover half — not the Kummer half, which is now closed end to
+end.

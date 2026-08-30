@@ -31,9 +31,11 @@ variable {X : Type*} [Fintype X] [Nonempty X] [MeasurableSpace X]
 /-- The probability measure attached to a finite packet. -/
 def packetMeasure (p : X → ℝ) : Measure X := weightMeasure fun x => ENNReal.ofReal (p x)
 
+omit [Fintype X] [Nonempty X] in
 @[simp] theorem packetMeasure_singleton (p : X → ℝ) (x : X) :
     packetMeasure p {x} = ENNReal.ofReal (p x) := weightMeasure_singleton _ x
 
+omit [Nonempty X] [MeasurableSingletonClass X] in
 theorem packetMeasure_univ {p : X → ℝ} (hp : ∀ x, 0 ≤ p x) (hp1 : ∑ x, p x = 1) :
     packetMeasure p Set.univ = 1 := by
   classical
@@ -45,10 +47,12 @@ theorem packetMeasure_univ {p : X → ℝ} (hp : ∀ x, 0 ≤ p x) (hp1 : ∑ x,
   rw [tsum_congr hterm, tsum_fintype, ← ENNReal.ofReal_sum_of_nonneg (fun x _ => hp x), hp1]
   simp
 
+omit [Nonempty X] [MeasurableSingletonClass X] in
 theorem isProbabilityMeasure_packetMeasure {p : X → ℝ} (hp : ∀ x, 0 ≤ p x)
     (hp1 : ∑ x, p x = 1) : IsProbabilityMeasure (packetMeasure p) :=
   ⟨packetMeasure_univ hp hp1⟩
 
+omit [Nonempty X] in
 theorem lintegral_packetMeasure (p : X → ℝ) (f : X → ℝ≥0∞) :
     ∫⁻ x, f x ∂(packetMeasure p) = ∑ x, ENNReal.ofReal (p x) * f x := by
   rw [packetMeasure, weightMeasure, lintegral_sum_measure]
@@ -62,6 +66,7 @@ variable {Y : Type*} [Fintype Y] [Nonempty Y] [MeasurableSpace Y]
 def finiteKernel (K : FiniteMarkovKernel X Y) : Kernel X Y :=
   Kernel.ofFunOfCountable fun x => packetMeasure (fun y => K.weight y x)
 
+omit [Nonempty X] [Nonempty Y] [MeasurableSingletonClass Y] in
 @[simp] theorem finiteKernel_apply (K : FiniteMarkovKernel X Y) (x : X) :
     finiteKernel K x = packetMeasure (fun y => K.weight y x) := rfl
 
@@ -69,6 +74,7 @@ instance isMarkovKernel_finiteKernel (K : FiniteMarkovKernel X Y) :
     IsMarkovKernel (finiteKernel K) :=
   ⟨fun x => isProbabilityMeasure_packetMeasure (fun y => K.nonneg y x) (K.column_sum x)⟩
 
+omit [Nonempty X] [Nonempty Y] in
 theorem finiteKernel_comp (K : FiniteMarkovKernel X Y) {p : X → ℝ} (hp : ∀ x, 0 ≤ p x) :
     (finiteKernel K) ∘ₘ (packetMeasure p)
       = packetMeasure (K.toFinitePositiveKernel.applyReal p) := by
@@ -85,6 +91,7 @@ theorem finiteKernel_comp (K : FiniteMarkovKernel X Y) {p : X → ℝ} (hp : ∀
     ← ENNReal.ofReal_sum_of_nonneg (fun x _ => mul_nonneg (K.nonneg y x) (hp x))]
   rfl
 
+omit [Nonempty X] in
 theorem packetMeasure_tensorPower [DecidableEq X] (d : ℕ) {p : X → ℝ} (hp : ∀ x, 0 ≤ p x)
     (hp1 : ∑ x, p x = 1) :
     packetMeasure (tensorPower d p) = Measure.pi (fun _ : Fin d => packetMeasure p) := by

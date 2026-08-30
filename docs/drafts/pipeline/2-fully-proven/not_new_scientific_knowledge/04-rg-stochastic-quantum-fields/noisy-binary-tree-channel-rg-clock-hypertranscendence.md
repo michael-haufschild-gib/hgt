@@ -251,3 +251,88 @@ Nevanlinna route is **not** the obstruction: the corpus's second-main-theorem st
 `S(r,f)` error term is complete (`LogDerivCountingRatio`, `RamificationSubstitution`,
 `NevanlinnaErrorNegligible`, `NevanlinnaRamification.card_totallyRamified_le_four`), and
 Becker–Bergweiler need Nevanlinna only to reduce the non-repelling case to the repelling one.
+
+### The `n = 2` case of the missing implication is now closed (2026-08-30)
+
+`HTGeometry/RittEigenSliceDescent.lean`, `HTGeometry/RittSecondJetAffineConnection.lean` and
+`HTGeometry/RittAffineConnectionBridge.lean` close it, unconditionally:
+
+| Statement | Name |
+|---|---|
+| inhomogeneous coprime descent over a scaled generator | `exists_shift_solution_of_scaling_cross`, `exists_shift_solution_of_mem_adjoin` |
+| eigen-inhomogeneous coprime descent over a scaled generator | `exists_eigen_shift_solution_of_scaling_cross`, `exists_eigen_shift_solution_of_mem_adjoin` |
+| `σ (τ / d τ) = ρ · (τ / d τ)` | `RittFrame.sigma_jetRatio` |
+| `σ (d²τ) = (q/ρ²)·d²τ + (dK(q/ρ)/ρ)·d τ` | `RittFrame.sigma_second_jet` |
+| `σ W = W − (dK ρ/ρ)·(τ/d τ)` for `W = d²τ·τ/(d τ)²` | `RittFrame.sigma_normalizedSecondJet` |
+| **`τ` transcendental, `d τ` transcendental over `K⟮τ⟯`, `d²τ ∈ K⟮τ, d τ⟯` ⟹ `∃ a ∈ K, ψ(a)·ρ = a − dK ρ/ρ`** | **`exists_affineConnection_of_secondJet_mem`** |
+| that relation *is* `IsAffineConnection R hR a`, i.e. `a(R)·(R′)² = R′·a − R″` | `isAffineConnection_of_ritt_relation` |
+
+So a linearizer whose second jet is rational in the first two forces a rational affine connection on
+the map, which `HTGeometry/RationalAffineConnection.lean` forbids for a map with a critical point
+whose orbit is infinite in either direction (`no_affine_connection_regular_at_critical`,
+`no_pole_of_forward_orbit`, `no_pole_of_backward_orbit`); the corpus discharges this unconditionally
+for `z² + 1` and `(z − 1)²`.
+
+What remains of Ritt's implication is therefore exactly the jet orders `n ≥ 3` of
+`rittForm_or_jet_mem_jetPrefixField` — the same place where the corpus's own free-jet-field lane
+(`JetShiftLevelInduction`, `JetTailTrivial.fixed_isConst`) needs its level-three input.
+
+### Second-order capstone, and the first brick of the `n ≥ 3` descent (2026-08-30)
+
+- **`RittSecondOrderCapstone.exists_affineConnection_of_secondJet_isAlgebraic`** — the whole
+  second-order case in one statement: `τ` transcendental over `K`, `d τ` transcendental over `K⟮τ⟯`,
+  and `d²τ` merely *algebraic* over `K⟮τ, d τ⟯` already force `∃ a ∈ K, ψ(a)·ρ = a − dK ρ / ρ`, i.e.
+  `IsAffineConnection`.  With `rittForm_or_jet_mem_jetPrefixField` this settles Ritt's implication
+  for every differentially algebraic linearizer whose minimal algebraic jet order is at most two.
+- **`RittTranslationSliceDescent.exists_constant_combination_of_translation_cross`** — the slice for
+  the *unipotent* top coordinate that jet orders `n ≥ 3` present, where the shift *translates* the
+  generator, `σ t = t + γ`, instead of scaling it.  Coprimality again fixes the denominator exactly
+  (`Q^Φ∘(X+γ) = Q`, the substitution being monic), and the second-highest coefficients give the
+  uniform conclusion
+
+  ```text
+  ∃ u κ λ,  (κ, λ) ≠ (0,0),  Φ κ = κ,  Φ λ = λ,  Φ(u) − u = κ·α + λ·γ
+  ```
+
+  with `−deg Q` from a nonconstant denominator, `−deg P` from a numerator of degree at least three,
+  `1/leadingCoeff P` paired with `−2` at degree exactly two, and `1` at degree at most one.
+
+What `n ≥ 3` still needs is the *level induction* that feeds this lemma back into itself: the output
+`κ·α + λ·γ` is linear in the next unipotent coordinate exactly when `λ ≠ 0`, and the branch `λ = 0`
+lands on a `w`-free inhomogeneity whose own descent needs the `α = 0` variant of the same slice.
+That bookkeeping is the corpus's open `JetShiftLevelInduction` problem, closed there only for the two
+quadratics.
+
+### The `n ≥ 3` descent now runs to the base (2026-08-30)
+
+The jet tower of a linearizer is *affine*, not merely triangular: `σ y_m = (q/ρ^m)·y_m + v_m` with
+`v_m` a base combination of the lower jets.  So the right slice is the **eigen slice over an
+affinely moved generator**, and above jet order one the eigenvalue `q/ρ^n` is never one, which makes
+the *top* coefficient of the numerator identity already informative — no second-highest-coefficient
+case analysis is needed.
+
+| Statement | Name |
+|---|---|
+| `Φ(u)·a^{deg P} = a^{deg Q}·(c·u + ((αX+β)Q)_{deg P})` for a coprime fraction with `σ t = a t + b` | `RittAffineSliceDescent.exists_eigen_relation_of_affine_cross` |
+| the residue is `0`, `α` or `β` — never a new element of the bigger field | `RittAffineSliceResidue.exists_eigen_relation_residue_of_affine_cross` |
+| the same, for a member of a simple transcendental extension | `exists_eigen_relation_residue_of_affine_mem_adjoin` |
+| Faà di Bruno with explicit coefficients: `σ(d^[n]τ) = (q/ρ^n)·d^[n]τ + Σ_{j<n} A_j·d^[j]τ` | `RittTowerDescentStep.exists_shift_jet_coeffs` |
+| **one descent step**: an eigen-inhomogeneous relation over the first `m+1` jets descends to one over the first `m`, tracking both the scalar and the coefficients | `exists_descent_step` |
+| **the whole descent**: from the top of the tower to the base | `exists_base_relation_of_tower` |
+| **the capstone**: a jet lying in the field generated by its predecessors forces `ψ(u) = c·u + g` in the base, `u ≠ 0`, `c ≠ 0`, with `g = 0` or `g` a nonzero base multiple of one of the `A_j` | `RittTowerCapstone.exists_base_relation_of_jet_mem` |
+
+Two facts make the induction close where a naive slicing would not.  The residue of the affine slice
+is one of the two given inhomogeneity coefficients, so an inhomogeneity that is a base combination of
+the lower jets *stays* one; and the scalar is only ever multiplied by a power of `q/ρ^m`, so it stays
+a monomial in `q` and `ρ`.  The bookkeeping is carried explicitly: the descent's output `g` is `0`,
+`z·A_m` or `z·g` with `z ≠ 0`, which iterates to "zero or a nonzero base multiple of one of the
+original Faà di Bruno coefficients".
+
+For `n = 2` the coefficient is `A_1 = dK(q/ρ)/ρ`, and the relation is the rational affine connection
+already excluded by `RationalAffineConnection.lean` for maps with an infinite critical orbit; the
+general `n` gives the same shape with the higher coefficients.
+
+What is left to close the cards is therefore no longer structural: it is (i) the end-to-end assembly
+that picks the *minimal* collapsing order (so the transcendence hypotheses of the capstone hold),
+and (ii) ruling out `ψ(u) = c·u + z·A_j` for the specific maps of these cards, exactly as
+`RationalAffineConnection` does for the affine connection.

@@ -14,7 +14,9 @@ axis, is now handled in
 `GaloisForLFunctions.RHTower.CompactWeilConcreteProfileCollision`. Its exported split, collision,
 differentiability, and normalized quadratic-limit theorems have no Hilbert or differentiability
 premises: the codomain is concretely `ℂ`, and differentiability is proved from the compact-support
-integral. All four declarations are targeted-built and depend only on `propext`,
+integral. The closed capstone
+`ccmGuinandWeilPolarCompactLaplaceReal_closePairCollision_closed` packages all four conclusions in
+one premise-free theorem. All five declarations are targeted-built and depend only on `propext`,
 `Classical.choice`, and `Quot.sound`. This discharges the structural hypotheses for that actual
 profile. It does not prove arbitrary functions differentiable, so the generic card remains at
 Stage 2 rather than silently replacing its quantifier by a special case.

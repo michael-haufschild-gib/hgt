@@ -126,3 +126,138 @@ For zeta, finite Euler products are an obvious but separately owned candidate ap
 4. G. Fernandes, *A survey on the hypertranscendence of the solutions of the Schroder's, Bottcher's and Abel's equations*, arXiv:2102.12168 (2021).
 5. A. E. Eremenko, *Meromorphic solutions of algebraic differential equations*, Russian Math. Surveys 37:4 (1982), 61--95.
 6. G. M. Reinhart, *Schanuel Functions and Algebraic Differential Equations*, PhD dissertation, University of Illinois (1993).
+
+## Lean progress — 2026-08-30
+
+**A corpus search first, and it changes the card's status.**  The recession half was recorded here
+as blocked on the two hypotheses of `exactDifferentialOrder_iterate_of_separation`.  It is not: the
+corpus already owns the unit-cost law *unconditionally* for an explicit member of the card's class.
+
+```text
+HTGeometry/ExponentialTowerUnitCost.exactDifferentialOrder_expTower
+    ** the n-fold exponential has differential order exactly n, no hypotheses **
+HTGeometry/ExpPolyAllHeights.exactDifferentialOrder_expPolyCascade_all
+    ** the same for a cascade of first-order linear entire maps with polynomial coefficients **
+HTGeometry/EntirePoincareExtension.exists_entire_poincare
+    ** the Poincaré germ at a repelling fixed point extends to an entire solution **
+```
+
+`HTGeometry/ExponentialPoincareRecession.lean` (new, axiom-clean, wired) puts them together:
+
+- `expTower_eq_iterate`, `exactDifferentialOrder_exp_iterate` — the tower *is* the iterate, so the
+  iterate of `Complex.exp` has exact differential order `n`;
+- **`exactDifferentialOrder_poincareApprox_exp`** — the normalized approximants
+  `z ↦ exp^{[n]}(ζ + z/λⁿ)` have exact differential orders `1, 2, 3, …`;
+- `exists_exactDifferentialOrder_poincareApprox_exp_ge` — those orders are unbounded.
+
+Since `Complex.exp` is a transcendental entire solution of the autonomous first-order equation
+`f′ = f`, **the card's recession law now holds unconditionally for an explicit member of its own
+class**, with the two hypotheses of `exactDifferentialOrder_iterate_of_separation` discharged rather
+than assumed.
+
+### Bergweiler's half: the exact remaining theorem
+
+The HT half of the card reduces, by an elementary transcendence count, to the recession half.  Write
+`φ` for the Poincaré function and suppose `φ` is differentially algebraic of order `N`.  Then
+
+```text
+φ(λᵏ z) = f^{[k]}(φ(z))                                          the Schröder equation, iterated
+φ(λᵏ ·) is DA of order N                                         affine reparametrisation
+ℂ(z)⟨φ, φ(λᵏ ·)⟩ has transcendence degree ≤ 1 + 2N over ℂ        two order-N jet fields
+(d/dφ)^j f^{[k]} ∘ φ ∈ that field                                chain rule, dividing by φ′ ≠ 0
+trdeg over ℂ(φ) ≤ 2N                                             φ is transcendental over ℂ
+⟹ (f^{[k]})^{(0)}, …, (f^{[k]})^{(2N)} are algebraically dependent over ℂ(w)
+⟹ f^{[k]} is DA of order ≤ 2N, for EVERY k
+```
+
+which contradicts the unbounded orders above.  So **the only missing theorem for Bergweiler in this
+card's setting is the composition-decomposition law**
+
+```text
+φ nonconstant entire,  φ and g ∘ φ both DA of order ≤ N   ⟹   g is DA of order ≤ 2N ,
+```
+
+with the bound uniform in `g`.  Two of its three steps are already corpus theorems:
+`EntireCascadeStateFieldOrder.differentiallyAlgebraicOfOrder_of_algebraic_state_derivatives` (an
+entire function whose realization lies in a field of bounded transcendence degree over `ℂ(z)`
+satisfies a bounded-order equation) and
+`EntireJetEvaluation.jetEval_identically_zero_or_isolated` (a jet relation valid on a set with a
+limit point is an identity, which is what transports the relation from the image of `φ` to the whole
+plane).  What has to be built is the middle step: the chain-rule closure of the jets of `g` inside
+`ℂ(z)⟨φ, g ∘ φ⟩` and the transcendence count over `ℂ(φ)`.
+
+### Gate status
+
+- `ord_DA(g_n) = n` for the canonical approximants: **Lean-closed unconditionally for `f = exp`**;
+  the general autonomous first-order class needs the Briot–Bouquet normal form, which the corpus
+  covers for the `expPoly` cascades.
+- HT of the limit: reduced to the composition-decomposition law above; no longer a black-box import
+  of Bergweiler's paper.
+
+### The analytic half of the composition-decomposition law is CLOSED
+
+`formal/GaloisForLFunctions/HTGeometry/CompositionOrderTransfer.lean` (built, wired, axiom-clean):
+
+```text
+eq_zero_of_eq_zero_on_range
+    ** an entire function vanishing on the range of a nonconstant entire map is zero **
+    (open mapping theorem + the identity theorem)
+deriv_iteratedDeriv_comp
+    ** the jet chain rule:  (g⁽ʲ⁾ ∘ φ)′ = (g⁽ʲ⁺¹⁾ ∘ φ) · φ′ **
+differentiallyAlgebraicOfOrder_of_relation_on_range
+    ** a nonzero differential polynomial in the jets of `g` vanishing along the range of a
+       nonconstant entire `φ` makes `g` differentially algebraic of that order **
+```
+
+The chain rule is what puts every `g⁽ʲ⁾ ∘ φ` inside the differential field generated by `φ` and
+`g ∘ φ`; the transfer theorem is what turns a relation in the inner variable into an algebraic
+differential equation for `g`.  What remains of the composition-decomposition law is exactly the
+transcendence count in the middle:
+
+```text
+trdeg_ℂ ℂ(z)⟨φ, g∘φ⟩ ≤ 1 + 2N   ⟹   φ, g∘φ, (g′∘φ), …, (g⁽²ᴺ⁾∘φ)  (2N+2 elements)
+are algebraically dependent over ℂ,
+```
+
+which is `AlgebraicIndependent.cardinalMk_le_trdeg` applied inside the corpus's meromorphic field,
+with the two order-`N` jet fields bounding the degree.  No second derivation is needed: including
+`φ` itself as the coordinate slot is what avoids `D_φ`, correcting the plumbing obstacle recorded
+above.
+
+### The algebraic half is CLOSED too; only the meromorphic instantiation remains
+
+`formal/GaloisForLFunctions/HTGeometry/CompositionJetClosure.lean` (built, wired, axiom-clean):
+
+```text
+compJet φ h            the outer jets:  compJet φ h 0 = h,  compJet φ h (j+1) = (compJet φ h j)′ / φ′
+compJet_mem_differentialAdjoin
+    ** every outer jet lies in the differential field generated by the inner function and the
+       composite ** (derivation-closure plus division)
+exists_relation_compJet_of_mem
+    ** in any intermediate field of transcendence degree ≤ m containing them, φ together with the
+       first m outer jets satisfies a nonzero relation over the constants **
+exists_relation_compJet
+    the same with the differential adjunction itself
+exists_relation_compJet_of_algebraic
+    ** if every jet of φ and of h is algebraic over a field generated by #I elements, then φ
+       together with the first #I outer jets satisfies a nonzero relation **
+```
+
+The last statement is the composition-decomposition law in exactly the form the analytic side
+consumes, and its transcendence bound comes from `StateFieldTrdeg.trdeg_algebraicClosure_adjoin_range_le`.
+
+**What is left is the instantiation in the meromorphic field, and it is now mechanical:**
+
+```text
+1. b_φ, b_h := LinearizedTowerCoherence.exists_jet_algebraicWitness_family  for φ and for g ∘ φ
+   (φ and g ∘ φ are differentially algebraic; the witness families are finite)
+2. s := b_φ ++ b_h            ⟹  exists_relation_compJet_of_algebraic gives the relation
+3. compJet (analyticMeroElement φ) (analyticMeroElement (g ∘ φ)) j
+     = analyticMeroElement (g⁽ʲ⁾ ∘ φ)                       CompositionOrderTransfer.deriv_iteratedDeriv_comp
+4. read the relation back as functions and apply
+   CompositionOrderTransfer.differentiallyAlgebraicOfOrder_of_relation_on_range
+```
+
+Uniformity in `k` — what Bergweiler's contradiction needs — comes from step 1: for
+`h_k = φ(λᵏ ·)` the witness family is the image of `b_φ` under the substitution automorphism, so
+`#I = 2·#b_φ` is the same for every `k`, while `ord_DA(f^{[k]}) = k → ∞`.
