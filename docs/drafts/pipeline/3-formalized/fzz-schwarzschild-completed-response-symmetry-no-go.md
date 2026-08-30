@@ -1,8 +1,8 @@
 # FZZ--Schwarzschild completed response symmetry no-go
 
 - **ID:** FZZ-COMP-RESP-SYM-NOGO
-- **Stage:** 2-fully-proven
-- **Type:** FALSIFIED / THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** FALSIFIED / THEOREM (Lean)
 - **Source:** `rh-current-frontier-map.md` FZZ-P source-side producer; continuation of the formalized response-jet interpolation no-go
 - **Statement:** The completed Schwarzschild response samples, entireness, Xi functional-equation symmetry, Schwarz reality, and global order-one growth still admit explicit off-critical zero countermodels; before imposing growth, their symmetric interpolation ambiguity is the reciprocal-Gamma two-ladder principal ideal.
 
@@ -20,7 +20,7 @@ This is source-pure: no Xi zero is used.  Physical response values determine the
 
 - [x] 0 → 1 in-progress: corpus-derived, well-posed, source-pure, explicit reciprocal-Gamma attack
 - [x] 1 → 2 fully-proven: complete paper proof, hostile audit, `[PROVED HERE]`
-- [ ] 2 → 3 formalized: Lean theorem, targeted `lake build`, axiom audit
+- [x] 2 → 3 formalized: Lean theorem, targeted `lake build`, axiom audit
 - [ ] 3 → 4 publication-ready: standalone theorem/proof/Lean certificate
 
 ## Approach
@@ -69,7 +69,7 @@ jet identity and the Archimedean completion formula.
 - **Exact killing theorem/mechanism:** `D_c=X+cK` preserves the full natural analytic package but has paired nontrivial off-critical zeros at `s=1/4,3/4`.
 - **Strongest positive survivor:** exact principal-ideal classification `F=X+HK`, with `H` entire, reflection-symmetric, and Schwarz-real.
 - **New insight:** functional-equation reflection doubles the invisible response lattice rather than removing it; its canonical divisor is the symmetric reciprocal-Gamma product.  FE, Schwarz reality, and order-one growth do not select the Xi continuation.
-- **Status:** dependency-closed paper proof.  Corpus audit found the one-ladder classification and generic FE/Schwarz off-line countermodels, but not this completed physical-sample-preserving two-ladder theorem.  External audit through 2026-08-30 found Solon's all-order Schwarzschild zeta clock and classical FZZ/reciprocal-Gamma facts, but no theorem combining those samples with Xi symmetry, Schwarz reality, order-one growth, or this null ideal.  Lean formalization in progress.
+- **Status:** dependency-closed Lean proof in `GaloisForLFunctions.RHTower.ThetaCuspHawkingFZZSchwarzschildCompletedResponseSymmetryNoGo`.  Exact classification: `isEntireCompletedBlackHoleSymmetricInterpolant_iff_twoLadderGammaNull`.  Route kill: `completed_response_FE_Schwarz_orderOne_route_noGo`.  Direct `lake env lean` and targeted `lake build` pass.  Axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.  Global lint still reports unrelated pre-existing unreachable modules; this new module is wired into and reachable from `RHTower.lean`.
 
 ## Novelty audit
 
@@ -82,3 +82,4 @@ jet identity and the Archimedean completion formula.
 - 2026-08-30 — created in 1-in-progress after corpus and literature audit; FZZ-COMP-1/2/3 frozen for proof-or-fail loop.
 - 2026-08-30 — hostile audit rejected boundary-only zeros `s=0,1`; pivoted FZZ-COMP-3 to paired interior-strip zeros `s=1/4,3/4`.
 - 2026-08-30 — FZZ-COMP-1/2/3 paper-proved; exact two-ladder classification and interior-strip order-one countermodel dependency-closed.
+- 2026-08-30 — Lean formalized, umbrella-wired, direct source check and targeted module build green; standard-axiom audit green.

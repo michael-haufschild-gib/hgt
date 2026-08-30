@@ -1251,3 +1251,66 @@ parent.
 build the mean-zero `L^∞(η)` chart and the convergent product probe
 `V = ∑_j a_j ∑_k X_{j,k} v_{j,k}`, and conclude with `prevalentOn_iInter` over the countable
 enumeration of relation patterns and patches.
+
+### Card 8 is CLOSED and promoted to stage 3 (2026-08-30)
+
+Two new modules finish the residual-to-prevalent upgrade, and the card moved to
+`3-formalized/not_new_scientific_knowledge/03-ht-translation-projective-geometry/`.
+
+- `HTGeometry/PrevalentCountableIntersection.lean` — general theory, a genuine mathlib gap.
+  Mathlib has `Measure.infinitePi` but no coordinate/complement splitting of it, and no prevalence
+  notion.  Built here: `infinitePi_indepFun_eval_restrictCompl`,
+  `infinitePi_map_eval_restrictCompl`, `infinitePi_null_of_slice_null` (the Fubini step obtained
+  from `iIndepFun_infinitePi` + `indep_iSup_of_disjoint` on the singleton/complement split of the
+  index set); the explicit compact product probe `productProbeMap` with `unitTruncate`,
+  `blockProbeLaw`, `isCompact_range_productProbeMap`, `productProbeMap_split`,
+  `norm_productProbeMap_le`; the block null law `blockProbeLaw_block_null`; and the prevalence
+  capstones `BlockPrevalentRadius`, `blockPrevalentRadius_iInter_of_blockControl_scalable`,
+  `globalWitness_blockPrevalentRadius_of_sigmaCompact_family`, plus the bridge
+  `Prevalent.of_blockPrevalent` to the `CompactProbe` definition of `PrevalentSets.lean`.
+  **Nothing about the ambient Banach space is needed beyond completeness** — the null sets are sets
+  of *parameters*, so no measurable structure on the tangent space is ever required.  That is what
+  makes the statement usable on `LinearMap.ker frozen.toLinearMap ≤ Lp ℝ ⊤ mu`.
+- `HTGeometry/NevanlinnaPrevalentFullRankWitness.lean` — the instantiation:
+  `blockControlled_finite_atlas`,
+  `compact_injectiveShiftPatch_blockControlled_completeAtlas_actualNevanlinna`,
+  `countablePatterns_actualNevanlinna_fullRankWitness_blockPrevalentRadius`,
+  `countablePatterns_actualNevanlinna_relationFree_blockPrevalentRadius`,
+  `countablePatterns_actualNevanlinna_relationFree_blockPrevalent`, and the moment-fibre cloud
+  corollary `convexInsertion_actualNevanlinna_relationFree_blockPrevalentRadius`.
+
+Method note for the remaining cards: the corpus's dense/residual capstones are systematically
+upgradable to prevalence by replacing `globalWitness_dense_residual_of_sigmaCompact` with
+`globalWitness_blockPrevalentRadius_of_sigmaCompact_family`, provided the per-patch density proof
+already produces an *explicit* finite probe (the `..._has_uniform_finiteProbe` family) rather than
+a bare `Dense` statement.
+
+### Card 12 — the generic-matrix differential Galois torsor (2026-08-30)
+
+New module `HTGeometry/GenericMatrixDifferentialGalois.lean` (axiom-clean, wired).  It realizes the
+card's generic Picard--Vessiot situation *concretely*, on the corpus's free differential rational
+field, so that **no δ-simplicity and no no-new-constants theorem is needed**: the corpus already
+proves `Differential.ContainConstants C (JetField C ι)` in `JetFieldConstantKernel.lean`.
+
+- `genericJetMatrix`, `det_genericJetMatrix_ne_zero`, `isUnit_det_genericJetMatrix` — the generic
+  matrix `Y` of jet coordinates is invertible (evaluate at the identity matrix).
+- `genericSystemMatrix` `A = Y⁻¹ δY` and `matDeriv_genericJetMatrix` — `Y` is a fundamental matrix
+  of its own system, tautologically.
+- `matDeriv_one`, `matDeriv_inv` — matrix calculus supplements (`δ(M⁻¹) = −M⁻¹ (δM) M⁻¹`).
+- `genericSliceMatrix` `B_k = Y⁻¹ Y^{(k)}` with `genericSliceMatrix_succ`:
+  `B_{k+1} = δB_k + A·B_k`.  Every jet of `Y` is `Y` times a differential polynomial in `A`.
+- `leftTranslationIndexMatrix`, `leftTranslationPolyEquiv`, `leftTranslationFieldEquiv` — the
+  jetwise substitution `x_{ij}^{(m)} ↦ (Z Y^{(m)})_{ij}` for a constant invertible `Z`, built on the
+  corpus's `DifferentialLinearChangeAutomorphism` with the index matrix `Z ⊗ 1`.
+- `leftTranslationFieldEquiv_deriv` — it is a **differential** automorphism of the free
+  differential rational field (conjugate-derivation plus `fractionRing_derivation_ext`).
+- `map_leftTranslationFieldEquiv_genericJetMatrix` — it multiplies `Y` on the left by `Z`.
+- **`map_leftTranslationFieldEquiv_genericSystemMatrix`** — it therefore *fixes* `A`.  The whole
+  general linear group of constants acts on the generic torsor over its own invariant base.
+
+**What remains for card 12 items (2), (5), (6)** is the fixed-field half, i.e. the slice argument
+`E^{GL_N(C)} = C⟨A⟩`.  Its two inputs are (i) algebraic independence of the slice coordinates
+`{Y_{ij}} ∪ {(B_k)_{ij}}` over `C`, provable by exhibiting the mutually inverse substitutions
+`X_{((i,j),k)} ↦ (Y·X_k)_{ij}` and `X_{((i,j),k)} ↦ (Y⁻¹X_k)_{ij}` on `JetPoly[1/det]`, and (ii)
+`L(Y)^{GL_N(C)} = L` for a matrix of independent variables over `L`, provable by Zariski density
+of `GL_N(C)` in `GL_N` over an infinite field followed by the substitution `Z ↦ W Y⁻¹`.

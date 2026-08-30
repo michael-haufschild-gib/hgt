@@ -897,3 +897,75 @@ conductors at every ramified and archimedean place, and the Artin/Hecke local
 epsilon comparison.  Only then can the finite epsilon product be calculated
 as `-1`.  No wrapper from the cited sign, no ABHN circle-character proxy, and
 no unramified norm lemma is an acceptable replacement.
+
+## 2026-08-30 Burnol closed-source exact conormal-jet package
+
+`[LEAN-PROVED]` `BurnolCoPoissonCosineClosedExactJetDetection.lean` packages
+the two previously separate literal-source facts into the single interface
+
+```lean
+BurnolCoPoissonSourceHasExactXiJetOrder b rho
+```
+
+and proves it for every `0 < b < 1` and every right-half Xi divisor.  The
+first conjunct annihilates every lower completed Mellin jet on the *closed*
+cosine co-Poisson source; the second gives the literal window `[b, 1]` whose
+first permitted jet is nonzero.  The top witness is transported from the
+same positive logarithmic source, so no abstract element or a posteriori
+source completion supplies it.
+
+This is an unconditional, axiom-clean integration theorem, but **not a new
+shared-gate closure**: it composes the existing closed lower-jet descent with
+the existing explicit top-jet witness.  It neither proves the reverse
+inclusion of the lower-jet annihilator, identifies `P_a`, nor excludes an
+off-line Xi divisor.  The active Burnol/Frankenstein core therefore remains
+the source-selected `L_a/K_a/P_a` complement (or an independent receiver
+which rules out the surviving top conormal class).
+
+Targeted checks passed: `lake env lean` on the source; only
+`lake build GaloisForLFunctions.RHTower.BurnolCoPoissonCosineClosedExactJetDetection`;
+and `#print axioms` for both exported theorems, reporting only `propext`,
+`Classical.choice`, and `Quot.sound`.  The leaf is wired into `RHTower.lean`;
+no umbrella build was run.
+
+## 2026-08-30 Targeted audit of PSD and CCM literature frontiers
+
+`[LEAN-PROVED]` The reverse finite Toeplitz direction is already literal,
+unconditional, and stronger than a merely measure-theoretic placeholder.
+For a normalized Hermitian positive-semidefinite Toeplitz block,
+`exists_atomic_caratheodoryFejer_psd_factorization` in
+`CaratheodoryFejerPSDtoAtomicFactorization.lean` gives a finite nonnegative
+atomic unit-circle Vandermonde Gram factorization, with every moment through
+the supplied finite window preserved exactly.  It uses diagonal
+regularization, Bernstein--Szegő probability measures, compactness, and finite
+cubature; it assumes no pre-existing representing measure.  The source check
+and axiom audit passed: only `propext`, `Classical.choice`, and `Quot.sound`
+occur in its dependency closure.
+
+`[LEAN-PROVED]` The CCM arithmetic core is likewise already literal at its
+stated algebraic level.  `CCMCyclotomicLambertIntegrality.lean` proves
+coefficientwise full Lambert-series containment in the dyadic cyclotomic
+coefficient ring, while `CCMDyadicCyclotomicFiniteDeterminant.lean` transports
+it through finite determinants and proves the normalized finite `q`-matrix
+coefficient statement.  Both source files checked directly on 2026-08-30;
+their exported endpoints
+
+```lean
+ccmLambertEntrySeries_coeff_literal_dyadicCyclotomic
+ccmActualFiniteQNormalizedDeterminant_coeff_dyadicCyclotomic
+```
+
+have exactly the same standard three axioms and no active
+`sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration occurs in either
+audited source.  This is a formal-power-series result, deliberately not a
+claim of analytic Lambert convergence.  Still unformalized is the
+source-specific identity from the paper relating this finite `q` matrix to
+the paper's normalized determinant over `Q(sqrt 2)`; cyclotomic containment
+does not establish that identification.
+
+Thus two of the four named literature targets are closed at their literal
+formal statement.  The two remaining targets are not missing theorem names:
+the Q8 sign requires local/global Hecke--Artin epsilon theory for the actual
+quadratic source, and the Burnol complement requires the Chapter-6
+Nevanlinna/Krein reconstruction of a compact multiplicative co-Poisson source
+from a Mellin transform divisible by zeta.

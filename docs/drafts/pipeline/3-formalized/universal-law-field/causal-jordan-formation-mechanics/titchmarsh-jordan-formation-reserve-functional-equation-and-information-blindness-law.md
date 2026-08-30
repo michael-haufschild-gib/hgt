@@ -1,11 +1,11 @@
 # Titchmarsh--Jordan formation reserve, functional-equation action, and information blindness
 
 - **ID:** ULF-CJFM-1
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** Causal Jordan Formation Mechanics; ULF-SGOGM causal-delay law; ULF-PFM split-recovery law
 - **Statement:** A finite word of signed source drifts has a canonical positive two-leg formation refinement. Convolution adds the two legs exactly, functional equation swaps them, Titchmarsh support detects their uncancelled causal cost, and every exponential-family endpoint observer and common recovery kernel in this chart sees only their signed difference. Opposite drifts therefore generate a positive hidden reserve even when the recovered observer closes exactly.
-- **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [BRIDGE] [FIVE-DOCTRINE SCALAR FUSION] [LEAN-FORMALIZED ALGEBRA/PROPERNESS CORE] [NOT RH]`
+- **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [BRIDGE] [FIVE-DOCTRINE SCALAR FUSION] [LEAN-FORMALIZED, UNCONDITIONAL, AXIOM-CLEAN] [NOT RH]`
 
 ## 1. Why this is not another endpoint theorem
 
@@ -674,6 +674,9 @@ Theorem 7.1.
 - [x] Euler-shell specialization
 - [x] hostile audit and parent classification
 - [x] Lean formalization of algebraic reserve/reflection and cofinal properness core
+- [x] Lean formalization of the word-level refinement, fibre, cocycle and monoid isomorphism
+- [x] Lean formalization of the causal support law (Titchmarsh input eliminated, not assumed)
+- [x] Lean formalization of the endpoint/common-recovery blindness and Euler-shell specialization
 - [x] literal Moebius source positive/coherent refinement (parent SFHM theorem)
 - [ ] coefficient-faithful source-to-causal/common-recovery comparison functor
 - [ ] RH selection
@@ -689,3 +692,10 @@ Theorem 7.1.
   in Source Formation Harmonic Mechanics. Narrowed new delta to reserve composition, causal
   reporting, recovery blindness, and properness. Lean formalized the algebraic/reflection core and
   proved reciprocal common-delay boundedness iff `q=1`.
+- 2026-08-30 -- **promoted to Stage 3.**  Two new modules close every displayed result: 
+  `HTGeometry/CausalJordanDriftWord.lean` (word-level `(CJF.1)`--`(CJF.19)`, `(CJF.31)`--`(CJF.42)`,
+  including the exponential-family observer, the common-recovery blindness, and the Euler-shell
+  atomic law) and `HTGeometry/CausalJordanTitchmarshSupport.lean` (`(CJF.20)`--`(CJF.30)`).  The
+  classical Titchmarsh convolution theorem is **not** assumed: the exact endpoint additivity is
+  derived from sign-definite causal edges, which the concrete two-window family has.  130 public
+  declarations, axiom-clean.  See the `-formalized.md` companion.

@@ -155,6 +155,111 @@ theorem meromorphicOrderAt_riemannZeta_eq_toNat_of_strip {z : ℂ}
 def twoPointOmissionOrder (rho1 rho2 z : ℂ) : WithTop ℤ :=
   (((if z = rho1 then (1 : ℤ) else 0) + (if z = rho2 then (1 : ℤ) else 0) : ℤ) : WithTop ℤ)
 
+/-- Natural multiplicity removed by omitting the two named top evaluator jets. -/
+def twoPointOmissionMultiplicity (rho1 rho2 z : ℂ) : ℕ :=
+  (if z = rho1 then 1 else 0) + (if z = rho2 then 1 else 0)
+
+/-- Finite multiplicity of the zeta divisor at a critical-strip point. Strip hypotheses supply
+the finiteness whenever this number is used. -/
+def zetaStripMultiplicity (z : ℂ) : ℕ := (analyticOrderAt riemannZeta z).toNat
+
+private theorem twoPoint_triple_budget_of_retained_jet
+    {rho1 rho2 rho : ℂ} {m : ℂ → ℕ} {k : ℕ}
+    (hselected : k < m rho - twoPointOmissionMultiplicity rho1 rho2 rho)
+    (h1 : twoPointOmissionMultiplicity rho1 rho2 rho1 ≤ m rho1)
+    (h2 : twoPointOmissionMultiplicity rho1 rho2 rho2 ≤ m rho2)
+    {z : ℂ} (hz : z = rho ∨ z = rho1 ∨ z = rho2) :
+    twoPointOmissionMultiplicity rho1 rho2 z +
+      (if z = rho then m rho - twoPointOmissionMultiplicity rho1 rho2 rho - k else 0) ≤ m z := by
+  rcases hz with hzr | hzr | hzr
+  · subst z
+    simp only [if_pos]
+    omega
+  · subst z
+    by_cases h : rho1 = rho
+    · subst rho1
+      simp only [if_pos]
+      omega
+    · have h' : rho ≠ rho1 := Ne.symm h
+      simp [twoPointOmissionMultiplicity, h]
+      simpa [twoPointOmissionMultiplicity] using h1
+  · subst z
+    by_cases h : rho2 = rho
+    · subst rho2
+      simp only [if_pos]
+      omega
+    · have h' : rho ≠ rho2 := Ne.symm h
+      simp [twoPointOmissionMultiplicity, h]
+      simpa [twoPointOmissionMultiplicity] using h2
+
+private theorem twoPoint_literal_triple_budgets_of_retained_jet
+    {rho1 rho2 rho : ℂ} {m : ℂ → ℕ} {k : ℕ}
+    (hselected : k < m rho - twoPointOmissionMultiplicity rho1 rho2 rho)
+    (h1 : twoPointOmissionMultiplicity rho1 rho2 rho1 ≤ m rho1)
+    (h2 : twoPointOmissionMultiplicity rho1 rho2 rho2 ≤ m rho2) :
+    (m rho - twoPointOmissionMultiplicity rho1 rho2 rho - k)
+        + (if rho2 = rho then 1 else 0) + (if rho1 = rho then 1 else 0) ≤ m rho ∧
+      (if rho = rho1 then m rho - twoPointOmissionMultiplicity rho1 rho2 rho - k else 0)
+        + (if rho2 = rho1 then 1 else 0) + 1 ≤ m rho1 ∧
+      (if rho = rho2 then m rho - twoPointOmissionMultiplicity rho1 rho2 rho - k else 0)
+        + 1 + (if rho1 = rho2 then 1 else 0) ≤ m rho2 := by
+  by_cases h12 : rho1 = rho2
+  · subst rho2
+    by_cases h : rho = rho1
+    · subst rho
+      simp [twoPointOmissionMultiplicity] at hselected h1 h2 ⊢
+      omega
+    · have h' : rho1 ≠ rho := Ne.symm h
+      simp [twoPointOmissionMultiplicity, h, h'] at hselected h1 h2 ⊢
+      omega
+  · by_cases h1rho : rho = rho1
+    · subst rho
+      have h12' : rho2 ≠ rho1 := Ne.symm h12
+      simp [twoPointOmissionMultiplicity, h12, h12'] at hselected h1 h2 ⊢
+      omega
+    · by_cases h2rho : rho = rho2
+      · subst rho
+        have h12' : rho2 ≠ rho1 := Ne.symm h12
+        simp [twoPointOmissionMultiplicity, h12, h12'] at hselected h1 h2 ⊢
+        omega
+      · have h1rho' : rho1 ≠ rho := Ne.symm h1rho
+        have h2rho' : rho2 ≠ rho := Ne.symm h2rho
+        have h12' : rho2 ≠ rho1 := Ne.symm h12
+        simp [twoPointOmissionMultiplicity, h12, h12', h1rho, h1rho', h2rho, h2rho'] at hselected h1 h2 ⊢
+        omega
+
+private theorem twoPoint_triple_divisor_count_eq_omission_add
+    (rho1 rho2 rho : ℂ) (l : ℕ) :
+    ((↑(if rho = rho1 then (1 : ℤ) else 0) : WithTop ℤ) +
+      ((↑(if rho = rho2 then (1 : ℤ) else 0) : WithTop ℤ) +
+        (↑(l : ℤ) : WithTop ℤ) * ↑(if rho = rho then (1 : ℤ) else 0))) =
+      ((↑(twoPointOmissionMultiplicity rho1 rho2 rho : ℤ) : WithTop ℤ) +
+        ((l : ℤ) : WithTop ℤ)) := by
+  have homega : ((↑(twoPointOmissionMultiplicity rho1 rho2 rho : ℤ) : WithTop ℤ) =
+      (↑(if rho = rho1 then (1 : ℤ) else 0) : WithTop ℤ) +
+        (↑(if rho = rho2 then (1 : ℤ) else 0) : WithTop ℤ)) := by
+    simp [twoPointOmissionMultiplicity]
+  rw [homega]
+  simp only [if_pos]
+  ac_rfl
+
+private theorem twoPoint_retained_order_sub_omission_eq
+    {m d k : ℕ} (hselected : k < m - d) :
+    ((m : ℤ) : WithTop ℤ) -
+        (((d : ℤ) : WithTop ℤ) + (((m - d - k : ℕ) : ℤ) : WithTop ℤ)) =
+      ((k : ℤ) : WithTop ℤ) := by
+  have hdle : d ≤ m := by omega
+  have hkle : k ≤ m - d := by omega
+  have hcast : ((m - d - k : ℕ) : ℤ) = (m : ℤ) - (d : ℤ) - (k : ℤ) := by
+    rw [Nat.cast_sub hkle, Nat.cast_sub hdle]
+  have hsel : (k : ℤ) < (m : ℤ) - (d : ℤ) := by
+    rw [← Nat.cast_sub hdle]
+    exact_mod_cast hselected
+  have hint : (m : ℤ) - ((d : ℤ) + ((m - d - k : ℕ) : ℤ)) = (k : ℤ) := by
+    rw [hcast]
+    omega
+  exact_mod_cast hint
+
 /-- A literal `K₁` witness for one retained jet after the two top jets at `rho1`, `rho2` have
 been omitted. -/
 def IsTwoPointOmittedEvaluatorWitness (rho1 rho2 rho : ℂ) (k : ℕ) (v : SoninL2) : Prop :=
@@ -635,6 +740,70 @@ theorem exists_twoPointOmittedEvaluatorWitness_of_sourceBudget
   refine ⟨v, isTwoPointOmittedEvaluatorWitness_of_exactMellin hev hK hFour hPhys hMellin ?_⟩
   rw [meromorphicOrderAt_extendedMellin_soninTriple_of_eq hMellin hrhore0 hrhore1]
   exact hk
+
+/-- **Burnol Proposition 6.5, retained-jet form.** A literal retained jet and literal validity of
+the two omitted top jets determine the required triple-quotient exponent. Hence they construct a
+coefficient-faithful `K₁` finite-defect witness without a separately postulated selected-order
+equality. The formula includes all collisions among the selected point and the two omissions. -/
+theorem exists_twoPointOmittedEvaluatorWitness_of_retainedJet
+    {rho1 rho2 rho : ℂ} {k : ℕ}
+    (hrho1re0 : 0 < rho1.re) (hrho1re1 : rho1.re < 1)
+    (hrho2re0 : 0 < rho2.re) (hrho2re1 : rho2.re < 1)
+    (hrhore0 : 0 < rho.re) (hrhore1 : rho.re < 1)
+    (homit1 : twoPointOmissionMultiplicity rho1 rho2 rho1 ≤ zetaStripMultiplicity rho1)
+    (homit2 : twoPointOmissionMultiplicity rho1 rho2 rho2 ≤ zetaStripMultiplicity rho2)
+    (hk : k < zetaStripMultiplicity rho - twoPointOmissionMultiplicity rho1 rho2 rho) :
+    ∃ v : SoninL2, IsTwoPointOmittedEvaluatorWitness rho1 rho2 rho k v := by
+  let m : ℂ → ℕ := zetaStripMultiplicity
+  let l : ℕ := m rho - twoPointOmissionMultiplicity rho1 rho2 rho - k
+  have hl : 1 ≤ l := by
+    dsimp [l, m]
+    omega
+  have hfin1 : analyticOrderAt riemannZeta rho1 ≠ ⊤ :=
+    analyticOrderAt_riemannZeta_ne_top_of_strip hrho1re0 hrho1re1
+  have hfin2 : analyticOrderAt riemannZeta rho2 ≠ ⊤ :=
+    analyticOrderAt_riemannZeta_ne_top_of_strip hrho2re0 hrho2re1
+  have hfin : analyticOrderAt riemannZeta rho ≠ ⊤ :=
+    analyticOrderAt_riemannZeta_ne_top_of_strip hrhore0 hrhore1
+  have hm1 : (m rho1 : ℕ∞) ≤ analyticOrderAt riemannZeta rho1 := by
+    dsimp [m, zetaStripMultiplicity]
+    exact le_of_eq (ENat.coe_toNat hfin1)
+  have hm2 : (m rho2 : ℕ∞) ≤ analyticOrderAt riemannZeta rho2 := by
+    dsimp [m, zetaStripMultiplicity]
+    exact le_of_eq (ENat.coe_toNat hfin2)
+  have hmr : (m rho : ℕ∞) ≤ analyticOrderAt riemannZeta rho := by
+    dsimp [m, zetaStripMultiplicity]
+    exact le_of_eq (ENat.coe_toNat hfin)
+  obtain ⟨hb0, hb1, hb2⟩ := twoPoint_literal_triple_budgets_of_retained_jet
+    (m := m) (k := k) (by simpa [m] using hk)
+    (by simpa [m] using homit1) (by simpa [m] using homit2)
+  have hb0' : (l : ℤ) + (if rho2 = rho then 1 else 0) + (if rho1 = rho then 1 else 0)
+      ≤ (m rho : ℤ) := by
+    dsimp [l]
+    exact_mod_cast hb0
+  have hb1' : (if rho = rho1 then (l : ℤ) else 0) + (if rho2 = rho1 then 1 else 0) + 1
+      ≤ (m rho1 : ℤ) := by
+    dsimp [l]
+    exact_mod_cast hb1
+  have hb2' : (if rho = rho2 then (l : ℤ) else 0) + 1 + (if rho1 = rho2 then 1 else 0)
+      ≤ (m rho2 : ℤ) := by
+    dsimp [l]
+    exact_mod_cast hb2
+  have hζ : meromorphicOrderAt riemannZeta rho = ((m rho : ℤ) : WithTop ℤ) := by
+    dsimp [m, zetaStripMultiplicity]
+    exact meromorphicOrderAt_riemannZeta_eq_toNat_of_strip hrhore0 hrhore1
+  have htarget : meromorphicOrderAt riemannZeta rho
+      - (((↑(if rho = rho1 then (1 : ℤ) else 0) : WithTop ℤ) +
+        ((↑(if rho = rho2 then (1 : ℤ) else 0) : WithTop ℤ) +
+          (↑(l : ℤ) : WithTop ℤ) * ↑(if rho = rho then (1 : ℤ) else 0))))
+        = ((k : ℤ) : WithTop ℤ) := by
+    rw [hζ, twoPoint_triple_divisor_count_eq_omission_add]
+    simpa [m, l] using twoPoint_retained_order_sub_omission_eq
+      (m := zetaStripMultiplicity rho)
+      (d := twoPointOmissionMultiplicity rho1 rho2 rho) (k := k) hk
+  exact exists_twoPointOmittedEvaluatorWitness_of_sourceBudget
+    hrho1re0 hrho1re1 hrho2re0 hrho2re1 hrhore0 hrhore1 hl
+    hm1 hm2 hmr hb0' hb1' hb2' htarget
 
 end
 

@@ -1388,13 +1388,16 @@ Reusable modules built (all compile, wired, no `sorry`):
   "list count ≤ order of `ζ`" at the three points, i.e. the remaining multiplicities.
 
 ### Remaining exact core for 6.5's minimality half
-1. From a literal retained jet `k`, choose `l` and prove the selected equality
-   `ord_ρ ζ − (1_{ρ=ρ₁}+1_{ρ=ρ₂}+l) = k`, uniformly including `ρ₁ = ρ₂`.
-   The source-budget carrier and its strip regularity no longer need independent hypotheses.
-2. Prove that `IsTwoPointOmittedEvaluatorWitness` is exactly a witness annihilating every retained
+1. Prove that `IsTwoPointOmittedEvaluatorWitness` is exactly a witness annihilating every retained
    evaluator functional in Burnol's shortened system, and transfer that into the existing
    minimal-system language.  This is an evaluator/derivative identification, not a Hardy, Gamma,
    reflection, or analyticity gap.
+
+The first formerly open item is now closed by
+`exists_twoPointOmittedEvaluatorWitness_of_retainedJet`: for every retained index
+`k < m_ρ - (1_{ρ=ρ₁}+1_{ρ=ρ₂})`, it chooses
+`l = m_ρ - (1_{ρ=ρ₁}+1_{ρ=ρ₂}) - k`, proves all three literal divisor budgets through every
+collision pattern, and derives the exact selected order unconditionally.
 
 ## Session close — state of the tree
 
@@ -1417,10 +1420,10 @@ Landed toward **Proposition 6.5's minimality half** (the remaining half):
   representative on the strip and its pure-tail datum at aperture one (head constant `0`).
 * `RHTower.soninTripleNF_reflect` — `χ(s)·(that)(1−s) = (−1)^l·(same at the mirror zeros)`.
 
-The carrier, exact order transport, and a finite-defect predicate are now completed by
-`BurnolTwoPointMinimality.lean`.  The remaining step for 6.5's minimality half is to derive the
-selected-order equality from a retained jet and prove that this order predicate is the literal
-shortened evaluator-system assertion.  The original `IsMinimalEvaluatorSystem` records an
+The carrier, exact order transport, finite-defect predicate, and retained-jet arithmetic are now
+completed by `BurnolTwoPointMinimality.lean`.  The remaining step for 6.5's minimality half is to
+prove that this order predicate is the literal shortened evaluator-system assertion.  The original
+`IsMinimalEvaluatorSystem` records an
 unshortened multiset and cannot express the two omitted top jets directly.
 
 Remaining paper items: Proposition 6.5's minimality half (as above); Theorem 5.2's `L²`-in-`Z` half,
@@ -1456,14 +1459,19 @@ principal theorems are deliberately layered:
   aperture vanishings, every non-selected strip order, and the selected retained order.
 * `exists_twoPointOmittedEvaluatorWitness_of_sourceBudget` constructs that literal witness from
   only the source budgets plus the one remaining selected-order equality.
+* `exists_twoPointOmittedEvaluatorWitness_of_retainedJet` eliminates that final equality premise.
+  It computes the quotient exponent from the literal retained multiplicity, proves all three
+  budget inequalities collision-safely, and obtains the selected meromorphic order by an explicit
+  natural-to-integer order calculation.
 
 Consequently this assembly discharges six distinct prerequisites of the Proposition 6.5 minimality
 witness: both Hardy orientations, literal `K₁`/zero-head membership, full-strip continuation,
 exact multiplicity accounting, strip regularity from source budgets, and finite-defect packaging.
-It is not a new RH route and does not establish evaluator minimality. The remaining two formal
-obligations are selected-order arithmetic and literal evaluator/derivative identification. The
-separate Burnol completeness frontier remains Theorem 5.2's `L²`-in-`Z` input, Corollary 5.3,
-Theorem 3.3 completeness, and Levin's growth package.
+It is not a new RH route, does not establish evaluator minimality, and is not counted as a
+cross-route source law: it closes Burnol's retained-order bookkeeping only. The remaining formal
+obligation is literal evaluator/derivative identification. The separate Burnol completeness
+frontier remains Theorem 5.2's `L²`-in-`Z` input, Corollary 5.3, Theorem 3.3 completeness, and
+Levin's growth package.
 
 Targeted validation (no umbrella build):
 

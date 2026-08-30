@@ -1,7 +1,7 @@
 # Derivative-shadow law for autonomous first-order entire caps
 
 - **ID:** `autonomous-cap-derivative-shadow-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Scientific status:** `[BRIDGE] [PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Lane:** general hypertranscendence; differential-order geometry under composition
@@ -321,7 +321,8 @@ For a zero-free local branch, writing a function as an exponential of a primitiv
 - [x] Parent theories and current D-algebraic composition algorithms checked.
 - [x] Parent-theory audit; downgraded to bridge.
 - [x] Audit the hyperexponential-integral citation at primary-source level.
-- [ ] Lean only after novelty and numerical-precertification instructions can be reconciled.
+- [x] Lean: every proved statement of the card is formalized unconditionally (see the Lean
+  formalization section); novelty stays downgraded to bridge, so no novelty claim is made.
 
 ## Primary references checked
 
@@ -330,3 +331,80 @@ For a zero-free local branch, writing a function as an exponential of a primitiv
 3. B. Teguia Tabuguia, *Arithmetic of D-algebraic functions*, J. Symbolic Comput. 126 (2025), 102348.
 4. G. M. Reinhart, *Schanuel Functions and Algebraic Differential Equations*, PhD dissertation, University of Illinois (1993).
 5. M. Rosenlicht, *Integration in Finite Terms*, Amer. Math. Monthly 79 (1972), 963--972.
+
+## Lean formalization (2026-08-30)
+
+Unconditional, `sorry`-free, axiom profile `[propext, Classical.choice, Quot.sound]` for every
+theorem listed.  All modules are wired into `GaloisForLFunctions.HTGeometry`.
+
+Setting: `meroField univ` is the meromorphic field of the plane, `coordElem` the coordinate,
+`jetElem hu k` the `k`-th derivative of an entire `u` inside that field, and
+
+- `daRank hu = trdeg_ℂ ℂ(z, u, u′, u″, …)` — the card's `ord_DA(u) + 1`;
+- `shadowRank' hu = trdeg_ℂ ℂ(z, u′, u″, …)` — the card's `ord_DA(u′) + 1`.
+
+### Finite-jet shadow theorem, order law, ledger, HT transfer
+
+| Card statement | Lean theorem | Module |
+|---|---|---|
+| `H_h(n) = 1 + S_g(n)` (infinite form) | `trdeg_shadow_law_infinite` | `CompositionShadowLawInfinite` |
+| `π_u ∈ {0,1}` | `daRank_eq_shadowRank_or_succ` | `CompositionShadowLawConsequences` |
+| `ord_DA(f∘g) = 1 + ord_DA(g′)` | `daRank_comp` | `CompositionShadowLawConsequences` |
+| primitive compression ledger | `compression_ledger` | `CompositionShadowLawConsequences` |
+| HT transfer `H_{f∘g}(n) = n+1` | `trdeg_jetField_comp_of_algebraicIndependent` | `CompositionShadowLawConsequences` |
+
+### The Liouville layer for the Gaussian primitive
+
+| Statement | Lean theorem | Module |
+|---|---|---|
+| `r′ = a·r` has no nonzero rational solution (`a ≠ 0` polynomial) | `eq_zero_of_deriv_eq_polynomial_mul` | `RationalLinearCoefficientNoSolution` |
+| `r′ = 2z·r + 1` has no rational solution | `not_deriv_eq_linear_mul_add_one` | `RationalLinearCoefficientNoSolution` |
+| a hyperexponential element is transcendental | `transcendental_of_hyperexponential` | `HyperexponentialTranscendence` |
+| no primitive of a hyperexponential generator inside its own extension | `not_deriv_eq_of_hyperexponential` | `HyperexponentialPrimitive` |
+| `E = exp(−z²)` is transcendental over `ℂ(z)` | `transcendental_gaussElem` | `GaussianPrimitiveTranscendence` |
+| `G = ∫E` is transcendental over `ℂ(z, E)` | `not_isAlgebraic_gaussPrimElem` | `GaussianPrimitiveTranscendence` |
+
+### `ord_DA(G) = 2`, `ord_DA(G′) = 1`, `π(G) = 1`
+
+| Statement | Lean theorem | Module |
+|---|---|---|
+| `daRank G = 3` | `daRank_gaussPrimitive` | `GaussianOrderLedger` |
+| `shadowRank G = 2` | `shadowRank_gaussPrimitive` | `GaussianOrderLedger` |
+| `π(G) = 1` | `daRank_eq_shadowRank_add_one_gaussPrimitive` | `GaussianOrderLedger` |
+
+### Exact counterexample to universal additivity
+
+| Statement | Lean theorem | Module |
+|---|---|---|
+| `exp` is an autonomous first-order cap | `autonomousFirstOrder_exp` | `ExponentialCapNonAdditivity` |
+| `ord_DA(exp) = 1`, `π(exp) = 0` | `daRank_exp`, `shadowRank_exp` | `ExponentialCapNonAdditivity` |
+| `ord_DA(exp ∘ G) = 2` | `daRank_expGauss` | `ExponentialCapNonAdditivity` |
+| additivity fails | `order_not_additive_expGauss` | `ExponentialCapNonAdditivity` |
+
+### Same scalar order, opposite cap behaviour
+
+| Statement | Lean theorem | Module |
+|---|---|---|
+| `exp z`, `exp(iz)` algebraically independent over `ℂ(z)` | `algebraicIndependent_expPair` | `RotatedExponentialIndependence` |
+| `trdeg_ℂ ℂ(z, exp z, exp iz) = 3` | `trdeg_adjoin_coordElem_expElem_expIElem` | `RotatedExponentialIndependence` |
+| `ord_DA(A) = ord_DA(A′) = 2` for `A = exp + sin` | `daRank_sumES`, `shadowRank_sumES` | `SumExponentialSineOrderLedger` |
+| `ord_DA(exp ∘ A) = 3` | `daRank_expSumES` | `AutonomousCapCostComparison` |
+| equal rank, different cap cost | `cap_cost_differs_at_equal_rank` | `AutonomousCapCostComparison` |
+| opposite primitive defects | `primitive_defects_differ` | `AutonomousCapCostComparison` |
+| a function of rank ≠ 1 is not a polynomial | `not_exists_poly_of_daRank_ne_one` | `AutonomousCapCostComparison` |
+
+### Breaking autonomy restores the primitive state
+
+| Statement | Lean theorem | Module |
+|---|---|---|
+| Clunie: `Y = exp G` transcendental over `ℂ(z, E, G)` | `not_isAlgebraic_gaussExpElem` | `GaussianExponentialCompositionField` |
+| `trdeg_ℂ ℂ(z, E, G, Y) = 4` | `trdeg_quadField` | `GaussianExponentialCompositionField` |
+| `q G = E(1+G)` for `q = Q′/Q`, `Q = G·Y` | `logQ_mul_gaussPrimElem` | `NonautonomousCapGaussian` |
+| `q′ + 2z q = −(q − E)²` | `compQ_eq` | `NonautonomousCapGaussian` |
+| `(q′ + 2z q)(1+G)² = −q²` | `compQ_mul_one_add_sq` | `NonautonomousCapGaussian` |
+| `G`, `E`, `Y` algebraic over `ℂ(z)⟨Q⟩` | `isAlgebraic_gaussPrimElem_prodQField`, `isAlgebraic_gaussElem_prodQField`, `isAlgebraic_gaussExpElem_prodQField` | `NonautonomousCapGaussian` |
+| `ord_DA(B ∘ G) = 3` for `B(w) = w exp w` | `daRank_prodQ` | `NonautonomousCapGaussian` |
+| autonomy is what compresses | `nonautonomous_cap_restores_state` | `NonautonomousCapGaussian` |
+
+Items 7 and 8 of the Attack list remain `[OPEN]` research questions; they are not part of the
+proved statement of this card.

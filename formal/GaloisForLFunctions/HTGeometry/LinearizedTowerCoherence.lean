@@ -44,7 +44,7 @@ theorem analyticSubringDeriv_analyticFunctionElement {U : Set ℂ} (hUo : IsOpen
       = analyticFunctionElement (deriv f) hf.deriv := rfl
 
 /-- Two analytic functions agreeing on the domain have the same element. -/
-theorem analyticFunctionElement_congr {U : Set ℂ} {f g : ℂ → ℂ} (hf : AnalyticOnNhd ℂ f U)
+theorem analyticFunctionElement_congr_eqOn {U : Set ℂ} {f g : ℂ → ℂ} (hf : AnalyticOnNhd ℂ f U)
     (hg : AnalyticOnNhd ℂ g U) (h : Set.EqOn f g U) :
     analyticFunctionElement f hf = analyticFunctionElement g hg := by
   apply Subtype.ext
@@ -142,10 +142,10 @@ theorem deriv_analyticMeroElement {W : Set ℂ} (hWo : IsOpen W) (hWc : IsPrecon
   rfl
 
 /-- Two analytic functions agreeing on the domain have the same meromorphic element. -/
-theorem analyticMeroElement_congr {W : Set ℂ} {F G : ℂ → ℂ} (hF : AnalyticOnNhd ℂ F W)
+theorem analyticMeroElement_congr_eqOn {W : Set ℂ} {F G : ℂ → ℂ} (hF : AnalyticOnNhd ℂ F W)
     (hG : AnalyticOnNhd ℂ G W) (h : Set.EqOn F G W) :
     analyticMeroElement F hF = analyticMeroElement G hG := by
-  rw [analyticMeroElement, analyticMeroElement, analyticFunctionElement_congr hF hG h]
+  rw [analyticMeroElement, analyticMeroElement, analyticFunctionElement_congr_eqOn hF hG h]
 
 /-! ## The tower theorem -/
 
@@ -194,7 +194,7 @@ theorem exists_uniform_jet_relation_of_linearized_tower
     rw [hadef, hcdef]
     rw [deriv_analyticMeroElement hUo hUc hUne]
     rw [← analyticMeroElement_mul]
-    refine analyticMeroElement_congr _ _ ?_
+    refine analyticMeroElement_congr_eqOn _ _ ?_
     intro t ht
     have h1 : deriv (fun s => iteratedDeriv j Φ (g n s)) t
         = iteratedDeriv (j + 1) Φ (g n t) * deriv (g n) t :=
@@ -207,7 +207,7 @@ theorem exists_uniform_jet_relation_of_linearized_tower
     intro n i
     rw [hcdef]
     rw [deriv_analyticMeroElement hUo hUc hUne]
-    refine analyticMeroElement_congr _ _ ?_
+    refine analyticMeroElement_congr_eqOn _ _ ?_
     intro t ht
     show deriv (fun s => μ n * iteratedDeriv (i + 1) κ s) t
       = μ n * iteratedDeriv (i + 1 + 1) κ t
@@ -292,7 +292,6 @@ theorem exists_uniform_jet_relation_of_linearized_tower
           (analyticOnNhd_iteratedDeriv hκ (i + 1)) := by
     intro n i
     rw [algebraMap_complex_eq_analyticMeroElement hUo hUc hUne hUinf, ← analyticMeroElement_mul]
-    rfl
   have hrankC : ∀ (u : Ultrafilter ℕ) (i : ℕ),
       IsAlgebraic ↥(IntermediateField.adjoin ℂ (Set.range fun k : Fin d =>
           ((fun n => basis n k : ℕ → meroField U) : Filter.Germ (u : Filter ℕ) (meroField U))))
@@ -347,7 +346,7 @@ theorem exists_uniform_jet_relation_of_linearized_tower
     have hz : Set.EqOn (deriv fun _ : ℂ => x) (fun _ : ℂ => (0 : ℂ)) U := by
       intro t _
       simp
-    rw [analyticMeroElement_congr _ (analyticOnNhd_const (v := (0 : ℂ))) hz]
+    rw [analyticMeroElement_congr_eqOn _ (analyticOnNhd_const (v := (0 : ℂ))) hz]
     show algebraMap (analyticSubring U) (meroField U)
       (analyticFunctionElement (fun _ : ℂ => (0 : ℂ)) analyticOnNhd_const) = 0
     rw [show analyticFunctionElement (fun _ : ℂ => (0 : ℂ)) analyticOnNhd_const = 0 from rfl,

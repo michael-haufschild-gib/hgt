@@ -18,7 +18,7 @@ Goal: unconditional Lean formalization of every card in this folder, then promot
 | 9 | drifting-periodic-primitive-ramification-exclusion | closed with `card_totallyRamified_le_four` | **DONE → 3-formalized** (2026-08-29) |
 | 10 | entire-composition-hypertranscendence-or-law | Steinmetz reduction / Huang–Ng Thm 3 | TODO |
 | 11 | first-order-composition-two-defect-decomposition | Clunie + trdeg observability | TODO |
-| 12 | autonomous-cap-derivative-shadow-law | Clunie + trdeg observability | TODO |
+| 12 | autonomous-cap-derivative-shadow-law | Clunie + trdeg observability | **DONE → 3-formalized** (2026-08-30) |
 | 13 | newton-corner-nonautonomous-composition-unit-cost | Clunie + Puiseux Jacobian | TODO |
 | 14 | asymptotically-exponential-algebraic-cascade-unit-cost | Clunie + Puiseux Jacobian + Briot–Bouquet | TODO |
 | 15 | nonautonomous-cap-linear-order-two-shadow-rigidity | Briot–Bouquet | TODO |
@@ -1009,3 +1009,41 @@ Traps recorded:
 Remaining for the counterexample: assemble the three abstract theorems in the meromorphic field —
 a `Derivation ℂ` upgrade of the corpus `Differential`, the rational subfield as an
 `IntermediateField ℂ`, derivation-closedness of `ℂ(z, E)`, and then the two rank computations.
+
+## Card 12 — autonomous-cap-derivative-shadow-law — DONE (2026-08-30)
+
+Everything the card proves is now Lean, unconditional and axiom-clean.  Nine new modules, all wired
+into `GaloisForLFunctions.HTGeometry`:
+
+- `GaussianExponentialField` — `ratField` (the rational subfield of `meroField univ`),
+  `meroComplexDerivation`, the Gaussian exponential `E = exp(−z²)` and `E′ = −2z E`.
+- `GaussianPrimitiveTranscendence` — `E` transcendental over `ℂ(z)`; a primitive `G` of `E`
+  (from mathlib's `Differentiable.isExactOn_univ`) transcendental over `ℂ(z, E)`.
+- `GaussianOrderLedger` — `daRank G = 3`, `shadowRank G = 2`, primitive defect one.
+- `ExponentialCapNonAdditivity` — `exp` is autonomous first order, `daRank exp = 2` with defect
+  zero, `daRank (exp ∘ G) = 3`, and `order_not_additive_expGauss`.
+- `RotatedExponentialIndependence` — Artin shortening (corpus `eq_zero_of_sum_expLike_eq_zero`)
+  plus the new rational obstruction `eq_zero_of_deriv_eq_const_mul` gives algebraic independence of
+  `exp z` and `exp (i z)` over `ℂ(z)`, hence `trdeg_ℂ ℂ(z, exp z, exp iz) = 3`.
+- `SumExponentialSineOrderLedger` — `A = exp + sin` has jet field = shadow field =
+  `ℂ(z, exp z, exp iz)`, so `daRank A = shadowRank A = 3`, defect zero.
+- `AutonomousCapCostComparison` — polynomials have rank one, hence `not_exists_poly_of_daRank_ne_one`;
+  `daRank (exp ∘ A) = 4`; equal rank with different cap cost.
+- `GaussianExponentialCompositionField` — Clunie (corpus `not_isAlgebraic_comp_over_jetGen`) gives
+  `Y = exp G` transcendental over the jet field of `G`; `trdeg_ℂ ℂ(z, E, G, Y) = 4`.
+- `NonautonomousCapGaussian` — the recovery chain `q G = E(1+G)`, `q′ + 2zq = −(q−E)²`,
+  `(q′+2zq)(1+G)² = −q²` makes `G`, `E`, `Y` algebraic over `ℂ(z)⟨Q⟩` for `Q = G exp G`, so
+  `daRank Q = 4`: breaking autonomy restores the compressed state.
+
+Reusable assets produced on the way: `eq_zero_of_deriv_eq_polynomial_mul` /
+`eq_zero_of_deriv_eq_const_mul` (rational logarithmic-derivative obstructions),
+`derivationClosed_jetField`, `isAlgebraic_of_quadratic_mem`, `not_exists_poly_of_daRank_ne_one`,
+`transcendental_coordElem`, `coordElem_mem_ratField`, `iteratedDeriv_polynomial`.
+
+Two environment traps worth remembering:
+
+- `rw` fails on goals that print identically to a lemma's LHS (invisible instance mismatch in the
+  `meroField` tower).  Deriving the equation as a hypothesis and finishing with `exact`/`.trans`
+  plus `congrArg (fun c : Cardinal => c + 1)` works.
+- `ring`/`linear_combination` fail on a goal produced by `refine <lemma> (a := …) … ?_` for the same
+  reason.  State the polynomial identity as its own theorem and pass it to the lemma by `exact`.

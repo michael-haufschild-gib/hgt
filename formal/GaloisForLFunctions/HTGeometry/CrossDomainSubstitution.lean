@@ -122,4 +122,20 @@ theorem substMero_analyticMeroElement (hUo : IsOpen U) (hUc : IsPreconnected U) 
   rw [substAnalytic_analyticFunctionElement]
   rfl
 
+/-- **A substitution with a local right inverse is faithful.**  If the inner map hits every point of
+some nonempty open subset of the target, a function vanishing along it vanishes on an open set and
+hence, by the identity theorem, on the whole preconnected target. -/
+theorem substitutionFaithful_of_rightInverse (hVc : IsPreconnected V) {g ρ : ℂ → ℂ} {W : Set ℂ}
+    (hWo : IsOpen W) (hWne : W.Nonempty) (hWV : W ⊆ V) (hρ : Set.MapsTo ρ W U)
+    (hgρ : ∀ w ∈ W, g (ρ w) = w) : SubstitutionFaithful U V g := by
+  intro F hF hvan z hz
+  obtain ⟨w₀, hw₀⟩ := hWne
+  have hzeroW : ∀ w ∈ W, F w = 0 := by
+    intro w hw
+    rw [← hgρ w hw]
+    exact hvan (ρ w) (hρ hw)
+  have hev : F =ᶠ[nhds w₀] 0 :=
+    Filter.eventuallyEq_of_mem (hWo.mem_nhds hw₀) fun w hw => hzeroW w hw
+  exact hF.eqOn_zero_of_preconnected_of_eventuallyEq_zero hVc (hWV hw₀) hev hz
+
 end GaloisForLFunctions.HTGeometry

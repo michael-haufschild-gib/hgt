@@ -311,6 +311,7 @@ theorem BlockPrevalentOn.mono {B G G' : Set S} (h : BlockPrevalentOn B G) (hGG' 
   refine measure_mono_null (fun ξ hξ => ?_) (hx x hxB)
   exact fun hmem => hξ (hGG' hmem)
 
+omit [CompleteSpace S] in
 theorem BlockPrevalent.mono {G G' : Set S} (h : BlockPrevalent G) (hGG' : G ⊆ G') :
     BlockPrevalent G' := BlockPrevalentOn.mono h hGG'
 
@@ -416,5 +417,186 @@ theorem Prevalent.of_blockPrevalent [MeasurableSpace S] [BorelSpace S] {G : Set 
   show ((blockProbeLaw d).map (productProbeMap d L)) {w : S | x + w ∉ G} = 0
   rw [Measure.map_apply (continuous_productProbeMap hL).measurable hsetmeas]
   exact hx x (Set.mem_univ x)
+
+end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+open MeasureTheory ProbabilityTheory MeasurableSpace Metric
+open scoped ENNReal NNReal
+
+variable {S : Type*} [NormedAddCommGroup S] [NormedSpace ℝ S] [CompleteSpace S]
+
+/-- **Block-prevalent global witness for a countable family of configuration spaces.**  Each
+pattern has its own sigma-compact configuration space; every compact patch of every pattern is
+certified by its own finite Euclidean control block, and all the blocks are merged into one
+convergent probe series. -/
+theorem globalWitness_blockPrevalent_of_sigmaCompact_family {H : ℕ → Type*}
+    [∀ n, TopologicalSpace (H n)] [∀ n, SigmaCompactSpace (H n)]
+    (Witness : ∀ n, S → H n → Prop)
+    (hcompact : ∀ (n : ℕ) (K : Set (H n)), IsCompact K →
+      ∃ (Dblk : ℕ) (l : (Fin Dblk → ℝ) →L[ℝ] S) (G : Set S), IsOpen G ∧
+        (∀ c : ℝ, 0 < c → ∀ center : S, ∀ μ : Measure (Fin Dblk → ℝ), μ ≪ volume →
+          μ {p | center + (c • l) p ∉ G} = 0) ∧
+        ∀ w ∈ G, ∀ h ∈ K, Witness n w h) :
+    BlockPrevalent {w : S | ∀ n h, Witness n w h} := by
+  classical
+  have hcov : ∀ n : ℕ, ∃ K : ℕ → Set (H n),
+      (∀ m, IsCompact (K m)) ∧ (⋃ m, K m) = (Set.univ : Set (H n)) :=
+    fun n => SigmaCompactSpace.exists_compact_covering (X := H n)
+  choose Kc hKcCompact hKcCover using hcov
+  have cert : ∀ n m : ℕ, ∃ (Dblk : ℕ) (l : (Fin Dblk → ℝ) →L[ℝ] S) (G : Set S), IsOpen G ∧
+      (∀ c : ℝ, 0 < c → ∀ center : S, ∀ μ : Measure (Fin Dblk → ℝ), μ ≪ volume →
+        μ {p | center + (c • l) p ∉ G} = 0) ∧
+      ∀ w ∈ G, ∀ h ∈ Kc n m, Witness n w h :=
+    fun n m => hcompact n (Kc n m) (hKcCompact n m)
+  choose Dpat lpat Gpat hopen hblk hwit using cert
+  have hprev : BlockPrevalent (⋂ p : ℕ, Gpat p.unpair.1 p.unpair.2) :=
+    blockPrevalent_iInter_of_blockControl_scalable
+      (d := fun p => Dpat p.unpair.1 p.unpair.2)
+      (fun p => lpat p.unpair.1 p.unpair.2)
+      (fun p => Gpat p.unpair.1 p.unpair.2)
+      (fun p => hopen p.unpair.1 p.unpair.2)
+      (fun p => hblk p.unpair.1 p.unpair.2)
+  refine hprev.mono ?_
+  intro w hw n h
+  have hh : h ∈ ⋃ m, Kc n m := by rw [hKcCover n]; exact Set.mem_univ h
+  obtain ⟨m, hm⟩ := Set.mem_iUnion.mp hh
+  have hmem : w ∈ Gpat n m := by
+    have hpair := Set.mem_iInter.mp hw (Nat.pair n m)
+    simpa using hpair
+  exact hwit n m w hmem h hm
+
+end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+open MeasureTheory ProbabilityTheory MeasurableSpace Metric
+open scoped ENNReal NNReal
+
+variable {S : Type*} [NormedAddCommGroup S] [NormedSpace ℝ S] [CompleteSpace S]
+
+/-- The probe series is bounded by the sum of the block amplitudes. -/
+theorem norm_productProbeMap_le {d : ℕ → ℕ} {L : ∀ n, (Fin (d n) → ℝ) →L[ℝ] S}
+    (hL : Summable fun n => ‖L n‖) (ξ : ∀ n, Fin (d n) → ℝ) :
+    ‖productProbeMap d L ξ‖ ≤ ∑' n, ‖L n‖ := by
+  have hsum : Summable fun n => ‖L n (unitTruncate (ξ n))‖ :=
+    Summable.of_nonneg_of_le (fun n => norm_nonneg _)
+      (fun n => norm_productProbeMap_term d L n (ξ n)) hL
+  refine le_trans (norm_tsum_le_tsum_norm hsum) ?_
+  exact hsum.tsum_le_tsum (fun n => norm_productProbeMap_term d L n (ξ n)) hL
+
+/-- `G` is **block prevalent with a probe of radius `r`**: the convergent block series never leaves
+the ball of radius `r`, and its law makes the complement of `G` null after every deterministic
+recentring.  This is the exact form the moment-fiber chart needs, where the probe has to stay
+inside the positivity margin of the chart. -/
+def BlockPrevalentRadius (r : ℝ) (G : Set S) : Prop :=
+  ∃ (d : ℕ → ℕ) (L : ∀ n, (Fin (d n) → ℝ) →L[ℝ] S) (_ : Summable fun n => ‖L n‖),
+    (∀ ξ, ‖productProbeMap d L ξ‖ ≤ r) ∧
+      ∀ x : S, blockProbeLaw d {ξ | x + productProbeMap d L ξ ∉ G} = 0
+
+omit [CompleteSpace S] in
+theorem BlockPrevalentRadius.blockPrevalent {r : ℝ} {G : Set S} (h : BlockPrevalentRadius r G) :
+    BlockPrevalent G := by
+  obtain ⟨d, L, hL, _, hx⟩ := h
+  exact ⟨d, L, hL, fun x _ => hx x⟩
+
+omit [CompleteSpace S] in
+theorem BlockPrevalentRadius.mono {r : ℝ} {G G' : Set S} (h : BlockPrevalentRadius r G)
+    (hGG' : G ⊆ G') : BlockPrevalentRadius r G' := by
+  obtain ⟨d, L, hL, hnorm, hx⟩ := h
+  refine ⟨d, L, hL, hnorm, fun x => ?_⟩
+  refine measure_mono_null (fun ξ hξ => ?_) (hx x)
+  exact fun hmem => hξ (hGG' hmem)
+
+/-- **Scalable block control gives block prevalence with an arbitrarily small probe.** -/
+theorem blockPrevalentRadius_iInter_of_blockControl_scalable {d : ℕ → ℕ}
+    (l : ∀ n, (Fin (d n) → ℝ) →L[ℝ] S) (G : ℕ → Set S) (hGopen : ∀ n, IsOpen (G n))
+    (hblock : ∀ n, ∀ c : ℝ, 0 < c → ∀ center : S, ∀ μ : Measure (Fin (d n) → ℝ), μ ≪ volume →
+      μ {p | center + (c • l n) p ∉ G n} = 0)
+    {r : ℝ} (hr : 0 < r) :
+    BlockPrevalentRadius r (⋂ n, G n) := by
+  classical
+  set c : ℕ → ℝ := fun n => (r / 2) * (1 / 2 : ℝ) ^ n / (1 + ‖l n‖) with hc
+  have hden : ∀ n, (0 : ℝ) < 1 + ‖l n‖ := fun n => by positivity
+  have hcpos : ∀ n, 0 < c n := fun n => by
+    have h2 : (0 : ℝ) < (r / 2) * (1 / 2 : ℝ) ^ n := by positivity
+    exact div_pos h2 (hden n)
+  have hbound : ∀ n, ‖c n • l n‖ ≤ (r / 2) * (1 / 2 : ℝ) ^ n := by
+    intro n
+    rw [norm_smul, Real.norm_eq_abs, abs_of_pos (hcpos n), hc]
+    have hle : ‖l n‖ / (1 + ‖l n‖) ≤ 1 := by
+      rw [div_le_one (hden n)]
+      linarith [norm_nonneg (l n)]
+    calc (r / 2) * (1 / 2 : ℝ) ^ n / (1 + ‖l n‖) * ‖l n‖
+        = ((r / 2) * (1 / 2 : ℝ) ^ n) * (‖l n‖ / (1 + ‖l n‖)) := by ring
+      _ ≤ ((r / 2) * (1 / 2 : ℝ) ^ n) * 1 :=
+          mul_le_mul_of_nonneg_left hle (by positivity)
+      _ = (r / 2) * (1 / 2 : ℝ) ^ n := mul_one _
+  have hgeom : Summable fun n : ℕ => (r / 2) * (1 / 2 : ℝ) ^ n :=
+    summable_geometric_two.mul_left _
+  have hLsum : Summable fun n => ‖c n • l n‖ :=
+    Summable.of_nonneg_of_le (fun n => norm_nonneg _) hbound hgeom
+  have hnorm : ∀ ξ, ‖productProbeMap d (fun n => c n • l n) ξ‖ ≤ r := by
+    intro ξ
+    refine le_trans (norm_productProbeMap_le hLsum ξ) ?_
+    refine le_trans (hLsum.tsum_le_tsum hbound hgeom) ?_
+    rw [tsum_mul_left, tsum_geometric_two]
+    linarith
+  refine ⟨d, fun n => c n • l n, hLsum, hnorm, fun x => ?_⟩
+  have hprev := blockPrevalent_iInter_of_blockControl (L := fun n => c n • l n) hLsum G hGopen
+    (fun n center μ hμ => hblock n (c n) (hcpos n) center μ hμ)
+  obtain ⟨d', L', hL', hx'⟩ := hprev
+  have hcover : {ξ : ∀ k, Fin (d k) → ℝ |
+      x + productProbeMap d (fun n => c n • l n) ξ ∉ ⋂ n, G n}
+      = ⋃ n, {ξ : ∀ k, Fin (d k) → ℝ |
+        x + productProbeMap d (fun n => c n • l n) ξ ∉ G n} := by
+    ext ξ
+    simp only [Set.mem_setOf_eq, Set.mem_iUnion, Set.mem_iInter]
+    push Not
+    rfl
+  rw [hcover]
+  exact measure_iUnion_null fun n =>
+    blockProbeLaw_block_null hLsum (hGopen n) n
+      (fun center μ hμ => hblock n (c n) (hcpos n) center μ hμ) x
+
+/-- **Small-probe block-prevalent global witness for a countable family of configuration
+spaces.** -/
+theorem globalWitness_blockPrevalentRadius_of_sigmaCompact_family {H : ℕ → Type*}
+    [∀ n, TopologicalSpace (H n)] [∀ n, SigmaCompactSpace (H n)]
+    (Witness : ∀ n, S → H n → Prop)
+    (hcompact : ∀ (n : ℕ) (K : Set (H n)), IsCompact K →
+      ∃ (Dblk : ℕ) (l : (Fin Dblk → ℝ) →L[ℝ] S) (G : Set S), IsOpen G ∧
+        (∀ c : ℝ, 0 < c → ∀ center : S, ∀ μ : Measure (Fin Dblk → ℝ), μ ≪ volume →
+          μ {p | center + (c • l) p ∉ G} = 0) ∧
+        ∀ w ∈ G, ∀ h ∈ K, Witness n w h)
+    {r : ℝ} (hr : 0 < r) :
+    BlockPrevalentRadius r {w : S | ∀ n h, Witness n w h} := by
+  classical
+  have hcov : ∀ n : ℕ, ∃ K : ℕ → Set (H n),
+      (∀ m, IsCompact (K m)) ∧ (⋃ m, K m) = (Set.univ : Set (H n)) :=
+    fun n => SigmaCompactSpace.exists_compact_covering (X := H n)
+  choose Kc hKcCompact hKcCover using hcov
+  have cert : ∀ n m : ℕ, ∃ (Dblk : ℕ) (l : (Fin Dblk → ℝ) →L[ℝ] S) (G : Set S), IsOpen G ∧
+      (∀ c : ℝ, 0 < c → ∀ center : S, ∀ μ : Measure (Fin Dblk → ℝ), μ ≪ volume →
+        μ {p | center + (c • l) p ∉ G} = 0) ∧
+      ∀ w ∈ G, ∀ h ∈ Kc n m, Witness n w h :=
+    fun n m => hcompact n (Kc n m) (hKcCompact n m)
+  choose Dpat lpat Gpat hopen hblk hwit using cert
+  have hprev : BlockPrevalentRadius r (⋂ p : ℕ, Gpat p.unpair.1 p.unpair.2) :=
+    blockPrevalentRadius_iInter_of_blockControl_scalable
+      (d := fun p => Dpat p.unpair.1 p.unpair.2)
+      (fun p => lpat p.unpair.1 p.unpair.2)
+      (fun p => Gpat p.unpair.1 p.unpair.2)
+      (fun p => hopen p.unpair.1 p.unpair.2)
+      (fun p => hblk p.unpair.1 p.unpair.2) hr
+  refine hprev.mono ?_
+  intro w hw n h
+  have hh : h ∈ ⋃ m, Kc n m := by rw [hKcCover n]; exact Set.mem_univ h
+  obtain ⟨m, hm⟩ := Set.mem_iUnion.mp hh
+  have hmem : w ∈ Gpat n m := by
+    have hpair := Set.mem_iInter.mp hw (Nat.pair n m)
+    simpa using hpair
+  exact hwit n m w hmem h hm
 
 end GaloisForLFunctions.HTGeometry

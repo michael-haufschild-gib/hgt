@@ -1,7 +1,7 @@
 # Indeterminate moment fibers are locally prevalent in maximal translation HT
 
 - **ID:** `indeterminate-moment-fiber-prevalent-translation-ht`
-- **Stage:** 2-fully-proven on paper / needs audit
+- **Stage:** 3-formalized
 - **Type:** THEOREM / MEASURE-THEORETIC MOMENT-FIBER PHASE LAW
 - **Lane:** general hypertranscendence; Hamburger moment geometry; prevalence
 - **Scientific status:** `[PROVED HERE] [BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]`
@@ -236,10 +236,71 @@ A true crossing above 90 for the parent route still requires at least one of:
 - [x] full-fiber convex-insertion corollary proved
 - [x] preliminary prevalence and generic-hypertranscendence parent audit
 - [ ] independent specialist proof audit
-- [ ] unconditional Lean formalization of the exact theorem
+- [x] unconditional Lean formalization of the exact theorem (2026-08-30)
+
+## Lean formalization
+
+Unconditional, axiom-clean (`propext`, `Classical.choice`, `Quot.sound` only).
+
+**New general theory** — `HTGeometry/PrevalentCountableIntersection.lean`.  Mathlib has no
+coordinate/complement splitting of `MeasureTheory.Measure.infinitePi`, and no prevalence notion at
+all; both are built here.
+
+- `infinitePi_indepFun_eval_restrictCompl`, `infinitePi_map_eval_restrictCompl`,
+  `infinitePi_null_of_slice_null` — the `n`th coordinate is independent of all the others under an
+  infinite product of probability measures, the joint law is the product of the two marginals, and
+  a set all of whose complement-slices are null is null.  This is the Fubini step of §"Conditional
+  transversality has probability one": conditioning on every block except the `j`th.
+- `unitBlockLaw`, `unitTruncate`, `productProbeMap`, `blockProbeLaw`,
+  `isCompact_range_productProbeMap`, `productProbeMap_split`, `norm_productProbeMap_le` — the
+  explicit compact product probe `V = ∑ⱼ aⱼ ∑ₖ X_{j,k} v_{j,k}` of equation (6): a uniformly
+  convergent series over `Ω = ∏ⱼ[-1,1]^{dⱼ}` with product Lebesgue law, continuous, with compact
+  range and norm bounded by `∑ⱼ aⱼ dⱼ`.
+- `blockProbeLaw_block_null` — equation (10): if every absolutely continuous law on the `j`th block
+  misses the `j`th bad set after every recentring, then the whole product probe misses it, after
+  every recentring.
+- `BlockPrevalentRadius`, `BlockPrevalent`, `blockPrevalentRadius_iInter_of_blockControl_scalable`,
+  `globalWitness_blockPrevalentRadius_of_sigmaCompact_family` — the local-prevalence theorem: for
+  every radius `r > 0` one probe supported in the ball of radius `r` makes a countable family of
+  block-controlled phases full after every deterministic recentring.  Amplitudes are chosen inside
+  the proof, which is exactly the summability condition (5).
+- `Prevalent.of_blockPrevalent` — the bridge to the Hunt--Sauer--Yorke definition
+  (`PrevalentSets.lean`: `CompactProbe`, `PrevalentOn`, `Prevalent`, `prevalentOn_iInter`).
+
+**Nevanlinna instantiation** — `HTGeometry/NevanlinnaPrevalentFullRankWitness.lean`.
+
+- `blockControlled_finite_atlas` — a compact configuration patch covered by finitely many smooth
+  affine control charts, with one Euclidean probe onto over every chart, has open simultaneous
+  avoidance phase and null bad parameter set for every absolutely continuous law, every positive
+  amplitude and every recentring.  Uses `StratifiedParametricPrevalence`
+  (`measure_recentred_parameter_bad_eq_zero`) and the open-surjectivity locus.
+- `compact_injectiveShiftPatch_blockControlled_completeAtlas_actualNevanlinna` — the compact-patch
+  certificate for the actual Nevanlinna carrier, built from the corpus's complete-atlas refinement
+  and the explicit uniform finite probes of
+  `compact_completeProjectiveRowPiece_has_uniform_finiteProbe`, concatenated by `concatBlock`.
+- `countablePatterns_actualNevanlinna_fullRankWitness_blockPrevalentRadius` — statement (2): for
+  every `r > 0` one compact product probe of radius `r` makes full expanded-evaluation rank hold
+  for *every* pattern and *every* tuple of distinct complex shifts, after every deterministic
+  recentring in the frozen tangent.
+- `countablePatterns_actualNevanlinna_relationFree_blockPrevalentRadius` and
+  `countablePatterns_actualNevanlinna_relationFree_blockPrevalent` — the relation-rigidity form of
+  the same law.
+- `convexInsertion_actualNevanlinna_relationFree_blockPrevalentRadius` — the full moment-fibre
+  probability-cloud corollary (11): the law is uniform in the base density, so the mixture
+  `(1-ε)·d₀ + ε·(base + x)` inherits it with a probe of any prescribed radius.
+
+The finite-support mean-zero control blocks of §"Finite-support control blocks" are the corpus's
+`MeanZeroAnnihilator`/`BoundaryCarrierTranslationFreeness` layer, already used by the parent card;
+the probes produced here live in the frozen tangent `S = ker` of the normalized Cauchy-jet control,
+which is exactly the moment-preserving direction space.
 
 ## Log
 
+- 2026-08-30 -- Formalized unconditionally in Lean 4 and promoted to stage 3.  The recorded
+  blocker ("needs the Nevanlinna N-extremal matrix") was stale: the parent card is at stage 3 and
+  the extremal family is constructed, not assumed.  What was actually missing was the
+  residual-to-prevalent upgrade, which required building prevalence theory and the
+  coordinate/complement splitting of `Measure.infinitePi` from scratch.
 - 2026-07-12 -- Proved a recentering-uniform compact product-probe theorem and the full-fiber
   probability-cloud corollary. Parent audit then reduced the mechanism to established prevalence
   and prevalent transversality, with an existing project tail-Haar HT precedent. Retained the

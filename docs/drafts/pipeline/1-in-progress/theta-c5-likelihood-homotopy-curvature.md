@@ -151,3 +151,45 @@ remains before the convex likelihood lift can close.
   `x=integral(h(u-r)+h(u+r))` and `s=integral(h(u-r)-h(u+r))`.  Its derivative numerator is exactly
   the negative of the remaining lower-transport determinant
   `K=(x+t*y)*s-t*x*m`.  Thus `K>0`, subject only to formalizing this audited calculus chain.
+- 2026-08-30 — `[LEAN-PROVED SIGNIFICANT PREMISE]` The full reflected bridge and both
+  monotone-l'Hospital descents are now closed in
+  `ThetaCuspLikelihoodHomotopyLowerTransport`.  A new four-cooling proof gives
+  `4*A*F2 < -F3` and `4*A*(-F3) < F4`; hence the projective invariant
+  `J = F3^2*F4 + 2*F2*F4^2 - 2*F2*F3*F5` is strictly positive.  Together with the previously
+  formalized energy `E>0`, this proves the sharp reflected endpoint comparison, strict
+  antitonicity of the second transport ratio, then strict antitonicity of the first transport
+  ratio.  The capstone theorem
+  `thetaCuspC5LikelihoodHomotopy_velocityCenterTwo_pos` proves unconditionally that
+  `(thetaCuspC5LikelihoodHomotopyData u t).velocityCenterTwo > 0` whenever
+  `0<t<=u` and `scale(u-t)>=6`.  This discharges the entire `H''>0` lower-transport curvature
+  premise in the chain
+  `H''>0 -> M'''>0 -> convex likelihood lift -> direct-J -> rank-four/Ptolemy -> CLG/TTF or Weil
+  positivity -> RH`.  Remaining C5 burden is the exact three-term Bose-weighted assembly
+  `W'''*H + 3*W''*H' + 3*W'*H'' < 0` and the independent initial condition `M''(0)>=0`; lower
+  transport itself is no longer open.  Direct source check and named-module build pass; axiom audit
+  reports only `propext`, `Classical.choice`, and `Quot.sound`.  Repository-wide lint sees no local
+  forbidden declaration but remains red on unrelated concurrent un-wired modules.
+- 2026-08-30 — `[LEAN-PROVED ROUTE KILL + POSITIVE SURVIVOR]` The naive unshifted alternating
+  Bose cone is impossible in the negative convex lower-transport chamber: for `P(z)=z*H(z)`,
+  `z>0`, `H<0`, `H''>0`, and `P'>0` force `H'>0` and hence `P''>0`, contradicting the proposed
+  `P''<0`.  The replacement is an exact lowest-mode-shifted Bernstein cone.  Closed positive
+  formulas for the first three centered Bose jets decompose the full three-term lower-transport
+  balance into the strict base term `30*(t*da)*H''<0` plus four nonpositive polynomial faces.
+  Thus four source inequalities imply the literal `M'''>0`, without a Bose-series expansion,
+  truncation, or interchange argument.  In the theta-source specialization, the prior
+  unconditional theorem `H''>0` discharges the only strict base sign; the surviving off-seam
+  burden is exactly the four-face source cone, with `M''(0)>=0` still independent.  Formalization:
+  `ThetaCuspLikelihoodHomotopyBoseBernsteinCone`.  Exact chain:
+  `shifted four-face cone -> M'''>0 -> convex likelihood lift -> direct-J -> rank-four/Ptolemy ->
+  CLG/TTF or Weil positivity -> RH`.  Direct source check and targeted module build pass; axiom
+  audit reports only `propext`, `Classical.choice`, and `Quot.sound`.  Repository-wide lint sees
+  no local forbidden declaration and remains red only on unrelated concurrently unwired modules.
+- 2026-08-30 — `[CONJECTURE K]` For every `0<t<=u`, every `0<=l<=1`, and every structural-tail
+  point `6<=thetaCuspSingleAtomReflectionScale 1 (u-t)`, the literal affine theta packet
+  `d=thetaCuspC5LikelihoodHomotopyData u t` satisfies `d.BoseShiftedTransportCone l`; equivalently,
+  all four lowest-mode-shifted derivatives `(D-d.dq)^j ((d.t*d.jetOne)*d.velocityCenter)`,
+  `0<=j<=3`, are nonpositive.  This is frozen as the decisive next source claim.  Exact chain:
+  `Conjecture K -> literal M'''>0 -> convex likelihood lift -> direct-J -> rank-four/Ptolemy ->
+  CLG/TTF or Weil positivity -> RH`.  Hostile attack order is source endpoints, modular seam jets,
+  then structural-tail propagation.  Any wrong-sign face kills the whole shifted-Bernstein survivor;
+  no weaker subset is being substituted.

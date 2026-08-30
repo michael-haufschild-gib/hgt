@@ -1,7 +1,7 @@
 # RG-tower differential incoherence obstructs a finite exact generator
 
 - **ID:** `rg-tower-differential-incoherence-obstruction`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / GENERAL RG-HT REDUCTION
 - **Scientific status:** `[PROVED HERE] [BRIDGE] [PARENT-DERIVED]`
   `[NOT NEW SCIENTIFIC KNOWLEDGE]`
@@ -223,3 +223,63 @@ passes to a local analytic inverse, closing `kappa` DA `=>` `Phi` DA),
 (`Bottcher.MeromorphicField`, `HTGeometry.MeromorphicDifferentialField`,
 `HTGeometry.AnalyticJetFieldBridge`), and `RGClockBetaEquivalence` for the first-order step
 `beta` DA `<=>` `kappa` DA.
+
+## Lean formalization — COMPLETE (unconditional)
+
+Every proved statement of this card is now an unconditional Lean theorem.  Axiom audit for all
+declarations below: `[propext, Classical.choice, Quot.sound]`.  The Boshernitzan--Rubel closure
+theorem is **not** used; the composition step is carried by the ultraproduct transcendence count
+described in the route section above, which also yields composition closure of differentially
+algebraic germs as a corollary.
+
+### The reusable engine
+
+| Module | Content |
+|---|---|
+| `HTGeometry/UniformJetRelation.lean` | `exists_uniform_annihilator` — ultrafilter-wise annihilation is uniform annihilation |
+| `HTGeometry/GeneratedFieldRank.lean` | `trdeg_intermediateFieldAdjoin_le`, `not_algebraicIndependent_of_isAlgebraic_over_adjoin`, `isAlgebraic_aeval` |
+| `HTGeometry/UltraproductRank.lean` | the germ `ℂ`-algebra, `aeval_germ`, `exists_uniform_annihilator_of_ultraproduct_rank`, `algebraicWitness_germ` |
+| `HTGeometry/CompositionJetPolynomials.lean` | the universal Faà di Bruno polynomials `Ξ_k` as iterates of the formal chain-rule derivation, and `iterate_deriv_eq_aeval_compJetPoly` |
+| `HTGeometry/CompositionTowerCoherence.lean` | **`exists_uniform_annihilator_of_composition_rank`** — one autonomous equation for a whole compositional family |
+| `HTGeometry/AlgebraicWitness.lean` | denominator-free algebraicity witnesses and their transport; `exists_finite_algebraicWitness_family` |
+| `HTGeometry/CrossDomainSubstitution.lean` | `substAnalytic`, `SubstitutionFaithful`, `substMero`, `substMero_analyticMeroElement`, `substitutionFaithful_of_rightInverse` |
+| `HTGeometry/LinearizedTowerCoherence.lean` | `exists_jet_algebraicWitness_family` and **`exists_uniform_jet_relation_of_linearized_tower`** — the analytic assembly |
+
+### The card's theorems
+
+| Statement | Lean |
+|---|---|
+| `(7)` `f^n = Φ(λ^n κ)` | `iterate_apply_linearizer`, `iterate_eqOn_linearizer` |
+| `(6)` `β` DA `⇔` `κ` DA | `differentiallyAlgebraicOn_of_rgBeta`, `differentiallyAlgebraicOn_rgBeta` (through the logarithmic-derivative equivalence, since `λ̃/β` is exactly `κ'/κ`) |
+| `κ` DA `⇒` `Φ` DA | the corpus's `differentiallyAlgebraicOn_of_localInverse` |
+| coherence of the tower under `β` DA | **`exists_uniform_jet_relation_of_rgTower`** |
+| **`(5)` the coherence obstruction** | **`not_differentiallyAlgebraicOn_rgBeta_of_incoherent`** — differential incoherence of `{f^n}` forces the exact beta field to be hypertranscendental |
+| composition closure of DA germs | `differentiallyAlgebraicOn_comp` (the one-member case of the tower theorem) |
+| `(9)` `f_h^n = h ∘ f^n ∘ h^(-1)` | `iterate_conjugate` |
+| **`(10)` DA-scheme invariance** | `differentiallyAlgebraicOn_comp_iff_of_scheme` — reading `κ` through a locally invertible differentially algebraic scheme neither creates nor destroys differential algebraicity, so incoherence is a property of the germ and not of the chart |
+
+### The hypotheses have models
+
+The only non-vacuity condition in the statements is `SubstitutionFaithful U V g` — a function
+analytic on `V` vanishing along `g` vanishes on `V`.  It is discharged in general by
+`substitutionFaithful_of_rightInverse` (a local right inverse for `g` on a nonempty open subset of
+`V` plus the identity theorem) and, for the tower itself, by
+`substitutionFaithful_scaled_linearizer`: the scaled coordinate `λ^n κ` hits the open set `λ^n · V`,
+where `Φ(·/λ^n)` is a right inverse.  So the coherence theorem applies to any analytically
+linearizable germ whose linearizing domain is preconnected and `λ`-stable.
+
+**Not Lean-bound (external classification results, as the card already records):** Ritt's
+exceptional families for rational continuations and Bergweiler's solution of Rubel's problem for
+transcendental entire continuations.  Neither is used in any proof above.
+
+## Log (cont.)
+- 2026-08-30 — **FORMALIZED → 3-formalized.**  The card's Lean boundary is removed: the
+  Boshernitzan--Rubel closure theorem is unnecessary.  Writing the tower as `f^n = Φ ∘ (λ^n · κ)`,
+  Faà di Bruno supplies *universal* polynomials `Ξ_k` for the jets of the composites, and in an
+  ultraproduct along an ultrafilter on `n` the outer jets, the multiplier and the inner jets
+  generate a field of transcendence degree at most `p + q + 1`.  Hence `d + 1` of the
+  `(f^n)^{(k)}` are algebraically dependent **over the constants**, uniformly in `n` — the
+  multiplier having become a single element of the coefficient field is exactly what makes the
+  equation `n`-uniform, which a per-`n` count cannot deliver.  A compactness step (annihilation
+  sets are closed upward under products, so their complements would generate an ultrafilter
+  avoiding all of them) upgrades "almost every `n`" to "every `n`".
