@@ -154,6 +154,58 @@ theorem fixed_chart_frequently_or_activeOrder_tendsto_atTop (κ : ℕ → ℕ) :
       (Finset.frequently_exists (Finset.range b)).mp hfreqExists
     exact ⟨k, hkfreq⟩
 
+/-- A Hasse history first activates at order `k`. -/
+def FirstActiveHasseOrderAt (m : ℕ → F) (k : ℕ) : Prop :=
+  (∀ r < k, m r = 0) ∧ m k ≠ 0
+
+/-- Two vanishing histories have vanishing product below the sum of their active orders. -/
+theorem hasseJetMul_vanishBelow_add
+    {m n : ℕ → F} {k l r : ℕ}
+    (hm : ∀ i < k, m i = 0) (hn : ∀ j < l, n j = 0)
+    (hr : r < k + l) :
+    hasseJetMul m n r = 0 := by
+  rw [hasseJetMul]
+  apply Finset.sum_eq_zero
+  intro j hj
+  have hjr : j ≤ r := Nat.lt_succ_iff.mp (Finset.mem_range.mp hj)
+  by_cases hjk : j < k
+  · rw [hm j hjk]
+    simp
+  · rw [hn]
+    · simp
+    · omega
+
+/-- The leading fused exceptional port is the product of the two leading ports. -/
+theorem hasseJetMul_leading_add
+    {m n : ℕ → F} {k l : ℕ}
+    (hm : ∀ i < k, m i = 0) (hn : ∀ j < l, n j = 0) :
+    hasseJetMul m n (k + l) = m k * n l := by
+  rw [show k + l = l + k by omega,
+    hasseJetMul_eq_exceptional_of_vanishBelow hn,
+    exceptionalHasseJetMul, Finset.sum_range_succ]
+  have hsum :
+      ∑ j ∈ Finset.range k, m j * n (l + k - j) = 0 := by
+    apply Finset.sum_eq_zero
+    intro j hj
+    rw [hm j (Finset.mem_range.mp hj)]
+    simp
+  rw [hsum, zero_add]
+  congr 2
+  omega
+
+/-- **Additive exceptional-depth conservation.**  Fusion adds first active orders and multiplies
+their leading exceptional ports. -/
+theorem FirstActiveHasseOrderAt.mul
+    {m n : ℕ → F} {k l : ℕ}
+    (hm : FirstActiveHasseOrderAt m k)
+    (hn : FirstActiveHasseOrderAt n l) :
+    FirstActiveHasseOrderAt (hasseJetMul m n) (k + l) := by
+  constructor
+  · intro r hr
+    exact hasseJetMul_vanishBelow_add hm.1 hn.1 hr
+  · rw [hasseJetMul_leading_add hm.1 hn.1]
+    exact mul_ne_zero hm.2 hn.2
+
 /-- Unit admission concentrated on one exceptional layer. -/
 def exceptionalUnitJet (k : ℕ) : ℕ → F := fun r => if r = k then 1 else 0
 

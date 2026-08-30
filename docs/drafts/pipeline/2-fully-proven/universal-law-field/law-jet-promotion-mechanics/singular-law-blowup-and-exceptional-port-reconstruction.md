@@ -213,6 +213,33 @@ reconstruction there is no diffuse third obstruction: failure of every fixed exc
 literal escape of active differential order.  Any route-independent properness theorem may target
 that integer-valued escape invariant directly.
 
+### Theorem 4.4 — additive exceptional-depth conservation
+
+Suppose admission histories `m` and `n` first activate at orders `k` and `ℓ`:
+
+\[
+ m_i=0\ (i<k),\quad m_k\ne0,\qquad
+ n_j=0\ (j<\ell),\quad n_\ell\ne0.
+\]
+
+Then their fused Hasse history first activates at order `k+ℓ`, and its leading port is
+
+\[
+ (m\star n)_{k+\ell}=m_kn_\ell\ne0.
+\tag{SLB.14}
+\]
+
+### Proof
+
+For `r<k+ℓ`, every summand `m_jn_{r-j}` has either `j<k` or `r-j<ℓ`; hence it vanishes.  At
+`r=k+ℓ`, every term except `j=k` vanishes, leaving `m_kn_ℓ`.  Since `F` is a field, that product is
+nonzero.  ∎
+
+Thus singular depth is an additive grade under independent formation, while the exceptional port
+is multiplicative.  This is a genuine cross-organ prediction: independently computed first-active
+orders must add in every fused organ sharing the same Hasse formation.  Failure of additivity proves
+that the proposed organ fusion is not source-native.
+
 ## 5. What this changes in the universal-law architecture
 
 The earlier architecture demanded a nonzero, uniformly invertible leading admission port.  The
@@ -293,6 +320,7 @@ the already-known fixed `(2,3)` Gamma port criterion into an unconditional RH pr
 - [x] uniqueness and global singular formation injectivity
 - [x] closed order-`k` normal model
 - [x] cofinal fixed-chart versus infinite-order-escape dichotomy
+- [x] additive exceptional-depth and multiplicative leading-port conservation
 - [x] unconditional Lean formalization
 - [ ] common Gamma/gauge/Cartier normal Hasse coordinate
 - [ ] cofinal active-order properness
