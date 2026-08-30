@@ -85,6 +85,31 @@ theorem differentiallyAlgebraicOn_of_rittForm {U : Set ℂ} {sigma : ℂ → ℂ
       · show iteratedDeriv 1 sigma z = deriv sigma z
         rw [iteratedDeriv_one]
 
+/-- **The differential-algebra half of the dichotomy `(1) ⇔ (2) ⇔ (3)`.**  For a Poincaré germ and
+its local inverse, differential algebraicity of the linearizing coordinate, of its inverse and of
+the exact beta field are all equivalent. -/
+theorem differentiallyAlgebraicOn_poincare_iff_rgBeta
+    {U V : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (hVo : IsOpen V) (hVc : IsPreconnected V) (hVne : V.Nonempty) (hVinf : V.Infinite)
+    {Φ κ : ℂ → ℂ} (hΦ : AnalyticOnNhd ℂ Φ V) (hκ : AnalyticOnNhd ℂ κ U)
+    (hκV : Set.MapsTo κ U V) (hΦU : Set.MapsTo Φ V U)
+    (hΦκ : ∀ t ∈ U, Φ (κ t) = t) (hκΦ : ∀ z ∈ V, κ (Φ z) = z)
+    (hκne : ∀ t ∈ U, κ t ≠ 0) (hκ'ne : ∀ t ∈ U, deriv κ t ≠ 0)
+    {lamLog : ℂ} (hlamLog : lamLog ≠ 0) :
+    (DifferentiallyAlgebraicOn Φ V ↔ DifferentiallyAlgebraicOn κ U) ∧
+      (DifferentiallyAlgebraicOn κ U ↔ DifferentiallyAlgebraicOn (rgBeta lamLog κ) U) := by
+  constructor
+  · constructor
+    · intro hΦDA
+      exact differentiallyAlgebraicOn_of_localInverse hVo hVc hVne hVinf hκ hΦ hΦU hκV hκΦ hΦκ hΦDA
+    · intro hκDA
+      exact differentiallyAlgebraicOn_of_localInverse hUo hUc hUne hUinf hΦ hκ hκV hΦU hΦκ hκΦ hκDA
+  · constructor
+    · intro hκDA
+      exact differentiallyAlgebraicOn_rgBeta hUo hUc hUne hUinf hκ hκne hκ'ne lamLog hκDA
+    · intro hβ
+      exact differentiallyAlgebraicOn_of_rgBeta hUo hUc hUne hUinf hκ hκne hκ'ne hlamLog hβ
+
 end
 
 end GaloisForLFunctions.HTGeometry

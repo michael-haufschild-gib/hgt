@@ -527,6 +527,31 @@ theorem exists_criticalFeatureSourceAliasPhase_re_nonpos
     (continuous_criticalFeatureSourceNonzeroFourierAliasAtPhase μ hg)
     (integral_criticalFeatureSourceNonzeroFourierAliasAtPhase_eq_zero μ hg)
 
+/-- The same zero-mean source alias also attains a phase with nonnegative real part.  This is the
+orientation needed when the Plemelj covariance subtracts the physical core observable. -/
+theorem exists_criticalFeatureSourceAliasPhase_re_nonneg
+    (μ : Measure ℝ) {g : ℝ → ℝ} (hg : Integrable g μ) :
+    ∃ θ : UnitAddCircle,
+      0 ≤ (criticalFeatureSourceNonzeroFourierAliasAtPhase θ μ g).re := by
+  let f : UnitAddCircle → ℂ := fun θ =>
+    criticalFeatureSourceNonzeroFourierAliasAtPhase θ μ g
+  have hf : Continuous f :=
+    continuous_criticalFeatureSourceNonzeroFourierAliasAtPhase μ hg
+  have hfInt : Integrable f GaloisForLFunctions.unitCircleHaar := by
+    rw [← integrableOn_univ]
+    exact hf.continuousOn.integrableOn_compact isCompact_univ
+  have hmean : (∫ θ, f θ ∂GaloisForLFunctions.unitCircleHaar) = 0 :=
+    integral_criticalFeatureSourceNonzeroFourierAliasAtPhase_eq_zero μ hg
+  have hmeanNeg :
+      (∫ θ, -f θ ∂GaloisForLFunctions.unitCircleHaar) = 0 := by
+    rw [MeasureTheory.integral_neg, hmean, neg_zero]
+  obtain ⟨θ, hθ⟩ :=
+    exists_re_nonpos_of_integral_unitCircleHaar_eq_zero
+      (fun θ => -f θ) hf.neg hmeanNeg
+  refine ⟨θ, ?_⟩
+  change 0 ≤ (f θ).re
+  simpa using hθ
+
 /-- Real representative form of the source-selected nonpositive phase, ready for translated
 lattice receiver geometry. -/
 theorem exists_real_criticalFeatureSourceAliasPhase_re_nonpos
@@ -535,6 +560,16 @@ theorem exists_real_criticalFeatureSourceAliasPhase_re_nonpos
       (criticalFeatureSourceNonzeroFourierAliasAtPhase
         (θ : UnitAddCircle) μ g).re ≤ 0 := by
   obtain ⟨ϑ, hϑ⟩ := exists_criticalFeatureSourceAliasPhase_re_nonpos μ hg
+  obtain ⟨θ, rfl⟩ := QuotientAddGroup.mk_surjective ϑ
+  exact ⟨θ, hϑ⟩
+
+/-- Real representative of a source-selected phase with nonnegative real alias. -/
+theorem exists_real_criticalFeatureSourceAliasPhase_re_nonneg
+    (μ : Measure ℝ) {g : ℝ → ℝ} (hg : Integrable g μ) :
+    ∃ θ : ℝ,
+      0 ≤ (criticalFeatureSourceNonzeroFourierAliasAtPhase
+        (θ : UnitAddCircle) μ g).re := by
+  obtain ⟨ϑ, hϑ⟩ := exists_criticalFeatureSourceAliasPhase_re_nonneg μ hg
   obtain ⟨θ, rfl⟩ := QuotientAddGroup.mk_surjective ϑ
   exact ⟨θ, hϑ⟩
 

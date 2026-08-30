@@ -79,8 +79,8 @@ theorem det_genericJetPolyMatrix_ne_zero : (genericJetPolyMatrix C N).det ≠ 0 
     ext i j
     by_cases hij : i = j
     · subst hij
-      simp [genericJetPolyMatrix, RingHom.mapMatrix_apply, hf, Matrix.one_apply]
-    · simp [genericJetPolyMatrix, RingHom.mapMatrix_apply, hf, Matrix.one_apply, hij]
+      simp [genericJetPolyMatrix, RingHom.mapMatrix_apply, hf]
+    · simp [genericJetPolyMatrix, RingHom.mapMatrix_apply, hf, hij]
   have := RingHom.map_det (MvPolynomial.eval f) (genericJetPolyMatrix C N)
   rw [h, hmap] at this
   simp at this

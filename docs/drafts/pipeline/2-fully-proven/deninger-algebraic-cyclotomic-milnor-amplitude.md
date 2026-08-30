@@ -1569,3 +1569,129 @@ This is now the exact next covering obligation.  No condition-number, bounded-we
 log-lattice, or fundamental-domain hypothesis may remain in the final theorem.  Card remains Stage
 2 while this number-field infrastructure is constructed; tame-kernel finite generation and Moore
 reciprocity remain later obligations.
+
+### Unconditional Dirichlet-unit reduction and full rank (2026-08-30)
+
+The unit-reduction obligation is now discharged without retaining a chosen unit system, rank
+formula, condition-number bound, lattice-span premise, or fundamental-domain hypothesis.
+
+The new dependency chain is:
+
+- `DeterminantOneLatticeShortVector.lean`: uniform Minkowski short vectors under every
+  determinant-one positive diagonal deformation;
+- `NumberFieldMixedRealCoordinates.lean`: exact split real coordinates for real and complex
+  places, with complex places counted twice and weighted-zero profiles mapped to determinant one;
+- `NumberFieldIntegerMinkowskiReduction.lean`: a uniform nonzero algebraic integer satisfying the
+  prescribed exponential bound at every infinite place;
+- `NumberFieldPrincipalIdealNormBound.lean` and `NumberFieldBoundedPrincipalIdeals.lean`: the
+  weighted place bound gives a bounded principal ideal, hence one of finitely many chosen nonzero
+  ideal generators;
+- `NumberFieldUnitPlaceLogCovering.lean`: division by that generator produces an actual unit whose
+  logarithmic place profile lies within one field-dependent radius of every weighted-zero profile;
+- `NumberFieldUnitPlaceLogFullRank.lean`: dilation plus closedness of finite-dimensional subspaces
+  proves that the real span of unit logarithms is exactly the weighted-zero hyperplane.
+
+The covering theorem is stronger than a selected-fundamental-units formulation:
+
+```text
+exists_numberFieldUnitPlaceLog_coveringRadius
+    ∃ R > 0, ∀ y with ∑_w mult(w)y_w = 0,
+      ∃ u : (𝓞 K)ˣ, ‖log|u| - y‖ ≤ R
+
+numberFieldUnitPlaceLogRealSpan_eq_hyperplane
+    span_ℝ {log|u| : u ∈ (𝓞 K)ˣ}
+      = {y : ∑_w mult(w)y_w = 0}
+```
+
+All targeted source checks and module builds passed.  Batched axiom audit for the new declarations:
+`[propext, Classical.choice, Quot.sound]`.  Modules are umbrella-wired without an umbrella build.
+
+Card remains Stage 2.  Quantitative order-Siegel descent must now consume this closed unit reduction;
+tame-kernel finite generation and Moore reciprocity remain afterward.
+
+### Determinant-one unit balancing witnesses (2026-08-30)
+
+`NumberFieldDetOneUnitPlaceLogCovering.lean` upgrades single-profile reduction to every finite
+zero-sum tuple.  It constructs units `u_i` with `∏_i u_i = 1` and one uniform bound on
+`‖log|u_i| - y_i‖`; the final unit is the inverse product, and the tuple zero-sum identity bounds
+its error by the sum of the remaining errors.  `NumberFieldDetOneUnitDiagonal.lean` packages that
+tuple as the literal diagonal element of `SL_n(𝓞 K)` and proves its coordinate action.
+
+Both targeted module builds pass.  Every new theorem audits to
+`[propext, Classical.choice, Quot.sound]`; both modules are umbrella-wired without an umbrella
+build.  Hence determinant one is no longer an external hypothesis in the unit-balancing step.
+
+`NumberFieldDetOneUnitWeightBalancing.lean` now performs the quantitative balancing itself.  For
+an arbitrary nonempty matrix of logarithmic place weights it removes the weighted place means and
+the coordinate mean, proves that every residual lies in the exact unit-log hyperplane and that the
+residual tuple sums to zero, then applies the determinant-one unit covering theorem.  The result is
+a field-only radius and product-one units for which every rescaled log weight differs from a sum of
+one coordinate-only and one place-only term by at most `2(n+1)R`.  This is the condition-number
+discharge required before Hermite--Schur iteration; neither the original weights nor a boundedness
+premise occurs in the theorem.
+
+Targeted source check/build pass; all declarations audit to
+`[propext, Classical.choice, Quot.sound]`; module is umbrella-wired without an umbrella build.
+
+`NumberFieldDetOneUnitPositiveWeightBalancing.lean` exponentiates this statement.  Every positive
+place-weight table is carried by a product-one unit tuple to within the explicit factor
+`exp(±2(n+1)R)` of a separable coordinate-scale times place-scale table.  This is the literal
+multiplicative condition-number bound consumed by reduction.  Positivity is the only lemma input
+and will come from positive-definiteness of the order form; no numerical bound on the input table
+is assumed.  Targeted check/build pass and the declaration audits to
+`[propext, Classical.choice, Quot.sound]`; module is umbrella-wired without building the umbrella.
+
+### Correct real/Hermitian archimedean cone and unconditional unit action (2026-08-30)
+
+The previous regular-representation `orderCone` cannot be the symmetric space for an arbitrary
+number field: its balancedness condition makes multiplication by every number-field scalar
+self-adjoint, which is incompatible with a scalar having a nonreal complex-place eigenvalue.  In
+particular its nonemptiness premise cannot honestly be discharged when complex places occur.
+
+Three new modules replace that seam instead of retaining the false premise:
+
+- `NumberFieldMixedVectorPlaceCoordinates.lean` constructs the canonical linear equivalence from
+  integral-basis vector coordinates to coordinatewise split Minkowski coordinates.
+- `NumberFieldArchimedeanCone.lean` defines the actual placewise symmetric space: positive real
+  symmetric forms at real places and positive complex Hermitian forms at complex places.  The
+  identity point proves nonemptiness for every number field.  Evaluation of
+  `SL_n(𝓞 K)` at every place has determinant one and is invertible, so literal placewise
+  congruence preserves Hermiticity and positive definiteness and satisfies the full action laws.
+- `NumberFieldArchimedeanUnitBalancing.lean` extracts the positive local diagonal table from every
+  cone point, proves that product-one unit congruence rescales its `(i,w)` entry by exactly
+  `|u_i|_w²`, and applies the unconditional unit covering theorem.  The capstone
+  `exists_numberFieldArchimedeanUnitDiagonal_balancingRadius` constructs the determinant-one unit
+  tuple internally for every cone point with one field-only radius; no positivity,
+  differentiability, bounded-condition-number, chosen-unit, or structural witness is retained as
+  a theorem hypothesis.
+
+All three direct source checks and targeted module builds pass.  Every created declaration audits
+to `[propext, Classical.choice, Quot.sound]`; all modules are umbrella-wired without an umbrella
+build.  Card remains Stage 2.  Remaining reduction obligation is the placewise real/Hermitian
+Schur--Iwasawa induction and finite-overlap Siegel region on this corrected cone.  Tame-kernel
+finite generation and Moore reciprocity remain after that covering theorem.
+
+### Unconditional real/Hermitian Schur rank descent (2026-08-30)
+
+`ComplexSchurPosDef.lean` upgrades the existing Haynsworth block congruence to the exact strict
+positivity theorem needed at complex places: the Schur complement of the Hermitian head of a
+positive-definite complex block form is positive definite.  Head invertibility and Hermiticity are
+derived from the full positive form.
+
+`NumberFieldArchimedeanSchur.lean` then performs the first-coordinate block reindexing uniformly,
+identifies the full form with its head/cross/tail block matrix, proves the head and reindexed full
+form positive, and applies the real or complex Schur theorem at the appropriate place.  Its
+capstone is the premise-free rank-lowering map
+
+```text
+numberFieldArchimedeanSchur :
+  numberFieldArchimedeanPositiveForms K (n + 1) →
+    numberFieldArchimedeanPositiveForms K n
+```
+
+Both direct source checks and targeted module builds pass.  Every new declaration audits to
+`[propext, Classical.choice, Quot.sound]` or a subset.  Both modules are umbrella-wired without an
+umbrella build.  Card remains Stage 2.  Remaining covering seam is quantitative: compare the
+unit-balanced head against the next Schur diagonal, iterate, and prove finite overlaps for the
+resulting placewise Siegel region.  Tame-kernel finite generation and Moore reciprocity remain
+afterward.

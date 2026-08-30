@@ -1,13 +1,13 @@
 # Gaussian quotient--fusion capital, exact depth, and testing-properness law
 
 - **ID:** ULF-FRM-3
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** OPERATIONALIZATION OF QUOTIENT--FUSION GENESIS + EXACT FORMATION CLASSIFICATION
 - **Parent:** Formation Resource Mechanics; Source-Coherent Synchronization Mechanics
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [UNCONDITIONAL FINITE THEOREM]`
   `[EXACT BLACKWELL CLASSIFICATION] [GLOBAL FORMATION PROPERNESS]`
   `[HYPOTHESIS-TESTING PREDICTION] [CLASSICAL GAUSSIAN/BLACKWELL PARENTS]`
-  `[LEAN PENDING] [NOT RH]`
+  `[LEAN-FORMALIZED, UNCONDITIONAL, AXIOM-CLEAN] [NOT RH]`
 - **Statement:** Quotient--fusion genesis energy is exactly signal norm, Bhattacharyya capital,
   Jeffreys work, and testing exponent of a canonical Gaussian packet. A Gaussian source of finite
   signal budget forms `d` independent genesis packets exactly when its budget is at least `d` times
@@ -411,15 +411,21 @@ composition
 with functional equation and common recovery proved information-neutral rather than proposed as
 producers.
 
-## 9. Lean gate
+## 9. Lean gate — CLOSED 2026-08-30
 
-No Lean file was written or built in this research pass. Existing Lean certifies coordinate-free
-quotient--fusion identity and zero classification. Future formalization must add only:
+All four items are closed, unconditionally, in two new modules wired into
+`GaloisForLFunctions.HTGeometry.UniversalLawField`:
 
-1. finite-dimensional Gaussian density formulas;
-2. explicit Gaussian kernel `(GQF.18)--(GQF.19)`;
-3. exact integer depth classification;
-4. orthogonal functional-equation equivariance.
+1. `HTGeometry/GaussianShiftInformation.lean` supplies the finite-dimensional Gaussian density
+   layer coordinate-freely: the Cameron--Martin density `exp(⟪m,x⟫-‖m‖²/2)`, the moment generating
+   function `exp(‖t‖²/2)`, and the Rényi/Hellinger integrals `exp(-α(1-α)‖m‖²/2)`;
+2. the explicit Gaussian kernel `(GQF.18)`–`(GQF.19)` is `gaussianGarbling`, verified through
+   characteristic functions in `HTGeometry/GaussianFormationRateRegion.lean`;
+3. the exact integer depth classification is `depth_le_floor_iff`;
+4. the orthogonal equivariance is `localOptimalHistory_equivariant`, `genesisSignal_equivariant`,
+   `generatedEnergy_equivariant`, `gaussianPacket_isometry_map`.
 
-Promotion to Stage 3 is forbidden until declarations are closed and universal-law field umbrella
-imports them.
+`HTGeometry/GaussianQuotientFusionCapital.lean` carries the card itself, including the genesis
+*signal vector* `(GQF.4)`, the exact factorization `(GQF.9)`, and the testing exponent `(GQF.28)`
+proved from a Chernoff upper tail and an interval lower tail.  Axiom-clean.  See the
+`-formalized.md` companion.

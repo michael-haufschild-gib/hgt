@@ -162,6 +162,27 @@ theorem gadcTreePopulationRG_zeroDamping (p : ℕ) (N : ℚ) :
   rw [hsignals]
   simp [asymmetricBinaryTreeRG]
 
+/-! ## The damping threshold splits the multiplier -/
+
+/-- **Attracting regime.**  Past the damping threshold the zero-message multiplier is a
+contraction. -/
+theorem gadcMultiplier_lt_one_iff {p : ℕ} (hp : 0 < p) (d : ℚ) :
+    (p : ℚ) * (1 - d) < 1 ↔ 1 - 1 / (p : ℚ) < d := by
+  have hp0 : (0 : ℚ) < (p : ℚ) := by exact_mod_cast hp
+  rw [sub_lt_comm, lt_div_iff₀ hp0, mul_comm]
+
+/-- **Repelling regime.**  Below the damping threshold the zero-message multiplier expands. -/
+theorem gadcMultiplier_one_lt_iff {p : ℕ} (hp : 0 < p) (d : ℚ) :
+    1 < (p : ℚ) * (1 - d) ↔ d < 1 - 1 / (p : ℚ) := by
+  have hp0 : (0 : ℚ) < (p : ℚ) := by exact_mod_cast hp
+  rw [lt_sub_comm, div_lt_iff₀ hp0, mul_comm]
+
+/-- **Parabolic regime.**  At the damping threshold the zero-message multiplier is one. -/
+theorem gadcMultiplier_eq_one_iff {p : ℕ} (hp : 0 < p) (d : ℚ) :
+    (p : ℚ) * (1 - d) = 1 ↔ d = 1 - 1 / (p : ℚ) := by
+  have hp0 : (0 : ℚ) < (p : ℚ) := by exact_mod_cast hp
+  constructor <;> intro h <;> field_simp at h ⊢ <;> linarith
+
 end
 
 end GaloisForLFunctions.HTGeometry

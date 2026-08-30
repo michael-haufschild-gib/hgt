@@ -1,12 +1,12 @@
 # Cofinal capital-density selection and Gaussian rate-region law
 
 - **ID:** ULF-FRM-4
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** GLOBAL FORMATION/PROPERNESS THEOREM FOR VARYING SOURCES
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [UNCONDITIONAL]`
   `[ASYMPTOTIC CAPITAL-DENSITY SELECTION] [EXACT GAUSSIAN RATE REGION]`
   `[FUNCTIONAL-EQUATION/RECOVERY NEUTRAL] [CLASSICAL RESOURCE-THEORY PARENT]`
-  `[LEAN PENDING] [NOT RH]`
+  `[LEAN-FORMALIZED, UNCONDITIONAL, AXIOM-CLEAN] [NOT RH]`
 - **Statement:** A growing source can form growing independent target depth only when every target
   Rényi capital is bounded by source capital per formed copy. Vanishing source capital density
   forces target neutrality. For Gaussian quotient--fusion packets this bound is necessary and
@@ -347,9 +347,18 @@ Primary parents:
 - asymmetric distinguishability resource theory, <https://arxiv.org/abs/1905.11629>;
 - symmetric distinguishability resource theory, <https://arxiv.org/abs/2102.12512>.
 
-## 9. Lean gate
+## 9. Lean gate — CLOSED 2026-08-30
 
-No Lean file was written or built in this research pass. Future formalization should first certify
-finite sequence form of `(CDS.7)`, then Gaussian iff `(CDS.15)`, then quantitative bound
-`(CDS.19)`. Stage 3 remains forbidden until closed declarations are wired into universal-law
-umbrella.
+Every displayed result is closed unconditionally in three new modules wired into
+`GaloisForLFunctions.HTGeometry.UniversalLawField`:
+
+* `HTGeometry/CofinalCapitalDensitySelection.lean` — §1, §2, §5;
+* `HTGeometry/GaussianFormationRateRegion.lean` — §3;
+* `HTGeometry/GaussianPacketTestingLaw.lean` — §4 and the KL/Jeffreys form of `(CDS.7)`.
+
+Notable: the Gaussian Blackwell classification `(CDS.15)` is proved in both directions — necessity
+by a new randomized data-processing inequality for `klDiv` plus the Cameron–Martin divergence
+`‖m‖²/2`, sufficiency by an explicit garbling kernel verified through characteristic functions.
+The testing law `(CDS.20)` needs no Neyman–Pearson input: a common independent side channel is
+testing-neutral by Fubini, and the one-dimensional optimum is `∫ min(φ₀, φ_c)`.  69 public
+declarations, axiom-clean.  See the `-formalized.md` companion.

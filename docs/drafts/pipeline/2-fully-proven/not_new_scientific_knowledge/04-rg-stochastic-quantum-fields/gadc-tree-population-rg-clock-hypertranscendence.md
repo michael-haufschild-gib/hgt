@@ -194,3 +194,36 @@ remain paper-level parent theorems and are not encoded as assumptions.
 - [x] Unconditional exact algebra formalized in HTGeometry.
 - [ ] Operator-valued noncommutative channel-message inheritance theorem proved.
 - [ ] Continuum QFT observable inheriting the same obstruction proved.
+
+## Lean status (2026-08-30)
+
+The card's own algebra is unconditional Lean in
+`formal/GaloisForLFunctions/HTGeometry/GADCTreePopulationRG.lean`, now including the damping
+trichotomy that separates the three regimes of the theorem:
+
+| Card item | Lean |
+|---|---|
+| Bloch action `(1)`, induced transition matrix `(2)`, signal gap `(3)` | `gadcPopulationBloch_*`, `gadcPositiveOutputProbability_eq_bloch`, `gadcSignal_gap` |
+| the exact `p`-branch rational family `(5)` | `gadcHomogeneousPopulationBP_eq`, `gadcTreePopulationRG` |
+| the multiplier `(6)` `= p(1-d)` and its bath independence | `gadcTreePopulation_linearMultiplier` |
+| **regime split at `d = 1 - 1/p`** | **`gadcMultiplier_lt_one_iff` (attracting), `gadcMultiplier_eq_one_iff` (parabolic), `gadcMultiplier_one_lt_iff` (repelling)** |
+| identity and reset endpoints | `gadcTreePopulationRG_zeroDamping`, `gadcTreePopulationRG_fullDamping`, `gadcTreePopulationRG_balancedBath` |
+
+What remains is the single external input shared by all three open cards of this folder: the
+**Becker–Bergweiler / Ritt hypertranscendence classification** of Schröder, Abel and Poincaré
+conjugacies of a non-exceptional rational map.  With that classification the HT conclusion in each
+of the three regimes is immediate from the multiplier facts above.  The corpus now owns the whole
+differential-algebra half of the dichotomy that the classification feeds
+(`HTGeometry/RittDichotomy.lean`, `HTGeometry/RittCocycle.lean`), so what is missing is exactly
+Ritt's implication "differentially algebraic Poincaré function ⇒ order-one cocycle relation".
+
+### The `d = 0` endpoint is now Lean
+
+The card's identity-channel endpoint — "Möbius-conjugate to `x ↦ x^p`, and its exact clock is DA" —
+is `formal/GaloisForLFunctions/HTGeometry/PowerMapPoincareDA.lean`.  Conjugating `x ↦ x^p` to the
+origin gives `g w = (1+w)^p - 1` with Poincaré germ `Φ z = exp z - 1`
+(`powerMapPoincare_functionalEquation`), which satisfies the order-one Ritt relation `Φ' = 1 + Φ`
+and is therefore differentially algebraic (`differentiallyAlgebraicOn_powerMapPoincare`); the
+corresponding multiplicative cocycle `g'(t)(1+t) = p (1 + g t)` holds identically
+(`powerMapGerm_cocycle`).  So the endpoint sits on the *positive* branch of the dichotomy, verified
+rather than asserted.

@@ -18,12 +18,12 @@ Exact burden attacked: determine the full leading term of the sole tuned minimum
 
 1. `[FALSIFIED C1]` Reciprocal tuning makes the positive remainder lower order: `R(M)=o(log(M)^4)`.
    Killing mechanism: the exact ordinary Abel transform below has a strictly positive fourth-log beta moment `7/12`.
-2. `[PAPER-PROVED C2]` Exact ordinary Abel transform:
+2. `[LEAN-PROVED C2]` Exact ordinary Abel transform:
    `R(M)=integral_0^H [L22(exp u)+2(H-u)L12(exp u)+(H-u)^2 L11(exp u)] du`, where `H=log M` and `Lij` is the real-cutoff original Selberg log monomial.
-3. `[PAPER-PROVED C3]` Fourth-log law:
+3. `[LEAN-PROVED C3]` Fourth-log law:
    `R(M)/log(M)^4 -> 7/12`.
    Ordinary coefficients `4/3,1,1` and beta moments `1/4,1/12,1/12` force `1/3+1/6+1/12=7/12`.
-4. `[PAPER-PROVED C4]` Detector consequence at reciprocal forty-nine scale:
+4. `[LEAN-PROVED C4]` Detector consequence at reciprocal forty-nine scale:
    the actual included long energy tends to `(1/12)*(49/100)^2`, exactly one eighth of the already-formal full-energy limit `(2/3)*(49/100)^2`.
 
 ## Hostile checks and open core
@@ -55,4 +55,14 @@ Every step is unconditional. No prime-distribution hypothesis, RH consequence, n
 
 ## Status
 
-`[PAPER-PROVED]` Stage 2. Dependency-closed proof survives endpoint, sign, floor, domination, and scale audits. Exact Lean formalization of C2--C4 is next.
+`[LEAN-PROVED]` Stage 3. C2--C4 are unconditional closed Lean theorems in
+`DifferentiatedBarbanVehovTunedMinLogAsymptotic`.  Targeted `lake env lean`, module-only
+`lake build`, and `#print axioms` audits pass; exported endpoints depend only on Lean's standard
+`propext`, `Classical.choice`, and `Quot.sound` axioms.
+
+The formal endpoint is
+`tendsto_levinsonCriticalDetectorLongEnergy_sub_oneEighth_full_fortyNine`: the actual included
+long detector minus one eighth of full long detector tends to zero.  This closes T1's tuned
+minimum-log/full-minus-omitted arithmetic burden.  Remaining T1 core is coefficient-faithful
+source-to-detector landing and bounded fixed critical half-density Weil-source pairing, not
+minimum-log asymptotics.

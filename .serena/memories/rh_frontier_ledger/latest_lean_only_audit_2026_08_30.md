@@ -2,19 +2,19 @@
 
 Target: `docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md`
 
-Lean-only declaration cutoff: 2026-08-30 05:37:42 CEST. Ledger is 1,084 lines and intentionally present-tense, not a diary.
+Lean-only declaration cutoff: 2026-08-30 06:54:23 CEST. Ledger is 1,086 lines, present-tense, not a diary. Final race scan found no later Lean file.
 
-Latest material shifts folded in:
-- T1 fixed differentiated Euler/gcd-log algebra, fixed asymptotics, tuned lower-channel cancellation, twisted diagonal closed; open moving detector interference, uniform deployment, smooth AFE and fixed-Weil landing.
-- T2 regular graph/square-energy/finite-variation continuations terminal; survivor is principal-relative singular continuation retaining mandatory infinite critical-line residue divisor and excluding off-line residues.
-- HB mixed-Casimir generic four-Xi landing, balanced C-A.9u, and target-independent Peierls incidence closed; open literal-source FE–Schwarz covariance/extinction.
-- FZZ-P regular finite-action, tempered nonlocal/distribution, finite-counterterm and response-interpolation interfaces terminal; survivor must be off-lattice/singular and exclude reciprocal-Gamma null ideal.
-- PW-B finite bands and regular analytic infinite Borel resummation terminal; survivor is all-orders-flat transseries/nonlocal/global law.
-- CLG/TTF homotopy endpoints, projective curvature, highest channel, and two lower velocity centers closed; exact homotopy core is lower-Bose compensation on closed segment.
-- HCF full-periodization error minus zero mode is exact absolutely summable phase-preserving nonzero Fourier alias; open exact signed covariance ceiling, four-term absolute majorant only fallback.
-- F2/Burnol: lower jets annihilate full cosine-closed co-Poisson source, leading conormal nonzero; literal two-omission budgets give aperture-one actual K1 retained-jet witnesses, closing L1→K1 carrier realization but not common moment/minimality assembly.
-- CCM adds exact Q(sqrt2)/dyadic cyclotomic intersection and determinant integrality.
-- Euler–Möbius–Sonin safe target-2 merger and critical-normal approach closed; singular target 1 remains.
-- Q8, differential/PV, autonomous cap-cost, random Euler, RG, zero census remain route-neutral without Xi occurrence/orientation.
+Latest mathematical deltas:
+- HCF: translated nonzero Fourier alias is continuous and has Haar mean zero; source selects phases of both real signs, including nonnegative sign needed because Plemelj covariance subtracts core observable. Direct/reflected three-center receiver is translation-uniform. Open core moved to phase-compatible translated finite-window source decomposition and residual zero-mode/omitted-interior/exterior-tail ceiling 15872/21125. Still only three-quarter receiver, so HCF remains candidate.
+- CLG/TTF: infinite Bose balance reduces to four explicit fixed-lowest-mode shifted polynomial cone faces; these imply compensationThree positivity without series interchange. Naive unshifted alternating cone and adaptive velocity-cancelling shift are Lean no-gos; adaptive shift has strictly positive second face. Four fixed-Bose-shift source faces remain open.
+- FZZ-P: for every finite jet depth, order-one FE/Schwarz countermodels preserve all natural response jets, canonical anchors 0,1/2,1, and strict positive real-axis phase while adding off-line zero. Descending positive contact filtration kills every bounded local-jet repair. Survivor requires full unbounded germ, off-lattice, nonlocal, or singular data excluding reciprocal-Gamma ideal.
+- Burnol/Sonin: at every subcritical aperture and right-half Xi divisor, whole closed cosine co-Poisson source kills all lower jets and one literal log window survives at exact conormal order. Closes exact source-order detection, not F2 simultaneous moment weld or L source-forced reduction.
+- Differential/composition: composition transcendental over full inner jet and shadow fields; pair algebraically independent; autonomous outer factor's full composed-jet visibility field contributes exactly one relative transcendence degree. Nonautonomous w exp(w) cap restores Gaussian primitive and raises differential order. Ritt form/cocycle and linearizer/inverse/beta DA equivalence formal; converse Ritt classification absent.
+- Actual-Nevanlinna countable-pattern rigidity upgraded from residual to block-prevalent with arbitrarily small compact product probe.
+- Number-field unit place-log hyperplane, bounded-slice finiteness, discrete unit-log range, uniform determinant-one lattice short vector strengthen AKC infrastructure but no Xi membership/contractivity.
+- Causal Jordan formation shows endpoint/Markov observers admit arbitrary hidden reserve; two-sided Titchmarsh support retains reserve via total variation. Route-neutral without Xi landing.
+- Generic matrix PV torsor, subfield point vanishing, and GADC tree population RG are formal but route-neutral.
 
-Validation: `git diff --check` clean; stale superseded phrases absent; no Lean build run because task is documentation-only. Final race scan found no Lean file newer than cutoff.
+Counts unchanged: 26 live labels, 30 candidate labels; no new independent route label justified.
+
+Validation: 1,086 lines; `git diff --check` clean; stale superseded phrases absent. Documentation-only task, so no Lean build run.

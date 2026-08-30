@@ -61,9 +61,10 @@ theorem det_positiveDiagonalLinearEquiv (s : ι → ℝ) (hs : ∀ i, 0 < s i) :
     · simp
   rw [hmat, Matrix.det_diagonal]
 
+omit [DecidableEq ι] in
 /-- One radius works for every determinant-one deformation of a fixed full lattice. -/
 theorem exists_uniform_ne_zero_zspan_linearEquiv_norm_le [Nonempty ι]
-    (b : Basis ι ℝ (ι → ℝ)) :
+    {κ : Type*} [Fintype κ] [DecidableEq κ] (b : Basis κ ℝ (ι → ℝ)) :
     ∃ R : ℝ, 0 < R ∧ ∀ T : (ι → ℝ) ≃ₗ[ℝ] (ι → ℝ),
       LinearMap.det (T : (ι → ℝ) →ₗ[ℝ] (ι → ℝ)) = 1 →
         ∃ x ∈ Submodule.span ℤ (Set.range b), x ≠ 0 ∧ ‖T x‖ ≤ R := by
@@ -97,12 +98,12 @@ theorem exists_uniform_ne_zero_zspan_linearEquiv_norm_le [Nonempty ι]
         mul_le_mul_of_nonneg_right (one_le_pow₀ hRone) (le_trans zero_le_one hRone)
   refine ⟨R, hR, ?_⟩
   intro T hdetT
-  let bT : Basis ι ℝ (ι → ℝ) := b.map T
+  let bT : Basis κ ℝ (ι → ℝ) := b.map T
   let F : Set (ι → ℝ) := ZSpan.fundamentalDomain bT
   let L : Submodule ℤ (ι → ℝ) := Submodule.span ℤ (Set.range bT)
-  have hbdet : b.det (bT : ι → (ι → ℝ)) = 1 := by
+  have hbdet : b.det (bT : κ → (ι → ℝ)) = 1 := by
     rw [Basis.det_apply]
-    have hmat : b.toMatrix (bT : ι → (ι → ℝ)) =
+    have hmat : b.toMatrix (bT : κ → (ι → ℝ)) =
         LinearMap.toMatrix b b (T : (ι → ℝ) →ₗ[ℝ] (ι → ℝ)) := by
       ext i j
       dsimp [bT]
@@ -126,7 +127,7 @@ theorem exists_uniform_ne_zero_zspan_linearEquiv_norm_le [Nonempty ι]
     simpa only [mul_comm] using ENNReal.mul_lt_mul_right hfactor0 hfactorTop hofReal
   have hfund : IsAddFundamentalDomain L F volume :=
     ZSpan.isAddFundamentalDomain bT volume
-  let f : (ι → ℤ) → (ι → ℝ) := fun n => ∑ i, n i • bT i
+  let f : (κ → ℤ) → (ι → ℝ) := fun n => ∑ i, n i • bT i
   have hL_subset : (L : Set (ι → ℝ)) ⊆ Set.range f := by
     intro y hy
     dsimp [L] at hy
@@ -167,7 +168,7 @@ theorem exists_uniform_ne_zero_zspan_linearEquiv_norm_le [Nonempty ι]
 
 /-- Uniform determinant-one reduction specialized to positive diagonal scaling. -/
 theorem exists_uniform_ne_zero_zspan_positiveDiagonal_norm_le [Nonempty ι]
-    (b : Basis ι ℝ (ι → ℝ)) :
+    {κ : Type*} [Fintype κ] [DecidableEq κ] (b : Basis κ ℝ (ι → ℝ)) :
     ∃ R : ℝ, 0 < R ∧ ∀ (s : ι → ℝ) (hs : ∀ i, 0 < s i), (∏ i, s i) = 1 →
       ∃ x ∈ Submodule.span ℤ (Set.range b),
         x ≠ 0 ∧ ‖positiveDiagonalLinearEquiv s hs x‖ ≤ R := by

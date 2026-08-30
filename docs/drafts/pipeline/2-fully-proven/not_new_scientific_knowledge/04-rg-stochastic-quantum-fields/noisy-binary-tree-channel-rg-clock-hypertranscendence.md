@@ -177,3 +177,19 @@ paper-level parent inputs and are not postulated in Lean.
 - [ ] Nonhomogeneous BMS message-distribution theorem proved.
 - [ ] Asymmetric positive transfer-matrix theorem proved.
 - [ ] Operator-valued quantum-channel inheritance theorem proved.
+
+## Lean status (2026-08-30)
+
+The card's own algebra is unconditional Lean in
+`formal/GaloisForLFunctions/HTGeometry/BetheHolographicIsingRG.lean` (one-edge BSC likelihoods
+`(3)`, the `p`-branch projective numerator and normalisation `(4)`–`(5)`, the endpoint anchors).
+
+What remains is the single external input shared by all three open cards of this folder: the
+**Becker–Bergweiler / Ritt hypertranscendence classification** of Schröder, Abel and Poincaré
+conjugacies of a non-exceptional rational map, together with the stochastic reconstruction theorem
+`(8)`.  The corpus now owns the differential-algebra half of the dichotomy the classification feeds
+(`HTGeometry/RittDichotomy.lean`, `HTGeometry/RittCocycle.lean`,
+`HTGeometry/ScalingGermRigidity.lean`): the equivalences `Φ` DA `⇔` `κ` DA `⇔` `β` DA, the fact that
+the order-one Ritt relation is an algebraic differential equation, and both directions of the
+cocycle equivalence.  Missing is exactly Ritt's implication "differentially algebraic Poincaré
+function ⇒ order-one cocycle relation".

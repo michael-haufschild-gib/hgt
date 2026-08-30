@@ -150,3 +150,70 @@ parent foundations exist.
 - [x] Arbitrary-analytic-coordinate degeneracy stated rather than hidden.
 - [x] Exact physical positive/negative discriminator identified.
 - [ ] A nontrivial continuum-QFT RG map classified by `(11)`.
+
+## Lean status (2026-08-30) — everything except Ritt's implication `(1) ⇒ (4)`
+
+The card's Lean boundary is now much smaller than when it was written: the corpus **does** contain
+the unconditional analytic Poincaré/Koenigs construction, and all of the card's own derivations are
+Lean theorems.  Axiom audit for every declaration below:
+`[propext, Classical.choice, Quot.sound]`.
+
+| Card item | Lean |
+|---|---|
+| the Koenigs linearizer and the Poincaré germ `Φ(0)=0`, `Φ'(0)=1`, `Φ(λw) = g(Φ w)` | `HTGeometry/PoincareFunctionGerm.lean`: `exists_poincare_of_linearizer`, `exists_poincare_koenigs` (already in the corpus) |
+| `(1) ⇔ (2)` `Φ` DA `⇔` `κ` DA | `differentiallyAlgebraicOn_of_localInverse`, packaged as `differentiallyAlgebraicOn_poincare_iff_rgBeta` |
+| `(2) ⇔ (3)` `κ` DA `⇔` `β` DA, i.e. equation `(6)` | `differentiallyAlgebraicOn_rgBeta`, `differentiallyAlgebraicOn_of_rgBeta` (through the logarithmic-derivative equivalence: `λ̃/β` is exactly `κ'/κ`) |
+| `(4) ⇒ (1)` the order-one relation is an algebraic differential equation | `differentiallyAlgebraicOn_of_rittForm` |
+| **`(4) ⇒ (5)`** differentiate the Poincaré equation | **`cocycle_of_ritt_form`** |
+| **`(5) ⇒ (4)`** the Laurent-rigidity step | **`ritt_form_of_cocycle`**, on the new `eq_monomial_of_scaling` |
+| the rigidity itself: a germ with `H(μz) = c·H(z)`, `‖μ‖<1`, is a monomial and `c = μ^m` | `HTGeometry/ScalingGermRigidity.lean`: `eventuallyEq_const_of_scaling_invariant`, `eq_monomial_of_scaling` |
+| `(8)`–`(10)` the scheme theorem and DA-scheme invariance | `HTGeometry/RGTowerCoherence.lean`: `differentiallyAlgebraicOn_comp`, `differentiallyAlgebraicOn_comp_iff_of_scheme`, `iterate_conjugate` |
+
+New modules: `HTGeometry/ScalingGermRigidity.lean`, `HTGeometry/RittCocycle.lean`,
+`HTGeometry/RittDichotomy.lean`.
+
+### The one remaining implication
+
+Only **`(1) ⇒ (4)`** — Ritt's theorem in the Di Vizio–Fernandes form: *differential algebraicity of
+the Poincaré function forces the order-one relation `(σ')^r = a z^j A(σ)`* — is still an external
+citation.  Its two known proofs are a parametrized-Picard–Vessiot argument (Di Vizio–Fernandes) and
+a value-distribution argument (Nevanlinna theory).  Neither theory exists in mathlib, so this is an
+independent formalization project, not a gap in the card's own reasoning.  Everything the card
+derives *from* Ritt's theorem, and the whole `(4) ⇔ (5)` cocycle equivalence that makes the
+dichotomy checkable, is now unconditional Lean.
+
+## Log (cont.)
+- 2026-08-30 — Lean: the analytic Poincaré theorem is no longer a gap (the corpus already had
+  Koenigs), and `(1) ⇔ (2) ⇔ (3)`, `(4) ⇒ (1)`, `(4) ⇔ (5)` and the scheme theorem `(8)`–`(10)` are
+  unconditional Lean theorems.  The scaling-rigidity core of `(5) ⇒ (4)` — a germ transforming by a
+  scalar under a contracting scaling is a monomial — is new corpus infrastructure.  Remaining:
+  Ritt's `(1) ⇒ (4)`.
+
+### The positive branch of the discriminator is Lean
+
+`formal/GaloisForLFunctions/HTGeometry/PowerMapPoincareDA.lean` verifies the positive branch of
+`(11)` on the exceptional power family: for `g w = (1+w)^p - 1` (the conjugate of `x ↦ x^p` at its
+fixed point) the Poincaré germ is `Φ z = exp z - 1`
+(`powerMapPoincare_functionalEquation`), the order-one relation `(4)` holds with `r = 1`, `j = 0`,
+`A t = 1 + t`, so `Φ` is differentially algebraic (`differentiallyAlgebraicOn_powerMapPoincare`),
+and the rational cocycle `(5)` holds identically (`powerMapGerm_cocycle`).  This is the "pure
+parallel Ising coupling doubling" half of the discriminator pair, checked in Lean.
+
+### The negative branch of the discriminator is Lean
+
+`formal/GaloisForLFunctions/HTGeometry/CocycleDivisorObstruction.lean` formalizes the "explicit
+infinite-divisor argument" of `(11)`.  Written with cleared denominators, the cocycle `(5)` makes
+the numerator of `A` vanish at `t` exactly when it vanishes at `R t`, for every non-critical `t`
+(`eval_eq_zero_iff_of_clearedCocycle`).  A zero therefore propagates backwards along any
+critical-free chain of preimages, so an infinite such chain through a zero forces the numerator to
+have infinitely many roots and hence to vanish
+(`not_clearedCocycle_of_infinite_backward_chain`).
+
+Exhibiting one infinite critical-free backward chain through a zero of the numerator thus rules out
+the cocycle `(5)`, and — through the Lean implication `(4) ⇒ (5)` (`cocycle_of_ritt_form`) — the
+order-one relation `(4)`.  Together with `PowerMapPoincareDA.lean`, both branches of the physical
+discriminator are now machine-checkable: the power family realises the positive branch, the divisor
+obstruction is the tool for the negative one.
+
+The step from "no relation `(4)`" to "the exact beta field is HT" is exactly Ritt's `(1) ⇒ (4)`, the
+one implication still cited rather than proved.

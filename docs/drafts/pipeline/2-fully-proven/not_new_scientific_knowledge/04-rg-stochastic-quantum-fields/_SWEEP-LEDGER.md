@@ -778,3 +778,36 @@ Steps inside that proof:
 Then the card's `(5)` follows from `β` DA `⇔` `κ` DA (the first-order equation `(6)`) and
 `κ` DA `⇒` `Φ` DA (`differentiallyAlgebraicOn_of_localInverse`), and `(10)` from the same theorem
 applied in both directions.
+
+## 14 of 17 — `rg-tower-differential-incoherence-obstruction` PROMOTED (2026-08-30)
+
+The Boshernitzan–Rubel gate is gone.  The analytic assembly
+`HTGeometry/LinearizedTowerCoherence.lean` (`exists_uniform_jet_relation_of_linearized_tower`) and
+the card capstone `HTGeometry/RGTowerCoherence.lean` are built, wired and axiom-clean; the card
+carries a full Lean-status table, including `substitutionFaithful_scaled_linearizer`, which shows
+the one non-vacuity hypothesis is satisfied by any `λ`-stable preconnected linearizing domain.
+
+## The last three cards share one external theorem
+
+`exact-rational-rg-generation-dichotomy`, `gadc-tree-population-rg-clock-hypertranscendence` and
+`noisy-binary-tree-channel-rg-clock-hypertranscendence` all bottom out in the **Ritt /
+Becker–Bergweiler classification**: *the Poincaré (Schröder, Abel) conjugacy of a non-exceptional
+rational map is hypertranscendental*, equivalently *differential algebraicity of the Poincaré
+function forces the order-one relation `(σ')^r = a z^j A(σ)`*.
+
+Everything else on those cards is now Lean:
+
+| Piece | Lean |
+|---|---|
+| Koenigs linearizer and Poincaré germ | `HTGeometry/PoincareFunctionGerm.lean` (already owned) |
+| `Φ` DA `⇔` `κ` DA `⇔` `β` DA | `differentiallyAlgebraicOn_poincare_iff_rgBeta` |
+| the Ritt relation is an ADE | `differentiallyAlgebraicOn_of_rittForm` |
+| **the cocycle equivalence `(4) ⇔ (5)`** | **`cocycle_of_ritt_form`, `ritt_form_of_cocycle`** |
+| the rigidity behind it: `H(μz) = c H(z)`, `‖μ‖<1` ⟹ `H` is a monomial and `c = μ^m` | `HTGeometry/ScalingGermRigidity.lean` |
+| the scheme theorem and DA-scheme invariance | `differentiallyAlgebraicOn_comp`, `differentiallyAlgebraicOn_comp_iff_of_scheme` |
+| the GADC damping trichotomy | `gadcMultiplier_lt_one_iff`, `gadcMultiplier_eq_one_iff`, `gadcMultiplier_one_lt_iff` |
+| the BSC/Bethe exact algebra | `HTGeometry/BetheHolographicIsingRG.lean` (already owned) |
+
+Ritt's implication has two known proofs — parametrized Picard–Vessiot (Di Vizio–Fernandes) and
+value distribution (Nevanlinna).  Neither theory is in mathlib, so closing these three cards is an
+independent formalization project of that scale, not a gap in the cards' own reasoning.

@@ -1,7 +1,7 @@
 # Two-defect decomposition for first-order entire composition
 
 - **ID:** `first-order-composition-two-defect-decomposition`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Scientific status:** `[BRIDGE] [PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Lane:** general hypertranscendence; differential-order geometry under composition
@@ -115,7 +115,9 @@ The decomposition is useful because it isolates the entire-function question, bu
 - [x] Relative primitive visibility classified.
 - [x] Exact field-dimension identity proved.
 - [x] Parent-theory audit; downgraded to bridge.
-- [ ] Formalization deferred; the tree already contains additive primitive descent and affine primitive-action infrastructure, but no transcendence-degree observability layer.
+- [x] Formalized: the transcendence-degree observability layer is now in the tree (relative
+  transcendence degree, jet-field Clunie transcendence, pair independence, first-order substitution);
+  see the Lean formalization section.
 
 ## Primary references
 
@@ -123,3 +125,66 @@ The decomposition is useful because it isolates the entire-function question, bu
 2. Y. Wang and E. D. Sontag, *Orders of Input/Output Differential Equations and State-Space Dimensions*, SIAM J. Control Optim. 33 (1995), 1102--1126.
 3. A. Isidori, A. J. Krener, C. Gori-Giorgi, and S. Monaco, *The Observability of Cascade Connected Nonlinear Systems*, IFAC Proceedings Volumes 14 (1981), 337--342.
 
+
+## Lean formalization (2026-08-30)
+
+Unconditional, `sorry`-free, axiom profile `[propext, Classical.choice, Quot.sound]`.  All modules
+are wired into `GaloisForLFunctions.HTGeometry`.
+
+Dictionary.  Inside the meromorphic field of the plane, with `jetElem hu k` the `k`-th derivative
+of an entire `u`:
+
+- `shadowSet hg` generates `K = ℂ(z)⟨g′⟩`;
+- `compSet hcomp` generates `L = ℂ(z)⟨h⟩` for `h = f ∘ g`, so `daRank hcomp = trdeg_ℂ L`;
+- `visibilityField hg hcomp = ℂ(z)⟨g′⟩ · ℂ(z)⟨h⟩ = N`;
+- `relTrdeg h` is the transcendence degree of one intermediate field over a smaller one, and
+  `shadowLoss hg hcomp = relTrdeg (L ≤ N) = λ_f(g)`;
+- `π(g) = 0` is `IsAlgebraic ↥(adjoin ℂ (shadowSet hg)) (jetElem hg 0)` and `π(g) = 1` its negation;
+- `FirstOrderDA f` is a nonzero polynomial relation among `w`, `f(w)` and `f′(w)`, arranged by the
+  degree in `w`; `AutonomousFirstOrder f` (corpus) is the same without `w`.
+
+### Relative visibility theorem `trdeg_K N = 1 + (1 − aut f)·π(g)`
+
+| Regime | Lean theorem | Module |
+|---|---|---|
+| `aut f` | `relTrdeg_visibilityField_autonomous = 1` | `RelativeVisibilityDegree` |
+| `π(g) = 0` | `relTrdeg_visibilityField_primitive_rigid = 1` | `RelativeVisibilityDegree` |
+| `¬aut f`, `π(g) = 1` | `relTrdeg_visibilityField_nonautonomous = 2` | `RelativeVisibilityDegree` |
+
+The same three statements in absolute form (`trdeg_ℂ N = trdeg_ℂ K + 1` resp. `+ 2`) are
+`trdeg_visibilityField_autonomous`, `trdeg_visibilityField_primitive_rigid` and
+`trdeg_visibilityField_nonautonomous` in `CompositionRelativeVisibility` and
+`FirstOrderCompositionDefect`.
+
+### Exact two-defect identity
+
+`trdeg_add_relTrdeg` is the tower formula `trdeg_ℂ A + trdeg_A B = trdeg_ℂ B`; since cardinal
+arithmetic has no subtraction, the identity
+`ord_DA(h) = ord_DA(g′) + 1 + (1 − aut f)·π(g) − λ_f(g)` is stated additively:
+
+| Regime | Lean theorem | Module |
+|---|---|---|
+| `aut f` | `two_defect_autonomous`: `daRank h + λ = shadowRank g + 1` | `TwoDefectDecomposition` |
+| `π(g) = 0` | `two_defect_primitive_rigid`: same | `TwoDefectDecomposition` |
+| `¬aut f`, `π(g) = 1` | `two_defect_nonautonomous`: `daRank h + λ = shadowRank g + 2` | `TwoDefectDecomposition` |
+
+### The shadow loss vanishes on the proved examples
+
+| Statement | Lean theorem | Module |
+|---|---|---|
+| `λ_f(g) = 0` for autonomous `f` | `shadowLoss_eq_zero_of_autonomous` | `TwoDefectDecomposition` |
+| hence the autonomous cap law | `daRank_eq_shadowRank_add_one_of_autonomous` | `TwoDefectDecomposition` |
+| `λ = 0` for `B(w) = w exp w` on the Gaussian primitive | `shadowLoss_prodQ_eq_zero` | `NonautonomousCapShadowLoss` |
+
+### Supporting layers built here
+
+| Statement | Lean theorem | Module |
+|---|---|---|
+| Clunie: `h` transcendental over `ℂ(z)⟨g⟩` and over `K` | `not_isAlgebraic_comp_over_jetField`, `not_isAlgebraic_comp_over_shadowField` | `CompositionJetFieldTranscendence` |
+| `g` and `h` algebraically independent, so `g` transcendental over `ℂ(h)` | `not_isAlgebraic_inner_over_comp` | `CompositionPairIndependence` |
+| coefficient principle for relations in `g` over `ℂ(h)` | `eq_zero_of_sum_aeval_mul_pow` | `CompositionPairIndependence` |
+| a polynomial relation witnesses algebraicity | `isAlgebraic_of_finsetSum_relation` | `CompositionPairIndependence` |
+| the substituted first-order relation | `firstOrder_relation_mero`, `firstOrder_relation_mero_swap` | `FirstOrderCompositionRelation`, `FirstOrderCompositionDefect` |
+| a nonzero entire function stays nonzero after substitution | `exists_ne_zero_comp` | `FirstOrderCompositionDefect` |
+| the composed derivative is algebraic over any field seeing `g` and `h` | `isAlgebraic_compJetElem_one_of_firstOrder` | `FirstOrderCompositionDefect` |
+| jets of the composition are algebraic once the first one is | `forall_isAlgebraic_jetElem` | `CompositionRelativeVisibility` |

@@ -317,17 +317,21 @@ theorem prodQField_le_quadField : prodQField ≤ quadField := by
   · exact coordElem_mem_quadField
   · exact jetElem_prodQ_mem_quadField _
 
+/-- **The four-generator field is algebraic over the jet field of the nonautonomous composite.** -/
+theorem isAlgebraic_quadField_over_prodQField :
+    ∀ y : meroField (Set.univ : Set ℂ), y ∈ quadField → IsAlgebraic ↥prodQField y := by
+  intro y hy
+  refine isAlgebraic_of_adjoin_of_generators prodQField (insert gaussExpElem gaussTriple)
+    ?_ hy
+  rintro w (rfl | rfl | rfl | rfl)
+  · exact isAlgebraic_gaussExpElem_prodQField
+  · exact isAlgebraic_gaussPrimElem_prodQField
+  · exact isAlgebraic_gaussElem_prodQField
+  · exact isAlgebraic_algebraMap (⟨coordElem, coordElem_mem_prodQField⟩ : ↥prodQField)
+
 /-- **The nonautonomous cap keeps all four states.** -/
 theorem daRank_prodQ : daRank differentiable_prodQ = 4 := by
-  have hAB : ∀ y : meroField (Set.univ : Set ℂ), y ∈ quadField → IsAlgebraic ↥prodQField y := by
-    intro y hy
-    refine isAlgebraic_of_adjoin_of_generators prodQField (insert gaussExpElem gaussTriple)
-      ?_ hy
-    rintro w (rfl | rfl | rfl | rfl)
-    · exact isAlgebraic_gaussExpElem_prodQField
-    · exact isAlgebraic_gaussPrimElem_prodQField
-    · exact isAlgebraic_gaussElem_prodQField
-    · exact isAlgebraic_algebraMap (⟨coordElem, coordElem_mem_prodQField⟩ : ↥prodQField)
+  have hAB := isAlgebraic_quadField_over_prodQField
   have hBA : ∀ y : meroField (Set.univ : Set ℂ), y ∈ prodQField → IsAlgebraic ↥quadField y := by
     intro y hy
     exact isAlgebraic_algebraMap (⟨y, prodQField_le_quadField hy⟩ : ↥quadField)

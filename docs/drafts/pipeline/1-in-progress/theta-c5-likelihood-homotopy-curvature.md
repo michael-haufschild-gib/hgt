@@ -193,3 +193,67 @@ remains before the convex likelihood lift can close.
   CLG/TTF or Weil positivity -> RH`.  Hostile attack order is source endpoints, modular seam jets,
   then structural-tail propagation.  Any wrong-sign face kills the whole shifted-Bernstein survivor;
   no weaker subset is being substituted.
+- 2026-08-30 — `[LEAN-PROVED ROUTE KILL + POSITIVE SURVIVOR]` The adaptive shift chosen to cancel
+  affine velocity variation cannot establish Conjecture K or any all-nonpositive shifted cone.
+  For an arbitrary shift `sigma`, exact cancellation `dv+sigma*v=0` reduces the second shifted face
+  to `v*(H''-sigma^2*H)`.  At the literal source endpoint `l=0`, the already-proved first-atom signs
+  give `v>0` and `H<0`, while the reflected lower-transport bridge gives `H''>0`; therefore this
+  second face is strictly positive.  The source theorem rules out the unique cancelling shift for
+  every `0<t<=u` with `scale(u-t)>=6`, not at sampled parameters.  Formalization:
+  `ThetaCuspLikelihoodHomotopyAdaptiveBernsteinNoGo`.  This kills the entire adaptive
+  velocity-cancellation variant of the shifted-Bernstein strategy.  Positive survivor is the exact
+  source law `0 < v*(H''-sigma^2*H)` under cancellation.  The fixed physical lowest-mode Bose shift
+  `sigma=-dq` does not cancel `dv` and remains the sole shifted-cone route under Conjecture K, with
+  unchanged chain `K -> M'''>0 -> convex likelihood lift -> direct-J -> rank-four/Ptolemy ->
+  CLG/TTF or Weil positivity -> RH`.
+- 2026-08-30 — `[LEAN-PROVED SIGNIFICANT PREMISE]` Corpus audit of the completed endpoint exposed
+  the native monotone ratio `-A'/A^2`, where `A=-(log Theta)''`.  Its derivative numerator is
+  `2*(A')^2-A*A''`.  On the structural tail this numerator is now unconditionally positive.  For
+  the first atom, clearing the sixth power of the Born--Witten coordinate `q>=9/2` leaves
+  `16*q^6-144*q^4-504*q^3-288*q^2+108*q+162>0`.  Completion then preserves strict positivity
+  without estimating the fourth likelihood jet: the negative third likelihood jet enlarges
+  `(A')^2`, while positive second and fourth likelihood jets strictly shrink the adverse product
+  whenever that product is positive; if completed `A''<=0`, the sign is immediate.  The native
+  capstone `strictMonoOn_thetaCuspCompletedInverseCurvatureSlope_of_scale` proves strict increase
+  of `-A'/A^2` on every ray starting at a positive scale-six point.  A current-literature audit
+  found no statement of this reciprocal-curvature inequality; the closest August 2026 result,
+  Planat--Sole's second-level concavity theorem, concerns log-concavity of the first Laguerre
+  expression after the squared radial change and uses certified interval patches, not this
+  completed log-curvature ratio or its exact tail proof.  Formalization:
+  `ThetaCuspCompletedInverseCurvatureTransport`.  Exact chain attacked:
+  `completed inverse-curvature transport + companion projective endpoint comparison ->
+  velocityCenter(1)<0 -> Conjecture K zero face -> shifted Bose cone -> M'''>0 -> direct-J ->
+  rank-four/Ptolemy -> CLG/TTF or Weil positivity -> RH`.  This discharges the first of the two
+  monotone-ratio premises for the completed endpoint; the companion comparison, and the remaining
+  three shifted faces, stay open.
+- 2026-08-30 — `[FROZEN CONJECTURE K0]` The completed endpoint needed for Conjecture K's zero face is
+  `c5CompletedVelocityCenterNumerator u t < 0` for `0<t<=u` and
+  `6<=thetaCuspSingleAtomReflectionScale 1 (u-t)`.  In intrinsic curvature coordinates
+  `A=-(log Theta)''`, its two-step monotone-l'Hospital numerator is controlled by the companion
+  projective law that `A''/A` decreases.  This candidate is corpus-driven by the already-proved
+  strict increase of `-A'/A^2` and the exact likelihood reflected-transport proof.  Hostile test:
+  inverse-curvature convexity alone is insufficient (positive affine curvature gives endpoint
+  determinant exactly zero), while decrease of `A''/A` excludes that obstruction and supplies both
+  the endpoint bridge and strict projective-energy drift.  Exact chain attacked:
+  `A''/A strict decrease -> completed endpoint negative -> Conjecture K zero face -> remaining three
+  shifted faces -> M'''>0 -> convex likelihood lift -> direct-J -> rank-four/Ptolemy -> CLG/TTF or
+  Weil positivity -> RH`.  First target is unconditional cofinal closure using the corpus's
+  super-polynomial likelihood cooling; this removes the noncompact endpoint burden before the
+  scale-six compact chamber.
+- 2026-08-30 — `[LEAN-PROVED SIGNIFICANT PREMISE]` Conjecture K0 is proved cofinally.  For
+  `A=-(log Theta)''`, the completed projective energy `A'*A''-A*A'''`, multiplied by the
+  first-atom reflection scale, tends exactly to `5184`; hence `A''/A` is strictly decreasing on a
+  positive cofinal ray.  Its companion potential `3*(A')^2-2*A*A''` is strictly increasing there.
+  These two endpoint comparisons make the second reflected derivative ratio strictly decreasing;
+  two exact monotone-l'Hospital descents then prove the closed theorem
+  `exists_c5CompletedVelocityCenterNumerator_neg_farTail`: some `x₀>0` satisfies
+  `c5CompletedVelocityCenterNumerator u t<0` for every `t>0` and `x₀<=u-t`.  No computation,
+  interval certificate, premise, hypothesis, or added axiom enters the theorem.  Formalization:
+  `ThetaCuspCompletedCurvatureProjectiveFarTail` and
+  `ThetaCuspCompletedVelocityCenterFarTail`.  Exact chain advanced:
+  `completed endpoint negative -> Conjecture K zero face -> remaining three shifted faces ->
+  M'''>0 -> convex likelihood lift -> direct-J -> rank-four/Ptolemy -> CLG/TTF or Weil positivity
+  -> RH`.  Remaining zero-face burden is compact; this theorem removes its entire noncompact
+  endpoint region.  Direct checks and targeted final-module build pass.  Axiom audit reports only
+  `propext`, `Classical.choice`, and `Quot.sound`.  Global lint finds no local forbidden declaration;
+  it remains red only on unrelated pre-existing umbrella-reachability failures.

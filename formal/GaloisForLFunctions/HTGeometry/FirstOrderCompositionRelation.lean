@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.CompositionPairIndependence
 import GaloisForLFunctions.HTGeometry.CompositionJetRing
 import GaloisForLFunctions.HTGeometry.CascadeMeroField
+import GaloisForLFunctions.HTGeometry.PolynomialDriftRationalOuterFactorRigidity
 
 /-!
 # A first-order equation for the outer factor, read after substitution
@@ -50,10 +51,10 @@ theorem analyticOnNhd_rowComp {f g : ℂ → ℂ} (hf : Differentiable ℂ f) (h
     (c : ℕ → ℕ → Polynomial ℂ) (m i : ℕ) :
     AnalyticOnNhd ℂ (fun z : ℂ => rowFun f c m i (g z)) (Set.univ : Set ℂ) := by
   have hcomp : Differentiable ℂ fun z : ℂ => f (g z) := fun z => (hf (g z)).comp z (hg z)
-  have hderiv : Differentiable ℂ fun z : ℂ => deriv f (g z) := by
-    have h1 : Differentiable ℂ (deriv f) := (differentiable_iteratedDeriv_entire hf 1).congr
-      (fun z => by rw [iteratedDeriv_one])
-    exact fun z => (h1 (g z)).comp z (hg z)
+  have hfan : AnalyticOnNhd ℂ f (Set.univ : Set ℂ) :=
+    hf.differentiableOn.analyticOnNhd isOpen_univ
+  have hd : Differentiable ℂ (deriv f) := fun z => (hfan.deriv z (Set.mem_univ z)).differentiableAt
+  have hderiv : Differentiable ℂ fun z : ℂ => deriv f (g z) := fun z => (hd (g z)).comp z (hg z)
   have hterm : ∀ k : ℕ, AnalyticOnNhd ℂ
       (fun z : ℂ => (c i k).eval (f (g z)) * (deriv f (g z)) ^ k) (Set.univ : Set ℂ) := by
     intro k
@@ -78,9 +79,11 @@ theorem analyticOnNhd_rowComp {f g : ℂ → ℂ} (hf : Differentiable ℂ f) (h
 
 theorem analyticOnNhd_compDeriv {f g : ℂ → ℂ} (hf : Differentiable ℂ f) (hg : Differentiable ℂ g) :
     AnalyticOnNhd ℂ (fun z : ℂ => deriv f (g z)) (Set.univ : Set ℂ) := by
-  have h1 : Differentiable ℂ (deriv f) := (differentiable_iteratedDeriv_entire hf 1).congr
-    (fun z => by rw [iteratedDeriv_one])
-  exact (fun z => (h1 (g z)).comp z (hg z)).differentiableOn.analyticOnNhd isOpen_univ
+  have hfan : AnalyticOnNhd ℂ f (Set.univ : Set ℂ) :=
+    hf.differentiableOn.analyticOnNhd isOpen_univ
+  have hd : Differentiable ℂ (deriv f) := fun z => (hfan.deriv z (Set.mem_univ z)).differentiableAt
+  have hcd : Differentiable ℂ fun z : ℂ => deriv f (g z) := fun z => (hd (g z)).comp z (hg z)
+  exact hcd.differentiableOn.analyticOnNhd isOpen_univ
 
 /-! ### The substituted row in the meromorphic field -/
 
@@ -128,8 +131,22 @@ theorem analyticMeroElement_rowComp {f g : ℂ → ℂ} (hf : Differentiable ℂ
     analyticMeroElement_congr _ _ (by funext z; rw [rowFun])
   rw [hfirst, hstep]
   refine Finset.sum_congr rfl fun k _ => ?_
-  rw [hh, ha, aeval_analyticMeroElement hcompan (c i k), ← analyticMeroElement_pow hderivan k,
-    ← analyticMeroElement_mul (analyticOnNhd_polyComp hcompan (c i k)) (hderivan.pow k)]
+  have hpowan : AnalyticOnNhd ℂ (fun z : ℂ => deriv f (g z) ^ k) (Set.univ : Set ℂ) :=
+    hderivan.pow k
+  have hpolyan : AnalyticOnNhd ℂ (fun z : ℂ => (c i k).eval (f (g z))) (Set.univ : Set ℂ) :=
+    analyticOnNhd_polyComp hcompan (c i k)
+  have hmul : analyticMeroElement
+      (fun z : ℂ => (c i k).eval (f (g z)) * deriv f (g z) ^ k) (hterm k)
+      = analyticMeroElement (fun z : ℂ => (c i k).eval (f (g z))) hpolyan
+        * analyticMeroElement (fun z : ℂ => deriv f (g z) ^ k) hpowan :=
+    analyticMeroElement_mul hpolyan hpowan
+  have hpow : analyticMeroElement (fun z : ℂ => deriv f (g z) ^ k) hpowan
+      = (analyticMeroElement (fun z : ℂ => deriv f (g z)) hderivan) ^ k :=
+    analyticMeroElement_pow hderivan k
+  have hpoly : analyticMeroElement (fun z : ℂ => (c i k).eval (f (g z))) hpolyan
+      = Polynomial.aeval (analyticMeroElement (fun w : ℂ => f (g w)) hcompan) (c i k) :=
+    (aeval_analyticMeroElement hcompan (c i k)).symm
+  rw [hh, ha, hmul, hpow, hpoly]
 
 /-- **The substituted first-order relation.**  A first-order equation for `f` becomes a polynomial
 relation among `g`, `f ∘ g` and `f′ ∘ g` in the meromorphic field. -/
@@ -156,9 +173,15 @@ theorem firstOrder_relation_mero {f g : ℂ → ℂ} (hf : Differentiable ℂ f)
     exact hrel (g z)
   rw [← hzero]
   refine Finset.sum_congr rfl fun i _ => ?_
-  rw [hG, ← analyticMeroElement_pow hgan i,
-    ← analyticMeroElement_mul (analyticOnNhd_rowComp hf hg c m i) (hgan.pow i),
-    ← analyticMeroElement_rowComp hf hg hcomp c m i]
+  have hpowan : AnalyticOnNhd ℂ (fun z : ℂ => g z ^ i) (Set.univ : Set ℂ) := hgan.pow i
+  have hmul : analyticMeroElement (fun z : ℂ => rowFun f c m i (g z) * g z ^ i) (hterm i)
+      = analyticMeroElement (fun z : ℂ => rowFun f c m i (g z))
+          (analyticOnNhd_rowComp hf hg c m i)
+        * analyticMeroElement (fun z : ℂ => g z ^ i) hpowan :=
+    analyticMeroElement_mul (analyticOnNhd_rowComp hf hg c m i) hpowan
+  have hpow : analyticMeroElement (fun z : ℂ => g z ^ i) hpowan
+      = (analyticMeroElement g hgan) ^ i := analyticMeroElement_pow hgan i
+  rw [hmul, hpow, analyticMeroElement_rowComp hf hg hcomp c m i, ← hG]
 
 end
 

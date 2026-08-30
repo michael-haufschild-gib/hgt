@@ -969,3 +969,86 @@ the Q8 sign requires local/global Hecke--Artin epsilon theory for the actual
 quadratic source, and the Burnol complement requires the Chapter-6
 Nevanlinna/Krein reconstruction of a compact multiplicative co-Poisson source
 from a Mellin transform divisible by zeta.
+
+## 2026-08-30 Burnol 6.25 seed-regularity arrow
+
+`[LITERATURE]` Active exact claim: for `0 < b ≤ 1`, an integrable seed `g`
+supported in `[b, b⁻¹]` whose literal co-Poisson sum
+
+```text
+F(t) = sum_(n >= 1) g(t / n) / n - c_g
+```
+
+is an `L²` vector has `g ∈ L²`.  This is the seed-regularity step used in
+Burnol's Theorem 6.25 before the Paley--Wiener reconstruction; it is not the
+full `P_a = Y_aᗮ` statement.  The current corpus has the finite sequence
+Möbius inversion and the forward co-Poisson Mellin formula, but no
+function-level theorem of this form.
+
+`[PAPER-PROVED]` Put `S = F + c_g`.  On `[b,b⁻¹]`, choose
+`N = ceil(b⁻²)`.  Support makes every term with `nm > N` vanish, hence the
+finite Möbius identity gives, almost everywhere,
+
+```text
+g(t) = sum_(1 ≤ n ≤ N) mu(n) / n * S(t / n).
+```
+
+Each dilate `F(t / n)` is `L²`; the correction constant restricted to the
+finite interval is `L²`; and the displayed finite sum is therefore `L²`.
+Outside `[b,b⁻¹]`, `g` vanishes.  The hostile checks are the index weight
+`1/n`, the finite cutoff `nm ≤ b⁻²`, and use of almost-everywhere equality
+rather than a pointwise representative; all three are explicit in the
+formula.  This is precisely the finite Möbius step recorded in Burnol's
+proof, not a new RH claim.  Primary source: Burnol, *On Fourier and Zeta(s)*,
+Theorem 6.25 and proof.
+
+`[OPEN CORE]` Lean must transport the finite function identity through the
+literal `BurnolCoPoissonSource.vector_eq_sum`, then package its finite
+linear combination of `dilationCLM` vectors and the bounded-window constant
+as `MemLp _ 2 volume`.  No local-class-field or Nevanlinna premise is needed
+for this lemma.
+
+## 2026-08-30 Burnol 6.25 seed-regularity arrow — closed
+
+`[LEAN-PROVED]` The open core above is now an unconditional theorem:
+
+```lean
+RHTower.BurnolCoPoissonSource.seed_memLp_two
+  (hb : 0 < b) (src : BurnolCoPoissonSource b) :
+  MemLp src.seed 2 volume
+```
+
+in `formal/GaloisForLFunctions/RHTower/BurnolCoPoissonSeedL2Recovery.lean`.
+The proof is stronger than the paper's stated `0 < b ≤ 1` range: positive
+aperture and the literal compact support already suffice.  It derives the
+source-window identity
+
+```text
+g(t) = sum_(1 ≤ n ≤ ceil(b⁻¹ / b)) mu(n) / n
+       * (F(t / n) + c_g),
+```
+
+by an exact finite divisor bijection.  Terms outside the `nm ≤ b⁻²`
+rectangle are proved zero from `Function.support g ⊆ [b,b⁻¹]`; therefore no
+exchange of infinite sums, no convergence proxy, and no unproved analytic
+regularity is used.  The variable part is a finite sum of literal `L²`
+co-Poisson dilates.  The correction is placed under the compact interval
+indicator before `MemLp`, so it is never falsely asserted globally `L²`.
+
+Targeted source check and leaf build passed:
+
+```text
+lake env lean GaloisForLFunctions/RHTower/BurnolCoPoissonSeedL2Recovery.lean
+lake build GaloisForLFunctions.RHTower.BurnolCoPoissonSeedL2Recovery
+```
+
+The axiom audit for both `seed_memLp_two` and its pointwise recovery theorem
+reports only `propext`, `Classical.choice`, and `Quot.sound`; source scan has
+no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`.  The leaf is wired into
+`RHTower.lean`; no umbrella build was run.  Repository lint still reports
+pre-existing unreachable modules elsewhere, but not this new leaf.
+
+This closes exactly one literature sub-arrow of Burnol 6.25.  It does not
+prove the reverse Mellin/Paley--Wiener reconstruction, `P_a = Y_aᗮ`, a
+source-selected complement equality, or RH.  Those remain the genuine
+Burnol endpoint obstruction.

@@ -1,8 +1,8 @@
 # FZZ sparse unbounded-jet density no-go
 
 - **ID:** FZZ-SUJD-NG
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper) / FALSIFIED route premise
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean) / FALSIFIED route premise
 - **Source:** `rh-current-frontier-map.md` FZZ-P route (read-only ledger)
 - **Statement:** One completed FZZ response can match Xi to unbounded node-dependent complex-order jet depth on a sparse subsequence of physical response orders, preserve the full completed analytic/real-axis package, and still carry an interior off-critical zero.
 
@@ -66,7 +66,7 @@ This is one fixed countermodel, not a family chosen after the requested depth.
 
 - [x] 0 -> 1 in-progress: source-pure frozen falsifier, explicit RH proof chain, corpus collision audit
 - [x] 1 -> 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 -> 3 formalized: Lean theorem, direct check, targeted `lake build`, axiom audit
+- [x] 2 -> 3 formalized: Lean theorem, direct check, targeted `lake build`, axiom audit
 - [ ] 3 -> 4 publication-ready: standalone theorem, proof, Lean certificate, novelty audit
 
 ## Approach
@@ -202,14 +202,25 @@ FZZ response with cubic-spaced unbounded Hermite contact and an implanted off-cr
 Novelty claim is the exact route kill and its cumulative-density boundary, not Weierstrass product
 existence alone.
 
-## No-go closure (pending proof)
+## No-go closure
 
 - **Exact killing theorem/mechanism:** sparse multiplicity consumes only summable reciprocal mass, so one order-one positive-square Gamma-null gauge hides linearly increasing jets at cubic-spaced physical orders.
 - **Strongest positive survivor:** cumulative jet multiplicity density, rather than boundedness of the depth function, is the necessary local uniqueness invariant.
 - **New insight:** any surviving FZZ-P local source selector must prove a quantitative uniqueness-density condition; merely producing arbitrarily high finite jets at selected orders cannot control the completed divisor.
-- **Status:** Dependency-closed paper theorem with hostile and novelty audits; Lean formalization pending.
+- **Status:** Dependency-closed and formalized in Lean.  The exact route-kill theorem is
+  `RHTower.completed_response_sparseUnboundedJet_route_noGo`; the reusable positive survivor is
+  `RHTower.sparseJetCanonicalProduct_package`.
+
+## Lean certificate
+
+- Survivor module: `formal/GaloisForLFunctions/HTGeometry/SparseUnboundedMultiplicityCanonicalProduct.lean`
+- Route-kill module: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingFZZSchwarzschildSparseUnboundedJetDensityNoGo.lean`
+- Direct checks: both modules pass `lake env lean <file>`.
+- Targeted builds: both module targets pass; no umbrella or full build was run.
+- Axioms: `propext`, `Classical.choice`, `Quot.sound` only.
 
 ## Log
 
 - 2026-08-30 — frozen as Stage 1 falsifier after corpus and literature audits.
 - 2026-08-30 — `[PROVED HERE]`; repeated-divisor growth, exact contact, completed gauge, and hostile audit closed; promoted to Stage 2.
+- 2026-08-30 — survivor and full no-go theorem formalized, wired into both umbrellas, directly checked, targeted-built, and axiom-audited; promoted to Stage 3.
