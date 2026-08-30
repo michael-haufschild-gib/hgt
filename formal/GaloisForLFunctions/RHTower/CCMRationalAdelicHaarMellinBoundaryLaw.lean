@@ -29,9 +29,9 @@ private abbrev LegacySource := CCMRationalAdelicCyclicSourceAlgebra
 private abbrev SourceDegree :=
   CCMRationalAdelicTwistedReducedSourceCyclicModule.simplicial.degree 0
 
-local instance : MeasurableSpace U := borel U
-local instance : BorelSpace U := ⟨rfl⟩
-local instance : IsProbabilityMeasure ccmRationalProfiniteUnitHaar :=
+local instance cCMRationalAdelicHaarMellinBoundaryLawLocalInst1 : MeasurableSpace U := borel U
+local instance cCMRationalAdelicHaarMellinBoundaryLawLocalInst2 : BorelSpace U := ⟨rfl⟩
+local instance cCMRationalAdelicHaarMellinBoundaryLawLocalInst3 : IsProbabilityMeasure ccmRationalProfiniteUnitHaar :=
   ⟨ccmRationalProfiniteUnitHaar_univ⟩
 
 /-! ## Finite-fibre Haar descent -/

@@ -24,7 +24,7 @@ noncomputable section
 attribute [local instance] formalLaurentRatAlgebra formalLaurentRatComplexTower
   formalLaurentDifferential rationalZeroDifferential formalLaurentDifferentialAlgebraRat
 
-local instance : CharZero FormalLaurent :=
+local instance familyFormalMahlerDescentLocalInst1 : CharZero FormalLaurent :=
   charZero_of_injective_algebraMap (algebraMap ℂ FormalLaurent).injective
 
 variable {ι : Type*} [Fintype ι] [DecidableEq ι]

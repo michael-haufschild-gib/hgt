@@ -31,7 +31,7 @@ def systemEntries (K : Type*) [Field K] (N : ℕ) : Set (JetField K (Fin N × Fi
 theorem derivationClosed_curvatureField :
     DerivationClosed (differentialAdjoin K (systemEntries K N)) :=
   derivationClosed_differentialAdjoin_of_constants K
-    (fun c => deriv_algebraMap_jetField c) _
+    (fun c => deriv_algebraMap_jetField_indexed c) _
 
 theorem genericSystemMatrix_mem_curvatureField (i j : Fin N) :
     genericSystemMatrix K N i j ∈ differentialAdjoin K (systemEntries K N) :=

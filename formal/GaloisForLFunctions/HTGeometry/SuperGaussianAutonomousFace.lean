@@ -81,7 +81,7 @@ theorem norm_prod_pow_sub_one_le {ι : Type*} [DecidableEq ι] (s : Finset ι) (
 
 
 /-- A crude but explicit expansion bound: `(1+δ)^D ≤ 1 + 3^D δ` for `0 ≤ δ ≤ 1`. -/
-theorem one_add_pow_le {δ : ℝ} (hδ0 : 0 ≤ δ) (hδ1 : δ ≤ 1) (D : ℕ) :
+private theorem one_add_pow_le {δ : ℝ} (hδ0 : 0 ≤ δ) (hδ1 : δ ≤ 1) (D : ℕ) :
     (1 + δ) ^ D ≤ 1 + 3 ^ D * δ := by
   induction D with
   | zero => simpa using hδ0

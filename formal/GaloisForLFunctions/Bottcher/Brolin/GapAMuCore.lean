@@ -11,7 +11,7 @@ open scoped Laplacian
 
 namespace Bottcher
 
-local instance : Fact (0 < 2 * Real.pi) := ⟨Real.two_pi_pos⟩
+local instance gapAMuCoreLocalInst1 : Fact (0 < 2 * Real.pi) := ⟨Real.two_pi_pos⟩
 
 /-- Zero-target arbitrary-pullback potential identity, stated through the
 arbitrary-target finite measure. -/

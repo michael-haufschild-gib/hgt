@@ -181,14 +181,14 @@ theorem exp_coeff_eq_zero_of_sum_eq_zero {ι : Type*} (s : Finset ι) (mu : ι �
   exact hLI Finset.univ (fun j => g (j : ι)) hsum ⟨i, hi⟩ (Finset.mem_univ _)
 
 /-- Point evaluation of a global analytic germ, as a ring homomorphism. -/
-def analyticEvalAt (z : ℂ) : analyticSubring (Set.univ : Set ℂ) →+* ℂ :=
+def analyticEvalAtUniv (z : ℂ) : analyticSubring (Set.univ : Set ℂ) →+* ℂ :=
   (univGermEval z).comp (Subring.subtype (analyticSubring (Set.univ : Set ℂ)))
 
-@[simp] theorem analyticEvalAt_physicalExponentialAnalytic (z mu : ℂ) :
-    analyticEvalAt z (physicalExponentialAnalytic mu) = Complex.exp (mu * z) := rfl
+@[simp] theorem analyticEvalAtUniv_physicalExponentialAnalytic (z mu : ℂ) :
+    analyticEvalAtUniv z (physicalExponentialAnalytic mu) = Complex.exp (mu * z) := rfl
 
-@[simp] theorem analyticEvalAt_constToAnalytic (z c : ℂ) :
-    analyticEvalAt z (constToAnalytic Set.univ c) = c := rfl
+@[simp] theorem analyticEvalAtUniv_constToAnalytic (z c : ℂ) :
+    analyticEvalAtUniv z (constToAnalytic Set.univ c) = c := rfl
 
 /-- The same statement inside the global meromorphic field. -/
 theorem physicalExponentialMero_coeff_eq_zero_of_sum_eq_zero {ι : Type*} (s : Finset ι)
@@ -207,7 +207,7 @@ theorem physicalExponentialMero_coeff_eq_zero_of_sum_eq_zero {ι : Type*} (s : F
       (by simpa using hmapA)
   refine exp_coeff_eq_zero_of_sum_eq_zero s mu hmu g ?_
   intro z
-  have hval := congrArg (analyticEvalAt z) hA0
+  have hval := congrArg (analyticEvalAtUniv z) hA0
   rw [hA, map_sum, map_zero] at hval
   rw [← hval]
   exact Finset.sum_congr rfl fun i _ => by rw [map_mul]; simp
@@ -270,20 +270,20 @@ theorem exists_constant_of_two_realPeriods_fixed {om1 om2 : ℝ}
 
 /-- Global analytic germs are determined by their point values. -/
 theorem analyticSubring_ext {a b : analyticSubring (Set.univ : Set ℂ)}
-    (h : ∀ z, analyticEvalAt z a = analyticEvalAt z b) : a = b :=
+    (h : ∀ z, analyticEvalAtUniv z a = analyticEvalAtUniv z b) : a = b :=
   Subtype.ext (univGerm_ext h)
 
 @[simp] theorem physicalExponentialAnalytic_zero :
     physicalExponentialAnalytic 0 = 1 := by
   refine analyticSubring_ext fun z => ?_
-  rw [analyticEvalAt_physicalExponentialAnalytic, map_one, zero_mul, Complex.exp_zero]
+  rw [analyticEvalAtUniv_physicalExponentialAnalytic, map_one, zero_mul, Complex.exp_zero]
 
 theorem physicalExponentialAnalytic_add (a b : ℂ) :
     physicalExponentialAnalytic (a + b)
       = physicalExponentialAnalytic a * physicalExponentialAnalytic b := by
   refine analyticSubring_ext fun z => ?_
-  rw [map_mul, analyticEvalAt_physicalExponentialAnalytic,
-    analyticEvalAt_physicalExponentialAnalytic, analyticEvalAt_physicalExponentialAnalytic,
+  rw [map_mul, analyticEvalAtUniv_physicalExponentialAnalytic,
+    analyticEvalAtUniv_physicalExponentialAnalytic, analyticEvalAtUniv_physicalExponentialAnalytic,
     ← Complex.exp_add]
   ring_nf
 

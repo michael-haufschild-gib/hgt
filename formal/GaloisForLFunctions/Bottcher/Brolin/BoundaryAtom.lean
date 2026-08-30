@@ -11,7 +11,7 @@ open scoped Laplacian
 
 namespace Bottcher
 
-local instance : Fact (0 < 2 * Real.pi) := ⟨Real.two_pi_pos⟩
+local instance boundaryAtomLocalInst1 : Fact (0 < 2 * Real.pi) := ⟨Real.two_pi_pos⟩
 
 /-- Boundary atom-pressure estimate on the compact carrier.  If the limiting
 measure put mass at a filled-Julia point, the boundary truncation inequality

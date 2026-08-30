@@ -11,7 +11,7 @@ open scoped Laplacian
 
 namespace Bottcher
 
-local instance : Fact (0 < 2 * Real.pi) := ⟨Real.two_pi_pos⟩
+local instance boundaryCriteriaLocalInst1 : Fact (0 < 2 * Real.pi) := ⟨Real.two_pi_pos⟩
 
 /-- If the constructed boundary potential satisfies the same quadratic scaling
 law as the Green function on `K_c`, then the opposite boundary inequality

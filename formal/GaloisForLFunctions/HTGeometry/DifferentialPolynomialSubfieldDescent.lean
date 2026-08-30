@@ -25,7 +25,7 @@ open GaloisForLFunctions
 variable {C L : Type*} [Field C] [Field L] [Algebra C L] [Differential C] [Differential L]
 
 /-- Jets of a point of the differential subfield stay in the subfield. -/
-theorem differentialJet_algebraMap
+private theorem differentialJet_algebraMap
     (hcompat : ∀ a : C, (algebraMap C L a)′ = algebraMap C L (a′)) (c : C) :
     ∀ n : ℕ, differentialJet n (algebraMap C L c) = algebraMap C L (differentialJet n c)
   | 0 => by rw [differentialJet_zero, differentialJet_zero]

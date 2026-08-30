@@ -21,7 +21,7 @@ namespace GaloisForLFunctions
 
 noncomputable section
 
-local instance : Algebra ℂ NatGerm := complexNatGerm.toAlgebra
+local instance gammaPoleWeightedFirstSubprincipalCofinalLocalInst1 : Algebra ℂ NatGerm := complexNatGerm.toAlgebra
 
 /-- Symbolic principal frame obtained as the highest pole coefficient of each Gamma jet. -/
 def gammaPolePrincipalReflectionSymbol (n : ℕ) :

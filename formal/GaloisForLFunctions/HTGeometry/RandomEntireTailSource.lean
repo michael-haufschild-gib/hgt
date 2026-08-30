@@ -70,7 +70,7 @@ theorem continuous_boundedRandomEntireTail_uncurry (N : ℕ) :
     rw [boundedRandomEntireTail_eq, entireOfCoeffs]
     congr 1
     refine tsum_congr fun n => ?_
-    rw [tailCoeff]
+    rw [randomTailCoeff]
     ring
   rw [hval]
   exact (continuous_snd.pow N).mul (continuous_clampedSeries_uncurry _ hα)

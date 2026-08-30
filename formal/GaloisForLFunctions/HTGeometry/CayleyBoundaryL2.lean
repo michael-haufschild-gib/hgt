@@ -53,7 +53,7 @@ theorem standardCauchyMeasure_eq_withDensity :
   field_simp
   ring
 
-local instance : CompleteSpace UpperHardyL2 :=
+local instance cayleyBoundaryL2LocalInst1 : CompleteSpace UpperHardyL2 :=
   RHTower.isClosed_hardyL2.completeSpace_coe
 
 def cayleyBaseFeature : UpperHardyL2 :=

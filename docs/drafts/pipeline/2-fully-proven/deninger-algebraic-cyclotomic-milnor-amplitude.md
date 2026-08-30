@@ -1821,3 +1821,46 @@ Both direct checks and targeted builds pass; every new declaration audits to
 `[propext, Classical.choice, Quot.sound]`.  Modules are umbrella-wired without an umbrella build.
 Card remains Stage 2: next geometric obligation is mixed real/complex leading-minor comparison and
 greedy covering, followed by finite overlap, tame-kernel finite generation, and Moore reciprocity.
+
+### Global integral-minor product invariant (2026-08-30)
+
+The attempted placewise port of the integer minor bound is false over a general number field: a
+nonzero algebraic integer can be arbitrarily small at one archimedean embedding.  The correct
+invariant is one globally selected integral minor measured simultaneously at every embedding.
+
+`NumberFieldArchimedeanMinorProduct.lean` now proves this replacement exactly.  Arbitrary complex
+embedding evaluation is defined for rectangular number-ring matrices and shown to commute with
+submatrices and determinants.  Leading columns of an injective square matrix are proved injective
+over any commutative ring.  Consequently, every leading frame of an element of
+`SL_n(𝓞 K)` has one globally nonzero maximal minor.  Its logarithmic embedding magnitudes have
+nonnegative total by the algebraic-integer norm formula.  The same row selection is retained at
+every embedding; no place-dependent minor choice or false local magnitude floor is introduced.
+
+`ComplexSiegelWeightedGram.lean` supplies the matching Hermitian analytic identity.  Its ordered
+complex Cauchy--Binet formula expands a weighted Gram determinant into real-positive Jacobi-weight
+products times squared minor norms.  A second theorem retains any prescribed minor term and bounds
+it by the full Hermitian Gram determinant, so the global integral minor above can be used at every
+complex embedding without reselection.
+
+Both source checks and targeted leaf builds pass.  All nine new declarations audit to
+`[propext, Classical.choice, Quot.sound]`; both modules are umbrella-wired without an umbrella
+build.  Card remains Stage 2.  Remaining geometric obligation is to combine real and Hermitian
+selected-minor bounds across all infinite places into the global leading-minor descent, then prove
+covering and finite overlap.  Tame-kernel finite generation and Moore reciprocity remain afterward.
+
+### Hermitian rectangular determinant domination (2026-08-30)
+
+`ComplexSiegelGramDomination.lean` completes the complex counterpart of the real determinant
+comparison used in Siegel reduction.  It constructs the projected complex Jacobi norm, proves it
+is the exact squared Hermitian distance to lower-coordinate support, constructs the minimizing
+projection through a finite-dimensional complex linear equivalence, and proves rectangular
+congruence preserves positive definiteness.  The capstone `complex_det_congr_ge` transports any
+pointwise lower bound between Hermitian quadratic forms through an injective rectangular frame and
+deduces the corresponding determinant lower bound, using no spectral or determinant-monotonicity
+premise.
+
+Direct source check and targeted leaf build pass.  All 19 declarations audit to
+`[propext, Classical.choice, Quot.sound]`; module is umbrella-wired without an umbrella build.
+Card remains Stage 2.  Real and complex selected-minor inequalities and determinant domination are
+now available on the same interface; next obligation is their weighted all-place summation and the
+resulting global leading-minor descent.

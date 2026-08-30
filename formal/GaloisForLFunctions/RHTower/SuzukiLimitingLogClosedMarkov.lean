@@ -18,11 +18,11 @@ open GaloisForLFunctions.RHTower
 
 attribute [local instance] Measure.Subtype.measureSpace
 
-local instance : SFinite ccmArchimedeanFormMeasure := by
+local instance suzukiLimitingLogClosedMarkovLocalInst1 : SFinite ccmArchimedeanFormMeasure := by
   unfold ccmArchimedeanFormMeasure
   infer_instance
 
-local instance : Fact ((2 : ℝ≥0∞) ≠ ∞) := ⟨by norm_num⟩
+local instance suzukiLimitingLogClosedMarkovLocalInst2 : Fact ((2 : ℝ≥0∞) ≠ ∞) := ⟨by norm_num⟩
 
 /-- Smooth one-Lipschitz approximation to the real modulus, fixing zero. -/
 def suzukiSmoothAbsolute (ε x : ℝ) : ℝ :=
@@ -869,11 +869,11 @@ open GaloisForLFunctions.HTGeometry
 
 attribute [local instance] Measure.Subtype.measureSpace
 
-local instance : SFinite ccmArchimedeanFormMeasure := by
+local instance suzukiLimitingLogClosedMarkovLocalInst3 : SFinite ccmArchimedeanFormMeasure := by
   unfold ccmArchimedeanFormMeasure
   infer_instance
 
-local instance : Fact ((2 : ℝ≥0∞) ≠ ∞) := ⟨by norm_num⟩
+local instance suzukiLimitingLogClosedMarkovLocalInst4 : Fact ((2 : ℝ≥0∞) ≠ ∞) := ⟨by norm_num⟩
 
 private local instance suzukiFormDomainRealInnerProduct :
     InnerProductSpace ℝ

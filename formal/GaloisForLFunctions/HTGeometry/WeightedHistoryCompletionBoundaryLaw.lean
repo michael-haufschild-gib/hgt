@@ -156,7 +156,7 @@ end Completion
 
 section BinaryRestrictedHistory
 
-local instance : UniformSpace (Fin 2) := ⊥
+local instance weightedHistoryCompletionBoundaryLawLocalInst1 : UniformSpace (Fin 2) := ⊥
 
 /-- Nonidentity element of the binary compact coordinate group. -/
 def binaryHistoryOne : Fin 2 := ⟨1, by omega⟩
@@ -407,7 +407,7 @@ theorem weightedHistoryAction_add_le (x y : ⨁ j, Gamma j) :
 
 variable [∀ j, UniformSpace (K j)]
 
-local instance : UniformSpace (⨁ j, Gamma j) := weightedHistoryUniformSpace Gamma
+local instance weightedHistoryCompletionBoundaryLawLocalInst2 : UniformSpace (⨁ j, Gamma j) := weightedHistoryUniformSpace Gamma
 
 /-- Neighbourhood relaxation of the finite-support action in the product completion. -/
 def weightedHistoryRelaxation (x : ∀ j, K j) : ℝ≥0∞ :=
@@ -514,8 +514,8 @@ end WeightedHistoryDatum
 
 section BinaryWeightedHistory
 
-local instance : UniformSpace (Fin 2) := ⊥
-local instance : UniformSpace (⨁ j : ℕ, binaryRestrictedGamma j) :=
+local instance weightedHistoryCompletionBoundaryLawLocalInst3 : UniformSpace (Fin 2) := ⊥
+local instance weightedHistoryCompletionBoundaryLawLocalInst4 : UniformSpace (⨁ j : ℕ, binaryRestrictedGamma j) :=
   weightedHistoryUniformSpace binaryRestrictedGamma
 
 /-- Proper symmetric binary coordinate length. -/

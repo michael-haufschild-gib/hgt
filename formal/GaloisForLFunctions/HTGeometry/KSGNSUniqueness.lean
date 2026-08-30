@@ -11,7 +11,7 @@ variable {A B : Type*}
     [CStarAlgebra B] [PartialOrder B] [StarOrderedRing B]
 
 /-- Complex-linear isometry `Bᵐᵒᵖ → B` used to expose the standard right-module convention. -/
-def mulOppositeUnopCLM : Bᵐᵒᵖ →L[ℂ] B :=
+private def mulOppositeUnopCLM : Bᵐᵒᵖ →L[ℂ] B :=
   { toLinearMap :=
       { toFun := MulOpposite.unop
         map_add' := by intro x y; rfl

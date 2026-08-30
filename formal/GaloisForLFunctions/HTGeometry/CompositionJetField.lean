@@ -29,7 +29,7 @@ def jetElem {f : ℂ → ℂ} (hf : Differentiable ℂ f) (k : ℕ) : meroField 
     ((differentiable_iteratedDeriv_entire hf k).differentiableOn.analyticOnNhd isOpen_univ)
 
 /-- The state field of the first `n+1` jets. -/
-def jetField {f : ℂ → ℂ} (hf : Differentiable ℂ f) (n : ℕ) :
+private def jetField {f : ℂ → ℂ} (hf : Differentiable ℂ f) (n : ℕ) :
     IntermediateField (RatFunc ℂ) (meroField (Set.univ : Set ℂ)) :=
   IntermediateField.adjoin (RatFunc ℂ) (Set.range (fun k : Fin (n + 1) => jetElem hf (k : ℕ)))
 

@@ -1197,3 +1197,51 @@ keep the paper's exact notation separate from the absolute field discriminant.
 Targeted source check and leaf build pass; axiom audit reports only `propext`,
 `Classical.choice`, and `Quot.sound`.  The module is wired into `RHTower.lean`; no umbrella build
 was run.
+
+## 2026-08-30 Burnol Theorem 5.2 critical-line L2 kernel — closed
+
+`[LITERATURE, LEAN-PROVED]` `BurnolResidueCriticalLineKernelL2.lean` formalizes the literal
+critical-line estimate used in Burnol's proof of strong `L²` residue-series convergence.  On
+`Z = -1/2 + it`, it defines
+
+```text
+B(t)   = zeta(Z) / (Z (Z + 2)),
+K_s(t) = zeta(Z) (2 + s) / ((Z + 2) (Z - s)).
+```
+
+The corpus's exact identity `|chi(Z)| = |Z|/(2*pi)` is combined with the uniform Dirichlet-series
+bound on `Re(1-Z)=3/2`, improving the previously available quadratic envelope to the linear bound
+
+```text
+|zeta(Z)| <= (zetaHalfPlaneBound(3/2)/(2*pi)) |Z|.
+```
+
+After cancelling `Z`, `B` is dominated by the shifted Cauchy kernel `(Z+2)^(-1)`, whose exact
+square integral was already formalized.  Hence `B in L²(R)`.  For every source-contour point with
+`Re s >= -1/4`, the exact separation `|Z-s| >= 1/4` gives
+
+```text
+|K_s(t)| <= 9 (1 + |s|^2) |B(t)|,
+```
+
+and therefore both
+
+```lean
+memLp_burnolResidueCriticalLineKernel
+eLpNorm_burnolResidueCriticalLineKernel_le_quadratic
+```
+
+unconditionally.  This is the paper's actual polynomial `L²` kernel bound, not an assumed Hardy
+or abstract integrability wrapper.
+
+Targeted source check and leaf build pass.  Axiom audit for the linear zeta bound, fixed base
+kernel, pointwise quadratic bound, `eLpNorm` bound, and `MemLp` theorem reports only `propext`,
+`Classical.choice`, and `Quot.sound`.  The leaf is wired into `RHTower.lean`; no umbrella build was
+run.
+
+`[OPEN CORE]` Burnol Theorem 3.3 completeness still needs the vector-valued contour step: turn the
+finite rectangle residue identity into convergence of its `L²` classes, identify each residue
+class with the multiplicity-faithful finite combination of `zeta(s)/(s-rho)^l`, and conclude that
+their closed span is all of `L_1`.  The analytic kernel estimate required for that step is now
+closed; pointwise residue convergence alone must not be mislabeled as quotient-system
+completeness.

@@ -29,7 +29,7 @@ namespace RHTower
 
 set_option maxHeartbeats 300000
 
-local instance : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
+local instance soninTimeBandHilbertSchmidtLocalInst1 : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
 
 section Kernel
 
@@ -322,7 +322,7 @@ namespace RHTower
 
 open ContinuousLinearMap
 
-local instance : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
+local instance soninTimeBandHilbertSchmidtLocalInst2 : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
 
 /-! ### Exact finite-rectangle localization energy -/
 

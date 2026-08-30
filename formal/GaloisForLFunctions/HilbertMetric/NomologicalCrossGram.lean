@@ -206,9 +206,9 @@ section Adjoint
 variable [NormedAddCommGroup D] [InnerProductSpace 𝕜 D]
 variable [FiniteDimensional 𝕜 D] [FiniteDimensional 𝕜 W] [FiniteDimensional 𝕜 W']
 
-local instance : CompleteSpace D := FiniteDimensional.complete 𝕜 D
-local instance : CompleteSpace W := FiniteDimensional.complete 𝕜 W
-local instance : CompleteSpace W' := FiniteDimensional.complete 𝕜 W'
+local instance nomologicalCrossGramLocalInst1 : CompleteSpace D := FiniteDimensional.complete 𝕜 D
+local instance nomologicalCrossGramLocalInst2 : CompleteSpace W := FiniteDimensional.complete 𝕜 W
+local instance nomologicalCrossGramLocalInst3 : CompleteSpace W' := FiniteDimensional.complete 𝕜 W'
 
 /-- The positive Gram operator of a continuous linear map. -/
 noncomputable def gram (T : D →L[𝕜] W) : D →L[𝕜] D := T† ∘L T
@@ -366,8 +366,8 @@ variable [FiniteDimensional 𝕜 W] [FiniteDimensional 𝕜 W']
 noncomputable local instance : DecidableEq ι := Classical.decEq ι
 
 local instance (i : ι) : CompleteSpace (V i) := FiniteDimensional.complete 𝕜 (V i)
-local instance : CompleteSpace W := FiniteDimensional.complete 𝕜 W
-local instance : CompleteSpace W' := FiniteDimensional.complete 𝕜 W'
+local instance nomologicalCrossGramLocalInst4 : CompleteSpace W := FiniteDimensional.complete 𝕜 W
+local instance nomologicalCrossGramLocalInst5 : CompleteSpace W' := FiniteDimensional.complete 𝕜 W'
 
 /-- The `(i,j)` block of the cross-Gram packet of a family. -/
 noncomputable def crossGram (T : ∀ i, V i →L[𝕜] W) (i j : ι) : V j →L[𝕜] V i :=

@@ -20,14 +20,14 @@ open MeasureTheory
 noncomputable section
 
 /-- The node at which one packet coordinate is evaluated. -/
-def packetNode {row ι : Type} [Fintype ι]
+def factorialBridgePacketNode {row ι : Type} [Fintype ι]
     (orders : ι → ℕ) (packet : InjectiveProjectiveRowPacket row)
     (shift : InjectiveShiftConfiguration ι)
     (p : row × Fin (Fintype.card (Σ i, Fin (orders i)))) : ℂ :=
   packet.1 p.1 + shift.1 ((Fintype.equivFin (Σ i, Fin (orders i))).symm p.2).1
 
 /-- The jet order of one packet coordinate. -/
-def packetOrder {row ι : Type} [Fintype ι]
+def factorialBridgePacketOrder {row ι : Type} [Fintype ι]
     (orders : ι → ℕ)
     (p : row × Fin (Fintype.card (Σ i, Fin (orders i)))) : ℕ :=
   ((Fintype.equivFin (Σ i, Fin (orders i))).symm p.2).2
@@ -40,13 +40,13 @@ theorem probabilityCarrierExpandedPacketValue_eq_factorial_moment
     (packet : InjectiveProjectiveRowPacket row)
     (shift : InjectiveShiftConfiguration ι)
     (p : row × Fin (Fintype.card (Σ i, Fin (orders i))))
-    (hz : (packetNode orders packet shift p).im ≠ 0) :
+    (hz : (factorialBridgePacketNode orders packet shift p).im ≠ 0) :
     probabilityCarrierExpandedPacketValue nu orders packet shift p =
-      ((Nat.factorial (packetOrder orders p) : ℕ) : ℂ) *
-        cauchyKernelMoment (nu : Measure ℝ) (packetOrder orders p)
-          (packetNode orders packet shift p) := by
+      ((Nat.factorial (factorialBridgePacketOrder orders p) : ℕ) : ℂ) *
+        cauchyKernelMoment (nu : Measure ℝ) (factorialBridgePacketOrder orders p)
+          (factorialBridgePacketNode orders packet shift p) := by
   rw [probabilityCarrierExpandedPacketValue]
-  exact iteratedDeriv_cauchyTransform (nu : Measure ℝ) (packetOrder orders p) hz
+  exact iteratedDeriv_cauchyTransform (nu : Measure ℝ) (factorialBridgePacketOrder orders p) hz
 
 end
 

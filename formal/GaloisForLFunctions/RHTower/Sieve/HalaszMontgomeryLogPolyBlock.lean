@@ -72,7 +72,7 @@ theorem halaszMontgomery_logPoly_finset
           + (P.card : ℝ) *
             (1 + 214 * Real.sqrt (4 * Real.pi * G)
               + 1536 * ((N : ℝ) / Real.sqrt U))) *
-        ‖blockCoeff N (restrictCoeff a s) 0‖ ^ 2 := by
+        ‖blockCoeff N (blockRestrictCoeff a s) 0‖ ^ 2 := by
   classical
   set S : Finset ℝ := P.image (fun x => -(2 * Real.pi * x)) with hS
   have hpi : (0 : ℝ) < 2 * Real.pi := by positivity
@@ -104,11 +104,11 @@ theorem halaszMontgomery_logPoly_finset
     have habs := hspread x hx u hu
     nlinarith [habs, Real.pi_pos, abs_nonneg (x - u)]
   have hT : (0 : ℝ) ≤ 4 * Real.pi * G := by positivity
-  have hbase := halaszMontgomery_blockPoly_real_finset_sigma N hN (restrictCoeff a s) 0
+  have hbase := halaszMontgomery_blockPoly_real_finset_sigma N hN (blockRestrictCoeff a s) 0
     hpi hU hT hSsep hSspread hnear hlamT
   rw [hcard] at hbase
   have hrw : ∑ w ∈ P, ‖logPoly a s w‖ ^ 2
-      = ∑ t ∈ S, ‖blockPoly N (restrictCoeff a s) 0 t‖ ^ 2 := by
+      = ∑ t ∈ S, ‖blockPoly N (blockRestrictCoeff a s) 0 t‖ ^ 2 := by
     rw [hS, Finset.sum_image (fun x hx y hy h => hinj hx hy h)]
     refine Finset.sum_congr rfl fun w _ => ?_
     rw [logPoly_eq_blockPoly_of_subset hs]

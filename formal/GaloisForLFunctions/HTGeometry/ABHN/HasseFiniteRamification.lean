@@ -34,7 +34,7 @@ variable {A : Type u} {B : Type v} [CommRing A] [CommRing B]
   [Algebra A B] [IsDedekindDomain A] [IsDedekindDomain B]
   [Module.IsTorsionFree A B] [Module.Finite A B]
 
-local instance : Algebra (FractionRing A) (FractionRing B) :=
+local instance hasseFiniteRamificationLocalInst1 : Algebra (FractionRing A) (FractionRing B) :=
   FractionRing.liftAlgebra A (FractionRing B)
 
 /-- In a finite separable extension of Dedekind domains, ramified height-one primes are exactly

@@ -19,7 +19,7 @@ namespace GaloisForLFunctions.HTGeometry
 noncomputable section
 
 /-- Diagonal rescaling of the polynomial variables. -/
-def scaleSubst {σ : Type*} (c : σ → ℂ) :
+private def scaleSubst {σ : Type*} (c : σ → ℂ) :
     MvPolynomial σ ℂ →ₐ[ℂ] MvPolynomial σ ℂ :=
   MvPolynomial.bind₁ (fun s => MvPolynomial.C (c s) * MvPolynomial.X s)
 
@@ -29,7 +29,7 @@ theorem scaleSubst_X {σ : Type*} (c : σ → ℂ) (s : σ) :
   simp [scaleSubst]
 
 /-- Rescaling by reciprocals undoes a rescaling. -/
-theorem scaleSubst_scaleSubst {σ : Type*} (c : σ → ℂ) (hc : ∀ s, c s ≠ 0)
+private theorem scaleSubst_scaleSubst {σ : Type*} (c : σ → ℂ) (hc : ∀ s, c s ≠ 0)
     (Q : MvPolynomial σ ℂ) :
     scaleSubst (fun s => (c s)⁻¹) (scaleSubst c Q) = Q := by
   classical

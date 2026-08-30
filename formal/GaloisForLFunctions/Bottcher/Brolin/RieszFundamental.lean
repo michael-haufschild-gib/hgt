@@ -49,7 +49,7 @@ namespace Bottcher
 
 noncomputable section
 
-local instance : Fact (0 < 2 * Real.pi) := ⟨Real.two_pi_pos⟩
+local instance rieszFundamentalLocalInst1 : Fact (0 < 2 * Real.pi) := ⟨Real.two_pi_pos⟩
 
 /-- **Corrected distributional Riesz condition.** `IsRieszMeasureOfSmooth μ u`
 means `μ = (2π)⁻¹ Δu` tested against `C²` compactly supported functions — the

@@ -31,8 +31,8 @@ open HedenmalmQuantile HedenmalmHilbertSchmidt HedenmalmThetaSource
 private abbrev H := Lp ℂ 2 unitIntervalMeasure
 private abbrev D := WithLp 2 (H × H)
 
-local instance : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
-local instance : CompleteSpace thetaCentered := thetaCentered_isClosed.completeSpace_coe
+local instance hedenmalmSupersymmetricDiracLocalInst1 : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
+local instance hedenmalmSupersymmetricDiracLocalInst2 : CompleteSpace thetaCentered := thetaCentered_isClosed.completeSpace_coe
 
 /-! ### Bounded Gram inverse used by the nonreal Dirac resolvent -/
 

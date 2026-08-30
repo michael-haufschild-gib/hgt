@@ -32,7 +32,7 @@ namespace GaloisForLFunctions.HTGeometry
 variable {R : Type*} [CommRing R] [Differential R]
 
 /-- **Leibniz rule over a finite product.** -/
-theorem deriv_finsetProd {ι : Type*} [DecidableEq ι] (s : Finset ι) (f : ι → R) :
+private theorem deriv_finsetProd {ι : Type*} [DecidableEq ι] (s : Finset ι) (f : ι → R) :
     (∏ i ∈ s, f i)′ = ∑ i ∈ s, (f i)′ * ∏ j ∈ s.erase i, f j := by
   classical
   induction s using Finset.induction_on with
@@ -61,7 +61,7 @@ theorem matrixDeriv_apply {m n : Type*} (M : Matrix m n R) (i : m) (j : n) :
     matrixDeriv M i j = (M i j)′ := rfl
 
 /-- **Jacobi's formula.**  The determinant differentiates one column at a time. -/
-theorem deriv_det {n : Type*} [DecidableEq n] [Fintype n] (M : Matrix n n R) :
+private theorem deriv_det {n : Type*} [DecidableEq n] [Fintype n] (M : Matrix n n R) :
     (M.det)′ = ∑ k, (M.updateCol k (fun a => (M a k)′)).det := by
   classical
   have hleft : (M.det)′ =

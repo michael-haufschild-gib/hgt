@@ -21,7 +21,7 @@ namespace RHTower
 
 noncomputable section
 
-local instance : IsProbabilityMeasure (expMeasure 1) :=
+local instance routePPrimitiveGammaJuliaStokesWallExponentialCubicCoherenceValueLocalInst1 : IsProbabilityMeasure (expMeasure 1) :=
   isProbabilityMeasure_expMeasure one_pos
 
 def routePPrimitiveGammaJuliaStokesWallExponentialCubicCoherence (a b : ℝ) : ℝ :=

@@ -34,7 +34,7 @@ noncomputable section
 
 open GaloisForLFunctions.HTGeometry
 
-local instance : MeasurableSpace Circle :=
+local instance jointAncestryPrimeCoordinateToggleDenseRangeNoGoLocalInst1 : MeasurableSpace Circle :=
   GaloisForLFunctions.HTGeometry.instMeasurableSpaceCircle_galoisForLFunctions
 
 /-- The additive-circle point whose multiplicative image is `+1`. -/

@@ -38,7 +38,7 @@ theorem deriv_iteratedDeriv_comp {U V : Set ℂ} {Φ g : ℂ → ℂ}
   exact (hout.comp t hin).deriv
 
 /-- The germ derivative of an analytic function element is the element of its derivative. -/
-theorem analyticSubringDeriv_analyticFunctionElement {U : Set ℂ} (hUo : IsOpen U) (f : ℂ → ℂ)
+private theorem analyticSubringDeriv_analyticFunctionElement {U : Set ℂ} (hUo : IsOpen U) (f : ℂ → ℂ)
     (hf : AnalyticOnNhd ℂ f U) :
     analyticSubringDeriv hUo (analyticFunctionElement f hf)
       = analyticFunctionElement (deriv f) hf.deriv := rfl
@@ -116,7 +116,7 @@ theorem exists_jet_algebraicWitness_family {W : Set ℂ} (hWo : IsOpen W) (hWc :
 /-! ## Constants and derivatives in a meromorphic field -/
 
 /-- The scalar embedding is the constant germ. -/
-theorem algebraMap_complex_eq_analyticMeroElement {W : Set ℂ} (hWo : IsOpen W)
+private theorem algebraMap_complex_eq_analyticMeroElement {W : Set ℂ} (hWo : IsOpen W)
     (hWc : IsPreconnected W) (hWne : W.Nonempty) (hWinf : W.Infinite) (c : ℂ) :
     letI := Bottcher.isDomain_analyticSubring W hWo hWc hWne
     letI : Algebra ℂ (meroField W) :=

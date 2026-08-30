@@ -317,7 +317,7 @@ theorem mem_lowJetField_of_jetShiftThree {k : ℕ} {g : FreeFamilyJetField C ι}
 /-! ## The coordinate change preserves the low-order fields -/
 
 omit [Differential C] [CharZero C] in
-theorem freeCoordinateField_mono {S T : Set (ι × ℕ)} (h : S ⊆ T) :
+private theorem freeCoordinateField_mono {S T : Set (ι × ℕ)} (h : S ⊆ T) :
     freeCoordinateField C (ι × ℕ) S ≤ freeCoordinateField C (ι × ℕ) T := by
   rw [freeCoordinateField, freeCoordinateField, IntermediateField.adjoin_le_iff]
   rintro _ ⟨p, hp, rfl⟩

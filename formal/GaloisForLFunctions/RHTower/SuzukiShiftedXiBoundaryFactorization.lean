@@ -27,7 +27,7 @@ namespace RHTower
 
 noncomputable section
 
-local instance : MeasurableSpace Circle :=
+local instance suzukiShiftedXiBoundaryFactorizationLocalInst1 : MeasurableSpace Circle :=
   GaloisForLFunctions.HTGeometry.instMeasurableSpaceCircle_galoisForLFunctions
 
 private theorem suzukiCanonicalE_I_ne_zero (omega : ℝ) :

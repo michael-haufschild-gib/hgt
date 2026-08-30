@@ -50,7 +50,7 @@ theorem innerDilation_qPrimitive {q : K} (hq : q ≠ 0)
 theorem ratFuncShift_zero (r : RatFunc K) : ratFuncShift 0 r = r := by
   refine RatFunc.induction_on (P := fun r => ratFuncShift 0 r = r) r ?_
   intro P S _
-  rw [ratFuncShift_div, polyShift_apply, polyShift_apply, map_zero, add_zero,
+  rw [ratFuncShift_div, polyTranslate_apply, polyTranslate_apply, map_zero, add_zero,
     Polynomial.comp_X, Polynomial.comp_X]
 
 theorem coeff_algebraMap_ratFunc (r : RatFunc K) (d : ℕ) :

@@ -28,7 +28,7 @@ open GaloisForLFunctions
 
 /-! ### Differentiating lowers the total degree -/
 
-theorem totalDegree_pderiv_lt {σ R : Type*} [CommRing R] {Q : MvPolynomial σ R} {i : σ}
+private theorem totalDegree_pderiv_lt {σ R : Type*} [CommRing R] {Q : MvPolynomial σ R} {i : σ}
     (h : MvPolynomial.pderiv i Q ≠ 0) :
     (MvPolynomial.pderiv i Q).totalDegree < Q.totalDegree := by
   classical
@@ -57,7 +57,7 @@ theorem totalDegree_pderiv_lt {σ R : Type*} [CommRing R] {Q : MvPolynomial σ R
 
 /-- In characteristic zero a polynomial of positive total degree has a nonzero partial
 derivative. -/
-theorem exists_pderiv_ne_zero {σ R : Type*} [CommRing R] [NoZeroDivisors R] [CharZero R]
+private theorem exists_pderiv_ne_zero {σ R : Type*} [CommRing R] [NoZeroDivisors R] [CharZero R]
     {Q : MvPolynomial σ R} (h : Q.totalDegree ≠ 0) :
     ∃ i : σ, MvPolynomial.pderiv i Q ≠ 0 := by
   classical

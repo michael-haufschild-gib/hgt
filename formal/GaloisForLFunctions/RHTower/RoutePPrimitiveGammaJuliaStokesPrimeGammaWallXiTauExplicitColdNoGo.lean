@@ -22,7 +22,7 @@ namespace RHTower
 
 noncomputable section
 
-local instance : MeasurableSpace Nat.Primes := ⊤
+local instance routePPrimitiveGammaJuliaStokesPrimeGammaWallXiTauExplicitColdNoGoLocalInst1 : MeasurableSpace Nat.Primes := ⊤
 
 private def explicitColdPrimeTwo : Nat.Primes := ⟨2, Nat.prime_two⟩
 

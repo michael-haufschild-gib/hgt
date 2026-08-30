@@ -19,10 +19,10 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-local instance : CompleteSpace UpperHardyL2 :=
+local instance diskBoundaryQuotientLeakageLocalInst1 : CompleteSpace UpperHardyL2 :=
   RHTower.isClosed_hardyL2.completeSpace_coe
 
-local instance : CompleteSpace LowerHardyL2 :=
+local instance diskBoundaryQuotientLeakageLocalInst2 : CompleteSpace LowerHardyL2 :=
   RHTower.hardyL2.isClosed_orthogonal.completeSpace_coe
 
 /-- Algebraic rank at least `r` for a bounded operator between Hilbert spaces. -/

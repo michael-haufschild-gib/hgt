@@ -799,7 +799,7 @@ theorem evenPrimePacket_disjoint_oddPrimePacket :
   norm_num at hmod
 
 /-- Differential field generated over `ℂ` by every radial profile in `W`. -/
-def primeRadialDifferentialField (W : Submodule ℂ (ℕ → ℂ)) :
+private def primeRadialDifferentialField (W : Submodule ℂ (ℕ → ℂ)) :
     IntermediateField ℂ arithmeticFunctionFractionField :=
   differentialAdjoin ℂ
     (Set.range (fun u : W =>

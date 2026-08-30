@@ -55,10 +55,10 @@ private theorem exp_one_le_packetBase : Real.exp 1 ≤ xiRayPacketBase := by
   have h2 := xiRayPacketBase_ge
   linarith
 
-private theorem xiRayLogDeriv_pos_of_packetBase {u : ℝ} (hu : xiRayPacketBase ≤ u) :
-    0 < xiRayLogDeriv u := by
+private theorem xiRayLaplaceLogDeriv_pos_of_packetBase {u : ℝ} (hu : xiRayPacketBase ≤ u) :
+    0 < xiRayLaplaceLogDeriv u := by
   have hu0 : 0 < u := lt_of_lt_of_le (by linarith [xiRayPacketBase_ge]) hu
-  have hlow := xiRayLogDeriv_ge (le_trans xiRayLowerBase_le_packetBase hu)
+  have hlow := xiRayLaplaceLogDeriv_ge (le_trans xiRayLowerBase_le_packetBase hu)
   have hlog : 1 ≤ Real.log u := by
     rw [Real.le_log_iff_exp_le hu0]
     linarith [exp_one_le_packetBase]
@@ -118,9 +118,9 @@ theorem xiRayLog_div_self_contraction {u v : ℝ} (hu : xiRayPacketBase ≤ u)
 
 private theorem packet_corr {u v : ℝ} (hu : xiRayPacketBase ≤ u) (hv : xiRayPacketBase ≤ v)
     {d : ℕ} (hgap : xiRayPacketBase ^ (2 * d) * u ≤ v) :
-    (xiRayLogDeriv u + xiRayLogDeriv v) / (u + v)
+    (xiRayLaplaceLogDeriv u + xiRayLaplaceLogDeriv v) / (u + v)
       ≤ 32 * (2 / xiRayPacketBase) ^ d *
-        (Real.sqrt (xiRayLogDeriv u / u) * Real.sqrt (xiRayLogDeriv v / v)) := by
+        (Real.sqrt (xiRayLaplaceLogDeriv u / u) * Real.sqrt (xiRayLaplaceLogDeriv v / v)) := by
   have hR256 := xiRayPacketBase_ge
   have hR0 : (0 : ℝ) < xiRayPacketBase := by linarith
   have hR1 : (1 : ℝ) ≤ xiRayPacketBase := by linarith
@@ -130,10 +130,10 @@ private theorem packet_corr {u v : ℝ} (hu : xiRayPacketBase ≤ u) (hv : xiRay
     have hpow : (1 : ℝ) ≤ xiRayPacketBase ^ (2 * d) := one_le_pow₀ hR1
     nlinarith
   have hueexp : Real.exp 1 ≤ u := le_trans exp_one_le_packetBase hu
-  have hru_le := xiRayLogDeriv_le (le_trans xiRayUpperBase_le_packetBase hu)
-  have hru_ge := xiRayLogDeriv_ge (le_trans xiRayLowerBase_le_packetBase hu)
-  have hrv_le := xiRayLogDeriv_le (le_trans xiRayUpperBase_le_packetBase hv)
-  have hrv_ge := xiRayLogDeriv_ge (le_trans xiRayLowerBase_le_packetBase hv)
+  have hru_le := xiRayLaplaceLogDeriv_le (le_trans xiRayUpperBase_le_packetBase hu)
+  have hru_ge := xiRayLaplaceLogDeriv_ge (le_trans xiRayLowerBase_le_packetBase hu)
+  have hrv_le := xiRayLaplaceLogDeriv_le (le_trans xiRayUpperBase_le_packetBase hv)
+  have hrv_ge := xiRayLaplaceLogDeriv_ge (le_trans xiRayLowerBase_le_packetBase hv)
   have hlogu1 : 1 ≤ Real.log u := (Real.le_log_iff_exp_le hu0).mpr hueexp
   have hlogv1 : 1 ≤ Real.log v :=
     (Real.le_log_iff_exp_le hv0).mpr (le_trans hueexp huv)
@@ -165,32 +165,32 @@ private theorem packet_corr {u v : ℝ} (hu : xiRayPacketBase ≤ u) (hv : xiRay
       _ = Real.sqrt ((q ^ d) ^ 2 * (B * A)) := by rw [h4]
       _ = q ^ d * Real.sqrt (B * A) := h5
   -- kernel numerator and diagonal comparison
-  have hKnum : (xiRayLogDeriv u + xiRayLogDeriv v) / (u + v) ≤ 4 * Real.log v / v := by
-    have hnum : xiRayLogDeriv u + xiRayLogDeriv v ≤ 4 * Real.log v := by
-      have h1 : xiRayLogDeriv u ≤ Real.log v + 1 := by linarith
-      have h2 : xiRayLogDeriv v ≤ Real.log v + 1 := by linarith
+  have hKnum : (xiRayLaplaceLogDeriv u + xiRayLaplaceLogDeriv v) / (u + v) ≤ 4 * Real.log v / v := by
+    have hnum : xiRayLaplaceLogDeriv u + xiRayLaplaceLogDeriv v ≤ 4 * Real.log v := by
+      have h1 : xiRayLaplaceLogDeriv u ≤ Real.log v + 1 := by linarith
+      have h2 : xiRayLaplaceLogDeriv v ≤ Real.log v + 1 := by linarith
       linarith
-    have hnum0 : 0 ≤ xiRayLogDeriv u + xiRayLogDeriv v := by
-      have := xiRayLogDeriv_pos_of_packetBase hu
-      have := xiRayLogDeriv_pos_of_packetBase hv
+    have hnum0 : 0 ≤ xiRayLaplaceLogDeriv u + xiRayLaplaceLogDeriv v := by
+      have := xiRayLaplaceLogDeriv_pos_of_packetBase hu
+      have := xiRayLaplaceLogDeriv_pos_of_packetBase hv
       linarith
-    calc (xiRayLogDeriv u + xiRayLogDeriv v) / (u + v)
-        ≤ (xiRayLogDeriv u + xiRayLogDeriv v) / v := by
+    calc (xiRayLaplaceLogDeriv u + xiRayLaplaceLogDeriv v) / (u + v)
+        ≤ (xiRayLaplaceLogDeriv u + xiRayLaplaceLogDeriv v) / v := by
           apply div_le_div_of_nonneg_left hnum0 hv0
           linarith
       _ ≤ (4 * Real.log v) / v := div_le_div_of_nonneg_right hnum hv0.le
       _ = 4 * Real.log v / v := by ring
   -- diagonal square roots dominate the (1/8)-scaled log data
-  have hDu : B / 8 ≤ xiRayLogDeriv u / u := by
-    have h1 : Real.log u / 8 / u ≤ xiRayLogDeriv u / u :=
+  have hDu : B / 8 ≤ xiRayLaplaceLogDeriv u / u := by
+    have h1 : Real.log u / 8 / u ≤ xiRayLaplaceLogDeriv u / u :=
       div_le_div_of_nonneg_right hru_ge hu0.le
     have h2 : B / 8 = Real.log u / 8 / u := by
       rw [hBdef]
       ring
     rw [h2]
     exact h1
-  have hDv : A / 8 ≤ xiRayLogDeriv v / v := by
-    have h1 : Real.log v / 8 / v ≤ xiRayLogDeriv v / v :=
+  have hDv : A / 8 ≤ xiRayLaplaceLogDeriv v / v := by
+    have h1 : Real.log v / 8 / v ≤ xiRayLaplaceLogDeriv v / v :=
       div_le_div_of_nonneg_right hrv_ge hv0.le
     have h2 : A / 8 = Real.log v / 8 / v := by
       rw [hAdef]
@@ -205,10 +205,10 @@ private theorem packet_corr {u v : ℝ} (hu : xiRayPacketBase ≤ u) (hv : xiRay
       Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ (1 : ℝ) / 8)]
     ring
   have h3 : Real.sqrt (B / 8) * Real.sqrt (A / 8)
-      ≤ Real.sqrt (xiRayLogDeriv u / u) * Real.sqrt (xiRayLogDeriv v / v) :=
+      ≤ Real.sqrt (xiRayLaplaceLogDeriv u / u) * Real.sqrt (xiRayLaplaceLogDeriv v / v) :=
     mul_le_mul (Real.sqrt_le_sqrt hDu) (Real.sqrt_le_sqrt hDv)
       (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
-  calc (xiRayLogDeriv u + xiRayLogDeriv v) / (u + v)
+  calc (xiRayLaplaceLogDeriv u + xiRayLaplaceLogDeriv v) / (u + v)
       ≤ 4 * Real.log v / v := hKnum
     _ = 4 * A := by rw [hAdef]; ring
     _ ≤ 4 * (q ^ d * Real.sqrt (B * A)) := by
@@ -216,7 +216,7 @@ private theorem packet_corr {u v : ℝ} (hu : xiRayPacketBase ≤ u) (hv : xiRay
     _ = 32 * q ^ d * (Real.sqrt (B * A) / 8) := by ring
     _ = 32 * q ^ d * (Real.sqrt (B / 8) * Real.sqrt (A / 8)) := by rw [hsq8]
     _ ≤ 32 * q ^ d *
-          (Real.sqrt (xiRayLogDeriv u / u) * Real.sqrt (xiRayLogDeriv v / v)) := by
+          (Real.sqrt (xiRayLaplaceLogDeriv u / u) * Real.sqrt (xiRayLaplaceLogDeriv v / v)) := by
         exact mul_le_mul_of_nonneg_left h3
           (mul_nonneg (by norm_num) (pow_nonneg hq0.le d))
 
@@ -227,7 +227,7 @@ namespace RHTower
 /-! ## Separated-packet positivity of the real critical kernel -/
 
 private theorem diag_eq {u : ℝ} (hu : u ≠ 0) :
-    (xiRayLogDeriv u + xiRayLogDeriv u) / (u + u) = xiRayLogDeriv u / u := by
+    (xiRayLaplaceLogDeriv u + xiRayLaplaceLogDeriv u) / (u + u) = xiRayLaplaceLogDeriv u / u := by
   rw [div_eq_div_iff (by simpa [two_mul] using mul_ne_zero (two_ne_zero) hu) hu]
   ring
 
@@ -301,7 +301,7 @@ theorem xiRayCriticalKernel_separatedPacket_quadraticForm_nonneg
     {x : ℕ → ℝ} (hbase : xiRayPacketBase ≤ x 0)
     (hstep : ∀ m, xiRayPacketBase ^ 2 * x m ≤ x (m + 1)) (n : ℕ) (a : ℕ → ℝ) :
     0 ≤ ∑ i ∈ Finset.range n, ∑ j ∈ Finset.range n,
-      a i * a j * ((xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j)) := by
+      a i * a j * ((xiRayLaplaceLogDeriv (x i) + xiRayLaplaceLogDeriv (x j)) / (x i + x j)) := by
   have hR256 := xiRayPacketBase_ge
   have hR0 : (0 : ℝ) < xiRayPacketBase := by linarith
   have hR1 : (1 : ℝ) ≤ xiRayPacketBase := by linarith
@@ -338,9 +338,9 @@ theorem xiRayCriticalKernel_separatedPacket_quadraticForm_nonneg
           mul_le_mul_of_nonneg_right hpow hx0pos.le
       _ ≤ x i := h
   have hxpos : ∀ i : ℕ, (0 : ℝ) < x i := fun i => lt_of_lt_of_le hR0 (hone i)
-  have hrpos : ∀ i : ℕ, 0 < xiRayLogDeriv (x i) := fun i =>
-    xiRayLogDeriv_pos_of_packetBase (hone i)
-  have hKnn : ∀ i j : ℕ, 0 ≤ (xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j) :=
+  have hrpos : ∀ i : ℕ, 0 < xiRayLaplaceLogDeriv (x i) := fun i =>
+    xiRayLaplaceLogDeriv_pos_of_packetBase (hone i)
+  have hKnn : ∀ i j : ℕ, 0 ≤ (xiRayLaplaceLogDeriv (x i) + xiRayLaplaceLogDeriv (x j)) / (x i + x j) :=
     fun i j => div_nonneg (by linarith [hrpos i, hrpos j])
       (by linarith [hxpos i, hxpos j])
   have hq0 : (0 : ℝ) < 2 / xiRayPacketBase := div_pos (by norm_num) hR0
@@ -356,58 +356,58 @@ theorem xiRayCriticalKernel_separatedPacket_quadraticForm_nonneg
         = 64 * (2 / xiRayPacketBase) / (1 - 2 / xiRayPacketBase) := by ring
     rw [h2, div_le_one h1q]
     linarith
-  have hdiag : ∀ i : ℕ, (xiRayLogDeriv (x i) + xiRayLogDeriv (x i)) / (x i + x i)
-      = xiRayLogDeriv (x i) / x i := fun i => diag_eq (ne_of_gt (hxpos i))
+  have hdiag : ∀ i : ℕ, (xiRayLaplaceLogDeriv (x i) + xiRayLaplaceLogDeriv (x i)) / (x i + x i)
+      = xiRayLaplaceLogDeriv (x i) / x i := fun i => diag_eq (ne_of_gt (hxpos i))
   have hcorr : ∀ i j : ℕ, i < j →
-      (xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j)
+      (xiRayLaplaceLogDeriv (x i) + xiRayLaplaceLogDeriv (x j)) / (x i + x j)
         ≤ 32 * (2 / xiRayPacketBase) ^ (j - i) *
-          (Real.sqrt ((xiRayLogDeriv (x i) + xiRayLogDeriv (x i)) / (x i + x i)) *
-            Real.sqrt ((xiRayLogDeriv (x j) + xiRayLogDeriv (x j)) / (x j + x j))) := by
+          (Real.sqrt ((xiRayLaplaceLogDeriv (x i) + xiRayLaplaceLogDeriv (x i)) / (x i + x i)) *
+            Real.sqrt ((xiRayLaplaceLogDeriv (x j) + xiRayLaplaceLogDeriv (x j)) / (x j + x j))) := by
     intro i j hij
     have h := packet_corr (hone i) (hone j) (d := j - i) (hgap i j hij.le)
     rw [hdiag i, hdiag j]
     exact h
   set b : ℕ → ℝ := fun i => |a i| *
-    Real.sqrt ((xiRayLogDeriv (x i) + xiRayLogDeriv (x i)) / (x i + x i)) with hbdef
+    Real.sqrt ((xiRayLaplaceLogDeriv (x i) + xiRayLaplaceLogDeriv (x i)) / (x i + x i)) with hbdef
   have hbsq : ∀ i : ℕ, b i ^ 2 = a i ^ 2 *
-      ((xiRayLogDeriv (x i) + xiRayLogDeriv (x i)) / (x i + x i)) := by
+      ((xiRayLaplaceLogDeriv (x i) + xiRayLaplaceLogDeriv (x i)) / (x i + x i)) := by
     intro i
     rw [hbdef]
     have h := hKnn i i
     rw [mul_pow, sq_abs, Real.sq_sqrt h]
   have hpair : ∀ i j : ℕ, i ≠ j →
       -(32 * (2 / xiRayPacketBase) ^ Nat.dist i j * ((b i ^ 2 + b j ^ 2) / 2)) ≤
-        a i * a j * ((xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j)) := by
+        a i * a j * ((xiRayLaplaceLogDeriv (x i) + xiRayLaplaceLogDeriv (x j)) / (x i + x j)) := by
     have hmain : ∀ i j : ℕ, i < j →
         -(32 * (2 / xiRayPacketBase) ^ Nat.dist i j * ((b i ^ 2 + b j ^ 2) / 2)) ≤
-          a i * a j * ((xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j)) := by
+          a i * a j * ((xiRayLaplaceLogDeriv (x i) + xiRayLaplaceLogDeriv (x j)) / (x i + x j)) := by
       intro i j hij
       have hk := hcorr i j hij
       have hknn := hKnn i j
       have hdist : Nat.dist i j = j - i := Nat.dist_eq_sub_of_le hij.le
       have habs : -(|a i| * |a j| *
-          ((xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j))) ≤
-          a i * a j * ((xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j)) := by
+          ((xiRayLaplaceLogDeriv (x i) + xiRayLaplaceLogDeriv (x j)) / (x i + x j))) ≤
+          a i * a j * ((xiRayLaplaceLogDeriv (x i) + xiRayLaplaceLogDeriv (x j)) / (x i + x j)) := by
         have h1 : -(|a i| * |a j|) ≤ a i * a j := by
           rw [← abs_mul]
           exact neg_abs_le _
         have h2 := mul_le_mul_of_nonneg_right h1 hknn
         calc -(|a i| * |a j| *
-            ((xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j)))
+            ((xiRayLaplaceLogDeriv (x i) + xiRayLaplaceLogDeriv (x j)) / (x i + x j)))
             = -(|a i| * |a j|) *
-                ((xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j)) := by ring
+                ((xiRayLaplaceLogDeriv (x i) + xiRayLaplaceLogDeriv (x j)) / (x i + x j)) := by ring
           _ ≤ a i * a j *
-                ((xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j)) := h2
+                ((xiRayLaplaceLogDeriv (x i) + xiRayLaplaceLogDeriv (x j)) / (x i + x j)) := h2
       have hup : |a i| * |a j| *
-          ((xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j)) ≤
+          ((xiRayLaplaceLogDeriv (x i) + xiRayLaplaceLogDeriv (x j)) / (x i + x j)) ≤
           32 * (2 / xiRayPacketBase) ^ (j - i) * (b i * b j) := by
         have h2 := mul_le_mul_of_nonneg_left hk
           (show (0 : ℝ) ≤ |a i| * |a j| by positivity)
         calc |a i| * |a j| *
-            ((xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j))
+            ((xiRayLaplaceLogDeriv (x i) + xiRayLaplaceLogDeriv (x j)) / (x i + x j))
             ≤ |a i| * |a j| * (32 * (2 / xiRayPacketBase) ^ (j - i) *
-                (Real.sqrt ((xiRayLogDeriv (x i) + xiRayLogDeriv (x i)) / (x i + x i)) *
-                  Real.sqrt ((xiRayLogDeriv (x j) + xiRayLogDeriv (x j)) / (x j + x j)))) :=
+                (Real.sqrt ((xiRayLaplaceLogDeriv (x i) + xiRayLaplaceLogDeriv (x i)) / (x i + x i)) *
+                  Real.sqrt ((xiRayLaplaceLogDeriv (x j) + xiRayLaplaceLogDeriv (x j)) / (x j + x j)))) :=
               h2
           _ = 32 * (2 / xiRayPacketBase) ^ (j - i) * (b i * b j) := by
               rw [hbdef]
@@ -421,10 +421,10 @@ theorem xiRayCriticalKernel_separatedPacket_quadraticForm_nonneg
       calc -(32 * (2 / xiRayPacketBase) ^ (j - i) * ((b i ^ 2 + b j ^ 2) / 2))
           ≤ -(32 * (2 / xiRayPacketBase) ^ (j - i) * (b i * b j)) := by linarith
         _ ≤ -(|a i| * |a j| *
-              ((xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j))) := by
+              ((xiRayLaplaceLogDeriv (x i) + xiRayLaplaceLogDeriv (x j)) / (x i + x j))) := by
             linarith
         _ ≤ a i * a j *
-              ((xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j)) := habs
+              ((xiRayLaplaceLogDeriv (x i) + xiRayLaplaceLogDeriv (x j)) / (x i + x j)) := habs
     intro i j hij
     rcases Nat.lt_or_ge i j with hlt | hge
     · exact hmain i j hlt
@@ -434,9 +434,9 @@ theorem xiRayCriticalKernel_separatedPacket_quadraticForm_nonneg
       calc -(32 * (2 / xiRayPacketBase) ^ Nat.dist j i * ((b i ^ 2 + b j ^ 2) / 2))
           = -(32 * (2 / xiRayPacketBase) ^ Nat.dist j i * ((b j ^ 2 + b i ^ 2) / 2)) := by
             ring
-        _ ≤ a j * a i * ((xiRayLogDeriv (x j) + xiRayLogDeriv (x i)) / (x j + x i)) := h
-        _ = a i * a j * ((xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j)) := by
-            rw [add_comm (xiRayLogDeriv (x j)), add_comm (x j)]
+        _ ≤ a j * a i * ((xiRayLaplaceLogDeriv (x j) + xiRayLaplaceLogDeriv (x i)) / (x j + x i)) := h
+        _ = a i * a j * ((xiRayLaplaceLogDeriv (x i) + xiRayLaplaceLogDeriv (x j)) / (x i + x j)) := by
+            rw [add_comm (xiRayLaplaceLogDeriv (x j)), add_comm (x j)]
             ring
   have hrow : ∀ i : ℕ,
       ∑ j ∈ (Finset.range n).erase i,
@@ -451,10 +451,10 @@ theorem xiRayCriticalKernel_separatedPacket_quadraticForm_nonneg
           mul_le_mul_of_nonneg_left hg (by norm_num)
       _ ≤ 1 := h2
   have hexpand : ∑ i ∈ Finset.range n, ∑ j ∈ Finset.range n,
-      a i * a j * ((xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j)) =
+      a i * a j * ((xiRayLaplaceLogDeriv (x i) + xiRayLaplaceLogDeriv (x j)) / (x i + x j)) =
       ∑ i ∈ Finset.range n, (b i ^ 2 +
         ∑ j ∈ (Finset.range n).erase i,
-          a i * a j * ((xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j))) := by
+          a i * a j * ((xiRayLaplaceLogDeriv (x i) + xiRayLaplaceLogDeriv (x j)) / (x i + x j))) := by
     refine Finset.sum_congr rfl fun i hi => ?_
     rw [← Finset.add_sum_erase _ _ hi]
     congr 1
@@ -465,13 +465,13 @@ theorem xiRayCriticalKernel_separatedPacket_quadraticForm_nonneg
       b i ^ 2 - (∑ j ∈ (Finset.range n).erase i,
           32 * (2 / xiRayPacketBase) ^ Nat.dist i j * ((b i ^ 2 + b j ^ 2) / 2)) ≤
         b i ^ 2 + ∑ j ∈ (Finset.range n).erase i,
-          a i * a j * ((xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j)) := by
+          a i * a j * ((xiRayLaplaceLogDeriv (x i) + xiRayLaplaceLogDeriv (x j)) / (x i + x j)) := by
     intro i _
     have h := Finset.sum_le_sum (s := (Finset.range n).erase i)
       (f := fun j => -(32 * (2 / xiRayPacketBase) ^ Nat.dist i j *
         ((b i ^ 2 + b j ^ 2) / 2)))
       (g := fun j => a i * a j *
-        ((xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j)))
+        ((xiRayLaplaceLogDeriv (x i) + xiRayLaplaceLogDeriv (x j)) / (x i + x j)))
       (fun j hj => hpair i j (by
         simp only [Finset.mem_erase] at hj
         exact fun hij => hj.1 (hij.symm)))
@@ -536,7 +536,7 @@ theorem xiRayCriticalKernel_separatedPacket_quadraticForm_nonneg
         32 * (2 / xiRayPacketBase) ^ Nat.dist i j * ((b i ^ 2 + b j ^ 2) / 2)) ≤
       ∑ i ∈ Finset.range n, (b i ^ 2 +
         ∑ j ∈ (Finset.range n).erase i,
-          a i * a j * ((xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j))) :=
+          a i * a j * ((xiRayLaplaceLogDeriv (x i) + xiRayLaplaceLogDeriv (x j)) / (x i + x j))) :=
     Finset.sum_le_sum hlower
   have hleft : 0 ≤ ∑ i ∈ Finset.range n, (b i ^ 2 -
       ∑ j ∈ (Finset.range n).erase i,
@@ -556,7 +556,7 @@ namespace RHTower
 kernel of the theta-cusp source. -/
 theorem criticalLogDerivKernel_ofReal_eq {u v : ℝ} :
     criticalLogDerivKernel (u : ℂ) (v : ℂ)
-      = (((xiRayLogDeriv u + xiRayLogDeriv v) / (u + v) : ℝ) : ℂ) := by
+      = (((xiRayLaplaceLogDeriv u + xiRayLaplaceLogDeriv v) / (u + v) : ℝ) : ℂ) := by
   unfold criticalLogDerivKernel
   rw [logDeriv_xiCent_ofReal u, logDeriv_xiCent_ofReal v, Complex.conj_ofReal,
     Complex.conj_ofReal, ← Complex.ofReal_add, ← Complex.ofReal_add, Complex.ofReal_div]
@@ -585,7 +585,7 @@ theorem posSemidef_criticalLogDerivKernel_separatedRealPacket
       criticalLogDerivKernel ((x j : ℝ) : ℂ) ((x k : ℝ) : ℂ)).PosSemidef := by
   classical
   set KR : ℕ → ℕ → ℝ := fun i j =>
-    (xiRayLogDeriv (x i) + xiRayLogDeriv (x j)) / (x i + x j) with hKRdef
+    (xiRayLaplaceLogDeriv (x i) + xiRayLaplaceLogDeriv (x j)) / (x i + x j) with hKRdef
   have hentry : ∀ j k : Fin n,
       criticalLogDerivKernel ((x j : ℝ) : ℂ) ((x k : ℝ) : ℂ)
         = ((KR (j : ℕ) (k : ℕ) : ℝ) : ℂ) :=
@@ -594,7 +594,7 @@ theorem posSemidef_criticalLogDerivKernel_separatedRealPacket
     intro i j
     rw [hKRdef]
     dsimp only
-    rw [add_comm (xiRayLogDeriv (x i)), add_comm (x i)]
+    rw [add_comm (xiRayLaplaceLogDeriv (x i)), add_comm (x i)]
   have hfin : ∀ c : ℕ → ℝ,
       0 ≤ ∑ j : Fin n, ∑ k : Fin n, c (j : ℕ) * c (k : ℕ) * KR (j : ℕ) (k : ℕ) := by
     intro c
@@ -732,9 +732,9 @@ theorem posSemidef_thetaTailFirstMomentBezoutian_separatedRealPacket
       criticalLogDerivKernel_ofReal_eq, criticalLogDerivKernel_ofReal_eq,
       RCLike.star_def]
     simp only [map_mul, Complex.conj_ofReal]
-    rw [show ((xiRayLogDeriv (x k) + xiRayLogDeriv (x j)) / (x k + x j) : ℝ)
-        = ((xiRayLogDeriv (x j) + xiRayLogDeriv (x k)) / (x j + x k) : ℝ) by
-      rw [add_comm (xiRayLogDeriv (x k)), add_comm (x k)]]
+    rw [show ((xiRayLaplaceLogDeriv (x k) + xiRayLaplaceLogDeriv (x j)) / (x k + x j) : ℝ)
+        = ((xiRayLaplaceLogDeriv (x j) + xiRayLaplaceLogDeriv (x k)) / (x j + x k) : ℝ) by
+      rw [add_comm (xiRayLaplaceLogDeriv (x k)), add_comm (x k)]]
     ring
   refine Matrix.PosSemidef.of_dotProduct_mulVec_nonneg hherm (fun cv => ?_)
   have hquad := hK.dotProduct_mulVec_nonneg

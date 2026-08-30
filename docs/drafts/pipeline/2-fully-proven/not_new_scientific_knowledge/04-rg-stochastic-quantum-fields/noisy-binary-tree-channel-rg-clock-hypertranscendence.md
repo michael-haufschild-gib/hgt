@@ -403,3 +403,71 @@ stated Lean propositions about the base field alone:
    `ψ(u) = u`, which says nothing.  Excluding it needs either a finer invariant along the descent or
    the `w`-normalised tower (`w_k = y_k y_0^{k−1}/y_1^k`, eigenvalue exactly one at every level),
    where the scaling slice has no vanishing-residue branch at all.
+The descent also tracks the *shape* of its scalar: `c = q^i · ρ^k` throughout, since each step
+multiplies it only by a power of `q/ρ^m` (`exists_descent_step` and `exists_base_relation_of_tower`
+now carry this).  Combining, `HTGeometry/RittFinalAlternative.lean`,
+**`rittForm_or_affineObstruction_or_degenerate`**: a differentially algebraic linearizer with
+independent first two jets satisfies
+
+```text
+(d τ)^r = A · τ^j                                  -- Ritt's order-one relation
+  ∨  ψ(u) = q^i ρ^k u + z · A_p ,  u ≠ 0, z ≠ 0    -- an affine base obstruction
+  ∨  ψ(u) = u ,  u ≠ 0                              -- total exponent cancellation
+```
+
+So exactly two things stand between the corpus and Ritt's implication, and both are now sharply
+stated Lean propositions about the base field alone:
+
+1. **the affine obstruction** — rule out `ψ(u) = q^i ρ^k u + z·A_p` for the map at hand.  For `n = 2`
+   this is `a(R)·(R′)² = R′·a − R″`, which `RationalAffineConnection.lean` already forbids for a map
+   with a critical point of infinite orbit; the general `A_p` needs the same treatment.
+2. **the degenerate branch** — the descent's exponents can in principle cancel to `q^0 ρ^0`, leaving
+   `ψ(u) = u`, which says nothing.  Excluding it needs either a finer invariant along the descent or
+   the `w`-normalised tower (`w_k = y_k y_0^{k−1}/y_1^k`, eigenvalue exactly one at every level),
+   where the scaling slice has no vanishing-residue branch at all.
+
+### Narrowing the degenerate branch (2026-08-30)
+
+At the bottom two levels of the tower the shift acts on the coordinate by a **pure scaling** —
+`σ y_0 = q·y_0` and `σ y_1 = (q/ρ)·y_1`, with no lower-order term — so there the twisted substitution
+is *diagonal on coefficients* and the eigen-relation forced on the denominator by coprimality is a
+relation on every coefficient separately.  `HTGeometry/RittScalingDenominatorEigen.lean`:
+
+| Statement | Name |
+|---|---|
+| `Q^Φ∘(aX) = a^{deg Q}·Q` | `denominator_eigen_of_scaling_cross` |
+| `Φ(Q_j)·a^j = a^{deg Q}·Q_j` for every `j` | `denominator_coeff_eigen_of_scaling_cross` |
+| a denominator coefficient below the degree gives `Φ(u) = a^s·u` with `u ≠ 0`, `s ≠ 0` | `exists_nondegenerate_relation_of_denominator` |
+| the same for two nonzero numerator coefficients (homogeneous case) | `exists_nondegenerate_relation_of_numerator` |
+| **`Φ(u) = (q/ρ^m)^s·u` with `s ≠ 0` ⟹ Ritt's order-one relation** | `RittHomogeneousBaseRelation.exists_rittForm_of_scaling_eigen` |
+
+The last one is immediate from the exponent computation: `(q/ρ^m)^s = q^s·ρ^{−ms}`, whose exponent
+pair `(s, −ms)` is nonzero as soon as `s ≠ 0`, so the invariant-differential-to-Ritt-form conversion
+applies.
+
+Consequence: **the degenerate branch survives only when the sliced fraction is a monomial in the
+coordinate at the bottom levels** — `Q = X^{deg Q}` and `P` a single term, i.e. the tower element is
+`u · t^m`.  Unwinding that case at `n = 2` reproduces the rational affine connection
+(`ψ(u)·ρ = u − dK ρ/ρ`), so it is not a new obstruction there; making that reduction uniform in `n`
+is what closes the branch.
+
+### The monomial case of the degenerate branch (2026-08-30)
+
+`HTGeometry/RittMonomialScaling.lean` handles what was left of the degenerate branch — the case where
+the sliced fraction is a *monomial* `W = u·t^d` in its coordinate.
+
+| Statement | Name |
+|---|---|
+| a transcendental has no nonzero integer power in the coefficient field | `zpow_notMem_of_transcendental` |
+| **the monomial split**: at a scaling level, `σ(u·t^d) = c·(u·t^d) + γ` with `d ≠ 0` forces `γ = 0` **and** `φ(u)·a^d = c·u` | `monomial_scaling_split` |
+| `ψ(u)·(q/ρ^m)^d = q^i·ρ^k·u` with `(i − d, k + m·d) ≠ (0,0)` ⟹ Ritt's order-one relation | `RittHomogeneousBaseRelation.exists_rittForm_of_scaling_eigen_shifted` |
+
+So a monomial element at a scaling level of the tower **cannot carry an inhomogeneity at all**: the
+two powers `t^d` and `t^0` are linearly independent over the coefficient field, so the relation
+splits, the inhomogeneity dies, and what survives is a homogeneous eigen-relation for the
+coefficient — which is Ritt's form as soon as its exponent pair is nonzero.
+
+The degenerate branch is therefore reduced to a single arithmetic condition: the exponents produced
+by the descent cancelling exactly, `i = d` and `k = −m·d`.  Every other configuration — a
+non-monomial numerator or denominator at either scaling level, a monomial with a surviving exponent,
+or a nonzero inhomogeneity — now lands on Ritt's relation or on the affine obstruction.

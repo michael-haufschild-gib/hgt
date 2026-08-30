@@ -19,10 +19,10 @@ open GaloisForLFunctions.HTGeometry
 
 variable {H : Type*} [NormedAddCommGroup H] [NormedSpace ℂ H]
 
-local instance : IsScalarTower ℂ (H →L[ℂ] H) H where
+local instance gohbergSigalCovariantIndexRigidityLocalInst1 : IsScalarTower ℂ (H →L[ℂ] H) H where
   smul_assoc _ _ _ := rfl
 
-local instance : IsBoundedSMul (H →L[ℂ] H) H where
+local instance gohbergSigalCovariantIndexRigidityLocalInst2 : IsBoundedSMul (H →L[ℂ] H) H where
   dist_smul_pair' A x y := by
     change dist (A x) (A y) ≤ dist A 0 * dist x y
     simpa only [dist_eq_norm, sub_zero, map_sub] using A.le_opNorm (x - y)

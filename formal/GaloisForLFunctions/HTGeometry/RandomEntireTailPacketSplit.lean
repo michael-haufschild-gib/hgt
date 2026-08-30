@@ -66,13 +66,13 @@ theorem finiteAffineJetPacketObservation_tail_split (shift : H → ℂ)
   set Pc : Polynomial ℂ :=
     ∑ n : Fin N, C (clampedComplexCoefficientHead N y n *
       ((4 : ℂ) * ((Nat.factorial ((n : ℕ) + L)) : ℂ))⁻¹) * X ^ ((n : ℕ) + L) with hPc
-  have hpoly : ∀ z : ℂ, Pc.eval z = ∑ n ∈ Finset.range N, tailCoeff L y n * z ^ (n + L) := by
+  have hpoly : ∀ z : ℂ, Pc.eval z = ∑ n ∈ Finset.range N, randomTailCoeff L y n * z ^ (n + L) := by
     intro z
     rw [hPc, Polynomial.eval_finsetSum,
-      Finset.sum_range fun n => tailCoeff L y n * z ^ (n + L)]
+      Finset.sum_range fun n => randomTailCoeff L y n * z ^ (n + L)]
     refine Finset.sum_congr rfl fun n _ => ?_
     rw [Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_pow, Polynomial.eval_X,
-      tailCoeff, clampedComplexCoefficientHead, div_eq_mul_inv]
+      randomTailCoeff, clampedComplexCoefficientHead, div_eq_mul_inv]
   have hsplit : boundedRandomEntireTail L y
       = (fun z => Pc.eval z) + boundedRandomEntireTail (N + L) (fun k => y (k + N)) := by
     funext z

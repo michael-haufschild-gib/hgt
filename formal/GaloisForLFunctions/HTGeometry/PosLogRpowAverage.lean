@@ -61,7 +61,7 @@ theorem posLog_le_log_one_add {y : ℝ} (hy : 0 ≤ y) : Real.posLog y ≤ Real.
     · exact Real.log_le_log h (by linarith)
 
 /-- `log⁺ y ≤ y` for `y ≥ 0`. -/
-theorem posLog_le_self {y : ℝ} (hy : 0 ≤ y) : Real.posLog y ≤ y :=
+private theorem posLog_le_self {y : ℝ} (hy : 0 ≤ y) : Real.posLog y ≤ y :=
   le_trans (posLog_le_log_one_add hy) (log_one_add_le hy)
 
 /-- `log⁺` of a power: `log⁺ (y^α) = α · log⁺ y` for `α > 0` and `y ≥ 0`. -/

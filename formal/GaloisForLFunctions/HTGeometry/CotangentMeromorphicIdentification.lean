@@ -79,11 +79,11 @@ def sinAnalytic (a : ℂ) : analyticSubring (Set.univ : Set ℂ) :=
 def cosAnalytic (a : ℂ) : analyticSubring (Set.univ : Set ℂ) :=
   univAnalytic (fun z : ℂ => Complex.cos (a * z)) (analyticOnNhd_cos_linear a)
 
-@[simp] theorem analyticEvalAt_sinAnalytic (z a : ℂ) :
-    analyticEvalAt z (sinAnalytic a) = Complex.sin (a * z) := rfl
+@[simp] theorem analyticEvalAtUniv_sinAnalytic (z a : ℂ) :
+    analyticEvalAtUniv z (sinAnalytic a) = Complex.sin (a * z) := rfl
 
-@[simp] theorem analyticEvalAt_cosAnalytic (z a : ℂ) :
-    analyticEvalAt z (cosAnalytic a) = Complex.cos (a * z) := rfl
+@[simp] theorem analyticEvalAtUniv_cosAnalytic (z a : ℂ) :
+    analyticEvalAtUniv z (cosAnalytic a) = Complex.cos (a * z) := rfl
 
 /-- The meromorphic cotangent `z ↦ cot (a z)`. -/
 def cotMero (a : ℂ) : meroField (Set.univ : Set ℂ) :=
@@ -92,8 +92,8 @@ def cotMero (a : ℂ) : meroField (Set.univ : Set ℂ) :=
 
 theorem sinAnalytic_ne_zero {a : ℂ} (ha : a ≠ 0) : sinAnalytic a ≠ 0 := by
   intro hzero
-  have hval := congrArg (analyticEvalAt ((Real.pi : ℂ) / (2 * a))) hzero
-  rw [analyticEvalAt_sinAnalytic, map_zero] at hval
+  have hval := congrArg (analyticEvalAtUniv ((Real.pi : ℂ) / (2 * a))) hzero
+  rw [analyticEvalAtUniv_sinAnalytic, map_zero] at hval
   rw [show a * ((Real.pi : ℂ) / (2 * a)) = (Real.pi : ℂ) / 2 by field_simp] at hval
   simp at hval
 
@@ -105,8 +105,8 @@ theorem physicalExponentialMero_sub_one_ne_zero {a : ℂ} (ha : a ≠ 0) :
       (meroField (Set.univ : Set ℂ))
     rw [map_sub, map_one, map_zero]
     exact hzero
-  have hval := congrArg (analyticEvalAt ((Real.pi : ℂ) / (2 * a))) hA
-  rw [map_sub, map_one, map_zero, analyticEvalAt_physicalExponentialAnalytic] at hval
+  have hval := congrArg (analyticEvalAtUniv ((Real.pi : ℂ) / (2 * a))) hA
+  rw [map_sub, map_one, map_zero, analyticEvalAtUniv_physicalExponentialAnalytic] at hval
   rw [show 2 * Complex.I * a * ((Real.pi : ℂ) / (2 * a)) = (Real.pi : ℂ) * Complex.I by
     field_simp] at hval
   rw [Complex.exp_pi_mul_I] at hval
@@ -161,9 +161,9 @@ theorem cylinderEmbed_cotModel {l : Fin 2 → ℂ} (hl : LinearIndependent ℚ l
         * (physicalExponentialAnalytic (l j) + 1) * sinAnalytic a)
       = cosAnalytic a * (physicalExponentialAnalytic (l j) - 1) := by
     refine analyticSubring_ext fun z => ?_
-    simp only [map_mul, map_add, map_sub, map_one, analyticEvalAt_physicalExponentialAnalytic,
-      analyticEvalAt_sinAnalytic, analyticEvalAt_cosAnalytic]
-    rw [show analyticEvalAt z (constToAnalytic Set.univ Complex.I) = Complex.I from rfl, hlj]
+    simp only [map_mul, map_add, map_sub, map_one, analyticEvalAtUniv_physicalExponentialAnalytic,
+      analyticEvalAtUniv_sinAnalytic, analyticEvalAtUniv_cosAnalytic]
+    rw [show analyticEvalAtUniv z (constToAnalytic Set.univ Complex.I) = Complex.I from rfl, hlj]
     exact cot_cylinder_pointwise a z
   have hmap := congrArg (algebraMap (analyticSubring (Set.univ : Set ℂ))
     (meroField (Set.univ : Set ℂ))) hgerm

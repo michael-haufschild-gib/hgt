@@ -24,7 +24,7 @@ noncomputable section
 variable {K : Type*} [AddCommGroup K] [UniformSpace K] [T0Space K]
 variable (Gamma : AddSubgroup K)
 
-local instance : UniformSpace (⨁ _j : ℕ, Gamma) :=
+local instance relativeWeightedHistoryCompletionLocalInst1 : UniformSpace (⨁ _j : ℕ, Gamma) :=
   weightedHistoryUniformSpace (fun _ : ℕ => Gamma)
 
 /-- A pair of completed histories is relatively restricted when its transverse difference comes

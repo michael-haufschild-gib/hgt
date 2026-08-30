@@ -103,7 +103,7 @@ theorem hasDerivAt_cutoffVertex (ρ E : ℕ → ℝ) (s : Finset ℕ) (m : ℕ) 
 /-! ## Infinite spectrum: termwise differentiation -/
 
 /-- The resolvent trace of the full spectrum. -/
-def resolventTrace (ρ E : ℕ → ℝ) (r : ℕ) (x : ℝ) : ℝ :=
+private def resolventTrace (ρ E : ℕ → ℝ) (r : ℕ) (x : ℝ) : ℝ :=
   ∑' n, ρ n / (x + E n) ^ r
 
 /-- **Equation `(4)`.**  On an open connected set carrying a summable majorant for the next-order

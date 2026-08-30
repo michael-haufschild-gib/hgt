@@ -30,9 +30,9 @@ private abbrev H := Lp ℂ 2 unitIntervalMeasure
 
 private abbrev HS := SourceSpace thetaSource
 
-local instance : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
+local instance hedenmalmShiftedClosedWeightedDerivativeLocalInst1 : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
 
-local instance : CompleteSpace thetaCentered := thetaCentered_isClosed.completeSpace_coe
+local instance hedenmalmShiftedClosedWeightedDerivativeLocalInst2 : CompleteSpace thetaCentered := thetaCentered_isClosed.completeSpace_coe
 
 /-- Bounded range-coordinate map of the literal translate `A + α`. -/
 def thetaShiftedRangeMap (α : ℂ) : thetaCentered →L[ℂ] H :=

@@ -8,7 +8,7 @@ noncomputable section
 
 namespace GaloisForLFunctions.HTGeometry
 
-local instance : CompleteSpace UpperHardyL2 :=
+local instance halfPlaneFiniteBlaschkeModelLocalInst1 : CompleteSpace UpperHardyL2 :=
   RHTower.isClosed_hardyL2.completeSpace_coe
 
 /-- One divisor point in the open upper half-plane. -/

@@ -68,7 +68,7 @@ theorem det_secantMomentHankel (K : Type*) [CommRing K] (r : ℕ) :
     secantAmplitudeDiagonal, Matrix.det_diagonal]
   ring
 
-theorem X_sub_X_ne_zero {σ : Type*} [DecidableEq σ] {K : Type*} [CommRing K] [Nontrivial K]
+private theorem X_sub_X_ne_zero {σ : Type*} [DecidableEq σ] {K : Type*} [CommRing K] [Nontrivial K]
     {a b : σ} (hab : a ≠ b) :
     (MvPolynomial.X a - MvPolynomial.X b : MvPolynomial σ K) ≠ 0 := by
   intro h

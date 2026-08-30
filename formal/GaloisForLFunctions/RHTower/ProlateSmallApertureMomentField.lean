@@ -73,7 +73,7 @@ noncomputable local instance apertureMeasureOneIsSeparable :
   rw [apertureMeasure_one_eq]
   infer_instance
 
-local instance : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
+local instance prolateSmallApertureMomentFieldLocalInst1 : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
 
 def apertureMomentFieldCoeff (k n : ℕ) :
     C(UnitPhysicalInterval, UnitApertureL2) where

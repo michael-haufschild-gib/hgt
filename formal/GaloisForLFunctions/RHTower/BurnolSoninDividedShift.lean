@@ -967,7 +967,7 @@ theorem coe_burnolCoShift_ae {ρ : ℂ} (hρ : 1 / 2 < ρ.re) (f : evenSubspace)
 
 /-- **Head law for the reflected divided shift.**  It is unconditional. -/
 theorem burnolCoShiftFun_head_eq {ρ : ℂ} (hρ : 1 / 2 < ρ.re)
-    {a : ℝ} (ha : 0 < a) (f : evenSubspace) {c : ℂ}
+    {a : ℝ} (_haha : 0 < a) (f : evenSubspace) {c : ℂ}
     (hc : ∀ᵐ s ∂volume, s ∈ Ioo (0 : ℝ) a → (((f : evenSubspace) : SoninL2) : ℝ → ℂ) s = c)
     {t : ℝ} (ht0 : 0 < t) (hta : t < a) :
     burnolCoShiftFun ρ (((f : evenSubspace) : SoninL2) : ℝ → ℂ) t = c / ρ := by
@@ -1090,7 +1090,7 @@ theorem burnolShiftKernel_eq_mellinKernel {t : ℝ} (ht : 0 < t) (v : ℂ) :
 
 /-- **Mellin multiplier of the forward divided shift.**  On the strip strictly to the left of
 `Re ρ` the divided shift multiplies the uncompleted Mellin transform by `1/(ρ - v)`. -/
-theorem integral_burnolShiftFun_mellinKernel {ρ v : ℂ} (hρ : 1 / 2 < ρ.re)
+theorem integral_burnolShiftFun_mellinKernel {ρ v : ℂ} (_hρhρ : 1 / 2 < ρ.re)
     (hvlo : 1 / 2 < v.re) (hvhi : v.re < 1) (hvρ : v.re < ρ.re)
     {a : ℝ} (ha : 0 < a) {g : evenSubspace} (hg : g ∈ soninExtendedSpace a) :
     (∫ t in Ioi (0 : ℝ),

@@ -154,24 +154,24 @@ theorem carrierJetNondegenerateAt_of_momentNondegenerate
         ∀ Q : MvPolynomial (Fin (Fintype.card (Σ i, Fin (orders i)))) ℂ, Q ≠ 0 →
           MvPolynomial.eval
             (fun k => cauchyKernelMoment (nu : Measure ℝ)
-              (packetOrder orders (r, k))
-              (packetNode orders ⟨z, hz⟩ shift (r, k))) Q ≠ 0) :
+              (factorialBridgePacketOrder orders (r, k))
+              (factorialBridgePacketNode orders ⟨z, hz⟩ shift (r, k))) Q ≠ 0) :
     CarrierJetNondegenerateAt (row := row) nu orders shift := by
   intro z hz hupper Q hQ r
-  have hnode : ∀ k, (packetNode orders ⟨z, hz⟩ shift (r, k)).im ≠ 0 := by
+  have hnode : ∀ k, (factorialBridgePacketNode orders ⟨z, hz⟩ shift (r, k)).im ≠ 0 := by
     intro k
     exact ne_of_lt (hupper r _)
   have hvals :
       (fun k => probabilityCarrierExpandedPacketValue nu orders ⟨z, hz⟩ shift (r, k)) =
-        fun k => ((Nat.factorial (packetOrder orders (r, k)) : ℕ) : ℂ) *
-          cauchyKernelMoment (nu : Measure ℝ) (packetOrder orders (r, k))
-            (packetNode orders ⟨z, hz⟩ shift (r, k)) := by
+        fun k => ((Nat.factorial (factorialBridgePacketOrder orders (r, k)) : ℕ) : ℂ) *
+          cauchyKernelMoment (nu : Measure ℝ) (factorialBridgePacketOrder orders (r, k))
+            (factorialBridgePacketNode orders ⟨z, hz⟩ shift (r, k)) := by
     funext k
     exact probabilityCarrierExpandedPacketValue_eq_factorial_moment nu orders
       ⟨z, hz⟩ shift (r, k) (hnode k)
   rw [hvals]
   refine eval_ne_zero_of_scaled
-    (fun k => ((Nat.factorial (packetOrder orders (r, k)) : ℕ) : ℂ)) ?_ _
+    (fun k => ((Nat.factorial (factorialBridgePacketOrder orders (r, k)) : ℕ) : ℂ)) ?_ _
     (hmom z hz hupper r) Q hQ
   intro k
   exact_mod_cast Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero _)
@@ -191,8 +191,8 @@ theorem maximalTranslationDifferentialFree_of_momentNondegenerate
           (Fin (Fintype.card (Σ i : CarrierPatternShift p, Fin (p.orders i)))) ℂ, Q ≠ 0 →
           MvPolynomial.eval
             (fun k => cauchyKernelMoment (nu : Measure ℝ)
-              (packetOrder p.orders (r, k))
-              (packetNode p.orders ⟨z, hz⟩ shift (r, k))) Q ≠ 0) :
+              (factorialBridgePacketOrder p.orders (r, k))
+              (factorialBridgePacketNode p.orders ⟨z, hz⟩ shift (r, k))) Q ≠ 0) :
     MaximalTranslationDifferentialFree nu :=
   maximalTranslationDifferentialFree_of_jetNondegenerate nu
     (fun p shift =>

@@ -315,7 +315,7 @@ theorem hypertranscendentalOver_of_ramify [CharZero k] (q : ℕ) (hq : 0 < q) {R
 /-! ## The ramified monomial twist -/
 
 /-- The geometric factorization `X^q - 1 = (X - 1)·(1 + X + … + X^(q-1))`. -/
-def geomFactor (q : ℕ) : Polynomial k := ∑ i ∈ Finset.range q, Polynomial.X ^ i
+private def geomFactor (q : ℕ) : Polynomial k := ∑ i ∈ Finset.range q, Polynomial.X ^ i
 
 theorem geomFactor_mul (q : ℕ) :
     (Polynomial.X - Polynomial.C 1 : Polynomial k) * geomFactor q = Polynomial.X ^ q - 1 := by

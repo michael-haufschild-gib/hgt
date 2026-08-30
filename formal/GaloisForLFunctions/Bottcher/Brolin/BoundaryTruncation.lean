@@ -11,7 +11,7 @@ open scoped Laplacian
 
 namespace Bottcher
 
-local instance : Fact (0 < 2 * Real.pi) := ⟨Real.two_pi_pos⟩
+local instance boundaryTruncationLocalInst1 : Fact (0 < 2 * Real.pi) := ⟨Real.two_pi_pos⟩
 
 /-- Disconnected boundary truncation inequality for the constructed limiting
 measure.  At points of `K_c`, every positive truncation of the singular

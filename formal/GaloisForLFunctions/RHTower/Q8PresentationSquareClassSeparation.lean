@@ -23,7 +23,7 @@ noncomputable section
 local notation "K1" => deningerQ8RootNumberNegOneFirstQuadraticField
 local notation "K2" => deningerQ8RootNumberNegOneSecondQuadraticField
 
-local instance : CharZero K2 :=
+local instance q8PresentationSquareClassSeparationLocalInst1 : CharZero K2 :=
   charZero_of_injective_algebraMap (algebraMap ℚ K2).injective
 
 /-- Quotient of the two non-common upper radical factors. -/

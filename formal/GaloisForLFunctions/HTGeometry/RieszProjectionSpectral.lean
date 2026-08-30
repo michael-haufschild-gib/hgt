@@ -162,6 +162,7 @@ theorem range_rieszProjection_eq_maxGenEigenspace {T : H →L[ℂ] H} {c : ℂ} 
   le_antisymm (range_rieszProjection_le_maxGenEigenspace hr h hP hsep hfin)
     (maxGenEigenspace_le_range_rieszProjection hr h hlam0)
 
+omit [CompleteSpace H] in
 /-- An eigenvalue is not in the resolvent set. -/
 theorem not_mem_resolventSet_of_eigenvector {T : H →L[ℂ] H} {mu : ℂ} {v : H} (hv : v ≠ 0)
     (heig : T v = mu • v) : mu ∉ resolventSet ℂ T := by

@@ -27,7 +27,7 @@ open scoped Topology ENNReal NNReal
 
 noncomputable section
 
-local instance : MeasurableSpace Circle :=
+local instance primePoissonSuperselectionScreenLocalInst1 : MeasurableSpace Circle :=
   instMeasurableSpaceCircle_galoisForLFunctions
 
 /-- Canonical relabelling from an enumerated multiplicative-circle product to the additive prime

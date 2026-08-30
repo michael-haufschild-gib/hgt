@@ -169,7 +169,7 @@ theorem packet_ODE (lam w : Fin r → ℂ) (t : ℂ) :
 /-! ### §2.1 — the atomic moment chart -/
 
 /-- The atomic spectral measure of a positive packet. -/
-noncomputable def packetMeasure (lam : Fin r → ℂ) (w : Fin r → ℝ) : MeasureTheory.Measure ℂ :=
+private noncomputable def packetMeasure (lam : Fin r → ℂ) (w : Fin r → ℝ) : MeasureTheory.Measure ℂ :=
   ∑ j, (ENNReal.ofReal (w j)) • MeasureTheory.Measure.dirac (lam j)
 
 /-- **Equation (3).**  The response is the moment sequence of the atomic measure. -/

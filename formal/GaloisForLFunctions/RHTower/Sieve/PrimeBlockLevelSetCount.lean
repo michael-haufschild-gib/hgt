@@ -39,22 +39,22 @@ theorem primeBlockPoly_eq_logPoly (B : Finset ℕ) (w : ℝ) :
 theorem primeBlockPoly_eq_inner {N : ℕ} {B : Finset ℕ} (hB : B ⊆ Finset.Ico N (2 * N)) (w : ℝ) :
     primeBlockPoly B w
       = ⟪dyadicDirRow N (-(2 * Real.pi * w)),
-          blockCoeff N (restrictCoeff moebiusCoeff B) 0⟫_ℂ := by
+          blockCoeff N (blockRestrictCoeff moebiusCoeff B) 0⟫_ℂ := by
   rw [inner_dyadicDirRow_blockCoeff, primeBlockPoly_eq_logPoly,
     logPoly_eq_blockPoly_of_subset hB]
 
 /-- The Hilbert energy of the Möbius block coefficient vector is at most the block size. -/
 theorem normSq_moebiusBlockCoeff_le {N : ℕ} {B : Finset ℕ} (hB : B ⊆ Finset.Ico N (2 * N)) :
-    ‖blockCoeff N (restrictCoeff moebiusCoeff B) 0‖ ^ 2 ≤ (B.card : ℝ) := by
+    ‖blockCoeff N (blockRestrictCoeff moebiusCoeff B) 0‖ ^ 2 ≤ (B.card : ℝ) := by
   classical
   rw [norm_blockCoeff_sq]
   have hterm : ∀ n ∈ Finset.Ico N (2 * N),
-      ‖restrictCoeff moebiusCoeff B n‖ ^ 2 * (((n : ℝ) ^ (-(0 : ℝ))) ^ 2)
+      ‖blockRestrictCoeff moebiusCoeff B n‖ ^ 2 * (((n : ℝ) ^ (-(0 : ℝ))) ^ 2)
         = if n ∈ B then ‖moebiusCoeff n‖ ^ 2 else 0 := by
     intro n _
     by_cases hn : n ∈ B
-    · simp only [restrictCoeff, if_pos hn, neg_zero, Real.rpow_zero, one_pow, mul_one]
-    · simp only [restrictCoeff, if_neg hn, norm_zero]
+    · simp only [blockRestrictCoeff, if_pos hn, neg_zero, Real.rpow_zero, one_pow, mul_one]
+    · simp only [blockRestrictCoeff, if_neg hn, norm_zero]
       simp
   rw [Finset.sum_congr rfl hterm, Finset.sum_ite_mem,
     Finset.inter_eq_right.mpr hB]
@@ -80,7 +80,7 @@ theorem card_le_of_mem_primeBlockLevelSet {N : ℕ} (hN : 1 ≤ N) {B : Finset �
             + 2 * E * (N : ℝ) ^ (2 * sigma))
           * (1 + 12 * Real.pi * (1 + Real.log (2 * (2 * Real.pi * G) + 1))) := by
   classical
-  set a : EuclideanSpace ℂ (Fin N) := blockCoeff N (restrictCoeff moebiusCoeff B) 0 with ha
+  set a : EuclideanSpace ℂ (Fin N) := blockCoeff N (blockRestrictCoeff moebiusCoeff B) 0 with ha
   set S : Finset ℝ := P.image (fun x => -(2 * Real.pi * x)) with hS
   have hpi : (1 : ℝ) < 2 * Real.pi := by
     have := Real.pi_gt_three

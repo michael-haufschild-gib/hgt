@@ -1,8 +1,8 @@
 # HB modewise QNM clock-renormalization no-go
 
 - **ID:** HB-HC-QNM
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** `rh-current-frontier-map.md` · HB open source-dynamical FE–Schwarz extinction core
 - **Statement:** The literal mixed-Casimir-corrected reduced Einstein–Teukolsky source has a unique modewise QNM frequency counterterm; it makes the returned Jost determinant vanish on every Xi fibre, while the counterterm is zero exactly on the critical wall and globally zero exactly under RH.
 
@@ -26,7 +26,7 @@ global standard-clock assertion that every modewise shift is zero.
 
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea, Door passport sketch
 - [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorem `<name>`, `lake build` green, `check_axioms.sh` PASS
+- [x] 2 → 3  formalized: Lean theorem `RHTower.d4BMMixedCasimirModewiseQNMClockRenormalization_noGo`, targeted `lake build` green, `#print axioms` audited
 - [ ] 3 → 4  publication-ready: standalone paper (theorem + proof + Lean certificate + Door-2)
 
 ## Conjecture chain
@@ -122,10 +122,13 @@ sourceful cancellation rather than darkness.
 - **New insight:** HB cannot obtain RH from perturbative solvability or a renormalized returned-Jost
   extinction law.  It needs a separate divisor-independent standard-clock theorem that forbids the
   canonical nonzero off-wall frequency shifts.
-- **Status:** Corpus and current-literature audits complete; dependency-closed paper proof above;
-  ready for Lean.
+- **Status:** Formalized in
+  `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMMixedCasimirModewiseQNMClockRenormalizationNoGo`.
+  Direct `lake env lean` and targeted module build pass.  Capstone axioms are only `propext`,
+  `Classical.choice`, and `Quot.sound`.  Module is wired into `GaloisForLFunctions.RHTower`.
 
 ## Log
 
 - 2026-08-30 — created directly in 1-in-progress after corpus-first conjecture and literature audit.
 - 2026-08-30 — HC-QNM-1/2/3 proved on paper; conjecture survived and moved to Lean gate.
+- 2026-08-30 — premise-free capstone formalized; targeted build and axiom audit passed.

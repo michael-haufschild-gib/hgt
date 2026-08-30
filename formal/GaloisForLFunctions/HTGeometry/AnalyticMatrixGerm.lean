@@ -26,7 +26,7 @@ def analyticMatrixElement (A : ℂ → Matrix m n ℂ)
     (hA : ∀ i j, AnalyticOnNhd ℂ (fun t => A t i j) U) : Matrix m n (analyticSubring U) :=
   fun i j => analyticFunctionElement (fun t => A t i j) (hA i j)
 
-theorem analyticFunctionElement_coe (f : ℂ → ℂ) (hf : AnalyticOnNhd ℂ f U) :
+private theorem analyticFunctionElement_coe (f : ℂ → ℂ) (hf : AnalyticOnNhd ℂ f U) :
     ((analyticFunctionElement f hf : analyticSubring U) : Germ (𝓟 U) ℂ) =
       Germ.coeRingHom (𝓟 U) f := rfl
 

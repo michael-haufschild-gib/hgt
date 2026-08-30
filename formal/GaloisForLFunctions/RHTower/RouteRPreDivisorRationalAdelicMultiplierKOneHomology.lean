@@ -288,7 +288,7 @@ def kummerGroupRingTrace : KummerGroupRing →ₗ[ℂ] ℂ :=
   (Finsupp.lapply (1 : CCMRationalAdelicScaling)).comp
     (MonoidAlgebra.coeffLinearEquiv ℂ).toLinearMap
 
-local instance : DecidableEq CCMRationalAdelicScaling := Classical.decEq _
+local instance routeRPreDivisorRationalAdelicMultiplierKOneHomologyLocalInst1 : DecidableEq CCMRationalAdelicScaling := Classical.decEq _
 
 @[simp] theorem kummerGroupRingTrace_single
     (k : CCMRationalAdelicScaling) (c : ℂ) :

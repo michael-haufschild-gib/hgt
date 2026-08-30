@@ -21,13 +21,13 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-local instance : MeasureTheory.MeasureSpace UnitAddCircle := ⟨AddCircle.haarAddCircle⟩
+local instance thresholdTransportLightFilterLocalInst1 : MeasureTheory.MeasureSpace UnitAddCircle := ⟨AddCircle.haarAddCircle⟩
 
-local instance :
+local instance thresholdTransportLightFilterLocalInst2 :
     (MeasureTheory.volume : MeasureTheory.Measure UnitAddCircle).IsAddHaarMeasure :=
   inferInstanceAs (MeasureTheory.Measure.IsAddHaarMeasure AddCircle.haarAddCircle)
 
-local instance :
+local instance thresholdTransportLightFilterLocalInst3 :
     IsProbabilityMeasure (volume : Measure UnitAddCircle) :=
   inferInstanceAs (IsProbabilityMeasure AddCircle.haarAddCircle)
 

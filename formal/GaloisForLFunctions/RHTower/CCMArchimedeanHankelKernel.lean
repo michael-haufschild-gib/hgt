@@ -21,7 +21,7 @@ open scoped ENNReal InnerProductSpace Real SchwartzMap Topology
 
 namespace RHTower
 
-local instance : SFinite ccmPositiveMeasure := by
+local instance cCMArchimedeanHankelKernelLocalInst1 : SFinite ccmPositiveMeasure := by
   unfold ccmPositiveMeasure
   infer_instance
 

@@ -41,7 +41,7 @@ noncomputable section
 namespace RHTower
 
 variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
-local instance : InnerProductSpace ℝ H := InnerProductSpace.rclikeToReal ℂ H
+local instance suzukiGammaSkewFrequencyFluxLocalInst1 : InnerProductSpace ℝ H := InnerProductSpace.rclikeToReal ℂ H
 
 /-- Multiplication by `i/2` turns a real scalar shift minus a self-adjoint operator into a
 real-inner-product skew direction. -/

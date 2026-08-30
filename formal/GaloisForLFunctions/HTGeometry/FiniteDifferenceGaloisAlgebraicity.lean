@@ -14,7 +14,7 @@ noncomputable section
 
 variable {K L : Type*} [Field K] [CommRing L] [Nontrivial L] [Algebra K L]
 
-local instance : DecidableEq L := Classical.decEq L
+local instance finiteDifferenceGaloisAlgebraicityLocalInst1 : DecidableEq L := Classical.decEq L
 
 /-- A finite stable packet for a subgroup gives algebraicity when subgroup invariants descend. -/
 theorem isAlgebraic_of_finite_stable_subgroup_orbit

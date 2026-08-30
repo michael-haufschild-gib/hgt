@@ -44,7 +44,7 @@ def innerDilationEquiv (β : k) (hβ : β ≠ 0) : LaurentSeries k ≃+* Laurent
   map_add' := map_add _
 
 /-- The dilation of `k(w)` as an automorphism. -/
-def ratFuncScaleEquiv (β : k) (hβ : β ≠ 0) : RatFunc k ≃+* RatFunc k where
+private def ratFuncScaleEquiv (β : k) (hβ : β ≠ 0) : RatFunc k ≃+* RatFunc k where
   toFun := ratFuncScale β hβ
   invFun := ratFuncScale β⁻¹ (inv_ne_zero hβ)
   left_inv f := ratFuncScale_scale_inv β hβ f

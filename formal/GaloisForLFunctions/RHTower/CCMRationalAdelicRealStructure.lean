@@ -24,7 +24,7 @@ private abbrev Scale := CCMRationalAdelicScaling
 private abbrev Crossed := CCMRationalAdelicAlgebraicCrossedProduct
 private abbrev Source := CCMRationalAdelicCyclicSourceAlgebra
 
-local instance : DecidableEq Scale := Classical.decEq _
+local instance cCMRationalAdelicRealStructureLocalInst1 : DecidableEq Scale := Classical.decEq _
 
 /-! ## Monomial Real twist -/
 

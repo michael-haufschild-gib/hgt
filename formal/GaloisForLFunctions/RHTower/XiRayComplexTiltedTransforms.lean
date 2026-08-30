@@ -237,9 +237,9 @@ theorem xiRayLaplaceAbsMoment_le {b : ℝ} (hb : xiRayPacketBase ≤ b) :
           (Real.exp_pos _).le
     linarith [hnegle]
   have hN : xiRayLaplaceMoment b ≤ (Real.log b + 1) * xiRayLaplace b := by
-    have h := xiRayLogDeriv_le (le_trans xiRayUpperBase_le_packetBase hb)
-    have h2 : xiRayLaplaceMoment b = xiRayLogDeriv b * xiRayLaplace b := by
-      unfold xiRayLogDeriv
+    have h := xiRayLaplaceLogDeriv_le (le_trans xiRayUpperBase_le_packetBase hb)
+    have h2 : xiRayLaplaceMoment b = xiRayLaplaceLogDeriv b * xiRayLaplace b := by
+      unfold xiRayLaplaceLogDeriv
       rw [div_mul_cancel₀ _ (ne_of_gt hZpos)]
     rw [h2]
     exact mul_le_mul_of_nonneg_right h hZpos.le
@@ -885,9 +885,9 @@ private theorem logDeriv_tilted_re_norm {b t : ℝ} (hb : xiRayPacketBase ≤ b)
     rw [Complex.sub_im, Complex.ofReal_im, sub_zero] at h
     linarith [hNc_sub]
   have hN_lower : Real.log b / 8 * xiRayLaplace b ≤ xiRayLaplaceMoment b := by
-    have h := xiRayLogDeriv_ge (le_trans xiRayLowerBase_le_packetBase hb)
-    have h2 : xiRayLaplaceMoment b = xiRayLogDeriv b * xiRayLaplace b := by
-      unfold xiRayLogDeriv
+    have h := xiRayLaplaceLogDeriv_ge (le_trans xiRayLowerBase_le_packetBase hb)
+    have h2 : xiRayLaplaceMoment b = xiRayLaplaceLogDeriv b * xiRayLaplace b := by
+      unfold xiRayLaplaceLogDeriv
       rw [div_mul_cancel₀ _ (ne_of_gt hZ)]
     rw [h2]
     exact mul_le_mul_of_nonneg_right h hZ.le

@@ -72,7 +72,7 @@ theorem mapsTo_differentialAdjoin (sigma : L ≃+* L) (S : Set L)
     exact IntermediateField.mul_mem _ ha hb
 
 /-- The inverse of a derivation-commuting automorphism commutes with the derivation. -/
-theorem ringEquiv_symm_deriv (sigma : L ≃+* L) (hderiv : ∀ x : L, sigma x′ = (sigma x)′) (x : L) :
+private theorem ringEquiv_symm_deriv (sigma : L ≃+* L) (hderiv : ∀ x : L, sigma x′ = (sigma x)′) (x : L) :
     sigma.symm x′ = (sigma.symm x)′ := by
   apply sigma.injective
   rw [sigma.apply_symm_apply, hderiv, sigma.apply_symm_apply]

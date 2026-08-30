@@ -278,7 +278,7 @@ theorem re_burnolDividedShiftPhysicalPort_pos
 /-- Scalar pre-divisor producer target: at every actual right-half Xi divisor, the oriented
 Euler--Gamma--Stokes law makes the fixed physical dilation port nonpositive. -/
 def BurnolXiDividedShiftPhysicalDissipativity : Prop :=
-  ∀ (rho : XiDivisorSupport) (h : 1 / 2 < (rho : ℂ).re),
+  ∀ (rho : XiDivisorSupport) (_hh : 1 / 2 < (rho : ℂ).re),
     (burnolDividedShiftPhysicalPort (rho : ℂ)).re ≤ 0
 
 /-- Vector source flatness and scalar physical dissipativity are equivalent endpoint producers. -/

@@ -19,7 +19,7 @@ noncomputable section
 
 variable {k : Type*} [Field k]
 
-theorem rescale_neg_one_one_sub_X :
+private theorem rescale_neg_one_one_sub_X :
     PowerSeries.rescale (-1 : k) (1 - PowerSeries.X) = 1 + PowerSeries.X := by
   rw [map_sub, map_one, PowerSeries.rescale_X]
   simp

@@ -16,7 +16,7 @@ open Finset
 
 variable {K L : Type*} [Field K] [CommRing L] [Algebra K L]
 
-local instance : DecidableEq L := Classical.decEq L
+local instance finiteAutomorphismOrbitAlgebraicityLocalInst1 : DecidableEq L := Classical.decEq L
 
 /-- Monic polynomial whose roots are the members of a finite packet. -/
 def finiteOrbitPolynomial (S : Finset L) : Polynomial L :=

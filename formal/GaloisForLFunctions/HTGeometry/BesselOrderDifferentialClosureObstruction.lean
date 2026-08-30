@@ -19,7 +19,7 @@ noncomputable section
 @[reducible] def complexZeroDifferential : Differential ℂ where
   deriv := 0
 
-local instance : Differential ℂ := complexZeroDifferential
+local instance besselOrderDifferentialClosureObstructionLocalInst1 : Differential ℂ := complexZeroDifferential
 
 /-- A concrete differentially closed extension of the complex constant field. -/
 abbrev Constants : Type := diffClosure ℂ

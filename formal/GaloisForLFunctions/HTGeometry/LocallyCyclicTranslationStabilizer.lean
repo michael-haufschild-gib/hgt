@@ -88,7 +88,7 @@ theorem exists_rat_of_tail_intMultiple {b : ℕ → ℕ} (hbpos : ∀ k, 0 < b k
 variable {a b : ℕ → ℕ}
 
 /-- The coefficient sequence used by the realization: reciprocal factorials on the frequencies. -/
-def ladderCoeff (b : ℕ → ℕ) (k : ℕ) : ℂ := 1 / (((b k).factorial : ℕ) : ℂ)
+private def ladderCoeff (b : ℕ → ℕ) (k : ℕ) : ℂ := 1 / (((b k).factorial : ℕ) : ℂ)
 
 theorem ladderCoeff_ne_zero (b : ℕ → ℕ) (k : ℕ) : ladderCoeff b k ≠ 0 := by
   rw [ladderCoeff, div_ne_zero_iff]

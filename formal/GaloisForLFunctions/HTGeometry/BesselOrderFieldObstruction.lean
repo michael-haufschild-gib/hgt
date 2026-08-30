@@ -18,16 +18,16 @@ noncomputable section
 variable {F : Type*} [Field F] [CharZero F]
 
 /-- The shift coefficient `c (X + 1)` of the order recurrence. -/
-def orderShiftCoeff (c : F) : RatFunc F :=
+private def orderShiftCoeff (c : F) : RatFunc F :=
   algebraMap F[X] (RatFunc F) (Polynomial.C c * (Polynomial.X + Polynomial.C 1))
 
 omit [CharZero F] in
-theorem orderShiftCoeff_ne_zero {c : F} (hc : c ≠ 0) : orderShiftCoeff c ≠ 0 := by
+private theorem orderShiftCoeff_ne_zero {c : F} (hc : c ≠ 0) : orderShiftCoeff c ≠ 0 := by
   refine algebraMap_poly_ne_zero (mul_ne_zero ?_ ?_)
   · simpa using hc
   · exact (Polynomial.monic_X_add_C (1 : F)).ne_zero
 omit [CharZero F] in
-theorem intDegree_orderShiftCoeff {c : F} (hc : c ≠ 0) : (orderShiftCoeff c).intDegree = 1 := by
+private theorem intDegree_orderShiftCoeff {c : F} (hc : c ≠ 0) : (orderShiftCoeff c).intDegree = 1 := by
   rw [orderShiftCoeff, RatFunc.intDegree_polynomial]
   have h : (Polynomial.C c * (Polynomial.X + Polynomial.C 1)).natDegree = 1 := by
     rw [Polynomial.natDegree_C_mul hc, Polynomial.natDegree_X_add_C]
@@ -159,7 +159,7 @@ theorem orderBessel_no_rational_delta_structure {c : F} (hc : c ≠ 0) :
 
 
 /-- The companion matrix of the Bessel order recurrence. -/
-def besselOrderCompanion (c : F) : Matrix (Fin 2) (Fin 2) (RatFunc F) :=
+private def besselOrderCompanion (c : F) : Matrix (Fin 2) (Fin 2) (RatFunc F) :=
   !![0, 1; 1, orderShiftCoeff c]
 
 /-- Its entrywise derivative. -/

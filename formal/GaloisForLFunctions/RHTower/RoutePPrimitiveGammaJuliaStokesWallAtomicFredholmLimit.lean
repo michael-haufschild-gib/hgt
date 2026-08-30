@@ -25,7 +25,7 @@ namespace RHTower
 
 noncomputable section
 
-local instance : MeasurableSpace Nat.Primes := ⊤
+local instance routePPrimitiveGammaJuliaStokesWallAtomicFredholmLimitLocalInst1 : MeasurableSpace Nat.Primes := ⊤
 
 def routePPrimitiveGammaJuliaStokesWallPrimePMF (d : ℝ) (hd : 0 < d) : PMF Nat.Primes := by
   refine ⟨fun p => ENNReal.ofReal

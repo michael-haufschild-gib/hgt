@@ -32,7 +32,7 @@ local instance formalLaurentRatComplexTower :
     simp [Algebra.smul_def]
     ring⟩
 
-local instance : CharZero FormalLaurent :=
+local instance formalMahlerIntegerNormalizationLocalInst1 : CharZero FormalLaurent :=
   charZero_of_injective_algebraMap (algebraMap ℂ FormalLaurent).injective
 
 @[reducible] def rationalZeroDifferential : Differential ℚ := ⟨0⟩
@@ -47,7 +47,7 @@ local instance : CharZero FormalLaurent :=
       ((PowerSeries.derivative ℂ).restrictScalars ℤ))
   exact ⟨fractionRingDerivation D⟩
 
-local instance : Differential FormalLaurent := formalLaurentDifferential
+local instance formalMahlerIntegerNormalizationLocalInst2 : Differential FormalLaurent := formalLaurentDifferential
 
 theorem formalLaurentDifferential_algebraMap (A : PowerSeries ℂ) :
     letI := formalLaurentDifferential

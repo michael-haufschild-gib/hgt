@@ -30,7 +30,7 @@ open scoped InnerProductSpace ContinuousFunctionalCalculus
 noncomputable section
 namespace RHTower.HedenmalmThetaSource
 
-local instance : Nontrivial GammaSewnCriticalPhysicalPluckerHilbert := by
+local instance gammaSewnMobiusApertureStokesPhysicalPluckerBoundaryAmplificationNoGoLocalInst1 : Nontrivial GammaSewnCriticalPhysicalPluckerHilbert := by
   refine ⟨⟨gammaSewnCriticalPhysicalPluckerBasis (0, 0), 0, ?_⟩⟩
   intro h
   have hn := congrArg norm h

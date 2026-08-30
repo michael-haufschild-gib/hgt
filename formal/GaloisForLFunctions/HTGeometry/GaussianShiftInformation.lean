@@ -92,7 +92,7 @@ theorem pi_withDensity {n : ℕ} {E : Fin n → Type*} [∀ i, MeasurableSpace (
     rw [withDensity_apply _ (hs i), ← lintegral_indicator (hs i)]
 
 /-- Transport of a density along a measurable equivalence. -/
-theorem map_withDensity_measurableEquiv {α β : Type*} [MeasurableSpace α] [MeasurableSpace β]
+private theorem map_withDensity_measurableEquiv {α β : Type*} [MeasurableSpace α] [MeasurableSpace β]
     (ν : Measure α) (e : α ≃ᵐ β) {g : α → ℝ≥0∞} (hg : Measurable g) :
     (ν.withDensity g).map e = (ν.map e).withDensity (fun y => g (e.symm y)) := by
   ext s hs

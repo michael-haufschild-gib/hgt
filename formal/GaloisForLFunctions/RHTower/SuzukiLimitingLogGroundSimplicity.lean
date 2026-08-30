@@ -26,11 +26,11 @@ open GaloisForLFunctions.RHTower
 
 attribute [local instance] Measure.Subtype.measureSpace
 
-local instance : SFinite ccmArchimedeanFormMeasure := by
+local instance suzukiLimitingLogGroundSimplicityLocalInst1 : SFinite ccmArchimedeanFormMeasure := by
   unfold ccmArchimedeanFormMeasure
   infer_instance
 
-local instance : Fact ((2 : ℝ≥0∞) ≠ ∞) := ⟨by norm_num⟩
+local instance suzukiLimitingLogGroundSimplicityLocalInst2 : Fact ((2 : ℝ≥0∞) ≠ ∞) := ⟨by norm_num⟩
 
 theorem tendsto_suzukiSmoothAbsoluteScale_apply (x : ℝ) :
     Tendsto (fun n => suzukiSmoothAbsolute (suzukiSmoothAbsoluteScale n) x)

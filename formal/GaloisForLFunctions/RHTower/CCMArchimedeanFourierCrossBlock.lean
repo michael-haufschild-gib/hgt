@@ -11,7 +11,7 @@ open scoped ENNReal InnerProductSpace Real SchwartzMap Topology Convolution Four
 
 namespace RHTower
 
-local instance : SFinite ccmPositiveMeasure := by
+local instance cCMArchimedeanFourierCrossBlockLocalInst1 : SFinite ccmPositiveMeasure := by
   unfold ccmPositiveMeasure
   infer_instance
 

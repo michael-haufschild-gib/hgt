@@ -29,7 +29,7 @@ namespace RHTower.HedenmalmThetaSource
 open GaloisForLFunctions
 open GaloisForLFunctions.HTGeometry
 
-local instance : Nontrivial GammaSewnCriticalPhysicalPluckerHilbert := by
+local instance frankensteinThetaPluckerBoundaryAnomalyRecoveryLocalInst1 : Nontrivial GammaSewnCriticalPhysicalPluckerHilbert := by
   refine ⟨⟨gammaSewnCriticalPhysicalPluckerBasis (0, 0), 0, ?_⟩⟩
   intro h
   have hn := congrArg norm h

@@ -20,7 +20,7 @@ noncomputable section
 
 namespace GaloisForLFunctions.HTGeometry
 
-local instance : CompleteSpace UpperHardyL2 :=
+local instance hardyDiskLineCayleyUnitaryLocalInst1 : CompleteSpace UpperHardyL2 :=
   RHTower.isClosed_hardyL2.completeSpace_coe
 
 /-- Disk Szegő feature at the Cayley image of an upper-half-plane point. -/

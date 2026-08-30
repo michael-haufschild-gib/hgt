@@ -40,7 +40,7 @@ local instance periodCotComplexAlgebra : Algebra ℂ (meroField (Set.univ : Set 
 
 /-! ### The two germ presentations agree -/
 
-theorem analyticFunctionElement_congr {f g : ℂ → ℂ} (h : ∀ z, f z = g z)
+private theorem analyticFunctionElement_congr {f g : ℂ → ℂ} (h : ∀ z, f z = g z)
     (hf : AnalyticOnNhd ℂ f (Set.univ : Set ℂ)) (hg : AnalyticOnNhd ℂ g (Set.univ : Set ℂ)) :
     analyticFunctionElement f hf = analyticFunctionElement g hg := by
   have hfg : f = g := funext h

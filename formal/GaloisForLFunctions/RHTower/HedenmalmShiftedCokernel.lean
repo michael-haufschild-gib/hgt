@@ -30,9 +30,9 @@ private abbrev HS := SourceSpace thetaSource
 private abbrev sourceMeasure : Measure ℝ :=
   volume.withDensity (realDensity (sourceWeight thetaSource))
 
-local instance : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
+local instance hedenmalmShiftedCokernelLocalInst1 : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
 
-local instance : CompleteSpace thetaCentered := thetaCentered_isClosed.completeSpace_coe
+local instance hedenmalmShiftedCokernelLocalInst2 : CompleteSpace thetaCentered := thetaCentered_isClosed.completeSpace_coe
 
 theorem cokernelVector_eq_k_mul_sourceChar (α : ℂ) (x : ℝ) :
     cokernelVector thetaSource α x =

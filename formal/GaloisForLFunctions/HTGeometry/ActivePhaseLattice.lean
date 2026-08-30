@@ -24,10 +24,10 @@ open Complex Set Filter Topology MeasureTheory
 
 attribute [local instance] instMeasureSpaceUnitAddCircle
 
-local instance : IsProbabilityMeasure (volume : Measure UnitAddCircle) :=
+local instance activePhaseLatticeLocalInst1 : IsProbabilityMeasure (volume : Measure UnitAddCircle) :=
   inferInstanceAs (IsProbabilityMeasure AddCircle.haarAddCircle)
 
-local instance : Measure.IsAddHaarMeasure (volume : Measure UnitAddCircle) :=
+local instance activePhaseLatticeLocalInst2 : Measure.IsAddHaarMeasure (volume : Measure UnitAddCircle) :=
   inferInstanceAs (Measure.IsAddHaarMeasure AddCircle.haarAddCircle)
 
 namespace GaloisForLFunctions.HTGeometry

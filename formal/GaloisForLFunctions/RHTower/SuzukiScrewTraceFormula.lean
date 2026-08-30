@@ -24,11 +24,11 @@ namespace RHTower
 
 attribute [local instance] Measure.Subtype.measureSpace
 
-local instance : Encodable XiZeroCopy := Encodable.ofCountable _
+local instance suzukiScrewTraceFormulaLocalInst1 : Encodable XiZeroCopy := Encodable.ofCountable _
 
 /-- The actual Xi-divisor `ℓ²` carrier is separable because its canonical Hilbert basis has
 countable index. -/
-local instance : TopologicalSpace.SeparableSpace XiDivisorL2 := by
+local instance suzukiScrewTraceFormulaLocalInst2 : TopologicalSpace.SeparableSpace XiDivisorL2 := by
   let b : HilbertBasis XiZeroCopy ℂ XiDivisorL2 :=
     HilbertBasis.ofRepr (LinearIsometryEquiv.refl ℂ XiDivisorL2)
   have hsep : TopologicalSpace.IsSeparable

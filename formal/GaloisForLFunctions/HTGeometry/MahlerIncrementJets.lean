@@ -78,7 +78,7 @@ section Base
 
 variable {F : Type*} [Field F] [Differential F]
 
-theorem coeffDeriv_C (a : F) : coeffDeriv (Polynomial.C a) = Polynomial.C (a′) := by
+private theorem coeffDeriv_C (a : F) : coeffDeriv (Polynomial.C a) = Polynomial.C (a′) := by
   refine Polynomial.ext fun n => ?_
   rw [coeffDeriv_coeff, Polynomial.coeff_C, Polynomial.coeff_C]
   by_cases h : n = 0
@@ -94,7 +94,7 @@ theorem twoCylDerivation_algebraMap_const (a : F) :
     map_zero, zero_mul, zero_mul, add_zero]
   exact RatFunc.algebraMap_C a′
 
-theorem coeffDeriv_X : coeffDeriv (Polynomial.X : Polynomial F) = 0 := by
+private theorem coeffDeriv_X : coeffDeriv (Polynomial.X : Polynomial F) = 0 := by
   refine Polynomial.ext fun n => ?_
   rw [coeffDeriv_coeff, Polynomial.coeff_X, Polynomial.coeff_zero]
   by_cases h : 1 = n

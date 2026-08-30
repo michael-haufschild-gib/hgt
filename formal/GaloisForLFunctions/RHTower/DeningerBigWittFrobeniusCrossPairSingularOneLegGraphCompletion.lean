@@ -26,7 +26,7 @@ namespace RHTower
 
 noncomputable section
 
-local instance : Infinite DeningerCalderonWittCrossPrimePacketIndex :=
+local instance deningerBigWittFrobeniusCrossPairSingularOneLegGraphCompletionLocalInst1 : Infinite DeningerCalderonWittCrossPrimePacketIndex :=
   Infinite.of_injective deningerBigWittCrossPairPacketNatEmbedding
     deningerBigWittCrossPairPacketNatEmbedding.injective
 

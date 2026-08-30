@@ -57,7 +57,7 @@ theorem jetField_ringHom_ext {f g : JetField K (Fin N × Fin N) →+* JetField K
   rw [← hu, map_div₀, map_div₀, hpoly p, hpoly q]
 
 /-- The gauge automorphism attached to an invertible constant matrix. -/
-def gaugeAut (Z : Matrix (Fin N) (Fin N) K) (hZ : IsUnit Z.det) :
+private def gaugeAut (Z : Matrix (Fin N) (Fin N) K) (hZ : IsUnit Z.det) :
     JetField K (Fin N × Fin N) ≃+* JetField K (Fin N × Fin N) :=
   leftTranslationFieldEquiv Z Z⁻¹ (Matrix.mul_nonsing_inv Z hZ) (Matrix.nonsing_inv_mul Z hZ)
 
@@ -68,7 +68,7 @@ theorem gaugeAut_jet (Z : Matrix (Fin N) (Fin N) K) (hZ : IsUnit Z.det) (a b : F
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [Matrix.map_apply, genericJetPower_apply]
 
-theorem gaugeAut_base (Z : Matrix (Fin N) (Fin N) K) (hZ : IsUnit Z.det) (a : K) :
+private theorem gaugeAut_base (Z : Matrix (Fin N) (Fin N) K) (hZ : IsUnit Z.det) (a : K) :
     gaugeAut Z hZ (algebraMap K (JetField K (Fin N × Fin N)) a)
       = algebraMap K (JetField K (Fin N × Fin N)) a :=
   leftTranslationFieldEquiv_algebraMap_base _ _ _ _ a

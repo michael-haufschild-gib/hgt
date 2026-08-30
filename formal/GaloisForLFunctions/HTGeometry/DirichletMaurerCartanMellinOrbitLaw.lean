@@ -149,10 +149,10 @@ abbrev DirichletUniversalDeRhamAlgebra :=
   ExteriorAlgebra ComplexArithmeticFunction
     Ω[ComplexArithmeticFunction⁄ℂ]
 
-local instance : Algebra ℂ DirichletUniversalDeRhamAlgebra :=
+local instance dirichletMaurerCartanMellinOrbitLawLocalInst1 : Algebra ℂ DirichletUniversalDeRhamAlgebra :=
   Algebra.restrictScalars ℂ ComplexArithmeticFunction _
 
-local instance : IsScalarTower ℂ ComplexArithmeticFunction
+local instance dirichletMaurerCartanMellinOrbitLawLocalInst2 : IsScalarTower ℂ ComplexArithmeticFunction
     DirichletUniversalDeRhamAlgebra :=
   IsScalarTower.of_algebraMap_eq fun _ => rfl
 

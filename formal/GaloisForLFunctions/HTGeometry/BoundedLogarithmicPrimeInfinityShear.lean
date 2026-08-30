@@ -219,7 +219,7 @@ open scoped ZeroAtInfty
 
 local instance primeDiscreteTopology : TopologicalSpace Nat.Primes := ⊥
 
-local instance : DiscreteTopology Nat.Primes := ⟨rfl⟩
+local instance boundedLogarithmicPrimeInfinityShearLocalInst1 : DiscreteTopology Nat.Primes := ⟨rfl⟩
 
 /-- Real `c₀` over ordinary-prime coordinates. -/
 abbrev RealPrimeC0 := C₀(Nat.Primes, ℝ)

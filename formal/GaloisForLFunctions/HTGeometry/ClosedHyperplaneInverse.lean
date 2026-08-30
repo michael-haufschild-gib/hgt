@@ -39,6 +39,7 @@ def hyperplaneInjectionPMap (K : Submodule ℂ H) (B : K →L[ℂ] H) : K →ₗ
 def closedHyperplaneInverse (K : Submodule ℂ H) (B : K →L[ℂ] H) : H →ₗ.[ℂ] H :=
   K.subtype.compPMap (hyperplaneInjectionPMap K B).inverse
 
+omit [CompleteSpace H] in
 theorem hyperplaneInjectionPMap_toFun_ker_eq_bot
     (K : Submodule ℂ H) (B : K →L[ℂ] H) (hB : Function.Injective B) :
     LinearMap.ker (hyperplaneInjectionPMap K B).toFun = ⊥ := by
@@ -58,6 +59,7 @@ inverse operator `A`. -/
 def closedGraphTransform (K : Submodule ℂ H) (B J : K →L[ℂ] H) : H →ₗ.[ℂ] H :=
   J.toLinearMap.compPMap (hyperplaneInjectionPMap K B).inverse
 
+omit [CompleteSpace H] in
 theorem closedGraphTransform_domain
     (K : Submodule ℂ H) (B J : K →L[ℂ] H) :
     (closedGraphTransform K B J).domain = B.range := by
@@ -233,6 +235,7 @@ theorem antilipschitz_subtype_add_smul_of_compact_of_injective
   apply hJ
   simpa [J] using hJz
 
+omit [CompleteSpace H] in
 theorem closedHyperplaneInverse_domain
     (K : Submodule ℂ H) (B : K →L[ℂ] H) :
     (closedHyperplaneInverse K B).domain = B.range := by
@@ -686,7 +689,7 @@ theorem closedHyperplaneInverse_adjointSquare_eq_closedDenseInverse
   exact hSquareY.trans hInverseY.symm
 
 theorem closedHyperplaneInverse_isFredholm
-    (K : Submodule ℂ H) (hK : IsClosed (K : Set H))
+    (K : Submodule ℂ H) (_hKhK : IsClosed (K : Set H))
     (B : K →L[ℂ] H) (hB : Function.Injective B)
     (φ : H →L[ℂ] ℂ) (hφ : Function.Surjective φ)
     (hKφ : K = LinearMap.ker φ.toLinearMap) :

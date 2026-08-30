@@ -11,7 +11,7 @@ open scoped Laplacian
 
 namespace Bottcher
 
-local instance : Fact (0 < 2 * Real.pi) := ⟨Real.two_pi_pos⟩
+local instance cauchyLocalInst1 : Fact (0 < 2 * Real.pi) := ⟨Real.two_pi_pos⟩
 
 /-! ## Cauchy-transform limit for the constructed hDisc measure -/
 

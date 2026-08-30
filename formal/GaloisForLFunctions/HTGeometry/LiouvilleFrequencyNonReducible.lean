@@ -130,7 +130,7 @@ theorem tail_le (K : ℕ) :
   linarith
 
 /-- The denominator of the `K`-th rational approximation. -/
-def qDen (K : ℕ) : ℕ := 2 ^ gapExp K
+private def qDen (K : ℕ) : ℕ := 2 ^ gapExp K
 
 /-- The numerator of the `K`-th rational approximation. -/
 def pNum (K : ℕ) : ℕ := ∑ k ∈ Finset.range (K + 1), 2 ^ (gapExp K - gapExp k)

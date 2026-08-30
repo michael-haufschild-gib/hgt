@@ -271,7 +271,7 @@ theorem leftTranslationFieldEquiv_jet (Z W : Matrix (Fin N) (Fin N) C)
   rw [map_mul]
   congr 1
 
-theorem jetDerivation_algebraMap {ι : Type*} (P : JetPoly C ι) :
+private theorem jetDerivation_algebraMap {ι : Type*} (P : JetPoly C ι) :
     JetField.jetDerivation (algebraMap (JetPoly C ι) (JetField C ι) P)
       = algebraMap (JetPoly C ι) (JetField C ι)
           (differentialPolynomialDerivation ι C P) := by
@@ -320,7 +320,7 @@ theorem leftTranslationFieldEquiv_deriv (Z W : Matrix (Fin N) (Fin N) C)
   rw [JetField.deriv_eq, JetField.deriv_eq, ← hz, RingEquiv.apply_symm_apply]
 
 /-- The base field consists of constants. -/
-theorem deriv_algebraMap_jetField {ι : Type*} (c : C) :
+theorem deriv_algebraMap_jetField_indexed {ι : Type*} (c : C) :
     (algebraMap C (JetField C ι) c)′ = 0 := by
   have hb : (algebraMap C (JetField C ι) c)
       = algebraMap (JetPoly C ι) (JetField C ι) (MvPolynomial.C c) := by
@@ -363,7 +363,7 @@ theorem baseMatrix_mul (Z W : Matrix (Fin N) (Fin N) C) :
 theorem matDeriv_baseMatrix (Z : Matrix (Fin N) (Fin N) C) :
     matDeriv (baseMatrix Z) = 0 := by
   ext i j
-  simp [deriv_algebraMap_jetField]
+  simp [deriv_algebraMap_jetField_indexed]
 
 /-- **The left translation multiplies the generic matrix on the left.** -/
 theorem map_leftTranslationFieldEquiv_genericJetMatrix (Z W : Matrix (Fin N) (Fin N) C)
@@ -402,7 +402,7 @@ theorem map_leftTranslationFieldEquiv_genericSystemMatrix (Z W : Matrix (Fin N) 
   have hright : matDeriv ((genericJetMatrix C N).map σ)
       = baseMatrix Z * (genericJetMatrix C N * genericSystemMatrix C N) := by
     rw [hY, matDeriv_const_mul _ (fun i j => by
-      simp [deriv_algebraMap_jetField]), hsys]
+      simp [deriv_algebraMap_jetField_indexed]), hsys]
   have hkey : baseMatrix Z * genericJetMatrix C N * (genericSystemMatrix C N).map σ
       = baseMatrix Z * (genericJetMatrix C N * genericSystemMatrix C N) := by
     rw [← hY, ← hleft, hright]

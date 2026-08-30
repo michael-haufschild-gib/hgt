@@ -32,7 +32,7 @@ theorem fin4_steinbergSymbolSubgroup_normal :
   rw [hcomm]
   group
 
-local instance : (steinbergSymbolSubgroup F (Fin 4)).Normal :=
+local instance steinbergFinFourTorusNormalFormLocalInst1 : (steinbergSymbolSubgroup F (Fin 4)).Normal :=
   fin4_steinbergSymbolSubgroup_normal
 
 abbrev fin4SymbolQuotient :=

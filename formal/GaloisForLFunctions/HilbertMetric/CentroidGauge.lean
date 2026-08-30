@@ -23,7 +23,7 @@ noncomputable section
 variable {ι E : Type*} [Fintype ι]
 variable [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 
-local instance : DecidableEq ι := Classical.decEq ι
+local instance centroidGaugeLocalInst1 : DecidableEq ι := Classical.decEq ι
 
 /-- The equal-weight centroid of a finite Hilbert family, equal to zero for an empty family. -/
 def hilbertCentroid (x : ι → E) : E :=

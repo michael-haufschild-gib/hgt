@@ -35,10 +35,10 @@ abbrev OneForms := KaehlerDifferential R S
 /-- Universal exterior algebra of differential forms. -/
 abbrev DifferentialForms := ExteriorAlgebra S (OneForms R S)
 
-local instance : Algebra R (DifferentialForms R S) :=
+local instance universalDeRhamLocalInst1 : Algebra R (DifferentialForms R S) :=
   Algebra.restrictScalars R S _
 
-local instance : IsScalarTower R S (DifferentialForms R S) :=
+local instance universalDeRhamLocalInst2 : IsScalarTower R S (DifferentialForms R S) :=
   IsScalarTower.of_algebraMap_eq fun _ => rfl
 
 /-- Tensor square used by the cotangent presentation of Kähler differentials. -/

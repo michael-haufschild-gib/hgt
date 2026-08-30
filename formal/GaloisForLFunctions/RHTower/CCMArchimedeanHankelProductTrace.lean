@@ -29,13 +29,13 @@ open scoped ENNReal InnerProductSpace Real SchwartzMap Topology
 
 namespace RHTower
 
-local instance : SFinite ccmPositiveMeasure := by
+local instance cCMArchimedeanHankelProductTraceLocalInst1 : SFinite ccmPositiveMeasure := by
   unfold ccmPositiveMeasure
   infer_instance
 
-local instance : Fact ((2 : ENNReal) ≠ ∞) := ⟨by norm_num⟩
+local instance cCMArchimedeanHankelProductTraceLocalInst2 : Fact ((2 : ENNReal) ≠ ∞) := ⟨by norm_num⟩
 
-local instance : TopologicalSpace.SeparableSpace CCMPositiveL2 := inferInstance
+local instance cCMArchimedeanHankelProductTraceLocalInst3 : TopologicalSpace.SeparableSpace CCMPositiveL2 := inferInstance
 
 /-! ## Literal restriction and extension of the positive half-line -/
 

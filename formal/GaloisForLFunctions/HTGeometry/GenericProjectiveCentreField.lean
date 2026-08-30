@@ -81,7 +81,7 @@ theorem jet_div_jet_mem_projectiveSubfield (p q : (Fin N × Fin N) × ℕ) :
     JetField.jet p / JetField.jet q ∈ projectiveSubfield K N :=
   Subfield.subset_closure (Or.inr ⟨p, q, rfl⟩)
 
-theorem jet_ne_zero (p : (Fin N × Fin N) × ℕ) : (JetField.jet p : JetField K (Fin N × Fin N)) ≠ 0 := by
+private theorem jet_ne_zero (p : (Fin N × Fin N) × ℕ) : (JetField.jet p : JetField K (Fin N × Fin N)) ≠ 0 := by
   intro h
   have hinj : Function.Injective
       (algebraMap (JetPoly K (Fin N × Fin N)) (JetField K (Fin N × Fin N))) :=

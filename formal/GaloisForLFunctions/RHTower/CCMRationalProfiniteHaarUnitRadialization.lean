@@ -28,12 +28,12 @@ private abbrev U := CCMRationalProfiniteUnit
 private abbrev IntegralFiniteAdeles :=
   ccmRationalIntegralFiniteAdelesAddSubgroup
 
-local instance : MeasurableSpace U := borel U
-local instance : BorelSpace U := ⟨rfl⟩
-local instance : IsFiniteMeasureOnCompacts ccmRationalProfiniteUnitHaar := by
+local instance cCMRationalProfiniteHaarUnitRadializationLocalInst1 : MeasurableSpace U := borel U
+local instance cCMRationalProfiniteHaarUnitRadializationLocalInst2 : BorelSpace U := ⟨rfl⟩
+local instance cCMRationalProfiniteHaarUnitRadializationLocalInst3 : IsFiniteMeasureOnCompacts ccmRationalProfiniteUnitHaar := by
   unfold ccmRationalProfiniteUnitHaar
   infer_instance
-local instance : ccmRationalProfiniteUnitHaar.IsMulLeftInvariant := by
+local instance cCMRationalProfiniteHaarUnitRadializationLocalInst4 : ccmRationalProfiniteUnitHaar.IsMulLeftInvariant := by
   unfold ccmRationalProfiniteUnitHaar
   infer_instance
 

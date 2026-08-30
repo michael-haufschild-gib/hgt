@@ -34,7 +34,7 @@ theorem tendsto_inv_pow_of_norm_atTop {ι : Type*} {l : Filter ι} {w : ι → �
 
 /-- **The projective limit of a polynomial.**  For `deg Q ≤ d`, the quotient `Q(w)/w^d` tends to the
 `d`-th coefficient of `Q` as `‖w‖ → ∞`. -/
-theorem tendsto_eval_div_pow {ι : Type*} {l : Filter ι} {w : ι → ℂ}
+private theorem tendsto_eval_div_pow {ι : Type*} {l : Filter ι} {w : ι → ℂ}
     (hw : Tendsto (fun i => ‖w i‖) l atTop) {Q : Polynomial ℂ} {d : ℕ} (hd : Q.natDegree ≤ d) :
     Tendsto (fun i => Q.eval (w i) / (w i) ^ d) l (nhds (Q.coeff d)) := by
   have hne : ∀ᶠ i in l, w i ≠ 0 := by

@@ -11,7 +11,7 @@ noncomputable section
 open GaloisForLFunctions.HTGeometry
 open HedenmalmQuantile HedenmalmHilbertSchmidt ContinuousLinearMap
 
-local instance : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
+local instance hedenmalmThetaSourceDeterminantIdentityLocalInst1 : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
 
 /-- Evenness forces the centered completed Xi derivative to vanish at the origin. -/
 theorem deriv_XiC_at_zero : deriv XiC 0 = 0 := by

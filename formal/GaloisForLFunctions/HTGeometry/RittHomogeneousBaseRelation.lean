@@ -120,3 +120,47 @@ theorem exists_rittForm_of_homogeneous_base_relation (Fr : RittFrame K L)
     rw [map_div₀]
     field_simp
     linear_combination -hvv
+
+/-- **A scaling eigen-relation with a nonzero exponent gives Ritt's form.**  The bottom levels of the
+jet tower move their coordinate by the pure scaling `q / ρ ^ m`, so any relation `ψ(u) = (q/ρ^m)^s·u`
+with `s ≠ 0` has exponent pair `(s, −m·s) ≠ (0,0)` and therefore yields the order-one relation. -/
+theorem exists_rittForm_of_scaling_eigen (Fr : RittFrame K L)
+    {τ : L} {q : K} (hτ : τ ≠ 0) (hdτ : Fr.d τ ≠ 0) (hq : q ≠ 0) (hqconst : Fr.dK q = 0)
+    (hshift : Fr.σ τ = algebraMap K L q * τ)
+    {u : K} (hu : u ≠ 0) {s : ℤ} (hs : s ≠ 0) {m : ℕ}
+    (hrel : Fr.ψ u = (q / Fr.ρ ^ m) ^ s * u) :
+    ∃ (r j : ℤ) (A : K), r ≠ 0 ∧ A ≠ 0 ∧ (Fr.d τ) ^ r = algebraMap K L A * τ ^ j := by
+  refine exists_rittForm_of_homogeneous_base_relation Fr hτ hdτ hq hqconst hshift hu
+    (i := s) (m := -((m : ℤ) * s)) (Or.inl hs) ?_
+  rw [hrel, div_zpow, ← zpow_natCast Fr.ρ m, ← zpow_mul, zpow_neg, div_eq_mul_inv]
+
+
+
+/-- **The monomial eigen-relation gives Ritt's form.**  A monomial element `u·t^d` at a scaling
+level of the jet tower leaves `ψ(u)·(q/ρ^m)^d = c·u`; writing `c = q^i·ρ^k`, this is the homogeneous
+relation with exponent pair `(i − d, k + m·d)`, and Ritt's form follows whenever that pair is
+nonzero. -/
+theorem exists_rittForm_of_scaling_eigen_shifted (Fr : RittFrame K L)
+    {τ : L} {q : K} (hτ : τ ≠ 0) (hdτ : Fr.d τ ≠ 0) (hq : q ≠ 0) (hqconst : Fr.dK q = 0)
+    (hshift : Fr.σ τ = algebraMap K L q * τ)
+    {u : K} (hu : u ≠ 0) {i k d : ℤ} {m : ℕ}
+    (hne : i - d ≠ 0 ∨ k + (m : ℤ) * d ≠ 0)
+    (hrel : Fr.ψ u * (q / Fr.ρ ^ m) ^ d = q ^ i * Fr.ρ ^ k * u) :
+    ∃ (r j : ℤ) (A : K), r ≠ 0 ∧ A ≠ 0 ∧ (Fr.d τ) ^ r = algebraMap K L A * τ ^ j := by
+  have hρ0 : Fr.ρ ≠ 0 := Fr.ρ_ne
+  have hqρ : (q / Fr.ρ ^ m) ≠ 0 := div_ne_zero hq (pow_ne_zero _ hρ0)
+  refine exists_rittForm_of_homogeneous_base_relation Fr hτ hdτ hq hqconst hshift hu
+    (i := i - d) (m := k + (m : ℤ) * d) hne ?_
+  have hexp : (q / Fr.ρ ^ m) ^ d = q ^ d * Fr.ρ ^ (-((m : ℤ) * d)) := by
+    rw [div_zpow, ← zpow_natCast Fr.ρ m, ← zpow_mul, zpow_neg, div_eq_mul_inv]
+  rw [hexp] at hrel
+  have hq' : (q : K) ^ d ≠ 0 := zpow_ne_zero _ hq
+  have hρ' : Fr.ρ ^ (-((m : ℤ) * d)) ≠ 0 := zpow_ne_zero _ hρ0
+  rw [zpow_sub₀ hq, zpow_add₀ hρ0]
+  field_simp
+  have hcan : Fr.ρ ^ (-((m : ℤ) * d)) * Fr.ρ ^ ((m : ℤ) * d) = 1 := by
+    rw [← zpow_add₀ hρ0]
+    simp
+  linear_combination Fr.ρ ^ ((m : ℤ) * d) * hrel - (Fr.ψ u * q ^ d) * hcan
+
+end GaloisForLFunctions.HTGeometry

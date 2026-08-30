@@ -85,7 +85,7 @@ noncomputable def natGenerator : finiteSupportSeq →ₗ[ℂ] finiteSupportSeq w
 /-! ### The unimodular diagonal pulses -/
 
 /-- The unimodular phase sequence `k ↦ e^{itk}`. -/
-noncomputable def phaseSeq (t : ℝ) : BoundedSeq :=
+private noncomputable def phaseSeq (t : ℝ) : BoundedSeq :=
   BoundedContinuousFunction.ofNormedAddCommGroup
     (fun k => Complex.exp (Complex.I * (t * k : ℝ))) continuous_of_discreteTopology 1
     (fun k => by

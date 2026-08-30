@@ -26,10 +26,10 @@ open UnitAddTorus MeasureTheory Set
 /-- The circle is normalised to total mass one, as in the multivariate Fourier theory. -/
 noncomputable local instance : MeasureSpace UnitAddCircle := ⟨AddCircle.haarAddCircle⟩
 
-local instance : Measure.IsAddHaarMeasure (volume : Measure UnitAddCircle) :=
+local instance deningerModeDescentLocalInst1 : Measure.IsAddHaarMeasure (volume : Measure UnitAddCircle) :=
   inferInstanceAs (Measure.IsAddHaarMeasure AddCircle.haarAddCircle)
 
-local instance : IsProbabilityMeasure (volume : Measure UnitAddCircle) :=
+local instance deningerModeDescentLocalInst2 : IsProbabilityMeasure (volume : Measure UnitAddCircle) :=
   inferInstanceAs (IsProbabilityMeasure AddCircle.haarAddCircle)
 
 section Descent

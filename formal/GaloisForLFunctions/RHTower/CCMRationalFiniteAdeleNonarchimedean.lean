@@ -139,7 +139,7 @@ theorem ccmRationalFiniteAdele_nonarchimedeanAddGroup :
         Valued.isOpen_valuationSubring (v.adicCompletion ℚ)))
 
 /-- Local instance used by finite-adele Bruhat arguments. -/
-local instance : NonarchimedeanAddGroup CCMRationalFiniteAdele :=
+local instance cCMRationalFiniteAdeleNonarchimedeanLocalInst1 : NonarchimedeanAddGroup CCMRationalFiniteAdele :=
   ccmRationalFiniteAdele_nonarchimedeanAddGroup
 
 /-- Every rational finite-adele Bruhat function has a single global open

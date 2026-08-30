@@ -53,7 +53,7 @@ def bernoulliRelativeEntropy (p q : ℝ) : ℝ :=
   p * Real.log (p / q) + (1 - p) * Real.log ((1 - p) / (1 - q))
 
 /-- Symmetrized relative entropy of two Bernoulli laws. -/
-def bernoulliJeffreys (p q : ℝ) : ℝ :=
+private def bernoulliJeffreys (p q : ℝ) : ℝ :=
   bernoulliRelativeEntropy p q + bernoulliRelativeEntropy q p
 
 theorem bernoulliJeffreys_reflection_eq {p : ℝ}

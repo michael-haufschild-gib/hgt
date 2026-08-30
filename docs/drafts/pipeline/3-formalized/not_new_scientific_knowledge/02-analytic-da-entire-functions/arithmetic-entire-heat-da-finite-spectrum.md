@@ -1,7 +1,7 @@
 # Algebraic Entire-Heat DA Fibers Have Finite Spectrum
 
 - **ID:** arithmetic-entire-heat-da-finite-spectrum
-- **Stage:** 2-fully-proven / not new scientific knowledge
+- **Stage:** 3-formalized / not new scientific knowledge
 - **Type:** THEOREM (paper) / BRIDGE / ROUTE NO-GO
 - **Scientific status:** `[BRIDGE]` — an exact finite-spectrum consequence of classical Pólya-Popken coefficient arithmetic and Fourier diagonalization of the heat equation
 - **Statement:** A jointly entire one-sided periodic heat orbit with algebraic Fourier coefficients cannot have a DA spatial fiber unless only finitely many Fourier coefficients are nonzero.
@@ -17,7 +17,7 @@ Test whether differential algebraicity can emerge as a genuine phase inside a co
 - [x] Arithmetic coefficient theorem identified: Popken's lower bound for nonzero algebraic Taylor coefficients, with Mahler normalization reducing an ADE of an algebraic-coefficient series to algebraic constants.
 - [x] Adjacent DA heat-ansatz literature checked.
 - [x] Parent-theory gate: **FAILS scientific novelty.** The proof is a short comparison of two known asymptotic scales.
-- [ ] Formalization: not attempted. The card cannot enter `3-formalized` without a complete unconditional Lean proof of the whole theorem and its arithmetic parent.
+- [x] Formalization: complete and unconditional in Lean 4, theorem and arithmetic parent both.
 
 ## Theorem `[PROVED HERE] [BRIDGE]`
 
@@ -143,3 +143,44 @@ The live non-arithmetic question is whether every nonpolynomial DA entire series
 
 - 2026-07-11 — Proved the arithmetic finite-spectrum theorem, killed the unrestricted order-zero argument with Valiron's example, checked DA heat-ansatz literature, and classified the result `[BRIDGE]` under the routine-parent gate.
 - 2026-07-11 — Strengthened the coefficient class from rational numbers to all algebraic numbers using Popken's algebraic-coefficient lower bound and Mahler normalization. The strengthening remains `[BRIDGE]`.
+
+## Lean formalization (2026-08-30)
+
+Complete and unconditional; every declaration below depends only on `propext`, `Classical.choice`
+and `Quot.sound`.
+
+| Statement | Lean name | Module (`formal/GaloisForLFunctions/HTGeometry/`) |
+|---|---|---|
+| Card theorem | `arithmetic_heat_finite_spectrum` | `ArithmeticHeatFiniteSpectrum.lean` |
+| Super-Gaussian decay `(1)` | `exists_gaussian_bound` | `ArithmeticHeatFiniteSpectrum.lean` |
+| Entire generating function | `radius_eq_top_of_gaussian` | `ArithmeticHeatFiniteSpectrum.lean` |
+| Logarithm chart is DA and faithful | `differentiallyAlgebraicOn_logChart`, `substitutionFaithful_logChart` | `ArithmeticHeatFiniteSpectrum.lean` |
+| Popken's floor `(2)` | `exists_popken_floor_of_formalRelation` | `ArithmeticTaylorCoefficientFloor.lean` |
+| Popken's bound from an integral Euler equation | `exists_popken_lower_bound` | `PopkenCoefficientLowerBound.lean` |
+| Denominators of the inverse indicial values | `exists_indicial_denominator` | `PopkenCoefficientLowerBound.lean` |
+| **Pólya–Popken denominator control** | `exists_mahlerDen_of_nondegenerate_eulerADE` | `PolyaPopkenDenominator.lean` |
+| Mahler weight and its size | `mahlerScale`, `mahlerScale_mul_dvd`, `mahlerScale_succ_dvd`, `log_mahlerScale_le` | `MahlerDenominatorScale.lean` |
+| Graded denominator calculus | `MahlerDen`, `exists_taylorDefect_const` | `MahlerDenominatorSeries.lean` |
+| Denominators of algebraic numbers; norm of the inverse | `DenBy`, `exists_denBy`, `exists_norm_denominator` | `AlgebraicDenominator.lean` |
+| Maillet for every conjugate | `exists_uniform_conjugate_gevrey`, `isFormalEulerADESolution_conj` | `EulerADEConjugate.lean` |
+| Integral Euler normalization | `exists_integer_euler_ade` | `IntegerEulerADE.lean` |
+
+Route notes.
+
+* The hypothesis is the pointwise convergence of the heat series at every complex time and place,
+  which is weaker than the local uniform convergence assumed on paper, so the Lean statement is
+  slightly stronger than the card's.
+* Step 2 is carried out with the corpus's composition-closure theorem
+  `RGTowerCoherence.differentiallyAlgebraicOn_comp` on the disc `|w - 1| < 1/2`, where the
+  principal logarithm chart `g(w) = log w / 2πi` is analytic, differentially algebraic
+  (`2πi w g'(w) = 1`) and faithful; the relation obtained there extends to the plane by the
+  identity theorem and passes to the Taylor series through `TaylorFormalBridge.taylorPS_jetFun`.
+* The arithmetic parent — Pólya–Popken denominator control — was missing from the corpus and is
+  built here in Mahler's own form: the weight `Δ_q = C^q ∏_{j ≤ q} A_j^{⌊q/j⌋}`, whose floor
+  exponents are superadditive (`⌊i/j⌋ + ⌊i'/j⌋ ≤ ⌊(i+i')/j⌋`), is a denominator for the `q`-th
+  coefficient, where `A_j` is the absolute norm of the `j`-th indicial value.  Superadditivity is
+  exactly what the convolution in the nonlinear part of the coefficient recursion needs, and
+  `∑_{j ≤ q} q/j ≤ q(1 + log q)` gives `log Δ_q = O(q (log q)^2)`, Popken's exponent.
+* Maillet's bound for the Galois conjugates uses the naturality of the Euler jet evaluation under a
+  ring homomorphism: after Mahler's integer normalization the equation is defined over `ℤ`, so each
+  embedding of the coefficient field carries the solution to another solution of the same equation.

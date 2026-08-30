@@ -19,7 +19,7 @@ noncomputable section
 
 namespace GaloisForLFunctions.HTGeometry
 
-local instance : CompleteSpace UpperHardyL2 :=
+local instance hardyDiskLineMultiplierTransportLocalInst1 : CompleteSpace UpperHardyL2 :=
   RHTower.isClosed_hardyL2.completeSpace_coe
 
 /-- The exact disk-to-line Hardy unitary as a continuous linear map. -/

@@ -30,7 +30,7 @@ noncomputable section
 namespace RHTower
 
 /-- The Gram summand, indexed by the integer itself rather than by its predecessor. -/
-def gramTerm (q : ℕ) (k : ℕ) : ℝ :=
+private def gramTerm (q : ℕ) (k : ℕ) : ℝ :=
   (((k % q : ℕ) : ℝ) * ((k % q : ℕ) : ℝ)) / ((q : ℝ) * (q : ℝ) * (k : ℝ) * ((k : ℝ) + 1))
 
 theorem gramTerm_apply (q k : ℕ) :

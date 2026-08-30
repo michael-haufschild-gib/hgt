@@ -79,7 +79,7 @@ theorem coeff_jetCoeffDeriv (F : ExpJetPoly) (e : ℕ) :
     have hde : d ≠ e := fun hh => he (hh ▸ hd)
     rw [Polynomial.coeff_monomial, if_neg hde]
 
-theorem coeff_X_mul_derivative (F : ExpJetPoly) (e : ℕ) :
+private theorem coeff_X_mul_derivative (F : ExpJetPoly) (e : ℕ) :
     (Polynomial.X * Polynomial.derivative F).coeff e
       = (e : MvPolynomial ℕ ℂ) * F.coeff e := by
   cases e with

@@ -11,7 +11,7 @@ open scoped Topology ENNReal
 
 noncomputable section
 
-local instance : MeasurableSpace Circle :=
+local instance circlePoissonProductSingularityLocalInst1 : MeasurableSpace Circle :=
   instMeasurableSpaceCircle_galoisForLFunctions
 
 /-- Product of circle Poisson laws over a natural-number index. -/

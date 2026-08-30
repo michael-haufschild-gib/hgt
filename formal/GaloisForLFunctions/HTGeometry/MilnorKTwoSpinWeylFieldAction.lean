@@ -20,7 +20,7 @@ open MilnorDiagonalExtension
 
 variable {F : Type*} [Field F]
 
-local instance : DecidableEq F := Classical.decEq F
+local instance milnorKTwoSpinWeylFieldActionLocalInst1 : DecidableEq F := Classical.decEq F
 
 /-- A signed-monomial matrix as an explicit matrix unit. -/
 def signedMonomialMatrixUnit (sigma : Equiv.Perm (Fin 4))

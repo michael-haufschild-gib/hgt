@@ -24,7 +24,7 @@ open GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-local instance : Module ℂ EulerWickCompletedFockSpace :=
+local instance eulerSquarefreeWickCompletedFockRankQuantumLocalInst1 : Module ℂ EulerWickCompletedFockSpace :=
   lp.instInnerProductSpace.toModule
 
 theorem eulerWickXiDivisorFockVector_lineConj_linearIndependent_iff

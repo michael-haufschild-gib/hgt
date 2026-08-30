@@ -39,7 +39,7 @@ theorem fin4WeylSubgroup_le_normalizer_torus :
   obtain ⟨word, rfl⟩ := SteinbergWeylWord.exists_of_mem_subgroup hx
   exact fin4_weylWord_conj_torusSubgroup_mem word ht
 
-local instance : ((fin4TorusSubgroup (F := F)).subgroupOf (fin4WeylSubgroup (F := F))).Normal :=
+local instance steinbergFinFourSimpleWeylCoxeterLocalInst1 : ((fin4TorusSubgroup (F := F)).subgroupOf (fin4WeylSubgroup (F := F))).Normal :=
   (Subgroup.normal_subgroupOf_iff_le_normalizer fin4TorusSubgroup_le_weyl).mpr
     fin4WeylSubgroup_le_normalizer_torus
 

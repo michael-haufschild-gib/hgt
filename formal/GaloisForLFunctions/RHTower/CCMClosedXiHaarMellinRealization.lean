@@ -26,13 +26,13 @@ private abbrev ClosedRange :=
 private abbrev Section := CCMRationalClassSpaceSection
 private abbrev U := CCMRationalProfiniteUnit
 
-local instance : MeasurableSpace U := borel U
-local instance : BorelSpace U := ⟨rfl⟩
-local instance : ccmRationalProfiniteUnitHaar.IsMulLeftInvariant := by
+local instance cCMClosedXiHaarMellinRealizationLocalInst1 : MeasurableSpace U := borel U
+local instance cCMClosedXiHaarMellinRealizationLocalInst2 : BorelSpace U := ⟨rfl⟩
+local instance cCMClosedXiHaarMellinRealizationLocalInst3 : ccmRationalProfiniteUnitHaar.IsMulLeftInvariant := by
   change (Measure.haarMeasure
     ccmRationalProfiniteUnitPositiveCompact).IsMulLeftInvariant
   infer_instance
-local instance : ccmRationalProfiniteUnitHaar.IsMulRightInvariant where
+local instance cCMClosedXiHaarMellinRealizationLocalInst4 : ccmRationalProfiniteUnitHaar.IsMulRightInvariant where
   map_mul_right_eq_self g := by
     simpa only [mul_comm] using
       (map_mul_left_eq_self

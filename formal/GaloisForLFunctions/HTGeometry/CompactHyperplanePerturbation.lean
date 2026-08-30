@@ -108,7 +108,7 @@ theorem compactPerturbation_one_adjoint_kernel_le_span
 
 theorem compact_hyperplane_perturbation_range_eq_orthogonal
     (K : Submodule ℂ X) (hK : IsClosed (K : Set X))
-    (p : X) (hp0 : p ≠ 0) (hKorth : Kᗮ = ℂ ∙ p)
+    (p : X) (_hp0hp0 : p ≠ 0) (hKorth : Kᗮ = ℂ ∙ p)
     (C : K →L[ℂ] X) (hC : IsCompactOperator C)
     (hJinj : Function.Injective (K.subtypeL + C))
     (hJclosed : IsClosed ((K.subtypeL + C).range : Set X))

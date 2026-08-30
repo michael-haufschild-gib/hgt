@@ -12,7 +12,7 @@ open scoped ENNReal ComplexConjugate
 
 noncomputable section
 
-local instance : MeasurableSpace Circle :=
+local instance circlePoissonOuterFactorLocalInst1 : MeasurableSpace Circle :=
   instMeasurableSpaceCircle_galoisForLFunctions
 
 /-- Positive prime-exponent characters, as vectors in Haar `L²` of the prime torus. -/

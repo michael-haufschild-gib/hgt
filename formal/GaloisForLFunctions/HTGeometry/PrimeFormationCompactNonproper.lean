@@ -670,7 +670,7 @@ theorem formationIsometricTransport_lowerBound_iff
 
 /-! ## Concrete Paley--Wiener prime formation -/
 
-local instance : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
+local instance primeFormationCompactNonproperLocalInst1 : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
 
 /-- Frequency-side realization of `PW²_σ`: `L²` data supported on `[-σ, σ]`. -/
 abbrev PrimePaleyWienerSource (σ : ℝ) :=

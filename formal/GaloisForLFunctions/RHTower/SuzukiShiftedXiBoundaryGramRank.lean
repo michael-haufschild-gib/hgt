@@ -18,10 +18,10 @@ noncomputable section
 
 namespace RHTower
 
-local instance : CompleteSpace UpperHardyL2 :=
+local instance suzukiShiftedXiBoundaryGramRankLocalInst1 : CompleteSpace UpperHardyL2 :=
   isClosed_hardyL2.completeSpace_coe
 
-local instance : CompleteSpace LowerHardyL2 :=
+local instance suzukiShiftedXiBoundaryGramRankLocalInst2 : CompleteSpace LowerHardyL2 :=
   (Submodule.isClosed_orthogonal hardyL2).completeSpace_coe
 
 /-- Algebraic rank at least `r` for an operator with literal upper-Hardy domain. -/

@@ -23,7 +23,7 @@ namespace GaloisForLFunctions
 
 noncomputable section
 
-local instance : Algebra GammaPoleRationalBase NatGerm := ratNatEval.toAlgebra
+local instance gammaPoleScaleDerivativeLaurentFreenessLocalInst1 : Algebra GammaPoleRationalBase NatGerm := ratNatEval.toAlgebra
 
 /-- Relative evaluation on the positive derivatives after separating the scale
 coordinate. -/

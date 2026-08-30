@@ -40,7 +40,7 @@ variable [CharZero F]
 
 /-- The Bessel order recurrence has no rational compatible derivation after arbitrary
 characteristic-zero constant-field extension. -/
-theorem besselOrder_no_rational_delta_structure {c : F} (hc : c ≠ 0) (P Q : RatFunc F)
+private theorem besselOrder_no_rational_delta_structure {c : F} (hc : c ≠ 0) (P Q : RatFunc F)
     (hA : ratShift (ratShift P) + ratShift (orderShiftCoeff c) * ratShift (ratShift Q)
         = P + orderShiftCoeff c * ratShift Q)
     (hB : ratShift (ratShift Q) + orderShiftCoeff c * ratShift (ratShift P)
@@ -182,11 +182,11 @@ def besselOrderCompanion (c : F) : Matrix (Fin 2) (Fin 2) (RatFunc F) :=
 
 /-- Entrywise coordinate derivative of the Bessel companion when `c` is a differential
 constant. -/
-def besselOrderCompanionDeriv (c : F) : Matrix (Fin 2) (Fin 2) (RatFunc F) :=
+private def besselOrderCompanionDeriv (c : F) : Matrix (Fin 2) (Fin 2) (RatFunc F) :=
   !![0, 0; 0, algebraMap F (RatFunc F) c]
 
 /-- Matrix connection obstruction after arbitrary characteristic-zero constant-field extension. -/
-theorem besselOrder_no_matrix_delta_structure {c : F} (hc : c ≠ 0)
+private theorem besselOrder_no_matrix_delta_structure {c : F} (hc : c ≠ 0)
     (B : Matrix (Fin 2) (Fin 2) (RatFunc F))
     (hB : B.map ratShift * besselOrderCompanion c - besselOrderCompanion c * B
       = besselOrderCompanionDeriv c) : False := by

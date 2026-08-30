@@ -36,7 +36,7 @@ def xiRayLaplaceMoment (b : ℝ) : ℝ :=
   ∫ x : ℝ, x * thetaCuspFullSource x * Real.exp (b * x)
 
 /-- The real-ray logarithmic derivative of the centered Xi function, as a Laplace quotient. -/
-def xiRayLogDeriv (b : ℝ) : ℝ := xiRayLaplaceMoment b / xiRayLaplace b
+def xiRayLaplaceLogDeriv (b : ℝ) : ℝ := xiRayLaplaceMoment b / xiRayLaplace b
 
 theorem integrable_xiRayLaplace (b : ℝ) :
     Integrable (fun x : ℝ => thetaCuspFullSource x * Real.exp (b * x)) := by
@@ -140,9 +140,9 @@ theorem deriv_xiCent_ofReal (b : ℝ) :
 /-- On the real ray the logarithmic derivative of the centered Xi function is the real
 Laplace quotient of the theta-cusp source. -/
 theorem logDeriv_xiCent_ofReal (b : ℝ) :
-    logDeriv xiCent (b : ℂ) = ((xiRayLogDeriv b : ℝ) : ℂ) := by
+    logDeriv xiCent (b : ℂ) = ((xiRayLaplaceLogDeriv b : ℝ) : ℂ) := by
   rw [logDeriv_apply, deriv_xiCent_ofReal, xiCent_ofReal]
-  unfold xiRayLogDeriv
+  unfold xiRayLaplaceLogDeriv
   rw [Complex.ofReal_div]
 
 /-! ## The explicit constants -/
@@ -230,8 +230,8 @@ theorem xiRayLowerBase_le_packetBase : xiRayLowerBase ≤ xiRayPacketBase := by
 
 /-- Beyond `xiRayUpperBase`, the real-ray logarithmic derivative of the centered Xi function
 is at most `log b + 1`. -/
-theorem xiRayLogDeriv_le {b : ℝ} (hb : xiRayUpperBase ≤ b) :
-    xiRayLogDeriv b ≤ Real.log b + 1 := by
+theorem xiRayLaplaceLogDeriv_le {b : ℝ} (hb : xiRayUpperBase ≤ b) :
+    xiRayLaplaceLogDeriv b ≤ Real.log b + 1 := by
   have hγ1 := one_le_xiRayEnvelopeRatio
   have hlogγ : 0 ≤ Real.log xiRayEnvelopeRatio := Real.log_nonneg hγ1
   have hb12 : (12 : ℝ) ≤ b := le_trans xiRayUpperBase_ge hb
@@ -467,7 +467,7 @@ theorem xiRayLogDeriv_le {b : ℝ} (hb : xiRayUpperBase ≤ b) :
         _ = thetaEnvelopeLower * thetaEnvelope 2 * Real.exp b := hfin.symm
     linarith
   -- conclude
-  unfold xiRayLogDeriv
+  unfold xiRayLaplaceLogDeriv
   rw [div_le_iff₀ hZpos]
   have hN : xiRayLaplaceMoment b ≤ X * xiRayLaplace b + xiRayLaplace b := by
     linarith [hsplit, hleft, htail, hTZ]
@@ -774,8 +774,8 @@ theorem laplace_even_split (b : ℝ) :
 set_option maxHeartbeats 1600000 in
 /-- Beyond `xiRayLowerBase`, the real-ray logarithmic derivative of the centered Xi function
 is at least `(log b)/8`. -/
-theorem xiRayLogDeriv_ge {b : ℝ} (hb : xiRayLowerBase ≤ b) :
-    Real.log b / 8 ≤ xiRayLogDeriv b := by
+theorem xiRayLaplaceLogDeriv_ge {b : ℝ} (hb : xiRayLowerBase ≤ b) :
+    Real.log b / 8 ≤ xiRayLaplaceLogDeriv b := by
   have hγ1 := one_le_xiRayEnvelopeRatio
   have hγ0 := xiRayEnvelopeRatio_pos
   have hCl := thetaEnvelopeLower_pos
@@ -1129,7 +1129,7 @@ theorem xiRayLogDeriv_ge {b : ℝ} (hb : xiRayLowerBase ≤ b) :
       mul_le_mul_of_nonneg_left hZle (by linarith : (0 : ℝ) ≤ L / 8)
     have hYL : Y = L / 4 := hYdef
     nlinarith [hNge, hLS, hCuZ, hZp0, hS0, hL0]
-  unfold xiRayLogDeriv
+  unfold xiRayLaplaceLogDeriv
   rw [le_div_iff₀ hZpos]
   linarith [htarget]
 

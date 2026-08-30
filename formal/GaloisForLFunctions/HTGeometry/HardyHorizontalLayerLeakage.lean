@@ -13,10 +13,10 @@ abbrev RealLineL2 := Lp ℂ 2 (volume : Measure ℝ)
 abbrev UpperHardyL2 := RHTower.hardyL2
 abbrev LowerHardyL2 := RHTower.hardyL2ᗮ
 
-local instance : CompleteSpace UpperHardyL2 :=
+local instance hardyHorizontalLayerLeakageLocalInst1 : CompleteSpace UpperHardyL2 :=
   RHTower.isClosed_hardyL2.completeSpace_coe
 
-local instance : CompleteSpace LowerHardyL2 :=
+local instance hardyHorizontalLayerLeakageLocalInst2 : CompleteSpace LowerHardyL2 :=
   RHTower.hardyL2.isClosed_orthogonal.completeSpace_coe
 
 /-- Actual anti-causal Hardy compression `P₋ M|H²₊` of a bounded whole-line operator. -/

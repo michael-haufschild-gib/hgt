@@ -27,7 +27,7 @@ private abbrev U := CCMRationalProfiniteUnit
 private abbrev Strong := _root_.RHTower.DeningerMeyerStrongLogTarget
 private abbrev Class := CCMRationalStrongClassSpace
 
-local instance : DecidableEq Strong := Classical.decEq Strong
+local instance cCMRationalStrongClassSpaceLFTopologyLocalInst1 : DecidableEq Strong := Classical.decEq Strong
 
 /-- One finite locally constant coefficient packet. -/
 structure CCMRationalStrongClassSpaceLFIndex where

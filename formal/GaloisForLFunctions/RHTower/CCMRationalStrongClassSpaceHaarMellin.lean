@@ -12,8 +12,8 @@ private abbrev U := CCMRationalProfiniteUnit
 private abbrev Strong := _root_.RHTower.DeningerMeyerStrongLogTarget
 private abbrev Class := CCMRationalStrongClassSpace
 
-local instance : MeasurableSpace U := borel U
-local instance : BorelSpace U := ⟨rfl⟩
+local instance cCMRationalStrongClassSpaceHaarMellinLocalInst1 : MeasurableSpace U := borel U
+local instance cCMRationalStrongClassSpaceHaarMellinLocalInst2 : BorelSpace U := ⟨rfl⟩
 
 /-- Whole profinite-unit group as Haar normalizing compact. -/
 def ccmRationalProfiniteUnitPositiveCompact :

@@ -416,6 +416,50 @@ theorem triangularDiscrimination_eq_add (κ : Kernel X Y) [IsMarkovKernel κ] (P
   rw [coherenceWork_eq_two_mul, coherenceWork_eq_two_mul] at h
   linarith
 
+theorem integrable_sq_informationCurrent (κ : Kernel X Y) [IsMarkovKernel κ] (P Q : Measure X)
+    [IsProbabilityMeasure P] [IsProbabilityMeasure Q] :
+    Integrable (fun z => (informationCurrent κ P Q z) ^ 2) ((balancedLaw P Q) ⊗ₘ κ) := by
+  have haj : ∀ᵐ z ∂((balancedLaw P Q) ⊗ₘ κ), |informationCurrent κ P Q z| ≤ 2 := by
+    filter_upwards [ae_abs_posteriorContrast_fst κ P Q, ae_abs_posteriorContrast_snd κ P Q]
+      with z h1 h2
+    have hz : informationCurrent κ P Q z
+        = posteriorContrast P Q z.1 - posteriorContrast (⇑κ ∘ₘ P) (⇑κ ∘ₘ Q) z.2 := rfl
+    rw [hz]
+    calc |posteriorContrast P Q z.1 - posteriorContrast (⇑κ ∘ₘ P) (⇑κ ∘ₘ Q) z.2|
+        ≤ |posteriorContrast P Q z.1| + |posteriorContrast (⇑κ ∘ₘ P) (⇑κ ∘ₘ Q) z.2| :=
+          abs_sub _ _
+      _ ≤ 1 + 1 := add_le_add h1 h2
+      _ = 2 := by norm_num
+  refine Integrable.mono' (integrable_const 4)
+    ((measurable_informationCurrent κ P Q).pow_const 2).aestronglyMeasurable ?_
+  filter_upwards [haj] with z hz
+  rw [Real.norm_eq_abs, abs_pow]
+  nlinarith [abs_nonneg (informationCurrent κ P Q z)]
+
+/-- Triangular discrimination is monotone under a common observation kernel. -/
+theorem triangularDiscrimination_comp_le (κ : Kernel X Y) [IsMarkovKernel κ] (P Q : Measure X)
+    [IsProbabilityMeasure P] [IsProbabilityMeasure Q] :
+    triangularDiscrimination (⇑κ ∘ₘ P) (⇑κ ∘ₘ Q) ≤ triangularDiscrimination P Q := by
+  have h := triangularDiscrimination_eq_add κ P Q
+  have hnn : 0 ≤ ∫ z, (informationCurrent κ P Q z) ^ 2 ∂((balancedLaw P Q) ⊗ₘ κ) :=
+    integral_nonneg fun z => sq_nonneg _
+  linarith
+
+
+/-- The balanced law of a degenerate experiment is the law itself. -/
+theorem balancedLaw_self (P : Measure X) : balancedLaw P P = P := by
+  rw [balancedLaw, ← two_smul ℝ≥0∞ P, smul_smul,
+    ENNReal.inv_mul_cancel (by norm_num) (by norm_num), one_smul]
+
+/-- A degenerate experiment has vanishing posterior contrast. -/
+theorem posteriorContrast_self (P : Measure X) [SigmaFinite P] :
+    posteriorContrast P P =ᵐ[balancedLaw P P] fun _ => 0 := by
+  rw [balancedLaw_self]
+  filter_upwards [Measure.rnDeriv_self P] with x hx
+  rw [posteriorContrast, balancedLaw_self, hx]
+  simp
+
+
 end
 
 end GaloisForLFunctions.HTGeometry

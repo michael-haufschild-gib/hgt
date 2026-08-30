@@ -473,7 +473,7 @@ input format of the corpus kernel theorem.  The assembly needs three facts: the 
 scalar multiple `i q(t)` of the slice family, the slice family is `L²`-continuous, and the row
 energy `q(t)² t(1-t)` is integrable. -/
 
-local instance : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
+local instance hedenmalmHilbertSchmidtNormLocalInst1 : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
 
 theorem ae_unitIntervalMeasure_mem_Ioo :
     ∀ᵐ t ∂unitIntervalMeasure, t ∈ Ioo (0 : ℝ) 1 := by

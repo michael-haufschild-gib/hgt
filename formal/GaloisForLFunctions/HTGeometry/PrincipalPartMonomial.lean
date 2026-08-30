@@ -26,7 +26,7 @@ theorem ratFuncShift_invLinPow (α : K) (d : ℕ) :
   congr 2
   rw [map_pow]
   congr 1
-  rw [map_sub, polyShift_apply, polyShift_apply, Polynomial.X_comp, Polynomial.C_comp]
+  rw [map_sub, polyTranslate_apply, polyTranslate_apply, Polynomial.X_comp, Polynomial.C_comp]
   ring
 
 theorem algebraMap_X_pow_laurent (d : ℕ) :

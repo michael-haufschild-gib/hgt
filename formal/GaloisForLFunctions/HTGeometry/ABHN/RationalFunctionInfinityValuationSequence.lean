@@ -23,7 +23,7 @@ section
 
 variable (F : Type u) [Field F] [DecidableEq (RatFunc F)]
 
-local instance : Valued (RatFunc F) ℤᵐ⁰ := RatFunc.inftyValued F
+local instance rationalFunctionInfinityValuationSequenceLocalInst1 : Valued (RatFunc F) ℤᵐ⁰ := RatFunc.inftyValued F
 
 /-- The image of `t⁻¹` in the completion of `F(t)` at infinity. -/
 noncomputable def rationalFunctionCompletionAtInftyUniformizer :

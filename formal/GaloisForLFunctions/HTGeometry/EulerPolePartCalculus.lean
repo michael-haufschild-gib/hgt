@@ -18,14 +18,14 @@ noncomputable section
 
 variable {K : Type*} [Field K]
 
-theorem polyShift_derivative (c : K) (P : Polynomial K) :
-    Polynomial.derivative (polyShift c P) = polyShift c (Polynomial.derivative P) := by
-  rw [polyShift_apply, polyShift_apply, Polynomial.derivative_comp, Polynomial.derivative_add,
+theorem polyTranslate_derivative (c : K) (P : Polynomial K) :
+    Polynomial.derivative (polyTranslate c P) = polyTranslate c (Polynomial.derivative P) := by
+  rw [polyTranslate_apply, polyTranslate_apply, Polynomial.derivative_comp, Polynomial.derivative_add,
     Polynomial.derivative_X, Polynomial.derivative_C, add_zero, one_mul]
 
 theorem ratFuncShift_algebraMap (c : K) (R : Polynomial K) :
     ratFuncShift c (algebraMap (Polynomial K) (RatFunc K) R)
-      = algebraMap (Polynomial K) (RatFunc K) (polyShift c R) := by
+      = algebraMap (Polynomial K) (RatFunc K) (polyTranslate c R) := by
   have h := ratFuncShift_div c R 1
   simpa using h
 
@@ -36,13 +36,13 @@ theorem ratFuncShift_ratFuncDerivative (c : K) (f : RatFunc K) :
   intro P S _
   rw [ratFuncShift_div, Derivation.leibniz_div, Derivation.leibniz_div]
   simp only [smul_eq_mul, map_mul, map_sub, map_inv₀, map_pow, ratFuncShift_algebraMap,
-    ratFuncDerivative_algebraMap, polyShift_derivative]
+    ratFuncDerivative_algebraMap, polyTranslate_derivative]
 
 theorem ratFuncShift_X (c : K) :
     ratFuncShift c (RatFunc.X : RatFunc K) = RatFunc.X + algebraMap K (RatFunc K) c := by
   have hX : (RatFunc.X : RatFunc K)
       = algebraMap (Polynomial K) (RatFunc K) Polynomial.X := (RatFunc.algebraMap_X).symm
-  rw [hX, ratFuncShift_algebraMap, polyShift_apply, Polynomial.X_comp, map_add,
+  rw [hX, ratFuncShift_algebraMap, polyTranslate_apply, Polynomial.X_comp, map_add,
     RatFunc.algebraMap_X, RatFunc.algebraMap_C]
   rfl
 
@@ -193,7 +193,7 @@ theorem ratFuncShift_const (c a : K) :
     ratFuncShift c (algebraMap K (RatFunc K) a) = algebraMap K (RatFunc K) a := by
   have hC : algebraMap K (RatFunc K) a
       = algebraMap (Polynomial K) (RatFunc K) (Polynomial.C a) := (RatFunc.algebraMap_C a).symm
-  rw [hC, ratFuncShift_algebraMap, polyShift_apply, Polynomial.C_comp]
+  rw [hC, ratFuncShift_algebraMap, polyTranslate_apply, Polynomial.C_comp]
 
 theorem ratFuncShift_linear (c : K) :
     ratFuncShift c (RatFunc.X - algebraMap K (RatFunc K) c) = (RatFunc.X : RatFunc K) := by
@@ -218,18 +218,18 @@ theorem polePart_top_of_repr {g : RatFunc K} {c : K} {m : ℕ} {P Q : Polynomial
       = algebraMap (Polynomial K) (RatFunc K) P / algebraMap (Polynomial K) (RatFunc K) Q) :
     polePart g c m = P.eval c / Q.eval c := by
   have hshift : ratFuncShift c g * RatFunc.X ^ m
-      = algebraMap (Polynomial K) (RatFunc K) (polyShift c P)
-        / algebraMap (Polynomial K) (RatFunc K) (polyShift c Q) := by
+      = algebraMap (Polynomial K) (RatFunc K) (polyTranslate c P)
+        / algebraMap (Polynomial K) (RatFunc K) (polyTranslate c Q) := by
     rw [shift_mul_X_pow, h, ratFuncShift_div]
-  have hQ0 : (polyShift c Q).eval 0 ≠ 0 := by
-    rw [polyShift_apply, Polynomial.eval_comp, Polynomial.eval_add, Polynomial.eval_X,
+  have hQ0 : (polyTranslate c Q).eval 0 ≠ 0 := by
+    rw [polyTranslate_apply, Polynomial.eval_comp, Polynomial.eval_add, Polynomial.eval_X,
       Polynomial.eval_C, zero_add]
     exact hQ
-  have hcoeff := coeff_zero_algebraMap_div (polyShift c P) (polyShift c Q) hQ0
+  have hcoeff := coeff_zero_algebraMap_div (polyTranslate c P) (polyTranslate c Q) hQ0
   rw [← hshift, algebraMap_mul_single, HahnSeries.coeff_mul_single] at hcoeff
   rw [show (0 : ℤ) - (m : ℤ) = -(m : ℤ) from by ring, mul_one] at hcoeff
   show (algebraMap (RatFunc K) (LaurentSeries K) (ratFuncShift c g)).coeff (-(m : ℤ)) = _
-  rw [hcoeff, polyShift_apply, polyShift_apply, Polynomial.eval_comp, Polynomial.eval_comp]
+  rw [hcoeff, polyTranslate_apply, polyTranslate_apply, Polynomial.eval_comp, Polynomial.eval_comp]
   simp
 
 theorem regularAt_of_repr {g : RatFunc K} {c : K} {P Q : Polynomial K} (hQ : Q.eval c ≠ 0)

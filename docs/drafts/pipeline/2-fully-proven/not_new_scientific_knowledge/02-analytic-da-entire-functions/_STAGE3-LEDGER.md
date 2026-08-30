@@ -1239,3 +1239,19 @@ coefficient field, then `NonlinearMailletUnconditional`), the Liouville assembly
 Cauchy bound; `RGTowerCoherence.differentiallyAlgebraicOn_comp` with the logarithm chart to move
 the DA hypothesis from the spatial fibre to the ordinary generating function, then Mahler integer
 normalization and `ordinaryToEulerADE`).
+
+### Card 17 CLOSED (2026-08-30)
+
+`arithmetic-entire-heat-da-finite-spectrum` is fully formalized and moved to `3-formalized`.
+`arithmetic_heat_finite_spectrum` in `HTGeometry/ArithmeticHeatFiniteSpectrum.lean`; axiom-clean.
+The arithmetic parent, **Popken's lower bound** for nonzero algebraic Taylor coefficients of a
+differentially algebraic series, is now corpus-owned as
+`exists_popken_floor_of_formalRelation` (`HTGeometry/ArithmeticTaylorCoefficientFloor.lean`),
+together with its two previously missing inputs: Pólya–Popken denominator control
+(`exists_mahlerDen_of_nondegenerate_eulerADE`) and Maillet's bound for all Galois conjugates
+(`exists_uniform_conjugate_gevrey`).  Infrastructure item **I17 (Pólya–Popken)** is CLOSED.
+
+Reusable for the other cards of this folder: the graded denominator calculus `MahlerDen`, the
+weight `mahlerScale` with its superadditivity and `O(q log² q)` size, the subring-coefficient
+calculus `MvCoeffIn`, `exists_integer_euler_ade` (integral nondegenerate Euler normalization), and
+the naturality lemma `map_aeval_eulerJetOver` for conjugating formal solutions.

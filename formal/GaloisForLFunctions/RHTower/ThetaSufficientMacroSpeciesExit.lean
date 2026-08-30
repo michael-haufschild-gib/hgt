@@ -110,7 +110,7 @@ def thetaTiltDensity (d : ℕ) (B B₀ : ℝ) (s : ℝ) : ℝ≥0∞ :=
   ENNReal.ofReal ((thetaCuspLikelihoodPartition B₀ / thetaCuspLikelihoodPartition B) ^ d
     * Real.exp (-(B - B₀) * s))
 
-theorem measurable_thetaTiltDensity (d : ℕ) (B B₀ : ℝ) :
+private theorem measurable_thetaTiltDensity (d : ℕ) (B B₀ : ℝ) :
     Measurable (thetaTiltDensity d B B₀) := by
   unfold thetaTiltDensity; fun_prop
 

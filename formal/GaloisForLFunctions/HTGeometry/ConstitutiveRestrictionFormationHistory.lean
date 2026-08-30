@@ -247,8 +247,8 @@ theorem groupQuotient_erases_support {H : Type w} [Group H]
 
 /-! ## Canonical partial-isometry representation -/
 
-local instance : DecidableEq E := Classical.decEq E
-local instance : DecidableEq G := Classical.decEq G
+local instance constitutiveRestrictionFormationHistoryLocalInst1 : DecidableEq E := Classical.decEq E
+local instance constitutiveRestrictionFormationHistoryLocalInst2 : DecidableEq G := Classical.decEq G
 local instance (p : Prop) : Decidable p := Classical.propDecidable p
 
 /-- The canonical Hilbert receiver `ℓ²(E × G)`. -/

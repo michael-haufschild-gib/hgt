@@ -261,3 +261,87 @@ consumes, and its transcendence bound comes from `StateFieldTrdeg.trdeg_algebrai
 Uniformity in `k` — what Bergweiler's contradiction needs — comes from step 1: for
 `h_k = φ(λᵏ ·)` the witness family is the image of `b_φ` under the substitution automorphism, so
 `#I = 2·#b_φ` is the same for every `k`, while `ord_DA(f^{[k]}) = k → ∞`.
+
+### The composition-decomposition law is PROVED
+
+`formal/GaloisForLFunctions/HTGeometry/EntireCompositionDecomposition.lean` (built, wired,
+axiom-clean):
+
+```text
+analyticOnNhd_iteratedDeriv_comp
+compJet_analyticMeroElement
+    ** the abstract outer jets ARE the actual ones:
+       compJet (φ) (g∘φ) j = the realization of g⁽ʲ⁾ ∘ φ **
+differentiallyAlgebraicOfOrder_of_comp_witness
+    ** φ nonconstant entire with nonvanishing realized derivative, and every jet of φ and of g ∘ φ
+       algebraically witnessed over a family of size ≤ M+1
+         ⟹  g satisfies an algebraic differential equation of order M **
+```
+
+That is the composition-decomposition law, with the order bound depending only on the witness
+family — which is what makes it uniform in `k` when applied to `g = f^{[k]}`, `g ∘ φ = φ(λᵏ ·)`.
+
+Supporting general theorems, all new and reusable:
+
+```text
+CompositionJetClosure.compJet, compJet_mem_differentialAdjoin,
+  exists_relation_compJet_of_mem, exists_relation_compJet,
+  exists_relation_compJet_of_algebraic(') , exists_relation_compJet_of_witness(')
+CompositionOrderTransfer.eq_zero_of_eq_zero_on_range, deriv_iteratedDeriv_comp_entire,
+  differentiallyAlgebraicOfOrder_of_relation_on_range
+```
+
+**The one remaining obstacle is instance hygiene, not mathematics.**
+`LinearizedTowerCoherence.exists_jet_algebraicWitness_family` — the corpus theorem that supplies the
+witness families — states its conclusion under an inline `letI` stack
+(`((ratfuncToMero …).comp (algebraMap ℂ (RatFunc ℂ))).toAlgebra`, `OreLocalization.instCommRing`),
+while everything on the `Set.univ` chart uses `UnivMeroFieldInstances`
+(`univComplexAlgebraMero`, `FractionRing.field.toCommRing`).  The two agree mathematically — both
+send a constant to its constant germ — but `AlgebraicWitness` statements written against them do not
+unify.  Aligning them (an `Algebra.algebra_ext` transport, or restating the witness-family theorem
+over `UnivMeroFieldInstances`) is the last step; after it, `differentiallyAlgebraic_of_comp` follows
+in ten lines, and with the unbounded orders of `exactDifferentialOrder_poincareApprox_exp` it gives
+Bergweiler's conclusion for this card's class.
+
+**A pre-existing umbrella defect was found and fixed on the way:**
+`MeroExponentialGauge` and `LinearizedTowerCoherence` both declared
+`GaloisForLFunctions.HTGeometry.deriv_analyticMeroElement`, so the `HTGeometry` umbrella could not
+elaborate.  The general-`W` version in `LinearizedTowerCoherence` is now
+`deriv_analyticMeroElement_open`; its three call sites were updated and the module rebuilds.
+
+### The instance obstacle is RESOLVED; `differentiallyAlgebraic_of_comp` is proved
+
+`formal/GaloisForLFunctions/HTGeometry/CompositionDecompositionLaw.lean` (built, wired,
+axiom-clean):
+
+```text
+AlgebraicWitness.extend            a witness extends along any family restricting to the original
+differentiallyAlgebraic_of_comp
+    ** φ nonconstant entire with nonvanishing realized derivative,
+       φ and g ∘ φ differentially algebraic   ⟹   g differentially algebraic **
+```
+
+The two instance stacks on the plane — the scoped `UnivMeroFieldInstances` one and the inline one
+that `LinearizedTowerCoherence.exists_jet_algebraicWitness_family` states its conclusion in — were
+reconciled directly: the `CommRing` instances are definitionally equal (`rfl` closes that
+congruence goal) and the two `Algebra ℂ (meroField univ)` instances are equal by
+`Algebra.algebra_ext` together with `ratfuncToMero_C_eq_constToMero`, since both send a constant to
+its constant germ.  So the earlier note that this was blocking is superseded.
+
+### What is left for Bergweiler, exactly
+
+`differentiallyAlgebraic_of_comp` gives *some* order for each `g = f^{[k]}`.  The contradiction with
+`ord_DA(f^{[k]}) = k → ∞` needs that order to be **uniform in `k`**, which
+`differentiallyAlgebraicOfOrder_of_comp_witness` already provides — its bound is the size of the
+combined witness family.  So the remaining step is:
+
+```text
+for h_k = φ(λᵏ ·),  a witness family of the SAME size p as φ's,
+  namely  b_{h_k} := precompMeroEquiv (dilation λᵏ) ∘ b_φ
+```
+
+using `Bottcher.MeromorphicField.precompMeroEquiv` (the deck automorphism of the meromorphic field
+attached to a self-biholomorphism, already in the corpus) together with `AlgebraicWitness.map`, plus
+the elementary jet identity `(φ(λᵏ ·))⁽ʲ⁾(z) = λ^{kj} φ⁽ʲ⁾(λᵏ z)`.  With that, the common family has
+size `2p` for every `k`, `differentiallyAlgebraicOfOrder_of_comp_witness` bounds every
+`ord_DA(f^{[k]})` by `2p`, and `exists_exactDifferentialOrder_poincareApprox_exp_ge` contradicts it.

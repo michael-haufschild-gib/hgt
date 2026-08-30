@@ -19,11 +19,11 @@ noncomputable section
 
 open HurwitzJointLadder HurwitzOrbit
 
-local instance : IsDomain upperEndAnalyticSubring :=
+local instance universalHybridKreinXiHurwitzObservableNonuniformityLawLocalInst1 : IsDomain upperEndAnalyticSubring :=
   isDomain_upperEndAnalyticSubring
-local instance : Algebra (RatFunc ℂ) upperEndMeroField :=
+local instance universalHybridKreinXiHurwitzObservableNonuniformityLawLocalInst2 : Algebra (RatFunc ℂ) upperEndMeroField :=
   upperEndRatfuncToMero.toAlgebra
-local instance : Differential upperEndMeroField :=
+local instance universalHybridKreinXiHurwitzObservableNonuniformityLawLocalInst3 : Differential upperEndMeroField :=
   upperEndMeroFieldDifferential
 
 /-- Blind-side field/ring equivalence, exact Krein discrimination, and faithful Xi-Hurwitz

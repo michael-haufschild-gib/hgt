@@ -34,14 +34,14 @@ private abbrev HS := SourceSpace thetaSource
 private abbrev sourceMeasure : Measure ℝ :=
   volume.withDensity (realDensity (sourceWeight thetaSource))
 
-local instance : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
+local instance hedenmalmClosedWeightedDerivativeLocalInst1 : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
 
 private theorem continuous_sourceWeight : Continuous (sourceWeight thetaSource) := by
   apply thetaSource.continuous_k.inv₀
   intro x
   exact (thetaSource.pos_k x).ne'
 
-local instance : IsFiniteMeasureOnCompacts sourceMeasure where
+local instance hedenmalmClosedWeightedDerivativeLocalInst2 : IsFiniteMeasureOnCompacts sourceMeasure where
   lt_top_of_isCompact := by
     intro K hK
     rw [sourceMeasure, withDensity_apply' (realDensity (sourceWeight thetaSource)) K]
@@ -461,7 +461,7 @@ theorem thetaCentered_isClosed : IsClosed (thetaCentered : Set H) := by
   simpa only [thetaCentered] using
     (Submodule.isClosed_orthogonal (ℂ ∙ pinnedOne : Submodule ℂ H))
 
-local instance : CompleteSpace thetaCentered := thetaCentered_isClosed.completeSpace_coe
+local instance hedenmalmClosedWeightedDerivativeLocalInst3 : CompleteSpace thetaCentered := thetaCentered_isClosed.completeSpace_coe
 
 /-- Closure of `-i d/dx`, realized as graph inverse of the compact centered source inverse. -/
 def thetaWeightedDerivative : H →ₗ.[ℂ] H :=

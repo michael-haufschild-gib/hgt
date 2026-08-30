@@ -30,7 +30,7 @@ namespace GaloisForLFunctions
 
 noncomputable section
 
-local instance : Algebra ℂ NatGerm := complexNatGerm.toAlgebra
+local instance gammaPoleWeightedSecondSubprincipalCofinalLocalInst1 : Algebra ℂ NatGerm := complexNatGerm.toAlgebra
 
 /-- Laurent symbol for the center derivative `R₀'(0)` of the base Gamma regular remainder. -/
 def gammaPoleBaseRemainderDerivativeSymbol :

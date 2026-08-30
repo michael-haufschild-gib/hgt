@@ -239,7 +239,7 @@ section ProductReductionWitness
 
 variable {G Y Z : Type*} [Group G]
 
-local instance : MulAction G (G × Y) := firstFactorMulAction G Y
+local instance gaugePropernessLocalInst1 : MulAction G (G × Y) := firstFactorMulAction G Y
 
 /-- The first-factor action is free. -/
 theorem firstFactorMulAction_isCancelSMul : IsCancelSMul G (G × Y) where

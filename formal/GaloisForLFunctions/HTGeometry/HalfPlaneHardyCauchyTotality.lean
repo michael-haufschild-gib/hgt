@@ -23,7 +23,7 @@ noncomputable section
 
 namespace GaloisForLFunctions.HTGeometry
 
-local instance : CompleteSpace UpperHardyL2 :=
+local instance halfPlaneHardyCauchyTotalityLocalInst1 : CompleteSpace UpperHardyL2 :=
   RHTower.isClosed_hardyL2.completeSpace_coe
 
 /-- Pointwise complex conjugation is antiunitary on whole-line `L²`. -/

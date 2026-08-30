@@ -22,7 +22,7 @@ section
 
 variable (F : Type u) [Field F] [DecidableEq (RatFunc F)]
 
-local instance : Valued (RatFunc F) ℤᵐ⁰ := RatFunc.inftyValued F
+local instance rationalFunctionInfinityCompletionLocalInst1 : Valued (RatFunc F) ℤᵐ⁰ := RatFunc.inftyValued F
 
 /-- The completion of `F(t)` at infinity is uniformly equivalent to `F((X))`, where the
 Laurent-series coordinate `X` represents `t⁻¹`. -/

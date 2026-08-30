@@ -25,7 +25,7 @@ private abbrev Section := CCMRationalClassSpaceSection
 private abbrev H := CCMRationalMoritaHilbert
 private abbrev Op := H →L[ℂ] H
 
-local instance : DecidableEq Scale := Classical.decEq _
+local instance cCMRationalAdelicRestrictionEquivarianceLocalInst1 : DecidableEq Scale := Classical.decEq _
 
 /-- Orbit evaluation after source pullback is evaluation at the translated
 class-space base. -/

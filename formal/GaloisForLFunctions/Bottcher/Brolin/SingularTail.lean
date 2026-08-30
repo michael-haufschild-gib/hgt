@@ -11,7 +11,7 @@ open scoped Laplacian
 
 namespace Bottcher
 
-local instance : Fact (0 < 2 * Real.pi) := ⟨Real.two_pi_pos⟩
+local instance singularTailLocalInst1 : Fact (0 < 2 * Real.pi) := ⟨Real.two_pi_pos⟩
 
 /-- Sum of pointwise differences over a finite multiset. -/
 theorem multiset_sum_map_sub_real {α : Type*} (s : Multiset α)

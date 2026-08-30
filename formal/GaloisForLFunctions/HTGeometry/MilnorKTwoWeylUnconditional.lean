@@ -18,7 +18,7 @@ universe u
 
 variable {F : Type u} [Field F]
 
-local instance : DecidableEq (MilnorKDeg F 2) := Classical.decEq _
+local instance milnorKTwoWeylUnconditionalLocalInst1 : DecidableEq (MilnorKDeg F 2) := Classical.decEq _
 
 structure MilnorWPackage (F : Type u) [Field F] where
   W : Type u

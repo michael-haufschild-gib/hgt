@@ -18,7 +18,7 @@ noncomputable section
 
 open GaloisForLFunctions.HTGeometry
 
-local instance : Differential (RatFunc Constants) := coordinateTotalDifferential
+local instance besselOrderParameterizedPicardVessiotLocalInst1 : Differential (RatFunc Constants) := coordinateTotalDifferential
 
 /-- Explicit inverse of the concrete Bessel order companion. -/
 def besselOrderCompanionInverse (s : ℝ) : Matrix (Fin 2) (Fin 2) (RatFunc Constants) :=

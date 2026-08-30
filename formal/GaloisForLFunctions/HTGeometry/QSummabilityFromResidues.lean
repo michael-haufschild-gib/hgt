@@ -229,7 +229,7 @@ theorem polePart_zero_zero_algebraMap (R : Polynomial K) :
     polePart (algebraMap (Polynomial K) (RatFunc K) R) 0 0 = R.eval 0 := by
   have hshift : ratFuncShift 0 (algebraMap (Polynomial K) (RatFunc K) R)
       = algebraMap (Polynomial K) (RatFunc K) R := by
-    rw [ratFuncShift_algebraMap, polyShift_apply, map_zero, add_zero, Polynomial.comp_X]
+    rw [ratFuncShift_algebraMap, polyTranslate_apply, map_zero, add_zero, Polynomial.comp_X]
   rw [polePart, hshift]
   have hdiv : algebraMap (Polynomial K) (RatFunc K) R
       = algebraMap (Polynomial K) (RatFunc K) R / algebraMap (Polynomial K) (RatFunc K) 1 := by

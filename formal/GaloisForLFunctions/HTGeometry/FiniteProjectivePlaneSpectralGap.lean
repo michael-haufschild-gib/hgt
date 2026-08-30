@@ -23,8 +23,8 @@ noncomputable section
 
 variable {P L : Type*} [Membership P L]
 
-local instance : DecidableEq P := Classical.decEq _
-local instance : DecidableEq L := Classical.decEq _
+local instance finiteProjectivePlaneSpectralGapLocalInst1 : DecidableEq P := Classical.decEq _
+local instance finiteProjectivePlaneSpectralGapLocalInst2 : DecidableEq L := Classical.decEq _
 local instance finiteProjectivizationFintype (K : Type*) [Field K] [Fintype K] :
     Fintype (ℙ K (Fin 3 → K)) := Fintype.ofFinite _
 

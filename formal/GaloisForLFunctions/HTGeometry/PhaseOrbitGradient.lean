@@ -21,13 +21,13 @@ noncomputable section
 
 namespace GaloisForLFunctions.HTGeometry
 
-local instance : MeasureTheory.MeasureSpace UnitAddCircle := ⟨AddCircle.haarAddCircle⟩
+local instance phaseOrbitGradientLocalInst1 : MeasureTheory.MeasureSpace UnitAddCircle := ⟨AddCircle.haarAddCircle⟩
 
-local instance :
+local instance phaseOrbitGradientLocalInst2 :
     (MeasureTheory.volume : MeasureTheory.Measure UnitAddCircle).IsAddHaarMeasure :=
   inferInstanceAs (MeasureTheory.Measure.IsAddHaarMeasure AddCircle.haarAddCircle)
 
-local instance :
+local instance phaseOrbitGradientLocalInst3 :
     MeasureTheory.IsProbabilityMeasure (MeasureTheory.volume : MeasureTheory.Measure UnitAddCircle) :=
   inferInstanceAs (MeasureTheory.IsProbabilityMeasure AddCircle.haarAddCircle)
 

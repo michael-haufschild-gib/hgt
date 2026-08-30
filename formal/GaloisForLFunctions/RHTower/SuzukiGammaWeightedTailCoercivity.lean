@@ -63,7 +63,7 @@ theorem suzukiGammaShiftLowerKernel_nonneg
     hden.le
 
 variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
-local instance : InnerProductSpace ℝ H := InnerProductSpace.rclikeToReal ℂ H
+local instance suzukiGammaWeightedTailCoercivityLocalInst1 : InnerProductSpace ℝ H := InnerProductSpace.rclikeToReal ℂ H
 
 /-- **Weighted tail energy estimate.**
 

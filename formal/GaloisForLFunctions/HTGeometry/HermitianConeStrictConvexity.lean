@@ -328,7 +328,7 @@ theorem posDef_iff_re_pos {A : Matrix (Fin q) (Fin q) ℂ} (hA : A.IsHermitian) 
     exact ⟨by simpa using h x hx, by simpa using (dotProduct_mulVec_im_eq_zero hA x).symm⟩
 
 /-- Positive definiteness is tested on the unit sphere. -/
-theorem posDef_iff_sphere {A : Matrix (Fin q) (Fin q) ℂ} (hA : A.IsHermitian) :
+private theorem posDef_iff_sphere {A : Matrix (Fin q) (Fin q) ℂ} (hA : A.IsHermitian) :
     A.PosDef ↔ ∀ x : Fin q → ℂ, ‖x‖ = 1 → 0 < (star x ⬝ᵥ A *ᵥ x).re := by
   rw [posDef_iff_re_pos hA]
   constructor

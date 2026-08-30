@@ -116,7 +116,7 @@ theorem isReduced_tensor_field_algebra_of_charZero
 
 /-- **The tensor product of two reduced algebras over a field of characteristic zero is
 reduced.**  This is the statement mathlib is missing. -/
-theorem isReduced_tensorProduct_of_charZero
+private theorem isReduced_tensorProduct_of_charZero
     {k : Type*} [Field k] [CharZero k]
     {A : Type*} [CommRing A] [Algebra k A] [IsReduced A]
     {B : Type*} [CommRing B] [Algebra k B] [IsReduced B] :

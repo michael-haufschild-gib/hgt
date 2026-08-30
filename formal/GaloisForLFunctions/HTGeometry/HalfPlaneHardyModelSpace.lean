@@ -7,7 +7,7 @@ noncomputable section
 
 namespace GaloisForLFunctions.HTGeometry
 
-local instance : CompleteSpace UpperHardyL2 :=
+local instance halfPlaneHardyModelSpaceLocalInst1 : CompleteSpace UpperHardyL2 :=
   RHTower.isClosed_hardyL2.completeSpace_coe
 
 /-- Upper-half-plane evaluation kernel, realized as a lower-pole Hardy boundary vector. -/

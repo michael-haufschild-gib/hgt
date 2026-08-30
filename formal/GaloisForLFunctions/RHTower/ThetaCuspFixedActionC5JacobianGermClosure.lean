@@ -178,7 +178,7 @@ def thetaCuspLogCurvatureJetTwo (x : ℝ) : ℝ :=
   -iteratedDeriv 4 thetaCuspLogSource x
 
 /-- Fourth displacement jet of reflected logarithmic action. -/
-def thetaCuspReflectedLogJetFour (u t : ℝ) : ℝ :=
+private def thetaCuspReflectedLogJetFour (u t : ℝ) : ℝ :=
   thetaCuspLogCurvatureJetTwo (u + t) +
     thetaCuspLogCurvatureJetTwo (u - t)
 
@@ -195,7 +195,7 @@ theorem hasDerivAt_thetaCuspLogCurvatureJet
   convert (hasDerivAt_iteratedDeriv_thetaCuspLogSource 3 x).neg using 1
   all_goals rfl
 
-theorem hasDerivAt_thetaCuspReflectedLogJetThree
+private theorem hasDerivAt_thetaCuspReflectedLogJetThree
     (u t : ℝ) :
     HasDerivAt (thetaCuspReflectedLogJetThree u)
       (thetaCuspReflectedLogJetFour u t) t := by

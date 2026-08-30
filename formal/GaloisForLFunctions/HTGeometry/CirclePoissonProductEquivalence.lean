@@ -10,7 +10,7 @@ open scoped Topology ENNReal NNReal
 
 noncomputable section
 
-local instance : MeasurableSpace Circle :=
+local instance circlePoissonProductEquivalenceLocalInst1 : MeasurableSpace Circle :=
   instMeasurableSpaceCircle_galoisForLFunctions
 
 theorem circlePoissonHalfDensity_pos (a : CirclePoissonParameter) (z : Circle) :

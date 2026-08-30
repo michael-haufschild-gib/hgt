@@ -13,7 +13,7 @@ identification is `t = −2πw`, `σ = 0`, `N = 2^j`, with the coefficients exte
 block.  With this identity every estimate proved for `blockPoly` applies to the dyadic pieces of a
 Möbius-cofactor polynomial, and `inner_dyadicDirRow_blockCoeff` turns them into Gram rows.
 
-* `restrictCoeff`, `logPoly_eq_blockPoly_of_subset` — the general bridge;
+* `blockRestrictCoeff`, `logPoly_eq_blockPoly_of_subset` — the general bridge;
 * `dyadicSegmentBlock_subset_Ico`;
 * `logPoly_dyadicSegmentBlock_eq_blockPoly`;
 * `logPoly_dyadicSegmentBlock_eq_inner` — the Gram-row form.
@@ -35,30 +35,30 @@ theorem dyadicSegmentBlock_subset_Ico (M j : ℕ) :
     _ = 2 * 2 ^ j := by ring
 
 /-- The coefficients of a finite set, extended by zero. -/
-def restrictCoeff (a : ℕ → ℂ) (s : Finset ℕ) : ℕ → ℂ :=
+def blockRestrictCoeff (a : ℕ → ℂ) (s : Finset ℕ) : ℕ → ℂ :=
   fun n => if n ∈ s then a n else 0
 
 /-- **A `logPoly` supported in a dyadic range is a Huxley `blockPoly`.**  The only content is the
 frequency normalisation `t = −2πw` at `σ = 0`. -/
 theorem logPoly_eq_blockPoly_of_subset {N : ℕ} {s : Finset ℕ}
     (hs : s ⊆ Finset.Ico N (2 * N)) (a : ℕ → ℂ) (w : ℝ) :
-    logPoly a s w = blockPoly N (restrictCoeff a s) 0 (-(2 * Real.pi * w)) := by
+    logPoly a s w = blockPoly N (blockRestrictCoeff a s) 0 (-(2 * Real.pi * w)) := by
   classical
   have hzero : ∀ n ∈ Finset.Ico N (2 * N), n ∉ s →
-      restrictCoeff a s n * (((n : ℝ) ^ (-(0 : ℝ)) : ℝ) : ℂ) *
+      blockRestrictCoeff a s n * (((n : ℝ) ^ (-(0 : ℝ)) : ℝ) : ℂ) *
         Complex.exp (((-(-(2 * Real.pi * w) * Real.log (n : ℝ)) : ℝ) : ℂ) * Complex.I) = 0 := by
     intro n _ hn
-    simp only [restrictCoeff, if_neg hn, zero_mul]
+    simp only [blockRestrictCoeff, if_neg hn, zero_mul]
   rw [blockPoly, ← Finset.sum_subset hs hzero, logPoly]
   refine Finset.sum_congr rfl fun n hn => ?_
   have hexp : (2 * Real.pi * (w * Real.log (n : ℝ)))
       = -(-(2 * Real.pi * w) * Real.log (n : ℝ)) := by ring
-  simp only [restrictCoeff, if_pos hn, neg_zero, Real.rpow_zero, Complex.ofReal_one,
+  simp only [blockRestrictCoeff, if_pos hn, neg_zero, Real.rpow_zero, Complex.ofReal_one,
     mul_one, hexp]
 
 /-- The coefficients of a dyadic block, extended by zero. -/
 def dyadicSegmentCoeff (a : ℕ → ℂ) (M j : ℕ) : ℕ → ℂ :=
-  restrictCoeff a (dyadicSegmentBlock M j)
+  blockRestrictCoeff a (dyadicSegmentBlock M j)
 
 /-- **A dyadic block of an initial-segment `logPoly` is a Huxley `blockPoly`.** -/
 theorem logPoly_dyadicSegmentBlock_eq_blockPoly (a : ℕ → ℂ) (M j : ℕ) (w : ℝ) :

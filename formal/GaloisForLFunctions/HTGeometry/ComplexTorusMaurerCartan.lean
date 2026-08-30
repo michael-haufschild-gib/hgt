@@ -21,7 +21,7 @@ open scoped Differential
 variable {n : ℕ}
 
 /-- A coordinate of `ℂ ^ n` is entire. -/
-theorem analyticOnNhd_coord (n : ℕ) (j : Fin n) :
+private theorem analyticOnNhd_coord (n : ℕ) (j : Fin n) :
     AnalyticOnNhd ℂ (fun z : Fin n → ℂ => z j) Set.univ :=
   (ContinuousLinearMap.proj (R := ℂ) (φ := fun _ : Fin n => ℂ) j).analyticOnNhd Set.univ
 
