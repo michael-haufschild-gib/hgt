@@ -1,7 +1,7 @@
 # Fixed Taylor Moduli Do Not Determine Differential Algebraicity
 
 - **ID:** `fixed-taylor-modulus-newton-geometry-ht-blindness`
-- **Stage:** 2-fully-proven / not new scientific knowledge
+- **Stage:** 3-formalized / not new scientific knowledge
 - **Type:** THEOREM (paper) / BRIDGE / CONSTRAINT NO-GO
 - **Scientific status:** `[PROVED HERE] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Statement:** Every admissible infinite Taylor-modulus profile has a hypertranscendental phase realization. In particular, one DA entire function and one HT entire function can have identical coefficient moduli, maximum-term function, logarithmic Newton envelope, active indices, and plateau widths.
@@ -161,3 +161,49 @@ No complete Lean formalization is claimed. The theorem depends on Ostrowski's an
 
 - 2026-07-11 — Proved arbitrary fixed-modulus HT realization and the exact `exp(z)` versus phase-twisted HT same-Newton-profile pair.
 - 2026-07-11 — Strengthened blindness inside the HT stratum: one stretched-exponential magnitude fiber contains uncountably many order-zero HT functions with pairwise distinct zero divisors.
+
+## Lean formalization (2026-08-30)
+
+Unconditional, `sorry`-free, axiom profile `[propext, Classical.choice, Quot.sound]`.  All modules
+are wired into `GaloisForLFunctions.HTGeometry`.
+
+**The Ostrowski input is replaced by the corpus's own Mahler confinement.**  Instead of the
+Dirichlet-series finite-basis theorem, the proof uses
+`MahlerCoefficientFieldConfinement.exists_forall_coefficientsIn_of_integer_ordinaryADE` together
+with `FormalMahlerIntegerNormalization.exists_integer_jet_relation_of_formalRelation`: a nonzero
+formal ADE gives one cutoff `N` valid over *every* intermediate coefficient field, so all
+coefficients lie in `ℚ(a₀,…,a_N)`, a field of finite transcendence degree.
+
+### Theorem 1 — every admissible modulus profile has an HT realization
+
+| Statement | Lean theorem | Module |
+|---|---|---|
+| coefficients confined to a finitely generated field | `coefficients_mem_adjoin_of_formalRelation` | `IndependentCoefficientHypertranscendence` |
+| infinitely many independent coefficients ⇒ no ADE | `aeval_formalJets_ne_zero_of_infinite_independent` | `IndependentCoefficientHypertranscendence` |
+| a prescribed modulus admits a transcendental phase | `exists_transcendental_scaled` | `PrescribedModulusPhases` |
+| the phase sequence and its independence | `phaseSeq`, `norm_phaseSeq`, `algebraicIndepOn_phaseSeq` | `ModulusPhaseSequence` |
+| the entire realization and its magnitudes | `modulusProfileFunction`, `norm_taylorPS_modulusProfileFunction` | `ModulusProfileHypertranscendence` |
+| **Theorem 1** | `hypertranscendental_modulusProfileFunction` | `ModulusProfileHypertranscendence` |
+| the card's root-test hypothesis `limsup ρₙ^{1/n} = 0` | `bounded_of_root_tendsto` | `ModulusProfileHypertranscendence` |
+
+### Theorem 2 — one profile, both natures
+
+| Item | Lean theorem | Module |
+|---|---|---|
+| 1–2 (DA and HT with the same moduli `1/n!`) | `factorial_profile_carries_DA_and_HT` | `FactorialModulusProfile` |
+| 3 (identical maximum term, attaining set, central index, log-Newton envelope) | `factorialProfile_newton_data_agree`, `newton_data_congr` | `ModulusDeterminesNewtonData` |
+| 4 (order one and exponential type one for both) | `factorialProfile_order_one_type_one` | `FactorialProfileGrowth` |
+
+### Theorem 3 — one HT magnitude fibre, uncountably many divisors
+
+| Statement | Lean theorem | Module |
+|---|---|---|
+| the family has order zero | `sqrtStretched_growth`, `sqrtStretched_norm_le_exp` | `SqrtStretchedGrowth`, `SqrtStretchedZeroFree` |
+| a zero-free entire function of order zero is constant | `const_of_ne_zero_of_subexponential` | `SqrtStretchedZeroFree` |
+| distinct constant-term phases give distinct divisors | `exists_analyticOrderAt_ne` | `SqrtStretchedDivisorFamily` |
+| **Theorem 3** | `uncountable_HT_family_with_distinct_divisors` | `SqrtStretchedDivisorFamily` |
+| order zero plus identical Newton data along the family | `phaseFamily_order_zero_and_newton` | `SqrtStretchedDivisorFamily` |
+
+Order and exponential type are formalized in their working form — an upper envelope `exp ‖z‖` and,
+on every large circle, a point where the modulus exceeds `exp ((1 − ε) r)` — rather than through a
+named `order` functional, which the corpus does not define.

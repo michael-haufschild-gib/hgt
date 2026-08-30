@@ -142,3 +142,46 @@ Baker–Wüstholz lower bound for a fixed finite set of prime logarithms.  Note 
 bound `|∑ m_p log p| ≥ (∏ p)^{−H(m)}` available from `gap_div_le_abs_log_div` is exponential in
 `H(m)` and therefore genuinely insufficient for R(ii), which needs the polynomial `H(m)^{−κ}` —
 this is exactly the sense in which the card says Baker is load-bearing.
+
+## Lean anchor — 2026-08-30 (both halves of the L² dichotomy)
+
+Lemma R's *consequences* — the two directions the card actually uses — are now Lean-proved,
+unconditionally and axiom-clean.  Only the Baker input itself remains.
+
+`formal/GaloisForLFunctions/HTGeometry/CombinationModeDiophantineDivisor.lean`:
+
+- `modeNorm`, `modeHeight` (`H(m) = max(3, maxᵢ|mᵢ|)`), `modeForm` — the mode data of the card;
+- `summable_prod_pi` — a finite product of summable nonnegative weights is summable on the integer
+  lattice `ℤ^s` (`Fin.consEquiv` induction plus `Summable.mul_of_nonneg`);
+- `three_add_sum_le_prod` — `3 + Σ aᵢ ≤ ∏ (3 + aᵢ)` on a nonempty finset of nonnegative reals, the
+  factorisation that turns the height weight into a product;
+- `summable_modeWeight` — `Σ_m (3 + |m|₁)^K e^{−2ρ|m|₁} < ∞`;
+- **`summable_modeDivisor_of_diophantine`** — the positive half of Lemma R: if
+  `|m·ℓ| ≥ γ·H(m)^{−κ}` for every nonzero mode and `|ĝ(m)| ≤ e^{−ρ|m|₁}`, then
+  `Σ_{m ≠ 0} |ĝ(m)|²/(m·ℓ)² < ∞`, i.e. the mode-divided solution is in `L²` and the cocycle is
+  reducible.
+
+`formal/GaloisForLFunctions/HTGeometry/LiouvilleFrequencyNonReducible.lean`:
+
+- `gapExp` (`a₀ = 2`, `a_{k+1} = a_k + 1 + 16^{a_k}`), `superLiouville` `α = Σ 2^{−a_k}`,
+  `qDen`/`pNum` its canonical approximations, `approx_pos` and **`approx_upper`**
+  (`0 < q_K α − p_K ≤ 2^{−16^{a_K}}`);
+- `superLiouville_irrational` — irrationality, by the elementary "a positive integer is at least
+  one" contradiction against the approximation rate;
+- `exp_le_two_pow` — `exp(4·4ⁿ) ≤ 2^{16ⁿ}` for `n ≥ 2`, the inequality that makes the gap beat the
+  square of the mode size;
+- **`abs_modeForm_liouvilleMode_le`** — `|m_K·(1,α)| ≤ exp(−|m_K|₁²)` for the resonant modes
+  `m_K = (−p_K, q_K)`;
+- **`exists_liouville_frequency`** — a frequency vector whose linear form never vanishes on a
+  nonzero mode yet is smaller than `exp(−|m|²)` on modes of arbitrarily large size;
+- **`not_summable_liouvilleDivisor`** — for every decay rate `ρ > 0` the divided series
+  `Σ_{m≠0} e^{−2ρ|m|₁}/(m·ω)²` has unbounded terms and is therefore not summable: `h ∉ L²`, the
+  cocycle is **not** reducible.
+
+**Card status.**  Lemma R(i), the `L²` sufficiency, the Liouville counterexample, §2 Part 1, §3 and
+§4's controlling bound are all formalized unconditionally.  The single remaining classical import is
+**Lemma R(ii)** — the effective Baker–Wüstholz bound `|m·ℓ| ≥ γ·H(m)^{−κ}` for a fixed finite set of
+prime logarithms — which is exactly the hypothesis of `summable_modeDivisor_of_diophantine`.  Its
+formalization is the separate project
+`docs/drafts/pipeline/1-in-progress/effective-baker-matveev-linear-forms.md`; when that lands, the
+prime-frequency instance of Lemma R closes by direct application and this card moves to stage 3.

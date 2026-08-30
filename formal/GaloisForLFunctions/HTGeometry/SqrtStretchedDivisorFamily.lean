@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.SqrtStretchedZeroFree
 import GaloisForLFunctions.HTGeometry.EntireQuotientNormalForm
+import GaloisForLFunctions.HTGeometry.ModulusDeterminesNewtonData
 
 /-!
 # An uncountable HT family with one magnitude profile and pairwise distinct divisors
@@ -191,12 +192,10 @@ theorem exp_I_inj_on_Ico {t s : ℝ} (ht : t ∈ Set.Ico (0 : ℝ) (2 * Real.pi)
   have hreal : (t : ℂ) = (s : ℂ) + (n : ℂ) * (2 * Real.pi) := by
     have hn' : Complex.I * (t : ℂ) = Complex.I * ((s : ℂ) + (n : ℂ) * (2 * Real.pi)) := by
       rw [hn]
-      push_cast
       ring
     exact mul_left_cancel₀ hI hn'
   have hrr : t = s + (n : ℝ) * (2 * Real.pi) := by
     have := congrArg Complex.re hreal
-    push_cast at this
     simpa using this
   have hpi : (0 : ℝ) < 2 * Real.pi := by positivity
   have hlt : |t - s| < 2 * Real.pi := by
@@ -236,7 +235,31 @@ theorem uncountable_HT_family_with_distinct_divisors :
       ∧ (∀ t ∈ Set.Ico (0 : ℝ) (2 * Real.pi), ∀ s ∈ Set.Ico (0 : ℝ) (2 * Real.pi), t ≠ s →
           ∃ z : ℂ, analyticOrderAt (phaseFamily t) z ≠ analyticOrderAt (phaseFamily s) z) :=
   ⟨not_countable_Ico_two_pi, hypertranscendental_phaseFamily, norm_coeff_taylorPS_phaseFamily,
-    fun t ht s hs hne => exists_analyticOrderAt_ne (exp_I_inj_on_Ico ht hs hne)⟩
+    fun _t ht _s hs hne => exists_analyticOrderAt_ne (exp_I_inj_on_Ico ht hs hne)⟩
+
+/-- The family has order zero and, having equal Taylor magnitudes, identical Newton data. -/
+theorem phaseFamily_order_zero_and_newton (t s : ℝ) :
+    (∀ ε : ℝ, 0 < ε → ∃ C : ℝ, 0 ≤ C ∧ ∀ z : ℂ,
+        ‖phaseFamily t z‖ ≤ Real.exp (C + ε * ‖z‖))
+      ∧ (∀ r : ℝ, maxTerm (fun n => PowerSeries.coeff n
+            (GaloisForLFunctions.taylorPS (phaseFamily t))) r
+          = maxTerm (fun n => PowerSeries.coeff n
+            (GaloisForLFunctions.taylorPS (phaseFamily s))) r)
+      ∧ (∀ r : ℝ, centralIndex (fun n => PowerSeries.coeff n
+            (GaloisForLFunctions.taylorPS (phaseFamily t))) r
+          = centralIndex (fun n => PowerSeries.coeff n
+            (GaloisForLFunctions.taylorPS (phaseFamily s))) r)
+      ∧ (∀ u : ℝ, logNewtonEnvelope (fun n => PowerSeries.coeff n
+            (GaloisForLFunctions.taylorPS (phaseFamily t))) u
+          = logNewtonEnvelope (fun n => PowerSeries.coeff n
+            (GaloisForLFunctions.taylorPS (phaseFamily s))) u) := by
+  have hmod : ∀ n : ℕ,
+      ‖PowerSeries.coeff n (GaloisForLFunctions.taylorPS (phaseFamily t))‖
+        = ‖PowerSeries.coeff n (GaloisForLFunctions.taylorPS (phaseFamily s))‖ := by
+    intro n
+    rw [norm_coeff_taylorPS_phaseFamily, norm_coeff_taylorPS_phaseFamily]
+  obtain ⟨h1, -, h3, h4⟩ := newton_data_congr hmod
+  exact ⟨fun ε hε => phaseFamily_growth t ε hε, h1, h3, h4⟩
 
 end
 

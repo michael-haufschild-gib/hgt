@@ -22,7 +22,7 @@ Goal: unconditional Lean formalization of every card in this folder, then promot
 | 13 | newton-corner-nonautonomous-composition-unit-cost | Clunie + Puiseux Jacobian | TODO |
 | 14 | asymptotically-exponential-algebraic-cascade-unit-cost | Clunie + Puiseux Jacobian + Briot–Bouquet | TODO |
 | 15 | nonautonomous-cap-linear-order-two-shadow-rigidity | Briot–Bouquet | TODO |
-| 16 | fixed-taylor-modulus-newton-geometry-ht-blindness | Ostrowski finite basis | TODO |
+| 16 | fixed-taylor-modulus-newton-geometry-ht-blindness | Ostrowski finite basis — replaced by corpus Mahler confinement | **DONE → 3-formalized** (2026-08-30) |
 | 17 | arithmetic-entire-heat-da-finite-spectrum | Popken + Mahler normalization | TODO |
 | 18 | finite-commuting-shift-peeling-hypertranscendence-law | Adamczewski–Dreyfus–Hardouin Thm 1.2 | TODO |
 | 19 | autonomous-ade-almost-periodic-frequency-rank | Cartwright/O'Brien | TODO |
@@ -1125,7 +1125,7 @@ Remaining:
 | # | Theorem | Missing input |
 |---|---|---|
 | ~~I16~~ | **CLOSED (2026-08-30)** — `FactorialProfileGrowth.factorialProfile_order_one_type_one`: `‖f z‖ ≤ exp ‖z‖` for both realizations, and on every large circle each exceeds `exp((1−ε)r)` (Cauchy estimate + splitting the exponential series at `2er`, using only `m! ≥ (m/e)^m`) | card 16 Theorem 2 item 4 |
-| I17 | **same-divisor rigidity for order-zero entire functions**: equal `analyticOrderAt` at every point forces a constant ratio (Hadamard for order zero) | card 16 Theorem 3 (uncountably many divisors on one HT magnitude fiber) |
+| ~~I17~~ | **CLOSED (2026-08-30)** — `EntireQuotientNormalForm.exists_entire_nonvanishing_quotient` (corpus) plus the new `SqrtStretchedZeroFree.const_of_ne_zero_of_subexponential` | card 16 Theorem 3 |
 
 For Theorem 3 the corpus already owns the HT half:
 `StretchedExponentialMagnitudeHypertranscendence.hypertranscendental_stretchedExponentialPhaseFunction`
@@ -1157,3 +1157,55 @@ Chain to prove:
    positive degree vanishes and `p` is constant.
 4. **Contradiction.**  A constant `F s` has vanishing first Taylor coefficient, but that coefficient
    is `ρ₁ ≠ 0`.  Hence distinct phases give distinct divisors, and the phase circle is uncountable.
+
+## Card 16 — fixed-taylor-modulus-newton-geometry-ht-blindness — DONE (2026-08-30)
+
+All three theorems and every listed item are Lean-proved and axiom-clean; the card is in
+`3-formalized`.  Ten new modules: `IndependentCoefficientHypertranscendence`,
+`PrescribedModulusPhases`, `ModulusPhaseSequence`, `ModulusProfileHypertranscendence`,
+`FactorialModulusProfile`, `ModulusDeterminesNewtonData`, `FactorialProfileGrowth`,
+`SqrtStretchedGrowth`, `SqrtStretchedZeroFree`, `SqrtStretchedDivisorFamily`.
+
+Reusable assets produced: `aeval_formalJets_ne_zero_of_infinite_independent` (independent
+coefficients ⇒ hypertranscendence), `exists_transcendental_scaled` (a transcendental point on any
+prescribed circle), `phaseSeq` (prescribed moduli with independent values),
+`const_of_ne_zero_of_subexponential` (**a zero-free entire function of order zero is constant** —
+Hadamard + Borel–Carathéodory + Cauchy), `newton_data_congr` (equal moduli ⇒ equal Newton data),
+`sq_div_le_exp_sqrt`, `term_le_geometric`, `isLittleO_log_sq_id`.
+
+Status after this card: 10 of 22 cards are in `3-formalized` (1–6, 9, 11, 12, 16).
+
+## Route analysis for the twelve remaining cards (2026-08-30)
+
+Cards done: 1–6, 9, 11, 12, 16.  Remaining: 7, 8, 10, 13, 14, 15, 17, 18, 19, 20, 21, 22.
+
+**Card 18 is the closest.**  Its §2 peeling theorem is *already* corpus-owned and abstract:
+`HTGeometry.FiniteCommutingShiftPeeling.shiftWord_dichotomy` takes the one-shift dichotomy as a
+hypothesis.  What is missing is exactly the ADH one-shift statement
+
+> `f ∈ ℂ((s⁻¹))`, `f(s+h) − f(s) = r ∈ ℂ(s)` ⟹ `f ∈ ℂ(s)` or `f` is HT over `ℂ(s)`.
+
+That is a *telescoping* dichotomy, the exact shape of the corpus's differential Ostrowski criteria
+(`ElementaryOstrowski.differentialIndependent_of_no_constant_simultaneous_jet_telescoping`,
+`AutomorphismFamilyOstrowski.automorphismFamily_differentialIndependent_of_no_constant_simultaneous_jet_telescoping`),
+which is how the q-difference ADH gate was closed for the RG/QFT folder.  The build is:
+
+1. the model: `LaurentSeries ℂ` in the variable `X = s⁻¹` with the automorphism
+   `F ↦ F.subst (X / (1 + hX))` (substitution of a power series of order one), a commuting
+   derivation, and invariants = constants (a translation-periodic formal Laurent series is constant);
+2. feed the criterion; the telescoping branch must be shown to force `f ∈ ℂ(s)`;
+3. instantiate `shiftWord_dichotomy` with `R = rational`, `H = HT`, plus the elementary descent
+   "`g` DA ⟹ `Δ_h g` DA".
+
+**Card 17** needs Popken's lower bound.  Two of its three inputs are corpus-owned:
+`NonlinearMailletUnconditional.exists_isGevreySeries_of_annihilator` (Maillet, for the conjugate
+series) and `MahlerCoefficientFieldConfinement.coefficientsConfinedToNumberField_of_formalRelation`
+(all coefficients in one number field).  Missing: Pólya–Popken **denominator** control, then the
+elementary norm argument `|N(D·a_n)| ≥ 1`.  The denominator bound should come from the same forward
+recursion that proves the confinement theorem.
+
+**Cards 7 and 10** need Steinmetz reduction; **13 and 14** need the Newton-corner Puiseux Jacobian
+(nothing classical beyond Clunie, but a weighted-initial-form calculus — an iterated Laurent-series
+model would carry it); **14 and 15** need Briot–Bouquet; **8** the Valiron–Zimogljad–Strelitz growth
+wall; **19** Cartwright/O'Brien; **20** Schwartz surface flows; **21** Hardouin–Singer PPV; **22**
+Taubes' Weinstein conjecture.

@@ -465,3 +465,91 @@ Layers, each a self-contained unconditional module:
   in the auxiliary function, with the mechanism described as "avoiding certain factorials" — which is
   the divided-power reading `δ^μ/μ!` used above, and matches the two modules already built.  So the
   objects are right; what is missing is the parameter balance, not the basis.
+- 2026-08-30 — **the clash located exactly, and the terminal step re-identified.**
+
+  Re-running the elimination with `K` and `J` free (as the retraction demands) isolates *three*
+  conditions that cannot hold together in the present univariate scheme, and the clash is sharp.
+
+  Write `h = log B`, `θ = R/(N−R)` with `R = S·#{ν : |ν| < T}` the row count and `N = (L+1)^d` the
+  column count, `W = Σ log pᵢ`.
+
+  ```text
+  (ii)   θ·T = O(1)             coefficient height:  log‖η‖ ≍ θ(T log(2LB) + dLS log P) = O(h)
+  (iii)  T / 2^J > c·L·K        per-step Schwarz feasibility at the LAST step
+  (v)    (K/2^{d−1})^J ≳ 1/θ    the terminal count must reach the number of columns
+  ```
+
+  Condition (ii) is forced by the entry height: the matrix entries carry `∏ᵢ δᵢ(m)^{νᵢ}` with
+  `δᵢ(m) = b_d mᵢ − m_d bᵢ`, so `log max|A| ≥ T log B`, and *no rescaling removes it* — writing the
+  directions as `mᵢ − m_d βᵢ` with `βᵢ = bᵢ/b_d ∈ [−1,1]` makes the entries rational with denominator
+  `b_d^{|ν|}`, and clearing that denominator (for Siegel over `ℤ`, or in the terminal
+  "nonzero rational ≥ 1/denominator" step) restores exactly the same `T log B`.  Fel'dman's binomials
+  applied to `δ` save `T log T`, which is independent of `B`, so they do not touch (ii); the
+  2026-08-16 correction stands.
+
+  Now eliminate.  (ii) with `θ ≍ S T^{d−1}/L^d` reads `S (T/L)^d = O(1)`, so `T = O(L)` and
+  `S = O(1)`.  Feeding `T = O(L)` into (iii) gives `2^J K = O(1)`, hence `J = O(1)` and `K = O(1)`,
+  hence `(K/2^{d−1})^J = O(1)`; but (v) then forces `θ = Ω(1)`, and with `θ ≍ S T^{d−1}/L^d = Ω(1)`
+  and `S = O(1)` we get `L^d = O(T^{d−1})`, i.e. `L = O(1)` and `T = O(1)`.  With every parameter
+  bounded the Schwarz gain `(T/2)·S·log(T/(4eLWK))` is `O(1)`, while the coefficient height is
+  `≍ θ T h ≍ h`.  **No parameter choice closes the system.**  (This is an order-of-magnitude
+  elimination; the constants are not tracked, and only the orders matter for the conclusion.)
+
+  **Where the load is.**  Two hypotheses carry that elimination, and they must be separated.
+
+  1. *"The multiplicity halves at every extrapolation step"* — this is what turns (iii) into
+     `T ≳ 2^J L K`.  It is **not** forced by the analysis.  The Cauchy step
+     `|Φ^{(k)}(s')| ≤ k! r^{−k} sup_{|z−s'|=r}|Φ|` is free once `T > eLW`: optimising `r = k/(LW)`
+     turns the factor `k! r^{−k}` into `exp(−k log(k/(eLW)))`, a *gain* rather than a cost, and
+     `T > eLW` is already implied by the per-step feasibility.  In the classical proof the halving
+     pays for something else: there the value `b_d^k Φ^{(k)}(s')` is an algebraic number whose house
+     grows like `B^k`, so the arithmetic threshold costs `k log B` per step and one shrinks `k`.
+     Dropping the halving turns (iii) into the `J`-free `T > cLK` and the counting part of the
+     system closes:
+
+     ```text
+     L ≍ h,  T ≍ cKL,  S = O(1),  K = O(1),  θ ≍ 1/L ≍ 1/h,  θT = O(1),
+     log‖η‖ ≍ θ(Th + LS log P) ≍ h,   gain₀ ≍ T ≍ h,   K^J ≳ 1/θ ≍ h  ⟹  J ≍ log h.
+     ```
+
+  2. *The per-step arithmetic threshold.*  This is the part that does **not** close, and it is the
+     real obstruction.  At every step the conclusion "the integer `C_ν(s')` is smaller than one, hence
+     zero" must beat the analytic size of the component function
+
+     ```text
+     F_ν(z) = Σ_m η_m ∏ᵢ δᵢ(m)^{νᵢ} e^{ω_m z},     sup_{|z|≤r} |F_ν| ≤ ‖η‖·N·(2LB)^T·e^{LWr},
+     ```
+
+     whose `(2LB)^T` contributes `T log B` — the same term as in (ii), now appearing *additively at
+     every step* rather than multiplied by `θ`.  Normalising the directions to `δᵢ/b_d ∈ [−2L,2L]`
+     removes it from the analytic size but reinstates it in the threshold, because the value is then
+     a rational with denominator `b_d^{|ν|}` and "nonzero ⟹ `≥ b_d^{−T}`" costs exactly `T log B`
+     again.  Requiring `gain₀ ≍ T S log(T/(eLWK)) ≳ T log B` forces `S·log(T/(eLWK)) ≳ h`, and both
+     ways of meeting it (`S ≍ h`, or `T ≳ B·LWK`) violate `θT = O(1)` or the feasibility
+     `T > eLWK`.
+
+  **Status of the card's open point.**  The obstruction is now located precisely: it is not the
+  Siegel exponent, not the extrapolation multiplier, and not Fel'dman's basis, but the fact that the
+  quantity `T log B` is charged *once per extrapolation step* by the arithmetic threshold.  Any
+  route to `|Λ| ≥ c B^{−C}` must make that charge appear only `O(1)` times, or make the gain of a
+  single step already of size `T log B`.  The two candidate mechanisms to reconstruct, in order:
+
+  1. **A single long extrapolation instead of an iteration** — one step whose gain is
+     `T·S·log(R'/S)` with `R'` exponentially large, so that a single arithmetic threshold of size
+     `T log B` is paid.  The cost is `LWR'`, so this needs `T S log(R'/S) > LWR' + T log B` with
+     `R' ≈ B`, i.e. `T S h > LWB`: impossible with `L ≥ 1` unless the analytic growth `e^{LWR'}` is
+     itself controlled by the vanishing, which is what the node polynomial already does.  Needs a
+     careful redo with the node polynomial kept, not bounded away.
+  2. **Reconstruct Baker's *Sharpening I–III* parameter table directly** and check which of (ii),
+     (iii), (v) it violates in this integral setting — the historical record says the polynomial
+     bound is reached there, so the table is an existence proof that some assignment works, and the
+     discrepancy with the elimination above will pinpoint the missing device.
+
+  The two Fel'dman modules stand and are still the right objects; the change of basis
+  (`FeldmanBasis.exists_pow_intCombination_eval`) will be needed whichever route closes, since it is
+  what lets the conditions be imposed in the cheaper basis.  **Until one of the two routes above is
+  settled, the polynomial bound remains open at the level of the construction, not merely
+  unformalised.**  The `exp(−(log B)^κ)` bound, by contrast, *is* reachable with the parameters
+  `J ≍ log h`, `K ≍ 2^{d(d−1)}`, `L ≍ h^d/log h`, `T ≍ 2^J L K`, and would be worth banking as an
+  intermediate Lean theorem: it is the historically correct 1966–68 statement, and every layer
+  built for it is reused by the sharpening.

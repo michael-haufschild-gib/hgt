@@ -217,3 +217,61 @@ obstruction is the tool for the negative one.
 
 The step from "no relation `(4)`" to "the exact beta field is HT" is exactly Ritt's `(1) ⇒ (4)`, the
 one implication still cited rather than proved.
+
+## Ritt `(1) ⇒ (4)`: the route, and how much of it is now Lean (2026-08-30)
+
+The implication is the main theorem of Di Vizio–Fernandes, *A Galoisian proof of Ritt theorem on the
+differential transcendence of Poincaré functions* (arXiv:2102.08268).  In their normalisation `τ` is
+the Koenigs linearizer, `τ(R(x)) = q·τ(x)` with `|q| > 1`, and the theorem reads: `τ` is
+differentially algebraic over `C(x)` **iff** `(τ′)^r = A(x)·τ^j` for integers `r ≠ 0`, `j` and a
+rational `A`.  Composing with `σ = τ^{-1}` turns that into the relation `(4)` of this card.
+
+The Galois theory is inessential — both Galois inputs are elementary rigidity statements about a
+field `L` carrying a ring endomorphism `σ` compatible with an endomorphism `ψ` of a base `K` and a
+derivation `d` with the chain rule `d ∘ σ = ρ · (σ ∘ d)`, where `ρ = R′`.  That structure is
+`HTGeometry/RittFirstOrderForm.lean`'s `RittFrame`, and the following are now unconditional Lean,
+all auditing to `[propext, Classical.choice, Quot.sound]`:
+
+| Step of the Di Vizio–Fernandes proof | Lean |
+|---|---|
+| additive rigidity: `σ w = w + c`, `w` algebraic over the base ⇒ `w` in the base | `RittShiftRigidity.exists_algebraMap_eq_of_isIntegral_of_shift_add` |
+| multiplicative rigidity: algebraically dependent shift coordinates give an integer monomial in the base | `RittShiftRigidity.exists_algebraMap_eq_zpow_prod_of_not_algebraicIndependent` |
+| `σ (d τ) = (q/ρ)·d τ` | `RittFrame.sigma_d_eq_of_shift` |
+| **(2) ⇒ (3): an order-one algebraic differential equation forces Ritt's form `(τ′)^r = A·τ^j`** | `exists_rittForm_of_not_algebraicIndependent` |
+| Faà di Bruno triangularity `σ(d^[n]τ) − (q/ρ^n)·d^[n]τ ∈ span{d τ,…,d^[n−1]τ}` | `RittFrame.shift_jet_sub_mem_jetSpan` |
+| **the collapse step: a top jet integral over the prefix field already lies in it** | `RittJetCollapse.jet_mem_of_isIntegral_of_lower_jets_mem` |
+
+The additive lemma is the endomorphism version of the corpus's
+`AlgebraicPrimitiveDescent.algebraic_additive_primitive_eq_base_add_constant` (divisibility of the
+minimal polynomial replaces irreducibility of its image, so no surjectivity of `ψ` is needed); the
+multiplicative one is the contrapositive of
+`MultiplicativeShiftIndependence.algebraicIndependent_of_multiplicativeShift`.
+
+### What is left, precisely
+
+Only Di Vizio–Fernandes's `(1) ⇒ (2)` — "differentially algebraic ⇒ *order one*".  Their argument
+takes `n` minimal with an algebraic differential equation of order `n`, assumes `n > 1`, and uses
+the collapse step to put `τ^{(n)}` in `K_n = K(τ,…,τ^{(n−1)})`; the paper then asserts that this
+contradicts minimality.  **It does not**: `y_n ∈ K_n` with `y_0,…,y_{n−1}` algebraically independent
+is possible for a general differentially algebraic function (Airy, `y″ = xy`).  The contradiction
+has to use the functional equation, and working the case `n = 2` out gives exactly
+
+```text
+a(R)·(R')^2 = R'·a - R''                                        (Ritt-AC)
+```
+
+— the **rational affine-connection equation**, which the corpus already owns in
+`HTGeometry/RationalAffineConnection.lean` (`IsAffineConnection`, the critical obstruction
+`no_affine_connection_regular_at_critical`, and the finiteness closers), and reaches from the jet
+side through `JetAffineConnectionLevelTwo.exists_ratFuncDeriv_affine_connection_of_hasNormalizingShift_two`.
+The same corpus lane — `JetSubstitutionDescent.exists_nonzero_isInvariantDifferential_or_hasNormalizingShift`
+and `JetTailTrivial.fixed_isConst` — runs the whole descent in the free jet field and closes it
+unconditionally for `z² + 1` and `(z − 1)²`.
+
+So the remaining work is one bridge, *differentially algebraic linearizer ⇒ finite-order eigenvector
+of the jet substitution*, feeding a descent machine the corpus already has, plus the `n ≥ 2` collapse
+whose first case is the affine connection the corpus already excludes for concrete maps.  The
+Nevanlinna route is **not** the obstruction: the corpus's second-main-theorem stack with the
+`S(r,f)` error term is complete (`LogDerivCountingRatio`, `RamificationSubstitution`,
+`NevanlinnaErrorNegligible`, `NevanlinnaRamification.card_totallyRamified_le_four`), and
+Becker–Bergweiler need Nevanlinna only to reduce the non-repelling case to the repelling one.

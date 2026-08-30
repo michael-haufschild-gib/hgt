@@ -1695,3 +1695,72 @@ umbrella build.  Card remains Stage 2.  Remaining covering seam is quantitative:
 unit-balanced head against the next Schur diagonal, iterate, and prove finite overlaps for the
 resulting placewise Siegel region.  Tame-kernel finite generation and Moore reciprocity remain
 afterward.
+
+### Unconditional simultaneous Jacobi decomposition and unit transport (2026-08-30)
+
+`ComplexJacobiDecomposition.lean` proves the exact complex Hermitian Jacobi factorization
+`A = Uᴴ diag(d) U`, with `U` upper unipotent and every `d_i > 0`; it derives all data directly
+from positive definiteness.  `NumberFieldArchimedeanJacobi.lean` applies the real and complex
+factorizations simultaneously at every infinite place and forms one uniformly positive real
+Jacobi-weight table.  Its balancing theorem chooses both Jacobi data and product-one units
+internally.
+
+`JacobiDiagonalRescale.lean` proves the exact real symmetric and complex Hermitian diagonal
+congruence formulas, including preservation of positivity, upper triangularity, and unit diagonal.
+`NumberFieldArchimedeanJacobiUnitConj.lean` specializes those identities to the actual
+`SL_n(𝓞 K)` action and proves that every transported Jacobi weight is exactly its source weight
+times `|u_i|_w²`.  Finally, `NumberFieldArchimedeanJacobiReduction.lean` combines this transport
+with Dirichlet-unit covering: for every cone point, it constructs source and transformed Jacobi
+data, a product-one unit tuple, and uniform field-only multiplicative bounds.  No supplied Jacobi
+decomposition, positivity certificate, unit choice, determinant-one proof, or boundedness premise
+remains in the capstone.
+
+All direct source checks and targeted module builds pass.  Every declaration created in the three
+transport/reduction modules audits to `[propext, Classical.choice, Quot.sound]`; all modules are
+umbrella-wired without an umbrella build.  Card remains Stage 2.  Remaining Siegel covering work
+is quantitative off-diagonal size reduction, iteration of Jacobi/Schur bounds, and finite
+overlaps.  Tame-kernel finite generation and Moore reciprocity remain afterward.
+
+### Unconditional mixed-place off-diagonal size reduction (2026-08-30)
+
+The quantitative off-diagonal seam is now connected to the corrected real/Hermitian cone.
+`NumberFieldMixedSizeReduction.lean` performs a superdiagonal sweep in the actual mixed
+archimedean algebra
+`(real places → ℝ) × (complex places → ℂ)`.  At every step, the number-ring covering radius
+chooses the required algebraic integer internally.  The accumulated matrix is upper unipotent,
+has determinant exactly one, and reduces every strict-upper mixed entry with one field-only bound.
+
+`NumberFieldArchimedeanJacobiSizeReduction.lean` packages real Jacobi factors together with the
+complex-conjugated factors, applies the mixed sweep once, and extracts simultaneous real and
+complex entry bounds.  `NumberFieldArchimedeanJacobiActionReduction.lean` then transposes the
+integral reducer into an actual element of `SL_n(𝓞 K)`, transports the full Jacobi decomposition
+through its cone action, and proves the resulting real/complex upper factors obey the uniform
+bound.  Its capstone constructs the original Jacobi data, reducer, determinant certificate,
+special-linear element, and transformed Jacobi data internally; none is a theorem premise.
+
+All direct source checks and targeted leaf builds pass.  Every declaration in all three modules
+audits to `[propext, Classical.choice, Quot.sound]`; all are umbrella-wired without an umbrella
+build.  Card remains Stage 2.  Remaining Siegel work is the diagonal-ratio/greedy reduction and
+finite-overlap theorem on the corrected mixed-place cone; tame-kernel finite generation and Moore
+reciprocity remain afterward.
+
+### Combined mixed-place Siegel bounds (2026-08-30)
+
+`NumberFieldArchimedeanSiegelReduction.lean` composes determinant-one unit balancing with the
+actual unipotent action reduction.  It proves one closed theorem yielding field-only constants
+`R > 0` and `C ≥ 0` such that every positive archimedean cone point is carried through internally
+chosen elements of `SL_n(𝓞 K)` to simultaneous real/complex Jacobi data with:
+
+- every strict-upper real entry bounded in absolute value by `C`;
+- every strict-upper complex entry bounded in norm by `C`;
+- every Jacobi weight retaining the explicit `exp(±2nR)` multiplicative balance bounds.
+
+The unipotent transport leaves Jacobi diagonals exactly unchanged, proved separately and consumed
+by the capstone.  Source Jacobi data, units, determinant-one certificate, unipotent reducer,
+special-linear actions, and target Jacobi data are all constructed inside the proof.  Direct check,
+targeted leaf build, and axiom audit pass; both new declarations use only
+`[propext, Classical.choice, Quot.sound]`.  Module is umbrella-wired without an umbrella build.
+
+Card remains Stage 2.  The remaining geometric reduction obligations are the adjacent
+diagonal-ratio/greedy bound and finite overlap.  Arithmetic obligations remain tame-kernel finite
+generation and Moore reciprocity.

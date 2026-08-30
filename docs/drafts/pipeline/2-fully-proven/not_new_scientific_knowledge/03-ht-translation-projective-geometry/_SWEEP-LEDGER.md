@@ -1457,3 +1457,24 @@ Remaining in this folder at stage 2: cards 1 (`combination-mode-reducibility-bak
 blocked on effective Baker–Wüstholz), 7 (`hypertranscendental-maximal-finite-horizon-galois-law`),
 10 (`poincare-constraint-order-recession`) and 11
 (`projective-horizon-hankel-secant-stratification`).
+
+### Card 1 — both halves of the L² dichotomy are CLOSED; only Baker remains (2026-08-30)
+
+Two new modules, both axiom-clean and wired into `GaloisForLFunctions.HTGeometry`:
+
+- `HTGeometry/CombinationModeDiophantineDivisor.lean` — `summable_prod_pi`,
+  `three_add_sum_le_prod`, `summable_modeWeight` and the capstone
+  **`summable_modeDivisor_of_diophantine`**: a fixed-exponent Diophantine condition plus
+  exponential coefficient decay make the mode-divided datum square-summable.  This is Lemma R's
+  positive conclusion (`h ∈ L²`, the cocycle is reducible) with the Baker bound as its hypothesis.
+- `HTGeometry/LiouvilleFrequencyNonReducible.lean` — the explicit super-Liouville number
+  `α = Σ 2^{−a_k}`, `a_{k+1} = a_k + 1 + 16^{a_k}`, its irrationality, the approximation bound
+  `0 < q_K α − p_K ≤ 2^{−16^{a_K}}`, and the capstones **`exists_liouville_frequency`** and
+  **`not_summable_liouvilleDivisor`**: the same cohomological equation is *unsolvable* in `L²` for a
+  Liouville-independent frequency, at every decay rate.
+
+Card 1 therefore has exactly one open input left: **Lemma R(ii)**, the effective Baker–Wüstholz
+lower bound for a fixed finite set of prime logarithms, tracked as
+`1-in-progress/effective-baker-matveev-linear-forms.md`.  Everything the card deduces *from* it is
+now Lean-closed, so the card promotes by a single application of
+`summable_modeDivisor_of_diophantine` once the bound lands.
