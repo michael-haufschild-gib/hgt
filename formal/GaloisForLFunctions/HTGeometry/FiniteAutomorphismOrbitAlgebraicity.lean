@@ -14,7 +14,7 @@ noncomputable section
 
 open Finset
 
-variable {K L : Type*} [Field K] [Field L] [Algebra K L]
+variable {K L : Type*} [Field K] [CommRing L] [Algebra K L]
 
 local instance : DecidableEq L := Classical.decEq L
 
@@ -74,6 +74,8 @@ theorem exists_map_polynomial_eq_of_coeff_mem_range
       have hne : i ≠ b := by omega
       rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, if_neg hne, mul_zero]
     rw [hsum, map_zero, Polynomial.coeff_eq_zero_of_natDegree_lt (by omega)]
+
+variable [Nontrivial L]
 
 /-- A finite stable packet containing `x` makes `x` algebraic when every automorphism-fixed
 coefficient descends to the base field. -/

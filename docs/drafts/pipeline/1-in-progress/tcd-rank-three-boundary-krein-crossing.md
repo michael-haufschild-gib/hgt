@@ -45,3 +45,10 @@ Novelty audit through 2026-08-29 found generic Toda/Hankel determinant variation
   unconditional PSD concerns the *integrated* Hedenmalm center-mixed density; D1 is the
   pointwise-center determinant, and determinant formation does not commute with that integral.
   It therefore supplies no source-pointwise crossing sign or global D1 theorem.
+- 2026-08-30 — derived and Lean-checked the adapted source jets through order eight and the exact
+  Darboux--Schur identity `4 D1 = beta * E - F^2`.  A staged exact-rational reduction proves D1
+  strictly positive on the sharp refined-cone lower-scale/upper-clock wall for every
+  `0 ≤ z^2 ≤ 9/100`; no external computation certificate is used.  This is not promoted as a
+  gate closure.  Active conjecture: refined-cone scale slack is D1-improving and the remaining
+  floor restriction has its minimum at the outer upper-clock corner.  Its chain is
+  `cone extremality -> missing compact D1 -> global rank-three D1 -> TCD/S6F finite gate`.

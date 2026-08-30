@@ -1,7 +1,7 @@
-# The erosion threshold: ½ as the marginal-variance locus (G19) — TERMINAL: 2-fully-proven (BRIDGE/structural)
+# The erosion threshold: ½ as the marginal-variance locus (G19) — TERMINAL: 3-formalized (BRIDGE/structural)
 
 - **ID:** erosion-threshold
-- **Stage:** 2-fully-proven (TERMINAL — see "19b RESOLVED + TERMINAL VERDICT" at EOF)
+- **Stage:** 3-formalized (TERMINAL — see "19b RESOLVED + TERMINAL VERDICT" at EOF; Lean status at EOF)
 - **Type:** THEOREM (paper) / STRUCTURAL — Door grade **BRIDGE** (½ located as the erosion threshold; structurally RH-blind by A1/A2). Was: CONJECTURE (native).
 - **Priority:** FUTURE
 - **Source:** ../../door/bucket-time-and-non-holonomic-time.md · 00-status row #59
@@ -142,3 +142,70 @@ the headline native conjecture, Door-2-tested, is a wall-locator, not a wall-cro
   not crossed. Headline verdict: G19 LOCATES ½ as the unique critically-tuned (erosion) abscissa via the proven
   backbone + 19a + 19b-statistical, but is structurally RH-blind; it is a wall-locator (BRIDGE), not a native C5
   wall-crosser. C5 count unchanged (0).
+
+## Lean formalization — COMPLETE (unconditional)
+
+Every **proved** statement of this card is an unconditional Lean theorem.  The two conjectural
+layers are marked as such below and are not formalization obligations: the "deep dynamical"
+version of 19b (zeros = spectral degenerations of a genuine transfer cocycle) is, by the card's own
+terminal verdict, the RH wall, and the FHK subleading term is open in the literature.
+
+### The backbone (`Re = ½` = abscissa of a.s. convergence)
+
+Already Lean-complete on its own card
+(`../../../3-formalized/not_new_scientific_knowledge/critical/critical-line-abscissa-of-convergence.md`):
+`RHTower/RandomEulerAbscissa.lean`, `RHTower/RandomEulerObservableFactor.lean`,
+`RHTower/RandomEulerObservableAbscissa.lean`.
+
+### The second-moment law `V(σ)` — `RHTower/RandomEulerSecondMoment.lean`
+
+| Theorem | Content |
+|---|---|
+| `hasFPowerSeriesOnBall_negLogOneSub`, `cauchyPowerSeries_negLogOneSub_coeff` | the logarithmic Euler factor is `∑_k z^k/k` on the unit disc |
+| `hasSum_circleMeanSq_negLogOneSub` | Gutzmer: circle mean square `= ∑_k r^{2k}/k²` |
+| `hasSum_intervalIntegral_normSq_randomEulerLogFactor` | `∫₀¹ ‖−log(1 − r e^{2πix})‖² dx = ∑_k r^{2k}/k²` |
+| `integral_sq_randomEulerLogFactor` | the mean of the *square* vanishes |
+| **`intervalIntegral_reSq_eq_half`** | **`Var(Re 𝓛) = ½ V`** at one prime: `∫₀¹ (Re)² = ½ ∑_k p^{−2kσ}/k²` |
+| `eulerLocalSecondMoment`, `randomEulerV`, `summable_eulerLocalSecondMoment` | `V(σ) = ∑_p ∑_k p^{−2kσ}/k²`, finite for `σ > ½` |
+
+### The blow-up rate and the truncated `log log` law — `RHTower/RandomEulerVarianceRate.lean`
+
+| Theorem | Content |
+|---|---|
+| `eulerLocalSecondMoment_eq_add_tail` | `V_p(σ) = p^{−2σ} + T_p(σ)` — the leading Dirichlet term splits off |
+| `eulerLocalTail_le` | `T_p(σ) ≤ p^{−4σ}`, uniformly for `σ ≥ ½` |
+| `summable_ite_prime_eulerLocalTail`, `randomEulerTailSum_le` | the total tail is summable and bounded by `P(2)` for every `σ ≥ ½` |
+| `randomEulerV_eq_primeZeta_add_tail` | `V(σ) = P(2σ) + (bounded tail)` for `σ > ½` |
+| **`tendsto_randomEulerV_add_log_sub_tail`** | `V(σ) + log(2σ−1) − tail → −D(1)` as `σ → ½⁺` (exact, via the corpus's prime-zeta asymptotic `P(s) + log(s−1) → −D(1)`) |
+| **`exists_bound_randomEulerV_sub_logInv`** | **`V(σ) = log(1/(2σ−1)) + O(1)`** as `σ → ½⁺` |
+| **`tendsto_randomEulerV_div_logInv`** | **`V(σ) / log(1/(2σ−1)) → 1`** — the card's blow-up rate |
+| `tendsto_logInv_atTop` | the scale `log(1/(2σ−1))` diverges at the half line |
+| `randomEulerVTrunc`, `randomEulerVTrunc_half_eq` | the truncated moment at `σ = ½` is the prime reciprocal sum plus a convergent tail |
+| **`tendsto_randomEulerVTrunc_half_sub_logLog`** | **`∑_{p ≤ X} V_p(½) − log log X → M + T(½)`** — the card's `∼ log log X` at the critical line, from Mertens' second theorem in the real variable |
+
+The blow-up constant is therefore now Lean-bound as well: it is `−D(1) + T(½)` where `D` is the
+higher-prime-power defect `∑_p (−log(1 − p^{−s}) − p^{−s})` and `T` the higher-power tail; the
+abscissa card's earlier note that the constant is a classical import is superseded.
+
+### 19a (bounded `L²`-coboundary iff `σ ≥ ½`)
+
+Already Lean-complete on its own card
+(`../../../3-formalized/not_new_scientific_knowledge/erosion-cocycle-reducibility.md`).
+
+### 19b — the provable half
+
+The card's own resolution of 19b is `Selberg CLT (IMPORT) + the tautology ζ = 0 ⟺ log|ζ| = −∞`.
+The Lean content of the tautology is `Real.log_eq_zero`-level and carries no mathematics; the
+Selberg CLT and the FHK leading order are classical imports the card explicitly grades as IMPORT,
+not native results of this programme.  The **deep dynamical** 19b is, by the card's terminal
+verdict, the RH wall itself and is *not* claimed proven anywhere here.
+
+## Log (cont.)
+- 2026-08-30 — **FORMALIZED → 3-formalized.**  `RHTower/RandomEulerVarianceRate.lean` closes the two
+  backbone gaps that were outstanding: the blow-up rate `V(σ) ≍ log(1/(2σ−1))` as `σ → ½⁺`
+  (in the sharp form `V(σ) = log(1/(2σ−1)) + O(1)`, hence `V/log(1/(2σ−1)) → 1`) and the truncated
+  law `∑_{p ≤ X} V_p(½) = log log X + O(1)` at the critical line.  Both go through the exact
+  splitting `V_p(σ) = p^{−2σ} + O(p^{−4σ})`, which reduces the total second moment to the prime
+  zeta function past the half line and to the prime reciprocal sum on it; the corpus's own
+  `tendsto_primeZeta_add_log_sub` and `tendsto_primeRecipSum_floor_sub_logLog` then supply the two
+  limits.  All new theorems audit to `[propext, Classical.choice, Quot.sound]`.

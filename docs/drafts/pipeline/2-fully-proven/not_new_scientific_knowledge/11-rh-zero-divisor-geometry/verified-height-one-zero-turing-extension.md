@@ -102,3 +102,58 @@ noncomputational source-to-divisor problem and does not prove RH.
 ## Log
 
 - 2026-07-11 -- RunPod Arb certificate produced and independently bracketed by the adjacent zeros.
+
+## Lean status update (2026-08-30) — consumer strengthened; the gate is a certificate, not a theorem
+
+**Staleness audit.**  `RHTower.rhVerifiedThrough_amplify_of_increment_ncard_le_one` is present and
+unconditional, exactly as the card claims:
+
+```text
+RHVerifiedThrough H → (stripZeroIncrement H U).ncard ≤ 1 → RHVerifiedThrough U
+```
+
+**New: the consumer is strengthened to a horizontal-fibre census.**
+`formal/GaloisForLFunctions/RHTower/VerifiedHeightFiberAmplification.lean` (axiom-clean, wired,
+exact leaf build clean):
+
+* `stripZeroIncrementFiber H U t` — the increment's zeros at one ordinate, with finiteness and
+  reflection-closure;
+* **`rhVerifiedThrough_amplify_of_fiber_ncard_le_one`** —
+
+  ```text
+  RHVerifiedThrough H → (∀ t, (stripZeroIncrementFiber H U t).ncard ≤ 1) → RHVerifiedThrough U
+  ```
+
+* `stripZeroIncrementFiber_ncard_le_one_of_increment` — the whole-increment census implies the
+  fibre census, so the new theorem **subsumes** the old one.
+
+This is a genuine weakening of the required census: arbitrarily many new zeros are now allowed in
+`(H, U]`, provided no two share an ordinate.  Reflection preserves the ordinate, so the pairing that
+rules out an off-line zero always happens inside one fibre; requiring the whole increment to be a
+singleton was throwing that away.  It also makes the connection to
+`horizontal-singleton-zero-fibers.md` explicit: that card's predicate is exactly this census.
+
+## Why this card cannot reach stage 3 by proof, and what would be required
+
+`[ASSESSMENT]` The remaining inputs are **not open mathematics**; they are external certified
+computations:
+
+1. `RHVerifiedThrough T₀` for `T₀ = 3,000,175,332,800` — the Platt–Trudgian verification of
+   `≈ 1.24 × 10¹³` zeros;
+2. `(stripZeroIncrement T₀ T₁).ncard ≤ 1` — Arb's Turing-method count at `T₁ = T₀ + 111/256`.
+
+Formalizing either inside Lean would require a verified numerical stack that does not exist:
+rigorous Riemann–Siegel evaluation of `Z(t)` with certified error bounds, Turing's method for the
+zero count, and kernel-executable interval arithmetic — then execution at height `≈ 3 × 10¹²`.  That
+is a separate multi-year formalization project of a different character from this card, and it is
+excluded by the session rule against computations.
+
+The statement is true and provable in principle, so this is **not** a mathematical impossibility;
+but by the available means the card's *mathematical* content is fully Lean-closed (and now
+strengthened), while its *numerical* content remains an imported certificate.  The honest status is
+therefore: **stage 2 with the mathematics complete**; a move to stage 3 requires either the verified
+numerical stack above, or a decision that an externally certified computation counts as a
+formalized input — which the pipeline's rules currently do not allow.
+
+This is recorded so that no future session re-attempts the numerical route without first building
+that stack.

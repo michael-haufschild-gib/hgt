@@ -1,7 +1,7 @@
 # HCF reflected-pair doubled direct three-center charge
 
 - **ID:** HCF-REFLECT-2X-DIRECT-3C
-- **Stage:** 1-in-progress
+- **Stage:** 2-fully-proven on paper; Lean module verified but not umbrella-integrated
 - **Type:** THEOREM (paper)
 - **Source:** `rh-current-frontier-map.md` · Route HCF
 - **Statement:** Every finite strict-right Xi multiplicity packet whose nearest three integer feature centres lie in `K` forces corrected HCF lattice budget at least `card(S) * (126976/21125)`.
@@ -21,8 +21,8 @@ upper bound
 ## Gates
 
 - [x] 0 → 1  in-progress: well-posed; unconditional divisor-side receiver; corpus nonduplication search complete
-- [ ] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorem, targeted build green, axioms audited
+- [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
+- [ ] 2 → 3  formalized: theorem source/typecheck/build/axioms green; contested umbrella import remains
 - [ ] 3 → 4  publication-ready: standalone paper (theorem + proof + Lean certificate + Door-2)
 
 ## Approach
@@ -57,3 +57,8 @@ With `N = N0 + 2 card(S)`, budget upper bound
 
 - 2026-08-29 — conjectured from mismatch between strict-right packet receiver and all-copy budget;
   survived copy-encoding and conjugation hostile checks; Lean formalization started.
+- 2026-08-29 — formalized in
+  `HedenmalmCriticalFeatureReflectedPairDirectThreeCenterCharge.lean`; direct source check and
+  targeted build pass. `#print axioms` reports only `propext`, `Classical.choice`, and
+  `Quot.sound`. Repository lint remains red on multiple concurrently unintegrated umbrella
+  modules, including this one; `RHTower.lean` was intentionally not edited while contested.

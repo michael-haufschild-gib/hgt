@@ -85,10 +85,17 @@ theorem ccmLambertEntrySummand_dyadicIntegral (ell i j : ℕ) (z : ℂ)
   · exact pow_ne_zero _ (by norm_num)
 
 /-- The literal coefficient of `q^n` in CCM equation (53), with a chosen
-square root at every finite-rank source index. -/
+square root at every finite-rank source index.  The Lambert series has zero
+constant coefficient: `q^(2 * ell + 1) / (1 - q^(2 * ell + 1))` contributes
+only at positive degrees. -/
 def ccmLambertEntryCoefficient (i j n : ℕ) (rad : ℕ → ℂ) : ℂ :=
-  ∑ ell ∈ Finset.range (n + 1),
-    if 2 * ell + 1 ∣ n then ccmLambertEntrySummand ell i j (rad ell) else 0
+  if n = 0 then 0 else
+    ∑ ell ∈ Finset.range (n + 1),
+      if 2 * ell + 1 ∣ n then ccmLambertEntrySummand ell i j (rad ell) else 0
+
+theorem ccmLambertEntryCoefficient_zero (i j : ℕ) (rad : ℕ → ℂ) :
+    ccmLambertEntryCoefficient i j 0 rad = 0 := by
+  simp [ccmLambertEntryCoefficient]
 
 /-- Every literal finite divisor coefficient of CCM equation (53) is an
 algebraic integer after multiplication by a power of `2`.  This proves the
@@ -98,11 +105,13 @@ theorem ccmLambertEntryCoefficient_dyadicIntegral (i j n : ℕ) (rad : ℕ → �
     (hrad : ∀ ell, (rad ell) ^ 2 = (ccmLambertRadicand ell i j : ℂ)) :
     CCMDyadicIntegral (ccmLambertEntryCoefficient i j n rad) := by
   unfold ccmLambertEntryCoefficient
-  apply ccmDyadicIntegral_sum
-  intro ell _
-  split_ifs with hdiv
-  · exact ccmLambertEntrySummand_dyadicIntegral ell i j (rad ell) (hrad ell)
+  split_ifs with hn
   · exact ⟨0, by simpa using (isIntegral_zero : IsIntegral ℤ (0 : ℂ))⟩
+  · apply ccmDyadicIntegral_sum
+    intro ell _
+    split_ifs with hdiv
+    · exact ccmLambertEntrySummand_dyadicIntegral ell i j (rad ell) (hrad ell)
+    · exact ⟨0, by simpa using (isIntegral_zero : IsIntegral ℤ (0 : ℂ))⟩
 
 end
 

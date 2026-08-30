@@ -413,11 +413,13 @@ theorem ccmLambertEntryCoefficient_dyadicCyclotomic (i j n : ℕ) (rad : ℕ →
     (hrad : ∀ ell, CCMCyclotomicInteger (rad ell)) :
     CCMDyadicCyclotomicInteger (ccmLambertEntryCoefficient i j n rad) := by
   unfold ccmLambertEntryCoefficient
-  apply ccmDyadicCyclotomicInteger_sum
-  intro ell _
-  split_ifs with hdiv
-  · exact ccmLambertEntrySummand_dyadicCyclotomic ell i j (rad ell) (hrad ell)
+  split_ifs with hn
   · exact ⟨0, by simpa using CCMCyclotomicInteger.zero⟩
+  · apply ccmDyadicCyclotomicInteger_sum
+    intro ell _
+    split_ifs with hdiv
+    · exact ccmLambertEntrySummand_dyadicCyclotomic ell i j (rad ell) (hrad ell)
+    · exact ⟨0, by simpa using CCMCyclotomicInteger.zero⟩
 
 /-- The unconditional form of CCM equation (55): no choice of a complex
 square-root branch can escape the cyclotomic ring. -/
@@ -437,6 +439,11 @@ def ccmLambertEntrySeries (i j : ℕ) (rad : ℕ → ℂ) : ℂ⟦X⟧ :=
 theorem ccmLambertEntrySeries_coeff (i j n : ℕ) (rad : ℕ → ℂ) :
     (ccmLambertEntrySeries i j rad).coeff n = ccmLambertEntryCoefficient i j n rad :=
   by rw [ccmLambertEntrySeries, coeff_mk]
+
+theorem ccmLambertEntrySeries_coeff_zero (i j : ℕ) (rad : ℕ → ℂ) :
+    (ccmLambertEntrySeries i j rad).coeff 0 = 0 := by
+  rw [ccmLambertEntrySeries_coeff]
+  exact ccmLambertEntryCoefficient_zero i j rad
 
 /-- The full formal Lambert system has coefficientwise containment in
 `ℤ^cyc[1/2]` under its literal square-root equations. -/

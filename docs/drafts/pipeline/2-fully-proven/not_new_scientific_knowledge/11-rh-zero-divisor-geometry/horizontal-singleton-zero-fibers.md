@@ -455,3 +455,87 @@ only `propext, Classical.choice, Quot.sound`; umbrella imports were added withou
 This closes Graham's sharp lower half, not its matching upper half. Growing-modulus upper control,
 differentiated full/omitted long tails, mixed-cross evaluation, and both exact PRZZ proportion
 providers remain required. Card stays at stage 2.
+
+## Lean status update (2026-08-30) — audit clean, gate pinned, arithmetic layer of the gate closed
+
+**Staleness audit.**  Every Lean declaration this card claims was re-verified against the tree and
+is present: `two_le_xiHorizontalMultiplicity_of_offLine`, `xiHorizontalSingletonZero_re_eq_half`,
+`xiHorizontalSingletonZero_order_eq_one`, `xiSingletonFiberCount`,
+`two_mul_xiSimpleCriticalZeroCount_le`, `le_liminf_xiSingletonFiberRatio`,
+`prattRoblesZaharescuZeindler_singleton_density`, `three_mul_xiOddFiberCount_le`,
+`xiHorizontalMultiplicity_odd_iff`, `exists_odd_order_line_zero_of_hardyZ_sign_flip`,
+`xiSingletonFiberCount_ge_of_sign_chain`.  Nothing is stale; the combinatorial half really is
+complete.
+
+**The gate, exactly.**  `prattRoblesZaharescuZeindler_singleton_density` carries its two inputs as
+premises, so the card needs precisely these two unconditional Lean theorems:
+
+```text
+(0.417293962 : ℝ) ≤ liminf xiCriticalRatio       atTop
+(0.407511457 : ℝ) ≤ liminf xiSimpleCriticalRatio atTop
+```
+
+and nothing else.  (For mere non-vacuity the cheaper odd-fibre route needs only
+`liminf O/N > 1/3`, which Levinson's own constant `0.3474…` already supplies — but the card's
+advertised decimal `0.116158438` needs the PRZZ pair.)
+
+**Owner:** `docs/drafts/pipeline/1-in-progress/levinson-critical-proportion-programme.md`.
+
+**Progress on the gate, 2026-08-29/30.**  Two things happened there that matter for this card.
+
+1. *A structural correction.*  The route the programme had been following — evaluating the direct
+   AFE head's diagonal and bounding the direct/reflected cross — cannot work.  The direct head's
+   per-pair weight is `log x − log[h,k] + log min(h,k)`, and the `min` mass makes that diagonal
+   diverge by a factor `log M` relative to the classical answer `log T − log[h,k] + log(h,k)`.  The
+   cross term carries exactly `+log(max/min) = |A−B| = A + B − 2·min(A,B)` and cancels the
+   divergence, so `ℓ¹` *upper* bounds on the cross can never close the gate; it must be evaluated.
+2. *The arithmetic layer of the corrected route is now closed.*  The corrected route needs exactly
+   two Selberg families, both of which are now unconditional Lean theorems:
+
+   | family | asymptotic | Lean |
+   |---|---|---|
+   | pure-log | `(ij/(i+j−1))·(log N)^{i+j−1}` | `tendsto_selbergOriginalLogMonomial_div_log_pow` |
+   | gcd-log | `(ij/((i+j−1)(i+j)))·(log N)^{i+j}` | `tendsto_selbergOriginalGcdLogMonomial_div_log_pow` |
+
+   The pair was checked to reproduce Young's constant `c(P,Q,R,θ)` exactly (`P(x)=x`, `Q=1`, `R=0`
+   gives `1 + 1/θ`).  Twenty axiom-clean modules were added for this, including a reusable
+   `BivariateDerivation` framework (Leibniz predicate, prime-power rigidity, convolution Leibniz
+   rule) and the full construction of the differentiated Euler correction `corr^{log}` with its
+   local identity, global identity and `ℓ¹` bound.
+
+What remains before this card can move to stage 3 is therefore the *analytic* half of the gate: the
+twisted second moment of `ζ` with a power-saving error uniform for `h,k ≤ T^θ`, then Heath-Brown's
+simple-zero refinement, then Conrey's `θ = 4/7` and the PRZZ optimization for the exact decimals.
+
+## Lean status update (2026-08-30, later) — the census is the counting function; gate shared with card 1
+
+Two new axiom-clean modules, both wired and `lake env lean`-clean:
+
+`RHTower/XiCensusVonMangoldtBridge.lean`
+* `stripFinsetPos_eq_image` — the census index set is the `ξ`-divisor support with positive
+  ordinate;
+* **`xiPosZeroCount_eq_xiZeroCount`** — the `N(T)` of this card's charging law *is* the corpus's
+  `xiZeroCount T`.  Until now the charging law's denominator was formally unrelated to the
+  Riemann–von Mangoldt asymptotic; it no longer is;
+* **`eventually_inv_four_pi_mul_le_xiPosZeroCount`** — `∀ᶠ T, (1/4π)·T log T ≤ N(T)`,
+  unconditionally;
+* **`exists_superlinear_of_le_liminf_xiSimpleCriticalRatio`** — a positive lower density of simple
+  critical zeros upgrades to `∀ᶠ T, (c/8π)·T log T ≤ N₀,s(T)`.
+
+`RHTower/XiCardGateUnification.lean`
+* **`suzukiCutoff_eq_zero_of_le_liminf_xiSimpleCriticalRatio`** and its PRZZ/Levinson
+  specialisations — the neighbouring card
+  `bounded-support-weil-critical-tail-uniqueness.md` now consumes *this* card's density input
+  directly.
+
+**Consequence for this card's gate.**  Nothing weakens: `prattRoblesZaharescuZeindler_singleton_density`
+still needs the two exact liminf bounds
+
+```text
+(0.417293962 : ℝ) ≤ liminf xiCriticalRatio       atTop
+(0.407511457 : ℝ) ≤ liminf xiSimpleCriticalRatio atTop
+```
+
+for the advertised decimal `0.116158438`.  But the folder's gate structure is now explicit: **one
+analytic input — a positive proportion of simple critical zeros — serves both cards**, at strength
+`> 0` for card 1 and at the PRZZ decimals for this card's headline constant.

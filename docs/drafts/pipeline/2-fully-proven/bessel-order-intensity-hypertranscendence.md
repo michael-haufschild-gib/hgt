@@ -4447,3 +4447,190 @@ descent is available.  The module is umbrella-wired, its targeted build passes, 
 theorems audit to `[propext, Classical.choice, Quot.sound]`.  Remaining bridge is now exactly the
 PPV invariant-field/torsor theorem plus embedding of the actual meromorphic carrier into that PV
 field; finite-orbit polynomial algebra is closed.
+
+## Ordinary PV fixed-field premise decomposed and discharged from torsor data (2026-08-30)
+
+`DifferenceAutomorphismFixedField.lean` removes the previously free invariant-field premise from
+the ordinary difference-Galois branch. It bundles every comparison-algebra point as a genuine
+`differenceAut`: sigma-simplicity proves injectivity, Picard--Vessiot generation and specialized
+determinant invertibility prove surjectivity, and tensor-square point separation gives descent to
+the base field. An inverse determinant already lying in the comparison algebra now proves the
+specialized determinant condition internally. Main declarations are:
+
+```text
+DifferencePointRealization
+pvDifferencePointRealization
+differenceAut_fixedField_of_realization
+differenceAut_fixedField_of_det
+galoisMatrixAt_det_isUnit
+exists_eq_algebraMap_of_forall_differenceAut
+```
+
+Implementation uses a single-universe API matching the existing Galois-point construction and an
+opaque point-realization bundle; this avoids pathological tensor-basis normalization without
+raising heartbeats. Direct source check, targeted module build, and axiom audit pass with only
+`[propext, Classical.choice, Quot.sound]`; module remains umbrella-wired.
+
+This is infrastructure, not the unconditional Bessel endpoint. Final theorem may retain none of
+the displayed PV/torsor data as hypotheses. Remaining work must construct that data for the
+concrete Bessel ordinary/parameterized PV quotient, identify the actual meromorphic Bessel carrier
+inside it, and close determinant-one density including the finite primitive branch. Until those
+producers are instantiated, this card stays in Stage 2.
+
+## Finite PV branch no longer assumes field carrier or fixed-field oracle (2026-08-30)
+
+`FiniteAutomorphismOrbitAlgebraicity.lean` and `FiniteDifferenceGaloisAlgebraicity.lean` are now
+proved over any nontrivial commutative carrier ring, matching an actual Picard--Vessiot ring rather
+than assuming its carrier is a field. `FiniteDifferenceGaloisPVTorsor.lean` composes that generalized
+orbit product with the fixed-field producer above:
+
+```text
+isAlgebraic_of_finite_differenceAut_of_pvTorsor
+not_finite_differenceAut_of_transcendental_of_pvTorsor
+```
+
+Hence finite `differenceAut` plus constructed PV torsor data forces algebraicity, and a
+transcendental carrier rules out that branch, with no free invariant-field hypothesis and no field
+hypothesis on the PV ring. Source checks, targeted builds, and new axiom audits pass with only
+`[propext, Classical.choice, Quot.sound]`; new leaf is umbrella-wired.
+
+Final Bessel endpoint is still not closed: concrete Bessel PV/PPV torsor data, actual meromorphic
+carrier embedding, and determinant-one density/finite-primitive classification must still be
+constructed and discharged. None may remain a final theorem premise.
+
+## Comparison algebra and finite branch constructed from fundamental solution (2026-08-30)
+
+`DifferenceComparisonAlgebra.lean` now constructs the ordinary finite comparison algebra directly
+from comparison matrix `Z` and inverse determinant `w`. It proves finite type, pointwise
+sigma-fixedness, tensor-square generation over the left PV factor, and linear independence over the
+PV ring of a chosen constants basis. `DifferenceAutomorphismFixedFieldFundamental.lean` then
+constructs `Z`, `w`, comparison algebra, and basis internally from any invertible fundamental
+solution. Its closed structural endpoints are:
+
+```text
+exists_eq_algebraMap_of_forall_differenceAut_of_comparison
+exists_eq_algebraMap_of_forall_differenceAut_of_fundamental
+```
+
+`FiniteDifferenceGaloisFundamental.lean` composes this with the commutative-ring orbit product:
+
+```text
+isAlgebraic_of_finite_differenceAut_of_fundamental
+not_finite_differenceAut_of_transcendental_of_fundamental
+```
+
+Thus no comparison matrix, inverse determinant, comparison algebra, finite-type certificate,
+constants basis, basis-independence proof, tensor-generation proof, or fixed-field oracle remains
+in the finite ordinary-Galois branch interface. Source checks, targeted builds, and all new axiom
+audits pass with only `[propext, Classical.choice, Quot.sound]`; no heartbeat increase was used.
+
+This still is not unconditional Bessel closure. Remaining ordinary interface fields—concrete PV
+quotient, sigma-simplicity, no-new-constants, generated fundamental solution, and carrier
+identification—must be instantiated from the Bessel recurrence, and determinant-one
+density/finite-primitive classification plus PPV differential descent remain open. Card stays
+Stage 2.
+
+## Concrete parameterized Picard--Vessiot quotient exists (2026-08-30)
+
+`BesselOrderParameterizedPicardVessiot.lean` constructs the parameterized PV object for the actual
+Bessel order companion over the corpus's concrete differential closure of `ℂ`.  It supplies the
+explicit inverse companion, proves both matrix inverse identities, instantiates the coordinate
+total derivation, proves the rational shift commutes with it, and packages the resulting
+sigma-delta-simple quotient with its fundamental solution and invertible determinant:
+
+```text
+besselOrderCompanionInverse
+besselOrderCompanion_mul_inverse
+besselOrderCompanion_inverse_mul
+besselRatShift_commutes
+BesselOrderParameterizedPVData
+besselOrder_parameterizedPicardVessiot_exists
+```
+
+The endpoint holds for every real slope parameter and retains no base-field, differential-closure,
+commutation, matrix-invertibility, quotient-existence, simplicity, fundamental-solution, or
+determinant premise.  Direct source check and targeted leaf build pass; all new theorem declarations
+audit to `[propext, Classical.choice, Quot.sound]`.  The module is umbrella-wired without an
+umbrella build.
+
+This closes PPV **existence**, not the parameterized Galois classification.  Remaining headline
+obligations are no-new-differential-constants/torsor descent for this quotient, identification of
+the actual meromorphic Bessel carrier, and determinant-one density including the finite primitive
+branch.  Card remains Stage 2.
+
+## Concrete ordinary PV quotient has exact constants (2026-08-30)
+
+`BesselOrderPicardVessiotNoNewConstants.lean` now instantiates the ordinary Picard--Vessiot
+construction at the same concrete Bessel companion.  The supporting theorem proves directly that
+every rational-shift-invariant monic polynomial descends coefficientwise to the concrete
+algebraically closed constant field and therefore has a shift-fixed root.  It also proves the
+shift-constant subfield infinite.  The packaged endpoint is:
+
+```text
+BesselOrderPVNoNewConstantsData
+besselOrder_picardVessiot_noNewConstants_exists
+```
+
+For every real slope parameter it supplies a proper sigma-stable maximal quotient, sigma-simplicity,
+an invertible fundamental matrix satisfying the Bessel system, and equality of quotient constants
+with the rational base constants.  No PV-existence, sigma-simplicity, inverse-matrix,
+fundamental-generation, infinite-constants, algebraic-closedness, or no-new-constants premise
+remains.  Direct source check and targeted leaf build pass; new theorem declarations audit to
+`[propext, Classical.choice, Quot.sound]`.  Module is umbrella-wired without building umbrella.
+
+The remaining ordinary branch is now theorem-specific: embed the actual meromorphic Bessel
+solution into this PV carrier and prove determinant-one Galois density/finite-primitive exclusion.
+The parameterized branch still needs differential-constants/torsor descent and classification.
+Card remains Stage 2.
+
+## Picard--Vessiot generation is discharged (2026-08-30)
+
+`DifferencePicardVessiotGeneration.lean` proves from the actual localization construction—not from
+an interface premise—that generic fundamental-matrix entries together with the distinguished
+inverse determinant generate `pvLocalization`.  Surjectivity of every ideal quotient transports
+that equality to each ordinary PV quotient, and the same distinguished element is proved to be a
+right inverse of the quotient fundamental determinant:
+
+```text
+pvLocalization_adjoin_genericVariables
+pvLocalization_adjoin
+pvQuotient_adjoin
+pvQuotient_det_mul_inverse
+```
+
+`BesselOrderPVNoNewConstantsData` now contains that explicit inverse, its determinant identity, and
+the exact `Algebra.adjoin = ⊤` equality.  Thus ordinary PV generation is no longer a hypothesis or
+open interface field.  Direct source checks and targeted builds of the generation and Bessel leaf
+modules pass.  Every new or strengthened theorem declaration audits to
+`[propext, Classical.choice, Quot.sound]`; no heartbeat increase was used.
+
+This does not promote the card.  Remaining ordinary headline obligations are the actual
+meromorphic Bessel carrier embedding and determinant-one Galois density/finite-primitive
+classification.  Parameterized differential-constant descent and PPV classification also remain.
+
+## Parameterized PV generation is discharged (2026-08-30)
+
+`ParameterizedPicardVessiotGeneration.lean` proves the exact parameterized analogue.  Every formal
+differential coordinate, together with the inverse zeroth-jet determinant, generates
+`ppvLocalization` and every ideal quotient.  It also identifies each coordinate of order `k` with
+the `k`-fold derivative of its zeroth-order fundamental-matrix entry, before and after passage to a
+differential quotient:
+
+```text
+ppvLocalization_adjoin_jetVariables
+ppvQuotient_adjoin_jetVariables
+ppvQuotient_det_mul_inverse
+iterate_deriv_ppvFundamental
+iterate_deriv_ppvQuotientFundamental
+```
+
+`BesselOrderParameterizedPVData` now packages the explicit determinant inverse, its product
+identity, exact algebraic generation by all jet coordinates, and their identification with actual
+iterated quotient derivatives.  No differential-generation premise remains.  Direct source checks
+and targeted builds of both new infrastructure and strengthened Bessel leaf pass; every affected
+theorem declaration audits to `[propext, Classical.choice, Quot.sound]`; no heartbeat increase was
+used.
+
+Card remains Stage 2.  PPV construction and generation are closed; differential-constant/torsor
+descent and parameterized Galois classification remain, alongside ordinary carrier embedding and
+density/finite-primitive classification.

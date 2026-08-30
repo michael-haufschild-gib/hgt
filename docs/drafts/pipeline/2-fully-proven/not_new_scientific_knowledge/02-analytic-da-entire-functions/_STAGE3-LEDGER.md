@@ -662,3 +662,350 @@ threaded through `exists_ge_centralIndex_no_double`, `exists_good_parameters`,
 `exists_radius_defect_le_eps_of_transcendental`, `exists_radius_dominates_and_defect_le_eps`,
 `exists_radius_norm_topSymbol_le` and `exists_radius_wiman_place`, whose statements changed shape
 from `∀ R, ∃ y ≥ R` to `∃ M, ∀ R, ∃ y ∈ [R, max R M + borelWindow (1/4) + 1]`.
+
+## The analytic half of cards 11–14 is closed (2026-08-29)
+
+"Outer-state independence" — the step the cards phrase as *"the Nevanlinna root estimate and
+Clunie's composition-growth theorem show that `h = f∘g` is transcendental over every field generated
+by finitely many derivatives of `g`"* — is now a single unconditional Lean theorem:
+
+```text
+not_algebraic_comp_over_jet :
+  f, g entire and not polynomials, N ≥ 1,
+  A : ℕ → MvPolynomial (Fin (n+2)) ℂ,  A N not identically zero on the jet,
+  ∀ z, ∑_{i ≤ N} A i (z, g z, …, g⁽ⁿ⁾ z) · (f (g z))^i = 0
+  → False
+```
+
+The chain, all axiom-clean:
+
+| Step | Lean name | Module |
+|---|---|---|
+| a Borel-good radius outside any null set | `exists_good_radius_seq_avoiding` | `BorelGoodRadiiAvoiding` |
+| one sequence of radii making a whole finite family's logarithmic-derivative proximities negligible | `exists_good_radii_family` | `GoodRadiiFamily` |
+| every derivative up to order `n` has `T(r,g⁽ʲ⁾) ≤ 2ⁿ⁺¹·T(r,g) + C` along that sequence, and the shift proximities are negligible | `exists_radii_jet_bound_and_error` | `IteratedDerivativeGrowth` |
+| `¬ ∀ᶠ r, T(r,f∘g) ≤ c·∑ⱼ T(r,g⁽ʲ⁾) + d log r + d` | `not_eventually_characteristic_comp_le_jet` | `ClunieDerivativeField` |
+| `T(r, A(z, G(z))) ≤ K(log r + ∑ T(r,Gⱼ)) + K` for a multivariate polynomial | `exists_characteristic_eval_le` | `MultivariateEvalCharacteristic` |
+| the transcendence statement above | `not_algebraic_comp_over_jet` | `CompositionJetTranscendence` |
+
+Two design points were forced by the mathematics:
+
+* the multiplier in the jet bound must not depend on the number `N` of preimages used in the second
+  main theorem, or the Clunie comparison `N − 3 > c` becomes circular; it is `2ⁿ⁺¹`, and all the
+  `N`-dependence sits in the additive constant;
+* the top coefficient of an algebraic relation is only assumed not identically zero, so the radii
+  whose circle carries one of its zeros must be avoided; that set is countable, hence null, and the
+  Borel exceptional set has measure two, so a window of length four always contains a usable radius.
+
+What remains for cards 11–14 is the *algebraic* half: the transcendence-degree bookkeeping of the
+jet fields (`H_h(n) = 1 + S_g(n)` and `trdeg_K N = 1 + (1−aut f)·π(g)`), for which the corpus already
+owns `Algebra.trdeg`, `differentialAdjoin`, `DifferentialAlgebraicOver`, `DerivationClosed` and the
+finite-transcendence descent `differentialAlgebraicOver_of_intermediate_trdeg_lt_aleph0`.
+
+## The field-side transcendence bridge (2026-08-30)
+
+`HTGeometry/CompositionJetField.lean`, unconditional and axiom-clean:
+
+```text
+not_isAlgebraic_comp_over_jetGen :
+  f, g entire and not polynomials →
+  ¬ IsAlgebraic ↥(IntermediateField.adjoin ℂ (Set.range (jetGen hg n)))
+      (analyticMeroElement (f ∘ g) _)
+```
+
+where `jetGen hg n : Fin (n+2) → meroField univ` is the coordinate followed by
+`g, g', …, g⁽ⁿ⁾`.  This is `not_algebraic_comp_over_jet` transported into the meromorphic function
+field, and it is the exact hypothesis the transcendence-degree computation of cards 11–12 consumes.
+
+The transport uses only corpus material — no new analysis:
+
+* `AlgebraAdjoinAlgebraic.isAlgebraic_algebraAdjoin_of_isAlgebraic_intermediateField` turns
+  algebraicity over the generated *field* into algebraicity over the generated *ring*, so no
+  denominators have to be cleared;
+* `Algebra.adjoin_range_eq_range_aeval` presents each coefficient as an `MvPolynomial (Fin (n+2)) ℂ`
+  in the generators — which is exactly the shape of the analytic theorem, because the base is `ℂ`
+  and the coordinate is one of the generators;
+* `AnalyticMeroPolynomialEval` (`analyticMeroElement_eval_mvPolynomial`,
+  `analyticMeroElement_finsetSum`, `analyticMeroElement_eq_zero_iff`) converts the field identity
+  into the pointwise identity and back.
+
+Working over `ℂ` rather than `RatFunc ℂ` is what makes the transport short; the two normalisations
+differ by exactly one transcendence degree (`trdeg ℂ (RatFunc ℂ) = 1`), so a statement
+`H = 1 + S` is the same in both.
+
+### Remaining for card 12 (and the same shape for 11, 13, 14)
+
+1. ~~**The degree increment.**~~ **CLOSED (2026-08-30)** —
+   `HTGeometry.CompositionJetTrdeg.trdeg_adjoin_comp_eq_add_one`:
+
+   ```text
+   trdeg ℂ (adjoin ℂ (insert (f∘g) (range (jetGen hg n))))
+     = trdeg ℂ (adjoin ℂ (range (jetGen hg n))) + 1
+   ```
+
+   unconditional and axiom-clean.  Three things made it go through: the general
+   `AdjoinInsert.adjoin_insert_eq_restrictScalars` had to live in a module *without* the
+   `relativeGauge*` local instances (inside the heavy module every attempt timed out at `isDefEq`);
+   the singleton has to be presented as `Set.range (fun _ : PUnit => x)` so that
+   `ProjectiveHorizonAllRankQSystem.adjoin_range_lift_eq_top` applies on the nose; and
+   `synthInstance.maxHeartbeats` has to be raised, since the meromorphic-field instance stack is
+   deep.
+2. **The jet equivalence.**  `adjoin ℂ ({z} ∪ h-jets)` and `adjoin ℂ ({z, h} ∪ g-shadow)` are
+   algebraic over one another:
+   * forward: `h⁽ᵏ⁾` is a polynomial in `f⁽ⁱ⁾∘g` and `g⁽ʲ⁾` (chain rule, induction on `k`), and each
+     `f⁽ⁱ⁾∘g` is algebraic over `ℂ(h, f'∘g)` — differentiate the autonomy relation `P(f,f') = 0`;
+   * backward: `g' = h'/(f'∘g)`, then `g''` from `h'' = (f''∘g)(g')² + (f'∘g)g''`, and so on.
+   Both directions need a *minimal-degree* choice of the autonomy polynomial so that `∂P/∂Y` does
+   not vanish on the solution.
+
+   The clean Lean route for the forward half avoids Faà di Bruno entirely: in the differential field
+   `meroField univ` let `R_m` be the `ℂ`-subalgebra generated by `{f⁽ⁱ⁾∘g : i ≤ m} ∪ {g⁽ʲ⁾ : j ≤ m}`.
+   Since `(f⁽ⁱ⁾∘g)′ = (f⁽ⁱ⁺¹⁾∘g)·g′` and `(g⁽ʲ⁾)′ = g⁽ʲ⁺¹⁾`, `Algebra.adjoin_induction` gives
+   `x ∈ R_m → x′ ∈ R_{m+1}`, and `h⁽ᵏ⁾ ∈ R_k` follows by induction on `k`.  The field derivation
+   agrees with the ordinary derivative on entire elements by
+   `MeroExponentialGauge.deriv_analyticMeroElement`.
+3. **Assembly**: `H_h(n) = 1 + S_g(n)`, then the DA order law, the compression ledger, and the
+   `E, G, H = exp∘G` counterexample (the last needs: no rational solution of `r' − 2zr = 1`, which
+   is an elementary pole/degree argument).
+
+The corpus already owns the abstract staircase these feed
+(`DerivativeShadowStaircase`, `trdeg_eq_add_one_of_transcendental`, `trdeg_eq_of_isAlgebraic`,
+`StateFieldTrdeg`), so item 2 is the only genuinely new mathematics left in cards 11–12.
+
+## Card 12: the forward half of the jet equivalence (2026-08-30)
+
+`HTGeometry/CompositionJetRing.lean`, unconditional and axiom-clean:
+
+| Statement | Lean name |
+|---|---|
+| `(f⁽ⁱ⁾∘g)′ = (f⁽ⁱ⁺¹⁾∘g)·g′` in the meromorphic field | `deriv_compJetElem` |
+| `(g⁽ʲ⁾)′ = g⁽ʲ⁺¹⁾` | `deriv_jetElem` |
+| the `ℂ`-subalgebra of index at most `m` | `compJetRing` |
+| **one differentiation raises the index by one** | `deriv_mem_compJetRing_succ` |
+| **`(f∘g)⁽ᵏ⁾` lies in the ring of index at most `k`** | `jetElem_comp_mem_compJetRing` |
+
+`deriv_mem_compJetRing_succ` is proved by `Algebra.adjoin_induction`; the two generator cases are the
+chain rule and the index shift, and the ring cases are `deriv_add'`/`deriv_mul'` from
+`DeltaStructureLinearOde` — the corpus forms that avoid the `Algebra ℤ` diamond that
+`Derivation.map_add` runs into on the Ore-localised meromorphic field.
+
+This is the forward half of card 12's jet equivalence, and it needs no Faà di Bruno formula: only
+that the ring is carried into the next one by the derivation.
+
+### What card 12 still needs
+
+* **(a)** `f⁽ⁱ⁾∘g` is algebraic over `ℂ(h, f′∘g)`: compose the autonomy relation `P(f,f′) = 0` with
+  `g`, then differentiate it repeatedly.  Needs `P` of minimal `Y`-degree so that `∂P/∂Y` does not
+  vanish on the solution.
+* **(b)** the backward direction: `g′ = h′/(f′∘g)`, then `g″` from
+  `h″ = (f″∘g)(g′)² + (f′∘g)g″`, and so on — each `g⁽ʲ⁾` algebraic over the `h`-jet field with `f′∘g`
+  adjoined.
+* **(c)** assembly: `trdeg` is unchanged by algebraic extensions (`trdeg_eq_of_isAlgebraic`), so
+  (a)+(b)+`trdeg_adjoin_comp_eq_add_one` give `H_h(n) = 1 + S_g(n)`; then the DA order law, the
+  compression ledger, and the `E, G, H = exp∘G` counterexample.
+
+## Card 12: the autonomy relation composes (2026-08-30)
+
+`HTGeometry/MeroTranscendentalConstants.lean` and `HTGeometry/AutonomousCompJet.lean`, both
+unconditional and axiom-clean:
+
+| Statement | Lean name |
+|---|---|
+| univariate polynomial evaluation transfers to the field | `aeval_analyticMeroElement_polynomial` |
+| **a nonconstant entire function is transcendental over `ℂ`** | `transcendental_analyticMeroElement_of_nonconstant` |
+| `f′` algebraic over `ℂ(f)`, as an explicit relation | `AutonomousFirstOrder` |
+| **`f′∘g` is algebraic over `ℂ(f∘g)`** | `isAlgebraic_compJetElem_one` |
+
+The transcendence lemma is the one place where the plane's uncountability is used: a polynomial
+relation over `ℂ` forces every value of the function into the finite root set, each level set is
+countable unless the function is constant there (`ZeroFreeRadius.countable_zeroSet`), and a finite
+union of countable sets is not `ℂ`.
+
+`isAlgebraic_compJetElem_one` is `AutonomousFirstOrder f` composed with `g`: the relation
+`∑ c_k(f)·(f′)^k = 0` becomes `∑ c_k(f∘g)·(f′∘g)^k = 0`, whose coefficients `c_k(f∘g)` lie in
+`Algebra.adjoin ℂ {f∘g}` and are nonzero for the index where `c_k ≠ 0`, by the transcendence lemma.
+
+### Still open on card 12
+
+* ~~the induction `f⁽ⁱ⁾∘g` algebraic over `ℂ(h, f′∘g)`~~ **CLOSED (2026-08-30)** —
+  `AutonomousCompJetAll.isAlgebraic_compJetElem_of_autonomous` proves the stronger statement that
+  *every* `f⁽ⁱ⁾∘g` is algebraic over `ℂ(f∘g)` alone.  The device is the **pullback derivation**
+  `x ↦ x′/g′`, installed as a local `Differential` instance, for which `f⁽ⁱ⁾∘g ↦ f⁽ⁱ⁺¹⁾∘g`; the
+  generator's image is `f′∘g`, algebraic by `isAlgebraic_compJetElem_one`, so
+  `AlgebraicClosureDerivationClosed.deriv_mem_algebraicClosure` applies and the relative algebraic
+  closure of `ℂ(f∘g)` contains the whole composed jet.  No minimal-degree bookkeeping is needed —
+  the minimal polynomial argument is already inside the corpus lemma.
+
+  Two instance traps: `c⁻¹ • Differential.deriv` must be written *without* ascribing the
+  `Derivation ℤ` type (ascription picks `OreLocalization.instAlgebra` where the class provides
+  `Ring.toIntAlgebra`), and the membership `y ∈ ⊥` must be cleared before
+  `IntermediateField.adjoin_induction` or it lands in the motive.
+* ~~the backward direction recovering `g⁽ʲ⁾` from the `h`-jets and `f′∘g`~~ **CLOSED (2026-08-30)** —
+  `CompositionJetBackward.isAlgebraic_jetElem_over_compJets`: for `1 ≤ j ≤ n`, `g⁽ʲ⁾` is algebraic
+  over the field generated by `f∘g, (f∘g)′, …, (f∘g)⁽ⁿ⁾`.  Supporting:
+  `compJetElem_one_ne_zero` (`f′∘g ≠ 0`, by the open-mapping dichotomy),
+  `gradedJetRing` with `deriv_mem_gradedJetRing_succ`, and
+  `jetElem_comp_sub_mem_gradedJetRing`, the leading-term identity
+  `(f∘g)⁽ʲ⁺¹⁾ − (f′∘g)·g⁽ʲ⁺¹⁾ ∈ R_j`.  The graded ring must exclude `g` itself from its generators —
+  `g` is exactly the state the primitive defect measures, and it is not recoverable.  The original
+  route sketched below is what was carried out:
+  with `R_m` the ring generated by the composed jets and the `g`-jets of order at most `m`,
+  `h⁽ʲ⁾ − (f′∘g)·g⁽ʲ⁾ ∈ R_{j−1}` by induction — differentiating `a·g⁽ʲ⁾ + r` gives
+  `a·g⁽ʲ⁺¹⁾ + (a′g⁽ʲ⁾ + r′)` and `r′ ∈ R_j` by `deriv_mem_compJetRing_succ`.  Solving for `g⁽ʲ⁾`
+  needs `f′∘g ≠ 0`, which follows from the open-mapping dichotomy exactly as in
+  `meromorphicOrderAt_comp_sub_const_ne_top`;
+* the assembly through `trdeg_eq_of_isAlgebraic` and `trdeg_adjoin_comp_eq_add_one`, then the DA
+  order law, the compression ledger, and the `E, G, H = exp∘G` counterexample.
+
+## Card 12: the finite-jet shadow law is proved (2026-08-30)
+
+`HTGeometry/CompositionShadowLaw.lean`, unconditional and axiom-clean:
+
+```text
+trdeg_shadow_law :
+  f, g entire, neither a polynomial, f∘g and g nonconstant, AutonomousFirstOrder f →
+  trdeg ℂ ℂ(z, f∘g, (f∘g)′, …, (f∘g)⁽ⁿ⁾)
+    = trdeg ℂ ℂ(z, g′, …, g⁽ⁿ⁾) + 1
+```
+
+This is the card's `H_h(n) = 1 + S_g(n)`.  The `ℂ`- and `ℂ(z)`-normalisations differ by exactly one
+degree on both sides, so the identity is the same in either.
+
+The assembly is the two halves plus two general field lemmas:
+
+| Step | Lean name |
+|---|---|
+| `h` is transcendental over the shadow field | `not_isAlgebraic_comp_over_jetGen` |
+| a transcendental generator costs one degree | `CompositionJetTrdeg.trdeg_adjoin_insert_eq_add_one` |
+| mutually algebraic fields have equal degree | `TrdegMutuallyAlgebraic.trdeg_eq_of_mutually_algebraic` |
+| outer jets ⊆ graded ring (no `g`) | `jetElem_comp_mem_gradedJetRing` |
+| composed jets algebraic over `ℂ(h)` | `isAlgebraic_compJetElem_of_autonomous` |
+| inner jets algebraic over the outer jet field | `isAlgebraic_jetElem_over_compJets` |
+
+`trdeg_eq_of_mutually_algebraic` goes through the relative algebraic closures — two intermediate
+fields each algebraic over the other have the same closure, and
+`StateFieldTrdeg.trdeg_algebraicClosure_restrictScalars_eq` says the closure does not change the
+degree.  Both closures must be compared after `restrictScalars`, since as intermediate fields they
+live over different bases.
+
+### Card 12 after the shadow law
+
+Still to formalise for promotion:
+
+* the **DA order law** `ord_DA(f∘g) = 1 + ord_DA(g′)` — the union of the finite-jet identities, via
+  `DifferentialTranscendenceDegree.differentialTranscendenceDegree` and
+  `DifferentialAdjoinFiniteTrdeg`;
+* the **compression ledger** `ord_DA(h_N) = ord_DA(g) + N − ∑ π(h_k)`, a corollary of the order law;
+* the **entire counterexample** `E = exp(−z²)`, `G = ∫E`, `H = exp∘G` with `ord_DA G = ord_DA H = 2`,
+  whose only nonstandard ingredient is that `r′ − 2zr = 1` has no rational solution — an elementary
+  pole/degree argument;
+* the closing "same scalar order, opposite cap behaviour" comparison.
+
+## Card 12: the order law, the defect dichotomy and the ledger (2026-08-30)
+
+The finite-jet shadow law is now extended to the full jet field and to its two stated corollaries.
+
+New modules:
+
+- `HTGeometry/AdjoinDirectedUnion.lean` — general field theory, no analysis:
+  `adjoin_iUnion_eq_iSup`, `directed_adjoin_of_monotone`, `exists_stage_mem`, and
+  `exists_isAlgebraic_stage`: an element algebraic over the field generated by an increasing union
+  of generating sets is already algebraic over the field generated by one stage.  The witnessing
+  polynomial has finitely many coefficients, each lies at a finite stage, the stages are directed,
+  and the polynomial is then lifted through `Polynomial.lifts` along `IntermediateField.inclusion`.
+- `HTGeometry/CompositionShadowLawInfinite.lean` — `coordElem`, `jetGen_zero_eq_coordElem`, and
+  `trdeg_shadow_law_infinite`: for `f` autonomous first-order and both factors transcendental
+  entire non-polynomials with nonconstant composition,
+  `trdeg_ℂ ℂ(z, all jets of f∘g) = trdeg_ℂ ℂ(z, all positive derivatives of g) + 1`.
+  This is the card's DA order law `ord_DA(f∘g) = 1 + ord_DA(g')` in the ℂ-normalisation
+  (`trdeg_ℂ = ord_DA + 1`, which avoids cardinal subtraction).
+  Only the transcendence step needs the limit: mutual algebraicity holds stage by stage and
+  therefore for the union directly.
+- `HTGeometry/CompositionShadowLawConsequences.lean` —
+  `trdeg_adjoin_insert_eq_of_isAlgebraic` (algebraic generator costs nothing; the companion of
+  `trdeg_adjoin_insert_eq_add_one`), `daRank`, `shadowRank'`, `jetSet_eq_insert`,
+  `daRank_eq_shadowRank_or_succ` (**the primitive defect is 0 or 1** — Attack item 2),
+  `daRank_comp` (the order law in rank form), `compression_ledger`
+  (`daRank(h_N) + ∑_{k<N} defect k = daRank(h_0) + N`, the card's compression ledger as a cardinal
+  identity), and `trdeg_jetField_comp_of_algebraicIndependent` (**the HT consequence**: if the
+  coordinate and `g',…,g^{(n)}` are algebraically independent then the jets of `f∘g` up to order `n`
+  give transcendence degree `n+2`, i.e. `H_{f∘g}(n) = n+1` over `ℂ(z)`).
+
+All axiom-clean (`propext, Classical.choice, Quot.sound`), all wired into `HTGeometry.lean`.
+
+Trap recorded: `rw` with the corpus lemma
+`trdeg_intermediateFieldAdjoin_range_eq_cardinalMk_of_algebraicIndependent` fails against a
+syntactically identical goal in the `meroField` setting (the local `relativeGauge*` instances make
+the `Algebra ℂ (meroField univ)` instance differ invisibly).  Deriving the equation from the
+hypothesis and finishing with `Eq.trans` works.
+
+Remaining on card 12 (all in the counterexample sections):
+
+1. `ord_DA(exp(−z²)) = 1`, `ord_DA(G) = 2` for `G = ∫₀^z exp(−t²)dt`, `ord_DA(exp∘G) = 2`.
+   The only hard step is `G` transcendental over `ℂ(z, E)`, `E = exp(−z²)`.  The route is the
+   classical Liouville argument, which factors into:
+   (α) `E` transcendental over `ℂ(z)`;
+   (β) the derivation on `ℂ(z)[E]` with `E′ = −2zE` (degree preserving, leading coefficient
+       `a_d′ − 2zd·a_d`);
+   (γ) `b′ = λ z b` has no nonzero rational solution for `λ ≠ 0` (kills all denominators: a monic
+       denominator `B` of `E`-degree `m` satisfies `B | B′` and `B′ + 2mzB` has smaller degree);
+   (δ) `r′ − 2zr = 1` has no rational solution (pole/degree argument);
+   (ε) the algebraic-to-rational descent: if `y` is algebraic over a differential field `K` and
+       `y′ ∈ K`, then `(y + a_{n−1}/n)′ = 0` where `a_{n−1}` is the next-to-leading coefficient of
+       the minimal polynomial — differentiate the minimal polynomial and use minimality.  Combined
+       with "the constants of the meromorphic field of the plane are `ℂ`", this gives `y ∈ K`.
+   None of (α)–(ε) is owned by the corpus (searched: Liouville criterion, hyperexponential integral,
+   Laurent structure of exponential extensions, minimal-polynomial derivative descent).
+   `AlgebraicPrimitiveDescent` has the *difference*-field analogue and the reusable
+   `nextCoeff_taylor_of_monic`; `ScalarAdditiveDifferentialTorsor` handles only the HT case.
+2. `A(z) = exp(z) + sin(z)`: `ord_DA(A) = ord_DA(A′) = 2`, defect `0`, so `ord_DA(exp∘A) = 3`.
+   Needs: `exp(z)` and `exp(iz)` algebraically independent over `ℂ(z)` (the corpus owns
+   exponential-independence machinery — check `ExponentialRationalShadow` / Ax–Schanuel lane).
+3. The nonautonomous cap `B(w) = w exp(w)` giving `ord_DA(B∘G) = 3`.
+
+## Card 12: the Liouville layer for the Gaussian counterexample (2026-08-30)
+
+Four new modules, all axiom-clean, all wired into `HTGeometry.lean`:
+
+- `HTGeometry/RationalLinearCoefficientNoSolution.lean` (namespace `GaloisForLFunctions.RationalShadow`)
+  — `ratFuncCoordinateDerivation_affine_cross`, `degree_wronskian_lt`,
+  `eq_zero_of_deriv_eq_linear_mul` (`z′ = c·t·z`, `c ≠ 0`, forces `z = 0`) and
+  `not_deriv_eq_linear_mul_add_one` (`z′ = c·t·z + 1` has no rational solution).
+  The homogeneous case is a degree count; the inhomogeneous case needs `denom ∣ denom′`, hence a
+  constant denominator, and then a degree count.  Helpers `lt_one_add_self_of_ne_bot`,
+  `zero_le_of_ne_bot`, `zero_lt_one_add_of_ne_bot` for `WithBot ℕ` — `le_add_self` is unavailable
+  there (no `CanonicallyOrderedAdd` instance) and `norm_cast` does not see through `1 + ↑n`;
+  `WithBot.add_lt_add_right` and `Nat.WithBot.lt_zero_iff` are the working tools.
+- `HTGeometry/MeroFieldConstants.lean` — `exists_complex_of_deriv_eq_zero`: **the constants of the
+  meromorphic field of the plane are `ℂ`**.  Write the element as `a/b` with entire germs,
+  differentiate the cleared identity, and feed the resulting vanishing Wronskian to the corpus's
+  `exists_constant_of_quotientWronskian_eq_zero` (`MeromorphicTranslationFixedField`).
+- `HTGeometry/HyperexponentialTranscendence.lean` — `coeff_X_mul_derivative`,
+  `eq_zero_of_coeffs_mem_of_natDegree_lt`, and `transcendental_of_hyperexponential`: if `D t = u·t`
+  with `u ∈ K` and no nonzero `w ∈ K` solves `D w = k·u·w` for any `k ≥ 1`, then `t` is
+  transcendental over `K`.  Differentiating the minimal polynomial gives a second annihilator of the
+  same degree with leading coefficient `n·u`; minimality forces every lower coefficient to solve an
+  excluded equation, so the minimal polynomial is `X^n`.
+- `HTGeometry/HyperexponentialPrimitive.lean` — `exists_coprime_monic_repr` (coprime monic-denominator
+  representation in a simple transcendental extension, via Bézout for `EuclideanDomain.gcd`),
+  `restrictDerivation`, `twistPoly`, `coeff_twistPoly`, `deriv_aeval_eq_aeval_twistPoly`, and
+  **`not_deriv_eq_of_hyperexponential`**: under the same homogeneous hypotheses plus "no `w ∈ K`
+  with `D w + u·w = 1`", no element of `K(t)` has derivative `t`.
+
+Key corpus assets found rather than rebuilt: `DerivationAlgebraicDescent.derivMapCoeffs`,
+`derivation_aeval_eq`, `mem_of_isAlgebraic_of_derivation_mem` (algebraic + derivative in the base ⇒
+in the base — exactly Liouville's descent step), and
+`MeromorphicTranslationFixedField.exists_constant_of_quotientWronskian_eq_zero`.
+Mathlib asset found: `Differentiable.isExactOn_univ` (`Mathlib/Analysis/Complex/HasPrimitives.lean`)
+— **every entire function has an entire primitive**, which is how the Gaussian primitive `G` gets
+constructed without any power-series or contour work.
+
+Traps recorded:
+- `GCDMonoid K[X]` is not an available instance, so `isCoprime_div_gcd_div_gcd` cannot be used;
+  `EuclideanDomain.gcd` with `gcd_eq_gcd_ab` (Bézout) gives coprimality directly.
+- `rw` with `r = gcd r s * A₀` rewrites the `r` inside `gcd r s` as well; obtain the gcd and its
+  Bézout coefficients as opaque local variables before any rewriting.
+
+Remaining for the counterexample: assemble the three abstract theorems in the meromorphic field —
+a `Derivation ℂ` upgrade of the corpus `Differential`, the rational subfield as an
+`IntermediateField ℂ`, derivation-closedness of `ℂ(z, E)`, and then the two rank computations.

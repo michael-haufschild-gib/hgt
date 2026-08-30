@@ -192,3 +192,99 @@ Remaining for 2 -> 3 is now exactly the unconditional superlinear provider
 `xiSimpleCriticalZeroCount T >= c*T*log T` for all sufficiently large `T`. It is the same PRZZ
 simple-critical density input already tracked by the Levinson programme; no hypothesis wrapper has
 been added.
+
+## Lean status update (2026-08-30) — consumer side CLOSED, gate pinned to one statement
+
+**Staleness audit.**  Every Lean declaration this card claims was re-verified against the tree:
+`exponentialType_zeroCount_le`, `exponentialType_zeroCount_linear`, `xiSimpleCriticalZeroCount`,
+`exists_xiSimpleCriticalZeroCount_linear_of_cofinite_exponentialType_zeros`,
+`exists_xiSimpleCriticalZeroCount_linear_of_cofinite_suzukiFourier_zeros`,
+`suzukiCutoff_eq_zero_of_compactFourier_eq_zero` — all present, none stale.
+
+**New: the consumer step.**  `formal/GaloisForLFunctions/RHTower/XiSimpleCriticalSuperlinearConsumer.lean`
+(axiom-clean, wired into `RHTower.lean`, exact leaf build with no warnings) closes the last
+*structural* step of this card:
+
+* `not_linear_bound_of_superlinear` — a linear upper bound `F T ≤ K(1+T)+m` and a superlinear lower
+  bound `c·T·log T ≤ F T` are incompatible;
+* **`suzukiCompactL2Fourier_eq_zero_of_superlinear_simpleCritical`** — given
+  `∀ᶠ T, c·T·log T ≤ N₀,s(T)` with `c > 0`, any compactly supported `L²` datum whose Fourier
+  transform vanishes at all but finitely many simple critical ordinates has *identically vanishing*
+  Fourier transform;
+* **`suzukiCutoff_eq_zero_of_superlinear_simpleCritical`** — hence the compactly supported source
+  itself vanishes.  This is the card's Theorem 2 in Lean, with its analytic input isolated as the
+  single explicit premise.
+
+**The gate is now exactly one unconditional statement:**
+
+```text
+∃ c > 0, ∀ᶠ T in atTop,  c · T · log T  ≤  (xiSimpleCriticalZeroCount T : ℝ).
+```
+
+Nothing else on this card is open.  That statement is a positive proportion of *simple* critical
+zeros (Levinson's method plus Heath-Brown's simple-zero refinement); it is not obtainable from
+Riemann–von Mangoldt alone, because bounded multiplicities only give `≫ T` distinct ordinates, and
+the exponential-type bound already supplies `O(T)`.
+
+**Owner of the gate:** `docs/drafts/pipeline/1-in-progress/levinson-critical-proportion-programme.md`.
+Progress there on 2026-08-29/30: the *whole arithmetic layer* of the mollified second moment is now
+closed — both Selberg families
+
+```text
+∑_{m,n≤N} c(m,n)·log(N/m)^i log(N/n)^j                ~ (ij/(i+j−1))·(log N)^{i+j−1}
+∑_{m,n≤N} c(m,n)·log(N/m)^i log(N/n)^j·log(m,n)        ~ (ij/((i+j−1)(i+j)))·(log N)^{i+j}
+```
+
+are unconditional Lean theorems (`tendsto_selbergOriginalLogMonomial_div_log_pow`,
+`tendsto_selbergOriginalGcdLogMonomial_div_log_pow`), and the pair was verified to reproduce Young's
+constant `c(P,Q,R,θ)` exactly.  The remaining gate there is the analytic twisted second moment.
+
+## Lean status update (2026-08-30, later) — the gate is now shared with card 2, and stated in density form
+
+**New: the census is the Riemann–von Mangoldt counting function.**
+`formal/GaloisForLFunctions/RHTower/XiCensusVonMangoldtBridge.lean` (axiom-clean, wired, exact leaf
+build, `lake env lean` warning-free):
+
+* `stripFinsetPos_eq_image` — the census index set is exactly the `ξ`-divisor support with positive
+  ordinate (every `ξ`-zero lies in the open strip, and the divisor support is the zero set);
+* **`xiPosZeroCount_eq_xiZeroCount`** — `N(T)` as used by this folder's charging law *is* the
+  corpus's counting function `xiZeroCount T`, as integers;
+* **`eventually_inv_four_pi_mul_le_xiPosZeroCount`** — hence, unconditionally,
+
+  ```text
+  ∀ᶠ T,  (1/4π)·T log T ≤ N(T),
+  ```
+
+  from `exists_xiZeroCount_close` (the corpus's unconditional Riemann–von Mangoldt asymptotic);
+* **`exists_superlinear_of_le_liminf_xiSimpleCriticalRatio`** —
+
+  ```text
+  0 < c,   c ≤ liminf N₀,s(T)/N(T)   ⟹   ∃ c' > 0, ∀ᶠ T,  c'·T log T ≤ N₀,s(T),
+  ```
+
+  with the explicit constant `c' = c/(8π)`.
+
+**Consequence — this card's theorem now holds in density form.**
+`formal/GaloisForLFunctions/RHTower/XiCardGateUnification.lean` (axiom-clean, wired, clean):
+
+* **`suzukiCutoff_eq_zero_of_le_liminf_xiSimpleCriticalRatio`** — for *any* `c > 0` with
+  `c ≤ liminf xiSimpleCriticalRatio atTop`, a compactly supported `L²` source whose Fourier
+  transform vanishes at all but finitely many simple critical ordinates is itself zero;
+* `suzukiCutoff_eq_zero_of_prattRoblesZaharescuZeindler` — the PRZZ constant `0.407511457`
+  discharges it;
+* `suzukiCutoff_eq_zero_of_levinson` — so does Levinson's own `0.3474`.
+
+**What this changes.**  This card and `horizontal-singleton-zero-fibers.md` no longer have two
+different gates.  Card 2 needs `κ_s ≤ liminf xiSimpleCriticalRatio` for a specific decimal; this
+card needs the *same* liminf bounded below by *any* positive number.  The superlinear-count
+formulation is now derived, not assumed, and the weakest sufficient input for this card is
+
+```text
+∃ c > 0,  c ≤ liminf xiSimpleCriticalRatio atTop
+```
+
+— i.e. any positive proportion of simple critical zeros.  Levinson's method with Heath-Brown's
+simple-zero refinement supplies it; the programme card
+`docs/drafts/pipeline/1-in-progress/levinson-critical-proportion-programme.md` owns it, and its
+analytic gate (the twisted second moment) had its **main term closed in Lean on 2026-08-30**
+(bricks 5ap–5ay), by two independent routes that agree.

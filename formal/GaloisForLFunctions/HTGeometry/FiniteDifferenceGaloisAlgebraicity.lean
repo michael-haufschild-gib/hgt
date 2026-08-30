@@ -12,7 +12,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-variable {K L : Type*} [Field K] [Field L] [Algebra K L]
+variable {K L : Type*} [Field K] [CommRing L] [Nontrivial L] [Algebra K L]
 
 local instance : DecidableEq L := Classical.decEq L
 
@@ -116,6 +116,7 @@ theorem finite_of_finite_range_of_injective
     (fun x : α => (⟨f x, ⟨x, rfl⟩⟩ : Set.range f))
     (fun _ _ h => hinj (Subtype.ext_iff.mp h))
 
+omit [Nontrivial L] in
 /-- Finite image of the faithful ordinary Galois representation forces the difference
 automorphism group to be finite. -/
 theorem finite_differenceAut_of_finite_galoisRepresentation_range

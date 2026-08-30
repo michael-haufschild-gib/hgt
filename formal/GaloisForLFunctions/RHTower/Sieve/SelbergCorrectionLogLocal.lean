@@ -169,17 +169,14 @@ def selbergCorrectionLogMajorant (p α β : ℕ) : ℝ :=
     (geomTailTwo p α * geomTailOne p β + geomTailOne p α * geomTailTwo p β +
       2 * (geomTailTwo p α * geomTailTwo p β))
 
-/-- **The differentiated local factor is dominated termwise by the explicit majorant.** -/
-theorem abs_selbergCorrectionLogLocal_le {p : ℕ} (hp : 2 ≤ p) (α β : ℕ) :
-    |selbergCorrectionLogLocal p α β| ≤ selbergCorrectionLogMajorant p α β := by
-  have hpR : (0 : ℝ) < (p : ℝ) := by
-    have : (2 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hp
-    linarith
-  have hlogp : 0 ≤ Real.log (p : ℝ) := by
-    refine Real.log_nonneg ?_
-    have : (2 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hp
-    linarith
-  have hcoef : 0 ≤ Real.log (p : ℝ) / (p : ℝ) ^ 2 := by positivity
+/-- **Exact product form of the differentiated local factor.** -/
+theorem selbergCorrectionLogLocal_eq_geomTails {p : ℕ} (hp : 0 < p) (α β : ℕ) :
+    selbergCorrectionLogLocal p α β =
+      Real.log (p : ℝ) *
+        ((1 / (p : ℝ) ^ 2) * (geomTailTwo p α * geomTailOne p β) +
+          (1 / (p : ℝ) ^ 2) * (geomTailOne p α * geomTailTwo p β) -
+          (1 / (p : ℝ) ^ 2) * (2 * (geomTailTwo p α * geomTailTwo p β))) := by
+  have hpR : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hp
   have hA : (if 2 ≤ α ∧ 1 ≤ β then (p : ℝ) ^ 3 else 0) / (p : ℝ) ^ (2 + α + β) =
       (1 / (p : ℝ) ^ 2) * (geomTailTwo p α * geomTailOne p β) := by
     rw [geomTailTwo, geomTailOne]
@@ -213,13 +210,21 @@ theorem abs_selbergCorrectionLogLocal_le {p : ℕ} (hp : 2 ≤ p) (α β : ℕ) 
       rcases not_and_or.mp hab with h | h
       · rw [if_neg h]; simp
       · rw [if_neg h]; simp
-  have hsplit : selbergCorrectionLogLocal p α β =
-      Real.log (p : ℝ) * ((1 / (p : ℝ) ^ 2) * (geomTailTwo p α * geomTailOne p β) +
-        (1 / (p : ℝ) ^ 2) * (geomTailOne p α * geomTailTwo p β) -
-        (1 / (p : ℝ) ^ 2) * (2 * (geomTailTwo p α * geomTailTwo p β))) := by
-    rw [selbergCorrectionLogLocal, ← hA, ← hB, ← hC]
-    field_simp
-  rw [hsplit, selbergCorrectionLogMajorant, abs_mul, abs_of_nonneg hlogp]
+  rw [selbergCorrectionLogLocal, ← hA, ← hB, ← hC]
+  field_simp
+
+/-- **The differentiated local factor is dominated termwise by the explicit majorant.** -/
+theorem abs_selbergCorrectionLogLocal_le {p : ℕ} (hp : 2 ≤ p) (α β : ℕ) :
+    |selbergCorrectionLogLocal p α β| ≤ selbergCorrectionLogMajorant p α β := by
+  have hpR : (0 : ℝ) < (p : ℝ) := by
+    have : (2 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hp
+    linarith
+  have hlogp : 0 ≤ Real.log (p : ℝ) := by
+    refine Real.log_nonneg ?_
+    have : (2 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hp
+    linarith
+  rw [selbergCorrectionLogLocal_eq_geomTails (by omega) α β,
+    selbergCorrectionLogMajorant, abs_mul, abs_of_nonneg hlogp]
   have hnn1 : 0 ≤ geomTailTwo p α * geomTailOne p β :=
     mul_nonneg (geomTailTwo_nonneg p α) (geomTailOne_nonneg p β)
   have hnn2 : 0 ≤ geomTailOne p α * geomTailTwo p β :=

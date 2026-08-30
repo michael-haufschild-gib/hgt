@@ -13,10 +13,10 @@ retain both an analytic local germ and every lower-jet zero.  Thus the
 cosine-closed **algebraic** source system satisfies Burnol's zero-jet
 annihilation relations without any postulated evaluator.
 
-The topological closure is deliberately not claimed here.  Passing this
-statement through the closure requires a separately proved bounded higher-jet
-evaluator on `L_a`; that is the remaining analytic component of the full
-Burnol completeness theorem.
+The topological closure is deliberately not claimed here.  Its bounded-jet
+input is now available in `BurnolSoninCompletedJetBridge`; the exact
+closure descent is kept in a separate leaf so this algebraic system remains
+independent of the chosen analytic realization.
 -/
 
 open Complex Real MeasureTheory Set Filter Topology

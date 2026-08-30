@@ -473,3 +473,427 @@ to root number `+1` for the unique symplectic character.  Thus a source proof th
 field is tame and its integer ring is not free over `Z[Q8]` would force the required `-1` sign and
 simultaneously provide the Galois-module obstruction.  This is not formalized: the corpus lacks a
 literal ring-of-integers, ramification, and locally-free-class framework for the selected field.
+
+## 2026-08-29 CCM concrete cyclotomic-to-integral bridge
+
+`[LEAN-PROVED]` `CCMCyclotomicAlgebraicIntegrality.lean` closes the missing bridge from the concrete definition of `Z^cyc` used by the literal CCM Lambert system to Mathlib's algebraic integrality predicate:
+
+```lean
+CCMRootOfUnity.isIntegral
+CCMCyclotomicInteger.isIntegral
+CCMDyadicCyclotomicInteger.dyadicIntegral
+```
+
+The proof is direct and source-faithful: a root of unity is integral because a positive power is one; a finite integer-linear combination is integral by finite-sum and product closure; clearing the supplied power of two gives the existing dyadic-integrality predicate. The leaf was checked with `lake env lean`, target-built as `GaloisForLFunctions.RHTower.CCMCyclotomicAlgebraicIntegrality`, and its public theorems have only `propext`, `Classical.choice`, and `Quot.sound`. It is wired into the RHTower umbrella without an umbrella build.
+
+This does **not** prove the unresolved arithmetic intersection `Q(sqrt 2) ∩ Z^cyc[1/2] = Z[1/sqrt 2]`, nor the characteristic-polynomial descent in CCM Theorem 5.6. It supplies the exact algebraic-integrality premise needed for the first of those two remaining steps.
+
+## 2026-08-30 CCM quadratic trace--norm entry
+
+`[LITERATURE]` The standard quadratic-field classification says
+`O_(Q(sqrt d)) = Z[sqrt d]` for squarefree `d = 2, 3 (mod 4)`; in particular
+`O_(Q(sqrt 2)) = Z[sqrt 2]`.  The precise trace--norm/parity proof is recorded
+in Proposition 2.24 of [Weston/Conrad's algebraic-number-theory notes](https://kconrad.math.uconn.edu/math5230f08/weston.pdf).
+
+`[LEAN-PROVED]` `CCMSqrtTwoIntegralTraceNorm.lean` now formalizes the nontrivial entrance of that argument on the literal carrier `SqrtTwoRat = QuadraticAlgebra Q 2 0`:
+
+```lean
+ccm_rat_exists_int_of_isIntegral_image
+ccmSqrtTwoRatConj
+ccm_sqrtTwoRat_trace_eq
+ccm_sqrtTwoRat_norm_eq
+ccm_sqrtTwoRat_trace_exists_int
+ccm_sqrtTwoRat_norm_exists_int
+```
+
+The module proves `Q(sqrt 2)` is a field from the irrationality of `sqrt 2`, builds its nontrivial conjugation over `Z`, reflects rational integrality across a faithful characteristic-zero extension, and proves that every integral element has integral rational trace and norm.  It was scratch-checked, target-built as `GaloisForLFunctions.RHTower.CCMSqrtTwoIntegralTraceNorm`, axiom-audited (only `propext`, `Classical.choice`, `Quot.sound`), and wired into `RHTower.lean` without an umbrella build.
+
+`[OPEN CORE]` The remaining source-independent parity lemma is exact: for `a, b : Q`, integral `a + b sqrt 2` has `2a` and `a^2 - 2b^2` integral; reducing the two rational denominators forces `a, b : Z`.  Only after that classification is proved may localization at `2` state the required cyclotomic intersection.  Neither conclusion is claimed by the new leaf.
+
+## 2026-08-30 CCM quadratic parity closure
+
+`[LEAN-PROVED]` The preceding parity open core is now closed in the same module:
+
+```lean
+ccm_sqrtTwoRat_integral_has_integer_coefficients
+ccm_sqrtTwoRat_integral_of_integer_coefficients
+ccm_sqrtTwoRat_isIntegral_iff_integer_coefficients
+```
+
+This is the literal `O_(Q(sqrt 2)) = Z[sqrt 2]` classification, not an assumed
+ring-of-integers object.  The forward proof uses the already formalized rational trace and norm;
+it splits the trace integer by parity.  In the even branch a reduced rational square equalling an
+integer divided by `2` has denominator one.  In the odd branch it would have to have denominator
+whose square is `8`, an explicit contradiction.  The reverse proof exhibits the integer-coordinate
+element as an integer plus an integer multiple of the integral root of `X^2 - 2`.
+
+The remaining CCM arithmetic task is now genuinely narrower: construct the faithful literal
+embedding `Q(sqrt 2) -> C`, transport this exact classification through it, and formalize the
+localization statement
+`Q(sqrt 2) ∩ Z^cyc[1/2] = Z[sqrt 2][1/2]` in those concrete representations.  The finite
+characteristic-polynomial/measure descent of Theorem 5.6 remains after that intersection.
+
+## 2026-08-30 CCM concrete dyadic cyclotomic intersection
+
+`[LEAN-PROVED]` `CCMSqrtTwoDyadicCyclotomicIntersection.lean` closes the preceding localization
+step in concrete, coefficient-faithful form.  It constructs the fixed faithful embedding
+
+```lean
+ccmSqrtTwoRatComplexEmbedding : SqrtTwoRat →ₐ[ℤ] ℂ
+```
+
+and represents `Z[sqrt 2][1/2]` without an abstract localization object:
+
+```lean
+ccmSqrtTwoDyadicInteger x :=
+  ∃ d : Nat, ∃ a b : Int,
+    (a : Q) = (2^d * x).re ∧ (b : Q) = (2^d * x).im
+```
+
+(The implemented formula uses the literal `algebraMap Q SqrtTwoRat` for the displayed scalar.)
+The exact theorem is
+
+```lean
+ccm_sqrtTwoDyadicInteger_iff_complex_dyadicCyclotomic
+```
+
+which proves that this predicate holds exactly when the complex image lies in the existing
+literal `CCMDyadicCyclotomicInteger` predicate.  The forward direction clears the same power of
+two in `Z^cyc`, uses concrete cyclotomic integrality, reflects it through the injective embedding,
+and invokes the proved `O_(Q(sqrt 2)) = Z[sqrt 2]` classification.  The reverse direction writes
+the cleared image as `a + b sqrt(2)` and uses the concrete cyclotomic certificate for `sqrt(2)`.
+
+Direct `lake env lean` and the sole target build
+`GaloisForLFunctions.RHTower.CCMSqrtTwoDyadicCyclotomicIntersection` passed.  A public axiom
+audit reports only `propext`, `Classical.choice`, and `Quot.sound`.  The leaf is imported by
+`RHTower.lean`; no umbrella build was run.
+
+This closes the exact CCM **intersection** part of the literature capstone.  It does not assert
+the still-separate finite characteristic-polynomial/measure descent in CCM Theorem 5.6, nor any
+source-order law or RH receiver conclusion.
+
+## 2026-08-30 CCM finite determinant coefficient descent
+
+`[LEAN-PROVED]` `CCMDyadicCyclotomicFiniteDeterminant.lean` closes the finite algebraic
+coefficient step needed before the source-specific similarity used in
+Connes--Consani--Moscovici Theorem 5.6.  The terminology is corrected here: the paper's step is a
+finite `q`-matrix/exterior-trace/determinant descent, not a measure argument.
+
+The new leaf realizes the existing concrete predicate `CCMDyadicCyclotomicInteger` as the literal
+subring `ccmDyadicCyclotomicSubring : Subring C`, lifts coefficientwise-contained formal power
+series to it, and proves
+
+```lean
+ccmDyadicCyclotomic_det_coeff
+ccmLambertFiniteMatrix_det_coeff_literal_dyadicCyclotomic
+ccmSqrtTwoDyadicInteger_of_complex_eq_ccmLambertFiniteMatrix_det_coeff
+```
+
+Thus every coefficient of the determinant of every finite literal CCM equation-(53) parity-block
+`q`-matrix lies in `Z^cyc[1/2]`; the new source-selected nonnegative radical
+`ccmLambertCanonicalRadical` removes the formerly conditional choice and gives the unconditional
+matrix `ccmActualFiniteQMatrix`.  If a coefficient is represented in the fixed concrete
+`Q(sqrt 2)` carrier, the previous intersection theorem puts it in `Z[sqrt 2][1/2]`.  This is a
+reusable finite algebra bridge; the separate `Q(sqrt 2)` similarity in the paper is not yet
+formalized.
+
+The scratch proof, duplicate-declaration audit, direct `lake env lean`, and sole target build
+`lake build GaloisForLFunctions.RHTower.CCMDyadicCyclotomicFiniteDeterminant` passed.  Its three
+public endpoint theorems use only `propext`, `Classical.choice`, and `Quot.sound`; the leaf is
+wired into `RHTower.lean` without an umbrella build.
+
+`[OPEN CORE]` The source-specific part of Theorem 5.6 remains: construct the paper's normalized
+moment matrices `D_n(q), D_n(0), E_n(q)` and prove its parity/source similarity placing the
+relevant exterior traces in `Q(sqrt 2)`.  This leaf then discharges their coefficient-ring
+consequence.  It clears no
+`ORD/COF/ORIENT/LAND/COMP` RH gate and is therefore infrastructure for a literature capstone, not
+a new Frankenstein merger law.
+
+## 2026-08-30 CCM literal q-matrix correction and normalized determinant
+
+`[BUG FIX + LEAN-PROVED]` Primary-source audit of CCM equation (53) exposed a concrete defect in
+the former formal Lambert coefficient: the formal condition `2*ell+1 ∣ n` accidentally admitted
+`ell=0` at `n=0`, although every term `q^(2*ell+1)/(1-q^(2*ell+1))` has zero constant coefficient.
+`ccmLambertEntryCoefficient` now branches at `n=0`, and the new theorem
+
+```lean
+ccmLambertEntryCoefficient_zero
+ccmLambertEntrySeries_coeff_zero
+```
+
+records that literal source fact.  Both coefficient-integrality leaves were rebuilt directly;
+no unrelated module was built.
+
+The finite CCM layer now also constructs the unconditional source-selected q-matrix
+`ccmActualFiniteQMatrix`.  It uses the nonnegative real radical of the proven nonnegative
+equation-(51) radicand and enforces the zero cross-parity block required by equation (53), so it
+is the literal finite `A_n^+(q) ⊕ A_n^-(q)` carrier rather than an all-entry over-approximation.
+It proves
+
+```lean
+ccmLambertCanonicalRadical_sq
+ccmActualFiniteQMatrix_coeff_dyadicCyclotomic
+ccmActualFiniteQMatrix_det_coeff_dyadicCyclotomic
+ccmActualFiniteQMatrix_coeff_zero
+ccmActualFiniteQNormalizedDeterminant_coeff_dyadicCyclotomic
+ccmActualFiniteQNormalizedDeterminant_coeff_zero
+```
+
+In particular, the literal Lemma-5.1 generating determinant
+`det(I + A_n(q))` has coefficientwise `Z^cyc[1/2]` containment and constant coefficient one,
+unconditionally.  This is the cyclotomic/exterior-determinant half of the paper's finite result.
+
+`[OPEN CORE]` It still does not identify this literal q-matrix with the source-normalized moment
+matrix `D_n(0)^(-1) E_n(q)` over `Q(sqrt 2)`.  That identity is what turns the just-proved
+cyclotomic containment into the `Z[1/sqrt 2]` theorem for exterior traces and
+`D_n(q)/D_n(0)`.  No RH gate is claimed discharged.
+
+## 2026-08-30 Burnol unit-aperture completed first jet
+
+`[LEAN-PROVED]` `BurnolSoninUnitFirstJetEvaluation.lean` closes the first
+nontrivial bounded-jet step for Burnol's literal extended Sonine carrier at
+the exceptional aperture `a = 1`.  It does not postulate a jet functional:
+the proof splits the literal Mellin integral into its constant head and its
+`L²` tail.  The head is the intrinsic bounded indicator pairing and the tail
+is a new Riesz functional against `t^{-w}`; its derivative uses the already
+proved Riesz functional against `-log(t)t^{-w}`.
+
+The exact outcome is a continuous linear map
+
+```lean
+burnolExtendedSoninUnitFirstJetEvaluation
+```
+
+and the literal derivative theorem
+
+```lean
+hasDerivAt_soninMellinEvaluation_unit_firstJet
+```
+
+for every `1/2 < Re w < 1`.  Its derivative is the coefficient-faithful
+Gamma product rule: the completed-factor derivative times the raw head-tail
+Mellin value, plus the completion factor times the head derivative and the
+logarithmic tail integral.  No zeta-zero premise, multiplicity assumption,
+or RH-equivalent boundedness is used.
+
+Direct `lake env lean`, duplicate-declaration audit, and the sole leaf build
+`lake build GaloisForLFunctions.RHTower.BurnolSoninUnitFirstJetEvaluation`
+passed.  The public endpoint has only `propext`, `Classical.choice`, and
+`Quot.sound` in its axiom audit.  The new leaf is wired into `RHTower.lean`;
+no umbrella build was run.
+
+`[OPEN CORE]` This is the unit-aperture first-jet base case, not Burnol's
+aperture completeness theorem.  Remaining literature frontier is the
+bounded all-order jet family, its closed-span identification with `P_aᗮ`, and
+Burnol's aperture threshold/completeness-minimality passage.  This result
+does not discharge an RH source gate on its own; it removes a concrete
+analytic obstruction to applying the existing completed zero-jet system at
+the `a = 1` endpoint.
+
+## 2026-08-30 Burnol all-order bounded tail-jet family
+
+`[LEAN-PROVED]` `BurnolSoninAllOrderTailJets.lean` removes the literal
+all-order *tail* boundedness obstruction at the unit aperture. For every
+natural `k` and every `w` with `1/2 < Re w`, it defines the coefficient-faithful
+kernel
+
+```lean
+soninMellinLogPowerKernel k w t = (-log t)^k * t^(-w)
+```
+
+and proves
+
+```lean
+memLp_soninMellinLogPowerKernel_Ioi_one
+soninMellinTailLogPowerEvaluation_apply
+```
+
+The proof loses a strictly positive amount in the real Mellin exponent and
+uses `log(t)^k ≤ (t^δ / δ)^k` on the literal tail `(1,∞)`. Hence each finite
+order has a genuine bounded Riesz evaluator on `SoninL2`, whose value is the
+literal tail integral. The order-zero and order-one evaluators are proved
+equal to the previously formalized Mellin and first-derivative functionals.
+
+Direct source checking, the sole target build
+`lake build GaloisForLFunctions.RHTower.BurnolSoninAllOrderTailJets`, corpus
+duplicate audit, and axiom audits passed; the two public endpoints depend only
+on `propext`, `Classical.choice`, and `Quot.sound`. The leaf is wired into
+`RHTower.lean`; no umbrella build was run.
+
+`[OPEN CORE]` This proves all finite tail evaluators, not the completed
+all-order derivative theorem on the full `L₁` carrier. The remaining
+literature obligations are the recursive dominated-differentiation theorem,
+the unit-head/Gamma Leibniz jet formula, the closure identification with
+`P_aᗮ`, and the aperture completeness/minimality theorem. No RH conclusion
+or source gate is claimed from this analytic component alone.
+
+## 2026-08-30 Burnol literal-source completed continuation and all-order jets
+
+`[LEAN-PROVED]` `BurnolSoninCompletedJetBridge.lean` now separates two
+objects that must not be conflated.  The raw literal integral
+`soninMellinEvaluation` is proved to equal its analytic continuation only on
+the absolute-convergence half-strip `1/2 < Re s < 1`; on the left half of the
+strip it is not a valid substitute for continuation.  The new source-selected
+object
+
+```lean
+soninExtendedCompletedMellinContinuation
+```
+
+is the central-band continuation transported through the proved embedding of
+the literal positive-head/cosine-head carrier.  It agrees locally with the
+Gamma-completed raw integral on that right half-strip:
+
+```lean
+eventuallyEq_soninEval_mul_completion_soninMellinEvaluation
+```
+
+and every one of its finite jets has a bounded linear representative on the
+literal `soninExtendedSpace a` throughout `0 < Re s < 1`:
+
+```lean
+exists_soninExtendedCompletedMellinContinuationJetEvaluator
+```
+
+The same representative evaluates every finite derivative of the literal raw
+completed integral wherever that integral is defined:
+
+```lean
+exists_soninExtendedCompletedMellinJetEvaluator
+```
+
+This consumes two distinct analytic prerequisites for the Burnol zero-jet
+system—source-carrier selection and all-order bounded evaluation—while keeping
+the physical integral/continuation distinction coefficient-faithful.  It does
+not identify the common jet kernel with `P_aᗮ`, prove the `L_a/K_a/P_a`
+complement, or establish aperture completeness/minimality; those remain the
+actual Burnol topological core.  The preceding tail module also now proves the
+recursive dominated-differentiation and literal all-order tail-jet formula,
+not merely existence of individual Riesz evaluators.
+
+Direct source checks and only the two leaf builds
+`GaloisForLFunctions.RHTower.BurnolSoninAllOrderTailJets` and
+`GaloisForLFunctions.RHTower.BurnolSoninCompletedJetBridge` passed.  Both are
+wired into `RHTower.lean`; no umbrella build was run.  Axiom audits for the
+tail formula and both bridge endpoints report only `propext`,
+`Classical.choice`, and `Quot.sound`.
+
+## 2026-08-30 Burnol closed cosine co-Poisson lower-jet descent
+
+`[LEAN-PROVED]` The bounded all-order source jet now crosses the literal
+cosine-closed co-Poisson Hilbert closure.  The new leaf
+`BurnolCoPoissonCosineClosedContinuousLowerJetSystem.lean` proves, for every
+right-half Xi divisor `rho`, every `j < m_rho`, and every `f` in the actual
+closed source space,
+
+```lean
+iteratedDeriv j
+  (fun w => soninMellinEvaluation w ((f : evenSubspace) : SoninL2)) rho = 0
+```
+
+The proof is coefficient-faithful: it obtains the bounded raw completed-jet
+evaluator on `soninExtendedSpace b`, extends it to the ambient even Hilbert
+carrier by orthogonal projection onto that closed source carrier, and applies
+the generic continuous-detector closed-span theorem to the literal generator
+set.  Thus no unproved topology is smuggled into the closure passage.
+
+This closes the Burnol `BND + COMP` subgate: all lower completed zero jets
+annihilate the full literal cosine-closed source, not only finite source
+combinations.  It still does **not** identify that closed source with the
+common jet kernel or `P_a` complement; that equality and the aperture
+completeness/minimality consequence remain the nontrivial literature core and
+are not RH consequences of this lemma alone.
+
+Direct source checking and the only target build
+`lake build GaloisForLFunctions.RHTower.BurnolCoPoissonCosineClosedContinuousLowerJetSystem`
+passed.  The new theorem's axiom audit reports only `propext`,
+`Classical.choice`, and `Quot.sound`.  The leaf is wired into `RHTower.lean`;
+no umbrella build was run.
+
+## 2026-08-30 Burnol reflected closed lower-jet descent
+
+`[LEAN-PROVED]` The source now carries the same full lower-jet relation in
+both functional-equation orientations.  The new leaf
+`BurnolCoPoissonCosineClosedReflectedContinuousLowerJetSystem.lean` proves
+that, at every left-half Xi divisor `rho`, every `j < m_rho`, and every
+member `f` of the literal closed co-Poisson source,
+
+```lean
+iteratedDeriv j
+  (fun w => soninMellinEvaluation (1 - w)
+    ((soninCosineUnitary f : evenSubspace) : SoninL2)) rho = 0
+```
+
+This is not a false claim about a divergent left Mellin integral.  The proof
+reflects `rho` to its right-half Xi partner, preserves the exact conormal
+order through `xiSupportMultiplicity_reflect`, applies the closed right-side
+theorem to the cosine-stable source, and transports the derivative using the
+affine reflection jet law.  The required analyticity of the right raw germ is
+proved from the source-selected completed continuation plus its local equality
+with the raw completed integral.  Thus the two orientations share the same
+literal source carrier and retain exact multiplicity and derivative parity.
+
+This is a genuine `COMP + ORIENT` subgate closure, not an RH endpoint: the
+remaining Burnol barrier is still identification of the common two-sided
+lower-jet annihilator with `P_aᗮ` (or another source-selected receiver strong
+enough to exclude an off-line conormal top jet).  No such identification is
+assumed here.
+
+Direct source checking, the sole leaf build
+`lake build GaloisForLFunctions.RHTower.BurnolCoPoissonCosineClosedReflectedContinuousLowerJetSystem`,
+and its axiom audit passed.  The endpoint depends only on `propext`,
+`Classical.choice`, and `Quot.sound`.  It is wired into `RHTower.lean`; no
+umbrella build was run.
+
+## 2026-08-30 Q8 epsilon audit: local norm is closed; local epsilon remains literal
+
+`[LEAN-PROVED]` The literal order-four subgroup used by the monomial model is no longer merely an
+abstract `Q8` subgroup.  In `DeningerQ8ActualQuadraticSource.lean`, Lean
+identifies its fixed field exactly with the literal quadratic field
+`Q(√41)`:
+
+```lean
+deningerQ8ActualQuadraticSourceField_eq_fixedField_cyclicSubgroup
+```
+
+The same leaf proves the degree-two assertion and that `√41` is not rational.
+Together with the already formalized monomial equivalence, this identifies one
+literal quadratic field on which an inducing Hecke character may be
+constructed; it does not select such a character by assertion.
+
+`[LEAN-PROVED]` A corpus-wide duplicate audit found that the local unramified
+norm part is already complete.  In particular,
+
+```lean
+nonarchimedeanLocalFieldAdjoinRoot_integralNormPrincipalUnits_surjective
+nonarchimedeanLocalFieldAdjoinRoot_integralNormUnits_surjective
+```
+
+prove exact principal-unit and unit norm surjectivity for the explicit finite
+unramified root lift.  Rebuilding a finite-precision variant would therefore
+be duplicate infrastructure, not progress.
+
+`[LITERATURE]` The primary source confirms that the literal quaternionic field
+has an order-four inducing Hecke character and global root number `-1`.
+Fröhlich--Queyrut reduces a *relative* local character's epsilon factor to its
+value on a trace-zero element.  See [Shankar--Södergren--Templier,
+Example 1.3(ii)](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/14CF2CC1ED9CFB89A33006023929C5F2/S2050509419000185a.pdf/sato-tate-equidistribution-of-certain-families-of-artin-dollarldollar-functions.pdf)
+and the stated local formula in
+[Anandavardhanan--Tandon, p. 4](https://msp.org/pjm/2002/206-2/pjm-v206-n2-p02-s.pdf).
+
+`[FALSIFIED AS A CURRENT COMPOSITION]` Neither route composes in the present
+Lean corpus.  The norm theorem has no local Artin map or Hecke-character
+transport for the literal `Q(√41)` completion.  The finite `Q_p` Tate package
+handles primitive Dirichlet characters, not the source-selected local Hecke
+components.  Consequently there is also no coefficient-faithful identification
+between the `Q/Z` Brauer reciprocity phase and a local epsilon factor.  The
+Fröhlich--Queyrut formula cannot be instantiated without first constructing
+the actual local character, proving its relative restriction, and evaluating
+it on the ramified trace-zero carrier.
+
+**Exact remaining source theorem.** Construct the literal order-four Hecke
+character of `Q(√41)` attached to the Q8 extension, its local components and
+conductors at every ramified and archimedean place, and the Artin/Hecke local
+epsilon comparison.  Only then can the finite epsilon product be calculated
+as `-1`.  No wrapper from the cited sign, no ABHN circle-character proxy, and
+no unramified norm lemma is an acceptable replacement.

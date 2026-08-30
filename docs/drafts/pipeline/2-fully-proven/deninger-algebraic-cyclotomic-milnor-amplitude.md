@@ -1470,3 +1470,102 @@ building the umbrella.
 Card remains Stage 2.  The exact next open implication is the block induction converting this
 minimum plus `exists_numberFieldInteger_unipotentUpperReduction` into order-Siegel covering.  The
 later arithmetic obligations remain tame-kernel finite generation and Moore reciprocity.
+
+### Principal and Schur rank descent for order forms (2026-08-30)
+
+Three unconditional modules close the structural rank-lowering step used by the Hermite--Siegel
+induction:
+
+- `OrderPrincipalRestriction.lean` characterizes balancedness blockwise and proves that every
+  injective selection of complete order blocks preserves symmetry, balancedness and positive
+  definiteness.  In particular `orderConeCastSucc` and `orderConeTail` lower rank with no retained
+  form, balance or positivity premise.
+- `RealSchurPosDef.lean` proves the real block Schur theorem by an explicit upper-unitriangular
+  congruence: the Schur complement of an invertible symmetric head in a positive-definite block
+  form is positive definite.
+- `OrderSchurRestriction.lean` applies that theorem to a positive balanced order form.  It proves
+  the head block positive and invertible, identifies the exact head/tail block decomposition, and
+  uses the block self-adjointness identities to show that the Schur complement remains balanced.
+  The resulting `orderConeSchur` is the canonical rank-`n+1` to rank-`n` descent with every
+  invertibility, symmetry, positivity and balancedness condition discharged internally.
+
+All three targeted builds passed.  Axiom audit for every new declaration:
+`[propext, Classical.choice, Quot.sound]`.  All three modules are umbrella-wired without an
+umbrella build.
+
+Card remains Stage 2.  What remains in the covering half is no longer preservation of the order
+cone under block descent; it is the quantitative induction showing that the concrete primitive
+minimum and concrete number-field unipotent size reduction put every successive Schur tail in one
+fixed order-Siegel region.  The later arithmetic obligations remain finite generation of the tame
+kernel and Moore reciprocity.
+
+### Regular-representation coordinate transport (2026-08-30)
+
+`OrderRepVectorCoordinates.lean` closes the coordinate seam between the minimum theorem and the
+order action:
+
+```text
+orderRep_mulVec_orderVectorCoordsZ
+    the integral regular representation acts on flattened basis coordinates exactly as the
+    original order matrix acts on the order-valued vector
+
+orderRepR_mulVec_orderVectorCoordsR
+    the same identity after passage to real coordinates
+
+numberField_orderVectorCoordsR_eq
+    these real basis coordinates are exactly the canonical mixed-embedding coordinates used by
+    NumberFieldOrderFormPrimitiveMinimum
+
+numberField_orderRepR_mulVec_mixedCoordinates
+    a number-ring matrix acting through orderRepR transports the literal mixed-embedding vector
+    coordinates, with no coordinate-identification hypothesis
+```
+
+Targeted build passed.  Axiom audit for all declarations:
+`[propext, Classical.choice, Quot.sound]`.  Umbrella-wired without an umbrella build.
+
+Card remains Stage 2.  Primitive-vector normalization can now be performed in the same coordinates
+as the positive order form.  Remaining covering work is the quantitative minimum-to-Schur-diagonal
+inequality and iteration with the concrete number-field upper-unipotent reduction; arithmetic
+obligations remain unchanged.
+
+### Primitive minimum normalized to the first order coordinate (2026-08-30)
+
+`NumberFieldOrderFormPrimitiveNormalization.lean` assembles the preceding pieces without retaining
+any structural assumption:
+
+- `orderConeCongrDetOne` proves directly that congruence by any determinant-one order matrix stays
+  in the positive balanced order cone;
+- `NumberFieldOrderPrimitiveNormalization` carries the literal primitive minimizer, its
+  determinant-one completion, the congruent order form, the exact mixed-coordinate transport, and
+  the exact quadratic-energy identity;
+- `exists_numberFieldOrderPrimitiveNormalization` constructs that package for every number field,
+  every `n ≥ 2`, and every point of the canonical number-ring order cone.
+
+Thus the shortest primitive vector is now the literal first order coordinate of the congruent
+form, and its first-coordinate energy is definitionally connected to the original minimum.  No
+arbitrary basis, coordinate equivalence, primitive witness, determinant-one completion,
+invertibility, positivity, balance, or energy-transport hypothesis survives.
+
+Targeted build passed.  Axiom audit for all declarations:
+`[propext, Classical.choice, Quot.sound]`.  Umbrella-wired without an umbrella build.
+
+Card remains Stage 2.  Remaining covering seam is quantitative: show the normalized minimum bounds
+the first diagonal against the next Schur-tail minimum with a field-only constant, then iterate and
+apply the concrete upper-unipotent reduction.  Tame-kernel finite generation and Moore reciprocity
+remain after covering.
+
+### Unit reduction exposed by primitive normalization (2026-08-30)
+
+The normalized minimum and Schur descent isolate a necessary multiplicative reduction step.  An
+additive mixed-space covering radius controls off-diagonal order entries, but it cannot uniformly
+compare an arbitrary positive head block with the standard mixed Euclidean norm: its archimedean
+weights can have unbounded condition number.  A field-only Siegel constant therefore requires the
+Dirichlet-unit logarithmic lattice and a bounded fundamental domain for the norm-zero logarithmic
+hyperplane.  Determinant-one diagonal unit congruences can then balance the head weights before the
+minimum-to-Schur estimate.
+
+This is now the exact next covering obligation.  No condition-number, bounded-weight, chosen-unit,
+log-lattice, or fundamental-domain hypothesis may remain in the final theorem.  Card remains Stage
+2 while this number-field infrastructure is constructed; tame-kernel finite generation and Moore
+reciprocity remain later obligations.

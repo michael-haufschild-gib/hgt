@@ -53,7 +53,7 @@ completely-regular-growth theory.  These are the real gaps.
 | Prop 6.2 | a > 1 ⇒ not minimal, complete after finite omission | | **TODO** |
 | Thm 6.3 | a = 1 ⇒ minimal and complete | | **TODO** |
 | Prop 6.4 | a < 1 ⇒ minimal, not complete | | **TODO** |
-| Prop 6.5 | `Z^1_{ρ,k}` not minimal; shortened system minimal + complete | | **TODO** |
+| Prop 6.5 | `Z^1_{ρ,k}` not minimal; shortened system minimal + complete | | **PARTIAL [LEAN-PROVED]**: completeness half and a coefficient-faithful, source-budgeted `K₁` finite-defect witness are formalized. Open: derive its selected exact order from an arbitrary retained jet and identify the order witness with the literal shortened evaluator-system predicate. |
 | Prop 6.6 | a > 1 ⇒ `Z^a_{ρ,k}` span `K_a` after finite omission | | **TODO** |
 | Thm 6.7 | a < 1 ⇒ `Z^a_{ρ,k}` minimal | | **TODO** |
 | Thm 7.1 | `a₁(Z) = a₂(Z)` | | **TODO** |
@@ -1387,15 +1387,14 @@ Reusable modules built (all compile, wired, no `sorry`):
   `s(s−1)ζ(s)/((s−ρ₁)(s−ρ₂)(s−ρ)^l)`.  The three hypotheses `hb₀, hb₁, hb₂` are exactly
   "list count ≤ order of `ζ`" at the three points, i.e. the remaining multiplicities.
 
-### Still to do for 6.5's minimality half
-1. `soninTripleNF` — the analytic representative of `s(s−1)ζ(s)/((s−ρ₁)(s−ρ₂)(s−ρ)^l)` on the
-   strip, and its identification with `K(s−1/2)` there (`isMellinTailHardy_iff` gives the pure tail
-   datum, head constant `0`).
-2. The reflection: `χ(s)·(that)(1−s) = (−1)^{l+1}·(same at the mirror zeros)`, exactly as in
-   `exists_headTail_zetaDivPowNF_reflect`.
-3. `headTailVector_mem_centralSoninExtendedCarrier` with `c₁ = c₂ = 0`, then
-   `mem_centralSoninCarrier_of_ae_zero` to land in `K₁`.
-4. The order computation on the strip and the `IsMinimalEvaluatorSystem`-style conclusion.
+### Remaining exact core for 6.5's minimality half
+1. From a literal retained jet `k`, choose `l` and prove the selected equality
+   `ord_ρ ζ − (1_{ρ=ρ₁}+1_{ρ=ρ₂}+l) = k`, uniformly including `ρ₁ = ρ₂`.
+   The source-budget carrier and its strip regularity no longer need independent hypotheses.
+2. Prove that `IsTwoPointOmittedEvaluatorWitness` is exactly a witness annihilating every retained
+   evaluator functional in Burnol's shortened system, and transfer that into the existing
+   minimal-system language.  This is an evaluator/derivative identification, not a Hardy, Gamma,
+   reflection, or analyticity gap.
 
 ## Session close — state of the tree
 
@@ -1418,15 +1417,57 @@ Landed toward **Proposition 6.5's minimality half** (the remaining half):
   representative on the strip and its pure-tail datum at aperture one (head constant `0`).
 * `RHTower.soninTripleNF_reflect` — `χ(s)·(that)(1−s) = (−1)^l·(same at the mirror zeros)`.
 
-The only steps left for 6.5's minimality half are mechanical assembly:
-1. feed `soninTripleNF` to `headTailVector_mem_centralSoninExtendedCarrier` with `c₁ = c₂ = 0`
-   (the two tail data are `exists_tail_soninTripleNF` and its mirror, composed with
-   `soninTripleNF_reflect`), then `mem_centralSoninCarrier_of_ae_zero` to land in `K₁`;
-2. transport the strip orders of `soninTripleNF` (already computed by
-   `meromorphicOrderAt_soninTriple`) to `extendedMellinContinuation 1 0 0 V` by the identity
-   theorem on the connected strip, exactly as `exists_extendedSonin_zetaDivPow` does;
-3. state the conclusion in the `IsMinimalEvaluatorSystem` shape of `BurnolEvaluatorSystemZ`.
+The carrier, exact order transport, and a finite-defect predicate are now completed by
+`BurnolTwoPointMinimality.lean`.  The remaining step for 6.5's minimality half is to derive the
+selected-order equality from a retained jet and prove that this order predicate is the literal
+shortened evaluator-system assertion.  The original `IsMinimalEvaluatorSystem` records an
+unshortened multiset and cannot express the two omitted top jets directly.
 
 Remaining paper items: Proposition 6.5's minimality half (as above); Theorem 5.2's `L²`-in-`Z` half,
 hence Corollary 5.3 and Theorem 3.3's completeness half; Theorems 7.7–7.10 (Levin's
 completely-regular-growth theory).
+
+## Session log — literal `K₁` two-omission carrier assembled
+
+New unconditional module:
+`formal/GaloisForLFunctions/RHTower/BurnolTwoPointMinimality.lean`.
+
+This closes the previously unassembled `L₁ → K₁` realization, source-budgeted strip regularity,
+and exact jet-order transport, without asserting RH or the full minimality-system statement. Its
+principal theorems are deliberately layered:
+
+* `exists_centralSonin_soninTriple_of_twoSidedTail` turns two literal pure Hardy tails into one
+  vector of `centralSoninCarrier 1`, with both physical/Fourier aperture constants zero and exact
+  completed Mellin continuation on the whole open critical strip.
+* `exists_centralSonin_soninTriple_of_reflectedTail` derives the left tail coefficient-faithfully
+  from the reflected quotient via `soninTripleNF_reflect`; the exact scale is `(-1)^l`.
+* `exists_centralSonin_soninTriple` consumes the three named multiplicity budgets and creates the
+  actual carrier.
+* `exists_centralSonin_soninTriple_of_symmetricBudget` derives every reflected multiplicity budget
+  from the original one using the zeta functional equation.  No independent mirror bookkeeping is
+  an assumption any more.
+* `meromorphicOrderAt_extendedMellin_soninTriple_of_eq` transports the exact continuation identity
+  to every strip jet: zeta order minus the two omitted top jets and the selected jet.
+* `analyticAt_soninTripleNF_of_threePointBudget` proves that the three literal divisor budgets
+  already imply strip analyticity, including every collision pattern among `ρ₁`, `ρ₂`, and `ρ`.
+* `exists_centralSonin_soninTriple_of_sourceBudget` removes both former analyticity hypotheses
+  from the `K₁` carrier construction.
+* `IsTwoPointOmittedEvaluatorWitness` records the exact finite-defect carrier: evenness, both
+  aperture vanishings, every non-selected strip order, and the selected retained order.
+* `exists_twoPointOmittedEvaluatorWitness_of_sourceBudget` constructs that literal witness from
+  only the source budgets plus the one remaining selected-order equality.
+
+Consequently this assembly discharges six distinct prerequisites of the Proposition 6.5 minimality
+witness: both Hardy orientations, literal `K₁`/zero-head membership, full-strip continuation,
+exact multiplicity accounting, strip regularity from source budgets, and finite-defect packaging.
+It is not a new RH route and does not establish evaluator minimality. The remaining two formal
+obligations are selected-order arithmetic and literal evaluator/derivative identification. The
+separate Burnol completeness frontier remains Theorem 5.2's `L²`-in-`Z` input, Corollary 5.3,
+Theorem 3.3 completeness, and Levin's growth package.
+
+Targeted validation (no umbrella build):
+
+* `lake env lean GaloisForLFunctions/RHTower/BurnolTwoPointMinimality.lean`;
+* `lake build GaloisForLFunctions.RHTower.BurnolTwoPointMinimality` only;
+* `#print axioms` for every exported theorem in this module reports only
+  `[propext, Classical.choice, Quot.sound]`.

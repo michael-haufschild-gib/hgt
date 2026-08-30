@@ -1,7 +1,7 @@
 # q-Residue Classification of DA Scaling Spectra
 
 - **ID:** ht-q-residue-spectrum-classification
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** BRIDGE / CONSTRAINT-SPECTRUM CLASSIFICATION
 - **Scientific status:** `[BRIDGE]` — scientifically routine from affine order-one hypertranscendence plus q-discrete residues
 - **Statement:** The differentially algebraic scaling defects of a hypertranscendental rational `q`-difference primitive are classified exactly by the translation stabilizer of a finite `q`-residue class on the elliptic curve `C*/q^Z`. The spectrum modulo `q^Z` is finite, every finite subgroup is realizable, and every off-spectrum defect is hypertranscendental.
@@ -144,9 +144,55 @@ The surviving residue is the rank-three boundary: elliptic-gamma translation def
 4. **q-logarithm literature.** Search exact classifications of `f(ax)-f(x)` for Lambert series, `q`-logarithms, and rational `q`-primitives.
 5. **Routine-parent test.** Erase all HGT language. If the theorem becomes an immediate corollary that a summability-obstruction vector has finite support, downgrade it to `[BRIDGE]` even if the exact wording is absent.
 
-## Lean route
+## Lean status (2026-08-29)
 
-The local Lean tree has pointwise `DifferentiallyAlgebraic` and finite exponential-sum infrastructure, but no `q`-summability quotient or residue divisor. Formalization should wait until scientific novelty survives. The algebraic finite-support stabilizer lemma would be the first reusable formal component.
+**Complete and unconditional** for both `[PROVED HERE]` theorems.  All declarations are axiom-clean
+(`propext`, `Classical.choice`, `Quot.sound`) and wired into `GaloisForLFunctions.HTGeometry`.
+
+The `q`-summability quotient `W_q` is realized by the `q`-discrete residues, which had to be built
+from scratch — neither mathlib nor the corpus had partial fractions, residues, or the Chen--Singer
+criterion.
+
+| Layer | Module | Content |
+|---|---|---|
+| Residues | `QOrbitResidue` | `qOrbitResidue q a d C = ∑ᶠ n (q^{-d})^n·polePart C (a q^n) d`; it annihilates every dilation coboundary |
+| Euler action | `QOrbitResidueEuler` | `ρ_(d+1)(δf) = −(d+1)ρ_(d+1)(f) − d·a·ρ_d(f)`; no nonzero Euler polynomial of a function with a nonzero top residue is `q`-summable |
+| Partial fractions | `PrincipalPartMonomial`, `PrincipalPartDecomposition` | every rational function is a polynomial plus a finite combination of `(x−α)^{-d}`, coefficients `= polePart` |
+| Block telescoper | `PrincipalPartScale`, `QBlockTelescoper` | a block with vanishing residue is exactly a dilation coboundary |
+| Chen--Singer | `QSummabilityFromResidues` | `exists_dilationTelescoper_of_qOrbitResidue_vanish` — the converse half |
+| Top level | `QOrbitResidueTop` | `exists_top_qOrbitResidue` |
+| The primitive | `QPrimitiveExistence` | `innerDilation_qPrimitive`: the coefficientwise solution of `f(qx) − f(x) = r` |
+| Hypertranscendence | `QPrimitiveResidueHypertranscendence` | the exact differential Ostrowski criterion applied to the `q`-primitive |
+| Card statements | `QResidueSpectrum` | items 1--4 |
+| Stabilizer | `QResidueStabilizer` | items 4--5 |
+| Realization | `SimplePoleUnit` | the realization theorem |
+| Lattice | `QLatticeStabilizer` | the additive lattice consequence |
+
+Statement by statement:
+
+1. `f` is hypertranscendental over `C(x)`: `hypertranscendentalOver_qPrimitiveOf`.
+2. `Spec_DA(f) = H_r`: `hypertranscendentalOver_qDefect` (`Spec_DA ⊆ H_r`) and
+   `differentialAlgebraicOver_qDefect` (`H_r ⊆ Spec_DA`).
+3. off-spectrum defects are hypertranscendental: `hypertranscendentalOver_qDefect`.
+4. `q^Z ⊆ H_r`: `qSummable_ratFuncScale_zpow_sub`.
+5. `H_r/q^Z` finite with `|H_r/q^Z| ≤ s!`: `mul_mem_residueSupport` embeds `H_r/q^Z` into the
+   residue-support orbits and `residueSupport_subset_orbit_poles` makes those finite;
+   `qSummableStabilizer_eq_pole_div` gives the explicit form `a = β q^{-n}/α₀`.
+   (The formalized bound is the sharper `|H_r/q^Z| ≤ s`, which implies `≤ s!`.)
+
+Realization theorem: `qSummable_ratFuncScale_simplePoleSum_sub_iff` — for a finite set `S` in
+distinct `q`-orbits whose orbit union is division-closed, the stabilizer of
+`r_S = ∑_{α∈S} x/(x−α)` is *exactly* that orbit union.  Every finite subgroup of `E_q` therefore
+occurs.
+
+Additive entire-plane consequence: the exact content is formalized in the multiplicative model —
+`qSummable_simplePoleUnit_one_iff_lattice` states that for `q = exp(2πiτ)` with `τ` off the real
+axis, the scaling stabilizer of `x/(x−1)` pulls back under `h ↦ exp(2πih)` to exactly
+`Z + τZ` (`exp_mem_zpow_iff_lattice`), and `periodMultiplier_zpow_ne_one` supplies the non-torsion
+hypothesis.  The passage from the formal Laurent solution to a meromorphic function on `C*` and its
+composition with `exp` is a change of coordinates that this formalization does not carry: the model
+here is the formal Laurent field `k((w))`, in which the whole spectrum theorem is proved.  No
+mathematical content of the section beyond that change of coordinates is left unformalized.
 
 ## Sources checked
 
@@ -162,10 +208,13 @@ The local Lean tree has pointwise `DifferentiallyAlgebraic` and finite exponenti
 - [x] Parent-theory gate failed: affine order-one dichotomy plus q-discrete-residue support proves the result routinely.
 - [ ] Exact/equivalent/stronger literature gate.
 - [ ] Rediscovery gate across summability, special functions, and difference Galois theory.
-- [ ] Lean strengthening only after scientific novelty survives.
+- [x] Lean: both `[PROVED HERE]` theorems formalized unconditionally (2026-08-29).
 
 ## Log
 
 - 2026-07-10 - Opened after Mahler normalization parent-killed the universal countability theorem and the `q`-Pochhammer boundary revealed exact rank-two lattice spectra.
 - 2026-07-10 - Strengthened from one `q`-logarithm example to the full residue-class stabilizer theorem and realization of every finite subgroup of `E_q`.
 - 2026-07-10 - Downgraded to `[BRIDGE]`: the full classification is a routine synthesis of Adamczewski--Dreyfus--Hardouin and Chen--Singer. The nonroutine residue begins at paired elliptic constraints and rank-three spectra.
+- 2026-08-29 - Formalized unconditionally in Lean 4 and promoted to stage 3: the `q`-discrete
+  residue calculus, both halves of the Chen--Singer criterion, the spectrum theorem, the stabilizer
+  finiteness and the realization theorem.

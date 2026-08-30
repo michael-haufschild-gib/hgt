@@ -10,10 +10,10 @@ Already promoted (before this sweep): `ht-remote-quartet-compact-open-field-invi
 |---|---|---|---|
 | 1 | combination-mode-reducibility-baker-bridge | OPEN | Baker–Wüstholz effective bound; Dirichlet pigeonhole no-go; Hankel support-≤d lemma |
 | 2 | da-ht-topological-interlacing-law | **PROMOTED 2026-08-29** | — (Runge's theorem built from scratch) |
-| 3 | ht-c28-minimal-handle-collapse | OPEN | per-handle collapse citations (Weierstrass addition, holonomic, integration closure, vdPS, Hardouin–Singer) |
+| 3 | ht-c28-minimal-handle-collapse | **PROMOTED 2026-08-29** | — (Weierstrass replaced by a one-derivative argument; class (II)/(III) are bibliographic) |
 | 4 | ht-da-translation-spectrum-countability | **PROMOTED 2026-08-29** | — |
 | 5 | ht-exact-da-translation-stabilizer | **PROMOTED 2026-08-29** | — (Ostrowski replaced by eventual-gap hypertranscendence) |
-| 6 | ht-q-residue-spectrum-classification | OPEN | ADH rational-or-HT; Chen–Singer q-discrete residues |
+| 6 | ht-q-residue-spectrum-classification | **PROMOTED 2026-08-29** | — (ADH replaced by the corpus's exact Ostrowski criterion; Chen–Singer built) |
 | 7 | hypertranscendental-maximal-finite-horizon-galois-law | OPEN | binomial degree + S_D normal closure transport |
 | 8 | indeterminate-moment-fiber-prevalent-translation-ht | OPEN | prevalence, product probe, parametric transversality |
 | 9 | laguerre-polya-jensen-profield-blindness | **PROMOTED 2026-08-29** | — (both directions of Jensen's theorem built from the Laguerre shift) |
@@ -771,3 +771,483 @@ unconditionally.  The only remaining piece is the *additive entire-plane consequ
 residue class gives `Stab_DA(F) = ℤ + τℤ`.  That needs the analytic transfer of DA/HT through
 `exp`/`log`; the corpus assets to use are `HTGeometry.MeroExponentialGauge`,
 `HTGeometry.AnalyticJetFieldBridge` and `HTGeometry.MeromorphicRatFuncTranslation`.
+
+## Card 3 — CLOSED (2026-08-29)
+
+`GaloisForLFunctions.HTGeometry.hypertranscendental_no_classI_handle`.  The whole mathematical
+content of the single-handle collapse lemma is class (I), and all five rows are now Lean-proved.
+
+The Weierstrass addition-theorem citation is **eliminated**: differentiating `f(x+y) = P(f x, f y)`
+in `y` at the origin gives the first-order autonomous equation `f' = Q(f)` directly, so no
+classification of functions with addition theorems is needed
+(`HTGeometry/AdditionTheoremCollapse.lean`).  The Padé row is closed by
+`HTGeometry/RationalPadeCollapse.lean`: a Padé pair whose error has vanishing jets of every order is
+exact for an entire function, giving a rational representation, which is an order-zero algebraic
+differential equation.
+
+Classes (II) and (III) of the card are a grading of which published theory covers which handle —
+statements about the literature, not propositions about functions — so they have no formalizable
+content.  Recorded in the card.
+
+**Reusable:** `differentiallyAlgebraic_of_additionTheorem`, `differentiallyAlgebraic_of_rational`,
+`differentiallyAlgebraic_of_padeStabilization`, `eq_zero_of_iteratedDeriv_zero` (an entire function
+with vanishing jets at a point is zero), `biEval` (two-variable polynomial evaluation).
+
+## Card 7 — the balanced gap reduced (2026-08-29)
+
+`hypertranscendental-maximal-finite-horizon-galois-law` is blocked on primitivity of
+`criticalGeometricMonodromy K m n` acting on `criticalGeometricSheet K m n`.  The corpus already
+owns, unconditionally:
+
+- `CriticalSchurCollisionSupportBound.exists_criticalGeometricMonodromy_isSwap` — the monodromy
+  contains a literal transposition;
+- `CriticalGeometricMonodromyJordan.criticalGeometricMonodromy_eq_top_of_isPreprimitive_of_isSwap` —
+  Jordan: primitive + a transposition ⟹ full symmetric group;
+- `OccupationSubsetPrimitivity.criticalOccupationRootAction_isPreprimitive` — primitivity of the
+  root action for `m ≠ n`.
+
+**The balanced case is not a missing citation; it is one combinatorial statement.**  For `m = n` the
+`S_(2m)`-action on `m`-subsets of `Fin (2m)` is imprimitive, with the complement pairing
+`S ↦ Sᶜ` as its only nontrivial block system.  A transposition `(S T)` lying in a group that
+preserves a nontrivial block system must have `S` and `T` in the *same* block (otherwise the image
+of `S`'s block meets two distinct blocks).  Therefore:
+
+> If the transposition supplied by `exists_criticalGeometricMonodromy_isSwap` swaps two sheets whose
+> labels are **not** complementary `m`-subsets, the complement pairing is destroyed, the monodromy is
+> primitive, and `(4)` follows.
+
+Equivalently, in Johnson-graph language: conjugating the one transposition by the root action gives
+all pairs `{S, T}` with `|S ∩ T| = j` fixed; that graph is connected for every `j` except `j = 0` in
+the balanced case, where it is a perfect matching — exactly the complement pairing.
+
+So card 7's remaining work is:
+1. the combinatorial lemma "a transposition in a group preserving a nontrivial block system has both
+   points in one block" (elementary, not in mathlib);
+2. the classification "the complement pairing is the only nontrivial `S_(2m)`-invariant block system
+   on `m`-subsets" (mathlib has the primitivity statement only for the unbalanced case);
+3. the geometric input: the two colliding sheets at the Schur place carry non-complementary labels.
+
+Items 1 and 2 are pure combinatorics and can be built directly; item 3 has to be read off the
+`CriticalSchurCollisionInertia` / `CriticalSheetLabelInertiaOrbit` construction.
+
+### Card 7 — item 1 is built (2026-08-29)
+
+`HTGeometry/SwapBlockObstruction.lean` (axiom-clean, wired):
+**`subsingleton_of_isBlock_of_swap`** — if `a ∈ B`, `b ∉ B` and the transposition `(a b)` lies in a
+group for which `B` is a block, then `B` is a singleton; equivalently
+**`mem_block_of_isBlock_of_swap`** — every transposition of a group with a nontrivial block lies
+inside one block.
+
+With it the balanced primitivity argument becomes purely combinatorial.  Let `G` contain the root
+action of `S_(m+n)` and one transposition `(S₀ T₀)`, and let `B` be a block with `|B| ≥ 2`.  By the
+lemma `S₀` and `T₀` lie in one block; conjugating by the root action, *every* pair `(S, T)` with
+`|S ∩ T| = j₀ := |S₀ ∩ T₀|` lies in one block.  Blocks are therefore unions of connected components
+of the Johnson-type graph `Γ_(j₀)` on `m`-subsets.  Hence:
+
+> **`Γ_(j₀)` connected ⟹ the monodromy is primitive ⟹ `(4)`.**
+
+`Γ_j` is connected for every `0 ≤ j < m` except the single balanced case `m = n`, `j = 0`, where it
+is the perfect matching by complementation.  The two remaining pieces for card 7 are therefore:
+
+1. **connectivity of `Γ_j`** for `m`-subsets of `Fin (m+n)`, `0 ≤ j < m`, excluding `(m = n, j = 0)`
+   — a self-contained combinatorial theorem, not in mathlib;
+2. the **geometric input** that the two sheets colliding at the Schur place carry labels with
+   `|S₀ ∩ T₀| ≠ 0` when `m = n` — to be read off `CriticalSchurCollisionInertia` /
+   `CriticalSheetLabelInertiaOrbit`.
+
+### Card 7 — the connectivity lemma, fully specified
+
+`Γ_j` on `m`-subsets of a type of card `N`, edges `|S ∩ T| = j`, is connected whenever `j < m` and
+not (`N = 2m` and `j = 0`).  Proof to formalize:
+
+1. **Complementation reduction.**  `S ↦ Sᶜ` is a bijection from `m`-subsets to `(N−m)`-subsets with
+   `|Sᶜ ∩ Tᶜ| = N − 2m + |S ∩ T|`, so it carries `Γ_j` to `Γ_(N−2m+j)`.  Hence one may assume
+   `2m ≤ N`.
+2. **One swap at a time.**  If `|S ∩ S'| = m − 1`, write `S = A ∪ {x}`, `S' = A ∪ {y}`.  Choose `T`
+   consisting of `j` elements of `A` together with `m − j` elements outside `A ∪ {x, y}`; this needs
+   `N − (m+1) ≥ m − j`, i.e. `N ≥ 2m + 1 − j`, which holds for `j ≥ 1` when `2m ≤ N`, and for
+   `j = 0` exactly when `N ≠ 2m`.  Then `|T ∩ S| = |T ∩ S'| = j`, so `S ~ T ~ S'`.
+3. **Johnson connectivity.**  Any two `m`-subsets are joined by a chain of one-element swaps
+   (induction on `m − |S ∩ S'|`), so step 2 propagates to all pairs.
+
+Combined with `subsingleton_of_isBlock_of_swap` (built) and
+`criticalGeometricMonodromy_eq_top_of_isPreprimitive_of_isSwap` (owned), only the geometric input —
+that the colliding sheets have `|S₀ ∩ T₀| ≠ 0` in the balanced case — then remains.
+
+## Remaining cards after 2026-08-29
+
+| # | Card | The single classical theorem still to build |
+|---|---|---|
+| 1 | combination-mode-reducibility-baker-bridge | effective Baker–Wüstholz (explicit constants) |
+| 7 | hypertranscendental-maximal-finite-horizon-galois-law | `Γ_j` connectivity + the non-complementary collision |
+| 8 | indeterminate-moment-fiber-prevalent-translation-ht | the Nevanlinna N-extremal matrix; prevalence |
+| 10 | poincare-constraint-order-recession | Bergweiler's Poincaré hypertranscendence (Nevanlinna theory) |
+| 11 | projective-horizon-hankel-secant-stratification | Hankel determinantal rings: codimension, singular locus, rational singularities (no CM theory in mathlib) |
+| 12 | projective-ht-generic-pv-curvature-core | differential Picard–Vessiot theory with group `SL_N` (mathlib has none) |
+
+Card 7 is the closest: its remaining pieces are elementary combinatorics plus one reading of an
+existing corpus construction.
+
+### Card 7 — the whole combinatorial side is now Lean-closed (2026-08-30)
+
+Three new modules, axiom-clean and wired:
+
+- `HTGeometry/SwapBlockObstruction.lean` — `subsingleton_of_isBlock_of_swap`,
+  `mem_block_of_isBlock_of_swap`.
+- `HTGeometry/JohnsonGraphConnected.lean` — `JohnsonStep`, the one-swap path
+  `reflTransGen_of_inter_card_pred`, **`reflTransGen_johnsonStep`** (the fixed-intersection graph on
+  `m`-subsets is connected whenever `j < m`, `2m ≤ N`, and not (`j = 0` and `N = 2m`)),
+  `swap_mem_of_reflTransGen` (transpositions along a connected relation generate every
+  transposition), `eq_top_of_forall_swap_mem`, and **`eq_top_of_johnsonSwaps`**.
+- `HTGeometry/FixedIntersectionTransitive.lean` — `permOfFiberCardEq` (a permutation matching two
+  maps with equal fibre cardinalities), the four-block index, **`exists_perm_image_pair`**
+  (`S_N` is transitive on ordered pairs of `m`-subsets with a fixed intersection size),
+  `cardImagePerm`, and the capstone
+
+  > **`eq_top_of_rootAction_of_swap`** — a group of permutations of `m`-subsets that contains the
+  > induced action of the ambient symmetric group together with *one* transposition of a pair
+  > meeting in `j` points, with `j < m`, `2m ≤ N` and not (`j = 0` and `N = 2m`), is the **full**
+  > symmetric group.
+
+This bypasses primitivity and Jordan entirely, and it covers the balanced case `m = n` that the
+`OccupationSubsetPrimitivity` route cannot reach.  Nothing combinatorial is left.
+
+**What card 7 still needs, and it is now exactly two geometric facts about the corpus's own
+construction:**
+
+1. `criticalGeometricMonodromy K m n` contains the induced root action — the corpus states
+   `criticalMonodromy_isPreprimitive_of_rootAction_le` with that containment as a *hypothesis*, and
+   never discharges it for the actual monodromy;
+2. the two sheets colliding at the Schur place (`exists_criticalGeometricMonodromy_isSwap`) carry
+   labels whose intersection is nonempty when `m = n`.
+
+Both live inside the `CriticalSheetLabelInertiaOrbit` / `CriticalSchurCollisionInertia` stack.  With
+them, `eq_top_of_rootAction_of_swap` gives statement `(4)` immediately, and the rest of card 7
+(degree, atomicity, radical threshold) is already discharged in the corpus.
+
+## Next-session brief (2026-08-30)
+
+Ten of the sixteen cards in this folder are at stage 3.  The six that remain are each blocked on one
+named piece of mathematics; below is exactly where each stands and what to build first, so no time is
+spent re-deriving the analysis.
+
+### Card 7 — closest.  Two geometric facts.
+Combinatorics **complete** (`SwapBlockObstruction`, `JohnsonGraphConnected`,
+`FixedIntersectionTransitive`).  `criticalHorizonOccupationStates m n` is *definitionally*
+`{S : Finset (Fin (m+n)) // S.card = m}` — the very subtype `eq_top_of_rootAction_of_swap` is stated
+for — so statement `(4)` follows from:
+1. `criticalGeometricMonodromy K m n` contains the induced root action.  The corpus never discharges
+   this: `criticalMonodromy_isPreprimitive_of_rootAction_le` takes it as a hypothesis, and the
+   occupation-state modules (`PostcriticalEscapeUnconditional`, `DeformedFibreLowerBound`,
+   `ProjectiveHorizonPostcriticalRigidity`) are a *parallel* development to the Galois-theoretic
+   `criticalGeometricSheet` one — **the sheet ↔ occupation-label bridge does not exist yet and is
+   the real work**;
+2. the two sheets colliding at the Schur place have labels with nonempty intersection when `m = n`.
+
+### Card 10 — two hypotheses plus Bergweiler.
+`PoincareRecession.exactDifferentialOrder_iterate_of_separation` already gives `ord_DA(f^[n]) = n`
+and `exactDifferentialOrder_poincareApprox` already transports it along the affine reparametrisation,
+so item 1 of the card needs only its two hypotheses discharged for iterates of a transcendental
+entire solution of an autonomous first-order ADE: `StepSeparation` (a growth separation) and the
+elimination step `helim`.  Item 2 (`φ` is hypertranscendental) is Bergweiler's theorem.  Note that
+DA does *not* bound growth (`exp∘exp` satisfies `y y'' = y y' + y'²`), so no cheap growth argument
+exists; mathlib now has value-distribution theory
+(`Mathlib/Analysis/Complex/ValueDistribution/`: proximity, log counting, characteristic function,
+the First Main Theorem, Cartan) but not the Second Main Theorem, which is the natural first build.
+
+### Card 8 — the probe is card 13's machinery; the fibre is not.
+The probabilistic core ("a compact product probe makes the full-translation-HT locus have
+probability one") is exactly `RandomAffineJetPacketFreeness.ae_translationOrbit_no_polynomialDifferentialRelation`
+plus `HasAbsolutelyContinuousFiniteAffineJetLaws`, already built and instantiated twice for card 13.
+What is missing is the *source*: Nevanlinna's `N`-extremal measures for an indeterminate Hamburger
+moment problem and the Cauchy-transform jet controllability.  Corpus assets: `NevExtremalFamily`,
+`CauchyMomentFlatness`, `MomentFunctionalPositivity`, `StieltjesTransformPick`.
+
+### Card 11 — needs commutative algebra mathlib does not have.
+Codimension `2k−1` and `Sing(C_k) = C_(k+1)` are dimension/singular-locus statements about Hankel
+determinantal rings, and the card also asserts normality, Cohen–Macaulayness and rational
+singularities (Conca–Mostafazadehfard–Singh–Varbaro).  mathlib has Krull dimension but no
+Cohen–Macaulay theory and no rational singularities.  The rank/recurrence core is already formalized
+(`ProjectiveHorizonHankelSecant`).
+
+### Card 12 — needs differential Picard–Vessiot theory.
+mathlib has none; the corpus has only the *difference* theory
+(`DifferenceSystemPicardVessiot`, `ParameterizedPicardVessiotExistence`).  Building differential PV
+with group `SL_N` is the prerequisite.
+
+### Card 1 — needs effective Baker–Wüstholz.
+The corpus owns qualitative Baker only (`general-baker-closed`); the card needs explicit constants.
+
+### Card 1 — Part 1 closed (2026-08-30)
+
+`HTGeometry/DirichletBoxLinearForm.lean` (axiom-clean, wired) proves Dirichlet's box principle for a
+nonnegative linear form (`exists_small_linear_form`) and the card's Part-1 no-go
+(`not_polynomially_diophantine`): with the support size free, no fixed-exponent Diophantine
+condition can hold, because bounded-entry modes make `|m·ℓ|` arbitrarily small.  Together with the
+already-formalized Lemma R(i) (`DiagonalModeDivision`), the only remaining classical import on
+card 1 is **Lemma R(ii)**, the effective Baker–Wüstholz bound.
+
+### Card 1 — §3 and §4 closed too (2026-08-30)
+
+- `HTGeometry/HankelDetTotalDegree.lean` — `totalDegree_hankelDet_le`: the `d × d` Hankel
+  determinant has total degree `≤ d` in the power sums, i.e. **combination-mode support ≤ d** (§3).
+- `HTGeometry/IntegerLogGap.lean` — `gap_div_le_abs_log_div`: `|a − b|/max(a,b) ≤ |log(a/b)|` for
+  distinct positive integers, the controlling estimate of §4.
+
+Everything on card 1 is now formalized except **Lemma R(ii)**.  An important sharpening recorded
+here: the integer gap gives `|∑ m_p log p| ≥ (∏ p)^{−H(m)}` — *exponential* in `H(m)` — which makes
+`‖h‖_{L²} < ∞` for every analytic `g` of radius `ρ > log ∏ p`.  Baker's polynomial bound
+`≥ γ·H(m)^{−κ}` is needed exactly to reach all `ρ > 0`.  So the residual dependency is not "an
+estimate" in general but specifically the *effective* Baker–Wüstholz theorem, whose formalization
+needs Baker's method (auxiliary function, extrapolation, zero estimate) and is a project of its own.
+
+### Cards 11 and 12 — first pieces landed (2026-08-30)
+
+- `HTGeometry/HankelSecantRank.lean` (card 11) — `secantHankel_eq`: a coefficient window that is a
+  sum of `t` geometric sequences has Hankel matrix `V · diag(c) · Vᵀ` with `V` the `t`-column
+  Vandermonde; hence **`rank_secantHankel_le`** (`rank ≤ t`) and `corank_secantHankel_ge`
+  (`corank ≥ m − t`).  This is the parametrized inclusion "spans of `t` points of the rational
+  normal curve ⊆ the Hankel determinantal locus", one half of the card's catalecticant
+  identification.  The reverse inclusion is the corpus's rank/recurrence core; what is still missing
+  is the *dimension* theory (codimension `2k−1`, `Sing(C_k) = C_(k+1)`) and the
+  normal/Cohen–Macaulay/rational-singularity assertions, for which mathlib has no Cohen–Macaulay
+  theory at all.
+- `HTGeometry/ProjectiveFrameCompanion.lean` (card 12) — `vecDeriv`, `frameMatrix`,
+  `companionMatrix`, and **`deriv_frameMatrix`**: for a lift with `δ^N v = ∑_j q_j δ^j v`, the moving
+  frame `[v, δv, …, δ^{N−1}v]` satisfies `δM = M·A` with `A` the companion matrix — the card's item
+  (3), that the frame is a fundamental matrix of the companion system — together with `frameSL`,
+  which places it in `SL_N` once the normalized Wronskian is `1`.  Items (4) and (5) need
+  differential Picard–Vessiot theory, which mathlib does not have.
+
+### Card 8 — the finite-support control block is built (2026-08-30)
+
+`HTGeometry/MeanZeroAnnihilator.lean` — **`eq_of_annihilates_meanZero`**: a coefficient sequence
+whose functional kills every finitely supported mean-zero direction is constant, proved by testing
+against `δ_p − δ_q`.  This is the card's "Finite-support control blocks" step.
+
+The card's *probabilistic* core is already owned and needs no new work: the probe conclusion
+`Π_B({w : x + w ∈ G}) = 1` for every recentring `x` is exactly
+`RandomAffineJetPacketFreeness.ae_translationOrbit_no_polynomialDifferentialRelation` together with
+`FiniteJetLawDeterministicGauge.ae_translationOrbit_no_polynomialDifferentialRelation_add_const`
+(the deterministic-recentring form), both formalized during the card-13 work.  What remains is
+purely the *source*: Nevanlinna's `N`-extremal measures for an indeterminate Hamburger moment
+problem, and the Cauchy-transform jet controllability that feeds
+`HasAbsolutelyContinuousFiniteAffineJetLaws`.
+
+### Card 10 — the residual hypotheses, precisely
+
+`PoincareRecession.exactDifferentialOrder_iterate_of_separation` needs exactly two things for
+iterates of a transcendental entire `f` satisfying a first-order autonomous ADE:
+
+1. `PrefixStateIndependence.StepSeparation (fun j => f^[j]) (f^[m])` — for every nonzero polynomial
+   `A` in the earlier iterates and every `c ≥ 0`, a point `z` where `|A|` is bounded below by some
+   `ε > 0` while `posLog‖f^[m] z‖` exceeds `c·(1 + ∑_j posLog‖f^[j] z‖ + posLog ε⁻¹)`.  This is a
+   growth statement about iterates of a transcendental entire function (`M(r, f∘g)` versus
+   `M(r, g)`), and it is a *for some `z`* statement, which is the easy direction.
+2. the elimination step `helim`, a differential-elimination statement about `statePoly`.
+
+Item 2 of the card (`φ` is hypertranscendental) is Bergweiler's theorem.  Note DA does **not** bound
+growth — `exp∘exp` satisfies `y·y'' = y·y' + y'²` — so no cheap growth argument replaces it.
+
+### Card 11 — the catalecticant identification, generic case (2026-08-30)
+
+`HTGeometry/RecurrenceGeometricBasis.lean` — `geomCombination`, `geomMap`, `geomMap_injective`
+(independence of geometric sequences by Vandermonde), and
+**`exists_geomCombination_of_distinct_roots`**: every solution of a linear recurrence whose
+characteristic polynomial has as many distinct roots as its order is a combination of the
+corresponding geometric sequences.
+
+Together with `HankelSecantRank.rank_secantHankel_le` this closes **both directions** of the
+catalecticant identification in the generic (distinct-root) case:
+
+> a coefficient window has Hankel rank `≤ t` and a recurrence with `t` distinct characteristic roots
+> ⟺ it is a sum of `t` geometric sequences, i.e. a point of the `t`-secant of the rational normal
+> curve.
+
+The corpus already owns the rank ⟺ recurrence half (`ProjectiveHorizonHankelSecant`).  What remains
+on card 11 is the *confluent* (repeated-root) closure and, above all, the dimension and singularity
+theory — codimension `2k−1`, `Sing(C_k) = C_(k+1)`, normality, Cohen–Macaulayness and rational
+singularities — for which mathlib has no Cohen–Macaulay theory.
+
+### Card 12 — the differential Picard–Vessiot foundation is built (2026-08-30)
+
+Seven new modules, all axiom-clean and wired into `GaloisForLFunctions.HTGeometry`.  mathlib has no
+differential Galois theory at all and the corpus had only the *difference* side, so every layer here
+is new.
+
+- `HTGeometry/DifferentialDeltaSimple.lean` — `IsDeltaIdeal`, `isDeltaIdeal_span_singleton_of_const`,
+  **`isNilpotent_deriv_of_pow_eq_zero`** (the derivative of a nilpotent is nilpotent in a
+  `ℚ`-algebra: `x^{n-k}(x′)^{2k+1} = 0` by induction), `isDeltaIdeal_nilradical`,
+  **`exists_maximal_isDeltaIdeal`** (Zorn), `IsDeltaSimple`, `isReduced_of_isDeltaSimple`,
+  `deltaConstantsSubring`, and **`isField_deltaConstantsSubring_of_isDeltaSimple`**.
+- `HTGeometry/DifferentialDeltaQuotient.lean` — `isDeltaIdeal_comap` and
+  **`isDeltaSimple_quotient_of_maximal`** (the corpus already owned the descended derivation
+  `quotDeriv` / `quotientDifferential`).
+- `HTGeometry/DifferentialSystemPicardVessiot.lean` —
+  **`exists_deltaPicardVessiot_of_fundamentalMatrix`**: a nontrivial differential ring carrying an
+  invertible fundamental matrix of `δ Y = B Y` has a `δ`-simple quotient in which the matrix is still
+  an invertible fundamental matrix and whose constants form a field.
+- `HTGeometry/DeterminantDerivation.lean` — **`deriv_finsetProd`** (Leibniz for a finite product),
+  **`deriv_det`** (Jacobi's formula for a derivation: differentiate one column at a time),
+  **`deriv_det_of_system`** (`δ det M = det M · tr A` when `δM = MA`) and
+  **`trace_eq_zero_of_det_eq_one`**.  All four are mathlib gaps.
+- `HTGeometry/ProjectiveFrameInvariance.lean` — `trace_companionMatrix`,
+  **`top_coefficient_eq_zero_of_det_eq_one`** (the card's claim that the missing `δ^{N-1}v`
+  coefficient of the normalized Wilczynski relation vanishes), `vecDeriv_mulVec`,
+  `frameMatrix_mulVec`, **`rel_mulVec_of_rel`** (a constant gauge of the lift satisfies the same
+  relation) and **`coefficients_unique`** (an invertible frame determines the coefficients).
+  Together these are card item **(1)**, first half: the `q_j` are projective differential invariants.
+- `HTGeometry/DifferentialMatrixGauge.lean` — `matDeriv`, `matDeriv_mul`, `matDeriv_const_mul`,
+  `matDeriv_map`, `matDeriv_gauge`, and **`exists_constantGauge_of_differentialAut`**: a differential
+  automorphism fixing the system matrix moves a normalized fundamental matrix by left multiplication
+  with a *constant* matrix of determinant one.  This is the Galois cocycle, i.e. the embedding
+  `Gal ↪ SL_N(C)`.
+- `HTGeometry/GenericSpecialLinearTorsor.lean` — the generic torsor.  `genericDerivation` makes the
+  generic matrix solve `δ Y = Y A`; because `A` is traceless the Wronskian is a constant
+  (`deriv_det_fundamentalMatrix`), so `det Y − 1` generates a differential ideal
+  (`isDeltaIdeal_slRelation`) and the quotient `genericSL I N` is a differential ring in which the
+  generic matrix is a fundamental matrix of determinant one.  `gaugeHom`/`gaugeAut` realize every
+  constant gauge of determinant one as a differential automorphism over the base
+  (`gaugeAut_deriv`, `map_gaugeAut_torsorMatrix`), the identity point `slEvalOneQuot` splits the base
+  inclusion and gives **`gaugeAut_injective`**, and the capstones are
+  **`generic_specialLinear_torsor`** and **`exists_gaugeCocycle_of_differentialAut`**.
+
+**Card 12 status.**  Item (3) was already Lean-closed (`ProjectiveFrameCompanion`).  Item (1) first
+half (invariance) and the normalization claim of `(2)`–`(3)` are now closed.  Item (4) is closed in
+both directions modulo the card's own genericity hypothesis: every constant gauge in `SL_N(C)` is a
+differential automorphism of the generic torsor, distinct gauges act differently, and conversely
+every differential automorphism over the base is such a gauge
+(`exists_gaugeCocycle_of_differentialAut`).
+
+**Still open on card 12:**
+1. joint differential independence of the `q_j` (item 1, second half) — needs the `dtrdeg` chain:
+   a Picard--Vessiot extension has differential transcendence degree `0` over its base, so
+   `dtrdeg(I/C) = dtrdeg(F/C) = N−1`, and a spanning family of size `dtrdeg` in the differential
+   matroid is independent.  Corpus assets: `DifferentialTranscendenceDegree`,
+   `ConstraintRelativity.CofinalRankTransfer`, `DifferentialFamilyMatroid`,
+   `DifferentialSubfieldTransfer`.
+2. item (2), `I = F^{PGL_N(C)}` — the Galois correspondence; needs `δ`-simplicity of the generic
+   torsor ring and "no new constants", which is Seiss's theorem.
+3. items (5) and (6) — the center/unipotent fixed-field statements, which the card itself derives
+   from the horizon-building theorem of `projective-horizon-tits-building`.
+
+### Card 12 — item (1) second half reduced to one hypothesis (2026-08-30)
+
+`HTGeometry/ProjectiveCurvatureIndependence.lean` (axiom-clean, wired):
+
+- `frameJet`, **`deriv_frameJet`** — the jets `v_i, δv_i, …, δ^{N−1}v_i` of one component of a
+  normalized lift are the coordinates of the first-order system with matrix `(companionMatrix q)ᵀ`;
+- **`differentialAlgebraicOver_lift_component`** — every component of the lift is therefore
+  differentially algebraic over the curvature field (via the corpus's
+  `differentialAlgebraicOver_finiteLinearSystem_coordinate`);
+- **`curvature_differentialIndependent`** — a curvature family over which the source is
+  differentially algebraic and whose size does not exceed `dtrdeg(F/C)` is differentially
+  independent.
+
+This is the card's dtrdeg argument in Lean: the Picard--Vessiot direction "a finite-dimensional
+constant Galois group does not lower differential transcendence degree" is replaced by the *exact*
+statement that the frame satisfies a linear system over `I`, hence adds no differential
+transcendence.  The one hypothesis still supplied from outside is `hspan` — that every element of
+the source field is differentially algebraic over `I` — which needs the finite-family form of
+"the differential field generated by differentially algebraic elements is differentially algebraic";
+the corpus owns only the singleton form
+(`RGClockBetaEquivalence.differentialAlgebraicOver_of_mem_adjoin`,
+`FiniteDifferentialCircuitBoundary.differentialAlgebraicOver_of_mem_differentialAdjoin_singleton`).
+The differential matroid layer (`DifferentialFamilyMatroid`, `WickContractedMatroidPersistence`) is
+the natural place to get it.
+
+### Card 12 — item (1) is CLOSED (2026-08-30)
+
+The `hspan` hypothesis is gone.  `ProjectiveCurvatureIndependence` now also owns:
+
+- **`differentialAlgebraicOver_differentialAdjoin_union`** — transitivity of differential
+  algebraicity over generated differential fields, obtained from the corpus's unconditional Kolchin
+  closure law (`differentialMatroid_mem_closure_iff_differentialAlgebraicOver_differentialAdjoin`)
+  plus matroid closure idempotence.  Reusable: it is the finite-family form of "the differential
+  field generated by differentially algebraic elements is differentially algebraic", which the
+  corpus previously owned only for a single element.
+- **`forall_differentialAlgebraicOver_curvature`** and its general form
+  **`forall_differentialAlgebraicOver_of_curvature_mem`** — the normalized lift adds no differential
+  transcendence over any generating set containing the curvatures (so the `q_{N-1} = 0` slot is
+  harmless).
+- **`curvature_differentialIndependent_of_lift`** — the card's item (1): for a differential-generic
+  source (`dtrdeg(F/C) ≥` the number of curvatures) with the source generated by the curvatures and
+  the lift, the curvature tuple is differentially independent over the constants.
+
+Card 12 items (1), (3) and (4) are now Lean-closed; (2), (5), (6) need the differential Galois
+correspondence (δ-simplicity of the generic torsor ring and Seiss's no-new-constants theorem, then
+the center/unipotent fixed fields).
+
+### Card 8 — the recorded blocker is stale (2026-08-30)
+
+The ledger and the card both say card 8 is blocked on "the Nevanlinna `N`-extremal matrix (the parent
+card in `nad/` is blocked on the same input)".  Both statements are out of date:
+
+- the parent card `indeterminate-moment-fiber-maximal-translation-ht` is at **stage 3**
+  (`docs/drafts/pipeline/3-formalized/nad/`), with capstone
+  `analyticNevCarrierFamily_maximalTranslationPhase_dense_residual`;
+- the classical `N`-extremal Nevanlinna family is **constructed**, not assumed:
+  `HTGeometry.nevExtremalFamily` builds every field of `ClassicalNevanlinnaExtremalFamily` from the
+  moment sequence (matrix from the orthogonal polynomials, leaves from quasi-orthogonal quadrature,
+  carriers from the denominator fibres, moments from quadrature exactness, weak continuity from
+  tightness), and `nevExtremalFamily_atoms` identifies the weights as Christoffel limits;
+- pairwise mutual singularity of leaves at distinct parameters is owned:
+  `FiberClosed.mutuallySingular_leaf` (via the exact label recovery
+  `map_projectiveLabel_leaf`), and `BoundaryBarycenterSpectralTransport.measureBarycenter_mutuallySingular`
+  transports it to barycenters;
+- the whole full-rank-witness machinery for maximal translation differential freeness of a weighted
+  boundary carrier is owned: `BoundaryCarrierTranslationFreeness`
+  (`MaximalTranslationFullRankWitness`, `maximalTranslationDifferentialFree_of_fullRankWitness`,
+  `probabilityCarrierExpandedFullRankWitness_weightedBoundaryProbabilityCarrier`,
+  `hypertranscendental_weightedBoundaryProbabilityCarrierCauchy`),
+  `NevanlinnaBoundaryFaceMaximalTranslation` (the dense/residual phase) and
+  `StratifiedParametricAvoidance` (the finite-dimensional stratified transversality engine).
+
+**What card 8 actually still needs** is only its own upgrade from *residual* to *locally prevalent*:
+
+1. the mean-zero chart: `E_η = {v ∈ ℓ^∞ : ∑ η_n v_n = 0}` and `X_δ = {1 + v : ‖v‖_∞ < δ}`, as a
+   submodule of the `L^∞(η)` density space the corpus already uses
+   (`weightedBoundaryProbabilityCarrier` takes `Lp ℝ ⊤ eta`);
+2. the compact product probe `V = ∑_j a_j ∑_k X_{j,k} v_{j,k}` with `∑_j a_j d_j < r`: a uniformly
+   convergent random series over `Ω = ∏_j [-1,1]^{d_j}` with product Lebesgue law, hence a
+   compactly supported Borel probability on `E_η`;
+3. the a.s. full-rank statement after every deterministic recentring.  The natural engine is the
+   card-13 architecture — an absolutely continuous *finite* block plus a nonzero
+   analytic/polynomial obstruction — with the finite block supplied by the finite-support mean-zero
+   controllability already proved in `MeanZeroAnnihilator.eq_of_annihilates_meanZero`;
+4. the definition of prevalence and the local-prevalence capstone, plus the convex-insertion
+   corollary `ν = (1−ε)μ₀ + ε μ_{x+V}`.
+
+### Card 8 — the prevalence engine is built (2026-08-30)
+
+Two new modules, axiom-clean and wired.  Together they are the exact upgrade of the corpus's Baire
+avoidance machinery to a measure statement, which is all that separates card 8 from its stage-3
+parent.
+
+- `HTGeometry/StratifiedParametricPrevalence.lean` —
+  **`volume_parameter_preimage_finite_stratification_eq_zero`**: the bad parameter set of a
+  stratified parametric family over a Euclidean probe block is Lebesgue *null*.  The corpus already
+  bounds its Hausdorff dimension by `finrank − 1`
+  (`dimH_parameter_preimage_finite_stratification_le_pred`); combining that with
+  `hausdorffMeasure_pi_real` and `measure_zero_of_dimH_lt` replaces
+  `dense_compl_of_dimH_lt_finrank` by a null statement.  Consequences:
+  **`measure_parameter_preimage_finite_stratification_eq_zero`** (every probe law absolutely
+  continuous for Lebesgue measure), **`measure_compactConfigurationAvoidance_eq_one`** (compact-patch
+  avoidance has probability one, with no measurability hypothesis on the avoidance set), and
+  **`measure_compactConfigurationAvoidance_smoothAffineControlFamily_eq_one`** — the same statement
+  for the corpus's affine finite-probe families `F(v,h) = base h + direction h v`, whose
+  surjectivity hypothesis is exactly finite-block controllability.
+- `HTGeometry/PrevalentSets.lean` — `CompactProbe`, `PrevalentOn`, `Prevalent`, `PrevalentOn.mono`,
+  `PrevalentOn.subset`, **`prevalentOn_iInter`** (a countable family tested by one probe), and
+  `CompactProbe.map`.  Prevalence is defined by *null complement*, so no measurability of the tested
+  set is ever needed — which matters because the maximal-translation phase is defined by an
+  uncountable quantifier.
+
+**Remaining for card 8:** assemble these against the parent's compact-patch call sites
+(`NevanlinnaTranslatedExpandedEvaluationCompactPatch`,
+`WeightedCauchyTranslatedExpandedEvaluationCompactPatch`,
+`NevanlinnaNoncriticalProjectiveCompactPatch`), i.e. replace
+`dense_compactConfigurationAvoidance_of_dense_submodule_perturbations` by the probe-measure version,
+build the mean-zero `L^∞(η)` chart and the convergent product probe
+`V = ∑_j a_j ∑_k X_{j,k} v_{j,k}`, and conclude with `prevalentOn_iInter` over the countable
+enumeration of relation patterns and patches.

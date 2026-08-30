@@ -1974,3 +1974,788 @@ genuine derivation, and `Λ₂(diag)(d,d) = 2 log d/d = 2·diag_log`, which give
 Note also, for the `Λ₂(mp)` collapse if it is ever needed: the `μ·log` kernel is elementary,
 `K̃_i(Y) = ∑_{u≤Y} (μ(u) log u / u)·log(Y/u)^i = log Y·K_i(Y) − K_{i+1}(Y)`, so it needs no new
 Möbius theory.
+
+## Brick 5ai — the differentiated local Euler factor is built (2026-08-29)
+
+`RHTower/Sieve/SelbergCorrectionLogLocal.lean` (axiom-clean, no warnings, wired):
+
+* `selbergCorrectionLogLocal p α β` — the exact `(X^α, Y^β)` coefficient of
+  `∂_s corr_p(s)|_{s=1} = (log p/p²)·XY(X+Y−2XY)/((1−X/p)(1−Y/p))`, namely
+  `(log p)·p^{-2-α-β}·(p³[α≥2,β≥1] + p³[α≥1,β≥2] − 2p⁴[α≥2,β≥2])`;
+* `geomTailTwo`, `geomTailOne` with `summable_*` and `tsum_*_le … ≤ 2` (shifted geometric tails,
+  proved by the `(· + k)` reindexing, `Function.Injective.tsum_eq`);
+* **`abs_selbergCorrectionLogLocal_le`** — the exact factorized majorant;
+* **`summable_abs_selbergCorrectionLogLocal`** and
+  **`tsum_abs_selbergCorrectionLogLocal_le`**: `∑_{α,β} |L_p(α,β)| ≤ 16 log p / p²`.
+
+Since `∑_p 16 log p/p² < ∞`, this is the whole quantitative content of `‖corr^{log}‖₁ < ∞`.
+
+### What is left for `corr^{log}` — the derivation framework
+
+`corr^{log}` is a **derivation of a bivariate multiplicative function**:
+`D(ac,bd) = D(a,b)·f(c,d) + f(a,b)·D(c,d)` for pair-coprime arguments, `D(1,1) = 0`.
+Three facts finish the family:
+
+1. a `BivariateDerivation f D` predicate with `eq_of_prime_pow_eq` (two derivations of the same
+   multiplicative `f` agreeing on prime powers are equal) — the analogue of the existing
+   `BivariateMultiplicative.eq_of_prime_pow_eq`;
+2. `c·log(m,n)` is a derivation of `c` (uses the corpus's `gcd_pair_mul_of_pair_coprime`), and
+   `corr ∗ 𝒫^{log} + corr^{log} ∗ 𝒫` is a derivation of `corr ∗ 𝒫 = c` (Leibniz for convolution);
+3. the two agree on prime powers — a finite local computation with
+   `selbergCorrectionLogLocal` and the known prime-power values of `corr`, `𝒫`, `𝒫^{log}`.
+
+`corr^{log}` itself is then the pushforward of `L_p ⊗ corr^{(p)}`, where `corr^{(p)}` is the
+existing `(r,u,v)` correction restricted to supports `r` with `p ∤ r`, so
+`‖corr^{(p)}‖₁ ≤ ‖corr‖₁` for free.
+
+## Brick 5aj — the derivation framework (2026-08-29)
+
+Two further axiom-clean leaves, both wired, both clean on the first check:
+
+* `RHTower/Sieve/BivariateDerivation.lean`
+  - `BivariateDerivation f D` : `D 1 1 = 0` and `D (a*c) (b*d) = D a b · f c d + f a b · D c d`
+    for pair-coprime arguments;
+  - **`BivariateDerivation.eq_of_prime_pow_eq`** — two derivations of the same bivariate
+    multiplicative function that agree on simultaneous prime-power pairs are equal (strong induction
+    on `m*n` along the `p`-adic splitting, mirroring
+    `BivariateMultiplicative.eq_of_prime_pow_eq`);
+  - **`BivariateDerivation.convolution`** — the Leibniz rule for the product-divisor convolution:
+    if `D` derives `f` and `E` derives `g`, then `D ∗ g + f ∗ E` derives `f ∗ g`.  Proved through
+    the same `pairCoprimeDivisorsEquiv` reindexing as the multiplicativity of the convolution.
+
+* `RHTower/Sieve/SelbergGcdLogCoefficient.lean`
+  - `selbergOriginalGcdLogCoeff m n = c(m,n)·log (m,n)` and
+    **`bivariateDerivation_selbergOriginalGcdLogCoeff`** — it is a derivation of
+    `selbergOriginalCoeff`, from `gcd_pair_mul_of_pair_coprime` plus `Real.log_mul`;
+  - `selbergOriginalGcdLogMonomial i j N`, the object whose asymptotic the corrected Levinson route
+    consumes.
+
+### Remaining for the gcd-log family
+
+1. define `corr^{log}` (pushforward of `L_p ⊗ corr^{(p)}`) and prove it is a
+   `BivariateDerivation selbergEulerCorrectionCoeff` with prime-power values
+   `selbergCorrectionLogLocal`;
+2. compute both sides of `c^{log} = corr ∗ 𝒫^{log} + corr^{log} ∗ 𝒫` on prime powers — a finite
+   local identity — and conclude by `BivariateDerivation.eq_of_prime_pow_eq`
+   (`BivariateDerivation.convolution` already shows the right side is a derivation of `c`);
+3. feed the identity through the dilated envelope + dominated convergence, exactly as in brick 5af,
+   to get
+
+   ```text
+   selbergOriginalGcdLogMonomial i j N / (log N)^{i+j}  →  i·j/((i+j−1)(i+j)).
+   ```
+
+Steps 1 and 2 are bookkeeping over the existing `(r,u,v)` parameterization; step 3 is a copy of the
+already-working dominated-convergence layer.
+
+## Brick 5ak — `corr^{log}` constructed (2026-08-29)
+
+`RHTower/Sieve/SelbergEulerCorrectionLogCoefficient.lean` (axiom-clean, wired):
+
+```text
+selbergEulerCorrectionLogCoeff m n
+  = ∑_{p ∣ mn} selbergCorrectionLogLocal p (v_p m) (v_p n) ·
+      selbergEulerCorrectionCoeff (m / p^{v_p m}) (n / p^{v_p n})
+```
+
+* **`selbergEulerCorrectionLogCoeff_prime_pow`** — `corr^{log}(p^i, p^j) = L_p(i,j)`, the
+  differentiated local Euler coefficient of brick 5ai;
+* **`bivariateDerivation_selbergEulerCorrectionLogCoeff`** — it is a Leibniz derivation of
+  `selbergEulerCorrectionCoeff`.  The proof splits the prime factors of `(ac)(bd) = (ab)(cd)` along
+  `Nat.Coprime.disjoint_primeFactors`, uses `Nat.factorization_mul` +
+  `Nat.factorization_eq_zero_of_not_dvd` to see that the `p`-valuation is unchanged on the side that
+  does not contain `p`, and `Nat.mul_div_right_comm` + the multiplicativity of `corr` to split the
+  cofactor.
+
+Combined with brick 5aj this closes items 1 of the "remaining" list.  What is left:
+
+* the **local identity** `c^{log}(p^i,p^j) = (corr ∗ 𝒫^{log})(p^i,p^j) + (corr^{log} ∗ 𝒫)(p^i,p^j)`
+  — a finite computation with the four local Euler factors — after which
+  `BivariateDerivation.eq_of_prime_pow_eq` (both sides being derivations of `c`, by
+  `bivariateDerivation_selbergOriginalGcdLogCoeff` and `BivariateDerivation.convolution`) gives the
+  global identity;
+* `‖corr^{log}‖₁ < ∞`, from `tsum_abs_selbergCorrectionLogLocal_le` (`≤ 16 log p/p²`) and
+  `‖corr‖₁ < ∞`, through the `(p, α, β, m', n')` regrouping;
+* the dominated-convergence assembly, a copy of brick 5af's, giving
+  `selbergOriginalGcdLogMonomial i j N / (log N)^{i+j} → i·j/((i+j−1)(i+j))`.
+
+## The remaining local identity, worked out explicitly (2026-08-29)
+
+With `A(k) := reciprocalMoebiusAmplitude (p^k)` (`A(0)=1`, `A(k)=(1−p)/p^k` for `k ≥ 1`; the
+coefficients of `𝒜(X) = X(1−X)/(1−X/p)`) and `μrec(p^0)=1`, `μrec(p^1)=−1/p`, `μrec(p^m)=0` for
+`m ≥ 2`, the four local coefficient families are
+
+```text
+c^{log}(p^i,p^j) = (log p / p)·[i = 1][j = 1]            (c vanishes off i,j ≤ 1, and log gcd = min(i,j)·log p)
+corr(p^{k+1},p^{l+1}) = −(1/p²)·A(k)·A(l),  corr(p^k,1) = corr(1,p^l) = 0 (k,l ≥ 1),  corr(1,1) = 1
+𝒫(p^i,p^j)      = ∑_{t ≤ min(i,j)}  p^{-t}          · μrec(p^{i−t})·μrec(p^{j−t})
+𝒫^{log}(p^i,p^j)= ∑_{t ≤ min(i,j)} (t·log p·p^{-t}) · μrec(p^{i−t})·μrec(p^{j−t})
+corr^{log}(p^i,p^j) = L_p(i,j)  =  selbergCorrectionLogLocal p i j
+```
+
+and the identity to prove, for every `i, j ≥ 0`, is
+
+```text
+(log p/p)·[i=1][j=1] = ∑_{k≤i, l≤j} corr(p^k,p^l)·𝒫^{log}(p^{i−k},p^{j−l})
+                     + ∑_{k≤i, l≤j} L_p(k,l)·𝒫(p^{i−k},p^{j−l}).
+```
+
+Both sides are derivations of `c` (left: `bivariateDerivation_selbergOriginalGcdLogCoeff`; right:
+`BivariateDerivation.convolution` applied twice, using that `diag_log` is a derivation of `diag`
+and `0` is a derivation of `mp`), so **this local family is the only thing between the corpus and
+the global identity**, by `BivariateDerivation.eq_of_prime_pow_eq`.
+
+It is the exact analogue of the existing `SelbergEulerCoefficientIdentity.lean` (which proves the
+undifferentiated local identity `c_p = corr_p ∗ 𝒫_p`), and should be organized the same way:
+generating functions `E_p(s) = 1 − X/p − Y/p + p^{s−1}XY/p`,
+`𝒫_p(s) = (1−X/p)(1−Y/p)/(1 − p^{s−1}XY/p)`, differentiate in `t := p^{s−2}` at `t = 1/p`, where
+
+```text
+∂_t[E_p·(1 − tXY)] = XY·(X/p + Y/p − 2tXY),      ∂_t[1/(1−tXY)] = XY/(1−tXY)²,
+```
+
+which is where `L_p = (log p/p²)·XY(X+Y−2XY)/((1−X/p)(1−Y/p))` and
+`diag_log = log p·(XY/p)/(1−XY/p)²` come from.
+
+**Why the crude route fails.** One cannot bound `‖corr^{log}_p‖₁` by
+`‖c^{log}_p‖₁ + ‖corr_p‖₁‖𝒫^{log}_p‖₁`: both of those are `≍ log p/p`, and `∑_p log p/p` diverges.
+The `log p/p²` saving is a cancellation between them, so the local identity must be proved exactly.
+
+## The local identity collapses to two one-dimensional facts (2026-08-30)
+
+Working the algebra out at the level of generating functions makes the remaining local computation
+short.  Write `N = (1−X/p)(1−Y/p)` (`= mp`), `D = 1 − XY/p`, so `𝒫 = mp/D`, `corr = c·D/N`,
+`𝒫^{log} = log p·(XY/p)·N/D²`, `corr^{log} = (log p/p²)·XY(X+Y−2XY)/N`.  Then
+
+```text
+(corr ∗ 𝒫^{log} + corr^{log} ∗ 𝒫) ∗ D
+    = log p·(XY/p) ∗ (corr ∗ 𝒫) + corr^{log} ∗ N
+    = log p·(XY/p) ∗ c + (log p/p²)·XY(X+Y−2XY),
+```
+
+and `c^{log} ∗ D` is the same thing because `c + (X+Y−2XY)/p = D` — a one-line polynomial identity
+(`1 − X/p − Y/p + XY/p + X/p + Y/p − 2XY/p = 1 − XY/p`).  Since `D` is invertible (`D ∗ diag = δ`),
+this gives the local identity.
+
+The only nontrivial input is `corr^{log} ∗ N = (log p/p²)·XY(X+Y−2XY)`, and **that factorizes**.
+With `g₂(i) := p²·p^{-i}·[i ≥ 2]` and `g₁(j) := p·p^{-j}·[j ≥ 1]` (exactly the `geomTailTwo`,
+`geomTailOne` of brick 5ai),
+
+```text
+selbergCorrectionLogLocal p i j = (log p/p²)·( g₂(i)g₁(j) + g₁(i)g₂(j) − 2 g₂(i)g₂(j) ),
+```
+
+and `N` is the product `n(i)n(j)` with `n(0)=1`, `n(1)=−1/p`, `n(≥2)=0`.  So the two-dimensional
+convolution factorizes into one-dimensional ones, and
+
+```text
+(g₂ ∗ n)(i) = g₂(i) − g₂(i−1)/p = [i = 2],        (g₁ ∗ n)(j) = g₁(j) − g₁(j−1)/p = [j = 1].
+```
+
+(Both are two-line checks: `i = 0,1` give `0`; `i = 2` gives `1 − 0`; `i ≥ 3` gives
+`p²p^{-i} − p²p^{-i} = 0`.)  Hence
+`corr^{log} ∗ N = (log p/p²)([i=2][j=1] + [i=1][j=2] − 2[i=2][j=2])`, which is exactly the numerator.
+
+So the remaining Lean work is: the two one-dimensional convolution identities, a
+product-factorization lemma for `additiveBivariateConvolution`, the diagonal identity
+`diag_log ∗ D = log p·(XY/p) ∗ diag`, and the finite assembly — no case explosion.
+
+## Brick 5al — the local gcd-logarithmic identity is CLOSED (2026-08-30)
+
+Two axiom-clean leaves, both wired:
+
+* `RHTower/Sieve/SelbergCorrectionLogNumerator.lean`
+  - `additiveConvolution` (one-dimensional) and
+    **`additiveBivariateConvolution_product`** — a product of one-variable factors convolves
+    componentwise;
+  - `localMoebiusFactor p` (`= 1, −1/p, 0, …`) and
+    `additiveConvolution_localMoebiusFactor` (convolving with `1 − X/p` is the first difference);
+  - **`additiveConvolution_geomTailTwo`** (`g₂ ∗ n = [i = 2]`) and
+    **`additiveConvolution_geomTailOne`** (`g₁ ∗ n = [j = 1]`);
+  - **`additiveBivariateConvolution_selbergCorrectionLogLocal_moebius`** —
+    `corr^{log} ∗ N = (log p/p²)·XY(X + Y − 2XY)`, the numerator identity.
+  - Supporting: `selbergCorrectionLogLocal_eq_geomTails` (the exact product form of `L_p`),
+    extracted in `SelbergCorrectionLogLocal.lean`.
+
+* `RHTower/Sieve/SelbergGcdLogLocalIdentity.lean`
+  - `selbergMoebiusReciprocalCoeff_prime_pow_eq`, `localMoebiusPairFactor_eq`,
+    `selbergLocalGcdLogPrincipal_eq_convolution`, `selbergLocalCorrectionLog_eq`,
+    `selbergLocalDiagonalLogReciprocal_eq`, `selbergLocalDiagonalReciprocal_eq`,
+    `gcd_prime_pow_eq_pow_min`, `selbergLocalOriginalGcdLog_eq`
+    (`c^{log}(p^i,p^j) = (log p/p)·[i=1][j=1]`);
+  - **`additiveBivariateConvolution_diagonalLog_eulerDenominator`** —
+    `diag^{log} ∗ D = (log p·XY/p) ∗ diag`;
+  - **`selbergLocalGcdLog_denominator_identity`** — the finite identity
+    `(log p·XY/p) ∗ c + numerator = c^{log} ∗ D`;
+  - `additiveBivariateConvolution_add_left`;
+  - **`additiveBivariateConvolution_localGcdLog_identity`** —
+
+    ```text
+    corr ∗ 𝒫^{log} + corr^{log} ∗ 𝒫 = c^{log}   at every prime.
+    ```
+
+    Proved by convolving with `D` (using `𝒫 ∗ D = mp`, `𝒫^{log} ∗ D = M ∗ 𝒫`,
+    `corr ∗ 𝒫 = c`, the numerator identity, and the finite identity) and cancelling `D` against
+    `diag`.
+
+### What is left in the gcd-log family
+
+1. **Global identity.**  Transport the local identity to all `(m,n)` with
+   `BivariateDerivation.eq_of_prime_pow_eq`.  Both sides are derivations of `c`:
+   the left by `bivariateDerivation_selbergOriginalGcdLogCoeff`; the right by
+   `BivariateDerivation.convolution` applied twice, which needs the two easy instances
+   `BivariateDerivation selbergDiagonalReciprocalCoeff selbergDiagonalLogReciprocalCoeff`
+   (pair-coprimality forces `a = b`, `c = d` on the diagonal, and `log` is additive) and
+   `BivariateDerivation selbergMoebiusReciprocalPair 0`.
+2. **`‖corr^{log}‖₁ < ∞`** from `tsum_abs_selbergCorrectionLogLocal_le` (`≤ 16 log p/p²`) and
+   `‖corr‖₁ < ∞`, through the `(p, α, β, m', n')` regrouping.
+3. **Dominated-convergence assembly**, a copy of brick 5af's, giving
+   `selbergOriginalGcdLogMonomial i j N / (log N)^{i+j} → i·j/((i+j−1)(i+j))`.
+
+## Brick 5am — the GLOBAL gcd-logarithmic identity is CLOSED (2026-08-30)
+
+`RHTower/Sieve/SelbergGcdLogGlobalIdentity.lean` (axiom-clean, wired):
+
+* `bivariateDerivation_zero` — `0` derives any bivariate multiplicative function;
+* `diag_pair_split` — on a pair-coprime splitting, `a·c = b·d` forces `a = b` and `c = d`
+  (each of `a ∣ b`, `b ∣ a` follows from `Nat.Coprime.dvd_of_dvd_mul_right`);
+* **`bivariateDerivation_selbergDiagonalLogReciprocalCoeff`** — `diag^{log}` derives `diag`;
+* **`bivariateDerivation_selbergGcdLogPrincipalCoeff`** — `𝒫^{log}` derives `𝒫`
+  (`BivariateDerivation.convolution` with the zero derivation on the Möbius pair);
+* `bivariateDerivation_gcdLogRightSide` — the right-hand side derives `c`;
+* **`selbergOriginalGcdLogCoeff_eq_convolution_sum`** —
+
+  ```text
+  c(m,n)·log(m,n) = (corr^{log} ∗ 𝒫)(m,n) + (corr ∗ 𝒫^{log})(m,n)      (0 < m, 0 < n).
+  ```
+
+  By `BivariateDerivation.eq_of_prime_pow_eq`, from the local identity of brick 5al.
+
+**Item 1 of the gcd-log family's remaining list is closed.**  What is left:
+
+2. `‖corr^{log}‖₁ < ∞` — from `tsum_abs_selbergCorrectionLogLocal_le` (`≤ 16 log p/p²`,
+   summable over primes) and `‖corr‖₁ < ∞`, through the `(p, α, β, m', n')` regrouping of
+   `selbergEulerCorrectionLogCoeff m n = ∑_{p ∣ mn} L_p(v_p m, v_p n)·corr(m/p^{v_p m}, n/p^{v_p n})`;
+3. the dominated-convergence assembly (a copy of brick 5af's), giving
+
+   ```text
+   selbergOriginalGcdLogMonomial i j N / (log N)^{i+j}  →  i·j/((i+j−1)(i+j)).
+   ```
+
+### Summability of `corr^{log}`: only an injection is needed (2026-08-30)
+
+The `(p, α, β, m', n')` regrouping does **not** need a bijection.  For nonnegative majorants an
+injection suffices:
+
+```text
+|corr^{log}(m,n)| ≤ ∑_{p ∣ mn} M_p(v_p m, v_p n)·|corr(m/p^{v_p m}, n/p^{v_p n})|,
+```
+
+and the triple `(m,n,p) ↦ (p, v_p m, v_p n, m/p^{v_p m}, n/p^{v_p n})` is **injective** (the pair
+`(m,n)` is recovered as `(p^α m', p^β n')`).  So every finite partial sum is bounded by the full
+sum over the target index set,
+
+```text
+∑_p (∑_{α,β} M_p(α,β)) · ‖corr‖₁ ≤ (∑_p 16 log p / p²)·‖corr‖₁ < ∞,
+```
+
+and `summable_of_sum_le` finishes.  The two quantitative inputs are already in the tree
+(`tsum_selbergCorrectionLogMajorant_le`, `summable_abs_selbergEulerCorrectionCoeff`); the only new
+analytic fact needed is `Summable (fun p => log p / p²)`, which follows from `log n ≤ 2√n` and
+`Real.summable_one_div_nat_rpow` at exponent `3/2`.
+
+## Brick 5an — `‖corr^{log}‖₁ < ∞` (2026-08-30)
+
+`RHTower/Sieve/SelbergCorrectionLogSummable.lean` (axiom-clean, wired):
+
+* `selbergCorrectionLogMajorant_nonneg'`, `summable_selbergCorrectionLogMajorant'`,
+  `tsum_selbergCorrectionLogMajorant_le'` — the brick-5ai estimates extended to `p ∈ {0,1}`
+  (where `log p = 0` makes everything vanish);
+* `summable_sixteen_log_div_sq` — from the corpus's `summable_log_div_sq`;
+* `summable_abs_selbergEulerCorrectionCoeff` — the `ℓ¹` mass of the correction;
+* **`padicSplit_injective`** — `(m,n) ↦ ((v_p m, v_p n), (m/p^{v_p m}, n/p^{v_p n}))` is injective
+  (globally, since `m = p^{v_p m}·(m/p^{v_p m})` holds for `m = 0` too);
+* `padicMajorantTerm`, `splitMajorant`, `summable_splitMajorant`, `tsum_splitMajorant_eq`;
+* **`tsum_padicMajorantTerm_le`** — `∑_{m,n} M_p(v_p m, v_p n)·|corr(…)| ≤ (16 log p/p²)·‖corr‖₁`,
+  by `Summable.tsum_le_of_sum_le` + `Finset.sum_image` along the injection;
+* `summable_padicMajorantProd`, `summable_padicMajorantSwap`,
+  `summable_padicMajorantTerm_fixed`, `summable_padicMajorantSum`;
+* `abs_selbergEulerCorrectionLogCoeff_le` — the pointwise majorant;
+* **`summable_abs_selbergEulerCorrectionLogCoeff`** — `‖corr^{log}‖₁ < ∞`.
+
+**Item 2 is closed.**  The gcd-log family now needs only item 3: the dominated-convergence
+assembly, which is a copy of the pure-log one of brick 5af —
+
+```text
+selbergOriginalGcdLogMonomial i j N / (log N)^{i+j}  →  i·j/((i+j−1)(i+j)),
+```
+
+using `selbergOriginalGcdLogCoeff_eq_convolution_sum` (brick 5am), the `𝒫^{log}` model asymptotic
+(brick 5ah), the dilated envelope `exists_abs_selbergPrincipalScaledLogPowerModel_le` (brick 5ag),
+and `summable_abs_selbergEulerCorrectionLogCoeff`.
+
+## Brick 5ao — THE GCD-LOGARITHMIC FAMILY IS CLOSED (2026-08-30)
+
+`RHTower/Sieve/SelbergGcdLogAsymptotic.lean` (axiom-clean, wired):
+
+* **`exists_abs_selbergGcdLogPrincipalScaledLogPowerModel_le`** — one envelope
+  `|∑_d (log d/d)K_{q+1}K_{r+1}| ≤ M(log N)^{q+r+2}` valid at every pair of dilations;
+* **`selbergOriginalGcdLogMonomial_eq_correction_split`** — the exact split
+  `∑ c^{log}·W = ∑_{d,e} corr^{log}(d,e)·𝒫-scaled + ∑_{d,e} corr(d,e)·𝒫^{log}-scaled`,
+  from the global identity of brick 5am plus the two rectangular collapses;
+* `selbergGcdCorrectionScaledTerm`, `tsum_…`,
+  `exists_eventually_norm_selbergGcdCorrectionScaledTerm_le`,
+  `tendsto_selbergGcdCorrectionScaledTerm`, and
+  **`tendsto_tsum_selbergGcdCorrectionScaledTerm`** — the main term, by dominated convergence;
+* `exists_abs_gcdLogErrorTerm_le`, **`tendsto_gcdLogErrorTerm_div`** — the `corr^{log}` term is
+  `O((log N)^{q+r+1}) = o((log N)^{q+r+2})`, using `‖corr^{log}‖₁ < ∞` (brick 5an);
+* **`tendsto_selbergOriginalGcdLogMonomial_div_log_pow`** —
+
+  ```text
+  ∑_{m,n ≤ N} μ(m)μ(n)(m,n)/(mn)·log(N/m)^i·log(N/n)^j·log(m,n) / (log N)^{i+j}
+        →  i·j / ((i+j−1)(i+j))      for all i, j ≥ 1.
+  ```
+
+### Status of the corrected arithmetic layer
+
+| family | statement | state |
+|---|---|---|
+| pure-log | `∑ c(m,n)·log(N/m)^i log(N/n)^j ~ (ij/(i+j−1))·(log N)^{i+j−1}` | **CLOSED 2026-08-29** |
+| gcd-log | `∑ c(m,n)·log(N/m)^i log(N/n)^j·log(m,n) ~ (ij/((i+j−1)(i+j)))·(log N)^{i+j}` | **CLOSED 2026-08-30** |
+
+**Both Selberg families required by the corrected Levinson route are now unconditional Lean
+theorems.**  Together with the verification against Young's constant recorded in brick 5af
+(`P(x)=x`, `Q=1`, `R=0` gives `1 + 1/θ`), the arithmetic side of the mollified second moment is
+complete for the linear mollifier; what remains on that side is only the assembly with a general
+`P`, `Q` and the detector parameter, which is a finite linear combination of these two families.
+
+The remaining brick-5 gate is therefore purely **analytic**: the twisted second moment
+
+```text
+∫_T^{2T} ζ(½+it)ζ(½−it)(h/k)^{-it} dt = T·((h,k)/√(hk))·( log(T(h,k)²/(2πhk)) + 2γ − 1 ) + error,
+```
+
+with a power-saving error uniform for `h,k ≤ T^θ`.  The corpus already owns the smooth AFE at every
+Levinson abscissa, the twisted mean-value theorem with explicit error, and the displaced stationary
+cross estimates; what brick 5af showed is that the cross term must be *evaluated*, not bounded.
+
+## Consumer audit of the two cards this programme gates (2026-08-30)
+
+Both cards in `2-fully-proven/not_new_scientific_knowledge/11-rh-zero-divisor-geometry` that depend
+on this programme were audited against the tree — all 17 claimed Lean declarations are present, none
+stale — and their consumer sides were completed, so each is now blocked on exactly one statement
+owned here.
+
+* **`bounded-support-weil-critical-tail-uniqueness`.**  New leaf
+  `RHTower/XiSimpleCriticalSuperlinearConsumer.lean` (axiom-clean, wired):
+  `not_linear_bound_of_superlinear`,
+  **`suzukiCompactL2Fourier_eq_zero_of_superlinear_simpleCritical`**,
+  **`suzukiCutoff_eq_zero_of_superlinear_simpleCritical`**.  The card's Theorem 2 is now a Lean
+  theorem whose only premise is
+
+  ```text
+  ∃ c > 0, ∀ᶠ T in atTop,  c · T · log T ≤ (xiSimpleCriticalZeroCount T : ℝ).
+  ```
+
+  That is brick 7 + brick 8 of this programme (a positive proportion of *simple* critical zeros).
+
+* **`horizontal-singleton-zero-fibers`.**  Blocked on exactly
+  `0.417293962 ≤ liminf xiCriticalRatio` and `0.407511457 ≤ liminf xiSimpleCriticalRatio`
+  — bricks 7–10.
+
+So the programme's brick list now has named external consumers, and closing bricks 7–10 closes both
+cards.  (The third card in that folder, `verified-height-one-zero-turing-extension`, does not depend
+on this programme; its remaining input is an external certified computation, assessed on the card.)
+
+## Brick 5ap — the twisted second-moment diagonal is evaluated (2026-08-30)
+
+With the arithmetic layer closed, the remaining gate is analytic.  Its first component — the
+diagonal of the twisted second moment — is now a Lean theorem.
+
+`RHTower/Sieve/TwistedDiagonalSqrtEvaluation.lean` (axiom-clean, wired):
+
+* **`twistedDiagonalSqrtWeight`** — on the reduced ray the critical-line weight collapses:
+
+  ```text
+  1 / √( (k'd)·(h'd) )  =  ((h,k)/√(hk)) · (1/d),      h' = h/(h,k),  k' = k/(h,k).
+  ```
+
+* `twistedDiagonalSqrt_membership` — the reduced scale range is exactly
+  `Icc 1 ⌊X / max(h',k')⌋` (via `min_natDiv_eq_natDiv_max`);
+* **`twistedDiagonalSqrt_sum_eq`** —
+
+  ```text
+  ∑_{m,n ≤ X, nk = mh} (mn)^{-1/2}  =  ((h,k)/√(hk)) · H_{⌊X / max(h',k')⌋};
+  ```
+
+* **`abs_twistedDiagonalSqrt_sub_main_le`** — the main term with an explicit error, from the
+  corpus's sharp harmonic comparison:
+
+  ```text
+  | ∑_{m,n ≤ X, nk = mh} (mn)^{-1/2}  −  ((h,k)/√(hk))·( log⌊X/max(h',k')⌋ + γ ) |
+        ≤  ((h,k)/√(hk)) · 1/⌊X/max(h',k')⌋ ;
+  ```
+
+* **`reducedMax_mul_min_eq_lcm`** — `max(h',k')·min(h,k) = [h,k]`, so the weight is literally
+
+  ```text
+  log X − log[h,k] + log min(h,k),
+  ```
+
+  which is exactly the direct-head weight identified in the structural correction of brick 5af.
+  The `(h,k)/√(hk)` prefactor is the classical Balasubramanian–Conrey–Heath-Brown constant.
+
+**What this settles.**  The diagonal half of the twisted second moment is done, in precisely the
+form the Levinson mollifier sum consumes, and it confirms the brick-5af accounting from the Lean
+side: the direct head really does carry `+log min(h,k)`, the term whose mass makes that diagonal
+diverge and which the cross must cancel.
+
+**Next on the analytic gate.**  The shifted diagonal (weight `m^{-1/2-α}n^{-1/2-β}`, giving a
+partial `ζ(1+α+β)` in place of the harmonic sum), then the reflected diagonal, then the cross main
+term — the last being the genuinely hard one, and the one brick 5af proved must be *evaluated*
+rather than bounded.
+
+## Brick 5aq — the twisted main term's removable singularity is evaluated (2026-08-30)
+
+`RHTower/Sieve/TwistedMainTermMerge.lean` (axiom-clean, wired).  The second component of the
+analytic gate: the *shape* of the twisted second moment's main term.
+
+Write `h' = h/(h,k)`, `k' = k/(h,k)`, `c = h'k'`.  The classical main term is the shifted diagonal
+series together with its functional-equation reflection,
+
+```text
+bchbMergeCore X c w  =  c^{-w/2} ζ(1+w)  +  X^{-w} c^{w/2} ζ(1-w).
+```
+
+Each summand has a simple pole at `w = 0`, with residues `+1` and `-1`.
+
+* `bchbMergeCore_eq` — the exact split `bchbMergeCore = w⁻¹·gap + reg`, where
+  `gap w = c^{-w/2} - X^{-w}c^{w/2}` vanishes at `w = 0` and
+  `reg w = c^{-w/2}ζ₀(1+w) + X^{-w}c^{w/2}ζ₀(1-w)` is entire (`riemannZeta₀` is mathlib's
+  pole-free completion, with `riemannZeta₀ 1 = γ`).
+* `hasDerivAt_bchbMergeGap` — `gap'(0) = log X − log c`.
+* `tendsto_bchbMergeGap_div` — hence `w⁻¹ gap(w) → log X − log c` (difference quotient at `0`).
+* `tendsto_bchbMergeReg` — `reg(w) → 2γ` by continuity.
+* **`tendsto_bchbMergeCore`** —
+
+  ```text
+  bchbMergeCore X c w  ⟶  log X − log c + 2γ      (w → 0, w ≠ 0).
+  ```
+
+Reduced-ray packaging:
+
+* `reducedProduct_mul_gcd_sq` — `h'k'(h,k)² = hk`;
+* **`sqrt_reducedProduct_mul_gcd`** — `√(h'k')·(h,k) = √(hk)`, i.e. `(h'k')^{-1/2} = (h,k)/√(hk)`:
+  the Balasubramanian–Conrey–Heath-Brown normalization;
+* `log_reducedProduct_merge` — `log X − log(h'k') = log(X(h,k)²/(hk))`;
+* **`tendsto_bchbMergeCore_reduced`** — the merged value on the reduced ray is
+  `log(X(h,k)²/(hk)) + 2γ`;
+* **`bchbTwistedMainTerm_eq`** — the packaged main term
+
+  ```text
+  bchbTwistedMainTerm X h k = ((h,k)/√(hk))·( log(X(h,k)²/(hk)) + 2γ )
+  ```
+
+  equals `(h'k')^{-1/2}` times the merged shifted pair.
+
+**Consistency check against brick 5ap.**  With `X = t/2π` and `∫_0^T … dt` this is exactly
+
+```text
+T·((h,k)/√(hk))·( log(T(h,k)²/(2πhk)) + 2γ − 1 ),
+```
+
+the BCHB statement.  Brick 5ap evaluated the *direct* diagonal at cutoff `x(t) = √(t/2π)`, giving
+`2·((h,k)/√(hk))·(½log(t/2π) + γ − log max(h',k'))`; integrating over `t ∈ [0,T]` this differs from
+BCHB by exactly `((h,k)/√(hk))·T·log(max(h',k')/min(h',k'))`.  So the two Lean bricks now pin the
+cross term's main term *numerically*, not just structurally: the reflected term
+`χ(1/2+it)·(∑_{n≤x} n^{-1/2+it})²·(h/k)^{-it}` must contribute exactly
+
+```text
+T·((h,k)/√(hk))·log( max(h',k') / min(h',k') ),
+```
+
+which is the residue of the stationary point `t₀ = 2π mn k'/h'` of the phase
+`−t log(t h'/(2π mn k'))`.  This is the brick that must be *evaluated*, as brick 5af showed.
+
+## Bricks 5ar–5at — the stationary-phase keystone (2026-08-30)
+
+Brick 5aq pinned the cross term's target value.  Evaluating it needs stationary phase *with a main
+term* — an asymptotic the corpus did not own (it owned only van der Corput upper bounds).  Three
+modules now build it from the corpus's own Fresnel stack.
+
+### 5ar `RHTower/QuadraticPhaseStationary.lean` — the local model
+
+The exact quadratic phase, with an explicit error:
+
+```text
+‖ ∫_{-R}^{R} e^{i μ t²/2} dt  −  √(2π/μ)·e^{iπ/4} ‖  ≤  8/(μR)      (μ > 0, R > 0),
+```
+
+`norm_integral_quadPhase_sub_le`, plus the conjugate `norm_integral_quadPhase_conj_sub_le` for the
+reversed phase (value `√(2π/μ)e^{-iπ/4}`).  Proved by `t = x√(2/μ)` from the corpus's
+`norm_integral_fresnel_sub_le` (`‖∫_0^R e^{ix²}dx − (√π/2)e^{iπ/4}‖ ≤ 2/R`) together with
+`integral_quadPhase_symm` and `integral_quadPhase_scale`.
+
+### 5as `RHTower/LogPhaseProfile.lean` — the universal profile
+
+The key structural observation: the archimedean phases arising from `χ(1/2+it)·n^{it}` all have the
+**same** local shape.  Its carrier is
+
+```text
+ψ(v) = v − (1+v) log(1+v),      ψ(0) = 0,   ψ'(v) = −log(1+v).
+```
+
+Proved: `logPhaseProfile_nonpos` (0 is a strict maximum, from `log(1+v) ≥ v/(1+v)`),
+`neg_logPhaseProfile_le_sq` (`−ψ(v) ≤ v²` on all of `(−1,∞)`),
+`sq_div_four_le_neg_logPhaseProfile` (`−ψ(v) ≥ v²/4` on `(−1,1]`), and strict monotonicity of `−ψ`
+on each side of `0` (`strictMonoOn_neg_logPhaseProfile`, `strictAntiOn_neg_logPhaseProfile`) — the
+injectivity needed to invert the Morse substitution `w = sgn(v)√(−2ψ(v))`.
+
+Both quadratic comparisons come from one elementary gap, `K(v) = log(1+v) − v/2`, monotone on
+`(−1,1]` and vanishing at `0` (`monotoneOn_halfLogGap`).
+
+### 5at `RHTower/LogLinearPhaseReduction.lean` — the exact factorisation
+
+For `f_B(t) = (B+1)t − t log t` (the phase of `χ(1/2+it)(mn)^{it}(h/k)^{-it}` with
+`B = log(2π mn k'/h')`):
+
+* `hasDerivAt_logLinearPhase` — `f_B'(t) = B − log t`, so the stationary point is `t₀ = e^B`;
+* `logLinearPhase_exp` — `f_B(t₀) = t₀`;
+* **`logLinearPhase_sub_eq`** — the *exact* identity, no approximation:
+
+  ```text
+  f_B(t₀(1+v)) − f_B(t₀) = t₀ · ψ(v);
+  ```
+
+* `logLinearPhase_drop_bounds` — hence `t₀v²/4 ≤ f_B(t₀) − f_B(t₀(1+v)) ≤ t₀v²` for `|v| ≤ 1`.
+
+**Why this matters.**  A general stationary-phase theorem would need a `C³` Morse lemma.  Here the
+substitution is a *single universal function* `ψ`, independent of `B` — exactly the situation the
+corpus already handled for `J₀` (where the universal substitution was `v = 2 sin(φ/2)`).  So the
+cross term reduces to the quadratic model of 5ar plus a fixed Jacobian correction, with the scale
+`μ = t₀ = 2π mn k'/h'` entering only as a parameter.
+
+**The arithmetic consequence, now visible.**  At the stationary point the phase is `t₀` itself, so
+the cross term's saddle contributions carry the factor
+
+```text
+e^{i t₀} = e^{2π i · mn k'/h'},
+```
+
+a root of unity depending on `mn k' mod h'`.  For `h' = 1` all saddles are in phase and the sum is a
+clean main term; for general `h'` the sum over `m,n` of these roots of unity is a **Ramanujan /
+Kloosterman sum**.  That is the precise arithmetic content of the Balasubramanian–Conrey–Heath-Brown
+error term, and it is the next brick.
+
+## Bricks 5au–5av — the Morse coordinate is built (2026-08-30)
+
+### 5au `RHTower/LogPhaseCubic.lean` — the cubic refinement
+
+Inverting the substitution needs `-ψ` to agree with `v²/2` to third order, not merely up to
+constants.  Proved, with explicit constants and no asymptotic notation:
+
+* `abs_logRemainder_le_sq` — `|log(1+v) − v| ≤ v²` for `|v| ≤ 1/2`, from the sign of the two
+  comparison functions `v² ± (log(1+v) − v)`, whose derivatives are `v(1+2v)/(1+v)` and
+  `v(3+2v)/(1+v)`;
+* **`abs_logPhaseCubicRemainder_le`** — `| −ψ(v) − v²/2 | ≤ |v|³/3` for `|v| ≤ 1/2`.
+
+The module also contributes three reusable one-sided comparison helpers (vanishing at `0`, with a
+signed derivative on a half-interval).
+
+### 5av `RHTower/LogPhaseMorse.lean` — the substitution
+
+```text
+w(v) = sgn(v) · √(−2ψ(v)).
+```
+
+* `logPhaseMorse_sq` — the defining identity `w(v)² = −2ψ(v)`, i.e. `ψ(v) = −w(v)²/2`;
+* `neg_logPhaseProfile_pos` — `ψ(v) < 0` strictly away from the stationary point (so `w` is
+  strictly signed);
+* `logPhaseMorse_pos` / `logPhaseMorse_neg` — sign preservation;
+* **`strictMonoOn_logPhaseMorse`** — `w` is strictly increasing on `(−1,∞)`, hence injective: the
+  substitution is a genuine reparametrisation;
+* **`abs_logPhaseMorse_sub_le`** — the near-identity estimate
+
+  ```text
+  |w(v) − v| ≤ 2v²/3        for |v| ≤ 1/2,
+  ```
+
+  obtained by factoring `w² − v² = 2·(cubic remainder)` and dividing by `|w + v| ≥ |v|`, which holds
+  because `w` and `v` have the same sign.
+
+**State of the stationary-phase keystone.**  With 5ar (quadratic model, error `8/(μR)`),
+5at (exact reduction `f_B(t₀(1+v)) − f_B(t₀) = t₀ψ(v)`) and 5av (`ψ = −w²/2`, `w` a strictly
+monotone near-identity), the archimedean integral is
+
+```text
+∫ g(t) e^{i f_B(t)} dt
+  = t₀ e^{i t₀} ∫ g(t₀(1+V(w))) e^{−i t₀ w²/2} V'(w) dw,
+```
+
+with `V` the inverse of `w`.  What remains for the cross term is (i) the Jacobian `V'(w) = 1 + O(w)`
+and its integral against the quadratic kernel, and (ii) the arithmetic sum over `m,n` of the saddle
+phases `e^{2πi mnk'/h'}` — a Ramanujan/Kloosterman sum.
+
+## Brick 5aw — STRUCTURAL CORRECTION: the adapted approximate functional equation (2026-08-30)
+
+Brick 5af concluded that the cross term of the twisted second moment must be *evaluated* rather
+than bounded.  That conclusion is an artefact of the **symmetric** approximate functional equation
+`x = y = √(t/2π)`, and it is removable.
+
+**The observation.**  The Hardy–Littlewood/Riemann–Siegel AFE holds for *any* split `2πxy = t`:
+
+```text
+ζ(1/2+it) = ∑_{m ≤ x} m^{-1/2-it} + χ(1/2+it) ∑_{n ≤ y} n^{-1/2+it} + O(x^{-1/2}) + O(y^{-1/2}).
+```
+
+Choose the split **adapted to the twist**:
+
+```text
+x = √( t k / (2π h) ),      y = √( t h / (2π k) ),      xy = t/2π.  ✓
+```
+
+On the diagonal ray `nk = mh`, i.e. `m = k'd`, `n = h'd` with `h' = h/(h,k)`, `k' = k/(h,k)`, the two
+cutoffs then coincide:
+
+```text
+x/k' = y/h' = D(t) = √( t (h,k)² / (2π h k) ),
+```
+
+so the diagonal condition is simply `d ≤ D(t)`, and
+
+```text
+∑_{m≤x, n≤y, nk=mh} (mn)^{-1/2}
+      = ((h,k)/√(hk)) · ( log D(t) + γ + O(1/D) )
+      = ((h,k)/√(hk)) · ( ½ log( t(h,k)²/(2πhk) ) + γ + O(1/D) ).
+```
+
+Doubling (the `2|A|²` of `|ζ|² = 2AB + χ̄A² + χB²`) and integrating over `t ∈ [0,T]`:
+
+```text
+2 ∫_0^T ((h,k)/√(hk)) ( ½ log(t(h,k)²/(2πhk)) + γ ) dt
+      = T · ((h,k)/√(hk)) · ( log( T(h,k)²/(2πhk) ) + 2γ − 1 ),
+```
+
+which is **exactly** the Balasubramanian–Conrey–Heath-Brown main term — no discrepancy.
+
+**Consequence for the programme.**  With the adapted split:
+
+* the whole main term comes from the direct diagonal;
+* the cross term `χ B² (h/k)^{-it}` and the direct off-diagonal are genuine *error* terms, to be
+  **bounded**, not evaluated;
+* no Ramanujan/Kloosterman evaluation is needed for the main term.
+
+This supersedes the "the cross must be evaluated" conclusion of brick 5af (which remains correct
+*for the symmetric split*: there the cross really does carry `log(max(h',k')/min(h',k'))`, exactly
+the amount by which the symmetric cutoff wastes the diagonal range).
+
+**Revised gate.**  The remaining analytic work is:
+
+1. the AFE itself with a general split `2πxy = t` (`x, y ≥ 1`), with error `O(x^{-1/2}+y^{-1/2})`;
+2. the adapted-cutoff diagonal (a two-cutoff refinement of brick 5ap);
+3. an upper bound for the direct off-diagonal `∑_{nk ≠ mh}`;
+4. an upper bound for the cross term — the corpus already owns the van der Corput first- and
+   second-derivative tests (`VanDerCorputLocal.secondDerivTestOn`,
+   `VanDerCorputSecond.norm_integral_cexp_secondDeriv_oneside`), and bricks 5ar/5at/5av give the
+   exact phase geometry needed to apply them with the right constants.
+
+The stationary-phase stack of 5ar–5av is not wasted: item 4 needs the same phase geometry, and the
+main-term machinery of 5aq stays as the independent check that the two routes agree.
+
+## Bricks 5ax–5ay — the adapted diagonal and its archimedean integral (2026-08-30)
+
+The two Lean bricks that turn the structural correction 5aw into a theorem.
+
+### 5ax `RHTower/Sieve/TwistedDiagonalAdapted.lean`
+
+* `twisted_diagonal_reindex_pair` / `twisted_diagonal_reindex_gcd_pair` — the diagonal reindexing
+  with **independent** cutoffs for the two variables (the single-cutoff version of the corpus only
+  covers the symmetric split);
+* `twistedDiagonalAdapted_membership` — with cutoffs `k'D` and `h'D` the diagonal range is exactly
+  `1 ≤ d ≤ D`: no truncation loss;
+* **`twistedDiagonalAdapted_sum_eq`** —
+
+  ```text
+  ∑_{m ≤ k'D, n ≤ h'D, nk = mh} (mn)^{-1/2} = ((h,k)/√(hk)) · H_D ;
+  ```
+
+* **`abs_twistedDiagonalAdapted_sub_main_le`** —
+
+  ```text
+  | … − ((h,k)/√(hk))·( log D + γ ) | ≤ ((h,k)/√(hk))·(1/D).
+  ```
+
+With `D = √( t(h,k)²/(2πhk) )` the cutoffs are `k'D = √(tk/(2πh))` and `h'D = √(th/(2πk))`, whose
+product is `t/2π` — the adapted approximate functional equation.
+
+### 5ay `RHTower/Sieve/BchbDensityIntegral.lean`
+
+The archimedean integration that produces the classical `2γ − 1`:
+
+```text
+∫_a^b ( log(ct) + 2γ ) dt = b( log(cb) + 2γ − 1 ) − a( log(ca) + 2γ − 1 )
+```
+
+(`integral_bchbLogDensity`, via the antiderivative `t(log(ct) + 2γ − 1)`).  Taking
+`c = (h,k)²/(2πhk)` and doubling the adapted diagonal density `½log(ct) + γ` gives exactly
+
+```text
+T · ((h,k)/√(hk)) · ( log( T(h,k)²/(2πhk) ) + 2γ − 1 ),
+```
+
+the Balasubramanian–Conrey–Heath-Brown main term.  The `−1` is produced by the integration, not by
+the arithmetic — which is why the symmetric split appeared to lose it.
+
+**Gate status.**  Main term: closed (arithmetic 5ax + archimedean 5ay, cross-checked against the
+independent shifted-pair evaluation 5aq).  Remaining: the approximate functional equation with a
+general split, and *upper bounds* for the direct off-diagonal and the cross term.
+
+## Brick 5az — the corpus already owns the arbitrary-split exact AFE (2026-08-30)
+
+Item 1 of the revised gate (5aw) turns out to be **already owned**, and in a stronger form than the
+classical Hardy–Littlewood statement: the corpus has an *exact identity*, not an approximation, and
+it holds for **every** split parameter.
+
+`RHTower/SmoothAFEZetaDualReflection.lean`:
+
+```text
+riemannZeta_line_eq_two_tsum_smoothAFE_dualWeight  (hx : 0 < x) (τ : ℝ) :
+  ζ(1/2+iτ) = ∑'_n (n+1)^{-(1/2+iτ)} · smoothAFECutoff((n+1)/x)
+            + ∑'_n χ(1/2+iτ)·(n+1)^{(1/2+iτ)-1} · smoothAFEZetaDualWeight τ ((n+1)·x)
+            − smoothAFEZetaShiftedPoleResidue (1/2+iτ) x
+```
+
+with `riemannZeta_eq_tsum_smoothAFECutoff_sub_dual_sub_residue_general`
+(`RHTower/SmoothAFEZetaGeneral.lean`) the off-line version, and the cutoff's two-sided behaviour in
+`RHTower/SmoothAFECutoffBounds.lean`:
+
+* `exists_norm_smoothAFECutoff_le_neg_rpow` — decay above the scale;
+* `exists_norm_smoothAFECutoff_sub_one_le_rpow` — `φ ≈ 1` below the scale.
+
+**Why the adapted split is legitimate here.**  In `∫ ζ(1/2+it)·ζ(1/2−it)·(h/k)^{-it} dt` the two
+factors are *separate* instances of the identity, at `τ = t` and `τ = −t`, each with its **own**
+free parameter.  Taking
+
+```text
+x₁ = √( t k / (2π h) )   for the ζ(1/2+it) factor,
+x₂ = √( t h / (2π k) )   for the ζ(1/2−it) factor,
+```
+
+gives `x₁x₂ = t/2π` and `x₁/k' = x₂/h' = D(t)`, which is exactly the adapted split of 5aw.  Nothing
+is approximated: the identity is exact for each choice, so the whole main term is the direct×direct
+diagonal, evaluated in 5ax and integrated in 5ay.
+
+**Updated gate list.**
+
+1. ~~the AFE with a general split~~ — **owned** (exact, smoothed, arbitrary split);
+2. the adapted diagonal — **closed** (5ax), for sharp cutoffs; the smooth-cutoff version is a
+   comparison against `exists_norm_smoothAFECutoff_sub_one_le_rpow` / `..._le_neg_rpow`;
+3. the archimedean integration — **closed** (5ay);
+4. an upper bound for the direct off-diagonal `nk ≠ mh`;
+5. an upper bound for the cross term (direct × dual) — the phase geometry is 5at/5av, the
+   oscillatory bounds are the corpus's van der Corput tests;
+6. the dual × dual term, which by the functional equation mirrors 2–4;
+7. the pole-residue term, which is `O(x^{1/2}/|t|)`-size and harmless.
+
+No step in this list is open mathematics; all are classical and now have their Lean prerequisites in
+the tree.

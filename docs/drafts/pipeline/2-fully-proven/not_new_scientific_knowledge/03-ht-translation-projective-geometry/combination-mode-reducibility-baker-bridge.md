@@ -97,3 +97,48 @@ NOT formalized (and not claimable unconditionally in Lean today): Lemma R(ii) �
 Baker–Wüstholz effective lower bound `|m·ℓ| ≥ γ·H(m)^{-κ}` — and the Part-1 pigeonhole no-go;
 these remain classical-import / paper-tier. The formalized floor is exactly the
 unique-factorization half the card marks as (i).
+
+## Lean anchor — 2026-08-30 (Part 1 closed)
+
+The **Part-1 pigeonhole no-go** listed above as "NOT formalized" is now Lean-proved,
+unconditionally and axiom-clean, in
+`formal/GaloisForLFunctions/HTGeometry/DirichletBoxLinearForm.lean`:
+
+- `sub_le_of_min_floor_eq` — two reals in `[0, K·b]` with the same clamped box index differ by at
+  most `b` (the box-principle estimate, with the top box closed);
+- **`exists_small_linear_form`** — Dirichlet's box principle for a nonnegative linear form: for every
+  `s ≥ 1`, every `ℓ : Fin s → ℝ≥0` and every `N ≥ 1` there is a **nonzero** integer mode `m` with
+  `|m_i| ≤ N` and
+
+  `|∑ m_i ℓ_i| ≤ N·(∑ ℓ_i) / ((N+1)^s − 1)`;
+
+- **`exists_small_mode_of_subexponential`** — if the partial sums `∑_{i<s} ℓ_i` are
+  `o(3^s)` then modes with entries bounded by `2` make the form arbitrarily small;
+- **`not_polynomially_diophantine`** — the card's statement: for every `γ > 0` and every exponent
+  `κ` there is a nonzero mode with `H(m) = 3` and `|m·ℓ| < γ·3^{-κ}`, so no fixed-exponent
+  Diophantine condition can hold once the support size is free.  This is precisely
+  "`(log p)_∞` is not polynomially Diophantine over unbounded-support modes", with the
+  subexponential growth of `∑_{i<s} log p_i` supplied as the hypothesis on the frequency vector.
+
+Still not formalized: **Lemma R(ii)** — the effective Baker–Wüstholz lower bound
+`|m·ℓ| ≥ γ·H(m)^{-κ}` for the prime frequency.  That is the single remaining classical import for
+this card; the corpus owns qualitative Baker only.
+
+### §3 and §4 are also closed (2026-08-30)
+
+- `HTGeometry/HankelDetTotalDegree.lean` — **`totalDegree_hankelDet_le`**: the determinant of the
+  `d × d` Hankel matrix in the indeterminates `P_k` has total degree at most `d`.  This is §3: every
+  monomial of the reducibility condition carries combination-mode support at most `d`, so bounded
+  degree bounds the support.
+- `HTGeometry/IntegerLogGap.lean` — `one_sub_inv_le_log`, `gap_div_le_log_div` and
+  **`gap_div_le_abs_log_div`**: for distinct positive integers,
+  `|a − b| / max(a,b) ≤ |log(a/b)|`.  This is the elementary integer-gap bound that §4 identifies as
+  the controlling estimate for the edge coboundary norm (the place where Baker is *not* the
+  operative input).
+
+**Card status.**  Lemma R(i), §2 Part 1, §3 and §4's controlling bound are all formalized
+unconditionally.  The one remaining classical import is **Lemma R(ii)**, the effective
+Baker–Wüstholz lower bound for a fixed finite set of prime logarithms.  Note that the elementary
+bound `|∑ m_p log p| ≥ (∏ p)^{−H(m)}` available from `gap_div_le_abs_log_div` is exponential in
+`H(m)` and therefore genuinely insufficient for R(ii), which needs the polynomial `H(m)^{−κ}` —
+this is exactly the sense in which the card says Baker is load-bearing.

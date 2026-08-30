@@ -1,7 +1,7 @@
 # Minimal higher-handle collapse — the elimination meta-theorem for the whole bucket
 
 - **ID:** ht-c28-minimal-handle-collapse
-- **Stage:** 2-fully-proven (DeWitt 2026-06-20; paper-complete BRIDGE classification, @Leaner review)
+- **Stage:** 3-formalized (class (I) closed in Lean 2026-08-29)
 - **Type:** THEOREM (classification/grading diagnosis) — Door grade **BRIDGE** (synthesis of classical theorems)
 - **Source:** ../../door/bucket-hypertranscendence.md · C28
 - **Statement:** Suppose a generic-looking HT function satisfies one proposed extra finite handle (shift, integral, transform, addition, finite-state). A minimal-complexity counterexample either is genuinely exceptional or collapses, after elimination, into a forbidden nonzero differential polynomial in `f`.
@@ -112,3 +112,46 @@ BRIDGE (single-handle collapse, ht-c28); C03→Malgrange-Casale; C29→Écalle. 
   residue located (Malgrange/Écalle/apex); apex externalized; honest grade BRIDGE. **@Leaner review.**
 - [ ] 2 → 3: Lean — would formalize the per-handle-type collapse citations + the dichotomy statement (scope:
   a classification, not a deep theorem; the classical theorems are imports).
+
+## Lean status (2026-08-29) — class (I) is fully formalized
+
+**Capstone:** `GaloisForLFunctions.HTGeometry.hypertranscendental_no_classI_handle`
+(`formal/GaloisForLFunctions/HTGeometry/SingleHandleCollapse.lean`).  For every differentiable
+`f : ℂ → ℂ` that is hypertranscendental, all five DA-forcing handles are simultaneously excluded:
+
+| Row | Handle | Lean input |
+|---|---|---|
+| C02 | algebraic addition theorem `f(x+y) = P(f x, f y)` | `differentiallyAlgebraic_of_additionTheorem` |
+| C05 | differentially algebraic derivative (integration closure) | `differentiallyAlgebraic_of_deriv` |
+| C07 | P-recursive Taylor coefficients | `differentiallyAlgebraic_of_pRecursive` |
+| C08 | stabilizing Padé table | `differentiallyAlgebraic_of_padeStabilization` |
+| — | an algebraic relation / rational representation | `differentiallyAlgebraic_of_algebraic`, `differentiallyAlgebraic_of_rational` |
+
+Two of these were built for this card and are new to the tree, both axiom-clean:
+
+- `HTGeometry/AdditionTheoremCollapse.lean` — **`differentiallyAlgebraic_of_additionTheorem`**.
+  The card cited Weierstrass's classification of functions with an algebraic addition theorem.  That
+  is not needed: differentiating `f(x+y) = P(f x, f y)` in `y` at the origin gives directly the
+  first-order autonomous equation `f' = Q(f)` with
+  `Q = f'(0)·(∂₂P)(·, f 0)`, and an autonomous annihilator witnesses differential algebraicity
+  (`differentiallyAlgebraic_of_autonomous`).  The classification is replaced by one derivative.
+- `HTGeometry/RationalPadeCollapse.lean` — **`differentiallyAlgebraic_of_rational`** (a rational
+  representation is an order-zero algebraic differential equation) and
+  **`differentiallyAlgebraic_of_padeStabilization`** (a Padé pair whose error has vanishing jets of
+  every order at the origin is exact, by the Taylor expansion of an entire function, hence gives a
+  rational representation).
+
+**Scope note.**  The card's class (II) ("single-parent — BRIDGE") and class (III) ("residue")
+rows are a grading of *which published theory covers which handle* — statements about the
+literature (van der Put–Singer, Hardouin–Singer, Malgrange–Casale, Écalle), not mathematical
+propositions about functions.  They carry no formalizable content: there is no proposition
+"this handle is covered by that theory" expressible in Lean.  The card's mathematical claim is
+exactly class (I), and that is now closed unconditionally.
+
+## Gates (updated 2026-08-29)
+- [x] 2 → 3: class (I) — the entire mathematical content of the collapse lemma — formalized
+  unconditionally in Lean; classes (II)/(III) are a bibliographic grading with no Lean content.
+
+## Log (continued)
+- 2026-08-29 — Formalized and promoted to stage 3.  The Weierstrass addition-theorem citation was
+  eliminated by an elementary first-order-ADE argument.

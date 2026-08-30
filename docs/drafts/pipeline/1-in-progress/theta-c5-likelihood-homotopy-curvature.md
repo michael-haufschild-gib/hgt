@@ -68,18 +68,17 @@ derivatives. None supplies the nonlinear seven-jet C5/Bose compensation curvatur
 
 ## Open core
 
-Prove or kill the fourth-cooling law
+Fourth cooling and the seam invariant are closed.  For the literal affine seven-jet homotopy, prove
+or kill the exact lower-transport inequality
 
 ```text
--F5 < 6 * A * F4,
+W''' * H + 3 * W'' * H' + 3 * W' * H'' < 0
 ```
 
-equivalently `(exp (3*A) * F4)' > 0`, on `A>=6`. Exact dominant-sector positivity is closed.
-Remaining paper obligations are: absorb all `n>=3` ordinary loss using the spectral gap, and prove
-the Bell correction cannot consume the dominant reserve. The lower cooling lemma
-`3*A*F2 < -F3` is now formal and axiom-audited. Once fourth cooling closes, the exact source seam invariant and the
-leading seam sign close without numeric input. Full `M'''(lambda)` and `M''(0)` remain beyond that
-seam gate.
+throughout `0 <= lambda <= 1`, where `W` is the literal Bose coefficient and `H` is the lower
+velocity transport.  This condition is equivalent to `M'''(lambda) > 0`; no highest displacement or
+second mixed-centre channel remains in it.  The independent initial condition `M''(0) >= 0` also
+remains before the convex likelihood lift can close.
 
 ## Log
 
@@ -90,3 +89,65 @@ seam gate.
   `2-fully-proven/computations/2026-08-29-c5-homotopy-seam-cooling/`.
 - 2026-08-29 — Closed lower cooling theorem `3*A*F2 < -F3` formalized in
   `ThetaCuspFixedActionC5LikelihoodLiftReduction`; targeted module build and axiom audit pass.
+- 2026-08-30 — `[LEAN-PROVED]` Fourth cooling closed in
+  `ThetaCuspLikelihoodFourthFifthLogCooling`.  The two cooling laws now give the exact strict seam
+  invariant `F2*F5 - 2*F3*F4 > 0`; quotient-rule formalization proves positive derivative and
+  tail-ray strict monotonicity of `F4/F2^2` in
+  `ThetaCuspLikelihoodHomotopySeamRatioOrientation`.  Current `[OPEN CORE]` is no longer seam
+  orientation: it is positivity of `M'''(lambda)` away from the seam together with `M''(0) >= 0`.
+  Current-literature audit found Planat--Solé's second-level theta-kernel concavity
+  (arXiv:2608.19160), but the corpus formal no-go shows that property does not imply C5; no located
+  primary result supplies this nonlinear seven-jet homotopy curvature.
+- 2026-08-30 — `[LEAN-PROVED ROUTE KILL]` Literal affine homotopy, both endpoints, and its first
+  three derivative profiles were formalized in
+  `ThetaCuspFixedActionC5LikelihoodHomotopyCurvatureReduction`.  Exact product-rule cancellation
+  proves
+  `M''' = -(W'''*H + 3*W''*H' + 3*W'*H'')`.  Consequently the entire velocity--slope numerator,
+  including third displacement and second mixed-centre likelihood channels, is absent from
+  `M'''`; changing those highest channels leaves third curvature definitionally unchanged.  This
+  kills every curvature proof based on the previously favorable highest-channel reserve.  The
+  positive survivor is the exact three-term lower-transport balance
+  `W'''*H + 3*W''*H' + 3*W'*H'' < 0`, now the sole off-seam `M'''` source burden.  `M''(0) >= 0`
+  remains separate.
+- 2026-08-30 — `[LEAN-PROVED SIGNIFICANT PREMISE]` The seam invariant was integrated globally,
+  without numerical bounds.  For `Fₖ` the source likelihood jets, the projective energy
+  `E = 3*F₃^2 - 2*F₂*F₄` satisfies
+  `E' = -2*(F₂*F₅ - 2*F₃*F₄) < 0` on every structural-tail ray, while exact cumulant decay gives
+  `E -> 0`.  Therefore `E > 0`, equivalently `2*F₂*F₄ < 3*F₃^2`; analytically this is strict
+  convexity of `1/sqrt(F₂)`.  Formalization is
+  `ThetaCuspLikelihoodHomotopyCurvatureEnergy`.  This discharges the first global nonlinear shape
+  premise behind `H''`; the remaining integral comparison from this projective curvature law to
+  the full reflected lower-transport determinant is still open.
+- 2026-08-30 — `[FROZEN CONJECTURE J]` Corpus search isolated the next projective derivative
+  
+  `J = F₃^2*F₄ + 2*F₂*F₄^2 - 2*F₂*F₃*F₅`.
+  
+  No matching invariant or exact reflected-integral consequence was found in the corpus or current
+  primary literature.  Writing `h=F₂`, `α=-F₃`, `C=F₄`, `γ=-F₅`, the identity is
+  `J = α^2*C + 2*h*C^2 - 2*h*α*γ`.  It is simultaneously the derivative numerator of
+  `C^2/(α^2*h)` and the negative derivative numerator of `E/α`.  The exact RH chain being attacked
+  is `J>0 -> reflected lower-transport determinant H''>0 -> M'''>0 -> convex likelihood lift ->
+  direct-J -> rank-four/Ptolemy -> CLG/TTF or Weil positivity -> RH`.
+- 2026-08-30 — `[PAPER ROUTE SURVIVES HOSTILE ALGEBRA]` Existing fourth/fifth cooling gives
+  `γ < 6*A*C`.  Two structural four-cooling laws suffice:
+  `4*A*h < α` and `4*A*α < C`.  They imply
+  `J > α*C*(α-4*A*h) > 0`.  The first law follows from the square-gap support recurrence and the
+  strict cumulant comparison `(5/2)*variance < thirdCumulant`.  For the second, introduce the
+  missing ordinary third score `P₃(z)=z^3-3*z^2+z`; on the exact support `z=A*t>=18`,
+  `4*z*P₃(z) <= 5*P₄(z)`.  Spectral integration gives
+  `4*A*ordinary₃ <= (5/6)*ordinary₄`; exact Bell algebra gives `α<ordinary₃`, while the existing
+  retention theorem gives `(19/20)*ordinary₄<C`.  Hence `4*A*α<C` with substantial structural
+  slack, not a tuned endpoint certificate.
+- 2026-08-30 — `[PAPER REFLECTED BRIDGE]` For a symmetric packet set
+  `a=h(u-t), b=h(u+t), α=-h'(u-t), β=-h'(u+t), C=h''(u-t), D=h''(u+t)`.
+  `J>0` makes `C^2/(α^2*h)` strictly increasing; `E>0` makes `1/sqrt(h)` strictly convex.  These
+  two facts imply the sharp endpoint comparison
+  `C*(b-t*β) <= D*(a+t*α)`.  Strict decrease of `E` then makes the derivative ratio
+  
+  `(α+β)/(2*(a+b)+t*(α-β))`
+  
+  strictly decreasing.  Two weighted monotone-l'Hospital integrations force
+  `t -> s(t)/(t*x(t))` strictly decreasing, where
+  `x=integral(h(u-r)+h(u+r))` and `s=integral(h(u-r)-h(u+r))`.  Its derivative numerator is exactly
+  the negative of the remaining lower-transport determinant
+  `K=(x+t*y)*s-t*x*m`.  Thus `K>0`, subject only to formalizing this audited calculus chain.

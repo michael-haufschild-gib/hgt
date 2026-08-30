@@ -117,6 +117,41 @@ theorem differentialAlgebraicOver_clock_iff_beta {c : F} (hc : c ≠ 0) {κ β �
       rw [add_zero]
       linear_combination -hτ
 
+/-! ## The canonical multiplicative scale calibration -/
+
+set_option maxHeartbeats 1000000 in
+/-- **The canonical scale calibration `L_a = exp(aτ)` is differentially algebraic exactly when the
+clock is.** -/
+theorem differentialAlgebraicOver_calibration_iff_clock {a : F} (ha : a ≠ 0) {τ Λ : L}
+    (hΛ : Λ ≠ 0) (hrel : Λ′ = algebraMap F L a * τ′ * Λ) :
+    (DifferentialAlgebraicOver F τ ↔ DifferentialAlgebraicOver F Λ) := by
+  have haL : algebraMap F L a ≠ 0 := by
+    intro h
+    exact ha ((injective_iff_map_eq_zero (algebraMap F L)).mp (algebraMap F L).injective _ h)
+  constructor
+  · intro hτDA
+    have hmemτ : τ ∈ differentialAdjoin F ({τ} : Set L) :=
+      subset_differentialAdjoin F ({τ} : Set L) rfl
+    have hmemτ' : τ′ ∈ differentialAdjoin F ({τ} : Set L) :=
+      derivationClosed_differentialAdjoin F ({τ} : Set L) hmemτ
+    have hcoeff : algebraMap F L a * τ′ ∈ differentialAdjoin F ({τ} : Set L) :=
+      IntermediateField.mul_mem _ (IntermediateField.algebraMap_mem _ a) hmemτ'
+    exact differentialAlgebraicOver_of_firstOrder_over_adjoin hτDA ⟨_, hcoeff⟩
+      ⟨0, IntermediateField.zero_mem _⟩ (by rw [add_zero]; exact hrel)
+  · intro hΛDA
+    have hmemΛ : Λ ∈ differentialAdjoin F ({Λ} : Set L) :=
+      subset_differentialAdjoin F ({Λ} : Set L) rfl
+    have hmemΛ' : Λ′ ∈ differentialAdjoin F ({Λ} : Set L) :=
+      derivationClosed_differentialAdjoin F ({Λ} : Set L) hmemΛ
+    have hcoeff : Λ′ / (algebraMap F L a * Λ) ∈ differentialAdjoin F ({Λ} : Set L) :=
+      IntermediateField.div_mem _ hmemΛ'
+        (IntermediateField.mul_mem _ (IntermediateField.algebraMap_mem _ a) hmemΛ)
+    refine differentialAlgebraicOver_of_firstOrder_over_adjoin hΛDA
+      ⟨0, IntermediateField.zero_mem _⟩ ⟨_, hcoeff⟩ ?_
+    show τ′ = 0 * τ + Λ′ / (algebraMap F L a * Λ)
+    rw [zero_mul, zero_add, eq_div_iff (mul_ne_zero haL hΛ)]
+    linear_combination -hrel
+
 /-! ## The chart change -/
 
 set_option maxHeartbeats 1000000 in
@@ -129,17 +164,18 @@ theorem differentialAlgebraicOver_of_scaled_over_intermediate
     (D₁ D₂ : Differential L) (E : IntermediateField F L)
     (hE₁ : @DerivationClosed F L _ _ _ D₁ E) (hE₂ : @DerivationClosed F L _ _ _ D₂ E)
     (hcompat₁ : ∀ y : F, D₁.deriv (algebraMap F L y) = algebraMap F L (y′))
-    (u : E) (hscale : ∀ y : L, D₂.deriv y = (u : L) * D₁.deriv y)
+    (u : E) (hscale : ∀ y : L, D₁.deriv y = (u : L) * D₂.deriv y)
     (htr : Algebra.trdeg F E < Cardinal.aleph0)
     {x : L} (hx : @DifferentialAlgebraicOver E L _ _ _ D₂ x) :
     @DifferentialAlgebraicOver F L _ _ _ D₁ x := by
   have hx₁ : @DifferentialAlgebraicOver E L _ _ _ D₁ x :=
     @differentialAlgebraicOver_scaled E L _ _ _ _
-      (@derivationClosedDifferential F L _ _ _ D₂ E hE₂)
-      (@derivationClosedDifferential F L _ _ _ D₁ E hE₁) D₂ D₁ u
+      (@derivationClosedDifferential F L _ _ _ D₁ E hE₁)
+      (@derivationClosedDifferential F L _ _ _ D₂ E hE₂) D₁ D₂ u
       (fun y => rfl) (fun y => rfl) hscale x hx
-  haveI : @DifferentialAlgebra F L _ _ _ _ D₁ := ⟨fun y => hcompat₁ y⟩
-  exact @differentialAlgebraicOver_of_intermediate_trdeg_lt_aleph0 F L _ _ _ _ D₁ _ _ E hE₁ htr
+  haveI hDA₁ : @DifferentialAlgebra F L _ _ _ _ D₁ :=
+    @DifferentialAlgebra.mk F L _ _ _ _ D₁ (fun y => hcompat₁ y)
+  exact @differentialAlgebraicOver_of_intermediate_trdeg_lt_aleph0 F L _ _ _ _ D₁ hDA₁ _ E hE₁ htr
     x hx₁
 
 end
