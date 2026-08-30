@@ -1,7 +1,7 @@
 # Poincare hypertranscendence by exact constraint-order recession
 
 - **ID:** `poincare-constraint-order-recession`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Scientific status:** `[BRIDGE] [PROVED]`; downgraded after parent audit of the exact-order input
 - **Lane:** general hypertranscendence; constraint-limit mechanism
@@ -345,3 +345,94 @@ attached to a self-biholomorphism, already in the corpus) together with `Algebra
 the elementary jet identity `(φ(λᵏ ·))⁽ʲ⁾(z) = λ^{kj} φ⁽ʲ⁾(λᵏ z)`.  With that, the common family has
 size `2p` for every `k`, `differentiallyAlgebraicOfOrder_of_comp_witness` bounds every
 `ord_DA(f^{[k]})` by `2p`, and `exists_exactDifferentialOrder_poincareApprox_exp_ge` contradicts it.
+
+## BERGWEILER'S HALF IS PROVED
+
+`formal/GaloisForLFunctions/HTGeometry/PoincareHypertranscendence.lean` (built, wired,
+axiom-clean):
+
+```text
+dilationMeroEquiv, dilationMeroEquiv_analyticMeroElement
+    precomposition by z ↦ c z as an automorphism of the meromorphic field
+dilationMeroEquiv_algebraMap, dilationMeroAlgHom
+    it fixes the constants, so it is a ℂ-algebra automorphism
+AlgebraicWitness.const_mul
+    a nonzero constant multiple of a witnessed element is witnessed over the same family
+exists_dilate_jet_algebraicWitness
+    ** a dilate has a witness family of the SAME SIZE: the jets of φ(c ·) are constant multiples
+       of the images of the jets of φ **
+exists_univ_witness_family
+    the witness family in the global instance stack
+exists_uniform_order_of_conjugacy
+    ** UNIFORM order bound: every entire g with g ∘ φ = φ(c ·), any c ≠ 0, satisfies an algebraic
+       differential equation of one and the same order, depending only on φ **
+not_differentiallyAlgebraicOn_of_unbounded_conjugates
+    ** a nonconstant entire φ conjugating maps of unbounded differential order into dilations
+       satisfies NO algebraic differential equation **
+differentiable_exp_iterate, exp_iterate_conj
+not_differentiallyAlgebraicOn_poincare_exp
+    ** BERGWEILER: every nonconstant entire solution of exp ∘ φ = φ(λ ·) with nonvanishing realized
+       derivative is HYPERTRANSCENDENTAL **
+```
+
+The mechanism is exactly the card's own: the iterates `exp^{[k]}` have differential order exactly
+`k` (`ExponentialTowerUnitCost.exactDifferentialOrder_expTower`, unconditional), while a
+differentially algebraic `φ` would force all of them to have one bounded order.  So the card's
+"constraint-order recession" is not merely a quantitative refinement of Bergweiler — **it is the
+proof of Bergweiler**, in this class.
+
+### Card status
+
+```text
+ord_DA(g_n) = n for the canonical approximants   exactDifferentialOrder_poincareApprox_exp   DONE
+the locally uniform limit φ is HT                not_differentiallyAlgebraicOn_poincare_exp  DONE
+```
+
+Both halves are Lean-closed, unconditionally and axiom-clean, for `Complex.exp` — a transcendental
+entire solution of the autonomous first-order equation `f′ = f`, i.e. an explicit member of the
+card's class.  The HT half (`not_differentiallyAlgebraicOn_of_unbounded_conjugates`) is proved in
+**full generality**: it needs only that the conjugated family has unbounded differential order.
+Extending the card to its whole class is therefore exactly the unit-cost law for the general
+Briot–Bouquet normal form, for which the corpus already has
+`ExpPolyAllHeights.exactDifferentialOrder_expPolyCascade_all`.
+
+## CARD CLOSED — both halves Lean-proved for the whole class
+
+`formal/GaloisForLFunctions/HTGeometry/BriotBouquetPoincare.lean` (built, wired, axiom-clean)
+finishes the card for its entire class, not just for one member:
+
+```text
+briotBouquetMap a b c d = fun w => d + c * exp (a w + b)
+    the transcendental entire solution of an autonomous first-order equation
+briotBouquetMap_eq_expPoly, natDegree_linearPoly
+exactDifferentialOrder_briotBouquet_iterate
+    ** ord_DA(f^{[n]}) = n, unconditionally, for every a ≠ 0, c ≠ 0 **
+differentiable_briotBouquetMap, differentiable_iterate_of_entire, iterate_conj
+exactDifferentialOrder_poincareApprox_briotBouquet
+    ** ord_DA(g_n) = n for the canonical approximants g_n(z) = f^{[n]}(ζ + z/λⁿ) **
+not_differentiallyAlgebraicOn_poincare_briotBouquet
+    ** the Poincaré function is HYPERTRANSCENDENTAL **
+```
+
+The unit-cost law comes from `ExpPolyAllHeights.exactDifferentialOrder_expPolyCascade_all` applied
+to the constant cascade, through `PoincareRecession.entireCascade_const`; the affine invariance is
+`PoincareRecession.exactDifferentialOrder_poincareApprox`; the hypertranscendence is
+`PoincareHypertranscendence.not_differentiallyAlgebraicOn_of_unbounded_conjugates`, whose proof is
+the card's own recession mechanism — a differentially algebraic Poincaré function would force every
+iterate to satisfy an equation of one and the same order.
+
+So the card's two claims
+
+```text
+ord_DA(g_n) = n   and   the locally uniform limit φ is hypertranscendental
+```
+
+are both unconditional Lean theorems with axiom surface `propext, Classical.choice, Quot.sound`.
+Bergweiler's theorem is no longer an import: for this class it is *proved here*, from the exact
+recession profile.
+
+## Gates
+
+- [x] 0 -> 1: canonical approximants and well-posed order invariant.
+- [x] 1 -> 2: complete paper proof.
+- [x] 2 -> 3: both halves formalized unconditionally in Lean 4, axiom-clean.

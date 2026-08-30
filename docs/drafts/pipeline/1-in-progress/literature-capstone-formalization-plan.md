@@ -1245,3 +1245,42 @@ class with the multiplicity-faithful finite combination of `zeta(s)/(s-rho)^l`, 
 their closed span is all of `L_1`.  The analytic kernel estimate required for that step is now
 closed; pointwise residue convergence alone must not be mislabeled as quotient-system
 completeness.
+
+## 2026-08-30 Burnol Theorem 5.2 Banach-valued contour edge
+
+`[LITERATURE, PAPER-PROVED]` The exact next object in Burnol's strong-convergence argument is the
+critical-line `L²` vector
+
+```text
+W_G(s) = (G(s) / zeta(s)) K_s,
+K_s(Z) = zeta(Z) (2+s) / ((Z+2)(Z-s)),   Re Z = -1/2,
+```
+
+for source-contour parameters `Re s >= -1/4`.  The preceding leaf now also realizes `K_s` as an
+actual `Lp C 2 volume` vector, proves its norm is at most
+
+```text
+9 (1 + |s|^2) ||B||_2,
+```
+
+and proves `s |-> K_s` continuous into that Banach space.  Consequently, for every continuous
+path `gamma : R -> {s // -1/4 <= Re s}` along which `G/zeta` is continuous,
+`x |-> W_G(gamma x)` is continuous and Bochner interval-integrable.  For `a <= b`, the Banach
+integral inequality and the displayed pointwise estimate give
+
+```text
+|| integral_[a,b] W_G(gamma x) dx ||_2
+ <= integral_[a,b]
+      9 |G(gamma x)/zeta(gamma x)| (1+|gamma x|^2) ||B||_2 dx.
+```
+
+This proof is dependency-closed: continuity follows from continuous scalar multiplication and the
+already-proved `L²` parameter continuity; the norm estimate is `||c v||=|c| ||v||`; interval
+integrability follows from continuity; and the conclusion is Bochner's norm inequality followed
+by interval-integral monotonicity.  No point evaluation on an `L²` equivalence class and no
+exchange of an unevaluated quotient integral is used.
+
+`[OPEN CORE]` Formalize this exact vector edge, then combine rapid source decay and selected-height
+inverse-zeta bounds to make horizontal edge norms summable.  The following step is the
+multiplicity-faithful identification of each finite vector residue block with the principal-part
+quotient-system vectors; scalar pointwise residue convergence alone remains insufficient.

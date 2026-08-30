@@ -358,3 +358,72 @@ The degenerate branch is therefore reduced to a single arithmetic condition: the
 by the descent cancelling exactly, `i = d` and `k = −m·d`.  Every other configuration — a
 non-monomial numerator or denominator at either scaling level, a monomial with a surviving exponent,
 or a nonzero inhomogeneity — now lands on Ritt's relation or on the affine obstruction.
+
+### The logarithmic derivative names the obstruction (2026-08-30)
+
+`HTGeometry/RittBaseExponent.lean` and `HTGeometry/RittLogDerivativeObstruction.lean` close the last
+structural question about the *homogeneous* branch: which named obstruction it is.
+
+The scalars the descent produces are monomials `q^i·ρ^k`, and the `q`-exponent is **invisible to the
+logarithmic derivative**, because the multiplier `q` is a derivation constant.  With the base chain
+rule `dK ∘ ψ = ρ·(ψ ∘ dK)` (`RittFrame.dK_psi`), an eigen-relation `ψ(u) = c·u` becomes
+
+```text
+ρ · ψ(v) = v + dK c / c ,        v = dK u / u,
+```
+
+and for `c = q^i·ρ^k` the inhomogeneity is exactly `k · dK ρ / ρ`.  So
+
+| `k` | what the relation is |
+|---|---|
+| `k ≠ 0` | scaling by `−k` gives `ρ·ψ(a) = a − dK ρ/ρ` — the **rational affine-connection equation** |
+| `k = 0` | `ρ·ψ(v) = v` — an **invariant rational vector field** |
+
+| Statement | Name |
+|---|---|
+| `dK ∘ ψ = ρ·(ψ ∘ dK)` | `RittFrame.dK_psi` |
+| `dK` kills every integer power of a constant | `RittFrame.dK_zpow_eq_zero` |
+| `ρ^k = q^j` with `dK ρ ≠ 0` ⟹ `k = 0` | `RittFrame.zpow_exponent_eq_zero_of_eq_zpow_const` |
+| `dKLog` is a homomorphism `K^× → K`, `dKLog (a^k) = k·dKLog a` | `RittFrame.dKLog_mul`, `_inv`, `_zpow` |
+| `ψ(u) = c·u` ⟹ `ρ·ψ(dKLog u) = dKLog u + dKLog c` | `RittFrame.dKLog_relation_of_eigen` |
+| the monomial form, with inhomogeneity `k·dKLog ρ` | `RittFrame.dKLog_relation_of_monomial_eigen` |
+| **`k ≠ 0` ⟹ a rational affine connection** | `RittFrame.exists_affineConnection_of_monomial_eigen` |
+| `ψ(u) = u` ⟹ `ρ·ψ(dKLog u) = dKLog u` | `RittFrame.invariantVectorField_of_psi_fixed` |
+
+This makes the homogeneous branch consumable by `RationalAffineConnection.lean` directly, in its own
+vocabulary, without going through Ritt's form — and it does so *without seeing the `q`-exponent*, so
+the exponent cancellations are harmless for it.
+
+**Remaining, precisely.**  Only the fully degenerate configuration is untouched: the descent's
+scalar collapses to `q^0ρ^0 = 1` with zero inhomogeneity, leaving `ψ(u) = u`, whose logarithmic
+derivative `v` satisfies `ρ·ψ(v) = v` and may be zero — the case where every coefficient of the
+sliced fraction is a derivation constant, which forces numerator and denominator to be monomials over
+the constants.  Closing it needs either a map-level exclusion of that configuration or a global
+invariant along the descent that the current bookkeeping does not carry.
+
+### An eigenvector in the first jet field is already an affine connection (2026-08-30)
+
+`HTGeometry/RittFirstJetAffineDescent.lean` closes the loop between the logarithmic derivative and
+the two-step slicing.
+
+| Statement | Name |
+|---|---|
+| `d 1 = 0`, `d y⁻¹ = −(d y)·y⁻²` | `RittFrame.d_one`, `RittFrame.d_inv` |
+| the derivation carries `K⟮τ⟯` into `K⟮τ, d τ⟯` | `RittFrame.d_mem_adjoin_two_of_mem_adjoin_one` |
+| `σ x = c·x` in the extension ⟹ `ρ·σ(d x/x) = d x/x + dKLog c` | `RittFrame.dLog_relation_of_eigen_L` |
+| an affine relation over `K⟮τ, d τ⟯` descends to the base in two slicings | `RittFrame.exists_base_affine_of_secondJetField` |
+| **an eigenvector `x ∈ K⟮τ⟯` with `σ x = q^i ρ^k·x` gives `∃ a ∈ K, ρ·ψ(a) = a + k·dKLog ρ`** | `RittFrame.exists_base_affine_of_firstJetField_eigen` |
+
+For `k ≠ 0` that last relation *is* the rational affine connection after scaling by `−k`; for `k = 0`
+it is the invariant-vector-field equation.  The mechanism: the logarithmic derivative of `x` lives in
+the second jet field, the chain rule turns the eigen-relation into an affine one there, and the two
+coprime slicings — in `d τ` over `K⟮τ⟯` (the shift scales by `q/ρ`), then in `τ` over `K` (it scales
+by `q`) — bring it down to the base.
+
+**What this leaves.**  In the degenerate branch the descended element at the level above the base is
+an eigenvector inside `K⟮τ⟯`, so it produces the affine connection unless its `ρ`-exponent `k₁`
+vanishes.  Tracking the exponent recursion, `k_{j−1} = k_j − (j−1)·s_{j−1}`, degeneracy at every
+level below the point where the inhomogeneity dies forces `s = 0` — equal numerator and denominator
+degrees — at each of those levels, on top of `k = 0` there.  Since the descent starts with `k = −n`
+and a nonzero Faà di Bruno inhomogeneity, closing the branch is now a finite combinatorial statement
+about where the inhomogeneity can die and what the degrees can be, not a structural gap.

@@ -1864,3 +1864,33 @@ Direct source check and targeted leaf build pass.  All 19 declarations audit to
 Card remains Stage 2.  Real and complex selected-minor inequalities and determinant domination are
 now available on the same interface; next obligation is their weighted all-place summation and the
 resulting global leading-minor descent.
+
+### Global real/Hermitian leading-minor descent (2026-08-30)
+
+The weighted all-place summation is now closed.  Four unconditional, umbrella-wired modules supply
+the full bridge:
+
+- `RealComplexSiegelSelectedMinor.lean` proves matching prescribed-minor bounds for real symmetric
+  and complex Hermitian Siegel forms.  Both retain the same row selector and expose the exact
+  `c^k · leading-weight-product · |minor|²` term.
+- `NumberFieldArchimedeanMinorLogSum.lean` proves the positive scalar log conversion and weighted
+  finite-sum aggregation.  A nonnegative global minor-log sum is discarded only after summation.
+- `NumberFieldArchimedeanCongruenceFrame.lean` identifies the leading block of the real/complex
+  number-field action with its transpose/conjugate-transpose frame.  At a complex place the selected
+  frame determinant is the conjugate of the embedding of the same integral row minor; at a real
+  place it is its real embedding.  Their absolute values therefore equal the corresponding
+  infinite-place absolute value exactly.
+- `NumberFieldArchimedeanLeadingMinorDescent.lean` chooses one common positive quasi-diagonal
+  constant for both local types, selects one globally nonzero integral minor, derives every target
+  leading determinant's positivity from the selected-minor inequality, and applies the weighted
+  algebraic-integer product formula.  Its capstone
+  `exists_numberFieldArchimedean_globalLeadingMinor_descent` is the complete all-place logarithmic
+  leading-minor comparison for simultaneous real/Hermitian Siegel data.
+
+Direct checks and targeted leaf builds pass.  Every new declaration audits to
+`[propext, Classical.choice, Quot.sound]`; umbrellas are wired without an umbrella build.  The false
+placewise assertion that a nonzero algebraic integer has modulus at least one is nowhere used.
+
+Card remains Stage 2.  Global leading-minor descent is closed; geometric work now proceeds to the
+greedy covering assembly and its finite-overlap consequence.  Tame-kernel finite generation and
+Moore reciprocity remain afterward.

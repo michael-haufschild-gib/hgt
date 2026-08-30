@@ -1517,3 +1517,45 @@ transcendence degree (**`trdeg_hankelSecantQuotient = 2r`**, both bounds), and
 formula for a derivation** (absent from mathlib), the fact that a derivation of a `(t+1)`-minor lies
 in the ideal of `t`-minors, and hence **`C_{k+1} ⊆ Sing(C_k)`**.  Card 11's `(6)` is now an
 equality and one containment of `(7)` is closed.
+
+### Card 10 is CLOSED and promoted (2026-08-30)
+
+`poincare-constraint-order-recession` is at stage 3.  Both halves of its theorem are unconditional
+Lean theorems for its whole class — the Briot–Bouquet normal form `f w = d + c·exp(a w + b)`:
+
+```text
+HTGeometry/ExponentialPoincareRecession.lean
+    exactDifferentialOrder_poincareApprox_exp
+HTGeometry/CompositionOrderTransfer.lean
+    eq_zero_of_eq_zero_on_range, deriv_iteratedDeriv_comp_entire,
+    differentiallyAlgebraicOfOrder_of_relation_on_range
+HTGeometry/CompositionJetClosure.lean
+    compJet, compJet_mem_differentialAdjoin, exists_relation_compJet_of_mem,
+    exists_relation_compJet(_of_algebraic(')/_of_witness('))
+HTGeometry/EntireCompositionDecomposition.lean
+    compJet_analyticMeroElement, differentiallyAlgebraicOfOrder_of_comp_witness
+HTGeometry/CompositionDecompositionLaw.lean
+    AlgebraicWitness.extend, differentiallyAlgebraic_of_comp
+HTGeometry/PoincareHypertranscendence.lean
+    dilationMeroEquiv, dilationMeroAlgHom, AlgebraicWitness.const_mul,
+    exists_dilate_jet_algebraicWitness, exists_univ_witness_family,
+    exists_uniform_order_of_conjugacy,
+    not_differentiallyAlgebraicOn_of_unbounded_conjugates,
+    not_differentiallyAlgebraicOn_poincare_exp
+HTGeometry/BriotBouquetPoincare.lean
+    briotBouquetMap, exactDifferentialOrder_briotBouquet_iterate,
+    exactDifferentialOrder_poincareApprox_briotBouquet,
+    not_differentiallyAlgebraicOn_poincare_briotBouquet
+```
+
+**Bergweiler's theorem is proved here, not imported.**  A differentially algebraic Poincaré function
+would force every iterate `f^{[k]}` to satisfy an algebraic differential equation of one and the
+same order — the bound being the size of a common algebraic-witness family, which is uniform in `k`
+because precomposition by a dilation is an automorphism of the meromorphic field fixing the
+constants.  That contradicts `ord_DA(f^{[k]}) = k`.  So the card's recession profile *is* the proof
+of the hypertranscendence it was previously importing.
+
+**Folder state: 13 of 16 cards at stage 3.**  Remaining: card 1 (effective Baker–Wüstholz),
+card 7 (its parent's étale-cover half), card 11 (normality / Cohen–Macaulay / rational singularities
+— neither mathlib nor this corpus has any Cohen–Macaulay theory; the corpus *does* have a large
+Stanley–Reisner development, which is the route).

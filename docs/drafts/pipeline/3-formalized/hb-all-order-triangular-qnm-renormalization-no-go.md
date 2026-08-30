@@ -1,8 +1,8 @@
 # HB all-order triangular QNM-renormalization no-go
 
 - **ID:** HB-ALL-ORDER-QNM-RENORM-NOGO
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** `rh-current-frontier-map.md` · HB `ORIENT DYN`
 - **Statement:** Every history-local perturbative QNM hierarchy with the actual mixed-Casimir-corrected leading Einstein--Teukolsky source and nonzero simple BM Jost derivative has a unique all-order modewise clock renormalization on every Xi fibre; formal solvability is therefore RH-blind, while vanishing of the full correction tower is exactly the critical wall and globally RH.
 
@@ -18,7 +18,7 @@ This is upstream of the RH receiver: the hierarchy is solved without selecting a
 
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea, Door passport sketch
 - [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorem `<name>`, `lake build` green, `check_axioms.sh` PASS
+- [x] 2 → 3  formalized: Lean theorem `RHTower.d4BMMixedCasimirAllOrderTriangularQNMClockRenormalization_noGo`, targeted `lake build` green, targeted `#print axioms` PASS
 - [ ] 3 → 4  publication-ready: standalone paper (theorem + proof + Lean certificate + Door-2)
 
 ## Approach
@@ -80,9 +80,20 @@ At `k=0`, the truncated history is zero and literal seeding gives `δ_0=-S(q)/D_
 - **Exact killing theorem/mechanism:** A simple Jost pole makes every history-local nonlinear perturbation hierarchy triangular with invertible diagonal; strong recursion uniquely absorbs the literal source on every fibre, including tilted ones.
 - **Strongest positive survivor:** Full correction-tower vanishing is exactly the critical wall and globally RH. Any live HB successor must derive that independent standard-clock condition, or exhibit a genuinely non-triangular multiple-pole/resonance obstruction invalidating simple-pole recursion.
 - **New insight:** Passing from one frequency counterterm to arbitrary formal order does not strengthen selection. Higher-order solvability contains no new horizontal information; all RH content is concentrated in forbidding the unique leading renormalization.
-- **Status:** Dependency-closed paper proof. Lean formalization pending.
+- **Status:** `[LEAN-PROVED]`. Exact capstone `RHTower.d4BMMixedCasimirAllOrderTriangularQNMClockRenormalization_noGo` in `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMAllOrderTriangularQNMClockRenormalizationNoGo`; strongest survivor and returned-Evans extinction are formalized. `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]` pending independent proof/priority review.
+
+## Lean certificate
+
+- **Module:** `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMAllOrderTriangularQNMClockRenormalizationNoGo.lean`
+- **Capstone:** `RHTower.d4BMMixedCasimirAllOrderTriangularQNMClockRenormalization_noGo`
+- **Positive survivor:** `RHTower.forall_d4BMMixedCasimirAllOrderQNMClockTower_allXi_eq_zero_iff_rh`
+- **Physical return:** `RHTower.d4BMMixedCasimirAllOrderClockRenormalizedReturnDeterminant_qnmPlus_eq_zero`
+- **Umbrella:** imported by `formal/GaloisForLFunctions/RHTower.lean`
+- **Verification:** direct `lake env lean` PASS; targeted `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMAllOrderTriangularQNMClockRenormalizationNoGo` PASS; capstone and global survivor depend only on `propext`, `Classical.choice`, `Quot.sound`.
+- **Lint:** new module is umbrella-reachable and contains no forbidden declarations; repository lint remains red only on unrelated pre-existing reachability debt.
 
 ## Log
 
 - 2026-08-30 — created directly in 1-in-progress after corpus and current-literature audit; conjecture targets remaining HB source-dynamical chain.
 - 2026-08-30 — `[PROVED HERE]`: strong-recursive existence, uniqueness, zero-tower classification, off-wall bright solvability, and global RH survivor closed on paper.
+- 2026-08-30 — `[LEAN-PROVED]`: exact all-order class theorem, global zero-tower/RH survivor, and leading returned-Evans extinction formalized; direct and targeted build gates pass.

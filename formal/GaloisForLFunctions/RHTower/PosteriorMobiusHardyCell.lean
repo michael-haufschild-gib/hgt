@@ -90,7 +90,7 @@ theorem twoPointWeight_add_neg (δ : ℝ) (b : Bool) :
 
 theorem withDensity_packetMeasure_singleton {Z : Type*} [Fintype Z] [Nonempty Z]
     [MeasurableSpace Z] [MeasurableSingletonClass Z] (p : Z → ℝ) {f : Z → ℝ≥0∞}
-    (_hfhf : Measurable f) (b : Z) :
+    (_hf : Measurable f) (b : Z) :
     ((packetMeasure p).withDensity f) {b} = ENNReal.ofReal (p b) * f b := by
   rw [withDensity_apply _ (measurableSet_singleton b),
     ← lintegral_indicator (measurableSet_singleton b), lintegral_packetMeasure]
