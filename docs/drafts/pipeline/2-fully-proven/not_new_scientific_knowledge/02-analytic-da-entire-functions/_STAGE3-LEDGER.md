@@ -1255,3 +1255,35 @@ Reusable for the other cards of this folder: the graded denominator calculus `Ma
 weight `mahlerScale` with its superadditivity and `O(q log² q)` size, the subring-coefficient
 calculus `MvCoeffIn`, `exists_integer_euler_ade` (integral nondegenerate Euler normalization), and
 the naturality lemma `map_aeval_eulerJetOver` for conjugating formal solutions.
+
+## Card 18 in progress (2026-08-30): the formal Laurent shift model
+
+`finite-commuting-shift-peeling-hypertranscendence-law` — the missing input is the ADH one-shift
+dichotomy. Proof route settled (all elementary, no parametrized Picard–Vessiot needed):
+
+1. **Ostrowski.** Instantiate `AutomorphismFamilyOstrowski.automorphismFamily_differentialIndependent_of_no_constant_simultaneous_jet_telescoping`
+   with `K = ℂ(s)`, `L = ℂ((s⁻¹))`, `C = ℂ`, one automorphism `σ_h`, `x = f`, `b = r`.  If `f` is DA
+   the criterion yields constants `c` and `g ∈ ℂ(s)` with `Δ_h g = ∑_k c_k r^{(k)}`, hence
+   `∑_k c_k f^{(k)} - g` is `σ_h`-invariant, hence constant: **`f` satisfies a constant-coefficient
+   inhomogeneous ODE `L(δ)f = g̃ ∈ ℂ(s)`.**
+2. **Rationality.** Factor `L = (δ-λ)L₁`; it suffices to treat first order.  The cokernel of
+   `δ - λ` on `ℂ(s)` splits over the poles (partial fractions), the translation permutes the poles
+   freely, and a finitely supported shift-periodic family of pole classes vanishes; so `g̃` is in
+   the image and `f` differs from a rational solution by an element of `ker L(δ) ∩ ℂ((s⁻¹))`, i.e.
+   by a polynomial.
+3. **Peeling.** `FiniteCommutingShiftPeeling.shiftWord_dichotomy` (corpus-owned).
+
+Model built and wired so far (all axiom-clean, `lake build` green):
+- `HTGeometry/LaurentShiftAutomorphism.lean` — `shiftSubst h = X/(1+hX)`, the power-series
+  automorphism `shiftPS`, its Laurent extension `shiftLaurent`, `shiftLaurent_coordS : σ_h s = s+h`,
+  and the chain-rule identity `X² a′ = a²`.
+- `HTGeometry/LaurentShiftDerivation.lean` — `d/ds = -X² d/dX` on `ℂ((X))` (`laurentSDifferential`),
+  `deriv_coordS : s′ = 1`, and `shiftLaurent_deriv : σ_h ∘ d/ds = d/ds ∘ σ_h`.
+- `HTGeometry/LaurentShiftFixedField.lean` — `exists_laurentC_of_shiftLaurent_eq`: the fixed field
+  of a nonzero translation is `ℂ` (inversion reduces to the power-series case, where the
+  coefficient of `X^{m+1}` in `σ_h B - B` is `-m h b_m`).
+- `HTGeometry/RatFuncLaurentShift.lean` — `ratToLaurent : ℂ(s) ↪ ℂ((X))` with `s ↦ X⁻¹`
+  (transcendence of `X⁻¹` via `HahnSeries.single`), and `shiftLaurent_ratToLaurent`: the embedding
+  intertwines `ratShiftBy h` with `shiftLaurent h`.
+
+Next: the differential-algebra compatibility of the embedding, then steps 1–3.

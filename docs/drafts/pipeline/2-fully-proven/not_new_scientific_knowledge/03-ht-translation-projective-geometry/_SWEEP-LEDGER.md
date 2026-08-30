@@ -1559,3 +1559,12 @@ of the hypertranscendence it was previously importing.
 card 7 (its parent's étale-cover half), card 11 (normality / Cohen–Macaulay / rational singularities
 — neither mathlib nor this corpus has any Cohen–Macaulay theory; the corpus *does* have a large
 Stanley–Reisner development, which is the route).
+
+### Cohen–Macaulay theory started (2026-08-30)
+
+`CohenMacaulay` appears nowhere in mathlib or this corpus.  Three foundational modules are now in —
+`HTGeometry/CohenMacaulayDepth.lean` (regular sequences, the dimension-drop theorem, depth, and the
+Cohen–Macaulay condition), `HTGeometry/PolynomialCohenMacaulay.lean` (a polynomial ring over a field
+is Cohen–Macaulay) and `HTGeometry/CohenMacaulayLifting.lean` (concatenation of regular sequences,
+and CM lifting through one).  Card 11's remaining clause and its decided route are recorded on the
+card.

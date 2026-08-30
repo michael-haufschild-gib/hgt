@@ -540,3 +540,212 @@ level below the point where the inhomogeneity dies forces `s = 0` — equal nume
 degrees — at each of those levels, on top of `k = 0` there.  Since the descent starts with `k = −n`
 and a nonzero Faà di Bruno inhomogeneity, closing the branch is now a finite combinatorial statement
 about where the inhomogeneity can die and what the degrees can be, not a structural gap.
+
+### An affine relation anywhere in the tower descends to the base (2026-08-30)
+
+`HTGeometry/RittAffineRelationDescent.lean` and `HTGeometry/RittAffineTowerDescent.lean` finish the
+structural reduction of the *inhomogeneous* branch.
+
+| Statement | Name |
+|---|---|
+| one level: `ν·σW = W + β` over an affinely moved generator gives `(ν·a^s)·φ(u) = u + β` **or** `= u`, for the numerator's leading coefficient `u ≠ 0` | `exists_affine_or_eigen_descent` |
+| **the whole tower**: an affine relation over `K⟮τ, …, d^[n−1]τ⟯` leaves `ν'·ψ(a) = a + γ'` in the base, with `a ≠ 0`, `γ' ∈ {γ, 0}` and `ν' = ν·q^I·ρ^J` | `exists_base_affine_relation_of_tower` |
+
+The mechanism is the residue classification again: writing `ν·σW = W + β` as the eigen slice with
+eigenvalue `ν⁻¹` and *zero* linear inhomogeneity coefficient, the residue can only be `0` or the
+constant `ν⁻¹β`, so the shape of the relation survives a level with its scalar multiplied by a power
+of that level's multiplier — and the only alternative is that it degenerates to an eigen-relation,
+which `exists_rittForm_of_homogeneous_base_relation` converts into Ritt's order-one relation as soon
+as the accumulated exponents do not both vanish.
+
+**The obstruction layer is now one equation family on the base.**  Everything the descent can produce
+is
+
+```text
+q^I · ρ^J · ψ(a) = a + γ ,      a ≠ 0,  I, J ∈ ℤ,
+```
+
+with `γ` either zero (the invariant-differential case, which yields Ritt's form) or one of the
+explicit elements the tower supplies — the Faà di Bruno coefficients `A_p`, or `dK ρ / ρ` on the
+logarithmic-derivative route, where `J = 1, I = 0` is exactly `RationalAffineConnection`'s
+`a(R)·(R′)² = R′·a − R″`.  Closing the three cards is now: rule out that family for their maps.
+
+### The obstruction layer *is* the corpus's affine transport equation (2026-08-30)
+
+A corpus search turned up `HTGeometry/RationalAffineTransport.lean`, which already owns exactly the
+equation family the descent produces:
+
+```text
+IsAffineTransport R hR k b c a   :   a(R) · (R′)^k = b · a + c
+```
+
+with the transport laws proved once and for all — `affineTransport_pole_forward` /
+`affineTransport_pole_backward` (off the critical set, where `b` is a unit and `c` is regular, a pole
+of `a` travels along `R` in both directions), `no_pole_of_forward_orbit_affineTransport` /
+`no_pole_of_backward_orbit_affineTransport` (a pole on an injective critical-free orbit is
+impossible), and `ratOrder_le_of_critical` (the ramification inequality at a critical point).
+
+`HTGeometry/RittTransportBridge.lean` connects the two:
+
+| Statement | Name |
+|---|---|
+| `q^I·ρ^J·ψ(a) = a + γ` **is** `IsAffineTransport R hR J (q^{−I}) (q^{−I}·γ) a` | `isAffineTransport_of_monomial_base_relation` |
+| the homogeneous case is the invariant-differential instance, `c = 0` | `isAffineTransport_of_homogeneous_base_relation` |
+
+Two things fall out immediately.  The multiplier `b = q^{−I}` is a **nonzero constant**, so the
+"`b` is a unit along the orbit" hypothesis of every transport lemma is automatic — only "`c` regular
+along the orbit" survives, and `c = q^{−I}·γ` has finitely many poles.  And the homogeneous branch
+is literally `c = 0`, where that hypothesis is vacuous.
+
+So the whole of Ritt's implication now reduces to one statement in the corpus's own vocabulary: for
+the map at hand, `IsAffineTransport R hR J b c a` has no nonzero solution for the finitely many
+`(J, c)` the tower supplies.  That is precisely the shape
+`RationalAffineConnection.no_affine_connection_regular_at_critical` and the orbit closers already
+handle for `k = 2`, `b = R′`, `c = −R″`.
+
+### Constant solutions, and when a solution must have a zero or a pole (2026-08-30)
+
+`HTGeometry/RittTransportConstant.lean`:
+
+| Statement | Name |
+|---|---|
+| over an algebraically closed field, a rational function of everywhere-vanishing signed order is a nonzero constant | `eq_C_of_ratOrder_eq_zero_algClosed` |
+| **`a = α` constant solves `a(R)·(R′)^k = b·a + c` iff `c = α·(R′)^k − b·α`** | `isAffineTransport_C_iff` |
+| **an inhomogeneity not of that shape forces every nonzero solution to have a zero or a pole** | `exists_ratOrder_ne_zero_of_no_constant_solution` |
+
+The substitution by `R` is a `K`-algebra map, so it fixes the constants: a constant solution leaves
+no freedom at all, `c` is determined by `α`.  Everything else must be non-constant, and over an
+algebraically closed field that means it has a point of nonzero order — which is exactly the input
+the pole-transport closers `no_pole_of_forward_orbit_affineTransport` and
+`no_pole_of_backward_orbit_affineTransport` consume.
+
+Combined with `RittTransportBridge`, ruling out Ritt's obstruction for a given map is now this
+chain: the descent's inhomogeneity `c = q^{−I}·γ` is not of constant type ⟹ every solution has a
+zero or a pole ⟹ a pole on an injective critical-free orbit is impossible (the multiplier
+`b = q^{−I}` being constant, its unit hypothesis is automatic) ⟹ the pole is confined to the
+critical/periodic set ⟹ the ramification inequality `ratOrder_le_of_critical` closes it.
+
+### From rational to polynomial, and the degree pin (2026-08-30)
+
+`HTGeometry/RittTransportPolynomial.lean` turns the surviving obstruction into a polynomial identity.
+
+| Statement | Name |
+|---|---|
+| over an algebraically closed field, a rational function of everywhere non-negative order is a polynomial (numerator and denominator are coprime, so a denominator root would be a pole, and a rootless denominator is constant) | `exists_polynomial_of_ratOrder_nonneg` |
+| substitution by a polynomial sends the image of `A` to the image of the composite `A ∘ R` | `ratFuncSubstitutionAlgHom_algebraMap` |
+| **a polynomial solution of `a(R)·(R′)^J = β·a + c` is the polynomial identity `A ∘ R · (R′)^J = β·A + C`** | `polynomial_identity_of_isAffineTransport` |
+
+That identity pins the degree.  For `deg R ≥ 2` and `deg A ≥ 1` the left side has degree
+`deg A · deg R + J·(deg R − 1) ≥ 2·deg A + J > deg A`, so the inhomogeneity must carry exactly that
+degree; an inhomogeneity of any other degree admits no non-constant polynomial solution, and the
+constant solutions are pinned by `isAffineTransport_C_iff`.
+
+So the per-map chain is now entirely elementary: `c` not of constant type ⟹ every solution has a
+zero or a pole ⟹ if it has no pole it is a polynomial and its degree is pinned ⟹ otherwise the pole
+transports along an injective critical-free orbit, which a nonzero rational function cannot sustain.
+
+### A checkable criterion that kills every polynomial solution (2026-08-30)
+
+`HTGeometry/RittTransportNoSolution.lean`,
+**`no_polynomial_solution_of_natDegree_lt`**: for any `R` with `deg R ≥ 2`, any nonzero constant `β`,
+any `J`, and any inhomogeneity `Cp` satisfying
+
+1. **no constant solution** — `Cp ≠ α·(R′)^J − β·α` for every `α ≠ 0`, and
+2. **low degree** — `deg Cp < deg R + J·(deg R − 1)`,
+
+the polynomial identity
+
+```text
+A ∘ R · (R′)^J = β·A + Cp
+```
+
+has no nonzero solution `A`.  The proof is pure degree bookkeeping: with `deg A ≥ 1` the left side
+has degree `deg A·deg R + J·(deg R − 1)`, which for `deg R ≥ 2` strictly exceeds both `deg A` and —
+by hypothesis 2, since `deg A·deg R ≥ deg R` — `deg Cp`, while the right side has degree at most the
+maximum of those two; and `deg A = 0` is exactly hypothesis 1.
+
+Both hypotheses are *arithmetic in the coefficients of the map*: no orbits, no critical points, no
+valuations.  Combined with `exists_polynomial_of_ratOrder_nonneg` and
+`polynomial_identity_of_isAffineTransport`, a solution of the transport equation that has no pole is
+now excluded outright; only solutions *with* a pole survive, and those are what the orbit closers of
+`RationalAffineTransport` remove.
+
+### The master criterion, and what the cards' maps still need (2026-08-30)
+
+**`RittTransportNoSolution.no_transport_solution_of_criteria`** packages the whole chain: for
+`deg R ≥ 2`, a nonzero constant multiplier `β`, and a polynomial inhomogeneity `Cp` with
+
+1. no constant solution (`Cp ≠ α·(R′)^J − β·α` for all `α ≠ 0`), and
+2. `deg Cp < deg R + J·(deg R − 1)`,
+
+a nonzero solution `a` of `IsAffineTransport R hR J β Cp a` with no pole is impossible.  Only
+pole-carrying solutions survive, and those the orbit closers of `RationalAffineTransport` remove.
+
+**The obstacle now identified precisely.**  The corpus's transport theory —
+`IsAffineTransport`, the pole-transport laws, the orbit closers, `ratOrder_le_of_critical`, and
+therefore this master criterion — is stated for a **polynomial** `R : K[X]`.  The step-scaling maps
+of these cards,
+
+```text
+R_(p;u,v)(y) = ((1+uy)^p − (1+vy)^p) / ((1+uy)^p + (1+vy)^p),
+```
+
+are **rational, not polynomial**: for `p ≥ 2` the denominator is a genuine nonconstant polynomial.
+So instantiating the criterion for them needs the rational-map version of the transport layer:
+`ratOrder` of `a ∘ R` at a point in terms of the local degree of `R` there, the pole-transport laws
+off the critical set, and the orbit closers, all for `R ∈ K(x)` rather than `K[X]` — which also has
+to handle the points `R` sends to infinity.
+
+That generalisation is the next infrastructure piece, and it is the only thing between the
+finished reduction and the three cards.
+
+### The rational-map order theory: foundation built (2026-08-30)
+
+The blocker identified last pass — the corpus's transport layer is polynomial-only while the cards'
+maps are rational — is now being removed.  `HTGeometry/RittRationalOrderAeval.lean` and
+`HTGeometry/RittRationalSubstitutionOrder.lean`:
+
+| Statement | Name |
+|---|---|
+| a polynomial expression in an element regular at `a` is regular at `a` | `ratOrder_aeval_nonneg` |
+| if the element *vanishes* at `a` and the polynomial has nonzero constant term, the expression is a **unit** at `a` | `ratOrder_aeval_eq_zero` |
+| the value of a rational map at a point of regularity, and `P − value` as a quotient of polynomial images | `ratValue`, `sub_ratValue_eq` |
+| **the local multiplicity is positive**: `0 < ord_a (P − P(a))` at a point where `P` is regular | `ratOrder_sub_ratValue_pos` |
+| **the substitution law for a rational map**: `ord_a (M(P)) = mult_{P(a)} M · ord_a (P − P(a))` | `ratOrder_aeval_ratFunc` |
+
+The proof is the local factorisation carried through a rational substitution: `M = (X − b)^m·N` with
+`N(b) ≠ 0` gives `M(P) = (P − b)^m · N(P)`, the first factor contributes `m` times the local
+multiplicity, and the cofactor is a unit at `a` because `P − b` vanishes there and the Taylor
+expansion of `N` at `b` has nonzero constant term — which is exactly what the two `aeval` lemmas
+above supply.
+
+This is the same shape as the corpus's polynomial law `ratOrder_ratFuncSubstitution`, with the local
+multiplicity taken in the rational sense `mult_a (num P − b · denom P)`.  What remains of the layer
+is extending it from a polynomial outer factor `M` to a general rational `Q` (multiplicativity of
+`ratOrder` over `num/denom`), and then re-running the pole-transport laws and orbit closers with it.
+
+### Pole transport for a rational map (2026-08-30)
+
+`HTGeometry/RittRationalTransport.lean` completes the transport layer in the generality the cards
+need.
+
+| Statement | Name |
+|---|---|
+| the image of a polynomial in `K(x)` is its evaluation at the generator | `algebraMap_eq_aeval_X` |
+| substitution sends the image of a polynomial to its evaluation at the map | `ratFuncSubstitutionAlgHom_aeval` |
+| **the substitution law for a rational map and a rational argument**: `ord_a (Q(P)) = ord_{P(a)} Q · ord_a (P − P(a))` | `ratOrder_ratFuncSubstitution_ratFunc` |
+| the affine transport equation `a(P)·(P′)^k = b·a + c` for rational `P` | `IsRatAffineTransport` |
+| **a pole travels backward along a rational map** | `ratAffineTransport_pole_backward` |
+| **a pole on an injective critical-free backward orbit is impossible** | `no_pole_of_backward_orbit_ratAffineTransport` |
+
+The transport argument is unchanged from the polynomial case once the substitution law is available:
+at a point where `P` is regular, `P′` and `b` are units and `c` is regular, the left side of the
+transport equation has order `ord_{P(p)} a` times the local multiplicity — a *positive* integer — so
+a pole at the image makes the left side negative, and the valuation inequality on `b·a + c` forces a
+pole of `a` at the point itself.  Note the local multiplicity need not be one: positivity alone
+carries the sign, so no non-critical hypothesis is needed for the backward direction beyond `P′`
+being a unit.
+
+That closes the gap the polynomial-only layer left; what remains to instantiate the master criterion
+for the cards' maps is the same arithmetic as before — degrees, critical points, and orbit witnesses
+— now in the rational setting.

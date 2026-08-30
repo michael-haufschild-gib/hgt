@@ -1284,3 +1284,17 @@ exchange of an unevaluated quotient integral is used.
 inverse-zeta bounds to make horizontal edge norms summable.  The following step is the
 multiplicity-faithful identification of each finite vector residue block with the principal-part
 quotient-system vectors; scalar pointwise residue convergence alone remains insufficient.
+
+`[LEAN-PROVED]` `BurnolResidueCriticalLineKernelL2Contour.lean` now formalizes the actual
+Banach-valued contour edge.  In particular,
+`norm_intervalIntegral_burnolWeightedResidueCriticalLineKernelL2_comp_le` proves the Bochner path
+bound, while `tendsto_burnolWeightedResidueHorizontalIntegralL2` proves vanishing of the selected
+horizontal edges in the literal critical-line `L²` norm.  Rapid source decay absorbs both the
+inverse-zeta growth and the quadratic kernel growth.  Direct source check, leaf-only target build,
+and axiom audit pass; audited declarations depend only on `propext`, `Classical.choice`, and
+`Quot.sound`.  The leaf is wired into `RHTower.lean`; no umbrella build was run.
+
+`[OPEN CORE]` The remaining Burnol step is no longer horizontal-edge control.  It is the
+coefficient- and multiplicity-faithful identification of the finite Banach-valued residue block
+with the quotient-system principal parts, followed by strong `L²` convergence.  Any proof must
+avoid illicit point evaluation of `Lp` classes.
