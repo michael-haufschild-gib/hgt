@@ -1,7 +1,7 @@
 # Reflected binary experiment, Julia lift coherence, information, and properness
 
 - **ID:** ULF-LPCM-1
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3 — formalised in Lean 4
 - **Type:** SOURCE-GENERATED POLARIZATION / LIFT-COMPARISON / INFORMATION-CONSERVATION THEOREM
 - **Source:** functional-equation split packet formation, Constitutive Dilation Mechanics, and
   Constitutive Reflection-Space Mechanics
@@ -15,7 +15,7 @@
   `[THREE-ORGAN BRIDGE] [FOURTH-ORGAN FISHER PREDICTION VERIFIED]`
   `[QUOTIENT PROPERNESS CLASSIFIED] [COMMON-RECOVERY NEUTRAL]`
   `[SIGN-BLIND SOURCE LIFT NOT YET TYPED]`
-  `[CLASSICAL COMPONENTS / NEW CORPUS COUPLING] [LEAN NOT YET WRITTEN] [NOT RH]`
+  `[CLASSICAL COMPONENTS / NEW CORPUS COUPLING] [LEAN FORMALIZED 2026-08-30] [NOT RH]`
 
 ## 1. Why a different mechanism is needed
 

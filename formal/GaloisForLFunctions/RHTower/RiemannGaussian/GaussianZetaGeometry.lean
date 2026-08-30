@@ -326,7 +326,15 @@ theorem exists_strictlyMaximalOffAxisZetaPacket_of_representation
     {occurrence | 1 ≤ envelope occurrence}
   have hhighFinite : high.Finite := by
     have hfinite := Filter.mem_cofinite.mp heventuallySmall
-    simpa only [high, Set.compl_ofPred, not_lt] using hfinite
+    change ({occurrence | 1 ≤ envelope occurrence} : Set
+      (NontrivialZetaZeroOccurrence analyticZetaZeroMultiplicity)).Finite
+    have heq : ({occurrence | 1 ≤ envelope occurrence} : Set
+        (NontrivialZetaZeroOccurrence analyticZetaZeroMultiplicity)) =
+        {occurrence | envelope occurrence < 1}ᶜ := by
+      ext occurrence
+      simp only [Set.mem_setOf_eq, Set.mem_compl_iff, not_lt]
+    rw [heq]
+    exact hfinite
   let occurrence₀ : NontrivialZetaZeroOccurrence
       analyticZetaZeroMultiplicity :=
     ⟨ρ₀, ⟨0, analyticZetaZeroMultiplicity_positive ρ₀⟩⟩

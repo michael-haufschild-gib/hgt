@@ -248,6 +248,120 @@ theorem integral_frullani (ha : 0 < a.re) (hb : 0 < b.re) :
   rw [← intervalIntegral.integral_of_le zero_le_one,
     intervalIntegral.integral_eq_sub_of_hasDerivAt hprim hintu, seg_zero, seg_one]
 
+/-- Truncated interval integrals of an integrable positive-ray function converge jointly as the
+lower endpoint tends to zero from above and the upper endpoint tends to infinity. -/
+theorem tendsto_intervalIntegral_Ioi_two_sided
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [CompleteSpace E] {f : ℝ → E}
+    (hf : IntegrableOn f (Ioi (0 : ℝ))) :
+    Tendsto (fun p : ℝ × ℝ ↦ ∫ x in p.1..p.2, f x)
+      ((nhdsWithin 0 (Ioi 0)) ×ˢ atTop)
+      (nhds (∫ x in Ioi (0 : ℝ), f x)) := by
+  let μ₀ : Measure ℝ := volume.restrict (Ioi (0 : ℝ))
+  have hmeasure :
+      Tendsto (fun ε : ℝ ↦ μ₀ (Ioc 0 ε))
+        (nhdsWithin 0 (Ioi 0)) (nhds 0) := by
+    have h := (ENNReal.continuous_ofReal.tendsto 0).mono_left
+      (show nhdsWithin (0 : ℝ) (Ioi 0) ≤ nhds 0 from inf_le_left)
+    simpa only [μ₀, Measure.restrict_apply measurableSet_Ioc,
+      inter_eq_left.mpr Ioc_subset_Ioi_self, Real.volume_Ioc, sub_zero,
+      ENNReal.ofReal_zero] using h
+  have hheadRestricted := hf.tendsto_setIntegral_nhds_zero hmeasure
+  have hhead :
+      Tendsto (fun ε : ℝ ↦ ∫ x in (0 : ℝ)..ε, f x)
+        (nhdsWithin 0 (Ioi 0)) (nhds 0) := by
+    apply hheadRestricted.congr'
+    filter_upwards [self_mem_nhdsWithin] with ε hε
+    rw [intervalIntegral.integral_of_le hε.le]
+    change (∫ x, f x ∂(volume.restrict (Ioi 0)).restrict (Ioc 0 ε)) =
+      ∫ x, f x ∂volume.restrict (Ioc 0 ε)
+    rw [Measure.restrict_restrict measurableSet_Ioc,
+      inter_eq_left.mpr Ioc_subset_Ioi_self]
+  have htail := intervalIntegral_tendsto_integral_Ioi
+    (f := f) 0 hf (show Tendsto (fun r : ℝ ↦ r) atTop atTop from tendsto_id)
+  have hlimit := (htail.comp tendsto_snd).sub (hhead.comp tendsto_fst)
+  have hlimit' :
+      Tendsto (fun p : ℝ × ℝ ↦
+        (∫ x in (0 : ℝ)..p.2, f x) - ∫ x in (0 : ℝ)..p.1, f x)
+        ((nhdsWithin 0 (Ioi 0)) ×ˢ atTop)
+        (nhds (∫ x in Ioi (0 : ℝ), f x)) := by
+    simpa only [Function.comp_apply, sub_zero] using hlimit
+  apply hlimit'.congr'
+  filter_upwards [prod_mem_prod self_mem_nhdsWithin
+    (eventually_ge_atTop (0 : ℝ))] with p hp
+  have hp₁ : IntervalIntegrable f volume 0 p.1 := by
+    rw [intervalIntegrable_iff_integrableOn_Ioc_of_le hp.1.le]
+    apply hf.mono_set
+    exact Ioc_subset_Ioi_self
+  have hp₂ : IntervalIntegrable f volume 0 p.2 := by
+    rw [intervalIntegrable_iff_integrableOn_Ioc_of_le hp.2]
+    apply hf.mono_set
+    exact Ioc_subset_Ioi_self
+  exact intervalIntegral.integral_interval_sub_left hp₂ hp₁
+
+/-- Real Frullani formula in the joint truncated-interval form. -/
+theorem tendsto_intervalIntegral_real_frullani
+    {A B : ℝ} (hA : 0 < A) (hB : 0 < B) :
+    Tendsto
+      (fun p : ℝ × ℝ ↦ ∫ t in p.1..p.2,
+        t⁻¹ * (Real.exp (-(A * t)) - Real.exp (-(B * t))))
+      ((nhdsWithin 0 (Ioi 0)) ×ˢ atTop)
+      (nhds (Real.log (B / A))) := by
+  let g : ℝ → ℝ := fun t ↦
+    t⁻¹ * (Real.exp (-(A * t)) - Real.exp (-(B * t)))
+  have hpoint (t : ℝ) : g t =
+      ((Complex.exp (-((A : ℂ) * t)) -
+        Complex.exp (-((B : ℂ) * t))) / (t : ℂ)).re := by
+    have hexpA : (Complex.exp (-((A : ℂ) * t))).re =
+        Real.exp (-(A * t)) := by
+      rw [show -((A : ℂ) * t) = ((-(A * t) : ℝ) : ℂ) by
+        push_cast
+        rfl]
+      exact Complex.exp_ofReal_re _
+    have hexpB : (Complex.exp (-((B : ℂ) * t))).re =
+        Real.exp (-(B * t)) := by
+      rw [show -((B : ℂ) * t) = ((-(B * t) : ℝ) : ℂ) by
+        push_cast
+        rfl]
+      exact Complex.exp_ofReal_re _
+    by_cases ht : t = 0
+    · simp [g, ht]
+    · simp [g, hexpA, hexpB, div_eq_mul_inv, mul_comm]
+      rw [← mul_assoc, mul_inv_cancel₀ ht, one_mul]
+      exact Or.inl rfl
+  have hcomplex := integrableOn_frullani
+    (a := (A : ℂ)) (b := (B : ℂ)) (by simpa using hA) (by simpa using hB)
+  have hreal : IntegrableOn g (Ioi (0 : ℝ)) := by
+    have hre := hcomplex.re
+    change Integrable g (volume.restrict (Ioi (0 : ℝ)))
+    convert hre using 1
+    funext t
+    exact hpoint t
+  have hlim := tendsto_intervalIntegral_Ioi_two_sided hreal
+  have hfr := integral_frullani
+    (a := (A : ℂ)) (b := (B : ℂ)) (by simpa using hA) (by simpa using hB)
+  have hvalue : (∫ t in Ioi (0 : ℝ), g t) = Real.log (B / A) := by
+    calc
+      (∫ t in Ioi (0 : ℝ), g t) =
+          ∫ t in Ioi (0 : ℝ),
+            ((Complex.exp (-((A : ℂ) * t)) -
+              Complex.exp (-((B : ℂ) * t))) / (t : ℂ)).re := by
+            congr 1
+            funext t
+            exact hpoint t
+      _ = ((∫ t in Ioi (0 : ℝ),
+            (Complex.exp (-((A : ℂ) * t)) -
+              Complex.exp (-((B : ℂ) * t))) / (t : ℂ)) : ℂ).re :=
+        integral_re hcomplex
+      _ = (Complex.log (B : ℂ) - Complex.log (A : ℂ)).re :=
+        congrArg Complex.re hfr
+      _ = Real.log (B / A) := by
+        rw [Complex.sub_re, Complex.log_re, Complex.log_re,
+          Real.log_div hB.ne' hA.ne']
+        simp [abs_of_pos hA, abs_of_pos hB]
+  rw [hvalue] at hlim
+  simpa only [g] using hlim
+
 end Frullani
 
 end GaloisForLFunctions.HTGeometry

@@ -1894,3 +1894,42 @@ placewise assertion that a nonzero algebraic integer has modulus at least one is
 Card remains Stage 2.  Global leading-minor descent is closed; geometric work now proceeds to the
 greedy covering assembly and its finite-overlap consequence.  Tame-kernel finite generation and
 Moore reciprocity remain afterward.
+
+### Determinant-profile balance and corrected-cone primitive normalization (2026-08-30)
+
+The corrected real/Hermitian cone now has an unconditional primitive-minimum theory in the same
+coordinates and action convention used by reduction.
+
+- `NumberFieldArchimedeanDeterminantProfile.lean` proves that the product of local Jacobi weights
+  is the local determinant, identifies the centered Jacobi profile with the normalized centered
+  log-determinant profile, and proves exact invariance under `SL_n(𝓞 K)`.
+- `NumberFieldArchimedeanBalancedSizeReduction.lean` combines determinant-one unit balancing with
+  the existing mixed-place upper-unipotent sweep.  It constructs source and target Jacobi data,
+  both special-linear actions, uniform upper-entry bounds, and a determinant-profile balance
+  certificate internally.
+- `ComplexHermitianRealification.lean`, `FiniteMatrixOrthogonalSum.lean`, and
+  `NumberFieldArchimedeanPrimitiveMinimum.lean` assemble every real local block and every faithful
+  doubled-real Hermitian block into one positive-definite matrix in canonical integral-basis
+  coordinates.  Its quadratic value is exactly the sum of actual placewise energies, so lattice
+  minimization returns a primitive number-ring minimizer and determinant-one completion without a
+  retained Hilbert space, form, coordinate equivalence, lattice, compactness, or positivity
+  hypothesis.
+- The cone action is row congruence `A ↦ G A Gᴴ`.  A column-energy realification would therefore
+  introduce a false complex-conjugation seam.  `ComplexHermitianRowRealification.lean` corrects
+  this by the explicit doubled-real involution `(x,y) ↦ (x,-y)`, proves exact row-Hermitian energy
+  and strict positivity, and supplies the matching congruence identity.
+- `NumberFieldArchimedeanPrimitiveNormalization.lean` proves exact real and complex embedding
+  transport for the transposed determinant-one completion, energy equivariance, primitivity of
+  every determinant-one column, and the capstone
+  `exists_numberFieldArchimedean_primitiveNormalization`: after an internally constructed
+  special-linear action, the first coordinate has minimum total archimedean energy among all
+  coordinate vectors.
+
+All direct source checks and targeted leaf builds pass.  A single batched audit of every new
+theorem reports only `[propext, Classical.choice, Quot.sound]`.  All modules are umbrella-wired;
+no umbrella build was run.  Scratch files and foreground Lean processes were removed.
+
+Card remains Stage 2.  The remaining geometric implication is the full greedy flag assembly that
+turns successive primitive minima, Schur tails, unit balance, and mixed size reduction into one
+field-uniform simultaneous Siegel covering; finite overlap then consumes the already closed global
+leading-minor descent.  Tame-kernel finite generation and Moore reciprocity remain afterward.

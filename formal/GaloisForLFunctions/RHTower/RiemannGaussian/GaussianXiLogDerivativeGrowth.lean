@@ -1,4 +1,6 @@
 import GaloisForLFunctions.RHTower.RiemannGaussian.GaussianXiQuantitativeContour
+import GaloisForLFunctions.HTGeometry.LogDerivGermCongruence
+import GaloisForLFunctions.HTGeometry.ExtendedCanonicalDecomposition
 import Mathlib.Analysis.Complex.CanonicalDecomposition
 import Mathlib.Analysis.Complex.BorelCaratheodory
 import Mathlib.Analysis.Complex.HasPrimitives
@@ -737,7 +739,7 @@ theorem logDeriv_riemannXi_eq_residual_sub_canonical_sum
   have hmul := logDeriv_mul (f := P) (g := riemannXi) z
     hPne hxi hPAnalytic.differentiableAt (differentiable_riemannXi z)
   have hlog : logDeriv g z = logDeriv P z + logDeriv riemannXi z := by
-    rw [(logDeriv_congr_nhds hfactorEq).self_of_nhds]
+    rw [(GaloisForLFunctions.HTGeometry.logDeriv_congr_nhds hfactorEq).eq_of_nhds]
     exact hmul
   rw [hproductLog] at hlog
   change logDeriv riemannXi z = logDeriv g z -

@@ -569,3 +569,18 @@ no Watt/DI, spectral, or large-value premise.  Axiom audit is only `propext`,
 The shared analytic gap with the cofactor card is therefore no longer all of `N ≤ T`: it is
 exactly the intermediate range `N < T < 2AN'²`, plus amplification and final exponent
 bookkeeping for Matomäki--Teräväinen Theorem 1.2.  Card remains Stage 2.
+
+## Lean progress update (2026-08-30) — reciprocal divisor-energy recovered
+
+`Sieve/MatomakiTeravainenWattDivisorEnergy.lean` proves the unconditional affine envelope
+
+```text
+∫_{T/2}^{T}|N(1+it)|⁴|A(1+it)|²dt
+  ≪ε (2AN'²)^(ε/2)(N'²)^(ε/2)(T+2AN'²)A⁻²N⁻²
+      ∑_{A<n≤2A}|aₙ|².
+```
+
+It retains both reciprocal `ℓ²` savings through divisor-fibre convolution.  Direct check,
+targeted module build, and axiom audit pass with only `propext`, `Classical.choice`, and
+`Quot.sound`.  Remaining gate is the residual Watt/DI intermediate configuration plus
+amplification and final Matomäki--Teräväinen Theorem 1.2 bookkeeping.

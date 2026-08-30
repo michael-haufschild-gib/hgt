@@ -555,3 +555,18 @@ retained.  Axiom audit: `propext`, `Classical.choice`, `Quot.sound` only.
 Remaining shared analytic gap is now precisely the intermediate regime
 `N < T < 2AN'²` of Matomäki--Teräväinen Lemma 3.5, followed by its amplification and
 Theorem 1.2 exponent assembly.  Card remains Stage 2.
+
+## Lean progress update (2026-08-30) — reciprocal divisor-energy recovered
+
+`Sieve/MatomakiTeravainenWattDivisorEnergy.lean` now proves unconditionally
+
+```text
+∫_{T/2}^{T}|N(1+it)|⁴|A(1+it)|²dt
+  ≪ε (2AN'²)^(ε/2)(N'²)^(ε/2)(T+2AN'²)A⁻²N⁻²
+      ∑_{A<n≤2A}|aₙ|².
+```
+
+Two divisor-fibre convolution estimates preserve the `N⁻²` reciprocal energy discarded by the
+earlier `ℓ¹` argument.  Direct check, targeted module build, and axiom audit pass; only `propext`,
+`Classical.choice`, and `Quot.sound` occur.  This closes an additional elementary portion of
+`N < T < 2AN'²`; residual Watt/DI configurations and Theorem 1.2 assembly still gate promotion.

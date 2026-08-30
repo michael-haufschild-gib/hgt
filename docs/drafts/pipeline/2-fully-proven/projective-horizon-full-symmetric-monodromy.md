@@ -6911,3 +6911,63 @@ everywhere-unramified cyclic radical extension
 so what remains card-specific is only the passage from a nontrivial block of the monodromy action to
 such a radical extension — the étale-cover half — not the Kummer half, which is now closed end to
 end.
+
+## Lean progress — the étale/Kummer classification with the root in the source field
+
+`HTGeometry/EtaleKummerClassification.lean` (built, wired, axiom-clean) removes the restriction that
+made `LocalizationTwoPrimeUnits` insufficient for step 4.  That file settles `(16)–(17)` when the
+`r`-th root is a *unit of the chart*; the block cover's Kummer generator is not a unit of the chart,
+it is an arbitrary element of the source function field.  The new file proves the criterion in that
+generality:
+
+```text
+dvd_of_pow_eq_pow_mul_pow_mul     the multiplicity identity in a UFD
+dvd_of_pow_eq_algebraMap          ** an r-th root anywhere in the fraction field of p^k·b,
+                                     with p prime not dividing b, forces r ∣ k **
+dvd_of_pow_eq_zpow_mul            the Laurent (integer-exponent) form
+dvd_exponents_of_pow_eq_unit_mul_zpow_mul_zpow
+    ** a unit times a Laurent monomial in two non-associate primes has an r-th root in the
+       fraction field only when r divides both exponents **
+not_exists_kummer_root_of_not_dvd_exponents      the sharp contrapositive
+not_associated_X_of_ne                           two distinct coordinates are never associate
+dvd_exponents_of_kummer_root_mvPolynomial        the coordinate-chart specialisation
+```
+
+The proof is the divisorial valuation at `p`, computed as the `p`-multiplicity in the unique
+factorisation domain after clearing the denominator of the root, plus a shift `k ↦ k + r·|k|` that
+reduces the Laurent case to the polynomial one.
+
+With it the Kummer half of step 4 is closed in the exact generality the block argument needs.  What
+remains card-specific is still the *étale* half: producing, from a nontrivial block of the monodromy
+action, a nontrivial everywhere-unramified cyclic extension with a Kummer presentation — i.e. the
+abelianness of the everywhere-unramified quotient, which is the `π₁` input, and its algebraisation.
+
+### A shorter route to `(4)` than the block/étale argument
+
+`HTGeometry/OccupationSubsetJohnson.lean` already proves, unconditionally and for **every** `m, n`
+with `m ≥ 1` (the balanced case included):
+
+```text
+closure_criticalOccupationAdjacentSwaps_eq_top
+    the Johnson-edge transpositions generate the full symmetric group on the states
+criticalMonodromy_eq_top_of_rootAction_of_adjacentSwap
+    ** root permutations + one Johnson-adjacent state transposition ⟹ S_D **
+```
+
+That does not go through primitivity at all, so it never needs the block system, the étale cover,
+or the Kummer elimination.  Its two inputs are geometric rather than group-theoretic:
+
+1. the pure-tail degeneration puts the whole `S_L` root action inside the actual geometric
+   monodromy, and
+2. the Schur inertia transposition is a **Johnson edge** — it swaps two states whose occupation
+   labels differ by exchanging exactly the two colliding roots, i.e. `|S ∩ T| = m - 1`.
+
+Input 2 is exactly what the pure-tail picture predicts: at the generic Schur fold two roots collide,
+and the two states that are identified are the `m`-subsets that differ by exchanging them.  Both
+inputs are statements about `criticalGeometricSheet`, while `OccupationSubsetJohnson` is stated on
+`criticalHorizonOccupationStates`, so a compatible identification of the two is the third piece.
+
+`OccupationSubsetPrimitivity` separately gives primitivity whenever `m ≠ n`, so the block/étale
+argument is only ever needed for `m = n` — and there the only `S_L`-stable nontrivial block system
+is the complementation pairing, so even that case reduces to "the Schur transposition does not swap
+a complementary pair", which is implied by input 2 for `m ≥ 2`.

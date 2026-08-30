@@ -2218,3 +2218,31 @@ use the exact dyadic-cardinality maximum bound for Watt, add each nonnegative ma
 `T ≤ N`.  Remaining deep range stays exactly
 `N < T < 2AN'²`, followed by source amplification and exponent assembly; no Route-E card is yet
 eligible for Stage 3.
+
+### M6/M7, brick 36 — divisor-energy recovery in the intermediate range (2026-08-30)
+
+`Sieve/MatomakiTeravainenWattDivisorEnergy.lean` is unconditional, axiom-clean, and
+umbrella-wired.  It replaces brick 34's lossy reciprocal `ℓ¹` transport by two applications of
+the divisor-fibre convolution-energy theorem:
+
+```text
+sum_norm_sq_mtWattUnitCoeff_le_inv
+    ∑_{N<n≤N'} |1/n|² ≤ 1/N
+exists_sum_norm_sq_mtWattProductDirCoeff_le_divisor
+    full triple-convolution energy
+      ≪ε (2AN'²)^(ε/2)(N'²)^(ε/2) A⁻²N⁻²
+         ∑_{A<n≤2A}|aₙ|²
+exists_integral_mtWatt_divisorEnergy
+    ∫_{T/2}^{T}|N(1+it)|⁴|A(1+it)|²dt
+      ≪ε (2AN'²)^(ε/2)(N'²)^(ε/2)
+         (T+2AN'²) A⁻²N⁻² ∑_{A<n≤2A}|aₙ|²
+```
+
+This is the strongest ordinary affine-mean-square estimate available after retaining both
+reciprocal unit-block energies.  It supplies a new elementary envelope inside
+`N < T < 2AN'²`; comparison with the literal Watt/Deshouillers--Iwaniec right-hand side now
+isolates only parameter configurations where the product-length term exceeds the source main
+terms.  Direct check, targeted module build, and `#print axioms` all pass; the three declarations
+use only `propext`, `Classical.choice`, and `Quot.sound`.  Full Lemma 3.5 still requires the
+genuine twisted fourth-moment bound on that residual configuration, then amplification and
+Theorem 1.2 exponent assembly.

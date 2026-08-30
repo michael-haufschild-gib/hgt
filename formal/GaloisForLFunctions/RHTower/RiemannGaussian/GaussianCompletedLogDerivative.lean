@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.RiemannGaussian.GaussianExplicitFormula
 import GaloisForLFunctions.RHTower.GammaRealHalfPlane
+import GaloisForLFunctions.HTGeometry.LogDerivGermCongruence
 import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
 
 /-!
@@ -126,7 +127,7 @@ theorem logDeriv_riemannXi_of_one_lt_re {s : ℂ} (hs : 1 < s.re) :
     filter_upwards [
       (isOpen_lt continuous_const Complex.continuous_re).mem_nhds hs] with z hz
     exact riemannXi_eq_mul_Gammaℝ_riemannZeta_of_one_lt_re hz
-  rw [(logDeriv_congr_nhds hlocal).self_of_nhds]
+  rw [(GaloisForLFunctions.HTGeometry.logDeriv_congr_nhds hlocal).eq_of_nhds]
   have hlinear :
       logDeriv (fun z : ℂ => z * (1 - z)) s =
         1 / s + 1 / (s - 1) := by

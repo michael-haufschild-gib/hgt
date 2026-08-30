@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.RiemannGaussian.RiemannXiSuzukiRealAxisCancellation
 import GaloisForLFunctions.RHTower.RiemannGaussian.GaussianCompletedLogDerivative
+import GaloisForLFunctions.HTGeometry.LogDerivGermCongruence
 
 /-!
 # The completed logarithmic derivative on Suzuki's real axis
@@ -69,7 +70,7 @@ theorem logDeriv_riemannXi_of_re_pos_of_riemannZeta_ne_zero
       [(isOpen_lt continuous_const Complex.continuous_re).mem_nhds hs,
         eventually_ne_nhds hs1] with z hz hzone
     exact riemannXi_eq_mul_Gammaℝ_riemannZeta_of_re_pos hz hzone
-  rw [(logDeriv_congr_nhds hlocal).self_of_nhds]
+  rw [(GaloisForLFunctions.HTGeometry.logDeriv_congr_nhds hlocal).eq_of_nhds]
   have hlinear :
       logDeriv (fun z : ℂ ↦ z * (1 - z)) s =
         1 / s + 1 / (s - 1) := by

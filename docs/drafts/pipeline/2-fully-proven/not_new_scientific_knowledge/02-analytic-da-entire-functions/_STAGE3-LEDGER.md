@@ -1287,3 +1287,28 @@ Model built and wired so far (all axiom-clean, `lake build` green):
   intertwines `ratShiftBy h` with `shiftLaurent h`.
 
 Next: the differential-algebra compatibility of the embedding, then steps 1–3.
+
+### Card 18 state (2026-08-30, later)
+
+Steps 1 and the model are done and wired:
+- `HTGeometry/RatFuncLaurentDifferential.lean` — `ratFuncSDifferential` (`d/ds` on `ℂ(s)`),
+  `deriv_polyToLaurent`, and `deriv_ratToLaurent`: the embedding is a morphism of differential
+  fields.
+- `HTGeometry/ShiftLaurentOstrowski.lean` — all instances (`Algebra (RatFunc ℂ) (LaurentSeries ℂ)`,
+  both scalar-tower forms, `DifferentialAlgebra`), the instantiated Ostrowski criterion
+  `hypertranscendental_of_no_telescoper`, and `exists_ode_of_telescoper`: a constant telescoping
+  relation for the increment turns the primitive into a solution of a constant-coefficient
+  inhomogeneous equation `∑ c_p f^{(p)} = ι g` with rational right-hand side.
+- `HTGeometry/ShiftPolePartCalculus.lean` — `polePart_ratFuncDerivative`
+  (`polePart (f′) c (d+1) = -d · polePart f c d`) and `polePart_ratFuncShift`
+  (`polePart (f(X+a)) c d = polePart f (c+a) d`).
+
+Remaining for the one-shift dichotomy (step 2 of the route above), all elementary:
+1. the obstruction functional `Θ^λ_β(u) = ∑_{d≥1} ((-λ)^{d-1}/(d-1)!) polePart u β d`, its
+   vanishing on `(δ-λ)(ℂ(s))`, and its transformation `Θ_β(ρ_h u) = Θ_{β+h}(u)`;
+2. finite pole support + shift-periodicity ⟹ `Θ ≡ 0`;
+3. sufficiency: `Θ ≡ 0 ⟹ u ∈ (δ-λ)(ℂ(s))` by the triangular solve on principal parts (peel the
+   top pole coefficient, induct on the pole order);
+4. `ker(δ-λ)` inside `ℂ((s⁻¹))` is `0` for `λ ≠ 0` and `ℂ` for `λ = 0` (valuation count);
+5. factor a general `L(δ)` into linear factors and induct on the degree; then peel with
+   `FiniteCommutingShiftPeeling.shiftWord_dichotomy`.

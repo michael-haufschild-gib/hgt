@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.RiemannGaussian.FiniteHardyCanonicalConclusion
-import Mathlib.Analysis.SpecialFunctions.FrullaniIntegral
+import GaloisForLFunctions.HTGeometry.FrullaniIntegral
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 
 /-!
@@ -75,28 +75,11 @@ theorem tendsto_pairHyperbolicHeatIntegral_log_ratio
       (nhds (Real.log
         (pairHyperbolicLowerSq d v a /
           pairHyperbolicUpperSq d v a))) := by
-  have hf : LocallyIntegrableOn (fun x : ℝ ↦ Real.exp (-x)) (Ioi 0) :=
-    (Real.continuous_exp.comp continuous_neg).continuousOn.locallyIntegrableOn
-      measurableSet_Ioi
-  have hzero :
-      Tendsto (fun x : ℝ ↦ Real.exp (-x)) (nhdsWithin 0 (Ioi 0)) (nhds 1) := by
-    have hcont : Continuous (fun x : ℝ ↦ Real.exp (-x)) :=
-      Real.continuous_exp.comp continuous_neg
-    have hcw : ContinuousWithinAt (fun x : ℝ ↦ Real.exp (-x)) (Ioi 0) 0 :=
-      hcont.continuousAt.continuousWithinAt
-    simpa only [ContinuousWithinAt, neg_zero, Real.exp_zero] using hcw
-  have hinfinity :
-      Tendsto (fun x : ℝ ↦ Real.exp (-x)) atTop (nhds 0) :=
-    Real.tendsto_exp_neg_atTop_nhds_zero
   have hlower : 0 < pairHyperbolicLowerSq d v a :=
     pairHyperbolicLowerSq_pos ha hv
-  simpa only [pairHyperbolicHeatIntegrand, smul_eq_mul, sub_zero, mul_one] using
-    (Frullani.tendsto_intervalIntegral
-      (f := fun x : ℝ ↦ Real.exp (-x))
-      (a := pairHyperbolicUpperSq d v a)
-      (b := pairHyperbolicLowerSq d v a)
-      (L := (1 : ℝ)) (R := (0 : ℝ))
-      hf hupper hlower hzero hinfinity)
+  simpa only [pairHyperbolicHeatIntegrand] using
+    (GaloisForLFunctions.HTGeometry.tendsto_intervalIntegral_real_frullani
+      hupper hlower)
 
 /-- The logarithm of the squared-distance ratio is exactly twice the
 negative logarithm of the pseudo-hyperbolic radius. -/

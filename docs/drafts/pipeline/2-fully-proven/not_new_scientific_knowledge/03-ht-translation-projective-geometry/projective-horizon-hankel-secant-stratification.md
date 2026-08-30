@@ -428,3 +428,69 @@ for `S = {(0,0)} ∪ {(a,b) : a ≥ 1, b ≤ d a}`, `α = (1,0)` and `β = (0,d)
 ```
 
 which is exactly the hypothesis `hrefl` of `monomial_regular_of_semigroup`.
+
+### The `r = 1` stratum is Cohen–Macaulay (Lean, 2026-08-30)
+
+`HTGeometry/RationalNormalCone.lean` closes the last stratum `C_{m-1}` — the cone over the rational
+normal curve of degree `d = 2m - 2` — unconditionally:
+
+```text
+coneExp d = {(a,b) : b ≤ d·a}            the exponent semigroup
+rationalNormalCone K d                   its monomial subalgebra of K[U,T]
+coneExp_refl_translate                   (a,b), (a,b+d) ∈ S ⟹ (a,b) ∈ (1,0) + S
+isRegularOn_coneTop                      hence U T^d is a nonzerodivisor modulo U
+isRingRegularSeq_cone                    ** (U, U T^d) is a ring-regular sequence **
+isIntegral_cone                          (U T^i)^d = U^(d-i)·(U T^d)^i, so the cone ring is
+                                         integral over K[U, U T^d]
+ringKrullDim_le_of_isIntegral            ** Krull dimension does not grow along an integral
+                                         extension ** (absent from mathlib)
+ringKrullDim_rationalNormalCone          dim = 2
+isCohenMacaulayRing_rationalNormalCone   ** the cone is Cohen–Macaulay **
+```
+
+The dimension is pinned from both sides: the regular sequence gives `2 ≤ dim` through
+`length_le_ringKrullDim_of_isRingRegularSeq`, and integrality over the two-variable polynomial ring
+gives `dim ≤ 2`.
+
+**What is left for the general stratum.**  For `r ≥ 2` the secant ring is no longer a monomial
+algebra, so the semigroup argument does not apply.  The two routes that do are (a) Conca's
+specialisation — the generic Hankel matrix is the generic matrix cut by the anti-diagonal
+identifications, which form a regular sequence on the generic determinantal ring, so
+Hochster–Eagon transfers; and (b) the squarefree initial ideal → Stanley–Reisner → shellability
+degeneration.  Both need machinery that neither mathlib nor this corpus has; (a) is the shorter of
+the two because `isCohenMacaulayRing_of_quotient` already consumes exactly that shape.
+
+Normality of the `r = 1` stratum is the next brick: `coneExp d` is saturated, and the missing Lean
+input is the monomial valuation `min {d·e₀ − e₁ : e ∈ supp p}` together with its multiplicativity.
+
+### … and normal (Lean, 2026-08-30)
+
+`HTGeometry/MonomialValuation.lean` builds the missing valuation and
+`HTGeometry/RationalNormalConeNormal.lean` applies it:
+
+```text
+minWeight w p                     min { weight w e : e ∈ supp p }
+minWeight_mul                     ** additive — the lowest-weight forms multiply without
+                                     cancellation ** (absent from mathlib)
+minWeight_pow
+weightNonneg K w                  the subalgebra cut out by weight ≥ 0
+mem_weightNonneg_of_monic_relation
+mem_weightNonneg_of_isIntegral    ** weight ≥ 0 is integrally closed in the polynomial ring **
+
+rationalNormalCone_eq_weightNonneg          coneExp d is the non-negative part of (d, −1)
+mem_rationalNormalCone_of_isIntegral        integrally closed inside K[U,T]
+exists_mem_rationalNormalCone_of_relation_fractionRing
+    ** normal: an element of the fraction field integral over the cone ring is already in it **
+```
+
+The additivity proof is at the coefficient level: if `weight e = minWeight p + minWeight q` then
+every antidiagonal pair contributing to `coeff e (p q)` has both entries of minimal weight, so
+`coeff e (p q) = coeff e (lowestForm p · lowestForm q)`, and that product is nonzero in a domain.
+The normality argument is then the classical lowest-form one: `z ^ n` has weight `n μ` while every
+other term of a monic relation has weight at least `(n−1) μ`, and `n μ ≥ (n−1) μ` fails for `μ < 0`.
+
+The fraction-field statement uses that `K[U,T]` is a UFD, hence integrally closed, to place the
+element in `K[U,T]` first.
+
+**Stratum `C_{m−1}` is therefore closed: normal and Cohen–Macaulay, unconditionally.**  What remains
+of the card's last clause is the same statement for `r ≥ 2` and rational singularities.

@@ -773,3 +773,64 @@ being a unit.
 That closes the gap the polynomial-only layer left; what remains to instantiate the master criterion
 for the cards' maps is the same arithmetic as before — degrees, critical points, and orbit witnesses
 — now in the rational setting.
+
+### The Ritt cocycle for the step-scaling family: normal form and the exclusion plan
+
+The transport layer is now complete enough to state exactly what the cards need and how it closes.
+The relation a differentially algebraic linearizer forces is the *homogeneous* transport
+
+`F(R(z)) · R'(z)^k = b · F(z)`,  `b` a nonzero constant, `k ≠ 0`, `F` rational nonzero,
+
+which says the map preserves a rational `k`-differential up to scale — the Ritt cocycle `(5)`.
+
+**Degree-two normal form.**  In the projective coordinate `w = (1+y)/(1−y)` the family becomes
+`w ∘ R = M(w)^p` with the Möbius factor
+
+`M(w) = ((1+u)w + (1−u)) / ((1+v)w + (1−v))`,
+
+so the map is `π_p ∘ M`: degree `p`, with **exactly two critical points**, `c_0 = M^{-1}(0) = (u−1)/(u+1)`
+and `c_∞ = M^{-1}(∞) = (v−1)/(v+1)`, each totally ramified, over the two critical values `0` and `∞`.
+Conjugating by `φ(w) = (w − c_0)/(w − c_∞)`, which sends `c_0 ↦ 0` and `c_∞ ↦ ∞`, puts the map in the
+two-parameter normal form
+
+`h(w) = (A − B λ w^p) / (1 − λ w^p)`,   `A = h(0) = c_0/c_∞`,   `B = h(∞) = φ(∞) = 1`.
+
+The three identities that drive everything are exact:
+
+`h − A = λ w^p (A−B)/(1−λw^p)`,  `h − B = (A−B)/(1−λw^p)`,  `h′ = p λ (A−B) w^{p−1}/(1−λw^p)²`.
+
+For both channel families `B = 1` and `A = c_0/c_∞` is real in `(0,1)`: for the symmetric channel
+`u = a`, `v = −a` one gets `A = ρ²` with `ρ = (1−a)/(1+a)`, and for the asymmetric channel
+`A = [(u−1)(v+1)]/[(u+1)(v−1)]`, a ratio of two negative numbers of decreasing modulus.
+
+**The cyclic symmetry.**  `h(w)` depends on `w` only through `w^p`, so `h(ζw) = h(w)` and
+`ζ h′(ζw) = h′(w)` for every `p`-th root of unity `ζ`.  Substituting `ζw` into the cocycle gives
+
+`F(ζ w) = ζ^{−k} F(w)`,
+
+so **the divisor of `F` is invariant under the cyclic group `μ_p`**.  This is the observation that
+makes the counting sharp.
+
+**The counting.**  Every fibre of `h` over a finite point other than the two critical values `A`,
+`B` consists of `p` distinct finite non-critical points, and at such a point the transport equation
+says `ord_z F = ord_{h(z)}F`.  So with `S` the finite support of `ord F` and `T = S \ {A,B}`, the
+fibre over each point of `T` lies in `S`, whence `p·|T| ≤ |S| ≤ |T| + 2`.  Cyclic invariance adds
+that `S` is a union of `μ_p`-orbits, so a nonempty `T` already contains `p − 2` points, forcing
+`(p−1)(p−2) ≤ 2`.  Hence
+
+* `p ≥ 4`: `T = ∅` outright;
+* `p = 3`: `T` is a single point whose `μ_3`-orbit is all of `S`, so `A` and `B` lie in one orbit
+  and `A³ = B³`;
+* `p = 2`: a short list of configurations, each of which forces `h(A) = −A`, `h(A) = −B`, or
+  `A² = B²`.
+
+**The endgame.**  When `T = ∅` the support lies in `{A,B}`, so `F = c(w−A)^m(w−B)^n` outright, and
+substituting the three identities gives
+
+`c(A−B)^{m+n+k} λ^{m+k} p^k w^{pm + k(p−1)} (1−λw^p)^{−m−n−2k} = b c (w−A)^m (w−B)^n`.
+
+Comparing orders at `w = 0` gives `pm + k(p−1) = 0`, and comparing at `w = A` — legitimate as soon
+as `A` is not a pole, `λA^p ≠ 1` — gives `m = 0` and hence `k = 0`, contradicting `k ≠ 0`.
+
+So the map carries no Ritt cocycle as soon as `A ≠ 0`, `B ≠ 0`, `λA^p ≠ 1`, `A^p ≠ B^p`, and, in
+degree two only, `h(A) ∉ {−A, −B}` — all of them explicit conditions on the channel parameters.

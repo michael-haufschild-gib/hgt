@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.RiemannGaussian.GaussianArchimedeanContour
 import GaloisForLFunctions.HTGeometry.EllipticPrincipalJet
-import Mathlib.Analysis.Meromorphic.LogDeriv
+import GaloisForLFunctions.HTGeometry.LogDerivGermCongruence
 
 /-!
 # The xi zero-divisor contour
@@ -360,7 +360,8 @@ theorem AnalyticAt.tendsto_sub_mul_logDeriv_analyticOrderNatAt
   have hfactor' : f =ᶠ[𝓝 a]
       fun z => (z - a) ^ m * g z := by
     simpa only [m, smul_eq_mul] using hfactor
-  have hlogFactor := logDeriv_congr_nhds hfactor'
+  have hlogFactor :=
+    GaloisForLFunctions.HTGeometry.logDeriv_congr_nhds hfactor'
   have hg_ne : ∀ᶠ z in 𝓝 a, g z ≠ 0 :=
     hg.continuousAt.eventually_ne hg0
   have heq : ∀ᶠ z in 𝓝[≠] a,
@@ -413,7 +414,8 @@ theorem AnalyticAt.exists_logDeriv_eq_principalPart_add_analytic
   have hfactor' : f =ᶠ[𝓝 a]
       fun z => (z - a) ^ m * g z := by
     simpa only [m, smul_eq_mul] using hfactor
-  have hlogFactor := logDeriv_congr_nhds hfactor'
+  have hlogFactor :=
+    GaloisForLFunctions.HTGeometry.logDeriv_congr_nhds hfactor'
   have hg_ne : ∀ᶠ z in 𝓝 a, g z ≠ 0 :=
     hg.continuousAt.eventually_ne hg0
   have hloggAnalytic : AnalyticAt ℂ (logDeriv g) a := by

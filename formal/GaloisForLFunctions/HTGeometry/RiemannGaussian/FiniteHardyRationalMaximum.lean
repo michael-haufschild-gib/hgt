@@ -57,9 +57,14 @@ theorem polynomial_div_norm_le_of_upperHalfPlane_boundary
       dsimp only [f]
       fun_prop
     · change ContinuousOn f (closure {w : ℂ | 0 < w.re})
-      rw [Complex.closure_setOfPred_lt_re]
       intro w hw
-      have hden : P.eval (Complex.I * w) ≠ 0 := hdenClosed w hw
+      have hwNonneg : 0 ≤ w.re := by
+        apply (closure_minimal (s := {z : ℂ | 0 < z.re})
+          (t := {z : ℂ | 0 ≤ z.re}) ?_ ?_) hw
+        · intro z hz
+          exact le_of_lt (show 0 < z.re from hz)
+        · exact isClosed_le continuous_const Complex.continuous_re
+      have hden : P.eval (Complex.I * w) ≠ 0 := hdenClosed w hwNonneg
       dsimp only [f]
       fun_prop
   have hpoly : q.eval =O[Bornology.cobounded ℂ] P.eval :=
