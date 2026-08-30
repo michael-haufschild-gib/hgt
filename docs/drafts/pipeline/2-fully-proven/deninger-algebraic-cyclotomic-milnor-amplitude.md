@@ -1812,6 +1812,10 @@ of the corpus's real Siegel interface:
 - `ComplexJacobiLeadingMinors.lean` proves leading blocks preserve Hermitian Jacobi form, computes
   full and leading determinants as the corresponding positive real diagonal products, and shows
   leading truncations inherit all complex Siegel bounds.
+- `NumberFieldArchimedeanSiegelData.lean` connects these local interfaces to actual simultaneous
+  number-field Jacobi data.  It derives real and Hermitian local forms, proves every complex Jacobi
+  diagonal equals its real-part embedding, and packages the simultaneous all-place Siegel
+  predicate with an exact entrywise characterization.
 
 Both direct checks and targeted builds pass; every new declaration audits to
 `[propext, Classical.choice, Quot.sound]`.  Modules are umbrella-wired without an umbrella build.

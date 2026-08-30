@@ -1154,3 +1154,46 @@ number-field discriminants and odd tame ramification (including which primes ram
 specialized epsilon/root-number equality from an independently defined global Artin epsilon factor.
 The finite sign calculation and maximal-abelian field are both closed; neither is being renamed as
 the missing global epsilon bridge.
+
+## 2026-08-30 Q8 two-adic hypothesis audit — tame bridge falsified
+
+`[FALSIFIED]` The preceding target “prove odd tame ramification” is false for the literal SST
+Example 1.3(ii) field.  `DeningerQ8ActualTwoAdicRamification.lean` constructs the actual integral
+coordinates
+
+```text
+u = (1 + sqrt 5) / 2,   v = (1 + sqrt 41) / 2,   z = top radical
+```
+
+and proves
+
+```text
+u^2 = u + 1,
+v^2 = v + 10,
+z^2 = 2 (u + 2) (35 + 12v),
+(u + 2)(35 + 12v)(3-u)(47-12v) = 1025.
+```
+
+At every prime above two, the last identity makes `(u + 2)(35 + 12v)` a unit.  Unramifiedness
+would make two have additive valuation one, while the square relation would force `2 | 1`.
+Lean therefore proves, unconditionally,
+
+```lean
+q8Literal_not_isUnramifiedAt_two
+q8Literal_two_not_isUnramifiedIn
+q8Literal_two_dvd_discriminant
+```
+
+Thus rational two ramifies and divides the literal field discriminant.  A tame-only specialization
+of Fröhlich's theorem cannot identify `deningerQ8FroehlichFiniteSign = -1` with the global Artin
+root number for this field.  The surviving literature route must compute the ramified two-adic
+local epsilon factor, or formalize a global theorem whose hypotheses include this case.
+
+`[CORRECTION]` The earlier line `Delta(K) = 205` is not the absolute discriminant of the
+biquadratic maximal-abelian field `K = Q(sqrt 5, sqrt 41)`.  Its three quadratic discriminants are
+`5`, `41`, and `205`, whose product is `42025 = 205^2`.  Any later Fröhlich specialization must
+keep the paper's exact notation separate from the absolute field discriminant.
+
+Targeted source check and leaf build pass; axiom audit reports only `propext`,
+`Classical.choice`, and `Quot.sound`.  The module is wired into `RHTower.lean`; no umbrella build
+was run.

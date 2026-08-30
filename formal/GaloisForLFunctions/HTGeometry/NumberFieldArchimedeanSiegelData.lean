@@ -94,7 +94,15 @@ theorem NumberFieldArchimedeanJacobiData.isSiegel_iff
       ((∀ w (i j : Fin n), (i : ℕ) + 1 = (j : ℕ) →
           (J.complexD w i).re ≤ t * (J.complexD w j).re) ∧
        ∀ w (i j : Fin n), ‖J.complexU w i j‖ ≤ u) := by
-  rfl
+  constructor
+  · rintro ⟨hreal, hcomplex⟩
+    exact ⟨⟨fun w i j hij => (hreal w).1 i j hij,
+      fun w i j => (hreal w).2 i j⟩,
+      ⟨fun w i j hij => (hcomplex w).1 i j hij,
+        fun w i j => (hcomplex w).2 i j⟩⟩
+  · rintro ⟨⟨hrealD, hrealU⟩, ⟨hcomplexD, hcomplexU⟩⟩
+    exact ⟨fun w => ⟨hrealD w, hrealU w⟩,
+      fun w => ⟨hcomplexD w, hcomplexU w⟩⟩
 
 end
 

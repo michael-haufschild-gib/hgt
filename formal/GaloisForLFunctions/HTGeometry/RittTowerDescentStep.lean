@@ -56,6 +56,7 @@ theorem exists_descent_step (Fr : RittFrame K L) {τ : L} {q : K}
     ∃ (W' : L) (c' g' : K) (A' : ℕ → K), W' ≠ 0 ∧ W' ∈ Fr.jetPrefixField τ m ∧ c' ≠ 0 ∧
       (g' = 0 ∨ ∃ z : K, z ≠ 0 ∧ (g' = z * A m ∨ g' = z * g)) ∧
       (∀ j, A' j = 0 ∨ ∃ z : K, z ≠ 0 ∧ A' j = z * A j) ∧
+      (∃ s : ℤ, c' = c * (q / Fr.ρ ^ m) ^ s) ∧
       Fr.σ W' = algebraMap K L c' * W' + algebraMap K L g'
         + ∑ j ∈ Finset.range m, algebraMap K L (A' j) * Fr.d^[j] τ := by
   classical
@@ -128,6 +129,9 @@ theorem exists_descent_step (Fr : RittFrame K L) {τ : L} {q : K}
   -- read the descended relation back in `L`
   set z : K := aK ^ e / aK ^ D with hz
   have hz0 : z ≠ 0 := div_ne_zero (pow_ne_zero _ haK0) (pow_ne_zero _ haK0)
+  have hzform : ∃ s : ℤ, c * z = c * (q / Fr.ρ ^ m) ^ s := by
+    refine ⟨(e : ℤ) - D, ?_⟩
+    rw [hz, ← haK, zpow_sub₀ haK0, zpow_natCast, zpow_natCast]
   have hmainL : Fr.σ (u : L) * algebraMap K L aK ^ D
       = algebraMap K L aK ^ e * (algebraMap K L c * (u : L) + (r : L)) := by
     have h := congrArg (algebraMap ↥E L) hmain
@@ -142,18 +146,17 @@ theorem exists_descent_step (Fr : RittFrame K L) {τ : L} {q : K}
   have huL : (u : L) ≠ 0 := fun h => hu0 (Subtype.ext (by simpa using h))
   rcases hr with hr0 | hrα | hrβ
   · refine ⟨(u : L), c * z, 0, fun _ => 0, huL, u.2, mul_ne_zero hc hz0, Or.inl rfl,
-      fun _ => Or.inl rfl, ?_⟩
+      fun _ => Or.inl rfl, hzform, ?_⟩
     rw [hsolve, hr0]
     simp
-  · refine ⟨(u : L), c * z, z * αK, fun _ => 0, huL, u.2, mul_ne_zero hc hz0, ?_,
-      fun _ => Or.inl rfl, ?_⟩
-    · exact Or.inr ⟨z, hz0, Or.inl rfl⟩
+  · refine ⟨(u : L), c * z, z * αK, fun _ => 0, huL, u.2, mul_ne_zero hc hz0,
+      Or.inr ⟨z, hz0, Or.inl rfl⟩, fun _ => Or.inl rfl, hzform, ?_⟩
     · rw [hsolve, hrα]
       have : ((αE : ↥E) : L) = algebraMap K L αK := rfl
       rw [this, ← map_mul]
       simp
   · refine ⟨(u : L), c * z, z * g, fun j => z * A j, huL, u.2, mul_ne_zero hc hz0,
-      Or.inr ⟨z, hz0, Or.inr rfl⟩, fun _ => Or.inr ⟨z, hz0, rfl⟩, ?_⟩
+      Or.inr ⟨z, hz0, Or.inr rfl⟩, fun _ => Or.inr ⟨z, hz0, rfl⟩, hzform, ?_⟩
     have hb : ((βE : ↥E) : L)
         = algebraMap K L g + ∑ j ∈ Finset.range m, algebraMap K L (A j) * Fr.d^[j] τ := rfl
     have hsum : ∑ j ∈ Finset.range m, algebraMap K L (z * A j) * Fr.d^[j] τ
@@ -270,34 +273,41 @@ theorem exists_base_relation_of_tower (Fr : RittFrame K L) {τ : L} {q : K}
     (g₀ : K) (A₀ : ℕ → K) :
     ∀ (n : ℕ), (∀ k, k < n → Transcendental ↥(Fr.jetPrefixField τ k) (Fr.d^[k] τ)) →
       ∀ (W : L) (c g : K) (A : ℕ → K), W ≠ 0 → W ∈ Fr.jetPrefixField τ n → c ≠ 0 →
+        (∃ i k : ℤ, c = q ^ i * Fr.ρ ^ k) →
         (g = 0 ∨ ∃ (j : ℕ) (z : K), z ≠ 0 ∧ (g = z * A₀ j ∨ g = z * g₀)) →
         (∀ j, A j = 0 ∨ ∃ z : K, z ≠ 0 ∧ A j = z * A₀ j) →
         Fr.σ W = algebraMap K L c * W + algebraMap K L g
           + ∑ j ∈ Finset.range n, algebraMap K L (A j) * Fr.d^[j] τ →
-        ∃ u c' g' : K, u ≠ 0 ∧ c' ≠ 0 ∧
+        ∃ u c' g' : K, u ≠ 0 ∧ c' ≠ 0 ∧ (∃ i k : ℤ, c' = q ^ i * Fr.ρ ^ k) ∧
           (g' = 0 ∨ ∃ (j : ℕ) (z : K), z ≠ 0 ∧ (g' = z * A₀ j ∨ g' = z * g₀)) ∧
           Fr.ψ u = c' * u + g' := by
   intro n
   induction n with
   | zero =>
-      intro _ W c g A hW0 hWmem hc hginv _ hrel
+      intro _ W c g A hW0 hWmem hc hcinv hginv _ hrel
       have hbot : Fr.jetPrefixField τ 0 = (⊥ : IntermediateField K L) := by
         rw [RittFrame.jetPrefixField,
           show {x : L | ∃ j < 0, x = Fr.d^[j] τ} = (∅ : Set L) by ext x; simp]
         exact IntermediateField.adjoin_empty K L
       rw [hbot, IntermediateField.mem_bot] at hWmem
       obtain ⟨u, hu⟩ := hWmem
-      refine ⟨u, c, g, ?_, hc, hginv, ?_⟩
+      refine ⟨u, c, g, ?_, hc, hcinv, hginv, ?_⟩
       · intro h
         exact hW0 (by rw [← hu, h, map_zero])
       · refine (algebraMap K L).injective ?_
         rw [map_add, map_mul, ← Fr.comp, hu]
         simpa using hrel
   | succ m ih =>
-      intro htr W c g A hW0 hWmem hc hginv hAinv hrel
-      obtain ⟨W', c', g', A', hW'0, hW'mem, hc'0, hg'inv, hA'inv, hrel'⟩ :=
+      intro htr W c g A hW0 hWmem hc hcinv hginv hAinv hrel
+      obtain ⟨W', c', g', A', hW'0, hW'mem, hc'0, hg'inv, hA'inv, hcform, hrel'⟩ :=
         exists_descent_step Fr hq hqconst hshift (htr m (by omega)) hW0 hWmem hc hrel
-      refine ih (fun k hk => htr k (by omega)) W' c' g' A' hW'0 hW'mem hc'0 ?_ ?_ hrel'
+      refine ih (fun k hk => htr k (by omega)) W' c' g' A' hW'0 hW'mem hc'0 ?_ ?_ ?_ hrel'
+      · obtain ⟨s, hs⟩ := hcform
+        obtain ⟨i, k, hik⟩ := hcinv
+        refine ⟨i + s, k - m * s, ?_⟩
+        rw [hs, hik, div_zpow, ← zpow_natCast Fr.ρ m, ← zpow_mul, zpow_add₀ hq,
+          zpow_sub₀ Fr.ρ_ne]
+        field_simp
       · rcases hg'inv with h0 | ⟨z, hz0, hz⟩
         · exact Or.inl h0
         · rcases hz with hz | hz

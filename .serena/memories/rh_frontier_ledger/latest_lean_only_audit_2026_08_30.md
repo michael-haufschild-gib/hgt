@@ -1,16 +1,25 @@
-Lean-only frontier ledger audit complete through declaration snapshot 2026-08-30 11:37:05 CEST.
+# Lean-only frontier audit
 
+Cutoff: 2026-08-30 13:07:17 CEST.
 Target: docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md
-State: 1107 lines; 26 live branch labels; 30 candidate interface labels; no new independent route label formalized.
+Size after update: 1120 lines.
 
-Latest corpus changes folded:
-- CLG/TTF: BoseShiftedTransportCone remains sufficient, but its first potential-generated face has exact vanishing through order six and source-positive seventh jet at structural scale >= 6, opposite required cone sign. Lean has not yet specialized germ result to interval-level cone negation. Direct compensation or different source decomposition remains.
-- Formation capital: split common recovery and FE relabelling preserve all Renyi/Hellinger capital; exponential sufficient-statistic macropackets preserve exact KL/Jeffreys/Renyi/Fisher information and can create new support species without orientation.
-- Ritt: first-order/prefix alternative, triangular stability, algebraic top-jet collapse, and both ambient simple-transcendental scaling descents are formal. Remaining classification is derive scaling presentation from general prefix branch and solve/exclude scalar affine connections.
-- Exponential Poincare recession: normalized iterated-exponential approximants have exact orders 1,2,3,..., unbounded.
-- AKC: simultaneous real/complex Jacobi/Siegel reduction and bounded algebraic integer/matrix finiteness formal; arithmetic Xi membership/transition bound/contractivity remain.
-- Arithmetic source-moment Torelli: Hankel Vandermonde factorization, generic nonsingularity, and 2r algebraic independence survive Hankel-rank quotient; reconstruction does not orient.
-- W2C: literal compact Weil profile has premise-free scalar close-pair collision and derivative-energy limit; nonscalar/derivative incidence remains mandatory.
-- HCF, T1, HB latest declarations inspected; their ledger frontiers remain accurate.
+Reviewed all Lean files newer than prior 2026-08-30 11:37:05 cutoff via scripts/formal_tools.py research and direct declarations. No cards/papers used as evidence. No Lean build run.
 
-Validation: git diff --check clean; stale CLG and Ritt claims absent; no Lean files newer than cutoff at final race scan. No Lean builds run; documentation-only task.
+Material route updates:
+- S6F/TCD: positive bounded contravariant D1 carrier killed for scalar, finite matrix, and arbitrary nontrivial complete Hilbert operator channels on either canonical side. Only singular/unbounded, indefinite, mechanism-changing, or direct cross-scale successor.
+- CLG: literal fixed lowest-Bose cone formally false; direct compensation/different decomposition survives.
+- FZZ-P: critical Θ(R log R) contact density still admits completed off-line-zero counterexample; need sharper type-normalized/supercritical uniqueness or leave category.
+- T2: exact principal-relative nonreal zeta-divisor tomography, residues minus multiplicity, RH iff strict-right regularity; graph laws have explicit Abel singular counterexample. Need second source-derived singular relative selector.
+- PW-B: singular horizontal connection has no nonzero L2 modes, arbitrary even core classifies positive reflection-unitary densities, connection index zero.
+- Suzuki/SP-E: fixed-scale dressed scalar transition core unbounded below; only signed relative/cutoff-growing/nonscalar/growing-rank successors.
+- HCF: translated finite source decomposition and fixed-phase landing closed; boundary-first zero-index-free reporter, finite real-zero family representation, continuity formal, but no public boundary sign selection/handoff theorem. Then tail budget or hybrid census remains.
+- RBH: source-faithful equivariant normalization and all finite-time symmetric two-channel Markov flows preserve exact wall locus; infinite-time balance universal/nonselective.
+- Ritt: tower descent preserves canonical c=q^i rho^k; nontrivial homogeneous base relation gives order-one Ritt form. Only inhomogeneous affine branch or trivial ψ(u)=u remains; no Xi occurrence.
+- Q8: actual field ramified at every prime above two; 2 divides discriminant. Tame-only root-number bridge impossible; local epsilon at 2 required.
+- AKC: real/complex Siegel/bounded-overlap geometry closed given source inputs; Xi membership/coercivity/contractivity still absent.
+- Formation/information: exact HS coimage energy, Gaussian quotient fusion; posterior contrast Pythagorean current and KL factorization sufficiency sharpen passive-observation firewall, no Xi landing.
+- HCF, Ritt, Q8, Posterior/KL race additions included through cutoff.
+- No new independent route label formal; count remains 26 live and 30 candidate handles.
+
+Validation: git diff --check clean; document 1120 lines (<4000); final race scan found no files newer than cutoff.

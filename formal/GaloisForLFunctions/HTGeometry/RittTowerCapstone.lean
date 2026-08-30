@@ -33,18 +33,19 @@ theorem exists_base_relation_of_jet_mem (Fr : RittFrame K L) {τ : L} {q : K}
     ∃ (A : ℕ → K), (Fr.σ (Fr.d^[n] τ)
         = algebraMap K L (q / Fr.ρ ^ n) * Fr.d^[n] τ
           + ∑ j ∈ Finset.range n, algebraMap K L (A j) * Fr.d^[j] τ) ∧
-      ∃ u c g : K, u ≠ 0 ∧ c ≠ 0 ∧
+      ∃ u c g : K, u ≠ 0 ∧ c ≠ 0 ∧ (∃ i k : ℤ, c = q ^ i * Fr.ρ ^ k) ∧
         (g = 0 ∨ ∃ (j : ℕ) (z : K), z ≠ 0 ∧ g = z * A j) ∧
         Fr.ψ u = c * u + g := by
   obtain ⟨A, hAsupp, hA⟩ := exists_shift_jet_coeffs Fr hshift n
   refine ⟨A, hA, ?_⟩
   have hc0 : q / Fr.ρ ^ n ≠ 0 := div_ne_zero hq (pow_ne_zero _ Fr.ρ_ne)
-  obtain ⟨u, c, g, hu0, hc, hginv, hrel⟩ :=
+  obtain ⟨u, c, g, hu0, hc, hcinv, hginv, hrel⟩ :=
     exists_base_relation_of_tower Fr hq hqconst hshift 0 A n htr (Fr.d^[n] τ)
-      (q / Fr.ρ ^ n) 0 A hjet0 hmem hc0 (Or.inl rfl)
+      (q / Fr.ρ ^ n) 0 A hjet0 hmem hc0
+      ⟨1, -(n : ℤ), by rw [zpow_one, zpow_neg, zpow_natCast, div_eq_mul_inv]⟩ (Or.inl rfl)
       (fun j => Or.inr ⟨1, one_ne_zero, (one_mul (A j)).symm⟩)
       (by simpa using hA)
-  refine ⟨u, c, g, hu0, hc, ?_, hrel⟩
+  refine ⟨u, c, g, hu0, hc, hcinv, ?_, hrel⟩
   rcases hginv with h0 | ⟨j, z, hz0, hz⟩
   · exact Or.inl h0
   · rcases hz with hz | hz

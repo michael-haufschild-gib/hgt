@@ -31,6 +31,7 @@ theorem exists_base_relation_of_collapse (Fr : RittFrame K L) [CharZero L]
     (hjets : ∀ m : ℕ, Fr.d^[m] τ ≠ 0)
     (hcollapse : ∃ n : ℕ, Fr.d^[n] τ ∈ Fr.jetPrefixField τ n) :
     ∃ (n : ℕ) (A : ℕ → K) (u c g : K), 2 ≤ n ∧ u ≠ 0 ∧ c ≠ 0 ∧
+      (∃ i k : ℤ, c = q ^ i * Fr.ρ ^ k) ∧
       (Fr.σ (Fr.d^[n] τ) = algebraMap K L (q / Fr.ρ ^ n) * Fr.d^[n] τ
         + ∑ j ∈ Finset.range n, algebraMap K L (A j) * Fr.d^[j] τ) ∧
       (g = 0 ∨ ∃ (j : ℕ) (z : K), z ≠ 0 ∧ g = z * A j) ∧
@@ -59,9 +60,9 @@ theorem exists_base_relation_of_collapse (Fr : RittFrame K L) [CharZero L]
       · exact htr1 (by simpa using halg)
     · exact hmin k hk
         (jet_mem_jetPrefixField_of_isAlgebraic Fr hτ hdτ hq hqconst hshift hk2 halg)
-  obtain ⟨A, hA, u, c, g, hu0, hc0, hginv, hrel⟩ :=
+  obtain ⟨A, hA, u, c, g, hu0, hc0, hcinv, hginv, hrel⟩ :=
     exists_base_relation_of_jet_mem Fr hq hqconst hshift htr (hjets n) hmem
-  exact ⟨n, A, u, c, g, hn2, hu0, hc0, hA, hginv, hrel⟩
+  exact ⟨n, A, u, c, g, hn2, hu0, hc0, hcinv, hA, hginv, hrel⟩
 
 open GaloisForLFunctions in
 /-- **Ritt's implication, in the frame.**  A differentially algebraic linearizer either satisfies
@@ -78,6 +79,7 @@ theorem rittForm_or_base_relation [Differential K] [Differential L] [Differentia
     (hDA : DifferentialAlgebraicOver K τ) :
     (∃ (r j : ℤ) (A : K), r ≠ 0 ∧ A ≠ 0 ∧ (Fr.d τ) ^ r = algebraMap K L A * τ ^ j) ∨
       ∃ (n : ℕ) (A : ℕ → K) (u c g : K), 2 ≤ n ∧ u ≠ 0 ∧ c ≠ 0 ∧
+        (∃ i k : ℤ, c = q ^ i * Fr.ρ ^ k) ∧
         (Fr.σ (Fr.d^[n] τ) = algebraMap K L (q / Fr.ρ ^ n) * Fr.d^[n] τ
           + ∑ j ∈ Finset.range n, algebraMap K L (A j) * Fr.d^[j] τ) ∧
         (g = 0 ∨ ∃ (j : ℕ) (z : K), z ≠ 0 ∧ g = z * A j) ∧

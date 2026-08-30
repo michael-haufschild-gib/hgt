@@ -129,7 +129,7 @@ theorem algebraMap_complex_eq_analyticMeroElement {W : Set ℂ} (hWo : IsOpen W)
   rfl
 
 /-- Germ differentiation of an analytic element is differentiation of the function. -/
-theorem deriv_analyticMeroElement {W : Set ℂ} (hWo : IsOpen W) (hWc : IsPreconnected W)
+theorem deriv_analyticMeroElement_open {W : Set ℂ} (hWo : IsOpen W) (hWc : IsPreconnected W)
     (hWne : W.Nonempty) (F : ℂ → ℂ) (hF : AnalyticOnNhd ℂ F W) :
     letI := Bottcher.isDomain_analyticSubring W hWo hWc hWne
     letI := meroFieldDifferential hWo hWc hWne
@@ -192,7 +192,7 @@ theorem exists_uniform_jet_relation_of_linearized_tower
   have ha : ∀ (n j : ℕ), Differential.deriv (a n j) = a n (j + 1) * c n 0 := by
     intro n j
     rw [hadef, hcdef]
-    rw [deriv_analyticMeroElement hUo hUc hUne]
+    rw [deriv_analyticMeroElement_open hUo hUc hUne]
     rw [← analyticMeroElement_mul]
     refine analyticMeroElement_congr_eqOn _ _ ?_
     intro t ht
@@ -206,7 +206,7 @@ theorem exists_uniform_jet_relation_of_linearized_tower
   have hc : ∀ (n i : ℕ), Differential.deriv (c n i) = c n (i + 1) := by
     intro n i
     rw [hcdef]
-    rw [deriv_analyticMeroElement hUo hUc hUne]
+    rw [deriv_analyticMeroElement_open hUo hUc hUne]
     refine analyticMeroElement_congr_eqOn _ _ ?_
     intro t ht
     show deriv (fun s => μ n * iteratedDeriv (i + 1) κ s) t
@@ -342,7 +342,7 @@ theorem exists_uniform_jet_relation_of_linearized_tower
   have hKconst : ∀ x : ℂ, Differential.deriv (algebraMap ℂ (meroField U) x) = 0 := by
     intro x
     rw [algebraMap_complex_eq_analyticMeroElement hUo hUc hUne hUinf x,
-      deriv_analyticMeroElement hUo hUc hUne]
+      deriv_analyticMeroElement_open hUo hUc hUne]
     have hz : Set.EqOn (deriv fun _ : ℂ => x) (fun _ : ℂ => (0 : ℂ)) U := by
       intro t _
       simp

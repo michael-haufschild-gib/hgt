@@ -180,4 +180,44 @@ theorem exists_relation_compJet_of_witness {F K I : Type} [Field F] [Field K] [A
     fun x hx j => mem_algebraicClosure_of_algebraicWitness (hwit x hx j)
 
 
+/-- The algebraic form with an explicit degree bound, avoiding `Fintype.card` in the statement. -/
+theorem exists_relation_compJet_of_algebraic' {F K I : Type} [Field F] [Field K] [Algebra F K]
+    [Differential K]
+    (hconst : ∀ c : F, (algebraMap F K c)′ = 0) (φ h : K) (s : I → K) (m : ℕ)
+    (hm : Cardinal.mk I ≤ (m : Cardinal))
+    (hjets : ∀ x ∈ ({φ, h} : Set K), ∀ j : ℕ,
+      differentialJet j x ∈ algebraicClosure (IntermediateField.adjoin F (Set.range s)) K) :
+    ∃ P : MvPolynomial (Fin (m + 1)) F, P ≠ 0 ∧
+      MvPolynomial.aeval (Fin.cons φ fun i : Fin m => compJet φ h (i : ℕ)) P = 0 := by
+  classical
+  set A : IntermediateField F K :=
+    (algebraicClosure (IntermediateField.adjoin F (Set.range s)) K).restrictScalars F with hA
+  have htr : Algebra.trdeg F ↥A ≤ ((m : ℕ) : Cardinal) :=
+    le_trans (trdeg_algebraicClosure_adjoin_range_le (K := F) (L := K) s) hm
+  have hjetmem : ∀ y ∈ differentialJetSet ({φ, h} : Set K), y ∈ A := by
+    rintro y ⟨x, hx, j, rfl⟩
+    exact hjets x hx j
+  have hle : differentialAdjoin F ({φ, h} : Set K) ≤ A := by
+    rw [differentialAdjoin]
+    exact IntermediateField.adjoin_le_iff.mpr hjetmem
+  have hφ : φ ∈ A := by
+    have hj0 := hjets φ (by simp) 0
+    rw [differentialJet_zero] at hj0
+    exact hj0
+  refine exists_relation_compJet_of_mem htr hφ ?_
+  intro j
+  exact hle (compJet_mem_differentialAdjoin hconst φ h j)
+
+/-- The witness form with an explicit degree bound. -/
+theorem exists_relation_compJet_of_witness' {F K I : Type} [Field F] [Field K] [Algebra F K]
+    [Differential K]
+    (hconst : ∀ c : F, (algebraMap F K c)′ = 0) (φ h : K) (s : I → K) (m : ℕ)
+    (hm : Cardinal.mk I ≤ (m : Cardinal))
+    (hwit : ∀ x ∈ ({φ, h} : Set K), ∀ j : ℕ, AlgebraicWitness F s (differentialJet j x)) :
+    ∃ P : MvPolynomial (Fin (m + 1)) F, P ≠ 0 ∧
+      MvPolynomial.aeval (Fin.cons φ fun i : Fin m => compJet φ h (i : ℕ)) P = 0 :=
+  exists_relation_compJet_of_algebraic' hconst φ h s m hm
+    fun x hx j => mem_algebraicClosure_of_algebraicWitness (hwit x hx j)
+
+
 end GaloisForLFunctions.HTGeometry

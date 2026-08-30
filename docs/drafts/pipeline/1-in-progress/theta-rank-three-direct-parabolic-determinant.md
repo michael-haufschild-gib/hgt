@@ -176,3 +176,85 @@ finite positive matrix-channel source-sl₂ carrier containing D1
 is impossible. Remaining representation-theoretic survivors must be genuinely infinite-channel,
 localized/singular, or indefinite/Krein. Direct cross-scale Hankel/singular-face geometry remains
 the clean positive survivor and `TCD-D1-BOUNDARY-FLUX` remains the route-closing open core.
+
+## 2026-08-30 infinite positive operator-channel contravariant route kill
+
+`[FALSIFIED][LEAN-PROVED]` Passing from finite matrices to bounded operators on an arbitrary
+nontrivial complete complex Hilbert channel does not rescue the positive contravariant-form route.
+For every nonzero carrier vector, literal strict operator positivity makes its diagonal pairing
+operator injective and gives it dense range, without coercivity or invertibility. The exact
+D1-generated vacuum string then forces the channel coefficient to vanish for either canonical
+left/right action and subsequently forces the strictly positive diagonal at `Ev ≠ 0` to be zero.
+
+Formal capstone:
+`modularThetaSourcePositive_no_D1_infiniteOperatorContravariantCarrier` in
+`PolynomialODEJetRankThreeSourcePositiveD1InfiniteOperatorContravariantNoGo`.
+
+Exact proof-chain consequence: the surviving representation proposal
+
+```text
+positive bounded infinite operator-channel source-sl₂ carrier containing D1
+→ operator-valued Gram/Shapovalov positivity for native rank-three D1
+→ finite TCD/S6F gate
+→ cofinal all-order landing
+→ Weil positivity
+→ RH
+```
+
+is impossible. This strictly strengthens the finite matrix-channel no-go: channel dimension may be
+infinite or nonseparable, and no determinant, compactness, or uniform lower spectral bound is used.
+The strongest positive survivor is also formalized: strict diagonal quadratic positivity implies
+both injectivity and dense range. Therefore only singular/unbounded operator pairings,
+indefinite/Krein pairings, or noncontravariant direct cross-scale Hankel geometry survive.
+
+`[NOVELTY AUDIT]` Corpus search found no bounded infinite operator-channel D1 theorem before this
+module. Primary literature located standard scalar contravariant Hermitian/Shapovalov forms and
+general positive operator-valued kernels/GNS constructions, but no source-specific vacuum-string
+obstruction for bounded operator-valued contravariant forms. Priority claim remains limited to
+the searched corpus and sources.
+
+## 2026-08-30 algebraic zero-divisor classification and regular-star route kill
+
+`[FALSIFIED][LEAN-PROVED]` Boundedness, positivity, channel dimension, and Hilbert topology are not
+the source of the contravariant obstruction. For values in any nontrivial nonunital ring, every
+right contravariant carrier containing actual D1 has a nonzero source vector whose diagonal pairing
+is not left regular. For values in any nontrivial involutive ring, the same holds for every left
+contravariant carrier whose diagonals are Hermitian. Thus neither canonical side admits a carrier
+whose nonzero diagonals are all left regular.
+
+Formal positive-survivor classifiers:
+
+- `ModularThetaSourcePositiveD1RightStarAlgebraContravariantCarrier.exists_nonzero_diagonal_not_leftRegular`;
+- `ModularThetaSourcePositiveD1LeftStarAlgebraContravariantCarrier.exists_nonzero_diagonal_not_leftRegular`.
+
+Formal no-go capstone:
+`modularThetaSourcePositive_no_D1_regularStarAlgebraContravariantCarrier` in
+`PolynomialODEJetRankThreeSourcePositiveD1StarAlgebraZeroDivisorNoGo`.
+
+The mechanism is the exact D1 vacuum string `Eu=0`, `Fv=u`, `Ev≠0`. If `pair(u,u)` is left
+regular, contravariance forces the coefficient to vanish. On the left side, diagonal Hermiticity
+and the faithful involution reverse the zero product before cancellation. Contravariance at
+`(v,Ev)` then makes `pair(Ev,Ev)=0`, so that diagonal is not left regular. No analytic assumption
+enters.
+
+Exact proof-chain consequence:
+
+```text
+regular algebra-valued contravariant source-sl₂ carrier containing D1
+→ singular/unbounded or indefinite Gram/Shapovalov realization
+→ finite TCD/S6F gate
+→ cofinal all-order landing
+→ Weil positivity
+→ RH
+```
+
+is impossible. Any remaining contravariant realization must now carry an actual diagonal zero
+divisor on the D1 cyclic string; merely becoming infinite-dimensional, unbounded, localized, or
+indefinite is insufficient. Direct theta-specific null-line orientation remains the clean survivor
+and `TCD-D1-BOUNDARY-FLUX` remains the finite route-closing open core.
+
+`[NOVELTY AUDIT]` Corpus search found no D1 zero-divisor classification before this module.
+Literature located scalar nondegenerate Shapovalov forms, classifications of scalar contravariant
+forms, and Cartan-algebra-valued universal forms, but no source-D1 theorem forcing a non-left-regular
+diagonal in every algebra-valued contravariant carrier. Priority remains provisional pending
+independent expert review.

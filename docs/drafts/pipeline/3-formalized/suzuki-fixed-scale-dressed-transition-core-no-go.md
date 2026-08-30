@@ -1,6 +1,6 @@
 # Suzuki fixed-scale dressed transition-core no-go
 
-Status: conjecture frozen; paper proof under hostile audit; Lean target not yet accepted.
+Status: fully formalized route kill; paper proof, hostile sign audit, targeted build, and axiom audit passed 2026-08-30.
 
 ## Exact RH proof chain
 
@@ -57,7 +57,42 @@ fixed-scale dressed Ward renormalizer or bounded-correction theorem.  Matsumoto-
 papers give RH equivalences, not this cofinal scaling obstruction.  Search of primary arXiv
 records found no theorem resolving the frozen claim.
 
-## Positive survivor if proved
+## Closed proof
+
+Let `c N` be any correction uniformly bounded above by `B`.  Corpus theorem
+`suzukiNaturalApertureCauchyEnergy_le_transitionCore` gives
+
+`target(8N) - (transitionCore(8N) - c N) ≤ target(8N) - naturalCauchyEnergy(8N) + B`.
+
+The right side tends to `-∞` by
+`tendsto_suzukiRectangularWardDefect_naturalCauchyEnergy_eight_mul_atBot`; hence so does the corrected
+transition-core defect.  The complete fixed-scale dressed budget is uniformly bounded above by
+the sum of the already formalized wall-light, marked-halfgap, and scalar-holonomy Schur ceilings.
+Instantiating `c` with that budget proves the frozen conjecture, and the `-∞` limit contradicts
+every eventual lower bound.
+
+## Lean certificate
+
+Module:
+`GaloisForLFunctions.RHTower.SuzukiFixedScaleDressedTransitionCoreNoGo`.
+
+- `suzukiFixedScaleDressedWardBudget_le`: aperture-independent ceiling for the complete fixed-scale
+  scalar dressing.
+- `tendsto_suzukiRectangularWardDefect_transitionCore_sub_bounded_atBot`: abstract bounded-correction
+  no-go.
+- `tendsto_suzukiRectangularWardDefect_transitionCore_sub_fixedScaleDressed_atBot`: concrete dressed
+  defect tends to `-∞` for every positive moving aperture sequence.
+- `not_exists_eventually_bddBelow_suzukiRectangularWardDefect_transitionCore_sub_fixedScaleDressed`:
+  no eventual Ward lower bound survives.
+- `no_fixedScaleDressed_transitionCore_WardProducer`: closed, parameter-free class kill.
+
+Audit: direct `lake env lean` passed; targeted
+`lake build GaloisForLFunctions.RHTower.SuzukiFixedScaleDressedTransitionCoreNoGo` passed; all five
+certificates depend only on `propext`, `Classical.choice`, and `Quot.sound`.  Module is wired into
+`GaloisForLFunctions.RHTower`.  Global lint recognizes it as reachable; global lint remains red
+only because unrelated concurrently present modules are not wired into their umbrellas.
+
+## Positive survivor
 
 Any viable Suzuki wall assembly must introduce at least one genuinely cofinal mechanism:
 
