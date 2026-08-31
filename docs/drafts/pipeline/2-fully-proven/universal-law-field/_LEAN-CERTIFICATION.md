@@ -2096,3 +2096,73 @@ bounded local capacity. Every off-neutral fixed-rank realization instead has cof
 least `n * |chi| / (2*d)`. This gives a precise hypertranscendence/noncompactness law: rank must grow
 at width scale or local current must diverge. Literal arithmetic packet construction remains open;
 no RH claim is made.
+
+## Session 2026-08-31 addition (normed intervention two-field selection)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-TAFM-12 | Normed intervention two-field; exact curvature--filling--residual conservation; observer-closed residual law; linear open-lift budget; route-representation naturality/composition and isometric gauge-budget invariance; cofinal sublinear and flat exact-fill selection | `HTGeometry.NormedInterventionTwoField` |
+
+Scratch and project-path elaboration pass. Final targeted leaf build passes (`2997/2997`). No
+umbrella, theorem-area, or project build was run. Module is wired into
+`HTGeometry.UniversalLawField` without building it. Ten audited capstones depend only on
+`propext`, `Classical.choice`, and `Quot.sound`. This changes the RH-facing producer: uniform bounds
+on every elementary edge current are sufficient but no longer necessary. A divisor-independent
+source intervention presentation plus cofinal legal fillings with sublinear complete
+curvature-plus-residual action also selects neutrality. Literal arithmetic grammar, return history,
+and sublinear filling construction remain open; no RH claim is made.
+
+## Session 2026-08-31 addition (canonical flat intervention quotient)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-TAFM-13 | Canonical flat history quotient; observer neutrality on all legal rewrite chains; primitive relation annihilation iff existence and uniqueness of the induced boundaryless readout; canonical observer reconstruction | `HTGeometry.CanonicalFreeInterventionPresentation` |
+
+Scratch and project-path elaboration pass. Final targeted leaf build passes (`2997/2997`). No
+umbrella, theorem-area, or project build was run. Module is wired into
+`HTGeometry.UniversalLawField` without building it. Eight audited declarations depend only on
+`propext`, `Classical.choice`, and `Quot.sound`. The theorem classifies flat readouts: violating one
+primitive relation blocks quotient descent; otherwise a unique readout exists, and every extra
+induced-kernel element records observer information loss. Post-proof hostile audit rejected the
+stronger all-route interpretation because a chain-level route may map a source rewrite to a nonzero
+target rewrite. Free observed two-field universality, literal arithmetic signature/relation
+extraction, and source normed completion remain open; no RH claim is made.
+
+## Session 2026-08-31 addition (free observed two-field route law)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-TAFM-14 | Free observed two-field; exact primitive-to-global boundary and observer defect reconstruction; primitive generator squares iff existence and uniqueness of a chain-level route representation | `HTGeometry.FreeObservedTwoField` |
+
+Scratch and project-path elaboration pass. Final targeted leaf build passes (`2998/2998`), including
+the changed direct dependency. No umbrella, theorem-area, or project build was run. Module is wired
+into `HTGeometry.UniversalLawField` without building it. Ten audited declarations depend only on
+`propext`, `Classical.choice`, and `Quot.sound`. This repairs the flat-quotient overreach: source
+rewrite boundaries may land on nonzero target rewrite boundaries, and all global failures of the
+two route squares are reconstructed exactly from primitive defects. Once both primitive squares
+close, the route map is forced and no further finite linear coherence obstruction exists. Literal
+arithmetic relation extraction, kernel faithfulness, source normed completion, and sublinear
+curvature--filling work remain open; no RH claim is made.
+
+## Session 2026-08-31 addition (anchored Cesàro scale connection and literal Suzuki fusion)
+
+| ID | Theorem | Lean modules |
+|---|---|---|
+| ULF-TAFM-15 | Exact anchored-Cesàro scale update and harmonic holonomy; terminal/base reconstruction; constant-gauge invariance and complete kernel classification; finite harmonic budget and bounded-potential no-trapping; literal Suzuki curvature acceleration, Route-RG potential conservation, completed-Abel connection transport, and Gamma/Xi readout predictions | `HTGeometry.AnchoredCesaroScaleConnection`; `RHTower.SuzukiAnchoredCesaroScaleConnection` |
+
+Scratch and project-path elaboration pass. Targeted leaf builds pass: `3028/3028` for the generic
+connection and `14113/14113` for the literal Suzuki leaf, the latter replaying a large inherited
+dependency cone after concurrent cache changes. No umbrella, theorem-area, or project build was
+run. Both modules are wired into `HTGeometry.UniversalLawField`; the literal module is also wired
+into `RHTower`, with neither umbrella built. Seventeen audited declarations depend only on
+`propext`, `Classical.choice`, and `Quot.sound`.
+
+This is first literal dynamical fusion rather than another route equality. Connection current
+reconstructs formation history modulo exactly one constant gauge; persistent one-sided current
+forces harmonic escape of bounded potential. The weighted signed prime--polar--Gamma curvature,
+Route-RG mass-error split, completed Abel source, aligned Gamma energy, and multiplicity- and
+orientation-faithful Xi short are exact readouts of that current plus the retained correction.
+The divisor-free corrected formation action is proved eventually equal to aligned Gamma energy,
+and eventual boundedness of that source action is proved equivalent to RH. Global source
+properness and correction control needed to establish the bound remain open; no RH proof is
+claimed.

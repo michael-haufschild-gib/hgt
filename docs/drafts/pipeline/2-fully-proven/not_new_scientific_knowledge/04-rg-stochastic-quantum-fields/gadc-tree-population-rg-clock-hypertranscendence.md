@@ -2343,3 +2343,54 @@ at `k = 1` the two obstructions coincide and cancel with `e = 0`.
 So the hierarchy is not available, and the remaining route to jet order `n ≥ 4` is the coupled
 descent: the datum passed between levels has to be the triangular pair `(v, u)` with `σ v = c₁·v`
 and `σ u = c₂·u + β₀ + γ·v`, not a single element.
+
+### The seeded relation at jet order three is closed (2026-08-31)
+
+| Statement | Name |
+|---|---|
+| a single base monomial as inhomogeneity at jet order two | `level_two_win_of_monomial_inhom` |
+| two base monomials of distinct jet degree | `level_two_win_of_two_monomials` |
+| **a seeded relation at jet order three reduces to the base** | `level_three_seed` |
+
+`level_three_seed` closes, unconditionally and with the regularity class carried through,
+
+`σ w = (q/ρ³)·w + α·d²τ + β₁·dτ`,  `α ≠ 0`,  `2·(q/ρ²)·β₁ ≠ λ₂·α`,  `w ∈ E₃`, `w ≠ 0`.
+
+All five branches of the level dichotomy at jet order two are discharged.  The degree-zero branch
+contradicts `α ≠ 0`; the vanishing-defect branch contradicts `λ₂ ≠ 0`; the affine connection gives a
+level-two relation with inhomogeneity `−N·λ₂·dτ`; the degree-one branch gives one with the base
+constant `α/(q/ρ²)`.  The quadratic branch is the one the new third coefficient equation closes:
+
+* the leading coefficient has multiplier `ρ/q`, so the level-two classification makes it
+  `κ_v/(dτ)` with `κ_v` shift-fixed **and** a derivation constant;
+* the middle equation reads `σ z = (q/ρ²)·z + (ρ·α/κ_v − 2λ₂)·dτ`; a nonzero coefficient closes it,
+  and a zero one pins `ρ·α = 2λ₂·κ_v`;
+* with that, the constant-term equation reads
+  `σ y = (q/ρ²)²·y − (q/ρ²)λ₂·(dτ)·z + c₂·(dτ)²`,  `c₂ = λ₂² + ρ(q/ρ²·β₁ − αλ₂)/κ_v`,
+  and `c₂·α = λ₂·(2(q/ρ²)β₁ − λ₂α)`, so `c₂ ≠ 0` is exactly the hypothesis;
+* if `z = 0` the datum is `c₂·(dτ)²` and closes; if `z ≠ 0` the classification makes it
+  `κ_z·τ^{-1}(dτ)²`, and multiplying by `τ` turns the resulting `τ^{-1}(dτ)³` term into the
+  polynomial datum `−q(q/ρ²)λ₂κ_z·(dτ)³ + q·c₂·τ(dτ)²`, whose leading coefficient is nonzero.
+
+The regularity class survives every step because the only inverses that appear are `κ_v⁻¹` and
+`κ_z⁻¹` for shift-fixed `κ`, which the class contains by construction.
+
+**Where it applies, and where it does not.**  For a collapse at jet order four the seed
+`W = d⁴τ ∈ E₄` descends at level three: the degree-zero branch is excluded, the vanishing-defect
+branch is impossible, and the affine-connection branch is a level-three seed with
+`α = −N·A₂⁽³⁾`, `β₁ = −N·A₁⁽³⁾`, for which the identity
+
+`2·(q/ρ²)·A₁⁽³⁾ − λ₂·A₂⁽³⁾ = 2q²·h_S/ρ³`
+
+makes the hypothesis exactly the non-vanishing of the map's Schwarzian.  So that branch closes.
+
+The Schwarzian itself is **not** usable above jet order three: `S ∈ E₄` always, and descending it at
+level three simply re-derives its own coprime decomposition — leading coefficient `1/(dτ)`, constant
+`−(3/2)(d²τ/dτ)²` — and the companion it produces has `2(q/ρ²)β₁ = λ₂α` identically.  That is not a
+gap in the argument but a tautology: an invariant's descent returns the invariant.
+
+What is left for jet order four are the two remaining branches of the seed's own descent, both of
+which need `level_three_seed` with a wider inhomogeneity: the quadratic branch produces a level-three
+relation carrying an extra `(dτ)²/τ` term, and the degree-one branch a level-three relation with a
+nonzero base constant and `α = 0`.  Both are the same lemma with `β` allowed to be a base
+combination of the monomials `τ^a(dτ)^b` rather than only `β₁·dτ`.

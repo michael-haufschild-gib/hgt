@@ -3688,3 +3688,153 @@ argument must close; it is the same end that the finite-time blow-up argument wo
 
 This is a genuinely smaller target than "branch consistency at all radii", and it is conformal
 geometry rather than Newton--Puiseux theory, so it does not need the Puiseux series mathlib lacks.
+
+## The Euler relation closes card 15's input, except for one degenerate Newton case
+
+Card 15's decisive input is **not** `F′ = c(F)` in the abstract: the card's own equation is
+`x f′(x) = c(f(x))` with `f` entire, and it needs only the conclusion *`f` is a polynomial*, which
+contradicts the assumed transcendence.  That is a much better target than the Briot--Bouquet
+classification, and it is now proved except in one case.
+
+### Built: `HTGeometry/EulerAutonomousPolynomial.lean`
+
+`eventually_taylorCoeff_eq_zero_of_euler_relation` — an entire `f` with
+`∑_{k ≤ m} C_k(f)·(z f′)^k = 0` has only finitely many nonzero Taylor coefficients, provided some
+index `ms ≥ 1` carries the maximal total degree `deg C_k + k` and is the largest such index.
+Axiom-clean.  The mechanism, which took the whole of this session's machinery:
+
+1. The corpus already owns **Gol'dberg's theorem** (`GoldbergCentralIndex`,
+   `exists_centralIndex_le_pow_of_relation`): a first-order algebraic relation with polynomial
+   coefficients in `z` makes the central index polynomial in the radius.  Expanding
+   `∑_k C_k(f)(z f′)^k` into monomials `(A p).eval z · f^{p.1} · (f′)^{p.2}` with
+   `A (j,k) = C((C k).coeff j)·X^k` puts the relation in exactly that form; the total degree of the
+   monomial `(j,k)` is `j + k`, so the index `ms` is what Gol'dberg calls the top symbol.
+2. At a Wiman--Valiron radius, `z f′/f` is within `ν/2` of the central index `ν(r)`, so the exponent
+   dichotomy of the relation becomes a dichotomy for `ν`:
+   `ν(r) ≤ 2K` or `c·μ(r) ≤ (3ν(r)/2)^m`.
+3. `ν(r) → ∞` for a transcendental function, so the tame alternative fails at every large radius.
+   The wild one, with Gol'dberg's polynomial bound, gives `μ(r) ≤ B·r^{Kg·m}` at the good radii;
+   monotonicity of `μ` and the window form of Wiman--Valiron spread it to *every* large radius.
+4. A transcendental maximum term outgrows every power (`tendsto_maxTerm_div_pow_atTop`).
+
+The intermediate `false_of_euler_relation_of_centralIndex_le_pow` states steps 2--4 on their own, with
+the polynomial central-index bound as an explicit hypothesis.
+
+### The one remaining case, and its route
+
+The hypothesis on `ms` fails exactly when the maximal total degree is attained **only** at `k = 0`,
+that is when `deg C_0 > deg C_k + k` for every `k ≥ 1`.  Gol'dberg's theorem as formalized needs
+`1 ≤ ms`, and the smallest example is real: `z f′ + f^{10} = 0`.
+
+In that case the tame alternative is impossible *at every point where `‖f‖` is large* — comparing
+`|C_0(f)| ≥ L‖f‖^{deg C_0}` against `∑_{k ≥ 1}|C_k(f)|·(K‖f‖)^k ≤ mAK^m‖f‖^{d₁}` with
+`d₁ = max_{k ≥ 1}(deg C_k + k) < deg C_0` bounds `‖f‖`.  So the wild bound
+`c‖f‖^{m+1} ≤ ‖z f′‖^m` holds everywhere `‖f‖ ≥ R₂`, and hence, after taking `log⁺` and absorbing the
+bounded region into a constant,
+
+```text
+m·log⁺‖z f′(z)‖ ≥ (m+1)·log⁺‖f z‖ − E    for every z.
+```
+
+Integrating over the circle and using `m(r, z f′) ≤ log⁺ r + m(r,f′)` and
+`m(r,f′) ≤ m(r,f) + m(r,f′/f)` gives, for entire `f` where `m = T`,
+
+```text
+T(r,f) ≤ m·m(r, f′/f) + m·log r + E,
+```
+
+which is `T ≤ S(r,f) + O(log r)` — the same collapse that proved Picard, and it forces
+`T(r,f) = O(log r)`, hence a polynomial.  The one piece not yet assembled is the logarithmic-derivative
+estimate *with* its divisor term: `proximity_logDeriv_sub_const_le` carries
+`∑ᶠ_u |divisor f (closedBall 0 |R|) u|^α`, which vanished in the omitted-value application but here
+must be bounded by the zero-counting function and then by `T(2R,f)` (mathlib's
+`AnalyticOnNhd.sum_divisor_le` is the Jensen inequality for that), and its hypothesis that the divisor
+vanishes on the sphere `|z| = R` must be met by choosing `R` off the discrete zero set
+(`GoodRadiusSelection`).  With those two, the collapse of `OmittedValueLogarithmicGrowth` applies
+verbatim.
+
+### The dominant-constant-term case: three of its four steps are built
+
+The case Gol'dberg does not reach is now attacked directly, and the analytic content is in place.
+
+* `HTGeometry/DominantConstantTermWild.lean` — `exists_not_tame_of_dominant_constant_term`.  If
+  `deg C_k + k < deg C_0` for every `1 ≤ k ≤ m`, then `‖W‖ ≤ K‖Y‖` is impossible once `‖Y‖` is large:
+  it would bound `L‖Y‖^{deg C_0}` by `B‖Y‖^{deg C_0 − 1}`.
+* `HTGeometry/EulerWildProximity.lean` — `proximity_id_eq` (`m(r, z) = log⁺ r`) and
+  `characteristic_le_logDeriv_of_wild`.  From the pointwise wild bound,
+  `(m+1)log⁺‖f‖ ≤ m·log⁺‖z f′‖ + E` at every point — the region `‖f‖ < R₂` is absorbed into the
+  constant — and integrating over the circle with
+  `m(r, z f′) ≤ log⁺ r + m(r,f′) ≤ log⁺ r + m(r,f) + m(r,f′/f)` gives, for entire `f`,
+
+  ```text
+  T(r,f) ≤ m·m(r, f′/f) + m·log r + E .
+  ```
+* `HTGeometry/EulerDominantConstantTerm.lean` — combines the two with the exponent dichotomy:
+  `exists_wild_of_dominant_constant_term` (the wild bound at every point where `‖f‖` is large) and
+  `exists_characteristic_le_logDeriv_of_dominant_constant_term` (the displayed inequality, with the
+  constant existentially quantified).
+* `HTGeometry/LogSelfBoundArithmetic.lean` gains `le_of_le_add_mul_log`: `T ≤ A + c·log(T+1)` forces
+  `T ≤ 2A + 2c|log 4c| + 1`, the self-bound collapse with an arbitrary logarithmic coefficient (the
+  earlier lemma was fixed at coefficient six).
+
+**The one step left** is the same collapse that finished Picard, applied to `m(r,f′/f)` for a function
+whose zeros are not controlled.  The tool for it is already in the corpus:
+`LogDerivCountingBound.circleAverage_posLog_logDeriv_le_counting` is Nevanlinna's estimate with the
+divisor weight already replaced by counting functions,
+
+```text
+m(r, f′/f) ≤ (1/α)·log(1 + (2π)⁻¹·(log 2)⁻¹·(N(2R,f,∞) + N(2R,f,0))·(r^{-α}·k(α) + 2π(R−r)^{-α})
+                        + (2R/(R−r)²·(2T(R,f) + c₀))^α) .
+```
+
+For entire `f` the first counting term vanishes and the second is at most `T(2R,f) + O(1)` by the
+first main theorem, so with `α = 1/2`, `R = r + (T(r)+1)^{-1/2}` and the Borel window lemma the right
+side is `O(log r + log(T(r)+1))`; `le_of_le_add_mul_log` then gives `T(r) = O(log r)`, hence a
+polynomial by `tendsto_maxTerm_div_pow_atTop`.  The remaining work is bookkeeping of exactly the kind
+`OmittedValueCharacteristicBound` and `OmittedValueLogarithmicGrowth` already carry out, with the
+counting term carried along instead of vanishing.
+
+## Card 15's analytic input is closed, unconditionally
+
+`HTGeometry/WildCharacteristicCollapse.lean` proves
+`eventually_taylorCoeff_eq_zero_of_euler_relation_general`:
+
+> An entire `f` satisfying `∑_{k ≤ m} C_k(f)·(z f′)^k = 0` with `C_m ≠ 0` and `m ≥ 1` has only
+> finitely many nonzero Taylor coefficients.
+
+No hypothesis on the Newton configuration; axiom-clean.  This is exactly the input card 15 needs:
+its equation is `x f′(x) = c(f(x))` with `c` algebraic, so `f` is a polynomial, contradicting the
+assumed transcendence.
+
+The proof splits on the largest index `ms` carrying the maximal total degree `deg C_k + k`.
+
+* `ms ≥ 1`: Gol'dberg's theorem (already in the corpus) makes the central index polynomial in the
+  radius, and the exponent dichotomy at the Wiman--Valiron radii then bounds the maximum term by a
+  power of the radius — impossible for a transcendental function.
+* `ms = 0`: the constant term dominates, so the *tame* alternative of the dichotomy is impossible
+  wherever `‖f‖` is large, and the wild bound `c‖f‖^{m+1} ≤ ‖z f′‖^m` holds at every such point.
+  Integrating its `log⁺` over the circle gives `T(r,f) ≤ m·m(r, f′/(f−a)) + m·log r + E`, and the
+  logarithmic-derivative estimate collapses that to `T(r,f) = O(log r)`.
+
+### How the second case avoids the doubling obstruction
+
+The corpus's counting form of the logarithmic-derivative estimate bounds the divisor mass by counting
+functions at **twice** the radius, and `T(2r)` is not controlled by the Borel window — the resulting
+inequality `T(x) ≲ log T(2x)` is satisfiable by a tower, so that route cannot close.  The repair is to
+bound the mass at radius `R` by Jensen's inequality against the maximum modulus on a circle of radius
+`R′` only slightly larger, and then by the characteristic at `R″` slightly larger still, using the
+Poisson--Jensen constant `(R″+R′)/(R″−R′)` of `MaxModulusCharacteristicBound.posLog_norm_le_characteristic`.
+All three radii sit inside the Borel window `[x, x + (T(x)+1)^{-1/2}]`, so every characteristic that
+appears is `≤ 2T(x) + 1`, and the widths only cost powers of `T(x)+1` inside a logarithm.
+
+New modules for that argument:
+
+| Module | Content |
+|---|---|
+| `ZeroFreeRadiusSelection` | a radius in any interval whose circle carries no zero — the hypothesis the estimate needs |
+| `DivisorMassCharacteristic` | `divisorMass_le_characteristic`: Jensen plus Poisson--Jensen, with three nearby radii |
+| `WildCharacteristicCollapse` | the per-radius bound, the Borel assembly, and the two-case theorem |
+
+`EulerWildProximity` also gained `characteristic_le_logDeriv_shift_of_wild`, which takes the
+logarithmic derivative at a shift `f − a` chosen so that the shifted function is `1` at the origin;
+that makes both the Jensen bound and the germ constant of the estimate trivial.

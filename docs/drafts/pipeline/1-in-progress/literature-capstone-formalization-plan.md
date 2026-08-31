@@ -1298,3 +1298,49 @@ and axiom audit pass; audited declarations depend only on `propext`, `Classical.
 coefficient- and multiplicity-faithful identification of the finite Banach-valued residue block
 with the quotient-system principal parts, followed by strong `L²` convergence.  Any proof must
 avoid illicit point evaluation of `Lp` classes.
+
+## 2026-08-31 Burnol literal aperture jet-vector system — frozen bridge
+
+`[CORPUS-GROUNDED BRIDGE]` A full corpus search isolates a missing theorem between three already
+proved layers:
+
+1. `exists_soninEvaluatorJet` constructs every finite Mellin jet as a bounded functional on the
+   literal Hilbert space `soninEvenExtended a`;
+2. `burnol_evaluators_complete_of_one_le` and
+   `burnol_evaluators_not_complete_of_lt_one` prove that the common jet kernel is zero exactly at
+   apertures `a >= 1`;
+3. `isCompleteSystem_iff_forall_inner_eq_zero` identifies dense Hilbert span with trivial common
+   orthogonal kernel.
+
+The frozen theorem is therefore:
+
+```text
+0 < a ->
+  IsCompleteSystem C (burnolZetaJetVector a) <-> 1 <= a.
+```
+
+Here indices are literal triples consisting of a nontrivial strip zero `rho`, a natural jet order
+`k`, and the proof `k < ord_rho(zeta)`.  `burnolZetaJetVector a (rho,k)` is the Riesz vector of the
+already-proved bounded functional `f |-> M_a(f)^(k)(rho)`.
+
+`[DEPENDENCY-CLOSED PAPER PROOF]` Riesz representation gives
+`<Y_(rho,k),f> = M_a(f)^(k)(rho)`.  If `a >= 1` and every such pairing vanishes, then at each
+nontrivial zero all derivatives below its finite analytic multiplicity vanish.  Hence the Mellin
+continuation is divisible by zeta at every nontrivial zero, and Burnol completeness forces `f=0`.
+The Hilbert orthogonal-kernel criterion gives dense span.  Conversely, if `0<a<1`, the proved
+co-Poisson construction supplies a nonzero literal `L_a` vector whose Mellin continuation is
+divisible by zeta at every nontrivial zero.  Its derivatives below every multiplicity vanish, so it
+is orthogonal to every Riesz jet vector; their span is not dense.  No RH premise, quotient-density
+substitution, or postulated evaluator is used.
+
+`[LEAN-PROVED]` `BurnolLiteralApertureJetSystem.lean` constructs the literal bounded jet
+functionals, their Riesz vectors, and proves
+`isCompleteSystem_burnolZetaJetVector_iff_one_le`.  Both directions are coefficient- and
+multiplicity-faithful: every index carries its strip zero and natural jet order strictly below that
+zero's analytic multiplicity.  Direct source check and leaf-only target build pass.  Axiom audit
+reports only `propext`, `Classical.choice`, and `Quot.sound`.  The leaf is wired into
+`RHTower.lean`; no umbrella build was run.
+
+This closes literal aperture completeness.  It does not by itself prove Burnol's separate
+quotient-system completeness in Theorem 3.3 or the source-complement identity used by the
+Frankenstein endpoint.

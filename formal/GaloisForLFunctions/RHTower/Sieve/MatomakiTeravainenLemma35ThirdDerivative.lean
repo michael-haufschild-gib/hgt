@@ -474,6 +474,113 @@ private theorem mtLemma35_thirdDerivative_scalar_le
       nlinarith
     _ = 20 * (Real.sqrt T / (N : ℝ) ^ 2) := by rw [hThalf]
 
+/-- The constructed third-derivative estimate implies the literal Deshouillers--Iwaniec
+envelope throughout its scalar applicability range.  No oscillatory or spectral estimate is
+retained as a premise. -/
+theorem exists_integral_mtDI_lemma35_thirdDerivativeRange
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ C : ℝ, 0 < C ∧ ∀ (a : ℕ → ℂ) (A N N' : ℕ),
+      1 ≤ A → 1 ≤ N → N < N' → N' ≤ 2 * N →
+      ∀ T : ℝ, 2 ≤ T → (A : ℝ) ≤ T → (N : ℝ) ≤ T →
+      T ≤ (N : ℝ) ^ 3 →
+      T ^ (5 / 6 : ℝ) ≤ (A : ℝ) ^ 2 →
+      (N : ℝ) ^ (3 / 2 : ℝ) ≤ (A : ℝ) ^ 2 →
+      (N : ℝ) ≤ (A : ℝ) * T ^ (1 / 6 : ℝ) →
+      (N : ℝ) ^ (5 / 2 : ℝ) ≤ (A : ℝ) * T →
+      (∫ t in (T / 2)..T,
+          ‖mtWattUnitBlock N N' t‖ ^ 4 *
+            ‖mtWattCoefficientBlock a A t‖ ^ 2) ≤
+        C * T ^ ε *
+          (((T + (A : ℝ) ^ 2 * Real.sqrt T +
+                  (A : ℝ) ^ (5 / 4 : ℝ) * T ^ (3 / 4 : ℝ)) /
+                ((N : ℝ) ^ 2 * (A : ℝ)) +
+              (T + (A : ℝ)) / (T ^ 4 * (A : ℝ))) *
+            (1 / (A : ℝ)) *
+            (∑ m ∈ Finset.Ioc A (2 * A), ‖a m‖ ^ 2)) := by
+  obtain ⟨C₀, hC₀, hbase⟩ :=
+    exists_integral_mtWatt_oneUnit_thirdDerivative_height hε
+  refine ⟨20 * C₀, mul_pos (by norm_num) hC₀, ?_⟩
+  intro a A N N' hA hN hNN' hN' T hT hAT hNT hTcube
+    hAfirst hNfirst hNsecond hNthird
+  let E : ℝ := ∑ m ∈ Finset.Ioc A (2 * A), ‖a m‖ ^ 2
+  let V : ℝ :=
+    T ^ (1 / 6 : ℝ) * (N : ℝ) ^ (-(1 / 2 : ℝ)) +
+      (N : ℝ) ^ (1 / 4 : ℝ) * T ^ (-(1 / 4 : ℝ))
+  let F : ℝ :=
+    (T + (((2 * A) * N' : ℕ) : ℝ)) *
+      (1 / (A : ℝ) ^ 2) * (1 / (N : ℝ))
+  let Q : ℝ :=
+    (T + (A : ℝ) ^ 2 * Real.sqrt T +
+        (A : ℝ) ^ (5 / 4 : ℝ) * T ^ (3 / 4 : ℝ)) /
+      ((N : ℝ) ^ 2 * (A : ℝ)) +
+    (T + (A : ℝ)) / (T ^ 4 * (A : ℝ))
+  let R : ℝ := Q * (1 / (A : ℝ)) * E
+  have hE0 : 0 ≤ E := by dsimp only [E]; positivity
+  have hTpow0 : 0 ≤ T ^ ε := Real.rpow_nonneg (by positivity) _
+  have hraw := hbase a A N N' hA hN hNN' hN' T hT hAT hNT hTcube
+  have hscalar := mtLemma35_thirdDerivative_scalar_le hA hN hN' hT
+    hAfirst hNfirst hNsecond hNthird
+  have hpre :
+      (∫ t in (T / 2)..T,
+          ‖mtWattUnitBlock N N' t‖ ^ 4 *
+            ‖mtWattCoefficientBlock a A t‖ ^ 2) ≤
+        C₀ * T ^ ε * E * (F * V ^ 2) := by
+    calc
+      _ ≤ C₀ * T ^ ε *
+          (T + (((2 * A) * N' : ℕ) : ℝ)) *
+          (1 / (A : ℝ) ^ 2) * E * (1 / (N : ℝ)) * V ^ 2 := by
+        simpa only [E, V, mul_assoc] using hraw
+      _ = C₀ * T ^ ε * E * (F * V ^ 2) := by
+        dsimp only [F]
+        ac_rfl
+  have hscaled := mul_le_mul_of_nonneg_left hscalar
+    (mul_nonneg (mul_nonneg hC₀.le hTpow0) hE0)
+  have hbranch :
+      (∫ t in (T / 2)..T,
+          ‖mtWattUnitBlock N N' t‖ ^ 4 *
+            ‖mtWattCoefficientBlock a A t‖ ^ 2) ≤
+        20 * C₀ * T ^ ε * (Real.sqrt T / (N : ℝ) ^ 2) * E := by
+    calc
+      _ ≤ C₀ * T ^ ε * E * (F * V ^ 2) := hpre
+      _ ≤ C₀ * T ^ ε * E *
+          (20 * (Real.sqrt T / (N : ℝ) ^ 2)) := hscaled
+      _ = 20 * C₀ * T ^ ε * (Real.sqrt T / (N : ℝ) ^ 2) * E := by ac_rfl
+  have hcarrier : (Real.sqrt T / (N : ℝ) ^ 2) * E ≤ R := by
+    have hApos : (0 : ℝ) < A := by exact_mod_cast hA
+    have hNpos : (0 : ℝ) < N := by exact_mod_cast hN
+    have hmain : Real.sqrt T / (N : ℝ) ^ 2 ≤ Q * (1 / (A : ℝ)) := by
+      dsimp only [Q]
+      have hres : 0 ≤ (T + (A : ℝ)) / (T ^ 4 * (A : ℝ)) := by positivity
+      calc
+        Real.sqrt T / (N : ℝ) ^ 2 =
+            ((A : ℝ) ^ 2 * Real.sqrt T /
+              ((N : ℝ) ^ 2 * (A : ℝ))) * (1 / (A : ℝ)) := by
+          field_simp [hApos.ne', hNpos.ne']
+        _ ≤ ((T + (A : ℝ) ^ 2 * Real.sqrt T +
+              (A : ℝ) ^ (5 / 4 : ℝ) * T ^ (3 / 4 : ℝ)) /
+              ((N : ℝ) ^ 2 * (A : ℝ))) * (1 / (A : ℝ)) := by
+          have hother : 0 ≤
+              T + (A : ℝ) ^ (5 / 4 : ℝ) * T ^ (3 / 4 : ℝ) := by positivity
+          gcongr
+          nlinarith
+        _ ≤ (((T + (A : ℝ) ^ 2 * Real.sqrt T +
+              (A : ℝ) ^ (5 / 4 : ℝ) * T ^ (3 / 4 : ℝ)) /
+              ((N : ℝ) ^ 2 * (A : ℝ))) +
+              (T + (A : ℝ)) / (T ^ 4 * (A : ℝ))) *
+              (1 / (A : ℝ)) :=
+          mul_le_mul_of_nonneg_right (le_add_of_nonneg_right hres) (by positivity)
+    exact mul_le_mul_of_nonneg_right hmain hE0
+  have htarget :
+      20 * C₀ * T ^ ε * (Real.sqrt T / (N : ℝ) ^ 2) * E ≤
+        20 * C₀ * T ^ ε * R := by
+    have hcoef : 0 ≤ 20 * C₀ * T ^ ε := by positivity
+    calc
+      20 * C₀ * T ^ ε * (Real.sqrt T / (N : ℝ) ^ 2) * E =
+          (20 * C₀ * T ^ ε) * ((Real.sqrt T / (N : ℝ) ^ 2) * E) := by ac_rfl
+      _ ≤ (20 * C₀ * T ^ ε) * R :=
+        mul_le_mul_of_nonneg_left hcarrier hcoef
+  simpa only [R, Q, mul_assoc] using hbranch.trans htarget
+
 end
 
 end RHTower.Sieve

@@ -56,4 +56,22 @@ theorem log_one_add_rpow_le {x α : ℝ} (hx : 0 ≤ x) (hα : 0 < α) :
   rw [hval, hposlog] at hlog
   exact hlog
 
+/-- **The self-bound collapse with an arbitrary logarithmic coefficient.**  Concavity of the
+logarithm at the scale `4c` absorbs `c·log(T+1)` into `T/4` plus a constant. -/
+theorem le_of_le_add_mul_log {T A c : ℝ} (hT : 0 ≤ T) (hc : 0 < c) (_hA : 0 ≤ A)
+    (h : T ≤ A + c * Real.log (T + 1)) :
+    T ≤ 2 * A + 2 * c * |Real.log (4 * c)| + 1 := by
+  have hT1 : (0 : ℝ) < T + 1 := by linarith
+  have h4c : (0 : ℝ) < 4 * c := by linarith
+  have hkey : Real.log (T + 1) ≤ Real.log (4 * c) + (T + 1) / (4 * c) - 1 := by
+    have hsub := Real.log_le_sub_one_of_pos (x := (T + 1) / (4 * c)) (by positivity)
+    rw [Real.log_div (ne_of_gt hT1) (ne_of_gt h4c)] at hsub
+    linarith
+  have hmul : c * Real.log (T + 1) ≤ c * (Real.log (4 * c) + (T + 1) / (4 * c) - 1) :=
+    mul_le_mul_of_nonneg_left hkey hc.le
+  have hsimp : c * ((T + 1) / (4 * c)) = (T + 1) / 4 := by
+    field_simp
+  have habs : Real.log (4 * c) ≤ |Real.log (4 * c)| := le_abs_self _
+  nlinarith [h, hmul, hsimp, habs, hc]
+
 end GaloisForLFunctions.HTGeometry

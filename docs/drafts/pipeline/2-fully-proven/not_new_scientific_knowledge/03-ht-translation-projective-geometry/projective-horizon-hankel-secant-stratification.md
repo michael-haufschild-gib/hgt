@@ -2480,3 +2480,224 @@ degeneration theorem** — `forall_mem_of_hilbert`, `hilbert_of_forall_mem` and
 `forall_mem_of_degeneration` all assume `∀ e, FiniteDimensional K (homogeneousSubmodule σ K e)`, and
 over `Fin N` it now holds unconditionally.  (The corpus already had this for `ℂ`; the new statement
 is for an arbitrary field.)
+
+### The graded pieces of the family are finitely generated over the base line
+
+`HTGeometry/FamilyDegreeFinite.lean`:
+
+```text
+sum_monomial_coeff_of_subset   a polynomial is the sum of its monomials over any superset of its
+                               support
+coeffPoly                      the coefficient of a fixed monomial, as a polynomial in the extra
+                               variable
+xDegreeSubmodule_eq_span       ** each graded piece is spanned by the monomials of that degree **
+module_finite_xDegreeSubmodule ** hence it is finitely generated over the base line **
+```
+
+A polynomial in the extra variable whose coefficients are all homogeneous of one degree is the
+combination, with coefficients in the base line, of the finitely many monomials of that degree — read
+off each monomial's coefficient as a polynomial in the extra variable.
+
+**This is the structural input for the fibre bound.**  In each degree the family is a finitely
+generated `K[t]`-module, so `exists_generic_fibre_rank` applies there: the fibre dimension is at
+least the rank everywhere and exactly the rank off a finite set, and `eval_homogenize` makes every
+nonzero fibre the same, so the value at `t = 1` is the rank and hence at most the value at `t = 0`.
+That is `dim (R/(I+l))_e ≤ dim (R/(J+l))_e`, the last hypothesis of `forall_mem_of_degeneration`.
+
+### The generic fibre is no bigger than the special one
+
+`HTGeometry/GenericFibreBound.lean`:
+
+```text
+finrank_fibre_one_le_zero   ** if all nonzero fibres agree, the fibre at one is at most the fibre
+                               at zero **
+```
+
+The two facts about a finitely generated module over the base line — every fibre has at least the
+rank, all but finitely many have exactly the rank — combine with an infinite field: some nonzero
+point avoids the exceptional set, so the common nonzero-fibre value *is* the rank, which bounds every
+fibre from below, including the one at zero.
+
+**This is the fibre bound in the form the degeneration theorem consumes.**  Its hypothesis — all
+nonzero fibres agree — is supplied by `eval_homogenize`, which carries the fibre at any nonzero point
+isomorphically onto the fibre at one.
+
+The abstract development for this card is now complete: `forall_mem_of_degeneration` with its five
+hypotheses, four of them already discharged for the Hankel pair
+(`isHomogIdeal_finiteHankelSecantIdeal`, `isHomogIdeal_finiteHankelChainIdeal`,
+`isGradedSubmodule_hankelStandardSpan`, and the corpus's two `isCompl` statements), the fifth
+supplied by this bound once the two fibres of `xDegreeSubmodule` are identified with the degree-`e`
+parts of `R/(J+l)` and `R/(I+l)`.
+
+### Evaluating the family at a point of the base line
+
+`HTGeometry/FamilyEvaluation.lean`:
+
+```text
+isHomogeneous_eval_of_isXHomog   evaluating keeps the x-degree
+polyMvScalarTower                the two scalar actions of the base field agree
+evalDegreeHom                    ** evaluation, as a map of graded pieces **
+```
+
+Setting the extra variable to a constant sends a polynomial whose coefficients are all homogeneous of
+one degree to a polynomial homogeneous of that degree, and does so linearly over the base field.
+
+This is the map that realises a fibre of the family in a fixed degree: its kernel is the multiples of
+`t − lam`, so the degree-`e` fibre at `lam` is the degree-`e` part of the fibre ring.  With it the
+last identification the card needs — between the fibres of `xDegreeSubmodule` and the degree-`e`
+parts of `R/(J+l)` and `R/(I+l)` — becomes the kernel computation for this map.
+
+### The fibre of a graded piece is the graded piece of the fibre
+
+`HTGeometry/FamilyFibreIdentification.lean`:
+
+```text
+isXHomog_of_mul_X_sub_C     dividing by a linear factor in the extra variable keeps the x-degree
+mem_ker_evalDegreeHom_iff   ** the kernel of evaluation is the multiples of that factor **
+evalDegreeHom_surjective    ** and evaluation is onto **
+```
+
+The division statement is a downward induction on coefficients: the recursion
+`G_j = F_{j+1} + lam · G_{j+1}` expresses each coefficient of the quotient in terms of one
+coefficient of the product and the next, and above the degree they all vanish.
+
+Together the two say that the degree-`e` part of the family, modulo the ideal of a point of the base
+line, **is** the degree-`e` part of the fibre there.  That is the identification the fibre bound
+needed: with it, `finrank_fibre_one_le_zero` applied to the graded piece of `A ⧸ lA` gives
+
+```text
+dim (R/(I+l))_e ≤ dim (R/(J+l))_e
+```
+
+which is the fifth and last hypothesis of `forall_mem_of_degeneration` for this card's pair.
+
+### Correction: the fibre bound needs a generic point, not the point `t = 1`
+
+Checking the fibre computation against `eval_homogenize` turns up an error in the way the bound was
+stated above, and it matters, so it is recorded rather than quietly fixed.
+
+The family used for the bound is `A ⧸ lA` with `l` a **fixed** linear form.  Its fibre at a nonzero
+`lam` is `R/(φ_lam(I) + (l))`, where `φ_lam` is the rescaling `x i ↦ lam ^ (w i) · x i`; applying
+`φ_lam⁻¹` identifies this with
+
+```text
+R/(I + (l_lam))      where   l_lam = φ_lam⁻¹(l)
+```
+
+— the ideal `I` back where it belongs, but the *linear form rescaled*.  So the nonzero fibres are
+**not** all isomorphic when `l` is not weight-homogeneous, and "the fibre at `t = 1` is the generic
+one" does not follow.  Semicontinuity still gives `generic ≤ dim (R/(J+l))_e`, but the generic value
+is a *lower* bound for the value at `1`, which is the wrong direction.
+
+**The repair costs nothing, because the form is ours to choose.**  What the card needs is *some*
+regular sequence on `R/I`, not one made of prescribed forms.  Run the chain at a generic `lam`:
+
+```text
+dim (R/(I+l_lam))_{1+e} ≤ dim (R/(J+l))_{1+e}          semicontinuity, at a generic point
+                        = dim (R/J)_{1+e} − dim (R/J)_e   l is regular on R/J
+                        = dim (R/I)_{1+e} − dim (R/I)_e   equal Hilbert functions
+```
+
+so the Hilbert equation holds for `l_lam` on `R/I`, and `forall_mem_of_hilbert` makes `l_lam` a
+nonzerodivisor there.  Iterating deforms the whole sequence at once: for a sequence `l_1,…,l_n`
+regular on `R/J`, the family `A ⧸ (l_1,…,l_n)A` has finitely many exceptional points in total, so a
+single generic `lam` makes `φ_lam⁻¹(l_1),…,φ_lam⁻¹(l_n)` regular on `R/I` — again linear forms, which
+is all the iteration needs.
+
+So the theorem to instantiate is the *generic* form: **a regular sequence of linear forms on the
+initial ring rescales, at a generic point of the base line, to a regular sequence of linear forms on
+the original ring.**  `forall_mem_of_degeneration` as stated is still correct — its fibre hypothesis
+is about whichever pair of ideals is fed to it — but the pair to feed it is
+`(I, J)` with the form `l_lam`, not `(I, J)` with `l`.
+
+### The corrected theorem is proved
+
+`HTGeometry/DeformedDegeneration.lean`:
+
+```text
+forall_mem_of_degeneration'   ** the element regular on the initial ideal and the element proved
+                                 regular on the original one need only share a degree **
+```
+
+This is the form the flat family actually delivers.  Rescaling the variables carries the fibre over a
+nonzero point back to the original ideal but *moves the form*: the fibre at `lam` is
+`R/(I + φ_lam⁻¹(l))`, not `R/(I + l)`.  Since the argument is free to choose which form it proves
+regular — any linear form will do for building a regular sequence — the useful statement compares
+`R/(I + l')` with `R/(J + l)` for two forms of the same degree.
+
+The proof is unchanged from `forall_mem_of_degeneration`: equal Hilbert functions, the Hilbert
+equation for `J` from `l` being regular there, the fibre bound in one direction, and
+`le_finrank_quotient_range_add` in the other.
+
+With this the abstract side is correct *and* matches what the family supplies.  The instantiation
+now needs: the graded piece of `A ⧸ lA` as a finitely generated `K[t]`-module (built), its fibres at
+`0` and at a generic `lam` (the identification is built), and the choice of a generic point avoiding
+the finitely many exceptional values for all `n` stages at once.
+
+### One generic point for the whole sequence
+
+`HTGeometry/GenericPointFamily.lean`:
+
+```text
+exists_nonzero_notMem_biUnion  a nonzero point outside finitely many finite sets
+exists_generic_point_forall    ** a single nonzero point at which every fibre in a finite family is
+                                  no bigger than its fibre at zero **
+```
+
+Each module contributes a finite exceptional set; over an infinite field their union, together with
+the origin, still misses a point.
+
+This is the step the correction above called for: the `n` stages of a regular sequence give `n`
+exceptional sets, and one generic point of the base line serves all of them at once, so the rescaled
+forms `φ_lam⁻¹(l_1),…,φ_lam⁻¹(l_n)` are simultaneously regular.  With
+`forall_mem_of_degeneration'`, `exists_linear_isRegular` and the fibre identification, every
+ingredient of the corrected argument is now a named Lean theorem.
+
+### The iteration engine
+
+`HTGeometry/DegenerationIteration.lean`:
+
+```text
+forall_mem_of_hilbert_le   ** the step, with equal Hilbert functions as a hypothesis **
+hilbert_eq_of_forall_mem   ** and the invariant: if both forms are regular, the quotients again have
+                              equal Hilbert functions **
+```
+
+A point worth recording: the invariant carried along the sequence is *equal Hilbert functions*, not
+a common complement.  The pair `(I + (l'₁,…), J + (l₁,…))` has no reason to share a standard-monomial
+basis, but after quotienting by a regular element on each side the two Hilbert functions drop by the
+same rule, so equality persists and the step applies again.  The common complement is therefore
+needed only at the start, where `isCompl_finiteHankelSecantIdeal_standardSpan` and
+`isCompl_finiteHankelChainIdeal_standardSpan` supply it.
+
+With the step and the invariant, the transported regular *element* becomes a transported regular
+*sequence*: at each of the `2r` stages the fibre bound comes from the family, and
+`exists_generic_point_forall` gives one point of the base line that works for all stages at once.
+
+### The last mile: the card is reduced to one statement
+
+`HTGeometry/HankelSecantLastMile.lean`:
+
+```text
+isCohenMacaulayRing_hankelSecantQuotient_of_regSeq
+    ** a regular sequence of length 2r on the secant quotient makes it Cohen–Macaulay **
+```
+
+Both inequalities were already available: the dimension is at most `2r` because the transcendence
+degree is (`ringKrullDim_hankelSecantQuotient_le`), and at least `2r` because a ring-regular sequence
+bounds the dimension below (`length_le_ringKrullDim_of_isRingRegularSeq`); the images of the sequence
+are ring-regular by `isRingRegularSeq_map_mk`.
+
+**So the Cohen–Macaulayness of the secant ring is now reduced to exactly one Lean statement:**
+
+```text
+∃ rs : List (MvPolynomial (Fin N) K), rs.length = 2 * r ∧
+  RingTheory.Sequence.IsRegular (MvPolynomial (Fin N) K ⧸ finiteHankelSecantIdeal K N r) rs
+```
+
+and the degeneration engine is built to produce it from the chain ring's sequence, which this card
+already proves exists (`hasRegSeq_chainFaceFinset`, `isCohenMacaulayRing_finiteHankelChainQuotient`).
+The remaining construction is the fibre bound for the Hankel family at each of the `2r` stages —
+every general ingredient for it is proved; what is left is applying them to
+`familyIdeal w (finiteHankelSecantIdeal K N r)` with the weight that realises the chain ideal as the
+initial ideal.

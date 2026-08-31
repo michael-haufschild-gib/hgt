@@ -142,22 +142,50 @@ Also built, and available to the algebraic case below:
 | the Newton exponent dichotomy of the relation | `HTGeometry.exists_deriv_dichotomy_of_relation` |
 | exponential type from a linear derivative bound | `HTGeometry.norm_le_mul_exp_of_norm_deriv_le` |
 
-**What the card still needs** is the same statement for `c` *algebraic* over `C(Y)` rather than
-polynomial.  That case is a classification rather than a no-go — `exp` and the Weierstrass `p`
-function are solutions — and it reduces to the growth statement "an entire solution of an autonomous
-first-order algebraic differential equation has order at most one".
+**The algebraic case is now closed in Lean.**  The card's own equation is `x f'(x) = c(f(x))` with
+`f` entire, and the card needs only the conclusion *`f` is a polynomial*, which contradicts
+transcendence.  Writing the minimal polynomial of `c` as `sum_{k <= m} C_k(Y) W^k`, that reads
 
-That statement now splits cleanly.  The relation's Newton exponent is a fraction with denominator at
-most `m`, so it cannot lie strictly between `1` and `1 + 1/m`, which gives the pointwise dichotomy
-`‖F′‖ ≤ K‖F‖` or `c‖F‖^{m+1} ≤ ‖F′‖^m` wherever `‖F‖` is large
-(`exists_deriv_dichotomy_of_relation`).  The tame alternative closes the case: a linear derivative
-bound forces exponential type by Grönwall along rays (`norm_le_mul_exp_of_norm_deriv_le`).  What
-remains is the wild alternative.  It cannot be excluded by any growth argument — the ledger records
-why, with the delay-inequality obstruction that defeats the growth walls — and it reduces instead to
-one conformal statement: on a component of `{‖F‖ > R₁}`, which the maximum principle forces to be
-unbounded, the map `h = (1/F)^{1/m}·m` has derivative bounded above and below and image in a disc,
-and the open point is properness of `h` at the end of that component at infinity.  This does **not**
-need Puiseux series, which mathlib does not have.
+```text
+sum_{k <= m} C_k(f(z))*(z f'(z))^k = 0 ,
+```
+
+and the following is proved unconditionally and axiom-cleanly.
+
+| Result | Declaration |
+|---|---|
+| **the Euler relation forces a polynomial** | `HTGeometry.eventually_taylorCoeff_eq_zero_of_euler_relation_general` |
+| the generic Newton case, via Gol'dberg's central-index bound | `HTGeometry.eventually_taylorCoeff_eq_zero_of_euler_relation` |
+| the analytic core, with the central-index bound as input | `HTGeometry.false_of_euler_relation_of_centralIndex_le_pow` |
+| the Newton exponent dichotomy of the relation | `HTGeometry.exists_dichotomy_of_relation` |
+| a dominant constant term excludes the tame branch | `HTGeometry.exists_not_tame_of_dominant_constant_term` |
+| the wild branch bounds `T` by a logarithmic derivative | `HTGeometry.characteristic_le_logDeriv_shift_of_wild` |
+| the wild branch forces `T(r,f) = O(log r)` | `HTGeometry.exists_characteristic_le_log_of_wild` |
+| the divisor mass against the characteristic at three nearby radii | `HTGeometry.divisorMass_le_characteristic` |
+| a zero-free circle in every interval of radii | `HTGeometry.exists_radius_divisor_sphere_eq_zero` |
+| Picard's little theorem, unconditional | `HTGeometry.eq_const_of_omits_two` |
+| exponential type from a linear derivative bound | `HTGeometry.norm_le_mul_exp_of_norm_deriv_le` |
+
+The proof splits on the largest index `ms` carrying the maximal total degree `deg C_k + k`.  When
+`ms >= 1`, Gol'dberg's theorem makes the central index polynomial in the radius, and the Newton
+exponent dichotomy — the exponent is a fraction with denominator at most `m`, so it cannot lie
+strictly between `1` and `1 + 1/m` — becomes a dichotomy for the central index at the Wiman--Valiron
+radii; divergence of the central index kills the tame side, and the wild side bounds the maximum term
+by a power of the radius, which a transcendental function cannot obey.  When `ms = 0` the constant
+term dominates, the tame side is impossible at every point where `|f|` is large, and integrating the
+wild bound over the circle gives `T <= S`, the collapse behind Picard's theorem.
+
+The paper route through the Briot--Bouquet classification is bypassed entirely: no classification of
+the solutions is needed, only the growth conclusion.
+
+## Remaining formalization
+
+What is not yet formalized is the card's *differential-algebra* half: the three-jet determinant
+`J = v^2(2A_x C - A C_x) - p A(x A_x + A)`, the state field of `(x, v, y) = (g, g', f(g))`, and the
+conclusion `ord_DA(f o g) = 3`.  The corpus's composition apparatus — `daRank`, `shadowSet`,
+`compSet`, `visibilityField`, `relTrdeg` in `CompositionRelativeVisibility`,
+`RelativeVisibilityDegree` and `TwoDefectDecomposition` — carries the first-order inner case; the
+order-two inner case of this card is the remaining build.
 
 ## Primary references
 

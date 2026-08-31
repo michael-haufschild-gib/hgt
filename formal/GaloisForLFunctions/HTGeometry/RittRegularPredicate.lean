@@ -30,7 +30,7 @@ structure RittRegular (Fr : RittFrame K L) (q : K) (P : K → Prop) : Prop where
   deriv : ∀ {x : K}, P x → P (Fr.dK x)
   qzpow : ∀ i : ℤ, P (q ^ i)
   rzpow : ∀ k : ℤ, P (Fr.ρ ^ k)
-  fixed_inv : ∀ κ : K, κ ≠ 0 → Fr.ψ κ = κ → P κ⁻¹
+  fixed : ∀ κ : K, Fr.ψ κ = κ → P κ
 
 namespace RittRegular
 
@@ -47,6 +47,12 @@ theorem one (hP : RittRegular Fr q P) : P 1 := by
 theorem natCast (hP : RittRegular Fr q P) (n : ℕ) : P (n : K) := by
   have := hP.ratCast (n : ℚ)
   rwa [Rat.cast_natCast] at this
+
+/-- The inverse of a nonzero shift-fixed element is shift-fixed, hence in the class. -/
+theorem fixed_inv (hP : RittRegular Fr q P) (κ : K) (_hκ : κ ≠ 0) (hf : Fr.ψ κ = κ) :
+    P κ⁻¹ := by
+  refine hP.fixed κ⁻¹ ?_
+  rw [map_inv₀, hf]
 
 theorem sub (hP : RittRegular Fr q P) {x y : K} (hx : P x) (hy : P y) : P (x - y) := by
   rw [sub_eq_add_neg]
