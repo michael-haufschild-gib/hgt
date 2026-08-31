@@ -3,7 +3,7 @@
 - **ID:** ULF-PMFM-1
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Paper proof:** `docs/drafts/pipeline/2-fully-proven/universal-law-field/prime-modular-formation-mechanics/theta-source-prime-modular-current-field-and-tracial-dichotomy.md`
+- **Paper proof:** `docs/drafts/pipeline/3-formalized/universal-law-field/prime-modular-formation-mechanics/theta-source-prime-modular-current-field-and-tracial-dichotomy-paper.md`
 - **Lean module:** `GaloisForLFunctions.RHTower.HedenmalmThetaSourcePrimeModularCurrentField`
 
 ## Certified declarations

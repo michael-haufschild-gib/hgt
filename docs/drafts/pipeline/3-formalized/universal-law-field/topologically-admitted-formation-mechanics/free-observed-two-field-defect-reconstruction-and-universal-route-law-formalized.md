@@ -3,7 +3,7 @@
 - **ID:** ULF-TAFM-14
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Paper source:** `../../../2-fully-proven/universal-law-field/topologically-admitted-formation-mechanics/free-observed-two-field-defect-reconstruction-and-universal-route-law.md`
+- **Paper source:** `free-observed-two-field-defect-reconstruction-and-universal-route-law.md`
 - **Lean module:** `GaloisForLFunctions.HTGeometry.FreeObservedTwoField`
 - **Status:** `[FORMALIZED] [NO SORRY] [NO ADDED AXIOMS] [NOT RH]`
 

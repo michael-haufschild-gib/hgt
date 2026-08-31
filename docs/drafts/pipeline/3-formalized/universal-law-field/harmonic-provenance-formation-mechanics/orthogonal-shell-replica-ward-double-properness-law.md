@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Paper proof:**
-  `docs/drafts/pipeline/2-fully-proven/universal-law-field/harmonic-provenance-formation-mechanics/orthogonal-shell-replica-ward-double-properness-law.md`
+  `docs/drafts/pipeline/3-formalized/universal-law-field/harmonic-provenance-formation-mechanics/orthogonal-shell-replica-ward-double-properness-law-paper.md`
 - **Lean module:**
   `GaloisForLFunctions.RHTower.HedenmalmThetaSourceShellReplicaWardDoubleProperness`
 

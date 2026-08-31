@@ -3,7 +3,7 @@
 - **ID:** ULF-TAFM-12
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Paper source:** `../../../2-fully-proven/universal-law-field/topologically-admitted-formation-mechanics/normed-intervention-two-field-curvature-filling-conservation-and-stable-selection-law.md`
+- **Paper source:** `normed-intervention-two-field-curvature-filling-conservation-and-stable-selection-law.md`
 - **Lean module:** `GaloisForLFunctions.HTGeometry.NormedInterventionTwoField`
 - **Status:** `[FORMALIZED] [NO SORRY] [NO ADDED AXIOMS] [NOT RH]`
 

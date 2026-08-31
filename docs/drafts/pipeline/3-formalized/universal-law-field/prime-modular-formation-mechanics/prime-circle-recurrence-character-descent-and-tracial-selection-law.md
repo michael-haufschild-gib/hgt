@@ -3,7 +3,7 @@
 - **ID:** ULF-PMFM-2
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Paper proof:** `docs/drafts/pipeline/2-fully-proven/universal-law-field/prime-modular-formation-mechanics/prime-circle-recurrence-character-descent-and-tracial-selection-law.md`
+- **Paper proof:** `docs/drafts/pipeline/3-formalized/universal-law-field/prime-modular-formation-mechanics/prime-circle-recurrence-character-descent-and-tracial-selection-law-paper.md`
 - **Lean modules:**
   `GaloisForLFunctions.HTGeometry.ConstitutiveCompactRecurrenceCharacterDescent`;
   `GaloisForLFunctions.RHTower.HedenmalmThetaSourcePrimeModularCompactRecurrenceDescent`

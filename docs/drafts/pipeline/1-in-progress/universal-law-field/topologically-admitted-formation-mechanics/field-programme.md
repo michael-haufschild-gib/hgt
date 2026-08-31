@@ -15,6 +15,9 @@
   `[FREE CHAIN-LEVEL ROUTE LAW LEAN-CERTIFIED]`
   `[LITERAL CESARO SCALE-CONNECTION FUSION LEAN-CERTIFIED]`
   `[EXACT SOURCE-ACTION RH COORDINATE LEAN-CERTIFIED]`
+  `[COMPLETION-PRIMITIVE AND POSITIVE PRODUCTION LAW LEAN-CERTIFIED]`
+  `[INNOVATION-HISTORY BUNDLE LEAN-CERTIFIED]`
+  `[UNCONDITIONAL BOUNDED PRODUCTION OPEN]`
   `[LITERAL XI FORMATION OPEN] [NOT RH]`
 
 ## 1. Higher pivot
@@ -41,7 +44,7 @@ Public law:
 This is the first mechanism that explains why global mutual singularity and local finite blindness
 coexist without either one selecting RH.
 
-## 2. Twenty laws
+## 2. Twenty-two laws
 
 ### Law I -- category-relative capital
 
@@ -397,6 +400,151 @@ the same connection plus every retained terminal correction; aligned Gamma energ
 law, not a claim that the heterogeneous route objects are identical. The corrected pre-divisor
 formation action is eventually the aligned energy, so its eventual boundedness is exactly RH.
 
+### Law XXI -- completion primitive and positive formation production
+
+The scale current has a canonical gauge-invariant positive action. With
+
+\[
+ V_N(a)=3a_2^2+\sum_{j=3}^{N}a_j^2-(N+1)M_N(a)^2,
+ \tag{TAFM.24}
+\]
+
+one has simultaneously
+
+\[
+ V_N=3(a_2-M_N)^2+\sum_{j=3}^{N}(a_j-M_N)^2
+ =\sum_{k=2}^{N-1}(k+1)(k+2)(M_{k+1}-M_k)^2,
+ \tag{TAFM.25}
+\]
+
+and
+
+\[
+ V_{N+1}-V_N=\frac{N+1}{N+2}H_N^2.                    \tag{TAFM.26}
+\]
+
+Every additive correction current `r` is exact on the scale ray: its canonical primitive
+
+\[
+ U_N(r)=\sum_{k=2}^{N-1}\frac{r_k}{k+2}                \tag{TAFM.27}
+\]
+
+makes the completed current `H_N+r_N` a pure weighted increment of `M+U`. Its square is exact
+positive production of a monotone completed Dirichlet action.
+
+For the literal Suzuki terminal current this removes the correction field entirely from the final
+coordinate. Completed Abel is the pure current of one divisor-free completed source potential;
+aligned Gamma energy is uniformly condition-equivalent to its local Dirichlet production; and
+
+\[
+ \operatorname{RH}\iff
+ \text{completed formation-energy increments are eventually uniformly bounded}. \tag{TAFM.28}
+\]
+
+This is not an RH proof. It isolates one source-level properness theorem whose truth would be the
+proof: unconditional bounded local production of the completed formation action.
+
+### Law XXII -- potential--history duality and orthogonal innovation birth
+
+Every scale potential `P` forces one unique anchored formation tail
+
+\[
+ \mathfrak h_P(2)=P_2,
+ \qquad
+ \mathfrak h_P(n)=(n+1)P_n-nP_{n-1}\quad(n\ge3),        \tag{TAFM.29}
+\]
+
+with
+
+\[
+ M_N(\mathfrak h_P)=P_N,
+ \qquad
+ H_N(\mathfrak h_P)=(N+2)(P_{N+1}-P_N).                \tag{TAFM.30}
+\]
+
+The centered history lies in a weighted zero-mass fibre. Successor formation translates the old
+residual by a uniform component orthogonal to that fibre and adds one new terminal component. Thus
+each current is an orthogonal rank-one innovation and
+
+\[
+ \|\mathfrak h_{N+1}^{\circ}\|^2
+ =\|\mathfrak h_N^{\circ}\|^2+\frac{N+1}{N+2}H_N^2.    \tag{TAFM.31}
+\]
+
+This is the first explicit global object of the field. A scalar observer may return because it sees
+only `M_N`; lifted history remains open because nonzero innovations occupy new orthogonal
+coordinates. Every completion current changes this history rather than remaining external. For the
+literal Suzuki lift, completed Abel is the innovation coordinate, completed action is history
+variance, Gamma is its conditioned norm readout, and RH is exactly bounded innovation birth.
+
+### Law XXIII -- local innovation phase quotient and orientation connection
+
+Anchor plus current is not merely sufficient data: it is equivalent to the full formation-history
+tail. For anchor `a` and current `r`, the recovered history satisfies
+
+\[
+ H_N(\mathfrak h_{a,r})=r_N,
+ \qquad
+ \operatorname{Var}_N(\mathfrak h_{a,r})
+ =\sum_{k=2}^{N-1}\frac{k+1}{k+2}r_k^2.              \tag{TAFM.32}
+\]
+
+The pointwise phase group `epsilon_N^2=1` acts by `r_N mapsto epsilon_N r_N`. Recovery is
+equivariant, but every positive action in `(TAFM.32)` is invariant. A one-site reflection changes
+history whenever that current is nonzero while preserving all action depths. Hence positivity is
+the exact quotient by independent scale orientation, not merely by the one global FE reflection.
+
+Adjacent holonomy
+
+\[
+ \omega_N=\epsilon_{N+1}\epsilon_N                    \tag{TAFM.33}
+\]
+
+together with one anchored sign reconstructs the whole phase gauge. Orientation is therefore a
+connection law discarded by positive receivers. Literal Suzuki production, accumulated variance,
+and conditioned aligned-Gamma energy all descend through this full local quotient.
+
+This law is diagnostic, not the missing magnitude producer. In the RG/CCM-FU source literal signs
+already exist; unsolved theorem is a source law bounding their magnitudes. Law XXIII rules out
+another FE/positive-reconstruction pivot and separates orientation connection from
+innovation-magnitude properness.
+
+### Law XXIV -- observer-clock transmutation and exceptional-domain selection
+
+One source density `mu_k` forms a different current in each observer clock `c`:
+
+\[
+ q^c_k=\mu_k(c_{k+1}-c_k).                            \tag{TAFM.34}
+\]
+
+Nondegenerate clock changes form a groupoid with relative rate
+
+\[
+ \lambda_{c\to d}(k)=
+ \frac{d_{k+1}-d_k}{c_{k+1}-c_k},
+ \qquad
+ \lambda_{c\to e}=\lambda_{c\to d}\lambda_{d\to e}. \tag{TAFM.35}
+\]
+
+Writing `Q_N=sum_(k<=N)q^c_k`, target response obeys exact conservation
+
+\[
+ \sum_{k=0}^Nq^c_k\lambda_k
+ =Q_N\lambda_N+
+   \sum_{k=0}^{N-1}Q_k(\lambda_k-\lambda_{k+1}).       \tag{TAFM.36}
+\]
+
+This is boundary storage plus observer-clock acceleration work. A relative rate is uniformly
+bounded exactly when it acts uniformly on all neutral unit dipoles. If rate is unbounded, neutral
+finite charges of fixed `l1` mass two have arbitrarily large target response.
+
+Literal completed prime--polar--Gamma density closes with total zero in harmonic clock
+`c_h(k)=-1/(k+1)` and produces completed Riesz moment in square-root clock
+`c_(1/2)(k)=sqrt(k+1)`. Their relative rate dominates `k+1` for `k>=3`. Therefore generic
+harmonic-to-Riesz boundedness or compactness is false. RH must be exceptional-domain regularity of
+one arithmetic charge under an unbounded clock transmutation. Remaining source law must cancel the
+two signed terms in `(TAFM.36)` jointly; absolute values destroy the zero-charge conservation.
+
 ## 3. Foundational theorem
 
 The dependency-closed paper theorem is
@@ -490,14 +638,28 @@ exact primitive-to-global defect reconstruction, and classifies every algebraic 
 the primitive boundary and observer squares. Together they separate chain-level legality, flat
 observer descent, readout information loss, and quantitative selection.
 
-The literal scale-connection successor is
+The literal scale-connection and completed-action successors are
 
-`../../../2-fully-proven/universal-law-field/topologically-admitted-formation-mechanics/anchored-cesaro-scale-connection-harmonic-holonomy-and-suzuki-organ-fusion.md`.
+`../../../2-fully-proven/universal-law-field/topologically-admitted-formation-mechanics/anchored-cesaro-scale-connection-harmonic-holonomy-and-suzuki-organ-fusion.md`
+
+and
+
+
+`../../../2-fully-proven/universal-law-field/topologically-admitted-formation-mechanics/completion-primitive-variance-dirichlet-conservation-and-positive-formation-action-law.md`.
 
 It proves `(TAFM.22)`--`(TAFM.23)`, harmonic reconstruction, exact constant-gauge kernel
 classification, finite harmonic budget, bounded-potential no-trapping, and the literal
 checkpoint/prime--polar--Gamma/Route-RG/completed-Abel/Gamma/Xi transport. It leaves the source
-properness bound and terminal-correction control open.
+properness bound open. The second proves that every correction current has an exact scale
+primitive, identifies anchored variance with Dirichlet action, makes completed Abel a pure current,
+and re-expresses RH as bounded local production of one monotone divisor-free source action.
+
+The innovation-history successor is
+
+`../../../2-fully-proven/universal-law-field/topologically-admitted-formation-mechanics/innovation-history-bundle-orthogonal-extension-and-completed-source-reconstruction-law.md`.
+
+It proves `(TAFM.29)`--`(TAFM.31)`, unique potential-to-history reconstruction, orthogonal rank-one
+successor extension, completed-history lifting, and the literal completed-Abel innovation landing.
 
 No RH premise or divisor point occurs.
 
@@ -521,6 +683,8 @@ one formation current.
 | free relation modules, functional-equation cells, and recovery kernels | one canonical flat quotient classifies boundary-annihilating readouts; nonzero target rewrite witnesses require the unquotiented two-field |
 | chain maps, Stokes witnesses, and recovery naturality | two primitive square tests generate the unique full route; every composite defect is the linear sum of primitive defects |
 | Suzuki checkpoint slope, prime--polar--Gamma curvature, Route-RG mass error, completed Abel, Gamma energy, and Xi short | one anchored Cesàro scale current reconstructs formation history modulo constant gauge; persistent oriented current forces harmonic potential escape |
+| route positivity, terminal completions, Gamma condition transport, and bounded-energy endpoints | positivity is exact production of gauge-invariant source variance; every terminal current integrates into the completed potential; RH selection becomes bounded local production of one monotone source action |
+| recurrence quotients, growing-rank channels, history loss, and hypertranscendence | scalar potential is the closed observer; unique centered innovation history is the open lift; every nonzero current adds one orthogonal coordinate and forces rank/noncompactness somewhere in any faithful realization |
 | HT/prolongation towers | analytic realization must lose normal-family compactness at some grade |
 | RG cofinal heat widths | source order must be uniform over a moving test family, not pointwise in width/center |
 | Wold inverse-depth equicontinuity | correct receiver type for bounded resolution price, but no source comparison theorem yet |
@@ -621,8 +785,16 @@ TAFM predicts before choosing a receiver:
     corrected current.
 20. eventual boundedness of the divisor-free corrected scale-connection action is exactly RH;
     proving its source upper bound closes selection without another divisor-dependent receiver.
+21. every additive completion current on the scale ray has a canonical primitive, and its completed
+    current square is exact local production of a monotone Dirichlet action. For the literal Suzuki
+    source, RH is exactly eventual uniform boundedness of those production increments; correction
+    control is no longer a separate algebraic obligation.
+22. every scale potential reconstructs one unique anchored formation tail; successor current is an
+    orthogonal rank-one innovation; completed Dirichlet action is its centered-history variance.
+    Therefore a recurrent scalar observer can close without erasing open history, and every faithful
+    route must retain or pay for innovation rank.
 
-Predictions 1--2 and 5--20 are consequences of Stage-2 theorems. Predictions 3--4 are the next exact
+Predictions 1--2 and 5--22 are consequences of Stage-2 theorems. Predictions 3--4 are the next exact
 observer-comparison targets.
 
 ## 7. RH architecture
@@ -704,10 +876,36 @@ Law XX supplies the first literal dynamical relation shared by heterogeneous rou
 source equalities become one scale connection: checkpoint curvature is its acceleration, Route-RG
 is an additive gauge split, completed Abel is corrected connection current, and Gamma/Xi are
 quadratic readouts. Its exact kernel theorem proves which information the current loses, while
-harmonic no-trapping identifies a sharp selection mechanism. Remaining producer is no longer
-another source equality: prove global source properness for the formation potential and sufficient
-control of the retained correction, or prove that an off-line divisor forces persistent oriented
-current and hence forbidden harmonic escape.
+harmonic no-trapping identifies a sharp selection mechanism.
+
+Law XXI removes retained correction as a separate algebraic obstruction. On the one-dimensional
+scale ray every correction current is exact, and completed-current square is not merely a receiver
+energy: it is local production of the source's gauge-invariant variance/Dirichlet action. The
+remaining producer is no longer another source equality or correction estimate. Prove an
+unconditional uniform bound on literal completed-action production, or derive it from a genuinely
+stronger formation law such as a source martingale, negative feedback, finite dissipation budget,
+or coercive comparison unavailable to an arbitrary sequence.
+
+Law XXII identifies what that stronger law must act on. The completed potential is only the scalar
+projection of an inductive centered-history bundle; its current is orthogonal innovation birth.
+Fixed-rank no-gos, recurrence/open-history separation, positive quadratic receivers, and
+hypertranscendence escape are now shadows of one object. The proof architecture must constrain
+innovation birth through source structure—componentwise passivity, a negative-feedback transport,
+or a two-sided isometric cocycle—not through another terminal scalar equality.
+
+Law XXIII identifies exact information erased by those positive receivers. They do not lose only a
+global FE sign; they quotient independent orientation at every scale. Common recovery kernel itself
+remains faithful, and adjacent holonomy is missing orientation connection. This closes
+FE/passivity/diagonal positivity as possible magnitude producers. Future work must derive a
+source-side law controlling norm of already-oriented innovation current.
+
+Law XXIV changes the type of that magnitude problem. Innovation does not merely grow in one fixed
+scale geometry; it is a neutral source charge viewed through an accelerating observer clock.
+Generic compactness is formally impossible because fixed-mass neutral dipoles escape under the
+literal harmonic-to-square-root rate. Selection must therefore prove the arithmetic source lies in
+an exceptional stable graph domain of this unbounded transmutation. Exact target is joint signed
+cancellation of boundary storage and clock-acceleration work, driven by multiplicative prime
+feedback rather than receiver positivity.
 
 ## 8. Why this is not regression into one route
 
@@ -786,6 +984,15 @@ literal source comparison, and whether Steps 1--5 close without importing RH.
 - [x] literal fusion of checkpoint affine potential, prime--polar--Gamma curvature, Route-RG mass
       error, completed Abel, Gamma energy, and Xi short through one scale current
 - [x] exact divisor-free corrected scale-connection action and RH boundedness equivalence
+- [x] gauge-invariant anchored variance, variance--Dirichlet conservation, and exact positive
+      scale-current production
+- [x] canonical primitive of every terminal correction and pure completed formation current
+- [x] literal monotone completed source action, exact Gamma condition comparison, and RH iff
+      eventually bounded local production
+- [x] unique potential-to-history reconstruction, centered-fibre orthogonality, and rank-one
+      innovation extension
+- [x] literal completed Suzuki history with completed Abel as innovation, action as variance, and
+      Gamma as conditioned innovation norm
 - [ ] literal Xi-source formation functor
 - [ ] literal divisor-independent intervention signature and proved relation table shared by at
       least three structurally different route organs
@@ -803,6 +1010,10 @@ literal source comparison, and whether Steps 1--5 close without importing RH.
 - [x] Lean certification of ULF-TAFM-13 canonical flat source quotient
 - [x] Lean certification of ULF-TAFM-14 free observed two-field route law
 - [x] Lean certification of ULF-TAFM-15 generic connection and literal multi-organ fusion law
+- [x] Lean certification of ULF-TAFM-16 completion primitive and positive formation-production law
+- [x] Lean certification of ULF-TAFM-17 innovation-history bundle and literal Suzuki lift
+- [x] Lean certification of ULF-TAFM-18 local innovation phase quotient and literal Suzuki lift
+- [x] Lean certification of ULF-TAFM-19 observer-clock transmutation and literal clock escape
 - [ ] complete Lean formalization of remaining ULF-TAFM-2/3 and paper-only clauses of ULF-TAFM-5/6
 
 ## Log
@@ -857,3 +1068,23 @@ literal source comparison, and whether Steps 1--5 close without importing RH.
   curvature, Route-RG mass error, completed Abel, Gamma energy, and Xi short are exact readouts.
   Remaining producer is global source properness plus retained-correction control, not another
   static route equality.
+- 2026-08-31 -- integrated every retained correction into its canonical scale primitive and
+  Lean-certified exact variance--Dirichlet conservation. Completed Abel is now a pure formation
+  current; its square is local production of one monotone divisor-free source action; aligned Gamma
+  is condition-equivalent to that production; and RH is exactly eventual bounded production. The
+  remaining open theorem is the unconditional source production bound itself.
+- 2026-08-31 -- constructed and Lean-certified the missing global object: every potential has one
+  unique anchored innovation history, successor current is an orthogonal rank-one birth, and action
+  is centered-history variance. Literal completed Abel is the innovation of the completed Suzuki
+  history. This unifies recurrence/open-history separation, positivity, and rank/noncompactness;
+  remaining producer must constrain innovation birth rather than rename its scalar projection.
+- 2026-08-31 -- proved and Lean-certified exact local phase quotient of that object. Anchor and
+  current jointly reconstruct history, but positive action forgets one independent sign at every
+  scale. One anchor plus adjacent holonomies reconstructs orientation; literal Suzuki variance and
+  conditioned Gamma energy descend through full orbit. FE/positivity cannot supply missing
+  magnitude bound; source innovation properness remains live producer.
+- 2026-08-31 -- constructed and Lean-certified observer-clock transmutation groupoid. Proved exact
+  boundary-storage/acceleration conservation and classified global clock properness by neutral
+  unit dipoles. Literal completed source closes in harmonic clock, becomes completed Riesz moment
+  in square-root clock, and has linearly escaping relative rate. Universal compactness is now
+  ruled out; source selection is exceptional-domain cancellation under an unbounded clock change.

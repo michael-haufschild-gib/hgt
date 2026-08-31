@@ -2166,3 +2166,84 @@ The divisor-free corrected formation action is proved eventually equal to aligne
 and eventual boundedness of that source action is proved equivalent to RH. Global source
 properness and correction control needed to establish the bound remain open; no RH proof is
 claimed.
+
+## Session 2026-08-31 addition (completion primitive and positive formation production)
+
+| ID | Theorem | Lean modules |
+|---|---|---|
+| ULF-TAFM-16 | Anchored variance as positive centered action and exact scale Dirichlet energy; canonical primitive of every correction current; pure completed current and monotone completed action; literal completed-Abel production, exact Gamma condition comparison, and RH iff bounded completed formation-energy production | `HTGeometry.AnchoredCesaroVarianceCompletion`; `RHTower.SuzukiCompletedFormationEnergy` |
+
+Scratch and project-path elaboration pass. Targeted leaf builds pass: `3029/3029` for the generic
+variance/completion module and `14115/14115` for the literal Suzuki leaf, the latter replaying a
+large inherited dependency cone after concurrent cache changes. No umbrella, theorem-area, or
+project build was run. Both modules are wired into `HTGeometry.UniversalLawField`; the literal
+module is also wired into `RHTower`, with neither umbrella built. Seventeen audited declarations
+depend only on `propext`, `Classical.choice`, and `Quot.sound`.
+
+This removes retained correction as an algebraic obstruction: every correction current on the
+scale ray is exact and has a canonical harmonic primitive. Positivity is reinterpreted as exact
+production of gauge-invariant source variance, not loss introduced by a quadratic receiver. For
+the literal Suzuki source, completed Abel is pure connection current, completed formation action is
+monotone, Gamma energy is condition-equivalent to its local production, and RH is equivalent to a
+uniform eventual bound on that production. The bound itself remains open; no RH proof is claimed.
+
+## Session 2026-08-31 addition (scale innovation-history bundle)
+
+| ID | Theorem | Lean modules |
+|---|---|---|
+| ULF-TAFM-17 | Potential--history equivalence and unique tail reconstruction; centered-mass and orthogonal recentering laws; rank-one residual extension; variance--Dirichlet action; completed-history lift; literal completed-Abel innovation, Gamma readout, and RH iff bounded innovation birth | `HTGeometry.ScaleInnovationHistoryBundle`; `RHTower.SuzukiFormationInnovationHistory` |
+
+Scratch and project-path elaboration pass. Targeted leaf builds pass: `3030/3030` for the generic
+innovation-history object and `14117/14117` for the literal Suzuki landing, the latter replaying a
+large inherited dependency cone after concurrent cache changes. No umbrella, theorem-area, or
+project build was run. Both modules are wired into `HTGeometry.UniversalLawField`; the literal
+module is also wired into `RHTower`, with neither umbrella built. Fifteen audited declarations
+depend only on `propext`, `Classical.choice`, and `Quot.sound`.
+
+This constructs the object implicit in prior laws. Every scale potential is the scalar projection
+of one unique anchored formation history; each new current is an orthogonal rank-one innovation;
+and Dirichlet action is exactly lifted-history variance. Every correction current changes this
+history rather than remaining external. Literal completed Abel is the innovation coordinate of the
+completed Suzuki history, Gamma is its conditioned quadratic readout, and RH is equivalent to
+bounded innovation-birth energy. The source birth bound remains open; no RH proof is claimed.
+
+## Session 2026-08-31 addition (local innovation phase quotient)
+
+| ID | Theorem | Lean modules |
+|---|---|---|
+| ULF-TAFM-18 | Anchor/current/history equivalence; exact quadratic current action; equivariant local phase action; action and variance invariance; strict one-site nonfaithfulness; phase reconstruction from anchored sign and adjacent holonomy; literal Suzuki production, variance, and conditioned Gamma orbit invariance | `HTGeometry.ScaleInnovationPhaseGauge`; `RHTower.SuzukiFormationInnovationPhaseGauge` |
+
+Batched scratch elaboration and direct project-path elaboration pass. Targeted leaf builds pass:
+`3031/3031` for generic phase-gauge module and `14119/14119` for literal Suzuki landing, latter
+replaying a large inherited dependency cone after cache changes. No umbrella, theorem-area, or
+project build was run. Both modules are wired into `HTGeometry.UniversalLawField`; literal module
+is also wired into `RHTower`, with neither umbrella built. Eighteen audited declarations depend
+only on `propext`, `Classical.choice`, and `Quot.sound`.
+
+This proves exact recovery and positive information loss coexist. Recovery retains every
+innovation sign, while positive formation quotients one independent sign at each scale. Global FE
+reflection is only constant subgroup; adjacent holonomy is missing orientation connection.
+Literal Suzuki formation and Gamma receivers see whole local-gauge orbit. This closes
+FE/passivity/positive phase recovery as possible magnitude producers but does not supply
+unconditional source-side innovation bound needed for RH.
+
+## Session 2026-08-31 addition (observer-clock transmutation and properness)
+
+| ID | Theorem | Lean modules |
+|---|---|---|
+| ULF-TAFM-19 | Source/clock charge reconstruction; multiplicative three-clock cocycle; exact boundary-storage/acceleration conservation; neutral-dipole mass and response; global clock-rate properness classification and fixed-mass escape; literal harmonic zero-charge and square-root Riesz landing; linear relative-rate escape | `HTGeometry.FormationClockTransmutation`; `RHTower.SuzukiHarmonicRieszClockTransmutation` |
+
+Batched scratch elaboration and direct project-path elaboration pass. Generic imports were reduced
+from broad `Mathlib` to six narrow modules; cached leaf size fell from `8655` to `938` jobs.
+Targeted leaf builds pass: `938/938` for generic clock transmutation and `12876/12876` for literal
+Suzuki harmonic--Riesz landing, latter replaying a large inherited dependency cone after cache
+changes. No umbrella, theorem-area, or project build was run. Both modules are wired into
+`HTGeometry.UniversalLawField`; literal module is also wired into `RHTower`, with neither umbrella
+built. Twenty audited declarations depend only on `propext`, `Classical.choice`, and `Quot.sound`.
+
+This constructs observer-clock groupoid and proves its global properness theorem. Same literal
+source closes with zero total charge in harmonic clock and becomes completed Riesz response in
+square-root clock, whose relative rate grows at least linearly. Neutral charges of fixed mass can
+therefore escape arbitrarily far. Universal clock compactness is ruled out; RH selection is
+retyped as exceptional arithmetic-source regularity under an unbounded transmutation. Remaining
+producer is joint signed cancellation of boundary storage and clock-acceleration work.

@@ -3,7 +3,7 @@
 - **ID:** ULF-TAFM-15
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean) / LITERAL MULTI-ORGAN FORMATION LAW
-- **Paper source:** `../../../2-fully-proven/universal-law-field/topologically-admitted-formation-mechanics/anchored-cesaro-scale-connection-harmonic-holonomy-and-suzuki-organ-fusion.md`
+- **Paper source:** `anchored-cesaro-scale-connection-harmonic-holonomy-and-suzuki-organ-fusion.md`
 - **Lean modules:** `GaloisForLFunctions.HTGeometry.AnchoredCesaroScaleConnection`;
   `GaloisForLFunctions.RHTower.SuzukiAnchoredCesaroScaleConnection`
 - **Status:** `[FORMALIZED] [NO SORRY] [NO ADDED AXIOMS] [BRIDGE] [NOT RH]`

@@ -2295,3 +2295,107 @@ Direct check and targeted leaf build pass.  Both declarations audit to
 Residual Lemma 3.5 configuration is now exactly `N < T` together with either `A > T` or failure of
 the applicable product-length comparison.  Proposition-2.2 scale arithmetic must eliminate or
 route those cases before amplification and Theorem 1.2 assembly.
+
+### M6/M7, brick 39 — full-numerator and internal height routing (2026-08-31)
+
+`Sieve/MatomakiTeravainenLemma35NumeratorRange.lean` charges the complete affine-mean-square
+product length to the entire literal Watt/Deshouillers--Iwaniec numerator, rather than demanding
+that one summand dominate. Its capstones
+
+```text
+exists_integral_mtDI_lemma35_numeratorRange
+exists_integral_mtWatt_lemma35_numeratorRange
+```
+
+split internally between over-height, large-`A`, and full-numerator branches. No comparison between
+`A`, `N`, and `T` remains except the exact numerator inequality itself. Direct source check,
+targeted leaf build, and new-declaration axiom audit pass with only
+`[propext, Classical.choice, Quot.sound]`.
+
+### M6/M7, brick 40 — third-derivative reciprocal-block range (2026-08-31)
+
+`Sieve/MatomakiTeravainenLemma35ThirdDerivative.lean` specializes the general logarithmic
+third-derivative test to the exact reciprocal unit block and proves
+
+```text
+norm_mtWattUnitBlock_le_thirdDerivativeWindow :
+  |N(1+it)| ≤ 4096 (T^(1/6)N^(-1/2) + N^(1/4)T^(-1/4))
+```
+
+on `T/2 ≤ t ≤ T ≤ N^3`. Abel transport and the one-unit-factor mean square then give
+`exists_integral_mtDI_lemma35_thirdDerivativeRange`, which proves the literal DI envelope wherever
+its resulting scalar comparison holds. All applicability and divisor-power conditions are
+discharged internally from the displayed source scales. Direct source check and new-declaration
+axiom audit pass with only `[propext, Classical.choice, Quot.sound]`.
+
+### DI spectral bridge, brick 41 — integrated Kloosterman/residue Parseval (2026-08-31)
+
+`Sieve/KloostermanHybridResidueParseval.lean` now carries both pointwise and integrated exact
+energy laws. The new theorem
+
+```text
+sum_integral_normSq_kloostermanHybridTransform_eq_unitResidueEnergy
+```
+
+identifies the Kloosterman-transform energy over every symmetric physical-height window with
+`(q+1)^3` times the integrated Dirichlet energy on unit physical residue classes. Finite summation
+and integration commute exactly; no inequality, modulus average, spectral estimate, or new premise
+is hidden. Direct check and targeted leaf build pass; the two new declarations audit to
+`[propext, Classical.choice, Quot.sound]`.
+
+This is the finite local bridge needed before modulus averaging. It does not prove the residual
+Deshouillers--Iwaniec estimate: the remaining core is still the genuine spectral cancellation in
+the Proposition-2.2 scale region not covered by bricks 33--40, followed by amplification and the
+Theorem 1.2 assembly.
+
+### DI spectral bridge, brick 42 — normalized finite-modulus direct sum (2026-08-31)
+
+`Sieve/KloostermanHybridModulusEnergy.lean` packages arbitrary finite modulus families with
+coefficient data allowed to depend on the modulus. Its exact theorem
+
+```text
+normalizedKloostermanHybridModulusEnergy_eq_unitResidue
+```
+
+divides each Kloosterman output energy by its cubic local Plancherel factor and identifies the
+whole direct sum with unit-residue physical energy. The companion
+`normalizedKloostermanHybridModulusEnergy_le_baseline` proves the explicit pre-spectral bound
+
+```text
+sum_q [5*pi*e*N/(q+1) + 5*pi*T] * coefficientEnergy(q).
+```
+
+This cleanly identifies the scale a cross-modulus spectral theorem must improve. Direct check,
+targeted leaf build, umbrella wiring, and all-new-declaration axiom audit pass; only
+`[propext, Classical.choice, Quot.sound]` occur.
+
+### Sparse large values, brick 43 — Heath--Brown basic collision reduction (2026-08-31)
+
+`Sieve/HeathBrownSparseMeanValueBasic.lean` proves the unconditional basic sparse mean-value
+inequality behind Heath--Brown Theorem 4(i). Its generic theorem
+
+```text
+integral_Icc_normSq_finiteFrequencyPoly_le_collisionWeight
+```
+
+keeps repeated frequencies as separate finite indices and bounds their symmetric-window mean
+square by the literal weighted near-collision sum. Positive integer supports, unit phases, positive
+height, and `[0,1]` dense coefficients are encoded in types; no side premise supplies any analytic
+estimate. The source-facing capstone
+
+```text
+integral_Icc_normSq_heathBrown_factors_le_collision
+```
+
+first identifies the indexed polynomial exactly with `M(it)Q(it)`, then proves the explicit bound
+
+```text
+integral_{-T}^{T} |M(it) Q(it)|^2 dt
+  <= (5*pi/2) T * #{(m1,n1,m2,n2) : |log(m1*n1)-log(m2*n2)| < 1/T}.
+```
+
+Direct check and targeted leaf build (`3378/3378`) pass. All 18 public declarations audit to
+`[propext, Classical.choice, Quot.sound]`; module is umbrella-wired without an umbrella build.
+This closes only Theorem 4(i), the collision reduction. Heath--Brown Theorem 4(iii), its deep
+collision/lattice estimate, and the residual Deshouillers--Iwaniec spectral cancellation remain
+separate open inputs; no Route-E card is promoted on this brick alone.

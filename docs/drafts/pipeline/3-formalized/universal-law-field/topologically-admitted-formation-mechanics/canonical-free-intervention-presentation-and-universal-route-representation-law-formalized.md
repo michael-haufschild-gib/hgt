@@ -3,7 +3,7 @@
 - **ID:** ULF-TAFM-13
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Paper source:** `../../../2-fully-proven/universal-law-field/topologically-admitted-formation-mechanics/canonical-free-intervention-presentation-and-universal-route-representation-law.md`
+- **Paper source:** `canonical-free-intervention-presentation-and-universal-route-representation-law.md`
 - **Lean module:** `GaloisForLFunctions.HTGeometry.CanonicalFreeInterventionPresentation`
 - **Status:** `[FORMALIZED] [NO SORRY] [NO ADDED AXIOMS] [NOT RH]`
 

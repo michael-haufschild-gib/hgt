@@ -4,7 +4,7 @@
 - **Stage:** 3 — formalized in Lean 4
 - **Scientific status:** `[PROVED HERE] [DEPENDENCY-CLOSED] [LEAN-FORMALIZED] [NOT RH]`
 - **Paper proof:**
-  `docs/drafts/pipeline/2-fully-proven/universal-law-field/on-shell-defect-transmutation-mechanics/theta-source-global-conservative-current-sewing-law.md`
+  `docs/drafts/pipeline/3-formalized/universal-law-field/on-shell-defect-transmutation-mechanics/theta-source-global-conservative-current-sewing-law-paper.md`
 - **Lean modules:**
   `HTGeometry.ConstitutiveDependentLpGaugeTransport`;
   `RHTower.HedenmalmThetaSourceGlobalConormalCurrentSewing`

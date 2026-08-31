@@ -1292,6 +1292,19 @@ theorem phaseAverage_criticalFeatureTranslatedPoleGammaLatticeBudget_eq_heightCe
       continuous_criticalFeaturePoleGammaArchJet.comp (continuous_const.add continuous_id.neg)
     exact hc.intervalIntegrable 0 1
 
+/-- The complete phase-selected source statistic has no residual lattice alias: it is exactly a
+finite vertical pole--Gamma cell integral minus the compact source boundary average. -/
+theorem criticalFeatureCompactFiniteLatticeSourceCovariancePhaseAverage_eq_heightCells
+    (n : ℕ) :
+    criticalFeatureCompactFiniteLatticeSourceCovariancePhaseAverage n =
+      (∑ k ∈ criticalFeatureCanonicalLatticeWindow n,
+        ∫ t : ℝ in ((k : ℝ) - 1)..(k : ℝ),
+          2 * (logDeriv archFactor (criticalFeatureEulerVMArchPoint t) -
+            deriv (logDeriv archFactor) (criticalFeatureEulerVMArchPoint t)).re) -
+      criticalFeatureCompactFiniteLatticeSourceBoundaryPhaseAverage n := by
+  rw [criticalFeatureCompactFiniteLatticeSourceCovariancePhaseAverage_eq_channels,
+    phaseAverage_criticalFeatureTranslatedPoleGammaLatticeBudget_eq_heightCells]
+
 end
 
 end RHTower

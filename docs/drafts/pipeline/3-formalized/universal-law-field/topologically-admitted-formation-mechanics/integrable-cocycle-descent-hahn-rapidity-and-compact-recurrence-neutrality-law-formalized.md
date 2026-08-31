@@ -2,7 +2,7 @@
 
 - **ID:** ULF-TAFM-7
 - **Paper card:**
-  `docs/drafts/pipeline/2-fully-proven/universal-law-field/topologically-admitted-formation-mechanics/integrable-cocycle-descent-hahn-rapidity-and-compact-recurrence-neutrality-law.md`
+  `integrable-cocycle-descent-hahn-rapidity-and-compact-recurrence-neutrality-law.md`
 - **Lean modules:** `GaloisForLFunctions.HTGeometry.TopologicallyAdmittedIntegrableCocycleDescent`,
   `GaloisForLFunctions.RHTower.HedenmalmThetaSourcePrimeModularIntegrableCocycleDescent`
 - **Umbrellas:** `GaloisForLFunctions.HTGeometry.UniversalLawField`,
