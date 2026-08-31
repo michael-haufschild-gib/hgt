@@ -2399,3 +2399,76 @@ Direct check and targeted leaf build (`3378/3378`) pass. All 18 public declarati
 This closes only Theorem 4(i), the collision reduction. Heath--Brown Theorem 4(iii), its deep
 collision/lattice estimate, and the residual Deshouillers--Iwaniec spectral cancellation remain
 separate open inputs; no Route-E card is promoted on this brick alone.
+
+### Sparse large values, brick 44 — weighted reverse collision comparison (2026-08-31)
+
+`Sieve/HeathBrownSparseMeanValueReverse.lean` closes the converse comparison for nonnegative
+coefficients. It proves the compact-triangle Parseval identity for arbitrary finite real
+frequencies, then derives
+
+```text
+finiteFrequencyCollisionWeight_le_integral_Icc_nnreal
+```
+
+without a positivity premise by encoding coefficients in `NNReal`. For positive integer supports
+the exact weighted collision mass is
+
+```text
+heathBrownPositiveWeightedCollision
+  = sum_{m1,n1,m2,n2; |log(m1*n1)-log(m2*n2)|<1/T} q(n1)q(n2).
+```
+
+The two source-facing capstones prove the forward comparison for arbitrary unit sparse phases and
+the reverse comparison when every sparse phase is `1`:
+
+```text
+integral_Icc_normSq_heathBrown_factors_le_weightedCollision
+heathBrownPositiveWeightedCollision_le_integral_Icc_factors
+```
+
+Thus the normalized symmetric-window version of Heath--Brown Theorem 4(i) is two-sided with
+explicit constants. Direct check and targeted leaf build (`3380/3380`) pass. All six public
+declarations audit to `[propext, Classical.choice, Quot.sound]`; module is umbrella-wired without
+an umbrella build. Theorem 4(iii) still requires Lemma 6's good/bad two-dimensional lattice
+classification, divisor-coefficient control, and the final two-scale iteration.
+
+### Sparse large values, brick 45 — exact bad-ray rescaling (2026-08-31)
+
+`Sieve/HeathBrownSparseRayScaling.lean` formalizes the one-dimensional branch on pages 12--13 of
+Heath--Brown's Lemma 6.  For a positive primitive direction `(u₁,u₂)`, it proves:
+
+```text
+card_heathBrownRayScales
+    # {lambda > 0 : lambda*u₁ ≤ N and lambda*u₂ ≤ N}
+      = floor(N / max(u₁,u₂))
+abs_log_mul_rayScale_sub_log_mul_rayScale
+    common positive scaling preserves the logarithmic collision displacement exactly
+card_heathBrownRayScales_le_mul_succ
+    #ray(N) ≤ (N/N₀) * (1 + #ray(N₀))
+```
+
+The endpoint loss is derived from Euclidean division; no real-interval counting premise remains.
+Direct source check and targeted leaf build pass. All six public declarations audit to
+`[propext, Classical.choice, Quot.sound]`; module is umbrella-wired without an umbrella build.
+This closes the rescaling half of Lemma 6's bad-pair case.  Remaining work is the unconditional
+two-dimensional good/bad classification and good-pair `O(N²/T)` count, then summation over sparse
+pairs and the two-scale Theorem 4(iii) iteration.
+
+### Sparse large values, brick 46 — primitive-direction Farey packing (2026-08-31)
+
+`Sieve/HeathBrownFareyWindow.lean` replaces the reduced-basis counting part of Heath--Brown Lemma 6
+by an exact reduced-direction formulation.  Primitive positive directions are Farey fractions;
+the corpus's circle separation implies ordinary real separation, giving
+
+```text
+card_heathBrownFareyWindow_le
+  # {a/q reduced : 1 ≤ a ≤ q ≤ Q, alpha ≤ a/q ≤ beta}
+    ≤ (beta - alpha) Q² + 1.
+```
+
+No lattice basis or packing hypothesis remains.  Direct check, targeted leaf build, umbrella
+wiring, and all-three-theorem axiom audit pass with only
+`[propext, Classical.choice, Quot.sound]`.  Together with brick 45 this closes the two elementary
+components of Lemma 6: quadratic packing of nonexceptional primitive directions and exact
+rescaling on one primitive ray.  Remaining work is their weighted exceptional-direction assembly
+at the logarithmic collision window, followed by the two-scale Theorem 4(iii) iteration.

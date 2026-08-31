@@ -1998,3 +1998,66 @@ are umbrella-wired; no umbrella build was run.  Card remains Stage 2.  Recursive
 is closed.  Remaining geometric work is the field-uniform placewise ratio consequence after unit
 balance, followed by the already prepared finite-overlap engine.  Tame-kernel finite generation
 and Moore reciprocity remain arithmetic obligations.
+
+### Greedy-to-balanced witness transport (2026-08-31)
+
+`NumberFieldArchimedeanGreedyBalancedReduction.lean` removes the witness mismatch between the
+recursive greedy construction and determinant-one unit balancing.  The previous balancing
+interface chose unrelated Jacobi data internally.  Its strengthened specified-data theorem now
+balances any supplied simultaneous Jacobi decomposition.  The unconditional capstone
+
+```text
+exists_numberFieldArchimedean_massGreedyBalancedSizeReductionRadius
+```
+
+constructs one complete chain: determinant-one integral greedy normalization, the exact
+mass-greedy Jacobi decomposition of that normalization, product-one unit balancing of that same
+decomposition, and a final mixed unipotent reduction restoring uniform real/complex upper-entry
+bounds without changing the balanced Jacobi weights.  The target retains both its intrinsic
+determinant-profile balance and an explicit `IsBalancedRelativeTo` certificate tied to the greedy
+source.
+
+The relative certificate yields exact same-place logarithmic and multiplicative ratio laws.  The
+common centered determinant profile cancels, leaving only the difference of the greedy source's
+weighted coordinate means and twice the field-only balancing radius.  Thus no selected Jacobi
+decomposition, units, determinant proof, action, upper reduction, or profile-identification premise
+remains in this stage.
+
+Direct source check and targeted leaf build pass.  All four new theorem declarations audit to
+exactly `[propext, Classical.choice, Quot.sound]`; module is umbrella-wired without an umbrella
+build.  Card remains Stage 2.  The next geometric obligation is now sharply isolated: bound adjacent
+weighted coordinate means of the recursively greedy source.  Once that is proved, the exact ratio
+law above gives the placewise Siegel bound and the existing finite-overlap engine applies.
+
+### Greedy-preserving mixed reduction (2026-08-31)
+
+`NumberFieldArchimedeanGreedySizeReduction.lean` proves exact first-Schur equivariance under
+upper-unitriangular integral congruence.  It factors every such matrix into a head-fixed tail lift
+and a first-row shear, proves Schur invariance under the shear in both real symmetric and complex
+Hermitian cases, transports all real/complex local forms through the tail matrix, and recursively
+preserves every primitive-minimal Schur head.  Its unconditional capstone
+
+```text
+exists_numberFieldArchimedean_massGreedySizeReducedJacobiRadius
+```
+
+constructs one Jacobi source that is simultaneously mass-greedy and field-uniformly size-reduced.
+The strengthened capstone
+
+```text
+exists_numberFieldArchimedean_sizeReducedMassGreedyBalancedRadius
+```
+
+then unit-balances that exact reduced greedy source and restores size reduction on the balanced
+target.  No greedy flag, Schur compatibility, upper-unitriangular factorization, Jacobi data,
+integral action, determinant proof, balancing unit, or reduction witness remains exposed.
+
+Direct source checks and targeted leaf builds pass.  Batched `#print axioms` audits of all nineteen
+new size-reduction theorems and the strengthened balanced capstone report only
+`[propext, Classical.choice, Quot.sound]` or a subset.  Both modules are umbrella-wired; no umbrella
+build was run.  Card remains Stage 2.  Exact remaining geometric gate is an adjacent weighted-mean
+bound for a size-reduced mass-greedy number-field Jacobi source.  Greedy minimality plus a generic
+covering-radius upper bound alone yields a coefficient with no guaranteed contraction, so closing
+this gate requires a genuine number-field Hermite/Minkowski relation between primitive minima and
+determinant, not another witness transport theorem.  Finite overlap, tame-kernel finite generation,
+and Moore reciprocity remain downstream.

@@ -1,8 +1,8 @@
 # Suzuki quadratic-contact compensation width loss
 
 - **ID:** SUZ-QCWL
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** `rh-current-frontier-map.md` (read-only) · shared HB/FZZ-P/PW-B/RBH Ward producer
 - **Statement:** Eventual boundedness of the quadratic-contact residual `E_N^2 / C_N` forces only the quantitative Xi half-plane bound `Re rho ≤ 3/4`; the CCM continuation manufactured by this residual reaches exactly `Re u > -1/4`, not the RH endpoint `Re u > -1/2`.
 
@@ -17,8 +17,8 @@ Here `C_N` is Suzuki transition-core energy, `E_N` its aligned Gamma-completed e
 ## Gates
 
 - [x] 0 → 1  in-progress: corpus-native statement, exact four-route chain, current-literature audit, proof architecture
-- [ ] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorem, targeted `lake build`, axiom audit
+- [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
+- [x] 2 → 3  formalized: Lean theorem, targeted `lake build`, axiom audit
 - [ ] 3 → 4  publication-ready: standalone theorem + proof + Lean certificate
 
 ## Corpus audit
@@ -35,7 +35,7 @@ No corpus theorem propagates an exponential resolvent envelope through the CCM c
 
 Suzuki's screw-function papers `arXiv:2206.03682`, `arXiv:2209.04658`, and `arXiv:2606.09096`, plus Matsumoto--Suzuki's M-function work, contain no transition-core/aligned-energy nonlinear compensation and no finite-contact-order abscissa law.  Searches for nonlinear screw renormalization, Chebyshev-resolvent power growth, and contact-order compensation found no matching theorem.  The claim is therefore internally and externally unrecorded, subject to final wording audit after proof closure.
 
-## Paper proof
+## Paper proof `[PROVED HERE]`
 
 Write `P_N := E_N^2/C_N`, with totalized division.  Assume `P_N ≤ B` eventually.
 
@@ -70,8 +70,14 @@ All steps use unconditional corpus theorems plus the displayed residual boundedn
 - **Exact killing theorem/mechanism:** quadratic contact converts the RH-bearing amplitude into a fourth-power bound and spends `1/4` of Mellin abscissa; the generated analytic continuation stops at Xi width `1/4`.
 - **Strongest positive survivor:** a new quantitative theorem `Q(t)=O(exp(alpha t)) ⇒ XiZeroHalfPlaneBound alpha`, specialized to the actual Suzuki quadratic residual at `alpha=1/4`.
 - **New insight:** finite contact order is a zero-width dial, not free cancellation.  First contact is the unique order whose mechanical continuation reaches the RH endpoint.
-- **Status:** paper proof written; hostile audit passed; Lean pending.
+- **Status:** dependency-closed paper proof and Lean formalization complete.  Generic theorem:
+  `xiZeroHalfPlaneBound_of_criticalMellinChebyshevResolventSource_exponentialBound` in
+  `CCMCriticalMellinResolventExponentialWidth.lean`.  Actual Suzuki capstone:
+  `suzukiTransitionCore_linear_quadratic_contact_widthClassification` in
+  `SuzukiTransitionCoreQuadraticContactWidthLoss.lean`.  Both targeted builds pass; all audited
+  capstones use only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Log
 
 - 2026-08-31 — conjecture C1 frozen from internal corpus; current-literature audit found no matching nonlinear contact-order law.
+- 2026-08-31 — paper proof closed and formalized; targeted builds and axiom audit pass.  Quadratic contact is retired as an endpoint-preserving CCM mechanism; quarter-width survivor retained.

@@ -568,6 +568,57 @@ theorem criticalFeaturePhaseCovariance_fourTwentyFifths_upper_iff_sourceBoundary
           (4 * Real.pi - 4 / 25) :=
   criticalFeaturePhaseCovariance_upper_iff_sourceBoundary_lower (4 / 25)
 
+theorem integral_criticalFeatureTranslatedLatticeBoundaryCutoffWeight_le_two_pi
+    (thetaWindow : Finset ℤ) (cutoff : ℕ) (x : ℝ) :
+    (∫ theta : ℝ in (0 : ℝ)..1,
+      criticalFeatureTranslatedLatticeBoundaryCutoffWeight theta thetaWindow cutoff x) ≤
+        2 * Real.pi := by
+  rw [intervalIntegral.integral_of_le (by norm_num)]
+  simp_rw [criticalFeatureTranslatedLatticeBoundaryCutoffWeight_eq_finite_mul_cutoff]
+  rw [MeasureTheory.integral_mul_const]
+  have hbase :=
+    integral_Ioc_criticalFeatureTranslatedFiniteRealBoundaryLatticeWeight_le_two_pi
+      thetaWindow x
+  have hcut0 := SchwartzMap.realCompactIntervalCutoff_nonnegative (cutoff : ℝ) x
+  have hcut1 := SchwartzMap.realCompactIntervalCutoff_le_one (cutoff : ℝ) x
+  nlinarith [Real.pi_pos]
+
+/-- The source-boundary phase average has no mass beyond the multiplicity of the real `XiC`
+packet exposed by its Plemelj representation. -/
+theorem exists_criticalFeatureSourceBoundaryPhaseAverage_le_realZeroMultiplicity (n : ℕ) :
+    ∃ Gamma : Finset ℝ,
+      (∀ gamma : ℝ, gamma ∈ Gamma ↔
+        ((gamma : ℂ) ∈ Metric.ball (0 : ℂ) ((n : ℝ) + 4) ∧
+          XiC (gamma : ℂ) = 0)) ∧
+      criticalFeatureCompactFiniteLatticeSourceBoundaryPhaseAverage n ≤
+        2 * Real.pi *
+          ∑ gamma ∈ Gamma, ((analyticOrderAt XiC (gamma : ℂ)).toNat : ℝ) := by
+  obtain ⟨Gamma, hGamma, hformula⟩ :=
+    exists_criticalFeatureCompactFiniteLatticeSourceBoundaryPhaseFamily_eq_realZeroSums n
+  refine ⟨Gamma, hGamma, ?_⟩
+  rw [criticalFeatureCompactFiniteLatticeSourceBoundaryPhaseAverage]
+  simp_rw [hformula]
+  rw [intervalIntegral.integral_finsetSum]
+  · rw [Finset.mul_sum]
+    exact Finset.sum_le_sum fun gamma hgamma => by
+      rw [intervalIntegral.integral_const_mul]
+      have hm : (0 : ℝ) ≤ ((analyticOrderAt XiC (gamma : ℂ)).toNat : ℝ) :=
+        Nat.cast_nonneg _
+      calc
+        ((analyticOrderAt XiC (gamma : ℂ)).toNat : ℝ) *
+            (∫ theta : ℝ in (0 : ℝ)..1,
+              criticalFeatureTranslatedLatticeBoundaryCutoffWeight theta
+                (criticalFeatureCanonicalLatticeWindow n) n gamma) ≤
+          ((analyticOrderAt XiC (gamma : ℂ)).toNat : ℝ) * (2 * Real.pi) :=
+            mul_le_mul_of_nonneg_left
+              (integral_criticalFeatureTranslatedLatticeBoundaryCutoffWeight_le_two_pi
+                (criticalFeatureCanonicalLatticeWindow n) n gamma) hm
+        _ = 2 * Real.pi * ((analyticOrderAt XiC (gamma : ℂ)).toNat : ℝ) := by ring
+  · intro gamma hgamma
+    exact (continuous_const.mul
+      (continuous_criticalFeatureTranslatedLatticeBoundaryCutoffWeight_phase
+        (criticalFeatureCanonicalLatticeWindow n) n gamma)).intervalIntegrable 0 1
+
 end
 
 end RHTower

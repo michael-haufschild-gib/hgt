@@ -1148,3 +1148,32 @@ axiom footprint.  The module is wired into `RHTower` without an umbrella build.
 
 This does not yet formalize the card's external Kaczorowski--Perelli boundary-continuation and
 nonzero-residue input for arbitrary standard twists.  Card therefore remains Stage 2.
+
+### 2026-08-31 canonical premise-free positive-rank law
+
+`formal/GaloisForLFunctions/RHTower/SelbergCanonicalCuspRootLaw.lean` removes the remaining three
+proposition arguments from the independent cusp-growth theorem.  It defines the canonical base
+point
+
+```text
+s_F = i * (gammaTailHeight(F) + 1)
+```
+
+and proves internally that its height is above every selected Gamma pole line and that every
+affine sine argument has nonzero imaginary part.  Hence the complete asymmetric sine product is
+nonzero.  For `PositiveRankSelbergClass`, positivity of presentation degree is derived from the
+positive Gamma slopes.  The capstone
+
+```text
+PositiveRankSelbergClass.canonicalCuspRootLaw
+```
+
+has no proposition premise: positive rank is part of its carrier type, while positive degree,
+safe height, normalization, analytic regularity, sine nonvanishing, and simultaneous recurrence
+are all discharged in Lean.  Direct source check and the single targeted leaf build pass.  All
+eight new theorems audit to exactly `[propext, Classical.choice, Quot.sound]`; the module is wired
+into `RHTower` without building that umbrella.
+
+This closes every representational premise in the card's independent general-rank radius law.  It
+does not supply the external Kaczorowski--Perelli standard-twist boundary continuation and
+nonzero-residue theorem, so the card remains at Stage 2.

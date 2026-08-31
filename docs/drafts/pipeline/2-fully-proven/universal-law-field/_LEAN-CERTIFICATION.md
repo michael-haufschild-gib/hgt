@@ -2247,3 +2247,59 @@ square-root clock, whose relative rate grows at least linearly. Neutral charges 
 therefore escape arbitrarily far. Universal clock compactness is ruled out; RH selection is
 retyped as exceptional arithmetic-source regularity under an unbounded transmutation. Remaining
 producer is joint signed cancellation of boundary storage and clock-acceleration work.
+
+## Session 2026-08-31 addition (observer-clock multiplier descent and interaction anomaly)
+
+| ID | Theorem | Lean modules |
+|---|---|---|
+| ULF-TAFM-20 | Exact marginal/interaction quotient test; clock-contrast times organ-contrast fusion; scalar-only marginal multiplier classification; anomaly reconstruction of clock modulo constants; fixed-probe properness; literal harmonic-to-Riesz interaction escape | `HTGeometry.ObserverClockInteractionAnomaly`; `RHTower.SuzukiClockInteractionAnomaly` |
+
+Batched scratch and direct project-path elaboration pass. Targeted leaf builds pass: `8779/8779`
+for generic interaction anomaly and `12878/12878` for literal Suzuki landing. No umbrella,
+theorem-area, or project build was run. Both modules are wired into `HTGeometry.UniversalLawField`;
+literal module is also wired into `RHTower`, with neither umbrella built. Ten audited capstones
+depend only on `propext`, `Classical.choice`, and `Quot.sound`; new modules contain no forbidden
+declarations. Global lint reached only five unrelated concurrent umbrella-reachability failures.
+
+This identifies exact algebra missing from prior clock and interaction results. Marginal observer
+space is not an ideal under nonconstant clock multiplication. Failure of descent is canonical
+anchored interaction `(rate-rate₀)(organ-organ₀)`, and its action on all marginals reconstructs the
+clock modulo constants. Literal harmonic-to-Riesz transmutation drives one fixed two-state probe to
+unbounded interaction. Remaining RH producer is therefore source-specific signed control of this
+pre-quotient mixed anomaly, before positivity or marginalization discards its orientation.
+
+## Session 2026-08-31 addition (lower-triangular clock representation)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-TAFM-21 | Canonical marginal/interaction recovery; invariant interaction sector; exact lower-triangular clock representation; multiplicative diagonal blocks; off-diagonal anomaly cocycle; commuting-clock flat-square identity; closed-observer/open-history criterion | `HTGeometry.ObserverClockTriangularRepresentation` |
+
+Scratch and direct project-path elaboration pass. Targeted leaf build passes `8780/8780`. No
+umbrella, theorem-area, or project build was run. Module is wired into
+`HTGeometry.UniversalLawField` without building it. Ten audited capstones depend only on `propext`,
+`Classical.choice`, and `Quot.sound`; module contains no forbidden declarations.
+
+This upgrades one-step clock non-descent into a compositional law. Marginal recovery plus anchored
+interaction is a two-level state on which every scale clock acts lower triangularly. Diagonal
+blocks compose multiplicatively; anomaly is exact off-diagonal cocycle; commuting clock changes
+obey zero-curvature square conservation. Marginal recurrence closes in full lifted history exactly
+when anomaly vanishes. Remaining RH producer is signed source admission for this cocycle, not
+another independent route statistic.
+
+## Session 2026-08-31 addition (full formation reflection polar mechanics)
+
+| ID | Theorem | Lean modules |
+|---|---|---|
+| ULF-TAFM-22 | Coordinate-free full-packet reflection; involutive multiplier conservation; support/depth polar decomposition; exact joint reconstruction; exterior unitary-boundary selection; universal boundary-Möbius law; prime-logarithm shifted-Euler specialization; squarefree-projected reflected coefficient equals Möbius multiplication | `HTGeometry.FormationReflectionPolarMechanics`; `HTGeometry.ShiftedEulerFormationReflectionPolarMechanics` |
+
+Direct foreground elaboration passes for both modules. Targeted leaf builds pass; no umbrella,
+theorem-area, or full-project build was run. Eleven audited capstones depend only on `propext`,
+`Classical.choice`, and `Quot.sound`; both modules contain no forbidden declarations. Both are wired
+into `HTGeometry.UniversalLawField`.
+
+This supplies the missing source-native orientation mechanism. Functional radial reflection on the
+full formation packet has positive modulus equal to multiplicity depth and normalized phase equal
+to support parity. Its unitary boundary is exactly squarefree formation, so boundary projection
+turns normalized reflection into Möbius without inserting Möbius as input. This crosses the fixed
+finite-jet breadth wall but does not yet prove Möbius cancellation or RH; remaining producer is
+completed prime--Gamma compatibility plus global boundary-phase properness.

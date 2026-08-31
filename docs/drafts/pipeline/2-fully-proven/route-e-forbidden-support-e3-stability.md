@@ -610,3 +610,14 @@ check, targeted leaf build, and axiom audit pass with only
 Remaining shared gap is the actual Proposition-2.2 scale routing for the residual `N < T` cases
 where `A > T` or the applicable product-length inequality fails, followed by amplification and
 Theorem 1.2 assembly.  Card remains Stage 2.
+
+## Lean progress update (2026-08-31) — Heath--Brown primitive-direction packing
+
+`Sieve/HeathBrownFareyWindow.lean` proves the exact quadratic Farey-window count for primitive
+positive collision directions.  Together with `Sieve/HeathBrownSparseRayScaling.lean`, this closes
+the two elementary components of Heath--Brown Lemma 6 without retaining a lattice-basis premise:
+quadratic packing of nonexceptional directions and exact transport of one exceptional ray.  Direct
+check, targeted leaf build, and all-three-theorem axiom audit pass with only
+`[propext, Classical.choice, Quot.sound]`; module is umbrella-wired without an umbrella build.
+Weighted exceptional-direction assembly, Theorem 4(iii)'s two-scale iteration, residual
+Proposition-2.2 routing, amplification, and final Theorem 1.2 assembly remain.  Card stays Stage 2.

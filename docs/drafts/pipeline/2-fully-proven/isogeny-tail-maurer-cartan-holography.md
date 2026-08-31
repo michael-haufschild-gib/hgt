@@ -694,3 +694,39 @@ only `[propext, Classical.choice, Quot.sound]` (the matrix definition itself doe
 closes Theorem B and Corollary C for every coordinatewise expanding diagonal isogeny of a finite
 split torus.  General nonsplit and non-toric connected commutative algebraic groups still require
 the quotient/function-field instantiations listed above, so the parent card remains at Stage 2.
+
+## Lean progress — reversible positions and expanding velocities in one split torus
+
+`GaloisForLFunctions.HTGeometry.FreeToricPartialDiagonalIsogenyTail` removes the pure-expansion
+restriction.  For every positive diagonal degree vector, it proves the exact split-torus
+position--velocity decomposition:
+
+```text
+eq_one_of_mem_erasedSector_const_diagonal_degree_one
+    every iterated deck transformation fixes each degree-one coordinate
+mem_scaleAnnihilator_erasedSector_const_diagonal_iff
+    annihilating Laurent characters are exactly those supported on degree-one coordinates
+torusInvariantMonomialField_erasedSector_const_diagonal_eq_positionVelocity
+    deck invariants are exactly quotient positions adjoined to all logarithmic velocities
+torusDiagonalEndo_stableRangeCore_eq_positionVelocity
+    the autonomous stable tail is exactly that position--velocity field
+torusPositiveDiagonalEndo_logDeriv
+    every velocity transforms with its exact coordinate degree
+torusPositiveDiagonalEndo_fixedPosition
+    every degree-one quotient position is fixed pointwise
+freeToricPositiveDiagonalIsogenyTail
+    unconditional finite-rank capstone with positivity encoded in the degree subtype
+```
+
+The root-of-unity argument treats integer Laurent exponents, including negative exponents: a
+nonzero exponent on an expanding coordinate is detected by an iterated deck root whose order is
+strictly larger than its absolute value.  Thus no separation premise is carried into the capstone.
+The free jet field discharges genericity, generation, constant-field structure, and differential
+independence.  Direct source check and targeted leaf build pass; all nine public declarations have
+axiom set `[propext, Classical.choice, Quot.sound]`.  Module is wired into `HTGeometry` without an
+umbrella build.
+
+This closes Theorem B for every positive diagonal isogeny of every finite split torus, including
+simultaneous reversible and expanding sectors.  It still does not construct quotient sheaves,
+function fields, reduced coactions, or finite-action quotient presentations for arbitrary
+connected commutative algebraic groups; those remain the card's Stage-3 gate.

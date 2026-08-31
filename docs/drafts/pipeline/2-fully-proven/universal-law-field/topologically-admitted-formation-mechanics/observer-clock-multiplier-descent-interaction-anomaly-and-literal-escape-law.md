@@ -53,7 +53,7 @@ Define the anchored interaction projector
 \tag{20.2}
 \]
 
-### Theorem 2.1 -- exact marginal/inter-action decomposition
+### Theorem 2.1 -- exact marginal/interaction decomposition
 
 For every `f in V`,
 
@@ -338,7 +338,7 @@ which must be bounded.
 - [x] exact descent classification
 - [x] literal unbounded harmonic-to-Riesz interaction anomaly
 - [x] fourth-organ mixed-carrier prediction
-- [ ] Lean formalization and umbrella wiring
+- [x] Lean formalization and umbrella wiring
 - [ ] literal source law bounding the created interaction anomaly
 - [ ] bilateral admission and RH selection
 
@@ -349,3 +349,6 @@ which must be bounded.
   harmonic-to-square-root interaction escape. Two attempted producers were retired first:
   absolute Selberg-clock feedback loses a factor `sqrt N`, and prime-phase/Fock averaging cannot
   select the literal phase against Helson flexibility.
+- 2026-08-31 -- Formalized generic multiplier/descent/reconstruction law and literal Suzuki escape
+  in Lean; added explicit constant-clock information-neutrality corollary for functional-equation
+  sign/phase action; wired leaf modules without building umbrellas.

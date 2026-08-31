@@ -47,6 +47,32 @@ noncomputable def Ideal.localizedLowerRamificationGroup (P : Ideal S) [P.IsPrime
       ∀ x : S, algebraMap S (Localization.AtPrime P) (g • x - x) ∈
         IsLocalRing.maximalIdeal (Localization.AtPrime P) ^ (n + 1) := Iff.rfl
 
+/-- At a maximal prime, localization does not change the ideal-theoretic lower filtration: the
+pullback of every power of the local maximal ideal is the corresponding power of `P`. -/
+theorem Ideal.localizedLowerRamificationGroup_eq_lowerRamificationGroup
+    (P : Ideal S) [P.IsMaximal] (n : ℕ) :
+    Ideal.localizedLowerRamificationGroup (G := G) P n =
+      Ideal.lowerRamificationGroup (G := G) P n := by
+  unfold Ideal.localizedLowerRamificationGroup Ideal.lowerRamificationGroup
+  dsimp only
+  have hcomap := IsLocalization.AtPrime.under_maximalIdeal_pow
+    P (Localization.AtPrime P) (n + 1)
+  change Ideal.comap (algebraMap S (Localization.AtPrime P))
+      (IsLocalRing.maximalIdeal (Localization.AtPrime P) ^ (n + 1)) =
+    P ^ (n + 1) at hcomap
+  rw [hcomap]
+
+/-- The localized lower ramification filtration decreases with depth. -/
+theorem Ideal.localizedLowerRamificationGroup_antitone
+    (P : Ideal S) [P.IsMaximal] :
+    Antitone (fun n => Ideal.localizedLowerRamificationGroup (G := G) P n) := by
+  intro m n hmn
+  change Ideal.localizedLowerRamificationGroup (G := G) P n ≤
+    Ideal.localizedLowerRamificationGroup (G := G) P m
+  rw [Ideal.localizedLowerRamificationGroup_eq_lowerRamificationGroup,
+    Ideal.localizedLowerRamificationGroup_eq_lowerRamificationGroup]
+  exact Ideal.lowerRamificationGroup_antitone P hmn
+
 open IsDiscreteValuationRing
 
 /-- In a DVR, membership in the `n`th maximal-ideal power is exactly additive valuation at least
