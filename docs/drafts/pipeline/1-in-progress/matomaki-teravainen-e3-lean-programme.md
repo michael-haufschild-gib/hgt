@@ -2612,3 +2612,50 @@ umbrella-wired without an umbrella build.
 
 Remaining Route-E work is paper-specific iteration/parameter substitution into Proposition 2.2,
 residual Watt/DI scale routing, amplification, and Matomäki--Teräväinen Theorem 1.2 assembly.
+
+### Sparse large values, brick 53 — Cauchy/divisor square lift (2026-08-31)
+
+`Sieve/HeathBrownSparseMeanValueSquareLift.lean` formalises the square-lift step used in
+Heath--Brown's Theorem 4(iii).  It constructs the natural-number sparse factor, proves its
+ordinary mean-square bound with support height and integration height kept separate, identifies
+the square of the full unit interval with divisor-fibre coefficients, and normalises those
+coefficients by the corpus divisor bound.  For arbitrary dense coefficients in `[0,1]`, it also
+proves domination by unit coefficients on the same support.  The capstone is the squared Cauchy
+estimate
+
+```text
+I(T; A,[1,N])²
+  ≤ MS(T; A) · divisorScale(N,η)² · (25π/8) · I(T; A,[1,N²]),
+```
+
+with coefficient bounds, divisor-fibre counting, reconstruction, continuity, integrability, and
+Cauchy--Schwarz discharged internally.  No supplied coefficient, divisor, continuity, or analytic
+premise remains.  Direct source check and targeted leaf build (`9107/9107`) pass; all thirty new
+declarations audit to only `[propext, Classical.choice, Quot.sound]`.  Module is umbrella-wired
+without an umbrella build.
+
+Remaining Heath--Brown work is exact one/two-step recurrence iteration, integer parameter choice
+and exponent absorption yielding Theorem 4(iii), then Proposition-2.2 routing, amplification, and
+Matomäki--Teräväinen Theorem 1.2 assembly.
+
+### Sparse large values, brick 54 — closed one-step self-bound (2026-08-31)
+
+`Sieve/HeathBrownSparseMeanValueSelfBound.lean` combines bricks 52 and 53 into a closed estimate.
+It constructs zero coefficients embedding `[1,K²]` into `[1,N]`, proves symmetric height-window
+monotonicity, proves nonnegativity of the explicit sparse mean-square envelope, and solves the
+resulting scalar system
+
+```text
+I ≤ a + bJ,     J² ≤ kI
+```
+
+as `I ≤ 2a+b²k`.  Its capstone instantiates `a`, `b`, and `k` with the exact recurrence,
+half-height, divisor scale, and explicit constants from the preceding modules whenever `K²≤N`.
+All coefficient, analytic, interval-extension, positivity, and quadratic-solver premises are
+discharged.  Direct source check and targeted leaf build (`9108/9108`) pass; all nine declarations
+audit to only `[propext, Classical.choice, Quot.sound]`.  Module is umbrella-wired without an
+umbrella build.
+
+Remaining Heath--Brown work is integer scale selection and exponent simplification for the first
+branch, the paper's second recurrence branch, and their exact Theorem 4(iii) union.  Proposition-
+2.2 routing, amplification, and Matomäki--Teräväinen Theorem 1.2 assembly then remain.

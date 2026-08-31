@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.ThetaCuspFullReflectionEighthLikelihoodGain
+import GaloisForLFunctions.RHTower.ThetaCuspReflectedEighthPolynomial
 
 /-!
 # Strict eighth baseline after the lower likelihood perturbations
@@ -22,11 +23,6 @@ def thetaCuspFirstAtomEighthProfile (q : ℝ) : ℝ :=
     (128 + 192 / q ^ 2 + 36288 / q ^ 3 + 780192 / q ^ 4 +
       5443200 / q ^ 5 + 16329600 / q ^ 6 + 22044960 / q ^ 7 +
       11022480 / q ^ 8)
-
-/-- Native rank-three reflected eighth polynomial in four signed even log jets. -/
-def thetaCuspReflectedEighthPolynomial (A B C D : ℝ) : ℝ :=
-  768 * A ^ 6 - 1344 * A ^ 4 * B + 304 * A ^ 2 * B ^ 2 -
-    68 * B ^ 3 + 128 * A ^ 3 * C - 4 * A ^ 2 * D + B * D - C ^ 2
 
 /-- Exact first-atom baseline at the worst second-jet loss, before any sixth-jet loss. -/
 def thetaCuspFirstAtomEighthNoSixthLossBaseline (q : ℝ) : ℝ :=

@@ -86,5 +86,11 @@ Novelty claim is limited to exact HB/AIME route-class application and Lean proof
 ## Verification
 
 - Direct `lake env lean` check: passed.
-- Target build, axiom audit, and lint: pending final audit.
-
+- Targeted build:
+  `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingHBFiniteRankGlobalAIMESourceResponseNoGo`
+  passed `11894/11894`.
+- Axiom audit for infrastructure, phase/scale laws, local no-go, infinite-rank survivor, and closed
+  certificate reports only `propext`, `Classical.choice`, and `Quot.sound`.
+- Formal lint confirms umbrella reachability and reports no defect in this module. Its nonzero exit
+  is caused by pre-existing unwired Deninger, Hedenmalm, XiWard, and lower-ramification modules
+  outside this card.

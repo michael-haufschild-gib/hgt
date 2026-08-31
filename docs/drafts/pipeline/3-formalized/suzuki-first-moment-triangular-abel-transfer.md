@@ -1,8 +1,8 @@
 # Suzuki first-moment to triangular Abel transfer
 
 - **ID:** CCM-FU-FIRST-MOMENT-ABEL
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** `rh-current-frontier-map.md` routes CCM-FU / G-CE / PPM
 - **Statement:** Linear growth of exact event-label-weighted Suzuki curvature prefixes uniformly bounds the CCM-FU third-grade triangular transform; bounded central unit-Riesz barycenters therefore imply RH.
 
@@ -46,7 +46,7 @@ transfer. The August 2026 checkpoint papers Zenodo 21859280, 21979513, and 22076
 Chebyshev balances and recovery witnesses but do not contain the CCM-FU triangular kernel or this
 unit-Riesz/first-moment criterion. Priority remains provisional pending expert review.
 
-## Conjecture C-FM-ABEL
+## Theorem C-FM-ABEL
 
 Assume a constant `C >= 0` satisfies, for every `N >= 1`,
 
@@ -132,10 +132,36 @@ RH chain.
 ## Gates
 
 - [x] 0 → 1 in-progress: source-pure statement, explicit RH chain, corpus/literature audit, hostile proof
-- [ ] 1 → 2 fully-proven: Lean-independent proof checked against exact endpoint indices
-- [ ] 2 → 3 formalized: closed Lean theorem, umbrella import, targeted build and axiom audit
+- [x] 1 → 2 fully-proven: Lean-independent proof checked against exact endpoint indices
+- [x] 2 → 3 formalized: closed Lean theorem, umbrella import, targeted build and axiom audit
 - [ ] 3 → 4 publication-ready: standalone proof and external expert novelty review
+
+## Lean realization
+
+Module:
+`GaloisForLFunctions.RHTower.SuzukiFirstMomentTriangularAbelTransfer`
+
+Principal closed theorems:
+
+- `HTGeometry.abs_sum_mul_weight_le_of_linear_partialSum`: generic signed Abel transfer from
+  linear prefix growth through a summable reciprocal-scale reporter.
+- `suzukiCheckpointTriangularCurvatureTransform_eq_reciprocalLogSums`: exact decomposition into
+  cubic and quadratic reciprocal-log channels.
+- `ccmFUSuzukiTriangularCurvatureTransformBound_of_weightedFirstMomentLinearBound`: discharges the
+  full CCM-FU triangular-transform premise from one exact first-moment bound.
+- `weightedFirstMomentLinearBound_of_unitRieszCentralBarycenterNaturalBound`: closes the source
+  landing from central unit-Riesz natural-aperture boundedness.
+- `riemannHypothesis_of_suzukiWeightedCurvatureFirstMomentLinearBound` and
+  `riemannHypothesis_of_unitRieszCentralBarycenterNaturalBound`: record both complete RH chains.
+
+Direct `lake env lean` and targeted
+`lake build GaloisForLFunctions.RHTower.SuzukiFirstMomentTriangularAbelTransfer` pass. Axiom audit
+for generic Abel transfer, exact decomposition, both premise transfers, and both RH capstones
+reports only `propext`, `Classical.choice`, and `Quot.sound`. Module is imported by RHTower
+umbrella. Global formal lint reports only unrelated concurrent umbrella-reachability failures; no
+forbidden declaration occurs in this module.
 
 ## Log
 
 - 2026-08-31 — conjecture frozen after corpus-driven Abel decomposition and hostile threshold audit.
+- 2026-08-31 — paper proof and Lean formalization closed; promoted to `3-formalized`.

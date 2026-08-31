@@ -697,3 +697,29 @@ an umbrella build.
 Card remains Stage 2.  Remaining shared gate is paper-specific iteration/parameter substitution,
 residual Proposition-2.2 Watt/DI routing, amplification, and final Matomäki--Teräväinen all-interval
 supply theorem.
+
+## Lean progress update (2026-08-31) — Heath--Brown Cauchy/divisor square lift
+
+`Sieve/HeathBrownSparseMeanValueSquareLift.lean` proves the exact divisor-normalised square
+reconstruction and squared Cauchy lift from the unit interval through `N` to the interval through
+`N²`.  Sparse-factor mean square, `[0,1]`-coefficient domination, divisor-fibre bounds,
+continuity, and integrability are all internal Lean theorems, not hypotheses.  Direct check,
+targeted leaf build (`9107/9107`), and all-thirty-declaration axiom audit pass with only
+`[propext, Classical.choice, Quot.sound]`; module is umbrella-wired without an umbrella build.
+
+Card remains Stage 2.  Remaining shared gate is exact Theorem 4(iii) recurrence iteration and
+integer parameter algebra, residual Proposition-2.2 Watt/DI routing, amplification, and final
+Matomäki--Teräväinen all-interval supply theorem.
+
+## Lean progress update (2026-08-31) — closed Heath--Brown one-step self-bound
+
+`Sieve/HeathBrownSparseMeanValueSelfBound.lean` closes the exact finite system produced by the
+two-scale recurrence and Cauchy/divisor lift.  Zero extension, symmetric height monotonicity,
+explicit-envelope positivity, and the quadratic implication `I≤a+bJ`, `J²≤kI` implies
+`I≤2a+b²k` are proved internally.  Direct check, targeted leaf build (`9108/9108`), and all-nine-
+declaration axiom audit pass with only `[propext, Classical.choice, Quot.sound]`; module is
+umbrella-wired without an umbrella build.
+
+Card remains Stage 2.  Remaining shared gate is integer scale selection, second-branch recurrence
+and exponent algebra for exact Theorem 4(iii), then residual Proposition-2.2 routing,
+amplification, and final all-interval supply theorem.

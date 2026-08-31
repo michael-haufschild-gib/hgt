@@ -687,3 +687,32 @@ umbrella build.
 Card remains Stage 2.  Remaining shared gate is paper-specific recurrence iteration and parameter
 substitution, residual Watt/DI routing in Proposition 2.2, amplification, and final
 Matomäki--Teräväinen all-interval theorem.
+
+## Lean progress update (2026-08-31) — Heath--Brown Cauchy/divisor square lift
+
+`Sieve/HeathBrownSparseMeanValueSquareLift.lean` constructs the divisor-normalised dense square
+factor and proves the exact squared Cauchy lift from length `N` to length `N²`.  It also proves the
+sparse-factor ordinary mean square with independent support/integration heights and domination of
+arbitrary `[0,1]` dense coefficients by unit coefficients.  Divisor fibres, coefficient bounds,
+square reconstruction, continuity, integrability, and Cauchy--Schwarz are discharged internally;
+no corresponding premise remains.  Direct check, targeted leaf build (`9107/9107`), and
+thirty-declaration axiom audit pass with only `[propext, Classical.choice, Quot.sound]`; module is
+umbrella-wired without an umbrella build.
+
+Card remains Stage 2.  Remaining shared gate is exact Theorem 4(iii) recurrence iteration and
+integer parameter algebra, Proposition-2.2 residual routing, amplification, and final all-interval
+supply theorem.
+
+## Lean progress update (2026-08-31) — closed Heath--Brown one-step self-bound
+
+`Sieve/HeathBrownSparseMeanValueSelfBound.lean` constructs zero extension from `[1,K²]` to
+`[1,N]`, proves height-window monotonicity and envelope positivity, and combines the exact
+two-scale recurrence with the divisor square lift.  The capstone closes `I≤a+bJ`, `J²≤kI` as
+`I≤2a+b²k` with the paper's explicit finite constants whenever `K²≤N`; none of these steps remains
+as a premise.  Direct check, targeted leaf build (`9108/9108`), and nine-declaration axiom audit
+pass with only `[propext, Classical.choice, Quot.sound]`; module is umbrella-wired without an
+umbrella build.
+
+Card remains Stage 2.  Remaining shared gate is integer scale selection, second-branch recurrence
+and exponent algebra for exact Theorem 4(iii), then Proposition-2.2 routing, amplification, and the
+all-interval supply theorem.

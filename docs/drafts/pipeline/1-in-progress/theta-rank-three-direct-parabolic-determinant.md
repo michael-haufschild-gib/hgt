@@ -411,3 +411,94 @@ already proved static chamber signs can close D1.
 strict reduced-clock penetration or combined-chamber no-go.  Primary arXiv searches found general
 Painlevé/Hankel differential systems but no complete-theta theorem or counterexample in these
 coordinates.  Priority remains provisional pending independent expert review.
+
+## 2026-08-31 negative Schur sheet selected
+
+`[PROVED][LEAN-PROVED][SIGNIFICANT PREMISE DISCHARGED]` The surviving sixth-jet Schur coupling has
+a global source-specific orientation:
+
+```text
+C - 64A³ < 0
+```
+
+on the complete physical theta half-line.  The proof combines the exact first-atom sixth-profile
+inequality already exposed by the likelihood decomposition with strict positivity of the literal
+sixth likelihood jet.  No rank-three positivity premise enters.
+
+Define the positive sheet coordinate `q = 64A³-C`.  Native rank-three curvature now has the exact
+selected-sheet normal form
+
+```text
+D1 = (4A²-B)(1216A⁴-32A²B+68B²-D) - q²,    q>0.
+```
+
+At every physical singular face there is therefore a unique positive `q` satisfying
+`q² = head*tail`; the opposite Schur sheet cannot occur.  Formal module:
+`ThetaCuspFullReflectionEighthNegativeSchurSheet`, with capstones
+`thetaCuspFullReflectionEighthSchurCoupling_neg` and
+`thetaCuspFullReflectionEighthHankelCurvature_eq_zero_iff_unique_negativeSchurSheet`.
+
+Exact remaining proof chain:
+
+```text
+inward orbital normal on unique negative Schur sheet
+→ no physical D1 first contact
+→ strict native D1
+→ finite TCD/S6F gate
+→ cofinal all-order Hankel/Bezoutian landing
+→ Weil positivity
+→ RH.
+```
+
+This removes a genuine branch from the boundary-flux problem and supplies the positive moving
+coordinate needed for a Riccati/normal-flow reduction.  The active conjecture is now
+`TCD-D1-RIGHT-ANCHORED-ANTIDRIFT`: use actual theta orbit direction, with the proved positive right
+anchor, to orient this sole sheet.
+
+`[NOVELTY AUDIT]` Mandatory corpus search found neither the global sign nor the unique-sheet
+classification.  Primary arXiv searches found general Hankel/Painlevé flows and the August 2026
+second-level theta cone proof, but no complete-theta rank-three sixth-jet Schur-sheet theorem.
+Priority remains provisional pending expert review.
+
+## 2026-08-31 negative-sheet normal-flow conjecture
+
+`[CONJECTURE TCD-D1-NEGATIVE-SCHUR-NORMAL-FLOW]` Put
+
+```text
+H = 4A²-B,
+q = 64A³-C,
+K = 1216A⁴-32A²B+68B²-D,
+r = q/H.
+```
+
+At every positive physical singular face, `H>0`, `q>0`, and `q²=HK`.  The conjectured reduction
+is that canonical boundary crossing has exactly the sign of
+
+```text
+Gamma = K' - 2r q' + r² H'.
+```
+
+Exact proof chain:
+
+```text
+Gamma>0 on every physical singular face
+⇔ positive canonical boundary flux
+⇔ global strict native D1
+→ finite TCD/S6F rank-three gate
+→ cofinal all-order Hankel/Bezoutian landing
+→ Weil positivity
+→ RH.
+```
+
+This is not a lower-jet sign conjecture: `K'` contains the ninth logarithmic source jet, whose
+freedom is already forced by the formalized depth-eight torsor no-go.  Intended progress is to
+prove the displayed equivalence unconditionally and thereby replace the current 3-by-3
+null-vector crossing with one source-specific scalar normal-flow inequality on the unique
+negative Schur sheet.  Hostile audit must compare it with the older division-free singular
+envelope and prove a strict simplification rather than repackage that theorem.
+
+`[REJECTED AT CORPUS AUDIT]` This was frozen before the mandatory hard-core status was read.
+`ThetaCuspReflectedEighthSingularEnvelope` already proves the stronger division-free four-channel
+normal-flow identity and singular specialization.  No Lean module will duplicate it.  Active core
+remains actual-theta positivity of that existing ninth-jet normal velocity at a putative singular
+point.
