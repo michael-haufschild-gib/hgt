@@ -775,3 +775,22 @@ Direct checks, targeted leaf builds (`9098/9098`, `9104/9104`, `9111/9111`, `911
 
 Card remains Stage 2.  Explicit exponent absorption and Theorem 4(iii) union remain before
 residual Proposition-2.2 routing, amplification, and final all-interval supply theorem.
+
+## Lean progress update (2026-08-31) — exact Heath--Brown Theorem 4(iii)
+
+`Sieve/HeathBrownSecondScaleAlgebra.lean`,
+`HeathBrownSparseMeanValueTheoremFourAlgebra.lean`, and
+`HeathBrownSparseMeanValueTheoremFour.lean` close the exact coefficient-faithful estimate
+
+```text
+I ≤ (95π/2) N²R² + Cη (NT)^η (NRT + N R^(7/4) T^(3/4))
+```
+
+with explicit `Cη`.  Arbitrary sparse phases and dense `[0,1]` coefficients are retained; empty
+support, `N=0`, scale selection, rounding, divisor loss, crossover, and all exponent algebra are
+discharged.  Direct checks, targeted leaf builds (`9116/9116`, `9117/9117`, `9118/9118`), and the
+ten-declaration axiom audit pass with only `[propext, Classical.choice, Quot.sound]`; capstone is
+umbrella-wired without an umbrella build.
+
+Card remains Stage 2.  Remaining shared analytic work is Proposition-2.2 routing,
+amplification, and final Matomäki--Teräväinen Theorem 1.2 assembly.

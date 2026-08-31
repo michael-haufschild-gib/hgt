@@ -14,11 +14,13 @@
 - Lean: `PsiRemainderSquareRootBounded` iff normalized Chebyshev error is bounded on the full late
   continuous ray.
 - Lean: that condition uniformly bounds every late-supported integrable detector by its `L¹` norm.
+- Lean: one explicit normalized compact autocorrelation yields Deninger weights with coherent mass
+  `≫ log T` at reciprocal dyadic scale.
+- Lean: under RH, its full multiplicity-exact Deninger spectral sum equals the summable phase packet
+  and is cofinally unbounded at arbitrarily late translations.
 - Literature: Littlewood's PNT-error omega theorem is stronger than the target no-go.
-- Current proof route: translated compact autocorrelation; zero-band mass is `≫ log T`, while a
-  square-root Chebyshev bound makes its arithmetic pairing uniformly bounded.
 
 ## Open core
 
-Identify a translated compact-autocorrelation Deninger test with its Xi spectral sum, then combine
-its growing band mass with the proved uniform arithmetic detector bound.
+Prove `PsiRemainderSquareRootBounded` uniformly bounds the same translated Deninger explicit-formula
+response; contradiction then kills CCM-FU.

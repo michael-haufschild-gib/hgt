@@ -1,47 +1,157 @@
 # Universal-law field: verified frontier
 
-Evidence only: current frontier map, paper-proven ULF cards, and `scripts/formal_tools.py research`. No conjecture is currently admitted.
+Evidence: current Lean tree, `rh-current-frontier-map.md`, and
+`scripts/formal_tools.py research`. No conjecture is admitted here.
 
-## Field law already supported
+## Corpus-level mechanism
 
-- Primitive is **unreduced source-generated formation**, not route endpoint: finite histories form an augmentation-filtered algebra; observation is quotient, recovery is multiplication by augmentation powers, and completion acts only after source formation.
-- All-order Green law pairs formation grade `I^r` with observer difference `Delta^r`. Recovery is injective; functional-equation inversion lifts involutively and acts by parity `(-1)^r`; closed period `p` retains residue `p[T-1]` in `I/I^2`.
-- Formation number `N=(T-1)d/dT` canonically measures grade. Hypertranscendence forces inverse-gauge escape from every finite `N`-stable state; it is not identified with generic infinite dimension or noncompactness.
-- Positive-grade Hilbert completion has canonical compact resolvent `(N+1)^-1`. Toeplitz creation is one-sided, reflection anticommutes with adjacent-grade creation, and diagonal positive energy erases parity. Abstract global properness is therefore proved; literal-source graph coercivity is not.
-- Unreduced bidirectional history `(x+,x-)` has current, visible magnitude, reserve, and activity with exact conservation `activity = visible + 2 reserve`. Fusion creates a nonnegative reflection-even reserve cocycle, and every visible-current loss equals twice reserve birth.
-- Diagonal gauge plus reflection uniquely force half-density `1/2`. Arithmetic gcd integrates reserve primewise; the same quotient gives the adelic lattice-mass ratio and Selberg gcd weight. This is a proved fourth-organ prediction, not analogy.
-- Functional-equation lift and common recovery are information- and superselection-neutral. They transport existing source structure; they cannot generate selection or merge off-wall source sectors.
+- Independent relabelable organ slots are nonpredictive:
+  `constitutiveSlotAction_transitive` and `constitutiveIntrinsicInvariant_constant`.
+- Full frontier types into one operation grammar:
+  `mark -> form -> ghost -> dualize -> admit -> saturate -> conserve`.
+- Route labels reduce to shared producer gates: source order/orientation, cofinal admission,
+  singular coefficient-faithful landing, whole-state saturation, and nonlinear dynamics.
+- Local exactness is abundant. Global source selection is scarce. Additional receivers or
+  RH-equivalent phase descriptions do not change this frontier.
 
-## Literal arithmetic calibration
+## Exact universal laws and one paper-only boundary
 
-- On `ell^2(N)`, `L e_n=(log n)e_n`, `S_t=e^{-tL}`, and multiplicative shifts `V_m` satisfy `[L,V_m]=(log m)V_m`.
-- Raw all-prime Duhamel response is injective compact with dense nonclosed range. Source commutator normalization cancels the exact `1/log p` loss and makes grade-one response uniformly proper.
-- Ordered two-letter response retains `sgn(log m-log n)` although `V_mV_n=V_nV_m`; squaring keeps magnitude and loses sign.
-- Unconditional prime-log crowding makes grade-two response injective compact/nonclosed. Every finite diagonal polynomial-log/time-differential prolongation still has lower bound zero. Any diagonal repair needs stretched-exponential singular growth; otherwise repair must be infinite-order or non-diagonal.
-- A pre-zero full-tower generator already exists: normalized log dilations `T_n` generate Euler completion `E = sum T_n`; Möbius synthesis `M = sum mu(n)T_n` exactly inverts `E` on anti-causal Green responses.
-- Internal local moments are inserted before translation and build every jet order. Their physical exponent cofaces form an actual `ell2(N;L2)` horizon whose codiagonal is the source and whose Fourier image is the Xi-jet profile. Finite Möbius--divisor Abel production independently splits exactly into signed dilation channels.
-- Independently, observer-jet formation proves canonical `mass + drift + second-boundary history` reconstruction and the exact value-slope-curvature Green identity. The harmonic-to-square-root clock has minimal additive formation order two.
-- Literal completed arithmetic landing reduces RH to the open signed source estimate `|m1_M| + sum_j |A_M,j|/sqrt(j+1) = O(M)`; this is a producer target, not a proof.
-- Literal Euler/Wold completed-source grades already possess canonical pre-compression Jordan legs: they reconstruct the signed current, retain nonzero total variation while scalar compression vanishes, and transport both selected legs through the same completed orientation block. This is not yet a comparison with causal support or formation-number graph action.
-- Finite Euler prime orbits already fuse prolongation, recurrence, polar energy, open phase lift, source coefficient, and the sharp half-density cofinal wall in one source family. Fixed finite prolongation order does not span growing prime apertures.
+- Formation exchange has ordered memory exactly when two source-generated formations fail to
+  commute; common repair is canonical (`formations_commute_iff_twoOrders_are_jointRepair`,
+  `failedExchange_is_orderedHistory`).
+- Observer loss is relational and conserved through fibres; common injective recovery and lifted
+  functional equation are information-neutral (`formationLiftKernel_klDiv_isometry`,
+  `liftedFunctionalEquation_informationNeutral`). They transport structure but do not select it.
+- Abstract source synchronization is already Lean-certified, not missing. One source displacement
+  produces all organ responses; pairwise differences are a complete cocycle invariant modulo the
+  diagonal source action; compatibility selects zero exactly when the response equalizer is
+  trivial (`sourceCoherentInterventionSynchronization_capstone`).
+- Formation-Laplacian properness is paper-proved but not yet Lean-certified: centered response
+  energy equals weighted pairwise disagreement, its kernel is the synchronization equalizer, and
+  global adaptive selection is equivalent to a positive lower frame bound/closed range. A fourth
+  organ reconstructible from the old packet cannot repair escape; it must intercept every old
+  adaptive null sequence.
+- This boundary is Lean-certified for literal summably weighted prime sampling. The formation map
+  is injective but Hilbert--Schmidt with nonclosed range; it has orthonormal adaptive escape, and no
+  compact or finite-dimensional boundary reporter repairs the lower bound
+  (`primeFormationOperator_exists_orthonormal_escape`,
+  `primeFormation_compactBoundary_no_positive_joint_lowerBound`).
+- Recurrent nonnegative repair action is rigid; summable action cannot contain cofinal replicas of
+  one nonzero transverse charge
+  (`collisionTransverseCharge_eq_zero_of_summableAction_of_cofinallyRecurrent`).
+- Finite histories carry augmentation filtration. Recovery pairs formation grade `I^r` with
+  observer difference `Delta^r`; functional-equation inversion acts by parity. Closed observation
+  may retain open lifted residue.
+- Formation number `N=(T-1)d/dT` measures grade. Hypertranscendence forces inverse-gauge escape
+  from finite `N`-stable states. Positive-grade Hilbert completion has compact resolvent
+  `(N+1)^-1`; this is abstract properness, not literal-source coercivity.
+- Bidirectional history satisfies `activity = visible + 2 reserve`; fusion converts lost visible
+  current into twice nonnegative reserve. Diagonal gauge plus reflection forces half-density
+  `1/2`; arithmetic gcd integrates this reserve and predicts adelic/Selberg weights.
+- Literal finite arithmetic fusion already exists across structurally different organs:
+  Boolean/Route-E capacity, Mass current, Hankel determinant, and recurrent QFI obey
+  `I_perp * ||j||^2 = 4*pi^2*det(H_1)` and `I_perp = 4D`.
+- Complete source resolution already has a bounded `ell1` codiagonal, exact
+  longitudinal/transverse split, and exact Xi recovery. The same label codiagonal is nonclosable
+  on canonical orthogonal `ell2` completion (`completeResolution_banachHilbert_sourceFusion_dichotomy`).
+- Every Green observer has a canonical unique primary/secondary split. Secondary part is precisely
+  boundary Green transgression and vanishes exactly when observer descends through orientation
+  trace (`greenObservation_traceFactorization_iff_secondary_eq_zero`).
+- Source-character selection is already Lean-certified. For actual nonzero complete-resolution
+  vector `x_rho`, any non-erasing consumer `T` intertwining centered source character with a
+  norm-conservative action `V` forces `Re rho = 1/2`
+  (`completeResolution_sourceCharacter_selection`). Quantitatively,
+  `|exp(2 Re rho - 1)-1| ||T x_rho||` is bounded by exact intertwining defect.
 
-## Corpus-killed shortcuts
+## Literal shifted-Xi formation law
 
-- FE symmetry, positivity, common recovery, closedness, flatness, finite packets, and abstract compact resolvent are nonselective.
-- JAS diagonal Gamma transport is exactly classified: uniform reflected prefix conditioning holds iff the parameter is `1/2`, but no pre-zero source law supplies that conditioning; off-wall closed flat creators remain possible.
-- Gerbe anomaly, compact reduction, orbit Gramians, Hardy admission, and per-zero finite-capital criteria are exact receivers unless a single pre-zero arithmetic source history produces their premise. Per-zero admission is RH-equivalent and circular.
-- Local internal-jet incidence exists at every transverse displacement; one-marginal charged closure is multivalued, ordinary `L2` cyclicity is blind to prime-Poisson sector singularity, and divisor-side survival is RH-equivalent. These kill treating the all-jet horizon alone as selection.
-- Same-completion physical coface annihilation is terminal: a continuous map killing every physical coface kills the theta source, and off wall cannot land it on the actual Green codiagonal. Any survivor must change topology, retain a nontrivial quotient, or act divisor-dependently before completion.
-- Finite-KL/common-kernel renewal has exact chain-rule and marginal lower bounds; finite global renewal forces occupation/current evacuation. Singular carriers and Jordan retention already exist, so neither is by itself the missing mechanism.
-- A tuple of independently relabelable organs has no nonconstant intrinsic invariant; any field that merely stores topology, positivity, history, and obstruction in separate slots is theatre.
+- Degree and mass already form an exact source plaquette:
+  `hasDerivAt_xiShiftedCanonicalAdmissionCumulativeJacobiFlux_degreeEdge_eq_sourceActionDifference`.
+  Calling this a new curvature law would be rediscovery.
+- In every positive block,
+  `2 * sourceAction = allDegreeConnectorEnergy + allDegreeSourceReserve`.
+  Reserve contains diagonal-curvature, base, interior-beta, and terminal-beta terms and is strictly
+  positive (`allDegreeConnectorEnergy_lt_two_mul_adaptiveMixedCompletedSourceAction`).
+- Newborn terminal channel is exact: `terminalCharge = 4(N+1) beta_(N+1)`. At every finite strict
+  contact it has a positive exact residue. Therefore former target “actual reserve vanishes” is
+  false.
+- Native source and newborn admission share same first Pade defect. Forced contact normalization
+  gives unit residue (`tendsto_xiShiftedStrictFrontierNativeContactUnitCharge`). This is local
+  normalization, not a global summable charge law.
+- False RH forces a parabolically confined cofinal cascade of strict contacts/nonintegrable source
+  walls. RH is exactly absence of that phase. This is source-side classification, not exclusion.
+- Actual positive cofinal blocks have divergent renormalized source action, yet
+  `routeUSparseParabolicCapitalEscape` proves current scalar capital laws remain compatible with
+  summable entry flux on a sparse quadratic schedule. Hence positivity, parabolic confinement,
+  action divergence, reserve positivity, and rung-spacing bounds do not jointly select RH.
 
-## Exact unresolved comparison
+## Literal completed-source calibration
 
-The former proposed physical-horizon-to-observer transporter is retracted: corpus proves neither that bridge nor its compatibility with the physical-coface annihilator.
+- Prime-log Duhamel response is grade-one proper after commutator normalization. Grade two is
+  injective compact with dense nonclosed range; every finite diagonal prolongation has lower bound
+  zero. Diagonal repair requires stretched-exponential singular growth.
+- Euler completion and Mobius synthesis already form an exact pre-zero inverse pair. Internal
+  moments generate all jets before translation; physical cofaces form an `ell2(N;L2)` horizon.
+- Observer-jet reconstruction is exactly `mass + drift + second-boundary history`.
+  Harmonic-to-Riesz clock curvature is bounded by `13/(4*sqrt(j+1))`.
+- Literal estimate `|m1_M| + sum_j |A_M,j|/sqrt(j+1) = O(M)` implies RH. It is unproved.
+- Pre-compression Euler/Wold Jordan legs retain signed current and nonzero variation after scalar
+  compression vanishes. No theorem identifies their action with shifted-Xi contact charge or
+  all-degree reserve.
 
-Two source obligations are presently proved sufficient only in separate charts:
+## Killed identifications
 
-1. bounded literal order-two `N`-graph action, concretely the displayed `O(M)` estimate, closes RH through observer-jet/Riesz selection;
-2. vanishing or source-budget-sublinear cofinal cross-orientation reserve production would make closed reflected formation unable to hide off-neutral current.
+- FE symmetry, positivity, flatness, common recovery, compact resolvent, finite packets, and local
+  unit charge are nonselective without a source-generated global comparison.
+- Positive scalarization can erase orientation; local positive states can coexist with global
+  obstruction. “Positivity is phase quotient” is chart-specific, not universal.
+- Mass-degree/Toda zero-curvature is already present and does not solve moving-degree
+  synchronization.
+- Contact spectral-flow/inertia is already present locally; global Noether/charge-free versions
+  such as `routeRPrimeGammaXiGlobalNoetherOrientationChargeFree` and
+  `fiveShiftEulerGammaWindowedGlobalKreinCharge = 0` are themselves RH-equivalent receivers.
+  Product-formula or index vocabulary does not derive their vanishing.
+- Normalized unit contacts cannot be summed for free: contact weight is degree/order dependent,
+  and corpus proves no finite total budget.
+- Generic recurrent-collision rigidity cannot apply until literal arithmetic contacts are proved
+  to be one recurrent history whose squared normalized charges equal a summable source action.
+- Total completion cancellation is too weak: resolved Green defects can be nonzero antidiagonal
+  pairs with identically zero codiagonal. Corpus proves completed smoothness and zero total Ward
+  anomaly coexist with a nonzero secondary relative character exactly off line
+  (`completedSmooth_codiagonalZero_but_relativeWardNonzero_iff`).
+- Properness is also too weak. Adaptive prime-normal resolved sectors are closed, conservative,
+  globally isometrically assembled, and their codiagonal has uniform lower modulus `3/4`; the
+  actual global Green record has zero codiagonal exactly under RH
+  (`adaptivePrimeNormalGlobalReflectedGreenRecord_codiagonal_eq_zero_iff_riemannHypothesis`).
+- Bounded label-blind consumers factor through scalar codiagonal and erase every reflection
+  displacement. Even label-sensitive uniformly Lipschitz observer families lose fixed spectral
+  separation as shell base moves cofinally (`sourceLabelBlind_factorization`,
+  `tendsto_uniformLipschitz_completeResolutionObserver_separation_zero`).
+- A tuple of topology, positivity, history, obstruction, and curvature is theatre by independent
+  slot theorem.
 
-No corpus theorem identifies these obligations, derives either from the all-order Möbius/theta horizon, or supplies a coefficient-faithful completed-prime source morphism preserving both formation number and bidirectional reserve. That identification—not another source object, receiver, singular carrier, or generic renewal law—is the exact current audit target. No new conjecture is admitted until search either finds this comparison or proves a nonduplicative candidate from existing source declarations with explicit RH closure.
+## Exact audit target
+
+Missing law is **not synchronization, completion, properness, recovery, or abstract conservation**;
+all are already closed in at least one literal chart. Missing producer is a pre-zero arithmetic
+reason that the already-defined **secondary resolved character** obeys exact source descent.
+
+Corpus exposes this in two equivalent-strength interfaces:
+
+1. **character interface:** for actual complete source vector `x_rho`, construct fixed-source
+   `T,V` with `T x_rho != 0`, `||V y||=||y||`, and
+   `V(T x)=T(exp(2 Re rho-1) x)` on source-generated domain; certified selection law then forces
+   `Re rho=1/2`;
+2. **resolved interface:** derive arithmetic annihilation of actual global adaptive Green
+   codiagonal; certified theorem identifies universal annihilation with RH.
+
+These are not new conjectures: they are exact open producer slots. Existing attempts show why a
+valid law must retain labels and signed relative character, use unbounded/cofinally increasing
+sensitivity or stronger topology, act before codiagonal completion, and be fixed by source rather
+than fitted at Xi divisors. Continuous same-completion coface annihilators, label-blind bounded
+maps, shared-ghost/naturality premises, total Ward cancellation, and compact repairs are already
+killed or RH-equivalent.
+
+Field progress now requires one corpus-native source operation that proves either interface and
+then predicts an independent third-organ identity. No new conjecture is admitted until search
+fixes that operation, its exact domain/topology, signed conservation equation, and RH implication.

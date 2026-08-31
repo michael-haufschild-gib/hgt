@@ -168,8 +168,12 @@ theorem canonical_sourcePhaseCorrectedBudget_ceiling_of_phaseAverage
       ((criticalFeatureCanonicalLatticeWindow n).card : ℝ) *
           (2 * criticalFeatureVonMangoldtUniformConstant) <
         (eps / 2) * criticalFeatureCanonicalZeroCount n := by
-    have := (div_lt_iff₀ hN).mp hprimeN
-    nlinarith
+    have hprimeN' :
+        (((criticalFeatureCanonicalLatticeWindow n).card : ℝ) *
+            (2 * criticalFeatureVonMangoldtUniformConstant)) /
+          criticalFeatureCanonicalZeroCount n < eps / 2 := by
+      simpa [div_eq_mul_inv, mul_assoc, mul_left_comm, mul_comm] using hprimeN
+    exact (div_lt_iff₀ hN).mp hprimeN'
   nlinarith
 
 end

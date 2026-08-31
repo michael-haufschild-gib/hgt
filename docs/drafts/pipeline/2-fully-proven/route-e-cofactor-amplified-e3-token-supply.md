@@ -767,3 +767,21 @@ Direct checks, targeted leaf builds (`9098/9098`, `9104/9104`, `9111/9111`, `911
 
 Card remains Stage 2.  Explicit exponent absorption and the exact Theorem 4(iii) regime union
 remain before Proposition-2.2 routing, amplification, and all-interval supply.
+
+## Lean progress update (2026-08-31) — exact Heath--Brown Theorem 4(iii)
+
+`Sieve/HeathBrownSecondScaleAlgebra.lean`,
+`HeathBrownSparseMeanValueTheoremFourAlgebra.lean`, and
+`HeathBrownSparseMeanValueTheoremFour.lean` now prove the coefficient-faithful published bound
+
+```text
+I ≤ (95π/2) N²R² + Cη (NT)^η (NRT + N R^(7/4) T^(3/4))
+```
+
+with explicit `Cη`, arbitrary sparse circle phases, and arbitrary dense coefficients in `[0,1]`.
+No scale, rounding, divisor, crossover, or branch premise remains.  Direct checks, targeted leaf
+builds (`9116/9116`, `9117/9117`, `9118/9118`), and all-ten-declaration axiom audits pass with only
+`[propext, Classical.choice, Quot.sound]`; capstone is umbrella-wired without an umbrella build.
+
+Card remains Stage 2.  Remaining shared analytic work is Proposition-2.2 scale routing,
+amplification, and final all-interval Theorem 1.2 assembly.

@@ -2781,3 +2781,27 @@ build.
 
 Remaining Heath--Brown work is explicit constant/rpow absorption for this selected-scale bound
 and union with brick 60 into exact Theorem 4(iii).
+
+### Sparse large values, brick 62 — exact Heath--Brown Theorem 4(iii) (2026-08-31)
+
+`Sieve/HeathBrownSecondScaleAlgebra.lean` proves the canonical-scale cube, inverse-quarter-power,
+cardinality crossover, height ceiling, and quartered divisor-loss inequalities.
+`HeathBrownSparseMeanValueTheoremFourAlgebra.lean` absorbs the complete two-step square-root
+expression into the published monomials.  `HeathBrownSparseMeanValueTheoremFour.lean` then proves,
+for arbitrary sparse circle phases and arbitrary dense coefficients in `[0,1]`,
+
+```text
+I ≤ (95π/2) N²R²
+  + Cη (NT)^η (NRT + N R^(7/4) T^(3/4)),
+```
+
+with explicit `Cη`.  Empty support and `N=0`, canonical scale selection, all rounding, divisor
+loss, and exponent algebra are discharged internally.  Second-scale estimate works in all
+regimes, so no branch hypothesis survives.
+
+Direct source checks and targeted leaf builds (`9116/9116`, `9117/9117`, `9118/9118`) pass.  All
+ten declarations audit to only `[propext, Classical.choice, Quot.sound]`; capstone is
+umbrella-wired without an umbrella build.
+
+Remaining programme gate is Proposition-2.2 scale routing, amplification, and final
+Matomäki--Teräväinen Theorem 1.2 assembly.

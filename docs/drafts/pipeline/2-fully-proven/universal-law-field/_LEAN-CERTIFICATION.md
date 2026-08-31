@@ -2303,3 +2303,21 @@ to support parity. Its unitary boundary is exactly squarefree formation, so boun
 turns normalized reflection into Möbius without inserting Möbius as input. This crosses the fixed
 finite-jet breadth wall but does not yet prove Möbius cancellation or RH; remaining producer is
 completed prime--Gamma compatibility plus global boundary-phase properness.
+
+## Session 2026-08-31 addition (bidirectional reserve arithmetic and adelic realization)
+
+| ID | Theorem | Lean modules |
+|---|---|---|
+| ULF-TAFM-27 | Unreduced activity/reserve reconstruction; nonnegative reflection-even fusion transgression; exact visible-current conservation; forced half-density; arithmetic gcd reconstruction and cross-fusion; finite unreduced activity sublevels with unbounded reduced-observer fibre; actual finite-adele lattice-mass and critical reduced-ray coefficient identity | `HTGeometry.BidirectionalReserveFormation`; `RHTower.BidirectionalReserveArithmeticAdelicFormation` |
+
+Batched scratch and direct project-path elaboration pass. Targeted leaf build passes `8663/8663`.
+No umbrella, theorem-area, or project build was run. Abstract module and arithmetic/adelic leaf are
+wired into `HTGeometry.UniversalLawField`; arithmetic/adelic leaf is also wired into `RHTower`,
+with neither umbrella built. Seven audited capstones depend only on `propext`, `Classical.choice`,
+and `Quot.sound`; new leaf contains no forbidden declarations.
+
+This certifies one route-independent fusion law and its fourth-organ prediction: visible current
+lost under fusion becomes exactly twice reserve, primewise reserve integrates to gcd, gauge plus
+reflection force half-density, and resulting coefficient equals square root of actual adelic
+lattice-mass ratio and existing critical Selberg reduced-ray weight. It does not bound completed-Xi
+reserve production or identify reserve control with order-two formation action.

@@ -44,10 +44,14 @@ theorem integral_Icc_normSq_heathBrown_factors_le_theoremFour
   · subst N
     have hBe : B = ∅ := by
       ext n
-      simp only [Finset.mem_empty, iff_false]
-      intro hn
-      have hnle := hB n hn
-      omega
+      constructor
+      · intro hn
+        exfalso
+        have hnle := hB n hn
+        have hnpos : 1 ≤ (n : ℕ) := n.pos
+        omega
+      · intro hn
+        simp at hn
     subst B
     simp [heathBrownDenseFactor, heta.ne']
   let K : ℕ := heathBrownSecondScale (T : ℝ) (A.card : ℝ)
@@ -83,6 +87,10 @@ theorem integral_Icc_normSq_heathBrown_factors_le_theoremFour
   have hbase := integral_Icc_normSq_heathBrown_factors_le_selectedSecondScale
     A B eps q T hT hA hB (eta := eta / 4) (by positivity)
   dsimp only at hbase
+  have hKdef : heathBrownSecondScale (T : ℝ) (A.card : ℝ) = K := rfl
+  rw [hKdef] at hbase
+  have hDdef : heathBrownSquareDivisorScale K (eta / 4) = D := rfl
+  rw [hDdef] at hbase
   have hraw :
       (∫ t in Set.Icc (-(T : ℝ)) (T : ℝ),
           ‖heathBrownSparseFactor A eps t * heathBrownDenseFactor B q t‖ ^ 2) ≤
@@ -103,7 +111,7 @@ theorem integral_Icc_normSq_heathBrown_factors_le_theoremFour
       _ ≤ _ := hbase
       _ = _ := by
         simp only [hdiv, Nat.cast_mul, Nat.cast_add, Nat.cast_one]
-        dsimp only [K, D, heathBrownMeanSquareCoefficient, heathBrownHalfHeight]
+        dsimp only [heathBrownMeanSquareCoefficient, heathBrownHalfHeight]
         field_simp
         ring
   have hscalar := heathBrown_twoStep_scalar_absorption
