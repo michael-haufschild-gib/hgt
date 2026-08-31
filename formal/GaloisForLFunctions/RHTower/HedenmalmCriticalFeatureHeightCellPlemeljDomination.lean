@@ -107,6 +107,71 @@ theorem criticalFeatureTranslatedPlemeljCovariance_at_sourcePhase_le_phaseAverag
     linarith
   exact hpoint.trans (criticalFeatureCompactFiniteLatticeSourceCovariancePhase_spec n)
 
+/-- Exact legitimate source-majorization inequality.  At the source-selected phase, the corrected
+HCF budget is bounded by the zero-independent height-cell phase average plus only the uniformly
+lower-order safe-line prime channel. -/
+theorem criticalFeatureTranslatedCorrectedBudget_at_sourcePhase_le_phaseAverage_add_prime
+    (n : ℕ) :
+    criticalFeaturePrimeGammaOffLineTranslatedLatticeBudget
+        (-(criticalFeatureCompactFiniteLatticeSourceCovariancePhase n))
+        (criticalFeatureCanonicalLatticeWindow n) ≤
+      criticalFeatureCompactFiniteLatticeSourceCovariancePhaseAverage n +
+        ((criticalFeatureCanonicalLatticeWindow n).card : ℝ) *
+          (2 * criticalFeatureVonMangoldtUniformConstant) := by
+  let theta := -(criticalFeatureCompactFiniteLatticeSourceCovariancePhase n)
+  let K := criticalFeatureCanonicalLatticeWindow n
+  have hsplit :=
+    criticalFeaturePrimeGammaOffLineTranslatedLatticeBudget_eq_sourceCovariance_add_vm theta K
+  have hcov : criticalFeatureTranslatedPoleGammaPlemeljCovariance theta K ≤
+      criticalFeatureCompactFiniteLatticeSourceCovariancePhaseAverage n := by
+    simpa only [theta, K] using
+      criticalFeatureTranslatedPlemeljCovariance_at_sourcePhase_le_phaseAverage n
+  have hprimeAbs := abs_criticalFeatureTranslatedVonMangoldtLatticeBudget_le theta K
+  have hprime : criticalFeatureTranslatedVonMangoldtLatticeBudget theta K ≤
+      (K.card : ℝ) * (2 * criticalFeatureVonMangoldtUniformConstant) :=
+    (le_abs_self _).trans hprimeAbs
+  rw [hsplit]
+  dsimp only [theta, K] at hcov hprime ⊢
+  linarith
+
+/-- Every asymptotic ceiling for the exact height-cell source average transfers to the corrected
+HCF budget at the source-selected moving phase, with no exterior-cutoff hypothesis. -/
+theorem canonical_sourcePhaseCorrectedBudget_ceiling_of_phaseAverage
+    {c : ℝ}
+    (hsource : CriticalFeatureCanonicalAsymptoticUpper
+      criticalFeatureCompactFiniteLatticeSourceCovariancePhaseAverage c) :
+    CriticalFeatureCanonicalAsymptoticUpper
+      (fun n => criticalFeaturePrimeGammaOffLineTranslatedLatticeBudget
+        (-(criticalFeatureCompactFiniteLatticeSourceCovariancePhase n))
+        (criticalFeatureCanonicalLatticeWindow n)) c := by
+  intro eps heps
+  have hsource' := hsource (eps / 2) (half_pos heps)
+  have hprime : Tendsto
+      (fun n =>
+        ((criticalFeatureCanonicalLatticeWindow n).card : ℝ) /
+            criticalFeatureCanonicalZeroCount n *
+          (2 * criticalFeatureVonMangoldtUniformConstant))
+      atTop (nhds 0) := by
+    simpa using
+      tendsto_card_criticalFeatureCanonicalLatticeWindow_div_zeroCount.mul_const
+        (2 * criticalFeatureVonMangoldtUniformConstant)
+  have hprime' : ∀ᶠ n : ℕ in atTop,
+      ((criticalFeatureCanonicalLatticeWindow n).card : ℝ) /
+            criticalFeatureCanonicalZeroCount n *
+          (2 * criticalFeatureVonMangoldtUniformConstant) < eps / 2 :=
+    (tendsto_order.1 hprime).2 _ (half_pos heps)
+  filter_upwards [hsource', hprime', eventually_criticalFeatureCanonicalZeroCount_pos]
+    with n hsourceN hprimeN hN
+  have hbudget :=
+    criticalFeatureTranslatedCorrectedBudget_at_sourcePhase_le_phaseAverage_add_prime n
+  have hprimeMul :
+      ((criticalFeatureCanonicalLatticeWindow n).card : ℝ) *
+          (2 * criticalFeatureVonMangoldtUniformConstant) <
+        (eps / 2) * criticalFeatureCanonicalZeroCount n := by
+    have := (div_lt_iff₀ hN).mp hprimeN
+    nlinarith
+  nlinarith
+
 end
 
 end RHTower

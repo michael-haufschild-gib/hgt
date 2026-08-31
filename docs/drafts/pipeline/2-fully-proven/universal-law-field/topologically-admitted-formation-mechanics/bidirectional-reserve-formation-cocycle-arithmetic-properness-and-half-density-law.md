@@ -1,7 +1,7 @@
 # Bidirectional reserve-formation cocycle, arithmetic properness, and half-density law
 
 **Card ID:** ULF-TAFM-27  
-**Status:** Fully proved on paper; Lean certification pending  
+**Status:** Fully proved on paper; Lean-certified  
 **Programme:** Universal law field / topologically admitted formation mechanics  
 **Field candidate:** Bidirectional reserve-formation geometry  
 **Scope:** Route-independent fusion, reflection, positivity, recurrence, and literal arithmetic
@@ -443,17 +443,18 @@ renamed RH: it is a pre-divisor law about the actual source formation process.
 7. **Hypertranscendence remains only structurally housed.**  Infinite prime-channel support and
    unbounded reserve/current rank fit the mechanism, but no new HT theorem is claimed here.
 
-## 8. Lean target
+## 8. Lean certificate
 
-Formalize exactly:
+Formalized exactly in:
 
-- ordered-group reconstruction, transgression nonnegativity, fusion conservation, cocycle, and
-  reflection;
-- arithmetic reduced-product and cross-gcd fusion laws;
-- finite activity sublevels and the closed-observer/open-lift witness;
-- diagonal-gauge/reflection uniqueness of exponent `1/2`;
-- literal rational finite-adele Haar realization and critical gcd coefficient.
+- `GaloisForLFunctions.HTGeometry.BidirectionalReserveFormation`: ordered-group reconstruction,
+  transgression nonnegativity, visible/reserve conservation, cocycle, reflection, and
+  diagonal-gauge/reflection uniqueness of exponent `1/2`;
+- `GaloisForLFunctions.RHTower.BidirectionalReserveArithmeticAdelicFormation`: arithmetic
+  reduced-product reconstruction, cross-gcd fusion, finite activity sublevels, unbounded diagonal
+  observer fibre, reflected closure, actual rational finite-adele Haar mass, critical reduced-ray
+  coefficient, and closed capstone.
 
-No stronger source-selection statement may be added to Lean until its paper proof is
-dependency-closed.
-
+No stronger source-selection statement is included. Direct foreground elaboration and targeted
+leaf build pass; both modules are wired into the universal-law and area umbrellas without umbrella
+builds. Capstone axiom audit uses only standard foundations.

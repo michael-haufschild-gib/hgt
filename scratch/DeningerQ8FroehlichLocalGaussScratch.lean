@@ -121,6 +121,37 @@ theorem deningerQ8FortyOneQuadraticGaussSum_sq_eq_fortyOne :
   rw [deningerQ8FortyOneQuadraticChar_neg_one_eq_one, one_mul] at h
   simpa using h
 
+set_option maxHeartbeats 2000000 in
+theorem deningerQ8FortyOneQuadraticGaussSum_re_explicit :
+    (gaussSum deningerQ8FortyOneQuadraticChar ZMod.stdAddChar).re =
+      2 * (
+        Real.cos (2 * Real.pi * 1 / 41) +
+        Real.cos (2 * Real.pi * 2 / 41) -
+        Real.cos (2 * Real.pi * 3 / 41) +
+        Real.cos (2 * Real.pi * 4 / 41) +
+        Real.cos (2 * Real.pi * 5 / 41) -
+        Real.cos (2 * Real.pi * 6 / 41) -
+        Real.cos (2 * Real.pi * 7 / 41) +
+        Real.cos (2 * Real.pi * 8 / 41) +
+        Real.cos (2 * Real.pi * 9 / 41) +
+        Real.cos (2 * Real.pi * 10 / 41) -
+        Real.cos (2 * Real.pi * 11 / 41) -
+        Real.cos (2 * Real.pi * 12 / 41) -
+        Real.cos (2 * Real.pi * 13 / 41) -
+        Real.cos (2 * Real.pi * 14 / 41) -
+        Real.cos (2 * Real.pi * 15 / 41) +
+        Real.cos (2 * Real.pi * 16 / 41) -
+        Real.cos (2 * Real.pi * 17 / 41) +
+        Real.cos (2 * Real.pi * 18 / 41) -
+        Real.cos (2 * Real.pi * 19 / 41) +
+        Real.cos (2 * Real.pi * 20 / 41)) := by
+  rw [gaussSum]
+  change (∑ i : Fin 41,
+    (deningerQ8FortyOneQuadraticChar i * ZMod.stdAddChar i).re) = _
+  norm_num [deningerQ8FortyOneQuadraticChar, MulChar.ringHomComp_apply,
+    quadraticChar, quadraticCharFun, ZMod.stdAddChar_coe, Fin.sum_univ_succ,
+    Complex.exp_re]
+
 end
 
 end RHTower
