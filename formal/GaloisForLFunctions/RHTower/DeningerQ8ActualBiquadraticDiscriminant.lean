@@ -395,6 +395,37 @@ theorem q8Biquad_discr_dvd_42025 :
   exact NumberField.discr_dvd_of_integral_basis_discr
     q8BiquadIntegralBasis q8BiquadIntegralBasis_isIntegral q8BiquadIntegralBasis_discr
 
+/-- Every rational prime dividing the discriminant of the actual maximal
+abelian Q8 subfield is one of its two literal source primes. -/
+theorem q8Biquad_prime_dvd_discr_eq_five_or_fortyOne
+    (p : ℕ) (hp : p.Prime)
+    (hpd : (p : ℤ) ∣ NumberField.discr K2) :
+    p = 5 ∨ p = 41 := by
+  have hp42025 : (p : ℤ) ∣ 42025 :=
+    dvd_trans hpd q8Biquad_discr_dvd_42025
+  have hpNat : p ∣ 42025 := by
+    exact_mod_cast hp42025
+  have hfactor : (42025 : ℕ) = 5 ^ 2 * 41 ^ 2 := by norm_num
+  rw [hfactor] at hpNat
+  rcases (hp.dvd_mul).mp hpNat with h5 | h41
+  · have hp5 : p ∣ 5 := hp.dvd_of_dvd_pow h5
+    rcases (Nat.dvd_prime (by norm_num : Nat.Prime 5)).mp hp5 with hp1 | hp5
+    · exact (hp.ne_one hp1).elim
+    · exact Or.inl hp5
+  · have hp41 : p ∣ 41 := hp.dvd_of_dvd_pow h41
+    rcases (Nat.dvd_prime (by norm_num : Nat.Prime 41)).mp hp41 with hp1 | hp41
+    · exact (hp.ne_one hp1).elim
+    · exact Or.inr hp41
+
+/-- Fröhlich Theorem 6(i)'s literal discriminant gate: every prime divisor
+of the maximal abelian subfield discriminant is `1 mod 4`. -/
+theorem q8Biquad_prime_dvd_discr_mod_four_eq_one
+    (p : ℕ) (hp : p.Prime)
+    (hpd : (p : ℤ) ∣ NumberField.discr K2) :
+    p % 4 = 1 := by
+  rcases q8Biquad_prime_dvd_discr_eq_five_or_fortyOne p hp hpd with rfl | rfl <;>
+    norm_num
+
 theorem q8Biquad_two_not_dvd_discr :
     ¬ (2 : ℤ) ∣ NumberField.discr K2 := by
   intro htwo
@@ -411,4 +442,3 @@ end NumberFieldConsequences
 end
 
 end RHTower
-

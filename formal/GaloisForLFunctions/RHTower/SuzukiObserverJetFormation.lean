@@ -52,7 +52,7 @@ theorem observerJetPrefix_succ (r : ℕ → ℝ) (j : ℕ) :
 theorem observerJetSecondHistory_succ (r : ℕ → ℝ) (j : ℕ) :
     observerJetSecondHistory r (j + 1) =
       observerJetSecondHistory r j + observerJetPrefix r (j + 1) := by
-  simp [observerJetSecondHistory, Finset.sum_range_succ]
+  exact observerJetPrefix_succ (observerJetPrefix r) j
 
 theorem observerJetAbelSummation (a f : ℕ → ℝ) (N : ℕ) :
     (∑ n ∈ Finset.range (N + 1), a n * f n) =
@@ -253,9 +253,11 @@ theorem hasDerivAt_observerJetSqrtGap
   unfold observerJetSqrtGap observerJetSqrtGapDeriv
   have hshift : HasDerivAt (fun y : ℝ => y + 1) 1 x :=
     (hasDerivAt_id x).add_const 1
-  simpa only [Function.comp_apply, one_mul] using
-    (((Real.hasDerivAt_sqrt (by linarith : x + 1 ≠ 0)).comp x hshift).sub
-      (Real.hasDerivAt_sqrt hx.ne'))
+  have h := ((Real.hasDerivAt_sqrt (by linarith : x + 1 ≠ 0)).comp x hshift).sub
+    (Real.hasDerivAt_sqrt hx.ne')
+  apply (h.congr_deriv (by ring)).congr_of_eventuallyEq
+  filter_upwards with y
+  simp only [Function.comp_def, Pi.sub_apply]
 
 theorem hasDerivAt_observerJetSqrtGapDeriv
     {x : ℝ} (hx : 0 < x) :
@@ -271,49 +273,73 @@ theorem hasDerivAt_observerJetSqrtGapDeriv
     (hasDerivAt_id x).add_const 1
   have hs1 : HasDerivAt (fun y : ℝ => Real.sqrt (y + 1))
       (1 / (2 * Real.sqrt (x + 1))) x := by
-    simpa only [Function.comp_apply, one_mul] using
+    simpa only [Function.comp_def, mul_one] using!
       ((Real.hasDerivAt_sqrt hxp).comp x hshift)
   have hs0 : HasDerivAt (fun y : ℝ => Real.sqrt y)
       (1 / (2 * Real.sqrt x)) x := Real.hasDerivAt_sqrt hx0
   have hrecip1 : HasDerivAt (fun y : ℝ => 1 / (2 * Real.sqrt (y + 1)))
       (-1 / (4 * (x + 1) * Real.sqrt (x + 1))) x := by
-    convert (hasDerivAt_const x (1 : ℝ)).div (hs1.const_mul 2) (by
-      simp only
-      positivity) using 1
-    · rfl
-    · field_simp [hsxp]
-      nlinarith
+    have h := (hasDerivAt_const x (1 : ℝ)).div (hs1.const_mul 2) (by
+      change 2 * Real.sqrt (x + 1) ≠ 0
+      positivity)
+    apply (h.congr_deriv (by
+      simp only [zero_mul, one_mul, zero_sub]
+      field_simp [hsxp, hxp]
+      nlinarith)).congr_of_eventuallyEq
+    filter_upwards with y
+    simp only [Pi.div_apply]
   have hrecip0 : HasDerivAt (fun y : ℝ => 1 / (2 * Real.sqrt y))
       (-1 / (4 * x * Real.sqrt x)) x := by
-    convert (hasDerivAt_const x (1 : ℝ)).div (hs0.const_mul 2) (by
-      simp only
-      positivity) using 1
-    · rfl
-    · field_simp [hsx]
-      nlinarith
-  convert hrecip1.sub hrecip0 using 1 <;> ring
+    have h := (hasDerivAt_const x (1 : ℝ)).div (hs0.const_mul 2) (by
+      change 2 * Real.sqrt x ≠ 0
+      positivity)
+    apply (h.congr_deriv (by
+      simp only [zero_mul, one_mul, zero_sub]
+      field_simp [hsx, hx0]
+      nlinarith)).congr_of_eventuallyEq
+    filter_upwards with y
+    simp only [Pi.div_apply]
+  have h := hrecip1.sub hrecip0
+  apply (h.congr_deriv (by
+    field_simp [hsx, hsxp, hx0, hxp]
+    ring)).congr_of_eventuallyEq
+  filter_upwards with y
+  simp only [Pi.sub_apply]
 
 theorem hasDerivAt_observerJetClockReal
     {x : ℝ} (hx : 0 < x) :
     HasDerivAt observerJetClockReal (observerJetClockRealDeriv x) x := by
   unfold observerJetClockReal observerJetClockRealDeriv
   have hpoly : HasDerivAt (fun y : ℝ => y * (y + 1)) (2 * x + 1) x := by
-    convert (hasDerivAt_id x).mul ((hasDerivAt_id x).add_const 1) using 1 <;>
-      simp only [id_eq] <;> ring
-  convert hpoly.mul (hasDerivAt_observerJetSqrtGap hx) using 1 <;> ring
+    have h := (hasDerivAt_id x).mul ((hasDerivAt_id x).add_const 1)
+    apply (h.congr_deriv (by simp only [id_eq]; ring)).congr_of_eventuallyEq
+    filter_upwards with y
+    simp only [Pi.mul_apply, id_eq]
+  have h := hpoly.mul (hasDerivAt_observerJetSqrtGap hx)
+  apply (h.congr_deriv (by ring)).congr_of_eventuallyEq
+  filter_upwards with y
+  simp only [Pi.mul_apply]
 
 theorem hasDerivAt_observerJetClockRealDeriv
     {x : ℝ} (hx : 0 < x) :
     HasDerivAt observerJetClockRealDeriv (observerJetClockRealSecondDeriv x) x := by
   unfold observerJetClockRealDeriv observerJetClockRealSecondDeriv
   have hcoef : HasDerivAt (fun y : ℝ => 2 * y + 1) 2 x := by
-    convert ((hasDerivAt_id x).const_mul 2).const_add 1 using 1 <;>
-      simp only [id_eq] <;> ring
+    have h := ((hasDerivAt_id x).const_mul 2).const_add 1
+    apply (h.congr_deriv (by ring)).congr_of_eventuallyEq
+    filter_upwards with y
+    simp only [id_eq]
+    ring
   have hpoly : HasDerivAt (fun y : ℝ => y * (y + 1)) (2 * x + 1) x := by
-    convert (hasDerivAt_id x).mul ((hasDerivAt_id x).add_const 1) using 1 <;>
-      simp only [id_eq] <;> ring
-  convert (hcoef.mul (hasDerivAt_observerJetSqrtGap hx)).add
-    (hpoly.mul (hasDerivAt_observerJetSqrtGapDeriv hx)) using 1 <;> ring
+    have h := (hasDerivAt_id x).mul ((hasDerivAt_id x).add_const 1)
+    apply (h.congr_deriv (by simp only [id_eq]; ring)).congr_of_eventuallyEq
+    filter_upwards with y
+    simp only [Pi.mul_apply, id_eq]
+  have h := (hcoef.mul (hasDerivAt_observerJetSqrtGap hx)).add
+    (hpoly.mul (hasDerivAt_observerJetSqrtGapDeriv hx))
+  apply (h.congr_deriv (by ring)).congr_of_eventuallyEq
+  filter_upwards with y
+  simp only [Pi.add_apply, Pi.mul_apply]
 
 theorem observerJetSqrtGap_mul_sum {x : ℝ} (hx : 0 ≤ x) :
     observerJetSqrtGap x * (Real.sqrt (x + 1) + Real.sqrt x) = 1 := by
@@ -498,18 +524,26 @@ theorem observerJetClockReal_secondDifference_bound
     have hy0 : 0 < y := lt_of_lt_of_le zero_lt_one (hx.trans hy.1.le)
     have hshift : HasDerivAt (fun z : ℝ => z + 1) 1 y :=
       (hasDerivAt_id y).add_const 1
-    simpa only [g, g', Function.comp_apply, one_mul] using
-      (((hasDerivAt_observerJetClockReal (by linarith : 0 < y + 1)).comp y
-        hshift).sub (hasDerivAt_observerJetClockReal hy0))
+    have h := ((hasDerivAt_observerJetClockReal
+      (by linarith : 0 < y + 1)).comp y hshift).sub
+        (hasDerivAt_observerJetClockReal hy0)
+    apply (h.congr_deriv (by simp only [g', mul_one])).congr_of_eventuallyEq
+    filter_upwards with z
+    simp only [g, Function.comp_def, Pi.sub_apply]
   have hgcont : ContinuousOn g (Set.Icc x (x + 1)) := by
     intro y hy
     have hy0 : 0 < y := lt_of_lt_of_le zero_lt_one (hx.trans hy.1)
-    have hshift : ContinuousAt (fun z : ℝ => z + 1) y :=
-      continuousAt_id.add continuousAt_const
-    simpa only [g, Function.comp_apply] using
-      (((hasDerivAt_observerJetClockReal
-        (by linarith : 0 < y + 1)).continuousAt.comp y hshift).sub
-          (hasDerivAt_observerJetClockReal hy0).continuousAt).continuousWithinAt)
+    have hshift : HasDerivAt (fun z : ℝ => z + 1) 1 y :=
+      (hasDerivAt_id y).add_const 1
+    have h := ((hasDerivAt_observerJetClockReal
+      (by linarith : 0 < y + 1)).comp y hshift).sub
+        (hasDerivAt_observerJetClockReal hy0)
+    have hgAt : HasDerivAt g
+        (observerJetClockRealDeriv (y + 1) - observerJetClockRealDeriv y) y := by
+      apply (h.congr_deriv (by simp only [mul_one])).congr_of_eventuallyEq
+      filter_upwards with z
+      simp only [g, Function.comp_def, Pi.sub_apply]
+    exact hgAt.continuousAt.continuousWithinAt
   obtain ⟨c, hc, hcSlope⟩ := exists_hasDerivAt_eq_slope g g'
     (by linarith : x < x + 1) hgcont hgder
   have hc0 : 0 < c := lt_trans (lt_of_lt_of_le zero_lt_one hx) hc.1
@@ -527,7 +561,7 @@ theorem observerJetClockReal_secondDifference_bound
   have heq : observerJetClockReal (x + 2) - 2 * observerJetClockReal (x + 1) +
       observerJetClockReal x = observerJetClockRealSecondDeriv d := by
     dsimp [g, g'] at hcSlope
-    simp only [add_sub_cancel_left, sub_self, div_one] at hcSlope hdSlope
+    simp only [add_sub_cancel_left, div_one] at hcSlope hdSlope
     have hcEq : observerJetClockReal (x + 2) - 2 * observerJetClockReal (x + 1) +
         observerJetClockReal x =
           observerJetClockRealDeriv (c + 1) - observerJetClockRealDeriv c := by
@@ -542,7 +576,6 @@ theorem observerJetClockReal_secondDifference_bound
     |observerJetClockRealSecondDeriv d| ≤ 13 / (4 * Real.sqrt d) := hdbound
     _ ≤ 13 / (4 * Real.sqrt x) := by
       gcongr
-      exact Real.sqrt_le_sqrt hdx
 
 end
 
@@ -567,7 +600,8 @@ theorem completedRieszHarmonicClockRatio_eq_observerJetClockReal (k : ℕ) :
   unfold observerJetClockReal observerJetSqrtGap
   push_cast
   field_simp [h1.ne', h2.ne']
-  norm_num
+  have hk : (k : ℝ) + 1 + 1 = (k : ℝ) + 2 := by ring
+  rw [hk]
 
 /-- The harmonic--Riesz observer has bounded curvature at the exact second-formation rate. -/
 theorem abs_observerJetCurvature_completedRieszHarmonicClockRatio_le (j : ℕ) :
@@ -580,7 +614,8 @@ theorem abs_observerJetCurvature_completedRieszHarmonicClockRatio_le (j : ℕ) :
   have hbound := observerJetClockReal_secondDifference_bound
     (x := (j : ℝ) + 1) (by
       exact_mod_cast Nat.succ_le_succ (Nat.zero_le j))
-  convert hbound using 1 <;> ring
+  convert hbound using 1
+  all_goals ring
 
 def completedSourceObserverJetMass (M : ℕ) : ℝ :=
   observerJetMass completedPrimePolarGammaHarmonicCharge (M - 2)
@@ -657,7 +692,7 @@ theorem abs_mobiusDivisorSquareRootAbelMoment_le_completedSourceObserverJet
         (13 / 4) *
           (∑ j ∈ Finset.range (M - 3),
             |completedSourceObserverJetHistory M j| / Real.sqrt (j + 1 : ℕ)) := by
-      congr 1
+      apply add_le_add_right
       rw [Finset.mul_sum]
       apply Finset.sum_le_sum
       intro j hj
@@ -672,7 +707,7 @@ theorem abs_mobiusDivisorSquareRootAbelMoment_le_completedSourceObserverJet
           mul_le_mul_of_nonneg_left hc (abs_nonneg _)
         _ = (13 / 4) *
             (|completedSourceObserverJetHistory M j| /
-              Real.sqrt (j + 1 : ℕ)) := by field_simp; ring
+              Real.sqrt (j + 1 : ℕ)) := by field_simp
 
 theorem abs_completedSourceObserverJetMass_le (M : ℕ) :
     |completedSourceObserverJetMass M| ≤
@@ -772,8 +807,8 @@ theorem riemannHypothesis_of_completedSourceObserverJetLinearActionBounded
                 (mul_le_mul_of_nonneg_left hmassM (abs_nonneg _)) hsplit
           _ ≤ |completedRieszHarmonicClockRatio 0| * massBudget +
                 actionClock * (C * (M : ℝ)) := by
-              gcongr
-              simpa using hactionM
+              exact add_le_add_right
+                (mul_le_mul_of_nonneg_left hactionM haction) _
       have hMR : (1 : ℝ) ≤ M := by exact_mod_cast (by omega : 1 ≤ M)
       have hMpos : (0 : ℝ) < M := lt_of_lt_of_le zero_lt_one hMR
       rw [abs_div, abs_of_pos hMpos]
@@ -783,7 +818,6 @@ theorem riemannHypothesis_of_completedSourceObserverJetLinearActionBounded
           div_le_div_of_nonneg_right hraw hMpos.le
         _ = affineBudget / (M : ℝ) + actionClock * C := by
           field_simp
-          ring
         _ ≤ affineBudget + actionClock * C := by
           gcongr
           exact div_le_self haffine hMR
