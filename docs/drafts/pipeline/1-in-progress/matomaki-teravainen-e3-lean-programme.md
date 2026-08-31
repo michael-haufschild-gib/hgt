@@ -2472,3 +2472,89 @@ wiring, and all-three-theorem axiom audit pass with only
 components of Lemma 6: quadratic packing of nonexceptional primitive directions and exact
 rescaling on one primitive ray.  Remaining work is their weighted exceptional-direction assembly
 at the logarithmic collision window, followed by the two-scale Theorem 4(iii) iteration.
+
+### Sparse large values, brick 47 — full primitive-square packing (2026-08-31)
+
+`Sieve/HeathBrownPrimitiveWindow.lean` removes the artificial slope-at-most-one restriction from
+brick 46.  A nonzero integral cross determinant separates two distinct positive primitive
+directions of height at most `Q` by `Q⁻²`; consequently every real slope interval satisfies
+
+```text
+card_heathBrownPrimitiveWindow_le
+  # {primitive (u₁,u₂) : max(u₁,u₂) ≤ Q, a ≤ u₁/u₂ ≤ b}
+    ≤ (b-a)Q²+1.
+```
+
+Proof reuses corpus reduced-fraction uniqueness theorem.  No reduced-basis, orientation, or
+packing premise remains.  Direct check, targeted leaf build, umbrella wiring, and four-theorem
+axiom audit pass with only `[propext, Classical.choice, Quot.sound]`.
+
+### Sparse large values, brick 48 — logarithmic collision-window count (2026-08-31)
+
+`Sieve/HeathBrownPrimitiveLogWindow.lean` converts
+`|log((m₁u₁)/(m₂u₂))| ≤ delta` into its exact exponential slope interval.  For
+`0 < m₂ ≤ m₁` and `0 < delta ≤ 1`, corpus exponential-width estimate and brick 47 give
+
+```text
+card_heathBrownPrimitiveLogWindow_le
+  # {primitive u : height(u) ≤ Q,
+       |log((m₁u₁)/(m₂u₂))| ≤ delta}
+    ≤ 4 delta Q²+1.
+```
+
+No logarithmic-window counting premise remains.  Direct check, targeted leaf build, umbrella
+wiring, and four-theorem axiom audit pass with only
+`[propext, Classical.choice, Quot.sound]`.
+
+### Sparse large values, brick 49 — weighted primitive-ray two-scale assembly (2026-08-31)
+
+`Sieve/HeathBrownPrimitiveRayMass.lean` counts every positive multiple on every primitive
+logarithmic collision ray.  Exact finite layer cake, low/high direction partition, Euclidean
+quotient transport, brick 48, and corpus finite inverse-square bound yield
+
+```text
+cast_heathBrownPrimitiveLogRayMass_le_twoScale
+  rayMass N ≤ 15 delta N²
+    + (floor(N/N₀)+1) rayMass N₀
+    + 2 floor(N/N₀)+1.
+```
+
+Exceptional-direction multiplicity is assembled with required `N/N₀` endpoint scale; `+1`
+packing loss does not accumulate to `N`.  No exceptional direction, lattice basis, layer-cake,
+or inverse-square premise is retained.  Direct source check, targeted leaf build (`9097/9097`),
+umbrella wiring, and all-eleven-theorem axiom audit pass with only
+`[propext, Classical.choice, Quot.sound]`.
+
+Remaining work: source-level reindexing of Heath--Brown's full sparse collision sum by these
+primitive ray masses, summation over cofactor pairs with divisor coefficients, and Theorem
+4(iii)'s iteration.  Proposition-2.2 routing, amplification, and Matomäki--Teräväinen Theorem 1.2
+assembly remain downstream.
+
+### Sparse large values, brick 50 — literal collision-square ray reindexing (2026-08-31)
+
+`Sieve/HeathBrownPositiveCollisionRayReindex.lean` constructs the positive-pair/coprime-direction
+gcd equivalence and restricts it to the literal bounded collision square.  It proves exactly
+
+```text
+# {(n₁,n₂) ∈ [1,N]² :
+     |log(m₁n₁)-log(m₂n₂)| ≤ delta}
+  = heathBrownPrimitiveLogRayMass N m₁ m₂ delta.
+```
+
+Combining this identity with brick 49 gives, for arbitrary positive cofactors `m₁,m₂`,
+
+```text
+collisionCount N ≤ 15 delta N²
+  + (floor(N/N₀)+1) collisionCount N₀
+  + 2 floor(N/N₀)+1.
+```
+
+Cofactor ordering is discharged internally by swapping dense coordinates.  No gcd decomposition,
+primitive-ray partition, cofactor-ordering, or source-to-ratio conversion premise remains.  Direct
+source check, targeted leaf build (`9098/9098`), umbrella wiring, and all-nineteen-theorem axiom
+audit pass with only `[propext, Classical.choice, Quot.sound]` (two arithmetic inverse laws need
+only `[propext, Quot.sound]`).
+
+This closes source-level reindexing for unweighted full positive squares.  Remaining Theorem
+4(iii) work is coefficient-weighted summation over actual dense supports and sparse cofactor pairs,
+followed by iteration.  Proposition-2.2 routing, amplification, and Theorem 1.2 assembly remain.

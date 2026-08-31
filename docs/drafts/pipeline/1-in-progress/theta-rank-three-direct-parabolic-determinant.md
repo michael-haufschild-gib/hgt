@@ -258,3 +258,84 @@ Literature located scalar nondegenerate Shapovalov forms, classifications of sca
 forms, and Cartan-algebra-valued universal forms, but no source-D1 theorem forcing a non-left-regular
 diagonal in every algebra-valued contravariant carrier. Priority remains provisional pending
 independent expert review.
+
+## 2026-08-31 positive-entire lower-jet spectral-flux route kill
+
+`[FALSIFIED][LEAN-PROVED]` Positivity, entire analyticity, and the complete current reflected jet
+through order eight cannot orient a singular rank-three boundary crossing. The positive entire
+family
+
+```text
+F_c(z)=cosh(z) exp(c z^9/9!)
+```
+
+has one fixed depth-eight jet. Its common reflected moment face is `(1,2,8,32,128)`, with zero
+rank-three determinant and strict leading minor `4`, but its canonical crossing is exactly `32c`.
+Thus every crossing sign and every real crossing value occur without changing the current face.
+
+Formal capstone:
+`reflectedBoundaryNinthJetCrossingSign_not_determinedBy_lowerJet` in
+`ThetaCuspFullReflectionEighthBoundaryNinthJetTorsorNoGo`. The exact positive survivor is
+`reflectedBoundaryNinthJetCrossing_eq`, the affine ninth-jet torsor law.
+
+Exact proof-chain consequence:
+
+```text
+positive entire source + reflected moments through order eight
+→ positive singular-face boundary flux
+→ strict native D1
+→ finite TCD/S6F gate
+→ cofinal all-order landing
+→ Weil positivity
+→ RH
+```
+
+is impossible at its first implication. The active `TCD-D1-BOUNDARY-FLUX` conjecture survives only
+in its literal theta-specific form: it must control the ninth source jet/projective drift, not infer
+orientation from lower moment geometry. Failed-route card:
+`../5-failed/s6f-positive-entire-lower-jet-boundary-flux.md`.
+
+## 2026-08-31 strict Schur-tail premise discharged
+
+`[PROVED][LEAN-PROVED][SIGNIFICANT PREMISE DISCHARGED]` The complete-theta rank-three polynomial
+has the exact Schur normal form
+
+```text
+D1 = (4A²-B)(1216A⁴-32A²B+68B²-D) - (C-64A³)².
+```
+
+Both diagonal factors are now unconditionally strict on the entire physical half-line. The head
+`4A²-B` follows from the already proved literal fourth-jet inequality. The new theorem
+`thetaCuspFullReflectionEighthSchurTail_pos` proves
+
+```text
+0 < 1216A⁴ - 32A²B + 68B² - D
+```
+
+for the actual complete-theta jets, without a compact-interval subdivision. Its proof completes
+the `B`-quadratic exactly and uses the global first-atom eighth-jet domination plus strict eighth
+likelihood positivity. Formal module:
+`ThetaCuspFullReflectionEighthSchurTail`.
+
+Exact proof-chain consequence:
+
+```text
+(C-64A³)² < (4A²-B)(1216A⁴-32A²B+68B²-D)
+→ strict native D1
+→ finite TCD/S6F gate
+→ cofinal all-order Hankel/Bezoutian landing
+→ Weil positivity
+→ RH.
+```
+
+The theorem
+`thetaCuspFullReflectionEighthHankelCurvature_pos_iff_schurCoupling` proves the first equivalence
+exactly. Therefore diagonal degeneration is no longer a possible S6F failure mode; the sole
+surviving source premise is a normalized sixth-jet correlation bound. On a singular face it is
+the rigid equality `(C-64A³)²=(4A²-B)(1216A⁴-32A²B+68B²-D)`, so subsequent boundary-flux work may
+differentiate one correlation saturation law instead of the original eight-term determinant.
+
+`[NOVELTY AUDIT]` Mandatory corpus search found neither this Schur normal form nor global positivity
+of its transformed eighth diagonal. The primary literature audit found general reflection/Hankel
+positivity and total-positivity frameworks, but no theorem for this complete-theta log-jet reserve.
+Priority remains provisional pending independent expert review.

@@ -607,3 +607,40 @@ and three-declaration axiom audit pass with only `[propext, Classical.choice, Qu
 is umbrella-wired without an umbrella build.  Weighted exceptional-direction assembly, the
 two-scale Theorem 4(iii) iteration, Proposition-2.2 routing, amplification, and final Theorem 1.2
 assembly remain.  Card stays Stage 2.
+
+## Lean progress update (2026-08-31) — weighted primitive-ray assembly
+
+`Sieve/HeathBrownPrimitiveWindow.lean`, `Sieve/HeathBrownPrimitiveLogWindow.lean`, and
+`Sieve/HeathBrownPrimitiveRayMass.lean` extend Farey packing to all positive primitive slopes,
+place literal logarithmic product collision inside an interval of width at most `4 delta`, and
+count every positive multiple on each surviving ray.  Resulting exact two-scale bound is
+
+```text
+rayMass N ≤ 15 delta N²
+  + (floor(N/N₀)+1) rayMass N₀
+  + 2 floor(N/N₀)+1.
+```
+
+Finite layer cake ensures packing endpoint loss contributes `N/N₀`, not `N`.  No exceptional
+direction, reduced basis, packing, layer-cake, or inverse-square premise remains.  Direct checks
+and targeted leaf builds pass; final leaf builds `9097/9097`.  All nineteen new theorem
+declarations across three leaves audit to only `[propext, Classical.choice, Quot.sound]`; all
+leaves are umbrella-wired without an umbrella build.
+
+Card remains Stage 2.  Remaining shared gap: source-level reindexing and coefficient-weighted
+summation of complete Heath--Brown sparse collision form, Theorem 4(iii)'s iteration, residual
+Proposition-2.2 routing, amplification, and final Matomäki--Teräväinen Theorem 1.2 assembly.
+
+## Lean progress update (2026-08-31) — literal source collision reindexing
+
+`Sieve/HeathBrownPositiveCollisionRayReindex.lean` proves exact equality between the literal
+difference-of-logs collision count on `[1,N]²` and the primitive ray mass, then derives the direct
+two-scale collision-count inequality with constants `15`, `1`, and `2`.  Cofactor ordering is
+discharged internally by coordinate swap; gcd decomposition and difference-of-logs/log-ratio
+conversion are constructed in Lean.  Direct check and targeted leaf build (`9098/9098`) pass.
+All nineteen theorem declarations audit to only `[propext, Classical.choice, Quot.sound]`; module
+is umbrella-wired without an umbrella build.
+
+Card remains Stage 2.  Unweighted full-square source reindexing is closed.  Remaining shared gate:
+coefficient-weighted summation over actual dense supports and sparse cofactor pairs, Theorem
+4(iii)'s iteration, Proposition-2.2 routing, amplification, and final all-interval theorem.

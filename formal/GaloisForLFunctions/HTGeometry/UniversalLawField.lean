@@ -453,6 +453,7 @@ import GaloisForLFunctions.RHTower.SuzukiClockInteractionAnomaly
 import GaloisForLFunctions.HTGeometry.ObserverClockTriangularRepresentation
 import GaloisForLFunctions.HTGeometry.FormationReflectionPolarMechanics
 import GaloisForLFunctions.HTGeometry.ShiftedEulerFormationReflectionPolarMechanics
+import GaloisForLFunctions.HTGeometry.AugmentationGradedFormationSpectrum
 
 /-!
 # Universal-law-field Lean umbrella

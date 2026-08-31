@@ -621,3 +621,38 @@ check, targeted leaf build, and all-three-theorem axiom audit pass with only
 `[propext, Classical.choice, Quot.sound]`; module is umbrella-wired without an umbrella build.
 Weighted exceptional-direction assembly, Theorem 4(iii)'s two-scale iteration, residual
 Proposition-2.2 routing, amplification, and final Theorem 1.2 assembly remain.  Card stays Stage 2.
+
+## Lean progress update (2026-08-31) — weighted primitive-ray assembly
+
+`Sieve/HeathBrownPrimitiveWindow.lean`, `Sieve/HeathBrownPrimitiveLogWindow.lean`, and
+`Sieve/HeathBrownPrimitiveRayMass.lean` now prove full positive-slope packing, exact logarithmic
+collision-window count `≤ 4 delta Q²+1`, and multiplicity-weighted two-scale law
+
+```text
+rayMass N ≤ 15 delta N²
+  + (floor(N/N₀)+1) rayMass N₀
+  + 2 floor(N/N₀)+1.
+```
+
+Finite layer cake keeps endpoint loss at `N/N₀`.  No exceptional direction, lattice basis,
+packing, layer-cake, or inverse-square premise remains.  Direct checks and targeted leaf builds
+pass; all nineteen theorem declarations across three leaves audit to only
+`[propext, Classical.choice, Quot.sound]`; modules are umbrella-wired without an umbrella build.
+
+Card remains Stage 2.  Source-level reindexing and coefficient-weighted summation of complete
+Heath--Brown collision form, Theorem 4(iii)'s iteration, Proposition-2.2 routing, amplification,
+and final Matomäki--Teräväinen all-interval supply theorem remain.
+
+## Lean progress update (2026-08-31) — literal source collision reindexing
+
+`Sieve/HeathBrownPositiveCollisionRayReindex.lean` identifies the literal closed
+difference-of-logs collision square on `[1,N]²` exactly with primitive ray mass.  Its capstone
+discharges cofactor ordering by coordinate swap and gives the direct two-scale collision-count
+law with explicit constants.  No gcd decomposition, ray partition, source-log conversion, or
+cofactor-ordering premise remains.  Direct check, targeted build (`9098/9098`), and nineteen-
+theorem axiom audit pass with only `[propext, Classical.choice, Quot.sound]`; module is
+umbrella-wired without an umbrella build.
+
+Card remains Stage 2.  Remaining shared gate is coefficient-weighted summation over actual dense
+supports and sparse cofactor pairs, Theorem 4(iii)'s iteration, Proposition-2.2 routing,
+amplification, and final all-interval theorem.

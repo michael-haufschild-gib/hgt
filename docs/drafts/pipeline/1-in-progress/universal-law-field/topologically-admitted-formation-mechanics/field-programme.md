@@ -545,6 +545,45 @@ harmonic-to-Riesz boundedness or compactness is false. RH must be exceptional-do
 one arithmetic charge under an unbounded clock transmutation. Remaining source law must cancel the
 two signed terms in `(TAFM.36)` jointly; absolute values destroy the zero-charge conservation.
 
+### Law XXV -- observer-jet decomposition and minimal clock order
+
+Every finite charge has canonical mass, drift, and second-boundary history coordinates.  Every
+observer clock has the dual value, slope, and curvature coordinates, with exact conservation
+
+\[
+ \sum_k q_k\lambda_k
+ =m_0\lambda_0+m_1\Delta\lambda_0+
+   \sum_jA_j\Delta^2\lambda_j.                         \tag{TAFM.37}
+\]
+
+The induced second-formation completion is proper for a clock exactly when its second difference
+is bounded.  The literal harmonic-to-square-root rate has unbounded value and slope but bounded
+decaying curvature, so its minimal additive formation order is two.  This lowers the RH producer
+to the signed weighted second-history estimate `(AF.22)`, without claiming that estimate.
+
+### Law XXVI -- augmentation-graded formation spectrum
+
+Observer jets are charts of one filtered source algebra
+
+\[
+ \mathcal A=\mathbb Z[T,T^{-1}],\qquad I=(T-1),
+ \qquad \operatorname{gr}_I^r\mathcal A=I^r/I^{r+1}.  \tag{TAFM.38}
+\]
+
+Order-`r` recovery `B_r(P)=(T-1)^rP` is injective and is exactly dual to the `r`-th clock
+difference.  Functional-equation inversion lifts involutively through the same recovery and acts
+by `(-1)^r` on grade `r`.  A closed period relation has the exact open-lift residue
+
+\[
+ T^p-1=p(T-1)\pmod{I^2}.                               \tag{TAFM.39}
+\]
+
+Thus recovery, clock transmutation, functional equation, recurrence, and positivity parity are
+not parallel analogies: they are operations on one object.  Diagonal grade energies erase
+orientation, while adjacent-grade polarization is reflection odd.  Bare infinite augmentation
+depth does not characterize hypertranscendence; the next field object must be the differential
+Rees spectrum, with formation-number operator `u d/du`.
+
 ## 3. Foundational theorem
 
 The dependency-closed paper theorem is
@@ -907,6 +946,17 @@ an exceptional stable graph domain of this unbounded transmutation. Exact target
 cancellation of boundary storage and clock-acceleration work, driven by multiplicative prime
 feedback rather than receiver positivity.
 
+Law XXV shows why that unbounded clock is not terminal.  Its source domain has formation order two:
+affine boundary debt separates from curvature-coupled history, and the literal observer curvature
+is bounded.  Selection is reduced to one weighted second-history action rather than generic
+compactness or another scalar endpoint.
+
+Law XXVI replaces the observer-jet chart by a coordinate-free filtration.  Every memory order,
+observer derivative, functional-equation parity, and compact-return residue belongs to one
+augmentation/Rees geometry.  This is the first field law to predict a recurrence theorem from the
+recovery--clock--reflection fusion.  Differential Rees comparison and literal prime-source landing,
+not more route receivers, are the next high-level obligations.
+
 ## 8. Why this is not regression into one route
 
 The research target is not “find a source-native Route-R map.” It is to construct a doctrine in
@@ -993,6 +1043,10 @@ literal source comparison, and whether Steps 1--5 close without importing RH.
       innovation extension
 - [x] literal completed Suzuki history with completed Abel as innovation, action as variance, and
       Gamma as conditioned innovation norm
+- [x] canonical second observer-jet reconstruction, value--slope--curvature conservation, and
+      literal minimal harmonic--Riesz formation order two
+- [x] augmentation-graded formation spectrum with injective recovery, all-order observer duality,
+      functional-equation grade parity, and recurrence winding residue
 - [ ] literal Xi-source formation functor
 - [ ] literal divisor-independent intervention signature and proved relation table shared by at
       least three structurally different route organs
@@ -1014,6 +1068,7 @@ literal source comparison, and whether Steps 1--5 close without importing RH.
 - [x] Lean certification of ULF-TAFM-17 innovation-history bundle and literal Suzuki lift
 - [x] Lean certification of ULF-TAFM-18 local innovation phase quotient and literal Suzuki lift
 - [x] Lean certification of ULF-TAFM-19 observer-clock transmutation and literal clock escape
+- [x] Lean certification of ULF-TAFM-24 augmentation-graded formation-spectrum core
 - [ ] complete Lean formalization of remaining ULF-TAFM-2/3 and paper-only clauses of ULF-TAFM-5/6
 
 ## Log
@@ -1088,3 +1143,8 @@ literal source comparison, and whether Steps 1--5 close without importing RH.
   unit dipoles. Literal completed source closes in harmonic clock, becomes completed Riesz moment
   in square-root clock, and has linearly escaping relative rate. Universal compactness is now
   ruled out; source selection is exceptional-domain cancellation under an unbounded clock change.
+- 2026-08-31 -- proved canonical mass--drift--second-history reconstruction and identified literal
+  harmonic-to-square-root rate as minimal formation order two.  Then replaced that coordinate chart
+  by augmentation-graded formation-spectrum geometry.  Lean certifies injective recovery,
+  all-order finite-difference duality, lossless FE lift, grade parity, closed-recurrence winding
+  residue, and adjacent-grade orientation.  Differential Rees/source landing remains open.
