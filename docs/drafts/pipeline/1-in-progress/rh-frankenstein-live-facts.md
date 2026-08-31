@@ -20,9 +20,10 @@ Current state only. Exact identifiers require `formal_tools.py research` confirm
 ## Route-E exact seam
 
 - Finite collision recurrence and divisor square lift are coefficient-faithful.
-- No existing theorem consumes either capstone beyond zero extension.
-- `HeathBrownSparseMeanValueSelfBound` closes zero extension and scalar quadratic absorption.
-- Next: combine recurrence, half-height square lift, height monotonicity, and self-absorption; instantiate Heath--Brown one/two-step scales.
+- `HeathBrownSparseMeanValueSelfBound` closes height/length return and scalar absorption.
+- `HeathBrownSparseMeanValueSqrtScale` selects exact first-branch integer scale.
+- `integral_Icc_normSq_heathBrown_factors_le_twoStepSelfBound` closes coefficient-faithful second recurrence/square-lift iteration at `N0²`.
+- Remaining: divisor-scale/rpow absorption, regime parameters, Theorem 4(iii) union, then Proposition-2.2 routing.
 - This is literature closure toward `ORD+COF`, not yet RH or a cross-route producer.
 
 ## Verified shared topology-2 carrier
@@ -63,4 +64,4 @@ Current state only. Exact identifiers require `formal_tools.py research` confirm
 
 ## Current target
 
-Complete Heath--Brown one/two-step mean-square iteration without duplicating existing helpers.
+Close Heath--Brown divisor-scale/rpow and regime algebra; then test Route-E supply against shared `ORD+COF` endpoint.

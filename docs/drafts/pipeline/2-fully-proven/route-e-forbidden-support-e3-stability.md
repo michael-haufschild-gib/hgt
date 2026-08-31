@@ -723,3 +723,15 @@ umbrella-wired without an umbrella build.
 Card remains Stage 2.  Remaining shared gate is integer scale selection, second-branch recurrence
 and exponent algebra for exact Theorem 4(iii), then residual Proposition-2.2 routing,
 amplification, and final all-interval supply theorem.
+
+## Lean progress update (2026-08-31) — exact square-root branch selected
+
+`Sieve/HeathBrownSparseMeanValueSqrtScale.lean` selects `K=Nat.sqrt N` in the closed self-bound and
+proves `K²≤N` and `N/K≤K+2` internally.  Its explicit three-term inequality has no rounding,
+quotient, or scale-selection premise.  Direct check, targeted leaf build (`9109/9109`), and all
+three declaration axiom audits pass with only `[propext, Classical.choice, Quot.sound]`; module is
+umbrella-wired without an umbrella build.
+
+Card remains Stage 2.  Divisor/rpow absorption, second-branch recurrence, and exact Theorem 4(iii)
+regime union remain before residual Proposition-2.2 routing, amplification, and all-interval
+supply.

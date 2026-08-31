@@ -17,6 +17,7 @@
 - Static clock/source/Lyapunov signs, generic Hankel geometry, and depth-eight positive-entire data cannot orient flux.
 - Finite/infinite scalar, matrix, bounded-operator, and regular-star contravariant D1 carriers fail.
 - Raw Bernstein/Gram, naive factorization, and pairwise atom PSD fail.
+- Planat–Solé is same orbit but lower-rank; PF5 failure concerns a distinct Toeplitz minor, not D1.
 
 ## Open
 

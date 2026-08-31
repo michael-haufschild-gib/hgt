@@ -2,36 +2,30 @@
 
 Evidence: current frontier map plus `scripts/formal_tools.py research`; no training-prior conjectures.
 
-## Proved mechanism
+## Higher mechanism already proved
 
-- Common grammar: `mark → form → ghost → dualize → admit → saturate → conserve`. Independent coexistence of route organs predicts nothing; exchange laws matter.
-- Generic field infrastructure is already closed: formation exchange, provenance, admission-relative current, functional-equation reflection, Rees grading, hypertranscendental inverse-gauge escape, thermal Toeplitz compact-resolvent properness, and bidirectional reserve conservation.
-- Literal multi-organ fusions already exist:
-  - one Suzuki scale current is read by affine checkpoints, Chebyshev mass error, completed Abel source, Gamma energy, and multiplicity/orientation-faithful Xi shorts;
-  - Euler–Möbius–Sonin safe-chamber landing carries `ORD + ORIENT + COF + LAND` before singular descent;
-  - moving Xi admission differentiates into radial, chart, and admission-velocity source terms, and literal adaptive arithmetic source action pays adjacent degree flux/effectivity;
-  - the same Xi source obeys a degree--mass plaquette, exact tail-action/flux identity, all-degree capital decomposition with positive reserve, nonlinear Jacobi/Weyl degree renewal, and exact mixed mass--admission charge flow;
-  - every strict shifted-Xi contact has a source/admission-normalized unit charge, and every false-RH frontier is already synchronized into one explicit parabolic degree cone;
-  - shifted-Xi reciprocal moments and their first omitted coupling are exact Gamma-normalized Laplace transforms of the Xi Gaussian heat history;
-  - prime–Gamma four-cup mixed secants reconstruct exact Weil polarization.
+- Natural carrier is a **source-marked formation/completion diagram**, not another RH operator: finite support, valuation depth, compound order, observer quotient, reflection, and completion provenance are independent coordinates.
+- Full formation reflection is information-neutral before observation. Its polar modulus reconstructs repeated-formation depth; its phase reconstructs support parity. Unitary boundary is exactly squarefree formation, and boundary phase is Möbius. Source orientation is therefore no longer missing.
+- Finite squarefree packets already have an exterior-horizon realization. Gamma insertion already has a closed densely defined Boolean creator with exact state-dependent coefficients and flat two-prime faces. Actual completed-theta grades form a nonzero linearly independent all-grade chain; Gamma--theta creation advances support and grade together. Compounds cannot be reduced to singleton or pairwise Gram data.
+- Completed theta value landing and a positive-displacement joint prime-power source-to-Xi landing are unconditional. The latter is a one-body `(prime, valuation)` Hilbert pairing; it does not totalize multi-prime support compounds.
+- Completion is the genuine fracture. Every finite internal-jet prime cylinder is relatively formally etale, yet the pre-divisor transverse infinitesimal maps coefficient-faithfully to a reflection-odd Tail--Roos `lim¹` class, nonzero exactly off wall. Thus finite-stage DANB does not cross completion.
+- Receiver is closed: a nonzero closed source-linear sewing between reflected prime-Poisson sectors exists exactly on wall, including countable multiplicity and arbitrary phase histories. On Xi support this is equivalent to internal-only divisor syndrome.
 
-- False RH has an exact cofinal source description: every fixed shifted-Hankel degree eventually heals and has finite outgoing action, while failure escapes to unbounded degree and produces cofinally many locally nonintegrable Christoffel source walls with finite positive contact residue. This is the first literal RH-source realization of RLM/LHSM's predicted `finite pages → cofinal admission failure` mode.
+## Retired guesses
 
-## Receiver walls
-
-- Functional-equation symmetry, positivity, pairing, trace/supertrace, thinning, naturality, flatness, closed recovery, compact recurrence, and abstract properness do not generate arithmetic selection. Several sharpened forms are already RH-equivalent receivers.
-- Hypertranscendence forces failure of finite joint formation/inverse-gauge closure; it does not supply Xi orientation.
-- Reflected prime–Gamma incidence gives complex bilinear squares, not Hermitian norms.
-- Local/finite source coercivity does not synchronize mass descent with a moving degree/contact schedule. Suzuki corrected scale-action boundedness and eventual shifted-wall regularity are already RH-equivalent, hence neither can be assumed.
-- “Add a moving-boundary/Stokes law” is obsolete: continuous discharge, discrete renewal, their degree--mass plaquette, parabolic synchronization, and contact residues are all closed.
-- Scalar capital cannot close the cofinal step: an exact sparse quadratic escape satisfies current adjacent-degree coercivity, reserve, and divergent renormalized action while retaining summable entry flux.
-- Factorial/Beta reflection is not positivity preserving; cofinally it is indefinite and no fixed finite-rank positive repair works.
-- Ordinary/coordinatewise completion loses provenance. Source-marked Lawson convergence retains it but, for the actual Route-R prime--Gamma stages, global continuity is already equivalent to RH.
+- Relative renewal/successor invariance: generic theorem exists; arithmetic landing was already audited and does not produce recurrence.
+- Derived arithmetic non-bifurcation: finite stage only; literal derived-Roos class is the infinite bifurcation it cannot exclude.
+- Exterior/Fock completion: finite exterior horizon already exists; critical all-prime Bessel divergence blocks bounded synthesis.
+- Koszul/braided repair: canonical all-prime sign cups already realize every scalar coefficient; tensoring with theta spin makes order independence automatic. Bare fermionic sign supplies orientation but no selection.
+- Prefix half-likelihood/Kakutani sewing: reflected prefix Cauchy coherence is already exactly RH.
+- Closedness, flatness, diagonal gauge, Haar dilation, positive recovery, finite action, and source-marked continuity: each is compatible with off-wall residue or is already an RH receiver.
 
 ## Exact open producer
 
-Two coupled burdens remain: source production (`ORD + ORIENT` or selective `DYN`) and faithful global propagation (`COF + LAND + COMP`). Local transport is not missing. Missing operation is **global source-marked renewal**: compare two infinite histories after removing common hypertranscendental ancestry, retain the reflection-odd transverse class, and make finite source action compatible with cofinal successor renewal. Generic relative-renewal rigidity is proved (`finite relative action + successor invariance => zero transverse history`); no literal pre-divisor arithmetic history is known to satisfy both laws. This single gap presents as shifted-Xi sparse degree escape, Suzuki unbounded innovation, Route-R marked-completion failure, and vanishing-mass/infinite-information evacuation.
+Not missing: sign, local creator, finite compound law, completed-theta value, transverse class, or wall receiver.
 
-Exact RH closure for any proposed source-renewal law: construct the histories before divisor specialization; prove finite relative action and successor invariance from the literal prime--Gamma/Chebyshev source; prove one coefficient-faithful landing sends their transverse coordinate to `Re rho - 1/2`. Existing relative-renewal rigidity then kills that coordinate for every Xi divisor copy, hence RH. A law that merely assumes bounded work, marked continuity, wall integrability, or positivity is circular because each has an existing RH-equivalent receiver.
+Missing composition is **infinite boundary-phase totalization**: before divisor choice, transport full formation-reflection boundary phase through a genuinely non-diagonal all-prime Gamma--theta completion while retaining valuation, phase, every compound order, and the nonzero Hodge/Roos connecting class. Existing one-body Xi landing scalarizes support; existing compound-faithful JAS creator can coexist with unit off-wall double-log residue. Their incompatibility is current load-bearing gap.
 
-Admissible new law must derive one of these seams from a literal pre-divisor source identity, imply route-independent consequences in at least three structurally different organs, and predict a fourth. No conjecture is admitted until its interpretation, corpus-search collision audit, and exact RH closure are written first.
+Exact RH closure: construct this totalization from literal Möbius--theta/Euler--Gamma identities; prove its specialization at every nonzero Xi first jet gives a nonzero, closed, single-valued map linear over the common prime source algebra; identify its two representations with reflected prime-Poisson sectors. `xiPrimePoissonReflectionSewing_iff_internalOnly` then kills only transverse placement, preserves internal multiplicity, and forces `Re rho = 1/2` for every Xi divisor.
+
+No conjecture is admitted until: (1) mechanism stated at diagram level; (2) corpus search rules out an existing theorem/receiver/no-go; (3) an explicit source formula defines the totalization on finite generators; (4) exact RH landing above is proved on paper.

@@ -1,8 +1,8 @@
 # HCF 75%: Current State
 
-- **Goal:** source-only budget implying `N₀(T) ≥ 3N(T)/4 + o(N(T))`.
-- **Closed:** exact receivers; `3*pi` charge/copy; pole--Gamma--von-Mangoldt rectangles; translation weld; phase/alias removal; prime `o(N)`; Poisson contraction; integrated annulus ≤ narrow-line energy.
-- **Open:** source-selected admissible rectangles rendering every submicroscopic strict-right copy; narrow-line energy ≤ `3*pi*N/8 + o(N)` (`21N/100` corrected budget suffices downstream).
-- **Risk:** current response hypotheses permit divisor-dependent endpoint selection; fixed positive transverse shift misses nearer-line zeros.
-- **No-gos:** finite entire Euler gauges; norm-square-only/unpaired/absolute-alias bounds; scalar diagonal minorants/adaptive spacing; rank--trace window refinement.
-- **Conjecture:** canonical source shifts admit an `o(N)` missed-copy weld plus the narrow-line ceiling.
+- **Receiver:** five-center charge `Q ≥ 44/5`; deep copies `o(N)`; source ceiling `cN+o(N)` gives `N₀ ≥ (1-5c/22)N-o(N)`.
+- **Threshold:** `c=11/10` gives asymptotic `75%`; any `c<11/10` gives eventual pointwise `75%`. Old `21/100` target gives `419/440` asymptotically.
+- **Formal:** `HedenmalmCriticalFeatureSevenTenthsSharpAsymptoticReceiver.lean`.
+- **Open:** prove source-only five-center Plemelj covariance ceiling `≤11N/10+o(N)`.
+- **Known structure:** phase averaging removes nonzero aliases; source covariance + compact source boundary `=4πN+o(N)`; boundary `=4πN₀+o(N)`.
+- **No-gos:** divisor-selected endpoints; fixed transverse shifts; finite entire Euler gauges; norm-square-only/unpaired/absolute-alias bounds; scalar diagonal minorants; rank--trace window refinement; squarefree Möbius critical-clock control.

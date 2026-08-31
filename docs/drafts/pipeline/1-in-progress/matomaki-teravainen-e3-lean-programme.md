@@ -2659,3 +2659,39 @@ umbrella build.
 Remaining Heath--Brown work is integer scale selection and exponent simplification for the first
 branch, the paper's second recurrence branch, and their exact Theorem 4(iii) union.  Proposition-
 2.2 routing, amplification, and Matomäki--Teräväinen Theorem 1.2 assembly then remain.
+
+### Sparse large values, brick 55 — exact natural square-root scale (2026-08-31)
+
+`Sieve/HeathBrownSparseMeanValueSqrtScale.lean` selects `K=Nat.sqrt N` inside brick 54, proving
+internally that `K²≤N` and `N/K≤K+2`.  It simplifies the closed one-step bound to the three exact
+terms
+
+```text
+75π N²R²
++ 5π T (2⌊√N⌋+5) R²
++ ((25π/4)(⌊√N⌋+3))² · k,
+```
+
+where `k` is the explicit half-height sparse envelope times the squared divisor scale and the two
+comparison constants.  No integer-rounding or quotient estimate remains as a hypothesis.  Direct
+source check, targeted leaf build (`9109/9109`), and three-declaration axiom audit pass with only
+`[propext, Classical.choice, Quot.sound]`; module is umbrella-wired without an umbrella build.
+
+### Sparse large values, brick 56 — coefficient-faithful two-step closure (2026-08-31)
+
+`Sieve/HeathBrownSparseMeanValueIteration.lean` closes the paper's second recurrence iteration
+without duplicating brick 54.  For arbitrary sparse phases and arbitrary dense `[0,1]`
+coefficients, the outer recurrence lands at the half-height unit interval of length `N₀`; its
+divisor square lift lands at `N₀²`, where brick 54's existing self-bound closes the inner mean
+square.  The resulting theorem
+
+```text
+integral_Icc_normSq_heathBrown_factors_le_twoStepSelfBound
+```
+
+has no analytic, coefficient, support, rounding, or inner-integral premise.  Direct source check
+and targeted leaf build (`9109/9109`) pass; the declaration audits to only
+`[propext, Classical.choice, Quot.sound]`.  Module is umbrella-wired without an umbrella build.
+
+Remaining Heath--Brown work is divisor-scale/rpow absorption, exact integer regime parameters,
+and the Theorem 4(iii) branch union.  Proposition-2.2 routing and amplification remain downstream.
