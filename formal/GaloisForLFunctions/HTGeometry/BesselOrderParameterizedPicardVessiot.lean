@@ -52,6 +52,16 @@ def besselOrderPPVSigma (s : ℝ) :
     (FieldShift.besselOrderCompanion (slope s)) (besselOrderCompanionInverse s)
     (besselOrderCompanion_mul_inverse s) (besselOrderCompanion_inverse_mul s)
 
+/-- The concrete parameterized difference action restricts to rational-coordinate shift. -/
+theorem besselOrderPPVSigma_base (s : ℝ) (x : RatFunc Constants) :
+    besselOrderPPVSigma s (ppvBaseMap (RatFunc Constants) 2 x) =
+      ppvBaseMap (RatFunc Constants) 2 (FieldShift.ratShiftEquiv x) := by
+  unfold besselOrderPPVSigma
+  exact ppvSigma_ppvBaseMap (K := RatFunc Constants) (n := 2)
+    FieldShift.ratShiftEquiv besselRatShift_commutes
+    (FieldShift.besselOrderCompanion (slope s)) (besselOrderCompanionInverse s)
+    (besselOrderCompanion_mul_inverse s) (besselOrderCompanion_inverse_mul s) x
+
 /-- A complete parameterized Picard--Vessiot quotient for the concrete Bessel order companion. -/
 structure BesselOrderParameterizedPVData (s : ℝ) where
   M : Ideal (ppvLocalization (RatFunc Constants) 2)
@@ -68,6 +78,19 @@ structure BesselOrderParameterizedPVData (s : ℝ) where
       (quotientDifferential M isSigmaDeltaIdeal.2)
       (sigmaQuotientEquiv (besselOrderPPVSigma s) M
         isSigmaDeltaIdeal.1 isSigmaIdeal_symm)
+  baseCompatible : ∀ x : RatFunc Constants,
+    sigmaQuotientEquiv (besselOrderPPVSigma s) M
+        isSigmaDeltaIdeal.1 isSigmaIdeal_symm
+        (Ideal.Quotient.mk M (ppvBaseMap (RatFunc Constants) 2 x)) =
+      Ideal.Quotient.mk M
+        (ppvBaseMap (RatFunc Constants) 2 (FieldShift.ratShiftEquiv x))
+  baseDerivCompatible : ∀ x : RatFunc Constants,
+    letI : Differential ((ppvLocalization (RatFunc Constants) 2) ⧸ M) :=
+      quotientDifferential M isSigmaDeltaIdeal.2
+    Differential.deriv
+        (Ideal.Quotient.mk M (ppvBaseMap (RatFunc Constants) 2 x)) =
+      Ideal.Quotient.mk M
+        (ppvBaseMap (RatFunc Constants) 2 (Differential.deriv x))
   fundamental : ∀ i j,
     sigmaQuotientEquiv (besselOrderPPVSigma s) M
         isSigmaDeltaIdeal.1 isSigmaIdeal_symm
@@ -106,6 +129,22 @@ theorem besselOrder_parameterizedPicardVessiot_exists :
       FieldShift.ratShiftEquiv besselRatShift_commutes
       (FieldShift.besselOrderCompanion (slope s)) (besselOrderCompanionInverse s)
       (besselOrderCompanion_mul_inverse s) (besselOrderCompanion_inverse_mul s)
+  have hbase : ∀ x : RatFunc Constants,
+      sigmaQuotientEquiv (besselOrderPPVSigma s) M hM.1 hM'
+          (Ideal.Quotient.mk M (ppvBaseMap (RatFunc Constants) 2 x)) =
+        Ideal.Quotient.mk M
+          (ppvBaseMap (RatFunc Constants) 2 (FieldShift.ratShiftEquiv x)) := by
+    intro x
+    rw [sigmaQuotientEquiv_mk, besselOrderPPVSigma_base]
+  have hbaseDeriv : ∀ x : RatFunc Constants,
+      letI : Differential ((ppvLocalization (RatFunc Constants) 2) ⧸ M) :=
+        quotientDifferential M hM.2
+      Differential.deriv
+          (Ideal.Quotient.mk M (ppvBaseMap (RatFunc Constants) 2 x)) =
+        Ideal.Quotient.mk M
+          (ppvBaseMap (RatFunc Constants) 2 (Differential.deriv x)) := by
+    intro x
+    exact quotientDifferential_ppvBaseMap_deriv M hM.2 x
   exact ⟨{
     M := M
     isSigmaDeltaIdeal := hM
@@ -113,6 +152,8 @@ theorem besselOrder_parameterizedPicardVessiot_exists :
     isSigmaIdeal_symm := hM'
     isSigmaDeltaSimple := hsimple
     commutesDeriv := hcomm
+    baseCompatible := hbase
+    baseDerivCompatible := hbaseDeriv
     fundamental := hfund
     fundamental_det_isUnit := hdet
     detInverse := Ideal.Quotient.mk M

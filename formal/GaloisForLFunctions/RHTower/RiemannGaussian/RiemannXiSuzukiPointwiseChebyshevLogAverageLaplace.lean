@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.RiemannGaussian.RiemannXiSuzukiPointwiseChebyshevLogAverageMellinXiBridge
+import GaloisForLFunctions.HTGeometry.ReflectionIntegral
 
 /-!
 # Suzuki's logarithmic average in one-sided Laplace coordinates
@@ -81,7 +82,7 @@ theorem integral_suzukiChebyshevLogAverageLaplaceKernel_eq_mellin
         -suzukiChebyshevLogAverageError x *
           x ^ (-sigma - 1 / 2 : ℝ) := by
       simpa only [Real.exp_zero] using
-        integral_comp_exp_Ioi
+        GaloisForLFunctions.HTGeometry.integral_comp_exp_Ioi
           (fun x : ℝ => -suzukiChebyshevLogAverageError x *
             x ^ (-sigma - 1 / 2 : ℝ)) 0
 
@@ -108,7 +109,8 @@ theorem integrableOn_suzukiChebyshevLogAverageLaplaceKernel_shift
       (Set.Ioi (0 : ℝ)) := by
     let g : ℝ → ℝ := fun x => -suzukiChebyshevLogAverageError x *
       x ^ (-sigma - 1 / 2 : ℝ)
-    have hchange := (integrableOn_comp_exp_Ioi g 0).mpr (by
+    have hchange :=
+      (GaloisForLFunctions.HTGeometry.integrableOn_comp_exp_Ioi g 0).mpr (by
       simpa only [Real.exp_zero] using hmellin)
     simpa only [g] using hchange
   convert hcomp using 1

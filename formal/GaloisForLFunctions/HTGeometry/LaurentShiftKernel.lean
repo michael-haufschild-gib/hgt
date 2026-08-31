@@ -16,7 +16,8 @@ open scoped Differential
 
 noncomputable section
 
-local instance : Differential (LaurentSeries ℂ) := laurentSDifferential
+local instance laurentSDifferentialKernel : Differential (LaurentSeries ℂ) :=
+  laurentSDifferential
 
 /-- The Laurent Euler-quotient operator. -/
 def laurentDX (w : LaurentSeries ℂ) : LaurentSeries ℂ :=

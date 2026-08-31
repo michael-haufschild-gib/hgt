@@ -517,7 +517,9 @@ theorem seven_sixths_le_suzukiSmoothCurvature_of_logTwo_le
       (3 / 4 : ℝ) ≤ 1 - Real.exp (-2 * t) := by
     linarith
   have hdenominatorPos : 0 < 1 - Real.exp (-2 * t) :=
-    GaloisForLFunctions.RHTower.one_sub_exp_neg_two_mul_pos htpos
+    by
+      simpa only [neg_mul] using
+        GaloisForLFunctions.RHTower.one_sub_exp_neg_two_mul_pos htpos
   have hnumeratorIdentity :
       Real.exp (-(5 * t) / 2) =
         Real.exp (-t / 2) * Real.exp (-2 * t) := by

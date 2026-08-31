@@ -44,14 +44,18 @@ theorem continuousOn_gaussianSuzukiDigammaOscillationIntegrand (r : ℝ) :
     ContinuousOn (gaussianSuzukiDigammaOscillationIntegrand r) (Set.Ioi 0) := by
   intro u hu
   have hden : 1 - Real.exp (-2 * u) ≠ 0 :=
-    (GaloisForLFunctions.RHTower.one_sub_exp_neg_two_mul_pos hu).ne'
+    by
+      simpa only [neg_mul] using
+        (GaloisForLFunctions.RHTower.one_sub_exp_neg_two_mul_pos hu).ne'
   unfold gaussianSuzukiDigammaOscillationIntegrand gaussianSuzukiDigammaDensity
   fun_prop
 
 lemma norm_gaussianSuzukiDigammaOscillationIntegrand_le_near_zero
     (r : ℝ) {u : ℝ} (hu : 0 < u) (hu1 : u ≤ 1) :
     ‖gaussianSuzukiDigammaOscillationIntegrand r u‖ ≤ (3 / 2 : ℝ) * |r| := by
-  have hdenpos := GaloisForLFunctions.RHTower.one_sub_exp_neg_two_mul_pos hu
+  have hdenpos : 0 < 1 - Real.exp (-2 * u) := by
+    simpa only [neg_mul] using
+      GaloisForLFunctions.RHTower.one_sub_exp_neg_two_mul_pos hu
   have hden := two_thirds_mul_le_one_sub_exp_neg_two_mul hu hu1
   have hnumerator : Real.exp (-u / 2) ≤ 1 := by
     rw [Real.exp_le_one_iff]
@@ -91,7 +95,9 @@ lemma norm_gaussianSuzukiDigammaOscillationIntegrand_le_tail
     ‖gaussianSuzukiDigammaOscillationIntegrand r u‖ ≤
       (2 / (1 - Real.exp (-2))) * Real.exp (-(1 / 2 : ℝ) * u) := by
   have hu0 : 0 < u := zero_lt_one.trans_le hu
-  have hdenpos := GaloisForLFunctions.RHTower.one_sub_exp_neg_two_mul_pos hu0
+  have hdenpos : 0 < 1 - Real.exp (-2 * u) := by
+    simpa only [neg_mul] using
+      GaloisForLFunctions.RHTower.one_sub_exp_neg_two_mul_pos hu0
   have hfixedDen : 0 < 1 - Real.exp (-2) := by
     exact sub_pos.mpr (Real.exp_lt_one_iff.mpr (by norm_num))
   have hden : 1 - Real.exp (-2) ≤ 1 - Real.exp (-2 * u) := by
@@ -448,7 +454,9 @@ theorem integrable_gaussianDigammaGaussJointIntegrand
         unfold gaussianSuzukiDigammaOscillationIntegrand
         exact mul_nonneg
           (div_nonneg (Real.exp_pos _).le
-            (GaloisForLFunctions.RHTower.one_sub_exp_neg_two_mul_pos hu).le)
+            (by
+              simpa only [neg_mul] using
+                (GaloisForLFunctions.RHTower.one_sub_exp_neg_two_mul_pos hu).le))
           (sub_nonneg.mpr (Real.cos_le_one _))
       have hgaussianNonneg : 0 ≤ symmetricGaussian ε t r := by
         unfold symmetricGaussian translatedGaussian

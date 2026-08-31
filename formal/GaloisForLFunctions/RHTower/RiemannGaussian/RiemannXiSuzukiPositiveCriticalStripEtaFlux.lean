@@ -56,7 +56,7 @@ theorem analyticOrderAt_pairedEtaCore_eq_riemannZeta
       pairedEtaCore =ᶠ[𝓝 rho.1]
         fun z => pairedEtaFactor z * riemannZeta z := by
     filter_upwards
-      [(Complex.isOpen_re_gt 0).mem_nhds hpositive,
+      [(isOpen_lt continuous_const Complex.continuous_re).mem_nhds hpositive,
         isOpen_compl_singleton.mem_nhds
           (show rho.1 ∈ ({1}ᶜ : Set ℂ) by simpa using rho.2.2.2)] with z hz0 hz1
     simpa [pairedEtaFactor] using
@@ -104,7 +104,7 @@ theorem tendsto_sub_mul_pairedEtaArithmeticQuotient
   rw [analyticOrderNatAt_pairedEtaCore_eq_analyticZetaZeroMultiplicity rho]
     at hbase
   have hnearFull : ∀ᶠ s in 𝓝 rho.1, 0 < s.re :=
-    (Complex.isOpen_re_gt 0).mem_nhds hpositive
+    (isOpen_lt continuous_const Complex.continuous_re).mem_nhds hpositive
   have hnear : ∀ᶠ s in 𝓝[≠] rho.1, 0 < s.re :=
     hnearFull.filter_mono nhdsWithin_le_nhds
   apply hbase.congr'
@@ -124,7 +124,7 @@ theorem analyticAt_pairedEtaArithmeticQuotient_of_re_pos_of_ne
   have hlog : AnalyticAt ℂ (logDeriv pairedEtaCore) s := by
     simpa only [logDeriv] using heta.deriv.div heta hne
   have hpositive : ∀ᶠ w in 𝓝 s, 0 < w.re :=
-    (Complex.isOpen_re_gt 0).mem_nhds hs
+    (isOpen_lt continuous_const Complex.continuous_re).mem_nhds hs
   apply hlog.congr
   filter_upwards [hpositive] with w hw
   rw [logDeriv_pairedEtaCore_eq_tsum hw]
@@ -158,7 +158,7 @@ theorem eventually_circleIntegrable_pairedEtaArithmeticQuotient
     intro hsne
     exact hs (by simpa using hsne)
   have hpositiveFull : ∀ᶠ s in 𝓝 rho.1, 0 < s.re :=
-    (Complex.isOpen_re_gt 0).mem_nhds hpositiveAt
+    (isOpen_lt continuous_const Complex.continuous_re).mem_nhds hpositiveAt
   have hlocal : ∀ᶠ s in 𝓝 rho.1, s ≠ rho.1 →
       0 < s.re ∧ pairedEtaCore s ≠ 0 := by
     filter_upwards [hpositiveFull, hetaNeFull] with s hs hne
@@ -211,7 +211,7 @@ theorem eventually_forall_circleMap_pairedEtaCore_ne_zero_re_pos
     intro hsne
     exact hs (by simpa using hsne)
   have hpositiveFull : ∀ᶠ s in nhds rho.1, 0 < s.re :=
-    (Complex.isOpen_re_gt 0).mem_nhds hpositiveAt
+    (isOpen_lt continuous_const Complex.continuous_re).mem_nhds hpositiveAt
   have hlocal : ∀ᶠ s in nhds rho.1, s ≠ rho.1 →
       0 < s.re ∧ pairedEtaCore s ≠ 0 := by
     filter_upwards [hpositiveFull, hetaNeFull] with s hs hne

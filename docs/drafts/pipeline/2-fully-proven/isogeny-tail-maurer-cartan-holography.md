@@ -635,3 +635,62 @@ count `dⁿ ≤ |ker αⁿ|`, which for a separable isogeny is the definition of
 
 What is *not* covered: a higher-dimensional group, where `α` is not a one-variable rational map.
 That is what items `2`–`5` need the quotient-sheaf and jet-scheme layers for.
+
+## Lean progress — structural premises discharged for split tori
+
+`GaloisForLFunctions.HTGeometry.FreeToricIsogenyTail` constructs the generic point of every finite
+split torus inside the free differential rational field over `ℂ` and proves, rather than assumes:
+
+```text
+differentialJetSet_freeTorusGenerator
+    all jets of the order-zero generators are exactly the free coordinates
+differentialAdjoin_freeTorusGenerator_eq_top
+    the concrete generic point differentially generates the ambient field
+differentialIndependent_freeTorusGenerator
+    the concrete point is differentially independent
+freeToricPowerIsogenyTail
+    for every rank r and every N ≥ 2, the stable power-isogeny tail is exactly the logarithmic-
+    velocity field; its velocity coordinates are differentially independent, its intersection
+    with the position field is the constants, and each velocity has weight one
+```
+
+The complex base carries the locally constructed zero derivation, and the free jet field's
+`DifferentialAlgebra ℂ` instance is constructed from `JetField.deriv_algebraMap`.  Thus the capstone
+has no supplied genericity, generation, constant-field, Hilbert, differentiability, or
+differential-algebra premise.  Direct check and targeted build pass; declaration-only axiom audit
+reports `[propext, Classical.choice, Quot.sound]`.
+
+This closes Theorem B and Corollary C for pure power isogenies on all finite split tori.  It does
+not close the card's quantified theorem for arbitrary connected commutative algebraic groups;
+items `2`–`5` above remain the exact Stage-3 gate.
+
+## Lean progress — coordinatewise expanding diagonal split tori
+
+`GaloisForLFunctions.HTGeometry.ToricDiagonalExpandingTail` removes the common-degree restriction
+from the split-torus result.  For an arbitrary degree vector `D : Fin r → ℕ` with every
+`D i ≥ 2`, it proves:
+
+```text
+prefixMatrix_const_diagonalPowerMatrix
+    the n-th prefix is diag((D i)^n)
+diagonalPowerProtocol_separates
+    the iterated diagonal deck kernels separate every pair of character vectors
+torusDiagonalEndo_stableRangeCore_eq_torusVelocityField
+    the stable tail is exactly the logarithmic-velocity field
+torusDiagonalEndo_logDeriv
+    the i-th velocity transforms with weight D i
+toricDiagonalIsogenyTail
+    tail equality, full differential independence, trivial position intersection, and transport
+```
+
+`GaloisForLFunctions.HTGeometry.FreeToricDiagonalIsogenyTail` then discharges the generic point,
+differential generation, differential independence, constant derivation, nonsingularity, and deck
+separation.  Its capstone `freeToricDiagonalIsogenyTail` takes only a finite rank and a vector of
+subtype-encoded degrees at least two; it has no supplied structural witness.
+
+Direct checks and targeted leaf builds pass.  Axiom audit of all eight new declarations reports
+only `[propext, Classical.choice, Quot.sound]` (the matrix definition itself does not use
+`Classical.choice`).  Both modules are wired into `HTGeometry` without an umbrella build.  This
+closes Theorem B and Corollary C for every coordinatewise expanding diagonal isogeny of a finite
+split torus.  General nonsplit and non-toric connected commutative algebraic groups still require
+the quotient/function-field instantiations listed above, so the parent card remains at Stage 2.

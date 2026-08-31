@@ -9277,3 +9277,20 @@ consumes the integer-start form `DyadicTranslates.dyadicMeanSquare`.  The siblin
 closed without that bridge, by covering the window with tiles instead
 (`Sieve/WindowTiling`, `Sieve/FreeScaleCover`, `Sieve/RouteEMarkerHallLaw`), and the same
 substitution is what this card's schedule now needs.
+
+## Bounded-marker replacement now covers every fixed positive exponent (2026-08-31)
+
+`Sieve/CardLengthGapAll` removes the old auxiliary `β > 1/2` restriction, and
+`Sieve/RouteEMarkerHallLawAll` upgrades the replacement theorem to
+
+```text
+RHTower.Sieve.route_e_marker_hall_injection_all
+    (hβ'0 : 0 < β') (hβ'1 : β' < 1)
+```
+
+for the same windows `H = ceil (sqrt Z * exp ((log Z)^β'))`.  The theorem is unconditional,
+leaf-built, umbrella-wired, and axiom-clean (`[propext, Classical.choice, Quot.sound]`).  Hence the
+Hall-capacity purpose of the card is no longer restricted to `β' > 9/10`.
+
+The card's exact general-`h` coprime square-root product-sign theorem is not implied by this fixed
+subpower replacement and remains unformalised.  Card remains Stage 2.

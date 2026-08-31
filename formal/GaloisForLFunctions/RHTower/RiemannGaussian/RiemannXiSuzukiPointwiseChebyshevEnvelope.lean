@@ -32,7 +32,9 @@ theorem suzukiMissingCurvature_le_one_sixth_exp_half_of_logTwo_le
   have htpos : 0 < t :=
     (Real.log_pos (by norm_num : (1 : ℝ) < 2)).trans_le ht
   have hden : 0 < 1 - Real.exp (-2 * t) :=
-    GaloisForLFunctions.RHTower.one_sub_exp_neg_two_mul_pos htpos
+    by
+      simpa only [neg_mul] using
+        GaloisForLFunctions.RHTower.one_sub_exp_neg_two_mul_pos htpos
   have hexpNegLogTwo :
       Real.exp (-Real.log 2) = (1 / 2 : ℝ) := by
     rw [Real.exp_neg, Real.exp_log (by norm_num : (0 : ℝ) < 2)]

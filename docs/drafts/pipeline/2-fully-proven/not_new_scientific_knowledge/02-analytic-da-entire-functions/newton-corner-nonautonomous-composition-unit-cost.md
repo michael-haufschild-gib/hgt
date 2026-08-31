@@ -172,3 +172,25 @@ No zero-localization statement follows. A possible RH use would require an indep
 3. A. E. Eremenko, *Meromorphic solutions of algebraic differential equations*, Russian Math. Surveys 37:4 (1982), 61--95.
 4. Y. Wang and E. D. Sontag, *Orders of Input/Output Differential Equations and State-Space Dimensions*, SIAM J. Control Optim. 33 (1995), 1102--1126.
 5. A. Isidori, A. J. Krener, C. Gori-Giorgi, and S. Monaco, *The Observability of Cascade Connected Nonlinear Systems*, IFAC Proceedings Volumes 14 (1981), 19--24.
+
+## Lean status
+
+The Newton-corner degeneration for this card shares its obstruction with
+`asymptotically-exponential-algebraic-cascade-unit-cost`; both reduce to controlling the *valuation*
+of the model cascade's output-jet determinant, whose nonvanishing the corpus already owns
+(`ExpAffineCascade.scaled_jet_det_ne_zero`).
+
+Two things are now settled about that valuation.
+
+* The naive route fails.  Taking the bounds in the separable product form `a_i + b_j` forced by
+  `det_ne_zero_of_hasLead`, the boundary matrix has entries `(v_i)_j · c_n^i` with `v_i = (i,…,i,1)`,
+  so its first `n − 1` columns are proportional and `det L = 0` for `n ≥ 3`.  The leading terms of the
+  determinant cancel.
+* The repair that suggested itself — that `det m` is a single monomial, so its valuation is known —
+  is **false**: `det (sumJacobian 2) = X₁²(1 − X₂)`, so the height-four model determinant is not a
+  monomial.
+
+Machinery built toward this card and available: `MultiGradedNewtonModel`,
+`ObservabilityJacobianTransfer`, `LaurentLeadingDeterminant`, `LaurentHasLead`,
+`HahnLeadingCoefficient`, `CascadeModelAlgebra`, `ScalarMonomial`, `TowerMonomialShape`.
+See `_STAGE3-LEDGER.md` for the full route analysis.

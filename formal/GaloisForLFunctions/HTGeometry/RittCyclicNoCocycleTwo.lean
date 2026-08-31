@@ -177,7 +177,7 @@ theorem cnf_support_subset_two [IsAlgClosed K] {A B lam : K} (hlam : lam ≠ 0)
     -- one of the two fibre points is a critical value
     have hcrit : (z = A ∨ z = B) ∨ (-z = A ∨ -z = B) := by
       by_contra hcon
-      push_neg at hcon
+      push Not at hcon
       obtain ⟨⟨h1, h2⟩, h3, h4⟩ := hcon
       exact hzne ((hmemcrit z hz h1 h2).trans (hmemcrit (-z) hzn h3 h4).symm)
     -- the other one is `y`
@@ -192,27 +192,31 @@ theorem cnf_support_subset_two [IsAlgClosed K] {A B lam : K} (hlam : lam ≠ 0)
     have hAcase : A ∈ cnfFiber 2 A B lam y → False := by
       intro hAf
       have hnA : -A ∈ cnfFiber 2 A B lam y := neg_mem_cnfFiber_two hc hAf
-      have hnAA : -A ≠ A := fun hh => hA0 (by linear_combination -hh / 2)
+      have hnAA : -A ≠ A := fun hh => hA0 (by
+        have h2 : (2 : K) * A = 0 := by linear_combination -hh
+        exact (mul_eq_zero.mp h2).resolve_left two_ne_zero)
       have hnAB : -A ≠ B := by
         intro hh
-        exact hpow (by linear_combination (A - B) * hh)
+        exact hpow (by linear_combination (B - A) * hh)
       have hyv : y = -A := (hmemcrit (-A) hnA hnAA hnAB).symm
       exact hnegA (by rw [cnfFiber_value hp0 hAB hc hAf, hyv])
     have hBcase : B ∈ cnfFiber 2 A B lam y → False := by
       intro hBf
       have hnB : -B ∈ cnfFiber 2 A B lam y := neg_mem_cnfFiber_two hc hBf
-      have hnBB : -B ≠ B := fun hh => hB0 (by linear_combination -hh / 2)
+      have hnBB : -B ≠ B := fun hh => hB0 (by
+        have h2 : (2 : K) * B = 0 := by linear_combination -hh
+        exact (mul_eq_zero.mp h2).resolve_left two_ne_zero)
       have hnBA : -B ≠ A := by
         intro hh
-        exact hpow (by linear_combination (A - B) * hh)
-      have hyv : y = -B := (hmemcrit (-B) hnB hnBB hnBA).symm
+        exact hpow (by linear_combination (B - A) * hh)
+      have hyv : y = -B := (hmemcrit (-B) hnB hnBA hnBB).symm
       -- the origin carries no order
       have h0S : (0 : K) ∉ S := by
         intro h0
         have : (0 : K) ∈ T := (hmemT 0).mpr ⟨Ne.symm hB0, Ne.symm hA0, (hmemS 0).mp h0⟩
         rw [hy, Finset.mem_singleton] at this
         rw [hyv] at this
-        exact hB0 (by linear_combination -this)
+        exact hB0 (by linear_combination this)
       have h0 : ratOrder F 0 = 0 := by
         by_contra hne
         exact h0S ((hmemS 0).mpr hne)
@@ -230,8 +234,8 @@ theorem cnf_support_subset_two [IsAlgClosed K] {A B lam : K} (hlam : lam ≠ 0)
     · exact hAcase hz
     · exact hBcase hz
     · rcases h' with h' | h'
-      · exact hAcase (by rw [← h']; exact hzn)
-      · exact hBcase (by rw [← h']; exact hzn)
+      · exact hAcase (by rwa [h'] at hzn)
+      · exact hBcase (by rwa [h'] at hzn)
   · -- two points outside the critical values
     have hS4 : S.card = 4 := by omega
     have hAS : A ∈ S := by
@@ -252,60 +256,83 @@ theorem cnf_support_subset_two [IsAlgClosed K] {A B lam : K} (hlam : lam ≠ 0)
         exact hfib y hy hzy
       · rw [Finset.card_biUnion hdisj, Finset.sum_congr rfl hcard, Finset.sum_const, smul_eq_mul,
           h, hS4]
-    obtain ⟨y, hy, hAf⟩ := Finset.mem_biUnion.mp (hunion ▸ hAS)
+    have hASu : A ∈ T.biUnion (cnfFiber 2 A B lam) := by rw [← hunion]; exact hAS
+    obtain ⟨y, hy, hAf⟩ := Finset.mem_biUnion.mp hASu
     obtain ⟨hyB, hyA, -⟩ := (hmemT y).mp hy
     have hc : (B - y) * lam ≠ 0 := mul_ne_zero (sub_ne_zero.mpr (Ne.symm hyB)) hlam
     have hyval : (A - B * lam * A ^ 2) / (1 - lam * A ^ 2) = y :=
       cnfFiber_value hp0 hAB hc hAf
     have hfibeq : cnfFiber 2 A B lam y = {A, -A} := cnfFiber_two_eq_pair hlam hyA hyB hAf
-    obtain ⟨y', hy', hBf⟩ := Finset.mem_biUnion.mp (hunion ▸ hBS)
+    have hBSu : B ∈ T.biUnion (cnfFiber 2 A B lam) := by rw [← hunion]; exact hBS
+    obtain ⟨y', hy', hBf⟩ := Finset.mem_biUnion.mp hBSu
     obtain ⟨hyB', hyA', -⟩ := (hmemT y').mp hy'
     have hfibeq' : cnfFiber 2 A B lam y' = {B, -B} := by
       have hc' : (B - y') * lam ≠ 0 := mul_ne_zero (sub_ne_zero.mpr (Ne.symm hyB')) hlam
       exact cnfFiber_two_eq_pair hlam hyA' hyB' hBf
-    -- the two fibres are the sign pairs of the critical values, so `T` is their negatives
-    have hyT : y ∈ S := hfib y hy hAf
-    have hyU : y ∈ T := hy
-    have hymem : y ∈ ({A, -A} : Finset K) ∪ ({B, -B} : Finset K) := by
-      have : y ∈ T.biUnion (cnfFiber 2 A B lam) := hunion ▸ hyT
-      obtain ⟨u, hu, hyu⟩ := Finset.mem_biUnion.mp this
-      have hne : u = y ∨ u = y' ∨ (u ≠ y ∧ u ≠ y') := by tauto
-      rcases eq_or_ne u y with rfl | hu1
-      · exact Finset.mem_union_left _ (hfibeq ▸ hyu)
-      · rcases eq_or_ne u y' with rfl | hu2
-        · exact Finset.mem_union_right _ (hfibeq' ▸ hyu)
-        · exfalso
-          have hsub : ({y, y'} : Finset K) ⊆ T := by
-            intro x hx
-            rcases Finset.mem_insert.mp hx with rfl | hx
-            · exact hy
-            · rw [Finset.mem_singleton] at hx; subst hx; exact hy'
-          have hyy' : y ≠ y' := by
-            intro hh
-            rw [hh] at hfibeq
-            rw [hfibeq] at hfibeq'
-            have hBmem : B ∈ ({A, -A} : Finset K) := hfibeq' ▸ Finset.mem_insert_self B {-B}
-            rcases Finset.mem_insert.mp hBmem with hh1 | hh1
-            · exact hAB hh1.symm
-            · rw [Finset.mem_singleton] at hh1
-              exact hpow (by linear_combination (A - B) * hh1)
-          have hcard2 : ({y, y'} : Finset K).card = 2 := by
-            rw [Finset.card_insert_of_notMem (by simpa using hyy'), Finset.card_singleton]
-          have := Finset.eq_of_subset_of_card_le hsub (by rw [hcard2, h])
-          have humem : u ∈ ({y, y'} : Finset K) := this ▸ hu
-          rcases Finset.mem_insert.mp humem with hh | hh
-          · exact hu1 hh
-          · rw [Finset.mem_singleton] at hh; exact hu2 hh
-    rw [Finset.mem_union] at hymem
-    rcases hymem with hm | hm
-    · rcases Finset.mem_insert.mp hm with hh | hh
+    have hyy' : y ≠ y' := by
+      intro hh
+      rw [hh, hfibeq'] at hfibeq
+      have hBmem : B ∈ ({A, -A} : Finset K) := by
+        rw [← hfibeq]
+        exact Finset.mem_insert_self B {-B}
+      rcases Finset.mem_insert.mp hBmem with hh1 | hh1
+      · exact hAB hh1.symm
+      · rw [Finset.mem_singleton] at hh1
+        exact hpow (by linear_combination (A - B) * hh1)
+    have hTeq : ({y, y'} : Finset K) = T := by
+      refine Finset.eq_of_subset_of_card_le ?_ ?_
+      · intro x hx
+        rcases Finset.mem_insert.mp hx with rfl | hx
+        · exact hy
+        · rw [Finset.mem_singleton] at hx
+          subst hx
+          exact hy'
+      · rw [Finset.card_insert_of_notMem (by simpa using hyy'), Finset.card_singleton, h]
+    have hyS : y ∈ S := (hmemS y).mpr ((hmemT y).mp hy).2.2
+    have hySu : y ∈ T.biUnion (cnfFiber 2 A B lam) := by
+      rw [← hunion]; exact hyS
+    obtain ⟨u, hu, hyu⟩ := Finset.mem_biUnion.mp hySu
+    rw [← hTeq, Finset.mem_insert, Finset.mem_singleton] at hu
+    rcases hu with rfl | rfl
+    · rw [hfibeq, Finset.mem_insert, Finset.mem_singleton] at hyu
+      rcases hyu with hh | hh
       · exact hyA hh
-      · rw [Finset.mem_singleton] at hh
-        exact hnegA (by rw [hyval, hh])
-    · rcases Finset.mem_insert.mp hm with hh | hh
+      · exact hnegA (hyval.trans hh)
+    · rw [hfibeq', Finset.mem_insert, Finset.mem_singleton] at hyu
+      rcases hyu with hh | hh
       · exact hyB hh
-      · rw [Finset.mem_singleton] at hh
-        exact hnegB (by rw [hyval, hh])
+      · exact hnegB (hyval.trans hh)
+
+/-- **Degree two carries no invariant differential.** -/
+theorem cnf_no_cocycle_two [IsAlgClosed K] {A B lam : K} (hlam : lam ≠ 0)
+    (hA0 : A ≠ 0) (hB0 : B ≠ 0) (hAB : A ≠ B) (hpow : A ^ 2 ≠ B ^ 2)
+    (hApole : 1 - lam * A ^ 2 ≠ 0)
+    (hnegA : (A - B * lam * A ^ 2) / (1 - lam * A ^ 2) ≠ -A)
+    (hnegB : (A - B * lam * A ^ 2) / (1 - lam * A ^ 2) ≠ -B)
+    {hP : ¬ ∃ c : K, cnf 2 A B lam = RatFunc.C c}
+    {k : ℤ} (hk : k ≠ 0) {b : K} (hb : b ≠ 0) {F : RatFunc K} (hF : F ≠ 0)
+    (heq : IsRatAffineTransport (cnf 2 A B lam) hP k (RatFunc.C b) 0 F) : False :=
+  cnf_no_cocycle_of_support (le_refl 2) hlam hA0 hB0 hAB hApole hk hb hF heq
+    (fun z hzA hzB =>
+      cnf_support_subset_two hlam hA0 hB0 hAB hpow hApole hnegA hnegB hk hb hF heq z hzA hzB)
+
+/-- **The cyclic normal form carries no invariant differential in any degree.**  The map
+`(A − Bλw^p)/(1 − λw^p)` preserves no rational `k`-differential up to scale, `k ≠ 0`, as soon as the
+two critical values are nonzero, distinct, not `p`-th-power-equal, and the first of them is not a
+pole — together with, in degree two only, the two sign exclusions on its image. -/
+theorem cnf_no_cocycle_general [IsAlgClosed K] {p : ℕ} (hp : 2 ≤ p) {A B lam : K} (hlam : lam ≠ 0)
+    (hA0 : A ≠ 0) (hB0 : B ≠ 0) (hAB : A ≠ B) (hpow : A ^ p ≠ B ^ p)
+    (hApole : 1 - lam * A ^ p ≠ 0)
+    (htwo : p = 2 → (A - B * lam * A ^ p) / (1 - lam * A ^ p) ≠ -A
+      ∧ (A - B * lam * A ^ p) / (1 - lam * A ^ p) ≠ -B)
+    {hP : ¬ ∃ c : K, cnf p A B lam = RatFunc.C c}
+    {k : ℤ} (hk : k ≠ 0) {b : K} (hb : b ≠ 0) {F : RatFunc K} (hF : F ≠ 0)
+    (heq : IsRatAffineTransport (cnf p A B lam) hP k (RatFunc.C b) 0 F) : False := by
+  rcases eq_or_lt_of_le hp with hp2 | hp3
+  · subst hp2
+    obtain ⟨h1, h2⟩ := htwo rfl
+    exact cnf_no_cocycle_two hlam hA0 hB0 hAB hpow hApole h1 h2 hk hb hF heq
+  · exact cnf_no_cocycle (by omega) hlam hA0 hB0 hAB hpow hApole hk hb hF heq
 
 end
 

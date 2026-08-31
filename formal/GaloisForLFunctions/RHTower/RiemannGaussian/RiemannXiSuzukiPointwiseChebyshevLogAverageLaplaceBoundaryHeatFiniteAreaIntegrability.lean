@@ -65,11 +65,11 @@ theorem locallyIntegrable_complex_inv_sub (c : ℂ) :
 /-- Every complex simple-pole kernel is locally integrable through its pole. -/
 theorem locallyIntegrable_simplePoleKernel (L c : ℂ) :
     LocallyIntegrable (simplePoleKernel L c) volume := by
-  have h := LocallyIntegrable.continuous_mul
-    (continuous_const : Continuous (fun _ : ℂ => L))
-    (locallyIntegrable_complex_inv_sub c)
   change LocallyIntegrable (fun z : ℂ => L * (z - c)⁻¹) volume
-  exact h
+  rw [locallyIntegrable_iff]
+  intro K hK
+  exact ((locallyIntegrable_complex_inv_sub c).integrableOn_isCompact hK).continuousOn_mul
+    continuousOn_const hK
 
 /-- Multiplying a simple pole by the smooth boundary-heat Cauchy--Green
 source preserves local integrability through the pole. -/
@@ -78,13 +78,13 @@ theorem locallyIntegrable_suzukiChebyshevLaplaceBoundaryHeatWeightedSimplePoleSo
     LocallyIntegrable
       (suzukiChebyshevLaplaceBoundaryHeatWeightedSimplePoleSource
         x tau L c) volume := by
-  have h := LocallyIntegrable.continuous_mul
-    (continuous_suzukiChebyshevLaplaceBoundaryHeatCauchyGreenSource x tau)
-    (locallyIntegrable_simplePoleKernel L c)
   change LocallyIntegrable (fun z : ℂ =>
     suzukiChebyshevLaplaceBoundaryHeatCauchyGreenSource x tau z *
       simplePoleKernel L c z) volume
-  exact h
+  rw [locallyIntegrable_iff]
+  intro K hK
+  exact ((locallyIntegrable_simplePoleKernel L c).integrableOn_isCompact hK).continuousOn_mul
+    (continuous_suzukiChebyshevLaplaceBoundaryHeatCauchyGreenSource x tau).continuousOn hK
 
 /-! ## Rectangular iterated integrals as planar set integrals -/
 

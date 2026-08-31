@@ -584,3 +584,29 @@ It retains both reciprocal `ℓ²` savings through divisor-fibre convolution.  D
 targeted module build, and axiom audit pass with only `propext`, `Classical.choice`, and
 `Quot.sound`.  Remaining gate is the residual Watt/DI intermediate configuration plus
 amplification and final Matomäki--Teräväinen Theorem 1.2 bookkeeping.
+
+## Lean progress update (2026-08-30) — literal Watt/DI comparison regions
+
+`Sieve/MatomakiTeravainenWattDivisorRange.lean` turns the divisor-energy envelope into the exact
+Lemma 3.5 Watt bound under `2AN'² ≤ A²√T`, and into the exact DI bound under
+`2AN'² ≤ A^(5/4)T^(3/4)`. Strengthened capstones choose divisor exponent `ε/5` and discharge its
+power from `T ≥ 2`, `A ≤ T`, `N ≤ T`, and `N' ≤ 2N`. Direct check, targeted build, and
+six-declaration axiom audit pass with only `[propext, Classical.choice, Quot.sound]`; module is
+umbrella-wired.
+
+These are intermediate comparison theorems, not retained hypotheses of the card. Remaining work
+must derive height bounds and scale partition from paper parameters, handle any complementary
+configuration, and perform amplification plus Theorem 1.2 assembly.
+
+## Lean progress update (2026-08-31) — height dichotomy discharged internally
+
+`Sieve/MatomakiTeravainenLemma35CoveredRange.lean` combines the elementary `T ≤ N` branch with the
+reciprocal-divisor `N < T` branch for both literal Watt and Deshouillers--Iwaniec envelopes.  The
+new capstones retain no supplied comparison between `N` and `T`; `A ≤ T` and the product-length
+condition are needed only on the sub-height branch where divisor energy consumes them.  Direct
+check, targeted leaf build, and axiom audit pass with only
+`[propext, Classical.choice, Quot.sound]`; module is umbrella-wired.
+
+Remaining shared gap is the actual Proposition-2.2 scale routing for the residual `N < T` cases
+where `A > T` or the applicable product-length inequality fails, followed by amplification and
+Theorem 1.2 assembly.  Card remains Stage 2.

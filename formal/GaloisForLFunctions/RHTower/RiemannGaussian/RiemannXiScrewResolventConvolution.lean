@@ -233,6 +233,7 @@ theorem norm_futureExponentialConvolution_le_of_exponential
     _ = A * D⁻¹ := by
       rw [MeasureTheory.integral_const_mul,
         GaloisForLFunctions.HTGeometry.integral_exp_neg_mul_Ioi_zero hD]
+      simp only [one_div]
     _ = (C * Real.exp (epsilon * t)) / (1 - epsilon) := by
       dsimp [A, D]
       rw [div_eq_mul_inv]

@@ -48,7 +48,9 @@ theorem gaussianSuzukiDigammaDensity_eq_reflected_add_missing
     {u : ℝ} (hu : 0 < u) :
     gaussianSuzukiDigammaDensity u =
       Real.exp (-u / 2) + suzukiMissingCurvature u := by
-  have hden := (GaloisForLFunctions.RHTower.one_sub_exp_neg_two_mul_pos hu).ne'
+  have hden : 1 - Real.exp (-2 * u) ≠ 0 := by
+    simpa only [neg_mul] using
+      (GaloisForLFunctions.RHTower.one_sub_exp_neg_two_mul_pos hu).ne'
   unfold gaussianSuzukiDigammaDensity suzukiMissingCurvature
   have hden' : 1 - Real.exp (-(u * 2)) ≠ 0 := by
     have harg : -(u * 2) = -2 * u := by ring
@@ -96,7 +98,9 @@ theorem continuousOn_gaussianSuzukiMissingCurvatureIntegrand
       (Set.Ioi 0) := by
   intro u hu
   have hden : 1 - Real.exp (-2 * u) ≠ 0 :=
-    (GaloisForLFunctions.RHTower.one_sub_exp_neg_two_mul_pos hu).ne'
+    by
+      simpa only [neg_mul] using
+        (GaloisForLFunctions.RHTower.one_sub_exp_neg_two_mul_pos hu).ne'
   unfold gaussianSuzukiMissingCurvatureIntegrand suzukiMissingCurvature
   fun_prop
 
@@ -106,7 +110,9 @@ lemma norm_gaussianSuzukiMissingCurvatureIntegrand_le_near_zero
     (hu : 0 < u) (hu1 : u ≤ 1) :
     ‖gaussianSuzukiMissingCurvatureIntegrand ε t u‖ ≤
       (3 / 2 : ℝ) * |t| := by
-  have hdenpos := GaloisForLFunctions.RHTower.one_sub_exp_neg_two_mul_pos hu
+  have hdenpos : 0 < 1 - Real.exp (-2 * u) := by
+    simpa only [neg_mul] using
+      GaloisForLFunctions.RHTower.one_sub_exp_neg_two_mul_pos hu
   have hden := two_thirds_mul_le_one_sub_exp_neg_two_mul hu hu1
   have hgaussian : Real.exp (-u ^ 2 / (4 * ε)) ≤ 1 := by
     rw [Real.exp_le_one_iff]
@@ -157,7 +163,9 @@ lemma norm_gaussianSuzukiMissingCurvatureIntegrand_le_tail
       (2 / (1 - Real.exp (-2))) *
         Real.exp (-(5 / 2 : ℝ) * u) := by
   have hu0 : 0 < u := zero_lt_one.trans_le hu
-  have hdenpos := GaloisForLFunctions.RHTower.one_sub_exp_neg_two_mul_pos hu0
+  have hdenpos : 0 < 1 - Real.exp (-2 * u) := by
+    simpa only [neg_mul] using
+      GaloisForLFunctions.RHTower.one_sub_exp_neg_two_mul_pos hu0
   have hfixedDen : 0 < 1 - Real.exp (-2) := by
     exact sub_pos.mpr (Real.exp_lt_one_iff.mpr (by norm_num))
   have hden : 1 - Real.exp (-2) ≤ 1 - Real.exp (-2 * u) := by

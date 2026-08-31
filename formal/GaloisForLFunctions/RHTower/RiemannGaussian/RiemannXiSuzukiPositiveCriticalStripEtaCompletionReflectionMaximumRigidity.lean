@@ -117,7 +117,8 @@ theorem analyticAt_pairedEtaLaplaceReflectionReciprocalExtension
     AnalyticAt ℂ pairedEtaLaplaceReflectionReciprocalExtension s := by
   let S : Set ℂ := {z : ℂ | 0 < z.re} ∩ {z : ℂ | z.re < 3}
   have hSopen : IsOpen S :=
-    (Complex.isOpen_re_gt 0).inter (Complex.isOpen_re_lt 3)
+    (isOpen_lt continuous_const Complex.continuous_re).inter
+      (isOpen_lt Complex.continuous_re continuous_const)
   have hSdiff : DifferentiableOn ℂ pairedEtaLaplaceReflectionReciprocalExtension S := by
     intro z hz
     exact (differentiableAt_pairedEtaLaplaceReflectionReciprocalExtension hz.1 hz.2).differentiableWithinAt

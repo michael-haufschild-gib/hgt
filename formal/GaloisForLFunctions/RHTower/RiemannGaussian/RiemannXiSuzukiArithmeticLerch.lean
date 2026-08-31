@@ -131,7 +131,7 @@ theorem differentiableOn_suzukiHurwitzLerchOne
   apply Complex.differentiableOn_tsum_of_summable_norm
     ((summable_geometric_of_lt_one hq0 hq1).mul_left 8)
     (differentiableOn_suzukiHurwitzLerchOneSummand q)
-    (Complex.isOpen_re_gt (1 / 8))
+    (isOpen_lt continuous_const Complex.continuous_re)
   exact fun n a ha ↦ norm_suzukiHurwitzLerchOneSummand_le hq0 ha n
 
 /-- Analytic form of the preceding holomorphy theorem. -/
@@ -140,7 +140,7 @@ theorem analyticOnNhd_suzukiHurwitzLerchOne
     AnalyticOnNhd ℂ (suzukiHurwitzLerchOne q)
       suzukiHurwitzLerchCommonDomain :=
   (differentiableOn_suzukiHurwitzLerchOne q hq0 hq1).analyticOnNhd
-    (Complex.isOpen_re_gt (1 / 8))
+    (isOpen_lt continuous_const Complex.continuous_re)
 
 /-- The moving Hurwitz--Lerch parameter `1/4 - i z/2` in Suzuki's formula. -/
 def suzukiHurwitzLerchParameter (z : ℂ) : ℂ :=

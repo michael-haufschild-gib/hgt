@@ -92,6 +92,16 @@ theorem coordinateTotalDerivation_algebraMap (p : K[X]) :
     rw [← Polynomial.algebraMap_eq, ← IsScalarTower.algebraMap_apply]
   rw [hC, hCd, coordinateTotalDerivation_algebraMap, polyTotalDeriv_C]
 
+/-- The total differential makes the rational function field a differential algebra over its
+coefficient field. -/
+theorem coordinateTotalDifferentialAlgebra :
+    letI : Differential (RatFunc K) := coordinateTotalDifferential
+    DifferentialAlgebra K (RatFunc K) := by
+  letI : Differential (RatFunc K) := coordinateTotalDifferential
+  constructor
+  intro c
+  exact coordinateTotalDerivation_base c
+
 /-- The total derivation sends the coordinate to one. -/
 @[simp] theorem coordinateTotalDerivation_X :
     coordinateTotalDerivation (RatFunc.X : RatFunc K) = 1 := by

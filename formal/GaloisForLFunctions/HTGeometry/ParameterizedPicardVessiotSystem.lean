@@ -201,6 +201,65 @@ def ppvSigma (σ : K ≃+* K)
       algebraMap _ _ (sigmaJetCoordEquiv σ hσ A A' hAA' hA'A f) := by
   exact sigmaAwayEquiv_algebraMap _ _ _ _ _
 
+/-- The parameterized difference action restricts to the given action on the base field. -/
+theorem ppvSigma_ppvBaseMap (σ : K ≃+* K)
+    (hσ : ∀ a : K, σ (Differential.deriv a) = Differential.deriv (σ a))
+    (A A' : Matrix (Fin n) (Fin n) K) (hAA' : A * A' = 1) (hA'A : A' * A = 1)
+    (x : K) :
+    ppvSigma σ hσ A A' hAA' hA'A (ppvBaseMap K n x) = ppvBaseMap K n (σ x) := by
+  rw [show ppvBaseMap K n x =
+      algebraMap (DifferentialPolynomial (Fin n × Fin n) K)
+        (ppvLocalization K n) (MvPolynomial.C x) from rfl,
+    show ppvBaseMap K n (σ x) =
+      algebraMap (DifferentialPolynomial (Fin n × Fin n) K)
+        (ppvLocalization K n) (MvPolynomial.C (σ x)) from rfl]
+  simpa only [sigmaJetCoordEquiv_apply, sigmaJetCoordHom_C] using
+    ppvSigma_algebraMap σ hσ A A' hAA' hA'A (MvPolynomial.C x)
+
+/-- The localized total derivation restricts to the derivation on the base field. -/
+theorem ppvBaseMap_deriv (x : K) :
+    Differential.deriv (ppvBaseMap K n x) = ppvBaseMap K n (Differential.deriv x) := by
+  rw [show ppvBaseMap K n x =
+      algebraMap (DifferentialPolynomial (Fin n × Fin n) K)
+        (ppvLocalization K n) (MvPolynomial.C x) from rfl,
+    show ppvBaseMap K n (Differential.deriv x) =
+      algebraMap (DifferentialPolynomial (Fin n × Fin n) K)
+        (ppvLocalization K n) (MvPolynomial.C (Differential.deriv x)) from rfl]
+  simpa only [GaloisForLFunctions.differentialPolynomialOverDerivation_C] using
+    ppvLocalization_deriv_algebraMap (n := n) (MvPolynomial.C x)
+
+/-- Base compatibility survives every two-sided stable quotient. -/
+theorem sigmaQuotientEquiv_ppvBaseMap (σ : K ≃+* K)
+    (hσ : ∀ a : K, σ (Differential.deriv a) = Differential.deriv (σ a))
+    (A A' : Matrix (Fin n) (Fin n) K) (hAA' : A * A' = 1) (hA'A : A' * A = 1)
+    (M : Ideal (ppvLocalization K n))
+    (hM : IsSigmaIdeal (ppvSigma σ hσ A A' hAA' hA'A) M)
+    (hM' : IsSigmaIdeal (ppvSigma σ hσ A A' hAA' hA'A).symm M)
+    (x : K) :
+    sigmaQuotientEquiv (ppvSigma σ hσ A A' hAA' hA'A) M hM hM'
+        (Ideal.Quotient.mk M (ppvBaseMap K n x)) =
+      Ideal.Quotient.mk M (ppvBaseMap K n (σ x)) := by
+  rw [sigmaQuotientEquiv_mk, ppvSigma_ppvBaseMap]
+
+/-- Base derivation compatibility survives every differential quotient. -/
+theorem quotientDifferential_ppvBaseMap_deriv (M : Ideal (ppvLocalization K n))
+    (hM : ∀ y ∈ M, Differential.deriv y ∈ M) (x : K) :
+    letI : Differential ((ppvLocalization K n) ⧸ M) := quotientDifferential M hM
+    Differential.deriv (Ideal.Quotient.mk M (ppvBaseMap K n x)) =
+      Ideal.Quotient.mk M (ppvBaseMap K n (Differential.deriv x)) := by
+  rw [quotientDifferential_deriv_mk, ppvBaseMap_deriv]
+
+/-- Every differential PPV quotient is canonically a differential algebra over its base field. -/
+theorem ppvQuotientDifferentialAlgebra
+    (M : Ideal (ppvLocalization K n))
+    (hM : ∀ y ∈ M, Differential.deriv y ∈ M) :
+    letI : Differential ((ppvLocalization K n) ⧸ M) := quotientDifferential M hM
+    DifferentialAlgebra K ((ppvLocalization K n) ⧸ M) := by
+  letI : Differential ((ppvLocalization K n) ⧸ M) := quotientDifferential M hM
+  constructor
+  intro x
+  exact quotientDifferential_ppvBaseMap_deriv M hM x
+
 /-- The generic matrix solves the localized system. -/
 theorem ppvSigma_ppvFundamental (σ : K ≃+* K)
     (hσ : ∀ a : K, σ (Differential.deriv a) = Differential.deriv (σ a))

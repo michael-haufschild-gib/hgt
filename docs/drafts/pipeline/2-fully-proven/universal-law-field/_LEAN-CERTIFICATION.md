@@ -1886,3 +1886,213 @@ Pythagorean conservation, functional-equation information neutrality, even-apert
 growth, shifted bilateral selection of unit character/zero prime-radial drift, and unbounded
 formation rank coexisting with the literal depth-`12` differentially independent source. No RH
 claim is made.
+
+## Session 2026-08-30 addition (on-shell Wronskian internalization)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-ODTM-1 | Equation-divisible commutator defect; principal-ideal preservation; module-linear on-shell quotient current; exact conormal reconstruction, range, vanishing, and square laws; reflection-odd descent; nonzero top-multiplicity range; invertible simple-wall and square-zero thick-wall classification | `HTGeometry.ConstitutiveOnShellWronskianInternalization` |
+
+Scratch and project-path elaboration and one targeted leaf build pass (`1461/1461`). No umbrella,
+theorem-area, or project build was run. Module is wired into `HTGeometry.UniversalLawField`, whose
+parent umbrella already imports it. Nine audited capstones depend only on `propext`,
+`Classical.choice`, and `Quot.sound`; forbidden-declaration scan and `git diff --check` pass. The
+certificate constructs an algebraic conormal current on the full equation scheme. Conservative
+transport to a nonzero closed normal prime-source correspondence remains the RH-bearing gate; no
+RH claim is made.
+
+## Session 2026-08-30 addition (actual Xi conormal current and graded functional equation)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-ODTM-2 | Entire-source derivation; actual Xi equation-Wronskian commutator and descent; exact conormal reconstruction; multiplicity-adapted nonzero top-jet certificate at every Xi zero; closed global nonvanishing; functional-equation oddness | `RHTower.XiEntireOnShellWronskianInternalization` |
+
+Scratch and project-path elaboration and one targeted leaf build pass (`8956/8956`). No umbrella,
+theorem-area, or project build was run. Module is wired into `RHTower` and
+`HTGeometry.UniversalLawField` without building either umbrella. Nine audited capstones depend only
+on `propext`, `Classical.choice`, and `Quot.sound`; forbidden-declaration scan and
+`git diff --check` pass. This certificate removes the polynomial-model restriction: one literal
+Xi-built quotient current is detected at every Xi divisor point by the jet immediately below its
+exact multiplicity and anticommutes with the actual functional-equation Real action. Conservative
+transport to an independently formed graded prime source remains the RH-bearing gate; no RH claim
+is made.
+
+## Session 2026-08-31 addition (parity suspension and conservative Hodge positivity)
+
+| ID | Theorem | Lean modules |
+|---|---|---|
+| ULF-ODTM-3 | Faithful square-zero parity suspension; exact kernel/range; odd-to-even symmetry transmutation; conservative positive Hodge Hamiltonian; unconditional nonzero multiplicity-faithful Xi BRST charge; involutive commuting functional-equation lift | `HTGeometry.ConstitutiveParitySuspensionHodge`; `RHTower.XiConormalParitySuspensionHodge` |
+
+Scratch and project-path elaboration and batched named leaf builds pass (`8962/8962`). No umbrella,
+theorem-area, or project build was run. Modules are wired into `HTGeometry.UniversalLawField` and
+`RHTower` without building either umbrella. Twelve audited capstones depend only on `propext`,
+`Classical.choice`, and `Quot.sound`; scoped forbidden-declaration and `git diff --check` scans
+pass. Certificate proves positivity is a conservative observer of an odd complex, not a normality
+condition on its multiplicity current: parity suspension preserves the actual Xi conormal current,
+makes it square-zero, and converts functional-equation oddness into a commuting involutive chain
+symmetry. Source-natural bounded realization remains the RH-bearing gate; no RH claim is made.
+
+## Session 2026-08-31 addition (theta-source conormal socle realization)
+
+| ID | Theorem | Lean modules |
+|---|---|---|
+| ULF-ODTM-4 | Iterated composite-kernel growth; coordinate-free single-Jordan-chain criterion; exact top-socle range reconstruction; actual theta-source geometric kernel dimension one; Xi-multiplicity exponent law; simple/multiple conormal phase classification; faithful nonzero positive source Hodge lift | `HTGeometry.ConstitutiveNilpotentSocleLaw`; `RHTower.HedenmalmThetaSourceConormalSocle` |
+
+Scratch and project-path elaboration and batched named leaf builds pass (`10961/10961`). No
+umbrella, theorem-area, or project build was run. Modules are wired into
+`HTGeometry.UniversalLawField` and `RHTower` without building either umbrella. Fourteen audited
+capstones depend only on `propext`, `Classical.choice`, and `Quot.sound`; scoped
+forbidden-declaration and `git diff --check` scans pass. Certificate fuses the homological
+composite-kernel inequality with theta-source geometric uniqueness and exact Xi determinant
+multiplicity: every nonzero source root block is one complete chain, and its canonical top power
+is a nonzero rank-one current with range exactly the eigenline. This closes the previously open
+source-natural bounded realization locally. Global conservative sewing compatible with reflection
+and prime-sector superselection remains the RH-bearing gate; no RH claim is made.
+
+## Session 2026-08-31 addition (functional-equation root transport and global current sewing)
+
+| ID | Theorem | Lean modules |
+|---|---|---|
+| ULF-ODTM-5 | Weighted source reflection; quantile operator anticommutation; exact root-block, nilpotent-power, conormal-current, range, and norm transport with Jordan-depth character | `HTGeometry.ConstitutiveEvenPositiveWeightedReflection`; `RHTower.HedenmalmThetaSourceFunctionalEquationRootCurrentTransport` |
+| ULF-ODTM-6 | Canonical nonzero contractive current normalization; oriented reflected `L²` orbit doubles; dependent `ell²` global sewing; involutive information-neutral reflection; exact `R D R = Chi D`; exact unnormalized single-packet recovery | `HTGeometry.ConstitutiveDependentLpGaugeTransport`; `RHTower.HedenmalmThetaSourceGlobalConormalCurrentSewing` |
+
+Scratch and project-path elaboration pass. Targeted named leaf builds pass (`10970/10970` and
+`10978/10978`). No umbrella, theorem-area, or project build was run. Modules are wired into
+`HTGeometry.UniversalLawField` and `RHTower` without building either umbrella. Eight audited
+capstones across transport and sewing depend only on `propext`, `Classical.choice`, and
+`Quot.sound`; formal lint, scoped forbidden-declaration scan, and `git diff --check` pass. Functional-equation
+symmetry is now an actual information-neutral action on source root histories, and every local
+conormal current survives one bounded global observer with exact coordinate recovery. Remaining
+RH gate is arithmetic source-occurrence properness/selection; no RH claim is made.
+
+## Session 2026-08-31 addition (prime-modular current field and tracial dichotomy)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-PMFM-1 | Invertible reciprocal prime dilation on every theta root-current reflection double; modular conjugation by functional equation; exact commutation with conormal current; literal two-source-energy norm law; singleton/all-positive prime modular-spectrum dichotomy | `RHTower.HedenmalmThetaSourcePrimeModularCurrentField` |
+
+Scratch and project-path elaboration pass. Targeted named leaf build passes (`12830/12830`); it
+replayed missing dependency oleans but did not build an umbrella. Module is wired into
+`HTGeometry.UniversalLawField` and `RHTower` without building either umbrella. Seven audited
+capstones depend only on `propext`, `Classical.choice`, and `Quot.sound`; scoped
+forbidden-declaration and `git diff --check` scans pass. The source conormal current, functional
+equation, literal prime translation, and gapless prime-log weld now form one exact modular field.
+Every off-wall sector has dense modular history in all positive scales; every on-wall sector has
+singleton tracial spectrum. Global tracial collapse remains RH-equivalent and is not asserted.
+
+## Session 2026-08-31 addition (prime-circle recurrence descent and tracial selection)
+
+| ID | Theorem | Lean modules |
+|---|---|---|
+| ULF-PMFM-2 | Faithful dense compact recurrence of finite prime histories; compact real-character rigidity; exact modular-log recovery iff neutral grade; theta-source critical-line descent; functional-equation invariance; global RH selection interface | `HTGeometry.ConstitutiveCompactRecurrenceCharacterDescent`; `RHTower.HedenmalmThetaSourcePrimeModularCompactRecurrenceDescent` |
+
+Scratch and project-path elaboration pass. Targeted named leaf build passes (`12833/12833`); it
+rebuilt missing dependency oleans but did not build an umbrella. Generic compact-descent module was
+reduced from the project-wide `Mathlib` import to four focused imports and rebuilt in 5.3 seconds.
+Modules are wired into `HTGeometry.UniversalLawField` and `RHTower` without building either
+umbrella. Eight audited capstones depend only on `propext`, `Classical.choice`, and `Quot.sound`;
+formal lint, scoped forbidden-declaration scan, and `git diff --check` pass. The certificate builds
+a faithful dense compact observer whose closed recurrence retains every finite prime history, then
+proves exact continuous recovery of the open real modular log forces neutral grade. For the literal
+theta-source current, pointwise descent is equivalent to critical-line placement and global descent
+is equivalent to RH. This is a closed selection interface, not an RH proof: source-native uniform
+continuity at the prime-circle completion boundary remains the open producer.
+
+## Session 2026-08-31 addition (topologically admitted formation mechanics)
+
+| ID | Theorem | Lean modules |
+|---|---|---|
+| ULF-TAFM-4 | Exact finite Feller image classification by common support; full-support gap rigidity; cofinal non-equicontinuity and Lipschitz escape | `HTGeometry.TopologicallyAdmittedFellerAdmission` |
+| ULF-TAFM-5 | Gauge-covariant path action; internal-gauge cancellation; nonnegative composition curvature; exact additive curvature two-cocycle | `HTGeometry.TopologicallyAdmittedGaugeAction` |
+| ULF-TAFM-6 | Finite and arbitrary-measurable Hahn-label regret identity; signed-current RN reconstruction and variation law; observer-deficit and channel-current conservation | `HTGeometry.TopologicallyAdmittedHahnLabel`; `HTGeometry.TopologicallyAdmittedMeasurableHahnLabel` |
+
+Scratch and project-path elaboration pass. Four targeted named leaf builds pass; missing dependency
+oleans were built only as required by those leaf targets. No umbrella, theorem-area, or project build
+was run. All four modules are wired into `HTGeometry.UniversalLawField` without building it. Batched
+`#print axioms` audits of classification, escape, gauge, finite information, and general measurable
+capstones report only `propext`, `Classical.choice`, and `Quot.sound`. Exact measurable
+Radon--Nikodym and signed-variation infrastructure was built rather than postulated. Arithmetic
+Hahn-dictionary width remains the RH-bearing producer; no RH claim is made.
+
+## Session 2026-08-31 addition (integrable cocycle descent)
+
+| ID | Theorem | Lean modules |
+|---|---|---|
+| ULF-TAFM-7 | Haar-`L1` translation-potential existence iff character neutrality; measurable Hahn-density specialization; prime-circle modular classification; theta-source pointwise and global RH selection interface | `HTGeometry.TopologicallyAdmittedIntegrableCocycleDescent`; `RHTower.HedenmalmThetaSourcePrimeModularIntegrableCocycleDescent` |
+
+Scratch and project-path elaboration pass. Targeted named leaf builds pass (`8700/8700` and
+`12856/12856`), rebuilding only missing dependency oleans. No umbrella, theorem-area, or project
+build was run. Modules are wired into `HTGeometry.UniversalLawField` and `RHTower` without building
+either umbrella. Eight audited capstones depend only on `propext`, `Classical.choice`, and
+`Quot.sound`. This strictly weakens the prior continuous-descent producer: one possibly unbounded,
+discontinuous Haar-integrable potential with almost-everywhere affine covariance suffices. The
+remaining RH-bearing producer is construction of that potential from the divisor-independent
+theta/prime source; no existence or RH claim is made.
+
+## Session 2026-08-31 addition (lattice-carry transgression)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-TAFM-8 | Finite invariant-mass drift/current reconstruction; zero-carry descent; section-gauge invariance; exact Hahn traffic/counterflow; serial carry composition; bounded-remainder winding-rate prediction | `HTGeometry.TopologicallyAdmittedLatticeCarryCurrent` |
+
+Scratch and project-path elaboration pass. Final targeted named leaf build passes (`8701/8701`). No
+umbrella, theorem-area, or project build was run. Module is wired into
+`HTGeometry.UniversalLawField` without building it. Batched `#print axioms` on nine significant
+declarations reports only `propext`, `Classical.choice`, and `Quot.sound`. The theorem sharpens
+integrable cocycle descent: compact recurrence can preserve nonzero open drift only by exporting it
+as lattice-current mean (within the finite-mass, integrable, exact-covariance chamber). FE reflection
+negates current, so global pair cancellation is nonselective; remaining source producer is
+componentwise zero carry/detailed balance, not another global balance receiver.
+
+## Session 2026-08-31 addition (compact-phase carry properness selection)
+
+| ID | Theorem | Lean modules |
+|---|---|---|
+| ULF-TAFM-9 | Additive finite-cover and cofinally large compact returns; locally bounded real-character annihilation; exact linear carry-current growth; adaptive compensated-fibre selection with element-dependent probability systems and gauges | `HTGeometry.CompactAddGroupMetricReturnLaw`; `HTGeometry.TopologicallyAdmittedCarryPropernessSelection` |
+
+Scratch and project-path elaboration pass. Missing additive recurrence infrastructure was built and
+its leaf `.olean` generated; final targeted selection leaf build passes (`8703/8703`). No umbrella,
+theorem-area, or project build was run. Both modules are wired into
+`HTGeometry.UniversalLawField` without building it. Ten audited capstones depend only on `propext`,
+`Classical.choice`, and `Quot.sound`. This strictly weakens the previous producer: neither one
+global potential nor componentwise zero carry is required. One source-derived uniform `L¹` traffic
+ceiling on a fixed compact-phase identity ball annihilates the real formation character. Every
+off-neutral character instead forces linear traffic blow-up on cofinally large near-identity source
+words, even when each word uses a separate observer system and gauge. Deriving that ceiling from
+the literal divisor-independent arithmetic formation law remains the RH-bearing gate; no RH claim
+is made.
+
+## Session 2026-08-31 addition (formation Stokes/Følner selection)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-TAFM-10 | Exact finite cut Stokes conservation; positive boundary-traffic identity; formation Cheeger bound; weighted Følner selection; inverse-isoperimetric boundary-current witness; box rank-width selection and density lower bound | `HTGeometry.FormationStokesFolnerSelection` |
+
+Scratch and project-path elaboration pass. Final targeted leaf build passes (`973/973`). No
+umbrella, theorem-area, or project build was run. Module is wired into
+`HTGeometry.UniversalLawField` without building it. Twelve audited capstones depend only on
+`propext`, `Classical.choice`, and `Quot.sound`. Certificate provides a mechanism for the previous
+local properness premise: a constant bulk formation grade is exact cut-boundary flux, so uniform
+local edge capacity on a formation Følner family forces neutrality. Off-neutrality instead forces
+positive formation Cheeger density or inverse-isoperimetric boundary-current blow-up. The box law
+also corrects the hypertranscendence interpretation: unbounded channel rank alone is nonselective;
+rank must remain at positive density relative to legal packet width unless local capacity diverges.
+Literal divisor-independent source packets and their uniform local edge bound remain the
+RH-bearing producer; no RH claim is made.
+
+## Session 2026-08-31 addition (compact closed-box fixed-rank escape)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-TAFM-11 | Simultaneous cofinal compact return for finite palettes; exact inverse-rank capacity bound; cofinal closed-box capacity escape; fixed-rank compact-phase selection | `HTGeometry.CompactFormationFolnerRankEscape` |
+
+Scratch and project-path elaboration pass. Final targeted leaf build passes (`1676/1676`). No
+umbrella, theorem-area, or project build was run. Module is wired into
+`HTGeometry.UniversalLawField` without building it. All four audited capstones depend only on
+`propext`, `Classical.choice`, and `Quot.sound`. The certificate fuses three previously separate
+organs: product compact recurrence supplies arbitrarily large common observer-closing widths,
+formation Stokes supplies the box current bound, and fixed channel rank forces selection under
+bounded local capacity. Every off-neutral fixed-rank realization instead has cofinal capacity at
+least `n * |chi| / (2*d)`. This gives a precise hypertranscendence/noncompactness law: rank must grow
+at width scale or local current must diverge. Literal arithmetic packet construction remains open;
+no RH claim is made.

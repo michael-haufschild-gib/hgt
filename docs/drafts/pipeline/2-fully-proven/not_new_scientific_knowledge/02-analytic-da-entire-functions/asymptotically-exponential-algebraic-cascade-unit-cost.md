@@ -179,3 +179,30 @@ Its possible future RH value is architectural: if an Euler--archimedean object c
 8. J. Clunie, *The composition of entire and meromorphic functions*, in *Mathematical Essays Dedicated to A. J. Macintyre* (1970), 75--92.
 9. G. M. Reinhart, *Schanuel Functions and Algebraic Differential Equations*, PhD dissertation, University of Illinois (1993).
 10. Y. Wang and E. D. Sontag, *Orders of Input/Output Differential Equations and State-Space Dimensions*, SIAM J. Control Optim. 33 (1995), 1102--1126.
+
+## Lean status
+
+The model half of step 2 is owned: `HTGeometry.ExpAffineCascade.scaled_jet_det_ne_zero` proves the
+affine-exponential product cascade's output-jet determinant is nonzero, and
+`ScaledExponentialCascade` transports it from the exponential tower via `scaleHom`.
+
+What is missing is the **degeneration from the perturbed cascade to that model** — the card's claim
+that replacing each `A_j(X_j)` by `λ_j X_j` gives the leading term.  The obstruction is precise and is
+shared with `newton-corner-nonautonomous-composition-unit-cost`:
+
+* Justifying the degeneration needs `v(det M − det m) > v(det m)` for the model matrix `m`.
+* That needs the *valuation* of `det m`, not merely `det m ≠ 0`.
+* The natural hope — that `det m` is a single monomial — is **false**.  `det (sumJacobian 2)` is
+  `X₁²(1 − X₂)`, so the height-four model determinant carries the factor `(1 − X₂)`.  The `n = 2` and
+  `n = 3` determinants `−X₂` and `−X₁²X₂X₃²` are monomials, but they are below the first case with
+  any content.
+
+What the corpus does prove is that the determinant's *leading coefficient under the column pencil* is
+a monomial multiple of a smaller determinant.  The degeneration must therefore be run against that
+graded leading datum rather than against the determinant as a whole.  See `_STAGE3-LEDGER.md`.
+
+Supporting analysis built in the meantime and available to this card: `CentralIndexGrowthWall`,
+`MeasureGrowthWall`, `DensityGrowthWall`, `LocalisedGrowthWall`, `CentralIndexLinearOrderOne`,
+`WimanValironSmallWindow`, `WimanValironAsymptotic`, `PolynomialMagnitudeBalance`,
+`TopCoefficientBound`, `TwoSidedBalancing`, `VanishingPowerSum`, `ScalarMonomial`,
+`TowerMonomialShape`.

@@ -431,6 +431,19 @@ theorem le_norm_thetaSeries_deg {σ d y : ℝ} (hd : 0 < d) (hy : 0 < y) (N : �
     abs_of_nonneg (tsum_nonneg (degTerm_nonneg σ d y))]
   linarith
 
+/-- Every positive inverse real power of the natural index tends to zero. -/
+theorem tendsto_natCast_rpow_neg_atTop {u : ℝ} (hu : 0 < u) :
+    Tendsto (fun N : ℕ => ((N : ℝ)) ^ (-u)) atTop (𝓝 0) := by
+  have hpow : Tendsto (fun x : ℝ => x ^ u) atTop atTop :=
+    tendsto_rpow_atTop hu
+  have hinv : Tendsto (fun x : ℝ => (x ^ u)⁻¹) atTop (𝓝 0) :=
+    tendsto_inv_atTop_zero.comp hpow
+  have hzeroReal : Tendsto (fun x : ℝ => x ^ (-u)) atTop (𝓝 0) := by
+    refine hinv.congr' ?_
+    filter_upwards [eventually_gt_atTop (0 : ℝ)] with x hx
+    rw [Real.rpow_neg hx.le]
+  exact hzeroReal.comp tendsto_natCast_atTop_atTop
+
 /-- **The degree-`d` theta series of the constant family at a real spectral
 parameter at or below one is unbounded on every disk touching the real axis.**
 At height `N^{-1/d}` the exponential is the constant `e^{-2π}` and the prefactor
@@ -443,7 +456,7 @@ theorem unbounded_thetaSeries_deg {σ d : ℝ} (hσ : σ ≤ 1) (hd : 0 < d)
   have hbig : ∀ᶠ N : ℕ in atTop, M * Real.exp (2 * Real.pi) < pSum σ N :=
     (tendsto_pSum_atTop hσ).eventually_gt_atTop _
   have hzero : Tendsto (fun N : ℕ => ((N : ℝ)) ^ (-(1 / d))) atTop (𝓝 0) :=
-    (tendsto_rpow_neg_nhds_zero (by linarith)).comp tendsto_natCast_atTop_atTop
+    tendsto_natCast_rpow_neg_atTop hdinv
   have hsmall : ∀ᶠ N : ℕ in atTop, ((N : ℝ)) ^ (-(1 / d)) < y₀ :=
     hzero.eventually_lt_const hy₀
   obtain ⟨N, ⟨hNM, hNy⟩, hN1⟩ :=

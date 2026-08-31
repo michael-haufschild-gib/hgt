@@ -1075,3 +1075,76 @@ umbrella.
 This removes a representational premise from the exact full-class cusp constant.  Card remains at
 Stage 2 solely because the general Kaczorowski--Perelli standard-twist spectrum theorem is still
 unformalized.
+
+## Exact standard-twist spectral spacing (2026-08-31)
+
+`formal/GaloisForLFunctions/HTGeometry/ShiftSpectrumSpacing.lean` now formalizes the arithmetic
+spacing law for the standard-twist lattice
+
+```text
+shiftSpectrumValue degree conductor m = degree * (m / conductor)^(1 / degree).
+```
+
+The module proves, for positive degree and conductor:
+
+```text
+strictMono_shiftSpectrumValue
+shiftSpectrumValue_mem
+min_adjacent_gap_le_dist_of_mem_shiftSpectrum_ne
+infDist_shiftSpectrum_diff_eq_min_adjacent
+```
+
+Thus every distinct supported spectral point is at least the smaller adjacent full-lattice gap
+away.  When `m > 1` and both adjacent coefficients are nonzero, the distance from the `m`-th
+spectral point to the rest of the spectrum is exactly the minimum of those two adjacent gaps.
+This discharges all set-theoretic and order-theoretic premises in the nearest-neighbour argument.
+
+It also exposes a necessary qualification in the paper wording: arbitrary zero coefficients can
+create support gaps larger than the adjacent full-lattice gap.  Therefore an unconditional upper
+comparison `Delta(alpha_m) \asymp m^(1/degree - 1)` for the coefficient-supported spectrum needs a
+support-density or adjacent-support theorem.  The full-lattice lower bound and the exact law under
+adjacent support are unconditional.
+
+Direct `lake env lean` checking, targeted leaf build, and axiom audit pass.  All five public
+declarations use exactly `[propext, Classical.choice, Quot.sound]`; no heartbeat override was added.
+The module is wired into `HTGeometry` without building the umbrella.  This card remains at Stage 2
+because general Kaczorowski--Perelli continuation and nonzero-residue theorems are still absent.
+
+`formal/GaloisForLFunctions/HTGeometry/ShiftSpectrumSpacingAsymptotic.lean` adds the exact leading
+asymptotic behind the card's spacing scale:
+
+```text
+shiftSpectrumValue_forwardGap_isEquivalent:
+  alpha_(m+1) - alpha_m ~ q^(-(1/d)) * m^(1/d - 1).
+```
+
+The proof discharges the differentiability step through the corpus's general finite-difference
+theorem `polynomialPowerFiniteDifference_isEquivalent`; callers supply no differentiability
+witness.  Its reusable real-power lemma is `realPower_forwardGap_isEquivalent`.  Direct check,
+targeted leaf build, and axiom audit pass; both declarations use exactly
+`[propext, Classical.choice, Quot.sound]`.  The result deliberately concerns the full lattice and
+does not assert that a sparse coefficient-supported spectrum has an adjacent supported point.
+
+### 2026-08-31 general-rank sine recurrence
+
+`formal/GaloisForLFunctions/RHTower/SelbergGeneralSineRecurrence.lean` removes the rank-one
+presentation restriction from the independent cusp-growth proof.  For every finite Selberg gamma
+presentation and every base point with `asymmetricS s₀ ≠ 0` (the card's stated exclusion of the
+exceptional lattice), it constructs explicit positive factor margins, a positive product
+tolerance, and an explicit positive product floor.  Delayed simultaneous `2π`-phase recurrence
+then proves that the asymmetric sine factor exceeds that floor frequently along the full shift
+lattice.  Consequently
+`SelbergClass.limsup_norm_shift_rpow_inv_of_height_of_asymmetricS_ne_zero` proves the general-rank
+cusp constant; normalization constructs the nonzero first coefficient, lattice-height regularity
+constructs every analytic-regularity witness used by the existing internal theorem, and recurrence
+constructs the former frequent-lower-bound witness.  No Hilbert, differentiability,
+commensurability, rank-one, or supplied recurrence structure remains as a premise.
+
+The leaf direct check, targeted build, and axiom audit pass.  All 17 new declarations use exactly
+`[propext, Classical.choice, Quot.sound]`.  The build also exposed and repaired a removed mathlib
+name in `GeometricThetaUnbounded.lean` and `NonnegThetaCuspGrowth.lean`; reusable
+`tendsto_natCast_rpow_neg_atTop` now supplies the required inverse-real-power limit and has the same
+axiom footprint.  The module is wired into `RHTower` without an umbrella build.
+
+This does not yet formalize the card's external Kaczorowski--Perelli boundary-continuation and
+nonzero-residue input for arbitrary standard twists.  Card therefore remains Stage 2.

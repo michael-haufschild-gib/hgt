@@ -159,7 +159,7 @@ theorem unbounded_thetaSeries_nonneg (hr : ∀ n, 0 ≤ r n) {C B : ℝ}
       M * Real.exp (2 * Real.pi) < dirichletPartial r σ N :=
     (tendsto_dirichletPartial_atTop hr hns).eventually_gt_atTop _
   have hzero : Tendsto (fun N : ℕ => ((N : ℝ)) ^ (-(1 / d))) atTop (𝓝 0) :=
-    (tendsto_rpow_neg_nhds_zero (by linarith)).comp tendsto_natCast_atTop_atTop
+    tendsto_natCast_rpow_neg_atTop hdinv
   have hsmall : ∀ᶠ N : ℕ in atTop, ((N : ℝ)) ^ (-(1 / d)) < y₀ :=
     hzero.eventually_lt_const hy₀
   obtain ⟨N, ⟨hNM, hNy⟩, hN1⟩ :=

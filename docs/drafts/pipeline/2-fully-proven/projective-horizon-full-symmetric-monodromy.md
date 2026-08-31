@@ -6971,3 +6971,74 @@ inputs are statements about `criticalGeometricSheet`, while `OccupationSubsetJoh
 argument is only ever needed for `m = n` — and there the only `S_L`-stable nontrivial block system
 is the complementation pairing, so even that case reduces to "the Schur transposition does not swap
 a complementary pair", which is implied by input 2 for `m ≥ 2`.
+
+### Primitivity is no longer the requirement — one Johnson-adjacent swap suffices
+
+`HTGeometry/SubsetPairTransitivity.lean` removes the primitivity hypothesis from step `(4)`
+altogether:
+
+```text
+exists_perm_mapsTo        a permutation carrying one finset into another of the same size
+exists_perm_image_pair    ** and one carrying a pair onto a pair with the same intersection size **
+finsetPerm                the induced action of the ground-set symmetric group on m-subsets
+eq_top_of_induced_symmetric_and_johnson_swap
+                          ** the induced symmetric group and one transposition of two m-subsets
+                             meeting in j points generate the whole symmetric group on m-subsets **
+```
+
+The pair statement is proved by carrying the left members onto each other and then correcting the
+right members with `Equiv.Perm.subtypeCongr`, whose two halves act inside and outside the common
+left member.  Conjugating the given transposition by the induced action therefore reaches every
+transposition at intersection size `j`, and `eq_top_of_johnsonSwaps` finishes.
+
+What this changes for the card.  With sheets labelled by the `m`-subsets of the `L = m+n` roots and
+the root symmetric group inside the monodromy, the side conditions of `eq_top_of_johnsonSwaps` are
+
+```text
+j < m                 automatic, since the swapped sheets are distinct m-subsets
+2m ≤ L                the case m ≤ n
+j ≠ 0 ∨ 2m ≠ L        automatic when m < n; for m = n it says the swapped pair is not complementary
+```
+
+So the primitivity hypothesis is replaced by two strictly weaker geometric inputs: an
+`S_L`-equivariant labelling of the sheets by `m`-subsets, and — only in the balanced case `m = n` —
+the statement that the Schur transposition swaps two sheets that are *not* complementary.  Since the
+Schur collision comes from a single reduction losing one point, the expected fact there is the
+stronger and more natural one: the two colliding sheets differ in a single root, so `j = m − 1`,
+which for `m ≥ 2` is nonzero.
+
+The transposition itself is already unconditional
+(`exists_criticalGeometricMonodromy_isSwap`); what the endgame still consumes is the labelling.
+
+### The endgame is now stated in the corpus's own occupation-state vocabulary
+
+`HTGeometry/OccupationJohnsonEndgame.lean` connects the Johnson route to the existing
+`criticalHorizonOccupationStates` / `criticalOccupationRootAction` layer:
+
+```text
+rootAction_eq_finsetPerm    the root action IS the induced action on m-subsets
+criticalOccupation_eq_top_of_rootAction_of_johnson_swap
+    ** root action + one transposition of two states meeting in j points ⟹ the full symmetric
+       group on the states **
+criticalOccupation_eq_top_of_rootAction_of_swap_of_lt      the unbalanced case m < n
+criticalOccupation_eq_top_of_rootAction_of_swap_balanced   the balanced case m = n
+```
+
+This changes what the two cases cost.
+
+*Unbalanced (`m < n`).*  Nothing at all is needed about the transposition beyond the two states
+being distinct: `j < m` is automatic and `2m ≠ m + n` holds.  The old route needed
+`criticalOccupationRootAction_isPreprimitive` plus Jordan; the new one needs neither.
+
+*Balanced (`m = n`).*  Exactly one geometric fact is consumed: the two swapped states **meet**, i.e.
+they are not a complementary pair.  `OccupationSubsetPrimitivity` explicitly excludes this case,
+because complement pairs are a genuine block system there — so primitivity is *false* and the old
+route could never have closed it.  The Johnson route replaces primitivity by transitivity on pairs,
+which is available in both cases.
+
+So the card's step `(4)` now needs precisely two inputs, both geometric and both strictly weaker
+than the primitivity that was being sought:
+
+1. the sheets are labelled by the occupation states compatibly with the root action;
+2. the Schur transposition swaps two states that meet (expected: they differ in a single root, so
+   they meet in `m − 1` points, nonzero for `m ≥ 2`).

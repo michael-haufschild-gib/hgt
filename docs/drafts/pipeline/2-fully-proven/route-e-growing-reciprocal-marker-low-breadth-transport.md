@@ -5942,3 +5942,29 @@ So this card has **two** residues, not one:
 
 The earlier claim that "the exponent range is no longer a constraint **anywhere** on this card" is
 accurate; the implied claim that the gate is therefore closed is not.
+
+## Fixed positive subpower Hall windows: exponent restriction removed (2026-08-31)
+
+The previous Hall-law implementation imposed an auxiliary `1/2 < β`, hence exposed the artificial
+restriction `9/10 < β'`.  `Sieve/CardLengthGapAll` now proves, for every `0 < β < β'`,
+
+```text
+a · cardLength β y · sqrt (log y) + b ≤ cardLength β' y
+```
+
+eventually.  The proof uses exponential domination after the change of variable
+`L = log y`; no heartbeat override or computation is involved.  Consequently
+`Sieve/RouteEMarkerHallLawAll` proves, for every fixed `0 < β' < 1`, both
+
+```text
+RHTower.Sieve.route_e_marker_hall_law_all
+RHTower.Sieve.route_e_marker_hall_injection_all
+```
+
+with window length `ceil (sqrt Z * exp ((log Z)^β'))`.  Thus every fixed positive subpower Hall
+window is now unconditional, leaf-built, umbrella-wired, and axiom-clean
+(`[propext, Classical.choice, Quot.sound]`).
+
+This does **not** finish the card's growing reciprocal-marker schedule.  Its remaining obligations
+are still the quantitative `o(1 / log X)` Menon–Halász rate and moving-scale fibre-to-real/integer
+normalisation recorded above.  Card remains Stage 2.

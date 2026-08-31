@@ -314,7 +314,9 @@ theorem continuousOn_suzukiSmoothCurvature_Ioi :
   intro t ht
   have htpos : 0 < t := ht
   have hden : 1 - Real.exp (-2 * t) ≠ 0 :=
-    ne_of_gt (GaloisForLFunctions.RHTower.one_sub_exp_neg_two_mul_pos htpos)
+    ne_of_gt (by
+      simpa only [neg_mul] using
+        GaloisForLFunctions.RHTower.one_sub_exp_neg_two_mul_pos htpos)
   apply ContinuousAt.continuousWithinAt
   unfold suzukiSmoothCurvature suzukiMissingCurvature
   fun_prop
@@ -328,7 +330,9 @@ theorem half_le_suzukiSmoothCurvature_of_log_two_le
   have htpos : 0 < t :=
     (Real.log_pos (by norm_num : (1 : ℝ) < 2)).trans_le ht
   have hden : 0 < 1 - Real.exp (-2 * t) :=
-    GaloisForLFunctions.RHTower.one_sub_exp_neg_two_mul_pos htpos
+    by
+      simpa only [neg_mul] using
+        GaloisForLFunctions.RHTower.one_sub_exp_neg_two_mul_pos htpos
   let x : ℝ := Real.exp t
   have hxpos : 0 < x := Real.exp_pos t
   have hx2 : 2 ≤ x := by

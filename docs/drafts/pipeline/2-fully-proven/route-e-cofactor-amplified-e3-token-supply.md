@@ -570,3 +570,29 @@ Two divisor-fibre convolution estimates preserve the `N⁻²` reciprocal energy 
 earlier `ℓ¹` argument.  Direct check, targeted module build, and axiom audit pass; only `propext`,
 `Classical.choice`, and `Quot.sound` occur.  This closes an additional elementary portion of
 `N < T < 2AN'²`; residual Watt/DI configurations and Theorem 1.2 assembly still gate promotion.
+
+## Lean progress update (2026-08-30) — literal Watt/DI comparison regions
+
+`Sieve/MatomakiTeravainenWattDivisorRange.lean` embeds the reciprocal divisor-energy bound into
+both literal Lemma 3.5 envelopes: the Watt bound under `2AN'² ≤ A²√T`, and the DI bound under
+`2AN'² ≤ A^(5/4)T^(3/4)`. Its strengthened capstones choose divisor exponent `ε/5` and discharge
+the small divisor power from `T ≥ 2`, `A ≤ T`, `N ≤ T`, and `N' ≤ 2N`. Direct check, targeted
+build, and six-declaration axiom audit pass; only `[propext, Classical.choice, Quot.sound]` occur,
+and the module is umbrella-wired.
+
+Card remains Stage 2. `A ≤ T`, `N ≤ T`, and applicable product-length inequalities must be proved
+from actual Proposition-2.2 parameters, followed by complementary-range analysis, amplification,
+and final all-interval supply assembly; no such premise may remain in the card theorem.
+
+## Lean progress update (2026-08-31) — height dichotomy discharged internally
+
+`Sieve/MatomakiTeravainenLemma35CoveredRange.lean` combines the elementary `T ≤ N` branch with the
+reciprocal-divisor `N < T` branch for both literal Watt and Deshouillers--Iwaniec envelopes.  The
+new capstones retain no supplied comparison between `N` and `T`; `A ≤ T` and the product-length
+condition are needed only on the sub-height branch where divisor energy consumes them.  Direct
+check, targeted leaf build, and axiom audit pass with only
+`[propext, Classical.choice, Quot.sound]`; module is umbrella-wired.
+
+Remaining shared gap is the actual Proposition-2.2 scale routing for the residual `N < T` cases
+where `A > T` or the applicable product-length inequality fails, followed by amplification and
+Theorem 1.2 assembly.  Card remains Stage 2.

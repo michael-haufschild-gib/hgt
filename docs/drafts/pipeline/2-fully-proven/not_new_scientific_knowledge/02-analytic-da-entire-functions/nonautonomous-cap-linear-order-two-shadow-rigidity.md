@@ -111,7 +111,53 @@ The determinant is a three-state nonlinear observability calculation, and the fi
 - [x] Degenerate `p=0` boundary classified.
 - [x] Entire matching equation excluded by autonomous first-order classification.
 - [x] Parent-theory audit; bridge verdict.
-- [ ] Lean deferred: the pure determinant identity is formalizable, but the decisive entire-classification input is absent from the formal tree and the repository's numerical-precertification rule conflicts with the no-computation research mode.
+- [ ] Lean: the entire-classification input is now **partly formalized**; see below.
+
+## Lean status
+
+The card's decisive input is the Briot--Bouquet classification of transcendental entire solutions of
+an autonomous first-order equation `F' = c(F)`.  The **polynomial-coefficient case is now proved
+unconditionally** in the formal tree:
+
+| Result | Declaration |
+|---|---|
+| `deg c ≤ 1`: every entire solution is `d + c·exp(a z)` | `HTGeometry.eq_briotBouquetMap_of_deriv_eq_affine` |
+| `deg c ≥ 2`: every entire solution is constant | `HTGeometry.eq_const_of_deriv_eq_comp` |
+| a nonconstant solution omits every root of `c` | `HTGeometry.eq_const_of_root_of_deriv_eq_comp` |
+| the pure-power case `F' = γ(F − a)^d` | `HTGeometry.eq_const_of_deriv_eq_const_mul_pow` |
+| the two-distinct-root case, via the second main theorem | `HTGeometry.not_nonconstant_of_two_roots` |
+
+The route is: a nonconstant solution omits every root of `c`, so `F'` is zero-free; the second main
+theorem then applies with both counting terms zero and the ramification term supplied by Jensen,
+forcing `T(r,F) = O(log r)`, hence polynomial growth, hence a degree contradiction.  No
+complex-analytic ODE flow, no Picard, and no Wiman--Valiron input is used.
+
+Also built, and available to the algebraic case below:
+
+| Result | Declaration |
+|---|---|
+| Picard's little theorem, unconditional | `HTGeometry.eq_const_of_omits_two` |
+| the sharp form: at most one omitted value | `HTGeometry.subsingleton_compl_range_of_nonconstant` |
+| Jensen's inequality for `m(r,1/g)`, zeros allowed | `HTGeometry.proximity_inv_le_sub` |
+| the Newton exponent dichotomy of the relation | `HTGeometry.exists_deriv_dichotomy_of_relation` |
+| exponential type from a linear derivative bound | `HTGeometry.norm_le_mul_exp_of_norm_deriv_le` |
+
+**What the card still needs** is the same statement for `c` *algebraic* over `C(Y)` rather than
+polynomial.  That case is a classification rather than a no-go — `exp` and the Weierstrass `p`
+function are solutions — and it reduces to the growth statement "an entire solution of an autonomous
+first-order algebraic differential equation has order at most one".
+
+That statement now splits cleanly.  The relation's Newton exponent is a fraction with denominator at
+most `m`, so it cannot lie strictly between `1` and `1 + 1/m`, which gives the pointwise dichotomy
+`‖F′‖ ≤ K‖F‖` or `c‖F‖^{m+1} ≤ ‖F′‖^m` wherever `‖F‖` is large
+(`exists_deriv_dichotomy_of_relation`).  The tame alternative closes the case: a linear derivative
+bound forces exponential type by Grönwall along rays (`norm_le_mul_exp_of_norm_deriv_le`).  What
+remains is the wild alternative.  It cannot be excluded by any growth argument — the ledger records
+why, with the delay-inequality obstruction that defeats the growth walls — and it reduces instead to
+one conformal statement: on a component of `{‖F‖ > R₁}`, which the maximum principle forces to be
+unbounded, the map `h = (1/F)^{1/m}·m` has derivative bounded above and below and image in a disc,
+and the open point is properness of `h` at the end of that component at infinity.  This does **not**
+need Puiseux series, which mathlib does not have.
 
 ## Primary references
 

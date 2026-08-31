@@ -96,7 +96,7 @@ theorem eventually_circleIntegrable_pairedEtaBoundaryHeatWeightedArithmeticQuoti
       x tau).continuous.comp (by fun_prop)
   filter_upwards [hquotient] with r hr
   unfold pairedEtaBoundaryHeatWeightedArithmeticQuotient
-  exact hr.continuousOn_mul hkernel.continuousOn
+  exact CircleIntegrable.mul_of_continuousOn hr hkernel.continuousOn
 
 /-- The complex small-circle integral of the literal heat-weighted eta
 quotient converges to `2 * pi * I` times its heat-weighted multiplicity. -/

@@ -65,7 +65,7 @@ theorem continuousOn_pairedEtaArithmeticQuotient :
     intro s hs
     have hanalytic := (analyticOnNhd_pairedEtaCore s hs.1).deriv
     have hpositive : ∀ᶠ w in nhds s, 0 < w.re :=
-      (Complex.isOpen_re_gt 0).mem_nhds hs.1
+      (isOpen_lt continuous_const Complex.continuous_re).mem_nhds hs.1
     have heq : pairedEtaArithmeticDerivativeValue =ᶠ[nhds s]
         deriv pairedEtaCore := by
       filter_upwards [hpositive] with w hw

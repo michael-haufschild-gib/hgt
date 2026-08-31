@@ -153,7 +153,7 @@ theorem tendstoLocallyUniformlyOn_pairedEtaCoreDerivativePartialSum :
     tendstoLocallyUniformlyOn_pairedEtaCorePartialSum.deriv
       (Eventually.of_forall fun N =>
         (differentiable_pairedEtaCorePartialSum N).differentiableOn)
-      (Complex.isOpen_re_gt 0)
+      (isOpen_lt continuous_const Complex.continuous_re)
   have hpartial :
       TendstoLocallyUniformlyOn pairedEtaCoreDerivativePartialSum
         (deriv pairedEtaCore) atTop {s : ℂ | 0 < s.re} := by
@@ -199,7 +199,7 @@ theorem tendstoLocallyUniformlyOn_pairedEtaArithmeticQuotientPartialSum :
     intro s hs
     have hanalytic := (analyticOnNhd_pairedEtaCore s hs.1).deriv
     have hpositive : ∀ᶠ w in nhds s, 0 < w.re :=
-      (Complex.isOpen_re_gt 0).mem_nhds hs.1
+      (isOpen_lt continuous_const Complex.continuous_re).mem_nhds hs.1
     have heq : pairedEtaArithmeticDerivativeValue =ᶠ[nhds s]
         deriv pairedEtaCore := by
       filter_upwards [hpositive] with w hw

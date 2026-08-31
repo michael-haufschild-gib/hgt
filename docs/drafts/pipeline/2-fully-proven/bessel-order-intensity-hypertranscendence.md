@@ -4634,3 +4634,145 @@ used.
 Card remains Stage 2.  PPV construction and generation are closed; differential-constant/torsor
 descent and parameterized Galois classification remain, alongside ordinary carrier embedding and
 density/finite-primitive classification.
+
+## Parameterized base compatibility is discharged (2026-08-30)
+
+`ParameterizedPicardVessiotSystem.lean` now proves that the universal parameterized difference
+action restricts to the supplied base automorphism and that its total derivation restricts to the
+supplied base derivation, both before and after passage to a stable quotient:
+
+```text
+ppvSigma_ppvBaseMap
+ppvBaseMap_deriv
+sigmaQuotientEquiv_ppvBaseMap
+quotientDifferential_ppvBaseMap_deriv
+ppvQuotientDifferentialAlgebra
+```
+
+`BesselOrderParameterizedPicardVessiot.lean` specializes these through
+`besselOrderPPVSigma_base` and stores both compatibilities in the constructed
+`BesselOrderParameterizedPVData`. Thus no base-action or base-derivation compatibility premise
+remains at the concrete PPV boundary, and every differential quotient receives its canonical
+`DifferentialAlgebra` structure rather than assuming one. Direct checks, targeted leaf builds, and all seven affected
+axiom audits pass with only `[propext, Classical.choice, Quot.sound]`; no heartbeat increase was
+used.
+
+Card remains Stage 2. Differential-constant/torsor descent and parameterized Galois
+classification remain, alongside ordinary meromorphic-carrier embedding and
+density/finite-primitive classification. None may be retained as a final theorem premise.
+
+## Parameterized differential finite generation is discharged (2026-08-31)
+
+`BesselOrderParameterizedDiffFG.lean` proves that the four entries of the concrete fundamental
+matrix and the distinguished inverse determinant differentially generate the entire parameterized
+PV quotient over `Constants(z)`. The capstone
+`besselOrder_parameterizedPicardVessiot_diffFG` constructs the PPV datum and the five-generator
+surjection for every real slope, so no PPV-existence or generation premise is retained.
+
+`RatFuncTotalDerivation.lean` now supplies the canonical `DifferentialAlgebra` structure for the
+total derivation on `K(z)`, and `DifferentialAlgebraTower.lean` proves compatibility composition
+along scalar towers. Direct source checks and targeted leaf builds pass. All ten new declarations
+audit to only `[propext, Classical.choice, Quot.sound]`; no heartbeat increase was used.
+
+Card remains Stage 2. Differential finite generation does not imply equality of parameterized
+constants over the non-differentially-closed rational base. Differential-constant/torsor descent,
+parameterized Galois classification, actual meromorphic Bessel carrier embedding, and
+determinant-one density/finite-primitive exclusion remain and may not be retained as final theorem
+premises.
+
+## Parameterized quotient reducedness is discharged (2026-08-31)
+
+`SigmaDeltaSimpleReduced.lean` proves that every nontrivial characteristic-zero
+`σ`-`δ`-simple ring is reduced: its nilradical is stable under both operators and therefore must be
+the zero ideal. `BesselOrderParameterizedReduced.lean` applies this to the concrete quotient and
+constructs a reduced PPV datum for every real slope. Reducedness is no longer a premise needed by
+the differential Nullstellensatz/torsor layer.
+
+Direct checks and targeted leaf builds pass. All three new declarations audit to only
+`[propext, Classical.choice, Quot.sound]`; no heartbeat increase was used. Card remains Stage 2:
+reducedness and differential finite generation are now both closed, while differential-constant
+descent, torsor/classification, actual meromorphic carrier embedding, and determinant-one
+density/finite-primitive exclusion remain.
+
+`besselOrder_parameterizedPicardVessiot_reduced_diffFG` now packages both properties on the same
+unconditionally constructed quotient, rather than producing unrelated existential witnesses. Its
+axiom audit is `[propext, Classical.choice, Quot.sound]` and its targeted leaf build passes.
+
+`TensorProductDifferential.lean` now constructs the asymmetric Leibniz derivation on `A ⊗[K] B`
+for arbitrary differential `K`-algebras and proves the scalar extension is a differential algebra
+over the left factor. This is the missing structural input for base-changing the reduced,
+differentially finitely generated Bessel quotient to a differential closure of `Constants(z)`.
+All six declarations audit to only `[propext, Quot.sound]`; direct check and targeted leaf build
+pass. No scalar-extension differential structure remains as a downstream hypothesis.
+
+## Differential-closure specialization points are discharged (2026-08-31)
+
+`DifferentialFGBaseChange.lean` proves differential finite generation survives scalar extension,
+and `DifferentialFGBaseChangePoint.lean` combines that result with scalar-extension reducedness and
+Kolchin's differential Nullstellensatz. `BesselOrderParameterizedBaseChangePoints.lean` applies the
+result to the same concrete reduced, five-generator Bessel PPV quotient. For every real slope it
+constructs the differential-closure base change and enough differential points to separate every
+nonzero element. No differential closure, differential structure, reducedness, finite-generation,
+PPV-existence, or specialization-point premise remains.
+
+Direct source check and targeted leaf build pass. All five declarations audit to only
+`[propext, Classical.choice, Quot.sound]`; no heartbeat increase was used. Card remains Stage 2:
+separating points do not by themselves prove no-new `σ`-constants or the PPV torsor theorem.
+Differential-constant descent and parameterized Galois classification remain, alongside the actual
+meromorphic Bessel carrier embedding and determinant-one density/finite-primitive exclusion.
+
+## Ordinary Bessel comparison determinant is constructed (2026-08-31)
+
+`BesselOrderPicardVessiotComparisonDeterminant.lean` specializes the ordinary tensor-comparison
+construction to the unconditionally constructed Bessel Picard--Vessiot quotient. For every real
+slope it constructs the quotient difference automorphism, proves its compatibility with the
+rational base shift, constructs the tensor comparison matrix from the fundamental solution, proves
+entrywise shift-fixedness and determinant invertibility, and derives
+
+```text
+Z.det ^ 2 = 1
+```
+
+from the exact no-new-constants theorem and the companion determinant `-1`. The capstone
+`besselOrder_picardVessiot_comparisonDeterminant_exists` retains no quotient, simplicity,
+fundamental-matrix, invertibility, base-compatibility, comparison-matrix, or constant-field premise.
+The same leaf constructs the finite ordinary comparison algebra and propagates this relation to
+every point-generated Galois monoid: every resulting determinant has square one, is nonzero, and
+belongs to the differential constants. Thus those two determinant hypotheses no longer remain in
+the ordinary Bessel Galois interface. It also proves exact constants over `Constants`, pointwise
+fixedness of the comparison algebra, generation of the tensor square by the left PV factor and
+comparison algebra, and linear independence over the PV ring of the chosen constants basis.
+The specialized fixed-field theorem also proves that any PV-ring element fixed by every ordinary
+Bessel difference automorphism comes from `Constants(z)`; no comparison algebra, basis, point
+realization, or automorphism-surjectivity premise is exposed.
+
+Direct source check and targeted leaf build pass; all nineteen public declarations audit to only
+`[propext, Classical.choice, Quot.sound]`; no heartbeat increase was used. Module is umbrella-wired
+without an umbrella build.
+
+Card remains Stage 2. This ordinary determinant-square theorem does not imply the corresponding
+parameterized no-new-`σ`-constants theorem, determinant-one density, finite-primitive exclusion,
+or identification of the actual meromorphic Bessel carrier. Those headline obligations remain and
+may not be retained as final theorem premises.
+
+## Comparison-jet torsor structure is discharged (2026-08-31)
+
+`ComparisonJetAlgebraDifferentialGeneration.lean` closes the parameterized generation gap in the
+generic torsor infrastructure: if a PPV ring is generated by all derivatives of its fundamental
+matrix entries and its inverse determinant, the left PPV copy and comparison-jet algebra generate
+the entire tensor square. This replaces the earlier ordinary finite-generation premise, which was
+not valid for a parameterized PPV ring.
+
+`BesselOrderParameterizedComparisonJet.lean` specializes the result to the unconditionally
+constructed Bessel quotient. For every real slope it constructs the fundamental-matrix
+invertibility instance, tensor comparison matrix, inverse comparison determinant, fixed comparison
+entries and first derivatives, derivation-stable fixed comparison-jet algebra, tensor-square
+generation, five differential generators, and reducedness. No comparison matrix, inverse,
+differential structure, stability, fixedness, generation, or reducedness premise remains.
+
+Direct source checks and targeted builds pass. All ten new public declarations audit to only
+`[propext, Classical.choice, Quot.sound]`; no heartbeat increase was used. Card remains Stage 2:
+the comparison determinant square law still requires parameterized no-new-`σ`-constants (or an
+equivalent Casoratian descent theorem). Parameterized constant-field/torsor descent, resulting
+Galois classification, actual meromorphic Bessel carrier embedding, and determinant-one
+density/finite-primitive exclusion remain and may not be retained as final theorem premises.

@@ -204,7 +204,8 @@ theorem logDeriv_pairedEtaCore_eq_factor_add_riemannZeta
   have hevent : pairedEtaCore =ᶠ[𝓝 s]
       fun w : ℂ => pairedEtaFactor w * riemannZeta w := by
     filter_upwards [
-      (Complex.isOpen_re_gt 0).mem_nhds (show 0 < s.re by linarith),
+      (isOpen_lt continuous_const Complex.continuous_re).mem_nhds
+        (show 0 < s.re by linarith),
       isOpen_compl_singleton.mem_nhds
         (show s ∈ ({1}ᶜ : Set ℂ) by simpa)] with w hwre hwone
     simpa [pairedEtaFactor] using

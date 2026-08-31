@@ -2246,3 +2246,52 @@ terms.  Direct check, targeted module build, and `#print axioms` all pass; the t
 use only `propext`, `Classical.choice`, and `Quot.sound`.  Full Lemma 3.5 still requires the
 genuine twisted fourth-moment bound on that residual configuration, then amplification and
 Theorem 1.2 exponent assembly.
+
+### M6/M7, brick 37 — divisor energy reaches the literal Watt/DI envelopes (2026-08-30)
+
+`Sieve/MatomakiTeravainenWattDivisorRange.lean` compares brick 36 directly with both right-hand
+sides of Matomäki--Teräväinen Lemma 3.5:
+
+```text
+exists_integral_mtDI_lemma35_divisorRange
+    divisor energy implies the literal DI envelope when 2AN'² ≤ A^(5/4)T^(3/4)
+
+exists_integral_mtWatt_lemma35_divisorRange
+    divisor energy implies the literal Watt envelope when 2AN'² ≤ A²√T
+```
+
+The strengthened capstones
+`exists_integral_mtDI_lemma35_divisorRange_of_le_height` and
+`exists_integral_mtWatt_lemma35_divisorRange_of_le_height` choose divisor exponent `ε/5` and
+prove its absorption into `T^ε` from `T ≥ 2`, `A ≤ T`, `N ≤ T`, and `N' ≤ 2N`. No
+twisted-moment, spectral, large-value, coefficient-boundedness, or divisor-power premise remains
+in these regions. Direct source check and targeted leaf build pass. All six declarations audit to
+`[propext, Classical.choice, Quot.sound]`, and the leaf is umbrella-wired without an umbrella
+build.
+
+This is not final Lemma 3.5: next arithmetic step must derive `A ≤ T`, `N ≤ T`, and the applicable
+displayed product-length inequality from each actual Proposition-2.2 parameter case. Only the
+complementary scale region may still require a genuine twisted fourth moment; neither Route-E
+card is promoted yet.
+
+### M6/M7, brick 38 — over-height/divisor-range union assembled (2026-08-31)
+
+`Sieve/MatomakiTeravainenLemma35CoveredRange.lean` combines brick 35 with brick 37.  Its two
+capstones
+
+```text
+exists_integral_mtDI_lemma35_coveredRange
+exists_integral_mtWatt_lemma35_coveredRange
+```
+
+perform the `T ≤ N` versus `N < T` split internally.  In the first branch they use the elementary
+over-height estimate and require no `A ≤ T` or product-length comparison; in the second they derive
+`N ≤ T` and use reciprocal divisor energy when `A ≤ T` and the corresponding DI/Watt
+product-length inequality holds.  Thus neither theorem retains a supplied comparison between `N`
+and `T`, and the coverage condition is the exact union of the two proved regions.
+
+Direct check and targeted leaf build pass.  Both declarations audit to
+`[propext, Classical.choice, Quot.sound]`; module is umbrella-wired without an umbrella build.
+Residual Lemma 3.5 configuration is now exactly `N < T` together with either `A > T` or failure of
+the applicable product-length comparison.  Proposition-2.2 scale arithmetic must eliminate or
+route those cases before amplification and Theorem 1.2 assembly.

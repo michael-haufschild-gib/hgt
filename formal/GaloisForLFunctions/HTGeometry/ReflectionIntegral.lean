@@ -258,6 +258,33 @@ theorem integral_Ioi_comp_exp (f : ℝ → ℝ) :
   show |Real.exp t| • f (Real.exp t) = Real.exp t * f (Real.exp t)
   rw [smul_eq_mul, abs_of_pos (Real.exp_pos t)]
 
+/-- Exponential substitution on a shifted real half-line. -/
+theorem integral_comp_exp_Ioi {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (g : ℝ → E) (a : ℝ) :
+    ∫ x in Ioi a, Real.exp x • g (Real.exp x) =
+      ∫ y in Ioi (Real.exp a), g y := by
+  symm
+  rw [← Real.image_exp_Ioi]
+  simpa [abs_of_pos (Real.exp_pos _)] using
+    integral_image_eq_integral_abs_deriv_smul
+      (measurableSet_Ioi (a := a))
+      (fun x _ ↦ (Real.hasDerivAt_exp x).hasDerivWithinAt)
+      (fun x _ y _ hxy ↦ Real.exp_injective hxy) g
+
+/-- Integrability equivalence for exponential substitution on a shifted real
+half-line. -/
+theorem integrableOn_comp_exp_Ioi {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (g : ℝ → E) (a : ℝ) :
+    IntegrableOn (fun x ↦ Real.exp x • g (Real.exp x)) (Ioi a) ↔
+      IntegrableOn g (Ioi (Real.exp a)) := by
+  symm
+  rw [← Real.image_exp_Ioi]
+  simpa [abs_of_pos (Real.exp_pos _)] using
+    integrableOn_image_iff_integrableOn_abs_deriv_smul
+      (measurableSet_Ioi (a := a))
+      (fun x _ ↦ (Real.hasDerivAt_exp x).hasDerivWithinAt)
+      (fun x _ y _ hxy ↦ Real.exp_injective hxy) g
+
 /-- **The logistic moment.**  For `0 < σ < 1` the two-sided Laplace transform of the logistic
 kernel `e^y/(1+e^y)²` is `Γ(1+σ)Γ(1-σ) = σπ / sin(πσ)`. -/
 theorem integral_exp_neg_mul_logistic {σ : ℝ} (h0 : 0 < σ) (h1 : σ < 1) :

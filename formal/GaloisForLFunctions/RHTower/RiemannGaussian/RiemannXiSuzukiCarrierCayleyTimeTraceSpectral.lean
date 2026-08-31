@@ -407,7 +407,7 @@ theorem summable_zetaSuzukiUpperRestrictedSpectralPSummand_at_I
         0 < (zetaSpectralCoordinate rho.1).im}
   refine hsum.congr ?_
   intro rho
-  simp only [Set.indicator_apply, Set.mem_ofPred_eq]
+  simp only [Set.indicator_apply, Set.mem_setOf_eq]
   rw [zetaSuzukiSpectralPSummand_at_I]
 
 /-- The lower restriction of the safe-point spectral series is absolutely
@@ -424,7 +424,7 @@ theorem summable_zetaSuzukiLowerRestrictedSpectralPSummand_at_I
         (zetaSpectralCoordinate rho.1).im < 0}
   refine hsum.congr ?_
   intro rho
-  simp only [Set.indicator_apply, Set.mem_ofPred_eq]
+  simp only [Set.indicator_apply, Set.mem_setOf_eq]
   rw [zetaSuzukiSpectralPSummand_at_I]
 
 /-- The complete upper-restricted safe-point Suzuki spectral value. -/

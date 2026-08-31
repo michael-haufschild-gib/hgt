@@ -106,7 +106,8 @@ theorem analyticAt_pairedEtaXiCompletionFactor
     AnalyticAt ℂ pairedEtaXiCompletionFactor s := by
   let S : Set ℂ := {z : ℂ | 0 < z.re} ∩ {z : ℂ | z.re < 1}
   have hSopen : IsOpen S :=
-    (Complex.isOpen_re_gt 0).inter (Complex.isOpen_re_lt 1)
+    (isOpen_lt continuous_const Complex.continuous_re).inter
+      (isOpen_lt Complex.continuous_re continuous_const)
   have hSdiff : DifferentiableOn ℂ pairedEtaXiCompletionFactor S := by
     intro z hz
     exact (differentiableAt_pairedEtaXiCompletionFactor hz.1 hz.2).differentiableWithinAt
@@ -197,8 +198,8 @@ theorem pairedEtaCompletedXi_eventuallyEq_riemannXi
     {s : ℂ} (hspos : 0 < s.re) (hslt : s.re < 1) :
     pairedEtaCompletedXi =ᶠ[𝓝 s] riemannXi := by
   filter_upwards [
-    (Complex.isOpen_re_gt 0).mem_nhds hspos,
-    (Complex.isOpen_re_lt 1).mem_nhds hslt] with w hwpos hwlt
+    (isOpen_lt continuous_const Complex.continuous_re).mem_nhds hspos,
+    (isOpen_lt Complex.continuous_re continuous_const).mem_nhds hslt] with w hwpos hwlt
   exact pairedEtaCompletedXi_eq_riemannXi hwpos hwlt
 
 /-- Every iterated derivative of completed paired eta agrees with the

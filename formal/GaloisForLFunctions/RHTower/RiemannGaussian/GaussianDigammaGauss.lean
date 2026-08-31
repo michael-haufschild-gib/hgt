@@ -762,7 +762,7 @@ theorem quarterLineGauss_change_variables (r : ℝ) :
     Real.exp (-(1 / 4 : ℝ) * t) /
         (1 - Real.exp (-t)) *
       (1 - Real.cos ((r / 2) * t))
-  have hchange := integral_comp_mul_left_Ioi' g 0
+  have hchange := MeasureTheory.integral_comp_mul_left_Ioi g 0
     (by norm_num : (0 : ℝ) < 2)
   have hpoint (u : ℝ) :
       g (2 * u) = gaussianSuzukiDigammaOscillationIntegrand r u := by
@@ -781,7 +781,8 @@ theorem quarterLineGauss_change_variables (r : ℝ) :
     exact hpoint u
   have hchange' : 2 * (∫ u : ℝ in Ioi 0, g (2 * u)) =
       ∫ t : ℝ in Ioi 0, g t := by
-    simpa only [smul_eq_mul, mul_zero] using hchange
+    rw [hchange]
+    ring_nf
   rw [hintegral] at hchange'
   exact hchange'.symm
 

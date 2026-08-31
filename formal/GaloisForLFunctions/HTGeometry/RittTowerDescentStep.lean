@@ -265,6 +265,101 @@ theorem exists_shift_jet_coeffs (Fr : RittFrame K L) {τ : L} {q : K}
         rw [← hdKsum, ← hshiftsum, ← hlast]
         linear_combination -hchain
 
+theorem exists_shift_jet_coeffs_pred (Fr : RittFrame K L) {τ : L} {q : K}
+    (hshift : Fr.σ τ = algebraMap K L q * τ)
+    (P : K → Prop) (hP0 : P 0) (hPadd : ∀ x y, P x → P y → P (x + y))
+    (hPd : ∀ x, P x → P (Fr.dK x)) (hPdiv : ∀ x, P x → P (x / Fr.ρ))
+    (hPq : ∀ m : ℕ, P (q / Fr.ρ ^ m)) :
+    ∀ n : ℕ, ∃ A : ℕ → K, (∀ j, n ≤ j → A j = 0) ∧ (∀ j, P (A j)) ∧ Fr.σ (Fr.d^[n] τ)
+      = algebraMap K L (q / Fr.ρ ^ n) * Fr.d^[n] τ
+        + ∑ j ∈ Finset.range n, algebraMap K L (A j) * Fr.d^[j] τ := by
+  have hρ0 : Fr.ρ ≠ 0 := Fr.ρ_ne
+  have hρL : algebraMap K L Fr.ρ ≠ 0 :=
+    (map_ne_zero_iff _ (algebraMap K L).injective).mpr hρ0
+  intro n
+  induction n with
+  | zero => exact ⟨fun _ => 0, fun _ _ => rfl, fun _ => hP0, by simpa using hshift⟩
+  | succ n ih =>
+      obtain ⟨A, hAsupp, hAP, hA⟩ := ih
+      classical
+      refine ⟨fun j => (Fr.dK (A j) + (if j = 0 then 0 else A (j - 1))
+        + (if j = n then Fr.dK (q / Fr.ρ ^ n) else 0)) / Fr.ρ, ?_, ?_, ?_⟩
+      · intro j hj
+        dsimp only
+        rw [hAsupp j (by omega), dK_zero Fr, if_neg (by omega : ¬ j = n)]
+        rcases Nat.eq_zero_or_pos j with h0 | hpos
+        · omega
+        · rw [if_neg (by omega : ¬ j = 0), hAsupp (j - 1) (by omega)]
+          simp
+      · intro j
+        dsimp only
+        refine hPdiv _ (hPadd _ _ (hPadd _ _ (hPd _ (hAP j)) ?_) ?_)
+        · by_cases hj : j = 0
+          · rw [if_pos hj]; exact hP0
+          · rw [if_neg hj]; exact hAP (j - 1)
+        · by_cases hj : j = n
+          · rw [if_pos hj]; exact hPd _ (hPq n)
+          · rw [if_neg hj]; exact hP0
+      · have hchain := Fr.chain (Fr.d^[n] τ)
+        rw [hA, Fr.d_add, Fr.d_mul, Fr.d_base, d_sum Fr] at hchain
+        rw [← Function.iterate_succ_apply' Fr.d] at hchain
+        have hterm : ∀ j : ℕ, Fr.d (algebraMap K L (A j) * Fr.d^[j] τ)
+            = algebraMap K L (Fr.dK (A j)) * Fr.d^[j] τ
+              + algebraMap K L (A j) * Fr.d^[j + 1] τ := by
+          intro j
+          rw [Fr.d_mul, Fr.d_base, ← Function.iterate_succ_apply' Fr.d]
+        rw [Finset.sum_congr rfl (fun j _ => hterm j), Finset.sum_add_distrib] at hchain
+        -- reindex the shifted sum
+        have hshiftsum : ∑ j ∈ Finset.range n, algebraMap K L (A j) * Fr.d^[j + 1] τ
+            = ∑ j ∈ Finset.range (n + 1),
+                algebraMap K L (if j = 0 then 0 else A (j - 1)) * Fr.d^[j] τ := by
+          rw [Finset.sum_range_succ' (fun j => algebraMap K L (if j = 0 then 0 else A (j - 1))
+            * Fr.d^[j] τ) n]
+          simp
+        have hdKsum : ∑ j ∈ Finset.range n, algebraMap K L (Fr.dK (A j)) * Fr.d^[j] τ
+            = ∑ j ∈ Finset.range (n + 1), algebraMap K L (Fr.dK (A j)) * Fr.d^[j] τ := by
+          rw [Finset.sum_range_succ, hAsupp n (le_refl n), dK_zero Fr, map_zero, zero_mul,
+            add_zero]
+        have hlast : algebraMap K L (Fr.dK (q / Fr.ρ ^ n)) * Fr.d^[n] τ
+            = ∑ j ∈ Finset.range (n + 1),
+                algebraMap K L (if j = n then Fr.dK (q / Fr.ρ ^ n) else 0) * Fr.d^[j] τ := by
+          rw [Finset.sum_eq_single n]
+          · rw [if_pos rfl]
+          · intro j _ hjn
+            rw [if_neg hjn, map_zero, zero_mul]
+          · intro h
+            exact absurd (Finset.self_mem_range_succ n) h
+        simp only [Nat.succ_eq_add_one] at hchain
+        have hcoef : algebraMap K L Fr.ρ * algebraMap K L (q / Fr.ρ ^ (n + 1))
+            = algebraMap K L (q / Fr.ρ ^ n) := by
+          rw [← map_mul]
+          congr 1
+          rw [pow_succ]
+          field_simp
+        refine mul_left_cancel₀ hρL ?_
+        dsimp only
+        rw [mul_add, ← mul_assoc, hcoef, Finset.mul_sum]
+        have hsimp : ∀ j : ℕ, algebraMap K L Fr.ρ *
+            (algebraMap K L ((Fr.dK (A j) + (if j = 0 then 0 else A (j - 1))
+              + (if j = n then Fr.dK (q / Fr.ρ ^ n) else 0)) / Fr.ρ) * Fr.d^[j] τ)
+            = (algebraMap K L (Fr.dK (A j)) + algebraMap K L (if j = 0 then 0 else A (j - 1))
+              + algebraMap K L (if j = n then Fr.dK (q / Fr.ρ ^ n) else 0)) * Fr.d^[j] τ := by
+          intro j
+          rw [map_div₀, map_add, map_add]
+          field_simp
+        rw [Finset.sum_congr rfl (fun j _ => hsimp j)]
+        have hdist : ∀ j : ℕ, (algebraMap K L (Fr.dK (A j))
+            + algebraMap K L (if j = 0 then 0 else A (j - 1))
+            + algebraMap K L (if j = n then Fr.dK (q / Fr.ρ ^ n) else 0)) * Fr.d^[j] τ
+            = algebraMap K L (Fr.dK (A j)) * Fr.d^[j] τ
+              + algebraMap K L (if j = 0 then 0 else A (j - 1)) * Fr.d^[j] τ
+              + algebraMap K L (if j = n then Fr.dK (q / Fr.ρ ^ n) else 0) * Fr.d^[j] τ := by
+          intro j; ring
+        rw [Finset.sum_congr rfl (fun j _ => hdist j)]
+        rw [Finset.sum_add_distrib, Finset.sum_add_distrib]
+        rw [← hdKsum, ← hshiftsum, ← hlast]
+        linear_combination -hchain
+
 /-- **The tower descent.**  An eigen-inhomogeneous relation over the whole jet prefix field descends
 all the way to the base, keeping the inhomogeneity a base multiple of one of the original
 coefficients. -/

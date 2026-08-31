@@ -169,7 +169,7 @@ theorem circleIntegrable_zetaSuzukiSpectralPSummand
     funext z
     simp
   rw [hfun]
-  exact hkernel.continuousOn_smul continuousOn_const
+  exact CircleIntegrable.const_smul hkernel
 
 /-- The full finite Suzuki function is circle-integrable when all of its
 poles miss the circle. -/

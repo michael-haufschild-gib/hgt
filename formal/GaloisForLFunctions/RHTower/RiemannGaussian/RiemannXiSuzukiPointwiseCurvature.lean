@@ -361,7 +361,9 @@ theorem suzukiPointwiseArchimedeanCurvatureSeries_eq_smoothCurvature
   rw [suzukiPointwiseLerchGapCurvature_eq ht]
   unfold suzukiSmoothCurvature suzukiMissingCurvature
   have hden : 1 - Real.exp (-2 * t) ≠ 0 :=
-    (GaloisForLFunctions.RHTower.one_sub_exp_neg_two_mul_pos ht).ne'
+    by
+      simpa only [neg_mul] using
+        (GaloisForLFunctions.RHTower.one_sub_exp_neg_two_mul_pos ht).ne'
   have hden' : 1 - Real.exp (-(t * 2)) ≠ 0 := by
     have harg : -(t * 2) = -2 * t := by ring
     rw [harg]

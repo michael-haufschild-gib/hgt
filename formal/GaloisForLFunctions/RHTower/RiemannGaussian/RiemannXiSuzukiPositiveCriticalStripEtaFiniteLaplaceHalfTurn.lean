@@ -186,7 +186,7 @@ theorem exists_pairedEtaFiniteLaplaceHalfTurnZero_sequence_tendsto
   refine ⟨N, z, hNtendsto, hztendsto, hNge, hzDist, hzZero, ?_⟩
   have hpositive : ∀ᶠ n : ℕ in atTop, 0 < (z n).re :=
     hztendsto.eventually <|
-      (Complex.isOpen_re_gt 0).mem_nhds
+      (isOpen_lt continuous_const Complex.continuous_re).mem_nhds
         (NontrivialZetaZero.zero_lt_re rho)
   filter_upwards [hpositive, eventually_ge_atTop 1] with n hnRe hnOne
   have hNpos : 0 < N n := by

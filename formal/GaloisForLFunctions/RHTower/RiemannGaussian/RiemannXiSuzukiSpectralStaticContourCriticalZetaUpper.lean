@@ -261,7 +261,8 @@ lemma differentiableOn_pairedEtaCore :
 /-- The paired eta series is analytic near every point with positive real part. -/
 lemma analyticOnNhd_pairedEtaCore :
     AnalyticOnNhd ℂ pairedEtaCore {s : ℂ | 0 < s.re} :=
-  differentiableOn_pairedEtaCore.analyticOnNhd (Complex.isOpen_re_gt 0)
+  differentiableOn_pairedEtaCore.analyticOnNhd
+    (isOpen_lt continuous_const Complex.continuous_re)
 
 /-- The shifted power series sums to zeta in its absolute-convergence half-plane. -/
 lemma hasSum_nat_add_one_cpow_neg_riemannZeta
@@ -331,14 +332,15 @@ def pairedEtaUpperRightDomain : Set ℂ :=
 
 /-- The upper-right eta continuation domain is open. -/
 lemma isOpen_pairedEtaUpperRightDomain : IsOpen pairedEtaUpperRightDomain := by
-  rw [pairedEtaUpperRightDomain, ofPred_and]
-  exact (Complex.isOpen_re_gt 0).inter (Complex.isOpen_im_gt 0)
+  change IsOpen ({s : ℂ | 0 < s.re} ∩ {s : ℂ | 0 < s.im})
+  exact (isOpen_lt continuous_const Complex.continuous_re).inter
+    (isOpen_lt continuous_const Complex.continuous_im)
 
 /-- The upper-right eta continuation domain is preconnected. -/
 lemma isPreconnected_pairedEtaUpperRightDomain :
     IsPreconnected pairedEtaUpperRightDomain := by
   apply Convex.isPreconnected
-  rw [pairedEtaUpperRightDomain, ofPred_and]
+  change Convex ℝ ({s : ℂ | 0 < s.re} ∩ {s : ℂ | 0 < s.im})
   exact (convex_halfSpace_re_gt 0).inter (convex_halfSpace_im_gt 0)
 
 /-- Analytic continuation of the eta factorization into the upper-right quadrant. -/
@@ -369,7 +371,7 @@ lemma pairedEtaCore_eq_factor_riemannZeta_of_re_pos_of_im_pos
     simp [z0, pairedEtaUpperRightDomain]
   have hevent : pairedEtaCore =ᶠ[𝓝 z0] rhs := by
     filter_upwards [
-      (Complex.isOpen_re_gt 1).mem_nhds
+      (isOpen_lt continuous_const Complex.continuous_re).mem_nhds
         (show 1 < z0.re by simp [z0])] with w hw
     exact pairedEtaCore_eq_factor_riemannZeta_of_one_lt_re hw
   exact hlhs.eqOn_of_preconnected_of_eventuallyEq hrhs

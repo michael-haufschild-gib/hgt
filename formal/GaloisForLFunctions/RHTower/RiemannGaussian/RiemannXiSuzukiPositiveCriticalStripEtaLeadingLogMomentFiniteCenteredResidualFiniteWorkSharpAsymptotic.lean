@@ -437,13 +437,16 @@ private theorem tendsto_succ_lowerPhaseWeightedCoupledMoment_aux
         rho k (N + 1)
     have hM : 0 ≤ M := by dsimp [M]; positivity
     have hM' : 0 < M' := by dsimp [M']; positivity
-    have hM'cpow : (M' : ℂ) ^ p ≠ 0 :=
-      Complex.cpow_ne_zero_iff.mpr
-        (Or.inl (Complex.ofReal_ne_zero.mpr hM'.ne'))
     change (((M : ℂ) / (M' : ℂ)) ^ p) *
         ((M' : ℂ) ^ p * C) = (M : ℂ) ^ p * C
-    rw [Complex.div_cpow_ofReal_nonneg hM hM'.le]
-    field_simp [hM'cpow])
+    have hfactor :
+        (((M : ℂ) / (M' : ℂ)) ^ p) * ((M' : ℂ) ^ p) =
+          (M : ℂ) ^ p := by
+      rw [← Complex.ofReal_div]
+      rw [← Complex.mul_cpow_ofReal_nonneg (div_nonneg hM hM'.le) hM'.le]
+      congr 1
+      rw [← Complex.ofReal_mul, div_mul_cancel₀ M hM'.ne']
+    rw [← mul_assoc, hfactor])
 
 private theorem tendsto_scaled_phase_headCoupled_zero_aux
     (rho : NontrivialZetaZero) (hrho : 1 / 2 < rho.1.re) :

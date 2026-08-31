@@ -137,7 +137,7 @@ theorem eventually_pairedEtaCorePartialSum_circle_nonzero_and_logDeriv_eq
         (∮ z in C(c, R), logDeriv (pairedEtaCorePartialSum N) z) =
           ∮ z in C(c, R), logDeriv pairedEtaCore z := by
   let U : Set ℂ := {z : ℂ | 0 < z.re}
-  have hU : IsOpen U := Complex.isOpen_re_gt 0
+  have hU : IsOpen U := isOpen_lt continuous_const Complex.continuous_re
   have hsphere : sphere c R ⊆ U := fun z hz => (hgeometry z hz).1
   have hdomination : ∀ᶠ N : ℕ in atTop,
       ∀ z ∈ sphere c R,

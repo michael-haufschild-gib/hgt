@@ -38,7 +38,7 @@ def suzukiXiSafeUpperHalfPlane : Set ℂ :=
 /-- Suzuki's safe upper half-plane is open. -/
 theorem isOpen_suzukiXiSafeUpperHalfPlane :
     IsOpen suzukiXiSafeUpperHalfPlane := by
-  exact Complex.isOpen_im_gt (1 / 2)
+  exact isOpen_lt continuous_const Complex.continuous_im
 
 /-- The explicit evaluation comparison constant varies continuously throughout
 the safe half-plane. -/

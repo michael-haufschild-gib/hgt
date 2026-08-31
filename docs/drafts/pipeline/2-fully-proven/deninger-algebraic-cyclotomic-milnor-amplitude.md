@@ -1933,3 +1933,68 @@ Card remains Stage 2.  The remaining geometric implication is the full greedy fl
 turns successive primitive minima, Schur tails, unit balance, and mixed size reduction into one
 field-uniform simultaneous Siegel covering; finite overlap then consumes the already closed global
 leading-minor descent.  Tame-kernel finite generation and Moore reciprocity remain afterward.
+
+### Hermitian Lovász step and first global greedy rung (2026-08-31)
+
+`ComplexSiegelLovasz.lean` supplies the missing complex-place counterpart of the real Lovász
+layer.  It proves the exact Hermitian diagonal and projected-norm formulas at zero and a successor
+index, derives the sharp `4/3` adjacent-weight bound from projected greedy minimality, and proves
+that greedy projected minima plus complex size reduction imply the full Hermitian Siegel
+predicate.  No Hermitian space, decomposition, projection, or differentiability witness is
+exposed by these local theorems.
+
+`NumberFieldArchimedeanFirstGreedy.lean` identifies standard-coordinate energy with the sum of its
+actual real and Hermitian local diagonals.  Its capstone
+
+```text
+exists_numberFieldArchimedean_firstGreedyJacobi
+```
+
+constructs the primitive minimizer, determinant-one integral completion, special-linear action,
+and simultaneous Jacobi decomposition internally.  The resulting summed first Jacobi weight is
+no larger than every coordinate's total local diagonal energy.  Thus the first rung of the mixed
+greedy flag retains no lattice, Hilbert, positivity, compactness, primitive-vector, completion, or
+Jacobi-decomposition premise.
+
+Direct checks and targeted leaf builds pass.  All fourteen new theorem declarations audit to exactly
+`[propext, Classical.choice, Quot.sound]`; both modules are umbrella-wired without an umbrella
+build.  Card remains Stage 2.  Remaining geometric work is recursive transport of this constructed
+minimum through the Schur tails, followed by unit-balanced placewise ratio bounds and the existing
+finite-overlap engine.  Tame-kernel finite generation and Moore reciprocity remain afterward.
+
+### Recursive Schur transport and complete mass-greedy flag (2026-08-31)
+
+`NumberFieldArchimedeanSchurAction.lean` constructs the head-fixed block lift of every tail
+element of `SL_n(𝓞_K)`, proves its determinant and all real/complex evaluation identities, and
+proves exact equivariance of first Schur descent.  The positive-cone congruence and its cone
+membership certificate are explicit; no action or positivity witness is supplied to the theorem.
+
+`NumberFieldArchimedeanGreedyFlag.lean` strengthens the first-rung result to the complete flag.
+Determinant-one matrices are proved to preserve Bezout primitivity.  Two-step rank induction then
+chooses each primitive minimizer and determinant-one completion internally, lifts every recursive
+tail action, and assembles one full-rank determinant-one integral matrix.  Its capstone
+
+```text
+exists_numberFieldArchimedean_greedyFlag
+```
+
+makes every nonterminal Schur head globally minimal among all primitive number-ring vectors.
+
+`NumberFieldArchimedeanJacobiSchur.lean` proves, separately for real symmetric and complex
+Hermitian forms, that first Schur descent deletes exactly the first upper-unipotent row and first
+positive Jacobi weight.  It packages this simultaneously over all infinite places, proves exact
+mass shifting, and converts the complete primitive-minimal flag into a complete mass-greedy
+Jacobi flag.  The capstone
+
+```text
+exists_numberFieldArchimedean_massGreedyJacobi
+```
+
+constructs the integral action, all Schur tails, and simultaneous Jacobi data internally.
+
+Direct source checks and targeted leaf builds pass.  A batched axiom audit of every new
+declaration reports only `[propext, Classical.choice, Quot.sound]` or a subset.  All three modules
+are umbrella-wired; no umbrella build was run.  Card remains Stage 2.  Recursive greedy transport
+is closed.  Remaining geometric work is the field-uniform placewise ratio consequence after unit
+balance, followed by the already prepared finite-overlap engine.  Tame-kernel finite generation
+and Moore reciprocity remain arithmetic obligations.

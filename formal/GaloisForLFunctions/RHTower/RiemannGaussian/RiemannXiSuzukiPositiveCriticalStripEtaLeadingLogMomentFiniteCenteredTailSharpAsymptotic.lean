@@ -92,7 +92,7 @@ theorem tendstoLocallyUniformlyOn_pairedEtaCoreNormalizedTail_half :
     TendstoLocallyUniformlyOn pairedEtaCoreNormalizedTail
       (fun _ : ℂ => 1 / 2) atTop {s : ℂ | 0 < s.re} := by
   refine (tendstoLocallyUniformlyOn_iff_forall_isCompact
-    (Complex.isOpen_re_gt 0)).mpr ?_
+    (isOpen_lt continuous_const Complex.continuous_re)).mpr ?_
   intro K hKU hK
   obtain ⟨R, hRpos, hR⟩ := hK.isBounded.exists_pos_norm_le
   rw [Metric.tendstoUniformlyOn_iff]
@@ -331,7 +331,7 @@ theorem tendstoLocallyUniformlyOn_iteratedDeriv_pairedEtaShiftedLogTailLaplaceMo
         (Eventually.of_forall fun N => by
           rw [iteratedDeriv_eq_iterate]
           exact (((analyticOnNhd_pairedEtaShiftedLogTailLaplaceMoment_zero N).iterated_deriv k).differentiableOn))
-        (Complex.isOpen_re_gt 0)
+        (isOpen_lt continuous_const Complex.continuous_re)
       change TendstoLocallyUniformlyOn
         (fun N s => deriv
           (iteratedDeriv k
