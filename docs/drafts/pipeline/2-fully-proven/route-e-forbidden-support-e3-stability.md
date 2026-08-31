@@ -735,3 +735,26 @@ umbrella-wired without an umbrella build.
 Card remains Stage 2.  Divisor/rpow absorption, second-branch recurrence, and exact Theorem 4(iii)
 regime union remain before residual Proposition-2.2 routing, amplification, and all-interval
 supply.
+
+## Lean progress update (2026-08-31) — first branch fully de-rounded
+
+`Sieve/HeathBrownSparseMeanValueFirstBranch.lean` proves the natural-to-real square-root transfer
+and absorbs the exact divisor scale into `divisorBoundConst η·N^η`.  Its explicit first-branch
+mean-value theorem has no floor, divisor, rpow, or positivity premise.  Direct check, targeted leaf
+build (`9110/9110`), and all-three-declaration axiom audit pass with only
+`[propext, Classical.choice, Quot.sound]`; module is umbrella-wired without an umbrella build.
+
+Card remains Stage 2.  First-branch regime absorption and two-step parameter algebra remain before
+exact Theorem 4(iii), residual Proposition-2.2 routing, amplification, and all-interval supply.
+
+## Lean progress update (2026-08-31) — arbitrary-scale Heath--Brown recurrence
+
+`Sieve/HeathBrownSparseMeanValueArbitraryScale.lean` proves collision-support monotonicity and
+extends the exact recurrence to every positive auxiliary cutoff `N₀`, matching the unrestricted
+scale in Heath--Brown's Lemma 6.  The coefficient-faithful two-step theorem now has no `N₀≤N`
+premise.  Direct checks, targeted leaf builds (`9103/9103`, `9110/9110`), and the focused axiom
+audit pass with only `[propext, Classical.choice, Quot.sound]`; module is umbrella-wired without
+an umbrella build.
+
+Card remains Stage 2.  Exact second-scale selection and exponent absorption remain before the
+Theorem 4(iii) union and downstream Route-E assembly.

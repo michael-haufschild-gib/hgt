@@ -22,8 +22,11 @@ Current state only. Exact identifiers require `formal_tools.py research` confirm
 - Finite collision recurrence and divisor square lift are coefficient-faithful.
 - `HeathBrownSparseMeanValueSelfBound` closes height/length return and scalar absorption.
 - `HeathBrownSparseMeanValueSqrtScale` selects exact first-branch integer scale.
+- `HeathBrownSparseMeanValueFirstBranch` closes floor/divisor/rpow artifacts.
+- `integral_Icc_normSq_heathBrown_fullUnit_le_firstBranchRegime` absorbs `T√N` under `T√N≤N²`.
+- `integral_Icc_normSq_heathBrown_fullUnit_le_firstBranchPublishedRegime` supplies that condition from `T^(2/3)≤N`.
 - `integral_Icc_normSq_heathBrown_factors_le_twoStepSelfBound` closes coefficient-faithful second recurrence/square-lift iteration at `N0²`.
-- Remaining: divisor-scale/rpow absorption, regime parameters, Theorem 4(iii) union, then Proposition-2.2 routing.
+- Remaining: two-step integer parameter/exponent algebra, Theorem 4(iii) union, then Proposition-2.2 routing.
 - This is literature closure toward `ORD+COF`, not yet RH or a cross-route producer.
 
 ## Verified shared topology-2 carrier
@@ -64,4 +67,4 @@ Current state only. Exact identifiers require `formal_tools.py research` confirm
 
 ## Current target
 
-Close Heath--Brown divisor-scale/rpow and regime algebra; then test Route-E supply against shared `ORD+COF` endpoint.
+Close Heath--Brown regime/parameter algebra and Theorem 4(iii); then test Route-E supply against shared `ORD+COF` endpoint.

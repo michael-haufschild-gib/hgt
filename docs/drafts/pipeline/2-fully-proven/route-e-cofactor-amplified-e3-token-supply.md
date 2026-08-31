@@ -727,3 +727,26 @@ targeted leaf build (`9109/9109`), and three-declaration axiom audit pass with o
 
 Card remains Stage 2.  Divisor/rpow absorption, second-branch recurrence, and exact Theorem 4(iii)
 regime union remain before Proposition-2.2 routing, amplification, and all-interval supply.
+
+## Lean progress update (2026-08-31) — first branch fully de-rounded
+
+`Sieve/HeathBrownSparseMeanValueFirstBranch.lean` replaces `Nat.sqrt N` by `√N` and the exact
+divisor scale by `divisorBoundConst η·N^η`, yielding a fully explicit three-term first-branch
+bound with source support `m≤T`.  No floor, divisor, rpow, or positivity premise remains.  Direct
+check, targeted leaf build (`9110/9110`), and three-declaration axiom audit pass with only
+`[propext, Classical.choice, Quot.sound]`; module is umbrella-wired without an umbrella build.
+
+Card remains Stage 2.  First-branch regime absorption and two-step parameter algebra remain before
+exact Theorem 4(iii), Proposition-2.2 routing, amplification, and all-interval supply.
+
+## Lean progress update (2026-08-31) — arbitrary-scale Heath--Brown recurrence
+
+`Sieve/HeathBrownSparseMeanValueArbitraryScale.lean` proves monotonicity of the closed collision
+aggregate and uses it to extend the exact two-scale recurrence from `1≤N₀≤N` to every positive
+`N₀`, as required by Heath--Brown's Lemma 6.  `HeathBrownSparseMeanValueIteration.lean` now uses
+that unrestricted theorem, so no hidden `N₀≤N` side condition remains.  Direct checks, targeted
+leaf builds (`9103/9103`, `9110/9110`), and the six-declaration axiom audit pass with only
+`[propext, Classical.choice, Quot.sound]`; module is umbrella-wired without an umbrella build.
+
+Card remains Stage 2.  Exact second-scale selection and exponent absorption remain before the
+Theorem 4(iii) union, Proposition-2.2 routing, amplification, and all-interval supply.

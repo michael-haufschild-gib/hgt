@@ -21,4 +21,4 @@
 
 ## Open
 
-Prove source-specific singular flux positive on `0<x<137/2000`; or exhibit an actual singular point with nonpositive flux, killing TCD.
+Prove refined-cone `D1>0`; this closes finite TCD/S6F gate. Fallback: prove actual singular flux positive, or exhibit nonpositive actual singular flux and kill TCD.

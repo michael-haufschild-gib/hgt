@@ -1,31 +1,33 @@
 # Universal-law field: verified frontier
 
-Evidence: current frontier map plus `scripts/formal_tools.py research`; no training-prior conjectures.
+Evidence only: current frontier map, paper-proven ULF cards, and `scripts/formal_tools.py research`. No conjecture is currently admitted.
 
-## Higher mechanism already proved
+## Field law already supported
 
-- Natural carrier is a **source-marked formation/completion diagram**, not another RH operator: finite support, valuation depth, compound order, observer quotient, reflection, and completion provenance are independent coordinates.
-- Full formation reflection is information-neutral before observation. Its polar modulus reconstructs repeated-formation depth; its phase reconstructs support parity. Unitary boundary is exactly squarefree formation, and boundary phase is Möbius. Source orientation is therefore no longer missing.
-- Finite squarefree packets already have an exterior-horizon realization. Gamma insertion already has a closed densely defined Boolean creator with exact state-dependent coefficients and flat two-prime faces. Actual completed-theta grades form a nonzero linearly independent all-grade chain; Gamma--theta creation advances support and grade together. Compounds cannot be reduced to singleton or pairwise Gram data.
-- Completed theta value landing and a positive-displacement joint prime-power source-to-Xi landing are unconditional. The latter is a one-body `(prime, valuation)` Hilbert pairing; it does not totalize multi-prime support compounds.
-- Completion is the genuine fracture. Every finite internal-jet prime cylinder is relatively formally etale, yet the pre-divisor transverse infinitesimal maps coefficient-faithfully to a reflection-odd Tail--Roos `lim¹` class, nonzero exactly off wall. Thus finite-stage DANB does not cross completion.
-- Receiver is closed: a nonzero closed source-linear sewing between reflected prime-Poisson sectors exists exactly on wall, including countable multiplicity and arbitrary phase histories. On Xi support this is equivalent to internal-only divisor syndrome.
+- Primitive is a **source-generated response tower**, not a route object: source evolution and legal interventions generate ordered words; formation, observation, recovery, reflection, positivity, and completion act on that tower.
+- Natural invariant is the **formation-grade properness spectrum** `alpha_r`: stable reconstructibility can hold at one word grade and fail at the next. Properness is not a property of one carrier or completion.
+- Functional-equation lift and common recovery are information-neutral. They transport an existing bound or defect; they cannot generate selection.
+- Positive Gram/action records response magnitude but erases orientation. Recurrence may close after observer quotient while marked accumulated action/history remains open.
+- Completion boundary is exact: bounded observers can erase but cannot create it. Hypertranscendence has not been identified with noncompactness; proved content is only that finite prolongation can be structurally insufficient.
 
-## Retired guesses
+## Literal arithmetic calibration
 
-- Relative renewal/successor invariance: generic theorem exists; arithmetic landing was already audited and does not produce recurrence.
-- Derived arithmetic non-bifurcation: finite stage only; literal derived-Roos class is the infinite bifurcation it cannot exclude.
-- Exterior/Fock completion: finite exterior horizon already exists; critical all-prime Bessel divergence blocks bounded synthesis.
-- Koszul/braided repair: canonical all-prime sign cups already realize every scalar coefficient; tensoring with theta spin makes order independence automatic. Bare fermionic sign supplies orientation but no selection.
-- Prefix half-likelihood/Kakutani sewing: reflected prefix Cauchy coherence is already exactly RH.
-- Closedness, flatness, diagonal gauge, Haar dilation, positive recovery, finite action, and source-marked continuity: each is compatible with off-wall residue or is already an RH receiver.
+- On `ell^2(N)`, `L e_n=(log n)e_n`, `S_t=e^{-tL}`, and multiplicative shifts `V_m` satisfy `[L,V_m]=(log m)V_m`.
+- Raw all-prime Duhamel response is injective compact with dense nonclosed range. Source commutator normalization cancels the exact `1/log p` loss and makes grade-one response uniformly proper.
+- Ordered two-letter response retains `sgn(log m-log n)` although `V_mV_n=V_nV_m`; squaring keeps magnitude and loses sign.
+- Unconditional prime-log crowding makes grade-two response injective compact/nonclosed. Every finite diagonal polynomial-log/time-differential prolongation still has lower bound zero. Any diagonal repair needs stretched-exponential singular growth; otherwise repair must be infinite-order or non-diagonal.
+- Independently, observer-jet formation proves canonical `mass + drift + second-boundary history` reconstruction and the exact value-slope-curvature Green identity. The harmonic-to-square-root clock has minimal additive formation order two.
+- Literal completed arithmetic landing reduces RH to the open signed source estimate `|m1_M| + sum_j |A_M,j|/sqrt(j+1) = O(M)`; this is a producer target, not a proof.
 
-## Exact open producer
+## Corpus-killed shortcuts
 
-Not missing: sign, local creator, finite compound law, completed-theta value, transverse class, or wall receiver.
+- FE symmetry, positivity, common recovery, closedness, flatness, finite packets, and abstract compact resolvent are nonselective.
+- JAS diagonal Gamma transport is exactly classified: uniform reflected prefix conditioning holds iff the parameter is `1/2`, but no pre-zero source law supplies that conditioning; off-wall closed flat creators remain possible.
+- Gerbe anomaly, compact reduction, orbit Gramians, Hardy admission, and per-zero finite-capital criteria are exact receivers unless a single pre-zero arithmetic source history produces their premise. Per-zero admission is RH-equivalent and circular.
+- A tuple of independently relabelable organs has no nonconstant intrinsic invariant; any field that merely stores topology, positivity, history, and obstruction in separate slots is theatre.
 
-Missing composition is **infinite boundary-phase totalization**: before divisor choice, transport full formation-reflection boundary phase through a genuinely non-diagonal all-prime Gamma--theta completion while retaining valuation, phase, every compound order, and the nonzero Hodge/Roos connecting class. Existing one-body Xi landing scalarizes support; existing compound-faithful JAS creator can coexist with unit off-wall double-log residue. Their incompatibility is current load-bearing gap.
+## Exact open mechanism
 
-Exact RH closure: construct this totalization from literal Möbius--theta/Euler--Gamma identities; prove its specialization at every nonzero Xi first jet gives a nonzero, closed, single-valued map linear over the common prime source algebra; identify its two representations with reflected prime-Poisson sectors. `xiPrimePoissonReflectionSewing_iff_internalOnly` then kills only transverse placement, preserves internal multiplicity, and forces `Re rho = 1/2` for every Xi divisor.
+Construct one **pre-zero, source-forced operation on the full response tower** that controls formation properness across word grades and whose grade-two image is the canonical completed-source second history. It must be non-diagonal or genuinely infinite/singular in relative prime scale, preserve ordered sign before positive observation, and yield the displayed `O(M)` action without mentioning zeros.
 
-No conjecture is admitted until: (1) mechanism stated at diagram level; (2) corpus search rules out an existing theorem/receiver/no-go; (3) an explicit source formula defines the totalization on finite generators; (4) exact RH landing above is proved on paper.
+RH closure is then exact: second-jet Green conservation bounds the normalized Möbius-divisor square-root Abel moment; the existing equivalence gives RH. No new conjecture is admissible until corpus search supplies an explicit finite-generator source formula and a paper proof of this landing.

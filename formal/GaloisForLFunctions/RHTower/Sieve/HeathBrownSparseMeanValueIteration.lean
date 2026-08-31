@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.Sieve.HeathBrownSparseMeanValueSelfBound
+import GaloisForLFunctions.RHTower.Sieve.HeathBrownSparseMeanValueArbitraryScale
 
 /-!
 # Two-step closure of the Heath--Brown sparse mean value
@@ -25,7 +26,7 @@ theorem integral_Icc_normSq_heathBrown_factors_le_twoStepSelfBound
     (T : Set.Ioi (0 : ℝ)) (hT : 2 ≤ (T : ℝ))
     {X : ℝ} (hA : ∀ n ∈ A, ((n : ℕ) : ℝ) ≤ X)
     {N N0 : ℕ} (hB : ∀ n ∈ B, (n : ℕ) ≤ N)
-    (hN0 : 1 ≤ N0) (hN0N : N0 ≤ N)
+    (hN0 : 1 ≤ N0)
     {eta : ℝ} (heta : 0 < eta) :
     let a0 : ℝ := (5 * Real.pi / 2) * (T : ℝ) *
       (15 * (T : ℝ)⁻¹ * (N : ℝ) ^ 2 * (A.card : ℝ) ^ 2 +
@@ -127,8 +128,8 @@ theorem integral_Icc_normSq_heathBrown_factors_le_twoStepSelfBound
     exact integral_nonneg fun _ => by positivity
   have hJ := le_sqrt_of_sq_le_nonneg hJ0 (mul_nonneg hk0 hF0) hJ2
   have hTone : 1 ≤ (T : ℝ) := by linarith
-  have hrec := integral_Icc_normSq_heathBrown_factors_le_twoScaleIntegral
-    A B eps q T hTone hB hN0 hN0N
+  have hrec := integral_Icc_normSq_heathBrown_factors_le_twoScaleIntegral_arbitrary
+    A B eps q T hTone hB hN0
   have houter :
       (∫ t in Set.Icc (-(T : ℝ)) (T : ℝ),
           ‖heathBrownSparseFactor A eps t * heathBrownDenseFactor B q t‖ ^ 2) ≤

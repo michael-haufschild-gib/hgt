@@ -1,0 +1,12 @@
+# RH frontier ledger snapshot — 2026-08-31 20:14 CEST
+
+Updated `docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md` from Lean declarations only; cards, papers, and literature excluded as evidence. Snapshot includes committed and indexed working-tree declarations. Ledger remains 1248 lines, 28 live branch labels, 33 candidate interface labels, no newly independent route label.
+
+Material frontier changes:
+- CCM-FU/CFI/SP-E/RG: weighted Suzuki-curvature first-moment growth and natural unit-Riesz barycenter control are each classified as equivalent to RH plus bounded normalized Chebyshev error / square-root literal-psi remainder. They are terminal as independent producers. Direct signed triangular-transform/common-high-pass order remains open.
+- G-CE/CCM: `SuzukiObserverJetFormation.lean` gives exact mass–drift–zero-mass/zero-drift second-history Green decomposition, harmonic-to-Riesz curvature bound `13/(4 sqrt(j+1))`, exact completed-source Abel landing, and sufficient producer `CompletedSourceObserverJetLinearActionBounded -> RH`. This is a source front within existing G-CE/CCM, not a new route.
+- Route E: `HeathBrownPrimitiveRayMassRealScale.lean` and `HeathBrownSparseMeanValueRealScale.lean` prove the uniform real-ratio recurrence `M(N) <= 19 delta N^2 + (2N/N0)M(N0) + 3N/N0` for every positive auxiliary scale and lift it through ordered cofactor aggregation to a source-facing fully integral mean-value estimate. `HeathBrownSecondScaleParameters.lean` closes canonical second-scale choice, rounding, threshold, and `R<=T`; second-branch analytic estimate and moving Gallagher assembly remain open.
+- HCF: `HedenmalmCriticalFeatureSevenTenthsSevenCenterReceiver.lean` closes canonical seven-center coverage, negligible padding, corrected-to-Plemelj ceiling equivalence, and asymptotic/eventual 3/4 receivers. Seven-center exact charge yields a strictly larger sufficient source ceiling than five centers, not a stronger density endpoint. Source ceiling remains open.
+- HB, FZZ-P, reciprocal dyadic Xi phase, and earlier Route E/CCM changes remain reflected from prior audit.
+
+Validation: one clean post-audit Lean mtime scan at 20:14 CEST; `git diff --check` passed; ledger 1248 lines (<4000). No Lean build run because documentation-only task. Other worktree files were not edited by this audit.

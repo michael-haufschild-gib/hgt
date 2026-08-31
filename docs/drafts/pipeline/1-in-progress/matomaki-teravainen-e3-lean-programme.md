@@ -2695,3 +2695,70 @@ and targeted leaf build (`9109/9109`) pass; the declaration audits to only
 
 Remaining Heath--Brown work is divisor-scale/rpow absorption, exact integer regime parameters,
 and the Theorem 4(iii) branch union.  Proposition-2.2 routing and amplification remain downstream.
+
+### Sparse large values, brick 57 — first-branch divisor/rpow absorption (2026-08-31)
+
+`Sieve/HeathBrownSparseMeanValueFirstBranch.lean` proves the cast natural root lies below the real
+root and bounds the square-root divisor scale by `divisorBoundConst η · N^η`.  Substitution into
+brick 55 removes every floor and divisor-normalizer artifact, giving
+
+```text
+I ≤ 75π N²R² + 35π T√N R²
+  + (25π)² N · ((5πe+5π/4)TR)
+      · ((divisorBoundConst η·N^η)²(25π/8)²).
+```
+
+The support condition is the source theorem's literal `m≤T`; no auxiliary analytic or rounding
+premise remains.  Direct check, targeted leaf build (`9110/9110`), and three-declaration axiom
+audit pass with only `[propext, Classical.choice, Quot.sound]`; module is umbrella-wired without
+an umbrella build.
+
+Remaining Heath--Brown work is regime absorption for this branch and exact integer parameter
+algebra for brick 56's coefficient-faithful two-step branch, followed by Theorem 4(iii) union.
+
+### Sparse large values, brick 58 — explicit first-regime absorption (2026-08-31)
+
+`Sieve/HeathBrownSparseMeanValueFirstBranchRegime.lean` consumes brick 57 and proves the exact
+first-branch estimate under `T√N≤N²`.  Its only new step absorbs the residual `35πT√N R²` into
+the diagonal budget, yielding
+
+```text
+I ≤ 110π N²R²
+  + (25π)² N · ((5πe+5π/4)TR)
+      · ((divisorBoundConst η·N^η)²(25π/8)²).
+```
+
+Direct source check and targeted leaf build (`9111/9111`) pass; the declaration audits to only
+`[propext, Classical.choice, Quot.sound]`.  Module is umbrella-wired without an umbrella build.
+
+Remaining Heath--Brown work is deriving this explicit branch condition from the paper's published
+regime, exact integer parameter algebra for brick 56's two-step branch, and Theorem 4(iii) union.
+
+### Sparse large values, brick 59 — arbitrary positive recurrence scale (2026-08-31)
+
+`Sieve/HeathBrownSparseMeanValueArbitraryScale.lean` removes the accidental formal restriction
+`N₀≤N` from bricks 51--52.  The source's Lemma 6 allows every positive `N₀`: when `N₀≤N` the
+existing primitive-ray decomposition applies, while for `N<N₀` the closed collision support at
+length `N` embeds directly into the support at length `N₀`.  The resulting aggregate and integral
+recurrences therefore require only `1≤N₀`.  Brick 56 now consumes this unrestricted recurrence,
+so its coefficient-faithful two-step bound also accepts every positive auxiliary scale.
+
+Direct source checks and targeted leaf builds (`9103/9103`, `9110/9110`) pass.  Five new
+declarations and the generalized brick-56 theorem audit to only
+`[propext, Classical.choice, Quot.sound]`; module is umbrella-wired without an umbrella build.
+
+Remaining Heath--Brown work is exact integer realization of
+`max(T^(1/3),(RT)^(1/4))`, exponent absorption in the second branch, and Theorem 4(iii) union.
+
+### Sparse large values, brick 60 — published first-regime bridge (2026-08-31)
+
+`Sieve/HeathBrownSparseMeanValueFirstBranchPublishedRegime.lean` proves directly that
+`T^(2/3)≤N` implies the exact brick-58 condition `T√N≤N²`.  Cubing the published inequality gives
+`T²≤N³`; squaring both nonnegative sides then closes the square-root comparison.  Its capstone
+instantiates brick 58, removing the explicit algebraic regime hypothesis from the first branch.
+
+Direct source check and targeted leaf build (`9112/9112`) pass; both declarations audit to only
+`[propext, Classical.choice, Quot.sound]`.  Module is umbrella-wired without an umbrella build.
+
+Remaining Heath--Brown work is exact integer realization and exponent absorption for the
+coefficient-faithful two-step branch, followed by Theorem 4(iii) union.
