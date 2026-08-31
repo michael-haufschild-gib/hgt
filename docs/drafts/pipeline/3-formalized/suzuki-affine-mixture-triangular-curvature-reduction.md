@@ -1,6 +1,6 @@
 # Suzuki affine mixture to discrete triangular curvature
 
-Status: `[PAPER-PROVED] [NOVELTY UNVERIFIED]`
+Status: `[LEAN-PROVED] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
 
 ## Exact RH chain
 
@@ -26,7 +26,10 @@ Exact signed Suzuki curvature cells
 Suzuki's screw-function papers (arXiv:2206.03682, 2209.04658, 2209.12832) and 2026
 Weil-quadratic-form synthesis (arXiv:2606.09096) treat continuous screw/Weil criteria. Audit found
 no integer-event floor decomposition, signed-curvature Green transform, or exact triangular
-checkpoint formula. Priority remains provisional pending expert review.
+checkpoint formula. The August 2026 prime-power-checkpoint papers Zenodo 21859280, 21979513, and
+22076088 sharpen event balance, terminal-episode exclusion, Chebyshev bridges, and recovery
+witnesses, but do not construct the CCM--FU third-grade triangular/error-kernel transform proved
+here. Priority remains provisional pending expert review.
 
 ## Conjecture C-TRI1
 
@@ -36,11 +39,17 @@ For `H ≥ 2`, define
   suzukiCheckpointSignedCurvatureCell j *
     ccmGuinandWeilThirdGradeCesaroTriangularWeight H (log (j+1))`.
 
+Also define the positive reset transform
+
+`E(H) = ∑ j ∈ Ico 2 (suzukiCheckpointEventIndex H),
+  suzukiCheckpointEventCurvatureJump j *
+    ccmGuinandWeilThirdGradeCesaroErrorKernel H (log (j+1))`.
+
 Then the canonical affine mixture is exactly
 
-`base affine mixture + T(H) + reset-prefix mixture`,
+`base affine mixture + T(H) + E(H)`,
 
-the base and reset mixtures are uniformly bounded in `H ≥ 2`, and therefore uniform boundedness
+the base and reset transforms are uniformly bounded in `H ≥ 2`, and therefore uniform boundedness
 of `T(H)` is equivalent to `CCMFUSuzukiCanonicalCheckpointAffineTailBound`.
 
 ## Hostile audit
@@ -104,9 +113,22 @@ the forced endpoint atom is
  + 32/H^4 (H-log(j+1))`,
 
 which is exactly `ccmGuinandWeilThirdGradeCesaroTriangularWeight H (log(j+1))` by the proved
-rectangular-mixture identity. Linearity yields
+rectangular-mixture identity. Linearity gives `M_H(G)=T(H)`.
 
-`M_H(A)=M_H(B)+T(H)+M_H(R)`.
+The same fixed-prefix argument writes
+
+`R(t)=sum_{2≤j<N} r_j 1_{log(j+1)≤t}`.
+
+For each step, its bulk marked response plus endpoint atom is exactly
+
+`integral_[log(j+1),H] density(H,t) dt + 32/H^4
+ = ccmGuinandWeilThirdGradeCesaroErrorKernel H (log(j+1))`.
+
+Thus finite linearity gives the stronger exact identity
+
+`M_H(A)=M_H(B)+T(H)+E(H)`;
+
+no residual floor-selected reset integral remains.
 
 It remains to show the two discarded responses are uniformly bounded. The base is affine,
 `B(t)=a+b t`. On `1≤t≤H`, positivity and the proved density estimate give
@@ -116,13 +138,9 @@ It remains to show the two discarded responses are uniformly bounded. The base i
 The inverse-quartic tail is integrable uniformly in `H`; the endpoint atom is bounded by
 `32|a|/H^4+32|b|/H^3`. Thus `M_H(B)` has one finite ceiling.
 
-All `r_j` are nonnegative and `sum_j r_j<∞`. Consequently
-`0≤R(t)≤C_R:=sum_j r_j`. Positivity of the marked density and its endpoint atom gives
-
-`0≤M_H(R)≤C_R (integral_[1,H] density(H,t) dt+32/H^4)`.
-
-The parenthesized mass is exactly the third-grade error kernel at `1`, uniformly at most `96`.
-Thus `M_H(R)` has one finite ceiling.
+All `r_j` are nonnegative and `sum_j r_j<∞`. Every active event has
+`1<log(j+1)≤H`; positivity and the exact kernel bounds give
+`0≤ErrorKernel(H,log(j+1))≤96`. Hence `0≤E(H)≤96 sum_j r_j`, uniformly in `H`.
 
 Therefore `|M_H(A)-T(H)|` is uniformly bounded for every `H≥2`. Adding or subtracting that
 fixed error proves equivalence between uniform boundedness of `T(H)` and
@@ -134,4 +152,27 @@ unproved estimate occurs. Hostile checks at integer walls pass because the new e
 preceding zero-length hinge and reset exactly; arbitrary noninteger `H` is covered by the fixed
 event set below `floor(exp H)`.
 
-`[PAPER-PROVED]` Obligations 1–5 are closed. Next gate: exact Lean formalization.
+## Lean realization
+
+Module:
+`GaloisForLFunctions.RHTower.SuzukiAffineMixtureTriangularCurvatureReduction`
+
+Principal closed theorems:
+
+- `ccmFUSuzukiCheckpointAffineMixture_eq_base_add_triangular_add_reset` proves the exact
+  three-channel finite transform for every `H ≥ 2`.
+- `exists_nonnegative_uniform_bound_suzukiCheckpointBaseAffineMixture` discharges fixed affine
+  memory unconditionally.
+- `exists_nonnegative_uniform_bound_suzukiCheckpointResetErrorTransform` discharges every reset
+  packet unconditionally using finite variation.
+- `ccmFUSuzukiCanonicalCheckpointAffineTailBound_iff_triangularCurvatureTransformBound` replaces
+  the full CCM--FU floor-selected affine premise by one finite signed triangular sum.
+- `riemannHypothesis_of_suzukiCheckpointTriangularCurvatureTransformBound` records exact remaining
+  RH chain.
+
+Targeted module build passes. `#print axioms` for exact decomposition, both nuisance bounds,
+equivalence, and RH implication reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
+`[LEAN-PROVED]` Obligations 1–5 are closed. Exact surviving open core: prove uniform boundedness
+of `suzukiCheckpointTriangularCurvatureTransform`; all continuous integration, floor selection,
+affine memory, and reset variation have been eliminated.

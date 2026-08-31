@@ -339,3 +339,75 @@ differentiate one correlation saturation law instead of the original eight-term 
 of its transformed eighth diagonal. The primary literature audit found general reflection/Hankel
 positivity and total-positivity frameworks, but no theorem for this complete-theta log-jet reserve.
 Priority remains provisional pending independent expert review.
+
+## 2026-08-31 static modular-chamber conjecture under hostile test
+
+`[CONJECTURE TCD-D1-STATIC-CHAMBER]` Let `(Z,R,S)` be real reduced modular data and put
+`A=R²(1-Z²)`, `W=(2/3)S-RZ`. Test whether the complete known local physical chamber
+
+```text
+-3/10 < Z < 0,  R>0,  S<0,  A>0,  W>0,
+18 < 2S²+3A,  -S/3 < W
+```
+
+forces positivity of the universal Lyapunov rank-three D1 polynomial. Exact intended proof chain:
+
+```text
+static chamber implication at every putative singular face
+→ positive projective boundary flux
+→ global native D1
+→ finite TCD/S6F gate
+→ cofinal all-order Hankel/Bezoutian landing
+→ Weil positivity
+→ RH.
+```
+
+This is stronger than source/gap positivity: it includes every strict Lyapunov inequality already
+proved on the actual positive theta orbit and the projective clock cap on the whole missing
+interval. The conjecture is undergoing hostile falsification before any orbit-specific proof.
+
+`[NOVELTY AUDIT]` Mandatory corpus search found no theorem or counterexample for this combined
+strict chamber. Primary arXiv searches found general Painlevé/Hankel differential systems but no
+complete-theta reflected D1 result with these modular coordinates. Priority remains provisional.
+
+## 2026-08-31 static modular-chamber route killed
+
+`[FALSIFIED][LEAN-PROVED]` The combined static chamber does not force D1.  The reduced modular ray
+
+```text
+Z=-t,  R=5/2,  S=-t,
+A=R²(1-Z²)=(25/4)(1-t²),
+W=(2/3)S-RZ=(11/6)t
+```
+
+enters, for sufficiently small `t>0`, every strict local chamber currently proved for the missing
+physical interval: `-3/10<Z<0`, positive scale/gap/shear, `18<2S²+3A`, and `-S/3<W`.  Nevertheless
+the universal Lyapunov D1 remains strictly negative.  Mechanism: at `t=0` this ray meets the exact
+rational seam state `R=5/2`, where D1 is negative; polynomial continuity makes the negative chamber
+open along the ray.
+
+Formal capstone:
+`HTGeometry.modularThetaLyapunov_strictClockChamber_not_sufficient_for_D1` in
+`PolynomialODEJetRankThreeStaticPhysicalClockChamberNoGo`.
+
+Exact proof-chain consequence: the implication
+
+```text
+known strict Lyapunov/source signs + projective clock localization
+→ D1 positivity or positive singular-face flux
+→ finite TCD/S6F gate
+→ cofinal all-order landing
+→ Weil positivity
+→ RH
+```
+
+is impossible at its first step.  Strongest positive survivor is the open-ray penetration theorem
+`exists_rightNeighborhood_modularThetaLyapunov_strictClockChamber_D1_neg`: failure is robust, not
+confined to a boundary point.  Therefore `TCD-D1-BOUNDARY-FLUX` must use actual centre-anchored theta-orbit
+incidence, or a strictly stronger dynamical invariant; no refinement assembled only from the
+already proved static chamber signs can close D1.
+
+`[NOVELTY AUDIT]` Mandatory corpus search found the weaker source/gap seam obstruction but not this
+strict reduced-clock penetration or combined-chamber no-go.  Primary arXiv searches found general
+Painlevé/Hankel differential systems but no complete-theta theorem or counterexample in these
+coordinates.  Priority remains provisional pending independent expert review.

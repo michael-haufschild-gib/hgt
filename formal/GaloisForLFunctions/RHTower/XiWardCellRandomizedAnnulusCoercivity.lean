@@ -271,6 +271,21 @@ theorem integrable_wardLorentzianHalf_mul
   simpa only [wardLorentzianHalf] using
     integrable_mul_lorentzianHalves_general hx hy beta gamma
 
+theorem integrable_wardReflectedLorentzianProfile_mul
+    {x y : ℝ} (hx : 0 < x) (hy : 0 < y) (beta gamma : ℝ) :
+    MeasureTheory.Integrable (fun t : ℝ =>
+      wardReflectedLorentzianProfile x beta t *
+        wardReflectedLorentzianProfile y gamma t) := by
+  have hpp := integrable_wardLorentzianHalf_mul hx hy beta gamma
+  have hpm := integrable_wardLorentzianHalf_mul hx hy beta (-gamma)
+  have hmp := integrable_wardLorentzianHalf_mul hx hy (-beta) gamma
+  have hmm := integrable_wardLorentzianHalf_mul hx hy (-beta) (-gamma)
+  convert ((hpp.add hpm).add (hmp.add hmm)).const_mul 4 using 1
+  funext t
+  unfold wardReflectedLorentzianProfile
+  simp only [Pi.add_apply]
+  ring
+
 theorem integral_wardLorentzianHalf_mul
     {x y : ℝ} (hx : 0 < x) (hy : 0 < y) (beta gamma : ℝ) :
     (∫ t : ℝ,
@@ -365,6 +380,24 @@ theorem re_xiAntiCausalWardSchwarzPairResponse_eq_reflectedProfile
   rw [re_xiAntiCausalWardSchwarzPairResponse_line_eq]
   unfold wardReflectedLorentzianProfile wardLorentzianHalf
   ring_nf
+
+/-- Pairwise real Ward products are integrable on every positive vertical
+line. -/
+theorem integrable_re_xiAntiCausalWardSchwarzPairResponse_mul
+    {sigma : ℝ} (hsigma : 0 < sigma)
+    (q r : XiRightUpperZeroCopy) :
+    MeasureTheory.Integrable (fun t : ℝ =>
+      (xiAntiCausalWardSchwarzPairResponse q
+        ((sigma : ℂ) + Complex.I * (t : ℂ))).re *
+      (xiAntiCausalWardSchwarzPairResponse r
+        ((sigma : ℂ) + Complex.I * (t : ℂ))).re) := by
+  have hx : 0 < sigma + (xiRightCenteredZero q.1).re := by
+    linarith [xiRightCenteredZero_re_pos q.1]
+  have hy : 0 < sigma + (xiRightCenteredZero r.1).re := by
+    linarith [xiRightCenteredZero_re_pos r.1]
+  simpa only [re_xiAntiCausalWardSchwarzPairResponse_eq_reflectedProfile] using
+    integrable_wardReflectedLorentzianProfile_mul hx hy
+      (xiRightCenteredZero q.1).im (xiRightCenteredZero r.1).im
 
 /-- Cross energy of two actual Ward Schwarz pairs on one vertical line. -/
 def xiWardPairRealCrossEnergyAtLine

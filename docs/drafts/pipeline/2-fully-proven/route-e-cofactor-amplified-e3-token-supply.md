@@ -644,3 +644,46 @@ is umbrella-wired without an umbrella build.
 Card remains Stage 2.  Unweighted full-square source reindexing is closed.  Remaining shared gate:
 coefficient-weighted summation over actual dense supports and sparse cofactor pairs, Theorem
 4(iii)'s iteration, Proposition-2.2 routing, amplification, and final all-interval theorem.
+
+## Lean progress update (2026-08-31) — finite Heath--Brown two-scale mean value closed
+
+`Sieve/HeathBrownSparseCollisionTwoScale.lean` sums the exact ray count over all ordered sparse
+cofactor pairs, dominates the existing `[0,1]`-weighted strict collision mass on any bounded dense
+support, and composes with the corpus's exact `M(it)Q(it)` collision reduction.  Its aggregate law
+is
+
+```text
+J(A,N,T) ≤ 15 N²|A|²/T
+  + (floor(N/N₀)+1)J(A,N₀,T)
+  + (2 floor(N/N₀)+1)|A|².
+```
+
+No coefficient, exceptional-direction, lattice, gcd, cofactor-ordering, or analytic premise
+remains.  Direct source check, final targeted build (`9101/9101`), and nine-theorem axiom audit
+pass with only `[propext, Classical.choice, Quot.sound]`; module is umbrella-wired without an
+umbrella build.
+
+Card remains Stage 2.  Finite Heath--Brown Lemma 6/Theorem 4(iii) comparison core is closed.
+Remaining shared gate is paper-specific iterative parameter substitution, Proposition-2.2
+residual Watt/DI routing, amplification, and final Matomäki--Teräväinen all-interval theorem.
+
+## Lean progress update (2026-08-31) — fully integral Heath--Brown recurrence
+
+`Sieve/HeathBrownSparseMeanValueTwoScale.lean` embeds every closed `1/T` collision in the full
+positive interval `[1,N₀]` into the strict unit-weight collision family at height `T/2`.  Existing
+reverse finite-frequency mean value then proves
+
+```text
+J(A,N₀,T) ≤ (5/(2T)) I(T/2; A,[1,N₀]),
+```
+
+and substitution yields the complete integral two-scale recurrence with the existing explicit
+constants `15`, `5/2`, and endpoint term `2 floor(N/N₀)+1`.  Natural/positive support conversion,
+unit-weight cardinality, closed-to-strict passage, and smaller-scale analytic closure are all
+discharged.  Direct source check, targeted leaf build (`9102/9102`), and seven-theorem axiom audit
+pass with only `[propext, Classical.choice, Quot.sound]`; module is umbrella-wired without an
+umbrella build.
+
+Card remains Stage 2.  Remaining shared gate is paper-specific recurrence iteration and parameter
+substitution, residual Watt/DI routing in Proposition 2.2, amplification, and final
+Matomäki--Teräväinen all-interval theorem.

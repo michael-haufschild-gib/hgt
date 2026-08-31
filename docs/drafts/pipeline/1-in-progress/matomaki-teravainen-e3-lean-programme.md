@@ -2558,3 +2558,57 @@ only `[propext, Quot.sound]`).
 This closes source-level reindexing for unweighted full positive squares.  Remaining Theorem
 4(iii) work is coefficient-weighted summation over actual dense supports and sparse cofactor pairs,
 followed by iteration.  Proposition-2.2 routing, amplification, and Theorem 1.2 assembly remain.
+
+### Sparse large values, brick 51 — aggregate and weighted two-scale mean value (2026-08-31)
+
+`Sieve/HeathBrownSparseCollisionTwoScale.lean` sums brick 50 over every ordered sparse cofactor
+pair and embeds arbitrary bounded positive dense supports into the closed full-square aggregate
+`J(A,N,T)`.  It proves
+
+```text
+J(A,N,T) ≤ 15 N²|A|²/T
+  + (floor(N/N₀)+1) J(A,N₀,T)
+  + (2 floor(N/N₀)+1)|A|².
+```
+
+The corpus's existing `[0,1]`-weighted strict collision mass is at most `J(A,N,T)`.  Composing with
+the exact sparse mean-value collision reduction gives a source-facing integral theorem for
+`M(it)Q(it)` with the same two-scale aggregate.  Dense-support boundedness, `1 ≤ T`, and
+`1 ≤ N₀ ≤ N` are the literal finite-range data; coefficient domination, strict-to-closed passage,
+cofactor summation, gcd/ray decomposition, and all analytic estimates are discharged.
+
+Direct source check and final targeted leaf build (`9101/9101`) pass.  All nine new public
+theorems audit to only `[propext, Classical.choice, Quot.sound]`; module is umbrella-wired without
+an umbrella build.  This closes the finite Heath--Brown Lemma 6/Theorem 4(iii) comparison core.
+Remaining Route-E work is its paper-specific iterative parameter substitution into Proposition
+2.2, residual Watt/DI scale routing, amplification, and Matomäki--Teräväinen Theorem 1.2 assembly.
+
+### Sparse large values, brick 52 — integral two-scale recurrence (2026-08-31)
+
+`Sieve/HeathBrownSparseMeanValueTwoScale.lean` closes the smaller aggregate in brick 51 by the
+same physical mean square at half-height.  The full positive interval `[1,N₀]` with unit weights
+contains every closed collision of logarithmic width `1/T` as a strict collision of width `2/T`.
+The existing reverse finite-frequency theorem therefore gives
+
+```text
+J(A,N₀,T) ≤ (5/(2T)) I(T/2; A, [1,N₀]).
+```
+
+Substitution into brick 51 produces the fully integral recurrence
+
+```text
+I(T; A,B) ≤ (5π/2)T * (
+    15 N²|A|²/T
+  + (floor(N/N₀)+1) (5/(2T)) I(T/2; A,[1,N₀])
+  + (2 floor(N/N₀)+1)|A|²).
+```
+
+The natural-to-positive lift, full positive interval, unit-coefficient cardinality identity,
+closed-to-strict half-height embedding, reverse mean-value comparison, and recurrence composition
+are all discharged in Lean.  No smaller-scale collision aggregate, positivity conversion, or
+analytic premise remains.  Direct source check and targeted leaf build (`9102/9102`) pass; all
+seven new theorem declarations audit to only `[propext, Classical.choice, Quot.sound]`.  Module is
+umbrella-wired without an umbrella build.
+
+Remaining Route-E work is paper-specific iteration/parameter substitution into Proposition 2.2,
+residual Watt/DI scale routing, amplification, and Matomäki--Teräväinen Theorem 1.2 assembly.

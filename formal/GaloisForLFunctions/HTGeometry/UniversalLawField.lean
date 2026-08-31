@@ -454,6 +454,8 @@ import GaloisForLFunctions.HTGeometry.ObserverClockTriangularRepresentation
 import GaloisForLFunctions.HTGeometry.FormationReflectionPolarMechanics
 import GaloisForLFunctions.HTGeometry.ShiftedEulerFormationReflectionPolarMechanics
 import GaloisForLFunctions.HTGeometry.AugmentationGradedFormationSpectrum
+import GaloisForLFunctions.HTGeometry.DifferentialReesFormationSpectrum
+import GaloisForLFunctions.HTGeometry.CanonicalThermalReesFormationField
 
 /-!
 # Universal-law-field Lean umbrella

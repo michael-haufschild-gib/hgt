@@ -656,3 +656,44 @@ umbrella-wired without an umbrella build.
 Card remains Stage 2.  Remaining shared gate is coefficient-weighted summation over actual dense
 supports and sparse cofactor pairs, Theorem 4(iii)'s iteration, Proposition-2.2 routing,
 amplification, and final all-interval theorem.
+
+## Lean progress update (2026-08-31) — finite Heath--Brown two-scale mean value closed
+
+`Sieve/HeathBrownSparseCollisionTwoScale.lean` proves the ordered-cofactor aggregate law
+
+```text
+J(A,N,T) ≤ 15 N²|A|²/T
+  + (floor(N/N₀)+1)J(A,N₀,T)
+  + (2 floor(N/N₀)+1)|A|²,
+```
+
+dominates existing `[0,1]`-weighted strict collision mass on arbitrary bounded dense supports,
+and composes it with exact `M(it)Q(it)` mean-value reduction.  Coefficient bounds, strict-to-closed
+passage, cofactor summation, ray decomposition, and analytic comparison are discharged.  Direct
+check, final targeted build (`9101/9101`), and nine-theorem axiom audit pass with only
+`[propext, Classical.choice, Quot.sound]`; module is umbrella-wired without umbrella build.
+
+Card remains Stage 2.  Finite Heath--Brown Lemma 6/Theorem 4(iii) comparison core is closed.
+Paper-specific iterative parameter substitution, Proposition-2.2 routing, amplification, and final
+Matomäki--Teräväinen all-interval supply theorem remain.
+
+## Lean progress update (2026-08-31) — fully integral Heath--Brown recurrence
+
+`Sieve/HeathBrownSparseMeanValueTwoScale.lean` removes the smaller closed aggregate from the
+brick-51 output.  Full unit-weight support `[1,N₀]` at height `T/2` strictly contains every closed
+`1/T` product collision, and reverse finite-frequency mean value gives
+
+```text
+J(A,N₀,T) ≤ (5/(2T)) I(T/2; A,[1,N₀]).
+```
+
+The resulting capstone is an entirely integral two-scale recurrence for the original weighted
+`M(it)Q(it)` mean square.  Positive-index conversion, support membership, strict endpoint slack,
+unit-weight collision cardinality, reverse comparison, and recurrence substitution are proved
+internally.  Direct source check, targeted leaf build (`9102/9102`), and all-seven-theorem axiom
+audit pass with only `[propext, Classical.choice, Quot.sound]`; module is umbrella-wired without
+an umbrella build.
+
+Card remains Stage 2.  Remaining shared gate is paper-specific iteration/parameter substitution,
+residual Proposition-2.2 Watt/DI routing, amplification, and final Matomäki--Teräväinen all-interval
+supply theorem.

@@ -584,6 +584,58 @@ orientation, while adjacent-grade polarization is reflection odd.  Bare infinite
 depth does not characterize hypertranscendence; the next field object must be the differential
 Rees spectrum, with formation-number operator `u d/du`.
 
+### Law XXVII -- differential Rees connection and hypertranscendental gauge escape
+
+The augmentation filtration carries an intrinsic formation-number connection
+
+\[
+ N=(T-1)\partial_T,
+ \qquad
+ N((T-1)^rP)=r(T-1)^rP+(T-1)^{r+1}\partial_TP.       \tag{TAFM.40}
+\]
+
+Thus grade is spectral data: `N` acts by `r` on `I^r/I^(r+1)`.  Under Laurent inversion `ι`,
+
+\[
+ \partial_T\iota=-T^{-2}\iota\partial_T,
+ \qquad N\iota=T^{-1}\iota N,                       \tag{TAFM.41}
+\]
+
+so `N` and reflection commute on each associated grade.  On a punctured differential source
+chart, `N_u=u∂`.  Any finite-dimensional state closed under both `N_u` and inverse gauge `u⁻¹`
+is derivative-closed and therefore contains no hypertranscendental source.  Positively, every
+finite `N_u`-stable state containing an HT source loses some vector under `u⁻¹`.
+
+This is the precise hypertranscendence/noncompactness mechanism: not infinite support, but failure
+of simultaneous finite formation closure and lossless gauge reopening.  It predicts an explicit
+inverse-gauge escape in every finite recurrent receiver.  Remaining global theorem must prove
+properness only after quotienting these escape directions while retaining adjacent-grade
+reflection polarization.
+
+### Law XXVIII -- canonical thermal Toeplitz--Rees completion and global properness
+
+Formation number is not an optional clock.  On the positive Rees algebra `Z[T-1]`, it is the unique
+derivation carrying the augmentation generator to itself.  Completing its one-dimensional grades
+in `ell2(N)` gives one joint spectrum
+
+\[
+ n,qquad (-1)^n,qquad (n+1)^{-1},qquad (1-q)q^n,
+ qquad \operatorname{rank}P_n=n,                    \tag{TAFM.42}
+\]
+
+read respectively by formation evolution, FE reflection, compact resolvent, KMS history mass, and
+Toeplitz boundary defect.  The resolvent `(N+1)^(-1)` is compact.  Completed parity `Γ` satisfies
+
+\[
+ \Gamma^2=1,\qquad \Gamma(N+1)^{-1}=(N+1)^{-1}\Gamma,
+ \qquad \Gamma V=-V\Gamma.                           \tag{TAFM.43}
+\]
+
+This closes the earlier free-grading objection to the bialgebra/KMS fork.  Infinite open history,
+thermal positivity, FE orientation, and global graph-domain properness are forced completions of
+one augmentation connection.  Remaining arithmetic theorem is now a literal source landing plus
+an unconditional bounded `N`-graph action retaining the odd adjacent-grade channel.
+
 ## 3. Foundational theorem
 
 The dependency-closed paper theorem is
@@ -954,8 +1006,21 @@ compactness or another scalar endpoint.
 Law XXVI replaces the observer-jet chart by a coordinate-free filtration.  Every memory order,
 observer derivative, functional-equation parity, and compact-return residue belongs to one
 augmentation/Rees geometry.  This is the first field law to predict a recurrence theorem from the
-recovery--clock--reflection fusion.  Differential Rees comparison and literal prime-source landing,
-not more route receivers, are the next high-level obligations.
+recovery--clock--reflection fusion.
+
+Law XXVII installs the missing connection on that filtration.  Formation order is now an
+associated-graded eigenvalue, and functional-equation reflection has an exact connection
+Jacobian.  Hypertranscendence forces a typed failure of finite properness: an `N_u`-stable finite
+state cannot remain closed under inverse gauge.  Literal prime-source landing and properness of the
+observer projection after removing exactly those escape directions, not more route receivers, are
+the next high-level obligations.
+
+Law XXVIII constructs that projection's canonical ambient completion.  Formation energy is unique
+on the positive Rees algebra; its Hilbert grade completion has compact resolvent, while Toeplitz
+curvature retains the inverse-gauge escape and KMS weights normalize all forward grades.  Global
+properness is therefore no longer the missing abstract theorem.  Missing producer is specifically
+the literal source's bounded formation-graph action with nonzero reflection-odd adjacent
+polarization.
 
 ## 8. Why this is not regression into one route
 
@@ -1047,6 +1112,10 @@ literal source comparison, and whether Steps 1--5 close without importing RH.
       literal minimal harmonic--Riesz formation order two
 - [x] augmentation-graded formation spectrum with injective recovery, all-order observer duality,
       functional-equation grade parity, and recurrence winding residue
+- [x] differential Rees formation-number connection, exact reflection covariance, and
+      hypertranscendental inverse-gauge escape from every finite formation-stable state
+- [x] unique positive-Rees energy grading, thermal Toeplitz--Rees joint spectrum, reflection-shift
+      orientation law, and compact-resolvent global formation properness
 - [ ] literal Xi-source formation functor
 - [ ] literal divisor-independent intervention signature and proved relation table shared by at
       least three structurally different route organs
@@ -1069,6 +1138,8 @@ literal source comparison, and whether Steps 1--5 close without importing RH.
 - [x] Lean certification of ULF-TAFM-18 local innovation phase quotient and literal Suzuki lift
 - [x] Lean certification of ULF-TAFM-19 observer-clock transmutation and literal clock escape
 - [x] Lean certification of ULF-TAFM-24 augmentation-graded formation-spectrum core
+- [x] Lean certification of ULF-TAFM-25 differential Rees and HT gauge-escape core
+- [x] Lean certification of ULF-TAFM-26 canonical thermal Rees completion and properness core
 - [ ] complete Lean formalization of remaining ULF-TAFM-2/3 and paper-only clauses of ULF-TAFM-5/6
 
 ## Log
@@ -1148,3 +1219,15 @@ literal source comparison, and whether Steps 1--5 close without importing RH.
   by augmentation-graded formation-spectrum geometry.  Lean certifies injective recovery,
   all-order finite-difference duality, lossless FE lift, grade parity, closed-recurrence winding
   residue, and adjacent-grade orientation.  Differential Rees/source landing remains open.
+- 2026-08-31 -- constructed and Lean-certified the differential Rees formation connection.
+  Formation order is the exact associated-graded eigenvalue of `(T-1)∂_T`; Laurent reflection has
+  exact Jacobian and commutes with the connection gradewise.  Proved the non-tautological
+  hypertranscendence law: every finite formation-stable state containing an HT source has an
+  explicit inverse-gauge escape.  Remaining producer is observer-projection properness after
+  quotienting those escape directions, with adjacent-grade orientation retained.
+- 2026-08-31 -- closed the free-energy-grading defect in the earlier Toeplitz/KMS field fork.
+  Lean proves formation number is the unique derivation carrying the augmentation generator to
+  itself on positive Rees history.  Its Hilbert completion has compact resolvent, and one intrinsic
+  grade jointly reconstructs FE parity, Gibbs mass, and Toeplitz defect rank; completed parity
+  anticommutes with one-step history creation.  Remaining RH producer is literal arithmetic landing
+  plus a bounded formation-graph action retaining that odd adjacent channel.
