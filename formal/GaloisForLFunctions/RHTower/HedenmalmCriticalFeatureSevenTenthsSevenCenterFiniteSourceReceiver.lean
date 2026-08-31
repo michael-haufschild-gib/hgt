@@ -102,7 +102,7 @@ theorem criticalFeatureCanonicalCriticalLineCount_threeQuarters_lower_of_regular
   apply
     criticalFeatureCanonicalCriticalLineCount_threeQuarters_lower_of_canonicalSevenCenter_plemelj_exactCharge
   apply canonicalSevenCenter_plemeljCovariance_ceiling_of_regularFiniteCovariance
-  · positivity
+  · exact (div_pos criticalFeatureShallowReflectedSevenCenterCharge_pos (by norm_num)).le
   · exact canonicalRegularLatticeSummedDisplacement_ceiling_of_sourcePieceMajorant hsource
 
 /-- Phase-preserving finite source majorant version of the exact seven-center 75% receiver. -/
@@ -115,7 +115,7 @@ theorem criticalFeatureCanonicalCriticalLineCount_threeQuarters_lower_of_regular
   apply
     criticalFeatureCanonicalCriticalLineCount_threeQuarters_lower_of_canonicalSevenCenter_plemelj_exactCharge
   apply canonicalSevenCenter_plemeljCovariance_ceiling_of_regularFiniteCovariance
-  · positivity
+  · exact (div_pos criticalFeatureShallowReflectedSevenCenterCharge_pos (by norm_num)).le
   · exact canonicalRegularLatticeSummedDisplacement_ceiling_of_phaseSourcePieceMajorant hsource
 
 end

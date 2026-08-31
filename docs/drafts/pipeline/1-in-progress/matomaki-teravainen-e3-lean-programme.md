@@ -2762,3 +2762,22 @@ Direct source check and targeted leaf build (`9112/9112`) pass; both declaration
 
 Remaining Heath--Brown work is exact integer realization and exponent absorption for the
 coefficient-faithful two-step branch, followed by Theorem 4(iii) union.
+
+### Sparse large values, brick 61 — real-ratio recurrence and canonical second scale (2026-08-31)
+
+`Sieve/HeathBrownPrimitiveRayMassRealScale.lean` proves the source-faithful primitive-ray
+coefficient `2N/N₀`, including the previously missing case `N<N₀`.  Its aggregate and integral
+lifts in `HeathBrownSparseMeanValueRealScale.lean`, followed by
+`HeathBrownSparseMeanValueRealIteration.lean`, give the exact real-ratio two-step recurrence for
+every positive auxiliary scale.  `HeathBrownSecondScaleParameters.lean` constructs
+`⌈max(T^(1/3),(RT)^(1/4))⌉₊`, proves its rounding bounds, proves its square reaches `T^(2/3)`, and
+derives `R≤T` from positive-natural support.  `HeathBrownSparseMeanValueSecondScale.lean`
+instantiates the recurrence at this canonical scale, discharging all selection premises.
+
+Direct source checks and targeted leaf builds (`9098/9098`, `9104/9104`, `9111/9111`,
+`9111/9111`, `9115/9115`) pass.  All eighteen new declarations audit to only
+`[propext, Classical.choice, Quot.sound]`; all modules are umbrella-wired without an umbrella
+build.
+
+Remaining Heath--Brown work is explicit constant/rpow absorption for this selected-scale bound
+and union with brick 60 into exact Theorem 4(iii).

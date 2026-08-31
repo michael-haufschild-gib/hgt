@@ -750,3 +750,20 @@ leaf builds (`9103/9103`, `9110/9110`), and the six-declaration axiom audit pass
 
 Card remains Stage 2.  Exact second-scale selection and exponent absorption remain before the
 Theorem 4(iii) union, Proposition-2.2 routing, amplification, and all-interval supply.
+
+## Lean progress update (2026-08-31) — source-faithful real-ratio second scale
+
+`Sieve/HeathBrownPrimitiveRayMassRealScale.lean` proves the exact `2N/N₀` recurrence for every
+positive `N₀`; the `N<N₀` case is closed ray by ray rather than weakened to a floor-plus-one
+coefficient.  `HeathBrownSparseMeanValueRealScale.lean` and
+`HeathBrownSparseMeanValueRealIteration.lean` lift this to the coefficient-faithful two-step
+integral bound.  `HeathBrownSecondScaleParameters.lean` constructs and proves all rounding and
+size properties of `⌈max(T^(1/3),(RT)^(1/4))⌉₊`, and
+`HeathBrownSparseMeanValueSecondScale.lean` selects it without auxiliary hypotheses.
+
+Direct checks, targeted leaf builds (`9098/9098`, `9104/9104`, `9111/9111`, `9111/9111`,
+`9115/9115`), and the focused eighteen-declaration axiom audit pass with only
+`[propext, Classical.choice, Quot.sound]`; modules are umbrella-wired without an umbrella build.
+
+Card remains Stage 2.  Explicit exponent absorption and the exact Theorem 4(iii) regime union
+remain before Proposition-2.2 routing, amplification, and all-interval supply.

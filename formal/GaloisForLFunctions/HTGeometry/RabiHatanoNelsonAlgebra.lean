@@ -286,8 +286,9 @@ theorem bdgCoordinateTransform_mul_inv :
   ext i j
   fin_cases i <;> fin_cases j <;>
     simp [bdgCoordinateTransform, bdgCoordinateTransformInv,
-      Matrix.mul_apply, Fin.sum_univ_four] <;>
-    ring_nf <;> simp [Complex.I_sq]
+      Matrix.mul_apply, Fin.sum_univ_four]
+  all_goals ring_nf
+  all_goals simp [Complex.I_sq]
 
 theorem bdgCoordinateTransformInv_mul :
     bdgCoordinateTransformInv * bdgCoordinateTransform = 1 := by
@@ -371,3 +372,133 @@ theorem generalizedBloch_factorization_clears_inverse
   rw [generalizedBlochEta, Units.val_inv_eq_inv_val]
   field_simp [hβ]
   ring
+
+/-! ## Shifted resolvents -/
+
+/-- Photon generator shifted into the carrier frame. -/
+def photonShiftedGenerator {n : ℕ} (L : Matrix (Fin n) (Fin n) ℂ) (ω₀ : ℝ) :=
+  L - (Complex.I * (ω₀ : ℂ)) • (1 : Matrix (Fin n) (Fin n) ℂ)
+
+theorem coRotating_resolvent_argument {n : ℕ}
+    (L : Matrix (Fin n) (Fin n) ℂ) (Ω ω₀ : ℝ) :
+    (Complex.I * (Ω : ℂ)) • (1 : Matrix (Fin n) (Fin n) ℂ) -
+        photonShiftedGenerator L ω₀ =
+      (Complex.I * ((ω₀ + Ω : ℝ) : ℂ)) • (1 : Matrix (Fin n) (Fin n) ℂ) - L := by
+  ext i j
+  simp [photonShiftedGenerator]
+  ring
+
+theorem counterRotating_resolvent_argument {n : ℕ}
+    (L : Matrix (Fin n) (Fin n) ℂ) (Ω ω₀ : ℝ) :
+    (-Complex.I * (Ω : ℂ)) • (1 : Matrix (Fin n) (Fin n) ℂ) -
+        photonShiftedGenerator L ω₀ =
+      (Complex.I * ((ω₀ - Ω : ℝ) : ℂ)) • (1 : Matrix (Fin n) (Fin n) ℂ) - L := by
+  ext i j
+  simp [photonShiftedGenerator]
+  ring
+
+/-- Co-rotating response probes the original photon generator at frequency `ω₀+Ω`. -/
+theorem coRotating_resolvent {n : ℕ}
+    (L : Matrix (Fin n) (Fin n) ℂ) (Ω ω₀ : ℝ) :
+    ((Complex.I * (Ω : ℂ)) • (1 : Matrix (Fin n) (Fin n) ℂ) -
+        photonShiftedGenerator L ω₀)⁻¹ =
+      ((Complex.I * ((ω₀ + Ω : ℝ) : ℂ)) • (1 : Matrix (Fin n) (Fin n) ℂ) - L)⁻¹ := by
+  rw [coRotating_resolvent_argument]
+
+/-- Counter-rotating response probes the original photon generator at frequency `ω₀-Ω`. -/
+theorem counterRotating_resolvent {n : ℕ}
+    (L : Matrix (Fin n) (Fin n) ℂ) (Ω ω₀ : ℝ) :
+    ((-Complex.I * (Ω : ℂ)) • (1 : Matrix (Fin n) (Fin n) ℂ) -
+        photonShiftedGenerator L ω₀)⁻¹ =
+      ((Complex.I * ((ω₀ - Ω : ℝ) : ℂ)) • (1 : Matrix (Fin n) (Fin n) ℂ) - L)⁻¹ := by
+  rw [counterRotating_resolvent_argument]
+
+/-! ## Interface and critical-scale balances -/
+
+/-- Exact inverse-detuning width law, encoding exponent `-1`. -/
+def firstOrderInterfaceWidth (a : ℂ) (δ : ℂˣ) : ℂ := a * ((δ⁻¹ : ℂˣ) : ℂ)
+
+/-- Exact square-root inverse-detuning width law, encoding exponent `-1/2`. -/
+def secondOrderInterfaceWidth (a : ℂ) (δ : ℂˣ) : ℂ :=
+  Complex.sqrt (a * ((δ⁻¹ : ℂˣ) : ℂ))
+
+theorem complex_sqrt_sq (z : ℂ) : Complex.sqrt z ^ 2 = z := by
+  rw [Complex.sqrt]
+  exact Complex.cpow_nat_inv_pow z (by norm_num)
+
+theorem firstOrderInterfaceWidth_balance (a : ℂ) (δ : ℂˣ) :
+    (δ : ℂ) * firstOrderInterfaceWidth a δ = a := by
+  have hδ : (δ : ℂ) ≠ 0 := Units.ne_zero δ
+  rw [firstOrderInterfaceWidth, Units.val_inv_eq_inv_val]
+  field_simp [hδ]
+
+theorem secondOrderInterfaceWidth_sq_eq_firstOrder (a : ℂ) (δ : ℂˣ) :
+    secondOrderInterfaceWidth a δ ^ 2 = firstOrderInterfaceWidth a δ := by
+  rw [secondOrderInterfaceWidth, complex_sqrt_sq]
+  rfl
+
+theorem secondOrderInterfaceWidth_balance (a : ℂ) (δ : ℂˣ) :
+    (δ : ℂ) * secondOrderInterfaceWidth a δ ^ 2 = a := by
+  rw [secondOrderInterfaceWidth_sq_eq_firstOrder,
+    firstOrderInterfaceWidth_balance]
+
+/-- Interior endpoint `κc = √2 Ω`. -/
+def interiorCriticalKappa (Ω : ℝ) : ℝ := Real.sqrt 2 * Ω
+
+/-- Interior endpoint `Jc = √(3/2) Ω`. -/
+def interiorCriticalJ (Ω : ℝ) : ℝ := Real.sqrt (3 / 2) * Ω
+
+theorem interiorCriticalKappa_sq (Ω : ℝ) : interiorCriticalKappa Ω ^ 2 = 2 * Ω ^ 2 := by
+  rw [interiorCriticalKappa, mul_pow, Real.sq_sqrt (by norm_num)]
+
+theorem interiorCriticalJ_sq (Ω : ℝ) :
+    interiorCriticalJ Ω ^ 2 = (3 / 2 : ℝ) * Ω ^ 2 := by
+  rw [interiorCriticalJ, mul_pow, Real.sq_sqrt (by norm_num)]
+
+/-- Cleared polynomial for the exterior boundary `κ² = J²-Ω²/4`. -/
+def exteriorCriticalPolynomialOne (J Ω κ : ℝ) : ℝ :=
+  4 * κ ^ 2 - 4 * J ^ 2 + Ω ^ 2
+
+/-- Cleared polynomial for the second exterior boundary. -/
+def exteriorCriticalPolynomialTwo (J Ω κ : ℝ) : ℝ :=
+  4 * (J ^ 2 - Ω ^ 2) * κ ^ 2 - (2 * J ^ 2 - Ω ^ 2) ^ 2
+
+/-- Unconditional complex branch of the first exterior critical coupling. -/
+def exteriorCriticalKappaOne (J Ω : ℂ) : ℂ :=
+  Complex.sqrt (J ^ 2 - Ω ^ 2 / 4)
+
+/-- Scaled second exterior coupling; unit `δ` represents its nonzero square-root denominator. -/
+def exteriorCriticalKappaTwoScaled (J Ω : ℂ) (δ : ℂˣ) : ℂ :=
+  (2 * J ^ 2 - Ω ^ 2) * ((2 * (δ : ℂ))⁻¹)
+
+theorem exteriorCriticalKappaOne_sq (J Ω : ℂ) :
+    exteriorCriticalKappaOne J Ω ^ 2 = J ^ 2 - Ω ^ 2 / 4 := by
+  rw [exteriorCriticalKappaOne, complex_sqrt_sq]
+
+theorem exteriorCriticalKappaOne_polynomial (J Ω : ℂ) :
+    4 * exteriorCriticalKappaOne J Ω ^ 2 - 4 * J ^ 2 + Ω ^ 2 = 0 := by
+  rw [exteriorCriticalKappaOne_sq]
+  ring
+
+theorem exteriorCriticalKappaTwoScaled_balance (J Ω : ℂ) (δ : ℂˣ) :
+    2 * (δ : ℂ) * exteriorCriticalKappaTwoScaled J Ω δ =
+      2 * J ^ 2 - Ω ^ 2 := by
+  have hδ : (δ : ℂ) ≠ 0 := Units.ne_zero δ
+  rw [exteriorCriticalKappaTwoScaled]
+  field_simp [hδ]
+
+theorem exteriorCriticalPolynomialOne_homogeneous (c J Ω κ : ℝ) :
+    exteriorCriticalPolynomialOne (c * J) (c * Ω) (c * κ) =
+      c ^ 2 * exteriorCriticalPolynomialOne J Ω κ := by
+  simp [exteriorCriticalPolynomialOne]
+  ring
+
+theorem exteriorCriticalPolynomialTwo_homogeneous (c J Ω κ : ℝ) :
+    exteriorCriticalPolynomialTwo (c * J) (c * Ω) (c * κ) =
+      c ^ 4 * exteriorCriticalPolynomialTwo J Ω κ := by
+  simp [exteriorCriticalPolynomialTwo]
+  ring
+
+end
+
+end GaloisForLFunctions.HTGeometry.RabiHatanoNelson

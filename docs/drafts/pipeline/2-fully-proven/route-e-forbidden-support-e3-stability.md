@@ -758,3 +758,20 @@ an umbrella build.
 
 Card remains Stage 2.  Exact second-scale selection and exponent absorption remain before the
 Theorem 4(iii) union and downstream Route-E assembly.
+
+## Lean progress update (2026-08-31) — source-faithful real-ratio second scale
+
+`Sieve/HeathBrownPrimitiveRayMassRealScale.lean` proves Heath--Brown's exact `2N/N₀`
+primitive-ray coefficient uniformly for positive `N₀`, including `N<N₀`.
+`HeathBrownSparseMeanValueRealScale.lean` and `HeathBrownSparseMeanValueRealIteration.lean` lift
+it through collision aggregation, integral recurrence, square lift, and quadratic closure.
+`HeathBrownSecondScaleParameters.lean` supplies the fully proved natural scale
+`⌈max(T^(1/3),(RT)^(1/4))⌉₊`; `HeathBrownSparseMeanValueSecondScale.lean` selects it and discharges
+all scale premises.
+
+Direct checks, targeted leaf builds (`9098/9098`, `9104/9104`, `9111/9111`, `9111/9111`,
+`9115/9115`), and the eighteen-declaration axiom audit pass with only
+`[propext, Classical.choice, Quot.sound]`; modules are umbrella-wired without an umbrella build.
+
+Card remains Stage 2.  Explicit exponent absorption and Theorem 4(iii) union remain before
+residual Proposition-2.2 routing, amplification, and final all-interval supply theorem.

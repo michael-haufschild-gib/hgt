@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven
 - **Type:** universal mechanism / exact formation law / arithmetic source reduction
 - **Parents:** ULF-TAFM-10, ULF-TAFM-15, ULF-TAFM-19
-- **Status:** `[PROVED HERE]` dependency-closed paper proof; Lean formalisation pending
+- **Status:** `[PROVED HERE]` dependency-closed paper proof; core observer-jet/RH reduction formalised
 
 ## 1. What changes
 
@@ -498,7 +498,9 @@ excision (arXiv:math/9906205).  None supplies `(OJ.29)` or `(OJ.31)` for the ari
 - [x] literal weighted second-curvature bound
 - [x] exact completed-source second-jet landing
 - [x] new sufficient source law for RH
-- [ ] Lean formalisation
+- [-] Lean formalisation: reconstruction, terminal closure, Green identity, literal curvature bound,
+  completed-source landing, and RH implication are in `RHTower.SuzukiObserverJetFormation`;
+  affine-gauge classification and sharp completion/properness remain
 - [ ] identify Möbius--divisor dilation history with canonical second primitive
 - [ ] prove linear source action `(OJ.31)`
 - [ ] RH selection consequence
@@ -508,3 +510,5 @@ excision (arXiv:math/9906205).  None supplies `(OJ.29)` or `(OJ.31)` for the ari
 - 2026-08-31 -- promoted from Stage 1 after complete reconstruction, properness, literal clock-order,
   and arithmetic landing proofs.  Determinant and first-order completion candidates were retired as
   already occupied corpus shadows; observer-jet formation order is the positive survivor.
+- 2026-08-31 -- Lean core certified in `RHTower.SuzukiObserverJetFormation`; targeted leaf build
+  passed and nine capstones audit to `propext`, `Classical.choice`, and `Quot.sound` only.
