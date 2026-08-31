@@ -1,8 +1,10 @@
-# HCF 75%: Current State
+# HCF 75%: Fact State
 
-- **Receiver:** deep copies `o(N)`; five-center ceiling `c` gives `N₀ ≥ (1-5c/22)N-o(N)`; old `21/100` target gives `419/440`.
-- **Threshold:** exact seven-center charge `Q₇=2·(23/25)·(23232/4225+32/221+32/725)`; `c=Q₇/8` gives asymptotic `75%`. `Q₇/8>Q₅/8>11/10`.
-- **Formal:** generic centered-stencil propagation; seven-center local/reflected charge; canonical Plemelj receiver.
-- **Open:** prove source-only seven-center Plemelj covariance ceiling `≤(Q₇/8)N+o(N)`; strict ceiling gives eventual pointwise `75%`.
-- **Known structure:** phase averaging removes nonzero aliases; source covariance + compact source boundary `=4πN+o(N)`; boundary `=4πN₀+o(N)`.
-- **No-gos:** divisor-selected endpoints; fixed transverse shifts; finite entire Euler gauges; norm-square-only/unpaired/absolute-alias bounds; scalar diagonal minorants; rank--trace window refinement; squarefree Möbius critical-clock control.
+- Exact: `N=N₀+2(S+Rdeep)`; Route-T gives `Rdeep=o(N)`.
+- Sharp source gate: phase covariance `≤πN+o(N)` iff `N₀≥3N/4-o(N)`; equivalent positive-shift boundary `≥3πN-o(N)`.
+- Conservation: covariance `+` boundary `=4πN+o(N)`; boundary `=4πN₀+o(N)`. Gamma re-estimation alone is circular.
+- Finite gate: seven-center source ceiling `≤(Q₇/8)N+o(N)`, `Q₇=2·(23/25)·(23232/4225+32/221+32/725)`; fixed reindex costs `o(N)`.
+- Source reduction: corrected budget `=` von Mangoldt `+` pole–Gamma `−` thin-strip contour; von Mangoldt lattice is `o(N)`. Contour carries line multiplicity.
+- Open: genuinely arithmetic control of HCF Robin/positive-shift covariance at required ceiling.
+- Live audit: all-depth von-Mangoldt/Gamma Cauchy positivity versus HCF value-minus-tangent functional.
+- Dead: divisor selection; fixed shifts; finite entire gauges; absolute/unpaired alias bounds; scalar minorants; rank–trace refinement; Gaussian pair kernel (horizontal blowup); Sonin moment/Feshbach comparison (RH-equivalent).

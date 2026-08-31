@@ -2,7 +2,7 @@
 
 ## Claim
 
-`[PW-B] [ROUTE-CLASS KILL] [PAPER PROOF] [NOVELTY CANDIDATE]`
+`[PW-B] [ROUTE-CLASS KILL] [LEAN-PROVED] [NOVELTY CANDIDATE]`
 
 Proof chain under attack:
 
@@ -63,6 +63,15 @@ On Xi support the second factor is positive in the nonblind case, while `W(s)=0`
 
 Internal search found finite and absolutely summable three-moment classifications, but no boundary-family/Vandermonde rigidity or positive regularization dichotomy. Primary PW tunneling literature located conservation-law and entropy-correction expansions, not this Borel-grade boundary classification. External novelty remains candidate pending expert review.
 
+## Formalization
+
+Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekPositiveBoundaryRegularizationThreeMomentNoGo`.
+
+Closed capstone: `pwPositiveBoundaryRegularization_threeMoment_noGo`.
+
+Verified by direct Lean check and target-only `lake build`. Axioms: `propext`, `Classical.choice`, `Quot.sound` only.
+
 ## Status
 
-Paper proof complete. Lean formalization pending.
+Paper proof and Lean formalization complete.
+

@@ -17,6 +17,8 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
+open scoped ContDiff
+
 /-! ## Schwarzschild--BR potentials and horizon -/
 
 /-- Angular coefficient `P_y` in the reciprocal Schwarzschild--BR chart. -/
@@ -112,8 +114,33 @@ theorem schwarzschildBRRadialWeight_reciprocalClearing
     (mass magnetic : ℝ) (y : {z : ℝ // z ≠ 0}) :
     y.1 ^ 2 * schwarzschildBRRadialWeight mass magnetic y.1⁻¹ =
       schwarzschildBRReciprocalWeight mass magnetic y.1 := by
-  field_simp [schwarzschildBRRadialWeight, schwarzschildBRReciprocalWeight, y.2]
-  <;> ring
+  unfold schwarzschildBRRadialWeight schwarzschildBRReciprocalWeight
+  field_simp [y.2]
+
+theorem schwarzschildBRReciprocalWeight_eq_zero_iff
+    (mass magnetic reciprocalRadius : ℝ) :
+    schwarzschildBRReciprocalWeight mass magnetic reciprocalRadius = 0 ↔
+      magnetic = 0 ∧ reciprocalRadius = 0 := by
+  unfold schwarzschildBRReciprocalWeight
+  constructor
+  · intro h
+    have hBsq : magnetic ^ 2 = 0 := by
+      nlinarith [sq_nonneg (reciprocalRadius - magnetic ^ 2 * mass), sq_nonneg magnetic]
+    have hfirst : (reciprocalRadius - magnetic ^ 2 * mass) ^ 2 = 0 := by
+      nlinarith [sq_nonneg (reciprocalRadius - magnetic ^ 2 * mass), sq_nonneg magnetic]
+    have hB : magnetic = 0 := sq_eq_zero_iff.mp hBsq
+    exact ⟨hB, by simpa [hB] using sq_eq_zero_iff.mp hfirst⟩
+  · rintro ⟨hB, hy⟩
+    simp [hB, hy]
+
+/-- Reciprocal clearing exposes one exceptional seam zero in addition to the horizon factor. -/
+theorem schwarzschildBRReciprocalLapse_eq_zero_iff
+    (mass magnetic reciprocalRadius : ℝ) :
+    schwarzschildBRReciprocalLapse mass magnetic reciprocalRadius = 0 ↔
+      (magnetic = 0 ∧ reciprocalRadius = 0) ∨
+        (1 + magnetic ^ 2 * mass ^ 2) - 2 * mass * reciprocalRadius = 0 := by
+  unfold schwarzschildBRReciprocalLapse
+  rw [mul_eq_zero, schwarzschildBRReciprocalWeight_eq_zero_iff]
 
 /-- The reciprocal conformal factor has an exact nonnegative decomposition on the polar strip. -/
 theorem schwarzschildBRReciprocalConformalSq_completeSquare
@@ -157,11 +184,17 @@ theorem schwarzschildBRReciprocalConformalSq_eq_zero_iff
       rcases mul_eq_zero.mp hproduct with hzero | hfalse
       · exact hzero
       · exact False.elim ((ne_of_gt hv) hfalse)
-    exact And.intro (by nlinarith [sq_nonneg
-      (reciprocalRadius - magnetic ^ 2 * mass * (1 - polarX.1 ^ 2))]) hbase
+    have hy : reciprocalRadius = magnetic ^ 2 * mass * (1 - polarX.1 ^ 2) := by
+      nlinarith [hsquare]
+    exact ⟨hy, hbase⟩
   · rintro ⟨hy, hbase⟩
-    rw [hy, hbase]
-    simp
+    calc
+      (reciprocalRadius - magnetic ^ 2 * mass * (1 - polarX.1 ^ 2)) ^ 2 +
+          magnetic ^ 2 * (1 - polarX.1 ^ 2) *
+            (1 + magnetic ^ 2 * mass ^ 2 * polarX.1 ^ 2) =
+        0 ^ 2 + (magnetic ^ 2 * (1 - polarX.1 ^ 2)) *
+          (1 + magnetic ^ 2 * mass ^ 2 * polarX.1 ^ 2) := by rw [hy]; ring
+      _ = 0 := by rw [hbase]; ring
 
 theorem magneticSq_mul_one_sub_sq_eq_zero_iff
     (magnetic polarX : ℝ) :
@@ -180,6 +213,33 @@ theorem magneticSq_mul_one_sub_sq_eq_zero_iff
     · simp [hB]
     · simp [hx]
     · simp [hx]
+
+theorem one_sub_polarSq_eq_zero_iff (polarX : ℝ) :
+    1 - polarX ^ 2 = 0 ↔ polarX = -1 ∨ polarX = 1 := by
+  have hfactor : 1 - polarX ^ 2 = (1 - polarX) * (1 + polarX) := by ring
+  rw [hfactor, mul_eq_zero]
+  constructor
+  · rintro (h | h)
+    · exact Or.inr (by linarith)
+    · exact Or.inl (by linarith)
+  · rintro (h | h)
+    · right; linarith
+    · left; linarith
+
+/-- The angular Schwarzschild--BR coefficient degenerates only on the two polar axes. -/
+theorem schwarzschildBRPolarFactor_eq_zero_iff
+    (mass magnetic polarX : ℝ) :
+    schwarzschildBRPolarFactor mass magnetic polarX = 0 ↔
+      polarX = -1 ∨ polarX = 1 := by
+  unfold schwarzschildBRPolarFactor
+  have hpos : 0 < 1 + magnetic ^ 2 * mass ^ 2 * polarX ^ 2 := by positivity
+  rw [mul_eq_zero, one_sub_polarSq_eq_zero_iff]
+  constructor
+  · rintro (h | h)
+    · exact h
+    · exact False.elim ((ne_of_gt hpos) h)
+  · intro h
+    exact Or.inl h
 
 /-- Full Schwarzschild--BR conformal zero locus on the physical polar interval. -/
 theorem schwarzschildBRReciprocalConformalSq_zero_classification
@@ -221,9 +281,13 @@ theorem contDiff_schwarzschildBRReciprocalPotentials (mass magnetic polarX : ℝ
     ContDiff ℝ ∞ (fun y => schwarzschildBRReciprocalLapse mass magnetic y) ∧
     ContDiff ℝ ∞ (fun y => schwarzschildBRReciprocalConformalSq mass magnetic polarX y) ∧
     ContDiff ℝ ∞ (fun y => schwarzschildBRReciprocalWeylFactor mass magnetic polarX y) := by
-  unfold schwarzschildBRReciprocalWeight schwarzschildBRReciprocalLapse
-    schwarzschildBRReciprocalConformalSq schwarzschildBRReciprocalWeylFactor
-  fun_prop
+  simp only [schwarzschildBRReciprocalWeight, schwarzschildBRReciprocalLapse,
+    schwarzschildBRReciprocalConformalSq, schwarzschildBRReciprocalWeylFactor]
+  constructor
+  · fun_prop
+  constructor
+  · fun_prop
+  constructor <;> fun_prop
 
 /-! ## Generic Kerr--Newman--BR reciprocal chart -/
 
@@ -265,6 +329,12 @@ def kerrNewmanBRReciprocalConformalSq
   kerrNewmanBRReciprocalWeight twist magnetic reciprocalRadius -
     magnetic ^ 2 *
       kerrNewmanBRReciprocalDelta mass spin charge twist reciprocalRadius * polarX ^ 2
+
+/-- Reciprocal extension of the dressed radial function. -/
+def kerrNewmanBRReciprocalQ
+    (mass spin charge twist magnetic reciprocalRadius : ℝ) : ℝ :=
+  kerrNewmanBRReciprocalWeight twist magnetic reciprocalRadius *
+    kerrNewmanBRReciprocalDelta mass spin charge twist reciprocalRadius
 
 /-- Reciprocal ring carrier `y^2 rho^2(1/y)`. -/
 def kerrNewmanBRReciprocalRhoSq (spin polarX reciprocalRadius : ℝ) : ℝ :=
@@ -372,6 +442,14 @@ theorem kerrNewmanBRReciprocalWeight_seam (twist magnetic : ℝ) :
   simp [kerrNewmanBRReciprocalWeight]
   ring
 
+theorem kerrNewmanBRReciprocalQ_eq_zero_iff
+    (mass spin charge twist magnetic reciprocalRadius : ℝ) :
+    kerrNewmanBRReciprocalQ mass spin charge twist magnetic reciprocalRadius = 0 ↔
+      (magnetic = 0 ∧ reciprocalRadius = 0) ∨
+        kerrNewmanBRReciprocalDelta mass spin charge twist reciprocalRadius = 0 := by
+  unfold kerrNewmanBRReciprocalQ
+  rw [mul_eq_zero, kerrNewmanBRReciprocalWeight_eq_zero_iff]
+
 theorem kerrNewmanBRReciprocalConformalSq_equator
     (mass spin charge twist magnetic reciprocalRadius : ℝ) :
     kerrNewmanBRReciprocalConformalSq
@@ -387,19 +465,39 @@ theorem kerrNewmanBRReciprocalConformalSq_equator_eq_zero_iff
   rw [kerrNewmanBRReciprocalConformalSq_equator,
     kerrNewmanBRReciprocalWeight_eq_zero_iff]
 
+/-- Exact generic conformal factor on the reciprocal seam. -/
+theorem kerrNewmanBRReciprocalConformalSq_seam
+    (mass spin charge twist magnetic polarX : ℝ) :
+    kerrNewmanBRReciprocalConformalSq
+        mass spin charge twist magnetic polarX 0 =
+      magnetic ^ 2 *
+        ((1 + twist ^ 2) * (1 - polarX ^ 2) +
+          (charge ^ 2 / spin ^ 2) * polarX ^ 2) := by
+  simp [kerrNewmanBRReciprocalConformalSq, kerrNewmanBRReciprocalWeight,
+    kerrNewmanBRReciprocalDelta, kerrNewmanBRRadialCoefficient]
+  ring
+
+theorem kerrNewmanBRReciprocalConformalSq_polarSeam
+    (mass spin charge twist magnetic : ℝ) :
+    kerrNewmanBRReciprocalConformalSq
+        mass spin charge twist magnetic 1 0 =
+      magnetic ^ 2 * (charge ^ 2 / spin ^ 2) := by
+  rw [kerrNewmanBRReciprocalConformalSq_seam]
+  ring
+
 theorem kerrNewmanBRRadialWeight_reciprocalClearing
     (twist magnetic : ℝ) (y : {z : ℝ // z ≠ 0}) :
     y.1 ^ 2 * kerrNewmanBRRadialWeight twist magnetic y.1⁻¹ =
       kerrNewmanBRReciprocalWeight twist magnetic y.1 := by
-  field_simp [kerrNewmanBRRadialWeight, kerrNewmanBRReciprocalWeight, y.2]
-  <;> ring
+  unfold kerrNewmanBRRadialWeight kerrNewmanBRReciprocalWeight
+  field_simp [y.2]
 
 theorem kerrNewmanBRDelta_reciprocalClearing
     (mass spin charge twist : ℝ) (y : {z : ℝ // z ≠ 0}) :
     y.1 ^ 2 * kerrNewmanBRDelta mass spin charge twist y.1⁻¹ =
       kerrNewmanBRReciprocalDelta mass spin charge twist y.1 := by
-  field_simp [kerrNewmanBRDelta, kerrNewmanBRReciprocalDelta, y.2]
-  <;> ring
+  unfold kerrNewmanBRDelta kerrNewmanBRReciprocalDelta
+  field_simp [y.2]
 
 theorem kerrNewmanBRConformal_reciprocalClearing
     (mass spin charge twist magnetic polarX : ℝ) (y : {z : ℝ // z ≠ 0}) :
@@ -420,8 +518,8 @@ theorem kerrNewmanBRRhoSq_reciprocalClearing
     (spin polarX : ℝ) (y : {z : ℝ // z ≠ 0}) :
     y.1 ^ 2 * kerrNewmanBRRhoSq spin y.1⁻¹ polarX =
       kerrNewmanBRReciprocalRhoSq spin polarX y.1 := by
-  field_simp [kerrNewmanBRRhoSq, kerrNewmanBRReciprocalRhoSq, y.2]
-  <;> ring
+  unfold kerrNewmanBRRhoSq kerrNewmanBRReciprocalRhoSq
+  field_simp [y.2]
 
 /-- All generic reciprocal potentials are smooth through the seam `y=0`. -/
 theorem contDiff_kerrNewmanBRReciprocalPotentials
@@ -431,10 +529,14 @@ theorem contDiff_kerrNewmanBRReciprocalPotentials
     ContDiff ℝ ∞ (fun y =>
       kerrNewmanBRReciprocalConformalSq mass spin charge twist magnetic polarX y) ∧
     ContDiff ℝ ∞ (fun y => kerrNewmanBRReciprocalRhoSq spin polarX y) := by
-  unfold kerrNewmanBRReciprocalWeight kerrNewmanBRReciprocalDelta
-    kerrNewmanBRReciprocalConformalSq kerrNewmanBRReciprocalRhoSq
-    kerrNewmanBRRadialCoefficient
-  fun_prop
+  simp only [kerrNewmanBRReciprocalWeight, kerrNewmanBRReciprocalDelta,
+    kerrNewmanBRReciprocalConformalSq, kerrNewmanBRReciprocalRhoSq,
+    kerrNewmanBRRadialCoefficient]
+  constructor
+  · fun_prop
+  constructor
+  · fun_prop
+  constructor <;> fun_prop
 
 /-! ## Existing Kerr--Newman corpus bridges -/
 
@@ -443,7 +545,7 @@ theorem kerrNewmanBRRhoSq_eq_kerrNewmanSigma (spin radius polar : ℝ) :
       kerrNewmanSigma spin radius polar := by
   rfl
 
-  theorem kerrNewmanBRDelta_untwistedUncharged_eq_kerrDelta
+theorem kerrNewmanBRDelta_untwistedUncharged_eq_kerrDelta
     (mass spin radius : ℝ) :
     kerrNewmanBRDelta mass spin 0 0 radius =
       kerrNewmanDelta mass spin 0 radius := by
@@ -513,6 +615,13 @@ theorem kerrNewmanBRKruskalV_sub_U
   simp [kerrNewmanBRKruskalU, kerrNewmanBRKruskalV]
   ring
 
+theorem kerrNewmanBRKruskalV_add_U_pos
+    (time tortoise horizonScale orientation : ℝ) :
+    0 < kerrNewmanBRKruskalV time tortoise horizonScale orientation +
+      kerrNewmanBRKruskalU time tortoise horizonScale orientation := by
+  rw [kerrNewmanBRKruskalV_add_U]
+  exact Real.exp_pos _
+
 /-- Hyperbolic product invariant of the Kruskal-like chart. -/
 theorem kerrNewmanBRKruskalV_sq_sub_U_sq
     (time tortoise horizonScale orientation : ℝ) :
@@ -532,6 +641,14 @@ theorem kerrNewmanBRKruskalV_sq_sub_U_sq
     _ = orientation * Real.exp (tortoise / horizonScale) := by
       congr 2
       ring
+
+theorem kerrNewmanBRKruskalV_sq_sub_U_sq_eq_zero_iff
+    (time tortoise horizonScale orientation : ℝ) :
+    kerrNewmanBRKruskalV time tortoise horizonScale orientation ^ 2 -
+      kerrNewmanBRKruskalU time tortoise horizonScale orientation ^ 2 = 0 ↔
+        orientation = 0 := by
+  rw [kerrNewmanBRKruskalV_sq_sub_U_sq, mul_eq_zero]
+  exact or_iff_left (Real.exp_ne_zero _)
 
 /-- Compactified time coordinate. -/
 def kerrNewmanBRCompactEta (U V : ℝ) : ℝ :=
@@ -557,13 +674,44 @@ theorem kerrNewmanBRCompact_tan_half_add (U V : ℝ) :
     Real.tan ((kerrNewmanBRCompactEta U V + kerrNewmanBRCompactChi U V) / 2) =
       V + U := by
   rw [kerrNewmanBRCompactEta_add_Chi]
-  convert Real.tan_arctan (V + U) using 2 <;> ring
+  rw [show 2 * Real.arctan (V + U) / 2 = Real.arctan (V + U) by ring]
+  exact Real.tan_arctan (V + U)
 
 theorem kerrNewmanBRCompact_tan_half_sub (U V : ℝ) :
     Real.tan ((kerrNewmanBRCompactEta U V - kerrNewmanBRCompactChi U V) / 2) =
       V - U := by
   rw [kerrNewmanBRCompactEta_sub_Chi]
-  convert Real.tan_arctan (V - U) using 2 <;> ring
+  rw [show 2 * Real.arctan (V - U) / 2 = Real.arctan (V - U) by ring]
+  exact Real.tan_arctan (V - U)
+
+theorem kerrNewmanBRCompact_recover_U (U V : ℝ) :
+    (Real.tan ((kerrNewmanBRCompactEta U V + kerrNewmanBRCompactChi U V) / 2) -
+      Real.tan ((kerrNewmanBRCompactEta U V - kerrNewmanBRCompactChi U V) / 2)) / 2 = U := by
+  rw [kerrNewmanBRCompact_tan_half_add, kerrNewmanBRCompact_tan_half_sub]
+  ring
+
+theorem kerrNewmanBRCompact_recover_V (U V : ℝ) :
+    (Real.tan ((kerrNewmanBRCompactEta U V + kerrNewmanBRCompactChi U V) / 2) +
+      Real.tan ((kerrNewmanBRCompactEta U V - kerrNewmanBRCompactChi U V) / 2)) / 2 = V := by
+  rw [kerrNewmanBRCompact_tan_half_add, kerrNewmanBRCompact_tan_half_sub]
+  ring
+
+/-- Carter--Penrose null combinations lie in the open compact interval `(-pi, pi)`. -/
+theorem kerrNewmanBRCompact_nullBounds (U V : ℝ) :
+    -Real.pi < kerrNewmanBRCompactEta U V + kerrNewmanBRCompactChi U V ∧
+      kerrNewmanBRCompactEta U V + kerrNewmanBRCompactChi U V < Real.pi ∧
+      -Real.pi < kerrNewmanBRCompactEta U V - kerrNewmanBRCompactChi U V ∧
+      kerrNewmanBRCompactEta U V - kerrNewmanBRCompactChi U V < Real.pi := by
+  rw [kerrNewmanBRCompactEta_add_Chi, kerrNewmanBRCompactEta_sub_Chi]
+  have hpa := Real.arctan_lt_pi_div_two (V + U)
+  have hna := Real.neg_pi_div_two_lt_arctan (V + U)
+  have hps := Real.arctan_lt_pi_div_two (V - U)
+  have hns := Real.neg_pi_div_two_lt_arctan (V - U)
+  constructor
+  · linarith
+  constructor
+  · linarith
+  constructor <;> linarith
 
 /-- Radial patch reflection preserves compactified time. -/
 theorem kerrNewmanBRCompactEta_reflectRadius (U V : ℝ) :
