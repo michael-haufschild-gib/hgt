@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.AlgebraicClosureDerivationClosed
 import GaloisForLFunctions.HTGeometry.DifferentialFieldLocus
+import GaloisForLFunctions.HTGeometry.JetLevelAlgebraicallyClosed
 
 /-!
 # Stability statements for an arbitrary derivation
@@ -51,7 +52,99 @@ def derivationKernelField (D : Derivation ℤ L L) (hbase : ∀ c : C, D (algebr
 @[simp]
 theorem mem_derivationKernelField_iff {D : Derivation ℤ L L}
     {hbase : ∀ c : C, D (algebraMap C L c) = 0} {x : L} :
-    x ∈ derivationKernelField (C := C) D hbase ↔ D x = 0 := Iff.rfl
+    x ∈ derivationKernelField (C := C) D hbase ↔ D x = 0 :=
+  mem_twistedLeibnizKernel_iff
+
+/-- A derivation killing the base field and a generating set kills the whole generated field. -/
+theorem derivation_eq_zero_of_mem_adjoin (D : Derivation ℤ L L)
+    (hbase : ∀ c : C, D (algebraMap C L c) = 0) {S : Set L} (hS : ∀ x ∈ S, D x = 0)
+    {x : L} (hx : x ∈ IntermediateField.adjoin C S) : D x = 0 := by
+  have hle : IntermediateField.adjoin C S ≤ derivationKernelField (C := C) D hbase := by
+    rw [IntermediateField.adjoin_le_iff]
+    exact fun u hu => hS u hu
+  exact mem_derivationKernelField_iff.mp (hle hx)
+
+/-- A derivation killing the base field and a generating set kills every element algebraic over the
+generated field. -/
+theorem derivation_eq_zero_of_isAlgebraic_adjoin [CharZero C] [CharZero L] (D : Derivation ℤ L L)
+    (hbase : ∀ c : C, D (algebraMap C L c) = 0) {S : Set L} (hS : ∀ x ∈ S, D x = 0)
+    {u : L} (hu : IsAlgebraic ↥(IntermediateField.adjoin C S) u) : D u = 0 :=
+  derivation_eq_zero_of_isAlgebraic _ D
+    (fun x hx => derivation_eq_zero_of_mem_adjoin D hbase hS hx) hu
+
+/-! ### The same statements for a derivation over the base field -/
+
+/-- A derivation over the base field, read as a derivation over `ℤ`. -/
+def toIntDerivation (D : Derivation C L L) : Derivation ℤ L L := D.restrictScalars ℤ
+
+@[simp]
+theorem toIntDerivation_apply (D : Derivation C L L) (x : L) : toIntDerivation D x = D x := rfl
+
+/-- **A base-field derivation vanishing on a subfield kills every algebraic element.** -/
+theorem derivationBase_eq_zero_of_isAlgebraic [CharZero C] [CharZero L]
+    (K : IntermediateField C L) (D : Derivation C L L) (hK : ∀ x ∈ K, D x = 0)
+    {u : L} (hu : IsAlgebraic ↥K u) : D u = 0 :=
+  derivation_eq_zero_of_isAlgebraic K (toIntDerivation D) hK hu
+
+/-- A base-field derivation whose values on a generating set stay inside an intermediate field
+keeps the whole generated field inside it. -/
+theorem derivationBase_mem_of_mem_adjoin (D : Derivation C L L) {S : Set L}
+    {M : IntermediateField C L} (hS : ∀ x ∈ S, x ∈ M ∧ D x ∈ M)
+    {x : L} (hx : x ∈ IntermediateField.adjoin C S) : x ∈ M ∧ D x ∈ M :=
+  derivation_mem_of_mem_adjoin (toIntDerivation D)
+    (fun c => by
+      have : D (algebraMap C L c) = 0 := by
+        simpa using D.map_algebraMap c
+      rw [toIntDerivation_apply, this]
+      exact zero_mem M) hS hx
+
+/-- **The relative algebraic closure absorbs a base-field derivation** that keeps the base inside
+itself. -/
+theorem derivationBase_mem_algebraicClosure [CharZero L] (K : IntermediateField C L)
+    (D : Derivation C L L) (hK : ∀ y : L, y ∈ K → D y ∈ K)
+    {y : L} (hy : y ∈ algebraicClosure ↥K L) : D y ∈ algebraicClosure ↥K L := by
+  refine derivation_mem_algebraicClosure K (toIntDerivation D) (fun u hu => ?_) hy
+  rw [IntermediateField.mem_bot] at hu
+  obtain ⟨w, rfl⟩ := hu
+  exact mem_algebraicClosure_iff.mpr
+    (isAlgebraic_algebraMap (⟨D (w : L), hK _ w.2⟩ : ↥K))
+
+/-- The kernel of a base-field derivation is an intermediate field. -/
+def derivationBaseKernelField (D : Derivation C L L) : IntermediateField C L :=
+  derivationKernelField (C := C) (toIntDerivation D) (fun c => by simpa using D.map_algebraMap c)
+
+@[simp]
+theorem mem_derivationBaseKernelField_iff {D : Derivation C L L} {x : L} :
+    x ∈ derivationBaseKernelField (C := C) D ↔ D x = 0 :=
+  mem_derivationKernelField_iff
+
+/-! ### Generator-level criteria -/
+
+/-- A base-field derivation killing a generating set kills the whole generated field. -/
+theorem derivationBase_eq_zero_of_mem_adjoin (D : Derivation C L L) {S : Set L}
+    (hS : ∀ x ∈ S, D x = 0) {x : L} (hx : x ∈ IntermediateField.adjoin C S) : D x = 0 := by
+  have hle : IntermediateField.adjoin C S ≤ derivationBaseKernelField (C := C) D := by
+    rw [IntermediateField.adjoin_le_iff]
+    exact fun u hu => hS u hu
+  exact mem_derivationBaseKernelField_iff.mp (hle hx)
+
+/-- A base-field derivation killing a generating set kills every element algebraic over the
+generated field. -/
+theorem derivationBase_eq_zero_of_isAlgebraic_adjoin [CharZero C] [CharZero L]
+    (D : Derivation C L L) {S : Set L} (hS : ∀ x ∈ S, D x = 0)
+    {u : L} (hu : IsAlgebraic ↥(IntermediateField.adjoin C S) u) : D u = 0 :=
+  derivationBase_eq_zero_of_isAlgebraic _ D
+    (fun x hx => derivationBase_eq_zero_of_mem_adjoin D hS hx) hu
+
+/-- A base-field derivation stabilising a generating set stabilises the relative algebraic closure
+of the generated field. -/
+theorem derivationBase_mem_algebraicClosure_adjoin [CharZero L] (D : Derivation C L L) {S : Set L}
+    (hS : ∀ x ∈ S, D x ∈ IntermediateField.adjoin C S)
+    {y : L} (hy : y ∈ algebraicClosure ↥(IntermediateField.adjoin C S) L) :
+    D y ∈ algebraicClosure ↥(IntermediateField.adjoin C S) L :=
+  derivationBase_mem_algebraicClosure _ D
+    (fun u hu => (derivationBase_mem_of_mem_adjoin D
+      (fun w hw => ⟨IntermediateField.subset_adjoin C S hw, hS w hw⟩) hu).2) hy
 
 end
 

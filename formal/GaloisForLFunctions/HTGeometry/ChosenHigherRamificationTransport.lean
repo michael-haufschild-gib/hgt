@@ -316,6 +316,35 @@ set_option maxHeartbeats 1200000 in
   apply Subtype.ext
   simp [chosenLocalIntegerRingAut]
 
+/-- Restriction of chosen completed-field automorphisms to the intrinsic integer ring, as a
+monoid homomorphism. -/
+noncomputable def chosenLocalIntegerRingAutHom
+    (v₀ : HeightOneSpectrum (𝓞 K)) :
+    (ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀ ≃ₐ[
+        ChosenFinitePlaceBaseCompletion (K := K) v₀]
+          ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀) →*
+      (chosenLocalIntegerRing (K := K) (L := L) v₀ ≃+*
+        chosenLocalIntegerRing (K := K) (L := L) v₀) where
+  toFun τ := chosenLocalIntegerRingAut (K := K) (L := L) v₀ τ
+  map_one' := by
+    apply RingEquiv.ext
+    intro z
+    exact chosenLocalIntegerRingAut_one_apply (K := K) (L := L) v₀ z
+  map_mul' σ τ := by
+    apply RingEquiv.ext
+    intro z
+    exact chosenLocalIntegerRingAut_mul_apply (K := K) (L := L) v₀ σ τ z
+
+/-- Canonical action of chosen completed-field automorphisms on the intrinsic integer ring. -/
+noncomputable instance chosenLocalIntegerRingMulSemiringAction
+    (v₀ : HeightOneSpectrum (𝓞 K)) :
+    MulSemiringAction
+      (ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀ ≃ₐ[
+        ChosenFinitePlaceBaseCompletion (K := K) v₀]
+          ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀)
+      (chosenLocalIntegerRing (K := K) (L := L) v₀) :=
+  MulSemiringAction.compHom _ (chosenLocalIntegerRingAutHom (K := K) (L := L) v₀)
+
 theorem chosenLocalIntegerRingAut_mem_maximalIdeal_pow_iff
     (v₀ : HeightOneSpectrum (𝓞 K))
     (τ : ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀ ≃ₐ[
@@ -447,7 +476,6 @@ theorem mem_chosenDVFLocalLowerRamificationGroup_iff
     apply (ValuationTheory.ringEquiv_mem_maximalIdeal_pow_iff e (n + 1) _).1
     rwa [heq]
 
-set_option maxHeartbeats 1200000 in
 /-- Actual completed lower filtration, expressed on the intrinsic local integer ring.  This is
 definitionally the displacement condition consumed by source-completion theorems; equality with
 CFT's complete-DVF filtration is proved below. -/
@@ -455,42 +483,12 @@ noncomputable def chosenActualLocalLowerRamificationGroup
     (v₀ : HeightOneSpectrum (𝓞 K)) (n : ℕ) :
     Subgroup (ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀ ≃ₐ[
       ChosenFinitePlaceBaseCompletion (K := K) v₀]
-        ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀) where
-  carrier := {τ | ∀ z : chosenLocalIntegerRing (K := K) (L := L) v₀,
-    chosenLocalIntegerRingAut (K := K) (L := L) v₀ τ z - z ∈
-      IsLocalRing.maximalIdeal
-        (chosenLocalIntegerRing (K := K) (L := L) v₀) ^ (n + 1)}
-  one_mem' := by
-    intro z
-    rw [chosenLocalIntegerRingAut_one_apply, sub_self]
-    exact Ideal.zero_mem _
-  mul_mem' := by
-    intro σ τ hσ hτ z
-    have hσz := hσ (chosenLocalIntegerRingAut (K := K) (L := L) v₀ τ z)
-    have hτz := hτ z
-    rw [chosenLocalIntegerRingAut_mul_apply]
-    have heq :
-        chosenLocalIntegerRingAut (K := K) (L := L) v₀ σ
-              (chosenLocalIntegerRingAut (K := K) (L := L) v₀ τ z) - z =
-          (chosenLocalIntegerRingAut (K := K) (L := L) v₀ σ
-              (chosenLocalIntegerRingAut (K := K) (L := L) v₀ τ z) -
-            chosenLocalIntegerRingAut (K := K) (L := L) v₀ τ z) +
-          (chosenLocalIntegerRingAut (K := K) (L := L) v₀ τ z - z) := by
-      ring
-    rw [heq]
-    exact Ideal.add_mem _ hσz hτz
-  inv_mem' := by
-    intro σ hσ z
-    have h := hσ (chosenLocalIntegerRingAut (K := K) (L := L) v₀ σ⁻¹ z)
-    have heq :
-        chosenLocalIntegerRingAut (K := K) (L := L) v₀ σ⁻¹ z - z =
-          -(chosenLocalIntegerRingAut (K := K) (L := L) v₀ σ
-              (chosenLocalIntegerRingAut (K := K) (L := L) v₀ σ⁻¹ z) -
-            chosenLocalIntegerRingAut (K := K) (L := L) v₀ σ⁻¹ z) := by
-      rw [chosenLocalIntegerRingAut_apply_inv_apply]
-      ring
-    rw [heq]
-    exact neg_mem h
+        ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀) :=
+  GaloisForLFunctions.HTGeometry.Ideal.lowerRamificationGroup
+    (G := ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀ ≃ₐ[
+      ChosenFinitePlaceBaseCompletion (K := K) v₀]
+        ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀)
+    (IsLocalRing.maximalIdeal (chosenLocalIntegerRing (K := K) (L := L) v₀)) n
 
 @[simp] theorem mem_chosenActualLocalLowerRamificationGroup_iff
     (v₀ : HeightOneSpectrum (𝓞 K)) (n : ℕ)

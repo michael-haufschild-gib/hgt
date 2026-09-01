@@ -11,7 +11,7 @@
 
 ## Proof
 
-For `q_j=exp(-(j+1))`, set `bₙ=aₙq₀ⁿ`. Absolute admissibility bounds `b`. The exact law `q_{j+1}=q₀q_j` turns shifted endpoint darkness into bounded power-series darkness, so corpus zero-sequence uniqueness gives `aₙ=0`. Even-antidiagonal induction and pairwise positivity kill every matrix row.
+For `q_j=exp(-(j+1))`, set `bₙ=aₙq₀ⁿ`. Absolute admissibility bounds `b` and proves endpoint-energy summability at every `q_j`. The exact law `q_{j+1}=q₀q_j` turns shifted endpoint darkness into bounded power-series darkness, so corpus zero-sequence uniqueness gives `aₙ=0`. Even-antidiagonal induction and pairwise positivity kill every matrix row.
 
 The Gram kernel `K(i,j)=2ⁱ2ʲ` has `aₙ=(n+1)2ⁿ`, is absolutely admissible because `2q₀<1`, pairwise-positive, and not uniformly bounded. Thus theorem strictly extends bounded corpus result.
 
@@ -19,6 +19,7 @@ The Gram kernel `K(i,j)=2ⁱ2ʲ` has `aₙ=(n+1)2ⁿ`, is absolutely admissible 
 
 - Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekAbsolutelyAdmissibleMatrixEndpointTomography`
 - Route kill: `schwarzschildParikhWilczekAbsolutelyAdmissiblePairwisePositiveEndpointDarkRouteKilled`
+- Semantic convergence: `summable_pwMatrixEndpointEnergy_of_absoluteAdmissible`
 - Strict witness: `pwExponentialGramKernel_absolutelyAdmissible`, `pwExponentialGramKernel_not_uniformlyBounded`
 - `lake env lean` PASS; targeted `lake build` PASS.
 - Axioms: `propext`, `Classical.choice`, `Quot.sound` only.

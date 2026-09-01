@@ -43,7 +43,7 @@ theorem exists_polynomial_of_eventually_taylorCoeff_eq_zero {f : ℂ → ℂ} (h
     intro n hn
     rw [hM n (by simpa using Finset.mem_range.not.mp hn), zero_mul]
   have := hsum.unique hfin
-  rw [this, Polynomial.eval_finset_sum]
+  rw [this, Polynomial.eval_finsetSum]
   exact Finset.sum_congr rfl fun n _ => by rw [Polynomial.eval_mul, Polynomial.eval_C,
     Polynomial.eval_pow, Polynomial.eval_X]
 
@@ -150,6 +150,89 @@ theorem analyticMeroElement_eulerComp {f g : ℂ → ℂ} (hf : Differentiable �
       = Polynomial.aeval (analyticMeroElement (fun w : ℂ => f (g w)) hcompan) (C k) :=
     (aeval_analyticMeroElement hcompan (C k)).symm
   rw [hh, hG, ha, hmul, hpow, hbase, hpoly]
+
+/-! ### The substituted relation forces a polynomial -/
+
+/-- **The substituted Euler relation forces the outer factor to be a polynomial.**  A vanishing
+polynomial expression in the two states `f ∘ g` and `g·(f′ ∘ g)`, with at least one nonzero
+coefficient polynomial, makes the entire function `f` a polynomial. -/
+theorem exists_polynomial_of_euler_mero_relation {f g : ℂ → ℂ} (hf : Differentiable ℂ f)
+    (hg : Differentiable ℂ g) (hcomp : Differentiable ℂ fun w => f (g w))
+    (hncg : ¬ ∃ c : ℂ, ∀ z : ℂ, g z = c) (hncf : ¬ ∃ c : ℂ, ∀ z : ℂ, f z = c)
+    {m : ℕ} {C : ℕ → Polynomial ℂ} (hCne : ∃ k ∈ Finset.range (m + 1), C k ≠ 0)
+    (hrel : ∑ k ∈ Finset.range (m + 1),
+        Polynomial.aeval (jetElem hcomp 0) (C k)
+          * (jetElem hg 0 * compJetElem hf hg 1) ^ k = 0) :
+    ∃ p : Polynomial ℂ, ∀ z : ℂ, f z = p.eval z := by
+  classical
+  -- the substituted expression vanishes identically
+  have hzero : analyticMeroElement (fun z : ℂ => eulerFun f C m (g z))
+      (analyticOnNhd_eulerComp hf hg C m) = 0 := by
+    rw [analyticMeroElement_eulerComp hf hg hcomp C m]; exact hrel
+  have hpt : ∀ z : ℂ, eulerFun f C m (g z) = 0 := fun z =>
+    (analyticMeroElement_eq_zero_iff (analyticOnNhd_eulerComp hf hg C m)).mp hzero z
+      (Set.mem_univ z)
+  have heulerdiff : Differentiable ℂ (eulerFun f C m) := by
+    have han : AnalyticOnNhd ℂ (fun z : ℂ => eulerFun f C m (id z)) (Set.univ : Set ℂ) :=
+      analyticOnNhd_eulerComp hf differentiable_id C m
+    exact fun z => (han z (Set.mem_univ z)).differentiableAt
+  have hall : ∀ w : ℂ, eulerFun f C m w = 0 := by
+    by_contra hcon
+    push Not at hcon
+    obtain ⟨z, hz⟩ := exists_ne_zero_comp heulerdiff hg hcon hncg
+    exact hz (hpt z)
+  -- pick the top index carrying a nonzero coefficient
+  set S : Finset ℕ := (Finset.range (m + 1)).filter (fun k => C k ≠ 0) with hS
+  have hSne : S.Nonempty := by
+    obtain ⟨k, hk, hkne⟩ := hCne
+    exact ⟨k, Finset.mem_filter.mpr ⟨hk, hkne⟩⟩
+  set ms : ℕ := S.max' hSne with hms
+  have hmsS : ms ∈ S := S.max'_mem hSne
+  have hmsne : C ms ≠ 0 := (Finset.mem_filter.mp hmsS).2
+  have hmsle : ms ≤ m := Nat.lt_succ_iff.mp (Finset.mem_range.mp (Finset.mem_filter.mp hmsS).1)
+  have habove : ∀ k, k ≤ m → ms < k → C k = 0 := by
+    intro k hkm hlt
+    by_contra hkne
+    exact absurd (S.le_max' k (Finset.mem_filter.mpr ⟨Finset.mem_range.mpr (by omega), hkne⟩))
+      (by omega)
+  -- the relation truncates to the top index
+  have htrunc : ∀ w : ℂ,
+      ∑ k ∈ Finset.range (ms + 1), (C k).eval (f w) * (w * deriv f w) ^ k = 0 := by
+    intro w
+    have hsub : Finset.range (ms + 1) ⊆ Finset.range (m + 1) := by
+      intro k hk
+      have := Finset.mem_range.mp hk
+      exact Finset.mem_range.mpr (by omega)
+    have hw := hall w
+    simp only [eulerFun] at hw
+    have hexp : ∑ k ∈ Finset.range (ms + 1), (C k).eval (f w) * (w * deriv f w) ^ k
+        = ∑ k ∈ Finset.range (m + 1), (C k).eval (f w) * (w * deriv f w) ^ k := by
+      refine Finset.sum_subset hsub ?_
+      intro k hk hknot
+      have hkm : k ≤ m := Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)
+      have hlt : ms < k := by
+        by_contra hle
+        exact hknot (Finset.mem_range.mpr (by omega))
+      rw [habove k hkm hlt, Polynomial.eval_zero, zero_mul]
+    rw [hexp, hw]
+  -- a dominant constant term is impossible
+  rcases Nat.eq_zero_or_pos ms with hms0 | hmspos
+  · exfalso
+    have hC0 : C 0 ≠ 0 := by rw [← hms0]; exact hmsne
+    have hC0ne : ∃ w : ℂ, (C 0).eval w ≠ 0 := by
+      by_contra hcon
+      push Not at hcon
+      exact hC0 (Polynomial.funext fun w => by rw [hcon w, Polynomial.eval_zero])
+    have hdiff : Differentiable ℂ (fun w : ℂ => (C 0).eval w) := Polynomial.differentiable _
+    obtain ⟨z, hz⟩ := exists_ne_zero_comp hdiff hf hC0ne hncf
+    have := htrunc z
+    rw [hms0] at this
+    simp only [zero_add, Finset.sum_range_one, pow_zero, mul_one] at this
+    exact hz this
+  · obtain ⟨M, hM⟩ :=
+      eventually_taylorCoeff_eq_zero_of_euler_relation_general hf hmspos hmsne htrunc
+    exact exists_polynomial_of_eventually_taylorCoeff_eq_zero hf hM
+
 
 end
 

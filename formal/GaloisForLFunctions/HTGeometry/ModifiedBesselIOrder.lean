@@ -471,6 +471,18 @@ theorem modifiedBesselIOrderPhase_recurrence {s : ℝ} (hs : 0 < s) (z : ℂ) :
   rw [hplus, hminus, hI]
   ring
 
+@[simp] theorem modifiedBesselIOrderPhase_zero (s : ℝ) :
+    modifiedBesselIOrderPhase s 0 = modifiedBesselIOrder s 0 := by
+  simp [modifiedBesselIOrderPhase]
+
+theorem modifiedBesselIOrderPhase_one (s : ℝ) :
+    modifiedBesselIOrderPhase s 1 = -modifiedBesselIOrder s 1 := by
+  have hp : Complex.exp ((Real.pi : ℂ) * Complex.I) = -1 := by
+    rw [Complex.exp_mul_I]
+    simp
+  rw [modifiedBesselIOrderPhase]
+  simp [hp]
+
 end
 
 end GaloisForLFunctions.HTGeometry

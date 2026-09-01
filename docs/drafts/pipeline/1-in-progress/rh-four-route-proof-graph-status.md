@@ -37,6 +37,6 @@ HB collision survivors: nonanalytic zero-coupling behavior or remote strong-coup
 
 - HB: `d4HBPreDivisorFiniteSchwarzPolarizedRouteKilled`.
 - FZZ-P: `fzzReplicaLevelsThreeFourKreinSign_iff_re_eq_zero`, `fzzHigherGenusCyclePairKreinSign_iff_im_eq_zero`, `fzzCigarParityMellinCyclePairKreinSign_iff_re_eq_half`, `fzzHigherGenusOddHolonomy_sq_fourierCoefficient`, `fzzAveragedHigherGenusCyclePairKreinSign_off_radialWall`, `fzzHigherGenusOddHolonomy_sq_weightedAverage_resonance`, `fzzPunctureTemperedScalarOccurrence_set_eq_univ`.
-- PW-B: `schwarzschildParikhWilczekAbsolutelyAdmissiblePairwisePositiveEndpointDarkRouteKilled`, `pwExponentialGramKernel_absolutelyAdmissible`, `pwExponentialGramKernel_not_uniformlyBounded`.
+- PW-B: `schwarzschildParikhWilczekAbsolutelyAdmissiblePairwisePositiveEndpointDarkRouteKilled`, `summable_pwMatrixEndpointEnergy_of_absoluteAdmissible`, `pwExponentialGramKernel_absolutelyAdmissible`, `pwExponentialGramKernel_not_uniformlyBounded`.
 
 Direct Lean/targeted builds PASS; axioms `propext`, `Classical.choice`, `Quot.sound`; umbrellas wired.
