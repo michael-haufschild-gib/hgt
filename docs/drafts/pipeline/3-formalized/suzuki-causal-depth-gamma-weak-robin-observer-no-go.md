@@ -1,9 +1,9 @@
 # Suzuki causal-depth Gamma weak Robin-observer no-go
 
 - **ID:** `suzuki-causal-depth-gamma-weak-robin-observer-no-go`
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Route:** CCM-FU · `SUZUKI-FE-REFLECTED-WALL-WARD-ASSEMBLY`
-- **Claim:** `[CONJECTURE C25] [PRODUCER-CLASS NO-GO]`
+- **Claim:** `[FORMALIZED C25] [PRODUCER-CLASS NO-GO]`
 
 ## Exact RH chain
 
@@ -61,4 +61,16 @@ The contrapositive is the sharp survivor: any semibounding bounded-operator Robi
 `x,y` whose matrix coefficient is unbounded. WOT/SOT convergence implies coefficient boundedness,
 so neither topology can contain a convergent successful family.
 
-`[PAPER-PROVED PENDING LEAN SIGNATURE AUDIT]`
+## Lean closure
+
+`SuzukiCausalDepthGammaWeakRobinTraceNoGo.lean` proves:
+
+- `uniformlyBounded_of_weaklyPointwiseBounded`: the two-level Banach--Steinhaus bridge;
+- `no_weaklyPointwiseBounded_causalDepthGammaTrace_WardProducer`: the producer-class kill;
+- `exists_unbounded_causalDepthGammaObserver_matrixCoefficient_of_Ward_bddBelow`: the sharp
+  survivor.
+
+Direct `lake env lean` and targeted `lake build` pass. `#print axioms` reports only `propext`,
+`Classical.choice`, and `Quot.sound`.
+
+`[PAPER-PROVED] [LEAN-CLOSED]`

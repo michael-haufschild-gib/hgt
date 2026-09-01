@@ -36,13 +36,7 @@ theorem norm_natCast_add_one_cpow_re_two {s : ℂ} (hs : s.re = 2) (n : ℕ) :
 theorem hasSum_one_div_add_two_sq :
     HasSum (fun n : ℕ => 1 / ((n : ℝ) + 2) ^ 2) (Real.pi ^ 2 / 6 - 1) := by
   have h := (hasSum_nat_add_iff' 2).mpr hasSum_zeta_two
-  have hsum2 : (∑ i ∈ Finset.range 2, (1 : ℝ) / (i : ℝ) ^ 2) = 1 := by
-    simp [Finset.sum_range_succ]
-  rw [hsum2] at h
-  convert h using 1
-  funext n
-  push_cast
-  ring
+  simpa [Finset.sum_range_succ] using h
 
 /-- On the line `Re s = 2`, `‖ζ(s)‖ ≥ 2 - π²/6`. -/
 theorem norm_riemannZeta_ge_of_re_eq_two {s : ℂ} (hs : s.re = 2) :
@@ -77,7 +71,7 @@ theorem norm_riemannZeta_ge_of_re_eq_two {s : ℂ} (hs : s.re = 2) :
   linarith
 
 /-- Each linear factor of the quartet on the line `Re s = 2` is at least `t - |γ|`. -/
-theorem norm_line_sub_root_ge {t g x : ℝ} (hg : |g| ≤ |t|) (ht : 0 ≤ t) :
+theorem norm_line_sub_root_ge {t g x : ℝ} (ht : 0 ≤ t) :
     t - |g| ≤ ‖(2 + (t : ℂ) * I) - ((x : ℂ) + (g : ℂ) * I)‖ := by
   have him : ((2 + (t : ℂ) * I) - ((x : ℂ) + (g : ℂ) * I)).im = t - g := by
     simp [Complex.add_im, Complex.sub_im, Complex.mul_im, Complex.I_re, Complex.I_im,
@@ -88,9 +82,9 @@ theorem norm_line_sub_root_ge {t g x : ℝ} (hg : |g| ≤ |t|) (ht : 0 ≤ t) :
   rw [abs_of_nonneg ht] at h2
   linarith
 
-theorem norm_line_sub_root_ge' {t g x : ℝ} (hg : |g| ≤ |t|) (ht : 0 ≤ t) :
+theorem norm_line_sub_root_ge' {t g x : ℝ} (ht : 0 ≤ t) :
     t - |g| ≤ ‖(2 + (t : ℂ) * I) - ((x : ℂ) - (g : ℂ) * I)‖ := by
-  have h := norm_line_sub_root_ge (g := -g) (x := x) (t := t) (by rwa [abs_neg]) ht
+  have h := norm_line_sub_root_ge (g := -g) (x := x) (t := t) ht
   rw [abs_neg] at h
   have hcast : ((x : ℂ) + ((-g : ℝ) : ℂ) * I) = ((x : ℂ) - (g : ℂ) * I) := by
     push_cast
@@ -101,14 +95,13 @@ theorem norm_line_sub_root_ge' {t g x : ℝ} (hg : |g| ≤ |t|) (ht : 0 ≤ t) :
 theorem norm_offLineQuartet_ge (a0 gam : ℝ) {t : ℝ} (ht : |gam| ≤ t) :
     (t - |gam|) ^ 4 ≤ ‖offLineQuartet a0 gam (2 + (t : ℂ) * I)‖ := by
   have ht0 : 0 ≤ t := le_trans (abs_nonneg _) ht
-  have hgt : |gam| ≤ |t| := by rwa [abs_of_nonneg ht0]
   have h0 : 0 ≤ t - |gam| := by linarith
   unfold offLineQuartet
   rw [norm_mul, norm_mul, norm_mul]
-  have h1 := norm_line_sub_root_ge (x := 1 / 2 + a0) hgt ht0
-  have h2 := norm_line_sub_root_ge' (x := 1 / 2 + a0) hgt ht0
-  have h3 := norm_line_sub_root_ge (x := 1 / 2 - a0) hgt ht0
-  have h4 := norm_line_sub_root_ge' (x := 1 / 2 - a0) hgt ht0
+  have h1 := norm_line_sub_root_ge (g := gam) (x := 1 / 2 + a0) ht0
+  have h2 := norm_line_sub_root_ge' (g := gam) (x := 1 / 2 + a0) ht0
+  have h3 := norm_line_sub_root_ge (g := gam) (x := 1 / 2 - a0) ht0
+  have h4 := norm_line_sub_root_ge' (g := gam) (x := 1 / 2 - a0) ht0
   calc (t - |gam|) ^ 4
       = (t - |gam|) * (t - |gam|) * (t - |gam|) * (t - |gam|) := by ring
     _ ≤ ‖(2 + (t : ℂ) * I) - (((1 / 2 + a0 : ℝ) : ℂ) + (gam : ℂ) * I)‖
@@ -146,7 +139,11 @@ theorem exists_norm_zetaQuartetTwist_gt {a0 : ℝ} (ha0 : 0 < a0) (ha1 : a0 < 1 
   have hK4 : K ≤ (|gam| + K - |gam|) ^ 4 := by
     have hsimp : (|gam| + K - |gam|) = K := by ring
     rw [hsimp]
-    nlinarith [hK1]
+    have hK3 : 1 ≤ K ^ 3 := by
+      nlinarith [mul_nonneg (sub_nonneg.mpr hK1) (by nlinarith [hK1] : (0 : ℝ) ≤ K ^ 2 + K + 1)]
+    calc K = K * 1 := (mul_one K).symm
+      _ ≤ K * K ^ 3 := mul_le_mul_of_nonneg_left hK3 (by linarith)
+      _ = K ^ 4 := by ring
   unfold zetaQuartetTwist
   rw [norm_mul, norm_div]
   have h1 : m * (K / Q0) ≤
@@ -170,20 +167,21 @@ theorem zetaQuartetTwist_not_dirichletSeries {a0 : ℝ} (ha0 : 0 < a0) (ha1 : a0
         ∀ t : ℝ, zetaQuartetTwist a0 gam (2 + (t : ℂ) * I)
           = ∑' n : ℕ, c n / ((n : ℂ) + 1) ^ (2 + (t : ℂ) * I) := by
   rintro ⟨c, hc, hrep⟩
-  set B : ℝ := ∑' n : ℕ, ‖c n‖ / ((n : ℝ) + 1) ^ 2 with hB
-  obtain ⟨t, ht⟩ := exists_norm_zetaQuartetTwist_gt ha0 ha1 gam B
+  obtain ⟨t, ht⟩ := exists_norm_zetaQuartetTwist_gt ha0 ha1 gam
+    (∑' n : ℕ, ‖c n‖ / ((n : ℝ) + 1) ^ 2)
   have hre : (2 + (t : ℂ) * I).re = 2 := by
     simp [Complex.add_re, Complex.mul_re, Complex.I_re, Complex.I_im, Complex.ofReal_re,
       Complex.ofReal_im]
   have hnorm : ∀ n : ℕ, ‖c n / ((n : ℂ) + 1) ^ (2 + (t : ℂ) * I)‖ = ‖c n‖ / ((n : ℝ) + 1) ^ 2 := by
     intro n
     rw [norm_div, norm_natCast_add_one_cpow_re_two hre]
-  have hbound : ‖zetaQuartetTwist a0 gam (2 + (t : ℂ) * I)‖ ≤ B := by
+  have hbound : ‖zetaQuartetTwist a0 gam (2 + (t : ℂ) * I)‖
+      ≤ ∑' n : ℕ, ‖c n‖ / ((n : ℝ) + 1) ^ 2 := by
     rw [hrep t]
     calc ‖∑' n : ℕ, c n / ((n : ℂ) + 1) ^ (2 + (t : ℂ) * I)‖
         ≤ ∑' n : ℕ, ‖c n / ((n : ℂ) + 1) ^ (2 + (t : ℂ) * I)‖ :=
           norm_tsum_le_tsum_norm (by simp_rw [hnorm]; exact hc)
-      _ = B := by simp_rw [hnorm]
+      _ = ∑' n : ℕ, ‖c n‖ / ((n : ℝ) + 1) ^ 2 := by simp_rw [hnorm]
   linarith
 
 end

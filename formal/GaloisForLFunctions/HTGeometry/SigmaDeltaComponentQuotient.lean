@@ -56,22 +56,22 @@ theorem commutesDeriv_pow (σ : R ≃+* R) (hσ : CommutesDeriv σ) (n : ℕ) :
         Differential.deriv (σ ((σ ^ n) x))
       rw [ih, hσ]
 
-/-- The quotient by one minimal differential-prime component is simple for the least positive
-iterate stabilizing that component. -/
-theorem exists_componentQuotient_isSigmaDeltaSimple
+/-- The quotient by any chosen minimal differential-prime component is simple for the least
+positive iterate stabilizing that component. -/
+theorem exists_period_componentQuotient_isSigmaDeltaSimple
     [Nontrivial R] (σ : R ≃+* R) (hσ : CommutesDeriv σ)
     (hsimple : IsSigmaDeltaSimple σ)
-    (S : Finset (Ideal R)) (hSne : S.Nonempty)
+    (S : Finset (Ideal R))
     (hSmin : ∀ P ∈ S, IsMinimalPrimeDifferentialIdeal P)
-    (hSbot : sInf (S : Set (Ideal R)) = ⊥) :
-    ∃ (P : Ideal R) (period : ℕ) (_ : 0 < period) (hPS : P ∈ S)
+    (hSbot : sInf (S : Set (Ideal R)) = ⊥)
+    (P : Ideal R) (hPS : P ∈ S) :
+    ∃ (period : ℕ) (_ : 0 < period)
       (hPσ : IsSigmaIdeal (σ ^ period) P)
       (hPσsymm : IsSigmaIdeal (σ ^ period).symm P),
       letI : Differential (R ⧸ P) := quotientDifferential P (hSmin P hPS).2.1
       IsSigmaDeltaSimple
         (sigmaQuotientEquiv (σ ^ period) P hPσ hPσsymm) := by
   classical
-  obtain ⟨P, hPS⟩ := hSne
   let F : Ideal R → Ideal R := fun J => Ideal.map (σ : R →+* R) J
   have hexPeriod : ∃ n, 0 < n ∧ F^[n] P = P :=
     exists_pos_iterate_map_eq_self_of_minimalPrimeDifferential σ hσ S hSmin hSbot hPS
@@ -97,7 +97,7 @@ theorem exists_componentQuotient_isSigmaDeltaSimple
     intro x hx
     have hxmap := Ideal.mem_map_of_mem (τ.symm : R →+* R) hx
     rwa [hmapSymm] at hxmap
-  refine ⟨P, period, hperiodPos, hPS, hPσ, hPσsymm, ?_⟩
+  refine ⟨period, hperiodPos, hPσ, hPσsymm, ?_⟩
   letI : Differential (R ⧸ P) := quotientDifferential P (hSmin P hPS).2.1
   intro J hJ
   let q : R →+* R ⧸ P := Ideal.Quotient.mk P
@@ -303,6 +303,26 @@ theorem exists_componentQuotient_isSigmaDeltaSimple
   obtain ⟨x, rfl⟩ := Ideal.Quotient.mk_surjective y
   have hxI : x ∈ I := by rw [hIeqTop]; trivial
   exact hxI
+
+/-- At least one minimal differential-prime component quotient is simple for a positive iterate
+of the difference automorphism. -/
+theorem exists_componentQuotient_isSigmaDeltaSimple
+    [Nontrivial R] (σ : R ≃+* R) (hσ : CommutesDeriv σ)
+    (hsimple : IsSigmaDeltaSimple σ)
+    (S : Finset (Ideal R)) (hSne : S.Nonempty)
+    (hSmin : ∀ P ∈ S, IsMinimalPrimeDifferentialIdeal P)
+    (hSbot : sInf (S : Set (Ideal R)) = ⊥) :
+    ∃ (P : Ideal R) (period : ℕ) (_ : 0 < period) (hPS : P ∈ S)
+      (hPσ : IsSigmaIdeal (σ ^ period) P)
+      (hPσsymm : IsSigmaIdeal (σ ^ period).symm P),
+      letI : Differential (R ⧸ P) := quotientDifferential P (hSmin P hPS).2.1
+      IsSigmaDeltaSimple
+        (sigmaQuotientEquiv (σ ^ period) P hPσ hPσsymm) := by
+  obtain ⟨P, hPS⟩ := hSne
+  obtain ⟨period, hperiodPos, hPσ, hPσsymm, hsimpleP⟩ :=
+    exists_period_componentQuotient_isSigmaDeltaSimple
+      σ hσ hsimple S hSmin hSbot P hPS
+  exact ⟨P, period, hperiodPos, hPS, hPσ, hPσsymm, hsimpleP⟩
 
 end
 
