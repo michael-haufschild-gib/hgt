@@ -26,7 +26,9 @@ Frontier map is read-only. Facts only; cards/certificates are source of truth.
 - Linear replica-area holonomy tangent has exact data `c₀=-2`, `c_{±2n}=2/3`, independent of radial dressing.
 - Normalized rectangular response is `≥1`; passivity is equivalent pointwise to zero radial twist, and on canonical Mellin twists to `Re ρ=1/2`. Universal divisor-mode passivity is iff RH.
 - Every charge-balanced completion built only from reciprocal multiplicative β/γ characters is twist-independent, including arbitrary external reporter charges and infinite screening towers; no output predicate can select zero radial twist.
-- Open: derive divisor-mode passivity from non-character torus data (twisted determinant/ghost/prime-form/branch localization) with a marked canonical twist retained before Jacobian integration.
+- Every continuous exact fixed-sublevel wall selector must saturate its threshold along the full wall. Raw twisted theta-determinant norm varies there (`D(0)=0`, `D(1/2)≠0`), so it and every continuous injective scalar postprocessing are dead.
+- Fixed-support Abel--Jacobi/Quillen branch is dead: replica charge deformation fixes divisor support and holonomy; subtraction/division cancels every separated log/determinant factor, so no output predicate selects zero radial twist.
+- Open: derive divisor-mode passivity from a genuinely mixed replica-charge/divisor-support term (support motion or prime-form/OPE branch localization before Jacobian integration).
 
 ## RBH
 
@@ -44,4 +46,4 @@ Frontier map is read-only. Facts only; cards/certificates are source of truth.
 
 ## Latest certificate
 
-`not_fzzChargeBalancedHolonomyAreaTower_value_selector` — direct Lean PASS; targeted build PASS; standard axioms only; umbrella wired.
+`not_exists_fzzFixedSupportQuillenRatioNormalizedResponse_value_selector` — direct Lean PASS; targeted build PASS; standard axioms only; umbrella wired.

@@ -8,8 +8,9 @@
 
 ## Q8 capstone
 
-- SST field `N/ℚ`: `Gal(N/ℚ) ≃ Q8`; faithful irreducible `2D` representation; conductor `6`.
+- SST field `N/ℚ`: `Gal(N/ℚ) ≃ Q8`; faithful irreducible `2D` representation; dyadic Artin conductor `6`.
 - `N` is totally real.
+- Every finite prime ramified in `N/ℚ` lies over `2`, `5`, or `41`; relative ramification is forced by the exact derivative `2z` and source norm `1025=5²·41`.
 - Maximal abelian field `K=ℚ(√5,√41)`; `disc(K)` is supported on `{5,41}`.
 - `D₅=I₅=Stab(√41)` and `D₄₁=I₄₁=Stab(√5)` are `C₄`; `P₅=P₄₁=1`.
 - Actual `5` source/inverse have conductor `5`, literal Tate equations, unit phases, product `−1`.
@@ -24,4 +25,4 @@
 - At `2`, source primes have `e=f=1` over `ℚ`; completed lower groups are `C₂` at `0,1,2`, then `1`; upper groups satisfy `G²=C₂`, `G³=1`; local conductor is `8`. Genuine filtered reciprocity transports a central depth-`2` witness to `ℤ₂ˣ`; the resulting modulo-`8` character is exactly even `χ₈`. Actual source/inverse Tate epsilon product is `+1`.
 - Fröhlich 6(i)'s hypothesis holds; wild `2` is permitted. Finite sign and odd local product equal `α_Kβ_K=−1`.
 - Fröhlich's proof uses Artin induction/local Gaussian `ε`, pure-field evaluation, then quadratic-twist invariance.
-- **Open:** assemble the proved local factors into `W_N=−1`.
+- **Open:** define the global Artin epsilon product and identify its local factors, yielding `W_N=−1`.

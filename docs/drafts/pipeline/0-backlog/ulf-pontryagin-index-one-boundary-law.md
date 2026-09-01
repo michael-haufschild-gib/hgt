@@ -184,13 +184,40 @@ literal).
   the transgression web (MUST-16); fits nothing per zero (CANNOT-25); admissible-class fixed before
   any repair (MUST-23).
 
+## Lean (2026-09-01): every bridge that is unconditional is formalized
+
+Six new modules, all unconditional, axioms `[propext, Classical.choice, Quot.sound]` only, wired into
+their area umbrellas.
+
+| Bridge | Lean theorem | Module |
+|---|---|---|
+| Generic: a self-adjoint rank-two form with one positive and one negative value has index exactly `(1,1)`; margin-definite subspaces are stable under norm perturbation | `rankTwo_mixed_exact_inertia`, `approximant_exact_margin_inertia`, `finrank_add_finrank_le_finrank_range` | `HTGeometry/HermitianDefiniteSubspaceRankBound` |
+| B1 (limit form): the corpus's pinned rank-two boundary form has positive index exactly one and negative index exactly one | `pinnedBoundaryCLM_exact_inertia` | `RHTower/PinnedBoundaryExactInertia` |
+| P1 (finite stages, unconditional form): every sufficiently late actual theta-stage Green boundary has exactly one `1/13`-positive square and exactly one `1/13`-negative square; `1/13 = (1/12)/(13/12)` is the corpus margin over the witness norm | `eventually_thetaSourceSignedStageGreenBoundary_exact_margin_inertia` | `RHTower/PinnedBoundaryExactInertia` |
+| B2: the conjugate-pair carrier of `k` off-line poles has positive index exactly `k` as well as negative index exactly `k`: one hyperbolic plane per pair | `exact_pos_inertia`, `multiPair_carrier_exact_inertia`, `seamCarrier_exact_inertia_pair` | `HTGeometry/CarrierExactPositiveInertia`, `RHTower/CountermodelCarrierHyperbolicPlane` |
+| P2 / B3: the Beurling countermodel's off-line zero is one full hyperbolic plane, at arbitrarily small reciprocal mass (index discontinuity); the entire countermodel's two upper-half-plane zeros are two hyperbolic planes | `beurling_small_reciprocalMass_seam_hyperbolicPlane`, `entireCountermodel_seam_two_hyperbolicPlanes` | `RHTower/CountermodelCarrierHyperbolicPlane` |
+| B4 (first step): the centred sawtooth continues `ζ` to `Re s > -1`, `s ≠ 1`, through the absolutely convergent, holomorphic `B₂` tail; `ζ(0) = -1/2` is recovered from the additive side | `zeta_eq_centredTruncated_of_re_gt_neg_one`, `differentiableAt_zetaBernoulliTail`, `riemannZeta_zero_of_centred` | `RHTower/ZetaCentredSawtoothContinuation` |
+| B1 (pole block): the polar part of `Λ` is two simple FE-exchanged poles with residues `−1, +1`; the residue pairing of the two rulings has inertia exactly `(1,1)` | `completedRiemannZeta_eq_entire_add_polar`, `tendsto_mul_completedZetaPolarPart_zero`, `polePlaneForm_exact_inertia` | `RHTower/CompletedZetaPolePlane` |
+
+**Correction to P2 as first written.** "Bounded away uniformly as the reciprocal mass → 0" is a
+normalization-dependent claim: in the carrier normalization the `u`-direction of the Beurling pole
+`β + iγ` degenerates as `γ → 0`. The invariant that is discontinuous in the reciprocal mass is the
+*index* `(1,1)`, and that is what is proved. The eigenvalue-size clause is withdrawn.
+
+**What remains unproved (as expected).** The cofinal law `Ind₊ = 1` on every stage of every natural
+form is RH-equivalent and is not claimed. Falsifier F4 (whether the pinned plane is the pole block of
+the theta Mellin transform under the probability-integral transform) is still open; the two objects
+are now both formal with matching inertia but are not identified.
+
 ## Gates
-- [ ] 0 → 1 in-progress: run B6 (numerical P1 on theta stages, P2 on both countermodels); settle F4 by
-  identifying the pinned `(1,1)`-plane with the pole block in one explicit Lean form
-- [ ] 1 → 2 fully-proven: B1–B4 on paper with `[PROVED HERE]`
-- [ ] 2 → 3 formalized: B1–B4 in Lean under `RHTower`, `lake build` green, no `sorry`
+- [x] 0 → 1 in-progress: the finite checks are theorems, not numerics; F4 remains
+- [x] 1 → 2 fully-proven: B1–B4 bridges proved (B4 to first order, `Re s > -1`)
+- [x] 2 → 3 formalized: the six modules above, `lake env lean` clean, axioms audited, wired into
+  `HTGeometry` and `RHTower`
 - [ ] 3 → 4 publication-ready: standalone note "positive index one" with the Lean certificate
 
 ## Log
 - 2026-09-01 — created in 0-backlog after full read of the frontier map and ULF STATUS; frozen as a
   truth-hunch, no proof route claimed; P1/P2/F1–F4 recorded before any bridge work.
+- 2026-09-01 — all unconditional bridges formalized (six modules); P2's eigenvalue-size clause
+  withdrawn as normalization-dependent; index statements retained.

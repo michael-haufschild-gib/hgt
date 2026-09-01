@@ -1470,3 +1470,95 @@ between source-selected and divisor/Hardy polarizations, vacuum-normalized by th
 Green cell. To close RH it must be constructed coefficient-faithfully before Xi specialization,
 proved proper/no-escape, and identified with Krein--Langer off-line count. Absolute inertia is the
 wrong invariant.
+
+F174 — Multiplicity is no longer an obstruction to a completion index. The corpus has a complete
+confluent Cauchy basis for each finite Hardy negative model and exact multiplicity-aware
+Krein--Langer counts. Repeated zeros contribute independent jet channels rather than repeated value
+features.
+
+F175 — One boundary channel does not imply index one. Scalar generalized-Schur functions have
+arbitrary finite negative-square count, and one scalar scattering channel can have arbitrary
+winding/bound-state number. The one-dimensional Gamma-six singular boundary likewise records
+off-wall charge but collapses all Xi labels onto scalar multiples of one boundary vector.
+
+CANNOT-97 — It cannot derive RH from dimension of the universal completion boundary or uniqueness
+of the fixed `(1,1)` Green cell. Boundary-channel rank and bound-state/Krein index are independent;
+the missing datum is degree/asymptotic completeness, not channel dimension.
+
+F176 — The corpus separately has (i) a literal one-prime Hardy Fredholm cycle of index `-1`, stable
+under compact completion, (ii) a one-line arithmetic formation boundary detecting every off-line Xi
+copy, and (iii) a multiplicity-exact Xi negative Hardy space. No theorem identifies these three as
+the source index, boundary channel, and complete bound-state space of one operator. The prime cycle
+is not coefficient-faithful for the full all-prime source.
+
+CANNOT-98 — It cannot set source winding equal to vacuum plus off-line multiplicity by analogy.
+Without a coefficient-faithful wave operator and cokernel-exhaustion theorem, invisible finite
+Krein spectators may change Xi inertia without changing the essential Toeplitz index.
+
+F177 — Generalized boundary triples, Fredholm-Lagrangian/Maslov theory, real spectral flow, and
+topological Levinson theorems already supply abstract index-transgression technology. They do not
+construct the arithmetic source operator or prove its completeness. Using them alone is a
+literature-level repackaging.
+
+F178 — The affine semigroup `N ⋊ N^×` has several natural operator-algebraic boundary quotients
+(additive, multiplicative, and full/Cuntz). Therefore “the source completion” is not canonical from
+the semigroup presentation alone.
+
+CANNOT-99 — It cannot choose an ax+b/Cuntz/Toeplitz boundary quotient and call its index the
+arithmetic selector. A valid completion must be singled out by a universal property forced by exact
+integer occurrence and must exclude the known off-line countermodels before divisor specialization.
+
+MUST-68 — Surviving completion-index mechanism is an arithmetic Levinson exact sequence. Construct
+one pre-divisor, coefficient-faithful all-prime wave operator from coupled successor--dilation
+execution; prove its source index is the single vacuum index; prove its completed cokernel is
+exhausted, with multiplicity, by the vacuum channel plus the Xi confluent negative Hardy space; and
+prove no channel escapes. Then `-1 = -(1 + k)` forces the off-line multiplicity `k=0`.
+
+MUST-69 — Exact residue-class occurrence must select the completion and collapse the separate
+per-prime Fredholm defects to one global source class. Direct sum gives infinite index; arbitrary
+quotient is circular. The required theorem is a mixed additive--multiplicative completion law, not
+static compatibility of the two operations.
+
+F179 — The completed theta source determinant is already exact: one fixed Hilbert--Schmidt source
+inverse `B` satisfies `det₂(I+zB)=XiC(z)/XiC(0)` globally, and analytic zero order equals the
+algebraic multiplicity of the corresponding generalized source eigenspace.
+
+F180 — Vacuum index cancels divisor defects. For injective `S`,
+`0 -> coker A -> coker(SA) -> coker S -> 0` and `ker(SA)=ker A`. Hence a one-defect shift composed
+with `A_z=I+zB` has kernel rank `g_z`, cokernel rank `1+g_z`, and index `-1` for every `z`, including
+every Xi zero. Paper proof: `vacuum-index-cancellation-determinant-torsion.md`.
+
+CANNOT-100 — It cannot force RH from a fixed numerical Fredholm index plus cokernel exhaustion.
+Every Xi mode contributes a matched kernel--cokernel pair; assuming injectivity of the completed
+wave operator is exactly assuming determinant nonvanishing.
+
+F181 — Determinant lines/family index, Hodge purity, complete positivity, equivariant character
+indices, and deficiency-`(1,1)` self-adjoint extensions all retain or orient the same defect, but
+the corpus already shows their selective clause is RH-equivalent or admits arbitrary off-line
+models. They are family-level readers, not source producers.
+
+MUST-70 — A viable completion index must live before pointwise group completion: analytic root
+complex, determinant-section torsion, or an equivalent effective family defect. It must derive
+from literal source formation a support/properness theorem excluding off-real torsion; merely
+equipping the Xi pencil with a Real, Hodge, Krein, Maslov, or determinant-line structure is static.
+
+F182 — Squier/polygraphic completion, Novikov--Sikorav homology, BNS support, Roos `lim^1`, and
+affine-semigroup boundary quotients are completion readers. Corpus already realizes the actual
+off-wall class in derived completion and makes its universal vanishing RH-equivalent; these
+theories do not construct the missing arithmetic occurrence or select a unique completion.
+
+CANNOT-101 — It cannot preserve and multiply the primewise residue-cell torsions
+`tau_n(z)=(1-z^n)/(1-z)` through a nested entire completion. For unbounded `n`, one persistent root
+`exp(2*pi*i/n)` per stage accumulates at `1`; every locally uniform entire limit is identically zero.
+Scalar or zero-free entire normalization cannot remove this divisor.
+
+F183 — Nonzero analytic completion forces a counterdivisor. On any fixed disc around `1`, local
+cyclotomic torsion contributes at least one positive divisor degree per sufficiently large stage.
+If the completed holomorphic functions converge to a nonzero limit, divisor additivity and the
+argument principle force the meromorphic interaction factor's local divisor degree to tend to
+`-infinity` at least linearly. Paper proof: `cofinal-cyclotomic-torsion-collapse-and-counterdivisor-law.md`.
+
+MUST-71 — Global arithmetic torsion must be nonadditive across prime-local completion indices. A
+viable source law must construct, before Xi specialization, the mixed addition--multiplication
+counterchannel that cancels the cofinal cyclotomic divisor while retaining a locally finite entire
+secondary torsion. Choosing a meromorphic denominator after reading the target divisor is circular.
