@@ -356,16 +356,6 @@ private noncomputable def adicCompletionIntegersRingEquivOfEq
   subst w
   exact RingEquiv.refl _
 
-private theorem adicCompletionIntegersRingEquivOfEq_symm_coe
-    {v w : HeightOneSpectrum (𝓞 ℚ)} (h : v = w)
-    (x : w.adicCompletionIntegers ℚ) :
-    (((adicCompletionIntegersRingEquivOfEq h).symm x :
-      v.adicCompletionIntegers ℚ) : v.adicCompletion ℚ) =
-      (adicCompletionRingEquivOfEq h).symm
-        (x : w.adicCompletion ℚ) := by
-  subst w
-  rfl
-
 private noncomputable def padicRingEquivOfEq
     {p q : ℕ} [Fact (Nat.Prime p)] [Fact (Nat.Prime q)] (h : p = q) :
     ℚ_[p] ≃+* ℚ_[q] := by
@@ -377,14 +367,6 @@ private noncomputable def padicIntRingEquivOfEq
     ℤ_[p] ≃+* ℤ_[q] := by
   subst q
   exact RingEquiv.refl _
-
-private theorem padicIntRingEquivOfEq_symm_coe
-    {p q : ℕ} [Fact (Nat.Prime p)] [Fact (Nat.Prime q)] (h : p = q)
-    (x : ℤ_[q]) :
-    (((padicIntRingEquivOfEq h).symm x : ℤ_[p]) : ℚ_[p]) =
-      (padicRingEquivOfEq h).symm (x : ℚ_[q]) := by
-  subst q
-  rfl
 
 /-- Integral form of the literal rational presentation of every dyadic
 source completion.  It identifies `ℤ₂` with the full valuation ring of the
@@ -452,26 +434,6 @@ noncomputable def q8QuadraticSource_dyadic_padicAlgEquiv
   exact
     { __ := ering
       commutes' := fun x => ering.toRingHom.map_rat_algebraMap x }
-
-/-- The integral and field presentations of a dyadic source completion form
-a commuting square. -/
-theorem q8QuadraticSource_dyadic_padicIntRingEquiv_coe
-    (v : HeightOneSpectrum (𝓞 S))
-    (hv : (2 : 𝓞 S) ∈ v.asIdeal)
-    (x : ℤ_[2]) :
-    (((q8QuadraticSource_dyadic_padicIntRingEquiv v hv) x :
-      v.adicCompletionIntegers S) : v.adicCompletion S) =
-      q8QuadraticSource_dyadic_padicAlgEquiv v hv (x : ℚ_[2]) := by
-  unfold q8QuadraticSource_dyadic_padicIntRingEquiv
-  unfold q8QuadraticSource_dyadic_padicAlgEquiv
-  dsimp only [RingEquiv.trans_apply, AlgEquiv.toRingEquiv_eq_coe,
-    AlgEquiv.toRingEquiv_apply]
-  rw [adicCompletionIntegersRingEquivOfEq_symm_coe]
-  change q8QuadraticSource_dyadic_adicCompletionAlgEquiv v hv _ =
-    q8QuadraticSource_dyadic_adicCompletionAlgEquiv v hv _
-  congr 1
-  rw [Rat.HeightOneSpectrum.adicCompletionIntegers.coe_padicIntEquiv_symm_apply]
-  rw [padicIntRingEquivOfEq_symm_coe]
 
 end
 

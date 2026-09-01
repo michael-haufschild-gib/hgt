@@ -39,14 +39,14 @@ theorem budget_add_le (P : ThresholdProfile) (m r : ℕ) :
           rw [Nat.cast_add, Nat.cast_one]
           ring
 
-/-- **Definition 1 deletion law.**  If every coordinate of `I` is larger than the cutoff and
+/-- **Definition 1 deletion law.**  If every coordinate of `I` is at least the cutoff and
 the full sum fits its cardinality budget, then every subset `J ⊆ I` fits the budget indexed by
 `J.card`.
 
 This is the precise finite statement behind the paper's repeated support-stability claim. -/
 theorem subset_sum_le_budget {P : ThresholdProfile} {α : Type*} [DecidableEq α]
     (t : α → ℝ) {I J : Finset α}
-    (hlarge : ∀ i ∈ I, P.cutoff < t i)
+    (hlarge : ∀ i ∈ I, P.cutoff ≤ t i)
     (hsum : (∑ i ∈ I, t i) ≤ P.budget I.card)
     (hJI : J ⊆ I) :
     (∑ i ∈ J, t i) ≤ P.budget J.card := by
@@ -64,7 +64,7 @@ theorem subset_sum_le_budget {P : ThresholdProfile} {α : Type*} [DecidableEq α
       (I \ J).card * P.cutoff = ∑ _i ∈ I \ J, P.cutoff := by simp
       _ ≤ ∑ i ∈ I \ J, t i := by
         refine sum_le_sum fun i hi => ?_
-        exact (hlarge i (Finset.mem_sdiff.mp hi).1).le
+        exact hlarge i (Finset.mem_sdiff.mp hi).1
   have hcard : J.card + (I \ J).card = I.card := by
     calc
       J.card + (I \ J).card = (J ∪ (I \ J)).card :=
@@ -77,7 +77,7 @@ theorem subset_sum_le_budget {P : ThresholdProfile} {α : Type*} [DecidableEq α
 /-- Removing one large coordinate preserves the support budget. -/
 theorem erase_sum_le_budget {P : ThresholdProfile} {α : Type*} [DecidableEq α]
     (t : α → ℝ) {I : Finset α} {i : α}
-    (hlarge : ∀ j ∈ I, P.cutoff < t j)
+    (hlarge : ∀ j ∈ I, P.cutoff ≤ t j)
     (hsum : (∑ j ∈ I, t j) ≤ P.budget I.card) :
     (∑ j ∈ I.erase i, t j) ≤ P.budget (I.erase i).card :=
   P.subset_sum_le_budget t hlarge hsum (erase_subset i I)
@@ -85,7 +85,7 @@ theorem erase_sum_le_budget {P : ThresholdProfile} {α : Type*} [DecidableEq α]
 /-- Every singleton selected from an admissible large-coordinate set meets the singleton budget. -/
 theorem singleton_le_budget {P : ThresholdProfile} {α : Type*} [DecidableEq α]
     (t : α → ℝ) {I : Finset α}
-    (hlarge : ∀ j ∈ I, P.cutoff < t j)
+    (hlarge : ∀ j ∈ I, P.cutoff ≤ t j)
     (hsum : (∑ j ∈ I, t j) ≤ P.budget I.card)
     {i : α} (hi : i ∈ I) :
     t i ≤ P.budget 1 := by
@@ -105,7 +105,7 @@ def finalThresholdProfile : ThresholdProfile where
 /-- Every subset of final-support large coordinates remains inside the final cardinality budget. -/
 theorem finalSupport_subset_stable {α : Type*} [DecidableEq α]
     (t : α → ℝ) {I J : Finset α}
-    (hlarge : ∀ i ∈ I, delta < t i)
+    (hlarge : ∀ i ∈ I, delta ≤ t i)
     (hsum : (∑ i ∈ I, t i) ≤ largeCoordinateBudget I.card)
     (hJI : J ⊆ I) :
     (∑ i ∈ J, t i) ≤ largeCoordinateBudget J.card := by
@@ -114,12 +114,46 @@ theorem finalSupport_subset_stable {α : Type*} [DecidableEq α]
 /-- In particular, every final-support large coordinate is at most `0.15`. -/
 theorem finalSupport_coordinate_le_three_twentieths {α : Type*} [DecidableEq α]
     (t : α → ℝ) {I : Finset α}
-    (hlarge : ∀ i ∈ I, delta < t i)
+    (hlarge : ∀ i ∈ I, delta ≤ t i)
     (hsum : (∑ i ∈ I, t i) ≤ largeCoordinateBudget I.card)
     {i : α} (hi : i ∈ I) :
     t i ≤ 3 / 20 := by
   simpa [finalThresholdProfile, largeCoordinateBudget] using
     finalThresholdProfile.singleton_le_budget t hlarge hsum hi
+
+/-- Every subset of the left block of a Proposition 3 `XiTuple` satisfies its own final budget. -/
+theorem StadlmannBoundedGaps.XiTuple.left_subset_budget
+    {m n : ℕ} (x : StadlmannBoundedGaps.XiTuple m n) (J : Finset (Fin m)) :
+    (∑ i ∈ J, x.left i) ≤ largeCoordinateBudget J.card := by
+  simpa using finalSupport_subset_stable x.left
+    (I := (Finset.univ : Finset (Fin m))) (J := J)
+    (by simpa using x.left_lower) (by simpa using x.left_sum_le)
+    (Finset.subset_univ J)
+
+/-- Every subset of the right block of a Proposition 3 `XiTuple` satisfies its own final budget. -/
+theorem StadlmannBoundedGaps.XiTuple.right_subset_budget
+    {m n : ℕ} (x : StadlmannBoundedGaps.XiTuple m n) (J : Finset (Fin n)) :
+    (∑ i ∈ J, x.right i) ≤ largeCoordinateBudget J.card := by
+  simpa using finalSupport_subset_stable x.right
+    (I := (Finset.univ : Finset (Fin n))) (J := J)
+    (by simpa using x.right_lower) (by simpa using x.right_sum_le)
+    (Finset.subset_univ J)
+
+/-- Each left `XiTuple` coordinate is automatically at most `0.15`, improving its stored `≤1`. -/
+theorem StadlmannBoundedGaps.XiTuple.left_le_three_twentieths
+    {m n : ℕ} (x : StadlmannBoundedGaps.XiTuple m n) (i : Fin m) :
+    x.left i ≤ 3 / 20 := by
+  simpa using finalSupport_coordinate_le_three_twentieths x.left
+    (I := (Finset.univ : Finset (Fin m)))
+    (by simpa using x.left_lower) (by simpa using x.left_sum_le) (Finset.mem_univ i)
+
+/-- Each right `XiTuple` coordinate is automatically at most `0.15`. -/
+theorem StadlmannBoundedGaps.XiTuple.right_le_three_twentieths
+    {m n : ℕ} (x : StadlmannBoundedGaps.XiTuple m n) (i : Fin n) :
+    x.right i ≤ 3 / 20 := by
+  simpa using finalSupport_coordinate_le_three_twentieths x.right
+    (I := (Finset.univ : Finset (Fin n)))
+    (by simpa using x.right_lower) (by simpa using x.right_sum_le) (Finset.mem_univ i)
 
 end
 

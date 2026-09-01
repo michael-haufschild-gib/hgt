@@ -1,8 +1,8 @@
 # Positive shared-plane Suzuki Stokes product no-go
 
 - **ID:** CCM-FU-SHARED-POS-SL2
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** ROUTE-CLASS KILL
 - **Source:** `rh-current-frontier-map.md` · CCM-FU sole live source gate
 - **Statement:** For `x_A(n)=suzukiCenterStokesCartanCell A n` and the canonical increasing-label product `P_A=∏_{n=2}^A [[1+x_A(n),sqrt(x_A(n))],[sqrt(x_A(n)),1]]`, the canonically completed observable `2 log((P_A)₀₀)+Σx_A(n)^2-regularWard(log A)` tends to `+∞` along `A=20n`.
 
@@ -11,8 +11,8 @@ Kill canonical positive shared-`SL₂` ordered fusion as CCM-FU's required nonlo
 
 ## Gates
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea, Door passport sketch
-- [ ] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorem `<name>`, `lake build` green, `check_axioms.sh` PASS
+- [x] 1 → 2  fully-proven: complete dependency-closed proof below, `[PROVED HERE]`
+- [x] 2 → 3  formalized: targeted build green; axiom audit uses only standard Lean axioms
 - [ ] 3 → 4  publication-ready: standalone paper (theorem + proof + Lean certificate + Door-2)
 
 ## RH chain and attack
@@ -31,13 +31,14 @@ At `A=20n`, isolate contiguous labels `2n<k≤5n`. The corpus Chebyshev block th
 - Proper prime powers cannot cancel it: their window von-Mangoldt mass has square-root width.
 
 ## Prior-art audit through 2026-08
-Suzuki 2026 leaves convergence of nonlocal finite-interval realizations conjectural; Connes–Consani–Moscovici 2025 leave spectral/determinant convergence unproved. Total-positivity literature explains positivity of positive root-subgroup words but does not state this Suzuki-source `sqrt A` surplus/no-go. No collision found.
+Suzuki 2026 leaves convergence of nonlocal finite-interval realizations conjectural; Connes–Consani–Moscovici 2025 leave spectral/determinant convergence unproved. Total-positivity literature explains positivity of positive root-subgroup words but does not state this Suzuki-source `sqrt A` surplus/no-go. Internal near-collision `SuzukiTransitionCoreGrowingRankCartanFission` uses independent rank-two blocks indexed by ordered prime pairs; this theorem instead multiplies actual single-label cells in one shared rank-two plane. No collision found.
 
 ## No-go closure
-- **Exact killing theorem/mechanism:** pending proof and Lean formalization.
+- **Exact killing theorem/mechanism:** `[PROVED HERE]` prime-block shared-word surplus `≥sqrt(n)/(1024 sqrt(20))`; proper-prime-power normalization loss is `o(sqrt n)`; Green is `o(sqrt n)`; completed observable tends to `+∞`. Lean: `tendsto_suzukiPositiveSharedPlaneTwentyCompletedObservable_atTop`, `no_bounded_suzukiPositiveSharedPlaneTwentyCompletedObservable` in `SuzukiPositiveSharedPlaneOrderedProductNoGo`.
 - **Strongest positive survivor:** positive shared-plane path expansion creates a new prime-density Cartan surplus at the same `sqrt A` scale as atomic/regular Ward masses.
 - **New insight:** nonlocality alone is insufficient; a survivor must introduce phase/indefinite cancellation or a source-derived packet-growing subtraction before positivity.
-- **Status:** internal corpus and primary-literature audits complete; paper proof in progress.
+- **Status:** dependency-closed paper proof and unconditional Lean formalization complete. Targeted module build passed; `#print axioms` reports only `propext`, `Classical.choice`, `Quot.sound`. Global lint remains red from unrelated pre-existing umbrella-unreachable modules.
 
 ## Log
 - 2026-09-01 — conjecture frozen after corpus hard-lock audit.
+- 2026-09-01 — route class killed and formalized.

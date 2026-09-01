@@ -1,0 +1,26 @@
+import GaloisForLFunctions.HTGeometry.SymmetricSquareMatrix
+import GaloisForLFunctions.HTGeometry.StokesResistance.FiniteGroupCharacter
+import GaloisForLFunctions.HTGeometry.StokesResistance.SymmetricTensorCharacter
+import GaloisForLFunctions.HTGeometry.StokesResistance.JetDimension
+import GaloisForLFunctions.HTGeometry.StokesResistance.MobilityAndElimination
+import GaloisForLFunctions.HTGeometry.StokesResistance.AxialAliasing
+import GaloisForLFunctions.HTGeometry.StokesResistance.AxialWeightCount
+import GaloisForLFunctions.HTGeometry.StokesResistance.SphericalWeightCount
+import GaloisForLFunctions.HTGeometry.StokesResistance.BinaryOctahedralApplication
+import GaloisForLFunctions.HTGeometry.StokesResistance.ProjectiveOctahedralApplication
+import GaloisForLFunctions.HTGeometry.StokesResistance.CliffordDoubledResponse
+import GaloisForLFunctions.HTGeometry.StokesResistance.QuaternionArtinApplication
+import GaloisForLFunctions.HTGeometry.StokesResistance.QuaternionEquivariantResponse
+import GaloisForLFunctions.HTGeometry.StokesResistance.SerreQ8GaloisApplication
+import GaloisForLFunctions.HTGeometry.StokesResistance.ConstitutiveC2Application
+import GaloisForLFunctions.HTGeometry.StokesResistance.MirrorSymmetricResponse
+import GaloisForLFunctions.HTGeometry.StokesResistance.ConstitutiveMirrorResponse
+import GaloisForLFunctions.HTGeometry.StokesResistance.MirrorResponseFracture
+
+/-!
+# Stokes resistance symmetry applications
+
+Umbrella for exact projector, character, tensor, parity, weight-count, elimination, and concrete
+corpus applications extracted from Moreau, *The Stokes resistance of an arbitrary particle: a
+classification of hydrodynamic symmetries*, arXiv:2608.23907v1.
+-/

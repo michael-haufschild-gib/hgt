@@ -23,7 +23,9 @@ Frontier map is read-only. Facts only; cards/certificates are source of truth.
 
 - FE/Schwarz/order-one response branches, eigenline/eigenpair landing, phase-only monomials, independent scales, and canonical joint radial-phase divisor landing are dead.
 - Joint quintic radial-phase source encoding is complete/injective.
-- Open: source-dynamical unit-sector/marked phase law yielding shared Ward.
+- Linear replica-area holonomy tangent has exact data `c₀=-2`, `c_{±2n}=2/3`, independent of radial dressing.
+- Normalized rectangular response is `≥1`; passivity is equivalent pointwise to zero radial twist, and on canonical Mellin twists to `Re ρ=1/2`. Universal divisor-mode passivity is iff RH.
+- Open: derive that divisor-mode passivity from literal full torus CFT dynamics.
 
 ## RBH
 
@@ -41,4 +43,4 @@ Frontier map is read-only. Facts only; cards/certificates are source of truth.
 
 ## Latest certificate
 
-`sourceHorizontalGammaSixClosedFibreAlgebraicUntwistingRouteKilled` — direct Lean PASS; targeted build PASS; standard axioms only; umbrella wired.
+`fzzLinearReplicaAreaDivisorPassive_iff_riemannHypothesis` — direct Lean PASS; targeted build PASS; standard axioms only; umbrella wired.

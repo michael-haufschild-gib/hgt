@@ -490,11 +490,26 @@ theorem suzukiPositiveSharedPlaneTwentyFullLabelList_toFinset (n : ℕ) :
 /-- The canonical natural-order label list has no repeated source label. -/
 theorem suzukiPositiveSharedPlaneTwentyFullLabelList_nodup (n : ℕ) :
     (suzukiPositiveSharedPlaneTwentyFullLabelList n).Nodup := by
-  simp [suzukiPositiveSharedPlaneTwentyFullLabelList,
-    suzukiPositiveSharedPlaneTwentyPrefixLabelList,
-    suzukiPositiveSharedPlaneTwentyWindowLabelList,
-    suzukiPositiveSharedPlaneTwentySuffixLabelList]
-  omega
+  rw [suzukiPositiveSharedPlaneTwentyFullLabelList]
+  apply List.nodup_append.mpr
+  constructor
+  · apply List.nodup_append.mpr
+    refine ⟨by simp [suzukiPositiveSharedPlaneTwentyPrefixLabelList],
+      by simp [suzukiPositiveSharedPlaneTwentyWindowLabelList], ?_⟩
+    intro a ha b hb
+    simp [suzukiPositiveSharedPlaneTwentyPrefixLabelList] at ha
+    simp [suzukiPositiveSharedPlaneTwentyWindowLabelList] at hb
+    omega
+  · constructor
+    · simp [suzukiPositiveSharedPlaneTwentySuffixLabelList]
+    · intro a ha b hb
+      rcases List.mem_append.mp ha with ha | ha
+      · simp [suzukiPositiveSharedPlaneTwentyPrefixLabelList] at ha
+        simp [suzukiPositiveSharedPlaneTwentySuffixLabelList] at hb
+        omega
+      · simp [suzukiPositiveSharedPlaneTwentyWindowLabelList] at ha
+        simp [suzukiPositiveSharedPlaneTwentySuffixLabelList] at hb
+        omega
 
 /-- The list logarithmic mass is exactly the existing finite Suzuki Cartan log mass. -/
 theorem positiveSharedPlaneLogMass_twentyFullCellList_eq (n : ℕ) :
@@ -506,6 +521,7 @@ theorem positiveSharedPlaneLogMass_twentyFullCellList_eq (n : ℕ) :
   rw [list_sum_map_eq_toFinset_sum_of_nodup
     (suzukiPositiveSharedPlaneTwentyFullLabelList_nodup n)]
   rw [suzukiPositiveSharedPlaneTwentyFullLabelList_toFinset]
+  simp only [Function.comp_apply]
 
 def suzukiPositiveSharedPlaneTwentyPrimeFloor (n : ℕ) : ℝ :=
   Real.log (2 * (n : ℝ)) / (4 * Real.sqrt (20 * (n : ℝ)))
@@ -1154,7 +1170,7 @@ theorem suzukiPositiveSharedPlaneTwentyCompletedObservable_eq (n : ℕ) :
       2 * Real.log
         (positiveSharedPlaneWord (suzukiPositiveSharedPlaneTwentyFullCellList n) 0 0) +
         suzukiStokesCartanQuadraticCounterterm (20 * n) -
-          _root_.RHTower.suzukiUnitRieszRegularWardMass (Real.log (20 * n)) := by
+          suzukiUnitRieszRegularWardMass (Real.log ((20 * n : ℕ) : ℝ)) := by
   rw [suzukiPositiveSharedPlaneTwentyCompletedObservable,
     suzukiCompletedStokesCartanWardObservable,
     positiveSharedPlaneCrossSurplus,

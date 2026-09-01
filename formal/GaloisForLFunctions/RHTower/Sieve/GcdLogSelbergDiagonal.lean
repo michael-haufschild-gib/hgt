@@ -61,6 +61,7 @@ theorem sum_gcdLog_weight_eq_double_diagonal
       gcd_eq_sum_totient_indicator ha1 (hM p.1 hp1) ha2]
     rw [Finset.sum_product]
     simp only [Finset.sum_mul, Finset.mul_sum]
+    rw [Finset.sum_comm]
     refine Finset.sum_congr rfl ?_
     intro e _
     refine Finset.sum_congr rfl ?_

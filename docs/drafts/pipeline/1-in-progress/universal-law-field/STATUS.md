@@ -1315,3 +1315,130 @@ MUST-59 — Decisive formation invariant must survive every source-legal rank ga
 literal pre-divisor arithmetic why gauge fails to extend across a second formation operation.
 One-leg determinant growth and reflection character alone are insufficient; mixed cross-effect is
 required before Xi specialization.
+
+F156 — Natural-rank trivializer `(z^-1)^m` is restriction of bilateral sewing history
+`g_z(e)=z^(-e)`. It algebraically trivializes every nonzero literal-source character, but is
+polynomially moderate exactly when `|z|=1`.
+
+F157 — Same bilateral history trivializes actual depth-12 marked source execution, while character
+inversion acts by rank reversal `g_(z^-1)(e)=g_z(-e)`. For half-density character
+`p^(1/2-s)`, admissibility is exactly `Re s=1/2`.
+
+CANNOT-85 — It cannot use ordinary algebraic coboundary class of source reflection as selector:
+class vanishes for every nonzero character, including off-line ones. Obstruction survives only
+after source-admissible gauges are fixed.
+
+MUST-60 — Higher theory must specify admissible gauge sheaf/bornology before Xi occurrence and
+prove literal formation places canonical rank primitive in it. Post-divisor moderation or a gauge
+class chosen from horizontal grade is RH restatement.
+
+F158 — On directed ranks, actual marked formation `F_z(m)=z^m(1-z)` is moderate iff `|z|<=1`,
+while exact recovery `R_z(m)=z^(-m)` is moderate iff `1<=|z|`; their pointwise product is constant
+`1-z`. Joint formation/recovery moderation is therefore exactly `|z|=1`.
+
+F159 — Same joint law holds for actual depth-12 marked source channels. At half-density character
+`p^(1/2-s)`, joint directed properness is exactly `Re s=1/2`; bilateral completion is not needed.
+
+CANNOT-86 — It cannot treat exact or information-neutral recovery as topological admissibility.
+Recovery may preserve every datum while carrying exponential rank cost opposite to formation.
+
+MUST-61 — A source proof may target one occurrence-independent bornology making actual formation
+and its canonical recovery jointly polynomially controlled. Separate zero-dependent norms, or
+continuity of only one leg, leave an entire off-line chamber.
+
+F160 — Finite Laurent packets `C[Z]` with coefficient `ell^1` form a coefficient-native Hopf
+envelope for directed formation and inverse recovery. Actual edges satisfy the exact algebra law
+`T^(-m) * (T^m - T^(m+1)) = 1 - T`, independent of rank.
+
+F161 — Evaluation characters of this bilateral Wiener source are bounded exactly on the unit
+circle. Half-density evaluation `T |-> p^(1/2-s)` is bounded exactly when `Re(s)=1/2`.
+
+CANNOT-87 — It cannot use algebraic Hopf extension alone as selector: evaluation extends
+algebraically for every nonzero character. Selection requires boundedness in one source-fixed
+coefficient norm, not an annular or zero-dependent weight.
+
+MUST-62 — Higher theory must derive an occurrence-independent bounded Xi packet evaluation on a
+coefficient-native Laurent completion before divisor specialization. Choosing the completion from
+the target horizontal grade is circular.
+
+F162 — Bilateral Wiener boundedness, fixed-star positivity, integral Cartier recovery, compact
+recurrence descent, and two-sided bounded orbit are already equivalent neutral-grade receivers.
+They expose one modular character in different completions; none supplies its arithmetic producer.
+
+CANNOT-88 — It cannot obtain new selection by combining functional-equation inversion with a
+Wiener/C-star completion, positive representation, closed-loop holonomy, or two-sided power
+boundedness. Corpus already proves each rigidity implication; asserting Xi admission is RH-equivalent.
+
+MUST-63 — Next narrowing mechanism must operate in literal pre-divisor integer execution before
+choosing a completion: it must use non-marginal addition--multiplication distributivity and derive,
+not assume, any summation, continuity, positivity, boundedness, or descent property it needs.
+
+F163 — Categorical-dimension/integrality and singular multivalued-correspondence pivots are already
+represented. Integral centered monodromy is a wall receiver; closed relations can become fully
+vertical or source-nonselective, and relation excess alone does not orient the Xi occurrence.
+
+CANNOT-89 — It cannot infer neutral grade by declaring the horizontal character a finite-set
+dimension, semiring character, additive automorphism, or correspondence representation. Existence
+of that lift is the missing occurrence theorem; regular and multivalued versions already terminate.
+
+MUST-64 — A distributive-source mechanism must construct its mixed action from literal coefficient
+execution itself and prove a new unconditional restriction on realizable response laws. Merely
+requiring the multiplicative character to respect addition stores the desired neutrality.
+
+F164 — Horizontal grade is the rapidity of reciprocal reflected transport. The corpus's `tanh`,
+`sech`, `artanh`, `sinh`, and `cosh-1` laws are velocity, visibility, additive rapidity, oriented
+current, and boost energy of the same rank-two hyperbolic block; they are not separate mechanisms.
+
+F165 — The cofinal theta Green boundary has fixed mixed inertia `(1,1)`, while finite Krein--Langer
+forms assign one negative square to each off-line pair. Thus the RH-bearing invariant is not raw
+positivity or raw inertia but excess/relative negative index above the universal hyperbolic block.
+
+CANNOT-90 — It cannot polarize away the fixed negative theta boundary mode. Actual stage boundaries
+remain uniformly separated from both positive and negative cones cofinally; the mixed block is
+vacuum geometry, not an off-line defect.
+
+MUST-65 — Required producer is source-native relative-index properness: define the vacuum-subtracted
+index before divisor specialization, prove literal finite stages have zero excess, and prove no
+negative-index birth or escape under arithmetic completion. An exact identification of its limit
+with Krein--Langer off-line-pair count would then close RH.
+
+F166 — Vacuum-subtracted Krein index is not continuous in compact-open or all-jet compact-open
+topology. Explicit analytic families retain any prescribed extra negative-square count while
+converging locally uniformly, with every derivative, to a lower-index limit.
+
+CANNOT-91 — It cannot prove RH by ordinary relative-index conservation or a norm-continuous exact
+index. Negative directions can migrate to infinite height; lower index lies in the closure of every
+higher finite index stratum.
+
+F167 — The escaped index is already reconstructed as one singular principal class by Gamma-six
+boundary jets, prime-normal double-log energy, adaptive Green codiagonal zeros, and reflected
+Kakutani flux. Global zero escape class/properness is equivalent to RH.
+
+CANNOT-92 — It cannot advance by adjoining one boundary point, tail mass, or ``index at infinity''.
+Corpus already has that receiver and its four-organ reconstruction; vanishing remains the producer.
+
+F168 — Multiple compact gauges do not block escape: any two compact reporters on an
+infinite-dimensional Hilbert source share an orthonormal null sequence. Noncompactness or positive
+essential norm alone also fails because a noncompact reporter may have infinite-dimensional kernel.
+
+CANNOT-93 — It cannot obtain properness by stacking finitely many compact completions or by adding
+an arbitrary noncompact boundary channel. Required invariant is essential coverage, not visibility.
+
+F169 — Literal critical Stokes formation has source winding `-1`; completed prime--Gamma flow is
+joined to it by a zero-avoiding homotopy on the real chamber and has the same Fredholm winding.
+Separately, the unilateral-shift law identifies recurrent boundary observation, open defect history,
+defect rank, and Toeplitz boundary index.
+
+F170 — Fixed Fredholm winding does not constrain Krein negative squares. Arbitrary finite negative
+spectator blocks may be added without changing essential Toeplitz index. Existing arithmetic-prime
+Fredholm operator is selected from integer grade, not constructed coefficient-faithfully from the
+full literal source.
+
+CANNOT-94 — It cannot equate source winding with off-line count without a completeness theorem.
+That equality is false for a source shift direct-summed with invisible finite Krein spectators.
+
+MUST-66 — Completion-index route requires arithmetic asymptotic completeness: construct one
+pre-divisor, coefficient-faithful source wave operator; prove its quotient/scattering class is the
+fixed source winding; prove its cokernel is exhausted by the universal theta vacuum line plus the
+Xi Krein negative space. Then index `-1 = -(1 + k)` forces off-line count `k=0`. Until this operator
+and exhaustion law are explicit, ``arithmetic Levinson'' is a research question, not a conjecture.

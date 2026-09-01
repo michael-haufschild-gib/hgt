@@ -665,6 +665,27 @@ theorem prod_towerDiag_sub_single (Fr : RittFrame K L) (e : Fin n →₀ ℕ) (j
     rw [Finsupp.notMem_support_iff.mp hi, pow_zero]
   rw [← hsplit, hshrink, Fr.prod_towerDiag g]
 
+theorem towerRest1_of_zero (Fr : RittFrame K L) (b : K) {j : Fin n} (hj : (j : ℕ) = 0) :
+    Fr.towerRest1 b n j = C (Fr.logConst b 0) := by
+  classical
+  rw [towerRest1, if_pos hj]
+  have hterm : ∀ i : Fin n,
+      (if (i : ℕ) + 1 = (j : ℕ) then C (Fr.logCoeff (j : ℕ) (i : ℕ)) * X i else 0)
+        = (0 : MvPolynomial (Fin n) K) := by
+    intro i
+    rw [if_neg (by omega)]
+  rw [Finset.sum_congr rfl (fun i _ => hterm i), Finset.sum_const_zero, zero_add]
+
+theorem towerRest1_of_succ (Fr : RittFrame K L) (b : K) {j i : Fin n}
+    (hij : (i : ℕ) + 1 = (j : ℕ)) :
+    Fr.towerRest1 b n j = C (Fr.logCoeff (j : ℕ) (i : ℕ)) * X i := by
+  classical
+  rw [towerRest1, if_neg (by omega), add_zero]
+  refine Finset.sum_eq_single i (fun i' _ hne => ?_) (fun hc => absurd (Finset.mem_univ i) hc)
+  rw [if_neg]
+  intro hc
+  exact hne (Fin.ext (by omega))
+
 end RittFrame
 
 end GaloisForLFunctions.HTGeometry

@@ -133,9 +133,11 @@ and `p>1` give `|lambda_p(s)|=1` iff `Re s=1/2`, proving item 6. `[PROVED HERE]`
 
 - [x] 0 -> 1: big-picture law, corpus audit, and exact RH closure stated
 - [x] 1 -> 2: dependency-closed proof; `[PROVED HERE]`
-- [ ] 2 -> 3: Lean formalization
+- [x] 2 -> 3: `LiteralSourceAdmissibleRankGaugeObstruction.lean`; scratch, direct check, and
+  module-only build pass; axioms `[propext, Classical.choice, Quot.sound]`
 - [ ] 3 -> 4: publication-ready extraction
 
 ## Log
 
 - 2026-09-01 — algebraic-versus-admissible gauge obstruction isolated and paper proof closed.
+- 2026-09-01 — Lean cross-organ identification and exact target audit passed.

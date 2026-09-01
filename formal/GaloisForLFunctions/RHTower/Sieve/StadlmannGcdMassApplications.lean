@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.BondarenkoHeapLemmaNine
 import GaloisForLFunctions.RHTower.DirichletCharacterTwoAdicSecondMoment
 import GaloisForLFunctions.RHTower.DirichletCharacterEightOddSecondMoment
+import GaloisForLFunctions.RHTower.Sieve.GcdSumTotient
 
 /-!
 # Stadlmann gcd-sum applications
@@ -124,6 +125,74 @@ theorem stadlmannDivisorTotientCoefficient_le (q : PositiveModulus) (M : ℕ) :
     _ ≤ (M : ℝ) * (q.1.divisors.card : ℝ) + 2 * (q.1 : ℝ) := by linarith
 
 end RHTower
+
+namespace RHTower.Sieve
+
+/-- Positive dyadic window start, packaging the only side condition needed by the lcm bridge. -/
+abbrev PositiveWindowStart := {y : ℕ // 1 ≤ y}
+
+/-- Row-by-row application of Stadlmann Lemma 10 to a dyadic gcd-pair mass. -/
+theorem sum_gcd_dyadicWindow_le_stadlmannLemmaTen (Y : PositiveWindowStart) :
+    ∑ p ∈ (Finset.Icc Y.1 (2 * Y.1)) ×ˢ (Finset.Icc Y.1 (2 * Y.1)),
+        Nat.gcd p.1 p.2 ≤
+      (2 * Y.1) *
+        ∑ a ∈ Finset.Icc Y.1 (2 * Y.1), a.divisors.card := by
+  classical
+  let S := Finset.Icc Y.1 (2 * Y.1)
+  have hsubset : S ⊆ Finset.Icc 1 (2 * Y.1) := by
+    intro b hb
+    simp only [S, Finset.mem_Icc] at hb ⊢
+    exact ⟨Y.2.trans hb.1, hb.2⟩
+  rw [Finset.sum_product]
+  calc
+    ∑ a ∈ S, ∑ b ∈ S, Nat.gcd a b ≤
+        ∑ a ∈ S, (2 * Y.1) * a.divisors.card := by
+      apply Finset.sum_le_sum
+      intro a ha
+      have haBounds : Y.1 ≤ a ∧ a ≤ 2 * Y.1 := by
+        simpa [S] using ha
+      have haNe : a ≠ 0 := by omega
+      calc
+        ∑ b ∈ S, Nat.gcd a b ≤
+            ∑ b ∈ Finset.Icc 1 (2 * Y.1), Nat.gcd a b := by
+          exact Finset.sum_le_sum_of_subset_of_nonneg hsubset
+            (fun _ _ _ => Nat.zero_le _)
+        _ = RHTower.stadlmannGcdIntervalMass
+            (⟨a, haNe⟩ : RHTower.PositiveModulus) (2 * Y.1) := by
+          simp [RHTower.stadlmannGcdIntervalMass]
+        _ ≤ (2 * Y.1) * a.divisors.card :=
+          RHTower.stadlmannGcdIntervalMass_le_divisorCount
+            (⟨a, haNe⟩ : RHTower.PositiveModulus) (2 * Y.1)
+    _ = (2 * Y.1) * ∑ a ∈ S, a.divisors.card := by
+      rw [Finset.mul_sum]
+
+/-- Lemma 10 plus the corpus's gcd/lcm bridge controls reciprocal-lcm energy on a dyadic window. -/
+theorem sum_inv_lcm_dyadicWindow_le_stadlmannLemmaTen (Y : PositiveWindowStart) :
+    ∑ p ∈ (Finset.Icc Y.1 (2 * Y.1)) ×ˢ (Finset.Icc Y.1 (2 * Y.1)),
+        1 / ((Nat.lcm p.1 p.2 : ℕ) : ℝ) ≤
+      (2 / (Y.1 : ℝ)) *
+        ∑ a ∈ Finset.Icc Y.1 (2 * Y.1), (a.divisors.card : ℝ) := by
+  have hpairNat := sum_gcd_dyadicWindow_le_stadlmannLemmaTen Y
+  have hpairReal :
+      (∑ p ∈ (Finset.Icc Y.1 (2 * Y.1)) ×ˢ (Finset.Icc Y.1 (2 * Y.1)),
+          (Nat.gcd p.1 p.2 : ℝ)) ≤
+        (2 * (Y.1 : ℝ)) *
+          ∑ a ∈ Finset.Icc Y.1 (2 * Y.1), (a.divisors.card : ℝ) := by
+    exact_mod_cast hpairNat
+  have hyPos : (0 : ℝ) < (Y.1 : ℝ) := by exact_mod_cast (lt_of_lt_of_le Nat.zero_lt_one Y.2)
+  calc
+    _ ≤ (1 / (Y.1 : ℝ) ^ 2) *
+        ∑ p ∈ (Finset.Icc Y.1 (2 * Y.1)) ×ˢ (Finset.Icc Y.1 (2 * Y.1)),
+          (Nat.gcd p.1 p.2 : ℝ) := sum_inv_lcm_le_gcd_sum Y.2
+    _ ≤ (1 / (Y.1 : ℝ) ^ 2) *
+        ((2 * (Y.1 : ℝ)) *
+          ∑ a ∈ Finset.Icc Y.1 (2 * Y.1), (a.divisors.card : ℝ)) := by
+      exact mul_le_mul_of_nonneg_left hpairReal (by positivity)
+    _ = (2 / (Y.1 : ℝ)) *
+        ∑ a ∈ Finset.Icc Y.1 (2 * Y.1), (a.divisors.card : ℝ) := by
+      field_simp
+
+end RHTower.Sieve
 
 namespace RHTower.OddPrimeFamily
 

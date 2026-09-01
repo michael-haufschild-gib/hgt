@@ -28,6 +28,8 @@ theorem exists_temporalDimension_stall_before_card
     ∃ i < Fintype.card I, temporalDimension jet (i + 1) = temporalDimension jet i := by
   rcases temporalDimension_grows_or_exists_stall jet 0 (Fintype.card I) with hgrow | hstall
   · have hupper := temporalDimension_le_card_sub_one jet (Fintype.card I)
+    have hcard : 0 < Fintype.card I := Fintype.card_pos
+    rw [temporalDimension_zero] at hgrow
     simp only [zero_add] at hgrow
     omega
   · simpa using hstall

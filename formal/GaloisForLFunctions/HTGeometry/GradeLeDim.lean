@@ -100,13 +100,10 @@ theorem exists_ltSeries_of_hasGradeGE :
       have hsub : Subsingleton (M ⧸ (x • (⊤ : Submodule A M))) :=
         Function.Surjective.subsingleton (Submodule.mkQ_surjective _)
       exact (not_subsingleton _) hsub
-    have hgq : HasGradeGE (maximalIdeal A) (ModuleCat.of A (M ⧸ (x • (⊤ : Submodule A M)))) n :=
-      hasGradeGE_quotSMulTop (ModuleCat.of A M) hxreg
-        (maximalIdeal_smul_top_lt_top M)
-        (show (maximalIdeal A) • (⊤ : Submodule A
-            ((ModuleCat.smulShortComplex (ModuleCat.of A M) x).X₃)) < ⊤ from
-          maximalIdeal_smul_top_lt_top (M ⧸ (x • (⊤ : Submodule A M))))
+    have hgq : HasGradeGE (maximalIdeal A) (ModuleCat.of A (M ⧸ (x • (⊤ : Submodule A M)))) n := by
+      refine hasGradeGE_quotSMulTop (ModuleCat.of A M) hxreg (maximalIdeal_smul_top_lt_top M) ?_
         ⟨x :: t, hlen, hmem, hreg⟩
+      exact maximalIdeal_smul_top_lt_top (M ⧸ (x • (⊤ : Submodule A M)))
     obtain ⟨s, hslen, hshead⟩ := ih (M ⧸ (x • (⊤ : Submodule A M))) hgq q hq
     refine ⟨s.cons ⟨p, ‹p.IsPrime›⟩ ?_, by simp [hslen], rfl⟩
     show (⟨p, ‹p.IsPrime›⟩ : PrimeSpectrum A) < s.head

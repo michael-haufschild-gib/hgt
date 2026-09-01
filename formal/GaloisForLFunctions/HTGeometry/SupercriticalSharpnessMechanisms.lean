@@ -167,6 +167,58 @@ theorem pathGraph_two_targetAvoidingIsoperimetricProfile_pos :
     exact Finset.disjoint_left.mp htarget hone (by simp)
   simp [edgeBoundary, SimpleGraph.pathGraph_adj, hzero, hone]
 
+/-- With the corpus convention of counting both edge orientations, the target-avoiding profile of
+the two-vertex path is exactly two. -/
+theorem pathGraph_two_targetAvoidingIsoperimetricProfile_eq_two :
+    targetAvoidingIsoperimetricProfile
+      (SimpleGraph.pathGraph 2)
+      ({(0 : Fin 2)} : Finset (Fin 2)) ({(1 : Fin 2)} : Finset (Fin 2)) = 2 := by
+  have hdisjoint : Disjoint
+      ({(0 : Fin 2)} : Finset (Fin 2)) ({(1 : Fin 2)} : Finset (Fin 2)) := by
+    simp
+  obtain ⟨S, hanchor, htarget, hprofile⟩ :=
+    exists_targetAvoiding_superset_boundarySize_eq_profile
+      (SimpleGraph.pathGraph 2) hdisjoint
+  have hzero : (0 : Fin 2) ∈ S := hanchor (by simp)
+  have hone : (1 : Fin 2) ∉ S := by
+    intro hone
+    exact Finset.disjoint_left.mp htarget hone (by simp)
+  have hS : S = ({(0 : Fin 2)} : Finset (Fin 2)) := by
+    ext i
+    fin_cases i <;> simp_all
+  rw [← hprofile, hS]
+  unfold finiteEdgeBoundarySize
+  have hboundary :
+      edgeBoundary (SimpleGraph.pathGraph 2)
+          (({(0 : Fin 2)} : Finset (Fin 2)) : Set (Fin 2)) =
+        {((0 : Fin 2), (1 : Fin 2)), ((1 : Fin 2), (0 : Fin 2))} := by
+    ext e
+    rcases e with ⟨a, b⟩
+    fin_cases a <;> fin_cases b <;>
+      simp [edgeBoundary, SimpleGraph.pathGraph_adj]
+  rw [hboundary, Set.ncard_pair]
+  decide
+
+/-- Any literal edge separating a singleton anchor from a singleton target forces positive
+finite-volume anchored profile. -/
+theorem targetAvoidingIsoperimetricProfile_pos_of_adj
+    [Finite V] (G : SimpleGraph V) {a b : V} (hab : G.Adj a b) :
+    0 < targetAvoidingIsoperimetricProfile G {a} {b} := by
+  classical
+  have hdisjoint : Disjoint ({a} : Finset V) ({b} : Finset V) := by
+    simp [hab.ne]
+  obtain ⟨S, hanchor, htarget, hprofile⟩ :=
+    exists_targetAvoiding_superset_boundarySize_eq_profile G hdisjoint
+  rw [← hprofile]
+  unfold finiteEdgeBoundarySize
+  rw [Set.ncard_pos]
+  refine ⟨(a, b), ?_⟩
+  have ha : a ∈ S := hanchor (by simp)
+  have hb : b ∉ S := by
+    intro hb
+    exact Finset.disjoint_left.mp htarget hb (by simp)
+  simp [edgeBoundary, hab, ha, hb]
+
 end Isoperimetry
 
 section SequentialTouches
@@ -374,5 +426,33 @@ theorem step_le_two_mul_current_of_doubling
     _ = 2 * c * phi v := by ring
 
 end CollectingMass
+
+section DensitySelection
+
+/-- Finite-family density selection in a form with no nonemptiness premise: either the carrier is
+empty, or one member carries at least the family average.  This is the deterministic pigeonhole
+step behind the paper's slab selection. -/
+theorem finiteFamilySum_empty_or_le_card_mul
+    {ι : Type*} [Fintype ι] (f : ι → ℝ) :
+    Fintype.card ι = 0 ∨ ∃ i, (∑ j, f j) ≤ (Fintype.card ι : ℝ) * f i := by
+  classical
+  cases isEmpty_or_nonempty ι with
+  | inl hempty =>
+      letI := hempty
+      left
+      simp
+  | inr hnonempty =>
+      letI := hnonempty
+      right
+      obtain ⟨i, _, hi⟩ :=
+        Finset.exists_max_image (Finset.univ : Finset ι) f Finset.univ_nonempty
+      refine ⟨i, ?_⟩
+      calc
+        (∑ j, f j) ≤ ∑ _j : ι, f i :=
+          Finset.sum_le_sum fun j _ ↦ hi j (Finset.mem_univ j)
+        _ = (Fintype.card ι : ℝ) * f i := by
+          rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
+
+end DensitySelection
 
 end GaloisForLFunctions.HTGeometry
