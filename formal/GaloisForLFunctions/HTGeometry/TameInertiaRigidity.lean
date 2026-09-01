@@ -98,11 +98,12 @@ theorem sq_dvd_smul_pow_sub {π : W} {g : Γ} (h2 : π ^ 2 ∣ g • π - π) (j
         ⟨g • c, by rw [hc, smul_mul', smul_pow']⟩
       exact dvd_trans (pow_dvd_pow_of_dvd (dvd_smul_self π g) 2) hdvd
 
-/-- **Tameness in residue characteristic zero.**  A finite-order ring automorphism that acts
-trivially on the residue field and moves a uniformizer only to second order fixes it. -/
-theorem smul_uniformizer_eq_self_of_sq_dvd [CharZero (IsLocalRing.ResidueField W)]
+/-- **Tameness at an order invertible in the residue field.**  A finite-order ring automorphism
+that acts trivially on the residue field and moves a uniformizer only to second order fixes it. -/
+theorem smul_uniformizer_eq_self_of_sq_dvd_of_natCast_ne_zero
     (hres : ∀ (h : Γ) (x : W), h • x - x ∈ IsLocalRing.maximalIdeal W)
-    {g : Γ} {N : ℕ} (hN : 0 < N) (hgN : g ^ N = 1)
+    {g : Γ} {N : ℕ} (hgN : g ^ N = 1)
+    (hNres : ((N : ℕ) : IsLocalRing.ResidueField W) ≠ 0)
     {π : W} (hπ : Irreducible π) (h2 : π ^ 2 ∣ g • π - π) :
     g • π = π := by
   classical
@@ -187,13 +188,23 @@ theorem smul_uniformizer_eq_self_of_sq_dvd [CharZero (IsLocalRing.ResidueField W
   have hres0 : ((N : ℕ) : IsLocalRing.ResidueField W) = 0 := by
     rw [← map_natCast (IsLocalRing.residue W) N]
     exact Ideal.Quotient.eq_zero_iff_mem.mpr hNmem
-  exact absurd hres0 (Nat.cast_ne_zero.mpr hN.ne')
+  exact hNres hres0
 
-/-- **Tame rigidity.**  A finite-order ring automorphism acting trivially on the residue field and
-fixing one uniformizer is the identity, when the residue field has characteristic zero. -/
-theorem smul_eq_self_of_smul_uniformizer_eq_self [CharZero (IsLocalRing.ResidueField W)]
+/-- Residue-characteristic-zero specialization of tame uniformizer rigidity. -/
+theorem smul_uniformizer_eq_self_of_sq_dvd [CharZero (IsLocalRing.ResidueField W)]
     (hres : ∀ (h : Γ) (x : W), h • x - x ∈ IsLocalRing.maximalIdeal W)
     {g : Γ} {N : ℕ} (hN : 0 < N) (hgN : g ^ N = 1)
+    {π : W} (hπ : Irreducible π) (h2 : π ^ 2 ∣ g • π - π) :
+    g • π = π :=
+  smul_uniformizer_eq_self_of_sq_dvd_of_natCast_ne_zero hres hgN
+    (Nat.cast_ne_zero.mpr hN.ne') hπ h2
+
+/-- **Tame rigidity at an order invertible in the residue field.**  A finite-order automorphism
+acting trivially on the residue field and fixing one uniformizer is the identity. -/
+theorem smul_eq_self_of_smul_uniformizer_eq_self_of_natCast_ne_zero
+    (hres : ∀ (h : Γ) (x : W), h • x - x ∈ IsLocalRing.maximalIdeal W)
+    {g : Γ} {N : ℕ} (hgN : g ^ N = 1)
+    (hNres : ((N : ℕ) : IsLocalRing.ResidueField W) ≠ 0)
     {π : W} (hπ : Irreducible π) (hfix : g • π = π) (x : W) :
     g • x = x := by
   classical
@@ -253,6 +264,15 @@ theorem smul_eq_self_of_smul_uniformizer_eq_self [CharZero (IsLocalRing.ResidueF
   have hres0 : ((N : ℕ) : IsLocalRing.ResidueField W) = 0 := by
     rw [← map_natCast (IsLocalRing.residue W) N]
     exact Ideal.Quotient.eq_zero_iff_mem.mpr hNmem
-  exact absurd hres0 (Nat.cast_ne_zero.mpr hN.ne')
+  exact hNres hres0
+
+/-- Residue-characteristic-zero specialization of tame rigidity. -/
+theorem smul_eq_self_of_smul_uniformizer_eq_self [CharZero (IsLocalRing.ResidueField W)]
+    (hres : ∀ (h : Γ) (x : W), h • x - x ∈ IsLocalRing.maximalIdeal W)
+    {g : Γ} {N : ℕ} (hN : 0 < N) (hgN : g ^ N = 1)
+    {π : W} (hπ : Irreducible π) (hfix : g • π = π) (x : W) :
+    g • x = x :=
+  smul_eq_self_of_smul_uniformizer_eq_self_of_natCast_ne_zero hres hgN
+    (Nat.cast_ne_zero.mpr hN.ne') hπ hfix x
 
 end GaloisForLFunctions.HTGeometry

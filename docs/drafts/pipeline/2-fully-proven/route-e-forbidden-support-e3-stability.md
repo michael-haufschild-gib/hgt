@@ -794,3 +794,22 @@ umbrella-wired without an umbrella build.
 
 Card remains Stage 2.  Remaining shared analytic work is Proposition-2.2 routing,
 amplification, and final Matomäki--Teräväinen Theorem 1.2 assembly.
+
+## Lean progress update (2026-08-31) — literal Lemma 3.4 and published refinement
+
+`Sieve/HeathBrownSparseMeanValueBounded.lean`,
+`HeathBrownSparseMeanValueBoundedRefined.lean`, and
+`HeathBrownSparseMeanValueLemma34.lean` close Matomäki--Teräväinen Lemma 3.4 with the published
+quantifiers and coefficient classes.  The formal statements retain arbitrary bounded complex
+sparse coefficients, arbitrary real dense coefficients, reciprocal weights, source/dyadic
+supports, and the internally constructed coefficient maximum.  They include the exact refinement
+deleting the mixed term under `N ≥ T^(2/3)` or sparse cardinality at most `T^(1/3)`.
+
+No sign, nonemptiness, height-two, normalization, continuity, or analytic hypothesis remains.
+Direct checks, targeted leaf builds (`9124/9124`, `9125/9125`), and the focused
+seventeen-declaration axiom audit pass with only `[propext, Classical.choice, Quot.sound]`; the
+capstone is umbrella-wired without an umbrella build.
+
+Card remains Stage 2.  Lemma 3.4 is closed.  Remaining shared work is Lemma 3.5's genuine Type I
+and Type I/II analytic cancellation, routing/amplification, and final Theorem 1.2 assembly;
+Proposition 2.2 bookkeeping and Type II are already closed.

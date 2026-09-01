@@ -595,8 +595,9 @@ is a precise research target, not an RH proof.
 - [ ] construct the charged anti-causal fixed-current codifferential
 - [ ] prove the completed affine-flux curvature equals the squarefree Hardy block curvature
 - [x] disprove Fisher-numerator divisibility at every strict-right Xi zero and retain exact conormal residue
-- [ ] split the charged graph into its forced conormal residue line and analytic regular remainder
-- [ ] prove the source-framed nonexpansive relative estimate for that regular remainder via `(7p)`
+- [x] split the charged graph into its forced conormal residue line and unique analytic regular remainder
+- [x] prove the physical-source regular germ has central cofinal value `2` and energy `4`
+- [ ] lift that point law to the source-framed graph-relative estimate via `(7p)`
 - [ ] prove cofinal graph convergence to `ell_E`
 - [ ] independent specialist literature audit
 - [ ] RH
@@ -672,6 +673,18 @@ The remaining RH theorem is therefore not divisibility by `B_sigma`.  It must re
 residue line and prove the boundary-unitary estimate `(7p)` only for the analytic regular
 remainder, with a separate source law forcing the oriented residue to have zero horizontal real
 component.
+
+Physical scaling now closes the regular finite part at the moving zero.  For
+`u_sigma=(rho-sigma)/(sigma-1)`, one fixed analytic logarithmic-derivative germ `g` gives
+
+```text
+h_sigma(v)=2(sigma-1)[g(sigma+v(sigma-1))+J_sq(sigma)],
+h_sigma(u_sigma)->2,
+|h_sigma(u_sigma)|^2->4.                                (20b)
+```
+
+The exact residue split with `(20b)` is formal for every strict-right Xi zero.  Remaining burden is
+uniform graph control away from the moving point plus oriented-residue horizontal annihilation.
 
 **HT consequence:** critical source conditioning can turn an unbounded affine observable into a
 finite calibrated state coordinate without making that observable bounded on the carrier.

@@ -1,0 +1,7 @@
+# MSC Bessel-Hilbert stability wall
+
+`[LEAN-PROVED]` Exact physical MSC source/overlap admits a coefficient-faithful positive Hilbert realization with finite Bessel bound iff `Re ρ > 1`. Necessity: Bessel makes both exact analysis columns square-summable; their norm product is summable; mode norms cancel; `norm_mul_norm_mscPhysicalSource_eq` identifies squarefree-Möbius mass, whose sharp summability wall is one. Sufficiency: balanced weight `w n = exp((Re ρ-σ) log n)` constructs explicit canonical `lp ℕ ℂ 2` source/overlap and scaled coordinate modes; normalized modes are orthonormal, Bessel bound one.
+
+At `Re ρ ≤ 1`, every exact Hilbert realization violates every Bessel bound: for each `B`, some finite packet and test vector have analysis energy greater than `B‖x‖²`. Thus all frame, Riesz-basis, bounded-synthesis, and Gram-Schur-stable non-diagonal MSC completions are killed. Survivor must be non-Bessel singular/distributional; gauge-breaking alone is insufficient.
+
+Module: `formal/GaloisForLFunctions/RHTower/HedenmalmGammaSewnSquarefreeFisherBesselHilbertStabilityWall.lean`. Main theorems: `exists_mscPhysicalOverlapBesselHilbertRealization_iff`, `exists_besselViolation_of_re_le_one`, `strictRightXiZero_mscBesselHilbertStabilityWall`. Targeted build passed. Axioms only `propext`, `Classical.choice`, `Quot.sound`.

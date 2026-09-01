@@ -27,6 +27,9 @@ import GaloisForLFunctions.HilbertMetric
 
 open Lean Meta Elab Command
 
+-- Current umbrellas exceed Lean's default heartbeat budget during the environment-wide scan.
+set_option maxHeartbeats 1000000
+
 def isProj (n : Name) : Bool := (`GaloisForLFunctions).isPrefixOf n
 
 /-- `P (x : α) : Prop` has constant type `∀ x, Prop`; recognizing that shape needs no elaboration. -/
@@ -164,7 +167,7 @@ run_cmd liftTermElabM do
 never-concluded {s1.size}; ungrounded {s2.size}"
   logInfo m!"--- never concluded ---"
   for r in s1 do
-    logInfo m!"{r.1}  {r.2}   [{defMod.getD r.2 `_}] <- {consumers.getD r.2 #[]}"
+    logInfo m!"{r.1}  {r.2}   [{defMod.getD r.2 `_}]"
   logInfo m!"--- ungrounded (fixpoint) ---"
   for r in s2 do
-    logInfo m!"{r.1}  {r.2}   [{defMod.getD r.2 `_}] <- {consumers.getD r.2 #[]}; produced by {producerNames.getD r.2 #[]}"
+    logInfo m!"{r.1}  {r.2}   [{defMod.getD r.2 `_}]"

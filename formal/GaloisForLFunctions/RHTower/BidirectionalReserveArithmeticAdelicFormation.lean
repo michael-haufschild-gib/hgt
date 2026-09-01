@@ -4,12 +4,17 @@ import GaloisForLFunctions.RHTower.Sieve.TwistedMainTermMerge
 import Mathlib
 
 open Set
+open scoped Pointwise
 
 namespace GaloisForLFunctions.RHTower
 
 noncomputable section
 
 open GaloisForLFunctions.HTGeometry
+
+local instance (p : Nat.Primes) : Fact p.1.Prime := ⟨p.2⟩
+
+local notation "IntegralAdeles" => ccmRationalIntegralFiniteAdelesAddSubgroup
 
 /-!
 # Arithmetic and adelic realization of bidirectional reserve formation
@@ -43,6 +48,59 @@ theorem arithmeticPrimitiveObserver_activity_reconstruction (a b : ℕ) :
         (arithmeticPrimitiveObserver a b).2 * arithmeticReserve a b ^ 2 =
       arithmeticActivity a b := by
   exact RHTower.Sieve.reducedProduct_mul_gcd_sq a b
+
+/-- Removing the full common reserve leaves a primitive coprime observer. -/
+theorem arithmeticPrimitiveObserver_coprime {a b : ℕ} (ha : 0 < a) :
+    Nat.Coprime (arithmeticPrimitiveObserver a b).1
+      (arithmeticPrimitiveObserver a b).2 := by
+  simpa [arithmeticPrimitiveObserver] using
+    Nat.coprime_div_gcd_div_gcd (Nat.gcd_pos_of_pos_left b ha)
+
+/-- The coprime primitive observer and diagonal reserve factorization are unique. -/
+theorem arithmeticPrimitiveObserver_reserve_unique
+    {a b h a₀ b₀ : ℕ} (ha : 0 < a)
+    (hab : a = h * a₀) (hbb : b = h * b₀) (hc : Nat.Coprime a₀ b₀) :
+    h = arithmeticReserve a b ∧ (a₀, b₀) = arithmeticPrimitiveObserver a b := by
+  have hh : 0 < h := by
+    have hne : h ≠ 0 := by
+      intro hz
+      subst h
+      simp at hab
+      omega
+    exact Nat.pos_of_ne_zero hne
+  have hgcd : Nat.gcd a b = h := by
+    rw [hab, hbb, Nat.gcd_mul_left, hc.gcd_eq_one, mul_one]
+  constructor
+  · simpa [arithmeticReserve] using hgcd.symm
+  · change (a₀, b₀) = (a / Nat.gcd a b, b / Nat.gcd a b)
+    rw [hgcd, hab, hbb, Nat.mul_div_cancel_left _ hh,
+      Nat.mul_div_cancel_left _ hh]
+
+/-- Additive logarithmic form of primitive/reserve activity reconstruction. -/
+theorem arithmeticActivity_log_reconstruction
+    {a b : ℕ} (ha : 0 < a) (hb : 0 < b) :
+    Real.log (arithmeticActivity a b : ℝ) =
+      Real.log (((arithmeticPrimitiveObserver a b).1 *
+        (arithmeticPrimitiveObserver a b).2 : ℕ) : ℝ) +
+        2 * Real.log (arithmeticReserve a b : ℝ) := by
+  have hg : 0 < arithmeticReserve a b := Nat.gcd_pos_of_pos_left b ha
+  have hp₁ : 0 < (arithmeticPrimitiveObserver a b).1 := by
+    simp only [arithmeticPrimitiveObserver]
+    exact Nat.div_pos (Nat.gcd_le_left b ha) (Nat.gcd_pos_of_pos_left b ha)
+  have hp₂ : 0 < (arithmeticPrimitiveObserver a b).2 := by
+    simp only [arithmeticPrimitiveObserver]
+    exact Nat.div_pos (Nat.gcd_le_right a hb) (Nat.gcd_pos_of_pos_right a hb)
+  have hrecon := arithmeticPrimitiveObserver_activity_reconstruction a b
+  have hreconR :
+      ((((arithmeticPrimitiveObserver a b).1 *
+        (arithmeticPrimitiveObserver a b).2) * arithmeticReserve a b ^ 2 : ℕ) : ℝ) =
+        (arithmeticActivity a b : ℝ) := by
+    exact_mod_cast hrecon
+  rw [← hreconR, Nat.cast_mul, Real.log_mul]
+  · rw [Nat.cast_pow, Real.log_pow]
+    norm_num
+  · positivity
+  · positivity
 
 theorem arithmeticReserve_product_dvd_fusedReserve (a b c d : ℕ) :
     Nat.gcd a b * Nat.gcd c d ∣ Nat.gcd (a * c) (b * d) := by
@@ -90,6 +148,196 @@ theorem arithmeticPrimitiveObserver_fusion_conservation (a b c d : ℕ) :
       _ = (a * c) * (b * d) := by ring
       _ = P₃ * g₃ ^ 2 := h₃.symm
       _ = (P₃ * K ^ 2) * (g₁ * g₂) ^ 2 := by rw [← hK]; ring
+
+/-- The `p`-adic valuation of a positive gcd is the minimum of the two valuations. -/
+theorem padicValNat_gcd_eq_min
+    {p a b : ℕ} [Fact p.Prime] (ha : a ≠ 0) (hb : b ≠ 0) :
+    padicValNat p (Nat.gcd a b) = min (padicValNat p a) (padicValNat p b) := by
+  have h := DFunLike.congr_fun (Nat.factorization_gcd ha hb) p
+  simpa [Nat.factorization_def _ (Fact.out : p.Prime)] using h
+
+/-- Primewise reserve birth is the minimum transgression of valuation channels. -/
+theorem padicValNat_arithmeticReserveTransgression
+    {p a b c d : ℕ} [Fact p.Prime]
+    (ha : 0 < a) (hb : 0 < b) (hc : 0 < c) (hd : 0 < d) :
+    padicValNat p (arithmeticReserveTransgression a b c d) =
+      min (padicValNat p a + padicValNat p c)
+          (padicValNat p b + padicValNat p d) -
+        (min (padicValNat p a) (padicValNat p b) +
+          min (padicValNat p c) (padicValNat p d)) := by
+  rw [arithmeticReserveTransgression,
+    padicValNat.div_of_dvd (arithmeticReserve_product_dvd_fusedReserve a b c d),
+    padicValNat_gcd_eq_min (mul_ne_zero ha.ne' hc.ne') (mul_ne_zero hb.ne' hd.ne'),
+    padicValNat.mul ha.ne' hc.ne', padicValNat.mul hb.ne' hd.ne',
+    padicValNat.mul (Nat.gcd_pos_of_pos_left b ha).ne'
+      (Nat.gcd_pos_of_pos_left d hc).ne',
+    padicValNat_gcd_eq_min ha.ne' hb.ne', padicValNat_gcd_eq_min hc.ne' hd.ne']
+
+/-- Literal ordered-group form: every prime valuation of arithmetic reserve birth is the
+bidirectional reserve transgression. -/
+theorem padicValNat_arithmeticReserveTransgression_eq_transgression
+    {p a b c d : ℕ} [Fact p.Prime]
+    (ha : 0 < a) (hb : 0 < b) (hc : 0 < c) (hd : 0 < d) :
+    (padicValNat p (arithmeticReserveTransgression a b c d) : ℤ) =
+      BidirectionalFormation.transgression
+        ((padicValNat p a : ℤ), (padicValNat p b : ℤ))
+        ((padicValNat p c : ℤ), (padicValNat p d : ℤ)) := by
+  let first := min (padicValNat p a + padicValNat p c)
+    (padicValNat p b + padicValNat p d)
+  let second := min (padicValNat p a) (padicValNat p b) +
+    min (padicValNat p c) (padicValNat p d)
+  have hnat : padicValNat p (arithmeticReserveTransgression a b c d) =
+      first - second := padicValNat_arithmeticReserveTransgression ha hb hc hd
+  have hle : second ≤ first := min_add_min_le_min_add_add
+  have hcast : (padicValNat p (arithmeticReserveTransgression a b c d) : ℤ) =
+      (first : ℤ) - second := by
+    rw [← Nat.cast_sub hle]
+    exact_mod_cast hnat
+  rw [hcast]
+  simp only [first, second, Nat.cast_add, Nat.cast_min,
+    BidirectionalFormation.transgression, BidirectionalFormation.reserve,
+    Prod.fst_add, Prod.snd_add]
+  abel
+
+/-- Concrete additive coordinates on the integral finite adeles. -/
+noncomputable def ccmRationalIntegralFiniteAdelesPadicEquiv :
+    IntegralAdeles ≃+ ((p : Nat.Primes) → ℤ_[p]) :=
+  ccmRationalIntegralPiAddEquivIntegralFiniteAdeles.symm.trans
+    ccmRationalIntegralPiPadicEquiv
+
+/-- Multiplication by a nonzero natural is injective on the integral finite adeles. -/
+theorem ccmRationalIntegralFiniteAdeles_nsmul_injective
+    {n : ℕ} (hn : n ≠ 0) :
+    Function.Injective (fun x : IntegralAdeles => n • x) := by
+  intro x y h
+  apply ccmRationalIntegralFiniteAdelesPadicEquiv.injective
+  have hm := congrArg ccmRationalIntegralFiniteAdelesPadicEquiv h
+  have hinj : Function.Injective
+      (fun z : ((p : Nat.Primes) → ℤ_[p]) => n • z) :=
+    nsmul_right_injective hn
+  exact hinj (by simpa using hm)
+
+private theorem exists_lcm_nsmul
+    {a b : ℕ} (ha : 0 < a) {x : IntegralAdeles}
+    (hax : x ∈ (nsmulAddMonoidHom (α := IntegralAdeles) a).range)
+    (hbx : x ∈ (nsmulAddMonoidHom (α := IntegralAdeles) b).range) :
+    ∃ w : IntegralAdeles, Nat.lcm a b • w = x := by
+  obtain ⟨y, hy⟩ := hax
+  obtain ⟨z, hz⟩ := hbx
+  let g := Nat.gcd a b
+  let a₀ := a / g
+  let b₀ := b / g
+  have hg : 0 < g := Nat.gcd_pos_of_pos_left b ha
+  have hga : g * a₀ = a := Nat.mul_div_cancel' (Nat.gcd_dvd_left a b)
+  have hgb : g * b₀ = b := Nat.mul_div_cancel' (Nat.gcd_dvd_right a b)
+  have hc : Nat.Coprime a₀ b₀ := Nat.coprime_div_gcd_div_gcd hg
+  have hred : a₀ • y = b₀ • z := by
+    apply ccmRationalIntegralFiniteAdeles_nsmul_injective hg.ne'
+    simpa [nsmulAddMonoidHom, ← mul_nsmul, Nat.mul_comm, hga, hgb] using
+      hy.trans hz.symm
+  let w : IntegralAdeles := Nat.gcdA a₀ b₀ • z + Nat.gcdB a₀ b₀ • y
+  have hbez : (1 : ℤ) =
+      (a₀ : ℤ) * Nat.gcdA a₀ b₀ + (b₀ : ℤ) * Nat.gcdB a₀ b₀ := by
+    simpa [hc.gcd_eq_one] using Nat.gcd_eq_gcd_ab a₀ b₀
+  have hyw : b₀ • w = y := by
+    have hredZ : (a₀ : ℤ) • y = (b₀ : ℤ) • z := by simpa using hred
+    change (b₀ : ℤ) • w = y
+    calc
+      (b₀ : ℤ) • w = Nat.gcdA a₀ b₀ • ((b₀ : ℤ) • z) +
+          Nat.gcdB a₀ b₀ • ((b₀ : ℤ) • y) := by
+        dsimp [w]
+        module
+      _ = Nat.gcdA a₀ b₀ • ((a₀ : ℤ) • y) +
+          Nat.gcdB a₀ b₀ • ((b₀ : ℤ) • y) := by rw [← hredZ]
+      _ = ((a₀ : ℤ) * Nat.gcdA a₀ b₀ +
+          (b₀ : ℤ) * Nat.gcdB a₀ b₀) • y := by module
+      _ = y := by rw [← hbez]; simp
+  have hlcm : Nat.lcm a b = g * (a₀ * b₀) := by
+    apply Nat.eq_of_mul_eq_mul_left hg
+    calc
+      g * Nat.lcm a b = a * b := Nat.gcd_mul_lcm a b
+      _ = (g * a₀) * (g * b₀) := by rw [hga, hgb]
+      _ = g * (g * (a₀ * b₀)) := by ring
+  refine ⟨w, ?_⟩
+  rw [← hy]
+  change Nat.lcm a b • w = a • y
+  rw [← hyw, hlcm, ← hga]
+  simp only [mul_nsmul]
+  module
+
+private theorem lcm_nsmul_range_eq_inf
+    {a b : ℕ} (ha : 0 < a) :
+    (nsmulAddMonoidHom (α := IntegralAdeles) (Nat.lcm a b)).range =
+      (nsmulAddMonoidHom (α := IntegralAdeles) a).range ⊓
+        (nsmulAddMonoidHom (α := IntegralAdeles) b).range := by
+  ext x
+  constructor
+  · rintro ⟨w, rfl⟩
+    constructor
+    · obtain ⟨k, hk⟩ := Nat.dvd_lcm_left a b
+      exact ⟨k • w, by simp [nsmulAddMonoidHom, ← mul_nsmul, hk, Nat.mul_comm]⟩
+    · obtain ⟨k, hk⟩ := Nat.dvd_lcm_right a b
+      exact ⟨k • w, by simp [nsmulAddMonoidHom, ← mul_nsmul, hk, Nat.mul_comm]⟩
+  · rintro ⟨hax, hbx⟩
+    obtain ⟨w, hw⟩ := exists_lcm_nsmul ha hax hbx
+    exact ⟨w, by simpa [nsmulAddMonoidHom] using hw⟩
+
+/-- Actual integral finite-adele lattices intersect by least common multiple. -/
+theorem ccmRationalIntegralFiniteAdelesNSMulSet_lcm_eq_inter
+    {a b : ℕ} (ha : 0 < a) (_hb : 0 < b) :
+    ccmRationalIntegralFiniteAdelesNSMulSet (Nat.lcm a b) =
+      ccmRationalIntegralFiniteAdelesNSMulSet a ∩
+        ccmRationalIntegralFiniteAdelesNSMulSet b := by
+  rw [← ccmRationalIntegralFiniteAdelesSubtype_image_nsmulRange,
+    ← ccmRationalIntegralFiniteAdelesSubtype_image_nsmulRange,
+    ← ccmRationalIntegralFiniteAdelesSubtype_image_nsmulRange,
+    lcm_nsmul_range_eq_inf ha]
+  ext x
+  constructor
+  · rintro ⟨y, hy, rfl⟩
+    exact ⟨⟨y, hy.1, rfl⟩, ⟨y, hy.2, rfl⟩⟩
+  · rintro ⟨⟨y, hy, hyx⟩, ⟨z, hz, hzx⟩⟩
+    have hyz : y = z := Subtype.val_injective (hyx.trans hzx.symm)
+    subst z
+    exact ⟨y, ⟨hy, hz⟩, hyx⟩
+
+/-- Actual integral finite-adele lattices add by greatest common divisor. -/
+theorem ccmRationalIntegralFiniteAdelesNSMulSet_add_eq_gcd (a b : ℕ) :
+    ccmRationalIntegralFiniteAdelesNSMulSet a +
+        ccmRationalIntegralFiniteAdelesNSMulSet b =
+      ccmRationalIntegralFiniteAdelesNSMulSet (Nat.gcd a b) := by
+  ext x
+  constructor
+  · rintro ⟨u, ⟨y, rfl⟩, v, ⟨z, rfl⟩, rfl⟩
+    obtain ⟨a₀, ha₀⟩ := Nat.gcd_dvd_left a b
+    obtain ⟨b₀, hb₀⟩ := Nat.gcd_dvd_right a b
+    refine ⟨a₀ • y + b₀ • z, ?_⟩
+    change Nat.gcd a b • ((a₀ • y + b₀ • z).1 : CCMRationalFiniteAdele) =
+      a • (y.1 : CCMRationalFiniteAdele) + b • (z.1 : CCMRationalFiniteAdele)
+    have haZ : (a : ℤ) = (Nat.gcd a b : ℤ) * (a₀ : ℤ) := by exact_mod_cast ha₀
+    have hbZ : (b : ℤ) = (Nat.gcd a b : ℤ) * (b₀ : ℤ) := by exact_mod_cast hb₀
+    change (Nat.gcd a b : ℤ) •
+        ((a₀ : ℤ) • (y.1 : CCMRationalFiniteAdele) +
+          (b₀ : ℤ) • (z.1 : CCMRationalFiniteAdele)) =
+      (a : ℤ) • (y.1 : CCMRationalFiniteAdele) +
+        (b : ℤ) • (z.1 : CCMRationalFiniteAdele)
+    rw [haZ, hbZ]
+    module
+  · rintro ⟨z, rfl⟩
+    let za : IntegralAdeles := Nat.gcdA a b • z
+    let zb : IntegralAdeles := Nat.gcdB a b • z
+    refine ⟨a • (za.1 : CCMRationalFiniteAdele), ⟨za, rfl⟩,
+      b • (zb.1 : CCMRationalFiniteAdele), ⟨zb, rfl⟩, ?_⟩
+    have hbez := Nat.gcd_eq_gcd_ab a b
+    change a • (za.1 : CCMRationalFiniteAdele) +
+      b • (zb.1 : CCMRationalFiniteAdele) =
+        Nat.gcd a b • (z.1 : CCMRationalFiniteAdele)
+    dsimp [za, zb]
+    change (a : ℤ) • (Nat.gcdA a b • (z.1 : CCMRationalFiniteAdele)) +
+      (b : ℤ) • (Nat.gcdB a b • (z.1 : CCMRationalFiniteAdele)) =
+        (Nat.gcd a b : ℤ) • (z.1 : CCMRationalFiniteAdele)
+    rw [hbez]
+    module
 
 /-- Bounded multiplicative activity has finite unreduced arithmetic sublevels. -/
 theorem finite_arithmeticFormationSublevel (B : ℕ) :
@@ -236,6 +484,89 @@ theorem bidirectionalReserveArithmeticAdelicFormation_certificate :
     fun _ _ ha hb =>
       ⟨arithmeticHalfDensity_eq_inv_sqrt_primitiveProduct ha hb,
         arithmeticHalfDensity_eq_sqrt_adelicMassRatio ha hb⟩⟩
+
+/-- Zero-argument certificate for every structural, arithmetic, valuation, and actual-lattice law
+used by bidirectional reserve formation. All domain restrictions are quantified internally. -/
+theorem bidirectionalReserveArithmeticAdelicFormation_completion_certificate :
+    (∀ x : BidirectionalFormation ℝ,
+      BidirectionalFormation.activity x = BidirectionalFormation.visible x +
+        (2 : ℕ) • BidirectionalFormation.reserve x) ∧
+    (∀ x y : BidirectionalFormation ℝ,
+      0 ≤ BidirectionalFormation.transgression x y) ∧
+    (∀ x y z : BidirectionalFormation ℝ,
+      BidirectionalFormation.transgression x y +
+          BidirectionalFormation.transgression (x + y) z =
+        BidirectionalFormation.transgression y z +
+          BidirectionalFormation.transgression x (y + z)) ∧
+    (∀ x y : BidirectionalFormation ℝ,
+      BidirectionalFormation.transgression
+          (BidirectionalFormation.reflect x) (BidirectionalFormation.reflect y) =
+        BidirectionalFormation.transgression x y) ∧
+    (∀ x y : BidirectionalFormation ℝ,
+      0 ≤ BidirectionalFormation.current x →
+      0 ≤ BidirectionalFormation.current y →
+      BidirectionalFormation.transgression x y = 0) ∧
+    (∀ x y : BidirectionalFormation ℝ,
+      BidirectionalFormation.current x ≤ 0 →
+      BidirectionalFormation.current y ≤ 0 →
+      BidirectionalFormation.transgression x y = 0) ∧
+    (∀ x y : BidirectionalFormation ℝ,
+      0 ≤ BidirectionalFormation.current x →
+      BidirectionalFormation.current y ≤ 0 →
+      BidirectionalFormation.transgression x y =
+        min (BidirectionalFormation.visible x) (BidirectionalFormation.visible y)) ∧
+    (∀ x y : BidirectionalFormation ℝ,
+      BidirectionalFormation.current x ≤ 0 →
+      0 ≤ BidirectionalFormation.current y →
+      BidirectionalFormation.transgression x y =
+        min (BidirectionalFormation.visible x) (BidirectionalFormation.visible y)) ∧
+    (∀ x y : ℝ,
+      Real.exp (formationLogPotential (1 / 2) (1 / 2) (min x y) x y) =
+        Real.exp (-|x - y| / 2)) ∧
+    (∀ a b : ℕ, 0 < a →
+      Nat.Coprime (arithmeticPrimitiveObserver a b).1
+        (arithmeticPrimitiveObserver a b).2) ∧
+    (∀ a b h a₀ b₀ : ℕ,
+      0 < a → a = h * a₀ → b = h * b₀ → Nat.Coprime a₀ b₀ →
+      h = arithmeticReserve a b ∧
+        (a₀, b₀) = arithmeticPrimitiveObserver a b) ∧
+    (∀ a b : ℕ, 0 < a → 0 < b →
+      Real.log (arithmeticActivity a b : ℝ) =
+        Real.log (((arithmeticPrimitiveObserver a b).1 *
+          (arithmeticPrimitiveObserver a b).2 : ℕ) : ℝ) +
+          2 * Real.log (arithmeticReserve a b : ℝ)) ∧
+    (∀ (p : Nat.Primes) (a b c d : ℕ),
+      0 < a → 0 < b → 0 < c → 0 < d →
+      (padicValNat p.1 (arithmeticReserveTransgression a b c d) : ℤ) =
+        BidirectionalFormation.transgression
+          ((padicValNat p.1 a : ℤ), (padicValNat p.1 b : ℤ))
+          ((padicValNat p.1 c : ℤ), (padicValNat p.1 d : ℤ))) ∧
+    (∀ a b : ℕ, 0 < a → 0 < b →
+      ccmRationalIntegralFiniteAdelesNSMulSet (Nat.lcm a b) =
+        ccmRationalIntegralFiniteAdelesNSMulSet a ∩
+          ccmRationalIntegralFiniteAdelesNSMulSet b) ∧
+    (∀ a b : ℕ,
+      ccmRationalIntegralFiniteAdelesNSMulSet a +
+          ccmRationalIntegralFiniteAdelesNSMulSet b =
+        ccmRationalIntegralFiniteAdelesNSMulSet (Nat.gcd a b)) := by
+  exact ⟨BidirectionalFormation.activity_eq_visible_add_two_reserve,
+    BidirectionalFormation.transgression_nonneg,
+    BidirectionalFormation.transgression_cocycle,
+    BidirectionalFormation.transgression_reflect,
+    BidirectionalFormation.transgression_eq_zero_of_currents_nonneg,
+    BidirectionalFormation.transgression_eq_zero_of_currents_nonpos,
+    BidirectionalFormation.transgression_eq_min_visible_of_current_nonneg_nonpos,
+    BidirectionalFormation.transgression_eq_min_visible_of_current_nonpos_nonneg,
+    criticalFormationExpPotential_eq_exp_neg_visible_half,
+    fun _ _ ha => arithmeticPrimitiveObserver_coprime ha,
+    fun _ _ _ _ _ ha hab hbb hc =>
+      arithmeticPrimitiveObserver_reserve_unique ha hab hbb hc,
+    fun _ _ ha hb => arithmeticActivity_log_reconstruction ha hb,
+    fun _ _ _ _ _ ha hb hc hd =>
+      padicValNat_arithmeticReserveTransgression_eq_transgression ha hb hc hd,
+    fun _ _ ha hb =>
+      ccmRationalIntegralFiniteAdelesNSMulSet_lcm_eq_inter ha hb,
+    ccmRationalIntegralFiniteAdelesNSMulSet_add_eq_gcd⟩
 
 end
 

@@ -106,6 +106,14 @@ theorem shiftedEulerValuationDefect_eq_log_sub (n : ℕ) :
       Real.log n - Real.log (shiftedEulerSquarefreeRadical n) := by
   rw [shiftedEulerValuationDefect, log_shiftedEulerSquarefreeRadical]
 
+/-- Valuation excess is exactly the logarithm of the integer-to-radical quotient. -/
+theorem shiftedEulerValuationDefect_eq_log_div {n : ℕ} (hn : 0 < n) :
+    shiftedEulerValuationDefect n =
+      Real.log ((n : ℝ) / shiftedEulerSquarefreeRadical n) := by
+  rw [shiftedEulerValuationDefect_eq_log_sub,
+    Real.log_div (by exact_mod_cast hn.ne')
+      (by exact_mod_cast (Nat.ne_of_gt (shiftedEulerSquarefreeRadical_pos n)))]
+
 theorem shiftedEulerValuationDefect_nonneg {n : ℕ} (hn : 0 < n) :
     0 ≤ shiftedEulerValuationDefect n := by
   rw [shiftedEulerValuationDefect_eq_log_sub, sub_nonneg]
@@ -361,6 +369,51 @@ theorem squarefreeProjection_shiftedEulerCoeff_neg (n : ℕ) (ω : ℂ) :
   · simp only [if_neg hn]
     rw [ArithmeticFunction.moebius_eq_zero_of_not_squarefree hn]
     simp
+
+/-- Zero-argument arithmetic certificate for radical geometry, valuation depth, exact shifted-Euler
+reflection, polar reconstruction, unitary-boundary Möbius recovery, and squarefree projection. -/
+theorem shiftedEulerFormationReflectionPolarMechanics_completion_certificate :
+    (∀ n : ℕ, 0 < shiftedEulerSquarefreeRadical n ∧
+      shiftedEulerSquarefreeRadical n ∣ n ∧
+      Squarefree (shiftedEulerSquarefreeRadical n)) ∧
+    (∀ n : ℕ, 0 < n →
+      shiftedEulerValuationDefect n =
+          Real.log ((n : ℝ) / shiftedEulerSquarefreeRadical n) ∧
+      0 ≤ shiftedEulerValuationDefect n ∧
+      (shiftedEulerValuationDefect n = 0 ↔ Squarefree n)) ∧
+    (∀ (n : ℕ) (ω : ℂ),
+      shiftedEulerCoeff n (-ω) =
+        shiftedEulerReflectionMultiplier n ω * shiftedEulerCoeff n ω ∧
+      shiftedEulerReflectionMultiplier n (-ω) *
+        shiftedEulerReflectionMultiplier n ω = 1) ∧
+    (∀ (n : ℕ) (a : ℝ), a ≠ 0 →
+      shiftedEulerReflectionMultiplier n (a : ℂ) /
+            (‖shiftedEulerReflectionMultiplier n (a : ℂ)‖ : ℂ) =
+          (-1 : ℂ) ^ n.primeFactors.card ∧
+        shiftedEulerValuationDefect n =
+          -Real.log ‖shiftedEulerReflectionMultiplier n (a : ℂ)‖ / (2 * a)) ∧
+    (∀ (n : ℕ), 0 < n → ∀ (a : ℝ), 0 < a →
+      (‖shiftedEulerReflectionMultiplier n (a : ℂ)‖ = 1 ↔ Squarefree n) ∧
+      ((ArithmeticFunction.moebius n : ℤ) : ℂ) =
+        if ‖shiftedEulerReflectionMultiplier n (a : ℂ)‖ = 1 then
+          shiftedEulerReflectionMultiplier n (a : ℂ) /
+            (‖shiftedEulerReflectionMultiplier n (a : ℂ)‖ : ℂ)
+        else 0) ∧
+    (∀ (n : ℕ) (ω : ℂ),
+      (if Squarefree n then shiftedEulerCoeff n (-ω) else 0) =
+        ((ArithmeticFunction.moebius n : ℤ) : ℂ) * shiftedEulerCoeff n ω) := by
+  exact ⟨fun n => ⟨shiftedEulerSquarefreeRadical_pos n,
+      shiftedEulerSquarefreeRadical_dvd n,
+      shiftedEulerSquarefreeRadical_squarefree n⟩,
+    fun n hn => ⟨shiftedEulerValuationDefect_eq_log_div hn,
+      shiftedEulerValuationDefect_nonneg hn,
+      shiftedEulerValuationDefect_eq_zero_iff hn⟩,
+    fun n ω => ⟨shiftedEulerCoeff_neg n ω,
+      shiftedEulerReflectionMultiplier_neg_mul n ω⟩,
+    fun n a => shiftedEulerReflection_joint_reconstruction n,
+    fun n hn a ha => ⟨norm_shiftedEulerReflectionMultiplier_eq_one_iff hn ha,
+      moebius_cast_eq_shiftedEulerReflection_boundaryPhase hn ha⟩,
+    squarefreeProjection_shiftedEulerCoeff_neg⟩
 
 end
 

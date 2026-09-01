@@ -15,14 +15,14 @@ variable {K R C : Type u} [Field K] [CommRing R] [Nontrivial R] [Algebra K R]
   [Differential C] [DifferentialAlgebra C R]
 
 omit [Nontrivial R] in
-/-- The comparison-jet algebra supplies inverse-adjoint stability directly from tensor flip. -/
-theorem comparisonJetGaloisMonoid_detOne_inverse_adjoint
+/-- The comparison-jet algebra supplies inverse-adjoint stability directly from tensor flip, using
+only a chosen inverse determinant. -/
+theorem comparisonJetGaloisMonoid_detOne_inverse_adjoint_of_det_inverse
     (Y : Matrix (Fin 2) (Fin 2) R)
     (Z : Matrix (Fin 2) (Fin 2) (R ⊗[K] R))
     (w : R ⊗[K] R)
     (hZ : leftFundamental K Y * Z = rightFundamental K Y)
     (hw : Z.det * w = 1)
-    (hdet : Z.det ^ 2 = 1)
     (u : R) (hu : Y.det * u = 1)
     :
     ∀ g ∈ galoisMonoid (comparisonJetAlgebra (C := C) Z w) Z
@@ -51,8 +51,8 @@ theorem comparisonJetGaloisMonoid_detOne_inverse_adjoint
   let hEδ : ∀ e ∈ E, tensorSquareDerivation (K := K) e ∈ E :=
     fun e he => comparisonJetAlgebra_deriv_stable Z hw he
   intro g hg
-  obtain ⟨g', hg', hgg'⟩ := comparisonJetGaloisMonoid_exists_inverse_mem
-    Y u hu Z w hZ hw hdet hg
+  obtain ⟨g', hg', hgg'⟩ := comparisonJetGaloisMonoid_exists_inverse_mem_of_det_inverse
+    Y u hu Z w hZ hw hg
   refine ⟨g', hgg', ?_⟩
   apply conj_mem_matrixTangentM_vanishingIdeal
     (H := {h ∈ galoisMonoid E Z hZE (tensorDifferentialPoints E hEδ) | h.det = 1})
@@ -62,6 +62,40 @@ theorem comparisonJetGaloisMonoid_detOne_inverse_adjoint
   have hdetgg' : g.det * g'.det = 1 := by
     rw [← Matrix.det_mul, hgg', Matrix.det_one]
   rw [Matrix.det_mul, Matrix.det_mul, hh.2, mul_one, hdetgg']
+
+omit [Nontrivial R] in
+/-- The comparison-jet algebra supplies inverse-adjoint stability directly from tensor flip. -/
+theorem comparisonJetGaloisMonoid_detOne_inverse_adjoint
+    (Y : Matrix (Fin 2) (Fin 2) R)
+    (Z : Matrix (Fin 2) (Fin 2) (R ⊗[K] R))
+    (w : R ⊗[K] R)
+    (hZ : leftFundamental K Y * Z = rightFundamental K Y)
+    (hw : Z.det * w = 1)
+    (_hdet : Z.det ^ 2 = 1)
+    (u : R) (hu : Y.det * u = 1)
+    :
+    ∀ g ∈ galoisMonoid (comparisonJetAlgebra (C := C) Z w) Z
+        (fun i j => mem_comparisonJetAlgebra_entry Z w i j)
+        (tensorDifferentialPoints (comparisonJetAlgebra (C := C) Z w)
+          (fun _e he => comparisonJetAlgebra_deriv_stable Z hw he)),
+      ∃ g' : Matrix (Fin 2) (Fin 2) C, g * g' = 1 ∧
+        ∀ W ∈ matrixTangentM (matrixVanishingIdeal
+            {h ∈ galoisMonoid (comparisonJetAlgebra (C := C) Z w) Z
+                (fun i j => mem_comparisonJetAlgebra_entry Z w i j)
+                (tensorDifferentialPoints (comparisonJetAlgebra (C := C) Z w)
+                  (fun _e he => comparisonJetAlgebra_deriv_stable Z hw he)) |
+              h.det = 1})
+          (subset_matrixZeroSet_vanishingIdeal _
+            ⟨Submonoid.one_mem _, Matrix.det_one⟩),
+          g * W * g' ∈ matrixTangentM (matrixVanishingIdeal
+            {h ∈ galoisMonoid (comparisonJetAlgebra (C := C) Z w) Z
+                (fun i j => mem_comparisonJetAlgebra_entry Z w i j)
+                (tensorDifferentialPoints (comparisonJetAlgebra (C := C) Z w)
+                  (fun _e he => comparisonJetAlgebra_deriv_stable Z hw he)) |
+              h.det = 1})
+            (subset_matrixZeroSet_vanishingIdeal _
+              ⟨Submonoid.one_mem _, Matrix.det_one⟩) :=
+  comparisonJetGaloisMonoid_detOne_inverse_adjoint_of_det_inverse Y Z w hZ hw u hu
 
 end
 

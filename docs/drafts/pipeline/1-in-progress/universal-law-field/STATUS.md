@@ -1,157 +1,216 @@
 # Universal-law field: verified frontier
 
-Evidence: current Lean tree, `rh-current-frontier-map.md`, and
-`scripts/formal_tools.py research`. No conjecture is admitted here.
+Evidence: current Lean tree, `rh-current-frontier-map.md`, and fresh
+`scripts/formal_tools.py research` searches. No active conjecture.
 
-## Corpus-level mechanism
+## Field nucleus
 
-- Independent relabelable organ slots are nonpredictive:
-  `constitutiveSlotAction_transitive` and `constitutiveIntrinsicInvariant_constant`.
-- Full frontier types into one operation grammar:
+- Primitive is a law-forming process, not a route object:
   `mark -> form -> ghost -> dualize -> admit -> saturate -> conserve`.
-- Route labels reduce to shared producer gates: source order/orientation, cofinal admission,
-  singular coefficient-faithful landing, whole-state saturation, and nonlinear dynamics.
-- Local exactness is abundant. Global source selection is scarce. Additional receivers or
-  RH-equivalent phase descriptions do not change this frontier.
+- Independently relabelable route organs have no nonconstant intrinsic invariant. A field law must
+  constrain their common source process, not collect terminal certificates.
+- Formation is closure with ordered memory. Quotient and fusion fail to commute by an exact
+  nonnegative genesis term; zero genesis means one common gauge exists.
+- Recovery never creates selection. Injective, split, sufficient, and common-Markov recovery
+  preserve information and formation capital; strict improvement is kernel erasure.
+- Functional-equation packet lift is information- and capital-neutral.
+- Local exactness and global effectivity differ. Finite observers may all stabilize while defect
+  escapes through rank, depth, aperture, contact order, singular domain, or completion.
+- Coordinate-free global anomaly is the formation--completion commutator
+  `closure(Sat_phi(S)) \ Sat_phi(closure(S))`. Lean proves invariance under mutually bounded
+  generator dictionaries, monotonicity under equivariant observers, and exact preservation under
+  injective equivariant observers (`ConstitutiveFormationCompletionExchange`). This is the first
+  proved route-gauge invariant: bounded changes of formation grammar cannot change its boundary.
+- Finite formation depth commutes with completion; a nonempty commutator therefore certifies
+  genuinely unbounded formation depth. Infinite signatures can already create it at depth one.
 
-## Exact universal laws and one paper-only boundary
+## Common literal RH class
 
-- Formation exchange has ordered memory exactly when two source-generated formations fail to
-  commute; common repair is canonical (`formations_commute_iff_twoOrders_are_jointRepair`,
-  `failedExchange_is_orderedHistory`).
-- Observer loss is relational and conserved through fibres; common injective recovery and lifted
-  functional equation are information-neutral (`formationLiftKernel_klDiv_isometry`,
-  `liftedFunctionalEquation_informationNeutral`). They transport structure but do not select it.
-- Abstract source synchronization is already Lean-certified, not missing. One source displacement
-  produces all organ responses; pairwise differences are a complete cocycle invariant modulo the
-  diagonal source action; compatibility selects zero exactly when the response equalizer is
-  trivial (`sourceCoherentInterventionSynchronization_capstone`).
-- Formation-Laplacian properness is paper-proved but not yet Lean-certified: centered response
-  energy equals weighted pairwise disagreement, its kernel is the synchronization equalizer, and
-  global adaptive selection is equivalent to a positive lower frame bound/closed range. A fourth
-  organ reconstructible from the old packet cannot repair escape; it must intercept every old
-  adaptive null sequence.
-- This boundary is Lean-certified for literal summably weighted prime sampling. The formation map
-  is injective but Hilbert--Schmidt with nonclosed range; it has orthonormal adaptive escape, and no
-  compact or finite-dimensional boundary reporter repairs the lower bound
-  (`primeFormationOperator_exists_orthonormal_escape`,
-  `primeFormation_compactBoundary_no_positive_joint_lowerBound`).
-- Recurrent nonnegative repair action is rigid; summable action cannot contain cofinal replicas of
-  one nonzero transverse charge
-  (`collisionTransverseCharge_eq_zero_of_summableAction_of_cofinallyRecurrent`).
-- Finite histories carry augmentation filtration. Recovery pairs formation grade `I^r` with
-  observer difference `Delta^r`; functional-equation inversion acts by parity. Closed observation
-  may retain open lifted residue.
-- Formation number `N=(T-1)d/dT` measures grade. Hypertranscendence forces inverse-gauge escape
-  from finite `N`-stable states. Positive-grade Hilbert completion has compact resolvent
-  `(N+1)^-1`; this is abstract properness, not literal-source coercivity.
-- Bidirectional history satisfies `activity = visible + 2 reserve`; fusion converts lost visible
-  current into twice nonnegative reserve. Diagonal gauge plus reflection forces half-density
-  `1/2`; arithmetic gcd integrates this reserve and predicts adelic/Selberg weights.
-- Literal finite arithmetic fusion already exists across structurally different organs:
-  Boolean/Route-E capacity, Mass current, Hankel determinant, and recurrent QFI obey
-  `I_perp * ||j||^2 = 4*pi^2*det(H_1)` and `I_perp = 4D`.
-- Complete source resolution already has a bounded `ell1` codiagonal, exact
-  longitudinal/transverse split, and exact Xi recovery. The same label codiagonal is nonclosable
-  on canonical orthogonal `ell2` completion (`completeResolution_banachHilbert_sourceFusion_dichotomy`).
-- Every Green observer has a canonical unique primary/secondary split. Secondary part is precisely
-  boundary Green transgression and vanishes exactly when observer descends through orientation
-  trace (`greenObservation_traceFactorization_iff_secondary_eq_zero`).
-- Source-character selection is already Lean-certified. For actual nonzero complete-resolution
-  vector `x_rho`, any non-erasing consumer `T` intertwining centered source character with a
-  norm-conservative action `V` forces `Re rho = 1/2`
-  (`completeResolution_sourceCharacter_selection`). Quantitatively,
-  `|exp(2 Re rho - 1)-1| ||T x_rho||` is bounded by exact intertwining defect.
+- Each multiplicity-labelled Xi copy has signed horizontal charge `a = 2 Re(q) - 1`; reflection
+  sends `a` to `-a`.
+- Gamma/co-Poisson defect, Green fracture, prime-tail entropy, Gaussian Wronskian, Route-R
+  Bockstein, Gamma-six curvature, and multiplicity outer charge are exact readers of this class
+  (`SourceZeroHorizontalCarrier`, `RiemannSourceForcedHorizontalVanishingFrontier`).
+- Positive principal escape is the support quotient `1_(a != 0)`. Gamma-six jets, Möbius
+  prime-normal energy, adaptive Green codiagonal, and Hellinger polarization reconstruct it
+  (`XiFormationEscapePrincipalClassLaw`). This is genuine four-organ fusion, but still a receiver.
+- Literal arithmetic effectivity now realizes this class as a completion boundary. The finite
+  rational-adelic Meyer--Tate graph is dense, meets the singular vertical line only at zero, and
+  contains the completed Xi Green boundary exactly on the wall. Off-wall boundary birth is
+  equivalent to nonzero pre-divisor Roos `lim^1` and nonzero strict Gamma/Sonin transport;
+  universal absence is exactly RH
+  (`arithmeticFormationCompletionBoundaryFusion_law`).
+- Three-slot reflected defect is `2 a^2`; independent work is `2 N a^2`; bounded work is `a = 0`
+  (`XiFormationStratificationLaw`). Source properness is not derived.
+- Reflected Gram fusion is exact: with diagonal energy `D`, codiagonal response `T`, and reservoir
+  interaction `R = D - T²`, the two FE orientations are `K⁺ = D + R`, `K⁻ = D - R`, obey
+  `K⁺ + K⁻ = 2D` and `K⁺ - K⁻ = 2R`. For positive weights, universal positivity of
+  `K⁺` holds exactly through formation depth two; depth three is first separating formation.
+  Global three-channel positivity therefore implies RH
+  (`formationCompletePositivityReflectedGramFractureLaw`). This is proved and formalized, but its
+  source-derived positivity premise remains the producer gap.
+- Literal cyclic residue is `(mateGain - 1) * nonzeroXiJet`; its vanishing is critical-line
+  placement. Fixed source differential kills its own boundaries. Missing comparison is the
+  analytic-dagger minimal boundary versus that fixed residue.
+- Whole-corpus positive phase, joint source/Gamma naturality, fixed-source flatness, compact
+  recurrence descent, group-like ind--pro landing, and essential reciprocal formation matching are
+  each already RH-equivalent terminal formulations.
 
-## Literal shifted-Xi formation law
+## Unconditional source facts
 
-- Degree and mass already form an exact source plaquette:
-  `hasDerivAt_xiShiftedCanonicalAdmissionCumulativeJacobiFlux_degreeEdge_eq_sourceActionDifference`.
-  Calling this a new curvature law would be rediscovery.
-- In every positive block,
-  `2 * sourceAction = allDegreeConnectorEnergy + allDegreeSourceReserve`.
-  Reserve contains diagonal-curvature, base, interior-beta, and terminal-beta terms and is strictly
-  positive (`allDegreeConnectorEnergy_lt_two_mul_adaptiveMixedCompletedSourceAction`).
-- Newborn terminal channel is exact: `terminalCharge = 4(N+1) beta_(N+1)`. At every finite strict
-  contact it has a positive exact residue. Therefore former target “actual reserve vanishes” is
-  false.
-- Native source and newborn admission share same first Pade defect. Forced contact normalization
-  gives unit residue (`tendsto_xiShiftedStrictFrontierNativeContactUnitCharge`). This is local
-  normalization, not a global summable charge law.
-- False RH forces a parabolically confined cofinal cascade of strict contacts/nonintegrable source
-  walls. RH is exactly absence of that phase. This is source-side classification, not exclusion.
-- Actual positive cofinal blocks have divergent renormalized source action, yet
-  `routeUSparseParabolicCapitalEscape` proves current scalar capital laws remain compatible with
-  summable entry flux on a sparse quadratic schedule. Hence positivity, parabolic confinement,
-  action divergence, reserve positivity, and rung-spacing bounds do not jointly select RH.
+- Finite positive zeta valuation windows are differentially free; their relation ideal is `bot`
+  (`zetaPrimeValuationGhost_relationIdeal_eq_bot`). Finite tail-palette relations are only the
+  displayed affine pivot relations. No hidden finite arithmetic syzygy exists there.
+- Every finite Taylor subtraction of the actual prime-log clock has graph closure equal to the full
+  Hardy product. No nonzero bounded pair of functionals balances source and clock
+  (`primeFiniteTraceClock_graphClosure_eq_top`,
+  `primeFiniteTraceClock_no_bounded_scalar_balance`).
+- Calderon--Witt relation-kernel character is genuinely source-defined and nonzero. Existing RH
+  detection multiplies it by Xi Green fracture; transgression then scales linearly. This is
+  parametric pullback, not arithmetic selection.
+- Pre-Xi Euler third jet is a literal signed producer: negative, prime/depth labelled,
+  nonsummable with cubic coefficient `1/3`. Coefficientwise Wold subtraction leaves a positive
+  summable defect and finite negative natural-cutoff limit
+  (`sourceHorizontalEulerGammaCubicNegativeRenormalizedChannel_producer`). It supplies orientation,
+  not the required physical comparison.
+- Completed Xi endpoint curvature is explicit and `< 1/2`; total reflection-defect energy is
+  strictly below its fixed source budget (`xiEndpointDefectEnergy_lt_unconditional_source_factor`).
+  No source theorem forms arbitrarily many independent copies of the same defect under that one
+  budget.
+- Complete prime-labelled source packets, shell evolution, singular graphs, multiplicity-preserving
+  Xi landing, cyclic residue, source Noether annihilation, abstract global properness, and
+  multi-organ recovery already exist. Rebuilding them is regression.
+- Fixed Gamma-six shell formation is a genuine producer: reflection base-change defect has cofinal
+  limit `2 P(a)`, and every cutoff `N >= 2` vanishes exactly at `a = 0`. High shells are disjoint,
+  differentially independent, preserve the strict-right Xi divisor, and recover the same quadratic
+  ghost on every label.
+- The resulting constant-weight shell recovery is sequentially closable exactly at `a = 0`;
+  off-wall graph-null packets converge to zero while their lifted Ward response converges to a
+  nonzero opposite pair. This is the same zero stratum as Roos `lim^1` escape, formal ramification,
+  central holonomy, finite-action failure, and unbounded reflected formation work.
+- The pre-divisor transverse class embeds coefficient-faithfully in fixed-tail Roos `lim^1`, is
+  reflection-odd, and is nonzero exactly off the wall. Finite Euler cutoffs cannot map onto this
+  tower by levelwise-surjective commuting comparisons: any faithful comparison needs a relative or
+  mapping-cone component (`PreDivisorTransverseRamificationRoosTransgression`,
+  `EulerCutoffTailRoosStagewiseExhaustionNoGo`).
+- Shared-reservoir packets reconstruct every prime coefficient while their norm tends arbitrarily
+  small; off-wall reflection reverses inertia. Any target receiving all packets needs unbounded
+  negative capacity. One-port Stokes/Witt targets cannot receive both orientations.
 
-## Literal completed-source calibration
+## Hard firewalls
 
-- Prime-log Duhamel response is grade-one proper after commutator normalization. Grade two is
-  injective compact with dense nonclosed range; every finite diagonal prolongation has lower bound
-  zero. Diagonal repair requires stretched-exponential singular growth.
-- Euler completion and Mobius synthesis already form an exact pre-zero inverse pair. Internal
-  moments generate all jets before translation; physical cofaces form an `ell2(N;L2)` horizon.
-- Observer-jet reconstruction is exactly `mass + drift + second-boundary history`.
-  Harmonic-to-Riesz clock curvature is bounded by `13/(4*sqrt(j+1))`.
-- Literal estimate `|m1_M| + sum_j |A_M,j|/sqrt(j+1) = O(M)` implies RH. It is unproved.
-- Pre-compression Euler/Wold Jordan legs retain signed current and nonzero variation after scalar
-  compression vanishes. No theorem identifies their action with shifted-Xi contact charge or
-  all-degree reserve.
+1. **Free-scalar vacuity:** if all non-Xi data extend to arbitrary scalar `A`, an identity false at
+   some `A` does not become arithmetic after substituting an Xi-dependent scalar.
+2. **Projection dichotomy:** channelwise/projected naturality is unconditional; retaining cross-
+   channel leakage makes joint naturality exactly critical-line/RH.
+3. **Completion dichotomy:** finite packets are dense, but bounded same-completion annihilation is
+   zero or erases the singular vertical class.
+4. **Replica dichotomy:** shell/common-mode copies are not independent formation. Split recovery
+   cannot manufacture independent capital.
+5. **Gauge dichotomy:** covariant flatness holds at every grade; fixed-source untwisting is the
+   selection receiver.
+6. **Trace/positivity blindness:** total signed cancellation and commutator traces coexist with
+   nonzero paired curvature; positivity may erase orientation or overspend source budget.
+7. **Sparse escape:** divergent positive action can coexist with summable cost on a sparse cofinal
+   schedule. Pointwise or fixed-aperture capital is insufficient.
+8. **Fixed-operation firewall:** Big-Witt Frobenius is a ring endomorphism, commutes with functional-
+   equation reflection, and its complete cross-pair source has an exact off-diagonal compensator.
+   Frobenius/reflection exchange supplies no residual selector; only the singular one-leg readout
+   survives.
+9. **Fock firewall:** orthogonal prime histories improve convergence only by moving divisor-sensitive
+   scalarization outside the Hilbert space. Born/Fisher data are phase-blind; relevant codiagonal
+   graphs are nonclosable or maximally multivalued; regular Fock-vacuum existence is RH-equivalent.
+10. **Topology/bornology firewall:** full-product bornological lower bounds and bipolar provenance
+    topology already exist. A global barrelled-source producer is exactly RH. Neither a second
+    topology nor Banach--Steinhaus supplies independent arithmetic production.
+11. **Formation-graph fracture:** constant codiagonal recovery is base-gauge closable iff its
+    coefficient is zero, yet every coefficient is bounded after canonical `(N+1)` loading
+    (`formationGraphTopologyFracture`). Formation properness alone is nonselective.
+12. **Principal-ideal boundary:** the corrected Gamma-six source is weak trace class but not trace
+    class, with trace-class Wold coface and remainder. Ordinary prime-sparse residue and ordinary
+    commutator trace are blind. A valid transport must be non-diagonal and source-native; assuming
+    trace-ideal strict lift is already equivalent to neutral grade.
+13. **Heterogeneous-chart firewall:** Hedenmalm and Euler/Hardy relative admission spectra differ;
+    injective natural transport preserves admission, while every strict enlargement is exactly a
+    nonzero pointed class killed by the transport kernel
+    (`hedenmalmBorelRelativeAdmissionSpectrum_ne_eulerPrimitive`,
+    `relativeAdmissionSpectrum_target_eq_source_union_killed`). Routes are not ordinary local
+    gauges of one object. Singular transitions explain mismatch but do not force source vanishing.
+14. **First-loss firewall:** serial and parallel transport already have exact first-killing and
+    common-radical classifications (`PointedTransportFirstLossLaw`). This is a complete calculus of
+    observer-created zeroes, not a producer of a source zero.
+15. **Stable-invariant firewall:** balanced reflection can have zero Fredholm index with positive
+    escape, and identical endpoint defect data can hide split versus nonsplit carry
+    (`thetaKakutaniBalancedFredholmIndex_eq_zero`,
+    `constitutiveSameDefect_split_nonsplit_carry_holonomy`). K-theory, cyclic classes, indices, and
+    singular traces may transport a supplied source law but cannot reconstruct its ordered memory.
+16. **Amplification/recurrence firewall:** Adams, tensor, phase, and compact-recurrence amplifiers
+    already recover memory, sign, and unbounded response. Their literal global descent or missing
+    arithmetic weld is RH-equivalent. Amplification supplies witnesses, not the source effectivity
+    theorem that excludes them.
 
-## Killed identifications
+## Retired formulations
 
-- FE symmetry, positivity, flatness, common recovery, compact resolvent, finite packets, and local
-  unit charge are nonselective without a source-generated global comparison.
-- Positive scalarization can erase orientation; local positive states can coexist with global
-  obstruction. “Positivity is phase quotient” is chart-specific, not universal.
-- Mass-degree/Toda zero-curvature is already present and does not solve moving-degree
-  synchronization.
-- Contact spectral-flow/inertia is already present locally; global Noether/charge-free versions
-  such as `routeRPrimeGammaXiGlobalNoetherOrientationChargeFree` and
-  `fiveShiftEulerGammaWindowedGlobalKreinCharge = 0` are themselves RH-equivalent receivers.
-  Product-formula or index vocabulary does not derive their vanishing.
-- Normalized unit contacts cannot be summed for free: contact weight is degree/order dependent,
-  and corpus proves no finite total budget.
-- Generic recurrent-collision rigidity cannot apply until literal arithmetic contacts are proved
-  to be one recurrent history whose squared normalized charges equal a summable source action.
-- Total completion cancellation is too weak: resolved Green defects can be nonzero antidiagonal
-  pairs with identically zero codiagonal. Corpus proves completed smoothness and zero total Ward
-  anomaly coexist with a nonzero secondary relative character exactly off line
-  (`completedSmooth_codiagonalZero_but_relativeWardNonzero_iff`).
-- Properness is also too weak. Adaptive prime-normal resolved sectors are closed, conservative,
-  globally isometrically assembled, and their codiagonal has uniform lower modulus `3/4`; the
-  actual global Green record has zero codiagonal exactly under RH
-  (`adaptivePrimeNormalGlobalReflectedGreenRecord_codiagonal_eq_zero_iff_riemannHypothesis`).
-- Bounded label-blind consumers factor through scalar codiagonal and erase every reflection
-  displacement. Even label-sensitive uniformly Lipschitz observer families lose fixed spectral
-  separation as shell base moves cofinally (`sourceLabelBlind_factorization`,
-  `tendsto_uniformLipschitz_completeResolutionObserver_separation_zero`).
-- A tuple of topology, positivity, history, obstruction, and curvature is theatre by independent
-  slot theorem.
+- `ULF-SPCM-D1` three-slot singular face naturality: projected equality is unconditional; the
+  coefficient-faithful joint equality is RH itself.
+- Generic synchronization, properness, recurrence, group-like landing, shared ghosts, common
+  recovery, complete response, curved differential, Maurer--Cartan flatness, and source-character
+  intertwining: all already constructed abstractly or classified as receivers.
+- A finite differential relation, bounded cross-prime lift, trace-class repair, scalar codiagonal,
+  fixed affine compensation, or free-parameter transgression cannot be the producer.
+- An ordinary gauge atlas, killed-locus calculus, stable index, tensor/Adams amplification, or
+  compact recurrence reformulation cannot be the producer.
 
-## Exact audit target
+## Exact live boundary
 
-Missing law is **not synchronization, completion, properness, recovery, or abstract conservation**;
-all are already closed in at least one literal chart. Missing producer is a pre-zero arithmetic
-reason that the already-defined **secondary resolved character** obeys exact source descent.
+Needed law is a **pre-divisor arithmetic strictification** that forces the analytic-dagger minimal
+defect boundary into the nullspace of the fixed rational-adelic/cotangent residue while retaining
+every prime label, multiplicity, signed orientation, and nonzero Xi jet. Equivalently, it must force
+the multiplicity-exact source-zero horizontal carrier to vanish. New equivalent target: construct,
+before divisor specialization, a recovery whose Gram positivity survives FE reflection and every
+three-channel formation. The reflected Gram theorem then supplies selection; merely postulating
+this positivity is another RH receiver.
 
-Corpus exposes this in two equivalent-strength interfaces:
+All current boundedness words name one receiver, not distinct mechanisms: second-Cartier order,
+cofinal budget, Hodge flatness, modular unitarity, shell-recovery closability, finite transverse
+action, and formation properness each reduce to `a = 0`. Rational/integral Cartier and scale-zero
+landings are likewise RH-equivalent. A valid producer must therefore be defined before spectral
+specialization; any operation containing the divisor-dependent transfer eigenvalue is a fitted
+gauge, not a source law. It must also control the base/formation gauge comparison or retain an
+oriented adjacent-grade channel that canonical graph regularization cannot absorb.
 
-1. **character interface:** for actual complete source vector `x_rho`, construct fixed-source
-   `T,V` with `T x_rho != 0`, `||V y||=||y||`, and
-   `V(T x)=T(exp(2 Re rho-1) x)` on source-generated domain; certified selection law then forces
-   `Re rho=1/2`;
-2. **resolved interface:** derive arithmetic annihilation of actual global adaptive Green
-   codiagonal; certified theorem identifies universal annihilation with RH.
+Corpus forces its type:
 
-These are not new conjectures: they are exact open producer slots. Existing attempts show why a
-valid law must retain labels and signed relative character, use unbounded/cofinally increasing
-sensitivity or stronger topology, act before codiagonal completion, and be fixed by source rather
-than fitted at Xi divisors. Continuous same-completion coface annihilators, label-blind bounded
-maps, shared-ghost/naturality premises, total Ward cancellation, and compact repairs are already
-killed or RH-equivalent.
+- genuinely infinite-support: finite source windows are differentially free;
+- singular/noncontinuous: completed prime-log and Meyer--Tate graphs defeat bounded readers;
+- source-fixed before divisor inspection: no fitted gauge, zero location, or centered-rate input;
+- non-cartesian under free-scalar base change: otherwise parametric vacuity applies;
+- irreducibly cross-prime before projection: projected laws are blind, joint laws are receivers;
+- coefficient-faithful and non-erasing through recovery;
+- accompanied by a theorem in an independent fourth organ before invoking the certified RH
+  implication.
 
-Field progress now requires one corpus-native source operation that proves either interface and
-then predicts an independent third-organ identity. No new conjecture is admitted until search
-fixes that operation, its exact domain/topology, signed conservation equation, and RH implication.
+No conjecture is admissible until corpus search identifies an executable source operation meeting
+all clauses and supplies: source definition, exact finite conservation identity, declared
+completion/domain, coefficient-faithful landing, independent-organ prediction, and closed RH
+chain.
+
+The concrete bridge is now proved: actual Xi Green boundary birth in closure of the finite
+Meyer--Tate source graph is exactly the reflection-odd Roos `lim^1` class and the strict physical
+response. Remaining producer is not identification of the anomaly; it is an independent arithmetic
+effectivity mechanism forcing that completed boundary back into the finite source graph. Equivalently,
+compare the literal source action by a bounded dictionary with a presentation whose boundary
+vanishes for a non-RH reason. No such operation is yet identified, so no conjecture is active.
+
+Fourth-organ prediction is now proved. For every Xi copy, arithmetic formation--completion birth is
+equivalent to failure of faithful compact prime-circle descent; globally, finite boundary freedom
+and compact recurrence descent are the same law, equivalent to RH
+(`ArithmeticFormationRecurrenceDescentFusion`). This rules out treating singular completion and
+recurrence as separate routes.
+
+Producer search sharpened again: FE reflection and common recovery are information-neutral but
+permit nonzero two-cycles and signed cancellation. Selection therefore needs a source-fixed
+nonlinear phase quotient producing positive reflected curvature *before* compact descent, plus an
+independent arithmetic theorem that makes that positive current descend or remain finitely
+effective. Local positivity, reflection evenness, and exact radicals cannot do this; the corpus
+contains explicit off-line countermodels. No conjecture is active.

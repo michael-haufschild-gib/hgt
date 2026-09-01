@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.BesselOrderParameterizedDiffFG
 import GaloisForLFunctions.HTGeometry.ComparisonJetAlgebraDifferentialGeneration
 import GaloisForLFunctions.HTGeometry.ComparisonJetAlgebraDiffFG
 import GaloisForLFunctions.HTGeometry.ComparisonJetAlgebraFixed
+import GaloisForLFunctions.HTGeometry.GaloisMonoidRootDeterminant
 import GaloisForLFunctions.HTGeometry.TensorReducedGeneral
 import GaloisForLFunctions.HTGeometry.DifferentialAlgebraTower
 
@@ -118,6 +119,7 @@ structure BesselOrderParameterizedPVData.ComparisonJetData {s : ℝ}
     data.tensorSigmaEquiv (tensorSquareDerivation (K := RatFunc Constants) (Z i j)) =
         tensorSquareDerivation (K := RatFunc Constants) (Z i j)
   det_mul_inverse : Z.det * w = 1
+  det_sq_eq_one : Z.det ^ 2 = 1
   deriv_stable : ∀ e ∈ comparisonJetAlgebra (C := Constants) Z w,
     tensorSquareDerivation (K := RatFunc Constants) e ∈
       comparisonJetAlgebra (C := Constants) Z w
@@ -153,6 +155,29 @@ theorem BesselOrderParameterizedPVData.comparisonJetData_nonempty {s : ℝ}
   let w : data.TensorSquare := ↑(detUnit⁻¹)
   have hw : Z.det * w = 1 := by
     simp [w, ← hdetUnit]
+  have hleftSq :
+      (data.fundamentalMatrix.det ⊗ₜ[RatFunc Constants] (1 : data.PPVRing)) ^ 2 = 1 := by
+    have h := congrArg
+      (Algebra.TensorProduct.includeLeft :
+        data.PPVRing →ₐ[RatFunc Constants] data.TensorSquare).toRingHom
+      data.fundamental_det_sq_eq_one
+    rw [map_pow, map_one] at h
+    change
+      (data.fundamentalMatrix.det ⊗ₜ[RatFunc Constants] (1 : data.PPVRing)) ^ 2 = 1 at h
+    exact h
+  have hrightSq :
+      ((1 : data.PPVRing) ⊗ₜ[RatFunc Constants] data.fundamentalMatrix.det) ^ 2 = 1 := by
+    have h := congrArg
+      (Algebra.TensorProduct.includeRight :
+        data.PPVRing →ₐ[RatFunc Constants] data.TensorSquare).toRingHom
+      data.fundamental_det_sq_eq_one
+    rw [map_pow, map_one] at h
+    change
+      ((1 : data.PPVRing) ⊗ₜ[RatFunc Constants] data.fundamentalMatrix.det) ^ 2 = 1 at h
+    exact h
+  have hZdetSq : Z.det ^ 2 = 1 :=
+    comparisonMatrix_det_pow_eq_one_of_balanced data.fundamentalMatrix Z
+      data.fundamental_det_isUnit (hleftSq.trans hrightSq.symm) hZ
   have hstable : ∀ e ∈ comparisonJetAlgebra (C := Constants) Z w,
       tensorSquareDerivation (K := RatFunc Constants) e ∈
         comparisonJetAlgebra (C := Constants) Z w := by
@@ -199,6 +224,7 @@ theorem BesselOrderParameterizedPVData.comparisonJetData_nonempty {s : ℝ}
     fixed_entry := hZfixed
     fixed_entry_deriv := hZderivFixed
     det_mul_inverse := hw
+    det_sq_eq_one := hZdetSq
     deriv_stable := hstable
     fixed := hfixed
     tensor_generated := hgenerated

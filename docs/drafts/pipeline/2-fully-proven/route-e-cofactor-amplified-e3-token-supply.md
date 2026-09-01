@@ -785,3 +785,24 @@ builds (`9116/9116`, `9117/9117`, `9118/9118`), and all-ten-declaration axiom au
 
 Card remains Stage 2.  Remaining shared analytic work is Proposition-2.2 scale routing,
 amplification, and final all-interval Theorem 1.2 assembly.
+
+## Lean progress update (2026-08-31) — literal Lemma 3.4 and published refinement
+
+`Sieve/HeathBrownSparseMeanValueBounded.lean`,
+`HeathBrownSparseMeanValueBoundedRefined.lean`, and
+`HeathBrownSparseMeanValueLemma34.lean` now prove Matomäki--Teräväinen Lemma 3.4 in its literal
+one-line form.  Arbitrary complex sparse coefficients of modulus at most one, arbitrary real dense
+coefficients, reciprocal weights, `M ≤ m ≤ T`, `N < n ≤ 2N`, and the internally constructed
+maximum `max_n |a_n|` are retained.  The second capstone also deletes the mixed term under exactly
+the published alternative `N ≥ T^(2/3)` or `|M| ≤ T^(1/3)`; the first alternative uses the
+independent Heath--Brown square-root branch rather than an invalid absorption from the full bound.
+
+Empty supports, zero coefficient maximum, sign splitting, normalization, continuity, and
+`1 ≤ T < 2` are discharged.  Direct checks, targeted leaf builds (`9124/9124`, `9125/9125`), and
+the focused seventeen-declaration audit pass with only `[propext, Classical.choice, Quot.sound]`;
+the capstone is umbrella-wired without an umbrella build.
+
+Card remains Stage 2.  Heath--Brown/Matomäki--Teräväinen Lemma 3.4 is closed.  Remaining shared
+work is Lemma 3.5's genuine Type I and Type I/II analytic cancellation, subsequent
+routing/amplification, and final Theorem 1.2 assembly; Proposition 2.2 bookkeeping and Type II are
+already closed.

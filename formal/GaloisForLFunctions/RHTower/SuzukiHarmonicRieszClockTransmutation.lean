@@ -94,6 +94,20 @@ theorem hasSum_completedPrimePolarGammaHarmonicFormationCharge_zero :
   rw [hfun]
   exact hasSum_completedPrimePolarGammaHarmonicCharge_zero
 
+/-- The literal harmonic-clock formation charge is absolutely summable. -/
+theorem summable_completedPrimePolarGammaHarmonicFormationCharge :
+    Summable
+      (formationClockCharge completedPrimePolarGammaFormationDensity
+        completedPrimePolarGammaHarmonicClock) := by
+  have hfun :
+      formationClockCharge completedPrimePolarGammaFormationDensity
+          completedPrimePolarGammaHarmonicClock =
+        completedPrimePolarGammaHarmonicCharge := by
+    funext k
+    exact completedPrimePolarGammaHarmonicFormationCharge_eq k
+  rw [hfun]
+  exact summable_completedPrimePolarGammaHarmonicCharge
+
 /-- Square-root-clock response is exactly the literal completed Riesz moment. -/
 theorem completedPrimePolarGammaSquareRootFormationResponse_eq_rieszMoment
     {M : ℕ} (hM : 2 ≤ M) :
@@ -195,6 +209,41 @@ theorem exists_completedRieszNeutralDipole_escape (A : ℝ) :
   exists_neutralUnitDipole_escape_of_rate_not_bounded
     completedRieszHarmonicClockRatio
     not_completedRieszHarmonicClockRatio_uniformlyBounded A
+
+/-- Zero-argument literal certificate for harmonic closure, square-root response, unbounded
+relative rate, and fixed-mass neutral escape. -/
+theorem suzukiHarmonicRieszClockTransmutation_certificate :
+    Summable
+      (formationClockCharge completedPrimePolarGammaFormationDensity
+        completedPrimePolarGammaHarmonicClock) ∧
+    HasSum
+      (formationClockCharge completedPrimePolarGammaFormationDensity
+        completedPrimePolarGammaHarmonicClock) 0 ∧
+    (∀ M : ℕ, 2 ≤ M →
+      formationClockResponse completedPrimePolarGammaFormationDensity
+          completedPrimePolarGammaSquareRootClock (M - 2) =
+        mobiusDivisorSquareRootAbelMoment M) ∧
+    (∀ k : ℕ,
+      relativeFormationClockRate completedPrimePolarGammaHarmonicClock
+          completedPrimePolarGammaSquareRootClock k =
+        completedRieszHarmonicClockRatio k) ∧
+    (∀ k : ℕ, 3 ≤ k →
+      (k + 1 : ℕ) ≤ completedRieszHarmonicClockRatio k) ∧
+    (¬ FormationClockRateUniformlyBounded completedRieszHarmonicClockRatio) ∧
+    (∀ A : ℝ, ∃ n : ℕ,
+      (∑ k ∈ Finset.range (n + 2), formationNeutralUnitDipole (n + 1) k) = 0 ∧
+      (∑ k ∈ Finset.range (n + 2),
+        |formationNeutralUnitDipole (n + 1) k|) = 2 ∧
+      A < |formationClockTransmutedResponse
+        (formationNeutralUnitDipole (n + 1))
+        completedRieszHarmonicClockRatio (n + 1)|) := by
+  exact ⟨summable_completedPrimePolarGammaHarmonicFormationCharge,
+    hasSum_completedPrimePolarGammaHarmonicFormationCharge_zero,
+    fun _ hM => completedPrimePolarGammaSquareRootFormationResponse_eq_rieszMoment hM,
+    completedPrimePolarGamma_relativeClockRate_eq,
+    fun _ hk => completedRieszHarmonicClockRatio_ge_index hk,
+    not_completedRieszHarmonicClockRatio_uniformlyBounded,
+    exists_completedRieszNeutralDipole_escape⟩
 
 end
 

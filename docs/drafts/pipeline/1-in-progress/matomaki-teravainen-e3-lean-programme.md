@@ -2805,3 +2805,26 @@ umbrella-wired without an umbrella build.
 
 Remaining programme gate is Proposition-2.2 scale routing, amplification, and final
 Matomäki--Teräväinen Theorem 1.2 assembly.
+
+### Sparse large values, brick 63 — literal Matomäki--Teräväinen Lemma 3.4 (2026-08-31)
+
+`Sieve/HeathBrownSparseMeanValueBounded.lean` extends Theorem 4(iii) from circle-valued sparse
+phases to arbitrary complex coefficients of modulus at most one and discharges the compact range
+`1 ≤ T < 2`.  `HeathBrownSparseMeanValueBoundedRefined.lean` proves the published deletion of the
+mixed `R^(7/4)T^(3/4)` term under either `T^(2/3) ≤ N` or `R ≤ T^(1/3)`: the first regime uses
+Heath--Brown's independent square-root branch, while the second absorbs the mixed term directly.
+
+`Sieve/HeathBrownSparseMeanValueLemma34.lean` performs the exact one-line normalization.  It keeps
+both reciprocal weights, arbitrary real dense coefficients, the dyadic support `N < n ≤ 2N`, and
+the source support `M ≤ m ≤ T`; constructs `max_n |a_n|` internally; discharges empty support,
+zero maximum, sign splitting, continuity, and the range `1 ≤ T < 2`; and proves both (3.1) and its
+published mixed-term deletion refinement with explicit constants.  No coefficient-sign,
+nonemptiness, height-two, normalization, or analytic premise survives.
+
+Direct source checks and targeted leaf builds (`9124/9124`, `9125/9125`) pass.  The focused
+seventeen-declaration axiom audit reports only `[propext, Classical.choice, Quot.sound]`; the
+capstone is umbrella-wired without an umbrella build.
+
+Heath--Brown/Matomäki--Teräväinen Lemma 3.4 is therefore closed.  Remaining Theorem 1.2 work is
+the genuine Lemma 3.5 Type I and Type I/II analytic cancellation, its routing/amplification, and
+the final all-interval assembly; Proposition 2.2 bookkeeping and Type II are already closed.

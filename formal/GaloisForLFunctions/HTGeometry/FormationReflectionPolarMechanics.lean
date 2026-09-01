@@ -222,6 +222,37 @@ theorem formationReflectionMultiplier_div_norm_ofReal
     Complex.exp_ne_zero _
   field_simp
 
+/-- Exact phase-times-modulus polar decomposition on a real radial line. -/
+theorem formationReflectionMultiplier_ofReal
+    (weight : P → ℝ) (x : P →₀ ℕ) (a : ℝ) :
+    formationReflectionMultiplier weight x (a : ℂ) =
+      (-1 : ℂ) ^ x.support.card *
+        (Real.exp (-2 * a * formationMultiplicityDefect weight x) : ℂ) := by
+  rw [formationReflectionMultiplier]
+  congr 1
+  rw [Complex.ofReal_exp]
+  congr 1
+  simp
+
+/-- Logarithmic modulus reconstructs multiplicity depth at every nonzero radial parameter. -/
+theorem formationMultiplicityDefect_reconstruct
+    (weight : P → ℝ) (x : P →₀ ℕ) {a : ℝ} (ha : a ≠ 0) :
+    formationMultiplicityDefect weight x =
+      -Real.log ‖formationReflectionMultiplier weight x (a : ℂ)‖ / (2 * a) := by
+  rw [norm_formationReflectionMultiplier_ofReal, Real.log_exp]
+  field_simp
+
+/-- Full reflection jointly reconstructs support parity and multiplicity depth. -/
+theorem formationReflection_joint_reconstruction
+    (weight : P → ℝ) (x : P →₀ ℕ) {a : ℝ} (ha : a ≠ 0) :
+    formationReflectionMultiplier weight x (a : ℂ) /
+          (‖formationReflectionMultiplier weight x (a : ℂ)‖ : ℂ) =
+        (-1 : ℂ) ^ x.support.card ∧
+      formationMultiplicityDefect weight x =
+        -Real.log ‖formationReflectionMultiplier weight x (a : ℂ)‖ / (2 * a) :=
+  ⟨formationReflectionMultiplier_div_norm_ofReal weight x a,
+    formationMultiplicityDefect_reconstruct weight x ha⟩
+
 theorem norm_formationReflectionMultiplier_eq_one_iff
     {weight : P → ℝ} (x : P →₀ ℕ) (hweight : ∀ p ∈ x.support, 0 < weight p)
     {a : ℝ} (ha : 0 < a) :
@@ -254,6 +285,90 @@ theorem formationMobius_eq_reflection_boundaryPhase
       intro hunit
       exact hx ((norm_formationReflectionMultiplier_eq_one_iff x hweight ha).mp hunit)
     rw [formationMobius, if_neg hx, if_neg hnonunit]
+
+/-- Centered radial-branch ratio of a completed function. -/
+def formationCenteredReflectionRatio
+    (F : ℂ → ℂ) (ω s : ℂ) : ℂ :=
+  F (s - ω) / F (s + ω)
+
+/-- Functional-equation reflection exchanges the centered radial branches. -/
+theorem formationCenteredReflectionRatio_one_sub
+    (F : ℂ → ℂ) (hF : ∀ z, F (1 - z) = F z) (ω s : ℂ) :
+    formationCenteredReflectionRatio F ω (1 - s) =
+      formationCenteredReflectionRatio F (-ω) s := by
+  simp only [formationCenteredReflectionRatio, sub_neg_eq_add]
+  rw [show (1 - s) - ω = 1 - (s + ω) by ring,
+    show (1 - s) + ω = 1 - (s - ω) by ring,
+    hF (s + ω), hF (s - ω)]
+  rw [show s + -ω = s - ω by ring]
+
+/-- Radial branch exchange inverts the centered ratio, including zero values under totalized
+division. -/
+theorem formationCenteredReflectionRatio_neg
+    (F : ℂ → ℂ) (ω s : ℂ) :
+    formationCenteredReflectionRatio F (-ω) s =
+      (formationCenteredReflectionRatio F ω s)⁻¹ := by
+  simp only [formationCenteredReflectionRatio, sub_neg_eq_add]
+  rw [inv_div]
+  rw [show s + -ω = s - ω by ring]
+
+/-- Exact completed-function reflection law `R_ω(1-s)=R_{-ω}(s)=R_ω(s)⁻¹`. -/
+theorem formationCenteredReflectionRatio_conservation
+    (F : ℂ → ℂ) (hF : ∀ z, F (1 - z) = F z) (ω s : ℂ) :
+    formationCenteredReflectionRatio F ω (1 - s) =
+        formationCenteredReflectionRatio F (-ω) s ∧
+      formationCenteredReflectionRatio F (-ω) s =
+        (formationCenteredReflectionRatio F ω s)⁻¹ :=
+  ⟨formationCenteredReflectionRatio_one_sub F hF ω s,
+    formationCenteredReflectionRatio_neg F ω s⟩
+
+/-- Zero-argument certificate for support/depth fracture, full-packet reflection, involutive
+conservation, polar joint reconstruction, unitary-boundary Möbius recovery, and completed-function
+branch exchange. -/
+theorem formationReflectionPolarMechanics_completion_certificate :
+    (∀ (P : Type*) (weight : P → ℝ) (x : P →₀ ℕ),
+      (∀ p ∈ x.support, 0 ≤ weight p) →
+        0 ≤ formationMultiplicityDefect weight x) ∧
+    (∀ (P : Type*) (weight : P → ℝ) (x : P →₀ ℕ),
+      (∀ p ∈ x.support, 0 < weight p) →
+        (formationMultiplicityDefect weight x = 0 ↔ FormationSquarefree x)) ∧
+    (∀ (P : Type*) (weight : P → ℝ) (x : P →₀ ℕ) (ω : ℂ),
+      formationReflectionPacketCoefficient weight x (-ω) =
+        formationReflectionMultiplier weight x ω *
+          formationReflectionPacketCoefficient weight x ω) ∧
+    (∀ (P : Type*) (weight : P → ℝ) (x : P →₀ ℕ) (ω : ℂ),
+      formationReflectionMultiplier weight x (-ω) *
+        formationReflectionMultiplier weight x ω = 1) ∧
+    (∀ (P : Type*) (weight : P → ℝ) (x : P →₀ ℕ)
+      (a : ℝ), a ≠ 0 →
+      formationReflectionMultiplier weight x (a : ℂ) /
+            (‖formationReflectionMultiplier weight x (a : ℂ)‖ : ℂ) =
+          (-1 : ℂ) ^ x.support.card ∧
+        formationMultiplicityDefect weight x =
+          -Real.log ‖formationReflectionMultiplier weight x (a : ℂ)‖ / (2 * a)) ∧
+    (∀ (P : Type*) (weight : P → ℝ) (x : P →₀ ℕ) (a : ℝ),
+      (∀ p ∈ x.support, 0 < weight p) → 0 < a →
+        (‖formationReflectionMultiplier weight x (a : ℂ)‖ = 1 ↔
+          FormationSquarefree x) ∧
+        formationMobius x =
+          if ‖formationReflectionMultiplier weight x (a : ℂ)‖ = 1 then
+            formationReflectionMultiplier weight x (a : ℂ) /
+              (‖formationReflectionMultiplier weight x (a : ℂ)‖ : ℂ)
+          else 0) ∧
+    (∀ (F : ℂ → ℂ), (∀ z, F (1 - z) = F z) → ∀ ω s : ℂ,
+      formationCenteredReflectionRatio F ω (1 - s) =
+          formationCenteredReflectionRatio F (-ω) s ∧
+        formationCenteredReflectionRatio F (-ω) s =
+          (formationCenteredReflectionRatio F ω s)⁻¹) := by
+  exact ⟨fun _ weight x => formationMultiplicityDefect_nonneg x,
+    fun _ weight x => formationMultiplicityDefect_eq_zero_iff x,
+    fun _ => formationReflectionPacketCoefficient_neg,
+    fun _ => formationReflectionMultiplier_neg_mul,
+    fun _ weight x a => formationReflection_joint_reconstruction weight x,
+    fun _ weight x a hweight ha =>
+      ⟨norm_formationReflectionMultiplier_eq_one_iff x hweight ha,
+        formationMobius_eq_reflection_boundaryPhase x hweight ha⟩,
+    fun F hF ω s => formationCenteredReflectionRatio_conservation F hF ω s⟩
 
 end
 

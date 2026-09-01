@@ -183,6 +183,104 @@ theorem scaleInnovationGauge_eq_of_holonomy
         scaleInnovationGaugeHolonomy, ← ih'] at hh
       exact mul_right_cancel₀ heps hh
 
+/-- Constant local reflection: the functional-equation sign inside the full pointwise gauge. -/
+def scaleInnovationConstantReflection : ℕ → ℝ := fun _ => -1
+
+/-- Global reflection of every phase in a local gauge. -/
+def scaleInnovationGaugeGlobalReflect (epsilon : ℕ → ℝ) (N : ℕ) : ℝ :=
+  -epsilon N
+
+@[simp]
+theorem scaleInnovationConstantReflection_sq (N : ℕ) :
+    (scaleInnovationConstantReflection N) ^ 2 = 1 := by
+  simp [scaleInnovationConstantReflection]
+
+/-- Functional-equation reflection is exactly the constant `-1` subgroup action on currents. -/
+theorem scaleInnovationConstantReflection_current (r : ℕ → ℝ) :
+    scaleInnovationGaugeCurrent scaleInnovationConstantReflection r = fun N => -r N := by
+  funext N
+  simp [scaleInnovationGaugeCurrent, scaleInnovationConstantReflection]
+
+/-- Global reflection preserves admissibility of every pointwise sign gauge. -/
+theorem scaleInnovationGaugeGlobalReflect_sq
+    (epsilon : ℕ → ℝ) (hphase : ∀ N, (epsilon N) ^ 2 = 1) (N : ℕ) :
+    (scaleInnovationGaugeGlobalReflect epsilon N) ^ 2 = 1 := by
+  simp [scaleInnovationGaugeGlobalReflect, hphase]
+
+/-- Global functional-equation reflection changes every local phase sign but fixes all adjacent
+parallel-transport holonomies. -/
+theorem scaleInnovationGaugeHolonomy_globalReflect
+    (epsilon : ℕ → ℝ) (N : ℕ) :
+    scaleInnovationGaugeHolonomy (scaleInnovationGaugeGlobalReflect epsilon) N =
+      scaleInnovationGaugeHolonomy epsilon N := by
+  simp [scaleInnovationGaugeHolonomy, scaleInnovationGaugeGlobalReflect]
+
+/-- One anchor phase and the complete adjacent holonomy connection determine a sign gauge. -/
+theorem scaleInnovationGauge_ext_of_base_holonomy
+    (epsilon delta : ℕ → ℝ)
+    (hbase : epsilon 0 = delta 0)
+    (hphase : ∀ j, (epsilon j) ^ 2 = 1)
+    (hholonomy : ∀ j,
+      scaleInnovationGaugeHolonomy epsilon j =
+        scaleInnovationGaugeHolonomy delta j) :
+    epsilon = delta := by
+  funext n
+  exact scaleInnovationGauge_eq_of_holonomy epsilon delta (Nat.zero_le n) hbase
+    (fun j _ => hphase j) (fun j _ _ => hholonomy j)
+
+/-- Zero-argument certificate for anchored reconstruction, positive local-gauge quotient, strict
+one-site nonfaithfulness, and orientation connection. -/
+theorem scaleInnovationPhaseGauge_certificate :
+    (∀ (anchor : ℝ) (r : ℕ → ℝ) (N : ℕ), 2 ≤ N →
+      anchoredCesaroPotential (scaleInnovationHistory anchor r) N =
+        scaleInnovationPotential anchor r N ∧
+      anchoredCesaroHighPass (scaleInnovationHistory anchor r) N = r N) ∧
+    (∀ (a : ℕ → ℝ) (n : ℕ), 2 ≤ n →
+      scaleInnovationHistory (a 2) (anchoredCesaroHighPass a) n = a n) ∧
+    (∀ (anchor : ℝ) (r : ℕ → ℝ) (N : ℕ), 2 ≤ N →
+      anchoredCesaroVariance (scaleInnovationHistory anchor r) N =
+        scaleInnovationAction r N ∧
+      scaleInnovationAction r (N + 1) - scaleInnovationAction r N =
+        ((N + 1 : ℕ) : ℝ) / (N + 2 : ℕ) * (r N) ^ 2) ∧
+    (∀ (anchor : ℝ) (epsilon r : ℕ → ℝ) (N : ℕ),
+      (∀ k, (epsilon k) ^ 2 = 1) → 2 ≤ N →
+      anchoredCesaroHighPass
+          (scaleInnovationHistory anchor (scaleInnovationGaugeCurrent epsilon r)) N =
+        epsilon N * r N ∧
+      anchoredCesaroVariance
+          (scaleInnovationHistory anchor (scaleInnovationGaugeCurrent epsilon r)) N =
+        anchoredCesaroVariance (scaleInnovationHistory anchor r) N) ∧
+    (∀ (anchor : ℝ) (r : ℕ → ℝ) (m : ℕ), 2 ≤ m → r m ≠ 0 →
+      scaleInnovationHistory anchor
+          (scaleInnovationGaugeCurrent (scaleInnovationSingleFlip m) r) ≠
+        scaleInnovationHistory anchor r) ∧
+    (∀ (epsilon delta : ℕ → ℝ),
+      epsilon 0 = delta 0 →
+      (∀ j, (epsilon j) ^ 2 = 1) →
+      (∀ j, scaleInnovationGaugeHolonomy epsilon j =
+        scaleInnovationGaugeHolonomy delta j) →
+      epsilon = delta) ∧
+    (∀ r : ℕ → ℝ,
+      scaleInnovationGaugeCurrent scaleInnovationConstantReflection r =
+        fun N => -r N) ∧
+    (∀ (epsilon : ℕ → ℝ) (N : ℕ),
+      scaleInnovationGaugeHolonomy (scaleInnovationGaugeGlobalReflect epsilon) N =
+        scaleInnovationGaugeHolonomy epsilon N) := by
+  exact ⟨fun anchor r N hN =>
+      ⟨scaleInnovationHistory_potential anchor r hN,
+        scaleInnovationHistory_current anchor r hN⟩,
+    scaleInnovationHistory_reconstructs,
+    fun anchor r N hN =>
+      ⟨scaleInnovationHistory_variance_eq_action anchor r hN,
+        scaleInnovationAction_succ_sub r hN⟩,
+    fun anchor epsilon r N hphase hN =>
+      ⟨scaleInnovationGaugeCurrent_recovery anchor epsilon r hN,
+        scaleInnovationHistory_variance_gauge_invariant anchor epsilon r hphase hN⟩,
+    fun anchor r m hm hr => scaleInnovationSingleFlip_history_ne anchor r hm hr,
+    scaleInnovationGauge_ext_of_base_holonomy,
+    scaleInnovationConstantReflection_current,
+    scaleInnovationGaugeHolonomy_globalReflect⟩
+
 end
 
 end GaloisForLFunctions.HTGeometry

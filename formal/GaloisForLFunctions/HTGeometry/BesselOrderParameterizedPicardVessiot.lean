@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.BesselOrderDifferentialClosureObstruction
-import GaloisForLFunctions.HTGeometry.ParameterizedPicardVessiotSystem
+import GaloisForLFunctions.HTGeometry.ParameterizedPicardVessiotNormalizedDeterminant
 import GaloisForLFunctions.HTGeometry.ParameterizedPicardVessiotGeneration
 import GaloisForLFunctions.HTGeometry.RatFuncShiftDerivationCommute
 
@@ -37,6 +37,11 @@ theorem besselOrderCompanion_inverse_mul (s : ℝ) :
   fin_cases i <;> fin_cases j <;>
     simp [FieldShift.besselOrderCompanion, besselOrderCompanionInverse,
       Matrix.mul_apply, Fin.sum_univ_two]
+
+/-- The Bessel companion determinant has order two. -/
+theorem besselOrderCompanion_det_sq (s : ℝ) :
+    (FieldShift.besselOrderCompanion (slope s)).det ^ 2 = 1 := by
+  simp [FieldShift.besselOrderCompanion, Matrix.det_fin_two]
 
 /-- The concrete rational-coordinate shift commutes with the concrete total derivation. -/
 theorem besselRatShift_commutes (a : RatFunc Constants) :
@@ -100,6 +105,8 @@ structure BesselOrderParameterizedPVData (s : ℝ) where
         ((ppvFundamental (RatFunc Constants) 2).map (Ideal.Quotient.mk M))) i j
   fundamental_det_isUnit :
     IsUnit ((ppvFundamental (RatFunc Constants) 2).map (Ideal.Quotient.mk M)).det
+  fundamental_det_sq_eq_one :
+    ((ppvFundamental (RatFunc Constants) 2).map (Ideal.Quotient.mk M)).det ^ 2 = 1
   detInverse : (ppvLocalization (RatFunc Constants) 2) ⧸ M
   fundamental_det_mul_inverse :
     ((ppvFundamental (RatFunc Constants) 2).map (Ideal.Quotient.mk M)).det * detInverse = 1
@@ -124,11 +131,12 @@ retained. -/
 theorem besselOrder_parameterizedPicardVessiot_exists :
     ∀ s : ℝ, Nonempty (BesselOrderParameterizedPVData s) := by
   intro s
-  obtain ⟨M, hM, hMne, hM', hsimple, hcomm, hfund, hdet⟩ :=
-    exists_parameterizedPicardVessiot_system
+  obtain ⟨M, hM, hMne, hM', hsimple, hcomm, hfund, hdet, hdetSq⟩ :=
+    exists_parameterizedPicardVessiot_system_fundamentalDetSqOne
       FieldShift.ratShiftEquiv besselRatShift_commutes
       (FieldShift.besselOrderCompanion (slope s)) (besselOrderCompanionInverse s)
       (besselOrderCompanion_mul_inverse s) (besselOrderCompanion_inverse_mul s)
+      (besselOrderCompanion_det_sq s)
   have hbase : ∀ x : RatFunc Constants,
       sigmaQuotientEquiv (besselOrderPPVSigma s) M hM.1 hM'
           (Ideal.Quotient.mk M (ppvBaseMap (RatFunc Constants) 2 x)) =
@@ -156,6 +164,7 @@ theorem besselOrder_parameterizedPicardVessiot_exists :
     baseDerivCompatible := hbaseDeriv
     fundamental := hfund
     fundamental_det_isUnit := hdet
+    fundamental_det_sq_eq_one := hdetSq
     detInverse := Ideal.Quotient.mk M
       (IsLocalization.Away.invSelf
         ((jetFundamentalMatrix (RatFunc Constants) 2).det))

@@ -108,6 +108,48 @@ theorem suzukiCompletedFormationSingleFlip_history_ne
         (fun N => suzukiTransitionCoreCompletedAbelSource (N + 1)) := by
   exact scaleInnovationSingleFlip_history_ne _ _ hm hsource
 
+/-- Zero-argument literal Suzuki certificate: every admissible local phase lift preserves local
+production, accumulated variance, and conditioned aligned-Gamma energy while nonzero one-site
+innovations still distinguish the recovered histories. -/
+theorem suzukiFormationInnovationPhaseGauge_certificate :
+    (∀ (epsilon : ℕ → ℝ) (N : ℕ), 2 ≤ N →
+      anchoredCesaroHighPass
+          (suzukiCompletedFormationPhaseGaugeHistory epsilon) N =
+        epsilon N * suzukiTransitionCoreCompletedAbelSource (N + 1)) ∧
+    (∀ (epsilon : ℕ → ℝ), (∀ k, (epsilon k) ^ 2 = 1) →
+      ∀ N : ℕ, 2 ≤ N →
+      suzukiCompletedFormationPhaseGaugeEnergy epsilon N =
+        suzukiCompletedFormationInnovationEnergy N ∧
+      anchoredCesaroVariance
+          (suzukiCompletedFormationPhaseGaugeHistory epsilon) N =
+        suzukiCompletedFormationEnergy N) ∧
+    (∀ N : ℕ, 2 ≤ N →
+      scaleInnovationAction
+          (fun k => suzukiTransitionCoreCompletedAbelSource (k + 1)) N =
+        suzukiCompletedFormationEnergy N) ∧
+    (∀ (epsilon : ℕ → ℝ), (∀ k, (epsilon k) ^ 2 = 1) →
+      ∀ N : ℕ, 2 ≤ N →
+      unitRieszCoherentPrimeOutgoingCharge (N + 1) ≠ 0 →
+      suzukiTransitionCoreAlignedGammaCompletedEnergy (N + 1) =
+        (suzukiNaturalApertureTransitionCoreCauchyEnergy (N + 1) /
+            unitRieszCoherentPrimeOutgoingCharge (N + 1) ^ 2) *
+          (((N + 2 : ℕ) : ℝ) / (N + 1 : ℕ)) *
+          suzukiCompletedFormationPhaseGaugeEnergy epsilon N) ∧
+    (∀ m : ℕ, 2 ≤ m →
+      suzukiTransitionCoreCompletedAbelSource (m + 1) ≠ 0 →
+      suzukiCompletedFormationPhaseGaugeHistory (scaleInnovationSingleFlip m) ≠
+        scaleInnovationHistory (suzukiCompletedFormationInnovationHistory 2)
+          (fun N => suzukiTransitionCoreCompletedAbelSource (N + 1))) := by
+  exact ⟨suzukiCompletedFormationPhaseGaugeHistory_current,
+    fun epsilon hphase N hN =>
+      ⟨suzukiCompletedFormationPhaseGaugeEnergy_eq_innovationEnergy epsilon hphase hN,
+        suzukiCompletedFormationPhaseGaugeHistory_variance epsilon hphase hN⟩,
+    fun _ hN => suzukiCompletedAbelSource_action_eq_formationEnergy hN,
+    fun epsilon hphase N hN hcharge =>
+      suzukiTransitionCoreAlignedGammaCompletedEnergy_succ_eq_phaseGaugeEnergy
+        epsilon hphase hN hcharge,
+    fun _ hm hsource => suzukiCompletedFormationSingleFlip_history_ne hm hsource⟩
+
 end
 
 end GaloisForLFunctions.RHTower

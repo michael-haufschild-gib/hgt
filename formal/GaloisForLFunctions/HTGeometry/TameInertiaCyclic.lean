@@ -85,10 +85,11 @@ theorem residueRatioHom_apply {π : W} (hπ : Irreducible π)
     (hres : ∀ (h : Γ) (x : W), h • x - x ∈ IsLocalRing.maximalIdeal W) (g : Γ) :
     residueRatioHom hπ hres g = IsLocalRing.residue W (ratioElt π g) := rfl
 
-/-- **The ratio character is faithful.**  In residue characteristic zero it separates the elements
-of a finite group acting faithfully and trivially on the residue field. -/
-theorem residueRatioHom_injective [CharZero (IsLocalRing.ResidueField W)] [Finite Γ]
+/-- **The ratio character is faithful at an invertible group order.**  If the group order is
+nonzero in the residue field, the ratio character separates every element. -/
+theorem residueRatioHom_injective_of_natCard_ne_zero [Finite Γ]
     [FaithfulSMul Γ W] {π : W} (hπ : Irreducible π)
+    (hcardRes : ((Nat.card Γ : ℕ) : IsLocalRing.ResidueField W) ≠ 0)
     (hres : ∀ (h : Γ) (x : W), h • x - x ∈ IsLocalRing.maximalIdeal W) :
     Function.Injective (residueRatioHom hπ hres) := by
   rw [injective_iff_map_eq_one]
@@ -102,11 +103,29 @@ theorem residueRatioHom_injective [CharZero (IsLocalRing.ResidueField W)] [Finit
     refine ⟨c, ?_⟩
     rw [smul_eq_mul_ratioElt, show π * ratioElt π g - π = π * (ratioElt π g - 1) by ring, hc]
     ring
-  have hcard : 0 < Nat.card Γ := Nat.card_pos
   have hfix : g • π = π :=
-    smul_uniformizer_eq_self_of_sq_dvd hres hcard pow_card_eq_one' hπ h2
+    smul_uniformizer_eq_self_of_sq_dvd_of_natCast_ne_zero
+      hres pow_card_eq_one' hcardRes hπ h2
   refine FaithfulSMul.eq_of_smul_eq_smul (α := W) (fun x => ?_)
-  rw [smul_eq_self_of_smul_uniformizer_eq_self hres hcard pow_card_eq_one' hπ hfix x, one_smul]
+  rw [smul_eq_self_of_smul_uniformizer_eq_self_of_natCast_ne_zero
+    hres pow_card_eq_one' hcardRes hπ hfix x, one_smul]
+
+/-- Residue-characteristic-zero specialization of ratio-character faithfulness. -/
+theorem residueRatioHom_injective [CharZero (IsLocalRing.ResidueField W)] [Finite Γ]
+    [FaithfulSMul Γ W] {π : W} (hπ : Irreducible π)
+    (hres : ∀ (h : Γ) (x : W), h • x - x ∈ IsLocalRing.maximalIdeal W) :
+    Function.Injective (residueRatioHom hπ hres) :=
+  residueRatioHom_injective_of_natCard_ne_zero hπ
+    (Nat.cast_ne_zero.mpr (Nat.card_pos.ne')) hres
+
+/-- **Tame inertia is cyclic at an invertible group order.** -/
+theorem isCyclic_of_tame_of_natCard_ne_zero [Finite Γ] [FaithfulSMul Γ W]
+    {π : W} (hπ : Irreducible π)
+    (hcardRes : ((Nat.card Γ : ℕ) : IsLocalRing.ResidueField W) ≠ 0)
+    (hres : ∀ (h : Γ) (x : W), h • x - x ∈ IsLocalRing.maximalIdeal W) :
+    IsCyclic Γ :=
+  isCyclic_of_injective_ringHom (residueRatioHom hπ hres)
+    (residueRatioHom_injective_of_natCard_ne_zero hπ hcardRes hres)
 
 /-- **Tame inertia is cyclic.**  A finite group acting faithfully on a discrete valuation ring by
 ring automorphisms, trivially on a residue field of characteristic zero, is cyclic. -/

@@ -75,6 +75,22 @@ theorem exists_completedRieszClockInteractionAnomaly_escape (C : ℝ) :
       (completedRieszHarmonicClockRatio k - completedRieszHarmonicClockRatio 1)]
   exact lt_of_lt_of_le habs hdouble
 
+/-- Zero-argument certificate for the exact literal anomaly and its unconditional escape. -/
+theorem suzukiClockInteractionAnomaly_completion_certificate :
+    (∀ k : ℕ,
+      productAnchoredInteractionPart ℕ (Fin 2)
+          completedRieszClockOrganObservable
+          ⟨(k, 0), Set.mem_univ _⟩ =
+        (-2 : ℂ) *
+          ((completedRieszHarmonicClockRatio k : ℂ) -
+            (completedRieszHarmonicClockRatio 1 : ℂ))) ∧
+    (∀ C : ℝ, ∃ k : ℕ,
+      C < ‖productAnchoredInteractionPart ℕ (Fin 2)
+        completedRieszClockOrganObservable
+        ⟨(k, 0), Set.mem_univ _⟩‖) := by
+  exact ⟨completedRieszClockOrganObservable_interaction_zero,
+    exists_completedRieszClockInteractionAnomaly_escape⟩
+
 end
 
 end GaloisForLFunctions.RHTower

@@ -102,13 +102,43 @@ private theorem comparisonInverseDet_eq_det
     _ = Z.det * (Z.det * w) := by ring
     _ = Z.det := by rw [hw, mul_one]
 
-omit [Differential C] [DifferentialAlgebra C R] in
-/-- Every flipped comparison-matrix entry remains in the comparison-jet algebra. -/
-theorem comparisonMatrix_flip_entry_mem
+omit [Differential K] [Differential R] [DifferentialAlgebra K R] in
+/-- Flipping a chosen inverse comparison determinant recovers the comparison determinant.
+
+This uses only the two-sided inverse supplied by the comparison torsor; no finite-order
+determinant law is needed. -/
+theorem tensorFlip_inverseDet_eq_det
     (Y : Matrix (Fin 2) (Fin 2) R) (u : R) (hu : Y.det * u = 1)
     (Z : Matrix (Fin 2) (Fin 2) (R ⊗[K] R)) (w : R ⊗[K] R)
     (hZ : leftFundamental K Y * Z = rightFundamental K Y)
-    (hw : Z.det * w = 1) (hdet : Z.det ^ 2 = 1) (i j : Fin 2) :
+    (hw : Z.det * w = 1) :
+    Algebra.TensorProduct.comm K R R w = Z.det := by
+  let τ := Algebra.TensorProduct.comm K R R
+  let F := Z.map τ
+  have hinv := comparisonMatrix_flip_inverse Y u hu Z hZ
+  have hmapdet : τ Z.det = F.det := by
+    simpa [RingHom.mapMatrix_apply] using
+      (RingHom.map_det τ.toRingEquiv.toRingHom Z)
+  have hFw : F.det * τ w = 1 := by
+    have h := congrArg τ hw
+    simpa [map_mul, hmapdet] using h
+  have hFZ : F.det * Z.det = 1 := by
+    have h := congrArg Matrix.det hinv.2
+    simpa using h
+  calc
+    τ w = 1 * τ w := (one_mul _).symm
+    _ = (Z.det * F.det) * τ w := by rw [mul_comm Z.det F.det, hFZ]
+    _ = Z.det * (F.det * τ w) := by rw [mul_assoc]
+    _ = Z.det := by rw [hFw, mul_one]
+
+omit [Differential C] [DifferentialAlgebra C R] in
+/-- Every flipped comparison-matrix entry remains in the comparison-jet algebra, using only the
+chosen inverse comparison determinant. -/
+theorem comparisonMatrix_flip_entry_mem_of_det_inverse
+    (Y : Matrix (Fin 2) (Fin 2) R) (u : R) (hu : Y.det * u = 1)
+    (Z : Matrix (Fin 2) (Fin 2) (R ⊗[K] R)) (w : R ⊗[K] R)
+    (hZ : leftFundamental K Y * Z = rightFundamental K Y)
+    (hw : Z.det * w = 1) (i j : Fin 2) :
     Algebra.TensorProduct.comm K R R (Z i j) ∈ comparisonJetAlgebra (C := C) Z w := by
   classical
   let E := comparisonJetAlgebra (C := C) Z w
@@ -116,39 +146,48 @@ theorem comparisonMatrix_flip_entry_mem
   let F := Z.map τ
   have hinv := comparisonMatrix_flip_inverse Y u hu Z hZ
   have hZunit : IsUnit Z := ⟨⟨Z, F, hinv.1, hinv.2⟩, rfl⟩
-  have hwdet : w = Z.det := comparisonInverseDet_eq_det Z w hw hdet
-  let A : Matrix (Fin 2) (Fin 2) (R ⊗[K] R) := Z.det • Z.adjugate
+  let A : Matrix (Fin 2) (Fin 2) (R ⊗[K] R) := w • Z.adjugate
   have hZA : Z * A = 1 := by
     dsimp [A]
     rw [Matrix.mul_smul, Matrix.mul_adjugate, smul_smul]
-    rw [← pow_two, hdet, one_smul]
+    rw [mul_comm w Z.det, hw, one_smul]
   have hFA : F = A := by
     apply hZunit.mul_left_cancel
     rw [hinv.1, hZA]
-  have hdetmem : Z.det ∈ E := comparisonJetCore_le Z w (det_mem_comparisonJetCore Z)
+  have hwmem : w ∈ E := mem_comparisonJetAlgebra_w Z w
   have hadjmem : Z.adjugate i j ∈ E := by
     fin_cases i <;> fin_cases j <;>
       simp [Matrix.adjugate_fin_two, E, mem_comparisonJetAlgebra_entry]
   have hAmem : A i j ∈ E := by
     dsimp [A]
-    exact E.mul_mem hdetmem hadjmem
+    exact E.mul_mem hwmem hadjmem
   change F i j ∈ E
   rw [hFA]
   exact hAmem
 
-/-- The tensor flip preserves the comparison-jet algebra. -/
-theorem comparisonJetAlgebra_flip_mem
+omit [Differential C] [DifferentialAlgebra C R] in
+/-- Every flipped comparison-matrix entry remains in the comparison-jet algebra. -/
+theorem comparisonMatrix_flip_entry_mem
     (Y : Matrix (Fin 2) (Fin 2) R) (u : R) (hu : Y.det * u = 1)
     (Z : Matrix (Fin 2) (Fin 2) (R ⊗[K] R)) (w : R ⊗[K] R)
     (hZ : leftFundamental K Y * Z = rightFundamental K Y)
-    (hw : Z.det * w = 1) (hdet : Z.det ^ 2 = 1)
+    (hw : Z.det * w = 1) (_hdet : Z.det ^ 2 = 1) (i j : Fin 2) :
+    Algebra.TensorProduct.comm K R R (Z i j) ∈ comparisonJetAlgebra (C := C) Z w :=
+  comparisonMatrix_flip_entry_mem_of_det_inverse Y u hu Z w hZ hw i j
+
+/-- The tensor flip preserves the comparison-jet algebra using only a chosen inverse determinant. -/
+theorem comparisonJetAlgebra_flip_mem_of_det_inverse
+    (Y : Matrix (Fin 2) (Fin 2) R) (u : R) (hu : Y.det * u = 1)
+    (Z : Matrix (Fin 2) (Fin 2) (R ⊗[K] R)) (w : R ⊗[K] R)
+    (hZ : leftFundamental K Y * Z = rightFundamental K Y)
+    (hw : Z.det * w = 1)
     {e : R ⊗[K] R} (he : e ∈ comparisonJetAlgebra (C := C) Z w) :
     Algebra.TensorProduct.comm K R R e ∈ comparisonJetAlgebra (C := C) Z w := by
   classical
   let E := comparisonJetAlgebra (C := C) Z w
   let τ := Algebra.TensorProduct.comm K R R
   have hentry : ∀ i j, τ (Z i j) ∈ E :=
-    comparisonMatrix_flip_entry_mem Y u hu Z w hZ hw hdet
+    comparisonMatrix_flip_entry_mem_of_det_inverse Y u hu Z w hZ hw
   have hjets : ∀ k i j, τ (tensorJet (K := K) k (Z i j)) ∈ E := by
     intro k i j
     induction k with
@@ -156,16 +195,9 @@ theorem comparisonJetAlgebra_flip_mem
     | succ k hk =>
         rw [tensorJet_succ, tensorFlip_tensorSquareDerivation]
         exact comparisonJetAlgebra_deriv_stable Z hw hk
-  have hwdet : w = Z.det := comparisonInverseDet_eq_det Z w hw hdet
   have hwflip : τ w ∈ E := by
-    rw [hwdet]
-    have hmapdet : τ Z.det = (Z.map τ).det := by
-      simpa [RingHom.mapMatrix_apply] using
-        (RingHom.map_det τ.toRingEquiv.toRingHom Z)
-    rw [hmapdet, Matrix.det_fin_two]
-    exact E.sub_mem
-      (E.mul_mem (hentry 0 0) (hentry 1 1))
-      (E.mul_mem (hentry 0 1) (hentry 1 0))
+    rw [tensorFlip_inverseDet_eq_det Y u hu Z w hZ hw]
+    exact comparisonJetCore_le Z w (det_mem_comparisonJetCore Z)
   induction he using Algebra.adjoin_induction with
   | mem x hx =>
       rcases hx with hx | hx
@@ -195,15 +227,25 @@ theorem comparisonJetAlgebra_flip_mem
   | add x y _ _ hx hy => rw [map_add]; exact E.add_mem hx hy
   | mul x y _ _ hx hy => rw [map_mul]; exact E.mul_mem hx hy
 
-/-- Tensor flip restricted to the comparison-jet algebra. -/
-def comparisonJetAlgebraFlip
+/-- The tensor flip preserves the comparison-jet algebra. -/
+theorem comparisonJetAlgebra_flip_mem
     (Y : Matrix (Fin 2) (Fin 2) R) (u : R) (hu : Y.det * u = 1)
     (Z : Matrix (Fin 2) (Fin 2) (R ⊗[K] R)) (w : R ⊗[K] R)
     (hZ : leftFundamental K Y * Z = rightFundamental K Y)
-    (hw : Z.det * w = 1) (hdet : Z.det ^ 2 = 1) :
+    (hw : Z.det * w = 1) (_hdet : Z.det ^ 2 = 1)
+    {e : R ⊗[K] R} (he : e ∈ comparisonJetAlgebra (C := C) Z w) :
+    Algebra.TensorProduct.comm K R R e ∈ comparisonJetAlgebra (C := C) Z w :=
+  comparisonJetAlgebra_flip_mem_of_det_inverse Y u hu Z w hZ hw he
+
+/-- Tensor flip restricted to the comparison-jet algebra using only a chosen inverse determinant. -/
+def comparisonJetAlgebraFlipOfDetInverse
+    (Y : Matrix (Fin 2) (Fin 2) R) (u : R) (hu : Y.det * u = 1)
+    (Z : Matrix (Fin 2) (Fin 2) (R ⊗[K] R)) (w : R ⊗[K] R)
+    (hZ : leftFundamental K Y * Z = rightFundamental K Y)
+    (hw : Z.det * w = 1) :
     comparisonJetAlgebra (C := C) Z w →ₐ[C] comparisonJetAlgebra (C := C) Z w where
   toFun e := ⟨Algebra.TensorProduct.comm K R R e,
-    comparisonJetAlgebra_flip_mem Y u hu Z w hZ hw hdet e.2⟩
+    comparisonJetAlgebra_flip_mem_of_det_inverse Y u hu Z w hZ hw e.2⟩
   map_one' := Subtype.ext (map_one _)
   map_mul' x y := Subtype.ext (map_mul _ x.1 y.1)
   map_zero' := Subtype.ext (map_zero _)
@@ -230,12 +272,22 @@ def comparisonJetAlgebraFlip
               simp [Algebra.smul_def]
     rw [hbalanced, ← hc]
 
-/-- Composing a differential point with tensor flip gives the inverse Galois matrix. -/
-theorem exists_flip_inverse_tensorDifferentialPoint
+/-- Tensor flip restricted to the comparison-jet algebra. -/
+def comparisonJetAlgebraFlip
     (Y : Matrix (Fin 2) (Fin 2) R) (u : R) (hu : Y.det * u = 1)
     (Z : Matrix (Fin 2) (Fin 2) (R ⊗[K] R)) (w : R ⊗[K] R)
     (hZ : leftFundamental K Y * Z = rightFundamental K Y)
-    (hw : Z.det * w = 1) (hdet : Z.det ^ 2 = 1)
+    (hw : Z.det * w = 1) (_hdet : Z.det ^ 2 = 1) :
+    comparisonJetAlgebra (C := C) Z w →ₐ[C] comparisonJetAlgebra (C := C) Z w :=
+  comparisonJetAlgebraFlipOfDetInverse Y u hu Z w hZ hw
+
+/-- Composing a differential point with tensor flip gives the inverse Galois matrix, using only a
+chosen inverse comparison determinant. -/
+theorem exists_flip_inverse_tensorDifferentialPoint_of_det_inverse
+    (Y : Matrix (Fin 2) (Fin 2) R) (u : R) (hu : Y.det * u = 1)
+    (Z : Matrix (Fin 2) (Fin 2) (R ⊗[K] R)) (w : R ⊗[K] R)
+    (hZ : leftFundamental K Y * Z = rightFundamental K Y)
+    (hw : Z.det * w = 1)
     (hEδ : ∀ e ∈ comparisonJetAlgebra (C := C) Z w,
       tensorSquareDerivation (K := K) e ∈ comparisonJetAlgebra (C := C) Z w)
     (χ : comparisonJetAlgebra (C := C) Z w →ₐ[C] C)
@@ -247,7 +299,7 @@ theorem exists_flip_inverse_tensorDifferentialPoint
           (fun i j => mem_comparisonJetAlgebra_entry Z w i j) χ' = 1 := by
   classical
   let E := comparisonJetAlgebra (C := C) Z w
-  let τE := comparisonJetAlgebraFlip (K := K) (C := C) Y u hu Z w hZ hw hdet
+  let τE := comparisonJetAlgebraFlipOfDetInverse (K := K) (C := C) Y u hu Z w hZ hw
   let χ' : E →ₐ[C] C := χ.comp τE
   have hχ' : χ' ∈ tensorDifferentialPoints E hEδ := by
     intro e he
@@ -255,8 +307,8 @@ theorem exists_flip_inverse_tensorDifferentialPoint
       Differential.deriv (χ (τE ⟨e, he⟩))
     have hτD : τE ⟨tensorSquareDerivation (K := K) e, hEδ e he⟩ =
         ⟨tensorSquareDerivation (K := K) (Algebra.TensorProduct.comm K R R e),
-          hEδ _ (comparisonJetAlgebra_flip_mem (K := K) (C := C)
-            Y u hu Z w hZ hw hdet he)⟩ := by
+          hEδ _ (comparisonJetAlgebra_flip_mem_of_det_inverse (K := K) (C := C)
+            Y u hu Z w hZ hw he)⟩ := by
       apply Subtype.ext
       exact tensorFlip_tensorSquareDerivation e
     rw [hτD]
@@ -266,7 +318,7 @@ theorem exists_flip_inverse_tensorDifferentialPoint
   let ZE : Matrix (Fin 2) (Fin 2) E := Matrix.of fun i j => ⟨Z i j, hZE i j⟩
   let FE : Matrix (Fin 2) (Fin 2) E := Matrix.of fun i j =>
     ⟨Algebra.TensorProduct.comm K R R (Z i j),
-      comparisonMatrix_flip_entry_mem Y u hu Z w hZ hw hdet i j⟩
+      comparisonMatrix_flip_entry_mem_of_det_inverse Y u hu Z w hZ hw i j⟩
   have hZEF : ZE * FE = 1 := by
     apply Matrix.ext
     intro i j
@@ -285,12 +337,30 @@ theorem exists_flip_inverse_tensorDifferentialPoint
   rw [← Matrix.map_mul, hZEF]
   exact Matrix.map_one χ (map_zero χ) (map_one χ)
 
-/-- The comparison-jet Galois monoid is closed under inverses, directly by tensor flip. -/
-theorem comparisonJetGaloisMonoid_exists_inverse_mem
+/-- Composing a differential point with tensor flip gives the inverse Galois matrix. -/
+theorem exists_flip_inverse_tensorDifferentialPoint
     (Y : Matrix (Fin 2) (Fin 2) R) (u : R) (hu : Y.det * u = 1)
     (Z : Matrix (Fin 2) (Fin 2) (R ⊗[K] R)) (w : R ⊗[K] R)
     (hZ : leftFundamental K Y * Z = rightFundamental K Y)
-    (hw : Z.det * w = 1) (hdet : Z.det ^ 2 = 1)
+    (hw : Z.det * w = 1) (_hdet : Z.det ^ 2 = 1)
+    (hEδ : ∀ e ∈ comparisonJetAlgebra (C := C) Z w,
+      tensorSquareDerivation (K := K) e ∈ comparisonJetAlgebra (C := C) Z w)
+    (χ : comparisonJetAlgebra (C := C) Z w →ₐ[C] C)
+    (hχ : χ ∈ tensorDifferentialPoints (comparisonJetAlgebra (C := C) Z w) hEδ) :
+    ∃ χ' ∈ tensorDifferentialPoints (comparisonJetAlgebra (C := C) Z w) hEδ,
+      galoisMatrixAt (comparisonJetAlgebra (C := C) Z w) Z
+          (fun i j => mem_comparisonJetAlgebra_entry Z w i j) χ *
+        galoisMatrixAt (comparisonJetAlgebra (C := C) Z w) Z
+          (fun i j => mem_comparisonJetAlgebra_entry Z w i j) χ' = 1 :=
+  exists_flip_inverse_tensorDifferentialPoint_of_det_inverse Y u hu Z w hZ hw hEδ χ hχ
+
+/-- The comparison-jet Galois monoid is closed under inverses using only a chosen inverse
+comparison determinant. -/
+theorem comparisonJetGaloisMonoid_exists_inverse_mem_of_det_inverse
+    (Y : Matrix (Fin 2) (Fin 2) R) (u : R) (hu : Y.det * u = 1)
+    (Z : Matrix (Fin 2) (Fin 2) (R ⊗[K] R)) (w : R ⊗[K] R)
+    (hZ : leftFundamental K Y * Z = rightFundamental K Y)
+    (hw : Z.det * w = 1)
     {g : Matrix (Fin 2) (Fin 2) C}
     (hg : g ∈ galoisMonoid (comparisonJetAlgebra (C := C) Z w) Z
       (fun i j => mem_comparisonJetAlgebra_entry Z w i j)
@@ -310,8 +380,8 @@ theorem comparisonJetGaloisMonoid_exists_inverse_mem
   induction hg using Submonoid.closure_induction with
   | mem x hx =>
       obtain ⟨χ, hχ, rfl⟩ := hx
-      obtain ⟨χ', hχ', hinv⟩ := exists_flip_inverse_tensorDifferentialPoint
-        Y u hu Z w hZ hw hdet hEδ χ hχ
+      obtain ⟨χ', hχ', hinv⟩ := exists_flip_inverse_tensorDifferentialPoint_of_det_inverse
+        Y u hu Z w hZ hw hEδ χ hχ
       refine ⟨galoisMatrixAt E Z hZE χ', ?_, hinv⟩
       exact Submonoid.subset_closure ⟨χ', hχ', rfl⟩
   | one => exact ⟨1, Submonoid.one_mem _, one_mul 1⟩
@@ -323,6 +393,24 @@ theorem comparisonJetGaloisMonoid_exists_inverse_mem
         (x * y) * (y' * x') = x * (y * y') * x' := by simp only [mul_assoc]
         _ = x * x' := by rw [hyy', mul_one]
         _ = 1 := hxx'
+
+/-- The comparison-jet Galois monoid is closed under inverses, directly by tensor flip. -/
+theorem comparisonJetGaloisMonoid_exists_inverse_mem
+    (Y : Matrix (Fin 2) (Fin 2) R) (u : R) (hu : Y.det * u = 1)
+    (Z : Matrix (Fin 2) (Fin 2) (R ⊗[K] R)) (w : R ⊗[K] R)
+    (hZ : leftFundamental K Y * Z = rightFundamental K Y)
+    (hw : Z.det * w = 1) (_hdet : Z.det ^ 2 = 1)
+    {g : Matrix (Fin 2) (Fin 2) C}
+    (hg : g ∈ galoisMonoid (comparisonJetAlgebra (C := C) Z w) Z
+      (fun i j => mem_comparisonJetAlgebra_entry Z w i j)
+      (tensorDifferentialPoints (comparisonJetAlgebra (C := C) Z w)
+        (fun _e he => comparisonJetAlgebra_deriv_stable Z hw he))) :
+    ∃ g' ∈ galoisMonoid (comparisonJetAlgebra (C := C) Z w) Z
+        (fun i j => mem_comparisonJetAlgebra_entry Z w i j)
+        (tensorDifferentialPoints (comparisonJetAlgebra (C := C) Z w)
+          (fun _e he => comparisonJetAlgebra_deriv_stable Z hw he)),
+      g * g' = 1 :=
+  comparisonJetGaloisMonoid_exists_inverse_mem_of_det_inverse Y u hu Z w hZ hw hg
 
 end
 

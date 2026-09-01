@@ -64,6 +64,30 @@ theorem formationClockCharge_target_eq_transmuted
   rw [formationClockCharge, formationClockCharge, relativeFormationClockRate]
   field_simp [hedge]
 
+/-- A nondegenerate reference-clock charge reconstructs the underlying source density exactly. -/
+theorem formationClockSource_eq_charge_div_edge
+    (source clock : ℕ → ℝ) {k : ℕ}
+    (hedge : formationClockEdge clock k ≠ 0) :
+    source k = formationClockCharge source clock k / formationClockEdge clock k := by
+  rw [formationClockCharge]
+  field_simp [hedge]
+
+/-- Every nondegenerate clock edge has identity relative rate. -/
+theorem relativeFormationClockRate_self
+    (clock : ℕ → ℝ) {k : ℕ} (hedge : formationClockEdge clock k ≠ 0) :
+    relativeFormationClockRate clock clock k = 1 := by
+  rw [relativeFormationClockRate, div_self hedge]
+
+/-- Reversing a nondegenerate clock change gives the multiplicative inverse rate. -/
+theorem relativeFormationClockRate_mul_reverse
+    (clock₀ clock₁ : ℕ → ℝ) {k : ℕ}
+    (h₀ : formationClockEdge clock₀ k ≠ 0)
+    (h₁ : formationClockEdge clock₁ k ≠ 0) :
+    relativeFormationClockRate clock₀ clock₁ k *
+        relativeFormationClockRate clock₁ clock₀ k = 1 := by
+  rw [relativeFormationClockRate, relativeFormationClockRate]
+  field_simp [h₀, h₁]
+
 /-- Relative rates compose multiplicatively across three observer clocks. -/
 theorem relativeFormationClockRate_cocycle
     (clock₀ clock₁ clock₂ : ℕ → ℝ) {k : ℕ}
@@ -191,6 +215,55 @@ theorem exists_neutralUnitDipole_escape_of_rate_not_bounded
   obtain ⟨n, hn⟩ := hnot A
   exact ⟨n, formationNeutralUnitDipole_sum n,
     formationNeutralUnitDipole_l1Mass n, hn⟩
+
+/-- Zero-argument certificate for source reconstruction, clock groupoid, acceleration
+conservation, and the sharp neutral-dipole properness classification. -/
+theorem formationClockTransmutation_certificate :
+    (∀ (source sourceClock targetClock : ℕ → ℝ) (k : ℕ),
+      formationClockEdge sourceClock k ≠ 0 →
+      source k = formationClockCharge source sourceClock k /
+          formationClockEdge sourceClock k ∧
+      formationClockCharge source targetClock k =
+        formationClockCharge source sourceClock k *
+          relativeFormationClockRate sourceClock targetClock k) ∧
+    (∀ (clock : ℕ → ℝ) (k : ℕ), formationClockEdge clock k ≠ 0 →
+      relativeFormationClockRate clock clock k = 1) ∧
+    (∀ (clock₀ clock₁ : ℕ → ℝ) (k : ℕ),
+      formationClockEdge clock₀ k ≠ 0 → formationClockEdge clock₁ k ≠ 0 →
+      relativeFormationClockRate clock₀ clock₁ k *
+        relativeFormationClockRate clock₁ clock₀ k = 1) ∧
+    (∀ (clock₀ clock₁ clock₂ : ℕ → ℝ) (k : ℕ),
+      formationClockEdge clock₀ k ≠ 0 → formationClockEdge clock₁ k ≠ 0 →
+      relativeFormationClockRate clock₀ clock₂ k =
+        relativeFormationClockRate clock₀ clock₁ k *
+          relativeFormationClockRate clock₁ clock₂ k) ∧
+    (∀ (charge rate : ℕ → ℝ) (N : ℕ),
+      formationClockTransmutedResponse charge rate N =
+        formationChargePrefix charge N * rate N +
+          ∑ k ∈ Finset.range N,
+            formationChargePrefix charge k * (rate k - rate (k + 1))) ∧
+    (∀ rate : ℕ → ℝ,
+      FormationClockRateUniformlyBounded rate ↔
+        ∃ B : ℝ, ∀ n,
+          |formationClockTransmutedResponse
+            (formationNeutralUnitDipole (n + 1)) rate (n + 1)| ≤ B) ∧
+    (∀ (rate : ℕ → ℝ),
+      (¬ FormationClockRateUniformlyBounded rate) →
+      ∀ A : ℝ, ∃ n : ℕ,
+        (∑ k ∈ Finset.range (n + 2), formationNeutralUnitDipole (n + 1) k) = 0 ∧
+        (∑ k ∈ Finset.range (n + 2),
+          |formationNeutralUnitDipole (n + 1) k|) = 2 ∧
+        A < |formationClockTransmutedResponse
+          (formationNeutralUnitDipole (n + 1)) rate (n + 1)|) := by
+  exact ⟨fun source sourceClock targetClock k hedge =>
+      ⟨formationClockSource_eq_charge_div_edge source sourceClock hedge,
+        formationClockCharge_target_eq_transmuted source sourceClock targetClock hedge⟩,
+    relativeFormationClockRate_self,
+    relativeFormationClockRate_mul_reverse,
+    relativeFormationClockRate_cocycle,
+    formationClockTransmutedResponse_eq_boundary_add_acceleration,
+    formationClockRateUniformlyBounded_iff_dipoleResponses,
+    exists_neutralUnitDipole_escape_of_rate_not_bounded⟩
 
 end
 

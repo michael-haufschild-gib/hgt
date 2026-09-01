@@ -168,6 +168,108 @@ theorem liftedAnchoredColumnProbe_mem_marginal
   simp only [liftedAnchoredColumnProbe]
   rw [hxy]
 
+/-- Uniform boundedness of a clock after quotienting by its constant anchor value. -/
+def ObserverClockAnchoredContrastUniformlyBounded
+    {A : Type*} [One A] (rate : A → ℂ) : Prop :=
+  ∃ C : ℝ, ∀ a, ‖rate a - rate 1‖ ≤ C
+
+/-- Uniform boundedness of the anomaly created from one fixed marginal column probe. -/
+def ObserverClockProbeAnomalyUniformlyBounded
+    (A B : Type*) [One A] [One B] [DecidableEq B]
+    (b₁ : B) (rate : A → ℂ) : Prop :=
+  ∃ C : ℝ, ∀ x : FullValueSubtype (A × B),
+    ‖observerClockInteractionAnomaly A B rate
+      (liftedAnchoredColumnProbe A B b₁) x‖ ≤ C
+
+/-- Pointwise anomaly of the fixed marginal probe is clock contrast times probe contrast. -/
+theorem observerClockInteractionAnomaly_liftedProbe
+    (A B : Type*) [One A] [One B] [DecidableEq B]
+    (b₁ : B) (rate : A → ℂ) (x : FullValueSubtype (A × B)) :
+    observerClockInteractionAnomaly A B rate
+        (liftedAnchoredColumnProbe A B b₁) x =
+      (rate x.1.1 - rate 1) *
+        (anchoredColumnProbe b₁ x.1.2 - anchoredColumnProbe b₁ 1) := by
+  change productAnchoredInteractionPart A B
+      (separatedClockOrganObservable rate (anchoredColumnProbe b₁)) x = _
+  exact productAnchoredInteractionPart_separatedClockOrganObservable
+    A B rate (anchoredColumnProbe b₁) x
+
+/-- The selected column reads the anchored clock contrast exactly, with no loss factor. -/
+theorem observerClockInteractionAnomaly_liftedProbe_at_selected
+    (A B : Type*) [One A] [One B] [DecidableEq B]
+    (b₁ : B) (hb₁ : b₁ ≠ 1) (rate : A → ℂ) (a : A) :
+    observerClockInteractionAnomaly A B rate
+        (liftedAnchoredColumnProbe A B b₁)
+        ⟨(a, b₁), Set.mem_univ _⟩ =
+      rate a - rate 1 := by
+  have hone : (1 : B) ≠ b₁ := Ne.symm hb₁
+  rw [observerClockInteractionAnomaly_liftedProbe]
+  simp [anchoredColumnProbe, hone]
+
+/-- Exact fixed-probe properness law: its anomaly is uniformly bounded precisely when the
+anchored clock contrast is uniformly bounded. -/
+theorem observerClockProbeAnomalyUniformlyBounded_iff
+    (A B : Type*) [One A] [One B] [DecidableEq B]
+    (b₁ : B) (hb₁ : b₁ ≠ 1) (rate : A → ℂ) :
+    ObserverClockProbeAnomalyUniformlyBounded A B b₁ rate ↔
+      ObserverClockAnchoredContrastUniformlyBounded rate := by
+  constructor
+  · rintro ⟨C, hC⟩
+    refine ⟨C, fun a => ?_⟩
+    rw [← observerClockInteractionAnomaly_liftedProbe_at_selected
+      A B b₁ hb₁ rate a]
+    exact hC ⟨(a, b₁), Set.mem_univ _⟩
+  · rintro ⟨C, hC⟩
+    have hC0 : 0 ≤ C := by simpa using hC 1
+    refine ⟨C, fun x => ?_⟩
+    have hone : (1 : B) ≠ b₁ := Ne.symm hb₁
+    rw [observerClockInteractionAnomaly_liftedProbe]
+    by_cases hx : x.1.2 = b₁
+    · simpa [anchoredColumnProbe, hx, hone] using hC x.1.1
+    · simp [anchoredColumnProbe, hx, hone, hC0]
+
+/-- Escape of the fixed-probe anomaly is exactly escape of the anchored clock contrast. -/
+theorem observerClockProbeAnomaly_escapes_iff
+    (A B : Type*) [One A] [One B] [DecidableEq B]
+    (b₁ : B) (hb₁ : b₁ ≠ 1) (rate : A → ℂ) :
+    (∀ C : ℝ, ∃ x : FullValueSubtype (A × B),
+      C < ‖observerClockInteractionAnomaly A B rate
+        (liftedAnchoredColumnProbe A B b₁) x‖) ↔
+      ∀ C : ℝ, ∃ a : A, C < ‖rate a - rate 1‖ := by
+  have h := not_congr
+    (observerClockProbeAnomalyUniformlyBounded_iff
+      A B b₁ hb₁ rate)
+  simpa only [ObserverClockProbeAnomalyUniformlyBounded,
+    ObserverClockAnchoredContrastUniformlyBounded,
+    not_exists, not_forall, not_le] using h
+
+/-- Subtracting the fixed anchor preserves and reflects uniform boundedness of a clock. -/
+theorem observerClockRateUniformlyBounded_iff_anchoredContrast
+    (A : Type*) [One A] (rate : A → ℂ) :
+    (∃ C : ℝ, ∀ a, ‖rate a‖ ≤ C) ↔
+      ObserverClockAnchoredContrastUniformlyBounded rate := by
+  constructor
+  · rintro ⟨C, hC⟩
+    refine ⟨2 * C, fun a => ?_⟩
+    exact (norm_sub_le (rate a) (rate 1)).trans (by
+      linarith [hC a, hC 1])
+  · rintro ⟨C, hC⟩
+    refine ⟨C + ‖rate 1‖, fun a => ?_⟩
+    calc
+      ‖rate a‖ = ‖(rate a - rate 1) + rate 1‖ := by ring_nf
+      _ ≤ ‖rate a - rate 1‖ + ‖rate 1‖ := norm_add_le _ _
+      _ ≤ C + ‖rate 1‖ := by linarith [hC a]
+
+/-- The fixed marginal probe is bounded exactly for bounded clocks. -/
+theorem observerClockProbeAnomalyUniformlyBounded_iff_rateUniformlyBounded
+    (A B : Type*) [One A] [One B] [DecidableEq B]
+    (b₁ : B) (hb₁ : b₁ ≠ 1) (rate : A → ℂ) :
+    ObserverClockProbeAnomalyUniformlyBounded A B b₁ rate ↔
+      ∃ C : ℝ, ∀ a, ‖rate a‖ ≤ C := by
+  exact (observerClockProbeAnomalyUniformlyBounded_iff
+    A B b₁ hb₁ rate).trans
+      (observerClockRateUniformlyBounded_iff_anchoredContrast A rate).symm
+
 /-- Exact multiplier-algebra classification: only scalar clocks preserve all marginals. -/
 theorem productMarginalClockStable_iff_anchoredConstant
     (A B : Type*) [One A] [One B] [DecidableEq B]
@@ -281,6 +383,62 @@ theorem finTwo_clock_interaction_anomaly_zero
   rw [productAnchoredInteractionPart_separatedClockOrganObservable]
   simp
   ring
+
+/-- Zero-argument certificate for exact marginal decomposition, multiplier descent,
+clock reconstruction modulo constants, and fixed-probe properness. -/
+theorem observerClockInteractionAnomaly_completion_certificate :
+    (∀ (A B : Type*) [One A] [One B]
+      (f : FullValueSubtype (A × B) → ℂ),
+      f = productRowPart A B f + productColumnPart A B f +
+          productAnchoredInteractionPart A B f ∧
+      (f ∈ productMarginalObservableSubmodule A B ↔
+        productAnchoredInteractionPart A B f = 0)) ∧
+    (∀ (A B : Type*) [One A] [One B]
+      (rate : A → ℂ) (organ : B → ℂ)
+      (x : FullValueSubtype (A × B)),
+      productAnchoredInteractionPart A B
+          (separatedClockOrganObservable rate organ) x =
+        (rate x.1.1 - rate 1) * (organ x.1.2 - organ 1)) ∧
+    (∀ (A B : Type*) [One A] [One B]
+      (rate : A → ℂ) (organ : B → ℂ),
+      separatedClockOrganObservable rate organ ∈
+          productMarginalObservableSubmodule A B ↔
+        (∀ a, rate a = rate 1) ∨ (∀ b, organ b = organ 1)) ∧
+    (∀ (A B : Type*) [One A] [One B] [DecidableEq B]
+      (b₁ : B), b₁ ≠ 1 → ∀ rate : A → ℂ,
+      ProductMarginalClockStable A B rate ↔ ∀ a, rate a = rate 1) ∧
+    (∀ (A B : Type*) [One A] [One B] [DecidableEq B]
+      (b₁ : B), b₁ ≠ 1 → ∀ rate₁ rate₂ : A → ℂ,
+      (∀ f : FullValueSubtype (A × B) → ℂ,
+          f ∈ productMarginalObservableSubmodule A B →
+            observerClockInteractionAnomaly A B rate₁ f =
+              observerClockInteractionAnomaly A B rate₂ f) ↔
+        ∀ a, rate₁ a - rate₂ a = rate₁ 1 - rate₂ 1) ∧
+    (∀ (A B : Type*) [One A] [One B] [DecidableEq B]
+      (b₁ : B), b₁ ≠ 1 → ∀ rate : A → ℂ,
+      ObserverClockProbeAnomalyUniformlyBounded A B b₁ rate ↔
+        ObserverClockAnchoredContrastUniformlyBounded rate) ∧
+    (∀ (A B : Type*) [One A] [One B] [DecidableEq B]
+      (b₁ : B), b₁ ≠ 1 → ∀ rate : A → ℂ,
+      (∀ C : ℝ, ∃ x : FullValueSubtype (A × B),
+        C < ‖observerClockInteractionAnomaly A B rate
+          (liftedAnchoredColumnProbe A B b₁) x‖) ↔
+        ∀ C : ℝ, ∃ a : A, C < ‖rate a - rate 1‖) := by
+  exact ⟨fun A B _ _ f =>
+      ⟨(product_decompose_row_column_anchored A B f).symm,
+        mem_productMarginalObservableSubmodule_iff_anchoredInteractionPart_eq_zero
+          A B f⟩,
+    productAnchoredInteractionPart_separatedClockOrganObservable,
+    separatedClockOrganObservable_mem_marginal_iff,
+    fun A B _ _ _ b₁ hb₁ rate =>
+      productMarginalClockStable_iff_anchoredConstant A B b₁ hb₁ rate,
+    fun A B _ _ _ b₁ hb₁ rate₁ rate₂ =>
+      observerClockInteractionAnomaly_eq_iff_rate_difference_anchoredConstant
+        A B b₁ hb₁ rate₁ rate₂,
+    fun A B _ _ _ b₁ hb₁ rate =>
+      observerClockProbeAnomalyUniformlyBounded_iff A B b₁ hb₁ rate,
+    fun A B _ _ _ b₁ hb₁ rate =>
+      observerClockProbeAnomaly_escapes_iff A B b₁ hb₁ rate⟩
 
 end
 

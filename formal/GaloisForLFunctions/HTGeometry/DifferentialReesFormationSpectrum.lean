@@ -124,6 +124,27 @@ theorem laurentFormationDerivative_mul (P Q : AugmentationFormationAlgebra) :
   rw [laurentFormationDerivative_sub, laurentFormationDerivative_T_one,
     laurentFormationDerivative_one, sub_zero]
 
+/-- Additive-map form of the Laurent derivative. -/
+def laurentFormationDerivativeAddHom :
+    AugmentationFormationAlgebra →+ AugmentationFormationAlgebra where
+  toFun := laurentFormationDerivative
+  map_zero' := laurentFormationDerivative_zero
+  map_add' := laurentFormationDerivative_add
+
+/-- The monomial rule uniquely determines the Laurent derivative. -/
+theorem laurentFormationDerivative_unique
+    (D : AugmentationFormationAlgebra →+ AugmentationFormationAlgebra)
+    (hD : ∀ (a n : ℤ), D (C a * T n) = C (n * a) * T (n - 1)) :
+    D = laurentFormationDerivativeAddHom := by
+  apply AddMonoidHom.ext
+  intro P
+  induction P using LaurentPolynomial.induction_on' with
+  | add P Q hP hQ =>
+      rw [map_add, map_add, hP, hQ]
+  | C_mul_T n a =>
+      change D (C a * T n) = laurentFormationDerivative (C a * T n)
+      rw [hD, laurentFormationDerivative_C_mul_T]
+
 /-- Derivative of every augmentation power. -/
 theorem laurentFormationDerivative_augmentationGenerator_pow (r : ℕ) :
     laurentFormationDerivative
@@ -143,8 +164,26 @@ theorem laurentFormationDerivative_augmentationGenerator_pow (r : ℕ) :
 
 /-- Formation-number connection `N = (T - 1) d/dT`. -/
 def formationNumber
-    (P : AugmentationFormationAlgebra) : AugmentationFormationAlgebra :=
+  (P : AugmentationFormationAlgebra) : AugmentationFormationAlgebra :=
   (T 1 - 1) * laurentFormationDerivative P
+
+/-- Principal augmentation ideal `I = (T - 1)`. -/
+def augmentationFormationIdeal : Ideal AugmentationFormationAlgebra :=
+  Ideal.span ({T 1 - 1} : Set AugmentationFormationAlgebra)
+
+/-- Membership in `I^r` is exactly explicit order-`r` boundary factorization. -/
+theorem mem_augmentationFormationIdeal_pow_iff
+    (r : ℕ) (Q : AugmentationFormationAlgebra) :
+    Q ∈ augmentationFormationIdeal ^ r ↔
+      ∃ P, Q = augmentationFormationBoundary r P := by
+  rw [augmentationFormationIdeal, Ideal.span_singleton_pow,
+    Ideal.mem_span_singleton']
+  simp only [augmentationFormationBoundary]
+  constructor
+  · rintro ⟨P, hP⟩
+    exact ⟨P, by rw [← hP, mul_comm]⟩
+  · rintro ⟨P, rfl⟩
+    exact ⟨P, mul_comm _ _⟩
 
 /-- Exact Euler connection law on every augmentation boundary. -/
 theorem formationNumber_boundary (r : ℕ) (P : AugmentationFormationAlgebra) :
@@ -259,6 +298,29 @@ theorem formationNumber_reflection_associatedGrade
         ((T 1 - 1) ^ r * augmentationHistoryReflection r Q)) by ring]
   rw [hshift]
   ring
+
+/-- Literal ideal-membership form of reflection/formation compatibility on `I^r/I^(r+1)`. -/
+theorem formationNumber_reflection_associatedGrade_of_mem
+    (r : ℕ) (Q : AugmentationFormationAlgebra)
+    (hQ : Q ∈ augmentationFormationIdeal ^ r) :
+    SameModuloAugmentationBoundary (r + 1)
+      (formationNumber (invert Q)) (invert (formationNumber Q)) := by
+  rw [mem_augmentationFormationIdeal_pow_iff] at hQ
+  obtain ⟨P, rfl⟩ := hQ
+  exact formationNumber_reflection_associatedGrade r P
+
+/-- Formation number and Laurent reflection give the exact joint spectrum on one associated
+augmentation grade. -/
+theorem differentialRees_jointGrade (r : ℕ) (P : AugmentationFormationAlgebra) :
+    SameModuloAugmentationBoundary (r + 1)
+        (formationNumber (augmentationFormationBoundary r P))
+        ((r : AugmentationFormationAlgebra) * augmentationFormationBoundary r P) ∧
+      SameModuloAugmentationBoundary (r + 1)
+        (invert (augmentationFormationBoundary r P))
+        ((-1 : AugmentationFormationAlgebra) ^ r *
+          augmentationFormationBoundary r P) :=
+  ⟨formationNumber_associatedGrade r P,
+    augmentationReflection_associatedGraded_parity r P⟩
 
 /-- Punctured-chart formation connection `u ∂`. -/
 def sourceFormationConnection

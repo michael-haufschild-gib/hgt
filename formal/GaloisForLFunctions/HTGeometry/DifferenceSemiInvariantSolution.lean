@@ -53,31 +53,49 @@ theorem isUnit_of_sigma_eq_smul {σR : R ≃+* R} (hsimple : IsSigmaSimple σR)
     exact isUnit_iff_exists_inv.mpr ⟨u, hu.symm⟩
 
 /-- **A hyperexponential solution solves the Riccati equation over the base.** -/
-theorem riccati_of_sigma_eq_smul [Nontrivial R] {σK : K ≃+* K} {σR : R ≃+* R}
+theorem riccati_of_sigma_eq_smul_without_simple [Nontrivial R]
+    {σK : K ≃+* K} {σR : R ≃+* R}
     (hcompat : ∀ a : K, σR (algebraMap K R a) = algebraMap K R (σK a))
-    (hsimple : IsSigmaSimple σR)
     {a₁ a₀ : K} {y : R} (hy : y ≠ 0)
     (hrec : σR (σR y) = algebraMap K R a₁ * σR y + algebraMap K R a₀ * y)
     {r : K} (hr : σR y = algebraMap K R r * y) :
     σK r * r = a₁ * r + a₀ := by
-  obtain ⟨u, hu⟩ := isUnit_of_sigma_eq_smul hsimple hy hr
   have hsq : σR (σR y) = algebraMap K R (σK r * r) * y := by
     rw [hr, map_mul, hcompat, hr, map_mul]
     ring
   have hcomb : algebraMap K R (σK r * r) * y = algebraMap K R (a₁ * r + a₀) * y := by
     rw [← hsq, hrec, hr, map_add, map_mul]
     ring
-  have hcancel : algebraMap K R (σK r * r) = algebraMap K R (a₁ * r + a₀) := by
-    have hyu : y * (↑u⁻¹ : R) = 1 := by
-      rw [← hu]
-      exact u.mul_inv
-    calc algebraMap K R (σK r * r)
-        = algebraMap K R (σK r * r) * (y * (↑u⁻¹ : R)) := by rw [hyu, mul_one]
-      _ = algebraMap K R (σK r * r) * y * (↑u⁻¹ : R) := by ring
-      _ = algebraMap K R (a₁ * r + a₀) * y * (↑u⁻¹ : R) := by rw [hcomb]
-      _ = algebraMap K R (a₁ * r + a₀) * (y * (↑u⁻¹ : R)) := by ring
-      _ = algebraMap K R (a₁ * r + a₀) := by rw [hyu, mul_one]
-  exact (algebraMap K R).injective hcancel
+  by_contra hne
+  have hdiff : σK r * r - (a₁ * r + a₀) ≠ 0 := sub_ne_zero.mpr hne
+  have huK : IsUnit (σK r * r - (a₁ * r + a₀)) := isUnit_iff_ne_zero.mpr hdiff
+  have huR : IsUnit (algebraMap K R (σK r * r - (a₁ * r + a₀))) :=
+    huK.map (algebraMap K R)
+  have hzero : algebraMap K R (σK r * r - (a₁ * r + a₀)) * y = 0 := by
+    rw [map_sub, sub_mul, hcomb, sub_self]
+  have hyzero : y = 0 := huR.mul_left_cancel (by simpa using hzero)
+  exact hy hyzero
+
+/-- Compatibility wrapper retaining the earlier `σ`-simple interface. -/
+theorem riccati_of_sigma_eq_smul [Nontrivial R] {σK : K ≃+* K} {σR : R ≃+* R}
+    (hcompat : ∀ a : K, σR (algebraMap K R a) = algebraMap K R (σK a))
+    (_hsimple : IsSigmaSimple σR)
+    {a₁ a₀ : K} {y : R} (hy : y ≠ 0)
+    (hrec : σR (σR y) = algebraMap K R a₁ * σR y + algebraMap K R a₀ * y)
+    {r : K} (hr : σR y = algebraMap K R r * y) :
+    σK r * r = a₁ * r + a₀ :=
+  riccati_of_sigma_eq_smul_without_simple hcompat hy hrec hr
+
+/-- A symmetric tensor solution produces a Riccati solution without a simplicity premise. -/
+theorem exists_riccati_of_tmul_comm_without_simple [Nontrivial R]
+    {σK : K ≃+* K} {σR : R ≃+* R}
+    (hcompat : ∀ a : K, σR (algebraMap K R a) = algebraMap K R (σK a))
+    {a₁ a₀ : K} {y : R} (hy : y ≠ 0)
+    (hrec : σR (σR y) = algebraMap K R a₁ * σR y + algebraMap K R a₀ * y)
+    (hsym : y ⊗ₜ[K] σR y = σR y ⊗ₜ[K] y) :
+    ∃ r : K, σK r * r = a₁ * r + a₀ := by
+  obtain ⟨r, hr⟩ := exists_eq_algebraMap_mul_of_tmul_comm hy hsym
+  exact ⟨r, riccati_of_sigma_eq_smul_without_simple hcompat hy hrec hr⟩
 
 /-- **A semi-invariant solution produces a Riccati solution over the base.** -/
 theorem exists_riccati_of_tmul_comm [Nontrivial R] {σK : K ≃+* K} {σR : R ≃+* R}

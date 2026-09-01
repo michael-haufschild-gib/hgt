@@ -1,24 +1,9 @@
-# TCD hard core
+# TCD
 
-## Chain
+`actual singular flux > 0 ⇔ global D1 > 0 → TCD/S6F → Weil positivity → RH`.
 
-`positive actual-theta D1 singular flux ⇔ global D1>0 → TCD/S6F → cofinal Hankel/Bezoutian → Weil positivity → RH`.
+Facts: open interval `0<x<137/2000`; `D1=HK-q²`, with actual `H,K>0`, `q<0`. On `D1=0`, flux = projective drift = ninth-jet crossing and is independent of eighth-jet value. In adapted source coordinates `r=Rz`, `b=R(z-v)/3`, `k=X(1-z²)/16`; scale variation is the positive weighted-Euler/Cartan field. Actual orbit lies in the refined parabolic cone and starts on a positive seam.
 
-## Proved
+Killed: static/generic Hankel, depth-8 entire, Lévy, contravariant, raw Gram, atom-pair, and product-fibre Wigner sign arguments.
 
-- Only `0<x<137/2000` remains.
-- `D1=H*K-q²`; actual orbit has `H,K,q=64A³-C>0`. Thus `D1=0` is unique sheet `q²=H*K`.
-- Singular flux sign = projective-drift sign = intrinsic ninth-jet crossing sign.
-- On `D1=0`, `A³*L*D1'=N(A,L,T;A',L',T',D')`; `N` is linear in four velocities and omits eighth-jet value.
-- Actual orbit lies in refined parabolic cone and follows exact source-positive `sl₂` ODE.
-
-## Killed
-
-- Static clock/source/Lyapunov signs, generic Hankel geometry, depth-eight positive-entire data, and a likelihood Lévy-moment carrier cannot orient flux; the likelihood law is not infinitely divisible.
-- Finite/infinite scalar, matrix, bounded-operator, and regular-star contravariant D1 carriers fail.
-- Raw Bernstein/Gram, naive factorization, and pairwise atom PSD fail.
-- Planat–Solé is same orbit but lower-rank; PF5 failure concerns a distinct Toeplitz minor, not D1.
-
-## Open
-
-Prove refined-cone `D1>0`; this closes finite TCD/S6F gate. Fallback: prove actual singular flux positive, or exhibit nonpositive actual singular flux and kill TCD.
+Open: prove drift positive on `X>191/10+(37/5)z²`, `0<z<3/10`, `13/32+z²/32<v/z<33/80+z²/16`; a nonpositive actual singular flux kills TCD.

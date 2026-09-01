@@ -10,9 +10,10 @@ This file formalizes the two finite Gaussian mechanisms occurring after selectin
 `E = ℚ(√41)` in Fröhlich's Section 5--6 calculation for the actual SST quaternion field.
 
 At the split prime `5`, the literal order-four Q8 source character is transported to the
-cyclic residue-unit group. Its inverse/conjugate Gauss pair, with inverse additive
-orientation, has exact normalized product one. The character is proved to have order four,
-so no quadratic replacement is hidden in the construction.
+cyclic residue-unit group. Its inverse/conjugate Gauss pair with inverse additive orientation
+has normalized product one (finite Fourier unitarity). Fröhlich's split-prime factor instead
+uses the same additive orientation on both conjugate characters; its normalized product is
+exactly `-1`. The character is proved to have order four, so no quadratic replacement is hidden.
 
 At `41`, the canonical quadratic residue character has Gauss square `41`. A finite
 square-fibre expansion reduces its real part to ten explicit cosines. Strict cosine
@@ -110,6 +111,91 @@ theorem deningerQ8FroehlichSplitFiveGaussianPair_eq_one :
     deningerQ8FroehlichSplitFiveGaussianPair = 1 := by
   rw [deningerQ8FroehlichSplitFiveGaussianPair,
     deningerQ8FiveResidueQuarticGaussProduct_eq_five]
+  norm_num
+
+/-- The transported source generator squares to the unique nontrivial order-two residue
+unit. This identifies the source involution with literal residue negation, independently of
+the noncanonical choice of cyclic equivalence. -/
+theorem deningerQ8FiveResidueSourceGenerator_sq_eq_neg_one :
+    ((deningerQ8FiveResidueSourceEquiv
+      (Multiplicative.ofAdd (1 : ZMod 4)) : (ZMod 5)ˣ) : ZMod 5) ^ 2 = -1 := by
+  let g : (ZMod 5)ˣ := deningerQ8FiveResidueSourceEquiv
+    (Multiplicative.ofAdd (1 : ZMod 4))
+  have hg4 : (g : ZMod 5) ^ 4 = 1 := by
+    have hsrc : (Multiplicative.ofAdd (1 : ZMod 4)) ^ 4 = 1 := by
+      apply Multiplicative.toAdd.injective
+      rw [toAdd_pow, toAdd_one, nsmul_eq_mul, ZMod.natCast_self, zero_mul]
+    have hmap : g ^ 4 = 1 := by
+      change (deningerQ8FiveResidueSourceEquiv
+        (Multiplicative.ofAdd (1 : ZMod 4))) ^ 4 = 1
+      rw [← map_pow, hsrc, map_one]
+    exact congrArg Units.val hmap
+  have hg2_ne : (g : ZMod 5) ^ 2 ≠ 1 := by
+    intro h
+    have hu : g ^ 2 = 1 := by
+      apply Units.ext
+      simpa using h
+    have hsrc_ne : (Multiplicative.ofAdd (1 : ZMod 4)) ^ 2 ≠ 1 := by
+      intro hsrc
+      apply q8OrderFourCharacter_generator_sq_ne_one
+      rw [← map_pow, hsrc, map_one]
+    apply hsrc_ne
+    apply deningerQ8FiveResidueSourceEquiv.injective
+    simpa only [map_pow, map_one] using hu
+  have hsq : ((g : ZMod 5) ^ 2) ^ 2 = 1 := by
+    rw [← pow_mul]
+    norm_num
+    exact hg4
+  exact (sq_eq_one_iff.mp hsq).resolve_left hg2_ne
+
+/-- The actual quartic source character is odd at the split prime `5`. -/
+theorem deningerQ8FiveResidueQuarticChar_neg_one_eq_neg_one :
+    deningerQ8FiveResidueQuarticChar (-1) = -1 := by
+  let g : (ZMod 5)ˣ := deningerQ8FiveResidueSourceEquiv
+    (Multiplicative.ofAdd (1 : ZMod 4))
+  have hg : (g : ZMod 5) ^ 2 = -1 :=
+    deningerQ8FiveResidueSourceGenerator_sq_eq_neg_one
+  calc
+    deningerQ8FiveResidueQuarticChar (-1) =
+        deningerQ8FiveResidueQuarticChar ((g : ZMod 5) ^ 2) := by rw [hg]
+    _ = deningerQ8FiveResidueQuarticChar (g : ZMod 5) ^ 2 := by rw [map_pow]
+    _ = -1 := by
+      rw [show deningerQ8FiveResidueQuarticChar (g : ZMod 5) = Complex.I by
+        exact deningerQ8FiveResidueQuarticChar_sourceGenerator]
+      norm_num [Complex.I_mul_I]
+
+/-- Fröhlich's literal split-prime Gaussian factor: both conjugate multiplicative characters
+use the same additive orientation. -/
+def deningerQ8FroehlichSplitFiveSameAdditiveGaussianPair : ℂ :=
+  (5 : ℂ)⁻¹ *
+    (gaussSum deningerQ8FiveResidueQuarticChar ZMod.stdAddChar *
+      gaussSum deningerQ8FiveResidueQuarticChar⁻¹ ZMod.stdAddChar)
+
+theorem deningerQ8FiveResidueQuarticSameAdditiveGaussProduct_eq_neg_five :
+    gaussSum deningerQ8FiveResidueQuarticChar ZMod.stdAddChar *
+        gaussSum deningerQ8FiveResidueQuarticChar⁻¹ ZMod.stdAddChar = -5 := by
+  have h := gaussSum_mul_gaussSum_pow_orderOf_sub_one
+    deningerQ8FiveResidueQuarticChar_ne_one (ZMod.isPrimitive_stdAddChar 5)
+  rw [deningerQ8FiveResidueQuarticChar_orderOf_eq_four] at h
+  norm_num [deningerQ8FiveResidueQuarticChar_neg_one_eq_neg_one] at h ⊢
+  have hp : deningerQ8FiveResidueQuarticChar ^ 3 =
+      deningerQ8FiveResidueQuarticChar⁻¹ := by
+    calc
+      deningerQ8FiveResidueQuarticChar ^ 3 =
+          deningerQ8FiveResidueQuarticChar ^ 3 * 1 := (mul_one _).symm
+      _ = deningerQ8FiveResidueQuarticChar ^ 3 *
+          (deningerQ8FiveResidueQuarticChar *
+            deningerQ8FiveResidueQuarticChar⁻¹) := by simp
+      _ = deningerQ8FiveResidueQuarticChar ^ 4 *
+          deningerQ8FiveResidueQuarticChar⁻¹ := by rw [← mul_assoc, ← pow_succ]
+      _ = deningerQ8FiveResidueQuarticChar⁻¹ := by
+        rw [deningerQ8FiveResidueQuarticChar_fourth_eq_one, one_mul]
+  simpa [hp] using h
+
+theorem deningerQ8FroehlichSplitFiveSameAdditiveGaussianPair_eq_neg_one :
+    deningerQ8FroehlichSplitFiveSameAdditiveGaussianPair = -1 := by
+  rw [deningerQ8FroehlichSplitFiveSameAdditiveGaussianPair,
+    deningerQ8FiveResidueQuarticSameAdditiveGaussProduct_eq_neg_five]
   norm_num
 
 noncomputable def deningerQ8FortyOneQuadraticChar : MulChar (ZMod 41) ℂ :=

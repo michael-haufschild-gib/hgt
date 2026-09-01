@@ -1,6 +1,7 @@
 import Mathlib.Algebra.Order.Group.MinMax
 import Mathlib.Algebra.Order.Group.Abs
 import Mathlib.Data.Real.Basic
+import Mathlib.Analysis.SpecialFunctions.Exp
 import Mathlib.Tactic.Abel
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Ring
@@ -140,6 +141,70 @@ theorem transgression_reflect (x y : BidirectionalFormation G) :
   rw [transgression, ← reflect_add, reserve_reflect, reserve_reflect, reserve_reflect]
   rfl
 
+/-- Fusion of two currents with the same nonnegative orientation creates no reserve. -/
+theorem transgression_eq_zero_of_currents_nonneg
+    (x y : BidirectionalFormation G) (hx : 0 ≤ current x) (hy : 0 ≤ current y) :
+    transgression x y = 0 := by
+  rcases x with ⟨p, q⟩
+  rcases y with ⟨r, s⟩
+  change 0 ≤ p - q at hx
+  change 0 ≤ r - s at hy
+  have hqp : q ≤ p := sub_nonneg.mp hx
+  have hsr : s ≤ r := sub_nonneg.mp hy
+  have hsum : q + s ≤ p + r := add_le_add hqp hsr
+  simp [transgression, reserve, min_eq_right hqp, min_eq_right hsr,
+    min_eq_right hsum]
+
+/-- Fusion of two currents with the same nonpositive orientation creates no reserve. -/
+theorem transgression_eq_zero_of_currents_nonpos
+    (x y : BidirectionalFormation G) (hx : current x ≤ 0) (hy : current y ≤ 0) :
+    transgression x y = 0 := by
+  rcases x with ⟨p, q⟩
+  rcases y with ⟨r, s⟩
+  change p - q ≤ 0 at hx
+  change r - s ≤ 0 at hy
+  have hpq : p ≤ q := sub_nonpos.mp hx
+  have hrs : r ≤ s := sub_nonpos.mp hy
+  have hsum : p + r ≤ q + s := add_le_add hpq hrs
+  simp [transgression, reserve, min_eq_left hpq, min_eq_left hrs,
+    min_eq_left hsum]
+
+/-- Oppositely oriented fusion creates exactly the smaller visible current as reserve. -/
+theorem transgression_eq_min_visible_of_current_nonneg_nonpos
+    (x y : BidirectionalFormation G) (hx : 0 ≤ current x) (hy : current y ≤ 0) :
+    transgression x y = min (visible x) (visible y) := by
+  rcases x with ⟨p, q⟩
+  rcases y with ⟨r, s⟩
+  change 0 ≤ p - q at hx
+  change r - s ≤ 0 at hy
+  have hqp : q ≤ p := sub_nonneg.mp hx
+  have hrs : r ≤ s := sub_nonpos.mp hy
+  simp only [current, visible, transgression, reserve, Prod.fst_add, Prod.snd_add]
+  rw [abs_of_nonneg hx, abs_of_nonpos hy, neg_sub]
+  rw [min_eq_right hqp, min_eq_left hrs]
+  by_cases h : p - q ≤ s - r
+  · have hsum : p + r ≤ q + s := by
+      have hh := add_le_add_left h (q + r)
+      convert hh using 1 <;> abel
+    rw [min_eq_left h, min_eq_left hsum]
+    abel
+  · have h' : s - r ≤ p - q := le_of_not_ge h
+    have hsum : q + s ≤ p + r := by
+      have hh := add_le_add_left h' (q + r)
+      convert hh using 1 <;> abel
+    rw [min_eq_right h', min_eq_right hsum]
+    abel
+
+/-- The opposite orientation gives the same exact smaller-visible-current law. -/
+theorem transgression_eq_min_visible_of_current_nonpos_nonneg
+    (x y : BidirectionalFormation G) (hx : current x ≤ 0) (hy : 0 ≤ current y) :
+    transgression x y = min (visible x) (visible y) := by
+  have h := transgression_eq_min_visible_of_current_nonneg_nonpos
+    (reflect x) (reflect y)
+    (by simpa using neg_nonneg.mpr hx)
+    (by simpa using neg_nonpos.mpr hy)
+  simpa using h
+
 end BidirectionalFormation
 
 /-- Logarithmic monomial potential on reserve and the two formation channels. -/
@@ -204,5 +269,11 @@ theorem criticalFormationLogPotential_eq_neg_visible_half (x y : ℝ) :
   simp [formationLogPotential]
   norm_num at h ⊢
   linarith
+
+/-- Positivity is the exponential quotient `exp (-visible / 2)` at the forced exponent. -/
+theorem criticalFormationExpPotential_eq_exp_neg_visible_half (x y : ℝ) :
+    Real.exp (formationLogPotential (1 / 2) (1 / 2) (min x y) x y) =
+      Real.exp (-|x - y| / 2) := by
+  rw [criticalFormationLogPotential_eq_neg_visible_half]
 
 end GaloisForLFunctions.HTGeometry

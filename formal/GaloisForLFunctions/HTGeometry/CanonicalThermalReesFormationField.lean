@@ -142,6 +142,18 @@ theorem tendsto_norm_formationResolventMultiplier :
   rw [formationResolventMultiplier, Complex.norm_real, Real.norm_eq_abs,
     abs_of_nonneg (inv_nonneg.mpr (by positivity)), one_div]
 
+/-- The positive resolvent eigenvalue reconstructs the intrinsic formation grade. -/
+theorem formationResolventMultiplier_injective :
+    Function.Injective formationResolventMultiplier := by
+  intro m n h
+  change (((((m : ℝ) + 1)⁻¹ : ℝ) : ℂ)) =
+    (((((n : ℝ) + 1)⁻¹ : ℝ) : ℂ)) at h
+  have hreal : (((m : ℝ) + 1)⁻¹ : ℝ) = ((n : ℝ) + 1)⁻¹ :=
+    Complex.ofReal_injective h
+  rw [inv_inj] at hreal
+  have hcast : (m : ℝ) = n := by linarith
+  exact_mod_cast hcast
+
 /-- Global formation properness: canonical formation number has compact resolvent. -/
 theorem isCompactOperator_formationResolvent :
     IsCompactOperator formationResolvent := by
@@ -149,8 +161,26 @@ theorem isCompactOperator_formationResolvent :
     (HilbertSchmidt.lpBasis ℕ) formationResolvent_lpBasis ?_
   simpa only [Nat.cofinite_eq_atTop] using tendsto_norm_formationResolventMultiplier
 
+/-- Exact graph-domain properness form: bounded formation loads have relatively compact images
+under `(N + 1)⁻¹`. -/
+theorem isCompact_closure_range_formationResolvent_of_bounded
+    {S : Type*} (y : S → ToeplitzSpace) {r : ℝ} (hr : ∀ s, ‖y s‖ ≤ r) :
+    IsCompact (closure (Set.range fun s => formationResolvent (y s))) := by
+  have hcpt :=
+    isCompactOperator_formationResolvent.isCompact_closure_image_closedBall r
+  have hsub :
+      (Set.range fun s => formationResolvent (y s)) ⊆
+        formationResolvent '' Metric.closedBall 0 r := by
+    rintro z ⟨s, rfl⟩
+    exact ⟨y s, by simpa [Metric.mem_closedBall, dist_eq_norm] using hr s, rfl⟩
+  exact hcpt.of_isClosed_subset isClosed_closure (closure_mono hsub)
+
 /-- Functional-equation parity on the Hilbert completion of formation grades. -/
 def formationParityMultiplier (n : ℕ) : ℂ := (-1 : ℂ) ^ n
+
+@[simp] theorem formationParityMultiplier_succ (n : ℕ) :
+    formationParityMultiplier (n + 1) = -formationParityMultiplier n := by
+  simp [formationParityMultiplier, pow_succ]
 
 theorem norm_formationParityMultiplier_le_one (n : ℕ) :
     ‖formationParityMultiplier n‖ ≤ 1 := by
@@ -198,6 +228,47 @@ theorem formationParity_shift_anticommutes :
       change (-1 : ℂ) ^ (n + 1) * f n = -((-1 : ℂ) ^ n * f n)
       rw [pow_succ]
       ring
+
+/-- Real normalized thermal mass of one formation grade. -/
+def canonicalThermalMass (q : ℝ) (n : ℕ) : ℝ := (1 - q) * q ^ n
+
+@[simp] theorem canonicalThermalMass_succ (q : ℝ) (n : ℕ) :
+    canonicalThermalMass q (n + 1) = q * canonicalThermalMass q n := by
+  simp [canonicalThermalMass, pow_succ]
+  ring
+
+/-- At positive temperature the normalized thermal mass reconstructs the intrinsic grade. -/
+theorem canonicalThermalMass_injective {q : ℝ} (hq0 : 0 < q) (hq1 : q < 1) :
+    Function.Injective (canonicalThermalMass q) := by
+  intro m n h
+  have hfactor : (1 : ℝ) - q ≠ 0 := sub_ne_zero.mpr (ne_of_gt hq1)
+  have hpows : q ^ m = q ^ n := mul_left_cancel₀ hfactor h
+  by_contra hmn
+  rcases lt_or_gt_of_ne hmn with hlt | hgt
+  · have hpow : q ^ (n - m) < 1 :=
+      pow_lt_one₀ hq0.le hq1 (Nat.sub_ne_zero_of_lt hlt)
+    have hstrict : q ^ n < q ^ m := by
+      calc
+        q ^ n = q ^ m * q ^ (n - m) := by
+          rw [← pow_add, Nat.add_sub_of_le hlt.le]
+        _ < q ^ m * 1 := mul_lt_mul_of_pos_left hpow (pow_pos hq0 m)
+        _ = q ^ m := mul_one _
+    exact (ne_of_lt hstrict) hpows.symm
+  · have hpow : q ^ (m - n) < 1 :=
+      pow_lt_one₀ hq0.le hq1 (Nat.sub_ne_zero_of_lt hgt)
+    have hstrict : q ^ m < q ^ n := by
+      calc
+        q ^ m = q ^ n * q ^ (m - n) := by
+          rw [← pow_add, Nat.add_sub_of_le hgt.le]
+        _ < q ^ n * 1 := mul_lt_mul_of_pos_left hpow (pow_pos hq0 n)
+        _ = q ^ n := mul_one _
+    exact (ne_of_lt hstrict) hpows
+
+theorem toeplitzGibbsState_historyLayer_eq_canonicalThermalMass
+    (q : ℝ) (n : ℕ) :
+    toeplitzGibbsState q (historyLayer n) = canonicalThermalMass q n := by
+  rw [toeplitzGibbsState_layer]
+  simp [canonicalThermalMass]
 
 /-- One intrinsic grade simultaneously controls formation energy, Hilbert resolvent, Hilbert and
 Laurent reflection parity, normalized thermal mass, and Toeplitz defect rank. -/

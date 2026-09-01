@@ -20,7 +20,10 @@ The generic module proves:
 4. Such an observable is marginal exactly when clock or organ reporter is constant.
 5. A scale-only multiplier preserves every marginal exactly when its clock rate is constant.
 6. The anomaly action on all marginals reconstructs clock rate modulo additive scalar gauge.
-7. A fixed two-state sign reporter produces exactly `-2` times anchored clock contrast.
+7. One fixed marginal indicator has uniformly bounded anomaly exactly when anchored clock contrast
+   is uniformly bounded; equivalently, exactly when the original clock is uniformly bounded.
+8. Escape above every real ceiling is equivalent for the fixed-probe anomaly and anchored contrast.
+9. A fixed two-state sign reporter produces exactly `-2` times anchored clock contrast.
 
 This is a multiplier-algebra theorem, not another equality inside one RH route. Marginals form a
 linear quotient but not an ideal under nonconstant clock multiplication; failure of descent is the
@@ -41,15 +44,14 @@ RH assumption occurs.
 
 - Batched scratch elaboration passed.
 - Direct foreground elaboration passed for both final modules.
-- Targeted leaf builds only:
-  - `GaloisForLFunctions.HTGeometry.ObserverClockInteractionAnomaly`: `8779/8779`
-  - `GaloisForLFunctions.RHTower.SuzukiClockInteractionAnomaly`: `12878/12878`
-- Both modules are imported by `HTGeometry.UniversalLawField`; literal module is also imported by
-  `RHTower`; neither umbrella was built.
-- Ten audited capstones depend only on `propext`, `Classical.choice`, and `Quot.sound`.
+- Targeted leaf build only:
+  - `GaloisForLFunctions.RHTower.SuzukiClockInteractionAnomaly`: `12878/12878`; this refreshed and
+    built changed generic dependency `ObserverClockInteractionAnomaly` at job `12877`.
+- Generic module is imported by `HTGeometry`; literal module is imported by `RHTower`; neither
+  umbrella was built.
+- Eight newly added theorem declarations were audited and depend only on `propext`,
+  `Classical.choice`, and `Quot.sound`.
 - New modules contain no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration.
-- Global lint reached five unrelated concurrent umbrella-reachability failures; it reported none
-  for either new module.
 
 ## Exact boundary
 

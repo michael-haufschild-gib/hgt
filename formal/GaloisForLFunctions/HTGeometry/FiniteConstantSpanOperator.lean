@@ -61,6 +61,21 @@ theorem exists_nonzero_linearJet_relation_of_span {ι : Type*} [Fintype ι] (w :
     exact hkill j
   exact fun x hx => (Submodule.span_le.mpr hsub) hx
 
+/-- Every entry of a finite matrix family satisfies one common nonzero linear differential
+operator. -/
+theorem exists_nonzero_linearJet_relation_of_finite_matrixSet
+    {G : Set (Matrix (Fin 2) (Fin 2) C)} (hfin : G.Finite) :
+    ∃ (d : ℕ) (L : ℕ → C) (i₀ : ℕ), i₀ ∈ Finset.range (d + 1) ∧ L i₀ ≠ 0 ∧
+      ∀ g ∈ G, ∀ i j, g i j ∈ linearJetSolutions d L := by
+  classical
+  letI : Fintype G := hfin.fintype
+  let w : G × (Fin 2 × Fin 2) → C := fun p => p.1.1 p.2.1 p.2.2
+  obtain ⟨d, L, i₀, hi₀, hLi₀, hsol⟩ := exists_nonzero_linearJet_relation_of_span w
+  refine ⟨d, L, i₀, hi₀, hLi₀, ?_⟩
+  intro g hg i j
+  apply hsol
+  exact Submodule.subset_span ⟨(⟨g, hg⟩, (i, j)), rfl⟩
+
 end
 
 end GaloisForLFunctions.HTGeometry

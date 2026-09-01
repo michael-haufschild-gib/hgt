@@ -1,19 +1,26 @@
-# Literature capstones: live facts
+# Literature capstones: facts
 
 ## Closed in Lean
 
-- **Toeplitz reverse:** `exists_atomic_caratheodoryFejer_psd_factorization` gives exact nonnegative unit-circle atomic Vandermonde factorization of normalized Hermitian PSD Toeplitz data.
-- **CCM:** `ccmLambertEntrySeries_coeff_literal_dyadicCyclotomic` gives every coefficient of the full formal Lambert entry series in `ℤ^cyc[1/2]`; `ccmActualFiniteQNormalizedDeterminant_coeff_dyadicCyclotomic` transports containment to every finite normalized determinant coefficient. No analytic-convergence claim.
-- **Burnol:** `isCompleteSystem_burnolZetaJetVector_iff_one_le` gives exact aperture threshold for literal Riesz zero-jet vectors. `BurnolCoPoissonSourceHasExactXiJetOrder` gives cosine-closed exact completed-jet detection. No quotient-system completeness claim.
+- **Toeplitz:** PSD data admits exact nonnegative unit-circle atomic Vandermonde factorization.
+- **CCM:** formal Lambert and finite normalized-determinant coefficients lie in `ℤ^cyc[1/2]`; no convergence theorem.
+- **Burnol:** literal Riesz zero jets are complete iff aperture `a ≥ 1`; cosine closure detects exact completed jets.
 
-## Open
+## Q8 capstone
 
-- **Q8 witness:** actual SST field, `Gal ≃ Q8`, unique 2D representation, maximal abelian fixed field, Euler product, two-adic decomposition/inertia, lower groups, conductor `6`, and finite Fröhlich sign `-1` are formalized.
-- **Primary-source correction:** Fröhlich Theorem 6(i) requires every prime divisor of `disc(K)` to be `1 mod 4`; it does **not** require `disc(N)` odd for `W_N = α_K β_K`. Here `K = ℚ(√5,√41)`, so primes are `5,41`. Wild ramification of `N` at `2` is no obstruction.
-- **Lean applicability:** `deningerQ8_froehlichTheoremSix_i_applicability` bundles maximal-abelian fixed-field identity, the exact discriminant-prime gate, and `α_Kβ_K=-1`; leaf build and standard-axiom audit pass.
-- **Local Gaussian factors:** split `p=5` quartic source pair is exactly `1`; canonical `p=41` Gauss sum is exactly `+√41`, hence normalized phase `1`. Targeted leaf build and standard-axiom audit pass.
-- Missing proof obligation: formalize Theorem 6(i) against an independently defined Artin root number and instantiate `W_N = α_K β_K = -1`. No definition-by-fiat.
-
-## Current target
-
-Formalize and instantiate Fröhlich Theorem 6(i), preserving independent global Artin ε/root-number semantics.
+- SST field `N/ℚ`: `Gal(N/ℚ) ≃ Q8`; faithful irreducible `2D` representation; conductor `6`.
+- `N` is totally real.
+- Maximal abelian field `K=ℚ(√5,√41)`; `disc(K)` is supported on `{5,41}`.
+- `D₅=I₅=Stab(√41)` and `D₄₁=I₄₁=Stab(√5)` are `C₄`; `P₅=P₄₁=1`.
+- Actual `5` source/inverse have conductor `5`, literal Tate equations, unit phases, product `−1`.
+- At `41`, direct `C₄→F₄₁×` pullback has exponent `≤2`. Reverse `F₄₁×→C₄≃I₄₁` is surjective and preserves both literal Artin eigenchannels.
+- Actual `41` source/inverse have conductor `41`, literal Tate equations, unit phases, product `+1`.
+- At `2`, every primitive quadratic conductor-`8` source/inverse pair has phase product `χ(-1)`, independent of radial orientation: `+1` for discriminant `8`, `−1` for `−8`.
+- For every dyadic `E/K`, `E⊗_KN ≃ E[ω]/(ω²−δ)` and `u` is its determinant algebra norm, via `a²=u+δ(u+1)²`.
+- The completed decomposition involution fixes each contracted dyadic prime and sends `u↦1−u`; hence the actual selected total local norm is `u(1−u)=−1`.
+- Pinned Lean CFT supplies actual finite local Artin reciprocity, kernel = local norms, and concrete finite-place tensor-norm comparison.
+- The completed Hensel witness is unit-valued; its norm `u` has trivial actual finite-place Artin symbol for `N/K` at every dyadic `K=ℚ(√5,√41)` place.
+- Over `S=ℚ(√41)`, `u` has minimal polynomial `X²−X−1`; hence `N_{K/S}(u)=−1`.
+- Fröhlich 6(i)'s hypothesis holds; wild `2` is permitted. Finite sign and odd local product equal `α_Kβ_K=−1`.
+- Fröhlich's proof uses Artin induction/local Gaussian `ε`, pure-field evaluation, then quadratic-twist invariance.
+- **Open:** finite-place Artin norm–restriction gives source Artin`(−1)=1`; identify its `C₄` character with the conductor-`8` Tate candidate; then `W_N=−1`.

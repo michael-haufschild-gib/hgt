@@ -16,5 +16,10 @@ name = "cslib"
 git = "https://github.com/leanprover/cslib.git"
 rev = "v4.32.2"
 
+[[require]]
+name = "ClassFieldTheory"
+git = "https://github.com/n-yamaguchi-0729/ClassFieldTheory.git"
+rev = "60102378cf732b1349ff3002300bde22b2f913a5"
+
 [[lean_lib]]
 name = "GaloisForLFunctions"

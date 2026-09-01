@@ -5322,3 +5322,331 @@ the exact equivalence between equality-valued strict reporter promotion and poin
 law: a finite full-CCR tuple exists exactly when mode type is empty or both coordinate types are
 empty.  Canonical value reflections (zero, identity, constant, empty-family, exact rank-three) are
 collected as unconditional ground witnesses rather than repeated downstream assumptions.
+
+## 2026-08-31 — current-corpus reopening and universal value-reflection pass
+
+`[CORPUS]` The 2026-08-14 closure result is no longer current.  The authoritative three-umbrella
+scan now sees **187 444 project constants**, **1 961 project proposition definitions**, and **1 447
+consumed interfaces**.  It reports **128 never-concluded exact heads** and **187 ungrounded heads**.
+The audit script now carries the required heartbeat budget and emits compact rows with defining
+modules, so later runs remain complete rather than truncating the consumer lists.
+
+First hostile classification separates genuine premises from exact-head blind spots:
+
+* `PlaceTrivialOn` cannot hold for an arbitrary place and arbitrary subfield; it is scientific data,
+  not a missing universal theorem.
+* `KleinbockMargulis.VWA`/`VWMA` are deliberately excluded almost everywhere by metric
+  Diophantine results; manufacturing positive instances would not discharge those consumers.
+* HLS `.fermionic` and `.transition` rows are structure projections, not propositions awaiting
+  standalone proofs.
+* Schanuel and the smooth-projector prerequisite retain their prior open/false classifications.
+* support reflection, linear recurrence, triangular support, split-formation equivalence, and
+  zero/identity analytic objects have canonical unconditional realizations and are tractable.
+
+### Paper proof for the first tractable cluster
+
+`[CONJECTURE]` The following laws are closed and require no scientific premise.
+
+1. A Pauli weight obtained by applying an arbitrary value function to the support set is support
+   invariant.  Equal `none` loci give equal non-`none` loci by negating the supplied equivalence;
+   extensionality gives equal support sets, hence equal reflected values.
+2. For fixed potential `p`, solutions of the discrete Liouville--Green recurrence form a real
+   submodule of sequences.  The recurrence operator is linear because `lgDiff` and pointwise
+   multiplication by `p` distribute over zero, addition, and real scalar multiplication.  Its zero
+   member supplies an exact `IsLGSolution` producer.
+3. Strictly-upper kernels form a complex submodule: every below-diagonal value of zero, a sum, or a
+   scalar multiple vanishes pointwise.  The zero member supplies the exact producer.
+4. A linear equivalence `X ≃ₗ[R] Z` gives a split formation by its forward and inverse maps.  Its
+   regenerate-after-recovery projection is identity, so the singleton family is resolving.  For
+   the identity equivalence on a real Hilbert space, form and recovery are identity, giving an
+   isometric-adjoint formation; its residual kernel is zero, so the singleton has sharp residual
+   fusion-frame bounds `A = B = 0`.
+5. Zero and identity matrix maps are completely positive at every finite amplification: their
+   amplifications are respectively zero and the input positive-semidefinite matrix.
+6. Constant maps are differentiable and continuous on every closed horizontal strip.  The constant
+   point with imaginary part `-π/2` belongs to every positive shrinking tube; fixing radius one
+   yields an unconditional inhabitant.
+7. Hardy multiplication by the unit multiplier is identity.  Thus every Hardy vector is the unit
+   numerator multiple of itself plus the finite-Blaschke denominator multiple of zero, proving
+   coprimality with every finite Blaschke product.
+
+8. Super-Gaussian coefficient families form a complex submodule.  For a sum, choose the sum of the
+   two positive Gaussian majorants and use the triangle inequality.  For scalar multiplication,
+   multiply the majorant by the scalar norm, separating the zero scalar.  Hence the zero family is
+   super-Gaussian.  The same zero family is eventually below `n` and below `n + N`, providing the
+   Gaussian coefficient and shifted-tail events.
+9. On the singleton coordinate type, the constant unit state has inner product one with itself and
+   therefore unit squared fidelity.  The unit polynomial, packaged with its nonvanishing proof, is
+   a good Milnor entry because its natural degree is zero.
+10. The zero finite observation is additive, homogeneous, and compact-open continuous; all three
+    laws are one bundled closed theorem.  Zero also supplies a derivation-like `SL₂` cocycle and an
+    almost-everywhere Boolean `L²` element.  Every zero nested polynomial is bihomogeneous in every
+    total degree because zero belongs to every homogeneous component.
+11. Every leaf formation is legal by definition.  Every constant complex function has a
+    first-order nonautonomous algebraic differential equation: use degree-zero rows with the single
+    nonzero coefficient polynomial `X - C a`; evaluation at the constant `a` vanishes, while its
+    natural degree is one, so the relation is nonzero.
+12. The identity scalar functional separates the one-dimensional scalar space.  Identity matrices
+    are diagonalizable and positive-definite metrics: the former uses identity change-of-basis and
+    constant diagonal one; the latter is the standard strictly positive Hermitian quadratic form.
+    Constant `GL(N)` weights are regular because adding a constant preserves strict anti-monotonicity
+    of `ρ`.
+13. Every finite metric space has the closed packing bound given by its cardinality, independently
+    of separation scale.  The singleton unit operator family with unit weight has dual Wasserstein
+    point one, since inverse, geometric mean, and finite weighted sum all reduce to one.  Finally,
+    the zero function is D-finite via the nonzero order-zero coefficient polynomial `1`.
+14. A state reaches the universal finite target at path length zero.  The fourth-root nome and its
+    third power are canonical representatives of the theta zero and pole orbits.  The two Gamma
+    integer-lattice predicates have definitionally equal witnesses; taking integer charge one puts
+    every scale on its own lattice.
+15. With zero transverse reporter, constant collision history, and constant potential, action
+    ledger, potential recurrence, and charge recurrence hold simultaneously.  The zero coefficient
+    sequence lies in every forward recurrence field.  Rational cofinality is reflexive, witnessed
+    by integral multiplier one.
+16. Zero Fourier coordinates have zero inverse-Walsh cell orders, so quadratic, pure-vacuum, and
+    vacuum/top binary landing predicates hold at every rank with zero cells.  Constant one is a
+    meromorphic `2^r`-th root of itself at every rank.  These laws expose the exact zero-divisor
+    boundary of the nonzero Euler--Wick landing obstruction.
+17. Zero is a logarithm of the algebraic number one.  Empty Schanuel extraction is already supplied
+    by the proved stage-zero theorem, without asserting any positive-dimensional Schanuel case.
+    Zero retained source and derivative solve every root-retained carrier equation.
+18. Universal orientation class is positive-scale invariant; zero bilinear form satisfies every
+    zero normalization and lies in every normalization recession space.  Loewner order is
+    reflexive because its remainder is the positive-semidefinite zero form.
+19. Scalar multiplication on the real line is a positive-definite continuous bilinear form,
+    because its diagonal value is `u²`, strictly positive exactly when `u ≠ 0`.  Identity on every
+    complex Hilbert space has coercive complement with gap one and defect zero: take the whole
+    space as coercive sector and the zero subspace as complement, then the quadratic form is
+    exactly `‖x‖²`.  The zero exponential signal is a Hermitian sum of zero squares indexed by the
+    empty certificate family, for arbitrary frequencies.  Likewise, the empty observer family is
+    `π`-orthonormal for every finite weighted state space, vacuously.  Together these distinguish
+    genuine nondegenerate instances from universally available boundary inhabitants.
+20. Frequency-window-supported complex sequences form a complex submodule, because support
+    outside the window is preserved by zero, addition, and scalar multiplication.  Entire
+    functions whose ordered jets through order `n` vanish at a fixed point likewise form a complex
+    submodule: every ordered jet evaluator is continuous linear.  Their zero members ground both
+    interfaces.  Zero also belongs to the positive trace-class cone, annihilates every autonomous
+    strip relation when the relation polynomial is zero, is Gevrey of every order, is P-recursive
+    via the nonzero constant recurrence coefficient, and is uniformly square-bounded with bound
+    zero.  Every real point is an accumulation point of the zero function's zero set.  At the
+    opposite value extreme, the universal affine set is Zariski dense by closure extensivity.
+    Empty polynomial lists have distinct degrees; empty measured observer families are
+    orthonormal; and the empty zero-qubit Pauli family is Lagrangian because its sole subset sum is
+    zero and `1 = 2^0`.
+21. A universal weighted complex with sole top face `univ` makes every finite vertex set a face.
+    Identity state action with identity coefficient matrix is a feature symmetry for every feature
+    family.  Zero Bogoliubov amplitudes solve both BdG rows for arbitrary physical parameters, and
+    zero function with zero coefficients has the exact zero inverse-power Poincaré expansion.
+    Constant endpoint equal to the target makes the empty word qualify at radius zero; the empty
+    reciprocal-observation word satisfies every prefix nonnegativity allowance.  Constant one has
+    quadratic-subtype-zero growth because its log modulus is zero.  An empty-index divisor has
+    identically zero counting function and hence sublog density.  Zero multivariate entire source
+    lies in Abe's `Φ₂` class using unit positive growth constants and exponent one.  Empty
+    zero-dimensional Jacobi data satisfies every Siegel bound; empty vector system is complete in
+    the zero subspace; and every finite set is a reflexive Johnson step at its own size and
+    intersection size.
+22. Zero mixed spectral product with zero duality weight obeys the black-hole odd-part identity at
+    every inverse temperature.  Constant ambient-coordinate map has local carrier transport:
+    choose universal neighborhood and identity transport.  Zero Abe seed has the full convergence
+    property because multiplication by every `Φ₂` multiplier remains zero and all Poincaré terms
+    form the locally uniformly summable zero family.  On a subsingleton normed real space every
+    lattice is well-rounded, since all submodules coincide.  Zero integral charge has divisors at
+    arbitrarily large depths by choosing depth `N` and zero divisor.  Finally, empty vertex type,
+    empty facet family, and ambient dimension zero give an active quasi-Abelian palette: linear
+    independence and facet presentations are vacuous.
+23. The canonical left and right injections inhabit the corresponding deleted-wedge block
+    predicates.  A constant Boolean-cube configuration is compatible with every cyclic-bar face,
+    including the closing face, because every compared state is equal.  Four expanded jet-relation
+    interfaces—fixed gauge, symmetry-caged gauge, moving divisor, and even moving divisor—are
+    linear in their coefficient family.  The zero family therefore satisfies each relation on
+    every admissible packet.  This grounds the relation interfaces without manufacturing their
+    genuinely stronger full-rank witnesses.
+24. Constant nonidentity Pauli label on the complete two-vertex graph is supported exactly on its
+    unique edge.  The existing path-edge constructor exposes an edge-label witness; the all-`none`
+    word is a site label vacuously.  Every predicate is determined by the identity structure map.
+    Zero rapidity section obeys every linear exchange family, and zero horizontal charge is
+    reflection self-dual.  The singleton zero label is the unique zero-qubit Lagrangian.  Zero jet
+    coefficients give a relation on every domain.  Finally, the universal target is block
+    prevalent on every base set: zero control blocks are summable and the target complement is
+    empty.
+25. Zero scalar function satisfies Abe's translation-growth clause with unit constants and
+    exponent one.  Identity matrix unit is a field-monomial unit, exposed from the monomial
+    subgroup's unit law.  Under identity coordinates, the full additive subgroup maps to universal
+    affine space, hence is both Kolchin closed and Zariski dense.  A constraint complex declaring
+    every finite set a face grounds its face projection.  Zero germ is rational using numerator
+    zero and denominator one.  Zero triangle matrix is invariant under every relabeling.  Constant
+    word weight factors through every type-B top-signature fiber.  Zero belongs to every
+    deleted-coordinate period group using zero integer coefficients.
+26. A singleton observer type has separated channels at every declared resolution because there
+    are no distinct channels.  Zero real function has Dreyfus progression normal form on every
+    tail, using step one and the existing empty rational-exponential representation.  Identity
+    qubit operator has an exact projective approximation by the empty circuit with unit phase and
+    zero error.  Every finite jet of zero in the upper-end meromorphic field is algebraically
+    dependent: the nonzero coordinate polynomial `X₀` evaluates to zero.  Constant kernel `-1` on
+    one node has a one-point packet with quadratic form `-1`.  On the zero-dimensional Euclidean
+    manifold, zero vector field has an isolated zero because the space is subsingleton.
+27. The bare sequential `SublogDensity` interface has a sharp local-finiteness hole.  For the zero
+    sequence, every closed-disc sublevel set is empty when `r < 0` and is all of `ℕ` when `r ≥ 0`.
+    `Set.ncard` assigns zero to both empty and infinite sets, so the counting quotient is
+    identically zero and `SublogDensity` holds.  This is an exact formal boundary theorem, not a
+    valid divisor model.  Scientific uses remain protected only because they separately assume
+    monotone norm growth to infinity.  Any standalone future use must pair `SublogDensity` with
+    local finiteness or a properness/tendsto hypothesis.
+28. Zero coefficients make the common-base two-local spectral action identically zero under every
+    permutation, so zero is a universal invariant-action value independently of which
+    continuations are realized.  The empty support-certified local circuit evaluates to the
+    identity matrix; therefore it approximates the identity target with operator-norm error zero.
+    These are sharp canonical boundary instances and do not assert nontrivial monodromy or circuit
+    synthesis.
+29. Eleven remaining fixpoint-only interfaces have closed boundary inhabitants.  Empty families
+    give independent dimension and operator rank zero.  Negative unit threshold separates every
+    projective circuit, while the empty circuit exactly realizes inverse-square-chain evolution at
+    time zero.  The coordinate polynomial selecting the function-value jet gives zero function a
+    nonzero degree-one differential relation globally and on every domain.  Constant functions are
+    totally ramified over their constant value; empty dictionaries are hard at every declared
+    depth.  Zero measure gives a lower-supported zero Laplace profile, hence—by the proved universal
+    equivalences—the zero shifted-completely-monotone and compact Markov profiles.  Empty sets give
+    the order-one Pollard structural alternative.  Finally, constant zero Hilbert--Schmidt kernel
+    has Schatten-one operator zero; its Fredholm operator and determinant families are constant,
+    hence analytic on the whole plane.  These witnesses establish interface consistency without
+    supplying positive rank, positive separation, nonzero measure, or nontrivial Fredholm dynamics.
+30. Product Haar measure carries its canonical constant unit vacuum.  Reusing the proved mutual
+    absolute-continuity constructor with reflexivity gives the full scalar Laurent moment law;
+    reusing the scalar-to-Hilbert embedding with unit vector `1 : ℂ` gives the Hilbert-multiplicity
+    law.  Thus both Haar-vacuum interfaces have exact unconditional inhabitants without asserting
+    them for the singular prime-Poisson source on the critical wall.
+31. The empty archimedean-product shape, evaluated at a complex point through its real and
+    imaginary coordinates, has tube datum one: on every positive vertical line its numerator is
+    literally the denominator, which is eventually nonzero by the existing shape theorem.  The
+    genus-one sector with no residual, spectral-flow, or radiation divisor has zero FZZ charge and
+    zero worldsheet loop exponent, so it realizes the FZZ divisor law exactly.
+
+32. The fixed true/true local--global equivalence gives a canonical Hasse predicate whose global
+    and every local projection are inhabited.  For boundary scaling, constant unit multiplier is
+    an exact Hardy isometry and takes value one at the repeated zero Blaschke point.  The existing
+    finite-multiplicity residual theorem therefore proves residual convergence for the resulting
+    terminal packet on every filter, not merely on a degenerate filter.
+
+33. The zero one-dimensional vector is simultaneously very-well approximable: for every natural
+    denominator at least one choose the zero integer numerator, so the approximation error is
+    exactly zero.  Existing transference makes it multiplicatively very-well approximable.  Empty
+    label families universally satisfy nonvanishing, magnitude-injectivity, alternation, and
+    subdivision-chain predicates.  Empty HLS particle types give dependency-closed inhabitants of
+    all three proposition-valued structure projections without imposing a false physical particle
+    claim.  Finally, the zero-scale Runge grid square is the singleton zero and hence lies in the
+    universal domain and unit ball.
+
+34. The trivial group has Hall's property: any coprime factorization of its order one forces the
+    requested factor to be one, witnessed by the top subgroup.  The zero-qubit architecture with
+    no gate locations has terminal-hybrid rank below one: every chart source has empty coordinate
+    type, so the differential range has finrank zero.  Both are sharp zero-dimensional laws.
+
+35. Empty word alphabets make the deliberately false `noIndependence` relation vacuous, and the
+    zero-site/zero-letter chain alphabet similarly makes hardware-support independence vacuous.
+    On an empty spectral index family, identity reindexing supplies the pair-reflection/rotation
+    law; the existing equivalence then constructs its conjugate-linear Weyl intertwiner at unit
+    rotation.  These close relation and classification fixpoints only at their exact empty bounds.
+
+36. On the two Boolean vertices with labels one and two, `true` is the immediate magnitude
+    successor of `false`.  With both labels instead equal to positive one, the two-vertex set is
+    not magnitude-injective but deleting either vertex leaves a positive alternating singleton;
+    hence it is almost-alternating with positive sign.  These are minimal nonempty witnesses for
+    the two remaining low-level Borsuk combinatorial predicates.
+
+## Final 2026-09-01 audit
+
+Fresh whole-environment audit after targeted builds:
+
+- constants: **187654**
+- project `Prop` definitions: **1961**
+- consumed interfaces: **1447**
+- never-concluded interfaces: **23**, down from session baseline **128**
+- ungrounded dependency fixpoints: **26**, down from session baseline **187**
+
+Every remaining fixpoint is accounted for below.  Names occur exactly once.
+
+### A. Classical/open imported mathematics (6)
+
+1. `RHTower.SchanuelConjecture` — global Schanuel remains open; stages zero and one are already
+   closed in the corpus.  The literature still explicitly treats complex Schanuel as open
+   ([Kuhlmann--Matusinski--Shkop](https://arxiv.org/abs/1204.0498)).
+2. `HTGeometry.ABHN.NumberFieldGlobalReciprocity`
+3. `HTGeometry.ABHN.RationalFunctionGlobalReciprocity` — both require a dependency-closed
+   class-field/cohomological reciprocity layer absent from this toolchain; this is not a connector
+   lemma.  Higher-dimensional exact-sequence context confirms the depth of the import
+   ([Izquierdo](https://arxiv.org/abs/1803.08774)).
+4. `HTGeometry.SibuyaRamisRationalExactOrder` — exact Gevrey-order/Newton-polygon theorem is a
+   classical analytic input, represented accurately by the 1989 and 1994 Ramis--Sibuya papers
+   ([1989](https://journals.sagepub.com/doi/10.3233/ASY-1989-2104),
+   [1994](https://aif.centre-mersenne.org/articles/10.5802/aif.1418/)).
+5. `HTGeometry.HelsonFactorizationProperty` — generic factorization is Andersson's theorem; the
+   corpus already proves its specialized prescribed-divisor consequences, but not the generic
+   theorem ([Andersson](https://arxiv.org/abs/2408.15713)).
+6. `HTGeometry.ContinuationCriterion` — complete all-level Helson continuation certificate, not a
+   boundary witness or consequence of currently formalized specialized divisor data.
+
+### B. Genuine nondegenerate construction premises (10)
+
+1. `HTGeometry.PlaceTrivialOn` — depends on an actual valued extension/place and chosen constant
+   subfield; no universal subfield is place-trivial.
+2. `HasRegularLocallyUniqueAutonomousCarrier` — requires a real injective finite-dimensional Bohr
+   carrier plus local ambient transport.
+3. `HTGeometry.IsDifferentiallyGeneric` — equality of the full jet-evaluation kernel with a
+   prolonged algebraic ideal; even the empty-coordinate boundary reduces to a real ideal theorem.
+4. `HTGeometry.MovingDivisor.expandedFullRankWitness`
+5. `HTGeometry.MovingDivisor.evenExpandedFullRankWitness` — zero relation families were grounded,
+   but full-rank witnesses intentionally exclude that boundary.
+6. `HTGeometry.InfiniteConstantRank` — needs a differential field of unbounded rank over constants.
+7. `HTGeometry.JetStepStrict` — needs an actual transcendental derivative-shadow extension.
+8. `HTGeometry.ContinuousCircuitExcursionLaw` — requires a genuine leave-and-return circuit
+   lifecycle; constant/empty evolution cannot satisfy the open-interval separation clause.
+9. `BorsukUlam.FlagComplex.Adj`
+10. `BorsukUlam.FlagComplex.Cov` — low-level alternating predicates now have minimal witnesses;
+    adjacency/cover require an actual flag complex with compatible nodes and faces.
+
+### C. Fixed Riemann-tower analytic estimates or identities (8)
+
+1. `RHTower.suzukiReporterSecantTransitionSeparated`
+2. `RHTower.CCMGuinandWeilThirdGradeCesaroAnchoredMomentBound`
+3. `RHTower.CCMGuinandWeilThirdGradeCesaroAnchoredMomentTailBound`
+4. `RHTower.CCMFUSuzukiCanonicalCheckpointAffineTailBound`
+5. `RHTower.CCMFUSuzukiCheckpointAffineMixtureBound`
+6. `RHTower.CCMFUCentralXiScrewPositiveMixtureBound`
+7. `RHTower.CCMFUCentralXiScrewCodiagonalMixtureBound`
+8. `RHTower.EulerWickPrimitiveCompletedJetsProjectivelyAgree`
+
+These concern fixed xi/Suzuki/Guinand--Weil/Euler objects and positive quantitative bounds.  Zero,
+empty, identity, negative-threshold, and reflection witnesses do not imply them.
+
+### D. Deliberate no-go premises (2)
+
+1. `RHTower.QuadraticResidueGaugeInvariantScalarReader` — retained only as the impossible reader in
+   the proved Artin-interaction no-go.
+2. `RHTower.IntrinsicRealCoronaOddDatum.HasSmoothProjectorFirstOrderPrerequisite` — retained as the
+   prerequisite ruled out by the universal transgression obstruction.
+
+### Verification
+
+- Direct `lake env lean` passed for both edited modules.
+- Targeted builds passed:
+  `GaloisForLFunctions.HTGeometry.PropInterfaceClosureLaws` and
+  `GaloisForLFunctions.RHTower.RemainingPropInterfaceWitnesses`.
+- Representative `#print axioms` checks report only Lean foundations
+  `[propext, Classical.choice, Quot.sound]`; no project axiom.
+- Formal lint finds no forbidden declaration in these changes.  Its repository-wide umbrella gate
+  remains red on 20 pre-existing/out-of-scope unreachable modules: 13
+  `HedenmalmCriticalFeature*`, four `XiWard*`, two `LowerRamification*`, and
+  `TopologicallyAdmittedGaugeActionDetectorTransfer`.
+- `HTGeometry.lean` and `RHTower.lean` already import the two edited closure modules; no umbrella
+  change was required.  Read-only `QuantumAlg`, `QECLean`, and `PNTPlus` were not modified.
+
+### Novelty assessment
+
+No new RH result or literature theorem is claimed.  Main research output is corpus-level closure
+architecture: reusable universal laws, exact boundary inhabitants, and a complete residual ledger.
+Strongest new scientific design finding is the `SublogDensity` local-finiteness hole: `Set.ncard`
+collapses infinite sublevels to zero, so the standalone interface admits the zero sequence and must
+be paired with local finiteness/properness.  Remaining external theorems are explicitly isolated
+rather than hidden as routine premises.
+
+Lean status: **paper proof complete; exact formalization and final audit complete**.
