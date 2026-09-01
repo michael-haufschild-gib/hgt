@@ -459,6 +459,111 @@ theorem correctedPropositionThreePartitionCertificate :
   intro ω₀ γ hω₀ hω hγlo hγhi
   exact correctedTypeIIcCondition m n x ω₀ γ hω₀ hω hγlo hγhi
 
+/-- Closed package of the five parameter hypotheses in Stadlmann Proposition 2. -/
+structure HarmanParameterData where
+  xiOne : ℝ
+  xiTwo : ℝ
+  xiThree : ℝ
+  xiTwo_pos : 0 < xiTwo
+  first : 2 * xiOne + 3 * xiTwo < 2
+  typeThree : xiTwo ≤ xiThree
+  separation : xiOne + 9 * xiTwo < 4
+  reversal : 1 < 2 * xiOne + xiTwo
+  terminal : 17 * xiTwo < 7
+
+/-- Every intermediate linear inequality cited in the proof of Proposition 2 follows from its
+five displayed parameter conditions. -/
+theorem HarmanParameterData.derivedProofInequalities (d : HarmanParameterData) :
+    2 * (1 - d.xiOne - d.xiTwo) > d.xiTwo ∧
+      1 - d.xiOne - d.xiTwo / 2 > d.xiTwo ∧
+      1 - 4 * (1 - 2 * d.xiTwo) < 1 - d.xiOne - d.xiTwo ∧
+      3 * (1 - 2 * d.xiTwo) > d.xiTwo ∧
+      d.xiTwo / 2 < 1 - d.xiOne - d.xiTwo ∧
+      16 * d.xiTwo < 7 ∧
+      (4 / 3 : ℝ) * (1 - d.xiTwo) + 2 * (1 - 2 * d.xiTwo) > 1 ∧
+      (1 - d.xiTwo) + 3 * (1 - 2 * d.xiTwo) > 1 ∧
+      (1 - d.xiTwo) / 2 > 1 - d.xiOne - d.xiTwo ∧
+      1 - 3 * (1 - 2 * d.xiTwo) < 1 - d.xiTwo ∧
+      12 * d.xiTwo < 5 ∧
+      7 * d.xiTwo < 3 ∧
+      8 * d.xiTwo - 3 < d.xiTwo ∧
+      2 * (8 * d.xiTwo - 3) < 1 - d.xiTwo := by
+  constructor
+  · linarith [d.first]
+  constructor
+  · linarith [d.first]
+  constructor
+  · linarith [d.separation]
+  constructor
+  · linarith [d.terminal]
+  constructor
+  · linarith [d.first]
+  constructor
+  · linarith [d.terminal, d.xiTwo_pos]
+  constructor
+  · linarith [d.terminal, d.xiTwo_pos]
+  constructor
+  · linarith [d.terminal]
+  constructor
+  · linarith [d.reversal]
+  constructor
+  · linarith [d.terminal]
+  constructor
+  · linarith [d.terminal]
+  constructor
+  · linarith [d.terminal]
+  constructor
+  · linarith [d.terminal]
+  · linarith [d.terminal]
+
+/-- Final numerical parameters as a closed Proposition 2 input. -/
+def finalHarmanParameterData : HarmanParameterData where
+  xiOne := xiOne
+  xiTwo := xiTwo
+  xiThree := xiThree
+  xiTwo_pos := by norm_num [xiTwo]
+  first := harmanParameterCertificate.1
+  typeThree := harmanParameterCertificate.2.1
+  separation := harmanParameterCertificate.2.2.1
+  reversal := harmanParameterCertificate.2.2.2.1
+  terminal := harmanParameterCertificate.2.2.2.2
+
+/-- Exponent data for the first five-prime correction in Proposition 2 at final parameters. -/
+structure FirstFiveFactorCorrection where
+  exponent : Fin 5 → ℝ
+  lower : ∀ i, 1 - 2 * xiTwo < exponent i
+  total : (∑ i, exponent i) = 1
+
+/-- Five exponents strictly above `1/5` cannot sum to one, so the first correction is empty. -/
+theorem noFirstFiveFactorCorrection : IsEmpty FirstFiveFactorCorrection := by
+  constructor
+  intro d
+  have h0 := d.lower (0 : Fin 5)
+  have h1 := d.lower (1 : Fin 5)
+  have h2 := d.lower (2 : Fin 5)
+  have h3 := d.lower (3 : Fin 5)
+  have h4 := d.lower (4 : Fin 5)
+  have hsum : d.exponent 0 + d.exponent 1 + d.exponent 2 +
+      d.exponent 3 + d.exponent 4 = 1 := by
+    simpa [Fin.sum_univ_succ, add_assoc] using d.total
+  norm_num [xiTwo] at h0 h1 h2 h3 h4
+  linarith
+
+/-- Exponent data for the second five-prime correction in Proposition 2 at final parameters. -/
+structure SecondFiveFactorCorrection where
+  exponent : Fin 5 → ℝ
+  lower : ∀ i, 1 - 2 * xiTwo < exponent i
+  upper : ∀ i, exponent i < 8 * xiTwo - 3
+
+/-- The second correction interval collapses to the empty interval `(1/5,1/5)`. -/
+theorem noSecondFiveFactorCorrection : IsEmpty SecondFiveFactorCorrection := by
+  constructor
+  intro d
+  have hlo := d.lower (0 : Fin 5)
+  have hhi := d.upper (0 : Fin 5)
+  norm_num [xiTwo] at hlo hhi
+  linarith
+
 end
 
 end StadlmannBoundedGaps

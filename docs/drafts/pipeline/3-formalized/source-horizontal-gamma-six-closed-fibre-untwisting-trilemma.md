@@ -1,8 +1,8 @@
 # Source Γ₆ closed-fibre untwisting trilemma
 
 - **ID:** RH-SOURCE-G6-CLOSED-FIBRE-TRILEMMA
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Statement:** In any commutative algebra over a field, an automorphic untwisting of `x-u` to `x-1` preserves a proper fibre ideal containing `x-a` iff `u=1`; hence no grade-universal fibre-preserving algebraic enlargement exists.
 
 ## Goal
@@ -14,7 +14,7 @@ Kill
 
 - [x] 0 → 1 in-progress: corpus-derived from the finite/total localization dichotomy; exact chain fixed
 - [x] 1 → 2 fully-proven: dependency-closed proof; `[PAPER-PROVED]`
-- [ ] 2 → 3 formalized: Lean theorem, targeted build, axiom audit, umbrella
+- [x] 2 → 3 formalized: exact Lean theorem; direct check and targeted build pass; standard axioms only; umbrella wired
 - [ ] 3 → 4 publication-ready
 
 ## Hostile loop
@@ -48,4 +48,4 @@ For the family statement, specialize to `u=0`, which is nontrivial in a field.
 - **Exact killing mechanism:** nontrivial untwisting translates the distinguished affine coordinate and therefore moves every proper source fibre.
 - **Strongest positive survivor:** exact fibre-preserving classification `untwisting at u ↔ u=1` for arbitrary commutative source algebras.
 - **New insight:** the localization survivor cannot be “infinite, non-field, closed-fibre retaining” if it is still algebraic and automorphic; viable source dynamics must cease to be fibre-preserving algebraic gauge transport.
-- **Status:** `[PAPER-PROVED]`; proof survives zero-ring, arbitrary-characteristic, nonreduced, and forward-invariance edge cases; Lean formalization pending.
+- **Status:** `[LEAN-PROVED]` as `sourceHorizontalGammaSixClosedFibreAlgebraicUntwistingRouteKilled`; proof survives zero-ring, arbitrary-characteristic, nonreduced, and forward-invariance edge cases; standard axioms only.

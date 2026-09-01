@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.SmoothAFEZetaCriticalDetectorLongRangeSplit
 import GaloisForLFunctions.RHTower.Sieve.DifferentiatedBarbanVehovIncludedEnergy
+import GaloisForLFunctions.RHTower.Sieve.BarbanVehovShortEnergyMain
 
 /-!
 # The total mollified coefficient energy in one statement
@@ -117,6 +118,56 @@ theorem abs_levinsonCriticalDetectorTotalEnergy_sub_le_sq_div
     omega
   exact le_trans (abs_levinsonCriticalDetectorTotalEnergy_sub_le lam hM hscale)
     (levinsonTotalEnergy_error_le_of_lam_small hM hL hlam)
+
+
+/-- **The total mollified coefficient energy against two explicit main terms.**
+
+The short range contributes the origin-based lcm quadratic form, the long range the included-head
+polynomial main term, and the whole error is `O(M²/L)`.  Under the Levinson scaling
+`L ≍ T^{1/2+θ}`, `M = T^θ` with `θ < 1/2` this error tends to zero, so the mollified coefficient
+energy is exactly the sum of the two explicit quadratic forms in the limit. -/
+theorem abs_levinsonCriticalDetectorTotalEnergy_sub_shortMain_add_longMain_le
+    (lam : ℝ) {L M : ℕ} (hM : 1 < M) (hscale : 8 * M ^ 2 ≤ L)
+    (hlam : |lam| * Real.log (L * M + 1 : ℕ) ≤ 1) :
+    |(∑ r : Fin (L * M), levinsonCriticalDetectorFiniteEnergyTerm lam L M r)
+        - (Sieve.barbanVehovShortEnergyMain lam L M +
+            Sieve.barbanVehovIncludedLongEnergyPolynomialMain lam (Real.log L) M)|
+      ≤ 36 * (M : ℝ) ^ 2 / (L : ℝ) := by
+  have hM1 : 1 ≤ M := le_of_lt hM
+  have hMsq : M ≤ M ^ 2 := by nlinarith [hM1]
+  have hML : M ≤ L := by omega
+  have hL : 0 < L := by
+    have : 0 < 8 * M ^ 2 := by positivity
+    omega
+  have hLR : (0 : ℝ) < (L : ℝ) := by exact_mod_cast hL
+  have hlamL : |lam| * Real.log ((L + 1 : ℕ) : ℝ) ≤ 1 := by
+    refine le_trans ?_ hlam
+    refine mul_le_mul_of_nonneg_left ?_ (abs_nonneg lam)
+    refine Real.log_le_log (by positivity) ?_
+    have : L + 1 ≤ L * M + 1 := by
+      have := Nat.le_mul_of_pos_right L (Nat.zero_lt_of_lt hM)
+      omega
+    exact_mod_cast this
+  have hshort := Sieve.abs_barbanVehovShortEnergyLcm_sub_main_le_sq_div lam hM hscale hlamL
+  have heq := Sieve.sum_norm_levinsonLinearMollifiedCriticalDetectorCoeff_sq_eq_shortEnergyLcm
+    lam (X := L) (M := M) hM hML
+  have htotal := abs_levinsonCriticalDetectorTotalEnergy_sub_le_sq_div lam hM hscale hlam
+  rw [heq] at htotal
+  have hsplit :
+      (∑ r : Fin (L * M), levinsonCriticalDetectorFiniteEnergyTerm lam L M r)
+          - (Sieve.barbanVehovShortEnergyMain lam L M +
+              Sieve.barbanVehovIncludedLongEnergyPolynomialMain lam (Real.log L) M)
+        = ((∑ r : Fin (L * M), levinsonCriticalDetectorFiniteEnergyTerm lam L M r)
+              - (Sieve.barbanVehovShortEnergyLcm lam L M +
+                Sieve.barbanVehovIncludedLongEnergyPolynomialMain lam (Real.log L) M))
+          + (Sieve.barbanVehovShortEnergyLcm lam L M -
+              Sieve.barbanVehovShortEnergyMain lam L M) := by
+    ring
+  rw [hsplit]
+  refine (abs_add_le _ _).trans ?_
+  have : 27 * (M : ℝ) ^ 2 / (L : ℝ) + 9 * (M : ℝ) ^ 2 / (L : ℝ)
+      = 36 * (M : ℝ) ^ 2 / (L : ℝ) := by ring
+  linarith [htotal, hshort]
 
 end RHTower
 

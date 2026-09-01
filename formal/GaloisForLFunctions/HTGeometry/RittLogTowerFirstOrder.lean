@@ -420,6 +420,50 @@ theorem second_base_relation_of_towerShift (Fr : RittFrame K L) (b : K)
   field_simp at h2
   linear_combination h2
 
+/-- **The first-order expansion of a power.** -/
+theorem wLt2_pow_sub_firstOrder {D R : MvPolynomial (Fin n) K} {d : ℕ}
+    (hD : WLe n D d) (hR : WLt n R d) :
+    ∀ m : ℕ, WLt2 n ((D + R) ^ m - D ^ m - (m : MvPolynomial (Fin n) K) * R * D ^ (m - 1))
+      (m * d)
+  | 0 => by
+      simpa using wLt2_zero (K := K) (n := n) 0
+  | (m + 1) => by
+      simp only [Nat.add_sub_cancel]
+      have hrw : (D + R) ^ (m + 1) - D ^ (m + 1)
+            - ((m + 1 : ℕ) : MvPolynomial (Fin n) K) * R * D ^ m
+          = ((D + R) ^ m - D ^ m - (m : MvPolynomial (Fin n) K) * R * D ^ (m - 1)) * (D + R)
+            + ((m : MvPolynomial (Fin n) K) * R * D ^ (m - 1)) * R
+            + (D ^ m * R - ((m + 1 : ℕ) : MvPolynomial (Fin n) K) * R * D ^ m
+              + (m : MvPolynomial (Fin n) K) * R * D ^ (m - 1) * D) := by
+        push_cast
+        ring
+      have hlast : (D : MvPolynomial (Fin n) K) ^ m * R
+            - ((m + 1 : ℕ) : MvPolynomial (Fin n) K) * R * D ^ m
+            + (m : MvPolynomial (Fin n) K) * R * D ^ (m - 1) * D = 0 := by
+        cases m with
+        | zero => push_cast; ring
+        | succ m =>
+            have : (D : MvPolynomial (Fin n) K) ^ (m + 1 - 1) * D = D ^ (m + 1) := by
+              simp [pow_succ]
+            push_cast
+            rw [show (m + 1 - 1) = m from rfl] at this
+            linear_combination ((m : MvPolynomial (Fin n) K) + 1) * R * this
+      have h1 : WLt2 n (((D + R) ^ m - D ^ m - (m : MvPolynomial (Fin n) K) * R * D ^ (m - 1))
+          * (D + R)) (m * d + d) :=
+        (wLt2_pow_sub_firstOrder hD hR m).mul_wLe (hD.add hR.wLe)
+      have h2 : WLt2 n (((m : MvPolynomial (Fin n) K) * R * D ^ (m - 1)) * R) (m * d + d) := by
+        cases m with
+        | zero =>
+            simpa using wLt2_zero (K := K) (n := n) (0 * d + d)
+        | succ m' =>
+            have hm : WLe n (((m' + 1 : ℕ) : MvPolynomial (Fin n) K)) 0 := by
+              simpa using wLe_C (K := K) (n := n) ((m' + 1 : ℕ) : K) 0
+            have hprod := ((hm.mul_wLt hR).mul (hD.pow m')).mul_wLt hR
+            exact hprod.mono (le_of_eq (by ring))
+      have hd : (m + 1) * d = m * d + d := by ring
+      rw [hrw, hlast, add_zero, hd]
+      exact h1.add h2
+
 end RittFrame
 
 end GaloisForLFunctions.HTGeometry

@@ -735,6 +735,22 @@ determinant torsors/gerbes for Tate objects, 2-gerbes for 2-Tate spaces, and hig
 commutators already exist. Corpus determinant/index no-gos show these carriers classify anomaly but
 do not force literal source trivialization (`ULF-MDIS-FAILED-1`).
 
+F151 — Functional-equation inversion acts on the marked execution of one actual source increment
+by exact multiplier `-z^-(2m+1)`. Across `n` consecutive increments beginning at `M`, multiplier is
+`(-1)^n z^-n(2M+n)`; actual depth-12 prime-edge executions obey same product law
+(`LiteralSourceReflectionDeterminantCocycle`).
+
+F152 — Source rank growth amplifies fixed horizontal radial drift quadratically: accumulated
+reflection multiplier has norm `norm(z)^-n(2M+n)`. For every nonempty block it has unit norm iff
+`norm(z)=1`; at prime-radial character `p^nu`, this is iff `nu=0`
+(`LiteralSourceReflectionDeterminantCocycle`).
+
+F153 — FE involutivity does not trivialize accumulated determinant distortion. It pairs cocycle with
+its inverse for every grade. Information-neutral common recovery likewise preserves separation,
+while bilateral summability/properness is already a critical-line endpoint
+(`ULF-FEIDS-FAILED-1`, `ConstitutiveFunctionalEquationPacketLift`,
+`PrimeEdgeObserverFormationHodge`).
+
 ## Logical consequences of audited facts
 
 Each `CANNOT`/`MUST` line is a necessary consequence of cited corpus results. This section contains
@@ -1067,6 +1083,10 @@ CANNOT-82 — It cannot obtain selection by replacing determinant line with dete
 already encode higher anomalies, while internal reflected determinant/index laws remain
 nonselective.
 
+CANNOT-83 — It cannot infer unit determinant transport from FE involutivity, common recovery, or
+information neutrality. Reflected source cocycles are inverse-paired at every grade, and bilateral
+properness is itself a selector premise.
+
 ### It must do or have this
 
 MUST-01 — It must be defined on pre-divisor source data and specialize at Xi occurrences only after
@@ -1274,3 +1294,8 @@ MUST-57 — Since actual source rank growth and canonical quotient increments ar
 determinant-history selector must construct source/reflection transport on those literal quotient
 generators, identify its accumulated class with existing horizontal Xi charge, and prove
 pre-divisor source completion trivializes it. Generic gerbe existence is insufficient.
+
+MUST-58 — Marked source reflection transport now has exact quadratic distortion. Any resulting RH
+architecture must prove from literal pre-divisor execution a subquadratic bilateral conditioning
+bound (or stronger unit-norm law); imposing summability, properness, or bounded distortion after Xi
+specialization is an existing endpoint.

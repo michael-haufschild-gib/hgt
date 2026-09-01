@@ -29,6 +29,13 @@ def stadlmannReciprocalPhaseSum (q : ℕ) [NeZero q] (c : ZMod q) : ℂ :=
   ∑ x : (ZMod q)ˣ,
     ZMod.stdAddChar (c * ((x⁻¹ : (ZMod q)ˣ) : ZMod q))
 
+/-- Diagonal two-phase specialization of Stadlmann's reciprocal exponential sum. -/
+def stadlmannReciprocalPhaseProductSum
+    (q : ℕ) [NeZero q] (c₁ c₂ : ZMod q) : ℂ :=
+  ∑ x : (ZMod q)ˣ,
+    ZMod.stdAddChar (c₁ * ((x⁻¹ : (ZMod q)ˣ) : ZMod q)) *
+      ZMod.stdAddChar (c₂ * ((x⁻¹ : (ZMod q)ˣ) : ZMod q))
+
 /-- The complete reciprocal phase is the zero-frequency Kloosterman sum. -/
 theorem stadlmannReciprocalPhaseSum_eq_kloosterman
     (q : ℕ) [NeZero q] (c : ZMod q) :
@@ -69,6 +76,42 @@ theorem stadlmannReciprocalPhaseSum_eq_cglRamanujan
       intro a ha
       congr 1
       ring
+
+/-- Two reciprocal phases with equal modulus and denominator collapse to frequency `c₁ + c₂`. -/
+theorem stadlmannReciprocalPhaseProductSum_eq_add
+    (q : ℕ) [NeZero q] (c₁ c₂ : ZMod q) :
+    stadlmannReciprocalPhaseProductSum q c₁ c₂ =
+      stadlmannReciprocalPhaseSum q (c₁ + c₂) := by
+  unfold stadlmannReciprocalPhaseProductSum stadlmannReciprocalPhaseSum
+  apply Finset.sum_congr rfl
+  intro x hx
+  rw [← AddChar.map_add_eq_mul]
+  congr 1
+  ring
+
+/-- Diagonal two-phase sum transported to the Kloosterman API. -/
+theorem stadlmannReciprocalPhaseProductSum_eq_kloosterman
+    (q : ℕ) [NeZero q] (c₁ c₂ : ZMod q) :
+    stadlmannReciprocalPhaseProductSum q c₁ c₂ =
+      kloostermanSum q 0 (c₁ + c₂) := by
+  rw [stadlmannReciprocalPhaseProductSum_eq_add,
+    stadlmannReciprocalPhaseSum_eq_kloosterman]
+
+/-- Diagonal two-phase sum transported to the Chen--Gupta--Li Ramanujan API. -/
+theorem stadlmannReciprocalPhaseProductSum_eq_cglRamanujan
+    (q : ℕ) [NeZero q] (c₁ c₂ : ZMod q) :
+    stadlmannReciprocalPhaseProductSum q c₁ c₂ =
+      RHTower.cglRamanujanAdditiveSum
+        ⟨q, Nat.pos_of_ne_zero (NeZero.ne q)⟩ (c₁ + c₂) := by
+  rw [stadlmannReciprocalPhaseProductSum_eq_add,
+    stadlmannReciprocalPhaseSum_eq_cglRamanujan]
+
+/-- Opposite diagonal frequencies cancel and leave the full unit mass. -/
+@[simp] theorem stadlmannReciprocalPhaseProductSum_neg
+    (q : ℕ) [NeZero q] (c : ZMod q) :
+    stadlmannReciprocalPhaseProductSum q c (-c) = (Nat.totient q : ℂ) := by
+  rw [stadlmannReciprocalPhaseProductSum_eq_add, add_neg_cancel]
+  simp [stadlmannReciprocalPhaseSum, ZMod.card_units_eq_totient]
 
 /-- Zero reciprocal frequency has full reduced-residue mass. -/
 @[simp] theorem stadlmannReciprocalPhaseSum_zero

@@ -74,6 +74,7 @@ private theorem sum_pointwise_quad_combination {ι : Type*} (S : Finset ι) (lam
       = c i * f0 i - (lam * (c i * f1 i) + lam * (c i * f2 i)) + lam ^ 2 * (c i * f3 i) :=
     fun i => by ring
   simp only [h, Finset.sum_add_distrib, Finset.sum_sub_distrib, ← Finset.mul_sum]
+  ring
 
 /-- Base lcm form of the short-range energy. -/
 def barbanVehovShortBaseLcm (X M : ℕ) : ℝ :=

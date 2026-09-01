@@ -105,7 +105,7 @@ theorem exists_list_mem_isRegular_of_map [IsNoetherianRing D] (I : Ideal A) :
         (Submodule.mkQ_surjective _)
     have hxle : (x • (⊤ : Submodule D N)) ≤ (Ideal.map (algebraMap A D) I) • ⊤ := by
       rw [← Submodule.ideal_span_singleton_smul]
-      exact Submodule.smul_mono_left (Ideal.span_le.mpr (Set.singleton_subset_iff.mpr hxmem))
+      exact Submodule.smul_mono (Ideal.span_le.mpr (Set.singleton_subset_iff.mpr hxmem)) le_rfl
     have hltq : (Ideal.map (algebraMap A D) I) •
         (⊤ : Submodule D ((ModuleCat.smulShortComplex N x).X₃)) < ⊤ := by
       have hmapeq : (Ideal.map (algebraMap A D) I) •
@@ -113,13 +113,24 @@ theorem exists_list_mem_isRegular_of_map [IsNoetherianRing D] (I : Ideal A) :
           = Submodule.map (Submodule.mkQ (x • (⊤ : Submodule D N)))
             ((Ideal.map (algebraMap A D) I) • ⊤) := by
         rw [Submodule.map_smul'', Submodule.map_top, Submodule.range_mkQ]
+        rfl
       refine lt_of_le_of_ne le_top ?_
       intro hcon
       rw [hmapeq] at hcon
-      have h2 := congrArg (Submodule.comap (Submodule.mkQ (x • (⊤ : Submodule D N)))) hcon
-      rw [Submodule.comap_map_eq, Submodule.ker_mkQ, Submodule.comap_top] at h2
-      rw [sup_eq_left.mpr hxle] at h2
-      exact hlt.ne h2
+      refine hlt.ne (le_antisymm le_top fun v _ => ?_)
+      have hv : (Submodule.mkQ (x • (⊤ : Submodule D N))) v
+          ∈ Submodule.map (Submodule.mkQ (x • (⊤ : Submodule D N)))
+            ((Ideal.map (algebraMap A D) I) • ⊤) := by
+        rw [hcon]
+        trivial
+      obtain ⟨w, hw, hwv⟩ := hv
+      have hker : v - w ∈ x • (⊤ : Submodule D N) := by
+        rw [← Submodule.ker_mkQ (p := x • (⊤ : Submodule D N)), LinearMap.mem_ker, map_sub, hwv,
+          sub_self]
+      have hvw : v - w ∈ (Ideal.map (algebraMap A D) I) • ⊤ := hxle hker
+      have hsplit : v = (v - w) + w := by abel
+      rw [hsplit]
+      exact Submodule.add_mem _ hvw hw
     have hgq : HasGradeGE (Ideal.map (algebraMap A D) I)
         ((ModuleCat.smulShortComplex N x).X₃) n :=
       hasGradeGE_quotSMulTop N hyreg hlt hltq ⟨z :: t, hlen, hmem, hreg⟩

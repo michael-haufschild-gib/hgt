@@ -1,4 +1,6 @@
 import GaloisForLFunctions.RHTower.BondarenkoHeapLemmaNine
+import GaloisForLFunctions.RHTower.DirichletCharacterTwoAdicSecondMoment
+import GaloisForLFunctions.RHTower.DirichletCharacterEightOddSecondMoment
 
 /-!
 # Stadlmann gcd-sum applications
@@ -71,6 +73,56 @@ theorem stadlmannGcdIntervalMass_le_divisorCount (q : PositiveModulus) (K : ℕ)
         _ ≤ K := Nat.div_mul_le_self K e
     _ = K * q.1.divisors.card := by simp [Nat.mul_comm]
 
+/-- Lemma 10 applied to a real divisor/totient coefficient.  Replacing real division by integer
+division costs one extra total totient mass, hence the explicit `2q` term. -/
+theorem stadlmannDivisorTotientCoefficient_le (q : PositiveModulus) (M : ℕ) :
+    ∑ e ∈ q.1.divisors, (Nat.totient e : ℝ) *
+        ((M : ℝ) / (e : ℝ) + 1) ≤
+      (M : ℝ) * (q.1.divisors.card : ℝ) + 2 * (q.1 : ℝ) := by
+  have hmass := stadlmannGcdIntervalMass_le_divisorCount q M
+  have hmassReal : (stadlmannGcdIntervalMass q M : ℝ) ≤
+      (M : ℝ) * (q.1.divisors.card : ℝ) := by
+    exact_mod_cast hmass
+  have hmassEq : (stadlmannGcdIntervalMass q M : ℝ) =
+      ∑ e ∈ q.1.divisors,
+        (Nat.totient e : ℝ) * ((M / e : ℕ) : ℝ) := by
+    exact_mod_cast stadlmannGcdIntervalMass_eq_totient q M
+  have htot : ∑ e ∈ q.1.divisors, (Nat.totient e : ℝ) = (q.1 : ℝ) := by
+    exact_mod_cast Nat.sum_totient q.1
+  calc
+    ∑ e ∈ q.1.divisors, (Nat.totient e : ℝ) *
+        ((M : ℝ) / (e : ℝ) + 1) ≤
+        ∑ e ∈ q.1.divisors,
+          (Nat.totient e : ℝ) * (((M / e : ℕ) : ℝ) + 2) := by
+      apply Finset.sum_le_sum
+      intro e he
+      have hepos : 0 < e := Nat.pos_of_mem_divisors he
+      have heRpos : (0 : ℝ) < (e : ℝ) := by exact_mod_cast hepos
+      have hlt : (M : ℝ) < (e : ℝ) * (((M / e : ℕ) : ℝ) + 1) := by
+        exact_mod_cast Nat.lt_mul_div_succ M hepos
+      have hdiv : (M : ℝ) / (e : ℝ) ≤ ((M / e : ℕ) : ℝ) + 1 := by
+        rw [div_le_iff₀ heRpos]
+        linarith
+      exact mul_le_mul_of_nonneg_left (by linarith) (Nat.cast_nonneg _)
+    _ = (∑ e ∈ q.1.divisors,
+          (Nat.totient e : ℝ) * ((M / e : ℕ) : ℝ)) +
+          2 * ∑ e ∈ q.1.divisors, (Nat.totient e : ℝ) := by
+      calc
+        _ = ∑ e ∈ q.1.divisors,
+            ((Nat.totient e : ℝ) * ((M / e : ℕ) : ℝ) +
+              2 * (Nat.totient e : ℝ)) := by
+          apply Finset.sum_congr rfl
+          intro e he
+          ring
+        _ = (∑ e ∈ q.1.divisors,
+              (Nat.totient e : ℝ) * ((M / e : ℕ) : ℝ)) +
+            ∑ e ∈ q.1.divisors, 2 * (Nat.totient e : ℝ) :=
+          Finset.sum_add_distrib
+        _ = _ := by rw [Finset.mul_sum]
+    _ = (stadlmannGcdIntervalMass q M : ℝ) + 2 * (q.1 : ℝ) := by
+      rw [← hmassEq, htot]
+    _ ≤ (M : ℝ) * (q.1.divisors.card : ℝ) + 2 * (q.1 : ℝ) := by linarith
+
 end RHTower
 
 namespace RHTower.OddPrimeFamily
@@ -97,5 +149,66 @@ theorem ramanujanGcdSymmetricIntervalMass_stadlmannLemmaTen
       2 * (K : ℝ) * (P.modulus.divisors.card : ℝ) := by
   rw [ramanujanGcdSymmetricIntervalMass_eq_two_mul]
   nlinarith [ramanujanGcdIntervalMass_stadlmannLemmaTen P K]
+
+/-- Lemma 10 closes the odd quadratic-character interval second moment through its gcd kernel. -/
+theorem quadratic_intervalShiftSum_normSq_stadlmannLemmaTen
+    (P : OddPrimeFamily I) (M : ℕ) (b : ℕ → ℂ) :
+    ∑ x : ZMod P.modulus, Complex.normSq (quadraticIntervalShiftSum P M b x) ≤
+      ((M : ℝ) * (P.modulus.divisors.card : ℝ) + 2 * (P.modulus : ℝ)) *
+        ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 := by
+  have henergy : 0 ≤ ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 :=
+    Finset.sum_nonneg fun k hk => sq_nonneg ‖b k‖
+  calc
+    _ ≤ (∑ e ∈ P.modulus.divisors, (Nat.totient e : ℝ) *
+        ((M : ℝ) / (e : ℝ) + 1)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 :=
+      quadratic_intervalShiftSum_normSq_le_divisor P M b
+    _ ≤ _ := mul_le_mul_of_nonneg_right
+      (RHTower.stadlmannDivisorTotientCoefficient_le
+        ⟨P.modulus, P.modulus_neZero.out⟩ M) henergy
+
+/-- Same Lemma 10 route for the conductor-four/odd quadratic character. -/
+theorem fourOdd_quadratic_intervalShiftSum_normSq_stadlmannLemmaTen
+    (P : OddPrimeFamily I) (M : ℕ) (b : ℕ → ℂ) :
+    ∑ x : ZMod (fourOddModulus P),
+        Complex.normSq (fourOddQuadraticIntervalShiftSum P M b x) ≤
+      ((M : ℝ) * ((fourOddModulus P).divisors.card : ℝ) +
+        2 * (fourOddModulus P : ℝ)) *
+        ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 := by
+  have henergy : 0 ≤ ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 :=
+    Finset.sum_nonneg fun k hk => sq_nonneg ‖b k‖
+  calc
+    _ ≤ (∑ e ∈ (fourOddModulus P).divisors, (Nat.totient e : ℝ) *
+        ((M : ℝ) / (e : ℝ) + 1)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 :=
+      fourOdd_quadratic_intervalShiftSum_normSq_le_divisor P M b
+    _ ≤ _ := mul_le_mul_of_nonneg_right
+      (RHTower.stadlmannDivisorTotientCoefficient_le
+        ⟨fourOddModulus P, (fourOddModulus_neZero P).out⟩ M) henergy
+
+/-- Same Lemma 10 route for either conductor-eight/odd quadratic character. -/
+theorem eightOdd_quadratic_intervalShiftSum_normSq_stadlmannLemmaTen
+    (κ : EightQuadraticKind) (P : OddPrimeFamily I) (M : ℕ) (b : ℕ → ℂ) :
+    ∑ x : ZMod (eightOddModulus P),
+        Complex.normSq (eightOddQuadraticIntervalShiftSum κ P M b x) ≤
+      ((M : ℝ) * ((eightOddModulus P).divisors.card : ℝ) +
+        2 * (eightOddModulus P : ℝ)) *
+        ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 := by
+  have hmodpos : 0 < eightOddModulus P :=
+    Nat.pos_of_ne_zero (eightOddModulus_neZero P).out
+  have hmod : eightOddModulus P - 1 + 1 = eightOddModulus P :=
+    Nat.sub_add_cancel hmodpos
+  have henergy : 0 ≤ ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 :=
+    Finset.sum_nonneg fun k hk => sq_nonneg ‖b k‖
+  calc
+    _ ≤ gcdKernelMoment (eightOddModulus P - 1) M b :=
+      eightOdd_quadratic_intervalShiftSum_normSq_le_gcdKernel κ P M b
+    _ ≤ (∑ e ∈ (eightOddModulus P - 1 + 1).divisors,
+        (Nat.totient e : ℝ) * ((M : ℝ) / (e : ℝ) + 1)) *
+        ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 :=
+      gcdKernelMoment_le (eightOddModulus P - 1) M b
+    _ ≤ _ := by
+      rw [hmod]
+      exact mul_le_mul_of_nonneg_right
+        (RHTower.stadlmannDivisorTotientCoefficient_le
+          ⟨eightOddModulus P, (eightOddModulus_neZero P).out⟩ M) henergy
 
 end RHTower.OddPrimeFamily

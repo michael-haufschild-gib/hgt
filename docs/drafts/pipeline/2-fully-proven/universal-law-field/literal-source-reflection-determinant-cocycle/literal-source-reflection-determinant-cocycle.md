@@ -19,7 +19,10 @@ For prime-radial character `z=p^nu`, unit norm of any nonempty accumulated cocyc
 `nu=0`.  Under existing identification `nu = 1/2-Re(rho)`, a pre-divisor theorem forcing unit-norm
 source reflection transport would close RH through existing horizontal-charge receivers.
 
-This card proves exact cocycle and classifier, not unit-norm premise.  Corpus warns that
+This card proves exact cocycle and classifier in the raw source-rank frame, not unit-norm premise.
+`RankGaugeLinearizationOfSourceReflection` subsequently proves its quadratic exponent is conjugated
+to a linear exponent by source-visible rank normalization; quadratic rate is therefore not an
+invariant selector.  Corpus also warns that
 information-neutral FE recovery is not defect-neutral and that finite reflected source displacement
 collapses cofinally off line with divergent inverse conditioning.  Thus unit norm cannot be inferred
 from involutivity, common recovery, or ordinary completion.
@@ -108,7 +111,8 @@ For item 6, `p>1` and `norm(p^nu)=p^nu`; strict injectivity of real exponentiati
 
 - Exact source-specific law fuses rank creation, prime-edge execution, FE inversion, and cofinal
   accumulation.
-- It predicts quadratic—not linear—reflection conditioning across source rank.
+- It predicts quadratic reflection conditioning only in the raw rank frame; exact rank-gauge
+  linearization proves this rate is not invariant.
 - It remains a faithful coordinate of horizontal grade, not source proof of grade zero.
 - FE involutivity only pairs cocycle with inverse and is compatible with every nonzero grade.
 - Any claimed RH use must independently prove unit norm or subquadratic conditioning from literal
@@ -119,7 +123,7 @@ For item 6, `p>1` and `norm(p^nu)=p^nu`; strict injectivity of real exponentiati
 - [x] 0 → 1: source-pure definitions; corpus audit; exact RH closure and circularity boundary
 - [x] 1 → 2: complete dependency-closed proof; `[PROVED HERE]`
 - [x] 2 → 3: `LiteralSourceReflectionDeterminantCocycle.lean`; direct check and module-only build
-  pass; targeted axiom audit recorded below
+  pass; axioms `[propext, Classical.choice, Quot.sound]`
 - [ ] 3 → 4: publication-ready extraction
 
 ## Log

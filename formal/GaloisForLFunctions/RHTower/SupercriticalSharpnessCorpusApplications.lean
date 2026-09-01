@@ -4,7 +4,10 @@ import GaloisForLFunctions.HTGeometry.GADCTreePopulationRG
 import GaloisForLFunctions.HTGeometry.PathShellEdgeTail
 import GaloisForLFunctions.HTGeometry.TemporalSteinerBirthSpectrum
 import GaloisForLFunctions.RHTower.FiniteAndersonLocalizedSurvivalRecurrenceLaw
+import GaloisForLFunctions.RHTower.FiniteWindowRecurrenceInstability
 import GaloisForLFunctions.RHTower.GateWordComplexityLaws
+import GaloisForLFunctions.RHTower.ParityConditionedForecastingInstability
+import GaloisForLFunctions.RHTower.RiemannGaussian.FiniteToEntireBoundedHeat
 import GaloisForLFunctions.RHTower.TwoSpinFKGLeeYangBridge
 
 /-!
@@ -65,6 +68,89 @@ theorem finiteDerivativeReporter_rank_reaches_or_conditionalInformation_zero
 end
 
 end HTGeometry
+
+namespace RHTower.ParityForecast
+
+/-! ## FKG-style selector for a parity midpoint record -/
+
+/-- For the shared parity/full observation record, one of the two terminal-error marginals is no
+larger than the square root of their joint product.  This is the paper's midpoint square-root
+alternative with the product of the two model errors as the joint-failure scale. -/
+theorem scaledMidpoint_forecast_error_le_sqrt_product
+    (forecast : (ℝ → ℝ) → ℝ) (T : ℝ) (n : ℕ) :
+    |forecast (scaledMidpointProbability T n) - 1| ≤
+        Real.sqrt
+          (|forecast (scaledMidpointProbability T n) - 1| *
+            |forecast (scaledMidpointProbability T n) - 0|) ∨
+      |forecast (scaledMidpointProbability T n) - 0| ≤
+        Real.sqrt
+          (|forecast (scaledMidpointProbability T n) - 1| *
+            |forecast (scaledMidpointProbability T n) - 0|) := by
+  exact GaloisForLFunctions.HTGeometry.le_sqrt_or_le_sqrt_of_mul_le
+    (mul_nonneg (abs_nonneg _) (abs_nonneg _)) le_rfl
+
+end RHTower.ParityForecast
+
+namespace RHTower.FiniteWindow
+
+/-! ## FKG-style selector for a finite-window midpoint record -/
+
+/-- The same square-root selector holds for the returning/orthogonal clock midpoint record. -/
+theorem scaledMidpoint_forecast_error_le_sqrt_product
+    (forecast : (ℝ → ℝ) → ℝ) (T : ℝ) (N : ℕ) :
+    |forecast (scaledMidpointProbability T N) - 1| ≤
+        Real.sqrt
+          (|forecast (scaledMidpointProbability T N) - 1| *
+            |forecast (scaledMidpointProbability T N) - 0|) ∨
+      |forecast (scaledMidpointProbability T N) - 0| ≤
+        Real.sqrt
+          (|forecast (scaledMidpointProbability T N) - 1| *
+            |forecast (scaledMidpointProbability T N) - 0|) := by
+  exact GaloisForLFunctions.HTGeometry.le_sqrt_or_le_sqrt_of_mul_le
+    (mul_nonneg (abs_nonneg _) (abs_nonneg _)) le_rfl
+
+end RHTower.FiniteWindow
+
+namespace RiemannGaussian
+
+open Complex Filter Metric Polynomial Set
+
+/-! ## Many disjoint spectral balls touched by canonical approximants -/
+
+/-- Around any finite family of genuine spectral-xi zeros, the canonical real Taylor
+approximants eventually place at least one root occurrence in each of pairwise disjoint isolating
+balls.  This is the root-cluster analogue of the paper's many-disjoint-balls touch lemma. -/
+theorem exists_pairwiseDisjoint_taylorRootBalls_eventually_card_le_rootCountSum
+    (S : Finset NontrivialZetaZero) :
+    ∃ R : S → ℝ,
+      (∀ rho : S, 0 < R rho ∧
+        ∀ z ∈ closedBall (zetaSpectralCoordinate rho.1.1) (R rho),
+          z ≠ zetaSpectralCoordinate rho.1.1 → riemannXiSpectral z ≠ 0) ∧
+      (Set.univ : Set S).PairwiseDisjoint (fun rho : S ↦
+        closedBall (zetaSpectralCoordinate rho.1.1) (R rho)) ∧
+      ∀ᶠ n in atTop,
+        S.card ≤ ∑ rho : S,
+          realPolynomialRootCountInBall
+            (riemannXiSpectralRealTaylorPolynomial n)
+            (zetaSpectralCoordinate rho.1.1) (R rho) := by
+  obtain ⟨R, hR, hdisjoint, hcounts⟩ :=
+    exists_pairwiseDisjoint_simultaneous_riemannXiSpectral_localRootCounts
+      riemannXiSpectralRealTaylorPolynomial
+      riemannXiSpectralRealTaylorPolynomial_tendstoLocallyUniformlyOn S
+  refine ⟨R, hR, hdisjoint, ?_⟩
+  filter_upwards [hcounts] with n hn
+  calc
+    S.card = ∑ _rho : S, 1 := by simp
+    _ ≤ ∑ rho : S, analyticZetaZeroMultiplicity rho.1 := by
+      exact Finset.sum_le_sum fun rho _ ↦
+        analyticZetaZeroMultiplicity_positive rho.1
+    _ = ∑ rho : S,
+        realPolynomialRootCountInBall
+          (riemannXiSpectralRealTaylorPolynomial n)
+          (zetaSpectralCoordinate rho.1.1) (R rho) := by
+      exact Finset.sum_congr rfl fun rho _ ↦ (hn rho).symm
+
+end RiemannGaussian
 
 namespace GaloisForLFunctions.HTGeometry
 

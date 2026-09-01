@@ -2360,3 +2360,45 @@ which need `level_three_seed` with a wider inhomogeneity: the quadratic branch p
 relation carrying an extra `(dτ)²/τ` term, and the degree-one branch a level-three relation with a
 nonzero base constant and `α = 0`.  Both are the same lemma with `β` allowed to be a base
 combination of the monomials `τ^a(dτ)^b` rather than only `β₁·dτ`.
+
+### The affine logarithmic tower closes the differential-algebra side of Ritt's implication (2026-09-01)
+
+The `τ`-jet descent is superseded.  Replace the linearizer by its **logarithmic seed**
+
+```text
+u = d²τ/dτ − dτ/τ = d(v)/v,      v = dτ/τ,      σ u = ρ^{-1}u − (dρ)/ρ².
+```
+
+Its jets obey a *triangular affine* system with diagonal `ρ^{-(k+1)}`, subdiagonal
+`−C(k+2,2)·ρ^{-(k+3)}·dρ ≠ 0` and base constants `b_{k+1} = ρ^{-1}dK b_k`, `b_0 = −(dρ)/ρ²`.  This
+removes the three obstructions that blocked the old descent: no `q` appears, so no base exponent pair
+can be trivial; no coordinate is a pure eigenvector, so the monomial tautology has no source; and
+every descended inhomogeneity is provably nonzero.
+
+Twelve new modules carry it, all unconditional and auditing to
+`[propext, Classical.choice, Quot.sound]`: `RittAffineJetTower`, `RittLogTowerDefect`,
+`RittAffineLinearSplit`, `RittLogTowerStep`, `RittGeneralDenominator`, `RittLogTowerRing`,
+`RittLogTowerMvSubstitution`, `RittLogTowerWeight`, `RittLogTowerCollapse`,
+`RittLogTowerFirstOrder`, `RittLogTowerConnection`, `RittLogTowerDescent`.
+
+With the jets algebraically independent the collapse becomes one polynomial identity in
+`MvPolynomial (Fin n) K` (`towerShift_eq_of_collapse`), graded by the weight `w(X_j) = j + 1`.  The
+top layer of that grading is the base relation `ψ(F_d) = ρ^{J+W}F_d + ρ^W G_d`
+(`base_relation_of_towerShift`); a vanishing top layer of `F` forces one of `G`, so the same
+relation descends unchanged (`obstruction_or_zero_of_towerRelation`).  The only trivial exponent is
+at weight `n + 1`.  Hence
+
+> **`obstruction_or_weightedHomogeneous_of_collapse`** — a collapse of the tower forces a base
+> obstruction (Ritt's order-one form, or a rational affine transport equation — both already refuted
+> for interior channels), or the collapsing polynomial is weighted homogeneous of weight exactly
+> `n + 1` with shift-fixed, hence derivation-constant, coefficients.
+
+The residual is then a pure substitution `F ∘ A = ρ^{-(n+1)}F + δ_n` with `F` of constant
+coefficients.  In the base coordinates `b_k` the tower coefficients satisfy the `ρ`-free recursion
+`A_{k+1,j} = A_{k,j-1} + (j+1)b_0A_{k,j} + D A_{k,j}`, and the degree-one part of the identity reads
+`∑_{j≥k}(∂_jF)(b)·A_{j,k}(b) = A_{n,k}(b)`.  At `k = n−1` this gives
+`∂F/∂x_{n-1} = C(n+1,2)·x_0`; at `k = n−2` it gives
+`(α + C(n+1,2)C(n,2) − σ_n)b_0² + (β − C(n+1,3))b_1 = 0`, so either two more coefficients of `F` are
+pinned or `b_1/b_0²` is constant — that is `ρ·d²ρ = c(dρ)²`, i.e. `R' = C(z−z_0)^m`, excluded for the
+channel maps.  `n = 1` and `n = 2` close outright: both force the map's Schwarzian to vanish.
+The remaining work is the same bookkeeping for general `n`.

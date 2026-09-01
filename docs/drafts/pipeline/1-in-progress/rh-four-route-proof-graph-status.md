@@ -10,7 +10,7 @@ Frontier map is read-only. Facts only; cards/certificates are source of truth.
 - Every fixed coherent complex quadratic scalarization is blind (`κ=0`) or exactly shared Ward/RH (`κ≠0`); positivity and Hermiticity are irrelevant.
 - Every ℝ-algebra automorphic untwisting of the Γ₆ cyclic source is trivial: `t-u → t-1` forces `u=1`; universal physical untwisting is shared Ward/RH.
 - Localization dichotomy: finite denominator `D` admits translation `q` iff `D(-q)=0`, so none is grade-universal; `ℝ(X)` has a unique untwisting for every holonomy and is nonselective.
-- Viable source dynamics must retain a closed-fibre invariant; algebraic reparametrization, finite-principal localization, and total fraction-field localization are dead. Any intermediate survivor must be infinite, non-field, and closed-fibre retaining.
+- Fibre-preserving commutative algebraic enlargement is terminal: any untwisting of `x-u` preserving a proper fibre containing `x-a` forces `u=1`, with no finiteness/domain/reducedness assumption. Grade-universal untwisting requires moving fibres; any survivor is genuinely dynamical, noncommutative, or non-algebraic/singular.
 - Missing edge is source-dynamical Ward/orientation, not divisor detection.
 
 ## HB
@@ -41,4 +41,4 @@ Frontier map is read-only. Facts only; cards/certificates are source of truth.
 
 ## Latest certificate
 
-`sourceHorizontalGammaSixRationalLocalizationRouteKilled` — direct Lean PASS; targeted build PASS; standard axioms only; umbrella wired.
+`sourceHorizontalGammaSixClosedFibreAlgebraicUntwistingRouteKilled` — direct Lean PASS; targeted build PASS; standard axioms only; umbrella wired.

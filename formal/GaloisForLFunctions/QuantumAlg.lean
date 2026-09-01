@@ -33,6 +33,7 @@ import GaloisForLFunctions.QuantumAlg.Algorithms.Grover
 import GaloisForLFunctions.QuantumAlg.Algorithms.OrderFinding
 import GaloisForLFunctions.QuantumAlg.Algorithms.OrderFinding.Probability
 import GaloisForLFunctions.QuantumAlg.Algorithms.OrderFinding.Resource
+import GaloisForLFunctions.QuantumAlg.Algorithms.OrderFinding.SupercriticalSharpnessRetry
 import GaloisForLFunctions.QuantumAlg.Algorithms.QPE
 import GaloisForLFunctions.QuantumAlg.Algorithms.Simon
 import GaloisForLFunctions.QuantumAlg.Algorithms.SuperdenseCoding

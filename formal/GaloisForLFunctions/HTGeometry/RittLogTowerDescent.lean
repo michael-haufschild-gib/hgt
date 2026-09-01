@@ -330,7 +330,7 @@ theorem eval_logConst_of_collapse (Fr : RittFrame K L) {u : L} {b : K}
     exact hfix d
   have hconst := congrArg (constantCoeff : MvPolynomial (Fin n) K →+* K) hpoly
   rw [Fr.constantCoeff_towerShift b F, map_add, map_mul, constantCoeff_C,
-    Fr.constantCoeff_defectPoly b n, constantCoeff_apply, hF0, mul_zero, zero_add] at hconst
+    Fr.constantCoeff_defectPoly b n, constantCoeff_eq, hF0, mul_zero, zero_add] at hconst
   rw [eval₂_eq_eval_map, hmapF] at hconst
   exact hconst
 
