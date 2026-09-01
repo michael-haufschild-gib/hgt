@@ -5553,7 +5553,7 @@ First hostile classification separates genuine premises from exact-head blind sp
     hence it is almost-alternating with positive sign.  These are minimal nonempty witnesses for
     the two remaining low-level Borsuk combinatorial predicates.
 
-## Final 2026-09-01 audit
+## 2026-09-01 audit checkpoint
 
 Fresh whole-environment audit after targeted builds:
 
@@ -5649,4 +5649,5 @@ collapses infinite sublevels to zero, so the standalone interface admits the zer
 be paired with local finiteness/properness.  Remaining external theorems are explicitly isolated
 rather than hidden as routine premises.
 
-Lean status: **paper proof complete; exact formalization and final audit complete**.
+Lean status: **in progress**.  Current audit still reports **23 never-concluded** and
+**26 ungrounded** interfaces.  This card is not complete until both counts are zero.

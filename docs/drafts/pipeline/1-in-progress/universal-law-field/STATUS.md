@@ -148,6 +148,21 @@ Evidence: current Lean tree, `rh-current-frontier-map.md`, and fresh
     already recover memory, sign, and unbounded response. Their literal global descent or missing
     arithmetic weld is RH-equivalent. Amplification supplies witnesses, not the source effectivity
     theorem that excludes them.
+17. **Projective/superselection firewall:** canonical two-clock projective blow-up already recovers
+    the full completed spectral coordinate, and source-normal residue already identifies shell
+    entropy, repair-history defect, affine Xi residue, Hurwitz phase, and valuation fracture.
+    Projectivization and type superselection classify the transverse charge; they do not kill it.
+18. **Complex/commutation firewall:** the completed Xi Green vector is already an unconditional
+    cross-prime Koszul cycle, and a boundedly invertible coefficient-faithful source automorphism
+    already commutes exactly with Green reflection. Its physical codiagonal remains injective and
+    vanishes exactly under RH. Chain closure or source/reflection commutation is not selection.
+19. **Moving-source flatness firewall:** every Gamma-six character is Stokes-flat for its uniquely
+    forced covariant differential `t-exp(a)`. Admission into the fixed differential `t-1` is exactly
+    neutral grade. Indefinite nonlinear endpoint annihilation also exists off wall but fails fixed
+    bilateral topology. Flatness/annihilation in a moving or indefinite carrier is nonselective.
+20. **Face-naturality firewall:** projected source/Gamma naturality is unconditional at every grade;
+    coefficient-faithful joint naturality is exactly critical-line placement. Thus `ULF-SPCM-D1`
+    cannot be a producer: its weak form erases cross-channel leakage and its strong form is RH.
 
 ## Retired formulations
 
