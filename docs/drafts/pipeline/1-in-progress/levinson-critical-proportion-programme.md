@@ -2759,3 +2759,76 @@ diagonal, evaluated in 5ax and integrated in 5ay.
 
 No step in this list is open mathematics; all are classical and now have their Lean prerequisites in
 the tree.
+
+## Brick 7a — the Littlewood→zero-count consumer is built (2026-09-01)
+
+The window inequality (`exists_levinson_admissible_window`) had left exactly one undetermined
+quantity: the zero mass of `G♯ = (s−1)²(ζ + λζ′)` inside `[½,4] × [T₁,T₂]`.  Levinson's route to
+that quantity is Littlewood's rectangle identity on the *wider* rectangle `[σ₀,4] × [T₁,T₂]` with
+`σ₀ = ½ − R/log T`, followed by Jensen's inequality against a mollified mean square.  That consumer
+chain is now Lean, axiom-clean and wired.
+
+### New modules
+
+* `RHTower/LevinsonLittlewoodZeroCount.lean`
+  * `intervalIntegrable_log_norm_vertical_of_entire` — `log‖f‖` is interval integrable on every
+    vertical segment for entire `f` (via `MeromorphicOn.intervalIntegrable_log_norm`); zeros on the
+    segment are harmless;
+  * `two_mul_integral_log_norm_le_ae` — the Jensen step with the nonvanishing hypothesis relaxed to
+    a null exceptional set, which is what a vertical line through zeros needs;
+  * `intervalIntegral_pos_of_continuous_global_nonneg` — positivity of the mean square from a single
+    interior nonvanishing point;
+  * **`exists_entire_zeroCount_le_of_meanSquare`** — for entire `f` nonvanishing on the bottom, top
+    and right edges of `[c,d] × [T₁,T₂]`,
+
+    ```text
+    2π (σ − c) · ∑_{Re w ≥ σ} ord_f(w)
+        ≤ ½(T₂−T₁)·log( Msq/(T₂−T₁) ) − (T₂−T₁)·log A
+          + (d−c)·∫ Re (f′/f)(d+it) + ∫ (x−c) Im (f′/f)(x+iT₁) − ∫ (x−c) Im (f′/f)(x+iT₂),
+    ```
+
+    where `Msq` bounds the left-edge mean square and `A` bounds `‖f‖` from below on the right edge.
+
+* `RHTower/EntireAdmissibleHeight.lean` — `exists_entire_admissible_height` and
+  `exists_entire_admissible_height_pair`: heights whose whole horizontal segment misses the divisor
+  are dense, for an arbitrary entire function and an arbitrary segment (the detector-free
+  generalization of `exists_levinsonG_admissible_height`), and a single height serves both factors
+  of a product.
+
+* `RHTower/EntireDirichletPolynomial.lean` — `edPoly a s z = ∑_{n∈s} aₙ n^{-z}` as an entire
+  function, `differentiable_edPoly`, `analyticOnNhd_edPoly`, `edPoly_line` (its restriction to a
+  vertical line is the corpus's `cdpoly`, so the mean-value machinery applies verbatim),
+  `norm_edPoly_le`, and the head-dominance lower bound `norm_edPoly_ge`.
+
+* `RHTower/LevinsonDetectorZeroBudget.lean` — **`levinsonGEntire_zeroMass_le_of_meanSquare`**:
+  multiplying by an arbitrary entire mollifier `Ψ` only raises the analytic order, so
+
+  ```text
+  2π (½ − σ₀) · ∑_{w ∈ Z(G♯) ∩ [½,4]×[T₁,T₂]} ord_{G♯}(w)  ≤  (Littlewood budget of G♯·Ψ).
+  ```
+
+* `RHTower/LevinsonOddFiberFromMeanSquare.lean` — `levinsonMollifiedBudget` and
+  **`le_xiOddFiberCount_of_mollified_meanSquare`**: the composition with the window inequality,
+
+  ```text
+  (n+2)π + π + (T₂−T₁)·6/T₁² + c·log T₁ + c·log T₂ + levinsonMollifiedBudget ≤ θ(T₂) − θ(T₁)
+      ⟹  n ≤ xiOddFiberCount T₂.
+  ```
+
+All declarations pass direct `lake env lean`, exact leaf `lake build`, and `#print axioms` with only
+`propext, Classical.choice, Quot.sound`.
+
+### What this changes for the two consumer cards
+
+The chain is now
+
+```text
+mollified mean square of G♯·Ψ at σ₀   ⟹   detector zero mass   ⟹   window inequality
+   ⟹   odd-fibre count O(T)   ⟹   H₁(T) ≥ (3/2)O(T) − N(T)/2   and   N₀,s ≥ O − N/3.
+```
+
+Every arrow except the first is unconditional Lean.  The remaining obligations of the consumer half
+are the two boundary integrals of `G♯·Ψ` (right-edge logarithmic derivative and the two horizontal
+edges — the corpus owns the `Ψ = 1` versions in `LevinsonRightEdge` and `LevinsonHorizontalEdge` and
+they must be extended by `logDeriv (G♯Ψ) = logDeriv G♯ + logDeriv Ψ`), the far-right lower bound
+`A ≤ ‖G♯Ψ(4+it)‖` (head dominance, `norm_edPoly_ge`), and then brick 5's mean square itself.

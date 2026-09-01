@@ -93,7 +93,7 @@ theorem exists_polynomial_of_euler_matching (hf : Differentiable ℂ f) (hg : Di
     rw [hMKdef, trdeg_algebraicClosure_restrictScalars_eq, hKdef]
     exact trdeg_intermediateFieldAdjoin_range_eq_cardinalMk_of_algebraicIndependent _ hyx
   -- the product state is algebraic over `ℂ[f ∘ g]`
-  have hAlg : IsAlgebraic ↥(Algebra.adjoin ℂ ({y} : Set L)) u := by
+  have hAlg : IsAlgebraic ↥(Algebra.adjoin ℂ ({y} : Set (meroField (Set.univ : Set ℂ)))) u := by
     by_contra hut
     have hpair : AlgebraicIndependent ℂ ![u, y] :=
       algebraicIndependent_pair_of_transcendental (R := ℂ) y u
@@ -131,10 +131,12 @@ theorem exists_polynomial_of_euler_matching (hf : Differentiable ℂ f) (hg : Di
         _ = Algebra.trdeg ℂ ↥MK := heq
     have hcard : Cardinal.mk (Fin 2) + 1 ≤ Cardinal.mk (Fin 2) := by
       rw [← hins, ← htrdegMK]; exact hmono
-    rw [Cardinal.mk_fin] at hcard
-    have hnat : ((3 : ℕ) : Cardinal) ≤ ((2 : ℕ) : Cardinal) := by push_cast; push_cast at hcard;
-      exact hcard
-    exact absurd (Cardinal.natCast_le.mp hnat) (by norm_num)
+    have hcast : Cardinal.mk (Fin 2) + 1 = ((3 : ℕ) : Cardinal) := by
+      rw [Cardinal.mk_fin]; push_cast; ring
+    have h2 : Cardinal.mk (Fin 2) = ((2 : ℕ) : Cardinal) := by rw [Cardinal.mk_fin]
+    rw [hcast, h2] at hcard
+    have hnat : (3 : ℕ) ≤ (2 : ℕ) := by exact_mod_cast hcard
+    exact absurd hnat (by norm_num)
   -- a denominator-free witness is the Euler relation
   obtain ⟨m, C, hCm, hrelsum⟩ :=
     exists_polynomialCoeff_relation_of_isAlgebraic_adjoin_singleton hAlg

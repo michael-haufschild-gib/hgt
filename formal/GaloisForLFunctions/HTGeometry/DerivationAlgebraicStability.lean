@@ -22,7 +22,7 @@ variable {C L : Type*} [Field C] [Field L] [Algebra C L]
 
 /-- A derivation whose values on a generating set stay inside an intermediate field keeps the whole
 generated field inside it. -/
-theorem derivation_mem_of_mem_adjoin (D : Derivation ℤ L L) {S : Set L}
+theorem derivationInt_mem_of_mem_adjoin (D : Derivation ℤ L L) {S : Set L}
     {M : IntermediateField C L} (hbase : ∀ c : C, D (algebraMap C L c) ∈ M)
     (hS : ∀ x ∈ S, x ∈ M ∧ D x ∈ M) {x : L} (hx : x ∈ IntermediateField.adjoin C S) :
     x ∈ M ∧ D x ∈ M := by
@@ -32,7 +32,7 @@ theorem derivation_mem_of_mem_adjoin (D : Derivation ℤ L L) {S : Set L}
 
 /-- **The relative algebraic closure absorbs an arbitrary derivation** whose values on the base are
 already algebraic over the base. -/
-theorem derivation_mem_algebraicClosure [CharZero L] (K : IntermediateField C L)
+theorem derivationInt_mem_algebraicClosure [CharZero L] (K : IntermediateField C L)
     (D : Derivation ℤ L L)
     (hK : ∀ y : L, y ∈ (⊥ : IntermediateField ↥K L) → D y ∈ algebraicClosure ↥K L)
     {y : L} (hy : y ∈ algebraicClosure ↥K L) :
@@ -41,7 +41,7 @@ theorem derivation_mem_algebraicClosure [CharZero L] (K : IntermediateField C L)
   exact deriv_mem_algebraicClosure hK hy
 
 /-- The kernel of a derivation that kills the base field is an intermediate field. -/
-def derivationKernelField (D : Derivation ℤ L L) (hbase : ∀ c : C, D (algebraMap C L c) = 0) :
+def derivationIntKernelField (D : Derivation ℤ L L) (hbase : ∀ c : C, D (algebraMap C L c) = 0) :
     IntermediateField C L :=
   twistedLeibnizKernel (C := C) (fun x => D x) (RingHom.id L)
     (fun x y => by rw [map_add])
@@ -50,27 +50,27 @@ def derivationKernelField (D : Derivation ℤ L L) (hbase : ∀ c : C, D (algebr
     hbase
 
 @[simp]
-theorem mem_derivationKernelField_iff {D : Derivation ℤ L L}
+theorem mem_derivationIntKernelField_iff {D : Derivation ℤ L L}
     {hbase : ∀ c : C, D (algebraMap C L c) = 0} {x : L} :
-    x ∈ derivationKernelField (C := C) D hbase ↔ D x = 0 :=
+    x ∈ derivationIntKernelField (C := C) D hbase ↔ D x = 0 :=
   mem_twistedLeibnizKernel_iff
 
 /-- A derivation killing the base field and a generating set kills the whole generated field. -/
-theorem derivation_eq_zero_of_mem_adjoin (D : Derivation ℤ L L)
+theorem derivationInt_eq_zero_of_mem_adjoin (D : Derivation ℤ L L)
     (hbase : ∀ c : C, D (algebraMap C L c) = 0) {S : Set L} (hS : ∀ x ∈ S, D x = 0)
     {x : L} (hx : x ∈ IntermediateField.adjoin C S) : D x = 0 := by
-  have hle : IntermediateField.adjoin C S ≤ derivationKernelField (C := C) D hbase := by
+  have hle : IntermediateField.adjoin C S ≤ derivationIntKernelField (C := C) D hbase := by
     rw [IntermediateField.adjoin_le_iff]
     exact fun u hu => hS u hu
-  exact mem_derivationKernelField_iff.mp (hle hx)
+  exact mem_derivationIntKernelField_iff.mp (hle hx)
 
 /-- A derivation killing the base field and a generating set kills every element algebraic over the
 generated field. -/
-theorem derivation_eq_zero_of_isAlgebraic_adjoin [CharZero C] [CharZero L] (D : Derivation ℤ L L)
+theorem derivationInt_eq_zero_of_isAlgebraic_adjoin [CharZero C] [CharZero L] (D : Derivation ℤ L L)
     (hbase : ∀ c : C, D (algebraMap C L c) = 0) {S : Set L} (hS : ∀ x ∈ S, D x = 0)
     {u : L} (hu : IsAlgebraic ↥(IntermediateField.adjoin C S) u) : D u = 0 :=
   derivation_eq_zero_of_isAlgebraic _ D
-    (fun x hx => derivation_eq_zero_of_mem_adjoin D hbase hS hx) hu
+    (fun x hx => derivationInt_eq_zero_of_mem_adjoin D hbase hS hx) hu
 
 /-! ### The same statements for a derivation over the base field -/
 
@@ -91,7 +91,7 @@ keeps the whole generated field inside it. -/
 theorem derivationBase_mem_of_mem_adjoin (D : Derivation C L L) {S : Set L}
     {M : IntermediateField C L} (hS : ∀ x ∈ S, x ∈ M ∧ D x ∈ M)
     {x : L} (hx : x ∈ IntermediateField.adjoin C S) : x ∈ M ∧ D x ∈ M :=
-  derivation_mem_of_mem_adjoin (toIntDerivation D)
+  derivationInt_mem_of_mem_adjoin (toIntDerivation D)
     (fun c => by
       have : D (algebraMap C L c) = 0 := by
         simpa using D.map_algebraMap c
@@ -103,7 +103,7 @@ itself. -/
 theorem derivationBase_mem_algebraicClosure [CharZero L] (K : IntermediateField C L)
     (D : Derivation C L L) (hK : ∀ y : L, y ∈ K → D y ∈ K)
     {y : L} (hy : y ∈ algebraicClosure ↥K L) : D y ∈ algebraicClosure ↥K L := by
-  refine derivation_mem_algebraicClosure K (toIntDerivation D) (fun u hu => ?_) hy
+  refine derivationInt_mem_algebraicClosure K (toIntDerivation D) (fun u hu => ?_) hy
   rw [IntermediateField.mem_bot] at hu
   obtain ⟨w, rfl⟩ := hu
   exact mem_algebraicClosure_iff.mpr
@@ -111,12 +111,12 @@ theorem derivationBase_mem_algebraicClosure [CharZero L] (K : IntermediateField 
 
 /-- The kernel of a base-field derivation is an intermediate field. -/
 def derivationBaseKernelField (D : Derivation C L L) : IntermediateField C L :=
-  derivationKernelField (C := C) (toIntDerivation D) (fun c => by simpa using D.map_algebraMap c)
+  derivationIntKernelField (C := C) (toIntDerivation D) (fun c => by simpa using D.map_algebraMap c)
 
 @[simp]
 theorem mem_derivationBaseKernelField_iff {D : Derivation C L L} {x : L} :
     x ∈ derivationBaseKernelField (C := C) D ↔ D x = 0 :=
-  mem_derivationKernelField_iff
+  mem_derivationIntKernelField_iff
 
 /-! ### Generator-level criteria -/
 

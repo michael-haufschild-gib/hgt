@@ -21,7 +21,7 @@ Goal: unconditional Lean formalization of every card in this folder, then promot
 | 12 | autonomous-cap-derivative-shadow-law | Clunie + trdeg observability | **DONE → 3-formalized** (2026-08-30) |
 | 13 | newton-corner-nonautonomous-composition-unit-cost | Clunie + Puiseux Jacobian | TODO |
 | 14 | asymptotically-exponential-algebraic-cascade-unit-cost | Clunie + Puiseux Jacobian + Briot–Bouquet | TODO |
-| 15 | nonautonomous-cap-linear-order-two-shadow-rigidity | Briot–Bouquet | TODO |
+| 15 | nonautonomous-cap-linear-order-two-shadow-rigidity | Briot–Bouquet — bypassed | **DONE → 3-formalized** (2026-09-01) |
 | 16 | fixed-taylor-modulus-newton-geometry-ht-blindness | Ostrowski finite basis — replaced by corpus Mahler confinement | **DONE → 3-formalized** (2026-08-30) |
 | 17 | arithmetic-entire-heat-da-finite-spectrum | Popken + Mahler normalization | **DONE → 3-formalized** (2026-08-30) |
 | 18 | finite-commuting-shift-peeling-hypertranscendence-law | Adamczewski–Dreyfus–Hardouin Thm 1.2 | **DONE → 3-formalized** (2026-08-30) |
@@ -3838,3 +3838,40 @@ New modules for that argument:
 `EulerWildProximity` also gained `characteristic_le_logDeriv_shift_of_wild`, which takes the
 logarithmic derivative at a shift `f − a` chosen so that the shifted function is `1` at the origin;
 that makes both the Jensen bound and the germ constant of the estimate trivial.
+
+## Card 15 CLOSED (2026-09-01)
+
+`nonautonomous-cap-linear-order-two-shadow-rigidity` is fully formalized and moved to
+`3-formalized`.  Five new modules, all axiom-clean and wired into `HTGeometry.lean`:
+
+| Module | Content |
+|---|---|
+| `DerivationAlgebraicStability` | the corpus's derivation-stability lemmas, restated for an explicitly supplied `Derivation ℤ` or `Derivation ℂ` instead of the ambient `Differential` instance: kernel field, "kills everything algebraic over the kernel", "stabilises the relative algebraic closure of a stable base" |
+| `AdjoinSingletonAlgebraicWitness` | `exists_polynomialCoeff_relation_of_isAlgebraic_adjoin_singleton` — the univariate form of `algebraicWitness_of_isAlgebraic_adjoin`: algebraicity over `K[t]` gives a relation with *polynomial* coefficients in `t` and nonzero leading one |
+| `EulerCompositionPolynomialRigidity` | the substituted Euler relation: `analyticMeroElement_eulerComp`, `exists_polynomial_of_eventually_taylorCoeff_eq_zero`, and `exists_polynomial_of_euler_mero_relation` (a vanishing polynomial expression in `f∘g` and `g·(f′∘g)` makes `f` a polynomial) |
+| `EulerMatchingCompositionState` | `exists_polynomial_of_euler_matching`: if a derivation with `∂_x g = 1`, `∂_x (f∘g) = 0` kills `g·(f′∘g)`, then `f` is a polynomial |
+| `NonautonomousCapLinearOrderTwo` | the state family, the observability Jacobian, and `daRank_comp_linear_order_two` |
+
+### The two things worth recording
+
+**Briot–Bouquet is not needed, and neither is the Wiman–Valiron route.**  The card's decisive input
+was already closed analytically by `eventually_taylorCoeff_eq_zero_of_euler_relation_general`; what
+this session added is the *bridge* from the differential-algebra degeneration to that input.  The
+bridge is not a classification of solutions — it is a transcendence count:
+
+> `∂_x(x A) = 0` with `∂_x g = 1` and `∂_x (f∘g) = 0`, plus `trdeg ℂ(g, f∘g, A) = 2`, forces
+> `g·(f′∘g)` to be algebraic over `ℂ[f∘g]`.
+
+If it were transcendental, `{g·(f′∘g), f∘g}` would be independent, and `g` — which `∂_x` moves, so
+`g` cannot be algebraic over the field `∂_x` kills — would add a third transcendence degree inside a
+field of degree two.  The rest is `algebraicWitness`-style denominator clearing.
+
+**The chain rule is a derivation-difference argument, not Faà di Bruno.**  `D` and
+`∂_z + v ∂_x + (qv + px) ∂_v + (Av) ∂_y` are two derivations of the meromorphic field agreeing on
+the four generators; their difference therefore kills everything algebraic over the state field, in
+particular `A = f′∘g`.  That yields `A₂ = ∂_x A + A ∂_y A` — i.e. the card's `C = A_x + A_y A` — with
+no jet combinatorics at all, and it is what makes `∂_v A₂ = 0` available for the determinant.
+
+Naming trap recorded: `derivation_eq_zero_of_mem_adjoin` already exists in
+`JetPrincipalSymbolExtraction` for base-field derivations, so the `Derivation ℤ` variants here are
+named `derivationInt_*` to keep the umbrella importable.

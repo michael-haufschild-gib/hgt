@@ -1,12 +1,9 @@
-# ULF workbench
+# Universal-law corpus facts
 
 Updated: 2026-09-01
 
-Question: what higher law makes all route invariants representations of one mechanism and forces
-horizontal Xi-zero current to vanish without assuming source landing, positivity, recurrence,
-properness, boundedness, or confluence equivalent to RH?
-
-Rule: no new card until mechanism survives corpus collision, countermodel, and circularity tests.
+Scope: compressed facts and logically forced design constraints extracted from audited positive
+theorems, negative no-gos, frontier branches, and RH endpoints. No active conjectures or work log.
 
 ## Hard facts
 
@@ -235,211 +232,352 @@ realization. It also proves the Gamma-six oriented normal is not Steinberg/Milno
 valid higher-rank law must extend its action as cocycle data rather than falsely making it a
 Steinberg boundary.
 
-## What shadows say
+F56 — Kazhdan extension is dead. Physical half-density transport is nonunitary, the Gamma normal
+lies outside the Steinberg ideal, and extending a cyclic current to a rigid group is unconstrained
+law insertion. Property (T) would only kill a cocycle after the RH-strength extension existed.
 
-- One obstruction changes type under representation: signed current, positive energy, residue,
-  boundary class, carry, holonomy, work, rank, or support.
-- Faithful changes conserve it; lossy changes hide it; adaptive changes move it into law.
-- Finite stages are locally exact because obstruction is born in cofinal execution/completion.
-- FE supplies reversal, not fixedness.
-- HT explains why no bounded grammar or finite observer exhausts source directions.
-- Missing theory must govern laws across representations, not add another representation.
+F57 — Path coherence is dead. The Gamma cover composes coherently at every grade, including
+off-line grades. FE-compatible parallel transport does not imply criticality.
 
-## What shadows do not say
+F58 — Compact/filtration lowering is already generic corpus infrastructure. The source-normal
+depth-lowering admission and compact aggregate needed at Xi fibres are RH-equivalent endpoints;
+renaming them properness or quasinilpotence adds no mechanism.
 
-- Not every route invariant is literally one scalar.
-- Not every no-go is curvature, holonomy, entropy, or geometry.
-- Not every completion defect is arithmetic.
-- FE pairing does not identify paired zeros.
-- Positivity, recurrence, compactness, confluence, source faithfulness, or properness cannot be
-  assumed under a new name.
-- Theorem whose last premise is `a = 0`, RH, or RH-equivalent global descent is not progress.
+F59 — Raw cubic source channel is not summable; only a renormalized correction is. Therefore no
+global trace law may silently assign nuclearity to every source-generated interaction.
 
-## Killed mechanisms
+F60 — Linear source-reversal defect is mixed-cobar exact even off line, while its quadratic mate
+curvature survives. Exactification moves information to higher interaction order; it does not
+annihilate it.
 
-| Mechanism | Corpus collision / fatal defect |
-|---|---|
-| another finite detector, packet, jet, Gram, KMS, determinant | F02; off-line finite models exist |
-| finite prime differential syzygy | F03; relation ideal is bottom |
-| FE fixed-point or symmetric pairing | F06; off-line FE countermodels |
-| common faithful recovery | F07; information-neutral |
-| positive/phase quotient | F10, F14; erases orientation |
-| recurrence as return | F11, F23; open lift and linear carry survive |
-| HT implies extinction | F12; only freedom/noncompactness follows |
-| exact source-dagger confluence | already isolated by `riemannHypothesis_of_predivisorDaggerConfluentPotential` |
-| closed loop conjugate to inverse | `deningerNoInversion` forbids nontrivial inversion conjugacy in unique-root source groups |
-| stable translation length alone | already formalized; bounded gauges preserve it and supply no annihilation |
-| abstract sublinear filling | already formalized; arithmetic filling is RH-strength premise |
-| opposed ind/pro intersection | already ULF ind–pro transversality; stalls at group-like arithmetic landing |
-| literal two-sided theta completion | analytic unit at every Xi divisor; preserves full divisor charge |
-| ordinary naturality across route gauges | F09; completion-born boundary can itself be gauge-natural |
-| source renewal / finite action | exact properness known; finite-action arithmetic renewal remains producer |
-| relational completion parametricity | completion dilemma: if semantics include a completion where boundary history does not converge, global section is undefined; if restricted to completions where it converges and relations are limit-closed, boundary section is automatically relational. This is old intersection/landing, not stronger selection |
-| nonabelian formation perfectification / `H₁ -> K₂` | actual Gamma-six and successor normals have nonzero Kummer regulator, lie outside the Steinberg ideal, and define non-boundary `K₁` cycles. Perfectification would erase the proved first-grade survivor |
-| fixed continuous selector or cofinal equicontinuity | already classified pointwise and globally; its existence on Xi fibres is exactly criticality/RH |
-| completed Weyl/Clifford symmetry | moves Xi vacuum into auxiliary `L` sectors; invariance requires unrelated common zeros |
-| algebraicity of one prime phase | arbitrary transcendental exponents can have algebraic values; existing Gelfond--Schneider endpoint still lacks source algebraic monodromy |
-| formation-scale character quantization | already developed by scalar HT clock/monomial-character programme; missing realization is old bridge |
-| infinitesimal-character/formal-unramified rigidity | transverse dual-number algebra is unramified exactly on wall; premise is an RH receiver |
-| complete positivity / Stinespring uniqueness | CP replacement erases first-jet phase and reflection-odd second-Cartier orientation |
-| multiplicative formal-group law | exact for every grade; explains linear current and quadratic curvature but cannot select |
-| adelic product formula / scalar ABHN reciprocity | balances nonzero local currents; torsion targets cannot retain continuous grade |
-| plain cyclotomic `can=phi` equalizer | F47; fixed Witt shadows lose orientation and a faithful Gamma regulator reinstates old scale-zero/Cartier landing |
-| stable/localizing additivity | F48; physical nonlinear trace does not descend through Hochschild boundaries |
-| formation-congruence/coideal kernel | F52; exact external tensor curvature card already proves same endpoint and isolates same missing source equality |
+F61 — Gamma-six forward/reflected defects form an odd visible law `D(a)` with
+`D(a)^2 = -K(a) I`, `K(a) >= 0`, and `K(a)=0 <-> a=0`. For `a != 0` this curved law has an explicit
+contracting homotopy. Thus ordinary cohomology/Hodge contraction accepts exactly the wrong sector.
 
-## Active conjecture: Kazhdan formation law
+F62 — Bare `L_infinity`, Maurer--Cartan, Cartan contraction, Gauss--Codazzi, cofinal filtration,
+and obstruction-degree lowering already exist in Lean. Rephrasing corpus in any of these languages
+is not a conjecture.
 
-### 1. Big-picture law
+F63 — A flat total block law can hide nonzero observed curvature as a product of two complementary
+couplings. Existing Gauss--Codazzi proves this abstractly. Hence `total law squares to zero` alone
+does not select; it permits curvature leakage.
 
-All existing routes see one-dimensional or amenable fragments of source symmetry. Such fragments
-permit exactly what corpus observes: nonzero additive character, linear carry, open lifted history,
-and locally coherent recurrence. Stop asking those fragments to select.
+F64 — Completion phantom, source tail, divisor current, and nearby-cycle defect carry the same
+off-line Noether charge. This classifies survival after completion; it does not force vanishing.
 
-Close prime powers, Gamma-six dilation, FE reflection, and Steinberg root moves into one
-higher-rank formation group. Working candidate is
+F65 — Cross-route fusion is not the missing theorem. Corpus already proves that one signed
+source-history defect is exactly normalized compact-theta Green flux, inverse-Cayley Gamma-frame
+skew, logarithmic duality--dagger curvature, shell-transfer entropy, and multiplicity-weighted
+affine Xi residue (`XiHistoryThetaGammaAmbidexterityTransgression`,
+`XiSourceHistoryResidueTransgression`, `XiDualityDaggerHistoryTransgression`).
 
-`Gamma = E_3(Z[1/6])`, with `h_6 = diag(6,6^-1,1)`.
+F66 — The fused defect has explicit exchange rates. If `a = 2 Re(s)-1`, its coordinates include
+`a`, `m a`, `log(p) a`, `exp(±log(p)a)`, a quadratic formation cost proportional to `a²`, and a
+positive entropy-production coordinate. These are nonlinear presentations of one anomaly, not
+independent constraints on it.
 
-New law is extension, not landing: route defects are restrictions of one affine unitary
-pre-cocycle on `Gamma`. Its failure to satisfy the cocycle law is literal source incidence. At an
-actual Xi zero that failure vanishes, so restriction becomes a genuine Hilbert one-cocycle.
+F67 — Existing positive proofs mostly reconstruct or conserve the anomaly. Existing no-gos mostly
+show that hiding it forces payment in rank, conditioning, sign variation, singular domain,
+interaction order, provenance loss, or open history. The corpus therefore distinguishes an
+intrinsic signed anomaly from the multi-resource debt created by attempts to suppress it.
 
-Write
+F68 — Resource currencies cannot yet be collapsed to one scalar. Exact lower bounds are proved in
+different categories, and corpus has no universal exchange theorem converting rank growth,
+condition-number growth, noncompact Calkin class, negative capacity, sign variation, singularity,
+and horizon escape into one another.
 
-`B_s(gh) = B_s(g) + pi(g) B_s(h) + Xi(s) Omega_s(g,h)`.
+F69 — A cost is evidence only when fixed before choosing a repair. Every repair selector is the
+unique minimizer of a manufactured positive cost (`ConstitutiveRepairTorsorSelectorNoGo`), so an
+optimized correction proves nothing unless both cost and admissible class are source-generated.
 
-This displayed factorization is a target shape, not permission to insert `Xi` by hand. `B`, `pi`,
-and `Omega` must be assembled from source operations; Xi may appear only after proving the existing
-prime--Gamma incidence identity.
+F70 — Algebraic existence and executable control are different layers. A two-prime Bezout identity
+can exist while every bounded synthesis fails (`HedenmalmTwoPrimeBezoutGrowthNoGo`); exact finite
+formation does not imply a bounded, continuous, or cofinal execution.
 
-Higher-rank rigidity then changes the game. Property (T), equivalently fixed-point property (FH)
-for unitary affine actions, makes every genuine cocycle bounded. But Gamma-six current forces
+F71 — Almost-everywhere topology is too coarse for divisor semantics. An isolated resonance can be
+changed pointwise without changing its `L²` class, while Hardy/RKHS or distributional structure
+retains it (`ThetaCuspHawkingGlobalL2ShellBlindnessNoGo`, `L2PointSamplingNoGo`).
 
-`B_rho(h_6^n) = n (2 Re(rho)-1) v_rho`, with `v_rho != 0`.
+F72 — Even complete local shape is nonselective. All-order local Bernstein sign, every prescribed
+finite jet, and every finite critical prefix can coexist with a later wrong sign; the Li survivor
+requires an essentially infinite, nonuniform tail cancellation.
 
-Boundedness and linear drift coexist only at neutral grade. Route no-gos are not curvatures of one
-object; they are restrictions of one global cocycle to subgroups too flexible to detect its
-impossible extension.
+F73 — Two-axis and second-order coherence are already receivers. Grade--phase nodal purity, its BV
+master equation, and coherent second-order descent of a fixed all-prime source complex are each
+proved equivalent to RH (`XiNodalDefectSuperselection`). Adding dimensions or saying “mixed
+curvature” does not supply selection.
 
-### 2. Corpus basis and collision audit
+F74 — Audit scope is explicit: 561 named `NoGo` Lean files, all 73 declarations explicitly labelled
+“positive survivor” across 67 files, 232 certified universal-law capstone rows, every frontier
+branch/open core/boundary, and all 1,917 endpoint obligations were checked at statement level.
 
-Search facts pointing specifically to rigid global symmetry:
+F75 — Positive results split into three logically different classes. Transport/reconstruction laws
+identify or conserve data unconditionally; selection laws prove neutrality from a global premise;
+positive survivors quantify what remains or what a repair must pay after a no-go.
 
-- `SourceHorizontalGammaSixCyclicGroup`, its boundary atom, Kummer reader, and physical character:
-  exact cyclic axis and linear horizontal current.
-- `closed_observer_open_history`, recurrence-corona laws, and scale--Mautner card: cyclic observer
-  closure coexists with open/unbounded lifted history; compact same-fibre repair fails.
-- `steinbergTorus`, `steinbergToGL_torus`, `elementaryDiagonal`, and four-transvection
-  factorization: literal unit torus exists inside higher-rank elementary grammar.
-- `steinbergTorus_conj_*`, `steinbergTorus_one_conj`, and Weyl inverse words: prime scaling and FE
-  inversion have exact higher-rank conjugation laws.
-- `steinbergGroup_perfect`, `elementaryGroup_perfect`, and finite-generation theorems: source group
-  is not another free cyclic completion.
-- Steinberg symbol, Dennis--Stein, and `K_2` theorems: failures of torus multiplication and index
-  transport are already typed central defects, suitable values for `Omega` rather than terms to
-  erase.
-- `deningerGammaSixOrientedEscape_not_mem_steinbergIdeal`: Gamma normal cannot be declared a
-  higher-rank boundary.
-- EWQ/Gamma fusion and Kummer/Stokes regulators: linear displacement and its positive quadratic
-  readout are coefficient-faithful once a global cocycle exists.
+F76 — Unconditional transport is abundant and nonselective. Exact recovery, FE lift, reflection,
+Hodge realization, Hilbert/Gram reconstruction, Noether conservation, transgression, and
+four-organ fusion preserve or re-express the defect but do not force it to vanish.
 
-Search found no property-(T)/(FH) implementation and no affine Hilbert cocycle coupling these
-organs. Thus mechanism is not in corpus. Main risk is extension laundering: a cocycle on the
-cyclic axis generally does not extend square-integrably to a property-(T) group.
+F77 — Every audited abstract selector has the same logical shape: fixed law plus bounded work,
+compact/proper admission, exact exchange, no-loss descent, integrable potential, or closed history
+forces neutrality. At actual Xi fibres, supplying that global premise is an endpoint or is already
+proved RH-equivalent.
 
-### 3. Exact RH closure
+F78 — Positive survivors have a common direction: a failed finite/regular repair does not leave
+nothing. It leaves a pointed residue, relative class, mixed charge, nonzero conormal jet, rank or
+capacity floor, reciprocal-growth bound, sign-indefinite form, divergent synthesis, or cofinal
+current.
 
-K1. Build exact group `Gamma=E_3(Z[1/6])`, torus word `h_6`, Weyl/reflection word, and finite root
-presentation inside existing Steinberg infrastructure.
+F79 — Generic universal-law machinery is saturated in corpus. It already contains strictification,
+central promotion, higher transgression, `L_infinity`/MC, finite and nonabelian Livsic theory,
+properness, compactification, interaction spectra, Hodge carriers, phase quotients, recurrent/open
+histories, and higher-arity formation. Recasting RH in one of these mechanisms is not progress.
 
-K2. Prove property (T), or directly property (FH), for this exact group. This is unconditional
-higher-rank group theory; missing Lean infrastructure is work, not a pivot reason.
+F80 — The main logical fracture is source execution versus semantic observation. Finite source
+rules may terminate while completion is nonconfluent; algebraic relations may be exact while
+bounded execution fails; observer relations may close by splicing distinct source histories; and
+completion may create a class with no finite witness.
 
-K3. Construct a zero-independent Hilbert `Gamma`-module `pi` and source-built pre-cocycle `B_s`.
-Prove its Steinberg-relator defect is the already existing Xi incidence, so `Xi(rho)=0` makes
-`B_rho` a genuine one-cocycle. Do not construct a separate representation per zero.
+F81 — “Shadow” has a precise audit meaning: any faithful image, nonlinear coordinate, positive
+square, quotient, completion class, residue, or cost generated from the same source defect. A
+shadow is not a new independent reason for vanishing. A theorem about literal source execution
+that rules out the defect before Xi-zero specialization would not be a shadow; corpus presently
+has no such theorem.
 
-K4. Prove on the literal torus axis
+## Design constraints distilled from no-go corpus
 
-`B_rho(h_6^n) = n a(rho) v_rho`, `a(rho)=2 Re(rho)-1`, `v_rho != 0`.
+Each line is a future conjecture filter, not exposition.
 
-This must use existing Gamma-six/Kummer/Stokes reconstruction and retain multiplicity and
-orientation.
+### It cannot be this
 
-K5. Property (FH) makes `B_rho` a coboundary, hence
+CANNOT-01 — It cannot be functional equation plus entireness plus positive `Lambda`, because an
+explicit system has all three and prescribed off-line zeros (`EntireFunctionalEquationOffLine`,
+`LambdaPositiveFunctionalEquationOffLine`).
 
-`||B_rho(g)|| <= 2 ||w_rho||` for every `g in Gamma`.
+CANNOT-02 — It cannot be any fixed finite packet, aperture, moment list, jet order, determinant, or
+Gram test, because complete finite data admit off-line extensions (`FiniteHankelBoundaryExtensionClass`,
+`CompletedResponseBoundedJetFiltrationNoGo`).
 
-K4 is unbounded in `n` unless `a(rho)=0`. Thus every Xi divisor lies on line and RH follows.
+CANNOT-03 — It cannot be positivity alone, including reflection positivity, Hermitian positivity,
+KMS passivity, Markov positivity, or positive carrier order, because each occurs with wrong or
+undetermined wall orientation (`FactorialPositiveCarrierOrientationNoGo`, HB/RBH no-gos).
 
-K1 has substantial corpus infrastructure. K2--K4 are open. K5 is standard once formalized. No RH
-proof is claimed.
+CANNOT-04 — It cannot be a norm, square, energy, absolute value, phase quotient, or projective
+class alone, because these retain size while erasing the reflection-odd sign that distinguishes
+the wall (`PhaseCancellationAffineCurvature`, EWQ scalarization no-gos).
 
-### 4. Shadow reconstruction
+CANNOT-05 — It cannot be FE pairing, involution, path coherence, or conjugacy alone, because those
+transport off-line data without identifying the paired points (`EntireFunctionalEquationOffLine`,
+Gamma-cover composition laws).
 
-- Gamma-six/Kummer: restriction of `B` to torus cyclic subgroup; linear cocycle current.
-- rational-Witt/Frobenius: torus conjugation weights on root subgroups.
-- FE: Weyl transport/inversion of torus axis.
-- EWQ/positive routes: squared affine displacement after phase/orientation quotient.
-- recurrence: amenable cyclic restriction closes after observation while cocycle lift drifts.
-- completion/Roos: failure of square-integrable extension from route subgroup to `Gamma`.
-- Steinberg `K_2`: relation curvature `Omega`, not a bin for deleting Kummer `H_1`.
-- HT: makes coefficient module noncompact, but property (T) controls Hilbert cocycles independent of
-  dimension. Failure of Hilbert admission would be a precise escape, not vague noncompactness.
+CANNOT-06 — It cannot be common recovery, invertible re-encoding, gauge transport, or naturality,
+because exact recovery preserves all distinguishing information (`ConstitutiveAsymptoticLawCore`,
+`ConstitutiveFunctionalEquationPacketLift`).
 
-## Fourth-organ prediction
+CANNOT-07 — It cannot be recurrence, periodicity, finite-state stationarity, or closed observation,
+because recurrent quotients coexist with linearly escaping lifted history (`ConstitutiveTimeReversalLikelihoodCocycle`,
+`WeightedHistoryCompletionBoundaryLaw`).
 
-Before selection, one finite Steinberg relator must expose failure of any off-line cyclic history to
-extend globally. For a finite generating set `S` of `Gamma`, construct relation curvature
-`Omega_s`. Prediction:
+CANNOT-08 — It cannot be self-adjointness, unitarity, spectral realization, or Hilbertization alone,
+because arbitrary real spectra have self-adjoint realizations and faithful unitary realization can
+erase or reject source translation (`CountableSpectralHamiltonianRealization`,
+`ConstitutiveUnitaryJordanFormationFracture`).
 
-`a(s) != 0  =>  max_{R in SteinbergRelators} ||Omega_s(R)|| > 0`,
+CANNOT-09 — It cannot be compactness, finite rank, trace class, Fredholm determinant, or fixed
+Sobolev control, because literal source displacement is non-`ℓ¹` and bounded mixing cannot relocate
+it to ordered Xi data (`RoutePPrimitiveGammaJuliaLog*NoGo`).
 
-and its coefficient-faithful quadratic contraction equals the existing EWQ/Gamma interaction
-class. At `Xi(rho)=0`, source incidence makes every relator defect zero; property (T) then forces
-bounded recurrence lift. A commuting comparison to one Roos/observer-clock anomaly is required as
-the independent fourth-organ theorem. Merely observing that both vanish on the line does not count.
+CANNOT-10 — It cannot be boundedness, contractivity, dissipativity, or nonexpansivity alone,
+because these either hold off line or have the passive polarity opposite to required source sign
+(HB dissipative-response and source-nonexpansive no-gos).
 
-## Kill tests
+CANNOT-11 — It cannot be ordinary cohomological exactness, Hodge contraction, Cartan contraction,
+or derived contractibility, because the off-line curved Gamma suspension is explicitly
+contractible (`SourceHorizontalGammaSixCurvedSuspensionHodgeTrace`, scalar Cartier wall).
 
-K01 — Perfectification rename: perfectness alone and `H_1 -> K_2` were killed. Selection must use
-boundedness of a genuine affine Hilbert cocycle, not claim normal is commutator/boundary.
+CANNOT-12 — It cannot be total square-zero/flatness alone, because a flat block law can hide visible
+curvature in complementary coupling products (`NomologicalGaussCodazzi`).
 
-K02 — Extension laundering: a cyclic cocycle does not automatically extend to `Gamma`. K3 is the
-core theorem; assuming extension at Xi fibres is an RH receiver.
+CANNOT-13 — It cannot be bare `L_infinity`, Maurer--Cartan, Gauss--Codazzi, filtration, or degree
+lowering language, because those mechanisms are already formalized and do not restrict which
+corrections exist (`SplitLInfinityObserverExtension`, `ConstitutiveCohomologicalDegreeLowering`).
 
-K03 — Target-fed curvature: writing `Xi(s) Omega` by definition is forbidden. Relator defect must
-be computed from literal prime/Gamma operations, then identified with Xi incidence.
+CANNOT-14 — It cannot be a single scalar polynomial law combining route invariants, because
+descent, conservativity, and properness ranks vary independently (`NomologicalThreeOrganIndependenceLaw`).
 
-K04 — Coinduction trap: coinducing from `<h_6>` usually has infinite Hilbert norm. No formal
-coinduction without square-integrable source estimate.
+CANNOT-15 — It cannot be diagonal, marginal, one-leg, rank-one, or source-independent mixing,
+because orientation lives in off-diagonal interaction and arbitrary diagonal responses are
+nonselective (EWQ replica scalarization, HB arbitrary-response no-gos).
 
-K05 — Wrong category: property (T) controls unitary Hilbert cocycles, not arbitrary Banach,
-distributional, non-Bessel, or nonunitary carriers.
+CANNOT-16 — It cannot be fixed linear normalization, common scalar counterterm, parity
+symmetrization, or holomorphic unitization, because exact coefficient-faithful source reservoirs
+still have wrong jet or polarity (`SourceHorizontalHolomorphic*Cofinal*NoGo`).
 
-K06 — Zero fitting: `pi` and `B_s` must be one pre-divisor family. Only cocycle closure may use
-`Xi(rho)=0`.
+CANNOT-17 — It cannot be local, jointly holomorphic complex-bilinear, finite-exponential-type,
+finite-variation, or polynomially tempered response, because these classes are explicitly closed
+off (`FZZSchwarzschildPhysicalResponseFiniteTypeNoGo`, FZZ/HB reflection no-gos).
 
-K07 — Nonerasure: `v_rho` must be nonzero and retain prime/depth/multiplicity/orientation. Positive
-norm alone is insufficient.
+CANNOT-18 — It cannot be regular compact-open or upper-semicontinuous descent, because escaping
+off-line bubbles converge to the same visible limit while retaining quantized charge
+(`XiHeatCassiniWoldOrbitCharge*NoGo`).
 
-K08 — Relation completeness: verify every Steinberg relation, including central `K_2` defects; a
-finite sample is not a group action.
+CANNOT-19 — It cannot be finite-stage exactness or stagewise exhaustion, because every finite
+history can be exact while a nonzero completion phantom survives (`RouteRCompletionPhantomNoether`,
+`EulerCutoffTailRoosStagewiseExhaustionNoGo`).
 
-K09 — Generalized-prime falsifier: an off-line system carrying same property-(T) extension and
-incidence law kills selectivity.
+CANNOT-20 — It cannot be an arbitrary adaptive/endogenous compatibility law, because one endogenous
+test can realize every transition system (`ConstitutiveEndogenousCompatibility`).
 
-K10 — Infrastructure discipline: do not build property-(T) Lean theory until K3 has a
-dependency-closed paper construction; otherwise infrastructure becomes busywork.
+CANNOT-21 — It cannot be unrestricted cross-prime coupling or determinant fitting, because additive
+cross-prime matrices are dense in every normalized even entire target and therefore cannot select
+RH (SC additive two-port universality in frontier map).
 
-## Next work
+CANNOT-22 — It cannot be perfectification, commutator killing, or declaration that Gamma normal is
+a Steinberg boundary, because its Kummer regulator is nonzero and it lies outside Steinberg ideal
+(`deningerGammaSixOrientedEscape_not_mem_steinbergIdeal`).
 
-1. Construct explicit `h_6` and Weyl words in `E_3(Z[1/6])`; inventory exact finite relators.
-2. Express existing Gamma-six cyclic current as proposed value of `B_s(h_6)` without changing its
-   source algebra or calling it Steinberg incidence.
-3. Attempt values of `B_s` on root generators from rational-Witt/prime packet operations; compute
-   every relator defect. Kill mechanism if these values cannot be source-defined.
-4. Only if step 3 survives, prove property (T)/(FH) for exact group and build required Lean
-   infrastructure.
-5. Derive EWQ contraction and Roos/observer prediction before using K5 for RH.
+CANNOT-23 — It cannot be hypertranscendence alone, because freedom/noncompactness creates directions
+but no relation that kills their off-line charge (HT freedom laws plus positivity/orientation
+no-gos).
+
+CANNOT-24 — It cannot be a global no-phantom, source-normal landing, cofinal boundedness, positive
+kernel, selector, or semistability premise already proved equivalent to RH (`endpoints.md`).
+
+CANNOT-25 — It cannot fit a representation, metric, response, gauge, or correction separately at
+each Xi zero, because arbitrary target realization is nonselective and merely reads divisor data
+(HB arbitrary-incidence/response and source-independent Krein no-gos).
+
+CANNOT-26 — It cannot be cross-route fusion or exact transgression alone, because history, theta
+flux, Gamma skew, dagger curvature, entropy, and affine residue are already exact coordinates of
+one defect for every horizontal grade (`XiHistoryThetaGammaAmbidexterityTransgression`).
+
+CANNOT-27 — It cannot be a two-axis node, mixed master equation, or second-order coherence law,
+because the grade--phase versions are already proved exactly RH-equivalent
+(`XiNodalDefectSuperselection`).
+
+CANNOT-28 — It cannot be least action, minimum energy, or canonical optimization unless objective
+is fixed independently of repair, because every selector is uniquely optimal for a manufactured
+positive cost (`ConstitutiveRepairTorsorSelectorNoGo`).
+
+CANNOT-29 — It cannot work only modulo almost-everywhere equality or global `L²`, because isolated
+divisor shells are invisible there (`ThetaCuspHawkingGlobalL2ShellBlindnessNoGo`,
+`L2PointSamplingNoGo`).
+
+CANNOT-30 — It cannot infer analytic execution from algebraic generation, because exact two-prime
+Bezout generation coexists with absence of uniformly bounded synthesis
+(`HedenmalmTwoPrimeBezoutGrowthNoGo`).
+
+CANNOT-31 — It cannot be any all-order local shape rule, because a complete local Bernstein tower
+and arbitrary finite critical prefixes coexist with later global sign failure
+(`LiEvenCrossLocalBernsteinShapeNoGo`, finite-prefix oscillation no-go).
+
+CANNOT-32 — It cannot be singularity, non-Fock realization, reflection unitarity, or finite source
+energy alone, because all coexist with arbitrary positive even divisor density
+(`FZZParitySingularWeightedHilbertDensityNoGo`).
+
+CANNOT-33 — It cannot choose phase from divisor amplitude, because an amplitude-following unit
+gauge makes off-line cocycles positive real (`BMRadiativeSourceFEUnitPhaseRealificationNoGo`).
+
+CANNOT-34 — It cannot assume every conservative repair system has a scalar progress functional:
+collective repairs cross a sharp threshold where a positive closed circulation exists and every
+strict scalar progress certificate fails (`ConstitutiveCollectiveRepairThreshold`).
+
+CANNOT-35 — It cannot be another abstract universal-law formalism detached from arithmetic:
+strictification, promotion, higher coherence, reconstruction, properness, recurrence, positivity,
+and interaction spectra already have certified unconditional capstones (`_LEAN-CERTIFICATION.md`).
+
+### It must do or have this
+
+MUST-01 — It must be defined on pre-divisor source data and specialize at Xi occurrences only after
+its law is proved.
+
+MUST-02 — It must distinguish fixed arithmetic source occurrence from generic spectral or scalar
+occurrence, because generic occurrence is universal (`FZZCigarPunctureTemperedScalarOccurrenceNoGo`).
+
+MUST-03 — It must retain reflection-odd orientation, not reconstruct it from positive or projective
+data after quotienting.
+
+MUST-04 — It must retain analytic multiplicity and prime/depth labels, because marginal
+multiplicities and source marking survive the no-gos.
+
+MUST-05 — It must act before smoothing, averaging, scalarization, completion, or phase quotient,
+because those operations preserve, export, or erase the needed sign.
+
+MUST-06 — It must be cofinal and whole-history, because every fixed finite depth/window/observer is
+nonselective.
+
+MUST-07 — It must permit genuinely infinite-rank, noncompact, singular, non-Fock, distributional,
+or multivalued behavior, because the audited regular finite/bounded/Hilbert comparison classes are
+closed while these classes remain unexcluded.
+
+MUST-08 — It must contain at least two directed legs and a mixed interaction, because one-leg and
+diagonal laws cannot carry the required orientation.
+
+MUST-09 — It must control higher interaction order, because linear source-reversal defect is exact
+off line while quadratic curvature survives (`DeningerFailureNerveMixedDaggerCoboundary`).
+
+MUST-10 — It must state where obstruction goes under every legal transformation: faithful maps
+conserve it, lossy maps expose a kernel, and completions export it as horizon charge.
+
+MUST-11 — It must constrain hidden complementary couplings, because otherwise they can cancel any
+visible curvature inside a flat total law.
+
+MUST-12 — It must classify all source-generated corrections by an exhaustive normal form, because
+one unclassified correction makes every claimed selection theorem conditional.
+
+MUST-13 — It must derive admissibility from source grammar rather than add compactness, positivity,
+normality, source-faithfulness, or properness as a new premise.
+
+MUST-14 — It must couple prime, archimedean/Gamma, FE orientation, depth, and completion history in
+one law, because each isolated organ has explicit off-line models.
+
+MUST-15 — It must use the existing joint conservation/transgression web as input; reproducing it,
+mapping its terms, or proving another shared zero locus is not a new result.
+
+MUST-16 — It must predict an exact quantitative theorem outside the already-proved transgression
+web before any RH consequence is trusted.
+
+MUST-17 — It must survive generalized-prime and freely fitted off-line countermodels by using a
+rigidity special to the literal arithmetic source, not to Xi-labelled targets.
+
+MUST-18 — It must turn noncompactness into a constraint on possible laws, not claim that
+noncompactness itself forces vanishing.
+
+MUST-19 — It must explain why local exactness is abundant while global selection fails: obstruction
+is raised in interaction degree or exported to cofinal history rather than destroyed.
+
+MUST-20 — It must prove that every allowed off-line cancellation loses required source data or
+leaves a nonzero conserved charge; naming that dichotomy is not enough.
+
+MUST-21 — It must force `K(a)=0` without assuming any statement already equivalent to `a=0`; only
+then may existing `K(a)=0 <-> a=0` close RH.
+
+MUST-22 — It must identify whether each ingredient is unconditional transport, conditional
+selection, or a positive survivor; moving a theorem between those logical classes is forbidden.
+
+MUST-23 — Any cost, norm, phase reference, topology, or admissible class it uses must be fixed by
+literal source data before choosing a repair or Xi divisor.
+
+MUST-24 — Its topology must retain isolated occurrence, multiplicity, orientation, and provenance;
+an `L²` or almost-everywhere quotient is insufficient.
+
+MUST-25 — It must distinguish algebraic formation from executable formation and prove any needed
+boundedness, convergence, or completion statement rather than infer it from a formal relation.
+
+MUST-26 — It must retain joint prime/depth or grade/phase incidence rather than separate scalar
+marginals (`BifilteredScalarizationNoGo`).
+
+MUST-27 — Any local-to-global step must contain an essential infinite nonuniform tail mechanism;
+finite prefixes, fixed jets, and finite moment towers cannot supply it.
+
+MUST-28 — It must distinguish intrinsic signed anomaly from repair debt and account separately for
+rank, conditioning, variation, singularity/domain, interaction order, provenance loss, and history
+escape until exact exchange laws between them are proved.
+
+MUST-29 — If it invokes bounded work, compactness, properness, exact exchange, integrable potential,
+or closed history, it must prove that property unconditionally for the pre-divisor arithmetic
+source; importing it at Xi fibres is an RH endpoint.
+
+MUST-30 — Its decisive implication must be a theorem about literal source execution, not another
+faithful coordinate of horizontal grade and not a condition attached separately to each zero.

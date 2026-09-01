@@ -1,20 +1,20 @@
 # HB pre-divisor finite-energy infinite-rank Gram no-go
 
 - **ID:** HB-FEIRG
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Statement:** The exact polarized HB cancellation kernel has no finite-energy complex-Hilbert Gram realization on `(0,1/2)`: its diagonal susceptibility dominates `x⁻²` and is not integrable.
 
 ## RH chain attacked
 
-`source-selected infinite-rank Schwarz/Hermitian two-leg incidence → opposite HB Ward sign / radiative ++ extinction → common clock coherence → RH` cannot use a positive finite-energy Hilbert feature field if the conjecture holds.
+`source-selected infinite-rank Schwarz/Hermitian two-leg incidence → opposite HB Ward sign / radiative ++ extinction → common clock coherence → RH` cannot use a positive finite-energy Hilbert feature field.
 
 ## Corpus frontier
 
 - `[CORPUS]` `d4PreDivisorOpticalCancellationPolarizedKernel_not_hasPositiveOpenSquareSeparationRankAtMost`: every finite-rank factorization is impossible.
 - `[CORPUS]` `d4PreDivisorOpticalCancellationSusceptibility_at_xi`: pre-divisor profile is coefficient-faithful to the physical Xi-fibre susceptibility.
 - `[CORPUS]` `routeP_not_integrableOn_translated_inverseSquare`: `x⁻²` is not locally integrable.
-- `[OPEN CORE]` Infinite-dimensional Schwarz/Hermitian incidence remains; exact profile has boundary denominator `A(x)^2`, `A(x)=x(3-x)`.
+- `[OPEN CORE]` Infinite-dimensional positive Hilbert incidence can remain only with infinite hard-edge energy; indefinite, singular, or domain-changing incidence is not excluded.
 
 ## External frontier
 
@@ -35,14 +35,23 @@ For `0<x<1/2`, put `A=x(3-x)`, `B=(1-x)(2+x)`, and
 `S(x)=54N(2-x)(1+x)/(A²B²)` therefore gives
 `S(x)≥54·B²·(1/2)·(3/2)/(9x²B²)=(9/2)x⁻²≥x⁻²`.
 
-If `S` were integrable on `(0,1/2)`, domination would make `x↦x⁻²` integrable there, contradicting `routeP_not_integrableOn_translated_inverseSquare 0` by restriction. For a Gram realization, setting `y=x` gives `inner (Phi x) (Phi x)=S(x)` and hence `‖Phi x‖²=S(x)`. Finite feature energy would therefore make `S` integrable, the same contradiction. No unproved dependency remains.
+If `S` were integrable on `(0,1/2)`, domination would make `x↦x⁻²` integrable there, contradicting the exact `integrableOn_Ioo_rpow_iff` endpoint criterion. For a Gram realization, setting `y=x` gives `inner (Phi x) (Phi x)=S(x)` and hence `‖Phi x‖²=S(x)`. Finite feature energy would therefore make `S` integrable, the same contradiction. No unproved dependency remains.
 
 ## Hostile verdict
 
-`SURVIVES PRELIMINARY ATTACK`. Arbitrary infinite analytic expansions do not help because positive Gram diagonal equals feature norm-square. Claim does not exclude indefinite Krein, renormalized/distributional, domain-excluding, support-changing, or sheet-changing incidence.
+`ROUTE CLASS KILLED`. Arbitrary infinite analytic expansions do not help because positive Gram diagonal equals feature norm-square. Result does not exclude indefinite Krein, renormalized/distributional, domain-excluding, support-changing, or sheet-changing incidence.
+
+## Lean certificate
+
+- Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingPreDivisorFiniteEnergyInfiniteRankGramNoGo`
+- Hard-edge bound: `d4PreDivisorOpticalCancellationSusceptibility_rpow_neg_two_le`
+- Infinite susceptibility energy: `not_integrableOn_d4PreDivisorOpticalCancellationSusceptibility`
+- Dimension-free Gram obstruction: `not_integrableOn_normSq_of_d4PreDivisorOpticalCancellationGram`
+- Closed route theorem: `d4HBPreDivisorFiniteEnergyInfiniteRankGramRouteKilled`
+- Direct `lake env lean` and targeted `lake build` pass; axiom audit: `propext`, `Classical.choice`, `Quot.sound` only.
 
 ## Gates
 
 - [x] 0 → 1: corpus-derived, exact RH chain, external audit, falsifiable statement
 - [x] 1 → 2: complete paper proof and hostile boundary audit
-- [ ] 2 → 3: exact unconditional Lean theorem and axiom audit
+- [x] 2 → 3: exact unconditional Lean theorem and axiom audit

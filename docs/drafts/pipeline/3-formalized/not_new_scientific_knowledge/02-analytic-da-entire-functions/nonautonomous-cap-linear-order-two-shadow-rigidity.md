@@ -1,7 +1,7 @@
 # Nonautonomous cap rigidity for linear order-two inner functions
 
 - **ID:** `nonautonomous-cap-linear-order-two-shadow-rigidity`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Scientific status:** `[BRIDGE] [PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Lane:** general hypertranscendence; composition observability
@@ -111,7 +111,7 @@ The determinant is a three-state nonlinear observability calculation, and the fi
 - [x] Degenerate `p=0` boundary classified.
 - [x] Entire matching equation excluded by autonomous first-order classification.
 - [x] Parent-theory audit; bridge verdict.
-- [ ] Lean: the entire-classification input is now **partly formalized**; see below.
+- [x] Lean: the whole theorem is formalized, unconditionally and axiom-cleanly; see below.
 
 ## Lean status
 
@@ -178,14 +178,55 @@ wild bound over the circle gives `T <= S`, the collapse behind Picard's theorem.
 The paper route through the Briot--Bouquet classification is bypassed entirely: no classification of
 the solutions is needed, only the growth conclusion.
 
-## Remaining formalization
+## The differential-algebra half, in Lean
 
-What is not yet formalized is the card's *differential-algebra* half: the three-jet determinant
-`J = v^2(2A_x C - A C_x) - p A(x A_x + A)`, the state field of `(x, v, y) = (g, g', f(g))`, and the
-conclusion `ord_DA(f o g) = 3`.  The corpus's composition apparatus — `daRank`, `shadowSet`,
-`compSet`, `visibilityField`, `relTrdeg` in `CompositionRelativeVisibility`,
-`RelativeVisibilityDegree` and `TwoDefectDecomposition` — carries the first-order inner case; the
-order-two inner case of this card is the remaining build.
+The state field, the three-jet observability determinant and the conclusion `ord_DA(f ∘ g) = 3` are
+formalized.  In the `ℂ`-normalisation used throughout the corpus, `trdeg_ℂ = ord_DA + 1`, so the
+card's conclusion is `daRank (f ∘ g) = 4`.
+
+| Statement | Lean theorem | Module |
+|---|---|---|
+| **`ord_DA(f ∘ g) = 3`** (`daRank (f∘g) = 4`) | `daRank_comp_linear_order_two` | `NonautonomousCapLinearOrderTwo` |
+| `z, y, y′, y″` algebraically independent | `algebraicIndependent_comp_jets_of_linear_order_two` | `NonautonomousCapLinearOrderTwo` |
+| the four states `y, z, x, v` are algebraically independent | `algebraicIndependent_state_four` | `NonautonomousCapLinearOrderTwo` |
+| `(f∘g, g)` algebraically independent | `algebraicIndependent_comp_inner_pair` | `NonautonomousCapLinearOrderTwo` |
+| `A = f′∘g` algebraic over `ℂ(g, f∘g)` | `isAlgebraic_compJetElem_one_pairField` | `NonautonomousCapLinearOrderTwo` |
+| the Euler matching equation forces a polynomial | `exists_polynomial_of_euler_matching` | `EulerMatchingCompositionState` |
+| the substituted Euler relation forces a polynomial | `exists_polynomial_of_euler_mero_relation` | `EulerCompositionPolynomialRigidity` |
+| finitely many Taylor coefficients means a polynomial | `exists_polynomial_of_eventually_taylorCoeff_eq_zero` | `EulerCompositionPolynomialRigidity` |
+| algebraicity over `K[t]` gives a polynomial-coefficient relation | `exists_polynomialCoeff_relation_of_isAlgebraic_adjoin_singleton` | `AdjoinSingletonAlgebraicWitness` |
+| coordinate derivations: kernels, stability, algebraic closure | `derivationBase_eq_zero_of_isAlgebraic_adjoin`, `derivationBase_mem_algebraicClosure_adjoin`, `derivationInt_eq_zero_of_isAlgebraic_adjoin` | `DerivationAlgebraicStability` |
+
+### How the Lean proof runs
+
+The four coordinate derivations `∂_y, ∂_z, ∂_x, ∂_v` are produced by prescribing their values on the
+algebraically independent family `(f∘g, z, g, g′)` (`exists_derivation_prescribed`).  Because a
+derivation vanishing on a subfield kills everything algebraic over it, `∂_z A = ∂_v A = 0` and, since
+`p, q` are rational, `∂_x p = ∂_x q = ∂_v p = ∂_v q = 0`.
+
+The ambient derivation is then identified with the coordinate combination
+`D = ∂_z + v ∂_x + (qv + px) ∂_v + (Av) ∂_y` on the state field: their difference is a derivation
+killing all four generators, hence killing everything algebraic over them.  Applying it to `A` gives
+`A₂ = ∂_x A + A ∂_y A` for `A₂ = f″ ∘ g`, so `A₂` is algebraic over `ℂ(g, f∘g)` too.
+
+The output jets are `y`, `A v`, `A₂ v² + A(qv + px)`, and the Jacobian against
+`(∂_z, ∂_y, ∂_x, ∂_v)` is block triangular with an identity block on `(z, y)` and lower block
+determinant exactly the card's
+
+```text
+J = v²(2A₂ ∂_x A − A ∂_x A₂) − p A (x ∂_x A + A),
+```
+
+the `q`-terms cancelling as in the paper proof.  Since `v` is transcendental over the algebraic
+closure of `ℂ(z, g, f∘g)`, `J = 0` forces `x ∂_x A + A = 0`, i.e. `∂_x(x A) = 0`.  A transcendence
+count then makes `x A = g·(f′∘g)` algebraic over `ℂ[f∘g]` — otherwise `g`, which `∂_x` moves, would
+add a third degree to a field of transcendence degree two — and a denominator-free witness for that
+algebraicity is exactly the Euler relation `∑_k C_k(f)·(z f′)^k = 0`, which makes `f` a polynomial.
+
+The upper bound `daRank (f∘g) ≤ 4` is the observation that every jet of `f∘g` is algebraic over the
+four-generator state field, whose relative algebraic closure still has transcendence degree four.
+
+All declarations are axiom-clean (`propext, Classical.choice, Quot.sound`).
 
 ## Primary references
 

@@ -1,0 +1,579 @@
+import GaloisForLFunctions.HTGeometry.EulerMatchingCompositionState
+import GaloisForLFunctions.HTGeometry.JacobianDomainCriterion
+import GaloisForLFunctions.HTGeometry.DerivationPrescription
+import GaloisForLFunctions.HTGeometry.GaussianOrderLedger
+import GaloisForLFunctions.HTGeometry.CompositionJetBackward
+import GaloisForLFunctions.HTGeometry.MeromorphicRealizationDerivative
+
+/-!
+# Nonautonomous cap rigidity for a linear order-two inner function
+
+Let `g` be a transcendental entire solution of `g″ = q g′ + p g` with `p, q` rational and `p ≠ 0`,
+whose coordinate, value and derivative are algebraically independent, and let `f` be a
+transcendental entire first-order differentially algebraic function.  Then the composition `f ∘ g`
+has differential rank exactly four, i.e. exact differential order three.
+
+The state is `(x, v, y) = (g, g′, f ∘ g)` with
+
+```text
+D x = v,   D v = q v + p x,   D y = A v,
+```
+
+`A = f′ ∘ g` algebraic over `ℂ(x, y)`.  The output jets are `y`, `A v` and `A₂ v² + A(qv + px)`
+with `A₂ = f″ ∘ g`, and the observability Jacobian against the coordinate derivations `∂_z, ∂_y,
+∂_x, ∂_v` is block triangular with lower block determinant
+
+```text
+J = v²(2 A₂ ∂_x A − A ∂_x A₂) − p A (x ∂_x A + A).
+```
+
+Since `v` is transcendental over the algebraic closure of `ℂ(z, x, y)`, a vanishing `J` forces
+`x ∂_x A + A = 0`, i.e. the Euler matching equation `x f′(x) = c(f(x))`, which makes `f` a
+polynomial.  So `J ≠ 0` and the four states `z, y, y′, y″` are algebraically independent.
+
+The `q`-terms cancel exactly, which is why no hypothesis on `q` beyond rationality is needed.
+-/
+
+namespace GaloisForLFunctions.HTGeometry
+
+open GaloisForLFunctions Bottcher
+open scoped Differential
+
+noncomputable section
+
+attribute [local instance] relativeGaugeDomain relativeGaugeDifferential
+  relativeGaugeRatFuncAlgebra relativeGaugeRatFuncDifferential relativeGaugeDifferentialAlgebra
+  relativeGaugeCharZeroBase relativeGaugeCharZero relativeGaugeComplexAlgebra
+
+set_option synthInstance.maxHeartbeats 4000000
+set_option maxHeartbeats 4000000
+
+variable {f g : ℂ → ℂ}
+
+
+/-! ### The state family of a composition -/
+
+/-- The composition and its inner factor are algebraically independent. -/
+theorem algebraicIndependent_comp_inner_pair (hf : Differentiable ℂ f) (hg : Differentiable ℂ g)
+    (hcomp : Differentiable ℂ fun w => f (g w))
+    (hfnp : ¬ ∃ p : Polynomial ℂ, ∀ z : ℂ, f z = p.eval z)
+    (hgnp : ¬ ∃ p : Polynomial ℂ, ∀ z : ℂ, g z = p.eval z) :
+    AlgebraicIndependent ℂ ![jetElem hcomp 0, jetElem hg 0] := by
+  have hncg : ¬ ∃ cst : ℂ, ∀ z : ℂ, g z = cst := not_const_of_not_polynomial hgnp
+  have hytr' : Transcendental
+      ↥(Algebra.adjoin ℂ ({jetElem hg 0} : Set (meroField (Set.univ : Set ℂ))))
+      (jetElem hcomp 0) := by
+    intro halg
+    have h1 := GaloisForLFunctions.isAlgebraic_intermediateField_of_isAlgebraic_algebraAdjoin _ halg
+    refine not_isAlgebraic_comp_over_jetField hf hg hcomp hfnp hgnp (isAlgebraic_of_le ?_ h1)
+    rw [IntermediateField.adjoin_le_iff]
+    rintro w rfl
+    exact IntermediateField.subset_adjoin ℂ _ (Set.mem_insert_of_mem _ ⟨0, rfl⟩)
+  exact algebraicIndependent_pair_of_transcendental (R := ℂ) _ _
+    (transcendental_jetElem_zero hg hncg) hytr'
+
+/-- The four states `f ∘ g`, the coordinate, `g` and `g′` are algebraically independent. -/
+theorem algebraicIndependent_state_four (hf : Differentiable ℂ f) (hg : Differentiable ℂ g)
+    (hcomp : Differentiable ℂ fun w => f (g w))
+    (hfnp : ¬ ∃ p : Polynomial ℂ, ∀ z : ℂ, f z = p.eval z)
+    (hgnp : ¬ ∃ p : Polynomial ℂ, ∀ z : ℂ, g z = p.eval z)
+    (hindep : AlgebraicIndependent ℂ ![coordElem, jetElem hg 0, jetElem hg 1]) :
+    AlgebraicIndependent ℂ
+      ![jetElem hcomp 0, coordElem, jetElem hg 0, jetElem hg 1] := by
+  have hytr3 : Transcendental
+      ↥(Algebra.adjoin ℂ (Set.range ![coordElem, jetElem hg 0, jetElem hg 1]))
+      (jetElem hcomp 0) := by
+    intro halg
+    have h1 := GaloisForLFunctions.isAlgebraic_intermediateField_of_isAlgebraic_algebraAdjoin _ halg
+    refine not_isAlgebraic_comp_over_jetField hf hg hcomp hfnp hgnp (isAlgebraic_of_le ?_ h1)
+    rw [IntermediateField.adjoin_le_iff]
+    rintro w ⟨j, rfl⟩
+    fin_cases j
+    · exact IntermediateField.subset_adjoin ℂ _ (Set.mem_insert _ _)
+    · exact IntermediateField.subset_adjoin ℂ _ (Set.mem_insert_of_mem _ ⟨0, rfl⟩)
+    · exact IntermediateField.subset_adjoin ℂ _ (Set.mem_insert_of_mem _ ⟨1, rfl⟩)
+  have h2 : AlgebraicIndependent ℂ
+      (fun o : Option (Fin 3) => o.elim (jetElem hcomp 0) ![coordElem, jetElem hg 0, jetElem hg 1]) :=
+    (hindep.option_iff_transcendental _).mpr hytr3
+  refine (algebraicIndependent_equiv' (e := (finSuccEquiv 3))
+    (f := fun o : Option (Fin 3) =>
+      o.elim (jetElem hcomp 0) ![coordElem, jetElem hg 0, jetElem hg 1])
+    (g := ![jetElem hcomp 0, coordElem, jetElem hg 0, jetElem hg 1]) ?_).mpr h2
+  funext j
+  fin_cases j <;> rfl
+
+/-- The outer derivative is algebraic over the field generated by the two states. -/
+theorem isAlgebraic_compJetElem_one_pairField (hf : Differentiable ℂ f) (hg : Differentiable ℂ g)
+    (hcomp : Differentiable ℂ fun w => f (g w))
+    (hfnp : ¬ ∃ p : Polynomial ℂ, ∀ z : ℂ, f z = p.eval z)
+    (hgnp : ¬ ∃ p : Polynomial ℂ, ∀ z : ℂ, g z = p.eval z)
+    {d m i₀ k₀ : ℕ} {c : ℕ → ℕ → Polynomial ℂ} (hi₀ : i₀ ≤ d) (hk₀ : k₀ ≤ m)
+    (hcne : c i₀ k₀ ≠ 0)
+    (hrel : ∀ w : ℂ, ∑ i ∈ Finset.range (d + 1), rowFun f c m i w * w ^ i = 0) :
+    IsAlgebraic ↥(IntermediateField.adjoin ℂ
+      (Set.range ![jetElem hcomp 0, jetElem hg 0])) (compJetElem hf hg 1) := by
+  have hncg : ¬ ∃ cst : ℂ, ∀ z : ℂ, g z = cst := not_const_of_not_polynomial hgnp
+  have hncomp : ¬ ∃ cst : ℂ, ∀ z : ℂ, f (g z) = cst :=
+    not_const_comp_of_not_polynomial hf hg hfnp hncg
+  refine isAlgebraic_compJetElem_one_of_firstOrder hf hg hcomp hfnp hgnp hncg hncomp hi₀ hk₀ hcne
+    hrel (IntermediateField.subset_adjoin ℂ _ ⟨0, rfl⟩)
+    (isAlgebraic_algebraMap (⟨jetElem hg 0, IntermediateField.subset_adjoin ℂ _ ⟨1, rfl⟩⟩ :
+      ↥(IntermediateField.adjoin ℂ (Set.range ![jetElem hcomp 0, jetElem hg 0]))))
+
+/-- **The four output states of a linear order-two composition are algebraically independent.** -/
+theorem algebraicIndependent_comp_jets_of_linear_order_two
+    (hf : Differentiable ℂ f) (hg : Differentiable ℂ g)
+    (hcomp : Differentiable ℂ fun w => f (g w))
+    (hfnp : ¬ ∃ p : Polynomial ℂ, ∀ z : ℂ, f z = p.eval z)
+    (hgnp : ¬ ∃ p : Polynomial ℂ, ∀ z : ℂ, g z = p.eval z)
+    {P Q : meroField (Set.univ : Set ℂ)}
+    (hP : P ∈ IntermediateField.adjoin ℂ ({coordElem} : Set (meroField (Set.univ : Set ℂ))))
+    (hQ : Q ∈ IntermediateField.adjoin ℂ ({coordElem} : Set (meroField (Set.univ : Set ℂ))))
+    (hPne : P ≠ 0)
+    (hode : jetElem hg 2 = Q * jetElem hg 1 + P * jetElem hg 0)
+    (hindep : AlgebraicIndependent ℂ ![coordElem, jetElem hg 0, jetElem hg 1])
+    {d m i₀ k₀ : ℕ} {c : ℕ → ℕ → Polynomial ℂ} (hi₀ : i₀ ≤ d) (hk₀ : k₀ ≤ m)
+    (hcne : c i₀ k₀ ≠ 0)
+    (hrel : ∀ w : ℂ, ∑ i ∈ Finset.range (d + 1), rowFun f c m i w * w ^ i = 0) :
+    AlgebraicIndependent ℂ
+      ![coordElem, jetElem hcomp 0, jetElem hcomp 1, jetElem hcomp 2] := by
+  classical
+  have hncg : ¬ ∃ cst : ℂ, ∀ z : ℂ, g z = cst := not_const_of_not_polynomial hgnp
+  have hncf : ¬ ∃ cst : ℂ, ∀ z : ℂ, f z = cst := not_const_of_not_polynomial hfnp
+  have hncomp : ¬ ∃ cst : ℂ, ∀ z : ℂ, f (g z) = cst :=
+    not_const_comp_of_not_polynomial hf hg hfnp hncg
+  set x : meroField (Set.univ : Set ℂ) := jetElem hg 0 with hxdef
+  set v : meroField (Set.univ : Set ℂ) := jetElem hg 1 with hvdef
+  set y : meroField (Set.univ : Set ℂ) := jetElem hcomp 0 with hydef
+  set A : meroField (Set.univ : Set ℂ) := compJetElem hf hg 1 with hAdef
+  set A2 : meroField (Set.univ : Set ℂ) := compJetElem hf hg 2 with hA2def
+  have hyx : AlgebraicIndependent ℂ ![y, x] :=
+    algebraicIndependent_comp_inner_pair hf hg hcomp hfnp hgnp
+  set K : IntermediateField ℂ (meroField (Set.univ : Set ℂ)) :=
+    IntermediateField.adjoin ℂ (Set.range ![y, x]) with hKdef
+  have hyK : y ∈ K := IntermediateField.subset_adjoin ℂ _ ⟨0, rfl⟩
+  have hxK : x ∈ K := IntermediateField.subset_adjoin ℂ _ ⟨1, rfl⟩
+  have hA : IsAlgebraic ↥K A :=
+    isAlgebraic_compJetElem_one_pairField hf hg hcomp hfnp hgnp hi₀ hk₀ hcne hrel
+  have hind4 : AlgebraicIndependent ℂ ![y, coordElem, x, v] :=
+    algebraicIndependent_state_four hf hg hcomp hfnp hgnp hindep
+  -- the coordinate derivations
+  obtain ⟨Dy, hDyv⟩ := exists_derivation_prescribed hind4 ![1, 0, 0, 0]
+  obtain ⟨Dz, hDzv⟩ := exists_derivation_prescribed hind4 ![0, 1, 0, 0]
+  obtain ⟨Dx, hDxv⟩ := exists_derivation_prescribed hind4 ![0, 0, 1, 0]
+  obtain ⟨Dv, hDvv⟩ := exists_derivation_prescribed hind4 ![0, 0, 0, 1]
+  have hDy_y : Dy y = 1 := by simpa using hDyv 0
+  have hDy_z : Dy coordElem = 0 := by simpa using hDyv 1
+  have hDy_x : Dy x = 0 := by simpa using hDyv 2
+  have hDy_v : Dy v = 0 := by simpa using hDyv 3
+  have hDz_y : Dz y = 0 := by simpa using hDzv 0
+  have hDz_z : Dz coordElem = 1 := by simpa using hDzv 1
+  have hDz_x : Dz x = 0 := by simpa using hDzv 2
+  have hDz_v : Dz v = 0 := by simpa using hDzv 3
+  have hDx_y : Dx y = 0 := by simpa using hDxv 0
+  have hDx_z : Dx coordElem = 0 := by simpa using hDxv 1
+  have hDx_x : Dx x = 1 := by simpa using hDxv 2
+  have hDx_v : Dx v = 0 := by simpa using hDxv 3
+  have hDv_y : Dv y = 0 := by simpa using hDvv 0
+  have hDv_z : Dv coordElem = 0 := by simpa using hDvv 1
+  have hDv_x : Dv x = 0 := by simpa using hDvv 2
+  have hDv_v : Dv v = 1 := by simpa using hDvv 3
+  -- the rational coefficients are constants for the state derivations
+  have hDxP : Dx P = 0 :=
+    derivationBase_eq_zero_of_mem_adjoin Dx (by rintro w rfl; exact hDx_z) hP
+  have hDxQ : Dx Q = 0 :=
+    derivationBase_eq_zero_of_mem_adjoin Dx (by rintro w rfl; exact hDx_z) hQ
+  have hDvP : Dv P = 0 :=
+    derivationBase_eq_zero_of_mem_adjoin Dv (by rintro w rfl; exact hDv_z) hP
+  have hDvQ : Dv Q = 0 :=
+    derivationBase_eq_zero_of_mem_adjoin Dv (by rintro w rfl; exact hDv_z) hQ
+  -- the outer derivative is a function of the two states only
+  have hkerK : ∀ (D : Derivation ℂ (meroField (Set.univ : Set ℂ))
+      (meroField (Set.univ : Set ℂ))), D y = 0 → D x = 0 →
+      ∀ w ∈ Set.range ![y, x], D w = 0 := by
+    rintro D hDy0 hDx0 w ⟨j, rfl⟩
+    fin_cases j
+    · exact hDy0
+    · exact hDx0
+  have hDzA : Dz A = 0 :=
+    derivationBase_eq_zero_of_isAlgebraic_adjoin Dz (hkerK Dz hDz_y hDz_x) hA
+  have hDvA : Dv A = 0 :=
+    derivationBase_eq_zero_of_isAlgebraic_adjoin Dv (hkerK Dv hDv_y hDv_x) hA
+  -- `K` is stable under the two remaining derivations
+  have hDxK : ∀ w ∈ Set.range ![y, x], Dx w ∈ K := by
+    rintro w ⟨j, rfl⟩
+    fin_cases j
+    · rw [show (![y, x] : Fin 2 → _) ⟨0, by norm_num⟩ = y from rfl, hDx_y]; exact zero_mem K
+    · rw [show (![y, x] : Fin 2 → _) ⟨1, by norm_num⟩ = x from rfl, hDx_x]; exact one_mem K
+  have hDyK : ∀ w ∈ Set.range ![y, x], Dy w ∈ K := by
+    rintro w ⟨j, rfl⟩
+    fin_cases j
+    · rw [show (![y, x] : Fin 2 → _) ⟨0, by norm_num⟩ = y from rfl, hDy_y]; exact one_mem K
+    · rw [show (![y, x] : Fin 2 → _) ⟨1, by norm_num⟩ = x from rfl, hDy_x]; exact zero_mem K
+  have hAcl : A ∈ algebraicClosure ↥K (meroField (Set.univ : Set ℂ)) :=
+    mem_algebraicClosure_iff.mpr hA
+  have hDxAcl : Dx A ∈ algebraicClosure ↥K (meroField (Set.univ : Set ℂ)) :=
+    derivationBase_mem_algebraicClosure_adjoin Dx hDxK hAcl
+  have hDyAcl : Dy A ∈ algebraicClosure ↥K (meroField (Set.univ : Set ℂ)) :=
+    derivationBase_mem_algebraicClosure_adjoin Dy hDyK hAcl
+  -- the ambient derivation, expanded in the coordinate derivations
+  have hDmul : ∀ (D : Derivation ℂ (meroField (Set.univ : Set ℂ)) (meroField (Set.univ : Set ℂ)))
+      (a b : meroField (Set.univ : Set ℂ)), D (a * b) = a * D b + b * D a := by
+    intro D a b
+    simpa [smul_eq_mul] using D.leibniz a b
+  have hvne : v ≠ 0 := by
+    intro h0
+    exact (hind4.ne_zero 3) (by simpa using h0)
+  have hy1 : jetElem hcomp 1 = A * v := jetElem_comp_one_eq hf hg hcomp
+  have hyder : y′ = A * v := by
+    rw [← jetElem_succ_eq_deriv hcomp 0]; exact hy1
+  have hxder : x′ = v := by rw [← jetElem_succ_eq_deriv hg 0]
+  have hvder : v′ = Q * v + P * x := by rw [← jetElem_succ_eq_deriv hg 1]; exact hode
+  set E :=
+    (Differential.deriv (R := meroField (Set.univ : Set ℂ)))
+      - (toIntDerivation Dz + v • toIntDerivation Dx + (Q * v + P * x) • toIntDerivation Dv
+        + (A * v) • toIntDerivation Dy) with hEdef
+  have hEapp : ∀ w : meroField (Set.univ : Set ℂ),
+      E w = w′ - (Dz w + v * Dx w + (Q * v + P * x) * Dv w + (A * v) * Dy w) := by
+    intro w
+    simp [hEdef, smul_eq_mul]
+  have hEbase : ∀ cst : ℂ, E (algebraMap ℂ (meroField (Set.univ : Set ℂ)) cst) = 0 := by
+    intro cst
+    rw [hEapp, deriv_complexConst]
+    simp
+  have hEgen : ∀ w ∈ Set.range ![y, coordElem, x, v], E w = 0 := by
+    rintro w ⟨j, rfl⟩
+    fin_cases j
+    · show E y = 0
+      rw [hEapp, hyder, hDz_y, hDx_y, hDv_y, hDy_y]; ring
+    · show E coordElem = 0
+      rw [hEapp, deriv_coordElem, hDz_z, hDx_z, hDv_z, hDy_z]; ring
+    · show E x = 0
+      rw [hEapp, hxder, hDz_x, hDx_x, hDv_x, hDy_x]; ring
+    · show E v = 0
+      rw [hEapp, hvder, hDz_v, hDx_v, hDv_v, hDy_v]; ring
+  have hKle : K ≤ IntermediateField.adjoin ℂ (Set.range ![y, coordElem, x, v]) := by
+    rw [hKdef, IntermediateField.adjoin_le_iff]
+    rintro w ⟨j, rfl⟩
+    fin_cases j
+    · exact IntermediateField.subset_adjoin ℂ _ ⟨0, rfl⟩
+    · exact IntermediateField.subset_adjoin ℂ _ ⟨2, rfl⟩
+  have hEA : E A = 0 :=
+    derivationInt_eq_zero_of_isAlgebraic_adjoin E hEbase hEgen (isAlgebraic_of_le hKle hA)
+  have hA2eq : A2 = Dx A + A * Dy A := by
+    have h1 : A′ = A2 * v := deriv_compJetElem hf hg 1
+    have h2 := hEA
+    rw [hEapp, h1, hDzA, hDvA] at h2
+    refine mul_right_cancel₀ hvne ?_
+    linear_combination h2
+  have hAcl' : A ∈ algebraicClosure ↥K (meroField (Set.univ : Set ℂ)) := hAcl
+  have hA2cl : A2 ∈ algebraicClosure ↥K (meroField (Set.univ : Set ℂ)) := by
+    rw [hA2eq]
+    exact add_mem hDxAcl (mul_mem hAcl' hDyAcl)
+  have hA2alg : IsAlgebraic ↥K A2 := mem_algebraicClosure_iff.mp hA2cl
+  have hDvA2 : Dv A2 = 0 :=
+    derivationBase_eq_zero_of_isAlgebraic_adjoin Dv (hkerK Dv hDv_y hDv_x) hA2alg
+  have hDxA2cl : Dx A2 ∈ algebraicClosure ↥K (meroField (Set.univ : Set ℂ)) :=
+    derivationBase_mem_algebraicClosure_adjoin Dx hDxK hA2cl
+  -- the second output jet
+  have hy2 : jetElem hcomp 2 = A2 * (v * v) + A * (Q * v + P * x) := by
+    have h := jetElem_succ_eq_deriv hcomp 1
+    rw [hy1, differential_deriv_mul, deriv_compJetElem hf hg 1, hvder] at h
+    rw [h]; ring
+  -- the Jacobian entries
+  have hDx_y1 : Dx (jetElem hcomp 1) = v * Dx A := by
+    rw [hy1]; simp only [hDmul, hDx_v]; ring
+  have hDv_y1 : Dv (jetElem hcomp 1) = A := by
+    rw [hy1]; simp only [hDmul, hDv_v, hDvA]; ring
+  have hDx_y2 : Dx (jetElem hcomp 2)
+      = v * v * Dx A2 + A * P + (Q * v + P * x) * Dx A := by
+    rw [hy2]; simp only [map_add, hDmul, hDx_v, hDx_x, hDxP, hDxQ]; ring
+  have hDv_y2 : Dv (jetElem hcomp 2) = A2 * (v + v) + A * Q := by
+    rw [hy2]; simp only [map_add, hDmul, hDv_v, hDv_x, hDvP, hDvQ, hDvA, hDvA2]; ring
+  -- the observability determinant
+  set J : meroField (Set.univ : Set ℂ) :=
+    v * Dx A * (A2 * (v + v) + A * Q)
+      - A * (v * v * Dx A2 + A * P + (Q * v + P * x) * Dx A) with hJdef
+  have hJfact : J = v * v * (A2 * Dx A + A2 * Dx A - A * Dx A2)
+      - P * (A * (x * Dx A + A)) := by rw [hJdef]; ring
+  have hAne : A ≠ 0 := compJetElem_one_ne_zero hf hg hfnp hgnp
+  have hJne : J ≠ 0 := by
+    intro hJ0
+    set F : IntermediateField ℂ (meroField (Set.univ : Set ℂ)) :=
+      IntermediateField.adjoin ℂ (Set.range ![y, coordElem, x]) with hFdef
+    have hKF : K ≤ F := by
+      rw [hKdef, IntermediateField.adjoin_le_iff]
+      rintro w ⟨j, rfl⟩
+      fin_cases j
+      · exact IntermediateField.subset_adjoin ℂ _ ⟨0, rfl⟩
+      · exact IntermediateField.subset_adjoin ℂ _ ⟨2, rfl⟩
+    have hclKF : ∀ w : meroField (Set.univ : Set ℂ),
+        w ∈ algebraicClosure ↥K (meroField (Set.univ : Set ℂ)) →
+        w ∈ algebraicClosure ↥F (meroField (Set.univ : Set ℂ)) := fun w hw =>
+      mem_algebraicClosure_iff.mpr (isAlgebraic_of_le hKF (mem_algebraicClosure_iff.mp hw))
+    have hxF : x ∈ algebraicClosure ↥F (meroField (Set.univ : Set ℂ)) :=
+      mem_algebraicClosure_iff.mpr
+        (isAlgebraic_algebraMap (⟨x, IntermediateField.subset_adjoin ℂ _ ⟨2, rfl⟩⟩ : ↥F))
+    have hPF : P ∈ algebraicClosure ↥F (meroField (Set.univ : Set ℂ)) := by
+      refine mem_algebraicClosure_iff.mpr (isAlgebraic_algebraMap (⟨P, ?_⟩ : ↥F))
+      rw [hFdef]
+      refine (IntermediateField.adjoin_le_iff (F := ℂ)).mpr ?_ hP
+      rintro w rfl
+      exact IntermediateField.subset_adjoin ℂ _ ⟨1, rfl⟩
+    set α : meroField (Set.univ : Set ℂ) := A2 * Dx A + A2 * Dx A - A * Dx A2 with hαdef
+    set β : meroField (Set.univ : Set ℂ) := P * (A * (x * Dx A + A)) with hβdef
+    have hαF : α ∈ algebraicClosure ↥F (meroField (Set.univ : Set ℂ)) := by
+      rw [hαdef]
+      exact sub_mem (add_mem (mul_mem (hclKF _ hA2cl) (hclKF _ hDxAcl))
+        (mul_mem (hclKF _ hA2cl) (hclKF _ hDxAcl)))
+        (mul_mem (hclKF _ hAcl') (hclKF _ hDxA2cl))
+    have hβF : β ∈ algebraicClosure ↥F (meroField (Set.univ : Set ℂ)) := by
+      rw [hβdef]
+      exact mul_mem hPF (mul_mem (hclKF _ hAcl')
+        (add_mem (mul_mem hxF (hclKF _ hDxAcl)) (hclKF _ hAcl')))
+    have hvtr : ¬ IsAlgebraic ↥(algebraicClosure ↥F (meroField (Set.univ : Set ℂ))) v := by
+      intro hva
+      have hvmem := mem_algebraicClosure_of_isAlgebraic hva
+      have hvF : IsAlgebraic ↥F v := mem_algebraicClosure_iff.mp hvmem
+      have himg : (![y, coordElem, x, v] '' ({0, 1, 2} : Set (Fin 4)))
+          = Set.range ![y, coordElem, x] := by
+        ext w
+        constructor
+        · rintro ⟨j, hj, rfl⟩
+          rcases hj with rfl | rfl | rfl
+          · exact ⟨0, rfl⟩
+          · exact ⟨1, rfl⟩
+          · exact ⟨2, rfl⟩
+        · rintro ⟨j, rfl⟩
+          fin_cases j
+          · exact ⟨0, by simp, rfl⟩
+          · exact ⟨1, by simp, rfl⟩
+          · exact ⟨2, by simp, rfl⟩
+      have htr := hind4.transcendental_adjoin (s := ({0, 1, 2} : Set (Fin 4))) (i := 3) (by simp)
+      rw [himg] at htr
+      exact htr (GaloisForLFunctions.isAlgebraic_algebraAdjoin_of_isAlgebraic_intermediateField _
+        (by rw [hFdef] at hvF; exact hvF))
+    have hrel2 : v * v * α = β := by rw [← hJfact] at *; linear_combination hJ0
+    have hα0 : α = 0 := by
+      by_contra hαne
+      have hsq : v * v ∈ algebraicClosure ↥F (meroField (Set.univ : Set ℂ)) := by
+        have : v * v = β * α⁻¹ := by
+          field_simp
+          linear_combination hrel2
+        rw [this]
+        exact mul_mem hβF (inv_mem hαF)
+      refine hvtr ⟨Polynomial.X ^ 2 - Polynomial.C
+          (⟨v * v, hsq⟩ : ↥(algebraicClosure ↥F (meroField (Set.univ : Set ℂ)))), ?_, ?_⟩
+      · exact Polynomial.X_pow_sub_C_ne_zero (by norm_num) _
+      · simp only [map_sub, map_pow, Polynomial.aeval_X, Polynomial.aeval_C]
+        show v ^ 2 - v * v = 0
+        ring
+    have hβ0 : β = 0 := by rw [← hrel2, hα0, mul_zero]
+    have hmatch : x * Dx A + A = 0 := by
+      have h1 : P * (A * (x * Dx A + A)) = 0 := by rw [← hβdef]; exact hβ0
+      rcases mul_eq_zero.mp h1 with h | h
+      · exact absurd h hPne
+      · rcases mul_eq_zero.mp h with h' | h'
+        · exact absurd h' hAne
+        · exact h'
+    exact hfnp (exists_polynomial_of_euler_matching hf hg hcomp hncg hncf hncomp hyx hA Dx
+      hDx_x hDx_y hmatch)
+  -- the Jacobian criterion
+  set MM : Matrix (Fin 4) (Fin 4) (meroField (Set.univ : Set ℂ)) :=
+    !![1, 0, Dz (jetElem hcomp 1), Dz (jetElem hcomp 2);
+       0, 1, Dy (jetElem hcomp 1), Dy (jetElem hcomp 2);
+       0, 0, v * Dx A, v * v * Dx A2 + A * P + (Q * v + P * x) * Dx A;
+       0, 0, A, A2 * (v + v) + A * Q] with hMMdef
+  have hMMdet : MM.det = J := by
+    rw [hMMdef, hJdef]
+    simp [Matrix.det_succ_row_zero, Fin.sum_univ_succ]
+    ring
+  refine algebraicIndependent_of_domain_jacobian (K := ℂ)
+    ![coordElem, jetElem hcomp 0, jetElem hcomp 1, jetElem hcomp 2]
+    ![fun w => Dz w, fun w => Dy w, fun w => Dx w, fun w => Dv w]
+    ?_ ?_ ?_ MM (by rw [hMMdet]; exact hJne) ?_
+  · intro i a b
+    fin_cases i <;> simp
+  · intro i a b
+    fin_cases i <;> simp [hDmul]
+  · intro i cst
+    fin_cases i <;> simp
+  · intro i j
+    fin_cases i <;> fin_cases j <;> simp [hMMdef] <;>
+      first
+        | rfl
+        | exact hDz_z | exact hDz_y
+        | exact hDy_z | exact hDy_y
+        | exact hDx_z | exact hDx_y | exact hDx_y1 | exact hDx_y2
+        | exact hDv_z | exact hDv_y | exact hDv_y1 | exact hDv_y2
+
+
+/-- **Nonautonomous cap rigidity for a linear order-two inner function.**  A transcendental entire
+first-order differentially algebraic outer factor composed with a transcendental entire solution of
+`g″ = q g′ + p g` (`p, q` rational, `p ≠ 0`) whose coordinate, value and derivative are
+algebraically independent has differential rank exactly four, i.e. exact differential order three:
+`ord_DA (f ∘ g) = 3`.  The shadow-recovery defect of the composition is zero. -/
+theorem daRank_comp_linear_order_two
+    (hf : Differentiable ℂ f) (hg : Differentiable ℂ g)
+    (hcomp : Differentiable ℂ fun w => f (g w))
+    (hfnp : ¬ ∃ p : Polynomial ℂ, ∀ z : ℂ, f z = p.eval z)
+    (hgnp : ¬ ∃ p : Polynomial ℂ, ∀ z : ℂ, g z = p.eval z)
+    {P Q : meroField (Set.univ : Set ℂ)}
+    (hP : P ∈ IntermediateField.adjoin ℂ ({coordElem} : Set (meroField (Set.univ : Set ℂ))))
+    (hQ : Q ∈ IntermediateField.adjoin ℂ ({coordElem} : Set (meroField (Set.univ : Set ℂ))))
+    (hPne : P ≠ 0)
+    (hode : jetElem hg 2 = Q * jetElem hg 1 + P * jetElem hg 0)
+    (hindep : AlgebraicIndependent ℂ ![coordElem, jetElem hg 0, jetElem hg 1])
+    {d m i₀ k₀ : ℕ} {c : ℕ → ℕ → Polynomial ℂ} (hi₀ : i₀ ≤ d) (hk₀ : k₀ ≤ m)
+    (hcne : c i₀ k₀ ≠ 0)
+    (hrel : ∀ w : ℂ, ∑ i ∈ Finset.range (d + 1), rowFun f c m i w * w ^ i = 0) :
+    daRank hcomp = 4 := by
+  classical
+  have hc4 : Cardinal.mk (Fin 4) = 4 := by simp
+  have hind4 : AlgebraicIndependent ℂ
+      ![jetElem hcomp 0, coordElem, jetElem hg 0, jetElem hg 1] :=
+    algebraicIndependent_state_four hf hg hcomp hfnp hgnp hindep
+  have hA : IsAlgebraic ↥(IntermediateField.adjoin ℂ
+      (Set.range ![jetElem hcomp 0, jetElem hg 0])) (compJetElem hf hg 1) :=
+    isAlgebraic_compJetElem_one_pairField hf hg hcomp hfnp hgnp hi₀ hk₀ hcne hrel
+  have hyB : jetElem hcomp 0 ∈ IntermediateField.adjoin ℂ
+      (Set.range ![jetElem hcomp 0, coordElem, jetElem hg 0, jetElem hg 1]) :=
+    IntermediateField.subset_adjoin ℂ _ ⟨0, rfl⟩
+  have hzB : coordElem ∈ IntermediateField.adjoin ℂ
+      (Set.range ![jetElem hcomp 0, coordElem, jetElem hg 0, jetElem hg 1]) :=
+    IntermediateField.subset_adjoin ℂ _ ⟨1, rfl⟩
+  have hxB : jetElem hg 0 ∈ IntermediateField.adjoin ℂ
+      (Set.range ![jetElem hcomp 0, coordElem, jetElem hg 0, jetElem hg 1]) :=
+    IntermediateField.subset_adjoin ℂ _ ⟨2, rfl⟩
+  have hvB : jetElem hg 1 ∈ IntermediateField.adjoin ℂ
+      (Set.range ![jetElem hcomp 0, coordElem, jetElem hg 0, jetElem hg 1]) :=
+    IntermediateField.subset_adjoin ℂ _ ⟨3, rfl⟩
+  have hKB : IntermediateField.adjoin ℂ (Set.range ![jetElem hcomp 0, jetElem hg 0])
+      ≤ IntermediateField.adjoin ℂ
+        (Set.range ![jetElem hcomp 0, coordElem, jetElem hg 0, jetElem hg 1]) := by
+    rw [IntermediateField.adjoin_le_iff]
+    rintro w ⟨j, rfl⟩
+    fin_cases j
+    · exact hyB
+    · exact hxB
+  have hAB : IsAlgebraic ↥(IntermediateField.adjoin ℂ
+      (Set.range ![jetElem hcomp 0, coordElem, jetElem hg 0, jetElem hg 1]))
+      (compJetElem hf hg 1) := isAlgebraic_of_le hKB hA
+  have hPB : P ∈ IntermediateField.adjoin ℂ
+      (Set.range ![jetElem hcomp 0, coordElem, jetElem hg 0, jetElem hg 1]) := by
+    refine (IntermediateField.adjoin_le_iff (F := ℂ)).mpr ?_ hP
+    rintro w rfl
+    exact hzB
+  have hQB : Q ∈ IntermediateField.adjoin ℂ
+      (Set.range ![jetElem hcomp 0, coordElem, jetElem hg 0, jetElem hg 1]) := by
+    refine (IntermediateField.adjoin_le_iff (F := ℂ)).mpr ?_ hQ
+    rintro w rfl
+    exact hzB
+  have hy1 : jetElem hcomp 1 = compJetElem hf hg 1 * jetElem hg 1 := jetElem_comp_one_eq hf hg hcomp
+  have hyder : (jetElem hcomp 0)′ = compJetElem hf hg 1 * jetElem hg 1 := by
+    rw [← jetElem_succ_eq_deriv hcomp 0]; exact hy1
+  have hxder : (jetElem hg 0)′ = jetElem hg 1 := by rw [← jetElem_succ_eq_deriv hg 0]
+  have hvder : (jetElem hg 1)′ = Q * jetElem hg 1 + P * jetElem hg 0 := by
+    rw [← jetElem_succ_eq_deriv hg 1]; exact hode
+  -- the state field carries the derivation up to algebraicity
+  have hderivAlg : ∀ w ∈ IntermediateField.adjoin ℂ
+      (Set.range ![jetElem hcomp 0, coordElem, jetElem hg 0, jetElem hg 1]),
+      IsAlgebraic ↥(IntermediateField.adjoin ℂ
+        (Set.range ![jetElem hcomp 0, coordElem, jetElem hg 0, jetElem hg 1])) (w′) := by
+    refine deriv_isAlgebraic_of_generators ?_
+    rintro w ⟨j, rfl⟩
+    fin_cases j
+    · refine ⟨isAlgebraic_algebraMap (⟨jetElem hcomp 0, hyB⟩ : ↥(IntermediateField.adjoin ℂ
+        (Set.range ![jetElem hcomp 0, coordElem, jetElem hg 0, jetElem hg 1]))), ?_⟩
+      show IsAlgebraic ↥(IntermediateField.adjoin ℂ
+        (Set.range ![jetElem hcomp 0, coordElem, jetElem hg 0, jetElem hg 1]))
+        ((jetElem hcomp 0)′)
+      rw [hyder]
+      exact mem_algebraicClosure_iff.mp (mul_mem (mem_algebraicClosure_iff.mpr hAB)
+        (mem_algebraicClosure_iff.mpr (isAlgebraic_algebraMap
+          (⟨jetElem hg 1, hvB⟩ : ↥(IntermediateField.adjoin ℂ
+            (Set.range ![jetElem hcomp 0, coordElem, jetElem hg 0, jetElem hg 1]))))))
+    · refine ⟨isAlgebraic_algebraMap (⟨coordElem, hzB⟩ : ↥(IntermediateField.adjoin ℂ
+        (Set.range ![jetElem hcomp 0, coordElem, jetElem hg 0, jetElem hg 1]))), ?_⟩
+      show IsAlgebraic ↥(IntermediateField.adjoin ℂ
+        (Set.range ![jetElem hcomp 0, coordElem, jetElem hg 0, jetElem hg 1])) (coordElem′)
+      rw [deriv_coordElem]
+      exact isAlgebraic_algebraMap (⟨1, one_mem _⟩ : ↥(IntermediateField.adjoin ℂ
+        (Set.range ![jetElem hcomp 0, coordElem, jetElem hg 0, jetElem hg 1])))
+    · refine ⟨isAlgebraic_algebraMap (⟨jetElem hg 0, hxB⟩ : ↥(IntermediateField.adjoin ℂ
+        (Set.range ![jetElem hcomp 0, coordElem, jetElem hg 0, jetElem hg 1]))), ?_⟩
+      show IsAlgebraic ↥(IntermediateField.adjoin ℂ
+        (Set.range ![jetElem hcomp 0, coordElem, jetElem hg 0, jetElem hg 1])) ((jetElem hg 0)′)
+      rw [hxder]
+      exact isAlgebraic_algebraMap (⟨jetElem hg 1, hvB⟩ : ↥(IntermediateField.adjoin ℂ
+        (Set.range ![jetElem hcomp 0, coordElem, jetElem hg 0, jetElem hg 1])))
+    · refine ⟨isAlgebraic_algebraMap (⟨jetElem hg 1, hvB⟩ : ↥(IntermediateField.adjoin ℂ
+        (Set.range ![jetElem hcomp 0, coordElem, jetElem hg 0, jetElem hg 1]))), ?_⟩
+      show IsAlgebraic ↥(IntermediateField.adjoin ℂ
+        (Set.range ![jetElem hcomp 0, coordElem, jetElem hg 0, jetElem hg 1])) ((jetElem hg 1)′)
+      rw [hvder]
+      exact isAlgebraic_algebraMap (⟨_, add_mem (mul_mem hQB hvB) (mul_mem hPB hxB)⟩ :
+        ↥(IntermediateField.adjoin ℂ
+          (Set.range ![jetElem hcomp 0, coordElem, jetElem hg 0, jetElem hg 1])))
+  have hjetalg : ∀ k : ℕ, IsAlgebraic ↥(IntermediateField.adjoin ℂ
+      (Set.range ![jetElem hcomp 0, coordElem, jetElem hg 0, jetElem hg 1])) (jetElem hcomp k) :=
+    forall_isAlgebraic_jetElem hcomp hderivAlg hyB
+  -- the upper bound
+  have hup : daRank hcomp ≤ 4 := by
+    have hle : IntermediateField.adjoin ℂ
+        (insert coordElem (Set.range fun k : ℕ => jetElem hcomp k))
+        ≤ (algebraicClosure ↥(IntermediateField.adjoin ℂ
+            (Set.range ![jetElem hcomp 0, coordElem, jetElem hg 0, jetElem hg 1]))
+          (meroField (Set.univ : Set ℂ))).restrictScalars ℂ := by
+      rw [IntermediateField.adjoin_le_iff]
+      rintro w (rfl | ⟨k, rfl⟩)
+      · exact mem_algebraicClosure_restrictScalars_of_mem _ hzB
+      · exact mem_algebraicClosure_iff.mpr (hjetalg k)
+    have hclos : Algebra.trdeg ℂ ↥((algebraicClosure ↥(IntermediateField.adjoin ℂ
+        (Set.range ![jetElem hcomp 0, coordElem, jetElem hg 0, jetElem hg 1]))
+        (meroField (Set.univ : Set ℂ))).restrictScalars ℂ) = 4 := by
+      rw [trdeg_algebraicClosure_restrictScalars_eq]
+      exact (trdeg_intermediateFieldAdjoin_range_eq_cardinalMk_of_algebraicIndependent _
+        hind4).trans hc4
+    have hmono := trdeg_add_relTrdeg hle
+    calc daRank hcomp
+        ≤ daRank hcomp + relTrdeg hle := le_self_add
+      _ = Algebra.trdeg ℂ ↥((algebraicClosure ↥(IntermediateField.adjoin ℂ
+            (Set.range ![jetElem hcomp 0, coordElem, jetElem hg 0, jetElem hg 1]))
+            (meroField (Set.univ : Set ℂ))).restrictScalars ℂ) := hmono
+      _ = 4 := hclos
+  -- the lower bound
+  have hjac : AlgebraicIndependent ℂ
+      ![coordElem, jetElem hcomp 0, jetElem hcomp 1, jetElem hcomp 2] :=
+    algebraicIndependent_comp_jets_of_linear_order_two hf hg hcomp hfnp hgnp hP hQ hPne hode
+      hindep hi₀ hk₀ hcne hrel
+  have hlow : (4 : Cardinal) ≤ daRank hcomp := by
+    have hle : IntermediateField.adjoin ℂ
+        (Set.range ![coordElem, jetElem hcomp 0, jetElem hcomp 1, jetElem hcomp 2])
+        ≤ IntermediateField.adjoin ℂ
+          (insert coordElem (Set.range fun k : ℕ => jetElem hcomp k)) := by
+      rw [IntermediateField.adjoin_le_iff]
+      rintro w ⟨j, rfl⟩
+      fin_cases j
+      · exact IntermediateField.subset_adjoin ℂ _ (Set.mem_insert _ _)
+      · exact IntermediateField.subset_adjoin ℂ _ (Set.mem_insert_of_mem _ ⟨0, rfl⟩)
+      · exact IntermediateField.subset_adjoin ℂ _ (Set.mem_insert_of_mem _ ⟨1, rfl⟩)
+      · exact IntermediateField.subset_adjoin ℂ _ (Set.mem_insert_of_mem _ ⟨2, rfl⟩)
+    have hbase : Algebra.trdeg ℂ ↥(IntermediateField.adjoin ℂ
+        (Set.range ![coordElem, jetElem hcomp 0, jetElem hcomp 1, jetElem hcomp 2])) = 4 :=
+      (trdeg_intermediateFieldAdjoin_range_eq_cardinalMk_of_algebraicIndependent _ hjac).trans hc4
+    have hmono := trdeg_add_relTrdeg hle
+    calc (4 : Cardinal)
+        = Algebra.trdeg ℂ ↥(IntermediateField.adjoin ℂ
+            (Set.range ![coordElem, jetElem hcomp 0, jetElem hcomp 1, jetElem hcomp 2])) :=
+          hbase.symm
+      _ ≤ Algebra.trdeg ℂ ↥(IntermediateField.adjoin ℂ
+            (Set.range ![coordElem, jetElem hcomp 0, jetElem hcomp 1, jetElem hcomp 2]))
+          + relTrdeg hle := le_self_add
+      _ = daRank hcomp := hmono
+  exact le_antisymm hup hlow
+
+
+end
+
+end GaloisForLFunctions.HTGeometry

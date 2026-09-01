@@ -285,66 +285,6 @@ noncomputable def chosenLocalIntegerRingAut
       (x : ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀)
       (y : ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀)
 
-@[simp] theorem chosenLocalIntegerRingAut_one_apply
-    (v₀ : HeightOneSpectrum (𝓞 K))
-    (z : chosenLocalIntegerRing (K := K) (L := L) v₀) :
-    chosenLocalIntegerRingAut (K := K) (L := L) v₀ 1 z = z := by
-  apply Subtype.ext
-  simp [chosenLocalIntegerRingAut]
-
-set_option maxHeartbeats 1200000 in
-@[simp] theorem chosenLocalIntegerRingAut_mul_apply
-    (v₀ : HeightOneSpectrum (𝓞 K))
-    (σ τ : ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀ ≃ₐ[
-      ChosenFinitePlaceBaseCompletion (K := K) v₀]
-        ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀)
-    (z : chosenLocalIntegerRing (K := K) (L := L) v₀) :
-    chosenLocalIntegerRingAut (K := K) (L := L) v₀ (σ * τ) z =
-      chosenLocalIntegerRingAut (K := K) (L := L) v₀ σ
-        (chosenLocalIntegerRingAut (K := K) (L := L) v₀ τ z) := by
-  apply Subtype.ext
-  rfl
-
-@[simp] theorem chosenLocalIntegerRingAut_apply_inv_apply
-    (v₀ : HeightOneSpectrum (𝓞 K))
-    (σ : ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀ ≃ₐ[
-      ChosenFinitePlaceBaseCompletion (K := K) v₀]
-        ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀)
-    (z : chosenLocalIntegerRing (K := K) (L := L) v₀) :
-    chosenLocalIntegerRingAut (K := K) (L := L) v₀ σ
-        (chosenLocalIntegerRingAut (K := K) (L := L) v₀ σ⁻¹ z) = z := by
-  apply Subtype.ext
-  simp [chosenLocalIntegerRingAut]
-
-/-- Restriction of chosen completed-field automorphisms to the intrinsic integer ring, as a
-monoid homomorphism. -/
-noncomputable def chosenLocalIntegerRingAutHom
-    (v₀ : HeightOneSpectrum (𝓞 K)) :
-    (ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀ ≃ₐ[
-        ChosenFinitePlaceBaseCompletion (K := K) v₀]
-          ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀) →*
-      (chosenLocalIntegerRing (K := K) (L := L) v₀ ≃+*
-        chosenLocalIntegerRing (K := K) (L := L) v₀) where
-  toFun τ := chosenLocalIntegerRingAut (K := K) (L := L) v₀ τ
-  map_one' := by
-    apply RingEquiv.ext
-    intro z
-    exact chosenLocalIntegerRingAut_one_apply (K := K) (L := L) v₀ z
-  map_mul' σ τ := by
-    apply RingEquiv.ext
-    intro z
-    exact chosenLocalIntegerRingAut_mul_apply (K := K) (L := L) v₀ σ τ z
-
-/-- Canonical action of chosen completed-field automorphisms on the intrinsic integer ring. -/
-noncomputable instance chosenLocalIntegerRingMulSemiringAction
-    (v₀ : HeightOneSpectrum (𝓞 K)) :
-    MulSemiringAction
-      (ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀ ≃ₐ[
-        ChosenFinitePlaceBaseCompletion (K := K) v₀]
-          ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀)
-      (chosenLocalIntegerRing (K := K) (L := L) v₀) :=
-  MulSemiringAction.compHom _ (chosenLocalIntegerRingAutHom (K := K) (L := L) v₀)
-
 theorem chosenLocalIntegerRingAut_mem_maximalIdeal_pow_iff
     (v₀ : HeightOneSpectrum (𝓞 K))
     (τ : ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀ ≃ₐ[
@@ -476,19 +416,29 @@ theorem mem_chosenDVFLocalLowerRamificationGroup_iff
     apply (ValuationTheory.ringEquiv_mem_maximalIdeal_pow_iff e (n + 1) _).1
     rwa [heq]
 
-/-- Actual completed lower filtration, expressed on the intrinsic local integer ring.  This is
-definitionally the displacement condition consumed by source-completion theorems; equality with
-CFT's complete-DVF filtration is proved below. -/
+private def chosenActualLocalLowerRamificationCarrier
+    (v₀ : HeightOneSpectrum (𝓞 K)) (n : ℕ) :
+    Set (ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀ ≃ₐ[
+      ChosenFinitePlaceBaseCompletion (K := K) v₀]
+        ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀) :=
+  {τ | ∀ z : chosenLocalIntegerRing (K := K) (L := L) v₀,
+    chosenLocalIntegerRingAut (K := K) (L := L) v₀ τ z - z ∈
+      IsLocalRing.maximalIdeal
+        (chosenLocalIntegerRing (K := K) (L := L) v₀) ^ (n + 1)}
+
+/-- Actual completed lower filtration, copied onto its intrinsic-integer displacement carrier.
+The named carrier makes exact source witnesses cheap to elaborate; subgroup laws and equality with
+CFT's filtration come from the complete-DVF construction. -/
 noncomputable def chosenActualLocalLowerRamificationGroup
     (v₀ : HeightOneSpectrum (𝓞 K)) (n : ℕ) :
     Subgroup (ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀ ≃ₐ[
       ChosenFinitePlaceBaseCompletion (K := K) v₀]
         ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀) :=
-  GaloisForLFunctions.HTGeometry.Ideal.lowerRamificationGroup
-    (G := ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀ ≃ₐ[
-      ChosenFinitePlaceBaseCompletion (K := K) v₀]
-        ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀)
-    (IsLocalRing.maximalIdeal (chosenLocalIntegerRing (K := K) (L := L) v₀)) n
+  (chosenDVFLocalLowerRamificationGroup (K := K) (L := L) v₀ n).copy
+    (chosenActualLocalLowerRamificationCarrier (K := K) (L := L) v₀ n) (by
+      ext τ
+      exact (mem_chosenDVFLocalLowerRamificationGroup_iff
+        (K := K) (L := L) v₀ n τ).symm)
 
 @[simp] theorem mem_chosenActualLocalLowerRamificationGroup_iff
     (v₀ : HeightOneSpectrum (𝓞 K)) (n : ℕ)
@@ -509,16 +459,8 @@ theorem chosenActualLocalLowerRamificationGroup_eq_localLower
       RamificationTheory.LocalField.localLowerRamificationGroup
         (ChosenFinitePlaceBaseCompletion (K := K) v₀)
         (ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀) (n : ℝ) := by
-  calc
-    chosenActualLocalLowerRamificationGroup (K := K) (L := L) v₀ n =
-        chosenDVFLocalLowerRamificationGroup (K := K) (L := L) v₀ n := by
-      ext τ
-      exact (mem_chosenActualLocalLowerRamificationGroup_iff
-        (K := K) (L := L) v₀ n τ).trans
-          (mem_chosenDVFLocalLowerRamificationGroup_iff
-            (K := K) (L := L) v₀ n τ).symm
-    _ = _ := chosenDVFLocalLowerRamificationGroup_eq_localLower
-      (K := K) (L := L) v₀ n
+  rw [chosenActualLocalLowerRamificationGroup, Subgroup.copy_eq,
+    chosenDVFLocalLowerRamificationGroup_eq_localLower]
 
 /-- One intrinsic-integer displacement outside `m^(n+1)` excludes an automorphism from actual
 completed lower level `n`. -/

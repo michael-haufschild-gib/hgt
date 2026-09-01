@@ -1611,3 +1611,34 @@ With `Γ` abelian the endgame is already Lean-closed: abelian ⟹ every subexten
 block field is Galois and inside the source field ⟹ a cyclic prime-order quotient ⟹ Kummer
 (`KummerExtension`) ⟹ `UnramifiedRadicalCriterion` ⟹ `UfdPowerDescent` ⟹ `TorusKummerExponents`
 ⟹ `CriticalSourceKummerObstruction`.
+
+### Brick A — the connectivity producer: three modules landed (2026-09-01)
+
+All axiom-clean (`propext`, `Classical.choice`, `Quot.sound`), wired into `HTGeometry`, oleans built.
+
+- `HTGeometry/MvPolynomialAwayComplexPoints.lean` — **general**: for `G : MvPolynomial ι ℂ`,
+  `AlgSpec (Localization.Away G)` is the set of `v` with `eval v G ≠ 0` (surjectivity
+  `awayAlgPoint_surjective`, continuity `continuous_awayAlgPoint`), hence
+  **`pathConnectedSpace_algSpec_localizationAway`**: the complex points of any principal open of a
+  complex affine space are path connected.  Also `continuous_mvPolynomial_eval` and
+  `pathConnectedSpace_of_continuous_surjective`.
+- `HTGeometry/CriticalSourceChartLocalization.lean` — the source chart **is** such a principal open:
+  `criticalSourceRawFamily`, `raw_zero_pow_mul_recip_mem` (the inverse recursion only divides by the
+  constant term, so `x_0^{k+1} y_k` is a polynomial in the raw coordinates),
+  `criticalSourceRecipNumerator`, **`criticalAmbientRecip_ne_zero`** (specialise the generic jet at
+  `1 - t`: its inverse is the geometric series, so no reciprocal coordinate vanishes),
+  `criticalAmbientRaw_ne_zero`, `criticalSourceChartPoly = X_0 · X_m · N_n` with
+  `criticalSourceChartPoly_ne_zero`, the chart ring `criticalSourceChartRing`, its injective
+  algebra map to `criticalSourceField`, `IsIntegrallyClosed`, and the general lemma
+  `injective_awayLift_of_injective`.
+- `HTGeometry/CriticalSourceChartObservationTower.lean` — `chartInvX0`, `chartRecip`,
+  `observationRingToChart`, the algebra `criticalObservationChartRing → criticalSourceChartRing`,
+  both scalar towers, and **`criticalSourceChartRing_isIntegral`**:
+  `Algebra.IsIntegral (criticalObservationChartRing K m n) (criticalSourceChartRing K m n)`.
+- `HTGeometry/CriticalSourceChartComplexPoints.lean` —
+  **`pathConnectedSpace_algSpec_criticalSourceChartRing`**.
+
+Remaining for Brick A: embed `CriticalBlockNormalization B` into `criticalSourceChartRing` (it is
+integrally closed with fraction field the source field, and the block field descends into the source
+field by `criticalBlockFixedField_le_sourceFieldRange_of_mem`), then
+`AlgSpec.surjective_precomp_of_isIntegral` transports path-connectedness to the block cover.
