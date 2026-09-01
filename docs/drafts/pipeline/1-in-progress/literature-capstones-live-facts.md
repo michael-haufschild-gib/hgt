@@ -22,7 +22,8 @@
 - The completed Hensel witness is unit-valued; its norm `u` has trivial actual finite-place Artin symbol for `N/K` at every dyadic `K=ℚ(√5,√41)` place.
 - Over `S=ℚ(√41)`, `u` has minimal polynomial `X²−X−1`; hence `N_{K/S}(u)=−1`.
 - At `2`, every source prime has `e=f=1` over `ℚ`; its prime below is literal `(2)`; the canonical completion map `ℚ₂→S_v` is an algebra equivalence. Source lower groups are `C₂` at levels `0,1,2`, then trivial; the quartic source character sends its generator to `−1`, is even, and has conductor exponent `3` (norm `8`).
-- Source→completion reflects every maximal-ideal power; completed central displacement lies in `m³` universally and not in `m⁴` on the embedded top radical.
+- Source→completion reflects every maximal-ideal power. Completed central displacement is universally in `m³`, outside `m⁴` on the embedded top radical, and the central automorphism lies in actual/CFT local `G₂`.
+- Exact intrinsic-integer criterion and one-witness exclusion for completed lower groups are proved. Q8 `G₃` specialization currently times out in `whnf` despite its proved `m⁴` witness.
 - Fröhlich 6(i)'s hypothesis holds; wild `2` is permitted. Finite sign and odd local product equal `α_Kβ_K=−1`.
 - Fröhlich's proof uses Artin induction/local Gaussian `ε`, pure-field evaluation, then quadratic-twist invariance.
 - **Open:** identify each chosen `S_v≃ℚ₂` and its reciprocity angular quotient with primitive even `χ₈`; prove genuine local `ε`; assemble `W_N=−1`.

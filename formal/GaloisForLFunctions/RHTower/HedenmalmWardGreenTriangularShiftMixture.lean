@@ -131,6 +131,17 @@ theorem wardTriangularExpPairMixture_eq (k a : ℝ) :
     simp [Real.exp_zero]
     ring
 
+theorem wardTriangularExpPairMixture_neg (k a : ℝ) :
+    wardTriangularExpPairMixture k (-a) = wardTriangularExpPairMixture k a := by
+  unfold wardTriangularExpPairMixture
+  apply intervalIntegral.integral_congr
+  intro u hu
+  change (2 * k - u) *
+      (Real.exp (u * -a) + Real.exp (-(u * -a))) =
+    (2 * k - u) * (Real.exp (u * a) + Real.exp (-(u * a)))
+  rw [show u * -a = -(u * a) by ring, neg_neg]
+  ring
+
 /-- The triangular pair kernel written using only positive source-shift energy gains. -/
 def wardTriangularPositiveShiftPairGain (k : ℝ) (z : ℂ) : ℝ :=
   ∫ u in (0 : ℝ)..2 * k,
@@ -170,7 +181,76 @@ theorem fiveShiftWardTriangularPositiveShiftMixture_eq (a : ℝ) :
   simp only [fiveShiftWardTriangularPositiveShiftMixture,
     fiveShiftWardRemovableSourceScalar, wardTriangularExpPairMixture_eq]
 
+theorem fiveShiftWardRemovableSourceScalar_neg (a : ℝ) :
+    fiveShiftWardRemovableSourceScalar (-a) =
+      fiveShiftWardRemovableSourceScalar a := by
+  rw [← fiveShiftWardTriangularPositiveShiftMixture_eq (-a),
+    ← fiveShiftWardTriangularPositiveShiftMixture_eq a]
+  simp only [fiveShiftWardTriangularPositiveShiftMixture,
+    wardTriangularExpPairMixture_neg]
+
+/-- Five-shift removable scalar written entirely in compact positive source-shift gains. -/
+def fiveShiftWardPositiveShiftPairGain (z : ℂ) : ℝ :=
+  fiveShiftWardCoefficientOne * wardTriangularPositiveShiftPairGain 1 z -
+    fiveShiftWardCoefficientTwo * wardTriangularPositiveShiftPairGain 2 z +
+    fiveShiftWardCoefficientThree * wardTriangularPositiveShiftPairGain 3 z -
+    fiveShiftWardCoefficientFour * wardTriangularPositiveShiftPairGain 4 z +
+    wardTriangularPositiveShiftPairGain 5 z
+
+theorem fiveShiftWardPositiveShiftPairGain_eq (z : ℂ) :
+    fiveShiftWardPositiveShiftPairGain z =
+      fiveShiftWardRemovableSourceScalar z.im := by
+  simp only [fiveShiftWardPositiveShiftPairGain,
+    fiveShiftWardRemovableSourceScalar, wardTriangularPositiveShiftPairGain_eq]
+
+/-- The compact positive-shift mixture retains the uniform Ward quantum throughout the strip,
+including the removable critical-line value. -/
+theorem fiveShiftWardPositiveShiftPairGain_ge
+    {z : ℂ} (hz : |z.im| ≤ 1 / 2) :
+    1 / 81 ≤ fiveShiftWardPositiveShiftPairGain z := by
+  rw [fiveShiftWardPositiveShiftPairGain_eq]
+  by_cases hzero : z.im = 0
+  · rw [hzero, fiveShiftWardRemovableSourceScalar_zero]
+    exact fiveShiftWardKernelJump_ge
+  · have habs0 : 0 < |z.im| := abs_pos.mpr hzero
+    have hpunct : |z.im| ≠ 0 := ne_of_gt habs0
+    have hbase := fiveShiftEulerGammaPairedRenormalizedFeature_one_ge habs0 hz
+    rw [← fiveShiftWardRemovableSourceScalar_eq_renormalizedFeature hpunct] at hbase
+    by_cases him : 0 ≤ z.im
+    · rwa [abs_of_nonneg him] at hbase
+    · have him' : z.im < 0 := lt_of_not_ge him
+      rw [abs_of_neg him', fiveShiftWardRemovableSourceScalar_neg z.im] at hbase
+      simpa using hbase
+
+theorem fiveShiftWardGreenRemovableExtension_one_eq_sourceScalar (a : ℝ) :
+    fiveShiftWardGreenRemovableExtension 1 a =
+      fiveShiftWardRemovableSourceScalar a := by
+  by_cases ha : a = 0
+  · subst a
+    simp [fiveShiftWardGreenRemovableExtension, fiveShiftWardKernelJump,
+      fiveShiftWardPairCoefficientOne, fiveShiftWardPairCoefficientTwo,
+      fiveShiftWardPairCoefficientThree, fiveShiftWardPairCoefficientFour,
+      fiveShiftWardCoefficientOne, fiveShiftWardCoefficientTwo,
+      fiveShiftWardCoefficientThree, fiveShiftWardCoefficientFour]
+    ring
+  · rw [← fiveShiftEulerGammaPairedRenormalizedFeature_eq_removableExtension 1 ha,
+      ← fiveShiftWardRemovableSourceScalar_eq_renormalizedFeature ha]
+
+/-- Copywise removable Ward current with inverse-Green division eliminated in favor of compact
+positive source shifts. -/
+theorem fiveShiftWardGreenRemovableCriticalFeatureCurrent_eq_positiveShiftPairGain
+    (t : ℝ) (q : XiZeroCopy) :
+    fiveShiftWardGreenRemovableCriticalFeatureCurrent t q =
+      fiveShiftWardPositiveShiftPairGain (xiSpectralPoint q) *
+        Complex.normSq (criticalFeatureCauchyKernelTest t (xiSpectralPoint q)) := by
+  rw [fiveShiftWardGreenRemovableCriticalFeatureCurrent,
+    fiveShiftWardGreenRemovableExtension_one_eq_sourceScalar,
+    fiveShiftWardPositiveShiftPairGain_eq]
+  have him : (xiSpectralPoint q).im = -((q.1 : ℂ).re - 1 / 2) := by
+    rw [xiSpectralPoint_im_eq]
+    ring
+  rw [him, fiveShiftWardRemovableSourceScalar_neg]
+
 end
 
 end RHTower
-

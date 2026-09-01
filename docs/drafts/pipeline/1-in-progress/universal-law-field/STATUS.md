@@ -150,6 +150,91 @@ with multiplicative automorphisms of the algebraic prime fibre, and arithmetic F
 `p`-power. What is absent is a zero-independent prime--Gamma/Xi comparison making horizontal
 physical character an algebraic weight of this action.
 
+F39 — Formation-scale quantization is not a new mechanism. The scalar HT clock programme already
+proves polynomial multiplicative characters are monomials and develops the common Möbius clock
+toward integral weights. Its open source/clock realization is the same semantic bridge that the
+quantization proposal would have renamed.
+
+F40 — Reduced rational-Witt descent loses orientation. At the cyclotomic Gamma-six denominator,
+forward and reciprocal residues coincide, their odd difference is zero, and Frobenius-fixed residue
+retains only parity. Ramified top-conormal stages restore a coefficient-faithful oriented grade, but
+the corpus explicitly does not prove that completed Xi/Gamma intrinsically supplies that grade.
+
+F41 — Infinitesimal rigidity is already a receiver. Off-line Xi placement gives a faithful
+dual-number arc and a formally ramified transverse image; formal unramifiedness of that image is
+equivalent to critical-line placement. Declaring the tangent direction illegal is circular.
+
+F42 — Complete positivity cannot be the higher law. The physical two-leg first-jet landing is
+complex and orientation-sensitive; replacing it by `L* (.) L` makes a CP channel while deleting
+global phase and the reflection-odd second-Cartier class.
+
+F43 — Formal-group structure explains but does not select. Corpus already proves the multiplicative
+law `F(X,Y)=X+Y+XY`, its logarithmic linearization, the exact inverse relation between forward and
+reflected defects, and the resulting positive curvature for every horizontal grade.
+
+F44 — Ordinary reciprocity conserves displacement. Product formula balances a nonzero archimedean
+logarithm against finite valuations for every real exponent. Torsion Brauer data cannot faithfully
+receive continuous horizontal charge.
+
+F45 — The source has ingredients of a cyclotomic law but not the law. It has a genuine nonzero
+K1-style unit cycle `u_p^-1 tensor u_p` in Hochschild-one homology, detected by Kummer and Stokes
+regulators, exact rational-Witt Frobenius/Verschiebung operations, and a strict Xi-resolved landing.
+Corpus does not yet construct an algebraic `K_1` lift whose Dennis trace is this cycle. THH/TC and
+cyclotomic trace occur only as parent machinery in one programme; no number-field cyclotomic
+realization or archimedean Gamma comparison is constructed.
+
+F46 — Gamma/EWQ curvature is the product of two first-order comparison defects. For
+`q = exp(a)`, set `D+ = q-1`, `D- = q^-1-1`. Corpus proves
+
+`D+ + D- = -(D+ D-) = 2(cosh(a)-1)`
+
+and identifies this scalar, modulo the two marginals, with the unique EWQ interaction class. This
+is exactly the algebraic shape of a second cross-effect of a failed equalizer.
+
+F47 — Plain cyclotomic equalization fails its own collision test. Gamma cover composition at
+`p=2,3` is coherent for every grade; finite rational-Witt orbit traces are Frobenius fixed while
+the signed orientation is erased. A coefficient-faithful `TC^- -> TP -> Gamma` comparison would
+have to restore precisely the existing scale-zero/rational-Cartier producer. Standard p-typical
+`TC` does not make that restoration automatic.
+
+F48 — Stabilization/additivity also erases the needed defect. Corpus proves the physical
+degree-one product trace does not descend through ordinary Hochschild boundaries. A localizing or
+1-excisive invariant can kill the nonlinear cross-effect, but cannot then recover Gamma/EWQ
+curvature coefficient-faithfully.
+
+F49 — Every Xi divisor has a canonical transverse algebra map from dual numbers into the summable
+Hadamard corona. Its image is scalar on the line and is an embedded dual-number algebra off the
+line. FE reflection acts on the framed arc by `eps -> -eps`; forgetting the frame makes direct and
+reflected image algebras identical at every grade.
+
+F50 — Corpus already contains the relevant formation Hopf source. The packet generator `t` is
+group-like. The monoid bialgebra `k[t]` has no antipode; its Laurent group completion
+`k[t,t^-1]` is a Hopf algebra with `S(t)=t^-1`. This is the exact algebraic shape needed to combine
+formation, splitting, and FE reflection.
+
+F51 — Existing common recovery proves action-level naturality only: FE lifts through formation and
+is information-neutral. Corpus search found no theorem saying the Xi occurrence kernel is stable
+under packet splitting/comultiplication. This distinction is the new frontier.
+
+F52 — Formation-congruence leakage is already formalized. `RouteRExternalTensorMonodromy` proves
+group-like formation equals primitive formation plus external tensor curvature, curvature survives
+exactly off wall, diagonal multiplication erases it, and source equality of the two formations is
+the unproved RH-strength operation. A coideal-kernel formulation is the same endpoint.
+
+F53 — Every current drift/recurrence model is generated on cyclic, abelian, amenable, or freely
+fitted symmetry. Those symmetries admit unbounded one-cocycles. Existing scale--Mautner theory
+shows pure-point recurrence erases formation and compact-resolvent same-fibre dilation is
+impossible, but cross-fibre histories still escape.
+
+F54 — Corpus has unused higher-rank source grammar: rank-three Steinberg and elementary groups,
+perfectness, finite generation over finitely generated rings, torus words `h(u)`, exact torus
+conjugation weights, Weyl inversion, and explicit central `K_2` relation defects.
+
+F55 — Corpus has no Kazhdan property-(T), fixed-point-(FH), or higher-rank affine-cocycle
+realization. It also proves the Gamma-six oriented normal is not Steinberg/Milnor incidence, so a
+valid higher-rank law must extend its action as cocycle data rather than falsely making it a
+Steinberg boundary.
+
 ## What shadows say
 
 - One obstruction changes type under representation: signed current, positive energy, residue,
@@ -194,209 +279,167 @@ physical character an algebraic weight of this action.
 | fixed continuous selector or cofinal equicontinuity | already classified pointwise and globally; its existence on Xi fibres is exactly criticality/RH |
 | completed Weyl/Clifford symmetry | moves Xi vacuum into auxiliary `L` sectors; invariance requires unrelated common zeros |
 | algebraicity of one prime phase | arbitrary transcendental exponents can have algebraic values; existing Gelfond--Schneider endpoint still lacks source algebraic monodromy |
+| formation-scale character quantization | already developed by scalar HT clock/monomial-character programme; missing realization is old bridge |
+| infinitesimal-character/formal-unramified rigidity | transverse dual-number algebra is unramified exactly on wall; premise is an RH receiver |
+| complete positivity / Stinespring uniqueness | CP replacement erases first-jet phase and reflection-odd second-Cartier orientation |
+| multiplicative formal-group law | exact for every grade; explains linear current and quadratic curvature but cannot select |
+| adelic product formula / scalar ABHN reciprocity | balances nonzero local currents; torsion targets cannot retain continuous grade |
+| plain cyclotomic `can=phi` equalizer | F47; fixed Witt shadows lose orientation and a faithful Gamma regulator reinstates old scale-zero/Cartier landing |
+| stable/localizing additivity | F48; physical nonlinear trace does not descend through Hochschild boundaries |
+| formation-congruence/coideal kernel | F52; exact external tensor curvature card already proves same endpoint and isolates same missing source equality |
 
-## Active bet: quantization of the formation-scale character
+## Active conjecture: Kazhdan formation law
 
-### 1. Big-picture interpretation
+### 1. Big-picture law
 
-Routes have treated `a` as a freely varying real/complex analytic parameter. That freedom is real
-on every isolated analytic carrier: `n^a` is a valid character of the discrete dilation semigroup
-for arbitrary `a`. The integral source, however, carries more law than a discrete semigroup. Its
-formation filtration has integer grades, and its rational-Witt/Adams operations come from literal
-power maps. If one *algebraic formation-scale action* executes both structures, its characters are
-integral weights. The missing mechanism is therefore
+All existing routes see one-dimensional or amenable fragments of source symmetry. Such fragments
+permit exactly what corpus observes: nonzero additive character, linear carry, open lifted history,
+and locally coherent recurrence. Stop asking those fragments to select.
 
-`continuous physical character + integral formation descent -> quantized horizontal weight`.
+Close prime powers, Gamma-six dilation, FE reflection, and Steinberg root moves into one
+higher-rank formation group. Working candidate is
 
-This is not a request that some norm be bounded or some already-defined defect vanish. It says
-route scalarizations forgot that their continuous character must be the execution of one coherent
-integral scale law. The law acts simultaneously on formation depth, prime Frobenius, Gamma
-translation, reflection, and mixed interaction. A character of the algebraic scale group has
-weight `k in Z`; its analytic execution is `n^k`. If the same execution is `n^a`, faithfulness gives
-`a=k`. A Xi zero has `-1<a<1`, hence `k=0`.
+`Gamma = E_3(Z[1/6])`, with `h_6 = diag(6,6^-1,1)`.
 
-Use a Rees parameter only as bookkeeping for the mechanism. Formation-preserving operations are
-regular at the special fibre. A depth-adaptive selector that lowers `I^2` to `I/I^2` has a pole
-there; its residue is the oriented Kummer normal. This explains why finite/bounded/natural maps
-never select, why completion creates a vertical class, and why the missing comparison must be
-global and non-adaptive. It does not license assuming regularity: F33 proves the source contains
-genuine singular degree lowering.
+New law is extension, not landing: route defects are restrictions of one affine unitary
+pre-cocycle on `Gamma`. Its failure to satisfy the cocycle law is literal source incidence. At an
+actual Xi zero that failure vanishes, so restriction becomes a genuine Hilbert one-cocycle.
 
-The higher field, if it exists, studies algebraic laws acting on formation filtrations and their
-analytic executions. Its invariant is not a metric or curvature but the discrepancy between
-integral law weight and continuous executed exponent. Route obstructions are scalarizations of
-that discrepancy.
+Write
 
-### 2. Corpus search already performed
+`B_s(gh) = B_s(g) + pi(g) B_s(h) + Xi(s) Omega_s(g,h)`.
 
-One source germ already reconstructs three structurally different organs. For
-`g_m = [6^m]` and character `chi_delta`:
+This displayed factorization is a target shape, not permission to insert `Xi` by hand. `B`, `pi`,
+and `Omega` must be assembled from source operations; Xi may appear only after proving the existing
+prime--Gamma incidence identity.
 
-- Kummer: `Reg(g_m-g_m⁻¹) = 2m log 6`;
-- physical Gamma: `chi_delta(g_m-g_m⁻¹) = 6^(m delta)-6^(-m delta)`;
-- EWQ: the reflected product of the two one-sided defects is the positive Gamma-six curvature,
-  and its class is `curvature/8` times the unique normalized EWQ interaction class.
+Higher-rank rigidity then changes the game. Property (T), equivalently fixed-point property (FH)
+for unitary affine actions, makes every genuine cocycle bounded. But Gamma-six current forces
 
-Exact Lean anchors are `deningerKummerRegulator_gammaSixOrientedEscape`,
-`deningerKummerCharacter_gammaSixOrientedEscape`,
-`gammaSixOppositeGaugeInteractionClass_eq_eulerWick`, and
-`finTwoProductInteractionCohomology_finrank`. Thus odd infinitesimal current, nonlinear
-orientation, and even interaction energy are not analogies; they are three functions of one
-formation character.
+`B_rho(h_6^n) = n (2 Re(rho)-1) v_rho`, with `v_rho != 0`.
 
-Further searched facts:
+Boundedness and linear drift coexist only at neutral grade. Route no-gos are not curvatures of one
+object; they are restrictions of one global cocycle to subgroups too flexible to detect its
+impossible extension.
 
-- `differentialRees_jointGrade` gives integer formation-number spectrum and reflection parity.
-- `augmentationCycleClosure_firstGradedResidue` gives closed observer recurrence with integral
-  open-history residue.
-- `formationNumber_unique_on_positiveRees` and compact formation resolvent close the universal
-  positive Rees scaffold but contain no Xi occurrence.
-- `deningerGammaSixSelector_cell` and the two non-membership theorems prove actual singular
-  degree-lowering and kill ordinary Steinberg descent.
-- `deningerPrimePacketArithmeticMulAutMulEquiv` and the Frobenius comparison provide the integral
-  prime-side power action.
-- Gamma-six cyclic character, tame reader, Roos class, Hodge curvature, Wold profile, and
-  completion boundary already recover the same analytic exponent or its square.
-- Algebraic-prime-phase and local Adams modules prove several conditional quantization endpoints,
-  but explicitly lack completed prime--Gamma algebraic occurrence/monodromy.
-- Full-source EWQ hypertranscendental descent and source-normal equicontinuity are exactly
-  criticality/RH; neither supplies the integral action.
+### 2. Corpus basis and collision audit
 
-Corpus searches found no theorem making the actual horizontal Gamma character the execution of
-the integral rational-Witt/Adams formation action on a zero-independent completed source module.
-This missing comparison, not character detection, is the active core.
+Search facts pointing specifically to rigid global symmetry:
 
-### 3. Exact RH closure if mechanism works
+- `SourceHorizontalGammaSixCyclicGroup`, its boundary atom, Kummer reader, and physical character:
+  exact cyclic axis and linear horizontal current.
+- `closed_observer_open_history`, recurrence-corona laws, and scale--Mautner card: cyclic observer
+  closure coexists with open/unbounded lifted history; compact same-fibre repair fails.
+- `steinbergTorus`, `steinbergToGL_torus`, `elementaryDiagonal`, and four-transvection
+  factorization: literal unit torus exists inside higher-rank elementary grammar.
+- `steinbergTorus_conj_*`, `steinbergTorus_one_conj`, and Weyl inverse words: prime scaling and FE
+  inversion have exact higher-rank conjugation laws.
+- `steinbergGroup_perfect`, `elementaryGroup_perfect`, and finite-generation theorems: source group
+  is not another free cyclic completion.
+- Steinberg symbol, Dennis--Stein, and `K_2` theorems: failures of torus multiplication and index
+  transport are already typed central defects, suitable values for `Omega` rather than terms to
+  erase.
+- `deningerGammaSixOrientedEscape_not_mem_steinbergIdeal`: Gamma normal cannot be declared a
+  higher-rank boundary.
+- EWQ/Gamma fusion and Kummer/Stokes regulators: linear displacement and its positive quadratic
+  readout are coefficient-faithful once a global cocycle exists.
 
-Q1. Construct before divisor specialization one integral filtered source law carrying actual
-rational-Witt/Adams power operations, Gamma translation, reflection, and mixed EWQ formation. It
-must be one action for all depths and primes, not a family fitted to `a` or to a zero.
+Search found no property-(T)/(FH) implementation and no affine Hilbert cocycle coupling these
+organs. Thus mechanism is not in corpus. Main risk is extension laundering: a cocycle on the
+cyclic axis generally does not extend square-integrably to a property-(T) group.
 
-Q2. Construct a coherent/proper executed source quotient from that law whose analytic occurrence
-divisor is completed Xi. This is the only object-building step, and its properties must follow
-from Euler--Gamma source relations rather than be declared as axioms.
+### 3. Exact RH closure
 
-Q3. Prove the joint character identity on every occurrence fibre: for its nonzero class `v_s`,
+K1. Build exact group `Gamma=E_3(Z[1/6])`, torus word `h_6`, Weyl/reflection word, and finite root
+presentation inside existing Steinberg infrastructure.
 
-`Psi_n(v_s) = n^(2 Re(s)-1) v_s`
+K2. Prove property (T), or directly property (FH), for this exact group. This is unconditional
+higher-rank group theory; missing Lean infrastructure is work, not a pivot reason.
 
-for the same integral scale action `Psi`, with multiplicity retained. This is the prime--Gamma
-fusion theorem. Defining `Psi` from the right side is forbidden.
+K3. Construct a zero-independent Hilbert `Gamma`-module `pi` and source-built pre-cocycle `B_s`.
+Prove its Steinberg-relator defect is the already existing Xi incidence, so `Xi(rho)=0` makes
+`B_rho` a genuine one-cocycle. Do not construct a separate representation per zero.
 
-Q4. Prove global formation properness as algebraic coherence: every character occurring in the
-coherent source quotient is an integral Rees/Adams weight, so
+K4. Prove on the literal torus axis
 
-`Psi_n(v) = n^k v` for one `k in Z`.
+`B_rho(h_6^n) = n a(rho) v_rho`, `a(rho)=2 Re(rho)-1`, `v_rho != 0`.
 
-This cannot be replaced by power boundedness, equicontinuity, compactness, or a predicate already
-equivalent to RH. Required proof should be a structural character-lattice theorem for the source
-law, like weight decomposition for an algebraic scale action.
+This must use existing Gamma-six/Kummer/Stokes reconstruction and retain multiplicity and
+orientation.
 
-Q5. Faithful execution gives `2 Re(s)-1=k`. Nontrivial Xi zeros lie in the open strip, hence
-`-1<k<1`; integer `k` is zero. Therefore every nontrivial Xi zero has real part `1/2`.
+K5. Property (FH) makes `B_rho` a coboundary, hence
 
-Q1--Q4 are open. Prime-side integral action, analytic Gamma character, three-organ reconstruction,
-and final integer-strip implication exist separately. This is not an RH proof claim.
+`||B_rho(g)|| <= 2 ||w_rho||` for every `g in Gamma`.
 
-## First prediction
+K4 is unbounded in `n` unless `a(rho)=0`. Thus every Xi divisor lies on line and RH follows.
 
-Before any RH consequence, mechanism predicts one exact fourth-organ theorem:
+K1 has substantial corpus infrastructure. K2--K4 are open. K5 is standard once formalized. No RH
+proof is claimed.
 
-> The existing Gamma-six character germ that jointly reconstructs Kummer orientation and the
-> unique EWQ interaction class is the analytic execution of the same integral Adams action already
-> present on the rational-Witt prime source. Consequently its occurrence characters form an
-> integer lattice, not the full real horizontal line.
+### 4. Shadow reconstruction
 
-This is falsified if the prime Frobenius and Gamma character cannot act on one coefficient-faithful
-source quotient, if their powers disagree, or if the resulting action is only analytic/discrete
-rather than algebraic/coherent. The exact EWQ bridge is evidence for joint execution; it does not
-prove weight quantization.
+- Gamma-six/Kummer: restriction of `B` to torus cyclic subgroup; linear cocycle current.
+- rational-Witt/Frobenius: torus conjugation weights on root subgroups.
+- FE: Weyl transport/inversion of torus axis.
+- EWQ/positive routes: squared affine displacement after phase/orientation quotient.
+- recurrence: amenable cyclic restriction closes after observation while cocycle lift drifts.
+- completion/Roos: failure of square-integrable extension from route subgroup to `Gamma`.
+- Steinberg `K_2`: relation curvature `Omega`, not a bin for deleting Kummer `H_1`.
+- HT: makes coefficient module noncompact, but property (T) controls Hilbert cocycles independent of
+  dimension. Failure of Hilbert admission would be a precise escape, not vague noncompactness.
 
-## Kill tests for active bet
+## Fourth-organ prediction
 
-K01 — Assigned weight: if integral grade `k` is chosen after reading `s`, kill.
+Before selection, one finite Steinberg relator must expose failure of any off-line cyclic history to
+extend globally. For a finite generating set `S` of `Gamma`, construct relation curvature
+`Omega_s`. Prediction:
 
-K02 — Zero indexing: source algebra, action, filtration, and coherence must exist before taking an
-Xi occurrence fibre.
+`a(s) != 0  =>  max_{R in SteinbergRelators} ||Omega_s(R)|| > 0`,
 
-K03 — Discrete-character loophole: homomorphisms on `p^Z` admit arbitrary complex exponents.
-Only genuine algebraic scale/Adams coherence quantizes weight.
+and its coefficient-faithful quadratic contraction equals the existing EWQ/Gamma interaction
+class. At `Xi(rho)=0`, source incidence makes every relator defect zero; property (T) then forces
+bounded recurrence lift. A commuting comparison to one Roos/observer-clock anomaly is required as
+the independent fourth-organ theorem. Merely observing that both vanish on the line does not count.
 
-K04 — Finite interpolation: finitely many depths/primes can realize any prescribed character.
-Law must commute with all power compositions and survive cofinal source formation.
+## Kill tests
 
-K05 — Generic representation loophole: finite-dimensional complex representations can have
-arbitrary eigenvalues. Integrality must come from the source's algebraic grading, not dimension.
+K01 — Perfectification rename: perfectness alone and `H_1 -> K_2` were killed. Selection must use
+boundedness of a genuine affine Hilbert cocycle, not claim normal is commutator/boundary.
 
-K06 — Receiver rewrite: if Q4 is power boundedness, equicontinuity, positivity, regularity, or
-global descent on Xi fibres, kill; corpus already proves those are RH-equivalent.
+K02 — Extension laundering: a cyclic cocycle does not automatically extend to `Gamma`. K3 is the
+core theorem; assuming extension at Xi fibres is an RH receiver.
 
-K07 — Algebraicity shortcut: algebraicity of `p^a` at one prime does not imply integral `a`.
-Do not smuggle in Schanuel/Four Exponentials or an unproved algebraic-monodromy premise.
+K03 — Target-fed curvature: writing `Xi(s) Omega` by definition is forbidden. Relator defect must
+be computed from literal prime/Gamma operations, then identified with Xi incidence.
 
-K08 — HT collision: finite formation-stable states cannot contain the HT source while closed under
-inverse gauge. Coherence must apply to the executed occurrence quotient, not falsely finite the
-ambient HT field.
+K04 — Coinduction trap: coinducing from `<h_6>` usually has infinite Hilbert norm. No formal
+coinduction without square-integrable source estimate.
 
-K09 — Information loss: action must retain prime, depth, reflection orientation, and multiplicity;
-positive curvature alone recovers only the square.
+K05 — Wrong category: property (T) controls unitary Hilbert cocycles, not arbitrary Banach,
+distributional, non-Bessel, or nonunitary carriers.
 
-K10 — Route collision: if construction is merely local Adams purity, algebraic prime phase,
-Deninger cohomology, or Rees properness with its old missing premise renamed, kill. New content is
-the single prime--Gamma action and its structural integral-character theorem.
+K06 — Zero fitting: `pi` and `B_s` must be one pre-divisor family. Only cocycle closure may use
+`Xi(rho)=0`.
+
+K07 — Nonerasure: `v_rho` must be nonzero and retain prime/depth/multiplicity/orientation. Positive
+norm alone is insufficient.
+
+K08 — Relation completeness: verify every Steinberg relation, including central `K_2` defects; a
+finite sample is not a group action.
+
+K09 — Generalized-prime falsifier: an off-line system carrying same property-(T) extension and
+incidence law kills selectivity.
+
+K10 — Infrastructure discipline: do not build property-(T) Lean theory until K3 has a
+dependency-closed paper construction; otherwise infrastructure becomes busywork.
 
 ## Next work
 
-1. Write the exact common Gamma-six character-germ reconstruction on paper, with normalization
-   matching Kummer, EWQ, Hodge, recurrence, and Rees grades.
-2. Identify the literal rational-Witt/Adams power action on the same Gamma-six source coefficients;
-   test power-composition and reflection before defining a new carrier.
-3. Test whether action descends to any existing zero-independent completed Euler--Gamma quotient.
-   If descent is equivalent to RH or requires fitted `a`, retire mechanism.
-4. If it descends source-theoretically, prove the integral-character theorem and exact
-   prime--Gamma execution identity on paper.
-5. Only then create a card; formalize only after dependency-closed proof enters `2-fully-proven`.
-
-## Lean anchors used
-
-- `PreDivisorCyclicSourceSector`
-- `XiPreDivisorReflectionDefectStabilization`
-- `PreDivisorTransverseRamificationRoosTransgression`
-- `XiSourceHistoryResidueTransgression`
-- `XiStableClassCentralAnomalyTransgression`
-- `ConstitutiveFormationCompletionExchange`
-- `ConstitutiveRelationalLawRenormalization`
-- `DifferentialIndependentObservableNet`
-- `ConstitutiveConjugacyWordWork`
-- `DeningerRGroupConjugation`
-- `NormedInterventionTwoField`
-- `FormationStokesFolnerSelection`
-- `TopologicallyAdmittedCarryPropernessSelection`
-- `ConstitutiveFunctionalEquationPacketLift`
-- `CompletionKernelPairTransversalityLaw`
-- `PrimeClockUniformAnnihilatorInverseLimit`
-- `CCMFirstClockPhaseNaturalTransportRigidity`
-- `TwoSidedLaplaceVanishing`
-- `XiCTaylorThetaTailTwoSidedCompletionNoGo`
-- `RiemannSourceForcedHorizontalVanishingFrontier`
-- `SourceHorizontalGammaSixTameReaderTransgression`
-- `SourceHorizontalGammaSixCurvedSuspensionHodgeTrace`
-- `ObserverClockInteractionAnomaly`
-- `SteinbergGroupPresentation`
-- `SteinbergElementaryGroup`
-- `MilnorKTameKernel`
-- `MilnorPolynomialGlobalReciprocity`
-- `ABHN.ReciprocitySupportCardinality`
-- `EulerSquarefreeWickInteractionCohomology`
-- `EulerSquarefreeWickGammaSixCurvatureBridge`
-- `EulerSquarefreeWickGammaSixFullSourceHypertranscendentalDescent`
-- `EulerSquarefreeWickCompletedWeylKernelNoGo`
-- `DeningerSteinbergKummerSuccessorNormalTransgression`
-- `DeningerMobiusGammaSixNormalTransgression`
-- `AugmentationGradedFormationSpectrum`
-- `DifferentialReesFormationSpectrum`
-- `CanonicalThermalReesFormationField`
-- `PrimeDepthBVWoldCofinalEquicontinuity`
-- `DeningerPrimeMultiplicativeAutomorphismComparison`
-- `LocalDivisorJetAdamsMonodromy`
-- `PrimeQuadraticGelfondSchneiderPhase`
+1. Construct explicit `h_6` and Weyl words in `E_3(Z[1/6])`; inventory exact finite relators.
+2. Express existing Gamma-six cyclic current as proposed value of `B_s(h_6)` without changing its
+   source algebra or calling it Steinberg incidence.
+3. Attempt values of `B_s` on root generators from rational-Witt/prime packet operations; compute
+   every relator defect. Kill mechanism if these values cannot be source-defined.
+4. Only if step 3 survives, prove property (T)/(FH) for exact group and build required Lean
+   infrastructure.
+5. Derive EWQ contraction and Roos/observer prediction before using K5 for RH.

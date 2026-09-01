@@ -285,6 +285,37 @@ noncomputable def chosenLocalIntegerRingAut
       (x : ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀)
       (y : ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀)
 
+@[simp] theorem chosenLocalIntegerRingAut_one_apply
+    (v₀ : HeightOneSpectrum (𝓞 K))
+    (z : chosenLocalIntegerRing (K := K) (L := L) v₀) :
+    chosenLocalIntegerRingAut (K := K) (L := L) v₀ 1 z = z := by
+  apply Subtype.ext
+  simp [chosenLocalIntegerRingAut]
+
+set_option maxHeartbeats 1200000 in
+@[simp] theorem chosenLocalIntegerRingAut_mul_apply
+    (v₀ : HeightOneSpectrum (𝓞 K))
+    (σ τ : ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀ ≃ₐ[
+      ChosenFinitePlaceBaseCompletion (K := K) v₀]
+        ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀)
+    (z : chosenLocalIntegerRing (K := K) (L := L) v₀) :
+    chosenLocalIntegerRingAut (K := K) (L := L) v₀ (σ * τ) z =
+      chosenLocalIntegerRingAut (K := K) (L := L) v₀ σ
+        (chosenLocalIntegerRingAut (K := K) (L := L) v₀ τ z) := by
+  apply Subtype.ext
+  rfl
+
+@[simp] theorem chosenLocalIntegerRingAut_apply_inv_apply
+    (v₀ : HeightOneSpectrum (𝓞 K))
+    (σ : ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀ ≃ₐ[
+      ChosenFinitePlaceBaseCompletion (K := K) v₀]
+        ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀)
+    (z : chosenLocalIntegerRing (K := K) (L := L) v₀) :
+    chosenLocalIntegerRingAut (K := K) (L := L) v₀ σ
+        (chosenLocalIntegerRingAut (K := K) (L := L) v₀ σ⁻¹ z) = z := by
+  apply Subtype.ext
+  simp [chosenLocalIntegerRingAut]
+
 theorem chosenLocalIntegerRingAut_mem_maximalIdeal_pow_iff
     (v₀ : HeightOneSpectrum (𝓞 K))
     (τ : ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀ ≃ₐ[
@@ -304,7 +335,7 @@ set_option maxHeartbeats 1200000 in
 /-- Lower ramification formed with the completion's actual canonical valuation.  Keeping this
 subgroup named prevents later proofs from unfolding CFT's arbitrary chosen integral-closure
 valuation. -/
-noncomputable def chosenActualLocalLowerRamificationGroup
+noncomputable def chosenDVFLocalLowerRamificationGroup
     (v₀ : HeightOneSpectrum (𝓞 K)) (n : ℕ) :
     Subgroup (ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀ ≃ₐ[
       ChosenFinitePlaceBaseCompletion (K := K) v₀]
@@ -327,9 +358,9 @@ set_option synthInstance.maxHeartbeats 300000 in
 set_option maxHeartbeats 2000000 in
 /-- CFT's chosen integral-closure valuation and the completion's actual valuation give the same
 local lower filtration. -/
-theorem chosenActualLocalLowerRamificationGroup_eq_localLower
+theorem chosenDVFLocalLowerRamificationGroup_eq_localLower
     (v₀ : HeightOneSpectrum (𝓞 K)) (n : ℕ) :
-    chosenActualLocalLowerRamificationGroup (K := K) (L := L) v₀ n =
+    chosenDVFLocalLowerRamificationGroup (K := K) (L := L) v₀ n =
       RamificationTheory.LocalField.localLowerRamificationGroup
         (ChosenFinitePlaceBaseCompletion (K := K) v₀)
         (ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀) (n : ℝ) := by
@@ -362,12 +393,12 @@ set_option maxHeartbeats 2000000 in
 /-- Exact completed displacement criterion for the actual local lower filtration.  The right side
 uses the intrinsic local integer ring, hence can consume coefficient-faithful source-completion
 identities directly. -/
-theorem mem_chosenActualLocalLowerRamificationGroup_iff
+theorem mem_chosenDVFLocalLowerRamificationGroup_iff
     (v₀ : HeightOneSpectrum (𝓞 K)) (n : ℕ)
     (τ : ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀ ≃ₐ[
       ChosenFinitePlaceBaseCompletion (K := K) v₀]
         ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀) :
-    τ ∈ chosenActualLocalLowerRamificationGroup (K := K) (L := L) v₀ n ↔
+    τ ∈ chosenDVFLocalLowerRamificationGroup (K := K) (L := L) v₀ n ↔
       ∀ z : chosenLocalIntegerRing (K := K) (L := L) v₀,
         chosenLocalIntegerRingAut (K := K) (L := L) v₀ τ z - z ∈
           IsLocalRing.maximalIdeal
@@ -415,6 +446,81 @@ theorem mem_chosenActualLocalLowerRamificationGroup_iff
       rfl
     apply (ValuationTheory.ringEquiv_mem_maximalIdeal_pow_iff e (n + 1) _).1
     rwa [heq]
+
+set_option maxHeartbeats 1200000 in
+/-- Actual completed lower filtration, expressed on the intrinsic local integer ring.  This is
+definitionally the displacement condition consumed by source-completion theorems; equality with
+CFT's complete-DVF filtration is proved below. -/
+noncomputable def chosenActualLocalLowerRamificationGroup
+    (v₀ : HeightOneSpectrum (𝓞 K)) (n : ℕ) :
+    Subgroup (ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀ ≃ₐ[
+      ChosenFinitePlaceBaseCompletion (K := K) v₀]
+        ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀) where
+  carrier := {τ | ∀ z : chosenLocalIntegerRing (K := K) (L := L) v₀,
+    chosenLocalIntegerRingAut (K := K) (L := L) v₀ τ z - z ∈
+      IsLocalRing.maximalIdeal
+        (chosenLocalIntegerRing (K := K) (L := L) v₀) ^ (n + 1)}
+  one_mem' := by
+    intro z
+    rw [chosenLocalIntegerRingAut_one_apply, sub_self]
+    exact Ideal.zero_mem _
+  mul_mem' := by
+    intro σ τ hσ hτ z
+    have hσz := hσ (chosenLocalIntegerRingAut (K := K) (L := L) v₀ τ z)
+    have hτz := hτ z
+    rw [chosenLocalIntegerRingAut_mul_apply]
+    have heq :
+        chosenLocalIntegerRingAut (K := K) (L := L) v₀ σ
+              (chosenLocalIntegerRingAut (K := K) (L := L) v₀ τ z) - z =
+          (chosenLocalIntegerRingAut (K := K) (L := L) v₀ σ
+              (chosenLocalIntegerRingAut (K := K) (L := L) v₀ τ z) -
+            chosenLocalIntegerRingAut (K := K) (L := L) v₀ τ z) +
+          (chosenLocalIntegerRingAut (K := K) (L := L) v₀ τ z - z) := by
+      ring
+    rw [heq]
+    exact Ideal.add_mem _ hσz hτz
+  inv_mem' := by
+    intro σ hσ z
+    have h := hσ (chosenLocalIntegerRingAut (K := K) (L := L) v₀ σ⁻¹ z)
+    have heq :
+        chosenLocalIntegerRingAut (K := K) (L := L) v₀ σ⁻¹ z - z =
+          -(chosenLocalIntegerRingAut (K := K) (L := L) v₀ σ
+              (chosenLocalIntegerRingAut (K := K) (L := L) v₀ σ⁻¹ z) -
+            chosenLocalIntegerRingAut (K := K) (L := L) v₀ σ⁻¹ z) := by
+      rw [chosenLocalIntegerRingAut_apply_inv_apply]
+      ring
+    rw [heq]
+    exact neg_mem h
+
+@[simp] theorem mem_chosenActualLocalLowerRamificationGroup_iff
+    (v₀ : HeightOneSpectrum (𝓞 K)) (n : ℕ)
+    (τ : ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀ ≃ₐ[
+      ChosenFinitePlaceBaseCompletion (K := K) v₀]
+        ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀) :
+    τ ∈ chosenActualLocalLowerRamificationGroup (K := K) (L := L) v₀ n ↔
+      ∀ z : chosenLocalIntegerRing (K := K) (L := L) v₀,
+        chosenLocalIntegerRingAut (K := K) (L := L) v₀ τ z - z ∈
+          IsLocalRing.maximalIdeal
+            (chosenLocalIntegerRing (K := K) (L := L) v₀) ^ (n + 1) :=
+  Iff.rfl
+
+/-- Intrinsic and complete-DVF definitions give the same local lower filtration. -/
+theorem chosenActualLocalLowerRamificationGroup_eq_localLower
+    (v₀ : HeightOneSpectrum (𝓞 K)) (n : ℕ) :
+    chosenActualLocalLowerRamificationGroup (K := K) (L := L) v₀ n =
+      RamificationTheory.LocalField.localLowerRamificationGroup
+        (ChosenFinitePlaceBaseCompletion (K := K) v₀)
+        (ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀) (n : ℝ) := by
+  calc
+    chosenActualLocalLowerRamificationGroup (K := K) (L := L) v₀ n =
+        chosenDVFLocalLowerRamificationGroup (K := K) (L := L) v₀ n := by
+      ext τ
+      exact (mem_chosenActualLocalLowerRamificationGroup_iff
+        (K := K) (L := L) v₀ n τ).trans
+          (mem_chosenDVFLocalLowerRamificationGroup_iff
+            (K := K) (L := L) v₀ n τ).symm
+    _ = _ := chosenDVFLocalLowerRamificationGroup_eq_localLower
+      (K := K) (L := L) v₀ n
 
 /-- One intrinsic-integer displacement outside `m^(n+1)` excludes an automorphism from actual
 completed lower level `n`. -/

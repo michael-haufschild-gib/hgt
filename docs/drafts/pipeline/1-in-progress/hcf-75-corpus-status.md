@@ -1,10 +1,11 @@
 # HCF 75%: Facts
 
-- Census: `N=N₀+2(S+Rdeep)`; Route-T gives `Rdeep=o(N)`.
-- Five-center receiver: any source ceiling `c<11/10` yields eventual `N₀≥3N/4`; `21/100` would yield `419/440` asymptotically.
-- Corrected HCF equals source-only Plemelj covariance up to `o(N)`; source-selected phase is bounded by exact height-cell average plus `o(N)` von Mangoldt mass.
-- Height-cell average = first archimedean winding − compact boundary + `o(N)` = `4π(N-N₀)+o(N)`; direct estimation is circular.
-- Positive shifts recover multiplicity; finite mixtures lose shallow charge. Moving/all-scale or phase-minimizing incidence is necessary.
-- Ward–Green removable trace has exact kernel/line-energy fracture and prime–Gamma majorants, but no pre-divisor arithmetic ceiling.
-- Thermal weights decay with height; global Plücker trace lacks coefficient-faithful Xi landing.
-- Open core: prove phase minimization saves fixed positive mass from its circular average, or build height-local Ward–Green source contraction with ceiling `<11/10`.
+- Census: `N=N₀+2(Sshallow+Rdeep)`; Route-T proves `Rdeep=o(N)`.
+- Reflected five-center HCF: source ceiling `<11/10` suffices for `N₀≥3N/4`; seven centers allow more. Old `21/100` target is obsolete.
+- Height-cell positive-shift source split is exact. Von Mangoldt part is `O(|K|)=o(N)` on canonical windows; leading obstruction is finite-shift pole–Gamma divided difference minus thin-strip contour.
+- Boundary-only phase covariance is circular: it equals `4π(N-N₀)+o(N)`.
+- Fixed finite shift mixtures lose arbitrarily shallow charge. All-scale, shrinking-shift, or moving-window localization is required.
+- Triangular half-cell Ward statistic is source-rendered before quadratic scalarization and charges each strict-right copy by `3π`. Narrow source-rectangle energy is a zero-free pole–Gamma–von-Mangoldt upper majorant.
+- Exterior coefficient-faithful determinant landing is exact, but its strict subquantum law is equivalent to RH; it gives no free upper bound.
+- Compact triangular positive source shifts exactly represent the removable five-shift Ward current and retain its `1/81` quantum.
+- Open core: construct uniform moving rectangles/thin-strip limit, then prove narrow source-rectangle energy `≤(3π/8)N+o(N)`.

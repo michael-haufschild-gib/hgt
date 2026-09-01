@@ -1,10 +1,10 @@
 # Route P subquantum trace-defect no-go
 
 - **ID:** P-ASD
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Route:** P
-- **Statement:** `[PAPER-PROVED]` Any matrix-complete Route-P boundary restriction whose total additive trace defect has eventual density strictly below the one-zero quantum `2` forces RH. Under failure of RH, every such restriction must satisfy `2N ≤ sourceBudget + defect(N)` for every repeated-copy packet size `N`.
+- **Statement:** `[LEAN-PROVED] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]` Any matrix-complete Route-P boundary restriction whose total additive trace defect has eventual density strictly below the one-zero quantum `2` forces RH. Under failure of RH, every such restriction must satisfy `2N ≤ sourceBudget + defect(N)` for every repeated-copy packet size `N`.
 
 ## RH proof chain
 
@@ -40,4 +40,4 @@ If `D(N) ≤ cN` eventually for some `c<2`, choose `N` beyond that tail with `B 
 
 - [x] 0 → 1 in-progress: exact route class, corpus and primary-literature audits, hostile attack
 - [x] 1 → 2 fully-proven: dependency-closed repeated-packet quantum proof
-- [ ] 2 → 3 formalized: exact Lean theorem, targeted build, axiom audit
+- [x] 2 → 3 formalized: `RoutePMatrixCompleteSubquantumTraceDefectNoGo.lean`; source check and targeted module build pass; axiom audit is `[propext, Classical.choice, Quot.sound]`

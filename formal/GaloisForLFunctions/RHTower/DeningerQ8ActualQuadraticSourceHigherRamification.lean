@@ -883,20 +883,13 @@ theorem q8QuadraticSourceCentralChosenLocalEquiv_not_mem_actualLower_three
     q8QuadraticSourceCentralChosenLocalEquiv v hv ∉
       HilbertRamification.chosenActualLocalLowerRamificationGroup
         (K := S) (L := K3) v 3 := by
-  let z : HilbertRamification.chosenLocalIntegerRing
-      (K := S) (L := K3) v := q8QuadraticSourceChosenCompletedTopRadical v
-  apply HilbertRamification.not_mem_chosenActualLocalLowerRamificationGroup_of_displacement
-    (K := S) (L := K3) v 3
-      (q8QuadraticSourceCentralChosenLocalEquiv v hv) z
-  intro hdeep
-  change HilbertRamification.chosenLocalIntegerRingAut
-        (K := S) (L := K3) v
-        (q8QuadraticSourceCentralChosenLocalEquiv v hv)
-        (q8QuadraticSourceChosenCompletedTopRadical v) -
-      q8QuadraticSourceChosenCompletedTopRadical v ∈ _ at hdeep
-  apply q8QuadraticSourceCentralChosenCompletion_displacement_not_mem_four v hv
-  rw [GaloisForLFunctions.HTGeometry.mem_maximalIdeal_pow_iff_le_addVal] at hdeep ⊢
-  exact hdeep
+  intro hmem
+  have hdeep :=
+    (HilbertRamification.mem_chosenActualLocalLowerRamificationGroup_iff
+      (K := S) (L := K3) v 3
+        (q8QuadraticSourceCentralChosenLocalEquiv v hv)).1 hmem
+      (q8QuadraticSourceChosenCompletedTopRadical v)
+  exact q8QuadraticSourceCentralChosenCompletion_displacement_not_mem_four v hv hdeep
 
 /-- CFT local lower level two contains the actual completed central source involution. -/
 theorem q8QuadraticSourceCentralChosenLocalEquiv_mem_localLower_two

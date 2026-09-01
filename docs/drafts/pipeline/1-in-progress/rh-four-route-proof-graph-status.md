@@ -19,6 +19,7 @@ Frontier map read-only. Facts only; cards hold proofs.
 - FZZ-P cross-level transport is unnecessary: reciprocal higher-genus holonomies at cycles `n,2n` of one fixed CFT have odd parts `sinh z,sinh(2z)`; for `n≠0`, their reality/passivity chamber iff real twist iff zero radial monodromy iff unit holonomy. Canonical Mellin twist makes cycles `1,2` the dyadic character and its square; chamber iff `Re ρ=1/2`.
 - FZZ-P unmarked Haar selector is dead: squared cycle-`n` odd holonomy has exact compact charges `{0,±2n}`; nonzero-cycle zero mode is `-1/2`, so averaged cycle-`n,2n` chamber is automatic off wall. Continuous backgrounds couple only through charges `0,±2n`; normalized marked `±2n` modes recover reciprocal radial holonomy, and positive marked unit norm iff zero radial monodromy.
 - FZZ-P scalar tempered generalized occurrence is dead: for every `S∈𝓢'` and `E∈ℝ`, `(x-E)T=S` is solvable; solution fibre is exactly `T₀+ℂ·δ_E`. Occurrence set is `ℝ`, hence nonselective.
+- PW-B unbounded absolutely endpoint-admissible positive matrices are dead: all-scale darkness forces every antidiagonal and row to vanish. `K(i,j)=2ⁱ2ʲ` is an unbounded admissible witness, so this strictly extends bounded tomography.
 - RBH separated architecture is terminal. PW-B bounded pairwise-positive kernels and closed Hilbert dark relations are dead. Finite tensor/Gamma-ghost and finite source-decoder classes are dead.
 
 ## Open core
@@ -27,7 +28,7 @@ Derive source-specific physical Ward/orientation from actual dynamics:
 
 - **HB:** prove opposite sign `0 ≤ K_n(q)` from literal Einstein--Teukolsky source. Schwarz/Hermitian compensation must have infinite separation rank; remaining legs are genuinely infinite-dimensional/nonseparated, distributional, support- or sheet-changing, or outside scalar pairing. Linear extinction can only use non-maximal deficiency/domain exclusion; other survivors are nonpassive, nonlinear, or source-fixed off-diagonal cancellation.
 - **FZZ-P:** derive torus replica-area resonant Fourier modes at charges `±2,±4` with required cycle signs, or source-derived nonlocal boundary/renormalization law fixing Dirac fibre, singular branch-cut, matrix/interacting carrier. Unmarked/resonance-gapped sources and scalar tempered occurrence are dead. Then close reflected divisor incidence.
-- **PW-B:** nonclosed/domain-excluding, indefinite, nonlinear, or nonpointwise global source law.
+- **PW-B:** nonclosed/domain-excluding, indefinite, non-absolutely-summable/singular, nonlinear, or nonpointwise global source law.
 - **RBH:** nonseparated, nonlinear, or singular source law.
 
 HB collision survivors: nonanalytic zero-coupling behavior or remote strong-coupling exceptional points only.
@@ -36,5 +37,6 @@ HB collision survivors: nonanalytic zero-coupling behavior or remote strong-coup
 
 - HB: `d4HBPreDivisorFiniteSchwarzPolarizedRouteKilled`.
 - FZZ-P: `fzzReplicaLevelsThreeFourKreinSign_iff_re_eq_zero`, `fzzHigherGenusCyclePairKreinSign_iff_im_eq_zero`, `fzzCigarParityMellinCyclePairKreinSign_iff_re_eq_half`, `fzzHigherGenusOddHolonomy_sq_fourierCoefficient`, `fzzAveragedHigherGenusCyclePairKreinSign_off_radialWall`, `fzzHigherGenusOddHolonomy_sq_weightedAverage_resonance`, `fzzPunctureTemperedScalarOccurrence_set_eq_univ`.
+- PW-B: `schwarzschildParikhWilczekAbsolutelyAdmissiblePairwisePositiveEndpointDarkRouteKilled`, `pwExponentialGramKernel_absolutelyAdmissible`, `pwExponentialGramKernel_not_uniformlyBounded`.
 
 Direct Lean/targeted builds PASS; axioms `propext`, `Classical.choice`, `Quot.sound`; umbrellas wired.
