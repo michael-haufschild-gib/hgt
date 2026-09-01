@@ -169,22 +169,25 @@ theorem levinsonGTrace_real_zeros_finite_radius {lam T : ℝ} (hlam : |lam| ≤ 
   rw [Finset.mem_preimage, Set.Finite.mem_toFinset]
   rfl
 
-/-- **The weighted horizontal edge of the detector, from any left abscissa `c ≥ ¼`.** -/
+/-- **The weighted horizontal edge of the detector on any segment inside the counting disc.**
+The disc is centred at `4` with radius `15/4`, so every `[c,e]` with `¼ ≤ c < e ≤ 15/2` is
+admissible. -/
 theorem exists_horizontal_weighted_levinsonG_bound :
-    ∃ K : ℝ, 0 < K ∧ ∀ lam : ℝ, |lam| ≤ 1 → ∀ T : ℝ, 6 ≤ T → ∀ c : ℝ, 1 / 4 ≤ c → c < 4 →
-      (∀ x ∈ Set.Icc c (4 : ℝ), levinsonG (lam : ℂ) ((x : ℂ) + (T : ℂ) * I) ≠ 0) →
-      |∫ x in c..(4 : ℝ), (x - c) *
+    ∃ K : ℝ, 0 < K ∧ ∀ lam : ℝ, |lam| ≤ 1 → ∀ T : ℝ, 6 ≤ T →
+      ∀ c e : ℝ, 1 / 4 ≤ c → c < e → e ≤ 15 / 2 →
+      (∀ x ∈ Set.Icc c e, levinsonG (lam : ℂ) ((x : ℂ) + (T : ℂ) * I) ≠ 0) →
+      |∫ x in c..e, (x - c) *
           (logDeriv (levinsonG (lam : ℂ)) ((x : ℂ) + (T : ℂ) * I)).im| ≤ K * Real.log T := by
   classical
   obtain ⟨c₀, hc₀, hcount⟩ :=
     exists_levinsonGTrace_count_bound_radius (r := (15 / 4 : ℝ)) (by norm_num) (by norm_num)
-  refine ⟨2 * (15 / 4 : ℝ) * (c₀ + 1) * Real.pi, by positivity, ?_⟩
-  intro lam hlam T hT c hc1 hc4 hne
+  refine ⟨2 * (15 / 2 : ℝ) * (c₀ + 1) * Real.pi, by positivity, ?_⟩
+  intro lam hlam T hT c e hc1 hce he4 hne
   have hT0 : (0 : ℝ) < T := by linarith
   have hTne : T ≠ 0 := by linarith
   have hlog1 : (1 : ℝ) ≤ Real.log T := by
     rw [Real.le_log_iff_exp_le hT0]
-    have he : Real.exp 1 < 2.7182818286 := Real.exp_one_lt_d9
+    have hexp : Real.exp 1 < 2.7182818286 := Real.exp_one_lt_d9
     linarith
   set f : ℝ → ℂ := fun x => levinsonG (lam : ℂ) ((x : ℂ) + (T : ℂ) * I) with hfdef
   set f' : ℝ → ℂ := fun x => deriv (levinsonG (lam : ℂ)) ((x : ℂ) + (T : ℂ) * I) with hf'def
@@ -199,7 +202,7 @@ theorem exists_horizontal_weighted_levinsonG_bound :
   set Z : Finset ℝ :=
     (levinsonGTrace_real_zeros_finite_radius hlam hT (r := (15 / 4 : ℝ))
       (by rw [abs_of_pos (by norm_num : (0:ℝ) < 15/4)]; norm_num)).toFinset with hZdef
-  have hZmem : ∀ x ∈ Set.Ioo c (4 : ℝ), (f x).re = 0 → x ∈ Z := by
+  have hZmem : ∀ x ∈ Set.Ioo c e, (f x).re = 0 → x ∈ Z := by
     intro x hx hzero
     rw [hZdef, Set.Finite.mem_toFinset]
     refine ⟨?_, ?_⟩
@@ -208,24 +211,24 @@ theorem exists_horizontal_weighted_levinsonG_bound :
         rw [show ((x : ℂ) - 4) = ((x - 4 : ℝ) : ℂ) by push_cast; ring, Complex.norm_real,
           Real.norm_eq_abs]
       rw [hval, abs_le]
-      constructor <;> linarith [hx.1, hx.2, hc1]
+      constructor <;> linarith [hx.1, hx.2, hc1, he4]
     · rw [levinsonGTrace_ofReal]
       rw [hfdef] at hzero
       simp only at hzero
       rw [hzero]
       norm_num
-  have hbound := abs_integral_weighted_im_logDeriv_le_of_finite_re_zeros hc4.le
+  have hbound := abs_integral_weighted_im_logDeriv_le_of_finite_re_zeros hce.le
     (f := f) (f' := f') (fun x => hasDerivAt_levinsonG_horiz (lam : ℂ) hTne x)
     hfc hf'c (fun x hx => hne x hx) Z hZmem
-  have hcongr : ∀ x ∈ Set.uIcc c (4 : ℝ),
+  have hcongr : ∀ x ∈ Set.uIcc c e,
       (x - c) * (f' x / f x).im
         = (x - c) * (logDeriv (levinsonG (lam : ℂ)) ((x : ℂ) + (T : ℂ) * I)).im := by
     intro x _
     rw [hf'def, hfdef, logDeriv_apply]
   rw [intervalIntegral.integral_congr hcongr] at hbound
   refine le_trans hbound ?_
-  have hcard : ((Z.filter (fun z => z ∈ Set.Ioo c (4 : ℝ))).card : ℝ) ≤ c₀ * Real.log T := by
-    have hsubc : (Z.filter (fun z => z ∈ Set.Ioo c (4 : ℝ))).card ≤ Z.card :=
+  have hcard : ((Z.filter (fun z => z ∈ Set.Ioo c e)).card : ℝ) ≤ c₀ * Real.log T := by
+    have hsubc : (Z.filter (fun z => z ∈ Set.Ioo c e)).card ≤ Z.card :=
       Finset.card_filter_le _ _
     have himg : (Z.image (fun x : ℝ => (x : ℂ))).card = Z.card :=
       Finset.card_image_of_injective _ (fun p q h => Complex.ofReal_inj.mp h)
@@ -247,29 +250,29 @@ theorem exists_horizontal_weighted_levinsonG_bound :
     have hcnt := hcount lam hlam T hT
     have hcast : ((Z.card : ℤ) : ℝ) ≤ ((∑ᶠ u, MeromorphicOn.divisor (levinsonGTrace lam T)
         (closedBall (4 : ℂ) |(15 / 4 : ℝ)|) u : ℤ) : ℝ) := by exact_mod_cast hle
-    have hsubcast : ((Z.filter (fun z => z ∈ Set.Ioo c (4 : ℝ))).card : ℝ)
+    have hsubcast : ((Z.filter (fun z => z ∈ Set.Ioo c e)).card : ℝ)
         ≤ (Z.card : ℝ) := by exact_mod_cast hsubc
     push_cast at hcast
     linarith
   have hπ : (0 : ℝ) < Real.pi := Real.pi_pos
-  have hwidth : (0 : ℝ) < 4 - c := by linarith
-  have hw2 : 4 - c ≤ 15 / 4 := by linarith
-  have hN1 : (((Z.filter (fun z => z ∈ Set.Ioo c (4 : ℝ))).card : ℝ) + 1)
+  have hwidth : (0 : ℝ) < e - c := by linarith
+  have hw2 : e - c ≤ 15 / 2 := by linarith
+  have hN1 : (((Z.filter (fun z => z ∈ Set.Ioo c e)).card : ℝ) + 1)
       ≤ (c₀ + 1) * Real.log T := by
     have hexp : (c₀ + 1) * Real.log T = c₀ * Real.log T + Real.log T := by ring
     rw [hexp]
     linarith [hcard, hlog1]
-  have hstep1 : (((Z.filter (fun z => z ∈ Set.Ioo c (4 : ℝ))).card : ℝ) + 1) * Real.pi
+  have hstep1 : (((Z.filter (fun z => z ∈ Set.Ioo c e)).card : ℝ) + 1) * Real.pi
       ≤ ((c₀ + 1) * Real.log T) * Real.pi :=
     mul_le_mul_of_nonneg_right hN1 hπ.le
-  have hstep2 : 2 * (4 - c) *
-      ((((Z.filter (fun z => z ∈ Set.Ioo c (4 : ℝ))).card : ℝ) + 1) * Real.pi)
-      ≤ 2 * (15 / 4 : ℝ) * (((c₀ + 1) * Real.log T) * Real.pi) := by
+  have hstep2 : 2 * (e - c) *
+      ((((Z.filter (fun z => z ∈ Set.Ioo c e)).card : ℝ) + 1) * Real.pi)
+      ≤ 2 * (15 / 2 : ℝ) * (((c₀ + 1) * Real.log T) * Real.pi) := by
     refine mul_le_mul (by linarith) hstep1 (by positivity) (by norm_num)
-  calc 2 * (4 - c) *
-        ((((Z.filter (fun z => z ∈ Set.Ioo c (4 : ℝ))).card : ℝ) + 1) * Real.pi)
-      ≤ 2 * (15 / 4 : ℝ) * (((c₀ + 1) * Real.log T) * Real.pi) := hstep2
-    _ = 2 * (15 / 4 : ℝ) * (c₀ + 1) * Real.pi * Real.log T := by ring
+  calc 2 * (e - c) *
+        ((((Z.filter (fun z => z ∈ Set.Ioo c e)).card : ℝ) + 1) * Real.pi)
+      ≤ 2 * (15 / 2 : ℝ) * (((c₀ + 1) * Real.log T) * Real.pi) := hstep2
+    _ = 2 * (15 / 2 : ℝ) * (c₀ + 1) * Real.pi * Real.log T := by ring
 
 end RHTower
 

@@ -778,12 +778,12 @@ set_option maxHeartbeats 1200000 in
 theorem q8QuadraticSourceCentralChosenCompletion_displacement_mem_cube
     (v : HeightOneSpectrum (𝓞 S))
     (hv : (2 : 𝓞 S) ∈ v.asIdeal)
-    (z : HilbertRamification.chosenLocalIntegerRing (K := S) (L := K3) v) :
+    (z : 𝒪[ChosenFinitePlaceLocalizedCompletion (K := S) (L := K3) v]) :
     HilbertRamification.chosenLocalIntegerRingAut
         (K := S) (L := K3) v
         (q8QuadraticSourceCentralChosenLocalEquiv v hv) z - z ∈
       IsLocalRing.maximalIdeal
-        (HilbertRamification.chosenLocalIntegerRing (K := S) (L := K3) v) ^ (2 + 1) := by
+        𝒪[ChosenFinitePlaceLocalizedCompletion (K := S) (L := K3) v] ^ (2 + 1) := by
   simpa only [q8QuadraticSourceCentralChosenLocalEquiv] using
     HilbertRamification.chosenDecompositionDisplacement_mem_local_of_global
       (K := S) (L := K3) v 3
@@ -909,15 +909,30 @@ theorem q8QuadraticSourceCentralChosenLocalEquiv_mem_actualLower_three_false
   have hcomm :=
     HilbertRamification.chosenLocalIntegerRingAut_chosenGlobalToLocalIntegerRing_sub
       (K := S) (L := K3) v sigma x
-  have hmapped :
-      HilbertRamification.chosenGlobalToLocalIntegerRing
-          (K := S) (L := K3) v (sigma • x - x) ∈
-        IsLocalRing.maximalIdeal
-          (HilbertRamification.chosenLocalIntegerRing (K := S) (L := K3) v) ^ (3 + 1) := by
-    exact (congrArg (fun y => y ∈ IsLocalRing.maximalIdeal
-      (HilbertRamification.chosenLocalIntegerRing (K := S) (L := K3) v) ^ (3 + 1)) hcomm).mp hdeep
-  exact q8QuadraticSourceCentralChosenCompletion_mappedDisplacement_not_mem_four
-    v hv hmapped
+  have hmapped := (congrArg (fun y => y ∈ IsLocalRing.maximalIdeal
+    (HilbertRamification.chosenLocalIntegerRing (K := S) (L := K3) v) ^ (3 + 1)) hcomm).mp hdeep
+  let P := finitePlaceExtensionCentre (K := S) (L := K3) v
+    (chosenFinitePlaceExtension (L := K3) v)
+  letI : IsDiscreteValuationRing (Localization.AtPrime P.asIdeal) :=
+    IsLocalization.AtPrime.isDiscreteValuationRing_of_dedekind_domain
+      (𝓞 K3) P.ne_bot (Localization.AtPrime P.asIdeal)
+  let hDVR : IsDiscreteValuationRing (q8ChosenGlobalValuationRing v) :=
+    IsDiscreteValuationRing.RingEquivClass.isDiscreteValuationRing
+      (q8ChosenGlobalLocalizationEquiv v).symm
+  letI : IsDiscreteValuationRing
+      (HilbertRamification.chosenGlobalValuationRing
+        (K := S) (L := K3) v) := by
+    change IsDiscreteValuationRing (q8ChosenGlobalValuationRing v)
+    exact hDVR
+  dsimp only [sigma, x] at hmapped
+  have hglobal :=
+    (HilbertRamification.chosenGlobalToLocalIntegerRing_mem_maximalIdeal_pow_iff
+      (K := S) (L := K3) v 4
+      ((q8QuadraticSourceCentralChosenDecomposition v hv) •
+          q8QuadraticSourceChosenTopRadical v -
+        q8QuadraticSourceChosenTopRadical v)).1 hmapped
+  exact q8QuadraticSourceCentralChosenDecomposition_displacement_not_mem_four
+    v hv hglobal
 
 /-- Exact end of the completed central lower break: the central source involution is absent from
 actual local lower level three. -/

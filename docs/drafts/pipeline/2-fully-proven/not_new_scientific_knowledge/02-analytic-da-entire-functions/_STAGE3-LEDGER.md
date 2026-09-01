@@ -4007,3 +4007,247 @@ everything both window estimates ask for — mirroring the parameter choices
 `exists_radius_point_logDeriv_close_centralIndex`.  Both estimates then follow, and `wv_error_le`
 (already public and purely arithmetic) tunes the order-one bound; the order-two constant
 `N²√(2N+1) + 2G₂` needs the analogous, and much easier, arithmetic bound against `ε ν²`.
+
+### Card 8: the order-two Wiman--Valiron asymptotic is PROVED (2026-09-01)
+
+`HTGeometry/SecondDerivativeWimanValironAsymptotic.lean`, axiom-clean and wired:
+
+> **`exists_radius_point_secondDeriv_close_centralIndex`** — for a transcendental entire function and
+> every `ε > 0`, at radii beyond every bound there is a point of the maximum circle with
+> ```text
+> ‖z f′/f − ν‖ ≤ ε·ν      and      ‖z² f″/f − ν(ν−1)‖ ≤ ε·ν² .
+> ```
+
+Five modules, in dependency order:
+
+| Module | Content |
+|---|---|
+| `SecondDerivativeDeviationSeries` | `z² f″ = ∑ n(n−1)a_n z^n`; the splitting into the squared-deviation series plus `(2k−1)` times the order-one deviation |
+| `SecondDerivativeWimanValironWindow` | the window estimate `‖z²f″/f − ν(ν−1)‖ ≤ (N²√(2N+1) + 2G₂) + (2ν+1)E` |
+| `WimanValironWindowData` | the corpus selection returning the window *data* rather than the order-one conclusion (reusable; not needed by the chain below) |
+| `SecondDerivativeWimanValironRadius` | `wvClosedBound`, `wvSecondMomentBound`, and both estimates at one selected radius |
+| `SecondDerivativeWimanValironAsymptotic` | `wv_second_moment_le` (`≤ 148 s²√s`), the parameter tying, the small window, `wv_second_error_le`, and the asymptotic |
+
+**No new moment analysis was needed.**  The whole order-two estimate rests on two facts the corpus
+already had: `tsum_index_sq_le_gaussian` (the second moment under Gaussian concentration) and
+`sum_window_le_sqrt_card_mul_bound` (the window's mass against the value).  Every arithmetic lemma of
+the corpus's tuning — `wv_scale_facts`, `wv_window_le`, `wv_selection_lt`, `wv_rhs_le`,
+`wv_tail_ratios_le_one`, `wv_error_le` — was reused verbatim; the only genuinely new arithmetic is
+`wv_second_moment_le` and `wv_second_error_le`, and both are two-line power comparisons
+(`N ≤ 4s`, `s = w^64`, `ν ≥ w^100/2`, so `148 s²√s = 148 w^160 ≤ (ε/2)ν²` once `1184/ε ≤ w^40`).
+
+**Remaining for card 8.**  Redo `TopSymbolWimanPlace` and the face inequality of
+`NewtonWeightPositiveOrder` for triples `f^{p₁}(f′)^{p₂}(f″)^{p₃}`: Newton weight
+`deg A_p − p₂ − 2p₃`, `ν`-power `p₂ + 2p₃`.  Every conclusion of that layer
+(`ν^{q}·r ≤ C·ν^{P}` and its variants) contradicts `ν(r) = o(log r)`, which
+`SuperGaussianCentralIndex.tendsto_centralIndex_div_log_zero` supplies.
+
+### Card 8: the plan for the order-two Newton face, and why cancellation is not an obstacle
+
+Worth recording, because two earlier attempts in this ledger stalled on exactly this point.
+
+The order-two top symbol, cleared of `z`-powers, is
+
+```text
+z^{2d}·∑_{|p|=d} A_p(z)·(f′/f)^{p₂}·(f″/f)^{p₃}
+  ≈ ∑_{|p|=d} A_p(z)·z^{2d−p₂−2p₃}·ν^{p₂+p₃}(ν−1)^{p₃} .
+```
+
+The `ν`-polynomials `ν^{p₂+p₃}(ν−1)^{p₃}` are **linearly independent** for distinct `(p₂,p₃)` — the
+multiplicity of the root `0` is `p₂+p₃` and of the root `1` is `p₃`, so both are recoverable — hence
+the symbol is a nonzero polynomial in `(z, ν)` whenever some `A_p ≠ 0`.  That is reassuring but *not*
+what the proof uses.
+
+What the proof uses is the corpus's own device: `exists_radius_wimanFace` never needs a
+non-cancellation hypothesis, because it states a **floor for one monomial and a ceiling for the
+others**,
+
+```text
+‖lead A_q‖/2 · r^{deg A_q + (2d − q₂ − 2q₃)}·ν^{q₂+2q₃}
+  ≤ η·2^{2d}·r^{2d} + K·∑_{p ≠ q} ν^{p₂+2p₃}·r^{deg A_p + (2d − p₂ − 2p₃)} ,
+```
+
+obtained from `‖A_q T₁^{q₂}T₂^{q₃}‖ ≤ ‖symbol‖ + ∑_{p≠q}‖A_p T₁^{p₂}T₂^{p₃}‖`.  Cancellation among
+the `A_p` is therefore irrelevant: only one coefficient's leading term ever needs a lower bound.  The
+Newton weight is `ω_p = deg A_p − p₂ − 2p₃` and the `ν`-power is `p₂ + 2p₃`; a strictly maximal `ω`
+makes every competitor lose a full power of `r`, and `ν = o(log r)` then contradicts the resulting
+`ν^{k_q}·r ≤ C·ν^{K}` in every branch.
+
+The lower bound on `|f″/f|` that the floor needs is available: the order-two asymptotic gives
+`|f″/f| ≥ (ν(ν−1) − εν²)/r²`, positive once `ν ≥ 2`.
+
+### Card 8: the order-two Newton face has a genuine degenerate branch — Wiman--Valiron alone cannot close it
+
+Working the face argument through with the new order-two asymptotic exposes an obstruction that is
+*not* an artefact of the packaging, and it explains why Zimogljad's original proof runs to a hundred
+pages.
+
+For a top-degree monomial `p = (p₁,p₂,p₃)` the face inequality compares individual terms of size
+`r^{ω_p}·ν^{k_p}` with `ω_p = deg A_p − p₂ − 2p₃` and `k_p = p₂ + 2p₃`.  In the **order-one** case
+`p` is determined by `p₂` once `|p| = d`, so distinct monomials have distinct `k_p` and the
+lexicographic maximum of `(ω_p, k_p)` is always unique — which is exactly why
+`NewtonWeightPositiveOrder` can close every branch.  In the **order-two** case
+`(p₂,p₃) = (2,0)` and `(0,1)` give the same `k`, so ties are possible, and the tied monomials are
+precisely those whose combination is the Wronskian:
+
+```text
+A(z) f (f′)² + B(z) f² f″  =  f²·(A(f′)²/f + B f″) ,   A + B = 0  ⟹  −A f·(f f″ − (f′)²).
+```
+
+At a Wiman--Valiron point `f f″ − (f′)² = f²·(ν(ν−1) − ν² + O(εν²))/z² = f²(−ν + O(εν²))/z²`.  The
+*main* term of the degenerate combination is therefore smaller by a factor `1/ν`, while the
+Wiman--Valiron error is `εν²` with `ε` a fixed constant — the error is larger than the main term by
+`εν`.  Sharpening `ε` does not help: the classical Wiman--Valiron error for `f^{(k)}/f` is
+`(ν/z)^k(1 + O(ν^{−1/2+δ}))`, so the absolute error at `k = 2` is `ν^{3/2} ≫ ν`.
+
+**Conclusion.**  The degenerate branch of the order-two Newton face cannot be closed by the
+Wiman--Valiron method at any error quality that method supplies.  Zimogljad's theorem needs a
+different tool, and Strelitz's "simpler" proof (Canad. J. Math. 35 (1983)) should be read before any
+further Lean work on this branch.  Everything up to the degenerate branch — the order-two
+asymptotic, the deviation series, the top-symbol reduction — is now built and is reusable
+independently of how the branch is eventually closed.
+
+### Cards 7 and 10: the missing input is pinned down exactly
+
+Huang--Ng, *Hypertranscendency of Perturbations of Hypertranscendental Functions* (arXiv:2007.10037),
+Theorem 3 and its Theorem C.  Verbatim:
+
+> **Theorem C (Steinmetz's Reduction Theorem).**  Let `F_j`, `1 ≤ j ≤ N`, be meromorphic on `ℂ`; let
+> `h_j` be meromorphic and `g` entire with `T(r,h_j) = O(T(r,g))` outside a set of finite measure.
+> Given `F_1(g)h_1 + ⋯ + F_N(g)h_N = 0`, there are polynomials `p_j`, not all zero, with
+> `p_1(g)h_1 + ⋯ + p_N(g)h_N = 0`.  Furthermore, if `h_j ≢ 0` for some `j`, there are polynomials
+> `Q_j`, not all zero, with `F_1Q_1 + ⋯ + F_NQ_N = 0`.
+
+> **Theorem 3.**  If `f` is hypertranscendental over `ℂ(z)` and `g` is a nonconstant entire function,
+> then `f ∘ g` is hypertranscendental over `S_g`.
+
+The deduction is three lines: Faà di Bruno writes
+`P(z, f∘g, …, (f∘g)^{(n)}) = ∑_j (M_j(f)∘g)·H_j(g)` with `M_j(f)` a *constant-coefficient*
+differential monomial of `f` and `H_j(g)` a differential polynomial in `g` with coefficients small
+relative to `g`, so `T(r,H_j(g)) = O(T(r,g))`; Theorem C's second conclusion then gives polynomials
+`Q_j`, not all zero, with `∑_j M_j(f)·Q_j = 0` — a nontrivial ADE for `f` over `ℂ(z)`.
+
+**The corpus already owns the Faà di Bruno step** (`CompositionJetBackward.jetElem_comp_mem_gradedJetRing`,
+`CompositionJetRing`).  So cards 7 and 10 reduce to Theorem C alone.  Note also the paper's own
+Remark 2: the reduction theorem does *not* apply to `g ∘ f` — which is consistent with the corpus's
+split, where the inner-HT half is handled by local-inverse closure instead.
+
+Reference for the proof to formalize: F. Gross and C. F. Osgood, *A simpler proof of a theorem of
+Steinmetz*, and N. Steinmetz, *Über die faktorisierbaren Lösungen gewöhnlicher
+Differentialgleichungen* (Math. Z. 170 (1980) 169--180).
+
+### Cards 7/10: the second half of Steinmetz's theorem is an elementary induction on the first
+
+Worth recording, because it halves the formalization target.
+
+Theorem C has two conclusions.  The second follows from the first by a three-line induction on `N`,
+with no analysis at all:
+
+* `N = 1`: `F₁(g)h₁ = 0` with `h₁ ≢ 0` forces `F₁∘g ≡ 0`, hence `F₁ ≡ 0` (the range of a nonconstant
+  entire `g` is open), so `Q₁ = 1` works.
+* `N → N−1`: the first conclusion gives polynomials `p_j`, not all zero; say `p_N ≠ 0`.  Solving
+  `∑ p_j(g)h_j = 0` for `h_N` and substituting into `∑ F_j(g)h_j = 0` gives
+
+  ```text
+  ∑_{j<N} (F_j p_N − F_N p_j)(g)·h_j = 0 ,
+  ```
+
+  a relation with `N − 1` terms whose coefficients still satisfy `T(r,h_j) = O(T(r,g))`.  By
+  induction there are polynomials `Q̃_j`, not all zero, with `∑_{j<N}(F_jp_N − F_Np_j)Q̃_j = 0`, i.e.
+  `Q_j := p_N Q̃_j` (`j < N`) and `Q_N := −∑_{j<N} p_j Q̃_j` work; they are not all zero because
+  `ℂ[z]` is a domain and `p_N ≠ 0`.
+
+So the only genuinely analytic content of Theorem C is its **first** conclusion: a relation
+`∑ F_j(g)h_j = 0` with coefficients of characteristic `O(T(r,g))` forces a *polynomial* relation
+`∑ p_j(g)h_j = 0`.
+
+### Cards 7/10: an equivalent reformulation, in the corpus's own vocabulary
+
+The outer-HT half is exactly
+
+> `f` hypertranscendental over `ℂ(w)` ⟹ the composed jets `{f^{(i)}∘g}` are algebraically
+> independent over `ℂ(z)⟨g⟩`.
+
+The corpus already proves the `i = 0` case (`CompositionJetTranscendence.not_algebraic_comp_over_jet`,
+by Clunie growth plus the Nevanlinna root estimate), and the substituted relation of card 10 is
+precisely a nontrivial polynomial relation among the composed jets over `ℂ(z)⟨g⟩`.  The corpus's
+growth argument does not extend as it stands: a relation among *several* `f^{(i)}∘g` gives no
+characteristic bound on any one of them, which is exactly the gap Steinmetz's first conclusion fills.
+
+### Card 10: three of its four pieces are corpus-owned; the exact build for the fourth
+
+Audit of what card 10 (`f ∘ g` DA ⟺ `f` DA and `g` DA, for nonconstant entire `f, g`) still needs:
+
+| Direction | Status |
+|---|---|
+| both DA ⟹ composite DA | `RGTowerCoherence.differentiallyAlgebraicOn_comp` + `substitutionFaithful_of_rightInverse` |
+| inner DA + composite DA ⟹ outer DA | **owned**: `CompositionDecompositionLaw.differentiallyAlgebraic_of_comp` (its `hφ'` is only `φ′ ≢ 0`, not nonvanishing) |
+| outer DA + composite DA ⟹ inner DA | not yet assembled — the build is written out below |
+| `f` HT **and** `g` HT and composite DA ⟹ False | the Steinmetz gap |
+
+So after the third direction is built, card 10's only remaining gap is the *both-hypertranscendental*
+case, i.e. exactly Steinmetz's first conclusion.
+
+**The build for the third direction** (all ingredients are corpus theorems):
+
+1. Choose `z₀` with `g′(z₀) ≠ 0` and `f′(g z₀) ≠ 0`.  Both zero sets are countable
+   (`FirstOrderCompositionDefect.countable_zeroSet_of_exists_ne_zero`, with `f′∘g ≢ 0` from
+   `exists_ne_zero_comp`), and `ℂ` is uncountable.
+2. `ParabolicFatouJetRealization.exists_localInverse_analytic` gives a local analytic inverse `γ` of
+   `f` at `w₀ = g z₀`; cut it down to balls `A ∋ w₀`, `B ∋ f w₀`.
+3. `LocalInverseHypertranscendence.differentiallyAlgebraicOn_of_localInverse` makes `γ` DA on `B`
+   (using `f` DA on `A`).
+4. `exists_localInverse_analytic` again, for `f ∘ g` at `z₀` — legitimate because
+   `(f∘g)′(z₀) = f′(g z₀)·g′(z₀) ≠ 0` — and
+   `CrossDomainSubstitution.substitutionFaithful_of_rightInverse` turns that right inverse into
+   `SubstitutionFaithful W B (f∘g)`.
+5. `differentiallyAlgebraicOn_comp` gives `γ ∘ (f∘g)` DA on `W`, and `γ(f(g t)) = g t` there.
+6. `LocalInverseHypertranscendence.differentiallyAlgebraic_of_differentiallyAlgebraicOn` globalises.
+
+`EllipticMeroFieldDifferentialAlgebraicity.infinite_ball` supplies the `Set.Infinite` side conditions
+the substitution lemmas ask of the ball domains.
+
+### Card 10: three of the four directions are now Lean (2026-09-01)
+
+`HTGeometry/CompositionInnerDecomposition.lean`, axiom-clean and wired:
+
+| Statement | Lean theorem |
+|---|---|
+| a nonconstant entire function has a point of nonzero derivative | `exists_deriv_ne_zero` |
+| a point where **both** `g′` and `f′∘g` are nonzero (both zero sets are countable) | `exists_regular_point` |
+| a local analytic inverse with explicit ball/open domains and both `MapsTo` conditions | `exists_localInverse_domains` |
+| **outer DA + composite DA ⟹ inner DA** | `differentiallyAlgebraic_inner_of_comp` |
+| the substitution by a nonconstant entire function is faithful on the plane | `substitutionFaithful_univ` |
+| **both DA ⟹ composite DA** | `differentiallyAlgebraic_comp_entire` |
+| **inner DA + composite DA ⟹ outer DA** | `differentiallyAlgebraic_outer_of_comp` |
+| **the Boolean law, modulo the both-HT case** | `differentiallyAlgebraic_comp_iff_of_gap` |
+
+The domain bookkeeping that made the inner direction work: take `A = ball w₀ s` where `γ ∘ f = id`,
+and `B = ball(f w₀, δ₀) ∩ γ⁻¹(A)`.  Then `MapsTo f A B` holds because `γ(f w) = w ∈ A`, and
+`MapsTo γ B A` holds by construction — no circular shrinking, which is what the naive "shrink both
+balls" attempt runs into.
+
+So card 10 now needs exactly `hgap`: `f` HT and `g` HT and `f∘g` DA is impossible.
+
+### Why `hgap` is not reachable by the corpus's growth arguments
+
+Recorded so a future session does not re-derive it.
+
+The substituted relation is `∑_ν c_ν·(F_ν ∘ g) = 0` with `F_ν = ∏_i (f^{(i)})^{ν_i}` the distinct
+jet monomials and `c_ν` differential polynomials in `g` — so `T(r,c_ν) = O(T(r,g))`, and by Clunie
+`T(r, F_ν∘g)/T(r,g) → ∞`: the coefficients are genuinely *small functions* relative to every term.
+Since `f` is HT the `F_ν` are `ℂ(w)`-linearly independent, so what is needed is that the `F_ν∘g`
+stay linearly independent over the small functions.
+
+* **The two-term case is reachable**: `b·(G∘g) = −1` gives `T(r,G∘g) = O(T(r,g))`, so `G` is
+  rational by Clunie, which is a `ℂ(w)`-relation among the jets of `f` — contradiction.
+* **The induction does not close.**  Applying `D = (1/g′)·d/dz` (which satisfies
+  `D(G∘g) = G′∘g` and preserves smallness, since `T(r,1/g′) = T(r,g′) + O(1)`) turns one relation
+  into a relation among *more* monomials: differentiating a degree-`d` jet monomial produces
+  degree-`d` monomials of one higher jet order.  Each differentiation therefore adds unknowns at
+  least as fast as equations — even in the linear case `∑_i c_i (f^{(i)}∘g) = 0`, `k`
+  differentiations give `k+1` equations in `n+1+k` unknowns.  So no Wronskian/Cramer elimination
+  closes the system.
+
+This is the same wall the literature hits: Steinmetz's reduction theorem rests on his generalisation
+of the second main theorem to small functions, and there is no growth-only substitute.

@@ -811,3 +811,132 @@ Everything else on those cards is now Lean:
 Ritt's implication has two known proofs — parametrized Picard–Vessiot (Di Vizio–Fernandes) and
 value distribution (Nevanlinna).  Neither theory is in mathlib, so closing these three cards is an
 independent formalization project of that scale, not a gap in the cards' own reasoning.
+
+## A new route for the last three cards: the affine logarithmic tower (2026-09-01)
+
+The `τ`-jet tower has two structural defects that stalled the descent: its bottom two coordinates
+`τ` and `dτ` are *pure* eigenvectors, so the classification always ends in a free monomial
+`κ·τ^{e₀}(dτ)^{e₁}`, and the exponent pair of the base relation it produces can be `(0,0)`.
+
+Replacing `τ` by its **logarithmic seed**
+
+```text
+u = d²τ/dτ − dτ/τ = d(v)/v,   v = dτ/τ,
+```
+
+removes both.  Because `σ v = ρ^{-1} v`, the seed satisfies the *affine* equation
+
+```text
+σ u = ρ^{-1} u − (dρ)/ρ²,
+```
+
+and differentiating gives a triangular affine system for `t_k = d^[k] u`:
+
+```text
+σ t_k = ∑_{j ≤ k} a_{k,j} t_j + b_k,   a_{k,k} = ρ^{-(k+1)},
+a_{k+1,j} = ρ^{-1}(a_{k,j-1} + dK a_{k,j}),   b_{k+1} = ρ^{-1} dK b_k.
+```
+
+The multiplier of level `k` is `ρ^{-(k+1)}`, never trivial; there is no `q`, so no exponent pair can
+degenerate; no coordinate is an eigenvector, so a `σ`-eigenvector of `K(t_0,…,t_{m-1})` has no
+tautological source; and the subdiagonal coefficient
+
+```text
+a_{k+1,k} = −C(k+2,2)·ρ^{-(k+3)}·dρ
+```
+
+is nonzero for every `k` as soon as the map is not affine, which is what makes every descended
+inhomogeneity nonzero.  `b_0 = −(dρ)/ρ² ≠ 0` likewise.
+
+Built and green (`HTGeometry/RittAffineJetTower.lean`, umbrella-wired):
+`RittFrame.dK_add`, `logCoeff`, `logConst`, `logCoeff_eq_zero_of_lt`, `logCoeff_diag`,
+`logCoeff_subdiag`, **`sigma_affineJet`** (the triangular affine system), `affineLogSeed`,
+**`sigma_affineLogSeed`**, `sigma_mem_affineJetPrefixField`, `affineJet_defect_mem`.
+
+### The classification the tower supports
+
+Write `E_m = K(t_0,…,t_{m-1})`, `c_m = ρ^{-(m+1)}`, `δ_m = ∑_{i<m} a_{m,i} t_i + b_m` (nonzero,
+`K`-affine in the jets).  Two mutually recursive statements:
+
+* **EIGEN(m)**: `v ∈ E_m^×` with `σ v = c·v` ⟹ a base relation, or `v ∈ K`.
+* **AFF(m)**: `w ∈ E_m` with `σ w = c'·w + h`, `h` a nonzero `K`-affine combination of the jets ⟹
+  a base relation.
+
+`AFF(0)` *is* the affine base relation `ψ w = c' w + h`.  The induction runs through the coprime
+representation `w = P/Q` over `E_{m-1}[X]`, `X = t_{m-1}`, `A(X) = c_{m-1}X + δ_{m-1}`:
+`σQ∘A = c_{m-1}^{deg Q}Q` after normalising `Q` monic, and its subleading coefficient satisfies
+`σ q_{D-1} = c_{m-1} q_{D-1} − D δ_{m-1}` — an `AFF(m-1)` instance with a *provably nonzero*
+inhomogeneity.  With `Q = 1` the numerator's leading coefficient is an `EIGEN(m-1)` instance and its
+subleading coefficient an `AFF(m-1)` instance with inhomogeneity `−D'ψ(p_{D'})δ_{m-1} + h_{D'-1}`,
+nonzero because `δ_{m-1} ∉ K` while `h_{D'-1} ∈ K`.
+
+The collapse enters as `AFF(N)` with `w = t_N`, `c' = c_N = ρ^{-(N+1)}`, `h = δ_N`.
+
+### Algebraic collapse upgrades to a rational one, in the affine tower
+
+If `w` is algebraic over `E` with `σ w = c w + δ`, `δ ∈ E`, and minimal polynomial of degree `m`,
+then applying `σ` to the minimal polynomial and comparing the coefficient of `w^{m-1}` gives
+`σ e = c e − m δ` for `e` the subleading coefficient, so `w' = w + e/m` satisfies `σ w' = c w'`.
+Either `w' ∈ E` — and then `w ∈ E` — or the constant term `a₀` of the minimal polynomial of `w'`
+satisfies `σ a₀ = c^{m'} a₀` with `m' ≥ 2`, an `EIGEN` instance whose base multiplier
+`ρ^{-(N+1)m'}` is never `1`, hence Ritt's form.  No `ω_n` normalisation and no multiplicative
+rigidity is needed.
+
+### The closed inhomogeneity class, and the single residual branch (2026-09-01)
+
+Built and green: `HTGeometry/RittLogTowerDefect.lean` (`towerDefect`, `sigma_jet_eq_defect`,
+`towerDefect_notMem_range` — the level defect is never a base element above level zero) and
+`HTGeometry/RittLogTowerStep.lean` (**`logTower_dichotomy`** — the corpus's abstract
+`affine_eigen_dichotomy` transported to the affine tower, in five tower-level shapes).
+
+Write `δ_ℓ = towerDefect ℓ`, `c_ℓ = ρ^{-(ℓ+1)}`.  The descent is run on the class
+
+```text
+h = μ·δ_ℓ + ν,    μ, ν ∈ K,   (μ, ν) ≠ (0,0),
+```
+
+with the **invariant** `μ ≠ 0 → J = −(ℓ+1)` for the multiplier `c = ρ^J`.  The class is closed:
+
+| branch of `logTower_dichotomy` at level `ℓ+1` | datum at level `ℓ` | `(μ′, ν′)` | `J′` |
+|---|---|---|---|
+| `α = 0`, `W ∈ E_ℓ` (forces `μ = 0`) | `W` | `(0, ν)` | `J` |
+| defect vanishes | impossible: `δ_ℓ ≠ 0` | | |
+| monic denominator, subleading coefficient | `B_{D−1}` | `(−N, 0)` | `−(ℓ+1)` |
+| numerator degree two | eigenvector `v`, companion `Z` | `(−2, (aα/c)/v)` | `−(ℓ+1)` |
+| numerator degree one, `α = 0` | eigenvector `v`, companion `Y` | `(−1, aν/(cv))` | `−(ℓ+1)` |
+| numerator degree one, `α ≠ 0` | leading coefficient `v` | `(0, α·ρ^{ℓ+1})` | `J + ℓ + 1` |
+
+The invariant is preserved by every row, and at level zero it gives `J = −1 ≠ 0`, so the base case
+is always an obstruction: `ψ W = ρ^J W + (μ b + ν)` is either the affine base relation or, with a
+vanishing inhomogeneity, Ritt's form.  Division by `v` is legitimate because the eigenvector `v` is
+first shown to lie in `K`, and its own eigen-relation is either a nontrivial cocycle — an
+obstruction — or says `ψ v = v`, which puts `v⁻¹` in the regularity class.
+
+**The homogeneous statement never leaks.**  `EIGEN(ℓ)` (`σ v = ρ^J v`, `v ∈ E_ℓ` ⟹ obstruction or
+`v ∈ K` with `ψ v = v`) only ever calls the class with `μ ∈ {−N, −1}`, i.e. `μ ≠ 0`.
+
+**The single residual.**  The last row is the only one leaving the resonant regime, and it produces
+a *constant* inhomogeneity with `J′ = −1`.  In that regime the descent can terminate in the
+tautological solution
+
+```text
+W = κ·u,   ψ κ = κ,   J = −1,   μ = 0,   ν = κ·b,
+```
+
+because `u` itself solves `σ u = ρ^{-1}u + b`.  Tracking the row backwards pins the constant:
+`α ρ^{ℓ+1}/b = μ·C(ℓ+2,2)`, so `κ = μ·C(ℓ+2,2)` and `ψ μ = μ`.  The configuration it describes is
+`W = κ·t_0·t_ℓ + p_0` — the solution is affine-linear in the top jet with leading coefficient a
+multiple of the seed.
+
+The companion equation of that row, `σ p_0 = c p_0 + β − σ(v)·δ_ℓ`, then carries a *quadratic*
+inhomogeneity `−κρ^{-1}t_0δ_ℓ + …`, which is outside the class.  Worked out at `ℓ = 1` the residual
+closes: the quadratic inhomogeneity has leading coefficient `−3ρ^{-2}b_0 ≠ 0`, the denominator is
+again trivial, numerator degree `≤ 1` contradicts the nonzero quadratic coefficient, degree two
+gives the affine base relation with inhomogeneity `−3b_0`, and degree `≥ 3` gives the cocycle
+`ψ P_D = ρ^{D−3}P_D`.  Independently, the collapse at `N = 1` forces
+`ρ·d²ρ = (3/2)(dρ)²` — the map is a Möbius transformation — so it is excluded for degree at least
+two.
+
+So the remaining core is exactly: **the descent for a polynomial inhomogeneity of degree two in the
+jets**, or equivalently the branch in which the solution is affine-linear in the top jet with
+leading coefficient `μ·C(ℓ+2,2)·u`.

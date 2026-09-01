@@ -654,11 +654,11 @@ theorem chosenGlobalToLocalIntegerRing_mem_maximalIdeal_pow_iff
     (x : chosenGlobalValuationRing (K := K) (L := L) v₀) :
     chosenGlobalToLocalIntegerRing (K := K) (L := L) v₀ x ∈
         IsLocalRing.maximalIdeal
-          𝒪[ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀] ^ n ↔
+          (chosenLocalIntegerRing (K := K) (L := L) v₀) ^ n ↔
       x ∈ IsLocalRing.maximalIdeal
         (chosenGlobalValuationRing (K := K) (L := L) v₀) ^ n := by
   let A := chosenGlobalValuationRing (K := K) (L := L) v₀
-  let B := 𝒪[ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀]
+  let B := chosenLocalIntegerRing (K := K) (L := L) v₀
   let f : A →+* B := chosenGlobalToLocalIntegerRing (K := K) (L := L) v₀
   obtain ⟨π, hπ⟩ := IsDiscreteValuationRing.exists_irreducible A
   have hmapπ : Irreducible (f π) :=
@@ -781,5 +781,55 @@ theorem chosenDecompositionDisplacement_mem_local_of_global
         (K := K) (L := L) v₀ σ x
     rw [hcomm]
     exact hmainMapped
+
+set_option synthInstance.maxHeartbeats 300000 in
+set_option maxHeartbeats 2000000 in
+/-- The chosen source-to-completion equivalence preserves every lower displacement depth in both
+directions.  This is stronger than inertia transport: completion neither creates nor erases any
+maximal-ideal congruence of a decomposition automorphism. -/
+theorem chosenDecomposition_mem_chosenActualLocalLowerRamificationGroup_iff
+    (v₀ : HeightOneSpectrum (𝓞 K))
+    [IsDiscreteValuationRing
+      (chosenGlobalValuationRing (K := K) (L := L) v₀)]
+    (n : ℕ)
+    (σ : RamificationTheory.HilbertRamification.ValuationSubring.decompositionGroup K
+      (chosenGlobalValuationRing (K := K) (L := L) v₀)) :
+    let vK := HeightOneSpectrum.adicAbv K v₀
+    let w := chosenFinitePlaceExtension (L := L) v₀
+    let τD := localizationRamificationGroups_valuationDecompositionGroupEquiv
+      vK (RayClass.adicAbv_isNontrivial v₀) w
+        (finitePlaceExtension_nonarchimedean (K := K) (L := L) v₀ w) σ
+    let τ : ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀ ≃ₐ[
+      ChosenFinitePlaceBaseCompletion (K := K) v₀]
+        ChosenFinitePlaceLocalizedCompletion (K := K) (L := L) v₀ := τD
+    τ ∈ chosenActualLocalLowerRamificationGroup (K := K) (L := L) v₀ n ↔
+      ∀ x : chosenGlobalValuationRing (K := K) (L := L) v₀,
+        σ • x - x ∈ IsLocalRing.maximalIdeal
+          (chosenGlobalValuationRing (K := K) (L := L) v₀) ^ (n + 1) := by
+  dsimp only
+  constructor
+  · intro hτ x
+    have hlocal :=
+      (mem_chosenActualLocalLowerRamificationGroup_iff
+        (K := K) (L := L) v₀ n _).1 hτ
+        (chosenGlobalToLocalIntegerRing (K := K) (L := L) v₀ x)
+    have hcomm :=
+      chosenLocalIntegerRingAut_chosenGlobalToLocalIntegerRing_sub
+        (K := K) (L := L) v₀ σ x
+    have hmapped :
+        chosenGlobalToLocalIntegerRing (K := K) (L := L) v₀ (σ • x - x) ∈
+          IsLocalRing.maximalIdeal
+            (chosenLocalIntegerRing (K := K) (L := L) v₀) ^ (n + 1) := by
+      rw [← hcomm]
+      exact hlocal
+    exact
+      (chosenGlobalToLocalIntegerRing_mem_maximalIdeal_pow_iff
+        (K := K) (L := L) v₀ (n + 1) (σ • x - x)).1 hmapped
+  · intro hσ
+    apply (mem_chosenActualLocalLowerRamificationGroup_iff
+      (K := K) (L := L) v₀ n _).2
+    intro z
+    exact chosenDecompositionDisplacement_mem_local_of_global
+      (K := K) (L := L) v₀ (n + 1) σ hσ z
 
 end HilbertRamification

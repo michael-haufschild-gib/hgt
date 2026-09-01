@@ -539,3 +539,33 @@ still needs the two exact liminf bounds
 for the advertised decimal `0.116158438`.  But the folder's gate structure is now explicit: **one
 analytic input — a positive proportion of simple critical zeros — serves both cards**, at strength
 `> 0` for card 1 and at the PRZZ decimals for this card's headline constant.
+
+## Lean status update (2026-09-01) — Levinson's consumer chain is closed in Lean
+
+The analytic gate of this card (`liminf O/N > 1/3` for the cheaper odd-fibre route; the PRZZ pair for
+the advertised decimal) is owned by
+`docs/drafts/pipeline/1-in-progress/levinson-critical-proportion-programme.md`.  Eighteen new
+axiom-clean modules landed there today and they close the **entire consumer half of Levinson's
+method**: everything from the mollified mean square to the odd-fibre count is now unconditional Lean.
+
+The capstone is
+
+```text
+RHTower.exists_le_xiOddFiberCount_of_mollified_meanSquare
+```
+
+which takes only the mean square `∫_{T₁}^{T₂}‖(ζ+λζ′)·Ψ(σ₀+it)‖²dt ≤ Msq` (plus admissible heights
+and elementary mollifier-coefficient hypotheses) and returns `n ≤ xiOddFiberCount T₂` for every `n`
+satisfying the Levinson window inequality.
+
+Two structural corrections were needed and are recorded on the programme card (brick 7b):
+
+1. the pole gauge `(s−1)²` must be **cancelled exactly** — `weightedLittlewoodBoundary_poleGauge_mul`
+   — because estimating it edge by edge introduces a `Θ(L log T)` error, far larger than Levinson's
+   whole margin;
+2. the far-right edge integrals must be shown `O(1)` by analyticity and decay
+   (`norm_integral_vertical_le_of_halfPlane_decay`), not by a pointwise bound, which would cost
+   `Θ(L)` — also fatal.
+
+Remaining for this card: the mollified mean square (programme bricks 5c–5e/6), then the density
+passage; and, for the advertised `0.116158438`, the PRZZ constants.  Card stays at stage 2.

@@ -1,14 +1,18 @@
 # RH hard ledger — reread before conjecturing
-
 Authoritative detail: `docs/drafts/pipeline/1-in-progress/rh-research-status.md`.
 
-## CCM-FU — do not rediscover
-- CFI completed-Abel, CCM-FU checkpoint curvature, SP-E transition core, RG weighted-Chebyshev error = same affine-slope Cesàro high-pass before divisor selection. `COF + LAND + COMP` closed; only arithmetic `ORD` remains. Not independent producers.
-- Uniform checkpoint-tail/triangular-transform, bounded aligned Gamma/Cartan energy, bounded completed formation production are RH-equivalent terminal receivers. Never repropose upstream.
-- Weighted-curvature first moment and natural central unit-Riesz barycenter are equivalent to `RH ∧` square-root ψ remainder and unconditionally false via compact-autocorrelation Deninger response. Absolute observer action is RH-equivalent.
-- Sole live CCM-FU core: upstream Robin trace comparison or marked-halfgap lower bound for closed causal-depth Gamma-Schur carrier, producing canonical-order high-pass without RH-equivalent current.
+## CCM-FU — DO NOT REDISCOVER
+- CFI completed-Abel, CCM-FU checkpoint curvature, SP-E transition core, RG weighted-Chebyshev error = same affine-slope Cesàro high-pass before divisor selection. COF+LAND+COMP closed; arithmetic ORD remains.
+- Uniform checkpoint-tail/triangular-transform, bounded aligned-Gamma/Cartan energy, bounded completed formation production = RH-equivalent terminal receivers, never producers.
+- Weighted-curvature first moment ↔ natural central unit-Riesz barycenter; stronger source bound is unconditionally false by compact-autocorrelation Deninger response. Absolute observer action is RH-equivalent. Do not reopen first-moment, barycenter, absolute-value, bounded-energy, generic positive-carrier lanes.
+- Actual causal-depth Gamma-Schur kernel: finite-packet strict positivity; exact source block of positive trace-class A†A; aperture-independent trace ceiling. Positivity, Hilbert/trace-class placement, summability, bounded holonomy closed.
+- Marked halfgap: sharp local completion d²; completed diagonal (r-m*s)² erases d; dressed all-prime total = wall mass × (r-m*s)², uniformly bounded independent of aperture/height/d. Local completion, summability, cofinal growth closed. Only mixed compound source occurrence retains d.
+- Scaling kill: rectangular Xi target O(sqrt N), raw/transition-core source Ω(N) on 8N. Every bounded/sublinear correction fails. Fixed-scale dressed light+halfgap+scalar-Schur, fixed matched actual-head CCM, raw natural Cauchy energy, and positive growing-rank Cartan fission are dead. Survivor must be coefficient-faithful signed linear-scale atomic–continuous renormalization before Gram/cofinal limit.
+- Canonical signed correction already supplies required linear scale unconditionally, but subtracting it leaves exactly RH-equivalent aligned completed energy. Do not repropose finding/saturating a linear correction or tautological subtraction; missing theorem must realize it independently through Robin/source trace before scalar energy.
+- Bounded Robin trace branch killed: for fixed Gamma-Schur trace carrier K, Ward semiboundedness forces n/576 ≤ ‖K‖₁‖B_(8n)‖; uniformly bounded observers force defect → -∞. `SuzukiCausalDepthGammaBoundedRobinTraceNoGo`.
+- Sole live gate: coefficient-faithful singular/unbounded or cutoff-growing relative Robin trace comparison OR source-occurrence/Schur lower comparison for mixed marked-halfgap channel, before scalar energy and without RH-equivalent receiver.
+- Before any CCM-FU conjecture reread active C1–C24 in `irregular-stokes-robin-gamma-holonomy-coercivity.md` and `suzuki-rooted-midpoint-compound-gram.md`.
 
-## Route E — newly closed structural premise
-- `RouteERamareNestedApertureScalarLocalization.lean`: if `P ⊆ Q`, old scalar mass cancels exactly in the difference of Ramaré complement forms. Literal Möbius prime off-diagonal difference, pointwise and Gallagher-integrated, equals new-activation polarization plus old-minus-new normalized prime-load energy.
-- This closes Route E's structural inter-modulus cancellation premise. Remaining analytic burden: bound activation seam/load variation strongly enough for half-power Möbius cancellation → Littlewood/RH.
-- Also closed/dead: finite source-faithful centering impossible; centered complement = negative load energy; `2J²≤ZE` is already recurrence bridge; no reproposals.
+## Route E
+- Nested scalar localization exact; two-prime sign no-go exact.
+- Survivor: collective many-prime/nonlocal or Hall.

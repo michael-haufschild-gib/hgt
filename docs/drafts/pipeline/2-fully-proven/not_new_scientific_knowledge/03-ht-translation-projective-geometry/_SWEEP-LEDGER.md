@@ -1693,3 +1693,92 @@ The depth argument can be run **without defining depth**, in regular-sequence fo
    Nakayama.  **No Koszul complex or Tor is needed.**
 5. `B''` finite free over `A` ⟹ its discriminant is defined; `A` is a UFD, so a nonunit discriminant
    would force ramification at a height-one prime, which is excluded.  Hence `B''` is finite étale.
+
+### Brick A is CLOSED (2026-09-01)
+
+**`HTGeometry/CriticalBlockNormalizationPathConnected.lean` —
+`pathConnectedSpace_algSpec_criticalBlockNormalization`**: for every block `B` of the critical
+geometric monodromy containing the canonical sheet, the complex points of
+`CriticalBlockNormalization ℂ B` form a path-connected space.  This is the first of the two
+producers the parent card `projective-horizon-full-symmetric-monodromy` lists as open
+("prove the normalization's complex-point space is connected").
+
+Supporting modules landed today, all axiom-clean and wired:
+
+- `MvPolynomialAwayComplexPoints.lean` — `awayAlgPoint`, `awayAlgPoint_surjective`,
+  `continuous_awayAlgPoint`, `pathConnectedSpace_of_continuous_surjective`, and
+  **`pathConnectedSpace_algSpec_localizationAway`** (the complex points of any principal open of a
+  complex affine space are path connected).
+- `CriticalSourceChartLocalization.lean` — `raw_zero_pow_mul_recip_mem`,
+  `criticalSourceRecipNumerator`, `criticalAmbientRecip_ne_zero`, `criticalAmbientRaw_ne_zero`,
+  `criticalSourceChartPoly`(`_ne_zero`), `criticalSourceChartRing`, its injective algebra map into
+  `criticalSourceField`, `IsIntegrallyClosed`, `injective_awayLift_of_injective`.
+- `CriticalSourceChartFractionRing.lean` — `criticalSourceFracEquiv`,
+  `criticalSourceChartRing_isFractionRing`.
+- `CriticalSourceChartObservationTower.lean` — `chartInvX0`, `chartRecip`, `observationRingToChart`,
+  the two scalar towers, **`criticalSourceChartRing_isIntegral`**, and
+  `exists_criticalSourceChart_of_isIntegral`.
+- `CriticalSourceChartComplexPoints.lean` — `pathConnectedSpace_algSpec_criticalSourceChartRing`.
+- `AlgebraSpectrumIntegralDescent.lean` — **`AlgSpec.pathConnectedSpace_of_injective_integral`**
+  (general: path connectedness descends along an injective integral complex-algebra map; all the
+  algebra/tower instances are introduced *inside* the proof so call sites never unify against them).
+- `CriticalBlockNormalizationChart.lean` — `blockFieldInclusion`, `blockFieldToSource`,
+  `blockNormalizationToSource`, `blockNormalizationToChart`,
+  `algebraMap_blockNormalizationToChart`, `injective_blockNormalizationToChart`.
+
+**Remaining for `(4)`:** Brick B (deck group ≅ monodromy ⟹ `Γ` abelian), Brick C (the ℂ-fibre is a
+`Γ`-torsor), Brick D (étale at every closed point — the trace-summand + regular-sequence route
+recorded above).
+
+### Two general theorems for Bricks B and D (2026-09-01)
+
+- `HTGeometry/CommutingTransitiveAbelian.lean` —
+  **`mul_comm_of_commuting_transitive_of_mul_comm`**: if a group `G` acting on `P` has injective
+  orbit map at one point `x₀`, a group `M` acting on `P` reaches every point from `x₀`, the two
+  actions commute elementwise, and `M` is commutative, then `G` is commutative.  Proof: pick
+  `μ_g ∈ M` with `μ_g • x₀ = g • x₀`; commuting gives `μ_g • (h • x₀) = h • (g • x₀)`, so
+  `(μ_g μ_h) • x₀ = (h g) • x₀` and `(μ_h μ_g) • x₀ = (g h) • x₀`; `M` commutative plus injectivity
+  of the orbit map gives `gh = hg`.  **Depends on no axioms at all.**  This is Brick B's algebraic
+  core: it needs `Γ` free at a *single* point, not simple transitivity.
+- `HTGeometry/FreeOfRegularSequence.lean` —
+  **`free_of_isWeaklyRegular_of_ofList_eq_maximalIdeal`**: over a Noetherian local ring, a finite
+  module carrying a weakly regular list that generates the maximal ideal is free.  Induction on the
+  list; the tail is regular over `A/(x)` by `isWeaklyRegular_cons_iff'`, a lift of the resulting
+  basis generates by Nakayama (`Submodule.le_of_le_smul_of_le_jacobson_bot`), and the kernel `K`
+  satisfies `K ≤ (x) • K` because `x` is `M`-regular, so `K = ⊥`
+  (`Submodule.eq_bot_of_le_smul_of_le_jacobson_bot`).  **No Koszul complex and no `Tor`.**
+  mathlib has regular sequences but no Cohen–Macaulay theory, so this is new.
+
+Brick D's remaining input is exactly: the images in `D` of a regular system of parameters of `A`
+form a `D`-regular sequence.  That is "a system of parameters of a Cohen–Macaulay local ring is a
+regular sequence", specialised to `D` regular — the one classical theorem still to build.
+
+### Brick D, third piece (2026-09-01)
+
+`HTGeometry/RegularSequenceRetract.lean` — `quotSMulTopMap` (a linear map descends to
+`QuotSMulTop`) and **`isWeaklyRegular_of_leftInverse`**: if `f : M → N` has a linear retraction,
+every `N`-weakly-regular sequence is `M`-weakly-regular.  Axiom-clean, wired, olean built.  This is
+the transport step "regular sequence on the regular ambient ring `D` ⟹ regular sequence on the
+normalization `B''`", once the characteristic-zero trace map splits `B'' ↪ D`.
+
+### Brick D — exactly what is left, and the two candidate routes
+
+With `FreeOfRegularSequence` + `RegularSequenceRetract`, Brick D reduces to the single statement
+
+> the images in `D` of a regular system of parameters of `A` form a `D`-regular sequence
+
+i.e. **"a system of parameters of a Cohen–Macaulay (here: regular) local ring is a regular
+sequence"**.  mathlib has regular sequences and Rees's theorem
+(`ModuleCat.exists_isRegular_tfae` in `RingTheory/Depth/Rees.lean`: an `M`-regular sequence of
+length `n` inside `I` exists iff `Ext^i (R/I, M) = 0` for `i < n`) but **no** Cohen–Macaulay theory,
+no `depth`, no Koszul complexes and no miracle flatness.  Two routes:
+
+1. **Unmixedness route.**  Define `depth` from Rees's theorem (well defined because the Ext side is
+   sequence-independent), prove `depth` drops by exactly one modulo a nonzerodivisor, prove that a
+   Cohen–Macaulay module has `Ass = Min` (no embedded primes), and conclude by induction that a
+   system of parameters is regular.
+2. **Koszul route.**  Build Koszul complexes and the depth-sensitivity theorem
+   `depth_I(M) = n − sup {i | H_i(K(y;M)) ≠ 0}`; for `n = d = depth` this forces `H_i = 0` for
+   `i > 0`, which is regularity.  Shorter statement, but Koszul complexes are absent from mathlib.
+
+Route 1 reuses Rees, which is already in mathlib, so it is the cheaper of the two.

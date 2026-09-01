@@ -2973,3 +2973,95 @@ edge, kept as a cross-check), and `logDeriv_levinsonGEntire_mul`
    `Log(GΨ)` analytic there with the same decay, and `logDeriv (GΨ)` by Cauchy on the unit disc;
 2. the budget assembly: `weightedLittlewoodBoundary (GΨ) ≤ (L/2)·log(meanSquare/L) + O(1) + O(log T)`;
 3. the mollified mean square itself (brick 5/6).
+
+## Brick 7d — the far-right edge is closed (2026-09-01)
+
+`RHTower/MollifiedDetectorFarRightDecay.lean` (axiom-clean, wired, built):
+
+* `exp_neg_log_two_eq`, `norm_riemannZeta_sub_one_le_exp` (`‖ζ−1‖ ≤ 3·2^{-Re s}` for `Re s ≥ 2`),
+  `norm_deriv_riemannZeta_le_exp` (`‖ζ′‖ ≤ 6·2^{-Re s}` for `Re s ≥ 3`, Cauchy on the unit disc),
+  **`norm_levinsonG_sub_one_le_exp`** (`‖G−1‖ ≤ 9·2^{-Re s}`);
+* `sum_rpow_neg_le_exp` — `∑_{n ∈ t, n ≥ 2} n^{-x} ≤ 11·2^{-x}` for `x ≥ 2`, from `hasSum_zeta_two`;
+* **`norm_edPoly_sub_one_le_exp`** — a Dirichlet polynomial with unit head and coefficients bounded
+  by `1` is `1 + O(2^{-Re z})`;
+* `norm_mul_sub_one_le`, `norm_clog_le_of_norm_sub_one_le` (`‖Log w‖ ≤ 2‖w−1‖` for `‖w−1‖ ≤ ½`),
+  `mem_slitPlane_of_norm_sub_one_le`.
+
+`RHTower/MollifiedDetectorFarRightEdge.lean` (axiom-clean, wired, built):
+
+* `analyticOnNhd_clog_comp`, `deriv_clog_comp` (`deriv (Log ∘ H) = logDeriv H`);
+* **`abs_integral_log_norm_farRight_le`** —
+  `|∫_{T₁}^{T₂} log‖H(d+it)‖ dt| ≤ 4K e^{-αd}/α`;
+* **`abs_integral_re_logDeriv_farRight_le`** —
+  `|∫_{T₁}^{T₂} Re (H′/H)(d+it) dt| ≤ 4K e^{α} e^{-αd}/α`,
+
+both for `H` analytic on `Re s > d₀` with `‖H−1‖ ≤ K e^{-α Re s} ≤ ½` there.  **Neither bound
+depends on the window length**, which is exactly what brick 7b showed to be necessary.
+
+### The shift is absorbed into the coefficients
+
+Levinson's mollifier is `ψ(s) = ∑_{h≤M} μ(h) P(·) h^{-(s + ½ − σ₀)}`, which looks like a *shifted*
+Dirichlet polynomial and would force the horizontal-edge lemmas onto a translated segment.  It is
+not necessary: writing `b_h = μ(h)P(·)·h^{σ₀ − ½}` gives `ψ = edPoly b (Icc 1 M)` **unshifted**, with
+
+* `‖b_h‖ ≤ 1` (because `σ₀ < ½` and `h ≥ 1`), `b_1 = 1`, and `b` real when `P` is,
+* `ψ(σ₀ + it) = ∑_{h≤M} μ(h)P(·) h^{-½-it}` — the classical mollifier on the Levinson line, exactly.
+
+So every module of bricks 7a/7c/7d applies verbatim, on the segment `[σ₀, 4]` with the counting
+disc centred at `4`.
+
+## Brick 7e — THE CONSUMER CHAIN IS CLOSED (2026-09-01)
+
+Levinson's method is now, in Lean, a single implication from the mollified mean square.
+
+`RHTower/LevinsonLeftEdgeJensen.lean` — **`integral_log_norm_le_of_meanSquare`**: Jensen's left-edge
+bound for a function merely analytic on the segment, with finitely many zeros there.
+
+`RHTower/LevinsonMollifiedBudget.lean`:
+* `levinsonMollifiedDetector lam b s = fun z => (ζ + λζ′)(z) · edPoly b s z`;
+* `norm_levinsonMollifiedDetector_sub_one_le_exp` / `..._le_half` — `‖g − 1‖ ≤ 22·2^{-Re z} ≤ ½`
+  on `Re z ≥ 6`;
+* `norm_edPolyTrace_centre_ge` — `|Re Ψ(4+iT)| ≥ 5/16`, the centre value of the mollifier's Jensen
+  disc, from head dominance;
+* **`exists_levinson_mollified_budget_le`** — all four edges of `[σ₀, 15/2] × [T₁,T₂]`:
+
+  ```text
+  weightedLittlewoodBoundary g σ₀ (15/2) T₁ T₂
+      ≤ ½(T₂−T₁)·log( Msq/(T₂−T₁) ) + C + K·( log T₂ + log Mb )
+  ```
+
+  with absolute constants `C, K`; `Msq` bounds the mean square of `g` on `Re s = σ₀` and `Mb` the
+  `n⁴`-weighted `ℓ¹` mass of the mollifier coefficients.
+
+`RHTower/LevinsonOddFiberFinal.lean`:
+* `logDeriv_congr_of_eventuallyEq'`, **`weightedLittlewoodBoundary_congr`** — the boundary functional
+  only sees an open neighbourhood of the rectangle, which is what identifies the entire `G♯·Ψ` with
+  `(s−1)²·(G·Ψ)`;
+* **`levinsonGEntire_zeroMass_le_boundary`** — the detector zero mass in `[½,4] × [T₁,T₂]` against
+  the Littlewood boundary on `[σ₀,d] × [T₁,T₂]`, `d ≥ 4`;
+* **`exists_le_xiOddFiberCount_of_mollified_meanSquare`** — the capstone:
+
+  ```text
+  ∃ cw C K > 0, ∀ λ < 0 with |λ| ≤ 1, ∀ mollifier (b, N) with b₁ = 1, ‖bₙ‖ ≤ 1, b real,
+    ∀ Mb ≥ 1 bounding ∑ ‖bₙ‖ n⁴, ∀ σ₀ ∈ [¼,½), T₁ ≥ 20, T₂ > T₁ at admissible heights,
+    ∫_{T₁}^{T₂} ‖(ζ+λζ′)·Ψ (σ₀+it)‖² dt ≤ Msq  →
+    ∀ n, (n+2)π + π + (T₂−T₁)·6/T₁² + cw log T₁ + cw log T₂
+           + [ ½(T₂−T₁)·log(Msq/(T₂−T₁)) + C + K(log T₂ + log Mb) ] / (½ − σ₀)
+         ≤ θ(T₂) − θ(T₁)
+      →  n ≤ xiOddFiberCount T₂ .
+  ```
+
+All axiom-clean (`propext, Classical.choice, Quot.sound`), wired into `RHTower.lean`, exact leaf
+builds.
+
+**What is left.**  Two items, in order of size.
+
+1. *(small, consumer)* Turn the window count into the density statement: choose admissible heights,
+   use `gammaHardyTheta T₂ − gammaHardyTheta T₁ ≈ π(N(T₂) − N(T₁))` and
+   `exists_xiZeroCount_close`, and combine with `one_sub_log_levinsonLinearOptimizationConstant_div_gt_one_third`
+   to get `∃ δ > 0, ∀ᶠ T, (1/3 + δ)·N(T) ≤ xiOddFiberCount T`, hence
+   `liminf O/N > 1/3`, hence `liminf xiSimpleCriticalRatio > 0` (an odd fibre of multiplicity ≥ 3
+   costs three zeros, so `N₀,s ≥ O − N/3`).
+2. *(the gate)* The mollified mean square itself: `∫_{T₁}^{T₂} ‖(ζ+λζ′)Ψ(σ₀+it)‖² dt ≤ (c+o(1))·L`
+   with `c = levinsonLinearOptimizationConstant`.  This is bricks 5c–5e / 6, the twisted second
+   moment of `ζ` against the Levinson mollifier.  Nothing else in the programme is open.

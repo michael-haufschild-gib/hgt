@@ -307,9 +307,12 @@ master equation, and coherent second-order descent of a fixed all-prime source c
 proved equivalent to RH (`XiNodalDefectSuperselection`). Adding dimensions or saying “mixed
 curvature” does not supply selection.
 
-F74 — Audit scope is explicit: 561 named `NoGo` Lean files, all 73 declarations explicitly labelled
-“positive survivor” across 67 files, 232 certified universal-law capstone rows, every frontier
-branch/open core/boundary, and all 1,917 endpoint obligations were checked at statement level.
+F74 — Audit baseline is explicit. At the 2026-09-01 13:55 frontier cutoff, 561 named `NoGo` Lean
+files, 73 declarations then classified as explicit positive survivors across 67 files, 232 certified
+universal-law capstone rows, every frontier branch/open core/boundary, and all 1,917 reconciled
+endpoint obligations were checked at statement level. The 13:55–15:22 frontier delta and its
+immediate endpoint audit are compressed in `F89`–`F108`; mutable file/text counts are not
+mathematical claims.
 
 F75 — Positive results split into three logically different classes. Transport/reconstruction laws
 identify or conserve data unconditionally; selection laws prove neutrality from a global premise;
@@ -491,6 +494,126 @@ F104 — A pole-clearing gauge is exactly invisible to the relevant rectangle bo
 when its zero lies outside the rectangle. Multiplying a detector by that gauge changes neither the
 weighted Littlewood boundary charge nor its height growth; detector, mollifier, and horizontal
 boundary terms remain (`LittlewoodPoleGaugeCancellation`, `LevinsonMollifiedEdges`).
+
+F105 — Refinement conserves rather than annihilates defect in the abstract corpus. Binary fusion
+splits total defect into local block defects plus defect between block resultants; fine formation
+energy is coarse endpoint energy plus centred fluctuation energy. The nested Ramaré law is a
+literal arithmetic instance with activation seam and incidence-energy variation
+(`NormingFaceFusion`, `SourceFormationHarmonicMechanics`,
+`RouteERamareNestedApertureScalarLocalization`).
+
+F106 — A zeta zero removes one base observation, not the lifted hierarchy. In the strict right
+half of the critical strip, the heat–aperture echo ladder has nonzero source coefficients and every
+positive-depth value is nonzero; `zeta(s)=0` is exactly disappearance of rung zero. Even and odd
+subsequences separately obey closed rising-factorial laws from their initial rungs
+(`HeatApertureEchoParity`).
+
+F107 — FE and Schwarz comparison already gives a complete one-coordinate orientation detector.
+For every prime, the heat–aperture coefficient difference is the canonical prime seam up to an
+explicit nonzero factor; equality at one prime is equivalent to `Re(s)=1/2`, and checking all primes
+adds nothing beyond prime two. Equality of the actual degree-one Euler local fluxes and equality of
+the actual Euler-point tangents have the same zero locus. Pointwise existence of a radially
+calibrated dagger-confluent repair is likewise equivalent to `Re(s)=1/2`
+(`HeatAperturePrimeSeamReflection`, `ConstitutiveDaggerConfluence`).
+
+F108 — Monotone Schrödinger dynamics does not orient rank-three reflected Hankel curvature. The
+positive even entire profile `exp(-z²-z⁴/6)` satisfies `f''=Vf`, has `V(0)<0`, and has strictly
+increasing `V` on the positive ray, yet its central signed rank-three determinant is `-87040`
+(`TCDMonotoneSchrodingerD1NoGo`). Thus the proved monotonicity of the actual theta Schrödinger
+potential cannot by itself settle the remaining TCD sign.
+
+F109 — Formation, source-generated execution, completion genealogy, operation descent, history,
+properness, and intervention grammar are already explicit universal-law programmes with exact
+calibrations. Their selection gates all retain an unproved literal-source premise. Naming one of
+those mechanisms again does not change the logical frontier.
+
+F110 — Audited operations fall into three anomaly-support classes. Faithful recovery, gauge, and
+functional-equation transport retain horizontal grade; positive, scalar, and recurrent observers
+forget part of it; admissible Gamma-cell multiplication can introduce arbitrary off-line divisor
+without violating the ambient structural laws. Corpus search found no literal pre-divisor
+operation that both restricts which horizontal grades occur in the Xi divisor and is proved before
+occurrence specialization.
+
+F111 — Base-preserving does not mean support-preserving. In `Set/A`, the base-preserving maps
+`f(a,*)=(a,a)` and `g(a,*)=(a,0)` have equalizer supported exactly at `a=0`. Products, split
+recoveries, and fibrewise surjections preserve inhabited support, but equalizers and compatibility
+loci can select a fibre. The unresolved issue is source generation of the relation, not whether its
+maps are vertical.
+
+F112 — “Endogenous compatibility” is not a restriction unless its generation grammar is fixed.
+`SourceCoherentInterventionSynchronization` already packages source response equalizers and proves
+zero selection from triviality plus compatibility. Conversely,
+`ConstitutiveEndogenousCompatibility` proves that one state-indexed test can realize every
+transition system, naturally under relabelling. Thus an unconstrained source-indexed relation can
+hide the desired conclusion verbatim.
+
+F113 — Finitary-versus-cofinal birth and compact escape are already closed mechanics, not a new
+field pivot. Finite words, even from arbitrarily many monotone extensive finitary formations,
+retain finite ancestry and cannot realize the concrete cofinal-birth closure. The corpus already
+retired bare compact-counterwitness escape after identifying formation depth as its diverging
+resource (`ConstitutiveFinitaryFormation`; `ULF-GTM-FAILED-2`).
+
+F114 — Passing from one zero to the whole divisor does not cross the frontier. Corpus already has
+complete Xi-divisor tomography, global all-zero energy criteria, and the canonical proposition
+`XiSourceForcedHorizontalVanishing`; its entropy, Gamma/co-Poisson, Gaussian-Wronskian, and RH
+forms are proved equivalent. The missing assertion remains global source-forced vanishing itself.
+
+F115 — Source scale escape is already an exact horizontal-grade coordinate. Every nonzero grade
+has unbounded nonlinear prime-clock work, while bounded work is equivalent pointwise and globally
+to critical placement and RH (`SourceHorizontalWoldPrimeClockProfile`). Scale covariance therefore
+supplies a sharp receiver/properness endpoint but not the unconditional boundedness producer.
+
+F116 — Geometry of incompatible cofinal directions is already present. Formation/completion
+exchange defects, noncommuting sequential observer-time limits, mixed prime/depth filters, and
+`InterfinityGeometry` model stable primitives, death regions, and source-marked exactness. The
+source-marked Lawson topology is proved to join loss of exactness with acquisition of stable
+primitives (`SourceMarkedInterfinityBridge`). This explains order-of-limits shadows but does not
+annihilate their literal arithmetic class.
+
+F117 — Additive/multiplicative half-density unitarity is already an exact selector interface.
+Normalized dilation becomes additive translation, the prime/Gamma source character has modulus
+one exactly at neutral horizontal grade, and fixed Gamma boundary is equivalent to Meyer-character
+unitarity on retained Xi copies. Existing ax+b, dilation/translation, and semilocal spectral
+constructions do not prove that Xi occurrence must enter this unitary sector.
+
+F118 — Countermodels isolate exact occurrence, not asymptotic density, as arithmetic information.
+An entire order-one, FE-symmetric, nonnegative generalized Euler system can have prescribed
+off-line zeros while differing from zeta in pole order; a Beurling system restores a simple pole
+and achieves `N(x) = rho*x + O(x^theta)` for every `theta > 0` while retaining arbitrary off-line
+zeros. The surviving literal distinction is which integers occur: `N(x) = floor x`, not its error
+scale (`EntireFunctionalEquationOffLine`, `BeurlingRegularIntegersOffLineZeros`).
+
+F119 — Integral multiplicativity plus a nonvanishing strip completion factor still does not select.
+`GammaFECell` contains zeta, is closed under convolution by an integral multiplicative finite
+Dirichlet polynomial, and thereby contains `zeta*dzo` with a simple off-line zero. Exact coefficients
+`a_n = 1` distinguish zeta from that cell, but this coefficient identity names the literal source;
+it does not constrain the divisor.
+
+F120 — Additive and multiplicative readings separate at a Xi zero. Euler--Maclaurin additive data
+contains a nonempty local zero certificate while every pinned finite-prime source map, finite Euler
+atlas divisor, and multiplicative sigma jet is trivial there
+(`additive_carrier_multiplicative_source_mismatch_positive`). Divisor occurrence is therefore a
+joint-operation effect invisible to either finite multiplicative marginal alone.
+
+F121 — Multiplicative ancestry first becomes visible in interaction order. A pure prime tone has
+zero cubic moment, while the multiplicatively forced prime-square harmonic gives a strictly
+positive cubic resonance; a full nonnegative prime-power tower retains this positivity
+(`ThirdMomentResonance`). But positivity does not descend to the marginal interaction quotient,
+which is unconditionally indefinite (`eulerWickReplicaCenteredInteraction_not_kreinNonneg`).
+
+F122 — Static source relations do not feel horizontal Gibbs grade. Positive source reweightings
+preserve the complete cofinite Gram radical and coefficient-independence matroid at every
+temperature; only free energy and tropical support radius change (`SourceMarkedGibbsSplitting`).
+
+F123 — Source-labelled rank and inertia have no positive energy quantum. For every packet size and
+every `epsilon > 0`, one shared reservoir realizes a nondegenerate prime-labelled form of inertia
+`(m-1,1,0)` (or its reflected reverse), trace zero, recoverable nonzero coefficients, and Frobenius
+square below `epsilon^2` (`SourceHorizontalSharedReservoirAmplification`).
+
+F124 — Integer topological charge is not a finite source resource. Matrix tensor amplification
+multiplies determinant `K₁` charge by arbitrary positive dimension, while balanced reflection can
+erase signed Fredholm index independently of escape multiplicity (`PrimeAFMatrixOperatorKOneDirectLimit`,
+`HedenmalmThetaKakutaniBalancedIndexNoGo`).
 
 ## Logical consequences of audited facts
 
@@ -712,6 +835,61 @@ germ. Quasianalyticity forces every such analytic germ locally zero.
 CANNOT-54 — It cannot obtain global orientation or height growth from a removable pole-clearing
 gauge. The exact boundary functional cancels that gauge on every rectangle avoiding its zero.
 
+CANNOT-55 — It cannot be refinement conservation, relative seam transgression, or telescoping
+alone. Those laws already classify where cancelled mass moves but impose no source bound or
+vanishing on the new seam.
+
+CANNOT-56 — It cannot interpret a zeta zero as total source extinction, vacuum, or death of an
+entire recursive tower. The literal heat–aperture lift keeps every strict rung nonzero when its
+zeroth observed rung vanishes.
+
+CANNOT-57 — It cannot postulate FE–Schwarz lift uniqueness, branch confluence, one-prime matching,
+all-prime matching, Euler-flux matching, or Euler-tangent matching at a zero. Each is already a
+faithful coordinate of horizontal grade, hence an RH-selective receiver rather than a source law.
+
+CANNOT-58 — It cannot derive the required reflected-Hankel orientation from positivity of an entire
+source, a negative central Schrödinger potential, and monotonicity of that potential. Those data
+admit an explicit negative rank-three determinant.
+
+CANNOT-59 — It cannot be another formation, execution, completion, history, properness, or operation-
+descent vocabulary whose only theorems preserve, forget, or repackage the already-realized anomaly.
+Those mechanism classes and their conditional selectors are already present.
+
+CANNOT-60 — It cannot use base-preservation or verticality alone as a no-selection criterion.
+Vertical equalizers can have support only at neutral grade.
+
+CANNOT-61 — It cannot call a compatibility law source-generated merely because it depends on source
+state. An unconstrained state-indexed test can encode any desired transition relation.
+
+CANNOT-62 — It cannot be bare logical noncompactness, cofinal birth, counterwitness escape, global
+divisor tomography, or source scale properness. Each already exists in exact form and terminates at
+an unproved literal-source vanishing or boundedness statement equivalent to RH.
+
+CANNOT-63 — It cannot be a renaming of noncommuting limits as Interfinity geometry or of the
+critical half-density as semiring/ax+b unitarity. Both mechanisms and their exact selector
+interfaces already exist; the occurrence-to-unitary or source-exactness theorem remains open.
+
+CANNOT-64 — It cannot be simple pole order, entire order one, positive generalized primes, or any
+power-scale regularity of generalized integer counting. Explicit off-line systems satisfy each of
+these separately, and the Beurling system satisfies simple-pole plus arbitrarily sharp counting
+regularity simultaneously.
+
+CANNOT-65 — It cannot be integral multiplicative coefficients plus a freely varying nonvanishing
+Gamma factor and functional equation. That class is convolution-mobile and carries simple
+off-line charge.
+
+CANNOT-66 — It cannot infer a positive selector from joint interaction merely because the source
+or a replica is positive. Passing to the interaction quotient can create an indefinite form.
+
+CANNOT-67 — It cannot select neutral grade from static standard-integer additive/multiplicative
+coherence, coefficient relations, or KMS compatibility. Power characters carry every real grade
+through the exact formation diamonds, and source relation matroids are Gibbs-temperature blind.
+
+CANNOT-68 — It cannot obtain a contradiction by representing one anomaly in many routes, tensor
+replicas, or source labels. Rank and integer charge can be amplified algebraically, while labelled
+indefinite rank can cost arbitrarily small norm; no unconditional finite literal-source budget has
+been proved.
+
 ### It must do or have this
 
 MUST-01 — It must be defined on pre-divisor source data and specialize at Xi occurrences only after
@@ -824,3 +1002,38 @@ carrier class.
 
 MUST-35 — Any phase quotient, determinant, completion, or codiagonal observation must retain the
 resolved constituents and their relative character; the total object alone is provably blind.
+
+MUST-36 — Its decisive source theorem must restrict the anomaly fibres arithmetically realizable by
+Xi occurrence. Explaining the internal geometry of every fibre, or transporting an occurrence
+within its existing fibre, cannot be the selection step.
+
+MUST-37 — If selection is expressed by an equalizer, fixed locus, compatibility locus, or vanishing
+locus, the source must generate both compared responses and the obligation relating them before
+Xi occurrence specialization; defining the locus after reading horizontal grade is an endpoint.
+
+MUST-38 — A claimed source law needs a fixed occurrence-independent signature and uniform
+derivation rule. State-indexed predicates, chosen equalizers, and arbitrary compatibility oracles
+are logically capable of storing RH rather than proving it.
+
+MUST-39 — A higher theory must distinguish information-conservative re-expression from a theorem
+that narrows the literal source model class. Route equivalence, full-divisor aggregation, cofinal
+completion, and properness can expose the exact missing proposition without supplying new evidence
+for it.
+
+MUST-40 — Any claimed radical reinterpretation must exhibit an unconditional narrowing of the
+pre-divisor literal-source model class. A new carrier, topology, limit order, unitary realization,
+or route dictionary without that narrowing is explanatory only.
+
+MUST-41 — It must use exact occurrence/distributive structure of ordinary integers, not an
+asymptotic counting law or a multiplicative Dirichlet-series class. Known off-line countermodels
+match the latter shadows and fail only the literal source specification.
+
+MUST-42 — It must expose a non-marginal invariant of the coupled additive-successor and
+multiplicative-prime-power histories. Finite prime marginals miss divisor occurrence, while cubic
+resonance proves that higher interaction can retain multiplicative ancestry; generic quotient
+positivity is unavailable.
+
+MUST-43 — Any decisive capacity must be nonhomogeneous under source-respecting rescaling, invariant
+under presentation by routes or replicas, and impossible to manufacture by matrix amplification or
+erase by balanced reflection. Its finite total budget must be proved from literal source formation,
+not assumed at the Xi divisor.

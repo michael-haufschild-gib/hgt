@@ -230,10 +230,43 @@ theorem sigma_affineLogSeed (Fr : RittFrame K L) {τ : L} {q : K} (hτ : τ ≠ 
     rw [hshift]
     exact mul_ne_zero hqL hτ
   simp only [affineLogSeed]
-  rw [map_sub, map_div₀, map_div₀, hd1, hd2, hshift, hdq, map_inv₀,
-    map_div₀, map_neg, map_pow, map_div₀, map_neg, map_mul, map_div₀, map_pow, map_div₀]
+  rw [map_sub, map_div₀, map_div₀, hd1, hd2, hshift, hdq]
+  simp only [map_div₀, map_neg, map_mul, map_pow, map_inv₀]
   field_simp
   ring
+
+end RittFrame
+
+end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+namespace RittFrame
+
+variable {K L : Type*} [Field K] [Field L] [Algebra K L]
+
+/-- **Shift stability of the jet prefix field of an affine tower.** -/
+theorem sigma_mem_affineJetPrefixField (Fr : RittFrame K L) {u : L} {b : K}
+    (hu : Fr.σ u = algebraMap K L Fr.ρ⁻¹ * u + algebraMap K L b) (n : ℕ) :
+    ∀ x ∈ Fr.jetPrefixField u n, Fr.σ x ∈ Fr.jetPrefixField u n := by
+  refine Fr.sigma_mem_of_mem_adjoin ?_
+  rintro x ⟨k, hk, rfl⟩
+  rw [Fr.sigma_affineJet hu k]
+  refine add_mem (sum_mem fun j hj => ?_) (IntermediateField.algebraMap_mem _ _)
+  exact mul_mem (IntermediateField.algebraMap_mem _ _)
+    (Fr.jet_mem_jetPrefixField (by simp only [Finset.mem_range] at hj; omega))
+
+/-- The shift defect of the affine tower at level `k` lies in the previous prefix field. -/
+theorem affineJet_defect_mem (Fr : RittFrame K L) {u : L} {b : K}
+    (hu : Fr.σ u = algebraMap K L Fr.ρ⁻¹ * u + algebraMap K L b) (k : ℕ) :
+    Fr.σ (Fr.d^[k] u) - algebraMap K L (Fr.logCoeff k k) * Fr.d^[k] u
+      ∈ Fr.jetPrefixField u k := by
+  rw [Fr.sigma_affineJet hu k, Finset.sum_range_succ]
+  have hrw : ∀ x y z : L, x + y + z - z = x + y := fun x y z => by ring
+  rw [add_right_comm, hrw]
+  refine add_mem (sum_mem fun j hj => ?_) (IntermediateField.algebraMap_mem _ _)
+  exact mul_mem (IntermediateField.algebraMap_mem _ _)
+    (Fr.jet_mem_jetPrefixField (by simpa only [Finset.mem_range] using hj))
 
 end RittFrame
 

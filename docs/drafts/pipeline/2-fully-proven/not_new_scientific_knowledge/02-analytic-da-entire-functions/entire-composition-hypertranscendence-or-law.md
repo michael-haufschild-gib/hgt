@@ -72,3 +72,31 @@ The law supplies a positive structural characteristic of the HT class: finite en
 - [x] Local-germ and Gamma-composition boundaries stated.
 - [ ] Formalization deferred: under the active no-computation research skill, the project rule requiring numerical pre-certification before Lean prevents a compliant Lean start in this session.
 
+
+## Lean status
+
+Three of the law's four directions are unconditional Lean theorems; the fourth is the classical
+input the card cites.
+
+| Statement | Lean theorem | Module |
+|---|---|---|
+| both factors DA ⟹ composite DA | `differentiallyAlgebraic_comp_entire` | `CompositionInnerDecomposition` |
+| inner DA + composite DA ⟹ outer DA | `differentiallyAlgebraic_outer_of_comp` | `CompositionInnerDecomposition` (from `CompositionDecompositionLaw.differentiallyAlgebraic_of_comp`) |
+| **outer DA + composite DA ⟹ inner DA** | `differentiallyAlgebraic_inner_of_comp` | `CompositionInnerDecomposition` |
+| the law, modulo the both-hypertranscendental case | `differentiallyAlgebraic_comp_iff_of_gap` | `CompositionInnerDecomposition` |
+| a regular point of the composition | `exists_regular_point` | `CompositionInnerDecomposition` |
+| a local analytic inverse with explicit domains | `exists_localInverse_domains` | `CompositionInnerDecomposition` |
+
+Supporting corpus assets used: `RGTowerCoherence.differentiallyAlgebraicOn_comp`,
+`LocalInverseHypertranscendence.differentiallyAlgebraicOn_of_localInverse` and
+`differentiallyAlgebraic_of_differentiallyAlgebraicOn`,
+`CrossDomainSubstitution.substitutionFaithful_of_rightInverse`,
+`ParabolicFatouJetRealization.exists_localInverse_analytic`,
+`DifferentialAlgebraicOnSum.differentiallyAlgebraicOn_of_eqOn`.
+
+**The one remaining gap** is the hypothesis `hgap` of `differentiallyAlgebraic_comp_iff_of_gap`:
+`f` hypertranscendental and `g` hypertranscendental make `f ∘ g` hypertranscendental.  This is
+Steinmetz's Reduction Theorem (equivalently Huang--Ng Theorem 3), and by the analysis in
+`_STAGE3-LEDGER.md` it rests on a second main theorem for small functions: the two-term case follows
+from Clunie growth alone, but every differentiation of the substituted relation adds jet monomials
+at least as fast as it adds equations, so no Wronskian elimination closes the system.

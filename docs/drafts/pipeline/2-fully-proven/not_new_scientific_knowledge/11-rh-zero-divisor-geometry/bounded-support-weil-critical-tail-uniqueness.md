@@ -288,3 +288,16 @@ simple-zero refinement supplies it; the programme card
 `docs/drafts/pipeline/1-in-progress/levinson-critical-proportion-programme.md` owns it, and its
 analytic gate (the twisted second moment) had its **main term closed in Lean on 2026-08-30**
 (bricks 5ap–5ay), by two independent routes that agree.
+
+## Lean status update (2026-09-01) — the shared gate's consumer half is Lean-closed
+
+This card's gate is `∃ c > 0, c ≤ liminf xiSimpleCriticalRatio atTop`, which the folder shares with
+`horizontal-singleton-zero-fibers.md`.  Levinson's method supplies it (an odd fibre of multiplicity
+≥ 3 costs three zeros, so `N₀,s ≥ O − N/3`, and `liminf O/N > 1/3` therefore gives a positive
+proportion of *simple* critical zeros).
+
+Today the whole consumer half of Levinson's method became unconditional Lean — eighteen new
+axiom-clean modules, capstone `RHTower.exists_le_xiOddFiberCount_of_mollified_meanSquare`.  Full
+detail is on `docs/drafts/pipeline/1-in-progress/levinson-critical-proportion-programme.md`
+(bricks 7a–7e).  What remains for this card is exactly the mollified mean square of
+`(ζ + λζ′)·Ψ` on the Levinson abscissa, plus the density passage.  Card stays at stage 2.

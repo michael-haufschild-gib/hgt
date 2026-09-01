@@ -147,6 +147,23 @@ Same-fibre Cartier descent means this excess vanishes, pointwise iff `Re(rho)=1/
 
 For `a > L` this function is zero at `x=0` but nonzero elsewhere, contradicting `mu(R)=hat(mu)(0)` for a nonzero positive measure. More strongly, edge discontinuities exclude every finite signed measure because Fourier--Stieltjes transforms are continuous. Thus sector coercivity cannot be transferred to the exact rectangular carrier by finite-measure superposition.
 
+### C24. Bounded Robin observer on the fixed causal-depth Gamma-Schur trace carrier
+
+**Verdict: FAILED; SHARP UNBOUNDED SURVIVOR.**  Let `K` be the corpus's fixed positive
+trace-class Gamma-Schur energy and let `B_N` be any Robin observer family. Trace duality gives
+
+`|Re Tr(K B_N)| <= ‖K‖₁ ‖B_N‖`.
+
+Rectangular Ward semiboundedness forces every transition-core correction to satisfy
+`n/576 <= correction(8n)` eventually. Hence it forces
+
+`n/576 <= ‖K‖₁ ‖B_(8n)‖`.
+
+No uniformly bounded observer family can work; its Ward defect instead tends to `-infinity` on
+`8n`. The positive survivor is necessarily singular/unbounded Robin transport, a cutoff-growing
+carrier, or a non-trace-class relative trace assembled before Gram/cofinal limit. Paper and Lean:
+`SuzukiCausalDepthGammaBoundedRobinTraceNoGo`.
+
 ## Current paper-proof obligations
 
 1. Construct an actual source-first same-fibre positive polarization whose descent is not equivalent by definition to `2*Re(rho)-1 = 0`.
@@ -154,4 +171,6 @@ For `a > L` this function is zero at `x=0` but nonzero elsewhere, contradicting 
 3. Prove its negative-light, marked-halfgap, and holonomy Schur debts share one uniformly bounded dressed source density.
 4. Derive the rectangular Ward residual split with a nonnegative bulk and a uniformly lower-bounded endpoint.
 
-No candidate in C1--C23 discharges obligation 1. The unconditional lower bound is not proved. No Lean declaration is claimed for this card.
+No candidate in C1--C24 discharges obligation 1. The unconditional lower bound is not proved.
+C24's producer-class no-go is formalized separately; no Lean declaration is claimed for the
+remaining positive statement of this card.

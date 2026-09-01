@@ -1,9 +1,9 @@
 # Two-prime Ramaré aperture sign no-go
 
 - **ID:** E-IMC-TWO-PRIME-SIGN-NOGO
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Label:** `[PAPER-PROVED]`
+- **Label:** `[LEAN-PROVED]`
 - **Source:** Route E nested-aperture residual after `E-IMC-SCALAR-LOCALIZATION`
 - **Statement:** If `p<q<2p` are primes, then the literal Ramaré off-diagonal for designated set
   `{p,q}`, integer cutoff `q`, and Gallagher aperture `W` is an explicit nonzero-frequency sine
@@ -12,7 +12,7 @@
 
 ## RH chain and route kill
 Nested Ramaré residual → hoped-for source-faithful sign/monotone inter-modulus telescope →
-half-power Möbius cancellation → Littlewood/RH.  This conjecture kills the middle implication:
+half-power Möbius cancellation → Littlewood/RH.  This theorem kills the middle implication:
 even the literal Möbius source on the smallest nontrivial prime aperture oscillates with full
 linear window scale.  Any surviving Route E proof must use collective many-prime cancellation or a
 nonlocal aperture coupling, not aperture nesting plus sign.
@@ -52,15 +52,23 @@ linear-scale rather than a negligible boundary effect.  Every dependency is elem
 unconditional.
 
 ## Hostile audit
-Verdict: `SURVIVES PRELIMINARY ATTACK`.  The statement is not an RH consequence or a coefficient-
+Verdict: `SURVIVES HOSTILE ATTACK`.  The statement is not an RH consequence or a coefficient-
 chosen counterexample: it classifies the literal Möbius/Ramaré observable.  Existing corpus sine
 steering and self-kernel results do not imply this two-prime active-set collapse and physical
 off-diagonal law.  External audit above found no exact collision.  Its significance is negative but
 material: universal sign, monotonicity, and sublinear-window damping of nested-aperture increments
 are impossible.
 
+## Lean certificate
+- Module: `GaloisForLFunctions.RHTower.Sieve.RouteERamareTwoPrimeApertureSignNoGo`.
+- Proved: active-set collapse, exact phase/kernel laws, exact two-prime off-diagonal, exact
+  quarter/three-quarter values, and opposite strict signs.
+- Audit: direct `lake env lean` passed; module-only `lake build` passed; all public theorems use only
+  `propext`, `Classical.choice`, and `Quot.sound`.
+- Wired into `GaloisForLFunctions.RHTower`; no umbrella build run.
+
 ## Gates
 - [x] 0 → 1: exact corpus-derived claim and RH-chain effect recorded
 - [x] 1 → 2: dependency-closed paper proof and hostile audit
-- [ ] 2 → 3: exact Lean theorem, target build, axiom audit
+- [x] 2 → 3: exact Lean theorem, target build, axiom audit
 - [ ] 3 → 4: publication-ready

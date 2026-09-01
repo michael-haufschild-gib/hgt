@@ -47,23 +47,22 @@ theorem continuous_deriv_edPoly_horiz (a : ℕ → ℂ) {s : Finset ℕ} (hs : �
       (by fun_prop : ContinuousAt (fun v : ℝ => (v : ℂ) + (T : ℂ) * I) x)
   simpa [Function.comp_def] using hc
 
-/-- **The weighted horizontal edge of a Dirichlet polynomial.** -/
+/-- **The weighted horizontal edge of a Dirichlet polynomial.**  The counting disc is centred at
+`4` with radius `r`; any segment `[c,e]` inside that disc is admissible. -/
 theorem abs_integral_weighted_im_logDeriv_edPoly_le
     (a : ℕ → ℂ) {s : Finset ℕ} (hs : ∀ n ∈ s, 1 ≤ n)
     (hreal : ∀ n ∈ s, (starRingEnd ℂ) (a n) = a n) (T : ℝ)
-    {c m Mb : ℝ} (hc : -4 < c) (hc4 : c < 4)
-    (hne : ∀ x ∈ Set.Icc c (4 : ℝ), edPoly a s ((x : ℂ) + (T : ℂ) * I) ≠ 0)
+    {c e r m Mb : ℝ} (hce : c < e) (hr : 0 < r) (hrlt : r < 8)
+    (hcr : 4 - r ≤ c) (her : e ≤ 4 + r)
+    (hne : ∀ x ∈ Set.Icc c e, edPoly a s ((x : ℂ) + (T : ℂ) * I) ≠ 0)
     (hm : 0 < m) (hM1 : 1 ≤ Mb)
     (hcentre : m ≤ ‖edPolyTrace a s T 4‖)
     (hmass : (∑ n ∈ s, ‖a n‖ * ((n : ℝ) ^ (4 : ℝ))) ≤ Mb) :
-    |∫ x in c..(4 : ℝ), (x - c) *
+    |∫ x in c..e, (x - c) *
         (logDeriv (edPoly a s) ((x : ℂ) + (T : ℂ) * I)).im|
-      ≤ 2 * (4 - c) *
-        ((Real.log (Mb / m) / Real.log (8 / (4 - c)) + 1) * Real.pi) := by
+      ≤ 2 * (e - c) *
+        ((Real.log (Mb / m) / Real.log (8 / r) + 1) * Real.pi) := by
   classical
-  set r : ℝ := 4 - c with hr
-  have hr0 : 0 < r := by rw [hr]; linarith
-  have hr8 : r < 8 := by rw [hr]; linarith
   set K : Set ℂ := closedBall (4 : ℂ) |r| with hK
   have hKcompact : IsCompact K := isCompact_closedBall _ _
   have hana : AnalyticOnNhd ℂ (edPolyTrace a s T) K := analyticOnNhd_edPolyTrace a hs T K
@@ -91,35 +90,35 @@ theorem abs_integral_weighted_im_logDeriv_edPoly_le
   set Z : Finset ℝ := hfinR.toFinset with hZdef
   set f : ℝ → ℂ := fun x => edPoly a s ((x : ℂ) + (T : ℂ) * I) with hfdef
   set f' : ℝ → ℂ := fun x => deriv (edPoly a s) ((x : ℂ) + (T : ℂ) * I) with hf'def
-  have hZmem : ∀ x ∈ Set.Ioo c (4 : ℝ), (f x).re = 0 → x ∈ Z := by
+  have hZmem : ∀ x ∈ Set.Ioo c e, (f x).re = 0 → x ∈ Z := by
     intro x hx hzero
     rw [hZdef, Set.Finite.mem_toFinset]
     refine ⟨?_, ?_⟩
-    · rw [hK, mem_closedBall, abs_of_pos hr0, Complex.dist_eq]
+    · rw [hK, mem_closedBall, abs_of_pos hr, Complex.dist_eq]
       have hval : ‖((x : ℂ) - 4)‖ = |x - 4| := by
         rw [show ((x : ℂ) - 4) = ((x - 4 : ℝ) : ℂ) by push_cast; ring, Complex.norm_real,
           Real.norm_eq_abs]
-      rw [hval, abs_le, hr]
+      rw [hval, abs_le]
       constructor <;> linarith [hx.1, hx.2]
     · rw [edPolyTrace_ofReal a hs hreal T x]
       rw [hfdef] at hzero
       simp only at hzero
       rw [hzero]
       norm_num
-  have hbound := abs_integral_weighted_im_logDeriv_le_of_finite_re_zeros hc4.le
+  have hbound := abs_integral_weighted_im_logDeriv_le_of_finite_re_zeros hce.le
     (f := f) (f' := f') (fun x => hasDerivAt_edPoly_horiz a hs T x)
     (continuous_edPoly_horiz a hs T) (continuous_deriv_edPoly_horiz a hs T)
     (fun x hx => hne x hx) Z hZmem
-  have hcongr : ∀ x ∈ Set.uIcc c (4 : ℝ),
+  have hcongr : ∀ x ∈ Set.uIcc c e,
       (x - c) * (f' x / f x).im
         = (x - c) * (logDeriv (edPoly a s) ((x : ℂ) + (T : ℂ) * I)).im := by
     intro x _
     rw [hf'def, hfdef, logDeriv_apply]
   rw [intervalIntegral.integral_congr hcongr] at hbound
   refine le_trans hbound ?_
-  have hcard : ((Z.filter (fun z => z ∈ Set.Ioo c (4 : ℝ))).card : ℝ)
+  have hcard : ((Z.filter (fun z => z ∈ Set.Ioo c e)).card : ℝ)
       ≤ Real.log (Mb / m) / Real.log (8 / r) := by
-    have hsubc : (Z.filter (fun z => z ∈ Set.Ioo c (4 : ℝ))).card ≤ Z.card :=
+    have hsubc : (Z.filter (fun z => z ∈ Set.Ioo c e)).card ≤ Z.card :=
       Finset.card_filter_le _ _
     have himg : (Z.image (fun x : ℝ => (x : ℂ))).card = Z.card :=
       Finset.card_image_of_injective _ (fun p q h => Complex.ofReal_inj.mp h)
@@ -131,20 +130,19 @@ theorem abs_integral_weighted_im_logDeriv_edPoly_le
       exact hx
     have hle := card_le_divisor_sum hKcompact hana hord _ hS
     rw [himg] at hle
-    have hjensen := edPolyTrace_count_le a hs T hr0 hr8 hm hM1 hcentre hmass
+    have hjensen := edPolyTrace_count_le a hs T hr hrlt hm hM1 hcentre hmass
     have hcast : ((Z.card : ℤ) : ℝ)
         ≤ ((∑ᶠ u, MeromorphicOn.divisor (edPolyTrace a s T) K u : ℤ) : ℝ) := by
       exact_mod_cast hle
-    have hsubcast : ((Z.filter (fun z => z ∈ Set.Ioo c (4 : ℝ))).card : ℝ) ≤ (Z.card : ℝ) := by
+    have hsubcast : ((Z.filter (fun z => z ∈ Set.Ioo c e)).card : ℝ) ≤ (Z.card : ℝ) := by
       exact_mod_cast hsubc
     push_cast at hcast
     linarith
   have hπ : (0 : ℝ) < Real.pi := Real.pi_pos
-  have hwidth : (0 : ℝ) < 4 - c := by linarith
-  have hstep : (((Z.filter (fun z => z ∈ Set.Ioo c (4 : ℝ))).card : ℝ) + 1) * Real.pi
-      ≤ (Real.log (Mb / m) / Real.log (8 / (4 - c)) + 1) * Real.pi := by
-    rw [← hr]
-    exact mul_le_mul_of_nonneg_right (by linarith [hcard]) hπ.le
+  have hwidth : (0 : ℝ) < e - c := by linarith
+  have hstep : (((Z.filter (fun z => z ∈ Set.Ioo c e)).card : ℝ) + 1) * Real.pi
+      ≤ (Real.log (Mb / m) / Real.log (8 / r) + 1) * Real.pi :=
+    mul_le_mul_of_nonneg_right (by linarith [hcard]) hπ.le
   nlinarith [hstep, hwidth]
 
 end RHTower
