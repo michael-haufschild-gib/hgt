@@ -62,10 +62,11 @@ theorem exists_mem_isSMulRegular_of_map [IsNoetherianRing D] (I : Ideal A)
   refine ⟨y, hyI, ?_⟩
   rw [isSMulRegular_iff_forall_notMem_associatedPrimes]
   intro q hq hmem
-  refine hynot (Set.mem_biUnion (i := Ideal.comap (algebraMap A D) q) ?_ hmem)
-  refine Finset.mem_coe.mpr (Finset.mem_image.mpr ⟨q, ?_, rfl⟩)
-  rw [← hF] at hq
-  exact_mod_cast hq
+  have hqG : Ideal.comap (algebraMap A D) q ∈ (G : Set (Ideal A)) := by
+    refine Finset.mem_coe.mpr (Finset.mem_image.mpr ⟨q, ?_, rfl⟩)
+    rw [← hF] at hq
+    exact_mod_cast hq
+  exact hynot (Set.mem_iUnion₂_of_mem hqG hmem)
 
 /-- **A regular sequence for the extended ideal can be taken inside the base ideal.** -/
 theorem exists_list_mem_isRegular_of_map [IsNoetherianRing D] (I : Ideal A) :
@@ -102,28 +103,23 @@ theorem exists_list_mem_isRegular_of_map [IsNoetherianRing D] (I : Ideal A) :
     haveI hfinq : Module.Finite D ((ModuleCat.smulShortComplex N x).X₃) :=
       Module.Finite.of_surjective (Submodule.mkQ (x • (⊤ : Submodule D N)))
         (Submodule.mkQ_surjective _)
+    have hxle : (x • (⊤ : Submodule D N)) ≤ (Ideal.map (algebraMap A D) I) • ⊤ := by
+      rw [← Submodule.ideal_span_singleton_smul]
+      exact Submodule.smul_mono_left (Ideal.span_le.mpr (Set.singleton_subset_iff.mpr hxmem))
     have hltq : (Ideal.map (algebraMap A D) I) •
         (⊤ : Submodule D ((ModuleCat.smulShortComplex N x).X₃)) < ⊤ := by
+      have hmapeq : (Ideal.map (algebraMap A D) I) •
+          (⊤ : Submodule D ((ModuleCat.smulShortComplex N x).X₃))
+          = Submodule.map (Submodule.mkQ (x • (⊤ : Submodule D N)))
+            ((Ideal.map (algebraMap A D) I) • ⊤) := by
+        rw [Submodule.map_smul'', Submodule.map_top, Submodule.range_mkQ]
       refine lt_of_le_of_ne le_top ?_
       intro hcon
-      apply absurd (le_antisymm hlt.le ?_) hlt.ne
-      intro v _
-      have hv : Submodule.Quotient.mk (p := x • (⊤ : Submodule D N)) v
-          ∈ (Ideal.map (algebraMap A D) I) •
-            (⊤ : Submodule D ((ModuleCat.smulShortComplex N x).X₃)) := by
-        rw [hcon]
-        trivial
-      rw [Submodule.mem_smul_top_iff] at hv
-      have hv' : v ∈ (Ideal.map (algebraMap A D) I) • (⊤ : Submodule D N)
-          ⊔ (x • (⊤ : Submodule D N)) := by
-        have := (Submodule.mem_comap (p := (Ideal.map (algebraMap A D) I) •
-          (⊤ : Submodule D N) ⊔ x • (⊤ : Submodule D N))).mp
-        exact hv
-      have hxle : (x • (⊤ : Submodule D N)) ≤ (Ideal.map (algebraMap A D) I) • ⊤ :=
-        Submodule.smul_le_smul_of_le (by
-          rw [Submodule.ideal_span_singleton_smul (M := N)] at *
-          exact le_refl _) le_rfl
-      exact (sup_le le_rfl hxle) hv'
+      rw [hmapeq] at hcon
+      have h2 := congrArg (Submodule.comap (Submodule.mkQ (x • (⊤ : Submodule D N)))) hcon
+      rw [Submodule.comap_map_eq, Submodule.ker_mkQ, Submodule.comap_top] at h2
+      rw [sup_eq_left.mpr hxle] at h2
+      exact hlt.ne h2
     have hgq : HasGradeGE (Ideal.map (algebraMap A D) I)
         ((ModuleCat.smulShortComplex N x).X₃) n :=
       hasGradeGE_quotSMulTop N hyreg hlt hltq ⟨z :: t, hlen, hmem, hreg⟩

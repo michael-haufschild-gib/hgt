@@ -1283,3 +1283,57 @@ most `n`, no weight-`(n+1)` monomial has degree one, so `P` has **no linear term
 held for more than `n + 2` distinct values of `x` it would hold identically and give `0 = n!`.  So
 the residual is refuted as soon as the chain-rule factor has enough distinct zero/pole orders — and
 the finer Laurent coefficients give further linear conditions on the same `c_e`.
+
+### The collapse capstone is Lean (2026-09-01)
+
+`HTGeometry/RittLogTowerDescent.lean` now carries, unconditionally:
+
+* `TowerObstruction` — the two base obstructions;
+* `weight_eq_zero_iff`, `eq_zero_of_wLe_zero`, `wLe_of_top_vanishing`, `wLe_towerShift`;
+* **`obstruction_or_zero_of_towerRelation`** — a tower relation with all exponents `J + k`
+  (`k ≤ W`) nontrivial has only the trivial solution;
+* **`obstruction_or_wLe_of_towerRelation`** — the same descent down to a chosen floor;
+* **`obstruction_or_weightedHomogeneous_of_collapse`** —
+
+> a collapse of the affine tower at order `n` forces a base obstruction, or the collapsing
+> polynomial is **weighted homogeneous of weight exactly `n + 1` with shift-fixed coefficients**.
+
+That is the whole differential-algebra side of Ritt's implication in this route, and it is
+unconditional.  Both obstructions are already refuted in the corpus for the interior tree-channel
+maps (`no_ritt_relation_treeRG_interior`; `cnf_no_pole_of_regular_data{,_three,_two}`).
+
+### Diagonalising the substitution: the shape of the residual solution (2026-09-01)
+
+In the surviving case the collapsing polynomial has *constant* coefficients, so the base map drops
+out of the identity entirely and it becomes a pure substitution:
+
+```text
+F ∘ A = ρ^{-(n+1)}·F + δ_n,     A(X)_j = ∑_i logCoeff j i · X_i + logConst b j.
+```
+
+The linear part `M` of `A` is lower triangular with the *distinct* diagonal entries
+`ρ^{-1}, …, ρ^{-n}` (distinct because `ρ` is not a root of unity), so `M − I` is invertible: `A` has
+a unique fixed point `x*` over the base, and `M` is diagonalisable by a unipotent lower-triangular
+`P`.  In the coordinates `Y = P^{-1}(X − x*)` the substitution is the *diagonal* map `Y ↦ D Y`,
+`D = diag(ρ^{-1}, …, ρ^{-n})`, and comparing coefficients gives, for `F̃(Y) := F(PY + x*)`,
+
+```text
+f̃_e · (ρ^{-w(e)} − ρ^{-(n+1)}) = δ̃_e ,
+```
+
+with `δ̃(Y) = δ_n(PY + x*)` **affine** in `Y`.  So every coefficient of `F̃` outside weight `n + 1` is
+*determined*, and it vanishes unless its monomial has degree at most one.  Hence
+
+> `F̃` consists of a free weighted-homogeneous part of weight `n + 1`, a linear part
+> `f̃_{Y_j} = δ̃_{Y_j}/(ρ^{-(j+1)} − ρ^{-(n+1)})`, and a constant `δ̃_1/(1 − ρ^{-(n+1)})` — and
+> **nothing else**.
+
+The residual is therefore the statement that the translate `F(PY + x*)` of a weighted-homogeneous
+polynomial with constant coefficients has no monomials except those three families.  Expanding the
+translation produces one equation per discarded monomial, which is the over-determined system that
+closes the implication.
+
+*A caution recorded.*  The constant-term equation alone — `F(b_0,…,b_{n-1}) = b_n` — is **not**
+enough for large `n`: normalising `β_k := t^{k+1}b_k` at a totally ramified critical point of the
+channel map turns it into a linear condition among polynomials of degree `2n + 2`, and the number of
+weight-`(n+1)` monomials outgrows that dimension.  The full system is needed.

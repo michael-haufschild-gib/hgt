@@ -64,6 +64,17 @@ theorem levinsonDetectorBracket_eq_divisorSum (lam : ℝ) (M : ℕ) {k : ℕ} (h
   rw [log_natDiv_eq_sub_log_of_dvd hk (Nat.dvd_of_mem_divisors hd)]
   ring
 
+/-- Splitting a quadratic combination of four pointwise families under one sum. -/
+private theorem sum_pointwise_quad_combination {ι : Type*} (S : Finset ι) (lam : ℝ)
+    (c f0 f1 f2 f3 : ι → ℝ) :
+    (∑ i ∈ S, c i * (f0 i - lam * (f1 i + f2 i) + lam ^ 2 * f3 i)) =
+      (∑ i ∈ S, c i * f0 i) - lam * ((∑ i ∈ S, c i * f1 i) + (∑ i ∈ S, c i * f2 i)) +
+        lam ^ 2 * (∑ i ∈ S, c i * f3 i) := by
+  have h : ∀ i, c i * (f0 i - lam * (f1 i + f2 i) + lam ^ 2 * f3 i)
+      = c i * f0 i - (lam * (c i * f1 i) + lam * (c i * f2 i)) + lam ^ 2 * (c i * f3 i) :=
+    fun i => by ring
+  simp only [h, Finset.sum_add_distrib, Finset.sum_sub_distrib, ← Finset.mul_sum]
+
 /-- Base lcm form of the short-range energy. -/
 def barbanVehovShortBaseLcm (X M : ℕ) : ℝ :=
   ∑ p ∈ (Finset.Icc 1 M) ×ˢ (Finset.Icc 1 M),
@@ -116,7 +127,9 @@ theorem sum_norm_levinsonLinearMollifiedCriticalDetectorCoeff_sq_eq_shortEnergyL
     barbanVehovShortEnergyLcm]
   congr 1
   have hIcc : Finset.Icc 1 X = Finset.Ioc 0 X := by
-    rw [← Nat.Icc_succ_left]
+    ext k
+    simp only [Finset.mem_Icc, Finset.mem_Ioc]
+    omega
   rw [hIcc]
   have hexpand : ∀ k ∈ Finset.Ioc 0 X,
       ((1 - lam * Real.log k) * barbanVehovCoeff M k +
@@ -148,13 +161,25 @@ theorem sum_norm_levinsonLinearMollifiedCriticalDetectorCoeff_sq_eq_shortEnergyL
                 barbanVehovLongFirstLogKernel 0 X p.1 p.2) +
             lam ^ 2 * barbanVehovLongSecondLogKernel 0 X p.1 p.2) := by
     intro p _
+    have hT : (Finset.Ioc 0 X).filter (fun k => Nat.lcm p.2 p.1 ∣ k)
+        = (Finset.Ioc 0 X).filter (fun k => Nat.lcm p.1 p.2 ∣ k) := by
+      rw [Nat.lcm_comm]
+    have hcongr : ∀ k ∈ (Finset.Ioc 0 X).filter (fun k => Nat.lcm p.1 p.2 ∣ k),
+        barbanVehovWeight M p.1 * barbanVehovWeight M p.2 *
+              ((1 - lam * Real.log (((k / p.1 : ℕ) : ℝ))) *
+                (1 - lam * Real.log (((k / p.2 : ℕ) : ℝ)))) / (k : ℝ)
+          = (barbanVehovWeight M p.1 * barbanVehovWeight M p.2) *
+            ((1 : ℝ) / (k : ℝ) -
+                lam * (Real.log (((k / p.1 : ℕ) : ℝ)) / (k : ℝ) +
+                  Real.log (((k / p.2 : ℕ) : ℝ)) / (k : ℝ)) +
+              lam ^ 2 * (Real.log (((k / p.1 : ℕ) : ℝ)) *
+                Real.log (((k / p.2 : ℕ) : ℝ)) / (k : ℝ))) := by
+      intro k _
+      ring
+    rw [Finset.sum_congr rfl hcongr, sum_pointwise_quad_combination]
     rw [barbanVehovLongHarmonicKernel, barbanVehovLongSecondLogKernel,
-      barbanVehovLongFirstLogKernel, barbanVehovLongFirstLogKernel]
-    rw [Nat.lcm_comm p.2 p.1]
-    rw [Finset.mul_sum, Finset.mul_sum, Finset.mul_sum, Finset.mul_sum,
-      ← Finset.sum_add_distrib, ← Finset.sum_sub_distrib]
-    refine Finset.sum_congr rfl ?_
-    intro k _
+      barbanVehovLongFirstLogKernel, barbanVehovLongFirstLogKernel, hT]
+    simp only [← Finset.mul_sum]
     ring
   rw [Finset.sum_congr rfl hinner]
   rw [sum_barbanVehovWeight_pair_support hMX
@@ -162,46 +187,20 @@ theorem sum_norm_levinsonLinearMollifiedCriticalDetectorCoeff_sq_eq_shortEnergyL
         lam * (barbanVehovLongFirstLogKernel 0 X p.2 p.1 +
           barbanVehovLongFirstLogKernel 0 X p.1 p.2) +
       lam ^ 2 * barbanVehovLongSecondLogKernel 0 X p.1 p.2)]
+  rw [sum_pointwise_quad_combination]
   rw [barbanVehovShortBaseLcm, barbanVehovShortCrossLcm, barbanVehovShortDerivativeLcm]
-  rw [Finset.mul_sum, Finset.mul_sum]
-  rw [← Finset.sum_add_distrib, ← Finset.sum_add_distrib]
-  have hsplit : ∀ p ∈ (Finset.Icc 1 M) ×ˢ (Finset.Icc 1 M),
+  have hswap := sum_barbanVehovWeight_firstLogKernel_swap X M
+  have hneg : (∑ p ∈ (Finset.Icc 1 M) ×ˢ (Finset.Icc 1 M),
       barbanVehovWeight M p.1 * barbanVehovWeight M p.2 *
-          (barbanVehovLongHarmonicKernel 0 X p.1 p.2 -
-              lam * (barbanVehovLongFirstLogKernel 0 X p.2 p.1 +
-                barbanVehovLongFirstLogKernel 0 X p.1 p.2) +
-            lam ^ 2 * barbanVehovLongSecondLogKernel 0 X p.1 p.2) =
-        (barbanVehovWeight M p.1 * barbanVehovWeight M p.2 *
-            barbanVehovLongHarmonicKernel 0 X p.1 p.2 +
-          lam * (barbanVehovWeight M p.1 * barbanVehovWeight M p.2 *
-            (-(barbanVehovLongFirstLogKernel 0 X p.2 p.1)))) +
-          (lam * (barbanVehovWeight M p.1 * barbanVehovWeight M p.2 *
-              (-(barbanVehovLongFirstLogKernel 0 X p.1 p.2))) +
-            lam ^ 2 * (barbanVehovWeight M p.1 * barbanVehovWeight M p.2 *
-              barbanVehovLongSecondLogKernel 0 X p.1 p.2)) := by
+        (-(barbanVehovLongFirstLogKernel 0 X p.1 p.2))) =
+      -(∑ p ∈ (Finset.Icc 1 M) ×ˢ (Finset.Icc 1 M),
+        barbanVehovWeight M p.1 * barbanVehovWeight M p.2 *
+          barbanVehovLongFirstLogKernel 0 X p.1 p.2) := by
+    rw [← Finset.sum_neg_distrib]
+    refine Finset.sum_congr rfl ?_
     intro p _
     ring
-  rw [Finset.sum_congr rfl hsplit]
-  rw [← Finset.sum_add_distrib]
-  rw [Finset.sum_add_distrib, Finset.sum_add_distrib]
-  rw [← Finset.mul_sum, ← Finset.mul_sum, ← Finset.mul_sum]
-  have hswap : (∑ p ∈ (Finset.Icc 1 M) ×ˢ (Finset.Icc 1 M),
-      barbanVehovWeight M p.1 * barbanVehovWeight M p.2 *
-        (-(barbanVehovLongFirstLogKernel 0 X p.2 p.1))) =
-      ∑ p ∈ (Finset.Icc 1 M) ×ˢ (Finset.Icc 1 M),
-        barbanVehovWeight M p.1 * barbanVehovWeight M p.2 *
-          (-(barbanVehovLongFirstLogKernel 0 X p.1 p.2)) := by
-    have h := sum_barbanVehovWeight_firstLogKernel_swap X M
-    have hneg : ∀ (S : Finset (ℕ × ℕ)) (g : ℕ × ℕ → ℝ),
-        (∑ p ∈ S, barbanVehovWeight M p.1 * barbanVehovWeight M p.2 * (-(g p))) =
-          -(∑ p ∈ S, barbanVehovWeight M p.1 * barbanVehovWeight M p.2 * g p) := by
-      intro S g
-      rw [← Finset.sum_neg_distrib]
-      refine Finset.sum_congr rfl ?_
-      intro p _
-      ring
-    rw [hneg, hneg, h]
-  rw [hswap]
+  rw [hneg, hswap]
   ring
 
 end RHTower.Sieve
