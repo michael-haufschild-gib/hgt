@@ -249,6 +249,26 @@ theorem firstHitMass_mono_discount
       Set.indicator_of_notMem
         (show w ∉ {w : List Γ | FirstHitWord act χ target w} from hw)]
 
+/-- Closed half-to-quarter instance of the paper's sprinkling envelope.  Here discount
+monotonicity already pays the short-word contribution; division by the half-discount threshold
+and the quarter-discount tail are the canonical two terms of the split. -/
+theorem firstHitMass_quarter_le_half_sprinklingEnvelope
+    {Γ : Type*} [Fintype Γ] [DecidableEq Γ] {X : Type*}
+    (act : Γ → X → X) (χ : X) (target : Set X) (t : ℕ) :
+    firstHitMass act χ target (1 / 4 : ℝ≥0∞) ≤
+      firstHitMass act χ target (1 / 2 : ℝ≥0∞) / (1 / 2 : ℝ≥0∞) ^ t +
+        (1 / 4 : ℝ≥0∞) ^ t := by
+  have hmono : firstHitMass act χ target (1 / 4 : ℝ≥0∞) ≤
+      firstHitMass act χ target (1 / 2 : ℝ≥0∞) :=
+    firstHitMass_mono_discount act χ target (by norm_num)
+  have hpow0 : (1 / 2 : ℝ≥0∞) ^ t ≠ 0 := pow_ne_zero t (by norm_num)
+  have hpowTop : (1 / 2 : ℝ≥0∞) ^ t ≠ ⊤ := by simp
+  have hsource : firstHitMass act χ target (1 / 2 : ℝ≥0∞) ≤
+      firstHitMass act χ target (1 / 2 : ℝ≥0∞) / (1 / 2 : ℝ≥0∞) ^ t := by
+    rw [ENNReal.le_div_iff_mul_le (Or.inl hpow0) (Or.inl hpowTop)]
+    exact mul_le_of_le_one_right bot_le (pow_le_one₀ (by norm_num) (by norm_num))
+  exact hmono.trans (hsource.trans (le_add_right le_rfl))
+
 /-- Real-valued first-hit mass inherits discount sprinkling throughout the unit interval. -/
 theorem firstHitMassReal_mono_discount
     {Γ : Type*} [Fintype Γ] [DecidableEq Γ] [Nonempty Γ] {X : Type*}

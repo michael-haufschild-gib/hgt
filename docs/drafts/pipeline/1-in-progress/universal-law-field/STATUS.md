@@ -751,6 +751,14 @@ while bilateral summability/properness is already a critical-line endpoint
 (`ULF-FEIDS-FAILED-1`, `ConstitutiveFunctionalEquationPacketLift`,
 `PrimeEdgeObserverFormationHodge`).
 
+F154 — Literal rank normalization `(z^-1)^m e_m(z)` makes every nonzero-character source edge
+exactly `1-z`, independent of rank. Reflection multiplier becomes constant `-z^-1`, and an `n`-edge
+block accumulates only its `n`th power (`LiteralSourceReflectionRankGaugeLinearization`).
+
+F155 — Raw quadratic reflection multiplier is exact rank-frame coboundary:
+`z^m[-(z^-1)^(2m+1)]z^m=-z^-1`, with exact finite-block product identity. Quadratic rate is not
+gauge-invariant; residual unit-norm classifier `norm(z)=1` survives (`ULF-QRDS-FAIL-1`).
+
 ## Logical consequences of audited facts
 
 Each `CANNOT`/`MUST` line is a necessary consequence of cited corpus results. This section contains
@@ -1087,6 +1095,10 @@ CANNOT-83 — It cannot infer unit determinant transport from FE involutivity, c
 information neutrality. Reflected source cocycles are inverse-paired at every grade, and bilateral
 properness is itself a selector premise.
 
+CANNOT-84 — It cannot use quadratic growth of raw marked-edge reflection multipliers as invariant
+conditioning or curvature. Source-visible rank gauge linearizes it exactly; any bound in raw frame
+requires an independently proved source-fixed gauge prohibition.
+
 ### It must do or have this
 
 MUST-01 — It must be defined on pre-divisor source data and specialize at Xi occurrences only after
@@ -1295,7 +1307,11 @@ determinant-history selector must construct source/reflection transport on those
 generators, identify its accumulated class with existing horizontal Xi charge, and prove
 pre-divisor source completion trivializes it. Generic gerbe existence is insufficient.
 
-MUST-58 — Marked source reflection transport now has exact quadratic distortion. Any resulting RH
-architecture must prove from literal pre-divisor execution a subquadratic bilateral conditioning
-bound (or stronger unit-norm law); imposing summability, properness, or bounded distortion after Xi
-specialization is an existing endpoint.
+MUST-58 — Marked source reflection transport has exact quadratic distortion only in raw rank frame.
+Any resulting architecture must first prove that frame source-canonical against all legal rank
+gauges; otherwise subquadratic conditioning is coordinate-dependent and cannot select.
+
+MUST-59 — Decisive formation invariant must survive every source-legal rank gauge, or prove from
+literal pre-divisor arithmetic why gauge fails to extend across a second formation operation.
+One-leg determinant growth and reflection character alone are insufficient; mixed cross-effect is
+required before Xi specialization.

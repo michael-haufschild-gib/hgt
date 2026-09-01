@@ -1,5 +1,6 @@
 import Mathlib.Data.Complex.Basic
 import Mathlib.LinearAlgebra.Trace
+import Mathlib.RepresentationTheory.Character
 import GaloisForLFunctions.HTGeometry.HaarAveragingExactness
 
 /-!
@@ -127,6 +128,20 @@ theorem finrank_intertwiningMap_eq_character_average
         LinearMap.trace ℂ (V →ₗ[ℂ] W) ((Representation.linHom rho sigma) g) := by
   rw [← LinearEquiv.finrank_eq (Representation.invariantsEquivIntertwiningMap rho sigma)]
   exact finrank_invariants_eq_character_average (Representation.linHom rho sigma)
+
+omit [Module.Free ℂ W] in
+/-- Moreau's equivariant-response count in ordinary character coordinates. This is also the
+finite-group character pairing used by Artin-representation modules in the corpus. -/
+theorem finrank_intertwiningMap_eq_character_product_average
+    (rho : Representation ℂ G V) (sigma : Representation ℂ G W) :
+    (Module.finrank ℂ (Representation.IntertwiningMap rho sigma) : ℂ) =
+      (Fintype.card G : ℂ)⁻¹ * ∑ g : G,
+        rho.character g⁻¹ * sigma.character g := by
+  rw [finrank_intertwiningMap_eq_character_average]
+  congr 1
+  apply Finset.sum_congr rfl
+  intro g _
+  exact Representation.char_linHom rho sigma g
 
 end FiniteDimension
 

@@ -32,13 +32,11 @@ theorem budget_add_le (P : ThresholdProfile) (m r : ℕ) :
   | zero => simp
   | succ r ih =>
       calc
-        P.budget (m + (r + 1)) = P.budget ((m + r) + 1) := by
-          congr 1
-          omega
+        P.budget (m + (r + 1)) = P.budget ((m + r) + 1) := by rw [Nat.add_assoc]
         _ ≤ P.budget (m + r) + P.cutoff := P.step_le (m + r)
         _ ≤ (P.budget m + r * P.cutoff) + P.cutoff := by linarith
-        _ = P.budget m + (r + 1) * P.cutoff := by
-          push_cast
+        _ = P.budget m + ((r + 1 : ℕ) : ℝ) * P.cutoff := by
+          rw [Nat.cast_add, Nat.cast_one]
           ring
 
 /-- **Definition 1 deletion law.**  If every coordinate of `I` is larger than the cutoff and
@@ -52,18 +50,26 @@ theorem subset_sum_le_budget {P : ThresholdProfile} {α : Type*} [DecidableEq α
     (hsum : (∑ i ∈ I, t i) ≤ P.budget I.card)
     (hJI : J ⊆ I) :
     (∑ i ∈ J, t i) ≤ P.budget J.card := by
-  have hdisjoint : Disjoint J (I \ J) := Finset.disjoint_sdiff_right
+  have hdisjoint : Disjoint J (I \ J) := by
+    rw [Finset.disjoint_left]
+    intro i hiJ hiDiff
+    exact (Finset.mem_sdiff.mp hiDiff).2 hiJ
   have hunion : J ∪ (I \ J) = I := Finset.union_sdiff_of_subset hJI
   have hsum_split : (∑ i ∈ I, t i) = (∑ i ∈ J, t i) + ∑ i ∈ I \ J, t i := by
-    rw [← hunion, sum_union hdisjoint]
+    calc
+      (∑ i ∈ I, t i) = ∑ i ∈ J ∪ (I \ J), t i := by rw [hunion]
+      _ = (∑ i ∈ J, t i) + ∑ i ∈ I \ J, t i := sum_union hdisjoint
   have htail : (I \ J).card * P.cutoff ≤ ∑ i ∈ I \ J, t i := by
     calc
       (I \ J).card * P.cutoff = ∑ _i ∈ I \ J, P.cutoff := by simp
       _ ≤ ∑ i ∈ I \ J, t i := by
         refine sum_le_sum fun i hi => ?_
-        exact (hlarge i (mem_of_mem_sdiff hi)).le
+        exact (hlarge i (Finset.mem_sdiff.mp hi).1).le
   have hcard : J.card + (I \ J).card = I.card := by
-    rw [← card_union_of_disjoint hdisjoint, hunion]
+    calc
+      J.card + (I \ J).card = (J ∪ (I \ J)).card :=
+        (card_union_of_disjoint hdisjoint).symm
+      _ = I.card := congrArg Finset.card hunion
   have hbudget := P.budget_add_le J.card (I \ J).card
   rw [hcard] at hbudget
   linarith

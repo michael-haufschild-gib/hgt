@@ -4635,3 +4635,58 @@ needs only entireness, transcendence, a first-order equation per constituent, an
 independence** — consecutive-state independence is automatic
 (`pairAlgIndep_of_transcendental`).  So cards 13 and 14 reduce, with no analytic residue, to the
 single geometric statement about the chain's top-weight supports.
+
+## The degree calculus is now on the cascade's own field (2026-09-01)
+
+The corpus already carries the rational model — `ProductLawFractionModel.CascadeField
+= FractionRing (MvPolynomial ℕ ℂ)`, its coordinate derivations `fpderiv k`, and
+`FractionRingDerivation.fractionRingDerivation` extending any derivation to it.  Two further modules
+put the weighted degree on that field.
+
+`HTGeometry/CascadeFieldWeightedDegree.lean` (unconditional, axiom-clean):
+
+| Statement | Theorem |
+|---|---|
+| the weighted degree on the rational model | `cascadeDeg := fracDeg ∘ wdeg` |
+| it is a degree function | `isDegree_cascadeDeg` |
+| it restricts to `wdeg`, and `cascadeDeg (fx k) = w k` | `cascadeDeg_algebraMap`, `cascadeDeg_fx` |
+| **the model's coordinate derivation extends `pderiv`** | `fpderiv_algebraMap` |
+| **`cascadeDeg (∂_k x) + w_k ≤ cascadeDeg x` for every rational `x`** | `cascadeDeg_fpderiv_add_le` |
+
+The last is the quotient rule cleared of denominators: for `x = a/b`,
+`∂_k x · b² = ∂_k a · b − a · ∂_k b`, and each term of the numerator already loses `w_k` by
+`wdeg_pderiv_add_le`.
+
+`HTGeometry/TowerGradientDegree.lean` (unconditional, axiom-clean):
+
+| Statement | Theorem |
+|---|---|
+| a partial derivative kills a coordinate product missing it | `pderiv_prod_X_of_notMem` |
+| the degree of a product of distinct coordinates | `wdeg_prod_X` |
+| **`∂_j P_k = P_k / X_j` for `1 ≤ j ≤ k`, and `0` otherwise** | `pderiv_towerMonomial`, `pderiv_towerMonomial_eq_zero` |
+| **`wdeg (∂_j P_k) = W_k − w_j`** | `wdeg_pderiv_towerMonomial` |
+
+### The residue, stated exactly
+
+Write `Y_m = P_(n−m) · u_m` in `CascadeField`.  With `cascadeDeg (u_m − 1) < 0` one gets, for free
+from what is now built:
+
+* `cascadeDeg u_m = 0` (`IsDegree.map_add_of_lt` on `u_m = 1 + (u_m − 1)`);
+* `∂_j Y_m = (∂_j P_(n−m))·u_m + P_(n−m)·∂_j u_m`, whose first term has degree exactly `W_(n−m) − w_j`
+  for `1 ≤ j ≤ n−m` (`wdeg_pderiv_towerMonomial`) and is zero otherwise
+  (`pderiv_towerMonomial_eq_zero`);
+* the second term has degree `≤ W_(n−m) + cascadeDeg(u_m − 1) − w_j < W_(n−m) − w_j`
+  (`cascadeDeg_fpderiv_add_le`, since `∂_j u_m = ∂_j (u_m − 1)`).
+
+So `IsDegree.map_add_of_lt` gives `heq` on `1 ≤ j ≤ n−m` and `hlt` off it — the staircase — and
+`det_ne_zero_of_staircase_deg` then closes step 2.
+
+**The one remaining statement is `cascadeDeg (u_m − 1) < 0`**, i.e. the graded recursion
+`u_(m+1) = σ_(n−m−1) + δ r_m / P_(n−m−1)` with the level-wise degree profile
+
+`e_ℓ(u_m) = −w_ℓ + ∑_(t=n−m)^(ℓ−1) (W_(ℓ−1) − W_t)`,
+
+which is negative for every `ℓ ≤ n−2` and every `m ≤ n−1` as soon as
+`w_ℓ > ∑_(i=2)^(ℓ−1) (i−1) w_i` — satisfied by `w_ℓ = (n²+1)^ℓ`.  That inequality is the exact
+weight condition; it replaces the earlier provisional `w_(ℓ+1) > 2 w_ℓ`, which was derived from a
+two-level analysis and is implied by it.

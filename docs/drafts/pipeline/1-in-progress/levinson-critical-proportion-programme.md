@@ -3402,3 +3402,78 @@ At the Levinson scaling `L ≍ T^{1/2+θ}`, `M = T^θ` this error is `≍ T^{θ�
 is now a single quantitative theorem**; what remains of it is only to feed in the two evaluated
 limits (`tendsto_levinsonLinearMollifiedCriticalDetector_energy` for the short range,
 `tendsto_barbanVehovIncludedLongEnergyPolynomialMain_tuned_rho` for the long) at matched parameters.
+
+## Brick 5bg — the short range was the real gap, and it is now reduced to one quadratic form (2026-09-01)
+
+### The structural discovery
+
+The corpus's exact split `sum_levinsonCriticalDetectorFiniteEnergyTerm_eq_short_add_long` cuts the
+total mollified energy at the **detector head length `L`**:
+
+```text
+∑_{r < LM} |c_r|²  =  ∑_{k ≤ L} ‖coeff λ M k‖²   +   levinsonCriticalDetectorLongEnergy λ L M
+```
+
+The long half is fully evaluated in the corpus.  The short half was **not**: the only evaluated
+short-range statement, `sum_norm_levinsonLinearMollifiedCriticalDetectorCoeff_sq_eq_momentQuadratic`,
+carries the hypothesis `N ≤ M` — it is the range in which `barbanVehovCoeff M k = Λ(k)`, so it gives
+the von Mangoldt moments.  The Levinson application needs the *opposite* regime, `8M² ≤ L`.  Those
+two are incompatible, so the range `M < k ≤ L` — the dominant Barban–Vehov middle range — had no
+evaluation at all.  `sum_harmonic_sq_barbanVehovCoeff_le` is not sharp enough there (its defect
+`M² log³M` survives the `log²M` normalisation).
+
+### Why the origin-based window is genuinely different
+
+Every long-range lcm kernel is a window `(A, B]` whose two endpoints both carry the factor `1/e`,
+`e = [q,r]`, so `log e` cancels between them and the main term is a function of `min(q,r)` alone.
+A window `(0, X]` has no lower endpoint to cancel against: its main term keeps the Euler-type
+additive constant **and** `log(X/e) = log X − log e`.  `log e` is not expressible through
+`log(M/q), log(M/r)`, so Graham's log-monomial law does not reach it directly.
+
+### What is now built (all axiom-clean, wired, exact leaf builds)
+
+* `Sieve/HarmonicLogMomentConstant.lean` — for `m ≤ 2`, `∑_{j ≤ N}(log j)^m/j` differs from
+  `(log(N+1))^{m+1}/(m+1)` by a convergent quantity.  `harmonicLogMomentConstant m` is that limit,
+  built as the supremum of the (monotone, bounded) gaps, and
+  `abs_harmonicLogWindowMoment_zeroStart_sub_le` gives the two-sided estimate with error
+  `(log(N+1))^m/(N+1)`.  For `m = 0` the constant is Euler's `γ`.
+* `Sieve/BarbanVehovShortWindowKernels.lean` — the three origin-based lcm kernels against their main
+  terms, plus `logPowDivId_succ_div_le`: the per-pair error is `O(log^m X / X)` **uniformly in the
+  lcm**, because the `1/e` of the kernel cancels the `e/X` of the rescaled endpoint.
+* `Sieve/BarbanVehovShortEnergyLcm.lean` — the exact expansion
+  `∑_{k ≤ X}‖coeff λ M k‖² = barbanVehovShortEnergyLcm λ X M` (`hM : 1 < M`, `hMX : M ≤ X`), via a
+  hypothesis-free origin-based divisor-pair exchange and the identity
+  `(1−λ log k)Λ_M(k) + λ Λ'_M(k) = ∑_{d ∣ k} w_d (1 − λ log(k/d))`.
+* `Sieve/BarbanVehovShortEnergyMain.lean` — `|shortEnergyLcm − shortEnergyMain| ≤ 9M²/X` whenever
+  `1 < M`, `8M² ≤ X`, `|λ|·log(X+1) ≤ 1`.
+* `RHTower/LevinsonTotalEnergy.lean` — **`abs_levinsonCriticalDetectorTotalEnergy_sub_shortMain_add_longMain_le`**:
+
+  ```text
+  1 < M,  8M² ≤ L,  |λ|·log(LM+1) ≤ 1
+     ⟹ | ∑_{r<LM}|c_r|²  −  ( barbanVehovShortEnergyMain λ L M
+                              + barbanVehovIncludedLongEnergyPolynomialMain λ (log L) M ) |
+          ≤ 36·M²/L .
+  ```
+
+At `L ≍ T^{1/2+θ}`, `M = T^θ` the error is `≍ T^{θ−1/2} → 0`.  **The total mollified coefficient
+energy is now two explicit quadratic forms plus a vanishing error.**
+
+### The one remaining mathematical target
+
+`barbanVehovShortEnergyMain λ X M` is, after the (routine) continuous step replacing `⌊X/e⌋+1` by
+`X/e` at cost `O(1/X)` per pair, a polynomial quadratic form in `ℓ = log X`, `log e`, `log q`,
+`log r` against the weight `w_q w_r / e`.  Every monomial **without** `log e` is Graham's law
+(`tendsto_selbergOriginalLogMonomial_div_log_pow`, limit `ij/(i+j−1)`).  The monomials **with**
+`log e` reduce, via `log e = log q + log r − log gcd(q,r)`, to the single new family
+
+```text
+G_a  :=  ∑_{q,r ≤ M} μ(q)μ(r) log(M/q) log(M/r) · (log gcd(q,r))^a / [q,r]   (a = 1, 2, 3).
+```
+
+These *are* Selberg-diagonalisable: with `a_q = μ(q)log(M/q)`, `S(d) = ∑_{d ∣ q} a_q/q`, and
+`h(g) = g (log g)^a`, one has `∑_{q,r} a_q a_r h(gcd)/(qr) = ∑_d (h ∗ μ)(d) S(d)²`; and for `a = 1`
+the new weight factors as `h ∗ μ = φ ∗ (Id·Λ)`, because `log = 1 ∗ Λ` and `Id` is completely
+multiplicative.  So `G_1 = ∑_b b Λ(b) ∑_a φ(a) S(ab)²` — a prime-power-twisted Graham diagonal.
+
+**That single family is the whole of what remains of gate item 3.**  Items 6 (block freezing of the
+moving AFE cutoff) and 7 (assembly into `LevinsonMeanSquareGate`) are unchanged.

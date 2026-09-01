@@ -1,0 +1,10 @@
+Target: docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md
+Snapshot updated through 2026-09-01 20:18 CEST, HEAD c9d8701c35671140feabc9a197edb52aeb412752 plus indexed working-tree Lean declarations. Ledger remains 1310 lines, 26 live labels / 33 candidate labels, no new route label.
+
+Lean-derived deltas folded:
+- SourceHorizontalGammaSixClosedFibreUntwistingNoGo: in arbitrary commutative algebra, preserving a proper closed coordinate fibre while affine-untwisting x-u to x-1 is possible iff u=1; no grade-universal preserved fibre. Closes last fixed-fibre commutative algebraic gauge survivor for shared Ward/L/HB/FZZ-P/PW-B.
+- LiteralSourceDeterminantRankTower + LiteralSourceReflectionDeterminantCocycle + uncommitted LiteralSourceReflectionRankGaugeLinearization: literal depth-12 source prefixes strictly gain one determinant direction per tick, but raw quadratic reflection-block exponent is exact rank-gauge coboundary. Normal form has linear residual (-z^-1)^n; prime-radial residual unitarity iff zero drift. Wall receiver, no producer/new label.
+- BarbanVehovShortEnergyMain + LevinsonTotalEnergy: short lcm energy differs from explicit origin-based main by <=9 M^2/L; total coefficient energy differs from short main + long main by <=36 M^2/L. Strengthens T1/Levinson coefficient-energy layer but does not prove LevinsonMeanSquareGate or signed full-minus-omitted interference.
+- Stadlmann: final Harman intermediate inequalities, empty two five-factor corrections, hereditary simplex deletion, coordinate <=3/20, gcd-based quadratic-character second moments, reciprocal phase product collapse. Finite allocation/local moment geometry only; E fixed Hall relation/nested residual and T1 signed detector remain open.
+- Supercritical sharpness, Stokes resistance/finite group/binary octahedral, regular-sequence scalar transfer, associated-prime quotient, cascade degree, and Shor retry are route-neutral infrastructure. No primitive gate discharged.
+- No builds run. Only target ledger edited. git diff --check clean.

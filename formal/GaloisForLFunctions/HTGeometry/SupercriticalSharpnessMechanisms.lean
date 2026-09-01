@@ -103,6 +103,70 @@ theorem anchoredIsoperimetricProfile_eq_zero_of_finite
     simp
   omega
 
+/-! ### Finite-volume replacement -/
+
+/-- Finite-volume analogue of the paper's anchored profile.  Admissible supersets must avoid a
+designated target.  The fallback `S = W` makes the definition total when anchor and target
+overlap; when they are disjoint, it adds no extra competitor. -/
+noncomputable def targetAvoidingIsoperimetricProfile
+    (G : SimpleGraph V) (W target : Finset V) : ℕ :=
+  by
+    classical
+    exact Nat.find (show ∃ n : ℕ, ∃ S : Finset V,
+        W ⊆ S ∧ (Disjoint S target ∨ S = W) ∧
+          finiteEdgeBoundarySize G S = n from
+      ⟨finiteEdgeBoundarySize G W, W, Finset.Subset.rfl, Or.inr rfl, rfl⟩)
+
+/-- For a disjoint anchor and target, the finite-volume profile is attained by a genuinely
+target-avoiding superset. -/
+theorem exists_targetAvoiding_superset_boundarySize_eq_profile
+    (G : SimpleGraph V) {W target : Finset V} (hWT : Disjoint W target) :
+    ∃ S : Finset V, W ⊆ S ∧ Disjoint S target ∧
+      finiteEdgeBoundarySize G S =
+        targetAvoidingIsoperimetricProfile G W target := by
+  classical
+  obtain ⟨S, hWS, htarget, hboundary⟩ :=
+    Nat.find_spec (show ∃ n : ℕ, ∃ S : Finset V,
+      W ⊆ S ∧ (Disjoint S target ∨ S = W) ∧
+        finiteEdgeBoundarySize G S = n from
+      ⟨finiteEdgeBoundarySize G W, W, Finset.Subset.rfl, Or.inr rfl, rfl⟩)
+  refine ⟨S, hWS, ?_, hboundary⟩
+  rcases htarget with htarget | rfl
+  · exact htarget
+  · exact hWT
+
+/-- Every target-avoiding finite superset bounds the finite-volume profile from above. -/
+theorem targetAvoidingIsoperimetricProfile_le_boundarySize
+    (G : SimpleGraph V) {W target S : Finset V}
+    (hWS : W ⊆ S) (hST : Disjoint S target) :
+    targetAvoidingIsoperimetricProfile G W target ≤
+      finiteEdgeBoundarySize G S := by
+  classical
+  unfold targetAvoidingIsoperimetricProfile
+  exact Nat.find_min' _ ⟨S, hWS, Or.inl hST, rfl⟩
+
+/-- Unlike the infinity-anchored profile, the target-avoiding profile is already nontrivial on
+the two-vertex path: separating vertex `0` from terminal `1` costs a positive ordered boundary. -/
+theorem pathGraph_two_targetAvoidingIsoperimetricProfile_pos :
+    0 < targetAvoidingIsoperimetricProfile
+      (SimpleGraph.pathGraph 2)
+      ({(0 : Fin 2)} : Finset (Fin 2)) ({(1 : Fin 2)} : Finset (Fin 2)) := by
+  have hdisjoint : Disjoint
+      ({(0 : Fin 2)} : Finset (Fin 2)) ({(1 : Fin 2)} : Finset (Fin 2)) := by
+    simp
+  obtain ⟨S, hanchor, htarget, hprofile⟩ :=
+    exists_targetAvoiding_superset_boundarySize_eq_profile
+      (SimpleGraph.pathGraph 2) hdisjoint
+  rw [← hprofile]
+  unfold finiteEdgeBoundarySize
+  rw [Set.ncard_pos]
+  refine ⟨((0 : Fin 2), (1 : Fin 2)), ?_⟩
+  have hzero : (0 : Fin 2) ∈ S := hanchor (by simp)
+  have hone : (1 : Fin 2) ∉ S := by
+    intro hone
+    exact Finset.disjoint_left.mp htarget hone (by simp)
+  simp [edgeBoundary, SimpleGraph.pathGraph_adj, hzero, hone]
+
 end Isoperimetry
 
 section SequentialTouches

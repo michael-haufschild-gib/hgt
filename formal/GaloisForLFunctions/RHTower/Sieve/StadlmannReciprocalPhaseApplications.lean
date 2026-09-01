@@ -36,6 +36,12 @@ def stadlmannReciprocalPhaseProductSum
     ZMod.stdAddChar (c₁ * ((x⁻¹ : (ZMod q)ˣ) : ZMod q)) *
       ZMod.stdAddChar (c₂ * ((x⁻¹ : (ZMod q)ˣ) : ZMod q))
 
+/-- Arbitrary finite same-denominator reciprocal-phase correlation. -/
+def stadlmannReciprocalPhaseFamilySum
+    (q : ℕ) [NeZero q] {ι : Type*} [Fintype ι] (c : ι → ZMod q) : ℂ :=
+  ∑ x : (ZMod q)ˣ,
+    ∏ i, ZMod.stdAddChar (c i * ((x⁻¹ : (ZMod q)ˣ) : ZMod q))
+
 /-- The complete reciprocal phase is the zero-frequency Kloosterman sum. -/
 theorem stadlmannReciprocalPhaseSum_eq_kloosterman
     (q : ℕ) [NeZero q] (c : ZMod q) :
@@ -88,6 +94,59 @@ theorem stadlmannReciprocalPhaseProductSum_eq_add
   rw [← AddChar.map_add_eq_mul]
   congr 1
   ring
+
+/-- Every finite same-denominator correlation collapses to its total additive frequency. -/
+theorem stadlmannReciprocalPhaseFamilySum_eq_sum
+    (q : ℕ) [NeZero q] {ι : Type*} [Fintype ι] (c : ι → ZMod q) :
+    stadlmannReciprocalPhaseFamilySum q c =
+      stadlmannReciprocalPhaseSum q (∑ i, c i) := by
+  classical
+  unfold stadlmannReciprocalPhaseFamilySum stadlmannReciprocalPhaseSum
+  apply Finset.sum_congr rfl
+  intro x hx
+  let u : ZMod q := ((x⁻¹ : (ZMod q)ˣ) : ZMod q)
+  have hmap : ∀ s : Finset ι,
+      (∏ i ∈ s, ZMod.stdAddChar (c i * u)) =
+        ZMod.stdAddChar (∑ i ∈ s, c i * u) := by
+    intro s
+    induction s using Finset.induction_on with
+    | empty => simp
+    | @insert a s ha ih =>
+        rw [Finset.prod_insert ha, Finset.sum_insert ha,
+          AddChar.map_add_eq_mul, ih]
+  rw [hmap Finset.univ, Finset.sum_mul]
+
+/-- Finite same-denominator correlations are zero-frequency Kloosterman sums. -/
+theorem stadlmannReciprocalPhaseFamilySum_eq_kloosterman
+    (q : ℕ) [NeZero q] {ι : Type*} [Fintype ι] (c : ι → ZMod q) :
+    stadlmannReciprocalPhaseFamilySum q c =
+      kloostermanSum q 0 (∑ i, c i) := by
+  rw [stadlmannReciprocalPhaseFamilySum_eq_sum,
+    stadlmannReciprocalPhaseSum_eq_kloosterman]
+
+/-- Finite same-denominator correlations are Chen--Gupta--Li Ramanujan coefficients. -/
+theorem stadlmannReciprocalPhaseFamilySum_eq_cglRamanujan
+    (q : ℕ) [NeZero q] {ι : Type*} [Fintype ι] (c : ι → ZMod q) :
+    stadlmannReciprocalPhaseFamilySum q c =
+      RHTower.cglRamanujanAdditiveSum
+        ⟨q, Nat.pos_of_ne_zero (NeZero.ne q)⟩ (∑ i, c i) := by
+  rw [stadlmannReciprocalPhaseFamilySum_eq_sum,
+    stadlmannReciprocalPhaseSum_eq_cglRamanujan]
+
+/-- A zero-sum frequency family cancels to full reduced-residue mass. -/
+theorem stadlmannReciprocalPhaseFamilySum_of_sum_eq_zero
+    (q : ℕ) [NeZero q] {ι : Type*} [Fintype ι] (c : ι → ZMod q)
+    (hsum : ∑ i, c i = 0) :
+    stadlmannReciprocalPhaseFamilySum q c = (Nat.totient q : ℂ) := by
+  rw [stadlmannReciprocalPhaseFamilySum_eq_sum, hsum]
+  simp [stadlmannReciprocalPhaseSum, ZMod.card_units_eq_totient]
+
+/-- Uniform totient bound for every finite same-denominator correlation. -/
+theorem norm_stadlmannReciprocalPhaseFamilySum_le_totient
+    (q : ℕ) [NeZero q] {ι : Type*} [Fintype ι] (c : ι → ZMod q) :
+    ‖stadlmannReciprocalPhaseFamilySum q c‖ ≤ (Nat.totient q : ℝ) := by
+  rw [stadlmannReciprocalPhaseFamilySum_eq_kloosterman]
+  exact norm_kloostermanSum_le_totient q 0 (∑ i, c i)
 
 /-- Diagonal two-phase sum transported to the Kloosterman API. -/
 theorem stadlmannReciprocalPhaseProductSum_eq_kloosterman

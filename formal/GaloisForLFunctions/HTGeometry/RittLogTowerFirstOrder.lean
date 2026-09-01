@@ -464,6 +464,207 @@ theorem wLt2_pow_sub_firstOrder {D R : MvPolynomial (Fin n) K} {d : ℕ}
       rw [hrw, hlast, add_zero, hd]
       exact h1.add h2
 
+/-- The first-order term of a product expansion. -/
+noncomputable def firstOrderTerm (D R : Fin n → MvPolynomial (Fin n) K) (k : Fin n → ℕ)
+    (t : Finset (Fin n)) : MvPolynomial (Fin n) K :=
+  ∑ j ∈ t, ((k j : MvPolynomial (Fin n) K) * R j * D j ^ (k j - 1)
+    * ∏ i ∈ t.erase j, D i ^ k i)
+
+theorem wLt_firstOrderTerm {D R : Fin n → MvPolynomial (Fin n) K} {w : Fin n → ℕ}
+    (hD : ∀ j, WLe n (D j) (w j)) (hR : ∀ j, WLt n (R j) (w j)) (k : Fin n → ℕ)
+    (t : Finset (Fin n)) :
+    WLt n (firstOrderTerm D R k t) (∑ j ∈ t, k j * w j) := by
+  classical
+  refine Finset.sum_induction _ (fun F => WLt n F (∑ j ∈ t, k j * w j))
+    (fun _ _ => WLt.add) (wLt_zero _) ?_
+  intro j hj
+  by_cases hkj : k j = 0
+  · rw [hkj]
+    simp only [Nat.cast_zero, zero_mul]
+    exact wLt_zero _
+  · have hm : WLe n ((k j : MvPolynomial (Fin n) K)) 0 := by
+      simpa using wLe_C (K := K) (n := n) ((k j : ℕ) : K) 0
+    have hprod : WLe n (∏ i ∈ t.erase j, D i ^ k i) (∑ i ∈ t.erase j, k i * w i) :=
+      wLe_prod_of_wLe hD k (t.erase j)
+    have h := ((hm.mul_wLt (hR j)).mul ((hD j).pow (k j - 1))).mul hprod
+    refine h.mono ?_
+    have hsum : ∑ i ∈ t.erase j, k i * w i + k j * w j = ∑ i ∈ t, k i * w i := by
+      rw [add_comm]
+      exact Finset.add_sum_erase t (fun i => k i * w i) hj
+    have hle : (k j - 1) * w j + w j = k j * w j := by
+      obtain ⟨m, hm'⟩ : ∃ m, k j = m + 1 := ⟨k j - 1, by omega⟩
+      rw [hm']
+      simp only [Nat.add_sub_cancel]
+      ring
+    omega
+
+/-- The algebraic identity behind the first-order product expansion. -/
+theorem firstOrder_algebra (X Y c P P' S : MvPolynomial (Fin n) K) :
+    X * P' - Y * P - (c * P + Y * S)
+      = Y * (P' - P - S) + c * (S + (P' - P - S))
+        + (X - Y - c) * (P + S + (P' - P - S)) := by
+  ring
+
+/-- **The first-order expansion of a product.** -/
+theorem wLt2_prod_sub_firstOrder {D R : Fin n → MvPolynomial (Fin n) K} {w : Fin n → ℕ}
+    (hD : ∀ j, WLe n (D j) (w j)) (hR : ∀ j, WLt n (R j) (w j)) (k : Fin n → ℕ) :
+    ∀ t : Finset (Fin n),
+      WLt2 n ((∏ j ∈ t, (D j + R j) ^ k j) - (∏ j ∈ t, D j ^ k j)
+        - firstOrderTerm D R k t) (∑ j ∈ t, k j * w j) := by
+  classical
+  intro t
+  induction t using Finset.induction with
+  | empty => simpa [firstOrderTerm] using wLt2_zero (K := K) (n := n) 0
+  | insert a t ha ih =>
+      have hne : ∀ j ∈ t, j ≠ a := fun j hj hc => ha (hc ▸ hj)
+      have hterm : firstOrderTerm D R k (insert a t)
+          = (k a : MvPolynomial (Fin n) K) * R a * D a ^ (k a - 1) * (∏ i ∈ t, D i ^ k i)
+            + D a ^ k a * firstOrderTerm D R k t := by
+        rw [firstOrderTerm, Finset.sum_insert ha, Finset.erase_insert ha, firstOrderTerm,
+          Finset.mul_sum]
+        congr 1
+        refine Finset.sum_congr rfl fun j hj => ?_
+        rw [Finset.erase_insert_of_ne (Ne.symm (hne j hj)),
+          Finset.prod_insert (fun hc => ha (Finset.mem_of_mem_erase hc))]
+        ring
+      rw [Finset.prod_insert ha, Finset.prod_insert ha, Finset.sum_insert ha, hterm,
+        firstOrder_algebra ((D a + R a) ^ k a) (D a ^ k a)
+          ((k a : MvPolynomial (Fin n) K) * R a * D a ^ (k a - 1))
+          (∏ i ∈ t, D i ^ k i) (∏ j ∈ t, (D j + R j) ^ k j) (firstOrderTerm D R k t)]
+      have hPle : WLe n (∏ i ∈ t, D i ^ k i) (∑ j ∈ t, k j * w j) := wLe_prod_of_wLe hD k t
+      have hSle : WLt n (firstOrderTerm D R k t) (∑ j ∈ t, k j * w j) :=
+        wLt_firstOrderTerm hD hR k t
+      have hBle : WLt2 n ((∏ j ∈ t, (D j + R j) ^ k j) - (∏ i ∈ t, D i ^ k i)
+          - firstOrderTerm D R k t) (∑ j ∈ t, k j * w j) := ih
+      have hAle : WLt2 n ((D a + R a) ^ k a - D a ^ k a
+          - (k a : MvPolynomial (Fin n) K) * R a * D a ^ (k a - 1)) (k a * w a) :=
+        wLt2_pow_sub_firstOrder (hD a) (hR a) (k a)
+      have hlin : WLt n ((k a : MvPolynomial (Fin n) K) * R a * D a ^ (k a - 1))
+          (k a * w a) := by
+        by_cases hka : k a = 0
+        · rw [hka]
+          simp only [Nat.cast_zero, zero_mul]
+          exact wLt_zero _
+        · have hm : WLe n ((k a : MvPolynomial (Fin n) K)) 0 := by
+            simpa using wLe_C (K := K) (n := n) ((k a : ℕ) : K) 0
+          refine ((hm.mul_wLt (hR a)).mul ((hD a).pow (k a - 1))).mono ?_
+          have hle : (k a - 1) * w a + w a = k a * w a := by
+            obtain ⟨m, hm'⟩ : ∃ m, k a = m + 1 := ⟨k a - 1, by omega⟩
+            rw [hm']
+            simp only [Nat.add_sub_cancel]
+            ring
+          omega
+      refine WLt2.add (WLt2.add ?_ ?_) ?_
+      · exact ((hD a).pow (k a)).mul_wLt2 hBle
+      · exact hlin.mul_wLt (hSle.add hBle.wLt)
+      · exact hAle.mul_wLe ((hPle.add hSle.wLe).add hBle.wLt.wLe)
+
+theorem wLt_towerRest1 (Fr : RittFrame K L) (b : K) (j : Fin n) :
+    WLt n (Fr.towerRest1 b n j) (jetWeight n j) := by
+  intro e he
+  have := Fr.wLe_towerRest1 b j e he
+  simp only [jetWeight]
+  omega
+
+/-- **The tower shift of a monomial, expanded to first order.** -/
+theorem wLt2_towerShift2_monomial (Fr : RittFrame K L) (b : K) (e : Fin n →₀ ℕ) (c : K) :
+    WLt2 n (Fr.towerShift2 b n (monomial e c)
+        - C (Fr.ψ c) * ((∏ j ∈ e.support, Fr.towerDiag n j ^ e j)
+          + firstOrderTerm (Fr.towerDiag n) (Fr.towerRest1 b n) (⇑e) e.support))
+      (Finsupp.weight (jetWeight n) e) := by
+  have h := wLt2_prod_sub_firstOrder (D := Fr.towerDiag n) (R := Fr.towerRest1 b n)
+    (w := jetWeight n) (fun j => Fr.wLe_towerDiag j) (fun j => Fr.wLt_towerRest1 b j)
+    (⇑e) e.support
+  rw [Fr.towerShift2_monomial b e c]
+  have hrw : C (Fr.ψ c) * (∏ j ∈ e.support, Fr.towerSub2 b n j ^ e j)
+      - C (Fr.ψ c) * ((∏ j ∈ e.support, Fr.towerDiag n j ^ e j)
+        + firstOrderTerm (Fr.towerDiag n) (Fr.towerRest1 b n) (⇑e) e.support)
+      = C (Fr.ψ c) * ((∏ j ∈ e.support, (Fr.towerDiag n j + Fr.towerRest1 b n j) ^ e j)
+        - (∏ j ∈ e.support, Fr.towerDiag n j ^ e j)
+        - firstOrderTerm (Fr.towerDiag n) (Fr.towerRest1 b n) (⇑e) e.support) := by
+    simp only [towerSub2]
+    ring
+  rw [hrw]
+  refine ((wLe_C (n := n) (Fr.ψ c) 0).mul_wLt2 h).mono ?_
+  rw [weight_eq_sum e]
+  omega
+
+/-- **The weight `W − 1` coefficient of the truncated tower shift** is the first-order term alone:
+the diagonal part lives entirely in the top layer. -/
+theorem coeff_towerShift2_of_second (Fr : RittFrame K L) (b : K)
+    {F : MvPolynomial (Fin n) K} {W : ℕ}
+    (hF : ∀ e ∈ F.support, Finsupp.weight (jetWeight n) e = W)
+    {d : Fin n →₀ ℕ} (hd : Finsupp.weight (jetWeight n) d + 1 = W) :
+    coeff d (Fr.towerShift2 b n F)
+      = ∑ e ∈ F.support, Fr.ψ (coeff e F)
+          * coeff d (firstOrderTerm (Fr.towerDiag n) (Fr.towerRest1 b n) (⇑e) e.support) := by
+  classical
+  have hmono : ∀ e ∈ F.support,
+      coeff d (Fr.towerShift2 b n (monomial e (coeff e F)))
+        = Fr.ψ (coeff e F)
+          * coeff d (firstOrderTerm (Fr.towerDiag n) (Fr.towerRest1 b n) (⇑e) e.support) := by
+    intro e he
+    have hrem : coeff d (Fr.towerShift2 b n (monomial e (coeff e F))
+        - C (Fr.ψ (coeff e F)) * ((∏ j ∈ e.support, Fr.towerDiag n j ^ e j)
+          + firstOrderTerm (Fr.towerDiag n) (Fr.towerRest1 b n) (⇑e) e.support)) = 0 := by
+      by_contra hne
+      have := Fr.wLt2_towerShift2_monomial b e (coeff e F) d
+        (MvPolynomial.mem_support_iff.mpr hne)
+      rw [hF e he] at this
+      omega
+    rw [coeff_sub, sub_eq_zero] at hrem
+    rw [hrem, mul_add, coeff_add, coeff_C_mul, coeff_C_mul, Fr.prod_towerDiag e]
+    have hdiag : coeff d (C ((Fr.ρ ^ Finsupp.weight (jetWeight n) e)⁻¹) * monomial e (1 : K))
+        = 0 := by
+      rw [coeff_C_mul, coeff_monomial, if_neg, mul_zero]
+      intro hc
+      rw [← hc, hF e he] at hd
+      omega
+    rw [hdiag, mul_zero, zero_add]
+  have hsum : Fr.towerShift2 b n F
+      = ∑ e ∈ F.support, Fr.towerShift2 b n (monomial e (coeff e F)) := by
+    rw [← map_sum, ← MvPolynomial.as_sum F]
+  rw [hsum, coeff_sum]
+  exact Finset.sum_congr rfl hmono
+
+theorem prod_towerDiag_sub_single (Fr : RittFrame K L) (e : Fin n →₀ ℕ) (j : Fin n)
+    (hj : j ∈ e.support) :
+    Fr.towerDiag n j ^ (e j - 1) * ∏ i ∈ e.support.erase j, Fr.towerDiag n i ^ e i
+      = C ((Fr.ρ ^ Finsupp.weight (jetWeight n) (e - Finsupp.single j 1))⁻¹)
+        * monomial (e - Finsupp.single j 1) (1 : K) := by
+  classical
+  set g : Fin n →₀ ℕ := e - Finsupp.single j 1 with hg
+  have hgval : ∀ i : Fin n, g i = if i = j then e j - 1 else e i := by
+    intro i
+    rw [hg, Finsupp.tsub_apply, Finsupp.single_apply]
+    by_cases h : i = j
+    · subst h
+      simp
+    · rw [if_neg h, if_neg (fun hc => h hc.symm)]
+      simp
+  have hgsub : g.support ⊆ e.support := by
+    intro i hi
+    rw [Finsupp.mem_support_iff] at hi ⊢
+    rw [hgval i] at hi
+    by_cases h : i = j
+    · subst h
+      rw [if_pos rfl] at hi
+      omega
+    · rw [if_neg h] at hi
+      exact hi
+  have hsplit : (∏ i ∈ e.support, Fr.towerDiag n i ^ g i)
+      = Fr.towerDiag n j ^ (e j - 1) * ∏ i ∈ e.support.erase j, Fr.towerDiag n i ^ e i := by
+    rw [← Finset.mul_prod_erase _ _ hj, hgval j, if_pos rfl]
+    congr 1
+    refine Finset.prod_congr rfl fun i hi => ?_
+    rw [hgval i, if_neg (Finset.ne_of_mem_erase hi)]
+  have hshrink : (∏ i ∈ e.support, Fr.towerDiag n i ^ g i)
+      = ∏ i ∈ g.support, Fr.towerDiag n i ^ g i := by
+    refine (Finset.prod_subset hgsub ?_).symm
+    intro i _ hi
+    rw [Finsupp.notMem_support_iff.mp hi, pow_zero]
+  rw [← hsplit, hshrink, Fr.prod_towerDiag g]
+
 end RittFrame
 
 end GaloisForLFunctions.HTGeometry

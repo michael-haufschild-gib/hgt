@@ -66,7 +66,7 @@ theorem shorRetryFailureUpperBound_le_stageProduct (r attempts : ℕ) :
       ∏ _i : Fin attempts,
         (1 - shorOrderRecoverySuccessLowerBound (r + 1)) := by
   unfold shorRetryFailureUpperBound
-  simpa using
+  simpa only [Fintype.card_fin] using
     (GaloisForLFunctions.HTGeometry.retention_pow_le_prod
       (fun _i : Fin attempts ↦
         1 - shorOrderRecoverySuccessLowerBound (r + 1))

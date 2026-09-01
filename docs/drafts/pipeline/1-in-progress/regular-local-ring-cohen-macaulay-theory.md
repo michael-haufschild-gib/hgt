@@ -109,12 +109,47 @@ hasGradeGE_of_radical_eq    ** grade depends on the ideal only through its radic
 Rees's TFAE condition (1) mentions `I` only through `PrimeSpectrum.zeroLocus I`, so for two ideals
 with the same radical it is literally the same statement.
 
+**Steps 5 and 6 are CLOSED as well (2026-09-01), and the regular sequence of step 3 is now known to
+generate the maximal ideal** (`exists_isRingRegularSeq_maximalIdeal` returns
+`Ideal.ofList rs = maximalIdeal S`, which is what the Koszul/freeness arguments need).
+
+`HTGeometry/GradeQuotient.lean`:
+
+```text
+subsingleton_ext_smulShortComplex_X₃   the middle of the covariant long exact sequence vanishes
+                                       when both neighbours do
+hasGradeGE_quotSMulTop                 ** grade drops by at most one modulo a regular element **
+```
+
+`HTGeometry/GradeFiniteTransfer.lean`:
+
+```text
+exists_mem_isSMulRegular_of_map    ** a regular element of the extended ideal can be replaced by
+                                      one coming from the base ideal ** (prime avoidance over the
+                                      contractions of the associated primes)
+exists_list_mem_isRegular_of_map   ** hence a whole regular sequence can be taken inside the base
+                                      ideal **
+```
+
+`HTGeometry/RestrictScalarsRegular.lean`:
+
+```text
+restrictScalars_map_smul_top   the extension of an ideal cuts the same submodule
+isWeaklyRegular_of_map         ** so such a sequence is regular for the base ring too **
+```
+
+`HTGeometry/AssociatedPrimeQuotient.lean`:
+
+```text
+exists_mem_notMem_smul_of_isAssociatedPrime   an associated prime is the annihilator of an element
+                                              outside `xM` (Krull's intersection theorem)
+exists_associatedPrime_sup_span_le            ** `p + (x)` lies in an associated prime of `M ⧸ xM` **
+```
+
 ## Next
 
-- Step 5: grade drops by exactly one modulo a regular element (`Ext` long exact sequence).
-- Step 6: depth transfer along a finite ring map (`Ass_A M` is the set of contractions of `Ass_D M`,
-  then induct with step 5).
-- Step 7: `pd_A(k) = dim A` from `projectiveDimension_quotient_eq_length` applied to step 3, then
-  `pd(N) ≤ pd(k)` for a local ring.
-- Step 8: the Auslander–Buchsbaum consequence, with
-  `projectiveDimension_quotient_eq_add_length_of_isWeaklyRegular`.
+- Step 7 (the last general input): **`grade(𝔪, M) ≤ dim R/p` for every `p ∈ Ass M`.**  Induction on
+  the grade using `exists_associatedPrime_sup_span_le` and `hasGradeGE_quotSMulTop`; the geometric
+  input is that a strictly larger prime has a strictly smaller quotient dimension.
+- Step 8: unmixedness ⟹ a system of parameters is a regular sequence; then Brick D of card 7 is the
+  trace-retraction argument already recorded there.

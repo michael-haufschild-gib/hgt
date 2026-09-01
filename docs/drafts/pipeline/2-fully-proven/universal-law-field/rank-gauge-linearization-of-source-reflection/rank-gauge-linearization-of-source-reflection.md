@@ -110,9 +110,11 @@ injectivity of real exponentiation for prime `p>1` give `p^nu=1` iff `nu=0`.
 
 - [x] 0 → 1: exact RH closure and failure mechanism stated; corpus search completed
 - [x] 1 → 2: dependency-closed algebraic proof; `[PROVED HERE]`
-- [ ] 2 → 3: Lean formalization pending
+- [x] 2 → 3: `LiteralSourceReflectionRankGaugeLinearization.lean`; direct check and module-only
+  build pass; axioms `[propext, Classical.choice, Quot.sound]`
 - [ ] 3 → 4: publication-ready extraction
 
 ## Log
 
 - 2026-09-01 — hostile audit found raw quadratic exponent is rank-gauge artefact; paper proof closed.
+- 2026-09-01 — Lean formalization and target-only build passed.

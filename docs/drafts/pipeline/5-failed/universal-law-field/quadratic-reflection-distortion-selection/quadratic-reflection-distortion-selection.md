@@ -41,7 +41,8 @@ literal arithmetic why such gauge cannot extend across the second formation oper
 
 - Internal audit: exact normalization absent; related coboundary no-gos present.
 - Paper proof: `rank-gauge-linearization-of-source-reflection`, fully proven.
-- Lean: pending paired module audit.
+- Lean: `LiteralSourceReflectionRankGaugeLinearization.lean`; direct check and module-only build
+  pass; axioms `[propext, Classical.choice, Quot.sound]`.
 
 ## Log
 
