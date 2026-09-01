@@ -3379,3 +3379,26 @@ combining the short limit, the long limit and the `θ < 1/2` error into one stat
 | 7 | `LevinsonMeanSquareGate` | splitting mechanised (brick 5bd); assembly open |
 
 **Every remaining item is assembly, not new mathematics.**  That is the honest state of the gate.
+
+## Brick 5bf — the total mollified coefficient energy in one statement (2026-09-01)
+
+`RHTower/LevinsonTotalEnergy.lean` (axiom-clean, wired, exact leaf build):
+
+* `abs_levinsonCriticalDetectorTotalEnergy_sub_le` — composes the exact short/long split
+  (`sum_levinsonCriticalDetectorFiniteEnergyTerm_eq_short_add_long`) with the long-range polynomial
+  approximation, giving one statement about the **total** energy `∑_{r < LM} |c_r|²`;
+* `levinsonTotalEnergy_error_le_of_lam_small` — the error collapses: whenever
+  `|λ|·log(LM+1) ≤ 1` (true at Levinson's `λ ≍ 1/log T`), the whole error is at most `27·M²/L`;
+* **`abs_levinsonCriticalDetectorTotalEnergy_sub_le_sq_div`** —
+
+  ```text
+  1 < M,  8M² ≤ L,  |λ|·log(LM+1) ≤ 1
+     ⟹ | ∑_{r<LM}|c_r|²  −  ( ∑_{k≤L}‖c_k‖²  +  barbanVehovIncludedLongEnergyPolynomialMain λ (log L) M ) |
+          ≤ 27·M²/L .
+  ```
+
+At the Levinson scaling `L ≍ T^{1/2+θ}`, `M = T^θ` this error is `≍ T^{θ−1/2} → 0` for every fixed
+`θ < 1/2`, and the hypothesis `8M² ≤ L` is exactly that same condition.  **Item 3 of the gate list
+is now a single quantitative theorem**; what remains of it is only to feed in the two evaluated
+limits (`tendsto_levinsonLinearMollifiedCriticalDetector_energy` for the short range,
+`tendsto_barbanVehovIncludedLongEnergyPolynomialMain_tuned_rho` for the long) at matched parameters.

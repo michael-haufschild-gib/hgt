@@ -4573,3 +4573,65 @@ These are `Y_1 = P_(n−1)` and `Y_2 = S_(n−2)` of the chain.  The next brick 
 for `wdeg` (`wdeg (monomial α c) = ⟨w,α⟩` for `c ≠ 0`, and `⟨w,α⟩ ≤ wdeg p` for `α` in the support),
 which gives `wdeg (pderiv j p) + w j ≤ wdeg p` with equality exactly when the top-weight part of `p`
 involves `X_j` — the two facts the staircase hypotheses `heq`/`hlt` are made of.
+
+## The staircase hypotheses are now Lean facts about weighted degrees (2026-09-01)
+
+`HTGeometry/WeightedDegreeSupport.lean` (unconditional, axiom-clean) proves the support calculus of
+the weighted degree, and with it exactly the two facts a staircase hypothesis consists of.
+
+| Statement | Theorem |
+|---|---|
+| the curve image of a monomial | `curveHom_monomial` |
+| the curve image as a support sum | `curveHom_eq_sum` |
+| the `t`-coefficient is the weight-graded part | `coeff_curveHom` |
+| no cancellation in a graded part | `coeff_curveHom_ne_zero` |
+| `wdeg (monomial α c) = ⟨w,α⟩` for `c ≠ 0` | `wdeg_monomial` |
+| every support weight is at most the degree | `wdegOf_le_wdeg` |
+| the degree is attained on the support | `exists_mem_support_wdegOf_eq` |
+| `wdegOf w (α + e_j) = wdegOf w α + w j` | `wdegOf_add_single` |
+| **`wdeg (∂_j p) + w_j ≤ wdeg p`** | `wdeg_pderiv_add_le` |
+| **equality when a top-weight exponent involves `X_j`** | `wdeg_pderiv_add_eq` |
+| **strict when none does** | `wdeg_pderiv_add_lt` |
+
+The last three are `heq` and `hlt` of `det_ne_zero_of_staircase_deg` verbatim: for a row `p` of a
+gradient matrix, the entry degrees are `wdeg p − w_j` exactly on the coordinates occurring in the
+top-weight part of `p`, and strictly smaller off them.  So the staircase criterion is now reduced to
+the single geometric statement
+
+> the top-weight part of `Y_m` involves exactly the coordinates `X_1, …, X_(n−m)`,
+
+which is the paper-proved recursion recorded above.  Nothing else about weighted degrees is needed.
+
+### Rational entries need no denominator clearing
+
+`HTGeometry/FractionDegreeExtension.lean` (unconditional, axiom-clean) extends a degree function
+from a domain to its fraction field:
+
+* `degZ`, `coe_degZ`, `degZ_mul` — the integer value of a degree at a nonzero element;
+* `fracDeg` — `deg(a/b) = deg a − deg b`, defined through `IsLocalization.sec`;
+* `fracDeg_eq` — **well-definedness**: any representation `x·ι b = ι a` computes it;
+* `fracDeg_algebraMap` — it restricts to the original degree;
+* **`isDegree_fracDeg`** — the extension is again a degree function.
+
+Multiplicativity is the product of two representations and subadditivity is the common denominator,
+so `det_ne_zero_of_staircase_deg` now applies verbatim to matrices of rational functions — in
+particular to the chain-gradient matrix `(∂_j Y_m)`, whose entries are rational.  The earlier plan of
+clearing one denominator per row is no longer needed.
+
+**State of the toolchain.**  Every general step of the cards' step 2 is now Lean:
+
+```
+staircase of top-weight supports          (wdeg_pderiv_add_eq / _add_lt)
+  ⟹ unique optimal assignment            (unique_max_of_staircase)
+  ⟹ det (∂_j Y_m) ≠ 0                    (det_ne_zero_of_staircase_deg, over fracDeg ∘ wdeg)
+  ⟹ det (∂_j δ^i X_n) ≠ 0                (outputJacobian_det_ne_zero_of_gradientMatrix)
+  ⟹ the jets of X_n are independent      (Jacobian criterion, corpus)
+  ⟹ ord_DA = n                           (exactDifferentialOrder_entireCascade_of_transcendental)
+```
+
+The last link is important and was found by search rather than built: the corpus already discharges
+the cards' Clunie/Gold'berg growth inputs.  `CascadeExactOrder.exactDifferentialOrder_entireCascade_of_transcendental`
+needs only entireness, transcendence, a first-order equation per constituent, and **the jet
+independence** — consecutive-state independence is automatic
+(`pairAlgIndep_of_transcendental`).  So cards 13 and 14 reduce, with no analytic residue, to the
+single geometric statement about the chain's top-weight supports.

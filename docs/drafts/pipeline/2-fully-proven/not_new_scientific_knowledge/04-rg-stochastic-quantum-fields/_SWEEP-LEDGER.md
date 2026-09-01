@@ -1168,3 +1168,118 @@ derivation constant, or Ritt's form already follows).  All five capstones audit 
 What remains is the weight-`n` layer of the surviving case, whose multiplier is `ρ^{-1}` — the
 rational affine connection — with inhomogeneity `ρ^n(δ_n|_{weight n} − T(F_{n+1}))`, `T` the
 lowering derivation `∂_0 + ∑_{j≥1} C(j+1,2)·x_{j-1}∂_j`.
+
+### The subdiagonal layer (2026-09-01)
+
+`HTGeometry/RittLogTowerFirstOrder.lean` — `towerRest` (the non-diagonal part of the substitution),
+`towerRest_eq`, `wLt_towerRest`, `towerRest1` (the layer that drops the weight by *exactly* one:
+`logCoeff j (j−1)·X_{j−1}` for `j ≥ 1`, `logConst b 0` for the bottom variable), `wLe_towerRest1`,
+and **`wLt_towerRest_sub_towerRest1`** — everything below the subdiagonal drops the weight by at
+least two.
+
+The remaining chain for the weight `W − 1` layer, in order:
+
+1. the "drops by at least two" predicate `WLt2 X d := ∀ e ∈ supp X, weight e + 1 < d`, with
+   `WLe.mul_wLt2`, `WLt.mul_wLt`, and the power/product versions — this avoids all truncated
+   subtraction on `ℕ`;
+2. `towerSub2 := towerDiag + towerRest1` and `towerShift2`, with
+   `WLt2 (towerShift F − towerShift2 F) W` by the same product induction as
+   `wLt_towerShift_sub_towerDiagShift`;
+3. the weight-`W−1` coefficient of `towerShift2 F − towerDiagShift F`, which involves only the
+   weight-`W` coefficients of `F` (the weight-`W−1` ones cancel against the diagonal), so its value
+   lies in the regularity class as soon as the top coefficients are `ψ`-fixed — which the top-layer
+   theorem already gives;
+4. hence `ψ(F_d) = ρ^{-1}F_d + h` with `P h`: an affine transport equation with multiplier `ρ^{-1}`
+   — the **rational affine connection** — for every weight-`W−1` monomial `d`, and Ritt's form when
+   `h = 0` and `F_d ≠ 0`.
+
+### The second weight layer, and the affine connection (2026-09-01)
+
+`RittLogTowerFirstOrder` now carries the whole second-layer apparatus:
+
+* the "drops by at least two" predicate `WLt2` with `WLt2.add/neg/sub/mono`, `WLt2.mul_wLe`,
+  `WLe.mul_wLt2`, `WLt.mul_wLt`, `wLt2_pow_sub_pow`, `wLt2_prod_sub_prod` — no truncated subtraction
+  anywhere;
+* the general product comparisons `wLt_pow_sub_pow_gen`, `wLt_prod_sub_prod_gen`,
+  `wLe_prod_of_wLe`;
+* `towerSub2 = towerDiag + towerRest1` and `towerShift2`, with `wLe_towerSub2`,
+  `wLt2_towerSub_sub_towerSub2`, `wLt_towerSub2_sub_towerDiag`,
+  **`wLt2_towerShift_sub_towerShift2`** (the shift and its first-order truncation agree two layers
+  below the top) and **`wLt_towerShift2_sub_towerDiagShift`**;
+* the weighted-component bookkeeping `wLe_weightedHomogeneousComponent`,
+  `wLe_sub_weightedHomogeneousComponent`, `coeff_sub_weightedHomogeneousComponent`;
+* **`coeff_towerShift_of_second`** — the weight `W − 1` coefficient of `towerShift F` is
+  `ψ(F_d)·ρ^{-(W-1)}` plus the first-order image of the top weight component; and
+* **`second_base_relation_of_towerShift`** — hence the weight `W − 1` layer of a tower relation is
+  the affine transport equation
+
+```text
+ψ(F_d) = ρ^{J+W-1}·F_d + ρ^{W-1}·(G_d − (towerShift2 F_{top})_d).
+```
+
+`RittLogTowerConnection` specialises it to a collapse: **`affine_connection_of_collapse`** gives
+multiplier `ρ^{-1}` exactly, and **`exists_obstruction_of_collapse_second`** turns any weight `n`
+monomial of the collapsing polynomial into an obstruction — an affine transport equation when the
+layer's inhomogeneity is nonzero, and Ritt's form when it vanishes, because the exponent `−1` is
+never trivial.
+
+So a collapse forces the collapsing polynomial to be **weighted homogeneous of weight exactly
+`n + 1`, with `ψ`-fixed coefficients** — or an obstruction already exists.
+
+### The weight descent closes the whole filtration (2026-09-01)
+
+The layer-by-layer comparison needs no higher-order expansion at all.  If the *entire* top layer of
+`F` vanishes, then the top layer of `G` vanishes with it — because the top-layer base relation reads
+`ψ(F_d) = ρ^{J+W}F_d + ρ^W G_d` and `F_d = 0` forces `ρ^W G_d = 0` — and the same comparison applies
+one layer down with the *unchanged* relation.  So:
+
+> **`obstruction_or_zero_of_towerRelation`** (`HTGeometry/RittLogTowerDescent.lean`) — a tower
+> relation `towerShift F = ρ^J·F + G` with `WLe F W`, `WLe G W` and every exponent `J + k`
+> (`k ≤ W`) nontrivial forces `F = 0` and `G = 0`, unless a base obstruction exists.
+
+Supporting: `TowerObstruction`, `weight_eq_zero_iff` (weight zero means the zero exponent vector,
+because every jet weight is positive), `eq_zero_of_wLe_zero`, `wLe_of_top_vanishing`.
+
+For a collapse `J = −(n+1)`, so the exponent is trivial exactly at `k = n + 1`.  That is the single
+layer the descent cannot cross, and crossing it is the `F ↦ F − F_{n+1}` step: at the trivial layer
+the relation gives `G_{n+1} = 0` and `ψ(F_d) = F_d`, and then `F₁ = F − F_{n+1}`,
+`G₁ = G − (towerShift F_{n+1} − ρ^J F_{n+1})` satisfy the same relation with
+`WLe F₁ n`, `WLe G₁ n`, where every exponent is nontrivial.  Hence
+
+> **either a base obstruction, or `F` is weighted homogeneous of weight exactly `n + 1` with
+> `ψ`-fixed coefficients and `defectPoly = towerShift F − ρ^{-(n+1)}F` exactly.**
+
+### The residual, in closed form (2026-09-01)
+
+The constant term of the surviving identity is a single explicit equation.  `constantCoeff` is a ring
+homomorphism, so composing it with `towerShift` gives the evaluation at the constant terms of the
+substitution, which are exactly the tower's base constants `b_k = logConst b k`.  With `F`
+weighted homogeneous of positive weight its own constant term vanishes, and its coefficients are
+`ψ`-fixed, so
+
+```text
+F(b_0, b_1, …, b_{n-1}) = b_n,        b_{k+1} = ρ^{-1}·dK b_k,  b_0 = −(dρ)/ρ².
+```
+
+Write `θ := ρ^{-1}·d`, so `b_k = θ^k b_0`; and introduce the "time" `w` with `dw = ρ·dz`, in which
+`θ = d/dw`.  Then `b_0 = −θ(log ρ)`, so with `u := log ρ` the residual says exactly
+
+> **`u^{(n+1)} = G(u', u'', …, u^{(n)})`**, `G` weighted homogeneous of weight `n + 1` for
+> `w(u^{(j)}) = j`, with *constant* coefficients —
+
+a **scale-invariant** algebraic differential equation of order `n` for `log R'` in the time
+`dw = R'·dz`.  That is the whole remaining content of Ritt's implication in this route.
+
+*The leading-order test.*  At a zero of `ρ` of order `m` one has `b_k ∼ γ_k c^{k+1}(z-z_0)^{-(k+1)(m+1)}`
+with `γ_{k+1} = −(k+1)(m+1)γ_k`, `γ_0 = −m`, so `γ_k = (−1)^{k+1}m(m+1)^k k!`.  Substituting and
+dividing by `t^{n+1}`, `t = m+1`, the equation becomes the *polynomial* identity
+
+```text
+P(x) = n!·x,     P(x) := ∑_{w(e) = n+1} c_e (∏_j (j!)^{e_j})·x^{|e|},     x = m/(m+1),
+```
+
+and at a pole of order `m` the same identity at `x = m/(m−1)`.  Since every variable has weight at
+most `n`, no weight-`(n+1)` monomial has degree one, so `P` has **no linear term**: if the identity
+held for more than `n + 2` distinct values of `x` it would hold identically and give `0 = n!`.  So
+the residual is refuted as soon as the chain-rule factor has enough distinct zero/pole orders — and
+the finer Laurent coefficients give further linear conditions on the same `c_e`.

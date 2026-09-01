@@ -345,6 +345,31 @@ theorem q8QuadraticSourceChosenLocalArtinPrincipalUnit_three_eq_bot
   simpa [LocalClassFieldTheory.artinPrincipalUnitStepGroup,
     RamificationTheory.natCeilStepFiltration] using hstep
 
+set_option maxRecDepth 4000 in
+set_option maxHeartbeats 1200000 in
+/-- Every literal depth-three principal unit of the chosen dyadic source
+completion has trivial genuine local Artin symbol. -/
+theorem q8QuadraticSourceChosenLocalArtin_eq_one_of_mem_fieldPrincipalUnits_three
+    (v : HeightOneSpectrum (𝓞 S))
+    (hv : (2 : 𝓞 S) ∈ v.asIdeal)
+    (x : (ChosenFinitePlaceBaseCompletion (K := S) v)ˣ)
+    (hx : x ∈ LocalFieldTheory.fieldPrincipalUnits
+      (ChosenFinitePlaceBaseCompletion (K := S) v) 3) :
+    LocalClassFieldTheory.abelianLocalArtinMonoidHom
+      (ChosenFinitePlaceBaseCompletion (K := S) v)
+      (ChosenFinitePlaceLocalizedCompletion (K := S) (L := K3) v) x = 1 := by
+  have hmem :
+      LocalClassFieldTheory.abelianLocalArtinMonoidHom
+          (ChosenFinitePlaceBaseCompletion (K := S) v)
+          (ChosenFinitePlaceLocalizedCompletion (K := S) (L := K3) v) x ∈
+        LocalClassFieldTheory.artinPrincipalUnitGroup
+          (ChosenFinitePlaceBaseCompletion (K := S) v)
+          (ChosenFinitePlaceLocalizedCompletion (K := S) (L := K3) v) 3 :=
+    ⟨x, hx, rfl⟩
+  rw [q8QuadraticSourceChosenLocalArtinPrincipalUnit_three_eq_bot v hv,
+    Subgroup.mem_bot] at hmem
+  exact hmem
+
 set_option synthInstance.maxHeartbeats 300000 in
 set_option maxHeartbeats 2000000 in
 theorem q8QuadraticSourceChosenLocalConductorExponent_eq_three

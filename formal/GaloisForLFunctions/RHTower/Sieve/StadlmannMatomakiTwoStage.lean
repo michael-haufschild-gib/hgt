@@ -67,6 +67,52 @@ theorem StadlmannNestedProductData.exists_matomakiNestedFactorSplit
   exact ⟨J, hJS, hlo, hhi,
     RHTower.Sieve.mtPrimeBlockFamilyAF_split block hJS⟩
 
+/-- Full Lemma 13 allocation yields four exact Matomäki convolution factors: nested selection,
+its complement in the first outer selection, the disjoint second selection, and the remainder. -/
+theorem StadlmannLemmaThirteenProductData.exists_matomakiFourFactorSplit
+    {t : ℕ} {Q : Fin t → ℝ} {S : Finset (Fin t)}
+    (d : StadlmannLemmaThirteenProductData Q S)
+    (block : Fin t → Finset ℕ) :
+    ∃ J₁ J₂ : Finset (Fin t),
+      J₁ ⊆ S ∧ J₂ ⊆ S ∧ Disjoint J₁ J₂ ∧
+        Real.exp d.fill.allocation.lowerOne ≤
+          Real.exp d.fill.allocation.baseOne * ∏ i ∈ J₁, Q i ∧
+        Real.exp d.fill.allocation.baseOne * ∏ i ∈ J₁, Q i ≤
+          Real.exp d.fill.allocation.upperOne ∧
+        Real.exp d.fill.allocation.lowerTwo ≤
+          Real.exp d.fill.allocation.baseTwo * ∏ i ∈ J₂, Q i ∧
+        Real.exp d.fill.allocation.baseTwo * ∏ i ∈ J₂, Q i ≤
+          Real.exp d.fill.allocation.upperTwo ∧
+        ∀ c : {c : ℝ // d.fill.allocation.lowerOne ≤ c ∧
+            c ≤ d.fill.allocation.upperOne},
+          ∃ J' ⊆ J₁,
+            Real.exp (2 * c.1 + d.fill.innerLower) ≤
+              Real.exp d.fill.innerBase * ∏ i ∈ J', Q i ∧
+            Real.exp d.fill.innerBase * ∏ i ∈ J', Q i ≤
+              Real.exp (2 * c.1 + d.fill.innerUpper) ∧
+            RHTower.Sieve.mtPrimeBlockFamilyAF block S =
+              ((RHTower.Sieve.mtPrimeBlockFamilyAF block J' *
+                  RHTower.Sieve.mtPrimeBlockFamilyAF block (J₁ \ J')) *
+                RHTower.Sieve.mtPrimeBlockFamilyAF block J₂) *
+              RHTower.Sieve.mtPrimeBlockFamilyAF block (S \ (J₁ ∪ J₂)) := by
+  obtain ⟨J₁, J₂, hJ₁S, hJ₂S, hdisj, hJ₁lo, hJ₁hi, hJ₂lo, hJ₂hi, hnested⟩ :=
+    d.exists_disjoint_and_nested_subproducts
+  have hUnion : J₁ ∪ J₂ ⊆ S := Finset.union_subset hJ₁S hJ₂S
+  have hsplit := RHTower.Sieve.mtPrimeBlockFamilyAF_split block hUnion
+  have hselected :
+      RHTower.Sieve.mtPrimeBlockFamilyAF block (J₁ ∪ J₂) =
+        RHTower.Sieve.mtPrimeBlockFamilyAF block J₁ *
+          RHTower.Sieve.mtPrimeBlockFamilyAF block J₂ := by
+    unfold RHTower.Sieve.mtPrimeBlockFamilyAF
+    exact Finset.prod_union hdisj
+  refine ⟨J₁, J₂, hJ₁S, hJ₂S, hdisj,
+    hJ₁lo, hJ₁hi, hJ₂lo, hJ₂hi, ?_⟩
+  intro c
+  obtain ⟨J', hJ'J₁, hJ'lo, hJ'hi⟩ := hnested c
+  have hJ₁split := RHTower.Sieve.mtPrimeBlockFamilyAF_split block hJ'J₁
+  refine ⟨J', hJ'J₁, hJ'lo, hJ'hi, ?_⟩
+  rw [hsplit, hselected, hJ₁split]
+
 end
 
 end RHTower

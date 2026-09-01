@@ -721,6 +721,20 @@ F147 — Exterior powers commute with injective direct limits only degreewise at
 not transport moving determinant degrees `finrank(stage)` across strict rank growth
 (`ExteriorPowerDirectLimit`, `RankJumpDeterminantCreation`).
 
+F148 — Actual depth-12 normalized finite-abscissa source channels are linearly independent over the
+full zeta differential field. Their finite complex spans have exact rank `n`, grow strictly at
+every tick, and never stabilize (`LiteralSourceDeterminantRankTower`).
+
+F149 — Every actual source tick creates a canonical pointed one-dimensional quotient: the new
+literal channel has nonzero quotient class and spans the complete increment. Each finite stage and
+each increment has one-dimensional determinant, while moving top exterior transport from old stage
+is not surjective (`LiteralSourceDeterminantRankTower`).
+
+F150 — Generic rank-changing determinant/interchange carriers are established mathematics:
+determinant torsors/gerbes for Tate objects, 2-gerbes for 2-Tate spaces, and higher determinant
+commutators already exist. Corpus determinant/index no-gos show these carriers classify anomaly but
+do not force literal source trivialization (`ULF-MDIS-FAILED-1`).
+
 ## Logical consequences of audited facts
 
 Each `CANNOT`/`MUST` line is a necessary consequence of cited corpus results. This section contains
@@ -1048,6 +1062,11 @@ CANNOT-81 — It cannot treat determinant lines of rank-growing stages as an ord
 under exterior powers of stage inclusions. Same-degree maps preserve old wedge; new top-degree map
 has zero old source and misses new determinant line.
 
+CANNOT-82 — It cannot obtain selection by replacing determinant line with determinant gerbe,
+2-gerbe, higher commutator, or bifiltered determinant interchange alone. Those generic carriers
+already encode higher anomalies, while internal reflected determinant/index laws remain
+nonselective.
+
 ### It must do or have this
 
 MUST-01 — It must be defined on pre-divisor source data and specialize at Xi occurrences only after
@@ -1250,3 +1269,8 @@ complements or frame orientations are not source-native.
 MUST-56 — To identify hypertranscendence with determinant noncompactness, it must prove actual
 literal source tower has unbounded independent rank and that its quotient determinant history
 cannot stabilize or escape into a forgotten boundary. Rank-jump algebra alone is insufficient.
+
+MUST-57 — Since actual source rank growth and canonical quotient increments are now proved, any
+determinant-history selector must construct source/reflection transport on those literal quotient
+generators, identify its accumulated class with existing horizontal Xi charge, and prove
+pre-divisor source completion trivializes it. Generic gerbe existence is insufficient.

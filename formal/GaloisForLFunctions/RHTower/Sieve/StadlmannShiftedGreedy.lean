@@ -315,6 +315,73 @@ theorem StadlmannLemmaThirteenFillData.exists_disjoint_and_nested_subsets
     hJ₁lo, hJ₁hi, hJ₂lo, hJ₂hi, ?_⟩
   simpa [nested] using nested.exists_subset_at_every_outer_scale
 
+/-- Positive product data for the full two-stage and nested allocation in Stadlmann Lemma 13. -/
+structure StadlmannLemmaThirteenProductData {ι : Type*} [DecidableEq ι]
+    (Q : ι → ℝ) (S : Finset ι) where
+  fill : StadlmannLemmaThirteenFillData (fun i => Real.log (Q i)) S
+  factor_pos : ∀ i ∈ S, 0 < Q i
+
+/-- Multiplicative form of the full finite content of Stadlmann Lemma 13. -/
+theorem StadlmannLemmaThirteenProductData.exists_disjoint_and_nested_subproducts
+    {ι : Type*} [DecidableEq ι] {Q : ι → ℝ} {S : Finset ι}
+    (d : StadlmannLemmaThirteenProductData Q S) :
+    ∃ J₁ J₂ : Finset ι,
+      J₁ ⊆ S ∧ J₂ ⊆ S ∧ Disjoint J₁ J₂ ∧
+        Real.exp d.fill.allocation.lowerOne ≤
+          Real.exp d.fill.allocation.baseOne * ∏ i ∈ J₁, Q i ∧
+        Real.exp d.fill.allocation.baseOne * ∏ i ∈ J₁, Q i ≤
+          Real.exp d.fill.allocation.upperOne ∧
+        Real.exp d.fill.allocation.lowerTwo ≤
+          Real.exp d.fill.allocation.baseTwo * ∏ i ∈ J₂, Q i ∧
+        Real.exp d.fill.allocation.baseTwo * ∏ i ∈ J₂, Q i ≤
+          Real.exp d.fill.allocation.upperTwo ∧
+        ∀ c : {c : ℝ // d.fill.allocation.lowerOne ≤ c ∧
+            c ≤ d.fill.allocation.upperOne},
+          ∃ J' ⊆ J₁,
+            Real.exp (2 * c.1 + d.fill.innerLower) ≤
+              Real.exp d.fill.innerBase * ∏ i ∈ J', Q i ∧
+            Real.exp d.fill.innerBase * ∏ i ∈ J', Q i ≤
+              Real.exp (2 * c.1 + d.fill.innerUpper) := by
+  obtain ⟨J₁, J₂, hJ₁S, hJ₂S, hdisj, hJ₁lo, hJ₁hi, hJ₂lo, hJ₂hi, hnested⟩ :=
+    d.fill.exists_disjoint_and_nested_subsets
+  have hJ₁prodPos : 0 < ∏ i ∈ J₁, Q i :=
+    Finset.prod_pos fun i hi => d.factor_pos i (hJ₁S hi)
+  have hJ₂prodPos : 0 < ∏ i ∈ J₂, Q i :=
+    Finset.prod_pos fun i hi => d.factor_pos i (hJ₂S hi)
+  have hJ₁exp :
+      Real.exp (d.fill.allocation.baseOne + ∑ i ∈ J₁, Real.log (Q i)) =
+        Real.exp d.fill.allocation.baseOne * ∏ i ∈ J₁, Q i := by
+    rw [Real.exp_add, ← Real.log_prod
+      (fun i hi => (d.factor_pos i (hJ₁S hi)).ne'), Real.exp_log hJ₁prodPos]
+  have hJ₂exp :
+      Real.exp (d.fill.allocation.baseTwo + ∑ i ∈ J₂, Real.log (Q i)) =
+        Real.exp d.fill.allocation.baseTwo * ∏ i ∈ J₂, Q i := by
+    rw [Real.exp_add, ← Real.log_prod
+      (fun i hi => (d.factor_pos i (hJ₂S hi)).ne'), Real.exp_log hJ₂prodPos]
+  refine ⟨J₁, J₂, hJ₁S, hJ₂S, hdisj, ?_, ?_, ?_, ?_, ?_⟩
+  · rw [← hJ₁exp]
+    exact Real.exp_le_exp.mpr hJ₁lo
+  · rw [← hJ₁exp]
+    exact Real.exp_le_exp.mpr hJ₁hi
+  · rw [← hJ₂exp]
+    exact Real.exp_le_exp.mpr hJ₂lo
+  · rw [← hJ₂exp]
+    exact Real.exp_le_exp.mpr hJ₂hi
+  · intro c
+    obtain ⟨J', hJ'J₁, hJ'lo, hJ'hi⟩ := hnested c
+    have hJ'prodPos : 0 < ∏ i ∈ J', Q i :=
+      Finset.prod_pos fun i hi => d.factor_pos i (hJ₁S (hJ'J₁ hi))
+    have hJ'exp :
+        Real.exp (d.fill.innerBase + ∑ i ∈ J', Real.log (Q i)) =
+          Real.exp d.fill.innerBase * ∏ i ∈ J', Q i := by
+      rw [Real.exp_add, ← Real.log_prod
+        (fun i hi => (d.factor_pos i (hJ₁S (hJ'J₁ hi))).ne'), Real.exp_log hJ'prodPos]
+    refine ⟨J', hJ'J₁, ?_, ?_⟩
+    · rw [← hJ'exp]
+      exact Real.exp_le_exp.mpr hJ'lo
+    · rw [← hJ'exp]
+      exact Real.exp_le_exp.mpr hJ'hi
+
 end
 
 end RHTower

@@ -46,6 +46,21 @@ theorem symmetricSquareMatrix_map
   ext i j
   fin_cases i <;> fin_cases j <;> simp [symmetricSquareMatrix, map_ofNat]
 
+/-- Moreau, arXiv:2608.23907v1, equation (44), without dividing by two: the character of the
+symmetric-square representation is determined by the character of `M` and of `M²`. -/
+theorem two_mul_trace_symmetricSquareMatrix (M : Matrix (Fin 2) (Fin 2) A) :
+    2 * Matrix.trace (symmetricSquareMatrix M) =
+      Matrix.trace M ^ 2 + Matrix.trace (M * M) := by
+  simp [Matrix.trace, symmetricSquareMatrix, Matrix.mul_apply, Fin.sum_univ_succ]
+  ring
+
+/-- Moreau equation (44) for a two-dimensional complex representation. -/
+theorem trace_symmetricSquareMatrix_complex (M : Matrix (Fin 2) (Fin 2) ℂ) :
+    Matrix.trace (symmetricSquareMatrix M) =
+      (Matrix.trace M ^ 2 + Matrix.trace (M * M)) / 2 := by
+  have h := two_mul_trace_symmetricSquareMatrix M
+  linear_combination (1 / 2 : ℂ) * h
+
 /-- Matrix-vector multiplication is linear in the vector. -/
 theorem matrix_mulVec_smul (M : Matrix (Fin 3) (Fin 3) A) (a : A) (v : Fin 3 → A) :
     M.mulVec (a • v) = a • M.mulVec v := by

@@ -26,6 +26,7 @@ def differentialGeneratorSubalgebra {ι : Type v} (y : ι → B) :
   Algebra.adjoin A
     (Set.range fun p : ι × ℕ => differentialJet p.2 (y p.1))
 
+omit [Differential A] [DifferentialAlgebra A B] in
 /-- Jet-generated subalgebra is exactly differential-polynomial evaluation range. -/
 theorem differentialGeneratorSubalgebra_eq_range {ι : Type v} (y : ι → B) :
     differentialGeneratorSubalgebra (A := A) y =
@@ -87,6 +88,7 @@ def differentialGeneratorIn {ι : Type v} (y : ι → B) (i : ι) :
     rw [← differentialJet_zero (y i)]
     exact Algebra.subset_adjoin ⟨(i, 0), rfl⟩⟩
 
+omit [Differential A] [DifferentialAlgebra A B] in
 @[simp] theorem differentialGeneratorIn_coe {ι : Type v} (y : ι → B) (i : ι) :
     ((differentialGeneratorIn (A := A) y i :
       differentialGeneratorSubalgebra (A := A) y) : B) = y i := rfl
@@ -171,7 +173,7 @@ def splitLastDifferentialPolynomial {n : ℕ} (y : Fin (n + 1) → B) :
     splitLastDifferentialPolynomial (A := A) y
         (MvPolynomial.X (Fin.last n, j)) =
       MvPolynomial.X ((), j) := by
-  simp [splitLastDifferentialPolynomial]
+  rw [splitLastDifferentialPolynomial, MvPolynomial.eval₂Hom_X', Fin.lastCases_last]
 
 @[simp] theorem splitLastDifferentialPolynomial_X_castSucc {n : ℕ}
     (y : Fin (n + 1) → B) (i : Fin n) (j : ℕ) :
@@ -181,7 +183,33 @@ def splitLastDifferentialPolynomial {n : ℕ} (y : Fin (n + 1) → B) :
         (differentialJet j
           (differentialGeneratorIn (A := A)
             (fun k : Fin n => y k.castSucc) i)) := by
-  simp [splitLastDifferentialPolynomial]
+  rw [splitLastDifferentialPolynomial, MvPolynomial.eval₂Hom_X', Fin.lastCases_castSucc]
+
+theorem differentialPolynomialEvalOver_splitLast_X_last {n : ℕ}
+    (y : Fin (n + 1) → B) (j : ℕ) :
+    differentialPolynomialEvalOver
+        (K := differentialGeneratorSubalgebra (A := A) (fun i : Fin n => y i.castSucc))
+        (fun _ : Unit => y (Fin.last n))
+        (splitLastDifferentialPolynomial (A := A) y
+          (MvPolynomial.X (Fin.last n, j))) =
+      differentialPolynomialEvalOver (K := A) y
+        (MvPolynomial.X (Fin.last n, j)) := by
+  rw [splitLastDifferentialPolynomial_X_last,
+    differentialPolynomialEvalOver_X, differentialPolynomialEvalOver_X]
+
+theorem differentialPolynomialEvalOver_splitLast_X_castSucc {n : ℕ}
+    (y : Fin (n + 1) → B) (i : Fin n) (j : ℕ) :
+    differentialPolynomialEvalOver
+        (K := differentialGeneratorSubalgebra (A := A) (fun k : Fin n => y k.castSucc))
+        (fun _ : Unit => y (Fin.last n))
+        (splitLastDifferentialPolynomial (A := A) y
+          (MvPolynomial.X (i.castSucc, j))) =
+      differentialPolynomialEvalOver (K := A) y
+        (MvPolynomial.X (i.castSucc, j)) := by
+  rw [splitLastDifferentialPolynomial_X_castSucc,
+    differentialPolynomialEvalOver_C, differentialPolynomialEvalOver_X]
+  exact differentialJet_differentialGeneratorIn_coe
+    (fun k : Fin n => y k.castSucc) i j
 
 /-- Splitting the last generator preserves differential-polynomial evaluation. -/
 theorem differentialPolynomialEvalOver_splitLast {n : ℕ} (y : Fin (n + 1) → B)
@@ -199,14 +227,42 @@ theorem differentialPolynomialEvalOver_splitLast {n : ℕ} (y : Fin (n + 1) → 
   | mul_X P p hP =>
       rcases p with ⟨i, j⟩
       refine Fin.lastCases ?_ (fun k => ?_) i
-      · simp only [map_mul]
-        rw [hP]
-        rw [splitLastDifferentialPolynomial_X_last]
-        simp
-      · simp only [map_mul]
-        rw [hP]
-        rw [splitLastDifferentialPolynomial_X_castSucc]
-        simp
+      · calc
+          _ = differentialPolynomialEvalOver
+                (K := differentialGeneratorSubalgebra (A := A)
+                  (fun i : Fin n => y i.castSucc))
+                (fun _ : Unit => y (Fin.last n))
+                (splitLastDifferentialPolynomial (A := A) y P) *
+              differentialPolynomialEvalOver
+                (K := differentialGeneratorSubalgebra (A := A)
+                  (fun i : Fin n => y i.castSucc))
+                (fun _ : Unit => y (Fin.last n))
+                (splitLastDifferentialPolynomial (A := A) y
+                  (MvPolynomial.X (Fin.last n, j))) := by rw [map_mul, map_mul]
+          _ = differentialPolynomialEvalOver (K := A) y P *
+              differentialPolynomialEvalOver (K := A) y
+                (MvPolynomial.X (Fin.last n, j)) :=
+            congrArg₂ (· * ·) hP
+              (differentialPolynomialEvalOver_splitLast_X_last y j)
+          _ = _ := by rw [map_mul]
+      · calc
+          _ = differentialPolynomialEvalOver
+                (K := differentialGeneratorSubalgebra (A := A)
+                  (fun i : Fin n => y i.castSucc))
+                (fun _ : Unit => y (Fin.last n))
+                (splitLastDifferentialPolynomial (A := A) y P) *
+              differentialPolynomialEvalOver
+                (K := differentialGeneratorSubalgebra (A := A)
+                  (fun i : Fin n => y i.castSucc))
+                (fun _ : Unit => y (Fin.last n))
+                (splitLastDifferentialPolynomial (A := A) y
+                  (MvPolynomial.X (k.castSucc, j))) := by rw [map_mul, map_mul]
+          _ = differentialPolynomialEvalOver (K := A) y P *
+              differentialPolynomialEvalOver (K := A) y
+                (MvPolynomial.X (k.castSucc, j)) :=
+            congrArg₂ (· * ·) hP
+              (differentialPolynomialEvalOver_splitLast_X_castSucc y k j)
+          _ = _ := by rw [map_mul]
 
 /-- Full finite differential generation makes the last coordinate a one-generator extension of
 the initial jet-generated subalgebra. -/
@@ -221,6 +277,188 @@ theorem differentialPolynomialEvalOver_last_surjective {n : ℕ}
   obtain ⟨Q, rfl⟩ := hy b
   exact ⟨splitLastDifferentialPolynomial (A := A) y Q,
     differentialPolynomialEvalOver_splitLast y Q⟩
+
+omit [Differential A] [DifferentialAlgebra A B] in
+/-- With no differential generators, surjective evaluation forces the coefficient map itself to
+be surjective. -/
+theorem algebraMap_surjective_of_empty_differentialPolynomialEval
+    (y : Fin 0 → B)
+    (hy : Function.Surjective
+      (differentialPolynomialEvalOver (K := A) y)) :
+    Function.Surjective (algebraMap A B) := by
+  intro b
+  obtain ⟨Q, hQ⟩ := hy b
+  have hconst : ∀ P : DifferentialPolynomial (Fin 0) A,
+      ∃ a : A, differentialPolynomialEvalOver
+        (K := A) y P = algebraMap A B a := by
+    intro P
+    induction P using MvPolynomial.induction_on with
+    | C a => exact ⟨a, by simp⟩
+    | add P Q hP hQ =>
+        obtain ⟨a, ha⟩ := hP
+        obtain ⟨c, hc⟩ := hQ
+        exact ⟨a + c, by rw [map_add, ha, hc, map_add]⟩
+    | mul_X P p hP => exact Fin.elim0 p.1
+  obtain ⟨a, ha⟩ := hconst Q
+  exact ⟨a, ha.symm.trans hQ⟩
+
+variable [CharZero A] [Algebra ℚ A] [IsDomain B]
+
+/-- Marked finite-generator differential Chevalley theorem, with one source guard uniform over
+all characteristic-zero target differential fields. -/
+theorem exists_differentialChevalley_extension_fin_avoiding_universal
+    (n : ℕ) (y : Fin n → B)
+    (hy : Function.Surjective (differentialPolynomialEvalOver (K := A) y))
+    (hAB : Function.Injective (algebraMap A B))
+    (z : B) (hz : z ≠ 0) :
+    ∃ g : A, g ≠ 0 ∧ ∀ (K : Type u) (_ : Field K) (_ : Differential K)
+      (_ : CharZero K) (f : A →+* K),
+      (∀ a : A, f (Differential.deriv a) = Differential.deriv (f a)) →
+      f g ≠ 0 →
+      ∃ (L : Type u) (_ : Field L) (_ : Differential L)
+          (κ : K →+* L) (F : B →+* L),
+        (∀ k : K, κ (Differential.deriv k) = Differential.deriv (κ k)) ∧
+        (∀ b : B, F (Differential.deriv b) = Differential.deriv (F b)) ∧
+        (∀ a : A, F (algebraMap A B a) = κ (f a)) ∧
+        F z ≠ 0 := by
+  induction n generalizing B with
+  | zero =>
+      have hsurj : Function.Surjective (algebraMap A B) :=
+        algebraMap_surjective_of_empty_differentialPolynomialEval y hy
+      let e : A ≃+* B := RingEquiv.ofBijective (algebraMap A B) ⟨hAB, hsurj⟩
+      let g : A := e.symm z
+      have hg : g ≠ 0 := by
+        intro hzero
+        apply hz
+        exact e.symm.injective (by simpa [g] using hzero)
+      refine ⟨g, hg, ?_⟩
+      intro K instKField instKDiff instKCharZero f hfδ hfg
+      let F : B →+* K := f.comp e.symm.toRingHom
+      have heδ (b : B) : e.symm (Differential.deriv b) =
+          Differential.deriv (e.symm b) := by
+        apply e.injective
+        calc
+          e (e.symm (Differential.deriv b)) = Differential.deriv b := e.apply_symm_apply _
+          _ = Differential.deriv (algebraMap A B (e.symm b)) := by
+            rw [show algebraMap A B (e.symm b) = b by exact e.apply_symm_apply b]
+          _ = algebraMap A B (Differential.deriv (e.symm b)) :=
+            DifferentialAlgebra.deriv_algebraMap _
+          _ = e (Differential.deriv (e.symm b)) := rfl
+      have hFδ : ∀ b : B,
+          F (Differential.deriv b) = Differential.deriv (F b) := by
+        intro b
+        change f (e.symm (Differential.deriv b)) = Differential.deriv (f (e.symm b))
+        rw [heδ, hfδ]
+      have hbase : ∀ a : A,
+          F (algebraMap A B a) = (RingHom.id K) (f a) := by
+        intro a
+        change f (e.symm (algebraMap A B a)) = f a
+        rw [show algebraMap A B a = e a by rfl, e.symm_apply_apply]
+      have hFz : F z ≠ 0 := by
+        change f (e.symm z) ≠ 0
+        exact hfg
+      exact ⟨K, instKField, instKDiff, RingHom.id K, F,
+        fun _ => rfl, hFδ, hbase, hFz⟩
+  | succ n ih =>
+      let y₀ : Fin n → B := fun i => y i.castSucc
+      let E : Subalgebra A B := differentialGeneratorSubalgebra (A := A) y₀
+      let yE : Fin n → E := fun i => differentialGeneratorIn (A := A) y₀ i
+      have hAE : Function.Injective (algebraMap A E) := by
+        intro a c hac
+        apply hAB
+        exact congrArg Subtype.val hac
+      letI : Algebra ℚ E := ((algebraMap A E).comp (algebraMap ℚ A)).toAlgebra
+      letI : CharZero E := ⟨fun m k hmk => by
+        apply CharZero.cast_injective (R := A)
+        apply hAE
+        simpa using hmk⟩
+      letI : DifferentialAlgebra E B := ⟨fun e => by
+        exact (differentialGeneratorSubalgebra_deriv_coe y₀ e).symm⟩
+      have hyE : Function.Surjective
+          (differentialPolynomialEvalOver (K := A) yE) := by
+        exact differentialPolynomialEvalOver_generatorIn_surjective y₀
+      have hyLast : Function.Surjective
+          (differentialPolynomialEvalOver (K := E)
+            (fun _ : Unit => y (Fin.last n))) := by
+        exact differentialPolynomialEvalOver_last_surjective y hy
+      have hEB : Function.Injective (algebraMap E B) := by
+        intro e₁ e₂ h
+        exact Subtype.ext h
+      obtain ⟨gE, hgE, hlast⟩ :=
+        exists_differentialChevalley_extension_one_avoiding_universal
+          (A := E) (B := B) (y (Fin.last n)) hyLast hEB z hz
+      obtain ⟨g, hg, hhead⟩ := ih yE hyE hAE gE hgE
+      refine ⟨g, hg, ?_⟩
+      intro K instKField instKDiff instKCharZero f hfδ hfg
+      obtain ⟨L₀, instL₀Field, instL₀Diff, κ₀, F₀,
+          hκ₀δ, hF₀δ, hbase₀, hF₀g⟩ :=
+        hhead K instKField instKDiff instKCharZero f hfδ hfg
+      let instL₀CharZero : CharZero L₀ := ⟨fun m k hmk => by
+        apply CharZero.cast_injective (R := K)
+        apply κ₀.injective
+        simpa using hmk⟩
+      obtain ⟨L, instLField, instLDiff, κ₁, F,
+          hκ₁δ, hFδ, hbase₁, hFz⟩ :=
+        hlast L₀ instL₀Field instL₀Diff instL₀CharZero F₀ hF₀δ hF₀g
+      let κ : K →+* L := κ₁.comp κ₀
+      have hκδ : ∀ k : K,
+          κ (Differential.deriv k) = Differential.deriv (κ k) := by
+        intro k
+        change κ₁ (κ₀ (Differential.deriv k)) = Differential.deriv (κ₁ (κ₀ k))
+        rw [hκ₀δ, hκ₁δ]
+      have hbase : ∀ a : A, F (algebraMap A B a) = κ (f a) := by
+        intro a
+        calc
+          F (algebraMap A B a) = F (algebraMap E B (algebraMap A E a)) := by
+            rw [IsScalarTower.algebraMap_apply A E B]
+          _ = κ₁ (F₀ (algebraMap A E a)) := hbase₁ _
+          _ = κ₁ (κ₀ (f a)) := by rw [hbase₀]
+          _ = κ (f a) := rfl
+      exact ⟨L, instLField, instLDiff, κ, F, hκδ, hFδ, hbase, hFz⟩
+
+variable {K : Type u} [Field K] [Differential K] [CharZero K]
+
+/-- Marked finite-generator differential Chevalley extension over a fixed target field. -/
+theorem exists_differentialChevalley_extension_fin_avoiding
+    (n : ℕ) (y : Fin n → B)
+    (hy : Function.Surjective (differentialPolynomialEvalOver (K := A) y))
+    (hAB : Function.Injective (algebraMap A B))
+    (z : B) (hz : z ≠ 0) :
+    ∃ g : A, g ≠ 0 ∧ ∀ (f : A →+* K),
+      (∀ a : A, f (Differential.deriv a) = Differential.deriv (f a)) →
+      f g ≠ 0 →
+      ∃ (L : Type u) (_ : Field L) (_ : Differential L)
+          (κ : K →+* L) (F : B →+* L),
+        (∀ k : K, κ (Differential.deriv k) = Differential.deriv (κ k)) ∧
+        (∀ b : B, F (Differential.deriv b) = Differential.deriv (F b)) ∧
+        (∀ a : A, F (algebraMap A B a) = κ (f a)) ∧
+        F z ≠ 0 := by
+  obtain ⟨g, hg, hguard⟩ :=
+    exists_differentialChevalley_extension_fin_avoiding_universal
+      n y hy hAB z hz
+  exact ⟨g, hg, hguard K inferInstance inferInstance inferInstance⟩
+
+/-- Finite-generator differential Chevalley extension for domains. -/
+theorem exists_differentialChevalley_extension_fin
+    (n : ℕ) (y : Fin n → B)
+    (hy : Function.Surjective (differentialPolynomialEvalOver (K := A) y))
+    (hAB : Function.Injective (algebraMap A B)) :
+    ∃ g : A, g ≠ 0 ∧ ∀ (f : A →+* K),
+      (∀ a : A, f (Differential.deriv a) = Differential.deriv (f a)) →
+      f g ≠ 0 →
+      ∃ (L : Type u) (_ : Field L) (_ : Differential L)
+          (κ : K →+* L) (F : B →+* L),
+        (∀ k : K, κ (Differential.deriv k) = Differential.deriv (κ k)) ∧
+        (∀ b : B, F (Differential.deriv b) = Differential.deriv (F b)) ∧
+        ∀ a : A, F (algebraMap A B a) = κ (f a) := by
+  obtain ⟨g, hg, hguard⟩ :=
+    exists_differentialChevalley_extension_fin_avoiding
+      (K := K) n y hy hAB (1 : B) one_ne_zero
+  refine ⟨g, hg, ?_⟩
+  intro f hfδ hfg
+  obtain ⟨L, instLField, instLDiff, κ, F, hκδ, hFδ, hbase, -⟩ :=
+    hguard f hfδ hfg
+  exact ⟨L, instLField, instLDiff, κ, F, hκδ, hFδ, hbase⟩
 
 end
 
