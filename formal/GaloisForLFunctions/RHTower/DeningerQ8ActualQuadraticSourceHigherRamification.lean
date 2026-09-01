@@ -345,6 +345,156 @@ theorem q8QuadraticSourceCharacter_lowerArtinConductor_eq_three
     q8QuadraticSourceCharacter_lowerArtinTerm_eq_one_of_le_two P hPtwo,
     q8QuadraticSourceCharacter_lowerArtinTerm_eq_zero_of_three_le P hPtwo]
 
+theorem q8FinitePlaceExtensionCentre_two_mem
+    (v : HeightOneSpectrum (𝓞 S))
+    (hv : (2 : 𝓞 S) ∈ v.asIdeal) :
+    (2 : 𝓞 K3) ∈
+      (finitePlaceExtensionCentre (K := S) (L := K3) v
+        (chosenFinitePlaceExtension (L := K3) v)).asIdeal := by
+  let w := chosenFinitePlaceExtension (L := K3) v
+  let P := finitePlaceExtensionCentre (K := S) (L := K3) v w
+  have hPover : P.asIdeal.LiesOver v.asIdeal :=
+    finitePlaceExtensionCentre_liesOver (K := S) (L := K3) v w
+  change algebraMap (𝓞 S) (𝓞 K3) (2 : 𝓞 S) ∈ P.asIdeal
+  rw [← Ideal.mem_comap]
+  change (2 : 𝓞 S) ∈ P.asIdeal.under (𝓞 S)
+  rw [← hPover.over]
+  exact hv
+
+/-- At a chosen dyadic source place, every source automorphism fixes the chosen top prime. -/
+theorem q8QuadraticSource_chosenPrime_stabilizer_eq_top
+    (v : HeightOneSpectrum (𝓞 S))
+    (hv : (2 : 𝓞 S) ∈ v.asIdeal) :
+    let P := finitePlaceExtensionCentre (K := S) (L := K3) v
+      (chosenFinitePlaceExtension (L := K3) v)
+    MulAction.stabilizer Gal(K3/S) P.asIdeal = ⊤ := by
+  dsimp only
+  let P := finitePlaceExtensionCentre (K := S) (L := K3) v
+    (chosenFinitePlaceExtension (L := K3) v)
+  have hPtwo := q8FinitePlaceExtensionCentre_two_mem v hv
+  apply top_unique
+  intro g hg
+  rw [MulAction.mem_stabilizer_iff]
+  have hrat :=
+    (q8Literal_two_decomposition_eq_cyclicSource P.asIdeal hPtwo).symm.le
+      (q8QuadraticSourceRestrictHom g).2
+  rw [MulAction.mem_stabilizer_iff] at hrat
+  exact hrat
+
+/-- At a chosen dyadic source place, inertia is literally the source central subgroup. -/
+theorem q8QuadraticSource_chosenPrime_inertia_eq_central
+    (v : HeightOneSpectrum (𝓞 S))
+    (hv : (2 : 𝓞 S) ∈ v.asIdeal) :
+    let P := finitePlaceExtensionCentre (K := S) (L := K3) v
+      (chosenFinitePlaceExtension (L := K3) v)
+    P.asIdeal.inertia Gal(K3/S) = q8QuadraticSourceCentralSubgroup := by
+  dsimp only
+  let P := finitePlaceExtensionCentre (K := S) (L := K3) v
+    (chosenFinitePlaceExtension (L := K3) v)
+  have hPtwo := q8FinitePlaceExtensionCentre_two_mem v hv
+  have hprof := q8QuadraticSource_lowerRamificationGroup_eq_central_of_le_two
+    P.asIdeal hPtwo 0 (by omega)
+  rw [GaloisForLFunctions.HTGeometry.Ideal.localizedLowerRamificationGroup_eq_lowerRamificationGroup,
+    GaloisForLFunctions.HTGeometry.Ideal.lowerRamificationGroup_zero] at hprof
+  exact hprof
+
+theorem q8QuadraticSource_chosenPrime_stabilizer_natCard_eq_four
+    (v : HeightOneSpectrum (𝓞 S))
+    (hv : (2 : 𝓞 S) ∈ v.asIdeal) :
+    let P := finitePlaceExtensionCentre (K := S) (L := K3) v
+      (chosenFinitePlaceExtension (L := K3) v)
+    Nat.card (MulAction.stabilizer Gal(K3/S) P.asIdeal) = 4 := by
+  dsimp only
+  rw [q8QuadraticSource_chosenPrime_stabilizer_eq_top v hv,
+    Subgroup.card_top, IsGalois.card_aut_eq_finrank,
+    q8BiquadQuadraticSource_top_finrank]
+
+theorem q8QuadraticSource_chosenPrime_inertia_natCard_eq_two
+    (v : HeightOneSpectrum (𝓞 S))
+    (hv : (2 : 𝓞 S) ∈ v.asIdeal) :
+    let P := finitePlaceExtensionCentre (K := S) (L := K3) v
+      (chosenFinitePlaceExtension (L := K3) v)
+    Nat.card (P.asIdeal.inertia Gal(K3/S)) = 2 := by
+  dsimp only
+  rw [q8QuadraticSource_chosenPrime_inertia_eq_central v hv,
+    q8QuadraticSourceCentralSubgroup_natCard]
+
+/-- The chosen top prime has residue degree two over the dyadic source prime. -/
+theorem q8QuadraticSource_chosenPrime_relative_inertiaDeg_eq_two
+    (v : HeightOneSpectrum (𝓞 S))
+    (hv : (2 : 𝓞 S) ∈ v.asIdeal) :
+    let P := finitePlaceExtensionCentre (K := S) (L := K3) v
+      (chosenFinitePlaceExtension (L := K3) v)
+    P.asIdeal.inertiaDeg (𝓞 S) = 2 := by
+  dsimp only
+  let P := finitePlaceExtensionCentre (K := S) (L := K3) v
+    (chosenFinitePlaceExtension (L := K3) v)
+  letI : P.asIdeal.LiesOver v.asIdeal :=
+    finitePlaceExtensionCentre_liesOver (K := S) (L := K3) v
+      (chosenFinitePlaceExtension (L := K3) v)
+  have hcard := Ideal.card_stabilizer_eq_card_inertia_mul_finrank
+    (G := Gal(K3/S)) v.asIdeal P.asIdeal
+  rw [q8QuadraticSource_chosenPrime_stabilizer_natCard_eq_four v hv,
+    q8QuadraticSource_chosenPrime_inertia_natCard_eq_two v hv] at hcard
+  change P.asIdeal.inertiaDeg (𝓞 S) = 2
+  omega
+
+/-- The chosen top prime has ramification index two over the dyadic source prime. -/
+theorem q8QuadraticSource_chosenPrime_relative_ramificationIdx_eq_two
+    (v : HeightOneSpectrum (𝓞 S))
+    (hv : (2 : 𝓞 S) ∈ v.asIdeal) :
+    let P := finitePlaceExtensionCentre (K := S) (L := K3) v
+      (chosenFinitePlaceExtension (L := K3) v)
+    P.asIdeal.ramificationIdx (𝓞 S) = 2 := by
+  dsimp only
+  let P := finitePlaceExtensionCentre (K := S) (L := K3) v
+    (chosenFinitePlaceExtension (L := K3) v)
+  letI : P.asIdeal.LiesOver v.asIdeal :=
+    finitePlaceExtensionCentre_liesOver (K := S) (L := K3) v
+      (chosenFinitePlaceExtension (L := K3) v)
+  calc
+    P.asIdeal.ramificationIdx (𝓞 S) =
+        Ideal.ramificationIdxIn v.asIdeal (𝓞 K3) :=
+      (Ideal.ramificationIdxIn_eq_ramificationIdx
+        v.asIdeal P.asIdeal Gal(K3/S)).symm
+    _ = Nat.card (P.asIdeal.inertia Gal(K3/S)) :=
+      (Ideal.card_inertia_eq_ramificationIdxIn v.asIdeal P.asIdeal).symm
+    _ = 2 := q8QuadraticSource_chosenPrime_inertia_natCard_eq_two v hv
+
+/-- Every dyadic prime of the quadratic source has residue degree one over `ℚ`. -/
+theorem q8QuadraticSource_dyadic_inertiaDeg_eq_one
+    (v : HeightOneSpectrum (𝓞 S))
+    (hv : (2 : 𝓞 S) ∈ v.asIdeal) :
+    v.asIdeal.inertiaDeg ℤ = 1 := by
+  let P := finitePlaceExtensionCentre (K := S) (L := K3) v
+    (chosenFinitePlaceExtension (L := K3) v)
+  letI : P.asIdeal.LiesOver v.asIdeal :=
+    finitePlaceExtensionCentre_liesOver (K := S) (L := K3) v
+      (chosenFinitePlaceExtension (L := K3) v)
+  have hPtwo := q8FinitePlaceExtensionCentre_two_mem v hv
+  have htower := Ideal.inertiaDeg_tower (R := ℤ) v.asIdeal P.asIdeal
+  rw [q8Literal_two_inertiaDeg_eq_two P.asIdeal hPtwo,
+    q8QuadraticSource_chosenPrime_relative_inertiaDeg_eq_two v hv] at htower
+  have hpos := Ideal.inertiaDeg_pos v.asIdeal ℤ
+  omega
+
+/-- Every dyadic prime of the quadratic source is unramified over `ℚ`. -/
+theorem q8QuadraticSource_dyadic_ramificationIdx_eq_one
+    (v : HeightOneSpectrum (𝓞 S))
+    (hv : (2 : 𝓞 S) ∈ v.asIdeal) :
+    v.asIdeal.ramificationIdx ℤ = 1 := by
+  let P := finitePlaceExtensionCentre (K := S) (L := K3) v
+    (chosenFinitePlaceExtension (L := K3) v)
+  letI : P.asIdeal.LiesOver v.asIdeal :=
+    finitePlaceExtensionCentre_liesOver (K := S) (L := K3) v
+      (chosenFinitePlaceExtension (L := K3) v)
+  have hPtwo := q8FinitePlaceExtensionCentre_two_mem v hv
+  have htower := Ideal.ramificationIdx_tower (R := ℤ) v.asIdeal P.asIdeal
+  rw [q8Literal_two_ramificationIdx_eq_two P.asIdeal hPtwo,
+    q8QuadraticSource_chosenPrime_relative_ramificationIdx_eq_two v hv] at htower
+  have hpos := Ideal.ramificationIdx_pos v.asIdeal ℤ
+  omega
+
 theorem q8QuadraticSourceCentral_mem_chosenDecomposition
     (v : HeightOneSpectrum (𝓞 S))
     (hv : (2 : 𝓞 S) ∈ v.asIdeal) :
@@ -509,22 +659,6 @@ theorem q8QuadraticSourceCentralChosenDecomposition_smul_coe
     q8CAlgEquiv (x : K3)
   exact DFunLike.congr_fun q8QuadraticSourceCentral_restrictScalars
     (x : K3)
-
-theorem q8FinitePlaceExtensionCentre_two_mem
-    (v : HeightOneSpectrum (𝓞 S))
-    (hv : (2 : 𝓞 S) ∈ v.asIdeal) :
-    (2 : 𝓞 K3) ∈
-      (finitePlaceExtensionCentre (K := S) (L := K3) v
-        (chosenFinitePlaceExtension (L := K3) v)).asIdeal := by
-  let w := chosenFinitePlaceExtension (L := K3) v
-  let P := finitePlaceExtensionCentre (K := S) (L := K3) v w
-  have hPover : P.asIdeal.LiesOver v.asIdeal :=
-    finitePlaceExtensionCentre_liesOver (K := S) (L := K3) v w
-  change algebraMap (𝓞 S) (𝓞 K3) (2 : 𝓞 S) ∈ P.asIdeal
-  rw [← Ideal.mem_comap]
-  change (2 : 𝓞 S) ∈ P.asIdeal.under (𝓞 S)
-  rw [← hPover.over]
-  exact hv
 
 theorem q8ChosenGlobalLocalizationEquiv_intertwines_central
     (v : HeightOneSpectrum (𝓞 S))

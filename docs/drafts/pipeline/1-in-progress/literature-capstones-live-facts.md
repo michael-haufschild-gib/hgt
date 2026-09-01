@@ -21,7 +21,7 @@
 - Pinned Lean CFT supplies actual finite local Artin reciprocity, kernel = local norms, and concrete finite-place tensor-norm comparison.
 - The completed Hensel witness is unit-valued; its norm `u` has trivial actual finite-place Artin symbol for `N/K` at every dyadic `K=ℚ(√5,√41)` place.
 - Over `S=ℚ(√41)`, `u` has minimal polynomial `X²−X−1`; hence `N_{K/S}(u)=−1`.
-- At `2`, source lower groups are exactly `C₂` for levels `0,1,2` and trivial thereafter; the quartic source character sends its generator to `−1`, is even, and has exact Artin conductor exponent `3` (norm `8`).
+- At `2`, every source prime has `e=f=1` over `ℚ`; its prime below is literal `(2)`; the canonical completion map `ℚ₂→S_v` is an algebra equivalence. Source lower groups are `C₂` at levels `0,1,2`, then trivial; the quartic source character sends its generator to `−1`, is even, and has conductor exponent `3` (norm `8`).
 - Fröhlich 6(i)'s hypothesis holds; wild `2` is permitted. Finite sign and odd local product equal `α_Kβ_K=−1`.
 - Fröhlich's proof uses Artin induction/local Gaussian `ε`, pure-field evaluation, then quadratic-twist invariance.
 - **Open:** identify each chosen `S_v≃ℚ₂` and its reciprocity angular quotient with primitive even `χ₈`; prove genuine local `ε`; assemble `W_N=−1`.
