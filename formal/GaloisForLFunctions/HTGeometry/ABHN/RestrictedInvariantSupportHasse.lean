@@ -191,7 +191,7 @@ theorem rationalFunctionRestrictedLocalBrauer_nonSplit_place_has_partner_of_reci
 
 /-- Global number-field reciprocity forces any locally nonzero global class to have two distinct
 nonsplit localizations. -/
-theorem numberFieldGlobalReciprocity_exists_two_nonSplit_places
+private theorem numberFieldGlobalReciprocity_exists_two_nonSplit_places_of_reciprocity
     (K : Type u) [Field K] [NumberField K]
     (globalToLocal : BrauerGroup.{u, u} K →+ RestrictedLocalBrauerClasses K)
     (invariant : ∀ v : NumberFieldPlace K, BrauerGroup (completion K v) →+ RatModInt)
@@ -205,7 +205,7 @@ theorem numberFieldGlobalReciprocity_exists_two_nonSplit_places
 
 /-- With faithful global localization, every nonzero number-field Brauer class has two distinct
 nonsplit localizations under global reciprocity. -/
-theorem numberFieldGlobalReciprocity_injective_exists_two_nonSplit_places
+private theorem numberFieldGlobalReciprocity_injective_exists_two_nonSplit_places_of_reciprocity
     (K : Type u) [Field K] [NumberField K]
     (globalToLocal : BrauerGroup.{u, u} K →+ RestrictedLocalBrauerClasses K)
     (invariant : ∀ v : NumberFieldPlace K, BrauerGroup (completion K v) →+ RatModInt)
@@ -215,7 +215,7 @@ theorem numberFieldGlobalReciprocity_injective_exists_two_nonSplit_places
     (x : BrauerGroup.{u, u} K) (hne : x ≠ 0) :
     ∃ v w, v ≠ w ∧ (globalToLocal x).toLocalBrauerClasses v ≠ 0 ∧
       (globalToLocal x).toLocalBrauerClasses w ≠ 0 := by
-  apply numberFieldGlobalReciprocity_exists_two_nonSplit_places
+  apply numberFieldGlobalReciprocity_exists_two_nonSplit_places_of_reciprocity
     K globalToLocal invariant hrec hinvariant x
   intro hzero
   apply hne
@@ -225,7 +225,7 @@ theorem numberFieldGlobalReciprocity_injective_exists_two_nonSplit_places
 
 /-- Global function-field reciprocity forces any locally nonzero global class to have two
 distinct nonsplit localizations. -/
-theorem rationalFunctionGlobalReciprocity_exists_two_nonSplit_places
+private theorem rationalFunctionGlobalReciprocity_exists_two_nonSplit_places_of_reciprocity
     (F : Type u) [Field F] [Finite F]
     (globalToLocal : BrauerGroup.{u, u} (RatFunc F) →+
       RationalFunctionRestrictedLocalBrauerClasses F)
@@ -241,7 +241,7 @@ theorem rationalFunctionGlobalReciprocity_exists_two_nonSplit_places
 
 /-- With faithful global localization, every nonzero function-field Brauer class has two distinct
 nonsplit localizations under global reciprocity. -/
-theorem rationalFunctionGlobalReciprocity_injective_exists_two_nonSplit_places
+private theorem rationalFunctionGlobalReciprocity_injective_exists_two_nonSplit_places_of_reciprocity
     (F : Type u) [Field F] [Finite F]
     (globalToLocal : BrauerGroup.{u, u} (RatFunc F) →+
       RationalFunctionRestrictedLocalBrauerClasses F)
@@ -253,12 +253,54 @@ theorem rationalFunctionGlobalReciprocity_injective_exists_two_nonSplit_places
     (x : BrauerGroup.{u, u} (RatFunc F)) (hne : x ≠ 0) :
     ∃ v w, v ≠ w ∧ (globalToLocal x).toLocalBrauerClasses v ≠ 0 ∧
       (globalToLocal x).toLocalBrauerClasses w ≠ 0 := by
-  apply rationalFunctionGlobalReciprocity_exists_two_nonSplit_places
+  apply rationalFunctionGlobalReciprocity_exists_two_nonSplit_places_of_reciprocity
     F globalToLocal invariant hrec hinvariant x
   intro hzero
   apply hne
   apply hglobal
   rw [map_zero]
   exact hzero
+
+/-- **Number-field reciprocity absorption law.**  Global reciprocity is unchanged by adjoining its
+universal two-place support consequence for every globally nonzero localized Brauer class. -/
+theorem numberFieldGlobalReciprocity_iff_and_all_nonzero_have_two_nonSplit_places
+    (K : Type u) [Field K] [NumberField K]
+    (globalToLocal : BrauerGroup.{u, u} K →+ RestrictedLocalBrauerClasses K)
+    (invariant : ∀ v : NumberFieldPlace K, BrauerGroup (completion K v) →+ RatModInt)
+    (hinvariant : ∀ v, Function.Injective (invariant v)) :
+    NumberFieldGlobalReciprocity K globalToLocal invariant ↔
+      NumberFieldGlobalReciprocity K globalToLocal invariant ∧
+        ∀ x : BrauerGroup.{u, u} K, globalToLocal x ≠ 0 →
+          ∃ v w, v ≠ w ∧ (globalToLocal x).toLocalBrauerClasses v ≠ 0 ∧
+            (globalToLocal x).toLocalBrauerClasses w ≠ 0 := by
+  constructor
+  · intro hrec
+    refine ⟨hrec, ?_⟩
+    intro x hne
+    exact numberFieldGlobalReciprocity_exists_two_nonSplit_places_of_reciprocity
+      K globalToLocal invariant hrec hinvariant x hne
+  · exact And.left
+
+/-- **Rational-function reciprocity absorption law.**  Global reciprocity is unchanged by adjoining
+its universal two-place support consequence for every globally nonzero localized Brauer class. -/
+theorem rationalFunctionGlobalReciprocity_iff_and_all_nonzero_have_two_nonSplit_places
+    (F : Type u) [Field F] [Finite F]
+    (globalToLocal : BrauerGroup.{u, u} (RatFunc F) →+
+      RationalFunctionRestrictedLocalBrauerClasses F)
+    (invariant : ∀ v : RationalFunctionPlace F,
+      BrauerGroup (rationalFunctionCompletion F v) →+ RatModInt)
+    (hinvariant : ∀ v, Function.Injective (invariant v)) :
+    RationalFunctionGlobalReciprocity F globalToLocal invariant ↔
+      RationalFunctionGlobalReciprocity F globalToLocal invariant ∧
+        ∀ x : BrauerGroup.{u, u} (RatFunc F), globalToLocal x ≠ 0 →
+          ∃ v w, v ≠ w ∧ (globalToLocal x).toLocalBrauerClasses v ≠ 0 ∧
+            (globalToLocal x).toLocalBrauerClasses w ≠ 0 := by
+  constructor
+  · intro hrec
+    refine ⟨hrec, ?_⟩
+    intro x hne
+    exact rationalFunctionGlobalReciprocity_exists_two_nonSplit_places_of_reciprocity
+      F globalToLocal invariant hrec hinvariant x hne
+  · exact And.left
 
 end GaloisForLFunctions.HTGeometry.ABHN

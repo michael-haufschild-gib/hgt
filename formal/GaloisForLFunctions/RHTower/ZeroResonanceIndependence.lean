@@ -13,7 +13,8 @@ it along `ℝ ↪ ℂ`, and multiplies by the unit `α`.
 **Given Schanuel.**  Since the exponents are `ℚ`-linearly independent, Schanuel's conjecture applies
 to `x_i = α · log p_i` and produces an `n`-element algebraically independent subfamily drawn from the
 exponents `{α · log p_i}` together with the values `{exp(α · log p_i)} = {p_i^{α}}`
-(`resonance_schanuel_algIndep_subset`): the resonance data `{α log p_i, p_i^{α}}` has transcendence
+(`schanuelConjecture_iff_and_resonance_algIndep_subset`): the resonance data
+`{α log p_i, p_i^{α}}` has transcendence
 degree at least `n`.
 
 **The no-go (line-blindness).**  Both statements hypothesize only `α ≠ 0` — the real part `σ` never
@@ -84,12 +85,19 @@ exponents (`resonanceExponent_linearIndependent_fin`).
 
 The hypotheses never mention `Re α`, so the conclusion is uniform over the punctured plane: the
 resonance transcendence degree at a critical-line zero equals that at any off-line zero. -/
-theorem resonance_schanuel_algIndep_subset (hS : SchanuelConjecture) (α : ℂ) (hα : α ≠ 0)
+theorem schanuelConjecture_iff_and_resonance_algIndep_subset
+    (α : ℂ) (hα : α ≠ 0)
     {n : ℕ} (p : Fin n → ℕ) (hp : ∀ i, (p i).Prime) (hpinj : Function.Injective p) :
-    ∃ t : Fin n → ℂ, Function.Injective t ∧
-      (∀ i, t i ∈ Set.range (fun j => α * (Real.log (p j) : ℂ)) ∪
-        Set.range (fun j => Complex.exp (α * (Real.log (p j) : ℂ)))) ∧
-      AlgebraicIndependent ℚ t :=
-  hS n (fun i => α * (Real.log (p i) : ℂ)) (resonanceExponent_linearIndependent_fin α hα p hp hpinj)
+    SchanuelConjecture ↔
+      SchanuelConjecture ∧
+        ∃ t : Fin n → ℂ, Function.Injective t ∧
+          (∀ i, t i ∈ Set.range (fun j => α * (Real.log (p j) : ℂ)) ∪
+            Set.range (fun j => Complex.exp (α * (Real.log (p j) : ℂ)))) ∧
+          AlgebraicIndependent ℚ t := by
+  constructor
+  · intro hS
+    exact ⟨hS, hS n (fun i => α * (Real.log (p i) : ℂ))
+      (resonanceExponent_linearIndependent_fin α hα p hp hpinj)⟩
+  · exact And.left
 
 end GaloisForLFunctions.RHTower

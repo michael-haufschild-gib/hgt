@@ -46,8 +46,9 @@ theorem exists_maximal_disjoint_radicalDifferential
       exact le_trans (hcS hJc).2.2.1 (le_sSup hJc)
     · rw [Set.disjoint_left]
       intro x hx hxM
-      rw [Submodule.mem_sSup_of_directed hnec hc.directedOn] at hx
-      obtain ⟨J, hJc, hxJ⟩ := hx
+      have hx' : x ∈ sSup c := hx
+      rw [Submodule.mem_sSup_of_directed hnec hc.directedOn] at hx'
+      obtain ⟨J, hJc, hxJ⟩ := hx'
       exact Set.disjoint_left.mp (hcS hJc).2.2.2 hxJ hxM
   obtain ⟨P, hP⟩ := zorn_le₀ S hbound
   refine ⟨P, hP.1.1, hP.1.2.1, hP.1.2.2.1, hP.1.2.2.2, ?_⟩

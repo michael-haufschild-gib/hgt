@@ -250,12 +250,20 @@ theorem ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound_iff_positiveMixtureBou
   ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound_iff_xiScrewCodiagonalMixtureBound hb |>.trans
     (ccmFUCentralXiScrewCodiagonalMixtureBound_iff_positiveMixtureBound hb)
 
-/-- Uniform boundedness of the positive marked Suzuki-profile average forces RH. -/
-theorem riemannHypothesis_of_ccmFUCentralXiScrewPositiveMixtureBound
-    {b : ℝ} (hb : 0 < b)
-    (hbound : CCMFUCentralXiScrewPositiveMixtureBound b) :
-    RiemannHypothesis := by
-  apply riemannHypothesis_of_ccmFUCentralXiScrewCodiagonalMixtureBound hb
-  exact (ccmFUCentralXiScrewCodiagonalMixtureBound_iff_positiveMixtureBound hb).2 hbound
+/-- **Exact positive-mixture/RH absorption law.**  Uniform boundedness of the marked Suzuki-profile
+average is unchanged by adjoining RH. -/
+theorem ccmFUCentralXiScrewPositiveMixtureBound_iff_and_riemannHypothesis
+    {b : ℝ} (hb : 0 < b) :
+    CCMFUCentralXiScrewPositiveMixtureBound b ↔
+      CCMFUCentralXiScrewPositiveMixtureBound b ∧ RiemannHypothesis := by
+  constructor
+  · intro hbound
+    refine ⟨hbound, ?_⟩
+    have hcodiagonal :=
+      (ccmFUCentralXiScrewCodiagonalMixtureBound_iff_positiveMixtureBound hb).2 hbound
+    exact
+      (ccmFUCentralXiScrewCodiagonalMixtureBound_iff_and_riemannHypothesis hb).mp
+        hcodiagonal |>.2
+  · exact And.left
 
 end GaloisForLFunctions.RHTower

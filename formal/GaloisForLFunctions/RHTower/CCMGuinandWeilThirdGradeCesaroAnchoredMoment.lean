@@ -539,14 +539,19 @@ theorem ccmGuinandWeilThirdGradeCesaroLinearBound_iff_anchoredMomentBound
         mul_le_mul_of_nonneg_right (hbound H hbH) hH.le
       _ ≤ C * (H + 1) := mul_le_mul_of_nonneg_left (by linarith) hC
 
-/-- The anchored positive-kernel bound is an unconditional sufficient criterion for RH because it
-is exactly the literal CCM-FU open core, not a reporter-only coercivity surrogate. -/
-theorem riemannHypothesis_of_ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound
-    {b : ℝ} (hb : 0 < b)
-    (hbound : CCMGuinandWeilThirdGradeCesaroAnchoredMomentBound b) :
-    RiemannHypothesis := by
-  exact riemannHypothesis_of_ccmGuinandWeilThirdGradeCesaroLinearBound hb
-    ((ccmGuinandWeilThirdGradeCesaroLinearBound_iff_anchoredMomentBound hb).2 hbound)
+/-- **Exact CCM-FU/RH absorption law.**  The anchored positive-kernel bound is unchanged by
+adjoining RH: the literal signed moment is exactly the CCM-FU open core, not a reporter-only
+coercivity surrogate. -/
+theorem ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound_iff_and_riemannHypothesis
+    {b : ℝ} (hb : 0 < b) :
+    CCMGuinandWeilThirdGradeCesaroAnchoredMomentBound b ↔
+      CCMGuinandWeilThirdGradeCesaroAnchoredMomentBound b ∧ RiemannHypothesis := by
+  constructor
+  · intro hbound
+    refine ⟨hbound, ?_⟩
+    exact riemannHypothesis_of_ccmGuinandWeilThirdGradeCesaroLinearBound hb
+      ((ccmGuinandWeilThirdGradeCesaroLinearBound_iff_anchoredMomentBound hb).2 hbound)
+  · exact And.left
 
 end GaloisForLFunctions.RHTower
 

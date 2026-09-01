@@ -212,7 +212,7 @@ theorem tendsto_ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment_sub
 /-- Raising the fixed positive lower wall cannot create a new CCM-FU obstruction. All source
 information removed from the aperture is retained in the two explicit compact memory terms of
 `ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment_wallTransport`. -/
-theorem ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound_of_le
+private theorem ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound_of_le
     {b c : ℝ} (hb : 0 < b) (hbc : b ≤ c)
     (hbound : CCMGuinandWeilThirdGradeCesaroAnchoredMomentBound b) :
     CCMGuinandWeilThirdGradeCesaroAnchoredMomentBound c := by
@@ -342,7 +342,7 @@ theorem abs_ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment_le_of_mem
 
 /-- Lowering a fixed positive source wall also preserves the CCM-FU bound. The only additional
 work is the explicit elementary estimate on the bounded aperture interval between the two walls. -/
-theorem ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound_lower_of_le
+private theorem ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound_lower_of_le
     {b c : ℝ} (hb : 0 < b) (hbc : b ≤ c)
     (hbound : CCMGuinandWeilThirdGradeCesaroAnchoredMomentBound c) :
     CCMGuinandWeilThirdGradeCesaroAnchoredMomentBound b := by
@@ -474,13 +474,20 @@ theorem ccmGuinandWeilThirdGradeCesaroAnchoredMomentTailBound_iff
     ((ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound_iff hb hc).trans
       (ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound_iff_tailBound hc))
 
-/-- Eventual boundedness of one anchored prime--polar tail suffices for RH. -/
-theorem riemannHypothesis_of_ccmGuinandWeilThirdGradeCesaroAnchoredMomentTailBound
-    {b : ℝ} (hb : 0 < b)
-    (htail : CCMGuinandWeilThirdGradeCesaroAnchoredMomentTailBound b) :
-    RiemannHypothesis := by
-  apply riemannHypothesis_of_ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound hb
-  exact
-    (ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound_iff_tailBound hb).2 htail
+/-- **Exact tail/RH absorption law.**  Eventual boundedness of one anchored prime--polar tail is
+unchanged by adjoining RH. -/
+theorem ccmGuinandWeilThirdGradeCesaroAnchoredMomentTailBound_iff_and_riemannHypothesis
+    {b : ℝ} (hb : 0 < b) :
+    CCMGuinandWeilThirdGradeCesaroAnchoredMomentTailBound b ↔
+      CCMGuinandWeilThirdGradeCesaroAnchoredMomentTailBound b ∧ RiemannHypothesis := by
+  constructor
+  · intro htail
+    refine ⟨htail, ?_⟩
+    have hbound :=
+      (ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound_iff_tailBound hb).2 htail
+    exact
+      (ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound_iff_and_riemannHypothesis hb).mp
+        hbound |>.2
+  · exact And.left
 
 end GaloisForLFunctions.RHTower

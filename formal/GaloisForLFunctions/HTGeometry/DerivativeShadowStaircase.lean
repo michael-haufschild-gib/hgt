@@ -115,12 +115,12 @@ theorem exists_jetStep_algebraic_of_not_hypertranscendentalOver
   push Not at hcon
   exact hx ((hypertranscendentalOver_iff_forall_jetStep x).mpr hcon)
 
-/-- **A collapsing step is exactly an algebraic jet.**  If the `k`-th step is not strict, the
-`k`-th jet is algebraic over the strict tail, so the step costs nothing. -/
-theorem isAlgebraic_of_not_jetStepStrict {F E : Type*} [Field F] [Field E] [Algebra F E]
-    [Differential E] {x : E} {k : ℕ} (h : ¬ JetStepStrict F x k) :
-    IsAlgebraic (jetTailField F x (k + 1)) (differentialJet k x) := by
-  rw [JetStepStrict, Transcendental, not_not] at h
-  exact h
+/-- **Exact collapse law.**  Failure of strictness at step `k` is equivalent to algebraicity of
+the `k`-th jet over the strict tail, so a collapsing step costs exactly nothing. -/
+theorem not_jetStepStrict_iff_isAlgebraic {F E : Type*} [Field F] [Field E] [Algebra F E]
+    [Differential E] {x : E} {k : ℕ} :
+    (¬ JetStepStrict F x k) ↔
+      IsAlgebraic (jetTailField F x (k + 1)) (differentialJet k x) := by
+  rw [JetStepStrict, Transcendental, not_not]
 
 end GaloisForLFunctions.HTGeometry

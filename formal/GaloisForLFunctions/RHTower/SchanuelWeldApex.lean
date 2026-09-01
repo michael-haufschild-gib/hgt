@@ -61,7 +61,7 @@ hence algebraic, while every member of an algebraically independent family is tr
 `t_i` can be an exponential generator, forcing `t_i ∈ {x_j}`.  Thus `range t ⊆ range x`; both are
 injective images of `Fin n`, so equal in cardinality and therefore equal as sets.  Algebraic
 independence of `t` transported across `range t = range x` yields algebraic independence of `x`. -/
-theorem primeLogs_algebraicallyIndependent (hS : SchanuelConjecture)
+private theorem primeLogs_algebraicallyIndependent_of_schanuel (hS : SchanuelConjecture)
     {n : ℕ} (p : Fin n → ℕ) (hp : ∀ i, (p i).Prime) (hpinj : Function.Injective p) :
     AlgebraicIndependent ℚ (fun i => (Real.log (p i) : ℂ)) := by
   set x : Fin n → ℂ := fun i => (Real.log (p i) : ℂ) with hxdef
@@ -131,14 +131,33 @@ theorem primeLogs_algebraicallyIndependent (hS : SchanuelConjecture)
   rw [hrange] at h1
   exact (algebraicIndependent_subtype_range hxinj).mp h1
 
+/-- **Exact finite prime-log absorption law.**  For each injective finite prime packet, adjoining
+algebraic independence to Schanuel's conjecture leaves the conjecture unchanged. -/
+theorem schanuelConjecture_iff_and_primeLogs_algebraicallyIndependent
+    {n : ℕ} (p : Fin n → ℕ) (hp : ∀ i, (p i).Prime) (hpinj : Function.Injective p) :
+    SchanuelConjecture ↔
+      SchanuelConjecture ∧
+        AlgebraicIndependent ℚ (fun i => (Real.log (p i) : ℂ)) := by
+  constructor
+  · intro hS
+    exact ⟨hS, primeLogs_algebraicallyIndependent_of_schanuel hS p hp hpinj⟩
+  · exact And.left
+
 /-- **The weld-spectrum independence ladder, apex form.**  Under Schanuel's conjecture the entire
 prime rate spectrum `{log p}` of the archimedean–difference weld is algebraically independent over
 `ℚ` — no finite set of primes has its logarithms tied by any nonzero rational polynomial relation.
 This sits one strict step above the unconditional `ℤ`-linear independence `primeLog_linearIndependent`
 and above the `ℚ̄`-linear (Baker) and pairwise Gelfond–Schneider layers, all of which it implies. -/
-theorem weldSpectrum_algebraicallyIndependent (hS : SchanuelConjecture) :
-    ∀ {n : ℕ} (p : Fin n → ℕ), (∀ i, (p i).Prime) → Function.Injective p →
-      AlgebraicIndependent ℚ (fun i => (Real.log (p i) : ℂ)) :=
-  fun p hp hpinj => primeLogs_algebraicallyIndependent hS p hp hpinj
+theorem schanuelConjecture_iff_and_weldSpectrum_algebraicallyIndependent :
+    SchanuelConjecture ↔
+      SchanuelConjecture ∧
+        ∀ {n : ℕ} (p : Fin n → ℕ), (∀ i, (p i).Prime) → Function.Injective p →
+          AlgebraicIndependent ℚ (fun i => (Real.log (p i) : ℂ)) := by
+  constructor
+  · intro hS
+    refine ⟨hS, ?_⟩
+    intro n p hp hpinj
+    exact (schanuelConjecture_iff_and_primeLogs_algebraicallyIndependent p hp hpinj).mp hS |>.2
+  · exact And.left
 
 end GaloisForLFunctions.RHTower

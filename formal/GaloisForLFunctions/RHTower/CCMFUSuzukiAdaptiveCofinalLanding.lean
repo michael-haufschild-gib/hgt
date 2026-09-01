@@ -373,13 +373,16 @@ theorem riemannHypothesis_of_sourceAdaptivePositiveLogChord_uniformlyBounded
     simpa using hbound
   rcases (uniformlyBounded_sourceAdaptivePositiveLogChord_iff_literal hb).mp
       hadaptive with ⟨C, hC⟩
-  apply riemannHypothesis_of_ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound hb
-  refine ⟨max C 0, le_max_right _ _, ?_⟩
-  intro H hH
-  have hW := hC H (by simpa using hH.le)
-  rw [← ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment_eq_primePolarTriangularWindow
-    hb hH.le] at hW
-  exact hW.trans (le_max_left _ _)
+  have hanchored : CCMGuinandWeilThirdGradeCesaroAnchoredMomentBound 1 := by
+    refine ⟨max C 0, le_max_right _ _, ?_⟩
+    intro H hH
+    have hW := hC H (by simpa using hH.le)
+    rw [← ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment_eq_primePolarTriangularWindow
+      hb hH.le] at hW
+    exact hW.trans (le_max_left _ _)
+  exact
+    (ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound_iff_and_riemannHypothesis hb).mp
+      hanchored |>.2
 
 def ccmFUSuzukiPositiveLogChordCofinalWall (b : ℝ) (N : ℕ) : ℝ :=
   b + (N : ℝ) + 1

@@ -15,12 +15,13 @@
 - Actual `5` source/inverse have conductor `5`, literal Tate equations, unit phases, product `−1`.
 - At `41`, direct `C₄→F₄₁×` pullback has exponent `≤2`. Reverse `F₄₁×→C₄≃I₄₁` is surjective and preserves both literal Artin eigenchannels.
 - Actual `41` source/inverse have conductor `41`, literal Tate equations, unit phases, product `+1`.
-- At `2`, every primitive quadratic conductor-`8` source/inverse pair has phase product `χ(-1)`, independent of radial orientation: `+1` for discriminant `8`, `−1` for `−8`.
+- At `2`, every primitive quadratic conductor-`8` pair has phase product `χ(-1)`; parity uniquely selects `χ₈` (`+1`) or `χ₋₈` (`−1`).
 - For every dyadic `E/K`, `E⊗_KN ≃ E[ω]/(ω²−δ)` and `u` is its determinant algebra norm, via `a²=u+δ(u+1)²`.
 - The completed decomposition involution fixes each contracted dyadic prime and sends `u↦1−u`; hence the actual selected total local norm is `u(1−u)=−1`.
 - Pinned Lean CFT supplies actual finite local Artin reciprocity, kernel = local norms, and concrete finite-place tensor-norm comparison.
 - The completed Hensel witness is unit-valued; its norm `u` has trivial actual finite-place Artin symbol for `N/K` at every dyadic `K=ℚ(√5,√41)` place.
 - Over `S=ℚ(√41)`, `u` has minimal polynomial `X²−X−1`; hence `N_{K/S}(u)=−1`.
+- At `2`, source lower groups are exactly `C₂` for levels `0,1,2` and trivial thereafter; the quartic source character sends its generator to `−1`, is even, and has exact Artin conductor exponent `3` (norm `8`).
 - Fröhlich 6(i)'s hypothesis holds; wild `2` is permitted. Finite sign and odd local product equal `α_Kβ_K=−1`.
 - Fröhlich's proof uses Artin induction/local Gaussian `ε`, pure-field evaluation, then quadratic-twist invariance.
-- **Open:** finite-place Artin norm–restriction gives source Artin`(−1)=1`; identify its `C₄` character with the conductor-`8` Tate candidate; then `W_N=−1`.
+- **Open:** identify each chosen `S_v≃ℚ₂` and its reciprocity angular quotient with primitive even `χ₈`; prove genuine local `ε`; assemble `W_N=−1`.

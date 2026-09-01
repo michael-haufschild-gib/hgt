@@ -891,9 +891,10 @@ of the exact Suzuki curvature cells. -/
 theorem riemannHypothesis_of_suzukiCheckpointTriangularCurvatureTransformBound
     (hbound : CCMFUSuzukiTriangularCurvatureTransformBound) :
     RiemannHypothesis := by
-  apply riemannHypothesis_of_ccmFUSuzukiCanonicalCheckpointAffineTailBound
-  exact
+  have htail : CCMFUSuzukiCanonicalCheckpointAffineTailBound :=
     ccmFUSuzukiCanonicalCheckpointAffineTailBound_iff_triangularCurvatureTransformBound.mpr
       hbound
+  exact
+    ccmFUSuzukiCanonicalCheckpointAffineTailBound_iff_and_riemannHypothesis.mp htail |>.2
 
 end RHTower

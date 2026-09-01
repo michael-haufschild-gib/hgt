@@ -464,6 +464,8 @@ import GaloisForLFunctions.RHTower.SuzukiObserverJetFormationCompletion
 import GaloisForLFunctions.RHTower.FormationCompletePositivityReflectedGramFracture
 import GaloisForLFunctions.RHTower.ArithmeticFormationCompletionBoundaryFusion
 import GaloisForLFunctions.RHTower.ArithmeticFormationRecurrenceDescentFusion
+import GaloisForLFunctions.RHTower.RouteRNilpotentMonodromy
+import GaloisForLFunctions.RHTower.RouteRExternalTensorMonodromy
 
 /-!
 # Universal-law-field Lean umbrella

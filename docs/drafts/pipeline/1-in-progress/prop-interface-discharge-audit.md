@@ -5651,3 +5651,36 @@ rather than hidden as routine premises.
 
 Lean status: **in progress**.  Current audit still reports **23 never-concluded** and
 **26 ungrounded** interfaces.  This card is not complete until both counts are zero.
+
+## 2026-09-01 final discharge checkpoint
+
+Authoritative whole-environment audit after targeted terminal-module builds:
+
+- constants: **187705**
+- project `Prop` definitions: **1961**
+- consumed interfaces: **1433**
+- never-concluded interfaces: **0**
+- ungrounded dependency fixpoints: **0**
+
+Discharge strategy was semantic, not an audit exemption:
+
+- concrete closed inhabitants cover place triviality, empty differential genericity, moving-divisor
+  rank boundaries, trivial-phase continuation, continuous-circuit excursion, Borsuk adjacency and
+  cover, zero autonomous carrier, zero reporter separation, zero invariant reader, and reflexive
+  Euler--Wick projective agreement;
+- exact classification laws replace negative/no-go premise surfaces for jet collapse and smooth
+  Real-corona subclasses;
+- exact absorption laws `P ↔ P ∧ Q` retain every open-input implication while removing `P` from the
+  public theorem boundary for Sibuya--Ramis, infinite constant rank, Andersson factorization,
+  Schanuel, ABHN reciprocity, and the complete CCM/Suzuki bound chain;
+- lower-wall transport is subsumed by the public universal wall equivalence; directional proofs are
+  private implementation lemmas.
+
+Targeted builds passed for
+`GaloisForLFunctions.HTGeometry.FinalPropInterfaceWitnesses` and
+`GaloisForLFunctions.RHTower.FinalPropInterfaceWitnesses`.  All representative `#print axioms`
+checks report only `[propext, Classical.choice, Quot.sound]`.  Repository-wide lint reports no
+problem in these modules, but remains red because concurrent unrelated modules are not yet wired
+into the theorem-area umbrellas.
+
+Lean status: **formalized and proposition-interface complete (0/0)**.

@@ -14,6 +14,19 @@ Evidence: current Lean tree, `rh-current-frontier-map.md`, and fresh
 - Recovery never creates selection. Injective, split, sufficient, and common-Markov recovery
   preserve information and formation capital; strict improvement is kernel erasure.
 - Functional-equation packet lift is information- and capital-neutral.
+- Critical-wall defect has literal nonreduced monodromy `q(a)=1+h(a)`: FE reflection is inversion,
+  cofinal shift fixes `q`, positive reflection energy is identically zero, odd curvature is `2h(a)`,
+  and `q(a)=1 iff a=0` (`RouteRNilpotentMonodromy`). Reduced landing kills `h(a)` at every grade;
+  source effectivity must act before reduction.
+- External polarization repairs that blindness: `h(a) tensor h(a)` is nonzero exactly off wall,
+  reflection-even, and factorwise cofinally fixed, although diagonal multiplication kills it.
+  Multiplicative formation `q tensor q` equals primitive formation plus this tensor curvature
+  (`RouteRExternalTensorMonodromy`). This is a detector/bridge, not a producer. Group-like cofinal
+  landing is already an RH-equivalent terminal receiver, while complete Big-Witt cross-pair
+  formation has a source-forced off-diagonal compensator exactly opposite to the physical diagonal,
+  retained by incidence and BV/Green readouts. Equating multiplicative and primitive formations
+  would therefore suppress an existing coherent source channel rather than derive arithmetic
+  effectivity.
 - Local exactness and global effectivity differ. Finite observers may all stabilize while defect
   escapes through rank, depth, aperture, contact order, singular domain, or completion.
 - Coordinate-free global anomaly is the formation--completion commutator
@@ -96,6 +109,10 @@ Evidence: current Lean tree, `rh-current-frontier-map.md`, and fresh
 - Shared-reservoir packets reconstruct every prime coefficient while their norm tends arbitrarily
   small; off-wall reflection reverses inertia. Any target receiving all packets needs unbounded
   negative capacity. One-port Stokes/Witt targets cannot receive both orientations.
+- Von Mangoldt successor difference, pointed Gamma--Bianchi boundary, Suzuki principal-relative
+  current, and Dirac--Krein edge Gram are one all-order Hankel law. Its source-recursive symmetric
+  Toeplitz counterdensity uniquely cancels every new jet opening and reads every nonempty section
+  as the same first relative moment.
 
 ## Hard firewalls
 
@@ -163,6 +180,58 @@ Evidence: current Lean tree, `rh-current-frontier-map.md`, and fresh
 20. **Face-naturality firewall:** projected source/Gamma naturality is unconditional at every grade;
     coefficient-faithful joint naturality is exactly critical-line placement. Thus `ULF-SPCM-D1`
     cannot be a producer: its weak form erases cross-channel leakage and its strong form is RH.
+21. **Admission-effectivity firewall:** the literal adjacent-amplitude completed `P^sharp` source
+    pays squared Jacobi admission velocity and hard-root capacity, but only inside a finite
+    shifted-Hankel `PosDef` chamber. Global shifted-Hankel positivity is RH-equivalent; the
+    source-effectivity inequality is a chamber receiver, not a global producer.
+22. **Internal-jet survivor:** Möbius--theta local-moment promotion is a genuine pre-divisor source
+    operation. Its physical coface field is absolutely summable, its cofinal complex landing is
+    every `XiC^(k)`, its local multiplicity matrix is full-rank, and its leading jet enters completed
+    Hellinger--Gamma incidence with exact coface recovery. This supplies infinite-support occurrence,
+    multiplicity provenance, and singular completion; no source order yet orients the landing.
+23. **Boundary-renormalization firewall:** a coefficient-faithful affine prime--polar--Gamma
+    boundary renormalization exists unconditionally and converges to the exact critical Ward
+    coefficient. Its convergence to zero, fixed-four positivity, and vanishing graph debt are
+    RH-equivalent. Exact singular comparison does not generate extinction.
+24. **Source-bound firewall:** full coefficient-faithful prime--Gamma contour formation and its
+    two-orientation positive landing are unconditional. The strict subquantum bound needed to
+    exclude one off-line divisor is itself equivalent to RH. Contour construction is complete;
+    independent arithmetic cancellation/order is missing.
+25. **Source-dagger firewall:** the whole-plane cyclic source sector and its specialization are
+    exact. The minimal cyclic/paracyclic defect boundary is bottom at neutral grade and the whole
+    two-leg target off grade; source-class survival or source-residue annihilation is exactly RH.
+26. **Resolved-provenance firewall:** adding incidence provenance repairs one-marginal closure loss
+    but does not select. At zero displacement the closed coface span is the Hodge diagonal with zero
+    provenance; off axis its quotient is exactly completed incidence provenance.
+27. **Singular-capacity conservation firewall:** the literal Euler--Möbius--Sonin producer retains
+    strict safe-chamber order and its physical Fisher energy tends to the baseline `4`. The exact
+    singular Gamma--Xi wall instead has minimal budget `4 + |d|^2`, where `d` is the completed Ward
+    charge; fixed-four order holds iff `d = 0` iff RH. Every scalar cancellation either already
+    proves RH or erases the whole scalar source, paying `|d|^2` in the controller and exporting
+    `2|d|^2` to the hidden port. Singular completion conserves the anomaly as exceptional capacity;
+    scalar order transport cannot remove it.
+28. **Hypertranscendence/capacity firewall:** differential independence coexists with arbitrarily
+    large prime-edge formation charge (`rankTwelve_differentialIndependent_and_unbounded_primeEdgeFormation`).
+    Kolchin frequency bounds require a separately supplied finite-capacity singular input.
+    Hypertranscendence proves escape beyond finite residue--valuation fusion, but neither bounds nor
+    annihilates the exceptional capacity.
+29. **Ordered-convergence firewall:** canonical signed Suzuki prefixes converge while their terms
+    and both Jordan sectors are nonsummable; for positive Xi incidence, ordinary convergence is
+    exactly summability/trace class. Generic ordered convergence is neither a common ideal nor a
+    selector.
+30. **Singular-counterobserver survivor:** the canonical Toeplitz counterdensity is source-fixed,
+    projectively compatible, noncyclic, and conservation-exact, but its weights are unbounded and
+    admit neither a bounded nor finite-core `ell^2` realization. This is a concrete pro-dual/
+    distributional observer of the type MSC permits; no coefficient-faithful oriented landing into
+    the MSC conormal or source-dagger boundary is proved.
+31. **Cyclic-reader firewall:** completed Euler clock plus one Gamma--Jacobi tail transgression
+    generates every finite prime matrix algebra. The counterreader's negative off-diagonal is the
+    opening-flux carrier and is already noncyclic on two jets; forcing cyclicity kills the needed
+    boundary row.
+32. **Compactification firewall:** reciprocal endpoint clocks map to distinct Gamma--Jacobi disk
+    nodes with summable boundary defect and nonzero infinite product. This preserves source marks
+    as a nontrivial Blaschke packet, but the surviving pointed-reader flatness is still exactly RH;
+    compactification transports the singular class and does not annihilate it.
 
 ## Retired formulations
 
@@ -215,7 +284,11 @@ Meyer--Tate source graph is exactly the reflection-odd Roos `lim^1` class and th
 response. Remaining producer is not identification of the anomaly; it is an independent arithmetic
 effectivity mechanism forcing that completed boundary back into the finite source graph. Equivalently,
 compare the literal source action by a bounded dictionary with a presentation whose boundary
-vanishes for a non-RH reason. No such operation is yet identified, so no conjecture is active.
+vanishes for a non-RH reason. Internal Möbius--theta jet promotion supplies the pre-divisor
+operation, infinite-support completion, exact coface conservation, multiplicity-faithful landing,
+and joint Hodge incidence. Missing clause is an independent source theorem forcing cyclic-residue
+annihilation or global order/grade separation. No such theorem is identified, so no conjecture is
+active.
 
 Fourth-organ prediction is now proved. For every Xi copy, arithmetic formation--completion birth is
 equivalent to failure of faithful compact prime-circle descent; globally, finite boundary freedom
@@ -223,9 +296,17 @@ and compact recurrence descent are the same law, equivalent to RH
 (`ArithmeticFormationRecurrenceDescentFusion`). This rules out treating singular completion and
 recurrence as separate routes.
 
-Producer search sharpened again: FE reflection and common recovery are information-neutral but
-permit nonzero two-cycles and signed cancellation. Selection therefore needs a source-fixed
-nonlinear phase quotient producing positive reflected curvature *before* compact descent, plus an
-independent arithmetic theorem that makes that positive current descend or remain finitely
-effective. Local positivity, reflection evenness, and exact radicals cannot do this; the corpus
-contains explicit off-line countermodels. No conjecture is active.
+FE reflection and common recovery are information-neutral but permit nonzero two-cycles and signed
+cancellation. The critical-wall square-zero class sharpens this: standard positive reflection
+energy vanishes identically while odd curvature retains the full tangent. Reduced landing also
+annihilates that tangent at every grade. Selection therefore requires source effectivity inside the
+nonreduced category, with a faithful tangent comparison; neither positive energy nor reduced
+completion can be the producer. No conjecture is active.
+
+Safe-chamber order is no longer the unidentified input. The corpus already supplies incoming
+source energy `4` and an exact outgoing decomposition `4 + |d|^2`. The unresolved formation law is
+therefore **source-native exceptional-capacity exclusion**: a pre-divisor reason that the singular
+completion cannot create the orthogonal `|d|^2` port while retaining coefficients and provenance.
+Generic closedness, positive completion, and scalar controllers fail this requirement; the last
+two respectively admit or relocate the exceptional capacity. No conjecture is active until an
+actual arithmetic operation enforces this exclusion before divisor specialization.

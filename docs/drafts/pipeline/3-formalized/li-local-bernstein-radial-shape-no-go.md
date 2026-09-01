@@ -1,9 +1,9 @@
 # LI local Bernstein radial-shape no-go
 
 - **ID:** LI-LOCAL-BERNSTEIN-NOGO
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** FALSIFIED
-- **Status:** `[PROVED HERE]`
+- **Status:** `[FORMALIZED]`
 - **RH chain killed:** `local all-order Bernstein shape of exact radial response → nonnegative adjacent-current coefficients → paired Li positivity → RH`.
 
 ## Theorem
@@ -68,8 +68,16 @@ the counterexample respects the algebraic symmetries used by the LI source law.
 - **Exact killing mechanism:** Local derivative signs measure pole-distance domination. Seven nearer positive-real poles mask the full derivative tower of a farther off-axis conjugate pair, while a single Chebyshev mode detects its phase.
 - **Strongest positive survivor:** Any viable radial-shape implication to LI must be global and singularity-faithful: e.g. a complete-Bernstein/Stieltjes extension whose analytic continuation constrains all singularities. No condition depending only on the complete derivative jet over the physical interval can exclude off-axis squared nodes.
 - **New insight:** Exact LI coefficient orientation is not a local real-variable shape problem. It requires analytic continuation/support exhaustion capable of reading pole location, not arbitrarily high local derivative order.
-- **Lean target:** `LiEvenCrossLocalBernsteinShapeNoGo.lean`; formalize exact derivative domination, negative mode, and capstone non-implication witness.
+- **Lean certificate:** `RHTower/LiEvenCrossLocalBernsteinShapeNoGo.lean`; capstones `strictBernsteinOnLIInterval_liLocalBernsteinResponse`, `liLocalCompletedAbelEndpointMode_three_re_neg`, and `not_localBernsteinShapeForcesEndpointModes`.
 
 ## Novelty audit
 
 Bombieri--Lagarias gives general multiset Li criteria; Voros gives asymptotic oscillation from off-line zeros. Corpus has exact LI radial generating law and finite-prefix oscillation no-gos. Bounded search through 2026-08 found no theorem combining strict all-order Bernstein shape on the full physical LI interval with an explicit negative completed-Abel Li mode. External novelty remains `[NOVELTY UNVERIFIED]` pending expert priority review.
+
+## Verification
+
+- `lake env lean GaloisForLFunctions/RHTower/LiEvenCrossLocalBernsteinShapeNoGo.lean`: PASS.
+- `lake build GaloisForLFunctions.RHTower.LiEvenCrossLocalBernsteinShapeNoGo`: PASS.
+- Axioms: `propext`, `Classical.choice`, `Quot.sound` only.
+- Wired into `GaloisForLFunctions/RHTower.lean`; lint sees module reachable. Remaining lint failures are unrelated pre-existing unreachable modules.
+

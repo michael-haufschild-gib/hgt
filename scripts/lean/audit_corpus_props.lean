@@ -21,6 +21,8 @@ Two rounds are reported:
 Both directions are approximations, so every row is a nomination to be checked by hand: a producer
 whose conclusion is a *container* of the interface, or an instance, stays invisible.
 -/
+import GaloisForLFunctions.HTGeometry.FinalPropInterfaceWitnesses
+import GaloisForLFunctions.RHTower.FinalPropInterfaceWitnesses
 import GaloisForLFunctions.HTGeometry
 import GaloisForLFunctions.RHTower
 import GaloisForLFunctions.HilbertMetric
@@ -91,6 +93,8 @@ run_cmd liftTermElabM do
   -- producers: (conclusion atoms, premise interfaces) of each project constant
   let mut prods : Array (Name × Array Name × Array Name) := #[]
   let mut producerNames : Std.HashMap Name (Array Name) := {}
+  -- project declaration → consumed interface heads, used to explain cyclic producers
+  let mut producerDeps : Std.HashMap Name (Array Name) := {}
   let mut nthm : Nat := 0
   let mut propDefs : Std.HashSet Name := {}
   let constants := env.constants.toList
@@ -117,6 +121,7 @@ run_cmd liftTermElabM do
       consumers := consumers.insert k ((consumers.getD k #[]).push n)
     for k in r.2 do
       producerNames := producerNames.insert k ((producerNames.getD k #[]).push n)
+    producerDeps := producerDeps.insert n r.1
     prods := prods.push (n, r.1, r.2)
   -- round 1: concluded anywhere at all
   let mut concluded : Std.HashSet Name := {}
@@ -171,3 +176,10 @@ never-concluded {s1.size}; ungrounded {s2.size}"
   logInfo m!"--- ungrounded (fixpoint) ---"
   for r in s2 do
     logInfo m!"{r.1}  {r.2}   [{defMod.getD r.2 `_}]"
+  logInfo m!"--- ungrounded consumer / producer graph ---"
+  for r in s2 do
+    logInfo m!"interface {r.2}"
+    for c in consumers.getD r.2 #[] do
+      logInfo m!"  consumer {c}"
+    for p in producerNames.getD r.2 #[] do
+      logInfo m!"  producer {p}  deps={producerDeps.getD p #[]}"

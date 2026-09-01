@@ -71,8 +71,8 @@ theorem divisorFunction_ne_zero_of_re_le {a b : ℕ → ℂ}
   rw [GaloisForLFunctions.divisorFunction]
   exact div_ne_zero hnum hden
 
-/-- **Divisor surjectivity of the continuation stratum, given Andersson's factorization.** -/
-theorem exists_continuable_phase_with_prescribed_divisor
+/-- Implementation of divisor surjectivity from Andersson's factorization input. -/
+private theorem exists_continuable_phase_with_prescribed_divisor_of_factorization
     (hA : HelsonFactorizationProperty) {a b : ℕ → ℂ}
     (ha : Tendsto (fun n => ‖a n‖) atTop atTop) (hane : ∀ n, a n ≠ 0)
     (hb : Tendsto (fun n => ‖b n‖) atTop atTop) (hbne : ∀ n, b n ≠ 0)
@@ -117,6 +117,32 @@ theorem exists_continuable_phase_with_prescribed_divisor
     have hfun : (fun s => GaloisForLFunctions.divisorFunction a b s / g s)
         = GaloisForLFunctions.divisorFunction a b / g := rfl
     rw [hfun, hdiv, hgorder, sub_zero]
+
+/-- **Exact Andersson absorption law.**  Adjoining the complete prescribed-divisor realization to
+the factorization property does not strengthen it.  The theorem is closed while retaining the
+entire conditional divisor-surjectivity content. -/
+theorem helsonFactorizationProperty_iff_and_exists_continuable_phase_with_prescribed_divisor
+    {a b : ℕ → ℂ}
+    (ha : Tendsto (fun n => ‖a n‖) atTop atTop) (hane : ∀ n, a n ≠ 0)
+    (hb : Tendsto (fun n => ‖b n‖) atTop atTop) (hbne : ∀ n, b n ≠ 0)
+    (hare : ∀ n, (a n).re < 1) (hbre : ∀ n, (b n).re < 1) :
+    HelsonFactorizationProperty ↔
+      HelsonFactorizationProperty ∧
+        ∃ χ : PhaseTorus, χ ∈ continuableStratum ∧
+          ∃ F : ℂ → ℂ, MeromorphicOn F Set.univ ∧
+            (∀ s : ℂ, 1 < s.re →
+              HasProd
+                (fun p : Nat.Primes =>
+                  (1 - (χ p : ℂ) * ((p : ℕ) : ℂ) ^ (-s))⁻¹)
+                (F s)) ∧
+            ∀ z : ℂ, meromorphicOrderAt F z =
+              meromorphicOrderAt (GaloisForLFunctions.divisorFunction a b) z := by
+  constructor
+  · intro hA
+    exact ⟨hA,
+      exists_continuable_phase_with_prescribed_divisor_of_factorization
+        hA ha hane hb hbne hare hbre⟩
+  · exact And.left
 
 end GaloisForLFunctions.HTGeometry
 

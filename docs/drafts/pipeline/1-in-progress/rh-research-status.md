@@ -7,3 +7,8 @@
 - **MSC survivor:** derive Bessel/frame stability from arithmetic source geometry; positivity, minimality, hereditary completeness, and uniform biorthogonal bounds are insufficient.
 - **Novelty audit through 2026-08:** no collision found for these exact MSC laws.
 - **Shared Gamma Ward:** fixed grade-universal countable positive tensor-degree mixtures fail: reflection forces pure degree `4`; two-prime phase kills it. `RHTower/SourceGammaCountableHalfDensityDegreeMixtureNoGo.lean`.
+- **TCD:** all work reduces to `D1>0`; actual orbit lies in `X>191/10+(37/5)z²`, `0<z<3/10`, `(13/32+z²/32)z<v<(33/80+z²/16)z`. Scalar-angle concavity cannot imply the required five-point coalescent PSD. Open: positive actual singular flux, or one nonpositive actual singular flux kills TCD.
+- **LI real-shape killed:** packet `7×(1/2)+(3/4±i)` has local Bernstein response and globally strictly completely monotone response quotient on `v≥0`, yet endpoint mode `n=3` is negative. `...LocalBernsteinShapeNoGo`, `...GlobalQuotientCompleteMonotonicityNoGo`.
+- **LI survivor:** coefficient orientation requires complex singularity-support control; every real-ray derivative sign still permits off-axis squared nodes.
+- **D2 contour shortcut killed:** actual boundary-to-interior lower-bound bridge on admissible rational windows is equivalent to RH. Under false RH, one zero-free compact frontier has a finite defect floor while Gaussian-rational interior values are unbounded below. `...PrimeArchLogHeightDefectBoundaryInteriorNoGo`.
+- **D2 survivor:** prove zero/residue exclusion before contour transport; boundary-size estimates alone cannot supply the interior floor.

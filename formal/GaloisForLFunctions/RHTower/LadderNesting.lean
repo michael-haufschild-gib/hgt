@@ -13,7 +13,8 @@ Its independence hierarchy is now:
 * `ℚ̄`-linear independence (`bakerLinearIndependence_holds`) — unconditional Baker;
 * transcendence of each pairwise ratio (`log_ratio_transcendental`) — unconditional
   Gelfond–Schneider;
-* algebraic independence over `ℚ` (`primeLogs_algebraicallyIndependent`) — the Schanuel apex.
+* algebraic independence over `ℚ`
+  (`schanuelConjecture_iff_and_primeLogs_algebraicallyIndependent`) — the Schanuel apex.
 
 The former Schanuel-to-Baker and Schanuel-to-Gelfond wrappers were useful while the lower rungs
 were open interfaces.  They are removed now that both conclusions are native theorems.

@@ -337,6 +337,139 @@ theorem tendsto_integral_conjPairKernel {ρ : ℂ} (hρ : ρ.im ≠ 0) {φ : ℝ
   simpa using hlim
 
 
+/-! ## Exact positive-shift strip census
+
+At a fixed positive boundary displacement, a conjugate pair does not merely admit a limiting
+description. Its full-line mass is classified exactly. A pair below the displaced line contributes
+`-2π`; a pair above it contributes zero because the two Cauchy orientations cancel. Thus a fixed
+positive shift is an exact transverse-strip census, not a new upper-bound statistic.
+-/
+
+private theorem integral_inv_im_shift_pos (gamma d : ℝ) (hd : 0 < d) :
+    (∫ t : ℝ, (((t : ℂ) - (gamma : ℂ) + (d : ℂ) * I)⁻¹).im) = -Real.pi := by
+  let s : NNReal := ⟨d, hd.le⟩
+  have hs : (s : ℝ) = d := rfl
+  have hpoint : (fun t : ℝ =>
+      (((t : ℂ) - (gamma : ℂ) + (d : ℂ) * I)⁻¹).im) =
+      fun t : ℝ => -(Real.pi * cauchyPDFReal gamma s t) := by
+    funext t
+    linarith [neg_im_inv_eq_cauchyPDFReal hs hd gamma t]
+  rw [hpoint, integral_neg, integral_const_mul,
+    integral_cauchyPDFReal_eq_one gamma (by
+      intro hs0
+      have hval := congrArg (fun x : NNReal => (x : ℝ)) hs0
+      simp [s] at hval
+      linarith)]
+  ring
+
+private theorem integral_inv_im_shift_neg (gamma d : ℝ) (hd : d < 0) :
+    (∫ t : ℝ, (((t : ℂ) - (gamma : ℂ) + (d : ℂ) * I)⁻¹).im) = Real.pi := by
+  have hpoint : (fun t : ℝ =>
+      (((t : ℂ) - (gamma : ℂ) + (d : ℂ) * I)⁻¹).im) =
+      fun t : ℝ => -((((t : ℂ) - (gamma : ℂ) + ((-d : ℝ) : ℂ) * I)⁻¹).im) := by
+    funext t
+    have hcoord :
+        (t : ℂ) - (gamma : ℂ) + (d : ℂ) * I =
+          (starRingEnd ℂ)
+            ((t : ℂ) - (gamma : ℂ) + ((-d : ℝ) : ℂ) * I) := by
+      apply Complex.ext <;> simp
+    rw [hcoord, ← map_inv₀]
+    exact Complex.conj_im _
+  rw [hpoint, integral_neg, integral_inv_im_shift_pos gamma (-d) (neg_pos.mpr hd)]
+  ring
+
+private theorem conjPairKernel_eq_shifted_inv_im_add
+    (rho : ℂ) (eps t : ℝ) :
+    conjPairKernel rho eps t =
+      (((t : ℂ) - (rho.re : ℂ) + ((eps - rho.im : ℝ) : ℂ) * I)⁻¹).im +
+      (((t : ℂ) - (rho.re : ℂ) + ((eps + rho.im : ℝ) : ℂ) * I)⁻¹).im := by
+  have hfirst :
+      (t : ℂ) + (eps : ℂ) * I - rho =
+        (t : ℂ) - (rho.re : ℂ) + ((eps - rho.im : ℝ) : ℂ) * I := by
+    apply Complex.ext <;> simp
+  have hsecond :
+      (t : ℂ) + (eps : ℂ) * I - (starRingEnd ℂ) rho =
+        (t : ℂ) - (rho.re : ℂ) + ((eps + rho.im : ℝ) : ℂ) * I := by
+    apply Complex.ext <;> simp
+  rw [conjPairKernel, hfirst, hsecond, Complex.add_im]
+
+private theorem integrable_inv_im_shift_pos (gamma d : ℝ) (hd : 0 < d) :
+    Integrable (fun t : ℝ =>
+      (((t : ℂ) - (gamma : ℂ) + (d : ℂ) * I)⁻¹).im) := by
+  apply Integrable.of_integral_ne_zero
+  rw [integral_inv_im_shift_pos gamma d hd]
+  exact neg_ne_zero.mpr Real.pi_ne_zero
+
+private theorem integrable_inv_im_shift_neg (gamma d : ℝ) (hd : d < 0) :
+    Integrable (fun t : ℝ =>
+      (((t : ℂ) - (gamma : ℂ) + (d : ℂ) * I)⁻¹).im) := by
+  apply Integrable.of_integral_ne_zero
+  rw [integral_inv_im_shift_neg gamma d hd]
+  exact Real.pi_ne_zero
+
+/-- A conjugate pair strictly inside a positive displaced line has exact full-line mass `-2π`. -/
+theorem integral_conjPairKernel_eq_neg_two_pi_of_abs_im_lt
+    (rho : ℂ) {eps : ℝ} (hdepth : |rho.im| < eps) :
+    (∫ t : ℝ, conjPairKernel rho eps t) = -2 * Real.pi := by
+  have hminus : 0 < eps - rho.im := by
+    have hle : rho.im ≤ |rho.im| := le_abs_self _
+    linarith
+  have hplus : 0 < eps + rho.im := by
+    have hle : -rho.im ≤ |rho.im| := neg_le_abs _
+    linarith
+  rw [show (fun t : ℝ => conjPairKernel rho eps t) =
+      (fun t : ℝ =>
+        (((t : ℂ) - (rho.re : ℂ) + ((eps - rho.im : ℝ) : ℂ) * I)⁻¹).im) +
+      (fun t : ℝ =>
+        (((t : ℂ) - (rho.re : ℂ) + ((eps + rho.im : ℝ) : ℂ) * I)⁻¹).im) by
+    funext t
+    exact conjPairKernel_eq_shifted_inv_im_add rho eps t]
+  change (∫ t : ℝ,
+      (((t : ℂ) - (rho.re : ℂ) + ((eps - rho.im : ℝ) : ℂ) * I)⁻¹).im +
+      (((t : ℂ) - (rho.re : ℂ) + ((eps + rho.im : ℝ) : ℂ) * I)⁻¹).im) = _
+  rw [integral_add
+    (integrable_inv_im_shift_pos rho.re (eps - rho.im) hminus)
+    (integrable_inv_im_shift_pos rho.re (eps + rho.im) hplus),
+    integral_inv_im_shift_pos rho.re (eps - rho.im) hminus,
+    integral_inv_im_shift_pos rho.re (eps + rho.im) hplus]
+  ring
+
+/-- A conjugate pair strictly outside a positive displaced line has zero full-line mass. -/
+theorem integral_conjPairKernel_eq_zero_of_lt_abs_im
+    (rho : ℂ) {eps : ℝ} (heps : 0 < eps) (hdepth : eps < |rho.im|) :
+    (∫ t : ℝ, conjPairKernel rho eps t) = 0 := by
+  rw [show (fun t : ℝ => conjPairKernel rho eps t) =
+      (fun t : ℝ =>
+        (((t : ℂ) - (rho.re : ℂ) + ((eps - rho.im : ℝ) : ℂ) * I)⁻¹).im) +
+      (fun t : ℝ =>
+        (((t : ℂ) - (rho.re : ℂ) + ((eps + rho.im : ℝ) : ℂ) * I)⁻¹).im) by
+    funext t
+    exact conjPairKernel_eq_shifted_inv_im_add rho eps t]
+  change (∫ t : ℝ,
+      (((t : ℂ) - (rho.re : ℂ) + ((eps - rho.im : ℝ) : ℂ) * I)⁻¹).im +
+      (((t : ℂ) - (rho.re : ℂ) + ((eps + rho.im : ℝ) : ℂ) * I)⁻¹).im) = _
+  by_cases hb : 0 ≤ rho.im
+  · have habs : |rho.im| = rho.im := abs_of_nonneg hb
+    have hminus : eps - rho.im < 0 := by linarith
+    have hplus : 0 < eps + rho.im := by linarith
+    rw [integral_add
+      (integrable_inv_im_shift_neg rho.re (eps - rho.im) hminus)
+      (integrable_inv_im_shift_pos rho.re (eps + rho.im) hplus),
+      integral_inv_im_shift_neg rho.re (eps - rho.im) hminus,
+      integral_inv_im_shift_pos rho.re (eps + rho.im) hplus]
+    ring
+  · have hbneg : rho.im < 0 := lt_of_not_ge hb
+    have habs : |rho.im| = -rho.im := abs_of_neg hbneg
+    have hminus : 0 < eps - rho.im := by linarith
+    have hplus : eps + rho.im < 0 := by linarith
+    rw [integral_add
+      (integrable_inv_im_shift_pos rho.re (eps - rho.im) hminus)
+      (integrable_inv_im_shift_neg rho.re (eps + rho.im) hplus),
+      integral_inv_im_shift_pos rho.re (eps - rho.im) hminus,
+      integral_inv_im_shift_neg rho.re (eps + rho.im) hplus]
+    ring
+
+
 end GaloisForLFunctions.HTGeometry
 
 end

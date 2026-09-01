@@ -10,7 +10,7 @@ equation of order `n` carries at most `n` elements independent over the constant
 is impossible as soon as the field contains arbitrarily large independent families.
 
 * `InfiniteConstantRank`;
-* `noUniversalJetRelation_of_infiniteConstantRank`.
+* `infiniteConstantRank_iff_and_noUniversalJetRelation`.
 -/
 
 namespace GaloisForLFunctions.HTGeometry
@@ -32,7 +32,7 @@ def InfiniteConstantRank : Prop :=
 variable {C}
 
 /-- **No universal linear jet relation on a field of infinite rank over its constants.** -/
-theorem noUniversalJetRelation_of_infiniteConstantRank
+private theorem noUniversalJetRelation_of_infiniteConstantRank
     (h : InfiniteConstantRank C) : NoUniversalJetRelation C := by
   classical
   intro s c hrel k hk
@@ -93,6 +93,15 @@ theorem noUniversalJetRelation_of_infiniteConstantRank
     (fun j => hx (y j)) hy
   simp only [Fintype.card_fin] at hcard
   omega
+
+/-- **Exact rank absorption law.**  Infinite rank already contains the absence of every universal
+linear jet relation, so adjoining that consequence leaves the rank predicate unchanged. -/
+theorem infiniteConstantRank_iff_and_noUniversalJetRelation :
+    InfiniteConstantRank C ↔ InfiniteConstantRank C ∧ NoUniversalJetRelation C := by
+  constructor
+  · intro h
+    exact ⟨h, noUniversalJetRelation_of_infiniteConstantRank h⟩
+  · exact And.left
 
 end
 

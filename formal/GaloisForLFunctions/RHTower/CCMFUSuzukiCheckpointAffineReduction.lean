@@ -570,15 +570,23 @@ theorem ccmFUCentralXiScrewPositiveMixtureBound_iff_checkpointAffineMixtureBound
     exact (abs_add_le _ _).trans
       (add_le_add (hC H hbH) (by rw [abs_of_nonneg hcurv.1]; exact hcurv.2))
 
-/-- Uniform control of the actual discrete affine checkpoint current forces RH. -/
-theorem riemannHypothesis_of_ccmFUSuzukiCheckpointAffineMixtureBound
-    {b : ℝ} (hlogb : Real.log 2 ≤ b)
-    (hbound : CCMFUSuzukiCheckpointAffineMixtureBound b) :
-    RiemannHypothesis := by
-  apply riemannHypothesis_of_ccmFUCentralXiScrewPositiveMixtureBound
-    ((Real.log_pos (by norm_num : (1 : ℝ) < 2)).trans_le hlogb)
-  exact (ccmFUCentralXiScrewPositiveMixtureBound_iff_checkpointAffineMixtureBound
-    hlogb).2 hbound
+/-- **Exact checkpoint/RH absorption law.**  Uniform control of the actual discrete affine
+checkpoint current is unchanged by adjoining RH. -/
+theorem ccmFUSuzukiCheckpointAffineMixtureBound_iff_and_riemannHypothesis
+    {b : ℝ} (hlogb : Real.log 2 ≤ b) :
+    CCMFUSuzukiCheckpointAffineMixtureBound b ↔
+      CCMFUSuzukiCheckpointAffineMixtureBound b ∧ RiemannHypothesis := by
+  have hb : 0 < b := (Real.log_pos (by norm_num : (1 : ℝ) < 2)).trans_le hlogb
+  constructor
+  · intro hbound
+    refine ⟨hbound, ?_⟩
+    have hpositive :=
+      (ccmFUCentralXiScrewPositiveMixtureBound_iff_checkpointAffineMixtureBound hlogb).2
+        hbound
+    exact
+      (ccmFUCentralXiScrewPositiveMixtureBound_iff_and_riemannHypothesis hb).mp
+        hpositive |>.2
+  · exact And.left
 
 /-- Eventual uniform boundedness of the discrete affine checkpoint current. -/
 def CCMFUSuzukiCheckpointAffineMixtureTailBound (b : ℝ) : Prop :=
@@ -681,20 +689,27 @@ def CCMFUSuzukiCanonicalCheckpointAffineTailBound : Prop :=
   ∃ C : ℝ, 0 ≤ C ∧ ∀ H : ℝ, 2 ≤ H →
     |ccmFUSuzukiCheckpointAffineMixture 1 H| ≤ C
 
-/-- The canonical discrete checkpoint tail is sufficient for RH. -/
-theorem riemannHypothesis_of_ccmFUSuzukiCanonicalCheckpointAffineTailBound
-    (htail : CCMFUSuzukiCanonicalCheckpointAffineTailBound) :
-    RiemannHypothesis := by
+/-- **Exact canonical-tail/RH absorption law.**  The canonical discrete checkpoint tail is
+unchanged by adjoining RH. -/
+theorem ccmFUSuzukiCanonicalCheckpointAffineTailBound_iff_and_riemannHypothesis :
+    CCMFUSuzukiCanonicalCheckpointAffineTailBound ↔
+      CCMFUSuzukiCanonicalCheckpointAffineTailBound ∧ RiemannHypothesis := by
   have hlog2 : Real.log 2 ≤ (1 : ℝ) := by
     have h := Real.log_le_sub_one_of_pos (by norm_num : (0 : ℝ) < 2)
     linarith
-  apply riemannHypothesis_of_ccmGuinandWeilThirdGradeCesaroAnchoredMomentTailBound
-    (b := 1) (by norm_num)
-  apply
-    (ccmGuinandWeilThirdGradeCesaroAnchoredMomentTailBound_iff_checkpointAffineMixtureTailBound
-      hlog2).2
-  rcases htail with ⟨C, hC0, hC⟩
-  exact ⟨2, C, by norm_num, hC0, hC⟩
+  constructor
+  · intro htail
+    refine ⟨htail, ?_⟩
+    have hcheckpointTail : CCMFUSuzukiCheckpointAffineMixtureTailBound 1 := by
+      rcases htail with ⟨C, hC0, hC⟩
+      exact ⟨2, C, by norm_num, hC0, hC⟩
+    have hanchoredTail : CCMGuinandWeilThirdGradeCesaroAnchoredMomentTailBound 1 :=
+      (ccmGuinandWeilThirdGradeCesaroAnchoredMomentTailBound_iff_checkpointAffineMixtureTailBound
+        hlog2).2 hcheckpointTail
+    exact
+      (ccmGuinandWeilThirdGradeCesaroAnchoredMomentTailBound_iff_and_riemannHypothesis
+        (b := 1) (by norm_num)).mp hanchoredTail |>.2
+  · exact And.left
 
 /-- False RH forces the canonical checkpoint current above every ceiling after every later wall. -/
 theorem ccmFUSuzukiCheckpointAffineMixture_cofinally_unbounded_of_not_riemannHypothesis
@@ -705,16 +720,18 @@ theorem ccmFUSuzukiCheckpointAffineMixture_cofinally_unbounded_of_not_riemannHyp
   by_contra hescape
   push Not at hescape
   apply hRH
-  apply riemannHypothesis_of_ccmGuinandWeilThirdGradeCesaroAnchoredMomentTailBound
-    (b := 1) (by norm_num)
   have hlog2 : Real.log 2 ≤ (1 : ℝ) := by
     have h := Real.log_le_sub_one_of_pos (by norm_num : (0 : ℝ) < 2)
     linarith
-  apply
+  have hcheckpointTail : CCMFUSuzukiCheckpointAffineMixtureTailBound 1 := by
+    refine ⟨U, max C 0, hU, le_max_right _ _, ?_⟩
+    intro H hH
+    exact (hescape H hH).trans (le_max_left _ _)
+  have hanchoredTail : CCMGuinandWeilThirdGradeCesaroAnchoredMomentTailBound 1 :=
     (ccmGuinandWeilThirdGradeCesaroAnchoredMomentTailBound_iff_checkpointAffineMixtureTailBound
-      hlog2).2
-  refine ⟨U, max C 0, hU, le_max_right _ _, ?_⟩
-  intro H hH
-  exact (hescape H hH).trans (le_max_left _ _)
+      hlog2).2 hcheckpointTail
+  exact
+    (ccmGuinandWeilThirdGradeCesaroAnchoredMomentTailBound_iff_and_riemannHypothesis
+      (b := 1) (by norm_num)).mp hanchoredTail |>.2
 
 end GaloisForLFunctions.RHTower

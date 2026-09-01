@@ -677,15 +677,21 @@ theorem ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound_iff_xiScrewCodiagonalM
             (ccmFUCentralGammaLerchAffineMixture b H)
       _ ≤ C + G := add_le_add (hC H hbH) (hG H hbH)
 
-/-- Uniform control of the literal Xi-screw codiagonal mixture closes CCM-FU and therefore forces
-the Riemann hypothesis. -/
-theorem riemannHypothesis_of_ccmFUCentralXiScrewCodiagonalMixtureBound
-    {b : ℝ} (hb : 0 < b)
-    (hbound : CCMFUCentralXiScrewCodiagonalMixtureBound b) :
-    RiemannHypothesis := by
-  apply riemannHypothesis_of_ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound hb
-  exact
-    (ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound_iff_xiScrewCodiagonalMixtureBound hb).2
-      hbound
+/-- **Exact codiagonal/RH absorption law.**  Uniform control of the literal Xi-screw codiagonal
+mixture is unchanged by adjoining RH. -/
+theorem ccmFUCentralXiScrewCodiagonalMixtureBound_iff_and_riemannHypothesis
+    {b : ℝ} (hb : 0 < b) :
+    CCMFUCentralXiScrewCodiagonalMixtureBound b ↔
+      CCMFUCentralXiScrewCodiagonalMixtureBound b ∧ RiemannHypothesis := by
+  constructor
+  · intro hbound
+    refine ⟨hbound, ?_⟩
+    have hanchored :=
+      (ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound_iff_xiScrewCodiagonalMixtureBound hb).2
+        hbound
+    exact
+      (ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound_iff_and_riemannHypothesis hb).mp
+        hanchored |>.2
+  · exact And.left
 
 end GaloisForLFunctions.RHTower

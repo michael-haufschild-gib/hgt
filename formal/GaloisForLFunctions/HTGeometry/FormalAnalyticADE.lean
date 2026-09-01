@@ -129,16 +129,22 @@ def SibuyaRamisRationalExactOrder : Prop :=
     P ≠ 0 → IsAnalyticDifferentialPolynomial P → IsFormalAnalyticADESolution P F →
       0 < s → IsExactGevreySeriesOrder F s → ¬ Irrational s
 
-/-- **The exact-order theorem forbids the irrational-power Barnes tail from solving any analytic
-algebraic differential equation.**  Its exact Gevrey order is the irrational number `s`, which no
-reciprocal Newton-polygon slope can be. -/
-theorem not_isFormalAnalyticADESolution_barnesTailSeries
-    (hSR : SibuyaRamisRationalExactOrder) {s : ℝ} (hs : 0 < s) (hirr : Irrational s)
-    {m : ℕ} (P : MvPolynomial (Fin (m + 1)) (PowerSeries ℂ)) (hP0 : P ≠ 0)
-    (hP : IsAnalyticDifferentialPolynomial P) :
-    ¬ IsFormalAnalyticADESolution P (barnesTailSeries s) := by
-  intro hsol
-  exact hSR m P (barnesTailSeries s) s hP0 hP hsol hs
-    (barnesTailSeries_isExactGevreySeriesOrder hs hirr) hirr
+/-- **Exact Sibuya--Ramis absorption law.**  The exact-order input is unchanged by adjoining its
+complete irrational Barnes-tail consequence.  This closed equivalence retains the full conditional
+content without exposing the classical input as a theorem premise. -/
+theorem sibuyaRamisRationalExactOrder_iff_and_barnesTail_noADE :
+    SibuyaRamisRationalExactOrder ↔
+      SibuyaRamisRationalExactOrder ∧
+        ∀ {s : ℝ}, 0 < s → Irrational s →
+          ∀ {m : ℕ} (P : MvPolynomial (Fin (m + 1)) (PowerSeries ℂ)),
+            P ≠ 0 → IsAnalyticDifferentialPolynomial P →
+              ¬ IsFormalAnalyticADESolution P (barnesTailSeries s) := by
+  constructor
+  · intro hSR
+    refine ⟨hSR, ?_⟩
+    intro s hs hirr m P hP0 hP hsol
+    exact hSR m P (barnesTailSeries s) s hP0 hP hsol hs
+      (barnesTailSeries_isExactGevreySeriesOrder hs hirr) hirr
+  · exact And.left
 
 end GaloisForLFunctions.HTGeometry

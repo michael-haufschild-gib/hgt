@@ -373,16 +373,21 @@ theorem IntrinsicRealCoronaOddDatum.not_hasSmoothProjectorFirstOrderPrerequisite
     ¬F.HasSmoothProjectorFirstOrderPrerequisite :=
   F.projectorCommutator_not_bounded
 
-/-- Empty-classification principle for any proposed smooth automorphic subclass whose smoothness
-implies the standard first-order bounded-commutator condition. -/
-theorem intrinsicRealCorona_smoothSubclass_empty
-    (P : IntrinsicRealCoronaOddDatum H → Prop)
-    (hfirst : ∀ F, P F → F.HasSmoothProjectorFirstOrderPrerequisite) :
-    {F | P F} = ∅ := by
-  ext F
-  simp only [Set.mem_setOf_eq, Set.mem_empty_iff_false, iff_false]
-  intro hP
-  exact F.not_hasSmoothProjectorFirstOrderPrerequisite (hfirst F hP)
+/-- Exact empty-classification law: a proposed subclass universally supplies the impossible smooth
+projector prerequisite exactly when that subclass is empty. -/
+theorem intrinsicRealCorona_smoothSubclass_firstOrder_iff_empty
+    (P : IntrinsicRealCoronaOddDatum H → Prop) :
+    (∀ F, P F → F.HasSmoothProjectorFirstOrderPrerequisite) ↔ {F | P F} = ∅ := by
+  constructor
+  · intro hfirst
+    ext F
+    simp only [Set.mem_setOf_eq, Set.mem_empty_iff_false, iff_false]
+    intro hP
+    exact F.not_hasSmoothProjectorFirstOrderPrerequisite (hfirst F hP)
+  · intro hempty F hP
+    have hmem : F ∈ {G | P G} := hP
+    have : False := by simpa [hempty] using hmem
+    exact this.elim
 
 end Fracture
 

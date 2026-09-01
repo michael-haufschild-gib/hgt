@@ -149,6 +149,120 @@ theorem q8TwoAdicOddPrimitiveTateCharacter_isQuadratic :
   norm_num [q8TwoAdicOddPrimitiveTateCharacter,
     _root_.RHTower.quadraticCharacterEightPrime, ZMod.χ₈']
 
+private theorem zmodEight_unit_eq_one_or_three_or_five_or_seven
+    (x : (ZMod 8)ˣ) :
+    (x : ZMod 8) = 1 ∨ (x : ZMod 8) = 3 ∨
+      (x : ZMod 8) = 5 ∨ (x : ZMod 8) = 7 := by
+  have hlt := ZMod.val_lt (x : ZMod 8)
+  interval_cases hval : (x : ZMod 8).val
+  · have hx : (x : ZMod 8) = 0 := (ZMod.val_eq_zero _).mp hval
+    exact ((by decide : ¬ IsUnit (0 : ZMod 8)) (hx ▸ x.isUnit)).elim
+  · exact Or.inl ((ZMod.val_eq_one (by norm_num) _).mp hval)
+  · have hx : (x : ZMod 8) = 2 := by
+      apply ZMod.val_injective 8
+      rw [hval]
+      exact (ZMod.val_cast_of_lt (by norm_num)).symm
+    exact ((by decide : ¬ IsUnit (2 : ZMod 8)) (hx ▸ x.isUnit)).elim
+  · exact Or.inr (Or.inl (by
+      apply ZMod.val_injective 8
+      rw [hval]
+      exact (ZMod.val_cast_of_lt (by norm_num)).symm))
+  · have hx : (x : ZMod 8) = 4 := by
+      apply ZMod.val_injective 8
+      rw [hval]
+      exact (ZMod.val_cast_of_lt (by norm_num)).symm
+    exact ((by decide : ¬ IsUnit (4 : ZMod 8)) (hx ▸ x.isUnit)).elim
+  · exact Or.inr (Or.inr (Or.inl (by
+      apply ZMod.val_injective 8
+      rw [hval]
+      exact (ZMod.val_cast_of_lt (by norm_num)).symm)))
+  · have hx : (x : ZMod 8) = 6 := by
+      apply ZMod.val_injective 8
+      rw [hval]
+      exact (ZMod.val_cast_of_lt (by norm_num)).symm
+    exact ((by decide : ¬ IsUnit (6 : ZMod 8)) (hx ▸ x.isUnit)).elim
+  · exact Or.inr (Or.inr (Or.inr (by
+      apply ZMod.val_injective 8
+      rw [hval]
+      exact (ZMod.val_cast_of_lt (by norm_num)).symm)))
+
+/-- Primitivity and parity classify a quadratic conductor-eight angular
+character.  In particular, the source law `χ(-1) = 1` selects the
+discriminant-eight candidate without choosing values at generators. -/
+theorem primitiveQuadraticConductorEight_eq_even_of_neg_one
+    (χ : FieldOnePadicPrimitiveAngularCharacter 2 3)
+    (hχquad : χ.1.IsQuadratic)
+    (heven : χ.1 (-1 : ZMod 8) = 1) :
+    χ = q8TwoAdicEvenPrimitiveTateCharacter := by
+  have h7 : χ.1 (7 : ZMod 8) = 1 := by
+    have hneg : (-1 : ZMod 8) = (7 : ZMod 8) := by
+      change ((-1 : ℤ) : ZMod 8) = ((7 : ℤ) : ZMod 8)
+      rw [ZMod.intCast_eq_intCast_iff']
+      norm_num
+    rw [← hneg]
+    exact heven
+  have hχne : χ.1 ≠ 1 := by
+    intro hχ
+    have hcond8 : DirichletCharacter.conductor χ.1 = 8 :=
+      (DirichletCharacter.isPrimitive_def χ.1).mp χ.2
+    have hcond1 : DirichletCharacter.conductor χ.1 = 1 :=
+      (DirichletCharacter.eq_one_iff_conductor_eq_one (χ := χ.1)).mp hχ
+    omega
+  have h3unit : IsUnit (3 : ZMod 8) :=
+    (ZMod.isUnit_iff_coprime 3 8).mpr (by decide)
+  have h5unit : IsUnit (5 : ZMod 8) :=
+    (ZMod.isUnit_iff_coprime 5 8).mpr (by decide)
+  have h3ne : χ.1 (3 : ZMod 8) ≠ 0 :=
+    MulChar.apply_ne_zero_iff.mpr h3unit
+  have h5ne : χ.1 (5 : ZMod 8) ≠ 0 :=
+    MulChar.apply_ne_zero_iff.mpr h5unit
+  have h35 : χ.1 (3 : ZMod 8) * χ.1 (5 : ZMod 8) = 1 := by
+    rw [← map_mul]
+    norm_num
+    exact h7
+  have h3 : χ.1 (3 : ZMod 8) = -1 := by
+    rcases hχquad (3 : ZMod 8) with hzero | hone | hneg
+    · exact (h3ne hzero).elim
+    · exfalso
+      have h5 : χ.1 (5 : ZMod 8) = 1 := by
+        rw [hone, one_mul] at h35
+        exact h35
+      apply hχne
+      apply MulChar.ext
+      intro x
+      rw [MulChar.one_apply_coe]
+      rcases zmodEight_unit_eq_one_or_three_or_five_or_seven x with
+        hx | hx | hx | hx
+      · rw [hx, MulChar.map_one]
+      · simpa [hx] using hone
+      · simpa [hx] using h5
+      · simpa [hx] using h7
+    · exact hneg
+  have h5 : χ.1 (5 : ZMod 8) = -1 := by
+    rw [h3, neg_mul] at h35
+    have h := congrArg Neg.neg h35
+    simpa using h
+  apply Subtype.ext
+  apply MulChar.ext
+  intro x
+  rcases zmodEight_unit_eq_one_or_three_or_five_or_seven x with
+    hx | hx | hx | hx
+  · change χ.1 (x : ZMod 8) =
+      _root_.RHTower.quadraticCharacterEight (x : ZMod 8)
+    rw [hx, MulChar.map_one, MulChar.map_one]
+  · change χ.1 (x : ZMod 8) =
+      _root_.RHTower.quadraticCharacterEight (x : ZMod 8)
+    rw [hx, h3]
+    norm_num [_root_.RHTower.quadraticCharacterEight, ZMod.χ₈]
+  · change χ.1 (x : ZMod 8) =
+      _root_.RHTower.quadraticCharacterEight (x : ZMod 8)
+    rw [hx, h5]
+    norm_num [_root_.RHTower.quadraticCharacterEight, ZMod.χ₈]
+  · change χ.1 (x : ZMod 8) =
+      _root_.RHTower.quadraticCharacterEight (x : ZMod 8)
+    rw [hx, h7]
+    norm_num [_root_.RHTower.quadraticCharacterEight, ZMod.χ₈]
+
 /-- Discriminant-eight candidate has dyadic source/inverse sign `+1`. -/
 theorem q8TwoAdicEvenTatePhase_pair_eq_one (ρ : Circle) :
     fieldOnePadicRamifiedTatePhase 2 3
