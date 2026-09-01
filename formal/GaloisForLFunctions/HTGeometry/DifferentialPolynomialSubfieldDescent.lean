@@ -22,7 +22,7 @@ noncomputable section
 open scoped Differential
 open GaloisForLFunctions
 
-variable {C L : Type*} [Field C] [Field L] [Algebra C L] [Differential C] [Differential L]
+variable {C L : Type*} [Field C] [CommRing L] [Algebra C L] [Differential C] [Differential L]
 
 /-- Jets of a point of the differential subfield stay in the subfield. -/
 private theorem differentialJet_algebraMap

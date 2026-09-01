@@ -228,3 +228,17 @@ carrier burden.
 - **Remaining core:** coefficient-faithful backreacted source or non-`L²` carrier with global
   zeta-selective landing.
 - 2026-08-27 — literal protected source audited and excluded in scalar point spectrum.
+
+## Tempered scalar generalized-occurrence no-go delta
+
+For every tempered source `S∈𝓢'(ℝ,ℂ)` and every real `E`, distributional equation
+`(x-E)T=S` has a tempered solution. All solutions form exact affine line
+`T₀(E,S)+ℂ·δ_E`. Thus generalized scalar occurrence is identically true on `ℝ`; it cannot select
+FZZ Mellin-divisor ordinates. This kills scalar first-order `𝓢'` fallback, not fixed nonlocal
+theta-source Fredholm pencil or singular/matrix/interacting carriers.
+
+- **Latest killing theorem:** `fzzPunctureTemperedScalarOccurrence_set_eq_univ`.
+- **Strongest positive survivor:** source-derived boundary/renormalization law must fix free Dirac
+  coefficient and couple energies nonlocally, or carrier must leave scalar tempered class.
+- **Formal module:** `FZZCigarPunctureTemperedScalarOccurrenceNoGo.lean`.
+- 2026-09-01 — scalar tempered generalized-occurrence branch retired.

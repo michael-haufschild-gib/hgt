@@ -24,7 +24,7 @@ open GaloisForLFunctions
 
 attribute [local instance] differentialPolynomialOverDifferential
 
-variable {C : Type*} [Field C] [Differential C]
+variable {C : Type*} [CommRing C] [Differential C]
 
 /-- Differential polynomials over a differential base form a differential algebra over it. -/
 local instance differentialPolynomialIsDifferentialAlgebra (ι : Type*) :

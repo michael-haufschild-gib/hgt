@@ -112,10 +112,10 @@ theorem tendsto_integral_xiWardCubicPositiveShiftDiagonalSeparatorProfile_zero
   have hmeas (n : ℕ) : MeasureTheory.AEStronglyMeasurable
       (fun eps : Ioi (0 : ℝ) =>
         xiWardCubicPositiveShiftDiagonalSeparatorProfile (a n / (eps : ℝ))) μ := by
-    apply Continuous.aestronglyMeasurable
+    apply Measurable.aestronglyMeasurable
     unfold xiWardCubicPositiveShiftDiagonalSeparatorProfile
       xiWardCubicPositiveShiftDiagonalAnomalyProfile
-    fun_prop (disch := exact ne_of_gt eps.property)
+    measurability
   have hbound (n : ℕ) : ∀ᵐ eps : Ioi (0 : ℝ) ∂μ,
       ‖xiWardCubicPositiveShiftDiagonalSeparatorProfile (a n / (eps : ℝ))‖ ≤
         (115 / 108 : ℝ) := by
@@ -129,9 +129,13 @@ theorem tendsto_integral_xiWardCubicPositiveShiftDiagonalSeparatorProfile_zero
       atTop (nhds 0) := by
     filter_upwards with eps
     have hratio : Tendsto (fun n => a n / (eps : ℝ)) atTop (nhds 0) := by
-      simpa [eps.property.ne'] using ha0.div_const (eps : ℝ)
-    simpa only [xiWardCubicPositiveShiftDiagonalSeparatorProfile_zero] using
+      simpa using ha0.div_const (eps : ℝ)
+    have hprofile :=
       continuousAt_xiWardCubicPositiveShiftDiagonalSeparatorProfile_zero.tendsto.comp hratio
+    change Tendsto
+      (xiWardCubicPositiveShiftDiagonalSeparatorProfile ∘
+        fun n => a n / (eps : ℝ)) atTop (nhds 0)
+    simpa only [xiWardCubicPositiveShiftDiagonalSeparatorProfile_zero] using hprofile
   simpa using MeasureTheory.tendsto_integral_of_dominated_convergence
     (fun _ : Ioi (0 : ℝ) => (115 / 108 : ℝ)) hmeas
     (MeasureTheory.integrable_const _) (fun n => hbound n) hlim

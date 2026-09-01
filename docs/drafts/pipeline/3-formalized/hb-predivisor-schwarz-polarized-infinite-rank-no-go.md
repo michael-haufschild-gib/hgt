@@ -1,7 +1,7 @@
 # HB pre-divisor Schwarz-polarized infinite-rank no-go
 
 - **ID:** HB-SCHWARZ-POLARIZED-INFINITE-RANK
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** ROUTE-CLASS NO-GO + SHARP POSITIVE SURVIVOR
 - **Source:** HB Hermitian/antiholomorphic survivor after analytic two-leg no-go
 
@@ -33,7 +33,7 @@ Abstract finite-rank Hankel rigidity is known. Exact pole-rank classification of
 
 1. `[FALSIFIED]` Same-variable Hermitianization can give the required regular complex-frequency optical landing. Corpus local-open Hermitian no-go kills it: a same-variable Hermitian anomaly is real up to phase.
 2. `[CONJECTURE]` Passing to the canonical independent Schwarz variable rescues the route in a finite-dimensional QNM sector.
-3. `[PAPER-PROVED]` It does not: the exact Schwarz-polarized susceptibility kernel has infinite separation rank already on `(0,1/2)^2`.
+3. `[LEAN-CLOSED]` It does not: the exact Schwarz-polarized susceptibility kernel has infinite separation rank already on `(0,1/2)^2`.
 
 ## Exact claim
 
@@ -47,7 +47,7 @@ For every `r`, there are no functions `f_k,g_k : R -> C`, `k<r`, satisfying
 
 for all `0<x<1/2` and `0<y<1/2`.
 
-## Proof `[PAPER-PROVED]`
+## Proof `[LEAN-CLOSED]`
 
 Put
 
@@ -85,8 +85,17 @@ No regularity of the separated factors is used.
 - Difference collisions cannot occur: selected shifts have diameter `<1/2`, whereas nonzero horizon-root gaps from zero are `1,2,3`.
 - Scope is exact: finite-dimensional Schwarz-polarized/Hermitian channels die; infinite-dimensional, distributional, support-changing, or nonseparated channels survive.
 
-Verdict: `SURVIVES PRELIMINARY ATTACK`; dependency-closed paper proof.
+Verdict: `CLOSED IN LEAN`.
 
 ## Positive survivor
 
-`[PAPER-PROVED]` Any exact Schwarz-polarized HB compensation has infinite separation/Schmidt rank on every physical neighborhood containing this square. Thus a surviving Hermitian left-QNM construction needs an infinite-dimensional channel before any PDE, positivity, or passivity question arises.
+`[LEAN-CLOSED]` Any exact Schwarz-polarized HB compensation has infinite separation/Schmidt rank on every physical neighborhood containing this square. Thus a surviving Hermitian left-QNM construction needs an infinite-dimensional channel before any PDE, positivity, or passivity question arises.
+
+## Lean closure
+
+- Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingPreDivisorFiniteSchwarzPolarizedInfiniteRankNoGo`.
+- Certificate: `d4HBPreDivisorFiniteSchwarzPolarizedRouteKilled`.
+- Direct `lake env lean` and targeted `lake build` pass.
+- Axioms: `propext`, `Classical.choice`, `Quot.sound` only.
+- Umbrella wired. Formal lint reports only pre-existing unreachable-module errors; new module is clean.
+

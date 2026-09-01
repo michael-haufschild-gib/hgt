@@ -1,6 +1,6 @@
 # TCD
 
-`actual singular flux > 0 ⇔ global D1 > 0 → TCD/S6F → Weil positivity → RH`.
+`actual singular flux > 0 ⇔ global rank-three D1 > 0 → finite TCD/S6F gate`; RH still needs cofinal all-order landing → Weil positivity.
 
 Facts: open interval `0<x<137/2000`; `D1=HK-q²`, with actual `H,K>0`, `q<0`. On `D1=0`, flux = projective drift = ninth-jet crossing and is independent of eighth-jet value. In adapted source coordinates `r=Rz`, `b=R(z-v)/3`, `k=X(1-z²)/16`; scale variation is the positive weighted-Euler/Cartan field. Actual orbit lies in the refined parabolic cone and starts on a positive seam.
 
