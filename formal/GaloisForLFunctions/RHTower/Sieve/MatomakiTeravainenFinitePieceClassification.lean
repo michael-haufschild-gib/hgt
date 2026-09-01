@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.Sieve.MatomakiTeravainenPaperDilation
 import GaloisForLFunctions.RHTower.Sieve.MatomakiTeravainenPieceClassification
+import GaloisForLFunctions.RHTower.Sieve.StadlmannShiftedGreedy
 
 /-!
 # Proposition 2.2 classification over arbitrary finite index types
@@ -13,29 +14,6 @@ namespace RHTower.Sieve
 open Finset
 
 noncomputable section
-
-/-- Greedy accumulation over an arbitrary finite carrier. -/
-private theorem exists_subset_sum_between_finite
-    {ι : Type*} [DecidableEq ι]
-    (S : Finset ι) (w : ι → ℝ) {target step : ℝ}
-    (htarget : 0 ≤ target) (hstep : 0 ≤ step)
-    (hw0 : ∀ i ∈ S, 0 ≤ w i) (hwstep : ∀ i ∈ S, w i ≤ step)
-    (htotal : target ≤ ∑ i ∈ S, w i) :
-    ∃ I ⊆ S, target ≤ ∑ i ∈ I, w i ∧ ∑ i ∈ I, w i ≤ target + step := by
-  induction S using Finset.induction_on with
-  | empty =>
-      simp only [Finset.sum_empty] at htotal
-      exact ⟨∅, Finset.Subset.rfl, by simpa using htotal, by simp; linarith⟩
-  | @insert i S hi ih =>
-      by_cases hS : target ≤ ∑ j ∈ S, w j
-      · obtain ⟨I, hIS, hlo, hhi⟩ := ih
-          (fun j hj => hw0 j (Finset.mem_insert_of_mem hj))
-          (fun j hj => hwstep j (Finset.mem_insert_of_mem hj)) hS
-        exact ⟨I, fun _ hj => Finset.mem_insert_of_mem (hIS hj), hlo, hhi⟩
-      · refine ⟨insert i S, Finset.Subset.rfl, htotal, ?_⟩
-        rw [Finset.sum_insert hi]
-        have hiStep := hwstep i (Finset.mem_insert_self i S)
-        linarith
 
 /-- Exact subset-product lemma over an arbitrary finite index type. -/
 theorem exists_subset_product_between_threshold_and_cap_finite
@@ -58,12 +36,22 @@ theorem exists_subset_product_between_threshold_and_cap_finite
     have hlogTotal : Real.log tau ≤ ∑ i ∈ S, Real.log (Q i) := by
       rw [← Real.log_prod (fun i hi => (zero_lt_one.trans_le (hQone i hi)).ne')]
       exact Real.log_le_log htauPos htotal
-    obtain ⟨I, hIS, hlo, hhi⟩ := exists_subset_sum_between_finite
-      S (fun i => Real.log (Q i)) (Real.log_nonneg htau) (Real.log_nonneg htau)
-      (fun i hi => Real.log_nonneg (hQone i hi))
-      (fun i hi => Real.log_le_log
-        (zero_lt_one.trans_le (hQone i hi)) (hsmall i hi).le)
-      hlogTotal
+    let fill : RHTower.StadlmannShiftedFillData (fun i => Real.log (Q i)) S := {
+      stepCap := Real.log tau
+      lower := Real.log tau
+      upper := Real.log tau + Real.log tau
+      base := 0
+      stepCap_nonneg := Real.log_nonneg htau
+      width := by ring_nf; exact le_rfl
+      base_le_upper := by nlinarith [Real.log_nonneg htau]
+      step_nonneg := fun i hi => Real.log_nonneg (hQone i hi)
+      step_le := fun i hi => Real.log_le_log
+        (zero_lt_one.trans_le (hQone i hi)) (hsmall i hi).le
+      total := by simpa using hlogTotal
+    }
+    obtain ⟨I, hIS, hlo, hhi⟩ := fill.exists_subset_in_interval
+    dsimp [fill] at hlo hhi
+    simp only [zero_add] at hlo hhi
     have hprodPos : 0 < ∏ i ∈ I, Q i :=
       Finset.prod_pos fun i hi => zero_lt_one.trans_le (hQone i (hIS hi))
     refine ⟨I, hIS, ?_, ?_⟩

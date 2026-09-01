@@ -175,22 +175,41 @@ No zero-localization statement follows. A possible RH use would require an indep
 
 ## Lean status
 
-The Newton-corner degeneration for this card shares its obstruction with
-`asymptotically-exponential-algebraic-cascade-unit-cost`; both reduce to controlling the *valuation*
-of the model cascade's output-jet determinant, whose nonvanishing the corpus already owns
-(`ExpAffineCascade.scaled_jet_det_ne_zero`).
+The Newton degeneration this card's step 2 proposes is now **proved unusable**, and an exact
+replacement is built.
 
-Two things are now settled about that valuation.
+* For the model cascade, `deg_w (δ^i X_n) = W_n + i·W_(n−1)` and the top-weight part of `δ^i X_n` is
+  exactly `P_(n−1)^i P_n`, so the Jacobian's top-weight entry degrees are `a(i,k) = D_i − w_k`: the
+  leading coefficient matrix is **rank one for every choice of positive weights**, every surviving
+  permutation of the assignment problem ties, and the model determinant is always a strictly
+  lower-order term.  No reweighting repairs this.
+* The general degeneration criterion is Lean
+  (`HTGeometry/LogScaleDeterminantNonCancellation.lean`: `hasLogScaleExponent_det_of_perturbation`,
+  `…_on`, `det_ne_zero_of_perturbation_unique_max_on`); its hypothesis is uniqueness of the optimal
+  assignment, which the previous point shows fails identically here.
 
-* The naive route fails.  Taking the bounds in the separable product form `a_i + b_j` forced by
-  `det_ne_zero_of_hasLead`, the boundary matrix has entries `(v_i)_j · c_n^i` with `v_i = (i,…,i,1)`,
-  so its first `n − 1` columns are proportional and `det L = 0` for `n ≥ 3`.  The leading terms of the
-  determinant cancel.
-* The repair that suggested itself — that `det m` is a single monomial, so its valuation is known —
-  is **false**: `det (sumJacobian 2) = X₁²(1 − X₂)`, so the height-four model determinant is not a
-  monomial.
+The replacement is an exact, hypothesis-free reduction:
 
-Machinery built toward this card and available: `MultiGradedNewtonModel`,
-`ObservabilityJacobianTransfer`, `LaurentLeadingDeterminant`, `LaurentHasLead`,
-`HahnLeadingCoefficient`, `CascadeModelAlgebra`, `ScalarMonomial`, `TowerMonomialShape`.
-See `_STAGE3-LEDGER.md` for the full route analysis.
+| Statement | Theorem | Module |
+|---|---|---|
+| `δH = U·H ⟹ det (∂_j δ^i H) = H^(n+1)·det(∂_j H ; ∂_j δ^s U)` | `derivationIterateOutputJacobian_det_uniformBordered` | `DerivationBorderedJetReduction` |
+| the Bell rows are a unitriangular change of the jet rows | `uniformBordered_derivationBell_det_eq`, `derivationBellCoeff_det` | `DerivationBorderedJetReduction` |
+| **the peel step**, with any number of border rows | `peelMatrix_det_succ` | `DerivationJetPeel` |
+| the whole chain peeled at once | `peelMatrix_det_chain` | `DerivationJetPeel` |
+| **closed form** `det (∂_j δ^i Y_0) = (∏_m Y_m^(N−m−1))·det (∂_j Y_m)` | `outputJacobian_det_eq_gradientMatrix` | `DerivationJetPeel` |
+| observability from the chain gradients | `outputJacobian_det_ne_zero_of_gradientMatrix` | `DerivationJetPeel` |
+
+Here `Y_0` is the output and `Y_(m+1) = δY_m/Y_m`.  This removes the hypothesis `hterminalU` of the
+corpus's terminal-scaled reduction, which the general cascade cannot satisfy: `∂_n U = 0` for
+`U = P_n/X_n` forces `A_n' X_n = A_n`, i.e. exact linearity.
+
+**The remaining open core is one statement:** the gradients `∂_j Y_m`, `m < n`, of the iterated
+logarithmic derivatives of `X_n` are linearly independent.  For the cascade `Y_1 = P_(n−1) h_n(X_n)`
+and `Y_2 = T_(n−1) + P_(n−1) κ_n(X_n)` with `κ_n = X_n h_n'(X_n) → 0`, so the asymptotic input is now
+needed only against a single scalar per level.  See `_STAGE3-LEDGER.md`.
+
+Also owned: `ExpAffineCascade.scaled_jet_det_ne_zero` (the model determinant),
+`TerminalPowerCascadeInduction.algebraicIndependent_cascadeOutput` (the exactly-triangular case),
+`MultiGradedNewtonModel`, `ObservabilityJacobianTransfer`, `LaurentLeadingDeterminant`,
+`LaurentHasLead`, `HahnLeadingCoefficient`, `CascadeModelAlgebra`, `ScalarMonomial`,
+`TowerMonomialShape`.

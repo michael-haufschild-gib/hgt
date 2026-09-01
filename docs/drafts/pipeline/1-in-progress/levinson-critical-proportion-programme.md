@@ -3065,3 +3065,317 @@ builds.
 2. *(the gate)* The mollified mean square itself: `∫_{T₁}^{T₂} ‖(ζ+λζ′)Ψ(σ₀+it)‖² dt ≤ (c+o(1))·L`
    with `c = levinsonLinearOptimizationConstant`.  This is bricks 5c–5e / 6, the twisted second
    moment of `ζ` against the Levinson mollifier.  Nothing else in the programme is open.
+
+## Brick 7f — THE WHOLE CONSUMER HALF IS CLOSED: one gate, both cards (2026-09-01)
+
+Twenty-two axiom-clean modules landed today.  The programme is now a single implication.
+
+### The gate, stated in Lean
+
+`RHTower/LevinsonOddFiberDensity.lean` defines
+
+```text
+LevinsonMeanSquareGate (R c : ℝ) : Prop
+```
+
+— for every `ε > 0` and every sufficiently large `U` there are an admissible Levinson window
+`[T₁,T₂]` with `T₁ ∈ [20,21]`, `T₂ ∈ (U−1, U]`, a real mollifier `(b, N)` with `b₁ = 1`,
+`‖bₙ‖ ≤ 1`, an `n⁴`-mass bound `Mb` with `log Mb ≤ 5 log T₂`, and the Levinson abscissa
+`σ₀ ∈ [¼,½)` with `(½−σ₀)·log T₂ = R`, such that
+
+```text
+∫_{T₁}^{T₂} ‖(ζ + λζ′)·edPoly b (Icc 1 N) (σ₀+it)‖² dt ≤ (c+ε)·(T₂−T₁).
+```
+
+### The chain from the gate
+
+| step | Lean |
+|---|---|
+| Littlewood identity → zero mass | `exists_entire_zeroCount_le_boundary` |
+| pole gauge cancels exactly | `weightedLittlewoodBoundary_poleGauge_mul`, `weightedLittlewoodBoundary_congr` |
+| left edge from the mean square | `integral_log_norm_le_of_meanSquare` |
+| far-right edges are `O(1)` | `abs_integral_log_norm_farRight_le`, `abs_integral_re_logDeriv_farRight_le` |
+| horizontal edges are `O(log T + log Mb)` | `exists_horizontal_weighted_levinsonG_bound`, `abs_integral_weighted_im_logDeriv_edPoly_le` |
+| the whole budget | `exists_levinson_mollified_budget_le` |
+| budget → window count | `exists_le_xiOddFiberCount_of_mollified_meanSquare` |
+| window count → proportion | `eventually_oddFiber_ge_of_gate` |
+| odd fibres → simple critical zeros | `three_mul_xiOddFiberCount_le_simple` |
+| **the two card gates** | `le_liminf_xiSimpleCriticalRatio_of_gate`, `le_liminf_xiSingletonFiberRatio_of_gate` |
+
+Explicitly:
+
+```text
+0 < R,  1 ≤ c,  0 < δ,  1/3 + 2δ < 1 − log c / R,  LevinsonMeanSquareGate R c
+   ⟹  δ ≤ liminf xiSimpleCriticalRatio atTop            (card 1's gate)
+   ⟹  (3/2)·δ ≤ liminf xiSingletonFiberRatio atTop      (card 2's non-vacuity)
+```
+
+`one_sub_log_levinsonLinearOptimizationConstant_div_gt_one_third` already supplies a `c` and `R`
+(`P(x)=x`, `Q(x)=1−x`, `R = 13/10`, `θ = 1/2`) with `1 − log c/R > 1/3`, so a `δ` exists as soon as
+the gate does.
+
+### Everything now open, in one line
+
+```text
+LevinsonMeanSquareGate (13/10) levinsonLinearOptimizationConstant
+```
+
+i.e. bricks 5c–5e/6: the mollified second moment of `ζ + λζ′` against the Levinson mollifier on the
+abscissa `σ₀ = ½ − R/log T`.  Nothing else in this programme, and nothing else in either consumer
+card except the exact PRZZ decimals, is open.
+
+### Module list (all axiom-clean, wired, exact leaf builds)
+
+`LevinsonLittlewoodZeroCount`, `EntireAdmissibleHeight`, `EntireDirichletPolynomial`,
+`LevinsonDetectorZeroBudget`, `LevinsonOddFiberFromMeanSquare`, `EntireDirichletPolynomialTrace`,
+`WeightedSegmentArgumentBound`, `EntireDirichletPolynomialHorizontalEdge`,
+`LevinsonWeightedHorizontalEdge`, `LevinsonMollifiedEdges`, `LittlewoodPoleGaugeCancellation`,
+`HalfPlaneDecayVerticalIntegral`, `MollifiedDetectorFarRightDecay`, `MollifiedDetectorFarRightEdge`,
+`LevinsonLeftEdgeJensen`, `LevinsonMollifiedBudget`, `LevinsonOddFiberFinal`,
+`LevinsonDensityScale`, `LevinsonOddFiberDensity`, `OddFiberSimpleCharging`,
+`LevinsonProportionGate` (plus endpoint generalizations of the two horizontal-edge modules).
+
+## Brick 5ba — STRATEGIC FINDING: at `θ < 1/2` the mean square needs neither Montgomery–Vaughan
+## nor Balasubramanian–Conrey–Heath-Brown (2026-09-01)
+
+The programme has been treating the mollified second moment as a formalization of BCHB (twisted
+second moment of `ζ` with a power-saving error uniform for `h,k ≤ T^θ`).  That is the right frame
+for `θ = 4/7` (Conrey/PRZZ), but it is **not** needed for Levinson's own `θ < 1/2`, which is all the
+two consumer cards require.  Three separate places where the programme expected a hard input turn
+out to be elementary at `θ < 1/2`.
+
+Throughout: `x = y ≍ √(t/2π)` are the AFE cutoffs, `M = T^θ` the mollifier length, so every
+Dirichlet polynomial in sight has length `N ≍ x·M ≍ T^{1/2+θ}`, and the mollified coefficient energy
+`∑_n |c_n|²` is **bounded** (that is what mollification buys).
+
+**1. The direct×direct term needs only the corpus's own mean-value theorem.**
+`RHTower/Sieve/DirichletMVT.dirichlet_meanValue_theorem` gives
+
+```text
+| ∫_0^T |∑_{n<N} c_n n^{it}|² dt − T·∑|c_n|² |  ≤  4N(1+log N)·∑|c_n|² .
+```
+
+Its own doc comment records that the sharp Montgomery–Vaughan error `O(N)` is not owned, needing a
+Hilbert inequality at the frequencies `log n`.  **It is not needed.**  Because the error is
+*proportional to `∑|c_n|²`*, which is `O(1)` after mollification, the total error is
+`≍ T^{1/2+θ} log T = o(T)` for every fixed `θ < 1/2`.  So `smoothAFEZetaDisplacedDirectMollified_meanValue_window`
+already closes the direct×direct term completely — diagonal *and* off-diagonal — with no
+BCHB-style off-diagonal analysis at all.
+
+**2. The cross term has no stationary point, and the first-derivative test suffices.**
+The cross term is
+
+```text
+2 Re ∫ conj(χ(σ₀+it))·(AΨ)(t)·conj((B̃Ψ)(t)) dt
+   = 2 Re ∑_{m ≤ xM} ∑_{n ≤ yM} e_m conj(f_n) ∫ exp( i( t log(t/2πe) + t log(n/m) ) ) dt .
+```
+
+The phase derivative is `log( t n / (2π m) )`, so the stationary point is `t = 2π m/n`, and it lies
+in the window only if `t/2π ≤ xM ≍ √(t/2π)·T^θ`, i.e. only if `t ≤ 2π T^{2θ}`.  **For fixed
+`θ < 1/2` and `t ≍ T` that never happens.**  Moreover the derivative is then bounded below by
+
+```text
+| log( t n / (2π m) ) |  ≥  (1/2 − θ) log T − O(1),
+```
+
+so the first-derivative (van der Corput) test — which the corpus owns — gives each oscillatory
+integral `≪ 1/((1/2−θ) log T)` and hence a total
+
+```text
+≪ ( ∑_m |e_m| )( ∑_n |f_n| ) / ((1/2−θ) log T)  ≍  T^{1/2+θ} log T  =  o(T).
+```
+
+**No stationary phase, no Ramanujan/Kloosterman sums, no saddle-point evaluation.**  (This is the
+precise sense in which brick 5aw's "the cross must be evaluated" was an artefact: it is an artefact
+of the *symmetric* split *and* of pushing `θ` to `4/7`.  At `θ < 1/2` the cross is genuinely an
+error term for the elementary reason that its saddle has left the window.)
+
+**3. The dual×dual term is the direct term with an explicit slowly varying weight.**
+`|χ(σ₀+it)|² = (t/2π)^{2(1/2−σ₀)} = (t/2π)^{2R/log T}`, which is exactly the `e^{2Rv}` of Young's
+constant after the substitution `v = log(t)/log T`.  The polynomial factor is handled by the same
+mean-value theorem; the weight is handled by partial summation in `t` (or by the block splitting of
+item 4), producing the `∫_0^1 e^{2Rv}·(…) dv` of `levinsonLinearOptimizationConstant`.
+
+**4. The moving AFE cutoff is handled by block freezing, which the corpus already owns.**
+`SmoothAFEZetaDisplacedReflectedCombinedFreezingMeanSquare` and the moving/frozen decomposition of
+2026-08-25 are exactly this.  Splitting `[T₁,T₂]` into `O(1/Δ)` blocks `[T, (1+Δ)T]` and freezing
+the cutoff on each costs `O(Δ)` relative error, which `Δ → 0` removes.
+
+### Revised gate list (replacing the BCHB-shaped one of brick 5az)
+
+| # | item | state |
+|---|---|---|
+| 1 | exact smooth AFE at every split | **owned** (`SmoothAFEZetaDualReflection`, `SmoothAFEZetaGeneral`) |
+| 2 | direct×direct mollified mean square | **owned** (`smoothAFEZetaDisplacedDirectMollified_meanValue_window`) |
+| 3 | mollified coefficient energy (short + long) | arithmetic layer **closed**; the long-tail asymptotic is the remaining arithmetic item |
+| 4 | cross term `o(T)` by the first-derivative test | to build — the phase-derivative lower bound `(1/2−θ)log T − O(1)` plus the corpus's van der Corput test |
+| 5 | dual×dual with the `(t/2π)^{2R/log T}` weight | to build — mean value + partial summation |
+| 6 | block freezing of the moving cutoff | machinery **owned**, assembly to build |
+| 7 | assembly to `levinsonLinearOptimizationConstant` and `LevinsonMeanSquareGate` | to build |
+
+**Nothing in this list requires Montgomery–Vaughan, a Hilbert inequality, Deshouillers–Iwaniec, or
+Kloosterman-sum cancellation.**  Those are needed only for the PRZZ decimals (`θ = 4/7`), i.e. only
+for the *advertised constant* of `horizontal-singleton-zero-fibers`, not for either card's gate.
+
+## Brick 5bb — the cross term's two ingredients are Lean (2026-09-01)
+
+`RHTower/DirichletCrossOscillatoryBound.lean` (axiom-clean, wired, exact leaf build):
+
+* **`norm_integral_dirichletCross_cexp_le`** — the general oscillatory cross estimate.  For two
+  finite Dirichlet polynomials and a real phase `g` with `g′` nondecreasing and every combined
+  frequency `g′(x) + log n − log m` bounded below by `lam > 0`,
+
+  ```text
+  ‖ ∫_a^b (∑_{m∈S} eₘ m^{-iτ}) · conj(∑_{n∈T} fₙ n^{-iτ}) · e^{i g(τ)} dτ ‖
+        ≤ (∑ ‖eₘ‖)(∑ ‖fₙ‖) · 2/lam .
+  ```
+
+  Proved by expanding into the `#S·#T` pure oscillations `exp(i(g(τ) + τ(log n − log m)))` and
+  applying the corpus's first-derivative test `norm_integral_cexp_ofReal_mul_I_le_mono` to each.
+
+* **`log_freq_lower_bound`** — the arithmetic input, i.e. *the saddle has left the window*:
+
+  ```text
+  1 ≤ m,  1 ≤ n,  m ≤ x,  0 < K,  2π·x·K ≤ τ
+      ⟹  log K ≤ log(τ/2π) + (log n − log m).
+  ```
+
+  With `x ≍ T^{1/2+θ}` (AFE head times mollifier) and `τ ≍ T` this gives `K ≍ T^{1/2−θ}`, hence
+  `lam ≍ (1/2 − θ)·log T`, and the cross term is
+
+  ```text
+  ≪ (∑‖e‖)(∑‖f‖)/((1/2−θ) log T)  ≍  T^{1/2+θ} log T  =  o(T)   for every fixed θ < 1/2.
+  ```
+
+Item 4 of the revised gate list (brick 5ba) is therefore reduced to *identifying the corpus's
+archimedean phase* `g` (the Riemann–Siegel phase carried by `χ`, i.e. `2·gammaHardyTheta` up to the
+displacement) and checking its two derivative hypotheses — `g′` nondecreasing and
+`g′(τ) = log(τ/2π) + O(1/τ²)` — both of which the corpus already owns in
+`HardyZPhaseAsymptotic` (`deriv_gammaHardyTheta`, `deriv_deriv_gammaHardyTheta`,
+`gammaHardyPhaseRate_sub_log_conductor_tendsto_zero`).
+
+## Brick 5bc — the archimedean cross and the weighted transfer are Lean (2026-09-01)
+
+`RHTower/ArchimedeanCrossPhase.lean` (axiom-clean, wired, exact leaf build):
+
+* **`norm_integral_archimedeanCross_le`** — the cross term of the mollified second moment, with the
+  Riemann–Siegel phase `2·gammaHardyTheta` supplied concretely:
+
+  ```text
+  4 ≤ a ≤ b,  every direct index ≤ x,  every dual index ≥ 1,  2π·x·K ≤ a,
+  0 < log K − (33/(8a²) + π/a)
+    ⟹ ‖∫_a^b (∑ eₘ m^{-iτ})·conj(∑ fₙ n^{-iτ})·e^{2iθ(τ)} dτ‖
+         ≤ (∑‖e‖)(∑‖f‖)·2/(log K − (33/(8a²) + π/a)).
+  ```
+
+  The phase hypotheses are discharged from the corpus's own Riemann–Siegel jets:
+  `hasDerivAt_gammaHardyTheta`, `hasDerivAt_gammaHardyPhaseRate`,
+  `continuous_deriv_gammaHardyPhaseRate`, `deriv_gammaHardyPhaseRate_pos` (so `θ′` is increasing),
+  and the quantitative velocity law `gammaHardyPhaseRate_sub_log_conductor_bound`
+  (`|θ′(t) − ½log(t/2π)| ≤ 33/(16t²) + π/(2t)`).
+
+  **Item 4 of the revised gate list is closed in reusable form.**
+
+`RHTower/WeightedMeanSquareTransfer.lean` (axiom-clean, wired, exact leaf build):
+
+* **`abs_integral_weighted_meanSquare_sub_le`** — transfer of a mean-square asymptotic through a
+  smooth increasing weight, by one integration by parts:
+
+  ```text
+  |∫_a^u ‖D‖² − (u−a)·M| ≤ E  for every u ∈ [a,b],   w′ ≥ 0,  w(a) ≥ 0
+     ⟹ |∫_a^b w·‖D‖² − M·∫_a^b w| ≤ E·(2w(b) − w(a)).
+  ```
+
+  This is item 5's mechanism: with `w(t) = |χ(σ₀+it)|² = (t/2π)^{2R/log T}` it converts the constant
+  `∑|c_n|²` of the dual polynomial into `∑|c_n|²·∫ (t/2π)^{2R/log T} dt`, which after `v = log t/log T`
+  is Young's `∫_0^1 e^{2Rv} dv` factor.
+
+`RHTower/WeightedMeanSquareTransfer.lean` also carries the weight itself:
+`chiModulusWeight α t = (t/2π)^α`, `chiModulusWeight_pos`, **`hasDerivAt_chiModulusWeight`**
+(`w′(t) = (α/t)·w(t)`, so `w′ ≥ 0` for `α ≥ 0` — the monotonicity the transfer needs) and
+`continuousOn_deriv_chiModulusWeight`.  With `α = 2(1/2 − σ₀) = 2R/log T` this is exactly
+`|χ(σ₀+it)|²`.
+
+### State of the revised gate list after bricks 5ba–5bc
+
+| # | item | state |
+|---|---|---|
+| 1 | exact smooth AFE at every split | **owned** |
+| 2 | direct×direct mollified mean square | **owned** |
+| 3 | mollified coefficient energy: short range | **owned**; long-tail asymptotic open |
+| 4 | cross term `o(T)` | **CLOSED** (`norm_integral_archimedeanCross_le`) |
+| 5 | dual×dual with the `χ`-modulus weight | mechanism **CLOSED** (`abs_integral_weighted_meanSquare_sub_le`, `chiModulusWeight`); instantiation open |
+| 6 | block freezing of the moving cutoff | machinery owned; assembly open |
+| 7 | assembly to `LevinsonMeanSquareGate` | open |
+
+## Brick 5bd — the assembly skeleton (2026-09-01)
+
+`RHTower/MeanSquareSplit.lean` (axiom-clean, wired, exact leaf build):
+
+* **`integral_normSq_add_le_of_cross`** — the two-term split
+  `∫‖D₁+D₂‖² ≤ P₁ + P₂ + 2X` from mean-square bounds `P₁, P₂` and a cross bound `X`.  This is the
+  shape into which `smoothAFEZetaDisplacedDirectMollified_meanValue_window` (direct),
+  `abs_integral_weighted_meanSquare_sub_le` + `chiModulusWeight` (dual) and
+  `norm_integral_archimedeanCross_le` (cross) plug.
+* **`integral_normSq_add_le_young`** — absorption of a small perturbation,
+  `∫‖D+E‖² ≤ (1+η)P + (1+1/η)Q`.  The approximate-functional-equation error and the pole residue
+  have mean square `o(L)`, so they cost only `η` of relative loss and `η → 0` removes it.
+
+With these, items 4, 5 and the splitting half of item 7 are mechanised.  What is left for the gate:
+
+* **item 3** — the sharp mollified coefficient energy over the *full* product range
+  `∑_{n ≤ xM} |cₙ|² = ∑_{n ≤ xM} λₙ²/n + …`, i.e. Graham's harmonic-weighted Barban–Vehov
+  asymptotic.  The corpus owns the Selberg diagonal sharply
+  (`tendsto_barbanVehovSelbergDiagonal_div_log_one`, both halves) and the harmonic-weighted upper
+  bound `sum_harmonic_sq_barbanVehovCoeff_le`, but the latter carries a `(1+2log X)(X log X)²`
+  defect that is only `o(L)` once `N ≫ X²`; the sharp version over `M < n ≤ xM` is the open item.
+* **item 6** — the block freezing of the moving AFE cutoff.
+* **item 7** — plugging items 2–6 into `LevinsonMeanSquareGate`.
+
+## Brick 5be — CORRECTION: item 3 is further along than the 2026-08-26 note said (2026-09-01)
+
+The status line of 2026-08-26 ("growing-modulus upper control, differentiated full/omitted long
+tails … remain required") is **stale**.  A re-audit of the tree shows both halves of the long-range
+energy are already Lean theorems, and — crucially — the error term vanishes *exactly* in the range
+`θ < 1/2` that the two consumer cards need.
+
+**The long energy is approximated by an explicit polynomial main, with a `θ < 1/2` error.**
+`RHTower/Sieve/DifferentiatedBarbanVehovIncludedEnergy.abs_levinsonCriticalDetectorLongEnergy_sub_includedPolynomialMain_le`:
+for `1 < M` and `8M² ≤ L`,
+
+```text
+| levinsonCriticalDetectorLongEnergy λ L M − barbanVehovIncludedLongEnergyPolynomialMain λ (log L) M |
+     ≤ ( M²log²M·(3/L + 12|λ|·log(LM+1)/L + 12λ²·log²(LM+1)/L) ) / log²M .
+```
+
+With the Levinson scaling `L ≍ T^{1/2+θ}` (AFE head × mollifier), `M = T^θ`, `|λ| ≍ 1/log T`:
+
+* the hypothesis `8M² ≤ L` reads `8T^{2θ} ≤ T^{1/2+θ}`, i.e. `θ ≤ 1/2 − log 8/log T` — satisfied
+  for every fixed `θ < 1/2` and `T` large;
+* the `log²M` cancels, `|λ|log(LM)` and `λ²log²(LM)` are `O(1)`, so the whole error is
+  `≍ M²/L = T^{θ−1/2} → 0`.
+
+**The polynomial main has an exact limit.**
+`DifferentiatedBarbanVehovTunedMinLogAsymptotic.tendsto_barbanVehovIncludedLongEnergyPolynomialMain_tuned_rho`
+gives the limit `ρ²/12` (the ordinary `−ρ²/2` channel plus the Gram contribution `7ρ²/12`), and
+`barbanVehovIncludedLongEnergyPolynomialMain_eq_ordinary_add_tunedRemainder` supplies the identity
+behind it.  The short range already had
+`tendsto_levinsonLinearMollifiedCriticalDetector_energy : ∑_{k≤M} ‖c_k‖² → 1 + (1−r)²/2 + r²/12`.
+
+**Revised assessment.**  Item 3 is not an open sieve-theoretic problem; it is an *assembly* problem —
+combining the short limit, the long limit and the `θ < 1/2` error into one statement about
+`∑_{n ≤ LM} |c_n|²`, and matching the result against `levinsonLinearOptimizationConstant`.
+
+### The gate list as it now stands
+
+| # | item | state |
+|---|---|---|
+| 1 | exact smooth AFE at every split | **owned** |
+| 2 | direct×direct mollified mean square | **owned** |
+| 3 | mollified coefficient energy, short + long + error | **owned in pieces**; single-statement assembly open |
+| 4 | cross term `o(T)` | **CLOSED** (brick 5bc) |
+| 5 | dual×dual with the `χ`-modulus weight | mechanism **CLOSED** (brick 5bc) |
+| 6 | block freezing of the moving AFE cutoff | machinery owned; assembly open |
+| 7 | `LevinsonMeanSquareGate` | splitting mechanised (brick 5bd); assembly open |
+
+**Every remaining item is assembly, not new mathematics.**  That is the honest state of the gate.

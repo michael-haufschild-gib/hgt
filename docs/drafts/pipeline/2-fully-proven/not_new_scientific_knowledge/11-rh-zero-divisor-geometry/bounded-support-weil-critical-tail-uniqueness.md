@@ -301,3 +301,16 @@ axiom-clean modules, capstone `RHTower.exists_le_xiOddFiberCount_of_mollified_me
 detail is on `docs/drafts/pipeline/1-in-progress/levinson-critical-proportion-programme.md`
 (bricks 7a–7e).  What remains for this card is exactly the mollified mean square of
 `(ζ + λζ′)·Ψ` on the Levinson abscissa, plus the density passage.  Card stays at stage 2.
+
+### Gate reduction completed (2026-09-01, later)
+
+`RHTower.le_liminf_xiSimpleCriticalRatio_of_gate` now derives this card's *exact* gate
+
+```text
+∃ c > 0,  c ≤ liminf xiSimpleCriticalRatio atTop
+```
+
+from `LevinsonMeanSquareGate R c` alone (Levinson's mollified mean square), unconditionally and
+axiom-clean; `suzukiCutoff_eq_zero_of_le_liminf_xiSimpleCriticalRatio` then closes the card's
+Theorem 2.  The only open statement left for this card is therefore the mollified mean square
+itself.

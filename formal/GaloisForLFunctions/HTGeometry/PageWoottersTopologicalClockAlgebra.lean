@@ -10,7 +10,7 @@ This module formalizes the unconditional algebraic identities used by arXiv:2608
 * exact forward/backward cancellation of common dynamical phase;
 * factorization of the two-path amplitude and its cosine coincidence fringe.
 
-No adiabatic approximation, numerical estimate, or added axiom occurs here.
+No adiabatic approximation, numerical estimate, or added assumption occurs here.
 -/
 
 open Complex

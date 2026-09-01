@@ -569,3 +569,15 @@ Two structural corrections were needed and are recorded on the programme card (b
 
 Remaining for this card: the mollified mean square (programme bricks 5c–5e/6), then the density
 passage; and, for the advertised `0.116158438`, the PRZZ constants.  Card stays at stage 2.
+
+### Non-vacuity reduced to one analytic statement (2026-09-01, later)
+
+`RHTower.le_liminf_xiSingletonFiberRatio_of_gate` derives
+
+```text
+(3/2)·δ ≤ liminf xiSingletonFiberRatio atTop
+```
+
+from `LevinsonMeanSquareGate R c` with `1/3 + 2δ < 1 − log c/R`, unconditionally and axiom-clean.
+So the card's *non-vacuity* now rests on exactly one open statement — the mollified mean square —
+while the advertised decimal `0.116158438` still needs the PRZZ pair.

@@ -4,6 +4,7 @@ import GaloisForLFunctions.RHTower.RelationalClockLocalHorizonLaw
 import GaloisForLFunctions.HTGeometry.RabiHatanoNelsonAlgebra
 import GaloisForLFunctions.HTGeometry.DecoupledEvolutionFactorization
 import GaloisForLFunctions.HTGeometry.HLSPhysicalAssumptions
+import GaloisForLFunctions.HTGeometry.PageWoottersTopologicalClockAlgebra
 
 open scoped BigOperators Matrix
 open Complex
@@ -12,37 +13,21 @@ noncomputable section
 
 namespace GaloisForLFunctions.RHTower.TopologicalClockApplications
 
-def riceMeleDx (J delta k : ℝ) : ℝ :=
-  J * ((1 + delta) + (1 - delta) * Real.cos k)
+abbrev riceMeleDx := HTGeometry.riceMeleDx
 
-def riceMeleDy (J delta k : ℝ) : ℝ :=
-  J * (1 - delta) * Real.sin k
+abbrev riceMeleDy := HTGeometry.riceMeleDy
 
-def riceMeleNormSq (J delta Delta k : ℝ) : ℝ :=
-  riceMeleDx J delta k ^ 2 + riceMeleDy J delta k ^ 2 + Delta ^ 2
+abbrev riceMeleNormSq := HTGeometry.riceMeleNormSq
 
 theorem riceMeleNormSq_eq (J delta Delta k : ℝ) :
     riceMeleNormSq J delta Delta k =
       Delta ^ 2 + 2 * J ^ 2 *
         (1 + delta ^ 2 + (1 - delta ^ 2) * Real.cos k) := by
-  simp only [riceMeleNormSq, riceMeleDx, riceMeleDy]
-  have hsin : Real.sin k ^ 2 = 1 - Real.cos k ^ 2 := by
-    nlinarith [Real.sin_sq_add_cos_sq k]
-  calc
-    (J * (1 + delta + (1 - delta) * Real.cos k)) ^ 2 +
-          (J * (1 - delta) * Real.sin k) ^ 2 + Delta ^ 2 =
-        Delta ^ 2 + J ^ 2 *
-          ((1 + delta + (1 - delta) * Real.cos k) ^ 2 +
-            (1 - delta) ^ 2 * Real.sin k ^ 2) := by ring
-    _ = Delta ^ 2 + J ^ 2 *
-          ((1 + delta + (1 - delta) * Real.cos k) ^ 2 +
-            (1 - delta) ^ 2 * (1 - Real.cos k ^ 2)) := by rw [hsin]
-    _ = Delta ^ 2 + 2 * J ^ 2 *
-          (1 + delta ^ 2 + (1 - delta ^ 2) * Real.cos k) := by ring
+  exact HTGeometry.riceMeleNormSq_closedForm J delta Delta k
 
 theorem riceMeleNormSq_even (J delta Delta k : ℝ) :
     riceMeleNormSq J delta Delta (-k) = riceMeleNormSq J delta Delta k := by
-  simp [riceMeleNormSq, riceMeleDx, riceMeleDy, Real.cos_neg, Real.sin_neg]
+  exact HTGeometry.riceMeleNormSq_neg J delta Delta k
 
 def riceMeleOffDiagonal (J delta k : ℝ) : ℂ :=
   ((J * (1 + delta) : ℝ) : ℂ) +
@@ -88,51 +73,38 @@ theorem riceMeleOffDiagonal_eq_gaugedDirectionalHopping (J delta k : ℝ) :
         (((J + J * delta : ℝ) : ℂ) * Complex.exp (-x) +
           ((J - J * delta : ℝ) : ℂ) * Complex.exp x) := by ring
 
-def normalizedPumpDelta (tau : ℝ) : ℝ := (1 / 2 : ℝ) * Real.cos tau
+abbrev normalizedPumpDelta := HTGeometry.referenceRiceMeleDelta
 
-def normalizedPumpMass (tau : ℝ) : ℝ := (1 / 2 : ℝ) * Real.sin tau
+abbrev normalizedPumpMass := HTGeometry.referenceRiceMeleDetuning
 
 theorem normalizedPump_normSq_decomposition (k tau : ℝ) :
     riceMeleNormSq 1 (normalizedPumpDelta tau) (normalizedPumpMass tau) k =
       (1 / 4 : ℝ) + (3 / 4 : ℝ) * Real.cos tau ^ 2 +
         2 * (1 - (1 / 4 : ℝ) * Real.cos tau ^ 2) * (1 + Real.cos k) := by
   rw [riceMeleNormSq_eq]
-  simp only [normalizedPumpDelta, normalizedPumpMass]
+  simp only [normalizedPumpDelta, normalizedPumpMass,
+    HTGeometry.referenceRiceMeleDelta, HTGeometry.referenceRiceMeleDetuning]
   nlinarith [Real.sin_sq_add_cos_sq tau]
 
 theorem normalizedPump_uniform_gap_sq (k tau : ℝ) :
     (1 / 4 : ℝ) ≤
       riceMeleNormSq 1 (normalizedPumpDelta tau) (normalizedPumpMass tau) k := by
-  rw [normalizedPump_normSq_decomposition]
-  have hcosSq : Real.cos tau ^ 2 ≤ 1 := by
-    nlinarith [Real.neg_one_le_cos tau, Real.cos_le_one tau]
-  have hfactor : 0 ≤ 1 - (1 / 4 : ℝ) * Real.cos tau ^ 2 := by nlinarith
-  have hbase : 0 ≤ 1 + Real.cos k := by linarith [Real.neg_one_le_cos k]
-  have hproduct := mul_nonneg hfactor hbase
-  nlinarith [sq_nonneg (Real.cos tau)]
+  change (1 / 4 : ℝ) ≤ HTGeometry.referenceRiceMeleNormSq k tau
+  exact HTGeometry.referenceRiceMeleNormSq_ge_quarter k tau
 
 theorem normalizedPump_gap_minimizer :
     riceMeleNormSq 1 (normalizedPumpDelta (Real.pi / 2))
       (normalizedPumpMass (Real.pi / 2)) Real.pi = (1 / 4 : ℝ) := by
-  simp [riceMeleNormSq, riceMeleDx, riceMeleDy,
-    normalizedPumpDelta, normalizedPumpMass]
-  norm_num
+  exact HTGeometry.referenceRiceMeleNormSq_pi_piDivTwo
 
-def normalizedPumpGap (k tau : ℝ) : ℝ :=
-  2 * Real.sqrt
-    (riceMeleNormSq 1 (normalizedPumpDelta tau) (normalizedPumpMass tau) k)
+abbrev normalizedPumpGap := HTGeometry.referenceRiceMeleGap
 
 theorem normalizedPumpGap_ge_one (k tau : ℝ) : 1 ≤ normalizedPumpGap k tau := by
-  have hsqrt := Real.sqrt_le_sqrt (normalizedPump_uniform_gap_sq k tau)
-  have hquarter : Real.sqrt (1 / 4 : ℝ) = 1 / 2 := by norm_num
-  rw [hquarter] at hsqrt
-  dsimp [normalizedPumpGap]
-  linarith
+  exact HTGeometry.referenceRiceMeleGap_ge_one k tau
 
 theorem normalizedPumpGap_minimizer :
     normalizedPumpGap Real.pi (Real.pi / 2) = 1 := by
-  rw [normalizedPumpGap, normalizedPump_gap_minimizer]
-  norm_num
+  exact HTGeometry.referenceRiceMeleGap_pi_piDivTwo
 
 def linearGeometricPhase (C : ℤ) (k : ℝ) : ℝ := -(C : ℝ) * k
 

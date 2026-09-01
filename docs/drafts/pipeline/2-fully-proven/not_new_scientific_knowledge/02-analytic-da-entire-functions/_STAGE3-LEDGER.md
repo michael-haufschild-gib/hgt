@@ -4338,3 +4338,238 @@ det ( a_0 ; … ; a_(k−1) ; ∂_j δ^s W )  =  W^(N−k−1) · det ( a_0 ; �
 for `δ W = V · W`.  The corpus owns this only for the polynomial-coefficient cascade
 (`PeelInduction`, `PeelEntry`, `PairPeelInduction`, `BorderShapeColumn`, `JetGradientRecursion`);
 the general derivation-level version is the missing infrastructure.
+
+## The general peel is now Lean: `HTGeometry/DerivationJetPeel.lean` (2026-09-01)
+
+The missing infrastructure named at the end of the previous section is built, unconditionally, at
+the level of an arbitrary commutative `ℂ`-algebra with an arbitrary time derivation and arbitrary
+coordinate derivations.
+
+| Statement | Theorem |
+|---|---|
+| `δ^m x = x · B_m(A)` with a natural-number index | `bellJet`, `derivation_iterate_eq_bellJet` |
+| the Bell coefficient matrix is unitriangular | `bellJetCoeff`, `bellJetCoeff_self`, `bellJetCoeff_of_lt` |
+| gradients of Bell values through gradients of jets | `derivation_bellJet_succ` |
+| the matrix with `k` border rows and jets of `W` below | `peelMatrix` |
+| **the peel step** `det (…, δ^s W) = W^(N−k−1) · det (…, ∂W, δ^s V)` for `δW = V·W` | `peelMatrix_det_succ` |
+| nonvanishing transfers along one step | `peelMatrix_det_ne_zero_of_succ` |
+| iterating the step along the whole chain | `peelMatrix_det_chain` |
+| **the closed form** | `outputJacobian_det_eq_gradientMatrix` |
+| observability from the chain gradients | `outputJacobian_det_ne_zero_of_gradientMatrix` |
+
+The closed form is: for a chain of iterated logarithmic derivatives `Y_0 = W`,
+`Y_(m+1) = δY_m / Y_m` (i.e. `δ Y_m = Y_(m+1) · Y_m`),
+
+```
+det (∂_j δ^i Y_0)_(i,j < N)  =  (∏_(m<N) Y_m^(N−m−1)) · det (∂_j Y_m)_(m,j < N).
+```
+
+Every hypothesis-bearing part of the old route disappears: no coordinate has to kill anything, no
+asymptotics are used, and the `n` explicit factors are visibly nonzero whenever the chain members
+are.  What is left is a single named statement:
+
+> **the gradients of the iterated logarithmic derivatives of the output are linearly independent.**
+
+### What the chain is for the cascade
+
+`Y_0 = X_n`, `Y_1 = P_(n−1) h_n(X_n)` with `h_n := A_n/X_n`, `Y_2 = T_(n−1) + P_(n−1) κ_n(X_n)` with
+`T_(n−1) = ∑_(i≤n−1) A_i'(X_i) P_(i−1)` and `κ_n := X_n h_n'(X_n)`.  Its gradients are
+
+* `∂_j Y_0 = δ_(jn)` — a coordinate vector, so the determinant drops to the `(n−1)×(n−1)` minor on
+  the first `n−1` columns immediately;
+* `∂_j Y_1 = Y_1 · m_j(X_j)` for `j < n`, `m_j := A_j'/A_j ≠ 0`;
+* `∂_j Y_2 = ∂_j T_(n−1) + P_(n−1) m_j κ_n` for `j < n`.
+
+In the exactly-linear model `κ_n = 0` and `Y_2 = T_(n−1)` is free of `X_n`; in general `κ_n → 0`
+along the Puiseux branch.  The asymptotic hypothesis now has to beat a **single scalar** at each
+level rather than a determinant whose leading behaviour is rank one, which is exactly the repair the
+old route could not make.
+
+### Status of the two cards
+
+Neither is closed.  What has changed is that the open core is one statement about one matrix, with
+every reduction to it unconditional and in Lean, instead of a Newton degeneration that the first
+section of this entry shows can never work.
+
+## The chain-gradient matrix does have a unique optimal assignment (2026-09-01)
+
+The two new tools compose, and the composition is the route.
+
+**The model's chain-gradient determinant is already owned.**  `outputJacobian_det_eq_gradientMatrix`
+gives `det (∂_j δ^i X_n) = (∏_m Y_m^(N−m−1))·det (∂_j Y_m)` with every factor `Y_m ≠ 0`, and
+`ExpAffineCascade.scaled_jet_det_ne_zero` gives the left side nonzero for the model.  Hence the
+model's chain-gradient determinant is nonzero, with no new work.
+
+**Unlike the jet Jacobian, the chain-gradient matrix is not rank-one degenerate.**  For the model
+`δ X_k = X_1⋯X_k` the chain is `Y_0 = X_n`, `Y_1 = P_(n−1)`, `Y_2 = S_(n−1) := ∑_(i<n−1) P_i`,
+`Y_(m+1) = δY_m/Y_m`, and each `Y_m` for `m ≥ 2` involves only `X_1,…,X_(n−2)`.  The zero pattern
+alone already forces most of the assignment:
+
+* `n = 3`: rows `(0,0,1)`, `(X_2,X_1,0)`, `(1,0,0)` — exactly one surviving permutation, determinant
+  `−X_1`, and `X_3²·X_1X_2·(−X_1) = −X_1²X_2X_3²`, which is the hand value of `det (∂_j δ^i X_3)`.
+  The closed form checks out.
+* `n = 2`: `(0,1)`, `(1,0)`, determinant `−1`, and `X_2·(−1) = −X_2`.  Also correct.
+* `n = 4`: rows `Y_0 = (0,0,0,1)`, `Y_1 = (X_2X_3, X_1X_3, X_1X_2, 0)`, `Y_2 = (1+X_2, X_1, 0, 0)`,
+  `Y_3 = (∂_1Y_3, ∂_2Y_3, 0, 0)`.  Rows `0` and `1` are forced onto columns `4` and `3`; two
+  permutations survive on the `2×2` block.  With
+  `Y_3 = X_1(1+X_2+X_1X_2)/(1+X_1+X_1X_2)` one computes
+  `∂_2 Y_3 = (X_1+X_1²+X_1³)/(1+X_1+X_1X_2)²`, of weighted degree `w_1 − 2w_2`, and
+  `∂_1 Y_3` of weighted degree `0` (its numerator's top term is `X_1²X_2²`, with coefficient
+  `2 − 1 = 1`, so there is no cancellation).  The two assignment totals are
+
+  `w_1` (rows `2,3` to columns `2,1`) and `w_1 − w_2` (to columns `1,2`),
+
+  so the optimum is **unique** for every positive weight.
+
+That is exactly the hypothesis of `hasLogScaleExponent_det_of_unique_max_on` /
+`det_ne_zero_of_perturbation_unique_max_on`.  So the degeneration that is impossible on the jet
+Jacobian is available on the chain-gradient matrix.
+
+### The remaining work, precisely
+
+1. Compute, for general `n`, the weighted degrees `deg_w (∂_j Y_m)` of the model chain and prove the
+   assignment optimum is unique.  (`Y_1` contributes the monomial row `P_(n−1)/X_j`; the rows
+   `m ≥ 2` are gradients of the `S`-tower and are the part that needs a general formula.)
+2. Show the perturbed chain's gradients differ from the model's by entrywise `o`, which is where
+   `κ_n = X_n h_n'(X_n) → 0` and the Puiseux branches of the `A_j` enter — against one scalar per
+   level, not against a determinant.
+3. Feed both into `det_ne_zero_of_perturbation_unique_max_on` and then into
+   `outputJacobian_det_ne_zero_of_gradientMatrix`.
+
+Step 1 is a self-contained combinatorial computation about the model tower; step 2 is the card's own
+asymptotic hypothesis used one factor at a time.  Neither needs any new analytic input.
+
+### The uniqueness criterion, reduced to one statement about leading forms
+
+Write `lf(f)` for the top-weight part of `f` and `K_m` for the largest coordinate index occurring in
+`lf(Y_m)`.  For a rational `f` one always has `deg_w (∂_j f) ≤ deg_w f − w_j`, with **equality exactly
+when `lf(f)` depends on `X_j`**.  Hence the chain-gradient matrix's exponent matrix is
+
+`a(m, j) = deg_w Y_m − w_j`  for `j ≤ K_m`,  and strictly smaller for `j > K_m`.
+
+Any permutation using only equality entries has the same total `∑_m deg_w Y_m − ∑_j w_j`; any
+permutation using one non-equality entry has a strictly smaller total.  So:
+
+> **The optimum is unique as soon as `K_m = n − m` for every `m`** — a strict staircase leaves exactly
+> one permutation that uses equality entries throughout, namely `σ(m) = n − m`.
+
+`K_0 = n` and `K_1 = n − 1` are immediate (`Y_0 = X_n`, `Y_1 = P_(n−1)` exactly), and `K_2 = n − 2`
+follows from `Y_2 = S_(n−2)` having top term `P_(n−2)`.  The inductive step needs
+
+`lf(δ Y_m) = lf(Y_m) · P_(K_m − 1)`,   i.e.  `K_(m+1) = K_m − 1`,
+
+and this is where a genuine choice enters: `deg_w (δ f) = max_k (deg_w (∂_k f) + W_k)`, and a
+coordinate `k > K_m` contributes `deg_w f + W_(k−1) − ε_k`, which beats the `k = K_m` term unless
+`ε_k > W_(k−1) − W_(K_m −1)`.  Explicitly for `n = 4`, `∂_2 Y_3` has `ε_2 = w_2` against a threshold
+`w_1`, so the step holds only when `w_2 > w_1`: **the weights must be chosen increasing**, and the
+required inequalities for general `n` are the remaining computation.  (For `n ≤ 4` no such step is
+needed, which is why those cases close by hand.)
+
+In the analytic realisation `X_k = F_k = f_k ∘ ⋯ ∘ f_1` the separation `T(r,F_k)/T(r,F_(k−1)) → ∞` is
+far stronger than any linear weight, so the same criterion should be run there — with
+`HasLogScaleExponent` measured against a growing radius rather than against a monomial valuation —
+rather than in the abstract weighted setting.  That is the concrete next step for both cards.
+
+## Step 1 is proved on paper: the model chain has a strict staircase (2026-09-01)
+
+Work in the model `δ X_k = P_k = X_1⋯X_k` with weights `w_1 < w_2 < ⋯` and `W_k = w_1+⋯+w_k`.
+Write `S_m := ∑_(i≤m) P_i`, `σ_j := S_j / P_j = 1 + S_(j−1)/P_j`, so `deg(σ_j − 1) = −w_j` with level
+`j`.  Put `Y_m = P_(n−m) · u_m` and `r_m := log u_m`.  Because `δ P_k / P_k = S_(k−1)`,
+
+`Y_(m+1) = δY_m / Y_m = S_(n−m−1) + δ r_m`,   hence   `u_(m+1) = σ_(n−m−1) + δ r_m / P_(n−m−1)`.
+
+Let `d_m := deg(u_m − 1) < 0` and `ℓ_m := lev(u_m − 1)`.  For any `f` whose part of level `ℓ` has
+degree `−w_ℓ`, the term of `δ f = ∑_k (∂_k f) P_k` coming from `k = ℓ` has degree
+`(−2w_ℓ) + W_ℓ = W_(ℓ−1) − w_ℓ`, and this is maximal over `ℓ` exactly when the sequence
+`ℓ ↦ W_(ℓ−1) − w_ℓ` decreases, i.e. when
+
+`w_(ℓ+1) > 2 w_ℓ`   — take `w_ℓ = 3^ℓ`.
+
+With that choice, `deg(δ(u_m − 1)) = d_m + W_(ℓ_m − 1)` and the recursion reads
+
+`d_(m+1) = max( −w_(n−m−1),  d_m + W_(ℓ_m−1) − W_(n−m−1) )`.
+
+Base: `Y_1 = P_(n−1)` exactly, `Y_2 = S_(n−2)`, so `u_2 = σ_(n−2)`, `d_2 = −w_(n−2)`, `ℓ_2 = n−2`.
+Induction: if `d_m = −w_(n−m)` and `ℓ_m = n−m`, the second entry is `−w_(n−m)` and the first is
+`−w_(n−m−1)`; since the weights increase, `−w_(n−m−1) > −w_(n−m)`, so
+
+`d_(m+1) = −w_(n−m−1)`,  `ℓ_(m+1) = n−m−1`.
+
+Hence `u_m = 1 + (lower)`, so **`lf(Y_m) = P_(n−m)`, a monomial with top index exactly `n − m`**, for
+`1 ≤ m ≤ n−1`, and `lf(Y_0) = X_n`.  The gradient exponents are therefore
+
+`deg ∂_j Y_m = deg Y_m − w_j` for `j ≤ n−m`,  and strictly smaller for `j > n−m`,
+
+which is exactly the staircase hypothesis with `K(m) = n − m`.  The `n = 4` computation recorded
+above (`ε_2 = w_2` against threshold `w_1`) is the first instance and matches.
+
+Two independent checks of the general degree computation: `∂_m Y_3` has numerator
+`P_(m−1)(S_(m−1)² − N')` with `N' = ∑_(i<m) P_i S_(i−1)`, giving `ε_m = w_m` exactly; and the closed
+form reproduces the hand values `−X_2` (`n=2`) and `−X_1²X_2X_3²` (`n=3`).
+
+### Lean status of step 1
+
+The combinatorial half is built and axiom-clean:
+`HTGeometry/StaircaseAssignment.lean` — `perm_eq_of_le` (a permutation dominated pointwise by a
+permutation equals it), `unique_max_of_staircase`, `hasLogScaleExponent_det_of_staircase`,
+`det_ne_zero_of_staircase`.  `HTGeometry/LogScaleMonomialCurve.lean` adds the measuring device:
+`HasLogScaleExponent.inv`, `.div`, and `hasLogScaleExponent_zpow` (a monomial curve measures its own
+weighted degree).
+
+What is left for step 1 in Lean is the degree bookkeeping above: a weighted-degree and leading-form
+calculus on `Frac (MvPolynomial (Fin n) ℂ)`, and the recursion `d_(m+1) = …`.  Because every
+`lf(Y_m)` is a *monomial*, the bridge from weighted degree to the measured exponent on the curve
+`X_j = t^(w_j)` needs no genericity: a monomial never vanishes on the curve.
+
+## The algebraic degeneration toolchain is Lean (2026-09-01)
+
+Three further modules, all unconditional and axiom-clean, complete the algebraic half of the route.
+
+| Module | Contents |
+|---|---|
+| `HTGeometry/StaircaseAssignment.lean` | `perm_eq_of_le`; `unique_max_of_staircase` (over any linearly ordered abelian group); `hasLogScaleExponent_det_of_staircase`; `det_ne_zero_of_staircase` |
+| `HTGeometry/LogScaleMonomialCurve.lean` | `HasLogScaleExponent.inv`, `.div`, `hasLogScaleExponent_zpow` |
+| `HTGeometry/DegreeDeterminantNonCancellation.lean` | `IsDegree` (a `WithBot ℤ`-valued degree on a domain); `IsDegree.map_one`, `.map_neg`, `.map_add_of_lt`, `.sum_lt`, `.map_sum_of_unique_max`, `.map_prod`; `det_ne_zero_of_unique_max_deg`; **`det_ne_zero_of_staircase_deg`** |
+| `HTGeometry/WeightedDegreeFunction.lean` | `curveHom` (substitution `X_j ↦ X_j·t^(w_j)`), `curveHom_injective`, `wdeg`, **`isDegree_wdeg`**, `wdeg_X`, `wdeg_C` |
+
+`det_ne_zero_of_staircase_deg` is the purely algebraic form of the criterion: if the entry degrees
+satisfy `d (M j i) = c i − w j` for `j ≤ P i` and `d (M j i) < c i − w j` for `j > P i`, the
+determinant is nonzero.  Entries may vanish off the staircase — `⊥` is below every integer — so no
+separate treatment of null entries is needed, unlike the measured version.
+
+`isDegree_wdeg` supplies the concrete instance: the weighted degree with natural weights on
+`MvPolynomial (Fin n) ℂ`.  Injectivity of the curve substitution (undone by `t ↦ 1`) is what makes
+the `t`-degree additive on products, so no non-cancellation argument is required.
+
+### How this is used, and what remains
+
+The chain `Y_m` is rational, but nothing needs a degree function on the fraction field: writing
+`Y_m = N_m/D_m` and scaling row `m` of the gradient matrix by `D_m²` makes every entry a polynomial
+and multiplies the determinant by the nonzero factor `∏_m D_m²`.  The row constants `c` of the
+staircase absorb the shift.  So the remaining work is exactly:
+
+1. the explicit numerators `N_m`, `D_m` of the cascade chain and their weighted degrees — the
+   recursion `d_(m+1) = max(−w_(n−m−1), d_m + W_(ℓ_m−1) − W_(n−m−1))` proved on paper above, with
+   weights `w_ℓ = 3^ℓ`;
+2. the perturbed chain's degrees, one scalar (`κ_n = X_n h_n'(X_n) → 0`) per level.
+
+Everything downstream of those two is now built: `det_ne_zero_of_staircase_deg` →
+`outputJacobian_det_ne_zero_of_gradientMatrix` → the cards' step 2.
+
+### First cascade-specific weighted degrees
+
+`HTGeometry/TowerWeightedDegree.lean` (unconditional, axiom-clean) computes the weighted degrees the
+staircase needs at the bottom of the chain, on top of the corpus's polynomial tower model
+(`ExponentialTowerModel.towerMonomial`, `ExponentialTowerLowAlgebra.towerSum`):
+
+* `towerWeight w k = ∑_(1≤j≤k) w j`, with `towerWeight_succ` and strict monotonicity for positive
+  weights (`towerWeight_lt`);
+* `wdeg_towerMonomial : wdeg w (towerMonomial k) = towerWeight w k` — the products of distinct
+  coordinates;
+* `wdeg_towerSum : wdeg w (towerSum m) = towerWeight w m` for positive weights — the top monomial is
+  the unique maximum, read off by `IsDegree.map_sum_of_unique_max`.
+
+These are `Y_1 = P_(n−1)` and `Y_2 = S_(n−2)` of the chain.  The next brick is the support calculus
+for `wdeg` (`wdeg (monomial α c) = ⟨w,α⟩` for `c ≠ 0`, and `⟨w,α⟩ ≤ wdeg p` for `α` in the support),
+which gives `wdeg (pderiv j p) + w j ≤ wdeg p` with equality exactly when the top-weight part of `p`
+involves `X_j` — the two facts the staircase hypotheses `heq`/`hlt` are made of.

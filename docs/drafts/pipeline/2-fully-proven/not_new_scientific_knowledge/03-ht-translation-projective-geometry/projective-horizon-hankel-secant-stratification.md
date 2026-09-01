@@ -2733,3 +2733,93 @@ of this card is therefore exactly: wire `exists_uniform_torsion_annihilator` +
 
 Rational singularities remain out of scope: they need resolutions and higher direct images, which
 neither mathlib nor this corpus has.
+
+### Cohen–Macaulayness for every `r` is CLOSED (Lean, 2026-09-01)
+
+The Gröbner degeneration is now carried out in Lean, end to end, and it transports the regular
+sequence of the chain complex to the secant ring itself.  Nine new modules, all axiom-clean
+(`propext`, `Classical.choice`, `Quot.sound` only) and wired into `HTGeometry`:
+
+```text
+HTGeometry/FibreNoTorsionBound.lean
+    finrank_fibre_le_of_smul_injective
+        ** a point of the base line where the parameter acts injectively has fibre dimension at
+           most that of any other point **   (the one-sided form of the corpus's
+                                              finrank_fibre_eq_of_smul_injective)
+
+HTGeometry/DegreePartMonotone.lean
+    finrank_quotDegreePart_le_of_le      a larger subspace has a smaller quotient in each degree
+    degreePart_sup_span_of_lt            adjoining a form of degree d changes nothing below d
+
+HTGeometry/HomogIdealList.lean
+    isHomogIdeal_sup, isHomogIdeal_span_singleton, isHomogIdeal_ofList_sup
+    isXGraded_sup_ofList_C, map_ofList, ofList_take_succ, ofList_map_take_succ
+
+HTGeometry/WeightScaleGraded.lean
+    coeff_familyWeightScale              the rescaling is diagonal on the monomial basis
+    weightScaleEquiv                     ** hence an automorphism of the polynomial ring **
+    homogeneousComponent_familyWeightScale, isHomogeneous_familyWeightScale
+    weightScaleDegreeEquiv               its action on one graded piece
+    isHomogIdeal_map_weightScaleEquiv
+    finrank_quotDegreePart_map_weightScaleEquiv
+        ** the rescaling preserves the Hilbert function **
+
+HTGeometry/FamilyGradedFibreBound.lean
+    finrank_quotDegreePart_fibre_le
+        ** saturation at one point bounds its fibre Hilbert function by every other one **
+
+HTGeometry/FamilyGenericSaturation.lean
+    exists_generic_saturation_point      one nonzero point saturating finitely many families
+    exists_generic_fibre_le              ** and there every fibre is at most the fibre at zero **
+
+HTGeometry/FamilyFibreRescaled.lean
+    map_famEval_familyIdeal
+        ** the fibre of the family ideal over a nonzero point is the rescaled ideal **
+    map_famEval_ofList_C
+
+HTGeometry/DegenerationRegularSequence.lean
+    exists_generic_degeneration_bound    one point of the base line bounds every partial fibre
+    isRegularOn_of_isRegular             a regular sequence read back stage by stage
+    finrank_quotDegreePart_top, finrank_quotDegreePart_zero_ne_zero
+    exists_isRegular_of_degeneration
+        ** a regular sequence of linear forms on the monomial degeneration deforms, by a single
+           rescaling of the variables, to a regular sequence of linear forms on the ideal itself **
+
+HTGeometry/HankelSecantCohenMacaulay.lean
+    isHomogeneous_linearForm
+    exists_isRegular_finiteHankelSecantIdeal
+        ** the secant ideal carries a regular sequence of length 2r **
+    isCohenMacaulayRing_finiteHankelSecantQuotient
+        ** the Hankel secant ring is COHEN–MACAULAY, for every r with 2r ≤ N **
+```
+
+**How the pieces fit.**  `hasRegSeq_chainFaceFinset` gives a regular sequence of length `min N (2r)`
+on the Stanley–Reisner ring of the chain complex; `exists_linear_isRegular` replaces it by one of
+linear forms.  The flat family `familyIdeal (hankelWeight N) I` has the initial ideal as its fibre
+over `0` (`map_famEval_zero_familyIdeal`) and the *rescaled* ideal as its fibre over every nonzero
+point (`map_famEval_familyIdeal`, from `eval_homogenize`).  A single point `λ ≠ 0` avoiding the roots
+of one torsion annihilator per stage (`exists_uniform_torsion_annihilator`) makes every stage
+saturated there, so `finrank_fibre_le_of_smul_injective` bounds each partial Hilbert function at `λ`
+by the one at `0`; `finrank_quotDegreePart_map_weightScaleEquiv` reads the bound back on the original
+ideal with the linear form *deformed* by `λ`; and the chain ideal sits inside the initial ideal
+(`finiteHankelChainIdeal_le_initialIdeal`), so the bound only improves.  That is exactly the fibre
+hypothesis of `forall_mem_of_hilbert_le`.  The induction carries the invariant "equal Hilbert
+functions in every degree": above the degree of the form it is restored by
+`hilbert_eq_of_forall_mem`, below it by `degreePart_sup_span_of_lt`.  Properness of the final ideal
+comes from the invariant in degree `0`.  With `ringKrullDim_hankelSecantQuotient_le` and
+`length_le_ringKrullDim_of_isRingRegularSeq` — both corpus-owned — the length `2r` is the dimension,
+which is `isCohenMacaulayRing_hankelSecantQuotient_of_regSeq`.
+
+No Stanley–Reisner shellability was needed: the corpus's two-shape induction
+(`hasRegSeq_shapeI`) already supplies the regular sequence on the degeneration, and the work here is
+the *transport*, which is the Hilbert-function bookkeeping above.
+
+**What is left of the card's last clause.**
+
+- *Normality for `r ≥ 2`.*  Serre: `S2` is now available (Cohen–Macaulay), and `R1` is the
+  codimension-2 singular locus already proved as `(7)`.  The missing Lean input is Serre's criterion
+  itself, and the Jacobian criterion linking `(7)` to regularity of the local rings.  Neither mathlib
+  nor this corpus has regular-local-ring theory beyond the bare definition `IsRegularLocalRing`.
+- *Rational singularities.*  Conca–Mostafazadehfard–Singh–Varbaro.  Needs resolutions and higher
+  direct images; nothing of that exists in mathlib.  Used by this card only for the qualitative
+  sentence of the theorem statement.

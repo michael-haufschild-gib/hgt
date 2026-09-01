@@ -1782,3 +1782,28 @@ no `depth`, no Koszul complexes and no miracle flatness.  Two routes:
    `i > 0`, which is regularity.  Shorter statement, but Koszul complexes are absent from mathlib.
 
 Route 1 reuses Rees, which is already in mathlib, so it is the cheaper of the two.
+
+## 2026-09-01 — card 11: the Gröbner degeneration is Lean-closed, and with it Cohen–Macaulayness
+
+`isCohenMacaulayRing_finiteHankelSecantQuotient` (in `HTGeometry/HankelSecantCohenMacaulay.lean`)
+proves, unconditionally and axiom-clean, that `MvPolynomial (Fin N) K ⧸ finiteHankelSecantIdeal K N r`
+is Cohen–Macaulay for `2r ≤ N` over a characteristic-zero field.  Nine new modules; the full list and
+the architecture are recorded on the card itself.
+
+The load-bearing new general theorem is
+`DegenerationRegularSequence.exists_isRegular_of_degeneration`: for homogeneous ideals `I`, `J` with a
+common graded complement and `J ≤ initialIdeal w I`, a regular sequence of linear forms on `R ⧸ J`
+deforms — by one rescaling of the variables — to a regular sequence of linear forms on `R ⧸ I`.  It is
+stated for arbitrary `I`, `J`, `w`, so it is reusable for any Gröbner degeneration in the corpus.
+
+Corrections to earlier ledger entries:
+
+* The earlier note "neither mathlib nor this corpus has Stanley–Reisner theory, and that is the
+  honest gap" is superseded: the corpus's own two-shape induction `hasRegSeq_shapeI` already gave the
+  regular sequence on the chain complex.  Only the *transport* was missing.
+* `FamilyUniformTorsion` is no longer an orphan; `exists_uniform_torsion_annihilator` is what supplies
+  a single point of the base line good for every graded piece and every stage at once.
+
+**Remaining on card 11:** normality for `r ≥ 2` (needs Serre's criterion and regular-local-ring
+theory — mathlib has only the bare definition `IsRegularLocalRing`) and rational singularities
+(needs resolutions and higher direct images; absent from mathlib entirely).

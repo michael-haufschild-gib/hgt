@@ -1,8 +1,8 @@
 # Suzuki local Cartan-germ universality
 
 - **ID:** CCM-FU-LOCAL-CARTAN-GERM
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** `rh-current-frontier-map.md` route CCM-FU; `SuzukiNonabelianCartanWardCompletion`
 - **Statement:** Every fixed local Cartan germ `phi(x)=x-x^2/2+O(x^3)` produces a completed Suzuki observable equal to Green plus `o(1)`; its uniform boundedness is equivalent to RH.
 
@@ -24,7 +24,7 @@ nonlocal or cutoff-dependent before scalar/cofinal passage.
 
 - [x] 0 → 1  in-progress: corpus-defined cells and exact RH chain; no literature collision found
 - [x] 1 → 2  fully-proven: complete paper proof below, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorem, targeted build, axiom audit
+- [x] 2 → 3  formalized: Lean theorem, targeted build, axiom audit
 - [ ] 3 → 4  publication-ready: standalone paper
 
 ## Exact class
@@ -86,8 +86,9 @@ with RH. ∎
 - **Exact killing theorem/mechanism:** fixed local germs with forced linear and quadratic jets differ from the literal completed atomic–continuous endpoint by a vanishing aggregate cubic tail.
 - **Strongest positive survivor:** genuinely nonlocal/cutoff-dependent cross-label coupling is necessary; local analytic `SL₂`/Cartan functional calculus cannot be the independent producer.
 - **New insight:** obstruction is universality of the cofinal endpoint, not special choice `log(1+x)`.
-- **Status:** paper proof dependency-closed; Lean formalization in progress. Primary-literature search through 2026-08 found no matching classification.
+- **Status:** dependency-closed paper and Lean proof. Module `SuzukiLocalCartanGermUniversality`; capstone `all_suzukiLocalCartanGermWardObservables_bounded_iff_riemannHypothesis`. Targeted build passed; axioms are only `propext`, `Classical.choice`, `Quot.sound`. Primary-literature search through 2026-08 found no matching classification.
 
 ## Log
 
 - 2026-09-01 — corpus/literature audit; paper proof closed.
+- 2026-09-01 — Lean proof closed, targeted module build and axiom audit passed.

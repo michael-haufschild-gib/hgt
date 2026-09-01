@@ -6,6 +6,10 @@ Frontier map is read-only. Facts only; cards/certificates are source of truth.
 
 - `C(q)=1-2 Re(q)` controls all four receivers; universal extinction iff RH.
 - Source FE gain, fixed physical pairing, clock covariance, receiver extinction are equivalent.
+- Genuine prime-2/prime-3 source boundaries form the rank-one orbit `d(t)·(0,1,-1,0)`.
+- Every fixed coherent complex quadratic scalarization is blind (`κ=0`) or exactly shared Ward/RH (`κ≠0`); positivity and Hermiticity are irrelevant.
+- Every ℝ-algebra automorphic untwisting of the Γ₆ cyclic source is trivial: `t-u → t-1` forces `u=1`; universal physical untwisting is shared Ward/RH.
+- Algebraic survivor: `t+c` is a unit iff `c=0`; viable untwisting must change category/localize or add non-algebraic source dynamics.
 - Missing edge is source-dynamical Ward/orientation, not divisor detection.
 
 ## HB
@@ -29,9 +33,11 @@ Frontier map is read-only. Facts only; cards/certificates are source of truth.
 
 - Positive matrix, conditional natural-order, and closed-relation branches are dead.
 - Unique source-pure singular FE carrier exists; it is an algebraic rescaling gauge.
-- Every fixed source-independent coercive Hilbert-energy realization is dead: `(0,1)` amplification diverges cofinally, while source-adapted energy is exactly conserved.
-- Open: unbounded/domain-sensitive or source-dependent weighted completion yielding partner balance.
+- Fixed energies and all uniformly conditioned scale-dependent invariant energy bundles are dead. Any invariant fibre obeys `m·max(a²,a⁻²) ≤ M`.
+- Exact source-adapted energy attains forced reciprocal-gain conditioning.
+- Carrier-only connection/index/operator-domain branch is dead: horizontal sections have no nonzero `L²` state in either orientation, index imbalance is zero, and all positive unitarizing densities are `a⁻¹h` with positive even `h`.
+- Open: independently source-normalized singular measure/domain or direct source-dynamical partner law.
 
 ## Latest certificate
 
-`pwSingularNeutralOrbit_boundedness_noGo` — direct Lean PASS; targeted build PASS; standard axioms only; umbrella wired.
+`sourceHorizontalGammaSixAlgebraicUntwistingRouteKilled` — direct Lean PASS; targeted build PASS; standard axioms only; umbrella wired.

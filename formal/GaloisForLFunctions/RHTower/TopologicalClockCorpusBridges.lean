@@ -114,7 +114,8 @@ theorem riceMeleDiracMassLoop_coordinates (tau : ℝ) :
       ((2 * normalizedPumpDelta tau : ℝ) : ℂ) +
         Complex.I * ((2 * normalizedPumpMass tau : ℝ) : ℂ) := by
   simp [riceMeleDiracMassLoop, PrimeQuasiLocalCharge.scalarCircleLoopOfInt,
-    normalizedPumpDelta, normalizedPumpMass, Complex.exp_mul_I,
+    normalizedPumpDelta, normalizedPumpMass, HTGeometry.referenceRiceMeleDelta,
+    HTGeometry.referenceRiceMeleDetuning, Complex.exp_mul_I,
     ← Complex.ofReal_cos, ← Complex.ofReal_sin]
   ring
 

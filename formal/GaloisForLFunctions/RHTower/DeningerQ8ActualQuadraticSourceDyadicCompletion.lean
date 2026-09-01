@@ -253,6 +253,64 @@ noncomputable def q8QuadraticSource_dyadic_adicCompletionAlgEquiv
     ((Algebra.finrank_eq_one_iff_bijective_algebraMap).mp
       (q8QuadraticSource_dyadic_adicCompletion_finrank_eq_one v hv))
 
+/-- The canonical dyadic source-completion equivalence preserves the normalized
+valuation exactly.  The exponent in the general completion formula disappears
+because every dyadic source prime has ramification index one over `ℚ`. -/
+theorem q8QuadraticSource_dyadic_adicCompletionAlgEquiv_valued
+    (v : HeightOneSpectrum (𝓞 S))
+    (hv : (2 : 𝓞 S) ∈ v.asIdeal)
+    (x : (finitePlaceBelow (K := ℚ) v).adicCompletion ℚ) :
+    Valued.v (q8QuadraticSource_dyadic_adicCompletionAlgEquiv v hv x) =
+      Valued.v x := by
+  let q := finitePlaceBelow (K := ℚ) v
+  let W : {W : HeightOneSpectrum (𝓞 S) //
+      finitePlaceBelow (K := ℚ) W = q} := ⟨v, rfl⟩
+  letI : v.asIdeal.LiesOver q.asIdeal := ⟨rfl⟩
+  have hram : q.asIdeal.ramificationIdx' v.asIdeal = 1 := by
+    let p := q.asIdeal.under ℤ
+    letI : q.asIdeal.LiesOver p := ⟨rfl⟩
+    have htower := Ideal.ramificationIdx_tower
+      (R := ℤ) q.asIdeal v.asIdeal
+    have habs := q8QuadraticSource_dyadic_ramificationIdx_eq_one v hv
+    have hrel : v.asIdeal.ramificationIdx (𝓞 ℚ) = 1 := by
+      rw [habs] at htower
+      exact Nat.eq_one_of_mul_eq_one_left htower.symm
+    rw [Ideal.ramificationIdx'_eq_ramificationIdx q.asIdeal v.asIdeal
+      q.ne_bot]
+    exact hrel
+  change Valued.v (finitePlaceAdicCompletionMap ℚ S q W x) = Valued.v x
+  rw [finitePlaceAdicCompletionMap_valued, hram, pow_one]
+
+/-- Restriction of the canonical dyadic completion equivalence to integral
+elements.  Exact valuation preservation gives both directions. -/
+noncomputable def q8QuadraticSource_dyadic_adicCompletionIntegersRingEquiv
+    (v : HeightOneSpectrum (𝓞 S))
+    (hv : (2 : 𝓞 S) ∈ v.asIdeal) :
+    (finitePlaceBelow (K := ℚ) v).adicCompletionIntegers ℚ ≃+*
+      v.adicCompletionIntegers S := by
+  let q := finitePlaceBelow (K := ℚ) v
+  let W : {W : HeightOneSpectrum (𝓞 S) //
+      finitePlaceBelow (K := ℚ) W = q} := ⟨v, rfl⟩
+  letI : Algebra (q.adicCompletion ℚ) (v.adicCompletion S) :=
+    (finitePlaceAdicCompletionMap ℚ S q W).toAlgebra
+  let e := q8QuadraticSource_dyadic_adicCompletionAlgEquiv v hv
+  exact
+    { toFun := fun x => ⟨e x, by
+        rw [HeightOneSpectrum.mem_adicCompletionIntegers,
+          q8QuadraticSource_dyadic_adicCompletionAlgEquiv_valued]
+        exact x.property⟩
+      invFun := fun y => ⟨e.symm y, by
+        rw [HeightOneSpectrum.mem_adicCompletionIntegers]
+        have h := q8QuadraticSource_dyadic_adicCompletionAlgEquiv_valued v hv
+          (e.symm y)
+        rw [e.apply_symm_apply] at h
+        rw [← h]
+        exact y.property⟩
+      left_inv := fun x => Subtype.ext <| e.symm_apply_apply x
+      right_inv := fun y => Subtype.ext <| e.apply_symm_apply y
+      map_mul' := fun x y => Subtype.ext <| e.map_mul x y
+      map_add' := fun x y => Subtype.ext <| e.map_add x y }
+
 /-- The rational prime below every dyadic source prime is literally `(2)`. -/
 theorem q8QuadraticSource_dyadic_below_eq_rationalPrime_two
     (v : HeightOneSpectrum (𝓞 S))
@@ -292,11 +350,53 @@ private noncomputable def adicCompletionRingEquivOfEq
   subst w
   exact RingEquiv.refl _
 
+private noncomputable def adicCompletionIntegersRingEquivOfEq
+    {v w : HeightOneSpectrum (𝓞 ℚ)} (h : v = w) :
+    v.adicCompletionIntegers ℚ ≃+* w.adicCompletionIntegers ℚ := by
+  subst w
+  exact RingEquiv.refl _
+
 private noncomputable def padicRingEquivOfEq
     {p q : ℕ} [Fact (Nat.Prime p)] [Fact (Nat.Prime q)] (h : p = q) :
     ℚ_[p] ≃+* ℚ_[q] := by
   subst q
   exact RingEquiv.refl _
+
+private noncomputable def padicIntRingEquivOfEq
+    {p q : ℕ} [Fact (Nat.Prime p)] [Fact (Nat.Prime q)] (h : p = q) :
+    ℤ_[p] ≃+* ℤ_[q] := by
+  subst q
+  exact RingEquiv.refl _
+
+/-- Integral form of the literal rational presentation of every dyadic
+source completion.  It identifies `ℤ₂` with the full valuation ring of the
+chosen source completion. -/
+noncomputable def q8QuadraticSource_dyadic_padicIntRingEquiv
+    (v : HeightOneSpectrum (𝓞 S))
+    (hv : (2 : 𝓞 S) ∈ v.asIdeal) :
+    ℤ_[2] ≃+* v.adicCompletionIntegers S := by
+  let q := finitePlaceBelow (K := ℚ) v
+  let p : Nat.Primes := ⟨2, by norm_num⟩
+  have hq : q = RayClass.rationalPrime p :=
+    q8QuadraticSource_dyadic_below_eq_rationalPrime_two v hv
+  let eadic0 := q8QuadraticSource_dyadic_adicCompletionIntegersRingEquiv v hv
+  let eadic : (RayClass.rationalPrime p).adicCompletionIntegers ℚ ≃+*
+      v.adicCompletionIntegers S :=
+    (adicCompletionIntegersRingEquivOfEq hq).symm.trans eadic0
+  letI : Fact (Nat.Prime (Rat.HeightOneSpectrum.primesEquiv
+      (RayClass.rationalPrime p) : ℕ)) :=
+    ⟨(Rat.HeightOneSpectrum.primesEquiv (RayClass.rationalPrime p)).property⟩
+  have hgen : Rat.HeightOneSpectrum.natGenerator
+      (RayClass.rationalPrime p) = 2 := by
+    calc
+      Rat.HeightOneSpectrum.natGenerator (RayClass.rationalPrime p) =
+          (p : ℕ) := RayClass.natGenerator_rationalPrime p
+      _ = 2 := rfl
+  let epadic0 := Rat.HeightOneSpectrum.adicCompletionIntegers.padicIntEquiv
+    (RayClass.rationalPrime p)
+  let epadic : (RayClass.rationalPrime p).adicCompletionIntegers ℚ ≃+* ℤ_[2] :=
+    epadic0.toRingEquiv.trans (padicIntRingEquivOfEq hgen)
+  exact epadic.symm.trans eadic
 
 /-- Literal rational presentation of every dyadic source completion.
 The equivalence is the canonical finite-place completion map composed with

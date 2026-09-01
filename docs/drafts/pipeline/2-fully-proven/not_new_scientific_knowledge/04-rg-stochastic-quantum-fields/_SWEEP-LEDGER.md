@@ -1112,3 +1112,59 @@ endomorphism of `MvPolynomial (Fin n) K`, applying the base map to the coefficie
 This is the vehicle for `(★)`: with the jets algebraically independent, the collapse becomes a
 single identity in `MvPolynomial (Fin N) K`, graded by the weight `w(X j) = j + 1`, and the
 weight-by-weight comparison is the classification.
+
+### The top-weight trichotomy is Lean (2026-09-01)
+
+Two new modules complete the top layer of the classification.
+
+`HTGeometry/RittLogTowerWeight.lean` — the weight filtration.  `jetWeight n j = j + 1`, the support
+predicates `WLe`/`WLt` with their closure under `+`, `−`, `*`, powers and sums, the diagonal part
+`towerDiag`/`towerDiagShift` of the substitution, `wLe_towerSub`,
+**`wLt_towerSub_sub_towerDiag`** (the substitution differs from its diagonal part strictly below the
+level's weight, because `logCoeff j i = 0` above the diagonal and `i + 1 < j + 1` below it),
+`wLt_pow_sub_pow`, `wLt_prod_sub_prod`, `prod_towerDiag`, `coeff_towerDiagShift`,
+**`coeff_towerShift_of_top`** — at a monomial of maximal weight `W`,
+
+```text
+coeff d (towerShift F) = ψ(coeff d F) · ρ^{-W},
+```
+
+and the two consequences **`base_relation_of_towerShift`**
+(`ψ(F_d) = ρ^{J+W}·F_d + ρ^W·G_d`) and **`homogeneous_base_relation_of_towerShift`**.
+
+`HTGeometry/RittLogTowerCollapse.lean` — the transport.  `jetFamily`,
+`jetPrefixRing_eq_adjoin_range`, `exists_mvPolynomial_of_mem_jetPrefixRing`, `defectPoly` with
+`aeval_defectPoly` and `wLe_defectPoly` (the defect has weight at most `n`),
+**`towerShift_eq_of_collapse`** (algebraic independence turns the collapse into the polynomial
+identity `towerShift F = ρ^{-(n+1)}·F + defectPoly`), and the two capstones:
+
+> **`exists_rittForm_of_collapse_weight_ne`** — a collapse whose polynomial has weight `W` with
+> `n < W ≠ n+1` yields `ψ w = ρ^J w` with `w ≠ 0` and `J = W − n − 1 ≠ 0`: **Ritt's order-one
+> form**.
+>
+> **`exists_affine_base_relation_of_collapse_weight_le`** — a collapse whose polynomial has weight
+> at most `n + 1` (in the `n = m+1` indexing) yields `ψ w = ρ^J w + h` with
+> `h = ρ^{m+1}·logCoeff (m+1) m ≠ 0`: an **affine transport equation with a nonzero
+> inhomogeneity**.  Its inhomogeneity is nonzero precisely because the subdiagonal coefficient is.
+
+So the top weight of the collapsing polynomial is forced to be exactly `n + 1`, and all of its
+top-weight coefficients are then `ψ`-fixed.  That is the entire content of the top layer, and it is
+unconditional.
+
+Two further consequences are now Lean: **`psi_fixed_of_collapse_top`** (in the surviving weight
+`n + 1` case every top-weight coefficient satisfies `ψ c = c`) and
+**`dK_eq_zero_of_collapse_top`** (hence, by `psi_fixed_dichotomy`, every top-weight coefficient is a
+derivation constant, or Ritt's form already follows).  All five capstones audit to
+`[propext, Classical.choice, Quot.sound]`.
+
+**State of the implication.**  For a collapse of the affine tower at order `n`:
+
+| weight `W` of the collapsing polynomial | conclusion | status |
+|---|---|---|
+| `W ≤ n + 1` | affine transport equation with inhomogeneity `ρ^{n}·logCoeff n (n−1) ≠ 0` | **Lean** |
+| `W > n`, `W ≠ n + 1` | Ritt's form `ψ w = ρ^{W−n−1} w`, `W−n−1 ≠ 0` | **Lean** |
+| `W = n + 1` | top coefficients are derivation constants | **Lean** |
+
+What remains is the weight-`n` layer of the surviving case, whose multiplier is `ρ^{-1}` — the
+rational affine connection — with inhomogeneity `ρ^n(δ_n|_{weight n} − T(F_{n+1}))`, `T` the
+lowering derivation `∂_0 + ∑_{j≥1} C(j+1,2)·x_{j-1}∂_j`.

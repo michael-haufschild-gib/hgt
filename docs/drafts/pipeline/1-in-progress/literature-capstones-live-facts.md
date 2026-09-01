@@ -21,8 +21,7 @@
 - Pinned Lean CFT supplies actual finite local Artin reciprocity, kernel = local norms, and concrete finite-place tensor-norm comparison.
 - The completed Hensel witness is unit-valued; its norm `u` has trivial actual finite-place Artin symbol for `N/K` at every dyadic `K=ℚ(√5,√41)` place.
 - Over `S=ℚ(√41)`, `u` has minimal polynomial `X²−X−1`; hence `N_{K/S}(u)=−1`.
-- At `2`, every source prime has `e=f=1` over `ℚ`; its prime below is literal `(2)`; the canonical completion map `ℚ₂→S_v` is an algebra equivalence. Source lower groups are `C₂` at levels `0,1,2`, then trivial; the quartic source character sends its generator to `−1`, is even, and has conductor exponent `3` (norm `8`).
-- Source→completion reflects every maximal-ideal power. Completed central displacement is universally in `m³` and outside `m⁴` on the embedded top radical; the central automorphism lies in intrinsic/CFT local `G₂ \ G₃`.
+- At `2`, source primes have `e=f=1` over `ℚ`, prime below `(2)`, and `S_v≃ℚ₂`. Exact all-depth source→completion transport gives completed lower groups `C₂` at `0,1,2`, then `1`; `φ(2)=2`, `φ(3)=5/2`; upper groups `G²=C₂`, `G³=1`; genuine local conductor exponent `3` (norm `8`). Source character is even and central value is `−1`.
 - Fröhlich 6(i)'s hypothesis holds; wild `2` is permitted. Finite sign and odd local product equal `α_Kβ_K=−1`.
 - Fröhlich's proof uses Artin induction/local Gaussian `ε`, pure-field evaluation, then quadratic-twist invariance.
-- **Open:** identify each chosen `S_v≃ℚ₂` and its reciprocity angular quotient with primitive even `χ₈`; prove genuine local `ε`; assemble `W_N=−1`.
+- **Open:** factor genuine dyadic Artin character through `(ℤ/8ℤ)×`, identify it with even `χ₈`, prove local `ε`, assemble `W_N=−1`.

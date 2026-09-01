@@ -37,7 +37,8 @@ theorem stadlmannGcdIntervalMass_eq_totient (q : PositiveModulus) (K : ℕ) :
         rw [Nat.dist_comm, Nat.dist_eq_sub_of_le (Nat.zero_le k), Nat.sub_zero]
       have h := gcd_succ_eq_sum_totient_residueClasses (q.1 - 1) k 0
       rw [hsub, hdist] at h
-      simpa using_mod_cast h
+      simp only [Nat.zero_mod] at h
+      exact_mod_cast h
     _ = ∑ e ∈ q.1.divisors, Nat.totient e * (K / e) := by
       rw [Finset.sum_comm]
       apply Finset.sum_congr rfl
@@ -81,15 +82,20 @@ omit [DecidableEq I] in
 theorem ramanujanGcdIntervalMass_stadlmannLemmaTen
     (P : OddPrimeFamily I) (K : ℕ) :
     ramanujanGcdIntervalMass P K ≤
-      (K : ℝ) * (P.modulus.divisors.card : ℝ) :=
-  ramanujanGcdIntervalMass_le_divisorCount P K
+      (K : ℝ) * (P.modulus.divisors.card : ℝ) := by
+  unfold ramanujanGcdIntervalMass
+  have h := RHTower.stadlmannGcdIntervalMass_le_divisorCount
+    (⟨P.modulus, P.modulus_neZero.out⟩ : RHTower.PositiveModulus) K
+  unfold RHTower.stadlmannGcdIntervalMass at h
+  exact_mod_cast h
 
 omit [DecidableEq I] in
 /-- The symmetric correlation range is two applications of Stadlmann Lemma 10. -/
 theorem ramanujanGcdSymmetricIntervalMass_stadlmannLemmaTen
     (P : OddPrimeFamily I) (K : ℕ) :
     ramanujanGcdSymmetricIntervalMass P K ≤
-      2 * (K : ℝ) * (P.modulus.divisors.card : ℝ) :=
-  ramanujanGcdSymmetricIntervalMass_le_two_mul_divisorCount P K
+      2 * (K : ℝ) * (P.modulus.divisors.card : ℝ) := by
+  rw [ramanujanGcdSymmetricIntervalMass_eq_two_mul]
+  nlinarith [ramanujanGcdIntervalMass_stadlmannLemmaTen P K]
 
 end RHTower.OddPrimeFamily

@@ -394,6 +394,22 @@ theorem not_paperTypeIIcCondition : ¬PaperTypeIIcCondition := by
   norm_num [criterionEpsilon] at hI₄
   linarith
 
+/-- Literal universal Type-IIc obligation imposed by Proposition 3 at the final parameters. -/
+def LiteralPaperTypeIIcCondition : Prop :=
+  ∀ (m n : ℕ) (x : XiTuple m n) (ω₀ γ : ℝ),
+    -criterionEpsilon ≤ ω₀ →
+    ω₀ ≤ omega →
+    xiTwo - criterionEpsilon ≤ γ →
+    γ ≤ 1 / 3 + 24 * omega / 3 + 7 * delta / 3 + 3 * criterionEpsilon →
+    TypeIIcPartitionAt x ω₀ γ
+
+/-- The universal published Type-IIc obligation fails already at `m = n = 1`. -/
+theorem not_literalPaperTypeIIcCondition : ¬LiteralPaperTypeIIcCondition := by
+  intro h
+  apply not_paperTypeIIcCondition
+  intro ω₀ γ hω₀ hω hγlo hγhi
+  exact h 1 1 paperXiWitness ω₀ γ hω₀ hω hγlo hγhi
+
 /-- Type-IIc condition with the forced correction `0 ≤ ω₀`. -/
 def CorrectedTypeIIcCondition : Prop :=
   ∀ (m n : ℕ) (x : XiTuple m n) (ω₀ γ : ℝ),

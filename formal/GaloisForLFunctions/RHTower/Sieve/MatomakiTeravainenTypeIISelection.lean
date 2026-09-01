@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.WindowBudget
+import GaloisForLFunctions.RHTower.Sieve.StadlmannShiftedGreedy
 
 /-!
 # Type-II factor selection in Matomäki--Teräväinen Proposition 2.2
@@ -35,12 +35,22 @@ theorem exists_subset_product_between_threshold_and_cap
     have hlogTotal : Real.log τ ≤ ∑ i ∈ S, Real.log (Q i) := by
       rw [← Real.log_prod (fun i hi => (zero_lt_one.trans_le (hQone i hi)).ne')]
       exact Real.log_le_log hτpos htotal
-    obtain ⟨I, hIS, hlo, hhi⟩ := RHTower.exists_subset_sum_between
-      (f := fun i => Real.log (Q i)) (ε := Real.log τ) (Real.log_nonneg hτ)
-      S (Real.log τ) (Real.log_nonneg hτ)
-      (fun i hi => Real.log_nonneg (hQone i hi))
-      (fun i hi => Real.log_le_log (zero_lt_one.trans_le (hQone i hi)) (hsmall i hi).le)
-      hlogTotal
+    let fill : RHTower.StadlmannShiftedFillData (fun i => Real.log (Q i)) S := {
+      stepCap := Real.log τ
+      lower := Real.log τ
+      upper := Real.log τ + Real.log τ
+      base := 0
+      stepCap_nonneg := Real.log_nonneg hτ
+      width := by ring_nf; exact le_rfl
+      base_le_upper := by nlinarith [Real.log_nonneg hτ]
+      step_nonneg := fun i hi => Real.log_nonneg (hQone i hi)
+      step_le := fun i hi =>
+        Real.log_le_log (zero_lt_one.trans_le (hQone i hi)) (hsmall i hi).le
+      total := by simpa using hlogTotal
+    }
+    obtain ⟨I, hIS, hlo, hhi⟩ := fill.exists_subset_in_interval
+    dsimp [fill] at hlo hhi
+    simp only [zero_add] at hlo hhi
     have hprodPos : 0 < ∏ i ∈ I, Q i := by
       exact Finset.prod_pos fun i hi => zero_lt_one.trans_le (hQone i (hIS hi))
     refine ⟨I, hIS, ?_, ?_⟩

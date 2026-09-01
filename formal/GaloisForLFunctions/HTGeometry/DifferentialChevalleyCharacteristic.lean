@@ -48,12 +48,12 @@ theorem map_mem_differentialPolynomialIterateIdeal_of_mem_diffPoly
       (differentialPolynomialIterateIdeal (MvPolynomial.map f A)).mul_mem_left
         (MvPolynomial.map f c) hP
 
-/-- A characteristic saturation certificate survives a coefficient specialization whenever the
-characteristic order, its initial, and one lower-jet Bezout witness survive. -/
-theorem exists_primeDifferentialIdeal_over_map_of_characteristicCertificate
+/-- A characteristic saturation certificate survives a coefficient specialization while one
+marked polynomial remains outside the resulting prime differential ideal. -/
+theorem exists_primeDifferentialIdeal_over_map_of_characteristicCertificate_avoiding
     (f : R →+* K) (hfδ : ∀ r : R, f (Differential.deriv r) = Differential.deriv (f r))
     (I : Ideal (DifferentialPolynomial Unit R))
-    (A U V N : DifferentialPolynomial Unit R)
+    (A U V N X Y M W H : DifferentialPolynomial Unit R) (a b : ℕ)
     (hAvars : A.vars.Nonempty)
     (hsat : ∀ Q ∈ I, ∃ a b : ℕ,
       scalarDifferentialPolynomialInitial A ^ a *
@@ -66,10 +66,18 @@ theorem exists_primeDifferentialIdeal_over_map_of_characteristicCertificate
     (hinit : MvPolynomial.map f (scalarDifferentialPolynomialInitial A) ≠ 0)
     (hN0 : MvPolynomial.map f N ≠ 0)
     (hNv : ((), scalarDifferentialPolynomialOrder A) ∉ N.vars)
-    (hbezout : U * A + V * scalarDifferentialPolynomialSeparant A = N) :
+    (hbezout : U * A + V * scalarDifferentialPolynomialSeparant A = N)
+    (hM0 : MvPolynomial.map f M ≠ 0)
+    (hMv : ((), scalarDifferentialPolynomialOrder A) ∉ M.vars)
+    (hbezoutM : X * A + Y * W = M)
+    (hWorder : scalarDifferentialPolynomialOrder (MvPolynomial.map f W) ≤
+      scalarDifferentialPolynomialOrder A)
+    (hred : scalarDifferentialPolynomialInitial A ^ a *
+      (scalarDifferentialPolynomialSeparant A ^ b * H) - W ∈ diffPolyIterateIdeal A) :
     ∃ P : Ideal (DifferentialPolynomial Unit K), P.IsPrime ∧
       (∀ Q ∈ P, Differential.deriv Q ∈ P) ∧
-      ∀ Q ∈ I, MvPolynomial.map f Q ∈ P := by
+      (∀ Q ∈ I, MvPolynomial.map f Q ∈ P) ∧
+      MvPolynomial.map f H ∉ P := by
   classical
   let C : DifferentialPolynomial Unit K := MvPolynomial.map f A
   let initK : DifferentialPolynomial Unit K :=
@@ -77,6 +85,8 @@ theorem exists_primeDifferentialIdeal_over_map_of_characteristicCertificate
   let sepK : DifferentialPolynomial Unit K :=
     MvPolynomial.map f (scalarDifferentialPolynomialSeparant A)
   let NK : DifferentialPolynomial Unit K := MvPolynomial.map f N
+  let MK : DifferentialPolynomial Unit K := MvPolynomial.map f M
+  let WK : DifferentialPolynomial Unit K := MvPolynomial.map f W
   let v : Unit × ℕ := ((), scalarDifferentialPolynomialOrder A)
   have hvA : v ∈ A.vars := by
     exact scalarDifferentialPolynomialLeader_mem_vars hAvars
@@ -134,11 +144,26 @@ theorem exists_primeDifferentialIdeal_over_map_of_characteristicCertificate
       rw [← hbezoutK]
       exact dvd_add (dvd_mul_of_dvd_right hFdvd _) (dvd_mul_of_dvd_right hsepDvd _)
     exact hNvK (mvPolynomial_vars_subset_of_dvd hNdvd hN0 hvF)
-  have hprodNot : initK * sepK ∉ Pcomp := by
+  have hMvK : v ∉ MK.vars := fun hv => hMv (MvPolynomial.vars_map _ f hv)
+  have hWorderF : scalarDifferentialPolynomialOrder WK ≤
+      scalarDifferentialPolynomialOrder F := by
+    simpa [WK, hForder] using hWorder
+  have hbezoutMK : MvPolynomial.map f X * C + MvPolynomial.map f Y * WK = MK := by
+    simpa [C, WK, MK] using congrArg (MvPolynomial.map f) hbezoutM
+  have hWNot : WK ∉ Pcomp := by
     intro hmem
-    rcases hPcompPrime.mem_or_mem hmem with h | h
-    · exact hinitNot h
-    · exact hsepNot h
+    have hWdvd : F ∣ WK := hPcompDvd WK hmem hWorderF
+    have hMdvd : F ∣ MK := by
+      rw [← hbezoutMK]
+      exact dvd_add (dvd_mul_of_dvd_right hFdvd _) (dvd_mul_of_dvd_right hWdvd _)
+    exact hMvK (mvPolynomial_vars_subset_of_dvd hMdvd hM0 hvF)
+  have havoidNot : initK * sepK * WK ∉ Pcomp := by
+    intro hmem
+    rcases hPcompPrime.mem_or_mem hmem with hpair | hM
+    · rcases hPcompPrime.mem_or_mem hpair with hinit | hsep
+      · exact hinitNot hinit
+      · exact hsepNot hsep
+    · exact hWNot hM
   let J₀ : Ideal (DifferentialPolynomial Unit K) :=
     (differentialPolynomialIterateIdeal F).radical
   have hJ₀rad : J₀.IsRadical := Ideal.radical_isRadical _
@@ -151,36 +176,86 @@ theorem exists_primeDifferentialIdeal_over_map_of_characteristicCertificate
       J₀ = (differentialPolynomialIterateIdeal F).radical := rfl
       _ ≤ Pcomp.radical := Ideal.radical_mono hIterF
       _ = Pcomp := hPcompPrime.isRadical.radical
-  have hprodJ₀ : initK * sepK ∉ J₀ := fun h => hprodNot (hJ₀le h)
-  obtain ⟨P, hPprime, hPδ, hJ₀P, hprodP⟩ :=
-    exists_isPrime_avoiding_radicalDifferential hJ₀rad hJ₀δ hprodJ₀
-  refine ⟨P, hPprime, hPδ, ?_⟩
-  intro Q hQI
-  obtain ⟨a, b, hQsat⟩ := hsat Q hQI
-  have hmapSat : MvPolynomial.map f
-      (scalarDifferentialPolynomialInitial A ^ a *
-        (scalarDifferentialPolynomialSeparant A ^ b * Q)) ∈
-      differentialPolynomialIterateIdeal C :=
-    map_mem_differentialPolynomialIterateIdeal_of_mem_diffPoly f hfδ hQsat
+  have havoidJ₀ : initK * sepK * WK ∉ J₀ := fun h => havoidNot (hJ₀le h)
+  obtain ⟨P, hPprime, hPδ, hJ₀P, havoidP⟩ :=
+    exists_isPrime_avoiding_radicalDifferential hJ₀rad hJ₀δ havoidJ₀
   have hFC : differentialPolynomialIterateIdeal C ≤
       differentialPolynomialIterateIdeal F :=
     differentialPolynomialIterateIdeal_le_of_dvd hFdvd
-  have hmemP : initK ^ a * (sepK ^ b * MvPolynomial.map f Q) ∈ P := by
-    apply hJ₀P
-    apply Ideal.le_radical
-    apply hFC
-    simpa [initK, sepK, C] using hmapSat
   have hinitP : initK ∉ P := by
     intro h
-    exact hprodP (Ideal.mul_mem_right _ _ h)
+    exact havoidP (P.mul_mem_right WK (P.mul_mem_right sepK h))
   have hsepP : sepK ∉ P := by
     intro h
-    exact hprodP (Ideal.mul_mem_left _ _ h)
-  rcases hPprime.mem_or_mem hmemP with hia | hrest
-  · exact absurd (hPprime.mem_of_pow_mem a hia) hinitP
-  · rcases hPprime.mem_or_mem hrest with hsb | hQ
-    · exact absurd (hPprime.mem_of_pow_mem b hsb) hsepP
-    · exact hQ
+    exact havoidP (P.mul_mem_right WK (P.mul_mem_left initK h))
+  have hWP : WK ∉ P := by
+    intro h
+    exact havoidP (P.mul_mem_left (initK * sepK) h)
+  refine ⟨P, hPprime, hPδ, ?_, ?_⟩
+  · intro Q hQI
+    obtain ⟨c, d, hQsat⟩ := hsat Q hQI
+    have hmapSat : MvPolynomial.map f
+        (scalarDifferentialPolynomialInitial A ^ c *
+          (scalarDifferentialPolynomialSeparant A ^ d * Q)) ∈
+        differentialPolynomialIterateIdeal C :=
+      map_mem_differentialPolynomialIterateIdeal_of_mem_diffPoly f hfδ hQsat
+    have hmemP : initK ^ c * (sepK ^ d * MvPolynomial.map f Q) ∈ P := by
+      apply hJ₀P
+      apply Ideal.le_radical
+      apply hFC
+      simpa [initK, sepK, C] using hmapSat
+    rcases hPprime.mem_or_mem hmemP with hic | hrest
+    · exact absurd (hPprime.mem_of_pow_mem c hic) hinitP
+    · rcases hPprime.mem_or_mem hrest with hsd | hQ
+      · exact absurd (hPprime.mem_of_pow_mem d hsd) hsepP
+      · exact hQ
+  · intro hHP
+    apply hWP
+    have hmapRed :=
+      map_mem_differentialPolynomialIterateIdeal_of_mem_diffPoly f hfδ hred
+    have hredP : initK ^ a * (sepK ^ b * MvPolynomial.map f H) - WK ∈ P := by
+      apply hJ₀P
+      apply Ideal.le_radical
+      apply hFC
+      simpa [initK, sepK, C, WK] using hmapRed
+    have hprodHP : initK ^ a * (sepK ^ b * MvPolynomial.map f H) ∈ P :=
+      P.mul_mem_left _ (P.mul_mem_left _ hHP)
+    rw [show WK =
+        initK ^ a * (sepK ^ b * MvPolynomial.map f H) -
+          (initK ^ a * (sepK ^ b * MvPolynomial.map f H) - WK) by ring]
+    exact P.sub_mem hprodHP hredP
+
+/-- A characteristic saturation certificate survives a coefficient specialization whenever the
+characteristic order, its initial, and one lower-jet Bezout witness survive. -/
+theorem exists_primeDifferentialIdeal_over_map_of_characteristicCertificate
+    (f : R →+* K) (hfδ : ∀ r : R, f (Differential.deriv r) = Differential.deriv (f r))
+    (I : Ideal (DifferentialPolynomial Unit R))
+    (A U V N : DifferentialPolynomial Unit R)
+    (hAvars : A.vars.Nonempty)
+    (hsat : ∀ Q ∈ I, ∃ a b : ℕ,
+      scalarDifferentialPolynomialInitial A ^ a *
+          (scalarDifferentialPolynomialSeparant A ^ b * Q) ∈
+        diffPolyIterateIdeal A)
+    (horder : scalarDifferentialPolynomialOrder (MvPolynomial.map f A) =
+      scalarDifferentialPolynomialOrder A)
+    (hvC : ((), scalarDifferentialPolynomialOrder A) ∈
+      (MvPolynomial.map f A).vars)
+    (hinit : MvPolynomial.map f (scalarDifferentialPolynomialInitial A) ≠ 0)
+    (hN0 : MvPolynomial.map f N ≠ 0)
+    (hNv : ((), scalarDifferentialPolynomialOrder A) ∉ N.vars)
+    (hbezout : U * A + V * scalarDifferentialPolynomialSeparant A = N) :
+    ∃ P : Ideal (DifferentialPolynomial Unit K), P.IsPrime ∧
+      (∀ Q ∈ P, Differential.deriv Q ∈ P) ∧
+      ∀ Q ∈ I, MvPolynomial.map f Q ∈ P := by
+  obtain ⟨P, hPprime, hPδ, hPI, -⟩ :=
+    exists_primeDifferentialIdeal_over_map_of_characteristicCertificate_avoiding
+      f hfδ I A U V N 0 1 1 1 1 0 0 hAvars hsat horder hvC hinit hN0 hNv hbezout
+      (by simp) (by simp) (by simp)
+      (by
+        unfold scalarDifferentialPolynomialOrder
+        simp)
+      (by simp)
+  exact ⟨P, hPprime, hPδ, hPI⟩
 
 end
 

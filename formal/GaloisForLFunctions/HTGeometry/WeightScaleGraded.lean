@@ -54,7 +54,7 @@ theorem familyWeightScale_comp (w : σ → ℤ) {lam : K} (hlam : lam ≠ 0) :
   rw [AlgHom.comp_apply, familyWeightScale_X, map_mul, familyWeightScale_X,
     MvPolynomial.algHom_C, AlgHom.id_apply]
   simp only [MvPolynomial.algebraMap_eq]
-  rw [← map_mul, ← mul_zpow, inv_mul_cancel₀ hlam, one_zpow, map_one, one_mul]
+  rw [← mul_assoc, ← map_mul, ← mul_zpow, inv_mul_cancel₀ hlam, one_zpow, map_one, one_mul]
 
 /-- **The rescaling is an automorphism of the polynomial ring.** -/
 noncomputable def weightScaleEquiv (w : σ → ℤ) {lam : K} (hlam : lam ≠ 0) :
@@ -179,7 +179,8 @@ theorem map_degreePart_weightScaleEquiv (w : σ → ℤ) {lam : K} (hlam : lam �
   ext x
   constructor
   · rintro ⟨y, hy, rfl⟩
-    show ((weightScaleDegreeEquiv w hlam e y : homogeneousSubmodule σ K e) : MvPolynomial σ K) ∈ _
+    show ((weightScaleDegreeEquiv w hlam e y : homogeneousSubmodule σ K e) : MvPolynomial σ K)
+      ∈ Ideal.map (weightScaleEquiv w hlam : MvPolynomial σ K →+* MvPolynomial σ K) I
     rw [weightScaleDegreeEquiv_coe]
     exact (mem_map_weightScaleEquiv_iff w hlam I _).mpr hy
   · intro hx

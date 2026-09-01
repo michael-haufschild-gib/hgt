@@ -681,6 +681,46 @@ F138 — Minimal realization and generated intertwiners are presentation theorem
 selection. A functional-equation involution can fix observer and recovery kernel, exchange legs,
 and act nontrivially on a nonzero formation charge (`TernaryFormationDualityHodge`).
 
+F139 — Ambient exterior non-linearity does not imply absence of a canonical determinant line. For
+every injective finite-rank formation `F`, `⋀^d(range F)` is one-dimensional and embeds injectively
+in `⋀^d(target F)` (`RangeDeterminantFormation`).
+
+F140 — Top exterior formation factors exactly through the range determinant line: source
+determinant line is canonically equivalent to `⋀^d(range F)`, followed by faithful ambient
+inclusion (`RangeDeterminantFormation`).
+
+F141 — For every independent frame, canonical range generator is nonzero, spans range determinant
+line, maps exactly to ambient Pluecker vector, and embedded carrier equals its ambient Pluecker
+span (`RangeDeterminantFormation`).
+
+F142 — Gram determinant is squared norm of included Pluecker vector and is invariant under
+orientation reversal; it is a positive phase/orientation quotient of range determinant carrier,
+not carrier itself (`ComplexGramPlucker`, `CCMEvansDeterminantLine`,
+`RangeDeterminantFormation`).
+
+F143 — Exact nonnegative action ledger plus cofinal source-potential recurrence already forces
+transverse collision charge zero, and corresponding Xi landing already closes RH. Missing theorem
+is literal source production of ledger/landing, not recurrence algebra (`CausalCollisionRecurrenceLaw`,
+`XiCausalCollisionRecurrenceLaw`).
+
+F144 — Source gauge change acts on top exterior formation by determinant character. Hence frame
+coordinates are gauges of range determinant line, while line and embedded Pluecker span are
+presentation-independent (`RangeDeterminantFormation`).
+
+F145 — Literal Xi determinant-central holonomy defect is already a critical-line classifier, not a
+global vanishing theorem. Exceptional two-sheet reflection coefficient is a gauge coboundary; its
+surviving selector is mixed with Wold transport (`ArithmeticXiStokesCentralRankPort`,
+`DeningerExponentGammaSixShellTransportRigidity`).
+
+F146 — One-rank injective refinement creates a type-level determinant gap. At old degree `d`, old
+top wedge injects as a one-dimensional image inside a `(d+1)`-dimensional target; at new degree
+`d+1`, old exterior source has rank zero and new target is a line, so induced map is not surjective
+(`RankJumpDeterminantCreation`).
+
+F147 — Exterior powers commute with injective direct limits only degreewise at fixed `n`; this does
+not transport moving determinant degrees `finrank(stage)` across strict rank growth
+(`ExteriorPowerDirectLimit`, `RankJumpDeterminantCreation`).
+
 ## Logical consequences of audited facts
 
 Each `CANNOT`/`MUST` line is a necessary consequence of cited corpus results. This section contains
@@ -989,6 +1029,25 @@ CANNOT-76 — It cannot select a response from existence or uniqueness of its mi
 canonical context quotient, or generated marked intertwiner. Those constructions exist for every
 complete response, including functional-equation-symmetric responses with nonzero hidden charge.
 
+CANNOT-77 — It cannot infer “no determinant line” from dimension greater than one of ambient
+exterior target. Formation's actual range canonically supplies a one-dimensional determinant line
+whose faithful image is exactly Pluecker line.
+
+CANNOT-78 — It cannot recover determinant-line orientation or holonomy from Gram positivity. Norm
+squared identifies all unit phases and survives sign reversal of source frame.
+
+CANNOT-79 — It cannot obtain selection by renaming horizontal defect as nonnegative dissipated
+action and assuming a recurrent source potential. That is existing conditional Xi recurrence
+endpoint, not source production.
+
+CANNOT-80 — It cannot obtain selection from ordinary holonomy of one globally framed finite range
+determinant line. Finite gauge changes produce determinant characters/coboundaries, while existing
+Xi determinant holonomy is already only a wall classifier.
+
+CANNOT-81 — It cannot treat determinant lines of rank-growing stages as an ordinary directed system
+under exterior powers of stage inclusions. Same-degree maps preserve old wedge; new top-degree map
+has zero old source and misses new determinant line.
+
 ### It must do or have this
 
 MUST-01 — It must be defined on pre-divisor source data and specialize at Xi occurrences only after
@@ -1166,3 +1225,28 @@ occurrence theorem; membership in the intersection cannot be imposed as compatib
 MUST-50 — It must constrain which complete responses literal arithmetic can generate, not merely
 reconstruct a chosen response or prove equivalence of its presentations. Realization minimality is
 downstream of response admission.
+
+MUST-51 — A route-independent formation geometry must transport canonical determinant line of
+actual source-generated range; ambient scalarizations, Gram norms, and chosen frame coordinates are
+only gauges or quotients.
+
+MUST-52 — A determinant-line RH architecture must identify existing source-forced horizontal
+charge with cofinal formation holonomy and prove from literal pre-divisor execution that source
+completion trivializes that holonomy. Choosing a trivialization or assuming flatness inserts the
+selection conclusion.
+
+MUST-53 — If recurrence is used, literal source formation must construct exact nonnegative ledger,
+its cofinal recurrence, and Xi landing before divisor specialization; recurrence rigidity itself is
+already solved.
+
+MUST-54 — Any determinant obstruction with selection force must survive absence of one global
+finite gauge: cofinal or singular gluing, rank-changing relative determinant transport, or failure
+of global nonvanishing section. Source must prove its trivialization rather than assume it.
+
+MUST-55 — A rank-growing formation theory must attach canonical quotient determinant increment to
+every strict source refinement and prove fusion/cocycle laws for accumulated increments; chosen
+complements or frame orientations are not source-native.
+
+MUST-56 — To identify hypertranscendence with determinant noncompactness, it must prove actual
+literal source tower has unbounded independent rank and that its quotient determinant history
+cannot stabilize or escape into a forgotten boundary. Rank-jump algebra alone is insufficient.

@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.DifferentialChevalleyCharacteristic
 import GaloisForLFunctions.HTGeometry.RittBasisTrivialContraction
 import GaloisForLFunctions.HTGeometry.DifferentialLurothComponentTransfer
 import GaloisForLFunctions.HTGeometry.SeparantCoefficientMap
+import GaloisForLFunctions.HTGeometry.TwoBlockCrossDifferenceControlled
 import GaloisForLFunctions.HTGeometry.DifferentialFieldSolution
 
 namespace GaloisForLFunctions.HTGeometry
@@ -85,6 +86,11 @@ theorem exists_characteristicSpecializationCertificate
     (hIC : ∀ r : R, (MvPolynomial.C r : DifferentialPolynomial Unit R) ∈ I → r = 0) :
     ∃ A U V N : DifferentialPolynomial Unit R,
       A.vars.Nonempty ∧
+      A ∈ I ∧
+      scalarDifferentialPolynomialInitial A ∉ I ∧
+      scalarDifferentialPolynomialSeparant A ∉ I ∧
+      Irreducible
+        (MvPolynomial.map (algebraMap R (FractionRing R)) A) ∧
       (∀ Q ∈ I, ∃ a b : ℕ,
         scalarDifferentialPolynomialInitial A ^ a *
             (scalarDifferentialPolynomialSeparant A ^ b * Q) ∈ diffPolyIterateIdeal A) ∧
@@ -203,6 +209,38 @@ theorem exists_characteristicSpecializationCertificate
   have hmapAvars : (MvPolynomial.map φ A).vars.Nonempty := by
     rw [MvPolynomial.vars_map_of_injective A hφinj]
     exact hAvars
+  have hAIK : MvPolynomial.map φ A ∈ IK := by
+    rw [hAmapφ]
+    exact IK.mul_mem_left _ hAK.1
+  have hAI : A ∈ I := by
+    have hcontraction : Ideal.under S IK = I := by
+      exact IsLocalization.under_map_of_isPrime_disjoint M
+        (DifferentialPolynomial Unit K) hprime hdisjoint
+    rw [← hcontraction]
+    change algebraMap S (DifferentialPolynomial Unit K) A ∈ IK
+    change MvPolynomial.map φ A ∈ IK
+    exact hAIK
+  have hinitIK :
+      scalarDifferentialPolynomialInitial (MvPolynomial.map φ A) ∉ IK := by
+    exact initial_notMem_of_oracle hmapA0 hmapAvars rfl hPdvd
+  have hinitI : scalarDifferentialPolynomialInitial A ∉ I := by
+    intro hmem
+    apply hinitIK
+    rw [scalarDifferentialPolynomialInitial,
+      scalarDifferentialPolynomialLeader_map hφinj,
+      mvPolynomialInitialAt_map hφinj]
+    exact Ideal.mem_map_of_mem _ hmem
+  have hsepIK :
+      scalarDifferentialPolynomialSeparant (MvPolynomial.map φ A) ∉ IK := by
+    intro hmem
+    exact irreducible_not_dvd_scalarDifferentialPolynomialSeparant
+      hmapAvars hmapAirr
+      (hPdvd _ hmem (scalarDifferentialPolynomialSeparant_order_le _))
+  have hsepI : scalarDifferentialPolynomialSeparant A ∉ I := by
+    intro hmem
+    apply hsepIK
+    rw [scalarDifferentialPolynomialSeparant_map hφinj]
+    exact Ideal.mem_map_of_mem _ hmem
   have hrelprime : IsRelPrime (MvPolynomial.map φ A)
       (scalarDifferentialPolynomialSeparant (MvPolynomial.map φ A)) := by
     intro D hDA hDS
@@ -264,10 +302,421 @@ theorem exists_characteristicSpecializationCertificate
       rw [← hu]
       simp [mul_assoc, mul_comm]
     exact hNvK (mvPolynomial_vars_subset_of_dvd hprodDvd hNK0 hvmap)
-  refine ⟨A, U, V, N, hAvars, hsat, hN0, ?_, hbezout⟩
+  refine ⟨A, U, V, N, hAvars, hAI, hinitI, hsepI, hmapAirr,
+    hsat, hN0, ?_, hbezout⟩
   simpa [v] using hNv
 
+/-- A characteristic specialization certificate which also preserves one marked polynomial
+outside the source prime differential ideal. -/
+theorem exists_characteristicSpecializationCertificate_avoiding
+    (I : Ideal (DifferentialPolynomial Unit R))
+    (hI0 : I ≠ ⊥) (hprime : I.IsPrime)
+    (hδ : ∀ Q ∈ I, differentialPolynomialOverDerivation Unit R Q ∈ I)
+    (hIC : ∀ r : R, (MvPolynomial.C r : DifferentialPolynomial Unit R) ∈ I → r = 0)
+    (H : DifferentialPolynomial Unit R) (hH : H ∉ I) :
+    ∃ A U V N : DifferentialPolynomial Unit R, ∃ a b : ℕ,
+      ∃ W X Y M : DifferentialPolynomial Unit R,
+      A.vars.Nonempty ∧
+      (∀ Q ∈ I, ∃ c d : ℕ,
+        scalarDifferentialPolynomialInitial A ^ c *
+            (scalarDifferentialPolynomialSeparant A ^ d * Q) ∈ diffPolyIterateIdeal A) ∧
+      N ≠ 0 ∧
+      ((), scalarDifferentialPolynomialOrder A) ∉ N.vars ∧
+      U * A + V * scalarDifferentialPolynomialSeparant A = N ∧
+      scalarDifferentialPolynomialInitial A ^ a *
+          (scalarDifferentialPolynomialSeparant A ^ b * H) - W ∈
+        diffPolyIterateIdeal A ∧
+      scalarDifferentialPolynomialOrder W ≤ scalarDifferentialPolynomialOrder A ∧
+      M ≠ 0 ∧
+      ((), scalarDifferentialPolynomialOrder A) ∉ M.vars ∧
+      X * A + Y * W = M := by
+  classical
+  obtain ⟨A, U, V, N, hAvars, hAI, hinitI, hsepI, hAirr,
+      hsat, hN0, hNv, hbezout⟩ :=
+    exists_characteristicSpecializationCertificate I hI0 hprime hδ hIC
+  let m := scalarDifferentialPolynomialOrder A
+  have hAhigh : ∀ j : ℕ, m < j → ((), j) ∉ A.vars := by
+    intro j hj hmem
+    have hjm : j ≤ m := Finset.le_sup (f := fun p : Unit × ℕ => p.2) hmem
+    omega
+  have hSep : MvPolynomial.pderiv (((), m) : Unit × ℕ) A ≠ 0 := by
+    simpa [m, scalarDifferentialPolynomialSeparant,
+      scalarDifferentialPolynomialLeader] using
+        scalarDifferentialPolynomialSeparant_ne_zero_of_domain hAvars
+  have hLeader : MvPolynomial.degreeOf (((), m) : Unit × ℕ) A ≠ 0 := by
+    simpa [m, scalarDifferentialPolynomialLeaderDegree,
+      scalarDifferentialPolynomialLeader] using
+        Nat.pos_iff_ne_zero.mp (scalarDifferentialPolynomialLeaderDegree_pos hAvars)
+  have hHhigh : ∀ j : ℕ, m + scalarDifferentialPolynomialOrder H < j →
+      ((), j) ∉ H.vars := by
+    intro j hj hmem
+    have hjH : j ≤ scalarDifferentialPolynomialOrder H :=
+      Finset.le_sup (f := fun p : Unit × ℕ => p.2) hmem
+    omega
+  obtain ⟨a, b, W, hred, hWhigh, hWdeg⟩ :=
+    exists_ritt_reduction (i := ()) (m := m) hAhigh hSep hLeader
+      (scalarDifferentialPolynomialOrder H) H hHhigh
+  have hW0 : W ≠ 0 := by
+    intro hzero
+    apply hH
+    have hiter : diffPolyIterateIdeal A ≤ I :=
+      diffPolyIterateIdeal_le_of_derivation_stable hAI hδ
+    have hprod : scalarDifferentialPolynomialInitial A ^ a *
+        (scalarDifferentialPolynomialSeparant A ^ b * H) ∈ I := by
+      have hprod' := hiter hred
+      simpa [m, hzero, scalarDifferentialPolynomialInitial,
+        scalarDifferentialPolynomialSeparant,
+        scalarDifferentialPolynomialLeader] using hprod'
+    rcases hprime.mem_or_mem hprod with hinit | hrest
+    · exact absurd (hprime.mem_of_pow_mem a hinit) hinitI
+    · rcases hprime.mem_or_mem hrest with hsep | hmarked
+      · exact absurd (hprime.mem_of_pow_mem b hsep) hsepI
+      · exact hmarked
+  let K := FractionRing R
+  let φ : R →+* K := algebraMap R K
+  have hφinj : Function.Injective φ := IsFractionRing.injective R K
+  have hmapW0 : MvPolynomial.map φ W ≠ 0 := by
+    intro hzero
+    apply hW0
+    apply MvPolynomial.map_injective φ hφinj
+    simpa using hzero
+  have hA0 : A ≠ 0 := by
+    intro hzero
+    simp [hzero] at hAvars
+  have hmapA0 : MvPolynomial.map φ A ≠ 0 := by
+    intro hzero
+    apply hA0
+    apply MvPolynomial.map_injective φ hφinj
+    simpa using hzero
+  have hWorder : scalarDifferentialPolynomialOrder W ≤ m := by
+    unfold scalarDifferentialPolynomialOrder
+    refine Finset.sup_le fun p hp => ?_
+    by_contra hpm
+    apply hWhigh p.2 (by omega)
+    simpa only [Subsingleton.elim p.1 ()] using hp
+  have hmapOrder : scalarDifferentialPolynomialOrder (MvPolynomial.map φ W) ≤
+      scalarDifferentialPolynomialOrder (MvPolynomial.map φ A) := by
+    rw [scalarDifferentialPolynomialOrder_map hφinj,
+      scalarDifferentialPolynomialOrder_map hφinj]
+    exact hWorder
+  have hdegreeMap (Q : DifferentialPolynomial Unit R) :
+      MvPolynomial.degreeOf (((), m) : Unit × ℕ) (MvPolynomial.map φ Q) =
+        MvPolynomial.degreeOf (((), m) : Unit × ℕ) Q := by
+    rw [MvPolynomial.degreeOf_eq_sup, MvPolynomial.degreeOf_eq_sup,
+      MvPolynomial.support_map_of_injective _ hφinj]
+  have hmapDegree :
+      MvPolynomial.degreeOf
+          ((), scalarDifferentialPolynomialOrder (MvPolynomial.map φ A))
+          (MvPolynomial.map φ W) <
+        MvPolynomial.degreeOf
+          ((), scalarDifferentialPolynomialOrder (MvPolynomial.map φ A))
+          (MvPolynomial.map φ A) := by
+    rw [scalarDifferentialPolynomialOrder_map hφinj]
+    simpa [m, hdegreeMap] using hWdeg
+  have hnotdvd : ¬ MvPolynomial.map φ A ∣ MvPolynomial.map φ W :=
+    not_dvd_of_lower_leaderDegree hmapA0 hmapW0 hmapOrder hmapDegree
+  have hrelprime : IsRelPrime (MvPolynomial.map φ A) (MvPolynomial.map φ W) := by
+    intro D hDA hDW
+    rcases hAirr.dvd_iff.mp hDA with hunit | hassoc
+    · exact hunit
+    · exact False.elim (hnotdvd (dvd_trans hassoc.dvd hDW))
+  let v : Unit × ℕ := ((), m)
+  obtain ⟨XK, YK, MK, hMK0, hMvK, hbezoutK⟩ :=
+    exists_mvPolynomial_bezout_clear_away_from_variable v hrelprime
+  let T : Fin 3 → DifferentialPolynomial Unit K := ![XK, YK, MK]
+  obtain ⟨d, B, hB⟩ :=
+    exists_mvPolynomial_family_fraction_clear
+      (R := R) (K := K) (σ := Unit × ℕ) T
+  let X := B 0
+  let Y := B 1
+  let M := B 2
+  have hdK : φ (d : R) ≠ 0 := by
+    intro hzero
+    exact (nonZeroDivisors.ne_zero d.2) (hφinj (by simpa using hzero))
+  have hCdunit : IsUnit
+      (MvPolynomial.C (φ (d : R)) : DifferentialPolynomial Unit K) :=
+    IsUnit.map MvPolynomial.C (isUnit_iff_ne_zero.mpr hdK)
+  have hXmap : MvPolynomial.map φ X = MvPolynomial.C (φ (d : R)) * XK := by
+    simpa [X, T, φ] using hB 0
+  have hYmap : MvPolynomial.map φ Y = MvPolynomial.C (φ (d : R)) * YK := by
+    simpa [Y, T, φ] using hB 1
+  have hMmap : MvPolynomial.map φ M = MvPolynomial.C (φ (d : R)) * MK := by
+    simpa [M, T, φ] using hB 2
+  have hbezoutM : X * A + Y * W = M := by
+    apply MvPolynomial.map_injective φ hφinj
+    rw [map_add, map_mul, map_mul, hXmap, hYmap, hMmap]
+    calc
+      MvPolynomial.C (φ (d : R)) * XK * MvPolynomial.map φ A +
+          MvPolynomial.C (φ (d : R)) * YK * MvPolynomial.map φ W =
+          MvPolynomial.C (φ (d : R)) *
+            (XK * MvPolynomial.map φ A + YK * MvPolynomial.map φ W) := by ring
+      _ = MvPolynomial.C (φ (d : R)) * MK := by rw [hbezoutK]
+  have hM0 : M ≠ 0 := by
+    intro hzero
+    have hprod0 : MvPolynomial.C (φ (d : R)) * MK = 0 := by
+      rw [← hMmap, hzero, map_zero]
+    exact hMK0 ((mul_eq_zero.mp hprod0).resolve_left (MvPolynomial.C_ne_zero.mpr hdK))
+  have hMv : v ∉ M.vars := by
+    intro hv
+    have hvmap : v ∈ (MvPolynomial.map φ M).vars := by
+      rw [MvPolynomial.vars_map_of_injective M hφinj]
+      exact hv
+    rw [hMmap] at hvmap
+    have hprodDvd : MvPolynomial.C (φ (d : R)) * MK ∣ MK := by
+      rcases hCdunit with ⟨u, hu⟩
+      refine ⟨(↑(u⁻¹) : DifferentialPolynomial Unit K), ?_⟩
+      rw [← hu]
+      simp [mul_assoc, mul_comm]
+    exact hMvK (mvPolynomial_vars_subset_of_dvd hprodDvd hMK0 hvmap)
+  refine ⟨A, U, V, N, a, b, W, X, Y, M, hAvars, hsat,
+    hN0, hNv, hbezout, hred, hWorder, hM0, ?_, hbezoutM⟩
+  simpa [v, m] using hMv
+
 variable {K : Type*} [Field K] [CharZero K] [Differential K]
+
+/-- One nonzero source coefficient guard specializes a prime differential ideal while preserving
+one marked polynomial outside the specialized prime. -/
+theorem exists_primeDifferentialIdeal_over_map_of_primeDifferentialIdeal_avoiding
+    (I : Ideal (DifferentialPolynomial Unit R))
+    (hI0 : I ≠ ⊥) (hprime : I.IsPrime)
+    (hδ : ∀ Q ∈ I, differentialPolynomialOverDerivation Unit R Q ∈ I)
+    (hIC : ∀ r : R, (MvPolynomial.C r : DifferentialPolynomial Unit R) ∈ I → r = 0)
+    (H : DifferentialPolynomial Unit R) (hH : H ∉ I) :
+    ∃ g : R, g ≠ 0 ∧ ∀ (f : R →+* K),
+      (∀ r : R, f (Differential.deriv r) = Differential.deriv (f r)) →
+      f g ≠ 0 →
+      ∃ P : Ideal (DifferentialPolynomial Unit K), P.IsPrime ∧
+        (∀ Q ∈ P, Differential.deriv Q ∈ P) ∧
+        (∀ Q ∈ I, MvPolynomial.map f Q ∈ P) ∧
+        MvPolynomial.map f H ∉ P := by
+  classical
+  obtain ⟨A, U, V, N, a, b, W, X, Y, M, hAvars, hsat,
+      hN0, hNv, hbezout, hred, hWorder, hM0, hMv, hbezoutM⟩ :=
+    exists_characteristicSpecializationCertificate_avoiding
+      I hI0 hprime hδ hIC H hH
+  let v : Unit × ℕ := ((), scalarDifferentialPolynomialOrder A)
+  have hvA : v ∈ A.vars := scalarDifferentialPolynomialLeader_mem_vars hAvars
+  obtain ⟨mA, hmA, hvmA⟩ :=
+    (MvPolynomial.mem_vars_iff_mem_support v).mp hvA
+  have hcA : A.coeff mA ≠ 0 := by
+    simpa [MvPolynomial.mem_support_iff] using hmA
+  have hinit0 : scalarDifferentialPolynomialInitial A ≠ 0 :=
+    scalarDifferentialPolynomialInitial_ne_zero (by
+      intro hzero
+      simp [hzero] at hvA)
+  obtain ⟨mI, hcI⟩ : ∃ m,
+      (scalarDifferentialPolynomialInitial A).coeff m ≠ 0 := by
+    by_contra h
+    push Not at h
+    apply hinit0
+    ext m
+    simpa using h m
+  obtain ⟨mN, hcN⟩ : ∃ m, N.coeff m ≠ 0 := by
+    by_contra h
+    push Not at h
+    apply hN0
+    ext m
+    simpa using h m
+  obtain ⟨mM, hcM⟩ : ∃ m, M.coeff m ≠ 0 := by
+    by_contra h
+    push Not at h
+    apply hM0
+    ext m
+    simpa using h m
+  let g : R := A.coeff mA *
+    (scalarDifferentialPolynomialInitial A).coeff mI * N.coeff mN * M.coeff mM
+  have hg0 : g ≠ 0 := by
+    exact mul_ne_zero (mul_ne_zero (mul_ne_zero hcA hcI) hcN) hcM
+  refine ⟨g, hg0, ?_⟩
+  intro f hfδ hfg
+  have hfcA : f (A.coeff mA) ≠ 0 := by
+    intro hzero
+    apply hfg
+    simp [g, hzero]
+  have hfcI : f ((scalarDifferentialPolynomialInitial A).coeff mI) ≠ 0 := by
+    intro hzero
+    apply hfg
+    simp [g, hzero]
+  have hfcN : f (N.coeff mN) ≠ 0 := by
+    intro hzero
+    apply hfg
+    simp [g, hzero]
+  have hfcM : f (M.coeff mM) ≠ 0 := by
+    intro hzero
+    apply hfg
+    simp [g, hzero]
+  have hmAmap : mA ∈ (MvPolynomial.map f A).support := by
+    rw [MvPolynomial.mem_support_iff, MvPolynomial.coeff_map]
+    exact hfcA
+  have hvMap : v ∈ (MvPolynomial.map f A).vars :=
+    (MvPolynomial.mem_vars_iff_mem_support v).mpr ⟨mA, hmAmap, hvmA⟩
+  have horder : scalarDifferentialPolynomialOrder (MvPolynomial.map f A) =
+      scalarDifferentialPolynomialOrder A := by
+    apply Nat.le_antisymm
+    · unfold scalarDifferentialPolynomialOrder
+      exact Finset.sup_le fun q hq => Finset.le_sup (MvPolynomial.vars_map _ f hq)
+    · exact Finset.le_sup (f := fun q : Unit × ℕ => q.2) hvMap
+  have hinitMap : MvPolynomial.map f
+      (scalarDifferentialPolynomialInitial A) ≠ 0 := by
+    intro hzero
+    have hcoeff := congrArg (MvPolynomial.coeff mI) hzero
+    rw [MvPolynomial.coeff_map] at hcoeff
+    simp at hcoeff
+    exact hfcI hcoeff
+  have hNmap : MvPolynomial.map f N ≠ 0 := by
+    intro hzero
+    have hcoeff := congrArg (MvPolynomial.coeff mN) hzero
+    rw [MvPolynomial.coeff_map] at hcoeff
+    simp at hcoeff
+    exact hfcN hcoeff
+  have hMmap : MvPolynomial.map f M ≠ 0 := by
+    intro hzero
+    have hcoeff := congrArg (MvPolynomial.coeff mM) hzero
+    rw [MvPolynomial.coeff_map] at hcoeff
+    simp at hcoeff
+    exact hfcM hcoeff
+  have hWmapOrder : scalarDifferentialPolynomialOrder (MvPolynomial.map f W) ≤
+      scalarDifferentialPolynomialOrder A := by
+    unfold scalarDifferentialPolynomialOrder
+    refine Finset.sup_le fun q hq => ?_
+    exact le_trans
+      (Finset.le_sup (f := fun p : Unit × ℕ => p.2) (MvPolynomial.vars_map _ f hq))
+      hWorder
+  apply exists_primeDifferentialIdeal_over_map_of_characteristicCertificate_avoiding
+    f hfδ I A U V N X Y M W H a b hAvars hsat horder
+  · simpa [v] using hvMap
+  · exact hinitMap
+  · exact hNmap
+  · exact hNv
+  · exact hbezout
+  · exact hMmap
+  · exact hMv
+  · exact hbezoutM
+  · exact hWmapOrder
+  · exact hred
+
+universe u
+
+/-- The marked specialization guard is independent of the target differential field. -/
+theorem exists_primeDifferentialIdeal_over_map_of_primeDifferentialIdeal_avoiding_universal
+    (I : Ideal (DifferentialPolynomial Unit R))
+    (hI0 : I ≠ ⊥) (hprime : I.IsPrime)
+    (hδ : ∀ Q ∈ I, differentialPolynomialOverDerivation Unit R Q ∈ I)
+    (hIC : ∀ r : R, (MvPolynomial.C r : DifferentialPolynomial Unit R) ∈ I → r = 0)
+    (H : DifferentialPolynomial Unit R) (hH : H ∉ I) :
+    ∃ g : R, g ≠ 0 ∧ ∀ (K : Type u) (_ : Field K) (_ : CharZero K)
+      (_ : Differential K) (f : R →+* K),
+      (∀ r : R, f (Differential.deriv r) = Differential.deriv (f r)) →
+      f g ≠ 0 →
+      ∃ P : Ideal (DifferentialPolynomial Unit K), P.IsPrime ∧
+        (∀ Q ∈ P, Differential.deriv Q ∈ P) ∧
+        (∀ Q ∈ I, MvPolynomial.map f Q ∈ P) ∧
+        MvPolynomial.map f H ∉ P := by
+  classical
+  obtain ⟨A, U, V, N, a, b, W, X, Y, M, hAvars, hsat,
+      hN0, hNv, hbezout, hred, hWorder, hM0, hMv, hbezoutM⟩ :=
+    exists_characteristicSpecializationCertificate_avoiding
+      I hI0 hprime hδ hIC H hH
+  let v : Unit × ℕ := ((), scalarDifferentialPolynomialOrder A)
+  have hvA : v ∈ A.vars := scalarDifferentialPolynomialLeader_mem_vars hAvars
+  obtain ⟨mA, hmA, hvmA⟩ :=
+    (MvPolynomial.mem_vars_iff_mem_support v).mp hvA
+  have hcA : A.coeff mA ≠ 0 := by
+    simpa [MvPolynomial.mem_support_iff] using hmA
+  have hinit0 : scalarDifferentialPolynomialInitial A ≠ 0 :=
+    scalarDifferentialPolynomialInitial_ne_zero (by
+      intro hzero
+      simp [hzero] at hvA)
+  obtain ⟨mI, hcI⟩ : ∃ m,
+      (scalarDifferentialPolynomialInitial A).coeff m ≠ 0 := by
+    by_contra h
+    push Not at h
+    apply hinit0
+    ext m
+    simpa using h m
+  obtain ⟨mN, hcN⟩ : ∃ m, N.coeff m ≠ 0 := by
+    by_contra h
+    push Not at h
+    apply hN0
+    ext m
+    simpa using h m
+  obtain ⟨mM, hcM⟩ : ∃ m, M.coeff m ≠ 0 := by
+    by_contra h
+    push Not at h
+    apply hM0
+    ext m
+    simpa using h m
+  let g : R := A.coeff mA *
+    (scalarDifferentialPolynomialInitial A).coeff mI * N.coeff mN * M.coeff mM
+  have hg0 : g ≠ 0 := by
+    exact mul_ne_zero (mul_ne_zero (mul_ne_zero hcA hcI) hcN) hcM
+  refine ⟨g, hg0, ?_⟩
+  intro K instKField instKCharZero instKDifferential f hfδ hfg
+  have hfcA : f (A.coeff mA) ≠ 0 := by
+    intro hzero
+    apply hfg
+    simp [g, hzero]
+  have hfcI : f ((scalarDifferentialPolynomialInitial A).coeff mI) ≠ 0 := by
+    intro hzero
+    apply hfg
+    simp [g, hzero]
+  have hfcN : f (N.coeff mN) ≠ 0 := by
+    intro hzero
+    apply hfg
+    simp [g, hzero]
+  have hfcM : f (M.coeff mM) ≠ 0 := by
+    intro hzero
+    apply hfg
+    simp [g, hzero]
+  have hmAmap : mA ∈ (MvPolynomial.map f A).support := by
+    rw [MvPolynomial.mem_support_iff, MvPolynomial.coeff_map]
+    exact hfcA
+  have hvMap : v ∈ (MvPolynomial.map f A).vars :=
+    (MvPolynomial.mem_vars_iff_mem_support v).mpr ⟨mA, hmAmap, hvmA⟩
+  have horder : scalarDifferentialPolynomialOrder (MvPolynomial.map f A) =
+      scalarDifferentialPolynomialOrder A := by
+    apply Nat.le_antisymm
+    · unfold scalarDifferentialPolynomialOrder
+      exact Finset.sup_le fun q hq => Finset.le_sup (MvPolynomial.vars_map _ f hq)
+    · exact Finset.le_sup (f := fun q : Unit × ℕ => q.2) hvMap
+  have hinitMap : MvPolynomial.map f
+      (scalarDifferentialPolynomialInitial A) ≠ 0 := by
+    intro hzero
+    have hcoeff := congrArg (MvPolynomial.coeff mI) hzero
+    rw [MvPolynomial.coeff_map] at hcoeff
+    simp at hcoeff
+    exact hfcI hcoeff
+  have hNmap : MvPolynomial.map f N ≠ 0 := by
+    intro hzero
+    have hcoeff := congrArg (MvPolynomial.coeff mN) hzero
+    rw [MvPolynomial.coeff_map] at hcoeff
+    simp at hcoeff
+    exact hfcN hcoeff
+  have hMmap : MvPolynomial.map f M ≠ 0 := by
+    intro hzero
+    have hcoeff := congrArg (MvPolynomial.coeff mM) hzero
+    rw [MvPolynomial.coeff_map] at hcoeff
+    simp at hcoeff
+    exact hfcM hcoeff
+  have hWmapOrder : scalarDifferentialPolynomialOrder (MvPolynomial.map f W) ≤
+      scalarDifferentialPolynomialOrder A := by
+    unfold scalarDifferentialPolynomialOrder
+    refine Finset.sup_le fun q hq => ?_
+    exact le_trans
+      (Finset.le_sup (f := fun p : Unit × ℕ => p.2) (MvPolynomial.vars_map _ f hq))
+      hWorder
+  apply exists_primeDifferentialIdeal_over_map_of_characteristicCertificate_avoiding
+    f hfδ I A U V N X Y M W H a b hAvars hsat horder
+  · simpa [v] using hvMap
+  · exact hinitMap
+  · exact hNmap
+  · exact hNv
+  · exact hbezout
+  · exact hMmap
+  · exact hMv
+  · exact hbezoutM
+  · exact hWmapOrder
+  · exact hred
 
 /-- One nonzero source coefficient guard specializes every relation in a nonzero prime
 differential ideal with trivial coefficient contraction into a prime differential ideal. -/
@@ -283,7 +732,7 @@ theorem exists_primeDifferentialIdeal_over_map_of_primeDifferentialIdeal
         (∀ Q ∈ P, Differential.deriv Q ∈ P) ∧
         ∀ Q ∈ I, MvPolynomial.map f Q ∈ P := by
   classical
-  obtain ⟨A, U, V, N, hAvars, hsat, hN0, hNv, hbezout⟩ :=
+  obtain ⟨A, U, V, N, hAvars, -, -, -, -, hsat, hN0, hNv, hbezout⟩ :=
     exists_characteristicSpecializationCertificate I hI0 hprime hδ hIC
   let v : Unit × ℕ := ((), scalarDifferentialPolynomialOrder A)
   have hvA : v ∈ A.vars := scalarDifferentialPolynomialLeader_mem_vars hAvars

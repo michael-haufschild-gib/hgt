@@ -3,11 +3,14 @@ import GaloisForLFunctions.HTGeometry.ClockPhaseEvolutionBridge
 import GaloisForLFunctions.HTGeometry.ConstitutivePolarAmplitudeFisherPhase
 import GaloisForLFunctions.HTGeometry.ContinuumChronometricGravity
 import GaloisForLFunctions.HTGeometry.FoldedPhaseGenerator
+import GaloisForLFunctions.HTGeometry.GaussianGoodCoefficientSet
+import GaloisForLFunctions.HTGeometry.LoopGaugeApplications
 import GaloisForLFunctions.HTGeometry.PageWoottersTopologicalClockAlgebra
 import GaloisForLFunctions.HTGeometry.PhysicalFirstReturnHorizonInstabilityLaw
 import GaloisForLFunctions.HTGeometry.UniversalClockSamplingPhaseLaw
 import GaloisForLFunctions.RHTower.ConnectedSymmetryBarrier
 import GaloisForLFunctions.RHTower.PrimeTorsionAutonomousCircuitPolygon
+import GaloisForLFunctions.RHTower.PrimeAFXichargeNoNucleation
 import GaloisForLFunctions.RHTower.RelationalClockLocalHorizonLaw
 import GaloisForLFunctions.RHTower.StaticChoiProjectiveComplexityPlateau
 import GaloisForLFunctions.RHTower.TopologicalClockWindingReadout
@@ -28,6 +31,7 @@ unproved physical assumptions.
 -/
 
 open Complex
+open MeasureTheory ProbabilityTheory
 open scoped BigOperators Matrix
 
 noncomputable section
@@ -214,7 +218,13 @@ theorem ramseyDoubledPhase_quadratures (geometric : ℝ) :
     trace_chronometricRamseyClockState_mul_pauliX,
     trace_chronometricRamseyClockState_mul_pauliY,
     Complex.exp_ofReal_mul_I]
-  simp
+  apply Prod.ext
+  · simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re,
+      Complex.ofReal_im, Complex.I_re, Complex.I_im, mul_zero, zero_mul,
+      sub_zero, add_zero]
+  · simp only [Complex.add_im, Complex.ofReal_re, Complex.mul_im,
+      Complex.ofReal_im, Complex.I_re, Complex.I_im, mul_zero,
+      mul_one, zero_add, add_zero]
 
 /-! ## Berry holonomy and digital branch ledger -/
 
@@ -226,6 +236,103 @@ theorem berryHolonomy_fringe {N : ℕ} (p : Fin N → ℝ) (k : Fin N → ℤ) :
   congr 1
   push_cast
   ring
+
+/-- A sampled phase increment inside the exact half-open Nyquist window. -/
+structure NyquistSafePhaseIncrement where
+  value : ℝ
+  lower : -Real.pi < value
+  upper : value ≤ Real.pi
+
+instance : Coe NyquistSafePhaseIncrement ℝ := ⟨NyquistSafePhaseIncrement.value⟩
+
+/-- The corpus phase wrapper is the identity on every bundled Nyquist-safe increment. -/
+theorem NyquistSafePhaseIncrement.phaseWrap_eq (delta : NyquistSafePhaseIncrement) :
+    phaseWrap delta.value = delta.value := by
+  obtain ⟨hwrapLower, hwrapUpper⟩ := phaseWrap_mem delta.value
+  have hledger := sub_phaseWrap_eq delta.value
+  have hlower : -2 * Real.pi <
+      2 * Real.pi * (branchIndex delta.value : ℝ) := by
+    linarith [delta.lower, hwrapUpper]
+  have hupper : 2 * Real.pi * (branchIndex delta.value : ℝ) <
+      2 * Real.pi := by
+    linarith [delta.upper, hwrapLower]
+  have hcastLower : (-1 : ℝ) < (branchIndex delta.value : ℝ) := by
+    nlinarith [Real.pi_pos]
+  have hcastUpper : (branchIndex delta.value : ℝ) < (1 : ℝ) := by
+    nlinarith [Real.pi_pos]
+  have hintLower : (-1 : ℤ) < branchIndex delta.value := by exact_mod_cast hcastLower
+  have hintUpper : branchIndex delta.value < (1 : ℤ) := by exact_mod_cast hcastUpper
+  have hbranch : branchIndex delta.value = 0 := by omega
+  rw [hbranch] at hledger
+  norm_num at hledger ⊢
+  linarith
+
+/-- Finite Nyquist-safe packet whose true total phase is an integral number of turns. -/
+structure NyquistSafeWindingPacket (n : ℕ) where
+  increment : Fin n → NyquistSafePhaseIncrement
+  winding : ℤ
+  total : (∑ j, (increment j : ℝ)) = 2 * Real.pi * (winding : ℝ)
+
+/-- Phase wrapping recovers exact winding on every Nyquist-safe packet. -/
+theorem NyquistSafeWindingPacket.wrappedReadout_eq {n : ℕ}
+    (packet : NyquistSafeWindingPacket n) :
+    (∑ j, phaseWrap (packet.increment j).value) / (2 * Real.pi) = packet.winding := by
+  simp_rw [NyquistSafePhaseIncrement.phaseWrap_eq]
+  rw [packet.total]
+  field_simp [Real.pi_ne_zero]
+
+/-- Eight uniform `-π/2` increments realize the paper's unit-charge doubled readout `-2`. -/
+def unitClockEightSamplePacket : NyquistSafeWindingPacket 8 where
+  increment := fun _ =>
+    { value := -(Real.pi / 2)
+      lower := by linarith [Real.pi_pos]
+      upper := by linarith [Real.pi_pos] }
+  winding := -2
+  total := by
+    simp
+    ring
+
+theorem unitClockEightSample_wrappedReadout :
+    (∑ j, phaseWrap (unitClockEightSamplePacket.increment j).value) /
+        (2 * Real.pi) = -2 :=
+  by simpa [unitClockEightSamplePacket] using
+    unitClockEightSamplePacket.wrappedReadout_eq
+
+/-- Eight standardized increment errors all stay below four standard deviations. -/
+def unitClockEightSampleGaussianNoSlipSet : Set (Fin 8 → ℝ) :=
+  {noise | ∀ j, |noise j| < 4}
+
+/-- Four-sigma Gaussian union bound for the eight-step readout; no independence is used here. -/
+theorem unitClockEightSample_gaussianSlipProbability_le :
+    (centredProductGaussian (Fin 8) 1).real
+        unitClockEightSampleGaussianNoSlipSetᶜ ≤ 16 * Real.exp (-8) := by
+  classical
+  have hcompl : unitClockEightSampleGaussianNoSlipSetᶜ ⊆
+      ⋃ j : Fin 8, {noise : Fin 8 → ℝ | 4 ≤ |noise j|} := by
+    intro noise hnoise
+    rw [unitClockEightSampleGaussianNoSlipSet, Set.mem_compl_iff,
+      Set.mem_setOf_eq] at hnoise
+    push Not at hnoise
+    obtain ⟨j, hj⟩ := hnoise
+    exact Set.mem_iUnion.mpr ⟨j, hj⟩
+  calc
+    (centredProductGaussian (Fin 8) 1).real unitClockEightSampleGaussianNoSlipSetᶜ
+        ≤ (centredProductGaussian (Fin 8) 1).real
+            (⋃ j : Fin 8, {noise : Fin 8 → ℝ | 4 ≤ |noise j|}) :=
+      measureReal_mono hcompl (measure_ne_top _ _)
+    _ ≤ ∑ j : Fin 8,
+          (centredProductGaussian (Fin 8) 1).real
+            {noise : Fin 8 → ℝ | 4 ≤ |noise j|} :=
+      measureReal_iUnion_fintype_le _
+    _ ≤ ∑ _j : Fin 8, 2 * Real.exp (-(4 : ℝ) ^ 2 / 2) :=
+      Finset.sum_le_sum fun j _ =>
+        measureReal_abs_ge_le_of_standardGaussian
+          (p := centredProductGaussian (Fin 8) 1)
+          (measurable_pi_apply j).aemeasurable
+          (map_coordinate_centredProductGaussian j) (by norm_num)
+    _ = 16 * Real.exp (-8) := by
+      norm_num
+      ring
 
 /-- Exact aliasing ledger for any finite packet of digitally wrapped phase increments. -/
 theorem sum_phaseWrap_eq_sub_branchLedger {n : ℕ} (delta : Fin n → ℝ) :
@@ -259,6 +366,39 @@ theorem quadraticBottcherWilsonReadout_even
         path) := by
   rw [Bottcher.LoopGaugeApplications.quadraticWilsonLoop_doubles]
   exact even_two_mul _
+
+/-! ## Determinant Wilson histories and an unconditional Xi boundary signal -/
+
+/-- Doubling determinant charge is pointwise squaring of its Wilson history. -/
+theorem loopHistory_two_mul (charge : ℤ) (t : ℝ) :
+    loopHistory (2 * charge) t = loopHistory charge t ^ 2 := by
+  rw [loopHistory, loopHistory, pow_two, ← Complex.exp_add]
+  congr 1
+  simp only [loopSpeed]
+  push_cast
+  ring
+
+/-- Logarithmic-derivative Wilson readout doubles the exact determinant charge. -/
+theorem determinantWilson_fringe_winding_exact (charge : ℤ) :
+    (2 * Real.pi * Complex.I)⁻¹ *
+        ∫ t in (0 : ℝ)..1,
+          (loopHistory (2 * charge) t)⁻¹ * deriv (loopHistory (2 * charge)) t =
+      (2 * charge : ℤ) := by
+  simpa using HTGeometry.LoopGaugeApplications.determinantWilson_winding_exact (2 * charge)
+
+/-- Hardy's unconditional Xi boundary charge yields an actual nonzero even clock readout. -/
+theorem exists_xiBoundaryClockFringe_nonzero_even :
+    ∃ gamma : ScalarCircleLoop,
+      scalarCircleLoopWinding (scalarCircleLoopFringe gamma) ≠ 0 ∧
+      Even (scalarCircleLoopWinding (scalarCircleLoopFringe gamma)) := by
+  obtain ⟨gamma, hcontinuous, hnonzero, hperiodic, hwinding⟩ :=
+    PrimeQuasiLocalCharge.exists_xiBoundaryLoop_nonzero_winding
+  let loop : ScalarCircleLoop :=
+    { toFun := gamma
+      isLoop := ⟨hcontinuous, hnonzero, by simpa using (hperiodic 0).symm⟩ }
+  refine ⟨loop, ?_, scalarCircleLoopFringe_winding_even loop⟩
+  rw [scalarCircleLoopFringe_winding]
+  exact mul_ne_zero (by norm_num) hwinding
 
 end GaloisForLFunctions.TopologicalClockCorpusApplications
 
