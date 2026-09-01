@@ -120,6 +120,13 @@ theorem exists_iterate_map_eq_of_isSigmaDeltaSimple
     exists_pos_iterate_map_eq_self_of_minimalPrimeDifferential σ hσ S hSmin hSbot hPS
   let O : Finset (Ideal R) := S.filter (fun J => ∃ n : ℕ, F^[n] P = J)
   have hPO : P ∈ O := Finset.mem_filter.mpr ⟨hPS, ⟨0, rfl⟩⟩
+  have hiterMin : ∀ n : ℕ, IsMinimalPrimeDifferentialIdeal (F^[n] P) := by
+    intro n
+    induction n with
+    | zero => simpa using hSmin P hPS
+    | succ n ih =>
+        rw [Function.iterate_succ_apply']
+        exact ih.map_ringEquiv σ hσ
   have hpre : ∀ J ∈ O, ∃ U ∈ O, F U = J := by
     intro J hJO
     obtain ⟨hJS, n, hn⟩ := Finset.mem_filter.mp hJO
@@ -127,26 +134,13 @@ theorem exists_iterate_map_eq_of_isSigmaDeltaSimple
     | zero =>
         obtain ⟨k, rfl⟩ := Nat.exists_eq_succ_of_ne_zero (ne_of_gt hperiodPos)
         refine ⟨F^[k] P, Finset.mem_filter.mpr ⟨?_, ⟨k, rfl⟩⟩, ?_⟩
-        · have hmin := (hSmin P hPS).map_ringEquiv σ hσ
-          have hiterMin : IsMinimalPrimeDifferentialIdeal (F^[k] P) := by
-            induction k with
-            | zero => simpa using hSmin P hPS
-            | succ k ih =>
-                rw [Function.iterate_succ_apply']
-                exact ih.map_ringEquiv σ hσ
-          exact mem_finite_minimalPrimeDifferential_family S hSmin hSbot hiterMin
-        · rw [← Function.iterate_succ_apply', hperiod]
-          exact hn.symm
+        · exact mem_finite_minimalPrimeDifferential_family S hSmin hSbot (hiterMin k)
+        · rw [← Function.iterate_succ_apply' F k P, hperiod]
+          exact hn
     | succ n =>
         refine ⟨F^[n] P, Finset.mem_filter.mpr ⟨?_, ⟨n, rfl⟩⟩, ?_⟩
-        · have hiterMin : IsMinimalPrimeDifferentialIdeal (F^[n] P) := by
-            induction n with
-            | zero => simpa using hSmin P hPS
-            | succ n ih =>
-                rw [Function.iterate_succ_apply']
-                exact ih.map_ringEquiv σ hσ
-          exact mem_finite_minimalPrimeDifferential_family S hSmin hSbot hiterMin
-        · rw [← Function.iterate_succ_apply']
+        · exact mem_finite_minimalPrimeDifferential_family S hSmin hSbot (hiterMin n)
+        · rw [← Function.iterate_succ_apply' F n P]
           exact hn
   have hOeq : O = S := by
     by_contra hOS
@@ -172,16 +166,30 @@ theorem exists_iterate_map_eq_of_isSigmaDeltaSimple
     have hIstable : IsSigmaDeltaIdeal σ I := by
       refine ⟨?_, ?_⟩
       · intro x hx
-        apply le_sInf
-        intro J hJO
-        obtain ⟨U, hUO, hFU⟩ := hpre J hJO
-        rw [← hFU]
-        exact Ideal.mem_map_of_mem (σ : R →+* R) ((sInf_le hUO) hx)
+        have hspan : Ideal.span {σ x} ≤ I := by
+          dsimp [I]
+          apply le_sInf
+          intro J hJO
+          rw [Ideal.span_le]
+          intro y hy
+          rw [Set.mem_singleton_iff] at hy
+          subst y
+          obtain ⟨U, hUO, hFU⟩ := hpre J hJO
+          rw [← hFU]
+          exact Ideal.mem_map_of_mem (σ : R →+* R) ((sInf_le hUO) hx)
+        exact hspan (Ideal.mem_span_singleton_self (σ x))
       · intro x hx
-        apply le_sInf
-        intro J hJO
-        have hJS : J ∈ S := hOSub hJO
-        exact (hSmin J hJS).2.1 x ((sInf_le hJO) hx)
+        have hspan : Ideal.span {Differential.deriv x} ≤ I := by
+          dsimp [I]
+          apply le_sInf
+          intro J hJO
+          rw [Ideal.span_le]
+          intro y hy
+          rw [Set.mem_singleton_iff] at hy
+          subst y
+          have hJS : J ∈ S := hOSub hJO
+          exact (hSmin J hJS).2.1 x ((sInf_le hJO) hx)
+        exact hspan (Ideal.mem_span_singleton_self (Differential.deriv x))
     rcases hsimple I hIstable with hIbot | hItop
     · exact hIneBot hIbot
     · exact hIneTop hItop

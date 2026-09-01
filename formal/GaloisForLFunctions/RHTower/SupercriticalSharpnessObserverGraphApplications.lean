@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.SupercriticalSharpnessMechanisms
 import GaloisForLFunctions.RHTower.FiniteQuantumObserverGraphSharpness
 import GaloisForLFunctions.RHTower.FiniteLocalizedSpectralSupportRecurrenceLaw
+import GaloisForLFunctions.RHTower.ObserverTemporalDimensionLaw
 
 /-!
 # Finite target profiles for observer-coherence graphs
@@ -9,6 +10,21 @@ Closed finite-volume isoperimetric applications of arXiv:2603.03257 to observer 
 -/
 
 namespace RHTower
+
+/-- Every finite modular observer packet has a spectral state with probability at least reciprocal
+cardinality. -/
+theorem exists_inv_card_le_observerModularProbability
+    {V : Type*} [Fintype V] [Nonempty V] (energy : V → ℝ) :
+    ∃ v : V, 1 / (Fintype.card V : ℝ) ≤ observerModularProbability energy v := by
+  rcases GaloisForLFunctions.HTGeometry.finiteFamilySum_empty_or_le_card_mul
+      (observerModularProbability energy) with hzero | ⟨v, hv⟩
+  · have hcard : 0 < Fintype.card V := Fintype.card_pos
+    omega
+  · refine ⟨v, ?_⟩
+    rw [sum_observerModularProbability] at hv
+    have hcard : (0 : ℝ) < Fintype.card V := by exact_mod_cast Fintype.card_pos
+    rw [div_le_iff₀ hcard]
+    simpa [mul_comm] using hv
 
 /-- Observer family is empty, or one record carries at least the average directed coherence
 weight of a fixed sector pair. -/

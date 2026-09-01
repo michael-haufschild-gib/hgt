@@ -34,16 +34,30 @@ def additiveSCSchwarzSharp (A : ℂ → ℂ) (z : ℂ) : ℂ :=
 def skewAdjointAdditiveSCTwoPortDet (A : ℂ → ℂ) (z : ℂ) : ℂ :=
   1 + A z * additiveSCSchwarzSharp A z
 
+/-- Opposite-sign Hermitian carrier exposed by the skew-adjoint obstruction. -/
+def hermitianAdditiveSCTwoPortDet (A : ℂ → ℂ) (z : ℂ) : ℂ :=
+  1 - A z * additiveSCSchwarzSharp A z
+
 /-- Identity plus a real-axis skew-adjoint off-diagonal two-port stage. -/
 def skewAdjointAdditiveSCTwoPortMatrix
     (A : ℂ → ℂ) (z : ℂ) : Matrix (Fin 2) (Fin 2) ℂ :=
   !![1, A z; -additiveSCSchwarzSharp A z, 1]
+
+def hermitianAdditiveSCTwoPortMatrix
+    (A : ℂ → ℂ) (z : ℂ) : Matrix (Fin 2) (Fin 2) ℂ :=
+  !![1, A z; additiveSCSchwarzSharp A z, 1]
 
 theorem det_skewAdjointAdditiveSCTwoPortMatrix (A : ℂ → ℂ) (z : ℂ) :
     (skewAdjointAdditiveSCTwoPortMatrix A z).det =
       skewAdjointAdditiveSCTwoPortDet A z := by
   rw [Matrix.det_fin_two]
   simp [skewAdjointAdditiveSCTwoPortMatrix, skewAdjointAdditiveSCTwoPortDet]
+
+theorem det_hermitianAdditiveSCTwoPortMatrix (A : ℂ → ℂ) (z : ℂ) :
+    (hermitianAdditiveSCTwoPortMatrix A z).det =
+      hermitianAdditiveSCTwoPortDet A z := by
+  rw [Matrix.det_fin_two]
+  simp [hermitianAdditiveSCTwoPortMatrix, hermitianAdditiveSCTwoPortDet]
 
 theorem differentiable_additiveSCSchwarzSharp
     {A : ℂ → ℂ} (hA : Differentiable ℂ A) :
@@ -117,6 +131,44 @@ theorem differentiable_skewAdjointAdditiveSCTwoPortDet
     Differentiable ℂ (skewAdjointAdditiveSCTwoPortDet A) := by
   exact differentiable_const (1 : ℂ) |>.add
     (hA.mul (differentiable_additiveSCSchwarzSharp hA))
+
+/-- Sharp boundary: opposite Hermitian sign reverses the central curvature. -/
+theorem iteratedDeriv_two_hermitianAdditiveSCTwoPortDet_zero
+    {A : ℂ → ℂ} (hA : Differentiable ℂ A) (hA0 : A 0 = 0) :
+    iteratedDeriv 2 (hermitianAdditiveSCTwoPortDet A) 0 =
+      -2 * deriv A 0 * (starRingEnd ℂ) (deriv A 0) := by
+  let D := skewAdjointAdditiveSCTwoPortDet A
+  have hD : Differentiable ℂ D :=
+    differentiable_skewAdjointAdditiveSCTwoPortDet hA
+  have hfun : hermitianAdditiveSCTwoPortDet A = fun z => 2 - D z := by
+    funext z
+    simp [D, hermitianAdditiveSCTwoPortDet, skewAdjointAdditiveSCTwoPortDet]
+    ring
+  have hfirst : deriv (fun z => 2 - D z) = fun z => -deriv D z := by
+    funext z
+    change deriv ((fun _ : ℂ => (2 : ℂ)) - D) z = _
+    simpa only [zero_sub] using
+      ((hasDerivAt_const (x := z) (2 : ℂ)).sub (hD z).hasDerivAt).deriv
+  rw [hfun, iteratedDeriv_succ, iteratedDeriv_succ, iteratedDeriv_zero, hfirst]
+  have hDd : DifferentiableAt ℂ (deriv D) 0 := by
+    simpa [iteratedDeriv_one] using
+      (GaloisForLFunctions.differentiable_iteratedDeriv_of_entire hD 1) 0
+  change deriv (-deriv D) 0 = _
+  rw [hDd.hasDerivAt.neg.deriv]
+  have hneg := congrArg Neg.neg
+    (iteratedDeriv_two_skewAdjointAdditiveSCTwoPortDet_zero hA hA0)
+  simpa [D, iteratedDeriv_succ, iteratedDeriv_zero] using hneg
+
+theorem re_iteratedDeriv_two_hermitianAdditiveSCTwoPortDet_zero_nonpos
+    {A : ℂ → ℂ} (hA : Differentiable ℂ A) (hA0 : A 0 = 0) :
+    (iteratedDeriv 2 (hermitianAdditiveSCTwoPortDet A) 0).re ≤ 0 := by
+  rw [iteratedDeriv_two_hermitianAdditiveSCTwoPortDet_zero hA hA0]
+  rw [show -2 * deriv A 0 * (starRingEnd ℂ) (deriv A 0) =
+      -(2 * (deriv A 0 * (starRingEnd ℂ) (deriv A 0))) by ring,
+    Complex.mul_conj]
+  simpa [Complex.mul_re] using
+    (neg_nonpos.mpr
+      (mul_nonneg (show (0 : ℝ) ≤ 2 by norm_num) (Complex.normSq_nonneg (deriv A 0))))
 
 theorem iteratedDeriv_two_normalizedXiC_zero :
     iteratedDeriv 2 (fun z => XiC z / XiC 0) 0 =

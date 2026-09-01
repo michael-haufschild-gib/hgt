@@ -25,7 +25,8 @@ Frontier map is read-only. Facts only; cards/certificates are source of truth.
 - Joint quintic radial-phase source encoding is complete/injective.
 - Linear replica-area holonomy tangent has exact data `c₀=-2`, `c_{±2n}=2/3`, independent of radial dressing.
 - Normalized rectangular response is `≥1`; passivity is equivalent pointwise to zero radial twist, and on canonical Mellin twists to `Re ρ=1/2`. Universal divisor-mode passivity is iff RH.
-- Open: derive that divisor-mode passivity from literal full torus CFT dynamics.
+- Every charge-balanced completion built only from reciprocal multiplicative β/γ characters is twist-independent, including arbitrary external reporter charges and infinite screening towers; no output predicate can select zero radial twist.
+- Open: derive divisor-mode passivity from non-character torus data (twisted determinant/ghost/prime-form/branch localization) with a marked canonical twist retained before Jacobian integration.
 
 ## RBH
 
@@ -43,4 +44,4 @@ Frontier map is read-only. Facts only; cards/certificates are source of truth.
 
 ## Latest certificate
 
-`fzzLinearReplicaAreaDivisorPassive_iff_riemannHypothesis` — direct Lean PASS; targeted build PASS; standard axioms only; umbrella wired.
+`not_fzzChargeBalancedHolonomyAreaTower_value_selector` — direct Lean PASS; targeted build PASS; standard axioms only; umbrella wired.

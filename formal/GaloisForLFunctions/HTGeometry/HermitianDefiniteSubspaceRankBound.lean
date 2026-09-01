@@ -58,6 +58,53 @@ theorem reQuad_smul (A : E →L[ℂ] E) (c : ℂ) (y : E) :
   have hcast : ((‖c‖ : ℂ) ^ 2) = ((‖c‖ ^ 2 : ℝ) : ℂ) := by push_cast; ring
   rw [hcast, Complex.re_ofReal_mul]
 
+/-- Strictly positive and strictly negative subspaces are disjoint. -/
+theorem disjoint_of_definite {A : E →L[ℂ] E}
+    {V W : Submodule ℂ E} (hV : StrictPositiveOn A V) (hW : StrictNegativeOn A W) :
+    Disjoint V W := by
+  rw [Submodule.disjoint_def]
+  intro x hxV hxW
+  by_contra hx
+  have hpos := hV x hxV hx
+  have hneg := hW x hxW hx
+  linarith
+
+/-- A strictly negative vector spans a strictly negative line. -/
+theorem strictNegativeOn_span_singleton {A : E →L[ℂ] E} {m : E} (hm : reQuad A m < 0) :
+    StrictNegativeOn A (ℂ ∙ m) := by
+  intro y hy hy0
+  obtain ⟨c, rfl⟩ := Submodule.mem_span_singleton.mp hy
+  have hc : c ≠ 0 := by
+    rintro rfl
+    simp at hy0
+  rw [reQuad_smul]
+  have hc2 : 0 < ‖c‖ ^ 2 := by positivity
+  exact mul_neg_of_pos_of_neg hc2 hm
+
+/-- A strictly positive vector spans a strictly positive line. -/
+theorem strictPositiveOn_span_singleton {A : E →L[ℂ] E} {m : E} (hm : 0 < reQuad A m) :
+    StrictPositiveOn A (ℂ ∙ m) := by
+  intro y hy hy0
+  obtain ⟨c, rfl⟩ := Submodule.mem_span_singleton.mp hy
+  have hc : c ≠ 0 := by
+    rintro rfl
+    simp at hy0
+  rw [reQuad_smul]
+  have hc2 : 0 < ‖c‖ ^ 2 := by positivity
+  exact mul_pos hc2 hm
+
+/-- A vector with strictly negative quadratic value is nonzero. -/
+theorem ne_zero_of_reQuad_neg {A : E →L[ℂ] E} {m : E} (hm : reQuad A m < 0) : m ≠ 0 := by
+  rintro rfl
+  rw [reQuad_zero] at hm
+  exact lt_irrefl _ hm
+
+/-- A vector with strictly positive quadratic value is nonzero. -/
+theorem ne_zero_of_reQuad_pos {A : E →L[ℂ] E} {m : E} (hm : 0 < reQuad A m) : m ≠ 0 := by
+  rintro rfl
+  rw [reQuad_zero] at hm
+  exact lt_irrefl _ hm
+
 section SelfAdjoint
 
 variable [CompleteSpace E]
@@ -101,17 +148,6 @@ theorem eq_zero_of_apply_eq_zero_of_definite {A : E →L[ℂ] E} (hA : IsSelfAdj
     · have hneg := hW w hw hw0
       linarith
 
-/-- Strictly positive and strictly negative subspaces are disjoint. -/
-theorem disjoint_of_definite {A : E →L[ℂ] E}
-    {V W : Submodule ℂ E} (hV : StrictPositiveOn A V) (hW : StrictNegativeOn A W) :
-    Disjoint V W := by
-  rw [Submodule.disjoint_def]
-  intro x hxV hxW
-  by_contra hx
-  have hpos := hV x hxV hx
-  have hneg := hW x hxW hx
-  linarith
-
 /-- **Definite-subspace dimension bound.**  For a self-adjoint operator with finite-dimensional
 range, a strictly positive subspace `V` and a strictly negative subspace `W` are finite-dimensional
 and `finrank V + finrank W ≤ finrank (range A)`. -/
@@ -132,50 +168,14 @@ theorem finrank_add_finrank_le_finrank_range {A : E →L[ℂ] E} (hA : IsSelfAdj
     have hmem : ((y₁ : E) - y₂) ∈ V ⊔ W := Submodule.sub_mem _ y₁.2 y₂.2
     exact Subtype.ext (sub_eq_zero.mp (eq_zero_of_apply_eq_zero_of_definite hA hV hW hmem hsub))
   haveI : FiniteDimensional ℂ ↥(V ⊔ W) := FiniteDimensional.of_injective f hf
-  haveI : FiniteDimensional ℂ V := Submodule.finiteDimensional_of_le le_sup_left
-  haveI : FiniteDimensional ℂ W := Submodule.finiteDimensional_of_le le_sup_right
+  haveI : FiniteDimensional ℂ V := Submodule.finiteDimensional_of_le (le_sup_left : V ≤ V ⊔ W)
+  haveI : FiniteDimensional ℂ W := Submodule.finiteDimensional_of_le (le_sup_right : W ≤ V ⊔ W)
   refine ⟨inferInstance, inferInstance, ?_⟩
   have h1 := LinearMap.finrank_le_finrank_of_injective hf
   have h2 := Submodule.finrank_sup_add_finrank_inf_eq V W
   have h3 : V ⊓ W = ⊥ := disjoint_iff.mp (disjoint_of_definite hV hW)
   rw [h3, finrank_bot] at h2
   omega
-
-/-- A strictly negative vector spans a strictly negative line. -/
-theorem strictNegativeOn_span_singleton {A : E →L[ℂ] E} {m : E} (hm : reQuad A m < 0) :
-    StrictNegativeOn A (ℂ ∙ m) := by
-  intro y hy hy0
-  obtain ⟨c, rfl⟩ := Submodule.mem_span_singleton.mp hy
-  have hc : c ≠ 0 := by
-    rintro rfl
-    simp at hy0
-  rw [reQuad_smul]
-  have hc2 : 0 < ‖c‖ ^ 2 := by positivity
-  exact mul_neg_of_pos_of_neg hc2 hm
-
-/-- A strictly positive vector spans a strictly positive line. -/
-theorem strictPositiveOn_span_singleton {A : E →L[ℂ] E} {m : E} (hm : 0 < reQuad A m) :
-    StrictPositiveOn A (ℂ ∙ m) := by
-  intro y hy hy0
-  obtain ⟨c, rfl⟩ := Submodule.mem_span_singleton.mp hy
-  have hc : c ≠ 0 := by
-    rintro rfl
-    simp at hy0
-  rw [reQuad_smul]
-  have hc2 : 0 < ‖c‖ ^ 2 := by positivity
-  exact mul_pos hc2 hm
-
-/-- A vector with strictly negative quadratic value is nonzero. -/
-theorem ne_zero_of_reQuad_neg {A : E →L[ℂ] E} {m : E} (hm : reQuad A m < 0) : m ≠ 0 := by
-  rintro rfl
-  rw [reQuad_zero] at hm
-  exact lt_irrefl _ hm
-
-/-- A vector with strictly positive quadratic value is nonzero. -/
-theorem ne_zero_of_reQuad_pos {A : E →L[ℂ] E} {m : E} (hm : 0 < reQuad A m) : m ≠ 0 := by
-  rintro rfl
-  rw [reQuad_zero] at hm
-  exact lt_irrefl _ hm
 
 /-- **Rank-two positive index bound.**  A self-adjoint operator of rank two with one strictly
 negative quadratic value has no strictly positive subspace of dimension two. -/

@@ -1442,3 +1442,31 @@ pre-divisor, coefficient-faithful source wave operator; prove its quotient/scatt
 fixed source winding; prove its cokernel is exhausted by the universal theta vacuum line plus the
 Xi Krein negative space. Then index `-1 = -(1 + k)` forces off-line count `k=0`. Until this operator
 and exhaustion law are explicit, ``arithmetic Levinson'' is a research question, not a conjecture.
+
+F171 — Literal all-prime pre-divisor source already has one exact Witt/Pontryagin defect: on every
+left fibre its rigged form has exactly one negative square modulo the coefficient radical, while
+reflection negates the form and gives one positive square on the right. A canonical two-prime time
+axis and real-linear fundamental symmetry polarize it unconditionally.
+
+F172 — Right source fibres also contain finite prime restrictions with arbitrarily large negative
+index. Hence absolute source index one cannot bound Xi off-line index: only a one-sided relative
+polarization/completion index could connect the left source vacuum to right-divisor defects.
+
+CANNOT-95 — It cannot identify the universal `(1,1)` Green block with a globally index-one source
+space and conclude RH by index monotonicity. Reflection reverses source orientation, and the
+opposite source chamber already has unbounded negative index.
+
+F173 — Honest finite theta source operators converge in norm and their determinants converge
+compact-open to normalized Xi, but every exact metric-adjoint repair escapes canonical theta
+polarization. Generic hyperbolic doubling preserves all source traces yet only Schwarz-doubles the
+divisor; chiral selection restores the original zeros rather than moving them to the line.
+
+CANNOT-96 — It cannot use generic Krein self-adjointization, metric rescaling, or projective
+polarization as completion selector. These exist for every finite source matrix and preserve
+nonreal divisor data exactly.
+
+MUST-67 — The precise candidate invariant is relative completion index: index of the Fredholm pair
+between source-selected and divisor/Hardy polarizations, vacuum-normalized by the fixed rank-two
+Green cell. To close RH it must be constructed coefficient-faithfully before Xi specialization,
+proved proper/no-escape, and identified with Krein--Langer off-line count. Absolute inertia is the
+wrong invariant.
