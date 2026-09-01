@@ -52,6 +52,7 @@ noncomputable local instance q8BaseIsGaloisGroup :
     IsGaloisGroup Gal(S/ℚ) ℚ S := IsGaloisGroup.of_isGalois ℚ S
 noncomputable local instance q8BaseIntegralAction :
     MulSemiringAction Gal(S/ℚ) (𝓞 S) := inferInstance
+local instance : Fact (Nat.Prime 2) := ⟨by norm_num⟩
 
 /-- A dyadic source prime has trivial ideal decomposition group over `ℚ`. -/
 theorem q8QuadraticSource_dyadic_idealStabilizer_eq_bot
@@ -284,6 +285,55 @@ theorem q8QuadraticSource_dyadic_below_eq_rationalPrime_two
   have htwo : 2 ≤ Rat.HeightOneSpectrum.natGenerator q :=
     (Rat.HeightOneSpectrum.prime_natGenerator q).two_le
   exact Nat.le_antisymm hle htwo
+
+private noncomputable def adicCompletionRingEquivOfEq
+    {v w : HeightOneSpectrum (𝓞 ℚ)} (h : v = w) :
+    v.adicCompletion ℚ ≃+* w.adicCompletion ℚ := by
+  subst w
+  exact RingEquiv.refl _
+
+private noncomputable def padicRingEquivOfEq
+    {p q : ℕ} [Fact (Nat.Prime p)] [Fact (Nat.Prime q)] (h : p = q) :
+    ℚ_[p] ≃+* ℚ_[q] := by
+  subst q
+  exact RingEquiv.refl _
+
+/-- Literal rational presentation of every dyadic source completion.
+The equivalence is the canonical finite-place completion map composed with
+the standard rational-adic-completion equivalence; it respects `ℚ`. -/
+noncomputable def q8QuadraticSource_dyadic_padicAlgEquiv
+    (v : HeightOneSpectrum (𝓞 S))
+    (hv : (2 : 𝓞 S) ∈ v.asIdeal) :
+    ℚ_[2] ≃ₐ[ℚ] v.adicCompletion S := by
+  let q := finitePlaceBelow (K := ℚ) v
+  let W : {W : HeightOneSpectrum (𝓞 S) //
+      finitePlaceBelow (K := ℚ) W = q} := ⟨v, rfl⟩
+  letI : Algebra (q.adicCompletion ℚ) (v.adicCompletion S) :=
+    (finitePlaceAdicCompletionMap ℚ S q W).toAlgebra
+  let p : Nat.Primes := ⟨2, by norm_num⟩
+  have hq : q = RayClass.rationalPrime p :=
+    q8QuadraticSource_dyadic_below_eq_rationalPrime_two v hv
+  let eadic0 := q8QuadraticSource_dyadic_adicCompletionAlgEquiv v hv
+  let eadic : (RayClass.rationalPrime p).adicCompletion ℚ ≃+*
+      v.adicCompletion S :=
+    (adicCompletionRingEquivOfEq hq).symm.trans eadic0.toRingEquiv
+  letI : Fact (Nat.Prime (Rat.HeightOneSpectrum.primesEquiv
+      (RayClass.rationalPrime p) : ℕ)) :=
+    ⟨(Rat.HeightOneSpectrum.primesEquiv (RayClass.rationalPrime p)).property⟩
+  have hgen : Rat.HeightOneSpectrum.natGenerator
+      (RayClass.rationalPrime p) = 2 := by
+    calc
+      Rat.HeightOneSpectrum.natGenerator (RayClass.rationalPrime p) =
+          (p : ℕ) := RayClass.natGenerator_rationalPrime p
+      _ = 2 := rfl
+  let epadic0 := Rat.HeightOneSpectrum.adicCompletion.padicEquiv
+    (RayClass.rationalPrime p)
+  let epadic : (RayClass.rationalPrime p).adicCompletion ℚ ≃+* ℚ_[2] :=
+    epadic0.toRingEquiv.trans (padicRingEquivOfEq hgen)
+  let ering : ℚ_[2] ≃+* v.adicCompletion S := epadic.symm.trans eadic
+  exact
+    { __ := ering
+      commutes' := fun x => ering.toRingHom.map_rat_algebraMap x }
 
 end
 
