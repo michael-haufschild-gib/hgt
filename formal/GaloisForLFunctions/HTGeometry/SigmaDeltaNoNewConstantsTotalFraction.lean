@@ -71,9 +71,11 @@ theorem exists_eq_algebraMap_fractionRing_of_isSigmaDeltaSimple_of_diffFG
           (fun i => algebraMap R (FractionRing R) (y i)) Q := by
       rw [show Q' = differentialRename Fin.castSucc Q from rfl,
         differentialPolynomialEvalOver_differentialRename]
-      congr 1
-      funext i
-      simp [z]
+      have hz : (fun i : Fin k => z i.castSucc) =
+          (fun i => algebraMap R (FractionRing R) (y i)) := by
+        funext i
+        simp [z]
+      rw [hz]
     have hmap := map_differentialPolynomialEvalOver
       (F := K) (L := R) (M := FractionRing R)
       (algebraMap R (FractionRing R))
@@ -223,7 +225,7 @@ theorem exists_eq_algebraMap_fractionRing_of_isSigmaDeltaSimple_of_diffFG
       change (1 : R) ∈ I
       rw [hItop]
       trivial
-    exact Or.inr (Ideal.eq_top_of_isUnit_mem J honeJ (by simpa using isUnit_one))
+    exact Or.inr (Ideal.eq_top_of_isUnit_mem J honeJ (by simp))
   have hyA : Function.Surjective
       (differentialPolynomialEvalOver (K := K)
         (fun i => differentialGeneratorIn (A := K) z i)) :=

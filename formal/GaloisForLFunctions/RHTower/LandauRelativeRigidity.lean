@@ -74,7 +74,7 @@ theorem closedBall_subset_halfPlane_union_ball {σc r ε : ℝ} (hr : 0 < r)
   by_cases hre : σc < z.re
   · exact Or.inl hre
   · right
-    have hre' : z.re ≤ σc := le_of_not_lt hre
+    have hre' : z.re ≤ σc := not_lt.mp hre
     rw [mem_closedBall, dist_eq_norm] at hz
     rw [mem_ball, dist_eq_norm]
     have hsq1 : ‖z - ((σc + 1 + 1 : ℝ) : ℂ)‖ ^ 2 = (z.re - (σc + 1 + 1)) ^ 2 + z.im ^ 2 := by
@@ -165,7 +165,7 @@ theorem re_le_abscissa_of_eulerFactor_zero {σc : ℝ} {E : ℂ → ℂ}
     (hE : ∀ s : ℂ, σc < s.re → E s = Complex.exp (gdSeries a lam s))
     {ρ : ℂ} (hρ : E ρ = 0) : ρ.re ≤ σc := by
   by_contra h
-  have h' : σc < ρ.re := lt_of_not_le h
+  have h' : σc < ρ.re := not_le.mp h
   rw [hE ρ h'] at hρ
   exact Complex.exp_ne_zero _ hρ
 
