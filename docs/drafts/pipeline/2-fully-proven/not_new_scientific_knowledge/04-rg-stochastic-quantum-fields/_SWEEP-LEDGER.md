@@ -940,3 +940,175 @@ two.
 So the remaining core is exactly: **the descent for a polynomial inhomogeneity of degree two in the
 jets**, or equivalently the branch in which the solution is affine-linear in the top jet with
 leading coefficient `μ·C(ℓ+2,2)·u`.
+
+### The linear branch, split; and the exact shape of the two residues (2026-09-01)
+
+`HTGeometry/RittAffineLinearSplit.lean` — **`affine_eigen_dichotomy_split`**: the corpus's affine
+dichotomy with its degree-one branch recorded in full.  When the coprime numerator has degree one
+the solution is `W = v·t + p` with both coefficients in the coefficient field, and *both* coefficient
+identities hold:
+
+```text
+φ v · a = c v + α,      φ v · b + φ p = c p + β.
+```
+
+The second identity is exactly what the leading-coefficient equation alone discards, and it is what
+the linear-top residue needs.  `logTower_dichotomy` now returns that branch in the tower.
+
+**The two residues, computed.**  Running the induction
+
+* `EIG(ℓ)`:  `σ v = ρ^J v`, `v ∈ E_ℓ`, `v ≠ 0`  ⟹ obstruction, or `v ∈ K` with `ψ v = v`;
+* `CONST(ℓ)`: `σ W = ρ^J W + ν`, `ν ≠ 0` ⟹ obstruction, or `W = κ·u`, `ψκ = κ`, `J = −1`, `ν = κ b`;
+* `RES(ℓ)`: `σ W = ρ^{-(ℓ+1)} W + (μ δ_ℓ + ν)`, `μ ≠ 0` ⟹ obstruction, or a residue,
+
+every row of `logTower_dichotomy` closes into the next lower level, with the invariant
+`μ ≠ 0 → J = −(ℓ+1)` preserved and the base case `ℓ = 0` always an obstruction.  Exactly two
+configurations survive, and both are **genuine solutions**, so neither can be refuted from its own
+relation:
+
+1. **Linear-top residue** (`RES` row six, numerator degree one with `α ≠ 0`).  `CONST` identifies the
+   leading coefficient as `v = κ·u` with `κ = μ·C(ℓ+2,2)` and `ψ κ = κ`; the second coefficient
+   identity then reads
+   `σ p = ρ^{-(ℓ+2)} p + (μ·δ_ℓ^low + ν − κ·σ(u)·δ_ℓ)`, whose inhomogeneity is quadratic in the jets.
+2. **Schwarzian residue** (`RES` row four at `ℓ = 0`, with both ratio data zero).  Then
+   `W = κ·u²` with `2κ = μ` and `ν = κ·(b² − 2 b_1)`.  And
+
+```text
+b² − 2 b_1 = (2/ρ⁴)·(ρ·d²ρ − (3/2)(dρ)²),
+```
+
+so the residue is *possible exactly when the map is not a Möbius transformation* — it is the
+Schwarzian solution `S = u² − 2 du`, which satisfies `σ S = ρ^{-2} S + (b² − 2 b_1)`
+unconditionally.
+
+**What this settles.**  The affine tower removes the two obstructions that blocked the `τ`-jet
+descent — the trivial exponent pair and the free monomial `κ τ^{e₀}(dτ)^{e₁}` — and reduces the whole
+classification to these two explicit solution families.  Both are *identifications of the solution*,
+not merely relations: the descent now knows `v = κ·u` and `W = κ·u²` exactly.  That is the datum the
+earlier single-coefficient descent threw away, and it is what the next step feeds back into the
+parent level.
+
+### The weight filtration: the architecture that carries the whole system (2026-09-01)
+
+The two residues are genuine solutions, so no single-coefficient descent can refute them.  The
+descent has to keep *every* coefficient of the coprime numerator, and the invariant that makes the
+resulting system finite is the **weight**, not the degree.
+
+Give the jet `t_j` the weight `j + 1`.  The tower's shift is weight-decreasing:
+
+```text
+w(δ_ℓ) = ℓ < ℓ + 1 = w(t_ℓ),
+```
+
+because the defect's top term is `a_{ℓ,ℓ-1} t_{ℓ-1}`.  So the seed relation `σ t_ℓ = c_ℓ t_ℓ + δ_ℓ`
+already satisfies `w(inhomogeneity) < w(solution)`, and that is the invariant to carry:
+
+> **`w(G) < w(W)`** for `σ W = ρ^J W + G` with `W`, `G` polynomials in the jets over `K`.
+
+Splitting `W = ∑_k p_k t_{ℓ-1}^k` and comparing the coefficient of `t_{ℓ-1}^k` gives
+
+```text
+σ p_k = (ρ^J / a^k)·p_k + a^{-k}·(G_k − ∑_{j>k} σ(p_j)·C(j,k)·δ_{ℓ-1}^{j-k}),
+```
+
+and the weight of the new inhomogeneity is at most `w(W) − kℓ + (k − j) < w(W) − kℓ`, while
+`w(p_k) ≤ w(W) − kℓ` with equality at the maximising `k`.  So the invariant is preserved and the
+level drops.  At level zero the invariant forces `G = 0`, and `ψ W = ρ^J W` with `J ≠ 0` is Ritt's
+form.
+
+Two statements carry it:
+
+* **MS(ℓ)** — a *rational* solution of an affine relation with polynomial inhomogeneity is an
+  obstruction or a *polynomial*.  Its proof is the denominator identity
+  `twistComp φ (aX+b) B = a^{deg B}·B` (the corpus's `twistComp_denominator_eq_gen`, valid for any
+  polynomial inhomogeneity) plus its subleading coefficient
+  `φ(B_{D-1}) + D·δ_{ℓ-1} = a·B_{D-1}` — an MS/PS datum one level down whose inhomogeneity
+  `−D·δ_{ℓ-1}` is nonzero of strictly smaller weight.
+* **PS(ℓ)** — the coefficient system above, recursing on `ℓ` with no multivariate polynomial ring:
+  every coefficient of a polynomial in the top jet is itself a polynomial in the lower jets.
+
+`exists_coprime_cross_gen` (`RittGeneralInhomogeneity`) already supplies the coprime cross relation
+for an arbitrary polynomial inhomogeneity, so MS needs only the subleading slice for a general
+inhomogeneity, which is `coeff_comp_linear_sub_one` applied to the denominator identity.
+
+### Affine-tower build state (2026-09-01)
+
+Six modules, all green, all umbrella-wired, all auditing to `[propext, Classical.choice, Quot.sound]`:
+
+| Module | Contents |
+|---|---|
+| `RittAffineJetTower` | `dK_add`, `logCoeff`, `logConst`, `logCoeff_eq_zero_of_lt`, `logCoeff_diag`, `logCoeff_subdiag`, **`sigma_affineJet`**, `affineLogSeed`, **`sigma_affineLogSeed`**, `sigma_mem_affineJetPrefixField`, `affineJet_defect_mem` |
+| `RittLogTowerDefect` | `towerDefect`, `towerDefect_mem`, `sigma_jet_eq_defect`, **`towerDefect_notMem_range`**, `towerDefectLow`, `towerDefect_succ_split` |
+| `RittAffineLinearSplit` | **`affine_eigen_dichotomy_split`** — the affine dichotomy with the degree-one branch recorded as `W = v·t + p` together with both coefficient identities |
+| `RittLogTowerStep` | **`logTower_dichotomy`** — the same, transported to the tower |
+| `RittGeneralDenominator` | `denominator_subleading_relation_gen`, **`exists_denominator_relation_gen`** — the denominator slice for an arbitrary polynomial inhomogeneity |
+| `RittLogTowerRing` | `jetPrefixRing`, `jet_mem_jetPrefixRing`, `jetPrefixRing_mono`, `jetPrefixRing_le_jetPrefixField`, `towerDefect_mem_ring`, `towerDefectLow_mem_ring`, **`sigma_mem_jetPrefixRing`**, **`exists_polynomial_of_mem_jetPrefixRing_succ`** |
+
+Next: `MS` (a rational solution with polynomial inhomogeneity is an obstruction or a polynomial) and
+`PS` (the coefficient system with the weight invariant `w(G) < w(W)`).
+
+### The weight filtration closes every level but one — and pins the collapse to a scale-invariant ODE
+
+Lift the collapse to the polynomial ring.  The jets `t_0,…,t_{N-1}` are algebraically independent, so
+`t_N ∈ E_N` polynomial (by MS) means `t_N = F(t_0,…,t_{N-1})` for a unique `F ∈ K[x_0,…,x_{N-1}]`,
+and the tower's shift is the **affine substitution**
+
+```text
+A : x_j ↦ ρ^{-(j+1)} x_j + ∑_{i<j} a_{j,i} x_i + b_j,
+```
+
+so the whole collapse is the single polynomial identity
+
+```text
+ψ(F) ∘ A = ρ^{-(N+1)}·F + δ_N.          (★)
+```
+
+Grade by the **weight** `w(x_j) = j + 1`.  `A` is diagonal on the top weight and strictly
+weight-lowering below, and `w(δ_N) = N`.
+
+*Top weight.*  Let `W = w(F)`.  Comparing weight-`W` parts: if `W < N` the weight-`N` part of `(★)`
+reads `0 = δ_N`'s top term, impossible; if `W = N` it gives an **affine base relation** with the
+nonzero inhomogeneity `a_{N,N-1}`; if `W > N` it gives `ψ f_m = ρ^{-(N+1)+W} f_m` for every top
+coefficient — Ritt's form unless `W = N + 1`.  So either an obstruction or **`W = N + 1` and every
+top-weight coefficient of `F` is `ψ`-fixed**, hence a derivation constant.
+
+*Every lower weight.*  At weight `W − k` the comparison reads
+`ψ f = ρ^{-k} f + ρ^{W-k}(δ_N|_{W-k} − corr_k)`, whose multiplier `ρ^{-k}` is **never trivial**.  So
+each level is an affine transport equation — an obstruction — unless its inhomogeneity vanishes *and*
+`f = 0`.  Consequently: either an obstruction, or `F` is **weighted homogeneous of weight `N + 1`
+with constant coefficients**, i.e.
+
+```text
+d^[N] u = F(u, du, …, d^[N-1]u),   F weighted homogeneous of weight N+1, constant coefficients,
+```
+
+a *scale-invariant* algebraic differential equation for the logarithmic seed.
+
+*The surviving chain.*  The weight-`N` comparison is the combinatorial equation
+
+```text
+T(F) = C(N+1,2)·x_{N-1},     T = ∂_0 + ∑_{j≥1} C(j+1,2)·x_{j-1}∂_j,
+```
+
+because the two weight-lowering sources — the subdiagonal `a_{j,j-1}` and the constant `b_0` — carry
+the *same* factor `−ρ^{-W-1}dρ`.  `T` is a locally nilpotent derivation with slice `x_0`
+(`T x_0 = 1`), hence surjective, so this level alone cannot close — it only pins the coefficient of
+`x_0 x_{N-1}` in `F` to `C(N+1,2)`, which is exactly the linear-top residue found by the field
+descent.  The weight-`0` comparison gives `F(b_0,…,b_{N-1}) = b_N`.
+
+So the remaining core is the finite system `(★)` for a weighted-homogeneous `F` of weight `N+1` with
+constant coefficients — a completely explicit combinatorial problem, uniform in `N`.
+
+### The tower shift as a polynomial substitution (2026-09-01)
+
+`HTGeometry/RittLogTowerMvSubstitution.lean` — `towerSub` (the affine image
+`∑_i logCoeff j i · X i + logConst b j` of the `j`-th variable), `towerShift` (the induced
+endomorphism of `MvPolynomial (Fin n) K`, applying the base map to the coefficients), `towerShift_C`,
+`towerShift_X`, and the capstone
+
+> **`aeval_towerShift`** — evaluation at the jets intertwines the polynomial shift with the shift of
+> the ambient field: `aeval (jets) ∘ towerShift = σ ∘ aeval (jets)`.
+
+This is the vehicle for `(★)`: with the jets algebraically independent, the collapse becomes a
+single identity in `MvPolynomial (Fin N) K`, graded by the weight `w(X j) = j + 1`, and the
+weight-by-weight comparison is the classification.

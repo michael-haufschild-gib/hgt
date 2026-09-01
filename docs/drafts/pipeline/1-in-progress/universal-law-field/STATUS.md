@@ -615,6 +615,72 @@ multiplies determinant `K₁` charge by arbitrary positive dimension, while bala
 erase signed Fredholm index independently of escape multiplicity (`PrimeAFMatrixOperatorKOneDirectLimit`,
 `HedenmalmThetaKakutaniBalancedIndexNoGo`).
 
+F125 — Finite well-founded execution does not imply global selection. Every finite formation
+rulebook can terminate while remaining nonconfluent; adjoining each missing join changes executable
+paths but leaves generated semantic equivalence stationary (`ConstitutiveCriticalCompletionMechanics`).
+
+F126 — Literal arithmetic carries distinct additive-successor and Dirichlet-convolution structures.
+Horizontal logarithmic weight is an exact derivation of Dirichlet convolution and is invariant under
+radial gauge, while Euler--Maclaurin occurrence can be nontrivial when every finite multiplicative
+source jet is trivial (`DirichletMaurerCartanMellinOrbitLaw`, `IdentitySectorRadialBlindness`,
+`NoGoPositiveFormulations`).
+
+F127 — The additive/multiplicative interaction is not a direct sum. The actual von Mangoldt
+successor Gram has strict negative adjacent Hankel curvature at every order; adding any ordinary
+Hankel Gamma/Bianchi boundary cannot make a Hankel target. A viable completion requires forced
+non-Hankel cross terms (`VonMangoldtAdditiveLogJetHankelCurvature`).
+
+F128 — The resolved joint `(prime, depth)` source/co-source cross-pair is an exact unsquared
+von Mangoldt Laplace channel and lands in the Xi relative resolvent after polar/Gamma completion.
+At balanced reflection its literal coefficient cross-term is not absolutely summable, so scalar
+analytic continuation is essential rather than an optional Hilbert completion
+(`EulerPrimitiveJointDepthKreinXiLanding`).
+
+F129 — Balanced-wall nonsummability is horizontal-grade blind. For every real split parameter
+`a`, the literal source/co-source cross-term at reflected parameters `a,-a` is nonsummable, while
+the Krein pairing and its completed scalar landing depend only on the codiagonal combination
+`w + conj(v)` (`EulerPrimitiveJointDepthKreinXiLanding`).
+
+F130 — Prime-depth BV--Wold scalar curvature is a forgetting defect, not curvature of the full
+source transport. Restoring the two endpoint clock characters gives an explicit triangular frame
+`G_i` with transport `G_i⁻¹G_j`, exact composition, and `D₁D₀ = 0` for every horizontal grade.
+
+F131 — Integral centered monodromy is an exact RH endpoint, not a proved source law. The actual
+centered log character descends iff its grade is integral, hence iff its grade is zero in the open
+critical strip; the corpus supplies no unconditional descent premise.
+
+F132 — Differential-character lattice periods are conditional on a character, boundary formula,
+closed cycle, and discrete-lattice small-chain law. They do not turn an arbitrary nonzero scalar
+triangle defect into an integral period.
+
+F133 — Reflection-Tate cohomology detects fixed support but does not generate it. Free reflection
+orbits are norms/boundaries, fixed orbits retain mod-two charge, and a charge lattice admits a
+conservative Tate reporter iff every charge is already supported on the fixed locus. Existence of a
+conservative Xi conormal landing is exactly RH (`IntegralOrbitTateExtension`,
+`ReflectionTateConservativeClassification`).
+
+F134 — Formation work is an exact receiver of mismatch, not a proved source budget. Independent
+depth multiplies the three-slot exchange defect linearly, bounded work is equivalent to equality of
+the compared laws, and global Xi formation-work properness is exactly RH
+(`ConstitutiveExchangeableFormationSelection`, `XiFormationStratificationLaw`).
+
+F135 — Common diagonal symmetry of positive-integer additive atom fusion and
+multiplicative/Dirichlet atom fusion is trivial. The full common-gauge type is a singleton; this is
+now paper-proved and Lean-certified (`TwoProductDiagonalGaugeRigidity`).
+
+F136 — Real radial weights `n ↦ n^a` preserve multiplicative atom fusion at every grade but preserve
+ordinary additive atom fusion iff `a = 0`. Literal Xi/Mellin formation supplies the first action,
+not an unconditional theorem that it is an automorphism of the second.
+
+F137 — Complete source response already generates a canonical context quotient, and every reachable
+context-observable branched realization is uniquely equivalent to it. Sequential Hankel and
+positive GNS minimal realizations and unique marked intertwiners are also Lean-certified
+(`ConstitutiveContextResponseGeometry`, `MarkedWordRealization`, `MarkedCyclicRigidity`).
+
+F138 — Minimal realization and generated intertwiners are presentation theorems, not response
+selection. A functional-equation involution can fix observer and recovery kernel, exchange legs,
+and act nontrivially on a nonzero formation charge (`TernaryFormationDualityHodge`).
+
 ## Logical consequences of audited facts
 
 Each `CANNOT`/`MUST` line is a necessary consequence of cited corpus results. This section contains
@@ -890,6 +956,39 @@ replicas, or source labels. Rank and integer charge can be amplified algebraical
 indefinite rank can cost arbitrarily small norm; no unconditional finite literal-source budget has
 been proved.
 
+CANNOT-69 — It cannot be termination, acyclicity, or semantic completion of finite source rules.
+Well-founded finite execution coexists with persistent nonconfluence, and conservative addition of
+missing joins can reveal new failures without narrowing the semantic model class.
+
+CANNOT-70 — It cannot identify ordinary integer addition with Dirichlet convolution and then use
+initial-semiring or vanishing-cotangent rigidity. Horizontal grade is a genuine derivation of the
+Dirichlet algebra; forcing it to descend to the initial semiring discards the analytic source
+interaction and inserts the desired vanishing as an unsupported quotient.
+
+CANNOT-71 — It cannot select neutral grade from existence, divergence, or canonical scalar
+renormalization of the balanced source/co-source cross-term. The divergence occurs at every
+horizontal split, and codiagonal contraction forgets the relative grade before continuation.
+
+CANNOT-72 — It cannot quantize the unnormalized BV--Wold triangle curvature as a lattice period.
+The full clock-retaining transport is pure gauge and flat at every grade; demanding centered-log
+descent or a differential-character lift inserts the missing RH-equivalent premise.
+
+CANNOT-73 — It cannot select the critical line by assuming a conservative reflection-Tate charge.
+Conservativity is exactly fixed-locus support, and existence of a conservative Xi landing is an RH
+restatement rather than a pre-divisor source law.
+
+CANNOT-74 — It cannot infer bounded or proper cofinal formation work from finite generation, local
+exchange identities, or information-neutral functional-equation lifting. Nonzero local mismatch
+accumulates linearly, and the required global boundedness is already equivalent to neutrality.
+
+CANNOT-75 — It cannot force neutral grade by declaring the Mellin radial action to be a common
+automorphism of additive and Dirichlet packet fusion. Common-gauge rigidity is true, but the
+additive-automorphism lift is not generated by Xi source formation and would insert the conclusion.
+
+CANNOT-76 — It cannot select a response from existence or uniqueness of its minimal realization,
+canonical context quotient, or generated marked intertwiner. Those constructions exist for every
+complete response, including functional-equation-symmetric responses with nonzero hidden charge.
+
 ### It must do or have this
 
 MUST-01 — It must be defined on pre-divisor source data and specialize at Xi occurrences only after
@@ -1037,3 +1136,33 @@ MUST-43 — Any decisive capacity must be nonhomogeneous under source-respecting
 under presentation by routes or replicas, and impossible to manufacture by matrix amplification or
 erase by balanced reflection. Its finite total budget must be proved from literal source formation,
 not assumed at the Xi divisor.
+
+MUST-44 — It must treat additive-successor and multiplicative-Dirichlet formation as distinct
+operations with a source-forced cross-effect. The decisive law must constrain the nonsummable
+balanced-wall interaction or its renormalization; direct sums, marginal positivity, and algebraic
+flatness are provably insufficient.
+
+MUST-45 — A cross-effect selector must retain the two oriented legs and at least one asymmetric
+third incidence before codiagonal pairing. Any law depending only on the paired sum, total trace,
+or balanced divergence is radial-gauge blind.
+
+MUST-46 — Selection must distinguish existence of the always-flat resolved source transport from
+existence of a canonical source-compatible reduction of that transport. Any reduction, splitting,
+integral structure, or descent used here must be generated before choosing a Xi divisor and must
+not be equivalent by definition to neutral horizontal grade.
+
+MUST-47 — Any quotient charge used for selection must prove from literal source formation why the
+source marker cannot become a norm, boundary, or free-orbit export; conservative reconstruction
+cannot be assumed.
+
+MUST-48 — Any formation selector must derive a cofinal non-escape or work bound from the literal
+pre-divisor source. Finite rule count, termination, local conservation, and stepwise
+information-neutrality do not imply that global bound.
+
+MUST-49 — A two-operation selector must construct from literal source execution the same action on
+both operations. Classifying the intersection of their symmetry groups is useful only after this
+occurrence theorem; membership in the intersection cannot be imposed as compatibility.
+
+MUST-50 — It must constrain which complete responses literal arithmetic can generate, not merely
+reconstruct a chosen response or prove equivalence of its presentations. Realization minimality is
+downstream of response admission.

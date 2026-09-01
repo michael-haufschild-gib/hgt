@@ -1,5 +1,13 @@
 import GaloisForLFunctions.RHTower.DeningerQ8ActualQuadraticSourceHigherRamification
 
+/-!
+# Completed lower profile of the actual Q8 quadratic source
+
+The chosen source-to-completion equivalence preserves every lower congruence depth.  Consequently
+the source profile transports without hidden completed automorphisms: levels zero through two are
+exactly central and every level from three onward is trivial.
+-/
+
 namespace RHTower
 
 noncomputable section
@@ -43,7 +51,7 @@ noncomputable local instance : IsGalois S K3 :=
 
 set_option synthInstance.maxHeartbeats 300000 in
 set_option maxHeartbeats 2000000 in
-theorem scratch_globalValuationLower_le_sourceLower
+theorem q8QuadraticSourceChosenGlobalValuationLower_le_sourceLower
     (v : HeightOneSpectrum (𝓞 S))
     (n : ℕ)
     (σ : RamificationTheory.HilbertRamification.ValuationSubring.decompositionGroup S
@@ -77,13 +85,15 @@ theorem scratch_globalValuationLower_le_sourceLower
     rfl
   rwa [heq] at hmapped
 
-noncomputable def scratch_q8ChosenLocalGalEquiv
+set_option synthInstance.maxHeartbeats 300000 in
+set_option maxHeartbeats 2000000 in
+noncomputable def q8QuadraticSourceChosenLocalGalEquiv
     (v : HeightOneSpectrum (𝓞 S)) :
     RamificationTheory.HilbertRamification.ValuationSubring.decompositionGroup S
         (q8ChosenGlobalValuationRing v) ≃*
       Gal(ChosenFinitePlaceLocalizedCompletion (K := S) (L := K3) v /
         ChosenFinitePlaceBaseCompletion (K := S) v) :=
-  let vK := HeightOneSpectrum.adicAbv S v
+  let vK := NumberField.HeightOneSpectrum.adicAbv S v
   let w := chosenFinitePlaceExtension (L := K3) v
   let hw := finitePlaceExtension_nonarchimedean (K := S) (L := K3) v w
   (localizationRamificationGroups_valuationDecompositionGroupEquiv
@@ -91,10 +101,10 @@ noncomputable def scratch_q8ChosenLocalGalEquiv
     (localizationRamificationGroups_localDecompositionGroupEquiv
       vK (RayClass.adicAbv_isNontrivial v) w hw).symm
 
-theorem scratch_q8ChosenLocalGalEquiv_central
+theorem q8QuadraticSourceChosenLocalGalEquiv_central
     (v : HeightOneSpectrum (𝓞 S))
     (hv : (2 : 𝓞 S) ∈ v.asIdeal) :
-    scratch_q8ChosenLocalGalEquiv v
+    q8QuadraticSourceChosenLocalGalEquiv v
         (q8QuadraticSourceCentralChosenDecomposition v hv) =
       q8QuadraticSourceCentralChosenLocalEquiv v hv := by
   apply AlgEquiv.ext
@@ -103,40 +113,69 @@ theorem scratch_q8ChosenLocalGalEquiv_central
 
 set_option synthInstance.maxHeartbeats 300000 in
 set_option maxHeartbeats 2000000 in
-theorem scratch_localLower_to_sourceLower
+theorem q8QuadraticSourceChosenLocalLower_to_sourceLower
     (v : HeightOneSpectrum (𝓞 S))
     (n : ℕ)
     (τ : Gal(ChosenFinitePlaceLocalizedCompletion (K := S) (L := K3) v /
       ChosenFinitePlaceBaseCompletion (K := S) v))
     (hτ : τ ∈ HilbertRamification.chosenActualLocalLowerRamificationGroup
       (K := S) (L := K3) v n) :
-    let σ := (scratch_q8ChosenLocalGalEquiv v).symm τ
+    let σ := (q8QuadraticSourceChosenLocalGalEquiv v).symm τ
     (σ : Gal(K3/S)) ∈
       GaloisForLFunctions.HTGeometry.Ideal.localizedLowerRamificationGroup
         (G := Gal(K3/S))
         (finitePlaceExtensionCentre (K := S) (L := K3) v
           (chosenFinitePlaceExtension (L := K3) v)).asIdeal n := by
-  let σ := (scratch_q8ChosenLocalGalEquiv v).symm τ
-  have himage : scratch_q8ChosenLocalGalEquiv v σ = τ :=
-    (scratch_q8ChosenLocalGalEquiv v).apply_symm_apply τ
-  have hlocal :
-      let vK := HeightOneSpectrum.adicAbv S v
-      let w := chosenFinitePlaceExtension (L := K3) v
-      let τD := localizationRamificationGroups_valuationDecompositionGroupEquiv
-        vK (RayClass.adicAbv_isNontrivial v) w
-          (finitePlaceExtension_nonarchimedean (K := S) (L := K3) v w) σ
-      let τ' : ChosenFinitePlaceLocalizedCompletion (K := S) (L := K3) v ≃ₐ[
-        ChosenFinitePlaceBaseCompletion (K := S) v]
-          ChosenFinitePlaceLocalizedCompletion (K := S) (L := K3) v := τD
-      τ' ∈ HilbertRamification.chosenActualLocalLowerRamificationGroup
+  let σ := (q8QuadraticSourceChosenLocalGalEquiv v).symm τ
+  let vK := NumberField.HeightOneSpectrum.adicAbv S v
+  let w := chosenFinitePlaceExtension (L := K3) v
+  let hw := finitePlaceExtension_nonarchimedean (K := S) (L := K3) v w
+  let eD := localizationRamificationGroups_valuationDecompositionGroupEquiv
+    vK (RayClass.adicAbv_isNontrivial v) w hw
+  have himage : q8QuadraticSourceChosenLocalGalEquiv v σ = τ :=
+    (q8QuadraticSourceChosenLocalGalEquiv v).apply_symm_apply τ
+  have hcoerce : ((eD σ :
+      RamificationTheory.HilbertRamification.ValuationSubring.decompositionGroup
+        vK.Completion (algebraicLocalizationValuationSubring vK w hw)) :
+      Gal(ChosenFinitePlaceLocalizedCompletion (K := S) (L := K3) v /
+        ChosenFinitePlaceBaseCompletion (K := S) v)) =
+      q8QuadraticSourceChosenLocalGalEquiv v σ := by
+    apply AlgEquiv.ext
+    intro x
+    rfl
+  have hτ'eq : ((eD σ :
+      RamificationTheory.HilbertRamification.ValuationSubring.decompositionGroup
+        vK.Completion (algebraicLocalizationValuationSubring vK w hw)) :
+      Gal(ChosenFinitePlaceLocalizedCompletion (K := S) (L := K3) v /
+        ChosenFinitePlaceBaseCompletion (K := S) v)) = τ :=
+    hcoerce.trans himage
+  have hlocal : ((eD σ :
+      RamificationTheory.HilbertRamification.ValuationSubring.decompositionGroup
+        vK.Completion (algebraicLocalizationValuationSubring vK w hw)) :
+      Gal(ChosenFinitePlaceLocalizedCompletion (K := S) (L := K3) v /
+        ChosenFinitePlaceBaseCompletion (K := S) v)) ∈
+      HilbertRamification.chosenActualLocalLowerRamificationGroup
         (K := S) (L := K3) v n := by
-    simpa [scratch_q8ChosenLocalGalEquiv, σ] using hτ
+    rw [hτ'eq]
+    exact hτ
+  let P := finitePlaceExtensionCentre (K := S) (L := K3) v w
+  letI : IsDiscreteValuationRing (Localization.AtPrime P.asIdeal) :=
+    IsLocalization.AtPrime.isDiscreteValuationRing_of_dedekind_domain
+      (𝓞 K3) P.ne_bot (Localization.AtPrime P.asIdeal)
+  let hDVR : IsDiscreteValuationRing (q8ChosenGlobalValuationRing v) :=
+    IsDiscreteValuationRing.RingEquivClass.isDiscreteValuationRing
+      (q8ChosenGlobalLocalizationEquiv v).symm
+  letI : IsDiscreteValuationRing
+      (HilbertRamification.chosenGlobalValuationRing
+        (K := S) (L := K3) v) := by
+    change IsDiscreteValuationRing (q8ChosenGlobalValuationRing v)
+    exact hDVR
   have hσ :=
     (HilbertRamification.chosenDecomposition_mem_chosenActualLocalLowerRamificationGroup_iff
       (K := S) (L := K3) v n σ).1 hlocal
-  exact scratch_globalValuationLower_le_sourceLower v n σ hσ
+  exact q8QuadraticSourceChosenGlobalValuationLower_le_sourceLower v n σ hσ
 
-abbrev scratch_q8CentralChosenLocalSubgroup
+abbrev q8QuadraticSourceCentralChosenLocalSubgroup
     (v : HeightOneSpectrum (𝓞 S))
     (hv : (2 : 𝓞 S) ∈ v.asIdeal) :
     Subgroup Gal(ChosenFinitePlaceLocalizedCompletion (K := S) (L := K3) v /
@@ -145,16 +184,16 @@ abbrev scratch_q8CentralChosenLocalSubgroup
 
 set_option synthInstance.maxHeartbeats 300000 in
 set_option maxHeartbeats 2000000 in
-theorem scratch_localLower_le_central_of_le_two
+theorem q8QuadraticSourceChosenLocalLower_le_central_of_le_two
     (v : HeightOneSpectrum (𝓞 S))
     (hv : (2 : 𝓞 S) ∈ v.asIdeal)
     (n : ℕ) (hn : n ≤ 2) :
     HilbertRamification.chosenActualLocalLowerRamificationGroup
         (K := S) (L := K3) v n ≤
-      scratch_q8CentralChosenLocalSubgroup v hv := by
+      q8QuadraticSourceCentralChosenLocalSubgroup v hv := by
   intro τ hτ
-  let σ := (scratch_q8ChosenLocalGalEquiv v).symm τ
-  have hsource := scratch_localLower_to_sourceLower v n τ hτ
+  let σ := (q8QuadraticSourceChosenLocalGalEquiv v).symm τ
+  have hsource := q8QuadraticSourceChosenLocalLower_to_sourceLower v n τ hτ
   have hcentral : (σ : Gal(K3/S)) ∈ q8QuadraticSourceCentralSubgroup := by
     rw [← q8QuadraticSource_lowerRamificationGroup_eq_central_of_le_two
       (finitePlaceExtensionCentre (K := S) (L := K3) v
@@ -164,44 +203,60 @@ theorem scratch_localLower_le_central_of_le_two
   rcases Subgroup.mem_zpowers_iff.mp hcentral with ⟨k, hk⟩
   apply Subgroup.mem_zpowers_iff.mpr
   refine ⟨k, ?_⟩
-  rw [← scratch_q8ChosenLocalGalEquiv_central v hv, ← map_zpow]
+  rw [← q8QuadraticSourceChosenLocalGalEquiv_central v hv, ← map_zpow]
   have hσ :
       (q8QuadraticSourceCentralChosenDecomposition v hv) ^ k = σ := by
     apply Subtype.ext
     exact hk
   rw [hσ]
-  exact (scratch_q8ChosenLocalGalEquiv v).apply_symm_apply τ
+  exact (q8QuadraticSourceChosenLocalGalEquiv v).apply_symm_apply τ
 
-set_option maxHeartbeats 1200000 in
-theorem scratch_central_le_localLower_of_le_two
+set_option synthInstance.maxHeartbeats 300000 in
+set_option maxHeartbeats 2000000 in
+theorem q8QuadraticSourceCentralChosenLocalSubgroup_le_localLower_of_le_two
     (v : HeightOneSpectrum (𝓞 S))
     (hv : (2 : 𝓞 S) ∈ v.asIdeal)
     (n : ℕ) (hn : n ≤ 2) :
-    scratch_q8CentralChosenLocalSubgroup v hv ≤
+    q8QuadraticSourceCentralChosenLocalSubgroup v hv ≤
       HilbertRamification.chosenActualLocalLowerRamificationGroup
         (K := S) (L := K3) v n := by
   rw [Subgroup.zpowers_le]
-  apply (HilbertRamification.mem_chosenActualLocalLowerRamificationGroup_iff
-    (K := S) (L := K3) v n _).2
-  intro z
-  have hcube := q8QuadraticSourceCentralChosenCompletion_displacement_mem_cube
-    v hv z
-  exact Ideal.pow_le_pow_right (by omega) hcube
+  let w := chosenFinitePlaceExtension (L := K3) v
+  let P := finitePlaceExtensionCentre (K := S) (L := K3) v w
+  letI : IsDiscreteValuationRing (Localization.AtPrime P.asIdeal) :=
+    IsLocalization.AtPrime.isDiscreteValuationRing_of_dedekind_domain
+      (𝓞 K3) P.ne_bot (Localization.AtPrime P.asIdeal)
+  let hDVR : IsDiscreteValuationRing (q8ChosenGlobalValuationRing v) :=
+    IsDiscreteValuationRing.RingEquivClass.isDiscreteValuationRing
+      (q8ChosenGlobalLocalizationEquiv v).symm
+  letI : IsDiscreteValuationRing
+      (HilbertRamification.chosenGlobalValuationRing
+        (K := S) (L := K3) v) := by
+    change IsDiscreteValuationRing (q8ChosenGlobalValuationRing v)
+    exact hDVR
+  have hlocal :=
+    (HilbertRamification.chosenDecomposition_mem_chosenActualLocalLowerRamificationGroup_iff
+      (K := S) (L := K3) v n
+        (q8QuadraticSourceCentralChosenDecomposition v hv)).2 (by
+      intro x
+      exact Ideal.pow_le_pow_right (by omega)
+        (q8QuadraticSourceCentralChosenDecomposition_displacement_mem_cube v hv x))
+  simpa [q8QuadraticSourceCentralChosenLocalEquiv] using hlocal
 
-theorem scratch_localLower_eq_central_of_le_two
+theorem q8QuadraticSourceChosenActualLocalLower_eq_central_of_le_two
     (v : HeightOneSpectrum (𝓞 S))
     (hv : (2 : 𝓞 S) ∈ v.asIdeal)
     (n : ℕ) (hn : n ≤ 2) :
     HilbertRamification.chosenActualLocalLowerRamificationGroup
         (K := S) (L := K3) v n =
-      scratch_q8CentralChosenLocalSubgroup v hv := by
+      q8QuadraticSourceCentralChosenLocalSubgroup v hv := by
   apply le_antisymm
-  · exact scratch_localLower_le_central_of_le_two v hv n hn
-  · exact scratch_central_le_localLower_of_le_two v hv n hn
+  · exact q8QuadraticSourceChosenLocalLower_le_central_of_le_two v hv n hn
+  · exact q8QuadraticSourceCentralChosenLocalSubgroup_le_localLower_of_le_two v hv n hn
 
 set_option synthInstance.maxHeartbeats 300000 in
 set_option maxHeartbeats 2000000 in
-theorem scratch_localLower_eq_bot_of_three_le
+theorem q8QuadraticSourceChosenActualLocalLower_eq_bot_of_three_le
     (v : HeightOneSpectrum (𝓞 S))
     (hv : (2 : 𝓞 S) ∈ v.asIdeal)
     (n : ℕ) (hn : 3 ≤ n) :
@@ -210,32 +265,36 @@ theorem scratch_localLower_eq_bot_of_three_le
   apply le_antisymm
   · intro τ hτ
     rw [Subgroup.mem_bot]
-    let σ := (scratch_q8ChosenLocalGalEquiv v).symm τ
-    have hsource := scratch_localLower_to_sourceLower v n τ hτ
+    let σ := (q8QuadraticSourceChosenLocalGalEquiv v).symm τ
+    have hsource := q8QuadraticSourceChosenLocalLower_to_sourceLower v n τ hτ
     have hbot : (σ : Gal(K3/S)) ∈ (⊥ : Subgroup Gal(K3/S)) := by
       rw [← q8QuadraticSource_lowerRamificationGroup_eq_bot_of_three_le
         (finitePlaceExtensionCentre (K := S) (L := K3) v
           (chosenFinitePlaceExtension (L := K3) v)).asIdeal
         (q8FinitePlaceExtensionCentre_two_mem v hv) n hn]
       exact hsource
-    have hσ : σ = 1 := Subgroup.mem_bot.mp hbot
-    have hτ := (scratch_q8ChosenLocalGalEquiv v).apply_symm_apply τ
-    rw [hσ, map_one] at hτ
-    exact hτ.symm
+    have hσ : σ = 1 := by
+      apply Subtype.ext
+      exact Subgroup.mem_bot.mp hbot
+    calc
+      τ = q8QuadraticSourceChosenLocalGalEquiv v σ :=
+        ((q8QuadraticSourceChosenLocalGalEquiv v).apply_symm_apply τ).symm
+      _ = q8QuadraticSourceChosenLocalGalEquiv v 1 := congrArg _ hσ
+      _ = 1 := map_one _
   · exact bot_le
 
-theorem scratch_localLower_profile
+theorem q8QuadraticSourceChosenActualLocalLower_profile
     (v : HeightOneSpectrum (𝓞 S))
     (hv : (2 : 𝓞 S) ∈ v.asIdeal)
     (n : ℕ) :
     HilbertRamification.chosenActualLocalLowerRamificationGroup
         (K := S) (L := K3) v n =
-      if n ≤ 2 then scratch_q8CentralChosenLocalSubgroup v hv else ⊥ := by
+      if n ≤ 2 then q8QuadraticSourceCentralChosenLocalSubgroup v hv else ⊥ := by
   by_cases hn : n ≤ 2
   · rw [if_pos hn]
-    exact scratch_localLower_eq_central_of_le_two v hv n hn
+    exact q8QuadraticSourceChosenActualLocalLower_eq_central_of_le_two v hv n hn
   · rw [if_neg hn]
-    exact scratch_localLower_eq_bot_of_three_le v hv n (by omega)
+    exact q8QuadraticSourceChosenActualLocalLower_eq_bot_of_three_le v hv n (by omega)
 
 end
 

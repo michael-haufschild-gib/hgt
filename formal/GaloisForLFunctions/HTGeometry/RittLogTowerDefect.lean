@@ -83,3 +83,31 @@ theorem towerDefect_notMem_range [CharZero K] (Fr : RittFrame K L) {u : L} {b : 
 end RittFrame
 
 end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+namespace RittFrame
+
+variable {K L : Type*} [Field K] [Field L] [Algebra K L]
+
+/-- The part of the defect of level `m + 1` that lies one level further down. -/
+noncomputable def towerDefectLow (Fr : RittFrame K L) (u : L) (b : K) (m : ℕ) : L :=
+  (∑ j ∈ Finset.range m, algebraMap K L (Fr.logCoeff (m + 1) j) * Fr.d^[j] u)
+    + algebraMap K L (Fr.logConst b (m + 1))
+
+theorem towerDefectLow_mem (Fr : RittFrame K L) (u : L) (b : K) (m : ℕ) :
+    Fr.towerDefectLow u b m ∈ Fr.jetPrefixField u m := by
+  refine add_mem (sum_mem fun j hj => ?_) (IntermediateField.algebraMap_mem _ _)
+  exact mul_mem (IntermediateField.algebraMap_mem _ _)
+    (Fr.jet_mem_jetPrefixField (by simpa only [Finset.mem_range] using hj))
+
+/-- The defect of level `m + 1`, split into its top jet component and the rest. -/
+theorem towerDefect_succ_split (Fr : RittFrame K L) (u : L) (b : K) (m : ℕ) :
+    Fr.towerDefect u b (m + 1)
+      = algebraMap K L (Fr.logCoeff (m + 1) m) * Fr.d^[m] u + Fr.towerDefectLow u b m := by
+  rw [towerDefect, towerDefectLow, Finset.sum_range_succ]
+  ring
+
+end RittFrame
+
+end GaloisForLFunctions.HTGeometry

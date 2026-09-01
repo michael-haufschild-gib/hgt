@@ -2701,3 +2701,35 @@ The remaining construction is the fibre bound for the Hankel family at each of t
 every general ingredient for it is proved; what is left is applying them to
 `familyIdeal w (finiteHankelSecantIdeal K N r)` with the weight that realises the chain ideal as the
 initial ideal.
+
+### The last mile, restated after a corpus audit (2026-09-01)
+
+`forall_mem_of_degeneration'` consumes its fibre hypothesis **for every degree `e`**, while
+`exists_generic_point_forall` produces one good `lam` for a **finite** family of `K[t]`-modules.  The
+stages of the regular sequence are finite (`2r`), but each stage needs the bound in every degree, and
+the graded pieces `famCoeff K N e ⧸ famCoeffPart A e` are one module per degree.  So the exceptional
+set is `⋃_{i < 2r} ⋃_e S_{i,e}`, and its finiteness needs an argument uniform in `e`.
+
+**The corpus already owns that argument** — `HTGeometry/FamilyUniformTorsion.lean`:
+
+```text
+torsionIdeal                        the elements a nonzero scalar polynomial pushes into the ideal
+exists_uniform_torsion_annihilator  ** one nonzero q ∈ K[t] annihilates all of the torsion **
+saturated_of_eval_ne_zero           ** so for q lam ≠ 0, (t − lam) is a nonzerodivisor on R ⧸ A **
+```
+
+The family ring is Noetherian, so the torsion ideal is finitely generated and the product of the
+annihilators of a generating set works in every degree at once; Bézout then gives saturation away
+from the roots of `q`.  With `(t − lam)` a nonzerodivisor on the whole family quotient, every graded
+piece is `(t − lam)`-torsion free, so `FibreSemicontinuity.finrank_fibre_eq` gives fibre dimension
+= rank at `lam`, uniformly in `e`, and the fibre at `0` is at least the rank.
+
+**Nothing currently imports `FamilyUniformTorsion`.**  The remaining work on the Cohen–Macaulay half
+of this card is therefore exactly: wire `exists_uniform_torsion_annihilator` +
+`saturated_of_eval_ne_zero` + `finrank_fibre_eq` into the degree-uniform fibre bound, feed that to
+`forall_mem_of_degeneration'` through the `DegenerationIteration` engine for the `2r` stages of
+`hasRegSeq_chainFaceFinset`, and hand the resulting sequence to
+`isCohenMacaulayRing_hankelSecantQuotient_of_regSeq`.
+
+Rational singularities remain out of scope: they need resolutions and higher direct images, which
+neither mathlib nor this corpus has.

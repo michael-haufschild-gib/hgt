@@ -4251,3 +4251,90 @@ stay linearly independent over the small functions.
 
 This is the same wall the literature hits: Steinmetz's reduction theorem rests on his generalisation
 of the second main theorem to small functions, and there is no growth-only substitute.
+
+## Cards 13/14: why the Newton degeneration is unrepairable, and the exact reduction that replaces it (2026-09-01)
+
+### The top-weight coefficient matrix of the model cascade has rank one — for every weight
+
+Work with the model `δ X_k = ∏_(j≤k) λ_j X_j` and any monomial valuation `deg_w X_j = w_j > 0`.
+Write `W_k = w_1 + … + w_k`.
+
+* `δ` raises the weighted degree of a monomial containing `X_n` by exactly `W_(n−1)`, and raises every
+  other monomial by less, so `deg_w (δ^i X_n) = W_n + i·W_(n−1)` and the **top-weight part of
+  `δ^i X_n` is exactly `P_(n−1)^i P_n`** (coefficient one), where `P_k = ∏_(j≤k) λ_j X_j`.
+* Hence for `i ≥ 1` the Jacobian entry `∂_k (δ^i X_n)` has top-weight degree
+
+  `a(i,k) = D_i − w_k`,  `D_i := W_n + i·W_(n−1)`,
+
+  which is **separable**: the leading-coefficient matrix is `c_i · d_k`, of rank one.
+* Row `i = 0` is `∂_k X_n = δ_(kn)`, so the optimal assignment must send row `0` to column `n`, and
+  every remaining permutation of rows `1..n−1` onto columns `1..n−1` has the *same* total
+  `∑_i D_i − ∑_(k<n) w_k`.
+
+So **every** surviving permutation ties, for **every** choice of weights: the assignment problem
+never has a unique optimum and the model determinant is always a strictly lower-order term than the
+individual permutation products.  This is not a defect of the particular bounds used earlier
+(`det_ne_zero_of_hasLead`, "the first `n − 1` columns are proportional"); it is intrinsic, and no
+sharpening, reweighting, or blow-up of the one-parameter degeneration can repair it.  The
+one-parameter Newton degeneration of these Jacobians is therefore closed as a route.
+
+### The general degeneration criterion is now Lean, and says exactly this
+
+`HTGeometry/LogScaleDeterminantNonCancellation.lean` proves, unconditionally:
+
+| Statement | Theorem |
+|---|---|
+| products add log-scale exponents | `HasLogScaleExponent.prod` |
+| a negligible correction does not move an exponent | `HasLogScaleExponent.add_isLittleO` |
+| the determinant reads off the optimal assignment | `hasLogScaleExponent_det_of_unique_max` |
+| the same with identically null entries allowed | `hasLogScaleExponent_det_of_unique_max_on` |
+| **degeneration**: `M = m + r`, `r` entrywise `o` of `m`, unique optimum ⟹ `det M` carries the model exponent | `hasLogScaleExponent_det_of_perturbation`, `…_on` |
+| eventual nonvanishing | `det_ne_zero_of_unique_max_logScale`, `det_ne_zero_of_perturbation_unique_max_on` |
+
+The hypothesis it isolates is precisely uniqueness of the optimal assignment, which the paragraph
+above shows *fails identically* for these cascades.  The theorem is therefore correct and reusable,
+and it certifies that the card's step-2 proof as written cannot be completed.
+
+### The replacement: an unconditional bordered reduction
+
+`HTGeometry/DerivationBorderedJetReduction.lean` proves, for any commutative `ℂ`-algebra, any time
+derivation `δ`, any coordinate derivations, and **no hypothesis beyond the law**:
+
+```
+δ H = U · H  ⟹  det (∂_j δ^i H)_(i,j≤n+1)
+                 = H^(n+1) · det ( border row `∂_j H` ; rows `∂_j δ^s U` )
+```
+
+(`derivationIterateOutputJacobian_det_uniformBordered`, with
+`derivationIterateOutputJacobian_det_ne_zero_of_uniformBordered`,
+`uniformBordered_derivationBell_det_eq`, `derivationBellCoeff_det = 1`.)
+
+This removes the hypothesis `hterminalU` of `derivationIterateOutputJacobian_det_terminalScaled`,
+which is what blocked the exact algebraic route: for the general cascade the multiplier
+`U = P_n / X_n = P_(n−1)·A_n(X_n)/X_n` **does** involve the top coordinate — `∂_n U = 0` forces
+`A_n' X_n = A_n`, i.e. exact linearity — so no coordinate derivation kills its jets, and the
+terminal-scaled reduction is unavailable.  The bordered reduction needs nothing of the kind.
+
+### What the reduction turns the card into
+
+Iterating the bordered reduction along `W_0 := X_n`, `W_(k+1) := δ W_k / W_k` (the iterated
+logarithmic derivatives) peels one row at a time.  For the cascade the first two steps are exact:
+
+* `δ X_n = U · X_n` with `U = P_(n−1) h_n(X_n)`, `h_n := A_n/X_n`, and the border row is `∂_j X_n = δ_(jn)`;
+* `δ U = U · V` with `V = T_(n−1) + P_(n−1) κ_n(X_n)`, `T_(n−1) = ∑_(i≤n−1) A_i'(X_i) P_(i−1)`,
+  `κ_n := X_n h_n'(X_n)`, and the border row is `∂_j U = U · m_j(X_j)`, `m_j := A_j'/A_j ≠ 0`.
+
+In the model `h_n` is the constant `λ_n`, so `κ_n = 0` and `V = T_(n−1)` is free of `X_n`; in general
+`κ_n → 0` along the branch, which is where the asymptotic hypothesis re-enters — but now against a
+*single scalar* rather than against a determinant with rank-one leading behaviour.
+
+The remaining Lean gap for both cards is therefore one named object: the **general peel step**, the
+bordered reduction with an arbitrary number of border rows already accumulated,
+
+```
+det ( a_0 ; … ; a_(k−1) ; ∂_j δ^s W )  =  W^(N−k−1) · det ( a_0 ; … ; a_(k−1) ; ∂_j W ; ∂_j δ^s V )
+```
+
+for `δ W = V · W`.  The corpus owns this only for the polynomial-coefficient cascade
+(`PeelInduction`, `PeelEntry`, `PairPeelInduction`, `BorderShapeColumn`, `JetGradientRecursion`);
+the general derivation-level version is the missing infrastructure.
