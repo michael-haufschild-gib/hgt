@@ -3875,3 +3875,135 @@ no jet combinatorics at all, and it is what makes `∂_v A₂ = 0` available for
 Naming trap recorded: `derivation_eq_zero_of_mem_adjoin` already exists in
 `JetPrincipalSymbolExtraction` for base-field derivations, so the `Derivation ℤ` variants here are
 named `derivationInt_*` to keep the umbrella importable.
+
+## Card 8 started (2026-09-01): the growth half is built
+
+`HTGeometry/SuperGaussianCentralIndex.lean` (axiom-clean, wired) proves the card's step 1 in
+central-index form, which is the form the Wiman--Valiron layer consumes:
+
+| Statement | Lean theorem |
+|---|---|
+| a Gaussian bound has a positive constant once a coefficient is nonzero | `pos_of_gaussian_decay` |
+| `‖a n‖ ≤ M e^{−A n²}` forces `ν(r) ≤ 2 log r / A` past the threshold | `centralIndex_le_of_gaussian_decay_of_lt` |
+| the threshold is met at every large radius | `eventually_gaussian_threshold`, `eventually_centralIndex_le_of_gaussian_decay` |
+| **the estimate for every `A > 0` makes `ν(r) = o(log r)`** | `tendsto_centralIndex_div_log_zero` |
+
+The proof is two lines of arithmetic: if `ν ≥ 2L/A` with `L = log r` then
+`−Aν² + νL = ν(L − Aν) ≤ −νL ≤ −2L²/A`, so the central term `‖a_ν‖r^ν ≤ M e^{−2L²/A}` sinks below the
+fixed term `‖a_{n₀}‖r^{n₀} ≥ ‖a_{n₀}‖`.  No integral, no theta bound, no Gaussian sum: the
+completing-the-square estimate of the card's step 1 is only needed for the *maximum modulus*, and the
+central index is what the differential-order argument actually uses.
+
+### Route audit for card 8's remaining half, and the exact obstruction
+
+The card's remaining input is Valiron--Zimogljad--Strelitz: a transcendental entire solution of an
+ADE of order at most two has positive order.  With the growth half above, what is needed is the
+weaker `ν(r) = o(log r)` is impossible.
+
+**The corpus's first-order layer is exactly the right shape.**  `TopSymbolWimanPlace`
+(`exists_radius_norm_topSymbol_le`) and `NewtonWeightPositiveOrder` (the face inequality
+`exists_radius_wimanFace`, the weight collapse, the tie collapse, and the positive-order readings)
+carry out precisely this analysis for relations `∑ A_p(z) f^{p₁} (f′)^{p₂}`, and their conclusions —
+`ν^{q₂}·r ≤ C·ν^P`, `ν^{q₂} r^{deg+1} ≤ 2 r^{q₂+1}` — contradict `ν = o(log r)` immediately.  So the
+work for card 8 is to redo that layer for triples `f^{p₁}(f′)^{p₂}(f″)^{p₃}`.
+
+**The single missing analytic input is the second-derivative Wiman--Valiron estimate**
+`z² f″(z)/f(z) ≈ ν(ν−1)` at a Wiman place; the corpus has only the first-derivative form
+(`MaximumTermLogarithmicDerivative.norm_mul_logDeriv_sub_centralIndex_le_sharp`,
+`WimanValironWindowEstimate`).
+
+**Two naive routes are ruled out, and it is worth recording why.**
+
+1. *Substituting `f″ ↦ (f′)²/f` and quoting the first-order layer.*  The substitution
+   `Y₁ ↦ Y₀T, Y₂ ↦ Y₀T²` has kernel exactly `(Y₀Y₂ − Y₁²)`, so a relation in that ideal — e.g. the
+   Wronskian relation satisfied by `A e^{cz}` — is invisible to it.  That case is separately fine
+   (`f f″ = (f′)²` forces `f = A e^{cz}`, of order one), and since the annihilating ideal of `f` is
+   prime one may assume `P ∉ (Y₀Y₂ − Y₁²)`.  But the substitution *merges* monomials of equal
+   `(|α|, α₁ + 2α₂)`, and merging can cancel leading coefficients while the Wiman--Valiron error term
+   still sees the individual, larger, monomials.
+2. *Reducing `P` to normal form modulo `Y₀Y₂ − Y₁²` first.*  The normal form has at most one monomial
+   per `(|α|, α₁+2α₂)` class, so it has no merging cancellation — but the discarded part
+   `(Y₀Y₂ − Y₁²)·S` contributes `f²(v − u²)·S`, which is only smaller by the Wiman--Valiron error
+   `δ ≍ ν^{−1/2}`, and `δ` dominates the `ν^{−1}` gap between adjacent Newton groups whenever
+   `ν = o(log r)`.  So the reduction does not by itself remove the tie problem.
+
+The corpus's own first-order treatment *does* solve the tie problem
+(`exists_radius_tieCollapse`, `not_transcendental_of_tie_dominant`), so the honest route for card 8 is
+to extend that treatment, not to look for a substitution trick.
+
+### Card 8: the second-derivative Wiman--Valiron estimate is a two-moment consequence
+
+Extending the corpus's Wiman--Valiron layer to `f″` does **not** require redoing the moment stack.
+With `c_n` the normalised coefficients at the maximum point and `ν` the central index,
+
+```text
+z f′/f − ν            = S₁/S₀,          S_k := ∑ (n − ν)^k c_n,
+z² f″/f − ν(ν−1)      = S₂/S₀ + (2ν − 1)·(z f′/f − ν),
+```
+
+because `n(n−1) − ν(ν−1) = (n − ν)(n + ν − 1)`.  So the second-derivative estimate needs exactly two
+things the corpus already has:
+
+* the first-derivative estimate in relative form,
+  `WimanValironAsymptotic.exists_radius_point_logDeriv_close_centralIndex`:
+  `‖z f′/f − ν‖ ≤ ε·ν` at radii beyond every bound;
+* the **second moment** `∑ (n − ν)² ‖a_n‖ r^n ≤ (N²√(2N+1) + 2G₂)·μ(r)`
+  (`MaximumTermProfileMoments.tsum_index_sq_le_gaussian`), divided by `‖f(z)‖ ≥ μ(r)`.
+
+Since the first-derivative bound is itself the Cauchy--Schwarz geometric mean of the zeroth and
+second moments, the second moment is `O((εν)²)` in the same selection, so
+
+```text
+‖z² f″/f − ν(ν−1)‖ ≤ (εν)² + (2ν + 1)·εν = O(ε ν²).
+```
+
+**The build for card 8 is therefore:**
+
+1. extend the selection chain `WimanValironWindowEstimate → WimanValironRadius →
+   WimanValironAsymptotic` so that the selected radius also reports the second-moment bound
+   (the moment bound is already proved; only the plumbing through the three selection layers is
+   missing);
+2. package `‖z² f″/f − ν(ν−1)‖ ≤ ε ν²` as the order-two companion of
+   `exists_radius_point_logDeriv_close_centralIndex`;
+3. redo `TopSymbolWimanPlace` and the face inequality of `NewtonWeightPositiveOrder` for triples
+   `f^{p₁}(f′)^{p₂}(f″)^{p₃}`, with Newton weight `deg A_p − p₂ − 2p₃` and `ν`-power `p₂ + 2p₃`;
+4. read off the contradiction with `ν(r) = o(log r)`, which every conclusion of that layer already
+   delivers (`ν^{q}·r ≤ C·ν^{P}` and its variants).
+
+### Card 8: the order-two Wiman--Valiron window estimate is built (2026-09-01)
+
+Two new modules, axiom-clean and wired:
+
+* `HTGeometry/SecondDerivativeDeviationSeries.lean` — `derivCoeffs`, `entireCoeffs_derivCoeffs`,
+  `deriv_coeffFun_eq` (the derivative is the series of the shifted coefficients),
+  **`mul_sq_deriv2_coeffFun_eq`** (`z² f″(z) = ∑ n(n−1) a_n z^n`),
+  **`mul_sq_deriv2_sub_eq_tsum`** and **`norm_mul_sq_deriv2_sub_le`**:
+
+  ```text
+  z² f″ − k(k−1) f = ∑ (n − k)² a_n z^n + (2k − 1)·(z f′ − k f),
+  ```
+
+  because `n(n−1) − k(k−1) = (n − k)(n + k − 1)`.
+* `HTGeometry/SecondDerivativeWimanValironWindow.lean` — `window_mass_le_sqrt` (the window carries at
+  most `√(2N+1)` times the value, from `sum_window_le_sqrt_card_mul_bound`) and
+  **`norm_mul_sq_deriv2_div_sub_le`**: at a maximum-modulus point, for *any* bound `E` of the
+  order-one defect,
+
+  ```text
+  ‖z² f″/f − ν(ν−1)‖ ≤ (N²√(2N+1) + 2G₂) + (2ν + 1)·E .
+  ```
+
+  No new moment analysis is needed: the second moment is `tsum_index_sq_le_gaussian` and the value
+  bound is `‖f(z)‖ ≥ μ(r)`.
+
+**What is left for the order-two asymptotic.**  The corpus's selection chain
+(`WimanValironRadius → WimanValironPolynomialBound → WimanValironSmallWindow →
+WimanValironAsymptotic`) consumes the window hypotheses and returns only the order-one bound, so the
+order-two conclusion cannot be composed onto `exists_radius_point_logDeriv_close_centralIndex`.  The
+right refactor is one new *data* selection theorem that exposes, at the selected radius, the point
+`z` together with `hz`, `hfz`, `hmax`, `hcrit`, the Lipschitz pair and the tail bounds `G₀, G₂` —
+everything both window estimates ask for — mirroring the parameter choices
+(`w = T₀^{1/100}`, `s = w^64`, `H = 6 log s / s`, `δ = T₀^{−1/4}`) of
+`exists_radius_point_logDeriv_close_centralIndex`.  Both estimates then follow, and `wv_error_le`
+(already public and purely arithmetic) tunes the order-one bound; the order-two constant
+`N²√(2N+1) + 2G₂` needs the analogous, and much easier, arithmetic bound against `ε ν²`.

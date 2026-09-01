@@ -778,12 +778,12 @@ set_option maxHeartbeats 1200000 in
 theorem q8QuadraticSourceCentralChosenCompletion_displacement_mem_cube
     (v : HeightOneSpectrum (𝓞 S))
     (hv : (2 : 𝓞 S) ∈ v.asIdeal)
-    (z : 𝒪[ChosenFinitePlaceLocalizedCompletion (K := S) (L := K3) v]) :
+    (z : HilbertRamification.chosenLocalIntegerRing (K := S) (L := K3) v) :
     HilbertRamification.chosenLocalIntegerRingAut
         (K := S) (L := K3) v
         (q8QuadraticSourceCentralChosenLocalEquiv v hv) z - z ∈
       IsLocalRing.maximalIdeal
-        𝒪[ChosenFinitePlaceLocalizedCompletion (K := S) (L := K3) v] ^ (2 + 1) := by
+        (HilbertRamification.chosenLocalIntegerRing (K := S) (L := K3) v) ^ (2 + 1) := by
   simpa only [q8QuadraticSourceCentralChosenLocalEquiv] using
     HilbertRamification.chosenDecompositionDisplacement_mem_local_of_global
       (K := S) (L := K3) v 3
@@ -803,7 +803,7 @@ theorem q8QuadraticSourceCentralChosenCompletion_mappedDisplacement_not_mem_four
               q8QuadraticSourceChosenTopRadical v -
             q8QuadraticSourceChosenTopRadical v) ∉
       IsLocalRing.maximalIdeal
-        𝒪[ChosenFinitePlaceLocalizedCompletion (K := S) (L := K3) v] ^ (3 + 1) := by
+        (HilbertRamification.chosenLocalIntegerRing (K := S) (L := K3) v) ^ (3 + 1) := by
   let P := finitePlaceExtensionCentre (K := S) (L := K3) v
     (chosenFinitePlaceExtension (L := K3) v)
   letI : IsDiscreteValuationRing (Localization.AtPrime P.asIdeal) :=
@@ -829,6 +829,34 @@ theorem q8QuadraticSourceCentralChosenCompletion_mappedDisplacement_not_mem_four
 
 set_option synthInstance.maxHeartbeats 300000 in
 set_option maxHeartbeats 2000000 in
+/-- Membership of the completed central displacement in the fourth maximal-ideal power is
+impossible.  This implication form avoids normalizing a large negated membership proposition at
+downstream exact-break call sites. -/
+theorem q8QuadraticSourceCentralChosenCompletion_displacement_mem_four_false
+    (v : HeightOneSpectrum (𝓞 S))
+    (hv : (2 : 𝓞 S) ∈ v.asIdeal)
+    (hlocal : HilbertRamification.chosenLocalIntegerRingAut
+          (K := S) (L := K3) v
+          (q8QuadraticSourceCentralChosenLocalEquiv v hv)
+          (q8QuadraticSourceChosenCompletedTopRadical v) -
+        q8QuadraticSourceChosenCompletedTopRadical v ∈
+      IsLocalRing.maximalIdeal
+        (HilbertRamification.chosenLocalIntegerRing (K := S) (L := K3) v) ^ (3 + 1)) : False := by
+  let sigma := q8QuadraticSourceCentralChosenDecomposition v hv
+  let x := q8QuadraticSourceChosenTopRadical v
+  have hcomm :=
+    HilbertRamification.chosenLocalIntegerRingAut_chosenGlobalToLocalIntegerRing_sub
+      (K := S) (L := K3) v sigma x
+  have hmapped :
+      HilbertRamification.chosenGlobalToLocalIntegerRing
+          (K := S) (L := K3) v (sigma • x - x) ∈
+        IsLocalRing.maximalIdeal
+          (HilbertRamification.chosenLocalIntegerRing (K := S) (L := K3) v) ^ (3 + 1) := by
+    exact (congrArg (fun y => y ∈ IsLocalRing.maximalIdeal
+      (HilbertRamification.chosenLocalIntegerRing (K := S) (L := K3) v) ^ (3 + 1)) hcomm).mp hlocal
+  exact q8QuadraticSourceCentralChosenCompletion_mappedDisplacement_not_mem_four
+    v hv hmapped
+
 /-- The completed central action has exact lower displacement depth three on the embedded
 source radical.  Completion therefore preserves the first excluded depth, rather than only the
 forward cube congruence. -/
@@ -841,22 +869,9 @@ theorem q8QuadraticSourceCentralChosenCompletion_displacement_not_mem_four
           (q8QuadraticSourceChosenCompletedTopRadical v) -
         q8QuadraticSourceChosenCompletedTopRadical v ∉
       IsLocalRing.maximalIdeal
-        𝒪[ChosenFinitePlaceLocalizedCompletion (K := S) (L := K3) v] ^ (3 + 1) := by
-  let sigma := q8QuadraticSourceCentralChosenDecomposition v hv
-  let x := q8QuadraticSourceChosenTopRadical v
-  intro hlocal
-  have hcomm :=
-    HilbertRamification.chosenLocalIntegerRingAut_chosenGlobalToLocalIntegerRing_sub
-      (K := S) (L := K3) v sigma x
-  have hmapped :
-      HilbertRamification.chosenGlobalToLocalIntegerRing
-          (K := S) (L := K3) v (sigma • x - x) ∈
-        IsLocalRing.maximalIdeal
-          𝒪[ChosenFinitePlaceLocalizedCompletion (K := S) (L := K3) v] ^ (3 + 1) := by
-    exact (congrArg (fun y => y ∈ IsLocalRing.maximalIdeal
-      𝒪[ChosenFinitePlaceLocalizedCompletion (K := S) (L := K3) v] ^ (3 + 1)) hcomm).mp hlocal
-  exact q8QuadraticSourceCentralChosenCompletion_mappedDisplacement_not_mem_four
-    v hv hmapped
+        (HilbertRamification.chosenLocalIntegerRing (K := S) (L := K3) v) ^ (3 + 1) :=
+  fun hlocal =>
+    q8QuadraticSourceCentralChosenCompletion_displacement_mem_four_false v hv hlocal
 
 set_option maxHeartbeats 1200000 in
 /-- The completed central source involution survives in the actual local lower group through
@@ -875,6 +890,35 @@ theorem q8QuadraticSourceCentralChosenLocalEquiv_mem_actualLower_two
   exact h
 
 set_option maxHeartbeats 2000000 in
+/-- Membership of the completed central source involution in actual lower level three is
+impossible.  Keeping membership explicit avoids normalizing the large negated subgroup
+proposition before the intrinsic displacement criterion is applied. -/
+theorem q8QuadraticSourceCentralChosenLocalEquiv_mem_actualLower_three_false
+    (v : HeightOneSpectrum (𝓞 S))
+    (hv : (2 : 𝓞 S) ∈ v.asIdeal)
+    (hmem : q8QuadraticSourceCentralChosenLocalEquiv v hv ∈
+      HilbertRamification.chosenActualLocalLowerRamificationGroup
+        (K := S) (L := K3) v 3) : False := by
+  have hdeep :=
+    (HilbertRamification.mem_chosenActualLocalLowerRamificationGroup_iff
+      (K := S) (L := K3) v 3
+        (q8QuadraticSourceCentralChosenLocalEquiv v hv)).1 hmem
+      (q8QuadraticSourceChosenCompletedTopRadical v)
+  let sigma := q8QuadraticSourceCentralChosenDecomposition v hv
+  let x := q8QuadraticSourceChosenTopRadical v
+  have hcomm :=
+    HilbertRamification.chosenLocalIntegerRingAut_chosenGlobalToLocalIntegerRing_sub
+      (K := S) (L := K3) v sigma x
+  have hmapped :
+      HilbertRamification.chosenGlobalToLocalIntegerRing
+          (K := S) (L := K3) v (sigma • x - x) ∈
+        IsLocalRing.maximalIdeal
+          (HilbertRamification.chosenLocalIntegerRing (K := S) (L := K3) v) ^ (3 + 1) := by
+    exact (congrArg (fun y => y ∈ IsLocalRing.maximalIdeal
+      (HilbertRamification.chosenLocalIntegerRing (K := S) (L := K3) v) ^ (3 + 1)) hcomm).mp hdeep
+  exact q8QuadraticSourceCentralChosenCompletion_mappedDisplacement_not_mem_four
+    v hv hmapped
+
 /-- Exact end of the completed central lower break: the central source involution is absent from
 actual local lower level three. -/
 theorem q8QuadraticSourceCentralChosenLocalEquiv_not_mem_actualLower_three
@@ -882,14 +926,9 @@ theorem q8QuadraticSourceCentralChosenLocalEquiv_not_mem_actualLower_three
     (hv : (2 : 𝓞 S) ∈ v.asIdeal) :
     q8QuadraticSourceCentralChosenLocalEquiv v hv ∉
       HilbertRamification.chosenActualLocalLowerRamificationGroup
-        (K := S) (L := K3) v 3 := by
-  intro hmem
-  have hdeep :=
-    (HilbertRamification.mem_chosenActualLocalLowerRamificationGroup_iff
-      (K := S) (L := K3) v 3
-        (q8QuadraticSourceCentralChosenLocalEquiv v hv)).1 hmem
-      (q8QuadraticSourceChosenCompletedTopRadical v)
-  exact q8QuadraticSourceCentralChosenCompletion_displacement_not_mem_four v hv hdeep
+        (K := S) (L := K3) v 3 :=
+  fun hmem =>
+    q8QuadraticSourceCentralChosenLocalEquiv_mem_actualLower_three_false v hv hmem
 
 /-- CFT local lower level two contains the actual completed central source involution. -/
 theorem q8QuadraticSourceCentralChosenLocalEquiv_mem_localLower_two

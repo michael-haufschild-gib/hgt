@@ -2832,3 +2832,144 @@ are the two boundary integrals of `G♯·Ψ` (right-edge logarithmic derivative 
 edges — the corpus owns the `Ψ = 1` versions in `LevinsonRightEdge` and `LevinsonHorizontalEdge` and
 they must be extended by `logDeriv (G♯Ψ) = logDeriv G♯ + logDeriv Ψ`), the far-right lower bound
 `A ≤ ‖G♯Ψ(4+it)‖` (head dominance, `norm_edPoly_ge`), and then brick 5's mean square itself.
+
+## Brick 7b — STRUCTURAL CORRECTION: the pole gauge must be cancelled exactly (2026-09-01)
+
+Estimating the Littlewood budget of `G♯·Ψ = (s−1)²·(ζ+λζ′)·Ψ` edge by edge **cannot** close
+Levinson's inequality, and the reason is quantitative, not technical.
+
+**The accounting.**  Write the budget on `[σ₀,d] × [T₁,T₂]`, `L = T₂ − T₁`, `½ − σ₀ = R/log T`.
+The zero mass obeys `2π(½−σ₀)·N_{G♯} ≤ budget`, and the target is `N_{G♯}/N(T) < 1/3`, i.e.
+
+```text
+budget  ≤  (L/2)·log c + o(L),        c = the mollified mean square,
+```
+
+because `N(T) ~ T log T/2π` and `2π(½−σ₀) = 2πR/log T`.  **Every `O(L)` term in the budget with a
+nonzero constant survives into the final ratio at the same order as `½ log c`.**  With Levinson's
+own margin `1 − log c/R > 1/3` holding only by `≈ 0.009`, no `O(L)` slack is affordable.
+
+Three sources of `O(L)` loss in the naive route, and their fixes:
+
+1. *The gauge `(s−1)²`.*  Bounding `|σ₀−1+it|⁴` by its window maximum and `|d−1+it|²` by its window
+   minimum costs `L·log(T₂²/T₁²)`, which is `Θ(L log T)` on a long window — fatal.  **Fix: the gauge
+   cancels exactly.**  `weightedLittlewoodBoundary` is additive over products, and Littlewood's own
+   identity applied to `u(s) = (s−1)²` on a rectangle with `1 ∉ [σ₀,d]×[T₁,T₂]` (guaranteed by
+   `T₁ ≥ 20`) gives `weightedLittlewoodBoundary u = 2π·0 = 0`.  Hence
+
+   ```text
+   weightedLittlewoodBoundary (G♯·Ψ) = weightedLittlewoodBoundary ((ζ+λζ′)·Ψ),
+   ```
+
+   and the whole argument runs on the *meromorphic* detector `G·Ψ`, whose boundary data has no
+   height growth at all.  This also removes the pole-gauge horizontal edge from the estimate list.
+
+2. *The far-right logarithm `∫ log‖GΨ(d+it)‖ dt`.*  The pointwise bound `Re G(4+it) ≥ 7/16` costs
+   `L·log(16/7) ≈ 0.83 L` — also fatal (the whole margin is `0.009`).  Pushing `d` to the right only
+   shrinks the loss like `2^{-d}`, and the required `d` is large and delicate.  **Fix: it is `O(1)`,
+   not `O(L)`, by analyticity and decay.**  On `Re s ≥ d` the function `F = Log(GΨ)` is analytic
+   (because `‖GΨ − 1‖ < 1` there) and satisfies `‖F(s)‖ ≪ 2^{-Re s}`.  Cauchy's theorem on
+   `[d,X]×[T₁,T₂]` with `X → ∞` gives
+
+   ```text
+   i·∫_{T₁}^{T₂} F(d+it) dt = ∫_d^∞ F(x+iT₂) dx − ∫_d^∞ F(x+iT₁) dx,
+   ```
+
+   whose right-hand side is bounded by `(2/log 2)·sup‖coefficient mass‖`, an absolute constant.
+   The same lemma applied to `F′ = logDeriv (GΨ)` makes the right-edge logarithmic-derivative term
+   `O(1)` as well.  (This is the Lean form of the classical remark that `log(Vψ)` is an absolutely
+   convergent Dirichlet series with no constant term.)
+
+3. *The horizontal edges.*  Already `O(log T) = o(L)`; nothing to fix.  With the gauge cancelled the
+   two needed estimates are exactly the ones landed in brick 7a:
+   `exists_horizontal_weighted_levinsonG_bound` for `G` and
+   `abs_integral_weighted_im_logDeriv_edPoly_le` for `Ψ`, joined by
+   `logDeriv (G·Ψ) = logDeriv G + logDeriv Ψ`.
+
+**Consequence.**  A *single* window `[T₀,T]` with `T₀ ≥ 20` fixed suffices — no dyadic subdivision
+and no summation of window counts is needed, because after the gauge cancellation nothing in the
+budget grows with the height.  The budget becomes
+
+```text
+(L/2)·log( (1/L)∫_{T₀}^{T} ‖GΨ(σ₀+it)‖² dt )  +  O(1)  +  O(log T),
+```
+
+which is exactly `(L/2) log c + o(L)`.
+
+**Revised remaining consumer list.**
+
+| # | item | state |
+|---|---|---|
+| 1 | `weightedLittlewoodBoundary` additivity over products | to build |
+| 2 | `weightedLittlewoodBoundary ((·−1)^k) = 0` off the rectangle | to build |
+| 3 | Cauchy/decay right-edge `O(1)` lemma (for `F` and `F′`) | to build |
+| 4 | `‖GΨ − 1‖ < 1` on `Re s ≥ d` with explicit `d` | to build (`ZetaFarRightDecay` + `norm_edPoly_ge`) |
+| 5 | horizontal edges for `G` and `Ψ` | **DONE** (brick 7a) |
+| 6 | Jensen left edge from the mean square | **DONE** (brick 7a) |
+| 7 | zero-mass ≥ `(½−σ₀)·count` | **DONE** (brick 7a) |
+| 8 | mollified mean square `(1/L)∫‖GΨ(σ₀+it)‖²` | brick 5/6, the gate |
+
+## Brick 7c — the two structural fixes are Lean (2026-09-01)
+
+Both corrections identified in brick 7b are now unconditional Lean theorems, axiom-clean, wired, and
+exact-leaf built.
+
+### `RHTower/LittlewoodPoleGaugeCancellation.lean`
+
+* `exists_entire_zeroCount_le_boundary` — the *raw* Littlewood counting inequality, with no estimate
+  applied to any edge:
+
+  ```text
+  2π (σ − c) · ∑_{Re w ≥ σ} ord_f(w)  ≤  weightedLittlewoodBoundary f c d T₁ T₂ .
+  ```
+
+* `intervalIntegrable_log_norm_vertical_of_analyticAt`, `continuousOn_re_logDeriv_vertical`,
+  `continuousOn_weighted_im_logDeriv_horizontal` — the integrability of the four boundary integrands
+  for a function merely analytic on the closed rectangle (not entire).
+
+* `weightedLittlewoodBoundary_poleGauge_eq_zero` — Littlewood's own identity applied to
+  `u(s) = (s−1)²` on a rectangle missing `s = 1` gives `weightedLittlewoodBoundary u = 0`.
+
+* **`weightedLittlewoodBoundary_poleGauge_mul`** —
+
+  ```text
+  weightedLittlewoodBoundary (fun z => (z−1)² * g z) c d T₁ T₂
+      = weightedLittlewoodBoundary g c d T₁ T₂
+  ```
+
+  for `g` analytic on the closed rectangle, nonvanishing on its bottom, top and right edges, with a
+  finite left-edge zero set.  The four boundary integrands split additively (the left edge only
+  almost everywhere, which is why the finite zero set is required), and the gauge's own contribution
+  is zero.  **The height growth of `(s−1)²` therefore never enters the budget.**
+
+### `RHTower/HalfPlaneDecayVerticalIntegral.lean`
+
+* `integral_exp_neg_le` — `∫_d^X K e^{-αx} dx ≤ K e^{-αd}/α`, with the explicit antiderivative.
+
+* **`norm_integral_vertical_le_of_halfPlane_decay`** — for `F` analytic on `Re s ≥ d` with
+  `‖F(s)‖ ≤ K e^{-α Re s}` there,
+
+  ```text
+  ‖∫_{T₁}^{T₂} F(d+it) dt‖  ≤  2 K e^{-αd} / α ,
+  ```
+
+  **independently of the window length**.  Proved by Cauchy's rectangle theorem
+  (`Complex.integral_boundary_rect_eq_zero_of_differentiableOn`) on `[d,X] × [T₁,T₂]` with the
+  far-right edge pushed to infinity; the connecting vertical integral is `O((T₂−T₁)e^{-αX}) → 0`.
+
+  Applied to `F = Log(GΨ)` this makes `∫ log‖GΨ(d+it)‖ dt` an `O(1)`; applied to
+  `F = logDeriv (GΨ)` it makes the right-edge logarithmic-derivative term an `O(1)` as well.  These
+  are the two `O(L)` losses that brick 7b showed to be fatal.
+
+### `RHTower/LevinsonMollifiedEdges.lean`
+
+`abs_im_two_div_sub_one_le`, `abs_integral_weighted_im_pole_le` (the `O(1/T)` pole-gauge horizontal
+edge, kept as a cross-check), and `logDeriv_levinsonGEntire_mul`
+(`logDeriv (G♯Ψ) = 2/(s−1) + logDeriv G + logDeriv Ψ`).
+
+### Remaining consumer items
+
+1. far-right decay of the mollified detector: `‖GΨ − 1‖ ≤ K e^{-α Re s}` on `Re s ≥ d`, hence
+   `Log(GΨ)` analytic there with the same decay, and `logDeriv (GΨ)` by Cauchy on the unit disc;
+2. the budget assembly: `weightedLittlewoodBoundary (GΨ) ≤ (L/2)·log(meanSquare/L) + O(1) + O(log T)`;
+3. the mollified mean square itself (brick 5/6).

@@ -16,7 +16,12 @@ Determine how much algebraic-differential complexity is forced by entire backwar
 - [x] Complete unconditional paper proof.
 - [x] No arithmetic or coefficient-height hypothesis.
 - [x] Parent-theory gate: **FAILS scientific novelty.** Once the zero-order estimate is written down, the conclusion is an immediate application of the classical order-two growth theorem.
-- [ ] Formalization: not attempted. The card cannot enter `3-formalized` without a complete unconditional Lean proof of the whole theorem, including the imported complex-growth theorem.
+- [ ] Formalization: **in progress.**  Step 1 is Lean-proved in central-index form
+  (`HTGeometry/SuperGaussianCentralIndex.lean`): the Gaussian coefficient bound for every `A > 0`
+  gives `ν(r) = o(log r)` (`tendsto_centralIndex_div_log_zero`), which is the form the
+  Wiman--Valiron layer consumes.  Step 2 needs the order-two extension of the corpus's
+  `TopSymbolWimanPlace` / `NewtonWeightPositiveOrder` layer; see `_STAGE3-LEDGER.md` for the route
+  audit and the two ruled-out shortcuts.
 
 ## Theorem `[PROVED HERE] [BRIDGE]`
 

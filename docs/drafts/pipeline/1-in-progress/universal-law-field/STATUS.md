@@ -345,9 +345,157 @@ shadow is not a new independent reason for vanishing. A theorem about literal so
 that rules out the defect before Xi-zero specialization would not be a shadow; corpus presently
 has no such theorem.
 
-## Design constraints distilled from no-go corpus
+F82 — Physical source landing is no longer an open identification. The prime-normal
+integer-labelled Möbius–theta source equals the `mPart` source in `L²`; Plancherel lands it in
+`ζ(m(1/2+it))⁻¹ XiC(t)` almost everywhere; and its complete exponent codiagonal is absolutely
+summable in `L²` (`MobiusThetaPhysicalSourceToXiLanding`). This controls the real Plancherel
+boundary, not complex point evaluation at a divisor.
 
-Each line is a future conjecture filter, not exposition.
+F83 — Compact prime-packet exactness and analytic graph completion are genuinely different.
+Literal finite packets are dense in the Gamma-six graph completion, while explicit averaging
+packets vanish in ambient `ℓ²` and retain unit graph trace; the singular vertical boundary is
+therefore produced by actual source sequences, not by missing inverse-limit infrastructure
+(`DeningerGammaSixCofinalSingularGraphSoninTransport`).
+
+F84 — Barrelled closed-graph selection is a terminal receiver. A completed barrelled source with
+pointwise-bounded readouts kills horizontal grade by Banach–Steinhaus, but existence of the
+Xi-labelled certificate and of its global producer is already equivalent to critical-line
+placement and RH (`PrimeDepthBVWoldBarrelledSourceTerminalNoGo`).
+
+F85 — The finite renormalized cubic Euler–Gamma budget does not continuously dominate the
+off-centre Hellinger sector. The cubic/Hellinger self-charge is discontinuous at the critical
+boundary, and the remaining completed-source order law is RH-equivalent
+(`XiWardCubicLogMomentHellingerCauchySeparator`, `FrankensteinWoldCubicJuliaOrbitBudget`).
+
+F86 — Möbius, von Mangoldt, theta/Gamma, and finite face/Koszul descriptions are already one exact
+source calculus. Lean proves `μ * log = Λ`, contraction of the Dirichlet Maurer–Cartan form to the
+literal von Mangoldt current, Witt ghost/exterior Newton generation, complete Möbius–theta
+Fourier–Laplace landing on its honest domain, and finite prime-face alternating augmentation
+(`MobiusLogDivisorParaproduct`, `DirichletMaurerCartanMellinOrbitLaw`,
+`WittFormationMechanics`, `MobiusThetaComplexSourceToXiLanding`,
+`PrimeDilationTropicalBoundaryTomography`). Their algebraic fusion is closed; cofinal executable
+cancellation or complex occurrence control is not.
+
+F87 — Finite prime zero localization is already exact in two different normalizations. A literal
+finite Euler functional equation forces every local parameter to satisfy `a_p² = p` and every zero
+to have real part `1/2` (`FiniteSquarefreeEulerFunctionalEquation`). In centered Lee–Yang
+coordinates, the physical factor `p⁻¹ᐟ²` shifts the unit wall to `Im z = 1/2`; moving that factor
+into a ferromagnetic two-spin interaction restores centered finite zero localization, whereas
+direct reciprocal Euler pairing is Lee–Yang only at unit weight
+(`PrimeEulerLeeYangAmplitudeNoGo`, `PrimeEulerFerromagneticInteraction`,
+`EulerReciprocalLeeYangNoGo`). None of these finite theorems identifies a cofinal limit with
+completed Xi.
+
+F88 — Direct prime-Ising thermodynamic reconstruction of Xi is ruled out. Unbalanced finite trees
+have a nonzero oriented central logarithmic-derivative floor; scalar centering does not remove it;
+even or Schwarz-real zero-free normalizers cannot absorb it; and no sequence of balanced finite
+prime-labelled ferromagnetic trees—with arbitrary labels, couplings, topology, and size—converges
+locally uniformly to unit-pointed XiC (`PrimeIsingTreeCentralMassFloorLaw`,
+`PrimeIsingTreeBalancedCentering`, `PrimeIsingTreeFixedModalClosureNoGo`). Finite Lee–Yang zero
+localization and completed analytic shape are independent obligations.
+
+F89 — Cofinal contour scheduling has no asymptotic selection freedom. Every admissible cofinal
+corrected-prime rectangle schedule converges to the same complete physical Weil energy, and any two
+schedules differ by a term tending to zero. Nevertheless asymptotic nonnegativity along one, some,
+or all such schedules is exactly RH; under failure of RH every schedule has an eventually uniformly
+negative physical sample (`XiPhysicalPrimeApertureThetaAbelEnergyPrimeCofinalScheduleInvariance`).
+
+F90 — The full error-syndrome packaging already exists. One off-line Xi divisor fibre carries a
+simultaneous source-defined completion-defect syndrome collecting independently constructed route
+shadows exactly when its horizontal grade is nonzero; global syndrome-freedom is exactly RH
+(`XiCompletionDefectSyndrome`, `XiInternalTransverseCompletionSyndrome`). The syndrome classifies a
+global logical sector but supplies no source law excluding it.
+
+F91 — Secondary energy and self-intersection are already exact shadows. Corpus has nonnegative
+secondary Floquet/Green energies and positive finite Hodge self-pairings; its canonical reflection
+self-intersection charge is exactly squared off-line divisor order, is even and monotone by height,
+and vanishes globally exactly under RH (`DeningerSecondaryFloquetEnergy`,
+`DeningerMeyerSecondaryPoissonRegulator`, `XiReflectionSelfIntersectionCharge`). Ordinary adelic
+product reciprocity remains blind to every real horizontal exponent.
+
+F92 — Prime–theta mixed covariance is already exact but quotient-blind. Normalized integer
+translation has a flat rank-one covariant source inverse on every integrable source vector. At each
+Xi divisor copy, both reflected orientations have the same nonzero integer-anomaly forcing with
+the same label, yet that forcing lies in every retained Xi conormal kernel. Equality of the two
+translated source modes is equivalent to horizontal vanishing, so common forcing and flatness do
+not produce the equality (`FrankensteinThetaPrimeTranslationCommonForcing`).
+
+F93 — Complete reflected-Hankel positivity is not a real-zero law. The positive real entire source
+`cosh(z) + cosh(2z)` has nonnegative reflected polynomial-square moment form at every real centre
+and strictly positive rank-three signed Hankel determinant, yet it vanishes at `i*pi/3`
+(`TCDCompleteReflectedHankelRealRootednessNoGo`). Thus even all-order positive reflected moments do
+not determine complex divisor orientation.
+
+F94 — A finite literal Ramaré packet cannot be source-faithfully centred. Vanishing on one
+nondegenerate interval uniquely forces the finite counterterm to negate every source coefficient
+and vanish off source. Every nonempty literal scalar packet, and its actual bilinear form, has
+strictly positive squared-norm energy on every such interval
+(`RouteERamareSourceFaithfulFiniteCenteringNoGo`).
+
+F95 — Quadratic divisor charge is incompatible with either one-sided compact-open semicontinuity.
+Upper-semicontinuous lower-faithful Wold-charge descent exists exactly under RH; in the opposite
+direction, two simple off-line roots converge locally uniformly to one double root while exact
+charge jumps from `4` to `8`, excluding lower-semicontinuous exact reporting. Scalar multiplicity
+weights stable under collision are exactly linear (`XiHeatCassiniWoldOrbitChargeUpperSemicontinuousNoGo`,
+`XiHeatCassiniWoldOrbitChargeLowerSemicontinuousCollisionNoGo`).
+
+F96 — Hilbert compensation has an intrinsic hard-edge graph-energy divergence independent of
+rank or metric regularity. The exact pre-divisor HB susceptibility is at least `x^-2` on `(0,1/2)`
+and is not integrable. No two Hilbert-valued legs realizing even its diagonal can both have finite
+square energy; if one feature leg has finite energy, every exact metric-image leg has infinite
+energy, with no boundedness, closability, self-adjointness, or domain relation assumed
+(`ThetaCuspHawkingPreDivisorFiniteEnergyInfiniteRankGramNoGo`,
+`ThetaCuspHawkingPreDivisorFiniteGraphEnergyMetricNoGo`).
+
+F97 — Hypertranscendence is forced by infinite spectrum in one exact source class. A one-sided
+periodic heat orbit with algebraic Fourier amplitudes, convergent for every complex time and place,
+has finite support whenever its time-zero spatial fibre is differentially algebraic. Everywhere
+backward-entire heat evolution also forces super-Gaussian coefficients and sublogarithmic central
+index (`ArithmeticHeatFiniteSpectrum`, `SuperGaussianCentralIndex`).
+
+F98 — Autonomous composition can hide one primitive state exactly. For an autonomous first-order
+outer factor, the complete composite-jet field adds only one transcendence degree over the inner
+derivative-shadow field. On the same Gaussian primitive, replacing `exp(w)` by the nonautonomous
+`w exp(w)` restores the compressed state and raises differential rank from three to four
+(`CompositionRelativeVisibility`, `NonautonomousCapGaussian`).
+
+F99 — Paired irregular unitarity is strictly weaker than constituentwise purity. A formal type and
+its Hermitian dual have unit-norm determinant at every source scale for every type. At any one
+nonzero scale, unit norm of each constituent is equivalent to vanishing real type; on Xi copies
+this is exactly critical-line placement (`XiDualConjugateIrregularPurity`).
+
+F100 — Smooth completion can hide two exact relative characters. The raw Stokes current and its
+polar countercurrent complete to a wall-continuous codiagonal while their difference tends to
+`8m`, with exact Xi multiplicity `m`. At second order, Laurent ghost and cyclic anomaly have zero
+codiagonal for every Xi divisor, while their relative Ward character vanishes exactly on the
+critical line (`XiResolvedStokesWardCharacter`).
+
+F101 — A nonzero all-orders-flat boundary charge is genuinely nonanalytic in augmentation scale.
+For analytic germs, flatness beyond every Rees grade is equivalent to local zero. The actual
+positive-charge reflected prime–Wold gauge is nonzero and all-orders flat, hence cannot be the
+boundary sampling of a holomorphic augmentation germ (`ReesAnalyticQuasianalyticity`).
+
+F102 — Nested source formation performs a legal cancellation that external centering cannot.
+Subtracting two nested literal Ramaré aperture forms cancels all scalar mass already present at the
+smaller aperture. The exact remainder consists only of polarization against newly activated
+integers, the activation-seam norm, and old-minus-new normalized incidence energy; the integrated
+physical off-diagonal obeys the same identity (`RouteERamareNestedApertureScalarLocalization`).
+
+F103 — Literal nonabelian depth data can survive completion exactly. In the actual Q8 quadratic
+source, the central involution is detected by the coefficient-faithful character as `-1`, occupies
+lower ramification levels zero through two, disappears at level three, and has the same break after
+adic completion and local-CFT comparison (`DeningerQ8ActualQuadraticSourceHigherRamification`).
+This is a source-depth/orientation fragment, not a completed-Xi occurrence law.
+
+F104 — A pole-clearing gauge is exactly invisible to the relevant rectangle boundary functional
+when its zero lies outside the rectangle. Multiplying a detector by that gauge changes neither the
+weighted Littlewood boundary charge nor its height growth; detector, mollifier, and horizontal
+boundary terms remain (`LittlewoodPoleGaugeCancellation`, `LevinsonMollifiedEdges`).
+
+## Logical consequences of audited facts
+
+Each `CANNOT`/`MUST` line is a necessary consequence of cited corpus results. This section contains
+no candidate mechanism, active conjecture, or research direction.
 
 ### It cannot be this
 
@@ -487,6 +635,83 @@ CANNOT-35 — It cannot be another abstract universal-law formalism detached fro
 strictification, promotion, higher coherence, reconstruction, properness, recurrence, positivity,
 and interaction spectra already have certified unconditional capstones (`_LEAN-CERTIFICATION.md`).
 
+CANNOT-36 — It cannot identify the compact prime-packet inverse limit with the analytic graph
+completion or infer boundary-freeness from compactness: explicit literal source packets converge
+to a nonzero vertical graph boundary while disappearing in ambient `ℓ²`.
+
+CANNOT-37 — It cannot infer complex divisor control from the exact real-axis Möbius–theta `L²`
+landing. Almost-everywhere Plancherel equality and absolute `L²` codiagonal summability do not make
+off-axis point evaluation continuous.
+
+CANNOT-38 — It cannot be another faithful conversion among Möbius inversion, von Mangoldt
+logarithmic differentiation, theta/Gamma Mellin transport, Witt ghosts, or finite Čech/Koszul
+faces. Those conversions are already exact and retain rather than annihilate the cofinal
+obstruction.
+
+CANNOT-39 — It cannot be finite Lee–Yang localization or a finite Euler functional equation.
+Both already place finite zeros on the centered wall after their respective coefficient
+normalizations; the absent statement is a source-derived cofinal completed-Xi comparison.
+
+CANNOT-40 — It cannot obtain that comparison as a locally uniform limit of finite prime-labelled
+ferromagnetic Ising trees, even after scalar centering or balancing. The unbalanced, centered,
+even/Schwarz-real normalized, and fully balanced tree families are already excluded by exact
+first-jet and modal-rank no-gos.
+
+CANNOT-41 — It cannot be fairness, cofinal schedule independence, contour choice, or reordering
+alone. Corrected literal prime-contour schedules already have one schedule-independent limit both
+under RH and under failure of RH; only the sign of that common limit is selective, and that sign is
+RH-equivalent.
+
+CANNOT-42 — It cannot be an error-correction or syndrome reinterpretation by itself. The complete
+multi-route syndrome and its logical-sector classification are already exact; asserting its global
+absence, infinite distance, or universal correctability merely restates an RH-equivalent endpoint
+unless derived from an independent pre-divisor source law.
+
+CANNOT-43 — It cannot be a secondary-height or self-intersection slogan whose global zero identity
+is postulated. Positive local Hodge energies and quantized global reflection charge already exist;
+the missing theorem is exactly an independent arithmetic reason that total off-line charge is below
+its first nonzero quantum—or zero—and that assertion closes RH.
+
+CANNOT-44 — It cannot be additive–multiplicative covariance, a flat prime-translation connection,
+common reflected forcing, or annihilation by all retained divisor characters alone. Those laws
+already hold while the two reflected source responses remain distinct off line; demanding their
+equality is itself the RH-selective endpoint.
+
+CANNOT-45 — It cannot infer real-rootedness from positivity of every reflected Hankel square plus
+strict finite Hankel rank: an explicit positive real entire source satisfies all those conditions
+and has a nonreal zero.
+
+CANNOT-46 — It cannot remove an unavoidable finite scalar packet by a finite source-faithful
+counterterm. Exact interval cancellation forces coefficientwise deletion of the source itself.
+
+CANNOT-47 — It cannot make exact quadratic divisor charge continuous by weakening compact-open
+descent to either upper or lower semicontinuity. Escape breaks the upper direction and multiplicity
+collision breaks the lower direction.
+
+CANNOT-48 — It cannot use finite-graph-energy pointwise Hilbert compensation, even with infinite
+rank and an arbitrary unbounded, nonclosable, non-self-adjoint, or partially defined metric action.
+The literal pre-divisor susceptibility forces inverse-square hard-edge energy divergence in at
+least one leg.
+
+CANNOT-49 — It cannot place an infinite algebraic heat spectrum inside an everywhere-entire,
+differentially algebraic periodic fibre. In that class the spectrum is forced finite.
+
+CANNOT-50 — It cannot infer full lifted state from an autonomous composite shadow. Exact
+transcendence-degree accounting shows that autonomy can compress the primitive coordinate.
+
+CANNOT-51 — It cannot use global determinant unitarity or paired Hermitian-dual purity. Pairing
+makes these identities hold at every horizontal grade while constituentwise purity remains
+selective.
+
+CANNOT-52 — It cannot infer annihilation from completed smoothness or zero total anomaly. Exact
+relative multiplicity and Ward characters survive in the resolved antidiagonal.
+
+CANNOT-53 — It cannot absorb a nonzero all-orders-flat source charge into an analytic Taylor/Rees
+germ. Quasianalyticity forces every such analytic germ locally zero.
+
+CANNOT-54 — It cannot obtain global orientation or height growth from a removable pole-clearing
+gauge. The exact boundary functional cancels that gauge on every rectangle avoiding its zero.
+
 ### It must do or have this
 
 MUST-01 — It must be defined on pre-divisor source data and specialize at Xi occurrences only after
@@ -581,3 +806,21 @@ source; importing it at Xi fibres is an RH endpoint.
 
 MUST-30 — Its decisive implication must be a theorem about literal source execution, not another
 faithful coordinate of horizontal grade and not a condition attached separately to each zero.
+
+MUST-31 — Any passage from the proved physical Möbius–theta landing to complex divisor occurrence
+must construct an occurrence-sensitive source topology and prove the required execution map in
+that topology; importing barrelledness, pointwise boundedness, or closed graph is terminal.
+
+MUST-32 — It must add a source-proved constraint on the cofinal joint execution of the existing
+Möbius–von-Mangoldt–theta/Gamma calculus; another identity, transform, resolution, or homology
+model of that calculus is not selection leverage.
+
+MUST-33 — Any scalar charge passed through collision or completion must be linearized before the
+passage, or its nonlinear collision defect must remain as source-marked noncompact boundary data.
+
+MUST-34 — If it uses an everywhere-entire periodic heat carrier with algebraic amplitudes, its
+infinite arithmetic spectrum requires a hypertranscendental spatial fibre or departure from that
+carrier class.
+
+MUST-35 — Any phase quotient, determinant, completion, or codiagonal observation must retain the
+resolved constituents and their relative character; the total object alone is provably blind.

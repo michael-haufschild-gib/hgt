@@ -14,7 +14,7 @@ Frontier map read-only. Facts only; cards hold proofs.
 - HB closed order-maximal unbounded passive extinction is dead: any range defect yields a proper dissipative extension; maximality forces unique nonzero reflected responses.
 - HB arbitrary-domain passive diagonal response is dead: every existing exact response has strict standard-passive polarity, opposite to HB's needed sign; no closedness, maximality, density, or surjectivity is needed.
 - HB jointly analytic complex-bilinear left-QNM/right-response compensation is dead on every nonempty open strip patch: dual evaluation stays holomorphic and cannot equal the forced horizontal AIME/third-mass susceptibility. Dimension and response-space completeness are irrelevant.
-- HB positive Hilbert Gram compensation is dead under either finite dimension or finite feature energy: exact AIME/third-mass kernel has infinite separation rank, while its diagonal dominates `x⁻²` and is nonintegrable.
+- HB pointwise Hilbert/Krein compensation is dead under finite two-leg graph energy, with no operator assumptions: exact kernel diagonal dominates `x⁻²`, forcing feature or metric-image energy infinite. Finite-dimensional positive Gram is also dead by infinite separation rank.
 - FZZ-P all-level selection premise is overstrong: `k=4` square-reality plus `k=3` nonpositivity already forces `Re ω=0`; full chambers at these two levels iff wall. One level never suffices.
 - FZZ-P cross-level transport is unnecessary: reciprocal higher-genus holonomies at cycles `n,2n` of one fixed CFT have odd parts `sinh z,sinh(2z)`; for `n≠0`, their reality/passivity chamber iff real twist iff zero radial monodromy iff unit holonomy. Canonical Mellin twist makes cycles `1,2` the dyadic character and its square; chamber iff `Re ρ=1/2`.
 - FZZ-P unmarked Haar selector is dead: squared cycle-`n` odd holonomy has exact compact charges `{0,±2n}`; nonzero-cycle zero mode is `-1/2`, so averaged cycle-`n,2n` chamber is automatic off wall. Continuous backgrounds couple only through charges `0,±2n`; normalized marked `±2n` modes recover reciprocal radial holonomy, and positive marked unit norm iff zero radial monodromy.
@@ -26,7 +26,7 @@ Frontier map read-only. Facts only; cards hold proofs.
 
 Derive source-specific physical Ward/orientation from actual dynamics:
 
-- **HB:** prove opposite sign `0 ≤ K_n(q)` from literal Einstein--Teukolsky source. Positive Hilbert compensation must have infinite separation rank and infinite hard-edge energy; other survivors are indefinite/Krein, renormalized/distributional, domain-excluding, support- or sheet-changing, or outside scalar pairing. Linear extinction can only use non-maximal deficiency/domain exclusion; other survivors are nonpassive, nonlinear, or source-fixed off-diagonal cancellation.
+- **HB:** prove opposite sign `0 ≤ K_n(q)` from literal Einstein--Teukolsky source. Pointwise metric compensation requires infinite graph energy; survivors are infinite-energy unbounded/rigged metrics, renormalized/distributional pairing, domain exclusion, support/sheet change, or non-scalar landing. Linear extinction can only use non-maximal deficiency/domain exclusion; other survivors are nonpassive, nonlinear, or source-fixed off-diagonal cancellation.
 - **FZZ-P:** derive torus replica-area resonant Fourier modes at charges `±2,±4` with required cycle signs, or source-derived nonlocal boundary/renormalization law fixing Dirac fibre, singular branch-cut, matrix/interacting carrier. Unmarked/resonance-gapped sources and scalar tempered occurrence are dead. Then close reflected divisor incidence.
 - **PW-B:** nonclosed/domain-excluding, indefinite, non-absolutely-summable/singular, nonlinear, or nonpointwise global source law.
 - **RBH:** nonseparated, nonlinear, or singular source law.
@@ -35,7 +35,7 @@ HB collision survivors: nonanalytic zero-coupling behavior or remote strong-coup
 
 ## Certificates
 
-- HB: `d4HBPreDivisorFiniteSchwarzPolarizedRouteKilled`, `d4HBPreDivisorFiniteEnergyInfiniteRankGramRouteKilled`.
+- HB: `d4HBPreDivisorFiniteSchwarzPolarizedRouteKilled`, `d4HBPreDivisorFiniteEnergyInfiniteRankGramRouteKilled`, `d4HBPreDivisorFiniteEnergyBoundedKreinRouteKilled`, `d4HBPreDivisorFiniteGraphEnergyMetricRouteKilled`.
 - FZZ-P: `fzzReplicaLevelsThreeFourKreinSign_iff_re_eq_zero`, `fzzHigherGenusCyclePairKreinSign_iff_im_eq_zero`, `fzzCigarParityMellinCyclePairKreinSign_iff_re_eq_half`, `fzzHigherGenusOddHolonomy_sq_fourierCoefficient`, `fzzAveragedHigherGenusCyclePairKreinSign_off_radialWall`, `fzzHigherGenusOddHolonomy_sq_weightedAverage_resonance`, `fzzPunctureTemperedScalarOccurrence_set_eq_univ`.
 - PW-B: `schwarzschildParikhWilczekAbsolutelyAdmissiblePairwisePositiveEndpointDarkRouteKilled`, `summable_pwMatrixEndpointEnergy_of_absoluteAdmissible`, `pwExponentialGramKernel_absolutelyAdmissible`, `pwExponentialGramKernel_not_uniformlyBounded`.
 
