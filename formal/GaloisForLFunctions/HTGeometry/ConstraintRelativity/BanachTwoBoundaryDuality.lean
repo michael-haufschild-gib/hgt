@@ -1,4 +1,6 @@
 import GaloisForLFunctions.HTGeometry.ConstraintRelativity.ConormalPersistence
+import GaloisForLFunctions.HTGeometry.ConstraintMotiveRelativity.FiniteReporterAdmission
+import GaloisForLFunctions.HTGeometry.LocallyConvexDenseOfVanishingDual
 import Mathlib.Analysis.Normed.Module.WeakDual
 
 /-!
@@ -185,6 +187,147 @@ theorem exists_detecting_nondescending_observer
     exact norm_ne_zero_iff.mpr hx0
   exact ⟨φ, hφne, fun hdesc => hφne (boundaryObserver_vanishes_on_common hdesc hx)⟩
 
+/-! ### Weak-star descent radical -/
+
+/-- The continuous annihilator, now equipped with the weak-star topology inherited from
+`WeakDual`. -/
+noncomputable def weakContinuousAnnihilator (Y : Submodule 𝕜 E) :
+    Submodule 𝕜 (WeakDual 𝕜 E) :=
+  (continuousAnnihilator Y).map StrongDual.toWeakDual.toLinearMap
+
+theorem mem_weakContinuousAnnihilator {Y : Submodule 𝕜 E} {φ : WeakDual 𝕜 E} :
+    φ ∈ weakContinuousAnnihilator Y ↔ ∀ y ∈ Y, φ y = 0 := by
+  constructor
+  · rintro ⟨ψ, hψ, rfl⟩
+    simpa using (mem_continuousAnnihilator.mp hψ)
+  · intro h
+    refine ⟨WeakDual.toStrongDual φ, ?_, ?_⟩
+    · exact mem_continuousAnnihilator.mpr h
+    · rfl
+
+theorem isClosed_weakContinuousAnnihilator (Y : Submodule 𝕜 E) :
+    IsClosed (weakContinuousAnnihilator Y : Set (WeakDual 𝕜 E)) := by
+  rw [show (weakContinuousAnnihilator Y : Set (WeakDual 𝕜 E)) =
+      ⋂ y : Y, {φ | φ y = 0} by
+    ext φ
+    simp only [Set.mem_iInter, Set.mem_setOf_eq]
+    constructor
+    · intro h y
+      exact (mem_weakContinuousAnnihilator.mp h) y y.2
+    · intro h
+      exact mem_weakContinuousAnnihilator.mpr fun y hy => h ⟨y, hy⟩]
+  exact isClosed_iInter fun y =>
+    (isClosed_singleton : IsClosed ({0} : Set ℂ)).preimage
+      (WeakDual.eval_continuous y.1)
+
+/-- **Card `(BHR.8)`.** For closed boundary subspaces, the weak-star closure of the sum of their
+continuous annihilators is exactly the annihilator of their intersection. -/
+theorem weakStarClosure_sup_annihilator (Yₗ Yᵣ : Submodule 𝕜 E)
+    (hYₗ : IsClosed (Yₗ : Set E)) (hYᵣ : IsClosed (Yᵣ : Set E)) :
+    (weakContinuousAnnihilator Yₗ ⊔ weakContinuousAnnihilator Yᵣ).topologicalClosure =
+      weakContinuousAnnihilator (Yₗ ⊓ Yᵣ) := by
+  letI : IsScalarTower ℝ ℂ (StrongDual ℂ E) :=
+    ⟨fun r c x => by
+      apply ContinuousLinearMap.ext
+      intro y
+      simp only [smul_apply, Complex.real_smul]
+      ring⟩
+  letI : IsScalarTower ℝ ℂ (WeakDual ℂ E) :=
+    ⟨fun r c x => by
+      apply DFunLike.ext _ _
+      intro y
+      change (r : ℂ) * c * x y = (r : ℂ) * (c * x y)
+      ring⟩
+  letI : LocallyConvexSpace ℝ (WeakDual ℂ E) :=
+    (topDualPairing ℂ E).weakBilin_withSeminorms.toLocallyConvexSpace
+  apply le_antisymm
+  · apply Submodule.topologicalClosure_minimal
+    · rw [sup_le_iff]
+      constructor
+      · intro φ hφ
+        rw [mem_weakContinuousAnnihilator] at hφ ⊢
+        exact fun y hy => hφ y hy.1
+      · intro φ hφ
+        rw [mem_weakContinuousAnnihilator] at hφ ⊢
+        exact fun y hy => hφ y hy.2
+    · exact isClosed_weakContinuousAnnihilator (Yₗ ⊓ Yᵣ)
+  · intro φ hφ
+    by_contra hnot
+    let Sℂ : Submodule ℂ (WeakDual ℂ E) :=
+      weakContinuousAnnihilator Yₗ ⊔ weakContinuousAnnihilator Yᵣ
+    let Sℝ : Submodule ℝ (WeakDual ℂ E) := Sℂ.restrictScalars ℝ
+    have hclosure :
+        (Sℝ.topologicalClosure : Set (WeakDual ℂ E)) =
+          (Sℂ.topologicalClosure : Set (WeakDual ℂ E)) := by
+      rw [Submodule.topologicalClosure_coe, Submodule.topologicalClosure_coe]
+      rfl
+    have hφnot : φ ∉ Sℝ.topologicalClosure := by
+      intro h
+      apply hnot
+      have h' : φ ∈ Sℂ.topologicalClosure := by
+        have hs : φ ∈ (Sℝ.topologicalClosure : Set (WeakDual ℂ E)) := h
+        rw [hclosure] at hs
+        exact hs
+      exact h'
+    obtain ⟨f, hfS, hfφ⟩ :=
+      HTGeometry.exists_dual_vanishing_of_notMem_closed_submodule_lcs
+        Sℝ.topologicalClosure Sℝ.isClosed_topologicalClosure hφnot
+    let g : StrongDual ℂ (WeakDual ℂ E) := StrongDual.extendRCLike f
+    obtain ⟨x, hx⟩ := LinearMap.dualEmbedding_surjective (topDualPairing ℂ E) g
+    have hg_eval : ∀ ψ : WeakDual ℂ E, g ψ = ψ x := by
+      intro ψ
+      have h := DFunLike.congr_fun hx ψ
+      exact h.symm
+    have hgS : ∀ ψ ∈ Sℂ, g ψ = 0 := by
+      intro ψ hψ
+      rw [StrongDual.extendRCLike_apply]
+      have hψR : ψ ∈ Sℝ := hψ
+      have hiψR : Complex.I • ψ ∈ Sℝ := by
+        change Complex.I • ψ ∈ Sℂ
+        exact Sℂ.smul_mem Complex.I hψ
+      have hfI : f (RCLike.I • ψ) = 0 :=
+        hfS _ (Sℝ.le_topologicalClosure hiψR)
+      rw [hfS ψ (Sℝ.le_topologicalClosure hψR), hfI]
+      simp
+    have hxYₗ : x ∈ Yₗ := by
+      by_contra hxnot
+      obtain ⟨ψ, hψY, hψx⟩ :=
+        HTGeometry.ConstraintMotiveRelativity.exists_continuous_annihilator_of_notMem_closure
+          Yₗ (by rw [hYₗ.closure_eq]; exact hxnot)
+      let ψw : WeakDual ℂ E := StrongDual.toWeakDual ψ
+      have hψw : ψw ∈ Sℂ := by
+        change ψw ∈ weakContinuousAnnihilator Yₗ ⊔ weakContinuousAnnihilator Yᵣ
+        exact (le_sup_left : weakContinuousAnnihilator Yₗ ≤
+          weakContinuousAnnihilator Yₗ ⊔ weakContinuousAnnihilator Yᵣ)
+            ⟨ψ, mem_continuousAnnihilator.mpr hψY, rfl⟩
+      apply hψx
+      have hz : ψw x = 0 := (hg_eval ψw).symm.trans (hgS ψw hψw)
+      simpa [ψw] using hz
+    have hxYᵣ : x ∈ Yᵣ := by
+      by_contra hxnot
+      obtain ⟨ψ, hψY, hψx⟩ :=
+        HTGeometry.ConstraintMotiveRelativity.exists_continuous_annihilator_of_notMem_closure
+          Yᵣ (by rw [hYᵣ.closure_eq]; exact hxnot)
+      let ψw : WeakDual ℂ E := StrongDual.toWeakDual ψ
+      have hψw : ψw ∈ Sℂ := by
+        change ψw ∈ weakContinuousAnnihilator Yₗ ⊔ weakContinuousAnnihilator Yᵣ
+        exact (le_sup_right : weakContinuousAnnihilator Yᵣ ≤
+          weakContinuousAnnihilator Yₗ ⊔ weakContinuousAnnihilator Yᵣ)
+            ⟨ψ, mem_continuousAnnihilator.mpr hψY, rfl⟩
+      apply hψx
+      have hz : ψw x = 0 := (hg_eval ψw).symm.trans (hgS ψw hψw)
+      simpa [ψw] using hz
+    have hφx : φ x = 0 :=
+      (mem_weakContinuousAnnihilator.mp hφ) x ⟨hxYₗ, hxYᵣ⟩
+    have hgφ : g φ ≠ 0 := by
+      intro hzero
+      change StrongDual.extendRCLike f φ = 0 at hzero
+      rw [StrongDual.extendRCLike_apply] at hzero
+      have hre := congrArg Complex.re hzero
+      exact hfφ (by simpa using hre)
+    apply hgφ
+    rw [hg_eval, hφx]
+
 end ContinuousObservers
 
 /-! ## Covariance of the relative pairing -/
@@ -225,6 +368,100 @@ theorem nestedCut_ker {Ma Mb : Submodule ℂ M} (h : Mb ≤ Ma) :
   ker_persistenceMap h
 
 end NestedCut
+
+/-! ## Normal predual of a nested layer -/
+
+section NormalPredualLayer
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
+
+/-- Normal functionals from a specified predual copy which annihilate a cut. -/
+def normalAnnihilator (P : Submodule 𝕜 (StrongDual 𝕜 E)) (Y : Submodule 𝕜 E) :
+    Submodule 𝕜 P where
+  carrier := {ω | ∀ y ∈ Y, (ω.1 : StrongDual 𝕜 E) y = 0}
+  zero_mem' := by simp
+  add_mem' hω hη y hy := by simp [hω y hy, hη y hy]
+  smul_mem' c ω hω y hy := by simp [hω y hy]
+
+/-- Explicit additive structure avoids reducibility loops for the nested annihilator subtype. -/
+noncomputable instance normalAnnihilatorAddCommGroup
+    (P : Submodule 𝕜 (StrongDual 𝕜 E)) (Y : Submodule 𝕜 E) :
+    AddCommGroup (normalAnnihilator P Y) :=
+  @Submodule.addCommGroup ℂ P inferInstance P.addCommGroup P.module
+    (normalAnnihilator P Y)
+
+/-- The lower cut as a subspace of the upper cut. -/
+def nestedLayerDenominator (Mb Ma : Submodule 𝕜 E) : Submodule 𝕜 Ma :=
+  Mb.comap Ma.subtype
+
+/-- Literal nested layer `Ma / Mb`. -/
+abbrev NormalNestedLayer (Mb Ma : Submodule 𝕜 E) := Ma ⧸ nestedLayerDenominator Mb Ma
+
+/-- Restrict a lower-cut-annihilating normal functional to the relative layer. -/
+noncomputable def normalLayerRestriction
+    (P : Submodule 𝕜 (StrongDual 𝕜 E)) (Mb Ma : Submodule 𝕜 E) :
+    normalAnnihilator P Mb →ₗ[𝕜] Module.Dual 𝕜 (NormalNestedLayer Mb Ma) where
+  toFun ω := (nestedLayerDenominator Mb Ma).liftQ
+    { toFun := fun x => (ω.1.1 : StrongDual 𝕜 E) x.1
+      map_add' := by intros; simp
+      map_smul' := by intros; simp }
+    (by
+      intro x hx
+      exact ω.2 x.1 hx)
+  map_add' ω η := by
+    ext x
+    rfl
+  map_smul' c ω := by
+    ext x
+    rfl
+
+@[simp] theorem normalLayerRestriction_mk
+    (P : Submodule 𝕜 (StrongDual 𝕜 E)) (Mb Ma : Submodule 𝕜 E)
+    (ω : normalAnnihilator P Mb) (x : Ma) :
+    normalLayerRestriction P Mb Ma ω (Submodule.Quotient.mk x) =
+      (ω.1.1 : StrongDual 𝕜 E) x.1 := rfl
+
+/-- Upper-cut annihilators include canonically among lower-cut annihilators. -/
+def normalAnnihilatorInclusion
+    (P : Submodule 𝕜 (StrongDual 𝕜 E)) {Mb Ma : Submodule 𝕜 E} (h : Mb ≤ Ma) :
+    normalAnnihilator P Ma →ₗ[𝕜] normalAnnihilator P Mb where
+  toFun ω := ⟨ω.1, fun y hy => ω.2 y (h hy)⟩
+  map_add' _ _ := rfl
+  map_smul' _ _ := rfl
+
+/-- Kernel of layer restriction is exactly the upper-cut annihilator. -/
+theorem ker_normalLayerRestriction
+    (P : Submodule 𝕜 (StrongDual 𝕜 E)) {Mb Ma : Submodule 𝕜 E} (h : Mb ≤ Ma) :
+    LinearMap.ker (normalLayerRestriction P Mb Ma) =
+      LinearMap.range (normalAnnihilatorInclusion P h) := by
+  ext ω
+  constructor
+  · intro hω
+    have hzero : ∀ x : Ma, (ω.1.1 : StrongDual 𝕜 E) x.1 = 0 := by
+      intro x
+      have hx := DFunLike.congr_fun hω (Submodule.Quotient.mk x)
+      simpa using hx
+    let η : normalAnnihilator P Ma := ⟨ω.1, fun y hy => hzero ⟨y, hy⟩⟩
+    exact ⟨η, rfl⟩
+  · rintro ⟨η, rfl⟩
+    ext x
+    exact η.2 x.1 x.2
+
+/-- Realized normal functionals on the relative layer. -/
+noncomputable abbrev normalNestedLayerPredual
+    (P : Submodule 𝕜 (StrongDual 𝕜 E)) (Mb Ma : Submodule 𝕜 E) :=
+  LinearMap.range (normalLayerRestriction P Mb Ma)
+
+/-- **Card `(BHR.14)`, exact normal-predual quotient theorem.** Lower-cut normal annihilators
+modulo upper-cut normal annihilators are canonically the normal functionals realized on the
+relative layer. The representative pairing is `(BHR.15)` by `normalLayerRestriction_mk`. -/
+noncomputable def normalAnnihilatorQuotientEquivLayerPredual
+    (P : Submodule 𝕜 (StrongDual 𝕜 E)) (Mb Ma : Submodule 𝕜 E) :
+    ((normalAnnihilator P Mb) ⧸ LinearMap.ker (normalLayerRestriction P Mb Ma)) ≃ₗ[𝕜]
+      normalNestedLayerPredual P Mb Ma :=
+  LinearMap.quotKerEquivRange (normalLayerRestriction P Mb Ma)
+
+end NormalPredualLayer
 
 /-! ## Finite thermofield countermodel -/
 

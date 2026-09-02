@@ -199,6 +199,17 @@ this notation by the parent papers, but it is mechanically derivable from their 
 standard regular-intersection facts.  It therefore fails the anti-theatre novelty/significance gate
 and is retained only as bridge infrastructure.
 
+## Lean status
+
+`HTGeometry/ThreeCoordinateAlgebraicIntersection.lean` now proves, without a regularity premise,
+the three-coordinate regular-intersection lemma used in Step 3: if `x,y,z` are algebraically
+independent and an element is algebraic over both `C(x,y)` and `C(x,z)`, then it is algebraic over
+`C(x)`.  The proof is the exact closure-intersection law of the algebraic matroid.
+
+This does not yet prove the card.  Remaining algebraic obligation is multiplicative separation in
+the pairwise relative algebraic closures; remaining analytic obligation is Steinmetz state
+independence.  Neither is represented by a hypothesis-bearing capstone.
+
 ## Gates
 
 - [x] 0 -> 1: exact theorem, explicit parent counterexample, algebraic core, and falsification tests.

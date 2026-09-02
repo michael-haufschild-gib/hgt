@@ -7,6 +7,7 @@ import Mathlib.Analysis.Calculus.MeanValue
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 import Mathlib.Order.Lattice.Nat
 import GaloisForLFunctions.HTGeometry.ConstraintRelativity.BipartiteMatrixDecomposition
+import GaloisForLFunctions.HTGeometry.AnalyticMatrixRankStratification
 
 /-!
 # Resource-filtered relation rank, recurrence, and tidal acceleration
@@ -114,6 +115,86 @@ theorem genericAccessibleRank_eq_lowerBound_of_exists_transverse [Nonempty M]
 
 end RelationRank
 
+/-! ## Analytic determinantal typicality -/
+
+section AnalyticRelationTypicality
+
+/-- Coordinate rank-defect model of accessible relations after choosing a rank-equivalent square
+matrix certificate for the quotient restriction `π|Rₓ`. -/
+noncomputable abbrev analyticAccessibleRelationRank {X : Type*} {r : ℕ}
+    (A : X → Matrix (Fin r) (Fin r) ℝ) (x : X) : ℕ :=
+  GaloisForLFunctions.HTGeometry.matrixRankDefect A x
+
+/-- Minimum accessible-relation rank in the analytic matrix certificate. -/
+noncomputable abbrev analyticGenericAccessibleRank {X : Type*} {r : ℕ}
+    (A : X → Matrix (Fin r) (Fin r) ℝ) : ℕ :=
+  GaloisForLFunctions.HTGeometry.genericMatrixRankDefect A
+
+/-- The minimum-rank analytic stratum. -/
+def analyticRelationGenericStratum {X : Type*} {r : ℕ}
+    (A : X → Matrix (Fin r) (Fin r) ℝ) : Set X :=
+  {x | analyticAccessibleRelationRank A x = analyticGenericAccessibleRank A}
+
+/-- The determinantal exceptional locus where accessible relation rank jumps above its minimum. -/
+def analyticRelationExceptionalSet {X : Type*} {r : ℕ}
+    (A : X → Matrix (Fin r) (Fin r) ℝ) : Set X :=
+  {x | analyticGenericAccessibleRank A < analyticAccessibleRelationRank A x}
+
+/-- **Card Theorem 2.1(2)--(3), coordinate chart form.** The minimum accessible-rank stratum of a
+real-analytic finite relation matrix is open and dense; every higher-rank point lies in a proper
+analytic determinantal locus of Lebesgue measure zero. -/
+theorem analyticRelationGenericStratum_open_dense_exceptional_volume_zero
+    {m r : ℕ} {A : (Fin m → ℝ) → Matrix (Fin r) (Fin r) ℝ}
+    (hA : ∀ i j, AnalyticOnNhd ℝ (fun x => A x i j) Set.univ) :
+    IsOpen (analyticRelationGenericStratum A) ∧
+      Dense (analyticRelationGenericStratum A) ∧
+      MeasureTheory.volume (analyticRelationExceptionalSet A) = 0 := by
+  simpa [analyticRelationGenericStratum, analyticRelationExceptionalSet] using
+    GaloisForLFunctions.HTGeometry.analytic_matrixRankDefect_generic_open_dense_fullMeasure hA
+
+/-- **Card Theorem 2.1(4), one-dimensional chart form.** Exceptional accessible-rank times are
+discrete. -/
+theorem analyticRelationExceptionalSet_discreteTopology
+    {r : ℕ} {A : ℝ → Matrix (Fin r) (Fin r) ℝ}
+    (hA : ∀ i j, AnalyticOnNhd ℝ (fun x => A x i j) Set.univ) :
+    DiscreteTopology (analyticRelationExceptionalSet A) := by
+  change DiscreteTopology
+    {x | GaloisForLFunctions.HTGeometry.genericMatrixRankDefect A <
+      GaloisForLFunctions.HTGeometry.matrixRankDefect A x}
+  exact GaloisForLFunctions.HTGeometry.analytic_matrixRankDefect_exceptional_discreteTopology hA
+
+/-- **Card Theorem 2.1(4), compact form.** Every compact one-dimensional parameter window contains
+only finitely many exceptional accessible-rank times. -/
+theorem analyticRelationExceptionalSet_inter_compact_finite
+    {r : ℕ} {A : ℝ → Matrix (Fin r) (Fin r) ℝ}
+    (hA : ∀ i j, AnalyticOnNhd ℝ (fun x => A x i j) Set.univ)
+    {K : Set ℝ} (hK : IsCompact K) :
+    (K ∩ analyticRelationExceptionalSet A).Finite := by
+  simpa [analyticRelationExceptionalSet] using
+    GaloisForLFunctions.HTGeometry.analytic_matrixRankDefect_exceptional_inter_compact_finite
+      hA hK
+
+/-- Card `(2.11)`, arithmetic core: generic accessible rank is the transverse lower bound plus
+the exact structural rank defect. -/
+theorem accessibleRank_eq_lowerBound_add_structuralDefect
+    {n r q ρ : ℕ} (hqn : q ≤ n)
+    (hρ : ρ ≤ min r (n - q)) :
+    r - ρ = r + q - n + (min r (n - q) - ρ) := by
+  rcases le_total r (n - q) with h | h
+  · rw [min_eq_left h]
+    omega
+  · rw [min_eq_right h]
+    omega
+
+/-- Structural defect is positive exactly when every certificate rank stays strictly below the
+dimensionally allowed rank. -/
+theorem structuralDefect_pos_iff
+    {n r q ρ : ℕ} (hρ : ρ ≤ min r (n - q)) :
+    0 < min r (n - q) - ρ ↔ ρ < min r (n - q) := by
+  omega
+
+end AnalyticRelationTypicality
+
 /-! ## Continuous visibility -/
 
 /-- Finite-dimensional soft visibility `Tr(P_R(x) P_Q)` in orthonormal coordinates. -/
@@ -216,6 +297,11 @@ noncomputable def normalOrbit (L : Submodule ℝ H) [L.HasOrthogonalProjection]
     (A : H →L[ℝ] H) (x : H) (t : ℝ) : H :=
   Lᗮ.starProjection (operatorOrbit A x t)
 
+/-- Hidden reporter weight from card `(5.1)`. -/
+noncomputable def hiddenWeight (L : Submodule ℝ H) [L.HasOrthogonalProjection]
+    (A : H →L[ℝ] H) (x : H) (t : ℝ) : ℝ :=
+  ‖normalOrbit L A x t‖ ^ 2
+
 theorem hasDerivAt_normalOrbit (L : Submodule ℝ H) [L.HasOrthogonalProjection]
     (A : H →L[ℝ] H) (x : H) (t : ℝ) :
     HasDerivAt (normalOrbit L A x) (Lᗮ.starProjection (A (operatorOrbit A x t))) t := by
@@ -230,6 +316,20 @@ theorem normalOrbit_zero (L : Submodule ℝ H) [L.HasOrthogonalProjection]
     (A : H →L[ℝ] H) {x : H} (hx : x ∈ L) : normalOrbit L A x 0 = 0 := by
   simp [normalOrbit, operatorOrbit, Submodule.starProjection_orthogonal,
     Submodule.starProjection_eq_self_iff.mpr hx]
+
+omit [CompleteSpace H] in
+@[simp] theorem hiddenWeight_zero (L : Submodule ℝ H) [L.HasOrthogonalProjection]
+    (A : H →L[ℝ] H) {x : H} (hx : x ∈ L) : hiddenWeight L A x 0 = 0 := by
+  simp [hiddenWeight, normalOrbit_zero L A hx]
+
+/-- Card Theorem 5.1, first-order clause `hₓ'(0)=0`. -/
+theorem hiddenWeight_deriv_zero (L : Submodule ℝ H) [L.HasOrthogonalProjection]
+    (A : H →L[ℝ] H) {x : H} (hx : x ∈ L) :
+    deriv (hiddenWeight L A x) 0 = 0 := by
+  change deriv (fun t => ‖normalOrbit L A x t‖ ^ 2) 0 = 0
+  rw [(hasDerivAt_normalOrbit L A x 0).norm_sq.deriv,
+    normalOrbit_zero L A hx]
+  simp
 
 /-- **Card Theorem 5.1, `(5.2)`.** Initial hidden-weight acceleration is exactly twice the squared
 normal component of the generator. -/
@@ -252,6 +352,16 @@ theorem normalAcceleration (L : Submodule ℝ H) [L.HasOrthogonalProjection]
     (Lᗮ.starProjection (A (A x)))
     (hasDerivAt_normalOrbit L A x) hp (normalOrbit_zero L A hx)
   simpa [operatorOrbit] using h
+
+/-- **Card Theorem 5.1, full hidden-weight jet `(5.2)`.** -/
+theorem hiddenWeight_initialJet (L : Submodule ℝ H) [L.HasOrthogonalProjection]
+    (A : H →L[ℝ] H) {x : H} (hx : x ∈ L) :
+    hiddenWeight L A x 0 = 0 ∧
+      deriv (hiddenWeight L A x) 0 = 0 ∧
+      deriv (deriv (hiddenWeight L A x)) 0 =
+        2 * ‖Lᗮ.starProjection (A x)‖ ^ 2 := by
+  refine ⟨hiddenWeight_zero L A hx, hiddenWeight_deriv_zero L A hx, ?_⟩
+  exact normalAcceleration L A hx
 
 /-- Intrinsic skew-adjointness condition for a bounded real Hilbert-space generator. -/
 def IsSkewAdjointGenerator (A : H →L[ℝ] H) : Prop :=

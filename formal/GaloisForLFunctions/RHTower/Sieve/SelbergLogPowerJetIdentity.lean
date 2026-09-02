@@ -106,7 +106,7 @@ private theorem coeff_selbergLocalOriginalJet_zero {p : ℕ} (hp : p.Prime) (i j
   by_cases h11 : i = 1 ∧ j = 1
   · rcases h11 with ⟨rfl, rfl⟩
     simp [selbergLocalOriginalJet, selbergLocalOriginalPolynomial,
-      additiveBivariateMonomialOver, localJetParameter, coeff_exponentialJet]
+      additiveBivariateMonomialOver, selbergLocalJetParameter, coeff_exponentialJet]
   · simp [selbergLocalOriginalJet, selbergLocalOriginalPolynomial,
       additiveBivariateMonomialOver, h00, h10, h01, h11]
 
@@ -120,7 +120,7 @@ private theorem coeff_selbergLocalEulerDenominatorJet_zero (p i j : ℕ) :
   · rcases h11 with ⟨rfl, rfl⟩
     simp [selbergLocalEulerDenominatorJet, selbergLocalEulerDenominator,
       additiveBivariateOne, additiveBivariateMonomialOver, additiveBivariateDiagonalMonomial,
-      localJetParameter, PowerSeries.coeff_zero_eq_constantCoeff, hexp0]
+      selbergLocalJetParameter, PowerSeries.coeff_zero_eq_constantCoeff, hexp0]
   · simp [selbergLocalEulerDenominatorJet, selbergLocalEulerDenominator,
       additiveBivariateOne, additiveBivariateMonomialOver, additiveBivariateDiagonalMonomial,
       PowerSeries.coeff_zero_eq_constantCoeff, h11]

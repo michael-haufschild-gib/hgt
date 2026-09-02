@@ -13,8 +13,8 @@ Goal: unconditional Lean formalization of every card in this folder, then promot
 | 4 | quasianalytic-one-phase-bezout-boundary-law | all steps closed | **DONE → 3-formalized** (2026-08-29) |
 | 5 | quasianalytic-exponential-log-phase-jet-law | all steps closed | **DONE → 3-formalized** (2026-08-29) |
 | 6 | exponential-tower-exact-differential-order | both halves closed | **DONE → 3-formalized** (2026-08-29) |
-| 7 | first-order-meromorphic-compression-matching | Steinmetz + 3-field factorization | TODO |
-| 8 | entire-heat-multiplicative-da-order-three-floor | Valiron–Zimogljad–Strelitz | TODO |
+| 7 | first-order-meromorphic-compression-matching | Steinmetz + 3-field factorization | **IN PROGRESS** — regular intersections closed; separation + Steinmetz open |
+| 8 | entire-heat-multiplicative-da-order-three-floor | Valiron–Zimogljad–Strelitz | **IN PROGRESS** — orders 0/1 closed; order 2 open |
 | 9 | drifting-periodic-primitive-ramification-exclusion | closed with `card_totallyRamified_le_four` | **DONE → 3-formalized** (2026-08-29) |
 | 10 | entire-composition-hypertranscendence-or-law | Steinmetz reduction / Huang–Ng Thm 3 | TODO |
 | 11 | first-order-composition-two-defect-decomposition | Clunie + trdeg observability | **DONE → 3-formalized** (2026-08-30) |
@@ -4758,3 +4758,42 @@ Combined with the separation-weight inequality and the unit-to-staircase determi
 removes the algebraic propagation step.  Cards 13/14 still require realization of their actual
 algebraic branch states in a common valued differential field and verification that each recurrence
 residue satisfies the established `deg r < W_k` bound; neither statement is weakened or assumed.
+
+## Entire-heat anchor bridge advanced (2026-09-02)
+
+`HTGeometry/EntireHeatDifferentialOrderFloor.lean` connects card 8's literal complex-time heat
+summability hypothesis to its coefficient anchor:
+
+| Statement | Theorem |
+|---|---|
+| Taylor coefficients of `coeffFun a` are exactly `a n` | `taylorCoeff_coeffFun` |
+| infinite coefficient support makes `coeffFun a` nonpolynomial | `not_exists_polynomial_coeffFun_of_infinite_support` |
+| entire heat evolution gives `centralIndex a r / log r → 0` | `tendsto_entireHeat_centralIndex_div_log_zero` |
+| an infinite-spectrum anchor satisfies no order-zero ADE | `not_differentiallyAlgebraicOfOrder_zero_entireHeat` |
+| every order-one ADE forces `r ≤ C·ν(r)^d` at arbitrarily large radii | `exists_radius_le_centralIndex_pow_of_order_one` |
+| sublogarithmic central index excludes every order-one ADE | `not_differentiallyAlgebraicOfOrder_one_of_centralIndex_div_log_zero` |
+| an infinite-spectrum entire-heat anchor satisfies no order-one ADE | `not_differentiallyAlgebraicOfOrder_one_entireHeat` |
+
+`HTGeometry/FirstOrderCoefficientDecomposition.lean` supplies the exact compiler from an arbitrary
+three-variable differential polynomial to its polynomial-coefficient `(f,f′)` row; multiplying the
+row by a power of `z` makes a maximal nonzero term coefficient-heavy, so the corpus Newton-face
+theorem applies with no extra Newton hypothesis.  `HTGeometry/SecondOrderCoefficientDecomposition.lean`
+now supplies the analogous exact four-variable `(z,f,f′,f″)` compiler.
+
+The exact order-two exclusion remains the Valiron–Zimogljad–Strelitz residue.  The second-derivative
+Wiman–Valiron asymptotic is corpus-owned, but a general minimal-relation reduction is still required
+because the homogeneous top symbol can vanish on the monomial jet model (for example through
+`Y₀Y₂ - Y₁²`).
+
+## Three-field regular intersection advanced (2026-09-02)
+
+`HTGeometry/ThreeCoordinateAlgebraicIntersection.lean` closes the regular-intersection identity at
+the element level.  For algebraically independent coordinates `v₀,v₁,v₂`, an element algebraic over
+both `C(v₀,v₁)` and `C(v₀,v₂)` is algebraic over `C(v₀)`.  The proof uses the algebraic matroid's
+exact closure-intersection law on subsets of one independent set, then the corpus bridges between
+ring and field adjunction.  It introduces no linear-disjointness or regularity premise.
+
+This discharges the three pairwise-intersection assertions in card 7's algebraic core.  Remaining
+algebraic step is multiplicative separation: from `A(x,y) B(x,z) = C(y,z)` in the three relative
+algebraic closures, construct `A=a(x)c(y)`, `B=b(z)/a(x)`, `C=b(z)c(y)`.  Remaining analytic step is
+the Steinmetz state-independence reduction shared with card 10.

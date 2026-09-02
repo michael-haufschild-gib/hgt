@@ -552,4 +552,18 @@ theorem homogeneous_factorGradientCokernel_length
   rw [factorGradientCokernel_length_eq_sum_weightedFaceDepth a ha,
     sum_weightedFaceDepth_const_one hd]
 
+/-- Card `(11)`: the two-factor anomaly has exact length two. -/
+theorem homogeneous_factorGradientCokernel_length_two
+    {R : Type*} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R]
+    (a : R) (ha : Ideal.span ({a} : Set R) = maximalIdeal R) :
+    Module.length R (FactorGradientCokernel a (fun _ : Fin 2 => 1)) = 2 := by
+  simpa using homogeneous_factorGradientCokernel_length (d := 2) (by omega) a ha
+
+/-- Card `(12)`: the three-factor anomaly has exact length ten. -/
+theorem homogeneous_factorGradientCokernel_length_three
+    {R : Type*} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R]
+    (a : R) (ha : Ideal.span ({a} : Set R) = maximalIdeal R) :
+    Module.length R (FactorGradientCokernel a (fun _ : Fin 3 => 1)) = 10 := by
+  simpa using homogeneous_factorGradientCokernel_length (d := 3) (by omega) a ha
+
 end HTGeometry.ConstraintRelativity

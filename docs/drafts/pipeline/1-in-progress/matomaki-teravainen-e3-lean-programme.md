@@ -3380,3 +3380,99 @@ with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired with
 Equal-modulus main and completion remainder are now classified completely: positive square energy
 plus a closed remainder budget. Remaining genuine analytic primitive is collective control of the
 source-weighted terminal distinct-modulus carrier at the paper ranges; no estimate is assumed.
+
+### Exact scalar analytic frontier, brick 119 (2026-09-02)
+
+`KloostermanAnalyticFrontier.lean` packages the exact transform-output energy into three named
+quantities: nonnegative Ramanujan main energy, full-source same-modulus remainder budget, and
+full-source terminal distinct-modulus budget. It proves the exact complex identity, cancellation
+of the combined remainder's imaginary part, the combined norm bound, and the unconditional scalar
+energy upper bound without an analytic premise.
+
+Direct check and targeted build pass (`12741/12741`). All six public theorem declarations audit
+with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella build.
+
+This closes the exact elementary scalar baseline, not the paper-range saving. Remaining genuine
+primitive is collective spectral cancellation beyond the terminal-carrier absolute-value budget,
+followed by source routing into Lemma 3.5(ii), amplification, and Theorem 1.2; no estimate is
+assumed.
+
+### Unequal-modulus phase nonresonance, brick 120 (2026-09-02)
+
+`KloostermanCrossPhaseGeometric.lean` proves the standard additive character on every positive
+cyclic group is faithful and has the expected natural-multiple power law. For units `x mod q` and
+`y mod r`, equality of the cross-phase ratio to one would force both `q ∣ r` and `r ∣ q`; hence
+unequal moduli give a nontrivial unit-circle ratio. Every finite orbit therefore satisfies the
+reciprocal-chord geometric bound independently of orbit length.
+
+Direct check and targeted build pass (`12746/12746`). Its five public theorem declarations audit
+with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella build.
+
+### Terminal geometric-orbit expansion, brick 121 (2026-09-02)
+
+`KloostermanTerminalGeometricCancellation.lean` expands every literal terminal cross-column block
+coefficient-faithfully into a double sum over unit pairs. Each inner sum is exactly one nontrivial
+geometric orbit from brick 120. It proves a terminal-length-independent reciprocal-chord bound and
+combines it with the prior exact-length totient bound as their pointwise minimum, including the
+stored ordinary-index Gram correlation.
+
+Direct check and targeted build pass (`12747/12747`). All six public theorem declarations, plus
+brick 120's newly public natural-multiple law, audit with only
+`[propext, Classical.choice, Quot.sound]`; leaves are umbrella-wired without umbrella build.
+
+This is genuine finite phase cancellation, but not yet the paper-range spectral estimate. The
+remaining primitive is a collective bound for the reciprocal chord denominators and their signed
+modulus/source aggregation strong enough for Lemma 3.5(ii), followed by amplification and Theorem
+1.2; no estimate is assumed.
+
+### Coprime cross-frequency CRT compression, brick 122 (2026-09-02)
+
+`KloostermanCoprimeCrossPhaseFrequency.lean` identifies the arithmetic structure of every coprime
+unit-pair denominator from bricks 120--121.  The pair `(x mod q, y mod r)` maps by CRT to the
+product-period frequency with coordinates `-r*x mod q` and `q*y mod r`.  Complement multiplication
+is invertible, so this map is an explicit equivalence
+
+```text
+(ZMod q)ˣ × (ZMod r)ˣ  ≃  (ZMod (q*r))ˣ.
+```
+
+Its product-level standard additive character is exactly the original cross-phase ratio.  The
+terminal double reciprocal-chord sum therefore reindexes, with no loss and no multiplicity, as one
+sum over product-modulus units.  The terminal geometric bound is restated in this compressed form.
+
+Direct check and targeted leaf build pass (`12749/12749`).  All eight public theorem declarations
+audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella
+build.
+
+This removes the apparent `phi(q) * phi(r)` independent-denominator loss for coprime pairs.  The
+next arithmetic primitive is a harmonic bound for the single product-period reciprocal-chord sum,
+then noncoprime gcd stratification and signed modulus/source aggregation at the paper ranges.
+Lemma 3.5(ii), amplification, and Theorem 1.2 remain open; no estimate is assumed.
+
+### Product-period reciprocal-chord harmonic bound, brick 123 (2026-09-02)
+
+`KloostermanProductUnitChordSum.lean` proves the missing collective estimate from brick 122.  For
+each nonzero product frequency with canonical representative `j`, two-sided Jordan separation gives
+
+```text
+2 / ||1 - e_N(j)|| ≤ (N/2) * (1/j + 1/(N-j)).
+```
+
+Unit representatives and their complements are injective positive families bounded by `N`, so the
+existing harmonic finite-family theorem bounds each side.  Hence
+
+```text
+sum_{z in (ZMod N)ˣ} 2 / ||1 - e_N(z)|| ≤ N * (1 + log N).
+```
+
+After brick 122's lossless CRT reindexing, every coprime terminal block satisfies the unconditional,
+interval-length-independent bound `q*r*(1+log(q*r))`; the stored ordinary-index Gram correlation
+has the corresponding `(q+1)(r+1)` statement.
+
+Direct check and targeted leaf build pass (`13483/13483`).  All eight public theorem declarations
+audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella
+build.
+
+Coprime reciprocal-denominator aggregation is now closed.  Remaining primitive is noncoprime gcd
+stratification and signed modulus/source aggregation at paper ranges, followed by Lemma 3.5(ii),
+amplification, and Theorem 1.2; no estimate is assumed.

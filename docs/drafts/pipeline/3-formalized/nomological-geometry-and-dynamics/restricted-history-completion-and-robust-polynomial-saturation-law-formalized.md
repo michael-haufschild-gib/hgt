@@ -1,10 +1,10 @@
 # Restricted-history completion and robust polynomial-saturation law
 
 - **ID:** `restricted-history-completion-and-robust-polynomial-saturation-law`
-- **Stage:** 2 — fully proved on paper
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** THEOREM / FIELD-CALIBRATION / NO-GO
-- **Status:** `[PAPER-PROVED] [ROUTE-INDEPENDENT HISTORY LAW] [HURWITZ REALIZATION]`
-  `[NOT RH] [NO LEAN WRITTEN OR BUILT THIS TURN]`
+- **Status:** `[LEAN COMPLETE] [UNCONDITIONAL] [NO SORRY]`
+  `[ROUTE-INDEPENDENT HISTORY LAW] [HURWITZ REALIZATION] [NOT RH]`
 - **Formal parent, used read-only:**
   `formal/GaloisForLFunctions/Hurwitz/PowerOrbitAdditiveSaturation.lean` and
   `formal/GaloisForLFunctions/Hurwitz/IntegerTranslationDifferentialMatroid.lean`
@@ -365,3 +365,70 @@ This forces a field-level correction:
    zeros or proves RH.
 4. Equation `(16)` records the exact filtered action system.  A universal 2-stack with transport
    among unrelated corpus routes remains unconstructed.
+
+## 9. Lean formalization
+
+### Modules
+
+| Module | Formalized content |
+|---|---|
+| `GaloisForLFunctions.HTGeometry.RestrictedHistoryCompletionLaw` | Arbitrary-group finite-support restricted product, induced uniformity, full-product abstract completion, density/properness/nonclosedness, arbitrary injectively enumerated open lifts, exact support cost, finite-observer constancy, product convergence, boundary exclusion, and finite-observer noncoercivity |
+| `GaloisForLFunctions.Hurwitz.PowerOrbitAdditiveSaturation` | Degree-robust additive-grid polynomial saturation |
+| `GaloisForLFunctions.Hurwitz.IntegerTranslationDifferentialMatroid` | Exact Hurwitz differential matroid |
+| `GaloisForLFunctions.HTGeometry.HurwitzMonodromyClosureLawstackResonanceRankLaw` | `(2,4)` and `(3/2,4/3)` monodromy-closure/resonance/differential-rank witnesses |
+| `GaloisForLFunctions.HTGeometry.RestrictedHistoryHurwitzRankCountermodels` | Exact `(2,2)` comparison with closure dimension 1, resonance rank 1, and differential rank 1 |
+| `GaloisForLFunctions.HTGeometry.PolarHistorySeparationLaw` | Compact projected recurrence, proper straight-line lift, deck-kernel period criterion, endpoint-observer no-go, and exact polar energy law |
+| `GaloisForLFunctions.HTGeometry.RestrictedHistoryHurwitzCountermodels` | Explicit `3/2`, `√2`, and `√2+I` Hurwitz hypertranscendence, periodic/recurrent/aperiodic phase separation, and radial escape |
+
+All new modules are imported by `GaloisForLFunctions.HTGeometry`.
+
+### Paper-to-Lean map
+
+- Theorem 2.1:
+  `multiplicativeRestrictedHistoryAbstractCompletion`,
+  `multiplicativeRestrictedHistory_compactObserver_openHistory`, and
+  `multiplicativeRestrictedHistory_explicit_openLift_along`.
+- Corollary 2.2:
+  `multiplicativeRestrictedHistory_no_finiteObserver_supportCost_bound`.
+- Theorem 3.1:
+  `HurwitzJointOrbit.additiveGrid_zero_of_robust_increment_span` and its degree-window
+  specialization in `PowerOrbitAdditiveSaturation`.
+- Countertheorem 4.1:
+  `hurwitzThreeHalvesFourThirds_commonMonodromy_order`,
+  `hurwitzThreeHalvesFourThirds_differentialIndependent`,
+  `hurwitzTwoFour_resonanceRank`,
+  `hurwitzTwoFour_monodromyClosureDimension`,
+  `hurwitzTwoFourExponents_differentialIndependent`,
+  `hurwitzTwoTwo_resonanceRank`,
+  `hurwitzTwoTwo_monodromyClosureDimension`, and
+  `hurwitzTwoTwoExponents_differentialRank_one`.
+- Theorem 5.1:
+  `liftedStraightLine_isProperMap`,
+  `liftedStraightLine_norm`,
+  `projectedStraightLine_compactClosure`,
+  `projectedStraightLine_recurrence`,
+  `projectedStraightLine_periodic_iff`,
+  `no_continuous_endpoint_observable_recovers_liftedLength`,
+  `polarLineEnergy_eq_four_sinh_sq`,
+  `complexPolarLineEnergy_nonneg`,
+  `complexPolarLineEnergy_eq_zero_iff`,
+  `complexPolarLineEnergy_mul_unitary`, and
+  `complexPolarLineEnergy_inv`.
+- Countertheorem 5.2:
+  `restrictedHistoryExponentZero_hypertranscendental`,
+  `restrictedHistoryExponentOne_hypertranscendental`,
+  `restrictedHistoryExponentTwo_hypertranscendental`,
+  `restrictedHistoryExponentZero_phase_periodic`,
+  `restrictedHistoryExponentOne_phase_aperiodic`,
+  `restrictedHistoryExponentOne_phase_recurrent`,
+  `restrictedHistoryExponentTwo_same_phase`,
+  `restrictedHistoryExponentTwo_monoScalar_norm`, and
+  `restrictedHistoryExponentTwo_radial_escape`.
+
+### Verification
+
+- Direct checks with `lake env lean <file>` passed for all four new modules.
+- Targeted `lake build` passed for each new module; no umbrella or full build was run.
+- Batched `#print axioms` covered every new capstone.  Output contains only Lean/mathlib
+  foundations `propext`, `Classical.choice`, and `Quot.sound`; no project axiom or `sorryAx`.
+- Existing corpus theorems reused above were not redundantly axiom-audited.

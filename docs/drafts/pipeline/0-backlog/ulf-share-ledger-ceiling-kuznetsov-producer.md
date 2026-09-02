@@ -267,3 +267,68 @@ unfolding, Maass forms, Kuznetsov.
 
 Order of build: 6a → 6c → 6d (holomorphic Petersson formula, self-contained), 6b in parallel,
 6e–6f only after a Maass-form foundation exists.
+
+## Lean (2026-09-02, brick 6a closed: holomorphic Poincaré series are modular forms)
+
+Corpus check before building: no holomorphic Poincaré series existed (the `ThetaCuspHawkingBM*`
+Poincaré modules are the real-analytic Eisenstein family with seed `(y/|cz+d|²)^s`; the
+`QuasiAbelianPoincareSeries` modules are theta-function Poincaré series on `ℂ^d`; `coprimeCuspMatrix`
+prescribes a first column). Mathlib's `EisensteinSeries.gammaSet 1 1 0`, `eisSummand`, the strip
+bounds and `gammaSetEquiv` are reused; nothing from them is duplicated.
+
+| Module | Headline theorems |
+|---|---|
+| `HTGeometry/HolomorphicPoincareSeries.lean` | `bottomRowMatrix` (determinant one with prescribed coprime bottom row), `exists_int_top_row_of_bottomRow_eq`, `coe_smul_eq_coe_smul_add_int_of_bottomRow_eq` (same bottom row ⇒ Möbius images differ by an integer), `poincareSummand`, `poincareSeries k m z = Σ_{(c,d) coprime} (cz+d)^{-k} e(m·M_{c,d}z)`, `norm_poincareSummand_le`, `summable_poincareSummand`, `poincareSeries_tendstoLocallyUniformly`, `poincareSummand_SL2_apply`, `poincareSeries_slash_apply` (`P_m ∣[k] γ = P_m`) |
+| `HTGeometry/HolomorphicPoincareSeriesModularForm.lean` | `poincareSummand_extension_differentiableOn`, `poincareSeries_mdifferentiable`, `poincareSeriesSIF`, `norm_poincareSeries_le_tsum_norm`, `isBoundedAtImInfty_poincareSeries`, `poincareSeriesMF : ModularForm 𝒮ℒ k` for `k ≥ 3` |
+
+Both `lake env lean` clean with zero warnings, axioms `propext/Classical.choice/Quot.sound`.
+Still open in 6a: cuspidality for `m ≥ 1` (`IsZeroAtImInfty`), which needs the tail estimate
+`Σ_{c≠0} |cz+d|^{-k} ≪ y^{1−k}`; mathlib's Eisenstein boundedness argument gives only a constant.
+
+## Lean (2026-09-02, brick 6a fully closed: `P_m` is a cusp form for `m ≥ 1`)
+
+| Module | Headline theorems |
+|---|---|
+| `HTGeometry/HolomorphicPoincareSeriesCuspForm.lean` | `gammaSet_snd_eq_of_fst_eq_zero` (the two pairs `(0, ±1)`), `norm_poincareSummand_le_exp_of_fst_eq_zero` (`‖term‖ ≤ e^{−2πmy}`), `im_le_norm_linear_of_fst_ne_zero` (`|cz+d| ≥ y` for `c ≠ 0`), `norm_poincareSummand_le_of_fst_ne_zero` (`≤ y^{−1/2}·r^{−(k−1/2)}‖(c,d)‖^{−(k−1/2)}` on a vertical strip), `tsum_ite_fst_eq_zero_le` (at most two `c = 0` pairs), `norm_poincareSeries_le_of_two_le_im` (`‖P_m(z)‖ ≤ 2e^{−2πmy} + C_k y^{−1/2}` for `y ≥ 2`), `tendsto_poincareCuspBound_atTop`, `isZeroAtImInfty_poincareSeries`, `poincareSeriesCF : CuspForm 𝒮ℒ k` (`k ≥ 3`, `m ≥ 1`), `coe_poincareSeriesCF` (same function as `poincareSeriesMF`) |
+
+Mechanism: the `y^{−1/2}` decay is extracted by splitting `|cz+d|^{−k} = |cz+d|^{−1/2}·|cz+d|^{−(k−1/2)}`
+and using mathlib's strip bound with the real exponent `k − 1/2 > 2`; this avoids the classical
+`y^{1−k}` tail estimate entirely.
+
+## Lean (2026-09-02, brick 6c started: the modular fundamental domain, measure-theoretically)
+
+Neither mathlib nor the corpus had `ModularGroup.fd` as a `MeasureTheory.IsFundamentalDomain`
+(mathlib has the set-theoretic facts `exists_smul_mem_fd`, `eq_one_or_neg_one_of_mem_fdo_mem_fd`,
+`coe_fd`, the invariant measure `dx dy/y²` and its `GL(2,ℝ)`-invariance; the corpus's only
+fundamental-domain unfoldings are Connes' idelic ones).
+
+| Module | Headline theorems |
+|---|---|
+| `HTGeometry/ModularFundamentalDomainMeasure.lean` | `PSL2Z := SL(2,ℤ) ⧸ ker(action)` with its faithful `MulAction` on `ℍ`, `MeasurableConstSMul`/`SMulInvariantMeasure` instances for `SL(2,ℤ)` and `PSL2Z`, `neg_one_mem_modularActionKernel`, `volume_re_eq_zero` (vertical lines are Lebesgue-null), `coe_fd_diff_fdo_subset` (boundary ⊆ two lines ∪ unit circle), `volume_fd_diff_fdo` (boundary null for `dx dy/y²`), `fd_inter_smul_fd_subset` (`𝒟 ∩ g𝒟 ⊆ ∂𝒟` for `g ≠ ±1`), `isFundamentalDomain_fd : IsFundamentalDomain PSL2Z 𝒟 volume` |
+
+Next in 6c: coset-representative fundamental domains for a subgroup (general), the strip
+`{0 ≤ Re z < 1}` as a fundamental domain for the translations, and the unfolding
+`Σ_{(c,d)} ∫_𝒟 φ(M_{c,d} z) = 2 ∫_strip φ` for `T`-periodic `φ`.
+
+## Lean (2026-09-02, brick 6c: unfolding along the translations closed)
+
+| Module | Headline theorems |
+|---|---|
+| `HTGeometry/ModularStripUnfolding.lean` | `isFundamentalDomain_iUnion_smul_of_cosetReps` (general: a `G`-fundamental domain and right-coset representatives `R : ι → G` of `H ≤ G` give the `H`-fundamental domain `⋃ R i • s`), `translationSubgroup := zpowers (T mod ±1)`, `modularStrip := {0 ≤ Re z < 1}`, `isFundamentalDomain_modularStrip`, `gammaSetHalf` (rows `(c,d)` with `c > 0`, or `(0,1)`) with `gammaSetHalfNegEquiv : half ≃ halfᶜ`, `mem_modularActionKernel_iff` (`ker = {±1}`), `PSL2Z_mk_eq_iff`, `exists_eq_T_zpow_mul_of_bottomRow_eq`, `exists_translation_mul_halfRep` + `translation_mul_halfRep_injective` (`PSL₂(ℤ) = ⊔ ⟨T⟩·M_{c,d}`), `isFundamentalDomain_iUnion_halfRep_smul_fd`, `tsum_setIntegral_fd_eq_two_mul_setIntegral_modularStrip`: for `T`-periodic `φ` integrable on the strip, `Σ_{(c,d) coprime} ∫_𝒟 φ(M_{c,d} z) = 2 ∫_{strip} φ` |
+
+Remaining for 6c: (i) `∫_{strip} F dμ = ∫_0^∞ (∫_0^1 F(x+iy) dx) y^{−2} dy` (density + `ofComplex` +
+Fubini), (ii) integrability of `petersson k f (e(m·))` on the strip and of `petersson k f P_m` on
+`𝒟` with the `Σ/∫` exchange, (iii) mathlib's coefficient integral and
+`integral_rpow_mul_exp_neg_mul_Ioi` to reach `⟨f, P_m⟩ = 2·conj(a_f(m))·Γ(k−1)/(4πm)^{k−1}`.
+
+## Lean (2026-09-02, brick 6c: strip integrals in the chart)
+
+| Module | Headline theorems |
+|---|---|
+| `HTGeometry/UpperHalfPlaneStripIntegral.lean` | `hyperbolicDensity z = ofReal (y⁻²)`, `volume_eq_comap_withDensity` (mathlib's `dx dy/y²` as comap + density), `stripEquiv : ℂ ≃ᵐ ℝ × ℝ` (`w ↦ (Im w, Re w)`, measure preserving), `stripEquiv_image_coe_modularStrip` (`= (0,∞) × [0,1)`), `stripChartIntegrand F (y,x) = y⁻² • F(x+iy)`, `setIntegral_modularStrip_eq_chart`, `integrableOn_modularStrip_iff`, `setIntegral_modularStrip_eq_iterated` (`∫_{strip} F = ∫_0^∞ y⁻² (∫_0^1 F(x+iy) dx) dy` for `F` integrable on the strip) |
+
+## Lean (2026-09-02, brick 6c: the Petersson integrand of `P_m`)
+
+| Module | Headline theorems |
+|---|---|
+| `HTGeometry/PoincareSeriesPeterssonIntegrand.lean` | `expSeed m z = e(mz)` (continuous, `T`-periodic, `‖·‖ = e^{−2πmy}`), `expSeed_slash_gammaSetMatrix` (`e_m ∣[k] M_{c,d} = poincareSummand`), `cuspForm_T_zpow_smul`, `petersson_expSeed_gammaSetMatrix_smul` (`ψ(M_{c,d} z) = conj(f z)·summand·y^k` via mathlib's `petersson_slash_SL`), `petersson_poincareSeries_eq_tsum` (`petersson k f P_m = Σ ψ∘M_{c,d}` pointwise), `integrableOn_exp_neg_mul_mul_rpow_Ioi`, `continuousOn_stripChartIntegrand`, `integrableOn_modularStrip_of_bound` (`‖F‖ ≤ C e^{−ay} y^r`, `a>0`, `r>1` ⇒ integrable on the strip), `exists_bound_petersson_expSeed` (`‖ψ‖ ≤ C e^{−2πmy} y^{k/2}` from mathlib's `CuspFormClass.exists_bound`), `integrableOn_modularStrip_petersson_expSeed` (`k ≥ 3`, `m ≥ 1`) |

@@ -914,3 +914,63 @@ with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired with
 Card remains Stage 2. Equal-modulus main/remainder classification is closed. Remaining shared
 primitive is collective control of the terminal distinct-modulus carrier at paper ranges, then
 Lemma 3.5(ii), amplification, and all-interval supply; no estimate is assumed.
+
+## Lean progress update (2026-09-02) — exact scalar analytic frontier
+
+`Sieve/KloostermanAnalyticFrontier.lean` gives the full transform-output energy a named exact
+frontier: nonnegative Ramanujan main energy, same-modulus completion remainder, and terminal
+distinct-modulus carrier. It proves closed full-source budgets, combined imaginary cancellation,
+and an unconditional scalar energy bound with no analytic premise.
+
+Direct check and targeted build pass (`12741/12741`). All six public theorem declarations audit
+with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella build.
+
+Card remains Stage 2. This closes the elementary absolute-value baseline only. Remaining shared
+primitive is collective spectral cancellation beyond the terminal-carrier budget, followed by
+source routing into Lemma 3.5(ii), amplification, and all-interval supply; no estimate is assumed.
+
+## Lean progress update (2026-09-02) — terminal geometric cancellation
+
+`Sieve/KloostermanCrossPhaseGeometric.lean` proves cross-unit phase nonresonance for unequal
+positive moduli. `Sieve/KloostermanTerminalGeometricCancellation.lean` expands the literal
+terminal block into nontrivial geometric orbits and proves a length-independent reciprocal-chord
+bound, combined pointwise with the exact-length totient estimate.
+
+Direct checks and targeted builds pass (`12746/12746`, `12747/12747`). Eleven public declarations
+across both leaves audit with only `[propext, Classical.choice, Quot.sound]`; leaves are
+umbrella-wired without umbrella build.
+
+Card remains Stage 2. Remaining shared primitive is collective control of reciprocal chord
+denominators and signed modulus/source aggregation at paper ranges, then Lemma 3.5(ii),
+amplification, and all-interval supply; no estimate is assumed.
+
+## Lean progress update (2026-09-02) — coprime cross-frequency CRT compression
+
+`Sieve/KloostermanCoprimeCrossPhaseFrequency.lean` proves an explicit equivalence between
+coprime cross-unit pairs and units modulo the product period, with CRT coordinates `(-r*x, q*y)`.
+Its standard additive character is the exact terminal cross-phase ratio.  Thus the double
+reciprocal-chord carrier compresses losslessly to one product-unit sum, and the terminal bound is
+available in that form.
+
+Direct check and targeted leaf build pass (`12749/12749`).  All eight public theorem declarations
+audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella
+build.
+
+Card remains Stage 2.  Remaining shared primitive is a harmonic product-period chord estimate,
+then noncoprime gcd strata and signed modulus/source aggregation at paper ranges, Lemma 3.5(ii),
+amplification, and all-interval supply; no estimate is assumed.
+
+## Lean progress update (2026-09-02) — product-unit harmonic chord bound
+
+`Sieve/KloostermanProductUnitChordSum.lean` proves the collective bound
+`sum_units 2/||1-e_N(z)|| <= N*(1+log N)` from two-sided Jordan separation and existing harmonic
+finite-family control.  With brick 122, this gives every coprime terminal block and stored Gram
+correlation an unconditional length-independent product-period harmonic bound.
+
+Direct check and targeted leaf build pass (`13483/13483`).  All eight public theorem declarations
+audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella
+build.
+
+Card remains Stage 2.  Coprime reciprocal-denominator aggregation is closed.  Remaining shared
+primitive is noncoprime gcd stratification and signed modulus/source aggregation at paper ranges,
+then Lemma 3.5(ii), amplification, and all-interval supply; no estimate is assumed.
