@@ -1004,6 +1004,133 @@ retains the common arithmetic sequence on which cross-modulus cancellation must 
 
 Direct check and targeted build pass (`9231/9231`). Focused audit of all eight new theorem
 declarations reports only `[propext, Classical.choice, Quot.sound]`; final leaf is umbrella-wired
-without an umbrella build. Card remains Stage 2: adjoint/representation structure is closed, while
-the quantitative Kuznetsov--Deshouillers--Iwaniec operator estimate remains open and is not a
-hypothesis of any endpoint.
+without an umbrella build. Card remains Stage 2: adjoint/representation structure is closed and
+the next exact orthogonality audit determines which specialization can carry a spectral estimate.
+No quantitative estimate is a hypothesis of any endpoint.
+
+## Lean progress update (2026-09-02) — two-sided hybrid collapse classification
+
+`Sieve/KloostermanSharedHybridCollapse.lean` proves the exact pointwise unit-residue Fourier
+formula, a reusable reflected-frequency pairing identity, and the full collapse law
+
+```text
+two additive-hybrid legs + complete Kloosterman kernel
+  = (modulus)^2 * inverse-residue correlation.
+```
+
+Thus the two-sided shared additive-Fourier specialization is not the missing Kuznetsov carrier:
+finite orthogonality removes its Kloosterman kernel before any modulus average. Generic signed
+modulus bilinear form remains valid, and the one-sided hybrid form remains the relevant candidate
+because its second residue vector is not another additive Fourier transform.
+
+Direct check and targeted build pass (`9233/9233`). All five theorem declarations audit with only
+`[propext, Classical.choice, Quot.sound]`; final leaf is umbrella-wired without umbrella build.
+Card remains Stage 2. Remaining analytic primitive is a genuine one-sided/shared-arithmetic
+Kuznetsov--Deshouillers--Iwaniec modulus estimate, followed by source Type-I routing. No false
+two-sided spectral premise survives.
+
+## Lean progress update (2026-09-02) — genuine ordinary-index Kloosterman carrier
+
+Two unconditional modules install the nondegenerate replacement:
+
+- `Sieve/KloostermanPhysicalResidueModulusBilinear.lean` groups the same ordinary Dirichlet
+  coefficients into physical residue fibres at every modulus, without additive Fourier transforms,
+  and expands the result back to the literal signed sums
+  `sum_q w_q sum_m a_m(t) sum_n b_n(t) S(m,n;q)`;
+- `Sieve/KloostermanIntegerModulusKernel.lean` isolates
+  `sum_q w_q S(m,n;q)` as a kernel on ordinary integer indices, proves symmetry, conjugation, and
+  the exact totient triangle baseline, and identifies the physical-residue carrier with its finite
+  ordinary-index bilinear form.
+
+Direct checks and targeted builds pass (`9234/9234`, `9235/9235`). Focused audit of all nine new
+theorem declarations reports only `[propext, Classical.choice, Quot.sound]`; final leaf is
+umbrella-wired without umbrella build.
+
+Card remains Stage 2. Representation question is now closed precisely: this integer-index signed
+kernel retains the complete Kloosterman sums and shared arithmetic coefficients, while the earlier
+two-additive-leg specialization provably does not. Remaining primitive is a quantitative spectral
+operator estimate for this kernel strong enough to imply Lemma 3.5(ii), then source Type-I routing,
+amplification, and Theorem 1.2. No estimate is assumed.
+
+## Lean progress update (2026-09-02) — finite kernel operator receiver
+
+`Sieve/KloostermanIntegerKernelOperator.lean` defines the signed integer-kernel transform and its
+finite bilinear form. It proves the exact Cauchy receiver, pointwise and summed Hilbert--Schmidt
+bounds, the fully scalar cardinality/totient baseline, and the identity with the physical-height
+carrier on the literal interval supports.
+
+Direct check and targeted build pass (`9236/9236`). All seven theorem declarations audit with only
+`[propext, Classical.choice, Quot.sound]`; final leaf is umbrella-wired without umbrella build.
+
+Card remains Stage 2. Algebraic and Hilbert-space routing to the correct signed kernel is closed.
+Remaining analytic theorem must improve the explicit Hilbert--Schmidt/cardinality/totient baseline
+at the paper's modulus ranges; no caller-supplied operator hypothesis has been introduced.
+
+## Lean progress update (2026-09-02) — exact Gram/off-diagonal frontier
+
+`Sieve/KloostermanIntegerKernelGram.lean` expands transform output energy into its Hermitian
+source-side Gram kernel, proves the exact quadratic identity, splits diagonal from a literal
+erased-index off-diagonal, and identifies the diagonal as manifestly nonnegative row square energy.
+
+Direct check and targeted build pass (`9237/9237`). All five theorem declarations audit with only
+`[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella build.
+
+Card remains Stage 2. Remaining spectral content is now isolated in one explicit finite object:
+`kloostermanIntegerKernelGramOffDiagonal`. Diagonal, adjoint, Cauchy, and all representation
+bookkeeping are unconditional and closed; no off-diagonal estimate is assumed.
+
+## Lean progress update (2026-09-02) — cross-modulus correlation expansion
+
+`Sieve/KloostermanCrossModulusCorrelation.lean` expands each signed-kernel Gram entry into the
+literal double modulus sum of incomplete Kloosterman correlations, proves Hermitian symmetry, and
+splits equal from distinct moduli by erasing the diagonal modulus.
+
+Direct check and targeted build pass (`9238/9238`). All three theorem declarations audit with only
+`[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella build.
+
+Card remains Stage 2. Remaining spectral theorem is reduced further to quantitative control of
+explicit incomplete cross-modulus correlations, especially the distinct-modulus part, on the
+paper's output interval. No correlation bound has been assumed.
+
+## Lean progress update (2026-09-02) — complete equal-modulus correlation
+
+`Sieve/KloostermanCompleteColumnCorrelation.lean` evaluates the full equal-modulus column
+correlation exactly as `q * S(0,k-n;q)` by additive-character orthogonality. Its diagonal is
+therefore exactly `q * phi(q)`.
+
+Direct check and targeted build pass (`9239/9239`). Both theorem declarations audit with only
+`[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella build.
+
+Card remains Stage 2. Equal-modulus complete-period arithmetic is closed. Remaining work is
+incomplete-window completion, bounds for the resulting zero-frequency/Ramanujan terms, and genuine
+distinct-modulus cancellation strong enough for Lemma 3.5(ii).
+
+## Lean progress update (2026-09-02) — complete-column Ramanujan arithmetic
+
+`Sieve/KloostermanCompleteColumnRamanujan.lean` identifies the full equal-modulus correlation with
+the modulus times the corpus's Chen--Gupta--Li Ramanujan coefficient, substitutes its exact
+gcd--Möbius divisor formula, and proves an unconditional divisor-sum norm majorant.
+
+Direct check and targeted build pass (`12570/12570`). All three public theorem declarations audit
+with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella build.
+
+Card remains Stage 2. Full-period equal-modulus arithmetic, including its gcd dependence, is now
+closed. Remaining analytic work is incomplete-window completion and genuine distinct-modulus
+cancellation strong enough for Lemma 3.5(ii); no estimate is assumed.
+
+## Lean progress update (2026-09-02) — same-modulus interval completion
+
+`Sieve/KloostermanSameModulusIntervalCompletion.lean` groups the actual `[1,M]` equal-modulus
+Gram correlation by residue class. It proves the exact decomposition into a uniform complete-period
+Ramanujan main term plus residue-count discrepancy, proves every discrepancy coefficient has
+absolute value at most one, and bounds the whole remainder by the sharp complete second-moment
+scale `q * phi(q)` using finite Cauchy--Schwarz.
+
+The module bridges this result directly to the stored correlation whose index `q` represents
+modulus `q+1`. Direct check and targeted build pass (`12571/12571`). All nine public theorem
+declarations audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired
+without umbrella build.
+
+Card remains Stage 2. Equal-modulus incomplete-window completion is closed unconditionally.
+Remaining spectral core is the distinct-modulus correlation estimate at the source ranges, then
+its Type-I routing; no analytic bound is assumed.

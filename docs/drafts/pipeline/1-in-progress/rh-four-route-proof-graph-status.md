@@ -19,7 +19,8 @@ Frontier map is read-only. Facts only; cards/certificates are authoritative.
 - Exact open core: fixed-channel third-order `++-` Einstein--Teukolsky projection at opposite simple QNM pole. Cancellation requires
   `samePoleSourceRemainder(z_q) = -A |A|² (-12/(Q+2))`.
 - Full source splits into three non-AIME channels. Critical BM matching forces aggregate `-AIME`; one channel is nonexact with projection at least `|AIME|/3`, or all three equal `-AIME/3`.
-- Exact scalar/vector KI reconstruction, chiral two-jet recovery, Plebanski vertex, first live multiplicity-matched angular jet, and second-harmonic return are closed. Missing premise is literal physical radial/left-QNM scale equalling the now-explicit required value.
+- Exact scalar/vector KI reconstruction, chiral two-jet recovery, Plebanski vertex, first-live multiplicity-matched angular jet, and second-harmonic return are closed.
+- Canonical complex-linear causal Peierls realization is dead globally: reciprocity plus retarded/advanced Schwarz exchange forces each same-fibre source response real even with arbitrary cross-fibre/channel mixing, while critical exact AIME cancellation requires a nonreal response; Hardy supplies the witness. A survivor must abandon canonical Peierls pairing/real structure, complex-linearity, reciprocity, or Schwarz exchange.
 
 ## FZZ-P
 
@@ -42,4 +43,4 @@ Frontier map is read-only. Facts only; cards/certificates are authoritative.
 
 ## Latest certificate
 
-`d4FullCrossBranchProjectedResidue_actualMultiplicityMatched_eq_unitBMTarget_iff_radialScale`: direct Lean PASS; targeted build `13205/13205` PASS; standard axioms; umbrella wired.
+`d4HBArbitraryGlobalLinearCausalPeierlsAIMERouteKilled`: direct Lean PASS; targeted build `13488/13488` PASS; standard axioms; umbrella wired.

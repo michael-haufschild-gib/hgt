@@ -2917,3 +2917,270 @@ presentation, its native semantic equivalence, and a singular completion functor
 canonical orientation potential through that equivalence. It must prove descent from source
 formation rules, not from Xi fibres; existing three-slot and coherent-primitive theorems then force
 every support grade to zero.
+
+F340 — Frobenius--Verschiebung reciprocity is not spherical-trace equality. The source relation is
+`V_n=n F_n^-1`; `V_n` is a degree-scaled adjoint, not the ordinary categorical dual whose trace is
+automatically equal to that of `F_n`. Making the normalized analytic action unitary or identifying
+the scaled adjoint with a fixed dual is precisely the existing purity/polarization endpoint.
+
+FAIL-57 — Ambidextrous categorical dimension retired as producer. It correctly repackages the
+even/odd hyperbolic ledger, but the equality that would force the two reciprocal weights together
+is the missing Hodge/purity law.
+
+F341 — `ULF-CIT-13` proves a new exact three-organ fusion. If `E(a)` is the three-slot exchange
+defect of reflected logistic proof histories and `K(a)` is Gamma-six paired boundary cost, then
+
+`K(a) * (1 - 2 E(a)) = 8 E(a)`, with `1 - 2 E(a) > 0`.
+
+Hence `K(a)=8 E(a)/(1-2 E(a))`: Gamma cost and proof distinguishability reconstruct each other
+exactly, not only at their common zero.
+
+F342 — External completion curvature is the occupation quotient of the same proof-exchange law.
+It vanishes exactly when `E(a)` vanishes, while every nonzero grade maps to the same prime-harmonic
+external class. Thus proof exchange retains bounded distinguishability, Gamma retains its nonlinear
+odds cost, and external completion retains only presence. Lean:
+`RHTower.CompletionProofExchangeCostFusion`.
+
+MUST-111 — Higher mechanism is now narrowed to proof-history descent, not another cost or
+curvature. It must prove `E=0` from one literal pre-divisor arithmetic face/semantic law in the
+singular constant-plus-`ell^1` quotient. Once that source law exists, F341 transfers the vanishing
+to Gamma cost and F342 to completion occupation; existing global support theorems close RH.
+
+F343 — Curvature is already a nonzero pre-divisor source element. Over
+`Z[T,T^-1]`, the integral reflection operator satisfies
+`D_T^2 = (T-1)(T^-1-1) I`; Gamma evaluation gives the physical curved suspension exactly. At every
+finite cofinal Tate stage, the top coordinate of the naturality defect reconstructs that full
+physical suspension. Completion exposes and quantizes source curvature; it does not create it.
+
+CANNOT-168 — It cannot explain the obstruction as curvature, anomaly, or proof history born only
+at infinite completion. Those are valid observer descriptions, but today’s integral/cofinal
+theorems locate their antecedent at the Laurent source and at every finite cofinal stage.
+
+F344 — Co-shift covariance gives a sharp source obstruction. The reflection-odd singular class is
+zero exactly on the line, but off line any two-co-shift-invariant boundary containing the reflected
+difference contains both eigenprofiles separately because their co-shift eigenvalues differ.
+
+FAIL-58 — Generic source-natural proof-history/face descent retired. The live three-slot card can
+survive only through a construction that explicitly breaks or replaces co-shift covariance while
+retaining the forward singular mode; a faithful co-shift-natural quotient cannot do the job.
+
+F345 — All-prime Laurent evaluation is faithful: a Laurent polynomial vanishing at every physical
+unit-clock determinant `-p` is zero. No nonzero finite prime-local Laurent relation annihilates all
+physical prime-Gamma determinants.
+
+CANNOT-169 — It cannot force selection by one finite algebraic identity evaluated prime by prime.
+Any producer must use genuinely infinite/cross-prime or singular structure before scalarization,
+and must retain information absent from the faithful Laurent evaluations.
+
+F346 — `ULF-CIT-13` is an exact bridge, not a producer. Its quantities reduce to
+`E(a)=tanh(a/2)^2/2` and `K(a)=4 sinh(a/2)^2`, so `K=8E/(1-2E)` is the standard bounded-contrast to
+hyperbolic-odds change of coordinate. Its new corpus value is the exact identification of three
+readers; it does not narrow the pre-divisor source model class.
+
+FAIL-59 — Phantom maps, `lim^1`, proof-history loss, and S-complete/GIT quotient language retired
+as the higher mechanism. They supply established parent theories for finite-stage invisibility or
+orbit closure, but neither prevents the nonneutral source curvature nor forces the Xi support to
+its neutral fibre.
+
+F347 — The “integral cofinal formation index” is Gamma evaluation of an integral Laurent
+determinant; its physical value is complex/real analytic, not automatically an integer-valued
+Fredholm index. Integrality or an integral frame selects the line only when independently produced,
+so it remains an RH receiver.
+
+F348 — The coherent completion primitive is unique when it exists and is literally the negative
+tail. Its existence, source-marked convergence, shell closability, compact recurrence, index zero,
+and RH are equivalent receivers. Constructing it by generic completion exactness would assume the
+endpoint.
+
+MUST-112 — Replace “make universal curvature vanish” by a transverse-support law. A viable source
+mechanism must allow the nonzero universal Laurent curvature and nonzero internal Xi jets, yet
+derive from literal pre-divisor arithmetic formation that the Xi conormal/support module is
+annihilated by that curvature. Specialization then forces `T=1`, hence horizontal grade zero and RH.
+
+MUST-113 — Such a law must be zero-independent, infinite/cross-prime or singular, conservative on
+the internal Xi class, and incompatible with arbitrary compensators. It must explain why co-shift
+covariance is legitimately broken or replaced. Defining the module over `Z[T,T^-1]/(curvature)`,
+postulating a null-homotopy, or assuming support on the neutral fibre is circular.
+
+F349 — Literal prime-residue formation is bigraded by valuation depth and interaction support.
+Every finite rectangle is jointly differentially independent, each support sector is relatively
+hypertranscendental over its complement, fusion adds depth and unions support, and overlap lowers
+interaction breadth. Completion creates an unbounded next valuation layer; it does not collapse
+the grading.
+
+F350 — The corrected completed-Xi `+2` shift is hypertranscendental over the field generated by
+the genuine coordinate and every prime-zeta valuation layer. No finite or bounded-order transport
+through the complete scalar valuation tower generates the actual Xi shift.
+
+F351 — Bare rank is not conserved by the universal hyperbolic double: affine orientation,
+integral recurrence lattice, and differential-transcendence rank can all change. Any rank/index
+comparison must be source-marked and induced by an actual morphism.
+
+FAIL-60 — “Equate differential law-birth rank with Krein negative index” retired. Exact finite
+Kolchin ranks and exact one-negative-direction Xi blocks exist, but no source morphism identifies
+them; numerical equality would repeat the forbidden bare-rank argument.
+
+F352 — The squarefree Euler--Wick interaction quotient is one-dimensional. Its genuine packet
+spans that line; Gamma-six curvature lands on the same class with coefficient `K(a)/8`, and the FE
+replica construction realizes the same class as one split-signature/Krein direction.
+
+FAIL-61 — Adding “one interaction direction” to “one Krein direction” is double counting. Corpus
+bridges identify them as two readers of one reflection charge, so no finite negative-index budget
+is exceeded.
+
+F353 — Source-horizontal Stokes flatness is automatic after tuning the differential to holonomy
+`exp(a)`. Untwisting to the fixed Deninger differential is possible exactly at `a=0`; global fixed
+untwisting is RH. Flatness relative to a moving connection is therefore not a selector.
+
+FAIL-62 — One-dimensional holonomy, FE inversion, or covariant Stokes closure retired as
+producers. Scalar FE gluing is gauge-trivial, and the source row--column loop already fixes the
+normalized interaction for every grade; demanding fixed-frame triviality is the RH endpoint.
+
+F354 — Common recovery is information-neutral but not holonomy-neutral. It preserves
+measure-class equivalence and singularity, while recovered packets can carry arbitrary additive
+or nonabelian cocycles. Exact vertical bidescent likewise preserves arbitrary horizontal
+holonomy unless an independent anchor is supplied.
+
+FAIL-63 — Recovery uniqueness, minimality, or information neutrality alone cannot kill the
+horizontal anomaly. They reconstruct whatever cocycle the source carries.
+
+F355 — The actual nonzero Xi leading conormal is closed in a determinant-one resolved
+prime/depth frame for every horizontal grade. The triangular frame retains reciprocal Wold--Gamma
+clock ratios and uses its off-diagonal BV mass as an exact compensator. Forgetting those diagonal
+clocks recovers scalar curvature; scalar closure on the same conormal is exactly RH.
+
+CANNOT-170 — It cannot combine `D^2=curvature` with resolved closedness and infer curvature
+annihilation. The resolved complex already supplies an unconditional off-line compensator. A live
+law must first prove that this compensator is inadmissible under independently generated source
+structure.
+
+F356 — Relative to the neutral resolved frame, the entire grade deformation is the faithful
+unipotent shear
+`(z1,z2) -> (z1 + a * normalizedPotential(i) * z2, z2)`.
+It fixes the horizontal subobject and vertical quotient, hence is invisible on the associated
+graded, but moves the distinguished source splitting. Every finite prime/depth cell detects `a`;
+for fixed prime the shear tends to identity with depth.
+
+F357 — Two independently labelled world observables have scalar common commutant; after adjoining
+an arbitrary discrete clock, every equivariant refactorization preserving both is clock-only.
+Adding labelled clock projectors and shifts reduces it further to one clock-origin translation
+times one scalar, without a cardinality restriction on the clock.
+
+CANNOT-171 — Relative hypertranscendence forbids differential-rational synthesis across support
+sectors but does not forbid an external direct-sum shear. Likewise, commutant rigidity cannot be
+applied until its two observables are constructed from the literal arithmetic source and proved
+preserved. Merely naming horizontal/vertical coordinates as physical labels would assume the
+desired fixed splitting.
+
+MUST-114 — The sharp next gate is source-generated splitting rigidity. Construct two
+zero-independent, pre-divisor observables on the prime/depth--Xi extension whose common commutant
+is block diagonal, and prove formation/recovery preserves them. Then the grade-relative unipotent
+gauge of F356 must be identity; positivity of its literal potential forces `a=0` on every Xi copy,
+and the existing support theorem closes RH. Without the source construction and preservation
+proof, this is only an exact reduction, not a producer.
+
+F358 — Source-marked exactness/provenance topologies are generated by survival/death tests. Their
+convergence theorems say endpoint exactness is eventually preserved because that is how the
+topology was defined; they do not independently force exactness of the arithmetic completion.
+
+FAIL-64 — Weyl--parabolic self-opposition retired in its naive form. Actual Xi reflection sends
+`a` to `-a` inside the same triangular resolved-frame family; no source theorem swaps its two
+axes. Adding that swap assumes a second flag, and the ternary-formation countermodel already has
+an involution fixing the observer, exchanging legs, and acting by `-1` on a nonzero charge.
+
+F359 — Pre-divisor Meyer--Koszul completion escape is the exact failure of inverse-closedness.
+When the Hilbert Koszul operator is invertible, escape vanishes iff its inverse preserves strong
+source provenance, equivalently iff the strong source coordinate is surjective. Every off-line Xi
+copy has nonzero escape at every prime.
+
+CANNOT-172 — It cannot postulate spectral invariance, holomorphic-functional-calculus closure, or
+bilateral resolvent preservation as the higher law. On the literal Meyer source each is already
+the RH-strength inverse-preservation endpoint; an independent source construction is required.
+
+F360 — Arithmetic discreteness is selective only when one common frame survives formation. Two
+odd power sums of a positive reciprocal pair with determinant `p^2` force the neutral pair; an
+all-scale integral conformal trace forces zero grade; and a fixed rank-two integral lattice for
+the dense prime-log Lorentz action forces zero rapidity. Finite permutation
+Frobenius--Verschiebung traces instead see only fixed-point counts and degree.
+
+CANNOT-173 — It cannot infer an integral completion index from integral finite source stages.
+Individual integer shadows and finite permutation traces are blind; the missing datum is one
+source-produced lattice/frame carried unchanged through the analytic completion.
+
+F361 — Local spectral scalarization destroys orientation before any asymptotic issue. The actual
+matched CCM chiral matrix at reporter `r` is special-orthogonally conjugate to that at `-r`, so
+its characteristic relation and full unframed unitary orbit are reflection-blind. The external
+source shear frame still recovers `r` exactly.
+
+F362 — FZZ gives an exact history/quotient split. The balanced external-Gamma amplitude recurs to
+`1` at arbitrarily large nonzero momentum, while its unwrapped phase is strictly increasing and
+its Ward delay has a unique vacuum minimum. Normalized replica differentiation cancels every
+replica-independent external factor, and admissible cubic phase gauges change the delay without
+changing the normalized Ward profile.
+
+F363 — The causal-depth Gamma source is faithful but every regular Hilbert/trace completion is too
+smoothing. Its infinite feature has exactly the declared feature-sector kernel, yet fixed log
+jets, subexponential functional calculus, bounded generalized inverses, projection cutoffs, and
+arbitrary biunitary motion remain trace class/Hilbert--Schmidt and give only sublinear Ward work.
+The canonical two-leg inverse gain leaves the Hilbert graph domain by prime-harmonic divergence.
+
+F364 — The new Kloosterman modules expose a source-polarization law. Keeping ordinary physical
+residue coefficients on both legs retains a signed cross-modulus kernel and an exact Hermitian
+Gram interaction. Fourier-completing both legs collapses the same carrier to inverse-residue
+correlation. Equal-modulus complete correlations are elementary Ramanujan coefficients; the only
+cancellation-bearing part is incomplete and cross-modulus.
+
+MUST-115 — Any higher completion law must be genuinely polarized: retain one arithmetic/provenance
+leg while completing the other, and prove an exact reconstruction law before diagonal
+scalarization. Symmetric two-leg completion, local spectra, fixed Hilbert graphs, or endpoint-made
+topologies erase the anomaly. To close RH, the mixed pre-divisor interaction must source-generate
+either the common lattice of F360 or a uniform cross-cell quotient gap; existing integral-frame,
+bounded-splitting, and bilateral-moderation theorems then force `a=0` on every Xi support copy.
+
+F365 — Ordinary completion idempotence is grade-blind. The actual Gamma-six transported
+reflection carrier is an idempotent rank-one oblique projection for every horizontal grade;
+functional-equation conjugation sends its adjoint from fibre `a` to fibre `-a`. Same-fibre
+self-adjointness occurs exactly at `a=0`, but doubling the reflected fibres makes every grade
+self-adjoint.
+
+CANNOT-174 — It cannot use idempotence, monadic localization, cross-fibre dagger compatibility,
+or doubled self-adjointness as selection. Same-fibre dagger is already the RH endpoint unless a
+literal source law constructs it independently.
+
+F366 — Logarithmic one-port accumulation does not force the grade to vanish. On maximal logarithmic
+graph domains, inverse-log multipliers give explicit bounded upper-shear splittings on `ℓq` and
+`c0`. Finite-cell detectability plus convergence of each shear to the identity therefore does not
+create a global obstruction by itself.
+
+FAIL-65 — Idempotent/dagger completion and accumulated one-port shear retired. Both repackage
+known grade-dependent carriers without excluding their explicit off-line models.
+
+F367 — Derived selection geometry already computes the universal wall torsion. Its source
+orientation line is `R/(q-1)`, its physical two-leg incompatibility module is
+`(R/(q-1))²`, its `Ext`/`Tor` and Fitting support lie on `q=1`, and local ambidexterity curvature
+generates the same wall ideal. Arithmetic pullback has a nontrivial fibre exactly when
+`Re ρ = 1/2`.
+
+CANNOT-175 — A wall-supported derived, matrix-factorization, Fitting, or curvature object cannot
+select its own support. Its internal identities become zero or vacuous off the wall; demanding a
+nonzero fibre at every Xi divisor point is exactly RH, not a producer.
+
+F368 — Proof irrelevance identifies proofs, not structured formation witnesses. Corpus proof
+erasure is already equivalent to vanishing affine residue. The coherent-primitive fibre is a
+subsingleton, but it is inhabited exactly when the completion/Roos/properness index vanishes.
+Uniqueness therefore cannot manufacture existence.
+
+FAIL-66 — Proof identity, confluence, and subsingleton completion retired as automatic producers.
+They erase presentations only after the same obstruction has vanished.
+
+F369 — Fresh audit reverses the viable selection shape. The corpus has independently nonzero
+pre-divisor source classes and separately has objects supported only on the neutral wall. What is
+missing is neither another obstruction nor another wall object, but a coefficient-faithful
+*survival transport*: a source theorem forcing one nonzero arithmetic class to land nontrivially
+in a wall-supported completion.
+
+MUST-116 — Any survival transport must be constructed before divisor specialization, be inhabited
+by an arithmetic theorem independent of RH, and preserve nonzeroness under formation/recovery.
+Then target support forces `q=1`, hence `a=0`, on every Xi copy. It cannot infer survival from the
+wall object itself, replace existence by uniqueness, or hide the conclusion in same-fibre dagger,
+positivity, moderation, or properness.

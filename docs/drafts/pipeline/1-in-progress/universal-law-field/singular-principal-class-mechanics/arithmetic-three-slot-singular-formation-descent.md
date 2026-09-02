@@ -2,8 +2,8 @@
 
 - **ID:** ULF-SPCM-D1
 - **Stage:** 1-in-progress
-- **Status:** conjectural source law; receiver and RH closure formally proved
-- **Open core:** construct and prove one source-native deletion/formation naturality square
+- **Status:** retired as stated after co-shift naturality audit; receiver and RH closure remain proved
+- **Open core:** none under fixed co-shift-natural quotient; any successor must change covariance
 
 ## 1. Big-picture interpretation of the higher law
 
@@ -93,6 +93,17 @@ Equivalently, `(D1.1)` makes each formation block have zero work; ULF-SPCM-02 th
 stable class, zero central holonomy, zero principal escape, and simultaneous vanishing in all four
 reconstruction organs.
 
+`ULF-CIT-13` now strengthens this closure from a shared zero locus to exact reconstruction. If
+`E` is the recovered three-slot defect and `K` is Gamma-six paired boundary cost, then
+
+`K(1-2E)=8E`, with `1-2E>0`.
+
+Thus the conjectural source face square does not merely select the same grade as Gamma curvature:
+it annihilates a proof-distinguishability coordinate whose nonlinear odds transform is the complete
+Gamma formation cost. External Route-R curvature is the further quotient retaining only whether
+`E` is zero. This identifies D1 as proof-history descent and rules out replacing it by another
+scalar cost, positivity, or occupation postulate.
+
 ## Conjecture D1 -- singular arithmetic face naturality
 
 There exists a source-defined three-slot formation object `F₃(S)` for literal completed
@@ -154,3 +165,20 @@ Retire or reformulate D1 immediately if any occurs:
 - [ ] source face identity
 - [ ] coefficient-faithful recovery square
 - [ ] unconditional RH theorem
+
+## Fresh hostile audit: fixed-quotient D1 is impossible
+
+`PrimeCoShiftNaturalSingularBoundaryNoGo` supplies the missing kill gate. Off the critical line,
+the forward and reflected singular histories are eigenprofiles for two distinct co-shift
+eigenvalues. Any boundary subgroup invariant under both co-shifts and containing their difference
+contains each eigenprofile separately. Therefore a faithful co-shift-natural quotient cannot both
+identify the two histories and retain the forward reciprocal-prime principal class.
+
+This directly contradicts D1 clauses 3 and 5 when `F₂(S)` is the proposed fixed
+constant-plus-`ell^1` source-natural quotient. D1 is not an unbuilt construction; in that form it
+is mathematically excluded.
+
+Survivor: a future face mechanism must use a moving/filtered boundary, a one-sided partial
+correspondence, or another source operation that explicitly replaces co-shift covariance. Merely
+renaming the same quotient as proof-history descent, a phantom class, or a Fitting-support module
+does not evade the theorem.

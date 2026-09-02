@@ -3104,5 +3104,137 @@ literally common across every modulus rather than hidden in an arbitrary modulus
 
 Direct check and targeted build pass (`9231/9231`). All eight theorem declarations audit with only
 `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella build.
-Remaining primitive is quantitative spectral cancellation on this shared signed carrier, not
-another finite Fourier baseline. No analytic premise has been introduced.
+This prepares an exact orthogonality audit of the shared specialization. No analytic premise has
+been introduced.
+
+### Two-sided additive-hybrid collapse, brick 103 (2026-09-02)
+
+`KloostermanSharedHybridCollapse.lean` proves that feeding additive Fourier transforms into both
+legs of the complete Kloosterman bilinear form removes the Kloosterman kernel exactly. The result
+is modulus squared times an inverse-residue correlation, and the signed modulus family is the sum
+of those correlations.
+
+Direct check and targeted build pass (`9233/9233`). All five theorem declarations audit with only
+`[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella build.
+
+This closes a false spectral direction. Two-sided shared additive-hybrid input cannot supply the
+missing Kuznetsov saving. The correct remaining carrier must keep one residue leg non-Fourier (or
+return to the generic signed Kloosterman bilinear form) while sharing the physical arithmetic
+coefficients across moduli. No conditional estimate has been introduced.
+
+### Physical-residue carrier and integer modulus kernel, bricks 104--105 (2026-09-02)
+
+`KloostermanPhysicalResidueModulusBilinear.lean` uses shared physical residue fibres rather than
+additive Fourier vectors. Fibrewise expansion recovers the literal classical Kloosterman bilinear
+sum on ordinary Dirichlet indices, so the complete kernel survives. Continuity and the exact
+fixed-modulus operator baseline are closed.
+
+`KloostermanIntegerModulusKernel.lean` then moves the signed modulus sum inside both coefficient
+sums. It defines the ordinary-integer kernel `sum_q w_q S(m,n;q)`, proves its symmetry,
+conjugation, and totient baseline, and identifies the full physical-height carrier as its finite
+bilinear form.
+
+Direct checks and targeted builds pass (`9234/9234`, `9235/9235`). All nine theorem declarations
+audit with only `[propext, Classical.choice, Quot.sound]`; final leaf is umbrella-wired without
+umbrella build.
+
+Remaining primitive is now exact: prove a Kuznetsov--Deshouillers--Iwaniec operator bound for this
+signed integer-index kernel with the paper's modulus weights and ranges, then route it into the
+source Type-I moment. No arbitrary modulus-indexed coefficient family and no conditional spectral
+interface remains.
+
+### Finite signed-kernel operator receiver, brick 106 (2026-09-02)
+
+`KloostermanIntegerKernelOperator.lean` defines the finite transform and bilinear form of the
+ordinary-index signed modulus kernel. Cauchy--Schwarz reduces the bilinear square to transform
+output energy; a second Cauchy step gives the exact Hilbert--Schmidt energy, and the totient bound
+exposes the complete elementary cardinality loss. The literal physical-height carrier is proved
+equal to this operator on `Icc 1 N` and `Icc 1 M`.
+
+Direct check and targeted build pass (`9236/9236`). All seven theorem declarations audit with only
+`[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella build.
+
+Remaining primitive is no longer representational: replace this proved Hilbert--Schmidt/totient
+baseline by the quantitative Kuznetsov--Deshouillers--Iwaniec output-energy bound required by
+Lemma 3.5(ii), with all ranges discharged internally.
+
+### Exact Gram and off-diagonal frontier, brick 107 (2026-09-02)
+
+`KloostermanIntegerKernelGram.lean` proves the Hermitian Gram expansion of signed-kernel transform
+energy and splits it exactly into diagonal plus erased-index off-diagonal. The diagonal is proved
+equal to a nonnegative weighted sum of literal kernel row energies.
+
+Direct check and targeted build pass (`9237/9237`). All five theorem declarations audit with only
+`[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella build.
+
+The remaining Kuznetsov input is precisely a bound for
+`kloostermanIntegerKernelGramOffDiagonal` on the paper's supports and modulus weights. Everything
+needed to turn such a proved bound into output energy and the Type-I receiver is already closed;
+no hypothesis-bearing interface has been added.
+
+### Cross-modulus correlation expansion, brick 108 (2026-09-02)
+
+`KloostermanCrossModulusCorrelation.lean` expands a Gram entry as a weighted double modulus sum of
+literal incomplete correlations
+`sum_m conj(S(m,n;q)) S(m,k;r)`. It proves Hermitian symmetry and the exact equal/distinct-modulus
+split.
+
+Direct check and targeted build pass (`9238/9238`). All three theorem declarations audit with only
+`[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella build.
+
+Next analytic layer is completion and cancellation for these explicit correlations. Distinct
+moduli and off-diagonal input indices are now separate finite objects; neither estimate is encoded
+as a premise.
+
+### Complete equal-modulus correlation, brick 109 (2026-09-02)
+
+`KloostermanCompleteColumnCorrelation.lean` proves
+
+```text
+sum_m conj(S(m,n;q)) S(m,k;q) = q S(0,k-n;q),
+```
+
+and hence diagonal energy `q phi(q)`, using only finite additive-character orthogonality.
+
+Direct check and targeted build pass (`9239/9239`). Both theorem declarations audit with only
+`[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella build.
+
+Remaining correlation problem is now incomplete-window completion plus distinct moduli. The full
+equal-modulus period no longer belongs to the analytic frontier.
+
+### Complete-column Ramanujan arithmetic, brick 110 (2026-09-02)
+
+`KloostermanCompleteColumnRamanujan.lean` proves the exact identities
+
+```text
+complete column correlation = q * CGL Ramanujan coefficient
+                            = q * gcd--Möbius divisor sum,
+```
+
+then bounds its norm unconditionally by `q` times the corresponding positive divisor sum.
+
+Direct check and targeted build pass (`12570/12570`). All three public theorem declarations audit
+with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella build.
+
+Next analytic layer remains completion of finite output windows and distinct-modulus correlation
+cancellation. No hypothesis-bearing large-sieve or Kuznetsov interface has been introduced.
+
+### Same-modulus interval completion, brick 111 (2026-09-02)
+
+`KloostermanSameModulusIntervalCompletion.lean` proves exact residue grouping on `[1,M]`, splits
+each multiplicity as `M/q` plus a discrepancy of absolute value at most one, and obtains
+
+```text
+interval column correlation
+  = (M/q) * complete Ramanujan column correlation + remainder,
+norm remainder <= q * phi(q).
+```
+
+The remainder bound uses the exact Kloosterman second moment twice and finite Cauchy--Schwarz, not
+the pointwise totient bound. It is instantiated directly for the existing stored-modulus Gram
+correlation. Direct check and targeted build pass (`12571/12571`). All nine public theorem
+declarations audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired
+without umbrella build.
+
+Equal-modulus incomplete-window arithmetic is now closed. Distinct-modulus completion and
+cancellation are the remaining Kloosterman core before source Lemma 3.5(ii) routing.

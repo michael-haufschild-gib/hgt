@@ -1,8 +1,8 @@
 # G-CE prime–Gamma Laurent annihilator no-go
 
 - **ID:** GCE-LAURENT-1
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean 4)
 - **Source:** `rh-current-frontier-map.md`, G-CE; hard lock `rh-research-status.md`
 - **Statement:** Evaluation of the unit-clock prime–Gamma determinant Laurent algebra on all ordinary primes is injective; hence no nonzero finite Laurent law annihilates every local transgression.
 
@@ -22,7 +22,7 @@ one prime's forward/reflected unit-clock rotation determinants.
 
 - [x] 0 → 1 in-progress: source-pure, exact route edge, proof frozen, internal/external audit done
 - [x] 1 → 2 fully-proven: complete paper proof below, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3 formalized: Lean theorem and exact module build
+- [x] 2 → 3 formalized: Lean theorem, umbrella wiring, exact module build, axiom audit
 - [ ] 3 → 4 publication-ready
 
 ## Audits
@@ -64,8 +64,19 @@ is injective.
   forward/reflected determinants, the full local finite algebra is faithfully detected by primes.
 - **New insight:** G-CE annihilation cannot be prime-local finite algebra. It must be genuinely
   cross-prime, infinite/singular, or non-algebraic before scalarization.
-- **Status:** paper proof dependency-closed; Lean formalization next.
+- **Status:** formalized as
+  `RHTower.not_GCEPrimeLocalFiniteLaurentAnnihilatorExists` in
+  `GaloisForLFunctions.RHTower.PrimeGammaAllPrimeLaurentAnnihilatorNoGo`.
+
+## Lean audit
+
+- `lake env lean GaloisForLFunctions/RHTower/PrimeGammaAllPrimeLaurentAnnihilatorNoGo.lean` — pass
+- `lake build GaloisForLFunctions.RHTower.PrimeGammaAllPrimeLaurentAnnihilatorNoGo` — pass
+- Exported route kill, Laurent injectivity, zero classification, and reflected determinant theorem
+  use only `propext`, `Classical.choice`, `Quot.sound`.
+- Wired into `GaloisForLFunctions.RHTower`; no full or umbrella build run.
 
 ## Log
 
 - 2026-09-02 — frozen after corpus and literature audit; paper proof closed.
+- 2026-09-02 — Lean proof closed, exact module build and axiom audit passed; promoted to stage 3.

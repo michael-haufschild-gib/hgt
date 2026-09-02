@@ -26,3 +26,11 @@
 - Fröhlich 6(i)'s hypothesis holds; wild `2` is permitted; `α_Kβ_K=−1`.
 - Specialized global Artin epsilon/root number is the actual source-channel Tate product: dyadic radial-independent, unit off `{2,5,41}` and at infinity, equal to `−1` and Fröhlich's sign.
 - **Open:** construct the completed Artin `L` analytic family with this root number and its functional equation.
+
+## RH frontier
+
+- **TCD:** actual `D1>0` remains open only for `0<x<137/2000`; generic/static Hankel, positive operator, and contravariant carriers are closed no-gos.
+- **C5:** exact orientation is derivative of normalized shifted `2×2` reflected minor; positive near seam and cofinally, compact actual-orbit sign open.
+- **D1--C5 weld no-go:** source-positive seam `X=100` has `D1>0`, C5 orientation `0`, and C5 Lie derivative `<0`; any common producer must use actual theta-orbit dynamics.
+- **C5×D1 dynamic weld:** `A²D1 + LΩ′ = R₇` exactly, with no eighth jet in `R₇`; corridor `0<Ω′` and `LΩ′<R₇` closes both gates. Corridor is proved only near seam; global actual-source law is open.
+- **Suzuki:** actual CCM chord and Suzuki current are real/imaginary polarizations of one wall Gram; fixed-scale/head/bounded/sublinear corrections cannot semibound Ward defect. Live source needs unsummable signed atomic--continuous relative assembly before scalarization.

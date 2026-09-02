@@ -81,10 +81,12 @@ theorem primeGammaUnitDeterminantPolynomialEval_apply
     (P : Polynomial ℂ) (p : Nat.Primes) :
     primeGammaUnitDeterminantPolynomialEval P p =
       P.eval (primeGammaUnitForwardDeterminantProfile p) := by
-  change (Polynomial.eval₂ (algebraMap ℂ (Nat.Primes → ℂ))
-    (primeGammaUnitForwardDeterminantProfileUnit : Nat.Primes → ℂ) P) p = _
-  rw [Polynomial.eval₂_eq_sum, Polynomial.eval_eq_sum]
-  simp [primeGammaUnitForwardDeterminantProfileUnit]
+  induction P using Polynomial.induction_on' with
+  | add P Q hP hQ =>
+      rw [map_add, Pi.add_apply, Polynomial.eval_add, hP, hQ]
+  | monomial n a =>
+      simp [primeGammaUnitDeterminantPolynomialEval,
+        primeGammaUnitForwardDeterminantProfileUnit]
 
 /-- A polynomial is determined by its values on the infinite physical prime--Gamma profile. -/
 theorem primeGammaUnitDeterminantPolynomialEval_injective :
