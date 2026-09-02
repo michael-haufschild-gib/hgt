@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.FundamentalGroupTopologicalGroup
+import GaloisForLFunctions.HTGeometry.TorusChartFundamentalGroup
 
 /-!
 # Basepoint transport of translated loops in a topological group
@@ -77,5 +78,56 @@ theorem conjugate_translatedLoopPath_mk
     split_ifs <;> simp
   rw [hpath]
   exact conjugate_translatedLoopPath_mk_aux alpha g
+
+/-- A chart loop whose two torus-coordinate classes are respectively the chosen generator and
+the constant loop is the canonical first chart generator.  Its affine-coordinate loop is
+irrelevant because affine space is simply connected. -/
+theorem torusChart_mk_eq_firstGenerator_of_coordinate_mk
+    (k : ℕ) (p : Path (1 : ComplexTorusAffineChart k) 1)
+    (hfirst : Path.Homotopic.Quotient.mk
+        (p.map ContinuousMap.fst.continuous) = complexUnitsFundamentalGenerator)
+    (hsecond : Path.Homotopic.Quotient.mk
+        ((p.map ContinuousMap.snd.continuous).map ContinuousMap.fst.continuous) =
+          Path.Homotopic.Quotient.mk (Path.refl (1 : Units ℂ))) :
+    Path.Homotopic.Quotient.mk p = torusChartFirstFundamentalGenerator k := by
+  apply (fundamentalGroupComplexTorusAffineChartEquiv k).injective
+  rw [show fundamentalGroupComplexTorusAffineChartEquiv k
+      (torusChartFirstFundamentalGenerator k) =
+        (complexUnitsFundamentalGenerator, 1) by
+      simp [torusChartFirstFundamentalGenerator]]
+  ext
+  · exact hfirst
+  · rw [show (fundamentalGroupComplexTorusAffineChartEquiv k
+          (Path.Homotopic.Quotient.mk p)).2 =
+        Path.Homotopic.Quotient.mk
+          ((p.map ContinuousMap.snd.continuous).map ContinuousMap.fst.continuous) by
+        rfl]
+    rw [hsecond]
+    rfl
+
+/-- A chart loop whose two torus-coordinate classes are respectively the constant loop and the
+chosen generator is the canonical second chart generator. -/
+theorem torusChart_mk_eq_secondGenerator_of_coordinate_mk
+    (k : ℕ) (p : Path (1 : ComplexTorusAffineChart k) 1)
+    (hfirst : Path.Homotopic.Quotient.mk
+        (p.map ContinuousMap.fst.continuous) =
+          Path.Homotopic.Quotient.mk (Path.refl (1 : Units ℂ)))
+    (hsecond : Path.Homotopic.Quotient.mk
+        ((p.map ContinuousMap.snd.continuous).map ContinuousMap.fst.continuous) =
+          complexUnitsFundamentalGenerator) :
+    Path.Homotopic.Quotient.mk p = torusChartSecondFundamentalGenerator k := by
+  apply (fundamentalGroupComplexTorusAffineChartEquiv k).injective
+  rw [show fundamentalGroupComplexTorusAffineChartEquiv k
+      (torusChartSecondFundamentalGenerator k) =
+        (1, complexUnitsFundamentalGenerator) by
+      simp [torusChartSecondFundamentalGenerator]]
+  ext
+  · rw [show (fundamentalGroupComplexTorusAffineChartEquiv k
+          (Path.Homotopic.Quotient.mk p)).1 =
+        Path.Homotopic.Quotient.mk (p.map ContinuousMap.fst.continuous) by
+        rfl]
+    rw [hfirst]
+    rfl
+  · exact hsecond
 
 end GaloisForLFunctions.HTGeometry

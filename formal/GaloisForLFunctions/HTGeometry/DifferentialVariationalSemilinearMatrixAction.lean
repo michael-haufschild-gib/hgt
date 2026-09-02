@@ -33,7 +33,36 @@ theorem diffOpToCompletedPseudoRingHom_apply (p : DiffOp K) :
         (numeratorRingHom p : PseudoDiffOp K) :
           WithVal (pseudoDiffOpValuation (K := K))) : CompletedPseudoDiffOp K) := rfl
 
+/-- Completed coefficient transport commutes with the canonical embedding of differential
+operators. -/
+@[simp] theorem mapCompletedPseudoRingEquiv_diffOpToCompletedPseudoRingHom
+    (σ : K ≃+* K) (hσ : ∀ a : K, σ (a′) = (σ a)′) (p : DiffOp K) :
+    mapCompletedPseudoRingEquiv σ hσ (diffOpToCompletedPseudoRingHom p) =
+      diffOpToCompletedPseudoRingHom (mapRingEquiv σ hσ p) := by
+  rw [diffOpToCompletedPseudoRingHom_apply, mapCompletedPseudoRingEquiv_coe,
+    diffOpToCompletedPseudoRingHom_apply]
+  apply congrArg (fun x : WithVal (pseudoDiffOpValuation (K := K)) =>
+    (x : CompletedPseudoDiffOp K))
+  change WithVal.toVal pseudoDiffOpValuation
+      (mapPseudoRingEquiv σ hσ (numeratorRingHom p)) =
+    WithVal.toVal pseudoDiffOpValuation
+      (numeratorRingHom (mapRingEquiv σ hσ p))
+  rw [mapPseudoRingEquiv_numerator]
+
 variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+
+/-- Entrywise coefficient transport of invertible differential-operator matrices. -/
+def mapDiffOpMatrixUnit
+    (σ : K ≃+* K) (hσ : ∀ a : K, σ (a′) = (σ a)′) :
+    (Matrix ι ι (DiffOp K))ˣ →* (Matrix ι ι (DiffOp K))ˣ :=
+  Units.map (((mapRingEquiv σ hσ).toRingHom.mapMatrix).toMonoidHom)
+
+@[simp]
+theorem mapDiffOpMatrixUnit_val
+    (σ : K ≃+* K) (hσ : ∀ a : K, σ (a′) = (σ a)′)
+    (A : (Matrix ι ι (DiffOp K))ˣ) :
+    (mapDiffOpMatrixUnit σ hσ A : Matrix ι ι (DiffOp K)) =
+      (A : Matrix ι ι (DiffOp K)).map (mapRingEquiv σ hσ) := rfl
 
 /-- An invertible differential-operator matrix remains invertible after completed-skew embedding. -/
 def completedPseudoDiffOpMatrixUnitOfOperatorMatrixUnit
@@ -47,6 +76,30 @@ theorem completedPseudoDiffOpMatrixUnitOfOperatorMatrixUnit_val
     (completedPseudoDiffOpMatrixUnitOfOperatorMatrixUnit A :
         Matrix ι ι (CompletedPseudoDiffOp K)) =
       (A : Matrix ι ι (DiffOp K)).map diffOpToCompletedPseudoRingHom := rfl
+
+/-- Completed embedding preserves multiplication of operator-matrix units. -/
+theorem completedPseudoDiffOpMatrixUnitOfOperatorMatrixUnit_mul
+    (A B : (Matrix ι ι (DiffOp K))ˣ) :
+    completedPseudoDiffOpMatrixUnitOfOperatorMatrixUnit (A * B) =
+      completedPseudoDiffOpMatrixUnitOfOperatorMatrixUnit A *
+        completedPseudoDiffOpMatrixUnitOfOperatorMatrixUnit B :=
+  map_mul _ A B
+
+/-- Coefficient transport commutes with embedding an operator-matrix unit into the completed skew
+field. -/
+theorem mapCompletedPseudoDiffOpMatrixUnit_completedPseudoDiffOpMatrixUnitOfOperatorMatrixUnit
+    (σ : K ≃+* K) (hσ : ∀ a : K, σ (a′) = (σ a)′)
+    (A : (Matrix ι ι (DiffOp K))ˣ) :
+    mapCompletedPseudoDiffOpMatrixUnit σ hσ
+        (completedPseudoDiffOpMatrixUnitOfOperatorMatrixUnit A) =
+      completedPseudoDiffOpMatrixUnitOfOperatorMatrixUnit
+        (mapDiffOpMatrixUnit σ hσ A) := by
+  apply Units.ext
+  ext i j
+  simp only [mapCompletedPseudoDiffOpMatrixUnit_val,
+    completedPseudoDiffOpMatrixUnitOfOperatorMatrixUnit_val,
+    mapDiffOpMatrixUnit_val, Matrix.map_apply,
+    mapCompletedPseudoRingEquiv_diffOpToCompletedPseudoRingHom]
 
 /-- Package the coefficient-twisted inverse equations as an operator-matrix unit. -/
 def operatorMatrixUnitOfSemilinearInverse

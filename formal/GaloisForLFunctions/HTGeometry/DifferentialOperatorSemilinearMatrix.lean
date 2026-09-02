@@ -237,6 +237,15 @@ theorem basisMapMatrix_apply
     T (b i) = ∑ j, basisMapMatrix b T i j • b j :=
   (b.sum_repr (T (b i))).symm
 
+/-- The coordinate matrix of a pointwise identity map is the identity matrix. -/
+theorem basisMapMatrix_eq_one
+    (b : Module.Basis (Fin r) R M) (T : M → M) (hT : ∀ x, T x = x) :
+    basisMapMatrix b T = 1 := by
+  ext i j
+  by_cases h : i = j
+  · simp [basisMapMatrix, hT, Matrix.one_apply, h]
+  · simp [basisMapMatrix, hT, h, Ne.symm h]
+
 /-- A matrix satisfying the basis-vector expansion is the canonical coordinate matrix. -/
 theorem matrix_eq_basisMapMatrix_of_apply
     (b : Module.Basis (Fin r) R M) (T : M → M)
@@ -298,13 +307,13 @@ theorem basisMapMatrix_semilinear_comp {τ : R ≃+* R}
   intro i
   calc
     T (S (b i)) = T (∑ j, basisMapMatrix b S i j • b j) := by
-      rw [basisMapMatrix_apply]
+      rw [basisMapMatrix_apply b S i]
     _ = ∑ j, τ (basisMapMatrix b S i j) • T (b j) :=
       apply_sum_smul_of_semilinear hTadd hTsmul b Finset.univ
         (basisMapMatrix b S i)
     _ = ∑ j, τ (basisMapMatrix b S i j) •
         (∑ l, basisMapMatrix b T j l • b l) := by
-      exact Finset.sum_congr rfl fun j _ => by rw [basisMapMatrix_apply]
+      exact Finset.sum_congr rfl fun j _ => by rw [basisMapMatrix_apply b T j]
     _ = ∑ j, ∑ l,
         (τ (basisMapMatrix b S i j) * basisMapMatrix b T j l) • b l := by
       exact Finset.sum_congr rfl fun j _ => by
@@ -318,7 +327,9 @@ theorem basisMapMatrix_semilinear_comp {τ : R ≃+* R}
       exact Finset.sum_congr rfl fun l _ => (Finset.sum_smul).symm
     _ = ∑ l,
         ((basisMapMatrix b S).map (τ : R →+* R) * basisMapMatrix b T) i l • b l := by
-      simp only [Matrix.mul_apply, Matrix.map_apply]
+      refine Finset.sum_congr rfl fun l _ => ?_
+      rw [Matrix.mul_apply]
+      congr 1
 
 /-- The composition identity for the two matrices of a semilinear pair. -/
 theorem sum_mul_matrix_of_semilinear_comp {τ : R ≃+* R} (b : Module.Basis (Fin r) R M)

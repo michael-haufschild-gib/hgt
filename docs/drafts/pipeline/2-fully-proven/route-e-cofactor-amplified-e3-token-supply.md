@@ -1383,3 +1383,42 @@ without umbrella build.
 Card remains Stage 2.  Exact source Fourier/orbit interface is closed.  Remaining shared primitive
 is a collective signed spectral estimate for this literal carrier at paper ranges, followed by
 Lemma 3.5(ii), amplification, and Theorem 1.2; no cancellation estimate is assumed.
+
+## Lean progress update (2026-09-02) — source Parseval with residue collisions
+
+`Sieve/KloostermanSourceFourierParseval.lean` reuses the corpus's exact finite additive large-sieve
+Parseval theorem.  Arbitrary natural source indices are first compressed by their residue modulo
+`q`, so collisions are retained rather than hidden behind an injectivity assumption.  The module
+proves the exact full-frequency identity
+
+```text
+sum_{t mod q} |F_q(t)|² = q * sum_{z mod q} |sum_{n in B, n=z mod q} b_n|²
+```
+
+and bounds the inverse-unit-frequency energy occurring in the terminal source-Fourier
+factorization by this exact residue energy.  Both statements are unconditional and contain no
+source-support premise.
+
+Direct source check and targeted leaf build pass (`12749/12749`).  All four new public theorem
+declarations audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired
+without umbrella build.
+
+Card remains Stage 2.  Source-side finite Parseval control is closed.  Remaining shared primitive
+is cancellation of the terminal orbit kernel across modulus/unit frequencies at paper ranges,
+then Lemma 3.5(ii), amplification, and Theorem 1.2.
+
+## Lean progress update (2026-09-02) — terminal-orbit Hilbert--Schmidt receiver
+
+`Sieve/KloostermanTerminalSourceFourierEnergy.lean` applies finite Cauchy--Schwarz twice to the
+exact source-Fourier/orbit factorization.  For each modulus pair, the squared terminal source
+quadratic is bounded by the product of its two source Fourier energies and the entrywise squared
+energy of the terminal-orbit kernel.  Composing with source Parseval replaces both source factors
+by exact residue-collision energies, leaving only the literal orbit-kernel Hilbert--Schmidt term.
+
+Direct source check and targeted leaf build pass (`12750/12750`).  Both new public theorem
+declarations audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired
+without umbrella build.
+
+Card remains Stage 2.  Fixed-pair source energy reduction is closed.  Remaining shared primitive
+is a saving for terminal-orbit kernel energy or stronger signed operator cancellation at paper
+ranges, then Lemma 3.5(ii), amplification, and Theorem 1.2.

@@ -97,6 +97,9 @@ Cascades / differential algebra:
   (the unit-cost law modulo jet independence — the exact residue of cards 13/14)
 - `HTGeometry.FiniteOrderCascadeCompositionDepth` — exact positive-lower-order composition depth
   for arbitrary finite cascades of nonconstant differentiable finite-order entire maps
+- `HTGeometry.HahnLeadingCoefficient`, `HTGeometry.HahnTowerGradientStaircase` — generic Hahn
+  determinant coefficients and exact algebraic independence from the terminal/prefix leading
+  profile of a cascade logarithmic-state chain
 - `HTGeometry.AnalyticJetFieldBridge` — DA closed under `+ − × ^`
 - `HTGeometry.FractionRingDerivation.fractionRingDerivation`
 - `HTGeometry.DifferentiallyAlgebraicCancellation.differentiallyAlgebraic_right_of_mul_eq`
@@ -244,6 +247,13 @@ beyond this card (they are the quantitative core of Picard/Montel).
   Direct source check, leaf build, and new-declaration axiom audit are clean.  Both cards remain in
   stage 2 pending their exact differential-order observability capstones (and Card 14's
   Briot--Bouquet classification).
+- 2026-09-02 — Cards 13/14 Puiseux determinant endpoint closed by
+  `HTGeometry.HahnTowerGradientStaircase`: the correct terminal-output/descending-prefix boundary
+  matrix has nonzero determinant, and its Hahn observable family is algebraically independent over
+  `ℂ`.  `HTGeometry.HahnLeadingCoefficient` now supplies generic determinant boundary-coefficient
+  calculus.  Direct checks, leaf build, and all-new-theorem axiom audit are clean.  Remaining
+  observability obligation is exact construction of the logarithmic chain's prefix leads from each
+  card's branch hypothesis; neither card is promoted.
 
 ## The logarithmic-derivative lemma (I11): route and progress
 

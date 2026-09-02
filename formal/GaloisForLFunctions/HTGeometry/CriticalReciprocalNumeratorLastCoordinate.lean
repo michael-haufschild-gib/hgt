@@ -105,6 +105,20 @@ theorem aeval_criticalReciprocalNumerator_update_last
   rw [hwj, hw0]
   ring
 
+/-- Positive-index form of last-coordinate linearity, indexed directly by the changed
+coordinate. -/
+theorem aeval_criticalReciprocalNumerator_update_index
+    (K : Type*) [Field K] {L k : ℕ} (hk0 : 0 < k) (hk : k < L)
+    (v : Fin L → K) :
+    let j : Fin L := ⟨k, hk⟩
+    let w : Fin L → K := fun i ↦ if i = j then 0 else v i
+    MvPolynomial.aeval v (criticalReciprocalNumerator K L k) =
+      MvPolynomial.aeval w (criticalReciprocalNumerator K L k) -
+        v j * v ⟨0, by omega⟩ ^ (k - 1) := by
+  have hsucc : k - 1 + 1 = k := by omega
+  simpa only [hsucc] using
+    (aeval_criticalReciprocalNumerator_update_last K (k := k - 1) (by omega) v)
+
 end
 
 end GaloisForLFunctions.HTGeometry

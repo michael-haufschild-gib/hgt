@@ -236,6 +236,63 @@ theorem twentyOneHundred_lt_sq_gammaSewnMobiusApertureStokesPrimeDyadicShell_of_
       mul_pos (by linarith) (by linarith)
     nlinarith
 
+/-! ## Fixed-grid finite frame receiver -/
+
+/-- Positive shell-frame energy for finite packets and a source scale grid fixed in advance. -/
+def finiteGammaSewnMobiusApertureStokesPrimeDyadicFrameEnergy
+    {ι κ : Type*} (S : Finset ι) (J : Finset κ)
+    (depth mass : ι → ℝ) (scale : κ → ℝ) : ℝ :=
+  ∑ i ∈ S, mass i * ∑ j ∈ J,
+    gammaSewnMobiusApertureStokesPrimeDyadicShell (scale j) (depth i) ^ 2
+
+/-- Every atom covered by one member of the fixed source grid contributes at least `21/100` of
+its mass to total frame energy.  The selected scale is used only in the proof of the lower bound;
+the observable contains the complete predeclared grid. -/
+theorem twentyOneHundred_mul_mass_le_finitePrimeStokesDyadicFrameEnergy
+    {ι κ : Type*} (S : Finset ι) (J : Finset κ)
+    (depth mass : ι → ℝ) (scale : κ → ℝ) {δ M : ℝ}
+    (hM : 0 ≤ M)
+    (hbound : ∀ d : ℝ, 0 < d → d < δ →
+      |thetaPhysicalEndpointPrimeHardyGreenRegularAnomaly d| ≤ M)
+    (hmass : ∀ i ∈ S, 0 ≤ mass i)
+    (hscalePos : ∀ j ∈ J, 0 < scale j)
+    (hscaleSmall : ∀ j ∈ J, 2 * scale j < δ)
+    (hscaleError : ∀ j ∈ J, scale j * M < 2 / 25)
+    (hcover : ∀ i ∈ S, ∃ j ∈ J, ∃ c : ℝ,
+      depth i = c * scale j ∧ 1 / 2 ≤ c ∧ c ≤ 1) :
+    (21 / 100 : ℝ) * ∑ i ∈ S, mass i ≤
+      finiteGammaSewnMobiusApertureStokesPrimeDyadicFrameEnergy
+        S J depth mass scale := by
+  rw [finiteGammaSewnMobiusApertureStokesPrimeDyadicFrameEnergy,
+    Finset.mul_sum]
+  apply Finset.sum_le_sum
+  intro i hi
+  obtain ⟨j, hj, c, hdepth, hcLower, hcUpper⟩ := hcover i hi
+  have hcharge : (21 / 100 : ℝ) <
+      gammaSewnMobiusApertureStokesPrimeDyadicShell
+        (scale j) (depth i) ^ 2 := by
+    rw [hdepth]
+    exact twentyOneHundred_lt_sq_gammaSewnMobiusApertureStokesPrimeDyadicShell_of_small
+      hM (hscalePos j hj) (hscaleSmall j hj) (hscaleError j hj)
+      hbound hcLower hcUpper
+  have hterm :
+      gammaSewnMobiusApertureStokesPrimeDyadicShell (scale j) (depth i) ^ 2 ≤
+        ∑ k ∈ J,
+          gammaSewnMobiusApertureStokesPrimeDyadicShell
+            (scale k) (depth i) ^ 2 := by
+    exact Finset.single_le_sum
+      (fun k _ => sq_nonneg
+        (gammaSewnMobiusApertureStokesPrimeDyadicShell (scale k) (depth i))) hj
+  calc
+    (21 / 100 : ℝ) * mass i = mass i * (21 / 100 : ℝ) := by ring
+    _ ≤ mass i *
+        gammaSewnMobiusApertureStokesPrimeDyadicShell (scale j) (depth i) ^ 2 :=
+      mul_le_mul_of_nonneg_left hcharge.le (hmass i hi)
+    _ ≤ mass i * ∑ k ∈ J,
+        gammaSewnMobiusApertureStokesPrimeDyadicShell
+          (scale k) (depth i) ^ 2 :=
+      mul_le_mul_of_nonneg_left hterm (hmass i hi)
+
 end
 
 end RHTower

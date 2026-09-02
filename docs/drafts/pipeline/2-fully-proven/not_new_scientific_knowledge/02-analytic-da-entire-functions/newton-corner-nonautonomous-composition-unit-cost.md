@@ -212,10 +212,20 @@ positive lower order for the `n` displayed factors.  Its proof first gives the g
 upper growth-height bound and then combines it with the existing Pólya lower bound; no assumptions
 on factors beyond the finite cascade are introduced.
 
+The exact multigraded Puiseux/Hahn determinant endpoint is now closed in
+`HTGeometry/HahnTowerGradientStaircase.lean`.  The theorem
+`algebraicIndependent_hahnCascade_of_leads` proves algebraic independence of the terminal output
+and all descending-prefix logarithmic states from their actual leading Hahn coefficients.  It
+retains arbitrary strictly higher branch terms, differentiates them with the coordinate
+derivations, proves the complete reversed-column boundary determinant, and invokes the
+domain-valued Jacobian criterion.  Generic Hahn determinant coefficient calculus is supplied by
+`HTGeometry/HahnLeadingCoefficient.lean`.
+
 **The remaining open core is one statement:** the gradients `∂_j Y_m`, `m < n`, of the iterated
 logarithmic derivatives of `X_n` are linearly independent.  For the cascade `Y_1 = P_(n−1) h_n(X_n)`
 and `Y_2 = T_(n−1) + P_(n−1) κ_n(X_n)` with `κ_n = X_n h_n'(X_n) → 0`, so the asymptotic input is now
-needed only against a single scalar per level.  See `_STAGE3-LEDGER.md`.
+needed only to prove that these actual logarithmic states have the descending-prefix Hahn leads
+consumed by the new capstone.  See `_STAGE3-LEDGER.md`.
 
 Also owned: `ExpAffineCascade.scaled_jet_det_ne_zero` (the model determinant),
 `TerminalPowerCascadeInduction.algebraicIndependent_cascadeOutput` (the exactly-triangular case),

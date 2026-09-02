@@ -398,6 +398,196 @@ theorem variationalOre_basisMapMatrix_changeBasis {σ : K ≃+* K}
     (variationalOreModuleEquiv_add hfix hδ)
     (variationalOreModuleEquiv_smul hfix hδ)
 
+/-- Canonical operator-matrix units obey the denominator-free twisted basis-change identity. -/
+theorem variationalOreOperatorMatrixUnit_changeBasis {σ : K ≃+* K}
+    (hfix : ∀ c : C, σ (algebraMap C K c) = algebraMap C K c)
+    (hδ : ∀ x : K, σ (Differential.deriv x) = Differential.deriv (σ x))
+    {r : ℕ}
+    (b c : Module.Basis (Fin r) (DiffOp K) (VariationalOreModule C K)) :
+    variationalOreOperatorMatrixUnit hfix hδ c * basisTransitionMatrixUnit b c =
+      DiffOp.mapDiffOpMatrixUnit σ hδ (basisTransitionMatrixUnit b c) *
+        variationalOreOperatorMatrixUnit hfix hδ b := by
+  apply Units.ext
+  exact matrix_changeBasis_semilinear b c (variationalOreModuleEquiv hfix hδ)
+    (variationalOreModuleEquiv_add hfix hδ)
+    (variationalOreModuleEquiv_smul hfix hδ)
+    (basisTransitionMatrix b c)
+    (basisMapMatrix b (variationalOreModuleEquiv hfix hδ))
+    (basisMapMatrix c (variationalOreModuleEquiv hfix hδ))
+    (basisTransitionMatrix_apply b c)
+    (basisMapMatrix_apply b (variationalOreModuleEquiv hfix hδ))
+    (basisMapMatrix_apply c (variationalOreModuleEquiv hfix hδ))
+
+/-- Completed transition matrix between two finite operator bases. -/
+noncomputable def variationalOreCompletedBasisTransition
+    {r : ℕ}
+    (b c : Module.Basis (Fin r) (DiffOp K) (VariationalOreModule C K)) :
+    (Matrix (Fin r) (Fin r) (DiffOp.CompletedPseudoDiffOp K))ˣ :=
+  DiffOp.completedPseudoDiffOpMatrixUnitOfOperatorMatrixUnit
+    (basisTransitionMatrixUnit b c)
+
+/-- Completed action and transition units obey the exact twisted basis-change identity. -/
+theorem variationalOreCompletedMatrixUnit_changeBasis {σ : K ≃+* K}
+    (hfix : ∀ c : C, σ (algebraMap C K c) = algebraMap C K c)
+    (hδ : ∀ x : K, σ (Differential.deriv x) = Differential.deriv (σ x))
+    {r : ℕ}
+    (b c : Module.Basis (Fin r) (DiffOp K) (VariationalOreModule C K)) :
+    variationalOreCompletedMatrixUnit hfix hδ c *
+        variationalOreCompletedBasisTransition b c =
+      DiffOp.mapCompletedPseudoDiffOpMatrixUnit σ hδ
+          (variationalOreCompletedBasisTransition b c) *
+        variationalOreCompletedMatrixUnit hfix hδ b := by
+  unfold variationalOreCompletedMatrixUnit variationalOreCompletedBasisTransition
+  rw [DiffOp.mapCompletedPseudoDiffOpMatrixUnit_completedPseudoDiffOpMatrixUnitOfOperatorMatrixUnit,
+    ← DiffOp.completedPseudoDiffOpMatrixUnitOfOperatorMatrixUnit_mul,
+    ← DiffOp.completedPseudoDiffOpMatrixUnitOfOperatorMatrixUnit_mul]
+  congr 1
+  exact variationalOreOperatorMatrixUnit_changeBasis hfix hδ b c
+
+/-- The projective completed-lattice actions constructed from two finite operator bases are
+conjugate by their completed transition matrix.  Thus changing basis cannot change intrinsic
+translation data once the metric/Cartan layer is supplied. -/
+theorem variationalOreProjectiveBuildingAction_changeBasis {σ : K ≃+* K}
+    (hfix : ∀ c : C, σ (algebraMap C K c) = algebraMap C K c)
+    (hδ : ∀ x : K, σ (Differential.deriv x) = Differential.deriv (σ x))
+    {r : ℕ}
+    (b c : Module.Basis (Fin r) (DiffOp K) (VariationalOreModule C K))
+    (x : DiffOp.DifferentialVariationalProjectiveBuildingCarrier K (Fin r)) :
+    DiffOp.mapDifferentialVariationalProjectiveBuildingCarrierMatrix
+        (variationalOreCompletedBasisTransition b c)
+        (variationalOreProjectiveBuildingAction hfix hδ c x) =
+      variationalOreProjectiveBuildingAction hfix hδ b
+        (DiffOp.mapDifferentialVariationalProjectiveBuildingCarrierMatrix
+          (variationalOreCompletedBasisTransition b c) x) := by
+  unfold variationalOreProjectiveBuildingAction
+  unfold DiffOp.differentialVariationalProjectiveSemilinearAction
+  rw [DiffOp.mapDifferentialVariationalProjectiveBuildingCarrierMatrix_mul,
+    DiffOp.mapDifferentialVariationalProjectiveBuildingCarrierCoefficients_matrix,
+    DiffOp.mapDifferentialVariationalProjectiveBuildingCarrierMatrix_mul,
+    variationalOreCompletedMatrixUnit_changeBasis]
+
+/-- Canonical operator matrices of the variational action satisfy the exact semilinear cocycle
+law in every fixed finite basis. -/
+theorem variationalOre_basisMapMatrix_trans
+    (σ τ : K ≃+* K)
+    (hσfix : ∀ c : C, σ (algebraMap C K c) = algebraMap C K c)
+    (hτfix : ∀ c : C, τ (algebraMap C K c) = algebraMap C K c)
+    (hσδ : ∀ x : K, σ (Differential.deriv x) = Differential.deriv (σ x))
+    (hτδ : ∀ x : K, τ (Differential.deriv x) = Differential.deriv (τ x))
+    {r : ℕ} (b : Module.Basis (Fin r) (DiffOp K) (VariationalOreModule C K)) :
+    basisMapMatrix b
+        (variationalOreModuleEquiv (σ := σ.trans τ)
+          (fun c => by rw [RingEquiv.trans_apply, hσfix c, hτfix c])
+          (DiffOp.trans_deriv_comm σ τ hσδ hτδ)) =
+      (basisMapMatrix b (variationalOreModuleEquiv hσfix hσδ)).map
+          (DiffOp.mapRingEquiv τ hτδ : DiffOp K →+* DiffOp K) *
+        basisMapMatrix b (variationalOreModuleEquiv hτfix hτδ) := by
+  have hcomp := basisMapMatrix_semilinear_comp
+    (τ := DiffOp.mapRingEquiv τ hτδ) b
+    (variationalOreModuleEquiv hσfix hσδ)
+    (variationalOreModuleEquiv hτfix hτδ)
+    (variationalOreModuleEquiv_add hτfix hτδ)
+    (variationalOreModuleEquiv_smul hτfix hτδ)
+  have heq : (fun x => variationalOreModuleEquiv hτfix hτδ
+      (variationalOreModuleEquiv hσfix hσδ x)) =
+      variationalOreModuleEquiv (σ := σ.trans τ)
+        (fun c => by rw [RingEquiv.trans_apply, hσfix c, hτfix c])
+        (DiffOp.trans_deriv_comm σ τ hσδ hτδ) := by
+    funext x
+    exact variationalOreModuleEquiv_trans σ τ hσfix hτfix hσδ hτδ x
+  rw [heq] at hcomp
+  exact hcomp
+
+/-- Canonical operator-matrix units satisfy the semilinear cocycle law. -/
+theorem variationalOreOperatorMatrixUnit_trans
+    (σ τ : K ≃+* K)
+    (hσfix : ∀ c : C, σ (algebraMap C K c) = algebraMap C K c)
+    (hτfix : ∀ c : C, τ (algebraMap C K c) = algebraMap C K c)
+    (hσδ : ∀ x : K, σ (Differential.deriv x) = Differential.deriv (σ x))
+    (hτδ : ∀ x : K, τ (Differential.deriv x) = Differential.deriv (τ x))
+    {r : ℕ} (b : Module.Basis (Fin r) (DiffOp K) (VariationalOreModule C K)) :
+    variationalOreOperatorMatrixUnit
+        (σ := σ.trans τ)
+        (fun c => by rw [RingEquiv.trans_apply, hσfix c, hτfix c])
+        (DiffOp.trans_deriv_comm σ τ hσδ hτδ) b =
+      DiffOp.mapDiffOpMatrixUnit τ hτδ
+          (variationalOreOperatorMatrixUnit hσfix hσδ b) *
+        variationalOreOperatorMatrixUnit hτfix hτδ b := by
+  apply Units.ext
+  exact variationalOre_basisMapMatrix_trans σ τ hσfix hτfix hσδ hτδ b
+
+/-- Canonical completed matrix units satisfy the same semilinear cocycle law. -/
+theorem variationalOreCompletedMatrixUnit_trans
+    (σ τ : K ≃+* K)
+    (hσfix : ∀ c : C, σ (algebraMap C K c) = algebraMap C K c)
+    (hτfix : ∀ c : C, τ (algebraMap C K c) = algebraMap C K c)
+    (hσδ : ∀ x : K, σ (Differential.deriv x) = Differential.deriv (σ x))
+    (hτδ : ∀ x : K, τ (Differential.deriv x) = Differential.deriv (τ x))
+    {r : ℕ} (b : Module.Basis (Fin r) (DiffOp K) (VariationalOreModule C K)) :
+    variationalOreCompletedMatrixUnit
+        (σ := σ.trans τ)
+        (fun c => by rw [RingEquiv.trans_apply, hσfix c, hτfix c])
+        (DiffOp.trans_deriv_comm σ τ hσδ hτδ) b =
+      DiffOp.mapCompletedPseudoDiffOpMatrixUnit τ hτδ
+          (variationalOreCompletedMatrixUnit hσfix hσδ b) *
+        variationalOreCompletedMatrixUnit hτfix hτδ b := by
+  rw [variationalOreCompletedMatrixUnit,
+    variationalOreCompletedMatrixUnit,
+    variationalOreCompletedMatrixUnit,
+    DiffOp.mapCompletedPseudoDiffOpMatrixUnit_completedPseudoDiffOpMatrixUnitOfOperatorMatrixUnit,
+    ← DiffOp.completedPseudoDiffOpMatrixUnitOfOperatorMatrixUnit_mul]
+  congr 1
+  exact variationalOreOperatorMatrixUnit_trans σ τ hσfix hτfix hσδ hτδ b
+
+/-- Identity differential automorphism has the identity canonical operator matrix unit. -/
+theorem variationalOreOperatorMatrixUnit_refl
+    {r : ℕ} (b : Module.Basis (Fin r) (DiffOp K) (VariationalOreModule C K)) :
+    variationalOreOperatorMatrixUnit
+        (σ := RingEquiv.refl K) (fun _ => rfl) (fun _ => rfl) b = 1 := by
+  apply Units.ext
+  exact basisMapMatrix_eq_one b
+    (variationalOreModuleEquiv (σ := RingEquiv.refl K) (fun _ => rfl) (fun _ => rfl))
+    variationalOreModuleEquiv_refl
+
+/-- Identity differential automorphism has the identity canonical completed matrix unit. -/
+theorem variationalOreCompletedMatrixUnit_refl
+    {r : ℕ} (b : Module.Basis (Fin r) (DiffOp K) (VariationalOreModule C K)) :
+    variationalOreCompletedMatrixUnit
+        (σ := RingEquiv.refl K) (fun _ => rfl) (fun _ => rfl) b = 1 := by
+  rw [variationalOreCompletedMatrixUnit, variationalOreOperatorMatrixUnit_refl]
+  exact map_one _
+
+/-- The canonical projective completed-lattice action is functorial in a fixed finite operator
+basis. -/
+theorem variationalOreProjectiveBuildingAction_trans
+    (σ τ : K ≃+* K)
+    (hσfix : ∀ c : C, σ (algebraMap C K c) = algebraMap C K c)
+    (hτfix : ∀ c : C, τ (algebraMap C K c) = algebraMap C K c)
+    (hσδ : ∀ x : K, σ (Differential.deriv x) = Differential.deriv (σ x))
+    (hτδ : ∀ x : K, τ (Differential.deriv x) = Differential.deriv (τ x))
+    {r : ℕ} (b : Module.Basis (Fin r) (DiffOp K) (VariationalOreModule C K))
+    (x : DiffOp.DifferentialVariationalProjectiveBuildingCarrier K (Fin r)) :
+    variationalOreProjectiveBuildingAction hτfix hτδ b
+        (variationalOreProjectiveBuildingAction hσfix hσδ b x) =
+      variationalOreProjectiveBuildingAction
+        (σ := σ.trans τ)
+        (fun c => by rw [RingEquiv.trans_apply, hσfix c, hτfix c])
+        (DiffOp.trans_deriv_comm σ τ hσδ hτδ) b x := by
+  unfold variationalOreProjectiveBuildingAction
+  rw [DiffOp.differentialVariationalProjectiveSemilinearAction_trans,
+    ← variationalOreCompletedMatrixUnit_trans σ τ hσfix hτfix hσδ hτδ b]
+
+/-- Identity differential automorphism acts identically on the projective completed-lattice
+carrier. -/
+theorem variationalOreProjectiveBuildingAction_refl
+    {r : ℕ} (b : Module.Basis (Fin r) (DiffOp K) (VariationalOreModule C K))
+    (x : DiffOp.DifferentialVariationalProjectiveBuildingCarrier K (Fin r)) :
+    variationalOreProjectiveBuildingAction
+        (σ := RingEquiv.refl K) (fun _ => rfl) (fun _ => rfl) b x = x := by
+  unfold variationalOreProjectiveBuildingAction
+  rw [variationalOreCompletedMatrixUnit_refl]
+  exact DiffOp.differentialVariationalProjectiveSemilinearAction_refl_one x
+
 /-- The matrix of the differential-automorphism action has a trivial operator-row-lattice
 conductor: its operator elementary divisors all have degree zero.  Identifying this certificate
 with completed-building Cartan position is a separate comparison theorem. -/

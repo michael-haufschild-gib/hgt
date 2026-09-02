@@ -1022,3 +1022,35 @@ without umbrella build.
 Card remains Stage 2.  Exact source Fourier/orbit interface is closed.  Remaining shared primitive
 is collective signed spectral cancellation for this literal carrier at paper ranges, followed by
 Lemma 3.5(ii), amplification, and all-interval supply; no cancellation estimate is assumed.
+
+## Lean progress update (2026-09-02) — source Parseval with residue collisions
+
+`Sieve/KloostermanSourceFourierParseval.lean` closes the source-energy side of the new Fourier/orbit
+interface.  It compresses arbitrary finite sources by exact residue fibres, proves full additive
+Parseval using existing corpus infrastructure, and restricts that identity to the inverse unit
+frequencies occurring in the Kloosterman carrier.  The resulting bound retains all residue
+collisions and requires no injectivity or support hypothesis.
+
+Direct source check and targeted leaf build pass (`12749/12749`).  All four new public theorem
+declarations audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired
+without umbrella build.
+
+Card remains Stage 2.  Source-side finite Parseval control is closed.  Remaining shared primitive
+is collective terminal-orbit kernel cancellation across modulus/unit frequencies at paper ranges,
+followed by Lemma 3.5(ii), amplification, and all-interval supply.
+
+## Lean progress update (2026-09-02) — terminal-orbit Hilbert--Schmidt receiver
+
+`Sieve/KloostermanTerminalSourceFourierEnergy.lean` supplies the unconditional finite-operator
+receiver for the exact carrier.  Two Cauchy--Schwarz steps bound a fixed modulus-pair source
+quadratic by source Fourier energies times terminal-orbit Hilbert--Schmidt energy; the Parseval
+module then replaces both source factors by exact residue-fibre energies.  No orbit saving is
+inserted as a premise.
+
+Direct source check and targeted leaf build pass (`12750/12750`).  Both new public theorem
+declarations audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired
+without umbrella build.
+
+Card remains Stage 2.  Fixed-pair source energy reduction is closed.  Remaining shared primitive
+is terminal-orbit kernel energy saving or stronger signed modulus/operator cancellation at paper
+ranges, followed by Lemma 3.5(ii), amplification, and all-interval supply.
