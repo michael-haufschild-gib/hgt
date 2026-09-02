@@ -1,15 +1,14 @@
 # Modified-Bessel order and intensity are hypertranscendental
 
 - **ID:** `bessel-order-intensity-hypertranscendence`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / DIFFERENCE GALOIS THEORY / BLACK-HOLE RESPONSE
 - **Statement:** For every real `s > 0`, both `ν ↦ K_ν(s)` and
   `ν ↦ K_ν(s) K_{ν-2}(s)` are hypertranscendental over `ℂ(ν)`.
-- **Status:** `[PROVED HERE]` on paper; novelty search found no collision; Lean formalization has
-  closed every analytic, recurrence, scalar-annihilator, arbitrary-period progression-growth,
-  factorial-growth, rational-Riccati, meromorphic intensity-recovery, and physical-scan obligation.
-  The exact Dreyfus higher-order classification theorem remains unformalized, so this card is not
-  promoted.
+- **Status:** `[FORMALIZED]` The paper theorem, parameterized difference-Galois classification,
+  relation-adapted PPV construction, comparison-torsor independence, scalar-orbit contradiction,
+  intensity recovery, and physical scan are all unconditional Lean theorems.  Targeted build and
+  axiom audits pass; the card is promoted to Stage 3.
 
 ## Theorem
 
@@ -202,14 +201,10 @@ backreaction, and collapse stability remain outside the model.
 
 ## Lean obligations
 
-- [ ] Formalize the needed special case of Dreyfus's DA-to-periodic-exponential theorem, with no
-  axioms.  As of the linearisation pass this splits into exactly two items, both recorded below:
-  (a) exclude the imprimitive case for the order recurrence — no rank-one sub-`σ`-module of the
-  symmetric square, i.e. no `(α, β, γ) ≠ 0` and `c ∈ ℂ(X)` with
-  `σγ = cα`, `σβ + 2b σγ = cβ`, `σα + b σβ + b² σγ = cγ` for `b = c(X+1)`;
-  (b) Cassidy's structure theorem for Zariski-dense differential algebraic subgroups of `SL₂` — the
-  Galois matrices are controlled by the tangent space of the Kolchin closure at the identity, whose
-  linearity is now `DifferentialTangentLinearization.exists_nonzero_linear_relation_of_tangent`.
+- [x] Formalize the needed Dreyfus/Cassidy parameterized difference-Galois classification and its
+  Bessel specialization with no axioms.  Reducible, imprimitive, finite primitive, full-tangent,
+  and isomonodromy branches are discharged in the dependency chain culminating in
+  `BesselOrderParameterizedSl2Closure` and `BesselOrderGaloisScalingContradiction`.
 - [x] Define order-variable \(K_\nu(s)\) from `(2)` and prove entire dependence, reflection,
   recurrence, and real positivity.
 - [x] Formalize the symmetric-square system `(5)` and scalar-annihilator existence `(7)`.
@@ -234,7 +229,7 @@ backreaction, and collapse stability remain outside the model.
 
 - [x] 0 → 1: exact function, attack, and physical carrier identified.
 - [x] 1 → 2: dependency-closed paper proof.
-- [ ] 2 → 3: unconditional Lean theorem.
+- [x] 2 → 3: unconditional Lean theorem.
 - [ ] 3 → 4: standalone paper and Lean certificate.
 
 ## Log
@@ -4776,3 +4771,52 @@ the comparison determinant square law still requires parameterized no-new-`σ`-c
 equivalent Casoratian descent theorem). Parameterized constant-field/torsor descent, resulting
 Galois classification, actual meromorphic Bessel carrier embedding, and determinant-one
 density/finite-primitive exclusion remain and may not be retained as final theorem premises.
+
+## Lean formalization complete (2026-09-01)
+
+The remaining PPV comparison-basis premise is discharged by a componentwise Hardouin--Singer
+argument:
+
+```text
+SigmaDeltaNoNewConstantsTotalFraction
+  exists_eq_algebraMap_fractionRing_of_isSigmaDeltaSimple_of_diffFG
+SigmaConstantsDomainIndependence
+  linearIndependent_of_fraction_fixed
+FixedTensorComponentInjection
+  eq_zero_of_fixed_of_leftComponentTensorMap_eq_zero
+SigmaConstantsComponentTensorIndependence
+  linearIndependent_leftComponentTensorMap_of_fraction_fixed
+BesselOrderComparisonBasisIndependence
+  BesselOrderParameterizedPVData.comparisonBasis_linearIndependent
+```
+
+For each minimal differential-prime component, a positive shift period stabilizes the component;
+its quotient is a sigma-delta-simple domain; the total fraction ring has exactly the constant
+field; fixed comparison tensors remain independent there.  Transitivity of the finite component
+orbit and zero intersection descend this independence to the full reduced PPV ring.  No
+sigma-simplicity, domain, fixed-field, component, basis-independence, or comparison-torsor premise
+survives at the Bessel boundary.
+
+`BesselOrderGaloisScalingContradiction.false_of_besselRelation` now constructs comparison-basis
+independence internally.  `BesselOrderHypertranscendence` closes the universal endpoints:
+
+```text
+hypertranscendental_modifiedBesselKOrder
+  ∀ s : ℝ, 0 < s → Hypertranscendental (modifiedBesselKOrder s)
+hypertranscendental_modifiedBesselOrderIntensity
+  ∀ s : ℝ, 0 < s → Hypertranscendental (modifiedBesselOrderIntensity s)
+hypertranscendental_extremalBesselIntensityScan
+  ∀ κ s : ℝ, 0 < κ → 0 < s →
+    Hypertranscendental (extremalBesselIntensityScan κ s)
+```
+
+Final targeted audit:
+
+```text
+lake -K maxJobs=1 build GaloisForLFunctions.HTGeometry.BesselOrderHypertranscendence
+Build completed successfully.
+```
+
+All new capstones report only `[propext, Classical.choice, Quot.sound]` under `#print axioms`.
+No heartbeat or recursion-depth limit was raised.  The endpoint is wired into
+`GaloisForLFunctions.HTGeometry`; no umbrella build was run.

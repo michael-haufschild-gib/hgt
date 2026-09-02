@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.BesselOrderParameterizedSl2Closure
 import GaloisForLFunctions.HTGeometry.BesselOrderRelationAdaptedPPV
 import GaloisForLFunctions.HTGeometry.BesselOrderParameterizedBaseChangePoints
+import GaloisForLFunctions.HTGeometry.BesselOrderComparisonBasisIndependence
 import GaloisForLFunctions.HTGeometry.GaloisMonoidDifferentialRelation
 import GaloisForLFunctions.HTGeometry.DifferentialMatrixOrbitScaling
 import GaloisForLFunctions.HTGeometry.DifferentialPolynomialScaling
@@ -8,11 +9,10 @@ import GaloisForLFunctions.HTGeometry.DifferentialPolynomialScaling
 /-!
 # Bessel relation contradiction from faithful comparison-torsor descent
 
-This module assembles the algebraic endgame after relation-adapted PPV existence.  If the
-comparison algebra has its genuine torsor independence property, full `SL₂` closure propagates a
-nonzero scalar differential relation to every constant multiple.  A separating differential point
-of the PPV base change then contradicts differential-polynomial scaling over the differentially
-closed constants.
+This module assembles the algebraic endgame after relation-adapted PPV existence.  Full `SL₂`
+closure and the unconditional comparison-basis independence theorem propagate a nonzero scalar
+differential relation to every constant multiple.  A separating differential point of the PPV base
+change then contradicts differential-polynomial scaling over the differentially closed constants.
 -/
 
 open scoped Differential TensorProduct
@@ -105,19 +105,11 @@ theorem BesselOrderParameterizedPVData.fundamental_zero_zero_ne_zero
 
 /-- Faithful comparison-torsor descent turns any nonzero relation imposed in a positive-scale
 Bessel PPV quotient into a contradiction. -/
-theorem false_of_besselRelation_of_comparisonBasisIndependent
+theorem false_of_besselRelation
     (s : ℝ) (hs : 0 < s)
     (P : DifferentialPolynomial Unit (RatFunc Constants)) (hPne : P ≠ 0)
     (data : BesselOrderParameterizedPVData s)
-    (hPmem : besselScalarPPVRelation P ∈ data.M)
-    (hLI : ∀ (comparison : data.ComparisonJetData) {ι : Type}
-      (basis : Module.Basis ι Constants
-        (comparisonJetAlgebra (C := Constants) comparison.Z comparison.w)),
-      LinearIndependent data.PPVRing
-        (fun i =>
-          ((basis i :
-              comparisonJetAlgebra (C := Constants) comparison.Z comparison.w) :
-            data.TensorSquare))) : False := by
+    (hPmem : besselScalarPPVRelation P ∈ data.M) : False := by
   letI : Nontrivial data.PPVRing := by
     rw [← not_subsingleton_iff_nontrivial, Ideal.Quotient.subsingleton_iff]
     exact data.ne_top
@@ -137,7 +129,7 @@ theorem false_of_besselRelation_of_comparisonBasisIndependent
   have hgen := comparison.tensor_generated
   have hindep : LinearIndependent data.PPVRing
       (fun i => ((b i : E) : data.TensorSquare)) := by
-    exact hLI comparison b
+    exact data.comparisonBasis_linearIndependent comparison b
   have hrelation : differentialPolynomialEvalOver (K := RatFunc Constants)
       (fun _ : Unit => data.fundamentalMatrix 0 0) P = 0 := by
     rw [← besselScalarPPVRelation_quotient data P]

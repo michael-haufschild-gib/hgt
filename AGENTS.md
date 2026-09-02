@@ -1,5 +1,7 @@
 ## Session init
 1. Read fully, line by line: docs/meta/scientific-method.md
+2. Before RH work, read `docs/drafts/pipeline/1-in-progress/rh-research-status.md`; treat every hard
+   lock as a closed search class, not a conjecture to rediscover.
 
 ## The research pipeline (Kanban)
 Card template: docs/drafts/pipeline/_card-template.md
@@ -14,6 +16,7 @@ Card template: docs/drafts/pipeline/_card-template.md
 - Current ledger of the major routes and route candidates: docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md
 - Current ledger of possible RH endpoints and their proof obligations: docs/reports/endpoints.md
 - Always use `scripts/formal_tools.py research "<query>"` to search in the lean corpus.
+- Every conjecture must name its checked status lock/module and exact surviving RH-chain edge.
 
 ## Lean discipline
 - Verify every mathlib name against THIS toolchain in a /tmp scratch file

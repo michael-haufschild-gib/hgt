@@ -24,7 +24,7 @@ noncomputable section
 open scoped NumberField Pointwise
 open GaloisForLFunctions.RHTower
 
-local instance : Fact (Nat.Prime 41) := ⟨by norm_num⟩
+local instance q8FortyOneDualFactPrimeFortyOne : Fact (Nat.Prime 41) := ⟨by norm_num⟩
 
 def zmodFortyToFour : Multiplicative (ZMod 40) →* Multiplicative (ZMod 4) :=
   (ZMod.castHom (by norm_num : 4 ∣ 40) (ZMod 4)).toAddMonoidHom.toMultiplicative
@@ -134,25 +134,25 @@ local notation "K3" => deningerQ8RootNumberNegOneTopField
 local notation "K1" => deningerQ8RootNumberNegOneFirstQuadraticField
 local notation "K2" => deningerQ8RootNumberNegOneSecondQuadraticField
 
-local instance : CharZero K3 :=
+local instance q8FortyOneDualCharZeroK3 : CharZero K3 :=
   charZero_of_injective_algebraMap (algebraMap ℚ K3).injective
-noncomputable local instance : FiniteDimensional ℚ K1 :=
+noncomputable local instance q8FortyOneDualFiniteDimensionalRatK1 : FiniteDimensional ℚ K1 :=
   Module.Basis.finiteDimensional_of_finite q8BiquadUBasis
-noncomputable local instance : FiniteDimensional K1 K2 :=
+noncomputable local instance q8FortyOneDualFiniteDimensionalK1K2 : FiniteDimensional K1 K2 :=
   Module.Basis.finiteDimensional_of_finite q8BiquadVBasis
-noncomputable local instance : FiniteDimensional ℚ K2 :=
+noncomputable local instance q8FortyOneDualFiniteDimensionalRatK2 : FiniteDimensional ℚ K2 :=
   Module.Basis.finiteDimensional_of_finite q8BiquadIntegralBasis
-noncomputable local instance : FiniteDimensional K2 K3 :=
+noncomputable local instance q8FortyOneDualFiniteDimensionalK2K3 : FiniteDimensional K2 K3 :=
   Module.Basis.finiteDimensional_of_finite
     (AdjoinRoot.powerBasis
       deningerQ8RootNumberNegOne_thirdQuadratic_irreducible.ne_zero).basis
-noncomputable local instance : FiniteDimensional ℚ K3 :=
+noncomputable local instance q8FortyOneDualFiniteDimensionalRatK3 : FiniteDimensional ℚ K3 :=
   FiniteDimensional.trans ℚ K2 K3
-noncomputable local instance : NumberField K3 := NumberField.mk
-noncomputable local instance : IsGalois ℚ K3 :=
+noncomputable local instance q8FortyOneDualNumberFieldK3 : NumberField K3 := NumberField.mk
+noncomputable local instance q8FortyOneDualIsGaloisRatK3 : IsGalois ℚ K3 :=
   deningerQ8RootNumberNegOne_isGalois
 
-noncomputable local instance : Fintype Gal(K3/ℚ) :=
+noncomputable local instance q8FortyOneDualFintypeGalK3Rat : Fintype Gal(K3/ℚ) :=
   Fintype.ofEquiv _ deningerQ8RootNumberNegOne_galoisEquivQ8.toEquiv.symm
 
 example : deningerQ8RootNumberNegOne_galoisEquivQ8.symm

@@ -22,33 +22,33 @@ open GaloisForLFunctions.HTGeometry
 open GaloisForLFunctions.HTGeometry.ValuationInertia
 noncomputable section
 
-local instance : Fact (Nat.Prime 5) := ⟨by norm_num⟩
+local instance q8FiveTameFactPrimeFive : Fact (Nat.Prime 5) := ⟨by norm_num⟩
 
 local notation "K1" => deningerQ8RootNumberNegOneFirstQuadraticField
 local notation "K2" => deningerQ8RootNumberNegOneSecondQuadraticField
 local notation "K3" => deningerQ8RootNumberNegOneTopField
 
-local instance : CharZero K3 :=
+local instance q8FiveTameCharZeroK3 : CharZero K3 :=
   charZero_of_injective_algebraMap (algebraMap ℚ K3).injective
-noncomputable local instance : FiniteDimensional ℚ K1 :=
+noncomputable local instance q8FiveTameFiniteDimensionalRatK1 : FiniteDimensional ℚ K1 :=
   Module.Basis.finiteDimensional_of_finite q8BiquadUBasis
-noncomputable local instance : FiniteDimensional K1 K2 :=
+noncomputable local instance q8FiveTameFiniteDimensionalK1K2 : FiniteDimensional K1 K2 :=
   Module.Basis.finiteDimensional_of_finite q8BiquadVBasis
-noncomputable local instance : FiniteDimensional ℚ K2 :=
+noncomputable local instance q8FiveTameFiniteDimensionalRatK2 : FiniteDimensional ℚ K2 :=
   Module.Basis.finiteDimensional_of_finite q8BiquadIntegralBasis
-noncomputable local instance : FiniteDimensional K2 K3 :=
+noncomputable local instance q8FiveTameFiniteDimensionalK2K3 : FiniteDimensional K2 K3 :=
   Module.Basis.finiteDimensional_of_finite
     (AdjoinRoot.powerBasis
       deningerQ8RootNumberNegOne_thirdQuadratic_irreducible.ne_zero).basis
-noncomputable local instance : FiniteDimensional ℚ K3 :=
+noncomputable local instance q8FiveTameFiniteDimensionalRatK3 : FiniteDimensional ℚ K3 :=
   FiniteDimensional.trans ℚ K2 K3
-noncomputable local instance : NumberField K3 := NumberField.mk
-noncomputable local instance : IsGalois ℚ K3 :=
+noncomputable local instance q8FiveTameNumberFieldK3 : NumberField K3 := NumberField.mk
+noncomputable local instance q8FiveTameIsGaloisRatK3 : IsGalois ℚ K3 :=
   deningerQ8RootNumberNegOne_isGalois
-local instance : (Ideal.span {(5 : ℤ)}).IsPrime := by
+local instance q8FiveTameSpanFiveIsPrime : (Ideal.span {(5 : ℤ)}).IsPrime := by
   rw [Ideal.span_singleton_prime (by norm_num), Int.prime_iff_natAbs_prime]
   norm_num
-local instance : (Ideal.span {(5 : ℤ)}).IsMaximal :=
+local instance q8FiveTameSpanFiveIsMaximal : (Ideal.span {(5 : ℤ)}).IsMaximal :=
   Ideal.IsPrime.isMaximal (inferInstance : (Ideal.span {(5 : ℤ)}).IsPrime) (by
     intro h
     have : (5 : ℤ) = 0 := by

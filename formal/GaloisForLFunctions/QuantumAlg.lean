@@ -166,6 +166,7 @@ import GaloisForLFunctions.QuantumAlg.Primitives.QNN.Overparam.OverparamQFIM
 import GaloisForLFunctions.QuantumAlg.Primitives.QNN.Overparam.Overparametrization
 import GaloisForLFunctions.QuantumAlg.Primitives.QNN.Overparam.OverparametrizationDef
 import GaloisForLFunctions.QuantumAlg.Primitives.QNN.Overparam.QuantumFisherRank
+import GaloisForLFunctions.QuantumAlg.Primitives.QNN.Overparam.PauliCramerRao
 import GaloisForLFunctions.QuantumAlg.Primitives.QNN.Overparametrization
 import GaloisForLFunctions.QuantumAlg.Primitives.QNN.OverparametrizationDef
 import GaloisForLFunctions.QuantumAlg.Primitives.QNN.PauliPropagation
@@ -236,6 +237,7 @@ import GaloisForLFunctions.QuantumAlg.Util.Polynomial.Complement.Laurent.Witness
 import GaloisForLFunctions.QuantumAlg.Util.Polynomial.Laurent
 import GaloisForLFunctions.QuantumAlg.Util.Polynomial.Trigonometric
 import GaloisForLFunctions.QuantumAlg.Util.QuantumFisher
+import GaloisForLFunctions.QuantumAlg.Util.QuantumCramerRao
 import GaloisForLFunctions.QuantumAlg.Util.QuantumFisher.FSBridge
 import GaloisForLFunctions.QuantumAlg.Util.RationalApproximation
 import GaloisForLFunctions.QuantumAlg.Util.ResidueEncoding

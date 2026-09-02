@@ -55,7 +55,7 @@ private theorem ringEquiv_pow_fixed_of_fixed {R : Type*} [CommRing R]
       change σ ((σ ^ n) x) = x
       rw [ih, hx]
 
-private theorem BesselOrderParameterizedPVData.baseCompatible_pow
+theorem BesselOrderParameterizedPVData.baseCompatible_pow
     {s : ℝ} (data : BesselOrderParameterizedPVData s) (n : ℕ)
     (a : RatFunc Constants) :
     (data.sigmaEquiv ^ n) (algebraMap (RatFunc Constants) data.PPVRing a) =
@@ -69,7 +69,7 @@ private theorem BesselOrderParameterizedPVData.baseCompatible_pow
   exact (hsemiconj.iterate_right n a).symm
 
 /-- Differential finite generation descends to every differential-prime component quotient. -/
-private theorem BesselOrderParameterizedPVData.component_diffGenerators_surjective
+theorem BesselOrderParameterizedPVData.component_diffGenerators_surjective
     {s : ℝ} (data : BesselOrderParameterizedPVData s)
     (P : Ideal data.PPVRing)
     (hPderiv : ∀ x ∈ P, Differential.deriv x ∈ P) :

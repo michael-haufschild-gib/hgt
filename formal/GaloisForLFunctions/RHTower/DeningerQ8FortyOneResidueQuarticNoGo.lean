@@ -17,7 +17,7 @@ namespace RHTower
 
 noncomputable section
 
-local instance : Fact (Nat.Prime 41) := ⟨by norm_num⟩
+local instance q8FortyOneResidueFactPrimeFortyOne : Fact (Nat.Prime 41) := ⟨by norm_num⟩
 
 /-- Every quartic residue character modulo `41` is even.  The explicit fourth
 root `3⁴ = -1` makes this independent of a chosen cyclic generator. -/

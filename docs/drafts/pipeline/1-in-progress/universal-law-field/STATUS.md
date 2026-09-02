@@ -1,6 +1,6 @@
 # Universal-law corpus facts
 
-Updated: 2026-09-01
+Updated: 2026-09-02
 
 Scope: compressed facts and logically forced design constraints extracted from audited positive
 theorems, negative no-gos, frontier branches, and RH endpoints. No active conjectures or work log.
@@ -1562,3 +1562,1358 @@ MUST-71 — Global arithmetic torsion must be nonadditive across prime-local com
 viable source law must construct, before Xi specialization, the mixed addition--multiplication
 counterchannel that cancels the cofinal cyclotomic divisor while retaining a locally finite entire
 secondary torsion. Choosing a meromorphic denominator after reading the target divisor is circular.
+
+F184 — Functional equation, Gamma factor, and completed-zeta polar plane do not determine primitive
+completion index. Multiplication by a normalized symmetric off-line quartet preserves all three
+and the exact polar part while adding two off-line hyperbolic planes.
+
+CANNOT-102 — It cannot recover off-line index from completed boundary data alone. Any selector
+using only functional equation, Gamma factor, residues, or the fixed pole hyperbolic plane accepts
+the normalized quartet twist.
+
+F185 — The same quartet twist is not an absolutely convergent Dirichlet series on `Re s = 2`: its
+quartic vertical growth contradicts boundedness of every absolutely convergent integer Dirichlet
+series there. Exact integer occurrence excludes this countermodel; boundary symmetry does not.
+
+F186 — A nonnegative generalized-prime logarithmic Euler perturbation can create a genuinely new
+zero only at or left of its convergence abscissa, whose real boundary point is singular by Landau.
+This is relative rigidity only and imposes no condition on zeros already belonging to zeta.
+
+F187 — Literal integer addition independently carries continuation through the critical strip.
+The centered sawtooth/Bernoulli-`B₂` identity continues zeta to `Re s > -1`, away from its sole pole
+at `1`, and recovers `zeta(0)=-1/2`; no Euler-product continuation is used.
+
+F188 — Pointwise source-horizontal rigged Krein geometry is trivial inside each open half-strip:
+all fibres are related by tame diagonal congruence, and opposite chambers by anti-congruence. Any
+invariant of one fibre's topological Krein-isomorphism class is chamber-constant and cannot select
+the wall; fixed coordinates or cross-fibre history are indispensable.
+
+F189 — Every finite trace-free skew-adjoint additive determinant stage has nonnegative real central
+second jet. Even variable-rank stages cannot converge compact-open to normalized Xi, whose central
+second jet is negative. Finite additive unitary landing has the wrong local orientation.
+
+F190 — Every normalized `L1` probability-density clock is Rajchman. Hence all corpus Gamma,
+logistic, harmonic, Wigner--Smith, Julia-jump, theta-tail, Suzuki/Cauchy, Meixner, Laplace,
+triangular, uniform-difference, and normalized radial clocks erase every nonzero prime-log
+character, including countable coordinatewise families.
+
+CANNOT-103 — It cannot use absolutely continuous positive timing or averaging as the selector.
+Such clocks quotient away precisely the nonzero horizontal character; they are phase readers after
+selection, not occurrence producers.
+
+F191 — Marked FZZ replica response is an incidence invariant, not a marginal charge invariant.
+Fixed-support separated Quillen normalization cancels, and every same-winding marked response is
+zero; the exact first response is supported only on the opposite-winding cross-block.
+
+MUST-72 — A surviving completion producer must retain cross-orientation incidence before positive
+averaging or phase quotient: support must move, opposite sectors must interact, or the completion
+law must be nonseparable. Marginal, same-orientation, and fixed-support data erase the anomaly.
+
+F192 — Reduced sigma--delta Bessel PPV component and no-new-constants infrastructure is closed, but
+the final Galois scaling contradiction still requires comparison-basis independence. It is not yet
+an unconditional hypertranscendence producer for RH.
+
+CANNOT-104 — It cannot infer bounded occurrence evaluation from scalar analytic continuation. The
+corpus has no theorem welding the literal rank tower or centered additive continuation to the exact
+theta determinant as a bounded representation; inserting that boundedness is RH in disguise.
+
+MUST-73 — Construct from exact integer occurrence one joint closed completion in which centered
+additive continuation and canonical multiplicative formation/recovery act on the same source graph,
+then prove Xi occurrence evaluations automatically bounded before divisor specialization. F161
+would then force every prime character `p^(1/2-s)` to have modulus one, hence `Re s=1/2`.
+
+F193 — Additive Haar uniqueness fixes each local dilation modulus, but global adelic unimodularity
+does not fix horizontal grade: the product formula remains `1` after every real power. Therefore
+local Haar scaling and global product-formula cancellation tolerate the full radial family.
+
+CANNOT-105 — It cannot select grade by Haar uniqueness, adelic unitarity, or scalar product formula.
+Those laws permit arbitrary redistribution of one real modular exponent between places.
+
+MUST-74 — Any local--global producer must detect nonseparable cross-place or cross-orientation
+incidence, not the scalar sum/product of local moduli. Its neutralization must fail for a real-power
+twist even though ordinary reciprocity and the adelic product formula still hold.
+
+F194 — Lean certifies a new completion-index dichotomy. Neutral twisted Möbius recovery is the
+divisor delta; every positive twist has strictly positive Euler-product fibres and boundary index
+`1/zeta(1+a)` strictly between `0` and `1`, hence outside the integral divisor lattice.
+
+F195 — Lean certifies meromorphic completion-current quantization. Every nonzero meromorphic germ
+has integer cofinal current `(1-z)(-z W'/W)`; therefore no such germ can realize the positive-grade
+fractional index. Module: `HTGeometry/TwistedMobiusWittCompletion.lean`.
+
+CANNOT-106 — Fractional index alone is still a receiver if `a`, the radial current, or the
+meromorphic germ is supplied after reading a zero. It cannot select RH until exact integer
+occurrence constructs the twisted current and completion before divisor specialization.
+
+MUST-75 — Prove two source laws: twisted divisor coefficients have Cesàro/Abel boundary current
+`1/zeta(1+a)`, and a genuine coefficient-one Xi occurrence lifts that same current to a nonzero
+single-valued meromorphic germ. Their conjunction with F195 forces `a=0`.
+
+F196 — The twisted Möbius coefficient in F194 is not a new source law. It is exactly the existing
+Suzuki/Wold activation factor `activationFactor a`; Lean already proves its Euler product and
+Dirichlet series `zeta(s)/zeta(s+a)` for every `a >= 0`. Suzuki summatory-error modules already use
+the reciprocal-zeta density. New content of F194--F195 is only meromorphic-current quantization.
+
+CANNOT-107 — It cannot identify an arithmetic mean or Abel boundary density with local divisor
+order without an independently derived occurrence-to-germ theorem. Positive activation is a valid
+exact coefficient stream, while its ordinary Witt completion may have a nonmeromorphic boundary;
+that is compatible source behavior, not a contradiction.
+
+FAIL-28 — Twisted Möbius--Witt fractional index fails as RH producer. The required lift from Xi
+occurrence to a single-valued meromorphic germ has no source justification and would prohibit a
+known exact Suzuki/Wold family. Formal arithmetic and quantization theorems survive as a sharp
+boundary classification; MUST-75 is retired as selection programme.
+
+F197 — Fresh interaction audit: information absent from marginals survives in crossed sectors.
+The balanced quantum switch's odd branch is exactly a half-commutator and vanishes exactly when
+the two statewise orders commute; FZZ same-winding and neutral-conjugate responses vanish, while
+opposite winding survives and modulus weighting recovers the radial label. Kinematic support alone
+is radial-blind.
+
+F198 — Finite memory cannot absorb the source obstruction. Lean constructs positive finite-bath
+memory kernels and exact Volterra solutions, yet Gamma/digamma/zeta/Xi remain
+constant-coefficient differentially transcendental after adjoining any finite bath. The missing
+direction is not a finite hidden-variable or finite-memory correction.
+
+F199 — Fixed-domain bounded repair cannot cure cofinal escape. Even an unbounded ambient Suzuki
+observer with one fixed common graph domain, weak boundedness, and fixed Hilbert--Schmidt
+ingress/egress contributes only a bounded trace correction against the cofinally negative Ward
+defect. Any surviving repair must change domain/bornology cofinally or retain an unbounded
+interaction channel.
+
+F200 — The corpus already has route-independent reconstruction and stratification. Gamma-six
+boundary jets, Möbius double-log energy, adaptive Green codiagonal, and Kakutani/Hellinger read one
+reflection-even principal escape class; independent formation work, central holonomy, properness,
+and escape index have the same zero stratum. These classify RH but do not produce that stratum.
+
+F201 — Properness is gauge-dependent. Constant codiagonal recovery is closable in the base
+`ell^2` gauge only at coefficient zero, but the `(n+1)` formation-graph load followed by bounded
+inverse-grade recovery realizes every coefficient. Thus a completion can hide nonzero anomaly by
+moving unbounded scale from recovery into formation.
+
+F202 — Informative completion requires genuinely cofinal topology, but topology alone is
+underdetermined. Product topology makes finite-coordinate freedom dense and exact recovery
+vertical; conormal refinement is strictly finer but remembers only the projective conormal line;
+provenance topology is either discrete or lets cofinal singleton atoms converge to zero and loses
+their coefficient.
+
+CANNOT-108 — It cannot infer selection from boundedness, closability, compactness, or properness
+in a chosen completion. A one-way unbounded load can regularize exactly the nonzero codiagonal that
+the base gauge rejects.
+
+MUST-76 — A source-admissible completion must be two-sided: formation and information-neutral
+recovery must both extend boundedly on the same completed source. Otherwise regularization merely
+exports anomaly into an unbounded change of gauge.
+
+F203 — Lean proves the route-independent bounded-factorization law: every algebraic response that
+factors through bounded formation and bounded recovery is sequentially closable in the original
+source topology. Hence every certified failure of `IsSequentiallyClosableBetween` is exactly an
+obstruction to a common two-sided bounded completion, independent of the route's scalar language.
+
+F204 — Specialization to the constant cofinal codiagonal forces its coefficient to zero through
+every complex normed intermediate space. The ULF-TAFM-29 graph rescue therefore works only by an
+unbounded formation load; bounded recovery did not remove anomaly, it transferred anomaly into
+ingress.
+
+CANNOT-109 — It cannot call a topology or graph norm information-neutral when only recovery is
+bounded. One-way boundedness permits arbitrary anomaly regularization and makes properness a gauge
+artifact.
+
+MUST-77 — Derive from pre-divisor Xi occurrence one common completion with bounded formation and
+bounded recovery of the already fused codiagonal response. F203 then forces closability, F201
+forces the horizontal coefficient to zero, and existing global stratification yields RH. This
+bounded source factorization—not another zero-index equivalence—is the remaining producer law.
+
+F205 — Functional-equation parity does not identify one class as both even and odd. The actual Xi
+conormal current is reflection-odd and unconditionally nonzero; the four-organ principal escape
+class is its unsigned support/energy, reflection-even, and reflection doubles rather than cancels
+it. Corpus already proves oddness of the conservative Green codiagonal iff RH.
+
+CANNOT-110 — It cannot kill the fused escape class by the characteristic-zero slogan “even and
+odd implies zero.” Odd orientation and even escape live in different graded pieces; identifying
+them is precisely the missing selection assertion.
+
+FAIL-29 — Reflection-parity torsion shortcut retired after corpus audit. Correct survivor: any
+mechanism must retain the odd orientation through completion while controlling its even quadratic
+escape, not equate the two.
+
+F206 — Lean proves bounded-coboundary invariance: adding any bounded response of the completed
+source leaves `IsSequentiallyClosableBetween` unchanged. Nonclosability is therefore not a value
+but a completion-obstruction class modulo bounded corrections.
+
+CANNOT-111 — It cannot identify routes merely because their scalar readers have the same zero
+locus or asymptotic coefficient. Equality of obstruction classes requires an explicit comparison
+whose route difference factors boundedly through the common source completion.
+
+MUST-78 — Upgrade the existing transgression web to bounded-coboundary comparisons between route
+responses. Then Gamma, Möbius, Green, Hellinger, trace, and recurrence become gauges of one
+completion-obstruction class; any one bounded two-sided source factorization kills the class in
+all organs. This is the next route-independent theorem, before further RH specialization.
+
+F207 — F192 is superseded. Lean now proves comparison-basis independence over the full Bessel PPV
+ring and closes the scaling contradiction: modified-Bessel order, reflected intensity, and the
+calibrated extremal physical scan are unconditionally hypertranscendental. Passing to a reduced or
+minimal component cannot manufacture a constant-field relation.
+
+F208 — The actual causal-depth Gamma pre-Gram feature is nuclear and Schatten-one. Pairing it with
+any uniformly operator-bounded moving response gives only a sublinear Ward correction, with no
+rank hypothesis.
+
+CANNOT-112 — It cannot evade fixed-source trace no-gos by increasing response rank. Rank-free
+trace-class duality already kills every uniformly bounded response. A survivor must be unbounded,
+domain-changing, cutoff-moving/non-trace-class, or alter source incidence before trace pairing.
+
+F209 — Tensor formation changes duality type. The n-fold epsilon dual squares to `(-1)^n`: even
+arity has real involutive polarizations; odd arity carries a complex structure. Its local epsilon
+bit is exactly the existing Euler--Wick binary gauge sign.
+
+CANNOT-113 — It cannot model every functional-equation or duality lift by one ungraded involution.
+Formation can change the square from `+1` to `-1`; a universal lift must retain degree parity and
+its forced phase correction.
+
+F210 — Literal Q8 arithmetic data supplies a genuine source-generated global orientation. Its
+proved local Artin epsilon factors at `2,5,41` are `+1,-1,+1`, and their global product is `-1`.
+Thus arithmetic phase production exists in the corpus; zeta's obstruction is not absence of local
+epsilon-factor technology.
+
+MUST-79 — A universal source law must explain which coefficient-faithful local incidence survives
+neutralization and completion. Scalar product formulas, marginal moduli, and positive averaging are
+insufficient: Q8 shows orientation is carried by the local representation/incidence data, while
+F191 and F197 show neutral or same-sector projection erases it.
+
+F211 — Closed-relation language already gives an exact Xi dichotomy. On the critical line the
+half-density Xi graph has zero vertical fibre; off line every closed relation retaining the full
+algebraic graph has the whole scalar target as vertical fibre. Thus off-line occurrence is maximal
+multivaluedness, not a missing notion of generalized graph.
+
+CANNOT-114 — It cannot advance by replacing operators with linear relations or by naming anomaly
+the vertical part of a graph. That construction already classifies the critical line; requiring a
+single-valued closed source realization is the same occurrence/admission gate.
+
+F212 — Rational-Hurwitz refinement already has the exact nonlinear source law. At every modulus
+`n`, squaring the modulus sends normalized reflection energy `E` to `4 E (1+E)`; the excess over
+linear refinement is the nonnegative square `4 E^2`. Vanishing of this excess at any nontrivial
+modulus on every Xi fibre is equivalent to RH and to vanishing of the existing Hurwitz orientation
+energy.
+
+CANNOT-115 — It cannot obtain selection from residue branching, martingale energy, finite Fourier
+Plancherel, or Chinese-remainder refinement by assuming linear or norm-conserving refinement. The
+literal finite Hurwitz source proves the nonlinear hyperbolic law; deleting its square term is
+already the RH assertion.
+
+F213 — Two independent graded structures already coexist. The theta source-positive polynomial
+flow contains an exact `sl2` triple with `H=[E,F]`; the actual Xi conormal current has a faithful
+square-zero parity suspension, and functional-equation oddness becomes a commuting involution after
+the parity correction. Positive Hodge suspension retains the nonzero multiplicity current at every
+Xi zero rather than killing it.
+
+CANNOT-116 — It cannot force neutral grade by putting reflected weights `+a,-a` in opposite parity
+and invoking supertrace cyclicity. Ordinary `sl2` uses the commutator `EF-FE`, for which reflected
+ordinary traces cancel; graded supertrace cancels the odd supercommutator `EF+FE`, not that `sl2`
+commutator. Parity relabelling therefore creates no contradiction.
+
+MUST-80 — Any graded algebraic selector must construct, from literal pre-divisor execution, an odd
+source operation whose genuine supercommutator retains the signed horizontal grade. It cannot use
+the existing ordinary `sl2` bracket, and it cannot replace signed grade by `J*J` or another positive
+square, which is reflection-even and nonzero at critical Xi occurrences.
+
+F214 — Cartan contraction, actual Xi square-zero conormal charge, theta one-chain socle, and global
+normalized root-current sewing all exist separately. The missing source contraction is already
+RH-complete; global sewing recovers local currents only through unbounded inverse denominators.
+
+CANNOT-117 — It cannot posit `{d,iota}=a id` on the actual occurrence complex. Nonzero characters
+are generically Cartan-contractible, while constructing that identity on the source-selected Xi
+complex is the selection assertion.
+
+F215 — Local matrix-factorization and curved-Hodge support is RH-blind. On-line and off-line simple
+zeros have the same node category; nonzero Gamma-curvature sectors are contractible, and ordinary
+Hodge cohomology accepts the wrong sector.
+
+CANNOT-118 — It cannot select by local singularity category, matrix factorization, or curvature
+supertrace. These retain local type while forgetting source placement and finite-part transport.
+
+F216 — Twisted Möbius recovery has a certified fractional boundary current, but no source theorem
+identifies it with an Xi meromorphic current. Relative divisor cancellation also leaves a nonzero
+exponential finite-part torsion.
+
+MUST-81 — Any completion-index comparison must first construct one source-normalized observable
+on both completions and control its finite part; equality of divisor order or zero locus is too
+weak.
+
+F217 — Conic properness, Lorentz compact reduction, APS balance, and bounded two-sided formation
+all select neutral grade once assumed. Actual Xi occurrence is not yet proved to carry any of
+these source structures; changing vocabulary does not supply them.
+
+CANNOT-119 — It cannot advance by renaming the RH endpoint conicity, compact reduction, bordism,
+microsupport, or properness. The source must generate the relevant structure before specialization.
+
+F218 — The corpus already proves `not RH` iff an actual finite source Lorentz plane exists. It also
+identifies rational-Hurwitz refinement with a Lorentz boost: rapidities add, Krein form and
+determinant are conserved, and seam energy is `sinh(u)^2`.
+
+F219 — The exact nonlinear Hurwitz law `E(n^2)=4E(n)(1+E(n))` is the double-rapidity identity
+`sinh(2u)^2=4 sinh(u)^2(1+sinh(u)^2)`. Likelihood contrast, visibility, fused defect, Hodge sign,
+and reciprocal Gamma holonomy are matrix coefficients or positive quotients of the same boost.
+
+F220 — The prime-log weld is dense and noncyclic. Therefore a nonzero horizontal grade sends
+literal prime formation to a dense noncompact one-parameter boost subgroup, not a discrete clock.
+
+F221 — Lean audit found no common-lattice version of this law. Existing integral Big-Witt descent
+requires the two light-cone eigenvalues themselves to be integers and is exactly RH-equivalent;
+central, equimodular, and fitted finite-rank enrichments are already killed.
+
+F222 — Paper theorem ULF-DALR-01: if `2 cosh(a x)` is integral for every prime-log weld rate `x`,
+then `a=0`. Hence a dense Lorentz weld preserving one fixed rank-two integral lattice is trivial.
+One-prime Pell boosts survive; common dense arithmetic descent kills them.
+
+MUST-82 — Construct from literal pre-divisor formation one prime-independent integral lattice in
+the existing oriented rank-two conormal plane, with every prime acting by its certified Lorentz
+boost. This is weaker than integral eigenvalues, stronger than separate fitted lattices, and would
+force every Xi horizontal grade to zero by F222.
+
+CANNOT-120 — It cannot use a separately chosen lattice or basis for each prime, an infinite-rank
+lattice, or a frame chosen after reading a zero. The rigidity comes from one finite-rank arithmetic
+object carrying the full dense prime action.
+
+F223 — Lean proves the full common-frame classification. A single invertible rank-two real frame
+intertwining every prime-weld Lorentz boost with an integer matrix exists iff horizontal grade is
+zero. Module: `RHTower/DenseArithmeticLorentzLatticeRigidity.lean`.
+
+F224 — Existing source integrality does not yet supply F223's frame. Rational-Hurwitz values are
+coefficient-one residue sums, but the Lorentz plane appears only after scalar normalization;
+literal prime-formation charge has unbounded rank and its coarse scalar cokernel is trivial.
+
+F225 — Theta/Burnol gives a nonzero two-prime quotient vector without multiplicative transport.
+Big-Witt Frobenius changes arithmetic base at fixed Xi fibre and its reporter records the label,
+not conormal-vector transport. Neither is a common lattice action.
+
+F226 — Integral Tate residue separates fixed from free reflection orbits, but prime holonomy is not
+proved to preserve that divisor lattice. Orbit integrality and formation integrality are distinct.
+
+CANNOT-121 — It cannot infer a common rank-two arithmetic frame from integer coefficients, a
+two-prime nonzero vector, same-fibre Frobenius base change, or integral divisor multiplicity.
+None proves a prime-stable monoidal quotient retaining orientation.
+
+MUST-83 — The exact producer is a canonical rank-two monoidal quotient of the growing integer
+formation lattice, prime-stable before scalar normalization and faithful to the signed conormal
+current. A chosen rank-two compression is invalid; the quotient must prove its discarded kernel is
+horizontal-blind.
+
+F227 — The Lorentz boost is the paired prime response only after removal of its common vertical
+phase and critical scalar. Integralizing the full character would also force zero ordinate and is
+false for actual critical-line zeros.
+
+MUST-84 — Integral descent must occur on a source-canonical projective orientation quotient, with
+determinant/volume trivialization recovering the unimodular radial boost. A phase chosen after
+reading the divisor is not source data.
+
+F228 — Corpus already has a one-prime irrational-rotation `K₀` integer-trace collision whose source
+projective module is missing. Projective-module language alone therefore repeats a known endpoint;
+new content of F223 is only dense all-prime common-frame rigidity.
+
+CANNOT-122 — It cannot claim victory from integral Lorentz rigidity without constructing the
+phase-projective determinant quotient. That construction, not trace arithmetic, is the producer.
+
+F229 — Fresh Lean audit: integer-genus FZZ samples do not determine a replica tangent. Sine-null
+entire deformations fix every nonnegative integer sample while prescribing an arbitrary tangent at
+genus zero, and Schwarz reality still permits every real tangent.
+
+F230 — Literal worldsheet genus has the opposite obstruction: every continuous map into `Nat` is
+locally constant, so it cannot produce a nonzero first replica tangent. Analytic interpolation is
+therefore arbitrary while literal continuous genus motion is zero.
+
+CANNOT-123 — It cannot use an ordinary real/complex tangent as a source derivative for discrete
+formation. Integer samples underdetermine it, and a continuous literal discrete history kills it.
+Source differentiation must be an insertion/successor/incidence operation before analytic readout.
+
+F231 — Fresh Lean audit: an `ell`-fold prime-supported multiplicative formation has product fibres
+of cardinality at most `ell!`; its convolution coefficients and total coefficient energy incur the
+same factorial loss. Unique factorization leaves only permutation histories, not `ell^ell`
+arbitrary histories.
+
+F232 — Fresh Lean audit: every fixed logarithmic source jet of the causal-depth Gamma pre-Gram
+feature remains nuclear/Schatten-one, so every uniformly bounded response gives only a sublinear
+Ward correction. Exact two-leg source-normal deattenuation instead produces multiplier `p` and the
+physical source leaves the Hilbert graph domain.
+
+CANNOT-124 — It cannot repair the common obstruction by taking more finite log jets, increasing
+bounded response rank, or applying the exact two-leg inverse inside the same Hilbert domain. The
+first two remain smoothing; the last exports the anomaly into domain failure.
+
+F233 — Fresh Lean audit: common retarded/advanced orientation corrections and even point-supported
+hard-edge charges cannot tune the nonlinear Hawking causal cut. Unit-normalized moving-horizon
+AIME response also cancels its own candidate counterterm.
+
+CANNOT-125 — It cannot manufacture the missing signed source term from a common causal correction,
+an even local hard-edge renormalization, or unit moving-boundary normalization. Required incidence
+must remain asymmetric and source-visible before those quotients.
+
+F234 — Paper theorem ULF-SKJS-1: for `c=(X-1)(Y-1)` and Euler--Kummer clock
+`D=A X∂X+B Y∂Y` over a field with `2AB≠0`, the ideal `(c,Dc,D²c)` is the unit ideal. Hence every
+Kummer-stable ideal containing one positive complementary Steinberg cell is the whole actual
+rational multiplicative group algebra.
+
+CANNOT-126 — It cannot impose complementarity in a proper static quotient on which the logarithmic
+Kummer clock descends. Second normal-jet saturation collapses that quotient to zero.
+
+F235 — The positive survivor of F234 is a surjective three-term normal-jet resolution at every
+cell. Local homology/cokernel contains no obstruction; only provenance, compatibility, and uniform
+boundedness of its right splittings can carry global information.
+
+F236 — Big-Witt/p-derivation language alone does not change F235. Corpus Frobenius acts vertically
+at fixed completed-Xi spectral coordinate, Teichmuller atoms are arithmetic-delta constants, and
+horizontal relabelling is not fibre transport.
+
+CANNOT-127 — It cannot call a delta-ring, lambda-ring, arithmetic jet, or coherent Frobenius lift
+the missing mechanism without a non-Teichmuller moving-relation class and a source-native bounded
+horizontal transport.
+
+MUST-85 — Any surviving moving-relation mechanism must retain relations and their normal jets in a
+pro-system rather than quotient by them, and must construct compatible two-sided bounded splittings
+from literal successor--prime--Gamma formation before Xi specialization. If it does, existing
+bounded-factorization and codiagonal rigidity force horizontal grade zero; if its split norms
+diverge, it is another completion no-go.
+
+F237 — Paper theorem ULF-SKSB-1: every right inverse of the actual depth-`m` Steinberg second-jet
+resolution has coefficient norm at least
+`1/(2 |log x_m log y_m|)`. Since `x_m=1/(1+(2/3)^m)` and
+`y_m=(2/3)^m/(1+(2/3)^m)`, this lower bound diverges exponentially up to a linear factor.
+
+CANNOT-128 — It cannot assemble bounded global recovery from diagonal/cellwise Kummer-jet
+splittings. Every local complex is exact, but every possible splitting is cofinally ill-conditioned.
+
+F238 — Existing formation-Laplacian theory makes the survivor exact: a new cross-cell channel must
+intercept every adaptive null sequence and give a uniform lower frame bound on the quotient by the
+common mode. Any channel bounded by the old diagonal energy leaves closed-range failure unchanged.
+
+F239 — The existing coherent Big-Witt cross-pair compensator does not supply F238. Complete
+right-leg fibres have zero one-leg trace and their closure stays in its closed kernel; a punctured
+fibre recovers the missing coefficient but is an incomplete, noncanonically selected incidence.
+
+CANNOT-129 — It cannot repair the split blowup by saying “couple all cells” or “use the Big-Witt
+off-diagonal compensator.” Full coherent coupling cancels the signal; selecting a puncture without
+a source law inserts the answer.
+
+MUST-86 — The live higher mechanism must generate a canonical asymmetric cross-cell incidence
+before coherent summation, while retaining exact reconstruction of the discarded complement. Its
+interaction Hessian must have a uniform quotient spectral gap; otherwise F237 and the prime-log
+gapless theorem force unbounded recovery.
+
+F240 — Corpus correction to F239: canonical punctures already exist. Genuine normalized Big-Witt
+rows are constructed for prime two and for every fixed left prime; their ambient packets tend to
+zero while all graph lifts converge to the same vertical one-leg generator and retain unit trace.
+
+F241 — The rooted collision is completely classified in Lean. An arbitrary prime-labelled finite
+reporter descends through the scalar singular graph iff its prime coefficients are constant. The
+Wold--Jordan profile is only `A/p`; descent iff `A=0`, and the Xi endpoint is the pullback of this
+free-scalar fact.
+
+CANNOT-130 — It cannot solve the coherent-fibre problem by pointing, rooting, or selecting a
+fixed-left row. The literal source already does all three, and the result is the sharp
+nonclosability/RH-equivalent receiver rather than a producer.
+
+F242 — Retaining the root label as an independent boundary coordinate would prevent the collision
+but also admit the reciprocal profile for arbitrary `A`. Scalar forgetting is selective but loses
+provenance; full label retention is conservative but nonselective.
+
+CANNOT-131 — It cannot choose between a scalar completion and a direct-sum labelled completion and
+call that choice the higher mechanism. The first inserts equality of labels; the second removes the
+selection constraint. A source law must govern the identifications between labels.
+
+F243 — The obvious transition law is already formalized. Literal Big-Witt atoms `1/(pq)` generate
+exactly the complete-prime Dirichlet energy `sum |a_p-a_q|^2/(pq)`; bounded finite-window energy is
+equivalent to a constant prime potential and, for the actual Xi seam, equivalent to RH. Its missing
+input remains a pre-divisor source upper bound.
+
+CANNOT-132 — It cannot rename the existing prime-seam energy as groupoid curvature, interaction
+action, or completion holonomy. Without a new source conservation law that bounds it, this is the
+same RH-equivalent receiver.
+
+MUST-87 — A surviving completion law must be conservative on rooted provenance, yet impose a
+source-generated constraint on transition arrows before Xi specialization. It must produce—not
+assume—the boundedness, vanishing, integrality, or compactness that makes the already-formalized
+transition receiver selective.
+
+F244 — Pair-groupoid language is also already exhausted. Exact bidescent conserves horizontal
+defect under vertical coboundaries but cannot kill it without an independent anchor; any
+nonnegative additive cost on reversible histories is identically zero. Directed irreversible
+history can carry cost, but direction alone supplies no selector.
+
+CANNOT-133 — It cannot relabel the existing prime-seam cocycle as a groupoid action, or use a
+reversible nonnegative path cost. The former still needs the source upper bound; the latter
+vanishes by reversibility.
+
+F245 — Paper theorem ULF-ICTR-1: for `0<=b<1`, the unnormalized paired trace
+`T_b(n)=n^(1+b)+n^(1-b)` is integral for every natural scale `n` iff `b=0`. For `0<b<1`, its second
+integer difference is eventually positive and tends to zero, contradicting integrality. The paired
+determinant is exactly `n^2` at every positive scale.
+
+F246 — F245 fuses four previously separate facts: functional-equation/Schwarz orientation pairing,
+literal all-natural-number formation, finite factorial multiplication histories, and real-power
+finite-difference asymptotics. Its new move is to retain the common scale `n` erased by every
+determinant-one/Lorentz normalization.
+
+CANNOT-134 — It cannot normalize first and then ask for a lattice, or retain only prime-scale
+traces. The exact selector uses the unnormalized integral trace at every natural formation size;
+discarding the common factor or the composite scales removes the discrete-curvature contradiction.
+
+MUST-88 — Construct before Xi specialization a multiplicative integral or virtual-integral
+rank-two formation correspondence `M_n` whose functional-equation involution exchanges the two
+orientations, whose determinant line is `n^2`, and whose complex character eigenvalues are
+`n^(2 Re s)` and `n^(2-2 Re s)`. Its integral categorical trace plus F245 forces grade zero and
+closes RH through the existing exact grade equivalence.
+
+MUST-89 — The realization must be signed/virtual/Krein-capable: corpus genuine-positive Artin/Wick
+no-gos prohibit assuming a genuine positive finite representation. Integral provenance must come
+from finite formation histories, not from a zero-labelled lattice selected after complexification.
+
+F247 — Hostile realization audit killed the finite-rank form of MUST-88. Scalar extension of one
+integral matrix cannot make its characteristic polynomial depend on a spectral character; allowing
+character-valued entries makes the source trace character-valued, not integral.
+
+CANNOT-135 — It cannot place `n^(2 Re s),n^(2-2 Re s)` in a finite integral matrix independent of
+`s`, or choose an `s`-dependent integral lattice. The first is impossible; the second is the old
+descent receiver.
+
+F248 — Exact hyperbolic formation ledger: for even/odd weights `E=n exp(u)`, `O=n exp(-u)`,
+`Tr=2n cosh u`, `STr=2n sinh u`, `EO=n²`, `STr/Tr=tanh u`, `2n/Tr=sech u`, and
+`Tr²-STr²=4n²`. Mixed inertia, Hodge sign, positivity, contrast, visibility, and rapidity are exact
+readouts of one parity-graded ledger, not analogies.
+
+F249 — Corpus Frobenius--Verschiebung relation supplies a possible source origin. `F_nV_n=n`; on a
+character with `F_n=n^sigma`, the dual weight is `V_n=n^(1-sigma)`. The even/odd squared doublet has
+weights `n^(2sigma),n^(2-2sigma)` and fixed determinant `n²`.
+
+F250 — ULF-ICTR-1 now also proves all-scale integral supertrace rigidity: for `0<=b<1`,
+`n^(1+b)-n^(1-b)` is integral for every natural `n` iff `b=0`. Lean proves trace, supertrace,
+determinant, Minkowski conservation, tanh contrast, and inverse-cosh visibility in one module.
+
+CANNOT-136 — It cannot use raw finite rank, raw infinite trace, or fixed finite log jets. The source
+must be an integral pro/super object, and integrality must reach the analytic character through a
+proved relative Fredholm/Lefschetz completion comparison.
+
+MUST-90 — Build finite integral formation-history complexes with chain maps `F_n,V_n`, prove
+`F_nV_n=n` and multiplication functoriality, place `F_n²` in even and `V_n²` in odd parity, then
+compute the finite Lefschetz-supertrace transition law. Stabilization or a source-canonical relative
+integer must be proved before any Xi character.
+
+MUST-91 — Prove completion-index invariance: the stabilized integral Lefschetz supertrace equals
+the analytic relative supertrace after the common Gamma-six recovery completion. Applying a strip
+character then gives the all-scale integers in F250, forces grade zero, and closes RH. Failure of
+this equality must be classified as the route-independent completion anomaly.
+
+F251 — Raw finite Frobenius--Verschiebung stages are now classified on paper and in Lean. If
+Frobenius is a finite permutation `F` and `V=qF⁻¹`, then
+`STr(F²,V²)=(1-q²)#Fix(F²)`. The trace is integral but depends only on finite orbit structure and
+degree; it contains no analytic grade.
+
+CANNOT-137 — It cannot identify `q^(1+a)-q^(1-a)` with a raw finite Witt/permutation Lefschetz
+trace. Finite stages supply integral provenance, not rapidity. Normalizing or inserting character
+weights at finite level changes the source and assumes the desired character.
+
+F252 — Every already-specialized finite prime Koszul fibre in the open strip is contractible.
+Taking `lim` or algebraic `lim¹` of its zero cohomology tower remains zero. Zeros therefore cannot
+be ordinary derived-limit cohomology of specialized finite fibres.
+
+F253 — Ordinary scalar derived Cartier base change is also exhausted: its two-term fibre is
+contractible at every nonneutral character and survives only at neutral character. It is a sharp
+wall receiver, not an off-line anomaly carrier.
+
+CANNOT-138 — It cannot be ordinary algebraic Tor, ordinary scalar derived base change, or ordinary
+`lim¹` applied after spectral specialization. All three erase the off-line class by exact
+contractibility.
+
+F254 — Provenance-continuous completion of eventually exact stages cannot create homology. Yet the
+corpus identifies every off-line horizontal class with a completion-born boundary and with a
+nonzero Roos class. Hence any genuine off-line carrier certifies failure of provenance-continuous,
+uniformly controlled exactness during completion.
+
+F255 — Today's Gamma/Suzuki audit locates that failure sharply. Actual causal Gamma feature is
+Schatten-one; every fixed log jet and every admitted subexponential functional calculus remains
+Schatten-one; bounded responses are sublinear; additive logarithmic singular residue is invariant
+under the feature; exact two-leg deattenuation instead exits the Hilbert graph by prime-harmonic
+divergence.
+
+CANNOT-139 — It cannot live inside bounded/nuclear functional calculus, be detected by an additive
+singular trace modulo trace class, or use the physical inverse on the same Hilbert graph. The live
+class lies at a nonclosed/unbounded completion boundary and must retain its source domain defect.
+
+F256 — Hawking/Peierls no-gos impose parity on that boundary. Common retarded/advanced corrections
+cancel exactly; an order-one hard-edge distribution contributes only its orientation-odd
+derivative-delta charge; finite-exponential-variation causal Laplace spectra cannot realize the
+pre-divisor susceptibility. The survivor is odd, singular, and not finite variation.
+
+F257 — FZZ no-gos impose source differentiation. Literal integer genus has zero continuous
+tangent; integer-genus entire samples admit arbitrary replica tangents; adaptive BRST occurrence,
+nonzero Gamma normalization, and radial visibility still do not imply passivity. The needed
+derivative must be a source insertion/incidence operator, not analytic interpolation of discrete
+samples.
+
+F258 — Prime-amplifier proofs expose the usable integral source grammar: multiplication histories
+quotient to prime multisets; ordered fibres have size at most `ell!`; distinct products obey a
+stars-and-bars bound; powered coefficients are literal fibre cardinalities; exact coefficient
+energy controls block support. This supplies integral symmetric/divided-power formation stages,
+but F251 proves their raw traces are grade-blind.
+
+CANNOT-140 — It cannot rename the existing coefficient-fed Roos or shell base-change reader as
+the producer. Those classes are explicitly evaluated on centered rate and already have the
+critical-line zero radical. New content must construct the comparison from the integral formation
+system before supplying a spectral occurrence.
+
+MUST-92 — Replace MUST-90's raw trace stabilization by the source-native comparison square
+`complete-then-specialize -> specialize-then-complete` for the actual integral formation complex.
+Its cone must be formed in a controlled topological/pro category where cofinally unbounded
+contracting homotopies are not equivalences. Ordinary derived categories are excluded by F252--F254.
+
+MUST-93 — Lift `F_n,V_n` and functional-equation parity to this comparison cone and prove a global
+properness theorem: at every Xi occurrence the cone has a finite perfect integral boundary class,
+its analytic eigenweights are `n^(2 Re s),n^(2-2 Re s)`, and its integral index equals their
+supertrace for every natural `n`. F250 then forces `2 Re s-1=0` and closes RH.
+
+F259 — The specialization--completion square already exists concretely in the Meyer half-density
+bridge. Strong source embeds injectively into `L²` and intertwines the prime Koszul operator. Off
+line the completed `L²` operator is a unit, but its inverse cannot preserve the strong source
+image. Thus horizontal escape is literally `complete then invert ≠ invert in source`.
+
+F260 — The arithmetic leg is also complete: packet units are equivalent to compatible
+automorphisms of all actual away-prime cyclotomic towers, and diagonal packet Frobenius acts by the
+literal prime-power map at every finite stage. This is a faithful profinite/integral history, not a
+fitted scalar reporter.
+
+F261 — One completion topology is impossible. Maximum-grade provenance norm retains every cofinal
+private shell but makes the transverse quotient discrete. Dyadic summable provenance norm is
+non-discrete but sends nonzero cofinal private shells to zero, and no uniform bound compares the
+first norm to the second.
+
+CANNOT-141 — It cannot seek one Banach/Hilbert/provenance norm that is simultaneously analytic,
+non-discrete, and uniformly faithful to unbounded source labels. Lean proves the two canonical
+requirements are singularly incompatible.
+
+F262 — The needed carrier is therefore intrinsically bi-complete: arithmetic/profinite topology
+retains labels and integrality; analytic/Hilbert topology supplies spectral completion but loses
+cofinal provenance. Their partially defined comparison graph, not either completion alone, is
+where source escape lives. Existing Gelfand-triple code already supplies the correct three-space
+shape but assumes the RH-strength source-eigenclass lifting interface.
+
+MUST-94 — Refine MUST-92 to a two-topology comparison. Construct from the same algebraic formation
+complex both its profinite provenance completion and Gamma/Meyer Hilbert completion. Treat identity
+between them as a closed relation/Gelfand pairing, form its specialization--inversion defect, and
+prove packet Frobenius--Verschiebung equivariance. Do not force a continuous map between singular
+topologies.
+
+MUST-95 — Immediate source-specific gate: generalize the Meyer prime Koszul comparison to a
+pre-divisor complex parameter, define the quotient measuring failure of the completed inverse to
+preserve strong source image, and identify its anti-invariant part with the existing Roos class.
+Then prove this defect has a finite perfect integral packet lattice; its FV supertrace plus F250
+closes RH.
+
+F263 — First half of MUST-95 is now paper-proved and Lean-formalized. For every `s in C` and prime
+`p`, Meyer half-density realization intertwines source and Hilbert prime Koszul coordinates before
+divisor specialization. If `R` is strong-source range and `D_s` the Hilbert coordinate, then
+`R <= D_s⁻¹(R)` and the canonical completion escape is `E_s=D_s⁻¹(R)/R`, realized inside `H/R`.
+
+F264 — Exact transgression law: whenever `D_s` is bijective, `E_s=0` iff `D_s⁻¹` preserves
+strong-source range iff the source Koszul coordinate is surjective. Thus a static invertible
+completion square does not manufacture a second obstruction; it transports the source cokernel
+into an inverse-domain quotient.
+
+F265 — At every Xi divisor and every prime, off-line placement forces `E_rho != 0`; conversely
+`E_rho=0` forces critical-line placement. This closes the comparison carrier and RH implication,
+but supplies no vanishing producer.
+
+CANNOT-142 — It cannot stop at the Meyer escape quotient, source-cokernel equivalence, or another
+static comparison square. Those are now exact receivers. Any claimed completion mechanism that
+forces `E_rho=0` by assuming source-preserving inversion or source surjectivity is circular.
+
+F266 — Existing complete-arithmetic-to-Meyer comparison no-go is stronger than a topology slogan.
+Every uniformly first-order-regular comparison sends normalized actual Xi traces to zero along a
+cofinal divisor sequence. A concrete fixed comparison stays nonzero at every finite stage yet
+still converges to zero. Hence source information can survive pointwise while its amplitude is
+erased asymptotically.
+
+F267 — Existing arithmetic formation-completion boundary is literally centered grade times one
+fixed singular vector, and its Roos/physical identifications are coefficient-fed. Likewise the
+integral bidirectional Big-Witt lift is defined by demanding an integral ghost equal the Gamma
+weight, and its existence is already equivalent to grade zero. Neither is the source producer.
+
+CANNOT-143 — It cannot demand uniform nonerasure, prescribe an integral ghost after spectral
+evaluation, or call `a` times a fixed completion vector arithmetic generation. The first is ruled
+out by F266; the latter two insert the selector.
+
+F268 — Loss-order/Rees reinterpretation is not new source structure. Corpus already defines Xi
+relative-completion slope as `Re rho-1/2`, proves functional-equation sign reversal, and identifies
+semistability with critical-line placement, closability, and zero theta flux. Gamma--Rees and
+prime/depth normalized-log modules already recover the same scalar through positive comparison
+factors.
+
+CANNOT-144 — It cannot define a new filtration slope from Xi trace decay, normalized anomaly,
+conormal norm, or the existing relative-completion coordinate. Those are divisor-fed receivers;
+asserting that an independent source filtration has that slope is the missing comparison, not a
+proof. `ULF-FVCS-L2S` is retired.
+
+F269 — Fresh audit of today's Lean additions gives a strict producer/receiver split. Source-native
+finite Frobenius--Verschiebung traces are integral but grade-blind; source-native twisted Möbius
+completion produces a positive fractional nonmeromorphic boundary at every positive twist;
+off-line Meyer completion escape is provably nonzero. By contrast, grade-zero conclusions require
+an integral descent, common lattice, bounded two-sided factorization, or escape vanishing that the
+source has not produced.
+
+F270 — `ULF-PD2SG-1` is dependency-closed and Lean-certified. Let `p` be prime, `XY=p^2`, and
+`1<Y<=X<p^2`. If the first two odd power sums `X-Y` and `X^2-Y^2` are integers, then `X=Y=p`.
+Thus for `0<=b<1`, integrality of only the two prime-power supertraces at depths one and two forces
+`b=0`; all-scale integrality and dense all-prime descent are unnecessary.
+
+F271 — Both sharpness directions are explicit. Composite determinant `36` admits `(X,Y)=(9,4)`
+with integral first two supertraces. At prime determinant `9`, the roots of `z^2-7z+9` are unequal,
+lie in the open reciprocal strip, and have integral even traces at every power by the recurrence
+`T_(r+2)=7T_(r+1)-9T_r`. Primality and odd parity are separately load-bearing.
+
+MUST-96 — Replace all-scale/common-lattice descent by two-superghost descent. Construct before
+divisor specialization one integral parity-graded object at one prime whose analytic realization
+has reciprocal determinant `p^2` and odd ghosts `p^(1+a)-p^(1-a)` and
+`p^(2+2a)-p^(2-2a)`. Big-Witt Frobenius already transports ghost two to ghost one. F270 then forces
+`a=0`; the only missing producer is source/Gamma supertrace naturality for this one object.
+
+F272 — The existing full integral Laurent producer has a sharper one-prime selector. Its one-copy
+quadratic ghost at prime two is `Q_2(a)=-2(cosh(a log 2)-1)`, and `|a|<1` forces
+`-1/2<Q_2(a)<=0`. Hence `Q_2(a)` is integral iff `a=0`. This is paper-proved and Lean-certified,
+including the exact pointwise Xi equivalence.
+
+F273 — Total multiplicity destroys the selector: for every `m>=3`, some nonzero strip grade has
+`m Q_2(a)=-1`. Multiplicity must be resolved by the intrinsic local divisor filtration
+`m_rho^j/m_rho^(j+1)`, whose layers are one-dimensional, not by dividing a total index or choosing
+a root projector.
+
+F274 — Direct character-to-Euler-index transgression is rejected. Laurent ghost evaluation is a
+varying analytic torsion/determinant, while ordinary Euler index is integer and locally constant.
+Equating them without an integral endomorphism is an unmotivated type jump; `ULF-DCIT-1` is retired.
+
+CANNOT-145 — It cannot use ordinary equivariant `K`-theory, a continuous Fredholm family, total
+divisor multiplicity, positivity, ghost erasure, or an asserted equality between analytic torsion
+and Euler index. Each either retains nonintegral character values, loses the selector, or is already
+an RH-equivalent receiver.
+
+F275 — Corpus already contains the correct higher-rank carrier. Bare functional-equation
+reflection `R` and Gamma-transported reflection `R_a` are involutions; their framed difference
+`C_a=R_a-R` is the curved suspension, and `det C_a=2(cosh a-1)` is exactly negative Laurent
+quadratic ghost. Unframed traces and determinants are blind; relative framing retains anomaly.
+
+F276 — `ULF-DRRIF-1` is dependency-closed and Lean-certified. If the dyadic relative reflection
+`C_(a log 2)` has integer coordinates in one complex rank-two frame and `|a|<1`, its determinant is
+an integer in `[0,1/2)`, hence zero and `a=0`. Frame existence at every Xi support point is exactly
+RH. This replaces dense all-prime common-lattice descent by one prime and one framed matrix.
+
+F277 — `ULF-IRRCF-1` is dependency-closed and Lean-certified. The universal integral matrix
+`C_T=[[0,T-1],[T^-1-1,0]]` satisfies `C_T^2=kappa I` and `det C_T=-kappa`; Gamma evaluation sends it
+exactly to the curved suspension `R_a-R` and sends its determinant to positive paired curvature.
+Integral Laurent formation, functional-equation reflection, and Gamma curvature are therefore
+three realizations of one source Clifford law, not analogous route outputs.
+
+MUST-97 — Remaining global theorem only: fuse the constructed integral complex `C_T` with the
+existing canonical Xi jet associated-grade functor, and prove dyadic Gamma realization lands each
+one-dimensional layer in a finite free `Z`-lattice. Then `ULF-DRRIF-1` forces every support grade
+to zero and closes RH. Any construction that chooses a zero, assumes integral landing, or uses
+total multiplicity merely restates this gate.
+
+F278 — Today's singular-cohomology theorem changes locality. Every finite restriction of the
+reflection-odd all-prime co-shift profile is an `ell^2` boundary, while its full cofinal class is
+zero exactly at neutral grade. The obstruction cannot occur at any finite stage.
+
+F279 — Today's infinite Suzuki Gamma kernel theorem proves the complementary fact: the full
+moment feature and its positive trace-class energy are faithful on all arithmetic source
+coordinates and lose exactly the auxiliary feature sector. Infinite completion can retain all
+source data even though every fixed log jet, bounded graph observer, and rational singular-residue
+circuit is coefficient-blind.
+
+F280 — Copywise dyadic integral/compact reduction is not the producer. Corpus already constructs a
+unique coefficient-faithful relative Gamma local system, flat off line as well as on line, whose
+positive compact real-form reduction exists exactly at neutral grade. `ULF-DRRLC-1` is retired as
+a producer programme; `ULF-DRRIF-1` survives only as its exact terminal selector.
+
+CANNOT-146 — It cannot be finite-packet exactness, fixed jets, bounded or rational completion,
+pointwise phase recurrence, generic passivity, a fitted integral frame, or ordinary square-zero
+totalization. Today's positive/no-go audit makes each blind, nonselective, or already RH-equivalent.
+
+MUST-98 — Move one categorical level up: realize `C_T` as the paired naturality defect of cofinal
+Tate completion. At stage `m`, flat-minus-scaled defect is `(1-u) beta_m` on the newly born top
+coordinate; reciprocal clocks reconstruct `-C_T`, so `C_T^2=kappa I` is completion curvature.
+Then seek zero-independent integral strictness of the assembled top-coordinate action; only that
+global law may invoke the dyadic selector.
+
+F281 — `ULF-CRRCF-1` is dependency-closed and Lean-certified. At every Tate stage, canonical top
+readout of reciprocal flat-minus-scaled naturality defects reconstructs the full Gamma relative
+reflection matrix. Its square is scalar curvature, its determinant is paired positive curvature,
+and that determinant equals evaluation of the universal integral Laurent determinant. The
+quadratic ghost is therefore literally a cofinal completion anomaly, not a static analogy.
+
+MUST-99 — Assemble this reciprocal-clock operator over the existing arithmetic cofinal Tate direct
+sum over `Z[T,T^-1]`, before Xi specialization. Prove actual Xi completion preserves its canonical
+integral top-coordinate module. Copywise compact reduction, source/physical reader agreement, or
+post-evaluation integrality does not count; each is already a wall receiver.
+
+F282 — `ULF-ICTRRA-1` is dependency-closed and Lean-certified. Finite Tate shift, zero-extension,
+and top-boundary mechanics now exist over `Z[T,T^-1]`. Flat-versus-`T` and
+flat-versus-`T^-1` defects reconstruct `C_T` at every stage; their direct-sum operator over all
+stages satisfies `D_T^2=kappa id`. The zero-independent integral curved Tate object is built.
+
+MUST-100 — Prove one global Gamma base-change square intertwining `D_T` with stagewise physical
+curved suspension, then fuse that square with the existing Xi jet associated-grade comparison.
+Only remaining conjectural content may be preservation of canonical integral top-coordinate
+module under actual Xi completion; per-fibre integrality is forbidden.
+
+F283 — `ULF-ICTGBC-1` is dependency-closed and Lean-certified. Coefficientwise Gamma base change
+globally intertwines the integral cofinal Tate operator `D_T` with physical `D_a`; moreover
+`D_a^2=-K(a) id`. Source construction, cofinal assembly, and Gamma physicalization are one exact
+base-change system. None is the missing selector.
+
+MUST-101 — Fuse `D_T` with the existing global Xi jet associated grade and identify its canonical
+top-coordinate module before proposing another producer. After that unconditional comparison, the
+only admissible new source law is global integral strictness under actual Xi completion. Copywise
+reader agreement or fitted lattices remain forbidden wall receivers.
+
+F284 — Completion audit: actual Xi vertical class is completion-born iff the pre-divisor Roos
+`lim^1` class is nonzero iff strict physical image is nonzero iff compact recurrence descent fails.
+Ordinary derived scalar base change contracts off neutrality; finite associated grade forgets the
+splitting torsor. Neither can carry the anomaly.
+
+F285 — `ULF-ICTFPI-1` is dependency-closed and Lean-certified. Literal finite Meyer--Tate Xi
+landings are boundaries and converge in Hilbert graph norm to the physical landing for every Xi
+grade. Their fixed-source exactness states converge in provenance topology iff the evaluated
+integral determinant vanishes. The Laurent ghost is the obstruction index to formation properness,
+not a static detector.
+
+CANNOT-147 — It cannot be ordinary vector/norm convergence, finite associated-grade preservation,
+ordinary Tor/base change, or boundary-of-boundary killing. Norm convergence holds off line;
+associated grade forgets splitting; scalar derived fibres contract; Stokes killing erases ghost and
+compensating curvature together.
+
+MUST-102 — Prove zero-independent source-marked provenance continuity of the literal Meyer--Tate
+formation system. Equivalently, actual arithmetic formation must preserve its fixed boundary
+witness through singular completion. This is the sole remaining producer; assuming it pointwise is
+RH-equivalent.
+
+F286 — Fresh code review correction: `SourceMarkedExFlag` retains source vector and open survival
+truth values, not a boundary primitive. At an exact physical state every survival neighborhood is
+absent, so the positive convergence direction of `ULF-ICTFPI-1` is vacuous. The theorem is a valid
+obstruction equivalence, not a formation-properness producer.
+
+F287 — Corpus already has the stronger mechanism. A compatible family of stage quotient classes
+lifts to coherent representatives iff its boundary mismatch is a Roos coboundary; failure is the
+canonical `lim^1` class. Stable-image/Mittag--Leffler towers kill every such obstruction by producing
+coherent corrections. This tracks proofs of exactness, not Boolean exactness.
+
+CANNOT-148 — It cannot be blanket Mittag--Leffler stability of the existing fixed-tail tower.
+Its bond prepends zero, misses every nonzero head, and its reaches strictly lose successive head
+coordinates. The ambient tower is designed to carry nonzero `lim^1`; only the distinguished
+arithmetic primitive, or a different source tower mapping faithfully to it, may be coherent.
+
+MUST-103 — Replace flag convergence by proof-carrying completion: construct one zero-independent
+arithmetic tower of actual boundary primitives and a coefficient-faithful comparison sending its
+coherence obstruction to the Xi Roos class. Prove coherence from a source law before divisor
+specialization. Pointwise existence of primitives, Boolean exactness, or universal stability of the
+target tail tower does not count.
+
+F288 — `ULF-ICTCPI-1` is dependency-closed and Lean-certified. The literal pre-divisor summable
+primitive fibre is always subsingleton; its only possible point is the negative arithmetic-tail
+history. It is inhabited iff the Roos class, integral determinant index, and Xi formation anomaly
+vanish. Universal inhabitation is RH.
+
+F289 — Higher mechanism identified: completion must retain compatible null-homotopies, not only
+objects or exactness truth values. Primitive choices form fibres under kernel gauge; transition
+mismatch is the cocycle, `lim^1` its holonomy, and `det C_T` its evaluated obstruction index. Here
+kernel rigidity collapses each fibre to empty-or-singleton, so no gauge choice can hide failure.
+
+CANNOT-149 — It cannot be “find some better primitive after completion.” Concrete Roos rigidity
+already fixes the only possible primitive coefficient-for-coefficient. Remaining freedom is solely
+whether this literal history belongs to the arithmetic summability/properness class.
+
+MUST-104 — Find a zero-independent law forcing the literal negative-tail history into the source
+completion class. Candidate law must act before Xi specialization and imply summability/properness;
+post-divisor closability, bounded work, integral framing, or survival continuity are equivalent
+receivers, not derivations.
+
+F290 — Fresh cross-organ theorem: an Xi coherent primitive exists iff orthogonal theta-shell
+recovery is sequentially closable. Any exact factorization of that recovery through bounded ingress
+and bounded egress on one normed completion constructs the unique primitive. Thus Roos `lim^1`
+holonomy and shell graph nonclosability are the same completion failure, not parallel endpoints.
+
+F291 — Today's integral Tate, Gamma base-change, proof-carrying completion, and shell-replica code
+now gives one exact anatomy. `C_T` is the zero-independent cofinal naturality defect; Gamma
+evaluation is its Lorentzian physical gauge; `det C_T` is its scalar index; the Roos class is failure
+to complete finite null-homotopies; infinite shell replication turns the same failure into a
+graph-null sequence with nonzero lifted Ward response. Compact recurrence is the quotient-side
+closed phase.
+
+CANNOT-150 — It cannot kill the Roos class by reflection oddness or strict functional-equation
+involutivity. Reflection swaps the two off-line fibres and sends `alpha` to `-alpha`; this action
+squares to identity for every `alpha`. Concluding `alpha=-alpha` would identify the fibres and
+reinsert the missing selection premise. Scalar FE/Schwarz projective residues are gauge-trivial.
+
+FAIL-37 — Adjoint-differential shortcut retired. A dense closable scalar reporter already has a
+bounded full-domain extension, while the replicated shell codiagonal is explicitly nonclosable.
+Calling recovery an adjointable differential cannot generate closability; source must first build
+the common two-sided correspondence.
+
+F292 — Literal shell formation fixes a non-arbitrary completion datum: counting trace equals the
+canonical `ell^2` GNS norm and successor formation preserves both. Shell sectors are disjoint and
+arbitrarily finite differentially independent while carrying the same divisor and anomaly. A
+summable probability weighting is not equivalent: it breaks successor invariance and can hide a
+nonzero constant response.
+
+MUST-105 — Test `ULF-SSND-1`: construct before divisor specialization one normal stationary
+formation/recovery correspondence on the shell counting-trace GNS completion, and prove its core
+recovery is exactly the pre-divisor quadratic Ward response on proof witnesses. Normal two-sided
+transport gives bounded factorization; F290 then supplies every coherent primitive and closes RH.
+Markov/Fisher data processing without the literal response comparison does not count.
+
+F293 — Fresh review of today's completion code: the cofinal Laurent/Tate modules are finite
+stagewise algebra. Their gains, shift maps, direct sums, Gamma base change, determinant identities,
+and coefficient reconstructions do not define a Tate topology or prove strictness/properness of an
+arithmetic completion. Source-marked convergence is imposed by survival predicates; its positive
+physical direction is vacuous at an exact state.
+
+F294 — The coherent-primitive theorem is exact and stronger than the flag topology: the primitive
+fibre is subsingleton and is inhabited iff the Roos class, integral completion index, Xi anomaly,
+and shell closability obstruction vanish. It classifies the missing history uniquely but does not
+put that history in the source completion.
+
+FAIL-38 — `ULF-SSND-1` retired. Normality governs bounded observables, not the singular/unbounded
+Ward response. Adding trace-nonincreasing `L2` boundedness plus exact core recovery assumes the
+existing bounded-factorization endpoint; positive physical realization conflicts with certified
+non-Bessel strip behaviour. Counting trace still proves the survivor: any nonzero off-line exact
+recovery must be singular, domain-changing, or noncyclic.
+
+F295 — Today's prime co-shift and Gamma-six relation no-gos remove two more fake sewing laws.
+Natural boundaries cannot selectively absorb the reflection-odd anomaly without also killing both
+source eigenprofiles, while relation covariance plus any nonvertical descended reader already
+forces equality of scalar characters. The former is too indiscriminate; the latter hides selection
+in descent.
+
+F296 — Suzuki/Hilbert--Brown/CCM/FZZ review gives one common exclusion envelope. Trace-class
+source features plus uniformly bounded, domain-preserving, cyclic recovery remain sublinear;
+bounded generalized inverses, finite circuits, moving projections, fixed graph norms, ordinary
+log residues, and regular vacuum linearisations cannot supply the linear Ward load. Unframed
+unitary invariants and balanced antiunitary amplitudes erase orientation. A successful lift must
+change domain/sheet/support or use a source-generated noncyclic renormalised history; merely
+postulating such singularity is not a mechanism.
+
+CANNOT-151 — It cannot be positivity, complete reflected Hankel positivity at every order,
+exponential type, and functional-equation symmetry alone. The certified uniform-distribution TCD
+countermodel has all these properties and still has nonreal zeros.
+
+F297 — Today's sieve code contains a genuine source law rather than a receiver: unique
+factorisation identifies coefficients of a powered prime amplifier with unordered prime
+multisets; fibre multiplicity is integral and bounded sharply by `ell!`; coefficient support and
+squared energy obey exact counting inequalities. Commutative observation forgets order but retains
+its multiplicity as positive arithmetic mass.
+
+F298 — The shifted-Euler Taylor stratification already formalises the associated source geometry:
+neutral-shift vanishing order is `omega(n)`, the first derivative is exactly `2 Lambda(n)`, the
+leading derivative is `2^omega omega!` times the product of prime logs, and reflection cancels even
+jets while doubling odd jets. Prime polar mechanics already reconstructs parity, valuation depth,
+squarefree locus, and the Möbius boundary phase. Normal-crossing, ordered-history, and parity-depth
+reinterpretations are therefore established shadows, not new selectors.
+
+F299 — Functional-equation packet lifting through the common recovery kernel is observer-level
+information-neutral: it discards and regenerates latent history. Prime-Poisson superselection,
+Shale summability, Fock recurrence, and finite-cutoff non-Cauchy laws are already exact RH
+receivers. They show that a source sewing unitary can exist only on the critical line, but none
+produces that sewing from the scalar functional equation.
+
+CANNOT-152 — Minimal KSGNS/Stinespring uniqueness cannot by itself generate the missing lift. The
+corpus already proves canonical pointed-unitary uniqueness for a supplied CP map and minimal
+presentation. Scalar equality of one functional-equation reporter does not imply equality of CP
+maps on a generating operator system; assuming a shared CP action or its intertwiner merely
+supplies the missing event, target, and passage.
+
+FAIL-39 — Normal-crossing completion, ordered confluence, Shale/Fock sector separation, and minimal
+dilation uniqueness retired as standalone higher mechanisms. Each is already formalised and exact;
+their conjunction still lacks the same source-generated weld. Combining receivers does not make a
+producer.
+
+MUST-106 — Next admissible mechanism must prove an intervention-tomography theorem before divisor
+specialisation: one arithmetic source law generates a shared action/channel, the full family of
+route interventions is complete on a generating system, and functional-equation equality for that
+family forces equality of the entire action. Only then may canonical dilation uniqueness produce
+history sewing and prime-Poisson/Shale superselection force horizontal grade zero. A scalar
+reporter, supplied CP map, chosen operator system, or assumed completeness does not count.
+
+F300 — Fresh tomography audit retires MUST-106 as stated. Complete process tomography in the
+corpus is only a finite span theorem. One-clock CCM tomography reconstructs the complete Xi divisor,
+yet its fibre still admits arbitrary pointed Stone recurrence. More decisively, an explicit ternary
+model fixes the observer and recovery kernel, implements the functional-equation involution, and
+acts nontrivially on a nonzero rank-one formation charge.
+
+CANNOT-153 — It cannot generate source sewing from a complete family of passive interventions. If
+the family omits hidden formation charge, the ternary countermodel survives; if it includes that
+charge, scalar functional-equation equality gives no equality on the added interventions. The
+shared action remains an extra premise.
+
+FAIL-40 — Intervention tomography retired. Existing complete response quotients, minimal
+realizations, divisor tomography, and the FE-fixed hidden-charge countermodel already give its
+strongest forms and exact failure.
+
+F301 — Nomenclature correction: the horizontal Euler--Wold ``Jordan producer'' takes the Xi copy
+and its grade as input. It preserves the selected fibre and proves exact orbit budgets; it does not
+restrict which grades occur. It is a connector/receiver, not a source producer.
+
+F302 — Two involutions must remain distinct. Functional-equation reflection `rho |-> 1-rho` has no
+fixed Xi zero copy, including on the line; Hermitian reflection `rho |-> 1-conj(rho)` fixes exactly
+the critical line. Their mixed source jet is `2 a gamma`, equivalently the imaginary part of the
+Xi-squared node, but even completion erases it. Confusing the involutions inserts selection.
+
+F303 — Toeplitz/Hopf/C-star/Shilov completion is already exact. The unilateral source bialgebra
+lacks an antipode, the boundary quotient kills its rank-one defect and yields the bilateral Laurent
+action, and compact boundary representation/admission is already RH-equivalent.
+
+CANNOT-154 — It cannot call the C-star envelope, Shilov boundary, or boundary representation the
+missing mechanism. Those constructions classify the quotient after the boundary ideal is supplied;
+proving the actual Xi landing factors through that quotient is precisely the open admission theorem.
+
+FAIL-41 — Boundary-envelope reinterpretation retired after direct Lean audit.
+
+F304 — Formation charge is already the symmetric distributivity quotient
+`U inter (W+Z) / ((U inter W)+(U inter Z))`; its dual, Hodge carrier, serial erasure/generation law,
+and completion-born realization are formalized. Central/distributive language does not add a
+producer: automorphisms transport nonzero charge, and singular completion creates exactly the
+off-line class.
+
+FAIL-42 — Central-support/distributive-completion reinterpretation retired. It restates proved
+formation homology and the existing completion boundary.
+
+F305 — Tensor polarization already amplifies one indefinite Lorentz block: negative index grows at
+every tensor depth, and a uniform finite target budget forces positivity. One off-line Xi atom has
+the predicted half-rank negative tensor sector. The missing map is a form-preserving embedding of
+all formed sectors into one fixed-aperture arithmetic target; assuming it is the old completeness
+gate.
+
+F306 — Ordinary nuclearity does not kill the completion class. Nuclear maps extend to completions
+and projective tensor products preserve Deninger nuclearity, while the actual fixed-tail tower is
+not Mittag--Leffler. Today's Suzuki theorem is sharper: every fixed log jet remains nuclear and any
+uniformly bounded response stays sublinear. Thus nuclear/solid vocabulary without a new source
+transition law cannot force the unique Roos primitive.
+
+FAIL-43 — Tensor-amplification, nuclear-exactness, and projective/metaplectic-coherence shortcuts
+retired. Tensor amplification lacks the fixed-target embedding; nuclearity lacks stable images;
+scalar FE/Schwarz projective data gauge-trivializes, while genuine nonsplit FE extensions exist at
+every grade.
+
+F307 — Literal arithmetic has a faithful profinite leg: packet units are exactly compatible
+automorphisms of all away-prime cyclotomic towers, their topology is compact and totally
+disconnected, and Frobenius is literal prime-power action. A connected Lorentz flow cannot descend
+nontrivially into this automorphism group. This is a real fracture, but F262 already locates it:
+profinite provenance and Hilbert/Gamma completion are singular topologies joined only by a partial
+comparison relation.
+
+CANNOT-155 — It cannot infer RH from connected-versus-profinite topology alone. Claiming that the
+analytic Xi flow descends through the profinite action supplies the missing bi-completion comparison;
+local Haar modulus or global adelic unimodularity is nonselective for the same reason.
+
+F308 — Formation-depth execution has an exact category profile. With the corpus gauge
+`G(x)=|sum x_n|+2 sum n|x_n|`, its domain is a separable Banach space compactly and densely
+embedded as a proper sigma-compact `F_sigma` meagre subspace of the observer `ell^2` completion.
+Any Hilbert-null sequence whose codiagonal tends to a nonzero value must escape every bounded
+`G`-set. This is proved on paper in `ULF-FDBE-1` from the Lean compact-sublevel, exhaustion, and
+bounded-recovery laws.
+
+F309 — Countably many compact route gauges cannot cover an infinite-dimensional observer space.
+For compact linear maps `T_m : E_m -> H`, every image is a countable union of nowhere-dense compact
+sets, so `H \ union_m range(T_m)` is dense residual. Adding finitely, countably, or recursively
+enumerably many compact/nuclear route completions cannot supply global admission.
+
+CANNOT-156 — It cannot use Baire measurability, Pettis automatic continuity, or Borel graph
+regularity to force grade zero on the existing source domain. Those theorems require a nonmeagre
+ambient subgroup or its equivalent; the literal executable core is dense meagre `F_sigma`, while
+its codiagonal is continuous only in the strictly finer formation norm.
+
+FAIL-44 — Baire automatic-continuity selection retired. Positive survivor: nonzero horizontal
+response is exactly certified by unbounded formation-depth escape, and every countable compact
+route atlas misses a residual set. Any source mechanism must create one essential noncompact
+coverage operation rather than add another local compact gauge.
+
+F310 — The completed Deninger Green/incidence bridge is already norm-faithful and dense at the Xi
+completion. Its algebraic source range is nevertheless exactly the finite-jet range, dense and
+nonclosed; the reflected-Gaussian horizon is nonzero on every divisor copy and lies in
+`closure(range) \ range`, both before and after incidence/provenance transport. Completing the
+source metric therefore admits the missing infinite history at every horizontal grade.
+
+CANNOT-157 — It cannot close RH by calling common recovery isometric, completing its dense range,
+or invoking completeness plus density. The completed receiver faithfully transports the same
+singular horizon; it neither annihilates nor orients its horizontal coefficient. Surjectivity after
+completion is admission, not selection.
+
+FAIL-45 — Complete-metric/isometric dense-landing fusion retired. It confuses closing the
+finite-jet source with proving that arithmetic formation lands in a grade-zero subspace.
+
+F311 — The literal theta/Gamma-six shell operator has a strict ideal wall, not a soft norm
+estimate. Every nonblind finite shell is coefficient-faithful and weak trace class at every
+horizontal grade, but ordinary trace class exactly at grade zero; universal trace-class admission
+over Xi support is RH. Its full corrected source differs from this principal operator by an
+unconditionally trace-class remainder, so the obstruction is the principal completion class.
+
+F312 — Prime formation is faithfully compact but intrinsically nonproper: its range is nonclosed,
+it has no positive lower frame bound, and adjoining any compact boundary reporter leaves a common
+orthonormal escape. Any reporter restoring a joint lower bound is necessarily noncompact and
+cannot factor boundedly through the prime sampler. Isometric change of gauge preserves this wall.
+
+CANNOT-158 — It cannot infer anything about Xi support from the residual complement of countably
+many compact route ranges. A meagre countable atlas can still contain every member of the
+countable Xi divisor set. Baire proves observer incompleteness, not divisor exclusion.
+
+F313 — The universal Laurent source contains two involutions, bare reflection `R` and transported
+reflection `R_T`, with products `R R_T=diag(T^-1,T)` and `R_T R=diag(T,T^-1)`. Their commutator is
+`diag(T^-1-T,T-T^-1)`; they commute exactly when `T^2=1`, and under the positive Gamma character
+`T=e^a` exactly when `a=0`. The curved differential `R_T-R` squares to the quadratic Laurent ghost.
+
+CANNOT-159 — It cannot impose commutative descent of bare and transported reflection as an
+innocent coherence law. Their failure to commute is already the pre-divisor anomaly; demanding
+commutation or an integral physical frame is a sharp grade-zero receiver unless literal source
+formation independently supplies that descent.
+
+F314 — Today's integral-rigidity modules separate genuine arithmetic from inserted integrality.
+Finite permutation Frobenius--Verschiebung traces see only fixed-point counts and degree defect,
+not rapidity. Conversely, two odd integral superghosts at prime-square determinant, all-scale
+integral conformal trace, one common dense prime-weld integral Lorentz frame, or one dyadic
+integral relative-reflection frame each force grade zero. Every latter condition is an external
+landing hypothesis, not a consequence of the integral Laurent source.
+
+CANNOT-160 — It cannot obtain selection from “the source is integral.” Laurent coefficients are
+integral before specialization, while evaluation `T -> e^a` is real-valued. A numerical index,
+integral trace, or integral matrix after physical evaluation requires a separate strict landing
+theorem; that theorem already carries the selection content.
+
+F315 — The Meyer half-density comparison makes completion escape pre-divisor and exact. The strong
+source range is contained in the analytic inverse domain; when the Hilbert Koszul coordinate is
+invertible, the quotient vanishes exactly when its inverse preserves strong-source provenance.
+At an off-line Xi fibre this quotient is nonzero. Dense Hilbert realization therefore does not
+repair the source-range fracture.
+
+F316 — Critical completion quantizes the continuous horizontal rapidity. The unique Route-R Roos
+primitive is the literal negative tail; its class vanishes exactly for summable coefficients. At
+the moving first-trace wall every `t>0` represents `-h`, every `t<0` represents `+h`, and `t=0`
+represents `0`, where the prime-harmonic class `h` is nonzero. Magnitude disappears; only causal
+orientation survives modulo summable work.
+
+CANNOT-161 — It cannot select by making the horizontal grade small, continuously deforming it, or
+summing the signed functional-equation pair. Completion has already collapsed every nonzero
+magnitude to the same two oriented classes, and reflection cancels `h+(-h)` automatically. A
+surviving law must detect the quadratic pairing or forbid the oriented history itself.
+
+F317 — Square-zero totalization is nonselective. Any composable pair of linear maps can be enlarged
+to an injective genuine complex while retaining its original curvature on the compensating
+summand. The source also contains an explicit all-cross Big-Witt compensator whose second ghost
+cancels the full physical diagonal at every grade. Algebraic exactness can always relocate the
+anomaly.
+
+CANNOT-162 — It cannot close RH by demanding `d^2=0`, BRST closure, or existence of some
+null-homotopy. Those conditions admit universal stabilizations and the literal nonlocal
+compensator. A valid completion must restrict admissible compensators by source provenance,
+effectivity, or formation cost and prove that restriction before divisor specialization.
+
+F318 — The actual strict-preclosure prime edge has a source-native ideal filtration: its all-prime
+correction is Hilbert--Schmidt but not trace class, its harmonic coordinate differs from `1/p` by
+an `ell^1` term, and its twist by `p^t` is summable exactly for `t<0`. Reflected ideal phases agree
+exactly at `t=0`. This is a pre-divisor orientation wall on literal prime data.
+
+F319 — Information-neutral functional-equation packet lifting does not identify the reflected
+completion sectors. Common recovery preserves KL information, measure class, and mutual
+singularity; off-wall prime-Poisson sectors remain disjoint and admit no nonzero closed
+source-linear sewing. Thus information neutrality transports the anomaly faithfully rather than
+annihilating it.
+
+FAIL-46 — Information-neutrality/trace-ideal shortcut retired. The available lift acts on observer
+laws and preserves off-wall superselection; it does not supply the missing same-source closed
+correspondence in the prime completion topology.
+
+F320 — Regularized-determinant holonomy also fails as a linear selector. The forced `S_2\S_1`
+source has a genuine `det_2` anomaly, but its fully labelled functional-equation reflection double
+has product one at every grade. The nonzero information survives only in higher interaction
+ghosts: complete all-cross cancellation kills the quadratic ghost while the determinant retains a
+strict negative quartic and, integrally, an infinite ghost tail.
+
+FAIL-47 — Scalar or projective determinant-holonomy selection retired. Reflection Cartier
+trivialization is unconditional. Any live mechanism must control effectivity or admissibility of
+the whole interaction-level completion, not the signed scalar cocycle.
+
+F321 — Actual cofinal theta Green boundaries do not approach a positive form. They retain one
+fixed positive and one fixed negative direction with limiting values `+1/6` and `-1/6`, uniformly
+away from either semidefinite cone. Reflection-balanced Toeplitz models likewise have zero signed
+index and determinant one while retaining unsigned defect energy `2n`. Mixed inertia is persistent
+carrier structure; signed cancellation is not absence of formation.
+
+CANNOT-163 — It cannot polarize away the fixed negative direction, use signature/index zero, or
+use determinant one as a vacuum law. Hyperbolic pairs are invisible after signed/group-completed
+decategorification. A selector must prove both effective defect sectors empty, not merely equal.
+
+F322 — Critical completion is an exact occupation quantizer. For every nonzero grade `t`, Route-R
+external tensor curvature is the same universal class `h tensor h`; its `(p,q)` representative is
+exactly the Big-Witt physical atom `1/(pq)`. The class detects zero versus nonzero grade but erases
+every nonzero rapidity magnitude.
+
+F323 — Literal Gamma-six paired boundary cost does not share that collapse: it is
+`2(cosh(t)-1)` and strictly separates positive rapidities. No function on external completion
+curvature can reconstruct this cost; grades `1` and `2` already have equal curvature and unequal
+cost. Lean: `RHTower.RouteRCompletionQuantumCostSeparation`.
+
+F324 — The two levels are jointly complete. The marked profile `(oriented completion class,
+Gamma-six paired cost)` is injective: orientation selects the sign ray, strict hyperbolic cost
+recovers magnitude, and class zero isolates neutral grade. Neither coordinate is sufficient alone.
+
+FAIL-48 — Unmarked external completion curvature retired as the universal object. It is the correct
+effective occupation shadow and Big-Witt kernel, but it cannot carry formation distance, properness,
+or noncompact history.
+
+MUST-107 — Surviving higher mechanism must be two-level and source-generated: an effective
+reflection-even occupation class before signed cancellation, plus a proper marked history/cost
+before phase completion. RH closure requires proving actual Xi formation can recur in the completed
+observer only with bounded marked history; assuming fibrewise bounded work is already an RH
+receiver.
+
+F325 — The corpus already contains the proposed marked-action closure. Literal pre-divisor Wold
+polar work has a quartic proper lower bound and bounded scale-orbit work iff grade zero. Literal
+Suzuki completed-source observer-jet action implies RH, and its strongest global linear bound is
+equivalent to RH. Abstract completion kernel-pair non-descent and transverse repair are also already
+formalized.
+
+FAIL-49 — “Add a non-descending cost mark, then assume closed Xi histories have bounded action”
+retired as higher mechanism. The mark is mathematically necessary and jointly reconstructive, but
+the boundedness clause is the existing RH-complete endpoint, not its producer.
+
+CANNOT-164 — It cannot move the unknown from vanishing defect to bounded action, descent,
+saturation, or faithful comparison and call that a mechanism. Each is already an exact receiver in
+the corpus. Next law must generate source-history admissibility from stricter source formation
+semantics and charge every compensator automatically.
+
+F326 — Cyclotomic-density continuation is already closed as a no-go. Finite source stages carry
+literal Frobenius actions, but any entire completion retaining one new cyclotomic divisor at each
+cofinal stage is identically zero; a nonzero limit needs linearly growing negative counterdivisor
+degree. Finite cyclotomic compatibility does not produce a coherent completion primitive.
+
+FAIL-50 — “Finite torsion fibres vanish, hence one holomorphic obstruction family vanishes by the
+identity theorem” retired. The corpus proves exactly this collapse and shows the missing datum is
+the source-generated counterdivisor/primitive compatibility, not analytic continuation.
+
+F327 — Compact-versus-split and periodic-versus-positive completion are already exact receivers.
+The reciprocal-character field has compact and split real forms with different admission domains;
+prime `5` has a literal period-two depth clock whose canonical Gamma-six bistochastic completion
+returns exactly iff grade is zero. Intertwining that clock with physical completion is RH-bearing.
+
+FAIL-51 — Cyclotomic rotation/Lorentz boost intersection and locally-finite-to-positive quotient
+selection retired as mechanisms. Their rigidity is valid, but the required coefficient-faithful
+intertwiner is the already isolated source-completion producer.
+
+F328 — Every off-line conjugate pair contributes one exact hyperbolic plane: positive and negative
+inertias both increase by one. Entire functional-equation and Beurling countermodels also realize
+these planes. Lorentzian/Krein geometry is therefore the correct universal carrier of off-line
+occupation, but functional equation, entire continuation, and small perturbation do not exclude it.
+
+F329 — Stable hermitian decategorification is too coarse. Over the quadratically closed complex
+source, nondegenerate quadratic forms and their Grothendieck--Witt completion retain only rank;
+Witt cancellation, signed index, determinant one, and zero signature all erase effective metabolic
+pairs. Rapidity and Gamma cost require an unstable, source-marked metric refinement.
+
+CANNOT-165 — It cannot identify the new mechanism with Lorentzian geometry, modular flow,
+Grothendieck--Witt theory, or a positive polarization alone. Each already explains a shadow, while
+explicit off-line countermodels satisfy the same carrier laws.
+
+F330 — Higher Schatten/cyclic repair is also present. The anomaly is Hilbert--Schmidt but not trace
+class; products of two Hilbert--Schmidt operators are trace class; source cyclic cocycles annihilate
+literal Hochschild boundaries; the quartic hyperbolic amplitude lands coefficient-faithfully in
+the physical degree-six boundary. Physical cyclic descent is nevertheless exactly RH.
+
+FAIL-52 — “Move one trace degree higher” retired as producer. Higher cyclicity supplies the correct
+interaction reader but not the source-to-physical descent that would annihilate its nonzero
+effective amplitude.
+
+F331 — The surviving common interpretation is effective metabolic birth under completion. Finite
+exact source stages have no defect object; singular completion may create a balanced hyperbolic
+pair that is zero in every group-completed shadow but nonzero as an effective object, with external
+occupation recording birth and Gamma cost recording its size.
+
+MUST-108 — A genuine higher law must prove, before Xi specialization, that literal arithmetic
+formation completion cannot create effective metabolic pairs from compatible finite proof
+witnesses. It must retain object-level effectivity, primitive provenance, and nonlinear cost;
+proving only vanishing after group completion, cyclic pairing, phase quotient, or bounded action
+does not discharge this gate.
+
+F332 — Compact inverse-limit repair is obstructed at tower level. The finite Euler/cyclotomic
+source tower has surjective bonds, while every fixed-tail Roos bond misses a nonzero head; no
+levelwise-surjective natural comparison can connect them. The canonical oriented conductor
+regulator exists only by retaining the horizontal holonomy and therefore preserves, rather than
+exactifies, the Roos class.
+
+FAIL-53 — “Use finite-stage compactness or a surjective profinite tower to manufacture the global
+primitive” retired. Any live source comparison must be relative/mapping-cone valued and
+non-surjective; ordinary compact descent necessarily erases the completion anomaly it must control.
+
+MUST-109 — The no-metabolic-birth theorem of MUST-108 must be proved on the relative comparison
+between arithmetic/profinite formation and analytic tail completion. It cannot be a functor on
+either completion separately: the anomaly is exactly their noncommuting comparison.
+
+F333 — Today's fusion modules identify the actual Xi boundary without interpretation slack.
+Arithmetic formation meets the analytic vertical boundary only at neutral grade; completion birth,
+nonzero Roos class, strict physical transport, and failure of compact recurrence descent are the
+same pointwise event. The integral cofinal Tate index and its unique coherent primitive classify
+that event but do not prevent it.
+
+F334 — Endogenous grammar birth is already constructed. The corpus has exact rule, sequential,
+and analytic examples where completion creates a new executable law, proves completion birth needs
+unbounded formation depth, and source-generates the next minimal challenge. “Effective metabolic
+birth” is therefore an interpretation of the Xi event, not a new production law.
+
+FAIL-54 — Grammar birth or a bare no-metabolic-birth axiom retired as the higher mechanism. The
+former is already present; the latter names the desired conclusion unless arithmetic admissibility
+of proof histories is independently generated.
+
+F335 — Exterior/Hodge and curved-differential interpretations are already exact. The source has an
+alternating degree-one cup, positive cup-star reader, and a completed odd operator with
+`D^2=-K(a)I`; off centre that curved complex is contractible, and supertrace, matrix-factorization,
+local-singularity, and ordinary derived-base-change shadows are blind to selection.
+
+FAIL-55 — Odd exteriorization, curved DG/Clifford completion, and matrix factorization retired as
+producers. They correctly encode the paired Gamma curvature but do not constrain which analytic
+characters occur.
+
+F336 — The rational-adelic multiplier already supplies more than a K1 analogy: every prime gives a
+genuine nonzero `HH1` unit cycle, a coefficient-faithful corrected Bruhat cycle, Kummer period
+`log p`, a nonerasing Xi cap, and exact Gamma-orientation parity. Ordinary dagger reverses the
+source class and cancels the physical sign. No actual algebraic-K1/cyclotomic-trace/TC realization
+or archimedean Gamma regulator comparison is constructed.
+
+CANNOT-166 — It cannot invoke standard K-theory/THH/TC additivity as the missing selector. The
+required anomaly is a nonlinear reflection cross-effect; ordinary additive stabilization and
+reduced cyclotomic traces erase its orientation. A viable cyclotomic law would have to construct,
+not assume, a coefficient-faithful integral two-orientation Gamma regulator.
+
+F337 — Self-amplification is also classified. Tensor powers of one indefinite packet have
+unbounded negative index, but selection requires injective form-preserving realization in one
+fixed finite-negative-budget target. For the actual Route-R completion quantum, canonical diagonal
+multiplication back to the corona kills the external curvature because the wall tangent is
+square-zero.
+
+FAIL-56 — “The anomaly replicates and must fit back into its rank-two boundary” retired. Corpus
+supplies replication but refutes the canonical curvature-preserving fold; supplying another fixed
+target embedding is the existing tensor-admission endpoint.
+
+F338 — The strongest surviving interpretation is proof-history descent. Finite semantic completion
+can identify two executable repairs while a radially calibrated analytic potential assigns them
+opposite values. Three-slot proof erasure, dagger confluence, equality of those provenances, and
+neutral horizontal grade are exactly equivalent for the canonical half-density potential. This
+explains the unique Roos primitive as a failed completed null-homotopy, not a new object class.
+
+F339 — Exchangeability cannot manufacture that descent. Three-slot deletion exposes exactly the
+square of the two provenance laws; common recovery preserves its Jeffreys information, and
+independent depth makes the work additive. Bounded work or thinning consistency forces neutrality,
+but the literal arithmetic source-to-singular-face naturality square remains unproved.
+
+CANNOT-167 — It cannot assume proof irrelevance, dagger confluence, three-slot exchangeability,
+thinning consistency, or bounded proof work after analytic completion. Each is already a sharp RH
+receiver. The missing law must construct one pre-divisor arithmetic quotient on which finite proof
+equivalence remains valid after singular completion and whose recovery retains the prime-harmonic
+principal class.
+
+MUST-110 — Any surviving proof-history mechanism must exhibit a zero-independent arithmetic
+presentation, its native semantic equivalence, and a singular completion functor that descends the
+canonical orientation potential through that equivalence. It must prove descent from source
+formation rules, not from Xi fibres; existing three-slot and coherent-primitive theorems then force
+every support grade to zero.

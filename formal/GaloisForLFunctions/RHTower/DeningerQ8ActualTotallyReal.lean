@@ -26,20 +26,20 @@ local notation "K1" => deningerQ8RootNumberNegOneFirstQuadraticField
 local notation "K2" => deningerQ8RootNumberNegOneSecondQuadraticField
 local notation "K3" => deningerQ8RootNumberNegOneTopField
 
-noncomputable local instance : FiniteDimensional K1 K2 :=
+noncomputable local instance q8TotallyRealFiniteDimensionalK1K2 : FiniteDimensional K1 K2 :=
   Module.Basis.finiteDimensional_of_finite
     (AdjoinRoot.powerBasis
       deningerQ8RootNumberNegOne_secondQuadratic_irreducible.ne_zero).basis
 
-noncomputable local instance : FiniteDimensional K2 K3 :=
+noncomputable local instance q8TotallyRealFiniteDimensionalK2K3 : FiniteDimensional K2 K3 :=
   Module.Basis.finiteDimensional_of_finite
     (AdjoinRoot.powerBasis
       deningerQ8RootNumberNegOne_thirdQuadratic_irreducible.ne_zero).basis
 
-noncomputable local instance : FiniteDimensional ℚ K2 :=
+noncomputable local instance q8TotallyRealFiniteDimensionalRatK2 : FiniteDimensional ℚ K2 :=
   FiniteDimensional.trans ℚ K1 K2
 
-noncomputable local instance : FiniteDimensional ℚ K3 :=
+noncomputable local instance q8TotallyRealFiniteDimensionalRatK3 : FiniteDimensional ℚ K3 :=
   FiniteDimensional.trans ℚ K2 K3
 
 private theorem complex_conj_eq_self_of_sq_eq_pos

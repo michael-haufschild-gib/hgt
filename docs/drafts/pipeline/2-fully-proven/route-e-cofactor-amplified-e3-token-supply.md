@@ -7,12 +7,14 @@
 - **Source:** `OPEN-SOURCE-001`
 - **RH used:** no
 - **Computation used:** no
-- **Lean status:** the whole elementary layer is formalized — exact parity reversal, the
+- **Lean status:** the elementary layer is formalized — exact parity reversal, the
   \(s\leftrightarrow2s\) cofactor pairing and displacement scaling in
-  `MobiusCofactorAmplifiedToken.lean`, the parity-balance inequality behind `(7)` and `(9)` and the
-  dyadic slice count `(6a)` in `RouteECofactorParityBalance.lean`, and the amplified displacement
-  `(5)` in `RouteEForbiddenSupportStability.lean`.  The analytic supply rests on the published
-  Matomäki--Teräväinen all-interval theorem and is not formalized.  See "Lean progress".
+  `MobiusCofactorAmplifiedToken.lean`, the parity-balance inequality and dyadic slice count `(6a)`
+  in `RouteECofactorParityBalance.lean`, the amplified displacement `(5)` in
+  `RouteEForbiddenSupportStability.lean`, and the unsigned band-avoiding squarefree estimates
+  `(7)` and `(9)` with the card's band hypothesis discharged in `RouteECofactorUnsignedMass.lean`
+  and `RouteECofactorBandMass.lean`.  Analytic supply `(6)` still depends on the published
+  Matomäki--Teräväinen all-interval theorem and is not yet formalized.  See "Lean progress".
 
 ## Lean progress
 
@@ -45,9 +47,9 @@ amplified by `t` stays within `√(ut)` times the same polylogarithmic factor of
 
 `#print axioms` on all of these: `propext`, `Classical.choice`, `Quot.sound` only.
 
-Not formalized: the quantitative all-interval supply `(6)`, which is the published
-Matomäki--Teräväinen minorant, and the classical unsigned squarefree harmonic estimates quoted in
-`(7)` and `(9)`.
+Not formalized: quantitative all-interval supply `(6)`, which is the published
+Matomäki--Teräväinen minorant.  The unsigned squarefree harmonic estimates `(7)` and `(9)` are now
+closed by `RouteECofactorUnsignedMass.lean` and `RouteECofactorBandMass.lean`.
 
 ## Statement
 
@@ -806,3 +808,202 @@ Card remains Stage 2.  Heath--Brown/Matomäki--Teräväinen Lemma 3.4 is closed.
 work is Lemma 3.5's genuine Type I and Type I/II analytic cancellation, subsequent
 routing/amplification, and final Theorem 1.2 assembly; Proposition 2.2 bookkeeping and Type II are
 already closed.
+
+## Lean progress update (2026-09-02) — literal Heath--Brown replacement Watt moment
+
+`Sieve/MatomakiTeravainenPrimeAmplifierSparseMass.lean` and
+`MatomakiTeravainenPrimeAmplifierHeathBrownSupport.lean` now package each literal powered-prime
+amplifier block as a factorial-normalized Heath--Brown sparse factor, with exact factor identity,
+unit coefficient bound, stars-and-bars support, and Brun--Titchmarsh support envelope.
+
+`Sieve/MatomakiTeravainenWattUnitSquareHeathBrown.lean` identifies the squared reciprocal unit
+block with raw ordered factor-pair coefficients, divisor-bounds those coefficients, and proves its
+exact split across `(N^2,2N^2]` and `(2N^2,4N^2]`; zero coefficients discharge both outside-range
+tails.  `Sieve/MatomakiTeravainenPrimeAmplifierHeathBrownMoment.lean` applies literal Lemma 3.4 to
+both pieces and proves the positive-height interval estimate for the actual powered-prime Watt
+moment, with only the explicit `(ell!)^2`, sparse-card, and divisor-scale factors remaining on its
+right side.
+
+Direct checks and targeted builds (`11172/11172`, `11176/11176`) pass.  Focused axiom audit of 41
+new declarations reports only `[propext, Classical.choice, Quot.sound]`; modules are umbrella-wired
+without an umbrella build.
+
+Card remains Stage 2.  Remaining shared gate is now scalar: absorb the explicit factorial-weighted
+sparse-card/divisor expression into the literal Lemma 3.5 budgets in every Proposition-2.2 scale,
+then complete amplification and Theorem 1.2.  No spectral or automorphic premise has been added.
+
+## Lean progress update (2026-09-02) — energy-faithful Type-I receiver
+
+Five further unconditional leaves close the support/energy mismatch in the Heath--Brown
+replacement:
+
+- `Sieve/MatomakiTeravainenPrimeAmplifierIntegralEnergy.lean` identifies every raised coefficient
+  with its ordered prime-product fibre cardinality and proves `card support <= block energy`;
+- `Sieve/MatomakiTeravainenPrimeAmplifierHeathBrownEnergyMoment.lean` factors the exact coefficient
+  energy from the complete mixed moment;
+- `Sieve/MatomakiTeravainenPrimeAmplifierHeathBrownBTMoment.lean` and
+  `MatomakiTeravainenPrimeAmplifierHeathBrownSqrtBTMoment.lean` remove exact support statistics and
+  select `sqrt P`, leaving the explicit support base `292 P/log P + 1 + ell`;
+- `Sieve/MatomakiTeravainenTypeIPrimeAmplifierHeathBrownMoment.lean` feeds the result through the
+  fixed amplifier-block cover and restricted Cauchy receiver, reducing all block-height clauses to
+  `((2P)^ell:R) <= T`.
+
+Targeted builds pass, and the focused 27-declaration audit reports only `propext`,
+`Classical.choice`, and `Quot.sound`.  All leaves are umbrella-wired without an umbrella build.
+
+Card remains Stage 2.  Remaining shared work is exact Section-5.1 schedule/exponent absorption of
+the now source-only coefficient, followed by Proposition-2.2 routing, amplification, and the
+all-interval theorem.  No hypothesis-bearing substitute has been promoted.
+
+## Lean progress update (2026-09-02) — source-scale Type-I absorption and height closure
+
+Seven new unconditional leaves close the Section-5.1 source schedule, canonical
+Brun--Titchmarsh/factorial losses, and unit-length/height branch:
+
+- `Sieve/MatomakiTeravainenTypeIPrimeAmplifierHeathBrownSourceScale.lean` derives
+  `P <= T^(2/5)` from the paper's source range;
+- `Sieve/MatomakiTeravainenTypeIPrimeAmplifierHeathBrownCanonicalMoment.lean` connects the Type-I
+  receiver to the square-root Brun--Titchmarsh coefficient and absorbs `ell!`, `(ell!)^2`, and
+  `292P/log P + 1 + ell` under the exact reserve `294 ell <= P`;
+- `Sieve/MatomakiTeravainenTypeIPrimeAmplifierHeathBrownDegreeDeficit.lean` constructs that reserve
+  uniformly from the actual exponent interval;
+- `Sieve/MatomakiTeravainenTypeIPrimeAmplifierHeathBrownAbsorbedSourceMoment.lean` discharges prime
+  scale, degree, height, factorial, support, and Brun--Titchmarsh side conditions internally;
+- `Sieve/MatomakiTeravainenTypeIPrimeAmplifierHeathBrownPowerMoment.lean` and
+  `MatomakiTeravainenTypeIPrimeAmplifierHeathBrownPowerSourceMoment.lean` absorb all remaining
+  divisor/small-power losses into a fixed constant times `T^(epsilon/2)`;
+- `Sieve/MatomakiTeravainenTypeIPrimeAmplifierHeightDichotomy.lean` chooses internally between the
+  new `N <= T` Heath--Brown receiver and the existing `T <= N` affine receiver.
+
+Direct checks and the targeted height-dichotomy leaf build (`11192/11192`) pass.  A focused audit
+of all 27 new theorem declarations reports only `[propext, Classical.choice, Quot.sound]`; modules
+are umbrella-wired without an umbrella build.
+
+Card remains Stage 2.  No caller-supplied `N/T` comparison or hidden schedule/factorial/support
+hypothesis remains in this Type-I lane.  Still open: literal final scalar comparison with the
+amplifier threshold and long-factor energy, Proposition-2.2 Type-I routing, amplification, and
+all-interval Theorem 1.2 assembly.  No conditional endpoint has been promoted.
+
+## Lean progress update (2026-09-02) — exact threshold-layer Type-I replacement
+
+The prior coefficient-energy collapse was too coarse: it erased the powered-block denominator and
+therefore could not retain the small source saving used in Section 5.1. Seven unconditional
+modules replace that step without changing the amplifier:
+
+- `Sieve/MatomakiTeravainenPrimeAmplifierLayerCake.lean` writes every positive integral raised
+  coefficient as sum of unit threshold layers, proves exact coefficient identity, and bounds total
+  layer mass by `P^ell`;
+- `MatomakiTeravainenPrimeAmplifierHeathBrownLayerMoment.lean` applies literal Lemma 3.4 to each
+  layer and recombines them by finite `L²` Minkowski, retaining both `B²` denominators;
+- `MatomakiTeravainenPrimeAmplifierHeathBrownLayerScalar.lean` uses finite Jensen at exponents
+  `1/2` and `7/8` to collapse layers to exact factorial powers;
+- `MatomakiTeravainenTypeIPrimeAmplifierHeathBrownLayerReceiver.lean` inserts that sharp symmetric
+  mixed moment into restricted Type-I Cauchy receiver;
+- `MatomakiTeravainenPrimeAmplifierHeathBrownLayerCanonical.lean` proves canonical block
+  cancellation from `ell! <= P^ell <= B`;
+- `MatomakiTeravainenPrimeAmplifierHeathBrownLayerSourceScalar.lean` keeps sharper source law
+  `ell! <= (P^ell)^(1/alpha)`, recovering exact negative powers
+  `(P^ell)^(-(1-1/alpha)/2)` and `(P^ell)^(-(1-1/alpha)/8)`;
+- `MatomakiTeravainenTypeIPrimeAmplifierHeathBrownLayerSourceReceiver.lean` constructs source base,
+  degree, powered threshold, complete-support height, and source-large-set identity internally.
+
+Direct checks and targeted leaf builds pass. Focused axiom audit of all 26 new theorem
+declarations reports only `[propext, Classical.choice, Quot.sound]`; modules are umbrella-wired
+without umbrella build.
+
+Remaining Type-I work is height/exponent comparison of this now-sharp source root with long-factor
+energy and Proposition-2.2 piece scales, followed by amplification and final Theorem 1.2 assembly.
+No hypothesis-bearing endpoint has been promoted.
+
+## Lean progress update (2026-09-02) — exact source density and fixed power decay
+
+Nine further unconditional bricks carry the threshold-layer Type-I replacement through its
+source scalar:
+
+- height, height-receiver, long-energy, divisor-energy, and long-power modules discharge the
+  square-product scale, divisor scale, literal long fourth moment, fixed divisor majorant, and
+  residual long polylogarithm;
+- the strengthened layer scalar keeps the exact diagonal mass
+  `card(mtTypeIPrimeCoeffSupport P)^ell / P^ell`;
+- `Sieve/MatomakiTeravainenPrimeAmplifierLayerPrimeDensity.lean` proves that mass is at most
+  `2^(-ell)` by the literal Brun--Titchmarsh support count and then at most
+  `exp(-(log(log X))^6)` on the complete source schedule;
+- `Sieve/MatomakiTeravainenTypeIPrimeAmplifierHeathBrownLayerSourceDensity.lean` inserts the saving
+  into the full long-power receiver;
+- `Sieve/MatomakiTeravainenTypeIPrimeAmplifierHeathBrownLayerSourcePowerDecay.lean` replaces the
+  two residual variable amplifier powers by the uniform paper-range savings
+  `T^(-9/2000)` and `T^(-9/8000)`.
+
+Direct checks and targeted leaf builds pass, ending at `11274/11274`. Focused axiom audits report
+only `[propext, Classical.choice, Quot.sound]`; modules are umbrella-wired without an umbrella
+build.
+
+Card remains Stage 2. Remaining shared Type-I gate is exact product-scale routing from the
+Proposition-2.2 piece data into this fixed-power receiver and final scalar absorption. Type-I/II,
+amplification, and the all-interval supply theorem remain downstream; no conditional or
+hypothesis-bearing endpoint has been promoted.
+
+## Lean progress update (2026-09-02) — one-unit coefficient-faithful Type-I lane
+
+Four unconditional modules add the complementary one-unit receiver:
+
+- `Sieve/MatomakiTeravainenTypeIPrimeAmplifierOneUnitMoment.lean` applies the unconditional
+  one-unit second-derivative moment to every powered-prime amplifier block while preserving its
+  exact coefficient energy and introducing no factorial normalization;
+- `Sieve/MatomakiTeravainenTypeIPrimeAmplifierOneUnitSourceMoment.lean` constructs the paper's
+  prime scale and raising degree, discharges every block-height condition, and inserts equation
+  `(5.4)` on the complete source schedule;
+- `Sieve/MatomakiTeravainenTypeIPrimeAmplifierOneUnitSourceLongEnergy.lean` replaces the long
+  fourth moment by literal dyadic coefficient energy;
+- `Sieve/MatomakiTeravainenTypeIPrimeAmplifierOneUnitSourceLongPower.lean` applies the fixed
+  divisor majorant and absorbs its polylogarithm into `T^(epsilon/100)`.
+
+Direct checks pass. Targeted final leaf build passes (`11211/11211`). A focused audit of all eight
+new theorem declarations reports only `[propext, Classical.choice, Quot.sound]`; final leaf is
+umbrella-wired without an umbrella build.
+
+This lane does not by itself close Section 5.1. Exact exponent comparison shows both available
+elementary replacements stop short on the middle Type-I product scales: the threshold-layer
+diagonal is only subpower after multiplication by long-factor fourth-moment energy, while the
+one-unit bound also lacks the published Deshouillers--Iwaniec modulus-average saving. The remaining
+analytic gate is therefore the genuine Lemma 3.5(ii) cancellation (or an equally strong
+source-specific theorem), followed by Proposition-2.2 routing, amplification, and the all-interval
+supply theorem. Card remains Stage 2; no premise-bearing endpoint has been promoted.
+
+## Lean progress update (2026-09-02) — signed modulus-average spectral carrier
+
+Three unconditional modules replace the positive modulus-energy object by the signed carrier on
+which genuine spectral cancellation can act:
+
+- `Sieve/KloostermanModulusBilinear.lean` forms the complex sum of complete Kloosterman bilinear
+  amplitudes across moduli before taking a norm, proves its literal threefold expansion, and gives
+  exact fixed-modulus and direct-sum baselines;
+- `Sieve/KloostermanHybridModulusBilinear.lean` specializes both residue vectors to physical-height
+  additive Dirichlet polynomials and proves continuity plus pointwise baselines;
+- `Sieve/KloostermanHybridModulusLinear.lean` fixes one residue vector and integrates the signed
+  one-sided form, closing the exact non-spectral baseline by the existing additive hybrid large
+  sieve.
+
+Direct checks pass. Targeted builds pass (`8941/8941`, `9229/9229`, `9230/9230`). Focused audit of
+all 12 new theorem declarations reports only `[propext, Classical.choice, Quot.sound]`; final leaf
+is umbrella-wired without an umbrella build.
+
+Card remains Stage 2. Relative phases across distinct moduli are now retained in Lean, but the
+proved right side still takes the fixed-modulus triangle/Cauchy baseline. Remaining primitive is
+the genuine Kuznetsov--Deshouillers--Iwaniec modulus-average improvement for this signed carrier;
+then source Type-I routing, amplification, and all-interval Theorem 1.2 assembly remain. No
+spectral estimate has been assumed or exposed as a hypothesis.
+
+## Lean progress update (2026-09-02) — shared-coefficient adjoint structure
+
+`Sieve/KloostermanHybridModulusAdjoint.lean` proves exact conjugation of additive hybrid
+polynomials, symmetry and adjoint laws for fixed-modulus and signed modulus-average Kloosterman
+forms, and the time-reflection adjoint for the shared-arithmetic-coefficient hybrid carrier. This
+removes arbitrary modulus-dependent source coefficients from the intended spectral input and
+retains the common arithmetic sequence on which cross-modulus cancellation must act.
+
+Direct check and targeted build pass (`9231/9231`). Focused audit of all eight new theorem
+declarations reports only `[propext, Classical.choice, Quot.sound]`; final leaf is umbrella-wired
+without an umbrella build. Card remains Stage 2: adjoint/representation structure is closed, while
+the quantitative Kuznetsov--Deshouillers--Iwaniec operator estimate remains open and is not a
+hypothesis of any endpoint.

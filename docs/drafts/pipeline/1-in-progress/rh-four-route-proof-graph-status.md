@@ -1,49 +1,45 @@
 # RH four-route status
 
-Frontier map is read-only. Facts only; cards/certificates are source of truth.
+Frontier map is read-only. Facts only; cards/certificates are authoritative.
 
 ## Shared
 
-- `C(q)=1-2 Re(q)` controls all four receivers; universal extinction iff RH.
-- Source FE gain, fixed physical pairing, clock covariance, receiver extinction are equivalent.
-- Genuine prime-2/prime-3 source boundaries form the rank-one orbit `d(t)·(0,1,-1,0)`.
-- Every fixed coherent complex quadratic scalarization is blind (`κ=0`) or exactly shared Ward/RH (`κ≠0`); positivity and Hermiticity are irrelevant.
-- Every ℝ-algebra automorphic untwisting of the Γ₆ cyclic source is trivial: `t-u → t-1` forces `u=1`; universal physical untwisting is shared Ward/RH.
-- Localization dichotomy: finite denominator `D` admits translation `q` iff `D(-q)=0`, so none is grade-universal; `ℝ(X)` has a unique untwisting for every holonomy and is nonselective.
-- Fibre-preserving commutative algebraic enlargement is terminal: any untwisting of `x-u` preserving a proper fibre containing `x-a` forces `u=1`, with no finiteness/domain/reducedness assumption. Grade-universal untwisting requires moving fibres; any survivor is genuinely dynamical, noncommutative, or non-algebraic/singular.
-- Missing edge is source-dynamical Ward/orientation, not divisor detection.
+- All receivers reduce to `C(q)=1-2 Re(q)`; universal extinction iff RH.
+- Fixed scalar/pairing/clock/commutative-fibre selectors are blind or equivalent to RH. Any survivor must supply a literal source-dynamical law.
 
 ## HB
 
-- Reduced `2s` Teukolsky incidence, exact Jost return, and actual BM left-coordinate incidence exist.
-- Hermitian completion, local third-jet cut, passive response, finite-energy graph/Krein, and analytic QNM compensation classes are dead.
-- Open: derive Schwarz/retarded–advanced covariance from literal dynamics; canonical compatibility is already iff RH.
+- Literal unfolded scalar source, rank-three mixed-Casimir landing, canonical scalar, negative BM, left QNM, and source/clock cocycle are closed. At `(2,5)`, canonical scalar is `2800` times literal RSZ.
+- Modewise and arbitrary-order history-local QNM solvability are nonselective: a unique frequency-correction tower cancels every Xi fibre; its vanishing is iff criticality/RH.
+- Generic KMS/purity, passivity, Hardy completeness, scalar/readout, causal-spectrum, and local-cut producer classes are dead.
+- Full BM radial Jost divisor is exactly two strictly damped QNM towers. Thus every arbitrary complex finite-variation Jost-pole spectrum decays and cannot persist as `-AIME`; all meromorphic radial-pole completions are dead.
+- Literal completed-Eisenstein continuum is finite energy and real-even; its BM response is real at every delay. Critical unit AIME is nonreal, so this continuum cannot supply forced `-AIME`. Survivor must carry genuinely complex phase-sensitive incidence.
+- For Xi support multiplicity `m`, completed balanced spin-two source is dark below grade `2m`. At actual repeated leg `s=2`, grade `2m` is always nonzero; full HB incidence is iff one explicit radial/left-QNM scale value.
+- Literal source-FE reflection gains form an off-wall hyperbolic saddle. No injective nonlinear detector continuous at vacuum can scalarize it to one gain; global existence is iff RH. Physical horizon--boundary transfer still needs reflection-channel inclusion.
+- Exact open core: fixed-channel third-order `++-` Einstein--Teukolsky projection at opposite simple QNM pole. Cancellation requires
+  `samePoleSourceRemainder(z_q) = -A |A|² (-12/(Q+2))`.
+- Full source splits into three non-AIME channels. Critical BM matching forces aggregate `-AIME`; one channel is nonexact with projection at least `|AIME|/3`, or all three equal `-AIME/3`.
+- Exact scalar/vector KI reconstruction, chiral two-jet recovery, Plebanski vertex, first live multiplicity-matched angular jet, and second-harmonic return are closed. Missing premise is literal physical radial/left-QNM scale equalling the now-explicit required value.
 
 ## FZZ-P
 
-- FE/Schwarz/order-one response branches, eigenline/eigenpair landing, phase-only monomials, independent scales, and canonical joint radial-phase divisor landing are dead.
-- Joint quintic radial-phase source encoding is complete/injective.
-- Linear replica-area holonomy tangent has exact data `c₀=-2`, `c_{±2n}=2/3`, independent of radial dressing.
-- Normalized rectangular response is `≥1`; passivity is equivalent pointwise to zero radial twist, and on canonical Mellin twists to `Re ρ=1/2`. Universal divisor-mode passivity is iff RH.
-- Every charge-balanced completion built only from reciprocal multiplicative β/γ characters is twist-independent, including arbitrary external reporter charges and infinite screening towers; no output predicate can select zero radial twist.
-- Every continuous exact fixed-sublevel wall selector must saturate its threshold along the full wall. Raw twisted theta-determinant norm varies there (`D(0)=0`, `D(1/2)≠0`), so it and every continuous injective scalar postprocessing are dead.
-- Fixed-support Abel--Jacobi/Quillen branch is dead: replica charge deformation fixes divisor support and holonomy; subtraction/division cancels every separated log/determinant factor, so no output predicate selects zero radial twist.
-- Open: derive divisor-mode passivity from a genuinely mixed replica-charge/divisor-support term (support motion or prime-form/OPE branch localization before Jacobian integration).
+- Joint quintic radial-phase encoding is injective; normalized rectangular passivity is pointwise zero radial twist and gives RH on canonical Mellin twists.
+- Character-balanced, determinant/sublevel, fixed-support Abel--Jacobi, OPE/BRST charge, genus/cycle, and pointwise Gamma-amplitude selectors are dead.
+- Normalized replica-Ward profiles cannot select vacuum Gamma delay over cubic gauge. Positive/signed/complex finite-variation nonlocal reflection kernels collapse to forced local transport and are UV non-tempered.
+- Reflected-Fermi work has unique center and strict negative-square gradient flow; a nonconstant flow cannot preserve the unchanged source divisor. Universal stationarity is iff RH.
+- Exact survivor: interacting mixed radial/replica source law forcing fixed divisor modes to zero twist without normalization gauge or fixed-source divisor transport.
 
 ## RBH
 
-- Separated, fixed/common scalar, source-faithful nonlinear normalization, and finite Markov-flow classes are dead.
-- Open: nonseparated singular source law yielding shared Ward.
+- Separated/fixed scalar, source-faithful nonlinear normalization, and finite Markov-flow classes are dead.
+- Source-native Schwarz-odd finite part has cofinal zeros/sign changes. Any survivor must change architecture to a source-derived singular law.
 
 ## PW-B
 
-- Positive matrix, conditional natural-order, and closed-relation branches are dead.
-- Unique source-pure singular FE carrier exists; it is an algebraic rescaling gauge.
-- Fixed energies and all uniformly conditioned scale-dependent invariant energy bundles are dead. Any invariant fibre obeys `m·max(a²,a⁻²) ≤ M`.
-- Exact source-adapted energy attains forced reciprocal-gain conditioning.
-- Carrier-only connection/index/operator-domain branch is dead: horizontal sections have no nonzero `L²` state in either orientation, index imbalance is zero, and all positive unitarizing densities are `a⁻¹h` with positive even `h`.
-- Open: independently source-normalized singular measure/domain or direct source-dynamical partner law.
+- Positive-matrix, conditional-order, closed-relation, fixed-energy, uniformly conditioned bundle, and carrier-only index/domain classes are dead.
+- Source-pure singular FE carrier exists but is algebraic rescaling gauge; source-adapted energy has forced reciprocal-gain conditioning.
+- Exact survivor: independently source-normalized singular measure/domain or direct source-dynamical partner law.
 
 ## Latest certificate
 
-`not_exists_fzzFixedSupportQuillenRatioNormalizedResponse_value_selector` — direct Lean PASS; targeted build PASS; standard axioms only; umbrella wired.
+`d4FullCrossBranchProjectedResidue_actualMultiplicityMatched_eq_unitBMTarget_iff_radialScale`: direct Lean PASS; targeted build `13205/13205` PASS; standard axioms; umbrella wired.

@@ -23,6 +23,6 @@
 - The completed Hensel witness is unit-valued; its norm `u` has trivial actual finite-place Artin symbol for `N/K` at every dyadic `K=ℚ(√5,√41)` place.
 - Over `S=ℚ(√41)`, `u` has minimal polynomial `X²−X−1`; hence `N_{K/S}(u)=−1`.
 - At `2`, source primes have `e=f=1` over `ℚ`; completed lower groups are `C₂` at `0,1,2`, then `1`; upper groups satisfy `G²=C₂`, `G³=1`; local conductor is `8`. Genuine filtered reciprocity transports a central depth-`2` witness to `ℤ₂ˣ`; the resulting modulo-`8` character is exactly even `χ₈`. Actual source/inverse Tate epsilon product is `+1`.
-- Fröhlich 6(i)'s hypothesis holds; wild `2` is permitted. Finite sign and odd local product equal `α_Kβ_K=−1`.
-- Fröhlich's proof uses Artin induction/local Gaussian `ε`, pure-field evaluation, then quadratic-twist invariance.
-- **Open:** define the global Artin epsilon product and identify its local factors, yielding `W_N=−1`.
+- Fröhlich 6(i)'s hypothesis holds; wild `2` is permitted; `α_Kβ_K=−1`.
+- Specialized global Artin epsilon/root number is the actual source-channel Tate product: dyadic radial-independent, unit off `{2,5,41}` and at infinity, equal to `−1` and Fröhlich's sign.
+- **Open:** construct the completed Artin `L` analytic family with this root number and its functional equation.

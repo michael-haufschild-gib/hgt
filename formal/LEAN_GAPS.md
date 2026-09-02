@@ -12,11 +12,12 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | Lines | File |
 |---:|---|
 | 67381 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/ModularInversion/MontgomeryKaliski.lean` |
-| 14567 | `formal/GaloisForLFunctions/RHTower.lean` |
-| 13008 | `formal/GaloisForLFunctions/HTGeometry.lean` |
+| 14917 | `formal/GaloisForLFunctions/RHTower.lean` |
+| 13144 | `formal/GaloisForLFunctions/HTGeometry.lean` |
 | 12440 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean` |
 | 9881 | `formal/GaloisForLFunctions/RHTower/ThetaCuspShellIncompleteGammaCoordinate.lean` |
 | 8232 | `formal/GaloisForLFunctions/QuantumAlg/Util/Polynomial/Complement/Interval/Witness.lean` |
+| 6890 | `formal/GaloisForLFunctions/HTGeometry/CaiChenFangGuoRajchman.lean` |
 | 6343 | `formal/GaloisForLFunctions/HTGeometry/ABHN/NonarchimedeanLocalFieldValuationSequence.lean` |
 | 6316 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/ModularDivision/StructuredCircuit.lean` |
 | 6194 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/QSP/MultiQubit/QSVT/Decomposition.lean` |
@@ -35,7 +36,6 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 3594 | `formal/GaloisForLFunctions/Bottcher/HDiscLoopDeck.lean` |
 | 3532 | `formal/GaloisForLFunctions/QuantumAlg/Algorithms/Factoring/EkeraHastadStyle.lean` |
 | 3468 | `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean` |
-| 3337 | `formal/GaloisForLFunctions/QuantumAlg/Algorithms/Factoring/ShorStyle.lean` |
 
 ## Gap Markers
 

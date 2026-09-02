@@ -27,8 +27,8 @@ namespace RHTower
 
 noncomputable section
 
-local instance : Fact (Nat.Prime 5) := ⟨by norm_num⟩
-local instance : Fact (Nat.Prime 41) := ⟨by norm_num⟩
+local instance deningerQ8FroehlichFactPrimeFive : Fact (Nat.Prime 5) := ⟨by norm_num⟩
+local instance deningerQ8FroehlichFactPrimeFortyOne : Fact (Nat.Prime 41) := ⟨by norm_num⟩
 
 noncomputable def deningerQ8FiveResidueSourceEquiv :
     Multiplicative (ZMod 4) ≃* (ZMod 5)ˣ := by
