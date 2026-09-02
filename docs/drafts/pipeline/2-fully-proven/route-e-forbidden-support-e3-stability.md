@@ -813,3 +813,104 @@ capstone is umbrella-wired without an umbrella build.
 Card remains Stage 2.  Lemma 3.4 is closed.  Remaining shared work is Lemma 3.5's genuine Type I
 and Type I/II analytic cancellation, routing/amplification, and final Theorem 1.2 assembly;
 Proposition 2.2 bookkeeping and Type II are already closed.
+
+## Lean progress update (2026-09-02) — distinct-modulus complete correlation
+
+`Sieve/KloostermanDistinctModulusCompleteCorrelation.lean` closes the complete-period arithmetic
+inside the remaining Type-I Kloosterman Gram problem: correlations at distinct positive moduli
+vanish over a full product period. It decomposes the literal `[1,M]` correlation into this zero
+main plus an explicit boundary-discrepancy remainder and proves the unconditional second-moment
+bound `q*r*(phi(q)+phi(r))/2`, with direct stored-modulus instantiations.
+
+Direct check and targeted build pass (`12572/12572`). All thirteen public theorem declarations
+audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella
+build.
+
+Card remains Stage 2. Remaining shared analytic core is quantitative cancellation for the
+incomplete distinct-modulus remainder at source ranges, then Lemma 3.5(ii) routing,
+amplification, and all-interval Matomäki--Teräväinen supply; no estimate is assumed.
+
+## Lean progress update (2026-09-02) — least-common-multiple completion
+
+`Sieve/KloostermanDistinctModulusLcmCompletion.lean` sharpens the shared Type-I Gram carrier from
+product-period to least-common-multiple completion. Unequal-modulus complete correlation vanishes
+on `lcm(q,r)`, arbitrary intervals are exact lcm-boundary remainders, and their unconditional
+second-moment budget is `lcm(q,r)*(phi(q)+phi(r))/2`, a full `gcd(q,r)` gain over the previous
+product-period bound.
+
+Direct check and targeted build pass (`12573/12573`). All nine public theorem declarations audit
+with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella build.
+
+Card remains Stage 2. Remaining shared analytic core is cancellation inside the sharp incomplete
+common period at source ranges, then Lemma 3.5(ii) routing, amplification, and all-interval supply;
+no estimate is assumed.
+
+## Lean progress update (2026-09-02) — exact terminal common-period block
+
+`Sieve/KloostermanDistinctModulusTerminalBlock.lean` proves that each unequal-modulus `[1,M]`
+correlation in the shared Type-I Gram problem is exactly the shifted block of length
+`M mod lcm(q,r)`. All full common-period blocks vanish; an exact-residual-length totient bound and
+stored-modulus identities are included.
+
+Direct check and targeted build pass (`12736/12736`). Its five public results and exposed
+periodicity theorem audit with only `[propext, Classical.choice, Quot.sound]`; leaf is
+umbrella-wired without umbrella build.
+
+Card remains Stage 2. Remaining shared analytic core is collective weighted cancellation of these
+literal terminal blocks, then Lemma 3.5(ii) routing, amplification, and all-interval supply; no
+estimate is assumed.
+
+## Lean progress update (2026-09-02) — weighted terminal-block Gram
+
+`Sieve/KloostermanDistinctModulusTerminalGram.lean` restores the source modulus weights around the
+literal terminal blocks and identifies the existing distinct-modulus Gram exactly with that
+carrier. It yields the full Gram split into same-modulus plus weighted terminal pieces and proves
+the closed pairwise residual-length budget.
+
+Direct check and targeted build pass (`12737/12737`). All four public theorem declarations audit
+with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella build.
+
+Card remains Stage 2. Remaining shared primitive is collective cancellation of this exact carrier
+inside the source-index quadratic form at paper ranges, then Lemma 3.5(ii), amplification, and
+all-interval supply; no estimate is assumed.
+
+## Lean progress update (2026-09-02) — source-weighted terminal quadratic receiver
+
+`Sieve/KloostermanDistinctModulusTerminalQuadratic.lean` lifts the exact terminal carrier into the
+existing source-index quadratic and erased off-diagonal forms. It proves their exact
+equal-modulus/terminal split and an unconditional bound retaining all source coefficients, modulus
+weights, and pairwise residual lengths.
+
+Direct check and targeted build pass (`12738/12738`). All four public theorem declarations audit
+with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella build.
+
+Card remains Stage 2. Remaining shared estimate is collective cancellation of the literal
+source-weighted terminal off-diagonal at paper ranges, plus equal-modulus Ramanujan routing, then
+Lemma 3.5(ii), amplification, and all-interval supply; no estimate is assumed.
+
+## Lean progress update (2026-09-02) — three-way Ramanujan/terminal frontier
+
+`Sieve/KloostermanSameModulusRamanujanQuadratic.lean` closes equal-modulus completion routing
+through the weighted source quadratic. Transform energy and source off-diagonal decompose exactly
+into Ramanujan main, bounded same-modulus remainder, and terminal distinct-modulus carrier, with a
+closed source-weighted remainder budget.
+
+Direct check and targeted build pass (`12739/12739`). All seven public theorem declarations audit
+with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella build.
+
+Card remains Stage 2. Remaining shared work is Ramanujan-main square-energy control and collective
+terminal-carrier cancellation at paper ranges, then Lemma 3.5(ii), amplification, and all-interval
+supply; no estimate is assumed.
+
+## Lean progress update (2026-09-02) — Ramanujan main square energy
+
+`Sieve/KloostermanSameModulusRamanujanEnergy.lean` identifies the full weighted Ramanujan main with
+a nonnegative real sum of complete Kloosterman column-transform square energies, retaining exact
+interval density and modulus weights.
+
+Direct check and targeted build pass (`12740/12740`). All six public theorem declarations audit
+with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella build.
+
+Card remains Stage 2. Equal-modulus main/remainder classification is closed. Remaining shared
+primitive is collective control of the terminal distinct-modulus carrier at paper ranges, then
+Lemma 3.5(ii), amplification, and all-interval supply; no estimate is assumed.

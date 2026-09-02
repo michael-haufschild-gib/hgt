@@ -1134,3 +1134,106 @@ without umbrella build.
 Card remains Stage 2. Equal-modulus incomplete-window completion is closed unconditionally.
 Remaining spectral core is the distinct-modulus correlation estimate at the source ranges, then
 its Type-I routing; no analytic bound is assumed.
+
+## Lean progress update (2026-09-02) — distinct-modulus complete correlation
+
+`Sieve/KloostermanDistinctModulusCompleteCorrelation.lean` proves exact vanishing of the complete
+product-period correlation for distinct positive moduli. It groups the literal `[1,M]` correlation
+by product-period residues, removes the vanishing complete main, identifies the result with an
+explicit boundary-discrepancy remainder, and bounds that remainder by
+`q*r*(phi(q)+phi(r))/2` using finite Cauchy--Schwarz and exact complete second moments. Direct
+instantiations cover the existing stored-modulus Gram correlation.
+
+Direct check and targeted build pass (`12572/12572`). All thirteen public theorem declarations
+audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella
+build.
+
+Card remains Stage 2. Complete-period distinct-modulus arithmetic is now closed. Remaining genuine
+core is cancellation for the incomplete discrepancy remainder at the source ranges, followed by
+Lemma 3.5(ii) routing, amplification, and Theorem 1.2 assembly; no estimate is assumed.
+
+## Lean progress update (2026-09-02) — least-common-multiple completion
+
+`Sieve/KloostermanDistinctModulusLcmCompletion.lean` proves that the earlier product period is
+exactly `gcd(q,r)` copies of the sharp common period. Hence unequal-modulus correlation vanishes
+already over `lcm(q,r)`, and the arbitrary `[1,M]` correlation is an exact lcm-residue remainder.
+Exact lcm-period second moments improve the boundary bound to
+`lcm(q,r)*(phi(q)+phi(r))/2`, including the stored-modulus Gram carrier.
+
+Direct check and targeted build pass (`12573/12573`). All nine public theorem declarations audit
+with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella build.
+
+Card remains Stage 2. Remaining genuine core is cancellation within this sharp incomplete common
+period at source ranges, then Lemma 3.5(ii) routing, amplification, and Theorem 1.2 assembly; no
+estimate is assumed.
+
+## Lean progress update (2026-09-02) — exact terminal common-period block
+
+`Sieve/KloostermanDistinctModulusTerminalBlock.lean` replaces the lcm discrepancy vector by its
+exact surviving support. For unequal positive moduli, the `[1,M]` correlation is literally the
+shifted sum over `0 <= i < M mod lcm(q,r)`; every complete common-period block vanishes. It also
+proves the exact-residual-length totient bound and stored-modulus Gram identities.
+
+Direct check and targeted build pass (`12736/12736`). Its five public results and exposed
+periodicity theorem audit with only `[propext, Classical.choice, Quot.sound]`; leaf is
+umbrella-wired without umbrella build.
+
+Card remains Stage 2. Remaining genuine core is collective cancellation of these literal terminal
+blocks with source modulus weights, then Lemma 3.5(ii) routing, amplification, and Theorem 1.2;
+no estimate is assumed.
+
+## Lean progress update (2026-09-02) — weighted terminal-block Gram
+
+`Sieve/KloostermanDistinctModulusTerminalGram.lean` restores the original signed modulus weights
+and proves that the existing distinct-modulus Gram on `[1,M]` is exactly the resulting terminal
+carrier. The full kernel Gram is the existing same-modulus term plus this weighted terminal term;
+an unconditional pairwise budget retains each exact `M mod lcm(q+1,r+1)` length.
+
+Direct check and targeted build pass (`12737/12737`). All four public theorem declarations audit
+with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella build.
+
+Card remains Stage 2. Remaining primitive is collective cancellation of this exact carrier inside
+the source-index quadratic form at paper ranges, then Lemma 3.5(ii), amplification, and Theorem
+1.2; no estimate is assumed.
+
+## Lean progress update (2026-09-02) — source-weighted terminal quadratic receiver
+
+`Sieve/KloostermanDistinctModulusTerminalQuadratic.lean` composes the modulus split with the
+existing source-index Gram receiver. Full transform energy and erased source off-diagonal now split
+exactly into equal-modulus and terminal distinct-modulus quadratic forms. The closed terminal bound
+retains every source coefficient, modulus weight, and exact residual length.
+
+Direct check and targeted build pass (`12738/12738`). All four public theorem declarations audit
+with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella build.
+
+Card remains Stage 2. Remaining analytic estimate is collective cancellation of this literal
+source-weighted terminal off-diagonal at paper ranges, plus equal-modulus Ramanujan routing, then
+Lemma 3.5(ii), amplification, and Theorem 1.2; no estimate is assumed.
+
+## Lean progress update (2026-09-02) — three-way Ramanujan/terminal frontier
+
+`Sieve/KloostermanSameModulusRamanujanQuadratic.lean` lifts equal-modulus interval completion
+through modulus weights and source quadratic forms. Transform energy and erased source
+off-diagonal split exactly into Ramanujan main, bounded equal-modulus completion remainder, and
+terminal distinct-modulus carrier. The remainder bound retains all source coefficients and the
+weighted `sum_q |w_q|^2 (q+1) phi(q+1)` scale.
+
+Direct check and targeted build pass (`12739/12739`). All seven public theorem declarations audit
+with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella build.
+
+Card remains Stage 2. Remaining work is Ramanujan-main square-energy control and collective
+terminal-carrier cancellation at paper ranges, then Lemma 3.5(ii), amplification, and Theorem 1.2;
+no estimate is assumed.
+
+## Lean progress update (2026-09-02) — Ramanujan main square energy
+
+`Sieve/KloostermanSameModulusRamanujanEnergy.lean` proves the weighted Ramanujan main quadratic is
+exactly `sum_q |w_q|^2 M/(q+1)` times complete Kloosterman column-transform square energy. It is
+therefore real and nonnegative, unconditionally.
+
+Direct check and targeted build pass (`12740/12740`). All six public theorem declarations audit
+with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella build.
+
+Card remains Stage 2. Equal-modulus main/remainder classification is closed. Remaining genuine
+primitive is collective control of the source-weighted terminal distinct-modulus carrier at paper
+ranges, then Lemma 3.5(ii), amplification, and Theorem 1.2; no estimate is assumed.

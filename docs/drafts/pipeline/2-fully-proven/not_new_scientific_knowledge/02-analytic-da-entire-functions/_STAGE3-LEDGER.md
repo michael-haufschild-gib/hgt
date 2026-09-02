@@ -4690,3 +4690,71 @@ which is negative for every `ℓ ≤ n−2` and every `m ≤ n−1` as soon as
 `w_ℓ > ∑_(i=2)^(ℓ−1) (i−1) w_i` — satisfied by `w_ℓ = (n²+1)^ℓ`.  That inequality is the exact
 weight condition; it replaces the earlier provisional `w_(ℓ+1) > 2 w_ℓ`, which was derived from a
 two-level analysis and is implied by it.
+
+## Exact nonautonomous witness closed (2026-09-02)
+
+The corpus search exposed the already-unconditional all-height theorem
+`PairCascadeOrder.exactDifferentialOrder_linearCascade`.  The new leaf
+`HTGeometry/ExpAddIdentityCascade.lean` applies it to the card's smallest genuinely nonautonomous
+map
+
+`f(z) = exp(z) + z`,  with the exact equation  `f' = f - z + 1`.
+
+It proves, without a Newton or Puiseux premise:
+
+* `transcendentalEntire_expAddId`;
+* `deriv_expAddId`;
+* `exactDifferentialOrder_expAddIdCascade`;
+* **`exactDifferentialOrder_expAddId_iterate`**: the `(m+1)`-fold iterate has exact differential
+  order `m+1` for every `m`;
+* `positiveLowerOrder_expAddId`, `growthHeightAtMost_entireCascade_expAddId`, and
+  **`compositionDepth_expAddId_iterate`**: the same iterate has exact positive-lower-order
+  composition depth `m+1`;
+* **`exactOrder_and_compositionDepth_expAddId_iterate`** packages both exact invariants.
+
+This closes both exact-invariant assertions for the explicit `exp z + z` witness in card 13.  It
+does not close the card's general output-linear algebraic-branch theorem; that remains governed by
+the graded-recursion obligation above.
+
+## Unit-to-staircase bridge closed (2026-09-02)
+
+`HTGeometry/CascadeUnitGradientStaircase.lean` now formalizes the “for free” paragraph above:
+
+| Statement | Theorem |
+|---|---|
+| `deg(u-1)<0 ⟹ deg u=0` | `cascadeDeg_eq_zero_of_sub_one_lt_zero` |
+| `deg(∂_j u)<-w_j` | `cascadeDeg_fpderiv_lt_neg_weight_of_sub_one_lt_zero` |
+| active gradient entries retain exact tower degree | `cascadeDeg_fpderiv_towerUnitState_eq` |
+| inactive entries have strictly lower degree | `cascadeDeg_fpderiv_towerUnitState_lt` |
+| **the full reversed-staircase gradient determinant is nonzero** | `towerUnitGradientMatrix_det_ne_zero` |
+
+Thus no determinant argument remains after the normalized-unit estimates.  Cards 13/14 now reduce
+strictly to constructing their actual normalized logarithmic states `u_m` in the rational/algebraic
+branch model and proving `cascadeDeg (u_m - 1) < 0` at every level.
+
+## Cascade separation weights closed (2026-09-02)
+
+`HTGeometry/CascadeSeparationWeight.lean` proves
+`sum_weighted_cascadeSeparationWeight_lt`: for every `ℓ ≤ n`,
+
+`∑_(2 ≤ i < ℓ) (i - 1)(n² + 1)^i < (n² + 1)^ℓ`.
+
+This is exactly the paper proof's claimed weight condition.  No numerical inequality remains in the
+graded-recursion route; its residue is entirely structural—realizing the branch states in one
+valued differential field and propagating their normalized negative-degree estimates.
+
+## Normalized-state recurrence closed (2026-09-02)
+
+`HTGeometry/CascadeNormalizedStateRecurrence.lean` proves the exact field-degree recurrence needed
+after a branch state has been realized in `CascadeField`:
+
+| Statement | Theorem |
+|---|---|
+| the embedded tower monomial has a nonzero inverse of degree `-W_k` | `cascadeDeg_inv_cascadeTowerMonomial` |
+| normalization divides residue degree by `P_k`: `deg(r/P_k) = deg r - W_k` | `cascadeDeg_div_cascadeTowerMonomial` |
+| `deg(σ-1)<0` and `deg r<W_k` imply `deg(σ+r/P_k-1)<0` | `cascadeDeg_normalizedState_step_lt_zero` |
+
+Combined with the separation-weight inequality and the unit-to-staircase determinant theorem, this
+removes the algebraic propagation step.  Cards 13/14 still require realization of their actual
+algebraic branch states in a common valued differential field and verification that each recurrence
+residue satisfies the established `deg r < W_k` bound; neither statement is weakened or assumed.
