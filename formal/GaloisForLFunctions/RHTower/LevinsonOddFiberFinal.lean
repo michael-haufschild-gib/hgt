@@ -161,15 +161,16 @@ theorem levinsonGEntire_zeroMass_le_boundary
 
 /-- **Levinson's window count from the mollified mean square.**  Every step from the mean square of
 `(ζ+λζ′)·Ψ` on the Levinson abscissa to a lower bound for the odd-fibre count is unconditional. -/
-theorem exists_le_xiOddFiberCount_of_mollified_meanSquare :
+theorem exists_le_xiOddFiberCount_of_mollified_meanSquare_of_Y_pos :
     ∃ cw C K : ℝ, 0 < cw ∧ 0 < C ∧ 0 < K ∧
-      ∀ lam : ℝ, lam < 0 → |lam| ≤ 1 →
+      ∀ lam : ℝ, lam ≠ 0 → |lam| ≤ 1 →
       ∀ (b : ℕ → ℂ) (N : ℕ), 1 ≤ N → b 1 = 1 →
         (∀ n ∈ Finset.Icc 1 N, ‖b n‖ ≤ 1) →
         (∀ n ∈ Finset.Icc 1 N, (starRingEnd ℂ) (b n) = b n) →
       ∀ Mb : ℝ, 1 ≤ Mb →
         (∑ n ∈ Finset.Icc 1 N, ‖b n‖ * ((n : ℝ) ^ (4 : ℝ))) ≤ Mb →
       ∀ σ₀ T₁ T₂ Msq : ℝ, 1 / 4 ≤ σ₀ → σ₀ < 1 / 2 → 20 ≤ T₁ → T₁ < T₂ →
+        (∀ u ∈ Icc T₁ T₂, (0 : ℝ) < (levinsonY (lam : ℂ) (linePt u)).re) →
         (∀ x ∈ Set.Icc σ₀ (15 / 2 : ℝ),
           levinsonG ((lam : ℝ) : ℂ) ((x : ℂ) + (T₁ : ℂ) * I) ≠ 0) →
         (∀ x ∈ Set.Icc σ₀ (15 / 2 : ℝ),
@@ -189,15 +190,15 @@ theorem exists_le_xiOddFiberCount_of_mollified_meanSquare :
           ≤ gammaHardyTheta T₂ - gammaHardyTheta T₁ →
         n ≤ xiOddFiberCount T₂ := by
   classical
-  obtain ⟨cw, hcw, hwin⟩ := exists_levinson_window_edge_bound_unconditional
+  obtain ⟨cw, hcw, hwin⟩ := exists_levinson_window_edge_bound_unconditional_of_Y_pos
   obtain ⟨C, K, hC, hK, hbudget⟩ := exists_levinson_mollified_budget_le
   refine ⟨cw, C, K, hcw, hC, hK, ?_⟩
   intro lam hlam0 hlam b N hN hb1 hbn hbreal Mb hMb1 hmass σ₀ T₁ T₂ Msq hσ₀ hσ₀' h20 hT
-    hG1 hG2 hP1 hP2 hMsq n hn
+    hY hG1 hG2 hP1 hP2 hMsq n hn
   set s : Finset ℕ := Finset.Icc 1 N with hsdef
   have hs : ∀ m ∈ s, 1 ≤ m := fun m hm => (Finset.mem_Icc.mp hm).1
   have h1mem : 1 ∈ s := Finset.mem_Icc.mpr ⟨le_rfl, hN⟩
-  have hlamC : ((lam : ℝ) : ℂ) ≠ 0 := by simpa using ne_of_lt hlam0
+  have hlamC : ((lam : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hlam0
   have hlamN : ‖((lam : ℝ) : ℂ)‖ ≤ 1 := by rwa [Complex.norm_real, Real.norm_eq_abs]
   have hσ₀15 : σ₀ < 15 / 2 := by linarith
   have huIccx : uIcc σ₀ (15 / 2 : ℝ) = Set.Icc σ₀ (15 / 2 : ℝ) := uIcc_of_le hσ₀15.le
@@ -392,7 +393,7 @@ theorem exists_le_xiOddFiberCount_of_mollified_meanSquare :
     · intro t _
       exact mul_ne_zero (hGright t) (hΨright t)
   -- the zero-mass bound
-  refine hwin lam hlam0 hlam T₁ T₂ h20 hT ?_ ?_ n ?_
+  refine hwin lam hlam0 hlam T₁ T₂ h20 hT hY ?_ ?_ n ?_
   · intro x hx; exact hG1 x (Set.Icc_subset_Icc (by linarith) (by norm_num) hx)
   · intro x hx; exact hG2 x (Set.Icc_subset_Icc (by linarith) (by norm_num) hx)
   intro Z hZ
@@ -407,7 +408,55 @@ theorem exists_le_xiOddFiberCount_of_mollified_meanSquare :
     nlinarith [hmassbound, hbud, hwidth]
   linarith [hn, hchain]
 
+/-- Legacy negative-shift specialization of the mollified mean-square capstone. -/
+theorem exists_le_xiOddFiberCount_of_mollified_meanSquare :
+    ∃ cw C K : ℝ, 0 < cw ∧ 0 < C ∧ 0 < K ∧
+      ∀ lam : ℝ, lam < 0 → |lam| ≤ 1 →
+      ∀ (b : ℕ → ℂ) (N : ℕ), 1 ≤ N → b 1 = 1 →
+        (∀ n ∈ Finset.Icc 1 N, ‖b n‖ ≤ 1) →
+        (∀ n ∈ Finset.Icc 1 N, (starRingEnd ℂ) (b n) = b n) →
+      ∀ Mb : ℝ, 1 ≤ Mb →
+        (∑ n ∈ Finset.Icc 1 N, ‖b n‖ * ((n : ℝ) ^ (4 : ℝ))) ≤ Mb →
+      ∀ σ₀ T₁ T₂ Msq : ℝ, 1 / 4 ≤ σ₀ → σ₀ < 1 / 2 → 20 ≤ T₁ → T₁ < T₂ →
+        (∀ x ∈ Set.Icc σ₀ (15 / 2 : ℝ),
+          levinsonG ((lam : ℝ) : ℂ) ((x : ℂ) + (T₁ : ℂ) * I) ≠ 0) →
+        (∀ x ∈ Set.Icc σ₀ (15 / 2 : ℝ),
+          levinsonG ((lam : ℝ) : ℂ) ((x : ℂ) + (T₂ : ℂ) * I) ≠ 0) →
+        (∀ x ∈ Set.Icc σ₀ (15 / 2 : ℝ),
+          edPoly b (Finset.Icc 1 N) ((x : ℂ) + (T₁ : ℂ) * I) ≠ 0) →
+        (∀ x ∈ Set.Icc σ₀ (15 / 2 : ℝ),
+          edPoly b (Finset.Icc 1 N) ((x : ℂ) + (T₂ : ℂ) * I) ≠ 0) →
+        (∫ t in T₁..T₂,
+          ‖levinsonMollifiedDetector ((lam : ℝ) : ℂ) b (Finset.Icc 1 N)
+            ((σ₀ : ℂ) + (t : ℂ) * I)‖ ^ 2) ≤ Msq →
+      ∀ n : ℕ,
+        ((n : ℝ) + 2) * Real.pi + Real.pi + (T₂ - T₁) * (6 / T₁ ^ 2)
+            + cw * Real.log T₁ + cw * Real.log T₂
+            + ((T₂ - T₁) / 2 * Real.log (Msq / (T₂ - T₁))
+                + C + K * (Real.log T₂ + Real.log Mb)) / (1 / 2 - σ₀)
+          ≤ gammaHardyTheta T₂ - gammaHardyTheta T₁ →
+        n ≤ xiOddFiberCount T₂ := by
+  obtain ⟨cw, C, K, hcw, hC, hK, hmain⟩ :=
+    exists_le_xiOddFiberCount_of_mollified_meanSquare_of_Y_pos
+  refine ⟨cw, C, K, hcw, hC, hK, ?_⟩
+  intro lam hlam0 hlam b N hN hb1 hbn hbreal Mb hMb1 hmass σ₀ T₁ T₂ Msq
+    hσ₀ hσ₀' h20 hT hG1 hG2 hP1 hP2 hMsq n hn
+  apply hmain lam (ne_of_lt hlam0) hlam b N hN hb1 hbn hbreal Mb hMb1 hmass
+    σ₀ T₁ T₂ Msq hσ₀ hσ₀' h20 hT
+  · intro u hu
+    rw [levinsonY_line_eq, Complex.ofReal_re]
+    have hdig := log_pi_lt_re_digamma_quarter (le_trans h20 hu.1)
+    have hmul : lam * ((Complex.digamma (((1 / 4 : ℝ) : ℂ)
+        + ((u / 2 : ℝ) : ℂ) * Complex.I)).re - Real.log Real.pi) ≤ 0 :=
+      mul_nonpos_of_nonpos_of_nonneg hlam0.le (sub_nonneg.mpr hdig.le)
+    linarith
+  · exact hG1
+  · exact hG2
+  · exact hP1
+  · exact hP2
+  · exact hMsq
+  · exact hn
+
 end RHTower
 
 end
-

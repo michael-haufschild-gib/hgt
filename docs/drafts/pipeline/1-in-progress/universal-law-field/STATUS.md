@@ -3419,3 +3419,151 @@ pre-divisor arithmetic operation, that the physical completion belongs to a uniq
 normal/regular folium or equivalent controlled history class. Any axiom of regularity, finite
 trace, conservative descent, source naturality, centralizer rigidity, or vanishing `lim^1` merely
 restates an existing RH endpoint.
+
+F389 — Today's critical-block code isolates a genuinely source-side selection mechanism. A block
+normalization containing the canonical sheet receives a continuous lift from the actual source
+chart. If that normalization is formally étale and the source contains closed histories projecting
+to both marked torus meridians, connected-cover monodromy forces its observation fibre to be a
+singleton. This is cycle-complete formation: source histories generate the observer fundamental
+group, so no nontrivial connected completion cover can remain between source and observer.
+
+CANNOT-188 — Source-chart finiteness, integrality, path connectedness, properness, or the existence
+of the lift does not supply cycle completeness. The Lean endgame still assumes formal étaleness of
+the block normalization and two closed source loops with the exact generator classes. Treating
+either premise as automatic merely renames the unramifiedness and sheet-selection gaps.
+
+MUST-120 — A topological higher law must derive, from literal pre-divisor arithmetic, both formal
+purity of the admissible completion and surjectivity of source histories onto observer cycles. To
+close RH it must additionally realize every nonzero horizontal grade as nontrivial monodromy of
+such an admissible lifted completion; cycle completeness would then force that monodromy to be
+trivial, hence `exp(a)=1`, `a=0`, and `Re rho=1/2`. Without the grade-to-cover bridge this is a
+source-model restriction, not an RH proof.
+
+F390 — Higher-rank prime dynamics separates history fluctuation from horizontal grade but does not
+select the grade. On two independent prime clocks the grade is already the homomorphism
+`(m,n) ↦ a (m log p + n log q)`. Cocycle-superrigidity conclusions reduce a cocycle to a
+homomorphism modulo a coboundary, so this exact anomaly survives their conclusion. Measure
+rigidity for toral/solenoidal actions additionally assumes positive or high entropy and
+hyperbolicity and classifies invariant measures; it supplies no vanishing law for the surviving
+real homomorphism.
+
+CANNOT-189 — It cannot infer neutral grade from a `×p,×q` action, a natural-extension solenoid,
+higher-rank recurrence, entropy rigidity, or cocycle superrigidity. A valid selector still needs a
+literal source relation annihilating the homomorphism part; assuming compact range, finite image,
+unitarity, or zero periods is the existing descent/admission endpoint.
+
+FAIL-75 — Higher-rank dynamical rigidity retired as an automatic producer. Positive survivor:
+higher-rank formation can canonically isolate the invariant homomorphism carrying horizontal grade
+from coboundary-valued completion history, so future laws must act on that quotient rather than on
+gauge fluctuations.
+
+## 2026-09-02 — individuation law frozen (card `0-backlog/zero-individuation-law-two-completion-producer.md`, ULF-IND-001)
+
+F379 — Every share ledger `Σ_ρ φ(ρ)` over an FE- and conjugation-stable zero set is even in the
+per-pair displacement `δ = β − ½`; first-order sensitivity exists only through half-plane cuts,
+alignment singularities, or amplification. Combined with ceilings C1–C4 and the Selberg ledger
+theorem, every fixed-kernel positivity certificate resolves off-line zeros only to the
+archimedean density `ν(t) = (1/2π) log(t/2π)`; the `log t` of every ceiling is the Γ-phase
+derivative. Zeros enter `GL(2)` spectral identities only as poles of `ξ(2s−1)/ξ(2s)`, outside
+every `L²` Parseval identity.
+
+CANNOT-182 — It cannot observe an individual nontrivial zero through any unconditional
+arithmetic identity: every identity is a functional of the pair-even smoothed zero density.
+Hence no card of the form "prove `Φ(source) ≥ 0` for one fixed functional `Φ`" can be a
+producer.
+
+MUST-118 — A producer must be nonlinear in the zero measure, oriented only through the
+archimedean phase, an identity uniform in amplification, and crowd-cancelling. The one classical
+object of that shape is the convex Littlewood mean `M_T(σ) = (1/2π)∫ log|ζ(σ+it)|dt`, whose kinks
+are individual real parts. The frozen producer conjecture is the two-completion comparison: the
+multiplicative (partial Euler product) and additive (Hadamard) completions have vertical
+log-means differing only by the Γ-phase density on `½ < σ < 1`, with the mean provable by a
+pair-even second-moment argument and individuation supplied by convexity. Bricks B1–B5 in the
+card; B5 is not to be attacked before B1–B4 and a corpus search of RG, T1, D2.
+
+F391 — Literal archimedean-only selection is false. The Gamma/functional-equation cell is closed
+under a positive reciprocal quartic that plants an explicit nonreal off-line strip zero while
+preserving real-strip zero-freeness, integral multiplicativity, and the completed functional
+equation (`GammaCellNonrealMobility`). Gamma supplies no nontrivial divisor because it is
+nonvanishing on the relevant right half-plane.
+
+F392 — The global theta source contains irreducible diffuse information at infinity. Its positive
+archimedean measure gives zero mass to the prime-power logarithms; sampling defect equals full theta
+mass, reflection completion doubles the defect, and normalized defect remains one. On every
+sampling gap its functional cannot factor through the samples even by arbitrary nonlinear
+postprocessing (`SeamArchimedeanSamplingQuotient`, `ArchimedeanSamplingDefect`).
+
+F393 — Prime and archimedean organs have an exact load/capacity split. The archimedean form is
+uniformly definite with lower constant `4-3 log 2-pi/2`, and Weil positivity is exactly domination
+of the prime operator by this form. Actual Suzuki walls are positive atomic prime mass minus
+positive continuous screw mass; cofinal raw-prime contours differ from full Weil energy by one
+explicit centered archimedean square (`ArchimedeanPairingDefinite`,
+`SuzukiWardAtomicContinuousLightWeld`,
+`XiPhysicalPrimeApertureThetaAbelEnergyPrimeCanonicalVanishingLimit`).
+
+CANNOT-190 — It cannot call RH a theorem of the isolated Gamma factor, functional equation, or
+archimedean positivity. Nor can it directly reconstruct the diffuse seam from prime samples or
+dominate it as a raw measure: the channels are sampling-disjoint, and Gamma/FE cells admit
+off-line mobility. Direct Hilbert--Schmidt welding is already impossible.
+
+MUST-121 — The viable archimedean reversal is global: finite places set atomic loading/vertical
+frequencies, while the full integer-theta completion supplies polarization and the horizontal
+unitary axis. A producer must derive a coefficient-faithful nonlocal atomic--diffuse admission law
+from literal integer formation, before divisor specialization, coupling additive Fourier
+self-duality to multiplicative Euler completion. Imposed domination, Weil positivity,
+self-adjointness, or completion regularity is the RH endpoint, not its source.
+
+FAIL-76 — “Gamma alone forces the critical line” retired. Positive survivor: zeros can be treated
+as resonances of failure to admit atomic Euler formation into the global archimedean theta
+polarization. The exact admission mechanism remains open; no RH gate is discharged.
+
+## 2026-09-02 — ULF-IND-001 producer refuted; survivors formalized
+
+F380 — Lean: convergence of the Möbius Dirichlet series at one point forces `ζ ≠ 0` on the open
+half-plane to its right, so the abscissa of convergence of `∑ μ(n) n^{−s}` is at least the real
+part of every zero (`RHTower.riemannZeta_ne_zero_of_moebius_convergesAt`,
+`re_le_abscissaOfConv_moebiusShift`). Lean: every pair ledger `φ(½+δ+iγ) + φ(½−δ+iγ)` is even in
+`δ` with vanishing derivative at `0` for every `φ`; the Lagarias–Suzuki constant term never
+vanishes at a half-zero of `Λ` in `Re s < ½` (`GaloisForLFunctions.RHTower.ZeroLedgerPairParity`).
+
+CANNOT-183 — It cannot run a two-completion comparison with two unconditional sides: inside the
+strip the prime series diverges everywhere and the convergent Möbius series is already the
+zero-free statement. The mean-value level of the smooth Littlewood identity gives `N(σ,T) = o(T)`
+only; detecting one zero needs window means of `log|ζ|` to precision `1/T₀`, and pair-even
+second moments give `T₀^{−c}`.
+
+FAIL-71 — ULF-IND-001's producer (Euler-vs-Hadamard Littlewood-mean comparison) retired. The
+individuation diagnosis (parity, crowd, Landau blindness, poles-not-eigenvalues) stands and is
+now three-quarters Lean-certified. MUST-118 withdrawn.
+
+MUST-119 — Any comparison of completions must treat the multiplicative side as a regularized
+family whose regularization budget is computed explicitly; unconditional convergence of that side
+is the conclusion (F380). This is the budget branch of the regularization trilemma, so a
+surviving candidate must exhibit a budget that is *not* the divergent positive mass — otherwise
+it is W1.
+
+## 2026-09-02 — literal Euler/theta contractivity decided (ULF-EHC-001)
+
+F394 — On additive log/Fourier half-density `L²`, the exact finite Euler operator
+`E_S = prod_(p in S)(I-p^(-1/2)tau_(-log p))` has norm
+`prod_(p in S)(1+p^(-1/2))`. Multiplicative independence of primes supplies the simultaneous
+maximally expansive phase by Kronecker; reciprocal-prime divergence makes these norms cofinally
+unbounded. No raw bounded or contractive Euler operator completion exists on this carrier.
+
+F395 — Literal formation and critical-axis selection are different laws. Finite Euler action is
+coefficient-exact on the even-Schwartz theta source; joint formation/recovery moderation is exactly
+the unitary half-density axis; absence of a completion-born arithmetic boundary is exactly RH.
+None of these makes joint admission automatic.
+
+CANNOT-191 — It cannot mean raw Euler-product contractivity on full theta half-density `L²`, nor
+can scalar norm-normalization be the selector: raw norms diverge, while normalization makes every
+finite stage contractive independently of horizontal grade.
+
+MUST-122 — Any surviving automatic-admissibility theorem must be a pre-divisor relative graph/form
+identity. It must couple forward formation, reflected recovery, and archimedean subtraction so the
+cofinal expansive prime phase becomes an exact boundary term; asserting boundedness, bilateral
+moderation, boundary freedom, or Weil domination merely states the RH endpoint.
+
+FAIL-77 — “Literal Euler completion acts contractively in theta polarization” retired in its raw
+operator meaning. Positive survivor: exact cofinal norm growth identifies the missing object as a
+relative completion index/cancellation law, not an Euler operator on one Hilbert completion.

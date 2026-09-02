@@ -165,7 +165,8 @@ Its possible future RH value is architectural: if an Euler--archimedean object c
 - [x] Dedicated iteration/differential-order literature audit.
 - [x] Oscillatory and multi-tract autonomous order-one audit resolved by Briot--Bouquet classification plus Clunie growth separation.
 - [ ] Nonautonomous order-one and autonomous higher-order audit.
-- [ ] Lean only after novelty and numerical pre-certification gates can both be met.
+- [ ] Lean differential-order observability capstone and Briot--Bouquet classification.
+- [x] Lean exact positive composition depth.
 
 ## Primary references checked
 
@@ -209,6 +210,14 @@ The replacement is an exact, hypothesis-free reduction:
 Here `Y_0` is the output and `Y_(m+1) = δY_m/Y_m`.  This removes the hypothesis `hterminalU` of the
 corpus's terminal-scaled reduction, which the general cascade cannot satisfy: `∂_n U = 0` for
 `U = P_n/X_n` forces `A_n' X_n = A_n`, i.e. exact linearity.
+
+The composition-depth half is now closed in
+`HTGeometry/FiniteOrderCascadeCompositionDepth.lean`.  The unconditional theorem
+`compositionDepth_finiteOrder_positiveCascade` proves exact depth `n` from precisely the finite
+prefix assumptions used by this card: differentiability, nonconstancy, finite-order envelopes, and
+positive lower order for the `n` displayed factors.  Its proof first gives the generic finite-order
+upper growth-height bound and then combines it with the existing Pólya lower bound; no assumptions
+on factors beyond the finite cascade are introduced.
 
 **The remaining open core is one statement:** the gradients `∂_j Y_m`, `m < n`, of the iterated
 logarithmic derivatives of `X_n` are linearly independent.  For the cascade `Y_1 = P_(n−1) h_n(X_n)`

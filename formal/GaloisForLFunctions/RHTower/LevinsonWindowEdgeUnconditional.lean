@@ -21,8 +21,10 @@ namespace RHTower
 /-- **The Levinson window with every edge estimated and no hypothesis on the critical edge.**
 The only quantities left are the number of zeros of the entire detector inside `[½,4]×[T₁,T₂]` and
 the requirement that the two horizontal edges avoid its zeros. -/
-theorem exists_levinson_window_edge_bound_unconditional :
-    ∃ c : ℝ, 0 < c ∧ ∀ lam : ℝ, lam < 0 → |lam| ≤ 1 → ∀ T₁ T₂ : ℝ, 20 ≤ T₁ → T₁ < T₂ →
+theorem exists_levinson_window_edge_bound_unconditional_of_Y_pos :
+    ∃ c : ℝ, 0 < c ∧ ∀ lam : ℝ, lam ≠ 0 → |lam| ≤ 1 → ∀ T₁ T₂ : ℝ,
+      20 ≤ T₁ → T₁ < T₂ →
+      (∀ u ∈ Icc T₁ T₂, (0 : ℝ) < (levinsonY (lam : ℂ) (linePt u)).re) →
       (∀ x ∈ Set.Icc (1 / 2 : ℝ) 4, levinsonG (lam : ℂ) ((x : ℂ) + (T₁ : ℂ) * I) ≠ 0) →
       (∀ x ∈ Set.Icc (1 / 2 : ℝ) 4, levinsonG (lam : ℂ) ((x : ℂ) + (T₂ : ℂ) * I) ≠ 0) →
       ∀ n : ℕ,
@@ -37,7 +39,7 @@ theorem exists_levinson_window_edge_bound_unconditional :
         n ≤ xiOddFiberCount T₂ := by
   obtain ⟨c, hc, hhoriz⟩ := exists_horizontal_levinsonGEntire_bound
   refine ⟨c, hc, ?_⟩
-  intro lam hlam0 hlam T₁ T₂ h20 hT hbotG htopG n hn
+  intro lam hlam0 hlam T₁ T₂ h20 hT hY hbotG htopG n hn
   have hlamC : ‖(lam : ℂ)‖ ≤ 1 := by rwa [Complex.norm_real, Real.norm_eq_abs]
   have huIcc : Set.uIcc (1 / 2 : ℝ) 4 = Set.Icc (1 / 2 : ℝ) 4 := uIcc_of_le (by norm_num)
   have hne1 : ∀ (x T : ℝ), 20 ≤ T → ((x : ℂ) + (T : ℂ) * I) ≠ 1 := by
@@ -58,8 +60,8 @@ theorem exists_levinson_window_edge_bound_unconditional :
     rw [huIcc] at hx
     rw [Ne, levinsonGEntire_eq_zero_iff (lam : ℂ) (hne1 x T₂ (by linarith))]
     exact htopG x hx
-  refine le_xiOddFiberCount_of_levinson_window_unconditional hlam0
-    (by norm_num : (1 / 2 : ℝ) < 4) h20 hT hbot htop ?_ ?_
+  refine le_xiOddFiberCount_of_levinson_window_unconditional_of_Y_pos hlam0
+    (by norm_num : (1 / 2 : ℝ) < 4) h20 hT hY hbot htop ?_ ?_
   · intro t _
     refine levinsonGEntire_ne_zero_of_four_le hlamC ?_
     simp
@@ -71,6 +73,36 @@ theorem exists_levinson_window_edge_bound_unconditional :
     rw [abs_le] at hR hB hTp
     simp only [Complex.ofReal_ofNat]
     linarith [hR.1, hR.2, hB.1, hB.2, hTp.1, hTp.2, hgoal]
+
+/-- Legacy negative-shift specialization of the all-edge Levinson window bound. -/
+theorem exists_levinson_window_edge_bound_unconditional :
+    ∃ c : ℝ, 0 < c ∧ ∀ lam : ℝ, lam < 0 → |lam| ≤ 1 → ∀ T₁ T₂ : ℝ, 20 ≤ T₁ → T₁ < T₂ →
+      (∀ x ∈ Set.Icc (1 / 2 : ℝ) 4, levinsonG (lam : ℂ) ((x : ℂ) + (T₁ : ℂ) * I) ≠ 0) →
+      (∀ x ∈ Set.Icc (1 / 2 : ℝ) 4, levinsonG (lam : ℂ) ((x : ℂ) + (T₂ : ℂ) * I) ≠ 0) →
+      ∀ n : ℕ,
+        (∀ Z : Finset ℂ,
+          (∀ z : ℂ, z ∈ Z ↔ z ∈ (Set.uIcc (1 / 2 : ℝ) 4 ×ℂ Set.uIcc T₁ T₂) ∧
+            levinsonGEntire (lam : ℂ) z = 0) →
+          ((n : ℝ) + 2) * Real.pi + Real.pi + (T₂ - T₁) * (6 / T₁ ^ 2)
+              + c * Real.log T₁ + c * Real.log T₂
+              + 2 * Real.pi *
+                (∑ w ∈ Z, ((analyticOrderAt (levinsonGEntire (lam : ℂ)) w).toNat : ℝ))
+            ≤ gammaHardyTheta T₂ - gammaHardyTheta T₁) →
+        n ≤ xiOddFiberCount T₂ := by
+  obtain ⟨c, hc, hwin⟩ := exists_levinson_window_edge_bound_unconditional_of_Y_pos
+  refine ⟨c, hc, ?_⟩
+  intro lam hlam0 hlam T₁ T₂ h20 hT hbotG htopG n hn
+  apply hwin lam (ne_of_lt hlam0) hlam T₁ T₂ h20 hT
+  · intro u hu
+    rw [levinsonY_line_eq, Complex.ofReal_re]
+    have hdig := log_pi_lt_re_digamma_quarter (le_trans h20 hu.1)
+    have hmul : lam * ((Complex.digamma (((1 / 4 : ℝ) : ℂ)
+        + ((u / 2 : ℝ) : ℂ) * Complex.I)).re - Real.log Real.pi) ≤ 0 :=
+      mul_nonpos_of_nonpos_of_nonneg hlam0.le (sub_nonneg.mpr hdig.le)
+    linarith
+  · exact hbotG
+  · exact htopG
+  · exact hn
 
 end RHTower
 

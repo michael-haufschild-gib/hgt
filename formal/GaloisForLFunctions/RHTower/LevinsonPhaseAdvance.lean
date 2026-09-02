@@ -59,11 +59,11 @@ theorem im_detector_logDeriv_eq {lam : ℝ} {τ : ℝ}
   rw [detector_logDeriv_eq hne]
   simp [Complex.mul_im]
 
-/-- **The phase advance of Levinson's detector.**  On a window above height `20` where `G` does not
-vanish, Hardy's `Z` has a polar form whose phase advances by the archimedean phase increment plus
-the argument variation of `G` along the segment. -/
-theorem exists_polar_hardyZ_advance_of_levinsonG_ne_zero {lam : ℝ} (hlam : lam ≤ 0)
-    {T₁ T₂ : ℝ} (h20 : 20 ≤ T₁) (hT : T₁ ≤ T₂)
+/-- **General phase advance of Levinson's detector.**  Positivity of `Y` is the exact sign input;
+the detector parameter may have either sign. -/
+theorem exists_polar_hardyZ_advance_of_levinsonG_ne_zero_of_Y_pos {lam : ℝ}
+    {T₁ T₂ : ℝ} (hT : T₁ ≤ T₂)
+    (hY : ∀ τ ∈ Icc T₁ T₂, 0 < (levinsonY (lam : ℂ) (linePt τ)).re)
     (hne : ∀ τ ∈ Icc T₁ T₂, levinsonG (lam : ℂ) (linePt τ) ≠ 0) :
     ∃ ρ ψ : ℝ → ℝ, ContinuousOn ψ (Icc T₁ T₂) ∧ (∀ τ ∈ Icc T₁ T₂, 0 < ρ τ) ∧
       (∀ τ ∈ Icc T₁ T₂, hardyZ τ = ρ τ * Real.cos (ψ τ)) ∧
@@ -106,11 +106,6 @@ theorem exists_polar_hardyZ_advance_of_levinsonG_ne_zero {lam : ℝ} (hlam : lam
     ContinuousOn.div hg'c.continuousOn hgc.continuousOn hgne
   obtain ⟨r, ψ, hψc, hrpos, hpolar, hadv⟩ :=
     exists_continuousOn_polar_advance (f := g) (f' := g') hT (fun τ _ => hgderiv τ) hquot hgne
-  have hY : ∀ τ ∈ Icc T₁ T₂, (0 : ℝ) < (levinsonY (lam : ℂ) (linePt τ)).re := by
-    intro τ hτ
-    rw [levinsonY_line_eq, Complex.ofReal_re]
-    have hd := log_pi_lt_re_digamma_quarter (le_trans h20 hτ.1)
-    nlinarith
   refine ⟨fun τ => 2 * r τ / (levinsonY (lam : ℂ) (linePt τ)).re, ψ, hψc, ?_, ?_, ?_⟩
   · intro τ hτ
     have := hrpos τ hτ
@@ -141,6 +136,23 @@ theorem exists_polar_hardyZ_advance_of_levinsonG_ne_zero {lam : ℝ} (hlam : lam
       exact Complex.continuous_re.comp_continuousOn
         (ContinuousOn.div hG'c.continuousOn hGc.continuousOn hne)
     rw [intervalIntegral.integral_add hint₁ hint₂, integral_gammaHardyPhaseRate]
+
+/-- **The phase advance of Levinson's detector.**  The legacy nonpositive-`λ` form obtains `Y > 0`
+from the vertical digamma estimate above height `20`. -/
+theorem exists_polar_hardyZ_advance_of_levinsonG_ne_zero {lam : ℝ} (hlam : lam ≤ 0)
+    {T₁ T₂ : ℝ} (h20 : 20 ≤ T₁) (hT : T₁ ≤ T₂)
+    (hne : ∀ τ ∈ Icc T₁ T₂, levinsonG (lam : ℂ) (linePt τ) ≠ 0) :
+    ∃ ρ ψ : ℝ → ℝ, ContinuousOn ψ (Icc T₁ T₂) ∧ (∀ τ ∈ Icc T₁ T₂, 0 < ρ τ) ∧
+      (∀ τ ∈ Icc T₁ T₂, hardyZ τ = ρ τ * Real.cos (ψ τ)) ∧
+      ψ T₂ - ψ T₁ = (gammaHardyTheta T₂ - gammaHardyTheta T₁)
+        + ∫ τ in T₁..T₂,
+            (deriv (levinsonG (lam : ℂ)) (linePt τ) / levinsonG (lam : ℂ) (linePt τ)).re := by
+  apply exists_polar_hardyZ_advance_of_levinsonG_ne_zero_of_Y_pos (lam := lam) hT
+  · intro τ hτ
+    rw [levinsonY_line_eq, Complex.ofReal_re]
+    have hd := log_pi_lt_re_digamma_quarter (le_trans h20 hτ.1)
+    nlinarith
+  · exact hne
 
 end RHTower
 

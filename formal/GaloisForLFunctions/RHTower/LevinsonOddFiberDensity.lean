@@ -119,6 +119,44 @@ def LevinsonMeanSquareGate (R c : ℝ) : Prop :=
     (∫ t in T₁..T₂, ‖levinsonMollifiedDetector ((lam : ℝ) : ℂ) b (Finset.Icc 1 N)
         ((σ₀ : ℂ) + (t : ℂ) * I)‖ ^ 2) ≤ (c + ε) * (T₂ - T₁)
 
+/-- Sign-correct Levinson gate.  The polar argument uses exactly nonvanishing of `lam` and
+positivity of the detector weight on the selected window; it does not require a negative shift. -/
+def LevinsonMeanSquareGateOfYPos (R c : ℝ) : Prop :=
+  ∀ ε : ℝ, 0 < ε → ∀ᶠ U in atTop, ∃ (T₁ T₂ σ₀ lam Mb : ℝ) (b : ℕ → ℂ) (N : ℕ),
+    T₁ ∈ Set.Icc (20 : ℝ) 21 ∧ T₂ ∈ Set.Ioc (U - 1) U ∧
+    lam ≠ 0 ∧ |lam| ≤ 1 ∧
+    (∀ u ∈ Set.Icc T₁ T₂, (0 : ℝ) < (levinsonY (lam : ℂ) (linePt u)).re) ∧
+    1 ≤ N ∧ b 1 = 1 ∧ (∀ n ∈ Finset.Icc 1 N, ‖b n‖ ≤ 1) ∧
+    (∀ n ∈ Finset.Icc 1 N, (starRingEnd ℂ) (b n) = b n) ∧
+    1 ≤ Mb ∧ (∑ n ∈ Finset.Icc 1 N, ‖b n‖ * ((n : ℝ) ^ (4 : ℝ))) ≤ Mb ∧
+    Real.log Mb ≤ 5 * Real.log T₂ ∧
+    1 / 4 ≤ σ₀ ∧ σ₀ < 1 / 2 ∧ (1 / 2 - σ₀) * Real.log T₂ = R ∧
+    (∀ x ∈ Set.Icc σ₀ (15 / 2 : ℝ), levinsonG ((lam : ℝ) : ℂ) ((x : ℂ) + (T₁ : ℂ) * I) ≠ 0) ∧
+    (∀ x ∈ Set.Icc σ₀ (15 / 2 : ℝ), levinsonG ((lam : ℝ) : ℂ) ((x : ℂ) + (T₂ : ℂ) * I) ≠ 0) ∧
+    (∀ x ∈ Set.Icc σ₀ (15 / 2 : ℝ),
+      edPoly b (Finset.Icc 1 N) ((x : ℂ) + (T₁ : ℂ) * I) ≠ 0) ∧
+    (∀ x ∈ Set.Icc σ₀ (15 / 2 : ℝ),
+      edPoly b (Finset.Icc 1 N) ((x : ℂ) + (T₂ : ℂ) * I) ≠ 0) ∧
+    (∫ t in T₁..T₂, ‖levinsonMollifiedDetector ((lam : ℝ) : ℂ) b (Finset.Icc 1 N)
+        ((σ₀ : ℂ) + (t : ℂ) * I)‖ ^ 2) ≤ (c + ε) * (T₂ - T₁)
+
+/-- The legacy negative-shift gate supplies the exact positive detector-weight interface. -/
+theorem levinsonMeanSquareGateOfYPos_of_gate {R c : ℝ}
+    (hgate : LevinsonMeanSquareGate R c) : LevinsonMeanSquareGateOfYPos R c := by
+  intro ε hε
+  filter_upwards [hgate ε hε] with U hU
+  obtain ⟨T₁, T₂, σ₀, lam, Mb, b, N, hT₁, hT₂, hlam0, hlam1, hN, hb1, hbn,
+    hbreal, hMb1, hmass, hlogMb, hσ₀a, hσ₀b, hσ₀R, hG1, hG2, hP1, hP2, hMsq⟩ := hU
+  refine ⟨T₁, T₂, σ₀, lam, Mb, b, N, hT₁, hT₂, ne_of_lt hlam0, hlam1, ?_, hN,
+    hb1, hbn, hbreal, hMb1, hmass, hlogMb, hσ₀a, hσ₀b, hσ₀R, hG1, hG2, hP1, hP2, hMsq⟩
+  intro u hu
+  rw [levinsonY_line_eq, Complex.ofReal_re]
+  have hdig := log_pi_lt_re_digamma_quarter (le_trans hT₁.1 hu.1)
+  have hmul : lam * ((Complex.digamma (((1 / 4 : ℝ) : ℂ)
+      + ((u / 2 : ℝ) : ℂ) * Complex.I)).re - Real.log Real.pi) ≤ 0 :=
+    mul_nonpos_of_nonpos_of_nonneg hlam0.le (sub_nonneg.mpr hdig.le)
+  linarith
+
 /-- Monotonicity of `Real.log` on nonnegative arguments, with the junk value at `0` absorbed. -/
 theorem log_le_log_of_nonneg_of_one_le {x y : ℝ} (hx : 0 ≤ x) (hy : 1 ≤ y) (hxy : x ≤ y) :
     Real.log x ≤ Real.log y := by
@@ -285,10 +323,10 @@ set_option maxHeartbeats 1000000 in
 /-- **Levinson's positive proportion from the mean-square gate.**  If the mollified mean square is
 eventually at most `c` and Levinson's margin `1 − log c/R` exceeds `1/3`, then the odd-fibre census
 eventually exceeds that proportion of the whole census. -/
-theorem eventually_oddFiber_ge_of_gate {R c δ : ℝ}
+theorem eventually_oddFiber_ge_of_gate_of_Y_pos {R c δ : ℝ}
     (hR : 0 < R) (hc : 1 ≤ c) (hδ : 0 < δ)
     (hmargin : 1 / 3 + 2 * δ < 1 - Real.log c / R)
-    (hgate : LevinsonMeanSquareGate R c) :
+    (hgate : LevinsonMeanSquareGateOfYPos R c) :
     ∀ᶠ U in atTop, (1 / 3 + δ) * (xiPosZeroCount U : ℝ) ≤ (xiOddFiberCount U : ℝ) := by
   classical
   have hπ0 : (0 : ℝ) < Real.pi := Real.pi_pos
@@ -324,7 +362,8 @@ theorem eventually_oddFiber_ge_of_gate {R c δ : ℝ}
     linarith
   have hcεg : (1 : ℝ) ≤ c + εg := by linarith
   -- the window capstone and the eventual facts
-  obtain ⟨cw, C, K, hcw, hC, hK, hcap⟩ := exists_le_xiOddFiberCount_of_mollified_meanSquare
+  obtain ⟨cw, C, K, hcw, hC, hK, hcap⟩ :=
+    exists_le_xiOddFiberCount_of_mollified_meanSquare_of_Y_pos
   obtain ⟨A₁, hA₁⟩ := eventually_atTop.mp (eventually_phase_advance_ge η hη0)
   obtain ⟨A₂, hA₂⟩ := eventually_atTop.mp (eventually_scale_shift hη0)
   obtain ⟨A₃, hA₃⟩ := eventually_atTop.mp
@@ -334,8 +373,8 @@ theorem eventually_oddFiber_ge_of_gate {R c δ : ℝ}
   filter_upwards [hgate εg hεg0, eventually_ge_atTop (A₁ + 1), eventually_ge_atTop (A₂ + 1),
     eventually_ge_atTop (A₃ + 1), eventually_ge_atTop A₄, eventually_ge_atTop (100 : ℝ)]
     with U hUgate hU1 hU2 hU3 hU4 hU100
-  obtain ⟨T₁, T₂, σ₀, lam, Mb, b, N, hT₁, hT₂, hlam0, hlam1, hN, hb1, hbn, hbreal, hMb1,
-    hmass, hlogMb, hσ₀a, hσ₀b, hσ₀R, hG1, hG2, hP1, hP2, hMsq⟩ := hUgate
+  obtain ⟨T₁, T₂, σ₀, lam, Mb, b, N, hT₁, hT₂, hlam0, hlam1, hY, hN, hb1, hbn,
+    hbreal, hMb1, hmass, hlogMb, hσ₀a, hσ₀b, hσ₀R, hG1, hG2, hP1, hP2, hMsq⟩ := hUgate
   set Msq : ℝ := (c + εg) * (T₂ - T₁) with hMsqdef
   have hT₂U : T₂ ≤ U := hT₂.2
   have hT₂gt : U - 1 < T₂ := hT₂.1
@@ -430,13 +469,22 @@ theorem eventually_oddFiber_ge_of_gate {R c δ : ℝ}
     hδ hδ3 hη0 hηsmall hR hlogc hbracketkey hΛ1 hSdef hT₁20 hT₁21 (by linarith)
     hcw hK hσ₀scale hσ₀b hNU0 hxS' hmx' hlogratio hlogMb hphase hlower hΛdef.symm
   have hcount := hcap lam hlam0 hlam1 b N hN hb1 hbn hbreal Mb hMb1 hmass σ₀ T₁ T₂ Msq
-    hσ₀a hσ₀b hT₁20 (by linarith) hG1 hG2 hP1 hP2 hMsq m hwin
+    hσ₀a hσ₀b hT₁20 (by linarith) hY hG1 hG2 hP1 hP2 hMsq m hwin
   have hmono := xiOddFiberCount_mono hT₂U
   have hfinN : (m : ℝ) ≤ (xiOddFiberCount U : ℝ) := by
     have hle : m ≤ xiOddFiberCount U := le_trans hcount hmono
     exact_mod_cast hle
   rw [hxdef] at hxm
   linarith [hxm, hfinN]
+
+/-- Legacy negative-shift specialization of Levinson's positive-proportion theorem. -/
+theorem eventually_oddFiber_ge_of_gate {R c δ : ℝ}
+    (hR : 0 < R) (hc : 1 ≤ c) (hδ : 0 < δ)
+    (hmargin : 1 / 3 + 2 * δ < 1 - Real.log c / R)
+    (hgate : LevinsonMeanSquareGate R c) :
+    ∀ᶠ U in atTop, (1 / 3 + δ) * (xiPosZeroCount U : ℝ) ≤ (xiOddFiberCount U : ℝ) :=
+  eventually_oddFiber_ge_of_gate_of_Y_pos hR hc hδ hmargin
+    (levinsonMeanSquareGateOfYPos_of_gate hgate)
 
 end RHTower
 

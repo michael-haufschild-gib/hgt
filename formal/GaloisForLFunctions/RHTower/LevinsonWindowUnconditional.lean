@@ -30,8 +30,10 @@ noncomputable section
 namespace RHTower
 
 /-- **The Levinson window inequality without any hypothesis on the critical edge.** -/
-theorem le_xiOddFiberCount_of_levinson_window_unconditional {lam : ℝ} (hlam0 : lam < 0)
+theorem le_xiOddFiberCount_of_levinson_window_unconditional_of_Y_pos
+    {lam : ℝ} (hlam0 : lam ≠ 0)
     {d T₁ T₂ : ℝ} (hd : (1 / 2 : ℝ) < d) (h20 : 20 ≤ T₁) (hT : T₁ < T₂) {n : ℕ}
+    (hY : ∀ u ∈ Icc T₁ T₂, (0 : ℝ) < (levinsonY (lam : ℂ) (linePt u)).re)
     (hbot : ∀ x ∈ uIcc (1 / 2 : ℝ) d, levinsonGEntire (lam : ℂ) ((x : ℂ) + T₁ * I) ≠ 0)
     (htop : ∀ x ∈ uIcc (1 / 2 : ℝ) d, levinsonGEntire (lam : ℂ) ((x : ℂ) + T₂ * I) ≠ 0)
     (hright : ∀ t ∈ uIcc T₁ T₂, levinsonGEntire (lam : ℂ) ((d : ℂ) + t * I) ≠ 0)
@@ -49,7 +51,7 @@ theorem le_xiOddFiberCount_of_levinson_window_unconditional {lam : ℝ} (hlam0 :
             (∑ w ∈ Z, ((analyticOrderAt (levinsonGEntire (lam : ℂ)) w).toNat : ℝ))) :
     n ≤ xiOddFiberCount T₂ := by
   classical
-  have hlamC : ((lam : ℝ) : ℂ) ≠ 0 := by simpa using ne_of_lt hlam0
+  have hlamC : ((lam : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hlam0
   obtain ⟨pts, m, H, hmemiff, hmpos, hordeq, hHdiff, hfact, hHline⟩ :=
     exists_levinson_line_factorization hlamC hT.le
   set F : ℂ → ℂ := levinsonGEntire (lam : ℂ) with hF
@@ -229,7 +231,8 @@ theorem le_xiOddFiberCount_of_levinson_window_unconditional {lam : ℝ} (hlam0 :
     (c := (1 / 2 : ℝ)) (d := d) (T₁ := T₁) (T₂ := T₂) hd hnodes
   -- the factored polar form
   obtain ⟨ρ, φ, hφc, hρpos, hpolarZ, hadvH⟩ :=
-    exists_factored_polar_hardyZ_advance (lam := lam) hlam0.le h20 hT.le hline hHdiff hfact hHline
+    exists_factored_polar_hardyZ_advance_of_Y_pos (lam := lam) hT.le hY
+      hline hHdiff hfact hHline
   set Mtot : ℕ := ∑ c ∈ pts, m c with hMtot
   have hMcast : ((Mtot : ℕ) : ℝ) = ∑ c ∈ pts, (m c : ℝ) := by
     rw [hMtot]; push_cast; ring
@@ -265,7 +268,72 @@ theorem le_xiOddFiberCount_of_levinson_window_unconditional {lam : ℝ} (hlam0 :
     simpa [hMtot] using this
   omega
 
-/-- The unconditional Levinson window inequality in singleton-fibre form. -/
+/-- Legacy negative-shift specialization of the unconditional Levinson window inequality. -/
+theorem le_xiOddFiberCount_of_levinson_window_unconditional {lam : ℝ} (hlam0 : lam < 0)
+    {d T₁ T₂ : ℝ} (hd : (1 / 2 : ℝ) < d) (h20 : 20 ≤ T₁) (hT : T₁ < T₂) {n : ℕ}
+    (hbot : ∀ x ∈ uIcc (1 / 2 : ℝ) d, levinsonGEntire (lam : ℂ) ((x : ℂ) + T₁ * I) ≠ 0)
+    (htop : ∀ x ∈ uIcc (1 / 2 : ℝ) d, levinsonGEntire (lam : ℂ) ((x : ℂ) + T₂ * I) ≠ 0)
+    (hright : ∀ t ∈ uIcc T₁ T₂, levinsonGEntire (lam : ℂ) ((d : ℂ) + t * I) ≠ 0)
+    (hbound : ∀ Z : Finset ℂ,
+      (∀ z : ℂ, z ∈ Z ↔
+        z ∈ (uIcc (1 / 2 : ℝ) d ×ℂ uIcc T₁ T₂) ∧ levinsonGEntire (lam : ℂ) z = 0) →
+      ((n : ℝ) + 2) * Real.pi ≤
+        (gammaHardyTheta T₂ - gammaHardyTheta T₁)
+          + (∫ t in T₁..T₂, (logDeriv (levinsonGEntire (lam : ℂ)) ((d : ℂ) + t * I)).re)
+          + (∫ x in (1 / 2 : ℝ)..d,
+              (logDeriv (levinsonGEntire (lam : ℂ)) ((x : ℂ) + T₁ * I)).im)
+          - (∫ x in (1 / 2 : ℝ)..d,
+              (logDeriv (levinsonGEntire (lam : ℂ)) ((x : ℂ) + T₂ * I)).im)
+          - 2 * Real.pi *
+            (∑ w ∈ Z, ((analyticOrderAt (levinsonGEntire (lam : ℂ)) w).toNat : ℝ))) :
+    n ≤ xiOddFiberCount T₂ := by
+  apply le_xiOddFiberCount_of_levinson_window_unconditional_of_Y_pos
+    (lam := lam) (ne_of_lt hlam0) hd h20 hT
+  · intro u hu
+    rw [levinsonY_line_eq, Complex.ofReal_re]
+    have hdig := log_pi_lt_re_digamma_quarter (le_trans h20 hu.1)
+    have hmul : lam * ((Complex.digamma (((1 / 4 : ℝ) : ℂ)
+        + ((u / 2 : ℝ) : ℂ) * Complex.I)).re - Real.log Real.pi) ≤ 0 :=
+      mul_nonpos_of_nonpos_of_nonneg hlam0.le (sub_nonneg.mpr hdig.le)
+    linarith
+  · exact hbot
+  · exact htop
+  · exact hright
+  · exact hbound
+
+/-- The unconditional Levinson window inequality in singleton-fibre form, assuming the exact
+positive-weight condition needed by the polar argument. -/
+theorem xiSingletonFiberCount_ge_of_levinson_window_unconditional_of_Y_pos
+    {lam : ℝ} (hlam0 : lam ≠ 0)
+    {d T₁ T₂ : ℝ} (hd : (1 / 2 : ℝ) < d) (h20 : 20 ≤ T₁) (hT : T₁ < T₂) {n : ℕ}
+    (hY : ∀ u ∈ Icc T₁ T₂, (0 : ℝ) < (levinsonY (lam : ℂ) (linePt u)).re)
+    (hbot : ∀ x ∈ uIcc (1 / 2 : ℝ) d, levinsonGEntire (lam : ℂ) ((x : ℂ) + T₁ * I) ≠ 0)
+    (htop : ∀ x ∈ uIcc (1 / 2 : ℝ) d, levinsonGEntire (lam : ℂ) ((x : ℂ) + T₂ * I) ≠ 0)
+    (hright : ∀ t ∈ uIcc T₁ T₂, levinsonGEntire (lam : ℂ) ((d : ℂ) + t * I) ≠ 0)
+    (hbound : ∀ Z : Finset ℂ,
+      (∀ z : ℂ, z ∈ Z ↔
+        z ∈ (uIcc (1 / 2 : ℝ) d ×ℂ uIcc T₁ T₂) ∧ levinsonGEntire (lam : ℂ) z = 0) →
+      ((n : ℝ) + 2) * Real.pi ≤
+        (gammaHardyTheta T₂ - gammaHardyTheta T₁)
+          + (∫ t in T₁..T₂, (logDeriv (levinsonGEntire (lam : ℂ)) ((d : ℂ) + t * I)).re)
+          + (∫ x in (1 / 2 : ℝ)..d,
+              (logDeriv (levinsonGEntire (lam : ℂ)) ((x : ℂ) + T₁ * I)).im)
+          - (∫ x in (1 / 2 : ℝ)..d,
+              (logDeriv (levinsonGEntire (lam : ℂ)) ((x : ℂ) + T₂ * I)).im)
+          - 2 * Real.pi *
+            (∑ w ∈ Z, ((analyticOrderAt (levinsonGEntire (lam : ℂ)) w).toNat : ℝ))) :
+    (3 / 2 : ℝ) * (n : ℝ) - (xiPosZeroCount T₂ : ℝ) / 2
+      ≤ (xiSingletonFiberCount T₂ : ℝ) := by
+  have h1 := le_xiOddFiberCount_of_levinson_window_unconditional_of_Y_pos
+    hlam0 hd h20 hT hY hbot htop hright hbound
+  have h2 := three_mul_xiOddFiberCount_le T₂
+  have hR : (3 : ℝ) * (n : ℝ)
+      ≤ 2 * (xiSingletonFiberCount T₂ : ℝ) + (xiPosZeroCount T₂ : ℝ) := by
+    have : 3 * n ≤ 2 * xiSingletonFiberCount T₂ + xiPosZeroCount T₂ := by omega
+    exact_mod_cast this
+  linarith
+
+/-- Legacy negative-shift specialization of the singleton-fibre window inequality. -/
 theorem xiSingletonFiberCount_ge_of_levinson_window_unconditional {lam : ℝ} (hlam0 : lam < 0)
     {d T₁ T₂ : ℝ} (hd : (1 / 2 : ℝ) < d) (h20 : 20 ≤ T₁) (hT : T₁ < T₂) {n : ℕ}
     (hbot : ∀ x ∈ uIcc (1 / 2 : ℝ) d, levinsonGEntire (lam : ℂ) ((x : ℂ) + T₁ * I) ≠ 0)

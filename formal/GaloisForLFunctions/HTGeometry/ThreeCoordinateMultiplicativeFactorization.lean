@@ -50,7 +50,7 @@ theorem exists_coordinateOne_eigenfactor
     ∃ c : FreeCoordinateAlgebraicClosure C (Fin 3),
       c ≠ 0 ∧
       IsAlgebraic (IntermediateField.adjoin C
-        ({algebraicClosureFreeCoordinate C (Fin 3) 1} : Set _)) c ∧
+        (algebraicClosureFreeCoordinate C (Fin 3) '' ({1} : Set (Fin 3)))) c ∧
       freeCoordinateAlgebraicClosureDerivation 1 c =
         (freeCoordinateAlgebraicClosureDerivation 1 A / A) * c := by
   let L := FreeCoordinateAlgebraicClosure C (Fin 3)
@@ -148,10 +148,14 @@ theorem exists_coordinateOne_eigenfactor
     apply hcY0
     exact Subtype.ext hc
   · rw [← mem_algebraicClosure_iff]
-    exact cY.property
+    have hc : (cY : L) ∈ algebraicClosure (↥Y) L := cY.property
+    have hYeq : IntermediateField.adjoin C
+        (algebraicClosureFreeCoordinate C (Fin 3) '' ({1} : Set (Fin 3))) = Y := by
+      simp [Y, v, L, Set.image_singleton]
+    rw [hYeq]
+    exact hc
   · exact congrArg Subtype.val hcY_eigen
 
-set_option maxHeartbeats 800000 in
 theorem exists_remaining_factors_of_coordinateOne_eigenfactor
     {C : Type*} [Field C] [CharZero C]
     {A B Q c : FreeCoordinateAlgebraicClosure C (Fin 3)}
@@ -163,7 +167,7 @@ theorem exists_remaining_factors_of_coordinateOne_eigenfactor
     (hQ : IsAlgebraic (IntermediateField.adjoin C
       (algebraicClosureFreeCoordinate C (Fin 3) '' ({1, 2} : Set (Fin 3)))) Q)
     (hcYAlg : IsAlgebraic (IntermediateField.adjoin C
-      ({algebraicClosureFreeCoordinate C (Fin 3) 1} : Set _)) c)
+      (algebraicClosureFreeCoordinate C (Fin 3) '' ({1} : Set (Fin 3)))) c)
     (hc_eigen : freeCoordinateAlgebraicClosureDerivation 1 c =
       (freeCoordinateAlgebraicClosureDerivation 1 A / A) * c)
     (hprod : A * B = Q) :
@@ -178,14 +182,17 @@ theorem exists_remaining_factors_of_coordinateOne_eigenfactor
     rw [div_mul_cancel₀ _ hA0]
   have hD0c : freeCoordinateAlgebraicClosureDerivation 0 c = 0 :=
     freeCoordinateAlgebraicClosureDerivation_eq_zero_of_isAlgebraic_adjoin
-      (C := C) ({1} : Set (Fin 3)) (i := (0 : Fin 3)) (by simp) hcYAlg
+      (C := C) (σ := Fin 3) ({1} : Set (Fin 3)) (i := (0 : Fin 3))
+      (by simp) (u := c) hcYAlg
   have hD2c : freeCoordinateAlgebraicClosureDerivation 2 c = 0 :=
     freeCoordinateAlgebraicClosureDerivation_eq_zero_of_isAlgebraic_adjoin
-      (C := C) ({1} : Set (Fin 3)) (i := (2 : Fin 3)) (by simp) hcYAlg
+      (C := C) (σ := Fin 3) ({1} : Set (Fin 3)) (i := (2 : Fin 3))
+      (by simp) (u := c) hcYAlg
   let a : FreeCoordinateAlgebraicClosure C (Fin 3) := A / c
   have ha0 : a ≠ 0 := div_ne_zero hA0 hc0
   have hD1a : freeCoordinateAlgebraicClosureDerivation 1 a = 0 := by
-    rw [a, div_eq_mul_inv, Derivation.leibniz, Derivation.leibniz_inv,
+    dsimp only [a]
+    rw [div_eq_mul_inv, Derivation.leibniz, Derivation.leibniz_inv,
       hA_eigen, hc_eigen]
     simp only [smul_eq_mul]
     field_simp [hc0]
@@ -194,7 +201,8 @@ theorem exists_remaining_factors_of_coordinateOne_eigenfactor
     freeCoordinateAlgebraicClosureDerivation_eq_zero_of_isAlgebraic_adjoin
       (C := C) ({0, 1} : Set (Fin 3)) (i := (2 : Fin 3)) (by simp) hA
   have hD2a : freeCoordinateAlgebraicClosureDerivation 2 a = 0 := by
-    rw [a, div_eq_mul_inv, Derivation.leibniz, Derivation.leibniz_inv,
+    dsimp only [a]
+    rw [div_eq_mul_inv, Derivation.leibniz, Derivation.leibniz_inv,
       hD2A, hD2c]
     simp
   have haAlg : IsAlgebraic
@@ -219,18 +227,21 @@ theorem exists_remaining_factors_of_coordinateOne_eigenfactor
     simp only [smul_eq_mul, mul_zero, add_zero] at hp
     calc
       freeCoordinateAlgebraicClosureDerivation 1 Q =
-          (freeCoordinateAlgebraicClosureDerivation 1 A / A) * A * B := hp.symm
+          0 + B * ((freeCoordinateAlgebraicClosureDerivation 1 A / A) * A) := hp.symm
+      _ = (freeCoordinateAlgebraicClosureDerivation 1 A / A) * A * B := by ring
       _ = (freeCoordinateAlgebraicClosureDerivation 1 A / A) * Q := by
         rw [← hprod]
         ring
   let b : FreeCoordinateAlgebraicClosure C (Fin 3) := Q / c
   have hb0 : b ≠ 0 := div_ne_zero hQ0 hc0
   have hD0b : freeCoordinateAlgebraicClosureDerivation 0 b = 0 := by
-    rw [b, div_eq_mul_inv, Derivation.leibniz, Derivation.leibniz_inv,
+    dsimp only [b]
+    rw [div_eq_mul_inv, Derivation.leibniz, Derivation.leibniz_inv,
       hD0Q, hD0c]
     simp
   have hD1b : freeCoordinateAlgebraicClosureDerivation 1 b = 0 := by
-    rw [b, div_eq_mul_inv, Derivation.leibniz, Derivation.leibniz_inv,
+    dsimp only [b]
+    rw [div_eq_mul_inv, Derivation.leibniz, Derivation.leibniz_inv,
       hQ_eigen, hc_eigen]
     simp only [smul_eq_mul]
     field_simp [hc0]
@@ -256,7 +267,8 @@ theorem exists_remaining_factors_of_coordinateOne_eigenfactor
     exact (div_mul_cancel₀ A hc0).symm
   · change B = (Q / c) / (A / c)
     field_simp [hA0, hc0]
-    exact hprod.symm
+    calc B * A = A * B := mul_comm _ _
+      _ = Q := hprod
   · change Q = (Q / c) * c
     exact (div_mul_cancel₀ Q hc0).symm
 

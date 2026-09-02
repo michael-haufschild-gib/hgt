@@ -255,6 +255,24 @@ noncomputable def torusChartComplexPointHomeomorph (k : ℕ) :
   continuous_toFun := continuous_torusChartCoordinates k
   continuous_invFun := continuous_torusChartAlgPoint k
 
+/-- The first analytic torus coordinate is evaluation of the first localized polynomial
+coordinate. -/
+theorem torusChartComplexPointHomeomorph_first_val (k : ℕ)
+    (chi : AlgSpec (TorusChart ℂ k)) :
+    ((torusChartComplexPointHomeomorph k chi).1 : ℂ) =
+      chi (algebraMap (TorusPolynomial k) (TorusChart ℂ k) (X 0)) := by
+  change chi (torusChartFirstUnit k) = _
+  rw [torusChartFirstUnit_coe]
+
+/-- The second analytic torus coordinate is evaluation of the second localized polynomial
+coordinate. -/
+theorem torusChartComplexPointHomeomorph_second_val (k : ℕ)
+    (chi : AlgSpec (TorusChart ℂ k)) :
+    ((torusChartComplexPointHomeomorph k chi).2.1 : ℂ) =
+      chi (algebraMap (TorusPolynomial k) (TorusChart ℂ k) (X 1)) := by
+  change chi (torusChartSecondUnit k) = _
+  rw [torusChartSecondUnit_coe]
+
 end
 
 end GaloisForLFunctions.HTGeometry

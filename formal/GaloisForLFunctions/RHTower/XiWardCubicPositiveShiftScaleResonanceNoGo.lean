@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.XiWardCubicPositiveShiftDampedDiagonalSeparator
+import GaloisForLFunctions.HTGeometry.HolomorphicSchwarzPolarization
 
 /-!
 # Positive-shift scale resonance and finite-mixture no-go
@@ -14,6 +15,7 @@ survivor is the exact resonance law: a displacement-matched shift pays the full 
 -/
 
 open Complex Filter Topology Set
+open scoped BigOperators
 
 namespace RHTower
 
@@ -139,6 +141,162 @@ theorem tendsto_integral_xiWardCubicPositiveShiftDiagonalSeparatorProfile_zero
   simpa using MeasureTheory.tendsto_integral_of_dominated_convergence
     (fun _ : Ioi (0 : ℝ) => (115 / 108 : ℝ)) hmeas
     (MeasureTheory.integrable_const _) (fun n => hbound n) hlim
+
+/-! ## Positive survivor: signed infinite scale transport -/
+
+/-- Finite signed dyadic shells telescope exactly.  Unlike a positive finite scale mixture, this
+retains cancellation between adjacent source scales. -/
+theorem sum_range_xiWardCubicPositiveShiftDyadicShellProfile
+    (n : ℕ) (x : ℝ) :
+    (∑ j ∈ Finset.range n,
+      xiWardCubicPositiveShiftDyadicShellProfile ((2 : ℝ) ^ j * x)) =
+      xiWardCubicPositiveShiftDiagonalSeparatorProfile ((2 : ℝ) ^ n * x) -
+        xiWardCubicPositiveShiftDiagonalSeparatorProfile x := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+      rw [Finset.sum_range_succ, ih]
+      rw [xiWardCubicPositiveShiftDyadicShellProfile, pow_succ]
+      ring_nf
+
+/-- On the Route-T shallow band, the signed scale-tail quantum at every Euler-safe endpoint is
+uniformly positive.  The rational `1/20` is deliberately conservative. -/
+theorem one_twentieth_le_xiWardCubicPositiveShiftDiagonalAnomalyProfile
+    {x : ℝ} (hx0 : 0 ≤ x) (hx1 : x ≤ 1 / 5) :
+    (1 / 20 : ℝ) ≤ xiWardCubicPositiveShiftDiagonalAnomalyProfile x := by
+  unfold xiWardCubicPositiveShiftDiagonalAnomalyProfile
+  have h0 : 0 < 2 * x + 2 := by linarith
+  have h1 : 0 < 3 * x + 3 / 2 := by linarith
+  have h2 : 0 < 4 * x + 1 := by linarith
+  field_simp [h0.ne', h1.ne', h2.ne']
+  nlinarith [sq_nonneg x, sq_nonneg (x ^ 2), sq_nonneg (x ^ 3),
+    mul_nonneg hx0 (sub_nonneg.mpr hx1)]
+
+/-- The separator tends to its full off-diagonal quantum at the remote end of the signed scale
+transport. -/
+theorem tendsto_xiWardCubicPositiveShiftDiagonalSeparatorProfile_atTop :
+    Tendsto xiWardCubicPositiveShiftDiagonalSeparatorProfile atTop
+      (nhds (115 / 108 : ℝ)) := by
+  have h :=
+    (tendsto_const_nhds.sub
+      tendsto_xiWardCubicPositiveShiftDiagonalAnomalyProfile_atTop :
+      Tendsto
+        (fun x : ℝ => (115 / 108 : ℝ) -
+          xiWardCubicPositiveShiftDiagonalAnomalyProfile x)
+        atTop (nhds ((115 / 108 : ℝ) - 0)))
+  convert h using 1
+  · rfl
+  · norm_num
+
+/-- Exact signed infinite-scale survivor.  For every positive transverse displacement, partial
+dyadic shell sums converge to the anomaly left at the fixed safe endpoint. -/
+theorem tendsto_sum_range_xiWardCubicPositiveShiftDyadicShellProfile
+    {x : ℝ} (hx : 0 < x) :
+    Tendsto
+      (fun n : ℕ => ∑ j ∈ Finset.range n,
+        xiWardCubicPositiveShiftDyadicShellProfile ((2 : ℝ) ^ j * x))
+      atTop
+      (nhds (xiWardCubicPositiveShiftDiagonalAnomalyProfile x)) := by
+  have hpow : Tendsto (fun n : ℕ => (2 : ℝ) ^ n * x) atTop atTop :=
+    (tendsto_pow_atTop_atTop_of_one_lt (by norm_num : (1 : ℝ) < 2)).atTop_mul_const hx
+  have hprofile :=
+    tendsto_xiWardCubicPositiveShiftDiagonalSeparatorProfile_atTop.comp hpow
+  have hsub := hprofile.sub_const
+    (xiWardCubicPositiveShiftDiagonalSeparatorProfile x)
+  convert hsub using 1
+  · funext n
+    rw [sum_range_xiWardCubicPositiveShiftDyadicShellProfile]
+    rfl
+  · rw [xiWardCubicPositiveShiftDiagonalSeparatorProfile]
+    ring_nf
+
+/-- Signed dyadic scale transport commutes with every finite multiplicity packet. -/
+theorem tendsto_finset_sum_range_xiWardCubicPositiveShiftDyadicShellProfile
+    {ι : Type*} (S : Finset ι) (a : ι → ℝ) {eps : ℝ}
+    (heps : 0 < eps) (ha : ∀ i ∈ S, 0 < a i) :
+    Tendsto
+      (fun n : ℕ => ∑ i ∈ S, ∑ j ∈ Finset.range n,
+        xiWardCubicPositiveShiftDyadicShellProfile
+          ((2 : ℝ) ^ j * (a i / eps)))
+      atTop
+      (nhds (∑ i ∈ S,
+        xiWardCubicPositiveShiftDiagonalAnomalyProfile (a i / eps))) := by
+  apply tendsto_finsetSum S
+  intro i hi
+  exact tendsto_sum_range_xiWardCubicPositiveShiftDyadicShellProfile
+    (div_pos (ha i hi) heps)
+
+/-- Uniform linear-multiplicity receiver for the signed scale-tail limit.  It survives precisely
+because the scale shells are signed; the preceding finite-positive-mass no-go does not apply. -/
+theorem card_div_twenty_le_sum_xiWardCubicPositiveShiftDiagonalAnomalyProfile
+    {ι : Type*} (S : Finset ι) (a : ι → ℝ) {eps : ℝ}
+    (heps : 0 < eps) (ha0 : ∀ i ∈ S, 0 ≤ a i)
+    (ha1 : ∀ i ∈ S, a i ≤ eps / 5) :
+    (S.card : ℝ) / 20 ≤
+      ∑ i ∈ S,
+        xiWardCubicPositiveShiftDiagonalAnomalyProfile (a i / eps) := by
+  rw [show (S.card : ℝ) / 20 = ∑ _i ∈ S, (1 / 20 : ℝ) by
+    simp [div_eq_mul_inv]]
+  apply Finset.sum_le_sum
+  intro i hi
+  apply one_twentieth_le_xiWardCubicPositiveShiftDiagonalAnomalyProfile
+    (div_nonneg (ha0 i hi) heps.le)
+  rw [div_le_iff₀ heps]
+  nlinarith [ha1 i hi]
+
+/-! ## Source-realization audit -/
+
+/-- Unit-normalized signed dyadic shell. -/
+def xiWardCubicPositiveShiftDyadicShellMask (x : ℝ) : ℝ :=
+  (108 / 115) * xiWardCubicPositiveShiftDyadicShellProfile x
+
+theorem xiWardCubicPositiveShiftDyadicShellMask_zero :
+    xiWardCubicPositiveShiftDyadicShellMask 0 = 0 := by
+  simp [xiWardCubicPositiveShiftDyadicShellMask,
+    xiWardCubicPositiveShiftDyadicShellProfile,
+    xiWardCubicPositiveShiftDiagonalSeparatorProfile_zero]
+
+theorem xiWardCubicPositiveShiftDyadicShellMask_half_neg :
+    xiWardCubicPositiveShiftDyadicShellMask (1 / 2) < 0 := by
+  unfold xiWardCubicPositiveShiftDyadicShellMask
+  exact mul_neg_of_pos_of_neg (by norm_num)
+    xiWardCubicPositiveShiftDyadicShellProfile_half_neg
+
+/-- Signed scale transport escapes the finite-positive-mixture no-go, but not holomorphic
+scalarization.  Even one dyadic shell is real-valued and nonconstant on the reflection graph, so
+it cannot be the restriction of a jointly entire source weight.  A legitimate shell landing must
+therefore retain a real Stokes/Wirtinger term (or the fixed poles of a meromorphic source kernel). -/
+theorem not_exists_entire_xiWardCubicPositiveShiftDyadicShellMaskLanding
+    {eps : ℝ} (heps : 0 < eps) :
+    ¬ ∃ F : ℂ × ℂ → ℂ,
+      Differentiable ℂ F ∧
+      ∀ z : ℂ,
+        F (1 - z, z) =
+          (xiWardCubicPositiveShiftDyadicShellMask (z.re / eps) : ℂ) := by
+  rintro ⟨F, hF, hland⟩
+  let g : ℂ → ℂ := fun z => F (1 - z, z)
+  have hg : Differentiable ℂ g := by
+    dsimp only [g]
+    fun_prop
+  have hstarEq : (fun z : ℂ => star (g z)) = g := by
+    funext z
+    change star (F (1 - z, z)) = F (1 - z, z)
+    rw [hland]
+    exact Complex.conj_ofReal _
+  have hgstar : Differentiable ℂ (fun z : ℂ => star (g z)) := by
+    rw [hstarEq]
+    exact hg
+  have hconst :=
+    GaloisForLFunctions.HTGeometry.eq_of_differentiable_pointwiseStar
+      hg hgstar ((eps / 2 : ℝ) : ℂ)
+  dsimp only [g] at hconst
+  rw [hland, hland, Complex.ofReal_inj] at hconst
+  norm_num [heps.ne'] at hconst
+  rw [xiWardCubicPositiveShiftDyadicShellMask_zero] at hconst
+  have hratio : eps / 2 / eps = (1 / 2 : ℝ) := by
+    field_simp [heps.ne']
+  rw [hratio] at hconst
+  exact (ne_of_lt xiWardCubicPositiveShiftDyadicShellMask_half_neg) hconst
 
 end
 

@@ -133,4 +133,74 @@ theorem HasLeadAt.mul {f g : HahnSeries Γ R} {d e : Γ} {c c' : R}
   ⟨coeffAt_mul_eq_zero_of_lt hf.1 hg.1,
     by rw [coeffAt_mul_of_vanishing_below hf.1 hg.1, hf.2, hg.2]⟩
 
+/-- The boundary coefficient of a finite product over an arbitrary ordered value group. -/
+theorem coeffAt_prod_of_vanishing_below {ι : Type*} [DecidableEq ι]
+    (f : ι → HahnSeries Γ R) (d : ι → Γ) :
+    ∀ s : Finset ι, (∀ i ∈ s, ∀ k < d i, (f i).coeff k = 0) →
+      (∀ k < ∑ i ∈ s, d i, (∏ i ∈ s, f i).coeff k = 0) ∧
+      (∏ i ∈ s, f i).coeff (∑ i ∈ s, d i) = ∏ i ∈ s, (f i).coeff (d i) := by
+  intro s
+  induction s using Finset.induction with
+  | empty =>
+      intro _
+      refine ⟨fun k hk => ?_, ?_⟩
+      · simp only [Finset.sum_empty] at hk
+        simp only [Finset.prod_empty]
+        rw [HahnSeries.coeff_one, if_neg (ne_of_lt hk)]
+      · simp only [Finset.prod_empty, Finset.sum_empty]
+        rw [HahnSeries.coeff_one, if_pos rfl]
+  | @insert a s ha ih =>
+      intro hall
+      obtain ⟨hzero, hlead⟩ := ih fun i hi => hall i (Finset.mem_insert_of_mem hi)
+      have hfa := hall a (Finset.mem_insert_self a s)
+      rw [Finset.prod_insert ha, Finset.sum_insert ha]
+      exact ⟨coeffAt_mul_eq_zero_of_lt hfa hzero,
+        by rw [coeffAt_mul_of_vanishing_below hfa hzero, hlead, Finset.prod_insert ha]⟩
+
+/-- **Boundary coefficient of a Hahn-series determinant.**  If every entry vanishes below a
+row-plus-column degree, the determinant's coefficient at the total degree is the determinant of
+the boundary-coefficient matrix. -/
+theorem det_coeffAt_of_vanishing_below {n : ℕ}
+    (M : Matrix (Fin n) (Fin n) (HahnSeries Γ R)) (a b : Fin n → Γ)
+    (hM : ∀ i j, ∀ k < a i + b j, (M i j).coeff k = 0) :
+    (M.det).coeff ((∑ i, a i) + ∑ j, b j) =
+      (Matrix.of fun i j => (M i j).coeff (a i + b j)).det := by
+  classical
+  rw [Matrix.det_apply, Matrix.det_apply, HahnSeries.coeff_sum]
+  refine Finset.sum_congr rfl fun σ _ => ?_
+  have hsum : (∑ i, (a (σ i) + b i)) = (∑ i, a i) + ∑ j, b j := by
+    rw [Finset.sum_add_distrib]
+    congr 1
+    exact Fintype.sum_equiv σ _ _ fun i => rfl
+  have hprod := (coeffAt_prod_of_vanishing_below
+    (fun i => M (σ i) i) (fun i => a (σ i) + b i) Finset.univ
+    (fun i _ => hM (σ i) i)).2
+  rw [hsum] at hprod
+  rcases Int.units_eq_one_or (Equiv.Perm.sign σ) with hs | hs
+  · rw [hs, one_smul, one_smul, hprod]
+    simp only [Matrix.of_apply]
+  · rw [hs]
+    have h1 : ((-1 : ℤˣ) • (∏ i, M (σ i) i)) = -(∏ i, M (σ i) i) := by simp
+    have h2 : ((-1 : ℤˣ) •
+        (∏ i, (Matrix.of (fun i j => (M i j).coeff (a i + b j))) (σ i) i)) =
+        -(∏ i, (M (σ i) i).coeff (a (σ i) + b i)) := by
+      simp only [Matrix.of_apply]
+      simp
+    rw [h1, h2, HahnSeries.coeff_neg, hprod]
+
+/-- **The Hahn leading-determinant test.**  A nonsingular matrix of boundary coefficients
+certifies that the original Hahn-series determinant is nonzero. -/
+theorem det_ne_zero_of_hasLeadAt {n : ℕ}
+    (M : Matrix (Fin n) (Fin n) (HahnSeries Γ R)) (a b : Fin n → Γ)
+    (L : Matrix (Fin n) (Fin n) R)
+    (hM : ∀ i j, HasLeadAt (M i j) (a i + b j) (L i j))
+    (hL : L.det ≠ 0) : M.det ≠ 0 := by
+  intro hzero
+  apply hL
+  have hLeq : (Matrix.of fun i j => (M i j).coeff (a i + b j)) = L := by
+    funext i j
+    exact (hM i j).2
+  rw [← hLeq, ← det_coeffAt_of_vanishing_below M a b (fun i j => (hM i j).1), hzero]
+  simp
+
 end GaloisForLFunctions.HTGeometry

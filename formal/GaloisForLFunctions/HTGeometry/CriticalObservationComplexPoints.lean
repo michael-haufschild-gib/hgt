@@ -21,6 +21,42 @@ noncomputable def criticalObservationComplexPointHomeomorph
     (criticalObservationChartTorusAlgEquiv ℂ m n)).symm.trans
       (torusChartComplexPointHomeomorph (n + m - 2))
 
+/-- The first analytic torus coordinate is the marked raw observation coordinate. -/
+theorem criticalObservationComplexPointHomeomorph_first_val
+    (m n : ℕ) [Fact (0 < m)] [Fact (0 < n)]
+    (chi : AlgSpec (criticalObservationChartRing ℂ m n)) :
+    ((criticalObservationComplexPointHomeomorph m n chi).1 : ℂ) =
+      chi (algebraMap (criticalObservationRing ℂ m n)
+        (criticalObservationChartRing ℂ m n)
+        (MvPolynomial.X (Sum.inl (⟨0, Fact.out⟩ : Fin n)))) := by
+  rw [criticalObservationComplexPointHomeomorph,
+    Homeomorph.trans_apply, torusChartComplexPointHomeomorph_first_val]
+  change chi ((criticalObservationChartTorusAlgEquiv ℂ m n).symm
+    (algebraMap (MvPolynomial (Fin ((n + m - 2) + 2)) ℂ)
+      (TorusChart ℂ (n + m - 2)) (MvPolynomial.X 0))) = _
+  congr 1
+  apply (criticalObservationChartTorusAlgEquiv ℂ m n).injective
+  rw [(criticalObservationChartTorusAlgEquiv ℂ m n).apply_symm_apply]
+  exact criticalObservationChartTorusEquiv_inl_zero ℂ m n
+
+/-- The second analytic torus coordinate is the marked reciprocal observation coordinate. -/
+theorem criticalObservationComplexPointHomeomorph_second_val
+    (m n : ℕ) [Fact (0 < m)] [Fact (0 < n)]
+    (chi : AlgSpec (criticalObservationChartRing ℂ m n)) :
+    ((criticalObservationComplexPointHomeomorph m n chi).2.1 : ℂ) =
+      chi (algebraMap (criticalObservationRing ℂ m n)
+        (criticalObservationChartRing ℂ m n)
+        (MvPolynomial.X (Sum.inr (⟨0, Fact.out⟩ : Fin m)))) := by
+  rw [criticalObservationComplexPointHomeomorph,
+    Homeomorph.trans_apply, torusChartComplexPointHomeomorph_second_val]
+  change chi ((criticalObservationChartTorusAlgEquiv ℂ m n).symm
+    (algebraMap (MvPolynomial (Fin ((n + m - 2) + 2)) ℂ)
+      (TorusChart ℂ (n + m - 2)) (MvPolynomial.X 1))) = _
+  congr 1
+  apply (criticalObservationChartTorusAlgEquiv ℂ m n).injective
+  rw [(criticalObservationChartTorusAlgEquiv ℂ m n).apply_symm_apply]
+  exact criticalObservationChartTorusEquiv_inr_zero ℂ m n
+
 /-- The actual observation-chart complex-point space is second countable through its explicit
 finite-dimensional torus-affine model. -/
 noncomputable instance criticalObservationAlgSpec_secondCountableTopology

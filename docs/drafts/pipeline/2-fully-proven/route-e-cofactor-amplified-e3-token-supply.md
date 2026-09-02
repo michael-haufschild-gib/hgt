@@ -1360,3 +1360,26 @@ leaf is umbrella-wired without umbrella build.
 Card remains Stage 2.  Cofactor/large-prime scale separation is closed; the remaining shared core
 is still the all-interval `E₃` spectral estimate, Lemma 3.5(ii) routing, amplification, and Theorem
 1.2.
+
+## Lean progress update (2026-09-02) — exact terminal source-Fourier factorization
+
+`Sieve/KloostermanTerminalSourceFourier.lean` now preserves source cancellation through the exact
+terminal carrier instead of taking source absolute values.  It defines the finite additive source
+transform at inverse unit frequencies and the terminal geometric orbit, proves that one
+cross-phase source quadratic is exactly a product of two source transforms, and then performs the
+dependent finite Fubini reordering through `Q.erase q`.  The resulting no-premise theorem writes
+the full weighted distinct-modulus terminal Gram quadratic exactly as
+
+```text
+sum_{q in Q} sum_{r in Q\{q}} conjugate(w_q) w_r
+  sum_{x in (Z/q+1 Z)^*} sum_{y in (Z/r+1 Z)^*}
+    conjugate(F_q(x)) F_r(y) Orbit_M(q,r;x,y).
+```
+
+Direct source check and targeted leaf build pass (`12748/12748`).  All four new public theorem
+declarations audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired
+without umbrella build.
+
+Card remains Stage 2.  Exact source Fourier/orbit interface is closed.  Remaining shared primitive
+is a collective signed spectral estimate for this literal carrier at paper ranges, followed by
+Lemma 3.5(ii), amplification, and Theorem 1.2; no cancellation estimate is assumed.

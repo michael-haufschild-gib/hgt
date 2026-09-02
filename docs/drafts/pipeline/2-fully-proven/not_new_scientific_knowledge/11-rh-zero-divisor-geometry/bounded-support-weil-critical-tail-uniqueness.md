@@ -314,3 +314,33 @@ from `LevinsonMeanSquareGate R c` alone (Levinson's mollified mean square), unco
 axiom-clean; `suzukiCutoff_eq_zero_of_le_liminf_xiSimpleCriticalRatio` then closes the card's
 Theorem 2.  The only open statement left for this card is therefore the mollified mean square
 itself.
+
+## Lean status update (2026-09-02) — sign repaired; physical-scale gate remains open
+
+An exact corpus search found no unconditional provider for
+
+```text
+∃ c > 0, c ≤ liminf xiSimpleCriticalRatio atTop.
+```
+
+The apparent shortcut through the finite-polynomial mean square does not discharge it.  In
+`LevinsonFiniteCoefficientMeanSquareLimit.lean` the schedule is
+
+```text
+height = N^200,  AFE head = N^100,  mollifier = N^49.
+```
+
+Thus the mollifier has physical height exponent `49/200`, not `49/100`.  Its exact limit
+`19751/14700` cannot be connected to the `49/100` Levinson optimization by relabelling the AFE-head
+exponent.  The existing coefficient-energy argument also requires `8 M^2 ≤ L`, which is compatible
+with this short mollifier but not with a physical `T^0.49` mollifier against a symmetric
+`L ≍ T^(1/2)` AFE head.  A genuine twisted second-moment theorem at the required physical scale is
+still missing.
+
+The detector-sign mismatch was repaired independently.  The arithmetic coefficient
+`1 - λ log n` uses the classical positive parameter `λ = 1/log T`; the new axiom-clean theorem
+`levinsonY_line_re_pos_reciprocal_log` proves the exact archimedean weight is positive throughout
+`[20,T]`, and the polar/window/counting chain now exposes that positivity condition without changing
+the legacy negative-parameter API.  This is necessary infrastructure, but it does not supply the
+missing mean square.  No density hypothesis or axiom was introduced as a substitute, so the card
+remains at stage 2.

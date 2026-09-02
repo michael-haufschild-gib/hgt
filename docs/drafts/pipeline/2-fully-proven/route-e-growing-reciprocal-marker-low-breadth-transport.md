@@ -6151,3 +6151,91 @@ Card remains Stage 2.  Remaining normalization residue is an explicit fixed-card
 `Q` whose displayed error is negligible at the target normalization, together with the required
 uniformity over its image.  Independent hard input remains Menon's quantitative `o(1/log X)`
 Möbius mean-square rate.  Neither is assumed.
+
+## Lean progress update (2026-09-02) — explicit length-grid quantizer
+
+`Sieve/MovingWindowLengthGrid.lean` replaces the arbitrary quantizer by the concrete lower grid
+
+```text
+Q_q(y) = q * floor(movingFibreWindowLength(x,h,y) / q).
+```
+
+For every positive natural mesh `q`, Lean proves the pointwise error is strictly below `q`, its
+total squared error is at most `#starts * q^2`, every moving length is at most `ceil h`, and
+
+```text
+# image(Q_q) <= floor(ceil(h)/q) + 1.
+```
+
+The terminal normalization therefore becomes
+
+```text
+sum_innerFibre_sq
+  <= 16 * sum_{ell in image(Q_q)} dyadicMeanSquare(f,ell,...)
+     + 16 * #starts * q^2
+     + 2 * card(outerBlock(x,h)) * (h/sqrt x + 2)^2.
+```
+
+Direct source check and targeted leaf build pass (`11598/11598`).  All seven public theorem
+declarations audit with at most `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired
+without an umbrella build.
+
+Card remains Stage 2.  Exact quantization is closed.  Remaining normalization arithmetic is to
+choose a growing low-breadth mesh schedule `q(X)` for which `q(X)/h(X) -> 0` while the sum over
+`image(Q_q)` preserves Menon's target rate.  The analytic Menon--Halász rate itself is still the
+independent hard input and is not assumed.
+
+## Lean progress update (2026-09-02) — exact growing low-breadth schedule
+
+`Sieve/GrowingReciprocalMarkerLengthGrid.lean` makes the preceding mesh choice explicit:
+
+```text
+B(X) = ceil(log log X),
+q(X) = floor(ceil(h(X))/B(X)) + 1.
+```
+
+It proves unconditionally that `B(X) -> infinity`, `q(X)/h(X) -> 0`, and eventually
+
+```text
+# image(Q_q) <= B(X).
+```
+
+It also proves that the exact normalized quantization loss vanishes,
+
+```text
+#starts * q(X)^2 / (h(X)^2 * sqrt X) -> 0,
+```
+
+and instantiates the complete finite fibre inequality at this literal schedule.  Thus the moving
+fibre family has now been transferred to at most `ceil(log log X)` fixed integer lengths with no
+surviving normalization error.
+
+Direct source check and targeted leaf build pass (`11602/11602`).  All six public theorem
+declarations audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired
+without an umbrella build.
+
+Card remains Stage 2.  The finite and asymptotic normalization construction is closed.  Remaining
+input is the uniform quantitative Menon--Halász mean-square estimate over these at most
+`ceil(log log X)` lengths, strong enough after this low-breadth sum to give `o(1/log X)`.  No such
+estimate is assumed here.
+
+## Lean progress update (2026-09-02) — low breadth preserves Menon's rate
+
+`Sieve/GrowingReciprocalMarkerGridMenonRate.lean` closes the last schedule calculation introduced
+by the length grid.  For the literal breadth `B(X)=ceil(log log X)` and the already formalized
+equation-`(17)` rate profile `R(X)`, it proves
+
+```text
+B(X) * R(X) -> 0.
+```
+
+The proof retains both terms of Menon's displayed rate.  After paying the entire grid breadth, the
+short-window term is bounded by `2 (log log X)^3/(log X)^(1/3)` and the moving-start term by
+`32 (log log X)^5/log X`; both limits are closed in Lean.
+
+Direct source check and targeted leaf build pass (`11605/11605`).  The public theorem audits with
+only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without an umbrella build.
+
+Card remains Stage 2, but no normalization or schedule-rate residue remains.  Its sole substantive
+gate is now the unconditional uniform Menon--Halász mean-square inequality itself over the grid
+lengths.  That analytic theorem is not assumed.

@@ -107,8 +107,9 @@ theorem im_neg_two_I_div_lineConj (u : ℝ) :
 detector have been divided out, `Z` is a real node amplitude times a genuine polar factor, and the
 phase advance is bounded below by the archimedean increment plus the argument variation of the
 cofactor. -/
-theorem exists_factored_polar_hardyZ_advance {lam : ℝ} (hlam : lam ≤ 0)
-    {T₁ T₂ : ℝ} (h20 : 20 ≤ T₁) (hT : T₁ ≤ T₂)
+theorem exists_factored_polar_hardyZ_advance_of_Y_pos {lam : ℝ}
+    {T₁ T₂ : ℝ} (hT : T₁ ≤ T₂)
+    (hY : ∀ u ∈ Icc T₁ T₂, (0 : ℝ) < (levinsonY (lam : ℂ) (linePt u)).re)
     {pts : Finset ℂ} {m : ℂ → ℕ} {H : ℂ → ℂ}
     (hline : ∀ c ∈ pts, c.re = 1 / 2)
     (hH : Differentiable ℂ H)
@@ -246,11 +247,6 @@ theorem exists_factored_polar_hardyZ_advance {lam : ℝ} (hlam : lam ≤ 0)
     rw [hG, hfact, lineProd_eq_pow_I_mul_amp m hline u, linePt_sub_one_inv_sq, hgdef, hAdef]
     push_cast
     ring
-  have hY : ∀ u ∈ Icc T₁ T₂, (0 : ℝ) < (levinsonY (lam : ℂ) (linePt u)).re := by
-    intro u hu
-    rw [levinsonY_line_eq, Complex.ofReal_re]
-    have hd := log_pi_lt_re_digamma_quarter (le_trans h20 hu.1)
-    nlinarith
   have hns : ∀ u : ℝ, (0 : ℝ) < Complex.normSq (linePt u - 1) :=
     fun u => Complex.normSq_pos.mpr (hlineone u)
   refine ⟨fun u => 2 * ((Complex.normSq (linePt u - 1))⁻¹ ^ 2) * r u
@@ -270,3 +266,29 @@ theorem exists_factored_polar_hardyZ_advance {lam : ℝ} (hlam : lam ≤ 0)
     refine mul_left_cancel₀ (ne_of_gt h2) ?_
     rw [hid]
     field_simp
+
+/-- Legacy nonpositive-shift specialization of the factored polar theorem. -/
+theorem exists_factored_polar_hardyZ_advance {lam : ℝ} (hlam : lam ≤ 0)
+    {T₁ T₂ : ℝ} (h20 : 20 ≤ T₁) (hT : T₁ ≤ T₂)
+    {pts : Finset ℂ} {m : ℂ → ℕ} {H : ℂ → ℂ}
+    (hline : ∀ c ∈ pts, c.re = 1 / 2)
+    (hH : Differentiable ℂ H)
+    (hfact : ∀ z, levinsonGEntire (lam : ℂ) z = (∏ c ∈ pts, (z - c) ^ (m c)) * H z)
+    (hHne : ∀ τ ∈ Icc T₁ T₂, H (linePt τ) ≠ 0) :
+    ∃ ρ φ : ℝ → ℝ, ContinuousOn φ (Icc T₁ T₂) ∧ (∀ τ ∈ Icc T₁ T₂, 0 < ρ τ) ∧
+      (∀ τ ∈ Icc T₁ T₂,
+        hardyZ τ = (∏ c ∈ pts, (τ - c.im) ^ (m c)) * (ρ τ * Real.cos (φ τ))) ∧
+      (gammaHardyTheta T₂ - gammaHardyTheta T₁)
+          + (∫ τ in T₁..T₂, (logDeriv H (linePt τ)).re) ≤ φ T₂ - φ T₁ := by
+  apply exists_factored_polar_hardyZ_advance_of_Y_pos (lam := lam) hT
+  · intro u hu
+    rw [levinsonY_line_eq, Complex.ofReal_re]
+    have hd := log_pi_lt_re_digamma_quarter (le_trans h20 hu.1)
+    have hmul : lam * ((Complex.digamma (((1 / 4 : ℝ) : ℂ)
+        + ((u / 2 : ℝ) : ℂ) * Complex.I)).re - Real.log Real.pi) ≤ 0 :=
+      mul_nonpos_of_nonpos_of_nonneg hlam (sub_nonneg.mpr hd.le)
+    linarith
+  · exact hline
+  · exact hH
+  · exact hfact
+  · exact hHne

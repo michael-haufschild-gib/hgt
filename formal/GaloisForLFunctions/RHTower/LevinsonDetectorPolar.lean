@@ -111,11 +111,11 @@ theorem continuous_linePt' : Continuous linePt := by
   unfold linePt
   exact continuous_const.add (Complex.continuous_ofReal.mul continuous_const)
 
-/-- **The polar representation of Hardy's `Z` produced by Levinson's detector.**  On a window above
-height `20` where `G` does not vanish, `Z = ρ·cos ψ` with `ρ > 0` and `ψ` continuous; the phase is
-the archimedean phase `θ` plus the phase of `G`. -/
-theorem exists_polar_hardyZ_of_levinsonG_ne_zero {lam : ℝ} (hlam : lam ≤ 0)
-    {T₁ T₂ : ℝ} (h20 : 20 ≤ T₁) (hT : T₁ ≤ T₂)
+/-- **General polar representation of Hardy's `Z` produced by Levinson's detector.**  Positivity
+of the real archimedean weight is the exact sign input; no sign convention for `λ` is imposed. -/
+theorem exists_polar_hardyZ_of_levinsonG_ne_zero_of_Y_pos {lam : ℝ}
+    {T₁ T₂ : ℝ} (hT : T₁ ≤ T₂)
+    (hY : ∀ τ ∈ Icc T₁ T₂, 0 < (levinsonY (lam : ℂ) (linePt τ)).re)
     (hne : ∀ τ ∈ Icc T₁ T₂, levinsonG (lam : ℂ) (linePt τ) ≠ 0) :
     ∃ ρ ψ : ℝ → ℝ, ContinuousOn ψ (Icc T₁ T₂) ∧ (∀ τ ∈ Icc T₁ T₂, 0 < ρ τ) ∧
       (∀ τ ∈ Icc T₁ T₂, hardyZ τ = ρ τ * Real.cos (ψ τ)) := by
@@ -158,22 +158,30 @@ theorem exists_polar_hardyZ_of_levinsonG_ne_zero {lam : ℝ} (hlam : lam ≤ 0)
     exists_continuousOn_polar (f := g) (f' := g') hT (fun τ _ => hgderiv τ) hquot hgne
   refine ⟨fun τ => 2 * r τ / (levinsonY (lam : ℂ) (linePt τ)).re, ψ, hψc, ?_, ?_⟩
   · intro τ hτ
-    have hY : (0 : ℝ) < (levinsonY (lam : ℂ) (linePt τ)).re := by
-      rw [levinsonY_line_eq, Complex.ofReal_re]
-      have hd := log_pi_lt_re_digamma_quarter (le_trans h20 hτ.1)
-      nlinarith
+    have hYτ := hY τ hτ
     have := hrpos τ hτ
     positivity
   · intro τ hτ
-    have hY : (0 : ℝ) < (levinsonY (lam : ℂ) (linePt τ)).re := by
-      rw [levinsonY_line_eq, Complex.ofReal_re]
-      have hd := log_pi_lt_re_digamma_quarter (le_trans h20 hτ.1)
-      nlinarith
+    have hYτ := hY τ hτ
     have hid : ((levinsonY (lam : ℂ) (linePt τ)).re * hardyZ τ : ℝ) = 2 * (g τ).re :=
       levinsonY_line_mul_hardyZ lam τ
     rw [hpolar τ hτ] at hid
     field_simp
     linarith [hid]
+
+/-- **The polar representation of Hardy's `Z` produced by Levinson's detector.**  For the legacy
+nonpositive-`λ` convention, weight positivity follows from the vertical digamma bound. -/
+theorem exists_polar_hardyZ_of_levinsonG_ne_zero {lam : ℝ} (hlam : lam ≤ 0)
+    {T₁ T₂ : ℝ} (h20 : 20 ≤ T₁) (hT : T₁ ≤ T₂)
+    (hne : ∀ τ ∈ Icc T₁ T₂, levinsonG (lam : ℂ) (linePt τ) ≠ 0) :
+    ∃ ρ ψ : ℝ → ℝ, ContinuousOn ψ (Icc T₁ T₂) ∧ (∀ τ ∈ Icc T₁ T₂, 0 < ρ τ) ∧
+      (∀ τ ∈ Icc T₁ T₂, hardyZ τ = ρ τ * Real.cos (ψ τ)) := by
+  apply exists_polar_hardyZ_of_levinsonG_ne_zero_of_Y_pos (lam := lam) hT
+  · intro τ hτ
+    rw [levinsonY_line_eq, Complex.ofReal_re]
+    have hd := log_pi_lt_re_digamma_quarter (le_trans h20 hτ.1)
+    nlinarith
+  · exact hne
 
 end RHTower
 

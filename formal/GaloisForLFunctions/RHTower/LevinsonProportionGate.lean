@@ -29,15 +29,15 @@ theorem eventually_pos_xiPosZeroCount : ∀ᶠ T in atTop, 0 < (xiPosZeroCount T
   linarith
 
 /-- **A positive lower density of simple critical zeros.** -/
-theorem le_liminf_xiSimpleCriticalRatio_of_gate {R c δ : ℝ}
+theorem le_liminf_xiSimpleCriticalRatio_of_gate_of_Y_pos {R c δ : ℝ}
     (hR : 0 < R) (hc : 1 ≤ c) (hδ : 0 < δ)
     (hmargin : 1 / 3 + 2 * δ < 1 - Real.log c / R)
-    (hgate : LevinsonMeanSquareGate R c) :
+    (hgate : LevinsonMeanSquareGateOfYPos R c) :
     δ ≤ liminf xiSimpleCriticalRatio atTop := by
   have hcob : IsCoboundedUnder (fun x y : ℝ => x ≥ y) atTop xiSimpleCriticalRatio :=
     (isBoundedUnder_of ⟨1, fun T => xiSimpleCriticalRatio_le_one T⟩).isCoboundedUnder_ge
   refine le_liminf_of_le hcob ?_
-  filter_upwards [eventually_oddFiber_ge_of_gate hR hc hδ hmargin hgate,
+  filter_upwards [eventually_oddFiber_ge_of_gate_of_Y_pos hR hc hδ hmargin hgate,
     eventually_pos_xiPosZeroCount] with U hU hUpos
   have hcharge : (3 : ℝ) * (xiOddFiberCount U : ℝ)
       ≤ 3 * (xiSimpleCriticalZeroCount U : ℝ) + (xiPosZeroCount U : ℝ) := by
@@ -47,22 +47,40 @@ theorem le_liminf_xiSimpleCriticalRatio_of_gate {R c δ : ℝ}
   rw [xiSimpleCriticalRatio, le_div_iff₀ hUpos]
   linarith
 
-/-- **A positive lower density of singleton horizontal fibres.** -/
-theorem le_liminf_xiSingletonFiberRatio_of_gate {R c δ : ℝ}
+/-- Legacy negative-shift specialization of the simple-critical density theorem. -/
+theorem le_liminf_xiSimpleCriticalRatio_of_gate {R c δ : ℝ}
     (hR : 0 < R) (hc : 1 ≤ c) (hδ : 0 < δ)
     (hmargin : 1 / 3 + 2 * δ < 1 - Real.log c / R)
     (hgate : LevinsonMeanSquareGate R c) :
+    δ ≤ liminf xiSimpleCriticalRatio atTop :=
+  le_liminf_xiSimpleCriticalRatio_of_gate_of_Y_pos hR hc hδ hmargin
+    (levinsonMeanSquareGateOfYPos_of_gate hgate)
+
+/-- **A positive lower density of singleton horizontal fibres.** -/
+theorem le_liminf_xiSingletonFiberRatio_of_gate_of_Y_pos {R c δ : ℝ}
+    (hR : 0 < R) (hc : 1 ≤ c) (hδ : 0 < δ)
+    (hmargin : 1 / 3 + 2 * δ < 1 - Real.log c / R)
+    (hgate : LevinsonMeanSquareGateOfYPos R c) :
     (3 / 2 : ℝ) * δ ≤ liminf xiSingletonFiberRatio atTop := by
   have hcob : IsCoboundedUnder (fun x y : ℝ => x ≥ y) atTop xiSingletonFiberRatio :=
     (isBoundedUnder_of ⟨1, fun T => xiSingletonFiberRatio_le_one T⟩).isCoboundedUnder_ge
   refine le_liminf_of_le hcob ?_
-  filter_upwards [eventually_oddFiber_ge_of_gate hR hc hδ hmargin hgate,
+  filter_upwards [eventually_oddFiber_ge_of_gate_of_Y_pos hR hc hδ hmargin hgate,
     eventually_pos_xiPosZeroCount] with U hU hUpos
   have hratio : (1 / 3 + δ : ℝ) ≤ xiOddFiberRatio U := by
     rw [xiOddFiberRatio, le_div_iff₀ hUpos]
     linarith
   have hcharge := xiOddFiberRatio_charge U
   linarith
+
+/-- Legacy negative-shift specialization of the singleton-fibre density theorem. -/
+theorem le_liminf_xiSingletonFiberRatio_of_gate {R c δ : ℝ}
+    (hR : 0 < R) (hc : 1 ≤ c) (hδ : 0 < δ)
+    (hmargin : 1 / 3 + 2 * δ < 1 - Real.log c / R)
+    (hgate : LevinsonMeanSquareGate R c) :
+    (3 / 2 : ℝ) * δ ≤ liminf xiSingletonFiberRatio atTop :=
+  le_liminf_xiSingletonFiberRatio_of_gate_of_Y_pos hR hc hδ hmargin
+    (levinsonMeanSquareGateOfYPos_of_gate hgate)
 
 end RHTower
 

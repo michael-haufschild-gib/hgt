@@ -1005,3 +1005,20 @@ with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired with
 Card remains Stage 2.  Absolute signed source/modulus aggregation is closed.  Remaining shared
 primitive is spectral cancellation beyond this product-harmonic ℓ¹ baseline at paper ranges, then
 Lemma 3.5(ii), amplification, and all-interval supply; no estimate is assumed.
+
+## Lean progress update (2026-09-02) — exact terminal source-Fourier factorization
+
+`Sieve/KloostermanTerminalSourceFourier.lean` reorganizes the literal terminal carrier before any
+absolute-value loss.  It defines finite additive source transforms at inverse unit frequencies and
+terminal geometric orbits, factors each cross-phase source quadratic exactly, and carries the
+factorization through the signed `Q.erase q` modulus Gram.  Thus the full terminal quadratic is now
+an exact signed sum of `conjugate(F_q(x))*F_r(y)` against terminal geometric orbits, with every
+source coefficient and modulus weight retained.
+
+Direct source check and targeted leaf build pass (`12748/12748`).  All four new public theorem
+declarations audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired
+without umbrella build.
+
+Card remains Stage 2.  Exact source Fourier/orbit interface is closed.  Remaining shared primitive
+is collective signed spectral cancellation for this literal carrier at paper ranges, followed by
+Lemma 3.5(ii), amplification, and all-interval supply; no cancellation estimate is assumed.

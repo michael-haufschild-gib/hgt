@@ -1286,3 +1286,94 @@ decomposition/apartment-coverage theorem and relative-position metric; the full 
 action and integral Fréchet Jacobian must be constructed; determinant balance, semisimplicity and
 axis attainment, the no-parabolic dichotomy, opposite weighted boundary flags, and free-field
 reconstruction `(18)--(22)` remain open.
+
+### Lean progress — canonical Ore quotient, corrected projective action, and matrix balance (2026-09-02)
+
+Five new leaves close the algebraic action chain without adding a geometric premise:
+
+- `DifferentialOperatorOreTorsion` defines the literal submodule of elements killed by a nonzero
+  operator.  Closure uses the proved Ore common-left-multiple theorem, and the quotient by this
+  whole submodule is torsion-free.
+- `DifferentialVariationalProjectiveBuildingCarrier` corrects the homothety orientation forced by
+  noncommutativity.  Left valuation lattices must be quotiented by **left** homothety for arbitrary
+  left-linear maps to descend.  It constructs the action of every completed-skew linear
+  equivalence, coefficient automorphism, invertible matrix, and their exact semidirect product.
+- `DifferentialVariationalProjectiveStandardApartment` proves that integral coweights modulo common
+  translation embed injectively in this corrected carrier.  The proof uses invariance of the
+  valuation ring under inner conjugation; it is not a commutative rewrite.  The rank-two balanced
+  point remains non-base and coefficient automorphisms fix the apartment pointwise.
+- `DifferentialVariationalSemilinearMatrixAction` embeds `K[∂;δ]` into the completed
+  pseudodifferential skew field and sends every invertible operator matrix to a genuine completed
+  matrix unit.
+- `DifferentialVariationalOreModule` assembles the exact object and action:
+
+  ```text
+  VariationalOreModule                         M_K = Ω[K⁄C]/Tor_R
+  variationalOreModule_free                    finite differential generation makes M_K free
+  kaehlerSemilinear_diffOp_smul                σ₊(P·ω) = σ(P)·σ₊(ω)
+  kaehlerSemilinear_mem_oreTorsion             σ₊ preserves the canonical torsion submodule
+  variationalOreModuleEquiv                    the induced invertible action on M_K
+  variationalOreModuleEquiv_refl/trans         identity and functorial composition
+  exists_variationalOre_completedPseudoDiffOpMatrixUnit
+      every finite basis produces the genuine completed matrix unit acting on the projective carrier
+  exists_variationalOre_operatorMatrix_degree_balance
+      the action matrix has trivial operator-row-lattice conductor and degree-zero operator divisors
+  ```
+
+The last theorem connects the actual differential-automorphism action to the existing operator
+balance certificate, closing `(3)` and `(7)`--`(10)` in one checked chain.  It does **not** yet call
+those operator-row-lattice divisors the completed-building Cartan vector `μ`: that identification
+is one of the remaining comparison theorems needed for `(12)`.  Direct checks and targeted builds
+of the two top leaves pass.  Every declaration introduced
+in these five leaves audits to exactly `[propext, Classical.choice, Quot.sound]`.  All leaves are
+wired into `HTGeometry`; no umbrella build was run.
+
+This also corrects the preceding status paragraph: full semilinear matrix action and its exact
+operator-row-lattice balance certificate are no longer open.  What remains is the genuinely
+affine-building content:
+apartment coverage/Cartan decomposition for every full lattice, relative-position vector and
+metric, identification of the balanced operator invariants with that vector, completeness and
+CAT(0) semisimplicity, axis attainment/no parabolic phase, intrinsic opposite weighted boundary
+flags, and free-field Fréchet/order reconstruction `(18)--(22)`.  The card therefore remains at
+Stage 2 and is not promoted.
+
+### Lean progress — finite rank, canonical matrix unit, and basis covariance (2026-09-02)
+
+`DifferentialVariationalOreModule` and `DifferentialOperatorSemilinearMatrix` now remove the last
+externally supplied finite-basis input from the algebraic action:
+
+```text
+variationalOreModule_finite
+    finite differential generation makes M_K finitely generated over K[∂;δ]
+exists_fin_basis_variationalOreModule
+    freeness plus finite generation produces an actual Fin r operator basis; neither r nor a basis
+    is assumed
+basisTransitionMatrixUnit
+    the row-coordinate transition between arbitrary finite bases is a genuine matrix unit over an
+    arbitrary, possibly noncommutative, ring
+matrix_changeBasis_semilinear
+basisMapMatrix_changeBasis_semilinear
+    exact twisted covariance A_new B = σ(B) A_old, equivalently
+    A_new = σ(B) A_old B⁻¹ in the row-coordinate convention
+basisMapMatrixUnitOfSemilinearEquiv
+variationalOreOperatorMatrixUnit
+variationalOreCompletedMatrixUnit
+    canonical operator and completed matrix units in every fixed finite basis
+variationalOreProjectiveBuildingAction
+    the literal semilinear action v ↦ σ(v)A on the corrected projective completed-lattice carrier
+exists_variationalOre_finiteBasis_completedPseudoDiffOpMatrixUnit
+exists_variationalOre_finiteBasis_operatorMatrix_degree_balance
+    finite differential generation alone supplies both the completed action matrix and the exact
+    operator-row-lattice degree-balance certificate
+```
+
+This closes the finite-rank existence needed by `(10)`, the basis-change law `(13)`, and construction
+of the actual projective carrier action in a finite basis.  Direct checks and targeted builds of
+the two changed leaves pass.  Every new declaration audits to exactly `[propext,
+Classical.choice, Quot.sound]`.
+
+No completed-building Cartan vector is inferred from the operator-row-lattice certificate.  The
+remaining gap is still the affine-building geometry and comparison layer listed above; in
+particular, apartment coverage/Cartan decomposition, relative position and metric, comparison of
+that relative position with operator invariants, CAT(0) completeness/semisimplicity, boundary
+flags, and free-field reconstruction remain absent.  Card stays at Stage 2.

@@ -8,6 +8,9 @@
 - Triangular source rectangles charge each strict-right copy by `3π`, but packet landing still needs moving-rectangle response hypotheses and no linear-`N` narrow-energy upper exists.
 - Exterior coefficient-faithful determinant landing is exact, but its strict subquantum law is equivalent to RH; it gives no free upper bound.
 - Compact triangular positive source shifts exactly represent the removable five-shift Ward current and retain its `1/81` quantum.
+- Signed cubic dyadic transport retains shallow charge but cannot be a jointly entire source weight; real Stokes/Wirtinger scalarization is necessary.
+- HCF-SX2 is proved: explicit prime-Stokes dyadic shells cancel the line, tend to unit charge inside each moving dyadic band, and retain `1/2` at both boundaries. One local source bound gives squared charge `>21/100` uniformly on each closed submicroscopic dyadic band.
+- HCF-SX2 is packet-uniform: one source-only anomaly bound gives collar error `≤(aM/4)·mass` for finite packets of arbitrary size.
 - Hard locks: fixed positive scalarizers, bounded/weak fixed-source pairings, and finite high-pass tuning are closed.
-- Surviving edge: coefficient-faithful linear source current with moving/all-scale localization, before any positive scalarization.
-- Open theorem: prove the HCF source ceiling `<11/10+o(1)` (or stronger) without selecting the Xi divisor; then the existing receiver gives `N₀≥3N/4`.
+- Surviving edge: build a height-summed source frame from HCF-SX2 and dominate its shell energy by the finite pole–Gamma Plemelj covariance/source-piece majorant.
+- Open theorem: this frame inequality must imply the HCF source ceiling `<11/10+o(1)` (or stronger) without Xi-divisor selection; existing receiver then gives `N₀≥3N/4`.

@@ -1,3 +1,9 @@
+import GaloisForLFunctions.HTGeometry.FiniteUnitaryEuclideanExponentialWordAnalytic
+import GaloisForLFunctions.HTGeometry.MvPolynomialMatrixRankDefect
+import GaloisForLFunctions.HTGeometry.AnalyticMatrixRankStratification
+import GaloisForLFunctions.HTGeometry.EternityObservableHorizonLaw
+import GaloisForLFunctions.HTGeometry.HallKrausDeterminantCapacity
+
 /-!
 # Haar-typical resource-filtered relation rank
 
@@ -6,12 +12,6 @@ The quotient block between the moving relation frame and fixed observer frame ha
 dimensionally allowed rank outside one Haar-null determinantal locus.  An explicit linear
 equivalence identifies its kernel with the literal subspace intersection.
 -/
-
-import GaloisForLFunctions.HTGeometry.FiniteUnitaryEuclideanExponentialWordAnalytic
-import GaloisForLFunctions.HTGeometry.MvPolynomialMatrixRankDefect
-import GaloisForLFunctions.HTGeometry.AnalyticMatrixRankStratification
-import GaloisForLFunctions.HTGeometry.EternityObservableHorizonLaw
-import GaloisForLFunctions.HTGeometry.HallKrausDeterminantCapacity
 
 open Set MeasureTheory Matrix
 open scoped Matrix.Norms.L2Operator

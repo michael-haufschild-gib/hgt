@@ -2095,17 +2095,21 @@ numberFieldIdealClassRepresentative
 numberFieldIdealClassRepresentative_mk
 finite_range_numberFieldIdealClassRepresentative
 numberFieldIdeal_mul_classRepresentative_inv_isPrincipal
+numberFieldIdealClassNormalizer
+numberFieldIdealClassNormalizer_span
+numberFieldIdealClassNormalizer_ne_zero
 ```
 
 The quotient map from invertible fractional ideals formed in the actual number field onto its
 class group is proved surjective.  One representative is then chosen in every class; class-number
 finiteness makes the whole family finite.  For every invertible fractional ideal `I`, dividing by
-the chosen representative of `[I]` is proved principal.  This is the exact finite-class correction
-needed to turn an arbitrary Minkowski short module line into one of finitely many projective types
-before comparing it with a primitive greedy vector.
+the chosen representative of `[I]` is proved principal.  The principal factor now has a chosen
+scalar normalizer; its span is exactly the normalized ideal and the scalar is proved nonzero.  This
+is the exact finite-class correction needed to turn an arbitrary Minkowski short module line into
+one of finitely many projective types before comparing it with a primitive greedy vector.
 
-Direct source check, targeted leaf build, and axiom audit pass; all four theorem declarations use
-only `[propext, Classical.choice, Quot.sound]`.  The module is umbrella-wired without an umbrella
-build.  Card remains Stage 2: the principal normalization must now be converted into a uniform
-archimedean comparison and then into the adjacent weighted-mean bound.  Finite overlap,
-tame-kernel finite generation, and Moore reciprocity remain downstream.
+Direct source check, targeted leaf build, and axiom audit pass; every declaration uses only
+`[propext, Classical.choice, Quot.sound]`.  The module is umbrella-wired without an umbrella build.
+Card remains Stage 2: the scalar normalization must now be converted into a rank-two Steinitz
+comparison and then into the adjacent weighted-mean bound.  Finite overlap, tame-kernel finite
+generation, and Moore reciprocity remain downstream.

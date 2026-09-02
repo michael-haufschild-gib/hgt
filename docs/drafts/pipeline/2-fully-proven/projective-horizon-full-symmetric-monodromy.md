@@ -7099,3 +7099,45 @@ Both direct source checks and both targeted leaf builds pass.  The three new dec
 `[propext, Classical.choice, Quot.sound]`; the new leaf is umbrella-wired without an umbrella build.
 Card remains Stage 2 until formal purity, torus-Kummer elimination, and the unconditional monodromy
 capstone are closed.
+
+### Two-meridian rigidity for the block cover (2026-09-02)
+
+`HTGeometry/TorusChartCoverGeneratorRigidity.lean` reduces the global topological elimination to
+the exact two source meridians appearing in the paper proof:
+
+```text
+torusChartCover_monodromy_fixed_of_generators_fixed
+subsingleton_torusChartCover_fiber_of_generators_fixed
+```
+
+Every loop of `(ℂˣ)² × ℂᵏ` is a product of integer powers of the two coordinate meridians.  If those
+two meridians fix one point of a cover fibre, every loop fixes it.  Path-connectedness makes the
+monodromy action transitive, hence the fibre is a singleton.  No cyclic-quotient choice or further
+finite-group hypothesis remains in this endgame.
+
+Direct source check, targeted leaf build, and axiom audit pass with
+`[propext, Classical.choice, Quot.sound]`; the module is umbrella-wired without an umbrella build.
+Card remains Stage 2.  After formal purity supplies the block covering, the global remainder is now
+the construction of two closed source lifts mapping to the marked `p_m` and `q_n` meridians.  These
+are the topological form of the two valuation-one/valuation-zero calculations `(16)` and `(17)`.
+
+`HTGeometry/CriticalSourceBlockComplexPoints.lean`,
+`HTGeometry/CoveringClosedLiftMonodromy.lean`, and
+`HTGeometry/CriticalBlockSourceMeridianElimination.lean` now assemble that statement on the actual
+critical maps.  The source chart maps continuously into every block normalization containing the
+canonical sheet, and the composite is exactly the observation projection.  A general closed-lift
+lemma proves that any closed source loop fixes its selected block-cover sheet.  The capstone
+
+```text
+criticalBlockCover_fiber_subsingleton_of_source_meridians
+```
+
+then combines the two projected source-loop classes, formal purity, path connectedness, and
+two-meridian rigidity to prove that the actual analytic block fibre is a singleton.  Direct checks,
+targeted leaf builds, and batched axiom audit pass; every new declaration uses only
+`[propext, Classical.choice, Quot.sound]`.  All leaves are umbrella-wired without an umbrella build.
+
+This sharpens the remaining global obligation: construct the two unconditional source-chart loops
+and identify their projected homotopy classes with the two torus generators.  Formal purity of the
+block normalization remains the separate local obligation.  No Kummer-character or abstract
+monodromy premise remains after those two inputs.

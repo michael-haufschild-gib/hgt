@@ -13,14 +13,14 @@ Goal: unconditional Lean formalization of every card in this folder, then promot
 | 4 | quasianalytic-one-phase-bezout-boundary-law | all steps closed | **DONE → 3-formalized** (2026-08-29) |
 | 5 | quasianalytic-exponential-log-phase-jet-law | all steps closed | **DONE → 3-formalized** (2026-08-29) |
 | 6 | exponential-tower-exact-differential-order | both halves closed | **DONE → 3-formalized** (2026-08-29) |
-| 7 | first-order-meromorphic-compression-matching | 3-field factorization | **IN PROGRESS** — analytic state independence, intersections, constant/logarithmic descent, and abstract algebraic tensor-eigenvector specialization closed; concrete relative-closure factorization assembly open |
+| 7 | first-order-meromorphic-compression-matching | 3-field factorization | **DONE → 3-formalized** (2026-09-02) |
 | 8 | entire-heat-multiplicative-da-order-three-floor | Valiron–Zimogljad–Strelitz | **IN PROGRESS** — orders 0/1 closed; order 2 open |
 | 9 | drifting-periodic-primitive-ramification-exclusion | closed with `card_totallyRamified_le_four` | **DONE → 3-formalized** (2026-08-29) |
 | 10 | entire-composition-hypertranscendence-or-law | Steinmetz reduction / Huang–Ng Thm 3 | TODO |
 | 11 | first-order-composition-two-defect-decomposition | Clunie + trdeg observability | **DONE → 3-formalized** (2026-08-30) |
 | 12 | autonomous-cap-derivative-shadow-law | Clunie + trdeg observability | **DONE → 3-formalized** (2026-08-30) |
-| 13 | newton-corner-nonautonomous-composition-unit-cost | Clunie + Puiseux Jacobian | TODO |
-| 14 | asymptotically-exponential-algebraic-cascade-unit-cost | Clunie + Puiseux Jacobian + Briot–Bouquet | TODO |
+| 13 | newton-corner-nonautonomous-composition-unit-cost | Clunie + Puiseux Jacobian | **IN PROGRESS** — exact composition depth closed; differential observability open |
+| 14 | asymptotically-exponential-algebraic-cascade-unit-cost | Clunie + Puiseux Jacobian + Briot–Bouquet | **IN PROGRESS** — exact composition depth closed; differential observability/classification open |
 | 15 | nonautonomous-cap-linear-order-two-shadow-rigidity | Briot–Bouquet — bypassed | **DONE → 3-formalized** (2026-09-01) |
 | 16 | fixed-taylor-modulus-newton-geometry-ht-blindness | Ostrowski finite basis — replaced by corpus Mahler confinement | **DONE → 3-formalized** (2026-08-30) |
 | 17 | arithmetic-entire-heat-da-finite-spectrum | Popken + Mahler normalization | **DONE → 3-formalized** (2026-08-30) |
@@ -95,6 +95,8 @@ Growth / factorization:
 Cascades / differential algebra:
 - `HTGeometry.CascadeExactOrder`, `CascadeUpperBound`, `EntireCascadeStateFieldOrder`
   (the unit-cost law modulo jet independence — the exact residue of cards 13/14)
+- `HTGeometry.FiniteOrderCascadeCompositionDepth` — exact positive-lower-order composition depth
+  for arbitrary finite cascades of nonconstant differentiable finite-order entire maps
 - `HTGeometry.AnalyticJetFieldBridge` — DA closed under `+ − × ^`
 - `HTGeometry.FractionRingDerivation.fractionRingDerivation`
 - `HTGeometry.DifferentiallyAlgebraicCancellation.differentiallyAlgebraic_right_of_mul_eq`
@@ -231,6 +233,17 @@ beyond this card (they are the quantitative core of Picard/Montel).
 - 2026-09-02 — Card 7 analytic gate closed by
   `HTGeometry.MeromorphicCompositionStateIndependence`; remaining gate is concrete
   relative-closure multiplicative factorization.
+- 2026-09-02 — **Card 7 closed and promoted**.  New exact infrastructure:
+  `SimpleTranscendentalLinearDisjoint`, the tensor-fraction compositum instance in
+  `IntermediateFieldTensorFraction`, `IntermediateFieldEigenvectorDescent`, and
+  `ThreeCoordinateMultiplicativeFactorization`.  The final capstone has no specialization or
+  regularity premise; leaf builds and new-declaration axiom audit are clean.
+- 2026-09-02 — Cards 13/14 growth half closed by
+  `HTGeometry.FiniteOrderCascadeCompositionDepth`: generic finite-order cascades have growth height
+  at most their displayed length, hence positive-lower-order composition depth exactly that length.
+  Direct source check, leaf build, and new-declaration axiom audit are clean.  Both cards remain in
+  stage 2 pending their exact differential-order observability capstones (and Card 14's
+  Briot--Bouquet classification).
 
 ## The logarithmic-derivative lemma (I11): route and progress
 

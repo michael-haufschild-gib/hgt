@@ -237,6 +237,20 @@ algebraic closedness to extract a root with the original eigenvalue.  The capsto
 `exists_left_eigenvector_of_algebraic_tensor_fraction` is unconditional for an algebraic extension
 of the fraction field of `A tensor_C B`; it has no branch-specialization premise.
 
+`HTGeometry/SimpleTranscendentalLinearDisjoint.lean` proves that adjoining one transcendental
+element to an algebraically closed base is linearly disjoint from every extension of that base.
+`HTGeometry/IntermediateFieldTensorFraction.lean` identifies the compositum of two linearly
+disjoint intermediate fields with the fraction field of their tensor product.
+`HTGeometry/IntermediateFieldEigenvectorDescent.lean` transports the tensor eigenvector theorem
+through that concrete compositum and produces a one-coordinate algebraic eigenfactor.
+
+`HTGeometry/ThreeCoordinateMultiplicativeFactorization.lean` completes Step 3.  Its capstone
+`freeCoordinate_three_multiplicative_factorization` assumes only the card's algebraically closed
+characteristic-zero base, the three pairwise-coordinate algebraicity statements, nonvanishing,
+and `A * B = Q`; it returns nonzero singleton-coordinate algebraic factors `a,b,c` with the exact
+identities `A = a*c`, `B = b/a`, and `Q = b*c`.  No regularity, generic-specialization,
+normal-cover, or branch-selection hypothesis remains.
+
 `HTGeometry/MeromorphicCompositionStateIndependence.lean` closes Step 1 without importing
 Steinmetz reduction as a new primitive.  The corpus's unbounded-fibre theorem for a transcendental
 entire inner function supplies arbitrarily large finite fibres over every point of a nonempty open
@@ -246,12 +260,12 @@ set; the meromorphic identity theorem promotes them to zero in `MeromorphicPlane
 the exact function-field predicate `TranscendentalMeromorphic`.  The capstone is
 `noRelation_meromorphicOuter_comp_of_transcendental`.
 
-This does not yet prove the card.  Remaining algebraic obligation is multiplicative separation in
-the concrete three-coordinate relative closures: construct and identify the fraction-tensor field
-of the two one-coordinate algebraic closures inside the common free-coordinate algebraic closure,
-transport its coordinate derivation, apply the new algebraic eigenvector descent, and finish with
-free-coordinate constant descent.  The analytic state-independence obligation is closed.  No
-hypothesis-bearing capstone is counted as the remaining factorization theorem.
+Together, `noRelation_meromorphicOuter_comp_of_transcendental` and
+`freeCoordinate_three_multiplicative_factorization` formalize the two nontrivial theorem-level
+steps: analytic state independence and exact matching on compatible algebraic covers.  Direct
+`lake env lean` checks and leaf-only `lake build` audits passed.  Every new declaration has axiom
+profile `[propext, Classical.choice, Quot.sound]`; no project axiom, `sorry`, or added premise is
+used.
 
 ## Gates
 
@@ -260,7 +274,7 @@ hypothesis-bearing capstone is counted as the remaining factorization theorem.
 - [x] Make the Steinmetz state-independence step citation-exact at theorem level; pin final bibliographic numbering during literature audit.
 - [x] Compare with nonlinear cascade matching and Fuchsian pullback literature.
 - [x] 1 -> 2: proof complete; dual gate gives `[BRIDGE]`, not new scientific knowledge.
-- [ ] 2 -> 3: assemble the concrete relative-closure factorization; analytic state independence is closed.
+- [x] 2 -> 3: analytic state independence and concrete relative-closure factorization are Lean-closed.
 
 ## Log
 
@@ -275,3 +289,7 @@ hypothesis-bearing capstone is counted as the remaining factorization theorem.
   `MeromorphicCompositionStateIndependence` via the stronger corpus-owned unbounded-fibre theorem
   plus meromorphic identity continuation.  Remaining gate is only concrete relative-closure
   multiplicative factorization.  Card stays at stage 2.
+- 2026-09-02 — Lean closed the concrete factorization through tensor-fraction compositum,
+  linear-disjointness, algebraic eigenvector descent, and free-coordinate constant descent.
+  `freeCoordinate_three_multiplicative_factorization` proves the exact three-factor normal form;
+  leaf builds and new-declaration axiom audit passed.  Promoted to stage 3.
