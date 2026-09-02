@@ -127,6 +127,115 @@ theorem FracHasLeadAt.div {x y : HahnFraction Γ R} {d e : Γ} {c a : R}
     FracHasLeadAt (x / y) (d - e) (c / a) := by
   simpa [div_eq_mul_inv, sub_eq_add_neg] using hx.mul (hy.inv ha)
 
+/-- A coefficient derivation preserves Hahn degree and differentiates its boundary coefficient. -/
+theorem HasLeadAt.hahnCoefficientDerivation
+    {C K Δ : Type*} [Field C] [Field K] [Algebra C K]
+    [AddCommGroup Δ] [LinearOrder Δ] [IsOrderedAddMonoid Δ]
+    (D : Derivation C K K) {f : HahnSeries Δ K} {d : Δ} {c : K}
+    (hf : HasLeadAt f d c) :
+    HasLeadAt (hahnCoefficientDerivation D f) d (D c) := by
+  constructor
+  · intro k hk
+    rw [coeff_hahnCoefficientDerivation, hf.1 k hk, map_zero]
+  · rw [coeff_hahnCoefficientDerivation, hf.2]
+
+/-- The fraction-field coefficient derivation preserves degree and differentiates its boundary
+coefficient. -/
+theorem FracHasLeadAt.hahnFractionCoefficientDerivation
+    {C K Δ : Type*} [Field C] [Field K] [Algebra C K]
+    [AddCommGroup Δ] [LinearOrder Δ] [IsOrderedAddMonoid Δ]
+    (D : Derivation C K K) {q : HahnFraction Δ K} {d : Δ} {c : K}
+    (hq : FracHasLeadAt q d c) :
+    FracHasLeadAt (hahnFractionCoefficientDerivation D q) d (D c) := by
+  obtain ⟨f, g, e, a, hf, hg, ha, rfl⟩ := hq
+  have hdf := hf.hahnCoefficientDerivation D
+  have hdg := hg.hahnCoefficientDerivation D
+  have hleft : HasLeadAt (hahnCoefficientDerivation D f * g)
+      (d + (e + e)) (D (c * a) * a) := by
+    convert hdf.mul hg using 1
+    abel
+  have hright : HasLeadAt (f * hahnCoefficientDerivation D g)
+      (d + (e + e)) ((c * a) * D a) := by
+    convert hf.mul hdg using 1
+    abel
+  have hnum : HasLeadAt
+      (hahnCoefficientDerivation D f * g - f * hahnCoefficientDerivation D g)
+      (d + (e + e)) (D c * (a * a)) := by
+    convert hleft.sub hright using 1
+    rw [D.leibniz]
+    simp only [smul_eq_mul]
+    ring
+  refine ⟨hahnCoefficientDerivation D f * g - f * hahnCoefficientDerivation D g,
+    g * g, e + e, a * a, hnum, hg.mul hg, mul_ne_zero ha ha, ?_⟩
+  have hg0 : algebraMap (HahnSeries Δ K) (HahnFraction Δ K) g ≠ 0 :=
+    (map_ne_zero (algebraMap (HahnSeries Δ K) (HahnFraction Δ K))).mpr
+      (hg.ne_zero ha)
+  rw [Derivation.leibniz_div]
+  simp only [smul_eq_mul, hahnFractionCoefficientDerivation_algebraMap, map_sub, map_mul]
+  field_simp
+
+/-- Boundary action of a coefficient-generic multigraded coordinate derivative. -/
+theorem hasLeadAt_mgPartialBase {K : Type*} [Field K] [CharZero K]
+    {N : ℕ} {j : Fin N} {f : HahnSeries (mgDeg N) K} {d : mgDeg N} {c : K}
+    (h : HasLeadAt f d c) :
+    HasLeadAt (mgPartialBase K N j f) (d + mgStep N j)
+      (((ofLex d j : ℤ) : K) * c) := by
+  constructor
+  · intro k hk
+    have hd : mgPartialBase K N j f =
+        mgShiftBase K N j * hahnGrade (mgCompBase K N j) f := by
+      show ((mgShiftBase K N j) • hahnDerivationBase (mgCompBase K N j)) f = _
+      simp only [Derivation.coe_smul, Pi.smul_apply, smul_eq_mul]
+      rfl
+    rw [hd, mgShiftBase, HahnSeries.coeff_single_mul, coeff_hahnGrade]
+    have hlt : k - mgStep N j < d := by
+      have hstep : k - mgStep N j + mgStep N j = k := by abel
+      refine lt_of_add_lt_add_right (a := mgStep N j) ?_
+      rw [hstep]
+      exact hk
+    rw [h.1 _ hlt]
+    ring
+  · rw [coeff_mgPartialBase, h.2]
+
+/-- Fraction-field boundary action of a coefficient-generic coordinate derivative. -/
+theorem FracHasLeadAt.hahnFractionPartialBase {K : Type*} [Field K] [CharZero K]
+    {N : ℕ} {j : Fin N} {q : HahnFraction (mgDeg N) K}
+    {d : mgDeg N} {c : K} (hq : FracHasLeadAt q d c) :
+    FracHasLeadAt (hahnFractionPartialBase K N j q) (d + mgStep N j)
+      (((ofLex d j : ℤ) : K) * c) := by
+  obtain ⟨f, g, e, a, hf, hg, ha, rfl⟩ := hq
+  have hdf := hasLeadAt_mgPartialBase (j := j) hf
+  have hdg := hasLeadAt_mgPartialBase (j := j) hg
+  have hleft : HasLeadAt (mgPartialBase K N j f * g)
+      ((d + mgStep N j) + (e + e))
+      ((((ofLex (d + e) j : ℤ) : K) * (c * a)) * a) := by
+    convert hdf.mul hg using 1
+    abel
+  have hright : HasLeadAt (f * mgPartialBase K N j g)
+      ((d + mgStep N j) + (e + e))
+      ((c * a) * (((ofLex e j : ℤ) : K) * a)) := by
+    convert hf.mul hdg using 1
+    all_goals first | rfl | abel
+  have hnum : HasLeadAt (mgPartialBase K N j f * g - f * mgPartialBase K N j g)
+      ((d + mgStep N j) + (e + e))
+      ((((ofLex d j : ℤ) : K) * c) * (a * a)) := by
+    convert hleft.sub hright using 1
+    have hcomp : ((ofLex (d + e) j : ℤ) : K) =
+        ((ofLex d j : ℤ) : K) + ((ofLex e j : ℤ) : K) := by
+      change (((ofLex d j + ofLex e j : ℤ) : K)) = _
+      push_cast
+      rfl
+    rw [hcomp]
+    ring
+  refine ⟨mgPartialBase K N j f * g - f * mgPartialBase K N j g, g * g,
+    e + e, a * a, hnum, hg.mul hg, mul_ne_zero ha ha, ?_⟩
+  have hg0 : algebraMap (HahnSeries (mgDeg N) K) (HahnFraction (mgDeg N) K) g ≠ 0 :=
+    (map_ne_zero (algebraMap (HahnSeries (mgDeg N) K)
+      (HahnFraction (mgDeg N) K))).mpr (hg.ne_zero ha)
+  rw [Derivation.leibniz_div]
+  simp only [smul_eq_mul, hahnFractionPartialBase_algebraMap, map_sub, map_mul]
+  field_simp
+
 theorem FracHasLeadAt.hahnFractionPartial {N : ℕ} {j : Fin N}
     {q : HahnFraction (mgDeg N) ℂ} {d : mgDeg N} {c : ℂ}
     (hq : FracHasLeadAt q d c) :

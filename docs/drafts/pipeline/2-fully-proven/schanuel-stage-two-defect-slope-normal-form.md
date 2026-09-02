@@ -370,3 +370,40 @@ with function field identified as the concrete value field, plus a scheme-analyt
 complex-point evaluation layer producing the required path on that model.  Neither interface exists
 in the current corpus or imported mathlib.  An all-five-clauses capstone would therefore be false as
 a description of the formal state; the card remains at Stage 2.
+
+## Lean progress — the affine chart is a genuine normal Noetherian curve chart (2026-09-02)
+
+`RHTower/SchanuelStageTwoDefectSlopeAffineNormality.lean` now proves the exact commutative-algebra
+properties of the canonical affine normalization.  Transcendence of `core.rho` makes evaluation
+
+```text
+AlgNum[X] → AlgNum[core.rho]
+```
+
+bijective.  The resulting `stageTwoSlopePolynomialAlgEquiv` transfers the principal-ideal and
+Dedekind-domain structure to the slope coordinate ring.  The already-proved finite-dimensionality
+of the concrete value field over `AlgNum⟨core.rho⟩`, together with characteristic-zero
+separability, then gives
+
+```text
+stageTwoSlopeAffineNormalizationRing_isDedekindDomain
+```
+
+for the actual integral closure.  Consequently its affine spectrum is locally Noetherian, every
+stalk is integrally closed, and every codimension-one stalk is a discrete valuation ring:
+
+```text
+stageTwoSlopeAffineNormalizationScheme_isLocallyNoetherian
+stageTwoSlopeAffineNormalization_stalk_isIntegrallyClosed
+stageTwoSlopeAffineNormalization_stalk_isDiscreteValuationRing
+```
+
+This is the literal normal affine curve chart attached to the finite extension, not a proxy model
+or an added normality hypothesis.  Direct Lean check and targeted leaf build pass; all ten public
+declarations audit to exactly `[propext, Classical.choice, Quot.sound]`.  The leaf is wired into the
+`RHTower` umbrella without building that umbrella.
+
+The missing clause remains unchanged in kind: construct the normal **projective** completion with
+this function field and connect its complex points/rational-coordinate evaluation to an analytic
+divisor-avoiding path.  Affine normality does not supply either absent interface, so the card stays
+at Stage 2.

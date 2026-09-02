@@ -265,6 +265,84 @@ theorem ramifiedPuiseuxBranchCascadeDerivation_coordinate {N : ℕ}
     ramifiedSuffixProductInBranchField_coe, ramifiedCoordinateInBranchField] using
       hahnFractionRamCascadeDerivation_coordinate r hr A k
 
+set_option maxHeartbeats 1000000 in
+/-- **Selected branches determine the differential specialization.**  Let the intrinsic branch
+field embed into any characteristic-zero target field.  If its coordinates map to a target state
+and the target derivation realizes the selected suffix-product law on those coordinates, then the
+embedding intertwines the cascade derivations on the entire algebraic branch field.  Agreement on
+algebraic branch elements is forced by target-valued derivation uniqueness. -/
+theorem ramifiedPuiseuxBranchCascadeDerivation_map {N : ℕ}
+    {L : Type*} [Field L] [Algebra ℂ L]
+    (r : Fin N → ℕ) (hr : ∀ i, 0 < r i)
+    (A : Fin N → HahnFraction (mgDeg N) ℂ)
+    (hAlg : ∀ j, IsAlgebraic (RamifiedCoordinateField r) (A j))
+    (rho : RamifiedPuiseuxBranchField r →ₐ[ℂ] L) (delta : Derivation ℂ L L)
+    (x : Fin N → L)
+    (hx : ∀ k, rho (ramifiedCoordinateInBranchField r k) = x k)
+    (hlaw : ∀ k, delta (x k) =
+      rho (ramifiedSuffixProductInBranchField r A hAlg (k : ℕ))) :
+    ∀ y : RamifiedPuiseuxBranchField r,
+      rho (ramifiedPuiseuxBranchCascadeDerivation r hr A hAlg y) =
+        delta (rho y) := by
+  let H := HahnFraction (mgDeg N) ℂ
+  let E := RamifiedCoordinateField r
+  let B := RamifiedPuiseuxBranchField r
+  let DB := ramifiedPuiseuxBranchCascadeDerivation r hr A hAlg
+  letI : CharZero H := charZero_of_injective_algebraMap (algebraMap ℂ H).injective
+  letI : CharZero E := (IntermediateField.val E).toRingHom.charZero
+  letI : CharZero B := (IntermediateField.val B).toRingHom.charZero
+  apply derivation_map_eq_of_isAlgebraic (K := E) rho DB delta
+  intro z
+  let xE : Fin N → E := fun k =>
+    ⟨hahnFractionRamCoordinate r k,
+      IntermediateField.subset_adjoin ℂ _ (Set.mem_range_self k)⟩
+  have hxTop : IntermediateField.adjoin ℂ (Set.range xE) = ⊤ := by
+    have h := adjoin_range_lift_eq_top
+      (F := ℂ) (E := H) (I := Fin N)
+      (hahnFractionRamCoordinate r) (hahnFractionRamCoordinate r) rfl
+    exact h
+  let eB : E →ₐ[ℂ] B := IsScalarTower.toAlgHom ℂ E B
+  let rhoE : E →ₐ[ℂ] L := rho.comp eB
+  letI : Algebra B L := rho.toAlgebra
+  letI : IsScalarTower ℂ B L := IsScalarTower.of_algebraMap_eq fun c =>
+    (rho.commutes c).symm
+  letI : Algebra E L := rhoE.toAlgebra
+  letI : IsScalarTower ℂ E L := IsScalarTower.of_algebraMap_eq fun c =>
+    (rhoE.commutes c).symm
+  letI : IsScalarTower E B L := IsScalarTower.of_algebraMap_eq fun _ => rfl
+  let DmodelB : Derivation ℂ B L := derivationAlgebraMap ℂ B L DB
+  let Dmodel : Derivation ℂ E L :=
+    derivationCompAlgebraMapDomain ℂ E B L DmodelB
+  let Dactual : Derivation ℂ E L := Derivation.mk'
+    (delta.toLinearMap.comp rhoE.toLinearMap) (by
+      intro u v
+      change delta (rhoE (u * v)) = _
+      rw [map_mul rhoE u v]
+      rw [delta.leibniz]
+      change rhoE u * delta (rhoE v) + rhoE v * delta (rhoE u) =
+        rhoE u * delta (rhoE v) + rhoE v * delta (rhoE u)
+      rfl)
+  let gap : Derivation ℂ E L := Dactual - Dmodel
+  have hgap : gap z = 0 := derivation_eq_zero_of_mem_adjoin_to_field gap
+    (S := Set.range xE) (fun _ hu => by
+      rcases hu with ⟨k, rfl⟩
+      change delta (rhoE (xE k)) - rho (DB (eB (xE k))) = 0
+      have hcoordE : eB (xE k) = ramifiedCoordinateInBranchField r k := by
+        apply Subtype.ext
+        rfl
+      have hrhoE : rhoE (xE k) = rho (ramifiedCoordinateInBranchField r k) := by
+        change rho (eB (xE k)) = _
+        rw [hcoordE]
+      rw [hrhoE, hx]
+      change delta (x k) - rho
+        (ramifiedPuiseuxBranchCascadeDerivation r hr A hAlg (eB (xE k))) = 0
+      rw [hcoordE, ramifiedPuiseuxBranchCascadeDerivation_coordinate r hr A hAlg k,
+        ← hlaw k]
+      exact sub_self _) (by rw [hxTop]; trivial)
+  change delta (rho (algebraMap E B z)) -
+      rho (DB (algebraMap E B z)) = 0 at hgap
+  exact (sub_eq_zero.mp hgap).symm
+
 /-! ## Exact branch-field specialization and observability -/
 
 /-- The intrinsic relative algebraic closure supplies the selected ramified Puiseux differential
@@ -296,5 +374,44 @@ theorem algebraicIndependent_ramifiedPuiseuxBranchCascadeOutputJets {n : ℕ}
     (ramifiedPuiseuxBranchCascadeDerivation r hr A hAlg)
     (ramifiedPuiseuxBranchPartial r hr) (ramifiedCoordinateInBranchField r 0)
     (isRamifiedPuiseuxCascadeSpecialization_branchField r hr A hAlg)
+
+set_option maxHeartbeats 1000000 in
+/-- **Output-jet independence in every selected realization.**  Once a target field realizes the
+selected Puiseux branch coordinates and their exact cascade law, its terminal coordinate and first
+`N-1` derivatives are algebraically independent. -/
+theorem algebraicIndependent_ramifiedPuiseuxBranchCascadeOutputJets_of_realization {n : ℕ}
+    {L : Type*} [Field L] [Algebra ℂ L]
+    (r : Fin (n + 1) → ℕ) (hr : ∀ j, 0 < r j)
+    (A : Fin (n + 1) → HahnFraction (mgDeg (n + 1)) ℂ)
+    (hAlg : ∀ j, IsAlgebraic (RamifiedCoordinateField r) (A j))
+    (lambda : Fin (n + 1) → ℂ) (hlambda : ∀ j, lambda j ≠ 0)
+    (hA : ∀ j, FracHasLeadAt (A j) (mgRamUnit r j) (lambda j))
+    (rho : RamifiedPuiseuxBranchField r →ₐ[ℂ] L) (delta : Derivation ℂ L L)
+    (x : Fin (n + 1) → L)
+    (hx : ∀ k, rho (ramifiedCoordinateInBranchField r k) = x k)
+    (hlaw : ∀ k, delta (x k) =
+      rho (ramifiedSuffixProductInBranchField r A hAlg (k : ℕ))) :
+    AlgebraicIndependent ℂ (fun i : Fin (n + 1) =>
+      ((delta : L → L)^[(i : ℕ)]) (x 0)) := by
+  have hsource := algebraicIndependent_ramifiedPuiseuxBranchCascadeOutputJets
+    r hr A hAlg lambda hlambda hA
+  have himage : AlgebraicIndependent ℂ (fun i : Fin (n + 1) =>
+      rho ((((ramifiedPuiseuxBranchCascadeDerivation r hr A hAlg :
+        RamifiedPuiseuxBranchField r → RamifiedPuiseuxBranchField r)^[(i : ℕ)]))
+          (ramifiedCoordinateInBranchField r 0))) := by
+    simpa only [Function.comp_def] using hsource.map' rho.injective
+  have hmap := ramifiedPuiseuxBranchCascadeDerivation_map
+    r hr A hAlg rho delta x hx hlaw
+  have hiter : ∀ (m : ℕ) (y : RamifiedPuiseuxBranchField r),
+      rho ((((ramifiedPuiseuxBranchCascadeDerivation r hr A hAlg :
+        RamifiedPuiseuxBranchField r → RamifiedPuiseuxBranchField r)^[m])) y) =
+        ((delta : L → L)^[m]) (rho y) := by
+    intro m
+    induction m with
+    | zero => intro y; rfl
+    | succ m ih =>
+        intro y
+        rw [Function.iterate_succ_apply', Function.iterate_succ_apply', hmap, ih]
+  simpa only [hiter, hx 0] using himage
 
 end GaloisForLFunctions.HTGeometry

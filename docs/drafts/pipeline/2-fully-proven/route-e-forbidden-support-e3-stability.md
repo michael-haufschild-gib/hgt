@@ -1114,3 +1114,181 @@ without umbrella build.
 Card remains Stage 2.  Literal interval source multiplicity is closed.  Remaining shared core is
 collective signed spectral saving at paper ranges, Lemma 3.5(ii), amplification, and all-interval
 supply.
+
+## Lean progress update (2026-09-02) — exact terminal Schur-row receiver
+
+`Sieve/KloostermanTerminalOrbitEnergy.lean` now strengthens the full distinct-modulus terminal
+Gram estimate from a global pairwise Cauchy product to an exact symmetric Schur-row bound.  For
+arbitrary finite modulus set `Q`, complex weights `w`, finite source set `B`, and coefficients `b`,
+Lean proves with no premise
+
+```text
+‖terminalGram(M,Q,w,B,b)‖
+  <= sum_{q in Q} ‖w_q‖^2 * sum_{r in Q} terminalSchurKernel(M,B,b,q,r).
+```
+
+The diagonal kernel is exactly zero.  Every off-diagonal row retains its own square-root
+source-residue/orbit budget, so each squared modulus weight is charged only to its own terminal
+kernel row.  No spectral cancellation, support injectivity, modulus-size condition, or analytic
+hypothesis is introduced.
+
+`Sieve/KloostermanSourceResidueMultiplicity.lean` inserts the literal interval multiplicity bound
+for `B = Finset.Icc 1 N` before applying this Schur test, producing a second no-premise theorem with
+fully explicit interval rows.
+
+Direct checks pass.  Targeted leaf builds pass (`13497/13497` and `13498/13498`).  The four newly
+exposed public theorems audit with only `[propext, Classical.choice, Quot.sound]`; both leaves were
+already umbrella-wired, and no umbrella build was run.
+
+Card remains Stage 2.  Exact absolute Schur-row control is closed, but it does not supply the
+collective signed spectral/Kuznetsov saving required by Lemma 3.5(ii), amplification, and
+all-interval supply; none is assumed.
+
+## Lean progress update (2026-09-02) — exact shared-gcd frequency multiplicity
+
+`Sieve/KloostermanProductFrequencyGcdBound.lean` completes the noncoprime arithmetic
+stratification of the terminal reciprocal-chord carrier.  Equal product-period cross frequencies
+force first-coordinate representatives to coincide modulo `q / gcd(q,r)`; their remaining
+quotient lies in `Fin (gcd(q,r))`.  Frequency is injective at fixed quotient, so every complete
+two-coordinate frequency fibre has cardinality at most `gcd(q,r)`.
+
+Grouping the terminal denominator sum by these nonzero fibres yields unconditionally
+
+```text
+sum_x sum_y 2 / ||1-crossPhase(q,r,x,y)||
+  <= gcd(q,r) * q*r * (1+log(q*r)).
+```
+
+Lean carries this shared-gcd budget through terminal and stored correlations and through every
+signed modulus/source weight to full and erased distinct-modulus Gram quadratics.  Final aggregate
+theorems have no premises and introduce no support, coprimality, range, or analytic hypothesis.
+
+Direct source check passes.  Targeted leaf build passes (`13494/13494`).  Eight principal new
+theorems audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired and no
+umbrella build was run.
+
+Card remains Stage 2.  Shared-gcd multiplicity closes the named noncoprime denominator debt, not
+the collective signed cancellation required at paper ranges.  Remaining shared core is genuine
+spectral/Kuznetsov saving, Lemma 3.5(ii), amplification, and all-interval supply; none is assumed.
+
+## Lean progress update (2026-09-02) — exact lcm-period terminal Parseval energy
+
+`Sieve/KloostermanTerminalOrbitParseval.lean` realizes the terminal cross phase on its exact
+period `lcm(q,r)` and combines two dependency-closed identities: every frequency fibre has size at
+most `gcd(q,r)`, and the complete finite Parseval energy is exactly
+`lcm(q,r) * (M % lcm(q,r))`.  Since `gcd(q,r) * lcm(q,r) = q*r`, the resulting unconditional
+orbit estimate is
+
+```text
+sum_x sum_y ‖kloostermanTerminalOrbit(M,q,r,x,y)‖²
+  <= q*r*(M % lcm(q,r)).
+```
+
+The theorem removes both the earlier harmonic logarithm and shared-gcd loss.  Exact receivers carry
+it through source-residue energies, signed modulus weights, full Gram quadratics, and the literal
+interval `Finset.Icc 1 N`; no forbidden-support stability, coprimality, or spectral hypothesis is
+inserted.
+
+Direct source check passes.  Targeted leaf build passes (`13500/13500`).  Nine public theorems
+audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without an
+umbrella build.
+
+Card remains Stage 2.  This closes finite phase cancellation inside each modulus pair, not the
+collective signed spectral/Kuznetsov saving at paper ranges.  Lemma 3.5(ii), amplification, and
+all-interval supply remain open; none is assumed.
+
+## Lean progress update (2026-09-02) — row-by-row lcm-Parseval receiver
+
+`Sieve/KloostermanTerminalOrbitParsevalSchur.lean` feeds the exact lcm-period energy into the
+terminal symmetric Schur test.  The resulting no-premise Gram receiver has the form
+
+```text
+‖terminalGram(M,Q,w,B,b)‖
+  <= sum_{q in Q} ‖w_q‖² * sum_{r in Q}
+       sqrt(SourceEnergy(q) * SourceEnergy(r) * LcmParsevalBudget(M,q,r)).
+```
+
+The diagonal kernel is exactly zero.  Unlike brick 136's global pairwise Cauchy bound, each signed
+modulus weight is charged only to its own row.  The literal-interval theorem substitutes the exact
+residue multiplicity for `Finset.Icc 1 N` before performing this row aggregation.  No
+forbidden-support, coprimality, range, or spectral hypothesis is introduced.
+
+Direct source check and targeted leaf build pass (`13501/13501`).  All three public theorem
+declarations audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired
+without umbrella build.
+
+Card remains Stage 2.  This is the strongest exact absolute terminal receiver now in the corpus,
+but norms are still taken before the modulus average.  Collective Kuznetsov cancellation, Lemma
+3.5(ii), amplification, and all-interval supply remain open; none is assumed.
+
+## Lean progress update (2026-09-02) — lossless global-period frequency carrier
+
+`Sieve/KloostermanGlobalPeriodFrequency.lean` places every terminal cross phase from a finite
+stored modulus family into the single cyclic group of order
+`P(Q)=lcm_{q in Q}(q+1)`.  The explicit embedded frequency has exactly the original additive
+character, is nonzero for every erased-diagonal modulus pair, and transports the pairwise
+least-common-multiple terminal orbit identically to length `M % P(Q)`.
+
+This is the minimal common period.  Injectivity of the standard additive character further gives
+an exact collision law: two stored tuples have the same global frequency exactly when their
+original complex cross-phase ratios are equal.
+
+Unlike the preceding receivers, this theorem takes no norm and loses no sign: modulus weights and
+source Fourier coefficients remain available for global frequency-fibre aggregation.  No
+forbidden-support, coprimality, size, or spectral hypothesis is added.
+
+Direct source check and targeted leaf build pass (`13502/13502`).  Nine public theorem
+declarations audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired
+without umbrella build.
+
+Card remains Stage 2.  Global embedding isolates the exact signed collision-energy problem; it is
+not itself the required Kuznetsov bound.  Lemma 3.5(ii), amplification, and all-interval supply
+remain open; none is assumed.
+
+## Lean progress update (2026-09-02) — signed global-frequency Parseval receiver
+
+`Sieve/KloostermanGlobalFrequencyParseval.lean` performs the exact grouping enabled by brick 138.
+For each `z : ZMod P(Q)`, its coefficient `A_z` is the signed sum over all erased-diagonal modulus
+pairs and both unit frequencies that map to `z`, including the full source-Fourier factors.  Lean
+proves
+
+```text
+terminalGram = sum_z A_z * globalOrbit_z,
+A_0 = 0,
+‖terminalGram‖² <= (sum_z ‖A_z‖²) * P(Q) * (M % P(Q)).
+```
+
+The last factor is exact finite Parseval.  Crucially, the norm of `A_z` is taken only after all
+same-frequency modulus contributions have been added, so signed collective cancellation is not
+discarded.  No forbidden-support, coprimality, range, or spectral premise is introduced.
+
+Direct source check and targeted leaf build pass (`13503/13503`).  Four public theorem
+declarations audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired
+without umbrella build.
+
+Card remains Stage 2.  The remaining spectral core is precisely an unconditional paper-scale
+upper bound for `sum_z ‖A_z‖²`.  Lemma 3.5(ii), amplification, and all-interval supply remain open;
+none is assumed.
+
+## Lean progress update (2026-09-02) — exact collision time-frequency Parseval
+
+`Sieve/KloostermanGlobalCollisionParseval.lean` Fourier-transforms the signed global coefficients
+`A_z` over the minimal period `P(Q)`.  Lean expands the transform into the literal erased-diagonal
+modulus/unit/source sum, with additive phase
+`stdAddChar (-(globalFrequency(q,r,x,y) * k))`; no fibre coefficient remains hidden.  Exact finite
+Parseval gives
+
+```text
+sum_k ‖timeTransform_k‖² = P(Q) * sum_z ‖A_z‖²,
+sum_z ‖A_z‖² = P(Q)⁻¹ * sum_k ‖timeTransform_k‖².
+```
+
+Thus the unresolved collision estimate is now equivalently one concrete time-domain Kloosterman
+second moment.  Both equalities and the explicit expansion are unconditional.
+
+Direct source check and targeted leaf build pass (`13504/13504`).  All three public theorem
+declarations audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired
+without umbrella build.
+
+Card remains Stage 2.  The exact receiver is closed, but the paper-scale bound for this time-domain
+second moment, Lemma 3.5(ii), amplification, and Theorem 1.2 remain open; none is assumed.

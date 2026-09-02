@@ -333,3 +333,44 @@ statement — either every admissible splitting is diagonal-up-to-units (route c
 no-go with the rigidity theorem as the promotable residue) or the admissible space is a torsor
 whose parametrization names the Stage-2 object.  In parallel: the metaplectic scattering-entry
 lookup, and in Lean the `2^k`-fold equidivisor factorization generalization of the twin theorem.
+
+## 2026-09-02 — Gate 7 rigidity (paper + Lean): the non-diagonal freedom is empty
+
+**Twin rigidity theorem** `[PROVED HERE, Lean: TwinRigidity.lean, axiom-clean]`. Let `(a, d)` be
+any twin factorization of ξ on `Re s > ½`. Equal orders make `q := a/d` an analytic nonvanishing
+function on the half-plane (`localQuotientOn_analytic_nonvanishing_factorization`); the
+half-plane is simply connected, so `q` has an analytic square root `v`; then `g := d·v`
+satisfies `g² = d² q = d·a = ξ`, with `a = g·v` and `g = d·v` (`twin_eq_sqrt_mul_unit`).
+Conversely `(g v, g/v)` is a twin for every root `g` and every analytic unit `v`
+(`twinFactorization_of_sqrt_mul_unit`). Hence the twin set is empty or a torsor under the
+analytic units of the half-plane over the diagonal twin (`twinFactorization_iff_exists_sqrt`).
+
+**Consequence for the "Next move".** The dichotomy posed there is settled on the first branch:
+every admissible splitting `𝟙 = α ∗ δ` with both L-series continuing to `Re s > ½` with equal
+divisors is diagonal up to units — the L-series of `α` is a square root of ξ (up to the Γ- and
+polar factors) times a unit. Non-diagonal twins therefore carry no information beyond the
+existence of the root; the "meander cut" exposes no inner channel that the root does not
+already contain. Gate 7 reduces, without loss, to: **construct an analytic function on
+`Re s > ½` whose divisor is half of ξ's, from arithmetic.**
+
+**Why no known arithmetic object can be that function.** L-functions are multiplicative under
+direct sums of motives, `L(M ⊕ N) = L(M)·L(N)`, and the trivial motive `𝟙` is simple, so no
+motivic `(M, N)` has `L(M)L(N) = ζ` except `{𝟙, 0}`; a half-divisor object is not the L-function
+of any motive. The half-integral-weight (metaplectic) objects of candidate (C1) square to
+integral weight, so they can present ξ as a product of *two different* factors only in the
+form `g v · g/v` above, i.e. only after a square root of ξ already exists; Waldspurger's squares
+are squares of *values*, not of functions. The Maass–Selberg Grams of candidate (C2) have
+determinants built from `ξ(2s), ξ(2s−1)` and their balance at an off-line point is, by the
+twin theorem, again a square root of the same local factor. The only remaining arithmetic
+candidates are the Selberg–Delange powers `ζ^{θ}`, whose continuation past the zero field is
+the rung itself (reframe 1). The open core is therefore irreducible in the present corpus:
+no linear, family, motivic, metaplectic, or Gram construction produces a half-divisor.
+
+**Status of the open core.** Not solved. It is now known to be exactly the statement "ξ has
+an analytic square root on `Re s > ½`" with every proposed reformulation proved equivalent
+(root ⟺ germ extension ⟺ twins ⟺ Clifford models ⟺ symplectic realizations), and every
+proposed producer (cyclic carriers, mirror/family doubling, quadratic symbols, non-diagonal
+twins, motivic halves) proved either impossible or equivalent to the root. A proof must supply
+a non-linear arithmetic construction of a half-divisor object; MUST-125/126 record the
+constraint. Related Lean this pass: `HTGeometry.SymplecticDoublingFree` (doubling is free;
+`{±1}` skew pairings are symmetric), complementing `SymplecticCyclicObstruction`.

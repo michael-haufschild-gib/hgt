@@ -238,8 +238,19 @@ not the false claim that every correction gains one fixed multidegree.
 observability determinant back along a differential specialization and applies the source-field
 Jacobian criterion.
 
-**Remaining open core:** construct `IsRamifiedPuiseuxCascadeSpecialization` from the card's selected
-nonautonomous algebraic branches.  See `_STAGE3-LEDGER.md`.
+`HTGeometry/RamifiedPuiseuxBranchField.lean` now constructs the intrinsic specialization in the
+relative algebraic closure of the rational coordinate field.  It proves that selected algebraic
+velocity branches and the cascade derivation remain in this field and closes
+`algebraicIndependent_ramifiedPuiseuxBranchCascadeOutputJets`.  Its arbitrary-realization theorem
+`algebraicIndependent_ramifiedPuiseuxBranchCascadeOutputJets_of_realization` transports this result
+to every target field whose coordinate images obey the selected suffix-product cascade law.
+Commutation on all algebraic branch elements is derived from coordinate agreement by
+`HTGeometry/AlgebraicDerivationMapUniqueness.lean`; it is not postulated.
+
+**Remaining open core:** construct the analytic embedding of this selected branch field into the
+actual meromorphic composition-state field, prove the coordinate and suffix-product identifications
+from analytic branch selection plus the chain rule, and descend the resulting independence from
+`C` to the theorem's required base `C(z)` without adding a premise.  See `_STAGE3-LEDGER.md`.
 
 Also owned: `ExpAffineCascade.scaled_jet_det_ne_zero` (the model determinant),
 `TerminalPowerCascadeInduction.algebraicIndependent_cascadeOutput` (the exactly-triangular case),

@@ -3544,3 +3544,153 @@ and targeted leaf build pass (`13490/13490`); all three public theorems audit wi
 This closes source-residue inflation on the literal interval.  It is a bridge, not the missing
 collective signed spectral cancellation.  Lemma 3.5(ii), amplification, and Theorem 1.2 remain
 open; no estimate is assumed.
+
+### Exact shared-gcd product-frequency multiplicity, brick 135 (2026-09-02)
+
+`KloostermanProductFrequencyGcdBound.lean` closes the noncoprime arithmetic stratification left by
+bricks 123–125.  If two product-period frequencies agree, cancellation of the common gcd shows
+their first representatives agree modulo `q/gcd(q,r)`.  The remaining quotient is a label in
+`Fin (gcd(q,r))`, and the fixed-label frequency map is injective.  Consequently every frequency
+fibre has at most `gcd(q,r)` elements.
+
+Fibrewise summation and the existing injective nonzero-frequency harmonic theorem give
+
+```text
+sum_x sum_y 2 / ||1-crossPhase(q,r,x,y)||
+  <= gcd(q,r) * q*r * (1+log(q*r)).
+```
+
+This alternative shared-gcd budget is propagated to terminal/stored correlations, weighted Gram
+entries, full source quadratics, and erased off-diagonal quadratics.  Direct source check and
+targeted leaf build pass (`13494/13494`).  Eight principal theorem declarations audit with only
+`[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella build.
+
+Noncoprime product-frequency multiplicity is now dependency-closed.  This is still an
+absolute-value receiver: it does not yield the signed spectral/Kuznetsov saving needed for
+Lemma 3.5(ii), amplification, and Theorem 1.2.  No such estimate is assumed.
+
+### Exact lcm-period terminal Parseval energy, brick 136 (2026-09-02)
+
+`KloostermanTerminalOrbitParseval.lean` replaces product-period pointwise chord summation by exact
+orthogonality on the true cross-phase period `lcm(q,r)`.  The exact frequency map has fibres of
+cardinality at most `gcd(q,r)`, and consecutive additive-character Parseval gives energy
+`lcm(q,r) * (M % lcm(q,r))`.  The gcd-lcm product identity cancels the fibre multiplicity exactly:
+
+```text
+sum_x sum_y ‖kloostermanTerminalOrbit(M,q,r,x,y)‖²
+  <= q*r*(M % lcm(q,r)).
+```
+
+This eliminates both the harmonic logarithm and the shared-gcd overcount.  The same exact budget is
+transported through source residues, weighted terminal Gram pairs, full signed modulus/source
+quadratics, and the literal interval receiver.  All results are dependency-closed and introduce no
+support, range, coprimality, or analytic cancellation axiom.
+
+Direct source check and targeted leaf build pass (`13500/13500`).  Nine public theorem declarations
+audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella
+build.
+
+This is genuine finite phase cancellation, but remains pairwise in the moduli.  Collective signed
+spectral/Kuznetsov saving at paper ranges, Lemma 3.5(ii), amplification, and Theorem 1.2 remain open;
+no such estimate is assumed.
+
+### Row-by-row lcm-Parseval terminal receiver, brick 137 (2026-09-02)
+
+`KloostermanTerminalOrbitParsevalSchur.lean` composes brick 136 with the exact symmetric Schur-row
+architecture.  Its pair kernel is the square root of the two source-residue energies times the
+exact lcm-period orbit budget; the diagonal is zero.  Lean proves
+
+```text
+‖terminalGram(M,Q,w,B,b)‖
+  <= sum_{q in Q} ‖w_q‖² * sum_{r in Q} LcmParsevalSchurKernel(M,B,b,q,r).
+```
+
+This removes the global modulus-pair Cauchy factor while retaining the log-free, gcd-free orbit
+budget.  The literal source-interval capstone substitutes the exact residue multiplicity row by
+row.  All statements are unconditional and add no support, coprimality, modulus-size, or analytic
+cancellation premise.
+
+Direct source check and targeted leaf build pass (`13501/13501`).  Three public theorem
+declarations audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired
+without umbrella build.
+
+This closes the strongest absolute-value receiver exposed by the terminal factorization.  It still
+takes norms before summing moduli, so collective signed spectral/Kuznetsov saving at paper ranges,
+Lemma 3.5(ii), amplification, and Theorem 1.2 remain open; no such estimate is assumed.
+
+### Lossless common-period frequency carrier, brick 138 (2026-09-02)
+
+`KloostermanGlobalPeriodFrequency.lean` defines the minimal common period
+`P(Q)=lcm_{q in Q}(q+1)`.  Every stored modulus divides `P(Q)`, hence every pairwise lcm does.
+For each erased-diagonal tuple `(q,r,x,y)`, Lean constructs an explicit frequency in
+`ZMod P(Q)`, proves its additive character equals the original Kloosterman cross phase, and proves
+the frequency is nonzero.  Faithfulness of the standard additive character also proves the exact
+collision classification: equality of global frequencies is equivalent to equality of the
+original complex cross-phase ratios.
+
+A general finite-order orbit lemma then shows that a nontrivial phase sum depends only on its
+length modulo any period.  Consequently the original pairwise-lcm terminal orbit equals exactly
+the global-period orbit of length `M % P(Q)`.
+
+No norm or absolute value appears in this transport.  It therefore retains all signed modulus and
+source-Fourier coefficients for one global frequency-fibre grouping—the first carrier in this
+chain that can express cross-modulus cancellation rather than only majorize it.
+
+Direct source check and targeted leaf build pass (`13502/13502`).  Nine public theorem
+declarations audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired
+without umbrella build.
+
+Remaining next obligation is exact grouping of the full terminal Gram by these global frequencies,
+then a bound for the resulting signed collision energy.  The latter is the genuine
+spectral/Kuznetsov core; Lemma 3.5(ii), amplification, and Theorem 1.2 remain open and unassumed.
+
+### Signed global-frequency Parseval receiver, brick 139 (2026-09-02)
+
+`KloostermanGlobalFrequencyParseval.lean` closes the exact grouping obligation left by brick 138.
+It defines `A_z` as the complete signed sum of modulus weights and source-Fourier products from
+every erased-diagonal `(q,r,x,y)` tuple with global frequency `z`, and defines the collision energy
+`E_global = sum_z ‖A_z‖²`.  Lean proves
+
+```text
+terminalGram(M,Q,w,B,b) = sum_z A_z * globalOrbit_z,
+A_0 = 0,
+‖terminalGram(M,Q,w,B,b)‖²
+  <= E_global * P(Q) * (M % P(Q)).
+```
+
+The first line is an exact finite reindexing, not a bound.  The second uses off-diagonal
+nontriviality.  The third is finite Cauchy--Schwarz plus the exact Parseval identity
+`sum_z ‖globalOrbit_z‖² = P(Q)*(M % P(Q))`.
+
+Unlike every preceding pairwise or Schur receiver, this formulation keeps all cross-modulus signs
+inside a common frequency fibre until after aggregation.  It introduces no analytic premise and
+isolates one scalar target: bound `E_global` at the paper's modulus/source ranges.
+
+Direct source check and targeted leaf build pass (`13503/13503`).  Four public theorem
+declarations audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired
+without umbrella build.
+
+The remaining analytic theorem is exactly the signed global collision-energy estimate—a concrete
+finite Kuznetsov target—followed by Lemma 3.5(ii), amplification, and Theorem 1.2.  None is assumed.
+
+### Exact collision time-frequency Parseval, brick 140 (2026-09-02)
+
+`KloostermanGlobalCollisionParseval.lean` applies corpus-owned cyclic DFT Parseval to the signed
+coefficients `A_z`.  It also expands each transform value into the literal erased-diagonal
+`(q,r,x,y)` sum with its global additive phase.  Lean proves
+
+```text
+sum_k ‖timeTransform_k‖² = P(Q) * E_global,
+E_global = P(Q)⁻¹ * sum_k ‖timeTransform_k‖².
+```
+
+This is an exact equality and introduces no estimate.  It converts the remaining signed collision
+energy into one explicit time-domain Kloosterman second moment, ready for an unconditional
+large-sieve/Kuznetsov bound.
+
+Direct source check and targeted leaf build pass (`13504/13504`).  Three public theorem
+declarations audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired
+without umbrella build.
+
+The paper-scale bound for that explicit time-domain moment, Lemma 3.5(ii), amplification, and
+Theorem 1.2 remain open and unassumed.

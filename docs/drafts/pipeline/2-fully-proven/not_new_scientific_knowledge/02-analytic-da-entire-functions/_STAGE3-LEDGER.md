@@ -19,8 +19,8 @@ Goal: unconditional Lean formalization of every card in this folder, then promot
 | 10 | entire-composition-hypertranscendence-or-law | Steinmetz reduction / Huang–Ng Thm 3 | TODO |
 | 11 | first-order-composition-two-defect-decomposition | Clunie + trdeg observability | **DONE → 3-formalized** (2026-08-30) |
 | 12 | autonomous-cap-derivative-shadow-law | Clunie + trdeg observability | **DONE → 3-formalized** (2026-08-30) |
-| 13 | newton-corner-nonautonomous-composition-unit-cost | Clunie + Puiseux Jacobian | **IN PROGRESS** — exact composition depth and ramified Puiseux observability closed; analytic-state transfer open |
-| 14 | asymptotically-exponential-algebraic-cascade-unit-cost | Clunie + Puiseux Jacobian + Briot–Bouquet | **IN PROGRESS** — exact composition depth and ramified Puiseux observability closed; analytic-state transfer/classification open |
+| 13 | newton-corner-nonautonomous-composition-unit-cost | Clunie + Puiseux Jacobian | **IN PROGRESS** — intrinsic branch field, arbitrary-realization commutation, ramified observability, and exact composition depth closed; analytic embedding/base-field transfer open |
+| 14 | asymptotically-exponential-algebraic-cascade-unit-cost | Clunie + Puiseux Jacobian + Briot–Bouquet | **IN PROGRESS** — selected autonomous branches now give actual meromorphic `C(z)`-jet independence and exact differential order; exact composition depth also closed; Briot–Bouquet classification remains |
 | 15 | nonautonomous-cap-linear-order-two-shadow-rigidity | Briot–Bouquet — bypassed | **DONE → 3-formalized** (2026-09-01) |
 | 16 | fixed-taylor-modulus-newton-geometry-ht-blindness | Ostrowski finite basis — replaced by corpus Mahler confinement | **DONE → 3-formalized** (2026-08-30) |
 | 17 | arithmetic-entire-heat-da-finite-spectrum | Popken + Mahler normalization | **DONE → 3-formalized** (2026-08-30) |
@@ -99,11 +99,15 @@ Cascades / differential algebra:
   for arbitrary finite cascades of nonconstant differentiable finite-order entire maps
 - `HTGeometry.HahnLeadingCoefficient`, `HTGeometry.HahnTowerGradientStaircase`,
   `HTGeometry.HahnFractionValuation`, `HTGeometry.HahnFractionLeadingCoefficient`,
-  `HTGeometry.RamifiedMultiGradedNewtonModel`, `HTGeometry.RamifiedPuiseuxCascadeTransfer` —
+  `HTGeometry.RamifiedMultiGradedNewtonModel`, `HTGeometry.RamifiedPuiseuxCascadeTransfer`,
+  `HTGeometry.AlgebraicDerivationMapUniqueness`, `HTGeometry.RamifiedPuiseuxBranchField`,
+  `HTGeometry.AutonomousRamifiedPuiseuxCascadeActual` —
   generic Hahn determinant coefficients,
   fraction-field valuation and coordinate derivations, quotient-rule leading calculus, exact
-  ramified logarithmic-state suffix propagation, and algebraic independence of the resulting full
-  product-cascade observable chain
+  ramified logarithmic-state suffix propagation, algebraic independence of the resulting full
+  product-cascade observable chain, its intrinsic algebraic branch field, and functorial transport
+  to arbitrary selected differential realizations; for autonomous selected branches, the actual
+  meromorphic realization, clock transcendence, `C(z)` base change, and exact-order capstone
 - `HTGeometry.AnalyticJetFieldBridge` — DA closed under `+ − × ^`
 - `HTGeometry.FractionRingDerivation.fractionRingDerivation`
 - `HTGeometry.DifferentiallyAlgebraicCancellation.differentiallyAlgebraic_right_of_mul_eq`
@@ -217,6 +221,23 @@ Steps 1–3 give a compact-base Schottky bound and Bohr's covering theorem — b
 beyond this card (they are the quantitative core of Picard/Montel).
 
 ## Log
+- 2026-09-02 — Card 14 selected-branch differential-order theorem closed:
+  `AutonomousRamifiedPuiseuxCascadeActual` constructs the ordinary time derivation and coordinate
+  frame on the actual relative branch field, derives full Hahn specialization from state-generator
+  agreement, transfers output jets into the meromorphic cascade, proves the clock transcendental
+  over the branch field, descends independence from `C` to `C(z)`, and concludes
+  `exactDifferentialOrder_entireCascade_of_autonomousRamifiedPuiseuxBranchSelection`.
+  `AlgebraicDerivationMapUniqueness.derivation_map_eq_of_isAlgebraic_tower_adjoin` supplies the
+  reusable tower-generator bridge.  Direct checks, leaf builds, and targeted axiom audit pass;
+  axioms are `[propext, Classical.choice, Quot.sound]`.  Briot–Bouquet remains for the complete
+  autonomous first-order corollary.
+- 2026-09-02 — Cards 13/14 branch-field layer closed: `AlgebraicDerivationMapUniqueness` proves
+  target-valued uniqueness of derivations across algebraic field extensions;
+  `RamifiedPuiseuxBranchField` constructs the intrinsic relative algebraic branch field, restricts
+  the coordinate/cascade derivations, and transports full output-jet independence into every
+  selected target realization from coordinate images and the suffix-product law alone.  Axiom
+  audit: `[propext, Classical.choice, Quot.sound]`.  Remaining gate is the actual analytic
+  branch-field embedding and `C(z)` base-field transfer; card 14 also retains Briot--Bouquet.
 - 2026-08-29 — ledger created; all 22 cards read; corpus reconnaissance done.
 - 2026-08-29 — card 1 closed: `SuperGaussianNewtonPlateau`, `SuperGaussianMonomialization`,
   `SuperGaussianAutonomousFace`; axioms clean; promoted to `3-formalized`.

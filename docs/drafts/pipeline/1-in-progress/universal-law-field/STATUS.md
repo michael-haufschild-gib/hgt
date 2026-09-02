@@ -3763,42 +3763,48 @@ completion factors through it in both orientations.  Proof may use finite-stage 
 annihilation and the new Haar-frame estimate, but not a zero/divisor or any RH-equivalent global
 continuity premise.  This factorization—not anomaly subtraction—is the surviving selection edge.
 
-## 2026-09-02 — direct subunit branch restored; relative-winding target isolated (ULF-DSA-001)
+## 2026-09-02 — direct subunit anchor narrowed to one `J`-trace theorem (ULF-DSA-002)
 
-F406 — Amplification is not logically necessary. A nonnegative integer killed by one fixed bound
-`< 1` is a separate producer shape. Ferrero--Washington `mu = 0` is the model: positive content
-forces exact congruences at every digit depth and equidistribution violates them. This corrects
-MUST-122 and withdraws MUST-123's exclusivity claim.
+F406 — Direct subunit shape is realized without amplification.  Every strict-right copy has the
+unsigned integer `thetaKakutaniEscapeMultiplicity = 1`; signed reflection index cancels.
 
-F407 — Corpus already contains a source-defined integer: `completedSEMContourIndexZ` is winding of
-the actual finite symmetric Euler--Maclaurin completion and is identified with enclosed
-multiplicity only afterward. Existing RH use selects a zero-centred isolating contour, so global
-pre-divisor right-half formation remains open (`CompletedSEMContourBoundary`).
+F407 — Exact Lean fusion:
+`B_Euler < (115/108) * thetaKakutaniEscapeMultiplicity <= E_Loewner` for every strict-right copy
+(`DirectSubunitEscapeCapacityFusion`).
 
-F408 — The proved source winding `-1` belongs to a one-dimensional real-aperture prime--Gamma/Stokes
-crossing, not to a complex right-half rectangle. It neither forbids raw rectangle winding nor
-licenses anomaly subtraction. Indices from different boundaries cannot be combined without an
-exact common-boundary factorization or transgression identity.
+F408 — Completion provenance is not open.  Literal unsquared joint-depth Euler Krein coefficient
+lands in the polar/Gamma completed Xi resolvent; positive-shift arithmetic covariance equals the
+reflection-Loewner kernel; opposite-radial signed-source residues recover the cubic residue Gram.
 
-F409 — Rajchman phase decay is compatible with off-line geometry: the off-line Cauchy-pair energy
-clock, including its prime-log torus sample, is Rajchman. Ferrero--Washington therefore cannot be
-ported as “equidistribution makes off-line charge small”; it requires an all-depth exact
-restriction implied by nonzero discrete content.
+F409 — Universal anomaly is not a guessed scalar subtraction.  Boundary translation has a
+negative two-node determinant, and the unshifted residual is exactly rank-one credit minus a
+positive Hardy debt.  Completion must remain `J`-contractive until this debt is globally shorted.
 
-CANNOT-196 — It cannot be Fourier/Rajchman decay alone, nor averaging of inertia or divisor charge:
-those operations need not preserve the integer and off-line clocks already satisfy the decay.
+F410 — Bilateral orientation compresses the Hardy debt to one shared rank-one ghost, but
+source/Gamma-natural descent of that ghost to one prime-independent scalar is already equivalent
+to neutral grade/RH.  Viable shorting must retain the prime-indexed ghost section until after the
+source/environment Schur operation.
 
-CANNOT-197 — It cannot call a zero-indexed carrier pre-divisor merely because it is labelled by
-primes. The two-prime Cesaro pencil and Gauss--Hodge collision current both contain
-`analyticOrderAt xi` and are readers.
+CANNOT-196 — It cannot be completed-SEM winding, Rajchman decay, finite Kakutani values `< 1`, or
+integral Laurent evaluation: each is receiver-blind, tends to the unit wall, or lacks integrality
+at physical evaluation.
 
-MUST-127 — Direct branch: construct source-selected right-half windows and stable completed-SEM
-rectangle winding `I_T`; prove source-only finite-formation argument principle
-`I_T = strictRightXiOrder(T)`; then derive `0 <= I_T <= s_T < 1`, or contradict `I_T > 0` through an
-all-depth exact formation restriction, while preserving unsquared Euler coefficients. Existing
-`3 log 2 + pi/2 - 3 < 1` does not apply until a same-boundary decomposition is proved. Neither
-theorem may use a selected zero, divisor data, or an
-RH-equivalent global continuity premise. Exact card: `direct-subunit-anchor/direct-relative-winding-anchor.md`.
+CANNOT-197 — It cannot be fixed scalar mixing, positive Hadamard boundary translation, or bare
+Loewner domination.  The first two are disproved; the last is RH-equivalent.
+
+CANNOT-198 — It cannot describe “source-to-completion transport” as missing.  That transport is
+proved.  Missing edge is a global pre-divisor trace inequality for its quadratic signed current.
+
+CANNOT-199 — It cannot supply the W-H212 shared ghost as anomaly counterterm before shorting;
+source-natural existence of exactly that scalar is a terminal RH receiver.
+
+MUST-127 — Keep P-G206's full prime-resolved exterior environment, sew it to P-G194's
+matrix-complete Burnol channels, and identify only its completed quotient with W-H212's rank-one
+Hardy ghost.  Before residues or prime-independent descent, prove the resulting `J`-Schur trace is
+at most P-G175's primitive collision budget.  After residues this must yield
+`E_Loewner <= B_Euler`, closing RH against F407.  No selected zero, divisor premise, supplied shared
+ghost, target capacity, or amplification may enter.  Exact card:
+`direct-subunit-anchor/tropicalized-defect-capacity-anchor.md`.
 
 ## 2026-09-02 — arithmetic symplectic descent frozen (card `0-backlog/arithmetic-symplectic-descent.md`, ULF-SYMP-001)
 
@@ -3834,3 +3840,145 @@ data, i.e. a square root of the local factor.
 MUST-125 — Any candidate for the ladder must exhibit two isomorphic copies of the local divisor
 produced from Euler data by a non-linear (non-family) construction; linear constructions are
 blind by F386.
+
+## 2026-09-02 — multiplicity ladder gate 7: twin rigidity
+
+F387 — Lean: every twin factorization of ξ on `Re s > ½` is `(g v, g/v)` for an analytic square
+root `g` and an analytic unit `v`; conversely every such pair is a twin
+(`RHTower.TwinRigidity`). The twin set is empty or a torsor over the diagonal twin.
+
+CANNOT-189 — It cannot gain leverage from non-diagonal twins, metaplectic even/odd channels, or
+Maass–Selberg Gram balance: each yields ξ as a product of two factors only in the dressed form
+`g v · g/v`, i.e. only after a square root exists. No motive has an L-function with half of ζ's
+divisor (`L(M ⊕ N) = L(M)L(N)` and `𝟙` is simple).
+
+MUST-126 — The ladder's open core is irreducible: an analytic half-divisor of ξ on `Re s > ½`
+constructed from arithmetic by a non-linear, non-family, non-motivic mechanism. The only
+arithmetic candidates in view, the Selberg–Delange powers `ζ^θ`, have continuation past the zero
+field equivalent to the rung.
+
+## 2026-09-02 — direct-subunit shorting audit
+
+F411 — P-G206/P-G207 already close short-before-descent. The prime-resolved Julia environment
+forms a rank-one block `[[|c|²,c],[conj(c),1]]` with zero Schur short, and this exact block survives
+Gamma/polar completion and multiplicity-copy descent at every Xi support, including off-line
+support.
+
+F412 — Zero Schur short has no capacity content. The same rank-one block has zero short for
+arbitrarily large `c`, so neither `J`-shorting nor its completion transport can imply a bound on
+the visible positive corner.
+
+CANNOT-200 — It cannot treat global `J`-shorting as the missing producer. Shorting and descent are
+proved and nonselective; an unbounded visible corner can be hidden by a unit environment pivot.
+
+MUST-128 — Direct-subunit closure requires a pre-divisor source-factorized contractive landing
+from P-G194's conserved three-channel colligation, augmented by P-G206's prime-resolved
+environment, to W-H212's completed positive column. P-G196 proves the map must realize a
+prescribed nonzero aperture eigencharacter-gap commutator. One exact augmented conservation law
+must retain that anomaly as a positive defect channel and imply target trace at most P-G175's
+primitive collision budget. Transport and shorting are not open.
+
+Housekeeping — the cyclic-module no-go proved this pass duplicated
+`RHTower.SymplecticCyclicObstruction` (2026-07-11); the duplicate module was removed and the
+surviving doubling/sign theorems live in `HTGeometry.SymplecticDoublingFree`.
+
+## 2026-09-02 — terminal classification (card `0-backlog/terminal-classification-two-doors.md`, ULF-TERM-001)
+
+F388 — Every producer shape in the corpus or the literature is one of four kinds, each closed by
+a theorem: fixed functionals (pair-even, crowd), convergence inside the strip (the conclusion),
+symmetries relating `s` to `σ(s)` (blind at free orbits), two-factor presentations of ξ (root
+dressed by a unit). Motivic halves are impossible. Two doors remain: an amplified discrete
+anchor (F₁) or a direct sub-unit anchor (Ferrero–Washington).
+
+MUST-127 — A new idea must name an integer attached to the free-orbit divisor and a bound below
+`1`; nothing else is admissible. Prediction to check first: the theta-multiplier transfer
+operator (the one arithmetic AII† candidate, absent from the corpus) doubles by cusp pairing and
+is blind.
+
+## 2026-09-02 — direct-subunit completion-index correction
+
+F413 — W-H197 already constructs unique rate-changing boundary transmuter
+`((p+z)/(p+w))^2`; W-H198 gives exact rank-one `SU(1,1)` companion and Krein-charge
+conservation. Rate-changing commutator/anomaly construction is closed.
+
+F414 — W-H205 proves independent-cell assembly impossible: depth-zero companion trace is at least
+`(115/1944) sum_p 1/p`, hence non-trace-class. Prime cells must mix before transmutation.
+
+F415 — Exact paper fusion. For strict-right centered depth `a`, prime `p`, `lambda=log p`, primitive
+weight `w=(115/864)/(p lambda^2)`, companion charge `kappa=w(lambda^4/a^4-1)`, and singleton
+synchronized curvature `C=(3/8)lambda^2`,
+`kappa+w=(115/(324a^4))(C/p)`. Formation curvature is exactly companion metric anomaly plus
+primitive source charge.
+
+F416 — Canonical metric subtraction does not leave zero. It leaves summable unsquared Euler weight
+`w`; declaring residual zero deletes source provenance. Two absolute traces diverge; their
+difference is trace class.
+
+F417 — CCM one-sided Birman--Schwinger theory already gives finite-dimensional above-one dangerous
+subspace, with restricted-Weil positivity iff that subspace vanishes. This supplies an integer but
+not direct bound: ordinary positive-part `<1` is restricted-Weil positivity/RH restated.
+
+F418 — Positive trace-class domination and positive coefficient-recovering cofinal regularization
+of trace-one reflection incidence succeed exactly at neutral grade. Signed, nonlocal relative
+subtraction must precede positivity and norms.
+
+F419 — Synchronized squarefree recovery is strictly contractive on every finite nonempty support;
+fixed-support first jet and absolute Ward index survive. Diffuse support yields strict limiting
+factor `tau/(2sinh(tau/2))<1`, but literal Ward coefficient restoration costs its inverse square
+root. Scalar damping alone is not direct selection.
+
+CANNOT-201 — It cannot call completion transport, rate transmutation, companion construction, or
+short-before-descent open; all are proved.
+
+CANNOT-202 — It cannot assemble local Krein completions independently or seek a positive
+trace-class majorant; corpus proves divergence/critical-line equivalence.
+
+CANNOT-203 — It cannot require residual completion boundary to vanish after metric subtraction;
+exact residual is primitive source charge.
+
+CANNOT-204 — It cannot replace formation-strictness construction by dangerous-sector positive trace
+bound; that is the RH wall in spectral notation.
+
+F420 — Unsigned escape is a singular harmonic-density multiplicity, not ordinary Fredholm index.
+It is reflection-even and equals `0/1`; balanced signed index is always zero. Any norm-continuous
+Fredholm polarization through the neutral fibre has locally constant index and cannot realize the
+escape jump.
+
+F421 — Singular-trace normalization is also already classified. Prime-normal `log log` residue is
+exactly `0/1`, but ordinary ordered-prime Dixmier residue is zero by prime sparsity; additive
+singular traces kill the trace-class primitive Euler remainder and therefore lose its coefficient
+provenance.
+
+F422 — Exact object/current transport does not imply strict transport of exactness witnesses.
+Corpus completion laws preserve coefficients and norm limits off line while compatible finite
+null-homotopies may fail to assemble; their mismatch is the canonical completion obstruction.
+
+CANNOT-205 — It cannot use ordinary essential codimension, signed relative Fredholm index, or an
+additive Dixmier/log-residue trace as direct integer. The first two cancel or remain locally
+constant; the last forgets precisely the summable source term that must finance selection.
+
+MUST-129 — Direct-subunit frontier is pre-divisor prime-mixed formation strictness. Formation and
+completion have equal non-trace-class principal metric and trace-class primitive difference.
+Construct one coefficient-faithful coherent primitive for the finite relative cancellations, prove
+its completion mismatch is unsigned escape multiplicity, and bound that obstruction by the
+primitive source capacity `<1`. Objectwise transport, an unmarked trace-class quotient, positive
+domination, or a post-divisor trace bound does not count.
+Exact card:
+`direct-subunit-anchor/tropicalized-defect-capacity-anchor.md`.
+
+## 2026-09-02 — metaplectic AII† door closed (card `5-failed/metaplectic-transfer-operator-kramers.md`, ULF-META-001)
+
+F389 — Lean: `Ξ` takes both strict signs above every height, so ξ has critical-line zeros of
+odd order above every height and not every order of ξ is even (`RHTower.GlobalParityWall`).
+Copies dichotomy: for `f^e·u` with `u` nonvanishing the order is `e·ord f`; even `e` makes all
+orders even, odd `e` preserves parity; for ξ the parity of `ξ^e·u` is void or violated.
+
+CANNOT-190 — It cannot read a parity constraint on `ord_ρ ξ` off any determinant presenting the
+divisor of ζ through `e` copies (cusp count, Fricke pairs, Weil-representation components,
+mirror pairs): `e` even is void, `e` odd is globally violated. The theta-multiplier transfer
+operator has `e = 2` (two singular cusps `∞, 0` of `Γ₀(4)`, Fricke-paired).
+
+FAIL-75 — ULF-META-001: the metaplectic transfer operator as an AII† model of ξ's divisor.
+
+MUST-128 — Any Kramers-type structure must be restricted to `Re s > ½`; `s`-independent cocycles
+(multiplier systems, symbols, Weil-representation signs) cannot supply the restriction.

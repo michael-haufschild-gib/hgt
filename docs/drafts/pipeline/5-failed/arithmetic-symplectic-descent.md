@@ -148,10 +148,10 @@ ladder must produce two isomorphic copies of the local divisor from Euler data; 
 in the Euler product does.
 
 ## No-go closure
-- **Exact killing theorem/mechanism:** `GaloisForLFunctions.HTGeometry.not_symplectic_selfAdjoint_of_cyclic`,
-  `not_isCyclicVector_of_symplectic_selfAdjoint`, `bilin_symm_of_cyclic`,
+- **Exact killing theorem/mechanism:** the corpus`s `RHTower.SymplecticCyclicObstruction` (`invariant_bilin_symm_of_cyclicVector`, `not_cyclicVector_of_symplectic`, `restrictMaxGen_no_cyclicVector_of_symplectic`, formalized 2026-07-11 and re-derived here before the search found it),
+  
   `exists_symplectic_selfAdjoint_doubled`, `symm_of_skew_units`
-  (module `HTGeometry.CyclicNoSymplecticSelfAdjoint`); on paper, the absence of a global
+  (module `HTGeometry.SymplecticDoublingFree` for the doubling and sign statements); on paper, the absence of a global
   reciprocity for non-quadratic tame symbols.
 - **Strongest positive survivor:** the sharpened Kramers statement (no cyclic vector; Jordan
   blocks double), which sharpens the ladder's open core: the symplectic structure must live on a

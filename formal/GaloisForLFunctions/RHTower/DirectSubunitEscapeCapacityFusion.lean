@@ -14,9 +14,12 @@ This module proves the exact three-organ fusion
 
 `Euler budget < (115 / 108) * escape multiplicity <= cubic Loewner landing`.
 
-No amplification occurs.  The theorem does not identify the source budget with the completed
-landing; constructing a pre-divisor, anomaly-subtracted trace contraction remains the open
-formation theorem.
+No amplification occurs.  Exact signed source-to-completion transport, arithmetic-current to
+reflection--Loewner identification, opposite-radial residue landing, and shorting already exist
+elsewhere in the corpus.  The open theorem is formation strictness: after the common non-trace-class
+metric is removed, the finite source cancellations must assemble into one coherent prime-mixed
+primitive whose exactness witness survives completion.  Such a theorem must be proved before
+divisor specialization.
 -/
 
 open Complex MeasureTheory Set

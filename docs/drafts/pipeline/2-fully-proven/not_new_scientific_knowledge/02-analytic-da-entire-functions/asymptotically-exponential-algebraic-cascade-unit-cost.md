@@ -245,9 +245,36 @@ not the false claim that every correction gains one fixed multidegree.
 observability determinant back along a differential specialization and applies the source-field
 Jacobian criterion.
 
-**Remaining open core:** construct `IsRamifiedPuiseuxCascadeSpecialization` from the card's selected
-algebraic branches.  The autonomous corollary additionally requires the full Briot--Bouquet
-classification.  See `_STAGE3-LEDGER.md`.
+`HTGeometry/RamifiedPuiseuxBranchField.lean` now constructs that specialization intrinsically.
+It takes the relative algebraic closure of the rational coordinate field inside the Hahn fraction
+field, proves that every selected algebraic velocity branch belongs to it, restricts all coordinate
+derivations and the cascade derivation to it, and closes
+`algebraicIndependent_ramifiedPuiseuxBranchCascadeOutputJets`.  The same module proves
+`algebraicIndependent_ramifiedPuiseuxBranchCascadeOutputJets_of_realization`: for any selected
+target realization, agreement on coordinate images and the exact coordinate cascade law forces
+commutation on the whole algebraic branch field and transports the full output-jet independence.
+The commutation step is a theorem, not a hypothesis on every algebraic branch element; it follows
+from the target-valued algebraic-extension uniqueness theorem
+`derivation_map_eq_of_isAlgebraic` in
+`HTGeometry/AlgebraicDerivationMapUniqueness.lean`.
+
+`HTGeometry/AutonomousRamifiedPuiseuxCascadeActual.lean` now closes the card's selected-branch
+differential-order theorem in the actual meromorphic cascade.  Its structure
+`AutonomousRamifiedPuiseuxBranchSelection` records exactly the card's analytic branch selection:
+the algebraic velocities lie in the relative branch field, their product is the actual state
+derivative, and the branch embedding carries the selected nonzero output-linear Puiseux leads.
+The module constructs the ordinary time derivation and the coordinate frame on that branch field;
+`derivation_map_eq_of_isAlgebraic_tower_adjoin` derives full intertwining from agreement on state
+generators.  It then proves actual output-jet independence over `C`, proves the clock transcendental
+over the branch field, descends the jets to `C(z)`, and concludes
+`exactDifferentialOrder_entireCascade_of_autonomousRamifiedPuiseuxBranchSelection` with no added
+observability or differential-specialization premise.  The combined capstone
+`exactOrder_and_compositionDepth_autonomousRamifiedPuiseuxCascade` adds the already-closed
+finite-order/positive-lower-order growth half and proves both equalities in one theorem.
+
+**Remaining open core:** formalise the full Briot--Bouquet classification and its entire-function
+specialization to Laurent polynomials in an exponential.  This is the only remaining gate for the
+card's complete autonomous first-order corollary and stage-3 promotion.  See `_STAGE3-LEDGER.md`.
 
 Also owned: `ExpAffineCascade.scaled_jet_det_ne_zero` (the model determinant),
 `TerminalPowerCascadeInduction.algebraicIndependent_cascadeOutput` (the exactly-triangular case),

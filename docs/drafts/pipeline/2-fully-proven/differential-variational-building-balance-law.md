@@ -1606,3 +1606,178 @@ free rank-one order no-go.  It does not identify matrix degree with the largest 
 component `μ₁(n)`, nor prove the boundedness equivalence `(21)` or boundary equivalence `(22)`.
 Those statements still require higher-rank noncommutative Cartan decomposition, the paper's
 Euclidean building metric, CAT(0) semisimplicity/axes, and boundary flags.  Card remains at Stage 2.
+
+### Lean progress — literal rank-two clock shear and exact unit cost (2026-09-02)
+
+`FreeDifferentialClockShear` constructs the paper's rank-two witness as an actual differential
+automorphism of the free jet field.  Its mutually inverse polynomial substitutions are
+
+```text
+x_n ↦ y_n                 x_n ↦ -x_{n+1} + y_n
+y_n ↦ x_n + y_{n+1}       y_n ↦ x_n,
+```
+
+and the construction proves both polynomial composition identities before lifting the equivalence
+to the fraction field and proving that it commutes with the jet derivation.  Hence this is a
+bundled `FreeAut`, not a matrix-only surrogate.
+
+In the canonical free-coordinate Ore basis, its literal Fréchet matrix is
+
+```text
+J = !![0, 1; 1, ∂].
+```
+
+The leaf proves the persistent leading-coefficient chain for every matrix power, compatibility of
+coefficient transport with `J` and all its powers, and therefore the exact identities
+
+```text
+freeFrechetMatrix (freeClockShear ^ (n + 1)) = J ^ (n + 1)
+DiffOp.matDeg (J ^ n) = n
+freeDifferentialOrder (freeClockShear ^ n) = n
+freeOrderGauge.translationLength freeClockShear = 1.
+```
+
+Direct checking and the targeted leaf build pass.  A batched audit of all 27 new public
+declarations reports exactly `[propext, Classical.choice, Quot.sound]`.  The leaf is wired into
+`HTGeometry`; no umbrella build was run.
+
+This closes the exact free-field rank-two clock witness and unit asymptotic cost claimed in `(24)`.
+It does not manufacture the paper's dominant Cartan vector `(n,-n)`: that literal statement still
+depends on a higher-rank Cartan decomposition for the completed noncommutative valuation ring.
+The Euclidean Cartan metric, CAT(0) semisimplicity/axes, and boundary flags remain open, so the card
+remains at Stage 2.
+
+### Lean progress — exact projective orbit distance of the clock shear (2026-09-02)
+
+`DifferentialVariationalOperatorMatrixInterleaving` converts projective lattice interleaving for
+an arbitrary invertible Ore matrix into an exact entrywise degree criterion.  It first proves that
+the completed valuation of every embedded nonzero differential operator is the negative of its
+Ore degree.  It then characterizes both standard-lattice containments for a left-scaled matrix
+orbit, including the inverse-matrix containment and the noncommutative inner-conjugation needed
+for arbitrary left scalars.  The resulting equivalence is
+
+```text
+standard.LeftOrbitInterleavedAt n (U · standard)
+  ⇔ ∃ z : ℤ,
+      (∀ i j, (U⁻¹)ᵢⱼ = 0 ∨ degree (U⁻¹)ᵢⱼ ≤ n - z) ∧
+      (∀ i j, Uᵢⱼ = 0 ∨ degree Uᵢⱼ ≤ n + z).
+```
+
+No commutativity of the completed skew field is assumed: every arbitrary homothety is reduced to
+its exact uniformizer power using its additive value, while the remaining value-zero unit acts by
+an integral inner automorphism.
+
+`FreeDifferentialClockShearOrbit` constructs the literal inverse Ore matrix
+
+```text
+J⁻¹ = !![-∂, 1; 1, 0]
+```
+
+and proves both two-sided inverse identities.  Its persistent inverse leading chain gives
+`matDeg ((J⁻¹)^n) = n`; together with the existing forward identity
+`matDeg (J^n) = n`, this supplies degree-`n` entries on both sides.  Consequently every
+projective recentering integer `z` at radius `d` obeys simultaneously
+`n ≤ d + z` and `n ≤ d - z`.  The exact orbit law follows:
+
+```text
+completedPseudoDiffOpLatticeOrbitInterleavingDistance
+  standard (freeClockShearCompletedOrbitLattice n) = n.
+```
+
+Finally, the same leaf identifies this matrix orbit with the actual canonical variational action
+in the proved free Ore basis.  Coefficient transport fixes the standard lattice, and the canonical
+completed action matrix of `freeClockShear^n` is exactly the completed embedding of `J^n`.
+Therefore the action-level statement is literal:
+
+```text
+projectiveInterleavingDistance
+  freeClockShearProjectiveBasePoint
+  ((freeClockShear^n).projectiveBuildingAction
+    freeVariationalOreBasis freeClockShearProjectiveBasePoint) = n.
+```
+
+Both leaves pass direct checks and targeted leaf builds.  One batched audit of their 30 new public
+declarations reports exactly `[propext, Classical.choice, Quot.sound]`.  Both are wired into
+`HTGeometry`; no umbrella build was run.
+
+This closes an exact rank-two geometric unit-cost law for the unconditional projective
+interleaving metric, with minimization over every left homothety rather than a fixed
+representative.  It does not identify that metric with the paper's Euclidean Cartan metric or
+construct the dominant Cartan vector `(n,-n)`.  Higher-rank noncommutative Cartan decomposition,
+Euclidean comparison, CAT(0) axes, and boundary flags remain open.  Card remains at Stage 2.
+
+### Lean progress — bi-infinite canonical clock axis (2026-09-02)
+
+`FreeDifferentialClockShearAxis` extends the actual projective clock orbit from natural iterates
+to every integer iterate:
+
+```text
+freeClockShearProjectiveOrbitPoint z
+  = (freeClockShear^z).projectiveBuildingAction
+      freeVariationalOreBasis freeClockShearProjectiveBasePoint.
+```
+
+Action functoriality and projective-metric isometry transport the positive-power calculation across
+inverse powers and arbitrary orbit origins.  The exact pairwise formula is
+
+```text
+projectiveInterleavingDistance
+  (freeClockShearProjectiveOrbitPoint m)
+  (freeClockShearProjectiveOrbitPoint n)
+  = Int.natAbs (n - m).
+```
+
+Thus the literal canonical variational action has a bi-infinite unit-speed metric axis, rather than
+only an asymptotic order calculation or a one-sided orbit estimate.
+`DifferentialVariationalProjectiveInterleavingMetricSpace` also promotes the natural-number
+distance to a genuine separated real-valued `MetricSpace`, preserving its exact integral values.
+In this metric the orbit map itself satisfies mathlib's `Isometry` predicate:
+
+```text
+Isometry (freeClockShearProjectiveOrbitPoint : ℤ → B).
+```
+
+Direct checks and targeted leaf builds pass.  A batched audit of all seven public declarations
+introduced by the metric-space and axis leaves reports exactly
+`[propext, Classical.choice, Quot.sound]`.  Both leaves are wired into `HTGeometry`, and the
+umbrella was not built.
+
+This is an exact axis for the unconditional projective interleaving metric.  Identifying it with a
+Euclidean geodesic in the paper's affine building, constructing its visual-boundary endpoints, and
+recovering the dominant Cartan vector `(n,-n)` still require the missing noncommutative Cartan and
+CAT(0) layers.  Card remains at Stage 2.
+
+### Lean progress — canonical action bundled by metric isometries (2026-09-02)
+
+`DifferentialVariationalProjectiveInterleavingIsometry` upgrades every canonical variational
+action from an equality-of-distance theorem to a mathlib `IsometryEquiv`:
+
+```text
+projectiveBuildingInterleavingIsometryEquiv σ b : B ≃ᵢ B.
+```
+
+The bundled isometries obey chronological multiplication and the identity law exactly, using the
+already-proved canonical projective action rather than a parallel action definition.  Direct
+checking, targeted leaf build, and a batched audit of all four new declarations pass with exactly
+`[propext, Classical.choice, Quot.sound]`.  The leaf is umbrella-wired without an umbrella build.
+
+This closes the functorial “action by isometries” assertion for the unconditional projective
+interleaving metric.  It does not identify that metric with the paper's Euclidean Cartan metric;
+the balance, asymptotic Cartan vector, and visual-boundary claims remain open.  Card remains at
+Stage 2.
+
+### Lean progress — completeness of the projective interleaving metric (2026-09-02)
+
+`DifferentialVariationalProjectiveInterleavingComplete` proves a genuine `CompleteSpace`
+instance for every finite-rank projective lattice carrier equipped with the interleaving metric.
+The proof uses the exact integral distance: a Cauchy filter has a member of diameter strictly below
+one, hence that member is a singleton, so the filter converges.  No local compactness, residue-field
+finiteness, or external building theorem is assumed.
+
+Direct checking, targeted leaf build, and the new-instance axiom audit pass with exactly
+`[propext, Classical.choice, Quot.sound]`.  The leaf is wired into `HTGeometry`; no umbrella
+build was run.
+
+This closes completeness for the unconditional projective interleaving metric.  Completeness alone
+does not supply CAT(0), geodesic interpolation, noncommutative Cartan decomposition, or visual
+boundary flags, so the paper's Euclidean phase theorem remains open and the card stays at Stage 2.
