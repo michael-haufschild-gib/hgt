@@ -89,3 +89,10 @@ exists in the corpus; producing one is the only research act this classification
   corpus searched for theta-multiplier/metaplectic transfer operators (absent).
 - 2026-09-02 — §2 prediction confirmed (two singular cusps, Fricke square, `e = 2`); global parity
   wall proved in Lean; the card remains as the standing classification.
+- 2026-09-02 — door 1 attacked directly: Weil–Deligne integrality refuted in both coordinates
+  (`5-failed/f1-frobenius-integrality-torsion-law.md`, `RHTower.FrobeniusTorsionLaw`); producer
+  positivity shown RH-or-blind. Door 1 survives only as a structure without characteristic
+  polynomials (MUST-129).
+- 2026-09-02 — door 2 audited: the corpus's direct anchor integer is the off-line indicator
+  (`RHTower.EscapeMultiplicityOffLineIndicator`); its gap is the off-line condition and its
+  everywhere-vanishing is RH. Both doors are receivers as the corpus stands (CANNOT-193, MUST-130).

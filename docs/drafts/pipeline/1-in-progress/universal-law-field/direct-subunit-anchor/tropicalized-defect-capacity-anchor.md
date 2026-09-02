@@ -144,3 +144,13 @@ synchronized squarefree formation. Candidate must:
 
 Transport, rate transmutation, local Krein lift, shorting, and Gamma/polar descent need not be
 rebuilt.
+
+## Audit addendum 2026-09-02 (from the terminal-classification lane; no status change made here)
+
+Lean (`RHTower.EscapeMultiplicityOffLineIndicator`): `thetaKakutaniEscapeMultiplicity q =
+if Re q = ½ then 0 else 1`; `budget < (115/108)·multiplicity ↔ Re q ≠ ½`; and
+`(∀ q, multiplicity q = 0) ↔ RH`. So the integer of this anchor is the off-line indicator and its
+sub-unit gap is the off-line condition itself. For the anchor to be of Ferrero–Washington type,
+the "formation strictness" theorem must supply an integer or bound defined without reference to
+the copy's position; the capacity law it must imply is RH-equivalent (P-G176), so strictness is an
+RH-strength target, not an independent producer. Recorded as CANNOT-193 / MUST-130.

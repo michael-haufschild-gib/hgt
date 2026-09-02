@@ -682,6 +682,110 @@ theorem hahnFractionRamCoordinateBase_hasLeadAt
     rw [HahnSeries.coeff_single_of_ne (ne_of_lt hk)]
   · rw [HahnSeries.coeff_single_same]
 
+/-- Generic ramified coordinate derivative is the negative Kronecker derivation. -/
+theorem hahnFractionRamPartialBase_coordinate
+    (K : Type*) [Field K] [CharZero K] {N : ℕ}
+    (r : Fin N → ℕ) (hr : ∀ i, 0 < r i) (j k : Fin N) :
+    hahnFractionRamPartialBase K r j (hahnFractionRamCoordinateBase K r k) =
+      algebraMap K (HahnFraction (mgDeg N) K) (if k = j then -1 else 0) := by
+  rw [hahnFractionRamCoordinateBase, hahnFractionRamPartialBase_algebraMap]
+  have hs : mgRamPartialBase K r j (HahnSeries.single (mgRamUnit r k) 1) =
+      algebraMap K (HahnSeries (mgDeg N) K) (if k = j then -1 else 0) := by
+    by_cases hkj : k = j
+    · subst k
+      ext d
+      rw [show mgRamPartialBase K r j (HahnSeries.single (mgRamUnit r j) 1) =
+          mgRamShiftBase K r j * hahnGrade (mgRamCompBase K r j)
+            (HahnSeries.single (mgRamUnit r j) 1) by rfl]
+      simp only [mgRamShiftBase, HahnSeries.coeff_single_mul, coeff_hahnGrade]
+      have hrK : (r j : K) ≠ 0 := by exact_mod_cast (ne_of_gt (hr j))
+      by_cases hd : d = 0
+      · subst d
+        rw [show (0 : mgDeg N) - mgRamStep r j = mgRamUnit r j by
+          have hzero := mgRamUnit_add_step r j
+          rw [eq_neg_of_add_eq_zero_left hzero]
+          abel]
+        have hcomp : mgRamCompBase K r j (mgRamUnit r j) = -1 := by
+          change ((((ofLex (mgRamUnit r j) j : ℤ) : K) / (r j : K))) = -1
+          rw [ofLex_mgRamUnit, if_pos rfl]
+          push_cast
+          field_simp
+        rw [hcomp]
+        simp
+      · have hne : d - mgRamStep r j ≠ mgRamUnit r j := by
+          intro h
+          apply hd
+          calc
+            d = (d - mgRamStep r j) + mgRamStep r j := by abel
+            _ = mgRamUnit r j + mgRamStep r j := by rw [h]
+            _ = 0 := mgRamUnit_add_step r j
+        rw [HahnSeries.coeff_single, if_neg hne]
+        simp [hd]
+    · ext d
+      rw [show mgRamPartialBase K r j (HahnSeries.single (mgRamUnit r k) 1) =
+          mgRamShiftBase K r j * hahnGrade (mgRamCompBase K r j)
+            (HahnSeries.single (mgRamUnit r k) 1) by rfl]
+      simp only [mgRamShiftBase, HahnSeries.coeff_single_mul, coeff_hahnGrade]
+      have hkj' : j ≠ k := Ne.symm hkj
+      simp only [if_neg hkj]
+      by_cases hindex : d - mgRamStep r j = mgRamUnit r k
+      · rw [HahnSeries.coeff_single, if_pos hindex, mul_one]
+        have hcomp : mgRamCompBase K r j (d - mgRamStep r j) = 0 := by
+          change ((((ofLex (d - mgRamStep r j) j : ℤ) : K) / (r j : K))) = 0
+          rw [hindex, ofLex_mgRamUnit, if_neg hkj']
+          norm_num
+        rw [hcomp]
+        simp
+      · rw [HahnSeries.coeff_single, if_neg hindex]
+        simp
+  simpa only [IsScalarTower.algebraMap_apply K (HahnSeries (mgDeg N) K)
+    (HahnFraction (mgDeg N) K)] using
+    congrArg (algebraMap (HahnSeries (mgDeg N) K)
+      (HahnFraction (mgDeg N) K)) hs
+
+/-- Generic product-cascade vector field sends each coordinate to its suffix velocity product. -/
+theorem hahnFractionRamCascadeDerivationBase_coordinate
+    (K : Type*) [Field K] [CharZero K] {N : ℕ}
+    (r : Fin N → ℕ) (hr : ∀ i, 0 < r i)
+    (A : Fin N → HahnFraction (mgDeg N) K) (k : Fin N) :
+    hahnFractionRamCascadeDerivationBase K r A (hahnFractionRamCoordinateBase K r k) =
+      hahnFractionRamSuffixProductBase A (k : ℕ) := by
+  rw [hahnFractionRamCascadeDerivationBase_apply]
+  simp_rw [hahnFractionRamPartialBase_coordinate K r hr]
+  rw [Finset.sum_eq_single k]
+  · simp
+  · intro j _ hjk
+    simp [Ne.symm hjk]
+  · intro hk
+    exact (hk (Finset.mem_univ k)).elim
+
+/-- Coefficient differentiation kills every ramified coordinate monomial. -/
+theorem hahnFractionCoefficientDerivation_coordinateBase
+    {C K : Type*} [Field C] [Field K] [Algebra C K] {N : ℕ}
+    (dK : Derivation C K K) (r : Fin N → ℕ) (k : Fin N) :
+    hahnFractionCoefficientDerivation dK (hahnFractionRamCoordinateBase K r k) = 0 := by
+  rw [hahnFractionRamCoordinateBase, hahnFractionCoefficientDerivation_algebraMap]
+  rw [← map_zero (algebraMap (HahnSeries (mgDeg N) K) (HahnFraction (mgDeg N) K))]
+  apply congrArg (algebraMap (HahnSeries (mgDeg N) K) (HahnFraction (mgDeg N) K))
+  ext d
+  rw [coeff_hahnCoefficientDerivation]
+  by_cases hd : d = mgRamUnit r k
+  · subst d
+    rw [HahnSeries.coeff_single_same, dK.map_one_eq_zero, HahnSeries.coeff_zero]
+  · rw [HahnSeries.coeff_single_of_ne hd, map_zero, HahnSeries.coeff_zero]
+
+/-- Total nonautonomous cascade derivation has the exact suffix-product coordinate law. -/
+theorem hahnFractionRamCascadeDifferentialDerivation_coordinate
+    (C K : Type*) [Field C] [Field K] [Algebra C K] [CharZero K] {N : ℕ}
+    (dK : Derivation C K K) (r : Fin N → ℕ) (hr : ∀ i, 0 < r i)
+    (A : Fin N → HahnFraction (mgDeg N) K) (k : Fin N) :
+    hahnFractionRamCascadeDifferentialDerivation C K dK r A
+        (hahnFractionRamCoordinateBase K r k) =
+      hahnFractionRamSuffixProductBase A (k : ℕ) := by
+  rw [hahnFractionRamCascadeDifferentialDerivation_apply,
+    hahnFractionCoefficientDerivation_coordinateBase,
+    zero_add, hahnFractionRamCascadeDerivationBase_coordinate K r hr]
+
 /-- Terminal coordinate followed by logarithmic derivatives for the nonautonomous cascade. -/
 noncomputable def hahnFractionRamDifferentialLogStateBase
     (C K : Type*) [Field C] [Field K] [Algebra C K] [CharZero K] {n : ℕ}
@@ -1016,6 +1120,66 @@ theorem algebraicIndependent_hahnFractionRamCascadeOutputJetsBase
     (fun i : Fin (n + 1) ↦ hahnFractionRamLogStateBase K r A (i : ℕ))
     (algebraicIndependent_hahnFractionRamLogStateBase r hr A lambda hlambda hA)
     (hahnFractionRamLogStateBase_mem_outputJetAdjoin K r A)
+    rfl
+
+/-- Nonautonomous Hahn logarithmic chain equals generic recursive chain for total time
+derivation. -/
+theorem hahnFractionRamDifferentialLogStateBase_eq_derivationLogState
+    (C K : Type*) [Field C] [Field K] [Algebra C K] [CharZero K] {n : ℕ}
+    (dK : Derivation C K K) (r : Fin (n + 1) → ℕ)
+    (A : Fin (n + 1) → HahnFraction (mgDeg (n + 1)) K) (k : ℕ) :
+    hahnFractionRamDifferentialLogStateBase C K dK r A k =
+      derivationLogState (hahnFractionRamCascadeDifferentialDerivation C K dK r A)
+        (hahnFractionRamCoordinateBase K r 0) k := by
+  induction k with
+  | zero => rfl
+  | succ k ih =>
+      rw [hahnFractionRamDifferentialLogStateBase_succ, derivationLogState_succ, ih]
+
+/-- Every nonautonomous Hahn logarithmic state lies in the raw output-jet field over `K`. -/
+theorem hahnFractionRamDifferentialLogStateBase_mem_outputJetAdjoin
+    (C K : Type*) [Field C] [Field K] [Algebra C K] [CharZero K] {n : ℕ}
+    (dK : Derivation C K K) (r : Fin (n + 1) → ℕ)
+    (A : Fin (n + 1) → HahnFraction (mgDeg (n + 1)) K)
+    (i : Fin (n + 1)) :
+    hahnFractionRamDifferentialLogStateBase C K dK r A (i : ℕ) ∈
+      IntermediateField.adjoin K
+        (Set.range fun j : Fin (n + 1) ↦
+          ((hahnFractionRamCascadeDifferentialDerivation C K dK r A :
+              HahnFraction (mgDeg (n + 1)) K → HahnFraction (mgDeg (n + 1)) K)^[(j : ℕ)])
+            (hahnFractionRamCoordinateBase K r 0)) := by
+  rw [hahnFractionRamDifferentialLogStateBase_eq_derivationLogState]
+  exact derivationLogState_mem_fixedDifferentialCoefficientJetPrefixField K
+    (hahnFractionRamCascadeDifferentialDerivation C K dK r A)
+    (fun c ↦ ⟨dK c,
+      hahnFractionRamCascadeDifferentialDerivation_coeffAlgebraMap C K dK r A c⟩)
+    (hahnFractionRamCoordinateBase K r 0) i
+
+/-- **Nonautonomous coefficient-field raw-jet observability.** The first `n+1` Lie derivatives of
+the terminal coordinate are algebraically independent over `K`, even though time differentiates
+the coefficients. -/
+theorem algebraicIndependent_hahnFractionRamDifferentialCascadeOutputJetsBase
+    {C K : Type*} [Field C] [Field K] [Algebra C K] [CharZero K] {n : ℕ}
+    (dK : Derivation C K K)
+    (r : Fin (n + 1) → ℕ) (hr : ∀ j, 0 < r j)
+    (A : Fin (n + 1) → HahnFraction (mgDeg (n + 1)) K)
+    (lambda : Fin (n + 1) → K) (hlambda : ∀ j, lambda j ≠ 0)
+    (hA : ∀ j, FracHasLeadAt (A j) (mgRamUnit r j) (lambda j)) :
+    AlgebraicIndependent K
+      (fun j : Fin (n + 1) ↦
+        ((hahnFractionRamCascadeDifferentialDerivation C K dK r A :
+            HahnFraction (mgDeg (n + 1)) K → HahnFraction (mgDeg (n + 1)) K)^[(j : ℕ)])
+          (hahnFractionRamCoordinateBase K r 0)) := by
+  apply algebraicIndependent_of_independent_family_mem_adjoin
+    (fun j : Fin (n + 1) ↦
+      ((hahnFractionRamCascadeDifferentialDerivation C K dK r A :
+          HahnFraction (mgDeg (n + 1)) K → HahnFraction (mgDeg (n + 1)) K)^[(j : ℕ)])
+        (hahnFractionRamCoordinateBase K r 0))
+    (fun i : Fin (n + 1) ↦
+      hahnFractionRamDifferentialLogStateBase C K dK r A (i : ℕ))
+    (algebraicIndependent_hahnFractionRamDifferentialLogStateBase
+      dK r hr A lambda hlambda hA)
+    (hahnFractionRamDifferentialLogStateBase_mem_outputJetAdjoin C K dK r A)
     rfl
 
 end GaloisForLFunctions.HTGeometry

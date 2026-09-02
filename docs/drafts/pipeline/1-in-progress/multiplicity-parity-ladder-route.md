@@ -374,3 +374,43 @@ twins, motivic halves) proved either impossible or equivalent to the root. A pro
 a non-linear arithmetic construction of a half-divisor object; MUST-125/126 record the
 constraint. Related Lean this pass: `HTGeometry.SymplecticDoublingFree` (doubling is free;
 `{±1}` skew pairings are symmetric), complementing `SymplecticCyclicObstruction`.
+
+## 2026-09-02 — Fixed theta determinant carrier: one-chain no-go and surviving parity character
+
+The fixed Hedenmalm theta source is a genuine arithmetic carrier, not an abstract model:
+`thetaSourceEntireDet2_eq_XiC_normalized` identifies its regularized determinant with normalized
+`XiC`, and `finrank_thetaRootBlock_at_XiSupport` identifies each complete generalized root-block
+dimension with exact Xi multiplicity. It therefore gives the strongest available test of the
+report's proposed “2×2 arithmetic presentation”.
+
+The test is negative in the proposed Kramers form. Source ODE uniqueness already gives
+`finrank (ker N_mu) = 1` for the nilpotent part of every nonzero root block. New theorem
+`exists_cyclicVector_thetaRootNilpotentPart` upgrades the coordinate-free nilpotency-index law to
+a literal cyclic vector: every actual theta root block is one complete Jordan chain. Combining
+this with `SymplecticCyclicObstruction` yields
+`thetaRootBlockOperator_not_symplectically_selfAdjoint`: no nondegenerate alternating bilinear
+form can make the actual restricted theta operator self-adjoint. Functional-equation reflection
+pairs distinct `mu` and `-mu` blocks; it does not create a second channel at one spectral point.
+
+**Positive survivor.** Xi multiplicity is exactly the length of this single arithmetic Jordan
+chain. Reflection acts on its nonzero terminal conormal current through the computable scalar
+`thetaDepthCharacter(mu) = (-1)^(dim ThetaRootBlock(mu)-1)`. At an Xi support point this is
+`(-1)^(ord_rho(Xi)-1)`. Hence base rung is now equivalent, on this concrete carrier, to the
+source-native sign law `thetaDepthCharacter = -1` at every right-half support point. Any viable
+theta-source proof must force that sign from prime/source data; adding a formal symplectic double
+cannot do it. If no such source law exists, fixed determinant carrier is retired with the
+single-chain classification as its positive salvage.
+
+Lean: `HedenmalmThetaRootBlockCyclicNoGo.lean`; targeted `lake build` succeeds; theorem axiom
+audit contains only `propext`, `Classical.choice`, and `Quot.sound`. Full formal lint is blocked
+only by pre-existing unrelated unreachable modules in the dirty worktree; this module is wired
+into `RHTower.lean`.
+
+The surviving sign interface is now formalized exactly in
+`HedenmalmThetaDepthCharacterLadder.lean`:
+`thetaDepthCharacter_eq_neg_one_iff_even_multiplicity` and
+`rhLadder_one_iff_thetaDepthCharacter_eq_neg_one_rightHalf`. Targeted build succeeds and axiom
+audit is clean modulo Lean foundations. Corpus audit of `HedenmalmThetaSourcePrimeModularCurrentField`
+shows prime-modular dilations commute with the conormal current for both character values; dense
+off-wall dilation spectrum therefore does not select `-1`. This closes prime-dilation covariance
+as a parity producer while preserving the depth character as exact open source invariant.

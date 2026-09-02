@@ -120,6 +120,47 @@ noncomputable instance stageTwoSlopeAffineNormalizationRing_isDedekindDomain
     inferInstance inferInstance inferInstance inferInstance hfinite
     inferInstance inferInstance inferInstance inferInstance
 
+/-- The affine normalization ring is finite as a module over the polynomial slope coordinate
+ring.  This is the module-finiteness statement inside the Dedekind integral-closure theorem,
+exported explicitly for the finite-morphism construction of the projective normalization. -/
+noncomputable instance stageTwoSlopeAffineNormalizationRing_finite
+    (x : Fin 2 → ℂ) (core : StageTwoDefectSlopeCore x) :
+    Module.Finite (stageTwoSlopeCoordinateRing x core)
+      (stageTwoSlopeAffineNormalizationRing x core) := by
+  letI algSlopeValue : Algebra (stageTwoSlopeRationalField x core)
+      (stageTwoValueField (x 0) (x 1)) :=
+    (stageTwoSlopeRationalField x core).val.toAlgebra
+  letI : IsScalarTower AlgNum (stageTwoSlopeRationalField x core)
+      (stageTwoValueField (x 0) (x 1)) :=
+    IsScalarTower.of_algebraMap_eq fun _ => rfl
+  letI towerCoordinateSlopeValue : IsScalarTower (stageTwoSlopeCoordinateRing x core)
+      (stageTwoSlopeRationalField x core) (stageTwoValueField (x 0) (x 1)) :=
+    IntermediateField.algebraAdjoinAdjoin.instIsScalarTowerSubtypeMemSubalgebraAdjoinAdjoin_1
+      AlgNum ({core.rho} : Set (stageTwoValueField (x 0) (x 1)))
+      (stageTwoValueField (x 0) (x 1))
+  letI hfinite : FiniteDimensional (stageTwoSlopeRationalField x core)
+      (stageTwoValueField (x 0) (x 1)) := core.finite_over_slope
+  letI : Algebra.IsAlgebraic (stageTwoSlopeRationalField x core)
+      (stageTwoValueField (x 0) (x 1)) :=
+    @Algebra.IsAlgebraic.of_finite
+      (stageTwoSlopeRationalField x core)
+      (stageTwoValueField (x 0) (x 1)) _ _ _ algSlopeValue hfinite
+  letI : Algebra.IsSeparable (stageTwoSlopeRationalField x core)
+      (stageTwoValueField (x 0) (x 1)) := inferInstance
+  letI : IsNoetherian (stageTwoSlopeCoordinateRing x core)
+      (stageTwoSlopeAffineNormalizationRing x core) :=
+    @IsIntegralClosure.isNoetherian
+      (stageTwoSlopeCoordinateRing x core)
+      (stageTwoSlopeRationalField x core)
+      inferInstance inferInstance inferInstance inferInstance
+      (stageTwoValueField (x 0) (x 1))
+      inferInstance
+      (stageTwoSlopeAffineNormalizationRing x core)
+      inferInstance algSlopeValue inferInstance towerCoordinateSlopeValue
+      inferInstance inferInstance inferInstance inferInstance hfinite
+      inferInstance inferInstance inferInstance inferInstance
+  exact ⟨IsNoetherian.noetherian ⊤⟩
+
 /-- The affine normalization chart is locally Noetherian. -/
 noncomputable instance stageTwoSlopeAffineNormalizationScheme_isLocallyNoetherian
     (x : Fin 2 → ℂ) (core : StageTwoDefectSlopeCore x) :

@@ -1,9 +1,9 @@
 # Tropicalized defect-capacity fusion
 
 - **ID:** ULF-DSA-002
-- **Stage:** 2-fully-proven
-- **Status:** escape-capacity fusion and formation-relative completion law proved; relative-index
-  selection remains open
+- **Stage:** 3-formalized
+- **Status:** escape-capacity fusion and formation-relative completion law Lean-proved;
+  relative-index selection remains open
 - **Lean:** `RHTower.DirectSubunitEscapeCapacityFusion`
 
 ## Big picture
@@ -64,7 +64,7 @@ flux/rate zero-locus theorem makes theta boundary flux nonzero, so quantized esc
 one.  Substitute this equality into the proved Euler subquantum bound.  The cubic Loewner quantum
 theorem gives the second inequality.  No new assumption enters.
 
-`[PROVED HERE]`
+`[LEAN-PROVED: RHTower.xiRight_tropicalizedDefectCapacityFusion]`
 
 ## Exact formation-relative completion law
 
@@ -104,12 +104,16 @@ synchronized-recovery curvature on a singleton is
 (1/3) lambda_p^2 + (1/24) lambda_p^2 = (3/8) lambda_p^2.
 ```
 
-Substitution gives the identity. `[PROVED HERE]`
+Substitution gives the identity.
+`[LEAN-PROVED: RHTower.xiRight_tropicalizedDefectCapacityFormationRelativeCompletion]`
 
 Formation curvature and completion companion are individually non-trace-class, while their
-difference is the literal summable primitive source weight. This is universal metric-anomaly
-subtraction derived from squarefree formation. It preserves the unsquared Euler coefficient
-because that coefficient is exactly the relative remainder.
+difference is the literal summable primitive source weight. These are formalized respectively by
+`not_summable_xiWardCubicFormationMetricAnomalyTraceWeight`,
+`not_summable_xiWardCubicPhaseMatchedKreinCompanionTraceWeight_prime_zero`, and
+`summable_xiWardCubicFormationRelativeRemainder`. This is universal metric-anomaly subtraction
+derived from squarefree formation. It preserves the unsquared Euler coefficient because that
+coefficient is exactly the relative remainder.
 
 The proposed clause “residual completion boundary vanishes” is false for this canonical
 subtraction: residual is `w_p`, not zero. Correct conservation law is
@@ -119,6 +123,41 @@ formation metric anomaly = completion companion + primitive source charge.
 ```
 
 Vanishing would erase source provenance.
+
+## Lean formalization audit
+
+The exact Stage-2 theorem surface is closed in
+`formal/GaloisForLFunctions/RHTower/DirectSubunitEscapeCapacityFusion.lean`:
+
+1. `xiRight_thetaKakutaniEscapeMultiplicity_eq_one` proves `I(q)=1`.
+2. `xiRight_directSubunitEscapeCapacityGap` proves
+   `B_Euler < (115/108) I(q) <= E(q)`.
+3. `xiRight_tropicalizedDefectCapacityFusion` packages the complete first theorem without an
+   added premise.
+4. `gammaSewnSynchronizedRecoveryQuadraticCost_singleton` proves
+   `C_p=(3/8)(log p)^2`.
+5. `xiWardCubicPhaseMatchedKreinCompanionTraceWeight_prime_zero_eq` proves the exact
+   `kappa_p=w_p((log p)^4/a^4-1)` law.
+6. `xiWardCubicFormationMetricAnomalyTraceWeight_eq_companion_add_source` and
+   `xiWardCubicFormationMetricAnomalyTraceWeight_sub_companion_eq_source` prove both displayed
+   forms of the formation-relative completion identity.
+7. `not_summable_xiWardCubicPhaseMatchedKreinCompanionTraceWeight_prime_zero` and
+   `not_summable_xiWardCubicFormationMetricAnomalyTraceWeight` prove both non-trace-class claims.
+8. `summable_xiGammaEulerPrimitiveCubicLogMomentWeight_prime_zero` and
+   `summable_xiWardCubicFormationRelativeRemainder` prove literal source-remainder summability.
+9. `xiRight_tropicalizedDefectCapacityFormationRelativeCompletion` packages the complete second
+   theorem without an added premise.
+
+Verification on 2026-09-02:
+
+- `lake env lean GaloisForLFunctions/RHTower/DirectSubunitEscapeCapacityFusion.lean`: pass.
+- `lake build GaloisForLFunctions.RHTower.DirectSubunitEscapeCapacityFusion`: pass
+  (`13190/13190`; targeted leaf only).
+- `#print axioms` on every newly created declaration: only `propext`, `Classical.choice`, and
+  `Quot.sound`.
+- `scripts/formal_tools.py lint`: no issue for this module or its umbrella import; global exit 1 is
+  caused by unrelated pre-existing unreachable modules listed by the lint report.
+- `GaloisForLFunctions.RHTower.lean` imports the finished module; no umbrella build was run.
 
 ## Exact RH closure still missing
 

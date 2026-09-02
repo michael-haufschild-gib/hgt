@@ -3982,3 +3982,188 @@ FAIL-75 — ULF-META-001: the metaplectic transfer operator as an AII† model o
 
 MUST-128 — Any Kramers-type structure must be restricted to `Re s > ½`; `s`-independent cocycles
 (multiplier systems, symbols, Weil-representation signs) cannot supply the restriction.
+
+## 2026-09-02 — door 1 attempted and refuted (card `5-failed/f1-frobenius-integrality-torsion-law.md`, ULF-F1-002)
+
+F390 — Lean (`RHTower.FrobeniusTorsionLaw`): if every Arakelov coordinate of a zero of ξ is an
+algebraic integer and Galois conjugates of coordinates are coordinates of zeros, then RH is
+false; with contractive packets (the chamber) this is contradictory. Kronecker forces roots of
+unity, the middle totative of each order gives a conjugate zero in the closed unit disc, and
+infinitely many orders make zeros accumulate.
+
+F391 — Lean: `p^ρ` algebraic for one `p ≥ 2` and `ρ` nonreal ⇒ `ρ` and `w(ρ)` transcendental
+(Gelfond–Schneider). Paper: at most two primes have `p^ρ` algebraic (six exponentials).
+
+CANNOT-191 — It cannot carry Weil–Deligne integrality on the zeros of ξ: in the normalised
+coordinate integrality is incompatible with RH (torsion law); in the unnormalised coordinate it
+fails at three primes; the two coordinates exclude each other.
+
+CANNOT-192 — It cannot produce a positivity below RH: all-aperture Weil positivity is RH,
+finite-aperture positivity is blind (C1–C4), symmetry never sources it, the Hodge star's
+Frobenius compatibility is RH.
+
+MUST-129 — Any F₁-door construction must be integral on the test-function side (integer
+Lefschetz numbers such as `lcm(1..n)`), not on the eigenvalue side; it cannot have a
+characteristic polynomial. The remaining Lean item is the six exponentials theorem.
+
+Open Lean item (card `1-in-progress/six-exponentials-lean.md`): six exponentials theorem via
+Siegel + multipoint Schwarz + Liouville, no zero-counting; corollary: not all of `p₁^ρ, p₂^ρ,
+p₃^ρ` algebraic for nonreal `ρ`.
+
+## 2026-09-02 — integral--nuclear homotopy defect
+
+F423 — Absolute nuclear `T` is impossible. Any endomorphism inducing identity on a nonzero
+Hausdorff escape quotient has norm at least one; faithful compact prime formation is already proved
+nonproper. The source budget can act only after relative cancellation of two non-nuclear principal
+parts.
+
+F424 — Raw completion-minus-formation heat difference is insufficient: trace class does not make
+its trace integral. Integrality requires a relative Hodge/Fedosov class (equivalently a trace-class
+difference of theta-positive graph projections).
+
+F425 — P-G186 canonically has a global prime-mixed Hilbert--Schmidt synthesis in its already-built
+Burnol `L²` carrier. Its squared HS norm is `B_base=(216/115)B_Euler<2`; normalization by
+`1/sqrt 2` makes total nuclear mass `<1`. P-G194 extends this to an exact three-channel isometry,
+retaining every off-diagonal prime/depth entry.
+
+F426 — Minimal surviving object is
+`T(s)=Pi_Mul(R_theta^+(s))-Pi_Mul(R_ar^+(s))`, the relative theta-positive projection defect of
+the multivalued horizons of the two completed pre-divisor all-prime relations. `Mul(R)` is the
+kernel of source projection from the closed relation, hence exactly completion-created loss of a
+finite null-homotopy. Relative projection trace is integral.
+
+F427 — One common vertical class and one horizontal scalar horizon already exist separately.
+`FrankensteinMeyerPrimeKoszulGammaReporter` gives one reporter cocyclic for every prime;
+`DeningerCalderonWittAllCrossPrimeIncidenceKoszul` leaves exactly one scalar packet direction.
+Their total-complex identification is missing.
+
+F428 — Gamma admission cannot provide the missing homotopy. The all-cross-prime Gamma admission
+operator is conservative on completed Green provenance, and annihilating its reflected-Gaussian
+Green vector is already RH-equivalent.
+
+CANNOT-206 — It cannot be an absolute compact reporter, raw relative heat trace, weighted sum of
+local Neumann remainders, Frobenius homotopy 2-cocycle, block-diagonal prime index, or reflected
+signed Fredholm index. It also cannot declare Gamma admission a source null-homotopy.
+
+MUST-130 — Prove one source-specific relative-horizon factorization
+`T=B*B-C*C` whose two canonical P-G194/P-G196/P-G206 defect columns have total HS mass
+`B_base/2<1`, and prove its relative index at a strict-right specialization equals the one
+common theta escape unit left by all-cross-prime incidence. This pre-divisor identity, not target
+trace domination, would close RH. Card:
+`direct-subunit-anchor/integral-nuclear-prime-mixed-homotopy-defect.md`.
+
+F429 — Provenance-continuous completion cannot create homology from eventually exact stages
+(`ExactCompletionDiagram.physical_exact`). Therefore an off-line class cannot be finite source
+cohomology transported to completion; it is failure of finite contractions to survive completion.
+
+F430 — Because off-line escape is a nonclosed-domain phenomenon, bounded harmonic projections are
+not admissible. The correct `T` projects the multivalued horizons of the two closed relations.
+Finite relations are single-valued; completion creates `Mul(R)=ker(sourceProjection)` exactly when
+finite contractions fail to survive.
+
+F431 — Trace-norm limits preserve trace (`traceTower_limit`). Hence a coherent nuclear completion
+of zero-index finite homotopy defects still has trace zero. Any off-line index-one fibre forces
+non-nuclearity or incoherence of the arithmetic/theta contractions.
+
+CANNOT-207 — It cannot insert a class at finite level, call eventual exactness alone the source
+mechanism, or assume trace-norm convergence of finite contractions. The first violates
+pre-divisor provenance; the latter two assume the missing completion theorem.
+
+MUST-131 — Construct the single graded landing
+`A_s=gradedCompletionLanding(P-G194((1/sqrt 2)A_base))` and prove
+`Pi_Mul(R_theta^+)-Pi_Mul(R_ar^+)=A_s* diag(+I,-I) A_s` on the pre-divisor total relation, retaining every
+cross-prime Gram entry and P-G196 aperture commutator. This one identity simultaneously gives
+integrality, nuclearity, and mass `<1`; strict-right index `1` then contradicts it.
+
+F432 — P-G177 collision Gram and P-G186/P-G194 base-Cauchy Gram are not interchangeable. Corpus
+proves diagonal rescaling `K_base(alpha,alpha)=(216/115)K_collision(alpha,alpha)`, not an entrywise
+inter-carrier isometry. The homotopy defect therefore uses the P-G194 base carrier and its `<2`
+quantum, normalized by `1/sqrt 2`; importing `sqrt(108/115)` into P-G194 is invalid.
+
+CANNOT-208 — It cannot use diagonal proportionality to identify full kernels or mix P-G177's
+`115/108` normalization with P-G194's three-channel colligation. Any future collision-carrier
+version needs a separately proved all-entry transgression.
+
+F433 — Off-line Meyer/theta escape lives at a nonclosed range/domain boundary. An ordinary
+bounded harmonic projection would assume a Hodge decomposition and erase the carrier. Corpus
+proves more: every closed relation retaining the off-line literal-source Xi graph is maximally
+multivalued, so no closed single-valued operator model is admissible.
+
+CANNOT-209 — It cannot define `T` through ordinary harmonic projections, a bounded Green inverse,
+or a closed single-valued theta operator. It must be formed from the multivalued horizons of closed
+relations before quotienting the completion defect away.
+
+F434 — Target integrality is already stronger than theta escape counting. The closed Meyer Xi
+relation has `Mul=0` on line and full scalar `Mul` off line; finite-packet source-projection kernel
+has dimension exactly total analytic Xi multiplicity. For one zeroth-order off-line copy the
+vertical index is unconditionally `1`. Missing work is only its pre-divisor all-prime formation
+identification and source nuclear factorization.
+
+## Nuggets of knowledge (2026-09-02, one line each; certificates in the cards named)
+
+- **Weil–Deligne integrality is incompatible with RH itself.** If every Arakelov coordinate
+  `w(ρ) = 1 − 1/ρ` of a zero is an algebraic integer and Galois conjugates of coordinates are
+  coordinates, RH is false (`FrobeniusTorsionLaw`, F390).
+- **The `q = 1` scale is what turns Weil's mechanism into torsion.** Over `𝔽_q` Frobenius
+  eigenvalues have modulus `q^{1/2} ≠ 1` and escape Kronecker; over ξ the scale is `1`, so an
+  integral unitary Frobenius has finite order, and the zeros are not torsion points.
+- **The two Frobenius coordinates exclude each other.** `p^ρ` algebraic for one `p ≥ 2` makes
+  `ρ` and `w(ρ)` transcendental (Gelfond–Schneider, F391); at most two primes have `p^ρ`
+  algebraic (six exponentials, paper).
+- **Any F₁ construction with a characteristic polynomial is dead**; admissible integrality lives
+  on the test-function side, e.g. `lcm(1..n) = e^{ψ(n)}` (MUST-129).
+- **Producer positivity is RH or blind.** All-aperture Weil positivity is RH; finite apertures
+  cannot see a zero closer than the crowd; symmetry never sources it; Frobenius compatibility
+  of the positive Hodge star is RH (CANNOT-192).
+- **Every twin factorization of ξ is the square root dressed by a unit.** Non-diagonal twins,
+  metaplectic channels, Gram balance carry no information beyond the root (`TwinRigidity`, F387).
+- **No motive has half of ζ's divisor**: `L(M ⊕ N) = L(M)L(N)` and `𝟙` is simple.
+- **ξ has critical-line zeros of odd order above every height**, so no structure doubling all
+  multiplicities exists (`GlobalParityWall`, F389).
+- **Parity read off `e` copies of ξ is void (`e` even) or violated (`e` odd)**; the theta
+  multiplier on `Γ₀(4)` has exactly two singular cusps, Fricke-paired, `e = 2` (CANNOT-190).
+- **Convergence of the Möbius series at one point is the zero-free half-plane** to its right;
+  the individuation producer is the conclusion (F380).
+- **Share ledgers are even in the off-line displacement** and every fixed functional pays one
+  `log t` of crowd per zero; the line anchor equals on-line density (C1–C4, F379, F382).
+- **A cyclic module carries only symmetric invariant forms; doubling any block is a free
+  symplectic realization; `{±1}`-valued skew pairings are symmetric** (F386).
+- **Four producer kinds, all closed; two doors remain**: an amplified discrete anchor (F₁ type,
+  now closed in characteristic-polynomial form) and a direct sub-unit anchor (F388, MUST-127).
+- **The direct sub-unit anchor already has its integer, its lift, and its budget in the corpus**
+  (`thetaKakutaniEscapeMultiplicity`, cubic Loewner landing, primitive Euler capacity); the
+  open step is the same-boundary identification, whose naive form is RH (ULF-DSA-003).
+
+## 2026-09-02 — six exponentials theorem in Lean (card `3-formalized/six-exponentials-lean.md`)
+
+F392 — Lean: for `x₀, x₁` rationally independent and `y₀, y₁, y₂` rationally independent, one of
+`exp(x_i y_j)` is transcendental (`SixExponentials.six_exponentials`, Siegel + multipoint
+Schwarz + Liouville, no zero-counting theorem); corollary: for nonreal `ρ` and distinct primes
+`p, q, r`, not all of `p^ρ, q^ρ, r^ρ` are algebraic (`not_all_three_prime_cpow_isAlgebraic`).
+Door 1's Theorem B is now certified; ULF-F1-002 has no open Lean item.
+
+- **Nugget:** the six exponentials theorem needs no zero-density estimate: vanishing on `M³`
+  points in a disc of radius `~M` against growth `exp(O(M))` forces an exponential polynomial to
+  vanish identically through the Schwarz lemma alone, and Liouville upgrades "tiny at a sample
+  point" to "zero" one level at a time.
+
+## 2026-09-02 — door 2 audited (card `3-formalized/escape-multiplicity-offline-indicator-lean.md`)
+
+F393 — Lean: the escape multiplicity of the direct sub-unit anchor is the off-line indicator,
+`= if Re q = ½ then 0 else 1`; the fusion's gap `budget < (115/108)·multiplicity` holds exactly
+off the line; its vanishing at every copy is RH (`RHTower.EscapeMultiplicityOffLineIndicator`).
+
+CANNOT-193 — It cannot read a Ferrero–Washington anchor off an integer that is the indicator of
+the conclusion's failure: the only bound below one unit for such an integer is the conclusion.
+The corpus's direct sub-unit anchor is, as it stands, a receiver; its open "prime-mixed formation
+strictness" has no formal statement and any version implying the capacity law is RH-strength.
+
+MUST-130 — A direct anchor must name an integer defined without reference to the zero's
+position, prove it positive at an off-line copy by a theorem, and bound it by an estimate that
+does not pass through the target inequality. No such integer exists in the corpus (the knapsack
+Euler characteristic, the completed-SEM contour index, and the escape multiplicity all fail one
+of the three).
+
+- **Nugget:** both doors of the terminal classification are, at the present state of the corpus,
+  RH-equivalent receivers: door 1 by the torsion law and six exponentials, door 2 by the
+  off-line-indicator audit. The corpus contains no non-RH-equivalent producer target.

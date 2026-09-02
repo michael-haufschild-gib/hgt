@@ -165,7 +165,9 @@ theorem kloostermanGlobalCrossPhaseFrequency_ne_zero
   exact (kloostermanCrossPhaseRatio_ne_one_of_ne
     (q + 1) (r + 1) (Nat.succ_ne_succ_iff.mpr hqr) x y) hone
 
-private theorem sum_range_eq_nsmul_add_mod_of_add_periodic_global
+/-- Exact block decomposition of a finite sum for a function periodic under every multiple of
+`P`. -/
+theorem sum_range_eq_nsmul_add_mod_of_add_periodic_global
     {A : Type*} [AddCommMonoid A] (f : ℕ → A) (M P : ℕ)
     (hperiodic : ∀ a j : ℕ, f (a + P * j) = f a) :
     (∑ m ∈ Finset.range M, f m) =
@@ -208,6 +210,38 @@ private theorem sum_range_eq_nsmul_add_mod_of_add_periodic_global
   intro a ha
   rw [Nat.add_comm (P * (M / P)) a]
   exact hperiodic a (M / P)
+
+/-- A statistic modulo `d`, lifted through canonical representatives to `ZMod P`, is repeated
+exactly `P / d` times whenever `d ∣ P`. -/
+theorem sum_zmod_lift_eq_nsmul_of_dvd
+    {A : Type*} [AddCommMonoid A]
+    (P d : ℕ) [NeZero P] [NeZero d] (hd : d ∣ P)
+    (f : ZMod d → A) :
+    (∑ k : ZMod P, f (k.val : ZMod d)) =
+      (P / d) • ∑ z : ZMod d, f z := by
+  rw [sum_zmod_eq_sum_range_natCast P]
+  have hval :
+      (∑ k ∈ Finset.range P, f (((k : ZMod P).val : ℕ) : ZMod d)) =
+        ∑ k ∈ Finset.range P, f (k : ZMod d) := by
+    apply Finset.sum_congr rfl
+    intro k hk
+    have hkP : k < P := Finset.mem_range.mp hk
+    rw [ZMod.val_natCast, Nat.mod_eq_of_lt hkP]
+  rw [hval]
+  have hperiodic : ∀ a j : ℕ,
+      f ((a + d * j : ℕ) : ZMod d) = f (a : ZMod d) := by
+    intro a j
+    apply congrArg f
+    push_cast
+    simp
+  have hdecomp := sum_range_eq_nsmul_add_mod_of_add_periodic_global
+    (fun k : ℕ => f (k : ZMod d)) P d hperiodic
+  have hmod : P % d = 0 := Nat.mod_eq_zero_of_dvd hd
+  rw [hmod] at hdecomp
+  simp only [Finset.range_zero, Finset.sum_empty, add_zero] at hdecomp
+  rw [hdecomp]
+  congr 1
+  exact (sum_zmod_eq_sum_range_natCast d f).symm
 
 /-- A nontrivial finite-order phase orbit depends only on length modulo its period. -/
 theorem sum_range_pow_succ_eq_sum_mod

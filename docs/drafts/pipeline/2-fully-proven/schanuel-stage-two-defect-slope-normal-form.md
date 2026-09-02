@@ -407,3 +407,32 @@ The missing clause remains unchanged in kind: construct the normal **projective*
 this function field and connect its complex points/rational-coordinate evaluation to an analytic
 divisor-avoiding path.  Affine normality does not supply either absent interface, so the card stays
 at Stage 2.
+
+## Lean progress — genuine global projective relative normalization (2026-09-02)
+
+`RHTower/SchanuelStageTwoDefectSlopeProjectiveNormalization.lean` now constructs the literal
+projective line over the algebraic numbers as the `Proj` of the standard grading on
+`AlgNum[U₀, U₁]`.  Its degree-zero graded ring is proved canonically equivalent to `AlgNum`, and
+the projective line is proper over that base.  Homogeneous evaluation
+
+```text
+U₀ ↦ 1,   U₁ ↦ core.rho
+```
+
+sends the irrelevant ideal to the top ideal, so `Proj.fromOfGlobalSections` supplies the actual
+generic-point map `[1 : core.rho] : Spec K → ℙ¹`.  Taking mathlib's relative normalization along
+this map gives a globally glued scheme, not an affine proxy.  Lean proves that the normalization
+scheme is integral, its map to the projective line is integral, its generic inclusion is dominant,
+and the normalization factorization is exact.  The composite to the degree-zero base is also
+universally closed, separated, and quasi-compact.
+
+Direct Lean check, targeted leaf build, and all-new-declaration axiom audit pass; every declaration
+uses only `[propext, Classical.choice, Quot.sound]`.  The leaf is wired into the `RHTower` umbrella,
+which was not built.
+
+This does not yet prove that the relative normalization morphism is finite or locally of finite
+type, so Lean cannot yet upgrade the composite to a proper normal projective curve over `AlgNum`.
+It also lacks a proof that this global model's function field is the concrete field `K`, and the
+scheme-analytification/complex-point interface needed to evaluate rational coordinates along a
+divisor-avoiding analytic path.  Those are literal clause-5 obligations; the card remains at
+Stage 2.

@@ -3694,3 +3694,173 @@ without umbrella build.
 
 The paper-scale bound for that explicit time-domain moment, Lemma 3.5(ii), amplification, and
 Theorem 1.2 remain open and unassumed.
+
+### Complete-transform Gram and fourth-moment normal form, brick 141 (2026-09-02)
+
+`KloostermanGlobalCollisionGram.lean` proves that the explicit time slice from brick 140 factors
+through the existing complete Kloosterman transform.  Writing `R_q(k)` for that local transform,
+Lean proves
+
+```text
+timeTransform_k = sum_{q != r} star(w_q R_q(k)) * (w_r R_r(k))
+                = (‖sum_q w_q R_q(k)‖² - sum_q ‖w_q R_q(k)‖² : R),
+E_global = P(Q)⁻¹ * sum_k
+  (‖sum_q w_q R_q(k)‖² - sum_q ‖w_q R_q(k)‖²)².
+```
+
+The generic common-period lift is exact: a statistic modulo `q+1` repeats
+`P(Q)/(q+1)` times.  Applying the corpus's sharp finite complete-Kloosterman `L²` theorem yields
+
+```text
+P(Q)⁻¹ * sum_k ‖R_q(k)‖²
+  <= (q+1) * sum_z ‖sourceResidue_q(z)‖².
+```
+
+Thus no product/LCM loss remains in local second moments.  Remaining target is genuinely the
+cross-modulus fourth moment of the total-mass-minus-diagonal defect.
+
+Direct source check and targeted leaf build pass (`13505/13505`).  Thirteen newly exposed or
+created theorem declarations audit with only `[propext, Classical.choice, Quot.sound]`; leaf is
+umbrella-wired without umbrella build.
+
+The cross-modulus fourth-moment/Kuznetsov bound, Lemma 3.5(ii), amplification, and Theorem 1.2
+remain open and unassumed.
+
+## Brick 142 — exact elementary cross-modulus fourth-moment envelope (2026-09-02)
+
+`Sieve/KloostermanGlobalCollisionElementary.lean` supplies the unconditional comparison point
+for the exact fourth-moment normal form.  It proves pointwise complete-response control,
+the ordered-pair mixed second moment
+
+```text
+P(Q)^(-1) * sum_k normSq(R_q(k)) * normSq(R_r(k))
+  <= (q+1)^2 * (r+1) * SourceEnergy(q) * SourceEnergy(r),
+```
+
+and the exact erased-diagonal cardinality `#Q * (#Q - 1)`.  The resulting global theorem is
+
+```text
+E_global
+  <= #Q * (#Q - 1) *
+       sum_(q != r) normSq(w_q) * normSq(w_r) *
+         (q+1)^2 * (r+1) * SourceEnergy(q) * SourceEnergy(r).
+```
+
+This is a closed theorem, not a hypothesis and not a spectral claim.  Direct check and targeted
+leaf build pass (`13506/13506`); all four public declarations have only standard Lean quotient
+and choice axioms.  Module is umbrella-wired; umbrella was not built.
+
+The remaining analytic target is now quantitative and comparative: replace the exact
+`#Q * (#Q - 1)` finite-Cauchy baseline and pointwise local charge by the paper-scale collective
+Kuznetsov saving, then discharge Lemma 3.5(ii), amplification, and Theorem 1.2.
+
+## Brick 143 — literal-source elementary collision envelope (2026-09-02)
+
+`Sieve/KloostermanGlobalCollisionInterval.lean` composes brick 142 with the exact residue-fibre
+occupancy for `Finset.Icc 1 N`.  Removing the common positive `q+1` factor from the existing
+source-energy theorem yields
+
+```text
+sum_z normSq(sourceResidue_q([1,N],b,z))
+  <= residueMultiplicity(q,N) * SourceL2([1,N]),
+```
+
+with no size premise and exact occupancy
+`if N=0 then 0 else (N-1)/(q+1)+1`.  Substitution on both legs gives
+
+```text
+E_global([1,N])
+  <= #Q * (#Q - 1) *
+       sum_(q != r) normSq(w_q) * normSq(w_r) * (q+1)^2 * (r+1)
+         * residueMultiplicity(q,N) * SourceL2([1,N])
+         * residueMultiplicity(r,N) * SourceL2([1,N]).
+```
+
+Direct check and targeted leaf build pass (`13507/13507`); both public theorems use only
+`[propext, Classical.choice, Quot.sound]`.  Leaf is umbrella-wired; umbrella was not built.
+
+The source side of the elementary cross-modulus fourth moment is now literal and fully explicit.
+Remaining analytic target is collective Kuznetsov saving over this baseline, then Lemma 3.5(ii),
+amplification, and Theorem 1.2.
+
+## Brick 144 — weight-separated global collision receiver (2026-09-02)
+
+`Sieve/KloostermanGlobalCollisionWeighted.lean` performs dependent erased-pair
+Cauchy--Schwarz before the common-period average.  It proves
+
+```text
+normSq(timeTransform_k)
+  <= WeightPairEnergy(Q,w) *
+       sum_(q != r) normSq(R_q(k)) * normSq(R_r(k))
+```
+
+and consequently
+
+```text
+E_global
+  <= WeightPairEnergy(Q,w) *
+       sum_(q != r) (q+1)^2 * (r+1) * SourceEnergy(q) * SourceEnergy(r),
+```
+
+with `WeightPairEnergy = sum_(q != r) normSq(w_q) * normSq(w_r)`.  A literal
+`Finset.Icc 1 N` capstone substitutes both exact residue multiplicities from brick 143.
+This receiver is complementary to brick 142 and keeps amplifier normalization separate from the
+response/source sum.
+
+Direct source check and targeted leaf build pass (`13508/13508`); all three public declarations
+use only `[propext, Classical.choice, Quot.sound]`.  Leaf is umbrella-wired; umbrella was not
+built.
+
+Remaining analytic target is still a collective signed Kuznetsov saving over these exact
+elementary receivers, then Lemma 3.5(ii), amplification, and Theorem 1.2.
+
+## Brick 145 — bidirectional minimum collision receiver (2026-09-02)
+
+`Sieve/KloostermanGlobalCollisionSymmetric.lean` exposes the exact pre-estimate receiver
+
+```text
+E_global
+  <= WeightPairEnergy(Q,w) *
+       sum_(q != r) Avg_k[normSq(R_q(k)) * normSq(R_r(k))]
+```
+
+and proves both elementary orientations of every pair average.  The resulting pair kernel is
+
+```text
+min(
+  (q+1)^2 * (r+1) * SourceEnergy(q) * SourceEnergy(r),
+  (r+1)^2 * (q+1) * SourceEnergy(r) * SourceEnergy(q)).
+```
+
+Thus the global capstone retains the better pointwise/average assignment for every ordered pair.
+The literal-source version propagates exact residue occupancies through both minimum branches.
+
+Direct source check and targeted leaf build pass (`13509/13509`).  All five created theorem
+declarations use only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired and the
+umbrella was not built.
+
+All loss still visible after brick 145 is collective: local L2, pointwise control, pairwise
+orientation, weight separation, and literal source collisions are closed.  Remaining target is a
+cross-modulus Kuznetsov fourth-moment saving, then Lemma 3.5(ii), amplification, and Theorem 1.2.
+
+## Brick 146 — exact amplifier-weight diagonal deficit (2026-09-02)
+
+`Sieve/KloostermanGlobalCollisionWeightIdentity.lean` closes the exact algebra of brick 145's
+weight-pair factor:
+
+```text
+WeightPairEnergy(Q,w)
+  = (sum_(q in Q) normSq(w_q))^2
+      - sum_(q in Q) normSq(w_q)^2.
+```
+
+Both the general symmetric collision envelope and literal `Finset.Icc 1 N` envelope are rewritten
+with this exact diagonal saving exposed.  No weight normalization, positivity premise, or
+cardinality relaxation is needed.
+
+Direct source check and targeted leaf build pass (`13510/13510`).  All three created theorems use
+only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired and umbrella was not built.
+
+After brick 146, amplifier normalization contributes exactly total squared mass minus diagonal
+fourth moment.  Remaining obstruction is unchanged and genuinely analytic: collective
+cross-modulus Kuznetsov fourth-moment saving, then Lemma 3.5(ii), amplification, and Theorem 1.2.

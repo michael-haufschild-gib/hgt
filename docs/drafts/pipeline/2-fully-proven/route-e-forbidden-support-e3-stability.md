@@ -1292,3 +1292,159 @@ without umbrella build.
 
 Card remains Stage 2.  The exact receiver is closed, but the paper-scale bound for this time-domain
 second moment, Lemma 3.5(ii), amplification, and Theorem 1.2 remain open; none is assumed.
+
+## Lean progress update (2026-09-02) — complete-transform Gram and fourth-moment normal form
+
+`Sieve/KloostermanGlobalCollisionGram.lean` splits the global additive phase into its two
+single-modulus factors and defines the corresponding source response `R_q(k)`.  Lean identifies
+this response exactly with the corpus-owned complete Kloosterman transform of the source compressed
+by residue class.  Hence every collision time slice is the erased-diagonal Hermitian Gram form
+
+```text
+timeTransform_k = sum_{q != r} star(w_q R_q(k)) * (w_r R_r(k))
+                = (‖sum_q w_q R_q(k)‖² - sum_q ‖w_q R_q(k)‖² : R).
+```
+
+Combining this with brick 140 gives the exact fourth-moment normal form
+
+```text
+E_global = P(Q)⁻¹ * sum_k
+  (‖sum_q w_q R_q(k)‖² - sum_q ‖w_q R_q(k)‖²)².
+```
+
+Period lifting is also closed without loss: for every stored `q`, the local transform energy is
+repeated exactly `P(Q)/(q+1)` times, and the normalized global average is at most
+`(q+1)` times exact source residue energy.  Thus the LCM carrier cancels completely from each
+single-modulus `L²` cost.
+
+Direct source check and targeted leaf build pass (`13505/13505`).  All thirteen newly exposed or
+created theorem declarations audit with only `[propext, Classical.choice, Quot.sound]`; leaf is
+umbrella-wired without umbrella build.
+
+Card remains Stage 2.  Period bookkeeping, phase factorization, local complete-transform control,
+and diagonal subtraction are closed.  Remaining analytic primitive is now precisely a
+cross-modulus fourth-moment bound for the displayed mass defect, followed by Lemma 3.5(ii),
+amplification, and Theorem 1.2; none is assumed.
+
+## Lean progress update (2026-09-02) — exact elementary collision-energy envelope
+
+`Sieve/KloostermanGlobalCollisionElementary.lean` now bounds brick 141's literal signed
+collision energy without introducing forbidden-support stability or any analytic premise.
+Pointwise sharp transform energy and normalized global-period `L²` give
+
+```text
+P(Q)^(-1) * sum_k normSq(R_q(k)) * normSq(R_r(k))
+  <= (q+1)^2 * (r+1) * SourceEnergy(q) * SourceEnergy(r).
+```
+
+The erased diagonal has exactly `#Q * (#Q - 1)` ordered pairs, so finite Cauchy--Schwarz proves
+
+```text
+E_global
+  <= #Q * (#Q - 1) *
+       sum_(q != r) normSq(w_q) * normSq(w_r) *
+         (q+1)^2 * (r+1) * SourceEnergy(q) * SourceEnergy(r).
+```
+
+Every weight and residue-collision energy remains explicit.  Direct source check and targeted
+leaf build pass (`13506/13506`).  All four public declarations audit with only
+`[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella build.
+
+Card remains Stage 2.  This closes the exact elementary fourth-moment baseline, not the collective
+Kuznetsov saving needed at paper ranges.  Lemma 3.5(ii), amplification, and all-interval supply
+remain open and unassumed.
+
+## Lean progress update (2026-09-02) — bidirectional minimum collision receiver
+
+`Sieve/KloostermanGlobalCollisionSymmetric.lean` proves both orientations of every mixed
+complete-response estimate and keeps their minimum:
+
+```text
+Avg_k[normSq(R_q(k)) * normSq(R_r(k))]
+  <= min(
+       (q+1)^2 * (r+1) * SourceEnergy(q) * SourceEnergy(r),
+       (r+1)^2 * (q+1) * SourceEnergy(r) * SourceEnergy(q)).
+```
+
+The global theorem multiplies the sum of these pairwise minima by exact
+`WeightPairEnergy(Q,w)`.  Its literal-source capstone replaces both source energies by the exact
+residue multiplicities from brick 143 inside both branches of the minimum.  No
+forbidden-support stability, modulus range, support injectivity, or analytic premise is used.
+
+Direct source check and targeted leaf build pass (`13509/13509`).  All five new public theorem
+declarations audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired
+without umbrella build.
+
+Card remains Stage 2.  The strongest elementary orientation choice is now closed exactly.
+Collective cross-modulus Kuznetsov saving, Lemma 3.5(ii), amplification, and all-interval supply
+remain open and unassumed.
+
+## Lean progress update (2026-09-02) — literal-interval elementary collision envelope
+
+`Sieve/KloostermanGlobalCollisionInterval.lean` inserts the already proved exact residue-fibre
+occupancy into both source legs of brick 142 for `Finset.Icc 1 N`.  It first proves
+
+```text
+sum_z normSq(sourceResidue_q([1,N],b,z))
+  <= residueMultiplicity(q,N) * SourceL2([1,N]),
+```
+
+where `residueMultiplicity(q,N)` is exactly
+`if N=0 then 0 else (N-1)/(q+1)+1`.  The resulting global collision bound retains
+`#Q * (#Q - 1)`, each modulus weight, `(q+1)^2*(r+1)`, both exact occupancies, and both
+literal source energies.  Forbidden-support stability is neither used nor assumed.
+
+Direct source check and targeted leaf build pass (`13507/13507`).  Both public declarations audit
+with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella
+build.
+
+Card remains Stage 2.  All literal-source elementary fourth-moment bookkeeping is closed.  A
+collective Kuznetsov saving beyond this exact baseline, Lemma 3.5(ii), amplification, and
+all-interval supply remain open and unassumed.
+
+## Lean progress update (2026-09-02) — weight-separated global collision receiver
+
+`Sieve/KloostermanGlobalCollisionWeighted.lean` separates the exact ordered unequal-modulus
+weight energy before averaging the response Gram over the global period:
+
+```text
+E_global
+  <= (sum_(q != r) normSq(w_q) * normSq(w_r)) *
+       sum_(q != r) (q+1)^2 * (r+1) * SourceEnergy(q) * SourceEnergy(r).
+```
+
+The literal-source version substitutes the exact
+`if N=0 then 0 else (N-1)/(q+1)+1` residue occupancy on both legs.  No forbidden-support
+stability premise, support injectivity, modulus range, or analytic estimate is introduced.
+This complements brick 142: raw ordered-pair cardinality is replaced by a separate amplifier
+weight-pair energy.
+
+Direct source check and targeted leaf build pass (`13508/13508`).  All three public declarations
+audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella
+build.
+
+Card remains Stage 2.  Exact amplifier-weight bookkeeping now reaches the literal collision
+fourth moment.  Collective Kuznetsov saving, Lemma 3.5(ii), amplification, and all-interval supply
+remain open and unassumed.
+
+## Lean progress update (2026-09-02) — exact amplifier-weight diagonal deficit
+
+`Sieve/KloostermanGlobalCollisionWeightIdentity.lean` proves the exact finite identity
+
+```text
+sum_(q != r) normSq(w_q) * normSq(w_r)
+  = (sum_(q in Q) normSq(w_q))^2
+      - sum_(q in Q) normSq(w_q)^2.
+```
+
+It then rewrites both brick 145's symmetric global receiver and its literal-source capstone using
+this diagonal deficit.  No constant-weight assumption, normalization premise, cardinal bound, or
+forbidden-support stability statement is inserted.
+
+Direct source check and targeted leaf build pass (`13510/13510`).  All three public theorem
+declarations audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired
+without umbrella build.
+
+Card remains Stage 2.  The exact weight geometry is closed at the collision receiver.  The missing
+step is still collective cross-modulus Kuznetsov saving, followed by Lemma 3.5(ii), amplification,
+and all-interval supply; none is assumed.
