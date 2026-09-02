@@ -537,6 +537,46 @@ theorem coweight_le_add_unit_of_rightScale_eq (m n : ι → ℤ)
 abbrev DifferentialVariationalStandardApartmentCarrier (ι : Type*) [Fintype ι] :=
   Quotient (coweightTranslationSetoid (ι := ι))
 
+/-- Every rank-one coweight differs from every other by a common translation. -/
+theorem finOne_coweightDiffersByConstant (m n : Fin 1 → ℤ) :
+    CoweightDiffersByConstant m n := by
+  refine ⟨n 0 - m 0, ?_⟩
+  funext i
+  fin_cases i
+  simp
+
+/-- The type-`A₀` standard apartment has one point. -/
+instance differentialVariationalStandardApartmentCarrierFinOne_subsingleton :
+    Subsingleton (DifferentialVariationalStandardApartmentCarrier (Fin 1)) where
+  allEq x y := by
+    induction x using Quotient.inductionOn with
+    | _ m =>
+        induction y using Quotient.inductionOn with
+        | _ n => exact Quotient.sound (finOne_coweightDiffersByConstant m n)
+
+/-- The first nonzero balanced coweight, in rank two. -/
+def rankTwoBalancedCoweight : Fin 2 → ℤ := ![1, -1]
+
+theorem rankTwoBalancedCoweight_sum_eq_zero :
+    ∑ i, rankTwoBalancedCoweight i = 0 := by
+  simp [rankTwoBalancedCoweight, Fin.sum_univ_two]
+
+theorem not_coweightDiffersByConstant_zero_rankTwoBalancedCoweight :
+    ¬ CoweightDiffersByConstant (fun _ : Fin 2 => 0) rankTwoBalancedCoweight := by
+  rintro ⟨c, h⟩
+  have h0 := congrFun h 0
+  have h1 := congrFun h 1
+  simp [rankTwoBalancedCoweight] at h0 h1
+  omega
+
+theorem rankTwoBalancedApartmentPoint_ne_base :
+    (Quotient.mk (coweightTranslationSetoid (ι := Fin 2)) rankTwoBalancedCoweight :
+        DifferentialVariationalStandardApartmentCarrier (Fin 2)) ≠
+      Quotient.mk (coweightTranslationSetoid (ι := Fin 2)) (fun _ => 0) := by
+  intro h
+  apply not_coweightDiffersByConstant_zero_rankTwoBalancedCoweight
+  exact CoweightDiffersByConstant.symm (Quotient.exact h)
+
 /-- Adding a common coweight translates a diagonal lattice by global homothety. -/
 theorem standardCompletedPseudoDiffOpLatticeAtCoweight_add_const
     (m : ι → ℤ) (c : ℤ) :
@@ -622,6 +662,16 @@ theorem differentialVariationalStandardApartmentMap_injective :
             (standardCompletedPseudoDiffOpLattices_homothetic_iff_coweightDiffersByConstant
               (K := K) m n).mp
           exact Quotient.exact hxy
+
+/-- Rank two contains a non-base balanced building point. -/
+theorem rankTwoBalancedBuildingPoint_ne_base :
+    differentialVariationalStandardApartmentMap (K := K)
+        (Quotient.mk (coweightTranslationSetoid (ι := Fin 2)) rankTwoBalancedCoweight) ≠
+      differentialVariationalStandardApartmentMap
+        (Quotient.mk (coweightTranslationSetoid (ι := Fin 2)) (fun _ => 0)) := by
+  intro h
+  exact rankTwoBalancedApartmentPoint_ne_base
+    (differentialVariationalStandardApartmentMap_injective h)
 
 /-- Differential coefficient automorphisms fix every diagonal coweight lattice. -/
 theorem map_standardCompletedPseudoDiffOpLatticeAtCoweight (σ : K ≃+* K)

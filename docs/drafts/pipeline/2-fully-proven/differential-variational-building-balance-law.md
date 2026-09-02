@@ -1260,3 +1260,29 @@ cannot move: missing exact interfaces are apartment/metric structure and relativ
 for these noncommutative valuation lattices, the integral matrix part of `T_σ`, determinant balance
 `(12)`, semisimplicity/axis attainment and no-parabolic dichotomy, canonical opposite weighted
 boundary flags, and free-field reconstruction `(18)--(22)` on that building action.
+
+### Lean progress — exact standard apartment over the completed skew field (2026-09-02)
+
+`DifferentialVariationalStandardApartment` constructs the canonical completed uniformizer from
+`∂⁻¹` and proves its extended additive valuation is exactly `1`.  It defines coordinatewise right
+scaling by completed-skew-field units, proves preservation and composition of full finitely
+generated valuation lattices, and specializes this action to integral coweights via uniformizer
+powers.
+
+The leaf proves the exact diagonal classification: two standard coweight lattices are homothetic if
+and only if their coweights differ by one common integer.  Hence integral coweights modulo constant
+translation embed injectively into the building carrier.  It also proves the rank-one standard
+apartment is a singleton, constructs the balanced rank-two coweight `![1, -1]` as a non-base
+apartment and building point, and proves every derivation-preserving coefficient automorphism fixes
+the standard apartment pointwise.
+
+Direct checking and the targeted leaf build pass.  Every new declaration's axiom audit reports only
+`propext`, `Classical.choice`, and `Quot.sound` (several purely relational declarations need fewer or
+none).  The leaf is wired into `HTGeometry`; the umbrella was not built.
+
+This closes the canonical-uniformizer, diagonal-lattice, and standard-apartment embedding layer.
+The card remains at Stage 2: arbitrary full lattices still require a noncommutative Cartan
+decomposition/apartment-coverage theorem and relative-position metric; the full semilinear matrix
+action and integral Fréchet Jacobian must be constructed; determinant balance, semisimplicity and
+axis attainment, the no-parabolic dichotomy, opposite weighted boundary flags, and free-field
+reconstruction `(18)--(22)` remain open.

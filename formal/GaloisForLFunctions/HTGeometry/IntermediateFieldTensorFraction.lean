@@ -143,6 +143,76 @@ theorem exists_tensor_fraction_of_mem_sup_of_linearDisjoint
       C E A B hAB
   · exact hx
 
+/-- Tensor multiplication with codomain restricted to the concrete compositum. -/
+def intermediateFieldTensorSupMap
+    (C E : Type*) [Field C] [Field E] [Algebra C E]
+    (A B : IntermediateField C E) :
+    (A ⊗[C] B) →ₐ[C] ↥(A ⊔ B) :=
+  (intermediateFieldTensorMulMap C E A B).codRestrict
+    (A ⊔ B).toSubalgebra (by
+      intro x
+      induction x with
+      | zero => exact (A ⊔ B).zero_mem
+      | tmul a b =>
+          show (a : E) * (b : E) ∈ (A ⊔ B).toSubalgebra
+          exact (A ⊔ B).mul_mem
+            ((show A ≤ A ⊔ B from le_sup_left) a.property)
+            ((show B ≤ A ⊔ B from le_sup_right) b.property)
+      | add x y hx hy =>
+          show intermediateFieldTensorMulMap C E A B (x + y) ∈
+            (A ⊔ B).toSubalgebra
+          rw [map_add]
+          exact (A ⊔ B).add_mem hx hy)
+
+@[simp] theorem intermediateFieldTensorSupMap_tmul
+    (C E : Type*) [Field C] [Field E] [Algebra C E]
+    (A B : IntermediateField C E) (a : A) (b : B) :
+    intermediateFieldTensorSupMap C E A B (a ⊗ₜ[C] b) =
+      (⟨(a : E) * (b : E), (A ⊔ B).mul_mem
+        ((show A ≤ A ⊔ B from le_sup_left) a.property)
+        ((show B ≤ A ⊔ B from le_sup_right) b.property)⟩ : ↥(A ⊔ B)) :=
+  rfl
+
+/-- Linear disjointness makes the tensor-to-compositum map injective. -/
+theorem intermediateFieldTensorSupMap_injective_of_linearDisjoint
+    (C E : Type*) [Field C] [Field E] [Algebra C E]
+    (A B : IntermediateField C E) (hAB : A.LinearDisjoint B) :
+    Function.Injective (intermediateFieldTensorSupMap C E A B) := by
+  intro x y hxy
+  apply intermediateFieldTensorMulMap_injective_of_linearDisjoint C E A B hAB
+  exact congrArg Subtype.val hxy
+
+/-- A linearly disjoint compositum, equipped with tensor multiplication as its structure map, is
+the fraction field of the tensor product. -/
+theorem intermediateFieldTensorSup_isFractionRing
+    (C E : Type*) [Field C] [Field E] [Algebra C E]
+    (A B : IntermediateField C E) (hAB : A.LinearDisjoint B) :
+    letI : Algebra (A ⊗[C] B) ↥(A ⊔ B) :=
+      (intermediateFieldTensorSupMap C E A B).toRingHom.toAlgebra
+    IsFractionRing (A ⊗[C] B) ↥(A ⊔ B) := by
+  let T := A ⊗[C] B
+  let K := A ⊔ B
+  let mu := intermediateFieldTensorSupMap C E A B
+  letI : Algebra T K := mu.toRingHom.toAlgebra
+  have hmu : Function.Injective mu :=
+    intermediateFieldTensorSupMap_injective_of_linearDisjoint C E A B hAB
+  letI : FaithfulSMul T K := ⟨by
+    intro x y hxy
+    apply hmu
+    have h1 := hxy (1 : K)
+    change mu x * (1 : K) = mu y * (1 : K) at h1
+    exact mul_right_cancel₀ one_ne_zero h1⟩
+  apply IsFractionRing.of_field T K
+  intro z
+  obtain ⟨N, D, _hD, hz⟩ :=
+    exists_tensor_fraction_of_mem_sup_of_linearDisjoint C E A B hAB z.property
+  refine ⟨N, D, ?_⟩
+  apply Subtype.ext
+  change (z : E) =
+    intermediateFieldTensorMulMap C E A B N /
+      intermediateFieldTensorMulMap C E A B D
+  exact hz.symm
+
 end
 
 end GaloisForLFunctions

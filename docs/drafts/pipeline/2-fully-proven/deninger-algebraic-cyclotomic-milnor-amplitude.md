@@ -2061,3 +2061,51 @@ covering-radius upper bound alone yields a coefficient with no guaranteed contra
 this gate requires a genuine number-field Hermite/Minkowski relation between primitive minima and
 determinant, not another witness transport theorem.  Finite overlap, tame-kernel finite generation,
 and Moore reciprocity remain downstream.
+
+### Determinant-normalized Minkowski bound (2026-09-02)
+
+`HTGeometry/DeterminantOneLatticeShortVector.lean` now proves the Hermite-strength form needed by
+the adjacent weighted-mean route:
+
+```text
+exists_uniform_ne_zero_zspan_linearEquiv_norm_le_of_abs_det_eq_one
+exists_uniform_ne_zero_zspan_linearEquiv_norm_le_detRoot
+```
+
+For one fixed full lattice, every invertible real linear deformation has a nonzero lattice vector
+whose transformed norm is bounded by one field-independent constant times the geometric mean of
+the deformation's absolute determinant.  The proof normalizes by the positive determinant root
+and applies Minkowski to absolute-determinant-one deformations, so orientation is irrelevant and no
+spectral calculation or supplied short vector is used.
+
+Direct source check, targeted leaf build, and batched axiom audit pass; both new declarations and
+the preserved determinant-one corollary use only `[propext, Classical.choice, Quot.sound]`.
+Card remains Stage 2.  To consume this for the number-ring greedy flag, a nonzero lattice vector
+must still be converted to a primitive `ᵊa_K` vector with a uniform ideal-class loss, and the
+two-coordinate frame determinant must be identified with the adjacent weighted Jacobi means.
+
+### Finite ideal-class normalization (2026-09-02)
+
+`HTGeometry/NumberFieldIdealClassRepresentatives.lean` supplies the missing class-group layer
+without choosing fundamental ideals as hypotheses:
+
+```text
+classGroup_mk_surjective
+numberFieldIdealClassRepresentative
+numberFieldIdealClassRepresentative_mk
+finite_range_numberFieldIdealClassRepresentative
+numberFieldIdeal_mul_classRepresentative_inv_isPrincipal
+```
+
+The quotient map from invertible fractional ideals formed in the actual number field onto its
+class group is proved surjective.  One representative is then chosen in every class; class-number
+finiteness makes the whole family finite.  For every invertible fractional ideal `I`, dividing by
+the chosen representative of `[I]` is proved principal.  This is the exact finite-class correction
+needed to turn an arbitrary Minkowski short module line into one of finitely many projective types
+before comparing it with a primitive greedy vector.
+
+Direct source check, targeted leaf build, and axiom audit pass; all four theorem declarations use
+only `[propext, Classical.choice, Quot.sound]`.  The module is umbrella-wired without an umbrella
+build.  Card remains Stage 2: the principal normalization must now be converted into a uniform
+archimedean comparison and then into the adjacent weighted-mean bound.  Finite overlap,
+tame-kernel finite generation, and Moore reciprocity remain downstream.

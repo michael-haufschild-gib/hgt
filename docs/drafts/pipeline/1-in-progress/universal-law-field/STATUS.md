@@ -3206,5 +3206,216 @@ and floor `(1/2π)/(1+(2r−γ)²)`, so the only created positivity (`Σ_j h(t_j
 ledger capped at the de la Vallée Poussin width `c/log γ` (Ceiling C2); the zeros are poles of the
 scattering matrix, outside every `L²` Parseval identity (structural). Route E does not need
 Kuznetsov (Huxley replaces it). Survivors: C1–C4 and the level-one Petersson formula, both in Lean
-(`3-formalized/petersson-formula-level-one-lean.md`). The Selberg-ledger ceiling is being certified
-in Lean as `RHTower/SelbergLedgerCeiling.lean`.
+(`3-formalized/petersson-formula-level-one-lean.md`). The Selberg-ledger ceiling is certified in
+Lean as `RHTower/SelbergLedgerCeiling.lean`: target-file check and independent axiom audit pass;
+all seven ceiling theorems use only `propext`, `Classical.choice`, and `Quot.sound`.
+
+F370 — `GL(2)` automorphic spectral theory separates created positivity from ζ-zero data.
+Petersson contains no ζ; Kuznetsov contains only `|ζ(1+2ir)|⁻²` on zero-free `Re s=1`; Selberg
+places zeros in the non-`L²` scattering density, where nonnegative tests see each zero through a
+pair of Poisson kernels.
+
+F371 — The Selberg positive ledger has an exact crowding ceiling. A target zero has weight at most
+`(||h||₁/(2π))(1/(1-β₀)+1/β₀)`, while every zero within height two contributes at least
+`(2/(29π))||h||₁`; exclusion requires `1-β₀ < 1/((4/29)|Z|-2)`. Local zero density therefore
+restricts the method to de la Vallée Poussin width.
+
+CANNOT-176 — It cannot obtain RH by tuning a nonnegative Selberg test, widening/narrowing its
+window, adding Petersson/Kuznetsov/DI/Stadlmann estimates, or placing scattering poles in an
+`L²` Parseval space. Sign changes remove the only created positivity; the poles are not `L²`.
+
+FAIL-67 — Automorphic created positivity as a ζ-zero selector retired. Positive survivors are the
+level-one Petersson identity and exact Selberg peak/floor/width ceiling, all Lean-certified.
+
+F372 — Faithful wall torsion cannot be the universal object. Over `R=k[q,q⁻¹]`, the wall element
+`q-1` annihilates the source and two-leg incompatibility modules, whose annihilator is exactly the
+wall ideal; a faithful `R`-module cannot have that nonzero annihilator. After arithmetic pullback,
+faithfulness plus wall annihilation is equivalent to requiring every Xi fibre to lie on the wall.
+
+FAIL-68 — Global faithful-torsion survival retired. Universal form is algebraically impossible;
+divisor-fibre form is an RH-equivalent receiver. Positive survivor: selection needs a source law
+that changes the coefficient category or produces descent before wall specialization.
+
+F373 — Ordinary `K₀`/Morita quantization is also grade-blind. Morita equivalence preserves the
+integral class of the actual rank-one oblique projection, which remains idempotent at every grade.
+The corpus irrational-rotation `K₀` collision kills a supplied Chern charge, and bidirectional
+Big-Witt integrality kills a supplied Gamma grade, but constructing either supplied integral class
+on every Xi fibre is exactly the unresolved source interface/RH endpoint.
+
+CANNOT-177 — It cannot assert that the real boost `p^a` scales an integral `K₀` class. `K₀` has
+only integer scalar action, while the physical boost acts on representatives/weighted traces; an
+integral lift of that real scaling is precisely what must be proved. Morita recovery alone keeps
+the class fixed and sees no grade.
+
+FAIL-69 — `K₀`, Chern trace, or Big-Witt rapidity quantization retired as automatic producers.
+Positive survivor: any discrete selector must derive its integral structure from a source operation
+whose preservation law still retains the oriented boost, not from completion equivalence itself.
+
+F374 — Compact observation and positive energy do not control lifted history. Finite-support
+restricted histories are dense, proper, and nonclosed in the full product; every fixed finite
+observer eventually stabilizes while support cost is unbounded. Universally, any periodic observer
+history admits a positive compact-resolvent lift with graph action tending to infinity and no
+convergent subsequence.
+
+CANNOT-178 — It cannot infer source recurrence, bounded formation work, or completion properness
+from compact observer recurrence, GNS positivity, compact resolvent, or compact action sublevels.
+Those structures admit exact escaping hidden lifts independently of arithmetic grade.
+
+F375 — Perfect-complex decategorification is systematically extension-blind. Euler/`K₀`, every
+power supertrace, every power superdeterminant, and positive squared modulus all factor through
+cohomology; explicit countermodels preserve those shadows while changing polarity, extension law,
+cost, or flat holonomy. The integer-doubling tower has zero ordinary inverse limit but nonzero
+`lim¹`, so completion history can survive simultaneous shadow cancellation.
+
+CANNOT-179 — It cannot use exactness, cohomology, five-shadow agreement, or finite unitary
+recurrence to prohibit completion-born anomaly. A live invariant must retain controlled
+null-homotopies/extension data before passage to cohomology or group completion.
+
+F376 — Native observer descent is exact but constitutively neutral. Coimage/effectivity and
+serial/parallel descent hold at Set level, yet one fixed observer with positive vertical kernel
+coexists with positive-definite, degenerate, and Lorentzian forms; identical observer data can also
+carry different costs or differential-algebraic status. Positive differential observers can have
+arbitrarily large covariance rank and infinite hidden GNS dimension.
+
+CANNOT-180 — It cannot derive neutral inertia, finite hidden rank, or a unique constitutive law
+from observer effectivity, positivity on the vertical kernel, or jet covariance alone. Selection
+must constrain how hidden extension data are formed, not merely how they descend.
+
+F377 — The completed pseudodifferential valuation-lattice carrier and its standard apartment now
+exist unconditionally, but differential coefficient automorphisms fix that apartment pointwise.
+The current differential variational building records valuation coweights while forgetting the
+coefficient-side anomaly it was meant to select.
+
+CANNOT-181 — It cannot call the existing building the higher mechanism. Any useful building law
+needs a second source-generated, completion-sensitive apartment/flag and a proved relative
+displacement or intersection theorem; the canonical apartment alone is blind.
+
+F378 — The two literal rational-adelic endpoints are a covariant flag, not a preserved frame.
+Class-space action fixes `ε₀` and rescales nonunital `ε₁` by the inverse positive radial character;
+the reduced cyclic source is `ker ε₀ ∩ ker ε₁`, so both endpoint values vanish there. The Kummer
+one-cocycle retains prime logarithmic weight, but is a detector and supplies no second invariant
+splitting.
+
+FAIL-70 — Two-endpoint common-commutant selection retired. On the full source the endpoint pair
+records the dilation instead of excluding it; on the reduced source it is zero and nonseparating.
+
+MUST-117 — Surviving information type is a controlled nonsplit comparison: a formation
+null-homotopy/extension together with its support or propagation cost. Any candidate must derive
+uniform control from literal pre-divisor arithmetic operations, map its obstruction faithfully to
+the Xi completion class, and prove that off-line effective metabolic birth requires loss of that
+control. Merely postulating bounded work, a second frame, or extension splitting is an existing
+RH-equivalent receiver.
+
+F379 — Ordinary reciprocity is signed and first-order. The rational Arakelov product formula
+cancels finite logarithmic trace against the archimedean boundary, and reciprocal Gamma
+characters have determinant one at every grade. The same reflected pair has positive residual
+`2(cosh a-1)`, equivalently the square of the reciprocal-gain mismatch, with radical exactly
+`a=0`.
+
+CANNOT-182 — It cannot use an additive product formula, determinant torsor, tame-symbol sum, or
+ordinary group-valued reciprocity as selector. Group completion cancels opposite orientations at
+every grade; the RH-bearing datum is the effective nonlinear residual left after that cancellation.
+
+F380 — Functional-equation packet lifting is involutive and information-neutral only on the image
+of common-kernel formation: it applies the observer involution, discards hidden history, and
+regenerates that history. Exact countermodels keep observer and recovery kernel fixed while the
+nonzero formation charge changes sign. Thus quotient-level reversibility is compatible with a
+nontrivial lifted defect.
+
+CANNOT-183 — It cannot infer full-source reversibility, zero index, or neutral grade from
+functional-equation involutivity, KL/Jeffreys isometry, or common recovery. Those laws certify an
+observer quotient, not an inverse on unreduced history.
+
+F381 — The monoid/Hopf-envelope model identifies the quotient mechanism exactly. A unilateral
+shift represents the irreversible source monoid but cannot extend to its Laurent/Hopf group
+completion; the obstruction is one rank-one defect. Any quotient killing that defect makes the
+shift invertible and gives a unique Hopf-envelope extension. Separately, injective post-completion
+cannot erase an earlier cokernel: its dimension adds the new outer cokernel.
+
+FAIL-71 — Automatic reciprocity/Hopf-extension selection retired. It explains how completed
+observers hide an effective defect, but asserting extension before quotient is the missing
+properness/exactness theorem, not its proof.
+
+F382 — Algebraic cross-route fusion cannot create a missing rank-one differential law. A nonzero
+algebraic eigenvector over a tensor-fraction extension specializes and descends to one factor;
+three-face multiplicative identities force logarithmic derivatives into one-coordinate algebraic
+closures. Auxiliary algebraic route factors therefore add presentation, not a new producer.
+
+CANNOT-184 — It cannot seek the universal mechanism in an algebraic tensor product, finite
+extension, or multiplicative three-face weld. A live fusion must depend essentially on controlled
+completion, chronology, or nonalgebraic topology and must fail under specialization to each route
+factor.
+
+F383 — Proof exchange, Gamma completion cost, and external completion occupation are one scalar
+state in three coordinates. Gamma curvature is the odds transform of the three-slot exchange
+defect, the visibility complement is strictly positive, and all three vanish exactly at `a=0`.
+This is exact joint reconstruction, not a source law making the state vanish.
+
+F384 — Effective arithmetic anomalies propagate rather than localize. Centered all-cross
+Big-Witt formation kills ghosts one through three but leaves a quartic determinant product; a
+nonzero integral first ghost forces nonzero ghosts at every sufficiently large prime; persistent
+cofinal cyclotomic zeros in a locally uniformly convergent holomorphic family force its limit to
+vanish identically. These form a possible propagation-to-collapse chain only if one literal
+source map preserves the same nonzero class through all three steps.
+
+F385 — Signed nonlocal completion can still short the effective diagonal: the complete all-cross
+Big-Witt source has zero ghost because its off-diagonal compensator is exactly the negative of the
+physical diagonal, unconditionally. In contrast, finite and summable nonnegative cooriented Gamma
+packets cannot short any nonzero grade.
+
+MUST-118 — A viable higher law must derive, from source chronology/provenance rather than imposed
+positivity, why reverse/off-diagonal compensators are inadmissible while the diagonal anomaly
+survives. One concrete closure architecture is: actual integral anomaly -> forced infinite prime
+tail -> persistent cyclotomic formation zeros -> normalized nonzero holomorphic limit
+contradiction. Every arrow, especially integrality and persistent-zero transport, must be
+pre-divisor, coefficient-faithful, and independently proved; without them this is only a diagram.
+
+F386 — The integral propagation-to-collapse diagram fails at its first physical arrow. The
+normalized Gamma-six Big-Witt second ghost is `-1/3`, so no integral source scalar-extends to it.
+Unconditional integral Cartier sources exist, but a coefficient-faithful physical reporter exists
+exactly on the critical line; likewise the bidirectional physical Big-Witt lift exists at grade
+`t` iff `t=0`, and on every Xi divisor iff RH.
+
+CANNOT-185 — It cannot invoke integral ghost propagation, cyclotomic persistence, or integer-index
+rigidity until a new pre-divisor map makes the actual horizontal anomaly integral. Existing
+physical integrality statements already contain the critical-line conclusion.
+
+FAIL-72 — Integral-tail-to-cyclotomic-collapse retired as a producer. Its propagation and collapse
+arrows are valid positive survivors; its required physical integral landing is RH-strength.
+
+F387 — Modular geometry is an exact interpretation but not a new producer. The grade is the
+Radon--Nikodym character `p^(-2|t|)`, recovered from the signed Krein current only by the singular
+multiplier `p`, which does not preserve the fixed `ell^1` source ideal. A nonerasing equivariant
+descent into a norm-conservative target forces `t=0`; type-III covariant traces cannot be invariant
+and nonzero, while normalized measured indices erase finite and density-zero off-line sectors.
+Source/Gamma naturality and modular-centralizer rigidity are already pointwise wall conditions and
+globally equivalent to RH.
+
+CANNOT-186 — It cannot obtain selection from Maharam extension, cocycle superrigidity, a finite or
+semifinite trace, KMS passivity, or centralizer language alone. Superrigidity leaves the prime-log
+homomorphism, type III removes absolute count, and supplying a nonerasing conservative descent is
+the unresolved arithmetic theorem.
+
+FAIL-73 — Modular-flow/centralizer trivialization retired as an automatic producer. Positive
+survivor: all route readers are charts of one modular completion class, and every viable selection
+law must choose its representation/completion from arithmetic rather than assume traciality.
+
+F388 — The Lorentzian reversal has an exact Bogoliubov form already in the corpus. The positive
+residual is partner occupation; all-prime Hellinger/Kakutani polarization is its square; repeating
+the beta block along the natural overtone ladder gives finite Shale mass linear in cutoff and
+infinite mass off wall. Regular/common-Fock implementability and common-Fock Cauchy convergence are
+pointwise equivalent to neutral grade and globally equivalent to RH. Finite cutoffs remain valid,
+and nonregular or incomplete-tensor sectors escape.
+
+CANNOT-187 — It cannot infer RH from Bogoliubov conservation, Shale--Stinespring, Kakutani
+singularity, finite-cutoff vacua, or orthogonality catastrophe. Those classify disjoint sectors;
+they do not prove that the arithmetic source occupies the regular sector.
+
+FAIL-74 — Fock implementability as the completion index retired as a producer. It is another exact
+gauge of the already known derived completion class.
+
+MUST-119 — The missing law is not another detector of nonzero grade. It must prove, from a literal
+pre-divisor arithmetic operation, that the physical completion belongs to a uniquely forced
+normal/regular folium or equivalent controlled history class. Any axiom of regularity, finite
+trace, conservative descent, source naturality, centralizer rigidity, or vanishing `lim^1` merely
+restates an existing RH endpoint.

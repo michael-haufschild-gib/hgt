@@ -7064,3 +7064,38 @@ Direct source check, targeted leaf build, and batched axiom audit pass.  Every n
 only `[propext, Classical.choice, Quot.sound]`; the leaf is umbrella-wired without an umbrella build.
 The card remains Stage 2: finite freeness/flatness of this explicit source presentation and the
 global block-cover elimination are not yet proved.
+
+`HTGeometry/CriticalBlockNormalizationEtaleCover.lean` closes the next analytic interface:
+
+```text
+isCoveringMap_criticalBlockNormalizationProjection_of_etale
+```
+
+The actual finite block normalization is already proper on complex points.  The general
+finite-étale spectrum theorem makes its projection a local homeomorphism, and proper local
+homeomorphisms are coverings.  Thus the remaining local block obligation is now purely algebraic:
+prove the actual block normalization étale.  No further analytic chart construction is needed.
+Direct check, targeted leaf build, and axiom audit pass with
+`[propext, Classical.choice, Quot.sound]`; the leaf is umbrella-wired without an umbrella build.
+
+### Block finite presentation and exact purity remainder (2026-09-02)
+
+`HTGeometry/CriticalBlockNormalizationFinitePresentation.lean` proves unconditionally that every
+actual block normalization is finitely presented over the marked observation chart:
+
+```text
+criticalBlockNormalization_finitePresentation
+```
+
+Module-finiteness was already proved, and the observation chart is Noetherian, so finite type
+upgrades to finite presentation.  Consequently
+`criticalBlockNormalization_etale_of_formallyEtale` and
+`isCoveringMap_criticalBlockNormalizationProjection_of_formallyEtale` remove every separate
+finiteness premise from the covering interface.  The remaining local theorem is now exactly the
+purity statement `Algebra.FormallyEtale` for the actual block normalization; neither finite type,
+finite presentation, nor analytic local-homeomorphism data remains bundled into that obligation.
+
+Both direct source checks and both targeted leaf builds pass.  The three new declarations audit to
+`[propext, Classical.choice, Quot.sound]`; the new leaf is umbrella-wired without an umbrella build.
+Card remains Stage 2 until formal purity, torus-Kummer elimination, and the unconditional monodromy
+capstone are closed.

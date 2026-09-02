@@ -6064,3 +6064,90 @@ without an umbrella build.
 Card remains Stage 2.  This closes finite combinatorial normalization, but not the asymptotic
 control of the displayed moving-scale mismatch and not Menon's quantitative `o(1/log X)`
 mean-square rate.  Neither residue is assumed.
+
+## Lean progress update (2026-09-02) — normalization rounding error vanishes
+
+`Sieve/GrowingReciprocalMarkerNormalizationError.lean` specializes the preceding finite bridge to
+the exact schedule `h(X)=exp(log X/log log X)`.  It proves unconditionally
+
+```text
+h(X) -> infinity,
+h(X)/sqrt X -> 0,
+card(outerBlock(X,h(X))) * (h(X)/sqrt X + 1)^2 / (h(X)^2 * sqrt X) -> 0.
+```
+
+The last limit is precisely the normalized rounding term in
+`sum_innerFibre_sq_le_dyadic_add_localScaleError` (up to its harmless constant factor `4`).
+It uses the exact block-cardinality bound rather than replacing the fibre family by an informal
+continuous density.
+
+Direct source check and targeted leaf build pass (`11598/11598`).  All three public theorem
+declarations audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired
+without an umbrella build.
+
+Card remains Stage 2.  Finite normalization and its rounding asymptotic are closed.  Remaining
+normalization residue is the displayed moving-scale variation term; the separate analytic residue
+is Menon's quantitative `o(1/log X)` Möbius mean-square rate.  Neither is assumed.
+
+## Lean progress update (2026-09-02) — exact moving integer lengths
+
+`Sieve/FibreMovingWindowNormalization.lean` removes the artificial single-length mismatch from the
+finite bridge.  For an arbitrary integer length function `L(y)` it proves the full fibre square is
+bounded by eight times the corresponding integer-start variable-window square, plus the literal
+fibre-length mismatch.  It then chooses the canonical moving length
+
+```text
+movingFibreWindowLength(x,h,y) = floor(h * (y-1) / sqrt x)
+```
+
+and proves
+
+```text
+|fibreLen(x,h,a) - movingFibreWindowLength(x,h,ceil(x/a))| <= h/sqrt x + 2,
+
+sum_innerFibre_sq
+  <= 8 * sum_y fixedWindowSq(f, movingFibreWindowLength(x,h,y), y-1)
+     + 2 * card(outerBlock(x,h)) * (h/sqrt x + 2)^2.
+```
+
+`GrowingReciprocalMarkerNormalizationError.tendsto_growingReciprocalMarkerMovingRoundingError`
+proves that the normalized final term tends to zero for the card's exact schedule.  Thus the
+fibre-to-moving-integer-window normalization is now closed without a rate premise and without
+discarding the continuous change of length across the start range.
+
+Direct source checks and targeted leaf builds pass (`11596/11596`, `11599/11599`).  The five new
+moving-window theorems and the new schedule-limit theorem audit with only
+`[propext, Classical.choice, Quot.sound]`; both leaves are umbrella-wired without an umbrella
+build.
+
+Card remains Stage 2.  Remaining normalization work is the passage from this exact variable-length
+integer-start family to the fixed-length real-start family in Menon's `(15)` (for example by a
+finite scale partition with uniform quantitative control).  The independent hard input remains
+Menon's `o(1/log X)` Möbius mean-square rate.  Neither is assumed.
+
+## Lean progress update (2026-09-02) — finite fixed-length partition receiver
+
+`Sieve/VariableWindowFinitePartition.lean` now gives the exact finite partition requested by the
+preceding normalization residue.  For every integer-valued quantizer `Q(y)`, it proves
+
+```text
+sum_innerFibre_sq
+  <= 16 * sum_{ell in image(Q)}
+       dyadicMeanSquare(f, ell, ceil(sqrt x/2)-1, ceil(sqrt x)-1)
+     + 16 * sum_y |movingFibreWindowLength(x,h,y) - Q(y)|^2
+     + 2 * card(outerBlock(x,h)) * (h/sqrt x + 2)^2.
+```
+
+The finite image of `Q` is the literal family of fixed integer lengths received by the existing
+dyadic mean-square module.  The proof first quantizes each variable window, retains the exact
+squared quantization error, and then groups all starts by the finite image; it assumes no
+mean-square bound or asymptotic rate.
+
+Direct source check and targeted leaf build pass (`11597/11597`).  All four public theorem
+declarations audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired
+without an umbrella build.
+
+Card remains Stage 2.  Remaining normalization residue is an explicit fixed-cardinality choice of
+`Q` whose displayed error is negligible at the target normalization, together with the required
+uniformity over its image.  Independent hard input remains Menon's quantitative `o(1/log X)`
+Möbius mean-square rate.  Neither is assumed.

@@ -31,7 +31,8 @@ theorem tendsto_levinsonCriticalDetectorFiniteEnergy_fortyNine_reciprocal :
         levinsonCriticalDetectorLongEnergy
           ((49 / 100 : ℝ) / (49 * Real.log N)) (N ^ 100) (N ^ 49))
       atTop (𝓝 (19751 / 14700 : ℝ)) := by
-    convert hsum using 1 <;> norm_num
+    convert hsum using 1
+    all_goals norm_num
   refine hsum'.congr' ?_
   filter_upwards [eventually_ge_atTop 2] with N hN
   have hNpos : 0 < N := by omega
@@ -41,7 +42,7 @@ theorem tendsto_levinsonCriticalDetectorFiniteEnergy_fortyNine_reciprocal :
         N ≤ N * N ^ 48 := Nat.le_mul_of_pos_right N (pow_pos hNpos 48)
         _ = N ^ 49 := by ring
     omega
-  have hML : N ^ 49 ≤ N ^ 100 := Nat.pow_le_pow_right₀ hNpos.le (by omega)
+  have hML : N ^ 49 ≤ N ^ 100 := Nat.pow_le_pow_right hNpos (by omega)
   rw [sum_levinsonCriticalDetectorFiniteEnergyTerm_eq_short_add_long _ _ _
     (le_of_lt hM)]
   rw [Sieve.sum_norm_levinsonLinearMollifiedCriticalDetectorCoeff_sq_eq_shortEnergyLcm

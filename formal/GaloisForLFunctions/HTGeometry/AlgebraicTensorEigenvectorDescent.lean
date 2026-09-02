@@ -61,6 +61,21 @@ def tensorFieldsFractionDerivation
     (derivationAlgebraMap C (A ⊗[C] B) K
       (tensorLeftDerivation C A B D))
 
+@[simp]
+theorem tensorFieldsFractionDerivation_algebraMap
+    (C A B K : Type*) [Field C] [IsAlgClosed C] [Field A] [Field B]
+    [Algebra C A] [Algebra C B]
+    [Field K] [Algebra (A ⊗[C] B) K] [Algebra C K]
+    [IsScalarTower C (A ⊗[C] B) K] [IsFractionRing (A ⊗[C] B) K]
+    (D : Derivation C A A) (x : A ⊗[C] B) :
+    tensorFieldsFractionDerivation C A B K D
+        (algebraMap (A ⊗[C] B) K x) =
+      algebraMap (A ⊗[C] B) K (tensorLeftDerivation C A B D x) := by
+  letI : IsDomain (A ⊗[C] B) := isDomain_tensorProduct_of_fields
+  exact GaloisForLFunctions.fractionRingDerivation_algebraMap
+    (derivationAlgebraMap C (A ⊗[C] B) K
+      (tensorLeftDerivation C A B D)) x
+
 /-- The constant coefficient of the minimal polynomial of an algebraic derivation eigenvector is
 an eigenvector with weight multiplied by the minimal-polynomial degree. -/
 theorem minpoly_constantCoeff_deriv_of_eigenvector
