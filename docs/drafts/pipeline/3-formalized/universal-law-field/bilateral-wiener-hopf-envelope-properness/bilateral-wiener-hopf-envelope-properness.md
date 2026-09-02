@@ -1,10 +1,11 @@
 # Bilateral Wiener–Hopf envelope properness
 
 - **ID:** ULF-BWHEP-1
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** `WienerFormationScale` + `ConstitutiveMonoidBialgebraHopfEnvelope` +
   `DirectedLiteralSourceFormationRecoveryProperness`
+- **Lean module:** `GaloisForLFunctions.HTGeometry.BilateralWienerHopfEnvelopeProperness`
 - **Statement:** The coefficient-native `ell^1` norm on the Laurent Hopf envelope admits a bounded
   evaluation character exactly on the unit circle; actual marked source formation and rank recovery
   are one algebraic identity in this envelope.
@@ -122,11 +123,29 @@ marked source execution, proving item 5.  The half-density norm formula then pro
 - **Required producer:** construct the literal FE packet-to-Laurent map before zero specialization
   and prove its evaluation/recovery action is bounded in coefficient `ell^1`.
 
+## Lean certification
+
+- Algebra-character packaging and coefficient formula:
+  `bilateralWienerEval`, `bilateralWienerEval_eq_sum`.
+- Laurent monomial evaluation and unit coefficient norm:
+  `bilateralWienerEval_T`, `bilateralWienerPacketNorm_T`.
+- Contractivity and exact bounded-character spectrum:
+  `norm_bilateralWienerEval_le`, `bilateralWienerEvalBounded_iff`.
+- Exact source-formation/recovery identity and both evaluated factors:
+  `bilateralWienerRankRecovery_mul_sourceEdge`, `bilateralWienerEval_sourceEdge`,
+  `bilateralWienerEval_rankRecovery`.
+- Actual normalized depth-12 marked execution:
+  `bilateralWienerEval_sourceEdge_rankTwelve`.
+- Prime half-density critical-line equivalence:
+  `bilateralWienerHalfDensityEvalBounded_iff`.
+- Imports wired into `HTGeometry/UniversalLawField.lean` and `HTGeometry.lean`; umbrella builds not
+  run.
+
 ## Gates
 
 - [x] 0 -> 1: big-picture law, corpus audit, and exact RH closure stated
 - [x] 1 -> 2: dependency-closed proof; `[PROVED HERE]`
-- [x] 2 -> 3: Lean formalization
+- [x] 2 -> 3: exact Lean declarations above; direct file check and targeted module build pass
 - [ ] 3 -> 4: publication-ready extraction
 
 ## Log
@@ -135,3 +154,7 @@ marked source execution, proving item 5.  The half-density norm formula then pro
   paper proof closed.
 - 2026-09-01 — Lean module scratch-checked, directly checked, exact-target built, and axiom-audited;
   only standard `propext`, `Classical.choice`, and `Quot.sound` dependencies remain.
+- 2026-09-02 — exact six-clause coverage audited against the paper statement; direct file check and
+  targeted module build pass; dedicated and theorem-area umbrella imports present; promoted to
+  Stage 3. Global lint reports only unrelated pre-existing umbrella-reachability failures and no
+  issue in this module.

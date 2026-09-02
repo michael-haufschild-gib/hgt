@@ -224,3 +224,46 @@ Wired: `HTGeometry.lean` (after `ConfluentVanishingPolynomial`), `RHTower.lean` 
 `FunctionalEquationParity` and after `NoObstructionOnlyAConstruction`). The no-surrogate theorem
 assumes frequencies `λ_j ≥ c > 0` (true for every generalized-prime system with least prime `> 1`);
 the derivative-series divergence left of the abscissa uses it.
+
+## Lean (2026-09-02, brick 5 closed: Landau–Page for two quadratic characters)
+
+The pole-side quantization of C4 is now a theorem, by values rather than by Hadamard zero sums:
+
+| Module | Headline theorems |
+|---|---|
+| `RHTower/DirichletCharacterPartialSumBound.lean` | `norm_dirichletCharacter_sum_range_le` (`‖Σ_{m<n} χ(m)‖ ≤ N`), `norm_sum_ofReal_mul_le_of_bounded_partial` (Abel), `norm_LFunction_le_three_mul_modulus` (`‖L(σ,χ)‖ ≤ 3N`, real `σ > 1`, `χ ≠ 1`) |
+| `RHTower/QuadraticCharacterFourfoldProduct.lean` | `hasDerivAt_LFunction_ofReal_of_isQuadratic`, `twistRe_sum_eq` (`Λ(n)n^{-σ}1_N(n)(1+χ₁(n))(1+χ₂(n))`), `hasDerivAt_fourfoldProduct_ofReal` (`F' = −F·W`, `W ≥ 0`), `fourfoldRe_pos`, `fourfoldRe_antitoneOn`, `fourfoldRe_ge` (`(2−π²/6)³ ≤ F(σ)` on `(1,2]`) |
+| `RHTower/LandauPageTwoQuadratic.lean` | `norm_deriv_LFunction_le_of_primitive` (Cauchy on the CGL strip: `‖L'(x,χ)‖ ≤ 1728·C·N²` on `[3/4,5/4]`), `norm_LFunction_le_of_real_zero` (mean value), `norm_LFunction_one_le_pole` (`‖L(1+δ,1_N)‖ ≤ 1/δ+2`), `landau_page_two_quadratic`: for distinct primitive quadratic `χ₁, χ₂ mod N` with real zeros `β₁, β₂ ≤ 1`, `landauPageWidth N ≤ max(1−β₁, 1−β₂)`, `landauPageWidth N = (2−π²/6)³/(18·(1728·C·N²)²·N)` |
+
+All `lake env lean` clean with zero warnings; axioms `propext/Classical.choice/Quot.sound`. The width
+is `≍ N^{-5}` rather than the classical `c/log N`: the values route pays the conductor-uniform
+strip bound `q²(1+|t|)²` instead of a Hadamard zero-sum bound. Sharpening to `c/log N` needs the
+local Borel–Carathéodory zero-sum lemma (`ArgumentVariation.borel_caratheodory` exists) and the
+partial-summation representation of `L(s,χ)` on `0 < Re s ≤ 1`; both are listed as the next bricks.
+
+## Brick 6 programme (created positivity), scoped against mathlib on 2026-09-02
+
+Available in mathlib: `ModularForm`, `CuspForm`, slash actions, level-one dimension formulas,
+`q`-expansions, Eisenstein series with locally uniform convergence for `k ≥ 3`
+(`eisensteinSeries_tendstoLocallyUniformly`), and the Petersson *integrand*
+(`UpperHalfPlane.petersson`, weight-`0` invariance). Not available anywhere: Poincaré series
+of weight `k`, the Petersson inner product as an integral over a fundamental domain, Bessel `J_ν`,
+unfolding, Maass forms, Kuznetsov.
+
+- 6a `HolomorphicPoincareSeries`: `P_m(z) = Σ_{Γ∞\Γ} j(γ,z)^{-k} e(m·γz)`, level one, `k ≥ 3`;
+  absolute locally uniform convergence by domination with the Eisenstein summand
+  (`|e(mγz)| ≤ 1` on `ℍ`), slash invariance, holomorphy, cuspidality for `m ≥ 1`.
+- 6b Fourier coefficients of `P_m`: `δ_{mn} + 2πi^{-k} Σ_c S(m,n;c)/c · J_{k-1}(4π√(mn)/c)`; needs
+  Bessel `J_ν` as a power series and the classical integral of `(x+iy)^{-k} e(−nx − m/(c²(x+iy)))`.
+  Corpus has `Sieve/KloostermanSum` and the Ramanujan-unfolding pattern of the real-analytic
+  Poincaré modules (`ThetaCuspHawkingBMEisensteinPoincareRamanujanUnfolding`).
+- 6c Petersson inner product on level one: invariant measure `dx dy / y²`, integral over the
+  standard fundamental domain, unfolding `⟨f, P_m⟩ = Γ(k−1)/(4πm)^{k−1} · a_f(m)`.
+- 6d Petersson formula: orthonormal basis of the finite-dimensional `S_k`, `P_m = Σ_f ⟨P_m,f⟩ f`,
+  hence `Σ_f a_f(m) a_f(n)‾ / ⟨f,f⟩ = (4π√(mn))^{k−1}/Γ(k−1) · [δ_{mn} + 2πi^{-k} Σ_c S(m,n;c)/c J_{k−1}(…)]`.
+  This is the first created positivity available: the left side is a sum of squares at `m = n`.
+- 6e Kuznetsov (Maass spectrum + Eisenstein continuous spectrum) and 6f Deshouillers–Iwaniec:
+  require the spectral theory of the hyperbolic Laplacian on `Γ\ℍ`, absent from mathlib; multi-month.
+
+Order of build: 6a → 6c → 6d (holomorphic Petersson formula, self-contained), 6b in parallel,
+6e–6f only after a Maass-form foundation exists.

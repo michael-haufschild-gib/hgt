@@ -33,13 +33,8 @@ where mathematical knowledge is missing use the /hgtl7 skill to create it.
 ## formalize goal
 /goal
 
-formalize UNCONDITIONALLY in lean any proven theorem from all these cards: 
-- docs/drafts/pipeline/2-fully-proven/bessel-order-intensity-hypertranscendence.md
-- docs/drafts/pipeline/2-fully-proven/deninger-algebraic-cyclotomic-milnor-amplitude.md
-- docs/drafts/pipeline/2-fully-proven/route-e-cofactor-amplified-e3-token-supply.md
-- docs/drafts/pipeline/2-fully-proven/route-e-coprime-square-root-mobius-product-sign-law.md
-- docs/drafts/pipeline/2-fully-proven/route-e-forbidden-support-e3-stability.md
-- docs/drafts/pipeline/2-fully-proven/route-e-growing-reciprocal-marker-low-breadth-transport.md
+formalize UNCONDITIONALLY in lean all proven theorem for every single card: 
+- docs/drafts/pipeline/2-fully-proven/universal-law-field/bilateral-wiener-hopf-envelope-properness/bilateral-wiener-hopf-envelope-properness.md
   
 add missing infrastructure, lean proofs, everything needed to mark a card as fully done and move it to stage 3 of the pipeline - no simplifications. 
 
@@ -91,7 +86,7 @@ do not touch git. for searching in our lean corpus use the search tool for it. p
 ## goal theorems gpt
 
 /goal
-Audit lean corpus for any remaining hypothesis or Prop interface - then attempt to discharge it:
+Use the search tool for our lean corpus to audit for any remaining hypothesis, prop interface, premise - then attempt to discharge them:
 1. reuse existing formal results to discharge every tractable premise
 2. create and formally prove missing connector theorems
 3. subsume theorems under a larger universal law which is nontrivial
@@ -109,25 +104,13 @@ read only corpus:
 - formal/GaloisForLFunctions/PNTPlus.lean for lean related to Prime Number Theorem
   
 lean rules:
-1. You always build in the foreground, 1 build process at a time - other agents are also building in parallel.
-2. Always use  lake env lean <file>  and only lake build <module> for the final audit.
-3. Be efficient with lean builds, do not constantly do minor edits and build, but batch changes and builds.
-4. make sure you don't leave stale lean processes running - clean up after yourself
+1. Proofs must be unconditional and closed in lean, no premises, no hypotheses, no added axioms, ....
+2. Always build in the foreground, 1 process per single agent.
+3. No computational results can be used in lean proof - computations only support ideas and guidance.
+4. Always use  lake env lean \<file>  and only lake build \<module> for the final audit. Do not forget to wire new modules into the umbrellas.
+5. do not run full builds. check in scratch, build only oleans that are needed, wire finished modules into their umbrella but do not run full umbrella builds.
+6. make sure you don't leave stale lean processes running - clean up after yourself.
 
-Mandatory:
-1. no computations.
-2. LEAN PROOFS MUST BE UNCONDTIONAL!!!
-3. no subagents or background tasks
-4. You are not allowed to change the cron timing.
-5. Effort is not a criterion:
-   1. If it cannot be done in a single session -> Does not matter. Do it!
-   2. If it cannot be done in a single context window -> Does not matter. Do it!
-   3. If it takes months -> Does not matter. Do it!
-
-
-LEAN PROOFS MUST BE UNCONDTIONAL!!! ALWAYS CHECK BEFORE WRITING NEW LEAN CODE WHAT THE PROJECT LEAN CODE ALREADY CONTAINS AS PROOF OR BUILDING BLOCK YOU SO YOU DO NOT DUPLICATE WORK.
-
-where mathematical knowledge is missing use the $hgt-fields-medalist skill to create it.
 
 ## research paper
 
@@ -306,9 +289,7 @@ how would a fields medal mathematician approach this problem? what our corpus is
 
 
 ## theorem experiment
-find as many places as possible in our lean corpus to apply any form of the Korteweg–De Vries equation, Kawahara equation, Kadomtsev–Petviashvili equation, Shrira-Pesenson equation, Nonlinear Schrödinger equation, Solitons math and physics, formalize it and see what happens. this is experimental. it does not have to be about rh or anything, purely mechanical. it has no goal other than this task done in as many places as possible. explain in chat whenever you find something what this could be about.
-
-Construct source-defined graded/Fredholm object carrying an odd index or weight. Reflection should follow from duality, horizontal orientation from eta/spectral flow or polarization, and infinite completion from index stability. Xi should appear only afterward as determinant or trace formula.
+find as many places as possible in our lean corpus to apply theorems-lemmas-propositions-correlatires from https://arxiv.org/abs/2608.25870 formalize them and see what happens. this is experimental. it does not have to be about rh or anything, purely mechanical. it has no goal other than this task done in as many places as possible. explain in chat whenever you find something what this could be about.
 
 Lean rules:
 1. Proofs must be unconditional and closed in lean, no premises, no hypotheses, no added axioms, ....
@@ -320,7 +301,7 @@ Lean rules:
 7. make sure you don't leave stale lean processes running - clean up after yourself.
    
 Non-negotiable working mode rules:
-1. If an idea/conjecture would be interesting, but is missing lean infrastructure, build it no matter the effort, instead of pivoting.
+1. If an idea would be interesting, but is missing lean infrastructure, build it no matter the effort, instead of pivoting.
 2. use the search tool for our lean corpus. do not read cards or anything, only work directly on lean.
 3. Missing mathematical knowledge: create it with the hgtl7 or hgt-fields-medalist skill workflow and heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ...
    
