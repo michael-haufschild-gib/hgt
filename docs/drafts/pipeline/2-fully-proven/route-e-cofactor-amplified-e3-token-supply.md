@@ -1422,3 +1422,107 @@ without umbrella build.
 Card remains Stage 2.  Fixed-pair source energy reduction is closed.  Remaining shared primitive
 is a saving for terminal-orbit kernel energy or stronger signed operator cancellation at paper
 ranges, then Lemma 3.5(ii), amplification, and Theorem 1.2.
+
+## Lean progress update (2026-09-02) — no-premise terminal-orbit hybrid energy
+
+`Sieve/KloostermanTerminalOrbitEnergy.lean` closes the unconditional absolute energy evaluation
+exposed by the preceding Hilbert--Schmidt receiver.  Every terminal orbit is bounded
+simultaneously by its exact residual length and its reciprocal phase chord; after squaring, Lean
+sums the pointwise minimum over every erased modulus pair.  A second no-premise theorem composes
+that budget with exact source residue Parseval and bounds the sum of all erased-modulus terminal
+source-quadratic energies by
+
+```text
+sum_{q in Q} sum_{r in Q\{q}}
+  SourceResidueEnergy(q) * SourceResidueEnergy(r) * HybridOrbitEnergy(q,r).
+```
+
+Direct source check and targeted leaf build pass (`12751/12751`).  Both public theorem
+declarations audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired
+without umbrella build.
+
+Card remains Stage 2.  Absolute source and orbit-energy bookkeeping is now closed with no premises.
+Remaining shared primitive is a genuine collective spectral saving beyond this pointwise hybrid
+budget at paper ranges, followed by Lemma 3.5(ii), amplification, and Theorem 1.2.
+
+## Lean progress update (2026-09-02) — full weighted hybrid/interpolated Gram receiver
+
+`Sieve/KloostermanTerminalOrbitEnergy.lean` now carries the fixed-pair hybrid estimate through the
+entire signed terminal Gram quadratic.  A dependent-pair Cauchy--Schwarz argument flattens
+`Q.erase q` with `Finset.sigma`, so no artificial `#Q` factor is introduced.  The resulting
+no-premise theorem bounds the squared full Gram norm by exact ordered modulus-weight energy times
+the source-residue/hybrid-orbit receiver.
+
+The same module then interpolates the pointwise bounds by
+
+```text
+min(length², chord⁻²) ≤ length * chord⁻¹
+```
+
+and discharges the summed reciprocal-chord factor with the existing shared-gcd-safe
+product-harmonic theorem.  Thus a second no-premise theorem gives a fully explicit receiver whose
+pair kernel is exact residual length times `kloostermanProductHarmonicPairBudget`.
+
+Direct source check and targeted leaf build pass (`13489/13489`).  All three additional public
+theorem declarations audit with only `[propext, Classical.choice, Quot.sound]`; leaf remains
+umbrella-wired without umbrella build.
+
+Card remains Stage 2.  Sharp unconditional absolute-value interpolation is closed, but it is not
+the collective signed spectral saving required at paper ranges.  Remaining shared core is that
+saving, Lemma 3.5(ii), amplification, and Theorem 1.2.
+
+## Lean progress update (2026-09-02) — literal source-interval residue multiplicity
+
+`Sieve/KloostermanSourceResidueMultiplicity.lean` removes the arbitrary-source residue-collision
+budget from the literal interval `B = Finset.Icc 1 N`.  For `N>0`, shifted Euclidean quotient gives
+an injection from each residue fibre modulo `q+1` into
+`Finset.range ((N-1)/(q+1)+1)`, so Lean proves the exact maximum occupancy
+
+```text
+#{n in [1,N] : n = z mod (q+1)} <= (N-1)/(q+1)+1.
+```
+
+Fibrewise Cauchy--Schwarz and exact finite reassembly then bound source residue energy by
+
+```text
+(q+1) * ((N-1)/(q+1)+1) * sum_{1 <= n <= N} |b_n|^2.
+```
+
+The module inserts this no-premise bound for both source legs into the full weighted terminal Gram
+receiver, retaining ordered modulus-weight energy and the residual-length/product-harmonic orbit
+budget.  No source injectivity, size premise, or analytic cancellation estimate is assumed.
+
+Direct source check and targeted leaf build pass (`13490/13490`).  All three public theorem
+declarations audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired
+without umbrella build.
+
+Card remains Stage 2.  Literal interval source-collision bookkeeping is closed.  Remaining shared
+core is genuine signed spectral saving at paper ranges, Lemma 3.5(ii), amplification, and Theorem
+1.2.
+
+## Lean progress update (2026-09-02) — exact literal-band dyadic slice asymptotic
+
+`CofactorAmplifiedDyadicSliceCount.lean` strengthens the earlier lower bound for `(6a)` to the
+exact floor-and-ceiling asymptotic at the card's literal exponent band.  It defines the dyadic
+indices whose powers of two lie between
+
+```text
+(log U)^(10999/10000)  and  2 * (log U)^(11/10)
+```
+
+and proves, with no premise,
+
+```text
+#slices / log log U -> 1 / (10000 * log 2).
+```
+
+The proof retains both endpoint roundings and proves their combined normalized error vanishes; it
+does not replace the stated `1.1 - 10^-4` range by a wider surrogate.
+
+Direct source check and targeted leaf build pass (`8974/8974`).  The public theorem audits with
+only `[propext, Classical.choice, Quot.sound]`; the leaf is umbrella-wired without an umbrella
+build.
+
+Card remains Stage 2.  Exact slice multiplicity and its leading constant are closed.  Remaining
+shared core is genuine signed spectral saving at paper ranges, Lemma 3.5(ii), amplification, and
+Theorem 1.2; none is assumed.

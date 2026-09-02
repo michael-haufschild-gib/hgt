@@ -157,3 +157,25 @@ formalized input — which the pipeline's rules currently do not allow.
 
 This is recorded so that no future session re-attempts the numerical route without first building
 that stack.
+
+## Lean status update (2026-09-02) — exhaustive corpus audit confirms constraint conflict
+
+The custom Lean-corpus search was repeated for the exact endpoint
+`768044885196911 / 256`, the two certified counts `12363153437138` and `12363153437139`,
+`plattTrudgianArbVerifiedHeight`, Turing zero counting, Riemann--Siegel certification, and concrete
+`stripZeroIncrement` cardinality providers.  No unconditional declaration supplies either required
+numerical input.  The strongest exact corpus results remain:
+
+- `rhVerifiedThrough_amplify_of_increment_ncard_le_one` and
+  `rhVerifiedThrough_amplify_of_fiber_ncard_le_one`, which are conditional consumers;
+- source-pure unconditional verified heights only through much smaller explicit bounds such as
+  `243 / 20`;
+- `plattTrudgianArbVerifiedHeight`, which is only the endpoint definition, not a proof of
+  `RHVerifiedThrough plattTrudgianArbVerifiedHeight`.
+
+Therefore the headline theorem cannot be promoted under the simultaneous rules “no computations”,
+“no hypotheses”, and “no added axioms”.  A valid stage-3 proof must add a kernel-checked
+Riemann--Siegel/Turing/interval-arithmetic certificate and evaluate it at the stated height, or
+import an independently axiom-audited Lean artifact that already does so.  Neither exists in the
+current corpus.  Replacing this with the generic amplification implication would weaken the card
+and is explicitly rejected.

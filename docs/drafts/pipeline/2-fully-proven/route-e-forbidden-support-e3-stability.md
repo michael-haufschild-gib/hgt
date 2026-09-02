@@ -1054,3 +1054,63 @@ without umbrella build.
 Card remains Stage 2.  Fixed-pair source energy reduction is closed.  Remaining shared primitive
 is terminal-orbit kernel energy saving or stronger signed modulus/operator cancellation at paper
 ranges, followed by Lemma 3.5(ii), amplification, and all-interval supply.
+
+## Lean progress update (2026-09-02) — no-premise terminal-orbit hybrid energy
+
+`Sieve/KloostermanTerminalOrbitEnergy.lean` evaluates the unconditional kernel-energy side of the
+receiver without an analytic hypothesis.  It squares the better of exact terminal length and
+reciprocal-chord control pointwise, sums this hybrid budget over all unit frequencies and every
+erased modulus pair, and composes it with exact source residue energies to bound the aggregate
+terminal source-quadratic energy.
+
+Direct source check and targeted leaf build pass (`12751/12751`).  Both public theorem
+declarations audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired
+without umbrella build.
+
+Card remains Stage 2.  Absolute source/orbit Hilbert--Schmidt bookkeeping is closed with no
+premises.  Remaining shared primitive is collective signed spectral cancellation beyond this
+hybrid budget at paper ranges, followed by Lemma 3.5(ii), amplification, and all-interval supply.
+
+## Lean progress update (2026-09-02) — full weighted hybrid/interpolated Gram receiver
+
+`Sieve/KloostermanTerminalOrbitEnergy.lean` now propagates the hybrid terminal-orbit energy through
+the full signed modulus/source quadratic.  Its dependent-pair Cauchy--Schwarz proof flattens the
+erased modulus family exactly, avoiding an extraneous modulus-cardinality loss, and bounds the
+squared Gram norm by ordered weight-pair energy times the exact source-residue/hybrid receiver.
+
+The pointwise hybrid minimum is also interpolated as residual length times reciprocal chord.  The
+existing noncoprime product-period slice theorem sums the chord factor, yielding an explicit
+residual-length/product-harmonic receiver for every erased modulus pair.  Both final Gram bounds
+are unconditional and have no hypotheses.
+
+Direct source check and targeted leaf build pass (`13489/13489`).  All three additional public
+theorem declarations audit with only `[propext, Classical.choice, Quot.sound]`; leaf remains
+umbrella-wired without umbrella build.
+
+Card remains Stage 2.  This closes the strongest available unconditional absolute receiver, not
+the collective signed spectral saving needed for the all-interval theorem.  Remaining shared core
+is that saving, Lemma 3.5(ii), amplification, and all-interval supply.
+
+## Lean progress update (2026-09-02) — literal source-interval residue multiplicity
+
+`Sieve/KloostermanSourceResidueMultiplicity.lean` specializes the exact residue-energy receiver to
+the paper's literal natural source interval.  For every residue `z mod (q+1)`, division by `q+1`
+after shifting by one injects its fibre in `Finset.Icc 1 N` into
+`Finset.range ((N-1)/(q+1)+1)` when `N>0`.  Consequently
+
+```text
+SourceResidueEnergy(q,[1,N],b)
+  <= (q+1) * ((N-1)/(q+1)+1) * sum_{1 <= n <= N} |b_n|^2.
+```
+
+Lean proves this by fibrewise Cauchy--Schwarz and exact `Finset.sum_fiberwise`, then substitutes the
+bound on both source legs of the full weighted terminal Gram receiver.  Result is unconditional:
+no support injectivity, modulus-size premise, spectral estimate, or axiom is introduced.
+
+Direct source check and targeted leaf build pass (`13490/13490`).  All three public theorem
+declarations audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired
+without umbrella build.
+
+Card remains Stage 2.  Literal interval source multiplicity is closed.  Remaining shared core is
+collective signed spectral saving at paper ranges, Lemma 3.5(ii), amplification, and all-interval
+supply.

@@ -2,6 +2,7 @@ import Mathlib
 import GaloisForLFunctions.HTGeometry.ConstraintRelativity.CongruenceOrderFirstOrder
 import GaloisForLFunctions.HTGeometry.ConstraintRelativity.SolderingTransportSymbol
 import GaloisForLFunctions.HTGeometry.PowerSeriesCriticalDeformation
+import GaloisForLFunctions.HTGeometry.ConstraintRelativity.PowerSeriesResidue
 
 /-!
 # The law symbol of the diagonal congruence order over a coefficient field
@@ -185,31 +186,6 @@ end CongruenceLawSymbol
 section PowerSeriesModel
 
 variable {k : Type*} [Field k] {m : ℕ}
-
-/-- The constant coefficient as a map of `k`-algebras. -/
-noncomputable def constantCoeffAlgHom : PowerSeries k →ₐ[k] k :=
-  { PowerSeries.constantCoeff with commutes' := fun r => by simp }
-
-@[simp] theorem constantCoeffAlgHom_apply (f : PowerSeries k) :
-    constantCoeffAlgHom f = PowerSeries.constantCoeff f := rfl
-
-theorem constantCoeffAlgHom_surjective :
-    Function.Surjective (constantCoeffAlgHom (k := k)) :=
-  fun r => ⟨PowerSeries.C r, by simp⟩
-
-theorem ker_constantCoeffAlgHom :
-    RingHom.ker (constantCoeffAlgHom (k := k)) =
-      Ideal.span ({PowerSeries.X} : Set (PowerSeries k)) :=
-  (GaloisForLFunctions.HTGeometry.powerSeriesDeformIdeal_eq_ker_constantCoeff k).symm
-
-/-- The residue ring of the formal power series ring is the coefficient field. -/
-noncomputable def powerSeriesResidueEquiv :
-    (PowerSeries k ⧸ Ideal.span ({PowerSeries.X} : Set (PowerSeries k))) ≃ₐ[k] k :=
-  (Ideal.quotientEquivAlgOfEq k (ker_constantCoeffAlgHom (k := k)).symm).trans
-    (Ideal.quotientKerAlgEquivOfSurjective constantCoeffAlgHom_surjective)
-
-@[simp] theorem powerSeriesResidueEquiv_mk (f : PowerSeries k) :
-    powerSeriesResidueEquiv (Ideal.Quotient.mk _ f) = PowerSeries.constantCoeff f := rfl
 
 /-- **Coefficient splitting for the literal model.**  Over `k[[X]]` with modulus `X` the
 congruence order is the coefficient field plus its maximal ideal. -/

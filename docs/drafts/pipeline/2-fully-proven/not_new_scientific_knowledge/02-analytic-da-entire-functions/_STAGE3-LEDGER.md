@@ -19,8 +19,8 @@ Goal: unconditional Lean formalization of every card in this folder, then promot
 | 10 | entire-composition-hypertranscendence-or-law | Steinmetz reduction / Huang–Ng Thm 3 | TODO |
 | 11 | first-order-composition-two-defect-decomposition | Clunie + trdeg observability | **DONE → 3-formalized** (2026-08-30) |
 | 12 | autonomous-cap-derivative-shadow-law | Clunie + trdeg observability | **DONE → 3-formalized** (2026-08-30) |
-| 13 | newton-corner-nonautonomous-composition-unit-cost | Clunie + Puiseux Jacobian | **IN PROGRESS** — exact composition depth closed; differential observability open |
-| 14 | asymptotically-exponential-algebraic-cascade-unit-cost | Clunie + Puiseux Jacobian + Briot–Bouquet | **IN PROGRESS** — exact composition depth closed; differential observability/classification open |
+| 13 | newton-corner-nonautonomous-composition-unit-cost | Clunie + Puiseux Jacobian | **IN PROGRESS** — exact composition depth and ramified Puiseux observability closed; analytic-state transfer open |
+| 14 | asymptotically-exponential-algebraic-cascade-unit-cost | Clunie + Puiseux Jacobian + Briot–Bouquet | **IN PROGRESS** — exact composition depth and ramified Puiseux observability closed; analytic-state transfer/classification open |
 | 15 | nonautonomous-cap-linear-order-two-shadow-rigidity | Briot–Bouquet — bypassed | **DONE → 3-formalized** (2026-09-01) |
 | 16 | fixed-taylor-modulus-newton-geometry-ht-blindness | Ostrowski finite basis — replaced by corpus Mahler confinement | **DONE → 3-formalized** (2026-08-30) |
 | 17 | arithmetic-entire-heat-da-finite-spectrum | Popken + Mahler normalization | **DONE → 3-formalized** (2026-08-30) |
@@ -97,9 +97,13 @@ Cascades / differential algebra:
   (the unit-cost law modulo jet independence — the exact residue of cards 13/14)
 - `HTGeometry.FiniteOrderCascadeCompositionDepth` — exact positive-lower-order composition depth
   for arbitrary finite cascades of nonconstant differentiable finite-order entire maps
-- `HTGeometry.HahnLeadingCoefficient`, `HTGeometry.HahnTowerGradientStaircase` — generic Hahn
-  determinant coefficients and exact algebraic independence from the terminal/prefix leading
-  profile of a cascade logarithmic-state chain
+- `HTGeometry.HahnLeadingCoefficient`, `HTGeometry.HahnTowerGradientStaircase`,
+  `HTGeometry.HahnFractionValuation`, `HTGeometry.HahnFractionLeadingCoefficient`,
+  `HTGeometry.RamifiedMultiGradedNewtonModel`, `HTGeometry.RamifiedPuiseuxCascadeTransfer` —
+  generic Hahn determinant coefficients,
+  fraction-field valuation and coordinate derivations, quotient-rule leading calculus, exact
+  ramified logarithmic-state suffix propagation, and algebraic independence of the resulting full
+  product-cascade observable chain
 - `HTGeometry.AnalyticJetFieldBridge` — DA closed under `+ − × ^`
 - `HTGeometry.FractionRingDerivation.fractionRingDerivation`
 - `HTGeometry.DifferentiallyAlgebraicCancellation.differentiallyAlgebraic_right_of_mul_eq`
@@ -248,12 +252,25 @@ beyond this card (they are the quantitative core of Picard/Montel).
   stage 2 pending their exact differential-order observability capstones (and Card 14's
   Briot--Bouquet classification).
 - 2026-09-02 — Cards 13/14 Puiseux determinant endpoint closed by
-  `HTGeometry.HahnTowerGradientStaircase`: the correct terminal-output/descending-prefix boundary
-  matrix has nonzero determinant, and its Hahn observable family is algebraically independent over
-  `ℂ`.  `HTGeometry.HahnLeadingCoefficient` now supplies generic determinant boundary-coefficient
-  calculus.  Direct checks, leaf build, and all-new-theorem axiom audit are clean.  Remaining
-  observability obligation is exact construction of the logarithmic chain's prefix leads from each
-  card's branch hypothesis; neither card is promoted.
+  `HTGeometry.HahnFractionLeadingCoefficient`: the nested terminal-output/suffix-product boundary
+  matrix has nonzero determinant, and its fraction-field observable family is algebraically
+  independent over `ℂ`.  The complete fraction leading calculus includes inversion and
+  quotient-rule differentiation; `HTGeometry.HahnFractionValuation` supplies the extended
+  valuation and coordinate derivations.  Direct checks, leaf builds, and all-new-theorem axiom
+  audits are clean.  Remaining observability obligation is exact construction of the logarithmic
+  chain's suffix leads from each card's branch hypothesis; neither card is promoted.
+- 2026-09-02 — Cards 13/14 ramified logarithmic-state propagation closed by
+  `HTGeometry.RamifiedMultiGradedNewtonModel`.  It constructs the original-coordinate derivations
+  after arbitrary positive integral ramification, proves the discrete lexicographic off-coordinate
+  derivative separation with unrestricted later exponents, propagates every logarithmic-state
+  suffix lead, and concludes both `algebraicIndependent_hahnFractionRamLogState` and the actual
+  time-jet endpoint `algebraicIndependent_hahnFractionRamCascadeOutputJets`.  A bounded chain peel
+  removes the old irrelevant requirement that logarithmic states remain nonzero past the finite
+  determinant.  Direct check, leaf build, and capstone axiom audit are clean.  Remaining obligation
+  is construction of `IsRamifiedPuiseuxCascadeSpecialization` from each selected algebraic branch;
+  once supplied, `algebraicIndependent_cascadeOutputJets_of_ramifiedPuiseuxSpecialization` already
+  transfers the nonzero determinant back to source time jets.  Card 14 additionally needs
+  Briot--Bouquet.  Neither card is promoted.
 
 ## The logarithmic-derivative lemma (I11): route and progress
 

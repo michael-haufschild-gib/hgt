@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.CriticalSourceBlockComplexPoints
+import GaloisForLFunctions.HTGeometry.CriticalSourceReciprocalNumeratorCanonical
 import GaloisForLFunctions.HTGeometry.MvPolynomialAwayComplexPoints
 
 /-!
@@ -16,6 +17,8 @@ open MvPolynomial
 
 noncomputable section
 
+set_option maxHeartbeats 1000000
+
 variable {m n : ℕ} [Fact (0 < m)] [Fact (0 < n)]
 
 /-- The source chart projected directly to analytic torus-affine observation coordinates. -/
@@ -24,13 +27,28 @@ def criticalSourceAnalyticProjection :
       ComplexTorusAffineChart (n + m - 2) :=
   criticalObservationComplexPointHomeomorph m n ∘ criticalSourceChartProjection
 
+/-- The direct source analytic projection is continuous. -/
+theorem continuous_criticalSourceAnalyticProjection :
+    Continuous (criticalSourceAnalyticProjection (m := m) (n := n)) :=
+  (criticalObservationComplexPointHomeomorph m n).continuous.comp
+    (AlgSpec.continuous_precomp _)
+
+/-- The direct source analytic projection as a bundled continuous map. -/
+def criticalSourceAnalyticProjectionContinuousMap :
+    C(AlgSpec (criticalSourceChartRing ℂ m n),
+      ComplexTorusAffineChart (n + m - 2)) :=
+  ⟨criticalSourceAnalyticProjection, continuous_criticalSourceAnalyticProjection⟩
+
 /-- On an evaluation point, the first analytic torus coordinate is `x_m`. -/
 theorem criticalSourceAnalyticProjection_awayAlgPoint_first_val
     {v : Fin (m + n) → ℂ}
     (hv : MvPolynomial.eval v (criticalSourceChartPoly ℂ m n) ≠ 0) :
     ((criticalSourceAnalyticProjection
       (AlgSpec.awayAlgPoint (criticalSourceChartPoly ℂ m n) hv)).1 : ℂ) =
-        v ⟨m, by omega⟩ := by
+        v ⟨m, by
+          have hm : 0 < m := Fact.out
+          have hn : 0 < n := Fact.out
+          omega⟩ := by
   rw [criticalSourceAnalyticProjection, Function.comp_apply,
     criticalObservationComplexPointHomeomorph_first_val]
   change AlgSpec.awayAlgPoint (criticalSourceChartPoly ℂ m n) hv
@@ -50,7 +68,9 @@ theorem criticalSourceAnalyticProjection_awayAlgPoint_first_val
   rw [observationRingToChart, MvPolynomial.aeval_X]
   change AlgSpec.awayAlgPoint (criticalSourceChartPoly ℂ m n) hv
       (algebraMap (MvPolynomial (Fin (m + n)) ℂ)
-        (criticalSourceChartRing ℂ m n) (X ⟨m, by omega⟩)) = _
+        (criticalSourceChartRing ℂ m n) (X ⟨m, by
+          have hn : 0 < n := Fact.out
+          omega⟩)) = _
   rw [AlgSpec.awayAlgPoint_algebraMap, MvPolynomial.eval_X]
 
 /-- At `x₀ = 1`, the second analytic torus coordinate is the cleared `n`-th reciprocal
@@ -58,7 +78,10 @@ numerator. -/
 theorem criticalSourceAnalyticProjection_awayAlgPoint_second_val
     {v : Fin (m + n) → ℂ}
     (hv : MvPolynomial.eval v (criticalSourceChartPoly ℂ m n) ≠ 0)
-    (hv0 : v ⟨0, by omega⟩ = 1) :
+    (hv0 : v ⟨0, by
+      have hm : 0 < m := Fact.out
+      have hn : 0 < n := Fact.out
+      omega⟩ = 1) :
     ((criticalSourceAnalyticProjection
       (AlgSpec.awayAlgPoint (criticalSourceChartPoly ℂ m n) hv)).2.1 : ℂ) =
         MvPolynomial.eval v (criticalReciprocalNumerator ℂ (m + n) n) := by
@@ -80,20 +103,19 @@ theorem criticalSourceAnalyticProjection_awayAlgPoint_second_val
     IsLocalization.Away.lift_eq _ _ _]
   rw [observationRingToChart, MvPolynomial.aeval_X]
   change AlgSpec.awayAlgPoint (criticalSourceChartPoly ℂ m n) hv
-      (chartRecip ℂ (m := m) (n := n) (k := n) (by omega)) = _
+      (chartRecip ℂ (m := m) (n := n) (k := n) (by
+        have hm : 0 < m := Fact.out
+        omega)) = _
   have hinv : AlgSpec.awayAlgPoint (criticalSourceChartPoly ℂ m n) hv
       (chartInvX0 ℂ (m := m) (n := n)) = 1 := by
     have h := congrArg (AlgSpec.awayAlgPoint (criticalSourceChartPoly ℂ m n) hv)
       (isUnit_algebraMap_chartX0 ℂ (m := m) (n := n)).val_inv_mul
-    change AlgSpec.awayAlgPoint (criticalSourceChartPoly ℂ m n) hv
-        (chartInvX0 ℂ (m := m) (n := n) *
-          algebraMap (MvPolynomial (Fin (m + n)) ℂ)
-            (criticalSourceChartRing ℂ m n) (X ⟨0, by omega⟩)) = 1 at h
-    rw [map_mul, AlgSpec.awayAlgPoint_algebraMap, MvPolynomial.eval_X, hv0, mul_one] at h
-    exact h
+    rw [map_mul, map_one, AlgSpec.awayAlgPoint_algebraMap,
+      MvPolynomial.eval_X, hv0, mul_one] at h
+    simpa [chartInvX0] using h
   rw [chartRecip, map_mul, map_pow,
     AlgSpec.awayAlgPoint_algebraMap, hinv, one_pow, mul_one]
-  rfl
+  rw [criticalSourceRecipNumerator_eq_criticalReciprocalNumerator]
 
 variable [Fact (1 < m)] [Fact (1 < n)]
 variable {B : Set (criticalGeometricSheet ℂ m n)}
@@ -104,10 +126,14 @@ theorem criticalSourceBlockAnalyticProjection_eq_source
     (hmem : criticalSourceNormalClosureEmbedding ℂ m n ∈ B) :
     criticalSourceBlockAnalyticProjection hB hmem =
       criticalSourceAnalyticProjection := by
-  rw [criticalSourceBlockAnalyticProjection, criticalSourceAnalyticProjection]
-  unfold criticalObservationAnalyticProjection
-  rw [← Function.comp_assoc,
-    criticalBlockNormalizationProjection_comp_sourceToBlock]
+  funext x
+  change criticalObservationComplexPointHomeomorph m n
+      (criticalBlockNormalizationProjection B
+        (criticalSourceToBlockNormalization hB hmem x)) =
+    criticalObservationComplexPointHomeomorph m n (criticalSourceChartProjection x)
+  congr 1
+  exact congrFun
+    (criticalBlockNormalizationProjection_comp_sourceToBlock hB hmem) x
 
 end
 

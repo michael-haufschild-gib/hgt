@@ -1361,19 +1361,248 @@ variationalOreCompletedMatrixUnit
     canonical operator and completed matrix units in every fixed finite basis
 variationalOreProjectiveBuildingAction
     the literal semilinear action v ↦ σ(v)A on the corrected projective completed-lattice carrier
+DifferentialFieldAut
+DifferentialFieldAut.projectiveBuildingEquiv
+DifferentialFieldAut.projectiveBuildingEquiv_one/mul
+    the intrinsic group of base-fixing derivation-preserving field automorphisms acts functorially
+    by genuine carrier equivalences, with inverse induced by the inverse field automorphism
+variationalOre_basisMapMatrix_trans
+variationalOreOperatorMatrixUnit_trans
+variationalOreCompletedMatrixUnit_trans
+    exact operator and completed semilinear cocycle laws
+variationalOreProjectiveBuildingAction_changeBasis
+    actions in two finite bases are conjugate by the genuine completed transition-matrix unit
 exists_variationalOre_finiteBasis_completedPseudoDiffOpMatrixUnit
 exists_variationalOre_finiteBasis_operatorMatrix_degree_balance
     finite differential generation alone supplies both the completed action matrix and the exact
     operator-row-lattice degree-balance certificate
 ```
 
-This closes the finite-rank existence needed by `(10)`, the basis-change law `(13)`, and construction
-of the actual projective carrier action in a finite basis.  Direct checks and targeted builds of
-the two changed leaves pass.  Every new declaration audits to exactly `[propext,
-Classical.choice, Quot.sound]`.
+This closes the finite-rank existence needed by `(10)`, the functorial carrier-action part of `(9)`,
+the basis-change law `(13)`, and construction of the actual projective carrier equivalence in every
+finite basis.  The isometry claim is not inferred: it still requires the missing metric/Cartan
+layer.  Direct checks and targeted builds of the changed leaves pass.  Every new declaration audits
+to exactly `[propext, Classical.choice, Quot.sound]`.
 
 No completed-building Cartan vector is inferred from the operator-row-lattice certificate.  The
 remaining gap is still the affine-building geometry and comparison layer listed above; in
 particular, apartment coverage/Cartan decomposition, relative position and metric, comparison of
 that relative position with operator invariants, CAT(0) completeness/semisimplicity, boundary
 flags, and free-field reconstruction remain absent.  Card stays at Stage 2.
+
+### Lean progress — lattice sandwich, commensurability, and the full rank-one carrier (2026-09-02)
+
+`DifferentialVariationalLatticeCommensurability` proves the first arbitrary-lattice structure
+theorems over the actual completed noncommutative skew field:
+
+```text
+exists_int_le_completedPseudoDiffOpAddValue
+exists_uniformizer_right_unscale_mem_integer
+exists_uniformizer_left_scale_mem_integer
+    every completed operator has a finite valuation floor, and one left uniformizer power clears
+    its denominator
+exists_le_standardCompletedPseudoDiffOpLatticeAtConstantCoweight
+exists_standardCompletedPseudoDiffOpLatticeAtConstantCoweight_le
+    every full finitely generated lattice L has an exact sandwich
+        π^a O^r ⊆ L ⊆ π^b O^r
+standardCompletedPseudoDiffOpLatticeAtCoweight_antitone
+leftScaleCompletedPseudoDiffOpLattice_carrier_mono
+completedPseudoDiffOpLattice_leftCommensurable
+    every pair of full lattices is commensurable by correctly oriented left uniformizer
+    homotheties
+```
+
+The lower inclusion uses `L.full` literally: each standard basis vector is a finite
+completed-skew linear combination of lattice vectors, and one left uniformizer exponent clears
+all coefficients in all finitely many supports.  No commutation of the uniformizer through a
+coefficient is used.
+
+`DifferentialVariationalRankOneBuilding` then proves that every full rank-one lattice is principal.
+A nonzero finite generator of least additive valuation divides every other generator on the left;
+inner-conjugation invariance of the valuation ring converts its resulting right-principal form to
+the correct left-homothety form.  Consequently
+
+```text
+exists_generator_rankOne_completedPseudoDiffOpLattice
+standardCompletedPseudoDiffOpLattice_leftHomothetic_rankOne
+differentialVariationalProjectiveBuildingCarrierFinOne_subsingleton
+```
+
+classify the **entire** corrected projective rank-one carrier, not only its standard apartment, as
+one point.  `DifferentialVariationalRankOneAction` therefore proves
+
+```text
+DifferentialFieldAut.projectiveBuildingAction_rankOne
+DifferentialFieldAut.projectiveBuildingEquiv_rankOne
+```
+
+so every canonical differential automorphism acts identically in rank one.  This closes the
+geometric type-`A₀` no-displacement half of §5.
+
+All three leaves pass direct `lake env lean` checks, targeted leaf builds, and batched audits of
+only their new public declarations with exactly `[propext, Classical.choice, Quot.sound]`; they are
+wired into `HTGeometry`, whose umbrella was not built.
+
+The sandwich proves boundedness/commensurability, not diagonalization.  For rank at least two the
+remaining exact obligations are still simultaneous noncommutative Cartan decomposition of a pair
+of lattices, its dominant relative-position vector and metric, comparison with the balanced
+operator invariants, CAT(0) completeness/semisimplicity and axes, boundary flags, and the free-field
+Fréchet/order reconstruction.  Card remains at Stage 2.
+
+### Lean progress — full-lattice interleaving metric and action isometries (2026-09-02)
+
+`DifferentialVariationalLatticeInterleaving` upgrades arbitrary-lattice commensurability to an
+exact integral metric on the full space of actual valuation lattices.  It defines
+
+```text
+L.InterleavedAt n M  ⇔  πⁿL ⊆ M and πⁿM ⊆ L
+completedPseudoDiffOpLatticeInterleavingDistance L M
+    = the least such n
+```
+
+and proves unconditionally:
+
+```text
+leftScale_uniformizer_zpow_carrier_le_self
+leftScale_uniformizer_zpow_carrier_antitone
+exists_completedPseudoDiffOpLattice_interleavedAt
+exists_least_completedPseudoDiffOpLattice_interleavedAt
+completedPseudoDiffOpLattice_interleavedAt_zero_iff
+completedPseudoDiffOpLatticeInterleavingDistance_self
+completedPseudoDiffOpLatticeInterleavingDistance_comm
+completedPseudoDiffOpLatticeInterleavingDistance_eq_zero_iff
+completedPseudoDiffOpLatticeInterleavingDistance_triangle
+```
+
+Thus the least radius is finite for every pair, separates literal lattices, and satisfies symmetry
+and the triangle inequality.  The same leaf proves exact preservation of every radius, hence of
+the metric, under completed-skew linear equivalences and differential coefficient automorphisms.
+Their composite `differentialVariationalLatticeSemilinearAction`, the literal representative-level
+action `v ↦ σ(v)A`, is therefore an isometry.
+
+Direct checking and the targeted leaf build pass.  A single batched audit of all 24 declarations
+introduced by the leaf reports exactly `[propext, Classical.choice, Quot.sound]`.  The leaf is wired
+into `HTGeometry`; the umbrella was not built.
+
+This closes a genuine full-lattice bounded metric and the representative-level action-isometry
+layer.  It does not identify this uniformizer interleaving metric with the paper's Euclidean
+Cartan metric and does not descend it to homothety classes: that requires simultaneous
+noncommutative Cartan decomposition and homothety-normalized relative position in rank at least
+two.  Those comparison results, CAT(0) semisimplicity/axes, boundary flags, and free-field
+Fréchet/order reconstruction remain open.  Card stays at Stage 2.
+
+### Lean progress — projective metric descent and canonical action isometry (2026-09-02)
+
+Three further leaves close quotient descent for the unconditional interleaving metric.
+`DifferentialVariationalProjectiveInterleaving` proves the noncommutative conjugation step:
+
+```text
+leftScaleCompletedPseudoDiffOpLattice_eq_self_of_unitAddValue_eq_zero
+leftScale_inner_uniformizer_zpow_eq
+leftScale_uniformizer_zpow_leftScale
+completedPseudoDiffOpLatticeInterleavingDistance_leftScale
+```
+
+A valuation-zero completed-skew unit fixes every lattice.  Hence conjugating `πⁿ` by an
+arbitrary unit changes no lattice, and simultaneous arbitrary left homothety preserves literal
+interleaving distance.  No false commutation of `π` through a coefficient is used.
+
+`DifferentialVariationalProjectiveInterleavingMetric` minimizes the literal distance over the
+second left-homothety orbit.  Natural-number well-ordering gives an attained minimum.  The leaf
+proves representative independence in both arguments and then descends the result to
+`DifferentialVariationalProjectiveBuildingCarrier`, with exact laws
+
+```text
+d(x,x) = 0
+d(x,y) = d(y,x)
+d(x,y) = 0 ⇔ x = y
+d(x,z) ≤ d(x,y) + d(y,z).
+```
+
+`DifferentialVariationalProjectiveInterleavingAction` proves that completed-skew linear transport,
+differential coefficient transport, every literal semilinear action `v ↦ σ(v)A`, and finally
+the actual canonical Ore-module action preserve this projective distance exactly:
+
+```text
+DifferentialFieldAut.projectiveBuildingAction_interleavingDistance
+```
+
+All three leaves pass direct checks, targeted leaf builds, and batched audits of only their 40 new
+declarations with exactly `[propext, Classical.choice, Quot.sound]`; they are wired into
+`HTGeometry`, whose umbrella was not built.
+
+This closes an unconditional separating projective metric and the canonical action-isometry claim
+for that metric.  It still does not identify this integral orbit-interleaving metric with the
+paper's Euclidean Cartan metric or supply a dominant Cartan vector.  Full rank-at-least-two Cartan
+decomposition/comparison, CAT(0) geometry and axis semisimplicity, boundary flags, and free-field
+Fréchet/order reconstruction remain open.  Card remains at Stage 2.
+
+### Lean progress — exact standard-apartment formula for the projective metric (2026-09-02)
+
+`DifferentialVariationalProjectiveInterleavingStandardApartment` computes the new metric on the
+entire standard apartment.  First it proves two exact structural statements:
+
+```text
+leftScaleCompletedPseudoDiffOpLattice_eq_uniformizer_zpow_unitAddValue
+    aL = π^{v(a)}L for every completed-skew unit a and every valuation lattice L
+standardCompletedPseudoDiffOpLatticeAtCoweight_carrier_le_iff
+    L_m ⊆ L_n ⇔ ∀i, n_i ≤ m_i
+```
+
+It follows that literal interleaving is the coordinatewise centered-box condition and that the
+descended projective distance has the exact upper-bound formula
+
+```text
+d([L_m],[L_n]) ≤ r
+  ⇔ ∃ c : ℤ, ∀ i,
+      n_i + c ≤ m_i + r  and  m_i ≤ n_i + c + r.
+```
+
+Thus common coweight translation is handled intrinsically and the projective metric is explicitly
+computable on every diagonal apartment point.  Direct checking, targeted leaf build, and a batched
+audit of all five declarations pass with exactly `[propext, Classical.choice, Quot.sound]`; the
+leaf is wired into `HTGeometry` without building the umbrella.
+
+This formula is the integral Chebyshev/recentering metric, not the Euclidean norm of the dominant
+Cartan vector.  It therefore supplies exact comparison infrastructure but does not close the
+higher-rank Cartan decomposition or the paper's Euclidean building geometry.  Card stays at
+Stage 2.
+
+### Lean progress — free-coordinate Ore basis and literal Fréchet reconstruction (2026-09-02)
+
+`FreeDifferentialAutomorphismOrder` now defines the paper's literal Fréchet matrix `(18)` and its
+jet order, proves the exact rational minimal-order characterization `(19)`, the differential
+substitution cocycle and both twisted inverse identities, Fekete convergence `(20)`, the explicit
+conjugacy overhead `(23)`, and invariance of the limiting speed.
+
+`FreeDifferentialVariationalOreBasis` supplies the previously missing identification with the
+intrinsic variational construction:
+
+```text
+freeVariationalOreBasis
+    the classes of dx_i form an actual K[∂;δ]-basis of Ω/Tor
+kaehlerD_eq_sum_frechet_smul
+    du = Σ_j J(u)_j · dx_j for every free differential rational function u
+variationalOreModuleEquiv_freeVariationalOreBasis_apply
+variationalOre_basisMapMatrix_free_eq_freeFrechetMatrix
+    the canonical action on Ω/Tor has matrix exactly J_σ in that basis
+variationalOreOperatorMatrixUnit_free_val
+isUnit_freeFrechetMatrix
+variationalOreCompletedMatrixUnit_free_val
+    J_σ is a unit already over K[∂;δ], and completion preserves that literal matrix
+freeDifferentialOrder_eq_variationalOreActionMatrix_matDeg
+    ord_x(σ) is degree of the actual canonical variational action matrix
+freeDifferentialOrder_finOne_eq_zero
+freeDifferentialOrder_pow_finOne_eq_zero
+    every rank-one free differential automorphism and every iterate has order zero
+```
+
+Both leaves pass direct checks and targeted leaf builds.  Batched audits of only their new public
+declarations report exactly `[propext, Classical.choice, Quot.sound]`.  Both are wired into
+`HTGeometry`; no umbrella build was run.
+
+This closes literal `(18)`, the minimal-order/matrix-degree part of `(19)`, `(20)`, `(23)`, and the
+free rank-one order no-go.  It does not identify matrix degree with the largest Euclidean Cartan
+component `μ₁(n)`, nor prove the boundedness equivalence `(21)` or boundary equivalence `(22)`.
+Those statements still require higher-rank noncommutative Cartan decomposition, the paper's
+Euclidean building metric, CAT(0) semisimplicity/axes, and boundary flags.  Card remains at Stage 2.

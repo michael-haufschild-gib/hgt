@@ -119,6 +119,64 @@ theorem aeval_criticalReciprocalNumerator_update_index
   simpa only [hsucc] using
     (aeval_criticalReciprocalNumerator_update_last K (k := k - 1) (by omega) v)
 
+/-- Updating the `k`-th coordinate of the reciprocal test point from zero to `z` changes the
+`k`-th reciprocal numerator from `(-1)^k` to `(-1)^k - z`. -/
+theorem eval_criticalReciprocalNumerator_update_testPoint
+    {L k : ℕ} (hk2 : 1 < k) (hk : k < L) (z : ℂ) :
+    MvPolynomial.eval
+        (Function.update (criticalReciprocalTestPoint ℂ) (⟨k, hk⟩ : Fin L) z)
+        (criticalReciprocalNumerator ℂ L k) = (-1 : ℂ) ^ k - z := by
+  have h := aeval_criticalReciprocalNumerator_update_index ℂ (by omega) hk
+    (Function.update (criticalReciprocalTestPoint ℂ) (⟨k, hk⟩ : Fin L) z)
+  rw [MvPolynomial.aeval_eq_eval] at h
+  rw [h]
+  rw [show (fun i : Fin L ↦
+      if i = (⟨k, hk⟩ : Fin L) then 0
+      else Function.update (criticalReciprocalTestPoint ℂ) ⟨k, hk⟩ z i) =
+        criticalReciprocalTestPoint ℂ by
+    funext i
+    by_cases hi : i = (⟨k, hk⟩ : Fin L)
+    · subst i
+      simp [criticalReciprocalTestPoint]
+      omega
+    · simp [Function.update, hi]]
+  rw [aeval_criticalReciprocalNumerator_testPoint ℂ hk]
+  simp [Function.update, criticalReciprocalTestPoint, show 0 ≠ k by omega]
+
+/-- If a coordinate assignment has `x₀ = 1` and `x_k = 0`, updating `x_k` by its current
+reciprocal-numerator value minus `z` makes that reciprocal-numerator value exactly `z`. -/
+theorem eval_criticalReciprocalNumerator_update_to
+    {L k : ℕ} (hk0 : 0 < k) (hk : k < L) (v : Fin L → ℂ)
+    (hv0 : v ⟨0, by omega⟩ = 1) (hvk : v ⟨k, hk⟩ = 0) (z : ℂ) :
+    let R := MvPolynomial.eval v (criticalReciprocalNumerator ℂ L k)
+    MvPolynomial.eval (Function.update v ⟨k, hk⟩ (R - z))
+      (criticalReciprocalNumerator ℂ L k) = z := by
+  dsimp only
+  have h := aeval_criticalReciprocalNumerator_update_index ℂ hk0 hk
+    (Function.update v (⟨k, hk⟩ : Fin L)
+      (MvPolynomial.eval v (criticalReciprocalNumerator ℂ L k) - z))
+  rw [MvPolynomial.aeval_eq_eval] at h
+  rw [h]
+  rw [show (fun i : Fin L ↦
+      if i = (⟨k, hk⟩ : Fin L) then 0
+      else Function.update v ⟨k, hk⟩
+        (MvPolynomial.eval v (criticalReciprocalNumerator ℂ L k) - z) i) = v by
+    funext i
+    by_cases hi : i = (⟨k, hk⟩ : Fin L)
+    · subst i
+      simpa using hvk.symm
+    · simp [Function.update, hi]]
+  have hzero : (⟨0, by omega⟩ : Fin L) ≠ ⟨k, hk⟩ := by
+    intro heq
+    have heq' := congrArg Fin.val heq
+    change 0 = k at heq'
+    omega
+  rw [show Function.update v ⟨k, hk⟩
+      (MvPolynomial.eval v (criticalReciprocalNumerator ℂ L k) - z)
+        ⟨0, by omega⟩ = 1 by
+    simpa [Function.update, hzero] using hv0]
+  simp [Function.update]
+
 end
 
 end GaloisForLFunctions.HTGeometry

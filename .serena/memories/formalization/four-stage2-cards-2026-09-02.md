@@ -1,36 +1,21 @@
-# Four Stage-2 cards formalization pass (2026-09-02)
+# Four Stage-2 card formalization, 2026-09-02 (updated)
 
-Goal: formalize all theorems in four specified Stage-2 cards without extra hypotheses/axioms; promote only genuinely complete cards.
+Active /goal remains incomplete. Do not promote any of the four cards yet.
 
-## Completed Lean infrastructure
+Differential variational card advanced materially:
+- `DifferentialVariationalOreModule.lean` proves `variationalOreModule_finite` and `exists_fin_basis_variationalOreModule`; finite differential generation now supplies an actual finite DiffOp basis with no supplied rank/basis.
+- Canonical transition matrices and canonical semilinear matrices are units over arbitrary rings; exact row-coordinate basis law is `A_new * B = σ(B) * A_old`, equivalently `A_new = σ(B) A_old B⁻¹`.
+- Completed embedding commutes with coefficient transport.
+- `DifferentialFieldAut C K` bundles base-fixing derivation-preserving automorphisms as a group (chronological multiplication).
+- Canonical operator/completed matrix units satisfy identity and cocycle laws.
+- Projective completed-lattice actions are genuine equivalences, compose functorially, and actions in different bases are conjugate by completed transition units.
+- Finite differential generation supplies completed matrix unit and operator-row-lattice degree-balance existentially.
+- Direct checks and targeted leaf builds passed. All new declarations axiom-audited with only propext, Classical.choice, Quot.sound (some bundle declarations use fewer).
+- Card docs updated truthfully. Remaining exact gap: completed-building Cartan decomposition/apartment coverage, relative position/metric and comparison to operator invariants, CAT(0) completeness/semisimplicity/no parabolic, boundary flags, free-field reconstruction. Stage remains 2.
 
-Centralizer:
-- `HTGeometry/AllReplicaStaticCentralizerPlanarSeparation.lean` has exact all-replica graph-local weighted Hermitian family, trivial common kernel, Hall law, zero-energy atom exclusion, and all-energy Ward annihilation.
-- Remaining exact bridge: nonzero-energy free matrix semicircle atomlessness via full inner rank / Strong Atiyah. Card remains Stage 2.
+Other three cards remain at prior frontiers:
+- centralizer: exact all-energy atom exclusion needs noncommutative inner-rank/Strong-Atiyah bridge.
+- cascade: compatible nested height-one Wiman place/branch flag plus place-specific RatIn/response bounds.
+- Schanuel: projective compactification/normalization plus scheme analytification/complex-point path production.
 
-Cascade:
-- `HTGeometry/UniversalFirstOrderEntireCascadeUnitCost.lean` has actual arbitrary-cascade algebraic branch, law coordinate frame, primitive packaging, exact unit-response Wronskian cancellation, place peel, determinant reflection.
-- Remaining exact bridge: compatible nested height-one Wiman place/branch flag plus place-specific RatIn/response bounds. Card remains Stage 2.
-
-Schanuel:
-- `RHTower/SchanuelStageTwoDefectSlopeNormalForm.lean` packages clauses 1–4, affine integral-closure normalization/function field, actual coordinate pullbacks and exact regulator integrals on supplied divisor-avoiding paths.
-- Remaining clause 5: projective compactification/normalization plus scheme analytification/complex-point evaluation/path production. Card remains Stage 2.
-
-Differential variational building:
-- Existing completion/lattice/standard-apartment infrastructure retained.
-- New `DifferentialOperatorOreTorsion.lean`: canonical Ore-torsion submodule and torsion-free quotient.
-- New/expanded `DifferentialVariationalProjectiveBuildingCarrier.lean`: corrected left-homothety carrier for left lattices; arbitrary linear, coefficient, matrix, and semidirect projective actions with identity/composition.
-- `DifferentialVariationalSemilinearMatrixAction.lean`: DiffOp embedding into completed pseudodifferential field and matrix unit lift.
-- New `DifferentialVariationalProjectiveStandardApartment.lean`: exact left-homothety coweight classification, injective standard apartment, rank-two nonbase point, coefficient invariance.
-- New `DifferentialVariationalOreModule.lean`: literal Ω/Tor_R; full DiffOp semilinearity; torsion descent; inverse/functorial action; freeness; completed matrix unit; exact operator-row-lattice conductor certificate. This is not yet the completed-building Cartan vector; that comparison remains open.
-- Top leaves wired to `HTGeometry.lean`; no umbrella build.
-- Direct checks pass. Targeted builds pass for ProjectiveStandardApartment and VariationalOreModule.
-- Batched #print axioms for every new declaration: only [propext, Classical.choice, Quot.sound].
-- Remaining: all-lattice apartment coverage/noncommutative Cartan, relative-position vector/metric and link to operator balance, completeness/CAT(0) semisimplicity/no parabolics, axes/boundary flags, Fréchet/order reconstruction. Card remains Stage 2.
-
-## Validation / hygiene
-- `git diff --check` passed.
-- `scripts/formal_tools.py lint` found no new-file lint problem but exits nonzero on unrelated pre-existing/uncommitted unreachable modules in RHTower/HTGeometry.
-- All /tmp/Hgt*.lean scratch/audit files deleted.
-- No Lean processes started by this task remain.
-- Do not modify unrelated dirty-worktree files.
+Important workflow: always run `scripts/formal_tools.py research` before Lean corpus work; no rg for Lean corpus. Use foreground `lake env lean`; targeted leaf `lake build` only; no umbrella/full builds. Preserve dirty shared worktree. A concurrent external commit b73ba599 included the generic semilinear matrix/compatibility files during this turn; remaining visible worktree changes are the Ore module and differential card.

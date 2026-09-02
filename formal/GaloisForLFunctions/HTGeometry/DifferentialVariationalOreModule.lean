@@ -112,6 +112,50 @@ abbrev VariationalOreModule (C K : Type*) [Field C] [Field K] [Algebra C K]
     [Differential K] [IsConstantBase C K] :=
   Ω[K⁄C] ⧸ DiffOp.oreTorsionSubmodule (K := K) (M := Ω[K⁄C])
 
+/-- Differential automorphisms of `K` fixing `C`, bundled as the intrinsic automorphism group used
+by the variational construction.  Multiplication is chronological composition: `σ * τ` applies
+`σ` first and then `τ`. -/
+structure DifferentialFieldAut (C K : Type*) [Field C] [Field K]
+    [Algebra C K] [Differential K] where
+  toRingEquiv : K ≃+* K
+  fixes : ∀ c : C, toRingEquiv (algebraMap C K c) = algebraMap C K c
+  deriv_comm : ∀ x : K,
+    toRingEquiv (Differential.deriv x) = Differential.deriv (toRingEquiv x)
+
+namespace DifferentialFieldAut
+
+omit [IsConstantBase C K] in
+@[ext] theorem ext {σ τ : DifferentialFieldAut C K}
+    (h : σ.toRingEquiv = τ.toRingEquiv) : σ = τ := by
+  cases σ
+  cases τ
+  cases h
+  rfl
+
+instance : One (DifferentialFieldAut C K) :=
+  ⟨⟨RingEquiv.refl K, fun _ => rfl, fun _ => rfl⟩⟩
+
+instance : Mul (DifferentialFieldAut C K) :=
+  ⟨fun σ τ =>
+    ⟨σ.toRingEquiv.trans τ.toRingEquiv,
+      fun c => by rw [RingEquiv.trans_apply, σ.fixes c, τ.fixes c],
+      DiffOp.trans_deriv_comm σ.toRingEquiv τ.toRingEquiv σ.deriv_comm τ.deriv_comm⟩⟩
+
+instance : Inv (DifferentialFieldAut C K) :=
+  ⟨fun σ =>
+    ⟨σ.toRingEquiv.symm, symm_fixes σ.fixes,
+      DiffOp.symm_deriv_comm σ.deriv_comm⟩⟩
+
+instance : Group (DifferentialFieldAut C K) where
+  mul_assoc σ τ υ := by ext x; rfl
+  one_mul σ := by ext x; rfl
+  mul_one σ := by ext x; rfl
+  inv_mul_cancel σ := by
+    ext x
+    exact σ.toRingEquiv.apply_symm_apply x
+
+end DifferentialFieldAut
+
 /-- Kähler semilinearity as a semilinear map over the full operator-ring automorphism. -/
 def kaehlerDiffOpSemilinearMap {σ : K ≃+* K}
     (hfix : ∀ c : C, σ (algebraMap C K c) = algebraMap C K c)
@@ -587,6 +631,69 @@ theorem variationalOreProjectiveBuildingAction_refl
   unfold variationalOreProjectiveBuildingAction
   rw [variationalOreCompletedMatrixUnit_refl]
   exact DiffOp.differentialVariationalProjectiveSemilinearAction_refl_one x
+
+namespace DifferentialFieldAut
+
+/-- Projective completed-lattice action of a bundled differential-field automorphism in a fixed
+finite operator basis. -/
+noncomputable def projectiveBuildingAction
+    (σ : DifferentialFieldAut C K)
+    {r : ℕ} (b : Module.Basis (Fin r) (DiffOp K) (VariationalOreModule C K)) :
+    DiffOp.DifferentialVariationalProjectiveBuildingCarrier K (Fin r) →
+      DiffOp.DifferentialVariationalProjectiveBuildingCarrier K (Fin r) :=
+  variationalOreProjectiveBuildingAction σ.fixes σ.deriv_comm b
+
+/-- Chronological multiplication of bundled differential automorphisms is composition of their
+projective actions. -/
+theorem projectiveBuildingAction_mul
+    (σ τ : DifferentialFieldAut C K)
+    {r : ℕ} (b : Module.Basis (Fin r) (DiffOp K) (VariationalOreModule C K))
+    (x : DiffOp.DifferentialVariationalProjectiveBuildingCarrier K (Fin r)) :
+    projectiveBuildingAction (σ * τ) b x =
+      projectiveBuildingAction τ b (projectiveBuildingAction σ b x) := by
+  exact (variationalOreProjectiveBuildingAction_trans
+    σ.toRingEquiv τ.toRingEquiv σ.fixes τ.fixes σ.deriv_comm τ.deriv_comm b x).symm
+
+/-- Identity bundled differential automorphism acts identically. -/
+theorem projectiveBuildingAction_one
+    {r : ℕ} (b : Module.Basis (Fin r) (DiffOp K) (VariationalOreModule C K))
+    (x : DiffOp.DifferentialVariationalProjectiveBuildingCarrier K (Fin r)) :
+    projectiveBuildingAction (1 : DifferentialFieldAut C K) b x = x :=
+  variationalOreProjectiveBuildingAction_refl b x
+
+/-- Every bundled differential automorphism acts by a genuine equivalence of the projective
+completed-lattice carrier; its inverse is the action of the inverse automorphism. -/
+noncomputable def projectiveBuildingEquiv
+    (σ : DifferentialFieldAut C K)
+    {r : ℕ} (b : Module.Basis (Fin r) (DiffOp K) (VariationalOreModule C K)) :
+    DiffOp.DifferentialVariationalProjectiveBuildingCarrier K (Fin r) ≃
+      DiffOp.DifferentialVariationalProjectiveBuildingCarrier K (Fin r) where
+  toFun := projectiveBuildingAction σ b
+  invFun := projectiveBuildingAction σ⁻¹ b
+  left_inv x := by
+    rw [← projectiveBuildingAction_mul σ σ⁻¹ b x, mul_inv_cancel,
+      projectiveBuildingAction_one]
+  right_inv x := by
+    rw [← projectiveBuildingAction_mul σ⁻¹ σ b x, inv_mul_cancel,
+      projectiveBuildingAction_one]
+
+/-- The carrier equivalences respect chronological multiplication exactly. -/
+theorem projectiveBuildingEquiv_mul
+    (σ τ : DifferentialFieldAut C K)
+    {r : ℕ} (b : Module.Basis (Fin r) (DiffOp K) (VariationalOreModule C K)) :
+    projectiveBuildingEquiv (σ * τ) b =
+      (projectiveBuildingEquiv σ b).trans (projectiveBuildingEquiv τ b) := by
+  ext x
+  exact projectiveBuildingAction_mul σ τ b x
+
+/-- Identity automorphism gives the identity carrier equivalence. -/
+theorem projectiveBuildingEquiv_one
+    {r : ℕ} (b : Module.Basis (Fin r) (DiffOp K) (VariationalOreModule C K)) :
+    projectiveBuildingEquiv (1 : DifferentialFieldAut C K) b = Equiv.refl _ := by
+  ext x
+  exact projectiveBuildingAction_one b x
+
+end DifferentialFieldAut
 
 /-- The matrix of the differential-automorphism action has a trivial operator-row-lattice
 conductor: its operator elementary divisors all have degree zero.  Identifying this certificate

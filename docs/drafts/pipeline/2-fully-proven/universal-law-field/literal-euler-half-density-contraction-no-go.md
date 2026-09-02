@@ -16,7 +16,7 @@ Fourier-self-dual half-density completion.
 
 - [x] 0 -> 1 in-progress: exact carrier and operator fixed; source-pure; no zero or divisor
 - [x] 1 -> 2 fully-proven: complete paper proof below; `[PROVED HERE]`; no open dependency
-- [ ] 2 -> 3 formalized: Lean theorem and targeted audit
+- [x] 2 -> 3 formalized: Lean theorem and targeted audit
 - [ ] 3 -> 4 publication-ready: standalone theorem, proof, and Lean certificate
 
 ## Exact setup
@@ -107,9 +107,27 @@ so it is impossible as well. QED.
   completion or renormalized boundary cancellation. Scalar normalization of
   each `E_S` by its norm makes contraction automatic at every finite stage
   and therefore carries no horizontal selection information.
-- **Status:** Internal corpus audit complete; paper proof dependency-closed;
-  Lean formalization pending.
+- **Moving-polarization survivor:** `HardyTitchmarshSemilocalSquare` already proves that one local
+  Euler factor is unitary when its target fiber carries the corresponding Euler-weighted measure.
+  This source-pure admission is universal, hence nonselective. `SoninSemilocalMetricLog` proves why
+  it does not globalize naively: the first retained logarithmic tail mode is `-1/p`, so the
+  all-prime metric requires a canonical relative subtraction.
+- **Status:** Internal corpus audit complete; paper proof dependency-closed; exact norm,
+  divergence, and strong/weak bounded-completion no-gos formalized in Lean.
+
+## Lean certificate
+
+- Module: `formal/GaloisForLFunctions/RHTower/LiteralEulerHalfDensityContractionNoGo.lean`
+- Exact norm: `norm_literalEulerHalfDensityOperator`
+- Cofinal divergence: `tendsto_norm_literalEulerHalfDensityOperator_atTop`
+- Completion no-gos:
+  `literalEulerHalfDensityOperator_no_strong_bounded_completion`,
+  `literalEulerHalfDensityOperator_no_weak_bounded_completion`
+- Umbrella: `HTGeometry/UniversalLawField.lean`
+- Targeted checks: scratch compile and module build pass; no full/umbrella build run
+- Axioms: `propext`, `Classical.choice`, `Quot.sound`
 
 ## Log
 
 - 2026-09-02 — literal contractivity formulation falsified; exact norm law proved on paper
+- 2026-09-02 — exact norm, divergence, and strong/weak completion no-gos formalized in Lean

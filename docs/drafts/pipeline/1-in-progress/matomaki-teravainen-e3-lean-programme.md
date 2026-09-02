@@ -3522,3 +3522,25 @@ with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired with
 Absolute signed modulus/source aggregation is now closed.  Remaining analytic primitive is
 cancellation beyond this ℓ¹/product-harmonic baseline at the paper ranges, followed by Lemma
 3.5(ii), amplification, and Theorem 1.2; no estimate is assumed.
+
+### Literal source-interval residue multiplicity, brick 131 (2026-09-02)
+
+`KloostermanSourceResidueMultiplicity.lean` replaces the exact but potentially inflated residue
+energy by the literal interval geometry used in the paper.  Every fibre of
+`n : Finset.Icc 1 N` modulo `q+1` injects, for `N>0`, under
+`n ↦ (n-1)/(q+1)` into a range of cardinality `(N-1)/(q+1)+1`.  Fibrewise Cauchy--Schwarz and
+exact residue reassembly give
+
+```text
+SourceResidueEnergy(q,[1,N],b)
+  <= (q+1) * ((N-1)/(q+1)+1) * sum_{1 <= n <= N} |b_n|².
+```
+
+The terminal theorem substitutes this budget for both source legs in the full weighted
+interpolated Gram receiver.  All statements are no-premise and unconditional.  Direct source check
+and targeted leaf build pass (`13490/13490`); all three public theorems audit with only
+`[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella build.
+
+This closes source-residue inflation on the literal interval.  It is a bridge, not the missing
+collective signed spectral cancellation.  Lemma 3.5(ii), amplification, and Theorem 1.2 remain
+open; no estimate is assumed.

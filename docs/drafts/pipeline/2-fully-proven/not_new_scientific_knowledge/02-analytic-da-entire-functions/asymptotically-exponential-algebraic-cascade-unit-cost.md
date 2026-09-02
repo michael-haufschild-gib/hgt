@@ -220,19 +220,34 @@ upper growth-height bound and then combines it with the existing Pólya lower bo
 on factors beyond the finite cascade are introduced.
 
 The exact multigraded Puiseux/Hahn determinant endpoint is now closed in
-`HTGeometry/HahnTowerGradientStaircase.lean`.  The theorem
-`algebraicIndependent_hahnCascade_of_leads` proves algebraic independence of the terminal output
-and all descending-prefix logarithmic states from their actual leading Hahn coefficients.  It
-retains arbitrary strictly higher branch terms, differentiates them with the coordinate
-derivations, proves the complete reversed-column boundary determinant, and invokes the
-domain-valued Jacobian criterion.  Generic Hahn determinant coefficient calculus is supplied by
-`HTGeometry/HahnLeadingCoefficient.lean`.
+`HTGeometry/HahnFractionLeadingCoefficient.lean`.  The theorem
+`algebraicIndependent_hahnFractionNestedCascade_of_leads` proves algebraic independence of the
+terminal output and all descending logarithmic states from their actual leading Hahn fractions in
+the nested order `X_n ≫ ⋯ ≫ X_1`.  It retains arbitrary higher branch terms, supports every field
+operation and quotient-rule differentiation, proves the complete triangular boundary determinant,
+and invokes the domain-valued Jacobian criterion.  The required fraction-field valuation and
+complex-linear coordinate derivations are supplied by `HTGeometry/HahnFractionValuation.lean`;
+generic Hahn determinant coefficient calculus remains in `HTGeometry/HahnLeadingCoefficient.lean`.
 
-**The remaining open core is one statement:** the gradients `∂_j Y_m`, `m < n`, of the iterated
-logarithmic derivatives of `X_n` are linearly independent.  For the cascade `Y_1 = P_(n−1) h_n(X_n)`
-and `Y_2 = T_(n−1) + P_(n−1) κ_n(X_n)` with `κ_n = X_n h_n'(X_n) → 0`, so the asymptotic input is now
-needed only to prove that these actual logarithmic states have the descending-prefix Hahn leads
-consumed by the new capstone.  See `_STAGE3-LEDGER.md`.
+The exact ramified logarithmic-state propagation and gradient independence are now closed in
+`HTGeometry/RamifiedMultiGradedNewtonModel.lean`.  Its capstone
+`algebraicIndependent_hahnFractionRamLogState` starts from arbitrary positive common Puiseux
+ramification indices and the card's nonzero output-linear branch leads, permits all higher branch
+terms, proves every iterated logarithmic state has the required nested suffix lead, and concludes
+algebraic independence.  The same module's
+`algebraicIndependent_hahnFractionRamCascadeOutputJets` converts this through a finite bounded peel
+to algebraic independence of the terminal coordinate's first full time-jet block.  The key
+off-coordinate theorem uses a discrete lexicographic target bound,
+not the false claim that every correction gains one fixed multidegree.
+
+`HTGeometry/RamifiedPuiseuxCascadeTransfer.lean` now closes the transport after branch realization:
+`algebraicIndependent_cascadeOutputJets_of_ramifiedPuiseuxSpecialization` pulls the nonzero Hahn
+observability determinant back along a differential specialization and applies the source-field
+Jacobian criterion.
+
+**Remaining open core:** construct `IsRamifiedPuiseuxCascadeSpecialization` from the card's selected
+algebraic branches.  The autonomous corollary additionally requires the full Briot--Bouquet
+classification.  See `_STAGE3-LEDGER.md`.
 
 Also owned: `ExpAffineCascade.scaled_jet_det_ne_zero` (the model determinant),
 `TerminalPowerCascadeInduction.algebraicIndependent_cascadeOutput` (the exactly-triangular case),

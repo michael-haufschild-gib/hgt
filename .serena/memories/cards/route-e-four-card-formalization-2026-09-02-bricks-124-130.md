@@ -18,3 +18,16 @@ Cards remain Stage 2 honestly:
 - growing marker: schedule, block count, and equation (17) arithmetic done; missing quantitative Menon–Halasz mean-square theorem and moving-scale normalization into (15).
 
 Progress notes appended at EOF of relevant cards and MT programme. Do not move any card yet or introduce hypotheses.
+
+## Brick 131 — literal Kloosterman source-residue multiplicity
+- Added `formal/GaloisForLFunctions/RHTower/Sieve/KloostermanSourceResidueMultiplicity.lean`.
+- Public no-premise theorems:
+  - `card_filter_Icc_natCast_zmod_succ_le`
+  - `kloostermanSourceResidueEnergy_Icc_le_intervalBudget`
+  - `norm_kloostermanDistinctModulusTerminalGramQuadratic_Icc_sq_le_interval_interpolated`
+- Exact maximum fibre occupancy is `0` at `N=0` and `(N-1)/(q+1)+1` for `N>0`, proved by `n ↦ (n-1)/(q+1)`; source energy uses this exact factor.
+- Direct source check passed. Final targeted leaf build passed `13490/13490`. New theorem axioms only `[propext, Classical.choice, Quot.sound]`.
+- Wired into `formal/GaloisForLFunctions/RHTower.lean`; umbrella not built.
+- Updated cofactor-amplified and forbidden-support Stage-2 cards plus MT E3 programme brick 131. Cards remain Stage 2.
+- Remaining `[OPEN CORE]`: collective signed modulus/unit Kloosterman spectral saving at paper ranges, then MT Lemma 3.5(ii), amplification, and Theorem 1.2. This brick is `[BRIDGE]`, not spectral closure.
+- Global lint still fails only on pre-existing unrelated unreachable owned modules; new leaf is not among failures.

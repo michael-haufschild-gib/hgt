@@ -97,6 +97,74 @@ theorem criticalBlockCover_fiber_subsingleton_of_source_meridians
     pathConnectedSpace_algSpec_criticalBlockNormalization hB hmem
   exact subsingleton_torusChartCover_fiber_of_generators_fixed p cov e hfixFirst' hfixSecond'
 
+/-- **Two source meridians at an arbitrary source basepoint eliminate a block cover.**  A path
+from the chart identity to the projected source basepoint transports both closed source loops to
+the canonical coordinate generators.  Their closed lifts fix one sheet; transporting that sheet
+back to the identity fibre reduces to the identity-based rigidity theorem. -/
+theorem criticalBlockCover_fiber_subsingleton_of_source_meridians_at
+    (hB : MulAction.IsBlock (criticalGeometricMonodromy ℂ m n) B)
+    (hmem : criticalSourceNormalClosureEmbedding ℂ m n ∈ B)
+    (x : AlgSpec (criticalSourceChartRing ℂ m n))
+    (alpha : Path (1 : ComplexTorusAffineChart (n + m - 2))
+      (criticalSourceBlockAnalyticProjectionContinuousMap hB hmem x))
+    (deltaFirst deltaSecond : Path.Homotopic.Quotient x x)
+    (hfirst :
+      (Path.Homotopic.Quotient.mk alpha).trans
+        ((deltaFirst.map (criticalSourceBlockAnalyticProjectionContinuousMap hB hmem)).trans
+          (Path.Homotopic.Quotient.mk alpha.symm)) =
+        torusChartFirstFundamentalGenerator (n + m - 2))
+    (hsecond :
+      (Path.Homotopic.Quotient.mk alpha).trans
+        ((deltaSecond.map (criticalSourceBlockAnalyticProjectionContinuousMap hB hmem)).trans
+          (Path.Homotopic.Quotient.mk alpha.symm)) =
+        torusChartSecondFundamentalGenerator (n + m - 2)) :
+    Subsingleton
+      ((criticalBlockAnalyticProjection (m := m) (n := n) (B := B)) ⁻¹'
+        {(1 : ComplexTorusAffineChart (n + m - 2))}) := by
+  let p := criticalBlockAnalyticProjection (m := m) (n := n) (B := B)
+  have cov : IsCoveringMap p := criticalBlockAnalyticProjection_isCoveringMap
+  let f := criticalSourceToBlockNormalization hB hmem
+  have hf : Continuous f := continuous_criticalSourceToBlockNormalization hB hmem
+  let q := criticalSourceBlockAnalyticProjectionContinuousMap hB hmem
+  have hq : q = (⟨p, cov.continuous⟩ :
+      C(AlgSpec (CriticalBlockNormalization ℂ B),
+        ComplexTorusAffineChart (n + m - 2))).comp ⟨f, hf⟩ := by
+    apply ContinuousMap.ext
+    intro z
+    rfl
+  let y : ComplexTorusAffineChart (n + m - 2) := q x
+  let eY : p ⁻¹' {y} := ⟨f x, by simpa [y, hq]⟩
+  have hfixFirst : cov.monodromy (deltaFirst.map q) eY = eY := by
+    exact covering_monodromy_fixed_of_closed_lift_at_of_eq p cov f hf q hq x deltaFirst
+  have hfixSecond : cov.monodromy (deltaSecond.map q) eY = eY := by
+    exact covering_monodromy_fixed_of_closed_lift_at_of_eq p cov f hf q hq x deltaSecond
+  change Path (1 : ComplexTorusAffineChart (n + m - 2)) y at alpha
+  change (Path.Homotopic.Quotient.mk alpha).trans
+      ((deltaFirst.map q).trans (Path.Homotopic.Quotient.mk alpha.symm)) =
+    torusChartFirstFundamentalGenerator (n + m - 2) at hfirst
+  change (Path.Homotopic.Quotient.mk alpha).trans
+      ((deltaSecond.map q).trans (Path.Homotopic.Quotient.mk alpha.symm)) =
+    torusChartSecondFundamentalGenerator (n + m - 2) at hsecond
+  have hfirst' :
+      (Path.Homotopic.Quotient.mk alpha).trans
+        ((deltaFirst.map q).trans (Path.Homotopic.Quotient.mk alpha).symm) =
+      torusChartFirstFundamentalGenerator (n + m - 2) := by
+    simpa using hfirst
+  have hsecond' :
+      (Path.Homotopic.Quotient.mk alpha).trans
+        ((deltaSecond.map q).trans (Path.Homotopic.Quotient.mk alpha).symm) =
+      torusChartSecondFundamentalGenerator (n + m - 2) := by
+    simpa using hsecond
+  obtain ⟨e, hgenFirst, hgenSecond⟩ :=
+    covering_monodromy_two_conjugates_fixed_transport cov
+      (Path.Homotopic.Quotient.mk alpha) eY
+      (deltaFirst.map q) (deltaSecond.map q) hfixFirst hfixSecond
+      (torusChartFirstFundamentalGenerator (n + m - 2))
+      (torusChartSecondFundamentalGenerator (n + m - 2)) hfirst' hsecond'
+  letI : PathConnectedSpace (AlgSpec (CriticalBlockNormalization ℂ B)) :=
+    pathConnectedSpace_algSpec_criticalBlockNormalization hB hmem
+  exact subsingleton_torusChartCover_fiber_of_generators_fixed p cov e hgenFirst hgenSecond
+
 end
 
 end GaloisForLFunctions.HTGeometry

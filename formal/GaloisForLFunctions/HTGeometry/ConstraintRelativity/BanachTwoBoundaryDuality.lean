@@ -463,6 +463,143 @@ noncomputable def normalAnnihilatorQuotientEquivLayerPredual
 
 end NormalPredualLayer
 
+/-! ## Isometric predual model of weak-star nested cuts -/
+
+section QuotientIsometryTransport
+
+variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
+  [NormedAddCommGroup F] [NormedSpace 𝕜 F]
+
+/-- A surjective linear isometry transports the quotient norm when it identifies the two
+denominators. -/
+theorem quotientNorm_transport
+    (d : E ≃ₗᵢ[𝕜] F) (K : Submodule 𝕜 E) (K' : Submodule 𝕜 F)
+    (hK : ∀ y : F, y ∈ K' ↔ d.symm y ∈ K) (x : E) :
+    ‖(Submodule.Quotient.mk (d x) : F ⧸ K')‖ =
+      ‖(Submodule.Quotient.mk x : E ⧸ K)‖ := by
+  refine le_antisymm ?_ ?_
+  · refine le_of_forall_pos_le_add fun ε hε => ?_
+    obtain ⟨m, hm, hmnorm⟩ :=
+      Submodule.Quotient.norm_mk_lt (S := K) (Submodule.Quotient.mk x) hε
+    have hmem : d m - d x ∈ K' := by
+      refine (hK _).mpr ?_
+      rw [← map_sub, LinearIsometryEquiv.symm_apply_apply]
+      exact (Submodule.Quotient.eq K).mp hm
+    have hmk : (Submodule.Quotient.mk (d m) : F ⧸ K') = Submodule.Quotient.mk (d x) :=
+      (Submodule.Quotient.eq K').mpr hmem
+    calc
+      ‖(Submodule.Quotient.mk (d x) : F ⧸ K')‖
+          = ‖(Submodule.Quotient.mk (d m) : F ⧸ K')‖ := by rw [hmk]
+      _ ≤ ‖d m‖ := Submodule.Quotient.norm_mk_le K' _
+      _ = ‖m‖ := d.norm_map m
+      _ ≤ ‖(Submodule.Quotient.mk x : E ⧸ K)‖ + ε := le_of_lt hmnorm
+  · refine le_of_forall_pos_le_add fun ε hε => ?_
+    obtain ⟨n, hn, hnnorm⟩ :=
+      Submodule.Quotient.norm_mk_lt (S := K') (Submodule.Quotient.mk (d x)) hε
+    have hmem : d.symm n - x ∈ K := by
+      have hnk : n - d x ∈ K' := (Submodule.Quotient.eq K').mp hn
+      have := (hK _).mp hnk
+      rwa [map_sub, LinearIsometryEquiv.symm_apply_apply] at this
+    have hmk : (Submodule.Quotient.mk (d.symm n) : E ⧸ K) = Submodule.Quotient.mk x :=
+      (Submodule.Quotient.eq K).mpr hmem
+    calc
+      ‖(Submodule.Quotient.mk x : E ⧸ K)‖
+          = ‖(Submodule.Quotient.mk (d.symm n) : E ⧸ K)‖ := by rw [hmk]
+      _ ≤ ‖d.symm n‖ := Submodule.Quotient.norm_mk_le K _
+      _ = ‖n‖ := d.symm.norm_map n
+      _ ≤ ‖(Submodule.Quotient.mk (d x) : F ⧸ K')‖ + ε := le_of_lt hnnorm
+
+/-- A surjective linear isometry identifying two submodules descends to an isometric linear
+equivalence of their normed quotients. -/
+noncomputable def quotientIsometryTransport
+    (d : E ≃ₗᵢ[𝕜] F) (K : Submodule 𝕜 E) (K' : Submodule 𝕜 F)
+    (hK : ∀ y : F, y ∈ K' ↔ d.symm y ∈ K) :
+    (E ⧸ K) ≃ₗᵢ[𝕜] (F ⧸ K') where
+  toLinearEquiv :=
+    LinearEquiv.ofLinear
+      (K.mapQ K' (d.toLinearEquiv : E →ₗ[𝕜] F) (fun x hx => by
+        refine (hK _).mpr ?_
+        simpa using hx))
+      (K'.mapQ K (d.symm.toLinearEquiv : F →ₗ[𝕜] E) (fun y hy => (hK y).mp hy))
+      (by
+        refine LinearMap.ext fun q => ?_
+        obtain ⟨y, rfl⟩ := Submodule.Quotient.mk_surjective _ q
+        show Submodule.Quotient.mk (d (d.symm y)) = _
+        rw [LinearIsometryEquiv.apply_symm_apply]
+        rfl)
+      (by
+        refine LinearMap.ext fun q => ?_
+        obtain ⟨x, rfl⟩ := Submodule.Quotient.mk_surjective _ q
+        show Submodule.Quotient.mk (d.symm (d x)) = _
+        rw [LinearIsometryEquiv.symm_apply_apply]
+        rfl)
+  norm_map' := by
+    intro q
+    obtain ⟨x, rfl⟩ := Submodule.Quotient.mk_surjective _ q
+    exact quotientNorm_transport d K K' hK x
+
+end QuotientIsometryTransport
+
+section WeakStarPredualLayer
+
+variable {P : Type*} [NormedAddCommGroup P] [NormedSpace ℂ P]
+
+/-- Weak-star closed cut presented as the annihilator in `P*` of a norm-closed predual
+subspace. -/
+noncomputable def weakStarCut (A : Submodule 𝕜 P) : Submodule 𝕜 (StrongDual 𝕜 P) :=
+  continuousAnnihilator A
+
+/-- Preannihilator of a dual subspace. -/
+noncomputable def predualAnnihilator
+    (Y : Submodule 𝕜 (StrongDual 𝕜 P)) : Submodule 𝕜 P where
+  carrier := {x | ∀ φ ∈ Y, φ x = 0}
+  zero_mem' := by simp
+  add_mem' hx hy φ hφ := by simp [hx φ hφ, hy φ hφ]
+  smul_mem' c x hx φ hφ := by simp [hx φ hφ]
+
+/-- Hahn--Banach double-annihilator recovery: a norm-closed predual subspace is exactly the
+preannihilator of its weak-star cut. -/
+theorem predualAnnihilator_weakStarCut (A : Submodule 𝕜 P)
+    (hA : IsClosed (A : Set P)) :
+    predualAnnihilator (weakStarCut A) = A := by
+  apply le_antisymm
+  · intro x hx
+    by_contra hnot
+    obtain ⟨φ, hφA, hφx⟩ :=
+      HTGeometry.ConstraintMotiveRelativity.exists_continuous_annihilator_of_notMem_closure
+        A (by rw [hA.closure_eq]; exact hnot)
+    exact hφx (hx φ (mem_continuousAnnihilator.mpr hφA))
+  · intro x hx φ hφ
+    exact (mem_continuousAnnihilator.mp hφ) x hx
+
+/-- Predual quotient recovered canonically from two weak-star cuts. -/
+abbrev weakStarNormalObserverQuotient (A B : Submodule 𝕜 P) :=
+  (predualAnnihilator (weakStarCut B)) ⧸
+    nestedLayerDenominator
+      (predualAnnihilator (weakStarCut A))
+      (predualAnnihilator (weakStarCut B))
+
+/-- **Card `(BHR.14)`, isometric predual theorem.** For closed predual subspaces `A` and `B`,
+the normal-observer quotient recovered from their weak-star annihilator cuts is canonically
+linearly isometric to the literal relative layer `B/A` (with the denominator interpreted inside
+`B`). -/
+noncomputable def weakStarNormalObserverQuotientIsometry
+    (A B : Submodule 𝕜 P) (hA : IsClosed (A : Set P)) (hB : IsClosed (B : Set P)) :
+    weakStarNormalObserverQuotient A B ≃ₗᵢ[𝕜] NormalNestedLayer A B := by
+  let PA := predualAnnihilator (weakStarCut A)
+  let PB := predualAnnihilator (weakStarCut B)
+  have hPA : PA = A := predualAnnihilator_weakStarCut A hA
+  have hPB : PB = B := predualAnnihilator_weakStarCut B hB
+  let d : PB ≃ₗᵢ[𝕜] B := LinearIsometryEquiv.ofEq PB B hPB
+  exact quotientIsometryTransport d
+    (nestedLayerDenominator PA PB) (nestedLayerDenominator A B) (by
+      intro y
+      change ((y : P) ∈ A) ↔ ((d.symm y : PB) : P) ∈ PA
+      rw [hPA]
+      rfl)
+
+end WeakStarPredualLayer
+
 /-! ## Finite thermofield countermodel -/
 
 section FiniteThermofield

@@ -37,7 +37,7 @@ theorem criticalObservationComplexPointHomeomorph_first_val
   congr 1
   apply (criticalObservationChartTorusAlgEquiv ℂ m n).injective
   rw [(criticalObservationChartTorusAlgEquiv ℂ m n).apply_symm_apply]
-  exact criticalObservationChartTorusEquiv_inl_zero ℂ m n
+  exact (criticalObservationChartTorusEquiv_inl_zero ℂ m n).symm
 
 /-- The second analytic torus coordinate is the marked reciprocal observation coordinate. -/
 theorem criticalObservationComplexPointHomeomorph_second_val
@@ -55,7 +55,7 @@ theorem criticalObservationComplexPointHomeomorph_second_val
   congr 1
   apply (criticalObservationChartTorusAlgEquiv ℂ m n).injective
   rw [(criticalObservationChartTorusAlgEquiv ℂ m n).apply_symm_apply]
-  exact criticalObservationChartTorusEquiv_inr_zero ℂ m n
+  exact (criticalObservationChartTorusEquiv_inr_zero ℂ m n).symm
 
 /-- The actual observation-chart complex-point space is second countable through its explicit
 finite-dimensional torus-affine model. -/

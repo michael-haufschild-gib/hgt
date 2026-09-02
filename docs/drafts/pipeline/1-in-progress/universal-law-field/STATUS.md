@@ -3567,3 +3567,270 @@ moderation, boundary freedom, or Weil domination merely states the RH endpoint.
 FAIL-77 — “Literal Euler completion acts contractively in theta polarization” retired in its raw
 operator meaning. Positive survivor: exact cofinal norm growth identifies the missing object as a
 relative completion index/cancellation law, not an Euler operator on one Hilbert completion.
+
+F396 — Lean closes ULF-EHC-001: literal half-density Euler cutoff norm is exactly
+`prod_(p<=N)(1+p^(-1/2))`, tends to infinity, is not uniformly bounded, and has neither strong nor
+weak bounded-operator completion (`LiteralEulerHalfDensityContractionNoGo`). Axioms are only
+`propext`, `Classical.choice`, `Quot.sound`.
+
+F397 — Euler formation is automatically isometric only after the polarization is allowed to move.
+For each prime, multiplication by the inverse local factor is a unitary from the archimedean fiber
+to the Euler-weighted semilocal fiber, and the Hardy--Titchmarsh square commutes exactly. This holds
+for every prime before any divisor and therefore explains admission but cannot select RH
+(`HardyTitchmarshSemilocalSquare`).
+
+CANNOT-192 — Replacing one fixed theta Hilbert space by the natural Euler-weighted Hilbert bundle
+does not finish the mechanism. Its finite-site log metric is additive, but even after removing the
+linear prime shell its central prime-square mode is `-1/p`, so the global absolute metric diverges.
+Neither fixed-fiber contraction nor unrenormalized moving-fiber unitarity can be the selector
+(`SoninSemilocalMetricLog`).
+
+MUST-123 — “Automatic admissibility” can now mean only canonical extension of the moving
+semilocal polarization through the all-place theta completion after a source-forced relative
+subtraction. The required theorem must derive that subtraction from literal integer/Poisson
+self-duality, preserve unsquared Euler coefficients, and prove the residual completion boundary is
+zero. By `ArithmeticFormationCompletionBoundaryFusion`, universal residual-boundary vanishing then
+forces every Xi occurrence to have neutral grade and closes RH.
+
+## 2026-09-02 — anchor law frozen (card `0-backlog/anchor-law-inner-band.md`, ULF-ANC-001)
+
+F381 — Every unconditional zero-free statement is the reach of an anchor (an unconditional
+nonvanishing value) against the archimedean crowd: Euler product (`Re s > 1`), pole (de la Vallée
+Poussin, Vinogradov–Korobov, Littlewood's `(log log t)/log t` saturation under Lindelöf), Bochner
+positivity of `Φ` (real axis), Maass–Selberg (Lagarias–Suzuki approximants), mollifiers
+(proportion `1 − c/θ`, `c ≈ 1/3` against Levinson `0.3474` and Conrey `0.4088`), Waldspurger
+squares (central twists of GL(2)). The one anchor on the line is the on-line zero set: the first
+Laguerre inequality of `Ξ` at `t = γ` forces every off-line pair to have `δ ≥ c/log γ`
+(identity `Ξ'² − ΞΞ'' = Ξ² Σ_z (t − z)^{−2}`), the dual of the pole's band.
+
+CANNOT-184 — It cannot obtain an interior zero-free set of positive measure from growth or
+positivity: the pole's reach saturates at `(log log t)/log t` and interior multiplicative anchors
+are the conclusion (F380).
+
+MUST-120 — Any surviving mechanism must either manufacture an anchor of unbounded length
+(the mollifier route, capped at `1 − c/θ` for finite `θ`) or anchor on the line itself. The
+first line-anchored target is the unconditional first Laguerre inequality of `Ξ` at every `t`
+(inner band `c/log γ`); it fails for every de Bruijn–Newman deformation `Ξ_s`, `s < 0`, so no
+kernel-positivity proof exists and a proof must use the arithmetic at `s = 0`.
+
+## 2026-09-02 — scalar completion retired; full scale-history law proved (ULF-PSH-001/2)
+
+F398 — Literal valuation/Poisson fusion already preserves the unsquared Euler coefficients and
+reconstructs the scalar completed current `−a ξ′(a)/ξ(a)` for `a>1`; moving head–tail transgression
+already has zero scalar trace unconditionally. Scalar subtraction/residual vanishing is therefore
+not the missing selector (`XiAperturePoissonEulerLogDerivCompletion`,
+`EulerPrimitiveCommonTestBoundaryTransgression`).
+
+CANNOT-193 — It cannot be a same-fibre scalar or bounded local metric counterterm. The orbital
+response `m log p` is nonzero modulo bounded responses, the central prime-square shell is `−1/p`,
+and positive Hilbert mass cannot cancel the positive principal shell (`SoninSemilocalMetricLog`,
+`ConnesSemilocalOrbitalSourceClass`).
+
+F399 — Full Poisson aperture history canonically normalizes every positive orbital clock:
+`ψ_t(a)=2t√a e^(−ta)`, `||ψ_t||²=1`, and
+`<ψ_t,ψ_u>=4tu/(t+u)²=sech²((log t−log u)/2)`, with equality to one iff `t=u`.
+Thus literal integer/Poisson formation forces the missing off-diagonal cross-aperture kernel
+(`PoissonScaleHistoryFrame`, ULF-PSH-001; Lean proved).
+
+F400 — For `t=m log p`, the scale-history lift absorbs the unbounded orbital clock while leaving
+the external unsquared Euler amplitude `p^(−m/2)/m` untouched. Its remaining global obstruction is
+exactly the principal `m=1` harmonic shell, consistent with the forced `6/p` diagonal gain anomaly;
+higher modes/remainder are summable.
+
+FAIL-78 — “Canonical scalar metric-anomaly subtraction plus vanishing scalar residual” retired as
+RH mechanism: both effects already occur without RH. The signed-subtraction survivor was tested
+next and also failed (FAIL-79).
+
+MUST-124 — Withdrawn: fixed principal-shell cancellation has wrong selection polarity.
+
+## 2026-09-02 — ULF-ANC-001 inner-band target retired; survivors formalized
+
+F382 — Lean: `ΞC'² − ΞC·ΞC'' = ΞC² ∑_q (z − a_q)⁻²` off the divisor (termwise differentiation of the
+corpus's Mittag-Leffler expansion), the exact pair term `−2/δ²` at a real point, and the inner
+band as an implication (`RHTower.XiLaguerreZeroSumIdentity`). Lean: a positive, even,
+log-concave kernel whose Fourier transform violates the first Laguerre inequality
+(`HTGeometry.LaguerreKernelCounterexample`).
+
+CANNOT-185 — It cannot anchor on the line: the first Laguerre inequality of `Ξ` at `γ` is
+equivalent to a pointwise lower bound on the on-line inverse-square zero sum near `γ`, which no
+unconditional input supplies (proportions and all-zero gap bounds only). Kernel positivity,
+evenness and log-concavity do not imply the inequality (F382), so no theta-kernel argument can.
+
+FAIL-72 — ULF-ANC-001's inner-band target retired. The anchor-law diagnosis stands.
+
+MUST-121 — Any surviving anchor must be neither convergence of a multiplicative series in the
+strip (F380) nor the on-line zero configuration itself (CANNOT-185); manufactured anchors are
+capped at `1 − c/θ`. A candidate must name an unconditional nonvanishing datum of a third kind
+before any reach argument is attempted.
+
+## 2026-09-02 — principal subtraction refuted; anomaly reclassified (ULF-PSH-002/3)
+
+F401 — In log-aperture coordinate, every Poisson clock history is a translate of one universal
+mother: `e^(x/2) ψ_t(e^x)=F(x+log t)`, `F(x)=2e^x e^(−e^x)`. Thus noncompactness is literal
+translation escape and the `sech²` kernel is stationary autocorrelation
+(`PoissonScaleHistoryFrame`; Lean proved).
+
+CANNOT-194 — It cannot subtract the fixed principal `[1/p]` class, even in a signed completion
+and even modulo arbitrary `ell¹` remainder. Exact trichotomy: coefficient `0` admits only neutral
+grade; coefficient `−1` admits only nonneutral grade; every other fixed coefficient admits none.
+The actual source counterterm `−1/p+2/p²` realizes the wrong phase
+(`HedenmalmThetaPrincipalCountertermPolarityNoGo`, `HedenmalmThetaPrincipalClassTrichotomy`).
+
+F402 — The harmonic anomaly is an oriented nonzero square-zero class modulo `ell¹`; reflection
+negates it, cofinal prime shift fixes it, and every reduced-ring receiver kills it. Neutral/tail
+limits do not commute: depth-first gives `±1`, grade-first gives `0`. It is a first-order
+completion-end class, not removable scalar error (`RouteRSummableHadamardConstitutiveCoronaEmbedding`,
+`RouteRFirstWallNeutralTailNoncommutation`).
+
+FAIL-79 — ULF-PSH-002 “theta–Poisson principal-shell subtraction” refuted. Positive survivor:
+transgress bulk harmonic density to an oriented nonreduced end class and prove source-global end
+properness without subtracting the class (ULF-PSH-003).
+
+MUST-125 — Build a pre-divisor, coefficient-faithful nonreduced translation-corona formation. It
+must retain the oriented square-zero harmonic symbol, realize its clocks by the ULF-PSH-001 mother
+orbit, split arithmetic mass into Haar bulk plus bounded-primitive discrepancy, and derive global
+end properness from theta/Poisson source laws. Reduced positivity, fixed counterterms, or bare
+functional-equation fibre identification are forbidden. Vanishing of the retained class then
+forces neutral grade and closes RH.
+
+## 2026-09-02 — integrality anchor law frozen (card `0-backlog/integrality-anchor-law.md`, ULF-INT-001)
+
+F383 — All four retired routes bounded a real-valued quantity to force an integer (a zero count)
+to vanish, with slack of order `log t` per integer. Every theorem that locates zeros (Hadamard–de
+la Vallée Poussin, Weil, Deligne, Lee–Yang, Kaczorowski–Perelli degree `< 2`, the corpus's prime
+Ising-tree Lee–Yang) contains one integrality anchor — a discrete invariant squeezed between an
+archimedean bound and its gap `1` — and is capped exactly where that squeeze has slack `≥ 1`.
+
+CANNOT-186 — It cannot force a zero count to zero with a real-valued inequality valid on a
+continuous class containing `ζ`: such classes contain members with any off-line configuration at
+the crowd's resolution, so the slack is `≥ log t` per integer (equality for pole-anchored
+arguments; mollifiers change the constant only).
+
+MUST-122 — A producer card must name, before any inequality: a discrete invariant `I`; why one
+off-line quartet forces `I ≥ 1`; an archimedean bound `s(k)` with amplification parameter `k`;
+and `s(k) → 0`. Real-valued inequality cards without (i)–(iv) are closed by CANNOT-186.
+
+## 2026-09-02 — ULF-INT-001 closed as a route; the law stands as constraint
+
+F384 — Lean: the Mertens sum is the Möbius sum over odd integers of `(x/2, x]`; it is the
+alternating face count of the squarefree knapsack complex `{S ⊆ primes : ∏S ≤ x}`; every such top
+window contains an odd prime; affine rescalings preserve relative displacement
+(`RHTower.MertensOddWindowKnapsack`).
+
+CANNOT-187 — It cannot amplify: no finite product of affine rescalings of `ζ` changes the
+displacement of a zero relative to its strip, convolution powers keep the abscissa, and the
+knapsack complex's Betti numbers (odd squarefree integers of the top window by `ω`) do not
+cancel — only the parity of `ω` does. Every discrete invariant surveyed (window counts,
+indices, Toeplitz indices, `ζ`-algebra, knapsack topology, Iwasawa invariants, Kloosterman
+integrality, CM averages) fails (i)–(iv) of MUST-122.
+
+FAIL-73 — ULF-INT-001's route content retired. The audit table and MUST-122 stand.
+
+MUST-123 — The only discrete structure satisfying MUST-122 is a local-eigenvalue realisation of
+the global zeros with a non-affine amplification, i.e. an F₁-point with a Deligne-type tensor
+structure. The integrality anchor law and the F₁ open core are the same requirement; no other
+producer shape remains open in the corpus.
+
+## 2026-09-02 — formation-end tangent law proved; automatic Xi admission retired (ULF-FTG-001/2)
+
+F403 — Prime-harmonic formation has an exact logarithmic-end tangent.  For
+`mu_{a,L}=sum_{log log p>L} p^(-1-a) delta_(log log p-L)`, positive grade has vanishing total mass,
+neutral grade converges to Haar measure with uniform whole-half-line cumulative discrepancy, and
+negative grade has infinite mass in every fixed end window.  This is an unconditional consequence
+of Mertens' second theorem.
+
+F404 — The tangent lifts to the literal Poisson translation frame while retaining unsquared Euler
+amplitudes in synthesis.  At neutral grade the frame operators converge in operator norm to a
+nonzero Haar operator; at positive grade they vanish in trace norm; at negative grade local norms
+diverge.  Every prime-power depth `m>=2` is trace-class residual and vanishes at the end, so full
+Euler formation has the same tangent as its principal layer (ULF-FTG-001; paper proved, Lean open).
+
+F405 — The `log log p` clock is not a second unrelated source coordinate: it is the logarithmic
+blow-up of theta's `2 log p` translation end.  Poisson scale history therefore describes normal
+geometry at theta infinity, not the literal theta translation orbit itself.
+
+CANNOT-195 — Functional equation cannot supply bilateral tangent admission.  It swaps grades but
+does not prove source-to-Xi continuity; ordinary Hilbert graph closure is top and canonical
+half-density Xi descent is RH-equivalent.  Assuming landing would restate RH (ULF-FTG-002).
+
+FAIL-80 — “Functional equation automatically admits both reflected Euler tangents” retired.
+Positive survivor: simultaneous finite nonzero reflected tangent is classified exactly by neutral
+grade once an independent source-to-Xi landing theorem is supplied.
+
+MUST-126 — Construct a pre-divisor cofinal transition functor from finite literal theta/Euler
+transports to the nonreduced formation-tangent completion, then prove actual Xi compact-open
+completion factors through it in both orientations.  Proof may use finite-stage Poisson boundary
+annihilation and the new Haar-frame estimate, but not a zero/divisor or any RH-equivalent global
+continuity premise.  This factorization—not anomaly subtraction—is the surviving selection edge.
+
+## 2026-09-02 — direct subunit branch restored; relative-winding target isolated (ULF-DSA-001)
+
+F406 — Amplification is not logically necessary. A nonnegative integer killed by one fixed bound
+`< 1` is a separate producer shape. Ferrero--Washington `mu = 0` is the model: positive content
+forces exact congruences at every digit depth and equidistribution violates them. This corrects
+MUST-122 and withdraws MUST-123's exclusivity claim.
+
+F407 — Corpus already contains a source-defined integer: `completedSEMContourIndexZ` is winding of
+the actual finite symmetric Euler--Maclaurin completion and is identified with enclosed
+multiplicity only afterward. Existing RH use selects a zero-centred isolating contour, so global
+pre-divisor right-half formation remains open (`CompletedSEMContourBoundary`).
+
+F408 — The proved source winding `-1` belongs to a one-dimensional real-aperture prime--Gamma/Stokes
+crossing, not to a complex right-half rectangle. It neither forbids raw rectangle winding nor
+licenses anomaly subtraction. Indices from different boundaries cannot be combined without an
+exact common-boundary factorization or transgression identity.
+
+F409 — Rajchman phase decay is compatible with off-line geometry: the off-line Cauchy-pair energy
+clock, including its prime-log torus sample, is Rajchman. Ferrero--Washington therefore cannot be
+ported as “equidistribution makes off-line charge small”; it requires an all-depth exact
+restriction implied by nonzero discrete content.
+
+CANNOT-196 — It cannot be Fourier/Rajchman decay alone, nor averaging of inertia or divisor charge:
+those operations need not preserve the integer and off-line clocks already satisfy the decay.
+
+CANNOT-197 — It cannot call a zero-indexed carrier pre-divisor merely because it is labelled by
+primes. The two-prime Cesaro pencil and Gauss--Hodge collision current both contain
+`analyticOrderAt xi` and are readers.
+
+MUST-127 — Direct branch: construct source-selected right-half windows and stable completed-SEM
+rectangle winding `I_T`; prove source-only finite-formation argument principle
+`I_T = strictRightXiOrder(T)`; then derive `0 <= I_T <= s_T < 1`, or contradict `I_T > 0` through an
+all-depth exact formation restriction, while preserving unsquared Euler coefficients. Existing
+`3 log 2 + pi/2 - 3 < 1` does not apply until a same-boundary decomposition is proved. Neither
+theorem may use a selected zero, divisor data, or an
+RH-equivalent global continuity premise. Exact card: `direct-subunit-anchor/direct-relative-winding-anchor.md`.
+
+## 2026-09-02 — arithmetic symplectic descent frozen (card `0-backlog/arithmetic-symplectic-descent.md`, ULF-SYMP-001)
+
+F385 — Audit of the discrete doors: reflection torsion, Galois dichotomy, Lee–Yang trees, Baker
+independence and pair parity are fixed-point invariants of the reflection group and are blind at
+free orbits by theorem; the multiplicity ladder is the only door whose invariant (symplectic
+self-adjointness, `even_finrank_maxGenEigenspace`) acts at every eigenvalue, which is why RH was
+localizable there to one construction: an alternating form from Euler data, self-adjoint for the
+divisor operator off the line, with line-supported anomaly.
+
+MUST-124 — The alternating form must be the Hilbert/Steinberg-symbol form on `ℚ^×/ℚ^{×2}`
+(Lagrangian by quadratic reciprocity, `μ₂` the sign at `∞`), transported to the window model over
+quadratic twists; the decisive test is self-adjointness of the divisor operator on one finite EM
+split (T2). A failure there closes the card with a finite witness.
+
+## 2026-09-02 — ULF-SYMP-001 refuted; Kramers sharpened
+
+F386 — Lean: on a space with a cyclic vector every `K`-self-adjoint bilinear form is symmetric,
+so no symplectic self-adjoint structure exists on a cyclic space; a symplectically self-adjoint
+endomorphism has no cyclic vector (Jordan blocks double). Doubling any block with a nondegenerate
+symmetric invariant form gives a symplectic realization for free. `{±1}`-valued skew pairings
+are symmetric (`HTGeometry.CyclicNoSymplecticSelfAdjoint`).
+
+CANNOT-188 — It cannot obtain the ladder's symplectic structure from any form on the canonical
+cyclic divisor model, nor from any family pairing (twists, reflection, FE doubling) — the former
+is impossible, the latter blind — nor from quadratic symbols (symmetric); tame symbols with
+non-real characters are alternating but have no global reciprocity (`K₂(ℚ)` has none beyond `μ₂`).
+
+FAIL-74 — ULF-SYMP-001 retired. The ladder's open core is sharpened, not closed: the required
+structure is a canonical decomposition of the local divisor into two isomorphic halves from Euler
+data, i.e. a square root of the local factor.
+
+MUST-125 — Any candidate for the ladder must exhibit two isomorphic copies of the local divisor
+produced from Euler data by a non-linear (non-family) construction; linear constructions are
+blind by F386.

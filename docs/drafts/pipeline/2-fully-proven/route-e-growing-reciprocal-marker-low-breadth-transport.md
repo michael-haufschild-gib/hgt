@@ -6239,3 +6239,27 @@ only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without a
 Card remains Stage 2, but no normalization or schedule-rate residue remains.  Its sole substantive
 gate is now the unconditional uniform Menon--Halász mean-square inequality itself over the grid
 lengths.  That analytic theorem is not assumed.
+
+## Lean progress update (2026-09-02) — exact aggregate capacity normalization
+
+`Sieve/GrowingReciprocalMarkerCapacityAggregation.lean` formalizes the analytic-free passage from
+the per-block scale in `(30)` to the aggregate scale in `(7)`.  With the literal floor-and-subtract
+block count from `(10)`, it proves the no-premise limit
+
+```text
+[K(X) * (H(X) / log X)] / [H(X) / log log X] -> 1 / log 2.
+```
+
+Thus neither the natural floor, the subtraction by four, nor summation over the retained dyadic
+blocks hides a loss: one `H/log X` contribution per block aggregates with the exact leading
+constant to `H/(log 2 * log log X)`.
+
+Direct source check and targeted leaf build pass (`2011/2011`).  The sole public theorem audits
+with only `[propext, Classical.choice, Quot.sound]`; the leaf is umbrella-wired without an umbrella
+build.
+
+Card remains Stage 2.  Corpus audit also rules out obtaining the required `o(1/log X)` rate merely
+by strengthening the existing qualitative `averagedMeanSquare_moebius`: its currently proved
+explicit non-spectral majorant contains a `C / log log X` term.  The independent remaining gate is
+still the uniform quantitative Menon--Halász mean-square inequality over the growing length grid;
+it is not assumed.

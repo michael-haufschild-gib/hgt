@@ -7141,3 +7141,44 @@ This sharpens the remaining global obligation: construct the two unconditional s
 and identify their projected homotopy classes with the two torus generators.  Formal purity of the
 block normalization remains the separate local obligation.  No Kummer-character or abstract
 monodromy premise remains after those two inputs.
+
+### Explicit source meridians close the global obligation (2026-09-02)
+
+`HTGeometry/CriticalSourceExplicitMeridians.lean` constructs the two closed loops on the actual
+critical source chart.  Their marked raw and reciprocal coordinates are literal translated unit
+loops, every cross-coordinate loop is null-homotopic through the open unit ball, and connector
+conjugation identifies their projected classes with the two standard generators of
+`π₁((ℂˣ)² × ℂ^(m+n-2))`:
+
+```text
+criticalFirstSourceMeridian_conjugate_mk
+criticalSecondSourceMeridian_conjugate_mk
+```
+
+`HTGeometry/CriticalBlockSourceExplicitMeridianElimination.lean` feeds those exact loops into the
+actual block normalization.  Its capstone
+
+```text
+criticalBlockCover_fiber_subsingleton_of_explicit_source_meridians
+```
+
+has no loop, homotopy-class, finite-group, or Kummer premise.  Given formal étaleness of the actual
+block normalization, every connected block-cover fibre is a singleton.  Direct source checks,
+targeted leaf builds, and axiom audits pass; the declarations use only
+`[propext, Classical.choice, Quot.sound]`, and both leaves are umbrella-wired without an umbrella
+build.
+
+The global/topological side of step 4 is therefore complete.  The sole remaining theorem for this
+card is the local purity statement
+
+```text
+Algebra.FormallyEtale
+  (criticalObservationChartRing ℂ m n)
+  (CriticalBlockNormalization ℂ B)
+```
+
+for an actual nontrivial monodromy block.  The normalization is already finite and finitely
+presented, its function field is unramified at the generic Schur divisor, and the complement is
+unramified by the Jacobian criterion.  Upgrading codimension-one unramifiedness to formal étaleness
+is Zariski--Nagata purity; Mathlib and this corpus currently contain no such theorem.  The card
+remains at Stage 2 until that exact statement is proved.
