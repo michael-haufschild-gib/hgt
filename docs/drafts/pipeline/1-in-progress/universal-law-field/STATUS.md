@@ -4167,3 +4167,48 @@ of the three).
 - **Nugget:** both doors of the terminal classification are, at the present state of the corpus,
   RH-equivalent receivers: door 1 by the torsion law and six exponentials, door 2 by the
   off-line-indicator audit. The corpus contains no non-RH-equivalent producer target.
+
+## 2026-09-02 — integral--nuclear defect audit closed
+
+F435 — Lean: verticalization commutes with incidence totalization,
+`Mul(Tot_delta R)=Mul(R)∩ker(delta)`. A supplied strict-right Meyer fibre becomes exactly the
+full-support cross-prime line `C eta`; its projector is rank-one, Schatten-1, and has trace and
+trace norm exactly `1` (`IntegralNuclearRelationIncidenceHorizon`).
+
+F436 — Lean: all zero-clock P-G186 Burnol columns form one literal all-prime Hilbert--Schmidt
+synthesis `A_base`; `||A_base||_HS²=B_base<1`. Its covariance is Schatten-1 with
+`Re Tr(A_base A_base*)=B_base<1` (`RoutePPrimitiveBurnolBaseNuclearSynthesis`). No normalization
+or divisor enters; P-G186 retains every cross-prime Gram entry.
+
+F437 — These are two incompatible positive survivors, not one operator. Any bounded landing of
+the zero finite horizon defects is zero by dense-core continuity; any singular relation retaining
+the completion-born horizon loses the inherited Schatten bound. Thus the identity
+`Pi_theta-Pi_ar=A_s*Gamma A_s` is impossible under ULF-INHD-001's finite-core premises, not merely
+unproved. The route is retired.
+
+CANNOT-210 — It cannot transport an integral completion horizon through a bounded/contractive
+Hilbert--Schmidt landing from finite defects that all vanish. Nor can a summable diagonal topology
+select the horizon ray: summable weights admit every scalar; nonsummable weights admit only zero.
+
+MUST-132 — Any successor must change the arithmetic relation and source topology before finite
+completion, act nontrivially on finite witnesses, and derive a norm native to that topology. It
+cannot reuse `B_base` through a bounded landing or call the source covariance and horizon projector
+one `T` without proving an impossible identification.
+
+## 2026-09-02 — MUST-130 attempted: no position-independent integer with an independent bound (card `5-failed/position-independent-integer-loop.md`)
+
+F394 — Lean: off the line the paired Li coefficients are positive for arbitrarily large `n`;
+unconditionally they are never eventually negative (`RHTower.LiSignOscillation`, mean value on
+the torus via recurrence and the geometric sum).
+
+CANNOT-194 — It cannot transfer the Ferrero–Washington mechanism to ζ: the negation of RH never
+yields a universal ("for all `n`") arithmetic statement, only "infinitely often" or "positive
+density" ones, because the dominant off-line contribution to every real arithmetic datum is a
+mean-zero almost-periodic oscillation. One independent instance can never refute it.
+
+MUST-131 — A direct anchor would need a datum whose off-line signal is one-signed; real
+Dirichlet data with a non-real dominant singularity cannot supply it. Every integer candidate
+(counts, indices, codimensions, signatures, indicators, growth exponents, Galois integers,
+continuous invariants) fails one of the three Ferrero–Washington ingredients.
+
+- **Nugget:** the archimedean obstruction to a direct sub-unit anchor is oscillation, not size.

@@ -1921,3 +1921,32 @@ without umbrella build.
 Card remains Stage 2.  Weight normalization bookkeeping is now exact through the literal-source
 collision fourth moment.  Collective cross-modulus Kuznetsov saving, Lemma 3.5(ii), amplification,
 and Theorem 1.2 remain open and unassumed.
+
+## Lean progress update (2026-09-02) — pair-local Minkowski collision receiver
+
+`Sieve/KloostermanGlobalCollisionMinkowski.lean` applies finite `ell^2` Minkowski to the exact
+erased-diagonal response Gram before modulus-pair Cauchy--Schwarz.  Lean proves
+
+```text
+E_global
+  <= (sum_(q != r) |w_q| * |w_r| * sqrt(Avg_k[|R_q(k)|^2 |R_r(k)|^2]))^2.
+```
+
+Inserting brick 145's symmetric pair estimate gives the same expression with
+`sqrt(PairElementaryBudget(q,r))`.  A separate theorem proves this new budget is at most
+
+```text
+WeightPairEnergy(Q,w) * sum_(q != r) PairElementaryBudget(q,r),
+```
+
+so it is a certified strengthening of the prior global pairwise-Cauchy receiver, not an
+alternative with an incomparable loss.  Literal interval residue multiplicities are also
+inserted inside every pair-local square root.
+
+Direct source check and targeted leaf build pass (`13513/13513`).  All five public theorem
+declarations audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired
+without umbrella build.
+
+Card remains Stage 2.  Elementary pair aggregation is now closed at the sharper Minkowski scale.
+Collective signed Kuznetsov cancellation, Lemma 3.5(ii), amplification, and Theorem 1.2 remain
+open and unassumed.

@@ -8,7 +8,8 @@ import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
 
 For a finite module over a Noetherian local ring, a list generating the maximal ideal is weakly
 regular as soon as the module has grade at least the length of the list.  More generally, it is
-enough that the maximal ideal be contained in the sum of the list ideal and the annihilator.
+enough that the maximal ideal be contained in the radical of the sum of the list ideal and the
+annihilator.
 
 The proof excludes each head element from every associated prime.  If the head lay in an
 associated prime `p`, the tail would generate the maximal ideal of `A ⧸ p`; Krull's height theorem
@@ -24,14 +25,15 @@ open IsLocalRing RingTheory.Sequence
 
 universe u
 
-/-- Full grade relative to generators modulo the annihilator makes those generators weakly
-regular. -/
-theorem isWeaklyRegular_of_hasGradeGE_of_maximalIdeal_le_sup_annihilator :
+set_option maxHeartbeats 800000 in
+/-- Full grade relative to generators modulo the annihilator, up to radical, makes those
+generators weakly regular. -/
+theorem isWeaklyRegular_of_hasGradeGE_of_maximalIdeal_le_radical_sup_annihilator :
     ∀ (d : ℕ) {A : Type u} [CommRing A] [IsNoetherianRing A] [IsLocalRing A]
       {rs : List A}, rs.length = d →
       ∀ {M : Type u} [AddCommGroup M] [Module A M] [Module.Finite A M],
       (∀ r ∈ rs, r ∈ maximalIdeal A) →
-      maximalIdeal A ≤ Ideal.ofList rs ⊔ Module.annihilator A M →
+      maximalIdeal A ≤ (Ideal.ofList rs ⊔ Module.annihilator A M).radical →
       HasGradeGE (maximalIdeal A) (ModuleCat.of A M) d →
       IsWeaklyRegular M rs := by
   intro d
@@ -67,34 +69,50 @@ theorem isWeaklyRegular_of_hasGradeGE_of_maximalIdeal_le_sup_annihilator :
         have htail : Ideal.ofList t ≤ maximalIdeal A := by
           rw [Ideal.ofList, Ideal.span_le]
           exact htmem
-        have hm_tail_p : maximalIdeal A ≤ Ideal.ofList t ⊔ p := by
-          rw [ofList_cons] at hspan
-          refine hspan.trans (sup_le (sup_le ?_ le_sup_left) ?_)
-          · exact le_sup_right.trans' (Ideal.span_le.mpr (by simpa using hxp))
-          · exact hann.trans le_sup_right
-        have hmap : Ideal.map f (maximalIdeal A) = Ideal.map f (Ideal.ofList t) := by
+        have hpmax : p ≤ maximalIdeal A :=
+          IsLocalRing.le_maximalIdeal hp.1.ne_top
+        have hsmall : Ideal.ofList t ⊔ p ≤ maximalIdeal A :=
+          sup_le htail hpmax
+        have hlarge : maximalIdeal A ≤ (Ideal.ofList t ⊔ p).radical := by
+          have hinc : Ideal.ofList (x :: t) ⊔ Module.annihilator A M ≤
+              Ideal.ofList t ⊔ p := by
+            rw [ofList_cons]
+            refine sup_le (sup_le ?_ le_sup_left) ?_
+            · exact le_sup_right.trans' (Ideal.span_le.mpr (by simpa using hxp))
+            · exact hann.trans le_sup_right
+          exact hspan.trans (Ideal.radical_mono hinc)
+        have hrad : (Ideal.ofList t ⊔ p).radical = maximalIdeal A := by
           apply le_antisymm
-          · calc
-              Ideal.map f (maximalIdeal A) ≤ Ideal.map f (Ideal.ofList t ⊔ p) :=
-                Ideal.map_mono hm_tail_p
-              _ = Ideal.map f (Ideal.ofList t) := by
-                rw [Ideal.map_sup, Ideal.map_quotient_self, sup_bot_eq]
-          · exact Ideal.map_mono htail
+          · exact (by infer_instance : (maximalIdeal A).IsPrime).radical_le_iff.mpr hsmall
+          · exact hlarge
         letI : IsLocalRing (A ⧸ p) :=
           IsLocalRing.of_surjective' f Ideal.Quotient.mk_surjective
-        have hmax : maximalIdeal (A ⧸ p) = Ideal.ofList (t.map f) := by
-          rw [← IsLocalRing.map_maximalIdeal_of_surjective f Ideal.Quotient.mk_surjective,
-            hmap, Ideal.map_ofList]
+        have hmaprad : Ideal.map f (Ideal.ofList t ⊔ p).radical =
+            (Ideal.map f (Ideal.ofList t ⊔ p)).radical :=
+          Ideal.map_radical_of_surjective Ideal.Quotient.mk_surjective (by
+            intro r hr
+            exact (show p ≤ Ideal.ofList t ⊔ p from le_sup_right)
+              (Ideal.Quotient.eq_zero_iff_mem.mp hr))
+        have htailrad : (Ideal.ofList (t.map f)).radical = maximalIdeal (A ⧸ p) := by
+          rw [hrad, IsLocalRing.map_maximalIdeal_of_surjective f
+            Ideal.Quotient.mk_surjective, Ideal.map_sup, Ideal.map_ofList,
+            Ideal.map_quotient_self, sup_bot_eq] at hmaprad
+          exact hmaprad.symm
         classical
-        have hspanFinset :
-            Ideal.span (((t.map f).toFinset : Finset (A ⧸ p)) : Set (A ⧸ p)) =
-              maximalIdeal (A ⧸ p) := by
-          rw [hmax]
-          simp [Ideal.ofList]
+        let J : Ideal (A ⧸ p) :=
+          Ideal.span (((t.map f).toFinset : Finset (A ⧸ p)) : Set (A ⧸ p))
+        have hJ : J = Ideal.ofList (t.map f) := by
+          simp [J, Ideal.ofList]
+        have hJrad : J.radical = maximalIdeal (A ⧸ p) := by
+          rw [hJ]
+          exact htailrad
         have hmin : maximalIdeal (A ⧸ p) ∈
-            (Ideal.span (((t.map f).toFinset : Finset (A ⧸ p)) : Set (A ⧸ p))).minimalPrimes := by
-          rw [hspanFinset, Ideal.minimalPrimes_eq_subsingleton_self]
-          simp
+            J.minimalPrimes := by
+          refine ⟨⟨by infer_instance, ?_⟩, ?_⟩
+          · exact Ideal.le_radical.trans_eq hJrad
+          · intro q hq hqle
+            have hradle : J.radical ≤ q := hq.1.radical_le_iff.mpr hq.2
+            rwa [hJrad] at hradle
         have hheight := Ideal.height_le_card_of_mem_minimalPrimes_span_finset hmin
         have hcard : (t.map f).toFinset.card ≤ d :=
           (List.toFinset_card_le _).trans (by simpa [htlen])
@@ -138,13 +156,30 @@ theorem isWeaklyRegular_of_hasGradeGE_of_maximalIdeal_le_sup_annihilator :
       have hannN : Module.annihilator A M ≤ Module.annihilator A N :=
         LinearMap.annihilator_le_of_surjective
           (Submodule.mkQ (x • (⊤ : Submodule A M))) (Submodule.mkQ_surjective _)
-      have hspanN : maximalIdeal A ≤ Ideal.ofList t ⊔ Module.annihilator A N := by
-        rw [ofList_cons] at hspan
-        refine hspan.trans (sup_le (sup_le ?_ le_sup_left) ?_)
-        · exact hspanX.trans le_sup_right
-        · exact hannN.trans le_sup_right
+      have hspanN : maximalIdeal A ≤
+          (Ideal.ofList t ⊔ Module.annihilator A N).radical := by
+        have hinc : Ideal.ofList (x :: t) ⊔ Module.annihilator A M ≤
+            Ideal.ofList t ⊔ Module.annihilator A N := by
+          rw [ofList_cons]
+          refine sup_le (sup_le ?_ le_sup_left) ?_
+          · exact hspanX.trans le_sup_right
+          · exact hannN.trans le_sup_right
+        exact hspan.trans (Ideal.radical_mono hinc)
       rw [isWeaklyRegular_cons_iff]
       exact ⟨hxreg, ih htlen htmem hspanN hgradeN⟩
+
+/-- Full grade relative to generators modulo the annihilator makes those generators weakly
+regular. -/
+theorem isWeaklyRegular_of_hasGradeGE_of_maximalIdeal_le_sup_annihilator
+    (d : ℕ) {A : Type u} [CommRing A] [IsNoetherianRing A] [IsLocalRing A]
+    {rs : List A} (hlen : rs.length = d)
+    {M : Type u} [AddCommGroup M] [Module A M] [Module.Finite A M]
+    (hmem : ∀ r ∈ rs, r ∈ maximalIdeal A)
+    (hspan : maximalIdeal A ≤ Ideal.ofList rs ⊔ Module.annihilator A M)
+    (hgrade : HasGradeGE (maximalIdeal A) (ModuleCat.of A M) d) :
+    IsWeaklyRegular M rs :=
+  isWeaklyRegular_of_hasGradeGE_of_maximalIdeal_le_radical_sup_annihilator
+    d hlen hmem (hspan.trans Ideal.le_radical) hgrade
 
 /-- A maximal-ideal generating list of full module grade is weakly regular. -/
 theorem isWeaklyRegular_of_hasGradeGE_of_ofList_eq_maximalIdeal

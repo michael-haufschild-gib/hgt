@@ -119,6 +119,16 @@ theorem xiRightPrimeMixedHorizonDefect_memSchattenClass_one
   memSchattenClass_of_hasRankLE one_pos
     (xiRightPrimeMixedHorizonDefect_hasRankLE_one q)
 
+/-- The integral target already costs exactly one full nuclear unit. -/
+theorem traceNorm_xiRightPrimeMixedHorizonDefect (q : XiRightZeroCopy) :
+    traceNorm DeningerCalderonWittCrossPrimePacketHilbert
+      (xiRightPrimeMixedHorizonDefect q) = 1 := by
+  rw [traceNorm_eq_norm_of_hasRankLE_one
+      (xiRightPrimeMixedHorizonDefect_hasRankLE_one q),
+    xiRightPrimeMixedHorizonDefect, InnerProductSpace.norm_rankOne,
+    deningerCalderonWittCrossPrimePacketHorizon_norm]
+  norm_num
+
 @[simp] theorem xiRightPrimeMixedHorizonDefect_apply_horizon
     (q : XiRightZeroCopy) :
     xiRightPrimeMixedHorizonDefect q

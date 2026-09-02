@@ -98,3 +98,10 @@ It must define the actual strict-right scalar-to-packet horizon, prove it equals
 incidence kernel, define the rank-one `T_q`, and prove its trace is one.  No RH premise or new
 axiom is permitted.
 
+## Lean status
+
+Completed in `RHTower.IntegralNuclearRelationIncidenceHorizon`.
+
+The module proves `(RIHF.1)`, the actual strict-right scalar-to-packet incidence-kernel equality,
+rank at most one, Schatten-1 membership, fixed-horizon action, operator trace `1`, and trace norm
+`1`.  Axiom audit: `propext`, `Classical.choice`, `Quot.sound` only.

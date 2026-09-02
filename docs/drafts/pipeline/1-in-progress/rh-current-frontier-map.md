@@ -1432,3 +1432,8 @@ last Lean item of the door-1 refutation: per-prime Frobenius integrality fails a
 Lean: escape multiplicity = `if Re q = ½ then 0 else 1`; the sub-unit gap is the off-line
 condition; vanishing everywhere is RH. Both doors are receivers at the present state of the corpus
 (CANNOT-193, MUST-130).
+
+### Addendum 2026-09-02 — MUST-130 loop closed: no archimedean universality
+
+The Ferrero–Washington shape cannot transfer: off-line signals are mean-zero oscillations (Lean:
+Li coefficients never eventually negative). CANNOT-194, MUST-131.

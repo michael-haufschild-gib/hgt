@@ -1,12 +1,12 @@
 # Integral--nuclear prime-mixed homotopy defect
 
 - **ID:** ULF-INHD-001
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Stage:** 5-failed
+- **Type:** RETIRED ROUTE · RH-EQUIVALENT RECEIVER
 - **Source:** `tropicalized-defect-capacity-anchor.md` · MUST-129
 - **Statement:** The theta-positive relative graph defect between arithmetic formation and
   Meyer/theta completion of one pre-divisor all-prime incidence complex is nuclear, has integral
-  trace, and factors through the normalized prime-mixed Burnol base-Cauchy colligation with trace
+  trace, and factors through the unscaled prime-mixed Burnol base-Cauchy colligation with trace
   norm `< 1`.
 
 ## Goal
@@ -45,8 +45,9 @@ the locus selected by an imposed positivity condition.
 3. `RHTower.RoutePPrimitiveBurnolWindowGramSquare` realizes the complete P-G186 primitive
    base-Cauchy kernel, including all off-diagonal prime/depth/clock entries, as an actual `L2`
    Gram of source-defined Burnol columns.
-4. `RHTower.RoutePPrimitiveBaseCauchyCapacityReduction` proves its trace budget
-   `B_base=(216/115)B_Euler<2`; one strict-right base-Cauchy charge is at least `2`.
+4. `RHTower.RoutePPrimitiveBurnolBaseNuclearSynthesis` constructs the literal all-prime
+   Hilbert--Schmidt synthesis and nuclear covariance.  Its trace is
+   `B_base=(216/115)B_Euler<1`; no normalization is needed.
 5. `RHTower.RoutePPrimeGammaCubicCarrierIdentification` proves literal natural-number von
    Mangoldt provenance of that kernel and its unsquared coefficients.
 6. `RHTower.RoutePPrimitiveBurnolMatrixCompleteColligation` gives the exact transported,
@@ -82,6 +83,22 @@ the locus selected by an imposed positivity condition.
 17. `RHTower.DeningerMeyerHalfDensityFiniteXiJetRepairIndex` identifies the multivalued horizon
     with the kernel of source projection and proves its off-line dimension is exactly total
     analytic Xi multiplicity.  For one zeroth-order copy, the required integer is already `1`.
+18. `RHTower.IntegralNuclearRelationIncidenceHorizon` proves that incidence totalization commutes
+    with the multivalued horizon and that a supplied strict-right Xi copy yields the unit rank-one
+    horizon projection with operator trace `1`.  It does not construct a pre-divisor relative
+    projection or any subunit factorization.
+19. `RHTower.RouteRSourceTopologyObserverDichotomy` proves
+    `routeR_no_continuousArithmeticCoreHorizonLanding`: every continuous landing which kills the
+    dense finite arithmetic core is zero and cannot retain the full-support horizon.
+20. `RHTower.DeningerCalderonWittCrossPrimeClosedRelationNoGo` proves the complementary relation
+    horn: every closed relation extending the zero graph on the dense arithmetic core is the full
+    source space times a constant vertical fibre.  Its output is nonselective.
+21. `RHTower.CompleteResolutionPrimeNormalHilbertSaturation` strengthens that horn: retaining the
+    full affine prime-normal packet through collapsing inputs forces the entire Hilbert target into
+    the vertical fibre.
+22. `RHTower.NuclearRankOneSchatten.traceNorm_eq_norm_of_hasRankLE_one`, together with
+    `traceNorm_xiRightPrimeMixedHorizonDefect`, makes the supplied strict-right horizon defect have
+    trace norm exactly `1`, not merely trace `1`.
 
 Searches run before this conjecture:
 
@@ -110,7 +127,7 @@ Let `I=Nat.Primes x Nat`, put every source clock at zero, and let
 ```text
 f_alpha = routePPrimitiveBurnolWindowFeatureLp(alpha,0),
 B_base  = routePPrimitiveBaseCauchyCubicTraceBudget
-        = (216/115) B_Euler < 2.
+        = (216/115) B_Euler < 1.
 ```
 
 P-G186 proves directly in the corpus that the finite Gram matrices of the actual `L2(0,infinity)`
@@ -134,18 +151,15 @@ choice of RKHS: the carrier and every column already exist in Lean.  Explicitly,
 ```
 
 Hence synthesis extends boundedly, and summing `||A_base e_alpha||^2` over the canonical basis
-gives its HS norm.  Normalize by the indivisible base-Cauchy escape quantum:
+gives its HS norm:
 
 ```text
-Abar = (1/sqrt 2) A_base,
-||Abar||_2^2 = B_base/2 < 1.                          (INHD.1)
+||A_base||_2^2 = B_base < 1.                          (INHD.1)
 ```
 
-The scale is forced, not adjustable damping: the corpus proves every strict-right Xi copy costs at
-least `2` in this same base carrier.  The P-G177 collision carrier has the sharper constants
-`B_Euler<115/108`, but it is not the P-G194 carrier.  The corpus proves only a diagonal rescaling
-between collision and base-Cauchy kernels, not an entrywise inter-carrier isometry.  Therefore the
-construction deliberately uses `A_base`; importing the P-G177 constant here would be invalid.
+This is the literal scale, with no damping.  The P-G177 collision carrier is not the P-G194
+carrier: the corpus proves only a diagonal rescaling between their kernels, not an entrywise
+inter-carrier isometry.  The construction deliberately uses `A_base` throughout.
 
 Prime mixing is literal.  At zero clock each cross entry is a nonzero von-Mangoldt amplitude times
 the base Cauchy value `2/(lambda_alpha+lambda_beta)^3`; therefore `A_base* A_base` has every
@@ -156,8 +170,8 @@ P-G194 then supplies an actual three-channel isometry on the closure of the sour
 ```text
 U_c f = (transport_c f, hardBoundary_c f, tailCocycle_c f),
 U_c* U_c = I,
-A_col,c = U_c Abar,
-||A_col,c||_2^2 = ||Abar||_2^2 < 1.                  (INHD.1a)
+A_col,c = U_c A_base,
+||A_col,c||_2^2 = ||A_base||_2^2 < 1.                (INHD.1a)
 ```
 
 The equality follows first from P-G194's finite Gram conservation and then by density.  Thus
@@ -260,10 +274,10 @@ realizations such that:
 (c) T(s) = B_s* B_s - C_s* C_s;
 
 (d) ||B_s||_2^2 + ||C_s||_2^2
-      <= ||Abar||_2^2 = B_base/2 < 1;
+      <= ||A_base||_2^2 = B_base < 1;
 
 (e) on every finite primitive packet, the Gram of (B_s,C_s)
-      is the normalized full P-G194 colligation Gram.             (INHD.5)
+      is the unscaled full P-G194 colligation Gram.                (INHD.5)
 ```
 
 `B_s,C_s` are not arbitrary witnesses.  They must be the completed boundary/tail/aperture channels
@@ -276,7 +290,7 @@ More explicitly, ULF-INHD-1 must construct a canonical contractive source-coordi
 three-channel carrier to the relative total complex, and set
 
 ```text
-A_s = L_s U_c Abar tau_s : Y_form -> E_s^+ directSum E_s^-,
+A_s = L_s U_c A_base tau_s : Y_form -> E_s^+ directSum E_s^-,
 Gamma_hom = diag(+I,-I),
 B_s = pr_+ A_s,
 C_s = pr_- A_s.
@@ -368,7 +382,7 @@ ULF-INHD-2 gives `Tr T(q)=1`.  ULF-INHD-1 and `(INHD.1)` give
 
 ```text
 1 = |Tr T(q)| <= ||T(q)||_1
-  <= B_base/2 < 1,
+  <= B_base < 1,
 ```
 
 a contradiction.  Functional-equation reflection then excludes the strict-left side.  Therefore
@@ -419,34 +433,65 @@ Before any infinite construction is accepted, it must pass:
   maximally multivalued.  `T` must project the relation's vertical horizon, not an operator kernel.
 - P-G177/P-G194 hybrid: invalid.  Their diagonal weights are proportionate, but no all-entry
   isometry between the collision and base-Cauchy kernels is proved.  The present `T` uses P-G194's
-  own base carrier and two-unit calibration throughout.
+  own unscaled base carrier throughout.
 - Provenance-continuous exact completion by itself: forces zero homology but supplies no nuclear
   control of the actual arithmetic/theta contractions.  Treating that continuity as automatic
   assumes the missing theorem.
 
 ## Current status
 
-`T(s)` is now specified intrinsically and has a concrete finite source nuclear carrier.  The
-generic implication
+**Retired.** `T(s)` was specified intrinsically and has a concrete finite source nuclear carrier.
+The generic implication
 
 ```text
 relative projection integrality + source factorization mass < 1 + off-line index 1 => RH
 ```
 
-is complete.  Two arithmetic theorems remain open and are not hidden:
+is complete, but it is a receiver rather than a producer.  The proposed construction has a closed
+dichotomy:
 
-1. construct the pre-divisor completed multivalued-horizon projections and prove factorization
-   `(INHD.5)` from literal integer/Poisson formation;
-2. prove the scalar cohomology of the total complex is exactly the theta escape multiplicity.
+1. If `tau_s`, `U_c`, and `L_s` are bounded/contractive and the Hilbert--Schmidt factors extend the
+   actual finite packet channels, then the completed Gram defect is the unique continuous
+   extension of its finite restrictions.  Every finite horizon defect is zero, hence every matrix
+   coefficient of `B_s^*B_s-C_s^*C_s` on the dense finite span is zero.  Therefore
+   `B_s^*B_s-C_s^*C_s=0`, so it cannot be the nonzero rank-one horizon defect.
+2. If the landing is made singular enough to retain the completion-born horizon, it no longer has
+   a bounded/contractive factorization through `A_base`.  The estimate
+   `||T(s)||_1 <= ||A_base||_2^2` then has no valid derivation.
+3. If the construction is kept relation-valued, the dense-zero-core and prime-normal saturation
+   theorems make the vertical output constant or full unless a different source topology and a
+   nonzero finite arithmetic action are introduced.  Such a replacement is no longer this route.
 
-The first item is now sharper than a scalar budget comparison: construct one coherent finite
-contraction system whose completion commutator is `(INHD.3)` and whose defect columns factor
-through `A_col,c`.  Then `(INHD.7a)` already forbids any nonzero relative index; the strict `<1`
-estimate is its quantitative, falsifiable certificate.
+Thus ULF-INHD-1 can hold with the required finite provenance only by forcing `T(s)=0`.  Identifying
+that zero operator with the theta/arithmetic horizon difference at every `s` is exactly the missing
+RH statement.  The suggested factorization does not derive this identification from arithmetic;
+it repackages it.
 
-No Lean promotion occurs until one of these source-specific statements has a dependency-closed
-paper proof.  Formalizing only the abstract relative-index implication would be infrastructure,
-not progress on the producer.
+The route remains retired, but its two independent positive halves are now Lean-proved.
+`IntegralNuclearRelationIncidenceHorizon` formalizes the strongest target-side fact: if a
+strict-right copy is supplied, its incidence-reduced horizon is rank one with trace and trace norm
+one.  `RoutePPrimitiveBurnolBaseNuclearSynthesis` formalizes the source-side survivor: the unscaled
+literal all-prime synthesis is Hilbert--Schmidt and its nuclear covariance has trace `<1`.  No
+theorem identifies these two operators; the bounded/singular dichotomy proves this architecture
+cannot do so while preserving its finite-core premises.
+
+### Positive survivor — bounded finite-core coherence rigidity
+
+The nontrivial surviving theorem is:
+
+```text
+A completion-born nonzero horizon cannot simultaneously
+  (i) vanish on every finite arithmetic packet,
+  (ii) be retained by a Hausdorff continuous/contractive landing, and
+  (iii) inherit a Schatten-one budget from Hilbert--Schmidt finite-source factors.
+```
+
+This is not a heuristic.  Horn `(ii)` is Lean-proved by
+`routeR_no_continuousArithmeticCoreHorizonLanding`; the closed-relation alternative is classified
+by `deningerCalderonWittCrossPrimeClosedRelation_eq_top_prod_vertical`; and trace-norm coherence is
+Lean-proved by `TraceNormLimit.traceTower_limit`.  A future route must change source topology
+before completion and prove a new norm estimate native to that topology.  It cannot reuse
+`B_base` merely through a contractive landing.
 
 ## Parent theory boundary
 
@@ -466,9 +511,10 @@ Primary parents:
 ## Gates
 
 - [x] 0 -> 1: well-posed, source-pure definition; corpus locks and exact RH edge named
-- [ ] 1 -> 2: prove ULF-INHD-1 and ULF-INHD-2 without divisor-fed construction
-- [ ] 2 -> 3: formalize source-specific theorem(s), scratch-check, wire only
-- [ ] 3 -> 4: publication-ready
+- [x] 1 -> 5: bounded/singular landing dichotomy closes route; positive survivor already
+  Lean-proved
+- [ ] 1 -> 2: closed as impossible for this architecture
+- [ ] 2 -> 3: not applicable
 
 ## Log
 
@@ -482,3 +528,8 @@ Primary parents:
   A surviving producer must be a source-canonical non-diagonal singular boundary landing and must
   not claim trace-norm convergence from the zero finite horizon defects. Report and raw data:
   `docs/drafts/pipeline/2-fully-proven/computations/integral-nuclear-prime-mixed-homotopy-defect/`.
+- 2026-09-02 — final theorem audit retired route.  Existing corpus proves continuous dense-core
+  landings are zero, closed-relation alternatives are nonselective/full-vertical, and trace-norm
+  coherent zero finite defects retain trace zero.  A singular landing can retain the horizon only
+  by forfeiting the contractive Hilbert--Schmidt budget.  Relative-index integrality does not
+  supply the missing comparison.  Verdict: `RETIRED — BOUNDED/SINGULAR NORM DICHOTOMY`.

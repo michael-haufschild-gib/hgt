@@ -9,7 +9,7 @@ even dimension for every local multiplicity.  This is therefore inter-block doub
 degeneracy inside the `mu`-block.  It cannot force the Xi multiplicity at `mu` to be even.
 -/
 
-open Complex Module
+open Complex MeasureTheory Module
 
 namespace RHTower.HedenmalmThetaSource
 
@@ -53,8 +53,7 @@ def thetaReflectedRootPairQuarterTurn (mu : ThetaNonzeroSpectrum) :
       rw [map_smul, smul_neg]
     · exact map_smul (thetaRootBlockReflectionLIE mu) c p.1
 
-/-- The reflected-pair quarter-turn has quaternionic square `-1`, independently of local
-multiplicity. -/
+/-- The reflected-pair quarter-turn has square `-1`, independently of local multiplicity. -/
 theorem thetaReflectedRootPairQuarterTurn_sq_apply
     (mu : ThetaNonzeroSpectrum) (p : ThetaReflectedRootPair mu) :
     thetaReflectedRootPairQuarterTurn mu
@@ -66,6 +65,64 @@ theorem thetaReflectedRootPairQuarterTurn_sq_apply
   · change thetaRootBlockReflectionLIE mu
         (-(thetaRootBlockReflectionLIE mu).symm p.2) = -p.2
     rw [map_neg, (thetaRootBlockReflectionLIE mu).apply_symm_apply]
+
+/-- Reflection anticommutes with the actual theta root-block operators; it does not commute with
+one operator on a fixed eigenspace. -/
+theorem thetaRootBlockOperator_reflection
+    (mu : ThetaNonzeroSpectrum) (v : ThetaRootBlock mu) :
+    thetaRootBlockOperator (thetaSpectrumNeg mu)
+        (thetaRootBlockReflectionLIE mu v) =
+      -thetaRootBlockReflectionLIE mu (thetaRootBlockOperator mu v) := by
+  apply Subtype.ext
+  change thetaKernelOperator (thetaQuantileReflection
+      (v : Lp ℂ 2 unitIntervalMeasure)) =
+    -thetaQuantileReflection
+      (thetaKernelOperator (v : Lp ℂ 2 unitIntervalMeasure))
+  have h := thetaQuantileReflection_intertwines_neg (v : Lp ℂ 2 unitIntervalMeasure)
+  simpa only [neg_apply, neg_neg] using (congrArg Neg.neg h).symm
+
+theorem thetaRootBlockOperator_reflection_symm
+    (mu : ThetaNonzeroSpectrum) (w : ThetaRootBlock (thetaSpectrumNeg mu)) :
+    thetaRootBlockOperator mu ((thetaRootBlockReflectionLIE mu).symm w) =
+      -(thetaRootBlockReflectionLIE mu).symm
+        (thetaRootBlockOperator (thetaSpectrumNeg mu) w) := by
+  apply (thetaRootBlockReflectionLIE mu).injective
+  rw [map_neg, (thetaRootBlockReflectionLIE mu).apply_symm_apply]
+  have h := thetaRootBlockOperator_reflection mu
+    ((thetaRootBlockReflectionLIE mu).symm w)
+  rw [(thetaRootBlockReflectionLIE mu).apply_symm_apply] at h
+  simpa only [neg_neg] using (congrArg Neg.neg h).symm
+
+/-- Block-diagonal theta operator on the functional-equation pair. -/
+def thetaReflectedRootPairOperator (mu : ThetaNonzeroSpectrum) :
+    Module.End ℂ (ThetaReflectedRootPair mu) where
+  toFun p :=
+    (thetaRootBlockOperator mu p.1,
+      thetaRootBlockOperator (thetaSpectrumNeg mu) p.2)
+  map_add' p q := by
+    apply Prod.ext <;> apply map_add
+  map_smul' c p := by
+    apply Prod.ext <;> apply map_smul
+
+/-- Exact reason reflected doubling is not Kramers degeneracy: the quarter-turn anticommutes with
+the paired theta operator, so it exchanges the `mu` and `-mu` spectral sectors instead of
+preserving one local generalized eigenspace. -/
+theorem thetaReflectedRootPairQuarterTurn_anticommutes
+    (mu : ThetaNonzeroSpectrum) (p : ThetaReflectedRootPair mu) :
+    thetaReflectedRootPairQuarterTurn mu (thetaReflectedRootPairOperator mu p) =
+      -thetaReflectedRootPairOperator mu (thetaReflectedRootPairQuarterTurn mu p) := by
+  apply Prod.ext
+  · change -(thetaRootBlockReflectionLIE mu).symm
+        (thetaRootBlockOperator (thetaSpectrumNeg mu) p.2) =
+      -(thetaRootBlockOperator mu
+        (-(thetaRootBlockReflectionLIE mu).symm p.2))
+    rw [map_neg, neg_neg]
+    exact (thetaRootBlockOperator_reflection_symm mu p.2).symm
+  · change thetaRootBlockReflectionLIE mu (thetaRootBlockOperator mu p.1) =
+      -thetaRootBlockOperator (thetaSpectrumNeg mu)
+        (thetaRootBlockReflectionLIE mu p.1)
+    simpa only [neg_neg] using
+      (congrArg Neg.neg (thetaRootBlockOperator_reflection mu p.1)).symm
 
 /-- Reflection doubling makes the total dimension even tautologically: it is twice the dimension
 of one block. -/

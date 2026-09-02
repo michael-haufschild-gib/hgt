@@ -1448,3 +1448,26 @@ without umbrella build.
 Card remains Stage 2.  The exact weight geometry is closed at the collision receiver.  The missing
 step is still collective cross-modulus Kuznetsov saving, followed by Lemma 3.5(ii), amplification,
 and all-interval supply; none is assumed.
+
+## Lean progress update (2026-09-02) — pair-local Minkowski collision receiver
+
+`Sieve/KloostermanGlobalCollisionMinkowski.lean` keeps each ordered modulus-pair weight attached
+to its own mixed response average:
+
+```text
+E_global
+  <= (sum_(q != r) |w_q| * |w_r| * sqrt(AvgPair(q,r)))^2.
+```
+
+The symmetric elementary estimate and exact literal-source residue multiplicities are then
+inserted pair by pair.  Lean additionally proves that this Minkowski budget is no larger than
+brick 145's `WeightPairEnergy * sum PairBudget` receiver by finite Cauchy--Schwarz.  Thus no
+support stability, modulus range, or new analytic premise is hidden in the improvement.
+
+Direct source check and targeted leaf build pass (`13513/13513`).  All five public theorem
+declarations audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired
+without umbrella build.
+
+Card remains Stage 2.  The best current elementary pair-local aggregation is now formalized.
+Collective cross-modulus Kuznetsov saving, Lemma 3.5(ii), amplification, and all-interval supply
+remain open and unassumed.

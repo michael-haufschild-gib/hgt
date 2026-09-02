@@ -54,4 +54,30 @@ theorem hasGradeGE_map_maximalIdeal_localizationAtMaximal
     I (maximalIdeal A).spanFinrank hIlt hrad
     (isCohenMacaulayRing_of_isRegularLocalRing B) hdimB
 
+/-- **Every maximal localization of a regular integral going-down algebra has maximal-ideal grade
+equal to the dimension of the regular local base.** -/
+theorem hasGradeGE_maximalIdeal_localizationAtMaximal
+    {A : Type u} {D : Type v} [CommRing A] [CommRing D] [Algebra A D]
+    [Algebra.IsIntegral A D] [Algebra.HasGoingDown A D]
+    [IsRegularLocalRing A] [IsRegularRing D]
+    (q : Ideal D) [q.IsMaximal] :
+    HasGradeGE
+      (maximalIdeal (Localization.AtPrime q))
+      (ModuleCat.of (Localization.AtPrime q) (Localization.AtPrime q))
+      (maximalIdeal A).spanFinrank := by
+  let B := Localization.AtPrime q
+  have hdimA : ringKrullDim A =
+      ((((maximalIdeal A).spanFinrank : ℕ∞)) : WithBot ℕ∞) := by
+    exact_mod_cast (IsRegularLocalRing.spanFinrank_maximalIdeal (R := A)).symm
+  have hdimB : ringKrullDim B =
+      ((((maximalIdeal A).spanFinrank : ℕ∞)) : WithBot ℕ∞) := by
+    rw [ringKrullDim_localizationAtMaximal_eq_of_isIntegral_of_hasGoingDown
+        (A := A) (D := D) q,
+      hdimA]
+  exact hasGradeGE_of_isCohenMacaulay_of_radical_eq_maximalIdeal
+    (maximalIdeal B) (maximalIdeal A).spanFinrank
+    (maximalIdeal_smul_top_lt_top B)
+    (by exact (by infer_instance : (maximalIdeal B).IsPrime).radical)
+    (isCohenMacaulayRing_of_isRegularLocalRing B) hdimB
+
 end GaloisForLFunctions.HTGeometry

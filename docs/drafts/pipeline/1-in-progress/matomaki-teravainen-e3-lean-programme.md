@@ -3864,3 +3864,32 @@ only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired and umbre
 After brick 146, amplifier normalization contributes exactly total squared mass minus diagonal
 fourth moment.  Remaining obstruction is unchanged and genuinely analytic: collective
 cross-modulus Kuznetsov fourth-moment saving, then Lemma 3.5(ii), amplification, and Theorem 1.2.
+
+## Brick 147 — pair-local Minkowski collision receiver (2026-09-02)
+
+`Sieve/KloostermanGlobalCollisionMinkowski.lean` applies finite `ell^2` Minkowski before the
+global modulus-pair Cauchy step.  The exact receiver is
+
+```text
+E_global
+  <= (sum_(q != r) |w_q| * |w_r| * sqrt(Avg_k[|R_q(k)|^2 |R_r(k)|^2]))^2.
+```
+
+Brick 145's bidirectional minimum bounds each pair average inside its own square root.  The
+literal `Finset.Icc 1 N` theorem then inserts both exact residue occupancies at that same
+pair-local level.  A comparison theorem proves
+
+```text
+MinkowskiElementaryBudget
+  <= WeightPairEnergy(Q,w) * sum_(q != r) PairElementaryBudget(q,r),
+```
+
+so brick 147 uniformly strengthens the prior elementary receiver.
+
+Direct source check and targeted leaf build pass (`13513/13513`).  All five created theorem
+declarations use only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired and
+umbrella was not built.
+
+After brick 147, all elementary aggregation loss has been reduced to pair-local mixed response
+averages.  Remaining obstruction is collective cross-modulus Kuznetsov cancellation beyond those
+elementary pair bounds, then Lemma 3.5(ii), amplification, and Theorem 1.2.

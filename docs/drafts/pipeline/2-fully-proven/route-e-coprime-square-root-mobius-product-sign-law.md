@@ -9317,3 +9317,41 @@ without umbrella build.
 This closes only the exact schedule-admissibility claim.  The general-`h` coprime square-root
 product-sign theorem still requires its representation/multiplicity and short-interval transport
 input, so card remains Stage 2.
+
+## Lean progress update (2026-09-02) — exact finite coprime product-sign count
+
+`RHTower/MobiusCoprimeSquarefreeProductSignCount.lean` specializes the card's finite sign
+extraction skeleton to any finite pair set with every arithmetic restriction internalized in the
+packet:
+
+```text
+S(T) = {(a,b) in T : Coprime(a,b), Squarefree(a), and Squarefree(b)}.
+```
+
+Möbius multiplicativity gives the exact identity
+
+```text
+sum_((a,b) in S) mu(a*b) = sum_((a,b) in S) mu(a) * mu(b).
+```
+
+Because both retained factors carry literal Möbius signs, Lean then proves simultaneously
+
+```text
+(#S - |sum_S mu(a)mu(b)|) / 2 <= #{(a,b) in S : mu(a)mu(b) =  1},
+(#S - |sum_S mu(a)mu(b)|) / 2 <= #{(a,b) in S : mu(a)mu(b) = -1}.
+```
+
+The same lower bounds are also exposed in the card's literal product-sign form, with signed mass
+`sum_S mu(a*b)` and filters `mu(a*b) = ±1`; the proof rewrites both the sum and both filtered
+cardinalities by exact coprime Möbius multiplicativity.
+
+Taking `T = balancedPairs x h` supplies named versions on the card's exact finite product window,
+so the product interval and square-root factor range are inherited literally from the existing
+`balancedPairs` definition.  All six theorems are unconditional in `T`, respectively `x,h`;
+coprimality and both squarefree conditions are filters, not hypotheses.  Direct source check and
+targeted leaf build pass (`9118/9118`).  All six public theorem declarations audit with only
+`[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella build.
+
+Card remains Stage 2.  Exact finite product-sign algebra and extraction are now closed in the
+card's native coprime packet.  The stated general-`h` asymptotic still needs its all-interval
+quantitative transport/representation input and is not assumed.

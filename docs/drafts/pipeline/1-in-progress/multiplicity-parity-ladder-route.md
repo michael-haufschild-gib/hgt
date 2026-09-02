@@ -414,3 +414,38 @@ audit is clean modulo Lean foundations. Corpus audit of `HedenmalmThetaSourcePri
 shows prime-modular dilations commute with the conormal current for both character values; dense
 off-wall dilation spectrum therefore does not select `-1`. This closes prime-dilation covariance
 as a parity producer while preserving the depth character as exact open source invariant.
+
+## 2026-09-02 — Report audit: reflected-pair and Clifford-successor type mismatches
+
+The report's proposed 2×2 Kramers step fails on the actual theta carrier for a second, independent
+reason. `thetaSpectrumNeg_ne` proves functional-equation reflection fixes no nonzero source
+spectral point. On the direct sum of the `mu` and `-mu` blocks, the canonical quarter-turn squares
+to `-1`, but `thetaReflectedRootPairQuarterTurn_anticommutes` proves it anticommutes with the
+block-diagonal theta operator. It exchanges distinct spectral sectors rather than preserving the
+generalized eigenspace at `mu`. The paired dimension is always `2 * ord_rho(Xi)` and hence even
+for every possible local order (`finrank_thetaReflectedRootPair_at_XiSupport_even`). This evenness
+is tautological inter-block doubling and supplies no parity information about `ord_rho(Xi)`.
+
+The claimed Clifford induction has a separate exact dimension mismatch. The corpus only proves
+the downward map `CliffordModel (k+1) rho -> CliffordModel k rho`. The public construction
+`AnticommSpace.double` replaces `V` by `V × V`; new theorem
+`finrank_anticommSpace_double_ne_xi_order` shows that, at every Xi zero, doubling an exact
+multiplicity space cannot retain the same fixed analytic order. Thus the named doubling functor
+does not upgrade rung `k` to rung `k+1`; it doubles the object being measured. A genuine upward
+step would need two new commuting Clifford generators on the unchanged root block, which is
+exactly the additional `2^(k+1)`-divisibility claim.
+
+Lean: `HedenmalmThetaReflectedPairParityBlindness.lean` and
+`CliffordSuccessorDoublingMismatch.lean`; direct checks and targeted builds succeed. Axiom audits
+contain only `propext`, `Classical.choice`, and `Quot.sound`.
+
+The report's differential-Galois veto is also contradicted by existing axiom-clean corpus
+theorems. `hypertranscendental_finiteQuartetWardIndex_law` constructs hypertranscendental entire
+functions with functional-equation and Schwarz symmetries and arbitrary finite off-critical
+quartet packets. More concretely, `reflectedGammaQuartetCarrier_hypertranscendental` coexists with
+`reflectedGammaQuartetCarrier_offCentral_cosh_zero`. Hypertranscendence therefore cannot by itself
+forbid off-line quartets. The cited
+`isomonodromy_of_no_riccati_of_differentialSolution` additionally requires a full difference
+system, algebraic-extension basis, separating Galois specializations, sigma-simplicity, no base
+Riccati solution, fundamental matrix and scalar differential-jet constraint; no Xi-quartet-to-
+those-hypotheses bridge appears in the corpus.

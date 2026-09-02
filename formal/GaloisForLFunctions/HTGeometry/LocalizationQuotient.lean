@@ -1,5 +1,5 @@
-import GaloisForLFunctions.HTGeometry.FacetRestrictionEmbedding
 import Mathlib.RingTheory.Localization.Integer
+import Mathlib.RingTheory.Localization.Ideal
 
 /-!
 # Localization after quotienting
