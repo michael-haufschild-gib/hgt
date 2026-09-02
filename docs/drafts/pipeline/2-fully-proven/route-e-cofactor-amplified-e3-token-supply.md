@@ -1300,3 +1300,63 @@ build.
 Card remains Stage 2.  Coprime reciprocal-denominator aggregation is closed.  Remaining shared
 primitive is noncoprime gcd stratification and signed modulus/source aggregation at paper ranges,
 then Lemma 3.5(ii), amplification, and Theorem 1.2; no estimate is assumed.
+
+## Lean progress update (2026-09-02) — product-period slices without coprimality
+
+`Sieve/KloostermanProductFrequencySliceBound.lean` represents every unequal-modulus cross phase,
+without a coprimality premise, by `q*val(y)-r*val(x)` modulo `q*r`.  Each fixed-coordinate slice is
+an injective family of nonzero frequencies.  A generalized nonzero-frequency chord theorem and
+injective-family harmonic estimate give the double reciprocal-chord budget as the minimum of the
+two slice bounds `phi(q)*q*r*(1+log(q*r))` and `phi(r)*q*r*(1+log(q*r))`, with direct terminal-block
+and stored-correlation consequences.
+
+Direct check and targeted leaf build pass (`13484/13484`).  All sixteen new theorem declarations
+audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella
+build.
+
+Card remains Stage 2.  Noncoprime denominator aggregation is closed.  Remaining shared primitive
+is signed modulus/source aggregation and cancellation beyond the absolute harmonic budget at paper
+ranges, then Lemma 3.5(ii), amplification, and Theorem 1.2; no estimate is assumed.
+
+## Lean progress update (2026-09-02) — source/modulus product-harmonic aggregation
+
+`Sieve/KloostermanProductHarmonicQuadratic.lean` aggregates the shared-gcd-safe pair budget through
+the card's signed modulus weights and source coefficients.  Terminal and stored Gram entries obey
+one explicit modulus-pair budget; full and erased source quadratics are bounded by that budget times
+the square of source ℓ¹ mass.
+
+Direct check and targeted leaf build pass (`13485/13485`).  All six theorem declarations audit
+with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella build.
+
+Card remains Stage 2.  Absolute signed source/modulus aggregation is closed.  Remaining shared
+primitive is spectral cancellation beyond this product-harmonic ℓ¹ baseline at paper ranges, then
+Lemma 3.5(ii), amplification, and Theorem 1.2; no estimate is assumed.
+
+## Lean progress update (2026-09-02) — exact `η<1/6` scale separation
+
+`CofactorAmplifiedScaleSeparation.lean` formalizes the scale comparison used in the construction
+to put both large `E₃` prime factors above every cofactor prime.  With
+
+```text
+T(U) = U^(2η),
+Plarge(U) = sqrt((U/T(U)) / (log U)^a),
+```
+
+it proves the exact identity
+
+```text
+Plarge(U)/T(U) = U^(1/2-3η)/(log U)^(a/2)
+```
+
+for `U>1`, then proves this ratio tends to infinity whenever `η<1/6`.  Consequently every fixed
+positive proportion of the large-prime scale eventually exceeds `T`, which is the precise
+asymptotic content behind the card's `p₂,p₃>T` support-separation claim.  No prime-distribution
+input is used.
+
+Direct source check and targeted leaf build pass (`2009/2009`) after narrowing the import surface.
+All three public theorem declarations audit with only `[propext, Classical.choice, Quot.sound]`;
+leaf is umbrella-wired without umbrella build.
+
+Card remains Stage 2.  Cofactor/large-prime scale separation is closed; the remaining shared core
+is still the all-interval `E₃` spectral estimate, Lemma 3.5(ii) routing, amplification, and Theorem
+1.2.

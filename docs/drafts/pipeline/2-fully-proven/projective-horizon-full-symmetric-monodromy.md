@@ -7042,3 +7042,25 @@ than the primitivity that was being sought:
 1. the sheets are labelled by the occupation states compatibly with the root action;
 2. the Schur transposition swaps two states that meet (expected: they differ in a single root, so
    they meet in `m − 1` points, nonzero for `m ≥ 2`).
+
+### Lean progress — canonical recursive source-chart presentation (2026-09-02)
+
+`HTGeometry/CriticalSourceReciprocalNumeratorCanonical.lean` removes the noncanonical numerator
+selection from the actual finite source chart.  It proves
+
+```text
+criticalSourceRecipNumerator_eq_criticalReciprocalNumerator
+criticalSourceChartPoly_eq_canonical
+criticalSourceChartCanonicalEquiv
+```
+
+and tracks the raw and reciprocal observation generators through the resulting localization-ring
+equivalence.  Every reciprocal generator is now literally the recursive cleared numerator divided
+by the corresponding power of the raw constant coordinate.  This supplies the explicit
+presentation required by a Schur/standard-monomial proof of finite freeness; no chosen existential
+numerator remains in that route.
+
+Direct source check, targeted leaf build, and batched axiom audit pass.  Every new declaration uses
+only `[propext, Classical.choice, Quot.sound]`; the leaf is umbrella-wired without an umbrella build.
+The card remains Stage 2: finite freeness/flatness of this explicit source presentation and the
+global block-cover elimination are not yet proved.

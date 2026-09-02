@@ -1,10 +1,10 @@
 # Native observer descent, effectivity, and constitutive non-determination law
 
 - **ID:** `native-observer-descent-effectivity-and-constitutive-nondetermination-law`
-- **Stage:** 2 — fully proved on paper
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** THEOREM / UNIVERSAL KINEMATICS / NO-GO
-- **Status:** `[PAPER-PROVED] [FIVE-ORGAN CALIBRATION] [ROUTE-INDEPENDENT]`
-  `[NOT A FIELD EQUATION] [NOT RH] [NO LEAN WRITTEN OR BUILT]`
+- **Status:** `[LEAN-COMPLETE] [UNCONDITIONAL] [AXIOM-AUDITED] [NO SORRY]`
+  `[FIVE-ORGAN CALIBRATION] [ROUTE-INDEPENDENT] [NOT A FIELD EQUATION] [NOT RH]`
 
 ## 1. Native observer geometry
 
@@ -218,3 +218,36 @@ constitutive outputs from bare `q` alone.
    is proper.
 4. No numerical conservation law among DA rank, inertia, winding, and completion defect follows.
 5. This is exact kinematics, not a constitutive field equation and not an RH theorem.
+
+## Lean formalization
+
+The dependency-closed formalization uses four modules:
+
+- `NomologicalHomotopyGeometry/ObserverDescent.lean`: universal effective sieves, Yoneda descent
+  after every base change, derived isomorphism/base-change/composition laws, and resulting observer
+  pretopology and Grothendieck topology.
+- `NativeObserverDescentEffectivityLaw.lean`: native Set coimage, canonical factorization,
+  kernel-pair/Cech descent with uniqueness, target extension, effective-surjection theorem, serial
+  coimage map, and exact finite-parallel kernel intersection.
+- `NativeObserverUniversalDescentInertiaLaw.lean`: effectivity comparison is bijective iff observer
+  is surjective; one exact descent/effectivity/serial/parallel package; full pointed-fibre
+  long-exact-sequence interface in every degree with literal pointed-set exactness at `pi₀`; and
+  the sharp finite-dimensional law
+  `ind₋(Q) + dim Rad(Q) ≤ rank(M) ≤ r`, where `ind₋` is constructed as the attained maximum
+  dimension of negative-definite subspaces and `Rad(Q)` is the full bilinear radical.
+- `NativeObserverConstitutiveCountermodels.lean`: all five explicit witnesses: exact scaled
+  unit-winding minima `2π²λ²/T`; the common projection with positive-definite, corank-one, and
+  Lorentzian forms; a first-order exponential and differentially independent Hurwitz function with
+  identical monodromy character `2`; continuous bijective discrete-to-usual identity that is not a
+  homeomorphism beside the usual identity homeomorphism; and actual finite multiple-Gamma constant
+  rescaling preserving period ratios and DA depth while breaking reciprocal reflection.
+
+Both new modules are imported by `GaloisForLFunctions.HTGeometry`.  They passed direct
+`lake env lean <file>` checks and targeted `lake build <module>` audits; umbrella was not built.
+Batched `#print axioms` checks for every new theorem reported only `propext`, `Classical.choice`,
+and `Quot.sound`, with no project axiom and no `sorryAx`.
+
+## Log
+
+- 2026-09-02 — exact Lean formalization completed, targeted modules built, axioms audited, and
+  card advanced to Stage 3.

@@ -9294,3 +9294,26 @@ Hall-capacity purpose of the card is no longer restricted to `β' > 9/10`.
 
 The card's exact general-`h` coprime square-root product-sign theorem is not implied by this fixed
 subpower replacement and remains unformalised.  Card remains Stage 2.
+
+## Lean progress update (2026-09-02) — exact iterated-logarithm schedule
+
+`Sieve/CoprimeSquareRootLogLogSchedule.lean` formalizes the concrete schedule advertised on this
+card,
+
+```text
+h(x) = (log log (3x))^(1+η),  η > 0.
+```
+
+It proves unconditionally that `h / log log (3x) → ∞`, `h → ∞`, `h / x → 0`, and eventually
+`10 ≤ h ≤ x`.  It also proves `log h/log x → 0` and, for the literal interval length
+`H(x)=sqrt(x)h(x)`, `log H/log x → 1/2`.  Thus the schedule itself satisfies every elementary
+growth condition stated on the card and has exact logarithmic exponent `1/2`; no Möbius estimate
+or moving-window hypothesis is hidden in the result.
+
+Direct source check and targeted leaf build pass (`2009/2009`).  All six public theorem
+declarations audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired
+without umbrella build.
+
+This closes only the exact schedule-admissibility claim.  The general-`h` coprime square-root
+product-sign theorem still requires its representation/multiplicity and short-interval transport
+input, so card remains Stage 2.

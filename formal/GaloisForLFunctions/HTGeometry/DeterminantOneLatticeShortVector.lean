@@ -62,11 +62,11 @@ theorem det_positiveDiagonalLinearEquiv (s : ι → ℝ) (hs : ∀ i, 0 < s i) :
   rw [hmat, Matrix.det_diagonal]
 
 omit [DecidableEq ι] in
-/-- One radius works for every determinant-one deformation of a fixed full lattice. -/
-theorem exists_uniform_ne_zero_zspan_linearEquiv_norm_le [Nonempty ι]
+/-- One radius works for every deformation of absolute determinant one of a fixed full lattice. -/
+theorem exists_uniform_ne_zero_zspan_linearEquiv_norm_le_of_abs_det_eq_one [Nonempty ι]
     {κ : Type*} [Fintype κ] [DecidableEq κ] (b : Basis κ ℝ (ι → ℝ)) :
     ∃ R : ℝ, 0 < R ∧ ∀ T : (ι → ℝ) ≃ₗ[ℝ] (ι → ℝ),
-      LinearMap.det (T : (ι → ℝ) →ₗ[ℝ] (ι → ℝ)) = 1 →
+      |LinearMap.det (T : (ι → ℝ) →ₗ[ℝ] (ι → ℝ))| = 1 →
         ∃ x ∈ Submodule.span ℤ (Set.range b), x ≠ 0 ∧ ‖T x‖ ≤ R := by
   let c : ENNReal := volume (ZSpan.fundamentalDomain b)
   let R : ℝ := c.toReal + 1
@@ -101,7 +101,7 @@ theorem exists_uniform_ne_zero_zspan_linearEquiv_norm_le [Nonempty ι]
   let bT : Basis κ ℝ (ι → ℝ) := b.map T
   let F : Set (ι → ℝ) := ZSpan.fundamentalDomain bT
   let L : Submodule ℤ (ι → ℝ) := Submodule.span ℤ (Set.range bT)
-  have hbdet : b.det (bT : κ → (ι → ℝ)) = 1 := by
+  have hbdet : |b.det (bT : κ → (ι → ℝ))| = 1 := by
     rw [Basis.det_apply]
     have hmat : b.toMatrix (bT : κ → (ι → ℝ)) =
         LinearMap.toMatrix b b (T : (ι → ℝ) →ₗ[ℝ] (ι → ℝ)) := by
@@ -113,7 +113,7 @@ theorem exists_uniform_ne_zero_zspan_linearEquiv_norm_le [Nonempty ι]
   have hvolF : volume F = c := by
     dsimp [F, bT, c]
     rw [ZSpan.measure_fundamentalDomain (b.map T) volume b, hbdet,
-      abs_one, ENNReal.ofReal_one, one_mul]
+      ENNReal.ofReal_one, one_mul]
   have hvol : volume F * 2 ^ finrank ℝ (ι → ℝ) <
       volume (Metric.closedBall (0 : ι → ℝ) R) := by
     rw [hvolF, Measure.addHaar_closedBall volume (0 : ι → ℝ) hR.le, hunitBall]
@@ -165,6 +165,81 @@ theorem exists_uniform_ne_zero_zspan_linearEquiv_norm_le [Nonempty ι]
   · calc
       ‖T x‖ = ‖y‖ := congrArg norm hxy
       _ ≤ R := hyR
+
+omit [DecidableEq ι] in
+/-- One radius works for every determinant-one deformation of a fixed full lattice. -/
+theorem exists_uniform_ne_zero_zspan_linearEquiv_norm_le [Nonempty ι]
+    {κ : Type*} [Fintype κ] [DecidableEq κ] (b : Basis κ ℝ (ι → ℝ)) :
+    ∃ R : ℝ, 0 < R ∧ ∀ T : (ι → ℝ) ≃ₗ[ℝ] (ι → ℝ),
+      LinearMap.det (T : (ι → ℝ) →ₗ[ℝ] (ι → ℝ)) = 1 →
+        ∃ x ∈ Submodule.span ℤ (Set.range b), x ≠ 0 ∧ ‖T x‖ ≤ R := by
+  obtain ⟨R, hR, hbound⟩ :=
+    exists_uniform_ne_zero_zspan_linearEquiv_norm_le_of_abs_det_eq_one b
+  refine ⟨R, hR, ?_⟩
+  intro T hdet
+  apply hbound T
+  rw [hdet, abs_one]
+
+omit [DecidableEq ι] in
+/-- Hermite form of the lattice bound: one constant controls every invertible deformation after
+rescaling by the geometric mean of its absolute determinant. -/
+theorem exists_uniform_ne_zero_zspan_linearEquiv_norm_le_detRoot [Nonempty ι]
+    {κ : Type*} [Fintype κ] [DecidableEq κ] (b : Basis κ ℝ (ι → ℝ)) :
+    ∃ R : ℝ, 0 < R ∧ ∀ T : (ι → ℝ) ≃ₗ[ℝ] (ι → ℝ),
+      ∃ x ∈ Submodule.span ℤ (Set.range b), x ≠ 0 ∧
+        ‖T x‖ ≤ R * Real.rpow
+          |LinearMap.det (T : (ι → ℝ) →ₗ[ℝ] (ι → ℝ))|
+          ((Fintype.card ι : ℝ)⁻¹) := by
+  obtain ⟨R, hR, hbound⟩ :=
+    exists_uniform_ne_zero_zspan_linearEquiv_norm_le_of_abs_det_eq_one b
+  refine ⟨R, hR, ?_⟩
+  intro T
+  let d : ℝ := LinearMap.det (T : (ι → ℝ) →ₗ[ℝ] (ι → ℝ))
+  have hd : d ≠ 0 := by
+    have hunit : IsUnit d := by
+      simpa [d, LinearMap.det_toMatrix] using
+        T.isUnit_det (Pi.basisFun ℝ ι) (Pi.basisFun ℝ ι)
+    exact hunit.ne_zero
+  have hcard : Fintype.card ι ≠ 0 := Fintype.card_ne_zero
+  let q : ℝ := Real.rpow |d| ((Fintype.card ι : ℝ)⁻¹)
+  have hq : 0 < q := Real.rpow_pos_of_pos (abs_pos.mpr hd) _
+  have hqpow : q ^ Fintype.card ι = |d| := by
+    exact Real.rpow_inv_natCast_pow (abs_nonneg d) hcard
+  let c : ℝ := q⁻¹
+  have hc : 0 < c := inv_pos.mpr hq
+  let S : (ι → ℝ) ≃ₗ[ℝ] (ι → ℝ) :=
+    positiveDiagonalLinearEquiv (fun _ => c) (fun _ => hc)
+  let U : (ι → ℝ) ≃ₗ[ℝ] (ι → ℝ) := S.trans T
+  have hdetU : |LinearMap.det (U : (ι → ℝ) →ₗ[ℝ] (ι → ℝ))| = 1 := by
+    have hdetS : LinearMap.det (S : (ι → ℝ) →ₗ[ℝ] (ι → ℝ)) =
+        c ^ Fintype.card ι := by
+      dsimp only [S]
+      rw [det_positiveDiagonalLinearEquiv]
+      simp
+    rw [show (U : (ι → ℝ) →ₗ[ℝ] (ι → ℝ)) =
+        (T : (ι → ℝ) →ₗ[ℝ] (ι → ℝ)) ∘ₗ
+          (S : (ι → ℝ) →ₗ[ℝ] (ι → ℝ)) by rfl,
+      LinearMap.det_comp, hdetS]
+    change |d * c ^ Fintype.card ι| = 1
+    rw [abs_mul, abs_of_pos (pow_pos hc _), ← hqpow]
+    dsimp [c]
+    rw [inv_pow]
+    exact mul_inv_cancel₀ (pow_ne_zero _ hq.ne')
+  obtain ⟨x, hxmem, hx0, hxR⟩ := hbound U hdetU
+  refine ⟨x, hxmem, hx0, ?_⟩
+  have hnorm : ‖U x‖ = c * ‖T x‖ := by
+    dsimp only [U]
+    rw [LinearEquiv.trans_apply]
+    dsimp only [S]
+    rw [positiveDiagonalLinearEquiv_apply]
+    change ‖T (c • x)‖ = c * ‖T x‖
+    rw [map_smul, norm_smul, Real.norm_eq_abs, abs_of_pos hc]
+  rw [hnorm] at hxR
+  have hcq : c * q = 1 := by
+    dsimp [c]
+    exact inv_mul_cancel₀ hq.ne'
+  change ‖T x‖ ≤ R * q
+  nlinarith [norm_nonneg (T x)]
 
 /-- Uniform determinant-one reduction specialized to positive diagonal scaling. -/
 theorem exists_uniform_ne_zero_zspan_positiveDiagonal_norm_le [Nonempty ι]

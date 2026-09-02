@@ -718,3 +718,24 @@ All new declarations depend only on `propext`, `Classical.choice`, and `Quot.sou
 card obligation is now only `(25)` for `r > 1`: full non-diagonal matrix-semicircle absolute
 continuity and its replicated Pauli/Hall instantiation.  The card remains at Stage 2 until that
 last obligation and separation `(26)` are assembled.
+
+## Lean progress — exact all-replica Hall pencil and remaining all-energy atom theorem (2026-09-02)
+
+`HTGeometry/AllReplicaStaticCentralizerPlanarSeparation.lean` now constructs the literal
+graph-local all-replica collective-Pauli matrix family, including arbitrary positive variance
+weights.  It proves Hermiticity, trivial common kernel, coordinate transport of the Hall law, and
+zero-energy matrix-atom exclusion.  At every real energy it also proves the exact Ward consequence
+that the covariance map applied to the atom mass annihilates the shifted pencil.
+
+The remaining theorem is not a diagonal or one-replica instantiation.  It is the noncommutative
+inner-rank/Strong-Atiyah bridge
+
+```text
+freeFockMatrixAtomMass_eq_zero_of_ne_zero
+```
+
+for a Hermitian coefficient family with trivial common kernel and nonzero scalar shift.  This needs
+full inner rank of the affine pencil, equality of evaluation-kernel mass with inner-rank defect,
+and positive-semidefinite polarization.  None exists in the current corpus.  Consequently the
+all-energy atom exclusion required by `(25)`, and hence planar separation `(26)`, remain unproved;
+the card is not promoted.

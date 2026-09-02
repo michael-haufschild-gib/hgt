@@ -431,6 +431,455 @@ theorem tendsto_selbergGcdLogPowerPrincipalScaledModel_one_one_div_log_pow
     (Real.log_pos (by exact_mod_cast hN)).ne'
   ring
 
+/-- Harmonic model for the only higher complementary-log moment needed by the short-energy
+assembly: `log(gcd)^2 log(N/m)^2 log(N/n)`. -/
+def selbergGcdLogSquareTwoOneHarmonicMain (A B N : ℕ) : ℝ :=
+  ∑ d ∈ Finset.Icc 1 (N / max A B),
+    2 * Real.log (d : ℝ) ^ 2 * Real.log ((N : ℝ) / ((A * d : ℕ) : ℝ)) / (d : ℝ)
+
+private theorem log_natCast_div_mul_eq_sub_sub
+    {N A d : ℕ} (hN : 0 < N) (hA : 0 < A) (hd : 0 < d) :
+    Real.log ((N : ℝ) / ((A * d : ℕ) : ℝ)) =
+      Real.log N - Real.log A - Real.log d := by
+  have hNR : (N : ℝ) ≠ 0 := by exact_mod_cast hN.ne'
+  have hAR : (A : ℝ) ≠ 0 := by exact_mod_cast hA.ne'
+  have hdR : (d : ℝ) ≠ 0 := by exact_mod_cast hd.ne'
+  rw [Nat.cast_mul, Real.log_div hNR (mul_ne_zero hAR hdR), Real.log_mul hAR hdR]
+  ring
+
+theorem selbergGcdLogSquareTwoOneHarmonicMain_eq
+    {A B N : ℕ} (hN : 0 < N) (hA : 0 < A) :
+    selbergGcdLogSquareTwoOneHarmonicMain A B N =
+      2 * ((Real.log N - Real.log A) * harmonicLogWindowMoment 2 0 (N / max A B) -
+        harmonicLogWindowMoment 3 0 (N / max A B)) := by
+  rw [selbergGcdLogSquareTwoOneHarmonicMain,
+    harmonicLogWindowMoment_zero_eq_sum_Icc, harmonicLogWindowMoment_zero_eq_sum_Icc]
+  calc
+    (∑ d ∈ Finset.Icc 1 (N / max A B),
+        2 * Real.log (d : ℝ) ^ 2 * Real.log ((N : ℝ) / ((A * d : ℕ) : ℝ)) /
+          (d : ℝ)) =
+      ∑ d ∈ Finset.Icc 1 (N / max A B),
+        2 * ((Real.log N - Real.log A) * (Real.log (d : ℝ) ^ 2 / (d : ℝ)) -
+          Real.log (d : ℝ) ^ 3 / (d : ℝ)) := by
+        apply Finset.sum_congr rfl
+        intro d hd
+        have hdpos : 0 < d := (Finset.mem_Icc.mp hd).1
+        rw [log_natCast_div_mul_eq_sub_sub hN hA hdpos]
+        ring
+    _ = 2 * ((Real.log N - Real.log A) *
+          (∑ d ∈ Finset.Icc 1 (N / max A B), Real.log (d : ℝ) ^ 2 / (d : ℝ)) -
+        ∑ d ∈ Finset.Icc 1 (N / max A B), Real.log (d : ℝ) ^ 3 / (d : ℝ)) := by
+      simp_rw [mul_sub]
+      rw [Finset.sum_sub_distrib, ← Finset.mul_sum, ← Finset.mul_sum,
+        ← Finset.mul_sum]
+
+private theorem tendsto_log_nat_sub_const_div_log (c : ℝ) :
+    Tendsto (fun N : ℕ => (Real.log N - c) / Real.log N) atTop (nhds 1) := by
+  have hlog : Tendsto (fun N : ℕ => Real.log (N : ℝ)) atTop atTop :=
+    Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
+  have hc : Tendsto (fun N : ℕ => c / Real.log N) atTop (nhds 0) :=
+    hlog.const_div_atTop c
+  have h := (tendsto_const_nhds :
+    Tendsto (fun _ : ℕ => (1 : ℝ)) atTop (nhds 1)).sub hc
+  have h' : Tendsto (fun N : ℕ => 1 - c / Real.log N) atTop (nhds 1) := by
+    simpa only [sub_zero] using h
+  refine h'.congr' ?_
+  filter_upwards [eventually_ge_atTop 2] with N hN
+  have hlogN : Real.log (N : ℝ) ≠ 0 :=
+    (Real.log_pos (by exact_mod_cast hN)).ne'
+  field_simp [hlogN]
+
+/-- The harmonic model has the beta-integral coefficient `1/6`. -/
+theorem tendsto_selbergGcdLogSquareTwoOneHarmonicMain_div_log_four
+    {A B : ℕ} (hA : 0 < A) (_hB : 0 < B) :
+    Tendsto (fun N : ℕ =>
+      selbergGcdLogSquareTwoOneHarmonicMain A B N / Real.log N ^ 4)
+      atTop (nhds (1 / 6 : ℝ)) := by
+  let c := max A B
+  have hc : 0 < c := lt_of_lt_of_le hA (le_max_left A B)
+  have h2 := tendsto_harmonicLogWindowMoment_natDiv_div_log_pow 2 hc
+  have h3 := tendsto_harmonicLogWindowMoment_natDiv_div_log_pow 3 hc
+  norm_num at h2 h3
+  have hratio := tendsto_log_nat_sub_const_div_log (Real.log A)
+  have hprod := hratio.mul h2
+  have hcomb := (hprod.sub h3).const_mul (2 : ℝ)
+  norm_num at hcomb
+  refine hcomb.congr' ?_
+  filter_upwards [eventually_ge_atTop 2] with N hN
+  have hlog : Real.log (N : ℝ) ≠ 0 :=
+    (Real.log_pos (by exact_mod_cast hN)).ne'
+  rw [selbergGcdLogSquareTwoOneHarmonicMain_eq (by omega) hA]
+  dsimp only [c] at *
+  field_simp [hlog]
+
+/-- Uniform fourth-order envelope for the corresponding principal model. -/
+theorem exists_abs_selbergGcdLogPowerPrincipalScaledModel_two_two_one_le :
+    ∃ M : ℝ, 0 ≤ M ∧ ∀ᶠ N : ℕ in atTop, ∀ A B : ℕ, 0 < A → 0 < B →
+      |selbergGcdLogPowerPrincipalScaledModel 2 2 1 A B N| ≤
+        M * Real.log N ^ 4 := by
+  obtain ⟨DA, hDA, hDAbound⟩ :=
+    exists_abs_moebiusLogPowerKernelReal_succ_le_const_mul_log_pow 1
+  obtain ⟨DB, hDB, hDBbound⟩ :=
+    exists_abs_moebiusLogPowerKernelReal_succ_le_const_mul_log_pow 0
+  refine ⟨2 * DA * DB, by positivity, ?_⟩
+  have hratio := GaloisForLFunctions.tendsto_harmonic_div_log
+  have hnear : ∀ᶠ N : ℕ in atTop,
+      dist ((harmonic N : ℝ) / Real.log N) 1 < 1 :=
+    hratio.eventually (Metric.ball_mem_nhds 1 zero_lt_one)
+  filter_upwards [hnear, eventually_ge_atTop 2] with N hnearN hN A B hA hB
+  have hlogpos : 0 < Real.log N := Real.log_pos (by exact_mod_cast hN)
+  have hratioTwo : (harmonic N : ℝ) / Real.log N < 2 := by
+    rw [Real.dist_eq] at hnearN
+    have hself : (harmonic N : ℝ) / Real.log N - 1 ≤
+        |(harmonic N : ℝ) / Real.log N - 1| := le_abs_self _
+    linarith
+  have hharm : (harmonic N : ℝ) ≤ 2 * Real.log N := by
+    have := (div_lt_iff₀ hlogpos).mp hratioTwo
+    linarith
+  rw [selbergGcdLogPowerPrincipalScaledModel]
+  calc
+    |∑ d ∈ Finset.Icc 1 (N / max A B),
+        Real.log (d : ℝ) ^ 2 *
+          (moebiusLogPowerKernelReal 2 ((N : ℝ) / ((A * d : ℕ) : ℝ)) *
+            moebiusLogPowerKernelReal 1 ((N : ℝ) / ((B * d : ℕ) : ℝ))) /
+          (d : ℝ)| ≤
+      ∑ d ∈ Finset.Icc 1 (N / max A B),
+        |Real.log (d : ℝ) ^ 2 *
+          (moebiusLogPowerKernelReal 2 ((N : ℝ) / ((A * d : ℕ) : ℝ)) *
+            moebiusLogPowerKernelReal 1 ((N : ℝ) / ((B * d : ℕ) : ℝ))) /
+          (d : ℝ)| := Finset.abs_sum_le_sum_abs _ _
+    _ ≤ ∑ d ∈ Finset.Icc 1 (N / max A B),
+        DA * DB * Real.log N ^ 3 * (1 / (d : ℝ)) := by
+      apply Finset.sum_le_sum
+      intro d hd
+      have hdpos : 0 < d := (Finset.mem_Icc.mp hd).1
+      have hdR : (0 : ℝ) < (d : ℝ) := by exact_mod_cast hdpos
+      have hdN : d ≤ N :=
+        (Finset.mem_Icc.mp hd).2.trans (Nat.div_le_self N (max A B))
+      have hdNR : (d : ℝ) ≤ (N : ℝ) := by exact_mod_cast hdN
+      have hlogd0 : 0 ≤ Real.log (d : ℝ) := Real.log_nonneg (by exact_mod_cast hdpos)
+      have hlogdN : Real.log (d : ℝ) ≤ Real.log N :=
+        Real.log_le_log (by positivity) hdNR
+      have hYAone : (1 : ℝ) ≤ (N : ℝ) / ((A * d : ℕ) : ℝ) :=
+        one_le_selbergScaledArgument hA (le_max_left A B) hd
+      have hYBone : (1 : ℝ) ≤ (N : ℝ) / ((B * d : ℕ) : ℝ) :=
+        one_le_selbergScaledArgument hB (le_max_right A B) hd
+      have hYAle : (N : ℝ) / ((A * d : ℕ) : ℝ) ≤ (N : ℝ) :=
+        selbergScaledArgument_le_natCast hA hdpos
+      have hLA0 : 0 ≤ Real.log ((N : ℝ) / ((A * d : ℕ) : ℝ)) :=
+        Real.log_nonneg hYAone
+      have hLAle : Real.log ((N : ℝ) / ((A * d : ℕ) : ℝ)) ≤ Real.log N :=
+        Real.log_le_log (by positivity) hYAle
+      have hKA := hDAbound _ hYAone
+      have hKB := hDBbound _ hYBone
+      simp only [pow_zero, mul_one] at hKB
+      rw [abs_div, abs_of_pos hdR, abs_mul,
+        abs_of_nonneg (sq_nonneg _), abs_mul]
+      rw [div_le_iff₀ hdR]
+      have hlogSq : Real.log (d : ℝ) ^ 2 ≤ Real.log N ^ 2 :=
+        pow_le_pow_left₀ hlogd0 hlogdN 2
+      have hKA' : |moebiusLogPowerKernelReal 2 ((N : ℝ) / ((A * d : ℕ) : ℝ))| ≤
+          DA * Real.log N := by
+        have hKA0 : |moebiusLogPowerKernelReal 2
+            ((N : ℝ) / ((A * d : ℕ) : ℝ))| ≤
+            DA * Real.log ((N : ℝ) / ((A * d : ℕ) : ℝ)) := by
+          simpa only [pow_one] using hKA
+        exact hKA0.trans (mul_le_mul_of_nonneg_left hLAle hDA)
+      have hcore := mul_le_mul
+        (mul_le_mul hlogSq hKA' (abs_nonneg _) (sq_nonneg _)) hKB
+        (abs_nonneg _) (by positivity : 0 ≤ Real.log N ^ 2 * (DA * Real.log N))
+      calc
+        Real.log (d : ℝ) ^ 2 *
+            (|moebiusLogPowerKernelReal 2 ((N : ℝ) / ((A * d : ℕ) : ℝ))| *
+              |moebiusLogPowerKernelReal 1 ((N : ℝ) / ((B * d : ℕ) : ℝ))|) ≤
+            Real.log N ^ 2 * (DA * Real.log N) * DB := by
+              calc
+                _ = (Real.log (d : ℝ) ^ 2 *
+                    |moebiusLogPowerKernelReal 2
+                      ((N : ℝ) / ((A * d : ℕ) : ℝ))|) *
+                    |moebiusLogPowerKernelReal 1
+                      ((N : ℝ) / ((B * d : ℕ) : ℝ))| := by ring
+                _ ≤ _ := by simpa only [Nat.zero_add, Nat.one_add] using hcore
+        _ = DA * DB * Real.log N ^ 3 * (1 / (d : ℝ)) * (d : ℝ) := by
+          field_simp
+    _ = DA * DB * Real.log N ^ 3 * (harmonic (N / max A B) : ℝ) := by
+      rw [← Finset.mul_sum, sum_Icc_one_div_eq_harmonic]
+    _ ≤ DA * DB * Real.log N ^ 3 * (harmonic N : ℝ) :=
+      mul_le_mul_of_nonneg_left
+        (RHTower.harmonic_cast_mono (Nat.div_le_self N (max A B))) (by positivity)
+    _ ≤ DA * DB * Real.log N ^ 3 * (2 * Real.log N) :=
+      mul_le_mul_of_nonneg_left hharm (by positivity)
+    _ = 2 * DA * DB * Real.log N ^ 4 := by ring
+
+/-- Exact single-sum error after replacing the two Möbius kernels by their leading product. -/
+theorem selbergGcdLogPowerPrincipalScaledModel_two_two_one_sub_harmonicMain
+    (A B N : ℕ) :
+    selbergGcdLogPowerPrincipalScaledModel 2 2 1 A B N -
+        selbergGcdLogSquareTwoOneHarmonicMain A B N =
+      ∑ d ∈ Finset.Icc 1 (N / max A B),
+        Real.log (d : ℝ) ^ 2 *
+          (moebiusLogPowerKernelReal 2 ((N : ℝ) / ((A * d : ℕ) : ℝ)) *
+              moebiusLogPowerKernelReal 1 ((N : ℝ) / ((B * d : ℕ) : ℝ)) -
+            2 * Real.log ((N : ℝ) / ((A * d : ℕ) : ℝ))) / (d : ℝ) := by
+  rw [selbergGcdLogPowerPrincipalScaledModel, selbergGcdLogSquareTwoOneHarmonicMain,
+    ← Finset.sum_sub_distrib]
+  apply Finset.sum_congr rfl
+  intro d _
+  ring
+
+set_option maxHeartbeats 1000000 in
+/-- Harmonic replacement for `log(gcd)^2 log(N/m)^2 log(N/n)`. -/
+theorem tendsto_selbergGcdLogPowerPrincipalScaledModel_two_two_one_sub_harmonic_div_log_four_zero
+    {A B : ℕ} (hA : 0 < A) (hB : 0 < B) :
+    Tendsto (fun N : ℕ =>
+      (selbergGcdLogPowerPrincipalScaledModel 2 2 1 A B N -
+        selbergGcdLogSquareTwoOneHarmonicMain A B N) / Real.log N ^ 4)
+      atTop (nhds 0) := by
+  obtain ⟨DA, hDA, hDAbound⟩ :=
+    exists_abs_moebiusLogPowerKernelReal_succ_le_const_mul_log_pow 1
+  obtain ⟨DB, hDB, hDBbound⟩ :=
+    exists_abs_moebiusLogPowerKernelReal_succ_le_const_mul_log_pow 0
+  set C : ℝ := DA * DB + 2 with hCdef
+  have hC : 0 ≤ C := by rw [hCdef]; positivity
+  set c : ℕ := max A B with hcdef
+  have hc : 0 < c := lt_of_lt_of_le hA (le_max_left A B)
+  have hcR : (0 : ℝ) < (c : ℝ) := by exact_mod_cast hc
+  rw [Metric.tendsto_atTop]
+  intro ε hε
+  obtain ⟨K, hK2, hKclose⟩ := exists_kernelProduct_close 1 0 (δ := ε / 8) (by positivity)
+  have hKpos : (0 : ℝ) < K := by linarith
+  have hratio := GaloisForLFunctions.tendsto_harmonic_div_log
+  have hnear : ∀ᶠ N : ℕ in atTop,
+      dist ((harmonic N : ℝ) / Real.log N) 1 < 1 :=
+    hratio.eventually (Metric.ball_mem_nhds 1 zero_lt_one)
+  rw [eventually_atTop] at hnear
+  obtain ⟨Nh, hNh⟩ := hnear
+  have hlogTop : Tendsto (fun N : ℕ => Real.log (N : ℝ)) atTop atTop :=
+    Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
+  have hlarge : ∀ᶠ N : ℕ in atTop, 4 * C * K / ε < Real.log N :=
+    hlogTop.eventually_gt_atTop (4 * C * K / ε)
+  rw [eventually_atTop] at hlarge
+  obtain ⟨Nl, hNl⟩ := hlarge
+  refine ⟨max (max Nh Nl) 2, ?_⟩
+  intro N hN
+  have hNhN : Nh ≤ N := (le_max_left Nh Nl).trans
+    ((le_max_left (max Nh Nl) 2).trans hN)
+  have hNlN : Nl ≤ N := (le_max_right Nh Nl).trans
+    ((le_max_left (max Nh Nl) 2).trans hN)
+  have hN2 : 2 ≤ N := (le_max_right (max Nh Nl) 2).trans hN
+  have hNpos : 0 < N := by omega
+  have hNR : (0 : ℝ) < (N : ℝ) := by exact_mod_cast hNpos
+  have hlogpos : 0 < Real.log (N : ℝ) := Real.log_pos (by exact_mod_cast hN2)
+  have hharm : (harmonic N : ℝ) ≤ 2 * Real.log N := by
+    have hdist := hNh N hNhN
+    rw [Real.dist_eq] at hdist
+    have hself : (harmonic N : ℝ) / Real.log N - 1 ≤
+        |(harmonic N : ℝ) / Real.log N - 1| := le_abs_self _
+    have hlt : (harmonic N : ℝ) / Real.log N < 2 := by linarith
+    exact (div_lt_iff₀ hlogpos).mp hlt |>.le
+  have hbigLog : 4 * C * K / ε < Real.log N := hNl N hNlN
+  have hterm : ∀ d ∈ Finset.Icc 1 (N / c),
+      |Real.log (d : ℝ) ^ 2 *
+          (moebiusLogPowerKernelReal 2 ((N : ℝ) / ((A * d : ℕ) : ℝ)) *
+              moebiusLogPowerKernelReal 1 ((N : ℝ) / ((B * d : ℕ) : ℝ)) -
+            2 * Real.log ((N : ℝ) / ((A * d : ℕ) : ℝ))) / (d : ℝ)| ≤
+        (ε / 8) * Real.log N ^ 3 * (1 / (d : ℝ)) +
+          C * Real.log N ^ 3 * (K * (c : ℝ) / (N : ℝ)) := by
+    intro d hd
+    have hdpos : 0 < d := (Finset.mem_Icc.mp hd).1
+    have hdR : (0 : ℝ) < (d : ℝ) := by exact_mod_cast hdpos
+    have hdN : d ≤ N := (Finset.mem_Icc.mp hd).2.trans (Nat.div_le_self N c)
+    have hdNR : (d : ℝ) ≤ (N : ℝ) := by exact_mod_cast hdN
+    have hlogd0 : 0 ≤ Real.log (d : ℝ) := Real.log_nonneg (by exact_mod_cast hdpos)
+    have hlogdN : Real.log (d : ℝ) ≤ Real.log N :=
+      Real.log_le_log (by positivity) hdNR
+    have hYAone : (1 : ℝ) ≤ (N : ℝ) / ((A * d : ℕ) : ℝ) :=
+      one_le_selbergScaledArgument hA (le_max_left A B) (by simpa [c, hcdef] using hd)
+    have hYBone : (1 : ℝ) ≤ (N : ℝ) / ((B * d : ℕ) : ℝ) :=
+      one_le_selbergScaledArgument hB (le_max_right A B) (by simpa [c, hcdef] using hd)
+    have hYAle : (N : ℝ) / ((A * d : ℕ) : ℝ) ≤ (N : ℝ) :=
+      selbergScaledArgument_le_natCast hA hdpos
+    have hYBle : (N : ℝ) / ((B * d : ℕ) : ℝ) ≤ (N : ℝ) :=
+      selbergScaledArgument_le_natCast hB hdpos
+    have hLA0 : 0 ≤ Real.log ((N : ℝ) / ((A * d : ℕ) : ℝ)) := Real.log_nonneg hYAone
+    have hLAle : Real.log ((N : ℝ) / ((A * d : ℕ) : ℝ)) ≤ Real.log N :=
+      Real.log_le_log (by positivity) hYAle
+    have hLB0 : 0 ≤ Real.log ((N : ℝ) / ((B * d : ℕ) : ℝ)) := Real.log_nonneg hYBone
+    have hLBle : Real.log ((N : ℝ) / ((B * d : ℕ) : ℝ)) ≤ Real.log N :=
+      Real.log_le_log (by positivity) hYBle
+    have hlogSq : Real.log (d : ℝ) ^ 2 ≤ Real.log N ^ 2 :=
+      pow_le_pow_left₀ hlogd0 hlogdN 2
+    have hsecond : 0 ≤ C * Real.log N ^ 3 * (K * (c : ℝ) / (N : ℝ)) := by positivity
+    by_cases hgood : K ≤ (N : ℝ) / ((A * d : ℕ) : ℝ) ∧
+        K ≤ (N : ℝ) / ((B * d : ℕ) : ℝ)
+    · have hclose := hKclose _ _ hgood.1 hgood.2
+      norm_num [pow_zero] at hclose
+      have hLAle' :
+          Real.log ((N : ℝ) / ((A : ℝ) * (d : ℝ))) ≤ Real.log N := by
+        simpa only [Nat.cast_mul] using hLAle
+      have hclose' :
+          |moebiusLogPowerKernelReal 2 ((N : ℝ) / ((A * d : ℕ) : ℝ)) *
+                moebiusLogPowerKernelReal 1 ((N : ℝ) / ((B * d : ℕ) : ℝ)) -
+              2 * Real.log ((N : ℝ) / ((A * d : ℕ) : ℝ))| ≤
+            (ε / 8) * Real.log N := by
+        have hclose'' :=
+          hclose.trans (mul_le_mul_of_nonneg_left hLAle' (by positivity : 0 ≤ ε / 8))
+        simpa only [Nat.cast_mul] using hclose''
+      have hmain : |Real.log (d : ℝ) ^ 2 *
+            (moebiusLogPowerKernelReal 2 ((N : ℝ) / ((A * d : ℕ) : ℝ)) *
+                moebiusLogPowerKernelReal 1 ((N : ℝ) / ((B * d : ℕ) : ℝ)) -
+              2 * Real.log ((N : ℝ) / ((A * d : ℕ) : ℝ))) / (d : ℝ)| ≤
+          (ε / 8) * Real.log N ^ 3 * (1 / (d : ℝ)) := by
+        rw [abs_div, abs_of_pos hdR, abs_mul, abs_of_nonneg (sq_nonneg _)]
+        have hmul := mul_le_mul hlogSq hclose' (abs_nonneg _) (sq_nonneg (Real.log N))
+        calc
+          Real.log (d : ℝ) ^ 2 *
+                |moebiusLogPowerKernelReal 2 ((N : ℝ) / ((A * d : ℕ) : ℝ)) *
+                    moebiusLogPowerKernelReal 1 ((N : ℝ) / ((B * d : ℕ) : ℝ)) -
+                  2 * Real.log ((N : ℝ) / ((A * d : ℕ) : ℝ))| / (d : ℝ) ≤
+              (Real.log N ^ 2 * ((ε / 8) * Real.log N)) / (d : ℝ) :=
+                div_le_div_of_nonneg_right hmul hdR.le
+          _ = (ε / 8) * Real.log N ^ 3 * (1 / (d : ℝ)) := by ring
+      linarith
+    · have hsmall : 1 / (d : ℝ) ≤ K * (c : ℝ) / (N : ℝ) := by
+        rcases not_and_or.mp hgood with hbad | hbad
+        · have hlt := lt_of_not_ge hbad
+          have hAd : (0 : ℝ) < ((A * d : ℕ) : ℝ) := by exact_mod_cast Nat.mul_pos hA hdpos
+          have hNlt : (N : ℝ) < K * ((A * d : ℕ) : ℝ) :=
+            (div_lt_iff₀ hAd).mp hlt
+          rw [div_le_div_iff₀ hdR hNR]
+          push_cast at hNlt
+          have hAc : (A : ℝ) ≤ (c : ℝ) := by exact_mod_cast le_max_left A B
+          nlinarith [hKpos.le]
+        · have hlt := lt_of_not_ge hbad
+          have hBd : (0 : ℝ) < ((B * d : ℕ) : ℝ) := by exact_mod_cast Nat.mul_pos hB hdpos
+          have hNlt : (N : ℝ) < K * ((B * d : ℕ) : ℝ) :=
+            (div_lt_iff₀ hBd).mp hlt
+          rw [div_le_div_iff₀ hdR hNR]
+          push_cast at hNlt
+          have hBc : (B : ℝ) ≤ (c : ℝ) := by exact_mod_cast le_max_right A B
+          nlinarith [hKpos.le]
+      have hKA := hDAbound _ hYAone
+      have hKB := hDBbound _ hYBone
+      simp only [pow_one] at hKA
+      simp only [pow_zero, mul_one] at hKB
+      have hdiff : |moebiusLogPowerKernelReal 2 ((N : ℝ) / ((A * d : ℕ) : ℝ)) *
+              moebiusLogPowerKernelReal 1 ((N : ℝ) / ((B * d : ℕ) : ℝ)) -
+            2 * Real.log ((N : ℝ) / ((A * d : ℕ) : ℝ))| ≤ C * Real.log N := by
+        rw [hCdef]
+        calc
+          _ ≤ |moebiusLogPowerKernelReal 2 ((N : ℝ) / ((A * d : ℕ) : ℝ))| *
+                |moebiusLogPowerKernelReal 1 ((N : ℝ) / ((B * d : ℕ) : ℝ))| +
+              2 * Real.log ((N : ℝ) / ((A * d : ℕ) : ℝ)) := by
+                calc
+                  _ ≤ |moebiusLogPowerKernelReal 2 ((N : ℝ) / ((A * d : ℕ) : ℝ)) *
+                        moebiusLogPowerKernelReal 1 ((N : ℝ) / ((B * d : ℕ) : ℝ))| +
+                      |2 * Real.log ((N : ℝ) / ((A * d : ℕ) : ℝ))| := abs_sub _ _
+                  _ = _ := by
+                    rw [abs_mul, abs_of_nonneg (mul_nonneg (by norm_num) hLA0)]
+          _ ≤ (DA * Real.log ((N : ℝ) / ((A * d : ℕ) : ℝ))) * DB +
+              2 * Real.log ((N : ℝ) / ((A * d : ℕ) : ℝ)) := by
+                gcongr
+          _ ≤ (DA * Real.log N) * DB + 2 * Real.log N := by gcongr
+          _ = (DA * DB + 2) * Real.log N := by ring
+      rw [abs_div, abs_of_pos hdR, abs_mul, abs_of_nonneg (sq_nonneg _)]
+      have hprod := mul_le_mul hlogSq hdiff (abs_nonneg _) (sq_nonneg (Real.log N))
+      calc
+        Real.log (d : ℝ) ^ 2 *
+              |moebiusLogPowerKernelReal 2 ((N : ℝ) / ((A * d : ℕ) : ℝ)) *
+                  moebiusLogPowerKernelReal 1 ((N : ℝ) / ((B * d : ℕ) : ℝ)) -
+                2 * Real.log ((N : ℝ) / ((A * d : ℕ) : ℝ))| / (d : ℝ) ≤
+            C * Real.log N ^ 3 * (1 / (d : ℝ)) := by
+              have := div_le_div_of_nonneg_right hprod hdR.le
+              calc
+                _ ≤ (Real.log N ^ 2 * (C * Real.log N)) / (d : ℝ) := this
+                _ = _ := by ring
+        _ ≤ C * Real.log N ^ 3 * (K * (c : ℝ) / (N : ℝ)) :=
+          mul_le_mul_of_nonneg_left hsmall (by positivity)
+        _ ≤ (ε / 8) * Real.log N ^ 3 * (1 / (d : ℝ)) +
+            C * Real.log N ^ 3 * (K * (c : ℝ) / (N : ℝ)) :=
+          le_add_of_nonneg_left (by positivity)
+  rw [Real.dist_eq, sub_zero, abs_div, abs_of_pos (pow_pos hlogpos 4),
+    div_lt_iff₀ (pow_pos hlogpos 4)]
+  rw [selbergGcdLogPowerPrincipalScaledModel_two_two_one_sub_harmonicMain, ← hcdef]
+  calc
+    |∑ d ∈ Finset.Icc 1 (N / c),
+        Real.log (d : ℝ) ^ 2 *
+          (moebiusLogPowerKernelReal 2 ((N : ℝ) / ((A * d : ℕ) : ℝ)) *
+              moebiusLogPowerKernelReal 1 ((N : ℝ) / ((B * d : ℕ) : ℝ)) -
+            2 * Real.log ((N : ℝ) / ((A * d : ℕ) : ℝ))) / (d : ℝ)| ≤
+      ∑ d ∈ Finset.Icc 1 (N / c),
+        ((ε / 8) * Real.log N ^ 3 * (1 / (d : ℝ)) +
+          C * Real.log N ^ 3 * (K * (c : ℝ) / (N : ℝ))) :=
+        (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum hterm)
+    _ = (ε / 8) * Real.log N ^ 3 * (harmonic (N / c) : ℝ) +
+        ((N / c : ℕ) : ℝ) *
+          (C * Real.log N ^ 3 * (K * (c : ℝ) / (N : ℝ))) := by
+      rw [Finset.sum_add_distrib, ← Finset.mul_sum, sum_Icc_one_div_eq_harmonic,
+        Finset.sum_const, nsmul_eq_mul]
+      rw [Nat.card_Icc]
+      norm_num
+    _ ≤ (ε / 4) * Real.log N ^ 4 + C * K * Real.log N ^ 3 := by
+      refine add_le_add ?_ ?_
+      · calc
+          (ε / 8) * Real.log N ^ 3 * (harmonic (N / c) : ℝ) ≤
+              (ε / 8) * Real.log N ^ 3 * (harmonic N : ℝ) :=
+            mul_le_mul_of_nonneg_left
+              (RHTower.harmonic_cast_mono (Nat.div_le_self N c)) (by positivity)
+          _ ≤ (ε / 8) * Real.log N ^ 3 * (2 * Real.log N) :=
+            mul_le_mul_of_nonneg_left hharm (by positivity)
+          _ = (ε / 4) * Real.log N ^ 4 := by ring
+      · have hdivle : ((N / c : ℕ) : ℝ) * ((c : ℝ) / (N : ℝ)) ≤ 1 := by
+          have hq : ((N / c : ℕ) : ℝ) ≤ (N : ℝ) / (c : ℝ) := by
+            rw [le_div_iff₀ hcR]
+            exact_mod_cast Nat.div_mul_le_self N c
+          calc
+            _ ≤ ((N : ℝ) / (c : ℝ)) * ((c : ℝ) / (N : ℝ)) :=
+              mul_le_mul_of_nonneg_right hq (by positivity)
+            _ = 1 := by field_simp
+        have hm := mul_le_mul_of_nonneg_left hdivle
+          (show 0 ≤ C * K * Real.log N ^ 3 by positivity)
+        calc
+          ((N / c : ℕ) : ℝ) *
+              (C * Real.log N ^ 3 * (K * (c : ℝ) / (N : ℝ))) =
+              (C * K * Real.log N ^ 3) *
+                (((N / c : ℕ) : ℝ) * ((c : ℝ) / (N : ℝ))) := by ring
+          _ ≤ C * K * Real.log N ^ 3 := by simpa using hm
+    _ < ε * Real.log N ^ 4 := by
+      have hCK : C * K < (ε / 4) * Real.log N := by
+        rw [div_lt_iff₀ hε] at hbigLog
+        nlinarith
+      have htail := mul_lt_mul_of_pos_right hCK (pow_pos hlogpos 3)
+      calc
+        (ε / 4) * Real.log N ^ 4 + C * K * Real.log N ^ 3 <
+            (ε / 4) * Real.log N ^ 4 +
+              (ε / 4) * Real.log N * Real.log N ^ 3 := by
+          have hadd := add_lt_add_left htail ((ε / 4) * Real.log N ^ 4)
+          linarith only [hadd]
+        _ = (ε / 2) * Real.log N ^ 4 := by ring
+        _ < ε * Real.log N ^ 4 := by
+          have hpow : 0 < Real.log N ^ 4 := pow_pos hlogpos 4
+          nlinarith
+
+/-- The principal `(2,1)` square-gcd-log model has leading coefficient `1/6`. -/
+theorem tendsto_selbergGcdLogPowerPrincipalScaledModel_two_two_one_div_log_four
+    {A B : ℕ} (hA : 0 < A) (hB : 0 < B) :
+    Tendsto (fun N : ℕ =>
+      selbergGcdLogPowerPrincipalScaledModel 2 2 1 A B N / Real.log N ^ 4)
+      atTop (nhds (1 / 6 : ℝ)) := by
+  have herr :=
+    tendsto_selbergGcdLogPowerPrincipalScaledModel_two_two_one_sub_harmonic_div_log_four_zero
+      hA hB
+  have hmain := tendsto_selbergGcdLogSquareTwoOneHarmonicMain_div_log_four hA hB
+  have h := herr.add hmain
+  rw [zero_add] at h
+  refine h.congr' ?_
+  filter_upwards [eventually_ge_atTop 2] with N hN
+  have hlog : Real.log (N : ℝ) ≠ 0 :=
+    (Real.log_pos (by exact_mod_cast hN)).ne'
+  field_simp [hlog]
+  ring
+
 end
 
 end RHTower.Sieve

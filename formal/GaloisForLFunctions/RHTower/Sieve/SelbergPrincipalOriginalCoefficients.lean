@@ -144,6 +144,11 @@ def selbergOriginalCoeff (m n : ℕ) : ℝ :=
 @[simp] theorem selbergOriginalCoeff_one : selbergOriginalCoeff 1 1 = 1 := by
   simp [selbergOriginalCoeff]
 
+theorem selbergOriginalCoeff_comm (m n : ℕ) :
+    selbergOriginalCoeff m n = selbergOriginalCoeff n m := by
+  rw [selbergOriginalCoeff, selbergOriginalCoeff, Nat.gcd_comm]
+  ring
+
 theorem bivariateMultiplicative_selbergOriginalCoeff :
     BivariateMultiplicative selbergOriginalCoeff := by
   constructor

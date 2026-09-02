@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.PseudoDiffOpValuation
+import GaloisForLFunctions.HTGeometry.PseudoDiffOpCompletion
 import GaloisForLFunctions.HTGeometry.DifferentialOperatorSemilinearMatrix
 import Mathlib.Topology.Algebra.Valued.WithVal
 
@@ -20,7 +20,7 @@ noncomputable section
 
 open OreLocalization
 open MonoidWithZeroHom MonoidWithZeroHom.ValueGroup₀
-open scoped OreLocalization nonZeroDivisors
+open scoped OreLocalization nonZeroDivisors WithZeroTopology
 
 variable {K : Type u} [Field K] [Differential K]
 
@@ -133,18 +133,29 @@ theorem trans_deriv_comm (σ τ : K ≃+* K)
   rw [RingEquiv.trans_apply, hσ, hτ]
   rfl
 
+/-- The identity coefficient automorphism commutes with the derivation. -/
+theorem refl_deriv_comm (a : K) :
+    (RingEquiv.refl K) (a′) = ((RingEquiv.refl K) a)′ := rfl
+
 /-- The Ore-skew-field coefficient action sends the identity coefficient automorphism to the
 identity. -/
 theorem mapPseudoRingEquiv_refl :
-    mapPseudoRingEquiv (RingEquiv.refl K) (fun _ => rfl) =
+    mapPseudoRingEquiv (RingEquiv.refl K) refl_deriv_comm =
       RingEquiv.refl (PseudoDiffOp K) := by
   apply RingEquiv.ext
-  apply pseudoDiffOp_ringHom_ext
-  intro p
-  rw [mapPseudoRingEquiv_numerator]
-  congr 1
-  ext n
-  simp [mapRingEquiv]
+  intro x
+  have hhom :
+      (mapPseudoRingEquiv (RingEquiv.refl K) refl_deriv_comm).toRingHom =
+        (RingEquiv.refl (PseudoDiffOp K)).toRingHom := by
+    apply pseudoDiffOp_ringHom_ext
+    intro p
+    change mapPseudoRingEquiv (RingEquiv.refl K) refl_deriv_comm
+        (numeratorRingHom p) = numeratorRingHom p
+    rw [mapPseudoRingEquiv_numerator]
+    congr 1
+    ext n
+    simp [mapRingEquiv]
+  exact DFunLike.congr_fun hhom x
 
 /-- The Ore-skew-field coefficient action respects composition. -/
 theorem mapPseudoRingEquiv_trans (σ τ : K ≃+* K)
@@ -153,17 +164,22 @@ theorem mapPseudoRingEquiv_trans (σ τ : K ≃+* K)
     (mapPseudoRingEquiv σ hσ).trans (mapPseudoRingEquiv τ hτ) =
       mapPseudoRingEquiv (σ.trans τ) (trans_deriv_comm σ τ hσ hτ) := by
   apply RingEquiv.ext
-  apply pseudoDiffOp_ringHom_ext
-  intro p
-  change mapPseudoRingEquiv τ hτ
-      (mapPseudoRingEquiv σ hσ (numeratorRingHom p)) =
-    mapPseudoRingEquiv (σ.trans τ) (trans_deriv_comm σ τ hσ hτ)
-      (numeratorRingHom p)
-  rw [mapPseudoRingEquiv_numerator, mapPseudoRingEquiv_numerator,
-    mapPseudoRingEquiv_numerator]
-  congr 1
-  ext n
-  simp [mapRingEquiv]
+  intro x
+  have hhom :
+      ((mapPseudoRingEquiv σ hσ).trans (mapPseudoRingEquiv τ hτ)).toRingHom =
+        (mapPseudoRingEquiv (σ.trans τ) (trans_deriv_comm σ τ hσ hτ)).toRingHom := by
+    apply pseudoDiffOp_ringHom_ext
+    intro p
+    change mapPseudoRingEquiv τ hτ
+        (mapPseudoRingEquiv σ hσ (numeratorRingHom p)) =
+      mapPseudoRingEquiv (σ.trans τ) (trans_deriv_comm σ τ hσ hτ)
+        (numeratorRingHom p)
+    rw [mapPseudoRingEquiv_numerator, mapPseudoRingEquiv_numerator,
+      mapPseudoRingEquiv_numerator]
+    congr 1
+    ext n
+    simp [mapRingEquiv]
+  exact DFunLike.congr_fun hhom x
 
 /-- Coefficient automorphisms preserve rational pseudodifferential order. -/
 theorem ordQ_mapPseudoRingHom (σ : K ≃+* K)
@@ -327,6 +343,125 @@ def mapCompletedPseudoRingEquiv (σ : K ≃+* K) (hσ : ∀ a : K, σ (a′) = (
         pseudoDiffOpValuation pseudoDiffOpValuation (mapPseudoRingEquiv σ hσ)
         (fun y => congrArg Multiplicative.toAdd
           (pseudoDiffOpAddValuationValue_mapPseudoRingHom σ hσ y)))]
+
+/-- The extended coefficient action is continuous on the completed ring. -/
+theorem continuous_mapCompletedPseudoRingEquiv (σ : K ≃+* K)
+    (hσ : ∀ a : K, σ (a′) = (σ a)′) :
+    Continuous (mapCompletedPseudoRingEquiv σ hσ) := by
+  change Continuous (UniformSpace.Completion.map _)
+  exact UniformSpace.Completion.continuous_map
+
+/-- The completed coefficient action sends the identity automorphism to the identity. -/
+theorem mapCompletedPseudoRingEquiv_refl :
+    mapCompletedPseudoRingEquiv (RingEquiv.refl K) refl_deriv_comm =
+      RingEquiv.refl (CompletedPseudoDiffOp K) := by
+  apply RingEquiv.ext
+  intro x
+  refine UniformSpace.Completion.induction_on x ?_ ?_
+  · exact isClosed_eq
+      (continuous_mapCompletedPseudoRingEquiv (RingEquiv.refl K) refl_deriv_comm)
+      continuous_id
+  · intro a
+    rw [mapCompletedPseudoRingEquiv_coe]
+    apply congrArg (fun y : WithVal (pseudoDiffOpValuation (K := K)) =>
+      (y : CompletedPseudoDiffOp K))
+    rcases a with ⟨a⟩
+    exact congrArg (WithVal.toVal (pseudoDiffOpValuation (K := K)))
+      (DFunLike.congr_fun mapPseudoRingEquiv_refl a)
+
+/-- The completed coefficient action respects composition. -/
+theorem mapCompletedPseudoRingEquiv_trans (σ τ : K ≃+* K)
+    (hσ : ∀ a : K, σ (a′) = (σ a)′)
+    (hτ : ∀ a : K, τ (a′) = (τ a)′) :
+    (mapCompletedPseudoRingEquiv σ hσ).trans (mapCompletedPseudoRingEquiv τ hτ) =
+      mapCompletedPseudoRingEquiv (σ.trans τ) (trans_deriv_comm σ τ hσ hτ) := by
+  apply RingEquiv.ext
+  intro x
+  refine UniformSpace.Completion.induction_on x ?_ ?_
+  · exact isClosed_eq
+      ((continuous_mapCompletedPseudoRingEquiv τ hτ).comp
+        (continuous_mapCompletedPseudoRingEquiv σ hσ))
+      (continuous_mapCompletedPseudoRingEquiv (σ.trans τ)
+        (trans_deriv_comm σ τ hσ hτ))
+  · intro a
+    simp only [RingEquiv.trans_apply, mapCompletedPseudoRingEquiv_coe]
+    apply congrArg (fun y : WithVal (pseudoDiffOpValuation (K := K)) =>
+      (y : CompletedPseudoDiffOp K))
+    rcases a with ⟨a⟩
+    exact congrArg (WithVal.toVal (pseudoDiffOpValuation (K := K)))
+      (DFunLike.congr_fun (mapPseudoRingEquiv_trans σ τ hσ hτ) a)
+
+/-- The completed action preserves the intrinsic extension of the order valuation. -/
+theorem extension_mapCompletedPseudoRingEquiv (σ : K ≃+* K)
+    (hσ : ∀ a : K, σ (a′) = (σ a)′) (x : CompletedPseudoDiffOp K) :
+    DivisionValuedCompletion.extension (mapCompletedPseudoRingEquiv σ hσ x) =
+      DivisionValuedCompletion.extension x := by
+  refine UniformSpace.Completion.induction_on x ?_ ?_
+  · exact isClosed_eq
+      (DivisionValuedCompletion.continuous_extension.comp
+        (continuous_mapCompletedPseudoRingEquiv σ hσ))
+      DivisionValuedCompletion.continuous_extension
+  · intro a
+    rw [mapCompletedPseudoRingEquiv_coe,
+      DivisionValuedCompletion.extension_extends,
+      DivisionValuedCompletion.extension_extends]
+    apply (WithVal.valueGroupOrderIso₀ (pseudoDiffOpValuation (K := K))).injective
+    change (WithVal.valueGroupOrderIso₀ (pseudoDiffOpValuation (K := K)))
+        ((WithVal.valuation pseudoDiffOpValuation).restrict
+          (WithVal.congr pseudoDiffOpValuation pseudoDiffOpValuation
+            (mapPseudoRingEquiv σ hσ) a)) =
+      (WithVal.valueGroupOrderIso₀ (pseudoDiffOpValuation (K := K)))
+        ((WithVal.valuation pseudoDiffOpValuation).restrict a)
+    rw [WithVal.valueGroupOrderIso₀_restrict, WithVal.valueGroupOrderIso₀_restrict]
+    apply ValueGroup₀.embedding_injective
+    rw [Valuation.embedding_restrict, Valuation.embedding_restrict]
+    change pseudoDiffOpValuation (mapPseudoRingHom σ hσ a.ofVal) =
+      pseudoDiffOpValuation a.ofVal
+    exact congrArg Multiplicative.toAdd
+      (pseudoDiffOpAddValuationValue_mapPseudoRingHom σ hσ a.ofVal)
+
+/-- The functorial coefficient action is valuation-preserving on the completed
+pseudodifferential division ring. -/
+theorem completedPseudoDiffOpValuation_mapCompletedPseudoRingEquiv
+    (σ : K ≃+* K) (hσ : ∀ a : K, σ (a′) = (σ a)′)
+    (x : CompletedPseudoDiffOp K) :
+    completedPseudoDiffOpValuation (mapCompletedPseudoRingEquiv σ hσ x) =
+      completedPseudoDiffOpValuation x := by
+  change MonoidWithZeroHom.ValueGroup₀.embedding
+      (DivisionValuedCompletion.extension (mapCompletedPseudoRingEquiv σ hσ x)) =
+    MonoidWithZeroHom.ValueGroup₀.embedding (DivisionValuedCompletion.extension x)
+  rw [extension_mapCompletedPseudoRingEquiv]
+
+/-- A differential coefficient automorphism restricts to the completed valuation ring. -/
+def mapCompletedPseudoIntegerEquiv (σ : K ≃+* K)
+    (hσ : ∀ a : K, σ (a′) = (σ a)′) :
+    CompletedPseudoDiffOpInteger (K := K) ≃+* CompletedPseudoDiffOpInteger (K := K) where
+  toFun x := ⟨mapCompletedPseudoRingEquiv σ hσ x, by
+    rw [Valuation.mem_integer_iff,
+      completedPseudoDiffOpValuation_mapCompletedPseudoRingEquiv]
+    exact (Valuation.mem_integer_iff _ _).mp x.property⟩
+  invFun x := ⟨mapCompletedPseudoRingEquiv σ.symm (symm_deriv_comm hσ) x, by
+    rw [Valuation.mem_integer_iff,
+      completedPseudoDiffOpValuation_mapCompletedPseudoRingEquiv]
+    exact (Valuation.mem_integer_iff _ _).mp x.property⟩
+  left_inv x := by
+    apply Subtype.ext
+    exact (mapCompletedPseudoRingEquiv σ hσ).left_inv x
+  right_inv x := by
+    apply Subtype.ext
+    exact (mapCompletedPseudoRingEquiv σ hσ).right_inv x
+  map_mul' x y := by
+    apply Subtype.ext
+    exact (mapCompletedPseudoRingEquiv σ hσ).map_mul x y
+  map_add' x y := by
+    apply Subtype.ext
+    exact (mapCompletedPseudoRingEquiv σ hσ).map_add x y
+
+@[simp] theorem mapCompletedPseudoIntegerEquiv_apply_coe
+    (σ : K ≃+* K) (hσ : ∀ a : K, σ (a′) = (σ a)′)
+    (x : CompletedPseudoDiffOpInteger (K := K)) :
+    (mapCompletedPseudoIntegerEquiv σ hσ x : CompletedPseudoDiffOp K) =
+      mapCompletedPseudoRingEquiv σ hσ x := rfl
 
 end
 

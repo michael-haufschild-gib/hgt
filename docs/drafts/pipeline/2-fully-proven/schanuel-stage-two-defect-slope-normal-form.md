@@ -355,3 +355,18 @@ targeted leaf build pass.  The new declaration's axiom audit is exactly
 `[propext, Classical.choice, Quot.sound]`.  Remaining clause-5 obligations are the normalized
 projective model, coordinate pullbacks, and construction of a divisor-avoiding analytic path to
 which this theorem applies.  Card remains Stage 2.
+
+## Lean progress — canonical affine normalization and literal regulator paths (2026-09-02)
+
+`RHTower/SchanuelStageTwoDefectSlopeNormalForm.lean` now packages clauses 1–4 through the exact
+stage-two core and essentiality/ecl theorems.  For clause 5 it constructs the integral-closure
+normalization ring, its affine spectrum, an exact function-field equivalence with the concrete
+stage-two value field, and the transported additive and exponential rational coordinates.  It also
+constructs genuine coordinate pullbacks along supplied differentiable divisor-avoiding paths,
+obtains simultaneous logarithm lifts automatically, and identifies both regulator integrals.
+
+Literal clause 5 still requires a projective compactification/normalization of the finite extension
+with function field identified as the concrete value field, plus a scheme-analytification and
+complex-point evaluation layer producing the required path on that model.  Neither interface exists
+in the current corpus or imported mathlib.  An all-five-clauses capstone would therefore be false as
+a description of the formal state; the card remains at Stage 2.

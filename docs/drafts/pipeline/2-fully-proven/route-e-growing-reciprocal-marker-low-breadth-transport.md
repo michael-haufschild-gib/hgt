@@ -5968,3 +5968,99 @@ window is now unconditional, leaf-built, umbrella-wired, and axiom-clean
 This does **not** finish the card's growing reciprocal-marker schedule.  Its remaining obligations
 are still the quantitative `o(1 / log X)` Menon–Halász rate and moving-scale fibre-to-real/integer
 normalisation recorded above.  Card remains Stage 2.
+
+## Lean progress update (2026-09-02) — exact near-maximal subpower schedule
+
+`Sieve/GrowingReciprocalMarkerSubpowerSchedule.lean` formalizes the card's equation `(6)` exactly:
+
+```text
+h(X) = exp (log X / log log X),
+w(X) = (log X)^(2/3),
+H(X) = sqrt X * h(X).
+```
+
+It proves `log h / log X -> 0`,
+`sqrt(log X)*(log log X)^2 / w -> 0`, `w / log h -> 0`, and
+`log H / log X -> 1/2`.  Thus equations `(1)`, `(2)`, and the `X^(1/2+o(1))` part of `(7)` are
+closed for the exact advertised schedule, without a mean-square premise.
+
+Direct check and targeted leaf build pass (`2009/2009`).  All seven theorem declarations audit
+with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella build.
+
+Card remains Stage 2.  Schedule admissibility is now Lean-complete.  Remaining obligations are
+still the quantitative `o(1/log X)` Menon--Halász mean-square rate and moving-scale
+fibre-to-real/integer normalization needed for `(15)`--`(18)`; neither is assumed here.
+
+## Lean progress update (2026-09-02) — exact retained-block count
+
+`Sieve/GrowingReciprocalMarkerBlockCount.lean` formalizes equation `(10)` with its natural floor
+and truncated subtraction intact:
+
+```text
+K(X) = floor((log h(X) - w(X)) / log 2) - 4.
+```
+
+For the exact schedules in equation `(6)`, it proves `K(X) → ∞` and
+`K(X)/log h(X) → 1/log 2`.  Thus the growing factor obtained by summing the per-block contribution
+in `(30)` is now machine-checked at the literal integer block count, not only at a continuous
+surrogate.
+
+Direct source check and targeted leaf build pass (`2010/2010`).  All three public theorem
+declarations audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired
+without umbrella build.
+
+Card remains Stage 2.  Block-count arithmetic is closed; remaining obligations are the same
+quantitative Menon--Halász mean-square rate and moving-scale normalization needed for `(15)`--`(18)`.
+
+## Lean progress update (2026-09-02) — equation `(17)` schedule-rate arithmetic
+
+`Sieve/GrowingReciprocalMarkerMenonRate.lean` formalizes the unconditional asymptotic calculation
+behind `(14)`--`(17)`.  It proves
+
+```text
+log X * (log w(X))^2 / w(X)^2 -> 0,
+log X * (log log X)^4 / (log X/2 - log h(X) + w(X))^2 -> 0,
+```
+
+and hence convergence to zero of their sum.  It also proves the exact start-scale normalization
+`(log X/2 - log h + w)/log X -> 1/2`.  These are precisely the two components obtained after
+multiplying Menon's displayed rate `(16)` by `log X` at the retained lower scales.
+
+Direct source check and targeted leaf build pass (`2011/2011`).  All four public theorem
+declarations audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired
+without umbrella build.
+
+This closes the schedule arithmetic in `(17)`, not Menon's mean-square theorem itself.  Card
+remains Stage 2 pending the unconditional quantitative mean-square input and its moving-scale
+normalization into `(15)`.
+
+## Lean progress update (2026-09-02) — exact finite moving-normalization bridge
+
+`Sieve/FibreFixedWindowNormalization.lean` now formalizes the finite fibre-to-integer-start
+comparison without assuming a mean-square estimate.  Its terminal inequality is
+
+```text
+sum_innerFibre_sq
+  <= 8 * dyadicMeanSquare(f, ell, ceil(sqrt x/2)-1, ceil(sqrt x)-1)
+     + 4 * sum_a |h * fibreStartIdx(x,a) / sqrt x - ell|^2
+     + 4 * card(outerBlock(x,h)) * (h/sqrt x + 1)^2.
+```
+
+The proof includes the exact predecessor reindexing of the integer starts, the at-most-four start
+multiplicity transfer, the zero-length window case, and the two-sided fibre-length estimate
+
+```text
+|fibreLen(x,h,a) - h * fibreStartIdx(x,a) / sqrt x| <= h/sqrt x + 1.
+```
+
+Thus the rounding error and moving-scale variation are no longer conflated.  In particular, the
+earlier informal claim that finitely many fixed scales put every variable endpoint within `O(1)`
+is replaced by a machine-checked inequality retaining the full smooth length-mismatch term.
+
+Direct source check and targeted leaf build pass (`11595/11595`).  All nine public theorem
+declarations audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired
+without an umbrella build.
+
+Card remains Stage 2.  This closes finite combinatorial normalization, but not the asymptotic
+control of the displayed moving-scale mismatch and not Menon's quantitative `o(1/log X)`
+mean-square rate.  Neither residue is assumed.

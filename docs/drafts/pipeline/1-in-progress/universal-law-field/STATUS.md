@@ -3184,3 +3184,27 @@ by an arithmetic theorem independent of RH, and preserve nonzeroness under forma
 Then target support forces `q=1`, hence `a=0`, on every Xi copy. It cannot infer survival from the
 wall object itself, replace existence by uniqueness, or hide the conclusion in same-fibre dagger,
 positivity, moderation, or properness.
+
+## 2026-09-02 — ULF-SLC-001 (share-ledger ceiling / Kuznetsov producer): holomorphic half closed in Lean
+
+Card moved to `1-in-progress/universal-law-field/ulf-share-ledger-ceiling-kuznetsov-producer.md`.
+Lean-closed this session (all in `HTGeometry`, wired, axiom-clean): the level-one holomorphic
+Poincaré series `P_m` as cusp forms; `𝒟` as a measure-theoretic fundamental domain for `PSL₂(ℤ)`;
+the strip unfolding; `⟨f, P_m⟩ = 2(4πm)^{1−k}Γ(k−1)·conj(a_f(m))`; the Petersson inner-product
+space of cusp forms (positive definite, finite dimensional); the Fourier coefficients of `P_m`
+through Kloosterman sums and `J_{k−1}`; and `petersson_formula_levelOne`.
+Open and decisive for the card: the spectral (Maass/Eisenstein) Kuznetsov formula, whose
+continuous spectrum carries `|ζ(1+2it)|^{−2}` — the only place ζ's zeros enter the ledger. No
+foundation for it exists in mathlib or the corpus.
+
+## 2026-09-02 — ULF-SLC-001 retired: the automorphic producer is a dead end for RH (paper proof)
+
+Verdict written into the card (now `5-failed/ulf-share-ledger-ceiling-kuznetsov-producer.md`):
+Petersson and Kuznetsov contain ζ only on `Re s = 1` (zero-blind); the Selberg trace formula's
+ζ-zero side is the Poisson-smoothed scattering density `Σ_ρ K_ρ` with peak `(1/2π)(1/β+1/(1−β))`
+and floor `(1/2π)/(1+(2r−γ)²)`, so the only created positivity (`Σ_j h(t_j) ≥ 0`) yields a Class II
+ledger capped at the de la Vallée Poussin width `c/log γ` (Ceiling C2); the zeros are poles of the
+scattering matrix, outside every `L²` Parseval identity (structural). Route E does not need
+Kuznetsov (Huxley replaces it). Survivors: C1–C4 and the level-one Petersson formula, both in Lean
+(`3-formalized/petersson-formula-level-one-lean.md`). The Selberg-ledger ceiling is being certified
+in Lean as `RHTower/SelbergLedgerCeiling.lean`.

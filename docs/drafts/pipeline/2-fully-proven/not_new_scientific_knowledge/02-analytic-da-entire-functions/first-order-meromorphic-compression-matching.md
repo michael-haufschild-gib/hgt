@@ -206,9 +206,52 @@ the three-coordinate regular-intersection lemma used in Step 3: if `x,y,z` are a
 independent and an element is algebraic over both `C(x,y)` and `C(x,z)`, then it is algebraic over
 `C(x)`.  The proof is the exact closure-intersection law of the algebraic matroid.
 
+`HTGeometry/FreeCoordinateAlgebraicConstantDescent.lean` proves the missing constant-field descent
+mechanism for arbitrary algebraic branches.  If a derivation extends through an algebraic field
+extension and kills an algebraic element, it kills every coefficient of that element's minimal
+polynomial.  For a free rational coordinate field this descends the element to the algebraic
+closure of precisely the coordinates not differentiated.  The module also constructs the
+coordinate derivations on a fixed algebraic closure and proves that they commute there; no
+branch-regularity premise is used.
+
+`HTGeometry/ThreeCoordinateLogarithmicSeparation.lean` now proves the full logarithmic-derivative
+part of Step 3.  For pairwise-algebraic nonzero branches with `A(x,y)B(x,z)=C(y,z)`, it derives
+unconditionally
+
+`partial_x A/A in C(x)^alg` and `partial_y A/A in C(y)^alg`.
+
+The proof differentiates the product law, uses algebraic stability of coordinate derivations, and
+then applies the exact three-coordinate closure intersection.  Its literal specialization is
+`freeCoordinate_three_logarithmicDerivative_separation`.
+
+`HTGeometry/TensorEigenvectorSpecialization.lean` formalizes the generic-fibre specialization
+argument for rank-one differential equations at the rational product-field level.  A nonzero
+tensor fraction satisfying a left-factor eigenvector equation specializes to a nonzero eigenvector
+in the left field.  The arbitrary-right-factor theorem extracts the finite coefficient algebra
+automatically, so no finite-type assumption is imposed on the full cover.
+
+`HTGeometry/AlgebraicTensorEigenvectorDescent.lean` closes the corresponding algebraic-cover
+step.  It proves that the constant coefficient of the minimal polynomial of an algebraic
+derivation eigenvector has multiplied eigenvalue, specializes that nonzero coefficient, and uses
+algebraic closedness to extract a root with the original eigenvalue.  The capstone
+`exists_left_eigenvector_of_algebraic_tensor_fraction` is unconditional for an algebraic extension
+of the fraction field of `A tensor_C B`; it has no branch-specialization premise.
+
+`HTGeometry/MeromorphicCompositionStateIndependence.lean` closes Step 1 without importing
+Steinmetz reduction as a new primitive.  The corpus's unbounded-fibre theorem for a transcendental
+entire inner function supplies arbitrarily large finite fibres over every point of a nonempty open
+set.  On each such fibre, a relation in `z`, `g(z)`, and `f(g(z))` is a one-variable polynomial in
+`z` with too many roots.  All coefficient relations in `(u,f(u))` therefore vanish on that open
+set; the meromorphic identity theorem promotes them to zero in `MeromorphicPlane`, contradicting
+the exact function-field predicate `TranscendentalMeromorphic`.  The capstone is
+`noRelation_meromorphicOuter_comp_of_transcendental`.
+
 This does not yet prove the card.  Remaining algebraic obligation is multiplicative separation in
-the pairwise relative algebraic closures; remaining analytic obligation is Steinmetz state
-independence.  Neither is represented by a hypothesis-bearing capstone.
+the concrete three-coordinate relative closures: construct and identify the fraction-tensor field
+of the two one-coordinate algebraic closures inside the common free-coordinate algebraic closure,
+transport its coordinate derivation, apply the new algebraic eigenvector descent, and finish with
+free-coordinate constant descent.  The analytic state-independence obligation is closed.  No
+hypothesis-bearing capstone is counted as the remaining factorization theorem.
 
 ## Gates
 
@@ -217,10 +260,18 @@ independence.  Neither is represented by a hypothesis-bearing capstone.
 - [x] Make the Steinmetz state-independence step citation-exact at theorem level; pin final bibliographic numbering during literature audit.
 - [x] Compare with nonlinear cascade matching and Fuchsian pullback literature.
 - [x] 1 -> 2: proof complete; dual gate gives `[BRIDGE]`, not new scientific knowledge.
-- [ ] Lean only after the paper theorem survives; the current tree lacks the required algebraic-closure intersection framework.
+- [ ] 2 -> 3: assemble the concrete relative-closure factorization; analytic state independence is closed.
 
 ## Log
 
 - 2026-07-11 — Created from the sharp zero-charge wall exposed by the universal entire unit-cost theorem.  The candidate turns the Liao--Yang meromorphic counterexample from an exception into the proposed universal normal form for first-order compression.
 - 2026-07-11 — Closed the algebraic core by regular intersections of the three algebraic function fields plus logarithmic partial derivatives.  Steinmetz reduction proves state independence.  The analytic classification theorem is now proved; novelty and parent comparison remain open.
 - 2026-07-11 — Parent comparison identifies the theorem as the scalar algebraic form of standard nonlinear-cascade partial matching.  The three-field separation is a short regular-intersection consequence, so the claim is downgraded to `[BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`.
+- 2026-09-02 — Lean closed finite-support tensor-fraction specialization and its algebraic-cover
+  extension in `TensorEigenvectorSpecialization` and `AlgebraicTensorEigenvectorDescent`.  Remaining
+  algebraic work is the concrete relative-closure field-tower assembly; Steinmetz remains the
+  analytic gate.  Card stays at stage 2.
+- 2026-09-02 — Lean closed analytic state independence in
+  `MeromorphicCompositionStateIndependence` via the stronger corpus-owned unbounded-fibre theorem
+  plus meromorphic identity continuation.  Remaining gate is only concrete relative-closure
+  multiplicative factorization.  Card stays at stage 2.

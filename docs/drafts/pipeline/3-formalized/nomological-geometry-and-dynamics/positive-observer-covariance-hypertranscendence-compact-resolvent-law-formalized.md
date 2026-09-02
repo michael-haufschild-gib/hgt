@@ -1,10 +1,10 @@
 # Positive observer covariance, relative jet freedom, and compact-resolvent completeness
 
 - **ID:** `clg-positive-observer-covariance-compact-resolvent`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** THEOREM (paper) / FIVE-SECTOR BRIDGE / COMPACTNESS CRITERION
-- **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [RELATIVE-JET-FREEDOM/POSITIVITY/RECURRENCE/COMPLETION]`
-  `[CONNECTED-FILTER DEFECT] [NOT RH] [NO LEAN WRITTEN OR BUILT]`
+- **Status:** `[LEAN-COMPLETE] [UNCONDITIONAL] [AXIOM-AUDITED] [NO SORRY]`
+  `[RELATIVE-JET-FREEDOM/POSITIVITY/RECURRENCE/COMPLETION] [CONNECTED-FILTER DEFECT] [NOT RH]`
 - **Statement:** For a faithful differential conditional observer, relative jet-freedom forces
   infinite positive covariance rank; its canonical norm is noncoercive, and compact resolvent is
   exactly the additional datum needed for compact action sublevels.
@@ -339,13 +339,37 @@ covariance identities alone are not gravity.
 - [ ] source-native `E` realizing two nonisomorphic corpus sectors
 - [ ] source-derived compact-resolvent `L`
 - [ ] CP-correspondence transition theorem
-- [ ] formalize only after field-level target stabilizes
+- [x] formalize every paper-proved theorem after field-level target stabilization
 
-## Lean-return note
+## Lean formalization
 
-No Lean code was written or built. A later formalization should separate finite Gram positivity,
-jet-independence, compact-operator equivalence, and the conditional-expectation identities.
+The paper theorem is dependency-closed across these modules:
+
+- `PositiveObserverCovarianceLaw.lean`: hidden covariance/Kadison identity, finite positive
+  semidefinite sums, arbitrary relative-jet Gram rank, noncompact canonical norm sublevel,
+  connected-product identity, and multiplicative-observer no-go.
+- `PositiveObserverDifferentialJetLaw.lean`: literal source/observer algebra cores, Leibniz
+  derivation, `Eδ=δE`, generated jets `δ^j f`, `c(δ^j f)=δ^j c(f)`, exact covariance entries,
+  rank `N+1`, infinite dimension, Hermitian and Cauchy--Schwarz laws, positive semidefinite
+  star-paired connected products, and faithful multiplicative collapse.
+- `PositiveObserverGraphActionCompactnessLaw.lean`: for arbitrary complex Hilbert space and
+  bounded inverse square root, compactness of every closed form-action sublevel iff compactness
+  of the adjoint-square resolvent.  This is the exact bounded-transform form of Theorem 5.1.
+- `PositiveObserverGNSDecompositionLaw.lean`: closed observed and hidden summands, dense algebraic
+  cores, unique orthogonal decomposition, and literal `E(a)+(a-E(a))` GNS splitting.
+- `PositiveObserverCompactResolventLaw.lean`: explicit positive self-adjoint compact-resolvent
+  generator with normalized eigenmodes and eigenvalues tending to infinity.
+- `PositiveObserverUniversalPeriodicLiftLaw.lean`: arbitrary periodic observer histories,
+  nonconvergent hidden lifts, exact graph-action value `1+λ_n`, escape to infinity, and global
+  phase invariance.
+
+All six modules are imported by `GaloisForLFunctions.HTGeometry`.  New modules passed direct
+`lake env lean` checks and targeted `lake build <module>` audits; the umbrella itself was not
+built.  Batched `#print axioms` checks for every new theorem reported only `propext`,
+`Classical.choice`, and `Quot.sound`, with no project axiom and no `sorryAx`.
 
 ## Log
 
 - 2026-08-09 — higher pivot from quotient geometry to positive observer correspondences.
+- 2026-09-02 — exact Lean formalization completed, targeted modules built, axioms audited, and
+  card advanced to Stage 3.

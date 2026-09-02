@@ -1213,3 +1213,50 @@ nonzero `(1,2)` top coefficient.  The parity assembly formalizes that every powe
 `ceil(k/2)`, not only a cofinal subsequence.  Direct check, targeted leaf build, and new-theorem
 axiom audit pass with only `[propext, Classical.choice, Quot.sound]`.  General restart attainment
 remains the card's unresolved formal core, so no promotion is made.
+
+### Lean progress — completed pseudodifferential skew field and functorial valuation action (2026-09-02)
+
+Three new leaves close the completion gap named above:
+
+- `PseudoDiffOpValuation` proves the nonarchimedean inequality for rational pseudodifferential
+  order, constructs the exact additive valuation `-ord_∂`, and proves every finite integer value is
+  realized.
+- `PseudoDiffOpCompletion` generalizes mathlib's commutative completion argument to completable
+  topological division rings.  It proves that the uniform completion is a division ring with
+  continuous inversion, extends the valuation to that completion, and defines its valuation ring.
+- `PseudoDiffOpAutomorphism` extends every derivation-preserving coefficient automorphism through
+  the Ore localization and completion, proves identity and composition laws, preserves the extended
+  valuation, and restricts functorially to the completed valuation ring.
+
+All declarations pass direct checking, targeted leaf builds, and axiom audit with only `propext`,
+`Classical.choice`, and `Quot.sound`.  The remaining card theorem is now the actual affine-building
+layer: valuation lattices and relative-position vectors over this completed skew field, general
+semisimplicity/attainment, the bounded-or-axis dichotomy with no parabolic phase, and canonical
+opposite boundary flags.  Those interfaces are absent from the corpus, so Theorems A–C are not yet
+fully formalized and the card remains at Stage 2.
+
+### Lean progress — exact valuation-lattice and homothety carrier (2026-09-02)
+
+Two further leaves now construct the actual lattice carrier over the completed noncommutative skew
+field, without replacing it by a commutative or finite-dimensional surrogate:
+
+- `CompletedPseudoDiffOpLattice` defines a lattice as a finitely generated left module over the
+  completed valuation ring whose completed-skew-field span is the whole coordinate space.  It
+  constructs the standard lattice, proves finite generation and full span, transports every lattice
+  under the completed coefficient action, proves identity and composition, and proves the standard
+  lattice is fixed.
+- `DifferentialVariationalBuildingCarrier` proves that right multiplication by a nonzero completed
+  skew scalar preserves lattices, that resulting homothety relation is reflexive, symmetric, and
+  transitive, and forms the exact quotient of full valuation lattices by homothety.  Coefficient
+  automorphisms preserve homothety and descend to this quotient with unconditional identity and
+  composition laws.
+
+Both leaves pass direct checking and targeted leaf builds.  Every new declaration audits with only
+`propext`, `Classical.choice`, and `Quot.sound`.  Top carrier leaf is wired into `HTGeometry`; umbrella
+was not built.
+
+This closes vertex carrier and functorial coefficient-action portions of `(6)` and `(9)`.  Card still
+cannot move: missing exact interfaces are apartment/metric structure and relative-position vectors
+for these noncommutative valuation lattices, the integral matrix part of `T_σ`, determinant balance
+`(12)`, semisimplicity/axis attainment and no-parabolic dichotomy, canonical opposite weighted
+boundary flags, and free-field reconstruction `(18)--(22)` on that building action.

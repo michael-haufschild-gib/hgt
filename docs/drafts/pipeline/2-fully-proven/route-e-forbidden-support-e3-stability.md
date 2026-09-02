@@ -974,3 +974,34 @@ build.
 Card remains Stage 2.  Coprime reciprocal-denominator aggregation is closed.  Remaining shared
 primitive is noncoprime gcd stratification and signed modulus/source aggregation at paper ranges,
 then Lemma 3.5(ii), amplification, and all-interval supply; no estimate is assumed.
+
+## Lean progress update (2026-09-02) — product-period slices without coprimality
+
+`Sieve/KloostermanProductFrequencySliceBound.lean` proves that every unequal-modulus cross phase
+has product-period frequency `q*val(y)-r*val(x)`, with no coprimality premise.  Fixing either unit
+coordinate gives an injective nonzero frequency family.  General cyclic chord separation and
+harmonic representative bounds therefore control the full double denominator carrier by the
+better of its two totient-weighted product-period slice budgets, and the exact terminal/stored
+correlations inherit that bound.
+
+Direct check and targeted leaf build pass (`13484/13484`).  All sixteen new theorem declarations
+audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella
+build.
+
+Card remains Stage 2.  Noncoprime denominator aggregation is closed.  Remaining shared primitive
+is signed modulus/source aggregation and cancellation beyond the absolute harmonic budget at paper
+ranges, then Lemma 3.5(ii), amplification, and all-interval supply; no estimate is assumed.
+
+## Lean progress update (2026-09-02) — source/modulus product-harmonic aggregation
+
+`Sieve/KloostermanProductHarmonicQuadratic.lean` pushes the noncoprime product-period bound through
+all signed modulus weights and source coefficients.  Both terminal/stored Gram entries and their
+full or erased source quadratics receive explicit closed budgets; the quadratic factor is exactly
+the square of source ℓ¹ mass times the weighted modulus-pair budget.
+
+Direct check and targeted leaf build pass (`13485/13485`).  All six theorem declarations audit
+with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella build.
+
+Card remains Stage 2.  Absolute signed source/modulus aggregation is closed.  Remaining shared
+primitive is spectral cancellation beyond this product-harmonic ℓ¹ baseline at paper ranges, then
+Lemma 3.5(ii), amplification, and all-interval supply; no estimate is assumed.

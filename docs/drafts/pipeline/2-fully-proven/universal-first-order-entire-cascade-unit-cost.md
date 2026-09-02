@@ -10226,3 +10226,20 @@ degree, and exact border shape.  Both declarations audit to
 This closes the full place-level newest-column peel in the small-response regime.  The general
 first-order cascade still has a unit-sized response and needs the law-specific Wronskian
 cancellation plus the global Wiman-place selection, so the card remains at Stage 2.
+
+### Log — actual arbitrary cascade branch/frame and unit-response peel (2026-09-02)
+
+`HTGeometry/UniversalFirstOrderEntireCascadeUnitCost.lean` now works with the literal meromorphic
+cascade states.  Its capstone `exists_actualCascade_algebraicBranch_lawCoordinateFrame` places all
+actual derivative branches, the restricted ordinary derivative, and a commuting Kronecker
+coordinate frame in one relative algebraic-closure field.  The same module proves simultaneous
+primitive-element packaging, removes the pair-independence premise from the transcendental-only
+wrapper, constructs the response internally, and proves exact unit-response Wronskian
+cancellation, place-degree bounds, below-border peel, and determinant reflection.
+
+The remaining headline obligation is geometric, not algebraic: construct one compatible nested
+height-one place/branch flag from the numerical Wiman selections on the actual cascade component,
+then prove the required place-specific `RatIn` and response-valuation bounds.  The corpus has a
+numerical Wiman radius theorem and an algebraic place above one coordinate, but no theorem joining
+them into that compatible flag.  No arbitrary exact-order capstone is therefore claimed, and the
+card remains at Stage 2.

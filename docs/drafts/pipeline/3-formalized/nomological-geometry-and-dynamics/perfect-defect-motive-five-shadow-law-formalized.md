@@ -1,10 +1,10 @@
 # Perfect defect motive five-shadow law
 
 - **ID:** `cmr-perfect-defect-five-shadow-law`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** THEOREM (paper) / HIGHER-EQUIVALENCE CALIBRATION
-- **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [PERFECT-COMPLEX CANCELLATION] [BRIDGE]`
-  `[NOT HT CHARACTERIZATION] [NOT RH] [NO LEAN WRITTEN OR BUILT]`
+- **Status:** `[LEAN-COMPLETE] [UNCONDITIONAL] [AXIOM-AUDITED] [NO SORRY]`
+  `[PERFECT-COMPLEX CANCELLATION] [FIVE COUNTERMODELS] [BRIDGE] [NOT HT CHARACTERIZATION] [NOT RH]`
 - **Statement:** A finite perfect complex with an automorphism has additive, cohomological,
   character/determinant, positive-modulus, and iterative-power readings governed by one
   cancellation law; a unitary automorphism also supplies compact recurrence.
@@ -178,14 +178,31 @@ boundary against scalar theatre.
 - [x] HT/nonperfectness boundary
 - [ ] construct one source-first motive realized in three corpus doctrines
 - [ ] prove coefficient-change/Beck--Chevalley conservation beyond vector spaces
-- [ ] formalize only after field-level target stabilizes
+- [x] formalize every paper-proved theorem after field-level target stabilization
 
-## Lean-return note
+## Lean formalization
 
-No Lean code was written or built. Later formalization can use finite-dimensional equivariant exact
-sequences and determinant/trace cancellation; search existing K-theory and determinant support
-first.
+The paper theorem and all five countermodels are dependency-closed across these modules:
+
+- `PerfectComplexFiveShadowCancellationLaw.lean`: bounded alternating additive and multiplicative
+  exact-shadow cancellation; Euler/`K₀`, every power supertrace, every power superdeterminant, and
+  positive-modulus factorization; unitary modulus-one law and arbitrary finite-unitary compact
+  recurrence; explicit polarity, dual-number extension, cost-rescaling, and flat-holonomy
+  countermodels.
+- `PerfectComplexDoublingDerivedLimitCountermodel.lean`: the stationary tower
+  `ℤ ←² ℤ ←² ⋯`, proof that its ordinary inverse limit is zero, an explicit nonzero
+  alternating-digit `lim¹` class, and the exact additive equivalence
+  `lim¹(ℤ ←² ℤ ←² ⋯) ≃+ ℤ₂/ℤ`.  Here `ℤ₂/ℤ` is constructed as compatible
+  integer lifts of residues modulo every positive power of two, quotiented by sequences congruent
+  to one diagonally embedded integer at every depth.
+
+Both modules are imported by `GaloisForLFunctions.HTGeometry`.  Each passed direct
+`lake env lean <file>` checking and targeted `lake build <module>` audit; umbrella was not built.
+Batched `#print axioms` checks for every new theorem and final equivalence reported only
+`propext`, `Classical.choice`, and `Quot.sound`, with no project axiom and no `sorryAx`.
 
 ## Log
 
 - 2026-08-09 — extracted as finite-perfect conservation law for Constraint-Motive Relativity.
+- 2026-09-02 — exact Lean formalization completed, both targeted modules built, axioms audited,
+  all five countermodels closed, and card advanced to Stage 3.

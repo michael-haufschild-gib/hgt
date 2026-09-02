@@ -13,7 +13,7 @@ Goal: unconditional Lean formalization of every card in this folder, then promot
 | 4 | quasianalytic-one-phase-bezout-boundary-law | all steps closed | **DONE → 3-formalized** (2026-08-29) |
 | 5 | quasianalytic-exponential-log-phase-jet-law | all steps closed | **DONE → 3-formalized** (2026-08-29) |
 | 6 | exponential-tower-exact-differential-order | both halves closed | **DONE → 3-formalized** (2026-08-29) |
-| 7 | first-order-meromorphic-compression-matching | Steinmetz + 3-field factorization | **IN PROGRESS** — regular intersections closed; separation + Steinmetz open |
+| 7 | first-order-meromorphic-compression-matching | 3-field factorization | **IN PROGRESS** — analytic state independence, intersections, constant/logarithmic descent, and abstract algebraic tensor-eigenvector specialization closed; concrete relative-closure factorization assembly open |
 | 8 | entire-heat-multiplicative-da-order-three-floor | Valiron–Zimogljad–Strelitz | **IN PROGRESS** — orders 0/1 closed; order 2 open |
 | 9 | drifting-periodic-primitive-ramification-exclusion | closed with `card_totallyRamified_le_four` | **DONE → 3-formalized** (2026-08-29) |
 | 10 | entire-composition-hypertranscendence-or-law | Steinmetz reduction / Huang–Ng Thm 3 | TODO |
@@ -54,7 +54,7 @@ Goal: unconditional Lean formalization of every card in this folder, then promot
 | I4 | Briot–Bouquet classification of autonomous first-order meromorphic solutions | 14, 15 |
 | ~~I5~~ | **CLOSED (2026-08-29)** — Nevanlinna ramification: `HTGeometry.NevanlinnaRamification.card_totallyRamified_le_four` gives `q ≤ 4` for an entire function, which is all card 9 needs | 9 |
 | ~~I11~~ | **CLOSED (2026-08-29)** — the general logarithmic-derivative lemma `m(r,f'/f) = O(log⁺T(R,f) + log(1/(R−r)) + log R)` — the single input the corpus's `SecondMainTheoremChain` still needs, and the common prerequisite of I1, I3, I5, I6, I7 | 3, 7, 8, 9, 10, 11, 12, 13, 14, 15 |
-| I6 | Steinmetz reduction / Huang–Ng Thm 3 | 7, 10 |
+| I6 | Steinmetz reduction / Huang–Ng Thm 3 | 10 (card 7 bypassed by unbounded fibres) |
 | I7 | Valiron–Zimogljad–Strelitz order-two growth wall | 8 |
 | I8 | Ostrowski finite-coefficient-basis theorem for DA Dirichlet series | 16 |
 | ~~I9~~ | **CLOSED (2026-08-30)** — `HTGeometry.ArithmeticTaylorCoefficientFloor.exists_popken_floor_of_formalRelation` | 17 |
@@ -98,6 +98,19 @@ Cascades / differential algebra:
 - `HTGeometry.AnalyticJetFieldBridge` — DA closed under `+ − × ^`
 - `HTGeometry.FractionRingDerivation.fractionRingDerivation`
 - `HTGeometry.DifferentiallyAlgebraicCancellation.differentiallyAlgebraic_right_of_mul_eq`
+- `HTGeometry.FreeCoordinateAlgebraicConstantDescent` — horizontal minimal-polynomial
+  coefficients and exact algebraic descent to free-coordinate constant subfields
+- `HTGeometry.ThreeCoordinateAlgebraicIntersection` — closure intersection for independent
+  coordinate pairs
+- `HTGeometry.ThreeCoordinateLogarithmicSeparation` — separated one-coordinate algebraicity of
+  both logarithmic derivatives in the three-face product law
+- `HTGeometry.TensorEigenvectorSpecialization` — finite-support specialization of nonzero
+  tensor-fraction derivation eigenvectors to one factor
+- `HTGeometry.AlgebraicTensorEigenvectorDescent` — minimal-polynomial eigenvalue multiplication
+  and algebraic-cover descent of rank-one eigenvectors over a product fraction field
+- `HTGeometry.MeromorphicCompositionStateIndependence` — exact independence of
+  `z, g(z), f(g(z))` for transcendental entire `g` and transcendental meromorphic `f`, proved via
+  unbounded fibres and meromorphic identity continuation
 
 ## The next infrastructure build: Nevanlinna's second main theorem
 
@@ -215,6 +228,9 @@ beyond this card (they are the quantitative core of Picard/Montel).
   New: `VandermondePhaseJet`, `JetProjectiveLimit` (abstract finite jet carrier), `ExponentialPolynomialCarrier`.
   Reusable: uniform lower bound for an invertible matrix, Vandermonde jet inversion over unit phases,
   the abstract `JetEval` functional-projective limit, exponential-polynomial recession.
+- 2026-09-02 — Card 7 analytic gate closed by
+  `HTGeometry.MeromorphicCompositionStateIndependence`; remaining gate is concrete
+  relative-closure multiplicative factorization.
 
 ## The logarithmic-derivative lemma (I11): route and progress
 

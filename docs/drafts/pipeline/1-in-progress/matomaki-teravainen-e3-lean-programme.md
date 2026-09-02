@@ -3476,3 +3476,49 @@ build.
 Coprime reciprocal-denominator aggregation is now closed.  Remaining primitive is noncoprime gcd
 stratification and signed modulus/source aggregation at paper ranges, followed by Lemma 3.5(ii),
 amplification, and Theorem 1.2; no estimate is assumed.
+
+### Product-period frequency slices without coprimality, brick 124 (2026-09-02)
+
+`KloostermanProductFrequencySliceBound.lean` removes the coprimality restriction from the
+reciprocal-denominator stage.  For arbitrary positive unequal `q,r`, it realizes each cross phase
+as the standard additive character of `q*val(y)-r*val(x)` modulo `q*r`.  With either unit
+coordinate fixed this frequency map is injective, and unequal moduli force all slice frequencies
+to be nonzero.
+
+The module generalizes the two-sided chord estimate from units to every nonzero cyclic frequency
+and proves a harmonic bound for any injective nonzero finite frequency family.  Slicing in either
+coordinate gives the shared-gcd-safe bound
+
+```text
+sum_x sum_y 2 / ||1 - crossPhase(q,r,x,y)||
+  <= min (phi(q) * q*r*(1+log(q*r)))
+         (phi(r) * q*r*(1+log(q*r))).
+```
+
+This transports directly to the literal terminal block and stored ordinary-index correlation.
+Direct check and targeted leaf build pass (`13484/13484`).  All sixteen new theorem declarations
+audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella
+build.
+
+Noncoprime reciprocal-denominator aggregation is now closed without gcd assumptions.  Remaining
+primitive is signed modulus/source aggregation at paper ranges and cancellation beyond this
+absolute harmonic budget, followed by Lemma 3.5(ii), amplification, and Theorem 1.2; no estimate
+is assumed.
+
+### Source/modulus product-harmonic aggregation, brick 125 (2026-09-02)
+
+`KloostermanProductHarmonicQuadratic.lean` restores brick 124 through every signed modulus weight
+and source coefficient.  It defines the explicit weighted pair budget and proves both the literal
+terminal Gram and existing stored distinct-modulus Gram are bounded by it.  Since this budget is
+independent of source indices, the full source quadratic and erased off-diagonal satisfy
+
+```text
+norm terminalQuadratic <= (sum_n |b_n|)^2 * productHarmonicModulusBudget.
+```
+
+Direct check and targeted leaf build pass (`13485/13485`).  All six theorem declarations audit
+with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella build.
+
+Absolute signed modulus/source aggregation is now closed.  Remaining analytic primitive is
+cancellation beyond this ℓ¹/product-harmonic baseline at the paper ranges, followed by Lemma
+3.5(ii), amplification, and Theorem 1.2; no estimate is assumed.
