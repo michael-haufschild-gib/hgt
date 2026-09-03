@@ -174,7 +174,7 @@ theorem eventually_menonHeathBrownCaseII_zetaLog_receiver
           (selectedY r) (color r)) →
       (∀ r : ℕ, tau r + 2 * Δ ≤ tau (r + 1)) →
       0 < T → Δ / 2 ≤ T →
-      (∀ r : ℕ, T + V ≤ tau r ∧ tau r ≤ 2 * T - V) →
+      (∀ r ∈ S, T + V ≤ tau r ∧ tau r ≤ 2 * T - V) →
       ∀ (label : MenonHeathBrownCaseIILabel L X cells),
       heathBrownBoxFactorExponent
         label.box.a label.box.b label.box.q label.factor = q0 →
@@ -235,7 +235,7 @@ theorem eventually_menonHeathBrownCaseII_zetaLog_receiver
       let lam := menonHeathBrownCaseIISelectedOrdinate
         S color selectedY tau V Δ label r
       have hrange := menonHeathBrownCaseIISelectedOrdinate_mem_band
-        hΔ hgrid hselection hbaseBand label r
+        hΔ hgrid hselection hbaseBand label r (Finset.mem_filter.mp hr).1
       have hlam : 0 < lam := hT.trans_le hrange.1
       have hfreq : |lam| ≤ N ^ (24 : ℕ) := by
         dsimp only [lam, N]

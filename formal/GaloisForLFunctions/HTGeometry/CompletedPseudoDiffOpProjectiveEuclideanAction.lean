@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.CompletedPseudoDiffOpProjectiveRelativePosition
+import GaloisForLFunctions.HTGeometry.CompletedPseudoDiffOpRelativePositionSymmetry
 import GaloisForLFunctions.HTGeometry.DifferentialVariationalProjectiveInterleavingAction
 
 /-!
@@ -175,6 +175,18 @@ theorem differentialVariationalProjectiveEuclideanRelativePosition_mapLinear
       | _ M =>
           exact completedPseudoDiffOpEuclideanRelativePositionPoint_mapLinear g L M
 
+/-- Simultaneous completed-skew linear transport preserves Euclidean vertex distance. -/
+theorem differentialVariationalProjectiveEuclideanVertexDistance_mapLinear
+    (g : (Fin r → CompletedPseudoDiffOp K) ≃ₗ[CompletedPseudoDiffOp K]
+      (Fin r → CompletedPseudoDiffOp K))
+    (x y : DifferentialVariationalProjectiveBuildingCarrier K (Fin r)) :
+    differentialVariationalProjectiveEuclideanVertexDistance
+        (mapDifferentialVariationalProjectiveBuildingCarrier g x)
+        (mapDifferentialVariationalProjectiveBuildingCarrier g y) =
+      differentialVariationalProjectiveEuclideanVertexDistance x y := by
+  unfold differentialVariationalProjectiveEuclideanVertexDistance
+  rw [differentialVariationalProjectiveEuclideanRelativePosition_mapLinear]
+
 /-- Differential coefficient transport preserves projective vector-valued relative position. -/
 theorem differentialVariationalProjectiveEuclideanRelativePosition_mapCoefficients
     (σ : K ≃+* K) (hσ : ∀ a : K, σ (a′) = (σ a)′)
@@ -188,6 +200,17 @@ theorem differentialVariationalProjectiveEuclideanRelativePosition_mapCoefficien
       induction y using Quotient.inductionOn with
       | _ M =>
           exact completedPseudoDiffOpEuclideanRelativePositionPoint_mapCoefficients σ hσ L M
+
+/-- Differential coefficient transport preserves Euclidean vertex distance. -/
+theorem differentialVariationalProjectiveEuclideanVertexDistance_mapCoefficients
+    (σ : K ≃+* K) (hσ : ∀ a : K, σ (a′) = (σ a)′)
+    (x y : DifferentialVariationalProjectiveBuildingCarrier K (Fin r)) :
+    differentialVariationalProjectiveEuclideanVertexDistance
+        (mapDifferentialVariationalProjectiveBuildingCarrierCoefficients σ hσ x)
+        (mapDifferentialVariationalProjectiveBuildingCarrierCoefficients σ hσ y) =
+      differentialVariationalProjectiveEuclideanVertexDistance x y := by
+  unfold differentialVariationalProjectiveEuclideanVertexDistance
+  rw [differentialVariationalProjectiveEuclideanRelativePosition_mapCoefficients]
 
 /-- Every literal differential semilinear action preserves the complete vector-valued projective
 relative position. -/
@@ -203,6 +226,18 @@ theorem differentialVariationalProjectiveEuclideanRelativePosition_semilinearAct
     mapDifferentialVariationalProjectiveBuildingCarrierMatrix]
   rw [differentialVariationalProjectiveEuclideanRelativePosition_mapLinear,
     differentialVariationalProjectiveEuclideanRelativePosition_mapCoefficients]
+
+/-- Every literal differential semilinear action preserves Euclidean vertex distance. -/
+theorem differentialVariationalProjectiveEuclideanVertexDistance_semilinearAction
+    (σ : K ≃+* K) (hσ : ∀ a : K, σ (a′) = (σ a)′)
+    (A : (Matrix (Fin r) (Fin r) (CompletedPseudoDiffOp K))ˣ)
+    (x y : DifferentialVariationalProjectiveBuildingCarrier K (Fin r)) :
+    differentialVariationalProjectiveEuclideanVertexDistance
+        (differentialVariationalProjectiveSemilinearAction σ hσ A x)
+        (differentialVariationalProjectiveSemilinearAction σ hσ A y) =
+      differentialVariationalProjectiveEuclideanVertexDistance x y := by
+  unfold differentialVariationalProjectiveEuclideanVertexDistance
+  rw [differentialVariationalProjectiveEuclideanRelativePosition_semilinearAction]
 
 end
 
@@ -226,6 +261,18 @@ theorem DifferentialFieldAut.projectiveBuildingAction_euclideanRelativePosition
       DiffOp.differentialVariationalProjectiveEuclideanRelativePosition x y := by
   exact DiffOp.differentialVariationalProjectiveEuclideanRelativePosition_semilinearAction
     σ.toRingEquiv σ.deriv_comm (variationalOreCompletedMatrixUnit σ.fixes σ.deriv_comm b) x y
+
+/-- The canonical variational Ore action preserves Euclidean distance between projective
+lattice vertices in every finite operator basis. -/
+theorem DifferentialFieldAut.projectiveBuildingAction_euclideanVertexDistance
+    (σ : DifferentialFieldAut C K)
+    {r : ℕ} (b : Module.Basis (Fin r) (DiffOp K) (VariationalOreModule C K))
+    (x y : DiffOp.DifferentialVariationalProjectiveBuildingCarrier K (Fin r)) :
+    DiffOp.differentialVariationalProjectiveEuclideanVertexDistance
+        (σ.projectiveBuildingAction b x) (σ.projectiveBuildingAction b y) =
+      DiffOp.differentialVariationalProjectiveEuclideanVertexDistance x y := by
+  unfold DiffOp.differentialVariationalProjectiveEuclideanVertexDistance
+  rw [σ.projectiveBuildingAction_euclideanRelativePosition]
 
 end
 

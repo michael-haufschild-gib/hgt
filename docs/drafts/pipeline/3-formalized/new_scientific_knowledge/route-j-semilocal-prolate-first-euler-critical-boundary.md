@@ -292,3 +292,55 @@ Route J remains open. Immediate hard targets are:
    with complete shell finite-support rigidity;
 5. derive a source-selected self-adjoint boundary condition and transport its relative resolvent
    through the Sonin corner.
+
+## Numerical follow-up 2026-09-03 (`2-fully-proven/computations/routej-semilocal-scale/`)
+
+Exact finite-`q` radii of `dν_p` by a discretized Stieltjes procedure (extended precision,
+validated against `r_n` to `10⁻¹³`): the first-jet law is confirmed at small `k` for large `p`
+(`p = 1009`: slope 10.98 at `k = 5`, 18.9 at `k = 20` against 15.6, 29.3 asymptotic), and is
+overtaken by `k ≈ 100` already at `q = 10⁻³`, consistently with the third-jet constant
+(`128(2k+1)^{5/2}q³ ≈ 1` at `k ≈ 285`, measured `D = −0.31` at `k = 300`). The exact deviation of
+the four-radius residual becomes order one at degree `n ≈ p` (ratio `n/p` = 0.98, 1.00, 1.03,
+1.05, 1.09, 1.16 for `p` = 211, 307, 401, 503, 701, 1009), far below both fixed-order scales
+`p²` and `p^{6/5}`. Survivor target 2 is answered negatively: the fixed Euler orders do not share
+a scale and the full response resums to `n ≍ p` (`qn ≍ 1`).
+
+**Scaling law (same follow-up).** `D_k(q) = q^{1/2} Φ(qn) + O(q)` with a universal profile `Φ`
+(collapse across `101 ≤ p ≤ 2003` to within 1 % for `x ≥ 0.4`): zeros at `x = 0.159, 0.823,
+1.586, 2.369` (spacings → `π/4`), extrema `−10.0` at `0.58`, `+35.4` at `1.27`, `−72.5` at
+`2.02`. The odd Euler orders are the Taylor coefficients `c₁ x^{1/2} + c₃ x^{5/2} + …` of `Φ`
+(this card's `c₁ = 4√(2/π)√2`, the third card's `c₃ = −160√(2/π)`), the even orders are the
+`O(q^{1/2})` corrections. The order-one degree is `n ~ p^{6/5}` asymptotically (the third-jet
+scale), the first-jet scale `p²` is not the scale of anything.
+
+**Two primes (same follow-up, §3.4–3.5 of the report).** For `S = {p₁, p₂, ∞}` the residual
+deviation is not the sum of the one-prime deviations: the cross term equals, to all displayed
+digits (correlation 1.0000, rms ratio 1.000 for ratios ≥ 1.3), the linear response of the
+archimedean Jacobi matrix to the beat mode `2(p₁p₂)^{−1/2} cos(s log(p₂/p₁))`, and it exceeds
+the one-prime term by a factor of order `p` for comparable primes. Survivor target 3 is
+answered: the one-prime boundary layer does not propagate through finite-set orthogonalization;
+the pairwise beat frequencies `log(p_i/p_j)` are leading, and the analytic object is the
+first-order response `H(n, δ)` to a cosine modulation of the archimedean measure.
+
+**Derivation of `Φ` (follow-up of 2026-09-03; §3.6–3.7 of the report
+`2-fully-proven/computations/routej-semilocal-scale/README.md`).**  The one-prime deviation is the
+first-order response to the single mode `cos(s log p)` of amplitude `p^{−1/2}` to 0.1–0.4 %
+(correlation ≥ 0.999996 over `n ≤ 2.6p`, `p ≤ 1511`).  The Meixner–Pollaczek generating function
+yields the generating function of all boost matrix elements
+`Σ c_m c_n M_{mn}(t) w^m z^n = (cosh t)^{−1/2}(1 − wz − i tanh t (w+z))^{−1/2}` (numerically exact
+to `10⁻⁹`; its first row is this card's Lean closed form), hence the diagonal cosine moments
+`m_n(t) = (cosh t)^{−1/2} P_n^{(0,−1/2)}(1 − 2 tanh² t)`.  At `t = log p` the Jacobi argument is
+`−1 + 8/p²`, and the Mehler–Heine limit gives `m_n(log p) ≈ (−1)^n √(2/(πpn)) cos(4n/p)`: the
+frequency `4` is the Mehler–Heine angle `2 sech(log p) = 4/p`.  Through the Lean first-order
+response theorems (`SemilocalCosineModeFirstOrderResponse.lean`: `u_n = ε r_n (m_{n+1} − m_n)`,
+residual jet `residualJetOf`) the alternating leading term cancels in the residual and
+
+    Φ(x) = 4√(2/π) [ √x cos(4x) − 8 x^{3/2} sin(4x) ],
+
+matching the measured profile to 1 % rms, the extrema to three digits, and reproducing this card's
+first jet `c₁ = 4√(2/π)` (the `√2` in the paragraph above is a transcription error: the measured
+slopes match `4√(2/π)√(2k)`) and the third card's `c₃ = −160√(2/π)` as its Taylor coefficients;
+it predicts the fifth jet `c₅ = 384√(2/π)`, and the threshold `n* = p^{4/3}/8.66` from the envelope
+`32√(2/π)x^{3/2} = √p`.  Route J's survivor question "what happens at `n ≈ p`" is answered: the
+Bessel-regime oscillation of the SU(1,1) boost elements at rapidity `log p`, with no intrinsic
+prime-scale boundary layer.

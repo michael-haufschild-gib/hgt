@@ -227,3 +227,86 @@ Theorem 6.11 (their inequality carries a term `−c|ĝ(0)|²`, `c = 4γ/log 2`, 
 pole-vanishing subspace) transported to the closed form domain by
 `SoninStrictPositivityTransfer`. Their proof of Theorem 6.11 is numerically certified with margin
 `ε₂ − ε₁ ≈ 0.0032` (Lemma 6.10), so it cannot be reproduced in Lean under the no-computation rule.
+
+## Addendum 2026-09-03 — the degeneracy law (Lean)
+
+`3-formalized/weil-polar-degeneracy-threshold-lean.md`: the pole-vanishing ground energy is
+attained at every aperture, and either it is positive everywhere or it vanishes at a unique
+threshold `a*` where the form has a normalized pole-vanishing null vector and is nonnegative on
+the pole-vanishing subspace. With Theorems C–D: given Connes–Consani's Sonin inequality,
+`a* > √2` (in the aperture variable, `a* > (log 2)/2`), i.e. if RH fails, the first degeneracy of
+the pole-vanishing Weil form occurs strictly after the entry of the prime 2. Open: the two RH links
+on paper (RH ⇒ no threshold; no threshold ⇒ RH); the second needs the `s(s−1)` multiplier
+argument inside the corpus's explicit-formula machinery.
+
+## Addendum 2026-09-03 — the pole-vanishing multiplier, and the status of the two RH links
+
+**Multiplier (Lean, `RHTower.CCMRestrictedWeilPolarMultiplier`).** Two integrations by parts give
+`∫ e^{sx} g'' = s² ∫ e^{sx} g` for every smooth compactly supported `g`
+(`integral_exp_mul_deriv_deriv`), so `D = ∂² − 1/4`, whose Mellin symbol in the centred variable
+is `s(s − 1)`, kills both pole coefficients: `D g` is a pole-vanishing strict-interior source for
+every strict-interior source `g` (`isPolarConstrained_polarMultiplier`). Converse on paper: for a
+pole-vanishing smooth `f`, `g := −e^{−|x|/2} ∗ f` is smooth, satisfies `D g = f`, and is compactly
+supported because beyond the support of `f` it equals `−e^{∓x/2} ∫ e^{±y/2} f(y) dy = 0`. So the
+pole-vanishing smooth core is exactly the image of `D`.
+
+**Status of the RH links (deep inspection).** The corpus's `RH ⟸ positivity` chain runs through
+zero-mean two-bump tests localizing Suzuki's screw form at `2Ψ(t)` and the pointwise criterion
+`Ψ ≥ 0 ⇒ RH` (`riemannHypothesis_of_suzukiSmoothTestFormNonnegative`). Two-bump tests are not
+pole-vanishing, and the localization of `Q(D g)` is at the fourth-order distribution `D²Ψ`, whose
+sign is not controlled by `Ψ(t₀) < 0`; Cramer-correcting a negative two-bump test costs `O(1)`
+coefficients and does not preserve negativity. The zero-side route (`xiOffRealSignTest`,
+`XiGuinandWeilExplicitFormula`) lives on the resolvent test algebra, and the corpus records that
+the explicit formula does not yet extend to general compactly supported tests (the full test
+algebra gate, `weil-polarization-layer-state`). Hence `μ₀ > 0 at every aperture ⇒ RH` is a known
+theorem (Bombieri 2000 / Yoshida 1992 on pole-vanishing tests, via `s(s−1)`-weighted Weil
+positivity) but is not formalizable from the corpus's present assets without either extending the
+explicit formula to compact tests or building a pole-vanishing analogue of the screw
+localization. Both are formalization projects of a known theorem; neither is new knowledge.
+
+**Prime-necessity observation (paper, not yet certified).** The exact archimedean form is
+`∫ 2θ′(2πξ)|f̂(ξ)|² dξ` on pole-vanishing tests, and `θ′ < 0` on `|t| < 6.29`. A pole-vanishing
+test of long support with Fourier mass concentrated near `|ξ| = 1/2` (for instance `D g` with `g`
+a smooth window modulated at frequency `1/2`) therefore has negative archimedean form. So the
+archimedean form alone is indefinite on the pole-vanishing subspace beyond an explicit aperture,
+and the prime terms are necessary for Weil positivity there. Yoshida's numerics give archimedean
+positivity up to support `(1/2, 2)`; the explicit indefiniteness threshold is a computable but
+unrecorded number.
+
+## Addendum 2026-09-03 — numerical study (`2-fully-proven/computations/weil-polar-ground-energy/`)
+
+Galerkin (orthonormal Legendre, `N ≤ 80`, double precision and mpmath 60–80 digits) of the exact
+form `Q = 2c₊c₋ − 2Σ Λ(n)n^{−1/2} g(log n) + Arch` on `L²(−a, a)` and on the pole-vanishing
+subspace `V₀`:
+
+- `μ₀(√2) = 0.54704` (N = 64; monotone convergence), second constrained eigenvalue ≈ 0.84; the
+  unconstrained minuscule eigenvalue is `1.3293·10⁻³`. The input of Theorem D holds with a
+  margin of order one, not the 0.3 % of Connes–Consani's comparison.
+- `μ₀(a)` is positive at every computed aperture and every basis size, converged to `≤ 5 %` up to
+  `a = 0.75` (`λ = 2.12`, value `7.6·10⁻¹⁰`), then decays super-exponentially below the
+  resolution of any basis (`4·10⁻³³` upper bound at `a = 1.4`). No degeneracy threshold is
+  visible up to `λ ≈ 5`; an explicit `λ₁` cannot be read off because the energy tends to zero
+  without changing sign.
+- The archimedean form alone is positive on `V₀` up to `λ_arch = 1.81451` (`a = 0.595815`) and
+  negative beyond: prime necessity is quantified, and the √2 threshold is not sharp for the
+  archimedean term.
+- Truncated forms fail right after the first excluded prime power enters: without 3 at
+  `a = 0.5658` (3 enters at 0.5493), without 4 at `0.7025` (4 enters at 0.6931), without 7
+  between 0.95 and 1.00 (7 enters at 0.973), without 8 between 1.00 and 1.05 (8 enters at
+  1.040). Every prime power becomes decisive within about 0.01–0.02 of aperture after entry — the
+  quantitative form of the log-soft entry law.
+- The prime 2 lowers the constrained energy (0.5371 → 0.5331 at `a = 0.35`); later primes raise
+  the truncated energies back to the full value. The prime terms have no fixed sign.
+
+## Addendum 2026-09-03 — Fourier zeros of the pole-vanishing ground state
+
+`computations/weil-polar-ground-energy/spectral_zeros.json`: the ground state of the
+pole-vanishing form is even at every aperture computed and its Fourier zeros converge to the
+zeta ordinates exactly as Connes–Consani–Moscovici's full-form ground state does: at `a = 0.9`
+both reproduce `γ₁ … γ₈` to three decimals. The full form locks on slightly earlier (`a = 0.5`:
+first zero 14.135 versus 14.251). At `√2` the pole-vanishing ground state is generic (zeros
+spaced by `π/a`). Reading: the spectral realization is carried by the archimedean-plus-prime
+part of the form, not by the pole terms; the two pole directions assist the unconstrained
+minimizer rather than contaminate it. Beyond `a ≈ 1.3` extra real zeros interleave with the
+zeta ordinates in both forms (zero counting of exponential type versus `N(T)`), and the
+eigenvectors become numerically delicate; the reliable regime is `a ≤ 1.1`.

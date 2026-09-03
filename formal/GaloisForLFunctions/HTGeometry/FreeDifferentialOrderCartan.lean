@@ -38,6 +38,22 @@ theorem freeDifferentialOrder_eq_topCartan
   rw [variationalOreOperatorMatrixUnit_free_val]
   rfl
 
+/-- Equation `(19)` for every finite iterate of a free differential automorphism. -/
+theorem freeDifferentialOrder_pow_eq_topCartan
+    (σ : FreeAut (C := C) (ι := Fin (r + 1))) (n : ℕ) :
+    DiffOp.completedPseudoDiffOpDominantRelativePosition
+        (DiffOp.mapCompletedPseudoDiffOpLatticeLinear
+          (DiffOp.completedPseudoDiffOpMatrixLinearEquiv
+            (DiffOp.completedPseudoDiffOpMatrixUnitOfOperatorMatrixUnit
+              (variationalOreOperatorMatrixUnit (σ ^ n).fixes (σ ^ n).deriv_comm
+                (freeVariationalOreBasis (C := C) (r := r + 1)))))
+          (DiffOp.standardCompletedPseudoDiffOpLattice
+            (K := JetField C (Fin (r + 1))) (ι := Fin (r + 1))))
+        (DiffOp.standardCompletedPseudoDiffOpLattice
+          (K := JetField C (Fin (r + 1))) (ι := Fin (r + 1))) 0 =
+      (freeDifferentialOrder (σ ^ n) : ℤ) := by
+  exact freeDifferentialOrder_eq_topCartan (σ ^ n)
+
 end
 
 

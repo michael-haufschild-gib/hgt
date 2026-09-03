@@ -28,7 +28,7 @@ theorem derivativeExcised_montgomery_menonHeathBrownCaseII_zeta_overHeight
         (selectedY r) (color r))
     (hbaseGap : ∀ r : ℕ, tau r + 2 * Δ ≤ tau (r + 1))
     (hT : 0 < T) (hΔT : Δ / 2 ≤ T)
-    (hbaseBand : ∀ r : ℕ, T + V ≤ tau r ∧ tau r ≤ 2 * T - V)
+    (hbaseBand : ∀ r ∈ S, T + V ≤ tau r ∧ tau r ≤ 2 * T - V)
     (label : MenonHeathBrownCaseIILabel L X cells)
     (hkind : heathBrownBoxFactorKind 3 label.box.m label.factor = .zeta)
     (hTN : T ≤
@@ -57,9 +57,9 @@ theorem derivativeExcised_montgomery_menonHeathBrownCaseII_zeta_overHeight
   have hgap : ∀ r : ℕ, lam r + Δ ≤ lam (r + 1) := by
     exact menonHeathBrownCaseIISelectedOrdinate_gap hΔ hselection hbaseGap label
   have hordinate : ∀ r ∈ F, T ≤ lam r ∧ lam r ≤ 2 * T := by
-    intro r _hr
+    intro r hr
     exact menonHeathBrownCaseIISelectedOrdinate_mem_band
-      hΔ hgrid hselection hbaseBand label r
+      hΔ hgrid hselection hbaseBand label r (Finset.mem_filter.mp hr).1
   have hband : ∀ r ∈ F, Δ / 2 ≤ lam r ∧ lam r + Δ / 2 ≤ 2 * T + Δ / 2 := by
     intro r hr
     have hrange := hordinate r hr
@@ -109,7 +109,7 @@ theorem derivativeExcised_montgomery_menonHeathBrownCaseII_log_overHeight
         (selectedY r) (color r))
     (hbaseGap : ∀ r : ℕ, tau r + 2 * Δ ≤ tau (r + 1))
     (hT : 0 < T) (hΔT : Δ / 2 ≤ T)
-    (hbaseBand : ∀ r : ℕ, T + V ≤ tau r ∧ tau r ≤ 2 * T - V)
+    (hbaseBand : ∀ r ∈ S, T + V ≤ tau r ∧ tau r ≤ 2 * T - V)
     (label : MenonHeathBrownCaseIILabel L X cells)
     (hkind : heathBrownBoxFactorKind 3 label.box.m label.factor = .log)
     (hTN : T ≤
@@ -139,9 +139,9 @@ theorem derivativeExcised_montgomery_menonHeathBrownCaseII_log_overHeight
   have hgap : ∀ r : ℕ, lam r + Δ ≤ lam (r + 1) := by
     exact menonHeathBrownCaseIISelectedOrdinate_gap hΔ hselection hbaseGap label
   have hordinate : ∀ r ∈ F, T ≤ lam r ∧ lam r ≤ 2 * T := by
-    intro r _hr
+    intro r hr
     exact menonHeathBrownCaseIISelectedOrdinate_mem_band
-      hΔ hgrid hselection hbaseBand label r
+      hΔ hgrid hselection hbaseBand label r (Finset.mem_filter.mp hr).1
   have hband : ∀ r ∈ F, Δ / 2 ≤ lam r ∧ lam r + Δ / 2 ≤ 2 * T + Δ / 2 := by
     intro r hr
     have hrange := hordinate r hr
@@ -192,7 +192,7 @@ theorem derivativeExcised_montgomery_menonHeathBrownCaseII_derivativeDefect
         (selectedY r) (color r))
     (hbaseGap : ∀ r : ℕ, tau r + 2 * Δ ≤ tau (r + 1))
     (hT : 0 < T) (hΔT : Δ / 2 ≤ T)
-    (hbaseBand : ∀ r : ℕ, T + V ≤ tau r ∧ tau r ≤ 2 * T - V)
+    (hbaseBand : ∀ r ∈ S, T + V ≤ tau r ∧ tau r ≤ 2 * T - V)
     (label : MenonHeathBrownCaseIILabel L X cells)
     (hkind : heathBrownBoxFactorKind 3 label.box.m label.factor = .zeta ∨
       heathBrownBoxFactorKind 3 label.box.m label.factor = .log)
@@ -243,9 +243,9 @@ theorem derivativeExcised_montgomery_menonHeathBrownCaseII_derivativeDefect
   have hgap : ∀ r : ℕ, lam r + Δ ≤ lam (r + 1) := by
     exact menonHeathBrownCaseIISelectedOrdinate_gap hΔ hselection hbaseGap label
   have hordinate : ∀ r ∈ F, T ≤ lam r ∧ lam r ≤ 2 * T := by
-    intro r _hr
+    intro r hr
     exact menonHeathBrownCaseIISelectedOrdinate_mem_band
-      hΔ hgrid hselection hbaseBand label r
+      hΔ hgrid hselection hbaseBand label r (Finset.mem_filter.mp hr).1
   have hband : ∀ r ∈ F, Δ / 2 ≤ lam r ∧ lam r + Δ / 2 ≤ 2 * T + Δ / 2 := by
     intro r hr
     have hrange := hordinate r hr

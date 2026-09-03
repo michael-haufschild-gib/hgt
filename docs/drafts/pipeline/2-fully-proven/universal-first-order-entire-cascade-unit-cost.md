@@ -10361,3 +10361,49 @@ This closes compatibility of the nested state valuation flag.  It does not force
 algebraic-closure lift to choose derivative roots with the nonzero output-linear Wiman leads.
 Those simultaneous branch-lead choices, followed by the place-specific `RatIn` and response
 bounds, remain the exact open core.  The card stays at Stage 2.
+
+### Actual derivative branches are nonzero (2026-09-03)
+
+`HTGeometry/NonautonomousFinitePuiseuxBranchNonzero.lean` proves unconditionally that every actual
+cascade state is transcendental over the constants, hence cannot have zero meromorphic derivative.
+It then transports this fact into both the finite actual derivative-branch field and its canonical
+algebraic-closure target embedding:
+
+```text
+nonautonomousFiniteCascadeDerivativeInBranchField_ne_zero
+nonautonomousFiniteCascadeBranchAlgebraicClosureEmbedding_derivative_ne_zero.
+```
+
+The proof uses the corpus theorem identifying the constants of the plane meromorphic field with
+`C` and explicitly reconciles the two existing complex-algebra structures; it adds no premise.
+Direct checking and the targeted leaf build pass.  All three new declarations audit to exactly
+`[propext, Classical.choice, Quot.sound]`; the leaf is wired into `HTGeometry`, and no umbrella
+build was run.
+
+This removes branch vanishing itself from the open core.  It does not yet identify a simultaneous
+valuation-compatible choice whose initial terms are the required nonzero output-linear Wiman
+roots.  That common leading-term selection and the place-specific `RatIn`/response bounds remain.
+Card stays at Stage 2.
+
+### Canonical finite-field velocity factorization (2026-09-03)
+
+`HTGeometry/NonautonomousFinitePuiseuxVelocityFactorization.lean` removes the arbitrary velocity
+witnesses from the branch-selection interface.  Each reversed constituent velocity is now the
+canonical ratio of two successive nonzero actual state derivatives inside the finite branch field.
+For every reversed state coordinate `k`, the exact selection-shaped suffix product is
+
+```text
+product_(j >= k) velocity_j
+  = actual derivative branch of state_(rev(k)+1).
+```
+
+The proof establishes the finite reversal bijection and telescopes the ratios; nonvanishing follows
+from actual derivative nonvanishing.  No analytic selection premise is used.  Direct checking and
+the targeted leaf build pass.  All seven new declarations audit to at most
+`[propext, Classical.choice, Quot.sound]`; the leaf is wired into `HTGeometry`, and no umbrella
+build was run.
+
+Thus actual velocity elements, their nonvanishing, and the required state-derivative product law
+are unconditional.  Remaining open core is their simultaneous finite-ramified Hahn landing with
+the prescribed nonzero output-linear initial terms, followed by place-specific `RatIn` and response
+bounds.  Card stays at Stage 2.

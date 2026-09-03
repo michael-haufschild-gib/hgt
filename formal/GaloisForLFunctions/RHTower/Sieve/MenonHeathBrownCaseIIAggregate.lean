@@ -285,7 +285,7 @@ theorem eventually_card_le_sum_menonHeathBrownCaseII_activeReceiver
           (selectedY r) (color r)) →
       (∀ r : ℕ, tau r + 2 * Δ ≤ tau (r + 1)) →
       0 < T → Δ / 2 ≤ T →
-      (∀ r : ℕ, T + V ≤ tau r ∧ tau r ≤ 2 * T - V) →
+      (∀ r ∈ S, T + V ≤ tau r ∧ tau r ≤ 2 * T - V) →
       (∀ label : MenonHeathBrownCaseIILabel L X cells,
         (menonHeathBrownCaseIIColorFibre S color label).Nonempty →
         ∀ r ∈ menonHeathBrownCaseIIColorFibre S color label,

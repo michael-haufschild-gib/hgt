@@ -183,6 +183,12 @@ one pre-divisor charge rather than independent coincidences.
 
 ## 8. Hostile boundary: what this does not prove
 
+Despite the name, `t -> T(t)` is not a trace-norm-continuous homotopy through the neutral wall:
+`||T(t)||_1=1` for every `t!=0` but `T(0)=0`. This discontinuity is forced by integer trace:
+a trace-norm-continuous integer-valued trace cannot jump from `-1` to `0` to `1`. Thus `T` is a
+two-chamber wall defect. Any genuinely continuous completion dynamics must retain `T` as a
+relative index/first-exit charge, not use `(SGRC.2)` itself as the evolution.
+
 `T_d` uniquely reconstructs its finite-trace potential `G_d`; every other bounded solution of
 the same Stein equation is `G_d+R` with shift-harmonic Toeplitz `R`. Finite trace kills `R`.
 

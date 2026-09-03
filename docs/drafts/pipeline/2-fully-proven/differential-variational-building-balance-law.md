@@ -2003,3 +2003,284 @@ build was run.
 Remaining work is the general coordinate-sum balance law, continuous global CAT(0) building,
 semisimplicity/axes and visual boundary flags, asymptotic phase dichotomy, and the remaining
 free-field endpoint consequences.  Card remains at Stage 2.
+
+### Lean progress — exact uniformizer-power quotient lengths (2026-09-03)
+
+`CompletedPseudoDiffOpUniformizerResidue` packages the canonical inverse derivative inside the
+completed valuation ring, proves that it generates the strict maximal ideal, and identifies the
+residue quotient as one simple composition factor.  `CompletedPseudoDiffOpUniformizerPowerLength`
+then identifies every principal uniformizer-power lattice with the integer ring, proves every
+adjacent layer has module length one, constructs the exact consecutive quotient sequence, and
+deduces the unconditional formula
+
+```text
+completedPseudoDiffOpUniformizerPowerQuotient_length n :
+  length(O / O·∂⁻ⁿ) = n.
+```
+
+Direct checks and targeted leaf builds pass.  The batched audit of all twenty new declarations in
+the two leaves reports exactly `[propext, Classical.choice, Quot.sound]`.  Both leaves are wired
+into `HTGeometry`; no umbrella build was run.
+
+This supplies the exact local length unit needed to define and compute additive relative indices
+of completed lattices.  Identification of the Cartan coordinate sum with the variational Ore
+balance, continuous global CAT(0) realization, semisimplicity/axes, boundary flags, and the
+asymptotic phase theorem remain open.  Card remains at Stage 2.
+
+### Lean progress — unconditional finite-rank Cartan balance `(12)` (2026-09-03)
+
+The completed-lattice length chain now includes arbitrary coweight intervals, arbitrary relative
+lattice quotients, exact length additivity for nested lattices, and the additive integral Cartan
+index.  `DifferentialOperatorCompletedCartanBalance` proves that this index vanishes for every
+matrix unit over the differential Ore ring.  Its proof uses only actual Ore row-column reduction:
+elementary operator transvections have zero index, every reduced diagonal matrix unit and its
+inverse have order-zero entries, and hence the reduced matrix fixes the standard completed
+valuation lattice.
+
+Consequently the literal dominant relative-position vector satisfies
+
+```text
+differentialOperatorMatrixCartanBalance
+variationalOreCartanBalance
+```
+
+for every invertible finite operator matrix and every canonical finite-basis variational Ore
+action, respectively.  The same leaf states the balance for every finite iterate and packages a
+finite-basis all-iterate form directly from finite differential generation.  This closes equation
+`(12)` without a determinant premise, a chosen diagonal form, or any extra proposition hypothesis.
+`FreeDifferentialOrderCartan` likewise now states `(19)` explicitly for every iterate.  Direct
+checking and the targeted leaf builds pass.  All thirty-eight declarations in the new balance
+leaf, and the new free-iterate declaration, audit to exactly
+`[propext, Classical.choice, Quot.sound]`.  The leaf is wired into `HTGeometry`; no umbrella build
+was run.
+
+Remaining work is the continuous global affine-building realization, CAT(0) semisimplicity and
+axes, visual weighted boundary flags, the asymptotic phase dichotomy, and the remaining free-field
+endpoint equivalences.  Card remains at Stage 2.
+
+### Lean progress — exact operator rank/differential-transcendence identity `(4)` (2026-09-03)
+
+`DifferentialVariationalRank` closes the basis-free operator-rank identity in `(4)`.  It first
+turns every differential-algebraicity relation into an explicit nonzero operator annihilating the
+corresponding universal differential modulo Ore torsion.  For every finite index type it then
+proves the exact equivalences
+
+```text
+DifferentialIndependent C y
+  ↔ LinearIndependent (DiffOp K) [d y_i]
+  ↔ LinearIndependent (PseudoDiffOp K) localized-coordinate-row(y_i).
+```
+
+For an arbitrary finite differential generating tuple, a differential-matroid basis of its range
+is consequently a skew-field basis of the localized coordinate space attached to every finite
+operator basis.  Cardinal comparison gives the unconditional theorem
+
+```text
+variationalOreModule_rank_eq_differentialTranscendenceDegree :
+  Module.rank (DiffOp K) (VariationalOreModule C K) =
+    constantBaseDifferentialTranscendenceDegree C K.
+```
+
+The right side is the corpus's `differentialTranscendenceDegree` with the base equipped internally
+with its canonical zero derivation and the induced `DifferentialAlgebra C K` structure.  No new
+premise is exposed.  The leaf also proves that differential generators span the quotient and its
+localized coordinate space.  Direct checking and the targeted leaf build pass.  All twelve new
+public declarations audit to only `[propext, Classical.choice, Quot.sound]`.  The leaf is wired
+into `HTGeometry`; no umbrella build was run.
+
+This closes `rank_(R_K) M_K = differential-trdeg_C K` and the finite skew-field coordinate
+dimension comparison.  The literal noncommutative balanced tensor-product carrier
+`Q_K tensor_(R_K) M_K` is not yet packaged in the corpus, so its displayed middle equality in
+`(4)` is not claimed as a separate Lean theorem.  Continuous affine-building gluing, CAT(0)
+semisimplicity/axes, visual boundary flags, the global phase dichotomy, and the remaining
+free-field endpoint equivalences also remain.  Card remains at Stage 2.
+
+### Lean progress — exact reversal of Euclidean Cartan position (2026-09-03)
+
+`CompletedPseudoDiffOpRelativePositionSymmetry` proves the ordered-pair reversal law for arbitrary
+actual completed valuation lattices.  If `mu(L,M)` is the canonical decreasing Cartan vector, then
+
+```text
+mu(M,L)_i = -mu(L,M)_(rev i).
+```
+
+The proof constructs the reverse Cartan frame explicitly: it applies the inverse diagonal
+coweight to exchange the standard and displaced lattices, then reverses the finite coordinate
+frame to return to the dominant chamber.  It also proves self-position is zero, centering commutes
+with this reversal, and therefore the Euclidean norm of the centered projective position is
+symmetric.  The leaf exposes
+
+```text
+differentialVariationalProjectiveEuclideanVertexDistance
+```
+
+as the literal Euclidean norm of the centered Cartan vector and proves nonnegativity, diagonal
+vanishing, and symmetry.  Direct checking, the targeted leaf build, and the batched audit of all
+eighteen new declarations pass; every declaration uses at most
+`[propext, Classical.choice, Quot.sound]`.  The leaf is wired into `HTGeometry`; no umbrella build
+was run.
+
+This is the exact symmetry layer needed for the Euclidean vertex metric.  Its triangle inequality
+still requires Cartan-product majorization, and the continuous affine-building gluing, CAT(0)
+semisimplicity/axes, visual boundary flags, global phase dichotomy, literal balanced tensor
+carrier, and remaining free-field endpoint equivalences remain open.  Card remains at Stage 2.
+
+### Lean progress — Euclidean vertex isometries and rank-two displacement (2026-09-03)
+
+`CompletedPseudoDiffOpProjectiveEuclideanAction` now proves that completed-skew linear transport,
+differential coefficient transport, their semilinear composition, and every canonical variational
+Ore action preserve `differentialVariationalProjectiveEuclideanVertexDistance` exactly.
+
+`FreeDifferentialClockShearEuclidean` evaluates that distance on the literal canonical rank-two
+orbit.  Combining the already-proved Cartan vector `(n,-n)` with the genuine type-`A_1` Euclidean
+norm gives
+
+```text
+freeClockShear_euclideanVertexDistance n = sqrt(2) * n.
+```
+
+Both direct checks and targeted builds pass.  A batched audit of the five new declarations reports
+exactly `[propext, Classical.choice, Quot.sound]`.  The new leaf is wired into `HTGeometry`; no
+umbrella build was run.
+
+This closes the vector-norm displacement and action-invariance pieces on actual vertices.  The
+Euclidean vertex triangle inequality still requires Cartan-product majorization; continuous
+apartment gluing, CAT(0), semisimplicity/axes, visual flags, the global phase dichotomy, literal
+balanced tensor carrier, and remaining free-field endpoint equivalences remain open.  Card remains
+at Stage 2.
+
+### Lean progress — literal noncommutative rational tensor carrier (2026-09-03)
+
+`DifferentialOreLocalizationTensor` constructs the scalar extension displayed in `(3)` as a
+literal noncommutative balanced quotient.  For every left `K[∂;δ]`-module `M`, the free left
+`Q_K`-module on `M` is divided by additivity and the Ore balance relation
+
+```text
+1 ⊗ (a • m) = a ⊗ m.
+```
+
+Thus no commutative tensor-product surrogate is used.  Every finite operator basis induces and is
+proved to invert a `Q_K`-linear equivalence between this quotient and `Q_K^r`.  Specializing to the
+torsion-free variational Kähler module gives the unconditional equality
+
+```text
+rank_(Q_K) (Q_K tensor_(K[∂;δ]) M_K)
+  = rank_(K[∂;δ]) M_K
+  = differential-trdeg_C K.
+```
+
+This closes all three literal terms in `(4)`.  Direct checking and the targeted leaf build pass.
+The batched audit of all twenty-one new declarations reports exactly
+`[propext, Classical.choice, Quot.sound]`; the leaf is wired into `HTGeometry`, and no umbrella
+build was run.
+
+Remaining work is Cartan-product majorization and the Euclidean vertex triangle inequality,
+continuous affine-building gluing, CAT(0) semisimplicity/axes, visual boundary flags, the global
+phase dichotomy, and remaining free-field endpoint equivalences.  Card remains at Stage 2.
+
+### Lean progress — exact Euclidean vertex separation (2026-09-03)
+
+`CompletedPseudoDiffOpEuclideanSeparation` proves that a centered dominant Cartan vector vanishes
+exactly when the uncentered coweight is constant.  Pulling the resulting standard-lattice
+homothety back through the actual Cartan frame gives
+
+```text
+completedPseudoDiffOpEuclideanRelativePosition L M = 0
+  iff L.LeftHomothetic M.
+```
+
+Passing to the projective quotient proves exact point separation and its strict-positivity form:
+
+```text
+differentialVariationalProjectiveEuclideanVertexDistance x y = 0 iff x = y,
+0 < differentialVariationalProjectiveEuclideanVertexDistance x y iff x != y.
+```
+
+The proof includes the rank-zero carrier rather than imposing positive rank.  Direct checking and
+the targeted leaf build pass.  All five new declarations audit to exactly
+`[propext, Classical.choice, Quot.sound]`; the leaf is wired into `HTGeometry`, and no umbrella
+build was run.
+
+Together with nonnegativity and symmetry, only Cartan-product majorization and its Euclidean
+triangle consequence remain before this vertex function is a metric.  Continuous affine-building
+gluing, CAT(0) semisimplicity/axes, visual boundary flags, the global phase dichotomy, and remaining
+free-field endpoint equivalences also remain.  Card stays at Stage 2.
+
+### Lean progress — exact Cartan majorization and Euclidean vertex triangle (2026-09-03)
+
+`CompletedPseudoDiffOpEuclideanTriangle` constructs the literal meet of any two full completed
+valuation lattices and proves its carrier is their submodule intersection.  An injective map from
+the triple-intersection quotient layer into the second pair quotient gives the unconditional
+asymmetric finite-length triangle.  In simultaneous Cartan coordinates this length is exactly the
+hinge sum
+
+```text
+sum_i max(0, mu_i - t).
+```
+
+Uniformizer shifts therefore turn the length triangle into every hinge inequality for a Cartan
+product.  The integral threshold identity for decreasing coweights converts these inequalities
+into every top-`k` majorization inequality.  The already-proved Cartan-index cocycle centers that
+majorization without loss, and the finite-dimensional Karamata/Minkowski compiler yields the exact
+projective vertex triangle
+
+```text
+differentialVariationalProjectiveEuclideanVertexDistance x z
+  <= differentialVariationalProjectiveEuclideanVertexDistance x y
+     + differentialVariationalProjectiveEuclideanVertexDistance y z.
+```
+
+No abstract metric or building premise is used, and rank zero is included.  Direct checking and
+the targeted leaf build pass.  All thirty-two new declarations audit to at most
+`[propext, Classical.choice, Quot.sound]`; the leaf is wired into `HTGeometry`, and no umbrella
+build was run.
+
+This closes Cartan-product top-sum majorization and the exact Euclidean vertex triangle.  The
+remaining exact obligations are continuous affine-building gluing, CAT(0) geometry,
+semisimplicity/axes, visual boundary flags, the global asymptotic phase dichotomy, and remaining
+free-field reconstruction endpoint equivalences.  Card stays at Stage 2.
+
+`CompletedPseudoDiffOpEuclideanMetricSpace` packages this function as literal `PseudoMetricSpace`
+and `MetricSpace` structures.  They are named values, not competing global instances, so the
+Euclidean metric coexists coherently with the earlier integral interleaving metric on the same
+carrier.  Its direct check and targeted build pass; all three declarations audit to at most
+`[propext, Classical.choice, Quot.sound]` and the leaf is wired into `HTGeometry`.
+
+`CompletedPseudoDiffOpEuclideanComplete` proves the Euclidean vertex metric itself is complete.
+Centered integral coweights give a rank-independent separation radius: distance below `1/2`
+forces equality, including ranks zero and one.  Hence every Euclidean Cauchy filter is eventually
+a singleton.  Direct checking and the targeted build pass; all three declarations audit to at
+most `[propext, Classical.choice, Quot.sound]`, and the leaf is umbrella-wired.  This is
+completeness of the literal vertex carrier; continuous apartment gluing and CAT(0) geometry of the
+full geometric realization remain separate obligations.
+
+`CompletedPseudoDiffOpProjectiveEuclideanIsometry` upgrades exact distance invariance to literal
+`Isometry` values for every completed-skew semilinear projective action.  For each bundled
+differential-field automorphism, the existing inverse-automorphism carrier equivalence and this
+distance theorem assemble into a genuine `IsometryEquiv` of the named Euclidean metric space.
+Its multiplication and identity laws prove the action is functorial at the literal isometry level.
+Direct checking and the targeted leaf build pass; all six new declarations audit to exactly
+`[propext, Classical.choice, Quot.sound]`, and the leaf is wired into `HTGeometry`.  No umbrella
+build was run.  This closes metric-level action packaging but does not supply the still-missing
+continuous affine-building realization, CAT(0) geometry, axes, or boundary theory; card stays at
+Stage 2.
+
+`CompletedPseudoDiffOpProjectiveEuclideanBasisIsometry` packages every invertible completed-skew
+matrix action, and in particular every completed operator-basis transition, as a literal Euclidean
+`IsometryEquiv`.  The denominator-free twisted change-of-basis identity now yields exact conjugacy
+of canonical differential-field actions in any two finite operator bases.  Direct checking and the
+targeted leaf build pass; all four new declarations audit to exactly
+`[propext, Classical.choice, Quot.sound]`, and the leaf is wired into `HTGeometry` without an
+umbrella build.  This closes Theorem A's functoriality and basis-independence at the complete
+Euclidean vertex-metric level.  Continuous affine realization and Theorem B's CAT(0)/axis/boundary
+claims remain, so the card stays at Stage 2.
+
+`DifferentialOperatorCompletedCartanBalanceEveryLattice` removes the standard-base restriction
+from equation (12).  Simultaneous semilinear transport preserves Cartan index, and the additive
+Cartan cocycle proves that displacement from an arbitrary lattice equals the matrix Cartan
+character.  Since every invertible differential-operator matrix has character zero, every
+canonical variational action and every finite iterate is exactly balanced from every completed
+valuation lattice.  Direct checking and the targeted leaf build pass; all six new declarations
+audit to exactly `[propext, Classical.choice, Quot.sound]`, and the leaf is wired into `HTGeometry`
+without an umbrella build.  Equation (12) is now fully base-point independent.  Theorem B's
+continuous affine realization and axis/boundary phase law remain, so the card stays at Stage 2.

@@ -132,8 +132,8 @@ theorem menonHeathBrownCaseIISelectedOrdinate_mem_band
     (hselection : ∀ r ∈ S,
       IsMenonHeathBrownCaseIISelection L X a cells T0 t sigma (tau r) V Δ Q
         (selectedY r) (color r))
-    (hbaseBand : ∀ r : ℕ, T + V ≤ tau r ∧ tau r ≤ 2 * T - V)
-    (label : MenonHeathBrownCaseIILabel L X cells) (r : ℕ) :
+    (hbaseBand : ∀ r ∈ S, T + V ≤ tau r ∧ tau r ≤ 2 * T - V)
+    (label : MenonHeathBrownCaseIILabel L X cells) (r : ℕ) (hr : r ∈ S) :
     T ≤ menonHeathBrownCaseIISelectedOrdinate
         S color selectedY tau V Δ label r ∧
       menonHeathBrownCaseIISelectedOrdinate
@@ -142,7 +142,7 @@ theorem menonHeathBrownCaseIISelectedOrdinate_mem_band
     hΔ hgrid hselection label r
   rw [Set.mem_Icc] at hperturb
   dsimp only [menonHeathBrownCaseIISelectedOrdinate]
-  constructor <;> linarith [(hbaseBand r).1, (hbaseBand r).2]
+  constructor <;> linarith [(hbaseBand r hr).1, (hbaseBand r hr).2]
 
 /-- On its color fibre, the continued sequence is exactly the selected Perron ordinate. -/
 theorem menonHeathBrownCaseIISelectedOrdinate_eq_on_fibre

@@ -31,7 +31,7 @@ theorem eventually_menonHeathBrownCaseII_nonempty_fibre_receiver
           (selectedY r) (color r)) →
       (∀ r : ℕ, tau r + 2 * Δ ≤ tau (r + 1)) →
       0 < T → Δ / 2 ≤ T →
-      (∀ r : ℕ, T + V ≤ tau r ∧ tau r ≤ 2 * T - V) →
+      (∀ r ∈ S, T + V ≤ tau r ∧ tau r ≤ 2 * T - V) →
       ∀ (label : MenonHeathBrownCaseIILabel L X cells),
       heathBrownBoxFactorExponent
         label.box.a label.box.b label.box.q label.factor = q0 →

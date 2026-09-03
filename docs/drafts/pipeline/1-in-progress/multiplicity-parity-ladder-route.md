@@ -1844,3 +1844,24 @@ Status: `[GENERAL INTERIOR POLE-FACTOR GROWTH CLOSED] [NOT RH]`. Positive surviv
 Hermite obstructions may now choose the witness continuously. This is the missing reusable input
 for closing every eventual linear slope strictly below the geometric threshold `5/11`. Lean:
 `SquarefreeConvolutionHalfInteriorPoleFactorGeneral.lean`; direct Lean check passes.
+
+## 2026-09-03 — Every eventual Hermite slope below `5/11` is closed
+
+Let `0<=alpha<5/11`. Choose witness gap `d=(alpha+5/11)/2`, Cauchy radius
+`r=(alpha+d)/2`, and real witness `sigma=6/11+d`. Then
+`alpha<r<d<5/11`, so `1/2<sigma<1` and the radius-`r` Cauchy circle remains in `Re(s)>=0`.
+The variable-radius estimate gives a counterterm envelope proportional to
+
+`N (d/r)^(K+1) exp(-(d-r)N)`.
+
+Since `d/r=1+(d-r)/r<=exp((d-r)/r)`, every schedule eventually satisfying
+`K(N)<=alpha N` makes the counterterm tend to zero at `sigma`, with exact positive rate
+`(d-r)(1-alpha/r)`. The general interior pole-factor theorem instead forces that counterterm to
+be unbounded under local boundedness.
+
+Status: `[ALL SUBCRITICAL LINEAR-DEPTH HERMITE SLOPES CLOSED] [NOT RH]`. Combined exact monotone
+frontier for the canonical point-Hermite construction is now
+`5/11 <= K(N)/N < 37/80`: slopes strictly below `5/11` cannot yield local boundedness, while
+slopes eventually at least `37/80` cannot preserve the Euler germ. Critical slope `5/11`, the
+small interval through `37/80`, oscillatory schedules, and distributed/nonlocal transitions remain.
+Lean: `SquarefreeConvolutionHalfMovingHermiteSubcriticalSlopeNoGo.lean`; direct Lean check passes.

@@ -4952,6 +4952,8 @@ F542–F545 [paper/Lean core] — First-exit curvature reconstructs mixed
 packet/exit law, Riesz potential recovers survival, and index/flux/trace/norm are one unit.
 F546/F547 [paper] — Same-defect completions are `G_A+R`, `R=U*RU`; no nonzero compact `R`, and
 positive `R` repeats infinite mass. Observer `p` has harmonic infinite-trace and first-exit S1 lifts.
+CANNOT-248 — Signed `T(t)` is a wall family, not trace-norm homotopy: integral trace and unit norm
+force a jump at zero. Continuous dynamics must carry `T` as relative index, not as evolution.
 FAIL-93/CANNOT-245/MUST-165/166 — Horizon data do not select harmonic over first-exit lift. A
 viable field must derive its history boundary operation before observer specialization.
 F548 [paper] — On every fixed physical prime edge, Pluecker block mass satisfies `D_e~c e^-6`,
@@ -4959,6 +4961,17 @@ while theta first-exit mass satisfies `w_e~(315/8)e^-4`. Their unique positive h
 `sqrt(w_e/pi_e)` grows linearly and has exactly the `N+1` graph domain (`ULF-TPFOI-001`).
 CANNOT-246/MUST-167 — No bounded diagonal coefficient-faithful Pluecker-to-theta completion exists.
 Completion must be first-order unbounded, depth-mixing, or abandon literal coefficients.
+F549 [paper] — The unique half-density has `s_(e+1)/s_e=1+1/e+O(e^-2)`; its formation residue
+equals `(6-4)/2=1=-ind(C)=Tr(T)`, independent of prime edge (`ULF-IFOCC-001`).
+F550 [paper] — The singular sandwich closes edgewise to a positive trace-one nuclear operator
+whose literal Pluecker kernel moves with depth; this repairs the old `history tensor prime` defect.
+CANNOT-247/F551 [paper] — This gauge cannot descend to shared prime-depth cells: overlap forces
+`s_e=s_(e+1)`, contradicting linear escape. Finite connection is flat; obstruction is its improper
+trivialization at the open formation end (`ULF-POSGND-001`).
+MUST-168 — Any literal global completion must carry one unit graph connection with prime-dependent
+blocks; derive that connection from integer/Poisson formation before any Xi specialization.
+MUST-169 — Complete on the formation cover before quotienting to physical cells; subtract the
+universal unit residue, then prove only the residual relation descends properly.
 
 ## 2026-09-03 (viii–ix) — constrained Weil continuity and ground energy
 
@@ -4970,3 +4983,100 @@ F404/F405 — Lean: nonzero pole-vanishing smooth interior sources exist and are
 MUST-142 — `WEIL-ENTRY-001` is Lean-closed modulo published numerical certificate
 `μ₀(√2)>0` (margin about `0.3%`); qualitative prime-2 crossing is formal, quantitative crossing is
 that one external number.
+
+## 2026-09-03 (x) — degeneracy threshold of the pole-vanishing Weil form
+
+F406 — Lean (`RHTower.CCMRestrictedWeilPolarGroundState`): the pole-vanishing ground energy is
+attained; either it is positive at every aperture or it vanishes at a unique threshold with an
+attained normalized pole-vanishing null vector and nonnegativity on the pole-vanishing subspace.
+
+MUST-143 — Failure of Weil positivity on the pole-vanishing subspace, if it happens, is a
+degenerate threshold `a*` with an attained null vector; prime entries cannot cause it
+discontinuously; given Connes–Consani, `a* > (log 2)/2`. The remaining links to RH itself
+(RH ⇒ no threshold by zero density; no threshold ⇒ RH by the `s(s−1)` multiplier) are paper-level.
+
+## 2026-09-03 (xi) — pole-vanishing multiplier; RH-link status
+
+F407 — Lean (`RHTower.CCMRestrictedWeilPolarMultiplier`): `∫ e^{sx} g'' = s² ∫ e^{sx} g` for smooth
+compactly supported `g`; the operator `∂² − 1/4` sends every strict-interior source to a
+pole-vanishing one (`isPolarConstrained_polarMultiplier`). The pole-vanishing smooth core is the
+image of `∂² − 1/4` (converse on paper via the Green kernel `−e^{−|x|/2}`).
+
+MUST-144 — The link `μ₀ > 0 everywhere ⇒ RH` is Bombieri–Yoshida's pole-vanishing Weil criterion;
+the corpus cannot currently formalize it (two-bump localization is not pole-vanishing; the
+explicit formula stops at the resolvent algebra). It is a known theorem, so it is recorded, not
+pursued. The archimedean form alone is indefinite on the pole-vanishing subspace at large
+apertures (Fourier mass near `|ξ| = 1/2` where `θ′ < 0`), so primes are necessary there.
+
+- **Nugget:** the pole-vanishing subspace is the range of `∂² − 1/4`, the operator with Mellin
+  symbol `s(s−1)`; Weil's pole terms and the two pole constraints are the same two-dimensional
+  space seen from the test side and the zero side.
+
+## 2026-09-03 (xii) — numerical study of the pole-vanishing Weil form
+
+F408 — Computation (RunPod, report in `2-fully-proven/computations/weil-polar-ground-energy/`):
+`μ₀(√2) = 0.54704` with second eigenvalue 0.84; `μ₀(a) > 0` at every aperture tested, converged
+through `λ ≈ 2.1` and decaying super-exponentially after; archimedean-only positivity on the
+pole-vanishing subspace ends at `λ_arch = 1.81451`; each prime power becomes necessary within
+0.01–0.02 of aperture after its entry. Upper-bound numerics with convergence control, not
+interval-certified.
+
+MUST-145 — Numerically the constrained input of Theorem D holds with an order-one margin, and no
+degeneracy threshold exists below `λ ≈ 5`; the analytic wall is unchanged (a Galerkin minimum is
+an upper bound, so positivity is evidence, negativity is proof). New quantitative facts: the
+archimedean threshold `λ_arch = 1.8145` and the immediate necessity of each entering prime.
+
+F409 — Computation: the pole-vanishing ground state's Fourier zeros converge to the zeta
+ordinates (eight zeros to `10⁻³` by `a = 0.9`), like the full ground state of Connes–Consani–
+Moscovici; the spectral realization does not depend on the pole terms.
+
+## 2026-09-03 (xiii) — Route J: the critical degree is `n ≈ p`
+
+F410 — Computation (`computations/routej-semilocal-scale/`): for the one-prime semilocal Jacobi
+matrix of Connes–Consani–Moscovici, the exact Euler deformation of the four-radius residual is
+order one at degree `n ≈ p` (`qn ≈ 1`), not at the first-jet scale `p²` nor the third-jet scale
+`p^{6/5}`; the corpus's Lean-proved jets are confirmed in their regimes and overtaken beyond.
+
+MUST-146 — Route J survivor target 2 is settled numerically: the fixed Euler orders do not share
+a scale; the natural variable of the finite-`q` semilocal Jacobi problem is `x = n/p`. Analytic
+work on the one-prime boundary layer should be organized around `qn`.
+
+F411 — Computation: Route J scaling law `D_k(q) = q^{1/2}Φ(qn) + O(q)`, universal profile `Φ`
+with zeros `0.159, 0.823, 1.586, 2.369` and extrema `−10.0, +35.4, −72.5`; odd Lean-proved jets
+are its Taylor coefficients, even jets are subleading corrections. Order-one threshold at
+`n ~ p^{6/5}` (third-jet scale), refining F410.
+
+F412 — Computation: the profile `Φ` is a modulated sinusoid, `Φ(x) ≈ −26 x^{1.45} sin(4.06x − 0.19)`
+(rms 0.4 %), so the order-one degree is `n* ≈ p^{4/3}/8.8`; for two primes the cross term is the
+linear response to the beat mode `2(p₁p₂)^{−1/2} cos(s log(p₂/p₁))` (correlation 1.0000) and
+dominates the one-prime terms by a factor `~p`.
+
+MUST-147 — The finite-`S` semilocal Jacobi problem is governed by the pairwise beat frequencies
+`log(p_i/p_j)`, not by one-prime boundary layers; Route J survivor target 3 is settled
+numerically, and the analytic target is the first-order response `H(n, δ)` of the
+Meixner–Pollaczek Jacobi matrix to `1 + 2ε cos(δ s)`. The frequency `4` of `Φ` in `n/p` is
+unexplained.
+
+F413 — Lean (`SemilocalCosineModeFirstOrderResponse.lean`): for the archimedean semilocal Jacobi
+matrix, the Gram matrix of the measure `(1 + 2ε cos(δ s)) μ` in the orthonormal basis is
+`1 + ε T_n(δ)`, the normalized Hankel determinant has jet `2 Σ_{j≤n} m_j(δ)`
+(`m_j(δ) = ∫ p_j² cos(δ s) dμ`), and the Jacobi radii respond at first order by
+`[ε] a_n = r_n (m_{n+1}(δ) − m_n(δ))`, the Route J residual by `residualJetOf`.  The transfer
+theorems are stated for an arbitrary jet sequence and contain the first-Euler jet as a special
+case.  Beat-mode instance `δ = log(p₂/p₁)` recorded.
+F414 — Computation: the exact one-prime deviation of the Route J residual equals the first-order
+response to the single mode `cos(s log p)` of amplitude `p^{−1/2}` to 0.1–0.4 % (correlation
+≥ 0.999996 for `p = 211..1511`, `n ≤ 2.6 p`); higher harmonics and orders are `O(q)`.
+F415 — Paper theorem (numerically verified to `10⁻⁹`): generating function of all boost matrix
+elements `Σ c_m c_n ⟨p_m, e^{its} p_n⟩ w^m z^n = (cosh t)^{−1/2}(1 − wz − i tanh t (w+z))^{−1/2}`,
+diagonal `m_n(t) = (cosh t)^{−1/2} P_n^{(0,−1/2)}(1 − 2 tanh² t)`.  Mehler–Heine at rapidity
+`log p` gives `m_n ≈ (−1)^n √(2/(πpn)) cos(4n/p)`, hence
+`Φ(x) = 4√(2/π)[√x cos 4x − 8 x^{3/2} sin 4x]` (1 % rms against the data, extrema to three digits,
+exact Lean jets `c₁ = 4√(2/π)`, `c₃ = −160√(2/π)` as Taylor coefficients, prediction
+`c₅ = 384√(2/π)`, threshold `n* = p^{4/3}/8.66`).  The frequency `4` of MUST-147 is the
+Mehler–Heine angle `2 sech(log p)`.
+MUST-148 — Formalize F415: the Meixner–Pollaczek generating function of the archimedean Jacobi
+polynomials, the two-variable boost generating function, the diagonal closed form, and the
+Mehler–Heine limit of `P_n^{(−1/2,0)}`; then the Route J profile `Φ` becomes a Lean theorem
+through F413.  Route J's boundary question is closed on paper: there is no prime-scale boundary
+layer, only the Bessel regime of the SU(1,1) boost elements.
