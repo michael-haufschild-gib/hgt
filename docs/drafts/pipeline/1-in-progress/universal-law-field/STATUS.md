@@ -4971,10 +4971,10 @@ CANNOT-239 — Fixed theta moment hazard is compact but not weak `S₁`: its nor
 partial sums diverge. Trace-class completion cannot match source clock. Residue alone also cannot
 select: finite-rank off-line horizons are residue-invisible.
 
-MUST-161 — Derive a history-dependent theta clock and finite-part origin from literal Poisson
-self-duality. It must land in source residue-three leaf, preserve odd unsquared formation, and
-admit no compensating `S₁` spectator; then each off-line trace-one horizon shifts finite part by
-`+1`, forcing zero horizons.
+MUST-161 — Poisson must select/transport the proved inverse-saddle theta clock and its forced
+double-log transgression, preserve odd unsquared formation, and admit no compensating `S₁`
+spectator. Then each off-line trace-one horizon shifts the remaining finite part by `+1`, forcing
+zero horizons.
 
 ## 2026-09-03 — carrier lattice theorem and Hodge-gate audit
 
@@ -4986,3 +4986,9 @@ MUST-134 — In the Deninger Hodge gate only the geometric production of positiv
 leaves with transverse flow through the archimedean compactification) is a producer; the
 radical-identity, energy-faithfulness, and resolvent-preservation clauses are receivers
 (closure inside the strip; Hodge purity; no off-axis resonances) and cannot be proved below RH.
+
+F521 — Inverse first-atom saddle increments have unique residue-matching scale `6`; their clock
+has residue `3`, while its difference from Hodge time is `3/(n log n)`, with double-log residue `3`.
+
+F522 — `G=sum C^nP₀C*^n` is unique trace-class Stein Gramian, `Tr G=7/4`; its defect sandwich is
+exactly history marginal `Phi`, and `Tr Phi=Tr P₀=1`. Prime formation lifts `Phi` to full `T`.
