@@ -5127,3 +5127,21 @@ MUST-150 — The beat-mode profile: the two-prime cross term is the first-order 
 `δ = log(p₂/p₁)` (report §3.5); its large-`n` law needs the Darboux (fixed-argument) asymptotics of
 `₂F₁(−n, n+½; ½; sech² δ)`, i.e. the oscillation `cos(n θ_δ + φ)` with `θ_δ = 2 arcsin(sech δ)`; the
 Tannery route does not apply (the terms are not individually bounded), so this is a new mechanism.
+F551 — Lean (`LegendreGeneratingFunction`, `LegendreConvolution`, `CentralBinomialAbelBounds`,
+`LegendreHalfSumEstimate`, `LegendreLaplaceHeine`): Legendre polynomials built explicitly (Mathlib has
+none), their generating function, the exact convolution `P_N(cos φ) = Σ C_k C_{N−k} cos((N−2k)φ)`, and
+**Laplace–Heine with an explicit constant**: `|P_N(cos φ) − 2C_N(2 sin φ)^{-1/2}cos((N+½)φ − π/4)| ≤
+400/(N sin φ)` for `0 < φ < π`, `N ≥ 8` (Abel summation + Abel's limit theorem, no contour).
+F552 — Lean (`SemilocalDiagonalLegendre`): `∫p_n² cos(δs)dμ = (cosh δ)^{-1/2} P_{2n}(sech δ)`; the Route
+J residual jet is an exact combination of `P_{4k}, …, P_{4k+8}(sech δ)`.
+F553 — Lean (`RouteJBeatModeProfile`): **the beat-mode law is a theorem**: for fixed `δ > 0`,
+`residualJetOf (cosineModeDeterminantJet δ) k / k^{3/2} − 32√(2/π) σ^{3/2} τ^{5/2}
+sin((4k+9/2)φ − π/4) → 0`, `σ = sech δ`, `τ = tanh δ`, `φ = arccos σ`.  The Darboux mechanism of
+MUST-150 is replaced by the convolution/Abel route.  MUST-150 closed.  Card:
+`3-formalized/route-j-beat-mode-profile-lean.md`.
+MUST-170 — The uniform two-term law: one asymptotic formula for the first-order residual response
+`J_k(δ)` valid for all `δ ≥ δ₀`, `k → ∞`, whose leading term is the beat law and whose second term
+(`k^{1/2}`, from the `O(k)` corrections of `r_{2k+a}r_{2k+b}` and the Szegő second Laplace–Heine term
+`O(1/(N sin φ))`) reproduces the `√X cos 4X` term of `Φ` in the scaling regime `2k sech δ → X`.
+Needs the second-order Laplace–Heine expansion with explicit error and the `1/k` expansion of the
+radius products; then `Φ` and the beat law are two limits of a single theorem.

@@ -45,8 +45,8 @@ theorem momentOrder_le {a x : ℝ} (_hx : 1 < x) (hbig : 1 ≤ (Real.log x) ^ (1
 
 set_option maxHeartbeats 4000000 in
 /-- **The two exponents of the moment bound, uniformly over the ladder.** -/
-theorem expBlock_moment_bounds {a c A β : ℝ} (ha : 0 < a) (hab : a < β) (_hβ1 : β < 1)
-    (hc : 0 < c) (_hA : 0 < A) :
+theorem expBlock_moment_bounds {a c A β : ℝ} (ha : 0 < a) (hab : a < β)
+    (ha1 : a < 1) (hc : 0 < c) (_hA : 0 < A) :
     ∀ᶠ x : ℝ in atTop, ∀ j ∈ Finset.range (expSteps a c β x),
       0 < ((geomBlock (primesRange (highBase a x) (expTop a c β x))
             ((highBase a x : ℕ) : ℝ) (1 + lowEta c x) j).card : ℝ)
@@ -335,7 +335,7 @@ theorem measureReal_annulusLarge_schedule {a c A β : ℝ} (ha : 0 < a) (hab : a
   have hll : Tendsto (fun x : ℝ => Real.log (Real.log x)) atTop atTop :=
     Real.tendsto_log_atTop.comp Real.tendsto_log_atTop
   filter_upwards [Filter.eventually_gt_atTop (1 : ℝ),
-    expBlock_moment_bounds (a := a) (c := c) (A := A) (β := β) ha hab hβ1 hc hA,
+    expBlock_moment_bounds (a := a) (c := c) (A := A) (β := β) ha hab (by linarith) hc hA,
     two_le_highBase_and_le_expTop (a := a) (c := c) (β := β) ha hc,
     one_le_twoRangeCut (β := β) (by linarith) hβ1,
     hll.eventually_ge_atTop (0 : ℝ)] with x hx1 hblock hlow2 hcut1 hu0

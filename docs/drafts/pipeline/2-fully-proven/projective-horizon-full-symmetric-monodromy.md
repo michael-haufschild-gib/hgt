@@ -7182,3 +7182,32 @@ presented, its function field is unramified at the generic Schur divisor, and th
 unramified by the Jacobian criterion.  Upgrading codimension-one unramifiedness to formal étaleness
 is Zariski--Nagata purity; Mathlib and this corpus currently contain no such theorem.  The card
 remains at Stage 2 until that exact statement is proved.
+
+### Purity, complex higher rank, and arbitrary-base rank one (2026-09-03)
+
+The formerly open purity statement is now closed in
+`HTGeometry/CriticalBlockNormalizationPurity.lean`.  Together with the explicit source meridians,
+finite-flat fibre rank, and the fixed-field index formula it proves
+
+```text
+criticalGeometricMonodromy_eq_top :
+  criticalGeometricMonodromy ℂ m n = ⊤
+```
+
+for every `m,n>1`.  Separately, centered eliminants and splitting-field transport now prove the
+exact arbitrary-base rank-one cases
+
+```text
+criticalGeometricMonodromy_one_left_eq_top
+criticalGeometricMonodromy_one_right_eq_top
+```
+
+over every algebraically closed characteristic-zero field, including the previously isolated
+degree-two case.  All new leaves pass direct checks, targeted builds, and axiom audits with only
+`[propext, Classical.choice, Quot.sound]`, and are umbrella-wired without an umbrella build.
+
+Card remains Stage 2 because its statement quantifies over an arbitrary algebraically closed
+characteristic-zero base.  The sole surviving case is `m,n>1` over such a base `K`; the complex
+topological proof cannot be reused definitionally.  Exact remaining producer is algebraic
+invariance of the universal critical normal-closure group under extension of algebraically closed
+constants, or equivalently the arbitrary-base torus finite-etale/Kummer block-elimination theorem.

@@ -1659,3 +1659,22 @@ mathematics of its own.  The parent card records the remaining chain, which afte
 nontrivial Schur inertia, the Schur reduction-degree count, and primitivity — the last of which now
 has its main input, `SCE_k`, proved in Lean
 (`GaloisForLFunctions.HTGeometry.rank_eq_one_of_isUnit_discr_mvPolynomial`).
+
+## Status (2026-09-03) — exact rank-one cases unconditional
+
+`HTGeometry/CriticalOneStepRigidityRankOne.lean` applies the new arbitrary-base rank-one full
+monodromy theorems to the existing reconstruction endpoint.  It proves, with no hypotheses beyond
+the card's ambient algebraically closed characteristic-zero field and positive depth,
+
+```text
+criticalObservation_sup_postcritical_eq_criticalSourceFieldSup_one_left
+criticalObservation_sup_postcritical_eq_criticalSourceFieldSup_one_right
+```
+
+for all `1×n` and `m×1` horizons.  Direct check, targeted build, and axiom audit pass; both
+declarations use only `[propext, Classical.choice, Quot.sound]`, and the leaf is umbrella-wired
+without an umbrella build.
+
+Card remains Stage 2 only because the parent full-monodromy card still lacks its arbitrary-base
+higher-rank case.  Over `ℂ`, all higher-rank cases are already unconditional.  No additional
+one-step reconstruction mathematics remains once that exact parent producer is supplied.

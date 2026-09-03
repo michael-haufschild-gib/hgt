@@ -340,3 +340,20 @@ response `residualJetOf (cosineModeDeterminantJet (log p_j)) k_j` converges to
 transformation to the `σ`-form (no cancellation), two contiguous relations that turn the residual
 into first differences of smooth sequences, Tannery's theorem for the Mehler–Heine limits, and the
 Wallis limit.  Pre-certification script: `mehler_heine_precert.py` (+ `contiguous_check.py`).
+
+### 3.10 The beat-mode (fixed-`δ`) law is a Lean theorem (2026-09-03)
+
+`RHTower.RouteJBeatMode.tendsto_beatMode_profile` (module `RouteJBeatModeProfile`): for fixed
+`δ > 0`, `σ = sech δ`, `τ = tanh δ`, `φ = arccos σ`,
+
+    J_k(δ) / k^{3/2}  −  32 √(2/π) σ^{3/2} τ^{5/2} sin((4k + 9/2) φ − π/4)  →  0.
+
+Route: `∫p_n² cos(δs)dμ = (cosh δ)^{-1/2} P_{2n}(sech δ)` (Legendre), the residual as an exact
+combination of `P_{4k}, …, P_{4k+8}`, Laplace–Heine with the explicit constant
+`|P_N(cos φ) − 2C_N(2 sin φ)^{-1/2}cos((N+½)φ − π/4)| ≤ 400/(N sin φ)` (proved from the convolution
+`P_N(cos φ) = Σ C_k C_{N−k} cos((N−2k)φ)` by Abel summation and Abel's limit theorem), Wallis, and the
+identity `−cos(χ−4φ) + 2cos(χ−2φ) − 2cos(χ+2φ) + cos(χ+4φ) = 8 sin 2φ sin²φ sin χ`.
+Pre-certification: `beat_mode_precert.py` (`beat_mode_precert.log`): Legendre identification to
+`10⁻³⁰`, convolution identity, `N·(P_N − asymptotic)` bounded, exact Legendre form of `J_k` to `10⁻²⁹`,
+`J_k / beat law → 1` (`1.0005` at `k = 3200`).  At `δ = log(p₂/p₁)` this is the two-prime cross term of
+§3.5.  Next (MUST-170): the uniform two-term law joining this to `Φ`.
