@@ -18,7 +18,7 @@ medium and long branches. -/
 theorem menonHeathBrownCaseIISelection_factorLower
     {L X a cells : ℕ} {T0 t sigma tau V Δ Q y : ℝ}
     {label : MenonHeathBrownCaseIILabel L X cells}
-    (ha : 1 ≤ a)
+    (_ha : 1 ≤ a)
     (hselection :
       IsMenonHeathBrownCaseIISelection L X a cells T0 t sigma tau V Δ Q y label) :
     (a : ℝ) ^ (1 / 8 : ℝ) ≤
@@ -32,9 +32,7 @@ theorem menonHeathBrownCaseIISelection_factorLower
   | true =>
       have hbranch := hselection.2.2.2.2.2
       simp only [hlong, ↓reduceIte] at hbranch
-      have haReal : (1 : ℝ) ≤ (a : ℝ) := by exact_mod_cast ha
-      have hexponents : (1 / 8 : ℝ) ≤ 1 / 3 := by norm_num
-      exact (Real.rpow_le_rpow_of_exponent_le haReal hexponents).trans hbranch.1.le
+      exact hbranch.1
 
 /-- The degree-three Case-II color fibres aggregate with a single physical-scale amplitude.
 The lower amplitude retains `min(T,a^(delta/8))`; the upper energy retains the exact

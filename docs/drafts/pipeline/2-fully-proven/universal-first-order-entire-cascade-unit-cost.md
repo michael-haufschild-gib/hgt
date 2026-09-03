@@ -10467,3 +10467,63 @@ build pass; the new declaration audits to exactly `[propext, Classical.choice, Q
 leaf is wired into `HTGeometry`; no umbrella build was run.  Fixed-slope extraction, compatible
 nested branch prolongation, and place-specific `RatIn`/response bounds remain, so the card stays at
 Stage 2.
+
+### A fixed finite positive Wiman exponent exists (2026-09-03)
+
+`HTGeometry/FirstOrderWimanSlope.lean` combines the now-unconditional upper bound with the existing
+cofinal lower bound.  It chooses radii escaping to infinity on which the lower estimate holds,
+proves the logarithmic central-index slopes lie eventually in one compact interval bounded away
+from zero, and extracts one convergent subsequence.  Its capstone is
+
+```text
+exists_positive_centralIndex_logSlope_of_order_one :
+  exists radii q, 0 < q and radii -> infinity and
+    log (centralIndex a (radii n)) / log (radii n) -> q.
+```
+
+Thus the Wiman exponent is now one fixed strictly positive finite real number, not a radius-dependent
+or limsup placeholder; the derivative-ratio Newton slope is `q - 1`, and its charge `p + 1` is
+literally `q > 0`.  Direct checking and the targeted leaf build pass; the new declaration audits to
+exactly `[propext, Classical.choice, Quot.sound]`.  The leaf is wired into `HTGeometry`; no umbrella
+build was run.  What remains in Reduction I is to retain the Wiman top-symbol cancellation on this
+same extracted sequence and turn the resulting tied maximal face into a prescribed nonzero edge
+root on the actual derivative component.  Compatible nested prolongation and place-specific
+`RatIn`/response bounds then remain, so the card stays at Stage 2.
+
+### Fixed-slope Wiman edge on the actual irreducible component (2026-09-03)
+
+`HTGeometry/FirstOrderWimanTopRelationSlope.lean` now performs Wiman selection and compact slope
+extraction on one subsequence.  Its points escape to infinity, normalized logarithmic-derivative
+defect tends to zero, complete top symbol tends to zero, and central-index logarithmic slope tends
+to one fixed finite `q > 0`.  Relation compiler also records exact source identity
+
+```text
+firstOrderMvPoly S A = X_0^d * X_2 * P,
+```
+
+so no factor bookkeeping is implicit.
+
+`HTGeometry/FirstOrderWimanNewtonEdge.lean` transfers relative Wiman estimate to exact log-scale
+exponent `q - 1` of `f'/f`, rules out a unique maximal Newton weight using vanishing top symbol,
+produces two distinct maximal derivative powers, and constructs a nonzero root of their edge
+polynomial.
+
+`HTGeometry/IrreducibleFirstOrderRelation.lean` chooses a least-total-degree analytic jet relation
+and proves it irreducible: a nontrivial factorization would split the identically vanishing product
+of two entire jet evaluations, forcing a smaller relation.  Capstone
+
+```text
+exists_irreducibleFirstOrderWimanNewtonEdge
+```
+
+in `HTGeometry/IrreducibleFirstOrderWimanNewtonEdge.lean` runs fixed-slope construction on this
+irreducible source relation.  Because shifted row is exactly `X_0^d X_2 P` and selected edge root is
+nonzero, added derivative factor cannot be its component: Newton edge belongs to irreducible
+derivative curve containing analytic element.  Direct leaf checks and targeted builds pass; all new
+declarations audit to exactly `[propext, Classical.choice, Quot.sound]`.  Leaves are umbrella-wired
+without an umbrella build.
+
+This closes analytic fixed-slope, tied-face, nonzero-root, and irreducible-component parts of
+Reduction I.  Remaining exact core is iterated prescribed-root prolongation through actual finite
+multigraded cascade branch field, followed by place-specific `RatIn`/response bounds and resulting
+actual output-jet determinant capstone.  Card stays at Stage 2.

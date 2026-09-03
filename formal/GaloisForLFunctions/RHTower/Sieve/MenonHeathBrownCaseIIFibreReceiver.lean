@@ -85,7 +85,7 @@ theorem eventually_menonHeathBrownCaseII_nonempty_fibre_receiver
     | true =>
         have hbranch := hselected0.2.2.2.2.2
         simp only [hlong, ↓reduceIte] at hbranch
-        exact hbranch.2
+        exact hbranch.2.2
   have hfactorFrequency : ∀ r ∈ menonHeathBrownCaseIIColorFibre S color label,
       let lam := menonHeathBrownCaseIISelectedOrdinate
         S color selectedY tau V Δ label r

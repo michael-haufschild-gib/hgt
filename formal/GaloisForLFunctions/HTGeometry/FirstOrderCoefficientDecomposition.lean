@@ -68,6 +68,18 @@ theorem eval_firstOrderSupport (P : MvPolynomial (Fin 3) ℂ) (z u v : ℂ) :
       rw [hprod]
       ring
 
+/-- Regrouping a three-variable polynomial by its value/derivative exponents and rebuilding it
+recovers the original polynomial exactly. -/
+theorem firstOrderMvPoly_support_coeff_eq (P : MvPolynomial (Fin 3) ℂ) :
+    firstOrderMvPoly (firstOrderSupport P) (firstOrderCoeff P) = P := by
+  classical
+  apply MvPolynomial.funext
+  intro x
+  have hx : (![x 0, x 1, x 2] : Fin 3 → ℂ) = x := by
+    funext i
+    fin_cases i <;> rfl
+  rw [← hx, eval_firstOrderMvPoly, eval_firstOrderSupport]
+
 /-- Value/derivative total degree is bounded by total degree of original differential polynomial. -/
 theorem firstOrderSupport_degree_le (P : MvPolynomial (Fin 3) ℂ) {p : ℕ × ℕ}
     (hp : p ∈ firstOrderSupport P) : p.1 + p.2 ≤ P.totalDegree := by

@@ -352,3 +352,10 @@ form `∫ p_n² cos(δ s) dμ = (cosh δ)^{−1/2} Σ_l C(n,l) Ring.choose(−(n
 (`RHTower.MeixnerPollaczek.cosineDiagonalMoment_eq`), together with the first-order response
 theorems.  What remains for `Φ` itself is the Mehler–Heine limit (MUST-149).  Card:
 `3-formalized/semilocal-boost-diagonal-closed-form-lean.md`.
+
+**Φ is a theorem (2026-09-03).**  `RHTower.RouteJProfile.ScalingData.tendsto_residual_profile`:
+along `p → ∞`, `2k/p → X > 0`, the first-order response of this card's four-radius residual to the
+Euler mode `cos(s log p)` converges to `4√(2/π)[√X cos 4X − 8X^{3/2} sin 4X]`, and the relative
+deviation has the same limit (`tendsto_residual_ratio_profile`).  The first jet of this card
+(`4√(2/π)`) and the third card's `−160√(2/π)` are its Taylor coefficients.  Card:
+`3-formalized/route-j-scaling-profile-lean.md`.

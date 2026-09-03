@@ -56,4 +56,68 @@ theorem mem_geomBlock_primesRange {z₀ z : ℕ} {Q η : ℝ} (hη : 0 ≤ η) (
     · rw [hz]
       exact (hfloorle L p).2 (le_trans hhiR (hmono (j + 1) L hj))
 
+/-- A nonterminal ladder block is a full prime interval whenever its own right endpoint remains
+inside the designated prime range.  No equality between the global ladder and range tops is
+required. -/
+theorem mem_geomBlock_primesRange_of_right_le
+    {z₀ z : ℕ} {Q η : ℝ} (hη : 0 ≤ η) (hQ : Q = (z₀ : ℝ))
+    {j : ℕ} (hright : ⌊Q * (1 + η) ^ (j + 1)⌋₊ ≤ z) (p : ℕ) :
+    p ∈ geomBlock (primesRange z₀ z) Q (1 + η) j
+      ↔ (p.Prime ∧ ⌊Q * (1 + η) ^ j⌋₊ < p ∧
+        p ≤ ⌊Q * (1 + η) ^ (j + 1)⌋₊) := by
+  classical
+  have hQ0 : (0 : ℝ) ≤ Q := by rw [hQ]; exact Nat.cast_nonneg _
+  have hr1 : (1 : ℝ) ≤ 1 + η := by linarith
+  have hbase : ∀ m : ℕ, (0 : ℝ) ≤ Q * (1 + η) ^ m := fun m => by positivity
+  have hmono0 : Q ≤ Q * (1 + η) ^ j := by
+    simpa only [pow_zero, mul_one] using
+      mul_le_mul_of_nonneg_left (pow_le_pow_right₀ hr1 (Nat.zero_le j)) hQ0
+  rw [geomBlock, Finset.mem_filter, mem_primesRange]
+  constructor
+  · rintro ⟨⟨hp, -, -⟩, hlo, hhi⟩
+    exact ⟨hp, (Nat.floor_lt (hbase j)).2 hlo,
+      (Nat.le_floor_iff (hbase (j + 1))).2 hhi⟩
+  · rintro ⟨hp, hlo, hhi⟩
+    have hloR : Q * (1 + η) ^ j < (p : ℝ) :=
+      (Nat.floor_lt (hbase j)).1 hlo
+    have hhiR : (p : ℝ) ≤ Q * (1 + η) ^ (j + 1) :=
+      (Nat.le_floor_iff (hbase (j + 1))).1 hhi
+    refine ⟨⟨hp, ?_, hhi.trans hright⟩, hloR, hhiR⟩
+    have hz₀p : ((z₀ : ℕ) : ℝ) < (p : ℝ) := by
+      rw [← hQ]
+      exact hmono0.trans_lt hloR
+    exact_mod_cast hz₀p
+
+/-- Every block of a truncated designated prime range is the full prime interval from its geometric
+left endpoint through the minimum of the range top and its geometric right endpoint.  This includes
+the terminal block whose geometric endpoint overshoots the designated top. -/
+theorem mem_geomBlock_primesRange_min
+    {z₀ z : ℕ} {Q η : ℝ} (hη : 0 ≤ η) (hQ : Q = (z₀ : ℝ))
+    {j : ℕ} (p : ℕ) :
+    p ∈ geomBlock (primesRange z₀ z) Q (1 + η) j ↔
+      (p.Prime ∧ ⌊Q * (1 + η) ^ j⌋₊ < p ∧
+        p ≤ min z ⌊Q * (1 + η) ^ (j + 1)⌋₊) := by
+  classical
+  have hQ0 : (0 : ℝ) ≤ Q := by rw [hQ]; exact Nat.cast_nonneg _
+  have hr1 : (1 : ℝ) ≤ 1 + η := by linarith
+  have hbase : ∀ m : ℕ, (0 : ℝ) ≤ Q * (1 + η) ^ m := fun m => by positivity
+  have hmono0 : Q ≤ Q * (1 + η) ^ j := by
+    simpa only [pow_zero, mul_one] using
+      mul_le_mul_of_nonneg_left (pow_le_pow_right₀ hr1 (Nat.zero_le j)) hQ0
+  rw [geomBlock, Finset.mem_filter, mem_primesRange]
+  constructor
+  · rintro ⟨⟨hp, hz₀p, hpz⟩, hlo, hhi⟩
+    refine ⟨hp, (Nat.floor_lt (hbase j)).2 hlo, le_min hpz ?_⟩
+    exact (Nat.le_floor_iff (hbase (j + 1))).2 hhi
+  · rintro ⟨hp, hlo, hhi⟩
+    have hloR : Q * (1 + η) ^ j < (p : ℝ) :=
+      (Nat.floor_lt (hbase j)).1 hlo
+    have hhiR : (p : ℝ) ≤ Q * (1 + η) ^ (j + 1) :=
+      (Nat.le_floor_iff (hbase (j + 1))).1 (hhi.trans (min_le_right _ _))
+    refine ⟨⟨hp, ?_, hhi.trans (min_le_left _ _)⟩, hloR, hhiR⟩
+    have hz₀p : ((z₀ : ℕ) : ℝ) < (p : ℝ) := by
+      rw [← hQ]
+      exact hmono0.trans_lt hloR
+    exact_mod_cast hz₀p
+
 end RHTower.Sieve

@@ -6388,3 +6388,54 @@ Card remains Stage 2.  Rough harmonic energy and the full non-exceptional Case-I
 Remaining analytic work is the exact exceptional-frequency Case-II factorization/large-value
 estimate, its quantitative ladder summation, and the terminal harmonic-frequency-to-integer-start
 normalization; none is assumed.
+
+## Lean progress update (2026-09-03) — literal H-adic schedule and global defect accounting
+
+The final-range ladder and its product estimates now match Menon's Section 3 organization rather
+than paying the moving-support defect once per geometric prime block:
+
+- `Sieve/MenonHarmonicFinalRangeSchedule.lean` defines the literal
+  `H = (log X)^10`, `eta = exp(1/H)-1` ladder from Menon's final cutoff through
+  `floor(3X)`, proves exact range coverage, and proves the natural cofactor endpoint conditions;
+- `Sieve/GeomBlockPrimesRange.lean` now proves exact membership for every nonterminal block whose
+  own right endpoint lies in the designated prime range, without requiring the full ladder top to
+  equal that endpoint;
+- `Sieve/MenonHarmonicLadderError.lean` flattens the global support defect and pays its mean-square
+  cost once outside the ladder Cauchy estimate;
+- `Sieve/MenonHarmonicGlobalFrequencyAssembly.lean` partitions frequencies using the genuine
+  prime-times-cofactor products, inserts local moment budgets, and retains the single global
+  support error;
+- `Sieve/MenonHarmonicCaseIProduct.lean` applies the Route-T reciprocal prime bound and reciprocal
+  Halasz--Montgomery estimate directly to a genuine full block product, eliminating the former
+  per-block moving-support error.
+
+Direct source checks and targeted leaf builds pass.  The axiom audit of every new declaration and
+the extended geometric-block theorem reports only `[propext, Classical.choice, Quot.sound]`.  All
+new leaves are umbrella-wired without an umbrella build.
+
+Card remains Stage 2.  Exact schedule, range coverage, global defect accounting, and the abstract
+Case-I product estimate are closed.  Remaining work is quantitative specialization and summation
+of low blocks, exact Case-II treatment of high blocks, and insertion into Menon's initial-range
+frequency partition before the existing window/grid receiver; none is assumed.
+
+## Lean progress update (2026-09-03) — Case-II cutoff correction
+
+The wide Heath--Brown chain now classifies selected factors at the literal Möbius cutoff `L`, as
+Menon's degree-three identity requires.  A selected factor has length at least the eighth root of
+the prime-block lower endpoint; it is either at most `L` (the medium Möbius branch) or exceeds `L`,
+in which case it is necessarily a zeta/logarithm factor.  This removes the false auxiliary
+restriction `L <= a^(1/3)` from the wide selection, aggregate, large-value, and measure theorems.
+
+`Sieve/MenonHeathBrownCaseIIAbsorptionSchedule.lean` now proves the corresponding order-sixteen
+absorption uniformly under the actual polynomial-support conditions `L <= X <= a^3`.
+`Sieve/MenonHarmonicCaseIIWideMeasure.lean` therefore applies to the full final-range high-block
+regime rather than only additive intervals of width `O(a^(2/3))`.
+
+The targeted leaf build
+`GaloisForLFunctions.RHTower.Sieve.MenonHarmonicCaseIIWideMeasure` passes through its complete
+dependency closure.  Axiom audit of all new and changed exported declarations reports only
+`[propext, Classical.choice, Quot.sound]`.
+
+Card remains Stage 2.  Case-II's former scale mismatch is closed.  Remaining work is the exact
+initial-range exceptional-frequency insertion, final-block/spectral-shell summation, and terminal
+quantitative harmonic-to-window receiver; none is assumed.

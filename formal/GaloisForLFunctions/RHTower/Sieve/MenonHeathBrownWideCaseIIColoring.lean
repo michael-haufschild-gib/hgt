@@ -20,7 +20,6 @@ theorem exists_menonHeathBrownCaseIISelection_of_vonMangoldtTwist_Ioc_gt_wide
     (T0 t tau : ℝ) (hT0 : 1 < T0)
     (hscale : ((2 ^ 6 : ℕ) : ℝ) * T0 ^ t ≤ (a : ℝ))
     (ha : (64 : ℝ) ^ 8 ≤ (a : ℝ)) (hL : 1 ≤ L)
-    (hcut : (L : ℝ) ≤ (a : ℝ) ^ (1 / 3 : ℝ))
     {H B sigma C V Δ : ℝ} (hH : 0 < H)
     (haH : 1 ≤ (a : ℝ) + H) (hbH : 1 ≤ (b : ℝ) + H)
     (hsupport : (b : ℝ) + H ≤ X) (hsigma : 1 < sigma) (hC : 1 ≤ C)
@@ -51,8 +50,20 @@ theorem exists_menonHeathBrownCaseIISelection_of_vonMangoldtTwist_Ioc_gt_wide
       L X 3 a b cells (by omega) hXL hab T0 t tau hT0
         (by simpa only [show 2 * 3 = 6 by omega] using hscale)
         hH haH hbH hsupport hsigma hC hkernel hV hΔ hcells hgrid hthreshold hlarge
-  have hfactor := exists_heathBrown_three_medium_or_long_zeta_log_of_windowRelevant
-    box hrelevant ha hL hcut
+  have ha1 : (1 : ℝ) < (a : ℝ) :=
+    (by norm_num : (1 : ℝ) < 64 ^ 8).trans_le ha
+  have hwidth := windowRelevant_heathBrownBox_coreLower_gt hrelevant
+  have hdiv : (a : ℝ) / 64 <
+      (groupedDyadicLower
+        (heathBrownBoxFactorExponent box.a box.b box.q) : ℝ) := by
+    norm_num at hwidth ⊢
+    exact hwidth
+  have hedge : (a : ℝ) ^ (7 / 8 : ℝ) ≤
+      (groupedDyadicLower
+        (heathBrownBoxFactorExponent box.a box.b box.q) : ℝ) :=
+    (rpow_sevenEighth_le_div_sixtyFour_of_pow_eight_le ha).trans hdiv.le
+  have hfactor := exists_heathBrown_three_medium_or_long_zeta_log_cutoff
+    box hL ha1 hedge
   have hterm := norm_heathBrownBoxTerm_three_le_eight_mul_core box
     ((sigma : ℂ) + ((y + tau : ℝ) : ℂ) * Complex.I)
   have hcard0 : 0 ≤ (Fintype.card (HeathBrownBoxChoice L X 3) : ℝ) := by positivity
@@ -71,7 +82,7 @@ theorem exists_menonHeathBrownCaseIISelection_of_vonMangoldtTwist_Ioc_gt_wide
       _ = (Fintype.card (HeathBrownBoxChoice L X 3) : ℝ) * 8 *
           ‖heathBrownDyadicCoreProduct L X 3 box.m box.a box.b box.q
             ((sigma : ℂ) + ((y + tau : ℝ) : ℂ) * Complex.I)‖ := by ring
-  rcases hfactor with ⟨i, hmediumLo, hmediumHi⟩ | ⟨i, hlong, hkind⟩
+  rcases hfactor with ⟨i, hmediumLo, hmediumHi⟩ | ⟨i, hlongLo, hlong, hkind⟩
   · let label : MenonHeathBrownCaseIILabel L X cells :=
       ⟨⟨j, Finset.mem_range.mp hj⟩, box,
         (i : HeathBrownBoxFactorIndex 3 box.m), false⟩
@@ -87,7 +98,7 @@ theorem exists_menonHeathBrownCaseIISelection_of_vonMangoldtTwist_Ioc_gt_wide
     dsimp only [IsMenonHeathBrownCaseIISelection,
       MenonHeathBrownCaseIILabel.cell, MenonHeathBrownCaseIILabel.box,
       MenonHeathBrownCaseIILabel.factor, MenonHeathBrownCaseIILabel.isLong, label]
-    exact ⟨hy, heligible, hrelevant, hcore, i.property, hlong, hkind⟩
+    exact ⟨hy, heligible, hrelevant, hcore, i.property, hlongLo, hlong, hkind⟩
 
 /-- One absolute derivative constant colors variable-upper sharp intervals at a common wide width.
 The source upper bound `Y` is separated from the enlarged Heath--Brown cutoff `X`. -/
@@ -98,7 +109,6 @@ theorem exists_absolute_menonHeathBrownCaseIISelection_variableUpper_wide_colori
         X < (L + 1) ^ 3 → 1 < T0 →
         ((2 ^ 6 : ℕ) : ℝ) * T0 ^ t ≤ (a : ℝ) →
         (64 : ℝ) ^ 8 ≤ (a : ℝ) → 1 ≤ L →
-        (L : ℝ) ≤ (a : ℝ) ^ (1 / 3 : ℝ) →
         0 < H → (Y : ℝ) + H ≤ (X : ℝ) →
         1 < sigma → 0 ≤ V → 0 < Δ → 0 < cells →
         2 * V = (cells : ℝ) * Δ →
@@ -120,7 +130,7 @@ theorem exists_absolute_menonHeathBrownCaseIISelection_variableUpper_wide_colori
               (selectedY r) (color r) := by
   obtain ⟨C0, hC0, hkernel⟩ := exists_menonWideIntervalAmbientKernelMajorant
   refine ⟨C0, hC0, ?_⟩
-  intro L X Y a cells T0 t H B sigma V Δ S upper tau hXL hT0 hscale ha hL hcut
+  intro L X Y a cells T0 t H B sigma V Δ S upper tau hXL hT0 hscale ha hL
     hH hYX hsigma hV hΔ hcells hgrid hupperLo hupperHi
   dsimp only
   intro hQ hlarge
@@ -154,7 +164,7 @@ theorem exists_absolute_menonHeathBrownCaseIISelection_variableUpper_wide_colori
     have hkernelR := hkernel (X := X) (a := a) (b := upper r)
       (H := H) (sigma := sigma) haOne har hsupport hH (by linarith)
     exact exists_menonHeathBrownCaseIISelection_of_vonMangoldtTwist_Ioc_gt_wide
-      L X a (upper r) cells hXL har T0 t (tau r) hT0 hscale ha hL hcut
+      L X a (upper r) cells hXL har T0 t (tau r) hT0 hscale ha hL
       hH haH hbH hsupport hsigma hkernelR.1 hkernelR.2 hV hΔ hcells hgrid
       (by simpa only [Q, C] using hQ) (hlarge r hr)
   choose selected selectedY hselected using hpoint

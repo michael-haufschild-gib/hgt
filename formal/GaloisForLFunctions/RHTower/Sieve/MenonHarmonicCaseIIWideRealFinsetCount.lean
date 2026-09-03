@@ -21,7 +21,7 @@ theorem exists_absolute_eventually_card_mul_sq_le_menonHarmonicPrimeBlock_caseII
         1 ≤ X → a < Y → X < (L + 1) ^ 3 → 1 < T0 →
         ((2 ^ 6 : ℕ) : ℝ) * T0 ^ t ≤ (a : ℝ) →
         (64 : ℝ) ^ 8 ≤ (a : ℝ) → 1 ≤ L →
-        (L : ℝ) ≤ (a : ℝ) ^ (1 / 3 : ℝ) →
+        L ≤ X → (X : ℝ) ≤ (a : ℝ) ^ (3 : ℕ) →
         0 < H → (Y : ℝ) + H ≤ (X : ℝ) →
         1 < sigma → 0 ≤ B → 0 ≤ V → 1 ≤ Δ → 0 < cells →
         2 * V = (cells : ℝ) * Δ →
@@ -58,7 +58,7 @@ theorem exists_absolute_eventually_card_mul_sq_le_menonHarmonicPrimeBlock_caseII
     exists_absolute_eventually_card_mul_sq_le_menonHarmonicPrimeBlock_caseII_wide_logPow
   refine ⟨C0, hC0, ?_⟩
   filter_upwards [hcount] with a haCount
-  intro L X Y cells T0 t H B sigma V Δ T E hX haY hXL hT0 hscale ha hL hcut
+  intro L X Y cells T0 t H B sigma V Δ T E hX haY hXL hT0 hscale ha hL hLX hXa
     hH hYX hsigma hB hV hΔ hcells hgrid hsep hT hΔT hband h2T
   dsimp only
   intro hQ hlarge
@@ -92,7 +92,7 @@ theorem exists_absolute_eventually_card_mul_sq_le_menonHarmonicPrimeBlock_caseII
       E (2 * Δ) htwoDelta hsep (Finset.mem_range.mp hr)
     simpa only [w, tau] using hlarge _ hmem
   simpa only [Finset.card_range] using
-    haCount hX haY hXL hT0 hscale ha hL hcut hH hYX hsigma hB hV hΔ hcells hgrid
+    haCount hX haY hXL hT0 hscale ha hL hLX hXa hH hYX hsigma hB hV hΔ hcells hgrid
       hgap hT hΔT hactiveBand h2T hQ hactiveLarge
 
 end

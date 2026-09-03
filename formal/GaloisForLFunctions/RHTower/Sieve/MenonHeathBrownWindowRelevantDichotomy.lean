@@ -120,4 +120,67 @@ theorem exists_windowRelevantBox_cell_medium_or_long_zeta_log_of_vonMangoldtTwis
     exists_heathBrown_three_medium_or_long_zeta_log_of_windowRelevant
       box hrelevant ha hL hcut⟩
 
+/-- Exact sharp-interval selection with factor lengths classified at the literal Heath--Brown
+cutoff `L`.  This is the form needed when the selected prime block is far below the ambient
+cutoff, so no comparison `L ≤ a^(1/3)` is available. -/
+theorem exists_windowRelevantBox_cell_medium_or_long_zeta_log_cutoff_of_vonMangoldtTwist_Ioc_gt
+    (L X a b cells : ℕ) (hXL : X < (L + 1) ^ 3)
+    (hab : a ≤ b) (hbX : b ≤ X) (T0 t tau : ℝ) (hT0 : 1 < T0)
+    (hscale : ((2 ^ 6 : ℕ) : ℝ) * T0 ^ t ≤ (a : ℝ))
+    (ha : (64 : ℝ) ^ 8 ≤ (a : ℝ)) (hL : 1 ≤ L)
+    {B sigma C V Δ : ℝ} (hsigma : 1 < sigma) (hC : 1 ≤ C)
+    (hkernel : ∀ y : ℝ,
+      ‖menonSharpIntervalMellinKernel (a : ℝ) (b : ℝ) sigma y‖ ≤
+        C * (1 + y ^ 2)⁻¹)
+    (hV : 0 ≤ V) (hΔ : 0 < Δ) (hcells : 0 < cells)
+    (hgrid : 2 * V = (cells : ℝ) * Δ)
+    (hthreshold : 0 <
+      (B - heathBrownWindowRelevantFixedPolylogBound L X 3 (a : ℝ) sigma * C *
+          (Real.pi - 2 * Real.arctan V)) /
+          ((cells : ℝ) * Δ * C))
+    (hlarge : B < ‖(2 * Real.pi : ℝ) •
+      (∑ n ∈ Finset.Ioc a b, vonMangoldtTwist tau n)‖) :
+    ∃ j ∈ Finset.range cells,
+      ∃ y ∈ Set.Icc (-V + (j : ℝ) * Δ) (-V + ((j : ℝ) + 1) * Δ),
+        ∃ box : HeathBrownBoxChoice L X 3,
+          IsHeathBrownBoxEligible L X 3 T0 t box ∧
+          IsHeathBrownBoxWindowRelevant (a : ℝ) X 3 box ∧
+          (B - heathBrownWindowRelevantFixedPolylogBound L X 3 (a : ℝ) sigma * C *
+              (Real.pi - 2 * Real.arctan V)) /
+              ((cells : ℝ) * Δ * C) ≤
+            (Fintype.card (HeathBrownBoxChoice L X 3) : ℝ) *
+              ‖heathBrownBoxTerm L X 3 box
+                ((sigma : ℂ) + ((y + tau : ℝ) : ℂ) * Complex.I)‖ ∧
+          ((∃ i : PositiveHeathBrownBoxFactorIndex box,
+              (a : ℝ) ^ (1 / 8 : ℝ) ≤
+                  ((2 ^ heathBrownBoxFactorExponent box.a box.b box.q i : ℕ) : ℝ) ∧
+                ((2 ^ heathBrownBoxFactorExponent box.a box.b box.q i : ℕ) : ℝ) ≤
+                  (L : ℝ)) ∨
+            ∃ i : PositiveHeathBrownBoxFactorIndex box,
+              (a : ℝ) ^ (1 / 8 : ℝ) ≤
+                  ((2 ^ heathBrownBoxFactorExponent box.a box.b box.q i : ℕ) : ℝ) ∧
+                (L : ℝ) <
+                  ((2 ^ heathBrownBoxFactorExponent box.a box.b box.q i : ℕ) : ℝ) ∧
+                (heathBrownBoxFactorKind 3 box.m i = .zeta ∨
+                  heathBrownBoxFactorKind 3 box.m i = .log)) := by
+  obtain ⟨j, hj, y, hy, box, heligible, hrelevant, _hedge, hbox⟩ :=
+    exists_windowRelevantBox_cell_large_of_vonMangoldtTwist_Ioc_gt
+      L X 3 a b cells (by omega) hXL hab hbX T0 t tau hT0
+        (by simpa only [show 2 * 3 = 6 by omega] using hscale)
+        hsigma hC hkernel hV hΔ hcells hgrid hthreshold hlarge
+  have ha1 : (1 : ℝ) < (a : ℝ) :=
+    (by norm_num : (1 : ℝ) < 64 ^ 8).trans_le ha
+  have hwidth := windowRelevant_heathBrownBox_coreLower_gt hrelevant
+  have hdiv : (a : ℝ) / 64 <
+      (groupedDyadicLower
+        (heathBrownBoxFactorExponent box.a box.b box.q) : ℝ) := by
+    norm_num at hwidth ⊢
+    exact hwidth
+  have hedge : (a : ℝ) ^ (7 / 8 : ℝ) ≤
+      (groupedDyadicLower
+        (heathBrownBoxFactorExponent box.a box.b box.q) : ℝ) :=
+    (rpow_sevenEighth_le_div_sixtyFour_of_pow_eight_le ha).trans hdiv.le
+  exact ⟨j, hj, y, hy, box, heligible, hrelevant, hbox,
+    exists_heathBrown_three_medium_or_long_zeta_log_cutoff box hL ha1 hedge⟩
+
 end RHTower.Sieve

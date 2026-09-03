@@ -330,3 +330,13 @@ and the two-variable boost generating function (`SemilocalGammaComplexRapidityCh
 `m_n(δ) = (cosh δ)^{−1/2} Σ_l C(n,l) Ring.choose(−(n+½), l) tanh^{2l} δ`
 (`SemilocalBoostDiagonalClosedForm.cosineDiagonalMoment_eq`).  Only the Mehler–Heine limit of the
 finite sum at `δ = log p`, `n = xp` (and the elementary residual-jet expansion) remains for `Φ`.
+
+### 3.9 `Φ` is a Lean theorem (2026-09-03)
+
+`RHTower.RouteJProfile.ScalingData.tendsto_residual_profile` (module `RouteJScalingProfile`) proves
+the scaling limit of §3.3/§3.7 exactly: for `p_j → ∞`, `2k_j/p_j → X > 0`, the first-order residual
+response `residualJetOf (cosineModeDeterminantJet (log p_j)) k_j` converges to
+`4√(2/π)[√X cos 4X − 8X^{3/2} sin 4X]`, and `J/R(0)` has the same limit.  The route is the Pfaff
+transformation to the `σ`-form (no cancellation), two contiguous relations that turn the residual
+into first differences of smooth sequences, Tannery's theorem for the Mehler–Heine limits, and the
+Wallis limit.  Pre-certification script: `mehler_heine_precert.py` (+ `contiguous_check.py`).

@@ -63,13 +63,9 @@ theorem abs_selectedFrequency_le_factor_pow_twentyFour
   | true =>
       have hbranch := hselection.2.2.2.2.2
       simp only [hlong, ↓reduceIte] at hbranch
-      have haReal : (1 : ℝ) ≤ (a : ℝ) := by exact_mod_cast ha
-      have hexponents : (1 / 8 : ℝ) ≤ 1 / 3 := by norm_num
-      have honeEighth : (a : ℝ) ^ (1 / 8 : ℝ) ≤ (a : ℝ) ^ (1 / 3 : ℝ) :=
-        Real.rpow_le_rpow_of_exponent_le haReal hexponents
       exact hfrequency.trans
         (rpow_cube_le_pow_twentyFour_of_rpow_oneEighth_le (by positivity)
-          (honeEighth.trans hbranch.1.le))
+          hbranch.1)
 
 /-- Once the literal logarithmic saving absorbs the finite box cost, a selected factor cannot be
 Mobius.  The theorem stays on the actual Perron line and retains the full box lower edge. -/

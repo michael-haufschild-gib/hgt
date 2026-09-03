@@ -43,7 +43,7 @@ corresponding eighth power.  The statement is uniform in the medium/long branch.
 theorem menonHeathBrownCaseIISelection_factorExponent_ge
     {L X a cells q0 : ℕ} {T0 t sigma tau V Δ Q y : ℝ}
     {label : MenonHeathBrownCaseIILabel L X cells}
-    (ha : 1 ≤ a) (hlarge : 2 ^ (8 * q0) ≤ a)
+    (_ha : 1 ≤ a) (hlarge : 2 ^ (8 * q0) ≤ a)
     (hselection :
       IsMenonHeathBrownCaseIISelection L X a cells T0 t sigma tau V Δ Q y label) :
     q0 ≤ heathBrownBoxFactorExponent
@@ -61,9 +61,7 @@ theorem menonHeathBrownCaseIISelection_factorExponent_ge
     | true =>
         have hbranch := hselection.2.2.2.2.2
         simp only [hlong, ↓reduceIte] at hbranch
-        have haReal : (1 : ℝ) ≤ (a : ℝ) := by exact_mod_cast ha
-        have hexponents : (1 / 8 : ℝ) ≤ 1 / 3 := by norm_num
-        exact (Real.rpow_le_rpow_of_exponent_le haReal hexponents).trans hbranch.1.le
+        exact hbranch.1
   have hpowsReal : (((2 ^ q0 : ℕ) : ℝ)) ≤ (((2 ^ q : ℕ) : ℝ)) :=
     hroot.trans hfactor
   have hpowsNat : 2 ^ q0 ≤ 2 ^ q := by exact_mod_cast hpowsReal

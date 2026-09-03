@@ -49,7 +49,7 @@ theorem exists_positive_centralIndex_logSlope_of_order_one
     have hν0 : ((centralIndex a (r n) : ℕ) : ℝ) = 0 := le_antisymm (le_of_not_gt hν)
       (Nat.cast_nonneg _)
     have hb := hrlower n
-    rw [hν0, zero_pow hdpos, mul_zero] at hb
+    rw [hν0, zero_pow (Nat.ne_of_gt hdpos), mul_zero] at hb
     linarith [hrpos n]
   have hlogr : ∀ n, 0 < Real.log (r n) := fun n => Real.log_pos (lt_of_lt_of_le one_lt_two (hr2 n))
   let slope : ℕ → ℝ := fun n =>
@@ -93,14 +93,14 @@ theorem exists_positive_centralIndex_logSlope_of_order_one
     filter_upwards [hC₀err.eventually_lt_const (by norm_num : (0 : ℝ) < 1 / 2)] with n hn
     exact hlowerSlope n hn
   obtain ⟨N, hN⟩ := eventually_atTop.mp (hlowerEventually.and hupperSlope)
-  let p : ℕ → PUnit → ℝ := fun n _ => slope (n + N)
+  let p : ℕ → Fin 1 → ℝ := fun n _ => slope (n + N)
   have hp : ∀ n k, p n k ∈ Set.Icc ((1 : ℝ) / (2 * d)) ((K : ℝ) + 1) := by
     intro n k
     exact hN (n + N) (by omega)
   obtain ⟨ns, hns, plim, hplim, htendsto⟩ :=
     exists_subseq_tendsto_of_mem_Icc (p := p) hp
   let radii : ℕ → ℝ := fun n => r (ns n + N)
-  let q : ℝ := plim PUnit.unit
+  let q : ℝ := plim 0
   have hidx : Tendsto (fun n => ns n + N) atTop atTop := by
     apply Filter.tendsto_atTop.mpr
     intro B
@@ -108,11 +108,11 @@ theorem exists_positive_centralIndex_logSlope_of_order_one
     omega
   have hradii : Tendsto radii atTop atTop := hr.comp hidx
   have hqpos : 0 < q := by
-    have hqmem := hplim PUnit.unit
+    have hqmem := hplim 0
     have hdreal : (0 : ℝ) < d := by exact_mod_cast hdpos
     exact lt_of_lt_of_le (by positivity : (0 : ℝ) < (1 : ℝ) / (2 * d)) hqmem.1
   refine ⟨radii, q, hqpos, hradii, ?_⟩
-  have hq := htendsto PUnit.unit
+  have hq := htendsto 0
   simpa [radii, q, p, slope] using hq
 
 end

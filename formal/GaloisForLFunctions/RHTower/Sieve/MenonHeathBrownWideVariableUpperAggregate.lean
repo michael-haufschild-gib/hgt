@@ -25,7 +25,6 @@ theorem exists_absolute_eventually_card_mul_sq_le_menonHeathBrownCaseII_variable
         1 ≤ X → X < (L + 1) ^ 3 → 1 < T0 →
         ((2 ^ 6 : ℕ) : ℝ) * T0 ^ t ≤ (a : ℝ) →
         (64 : ℝ) ^ 8 ≤ (a : ℝ) → 1 ≤ L →
-        (L : ℝ) ≤ (a : ℝ) ^ (1 / 3 : ℝ) →
         0 < H → (Y : ℝ) + H ≤ (X : ℝ) →
         1 < sigma → 0 ≤ V → 1 ≤ Δ → 0 < cells →
         2 * V = (cells : ℝ) * Δ →
@@ -68,7 +67,7 @@ theorem exists_absolute_eventually_card_mul_sq_le_menonHeathBrownCaseII_variable
     exists_absolute_menonHeathBrownCaseIISelection_variableUpper_wide_coloring
   refine ⟨C0, hC0, ?_⟩
   filter_upwards [eventually_card_mul_sq_le_menonHeathBrownCaseII_explicit A] with a haggregate
-  intro L X Y cells T0 t H B sigma V Δ T S upper tau hX hXL hT0 hscale ha hL hcut
+  intro L X Y cells T0 t H B sigma V Δ T S upper tau hX hXL hT0 hscale ha hL
     hH hYX hsigma hV hΔ hcells hgrid hupperLo hupperHi hbaseGap hT hΔT hbaseBand h2T
   dsimp only
   intro hQ hA habsorb hlarge
@@ -78,7 +77,7 @@ theorem exists_absolute_eventually_card_mul_sq_le_menonHeathBrownCaseII_variable
         (Real.pi - 2 * Real.arctan V)) /
       ((cells : ℝ) * Δ * C)
   obtain ⟨color, selectedY, hselection⟩ :=
-    hcolor L X Y a cells T0 t H B sigma V Δ S upper tau hXL hT0 hscale ha hL hcut
+    hcolor L X Y a cells T0 t H B sigma V Δ S upper tau hXL hT0 hscale ha hL
       hH hYX hsigma hV (lt_of_lt_of_le zero_lt_one hΔ) hcells hgrid hupperLo hupperHi
       (by simpa only [C, Q] using hQ) hlarge
   refine ⟨color, selectedY, hselection, ?_⟩

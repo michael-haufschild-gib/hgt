@@ -18,11 +18,14 @@ noncomputable section
 /-- One Case-I genuine block product, without duplicating the global moving-support defect. -/
 theorem exists_setIntegral_normSq_harmonicProduct_geom_le_scaled_HM :
     ∃ A delta Ctot tau0 : ℝ, 0 < delta ∧ 0 < Ctot ∧ 2 ≤ tau0 ∧
-      ∀ (z0 z A0 B0 L j : ℕ) (Q eta W D t0 sigma Lx q mu xmin Hmaj : ℝ)
+      ∀ (P : Finset ℕ) (A0 B0 j : ℕ)
+          (Q eta W D t0 sigma Lx q mu xmin Hmaj : ℝ)
           (E : Set ℝ),
-        1 ≤ z0 → Q = (z0 : ℝ) → 0 ≤ eta → j + 1 ≤ L →
-        z = ⌊Q * (1 + eta) ^ L⌋₊ →
+        0 < Q → 0 ≤ eta →
         1 ≤ ⌊Q * (1 + eta) ^ j⌋₊ →
+        (∀ p, p ∈ geomBlock P Q (1 + eta) j ↔
+          (p.Prime ∧ ⌊Q * (1 + eta) ^ j⌋₊ < p ∧
+            p ≤ ⌊Q * (1 + eta) ^ (j + 1)⌋₊)) →
         1 ≤ A0 →
         1 ≤ ⌈(A0 : ℝ) / ((Q * (1 + eta) ^ j) * (1 + eta))⌉₊ →
         1 ≤ ⌊(B0 : ℝ) / (Q * (1 + eta) ^ j)⌋₊ →
@@ -39,40 +42,32 @@ theorem exists_setIntegral_normSq_harmonicProduct_geom_le_scaled_HM :
         (∀ w ∈ E, |(-(2 * Real.pi * w))| ≤ |sigma|) →
         (∫ w in E,
           ‖harmonicPrimeBlockPoly
-              (geomBlock (primesRange z0 z) Q (1 + eta) j) w *
-            logPoly (harmonicRamareCofactorCoeff (primesRange z0 z))
+              (geomBlock P Q (1 + eta) j) w *
+            logPoly (harmonicRamareCofactorCoeff P)
               (geomCofactorBlockAt A0 B0 Q eta j) w‖ ^ 2)
-          ≤ menonHarmonicProductCostVolume (primesRange z0 z) A0 B0 Q eta W
+          ≤ menonHarmonicProductCostVolume P A0 B0 Q eta W
               (harmonicCaseIBlockMajorant Ctot D Lx Hmaj mu q t0 xmin
                 ⌊Q * (1 + eta) ^ j⌋₊ ⌊Q * (1 + eta) ^ (j + 1)⌋₊)
               (volume.real E) j := by
   obtain ⟨A, delta, Ctot, tau0, hdelta, hCtot, htau0, hroute⟩ :=
     exists_norm_harmonicPrimeBlockPoly_scaled_le
   refine ⟨A, delta, Ctot, tau0, hdelta, hCtot, htau0, ?_⟩
-  intro z0 z A0 B0 L j Q eta W D t0 sigma Lx q mu xmin Hmaj E hz0 hQ heta hj hz
-    hblock hA0 hleft hright hW hD ht0 hLx hq0 hq hmu0 hmu hxmin hxminBlock hHmaj
-    hEm hEs hfreq hfreq16 hfreq0 hfreqTop
-  have hQpos : 0 < Q := by
-    rw [hQ]
-    exact_mod_cast (Nat.zero_lt_of_lt hz0)
+  intro P A0 B0 j Q eta W D t0 sigma Lx q mu xmin Hmaj E hQpos heta hblock
+    hblockRange hA0 hleft hright hW hD ht0 hLx hq0 hq hmu0 hmu hxmin
+    hxminBlock hHmaj hEm hEs hfreq hfreq16 hfreq0 hfreqTop
   have hstep : (1 : ℝ) ≤ 1 + eta := by linarith
   have hQnonneg : 0 ≤ Q := hQpos.le
   have habR : Q * (1 + eta) ^ j ≤ Q * (1 + eta) ^ (j + 1) :=
     mul_le_mul_of_nonneg_left (pow_le_pow_right₀ hstep (Nat.le_succ j)) hQnonneg
   have hab : ⌊Q * (1 + eta) ^ j⌋₊ ≤ ⌊Q * (1 + eta) ^ (j + 1)⌋₊ :=
     Nat.floor_mono habR
-  have hblockRange : ∀ p,
-      p ∈ geomBlock (primesRange z0 z) Q (1 + eta) j ↔
-        (p.Prime ∧ ⌊Q * (1 + eta) ^ j⌋₊ < p ∧
-          p ≤ ⌊Q * (1 + eta) ^ (j + 1)⌋₊) :=
-    fun p => mem_geomBlock_primesRange heta hQ hj hz p
   have hpoint : ∀ w ∈ E,
       ‖harmonicPrimeBlockPoly
-          (geomBlock (primesRange z0 z) Q (1 + eta) j) w‖
+          (geomBlock P Q (1 + eta) j) w‖
         ≤ harmonicCaseIBlockMajorant Ctot D Lx Hmaj mu q t0 xmin
             ⌊Q * (1 + eta) ^ j⌋₊ ⌊Q * (1 + eta) ^ (j + 1)⌋₊ := by
     intro w hw
-    have hraw := hroute (geomBlock (primesRange z0 z) Q (1 + eta) j)
+    have hraw := hroute (geomBlock P Q (1 + eta) j)
       ⌊Q * (1 + eta) ^ j⌋₊ ⌊Q * (1 + eta) ^ (j + 1)⌋₊ D w
       hblock hab hblockRange hD (hfreq w hw)
     let xb : ℝ := max ((⌊Q * (1 + eta) ^ (j + 1)⌋₊ : ℕ) : ℝ) 1
@@ -106,7 +101,7 @@ theorem exists_setIntegral_normSq_harmonicProduct_geom_le_scaled_HM :
     exact hraw.trans (div_le_div_of_nonneg_right
       (mul_le_mul_of_nonneg_left hadd hfac) (by positivity))
   exact setIntegral_normSq_harmonicProduct_geom_le_HM
-    (P := primesRange z0 z) (A₀ := A0) (B₀ := B0) (Q := Q) (eta := eta)
+    (P := P) (A₀ := A0) (B₀ := B0) (Q := Q) (eta := eta)
     (W := W) (V := harmonicCaseIBlockMajorant Ctot D Lx Hmaj mu q t0 xmin
       ⌊Q * (1 + eta) ^ j⌋₊ ⌊Q * (1 + eta) ^ (j + 1)⌋₊)
     hW j hleft hright hEm hEs hpoint

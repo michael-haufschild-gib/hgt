@@ -34,3 +34,7 @@ the Leibniz rule.  Tilt integrability uses the corpus's sharp majorant
 `S_n(τ) := Σ_l C(n,l) Ring.choose(−(n+½), l) τ^{2l}` at `τ = tanh(log p)`, `n = xp`:
 `S_n → (−1)^n (πn)^{−1/2} cos(4x)`; then the residual jet `residualJetOf` with
 `m_n = (cosh log p)^{−1/2} S_n` gives `Φ(x) = 4√(2/π)[√x cos 4x − 8x^{3/2} sin 4x]`.
+
+**Update 2026-09-03 (later).**  MUST-149 is closed: `3-formalized/route-j-scaling-profile-lean.md`
+(the Pfaff transformation, the contiguous relations, Tannery's theorem, and the assembly to
+`Φ(X) = 4√(2/π)[√X cos 4X − 8 X^{3/2} sin 4X]`, all Lean).

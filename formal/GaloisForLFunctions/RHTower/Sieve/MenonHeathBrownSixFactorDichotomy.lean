@@ -120,6 +120,68 @@ theorem heathBrown_factorKind_eq_zeta_or_log_of_length_gt_cutoff
     · exact Or.inl rfl
     · exact Or.inr rfl
 
+/-- A factor longer than the literal Heath--Brown Mobius cutoff is necessarily a zeta or
+logarithm factor.  Unlike the paper-scale corollary above, this form does not compare the cutoff
+with the lower endpoint of the selected prime interval. -/
+theorem heathBrown_factorKind_eq_zeta_or_log_of_length_gt_L
+    {L X k : ℕ} (box : HeathBrownBoxChoice L X k) (hL : 1 ≤ L)
+    (i : HeathBrownBoxFactorIndex k box.m)
+    (hlong : (L : ℝ) <
+      ((2 ^ heathBrownBoxFactorExponent box.a box.b box.q i : ℕ) : ℝ)) :
+    heathBrownBoxFactorKind k box.m i = .zeta ∨
+      heathBrownBoxFactorKind k box.m i = .log := by
+  rcases i with i | i
+  · exfalso
+    have hai : box.a i ≤ Nat.log 2 L :=
+      dyadicChoice_le_log box.2.2.2.2 i
+    have hpowNat : 2 ^ box.a i ≤ L :=
+      (Nat.pow_le_pow_right (by norm_num : 0 < 2) hai).trans
+        (Nat.pow_log_le_self 2 (by omega : L ≠ 0))
+    have hpowReal : (((2 ^ box.a i : ℕ) : ℝ)) ≤ (L : ℝ) := by
+      exact_mod_cast hpowNat
+    exact (not_lt_of_ge hpowReal) hlong
+  · rcases i with i | i
+    · exact Or.inl rfl
+    · exact Or.inr rfl
+
+/-- Exact degree-three factor classification at the literal Heath--Brown cutoff.  A selected
+factor always has length at least `P^(1/8)`; it is either no longer than `L`, or it lies beyond
+every Mobius factor and is therefore a zeta/logarithm factor. -/
+theorem exists_heathBrown_three_medium_or_long_zeta_log_cutoff
+    {L X : ℕ} (box : HeathBrownBoxChoice L X 3) (hL : 1 ≤ L) {P : ℝ}
+    (hP : 1 < P)
+    (hedge : P ^ (7 / 8 : ℝ) ≤
+      (groupedDyadicLower
+        (heathBrownBoxFactorExponent box.a box.b box.q) : ℝ)) :
+    (∃ i : PositiveHeathBrownBoxFactorIndex box,
+        P ^ (1 / 8 : ℝ) ≤
+            ((2 ^ heathBrownBoxFactorExponent box.a box.b box.q i : ℕ) : ℝ) ∧
+          ((2 ^ heathBrownBoxFactorExponent box.a box.b box.q i : ℕ) : ℝ) ≤
+            (L : ℝ)) ∨
+      ∃ i : PositiveHeathBrownBoxFactorIndex box,
+        P ^ (1 / 8 : ℝ) ≤
+            ((2 ^ heathBrownBoxFactorExponent box.a box.b box.q i : ℕ) : ℝ) ∧
+          (L : ℝ) <
+            ((2 ^ heathBrownBoxFactorExponent box.a box.b box.q i : ℕ) : ℝ) ∧
+          (heathBrownBoxFactorKind 3 box.m i = .zeta ∨
+            heathBrownBoxFactorKind 3 box.m i = .log) := by
+  obtain ⟨i, hi⟩ : ∃ i : PositiveHeathBrownBoxFactorIndex box,
+      P ^ (1 / 8 : ℝ) ≤
+        ((2 ^ heathBrownBoxFactorExponent box.a box.b box.q i : ℕ) : ℝ) := by
+    rcases exists_medium_or_long_positive_heathBrown_three box hP hedge with hmedium | hlong
+    · exact ⟨hmedium.choose, hmedium.choose_spec.1⟩
+    · have hroot : P ^ (1 / 8 : ℝ) ≤ P ^ (1 / 3 : ℝ) :=
+        Real.rpow_le_rpow_of_exponent_le hP.le (by norm_num)
+      exact ⟨hlong.choose, hroot.trans hlong.choose_spec.le⟩
+  by_cases hshort :
+      ((2 ^ heathBrownBoxFactorExponent box.a box.b box.q i : ℕ) : ℝ) ≤ (L : ℝ)
+  · exact Or.inl ⟨i, hi, hshort⟩
+  · have hlong : (L : ℝ) <
+        ((2 ^ heathBrownBoxFactorExponent box.a box.b box.q i : ℕ) : ℝ) :=
+      lt_of_not_ge hshort
+    exact Or.inr ⟨i, hi, hlong,
+      heathBrown_factorKind_eq_zeta_or_log_of_length_gt_L box hL i hlong⟩
+
 /-- Exact Case-II length classification for the six factors in the degree-three packet. -/
 theorem exists_heathBrown_three_medium_or_long_zeta_log
     {L X : ℕ} (box : HeathBrownBoxChoice L X 3) (hL : 1 ≤ L) {P : ℝ}

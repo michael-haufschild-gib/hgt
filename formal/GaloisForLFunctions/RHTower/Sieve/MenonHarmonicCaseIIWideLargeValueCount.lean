@@ -57,7 +57,6 @@ theorem exists_absolute_eventually_card_mul_sq_le_menonHarmonicPrimeBlock_caseII
         1 ≤ X → a < Y → X < (L + 1) ^ 3 → 1 < T0 →
         ((2 ^ 6 : ℕ) : ℝ) * T0 ^ t ≤ (a : ℝ) →
         (64 : ℝ) ^ 8 ≤ (a : ℝ) → 1 ≤ L →
-        (L : ℝ) ≤ (a : ℝ) ^ (1 / 3 : ℝ) →
         0 < H → (Y : ℝ) + H ≤ (X : ℝ) →
         1 < sigma → 0 ≤ B → 0 ≤ V → 1 ≤ Δ → 0 < cells →
         2 * V = (cells : ℝ) * Δ →
@@ -96,7 +95,7 @@ theorem exists_absolute_eventually_card_mul_sq_le_menonHarmonicPrimeBlock_caseII
     exists_absolute_eventually_card_mul_sq_le_menonHeathBrownCaseII_variableUpper_wide A
   refine ⟨C0, hC0, ?_⟩
   filter_upwards [haggregate] with a haAggregate
-  intro L X Y cells T0 t H B sigma V Δ T S w hX haY hXL hT0 hscale ha hL hcut
+  intro L X Y cells T0 t H B sigma V Δ T S w hX haY hXL hT0 hscale ha hL
     hH hYX hsigma hB hV hΔ hcells hgrid hbaseGap hT hΔT hbaseBand h2T
   dsimp only
   intro hQ hA habsorb hlarge
@@ -146,7 +145,7 @@ theorem exists_absolute_eventually_card_mul_sq_le_menonHarmonicPrimeBlock_caseII
       linarith
     simpa only [upper, dif_pos hr, tau] using hBE.trans_lt hraw
   obtain ⟨_, _, _, hbound⟩ :=
-    haAggregate hX hXL hT0 hscale ha hL hcut hH hYX hsigma hV hΔ hcells hgrid
+    haAggregate hX hXL hT0 hscale ha hL hH hYX hsigma hV hΔ hcells hgrid
       hupperLo hupperHi (by simpa only [tau] using hbaseGap) hT hΔT
       (by simpa only [tau] using hbaseBand) h2T (by simpa using hQ) hA habsorb hsharp
   exact hbound

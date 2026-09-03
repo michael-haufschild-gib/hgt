@@ -55,18 +55,21 @@ def IsMenonHeathBrownCaseIISelection
     1 ≤ heathBrownBoxFactorExponent
       label.box.a label.box.b label.box.q label.factor ∧
     if label.isLong then
-      (a : ℝ) ^ (1 / 3 : ℝ) <
+      (a : ℝ) ^ (1 / 8 : ℝ) ≤
           ((2 ^ heathBrownBoxFactorExponent
             label.box.a label.box.b label.box.q label.factor : ℕ) : ℝ) ∧
-        (heathBrownBoxFactorKind 3 label.box.m label.factor = .zeta ∨
-          heathBrownBoxFactorKind 3 label.box.m label.factor = .log)
+        (L : ℝ) <
+            ((2 ^ heathBrownBoxFactorExponent
+              label.box.a label.box.b label.box.q label.factor : ℕ) : ℝ) ∧
+          (heathBrownBoxFactorKind 3 label.box.m label.factor = .zeta ∨
+            heathBrownBoxFactorKind 3 label.box.m label.factor = .log)
     else
       (a : ℝ) ^ (1 / 8 : ℝ) ≤
           ((2 ^ heathBrownBoxFactorExponent
             label.box.a label.box.b label.box.q label.factor : ℕ) : ℝ) ∧
         ((2 ^ heathBrownBoxFactorExponent
           label.box.a label.box.b label.box.q label.factor : ℕ) : ℝ) ≤
-          (a : ℝ) ^ (1 / 3 : ℝ)
+          (L : ℝ)
 
 /-- The Case-II label type is inhabited as soon as the frequency grid is nonempty. -/
 theorem nonempty_menonHeathBrownCaseIILabel
@@ -118,7 +121,7 @@ theorem exists_menonHeathBrownCaseIISelection_of_vonMangoldtTwist_Ioc_gt
     (hab : a ≤ b) (hbX : b ≤ X) (T0 t tau : ℝ) (hT0 : 1 < T0)
     (hscale : ((2 ^ 6 : ℕ) : ℝ) * T0 ^ t ≤ (a : ℝ))
     (ha : (64 : ℝ) ^ 8 ≤ (a : ℝ)) (hL : 1 ≤ L)
-    (hcut : (L : ℝ) ≤ (a : ℝ) ^ (1 / 3 : ℝ))
+    (_hcut : (L : ℝ) ≤ (a : ℝ) ^ (1 / 3 : ℝ))
     {B sigma C V Δ : ℝ} (hsigma : 1 < sigma) (hC : 1 ≤ C)
     (hkernel : ∀ y : ℝ,
       ‖menonSharpIntervalMellinKernel (a : ℝ) (b : ℝ) sigma y‖ ≤
@@ -141,8 +144,8 @@ theorem exists_menonHeathBrownCaseIISelection_of_vonMangoldtTwist_Ioc_gt
         (Real.pi - 2 * Real.arctan V)) /
         ((cells : ℝ) * Δ * C)
   obtain ⟨j, hj, y, hy, box, heligible, hrelevant, hbox, hfactor⟩ :=
-    exists_windowRelevantBox_cell_medium_or_long_zeta_log_of_vonMangoldtTwist_Ioc_gt
-      L X a b cells hXL hab hbX T0 t tau hT0 hscale ha hL hcut hsigma hC
+    exists_windowRelevantBox_cell_medium_or_long_zeta_log_cutoff_of_vonMangoldtTwist_Ioc_gt
+      L X a b cells hXL hab hbX T0 t tau hT0 hscale ha hL hsigma hC
         hkernel hV hΔ hcells hgrid hthreshold hlarge
   have hterm := norm_heathBrownBoxTerm_three_le_eight_mul_core box
     ((sigma : ℂ) + ((y + tau : ℝ) : ℂ) * Complex.I)
@@ -163,7 +166,7 @@ theorem exists_menonHeathBrownCaseIISelection_of_vonMangoldtTwist_Ioc_gt
       _ = (Fintype.card (HeathBrownBoxChoice L X 3) : ℝ) * 8 *
           ‖heathBrownDyadicCoreProduct L X 3 box.m box.a box.b box.q
             ((sigma : ℂ) + ((y + tau : ℝ) : ℂ) * Complex.I)‖ := by ring
-  rcases hfactor with ⟨i, hmediumLo, hmediumHi⟩ | ⟨i, hlong, hkind⟩
+  rcases hfactor with ⟨i, hmediumLo, hmediumHi⟩ | ⟨i, hlongLo, hlong, hkind⟩
   · let label : MenonHeathBrownCaseIILabel L X cells :=
       ⟨⟨j, Finset.mem_range.mp hj⟩, box, (i : HeathBrownBoxFactorIndex 3 box.m), false⟩
     refine ⟨label, y, ?_⟩
@@ -177,7 +180,7 @@ theorem exists_menonHeathBrownCaseIISelection_of_vonMangoldtTwist_Ioc_gt
     dsimp only [IsMenonHeathBrownCaseIISelection,
       MenonHeathBrownCaseIILabel.cell, MenonHeathBrownCaseIILabel.box,
       MenonHeathBrownCaseIILabel.factor, MenonHeathBrownCaseIILabel.isLong, label]
-    exact ⟨hy, heligible, hrelevant, hcore, i.property, hlong, hkind⟩
+    exact ⟨hy, heligible, hrelevant, hcore, i.property, hlongLo, hlong, hkind⟩
 
 /-- Uniform finite coloring of a finite set of large sharp twisted intervals. -/
 theorem exists_menonHeathBrownCaseIISelection_coloring

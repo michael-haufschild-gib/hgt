@@ -24,7 +24,7 @@ theorem exists_absolute_eventually_card_mul_sq_le_menonHarmonicPrimeBlock_caseII
         1 ≤ X → a < Y → X < (L + 1) ^ 3 → 1 < T0 →
         ((2 ^ 6 : ℕ) : ℝ) * T0 ^ t ≤ (a : ℝ) →
         (64 : ℝ) ^ 8 ≤ (a : ℝ) → 1 ≤ L →
-        (L : ℝ) ≤ (a : ℝ) ^ (1 / 3 : ℝ) →
+        L ≤ X → (X : ℝ) ≤ (a : ℝ) ^ (3 : ℕ) →
         0 < H → (Y : ℝ) + H ≤ (X : ℝ) →
         1 < sigma → 0 ≤ B → 0 ≤ V → 1 ≤ Δ → 0 < cells →
         2 * V = (cells : ℝ) * Δ →
@@ -61,25 +61,21 @@ theorem exists_absolute_eventually_card_mul_sq_le_menonHarmonicPrimeBlock_caseII
     exists_absolute_eventually_card_mul_sq_le_menonHarmonicPrimeBlock_caseII_wide 16
   refine ⟨C0, hC0, ?_⟩
   filter_upwards [hcount,
-    eventually_menonHeathBrownCaseIIAbsorptionEnvelope_lt_logPow] with a haCount haAbsorb
-  intro L X Y cells T0 t H B sigma V Δ T S w hX haY hXL hT0 hscale ha hL hcut
+    eventually_menonHeathBrownCaseIIAbsorptionEnvelope_lt_logPow_of_polynomial_support]
+      with a haCount haAbsorb
+  intro L X Y cells T0 t H B sigma V Δ T S w hX haY hXL hT0 hscale ha hL hLX hXa
     hH hYX hsigma hB hV hΔ hcells hgrid hbaseGap hT hΔT hbaseBand h2T
   dsimp only
   intro hQ hlarge
-  have haX : a < X := by
-    have hYXNat : Y ≤ X := by
-      have hYR : (Y : ℝ) ≤ (X : ℝ) := by linarith
-      exact_mod_cast hYR
-    exact haY.trans_le hYXNat
   have haReal : (1 : ℝ) < (a : ℝ) := by
     calc
       (1 : ℝ) < 64 ^ (8 : ℕ) := by norm_num
       _ ≤ (a : ℝ) := ha
   have hlogPow : 0 < (Real.log (a : ℝ)) ^ (-8 : ℝ) :=
     Real.rpow_pos_of_pos (Real.log_pos haReal) _
-  exact haCount hX haY hXL hT0 hscale ha hL hcut hH hYX hsigma hB hV hΔ hcells hgrid
+  exact haCount hX haY hXL hT0 hscale ha hL hH hYX hsigma hB hV hΔ hcells hgrid
     hbaseGap hT hΔT hbaseBand h2T (hlogPow.trans hQ) (by norm_num)
-      ((haAbsorb hL hX haX hXL hcut).trans hQ) hlarge
+      ((haAbsorb hL hX hLX hXa).trans hQ) hlarge
 
 end
 

@@ -5107,3 +5107,23 @@ MUST-149 — Mehler–Heine limit of `S_n(τ) = Σ_l C(n,l) Ring.choose(−(n+½
 `τ = tanh(log p)`, `n = xp`: `S_n ≈ (−1)^n (πn)^{−1/2} cos(4x)`; then the residual jet
 `residualJetOf` gives the Route J profile `Φ(x) = 4√(2/π)[√x cos 4x − 8x^{3/2} sin 4x]` in Lean.
 Card: `3-formalized/semilocal-boost-diagonal-closed-form-lean.md`.
+F421 — Lean (`ScaledTerminatingHypergeometricLimit`): the Mehler–Heine mechanism for terminating
+hypergeometric sums: `₂F₁(−n_j, n_j+d; c; σ_j²) → Σ_l (−1)^l w^{2l}/((c)_l l!)` when `n_j → ∞`,
+`n_j σ_j → w` (Tannery), with the limits `cos 2w` (`c = ½`) and `sin 2w / 2w` (`c = 3/2`).
+F422 — Lean (`SemilocalDiagonalPfaffTransformation`, `SemilocalBoostContiguousRelations`): the Pfaff
+transformation of the diagonal cosine moments to the bounded `σ`-form
+`m_n(δ) = (cosh δ)^{-1/2}(−1)^n C_n ₂F₁(−n, n+½; ½; sech² δ)` (Chu–Vandermonde), and the two
+contiguous relations `(2n+1)F_{n+1} + 2(n+1)F_n = (4n+3)(1−x)H_n`, `H_{n+1} − H_n = −(4n+5)xK_n`.
+F423 — Lean (`RouteJResidualFirstDifferenceForm`): the Route J residual jet is exactly
+`(cosh δ)^{-1/2}[r_{2k}r_{2k+1}ΔQ_{2k} + 2Δ(r²Q)_{2k+1} + r_{2k+2}r_{2k+3}ΔQ_{2k+2}]` with the smooth
+`Q_n = C_n(4n+3)(1−x)H_n/(2(n+1))`, and the differences are closed forms in `H_n, K_n` with a factor
+`x = sech² δ` in front of `K_n`.
+F424 — Lean (`RouteJScalingProfileLimits`, `RouteJScalingProfile`, `RouteJResidualNormalizationLimit`):
+**the Route J profile is a theorem**: along `p_j → ∞`, `2k_j/p_j → X > 0`,
+`residualJetOf (cosineModeDeterminantJet (log p_j)) k_j → Φ(X) = 4√(2/π)[√X cos 4X − 8X^{3/2} sin 4X]`,
+and `R_k(0) → 1`, so the relative first-order deviation has the same limit.  MUST-149 closed.  Card:
+`3-formalized/route-j-scaling-profile-lean.md`.
+MUST-150 — The beat-mode profile: the two-prime cross term is the first-order response at fixed
+`δ = log(p₂/p₁)` (report §3.5); its large-`n` law needs the Darboux (fixed-argument) asymptotics of
+`₂F₁(−n, n+½; ½; sech² δ)`, i.e. the oscillation `cos(n θ_δ + φ)` with `θ_δ = 2 arcsin(sech δ)`; the
+Tannery route does not apply (the terms are not individually bounded), so this is a new mechanism.

@@ -32,7 +32,7 @@ theorem exists_absolute_eventually_volume_menonHarmonicPrimeBlockExceptionalSet_
         1 ≤ X → a < Y → X < (L + 1) ^ 3 → 1 < T0 →
         ((2 ^ 6 : ℕ) : ℝ) * T0 ^ t ≤ (a : ℝ) →
         (64 : ℝ) ^ 8 ≤ (a : ℝ) → 1 ≤ L →
-        (L : ℝ) ≤ (a : ℝ) ^ (1 / 3 : ℝ) →
+        L ≤ X → (X : ℝ) ≤ (a : ℝ) ^ (3 : ℕ) →
         0 < H → (Y : ℝ) + H ≤ (X : ℝ) →
         1 < sigma → 0 ≤ B → 0 ≤ V → 1 ≤ Δ → 0 < cells →
         2 * V = (cells : ℝ) * Δ →
@@ -61,7 +61,7 @@ theorem exists_absolute_eventually_volume_menonHarmonicPrimeBlockExceptionalSet_
     exists_absolute_eventually_card_mul_sq_le_menonHarmonicPrimeBlock_caseII_wide_realFinset
   refine ⟨C0, hC0, ?_⟩
   filter_upwards [hcount] with a haCount
-  intro L X Y cells T0 t H B sigma V Δ T hX haY hXL hT0 hscale ha hL hcut
+  intro L X Y cells T0 t H B sigma V Δ T hX haY hXL hT0 hscale ha hL hLX hXa
     hH hYX hsigma hB hV hΔ hcells hgrid hT hΔT h2T
   dsimp only
   intro hQ
@@ -102,7 +102,7 @@ theorem exists_absolute_eventually_volume_menonHarmonicPrimeBlockExceptionalSet_
     exact mul_pos (div_pos (lt_min hTpos hgain) (mul_pos (by norm_num) henv))
       (div_pos hQpos (mul_pos hDpos (by norm_num)))
   have hR : 0 ≤ R := by
-    have hempty := haCount (E := (∅ : Finset ℝ)) hX haY hXL hT0 hscale ha hL hcut
+    have hempty := haCount (E := (∅ : Finset ℝ)) hX haY hXL hT0 hscale ha hL hLX hXa
       hH hYX hsigma hB hV hΔ hcells hgrid (by simp) hT hΔT (by simp) h2T
       (by simpa only [Q, C] using hQ) (by simp)
     simpa only [Finset.card_empty, Nat.cast_zero, zero_mul, D, W, Vexp, Hmax, R]
@@ -124,7 +124,7 @@ theorem exists_absolute_eventually_volume_menonHarmonicPrimeBlockExceptionalSet_
                 (-x / (2 * Real.pi))‖ := by
           intro x hx
           exact (hES (by exact_mod_cast hx)).2
-        have hfinite := haCount (E := E) hX haY hXL hT0 hscale ha hL hcut hH hYX
+        have hfinite := haCount (E := E) hX haY hXL hT0 hscale ha hL hLX hXa hH hYX
           hsigma hB hV hΔ hcells hgrid hsep hT hΔT hbandE h2T
           (by simpa only [Q, C] using hQ) hlargeE
         simpa only [D, W, Vexp, Hmax, R] using hfinite)

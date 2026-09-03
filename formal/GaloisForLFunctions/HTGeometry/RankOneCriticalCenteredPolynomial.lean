@@ -270,7 +270,8 @@ theorem map_rankOneCriticalCenteredPolynomial_eq_centeredMonicE
     simp
   by_cases hlow : k < n
   · have hsucc : k < n.succ := by omega
-    simp only [dif_pos hlow, dif_pos hsucc, zero_add]
+    simp only [if_neg hlead, dif_pos hlow, if_neg (by omega), dif_pos hsucc,
+      zero_add]
     have hidx :
         rankOneCenteredIndex (⟨k, hlow⟩ : Fin n) =
           (⟨k, hsucc⟩ : Fin n.succ) := Fin.ext rfl
