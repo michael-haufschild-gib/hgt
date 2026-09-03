@@ -65,7 +65,7 @@ theorem integral_Icc_normSq_menonFinalRangeShell_le_frequencyPartition
       Q < (p : ℝ) ∧ (p : ℝ) ≤ Q * (1 + eta) ^ L)
     (V : ℕ → ℝ)
     (hleft : ∀ j ∈ Finset.range L,
-      1 ≤ ⌈x / ((Q * (1 + eta) ^ j) * (1 + eta))⌉₊)
+      1 ≤ ⌈(⌈x⌉₊ : ℝ) / ((Q * (1 + eta) ^ j) * (1 + eta))⌉₊)
     (hright : ∀ j ∈ Finset.range L,
       1 ≤ ⌊(menonFinalRangeTopNat x : ℝ) / (Q * (1 + eta) ^ j)⌋₊) :
     (∫ w in Set.Icc (-x) x,
@@ -92,6 +92,7 @@ theorem integral_Icc_normSq_menonFinalRangeShell_le_frequencyPartition
     (F := fun w => harmonicRamareBilinear (menonFinalRangePrimes x)
       (menonFinalRangeShell x) w)
     (G := fun w => logPoly harmonicMoebiusC (menonFinalRangeHarmonicRoughSet x) w)
+    (E := Set.Icc (-x) x) (W := x)
     (by
       refine continuous_finsetSum (menonFinalRangePrimes x) fun p _ => ?_
       exact ((continuous_moebiusPhase p).div_const _).mul (continuous_logPoly _ _))
@@ -122,7 +123,9 @@ theorem integral_Icc_normSq_menonFinalRangeShell_le_frequencyPartition
           + 2 * ∫ w in Set.Icc (-x) x,
             ‖logPoly harmonicMoebiusC (menonFinalRangeHarmonicRoughSet x) w‖ ^ 2 := by
               rw [hshell]
-              exact add_le_add_right (mul_le_mul_of_nonneg_left hbil (by norm_num)) _
+              have hmul := mul_le_mul_of_nonneg_left hbil
+                (show (0 : ℝ) ≤ 2 by norm_num)
+              exact add_le_add hmul le_rfl
 
 end
 

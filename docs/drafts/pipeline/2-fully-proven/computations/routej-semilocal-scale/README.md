@@ -320,3 +320,13 @@ amplitude `√p` relative to the residual.
   function coefficients; its own `F` has the wrong shift and serves as the negative control.
 - `phi_derivation_check.py`, `phi_derivation_check.log` — §3.7: closed-form diagonal moments,
   corrected generating function, derived `Φ` versus the collapse profile.
+
+### 3.8 Lean status of the derivation (2026-09-03)
+
+Steps (i)–(iii) of §3.7 are Lean theorems: the generating function
+(`SemilocalJacobiMeixnerPollaczekGeneratingFunction`), the complex-rapidity characteristic function
+and the two-variable boost generating function (`SemilocalGammaComplexRapidityCharacteristic`,
+`SemilocalBoostGeneratingFunctionClosedForm`), and the diagonal closed form
+`m_n(δ) = (cosh δ)^{−1/2} Σ_l C(n,l) Ring.choose(−(n+½), l) tanh^{2l} δ`
+(`SemilocalBoostDiagonalClosedForm.cosineDiagonalMoment_eq`).  Only the Mehler–Heine limit of the
+finite sum at `δ = log p`, `n = xp` (and the elementary residual-jet expansion) remains for `Φ`.

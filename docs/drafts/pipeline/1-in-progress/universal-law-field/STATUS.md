@@ -5080,3 +5080,30 @@ polynomials, the two-variable boost generating function, the diagonal closed for
 Mehler–Heine limit of `P_n^{(−1/2,0)}`; then the Route J profile `Φ` becomes a Lean theorem
 through F413.  Route J's boundary question is closed on paper: there is no prime-scale boundary
 layer, only the Bessel regime of the SU(1,1) boost elements.
+F416 — Lean (`SemilocalJacobiMeixnerPollaczekGeneratingFunction.lean`): the corpus's archimedean
+semilocal Jacobi polynomials are Meixner–Pollaczek: `Σ c_n p_n(s) w^n = (1 − iw)^{−1/4+is/2}(1 + iw)^{−1/4−is/2}`
+for `‖w‖ < 1`, real form `(1 + w²)^{−1/4} exp(s arctan w)`; proved through the ODE
+`(1 + w²)G′ = (s − w/2)G`, its `n`-fold derivative recurrence at `0`, and Cauchy's Taylor theorem.
+First brick of MUST-148; remaining bricks listed in
+`3-formalized/semilocal-jacobi-meixner-pollaczek-generating-function-lean.md`.
+F417 — Lean (`SemilocalGammaComplexRapidityCharacteristic`): the archimedean characteristic
+function continues to `∫ e^{zs} dμ = (cos z)^{−1/2}` on the strip `|Re z| < π/2` (Mathlib
+`complexMGF` analyticity + identity theorem, corpus majorant of rate `π/2`); two-variable boost
+integral `∫ G_s(w)G_s(z)e^{its} dμ` in cosine form.
+F418 — Lean (`ScalarPowerSeriesUniqueness`, `SemilocalJacobiCoefficientCauchyBound`,
+`SemilocalBoostCoefficientInterchange`): coefficient uniqueness on discs and on the real diameter,
+Taylor coefficients, complex binomial series; Cauchy bound `|c_m p_m(s)| ≤ (3/4)^{−1/2} e^{|s|/2} 4^m`;
+term-by-term integration of the generating function against `e^{|s|/2}`-integrable weights.
+F419 — Lean (`SemilocalBoostGeneratingFunctionClosedForm`): the two-variable boost generating
+function `∫ G_s(w)G_s(z)e^{its} dμ = (cosh t)^{−1/2}(1 − wz − i tanh t (w+z))^{−1/2}` (real `|w|,|z| < 1`)
+and its `w`-coefficients `(cosh t)^{−1/2}(1−iτz)^{−1/2}(−½ choose m)(−q(z))^m`.
+F420 — Lean (`SemilocalBoostRowTaylorIdentification`, `SemilocalBoostDiagonalClosedForm`): the boost
+matrix entries `M_{mn}(t) = ∫ p_m p_n e^{its} dμ` are the Taylor coefficients of
+`K_m (z+iτ)^m (1−iτz)^{−(m+½)}`; diagonal closed form
+`∫ p_n² e^{its} dμ = (cosh t)^{−1/2} Σ_{l≤n} C(n,l)((−(n+½)) choose l) tanh^{2l} t`, i.e.
+`(cosh t)^{−1/2} P_n^{(0,−1/2)}(1 − 2tanh² t)`; real form `cosineDiagonalMoment_eq` for the response
+module.  F415's paper theorem is Lean.  MUST-148 items (i)–(iv) closed.
+MUST-149 — Mehler–Heine limit of `S_n(τ) = Σ_l C(n,l) Ring.choose(−(n+½), l) τ^{2l}` at
+`τ = tanh(log p)`, `n = xp`: `S_n ≈ (−1)^n (πn)^{−1/2} cos(4x)`; then the residual jet
+`residualJetOf` gives the Route J profile `Φ(x) = 4√(2/π)[√x cos 4x − 8x^{3/2} sin 4x]` in Lean.
+Card: `3-formalized/semilocal-boost-diagonal-closed-form-lean.md`.

@@ -47,16 +47,16 @@ noncomputable def mpCoefficient (s : ℝ) (n : ℕ) : ℝ :=
 
 /-! ## The bases avoid the branch cut on the unit disc -/
 
-theorem re_one_sub_I_mul (w : ℂ) : (1 - I * w).re = 1 + w.im := by
+theorem mp_re_one_sub_I_mul (w : ℂ) : (1 - I * w).re = 1 + w.im := by
   simp [Complex.sub_re, Complex.mul_re]
 
-theorem re_one_add_I_mul (w : ℂ) : (1 + I * w).re = 1 - w.im := by
+theorem mp_re_one_add_I_mul (w : ℂ) : (1 + I * w).re = 1 - w.im := by
   simp [Complex.add_re, Complex.mul_re, sub_eq_add_neg]
 
 theorem one_sub_I_mul_mem_slitPlane {w : ℂ} (hw : ‖w‖ < 1) : 1 - I * w ∈ slitPlane := by
   rw [mem_slitPlane_iff]
   left
-  rw [re_one_sub_I_mul]
+  rw [mp_re_one_sub_I_mul]
   have h := abs_im_le_norm w
   have := (abs_lt.mp (h.trans_lt hw)).1
   linarith
@@ -64,12 +64,12 @@ theorem one_sub_I_mul_mem_slitPlane {w : ℂ} (hw : ‖w‖ < 1) : 1 - I * w ∈
 theorem one_add_I_mul_mem_slitPlane {w : ℂ} (hw : ‖w‖ < 1) : 1 + I * w ∈ slitPlane := by
   rw [mem_slitPlane_iff]
   left
-  rw [re_one_add_I_mul]
+  rw [mp_re_one_add_I_mul]
   have h := abs_im_le_norm w
   have := (abs_lt.mp (h.trans_lt hw)).2
   linarith
 
-theorem one_add_sq_ne_zero {w : ℂ} (hw : ‖w‖ < 1) : (1 : ℂ) + w ^ 2 ≠ 0 := by
+theorem mp_one_add_sq_ne_zero {w : ℂ} (hw : ‖w‖ < 1) : (1 : ℂ) + w ^ 2 ≠ 0 := by
   have h1 := slitPlane_ne_zero (one_sub_I_mul_mem_slitPlane hw)
   have h2 := slitPlane_ne_zero (one_add_I_mul_mem_slitPlane hw)
   have : (1 : ℂ) + w ^ 2 = (1 - I * w) * (1 + I * w) := by
@@ -85,7 +85,7 @@ theorem mpExponent_identity (s : ℝ) {w : ℂ} (hw : ‖w‖ < 1) :
       ((s : ℂ) - w / 2) / (1 + w ^ 2) := by
   have hA0 := slitPlane_ne_zero (one_sub_I_mul_mem_slitPlane hw)
   have hB0 := slitPlane_ne_zero (one_add_I_mul_mem_slitPlane hw)
-  have hq := one_add_sq_ne_zero hw
+  have hq := mp_one_add_sq_ne_zero hw
   rw [div_add_div _ _ hA0 hB0, div_eq_div_iff (mul_ne_zero hA0 hB0) hq]
   unfold mpExponentPlus mpExponentMinus
   linear_combination (-((s : ℂ) - w / 2)) * I_sq
@@ -126,7 +126,7 @@ theorem mpGeneratingFunction_ode (s : ℝ) {w : ℂ} (hw : ‖w‖ < 1) :
     (1 + w ^ 2) * deriv (mpGeneratingFunction s) w =
       ((s : ℂ) - w / 2) * mpGeneratingFunction s w := by
   rw [deriv_mpGeneratingFunction s hw]
-  have hq := one_add_sq_ne_zero hw
+  have hq := mp_one_add_sq_ne_zero hw
   field_simp
 
 /-! ## Smoothness at the origin -/
@@ -388,7 +388,7 @@ theorem mpGeneratingFunction_ofReal (s w : ℝ) :
     rw [log_one_sub_I_mul_ofReal, log_one_add_I_mul_ofReal]
     unfold mpExponentPlus mpExponentMinus
     push_cast
-    simp only [Complex.ofReal_arctan]
+    try simp only [Complex.ofReal_arctan]
     linear_combination (-(s : ℂ) * Complex.arctan (w : ℂ)) * I_sq
   unfold mpGeneratingFunction
   rw [cpow_def_of_ne_zero hA, cpow_def_of_ne_zero hB, ← Complex.exp_add, hexp,

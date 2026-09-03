@@ -10407,3 +10407,63 @@ Thus actual velocity elements, their nonvanishing, and the required state-deriva
 are unconditional.  Remaining open core is their simultaneous finite-ramified Hahn landing with
 the prescribed nonzero output-linear initial terms, followed by place-specific `RatIn` and response
 bounds.  Card stays at Stage 2.
+
+### One common Newton--Puiseux cover for every finite branch family (2026-09-03)
+
+`HTGeometry/NewtonPuiseuxFiniteFamily.lean` upgrades the corpus's unconditional one-polynomial
+Newton--Puiseux theorem to a finite-family theorem.  It multiplies the individually produced
+positive ramification indices and expands each selected root through the product of all other
+indices.  Consequently every positive-degree monic power-series polynomial in an arbitrary finite
+family has a root after one common nonzero ramification, with no root-selection premise.  Direct
+checking and the targeted leaf build pass; the new theorem audits to exactly
+`[propext, Classical.choice, Quot.sound]`, and the leaf is wired into `HTGeometry` without an
+umbrella build.
+
+This closes common finite ramification and simultaneous root existence at each one-variable
+Newton--Puiseux stage.  Iterating those stages into the actual multigraded cascade field while
+retaining the prescribed Wiman edge roots, then proving the place-specific `RatIn` and response
+bounds, remains the exact open core.  Card stays at Stage 2.
+
+### Prescribed Newton-edge roots survive one common finite cover (2026-09-03)
+
+`HTGeometry/NewtonPuiseuxPrescribedEdgeRoot.lean` strengthens the root-multiplicity Hensel factor
+to retain its exact special fibre, then proves Newton--Puiseux lifting with a prescribed edge root.
+For a chosen root `c` of a Newton transform's special fibre, the lifted root of the original
+polynomial is exactly `X^(N*p) * z` with `constantCoeff z = c`.  The finite-family theorem
+
+```text
+exists_isRoot_map_expand_finite_family_with_prescribed_newton_leads
+```
+
+places every selected edge root on one common nonzero ramified cover, records the exact cover
+factor `Q = M_i q_i`, and retains every exponent `M_i p_i` and leading coefficient `c_i`.
+Direct checking and the targeted leaf build pass.  All four new declarations audit to exactly
+`[propext, Classical.choice, Quot.sound]`; the leaf is wired into `HTGeometry` without an umbrella
+build.
+
+This closes simultaneous one-variable ramification **with the prescribed Wiman edge-root choices**.
+Remaining open core is to iterate these exact lifts through the actual nested multigraded cascade
+field, then prove the place-specific `RatIn` and response bounds.  Card stays at Stage 2.
+
+### Eventual central-index upper bound for every order-one ADE (2026-09-03)
+
+`HTGeometry/FirstOrderCentralIndexUpper.lean` removes the last equation-shape premise from the
+Gol'dberg upper bound.  Starting from the canonical finite coefficient row of an arbitrary
+order-one ADE, it discards zero coefficients and multiplies the relation by the actual derivative.
+Every resulting monomial therefore has positive derivative degree.  The proof selects maximal
+value/derivative total degree and then maximal derivative degree internally, producing exactly the
+top-symbol data consumed by the existing Gol'dberg theorem.  The unconditional result is
+
+```text
+exists_centralIndex_le_pow_of_order_one :
+  exists C K, 0 < C and eventually (centralIndex a r <= C * r^K).
+```
+
+Together with `exists_radius_le_centralIndex_pow_of_order_one`, every transcendental entire
+order-one solution now has both a cofinal positive power lower bound and an eventual finite power
+upper bound for its central index.  This is the compact log-slope input needed to extract a fixed
+positive Wiman exponent before selecting a Newton edge.  Direct checking and the targeted leaf
+build pass; the new declaration audits to exactly `[propext, Classical.choice, Quot.sound]`.  The
+leaf is wired into `HTGeometry`; no umbrella build was run.  Fixed-slope extraction, compatible
+nested branch prolongation, and place-specific `RatIn`/response bounds remain, so the card stays at
+Stage 2.

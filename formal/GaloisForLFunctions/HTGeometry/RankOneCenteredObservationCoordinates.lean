@@ -3,6 +3,8 @@ import GaloisForLFunctions.HTGeometry.FracXTranscendental
 import GaloisForLFunctions.HTGeometry.ProjectiveHorizonAllRankQSystem
 import GaloisForLFunctions.HTGeometry.TailCenteredCoefficientMatch
 import GaloisForLFunctions.HTGeometry.CriticalObservationField
+import GaloisForLFunctions.HTGeometry.CriticalGeometricSheetFibre
+import GaloisForLFunctions.HTGeometry.CenteredFreeParameter
 
 /-!
 # Centered coordinates for the rank-one observation field
@@ -159,7 +161,7 @@ parameter. -/
 noncomputable def rankOneCenteredFreeFamily (hn : 0 < n) :
     Fin n ⊕ Unit → TailRatFree K n
   | Sum.inl j =>
-      -algebraMap (TailRat K n) (TailRatFree K n) (tailCoeffIn K n j) /
+      algebraMap (TailRat K n) (TailRatFree K n) (tailCoeffIn K n j) /
         fracX (TailRat K n)
   | Sum.inr _ =>
       algebraMap (TailRat K n) (TailRatFree K n)
@@ -202,7 +204,7 @@ theorem rankOneCenteredFreeFamily_adjoin_eq_top (hn : 0 < n) :
     apply IntermediateField.subset_adjoin K
     exact ⟨Sum.inr Unit.unit, rfl⟩
   have hc_mem (j : Fin n) :
-      -algebraMap T Q (tailCoeffIn K n j) / q ∈ C := by
+      algebraMap T Q (tailCoeffIn K n j) / q ∈ C := by
     apply IntermediateField.subset_adjoin K
     exact ⟨Sum.inl j, rfl⟩
   let j0 : Fin n := ⟨0, hn⟩
@@ -212,25 +214,25 @@ theorem rankOneCenteredFreeFamily_adjoin_eq_top (hn : 0 < n) :
   have ht0ne : algebraMap T Q (tailCoeffIn K n j0) ≠ 0 := by
     rw [ht0]
     exact pow_ne_zero _ hp
-  have hc0ne : -algebraMap T Q (tailCoeffIn K n j0) / q ≠ 0 :=
-    div_ne_zero (neg_ne_zero.mpr ht0ne) hq
+  have hc0ne : algebraMap T Q (tailCoeffIn K n j0) / q ≠ 0 :=
+    div_ne_zero ht0ne hq
   have hq_formula :
-      q = -(algebraMap T Q p) ^ n /
-        (-algebraMap T Q (tailCoeffIn K n j0) / q) := by
+      q = (algebraMap T Q p) ^ n /
+        (algebraMap T Q (tailCoeffIn K n j0) / q) := by
     rw [← ht0]
     symm
     apply (div_eq_iff hc0ne).2
     exact (mul_div_cancel₀ _ hq).symm
   have hq_mem : q ∈ C := by
     rw [hq_formula]
-    exact C.div_mem (C.neg_mem (C.pow_mem hp_mem n)) (hc_mem j0)
+    exact C.div_mem (C.pow_mem hp_mem n) (hc_mem j0)
   have ht_mem (j : Fin n) : algebraMap T Q (tailCoeffIn K n j) ∈ C := by
     have h := C.mul_mem hq_mem (hc_mem j)
     have heq : algebraMap T Q (tailCoeffIn K n j) =
-        -(q * (-algebraMap T Q (tailCoeffIn K n j) / q)) := by
-      rw [mul_div_cancel₀ _ hq, neg_neg]
+        q * (algebraMap T Q (tailCoeffIn K n j) / q) := by
+      rw [mul_div_cancel₀ _ hq]
     rw [heq]
-    exact C.neg_mem h
+    exact h
   have hconstants : ∀ a : T, algebraMap T Q a ∈ C := by
     let D : IntermediateField K T := IntermediateField.comap
       (IsScalarTower.toAlgHom K T Q) C
@@ -294,6 +296,20 @@ noncomputable def rankOneObservationRationalReindexEquiv :
     (FractionRing (MvPolynomial (Fin n ⊕ Unit) K))
     (MvPolynomial.renameEquiv K (rankOneObservationIndexEquiv (n := n)))
 
+@[simp] theorem rankOneObservationRationalReindexEquiv_X (i : Fin n ⊕ Fin 1) :
+    rankOneObservationRationalReindexEquiv (K := K) (n := n)
+        (algebraMap (MvPolynomial (Fin n ⊕ Fin 1) K)
+          (FractionRing (MvPolynomial (Fin n ⊕ Fin 1) K)) (MvPolynomial.X i)) =
+      algebraMap (MvPolynomial (Fin n ⊕ Unit) K)
+        (FractionRing (MvPolynomial (Fin n ⊕ Unit) K))
+        (MvPolynomial.X (rankOneObservationIndexEquiv (n := n) i)) := by
+  change (IsFractionRing.ringEquivOfRingEquiv
+      (MvPolynomial.renameEquiv K (rankOneObservationIndexEquiv (n := n))).toRingEquiv)
+      (algebraMap (MvPolynomial (Fin n ⊕ Fin 1) K)
+        (FractionRing (MvPolynomial (Fin n ⊕ Fin 1) K)) (MvPolynomial.X i)) = _
+  rw [IsFractionRing.ringEquivOfRingEquiv_algebraMap]
+  simp
+
 /-- Raw rank-one observation coordinates identify the actual observation field with the iterated
 rational model in the raw tail variables and the final reciprocal coordinate. -/
 noncomputable def rankOneCriticalObservationFieldEquiv
@@ -303,40 +319,118 @@ noncomputable def rankOneCriticalObservationFieldEquiv
     (rankOneObservationRationalReindexEquiv (K := K) (n := n)) |>.trans
     (iteratedRationalFieldEquiv (K := K) (n := n))
 
+@[simp] theorem rankOneCriticalObservationFieldEquiv_raw
+    [IsAlgClosed K] (hn : 0 < n) (i : Fin n) :
+    rankOneCriticalObservationFieldEquiv (K := K) hn
+        (criticalObservationRaw K 1 n i) =
+      iteratedRationalFamily (K := K) (n := n) (Sum.inl i) := by
+  have hcrit :
+      (criticalObservationFieldEquiv K (m := 1) (n := n) (by omega) hn).symm
+          (criticalObservationRaw K 1 n i) =
+        algebraMap (MvPolynomial (Fin n ⊕ Fin 1) K)
+          (FractionRing (MvPolynomial (Fin n ⊕ Fin 1) K))
+          (MvPolynomial.X (Sum.inl i)) := by
+    apply (criticalObservationFieldEquiv K (m := 1) (n := n) (by omega) hn).injective
+    simp only [AlgEquiv.apply_symm_apply]
+    apply Subtype.ext
+    simp [criticalObservationFieldEquiv, criticalObservationRaw,
+      criticalFieldObservation]
+  rw [rankOneCriticalObservationFieldEquiv, AlgEquiv.trans_apply, AlgEquiv.trans_apply,
+    hcrit, rankOneObservationRationalReindexEquiv_X, iteratedRationalFieldEquiv_X]
+  rfl
+
+@[simp] theorem rankOneCriticalObservationFieldEquiv_recip
+    [IsAlgClosed K] (hn : 0 < n) (j : Fin 1) :
+    rankOneCriticalObservationFieldEquiv (K := K) hn
+        (criticalObservationRecip K 1 n j) =
+      iteratedRationalFamily (K := K) (n := n) (Sum.inr Unit.unit) := by
+  have hcrit :
+      (criticalObservationFieldEquiv K (m := 1) (n := n) (by omega) hn).symm
+          (criticalObservationRecip K 1 n j) =
+        algebraMap (MvPolynomial (Fin n ⊕ Fin 1) K)
+          (FractionRing (MvPolynomial (Fin n ⊕ Fin 1) K))
+          (MvPolynomial.X (Sum.inr j)) := by
+    apply (criticalObservationFieldEquiv K (m := 1) (n := n) (by omega) hn).injective
+    simp only [AlgEquiv.apply_symm_apply]
+    apply Subtype.ext
+    simp [criticalObservationFieldEquiv, criticalObservationRecip,
+      criticalFieldObservation]
+  rw [rankOneCriticalObservationFieldEquiv, AlgEquiv.trans_apply, AlgEquiv.trans_apply,
+    hcrit, rankOneObservationRationalReindexEquiv_X, iteratedRationalFieldEquiv_X]
+  congr 2
+
+/-- Evaluation in the actual raw observation coordinates becomes ordinary evaluation in the raw
+tail rational coordinates. -/
+theorem rankOneCriticalObservationFieldEquiv_aeval_raw
+    [IsAlgClosed K] (hn : 0 < n) (P : MvPolynomial (Fin n) K) :
+    rankOneCriticalObservationFieldEquiv (K := K) hn
+        (MvPolynomial.aeval (criticalObservationRaw K 1 n) P) =
+      algebraMap (TailRat K n) (TailRatFree K n)
+        (algebraMap (MvPolynomial (Fin n) K) (TailRat K n) P) := by
+  let e := rankOneCriticalObservationFieldEquiv (K := K) hn
+  let lhs : MvPolynomial (Fin n) K →ₐ[K] TailRatFree K n :=
+    e.toAlgHom.comp (MvPolynomial.aeval (criticalObservationRaw K 1 n))
+  let rhs : MvPolynomial (Fin n) K →ₐ[K] TailRatFree K n :=
+    (IsScalarTower.toAlgHom K (TailRat K n) (TailRatFree K n)).comp
+      (IsScalarTower.toAlgHom K (MvPolynomial (Fin n) K) (TailRat K n))
+  have hhom : lhs = rhs := by
+    apply MvPolynomial.algHom_ext
+    intro i
+    simp [lhs, rhs, e]
+  exact DFunLike.congr_fun hhom P
+
+/-- Centered coefficients inside the actual rank-one observation field. -/
+noncomputable def rankOneCriticalCenteredCoeff
+    [IsAlgClosed K] (hn : 0 < n) (j : Fin n) :
+    criticalObservationField K 1 n :=
+  MvPolynomial.aeval (criticalObservationRaw K 1 n) (tailCoeff K n j) /
+    criticalObservationRecip K 1 n (0 : Fin 1)
+
+/-- Canonical identification of a rank-one tail index with a low centered-coefficient index. -/
+def rankOneCenteredLowIndex (j : Fin n) : Fin (n.succ - 1) :=
+  ⟨j, by omega⟩
+
+/-- The corresponding coefficient index in a centered polynomial of degree `n + 1`. -/
+def rankOneCenteredIndex (j : Fin n) : Fin n.succ :=
+  centeredIndex n.succ (rankOneCenteredLowIndex j)
+
 /-- Rational presentation of the centered coefficient field in degree `n + 1`. -/
 noncomputable def centeredCoeffFieldRationalEquiv (hn : 0 < n) :
-    TailRat K n ≃ₐ[K] centeredCoeffField K (n + 1) :=
-  (centeredCoeffFieldEquiv K (n + 1) (by omega)).trans
+    TailRat K n ≃ₐ[K] centeredCoeffField K n.succ :=
+  (centeredCoeffFieldEquiv K n.succ (by omega)).trans
     (IntermediateField.equivOfEq (adjoin_range_centeredLowCoeffIn (K := K) (by omega)))
 
 set_option maxHeartbeats 800000 in
 @[simp] theorem centeredCoeffFieldRationalEquiv_X (hn : 0 < n) (j : Fin n) :
     centeredCoeffFieldRationalEquiv (K := K) hn
         (algebraMap (MvPolynomial (Fin n) K) (TailRat K n) (MvPolynomial.X j)) =
-      centeredCoeffIn K (n + 1) (centeredIndex (n + 1) j) := by
+      centeredCoeffIn K n.succ (rankOneCenteredIndex j) := by
   apply Subtype.ext
-  change ((centeredCoeffFieldEquiv K (n + 1) (by omega)
-      (algebraMap (MvPolynomial (Fin n) K) (TailRat K n) (MvPolynomial.X j)) :
-      IntermediateField.adjoin K (Set.range (centeredLowCoeffIn K (n + 1)))) :
-      centeredField K (n + 1)) = centeredLowCoeffIn K (n + 1) j
-  exact coe_centeredCoeffFieldEquiv_X (K := K) (d := n + 1) (by omega) j
+  change ((centeredCoeffFieldEquiv K n.succ (by omega)
+      (algebraMap (MvPolynomial (Fin n) K)
+        (FractionRing (MvPolynomial (Fin n) K)) (MvPolynomial.X j)) :
+      IntermediateField.adjoin K (Set.range (centeredLowCoeffIn K n.succ))) :
+      centeredField K n.succ) =
+        centeredLowCoeffIn K n.succ (rankOneCenteredLowIndex j)
+  exact coe_centeredCoeffFieldEquiv_X (K := K) (d := n.succ) (by omega)
+    (rankOneCenteredLowIndex j)
 
 /-- Extend the rational presentation of the centered coefficient field by one free parameter. -/
 noncomputable def centeredCoeffFreeRationalEquiv (hn : 0 < n) :
     TailRatFree K n ≃ₐ[K]
-      FractionRing (Polynomial (centeredCoeffField K (n + 1))) :=
+      FractionRing (Polynomial (centeredCoeffField K n.succ)) :=
   IsFractionRing.fieldEquivOfAlgEquiv K
     (TailRatFree K n)
-    (FractionRing (Polynomial (centeredCoeffField K (n + 1))))
+    (FractionRing (Polynomial (centeredCoeffField K n.succ)))
     (Polynomial.mapAlgEquiv (centeredCoeffFieldRationalEquiv (K := K) hn))
 
 @[simp] theorem centeredCoeffFreeRationalEquiv_inner_X (hn : 0 < n) (j : Fin n) :
     centeredCoeffFreeRationalEquiv (K := K) hn
         (algebraMap (TailRat K n) (TailRatFree K n)
           (algebraMap (MvPolynomial (Fin n) K) (TailRat K n) (MvPolynomial.X j))) =
-      algebraMap (Polynomial (centeredCoeffField K (n + 1)))
-        (FractionRing (Polynomial (centeredCoeffField K (n + 1))))
-        (Polynomial.C (centeredCoeffIn K (n + 1) (centeredIndex (n + 1) j))) := by
+      algebraMap (Polynomial (centeredCoeffField K n.succ))
+        (FractionRing (Polynomial (centeredCoeffField K n.succ)))
+        (Polynomial.C (centeredCoeffIn K n.succ (rankOneCenteredIndex j))) := by
   let e := centeredCoeffFieldRationalEquiv (K := K) hn
   change (IsFractionRing.ringEquivOfRingEquiv
       (Polynomial.mapAlgEquiv e).toRingEquiv)
@@ -348,7 +442,7 @@ noncomputable def centeredCoeffFreeRationalEquiv (hn : 0 < n) :
 
 @[simp] theorem centeredCoeffFreeRationalEquiv_fracX (hn : 0 < n) :
     centeredCoeffFreeRationalEquiv (K := K) hn (fracX (TailRat K n)) =
-      fracX (centeredCoeffField K (n + 1)) := by
+      fracX (centeredCoeffField K n.succ) := by
   let e := centeredCoeffFieldRationalEquiv (K := K) hn
   change (IsFractionRing.ringEquivOfRingEquiv
       (Polynomial.mapAlgEquiv e).toRingEquiv)
@@ -359,19 +453,20 @@ noncomputable def centeredCoeffFreeRationalEquiv (hn : 0 < n) :
 /-- The raw iterated model, expressed in the centered coefficient field with one free parameter. -/
 noncomputable def rankOneRawToCenteredCoeffFreeEquiv (hn : 0 < n) :
     TailRatFree K n ≃ₐ[K]
-      FractionRing (Polynomial (centeredCoeffField K (n + 1))) :=
+      FractionRing (Polynomial (centeredCoeffField K n.succ)) :=
   (rankOneCenteredFreeFieldEquiv (K := K) hn).symm |>.trans
     (iteratedRationalFieldEquiv (K := K) (n := n)) |>.trans
     (centeredCoeffFreeRationalEquiv (K := K) hn)
 
+set_option maxHeartbeats 800000 in
 @[simp] theorem rankOneRawToCenteredCoeffFreeEquiv_centered
     (hn : 0 < n) (j : Fin n) :
     rankOneRawToCenteredCoeffFreeEquiv (K := K) hn
-        (-algebraMap (TailRat K n) (TailRatFree K n) (tailCoeffIn K n j) /
+        (algebraMap (TailRat K n) (TailRatFree K n) (tailCoeffIn K n j) /
           fracX (TailRat K n)) =
-      algebraMap (Polynomial (centeredCoeffField K (n + 1)))
-        (FractionRing (Polynomial (centeredCoeffField K (n + 1))))
-        (Polynomial.C (centeredCoeffIn K (n + 1) (centeredIndex (n + 1) j))) := by
+      algebraMap (Polynomial (centeredCoeffField K n.succ))
+        (FractionRing (Polynomial (centeredCoeffField K n.succ)))
+        (Polynomial.C (centeredCoeffIn K n.succ (rankOneCenteredIndex j))) := by
   have hsymm :
       (rankOneCenteredFreeFieldEquiv (K := K) hn).symm
           (rankOneCenteredFreeFamily (K := K) hn (Sum.inl j)) =
@@ -379,19 +474,20 @@ noncomputable def rankOneRawToCenteredCoeffFreeEquiv (hn : 0 < n) :
           (FractionRing (MvPolynomial (Fin n ⊕ Unit) K))
           (MvPolynomial.X (Sum.inl j)) := by
     rw [AlgEquiv.symm_apply_eq]
-    exact rankOneCenteredFreeFieldEquiv_X (K := K) hn (Sum.inl j)
+    exact (rankOneCenteredFreeFieldEquiv_X (K := K) hn (Sum.inl j)).symm
   change rankOneRawToCenteredCoeffFreeEquiv (K := K) hn
       (rankOneCenteredFreeFamily (K := K) hn (Sum.inl j)) = _
   rw [rankOneRawToCenteredCoeffFreeEquiv, AlgEquiv.trans_apply, AlgEquiv.trans_apply,
     hsymm, iteratedRationalFieldEquiv_X, iteratedRationalFamily_inl,
     centeredCoeffFreeRationalEquiv_inner_X]
 
+set_option maxHeartbeats 800000 in
 @[simp] theorem rankOneRawToCenteredCoeffFreeEquiv_free (hn : 0 < n) :
     rankOneRawToCenteredCoeffFreeEquiv (K := K) hn
         (algebraMap (TailRat K n) (TailRatFree K n)
           (algebraMap (MvPolynomial (Fin n) K) (TailRat K n)
             (MvPolynomial.X (⟨0, hn⟩ : Fin n)))) =
-      fracX (centeredCoeffField K (n + 1)) := by
+      fracX (centeredCoeffField K n.succ) := by
   have hsymm :
       (rankOneCenteredFreeFieldEquiv (K := K) hn).symm
           (rankOneCenteredFreeFamily (K := K) hn (Sum.inr Unit.unit)) =
@@ -399,12 +495,61 @@ noncomputable def rankOneRawToCenteredCoeffFreeEquiv (hn : 0 < n) :
           (FractionRing (MvPolynomial (Fin n ⊕ Unit) K))
           (MvPolynomial.X (Sum.inr Unit.unit)) := by
     rw [AlgEquiv.symm_apply_eq]
-    exact rankOneCenteredFreeFieldEquiv_X (K := K) hn (Sum.inr Unit.unit)
+    exact (rankOneCenteredFreeFieldEquiv_X (K := K) hn (Sum.inr Unit.unit)).symm
   change rankOneRawToCenteredCoeffFreeEquiv (K := K) hn
       (rankOneCenteredFreeFamily (K := K) hn (Sum.inr Unit.unit)) = _
   rw [rankOneRawToCenteredCoeffFreeEquiv, AlgEquiv.trans_apply, AlgEquiv.trans_apply,
     hsymm, iteratedRationalFieldEquiv_X, iteratedRationalFamily_inr,
     centeredCoeffFreeRationalEquiv_fracX]
+
+/-- The actual observation field, in centered coefficient coordinates and the first raw tail
+parameter. -/
+noncomputable def rankOneCriticalObservationToCenteredCoeffFreeEquiv
+    [IsAlgClosed K] (hn : 0 < n) :
+    criticalObservationField K 1 n ≃ₐ[K]
+      FractionRing (Polynomial (centeredCoeffField K n.succ)) :=
+  (rankOneCriticalObservationFieldEquiv (K := K) hn).trans
+    (rankOneRawToCenteredCoeffFreeEquiv (K := K) hn)
+
+set_option maxHeartbeats 800000 in
+@[simp] theorem rankOneCriticalObservationToCenteredCoeffFreeEquiv_centered
+    [IsAlgClosed K] (hn : 0 < n) (j : Fin n) :
+    rankOneCriticalObservationToCenteredCoeffFreeEquiv (K := K) hn
+        (rankOneCriticalCenteredCoeff (K := K) hn j) =
+      algebraMap (Polynomial (centeredCoeffField K n.succ))
+        (FractionRing (Polynomial (centeredCoeffField K n.succ)))
+        (Polynomial.C (centeredCoeffIn K n.succ (rankOneCenteredIndex j))) := by
+  have hmap :
+      rankOneCriticalObservationFieldEquiv (K := K) hn
+          (rankOneCriticalCenteredCoeff (K := K) hn j) =
+        algebraMap (TailRat K n) (TailRatFree K n) (tailCoeffIn K n j) /
+          fracX (TailRat K n) := by
+    rw [rankOneCriticalCenteredCoeff]
+    calc
+      rankOneCriticalObservationFieldEquiv (K := K) hn
+          (MvPolynomial.aeval (criticalObservationRaw K 1 n) (tailCoeff K n j) /
+            criticalObservationRecip K 1 n (0 : Fin 1)) =
+          rankOneCriticalObservationFieldEquiv (K := K) hn
+              (MvPolynomial.aeval (criticalObservationRaw K 1 n) (tailCoeff K n j)) /
+            rankOneCriticalObservationFieldEquiv (K := K) hn
+              (criticalObservationRecip K 1 n (0 : Fin 1)) :=
+        map_div₀ _ _ _
+      _ = _ := by
+        rw [rankOneCriticalObservationFieldEquiv_aeval_raw,
+          rankOneCriticalObservationFieldEquiv_recip, iteratedRationalFamily_inr]
+        rfl
+  rw [rankOneCriticalObservationToCenteredCoeffFreeEquiv, AlgEquiv.trans_apply, hmap]
+  exact rankOneRawToCenteredCoeffFreeEquiv_centered (K := K) hn j
+
+set_option maxHeartbeats 800000 in
+@[simp] theorem rankOneCriticalObservationToCenteredCoeffFreeEquiv_free
+    [IsAlgClosed K] (hn : 0 < n) :
+    rankOneCriticalObservationToCenteredCoeffFreeEquiv (K := K) hn
+        (criticalObservationRaw K 1 n (⟨0, hn⟩ : Fin n)) =
+      fracX (centeredCoeffField K n.succ) := by
+  rw [rankOneCriticalObservationToCenteredCoeffFreeEquiv, AlgEquiv.trans_apply,
+    rankOneCriticalObservationFieldEquiv_raw, iteratedRationalFamily_inl]
+  exact rankOneRawToCenteredCoeffFreeEquiv_free (K := K) hn
 
 end
 

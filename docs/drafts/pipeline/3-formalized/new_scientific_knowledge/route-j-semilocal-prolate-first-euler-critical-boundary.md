@@ -344,3 +344,11 @@ it predicts the fifth jet `c₅ = 384√(2/π)`, and the threshold `n* = p^{4/3}
 `32√(2/π)x^{3/2} = √p`.  Route J's survivor question "what happens at `n ≈ p`" is answered: the
 Bessel-regime oscillation of the SU(1,1) boost elements at rapidity `log p`, with no intrinsic
 prime-scale boundary layer.
+
+**Lean status (2026-09-03).**  The analytic input of the derivation of `Φ` is now formal: the
+Meixner–Pollaczek generating function, the complex-rapidity characteristic function
+`∫ e^{zs} dμ = (cos z)^{−1/2}`, the two-variable boost generating function, and the diagonal closed
+form `∫ p_n² cos(δ s) dμ = (cosh δ)^{−1/2} Σ_l C(n,l) Ring.choose(−(n+½), l) tanh^{2l} δ`
+(`RHTower.MeixnerPollaczek.cosineDiagonalMoment_eq`), together with the first-order response
+theorems.  What remains for `Φ` itself is the Mehler–Heine limit (MUST-149).  Card:
+`3-formalized/semilocal-boost-diagonal-closed-form-lean.md`.

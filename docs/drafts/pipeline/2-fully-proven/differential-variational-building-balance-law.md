@@ -2284,3 +2284,89 @@ valuation lattice.  Direct checking and the targeted leaf build pass; all six ne
 audit to exactly `[propext, Classical.choice, Quot.sound]`, and the leaf is wired into `HTGeometry`
 without an umbrella build.  Equation (12) is now fully base-point independent.  Theorem B's
 continuous affine realization and axis/boundary phase law remain, so the card stays at Stage 2.
+
+`DifferentialVariationalEuclideanTranslationLength` constructs the Euclidean orbit-displacement
+gauge on the full differential-automorphism group and proves its exact subadditivity.  Fekete's
+lemma gives unconditional convergence of normalized scalar Euclidean orbit distance.  A uniform
+two-base-point bound proves lattice-base independence; exact transition-matrix conjugacy proves
+finite operator-basis independence.  Direct checking and the targeted leaf build pass; all nine
+new declarations audit to exactly `[propext, Classical.choice, Quot.sound]`, and the leaf is wired
+into `HTGeometry` without an umbrella build.  This closes existence and intrinsicness of the
+scalar Euclidean translation speed.  Vector-valued coweight convergence, zero-speed rigidity,
+axes, continuous CAT(0) realization, and weighted boundary flags remain, so the card stays at
+Stage 2.
+
+`DifferentialVariationalCartanTranslationVector` closes the vector-valued limit in `(14)` without
+assuming CAT(0) geometry.  Every top-`k` Cartan sum is proved nonnegative and subadditive on an
+orbit by the already-established Cartan majorization triangle.  Fekete convergence for all
+fundamental-weight coordinates reconstructs the full coordinatewise limit
+
+```text
+differentialVariationalCartanTranslationVector
+tendsto_differentialVariationalCartanTranslationVector.
+```
+
+The limit is proved dominant and exactly balanced, and uniform two-base-point prefix bounds plus
+exact basis-transition conjugacy make it independent of every lattice base point and finite
+operator basis.  Direct checking and the targeted leaf build pass; all twenty new declarations
+audit to exactly `[propext, Classical.choice, Quot.sound]`, and the leaf is wired into `HTGeometry`
+without an umbrella build.
+
+Thus `(14)` and `(15)` now hold intrinsically at the complete projective vertex level.  Remaining
+obligations are zero-vector rigidity (bounded orbit/fixed point), continuous affine-building
+realization, semisimple axes, visual attracting/repelling weighted flags, and corresponding
+free-field phase endpoint equivalences.  Card stays at Stage 2.
+
+`DifferentialVariationalCartanTranslationNorm` identifies the independently constructed scalar
+Fekete speed with the literal Euclidean norm of the full intrinsic Cartan translation vector:
+
+```text
+differentialVariationalEuclideanTranslationLength
+  = differentialVariationalCartanTranslationVectorEuclideanNorm.
+```
+
+It also proves, without a rank or positivity premise, that scalar speed vanishes exactly when the
+complete Cartan vector vanishes.  Direct checking and the targeted leaf build pass; all five new
+declarations audit to exactly `[propext, Classical.choice, Quot.sound]`, and the leaf is wired into
+`HTGeometry` without an umbrella build.  This closes the scalar/vector norm comparison in `(14)`
+and the zero-speed/zero-vector equivalence.  Bounded-orbit/fixed-point rigidity, continuous affine
+realization, semisimple axes, visual weighted flags, and free-field phase endpoints remain, so the
+card stays at Stage 2.
+
+`FreeDifferentialCartanTranslationSpeed` closes the exact free-field reconstruction endpoint from
+finite iterate to asymptotic speed.  It first identifies the canonical free action on the literal
+standard projective completed-lattice point.  Respecting the matrix-degree orientation, it proves
+that `freeDifferentialOrder sigma` is the top centered Cartan coordinate from the orbit point back
+to the base point.  Reversing the already-constructed intrinsic vector then gives a dominant,
+balanced order-oriented translation vector and the exact equality
+
+```text
+freeOrderGauge.translationLength sigma
+  = freeDifferentialReverseCartanTranslationVector sigma 0
+  = -differentialVariationalCartanTranslationVector ... sigma (Fin.last r).
+```
+
+Thus `(19)` and `(20)`, including identification with the largest component of `(14)` in the
+paper's orbit-to-base convention, are now unconditional on the actual projective vertex carrier.
+Direct checking and the targeted leaf build pass.  All ten new declarations audit to exactly
+`[propext, Classical.choice, Quot.sound]`; the leaf is wired into `HTGeometry`, and no umbrella
+build was run.  The strict zero-speed/bounded-order equivalence `(21)`, boundary equivalence `(22)`,
+continuous affine realization, axes, and weighted visual flags remain, so the card stays at Stage
+2.
+
+`FreeDifferentialBoundedOrbit` closes the finite-displacement comparison inside `(21)`.  For every
+iterate, the free differential order is bounded above by the literal Euclidean displacement of the
+standard projective lattice vertex.  Conversely, dominance and exact Cartan balance bound every
+coordinate, hence the Euclidean displacement, by the square of the rank times that order.  Thus
+
+```text
+FreeDifferentialEuclideanOrbitBounded sigma
+  iff FreeDifferentialOrderPowersBounded sigma.
+```
+
+No properness, CAT(0), or phase assumption enters this equivalence.  Direct checking and the
+targeted leaf build pass; all seven new public declarations audit to at most
+`[propext, Classical.choice, Quot.sound]`.  The leaf is wired into `HTGeometry`; no umbrella build
+was run.  The remaining strict part of `(21)` is now exactly zero-speed versus bounded orbit/fixed
+point.  Continuous affine realization, semisimple axes, `(22)`, and weighted visual flags also
+remain, so the card stays at Stage 2.
