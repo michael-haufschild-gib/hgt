@@ -2321,3 +2321,16 @@ lost under fusion becomes exactly twice reserve, primewise reserve integrates to
 reflection force half-density, and resulting coefficient equals square root of actual adelic
 lattice-mass ratio and existing critical Selberg reduced-ray weight. It does not bound completed-Xi
 reserve production or identify reserve control with order-two formation action.
+
+## Session 2026-09-03 addition (Hodge survival Fredholm colligation)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-PHSF-001 | Tail-forced survival shift; positive adjoint defect; bounded left inverse; exact duality--adjunction fracture; finite operator exit telescope; Fredholm index `-1`; history exit equals prime-fibre marginal; index--exit--Hodge--nuclear unit conservation | `RHTower.PrimeHodgeHistorySurvivalFredholmColligation` |
+
+Direct foreground elaboration passes. Targeted leaf build passes `13055/13055`; module is wired
+into `RHTower`, whose umbrella was not built. Seven audited capstones, including the closed joint
+certificate, depend only on `propext`,
+`Classical.choice`, and `Quot.sound`. Analytic strong-limit,
+operator-norm, compact-perturbation, and square-root observability corollaries remain outside this
+Lean certificate and are not used by its capstone.

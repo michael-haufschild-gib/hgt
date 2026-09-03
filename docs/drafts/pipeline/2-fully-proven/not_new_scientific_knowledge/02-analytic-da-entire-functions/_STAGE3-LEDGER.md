@@ -19,7 +19,7 @@ Goal: unconditional Lean formalization of every card in this folder, then promot
 | 10 | entire-composition-hypertranscendence-or-law | Steinmetz reduction / Huang–Ng Thm 3 | TODO |
 | 11 | first-order-composition-two-defect-decomposition | Clunie + trdeg observability | **DONE → 3-formalized** (2026-08-30) |
 | 12 | autonomous-cap-derivative-shadow-law | Clunie + trdeg observability | **DONE → 3-formalized** (2026-08-30) |
-| 13 | newton-corner-nonautonomous-composition-unit-cost | Clunie + Puiseux Jacobian | **IN PROGRESS** — intrinsic branch field, arbitrary-realization commutation, ramified observability, and exact composition depth closed; analytic embedding/base-field transfer open |
+| 13 | newton-corner-nonautonomous-composition-unit-cost | Clunie + Puiseux Jacobian | **DONE → 3-formalized** (2026-09-02) |
 | 14 | asymptotically-exponential-algebraic-cascade-unit-cost | Clunie + Puiseux Jacobian + Briot–Bouquet | **IN PROGRESS** — selected autonomous branches now give actual meromorphic `C(z)`-jet independence and exact differential order; exact composition depth also closed; Briot–Bouquet classification remains |
 | 15 | nonautonomous-cap-linear-order-two-shadow-rigidity | Briot–Bouquet — bypassed | **DONE → 3-formalized** (2026-09-01) |
 | 16 | fixed-taylor-modulus-newton-geometry-ht-blindness | Ostrowski finite basis — replaced by corpus Mahler confinement | **DONE → 3-formalized** (2026-08-30) |
@@ -221,6 +221,15 @@ Steps 1–3 give a compact-base Schottky bound and Bohr's covering theorem — b
 beyond this card (they are the quantitative core of Picard/Montel).
 
 ## Log
+- 2026-09-02 — **Card 13 closed and promoted**.  New differential-coefficient infrastructure:
+  `RamifiedMultiGradedNewtonModelBase` and `RamifiedPuiseuxDifferentialBranchField`.  Actual analytic
+  transfer: `NonautonomousRamifiedPuiseuxCascadeActual`.  The branch-selection structure contains
+  only the card's actual algebraic velocities, suffix-product chain law, and common Puiseux expansion;
+  derivative intertwining on the entire algebraic branch field is derived from clock/state generator
+  agreement.  Actual terminal jets are algebraically independent directly over `RatFunc ℂ`, yielding
+  exact differential order and, with the already-closed growth theorem, exact positive composition
+  depth.  Direct checks, both targeted leaf builds, and new-declaration axiom audit pass; axioms are
+  `[propext, Classical.choice, Quot.sound]`.
 - 2026-09-02 — Card 14 selected-branch differential-order theorem closed:
   `AutonomousRamifiedPuiseuxCascadeActual` constructs the ordinary time derivation and coordinate
   frame on the actual relative branch field, derives full Hahn specialization from state-generator

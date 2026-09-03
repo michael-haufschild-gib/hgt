@@ -436,3 +436,258 @@ It also lacks a proof that this global model's function field is the concrete fi
 scheme-analytification/complex-point interface needed to evaluate rational coordinates along a
 divisor-avoiding analytic path.  Those are literal clause-5 obligations; the card remains at
 Stage 2.
+
+## Lean progress — finite and proper projective normalization (2026-09-03)
+
+The finite/proper qualification above is now closed without an added finiteness premise.
+`RHTower/SchanuelStageTwoDefectSlopeAffineChartCompatibility.lean` and
+`RHTower/SchanuelStageTwoDefectSlopeInfinityChartCompatibility.lean` compute the actual pullback
+maps on the two standard projective charts.  After the canonical section-ring identifications,
+the first is literal inclusion of the slope coordinate ring in the concrete stage-two value field;
+the second is literal inclusion of the inverse-slope coordinate ring and sends its affine
+coordinate to `core.rho⁻¹`.  These are compatibilities for the genuine
+`Proj.fromOfGlobalSections` generic map, not independently chosen abstract equivalences.
+
+The reusable infrastructure
+`HTGeometry/IntegralClosureRingEquiv.lean` transports integrality, integral closures, and
+module-finiteness across compatible base/ambient ring-equivalence squares.  Applying it to both
+computed charts proves that the relative normalization is finite on the standard two-chart cover.
+`HTGeometry/FiniteMorphismAffineRestriction.lean` then globalizes that finite affine-cover result:
+
+```text
+stageTwoSlopeProjectiveNormalizationToLine_isFinite
+stageTwoSlopeProjectiveNormalizationToGradeZero_isProper
+```
+
+Hence the global relative normalization is finite over the projective line, and its composite to
+`Spec AlgNum` is proper.  Direct checks and targeted leaf builds pass.  Every new public
+declaration audits to no axioms beyond `[propext, Classical.choice, Quot.sound]`; all leaves are
+umbrella-wired, and no umbrella build was run.
+
+Two literal clause-5 obligations remain: identify this relative normalization's function field
+with the concrete stage-two value field `K`, and construct the scheme-analytification/complex-point
+evaluation interface that realizes a divisor-avoiding differentiable path on this model.  Existing
+path and regulator theorems consume such a path once available, but do not manufacture it from a
+scheme point.  Card therefore remains at Stage 2.
+
+## Lean progress — projective function field identified with the concrete value field (2026-09-03)
+
+`HTGeometry/FunctionFieldPullback.lean` now proves the reusable fact that a dominant open
+immersion induces an isomorphism on function fields.  The proof identifies the two generic points,
+uses the stalk isomorphism of an open immersion, and contains no birationality premise hidden in
+the statement.
+
+`RHTower/SchanuelStageTwoDefectSlopeProjectiveFunctionField.lean` applies that result to the actual
+relative normalization.  Its normalized standard chart is affine and dense because it contains
+the dense image of `Spec K`.  The chart-section equivalence is transported through the already
+computed projective generic-map square, so its section ring is exactly the concrete integral
+closure inside `K`.  Passing to fraction fields on that chart and then through the dominant open
+immersion gives
+
+```text
+stageTwoSlopeProjectiveNormalizationFunctionFieldEquiv :
+  stageTwoValueField (x 0) (x 1) ≃+*
+    (stageTwoSlopeProjectiveNormalization x core).functionField
+```
+
+Thus the global proper integral projective model now has the literal function field required by
+the card.  Direct checking, the targeted leaf build, and axiom audits of every new declaration
+pass with exactly `[propext, Classical.choice, Quot.sound]`; the leaf is umbrella-wired without an
+umbrella build.
+
+The sole remaining clause-5 obligation is analytic realization: connect scheme complex points and
+rational-coordinate evaluation on this model to a differentiable divisor-avoiding complex path.
+Mathlib and the current corpus still have no scheme analytification or equivalent complex-point
+path interface.  The regulator theorem is already unconditional for every such realized path, but
+the missing interface prevents an honest all-clauses capstone.  Card remains at Stage 2.
+
+## Lean progress — scheme-valued projective regulator paths (2026-09-03)
+
+`HTGeometry/ComplexPointRationalFunctionEvaluation.lean` adds the missing algebraic half of that
+interface.  A complex-valued scheme point over `AlgNum` is an actual morphism `Spec ℂ ⟶ V`
+commuting with the fixed structural maps; a rational function
+regular there is represented by a germ in the local ring whose specialization is the function-field
+element.  Evaluation is the point's stalk map followed by the canonical equivalence between the
+unique stalk of `Spec ℂ` and `ℂ`.
+
+`RHTower/SchanuelStageTwoDefectSlopeProjectiveRegulator.lean` transports the four literal elements
+`x₁,x₂,e^{x₁},e^{x₂}` of the concrete value field through
+`stageTwoSlopeProjectiveNormalizationFunctionFieldEquiv`, making them rational functions on the
+actual proper projective normalization.  `StageTwoProjectiveDivisorAvoidingPath` is a path of
+complex-valued scheme points at which all four functions have local germs; its derivative,
+nonvanishing, algebraic-source, scheme-theoretic smooth-base, and `(x,exp x)` target fields are
+exactly the conditions used in clause 5.  The capstone
+
+```text
+exists_stageTwoProjectivePathRegulatorWitness
+```
+
+proves simultaneous logarithm lifts and both exact regulator integrals for every such path.
+`exists_stageTwoDefectSlopeProjectiveNormalizationPackage` now bundles clauses 1–4, properness,
+the concrete global function field, and this scheme-valued regulator law using only the card's
+original linear-independence and low-transcendence assumptions.
+
+Direct checks, targeted leaf builds, and all-new-declaration axiom audits pass with exactly
+`[propext, Classical.choice, Quot.sound]`; both leaves are umbrella-wired without umbrella builds.
+
+This still does not identify `StageTwoProjectiveDivisorAvoidingPath` with ordinary smooth paths in
+the complex analytification: the corpus has no topology on `Hom(Spec ℂ,V)`, analytification functor,
+or theorem equating analytic smoothness with differentiability of these evaluated coordinate
+pullbacks.  Therefore the scheme-valued coordinate theorem is closed, but the paper's literal
+smooth-path wording is not yet fully represented.  Card remains at Stage 2.
+
+A final hostile audit also separates coordinate algebraicity from point algebraicity.  The present
+`algebraicBase` field records that the four evaluated coordinates lie in `AlgNum`; it does not prove
+that the source morphism `Spec ℂ ⟶ V` factors through an `AlgNum`-valued point of `V`.  That
+scheme-theoretic factorization, together with analytification and ordinary smooth-path comparison,
+remains necessary before clause 5 can trigger Stage-3 promotion.
+
+## Lean progress — actual algebraic source-point factorization (2026-09-03)
+
+`HTGeometry/BaseFieldPointComplexification.lean` now defines a base-field-valued point as an actual
+section `Spec k ⟶ X` of the structural map and proves that its associated complex point is
+literally the composite
+
+```text
+Spec ℂ ⟶ Spec k ⟶ X.
+```
+
+`RHTower/SchanuelStageTwoDefectSlopeAlgebraicBasePoint.lean` applies this to `k = AlgNum` and the
+actual proper projective normalization.  The structure
+`StageTwoProjectiveDivisorAvoidingPathWithAlgebraicBase` carries an `AlgNum`-valued source point,
+the exact factorization of the path's source complex point through it, and formal smoothness at its
+algebraic stalk.  The theorem
+`exists_stageTwoProjectivePathRegulatorWitness_of_algebraicBase` supplies both regulator identities
+for every divisor-avoiding coordinate-smooth path with this literal algebraic source.
+
+Direct checks, targeted leaf builds, and all-new-declaration axiom audits pass with exactly
+`[propext, Classical.choice, Quot.sound]`; both leaves are umbrella-wired without umbrella builds.
+The coordinate-algebraicity/point-algebraicity mismatch is therefore closed.  Sole remaining
+clause-5 mismatch is analytic: construct the complex analytification (or an equivalent established
+analytic-space interface) and identify its ordinary smooth paths with the evaluated differentiable
+coordinate paths consumed by the regulator theorem.  Card remains Stage 2.
+
+## Lean progress — canonical algebraic target complex point (2026-09-03)
+
+`HTGeometry/ComplexPointRationalFunctionEvaluation.lean` now proves the exact generic-center
+regularity and evaluation dictionary.  Every rational function is regular at a complex point whose
+center is the generic point, using the transported generic stalk germ; evaluation of that germ is
+identified with dominant function-field pullback followed by the canonical
+`functionField (Spec ℂ) ≃ ℂ` map.  It also records the affine-spectrum adjunction identity needed
+to compute structural composites.
+
+`RHTower/SchanuelStageTwoDefectSlopeGenericTargetPoint.lean` applies this dictionary to the literal
+inclusion
+
+```text
+stageTwoValueField (x 0) (x 1) ↪ ℂ.
+```
+
+Composing its spectrum map with the normalized generic inclusion constructs an actual dominant
+complex point of the proper projective normalization.  Lean proves that its center is the generic
+point, that it lies over the standard embedding `AlgNum ↪ ℂ`, and that all four projective
+coordinate rational functions are regular there.  The resulting
+`stageTwoProjectiveGenericCoordinatePoint` is therefore a canonical algebraic target point, not an
+assumed endpoint or proxy scheme.
+
+Direct Lean checks and targeted leaf builds pass.  Every new declaration audits to exactly
+`[propext, Classical.choice, Quot.sound]`; the new leaf is wired into the `RHTower` umbrella, which
+was not built.
+
+The function-field comparison layer is now closed.  New exact naturality lemmas in
+`HTGeometry/FunctionFieldPullback.lean` identify dominant pullback with the generic-stalk germ map,
+and `stageTwoSlopeGenericAffineChartSectionsRingEquivAligned_eq` proves that the chart equivalence
+used in the normalization construction is the canonical global-sections equivalence.  Their
+projective specialization is
+
+```text
+stageTwoSlopeProjectiveNormalizationFunctionFieldEquiv_pullback
+```
+
+which proves that pullback along the normalized generic inclusion, after the chosen projective
+function-field equivalence, is literally the canonical embedding of the concrete stage-two value
+field into the function field of `Spec K`.  Consequently
+
+```text
+stageTwoProjectiveGenericCoordinatePoint_exponentValue
+stageTwoProjectiveGenericCoordinatePoint_exponentialValue
+```
+
+evaluate the four target germs to `x₁,x₂,e^{x₁},e^{x₂}` with no comparison premise.  Direct checks,
+targeted leaf builds, and axiom audits pass; every new public declaration uses only
+`[propext, Classical.choice, Quot.sound]`.
+
+Only the analytic comparison remains: construct the ordinary complex analytification of the
+projective normalization and identify its smooth paths with the scheme-valued paths and evaluated
+coordinate derivatives consumed by the regulator theorem.  Corpus search finds pointwise
+topologies for complex spectra of affine `ℂ`-algebras and several special path-connectedness
+theorems, but no global scheme analytification, smooth structure, or comparison theorem for this
+normal projective curve.  Those special affine results do not establish the card's literal
+ordinary-smooth-path quantifier.  Card remains Stage 2.
+
+`HTGeometry/AlgebraSpectrumBaseChange.lean` closes the first exact affine comparison needed for
+that construction.  For every commutative `k`-algebra `B` with `k → ℂ`, it equips
+`B →ₐ[k] ℂ` with pointwise-convergence topology and proves the canonical homeomorphism
+
+```text
+RelativeAlgSpec.baseChangeHomeomorph :
+  RelativeAlgSpec k B ≃ₜ AlgSpec (ℂ ⊗[k] B).
+```
+
+Thus base-field-valued complex points and complex points of the scalar-extended affine chart are
+now identified topologically, not merely bijectively.  Direct check, targeted leaf build, and all
+eight new-declaration axiom audits pass with exactly
+`[propext, Classical.choice, Quot.sound]`.  The leaf is umbrella-wired without an umbrella build.
+This still does not glue affine spectra into the projective analytification or furnish its smooth
+path structure, so it does not by itself justify promotion.
+
+## Lean progress — intrinsic smooth paths on an actual projective open (2026-09-03)
+
+`HTGeometry/AlgebraSpectrumSmoothPath.lean` defines a smooth path in an affine complex-point space
+intrinsically: evaluation of every regular function is `C∞`.  This condition is independent of a
+chosen generating presentation, implies continuity for the pointwise topology, and is preserved
+and reflected by the scalar-extension homeomorphism.
+
+`RHTower/SchanuelStageTwoDefectSlopeCoordinatePrincipalOpen.lean` chooses one nonzero common
+denominator for the four literal elements `x₁,x₂,exp x₁,exp x₂` in the concrete affine
+normalization ring.  Its localization is therefore one actual affine domain on which all four are
+regular functions.  The canonical map from that localization to the concrete value field sends
+the four localized elements to their literal field values.
+
+`RHTower/SchanuelStageTwoDefectSlopePrincipalOpenComplexPoints.lean` constructs the canonical
+target point of this relative complex spectrum and proves that the four regular functions evaluate
+there to exactly `x₁,x₂,exp x₁,exp x₂`.  Smoothness of every coordinate pullback is derived from
+intrinsic affine smoothness, not supplied separately.  Consequently
+
+```text
+exists_stageTwoCoordinatePrincipalOpenPathRegulatorWitness
+```
+
+proves both exact regulator identities for every intrinsically smooth divisor-avoiding path in
+this common coordinate domain from the complexification of an actual `AlgNum`-valued point to the
+canonical target.  All derivative fields, continuous-derivative fields, algebraic source values,
+and target values are derived.
+
+Finally,
+`RHTower/SchanuelStageTwoDefectSlopePrincipalOpenProjectivization.lean` proves that this coordinate
+domain is not an affine stand-in: its spectrum maps into the actual proper projective normalization
+by an open immersion
+
+```text
+stageTwoSlopeCoordinatePrincipalOpenToProjectiveNormalization
+```
+
+obtained from the genuine principal-localization map, the computed normalized affine-chart
+equivalence, and chart inclusion.  Every intrinsic affine smooth path thereby becomes a literal
+scheme-valued path on the projective model.  Its source is proved to factor through an actual
+`Spec AlgNum` point, and its endpoint is the image of the canonical exponential target.
+
+Direct checks and targeted leaf builds pass.  Every new declaration audits to exactly
+`[propext, Classical.choice, Quot.sound]`; all leaves are umbrella-wired, with no umbrella build.
+
+This closes the affine-to-projective gluing and removes the previously supplied coordinate
+derivatives from this path class.  It does not yet cover every ordinary smooth path in the full
+projective complement of all coordinate poles and multiplicative zeroes: that locus need not lie
+inside the chosen normalized standard chart, and the corpus still lacks global complex
+analytification plus holomorphic regular-function evaluation on a finite affine cover.  That exact
+global comparison remains necessary, so the card stays at Stage 2.

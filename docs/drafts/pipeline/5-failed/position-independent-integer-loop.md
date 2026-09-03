@@ -67,3 +67,14 @@ weighted cosine sum is negative at some `k₀ < n₀` (mean value on the torus).
 
 ## Log
 - 2026-09-02 — loop run; law extracted; Li sign oscillation proved in Lean.
+
+## Addendum 2026-09-02 — why one-signedness and position-independence conflict (MUST-132)
+
+A one-signed off-line signal is obtained only by isolating a single zero, i.e. by twisting the
+arithmetic datum with the zero's own frequency (`Λ(n) n^{−iγ}`: the term of `ρ` becomes
+`x^{β}/β`, real and positive, and Turán's power-sum theorem makes it large in every window of
+scales). That twist is position-dependent, and its "independent bound" at one scale is the
+zero-free region at height `γ`, the target itself. So the two requirements of MUST-130 are
+jointly unsatisfiable for data built from ζ: position-independent data oscillate with mean zero
+(CANNOT-194); one-signed data are position-dependent twists. MUST-132: a producer must supply a
+one-signed signal *without* knowing the frequency, which no functional of ζ's values does.

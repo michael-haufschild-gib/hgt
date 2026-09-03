@@ -1,7 +1,7 @@
 # Newton-corner unit cost for nonautonomous first-order composition
 
 - **ID:** `newton-corner-nonautonomous-composition-unit-cost`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Scientific status:** `[BRIDGE] [PROVED]`
 - **Lane:** general hypertranscendence; nonautonomous first-order DA boundary
@@ -163,7 +163,7 @@ No zero-localization statement follows. A possible RH use would require an indep
 - [x] Exact failure object isolated.
 - [x] Nonlinear observability parent audit; result downgraded to bridge.
 - [x] Iteration/differential-order audit sufficient for non-novelty verdict.
-- [ ] Lean differential-order observability capstone.
+- [x] Lean differential-order observability capstone.
 - [x] Lean exact positive composition depth.
 
 ## Primary references checked so far
@@ -247,10 +247,27 @@ to every target field whose coordinate images obey the selected suffix-product c
 Commutation on all algebraic branch elements is derived from coordinate agreement by
 `HTGeometry/AlgebraicDerivationMapUniqueness.lean`; it is not postulated.
 
-**Remaining open core:** construct the analytic embedding of this selected branch field into the
-actual meromorphic composition-state field, prove the coordinate and suffix-product identifications
-from analytic branch selection plus the chain rule, and descend the resulting independence from
-`C` to the theorem's required base `C(z)` without adding a premise.  See `_STAGE3-LEDGER.md`.
+`HTGeometry/RamifiedMultiGradedNewtonModelBase.lean` and
+`HTGeometry/RamifiedPuiseuxDifferentialBranchField.lean` extend the entire ramified Hahn and
+intrinsic-branch construction to a differential coefficient field.  Coefficient differentiation is
+proved strictly above every selected Newton boundary, the total nonautonomous cascade derivation
+preserves the relative algebraic branch field, and
+`algebraicIndependent_ramifiedPuiseuxBranchDifferentialCascadeOutputJets` proves intrinsic raw-jet
+independence over that nonconstant coefficient field.
+
+`HTGeometry/NonautonomousRamifiedPuiseuxCascadeActual.lean` closes the analytic realization.  Its
+`NonautonomousRamifiedPuiseuxBranchSelection` is exactly the theorem's analytic branch-selection
+data: actual algebraic velocity branches, their chain-rule suffix products, and their common Puiseux
+expansion with the stated nonzero output-linear leads.  Derivative compatibility is not a field of
+that structure.  Instead,
+`nonautonomousRamifiedPuiseuxBranchSelection_derivation_map` derives it on the whole algebraic
+branch field from agreement on clock and state generators.  The theorem
+`algebraicIndependent_ratFunc_nonautonomousRamifiedCascadeOutputJets` then proves independence of
+the first full actual jet block directly over `RatFunc ℂ = ℂ(z)`.  Finally,
+`exactDifferentialOrder_entireCascade_of_nonautonomousRamifiedPuiseuxBranchSelection` and
+`exactOrder_and_compositionDepth_nonautonomousRamifiedPuiseuxCascade` prove the two exact conclusions
+of this card.  Direct source checks and both leaf builds pass; targeted axiom audit reports only
+`propext`, `Classical.choice`, and `Quot.sound`.
 
 Also owned: `ExpAffineCascade.scaled_jet_det_ne_zero` (the model determinant),
 `TerminalPowerCascadeInduction.algebraicIndependent_cascadeOutput` (the exactly-triangular case),

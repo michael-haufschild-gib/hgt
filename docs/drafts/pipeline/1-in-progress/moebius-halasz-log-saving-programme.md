@@ -2402,3 +2402,82 @@ right ingredients and are now theorems, but joining them to the *mean square* ne
 Matomäki–Radziwiłł argument itself — the same input the sibling cards are gated on — rather than a
 further elementary step.  Both routes examined this session (level-split, pointwise transfer) have
 been measured to their ceilings and neither reaches it.
+
+### Full-distance log power and the exact smooth Euler polynomial (2026-09-03)
+
+`Sieve/MoebiusSmoothLogPower.lean` removes the remaining finite-frequency gap in the Euler-product
+lane.  It proves unconditionally that there is one absolute constant `C` such that, eventually in
+the prime cutoff `z` and uniformly for every real frequency `t`,
+
+```text
+log(log z) - 11*log(log(|t|+e)) - C
+  <= mulDistSqPair moebiusC (charFn t) (Nat.primesLE z).
+```
+
+Exponentiating the exact squarefree smooth Euler-product identity gives the corresponding complete
+polynomial estimate
+
+```text
+‖sum_{n squarefree and z-smooth} μ(n)n⁻¹ exp(-it log n)‖
+  <= C * (log(|t|+e))^11.
+```
+
+Both declarations pass direct source checking, the targeted leaf build, and an axiom audit with
+exactly `[propext, Classical.choice, Quot.sound]`; the leaf is umbrella-wired without building the
+umbrella.
+
+This closes the frequency-side estimate for the **complete** smooth Euler polynomial.  It does not
+replace the truncated smooth-number input in Menon's final range: passing from the complete product
+to `n <= 3X` requires a quantitative friable tail/count.  The exact next source is therefore the
+Hildebrand--Tenenbaum smooth-number density used in Menon's Lemmas 2.14--2.15, followed by the final
+range frequency decomposition; neither is introduced as a hypothesis.
+
+### Menon's literal friable set and its rough mean square (2026-09-03)
+
+The truncated smooth-number input named above is now closed unconditionally, without importing a
+Hildebrand--Tenenbaum theorem.  `RHTower/PrimeRpowUniformUpper.lean` and
+`Sieve/MoebiusSquarefreeSmoothRankin.lean` give an elementary Rankin--Euler majorant uniform in the
+tilt.  `Sieve/MenonFinalRangeSmoothDensity.lean` specializes it to
+
+```text
+P(X) = exp((log X/80) * logloglog X/loglog X),   Q(X) = floor(3X),
+```
+
+and proves the stronger quantitative statement
+
+```text
+# {n <= Q(X) : n squarefree, every prime factor <= floor(P(X))}
+    = o(X/(log X)^10).
+```
+
+`Sieve/MoebiusFinalRangeRoughMeanSquare.lean` then identifies the squarefree support of the exact
+Ramaré rough set for primes `(P(X),Q(X)]` with a subset of this friable set.  Its terminal theorem
+is the no-premise bound
+
+```text
+integral_{|w|<=X} |roughMobiusPoly(w)|^2 * (log X)^8 / X^2 -> 0.
+```
+
+Direct checks, targeted leaf builds, and one batched axiom audit pass; all new declarations depend
+only on `[propext, Classical.choice, Quot.sound]`.  Leaves are umbrella-wired, with no umbrella
+build.
+
+The remaining Menon lane is no longer a smooth-number estimate.  It is the non-rough final-range
+frequency decomposition and its uniform quantitative assembly at the card's growing length grid.
+
+### Exact final-range Ramaré receiver (2026-09-03)
+
+`Sieve/MenonFinalRangeRamareReduction.lean` now specializes the exact Ramaré identity to the
+literal interval `(P(X), floor(3X)]`.  The full Möbius energy is at most twice its named bilinear
+energy plus twice the rough energy, and the positive excess over twice the bilinear term is
+`o(X^2/(log X)^8)`.  This is a closed theorem, not a conditional interface.
+
+This receiver uses the corpus's unweighted Gallagher polynomial.  Its rough term is negligible at
+the displayed normalization, but the full and bilinear energies retain the diagonal of order
+`X^2`; neither can, nor should, tend to zero after multiplying by `(log X)^8/X^2`.  Menon's
+frequency proof instead uses the harmonic polynomial `sum mu(n)n^(-1-it)` on dyadic support.
+
+The next exact target is therefore the harmonic Ramaré factorization and its dyadic rescaling into
+the existing Gallagher receiver.  The rough and square-multiple bookkeeping is already closed;
+the diagonal normalization must remain harmonic.  Direct check, targeted leaf build, and axiom
+audit pass; only `[propext, Classical.choice, Quot.sound]` occur.

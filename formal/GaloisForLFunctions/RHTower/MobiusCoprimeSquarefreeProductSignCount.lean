@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.MobiusCoprimeProductSignExtraction
 import GaloisForLFunctions.RHTower.RouteECofactorParityBalance
 import GaloisForLFunctions.RHTower.Sieve.BalancedPairs
+import GaloisForLFunctions.RHTower.Sieve.CoprimeSignDensity
 
 /-!
 # Exact finite coprime squarefree product-sign count
@@ -177,6 +178,134 @@ theorem balancedCoprimeSquarefreeProductPair_bothProductSignCount_lower
   simpa only [balancedCoprimeSquarefreeProductPairPacket] using
     finiteCoprimeSquarefreeProductPair_bothProductSignCount_lower
       (RHTower.Sieve.balancedPairs x h)
+
+/-- For both signs, the explicit squarefree packet filter is exactly the card's canonical coprime
+sign class.  In the reverse direction squarefreeness is forced by the nonzero product sign. -/
+theorem balancedCoprimeSquarefreeProductPair_factorSignFilters_eq_coprimeSignClasses
+    (x h : ℝ) :
+    (balancedCoprimeSquarefreeProductPairPacket x h).filter (fun p =>
+        ArithmeticFunction.moebius p.1 * ArithmeticFunction.moebius p.2 = 1) =
+      RHTower.Sieve.coprimeSignClass x h 1 ∧
+    (balancedCoprimeSquarefreeProductPairPacket x h).filter (fun p =>
+        ArithmeticFunction.moebius p.1 * ArithmeticFunction.moebius p.2 = -1) =
+      RHTower.Sieve.coprimeSignClass x h (-1) := by
+  classical
+  constructor
+  · rw [balancedCoprimeSquarefreeProductPairPacket,
+      finiteCoprimeSquarefreeProductPairPacket, RHTower.Sieve.coprimeSignClass]
+    ext p
+    simp only [Finset.mem_filter]
+    constructor
+    · rintro ⟨⟨hp, hcop, hsa, hsb⟩, hs⟩
+      exact ⟨hp, hs, hcop⟩
+    · rintro ⟨hp, hs, hcop⟩
+      have ha0 : ArithmeticFunction.moebius p.1 ≠ 0 := by
+        intro ha
+        rw [ha, zero_mul] at hs
+        norm_num at hs
+      have hb0 : ArithmeticFunction.moebius p.2 ≠ 0 := by
+        intro hb
+        rw [hb, mul_zero] at hs
+        norm_num at hs
+      exact ⟨⟨hp, hcop,
+        ArithmeticFunction.moebius_ne_zero_iff_squarefree.mp ha0,
+        ArithmeticFunction.moebius_ne_zero_iff_squarefree.mp hb0⟩, hs⟩
+  · rw [balancedCoprimeSquarefreeProductPairPacket,
+      finiteCoprimeSquarefreeProductPairPacket, RHTower.Sieve.coprimeSignClass]
+    ext p
+    simp only [Finset.mem_filter]
+    constructor
+    · rintro ⟨⟨hp, hcop, hsa, hsb⟩, hs⟩
+      exact ⟨hp, hs, hcop⟩
+    · rintro ⟨hp, hs, hcop⟩
+      have ha0 : ArithmeticFunction.moebius p.1 ≠ 0 := by
+        intro ha
+        rw [ha, zero_mul] at hs
+        norm_num at hs
+      have hb0 : ArithmeticFunction.moebius p.2 ≠ 0 := by
+        intro hb
+        rw [hb, mul_zero] at hs
+        norm_num at hs
+      exact ⟨⟨hp, hcop,
+        ArithmeticFunction.moebius_ne_zero_iff_squarefree.mp ha0,
+        ArithmeticFunction.moebius_ne_zero_iff_squarefree.mp hb0⟩, hs⟩
+
+/-- The literal product-Möbius sign filters are exactly the card's canonical coprime sign classes. -/
+theorem balancedCoprimeSquarefreeProductPair_productSignFilters_eq_coprimeSignClasses
+    (x h : ℝ) :
+    (balancedCoprimeSquarefreeProductPairPacket x h).filter (fun p =>
+        (ArithmeticFunction.moebius (p.1 * p.2) : ℝ) = 1) =
+      RHTower.Sieve.coprimeSignClass x h 1 ∧
+    (balancedCoprimeSquarefreeProductPairPacket x h).filter (fun p =>
+        (ArithmeticFunction.moebius (p.1 * p.2) : ℝ) = -1) =
+      RHTower.Sieve.coprimeSignClass x h (-1) := by
+  classical
+  have hfactor :=
+    balancedCoprimeSquarefreeProductPair_factorSignFilters_eq_coprimeSignClasses x h
+  constructor
+  · calc
+      (balancedCoprimeSquarefreeProductPairPacket x h).filter (fun p =>
+          (ArithmeticFunction.moebius (p.1 * p.2) : ℝ) = 1) =
+          (balancedCoprimeSquarefreeProductPairPacket x h).filter (fun p =>
+            ArithmeticFunction.moebius p.1 * ArithmeticFunction.moebius p.2 = 1) := by
+            ext p
+            simp only [Finset.mem_filter]
+            constructor
+            · rintro ⟨hp, hs⟩
+              refine ⟨hp, ?_⟩
+              have hs' : ArithmeticFunction.moebius (p.1 * p.2) = 1 := by
+                exact_mod_cast hs
+              rw [ArithmeticFunction.isMultiplicative_moebius.map_mul_of_coprime
+                (Finset.mem_filter.mp hp).2.1] at hs'
+              exact hs'
+            · rintro ⟨hp, hs⟩
+              refine ⟨hp, ?_⟩
+              have hs' : ArithmeticFunction.moebius (p.1 * p.2) = 1 := by
+                rw [ArithmeticFunction.isMultiplicative_moebius.map_mul_of_coprime
+                  (Finset.mem_filter.mp hp).2.1]
+                exact hs
+              exact_mod_cast hs'
+      _ = RHTower.Sieve.coprimeSignClass x h 1 := hfactor.1
+  · calc
+      (balancedCoprimeSquarefreeProductPairPacket x h).filter (fun p =>
+          (ArithmeticFunction.moebius (p.1 * p.2) : ℝ) = -1) =
+          (balancedCoprimeSquarefreeProductPairPacket x h).filter (fun p =>
+            ArithmeticFunction.moebius p.1 * ArithmeticFunction.moebius p.2 = -1) := by
+            ext p
+            simp only [Finset.mem_filter]
+            constructor
+            · rintro ⟨hp, hs⟩
+              refine ⟨hp, ?_⟩
+              have hs' : ArithmeticFunction.moebius (p.1 * p.2) = -1 := by
+                exact_mod_cast hs
+              rw [ArithmeticFunction.isMultiplicative_moebius.map_mul_of_coprime
+                (Finset.mem_filter.mp hp).2.1] at hs'
+              exact hs'
+            · rintro ⟨hp, hs⟩
+              refine ⟨hp, ?_⟩
+              have hs' : ArithmeticFunction.moebius (p.1 * p.2) = -1 := by
+                rw [ArithmeticFunction.isMultiplicative_moebius.map_mul_of_coprime
+                  (Finset.mem_filter.mp hp).2.1]
+                exact hs
+              exact_mod_cast hs'
+      _ = RHTower.Sieve.coprimeSignClass x h (-1) := hfactor.2
+
+/-- Exact finite lower bound stated directly on the card's canonical counts `R₊` and `R₋`. -/
+theorem balancedCoprimeSquarefreeProductPair_bothCanonicalSignCount_lower
+    (x h : ℝ) :
+    (((balancedCoprimeSquarefreeProductPairPacket x h).card : ℝ) -
+          |∑ p ∈ balancedCoprimeSquarefreeProductPairPacket x h,
+            (ArithmeticFunction.moebius (p.1 * p.2) : ℝ)|) / 2 ≤
+        RHTower.Sieve.coprimeSignClassCount x h 1 ∧
+      (((balancedCoprimeSquarefreeProductPairPacket x h).card : ℝ) -
+          |∑ p ∈ balancedCoprimeSquarefreeProductPairPacket x h,
+            (ArithmeticFunction.moebius (p.1 * p.2) : ℝ)|) / 2 ≤
+        RHTower.Sieve.coprimeSignClassCount x h (-1) := by
+  have hbound := balancedCoprimeSquarefreeProductPair_bothProductSignCount_lower x h
+  have heq :=
+    balancedCoprimeSquarefreeProductPair_productSignFilters_eq_coprimeSignClasses x h
+  rw [heq.1, heq.2] at hbound
+  simpa only [RHTower.Sieve.coprimeSignClassCount] using hbound
 
 end
 

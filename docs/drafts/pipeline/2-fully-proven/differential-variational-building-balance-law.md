@@ -1781,3 +1781,40 @@ build was run.
 This closes completeness for the unconditional projective interleaving metric.  Completeness alone
 does not supply CAT(0), geodesic interpolation, noncommutative Cartan decomposition, or visual
 boundary flags, so the paper's Euclidean phase theorem remains open and the card stays at Stage 2.
+
+### Lean progress — faithful Euclidean realization of the standard apartment (2026-09-03)
+
+`DifferentialVariationalEuclideanStandardApartment` constructs the literal real type-`A`
+coweight hyperplane and embeds every integral standard-apartment vertex into it.  For an integral
+coweight `m`, its canonical representative is
+
+```text
+m_i - (sum_j m_j) / r.
+```
+
+The leaf proves this representative has sum zero, is invariant under every common integral
+translation, and separates the quotient classes.  Consequently
+
+```text
+standardApartmentEuclideanEmbedding
+```
+
+is injective into the actual Euclidean space `{x : R^r | sum_i x_i = 0}`.  It also proves that every
+integral coweight admits a decreasing (dominant) permutation preserving its total sum.  Thus the
+continuous Euclidean apartment, determinant-balance hyperplane, integral vertices, and dominant
+Weyl chamber now coexist without replacing Euclidean geometry by the interleaving metric.
+
+The zero-sum apartment is a closed subspace of finite-dimensional Euclidean space, so the leaf also
+installs its genuine `CompleteSpace` instance.  It constructs the literal straight segment between
+any two apartment points, proves its two endpoint laws, and proves the exact constant-speed formula
+`d(gamma(s),gamma(t))=|s-t|d(x,y)`; zero-sum balance is preserved at every real parameter.
+
+Direct checking, the targeted leaf build, and a batched audit of all eighteen new declarations pass
+with exactly `[propext, Classical.choice, Quot.sound]`; the leaf is umbrella-wired and no umbrella
+build was run.
+
+This is exact apartment infrastructure, not the still-missing global theorem.  Remaining work is
+the noncommutative Cartan decomposition identifying arbitrary lattice pairs with these apartment
+coordinates, gluing apartments into the Euclidean affine building and proving its CAT(0)
+semisimplicity, and identifying axial endpoints with weighted residue flags.  The card remains at
+Stage 2.

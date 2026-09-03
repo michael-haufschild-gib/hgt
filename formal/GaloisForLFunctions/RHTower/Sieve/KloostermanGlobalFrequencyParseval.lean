@@ -242,6 +242,34 @@ theorem sum_normSq_kloostermanGlobalTerminalOrbit_eq
     (kloostermanGlobalPeriod Q) (M % kloostermanGlobalPeriod Q)
       (Nat.le_of_lt (Nat.mod_lt M (kloostermanGlobalPeriod_pos Q)))
 
+/-- The zero-frequency global terminal orbit is the residual length itself. -/
+theorem kloostermanGlobalTerminalOrbit_zero
+    (M : ℕ) (Q : Finset ℕ) :
+    kloostermanGlobalTerminalOrbit M Q 0 =
+      ((M % kloostermanGlobalPeriod Q : ℕ) : ℂ) := by
+  simp [kloostermanGlobalTerminalOrbit]
+
+/-- Exact Parseval energy after deleting the zero global frequency.  The removed square is the
+square of the residual length, so no zero-mode orbit loss remains. -/
+theorem sum_normSq_kloostermanGlobalTerminalOrbit_erase_zero_eq
+    (M : ℕ) (Q : Finset ℕ) :
+    (∑ z ∈ (Finset.univ : Finset (ZMod (kloostermanGlobalPeriod Q))).erase 0,
+      ‖kloostermanGlobalTerminalOrbit M Q z‖ ^ 2) =
+      (kloostermanGlobalPeriod Q : ℝ) *
+          (M % kloostermanGlobalPeriod Q : ℕ) -
+        ((M % kloostermanGlobalPeriod Q : ℕ) : ℝ) ^ 2 := by
+  have hsplit := Finset.sum_erase_add
+    (Finset.univ : Finset (ZMod (kloostermanGlobalPeriod Q)))
+    (fun z => ‖kloostermanGlobalTerminalOrbit M Q z‖ ^ 2)
+    (Finset.mem_univ (0 : ZMod (kloostermanGlobalPeriod Q)))
+  have hall := sum_normSq_kloostermanGlobalTerminalOrbit_eq M Q
+  have hzero : ‖kloostermanGlobalTerminalOrbit M Q 0‖ ^ 2 =
+      ((M % kloostermanGlobalPeriod Q : ℕ) : ℝ) ^ 2 := by
+    rw [kloostermanGlobalTerminalOrbit_zero]
+    simp
+  rw [hzero, hall] at hsplit
+  linarith
+
 /-- Full terminal Gram energy bounded by the signed global frequency-collision energy times exact
 common-period Parseval.  Cancellation inside every frequency fibre is retained. -/
 theorem norm_kloostermanDistinctModulusTerminalGramQuadratic_sq_le_globalFrequencyCollisionEnergy
@@ -294,6 +322,48 @@ theorem norm_kloostermanDistinctModulusTerminalGramQuadratic_sq_le_globalFrequen
       · exact Finset.sum_nonneg fun z hz => by positivity
       · unfold kloostermanGlobalFrequencyCollisionEnergy
         exact Finset.sum_nonneg fun z hz => by positivity
+
+/-- Zero-mode-exact version of the global-frequency terminal receiver.  Since the signed global
+coefficient vanishes at frequency zero, Cauchy--Schwarz is charged only to the nonzero terminal
+orbits, whose exact energy is `P * (M % P) - (M % P)^2`. -/
+theorem norm_kloostermanDistinctModulusTerminalGramQuadratic_sq_le_globalFrequencyCollisionEnergy_erase_zero
+    (M : ℕ) (Q : Finset ℕ) (w : ℕ → ℂ)
+    (B : Finset ℕ) (b : ℕ → ℂ) :
+    ‖kloostermanDistinctModulusTerminalGramQuadratic M Q w B b‖ ^ 2 ≤
+      kloostermanGlobalFrequencyCollisionEnergy Q w B b *
+        ((kloostermanGlobalPeriod Q : ℝ) *
+            (M % kloostermanGlobalPeriod Q : ℕ) -
+          ((M % kloostermanGlobalPeriod Q : ℕ) : ℝ) ^ 2) := by
+  classical
+  rw [kloostermanDistinctModulusTerminalGramQuadratic_eq_globalFrequency]
+  let S : Finset (ZMod (kloostermanGlobalPeriod Q)) := Finset.univ.erase 0
+  have hzero := kloostermanGlobalFrequencyCoefficient_zero Q w B b
+  have herase :
+      (∑ z : ZMod (kloostermanGlobalPeriod Q),
+        kloostermanGlobalFrequencyCoefficient Q w B b z *
+          kloostermanGlobalTerminalOrbit M Q z) =
+        ∑ z ∈ S,
+          kloostermanGlobalFrequencyCoefficient Q w B b z *
+            kloostermanGlobalTerminalOrbit M Q z := by
+    rw [← Finset.sum_erase Finset.univ (by rw [hzero, zero_mul])]
+  rw [herase]
+  have hcs := norm_sum_mul_sq_le_sq_mul_sq_global S
+    (kloostermanGlobalFrequencyCoefficient Q w B b)
+    (kloostermanGlobalTerminalOrbit M Q)
+  calc
+    ‖∑ z ∈ S,
+        kloostermanGlobalFrequencyCoefficient Q w B b z *
+          kloostermanGlobalTerminalOrbit M Q z‖ ^ 2 ≤
+        (∑ z ∈ S, ‖kloostermanGlobalFrequencyCoefficient Q w B b z‖ ^ 2) *
+          ∑ z ∈ S, ‖kloostermanGlobalTerminalOrbit M Q z‖ ^ 2 := hcs
+    _ = kloostermanGlobalFrequencyCollisionEnergy Q w B b *
+        ((kloostermanGlobalPeriod Q : ℝ) *
+            (M % kloostermanGlobalPeriod Q : ℕ) -
+          ((M % kloostermanGlobalPeriod Q : ℕ) : ℝ) ^ 2) := by
+      congr 1
+      · unfold kloostermanGlobalFrequencyCollisionEnergy S
+        exact Finset.sum_erase Finset.univ (by simp [hzero])
+      · exact sum_normSq_kloostermanGlobalTerminalOrbit_erase_zero_eq M Q
 
 end
 

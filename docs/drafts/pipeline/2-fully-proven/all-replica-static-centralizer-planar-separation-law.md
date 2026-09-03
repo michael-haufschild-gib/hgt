@@ -728,14 +728,27 @@ zero-energy matrix-atom exclusion.  At every real energy it also proves the exac
 that the covariance map applied to the atom mass annihilates the shifted pencil.
 
 The remaining theorem is not a diagonal or one-replica instantiation.  It is the noncommutative
-inner-rank/Strong-Atiyah bridge
+Strong-Atiyah evaluation bridge
 
 ```text
 freeFockMatrixAtomMass_eq_zero_of_ne_zero
 ```
 
-for a Hermitian coefficient family with trivial common kernel and nonzero scalar shift.  This needs
-full inner rank of the affine pencil, equality of evaluation-kernel mass with inner-rank defect,
-and positive-semidefinite polarization.  None exists in the current corpus.  Consequently the
-all-energy atom exclusion required by `(25)`, and hence planar separation `(26)`, remain unproved;
-the card is not promoted.
+for a Hermitian coefficient family with trivial common kernel and nonzero scalar shift.  The
+algebraic fullness part is now closed by the umbrella-wired, axiom-clean module
+`HTGeometry/FreeAffinePencilInnerRank.lean`.  Its theorem
+`FreeAffinePencil.complex_hasFullInnerRank_of_ne_zero` applies to every finite complex coefficient
+family: augmentation sends every free variable to zero, specializes the shifted pencil to the
+invertible scalar matrix `-aI`, and therefore rules out every factorization through a free module
+of smaller rank.  The separate module `HTGeometry/GraphLocalFreePencilInnerRank.lean` instantiates
+this result on the literal positive-variance completed graph-local all-replica family as
+`graphLocalWeightedCompletedFreePencil_hasFullInnerRank` for every nonzero real energy.  Zero energy
+was already closed by `graphLocalWeightedCompletedMatrix_zeroAtomMass_eq_zero`.  The unconditional
+theorem `graphLocalWeightedCompletedMatrix_zeroAtom_or_freePencil_full` packages the exhaustive
+all-energy split with no premise: at zero the atom mass vanishes, and away from zero the exact
+affine free pencil is full.
+
+What remains is exactly equality of free-Fock evaluation-kernel mass with algebraic inner-rank
+defect, followed by positive-semidefinite polarization.  That Strong-Atiyah/free-field theorem is
+absent from the current corpus.  Consequently all-energy atom exclusion required by `(25)`, and
+hence planar separation `(26)`, remain unproved; the card is not promoted.

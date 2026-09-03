@@ -6263,3 +6263,94 @@ by strengthening the existing qualitative `averagedMeanSquare_moebius`: its curr
 explicit non-spectral majorant contains a `C / log log X` term.  The independent remaining gate is
 still the uniform quantitative Menon--Halász mean-square inequality over the growing length grid;
 it is not assumed.
+
+## Lean progress update (2026-09-03) — exact final-range source isolated
+
+`Sieve/MoebiusSmoothLogPower.lean` proves the full uniform-frequency lower bound
+
+```text
+log(log z) - 11*log(log(|t|+e)) - C
+  <= mulDistSqPair moebiusC (charFn t) (Nat.primesLE z)
+```
+
+and, from the exact Euler-product identity, the complete squarefree `z`-smooth Möbius polynomial
+bound by `C*(log(|t|+e))^11`.  Both public declarations are unconditional and audit with only
+`[propext, Classical.choice, Quot.sound]`; direct source check and targeted leaf build pass, and the
+leaf is umbrella-wired without an umbrella build.
+
+The primary proof of Menon's displayed quantitative mean square has now been traced through its
+final wide prime range.  Its exceptional integers have no prime factor in `[P,3X]`, where
+
+```text
+P = exp((log X / R) * log(log(log X)) / log(log X)),
+```
+
+and Lemmas 2.14--2.15 control them using the Hildebrand--Tenenbaum estimate for the `P`-smooth
+count.  This yields `X*(log X)^(-R+o(1))`, which feeds the final-range frequency estimate.  Existing
+corpus rough-set bounds reach only `O((log log X)^(-1/2))` after the two-range budget; even adding
+Brun--Titchmarsh fibre control still requires `o(1/log log X)`.  Thus neither closes the card.
+
+Card remains Stage 2.  Exact unresolved source is now narrower: prove, without hypotheses, the
+required quantitative smooth-number upper bound for Menon's literal schedule and use it in the
+final-range frequency decomposition.  No proxy estimate or conditional interface is being added.
+
+## Lean progress update (2026-09-03) — literal final-range smooth density and rough mean square
+
+Four new leaves close the quantitative friable-count half of the preceding residue at Menon's
+literal final wide range, with fixed `R = 80` and top endpoint `floor(3X)`:
+
+- `RHTower/PrimeRpowUniformUpper.lean` proves a uniform Euler-product bound for
+  `prod_{p<=z}(1+p^(a-1))`, valid for every `0<a<=1`;
+- `Sieve/MoebiusSquarefreeSmoothRankin.lean` turns it into an exact Rankin bound for squarefree
+  `z`-smooth integers;
+- `Sieve/MenonFinalRangeSmoothDensity.lean` specializes
+  `z = floor(exp((log X/80) logloglog X/loglog X))` and proves
+
+  ```text
+  #squarefreeSmooth(z,floor(3X)) * (log X)^10 / X -> 0;
+  ```
+
+- `Sieve/MoebiusFinalRangeRoughMeanSquare.lean` proves that every squarefree integer at most `M`
+  carrying no prime factor in `(z,M]` is in that smooth set, inserts the exact Möbius energy into
+  the support mean-value theorem, and obtains
+
+  ```text
+  integral_{|w|<=X} |roughMobiusPoly(w)|^2 * (log X)^8 / X^2 -> 0.
+  ```
+
+These are stronger than the smooth exceptional-set loss required in Menon's Lemmas 2.14--2.15.
+All declarations are unconditional; direct source checks and targeted leaf builds pass.  The
+combined axiom audit reports only `[propext, Classical.choice, Quot.sound]`.  All four leaves are
+umbrella-wired without an umbrella build.
+
+Card remains Stage 2.  Quantitative smooth density and its rough-polynomial mean-square insertion
+are closed.  Remaining analytic work is the non-rough final-range frequency decomposition and its
+uniform assembly over the growing length grid; neither is assumed.
+
+## Lean progress update (2026-09-03) — exact final-range Ramaré reduction
+
+`Sieve/MenonFinalRangeRamareReduction.lean` specializes the corpus's exact square-multiple-free
+Ramaré identity to Menon's literal prime range.  It defines the full, bilinear, and rough energies
+on `[-X,X]`, proves pointwise and in mean square that
+
+```text
+fullMobiusPoly = finalRangeRamareBilinear + finalRangeRoughPoly,
+FullEnergy <= 2*BilinearEnergy + 2*RoughEnergy,
+```
+
+and combines the preceding rough estimate into the closed no-premise limit
+
+```text
+max(FullEnergy - 2*BilinearEnergy, 0) * (log X)^8 / X^2 -> 0.
+```
+
+Thus the unweighted final-range residue is literally one named bilinear energy; no square-multiple
+or rough error remains hidden.  Direct check, targeted leaf build, and the eight-declaration axiom
+audit pass with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without an
+umbrella build.
+
+The unweighted full and bilinear energies retain a diagonal of order `X^2`, so their
+`(log X)^8/X^2` normalization is not expected to vanish.  Menon's proof works with the harmonic
+polynomial `sum mu(n)n^(-1-it)` on dyadic support.  Card remains Stage 2; next gate is the exact
+harmonic Ramaré factorization and its dyadic rescaling into the existing Gallagher receiver,
+followed by the already-built growing-grid normalization.

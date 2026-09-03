@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.RamifiedMultiGradedNewtonModelBase
+import GaloisForLFunctions.HTGeometry.AlgebraicDerivationMapUniqueness
 import GaloisForLFunctions.HTGeometry.UniversalFirstOrderEntireCascadeUnitCost
 import GaloisForLFunctions.HTGeometry.CascadeExactOrder
 import GaloisForLFunctions.HTGeometry.FiniteOrderCascadeCompositionDepth
@@ -116,6 +117,13 @@ noncomputable def nonautonomousRamifiedCascadeStateInBranchField
       NonautonomousRamifiedCascadeBranchField hfan N) : meroField Set.univ) =
       nonautonomousRamifiedCascadeState hfan k := rfl
 
+@[simp] theorem nonautonomousRamifiedCascadeState_zero
+    {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
+    (m : ℕ) :
+    nonautonomousRamifiedCascadeState hfan (0 : Fin (m + 1)) =
+      cascadeMero hfan (m + 1) := by
+  simp [nonautonomousRamifiedCascadeState, Fin.rev]
+
 /-- The rational clock field maps into the full actual branch field. -/
 noncomputable def nonautonomousRamifiedRatFuncToBranch
     {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
@@ -144,6 +152,27 @@ noncomputable instance nonautonomousRamifiedBranchScalarTower
     (N : ℕ) : IsScalarTower ℂ (RatFunc ℂ)
       (NonautonomousRamifiedCascadeBranchField hfan N) :=
   IsScalarTower.of_algebraMap_eq fun _ => rfl
+
+noncomputable instance nonautonomousRamifiedBranchAmbientScalarTower
+    {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
+    (N : ℕ) : IsScalarTower (RatFunc ℂ)
+      (NonautonomousRamifiedCascadeBranchField hfan N)
+      (meroField (Set.univ : Set ℂ)) :=
+  IsScalarTower.of_algebraMap_eq fun _ => rfl
+
+/-- Inclusion of actual branch field into meromorphic field, over rational clock coefficients. -/
+noncomputable def nonautonomousRamifiedBranchEmbedding
+    {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
+    (N : ℕ) : NonautonomousRamifiedCascadeBranchField hfan N →ₐ[RatFunc ℂ]
+      meroField (Set.univ : Set ℂ) :=
+  IsScalarTower.toAlgHom (RatFunc ℂ)
+    (NonautonomousRamifiedCascadeBranchField hfan N) (meroField Set.univ)
+
+@[simp] theorem nonautonomousRamifiedBranchEmbedding_apply
+    {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
+    (N : ℕ) (y : NonautonomousRamifiedCascadeBranchField hfan N) :
+    nonautonomousRamifiedBranchEmbedding hfan N y =
+      (y : meroField (Set.univ : Set ℂ)) := rfl
 
 @[simp] theorem nonautonomousRamifiedBranch_algebraMap_coe
     {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
@@ -285,6 +314,159 @@ theorem nonautonomousRamifiedCascadeDerivation_state
   rw [← differentialJet_zero (cascadeMero hfan ((Fin.rev k : Fin N).1 + 1)),
     ← differentialJet_succ, differentialJet_one_cascadeMero]
   exact (sel.state_derivative k).symm
+
+set_option maxHeartbeats 1000000 in
+/-- The selected Puiseux expansion commutes with time differentiation on the entire algebraic
+branch field.  Agreement is checked only on the clock and state generators. -/
+theorem nonautonomousRamifiedPuiseuxBranchSelection_derivation_map
+    {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
+    (hall : ∀ i : ℕ, TranscendentalEntire (f i)) {N : ℕ}
+    (h1 : ∀ k, k < N → DifferentiallyAlgebraicOfOrder (f k) 1)
+    (sel : NonautonomousRamifiedPuiseuxBranchSelection hfan N) :
+    ∀ y : NonautonomousRamifiedCascadeBranchField hfan N,
+      sel.branchMap (nonautonomousRamifiedCascadeDerivation hfan hall h1 y) =
+        hahnFractionRamCascadeDifferentialDerivation ℂ (RatFunc ℂ)
+          (ratFuncCoordinateDerivation ℂ) sel.r sel.A (sel.branchMap y) := by
+  let M := meroField (Set.univ : Set ℂ)
+  let x : Fin (N + 1) → M := fun i => cascadeMero hfan i
+  let E := NonautonomousRamifiedCascadeStateField hfan N
+  let xE : Fin (N + 1) → E := fun i =>
+    ⟨x i, IntermediateField.subset_adjoin ℂ (Set.range x) (Set.mem_range_self i)⟩
+  let B := NonautonomousRamifiedCascadeBranchField hfan N
+  let H := HahnFraction (mgDeg N) (RatFunc ℂ)
+  have hxTop : IntermediateField.adjoin ℂ (Set.range xE) = ⊤ := by
+    exact adjoin_range_lift_eq_top x x rfl
+  let rho : B →ₐ[ℂ] H := sel.branchMap.restrictScalars ℂ
+  apply derivation_map_eq_of_isAlgebraic_tower_adjoin xE hxTop rho
+    (nonautonomousRamifiedCascadeDerivation hfan hall h1)
+    (hahnFractionRamCascadeDifferentialDerivation ℂ (RatFunc ℂ)
+      (ratFuncCoordinateDerivation ℂ) sel.r sel.A)
+  intro i
+  refine Fin.cases ?_ (fun k => ?_) i
+  · have hclock : algebraMap E B (xE 0) =
+        nonautonomousRamifiedClockInBranchField hfan N := by
+      apply Subtype.ext
+      rfl
+    change sel.branchMap
+        (nonautonomousRamifiedCascadeDerivation hfan hall h1 (algebraMap E B (xE 0))) =
+      hahnFractionRamCascadeDifferentialDerivation ℂ (RatFunc ℂ)
+        (ratFuncCoordinateDerivation ℂ) sel.r sel.A (sel.branchMap (algebraMap E B (xE 0)))
+    rw [hclock, nonautonomousRamifiedCascadeDerivation_clock, map_one,
+      ← nonautonomousRamifiedBranch_algebraMap_X hfan N, sel.branchMap.commutes,
+      hahnFractionRamCascadeDifferentialDerivation_algebraMap_X]
+  · let j : Fin N := Fin.rev k
+    have hstate : algebraMap E B (xE k.succ) =
+        nonautonomousRamifiedCascadeStateInBranchField hfan j := by
+      apply Subtype.ext
+      simp [x, xE, j, nonautonomousRamifiedCascadeState]
+    change sel.branchMap
+        (nonautonomousRamifiedCascadeDerivation hfan hall h1 (algebraMap E B (xE k.succ))) =
+      hahnFractionRamCascadeDifferentialDerivation ℂ (RatFunc ℂ)
+        (ratFuncCoordinateDerivation ℂ) sel.r sel.A
+          (sel.branchMap (algebraMap E B (xE k.succ)))
+    rw [hstate, nonautonomousRamifiedCascadeDerivation_state, map_prod]
+    rw [sel.branchMap_state,
+      hahnFractionRamCascadeDifferentialDerivation_coordinate ℂ (RatFunc ℂ)
+        (ratFuncCoordinateDerivation ℂ) sel.r sel.ramification_pos sel.A]
+    rw [hahnFractionRamSuffixProductBase]
+    apply Finset.prod_congr rfl
+    intro q hq
+    exact sel.branchMap_velocity q
+
+set_option maxHeartbeats 1000000 in
+/-- **Actual nonautonomous output-jet observability.**  Analytic selection of output-linear
+branches forces the terminal output and its first `n` derivatives to be algebraically independent
+over the rational clock field `ℂ(z)`. -/
+theorem algebraicIndependent_ratFunc_nonautonomousRamifiedCascadeOutputJets
+    {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
+    (hall : ∀ i : ℕ, TranscendentalEntire (f i)) {n : ℕ}
+    (h1 : ∀ k, k < n + 1 → DifferentiallyAlgebraicOfOrder (f k) 1)
+    (sel : NonautonomousRamifiedPuiseuxBranchSelection hfan (n + 1)) :
+    AlgebraicIndependent (RatFunc ℂ) (fun i : Fin (n + 1) =>
+      differentialJet (i : ℕ) (cascadeMero hfan (n + 1))) := by
+  let B := NonautonomousRamifiedCascadeBranchField hfan (n + 1)
+  let D := nonautonomousRamifiedCascadeDerivation hfan hall h1
+  let H := HahnFraction (mgDeg (n + 1)) (RatFunc ℂ)
+  let DH := hahnFractionRamCascadeDifferentialDerivation ℂ (RatFunc ℂ)
+    (ratFuncCoordinateDerivation ℂ) sel.r sel.A
+  let x0 : B := nonautonomousRamifiedCascadeStateInBranchField hfan 0
+  have hmap : ∀ y : B, sel.branchMap (D y) = DH (sel.branchMap y) :=
+    nonautonomousRamifiedPuiseuxBranchSelection_derivation_map hfan hall h1 sel
+  have hiterMap : ∀ (m : ℕ) (y : B),
+      sel.branchMap (((D : B → B)^[m]) y) =
+        ((DH : H → H)^[m]) (sel.branchMap y) := by
+    intro m
+    induction m with
+    | zero => intro y; rfl
+    | succ m ih =>
+        intro y
+        rw [Function.iterate_succ_apply', Function.iterate_succ_apply', hmap, ih]
+  have htarget : AlgebraicIndependent (RatFunc ℂ) (fun i : Fin (n + 1) =>
+      ((DH : H → H)^[(i : ℕ)])
+        (hahnFractionRamCoordinateBase (RatFunc ℂ) sel.r 0)) :=
+    algebraicIndependent_hahnFractionRamDifferentialCascadeOutputJetsBase
+      (ratFuncCoordinateDerivation ℂ) sel.r sel.ramification_pos sel.A
+        sel.lambda sel.lambda_ne_zero sel.hasLead
+  have hsource : AlgebraicIndependent (RatFunc ℂ) (fun i : Fin (n + 1) =>
+      ((D : B → B)^[(i : ℕ)]) x0) := by
+    apply AlgebraicIndependent.of_comp sel.branchMap
+    convert htarget using 1
+    funext i
+    rw [Function.comp_apply, hiterMap, sel.branchMap_state]
+  have hmapped := hsource.map'
+    (f := nonautonomousRamifiedBranchEmbedding hfan (n + 1))
+    (nonautonomousRamifiedBranchEmbedding hfan (n + 1)).injective
+  have hiterActual : ∀ (q : ℕ) (y : B),
+      nonautonomousRamifiedBranchEmbedding hfan (n + 1)
+          (((D : B → B)^[q]) y) =
+        differentialJet q
+          (nonautonomousRamifiedBranchEmbedding hfan (n + 1) y) := by
+    intro q
+    induction q with
+    | zero =>
+        intro y
+        simp [differentialJet_zero]
+    | succ q ih =>
+        intro y
+        rw [Function.iterate_succ_apply', differentialJet_succ,
+          nonautonomousRamifiedBranchEmbedding_apply,
+          nonautonomousRamifiedCascadeDerivation_coe]
+        exact congrArg (fun z : meroField (Set.univ : Set ℂ) => z′) (ih y)
+  convert hmapped using 1
+  funext i
+  rw [Function.comp_apply, hiterActual]
+  congr 1
+
+/-- **Exact nonautonomous Newton-corner unit differential-order cost.**  Selecting the card's
+output-linear branch at every analytic cascade state forces exact order equal to cascade depth. -/
+theorem exactDifferentialOrder_entireCascade_of_nonautonomousRamifiedPuiseuxBranchSelection
+    {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
+    (hall : ∀ i : ℕ, TranscendentalEntire (f i)) {n : ℕ}
+    (h1 : ∀ k, k < n + 1 → DifferentiallyAlgebraicOfOrder (f k) 1)
+    (sel : NonautonomousRamifiedPuiseuxBranchSelection hfan (n + 1)) :
+    ExactDifferentialOrder (entireCascade f (n + 1)) (n + 1) := by
+  apply exactDifferentialOrder_entireCascade_of_transcendental hfan hall h1
+  exact algebraicIndependent_ratFunc_nonautonomousRamifiedCascadeOutputJets
+    hfan hall h1 sel
+
+/-- **Complete nonautonomous Newton-corner unit-cost law.**  Under the card's finite-order and
+positive-lower-order assumptions, differential order and positive composition depth both equal
+the displayed cascade length. -/
+theorem exactOrder_and_compositionDepth_nonautonomousRamifiedPuiseuxCascade
+    {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
+    (hall : ∀ i : ℕ, TranscendentalEntire (f i)) {n : ℕ}
+    (h1 : ∀ k, k < n + 1 → DifferentiallyAlgebraicOfOrder (f k) 1)
+    (hfin : ∀ k, k < n + 1 → FiniteOrderEnvelope (f k))
+    (hpos : ∀ k, k < n + 1 → PositiveLowerOrder (f k))
+    (sel : NonautonomousRamifiedPuiseuxBranchSelection hfan (n + 1)) :
+    ExactDifferentialOrder (entireCascade f (n + 1)) (n + 1) ∧
+      CompositionDepthAtLeast (entireCascade f (n + 1)) (n + 1) ∧
+      ¬ CompositionDepthAtLeast (entireCascade f (n + 1)) (n + 2) := by
+  refine ⟨exactDifferentialOrder_entireCascade_of_nonautonomousRamifiedPuiseuxBranchSelection
+    hfan hall h1 sel, ?_⟩
+  simpa [Nat.add_assoc] using compositionDepth_finiteOrder_positiveCascade (n + 1)
+    (fun k hk => (hall k).1)
+    (fun k hk => exists_ne_of_transcendentalEntire (hall k)) hfin hpos
 
 end
 

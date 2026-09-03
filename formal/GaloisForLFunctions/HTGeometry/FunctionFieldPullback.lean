@@ -1,5 +1,6 @@
 import Mathlib.AlgebraicGeometry.FunctionField
 import Mathlib.AlgebraicGeometry.Morphisms.UnderlyingMap
+import GaloisForLFunctions.HTGeometry.CommRingCatIsoRingEquiv
 
 /-!
 # Pullback on function fields
@@ -14,6 +15,8 @@ open CategoryTheory TopologicalSpace
 namespace AlgebraicGeometry
 
 universe u
+
+set_option maxHeartbeats 1000000
 
 /-- A dominant morphism between irreducible schemes sends generic point to generic point. -/
 theorem Scheme.Hom.map_genericPoint_of_isDominant
@@ -42,12 +45,71 @@ noncomputable def Scheme.Hom.functionFieldPullback
   Y.presheaf.stalkSpecializes f.dominantGenericSpecializes ≫
     f.stalkMap (genericPoint X)
 
+/-- Pullback of the germ of a global section is the germ of its pullback global section. -/
+theorem Scheme.Hom.functionFieldPullback_germ_appTop
+    {X Y : Scheme.{u}} [IrreducibleSpace X] [IrreducibleSpace Y]
+    (f : X ⟶ Y) [IsDominant f] (s : Γ(Y, ⊤)) :
+    f.functionFieldPullback
+        (Y.presheaf.germ ⊤ (genericPoint Y) trivial s) =
+      X.presheaf.germ ⊤ (genericPoint X) trivial (f.appTop.hom s) := by
+  change ((Y.presheaf.germ ⊤ (genericPoint Y) trivial ≫
+      Y.presheaf.stalkSpecializes f.dominantGenericSpecializes ≫
+      f.stalkMap (genericPoint X)).hom s) = _
+  rw [TopCat.Presheaf.germ_stalkSpecializes_assoc]
+  rw [Scheme.Hom.germ_stalkMap]
+  rfl
+
+/-- Pullback of a germ on an open neighbourhood of the generic point is the germ of the
+pulled-back section on the inverse-image open. -/
+theorem Scheme.Hom.functionFieldPullback_germ
+    {X Y : Scheme.{u}} [IrreducibleSpace X] [IrreducibleSpace Y]
+    (f : X ⟶ Y) [IsDominant f] (U : Y.Opens)
+    (hY : genericPoint Y ∈ U) (s : Γ(Y, U)) :
+    f.functionFieldPullback
+        (Y.presheaf.germ U (genericPoint Y) hY s) =
+      X.presheaf.germ (f ⁻¹ᵁ U) (genericPoint X)
+        (by simpa [f.map_genericPoint_of_isDominant] using hY)
+        ((f.app U).hom s) := by
+  change ((Y.presheaf.germ U (genericPoint Y) hY ≫
+      Y.presheaf.stalkSpecializes f.dominantGenericSpecializes ≫
+      f.stalkMap (genericPoint X)).hom s) = _
+  rw [TopCat.Presheaf.germ_stalkSpecializes_assoc]
+  rw [Scheme.Hom.germ_stalkMap]
+  rfl
+
 /-- Dominant pullback is injective on function fields. -/
 theorem Scheme.Hom.functionFieldPullback_injective
     {X Y : Scheme.{u}} [IsIntegral X] [IsIntegral Y]
     (f : X ⟶ Y) [IsDominant f] :
     Function.Injective f.functionFieldPullback :=
   RingHom.injective f.functionFieldPullback.hom
+
+/-- Pullback on function fields along a dominant open immersion is an isomorphism.  The
+specialization between the two generic points is an isomorphism because dominance identifies
+them, while the stalk map of an open immersion is an isomorphism. -/
+noncomputable instance Scheme.Hom.functionFieldPullback_isIso_of_isOpenImmersion
+    {X Y : Scheme.{u}} [IrreducibleSpace X] [IrreducibleSpace Y]
+    (f : X ⟶ Y) [IsDominant f] [IsOpenImmersion f] :
+    IsIso f.functionFieldPullback := by
+  have hsep : Inseparable (f (genericPoint X)) (genericPoint Y) :=
+    inseparable_iff_eq.mpr f.map_genericPoint_of_isDominant
+  let e := Y.presheaf.stalkCongr hsep
+  haveI heIso : IsIso e.inv := by infer_instance
+  haveI hs : IsIso (Y.presheaf.stalkSpecializes hsep.specializes) := by
+    have hhom : e.inv = Y.presheaf.stalkSpecializes hsep.specializes := rfl
+    rw [← hhom]
+    infer_instance
+  have heq : f.dominantGenericSpecializes = hsep.specializes := Subsingleton.elim _ _
+  rw [Scheme.Hom.functionFieldPullback, heq]
+  infer_instance
+
+/-- A dominant open immersion induces the contravariant equivalence of function fields. -/
+noncomputable def Scheme.Hom.functionFieldPullbackRingEquivOfOpenImmersion
+    {X Y : Scheme.{u}} [IrreducibleSpace X] [IrreducibleSpace Y]
+    (f : X ⟶ Y) [IsDominant f] [IsOpenImmersion f] :
+    Y.functionField ≃+* X.functionField :=
+  GaloisForLFunctions.HTGeometry.commRingCatIsoRingEquiv
+    (asIso f.functionFieldPullback)
 
 /-- Pullback depends only on the underlying dominant morphism. -/
 theorem Scheme.Hom.functionFieldPullback_congr
@@ -151,6 +213,34 @@ noncomputable def Scheme.specFunctionFieldAlgEquiv (K : Type u) [Field K] :=
   letI : IsFractionRing K (Spec (.of K)).functionField :=
     functionField_isFractionRing_of_affine (.of K)
   IsFractionRing.algEquiv K K (Spec (.of K)).functionField
+
+/-- Pullback along a map of field spectra carries the canonical function-field image of an
+element to the canonical image of its literal ring-homomorphic value. -/
+theorem Scheme.specMap_functionFieldPullback_specFunctionFieldAlgEquiv
+    {K L : Type u} [Field K] [Field L]
+    (f : K →+* L) [IsDominant (Spec.map (CommRingCat.ofHom f))] (a : K) :
+    (Spec.map (CommRingCat.ofHom f)).functionFieldPullback
+        (Scheme.specFunctionFieldAlgEquiv K a) =
+      Scheme.specFunctionFieldAlgEquiv L (f a) := by
+  letI := Scheme.specFunctionFieldAlgebra K
+  letI := Scheme.specFunctionFieldAlgebra L
+  rw [show Scheme.specFunctionFieldAlgEquiv K a =
+      (StructureSheaf.toStalk K (genericPoint (Spec (.of K)))).hom a by
+    exact (Scheme.specFunctionFieldAlgEquiv K).commutes a]
+  change (Spec.map (CommRingCat.ofHom f)).functionFieldPullback
+      ((Spec (.of K)).presheaf.germ ⊤ (genericPoint (Spec (.of K))) trivial
+        ((Scheme.ΓSpecIso (.of K)).inv.hom a)) = _
+  rw [Scheme.Hom.functionFieldPullback_germ_appTop]
+  have hn := Scheme.ΓSpecIso_inv_naturality (CommRingCat.ofHom f)
+  have ha := congrArg CommRingCat.Hom.hom hn
+  have haa := RingHom.congr_fun ha a
+  simp only [CategoryTheory.comp_apply] at haa
+  rw [← haa]
+  change (Spec (.of L)).presheaf.germ ⊤ (genericPoint (Spec (.of L))) trivial
+      ((Scheme.ΓSpecIso (.of L)).inv.hom (f a)) = _
+  change (StructureSheaf.toStalk L (genericPoint (Spec (.of L)))).hom (f a) =
+    Scheme.specFunctionFieldAlgEquiv L (f a)
+  exact ((Scheme.specFunctionFieldAlgEquiv L).commutes (f a)).symm
 
 /-- A dominant structure morphism makes the source function field an algebra over the base
 function field. -/

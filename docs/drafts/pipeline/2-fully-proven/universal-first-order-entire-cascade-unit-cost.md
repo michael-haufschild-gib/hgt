@@ -10243,3 +10243,100 @@ then prove the required place-specific `RatIn` and response-valuation bounds.  T
 numerical Wiman radius theorem and an algebraic place above one coordinate, but no theorem joining
 them into that compatible flag.  No arbitrary exact-order capstone is therefore claimed, and the
 card remains at Stage 2.
+
+### Formal-audit correction — the full-relative-closure selection target is too large (2026-09-03)
+
+`HTGeometry/NonautonomousRamifiedPuiseuxSelectionObstruction.lean` proves, without axioms, that
+the present `NonautonomousRamifiedPuiseuxBranchSelection` structure is uninhabited even for the
+one-layer exponential cascade:
+
+```text
+not_nonempty_nonautonomousRamifiedPuiseuxBranchSelection_exp_one :
+  ¬ Nonempty (NonautonomousRamifiedPuiseuxBranchSelection
+      exponentialCascade_analyticOnNhd 1)
+```
+
+Reason: the structure asks one finitely ramified Hahn fraction field to receive the **full**
+relative algebraic closure of the actual state field.  For `f(z)=exp z`, that closure contains
+`exp(z/m)` for every positive `m`.  If the state is sent to the prescribed Hahn coordinate
+`s^{-r}`, the image of `exp(z/m)` would be an `m`-th root of `s^{-r}`.  The integer-valued Hahn
+valuation forces `m | r`.  Taking `m=r+1` contradicts `r>0`.
+
+This does not refute the headline differential-order statement; the length-one exponential case is
+already unconditional.  It refutes the current full-relative-closure selection interface as the
+bridge to that statement.  A sound replacement must either use the finite algebraic field generated
+by the selected velocity branches (so one common finite ramification clears all denominators), or
+use a Hahn target with divisible value group.  After that repair, the still-missing theorem is the
+actual analytic construction of the common nested Wiman/Puiseux branch map with nonzero
+output-linear leads, plus the place-specific `RatIn` and response bounds.  Until both are proved,
+the universal capstone cannot be added and this card remains at Stage 2.
+
+### Positive survivor — every finite root family has one common ramification (2026-09-03)
+
+`HTGeometry/FiniteRamifiedPuiseuxRootFamily.lean` closes the strongest target-side statement exposed
+by the obstruction.  For an arbitrary finite family of positive root orders `m(j,a)`, it defines
+
+`r(j)=product_a m(j,a)`
+
+and constructs, in the same multigraded Hahn fraction field used by the cascade model, a literal
+`m(j,a)`-th root of the ramified coordinate `X_j=s_j^{-r(j)}` for every pair `(j,a)` simultaneously.
+The capstone is
+
+```text
+hahnFractionFiniteCoordinateRootBase_pow
+```
+
+and `finiteRootRamification_pos` proves the common ramification remains positive even for an empty
+root family.  These are unconditional `[LEAN-PROVED]` declarations with axioms exactly
+`[propext, Classical.choice, Quot.sound]`.
+
+This proves that finite ramification itself is not the obstruction.  The sharp boundary is finite
+versus unbounded Kummer data: every finite velocity-generated branch field has enough target-side
+ramification, while the full relative algebraic closure does not.
+
+`HTGeometry/NonautonomousFinitePuiseuxBranchField.lean` now constructs that source field literally:
+the actual state field with only the finitely many actual derivative branches adjoined.  From the
+card's original transcendence and first-order DA assumptions it proves that this is a finite
+state-field extension, contains the rational clock and every state/derivative branch, embeds into
+the actual meromorphic field, lies inside the old relative algebraic closure, and is preserved by
+ordinary differentiation.  The derivative-closure theorem is derived by differentiating each
+branch's minimal equation; it is not a new premise.  Its restricted derivation sends every actual
+state to its actual derivative branch exactly.
+
+The remaining open core is therefore narrower: construct the analytic algebra homomorphism from
+this finite actual branch field to the finite common-ramification Hahn field, respecting the nested
+state coordinates and nonzero output-linear branch leads, then prove its place-specific
+`RatIn`/response bounds.  Until that map is proved, the card stays at Stage 2.
+
+### Algebraic half of finite branch selection (2026-09-03)
+
+`HTGeometry/NonautonomousFinitePuiseuxAlgebraicEmbedding.lean` now closes the purely algebraic
+existence problem without adding a selection premise.  It proves that the rational Hahn clock
+together with the ramified coordinate monomials is algebraically independent over the constant
+field, corestricts the actual clock/state family to its generated state field, proves that family
+still algebraically independent and internally generating, and constructs the generator-preserving
+embedding
+
+```text
+nonautonomousRamifiedCascadeStateEmbedding
+```
+
+from the actual state field to the generic Hahn fraction field.  Because the finite actual branch
+field is finite over that state field, `IsAlgClosed.lift` then gives the unconditional extension
+
+```text
+nonautonomousFiniteCascadeBranchAlgebraicClosureEmbedding
+```
+
+into the algebraic closure of the Hahn field.  The theorem
+`nonautonomousFiniteCascadeBranchAlgebraicClosureEmbedding_apply_state` proves that every actual
+clock/state generator lands at its prescribed Hahn clock/state coordinate.  The new declarations
+are targeted-leaf built and audit to exactly `[propext, Classical.choice, Quot.sound]`.
+
+This removes the existence of a common **algebraic** branch-field embedding as an open issue.  It
+does not put the extended derivative-branch values back inside the integer-valued Hahn field, and
+an arbitrary algebraic-closure lift need not preserve the Hahn valuation or the selected Wiman
+leading terms.  The remaining open core is exactly that analytic/valuative refinement: choose a
+finite common ramification for the actual derivative branches, prove their nonzero output-linear
+leads on one compatible nested flag, and establish the place-specific `RatIn` and response bounds.
+The card therefore remains at Stage 2.

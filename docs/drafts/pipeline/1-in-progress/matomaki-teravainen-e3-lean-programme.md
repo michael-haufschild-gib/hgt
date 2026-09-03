@@ -3893,3 +3893,235 @@ umbrella was not built.
 After brick 147, all elementary aggregation loss has been reduced to pair-local mixed response
 averages.  Remaining obstruction is collective cross-modulus Kuznetsov cancellation beyond those
 elementary pair bounds, then Lemma 3.5(ii), amplification, and Theorem 1.2.
+
+## Brick 149 — centered collective collision receiver (2026-09-02)
+
+`Sieve/KloostermanGlobalCollisionCentered.lean` uses the already proved vanishing of the zero
+global-frequency coefficient before taking a fourth-moment bound.  The common-period collision
+transform has exact mean zero:
+
+```text
+sum_k collisionTimeTransform(k) = 0.
+```
+
+Writing `D(k)` for the diagonal response mass and `S(k)` for the squared total response, the exact
+Gram identity gives `collisionTimeTransform(k) = S(k) - D(k)`.  Finite Cauchy gives
+`S(k) <= #Q * D(k)`, while exact centering gives `sum_k S(k) = sum_k D(k)`.  Combining these before
+summation, and retaining the exact square expansion, proves the unconditional collective receiver
+
+```text
+E_global
+  <= (#Q + 1) * PointwiseDiagonalBudget * AverageDiagonalBudget.
+```
+
+The two aggregate budgets retain every squared modulus weight and every exact source-residue
+energy.  At comparable modulus/source weights this replaces brick 142's direct
+`#Q * (#Q - 1)` finite-Cauchy multiplier by one `#Q + 1` factor, a full family-cardinality gain.
+The literal `Finset.Icc 1 N` capstone inserts exact residue multiplicities independently in both
+aggregate budgets.
+
+Direct source check and targeted leaf build pass (`13508/13508`).  The three public theorem
+declarations audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired and
+the umbrella was not built.
+
+This is genuine collective cancellation but not yet the paper-scale Kuznetsov saving: it uses
+only exact zero-mode removal plus local complete-transform bounds.  Remaining obstruction is a
+further cross-modulus fourth-moment saving strong enough for Lemma 3.5(ii), followed by
+amplification and Theorem 1.2.
+
+## Brick 150 — sharp centered collective constant (2026-09-02)
+
+The centered receiver in `Sieve/KloostermanGlobalCollisionCentered.lean` has been sharpened by a
+factor two with no new premise.  If `S(k)` is total squared response, `D(k)` is diagonal response,
+and `U` bounds `D(k)`, then
+
+```text
+(S(k)-D(k))^2 <= S(k)^2 + D(k)^2
+S(k)^2 <= #Q * U * S(k)
+D(k)^2 <= U * D(k).
+```
+
+Exact zero-mode cancellation gives `sum S = sum D`, hence
+
+```text
+E_global <= (#Q + 1) * U * AverageDiagonalBudget.
+```
+
+The literal `Finset.Icc 1 N` specialization inherits the same sharp factor and keeps exact residue
+multiplicities.  Direct source check and targeted leaf build pass; both changed theorem
+declarations use only `[propext, Classical.choice, Quot.sound]`.  No umbrella build was run.
+
+The remaining analytic target is unchanged: a paper-scale collective cross-modulus Kuznetsov
+saving, then Lemma 3.5(ii), amplification, and Theorem 1.2.
+
+## Brick 151 — zero-mode-exact terminal Gram bridge (2026-09-02)
+
+`Sieve/KloostermanGlobalFrequencyParseval.lean` now deletes the global zero frequency on both
+sides of the terminal Parseval receiver.  If `P = kloostermanGlobalPeriod Q` and `r = M % P`, the
+zero terminal orbit equals `r`, so Lean proves the exact nonzero-frequency identity
+
+```text
+sum_(z != 0) normSq(GlobalTerminalOrbit(M,Q,z)) = P*r - r^2.
+```
+
+Because the signed global frequency coefficient already vanishes at zero, the terminal quadratic
+therefore satisfies
+
+```text
+norm(TerminalGram)^2 <= GlobalCollisionEnergy * (P*r - r^2).
+```
+
+`Sieve/KloostermanGlobalCollisionCentered.lean` composes this exact receiver with brick 150.  The
+general and literal-source capstones are
+
+```text
+norm(TerminalGram)^2
+  <= ((#Q + 1) * PointwiseDiagonalBudget * AverageDiagonalBudget) * (P*r - r^2),
+```
+
+with exact `Finset.Icc 1 N` residue multiplicities in the literal version.  This closes the bridge
+from the centered collision normal form back to the actual terminal distinct-modulus Gram in the
+integer-kernel decomposition; no full-period zero-mode charge survives.
+
+Both changed sources pass direct `lake env lean` checks and targeted leaf builds.  The five new
+declarations audit with only `[propext, Classical.choice, Quot.sound]`; no umbrella build was run.
+
+Remaining analytic obstruction is now entirely inside the nonzero-frequency global collision
+energy: a paper-scale cross-modulus Kuznetsov saving strong enough for Lemma 3.5(ii), followed by
+amplification and Theorem 1.2.
+
+## Brick 152 — full constructed-range Type-I consumer (2026-09-02)
+
+`Sieve/MatomakiTeravainenTypeIConstructedRange.lean` propagates the complete unconditional
+five-region union from the constructed-range form of Matomäki–Teräväinen Lemma 3.5(ii) through
+restricted Cauchy–Schwarz and the literal powered-prime amplifier cover.  For a measurable
+`E ⊆ Set.Icc (T / 2) T`, the analytic input is selected internally whenever one of the following
+closed alternatives holds:
+
+```text
+T <= N,
+sqrt T <= B,
+2*B*N'^2 <= T + B^2*sqrt T + B^(5/4)*T^(3/4),
+or the complete third-derivative region
+  T <= N^3,
+  T^(5/6) <= B^2,
+  N^(3/2) <= B^2,
+  N <= B*T^(1/6),
+  N^(5/2) <= B*T.
+```
+
+The first capstone proves the constructed-range restricted Type-I integral bound at an arbitrary
+block length `B`.  The second specializes `B` to every literal powered-prime block
+`mtTypeIPrimeBlockLength P ell r`, constructs the amplifier lower bound and finite block cover
+internally, and concludes the existing exact `mtTypeIPrimeBlockMomentBound`.  Neither theorem
+exposes an analytic-estimate, coefficient-energy, amplifier-lower-bound, or cover premise.
+
+Direct source check and targeted leaf build pass.  Both new public declarations audit with only
+`[propext, Classical.choice, Quot.sound]`; the new leaf is umbrella-wired and the umbrella was not
+built.
+
+This closes the stale two-region consumer gap.  It does not yet prove that every block generated
+by the source schedule lies in the five-region union, so it shrinks but does not close the numeric
+frontier toward Matomäki–Teräväinen Theorem 1.2.
+
+## Brick 153 — lossless real-to-natural Type-I blocks (2026-09-02)
+
+`Sieve/MatomakiTeravainenRealNaturalBlocks.lean` closes the endpoint-type mismatch between the
+real-scale factors stored by Proposition 2.2 and the exact natural Watt blocks consumed by the
+Type-I moment machinery.
+
+For every real dyadic coefficient interval `(M,2M]` with `M ≥ 1`, writing `A = floor M`, Lean
+proves the exact Perron-polynomial identity
+
+```text
+RealDyadicBlock(M)
+  = WattBlock(A) + WattBlockTail(2*A).
+```
+
+The first term carries every coefficient through `2*A`; the second carries only coefficients
+strictly above `2*A`.  Since `2*M < 2*A+2`, that tail lies inside `(2*A,4*A]` and contains at most
+the rounding boundary.  No coefficient is duplicated, deleted, or replaced by a majorant.
+
+For the unit factor Lean also proves the exact identity
+
+```text
+RealUnitBlock(L,U) = WattUnitBlock(floor L, floor U).
+```
+
+Finally, the scalar source conditions `1 ≤ delta*M ≤ floor M` imply the precise moment-admission
+window
+
+```text
+floor M < floor((1+delta)*M) ≤ 2*floor M.
+```
+
+Direct source check and targeted leaf build pass (`11124/11124`).  All five new theorem
+declarations audit with only `[propext, Classical.choice, Quot.sound]`; the leaf is umbrella-wired
+and the umbrella was not built.
+
+This removes rounding as a hidden source hypothesis.  Remaining assembly must prove the displayed
+scalar window conditions from the actual geometric schedule, then apply the Type-I and Type-II
+receivers to every Proposition-2.2 piece before the Perron comparison.
+
+## Brick 154 — actual-source real-to-natural Watt windows (2026-09-03)
+
+`Sieve/MatomakiTeravainenRealNaturalSourceSchedule.lean` discharges brick 153's scalar window
+conditions on the literal rooted geometric schedule.  At successor paper width
+`delta = mtPaperWidth (A+1) X`, the existing aligned-schedule progress theorem and width reserve
+give, eventually and uniformly in every geometric level `j`,
+
+```text
+1 <= delta*M <= floor M,
+floor M < floor((1+delta)*M) <= 2*floor M.
+```
+
+The source-facing capstone then identifies the real unit-factor Perron polynomial exactly with
+`mtWattUnitBlock (floor M) (floor((1+delta)*M))`; no rounding majorant, scale premise, or analytic
+estimate remains.  Direct source check and targeted leaf build pass (`11149/11149`).  All three
+new declarations audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired
+and umbrella was not built.
+
+This closes actual-source unit-factor admission.  Remaining assembly must route every full
+Proposition-2.2 piece into the Type-I/Type-II receivers, including the genuinely collective
+cross-modulus estimate needed by the residual Lemma 3.5(ii) range, before Perron comparison and
+Theorem 1.2.
+
+## Brick 155 — retained-piece real-to-natural Watt windows (2026-09-03)
+
+`Sieve/MatomakiTeravainenRealNaturalPieceSchedule.lean` closes the unit-factor handoff for the
+actual Type-I and Type-I/II data produced by Proposition 2.2.  An arbitrary upper-adic block can
+be too small, so no false all-index statement is used.  Instead Lean derives the required room
+from the source's own retained-product lower bound and built-in scale caps.
+
+At successor width `delta = mtPaperWidth (A+1) X`, uniformly over the literal paper range
+
+```text
+0 < epsilon <= 1/100,
+X^(1-epsilon/100) < Y,
+```
+
+every Type-I datum satisfies `delta*M2 >= 1`.  Every Type-I/II datum first satisfies the exact
+consequence
+
+```text
+M1*M2 <= X^(5/8),
+```
+
+from `M1^2*M2 <= X^(1-epsilon)` and `M2 <= X^(1/4-epsilon)`; its retained product then forces
+`delta*M3 >= 1`.  Eventual half-width gives the matching upper floor bound in both cases.
+
+The two source-facing capstones identify each real terminal factor exactly with
+`mtWattUnitBlock (floor M) (floor ((1+delta)M))` and prove
+
+```text
+floor M < floor ((1+delta)M) <= 2*floor M.
+```
+
+All paper restrictions occur inside the eventual conclusions; neither theorem has a hypothesis.
+Direct source check and targeted leaf build pass (`11141/11141`).  All five new declarations
+audit with only `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired and umbrella was
+not built.
+
+This removes the false need for a lower bound on every adic index and closes natural unit-block
+admission for every retained Type-I and Type-I/II piece.  The remaining analytic core is still the
+collective signed cross-modulus estimate on the residual Lemma 3.5(ii) Type-I range.

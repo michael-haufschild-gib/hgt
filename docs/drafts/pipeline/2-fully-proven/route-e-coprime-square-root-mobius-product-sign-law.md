@@ -9345,11 +9345,18 @@ The same lower bounds are also exposed in the card's literal product-sign form, 
 `sum_S mu(a*b)` and filters `mu(a*b) = ±1`; the proof rewrites both the sum and both filtered
 cardinalities by exact coprime Möbius multiplicativity.
 
+Finally, the two factor-sign filters and the two literal product-sign filters are proved equal to
+the corpus's canonical `coprimeSignClass x h (±1)`, whose cardinality is exactly
+`coprimeSignClassCount x h (±1) = R_±(x,h)`.  The reverse inclusion is not assumed: from
+`mu(a)mu(b)=±1`, Lean derives `mu(a)≠0` and `mu(b)≠0`, then obtains both separate squarefree
+conditions through `ArithmeticFunction.moebius_ne_zero_iff_squarefree`.  The terminal finite
+bound is therefore stated directly on the paper's canonical `R_+` and `R_-` objects.
+
 Taking `T = balancedPairs x h` supplies named versions on the card's exact finite product window,
 so the product interval and square-root factor range are inherited literally from the existing
-`balancedPairs` definition.  All six theorems are unconditional in `T`, respectively `x,h`;
+`balancedPairs` definition.  All nine theorems are unconditional in `T`, respectively `x,h`;
 coprimality and both squarefree conditions are filters, not hypotheses.  Direct source check and
-targeted leaf build pass (`9118/9118`).  All six public theorem declarations audit with only
+targeted leaf build pass.  All nine public theorem declarations audit with only
 `[propext, Classical.choice, Quot.sound]`; leaf is umbrella-wired without umbrella build.
 
 Card remains Stage 2.  Exact finite product-sign algebra and extraction are now closed in the
