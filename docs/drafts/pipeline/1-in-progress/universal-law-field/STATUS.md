@@ -4963,19 +4963,36 @@ F401/F402 [Lean]/MUST-139/140 — prime entry into restricted Weil energy is log
 failure requires a null vector. Sonin injectivity upgrades nonnegativity to strictness. Aperture
 continuity is Suzuki 2026, not new; only quantitative window law is corpus-new (`WEIL-ENTRY-001`).
 
-FAIL-92 — Halmos/Naimark projection dilation of positive `T` is generic, has zero pair index, and
-obeys `Tr T=Tr T²+Tr(T-T²)`; it manufactures exactly the missing unit and cannot yield a subunit
-contradiction. Dilation is not completion transport.
-F537/F538 [paper] — Euler-lifted Stokes covariance aperture-integrates to canonical order-six
-prime/depth Gamma Gram `C`, `Tr C=collision budget<115/108`; scalar trace identity was already
-P-G177-A, while operator lift/order-six law are new (`ULF-ESAC-001`).
-F539/CANNOT-243 [paper] — `S_L^6(C)=(230/27)|c><c|` on finite core, but `c∉ell2` because
-`sum_p(log p)^4/p=∞`; no bounded sixth source preserves literal Euler weights.
-F540 [paper] — Unique dilation-equivariant Mellin multiplier mapping order-six aperture features to
-cubic Hellinger features is `m(xi)=(18/sqrt23)Γ(3/2-iξ)/Γ(3-iξ)(1-2^(-3/2+iξ))`; it is injective
-with dense nonclosed range and unbounded inverse (`ULF-EHGM-001`).
-F541/MUST-165 [paper] — Source metric anomaly `D=W_6*(M*M-I)W_6` is nonzero, indefinite S1,
-zero on every Euler diagonal, and `Tr D=0`; exactly `K_Hellinger=C+D`. Surviving RH edge is Xi
-landing through this fixed nonmultiplicative subtraction plus zero residual boundary.
-CANNOT-244 — `M` preserves Euler rate `lambda>=log 2`, so cannot land on Xi rate `a<1/2`.
-Completion = solved gauge/anomaly `M` plus open noncommuting polar--Gamma rate changer `R`.
+FAIL-92 — Generic Halmos/Naimark dilation manufactures missing unit; dilation is not transport.
+F537–F539 [paper] — Euler aperture yields order-six prime/depth Gram `C`,
+`Tr C<115/108`, but `S_L^6(C)=(230/27)|c><c|` only on finite core and `c∉ell2`; no bounded sixth
+source preserves literal Euler weights (`ULF-ESAC-001`).
+F540/F541 [paper] — Unique order-six-to-cubic Mellin gauge `M` has dense nonclosed range and
+unbounded inverse; `D=W_6*(M*M-I)W_6` is nonzero indefinite S1, diagonal/trace zero, and
+`K_Hellinger=C+D`. Gauge subtraction is not rate transmutation (`ULF-EHGM-001`).
+F542/F543 [Lean] — First-exit curvature reconstructs exact mixed `T`; W-H197/198 already give rate
+changer/Krein charge, while W-H205 kills independent prime-cell dilation. Cells must mix first.
+F544 [paper] — `Q=diag(sqrt(m_n))` is compact, injective, dense nonclosed, and `CQ=QU`: arithmetic
+survival is singular gauge of pure unilateral open history (`ULF-PHSTH-001`).
+F545 [paper] — For every positive trace-class prime carrier `A`,
+`T_A=G_A-U*G_AU` and `G_A=sum_j U*^j T_A U^j` in trace norm; total coefficient is `7/4`.
+F546 [paper] — Same-defect completions are `G_A+R`, `R=U*RU`, hence operator-valued Toeplitz.
+No nonzero `R` is compact; positive nonzero `R` repeats mass and is never trace class.
+F547 [paper] — Closed finite observer `p` lifts to noncompact open history `I⊗p`.
+CANNOT-244/245 — Not `M`, scalar matching, fixed theta metric, another Cauchy jet, or dense-range
+recovery; none removes the noncompact Toeplitz horizon (`ULF-NFPCJ-001`).
+MUST-165/166 — Derive actual anomaly-subtracted theta/Xi same-displacement identity pre-divisor,
+preserving unsquared Euler coefficients, then prove strict-right grade lifts to nonzero positive
+Toeplitz symbol. Positivity plus any finite Euler trace budget then forces RH (`ULF-PHTH-002`).
+
+## 2026-09-03 (viii) — constrained right continuity in Lean
+
+F403 — Lean (`RHTower.CCMRestrictedWeilPolarConstrainedRightContinuity`): a strictly positive
+Rayleigh floor of the exact CCM restricted Weil form on the pole-vanishing subspace at aperture `a`
+persists (halved) on `[a, a + δ]`, prime entries included; constraints are invariant under
+extension and scaling; constrained floors are antitone in the aperture.
+
+MUST-141 — Theorem D of `WEIL-ENTRY-001` now has all inputs in Lean except the Connes–Consani
+Sonin inequality at `√2`: strictness there (Theorem C, abstract mechanism
+`SoninStrictPositivityTransfer`) plus F403 gives positivity with the prime 2 beyond `√2` on the
+pole-vanishing subspace.

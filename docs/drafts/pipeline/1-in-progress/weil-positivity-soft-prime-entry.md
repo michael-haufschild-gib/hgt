@@ -200,3 +200,14 @@ theorem, which is why it is recorded as a theorem on paper and not as a corpus-c
 3. The Lean bridge between the elementary `K`-form and the CCM archimedean Fourier weight (the
    Plancherel identity `D(u) = ∫ (1 − cos uξ)|f̂|²` and `∫_0^{1/10}(1 − cos uξ)K(u)du ≤
    C(1 + log⁺|ξ|)`), so that the window law can be stated inside the CCM form domain.
+
+## Addendum 2026-09-03 — Theorem D's continuity input is now Lean (right side)
+
+`RHTower.CCMRestrictedWeilPolarConstrainedRightContinuity` (certificate
+`3-formalized/weil-polar-constrained-right-continuity-lean.md`): a strictly positive Rayleigh floor
+on the pole-vanishing subspace at aperture `a` persists, halved, on every aperture up to `a + δ`,
+with the exact CCM source form including whatever prime powers enter in `[a, a + δ]`. Combined
+with Theorem C this gives Theorem D in the form: **if the Connes–Consani inequality holds at `√2`,
+then Weil positivity on the pole-vanishing subspace holds with the prime 2 for all `λ` in some
+`[√2, λ₁)`**, with only the Sonin inequality itself outside Lean. Left continuity (not needed for
+propagation) is not formalized.

@@ -610,3 +610,61 @@ Primary parents:
   formalized.  They realize two compact non-Schatten-one metrics with a positive trace-one relative
   curvature and sharp operator norm `1/3`.  Nuclear norm remains exactly `1`; result strengthens
   relative-metric infrastructure but confirms it cannot close subunit trace inequality.
+- 2026-09-03 — Replacement-host reproducibility run recovered the same finite zero-defect,
+  projection lower-bound, nonzero natural-grading residual, and off-diagonal non-scalar mismatch.
+  A separate full cyclic exponential-Hankel surrogate has ample cubic numerical margin
+  (`2 Tr(H_X^3) = 0.1146415...` through `p^k <= 10000`), but mixed triples carry `68.68%` of its
+  trace.  Direct bounded landing of this surrogate is excluded: literal endpoint atoms are not
+  absolutely nuclear, actual successor-plus-Bianchi source is strictly anti-Hankel, and `S_3`
+  convergence of finite zero-winding stages would preserve cubic trace zero.  This does not revive
+  ULF-INHD-001.  Follow-up corpus audit also retired `RPGT-C3` in its shifted-corona,
+  singular-corona, and Evans-determinant realizations.  Only direct same-boundary analytic
+  theta-kernel estimate `RPGT-Theta-S3` remains open on the active restricted-unitary card.
+- 2026-09-03 — Multiplicative Helson continuation was audited and retired as another implementation
+  of the missing bounded landing.  Corpus already realizes `K_a(j,k)=a(jk)` trace-class and
+  coefficient-faithfully on `ell^1_d`, but the positive one-atom stream at `2` gives eigenvalues
+  `+c,-c`, hence `Tr(K_a^3)=0` while `Tr(|K_a|^3)=2c^3`.  Additive Gamma--Hankel cofinal energy
+  control is already RH-equivalent, and Andersson divisor surjectivity lets continuable Helson
+  zeta functions realize arbitrary left-half-plane divisors.  No further computation is useful.
+  Positive survivor is the already-formalized coefficient-faithful Helson trace-class/Fredholm
+  response infrastructure; it requires a new prime--Gamma moment-measure identity and oriented
+  divisor selector before it can enter any RH chain.
+- 2026-09-03 — Exact post-computation audit closed three more ready-made repairs.  Canonical
+  theta-survival relative curvature realizes the two-non-trace-class-metrics mechanism but
+  saturates `Tr T = ||T||_1 = 1`; its smaller operator norm `1/3` cannot be substituted.  Full
+  Gauss cubic propagation converges locally while its actual positive two-orientation cubic
+  diagonal has divergent partial sums.  Corrected rational-adelic multiplier K1/Hochschild class
+  has genuine nonzero `+/- log p` regulator, but its Xi landing is divisor-indexed and its trace-one
+  ordinary convergence is globally RH-equivalent.  These are exact structural locks, so no larger
+  Runpod cutoff is justified.  Only a new signed pre-absolute-value theta kernel identity could
+  continue the separate `RPGT-Theta-S3` search class.
+- 2026-09-03 — Fixed-theta determinant continuation was audited and retired.  One canonical
+  Hilbert--Schmidt source already has `det_2` equal to normalized centered Xi and
+  multiplicity-exact finite-rank Riesz fibres, so divisor realization is not missing.  Its Green
+  identity has a self-adjoint exact-rank-two mixed-inertia boundary commutator with eigenvalues
+  `+/-1/sqrt(12)`.  Eigenmode flux is `2 Im(mu)` times canonical metric energy, but the positive
+  metric is not bounded below; universal zero flux is already equivalent to RH.  Reflection makes
+  cross flux zero and diagonal fluxes opposite, so every symmetric rank-two repair is blind.
+  Riesz normalization restores integral trace only at trace norm at least one.  No remote
+  computation can change these exact locks; surviving `RPGT-Theta-S3` work must be chiral,
+  source-nonlocal, and cancel before nuclear absolute value.
+- 2026-09-03 — Chiral boundary-port normalization and independent Euler--Wold cubic transport were
+  audited.  Raw Green-port eigenvalues `+/-1/sqrt(12)` are subunit, but normalization to the
+  integer-winding fundamental symmetry restores norm one.  Separately, the new pre-Xi
+  Euler--Wold source has correct negative cubic orientation, literal prime-power multiplicity, and
+  summable coefficientwise defect; both completed Gamma residues preserve analytic multiplicity.
+  Yet intrinsic prime-clock normalization sends the combined landing to zero, while the
+  unnormalized source magnitude exceeds the canonical Xi cubic residual by factor `>2000`.
+  Scalar interpolation is therefore retired.  Positive survivor is an exact sign-correct
+  pre-divisor cubic source and residue transport; remaining gate is a non-scalar source-derived
+  contraction preserving the full cyclic matrix through the cofinal clock.
+- 2026-09-03 — Boundary-translation/shared-ghost continuation was narrowed exactly.  Shifted
+  reflection absorption is completely positive, but its universal Hadamard translation back to
+  the literal source wall has negative determinant on every distinct positive two-node packet.
+  Bilateral orientation compresses the full Hardy debt to one shared rank-one ghost, whose exact
+  positive completion strictly amplifies the surviving source column.  Prime-independent scalar,
+  finite-matrix, and arbitrary central module ghosts fit primes two and three only at neutral
+  grade; source/Gamma naturality is RH-equivalent.  Exact multiplicative co-shift covariance also
+  cannot selectively absorb the reflection-odd mode.  Remaining survivor must be genuinely
+  prime-mixing and noncentral, with a controlled covariance anomaly paying the shared ghost before
+  nuclear absolute value.

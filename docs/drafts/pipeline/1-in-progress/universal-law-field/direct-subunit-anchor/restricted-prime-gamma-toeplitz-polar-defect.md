@@ -878,6 +878,39 @@ constructed before Xi specialization and before taking norms.
 This formulation deliberately excludes a bounded one-particle map, a direct sum of the two
 positive source legs, and any post-completion zero Gram.  Those three classes are now closed.
 
+### 6.11 Existing singular transgressions are receivers, not the producer
+
+The corpus contains the three natural implementations of `RPGT-C3`; each is already closed.
+
+1. **Closed graph / mapping cone.**  The theorem
+   `isClosableShiftedCorona_iff_zeroFree_above` identifies closability of the shifted arithmetic
+   corona at `z` with zero-freeness of the entire strict-right region above `Re z`.  Invoking this
+   closability to create the boundary class would assume the desired zero-free conclusion.
+2. **Singular corona quotient.**  Every finite arithmetic packet dies in the canonical corona, and
+   `no_routeRTwoThreeStokesCalkinPrequotientComparison_factorization_mod_compact` proves that away
+   from neutral grade no linear corona reporter recovers the actual pre-quotient Stokes comparison,
+   even modulo compact operators.
+3. **Existing Evans determinant candidate.**  `one_lt_finrank_exteriorPower_evansExcessTarget`
+   proves that its top exterior target has dimension greater than one, so it is not a determinant
+   line.  `det_evansGram_update_neg` proves that the scalar Gram determinant is orientation-blind.
+
+**[RETIRED SUBROUTE: RPGT-C3 as mapping-cone/corona/Evans determinant transgression].**  These
+mechanisms either assume the right-strip zero-free law, erase the literal finite source before the
+physical comparison, or lose the orientation needed for trace one.  They cannot be used to prove
+`(RPGT.21d)`.
+
+The surviving statement is now strictly analytic and same-boundary:
+
+**[CONJECTURE RPGT-Theta-S3, OPEN].**  After the literal Euler--Gamma anomaly is cancelled at the
+current level, theta/heat formation gives a pointwise integral-kernel identity for the two chiral
+Hardy blocks of the already-completed relative phase.  The identity bounds their full cyclic
+`S_3` mass by the positive kernel `(RPGT.25)` without passing through finite zero-winding
+approximants, a singular quotient, a closed-graph admission, or a zero-labelled Gram.
+
+This is exactly the remaining content of `(RPGT.21d)`, with every known topological workaround
+removed.  A qualitative Peller/Besov estimate is insufficient; the identity must preserve the
+literal arithmetic normalization and all mixed cyclic terms.
+
 ## 7. Hostile falsifiers
 
 1. If `a_D` is defined from an inner/outer factorization of `XiC`, `(RPGT.8)` is RH rewritten.
@@ -942,6 +975,12 @@ positive source legs, and any post-completion zero Gram.  Those three classes ar
     `not_summable_norm_routeKPhysicalEndpointBoundaryRankOne` rules out absolute nuclear assembly.
 25. An additive Gamma/Bianchi moment-Hankel correction cannot supply the missing cross term:
     strict successor anti-Hankel curvature survives every such correction.
+26. Shifted-corona closability cannot be used as source infrastructure: the corpus proves it is
+    equivalent pointwise to the desired strict-right zero-free region.
+27. The canonical singular corona kills every finite arithmetic packet and cannot recover the
+    actual pre-quotient Stokes comparison even modulo compacts off neutral grade.
+28. The existing Evans exterior target is not a determinant line, and its scalar Gram determinant
+    is invariant under source-orientation reversal.
 
 ## Gates
 
@@ -970,11 +1009,288 @@ positive source legs, and any post-completion zero Gram.  Those three classes ar
 - [x] compute the full cyclic exponential-Hankel surrogate and verify that mixed triples dominate
 - [x] retire direct bounded exponential-Hankel landing by source provenance and trace continuity
 - [x] exclude additive moment-Hankel repair by the exact successor-curvature lock
+- [x] retire shifted-corona closed-graph admission as zero-freeness-equivalent
+- [x] retire existing singular-corona and Evans-determinant transgressions
 - [ ] construct canonical literal-source counterphase in restricted-unitary topology
 - [ ] prove weak `H^(1/2)` boundary convergence of `(RPGT.10b)` in the strict-right strip
 - [ ] prove the native one-chirality corona bound `(RPGT.21)`, or the stronger weighted seam bound
   `(RPGT.23)`
 - [ ] construct the matrix-complete degree-three cyclic/Besov transgression `(RPGT.21d)`
-- [ ] construct the singular non-Hankel mapping-cone/determinant-line transgression `RPGT-C3`
+- [x] attack and retire `RPGT-C3` in its mapping-cone/corona/Evans determinant realizations
+- [ ] prove direct same-boundary theta kernel identity `RPGT-Theta-S3`
 - [ ] dependency-close paper proof
 - [ ] formalize in Lean only after dependency closure
+
+## 8. Helson/multiplicative-Hankel audit
+
+**[RETIRED SUBROUTE: multiplicative Helson landing].**  Replacing the additive Hardy frequency
+matrix by the multiplicative matrix `K_a(j,k)=a(jk)` does preserve all factor-pair cross terms, but
+it does not supply the missing signed cubic landing.
+
+The corpus already contains the exact coefficient-faithful trace-class realization.  Under
+`HelsonSummable a`, `helsonOperator a` is trace class,
+
+```text
+||K_a||_1 <= sum_n d(n) |a(n)|,
+<e_j,K_a e_k> = a(jk).
+```
+
+It also contains the decisive finite countermodel.  Let `a(2)=c>0` and `a(n)=0` otherwise.  On
+`span(e_1,e_2)`,
+
+```text
+K_a = [[0,c],[c,0]],
+spec(K_a) = {c,-c},
+Tr(K_a^3) = c^3 + (-c)^3 = 0,
+Tr(|K_a|^3) = 2 c^3.
+```
+
+Thus coefficient positivity is not operator positivity.  The signed cubic loses the required
+index, while the absolute cubic is orientation-blind.  This is not repaired by a general Helson
+moment theorem: nonnegativity of a multiplicative Hankel matrix requires the whole coefficient
+stream to be a multivariate moment sequence, not merely pointwise nonnegative coefficients.
+
+The additive Gamma--Hankel alternative is equally closed.  Its finite quadratic form is exactly
+the positive weighted Laplace energy, including every off-diagonal term.  But uniform control of
+the cofinal finite Möbius sections is already equivalent to RH, via
+`mobiusLaplaceCanonicalFiniteSectionEnergyBounded_iff_riemannHypothesis`.  Using that ceiling in
+the proposed `S_3` estimate would therefore assume the endpoint source law rather than prove it.
+
+Finally, generic Helson continuation cannot provide the divisor selector.  Andersson's
+factorization theorem, formalized by `exists_continuable_phase_with_prescribed_divisor`, realizes
+an arbitrary locally finite signed divisor strictly left of `Re s=1` by a continuable Helson zeta
+function.  Hence the Helson class by itself has no critical-line rigidity to transport into trace
+one.
+
+Primary audit:
+
+- K.-M. Perfekt and A. Pushnitski, *On Helson matrices: moment problems, non-negativity,
+  boundedness, and finite rank*, arXiv:1611.03772.
+- J. Andersson, *Mittag-Leffler type theorems for Helson zeta-functions*, arXiv:2408.15713.
+- O. F. Brevig and K.-M. Perfekt, *Failure of Nehari's Theorem for Multiplicative Hankel Forms in
+  Schatten Classes*, arXiv:1409.3117.
+
+**Positive survivor.**  Multiplicative indexing is a valid exact bookkeeping device: the
+coefficient-faithful `ell^1_d -> S_1` map and its Fredholm crossing covector are fully formalized.
+The obstruction is classification, not existence.  To be useful here, a future multiplicative
+operator must additionally prove a literal prime--Gamma moment-measure identity and an oriented
+divisor-selective landing.  Neither follows from Helson structure, Schatten membership, or
+positive coefficients.
+
+This retires the Helson implementation only.  It does not refute every non-translation,
+matrix-valued same-boundary theta identity.  The broader `RPGT-Theta-S3` class remains open.
+Route K does not supply a shortcut: `XiPrimeMarkedPhysicalEndpointRVMQuarticIncidence` already
+matches the exact reflected quadratic and quartic source moments while retaining the cofinite RVM
+diagonal and nonzero cofinal cycle holonomy.  But
+`riemannHypothesis_of_routeKAllOrderReflectedEnergyIncidence` proves that matching the complete
+moment tower by one self-adjoint Hilbert--Schmidt operator implies RH before any determinant or
+index is formed.  The surviving gate must therefore be a finite-degree, orientation-sensitive
+theta identity that lands the cubic restricted-unitary defect directly; extending positive
+moment admission to all orders would only restate the Route-P moment cone.  No numerical
+calculation is relevant to this algebraic distinction.
+
+## 9. Exact saturation, Gauss, and K1 audits
+
+Three further corpus-complete tests narrow `RPGT-Theta-S3` without adding a numerical task.
+
+1. **Canonical relative curvature saturates the nuclear inequality.**  The theta Mellin-six
+   survival construction is already the literal pre-divisor realization of “two compact,
+   non-trace-class metrics with trace-class difference.”  Theorems
+   `primeHodgeHistory_relativeCurvature_trace_index_integralNuclear` and
+   `primeHodgeHistoryRelativeCurvature_closed` prove that its relative curvature has index trace
+   `1`, trace norm `1`, and operator norm `1/3`.  Thus the small operator norm is irrelevant to the
+   proposed contradiction, and the natural relative-Hodge object lies exactly on, not below, the
+   nuclear unit wall.  The signed two-sided family sharpens this to
+   `Tr T(t)=sign(t)` and `||T(t)||_1=|sign(t)|`.  Scalar attenuation produces a subunit nuclear
+   norm only by attenuating the trace away from the integer unit, as already closed in
+   `CCMRoutePCompletedCubicGreenIntegralDefectNoGo`.
+2. **The physical Gauss cubic is not a hidden trace-class lift.**  The formerly open cubic outer
+   defect is fully convergent by `tendsto_norm_gaussCubicOuterDefectVector_comp` and
+   `tendsto_norm_gaussCubicPropagatedRelativeErrorVector_comp`.  Downstream positivity then proves
+   `tendsto_gaussCubeTwoSidedDiagonal_sum_atTop`: the actual two-orientation cubic diagonal has
+   nonnegative terms and divergent partial sums.  Hence this physical cubic channel cannot be the
+   finite nuclear defect sought here; cancellation would have to precede its positive diagonal.
+3. **K1/Hochschild topology does not supply the metric gap.**  The corrected rational-adelic
+   multiplier class is a genuine Hochschild one-cycle and its Kummer regulator is exactly
+   `-log p`.  This is a valid pre-divisor orientation carrier.  Its Xi landing, however, is defined
+   with an explicit `rho : XiDivisorSupport`, and the associated trace-one ordinary convergence is
+   proved equivalent to critical-line placement locally and to RH globally by
+   `riemannHypothesis_iff_xiReflectionIncidenceTraceOneSourceOrdinaryLanding`.  The identity in
+   the minimal trace-norm unitization also has norm exactly one.  Topological nontriviality
+   therefore does not manufacture the strict metric contraction or an upstream divisor selector.
+
+**Route consequence.**  These tests do not disprove every conceivable source-specific
+matrix-valued theta identity, but they close the three remaining ready-made producers.  Any valid
+`RPGT-Theta-S3` theorem must be a new signed, nonpositive, finite-degree kernel identity whose
+cancellation occurs before nuclear absolute value.  It cannot be obtained by rescaling the
+canonical relative curvature, taking the positive Gauss cubic diagonal, or composing the existing
+K1 class with its divisor-indexed Xi landing.
+
+Additional hostile falsifiers:
+
+29. Replacing trace norm by operator norm is invalid: the canonical trace-one curvature has
+    operator norm `1/3` but trace norm exactly `1`.
+30. The convergent Gauss cubic propagation does not imply nuclear summability; its physical
+    two-orientation positive cubic diagonal diverges.
+31. A genuine K1/Hochschild class with nonzero Kummer regulator is not yet an index-one Xi
+    producer.  The available landing supplies `XiDivisorSupport`, and its convergence is already
+    RH-equivalent.
+
+## 10. Fixed theta `det_2` and rank-two metric-commutator audit
+
+**[RETIRED SUBROUTE: fixed Fredholm determinant plus canonical Green commutator].**  The corpus
+does contain a substantially stronger pre-divisor object than the proposed pair of hypothetical
+completions.  `thetaKernelOperator` is one fixed Hilbert--Schmidt operator and
+`thetaSourceEntireDet2_eq_zero_iff_XiC_eq_zero` identifies
+`det_2(I+z thetaKernelOperator)` with the centered Xi divisor exactly.  Nonzero source spectrum,
+including algebraic multiplicity and finite-rank Riesz fibres, is already reconstructed without
+choosing an enumeration of zeros.
+
+Its canonical metric identity does not provide the missing contraction.  With
+`G=thetaMetricOperator`, `B=thetaKernelOperator`, and `C=pinnedBoundaryCLM`, the exact Green law is
+
+```text
+G B - B* G = i C.
+```
+
+Here `C` is self-adjoint of exact rank two and mixed inertia `(1,1)`; its two nonzero eigenvalues
+are `+1/sqrt(12)` and `-1/sqrt(12)`.  On an eigenmode `B f = mu f`,
+
+```text
+<C f,f> = 2 Im(mu) <G f,f>.
+```
+
+The metric energy is strictly positive on nonzero vectors, but `G` is unconditionally not bounded
+below.  Hence the small finite-rank commutator gives no uniform spectral gap and cannot force
+`Im(mu)=0`.  Requiring `<C f,f>=0` on every nonzero eigenmode is already exactly RH by
+`thetaFredholmEigenmodesPinnedGreenIsotropic_iff_riemannHypothesis`.
+
+Functional-equation pairing closes the natural matrix repair.  A divisor mode and its
+critical-line reflection have zero cross-pairing for `C`, while their diagonal currents are exact
+opposites.  Therefore every reflection-symmetric Hermitian rank-two correction vanishes on the
+pair (`thetaXiReflectionSymmetricRankTwoCorrection_eq_zero`) and cannot reduce its hyperbolic
+excess.  Breaking reflection first merely exposes the unresolved global Krein-chamber sign;
+`HedenmalmHankelKreinChamber` identifies that sign as horizontal monotonicity of `|Xi|^2`, not as
+ambient positivity.
+
+A local Riesz projection at a nonzero source eigenvalue is finite rank and has the correct
+algebraic multiplicity, but any trace-one projection or relative projection difference still has
+trace norm at least one.  Multiplying it by the subunit boundary eigenvalue attenuates its trace,
+exactly as in the scalar-fusion no-go.  Thus the fixed `det_2` source solves divisor realization,
+not the strict nuclear comparison.
+
+**Positive survivor.**  The exact pre-divisor Hilbert--Schmidt determinant, multiplicity-exact
+Riesz calculus, singular positive metric, and rank-two Green port form a complete source-side
+spectral package.  A future continuation may use them only with a new chiral, source-nonlocal
+operator identity whose cancellation occurs before trace norm.  Canonical metric isotropy,
+reflection-symmetric rank-two correction, or Riesz normalization cannot be used as the missing
+`RPGT-Theta-S3` theorem.
+
+Additional hostile falsifiers:
+
+32. Small norm of `G B - B* G` does not imply real spectrum because `G` is positive but not
+    bounded below.
+33. The canonical rank-two defect is mixed-sign and reflection-pair blind; its symmetric
+    correction is identically zero on actual paired Xi modes.
+34. A local Riesz fibre supplies integral multiplicity but cannot be nuclear-subunit at trace one;
+    normalization reaches the same sharp unit wall as every other projection/index carrier.
+
+## 11. Chiral boundary-port and independent Euler--Wold cubic audits
+
+**[RETIRED SUBROUTE: normalized rank-two Livsic port].**  Splitting the fixed Green defect into
+its positive and negative boundary eigenchannels does break reflection before scalar reduction,
+but it does not create a free contraction.  The raw port eigenvalue has magnitude
+`1/sqrt(12)<1`; the port fundamental symmetry that carries an integer winding is obtained by
+dividing by that same eigenvalue.  Thus raw port amplitude is subunit but nonintegral, while the
+normalized index port has norm one.  This is the two-channel version of the scalar-fusion wall.
+The negative channel also prevents ordinary dissipative/Schur passivity; removing it is precisely
+the unresolved Krein-chamber condition, not a source consequence of finite rank.
+
+The independent Euler--Wold construction closes a different missing obligation and sharply
+classifies what remains.  `SourceHorizontalEulerGammaCubicNegativeRenormalizedChannel` builds,
+before every Xi selection, the literal negative Euler third jet with all prime-power `k^2`
+multiplicities and subtracts the positive Wold counterterm coefficientwise.  The remainder is a
+strictly positive summable source defect, and natural cutoffs converge to its strictly negative
+total.  Hence source orientation and summability are real; they are not supplied by a divisor.
+
+`SourceHorizontalEulerWoldIndependentKreinXiResidueTransport` then transports the independent
+Euler and Wold pure third jets through both completed Gamma residues and restores exact analytic
+multiplicity.  Linear grade-forgetting, however, gives
+
+```text
+-2 D_N / H_N^3 * routePJuliaSharedOrientationOrbitBlock(c),
+```
+
+where `D_N` converges and `H_N -> infinity`.  Every finite matrix is nonzero and correctly
+oriented, but the intrinsic prime-clock limit is zero.  Keeping the unnormalized current avoids
+collapse but fails identity-scale landing in the opposite quantitative direction:
+`RoutePPrimitiveGammaJuliaStokesPrimeGammaWallCubicRawMagnitudeOvershoot` proves from the prime-two
+atom alone that its magnitude exceeds `2000` times the canonical wall--Xi cubic Malgrange
+magnitude.
+
+**Positive survivor.**  There is now an unconditional pre-Xi, sign-correct, coefficient-faithful,
+summable cubic defect and an exact multiplicity-preserving completed-residue transport.  The
+remaining theorem is narrower: construct a non-scalar, source-derived contraction that survives
+the cofinal prime clock and transports the full cyclic matrix, without selecting an Xi residue or
+renormalizing by a target scalar.  Neither raw identity scale nor intrinsic cubic clock scale can
+do this.
+
+Additional hostile falsifiers:
+
+35. Dividing the rank-two Green port by `1/sqrt(12)` to recover integer winding removes the entire
+    subunit gain.
+36. The independent Euler--Wold cubic source is not missing orientation or multiplicity; its
+    intrinsic normalized residue landing vanishes entrywise.
+37. Retaining the unnormalized cubic current is not a small correction: its magnitude exceeds the
+    canonical Xi cubic residual by a rigorously certified factor greater than `2000`.
+
+## 12. Boundary translation, bilateral ghost, and noncentrality audit
+
+The remaining matrix order cannot be recovered by translating a positive Hardy kernel.  W-H200
+proves complete positivity after shifting the source convergence wall by `1/2`, but the literal
+unshifted denominator is obtained by Hadamard multiplication with
+
+```text
+M(z,w) = (z + conjugate(w)) / (z + conjugate(w) + 1).
+```
+
+`XiWardCubicBoundaryTranslationSchurWall` proves that for any two distinct positive real nodes
+the determinant of this multiplier is strictly negative.  Thus boundary translation itself
+creates a negative square; no Schur-positive denominator correction can turn the shifted result
+into the literal same-boundary Loewner current.
+
+The negative square has an exact minimal carrier.  Bilateral grade `a,-a` converts the full Hardy
+debt into one prime-independent rank-one ghost,
+
+```text
+K_a = P_a P_a* - G_a G_a*,
+P_a(lambda) = 2 lambda / (lambda^2-a^2),
+G_a(lambda) = 2 a / (lambda^2-a^2).
+```
+
+Adding `G_a G_a*` makes the packet positive, but `P_a` is strictly amplified away from grade zero.
+The ghost therefore cannot be paid without increasing the positive corner.
+
+The obvious Gamma repair is also classified.  A prime-independent scalar ghost, an arbitrary
+finite matrix ghost, or an arbitrary module-valued ghost with central prime--Gamma action can fit
+primes two and three only at horizontal grade zero.  Source/Gamma naturality of the shared ghost
+is pointwise equivalent to critical-line placement and globally equivalent to RH.  Replacing the
+central action by the natural multiplicative co-shift does not help selectively: off the line,
+forward and reflected ground profiles have distinct shift eigenvalues, so every invariant
+boundary containing their difference contains both profiles separately.
+
+**Positive survivor.**  The live construction must use genuinely prime-mixing, noncentral
+dynamics and must break exact co-shift covariance through a controlled anomaly.  The anomaly must
+pay the single bilateral rank-one ghost without the amplified `P_a` corner, while retaining the
+Euler--Wold cubic labels and cofinal matrix norm.  Central enlargement, positive wall
+translation, and equivariant singular boundary absorption are closed search classes.
+
+Additional hostile falsifiers:
+
+38. The shifted-positive Hardy Pick kernel cannot be transported to the literal boundary by a
+    positive Schur multiplier; the universal translation multiplier has a negative two-node
+    determinant.
+39. Bilateral completion reduces, but does not remove, the obstruction: one shared ghost remains
+    and its positive completion strictly amplifies the surviving source column.
+40. Increasing central ghost rank or dropping positivity/topology does not evade prime-two/three
+    rigidity.  Exact co-shift covariance likewise cannot selectively absorb the odd mode.

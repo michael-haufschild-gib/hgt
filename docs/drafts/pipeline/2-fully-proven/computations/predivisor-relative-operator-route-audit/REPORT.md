@@ -232,6 +232,14 @@ support continued investigation only of a genuinely renormalized, non-Hankel cro
 transgression.  They do not revive the retired relative-projection route and do not prove an index
 or infinite Schatten bound.
 
+Subsequent corpus audit also closed the available mapping-cone/corona/determinant implementations
+of that transgression.  Shifted-corona closability is equivalent to right-strip zero-freeness; the
+canonical singular corona cannot recover the literal pre-quotient comparison even modulo
+compacts; and the existing Evans exterior target is not a determinant line while its Gram scalar
+forgets orientation.  The only surviving restricted-Hardy continuation is therefore a direct
+same-boundary theta integral-kernel identity controlling the full chiral `S_3` cyclic mass.  No
+such identity is presently proved.
+
 ## Final route decision
 
 Retire proposed Step 1--6 relative-projection route because its proposed operator producers fail:
@@ -256,8 +264,9 @@ retired Step 1--6 projection route.
 
 The later exponential-Hankel calculation does not alter that decision.  It shows a separate
 restricted-Hardy cubic surrogate has enough numerical norm margin if an exact source identity can
-be proved.  Current continuation gate is therefore algebraic/operator-theoretic, not numerical:
-construct the missing non-Hankel scattering transgression or retire that distinct surrogate too.
+be proved.  Current continuation gate is therefore analytic, not numerical or topological: prove
+the direct same-boundary theta kernel identity `RPGT-Theta-S3`.  Direct bounded landing and the
+checked singular transgression mechanisms are retired.
 
 Subsequent exact operator audit sharpened that obligation.  For the restricted-Hardy candidate
 `T=(U*PU-P)^3`, its nuclear norm is exactly the sum of the cubes of the two chiral Hankel
@@ -282,3 +291,118 @@ ee29b88c05b57d97c365bce844a4f17c8d37fe137e27c71e1f333608f4259342  wild-saddle-re
 
 Remote and downloaded hashes matched before cleanup. Results are numerical evidence, not interval
 certificates or substitutes for exact unconditional Lean locks cited by failed-route card.
+
+### 9. Post-computation Helson audit
+
+No additional computation was run.  The possible multiplicative-Hankel continuation was decided
+exactly from corpus theorems and primary literature.
+
+- `helsonOperator` gives the coefficient-faithful trace-class matrix `K_a(j,k)=a(jk)` under the
+  divisor-weighted `ell^1` condition.
+- The one-atom stream `a(2)=c>0` gives the block `[[0,c],[c,0]]`.  Its cubic trace is zero, while
+  `Tr(|K_a|^3)=2c^3`; signed orientation and positive norm cannot be obtained simultaneously from
+  coefficient positivity.
+- The full additive Gamma--Hankel finite-section energy already retains all cross terms, but its
+  required cofinal uniform bound is formally equivalent to RH.
+- Continuable Helson zeta functions can realize arbitrary locally finite signed divisors left of
+  `Re s=1`, so generic Helson continuation supplies no critical-line selector.
+
+Interpretation for future agents: do not spend GPU time on Helson truncations.  Finite spectra may
+show small Schatten-three mass, but that cannot repair the exact orientation cancellation or the
+divisor-surjectivity obstruction.  Route K already has exact quadratic and quartic RVM incidence;
+complete all-order incidence implies RH by the existing squared-odd-power Hankel factorization.
+The only surviving broader search class is therefore a finite-degree, orientation-sensitive,
+non-translation theta identity landing the cubic restricted-unitary defect directly.  This is an
+algebraic paper-proof gate, not a numerical one.
+
+Primary references: arXiv:1611.03772, arXiv:2408.15713, and arXiv:1409.3117.
+
+### 10. Exact post-computation saturation audit
+
+No further remote computation is warranted.  Three exact corpus results decide the remaining
+off-the-shelf continuations more strongly than finite truncations could.
+
+- The canonical theta-survival relative curvature already realizes the proposed cancellation of
+  two compact non-trace-class metrics.  It has operator norm `1/3`, but trace `1` and trace norm
+  exactly `1`.  Its signed wall family satisfies `Tr T(t)=sign(t)` and
+  `||T(t)||_1=|sign(t)|`.  Scaling below one necessarily scales the trace away from the integral
+  unit.
+- Full Gauss cubic propagation is proved convergent, but the actual positive two-orientation cubic
+  Fourier diagonal has divergent partial sums.  It is not a hidden trace-class realization of the
+  numerical exponential-Hankel surrogate.
+- The rational-adelic multiplier repair is a genuine Hochschild-one/K1 carrier with regulator
+  `+/- log p`, but its existing Xi landing explicitly accepts a divisor support.  Ordinary
+  trace-one landing is locally equivalent to critical-line placement and globally equivalent to
+  RH.
+
+Interpretation for future agents: retain downloaded data as reproducibility evidence, but do not
+run larger cutoffs.  Proposed Step 1--6 route is retired.  Canonical relative-Hodge construction
+saturates the trace inequality, Gauss positivity diverges before nuclearization, and current K1
+landing is a divisor-indexed receiver.  Broader finite-degree `RPGT-Theta-S3` search remains an
+open, genuinely new arithmetic kernel problem; it is not supported or refuted by more floating-
+point computation.
+
+### 11. Fixed `det_2` source and rank-two Green-port audit
+
+No follow-up numerical run was needed.  Corpus identities decide this continuation exactly.
+
+- One fixed Hilbert--Schmidt theta operator has regularized determinant with exactly the centered
+  Xi divisor, and its nonzero spectrum has multiplicity-exact finite-rank Riesz fibres.
+- Its canonical singular metric obeys `G B - B* G = i C`, where `C` is self-adjoint, exact rank
+  two, mixed inertia, with nonzero eigenvalues `+/-1/sqrt(12)`.
+- On every eigenmode, `<C f,f> = 2 Im(mu)<G f,f>`.  Although `<G f,f>` is positive for `f != 0`,
+  `G` has no uniform lower bound.  The small boundary channel therefore cannot force spectral
+  reality.
+- Universal vanishing of this boundary current on nonzero eigenmodes is already formally
+  equivalent to RH.  Under critical-line reflection the two diagonal currents cancel and the
+  mixed current is zero, so every symmetric rank-two correction is blind.
+- Riesz projection gives integral multiplicity, but trace one still forces trace norm at least
+  one.  Scaling by the subunit boundary eigenvalue scales the trace away from one.
+
+Interpretation for future agents: fixed theta `det_2` is a genuine upstream divisor realization,
+not the missing subunit defect.  Do not spend GPU time estimating its rank-two commutator or
+finite Riesz projections.  Any continuation must add a chiral, source-nonlocal cancellation
+identity before nuclear absolute value; canonical metric isotropy is the RH target itself.
+
+### 12. Chiral port and independent Euler--Wold source audit
+
+No numerical follow-up was run.  Exact corpus theorems decide both scale choices.
+
+- Splitting the canonical rank-two Green port gives raw eigenvalues `+/-1/sqrt(12)`.  Raw scale is
+  subunit but does not carry integer winding; normalizing the port to a fundamental symmetry
+  divides by the same number and restores norm one.
+- A new pre-Xi source channel supplies the negative Euler third jet with literal prime-power
+  `k^2` multiplicity, coefficientwise Wold subtraction, a positive summable defect, and a nonzero
+  negative natural-cutoff limit.
+- Independent Euler and Wold jets pass through both completed Gamma residues with exact analytic
+  multiplicity.  Their combined intrinsically normalized matrix is nonzero at every finite clock
+  but converges entrywise to zero.
+- Without that normalization, prime `2` alone proves total source magnitude `>1/5`, whereas the
+  canonical wall--Xi cubic residual magnitude is `<1/10000`; source magnitude is rigorously more
+  than `2000` times target magnitude.
+
+Interpretation for future agents: do not tune a scalar between these two scales.  Such tuning
+would either attenuate the integer trace or encode target data in the normalization.  Surviving
+problem is an exact non-scalar source contraction retaining the full cyclic matrix through the
+cofinal clock.  This is an algebraic/operator identity question, not a larger-cutoff question.
+
+### 13. Boundary-translation and shared-ghost audit
+
+No numerical calculation can resolve this step; finite two-node identities already decide it.
+
+- Shifted reflection absorption is completely positive, but translation back to the literal
+  source boundary is Hadamard multiplication by
+  `(z+conj(w))/(z+conj(w)+1)`.  Its determinant is strictly negative on every pair of distinct
+  positive real nodes.
+- Bilateral orientations reduce the entire negative Hardy channel to one shared rank-one ghost.
+  Adding that ghost gives exact positivity, but strictly amplifies the positive column at every
+  nonzero grade.
+- A common Gamma scalar, finite matrix, or arbitrary module-valued central ghost fits primes two
+  and three only at grade zero.  Source/Gamma naturality of that ghost is globally RH-equivalent.
+- Natural multiplicative co-shift covariance cannot selectively kill the reflection-odd profile:
+  off the line its invariant boundary necessarily absorbs both forward and reflected modes.
+
+Interpretation for future agents: remaining operator must be noncentral and genuinely
+prime-mixing, with a controlled failure of co-shift covariance.  Positive boundary translation,
+central rank enlargement, and equivariant singular absorption are exact no-go classes, so no
+Runpod sweep should be assigned to them.

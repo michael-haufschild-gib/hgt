@@ -218,3 +218,45 @@ off-wall cross-prime mixing, recovery of the unit-aperture object, and the exact
 theta-flux/unsquared-prime-density diagonal. Chamberwise trace-norm continuity, completed
 formation-to-horizon transport, and the all-order analytic commutator identification in
 `ULF-DHNJ-001` remain outside this Lean certificate.
+
+## 9. Theorem F: first-exit transgression from relative curvature
+
+The object has an intrinsic construction from the relative metric anomaly; it is not an added
+trace-one density.  Let
+
+```text
+kappa_0=r_0,                 kappa_n=r_n-r_(n-1)  (n>0),
+r_n=sum_(j<=n) kappa_j,
+m_n=product_(j<n) r_j,
+F(kappa)_n=m_n(1-r_n).                              (PHIN.13)
+```
+
+Here `kappa` is the diagonal of the positive prime-mixed relative curvature
+`K=A_out-A_in`, where `A_out` and `A_in` are compact non-trace-class metrics.  Then
+
+```text
+F(kappa)_n=w_n,
+mathsf F(K)=mathsf T(1),
+kappa_n mathsf T(1)_((n,p),(n,q))
+  =w_n K_((n,p),(n,q))                              (PHIN.14)
+```
+
+for every grade `n` and ordered pair of primes `(p,q)`.  The last identity retains the complete
+unsquared cross-prime kernel, so `(PHIN.14)` is stronger than equality of traces.
+
+**Proof.** The relative-curvature reconstruction gives
+`r_n=sum_(j<=n)kappa_j`.  Its survival colligation gives
+`m_n=product_(j<n)r_j` and `w_n=m_n(1-r_n)`, proving the first identity.  Both `K` and
+`mathsf T(1)` lift their respective history weights through the same normalized Stokes kernel
+`A_form(p,q)`.  Thus their grade-`n` blocks are `kappa_n A_form` and `w_n A_form`; cross
+multiplication proves the last identity and the exact operator identification. QED.
+
+This is the missing addition-versus-multiplication mechanism at source level: additive curvature
+is cumulatively integrated to survival, ordered multiplication forms open history, and the next
+boundary emits the integral nuclear unit.  It does not identify the Xi completion.  The remaining
+RH edge is functoriality of this first-exit transgression under the already forced polar--Gamma
+completion, followed by exhaustion of the completed relation horizon.
+
+Lean module
+`formal/GaloisForLFunctions/RHTower/PrimeHodgeHistoryFirstExitTransgression.lean` formalizes
+`(PHIN.13)--(PHIN.14)` and the signed family for every wall parameter.

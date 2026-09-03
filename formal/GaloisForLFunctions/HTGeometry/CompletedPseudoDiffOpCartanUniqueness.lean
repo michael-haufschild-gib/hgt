@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.CompletedPseudoDiffOpLatticeCartan
 import GaloisForLFunctions.HTGeometry.CompletedPseudoDiffOpResidue
 import GaloisForLFunctions.HTGeometry.DifferentialOperatorSemilinearMatrix
+import GaloisForLFunctions.HTGeometry.DifferentialVariationalEuclideanStandardApartment
 
 /-!
 # Uniqueness of completed pseudodifferential Cartan coweights
@@ -86,7 +87,7 @@ theorem card_le_card_of_matrixUnit_rowSupport
         · have hU : (U : Matrix (Fin r) (Fin r) D) i j = 0 := by
             by_contra hU
             exact hj (hsupport i hi j hU)
-          simp [x', y', hi, hU]
+          simp [x', y', hU]
         · simp [x', y', extendFromFinset, hi]
     have hfull : x' = y' := by
       have h := congrArg
@@ -100,6 +101,44 @@ theorem card_le_card_of_matrixUnit_rowSupport
   simpa [Module.finrank_pi] using hdim
 
 end MatrixSupport
+
+section DominantTuple
+
+variable {r : ℕ}
+
+/-- Two decreasing integral tuples in the same Weyl orbit are equal. -/
+theorem eq_of_antitone_of_eq_comp_perm
+    (m n : Fin r → ℤ) (w : Equiv.Perm (Fin r))
+    (hmn : m = fun i => n (w i)) (hm : Antitone m) (hn : Antitone n) :
+    m = n := by
+  classical
+  have hwfin : Finset.univ.map w.toEmbedding = (Finset.univ : Finset (Fin r)) := by
+    ext i
+    simp
+  have hwms : Multiset.map w Finset.univ.val = Finset.univ.val := by
+    change (Finset.univ.map w.toEmbedding).val = Finset.univ.val
+    exact congrArg Finset.val hwfin
+  have hmul : Multiset.map m Finset.univ.val = Multiset.map n Finset.univ.val := by
+    rw [hmn]
+    calc
+      Multiset.map (fun i => n (w i)) Finset.univ.val =
+          Multiset.map n (Multiset.map w Finset.univ.val) := by
+        rw [Multiset.map_map]
+        rfl
+      _ = _ := by rw [hwms]
+  have hcoe : (↑(List.ofFn m) : Multiset ℤ) = ↑(List.ofFn n) := by
+    have hM : Multiset.map m Finset.univ.val =
+        (↑(List.ofFn m) : Multiset ℤ) := by
+      simp [List.ofFn_eq_map]
+    have hN : Multiset.map n Finset.univ.val =
+        (↑(List.ofFn n) : Multiset ℤ) := by
+      simp [List.ofFn_eq_map]
+    rw [← hM, ← hN, hmul]
+  exact List.ofFn_injective (List.Perm.eq_of_sortedGE
+    (List.sortedGE_ofFn_iff.mpr hm) (List.sortedGE_ofFn_iff.mpr hn)
+      (Multiset.coe_eq_coe.mp hcoe))
+
+end DominantTuple
 
 section Stabilizer
 
@@ -487,6 +526,200 @@ theorem exists_perm_of_completedPseudoDiffOpLattice_pair_cartan
       standardCompletedPseudoDiffOpLatticeAtCoweight (K := K) n := by
     rw [← mapCompletedPseudoDiffOpLatticeLinear_trans, heM', hfM]
   exact exists_perm_of_standardStabilizer_map_coweight g hgL m n hgM
+
+/-- Coordinate permutation as an actual completed-skew linear equivalence. -/
+noncomputable def completedPseudoDiffOpCoordinatePermutationLinearEquiv
+    (w : Equiv.Perm (Fin r)) :
+    (Fin r → CompletedPseudoDiffOp K) ≃ₗ[CompletedPseudoDiffOp K]
+      (Fin r → CompletedPseudoDiffOp K) :=
+  LinearEquiv.funCongrLeft (CompletedPseudoDiffOp K) (CompletedPseudoDiffOp K) w
+
+/-- Coordinate permutations preserve the standard completed valuation lattice. -/
+theorem map_completedPseudoDiffOpCoordinatePermutation_standard
+    (w : Equiv.Perm (Fin r)) :
+    mapCompletedPseudoDiffOpLatticeLinear
+        (completedPseudoDiffOpCoordinatePermutationLinearEquiv (K := K) w)
+        (standardCompletedPseudoDiffOpLattice (K := K) (ι := Fin r)) =
+      standardCompletedPseudoDiffOpLattice (K := K) (ι := Fin r) := by
+  apply CompletedPseudoDiffOpLattice.ext
+  ext y
+  rw [mem_mapCompletedPseudoDiffOpLatticeLinear_iff]
+  constructor
+  · rintro ⟨x, hx, rfl⟩
+    rw [mem_standardCompletedPseudoDiffOpLattice_iff] at hx ⊢
+    exact fun i => hx (w i)
+  · intro hy
+    refine ⟨(completedPseudoDiffOpCoordinatePermutationLinearEquiv (K := K) w).symm y,
+      ?_, by simp⟩
+    rw [mem_standardCompletedPseudoDiffOpLattice_iff] at hy ⊢
+    exact fun i => hy (w.symm i)
+
+/-- Coordinate permutations transport a coweight lattice to the literally permuted coweight. -/
+theorem map_completedPseudoDiffOpCoordinatePermutation_coweight
+    (w : Equiv.Perm (Fin r)) (m : Fin r → ℤ) :
+    mapCompletedPseudoDiffOpLatticeLinear
+        (completedPseudoDiffOpCoordinatePermutationLinearEquiv (K := K) w)
+        (standardCompletedPseudoDiffOpLatticeAtCoweight (K := K) m) =
+      standardCompletedPseudoDiffOpLatticeAtCoweight (K := K) (m ∘ w) := by
+  apply CompletedPseudoDiffOpLattice.ext
+  ext y
+  rw [mem_mapCompletedPseudoDiffOpLatticeLinear_iff]
+  constructor
+  · rintro ⟨x, hx, rfl⟩
+    rw [mem_standardCompletedPseudoDiffOpLatticeAtCoweight_iff] at hx ⊢
+    exact fun i => hx (w i)
+  · intro hy
+    refine ⟨(completedPseudoDiffOpCoordinatePermutationLinearEquiv (K := K) w).symm y,
+      ?_, by simp⟩
+    rw [mem_standardCompletedPseudoDiffOpLatticeAtCoweight_iff] at hy ⊢
+    intro i
+    simpa [completedPseudoDiffOpCoordinatePermutationLinearEquiv, Function.comp_def,
+      completedPseudoDiffOpUniformizerCoweight] using hy (w.symm i)
+
+/-- **Dominant arbitrary-pair Cartan decomposition.**  Every ordered pair of full completed
+valuation lattices has a simultaneous Cartan frame whose coweight lies in the closed dominant
+Weyl chamber. -/
+theorem exists_completedPseudoDiffOpLattice_pair_cartan_dominant
+    (L M : CompletedPseudoDiffOpLattice K (Fin r)) :
+    ∃ (e : (Fin r → CompletedPseudoDiffOp K) ≃ₗ[CompletedPseudoDiffOp K]
+        (Fin r → CompletedPseudoDiffOp K)) (m : Fin r → ℤ),
+      mapCompletedPseudoDiffOpLatticeLinear e L =
+          standardCompletedPseudoDiffOpLattice (K := K) (ι := Fin r) ∧
+      mapCompletedPseudoDiffOpLatticeLinear e M =
+          standardCompletedPseudoDiffOpLatticeAtCoweight (K := K) m ∧
+      Antitone m := by
+  obtain ⟨e, m, heL, heM⟩ := exists_completedPseudoDiffOpLattice_pair_cartan L M
+  obtain ⟨w, hw, -⟩ := exists_dominant_permutation m
+  let p := completedPseudoDiffOpCoordinatePermutationLinearEquiv (K := K) w
+  refine ⟨e.trans p, m ∘ w, ?_, ?_, hw⟩
+  · rw [← mapCompletedPseudoDiffOpLatticeLinear_trans, heL,
+      map_completedPseudoDiffOpCoordinatePermutation_standard]
+  · rw [← mapCompletedPseudoDiffOpLatticeLinear_trans, heM,
+      map_completedPseudoDiffOpCoordinatePermutation_coweight]
+
+/-- **Uniqueness of dominant relative position.**  Two dominant Cartan reductions of the same
+ordered lattice pair have exactly the same integral coweight, not merely the same Weyl orbit. -/
+theorem completedPseudoDiffOpLattice_pair_cartan_dominant_unique
+    (L M : CompletedPseudoDiffOpLattice K (Fin r))
+    (e f : (Fin r → CompletedPseudoDiffOp K) ≃ₗ[CompletedPseudoDiffOp K]
+      (Fin r → CompletedPseudoDiffOp K))
+    (m n : Fin r → ℤ)
+    (heL : mapCompletedPseudoDiffOpLatticeLinear e L =
+      standardCompletedPseudoDiffOpLattice (K := K) (ι := Fin r))
+    (heM : mapCompletedPseudoDiffOpLatticeLinear e M =
+      standardCompletedPseudoDiffOpLatticeAtCoweight (K := K) m)
+    (hfL : mapCompletedPseudoDiffOpLatticeLinear f L =
+      standardCompletedPseudoDiffOpLattice (K := K) (ι := Fin r))
+    (hfM : mapCompletedPseudoDiffOpLatticeLinear f M =
+      standardCompletedPseudoDiffOpLatticeAtCoweight (K := K) n)
+    (hm : Antitone m) (hn : Antitone n) :
+    m = n := by
+  obtain ⟨w, hw⟩ := exists_perm_of_completedPseudoDiffOpLattice_pair_cartan
+    L M e f m n heL heM hfL hfM
+  exact eq_of_antitone_of_eq_comp_perm m n w hw hm hn
+
+/-- Simultaneous Cartan data with its coweight fixed in the dominant chamber. -/
+structure CompletedPseudoDiffOpDominantCartanData
+    (L M : CompletedPseudoDiffOpLattice K (Fin r)) where
+  frame : (Fin r → CompletedPseudoDiffOp K) ≃ₗ[CompletedPseudoDiffOp K]
+    (Fin r → CompletedPseudoDiffOp K)
+  coweight : Fin r → ℤ
+  map_left : mapCompletedPseudoDiffOpLatticeLinear frame L =
+    standardCompletedPseudoDiffOpLattice (K := K) (ι := Fin r)
+  map_right : mapCompletedPseudoDiffOpLatticeLinear frame M =
+    standardCompletedPseudoDiffOpLatticeAtCoweight (K := K) coweight
+  dominant : Antitone coweight
+
+/-- Dominant Cartan data exists for every ordered lattice pair. -/
+theorem nonempty_completedPseudoDiffOpDominantCartanData
+    (L M : CompletedPseudoDiffOpLattice K (Fin r)) :
+    Nonempty (CompletedPseudoDiffOpDominantCartanData L M) := by
+  obtain ⟨e, m, heL, heM, hm⟩ :=
+    exists_completedPseudoDiffOpLattice_pair_cartan_dominant L M
+  exact ⟨⟨e, m, heL, heM, hm⟩⟩
+
+/-- A chosen dominant Cartan datum; its coweight is independent of this choice by the uniqueness
+theorem below. -/
+noncomputable def completedPseudoDiffOpDominantCartanData
+    (L M : CompletedPseudoDiffOpLattice K (Fin r)) :
+    CompletedPseudoDiffOpDominantCartanData L M :=
+  Classical.choice (nonempty_completedPseudoDiffOpDominantCartanData L M)
+
+/-- Canonical dominant integral relative-position vector of two completed valuation lattices. -/
+noncomputable def completedPseudoDiffOpDominantRelativePosition
+    (L M : CompletedPseudoDiffOpLattice K (Fin r)) : Fin r → ℤ :=
+  (completedPseudoDiffOpDominantCartanData L M).coweight
+
+/-- The canonical relative-position vector lies in the closed dominant Weyl chamber. -/
+theorem completedPseudoDiffOpDominantRelativePosition_antitone
+    (L M : CompletedPseudoDiffOpLattice K (Fin r)) :
+    Antitone (completedPseudoDiffOpDominantRelativePosition L M) :=
+  (completedPseudoDiffOpDominantCartanData L M).dominant
+
+/-- Every dominant simultaneous Cartan reduction computes the canonical relative-position
+vector. -/
+theorem completedPseudoDiffOpDominantRelativePosition_eq
+    (L M : CompletedPseudoDiffOpLattice K (Fin r))
+    (e : (Fin r → CompletedPseudoDiffOp K) ≃ₗ[CompletedPseudoDiffOp K]
+      (Fin r → CompletedPseudoDiffOp K))
+    (m : Fin r → ℤ)
+    (heL : mapCompletedPseudoDiffOpLatticeLinear e L =
+      standardCompletedPseudoDiffOpLattice (K := K) (ι := Fin r))
+    (heM : mapCompletedPseudoDiffOpLatticeLinear e M =
+      standardCompletedPseudoDiffOpLatticeAtCoweight (K := K) m)
+    (hm : Antitone m) :
+    m = completedPseudoDiffOpDominantRelativePosition L M := by
+  let d := completedPseudoDiffOpDominantCartanData L M
+  exact completedPseudoDiffOpLattice_pair_cartan_dominant_unique
+    L M e d.frame m d.coweight heL heM d.map_left d.map_right hm d.dominant
+
+/-- Simultaneously changing the completed-skew frame of both lattices leaves their canonical
+dominant relative-position vector unchanged. -/
+theorem completedPseudoDiffOpDominantRelativePosition_mapLinear
+    (g : (Fin r → CompletedPseudoDiffOp K) ≃ₗ[CompletedPseudoDiffOp K]
+      (Fin r → CompletedPseudoDiffOp K))
+    (L M : CompletedPseudoDiffOpLattice K (Fin r)) :
+    completedPseudoDiffOpDominantRelativePosition
+        (mapCompletedPseudoDiffOpLatticeLinear g L)
+        (mapCompletedPseudoDiffOpLatticeLinear g M) =
+      completedPseudoDiffOpDominantRelativePosition L M := by
+  let d := completedPseudoDiffOpDominantCartanData L M
+  let f := g.symm.trans d.frame
+  have hfL : mapCompletedPseudoDiffOpLatticeLinear f
+      (mapCompletedPseudoDiffOpLatticeLinear g L) =
+      standardCompletedPseudoDiffOpLattice (K := K) (ι := Fin r) := by
+    rw [mapCompletedPseudoDiffOpLatticeLinear_trans]
+    change mapCompletedPseudoDiffOpLatticeLinear (g.trans (g.symm.trans d.frame)) L = _
+    rw [← LinearEquiv.trans_assoc, LinearEquiv.self_trans_symm, LinearEquiv.refl_trans]
+    exact d.map_left
+  have hfM : mapCompletedPseudoDiffOpLatticeLinear f
+      (mapCompletedPseudoDiffOpLatticeLinear g M) =
+      standardCompletedPseudoDiffOpLatticeAtCoweight (K := K) d.coweight := by
+    rw [mapCompletedPseudoDiffOpLatticeLinear_trans]
+    change mapCompletedPseudoDiffOpLatticeLinear (g.trans (g.symm.trans d.frame)) M = _
+    rw [← LinearEquiv.trans_assoc, LinearEquiv.self_trans_symm, LinearEquiv.refl_trans]
+    exact d.map_right
+  exact (completedPseudoDiffOpDominantRelativePosition_eq
+    (mapCompletedPseudoDiffOpLatticeLinear g L)
+    (mapCompletedPseudoDiffOpLatticeLinear g M)
+    f d.coweight hfL hfM d.dominant).symm
+
+/-- A dominant standard-apartment coweight is literally the canonical relative position from the
+standard lattice. -/
+theorem completedPseudoDiffOpDominantRelativePosition_standard_coweight
+    (m : Fin r → ℤ) (hm : Antitone m) :
+    completedPseudoDiffOpDominantRelativePosition
+        (standardCompletedPseudoDiffOpLattice (K := K) (ι := Fin r))
+        (standardCompletedPseudoDiffOpLatticeAtCoweight (K := K) m) = m := by
+  have h := completedPseudoDiffOpDominantRelativePosition_eq
+    (standardCompletedPseudoDiffOpLattice (K := K) (ι := Fin r))
+    (standardCompletedPseudoDiffOpLatticeAtCoweight (K := K) m)
+    (LinearEquiv.refl (CompletedPseudoDiffOp K) (Fin r → CompletedPseudoDiffOp K))
+    m
+    (mapCompletedPseudoDiffOpLatticeLinear_refl _)
+    (mapCompletedPseudoDiffOpLatticeLinear_refl _)
+    hm
+  exact h.symm
 
 end Stabilizer
 

@@ -1856,3 +1856,105 @@ dominant Weyl-chamber vector.  Remaining global obligations are uniqueness/invar
 dominant relative position, gluing continuous apartments into the Euclidean affine building,
 CAT(0) semisimplicity and axes, and identification of visual endpoints with weighted residue
 flags.  The card remains at Stage 2.
+
+### Lean progress — canonical dominant relative position (2026-09-03)
+
+`CompletedPseudoDiffOpResidue` constructs the strict completed-valuation ideal, proves it is a
+two-sided maximal ideal, and proves that its quotient is a division ring.  Thus a
+standard-lattice stabilizer has an honest invertible reduction over the residue skew field.
+
+`CompletedPseudoDiffOpCartanUniqueness` uses that reduction to prove a division-ring Hall rank
+inequality for every matrix support cut.  A nonzero reduced matrix entry can carry a source
+coweight only to a target coweight no larger than it.  Hall inequalities for all integral
+sublevels, applied also to the inverse stabilizer, recover every exact coweight multiplicity.
+Consequently two Cartan reductions of the same ordered pair differ only by a Weyl permutation.
+
+The leaf realizes the sorting permutation by an actual completed-skew coordinate linear
+equivalence preserving the standard lattice.  It therefore proves existence and exact uniqueness
+of a decreasing Cartan vector and exposes the canonical invariant
+
+```text
+completedPseudoDiffOpDominantRelativePosition L M : Fin r → ℤ.
+```
+
+Every dominant simultaneous reduction computes this same vector.  Both new leaves pass direct
+checks and targeted leaf builds.  A batched audit of all their new public declarations reports
+exactly `[propext, Classical.choice, Quot.sound]`.  Both are wired into `HTGeometry`; no umbrella
+build was run.
+
+This closes uniqueness/invariance of dominant relative position.  Remaining global obligations
+are gluing continuous apartments into the Euclidean affine building, CAT(0) semisimplicity and
+axes, identification of visual endpoints with weighted residue flags, and the full Theorem B/free-
+field endpoint equivalences.  Card remains at Stage 2.
+
+### Lean progress — projective Euclidean relative-position vector (2026-09-03)
+
+`CompletedPseudoDiffOpProjectiveRelativePosition` proves the exact transformation law for the
+canonical dominant Cartan vector under independent changes of both lattice representatives.
+Scaling the second lattice adds the scalar valuation to every coordinate; scaling the first
+subtracts it.  Centering therefore removes both common translations.
+
+The leaf packages the centered vector as a literal point of the zero-sum Euclidean apartment and
+descends it through both quotient arguments to the actual projective lattice carrier:
+
+```text
+differentialVariationalProjectiveEuclideanRelativePosition
+```
+
+It also proves the representative formula and both lattice-scale invariance laws.  Direct checking
+and the targeted leaf build pass.  The batched audit of all new declarations, together with the two
+new canonical-frame computation laws, reports exactly
+`[propext, Classical.choice, Quot.sound]`.  The leaf is wired into `HTGeometry`; no umbrella build
+was run.
+
+This closes descent of the vector-valued Cartan invariant to projective vertices, but does not
+construct the continuous global affine building or establish CAT(0), semisimplicity, axes, visual
+boundary flags, the differential rank identity, or the full Theorem B/free-field endpoint
+equivalences.  Card remains at Stage 2.
+
+### Lean progress — exact vector-valued isometry of the canonical action (2026-09-03)
+
+`CompletedPseudoDiffOpProjectiveEuclideanAction` proves that every finite completed-skew linear
+equivalence is represented by an invertible row-action matrix and uses this representation to
+transport arbitrary Cartan frames through differential coefficient automorphisms.  It follows
+that coefficient transport preserves the complete canonical dominant Cartan vector, not merely
+its interleaving radius.
+
+Consequently completed-skew linear transport, coefficient transport, and their semilinear
+composition all preserve the centered projective Euclidean relative-position point exactly.  The
+canonical variational Ore action therefore satisfies
+
+```text
+DifferentialFieldAut.projectiveBuildingAction_euclideanRelativePosition
+```
+
+in every finite operator basis.  This is the vector-valued isometry assertion of Theorem A on the
+actual projective completed-lattice carrier.  Direct checking and the targeted leaf build pass;
+all thirteen new declarations audit to exactly `[propext, Classical.choice, Quot.sound]`.  The leaf
+is wired into `HTGeometry`; no umbrella build was run.
+
+Remaining work is the continuous global affine-building realization and CAT(0) semisimplicity,
+axes, visual boundary flags, asymptotic phase dichotomy, and full free-field endpoint identities.
+Card remains at Stage 2.
+
+### Lean progress — literal rank-two Cartan vector `(n,-n)` (2026-09-03)
+
+`FreeDifferentialClockShearCartan` upgrades the earlier scalar interleaving-distance computation to
+the complete dominant Cartan vector.  Two general inclusion equivalences identify sharp uniformizer
+rescalings of a matrix-image lattice with lower and upper coordinate bounds on its canonical
+relative-position vector.  The clock matrix and its inverse both have exact maximum operator degree
+`n`; applying the two sharp inclusion tests to each side gives, for every `n`,
+
+```text
+completedPseudoDiffOpDominantRelativePosition_freeClockShear n
+  = ![(n : ℤ), -(n : ℤ)].
+```
+
+Thus the full finite-iterate assertion `μ_n=(n,-n)` in `(25)` is now Lean, without assuming a
+determinant-balance theorem.  Direct checking, the targeted leaf build, and the axiom audit of all
+three new declarations pass; each declaration reports exactly
+`[propext, Classical.choice, Quot.sound]`.  The leaf is wired into `HTGeometry`; no umbrella build
+was run.
+
+The general balance law for every variational operator matrix and the global CAT(0)/boundary phase
+theorem remain open.  Card remains at Stage 2.

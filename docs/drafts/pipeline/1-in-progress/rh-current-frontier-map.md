@@ -1587,3 +1587,37 @@ Status: `[HIGH-DEPTH SOURCE-FIDELITY CLASS CLOSED] [NOT RH]`. The point-Hermite 
 two-sided: eventual depth at most `N/15` cannot yield local boundedness, while eventual depth at
 least `N/2` cannot preserve the Euler germ. Exact remaining class is intermediate or oscillatory
 depth, plus genuinely distributed/nonlocal transitions.
+
+## 2026-09-03 — Arithmetic Hermite tails lower high-depth cutoff to `37/80`
+
+The high-depth calculation now retains the arithmetic exponential modes instead of applying a
+generic Cauchy remainder. At `s=1101/1100`, every corrected Dirichlet mode is exactly a Poisson
+upper tail with action `((N:real)-log n)501/1100`. A Chernoff tilt at `1/75` and the rational bound
+`exp(1/75)<=75/74` yield
+
+`|D_N(1101/1100)+c_{N,K}(1101/1100)|
+ <= N exp(-29N/2442000)`
+
+whenever `K>=37N/80`. Thus every schedule eventually above slope `37/80` cancels the nonzero Euler
+source and is inadmissible.
+
+Status: `[ARITHMETIC HIGH-DEPTH SOURCE-FIDELITY CLASS CLOSED] [NOT RH]`. Point-Hermite frontier is
+now: eventual depth at most `N/15` cannot yield local boundedness; eventual depth at least `37N/80`
+cannot preserve Euler germ. Exact remaining class is intermediate or oscillatory depth, plus
+genuinely distributed/nonlocal transitions.
+
+## 2026-09-03 — Near-one Hermite witness raises low-depth cutoff to `1/3`
+
+At the interior point `s=10/11`, explicit alternating-binomial estimates make the finite Cayley
+square-root factor uniformly bounded below on every sufficiently large cutoff. A radius-`1/3`
+Cauchy estimate at the Hermite anchor gives
+
+`|c_{N,K}(10/11)| <= 11 N (12/11)^(K+1) exp(-N/33)`.
+
+Using `12/11<=exp(9/100)`, every schedule eventually satisfying `K(N)<=N/3` forces this
+counterterm to zero, contradicting the interior unboundedness necessity. Status:
+`[NEAR-ONE LINEAR-DEPTH HERMITE CLASS CLOSED] [NOT RH]`.
+
+Exact point-Hermite frontier is now two-sided: eventual depth at most `N/3` cannot yield local
+boundedness; eventual depth at least `37N/80` cannot preserve Euler germ. Remaining class is the
+narrow intermediate band, oscillatory schedules, and genuinely distributed/nonlocal transitions.

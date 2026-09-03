@@ -1732,3 +1732,54 @@ canonical point-Hermite construction: a viable schedule can be neither eventuall
 nor eventually at least `N/2`. Intermediate slopes and schedules oscillating between regimes
 remain open; distributed/nonlocal transitions remain separate. Lean:
 `SquarefreeConvolutionHalfMovingHermiteHighDepthNoGo.lean`; direct Lean check passes.
+
+## 2026-09-03 — Arithmetic mode tails sharpen high-depth failure to `37/80`
+
+The preceding Cauchy estimate discards finite Dirichlet structure. Expanding the positive dress
+mode by mode gives frequencies `N-log n`. At `s=1101/1100`, undoing the dress identifies each
+corrected mode exactly with a Poisson upper tail of action
+
+`x_{N,n}=((N:real)-log n) * 501/1100`, with `0<=x_{N,n}<=(501/1100)N`.
+
+An exponential Chernoff tilt proves
+
+`exp(-x) (exp(x)-sum_{j<K+1} x^j/j!)
+  <= exp(-(K+1)t+x(exp(t)-1))`.
+
+Taking `t=1/75`, the first-order factorial remainder gives `exp(1/75)<=75/74`. Therefore, if
+`K>=37N/80`, the entire corrected source satisfies
+
+`|D_N(1101/1100)+c_{N,K}(1101/1100)|
+  <= N exp(-29N/2442000)`.
+
+It tends to zero, contradicting source fidelity to the nonzero Euler product. This strictly
+improves the generic Cauchy threshold `N/2` without changing the Hermite construction.
+
+Status: `[ARITHMETIC HIGH-DEPTH SOURCE-FIDELITY CLASS CLOSED] [NOT RH]`. Combined exact survivor
+for the canonical point-Hermite construction: a viable schedule can be neither eventually at most
+`N/15` nor eventually at least `37N/80`. Intermediate slopes and schedules oscillating between
+regimes remain open; distributed/nonlocal transitions remain separate. Lean:
+`SquarefreeConvolutionHalfMovingHermiteArithmeticHighDepthNoGo.lean`; direct Lean check passes.
+
+## 2026-09-03 — Near-one witness closes point-Hermite depths through `N/3`
+
+Move the independent interior test to `s=10/11`, where the shifted pole Cayley coordinate is
+`-6/5`. The `(-1/2)` binomial weights eventually grow by at least `21/20`; explicit parity bounds,
+together with a nonzero lower bound for the `(1/2)` factor, prove that the finite Cayley square-root
+factor has norm at least one for every cutoff at least `264`.
+
+For the moving Hermite correction, the radius-`1/3` Cauchy circle about `b=6/11` remains in
+`Re(s)>=0`. Since the witness gap is `4/11`, the Taylor ratio is `12/11`, and
+
+`|c_{N,K}(10/11)| <= 11 N (12/11)^(K+1) exp(-N/33)`.
+
+The third Taylor lower bound gives `12/11<=exp(9/100)`. Every schedule eventually satisfying
+`K(N)<=N/3` therefore makes the counterterm tend to zero, with residual exponential rate `1/3300`.
+This contradicts the exact interior unboundedness forced by local boundedness of the corrected
+family.
+
+Status: `[NEAR-ONE LINEAR-DEPTH HERMITE CLASS CLOSED] [NOT RH]`. Combined exact survivor for the
+canonical point-Hermite construction: a viable schedule can be neither eventually at most `N/3`
+nor eventually at least `37N/80`. Intermediate slopes and oscillatory schedules remain open;
+distributed/nonlocal transitions remain separate. Lean:
+`SquarefreeConvolutionHalfMovingHermiteNearOneWitnessNoGo.lean`; direct Lean check passes.
