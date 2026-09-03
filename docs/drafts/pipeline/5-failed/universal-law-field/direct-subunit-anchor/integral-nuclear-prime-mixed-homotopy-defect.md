@@ -668,3 +668,27 @@ Primary parents:
   cannot selectively absorb the reflection-odd mode.  Remaining survivor must be genuinely
   prime-mixing and noncentral, with a controlled covariance anomaly paying the shared ghost before
   nuclear absolute value.
+- 2026-09-03 — Final relative-completion audit retired the proposed Step 1--6 route.  Bounded-clock
+  Sonin commutators vanish cofinally, logarithmic Weyl anomalies centralize, and pure-Hodge odd
+  transgression has uniform capacity only on the RH locus.  P-G206/P-G207 already preserve the
+  full Julia source coupling and Xi multiplicity, but their pre-divisor Loewner order is
+  RH-equivalent and fails at every hypothetical strict-right copy.  Indefinite Euler/Wold
+  reporters can remain strictly inside source budget only as continuously scaled scalar mass;
+  their Hilbert realization does not extend across the balanced wall.  Most decisively, the
+  concrete self-adjoint Schatten-one ordered-Xi/RVM relocation pairs every coefficient `d_p` with
+  `-d_p`.  New closed Lean theorems in
+  `RHTower.XiOrderedPrimeRelativeTraceCancellation` prove its ordinary relative trace is exactly
+  zero and not one.  Thus trace-classness supplies neither projection hypotheses nor Kakutani
+  escape charge.  No further numerical cutoff is informative.  Surviving positive obligation is
+  a genuinely new prime-mixing noncentral colligation with independently constructed unit index
+  and pre-absolute-value nuclear cancellation; no such object currently exists.
+- 2026-09-03 — Prime-harmonic singular-graph continuation was closed exactly.  Actual normalized
+  Big-Witt source rows have one-leg trace one and collapse in ambient `ell^2`, while converging to
+  the vertical graph generator.  New closed Lean module
+  `RHTower.DeningerBigWittPrimeHarmonicGraphTraceNormSaturation` proves their positive rank-one
+  lifts converge in Schatten-one norm to an ordinary trace-one operator whose trace norm is
+  exactly one and whose ambient shadow is zero.  This supplies a genuine upstream operator but
+  retires the hoped-for subunit inference: projecting first erases charge, while lifting first
+  retains charge only at the sharp nuclear unit wall.  Positive survivor is the source-derived
+  graph/operator convergence law; any new route must create signed cancellation before nuclear
+  absolute value.

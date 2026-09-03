@@ -1783,3 +1783,64 @@ canonical point-Hermite construction: a viable schedule can be neither eventuall
 nor eventually at least `37N/80`. Intermediate slopes and oscillatory schedules remain open;
 distributed/nonlocal transitions remain separate. Lean:
 `SquarefreeConvolutionHalfMovingHermiteNearOneWitnessNoGo.lean`; direct Lean check passes.
+
+## 2026-09-03 — Very-near-one witness closes point-Hermite depths through `3N/8`
+
+Move the independent interior test to `s=20/21`, where the shifted pole Cayley coordinate is
+`-11/10`. The `(-1/2)` binomial weights eventually grow by at least `21/20`; exact parity bounds,
+together with a `1/100` lower bound for the `(1/2)` factor, prove that the finite Cayley
+square-root factor has norm at least one for every cutoff at least `271`.
+
+For the moving Hermite correction, the radius-`3/8` Cauchy circle about `b=6/11` remains in
+`Re(s)>=0`. The witness gap is `94/231`, the Taylor ratio is `752/693`, and
+
+`|c_{N,K}(20/21)| <= 12 N (752/693)^(K+1) exp(-59N/1848)`.
+
+The Taylor lower bound gives `752/693<=exp(1/12)`. Every schedule eventually satisfying
+`K(N)<=3N/8` therefore makes the counterterm tend to zero, with residual exponential rate
+`5/7392`. This contradicts the exact interior unboundedness forced by local boundedness of the
+corrected family.
+
+Status: `[VERY-NEAR-ONE LINEAR-DEPTH HERMITE CLASS CLOSED] [NOT RH]`. Combined exact survivor for
+the canonical point-Hermite construction: a viable schedule can be neither eventually at most
+`3N/8` nor eventually at least `37N/80`. The remaining monotone band is
+`3/8 < K(N)/N < 37/80`; oscillatory schedules and distributed/nonlocal transitions remain open.
+Lean: `SquarefreeConvolutionHalfMovingHermiteVeryNearOneWitnessNoGo.lean`; direct Lean check
+passes.
+
+## 2026-09-03 — Same witness closes point-Hermite depths through `2N/5`
+
+Keep the arithmetic witness `s=20/21` and enlarge the Cauchy circle about `b=6/11` to radius
+`2/5`, still wholly inside `Re(s)>=0`. The witness gap remains `94/231`, so the Taylor ratio is
+now `235/231`, and
+
+`|c_{N,K}(20/21)| <= 58 N (235/231)^(K+1) exp(-8N/1155)`.
+
+The Taylor lower bound gives `235/231<=exp(1/58)`. Every schedule eventually satisfying
+`K(N)<=2N/5` therefore makes the counterterm tend to zero, with residual exponential rate
+`1/33495`. The existing exact pole-factor lower bound at `20/21` then contradicts local
+boundedness of the corrected family.
+
+Status: `[TWO-FIFTHS LINEAR-DEPTH HERMITE CLASS CLOSED] [NOT RH]`. Combined exact survivor for
+the canonical point-Hermite construction: a viable schedule can be neither eventually at most
+`2N/5` nor eventually at least `37N/80`. The remaining monotone band is
+`2/5 < K(N)/N < 37/80`; oscillatory schedules and distributed/nonlocal transitions remain open.
+Lean: `SquarefreeConvolutionHalfMovingHermiteTwoFifthsNoGo.lean`; direct Lean check passes.
+
+## 2026-09-03 — Pole-factor growth is uniform over all fixed interior witnesses
+
+The fixed rational cutoff calculations are no longer needed. For every real exterior modulus
+`x>1`, the successive ratios of both relevant binomial coefficient magnitudes tend to `x`. The
+`(1/2)` partial sums therefore tend to `-infinity`; the odd and even parity subsequences of the
+alternating `(-1/2)` partial sums tend to `+infinity` and `-infinity`, respectively. Their product
+has norm at least one on every sufficiently large cutoff.
+
+For every real `sigma` with `1/2<sigma<1`, the shifted Cayley coordinate is
+`-(2/sigma-1)` and `2/sigma-1>1`. Consequently every cofinal locally bounded corrected family
+forces its counterterm to have no bounded tail at every fixed real point of the open critical
+strip, not only at selected rational witnesses.
+
+Status: `[GENERAL INTERIOR POLE-FACTOR GROWTH CLOSED] [NOT RH]`. Positive survivor: low-depth
+Hermite obstructions may now choose the witness continuously. This is the missing reusable input
+for closing every eventual linear slope strictly below the geometric threshold `5/11`. Lean:
+`SquarefreeConvolutionHalfInteriorPoleFactorGeneral.lean`; direct Lean check passes.

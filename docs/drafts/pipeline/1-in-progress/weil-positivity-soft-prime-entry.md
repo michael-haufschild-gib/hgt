@@ -211,3 +211,19 @@ with Theorem C this gives Theorem D in the form: **if the Connes–Consani inequ
 then Weil positivity on the pole-vanishing subspace holds with the prime 2 for all `λ` in some
 `[√2, λ₁)`**, with only the Sonin inequality itself outside Lean. Left continuity (not needed for
 propagation) is not formalized.
+
+## Addendum 2026-09-03 — Theorem D fully in Lean except the `√2` input
+
+Certificate `3-formalized/weil-polar-ground-energy-continuity-lean.md`: the pole-vanishing ground
+energy `μ₀(a)` is defined (nonzero pole-vanishing smooth sources exist at every aperture via
+Cramer-corrected bumps), is antitone, continuous in the aperture (right side from the constrained
+floor theorem, left side from the constrained smooth-core density), and its strict positivity is
+an open condition (`eventually_ccmRestrictedWeilPolarGroundEnergy_pos`). Hence
+
+> `μ₀(√2) > 0 ⇒ ∃ λ₁ > √2, Weil positivity on the pole-vanishing subspace for all λ < λ₁`,
+
+with the prime 2 included through the exact CCM source form. `μ₀(√2) > 0` is Connes–Consani's
+Theorem 6.11 (their inequality carries a term `−c|ĝ(0)|²`, `c = 4γ/log 2`, which vanishes on the
+pole-vanishing subspace) transported to the closed form domain by
+`SoninStrictPositivityTransfer`. Their proof of Theorem 6.11 is numerically certified with margin
+`ε₂ − ε₁ ≈ 0.0032` (Lemma 6.10), so it cannot be reproduced in Lean under the no-computation rule.

@@ -406,3 +406,51 @@ Interpretation for future agents: remaining operator must be noncentral and genu
 prime-mixing, with a controlled failure of co-shift covariance.  Positive boundary translation,
 central rank enlargement, and equivariant singular absorption are exact no-go classes, so no
 Runpod sweep should be assigned to them.
+
+### 14. Exact covariance, source-order, and relative-trace closure
+
+No additional remote calculation was run after migration to the replacement endpoint.  Exact
+corpus theorems settle every remaining quantitative question more strongly than a finite cutoff.
+
+- Every bounded-clock Sonin pullback commutator converges strongly to zero.  The logarithmic Weyl
+  commutator centralizes, while pure-Hodge odd transgression has uniformly bounded cofinal graph
+  capacity exactly at zero horizontal displacement.
+- P-G206/P-G207 already provide coefficient-faithful Julia source coupling, completed
+  Gamma/polar transport, and exact analytic multiplicity.  Their global pre-divisor Loewner order
+  is RH-equivalent and fails at every hypothetical strict-right copy.
+- A transverse signed Euler/Wold reporter can lie strictly inside the source budget, but it is
+  continuously scaled source mass rather than an integral index.  Fundamental-symmetry rotation
+  removes cancellation and overspends.  The joint-depth Krein source-to-Xi landing exists only as
+  scalar continuation because its balanced cross term is not summable.
+- The literal ordered-Xi/RVM relative-completion correction is self-adjoint and Schatten one, but
+  its two signed prime sectors carry `d_p` and `-d_p`.  New module
+  `GaloisForLFunctions.RHTower.XiOrderedPrimeRelativeTraceCancellation` proves its ordinary trace,
+  and the trace of the literal operator difference, are exactly zero and therefore not one.
+
+Interpretation for future agents: retire the proposed Step 1--6 relative projection route.  Its
+Step 4 silently requires actual projection/Fredholm hypotheses that the null-homotopy mismatch
+does not provide, and Step 5 is false for the strongest concrete relative-completion object: exact
+charge is zero.  Do not spend Runpod time estimating this paired correction.  Broader
+`RPGT-Theta-S3` work survives only as a new noncentral prime-mixing colligation problem, with unit
+index and pre-absolute-value cancellation proved independently rather than inferred from
+trace-classness.
+
+### 15. Prime-harmonic singular-graph saturation audit
+
+No new remote calculation was run.  Exact source and operator identities settle this continuation
+more strongly than finite truncations.
+
+- Normalized prime-two Big-Witt horizon rows are actual arithmetic packets.  Each has algebraic
+  one-leg trace `1`, its ambient `ell^2` realization tends to zero, and its singular graph
+  realization tends to the vertical unit vector `(0,1)`.
+- Positive rank-one lifting is continuous from graph norm to genuine Schatten-one norm, so these
+  source packets converge to the ordinary operator `|(0,1)><(0,1)|`.
+- New closed Lean module
+  `GaloisForLFunctions.RHTower.DeningerBigWittPrimeHarmonicGraphTraceNormSaturation` proves this
+  limit operator is Schatten one, has ordinary trace exactly `1`, has approximation-number trace
+  norm exactly `1`, and has zero ambient Calderón--Witt shadow.
+
+Interpretation for future agents: do not use larger Runpod cutoffs to infer nuclear smallness from
+ambient packet collapse.  Projection before lifting loses unit charge; charge-faithful graph
+lifting reaches the sharp `|Tr T| = ||T||_1 = 1` wall.  Only signed cancellation constructed before
+nuclear absolute value could continue the broader `RPGT-Theta-S3` route.

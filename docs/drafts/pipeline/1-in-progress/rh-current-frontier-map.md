@@ -1621,3 +1621,49 @@ counterterm to zero, contradicting the interior unboundedness necessity. Status:
 Exact point-Hermite frontier is now two-sided: eventual depth at most `N/3` cannot yield local
 boundedness; eventual depth at least `37N/80` cannot preserve Euler germ. Remaining class is the
 narrow intermediate band, oscillatory schedules, and genuinely distributed/nonlocal transitions.
+
+## 2026-09-03 — Very-near-one Hermite witness raises low-depth cutoff to `3/8`
+
+At `s=20/21`, exact alternating-binomial estimates make the finite Cayley square-root factor
+uniformly bounded below on every sufficiently large cutoff. A radius-`3/8` Cauchy estimate at the
+Hermite anchor gives
+
+`|c_{N,K}(20/21)| <= 12 N (752/693)^(K+1) exp(-59N/1848)`.
+
+Using `752/693<=exp(1/12)`, every schedule eventually satisfying `K(N)<=3N/8` forces this
+counterterm to zero, contradicting the interior unboundedness necessity. Status:
+`[VERY-NEAR-ONE LINEAR-DEPTH HERMITE CLASS CLOSED] [NOT RH]`.
+
+Exact point-Hermite frontier is now two-sided: eventual depth at most `3N/8` cannot yield local
+boundedness; eventual depth at least `37N/80` cannot preserve Euler germ. Remaining monotone band
+is `3/8 < K(N)/N < 37/80`, plus oscillatory schedules and genuinely distributed/nonlocal
+transitions.
+
+## 2026-09-03 — Enlarged Cauchy circle raises low-depth cutoff to `2/5`
+
+At the same `s=20/21` arithmetic witness, enlarge the Cauchy radius about `6/11` to `2/5`.
+The circle remains in `Re(s)>=0`, and the resulting estimate is
+
+`|c_{N,K}(20/21)| <= 58 N (235/231)^(K+1) exp(-8N/1155)`.
+
+Using `235/231<=exp(1/58)`, every schedule eventually satisfying `K(N)<=2N/5` forces this
+counterterm to zero, contradicting the interior unboundedness necessity. Status:
+`[TWO-FIFTHS LINEAR-DEPTH HERMITE CLASS CLOSED] [NOT RH]`.
+
+Exact point-Hermite frontier is now two-sided: eventual depth at most `2N/5` cannot yield local
+boundedness; eventual depth at least `37N/80` cannot preserve Euler germ. Remaining monotone band
+is `2/5 < K(N)/N < 37/80`, plus oscillatory schedules and genuinely distributed/nonlocal
+transitions.
+
+## 2026-09-03 — General interior pole-factor lower bound
+
+For every real `1/2<sigma<1`, both exterior binomial factors are now controlled without a
+point-specific cutoff computation. Their coefficient-magnitude ratios tend to
+`x=2/sigma-1>1`; the `(1/2)` partial sums diverge negatively, while the two parity subsequences of
+the alternating `(-1/2)` partial sums diverge with opposite signs. Hence
+`|poleFactorSqrtApprox_N(sigma)|>=1` eventually.
+
+Status: `[GENERAL INTERIOR POLE-FACTOR GROWTH CLOSED] [NOT RH]`. Any cofinal locally bounded
+corrected family forces its counterterm to be unbounded at every fixed real point of the open
+critical strip. The next low-depth theorem can therefore optimize the witness continuously toward
+`sigma=1`, rather than introducing more rational witness modules.

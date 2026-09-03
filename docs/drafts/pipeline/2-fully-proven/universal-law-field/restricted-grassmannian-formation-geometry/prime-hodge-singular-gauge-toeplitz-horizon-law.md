@@ -4,6 +4,7 @@
 - **Stage:** 2-fully-proven
 - **Type:** unconditional pre-divisor completion-classification theorem
 - **Parents:** ULF-PHSG-001, ULF-PHIN-001, ULF-PHSF-001
+- **Status:** `[PAPER-PROVED] [BRIDGE] [RH SELECTOR RETIRED]`
 - **Lean:** not yet formalized; no Lean work was performed in this research pass
 
 ## 1. Higher-law interpretation
@@ -24,7 +25,7 @@ selects it without amplification.
 This is the mechanism hidden by the prior route vocabulary:
 
 ```text
-closed observer datum  --open-history lift-->  Toeplitz horizon
+closed observer datum  --shift-harmonic lift-->  Toeplitz horizon
                                                |
 finite source capacity ------------------------+--> horizon must vanish.
 ```
@@ -226,9 +227,9 @@ stronger compact conclusion. QED.
 
 No numerical amplification is used. Any finite trace ceiling suffices.
 
-## 7. Closed observer, open lifted history
+## 7. Harmonic/exit lift bifurcation
 
-Let `p>=0`, `p!=0`, be a finite-rank observer on `K`. Its canonical history lift is
+Let `p>=0`, `p!=0`, be a finite-rank observer on `K`. Its shift-harmonic history lift is
 
 ```text
 H_p=I_H tensor p.                                                       (PHSTH.13)
@@ -250,6 +251,30 @@ value repeated at every grade. QED.
 
 This is an exact theorem, not a curvature metaphor.
 
+It is not, however, the source's unique or canonical way to form history. The already proved
+first-exit mechanism gives the different lift
+
+```text
+E_p=Phi tensor p
+   =(G tensor p)-mathcal U*(G tensor p)mathcal U.                       (PHSTH.14)
+```
+
+**Theorem PHSTH-G (two-lift law).** For finite-rank positive `p`, `H_p` and `E_p` recover the same
+observer by different boundary operations:
+
+```text
+grade-zero compression of H_p = p,
+sum of all history blocks of E_p = p.
+```
+
+But `H_p` is shift harmonic, noncompact, and infinite trace, whereas `E_p` is positive trace class
+with `Tr E_p=Tr p`. Thus closed observation does not determine open-history behavior. Harmonic
+repetition and first-exit formation are inequivalent lifts of the same observer.
+
+**Proof.** The first line for `H_p` is PHSTH-F. For `E_p`, its grade-`n` block is `w_n p`, and
+`sum_n w_n=1`; positivity gives trace-norm convergence and trace `Tr p`. Equation `(PHSTH.14)` is
+PHSTH-B with `A=p`. QED.
+
 ## 8. What this explains and what it does not
 
 The law explains several corpus-wide shadows:
@@ -258,31 +283,30 @@ The law explains several corpus-wide shadows:
 - dense source recovery cannot remove a horizon living in the noncompact fixed sector;
 - positivity is a quotient: every positive completion is minimal compact completion plus positive
   Toeplitz horizon;
-- recurrence is compatible with open history because a finite observer lifts to `(PHSTH.13)`;
+- recurrence is compatible with open history under the harmonic lift `(PHSTH.13)`, but the source
+  also has the inequivalent nuclear first-exit lift `(PHSTH.14)`;
 - finite capacity is a properness condition, not an energy-amplification argument.
 
 It does **not** identify an actual Xi/theta completion with `(PHSTH.8)`, prove that an off-line zero
 creates a nonzero positive horizon, or prove RH. Hypertranscendence has not been identified with
 this noncompact sector and is not claimed here.
 
-## 9. Exact RH leverage
+## 9. Selector failure and surviving leverage
 
-The previous direct-subunit programme compared a finite Euler capacity with a completed-Xi escape
-energy living on a different object. This theorem replaces that global comparison by two local
-statements:
+The proposed RH use required a strict-right rank-one horizon to lift as `H_p`. Corpus audit killed
+that inference. `IntegralNuclearRelationIncidenceHorizon` supplies the rank-one `p` after divisor
+specialization, but ULF-PHSG-001 and `PrimeHodgeHistoryFirstExitTransgression` make `E_p`, not
+`H_p`, the literal source formation law. `E_p` has finite trace and causes no contradiction.
 
-1. construct the anomaly-subtracted theta/Xi completion `X` before supplying a divisor and prove
-   the literal same-boundary identity `(PHSTH.8)`;
-2. prove a strict-right copy induces a nonzero positive Toeplitz observer horizon in
-   `X-mathcal G_A`.
+Therefore finite capacity plus PHSTH-E is not a selector unless an independent pre-divisor theorem
+forces harmonic rather than first-exit lifting. Requiring that theorem merely because `H_p` has
+infinite trace is circular. The strongest surviving leverage is the two-lift discriminator:
 
-If source formation also gives `X>=0` and any finite trace bound (the proved Euler collision budget
-is one candidate), PHSTH-E forces `X=mathcal G_A`, so the strict-right horizon is zero, a
-contradiction. Functional-equation symmetry then excludes strict-left copies.
+> any valid completion law must derive, from literal integer/Poisson structure, whether the
+> completed horizon is shift harmonic, first-exit formed, or carries a nontrivial relative class
+> between them.
 
-This is a genuine narrowing of the missing source model class: the unknown is no longer an
-arbitrary source-to-resolvent energy comparison. It is one same-displacement identity plus one
-observer-to-horizon incidence law.
+This is a no-go/classification advance, not RH selection.
 
 ## 10. Hostile audit
 
@@ -291,9 +315,11 @@ observer-to-horizon incidence law.
 - `[PAPER-PROVED]` The exact arithmetic gauge `(PHSTH.3)`, displacement `(PHSTH.5)`, trace-norm
   reconstruction `(PHSTH.6)`, compact fibre theorem, finite-trace selector, and observer-opening
   law are dependency-closed.
+- `[PAPER-PROVED]` PHSTH-G exhibits the competing nuclear first-exit lift of the same observer.
 - `[CORPUS FUSION]` The same pre-existing `m_n,w_n,A_d` now generate both compact completion and
   prime-mixed defect; no fitted divisor datum enters.
 - `[NOT PROVED]` Actual polar--Gamma/theta completion has this displacement.
-- `[NOT PROVED]` Strict-right Xi copies are precisely nonzero positive Toeplitz symbols.
+- `[FALSIFIED AS SOURCE INFERENCE]` A strict-right rank-one horizon is not automatically the
+  harmonic lift `I tensor p`; the literal source already supplies `Phi tensor p`.
 - `[NOVELTY]` No claim for general operator theory. Potential new content is only its exact
   arithmetic fusion and RH reduction; independent priority review remains required.

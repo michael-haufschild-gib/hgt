@@ -4919,80 +4919,54 @@ F524 — Mellin creator is `a∞(s)=Γ(s+1)/Γ(s+1/2)` with half-order critical-
 F525–F526 — Cofinite prime Gamma frames are total but nonproper; covariance whitening gives a
 canonical unitary lift preserving every prime coefficient and history tail. This is exact
 information-neutral completion, not selection.
-F527–F529 — `T` reconstructs the summable half-order aperture curvature; its connection has one
-bounded ray. Gamma residue canonically regrades `Phi` to `fΓ(w_n)=((2n)!)^-2`, whose inverse energy
-is constant only at neutral displacement. Polynomial `T^(-1/2)` cannot stop factorial coface
-collapse, and summable curvature cannot equal the `1/(n log n)` clock even modulo `S₁`.
-FAIL-89 — Petz/common recovery preserves KL information for every grade; nonabelian recovery
-holonomy and flat observer squares constrain composition but not grade magnitude. They cannot
-select neutral grade.
-FAIL-90 — Nonseparable prime-depth curvature is already source-built, but its flatness is RH
-after divisor specialization. Strict contraction holds for nonzero grades. Small trace
-selfcommutator cannot kill Fredholm index (`alpha*S` keeps index `-1` with trace `alpha²`).
-F530 — Pole-strip the literal first theta atom: `Gθ(s)=2Mθ₁(s)/(s(s-1))=Γ_R(s)`. Its normalized
-six-step holonomy
-`H_n=[Gθ(2n+3)/Gθ(2n+9)]/[Gθ(3)/Gθ(9)]` equals `m_n` exactly; adjacent loss equals `w_n`, and the
-prime-mixed defect diagonal is this theta flux times the unsquared prime density. The two Hodge
-charts telescope through grade `2n+6`. Lean: `ThetaMellinSixIntegralNuclearFormation`.
-MUST-162 — `T` history is now theta-formed before divisors. Remaining edge: prove completed Xi
-relative energy is the same boundary functional after forced metric renormalization and has zero
-residual; divisor-specialized finite energy or flatness is circular.
-F531 — For theta shift `C`, `A-=I-C*C,A+=I-CC*` are compact non-S1; `K=A+-A-=[C*,C]` is positive
-S1 with `kappa_0=1/3`, `kappa_n=12/((2n+7)(2n+9))`, trace `1=-ind C=Tr T`, norm `1/3`.
-F532 — `m_n=sum_(j>=n)w_j`, `r_n=m_(n+1)/m_n`, `kappa=Delta r`; conversely
-`r_n=sum_(j<=n)kappa_j`, `m_n=product_(j<n)r_j`, `w_n=m_n(1-r_n)`.
-F533 [paper] — Gamma split gives `U=X/(X+Y) independent V=X+Y`; signed `sqrt U` recovers the
-Cayley law and `E[U^n]=m_n`. F534 [paper] — `T` is the unique cubic prime-clock Lyapunov solution,
-a one-Jordan-step heat Gramian, faithful nuclear with source-generated proper inverse.
-FAIL-91/F535/MUST-164 — Gamma spectators do not identify Xi. `T` as defect has infinite capital;
-`T^2` has exact capital one but `[I⊗L,T_d^2]` diverges as `d^-1`. Need cubic-boundary-covariant,
-anomaly-explicit relative completion and horizon exhaustion; multiplicative transport is retired.
+F527–F529 — `T` reconstructs summable half-order aperture curvature; Gamma residue regrades
+`Phi` to `((2n)!)^-2`, whose inverse energy is constant only at neutral grade. Polynomial
+`T^(-1/2)` cannot stop factorial coface collapse or produce the `1/(n log n)` clock modulo `S₁`.
+FAIL-89/90 — Petz recovery preserves every grade; nonabelian holonomy constrains composition, not
+grade. Source-built nonseparable curvature is real, but divisor-specialized flatness is RH; small
+trace selfcommutator cannot kill Fredholm index (`alpha*S` retains index `-1`).
+F530/MUST-162 — `Gθ(s)=2Mθ₁(s)/(s(s-1))=Γ_R(s)` and normalized six-step holonomy equals `m_n`;
+adjacent loss is `w_n`, so `T` is theta-formed before divisors. Need completed Xi relative energy
+to be this boundary functional after forced metric renormalization with zero residual.
+F531/F532 — `[C*,C]` is positive S1 with trace `1=-ind C=Tr T`; `m=tail(w)`, `r=m_succ/m`,
+`kappa=Delta r`, and conversely `r=prefix(kappa),m=product(r),w=m(1-r)`.
+F533/F534 [paper] — Gamma split recovers Cayley moments `m_n`; `T` is the unique cubic prime-clock
+Lyapunov solution, a one-Jordan-step heat Gramian with source-generated proper inverse.
+FAIL-91/F535/MUST-164 — Gamma spectators do not identify Xi. `T²` has capital one but
+`[I⊗L,T_d²]~d^-1`; need anomaly-explicit cubic boundary and horizon exhaustion, not multiplicative
+transport.
+F536/CANNOT-242 [paper; Lean core] — For faithful compact `T`, `T-T²` is full; every continuous
+multiplicative completion sending `T` to an idempotent is zero. A divisor horizon must arise by a
+singular/nonmultiplicative completion (`ULF-PHFI-001`).
+F397–F402 [Lean]/MUST-135–140 — Archimedean `1/2` is unique flow-invariant half-density, not
+selector; Plancherel has no zero eigenvectors, atomic Weil `ell2` positivity is RH, Meyer `L1` has
+no bounded star. Prime entry is log-soft; Sonin strictness plus aperture continuity is the live edge.
+FAIL-92 — Generic Halmos/Naimark dilation manufactures a unit; dilation is not transport.
+F537–F539 [paper] — Euler aperture has order-six Gram `C`, `Tr C<115/108`, but its sixth lowering
+lands on a non-`ell2` vector; no bounded sixth source preserves literal Euler weights (`ULF-ESAC-001`).
+F540/F541 [paper] — Unique order-six-to-cubic Mellin gauge has dense nonclosed range/unbounded
+inverse; its correction is nonzero indefinite S1 with zero diagonal/trace. Gauge subtraction is
+not rate transmutation (`ULF-EHGM-001`).
+F542–F545 [paper/Lean core] — First-exit curvature reconstructs mixed
+`T=Q(I-C*C)Q⊗A=G_A-U*G_AU`; `CQ=QU` with compact dense-range `Q`. Partial traces recover prime
+packet/exit law, Riesz potential recovers survival, and index/flux/trace/norm are one unit.
+F546/F547 [paper] — Same-defect completions are `G_A+R`, `R=U*RU`; no nonzero compact `R`, and
+positive `R` repeats infinite mass. Observer `p` has harmonic infinite-trace and first-exit S1 lifts.
+FAIL-93/CANNOT-245/MUST-165/166 — Horizon data do not select harmonic over first-exit lift. A
+viable field must derive its history boundary operation before observer specialization.
+F548 [paper] — On every fixed physical prime edge, Pluecker block mass satisfies `D_e~c e^-6`,
+while theta first-exit mass satisfies `w_e~(315/8)e^-4`. Their unique positive half-density
+`sqrt(w_e/pi_e)` grows linearly and has exactly the `N+1` graph domain (`ULF-TPFOI-001`).
+CANNOT-246/MUST-167 — No bounded diagonal coefficient-faithful Pluecker-to-theta completion exists.
+Completion must be first-order unbounded, depth-mixing, or abandon literal coefficients.
 
-F536 [paper; Lean core] — `Delta_T=T-T^2` is nonzero and full in the compact formation algebra
-for faithful compact `T`. Any continuous multiplicative completion mapping `T` to an idempotent
-vanishes identically; positivity/unitality/trace/capital are unnecessary (`ULF-PHFI-001`,
-`TopologicallySimpleFormationIdempotenceDefect`). Concrete Lean application awaits PCOB faithfulness.
-CANNOT-242 — A nonzero divisor horizon cannot be bounded multiplicative image of `T`; PCOB.31's
-multiplicative square transport is impossible, not the missing theorem. Completion must be singular
-or nonmultiplicative; its multiplicativity fracture is boundary data, not noise.
+## 2026-09-03 (viii–ix) — constrained Weil continuity and ground energy
 
-F397–F400 [Lean]/MUST-135/137/138 — Archimedean place is a transverse cusp; weight `1/2` is its
-unique flow-invariant half-density, not a selector. Plancherel has no zero eigenvectors, atomic Weil
-`ell2` positivity is RH, and Meyer `L1` has no bounded polarizing star.
-F401/F402 [Lean]/MUST-139/140 — prime entry into restricted Weil energy is log-soft; threshold
-failure requires a null vector. Sonin injectivity upgrades nonnegativity to strictness. Aperture
-continuity is Suzuki 2026, not new; only quantitative window law is corpus-new (`WEIL-ENTRY-001`).
-
-FAIL-92 — Generic Halmos/Naimark dilation manufactures missing unit; dilation is not transport.
-F537–F539 [paper] — Euler aperture yields order-six prime/depth Gram `C`,
-`Tr C<115/108`, but `S_L^6(C)=(230/27)|c><c|` only on finite core and `c∉ell2`; no bounded sixth
-source preserves literal Euler weights (`ULF-ESAC-001`).
-F540/F541 [paper] — Unique order-six-to-cubic Mellin gauge `M` has dense nonclosed range and
-unbounded inverse; `D=W_6*(M*M-I)W_6` is nonzero indefinite S1, diagonal/trace zero, and
-`K_Hellinger=C+D`. Gauge subtraction is not rate transmutation (`ULF-EHGM-001`).
-F542/F543 [Lean] — First-exit curvature reconstructs exact mixed `T`; W-H197/198 already give rate
-changer/Krein charge, while W-H205 kills independent prime-cell dilation. Cells must mix first.
-F544 [paper] — `Q=diag(sqrt(m_n))` is compact, injective, dense nonclosed, and `CQ=QU`: arithmetic
-survival is singular gauge of pure unilateral open history (`ULF-PHSTH-001`).
-F545 [paper] — For every positive trace-class prime carrier `A`,
-`T_A=G_A-U*G_AU` and `G_A=sum_j U*^j T_A U^j` in trace norm; total coefficient is `7/4`.
-F546 [paper] — Same-defect completions are `G_A+R`, `R=U*RU`, hence operator-valued Toeplitz.
-No nonzero `R` is compact; positive nonzero `R` repeats mass and is never trace class.
-F547 [paper] — Closed finite observer `p` lifts to noncompact open history `I⊗p`.
-CANNOT-244/245 — Not `M`, scalar matching, fixed theta metric, another Cauchy jet, or dense-range
-recovery; none removes the noncompact Toeplitz horizon (`ULF-NFPCJ-001`).
-MUST-165/166 — Derive actual anomaly-subtracted theta/Xi same-displacement identity pre-divisor,
-preserving unsquared Euler coefficients, then prove strict-right grade lifts to nonzero positive
-Toeplitz symbol. Positivity plus any finite Euler trace budget then forces RH (`ULF-PHTH-002`).
-
-## 2026-09-03 (viii) — constrained right continuity in Lean
-
-F403 — Lean (`RHTower.CCMRestrictedWeilPolarConstrainedRightContinuity`): a strictly positive
-Rayleigh floor of the exact CCM restricted Weil form on the pole-vanishing subspace at aperture `a`
-persists (halved) on `[a, a + δ]`, prime entries included; constraints are invariant under
-extension and scaling; constrained floors are antitone in the aperture.
-
-MUST-141 — Theorem D of `WEIL-ENTRY-001` now has all inputs in Lean except the Connes–Consani
-Sonin inequality at `√2`: strictness there (Theorem C, abstract mechanism
-`SoninStrictPositivityTransfer`) plus F403 gives positivity with the prime 2 beyond `√2` on the
-pole-vanishing subspace.
+F403/MUST-141 — Lean: a positive constrained Weil Rayleigh floor persists on a right aperture
+neighborhood, including prime entries. The remaining quantitative input is Connes–Consani's
+pole-vanishing Sonin inequality at `√2`.
+F404/F405 — Lean: nonzero pole-vanishing smooth interior sources exist and are dense; ground energy
+`μ₀` is antitone and continuous, and strict positivity is open.
+MUST-142 — `WEIL-ENTRY-001` is Lean-closed modulo published numerical certificate
+`μ₀(√2)>0` (margin about `0.3%`); qualitative prime-2 crossing is formal, quantitative crossing is
+that one external number.

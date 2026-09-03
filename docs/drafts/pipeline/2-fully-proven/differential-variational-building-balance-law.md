@@ -1958,3 +1958,48 @@ was run.
 
 The general balance law for every variational operator matrix and the global CAT(0)/boundary phase
 theorem remain open.  Card remains at Stage 2.
+
+### Lean progress — arbitrary operator-matrix Cartan extrema (2026-09-03)
+
+`DifferentialOperatorCartanExtrema` proves the two sharp endpoint identities for every invertible
+positive-rank matrix over the differential Ore ring.  For the canonical dominant relative-position
+vector from the standard completed lattice to its matrix image, the last coordinate is minus the
+maximum operator degree of the matrix, while the zeroth coordinate is the maximum operator degree
+of its inverse:
+
+```text
+completedPseudoDiffOpDominantRelativePosition_last_eq_neg_matDeg
+completedPseudoDiffOpDominantRelativePosition_zero_eq_inv_matDeg
+```
+
+The proof first shows that a matrix unit has a nonzero entry attaining its matrix degree, including
+degree zero, and then combines this witness with the two exact completed-lattice inclusion tests.
+Direct checking and the targeted leaf build pass.  All three new declarations audit to exactly
+`[propext, Classical.choice, Quot.sound]`.  The leaf is wired into `HTGeometry`; no umbrella build
+was run.
+
+This closes arbitrary finite-rank Cartan endpoint control.  The general coordinate-sum balance law,
+global CAT(0) realization, boundary phase theorem, and remaining free-field equivalences remain
+open.  Card remains at Stage 2.
+
+### Lean progress — exact free differential order/Cartan identity `(19)` (2026-09-03)
+
+`DifferentialOperatorCartanExtrema` now also proves the reversed-pair endpoint formula: for a
+matrix-image lattice paired back to the standard lattice, its top canonical dominant Cartan
+coordinate is the operator degree of the original matrix.  `FreeDifferentialOrderCartan` applies
+this formula to the canonical variational Ore matrix and its literal Fréchet-matrix identification,
+giving
+
+```text
+freeDifferentialOrder_eq_topCartan
+```
+
+in every positive finite free differential rank.  This is the exact Lean form of `(19)` for one
+automorphism; applying it to each iterate gives the stated finite-iterate identity without any new
+premise.  Direct checks and targeted builds pass.  Both new declarations audit to exactly
+`[propext, Classical.choice, Quot.sound]`.  Both leaves are wired into `HTGeometry`; no umbrella
+build was run.
+
+Remaining work is the general coordinate-sum balance law, continuous global CAT(0) building,
+semisimplicity/axes and visual boundary flags, asymptotic phase dichotomy, and the remaining
+free-field endpoint consequences.  Card remains at Stage 2.

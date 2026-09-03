@@ -1294,3 +1294,152 @@ Additional hostile falsifiers:
     and its positive completion strictly amplifies the surviving source column.
 40. Increasing central ghost rank or dropping positivity/topology does not evade prime-two/three
     rigidity.  Exact co-shift covariance likewise cannot selectively absorb the odd mode.
+
+## 13. Controlled-covariance-anomaly and first-trace audits
+
+The proposed noncentral repair cannot be obtained from the existing logarithmic clock anomaly.
+For every bounded arithmetic clock, the finite-depth Sonin pullback/clock commutator converges
+strongly to zero, and its Fisher-score discrepancy vanishes in the cofinal limit.  Exponentiating
+to the logarithmic Weyl relation does not retain a transverse operator either: the commutator
+collapses to a scalar central character.  A nonzero first-order rescaling would require a new,
+noncanonical rate datum not present in the source complex.
+
+The pure-Hodge transgression does retain the unsquared horizontal displacement, but its balanced
+graph capacity is uniformly bounded exactly at displacement zero and diverges otherwise.  Thus it
+is a detector with the desired odd orientation but no uniform nuclear envelope.  The affine
+zero-clock packet is nonzero, while its odd jet is identically zero; the cofinal boundary
+renormalization tends to the already RH-equivalent critical coefficient.
+
+The squarefree first-trace anomaly solves a different half of the problem.  It is an upstream
+analytic function whose analytic order equals Xi multiplicity, and its Fisher quotient has residue
+twice that multiplicity.  This is a meromorphic scalar residue rather than a trace-class subunit
+operator.  Normalizing the residue to an integral unit again reaches the sharp trace-norm wall.
+
+**Positive survivor.**  Exact multiplicity is available before individual-zero specialization,
+and exact horizontal oddness is available before divisor selection, but current constructions do
+not put both in one uniformly nuclear operator.  Any useful covariance anomaly must be
+nonvanishing without an external rate rescaling and must remain noncentral after completion.
+
+Additional hostile falsifiers:
+
+41. An unscaled bounded-clock Sonin commutator vanishes cofinally; it cannot carry a unit escape
+    charge.
+42. Pure-Hodge odd transgression is uniformly capacity-bounded only at the RH locus.
+43. Meromorphic first-trace residues recover multiplicity, but residue normalization is not a
+    subunit trace-class construction.
+
+## 14. Completed Julia source-order and transverse-reporter audit
+
+P-G206 and P-G207 already carry the proposed source/divisor interface farther than the abstract
+relative-complex formulation.  The global coefficient-faithful Julia exterior coupling is
+positive before any finite packet, survives both completed Gamma/polar residue gauges, and retains
+full analytic multiplicity at every Xi copy.  Its rank-one Gram block has zero Schur short even
+though the Xi coordinate is nonzero.  Four-orientation Wold regularization repairs that local
+short, but the resulting endpoint quantum exceeds the available Euler source budget.
+
+The literal pre-divisor orbit-source firewall is decisive: any local Loewner order transports by
+trace closedness to the post-residue inequality, but every strict-right copy violates that order
+at sufficiently deep truncation.  Global pre-divisor Loewner order and positive Gram conservation
+are each equivalent to RH.  Complete positive splitting overspends, the natural Krein-signed split
+still overspends, and fixed Route-O compensation is invisible at the cubic horizon.
+
+A transverse Euler/Wold reporter can be chosen with cofinal value strictly between zero and the
+source budget, and exact multiplicity reappears as a scalar factor.  This does not produce an
+index: the reporter is continuously scaled source mass.  The unique negative counterleg realizes
+the same signed trace, but rotation by the fundamental symmetry converts it to a physical trace
+that overspends.  Exact Hardy sewing cancellation exists only in the indefinite form, whose
+strict-right fibre fails bilateral moderation.  The exact joint-depth Krein landing likewise
+reaches the Xi relative resolvent only as a scalar analytic continuation; its balanced-reflection
+cross term is not summable, so no Hilbert operator extends across the wall.
+
+**Positive survivor.**  Source-to-Xi coupling, completed residue transport, multiplicity, and a
+strictly budgeted transverse scalar are all unconditional.  Missing theorem is not another source
+estimate: it is a new signed/relative polar--Gamma colligation whose *operator* survives the
+balanced wall and whose integral charge is not obtained by normalizing that scalar.
+
+Additional hostile falsifiers:
+
+44. Ordinary positive pre-divisor source order is globally equivalent to RH and fails locally at
+    every hypothetical strict-right copy.
+45. Existing indefinite cancellation is scalar-continuable but not Hilbert-operator-continuable
+    across the balanced wall.
+46. A budgeted transverse reporter cannot also dominate the completed endpoint; multiplicity as a
+    scalar factor does not create relative-index integrality.
+
+## 15. Ordered-Xi/RVM relative-completion trace cancellation
+
+The strongest literal two-completion candidate in the corpus is the ordered-Xi signed prime
+operator relative to its smooth Riemann--von Mangoldt skeleton.  Their difference is an
+unconditional self-adjoint Schatten-one diagonal operator.  It is nevertheless target-fed by the
+actual ordered Xi ordinates, carries no horizontal-displacement coordinate, and places each
+relocation coefficient `d_p` in one marked-prime sector and `-d_p` in the other.
+
+`XiOrderedPrimeRelativeTraceCancellation.lean` now proves unconditionally that
+
+```text
+Tr(xiOrderedSignedPrimeRVMCorrection) = 0,
+Tr(xiOrderedSignedPrimeOperator - routeKSignedPrimeRVMOperator) = 0,
+Tr(xiOrderedSignedPrimeOperator - routeKSignedPrimeRVMOperator) != 1.
+```
+
+The proof expands the Schatten-one trace in the coordinate Hilbert basis, splits the absolutely
+summable series over the two signed prime sectors, and cancels each pair.  It uses neither a zero
+location assumption nor a numerical estimate.  This is the exact obstruction to Steps 4--5 of
+the proposed relative-homotopy route: trace-class difference alone does not make the chosen
+operator a difference of projections, and this concrete relative difference has zero charge,
+not Kakutani escape multiplicity one.
+
+**Verdict.**  The proposed Step 1--6 relative projection route is retired.  Its available
+pre-divisor or relative-completion realizations either saturate the unit trace-norm wall, lose the
+operator at the balanced boundary, or have exact trace zero.  The broader `RPGT-Theta-S3` route
+remains open only for a genuinely new prime-mixing, noncentral colligation with an independently
+proved unit index and pre-absolute-value nuclear cancellation.
+
+Additional hostile falsifiers:
+
+47. Paired signed Xi/RVM trace-class relocation has exact ordinary trace zero.
+48. Target-fed spectral relocation cannot serve as an upstream horizontal detector.
+49. Relative-index integrality cannot be invoked until actual Fredholm/projection hypotheses and
+    the arithmetic identification of the resulting integer are constructed.
+
+## 16. Prime-harmonic singular-graph lift and sharp nuclear saturation
+
+The strongest topology-changing source currently in the corpus is not an abstract dense-core
+average.  `DeningerBigWittCrossPrimeHarmonicSingularGraphSource.lean` constructs actual normalized
+prime-two Big-Witt horizon rows.  Their algebraic one-leg trace is exactly `1`, their ambient
+Calderón--Witt `ell^2` realization tends to zero, and their graph realization tends to the
+vertical singular vector `(0,1)`.
+
+The canonical ordinary operator lift has now been completed without hypotheses.  Apply the
+trace-norm-continuous positive rank-one embedding to those graph packets and to their vertical
+limit.  New module
+`GaloisForLFunctions.RHTower.DeningerBigWittPrimeHarmonicGraphTraceNormSaturation` proves:
+
+```text
+source rank-one packets -> |(0,1)><(0,1)| in Schatten-one norm,
+Tr |(0,1)><(0,1)| = 1,
+||(0,1)><(0,1)||_1 = 1,
+ambientProjection ∘ |(0,1)><(0,1)| = 0.
+```
+
+This gives the exact ambient/graph dichotomy.  Any construction factoring through the ambient
+projection loses the charge because the vertical generator maps to zero.  The canonical
+charge-faithful graph lift retains ordinary trace one, but pays nuclear norm exactly one.  Ambient
+collapse therefore supplies no strict trace-norm gain: the missing singular coordinate contains
+all charge and all of its unavoidable unit nuclear cost.
+
+**Verdict.**  Retire the prime-harmonic graph-to-rank-one continuation as a subunit route.  Retain
+its positive survivor: a genuine arithmetic source sequence reaches a trace-one Schatten-one
+operator before divisor specialization, and the exact obstruction is sharp saturation rather
+than lack of source provenance.  A continuing `RPGT-Theta-S3` construction must create signed
+operator cancellation before the positive rank-one/nuclear absolute value; ambient norm collapse
+or graph completion alone cannot do it.
+
+Additional hostile falsifiers:
+
+50. Source-derived ambient collapse does not imply trace-norm collapse after a charge-faithful
+    singular completion.
+51. The vertical one-leg generator has a canonical ordinary trace-one lift, but its genuine
+    approximation-number trace norm is exactly one.
+52. Projecting before the lift erases the entire charge; lifting before projection preserves the
+    charge only in the singular graph sector.
