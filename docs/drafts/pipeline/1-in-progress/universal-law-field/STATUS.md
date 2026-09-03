@@ -4805,10 +4805,11 @@ concentrate diffuse trace-one densities into rank-one states. Existing fixed Mö
 source map is formally expansive near the critical ray. Required law is a new anomaly-subtracted
 bistochastic map on correlated history x prime provenance, not the existing scalar transport.
 
-F505 — Lean now certifies `ULF-PHIN-001` as one literal kernel on `ell2(Nat x Primes)`, not only a
-tensor analogy: every finite block is positive, the full operator is positive Schatten-one with
-trace and trace norm `1`, every same-history prime pair has nonzero entry, and each shifted
-history marginal has exact tail `m_n`. Closed unit-aperture theorem has no hypotheses.
+F505 — Lean certifies `ULF-PHIN-001` as one literal kernel on `ell2(Nat x Primes)`, not a tensor
+analogy. `primeHodgeHistoryIntegralNuclearHomotopyDefect t` is the single signed pre-divisor wall
+family: `T(-t)=-T(t)`, `Tr T(t)=sign(t)`, `||T(t)||_1=|sign(t)|`, positive with chamber orientation,
+and every same-history cross-prime entry is nonzero off wall. Its diagonal is exactly signed theta
+Mellin-six flux times unsquared prime density. Unit aperture recovers the prior closed `T`.
 
 F506 — `ULF-PHSF-001`: tails `m_n` force unique positive nearest-neighbour survival ratio
 `r_n=m_(n+1)/m_n=(2n+3)/(2n+9)` and hazard `h_n=6/(2n+9)`. Weighted shift
@@ -4888,82 +4889,93 @@ on the marked colligation `(Omega_H,S,E)` plus pole--Gamma countercurrent. Recor
 carry its zero residual survival to the completed relation residual; any off-line rank-one horizon
 would then be impossible. This refines `MUST-156`; the boundary functor remains open.
 
-## Cayley--theta record flatness mismatch (`ULF-CTRFM-001`)
+## Recent formation/completion laws
 
-F512 — Prime and theta gauges obey one signed complementary-observability law: respectively
-`(S,E)=(delta,sqrt(1-delta²))` and `(tanh(ax),sech(ax))`; full exit histories are isometries and
-reflection becomes alternating grade parity.
+F512–F513 — Prime and theta histories share complementary observability, but prime endpoint order
+is cubic (`n³m_n->105/8`) while every fixed theta tilt is infinitely flat. FAIL-83/CANNOT-236:
+no fixed-scale isometry, stationary recovery, or bare conservation identifies their records.
+MUST-158 — Completion needs moving history scale or independently derived singular clock.
 
-F513 — Their marked spectral boundaries differ invariantly. Prime Hodge mass satisfies
-`mu_H(|delta|>1-epsilon)~(35/2)epsilon³` and `n³m_n->105/8`; every fixed theta tilt is flat to all
-endpoint orders and has survival moments `o(n^-K)` for every `K`, forced by literal theta
-superexponential decay.
+F514–F515 — Unique finite Szegő subtraction is `pi exp(2|x|)`; residual is zero-free outer with
+dense nonclosed range. FAIL-84/CANNOT-237: scalar outer completion loses odd unsquared orientation
+and no other scalar coefficient works. MUST-159 — oriented Hardy double plus pole–Gamma current.
 
-FAIL-83 — No fixed real theta tilt admits a state-preserving isometry intertwining prime Cayley
-survival with theta contrast. Full marked moment equality contradicts F513. Fixed-scale theta
-record completion, stationary Markov recovery, and bounded gauge conjugacy are closed.
+F516–F517 — Exit mean is `7/4`; finite recurrence forces `(d,K)` multiples of `(4,7)`.
+FAIL-85/CANNOT-238: no finite monitored unitary realizes polynomial tail `w_n`; `7/4` is coarse.
 
-CANNOT-236 — Shared conservation `S*S+E*E=I` is not completion. It permits locally identical
-colligations with inequivalent endpoint regularity and therefore cannot identify source and theta
-records.
+F518–F520 — `D_N` is measurable weak `S₁` with residue `3N`; every exit `E_j` has residue `3`;
+`T` shifts canonical finite part by `+1`. FAIL-86/CANNOT-239: direct determinant and fixed theta
+hazard cannot select; residue misses finite-rank horizons. MUST-161 — inverse-saddle transport,
+odd formation, and no `S₁` spectator remain required.
 
-MUST-158 — Completion must convert finite cubic source endpoint order into infinitely flat theta
-endpoint order by a history-dependent scale, singular boundary clock, or independently derived
-anomaly counterterm. It cannot act at one fixed theta polarization. This is the narrowed surviving
-edge of MUST-157.
+F396/MUST-134 — Three-prime Frobenius-stable finite ℤ-lattice is zero; Deninger producer must be
+geometric Hodge positivity, not another radical/resolvent receiver.
+F521 — Unique scale-6 inverse saddle has residue `3`; Hodge discrepancy is `3/(n log n)`.
+F522 — Stein Gramian has trace `7/4`; exit sandwich `Phi` has trace `1`.
+F523 — Degree-2 theta history and degree-3 prime formation give `Q`, `T=Q*Q`, trace `1`, prime-mixed.
+CANNOT-240 — No fixed contraction carries two distinct clocks between degrees.
+F524 — Mellin creator is `a∞(s)=Γ(s+1)/Γ(s+1/2)` with half-order critical-axis metric anomaly.
 
-## Unique archimedean Szegő anomaly (`ULF-UASA-001`)
+F525–F526 — Cofinite prime Gamma frames are total but nonproper; covariance whitening gives a
+canonical unitary lift preserving every prime coefficient and history tail. This is exact
+information-neutral completion, not selection.
+F527–F529 — `T` reconstructs the summable half-order aperture curvature; its connection has one
+bounded ray. Gamma residue canonically regrades `Phi` to `fΓ(w_n)=((2n)!)^-2`, whose inverse energy
+is constant only at neutral displacement. Polynomial `T^(-1/2)` cannot stop factorial coface
+collapse, and summable curvature cannot equal the `1/(n log n)` clock even modulo `S₁`.
+FAIL-89 — Petz/common recovery preserves KL information for every grade; nonabelian recovery
+holonomy and flat observer squares constrain composition but not grade magnitude. They cannot
+select neutral grade.
+FAIL-90 — Nonseparable prime-depth curvature is already source-built, but its flatness is RH
+after divisor specialization. Strict contraction holds for nonzero grades. Small trace
+selfcommutator cannot kill Fredholm index (`alpha*S` keeps index `-1` with trace `alpha²`).
+F530 — Pole-strip the literal first theta atom: `Gθ(s)=2Mθ₁(s)/(s(s-1))=Γ_R(s)`. Its normalized
+six-step holonomy
+`H_n=[Gθ(2n+3)/Gθ(2n+9)]/[Gθ(3)/Gθ(9)]` equals `m_n` exactly; adjacent loss equals `w_n`, and the
+prime-mixed defect diagonal is this theta flux times the unsquared prime density. The two Hodge
+charts telescope through grade `2n+6`. Lean: `ThetaMellinSixIntegralNuclearFormation`.
+MUST-162 — `T` history is now theta-formed before divisors. Remaining edge: prove completed Xi
+relative energy is the same boundary functional after forced metric renormalization and has zero
+residual; divisor-specialized finite energy or flatness is circular.
+F531 — For theta shift `C`, `A-=I-C*C,A+=I-CC*` are compact non-S1; `K=A+-A-=[C*,C]` is positive
+S1 with `kappa_0=1/3`, `kappa_n=12/((2n+7)(2n+9))`, trace `1=-ind C=Tr T`, norm `1/3`.
+F532 — `m_n=sum_(j>=n)w_j`, `r_n=m_(n+1)/m_n`, `kappa=Delta r`; conversely
+`r_n=sum_(j<=n)kappa_j`, `m_n=product_(j<n)r_j`, `w_n=m_n(1-r_n)`.
+F533 [paper] — Gamma split gives `U=X/(X+Y) independent V=X+Y`; signed `sqrt U` recovers the
+Cayley law and `E[U^n]=m_n`. F534 [paper] — `T` is the unique cubic prime-clock Lyapunov solution,
+a one-Jordan-step heat Gramian, faithful nuclear with source-generated proper inverse.
+FAIL-91/F535/MUST-164 — Gamma spectators do not identify Xi. `T` as defect has infinite capital;
+`T^2` has exact capital one but `[I⊗L,T_d^2]` diverges as `d^-1`. Need cubic-boundary-covariant,
+anomaly-explicit relative completion and horizon exhaustion; multiplicative transport is retired.
 
-F514 — The exact prime-Hodge/theta Radon--Nikodym density has logarithm
-`pi A_b-(9/(4b))log Q+2log|v|+(7/2)log(1-v²)+O(1)`, where
-`A_b=Q^(1/b)=exp(2|x|)`. For every punctured critical-strip grade `0<b<=1`, subtracting
-`c A_b` gives finite logarithmic completion action iff `c=pi`.
+F536 [paper; Lean core] — `Delta_T=T-T^2` is nonzero and full in the compact formation algebra
+for faithful compact `T`. Any continuous multiplicative completion mapping `T` to an idempotent
+vanishes identically; positivity/unitality/trace/capital are unnecessary (`ULF-PHFI-001`,
+`TopologicallySimpleFormationIdempotenceDefect`). Concrete Lean application awaits PCOB faithfulness.
+CANNOT-242 — A nonzero divisor horizon cannot be bounded multiplicative image of `T`; PCOB.31's
+multiplicative square transport is impossible, not the missing theorem. Completion must be singular
+or nonmultiplicative; its multiplicativity fracture is boundary data, not noise.
 
-F515 — The forced `pi exp(2|x|)` subtraction is literal theta first-atom metric anomaly. Its
-residual weight is comparable to `v²(1-v²)^(7/2)Q^(-9/(4b))`, hence has a canonical zero-free
-outer factor whose Hardy multiplier is injective with dense nonclosed range and no inner index.
+F397–F400 [Lean]/MUST-135/137/138 — Archimedean place is a transverse cusp; weight `1/2` is its
+unique flow-invariant half-density, not a selector. Plancherel has no zero eigenvectors, atomic Weil
+`ell2` positivity is RH, and Meyer `L1` has no bounded polarizing star.
+F401/F402 [Lean]/MUST-139/140 — prime entry into restricted Weil energy is log-soft; threshold
+failure requires a null vector. Sonin injectivity upgrades nonnegativity to strictness. Aperture
+continuity is Suzuki 2026, not new; only quantitative window law is corpus-new (`WEIL-ENTRY-001`).
 
-FAIL-84 — Scalar Szegő completion cannot preserve unsquared orientation. The required boundary
-half-density is nonconstant, real, and odd; no scalar Hardy function has such boundary values.
-Metric completion and oriented current are necessarily distinct legs.
-
-CANNOT-237 — It cannot choose another scalar archimedean counterterm inside `0<b<=1`: coefficients
-below `pi` leave nonintegrable positive action; coefficients above `pi` force Szegő determinant
-collapse. Nor can outer phase reconstruct the reflection-odd current.
-
-MUST-159 — Build the completion boundary as an oriented Hardy double with forced outer metric
-factor `D_b`, source odd line, and pole--Gamma countercurrent. Prove Poisson recovery preserves
-outer/inner type; then an off-line rank-one inner horizon contradicts source outerness and closes
-RH. This is the exact surviving edge; absence of the inner factor may not be assumed.
-
-## Return denominator/open-history law (`ULF-PHRD-001`)
-
-F516 — Exact first-exit mean: `sum_(n>=0)(n+1)w_n=sum_n m_n=7/4`, by second-difference telescope.
-F517 — Finite recurrent unitary with this mean has `K/d=7/4`, so `4|d`, `7|K`; minimal model `(d,K)=(4,7)` has return `diag(z,z²,z²,z²)`.
-FAIL-85 — No finite monitored unitary realizes full `w_n`: rational-inner recurrence decays exponentially, but `w_(n-1)>=2/(3n⁴)`.
-CANNOT-238 — `7/4` alone cannot identify open observability with recurrence; the `(4,7)` coarse model discards all higher tails.
-
-## Prime--Hodge singular residue clock (`ULF-PHSR-001`)
-
-F518 — `D_N=I-C*^NC^N` has eigenvalues `1-m_(k+N)/m_k~3N/k`: measurable weak `S₁`, not `S₁`, residue `3N`.
-F519 — `E_j=C*^jD_1C^j=D_(j+1)-D_j` has residue `3`; all lie in one affine `S₁` leaf and `<e₀,E_je₀>=w_j=Tr(P_jT)`.
-F520 — In prime-formed basis, `Res(D_N+T)=3N`, `FP(D_N+T)=FP(D_N)+1`, and `FP(D_1)=-3psi(9/2)` pre-divisor.
-FAIL-86 — `C-S in S₂\S₁` and direct regularized determinant is zero-free; degree `7` is only excluded finite coarse model. ULF-FRRD-001 retired; MUST-160 superseded.
-CANNOT-239 — Fixed theta hazard is compact but not weak `S₁`; trace-class completion cannot match it. Residue cannot see finite-rank off-line horizons.
-MUST-161 — Poisson must transport inverse-saddle clock/double-log transgression, odd unsquared formation, and no compensating `S₁` spectator; then each off-line horizon adds `+1`.
-
-## 2026-09-03 — carrier lattice theorem and Hodge-gate audit
-
-F396 — On graded divisor carrier with Frobenius `p^ρ`, every finitely generated ℤ-submodule stable under three prime Frobenii is zero (`DeningerCarrierNoIntegralLattice`).
-MUST-134 — Deninger Hodge producer is geometric positivity from Kähler leaves/transverse archimedean flow; radical identity, energy faithfulness, resolvent preservation are RH receivers.
-F521 — Inverse first-atom saddle has unique residue-matching scale `6`, residue `3`; difference from Hodge time is `3/(n log n)`, double-log residue `3`.
-F522 — Unique Stein Gramian `G=sum C^nP₀C*^n` has `Tr G=7/4`; defect sandwich `Phi` has `Tr Phi=Tr P₀=1`.
-F523 — Theta Poisson history is Gamma degree 2, prime Cauchy formation degree 3; Stein-weighted Gram channel `Q` gives `T=Q*Q`, `Tr T=1`, prime-mixed.
-CANNOT-240 — No fixed contraction carries two distinct degree-2 clocks to degree 3; completion needs clock-indexed relative creation, not scalar transport.
-F524 — Mellin creator is prime-independent `Γ(s+1)/Γ(s+1/2)`; on `Re s=1/2` clocks are unitary and metric anomaly `(t²+1/4)tanh(πt)/t` has half-order.
-
-## 2026-09-03 (ii) — all places are cusps
-
-F397 — Nonzero flow-invariant transverse measure at real apex, finite on compacts, has infinite mass in every apex neighbourhood (`ArchimedeanTransverseMassLaw`).
-MUST-135 — Deninger archimedean compactification must be cusp: transverse `d(log x)`, forms `L²(dx/x)`; smooth stationary-point models excluded.
-- **Nugget:** `1/2` in `Theta-1/2` is leafwise Kähler weight through unique flow-invariant Mellin-critical measure `dx/x` at every place.
+FAIL-92 — Halmos/Naimark projection dilation of positive `T` is generic, has zero pair index, and
+obeys `Tr T=Tr T²+Tr(T-T²)`; it manufactures exactly the missing unit and cannot yield a subunit
+contradiction. Dilation is not completion transport.
+F537/F538 [paper] — Euler-lifted Stokes covariance aperture-integrates to canonical order-six
+prime/depth Gamma Gram `C`, `Tr C=collision budget<115/108`; scalar trace identity was already
+P-G177-A, while operator lift/order-six law are new (`ULF-ESAC-001`).
+F539/CANNOT-243 [paper] — `S_L^6(C)=(230/27)|c><c|` on finite core, but `c∉ell2` because
+`sum_p(log p)^4/p=∞`; no bounded sixth source preserves literal Euler weights.
+F540 [paper] — Unique dilation-equivariant Mellin multiplier mapping order-six aperture features to
+cubic Hellinger features is `m(xi)=(18/sqrt23)Γ(3/2-iξ)/Γ(3-iξ)(1-2^(-3/2+iξ))`; it is injective
+with dense nonclosed range and unbounded inverse (`ULF-EHGM-001`).
+F541/MUST-165 [paper] — Source metric anomaly `D=W_6*(M*M-I)W_6` is nonzero, indefinite S1,
+zero on every Euler diagonal, and `Tr D=0`; exactly `K_Hellinger=C+D`. Surviving RH edge is Xi
+landing through this fixed nonmultiplicative subtraction plus zero residual boundary.
+CANNOT-244 — `M` preserves Euler rate `lambda>=log 2`, so cannot land on Xi rate `a<1/2`.
+Completion = solved gauge/anomaly `M` plus open noncommuting polar--Gamma rate changer `R`.

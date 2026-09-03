@@ -2,7 +2,8 @@
 
 - **ID:** ULF-PPTI-001
 - **Stage:** 2-fully-proven
-- **Type:** unconditional pre-divisor reconstruction and linear-transport no-go
+- **Type:** unconditional pre-divisor reconstruction, faithful nuclear formation, relative
+  modular transport, projective properness, and linear-transport no-go
 - **Parents:** ULF-PHIN-001, ULF-PHSG-001, ULF-PHSR-001
 - **Purpose:** construct the prime-mixed defect `mathsf T` as the nuclear Gram of one relative
   Poisson creation degree, rather than as a chosen tensor product.
@@ -366,32 +367,352 @@ correspondence, with `mathsf T` as its nuclear history regularization.  Mellin t
 that relative correspondence prime-independent only by accepting its unbounded half-order metric
 anomaly.
 
-## 7. Exact RH-chain consequence
+## 7. Global prime-clock formation completeness
 
-The surviving RH edge is no longer
+The source columns are not merely a convenient Gram realization.  Literal prime clocks are a
+uniqueness set in every coherent degree.
+
+**Theorem PPTI-F (cofinite prime-clock totality).**  Fix `k>=1` and delete any finite set `S` of
+primes.  Then
 
 ```text
-find a bounded source-to-xi operator carrying A_d.   (killed)
+closedSpan{psi_(log p)^(k) : p prime, p notin S}=H.   (PPTI.30)
 ```
 
-It is the following sharper statement.
+**Proof.**  Put `alpha=(k-1)/2`.  If `f in H` is orthogonal to all retained columns, define on the
+right half-plane
+
+```text
+F(z)=integral_0^infinity f(r) r^alpha exp(-zr) dr.    (PPTI.31)
+```
+
+For every `epsilon>0`, Cauchy--Schwarz gives
+
+```text
+sup_(Re z>=epsilon)|F(z)|
+ <=||f||_2 [integral_0^infinity r^(2alpha)exp(-2epsilon r)dr]^(1/2)<infinity.
+```
+
+Thus `F` is bounded analytic on every translated half-plane.  Its zeros contain every retained
+`log p`.  The corpus theorem `cofinitePrimeLog_strongSectorBlaschkeComplete`, specialized to
+sector-root order one, says that this sequence violates the translated half-plane Blaschke
+condition after every finite deletion.  Hence `F` vanishes on a positive real ray and therefore,
+by analytic identity, on the whole right half-plane.  On any vertical line `Re z=epsilon`, `F` is
+the Fourier transform of the `L1` function
+`f(r)r^alpha exp(-epsilon r) 1_(0,infinity)(r)`.  Fourier uniqueness makes this function zero
+almost everywhere; its scalar weight is nonzero almost everywhere, so `f=0`.  Orthogonal-complement
+duality proves `(PPTI.30)`. QED.
+
+Apply this at degrees two and three.  For
+
+```text
+W_d^(k)e_p=sqrt(mu_d(p)) psi_(log p)^(k),
+B_d^(k)=W_d^(k)(W_d^(k))*,                            (PPTI.32)
+Q_d^(k)=Phi^(1/2) tensor W_d^(k),
+```
+
+all weights are strictly positive, so `(PPTI.30)` says `W_d^(k)` has dense range.  Therefore
+
+```text
+B_d^(k)>=0,  Tr B_d^(k)=1,
+ker B_d^(k)=0,
+closure(range B_d^(k))=H.                            (PPTI.33)
+```
+
+It is trace class and hence compact.  Since `H` is infinite dimensional, its dense range cannot
+be closed.  The inverse of `B_d^(k)` is consequently a densely defined unbounded positive
+operator.  Literal prime formation has produced a **faithful nuclear metric with a noncompact
+inverse**, before any divisor is supplied.
+
+The left Gram of the history channel is
+
+```text
+mathsf T_d,left^(k)=Q_d^(k)(Q_d^(k))*
+  =Phi tensor B_d^(k).                                (PPTI.34)
+```
+
+It too is positive, faithful, trace one, nuclear, and has dense nonclosed range.  Equations
+`(PPTI.19)` and `(PPTI.34)` are not two objects: they are the right and left Gram gauges of the
+single Hilbert--Schmidt correspondence `Q_d`.  The right gauge exposes every cross-prime entry;
+the left gauge exposes the singular completion metric.  Their nonzero spectral data and integral
+trace agree.
+
+This does not contradict `PrimeFormationCompactNonproper`.  It realizes its sharp positive side:
+faithfulness gives tomography, while compactness forces nonproper completion.  Dense range alone
+cannot exclude a completion-born boundary class.
+
+## 8. Relative nuclear modular transport
+
+Let `A_infinity` be the closed Mellin multiplier with symbol `a_infinity` from `(PPTI.25)` on the
+unitary half-density line.  It is injective, and `(PPTI.26)` plus closedness gives the operator
+identity
+
+```text
+A_infinity W_d^(2)=W_d^(3)                            (PPTI.35)
+```
+
+on the whole prime coefficient space, not only on finite packets.  In particular
+
+```text
+ker W_d^(2)=ker W_d^(3).                              (PPTI.36)
+```
+
+Write the unique left polar decompositions
+
+```text
+W_d^(k)=(B_d^(k))^(1/2) V_k.                         (PPTI.37)
+```
+
+Dense range makes each `V_k` a coisometry.  Equation `(PPTI.36)` says the two initial support
+projections coincide.  Hence
+
+```text
+U_infinity=V_3 V_2*                                  (PPTI.38)
+```
+
+is unitary on `H`.
+
+**Theorem PPTI-G (information-neutral relative completion).**  The raw unbounded creator becomes
+the canonical unitary `U_infinity` after whitening by the two source-forced nuclear metrics:
+
+```text
+A_infinity (B_d^(2))^(1/2)
+  =(B_d^(3))^(1/2) U_infinity,                        (PPTI.39)
+
+(B_d^(3))^(-1/2) A_infinity (B_d^(2))^(1/2)
+  =U_infinity                                         (PPTI.40)
+```
+
+on the natural dense domain.  Moreover the common history recovery kernel lifts it without any
+loss:
+
+```text
+(I tensor A_infinity) Q_d^(2)=Q_d^(3),
+U_history=I tensor U_infinity is unitary,             (PPTI.41)
+
+(mathsf T_d,left^(3))^(-1/2)
+  (I tensor A_infinity)
+  (mathsf T_d,left^(2))^(1/2)=U_history.              (PPTI.42)
+```
+
+**Proof.**  Multiply `(PPTI.37)` for `k=2` on the right by `V_2*`.  Since `V_2V_2*=I`, this gives
+`W_d^(2)V_2*=(B_d^(2))^(1/2)`.  Use `(PPTI.35)` and the degree-three polar decomposition:
+
+```text
+A_infinity(B_d^(2))^(1/2)
+ =W_d^(3)V_2*
+ =(B_d^(3))^(1/2)V_3V_2*.
+```
+
+The common initial projection from `(PPTI.36)` gives both
+`U_infinity U_infinity*=I` and `U_infinity*U_infinity=I`, proving `(PPTI.38)--(PPTI.40)`.
+Tensor with `Phi^(1/2)` for `(PPTI.41)--(PPTI.42)`. QED.
+
+This is literal anomaly subtraction.  No scalar counterterm is chosen: the degree-two and
+degree-three prime covariances are the two Radon--Nikodym metrics, and their square roots absorb
+the exact half-order modulus in `(PPTI.28)`.  Every prime coefficient and every history tail is
+retained.  The phase quotient is unitary because the metric anomaly has been removed relatively,
+not discarded.
+
+## 9. The projective connection carried by `mathsf T`
+
+The same Mellin creator already occurs in a fourth corpus organ.  Let
+
+```text
+g_n=thetaCuspGaussianApertureColdHalfOrderGammaGap(n)
+   =Gamma(n+1)/[(2n+1)Gamma(n+1/2)]
+   =a_infinity(n)/(2n+1),                             (PPTI.43)
+
+kappa_n=(g_n-2g_(n+1)+g_(n+2))/g_n.                 (PPTI.44)
+```
+
+The corpus proves the recurrence of `g_n` and its exact positive second difference.  Therefore
+
+```text
+kappa_n=3/[(2n+3)(2n+5)].                            (PPTI.45)
+```
+
+But the history tail recovered from `mathsf T` is
+
+```text
+m_n=105/[(2n+3)(2n+5)(2n+7)].                       (PPTI.46)
+```
+
+Hence the exact joint reconstruction law is
+
+```text
+m_n=35 kappa_n/(2n+7),
+kappa_n=(2n+7)m_n/35.                                (PPTI.47)
+```
+
+Thus the trace-slice tails of the prime-mixed nuclear defect determine the projective curvature
+of the physical theta half-order correction, and conversely.  Combining `(PPTI.47)` with the
+double-Hellinger theorem gives the predicted fourth-organ identity
+
+```text
+kappa_n=(2n+7)/35
+  * h(n+1)h(n+5/2)/[h(1)h(5/2)],                    (PPTI.48)
+```
+
+where `h` is the literal Euler odd-Hodge Beta response.  Prime formation, theta aperture,
+Kummer history, and Euler Hodge response are four gauges of one sequence.
+
+There is an exact global properness theorem behind this curvature.  Define the discrete
+connection
+
+```text
+nabla_kappa y(n)
+ =y_(n+2)-2y_(n+1)+(1-kappa_n)y_n.                  (PPTI.49)
+```
+
+**Theorem PPTI-H (two-ray classification and bounded-ray rigidity).**  Its entire scalar solution
+space is
+
+```text
+y_n=c g_n+d (n+1)(n+2)g_n.                          (PPTI.50)
+```
+
+Moreover
+
+```text
+g_n~(1/2)n^(-1/2),
+(n+1)(n+2)g_n~(1/2)n^(3/2).                         (PPTI.51)
+```
+
+Consequently every bounded, equivalently every `c0`, parallel section is a scalar multiple of
+`g`; fixing its value at one site makes it unique.
+
+**Proof.**  Gamma recurrence gives
+
+```text
+g_(n+1)/g_n=(2n+2)/(2n+3).                          (PPTI.52)
+```
+
+Substitution yields `(PPTI.45)`, so `g` solves `(PPTI.49)`.  For
+`q_n=(n+1)(n+2)g_n`,
+
+```text
+q_(n+1)/q_n=(2n+6)/(2n+3),
+1-2 q_(n+1)/q_n+q_(n+2)/q_n=kappa_n,
+```
+
+so `q` is a second solution.  Since `q_n/g_n=(n+1)(n+2)` is nonconstant, the two solutions are
+independent.  A second-order recurrence is uniquely determined by its first two values, proving
+`(PPTI.50)`.  Standard Gamma-ratio asymptotics give `(PPTI.51)`.  If `d!=0`, the second term
+dominates and the solution is unbounded; if `d=0`, it tends to zero. QED.
+
+This identifies the noncompact direction geometrically: it is the second parallel ray of the
+connection reconstructed from `mathsf T`.  The physical theta section is the unique subordinate
+ray.  The result is stronger than positivity but weaker than RH selection, because a completed Xi
+horizon has not yet been proved to define a parallel section of this connection.
+
+## 10. Boundary-topology audit and forced Gamma regrading
+
+Three earlier proposed edges are now closed:
+
+```text
+find a bounded source-to-xi operator carrying A_d;              (killed)
+identify the half-order curvature directly with double-log B.  (killed)
+send a finite-T-energy Xi horizon into the bounded scalar ray.  (killed)
+```
+
+Indeed `kappa_n~3/(4n^2)` and `m_n~105/(8n^3)`, while the corpus double-log transgression is
+`3/(n log n)`.  The first two are summable and the last is not.  No direct equality or trace-class
+perturbation can identify them.  A future nonlinear inverse-saddle pushforward would require its
+own source theorem; it is not supplied by the Gamma quotient.
+
+The third failure is sharper.  Put
+
+```text
+eta_n=1/(2n)!,
+L_pq=log p+log q>0.                                 (PPTI.53)
+```
+
+Up to exchange of the two coordinates, the corpus's completed Hellinger--Gamma vertex is
+
+```text
+v_n(a,x)=eta_n (exp(a L_pq(n+1))x,
+                exp(-a L_pq(n+1))x).               (PPTI.54)
+```
+
+The history marginal of `mathsf T` is `Phi=diag(w_n)`, with
+
+```text
+w_n=630/[(2n+3)(2n+5)(2n+7)(2n+9)].
+```
+
+**Theorem PPTI-I (the `mathsf T`-metric does not close the Xi boundary).**  For every fixed
+`a,p,q,x`,
+
+```text
+||Phi^(-1/2)v_n(a,x)||^2
+ =eta_n^2/w_n * 2 cosh(2a L_pq(n+1)) ||x||^2 -> 0. (PPTI.55)
+```
+
+**Proof.**  The reciprocal `1/w_n` is a positive degree-four polynomial divided by `630`.
+For fixed `a,p,q`, the hyperbolic factor is bounded by an exponential in `n`.  The square of
+`(2n)!` dominates every polynomial times every fixed exponential. QED.
+
+Thus ordinary Hellinger vertices collapse even in the inverse metric of `mathsf T`.  This agrees
+with the Lean theorem `hellingerGammaCompletedGradedBalancedVertex_tendsto_zero`.  More
+decisively, the actual resolved cofaces do not become scalar parallel rays: off axis their closed
+span is exactly the zero-provenance hyperplane, and their quotient is the entire completed
+Calderon--Witt provenance carrier
+(`hellingerGammaResolvedProvenanceQuotientEquivOfNe`).  The proposed injection into the bounded
+scalar quotient of `nabla_kappa` is false.
+
+The positive survivor is not an invented topology.  The completion itself supplies the faithful
+Gamma-residue metric
+
+```text
+G_Gamma=diag(eta_n^2).                               (PPTI.56)
+```
+
+It is positive, nuclear and has trivial kernel.  Since the `w_n` are strictly decreasing to zero,
+there is a unique continuous function on `spec(Phi)={0,w_0,w_1,...}` satisfying
+
+```text
+f_Gamma(0)=0,  f_Gamma(w_n)=eta_n^2,
+G_Gamma=f_Gamma(Phi).                               (PPTI.57)
+```
+
+Hence this is a canonical nonlinear spectral regrading of the history marginal recovered from
+`mathsf T`, forced by the archimedean Gamma residues.  It is not a second freely chosen source.
+After normalization by `Z=sum eta_n^2`, the prime extension
+`Z^(-1)G_Gamma tensor A_d` is again positive, prime-mixed, nuclear, and has integral trace one.
+Its inverse form has the exact properness law
+
+```text
+||(Z^(-1)G_Gamma)^(-1/2)v_n(a,x)||^2
+ =2Z cosh(2a L_pq(n+1)) ||x||^2.                   (PPTI.58)
+```
+
+This stays equal to `2Z||x||^2` at `a=0` and diverges for every `a!=0`.  The same completed
+vertices which are graph-null in the ambient Hilbert topology are therefore neutral-bounded and
+off-axis escaping in the Gamma Cameron--Martin topology.
+
+The surviving RH edge is now a topology/formation theorem, not another scalar metric estimate:
 
 > Extend Fourier/Poisson inversion to the clock-indexed adjacent-sector correspondence
-> `R_(log p)` using the forced Mellin symbol `a_infinity`, prove that its universal archimedean
-> metric anomaly is exactly the already identified double-log/finite-part subtraction, and prove
-> that the completed relative Gram equals
-> `mathsf T_d` plus the positive strict-right horizon Gram with no trace-class spectator.
+> using the unitary relative lift `(PPTI.42)`.  Prove, before divisor specialization, that literal
+> integer/Poisson formation lands in the form domain of the Gamma regrading `(PPTI.57)`, with the
+> resolved provenance coordinate closed in that form topology and no extra completion channel.
 
-If this relative completion is information-neutral, source and completed relative traces agree.
-The source trace is `(PPTI.21)`.  The completed trace would be
+Then `(PPTI.58)` permits only `a=0`.  At a divisor fibre, `a=2 Re(rho)-1`, so every completed copy
+lies on the critical line.  Equivalently, an exhaustive completed relative Gram would give
 
 ```text
-1 + number of strict-right horizon copies.
+1=Tr mathsf T_source
+ =Tr mathsf T_completed
+ =1+number of strict-right horizon copies.
 ```
 
-Equality forces the number to be zero; functional-equation reflection then gives RH.  This card
-does not prove that completion/exhaustion theorem.  It constructs its source object and proves
-that the previously sought fixed contraction is the wrong category.
+The missing domain/closed-provenance theorem must be derived source-side; merely requiring it on
+the Xi divisor is an RH-equivalent receiver.  This card does not prove that theorem.  It does prove
+global prime-clock totality, construct the faithful nuclear completion metric, remove its
+unbounded degree anomaly by a canonical unitary relative normalization, classify the scalar
+history rays, kill their proposed use as a provenance selector, and identify the exact
+archimedean regrading which would make completion proper.
 
 The Lean no-go `SourceGammaFiniteHalfDensityTensorPowerRadialNoGo` forbids using tensor degree
 itself as a selector: non-fourth degrees are RH-equivalent receivers and degree four is fitted at
@@ -400,16 +721,31 @@ the critical line.  Its new datum is the *relative* degree-2-to-degree-3 Mellin 
 with the nuclear Stein incidence.  Selection must come from completion/exhaustion of that
 relative object.
 
-## 8. Hostile audit
+## 11. Hostile audit
 
 - `[LITERATURE]` Gamma integrals, tensor-product coherent states, Hilbert-module frames, and
   Stein Gramians are standard.
-- `[PAPER-PROVED]` Equations `(PPTI.2)--(PPTI.29)` are elementary consequences of exact corpus
+- `[PAPER-PROVED]` Equations `(PPTI.2)--(PPTI.58)` are consequences of exact corpus
   formulas and standard Hilbert-space identities.
 - `[CORPUS FUSION]` The corpus's theta Poisson history is degree two, while its literal prime
   Stokes/Burnol formation is degree three in the same coherent-state ladder.
 - `[MODEL CLASS KILLED]` No fixed label-preserving contraction transports even two distinct
   clocks from the degree-two frame to the degree-three frame.
+- `[GLOBAL FORMATION]` Cofinite literal prime clocks are total in every Gamma coherent sector.
+  The dual covariance is faithful nuclear with dense nonclosed range.
+- `[INFORMATION NEUTRALITY]` Relative covariance whitening turns the forced unbounded Gamma
+  creator into a canonical unitary and lifts it through the Stein history factor.
+- `[JOINT RECONSTRUCTION]` `mathsf T` history tails and physical aperture Gamma-gap curvature
+  determine one another by `(PPTI.47)`; the same sequence is the double Euler Hodge response.
+- `[PROPERNESS]` The resulting discrete connection has exactly one bounded parallel ray and one
+  compulsory `n^(3/2)` ray.
+- `[FAILED SELECTION LIFT]` The actual off-axis resolved quotient is the full provenance carrier,
+  not a scalar parallel ray; factorial Hellinger collapse survives the inverse `mathsf T` metric.
+- `[GAMMA REGRADING]` The completion-residue metric is the canonical nonlinear functional
+  calculus `G_Gamma=f_Gamma(Phi)`.  Its inverse form is bounded at neutral grade and diverges at
+  every nonzero modular displacement.
+- `[FALSE BRIDGE]` The half-order aperture curvature is summable and cannot itself be the
+  nonsummable double-log transgression.
 - `[CORPUS LOCK RESPECTED]` Finite tensor degree is not a selector; the existing shared-Ward
   tensor-power route-class no-go remains binding.
 - `[SIGNIFICANCE]` `mathsf T` is the nuclear Gram of the one-degree relative creator regularized
@@ -417,13 +753,16 @@ relative object.
   creator into one prime-independent half-order Gamma quotient while preserving every unsquared
   prime coefficient.
 - `[NOVELTY UNVERIFIED]` No priority claim is made for this exact arithmetic identification.
-- `[OPEN]` Signed theta landing, identification of the Gamma-quotient metric anomaly with the
-  forced double-log subtraction, and completed exhaustion remain unproved.
+- `[OPEN]` Source-forced landing in the Gamma form domain, closed resolved provenance in that
+  topology, and exhaustion remain unproved.  Stating finite Gamma energy only on divisor fibres
+  would be an RH-equivalent receiver, not the missing producer.
 
-## 9. Lean status
+## 12. Lean status
 
 Paper proof dependency-closed.  No Lean file was written during the current read-only research
 phase.  Existing Lean already supplies every source formula, both degree-two and degree-three Gram
-laws in separate modules, the Stein system, and `mathsf T`.  Stage 3 should formalize their exact
-factorization through `psi^(3)`, `Q_d*Q_d`, Mellin symbol `a_infinity`, its critical-axis norm,
-and the two-clock contraction no-go.
+laws in separate modules, prime-log sector-Blaschke completeness, the aperture Gamma-gap
+recurrence and second difference, the Stein system, and `mathsf T`.  Stage 3 should formalize their
+exact factorization through `psi^(3)`, `Q_d*Q_d`, cofinite totality, faithful dual covariance,
+relative modular unitary, projective reconstruction/classification, Mellin symbol `a_infinity`,
+its critical-axis norm, and the two-clock contraction no-go.

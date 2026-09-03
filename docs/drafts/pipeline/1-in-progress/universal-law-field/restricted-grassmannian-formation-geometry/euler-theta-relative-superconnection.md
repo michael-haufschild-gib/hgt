@@ -242,12 +242,25 @@ packets are outside the actual continuum range and every approximating continuum
 divergent source norm.  `ULF-MHPD-001` proves the Hadamard double is the minimal bounded linear
 carrier of provenance and derives the four-leg architecture after FE doubling.
 
-`[OPEN CORE]` Construct the theta-forced operator Wold/Poisson counterterm for the canonical
-inverse-completion action and, independently, the literal reflection-odd prime--Gamma current on
-the derived four-leg Hadamard cone.  Prove that their bivariant degree-three boundary—not the
-metric finite part alone—is formation-anchored `mathsf T_D`.  Then prove the positive-reduction
-identity `(ETRS.8)`.  Do not attempt ordinary positive, flat, one-channel,
-orthogonal-shorting, or covariance-only models.
+`ULF-TSRC-001` now constructs the theta-forced source counterterm without a scalar regulator.
+For forced survival transport `C`, both defect metrics `I-C*C` and `I-CC*` are compact but
+non-nuclear, while their relative curvature `[C*,C]` is positive nuclear of trace one and norm
+`1/3`. Its complete curvature filtration and the exit filtration of `mathsf T` reconstruct each
+other exactly. This discharges source-side relative nuclearity and fixes what completion must
+preserve; it does not construct completed bivariant incidence.
+
+`ULF-BGPR-001` now constructs exact projective Gamma recovery for the unmarked Mellin-six history:
+sum and ratio are independent, conditional expectation recovers the full signed history algebra,
+and posterior information gain is the relative curvature. This solves the archimedean history
+kernel, not the arithmetic seam; raw prime--Gamma independence is false as a model class.
+
+`[OPEN CORE]` Construct literal reflection-odd prime--Gamma current on the derived four-leg
+Hadamard cone and the source-forced covariance whitening that extends projective recovery to the
+full marked carrier. Prove its same-boundary morphism carries the filtered relative pair of
+`ULF-TSRC-001` and fixes the bivariant degree-three boundary `mathsf T_D`, not only total trace or
+metric finite part. Then prove normal horizon exhaustion and positive reduction `(ETRS.8)`. Do not
+attempt ordinary positive, flat, one-channel, orthogonal-shorting, covariance-only, or raw-product
+models.
 
 ## Log
 
@@ -259,3 +272,5 @@ orthogonal-shorting, or covariance-only models.
   Hadamard provenance double proved on paper. Open core moved to renormalized inverse action.
 - 2026-09-03 — covariance-only cyclic boundary retired by orientation parity; open core narrowed
   to bivariant inverse-metric plus source-current transgression.
+- 2026-09-03 — theta survival supplies canonical non-nuclear metric pair with positive nuclear
+  self-commutator; open core narrowed from finding counterterm to transporting full filtration.

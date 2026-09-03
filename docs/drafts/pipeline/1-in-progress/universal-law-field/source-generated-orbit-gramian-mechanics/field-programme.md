@@ -9,12 +9,18 @@
   `../../../2-fully-proven/universal-law-field/source-generated-orbit-gramian-mechanics/split-recovery-formation-capital-monotonicity-functional-equation-neutrality-law.md`
 - **Hardy admission/radial wall theorem:**
   `../../../2-fully-proven/universal-law-field/source-generated-orbit-gramian-mechanics/spectral-hardy-trace-formation-admission-and-radial-capital-wall-law.md`
+- **Prime--Hodge cubic source realization:**
+  `../../../2-fully-proven/universal-law-field/source-generated-orbit-gramian-mechanics/prime-hodge-cubic-orbit-birth-faithfulness-and-self-financing-law.md`
+- **Euler--Stokes aperture-capacity realization:**
+  `../../../2-fully-proven/universal-law-field/source-generated-orbit-gramian-mechanics/euler-stokes-aperture-capacity-and-singular-sixth-boundary-law.md`
+- **Relative Mellin anomaly/completion law:**
+  `../../../2-fully-proven/universal-law-field/source-generated-orbit-gramian-mechanics/euler-hellinger-gamma-relative-mellin-anomaly-law.md`
 - **Causal delay/drift/work theorem:**
   `../../../2-fully-proven/universal-law-field/source-generated-orbit-gramian-mechanics/causal-delay-radial-drift-work-cusp-and-information-undercapacity-law.md`
 - **Failed field-core claim:**
   `../../../5-failed/universal-law-field/source-generated-orbit-gramian-mechanics/controllability-gramian-is-the-universal-law-field.md`
-- **Status:** `[LIVE FIELD PROGRAMME] [ONE DEPENDENCY-CLOSED BRIDGE]`
-  `[SOURCE-GENERATED PROPERNESS CONSTRUCTED] [RH DEFECT FACTORIZATION OPEN]`
+- **Status:** `[LIVE FIELD PROGRAMME] [DEPENDENCY-CLOSED BRIDGES]`
+  `[SINGULAR SOURCE / NUCLEAR CAPACITY CONSTRUCTED] [RH FORM TRANSPORT OPEN]`
 
 ## 1. Public sentence
 
@@ -60,7 +66,7 @@ Its stronger reconstruction clause proves that inverse-Gramian energy equals the
 Hilbert--Schmidt capital of any source-orbit formation. The cost is no longer an extra premise or an
 upper bound chosen after the fact.
 
-## 3. Seven mechanism laws
+## 3. Mechanism laws
 
 ### Law I — orbit formation
 
@@ -163,6 +169,16 @@ Width-`T` radial drift `delta` is formable exactly after delay `b>=max(0,delta)`
 Common extra delay is gauge. Work has a linear cusp while Jeffreys information is quadratic, so
 smooth information cannot finance source formation. Zero entrance latency plus reflection would
 force `delta=0`, but source origin alone does not supply it.
+
+### Law XIII — relative coherent gauges carry a mixing-only metric anomaly
+
+Two normalized dilation orbits can agree on every labelled diagonal yet differ on mixed packets.
+The unique dilation-equivariant Mellin multiplier `M` between their mother vectors is the relative
+completion. Its polar phase is quotiented by Gram formation; its modulus creates
+`Q=M* M-I`. The compressed anomaly has zero diagonal and trace but is nonzero and indefinite.
+If `|m(xi)|->0`, completion is injective with dense nonclosed range and unbounded inverse. Local
+information neutrality, global curvature, phase quotient, and noncompact lifted history are one
+law, not separate postulates (`ULF-EHGM-001`).
 
 ## 4. Exact fusion across structurally different organs
 
@@ -350,10 +366,18 @@ names for controllability.
 - [x] positive divisor aggregation proved unable to hide off-neutral infinite capital;
 - [x] causal delay/drift/work law and information-undercapacity cusp proved;
 - [x] Euler-shell five-organ realization constructed from one source pair;
-- [ ] second structurally different literal source realization;
-- [ ] one route defect factored through its source orbit;
-- [ ] source-work bound on Hilbert--Schmidt capital;
-- [ ] asymptotic source commutation for the same defect;
+- [x] second structurally different literal source realization: theta history times the
+  nilpotent-lifted prime heat orbit;
+- [x] one literal pre-divisor cross-route defect `mathsf D=mathsf T^2` factored through its source
+  orbit;
+- [x] exact source-work bound for that defect: least Hilbert--Schmidt capital `1`;
+- [x] complete prime-power collision budget reconstructed as one aperture-integrated nuclear Gram;
+- [x] exact singular sixth-boundary source and bounded-source completion no-go proved;
+- [x] unique dilation-equivariant Mellin transport between aperture and Hellinger gauges proved;
+- [x] universal zero-diagonal/zero-trace indefinite metric anomaly derived source-side;
+- [ ] one RH-facing divisor/horizon defect factored through the same source orbit;
+- [x] asymptotic source commutation tested and falsified for `mathsf T^2`;
+- [ ] covariant transport of the exact cubic source boundary to the completed horizon;
 - [ ] Lean formalization of the Stage-2 theorem in a later formalization pass;
 - [ ] RH selection consequence.
 
@@ -361,11 +385,27 @@ names for controllability.
 
 `[OPEN CORE] [SOURCE_FORMATION_FACTORISATION]`
 
-Which literal pre-zero source operation produces a nonzero positive defect factor `X` together with
-a bounded control `B` satisfying `X=WB`?
+Does the actual anomaly-subtracted Euler--theta completion transport the singular sixth source
+boundary
 
-This is now the first load-bearing question. A new receiver, topology, compactification, or proper
-weight does not answer it.
+```text
+(230/27) Phi tensor |c><c|
+  -- inverse sixth Sylvester regularization --> T_cap=Phi tensor C
+```
+
+to completed Xi cubic Loewner energy, capacity-nonincreasingly and with zero residual completion
+boundary?  ULF-ESAC-001 fixes the source form, its unique nuclear regularization, and its exact
+subquantum trace.  ULF-EHGM-001 fixes the relative completion itself: the unique universal Mellin
+multiplier `M` changes the order-six aperture gauge into the cubic Hellinger gauge, and
+`D=W_6*(M*M-I)W_6` is the forced zero-trace metric subtraction.  ULF-PHFI-001 forbids bounded
+multiplicative transport, while ULF-ESAC-FAIL-001 forbids a bounded sixth source.  Only the actual
+Xi landing and vanishing residual boundary remain open.  ULF-EHGM-FAIL-001 proves `M` itself
+cannot be that landing because it preserves the Euler rate floor.  The remaining map must be a
+noncommuting polar--Gamma rate changer whose semigroup commutator carries the exact source/target
+spectral gap while preserving the augmented capacity identity.
+
+This is now the first load-bearing question.  A new receiver, topology, compactification, or
+proper weight does not answer it.
 
 ## Log
 
@@ -383,3 +423,17 @@ weight does not answer it.
 - 2026-08-13 — delayed smoothing classified exactly; functional equation shown to require common
   entrance latency. Source-origin-to-zero-delay inference killed against the formal Hedenmalm
   classifier; zero-slack global formation remains open.
+- 2026-09-03 — prime--Hodge `mathsf T` identified as the unique cubic Lyapunov solution and a
+  compression of one nilpotent-lifted heat Gramian.  Right faithfulness and proper inverse proved;
+  `mathsf T` itself has infinite defect capital, while `mathsf T^2` has exact source capital one.
+- 2026-09-03 — direct properness selection with `mathsf T^2` killed: its prime-clock commutator
+  diverges at least as `d^(-1)`.  Exact cubic boundary covariance replaces asymptotic invariance.
+- 2026-09-03 — covariant aperture integral of the literal all-prime-power Stokes lift proved equal
+  to the complete primitive collision capacity; its unique nuclear observer has a forced
+  non-`ell2` sixth source boundary.  Completion target narrowed to singular-form transport.
+- 2026-09-03 — prior P-G177-A scalar identity found and novelty claim corrected.  Its Hellinger
+  Gram and the new aperture Gamma Gram are linked by one unique Mellin multiplier; their difference
+  is a nonzero indefinite trace-class anomaly with zero diagonal and trace.
+- 2026-09-03 — Mellin multiplier tested as Xi completion and killed by the existing spectral-floor
+  theorem: it preserves Euler decay rates.  Completion split into solved coherent-gauge component
+  and open noncommuting polar--Gamma rate-change component.

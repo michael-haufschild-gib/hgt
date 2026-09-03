@@ -12,6 +12,8 @@ open Complex Filter Metric Set Topology
 
 namespace RHTower
 
+open GaloisForLFunctions.HTGeometry
+
 noncomputable section
 
 /-- A counterterm-corrected Cayley--Dirichlet approximation. -/
@@ -27,6 +29,127 @@ def PoleClearedFirstTraceCountertermScheduledLocallyBounded
   ∀ z ∈ rightHalf, ∃ R : ℝ, 0 < R ∧ ball z R ⊆ rightHalf ∧ ∃ C : ℝ,
     ∀ N, ∀ w ∈ ball z R,
       ‖poleClearedFirstTraceCountertermScheduledApprox counterterm kappa N w‖ ≤ C
+
+/-- Source-faithful counterterms are analytic on `rightHalf` and disappear compact-open in the
+Euler chamber. -/
+def SquarefreeHalfCountertermAdmissible (counterterm : ℕ → ℂ → ℂ) : Prop :=
+  (∀ N, AnalyticOnNhd ℂ (counterterm N) rightHalf) ∧
+    TendstoLocallyUniformlyOn counterterm (fun _ => 0) atTop farHalf
+
+private theorem counterterm_tendstoLocallyUniformlyOn_comp_index
+    {ι κ α β : Type*} [TopologicalSpace α] [UniformSpace β]
+    {F : ι → α → β} {f : α → β} {p : Filter ι} {q : Filter κ} {s : Set α}
+    (hF : TendstoLocallyUniformlyOn F f p s) {k : κ → ι} (hk : Tendsto k q p) :
+    TendstoLocallyUniformlyOn (fun n => F (k n)) f q s := by
+  intro u hu x hx
+  obtain ⟨t, ht, hF⟩ := hF u hu x hx
+  exact ⟨t, ht, hk.eventually hF⟩
+
+private theorem counterterm_tendstoLocallyUniformlyOn_const
+    {ι α β : Type*} [TopologicalSpace α] [UniformSpace β]
+    {p : Filter ι} {s : Set α} (g : α → β) :
+    TendstoLocallyUniformlyOn (fun _ : ι => g) g p s := by
+  intro u hu x hx
+  exact ⟨s, self_mem_nhdsWithin, Eventually.of_forall fun _ y _ =>
+    refl_mem_uniformity hu⟩
+
+/-- Admissible counterterms preserve holomorphy of every corrected approximant. -/
+theorem analyticOnNhd_poleClearedFirstTraceCountertermScheduledApprox_rightHalf
+    {counterterm : ℕ → ℂ → ℂ} (hadm : SquarefreeHalfCountertermAdmissible counterterm)
+    (kappa : ℕ → ℕ) (N : ℕ) :
+    AnalyticOnNhd ℂ
+      (poleClearedFirstTraceCountertermScheduledApprox counterterm kappa N) rightHalf := by
+  exact (analyticOnNhd_poleFactorSqrtApprox_rightHalf (kappa N)).mul
+    (((analyticOnNhd_squarefreeHalfDirichletPartialSum N).mono (Set.subset_univ _)).add
+      (hadm.1 N)) |>.div
+      analyticOnNhd_squarefreeCarlemanHalfDet_rightHalf
+      (fun s _ => squarefreeCarlemanHalfDet_ne_zero s)
+
+/-- Admissible counterterms preserve the source limit in the Euler chamber. -/
+theorem tendstoLocallyUniformlyOn_poleClearedFirstTraceCountertermScheduledApprox
+    {counterterm : ℕ → ℂ → ℂ} (hadm : SquarefreeHalfCountertermAdmissible counterterm)
+    {kappa : ℕ → ℕ} (hkappa : Tendsto kappa atTop atTop) :
+    TendstoLocallyUniformlyOn
+      (poleClearedFirstTraceCountertermScheduledApprox counterterm kappa)
+      poleClearedFirstTraceSourceLimit atTop farHalf := by
+  have hr := counterterm_tendstoLocallyUniformlyOn_comp_index
+    tendstoLocallyUniformlyOn_poleFactorSqrtApprox hkappa
+  have hrcont : ContinuousOn poleFactorSqrtCayleyLimit farHalf :=
+    hr.continuousOn (Frequently.of_forall fun n =>
+      (analyticOnNhd_poleFactorSqrtApprox_rightHalf (kappa n)).continuousOn.mono
+        farHalf_subset_rightHalf)
+  have hzero : ContinuousOn (fun _ : ℂ => (0 : ℂ)) farHalf := continuousOn_const
+  have hnum := hr.mul₀ hadm.2 hrcont hzero
+  have hden : TendstoLocallyUniformlyOn
+      (fun _ : ℕ => squarefreeCarlemanHalfDet) squarefreeCarlemanHalfDet atTop farHalf :=
+    counterterm_tendstoLocallyUniformlyOn_const squarefreeCarlemanHalfDet
+  have hdencont : ContinuousOn squarefreeCarlemanHalfDet farHalf :=
+    analyticOnNhd_squarefreeCarlemanHalfDet_rightHalf.continuousOn.mono
+      farHalf_subset_rightHalf
+  have hcorr := hnum.div₀ hden (hrcont.mul hzero) hdencont
+    (fun s _ => squarefreeCarlemanHalfDet_ne_zero s)
+  have hcorr' : TendstoLocallyUniformlyOn
+      (fun N s => poleFactorSqrtApprox (kappa N) s * counterterm N s /
+        squarefreeCarlemanHalfDet s) (fun _ => 0) atTop farHalf := by
+    convert hcorr using 1
+    · rfl
+    · ext s
+      simp
+  have hsum :=
+    (tendstoLocallyUniformlyOn_poleClearedFirstTraceScheduledApprox hkappa).add hcorr'
+  convert hsum using 1
+  · ext N s
+    simp only [Pi.add_apply]
+    rw [poleClearedFirstTraceCountertermScheduledApprox,
+      poleClearedFirstTraceScheduledApprox]
+    ring
+  · ext s
+    simp
+
+/-- A source-faithful locally bounded corrected family proves the first RH rung. -/
+theorem rhLadder_one_of_countertermScheduledLocallyBounded
+    {counterterm : ℕ → ℂ → ℂ} (hadm : SquarefreeHalfCountertermAdmissible counterterm)
+    {kappa : ℕ → ℕ} (hkappa : Tendsto kappa atTop atTop)
+    (hloc : PoleClearedFirstTraceCountertermScheduledLocallyBounded counterterm kappa) :
+    RHLadder 1 := by
+  obtain ⟨G, hGdiff, hGlim⟩ :=
+    vitali_tendstoLocallyUniformlyOn_of_isPreconnected
+      convex_rightHalf.isPreconnected
+      (fun N =>
+        (analyticOnNhd_poleClearedFirstTraceCountertermScheduledApprox_rightHalf
+          hadm kappa N).differentiableOn)
+      hloc
+      (farHalf_subset_rightHalf two_mem_farHalf)
+      (Filter.Eventually.frequently
+        (Filter.Eventually.filter_mono nhdsWithin_le_nhds
+          (isOpen_farHalf.mem_nhds two_mem_farHalf)))
+      (fun s hs => ⟨poleClearedFirstTraceSourceLimit s,
+        (tendstoLocallyUniformlyOn_poleClearedFirstTraceCountertermScheduledApprox
+          hadm hkappa).tendsto_at hs⟩)
+  rw [rhLadder_one_iff_poleClearedFirstTrace_sqrt]
+  refine ⟨G, hGdiff.analyticOnNhd isOpen_rightHalf, ?_⟩
+  have hGeq : EqOn G poleClearedFirstTraceSourceLimit farHalf := by
+    intro s hs
+    exact tendsto_nhds_unique
+      (hGlim.tendsto_at (farHalf_subset_rightHalf hs))
+      ((tendstoLocallyUniformlyOn_poleClearedFirstTraceCountertermScheduledApprox
+        hadm hkappa).tendsto_at hs)
+  let H : ℂ → ℂ := fun s => G s ^ 2 - poleClearedFirstTraceExponentialContinuation s
+  have hHana : AnalyticOnNhd ℂ H rightHalf :=
+    ((hGdiff.analyticOnNhd isOpen_rightHalf).pow 2).sub
+      analyticOnNhd_poleClearedFirstTraceExponentialContinuation_rightHalf
+  have hfreq : ∃ᶠ s in 𝓝[≠] (2 : ℂ), H s = 0 := by
+    have hmem : ∀ᶠ s in 𝓝 (2 : ℂ), s ∈ farHalf := isOpen_farHalf.mem_nhds two_mem_farHalf
+    have hzero' : ∀ᶠ s in 𝓝 (2 : ℂ), H s = 0 := hmem.mono fun s hs => by
+      dsimp [H]
+      rw [hGeq hs, poleClearedFirstTraceSourceLimit_sq hs, sub_self]
+    exact (Filter.Eventually.filter_mono nhdsWithin_le_nhds hzero').frequently
+  have hHall := hHana.eqOn_zero_of_preconnected_of_frequently_eq_zero
+    convex_rightHalf.isPreconnected (farHalf_subset_rightHalf two_mem_farHalf) hfreq
+  intro s hs
+  have hzero' := hHall hs
+  change G s ^ 2 - poleClearedFirstTraceExponentialContinuation s = 0 at hzero'
+  exact sub_eq_zero.mp hzero'
 
 /-- If the corrected arithmetic values have a bounded tail, the correction cannot also have one. -/
 theorem counterterm_not_eventually_bounded_of_corrected_eventually_bounded

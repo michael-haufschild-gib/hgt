@@ -1818,3 +1818,41 @@ the noncommutative Cartan decomposition identifying arbitrary lattice pairs with
 coordinates, gluing apartments into the Euclidean affine building and proving its CAT(0)
 semisimplicity, and identifying axial endpoints with weighted residue flags.  The card remains at
 Stage 2.
+
+### Lean progress — arbitrary-lattice noncommutative Cartan decomposition (2026-09-03)
+
+The previously named Cartan-decomposition gap is now closed unconditionally for the actual
+completed pseudodifferential skew field and its actual valuation lattices.
+
+`CompletedPseudoDiffOpIntegerPrincipal`, `CompletedPseudoDiffOpLatticeSplitting`, and
+`CompletedPseudoDiffOpLatticeBasis` prove two-sided valuation divisibility, principality of every
+finitely generated fractional left ideal, coordinate splitting, and an integral basis of exactly
+the ambient rank for every full lattice.  The basis remains a basis after scalar extension to the
+completed skew field.
+
+`CompletedPseudoDiffOpValuationDiagonal` proves a genuinely noncommutative Smith-style reduction:
+a globally least-valuation matrix entry divides every entry on both sides, integral left row
+shears and right column shears isolate it, and recursion on the complementary block diagonalizes
+every finite completed-skew matrix.  `CompletedPseudoDiffOpValuationShear` realizes every column
+shear by an actual completed-skew linear equivalence preserving the standard lattice and proves
+that row shears preserve the integral row span.
+
+`CompletedPseudoDiffOpLatticeCartan` assembles these facts into the exact capstones
+
+```text
+exists_completedPseudoDiffOpLattice_cartan_standard
+exists_completedPseudoDiffOpLattice_pair_cartan
+```
+
+For arbitrary full lattices `L,M`, one completed-skew linear frame sends `L` to the standard
+lattice and `M` to a literal uniformizer-coweight lattice.  No commutativity, chosen matrix
+presentation, lattice-basis premise, or diagonalizability premise is assumed.  The seven new leaves
+pass direct checks and targeted leaf builds; batched audits of their new capstones report exactly
+`[propext, Classical.choice, Quot.sound]`.  They are wired into `HTGeometry`; no umbrella build was
+run.
+
+This supplies existence of arbitrary-pair Cartan coordinates, but not yet their uniqueness as a
+dominant Weyl-chamber vector.  Remaining global obligations are uniqueness/invariance of the
+dominant relative position, gluing continuous apartments into the Euclidean affine building,
+CAT(0) semisimplicity and axes, and identification of visual endpoints with weighted residue
+flags.  The card remains at Stage 2.

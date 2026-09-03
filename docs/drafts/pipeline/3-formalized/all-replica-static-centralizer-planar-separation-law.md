@@ -1,13 +1,13 @@
 # All-replica static-centralizer / planar-separation law
 
 - **ID:** `all-replica-static-centralizer-planar-separation-law`
-- **Stage:** 2 -- fully proved on paper
+- **Stage:** 3 -- formalised in Lean 4
 - **Type:** theorem / failed-transfer classification / positive static replacement
 - **Parents:**
   `all-replica-one-step-local-pauli-hall-saturation-law.md`,
   `../3-formalized/one-replica-local-pauli-planar-cavity-decay.md`, and
   `fixed-shell-angular-dephasing-static-local-plateau-law.md`
-- **Status:** `[PAPER-PROVED] [FRONTIER ADVANCE] [APPLICATION NOVELTY UNVERIFIED] [LEAN DEFERRED]`
+- **Status:** `[LEAN-FORMALIZED] [AXIOM-CLEAN] [FRONTIER ADVANCE] [APPLICATION NOVELTY UNVERIFIED]`
 - **Date:** 2026-08-10
 
 ## Public sentence
@@ -402,11 +402,12 @@ bound on the centered quenched propagator cannot prove it because `(9)` is time-
    translation-invariant, or symmetry-constrained subfamilies can retain additional actions.
 5. **Finite volume.**  No thermodynamic-limit, continuous-spectrum, gravity, or black-hole claim is
    made.
-6. **Planar theorem uses an external structure theorem.**  Equation `(25)` uses Kargin's full
-   matrix-semicircle absolute-continuity theorem.  The one-replica instance and its analytic
-   infrastructure are already formalized internally; the all-replica composition is paper-only.
-7. **Lean status.**  No equation from this card is authorized for a final manuscript until its
-   exact finite-dimensional core is formalized after the active corpus refactor.
+6. **Planar theorem is now internal.**  Equation `(25)` uses an internally formalized
+   finite-dimensional matrix-Dyson Hilbert--Schmidt bound and the exact Stieltjes atom boundary
+   law; no external structure theorem remains as a Lean premise.
+7. **Lean status.**  Every finite-dimensional core used by `(8)`--`(26)` is formalized and
+   umbrella-wired.  The four declarations added at final closure have axiom set exactly
+   `[propext, Classical.choice, Quot.sound]`.
 
 ## External priority boundary
 
@@ -748,7 +749,29 @@ theorem `graphLocalWeightedCompletedMatrix_zeroAtom_or_freePencil_full` packages
 all-energy split with no premise: at zero the atom mass vanishes, and away from zero the exact
 affine free pencil is full.
 
-What remains is exactly equality of free-Fock evaluation-kernel mass with algebraic inner-rank
-defect, followed by positive-semidefinite polarization.  That Strong-Atiyah/free-field theorem is
-absent from the current corpus.  Consequently all-energy atom exclusion required by `(25)`, and
-hence planar separation `(26)`, remain unproved; the card is not promoted.
+## Lean completion — all-energy atomlessness and planar decay (2026-09-03)
+
+The apparent Strong-Atiyah dependency is unnecessary.  The new umbrella-wired module
+`HTGeometry/MatrixSemicircleStieltjesBound.lean` formalizes the finite-dimensional balanced-polar
+Dyson argument directly:
+
+| Card item | Declaration |
+|---|---|
+| uniform full-matrix Stieltjes estimate `‖G(z)‖₂ ≤ 2√d/‖z‖` | `freeFockMatrixStieltjes_hilbertSchmidt_bound` |
+| every nonzero real energy has zero matrix atom | `freeFockMatrixAtomMass_eq_zero_of_ne_zero` |
+| all-energy atomlessness for the literal positive-variance completed graph-local pencil | `graphLocalWeightedCompletedMatrix_atomMass_eq_zero` |
+| **`(25)`**, all-replica operator-norm Fourier decay | `graphLocalWeightedCompletedMatrix_vacuumPropagator_operatorNorm_tendsto_zero` |
+
+At zero energy, exact Hall fullness supplies atom exclusion.  Away from zero, the new estimate
+forces every scaled Stieltjes entry to vanish at the atom boundary.  Thus the matrix atom vanishes
+at every energy with no diagonal, subsingleton-column, free-field, or Strong-Atiyah premise.
+
+Equation `(26)` is now the direct composition of the already formalized concrete static limit
+`pauliChainReplicaAnnealedPropagator_sub_averagedCentralizer_l2_opNorm_tendsto_zero`, the exact
+quotient centralizer floor `l2_opNorm_averaged_compression_ge`, the decay theorem above, and
+`eventually_le_norm_sub_of_tendsto` / `norm_sub_ge_of_floor`.  No card obligation remains.
+
+Direct source checks and targeted leaf builds passed for
+`GaloisForLFunctions.HTGeometry.MatrixSemicircleStieltjesBound` and
+`GaloisForLFunctions.HTGeometry.AllReplicaStaticCentralizerPlanarSeparation`.  Axiom audit for all
+four new public declarations is exactly `[propext, Classical.choice, Quot.sound]`.

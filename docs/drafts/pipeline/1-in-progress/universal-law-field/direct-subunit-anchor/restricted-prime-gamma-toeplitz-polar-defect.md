@@ -668,8 +668,35 @@ specialization, a degree-three trace-contractive boundary morphism from the matr
 aperture colligation to the restricted Hardy projection pair such that
 
 ```text
-0 <= Tr mathsf T_D <= B_base < 1.                       (RPGT.21d)
+||mathsf T_D||_1
+  = ||(1-P)V_D P||_3^3 + ||(1-P)V_D* P||_3^3
+  <= B_base < 1.                                       (RPGT.21d)
 ```
+
+Here `V_D` denotes multiplication by the canonically counterphased relative phase, not the raw
+completed phase `u_D`.  For every bounded real branch `psi_(D,x)` of that relative phase,
+Duhamel's commutator formula and unitary invariance give the unconditional reduction
+
+```text
+||mathsf T_(D,x)||_1
+  = ||[P,exp(i*M_(psi_(D,x)))]||_3^3
+  <= ||[P,M_(psi_(D,x))]||_3^3
+  = 2 ||(1-P)M_(psi_(D,x))P||_3^3.                    (RPGT.21g)
+```
+
+Hence nonlinear exponentiation is not the obstruction.  The remaining producer is an additive,
+matrix-complete Hankel estimate for the anomaly-subtracted Euler--Gamma current, followed by a
+genuine `S_3` completion limit.  Weak `H^(1/2)` convergence supplies neither step.
+
+The existing Route-P base Cauchy cube does not itself supply this estimate.  Its source Gram is
+indexed by primitive prime-depth cells, whereas its conormal target Gram is indexed by completed
+Xi residues.  The corpus already proves that global domination between those two packets is the
+terminal RH capacity law
+`routePPrimitiveBaseCauchyTraceCapacityLaw_iff_riemannHypothesis`.  Moreover, trace of the source
+Gram sees only its diagonal, while Schatten-three mass of a summed Hankel operator contains full
+cyclic triple products.  Therefore the required bridge must factor the **finite additive boundary
+Hankel operator itself** through source features before completion.  A post-completion comparison
+of the prime Gram with a zero/conormal Gram is forbidden as circular.
 
 This theorem closes RH immediately by `(RPGT.6)`.  It evades the retired bounded-landing theorem
 because it need not map a finite source vector to a completed zero projector.  It must preserve
@@ -772,6 +799,85 @@ receiver.
 - These sources validate profile quantization only.  They contain no ordinary-prime/Gamma/theta
   counterphase, no prime-mixed coefficientwise anomaly subtraction, and no bound `(RPGT.21)`.
 
+### 6.10 Cyclic exponential-Hankel surrogate: margin and exact exclusion boundary
+
+The next source-first test keeps all cross-frequency terms.  For a prime-power event
+`n=p^k`, set
+
+```text
+a_(p,k) = k log p,
+c_(p,k) = 1 / (2 p^k k^2 log p),
+e_a(x)  = exp(-a x),
+H_X     = sum_(p^k <= X) c_(p,k) |e_a><e_a|.          (RPGT.24)
+```
+
+This is not the earlier diagonal scalar budget.  Its finite feature Gram is
+
+```text
+G_X((p,k),(q,l))
+  = sqrt(c_(p,k)c_(q,l)) / (a_(p,k)+a_(q,l)).         (RPGT.25)
+```
+
+Therefore finite-dimensional cyclicity gives the exact identities
+
+```text
+Tr H_X = sum_(p^k <= X) 1/(4 p^k k^3 log(p)^2),
+
+Tr(H_X^3)
+  = sum_(i,j,r)
+      c_i c_j c_r /
+      ((a_i+a_j)(a_j+a_r)(a_r+a_i)),
+
+Tr(H_X^3) <= (Tr H_X)^3.                              (RPGT.26)
+```
+
+The last inequality is spectral: all eigenvalues are nonnegative and the sum of their cubes is
+at most the cube of their sum.  Thus an infinite positive trace-class limit `H`, together with
+the elementary strengthening `B_base < 1/2`, would imply
+
+```text
+2 ||H||_3^3 = 2 Tr(H^3) <= 2 B_base^3 < 1/4 < 1.      (RPGT.27)
+```
+
+Runpod evaluated the full Gram, not just its diagonal, through `p^k <= 10000`.  It found
+
+```text
+Tr H_X                    = 0.40215445468965655,
+||H_X||                   = 0.3855625981008574,
+2 Tr(H_X^3)               = 0.11464151462336479,
+mixed share of Tr(H_X^3)  = 0.686809074484133.
+```
+
+Raw data and interpretation are in
+`docs/drafts/pipeline/2-fully-proven/computations/predivisor-relative-operator-route-audit/`.
+The `68.68%` mixed share validates the full-cyclic requirement in hostile falsifier 18.  It also
+shows that numerical size is not the present obstruction.
+
+**[RETIRED SUBROUTE: bounded exponential-Hankel landing].**  No identity in the checked corpus
+equates `(RPGT.24)` with either chiral block of the literal anomaly-subtracted scattering current.
+Three exact locks prevent declaring such an identity:
+
+1. `not_summable_norm_routeKPhysicalEndpointBoundaryRankOne` proves that literal ordinary-prime
+   endpoint atoms are not absolutely nuclear;
+2. `vonMangoldtAdditivePositiveLogJetGram_add_pointedBianchiBoundary_ne_momentHankel` proves that
+   the positive successor carrier plus actual additive pointed Bianchi boundary cannot be a
+   moment-Hankel target;
+3. any coefficientwise bounded factorization whose finite zero-winding stages converge in
+   `S_3` makes their cubic defects converge in `S_1`; trace continuity then preserves trace zero.
+   It cannot create the required completed trace one.
+
+Consequently `(RPGT.24)` is a valid positive budget surrogate but not the missing producer.  The
+surviving conjecture is narrower:
+
+**[CONJECTURE RPGT-C3, OPEN].**  The literal Euler--Gamma--theta current admits a degree-three
+mapping-cone or determinant-line transgression whose completed cubic trace is not the `S_1` limit
+of the finite zero-index traces, while its two chiral moduli are contractively represented by the
+full cyclic kernel `(RPGT.25)` after the non-Hankel cross term is formed.  The transgression must be
+constructed before Xi specialization and before taking norms.
+
+This formulation deliberately excludes a bounded one-particle map, a direct sum of the two
+positive source legs, and any post-completion zero Gram.  Those three classes are now closed.
+
 ## 7. Hostile falsifiers
 
 1. If `a_D` is defined from an inner/outer factorization of `XiC`, `(RPGT.8)` is RH rewritten.
@@ -809,19 +915,46 @@ receiver.
 17. Identity `(RPGT.21c)` alone is still scalar.  Any claimed closure that discards the
     matrix-complete Burnol cross terms before reaching the triple Hardy kernel has not constructed
     the required transgression.
+18. The diagonal cubic coefficient budget does not dominate Schatten-three Hankel mass with
+    constant one.  Already the two-mode Hankel block
+    `A=[[1,1],[1,0]]` has `Tr |A|^3=2*sqrt(5)>3`, whereas the separate weighted coefficient
+    cubes are `1+2=3`.  Any valid `(RPGT.21d)` must transport the full cyclic Gram, including
+    cross-frequency interference.  This is exact: the eigenvalues are
+    `(1+sqrt(5))/2` and `(1-sqrt(5))/2`; cubing their absolute values gives `2*sqrt(5)`, and
+    `2*sqrt(5)>3` follows by squaring the positive sides (`20>9`).
+19. A generic zero-winding phase can carry arbitrarily large paired chiral mass.  Thus no
+    topology-only or winding-only estimate can prove `(RPGT.21d)`; the estimate must use the
+    literal Euler--Gamma--theta source and a canonical anomaly removal before taking norms.
+20. Duhamel reduces the nonlinear phase to the additive current with constant one, but does not
+    identify boundary Fourier modes with prime-log labels.  Treating `(RPGT.21g)` as the missing
+    source transgression silently skips the arithmetic frequency-transport theorem.
+21. Route-P's positive base Cauchy cube is not the missing factorization.  Its prime-labelled
+    trace budget versus zero-labelled conormal trace is already classified by
+    `routePPrimitiveBaseCauchyTraceCapacityLaw_iff_riemannHypothesis`.  Reusing that comparison
+    would violate the upstream-operator requirement.
+22. Peller's `S_3`--`B_3^(1/3)` theorem identifies the correct function space but only gives norm
+    equivalence, not the sharp source normalization needed for `<1`.  Qualitative Besov
+    membership cannot spend the fixed arithmetic margin.
+23. The positive exponential-Hankel surrogate has the right cubic size but the wrong provenance.
+    Its direct absolutely summable realization would give `S_3` convergence of finite
+    zero-winding stages and hence preserve cubic trace zero.
+24. The literal ordinary-prime endpoint cannot be substituted for the damped surrogate:
+    `not_summable_norm_routeKPhysicalEndpointBoundaryRankOne` rules out absolute nuclear assembly.
+25. An additive Gamma/Bianchi moment-Hankel correction cannot supply the missing cross term:
+    strict successor anti-Hankel curvature survives every such correction.
 
 ## Gates
 
 - [x] one pre-divisor definition, no supplied zero
 - [x] genuine all-prime mixing before compression
 - [x] one graded object retains signed orientation and unsigned multiplicity
-- [x] paper proof of integrality, nuclearity, exact conservation, and native domination
+- [x] paper proof of integrality, nuclearity, exact conservation, and exact cubic norm identity
 - [x] exact RH-chain edge stated
 - [x] kill raw cubic residual as direct `<1` budget
 - [x] kill global Wold/ordinary-Hilbert--Schmidt domination as producer
 - [x] classify every possible critical degree jump by finite escaping Möbius profiles
 - [x] prove exact weighted-seam/H1 properness and single-charge divergence on paper
-- [x] prove exact chiral-corona transgression and sub-unit selection theorem on paper
+- [ ] prove exact chiral-corona transgression and sub-unit selection theorem on paper
 - [x] kill ambient prime-Bohr restriction and full prime-torus-linear sewing as producers
 - [x] replace the invalid critical-line phase sequence by an explicit zero-free, unsquared,
   additive-theta damped Euler exponential
@@ -830,10 +963,18 @@ receiver.
   `mathsf T_D=(U_D*PU_D-P)^3` whose trace is the integral relative index
 - [x] prove cubic minimality at the critical restricted-unitary boundary
 - [x] identify the exact `<1` source budget as the third inverse moment of the safe Euler clock
+- [x] identify the exact target nuclear norm as the sum of the two chiral Schatten-three masses
+- [x] kill constant-one diagonal-coefficient domination by the exact two-mode Hankel block
+- [x] reduce phase exponentiation to the additive-current `S_3` commutator with constant one
+- [x] exclude post-completion Route-P prime-Gram/zero-Gram domination as an RH-equivalent receiver
+- [x] compute the full cyclic exponential-Hankel surrogate and verify that mixed triples dominate
+- [x] retire direct bounded exponential-Hankel landing by source provenance and trace continuity
+- [x] exclude additive moment-Hankel repair by the exact successor-curvature lock
 - [ ] construct canonical literal-source counterphase in restricted-unitary topology
 - [ ] prove weak `H^(1/2)` boundary convergence of `(RPGT.10b)` in the strict-right strip
 - [ ] prove the native one-chirality corona bound `(RPGT.21)`, or the stronger weighted seam bound
   `(RPGT.23)`
-- [ ] construct the matrix-complete degree-three cyclic transgression `(RPGT.21d)`
+- [ ] construct the matrix-complete degree-three cyclic/Besov transgression `(RPGT.21d)`
+- [ ] construct the singular non-Hankel mapping-cone/determinant-line transgression `RPGT-C3`
 - [ ] dependency-close paper proof
 - [ ] formalize in Lean only after dependency closure

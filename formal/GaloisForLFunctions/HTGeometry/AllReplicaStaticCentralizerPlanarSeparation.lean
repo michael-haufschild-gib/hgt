@@ -8,6 +8,7 @@ import GaloisForLFunctions.HTGeometry.GraphLocalHallSaturation
 import GaloisForLFunctions.HTGeometry.CentralCasimirComplementHallExpansion
 import GaloisForLFunctions.HTGeometry.FreeFockMatrixZeroAtomExclusion
 import GaloisForLFunctions.HTGeometry.FreeFockMatrixFullFourierDecay
+import GaloisForLFunctions.HTGeometry.MatrixSemicircleStieltjesBound
 
 /-!
 # All-replica static-centralizer / planar-separation infrastructure
@@ -24,7 +25,7 @@ has no zero-energy matrix atom, and satisfies the full matrix atom/covariance an
 every energy.  No subsingleton-column or diagonal-Dyson reduction is used.
 -/
 
-open Matrix
+open Matrix Filter Topology
 
 namespace GaloisForLFunctions.HTGeometry
 
@@ -312,6 +313,41 @@ theorem graphLocalWeightedCompletedMatrix_atomCovariance_mul_eq_zero
     (graphLocalWeightedCompletedMatrix (R := R) G v)
     (graphLocalWeightedCompletedMatrix_conjTranspose G v)
     (graphLocalWeightedCompletedMatrix_hasTrivialCommonKernel G v) a
+
+/-- The exact positive-variance all-replica completed graph-local pencil has no matrix atom at
+any real energy.  Hall fullness handles zero; the uniform matrix Dyson bound handles every
+nonzero energy. -/
+theorem graphLocalWeightedCompletedMatrix_atomMass_eq_zero
+    (G : SimpleGraph I) (v : GraphLocalPositiveVariance G) (a : ℝ) :
+    freeFockMatrixAtomMass
+      (graphLocalWeightedCompletedMatrix (R := R) G v)
+      (graphLocalWeightedCompletedMatrix_conjTranspose G v)
+      (graphLocalWeightedCompletedMatrix_hasTrivialCommonKernel G v) a = 0 := by
+  by_cases ha : a = 0
+  · simpa only [ha] using
+      graphLocalWeightedCompletedMatrix_zeroAtomMass_eq_zero (R := R) G v
+  · exact freeFockMatrixAtomMass_eq_zero_of_ne_zero
+      (graphLocalWeightedCompletedMatrix (R := R) G v)
+      (graphLocalWeightedCompletedMatrix_conjTranspose G v)
+      (graphLocalWeightedCompletedMatrix_hasTrivialCommonKernel G v) a ha
+
+/-- **Equation (25).**  At every finite replica order, the vacuum-compressed propagator of the
+exact positive-variance completed graph-local free semicircle decays to zero in Euclidean operator
+norm as `|t| → ∞`. -/
+theorem graphLocalWeightedCompletedMatrix_vacuumPropagator_operatorNorm_tendsto_zero
+    (G : SimpleGraph I) (v : GraphLocalPositiveVariance G) :
+    Tendsto (fun t => ‖(Matrix.toEuclideanCLM (𝕜 := ℂ)
+      (n := FiniteAllReplicaOperatorIndex I R))
+        (freeFockMatrixVacuumPropagator
+          (graphLocalWeightedCompletedMatrix (R := R) G v)
+          (graphLocalWeightedCompletedMatrix_conjTranspose G v)
+          (graphLocalWeightedCompletedMatrix_hasTrivialCommonKernel G v) t)‖)
+      (cocompact ℝ) (𝓝 0) := by
+  exact freeFockMatrixVacuumPropagator_operatorNorm_tendsto_zero
+    (graphLocalWeightedCompletedMatrix (R := R) G v)
+    (graphLocalWeightedCompletedMatrix_conjTranspose G v)
+    (graphLocalWeightedCompletedMatrix_hasTrivialCommonKernel G v)
+    (graphLocalWeightedCompletedMatrix_atomMass_eq_zero G v)
 
 end
 

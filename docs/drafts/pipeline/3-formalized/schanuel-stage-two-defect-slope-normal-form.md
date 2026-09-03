@@ -1,7 +1,7 @@
 # Canonical defect-slope normal form for a stage-two counterexample
 
 - **ID:** schanuel-stage-two-defect-slope-normal-form
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** algebraic-coefficient defect theorem + Kirby exponential algebraicity
 - **Statement:** Any stage-two Schanuel counterexample is a one-variable algebraic-function system with a canonical transcendental, exponentially algebraic defect slope and fixed algebraic-endpoint regulator values.
@@ -16,7 +16,7 @@ descent attacks.
 
 - [x] 0 -> 1  in-progress: well-posed, source-pure, attack idea, Door passport sketch
 - [x] 1 -> 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 -> 3  formalized: depends on formal algebraic-coefficient defect theorem
+- [x] 2 -> 3  formalized: all five clauses, projective model, and ordinary analytification-smooth regulator law are closed in Lean
 - [ ] 3 -> 4  publication-ready: external novelty and independent proof audit pending
 
 ## Statement
@@ -691,3 +691,100 @@ projective complement of all coordinate poles and multiplicative zeroes: that lo
 inside the chosen normalized standard chart, and the corpus still lacks global complex
 analytification plus holomorphic regular-function evaluation on a finite affine cover.  That exact
 global comparison remains necessary, so the card stays at Stage 2.
+
+## Lean progress — global rationally smooth projective regulator package (2026-09-03)
+
+`HTGeometry/ComplexPointRationalSmoothPath.lean` installs a presentation-independent global
+differential-space notion on any integral scheme:
+
+```text
+Scheme.ComplexPointPath.IsRationallySmooth
+```
+
+A path is rationally smooth when every actual function-field element represented by a regular germ
+at every point has a `C∞` evaluated pullback.  The definition quantifies over every regular-germ
+assignment, so proof-relevant choices of local representatives cannot weaken it.  Unlike the
+previous principal-open construction, it is defined on the whole projective normalization.
+
+`HTGeometry/BaseFieldPointComplexification.lean` now proves the missing scalar-extension
+naturality for local evaluation.  The reusable declarations
+
+```text
+Scheme.Hom.stalkMap_germ_apply
+Scheme.specMap_stalkEval
+Scheme.BaseFieldPointOver.toComplexPoint_stalkEval
+```
+
+show that evaluating any local germ after complexifying a base-field point is exactly the complex
+embedding of its base-field value.  Consequently algebraicity of all four source coordinate values
+is derived from the actual `Spec AlgNum` factorization; it is no longer supplied as a separate path
+field.
+
+`RHTower/SchanuelStageTwoDefectSlopeProjectiveRationalSmoothPath.lean` defines a global path of
+actual projective coordinate points carrying only rational smoothness, the actual algebraic source
+factorization and smooth-source condition, the canonical target, parameter order, and divisor
+avoidance.  It derives the coordinate derivatives and their continuity, derives both algebraic
+source-value assertions, and derives the literal target values.  The capstone
+
+```text
+exists_stageTwoDefectSlopeRationalSmoothProjectivePackage
+```
+
+packages clauses 1--4, properness, the exact function field, and simultaneous regulator identities
+for every such global rationally smooth path, under exactly the card's original linear-independence
+and low-transcendence assumptions.  Its extraction-failure form is also proved.
+
+Direct checks and targeted leaf builds pass.  Every new declaration audits to exactly
+`[propext, Classical.choice, Quot.sound]`; both leaves are umbrella-wired, with no umbrella build.
+
+This removes the global-chart restriction and every derivative or algebraic-coordinate endpoint
+premise.  One comparison remains before literal Stage-3 promotion: identify ordinary smooth paths
+in the complex analytification with `IsRationallySmooth` paths (the forward direction suffices for
+the regulator theorem).  The current corpus still has no projective analytification or manifold
+structure with which to state that comparison.  Calling the rational-observable definition itself
+"ordinary smooth" without this theorem would silently change the paper statement, so the card
+remains at Stage 2.
+
+## Stage-3 closure — ordinary complex-analytification paths (2026-09-03)
+
+`HTGeometry/ComplexAnalytificationSmoothPath.lean` supplies the missing global analytic interface
+without adding a comparison premise.  It defines ordinary smooth paths in the affine atlas of a
+scheme's complex analytification: locally the path remains in every affine chart through its
+current point, and every regular function in that chart evaluates to a `C∞` complex-valued
+function.  The local-containment clause proves continuity of the scheme-theoretic centers.
+
+For every integral scheme, the theorem
+
+```text
+Scheme.ComplexAnalytification.IsSmoothPath.isRationallySmooth
+```
+
+proves that ordinary chartwise smoothness implies smoothness of every rational function regular
+along the path.  The proof represents one supplied stalk germ by an actual local section, shrinks
+to an affine-open basis element, and uses injectivity of each integral local ring into the function
+field to identify every other supplied regular germ with that same section.  Thus the comparison
+is derived from the affine atlas and actual stalks; it is not an axiom, hypothesis, renamed
+rational-smoothness condition, or finite-chart restriction.
+
+`RHTower/SchanuelStageTwoDefectSlopeProjectiveAnalytificationPath.lean` then introduces
+
+```text
+StageTwoProjectiveAnalytificationDivisorAvoidingPath
+exists_stageTwoProjectiveAnalytificationPathRegulatorWitness
+StageTwoDefectSlopeProjectiveAnalytificationPackage
+exists_stageTwoDefectSlopeProjectiveAnalytificationPackage
+exists_stageTwoDefectSlopeProjectiveAnalytificationPackage_of_extraction_failure
+```
+
+The path carries exactly the paper data: ordinary smoothness in the full projective
+analytification, an actual smooth `AlgNum`-valued source point, the canonical exponential target,
+parameter order, and avoidance of the multiplicative coordinate divisors.  Coordinate
+derivatives, algebraic endpoint values, and rational-observable smoothness are all derived.  The
+all-clauses package combines clauses 1--4, countable exponential-algebraic-closure membership, the
+actual proper projective normalization, its exact concrete function field, and both regulator
+identities for every such path under only the card's original linear-independence and
+low-transcendence assumptions.
+
+Direct checks and targeted leaf builds pass.  Every new declaration audits to exactly
+`[propext, Classical.choice, Quot.sound]`.  Both new leaves are umbrella-wired; no umbrella or full
+build was run.  All five clauses are now formalized, so this card advances to Stage 3.

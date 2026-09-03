@@ -126,6 +126,107 @@ Finally, multiplication and ideal Holder inequalities make `Delta -> Delta^3` co
 `S_2` to `S_1` on bounded sets.  The trace is therefore continuous along the stated homotopy, but
 `(RUCRI.3)` makes it integer-valued, so it is constant.  QED.
 
+### 2.1 Exact cubic Schatten mass
+
+The preceding signed trace is only the index channel.  The contradiction requested by the
+pre-divisor operator route needs the full nuclear norm.  Put `Q=1-P` and define the two oriented
+Hankel seams
+
+```text
+H_+(U)=Q U P,
+H_-(U)=Q U* P.
+```
+
+**Theorem RUCRI-A+.** Under `(RUCRI.1)`, both seams belong to `S_2`, hence to `S_3`, and
+
+```text
+||T(U)||_1
+  = ||Delta_U^3||_1
+  = ||H_+(U)||_3^3 + ||H_-(U)||_3^3.                  (RUCRI.4a)
+```
+
+Consequently
+
+```text
+|Tr T(U)| <= ||H_+(U)||_3^3 + ||H_-(U)||_3^3,        (RUCRI.4b)
+```
+
+and a relative index of absolute value one forces the right-hand side to be at least one.
+
+**Proof.** Relative to `H=PH directSum QH`, write
+
+```text
+R_U = [[A,B*],[B,C]].
+```
+
+The projection identity `R_U^2=R_U` gives
+
+```text
+Delta_U^2
+  = [[1-A,0],[0,C]].                                  (RUCRI.4c)
+```
+
+The two diagonal blocks are precisely the seam energies:
+
+```text
+1-A = H_+(U)* H_+(U),
+C   = H_-(U) H_-(U)*.                                 (RUCRI.4d)
+```
+
+Because `Delta_U` is self-adjoint,
+`|Delta_U^3|=|Delta_U|^3=(Delta_U^2)^(3/2)`.  Functional calculus preserves the block
+decomposition `(RUCRI.4c)`.  Taking the positive trace and using `(RUCRI.4d)` yields
+
+```text
+Tr |Delta_U^3|
+  = Tr (H_+(U)*H_+(U))^(3/2)
+    + Tr (H_-(U)H_-(U)*)^(3/2),
+```
+
+which is `(RUCRI.4a)` by the definition of the Schatten-three norm.  Equation `(RUCRI.4b)` is the
+standard trace inequality.  Equivalently, in the canonical two-projection decomposition every
+generic principal angle contributes a paired `+s,-s`, hence `2s^3` to the nuclear norm and zero
+to the signed trace; endpoint angles contribute the relative-index dimensions.  QED.
+
+Identity `(RUCRI.4a)` is sharp and changes the remaining analytic problem.  A quadratic
+Hilbert--Schmidt estimate is not the target norm, and a scalar diagonal cubic coefficient sum is
+not automatically a Schatten-three bound.  The required source theorem must control the full
+matrix-complete sum of the two oriented seam masses.
+
+There is nevertheless an exact nonlinear-to-additive reduction.  Let `phi` be a bounded real
+multiplication symbol, set `X=i*M_phi`, and `U=exp(X)`.  Then
+
+```text
+[P,U]
+  = integral_0^1 exp((1-t)X) [P,X] exp(tX) dt,         (RUCRI.4e)
+```
+
+so unitary invariance and the Schatten-three triangle inequality give
+
+```text
+||T(U)||_1
+  = ||[P,U]||_3^3
+  <= ||[P,M_phi]||_3^3
+  = 2 ||(1-P)M_phi P||_3^3.                           (RUCRI.4f)
+```
+
+Indeed, `(RUCRI.4e)` follows by differentiating
+`exp((1-t)X) P exp(tX)`.  The first equality in `(RUCRI.4f)` uses
+`Delta_U=U*[P,U]` and self-adjointness of `Delta_U`; the last uses the two adjoint off-diagonal
+blocks of the commutator with the self-adjoint multiplier `M_phi`.  Finite formation phases obey
+this inequality directly.  A singular completed phase may inherit it only through an actual
+Schatten-three limit; weak phase convergence alone is insufficient.
+
+Thus exponentiation itself creates no Schatten-three amplification.  All remaining difficulty is
+the source-specific additive estimate
+
+```text
+2 ||(1-P)M_(phi_D)P||_3^3 <= B_base,                  (RUCRI.4g)
+```
+
+after the canonical continuum anomaly is subtracted at current level.  This is still a full
+Hankel-matrix inequality, not a diagonal Fourier-coefficient estimate.
+
 ## 3. Integral-kernel form and genuine prime mixing
 
 On `L2(S1)`, write the Szego kernel of `P` as `K_P(z,w)`.  The displacement has the `L2` kernel
@@ -336,23 +437,32 @@ action inequality between these two homotopies.
 
 ## 8. Exact remaining RH edge
 
-For a strict-right rational rectangle `D`, let `u_D` be the pre-divisor completed boundary phase
-obtained as the formation limit, and set
+For a strict-right rational rectangle `D`, let `u_(D,0)` be the completed source boundary phase
+and let `u_(D,x)` be a canonical zero-free Gaussian formation phase.  Put
 
 ```text
-T_D = (M_(u_D)* P M_(u_D) - P)^3.                       (RUCRI.17)
+v_(D,x)=u_(D,0) conj(u_(D,x)),
+V_(D,x)=M_(v_(D,x)).
+```
+
+The zero winding of `u_(D,x)` makes the relative phase carry exactly the completed winding.  Set
+
+```text
+T_(D,x) = (V_(D,x)* P V_(D,x) - P)^3.                   (RUCRI.17)
 ```
 
 The corpus source-current contour law and RUCRI-A give
 
 ```text
-Tr T_D = enclosed strict-right Xi multiplicity.         (RUCRI.18)
+Tr T_(D,x) = enclosed strict-right Xi multiplicity.     (RUCRI.18)
 ```
 
 Thus RH follows from the single source-side cyclic domination
 
 ```text
-0 <= Tr T_D <= B_base < 1.                              (RUCRI.19)
+||T_(D,x)||_1
+  = ||H_+(V_(D,x))||_3^3 + ||H_-(V_(D,x))||_3^3
+  <= B_base < 1.                                       (RUCRI.19)
 ```
 
 `(RUCRI.19)` is not proved here.  It is substantially narrower than an unspecified
@@ -360,7 +470,11 @@ source-to-resolvent landing: both sides now have forced cubic provenance.  The r
 degree-three cyclic transgression from the matrix-complete Burnol source colligation to the
 restricted Hardy projection pair.  It need not, and by the corpus no-go cannot, be a bounded
 one-particle landing.  Any proof must be constructed before divisor specialization from the
-Gaussian Euler--continuum formation.
+Gaussian Euler--continuum formation, with `x` chosen or integrated by a source-only law.
+Peller's theorem identifies the target analytic class:
+each chiral seam is `S_3` exactly when the corresponding projected phase symbol lies in
+`B_3^(1/3)`.  Therefore the missing theorem is a sharp, source-specific two-chirality Besov
+action estimate, not a coefficientwise `ell^3` estimate.
 
 ## 9. Lean status
 

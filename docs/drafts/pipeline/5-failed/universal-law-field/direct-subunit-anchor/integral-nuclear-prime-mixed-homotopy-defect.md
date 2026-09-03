@@ -493,6 +493,46 @@ Lean-proved by `TraceNormLimit.traceTower_limit`.  A future route must change so
 before completion and prove a new norm estimate native to that topology.  It cannot reuse
 `B_base` merely through a contractive landing.
 
+### Positive survivor — completed cubic Green signed scalar tail
+
+Restoring the literal Gamma channel and using strict lower wall `log 2` exposes a second sharp
+survivor.  After deleting first atom from primitive Route-P budget, signed scalar completion
+
+```text
+open prime tail - polar tail + Gamma tail
+```
+
+has absolute value strictly below `1`.  Complete unconditional proof is formalized as
+`RHTower.abs_ccmRoutePCompletedCubicGreenTail_lt_one` in
+`GaloisForLFunctions.RHTower.CCMRoutePCompletedCubicGreenTailSubunit`.  This corrects earlier
+prime/polar-only numerical interpretation.  It does not revive route: signed scalar absolute value
+does not bound nuclear norm.  Exact surviving operator obligation is a coefficient-faithful
+nuclear lift whose norm retains cancellation before entrywise/operator absolute value and whose
+source action lands Xi essential codimension.
+
+The most direct lift is now also closed in Lean.  Multiplying canonical unit-trace prime-Hodge
+defect by completed scalar produces Schatten-one operator with trace norm `<1`, but trace becomes
+scalar and is provably neither `1` nor `-1`.  See
+`RHTower.ccmRoutePCompletedCubicGreenScaledIntegralDefect_closed` in
+`GaloisForLFunctions.RHTower.CCMRoutePCompletedCubicGreenIntegralDefectNoGo`.
+
+### Positive survivor — theta-survival relative curvature
+
+The canonical non-scalar relative-metric mechanism itself now exists.  The literal theta
+Mellin-six survival shift produces compact positive incoming and outgoing metrics which are each
+non-Schatten-one.  Their difference is the positive self-commutator curvature with trace `1`, trace
+norm `1`, and operator norm `1/3`.  The normalized Stokes prime lift retains all same-history
+cross-prime entries, the exact history marginal, both non-Schatten-one metric terms, and the same
+trace laws; its operator norm is at most `1/3`.
+
+This is fully formalized by
+`RHTower.primeHodgeHistoryRelativeCurvature_closed` and
+`RHTower.primeHodgeHistoryRelativeCurvaturePrimeLift_closed`.  It proves relative subtraction is
+source-native, not an ad hoc regularization.  It also closes the tempting operator-norm escape:
+positive trace-one curvature has nuclear norm exactly one.  A surviving RH producer must therefore
+transport signed cancellation through the nuclear norm and cannot replace `||T||_1` by the much
+smaller operator norm.  See stage-3 card ULF-TSRC-001.
+
 ## Parent theory boundary
 
 Relative heat/relative index theory already permits differences of two non-trace-class heat
@@ -535,9 +575,38 @@ Primary parents:
   supply the missing comparison.  Verdict: `RETIRED — BOUNDED/SINGULAR NORM DICHOTOMY`.
 - 2026-09-03 — Runpod follow-up closed three remaining variants: exact Gamma-vacuum subtraction
   stays positive; two-step wild-saddle relocation has signed trace zero and is horizontally blind;
-  literal cubic-Green completion leaves stable positive polar surplus about `0.83948446`.  Report
+  prime/polar-only cubic-Green fracture leaves stable positive surplus about `0.83948446`.  Report
   and raw data:
   `docs/drafts/pipeline/2-fully-proven/computations/predivisor-relative-operator-route-audit/`.
   Route remains retired.  Only positive survivor is new producer obligation for a
   coefficient-faithful non-scalar prime--polar--Gamma relative operator whose cancellation occurs
   before absolute value; no such operator or norm law currently exists.
+- 2026-09-03 — Fourth Runpod diagnostic restored literal Gamma channel and strict lower-wall
+  convention.  Signed scalar completed tail is about `-0.09914495` at `N=50,000,000`.  Exact
+  infinite theorem was then proved on paper and formalized in Lean as
+  `RHTower.abs_ccmRoutePCompletedCubicGreenTail_lt_one`.  This is strongest new positive survivor;
+  original projection/index route remains retired because scalar cancellation has no automatic
+  trace-norm or essential-codimension lift.
+- 2026-09-03 — Direct operator lift closed formally: scalar multiplication of canonical
+  unit-trace prime-Hodge defect is trace class and subunit, but its trace is scalar and cannot be
+  either integral unit.  Any continuation must be genuinely non-scalar and topology-changing.
+- 2026-09-03 — Paper/corpus follow-up tested the three strongest available non-scalar producer
+  families.  Actual-head completed-error autocorrelation is exactly the restricted-Weil source
+  quadratic, while its only unconditional quantile estimate pays
+  `ccmOutgoingQuantileGammaChiSquare`, proved to diverge.  Complex polarization therefore changes
+  neither the source form nor its RH-bearing sign.  The completed third-grade connection removes
+  separate prime, polar, and Gamma growth, but leaves exactly the completed-error endpoint/flux;
+  every fixed subcubic bound on that flux already implies RH.  Mass-matched prime--polar cells do
+  give a genuine coefficient-faithful all-prime absolute convergence theorem on every aperture
+  head (`summable_ccmActualHeadMatchedPrimePolarCellDifference_of_aperture`), which is the strongest
+  positive survivor.  It still does not give an `S1` relative operator or an index landing: the
+  exact infinite-Fock logarithmic reporter has both signs at literal prime-power frequencies, and
+  even the all-frequency PSD Gram kernel cannot force its order
+  (`ccmActualHeadMatchedPhaseAllFrequencyFockGramReporterPositivityRouteKilled`).  Thus
+  cross-correlation, higher logarithmic grade, and coherent-Fock completion do not supply the
+  missing subunit trace transport.  A future route must add a source-specific phase-sensitive
+  non-Fock coupling, not another polarization of these carriers.
+- 2026-09-03 — Exact theta-survival relative curvature and normalized Stokes prime lift were
+  formalized.  They realize two compact non-Schatten-one metrics with a positive trace-one relative
+  curvature and sharp operator norm `1/3`.  Nuclear norm remains exactly `1`; result strengthens
+  relative-metric infrastructure but confirms it cannot close subunit trace inequality.

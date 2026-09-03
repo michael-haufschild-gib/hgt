@@ -142,3 +142,110 @@ Mellin-critical weight `x^{−1}dx` on the transverse coordinate. This is the in
 origin of the `1/2` in `Θ − ½`: leafwise Kähler weight `e^{t}` against the invariant transverse
 measure gives global weight `e^{t}`, and `e^{−t/2}φ^{t*}` is unitary (corpus:
 `deningerTwistedFlow_centered`).
+
+## Addendum 2026-09-03 (iii) — census of the global space in the corpus, and the transverse-measure atlas
+
+**What the corpus holds for the global foliated space** (deep inspection 2026-09-03):
+
+| stratum / structure | module | proved |
+|---|---|---|
+| fine generic source: points `(χ, h, u)` (unitary character, Kummer vector, suspension height); modulus flow and Kummer–Kronecker phase flow generate an affine-group action whose orbits are the leaves; the flow moves only the height and is transverse to the leaves | `DeningerAffineLeafFlow` | yes |
+| deck relation `(a, u) ∼ (q a, u/q)` trivialised by the weight-one radius; suspension flow = dilation of the radial line; ray augmentation resolution | `DeningerKummerRayResolution`, `DeningerArithmeticHilbertKummerRadius` | yes |
+| leaf cylinder modes: Haar-orthogonal characters, norm `1/|μ|`, cup pairing; Kronecker density ⟺ trivial annihilator | `DeningerCylinderModes` | yes |
+| prime cusp: metric `(u/L)(dL²+dθ²)`, weight-one Kähler form, deck invariance, infinite length, quarter-turn star | `DeningerProLogCuspHodge` | yes |
+| real apex germ: involution, flow weights `+½` (leaf), `−2` (transverse), stationary apex, orientation-sign descent | `DeningerStationaryKahlerGerm`, `DeningerReesJetTower` | yes |
+| generic/prime overlap: conformal metrics, agreeing stars | `DeningerAffinePrimeOverlap` | yes |
+| abstract flow purity: weight law, unitary group, `Re λ = n/2`, odd `J` with `J² = −1`, positive cup | `DeningerKahlerRiemannFlowPurity` | yes |
+| rational Witt space (Deninger Def. 2.3) | `DeningerDynSysRationalWittPresheaf` | yes |
+| transverse measure: canonical, both ends cusps, apex gluing `log x = −2 log u` | `ArchimedeanTransverseMassLaw` | yes (this cycle) |
+| **global gluing of the strata into one foliated space with holonomy-invariant transverse measure and leafwise complete Kähler metric** | — | **missing** |
+| leafwise `L²`-Hodge theory on the cusped leaves (fibred-cusp / extended Hodge) and its comparison with `M_ζ` | — | **missing (the gate)** |
+
+**Transverse-measure atlas (Lean).** On the generic stratum the flow translates the logarithmic
+height by `t` (`log_deningerSuspFlow_susp`); a nonzero flow-invariant transverse measure, finite
+on compacts, is a multiple of `d(log u)` and infinite at both ends (`suspension_transverse_mass_eq_top`).
+The real-apex chart's coordinate glues by `log x = −2 log u`, the only power law compatible with
+the flow weights `+1` and `−2` (`apexGluing_exponent_unique`); the gluing intertwines the two
+flows (`apexGluing_intertwines`), carries invariant measures to invariant measures
+(`map_apexGluing_invariant`), and sends `d(log u)` to `½ d(log x)` (`map_apexGluing_volume`).
+Hence the flow-invariant transverse measure of the whole transversal is canonical up to one
+global constant, with the real apex at the `u → ∞` end.
+
+**Consequence (MUST-136).** The Riemannian-foliation hypothesis of Deninger–Singhof (existence of
+a holonomy-invariant transverse measure) is not the obstacle: leaves fix the height, holonomy is
+trivial on the transversal, and the measure is forced. The whole difficulty of the positive Hodge
+gate is leafwise: a complete Kähler metric on the cusped leaves with `L²`-Hodge decomposition in
+the extended (fibred-cusp) sense, glued across the prime and real strata, whose reduced `H¹`
+compares with `M_ζ`. The next construction step is the leafwise metric on the generic leaf
+(affine-group orbit) that restricts to the prime cusp metric and the apex germ on the overlaps,
+with the flow scaling its Kähler class by `e^{t}`.
+
+## Addendum 2026-09-03 (iv) — correction: the polarization density has weight one, not zero
+
+The weight bookkeeping of the Deninger–Singhof polarization is: `H² = ℂ(−1)`, i.e. the flow acts
+on the Kähler class by `e^{t}`; the cup pairing `H¹ × H¹ → H²` is flow-equivariant, so paired
+eigenvalues satisfy `λ + λ' = 1`; positivity of `h(x, y) = tr(x ∪ ⋆y)` with `h(φx, φy) = e^{t}h(x, y)`
+makes `e^{−t/2}φ` unitary and forces `Re λ = ½`. A trace on `H²` *invariant* under the flow is
+impossible (`no_invariant_trace_of_weight_one`: `T(ω) = T(φ^{t*}ω) = e^{t}T(ω)`), and in real
+leaf dimension two the leafwise `L²` product of one-forms is conformally invariant, so a
+flow-invariant transverse measure would make the flow unitary on `H¹` with `Re λ = 0`, not `½`.
+Hence the transverse density of the polarization is the **weight-one density `du`** on the height
+line, whose pushforward under `u ↦ e^{t}u` is `e^{−t}du` (`heightDensity_map_heightFlow`), not
+the invariant `du/u` of addenda (ii)–(iii). With `du` the `u → 0` end has finite mass
+(`heightDensity_Ioo_zero_one`) and the real apex `u → ∞` has infinite mass
+(`heightDensity_Ioi_one`); in the apex coordinate `x = u^{−2}` the density is `½ x^{−3/2}dx`, so
+the real place is the *only* transverse cusp. Uniqueness of the weight-one density is the Haar
+argument applied to `e^{−y}ν` in the logarithmic coordinate (paper).
+
+**Corrected laws.** MUST-135 and MUST-136 are replaced by MUST-137: the transverse density of the
+F₁ object is `du` (weight one, canonical up to a constant), invariant transverse measures are
+excluded by `H² = ℂ(−1)`, the `u → 0` end is a finite boundary and the real apex is the single
+transverse cusp; the difficulty of the gate remains leafwise. The results of (ii)–(iii) stay
+true as statements about invariant measures and record why that hypothesis cannot be the one
+used.
+
+## Addendum 2026-09-03 (v) — the weight-one density is the corpus's half-density, and the completion dichotomy
+
+**Identification (Lean, `RHTower.WeightOneFlowIsometry`).** The corpus completes the literal Meyer
+cohomology with the `L¹` seminorm of weight `exp(t/2)` in the logarithmic radius
+(`deningerMeyerHalfDensityWeight`), on which the centered dilation `g ↦ e^{−c/2} g(· − c)` is an
+isometry. The square of that weight is `exp t = du/dt` (`deningerMeyerHalfDensityWeight_sq`); the
+centered flow is an `L²` isometry for the weight `exp t` (`integral_exp_mul_normSq_centeredFlow`);
+and any continuous weight for which the centered flow preserves interval masses is a constant
+multiple of `exp t` (`weight_eq_exp_of_flow_isometry`). So the Deninger–Singhof polarization density
+of addendum (iv) and the corpus's half-density completion are one weight, seen in `L²` and in `L¹`.
+Its Mellin dual is the critical line: `L²((0,∞), du)` is carried by the Mellin transform onto
+`L²(Re s = ½)`, which is the classical reason the unitary spectrum of dilations is the line.
+
+**Completion dichotomy (synthesis of corpus theorems).** Let `H` be a completion of the literal
+Meyer cohomology on which the centered flow acts by bounded operators.
+1. If `H` is a Hilbert space with unitary flow diagonalised by Mellin against an absolutely
+   continuous spectral measure (the `L²(du)` completion, or any weighted `L²` on the line such as
+   the Calderón trace norm `∫|F(½+iτ)|²/|τ| dτ` of the leaf modes), the flow has no eigenvectors
+   (`HTGeometry.DilationSpectralType`) and no zero evaluation is continuous: the zeros are
+   resonances, not eigenvalues, and no Hodge structure with the zeros as `Θ`-eigenvalues exists on
+   `H`.
+2. If `H` is a Hilbert space on which some zero evaluation is a continuous transpose
+   eigenfunctional of the unitary flow, that zero is on the line
+   (`re_eq_half_of_unitary_transposeEigenfunctional`); a Hilbert completion carrying all zeros as
+   eigen-characters is the Weil `ℓ²` over the divisor (`XiWeilLineConjHilbert`) and exists as a
+   polarised structure exactly under RH.
+3. If `H` is the `L¹` half-density completion, the on-line evaluations are continuous and the
+   off-line ones are unbounded (`riemannHypothesis_iff_deningerMeyerHalfDensityXiEvaluationsBounded`),
+   but `H` has no inner product, so no polarisation positivity can be stated on it; the Hodge star
+   of the leaf modes is the Hilbert transform `i·sgn μ`, which is not bounded on `L¹`.
+
+Hence no completion of the arithmetic Meyer cohomology carries simultaneously a positive
+polarisation and the zeros as continuous spectrum, unless RH holds already. The Deninger–Singhof
+polarised Hodge structure, if it exists for `Spec ℤ`, lives on the literal (uncompleted)
+cohomology, and its positivity is the Weil form on the divisor. This is MUST-138; it closes the
+"extended `L²`-Hodge" reading of the gate `DAC_ARITHMETIC_CALDERON_GREEN_INTERMEDIATE_EXTENSION`
+as a receiver and confirms the corpus's earlier verdict ("Deninger weight-one polarisation: axioms
+⟺ Re = ½", five-lanes-one-wall) from the completion side.
+
+**Verdict on the F₁ lane.** Its transverse data (`du`), leafwise complex structure (Hilbert
+transform in the Kronecker direction, invariant under the positive dilations of the deck group and
+the flow, `deningerFreqSign_pos_mul`), local positivity (`deningerMode_cupStar_pos`) and trace
+weight are all canonical; the lane produces no positivity beyond the local modes. Further work on
+completions or leafwise metrics is theatre. The producer question is the one the corpus already
+names: a positivity-preserving regularisation of the prime-side Gram forms.

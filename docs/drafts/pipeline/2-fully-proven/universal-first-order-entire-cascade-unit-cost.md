@@ -10340,3 +10340,24 @@ leading terms.  The remaining open core is exactly that analytic/valuative refin
 finite common ramification for the actual derivative branches, prove their nonzero output-linear
 leads on one compatible nested flag, and establish the place-specific `RatIn` and response bounds.
 The card therefore remains at Stage 2.
+
+### Valuation-compatible finite branch flag (2026-09-03)
+
+`HTGeometry/NonautonomousFinitePuiseuxValuationFlag.lean` now equips the algebraic-closure target
+with a valuation ring dominating the full Hahn valuation ring and contracts it back exactly.
+Pulling that valuation ring through the unconditional finite actual branch-field embedding gives
+
+```text
+nonautonomousFiniteCascadeBranchValuationSubring
+nonautonomousFiniteCascadeStateInBranchField_mem_valuationSubring_iff
+```
+
+Thus every actual clock/state generator has exactly the prescribed Hahn-coordinate integrality on
+one valuation of the finite actual derivative-branch field.  The leaf passes direct checking, its
+targeted build, and a ten-declaration audit with exactly
+`[propext, Classical.choice, Quot.sound]`; it is umbrella-wired without an umbrella build.
+
+This closes compatibility of the nested state valuation flag.  It does not force an arbitrary
+algebraic-closure lift to choose derivative roots with the nonzero output-linear Wiman leads.
+Those simultaneous branch-lead choices, followed by the place-specific `RatIn` and response
+bounds, remain the exact open core.  The card stays at Stage 2.

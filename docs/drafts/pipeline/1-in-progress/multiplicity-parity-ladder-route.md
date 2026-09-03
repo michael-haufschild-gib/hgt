@@ -1400,3 +1400,335 @@ eventually bounded at `boundaryExteriorPoint`, proves no cofinal scheduled produ
 bounded, and specializes this to the formerly surviving iterated-log schedule. Direct Lean check
 and targeted module build pass. Axiom audits report only `propext`, `Classical.choice`, and
 `Quot.sound`; no `sorry`, new axiom, opaque declaration, or unsafe declaration is used.
+
+## 2026-09-03 — Counterterm classification isolates singular renormalization
+
+Let `c_N(s)` correct the raw convolution-half Dirichlet polynomial before multiplication by the
+Cayley pole factor. Source fidelity has two exact requirements: every `c_N` is analytic on
+`rightHalf`, and `c_N -> 0` compact-open on `farHalf`. These conditions preserve both holomorphy of
+the corrected approximants and compact-open convergence to the fixed Euler half-germ. Consequently
+local boundedness of any cofinal corrected family still implies `RHLadder 1` by Vitali and analytic
+identity.
+
+The Abel obstruction forces a sharp price. If the corrected arithmetic values have a bounded tail
+at `s=6/11`, then `c_N(6/11)` cannot also have a bounded tail, since subtracting two bounded tails
+would bound the raw partial sums. Local boundedness of a cofinal corrected product gives precisely
+such a bounded corrected tail through the base-five Cayley lower bound. Therefore every successful
+counterterm is unbounded at `6/11`. In particular, uniformly bounded perturbations and corrections
+tending pointwise to zero there cannot work.
+
+Status: `[LEAN-PROVED POSITIVE SURVIVOR] [EXACT OPEN BRIDGE, NOT RH]`. Required object is now a
+singular separating family: analytic on `rightHalf`, compact-open zero on `farHalf`, unbounded in
+the inner strip strongly enough to cancel the raw pole-root divergence, yet locally bounded after
+the corrected arithmetic term is paired with the cofinal Cayley factor. Ordinary small smoothing
+is excluded. Next hostile test should construct an explicit separating counterterm and determine
+whether its transition layer near `Re(s)=1` remains locally bounded or merely moves the blow-up.
+
+Lean: `SquarefreeConvolutionHalfCountertermNecessity.lean` defines admissible counterterms and
+corrected scheduled products, proves preservation of analyticity and the Euler-chamber source
+limit, gives the conditional `RHLadder 1` endpoint, and proves the unbounded-counterterm necessity
+plus bounded/pointwise-vanishing no-go corollaries. Direct Lean check and targeted module build
+pass. Axiom audits report only `propext`, `Classical.choice`, and `Quot.sound`.
+
+## 2026-09-03 — Explicit anchored separator repairs the Abel witness
+
+The first singular counterterm satisfying the classification is explicit:
+
+`c_N(s) = -D_N(6/11) exp(N(6/11-s))`.
+
+Each `c_N` is entire. At `s=6/11` its exponential factor is one, so
+`D_N(6/11)+c_N(6/11)=0`; every pole-cleared scheduled approximant therefore vanishes exactly at
+the point which retired all raw schedules. On every compact subset of `Re(s)>1`, the exponential
+decay beats the certified crude bound `|D_N(6/11)|<=N^2`, so `c_N->0` compact-open. The family is
+therefore a source-faithful admissible counterterm for the general Vitali bridge.
+
+Its singularity is genuine, not hidden: `c_N(6/11)=-D_N(6/11)` has no bounded tail, and the
+counterterm family is not locally bounded on any ball centered at `6/11`. This is required by the
+counterterm classification. The cancellation shows that unbounded correction amplitude alone does
+not obstruct bounded corrected products.
+
+Status: `[LIVE EXPLICIT CANDIDATE] [NOT RH]`. The old Abel witness is closed for this family, but
+no local-boundedness theorem is claimed. Exact open core is transition-layer control of
+
+`r_(kappa(N))(s) (D_N(s)+c_N(s)) / C_(1/2)(s)`
+
+on all compact subsets of `rightHalf` for a cofinal `kappa`. Next hostile attack must test points
+and derivatives immediately left of the anchor; a fixed-point cancellation which merely moves
+exponential blow-up is terminal.
+
+Lean: `SquarefreeConvolutionHalfAnchoredCounterterm.lean` proves the polynomial amplitude bound,
+entireness, compact-open Euler-chamber decay, admissibility, exact anchor cancellation, required
+unbounded amplitude, and failure of local boundedness for the counterterm by itself. Direct Lean
+check and targeted module build pass. Axiom audits report only `propext`, `Classical.choice`, and
+`Quot.sound`.
+
+## 2026-09-03 — Rank-one boundary anchor fails at first jet
+
+The explicit anchor is terminal. On the radius-`1/22` disc about `b=6/11`, coefficient bounds give
+`|D_N(s)|<=N`; Cauchy's estimate therefore gives `|D_N'(b)|<=22N`. But the separator derivative is
+`-N`, so
+
+`(D_N+c_N)'(b)=D_N'(b)+N D_N(b)`.
+
+The already-certified absence of any bounded tail for `|D_N(b)|` forces these corrected first jets
+to escape every fixed bound. For every cofinal degree schedule, the Cayley factor is eventually
+bounded below at `b`, while the determinant is fixed and nonzero. If the full corrected quotients
+were locally bounded, Cauchy's derivative estimate on a smaller disc would give one uniform first-
+derivative bound, contradicting this escape.
+
+Status: `[RETIRED — FIRST-JET OBSTRUCTION] [NOT RH]`. Exact anchor interpolation only moves the
+Abel obstruction from value order zero to derivative order one. Positive survivor: a viable
+singular renormalization must cancel or distribute a transition jet; no rank-one value anchor of
+this form can suffice.
+
+Lean: `SquarefreeConvolutionHalfAnchoredCountertermNoGo.lean` proves the coefficient bound, linear
+Cauchy derivative estimate, exact counterterm and quotient derivative formulas, and the universal
+cofinal local-boundedness no-go. Direct Lean check passes.
+
+## 2026-09-03 — First-jet Hermite repair fails at second jet
+
+The next counterterm matches the degree-one Taylor jet of `exp(N(s-b))D_N(s)` at `b=6/11`, then
+multiplies it by `-exp(N(b-s))`. It is entire, converges compact-open to zero on `Re(s)>1`, and
+cancels both the corrected value and first derivative exactly at `b`. Thus it passes the previous
+first-jet obstruction rather than merely repeating the rank-one anchor.
+
+Its first uncancelled jet is exact:
+
+`(D_N+c_N)''(b)=D_N''(b)+2N D_N'(b)+N^2 D_N(b)`.
+
+Cauchy on the radius-`1/22` disc gives `|D_N'(b)|<=22N` and `|D_N''(b)|<=968N`. Since
+`|D_N(b)|` has no bounded tail, the `N^2D_N(b)` term forces the corrected second jets beyond every
+fixed bound. For a cofinal Cayley schedule the pole factor is eventually bounded below and the
+determinant is fixed nonzero. Local boundedness would give a uniform second-derivative Cauchy
+bound, contradiction.
+
+Status: `[RETIRED — SECOND-JET OBSTRUCTION] [NOT RH]`. Finite Hermite matching through first order
+only moves the obstruction one derivative higher. Positive survivor is now increasing-order or
+genuinely distributed transition-jet renormalization; fixed value/first-jet interpolation is
+closed.
+
+Lean: `SquarefreeConvolutionHalfFirstJetCountertermNoGo.lean` constructs the admissible correction,
+proves exact zero- and first-jet cancellation, all-order Cauchy bounds for raw jets, the exact
+second-jet quotient formula, and the cofinal local-boundedness no-go. Direct Lean check passes.
+
+## 2026-09-03 — Every fixed dressed arithmetic jet escapes
+
+The first- and second-jet calculations extend arithmetically to every fixed order. For
+
+`H_N(s)=exp(N(s-b))D_N(s)`, `b=6/11`,
+
+Leibniz gives
+
+`H_N^(k)(b)=sum_(i=0)^k binom(k,i) N^i D_N^(k-i)(b)`.
+
+The top term is `N^kD_N(b)`. Cauchy gives the explicit general bound
+`|D_N^(j)(b)|<=j! N 22^j`. Hence the sum of all terms with `i<k` is at most `C_k N^k`, where
+
+`C_k=sum_(i<k) binom(k,i)(k-i)!22^(k-i)`.
+
+Because `|D_N(b)|` has no bounded tail, `|H_N^(k)(b)|` has no bounded tail for every fixed `k`
+(including `k=0`). This is unconditional and schedule-independent.
+
+Status: `[FIXED-JET ARITHMETIC CLASS CLOSED] [NOT RH]`. Any fixed-depth Hermite anchor leaves its
+first uncancelled jet equal to one of these dressed jets, so the only interpolation survivor has
+depth tending to infinity with cutoff. Distributed/nonlocal transition control remains separate.
+
+Lean: `SquarefreeConvolutionHalfFixedJetEscape.lean` proves the exact dressed Leibniz expansion,
+explicit remainder constant and bound, and absence of an eventual bound at every fixed jet order.
+Direct Lean check passes.
+
+## 2026-09-03 — Abel obstruction fills the entire interior real interval
+
+The raw obstruction is not confined to the original witness `b=6/11`. For every real
+`sigma` with `1/2<sigma<1`, bounded convolution-half Dirichlet partial sums at `sigma` would, by
+Abel summation, define a holomorphic Dirichlet sum on a half-plane still containing `s=1`.
+Squaring on the Euler chamber and applying analytic uniqueness would force the zeta residue unit
+to vanish at one. Hence the raw partial sums have no bounded tail at every such `sigma`.
+
+Combining the new theorem at `sigma=4/7` with the existing Cayley lower bound gives a second
+counterterm necessity law: every cofinal locally bounded corrected family has an unbounded
+counterterm tail at `4/7`, as well as at `6/11`. In particular, any correction tending to zero at
+`4/7` is terminal for every cofinal Cayley schedule.
+
+Status: `[LEAN-PROVED MULTI-ANCHOR OBSTRUCTION] [NOT RH]`. Point-jet cancellation must stay active
+throughout the whole real interval `(1/2,1)`, not merely at one selected anchor. This sharply
+constrains the moving-depth Hermite survivor: a schedule whose transition collapses back to
+`6/11` is already excluded at `4/7`. The remaining hostile audit is whether a linearly moving
+transition can preserve compact-open source fidelity on the full vertically unbounded Euler
+half-plane; vertical Taylor growth is the suspected obstruction, but that dichotomy is not yet a
+Lean theorem.
+
+Lean: `SquarefreeConvolutionHalfInteriorUnbounded.lean` proves pointwise and eventual
+unboundedness for every real `sigma in (1/2,1)`, specializes it at `4/7`, and proves the second
+counterterm necessity and pointwise-vanishing no-go. Direct Lean check passes.
+
+## 2026-09-03 — Exact Cayley seam formulation
+
+Set `w=(s-2)/s`. The strict target half-plane `Re(s)>1/2` is biholomorphic to the disk
+`|w+1|<2`, with inverse `s=2/(1-w)`, while the arithmetic Euler chamber `Re(s)>1` is exactly the
+unit subdisk `|w|<1`. The fixed prime-zeta half-germ therefore lives on an internal unit disk, and
+the missing scalar is precisely its analytic square-root continuation across that circle to the
+larger tangent disk.
+
+This change of coordinates does not weaken the endpoint: existence of a square root on the larger
+disk is equivalent to `RHLadder 1`, and the stronger condition that it agree with the transported
+fixed arithmetic half-germ on the unit disk is equivalent as well. The seam is therefore a clean
+Hardy/Riemann--Hilbert formulation of the surviving problem, not a new producer and not an RH
+proof.
+
+Status: `[EXACT CAYLEY-SEAM REDUCTION] [OPEN PRODUCER] [NOT RH]`. The useful search target is now a
+coefficient-faithful continuation theorem across the internal unit circle. Pure root existence,
+locally uniform square approximation, and the first-order half-ODE remain exact receivers and are
+circular if asserted without such a producer.
+
+Lean: `XiPoleClearedFirstTraceCayleySeam.lean` proves both domain maps and inverses, exact Euler
+unit-subdisk membership, analyticity of the transported field and arithmetic germ, root-existence
+equivalence, and fixed-germ extension equivalence. Direct Lean check passes.
+
+The internal unit circle is not a local analytic barrier. Classical zero-freeness on
+`Re(s)>=1` makes the transported field nonzero on the closed unit disk (inside the larger open
+disk). Every finite seam point therefore has a nonvanishing local analytic square root. The
+remaining obstruction is global: continuation through the outer annulus must avoid or acquire
+even winding around every off-line zero. Arithmetic loss of the Euler series at `Re(s)=1` is a
+source-representation seam, not a local singularity of the continued field.
+
+## 2026-09-03 — Unconditional high-band continuation beyond the Euler chamber
+
+The de la Vallee Poussin zero-free region yields a genuine positive continuation result. There is
+an absolute height `T` such that for every `Y>=T`, the convex height-one band
+
+`Y<Im(s)<Y+1`, `Re(s)>1-1/(10000 log(Y+1))`
+
+is zero-free. On each band the pole-cleared first-trace field therefore has an analytic square
+root. Normalizing its sign at the canonical Euler-side point `2+i(Y+1/2)` and applying analytic
+uniqueness makes it agree with the fixed prime-zeta half-germ throughout the band overlap with
+`Re(s)>1`.
+
+Status: `[UNCONDITIONAL ARITHMETIC CONTINUATION] [SHRINKING WIDTH] [NOT RH]`. This is stronger than
+pointwise local seam passage: one coherent branch crosses the full height-one band. Its leftward
+gain is only `1/(10000 log Y)` and tends to zero, whereas the target requires fixed width `1/2`.
+Classical zero-free regions therefore produce a cusp collar, not the required half-plane root.
+
+Lean: `XiPoleClearedFirstTraceZeroFreeBand.lean` proves band openness, convexity, containment in
+`rightHalf`, zero-freeness from the formal de la Vallee Poussin theorem, analytic root existence,
+and exact agreement with the fixed Euler half-germ. Direct Lean check passes.
+
+## 2026-09-03 — One coherent branch on the full upper zero-free cusp
+
+The separate high-band roots assemble more strongly into one global arithmetic branch. For a
+sufficiently large absolute `T`, define
+
+`C_T={s: Im(s)>T, Re(s)>1-1/(10000 log(Im(s)))}`.
+
+A globally continuous real-coordinate shear maps the convex quadrant
+`{Re(z)>0, Im(z)>T}` homeomorphically onto `C_T`; hence the cusp is open and simply connected. The
+formal de la Vallee Poussin theorem makes the pole-cleared first-trace field nonzero throughout
+`C_T`. It therefore has one analytic square root there. Sign normalization at an Euler-side point
+and analytic uniqueness force equality with the fixed prime-zeta half-germ on all of
+`C_T intersect {Re(s)>1}`.
+
+Status: `[COHERENT ZERO-FREE CUSP ROOT] [UNCONDITIONAL] [NOT RH]`. This is no longer a collection of
+unrelated local branches. It is one source-faithful analytic object on an unbounded domain crossing
+the Euler line at every high ordinate. Its boundary nevertheless tends to `Re(s)=1`; it reaches no
+fixed line `Re(s)=sigma<1`. The remaining leap from shrinking cusp width to the fixed half-plane is
+exactly where possible off-line zeros and `ZMod 2` monodromy enter.
+
+Lean: `XiPoleClearedFirstTraceZeroFreeCusp.lean` proves continuity of the protected cusp boundary,
+constructs the shear homeomorphism, proves openness and simple connectedness, establishes
+zero-freeness, and constructs the normalized arithmetic square root. Direct Lean check passes.
+
+## 2026-09-03 — One arithmetic branch on the symmetric two-ended cusp
+
+Reflecting the upper cusp through complex conjugation gives a lower cusp with the same unconditional
+zero-free bound. Each cusp is open and simply connected and meets the Euler chamber `Re(s)>1` in a
+convex set. Orienting both square roots by the fixed prime-zeta half-germ makes their overlap values
+identical. Two successive analytic gluing steps therefore produce one function on
+
+`{Re(s)>1} union C_T^+ union C_T^-`
+
+which is analytic, squares to the pole-cleared first-trace field, and equals the fixed arithmetic
+half-germ everywhere in the Euler chamber.
+
+Status: `[SYMMETRIC TWO-ENDED CUSP ROOT] [UNCONDITIONAL] [NOT RH]`. Conjugation symmetry introduces
+no sign or monodromy obstruction once both ends are attached through the Euler chamber. It also adds
+no fixed-width gain: both boundaries retreat to `Re(s)=1`. The surviving obstruction remains
+leftward domain enlargement through the zero-bearing strip, not normalization or compatibility of
+the upper and lower arithmetic branches.
+
+Lean: `XiPoleClearedFirstTraceSymmetricZeroFreeCusp.lean` proves lower-cusp topology, reflected
+zero-freeness, arithmetic orientation, cusp disjointness, height restriction, and exact two-stage
+gluing on the connected symmetric domain. Direct Lean check passes.
+
+## 2026-09-03 — Growing Hermite depth below slope `1/54` is terminal
+
+Let `D_N` be the convolution-half Dirichlet polynomial and let `H_{N,K}` be the degree-`K` Taylor
+polynomial at `b=6/11` of `exp(N(s-b))D_N(s)`. The canonical moving-depth Hermite counterterm is
+
+`c_{N,K}(s)=-exp(N(b-s))H_{N,K}(s)`.
+
+It cancels the raw value at `b` for every depth. On the Cauchy circle of radius `1/77`, the dressed
+source has norm at most `N exp(N/77)`. Evaluating its Taylor polynomial at the independent witness
+`a=4/7`, whose distance from `b` is `2/77`, costs at most `2^(K+1)`. After the separating
+exponential is restored,
+
+`|c_{N,K}(4/7)| <= N 2^(K+1) exp(-N/77)`.
+
+Using the fourth Taylor lower bound for `exp(7/10)` gives `2^K<=exp(7K/10)`, while
+`1/77-7/(10*54)=1/41580>0`. Consequently every depth schedule with `K(N)<=N/54` makes this
+counterterm tend to zero at `4/7`. The interior
+multi-anchor theorem says any locally bounded cofinal corrected family requires an unbounded
+counterterm there, yielding a contradiction. The earlier `1/154` estimate remains as a compatibility
+corollary.
+
+Status: `[LINEAR-DEPTH HERMITE CLASS CLOSED] [NOT RH]`. This strictly extends the fixed-depth
+closure to a growing linear class. A surviving point-Hermite schedule must exceed this slope (the
+constant is conservative, not claimed sharp), or replace point Taylor interpolation with a
+distributed/nonlocal transition. Lean:
+`SquarefreeConvolutionHalfMovingHermiteNoGo.lean`; direct Lean check passes.
+
+## 2026-09-03 — Far witness closes point-Hermite depths through slope `1/15`
+
+The same moving Taylor/Hermite correction admits a stronger independent test at `s=2/3`, whose
+Cayley coordinate is exactly `-2`. Explicit alternating-binomial estimates show that the Cayley
+square-root factor has norm at least one for every cutoff `N>=8`; hence a locally bounded corrected
+family still requires its counterterm to be unbounded at this point.
+
+A radius-`1/22` Cauchy estimate about `b=6/11` and the gap `2/3-6/11=4/33` give
+
+`|c_{N,K}(2/3)| <= N 3^(K+1) exp(-5N/66)`.
+
+The elementary bound `3<=exp(11/10)` then makes the right side tend to zero for every schedule
+eventually satisfying `K(N)<=N/15`; the remaining exponential rate is `2/825`. This contradicts
+the exact counterterm-unboundedness necessity at `2/3`.
+
+Status: `[FAR-WITNESS LINEAR-DEPTH CLASS CLOSED] [NOT RH]`. Every surviving point-Hermite schedule
+must exceed `N/15` infinitely often. This constant is sufficient, not sharp. Distributed or
+nonlocal transitions remain open, as do high-slope point-Hermite schedules whose Euler-chamber
+compact-open behavior has not yet been controlled. Lean:
+`SquarefreeConvolutionHalfMovingHermiteFarWitnessNoGo.lean`; direct Lean check passes.
+
+## 2026-09-03 — Superdiagonal Hermite depth destroys Euler source fidelity
+
+Large Taylor depth fails for a different reason. At the Euler point `s=1101/1100`, use the full
+radius-`6/11` circle about `b=6/11`; this circle remains in `Re(s)>=0`, where the finite Dirichlet
+source has norm at most `N`. A centered Cauchy remainder theorem gives
+
+`|H_{N,K}(1101/1100)-exp(501N/1100)D_N(1101/1100)|
+  <= (200/33) N exp(6N/11) (167/200)^(K+1)`.
+
+After undoing the exponential dress, the corrected source obeys
+
+`|D_N(1101/1100)+c_{N,K}(1101/1100)|
+  <= (200/33) N exp(9N/100) (167/200)^(K+1)`.
+
+A fourth-order Taylor remainder proves `exp(1801/10000)<=200/167`, hence
+`167/200<=exp(-1801/10000)`. Every schedule eventually satisfying `K(N)>=N/2` therefore makes this
+tend to zero with residual exponential rate `1/20000`. But source admissibility would make the
+counterterm tend to zero while `D_N(1101/1100)` tends to its nonzero Euler product. Hence every
+schedule eventually above slope `1/2` is source-unfaithful.
+
+Status: `[HIGH-DEPTH SOURCE-FIDELITY CLASS CLOSED] [NOT RH]`. Combined exact survivor for the
+canonical point-Hermite construction: a viable schedule can be neither eventually at most `N/15`
+nor eventually at least `N/2`. Intermediate slopes and schedules oscillating between regimes
+remain open; distributed/nonlocal transitions remain separate. Lean:
+`SquarefreeConvolutionHalfMovingHermiteHighDepthNoGo.lean`; direct Lean check passes.

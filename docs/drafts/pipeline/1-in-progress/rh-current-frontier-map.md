@@ -954,7 +954,7 @@ Hardy's tail theorem supplies a critical-line Xi zero of odd analytic order abov
 
 The local length-`m` divisor algebra now has a canonical intrinsic Euler--residue alternating form with anti-diagonal coefficient `m-1-2i`. Its radical is zero exactly for even `m`; for odd `m=2r+1` the radical is exactly the middle line `C*t^r`. Hence canonical local Kramers nondegeneracy is itself equivalent to `RHLadder 1`, not a producer. At coefficient level the opposite extreme is also closed: every normalized arithmetic function has a unique coherent dyadic Dirichlet-convolution root tower, and its depth-`n` stage has `2^n`-fold convolution power equal to the original. The squarefree tower has prime coefficient `2^(-n)`. Its first half is now identified exactly with the multiplicative local system `a(p^k)=binom(1/2,k)`; `|a(n)|<=d(n)`, its L-series is holomorphic on `Re(s)>1`, and there `L(a,s)^2=zeta(s)/zeta(2s)`. The separate prime restriction proves nonsummability on `Re(s)<=1`, so this Euler chamber is sharp for direct absolute convergence. Thus all-rung coefficient escalation and the first Euler germ are automatic, while analytic continuation of each stage is exactly the missing ladder content. Differential Galois theory adds no square obstruction: on every nonempty connected open domain, including `rightHalf`, an analytic `g` is locally hypertranscendental exactly when `g^2` is; the entire-function specialization holds too. Hypertranscendence is compatible with rather than hostile to analytic square-root carriers.
 
-The raw pole-cleared Cayley--Dirichlet cofinal-schedule class is terminal. Rational Cayley-binomial functions `r_N`, holomorphic on `rightHalf`, converge on `farHalf` to a branch whose square is `s-1`; pairing any cofinal degree schedule `kappa(N)` with canonical convolution-half cutoff preserves Euler-chamber compact-open convergence. Local boundedness on `rightHalf` would imply `RHLadder 1` by Vitali. Lean proves raw convolution-half partial sums have no bounded tail at `s=6/11`; boundedness would force Abel continuation of square identity and contradiction at pole-cleared value `s=1`. Every cofinal schedule eventually reaches Cayley degree `24`, where base-five factor lower bound transfers scheduled local boundedness to this forbidden raw bound. Hence no cofinal raw scheduled sequence is locally bounded, including iterated-log schedule. A successor must alter arithmetic approximants by source-faithful smoothing, subtraction, or renormalization while retaining compact-open Euler half-germ convergence; slower degree growth cannot work.
+The raw pole-cleared Cayley--Dirichlet cofinal-schedule class is terminal. Rational Cayley-binomial functions `r_N`, holomorphic on `rightHalf`, converge on `farHalf` to a branch whose square is `s-1`; pairing any cofinal degree schedule `kappa(N)` with canonical convolution-half cutoff preserves Euler-chamber compact-open convergence. Local boundedness on `rightHalf` would imply `RHLadder 1` by Vitali. Lean proves raw convolution-half partial sums have no bounded tail at `s=6/11`; boundedness would force Abel continuation of square identity and contradiction at pole-cleared value `s=1`. Every cofinal schedule eventually reaches Cayley degree `24`, where base-five factor lower bound transfers scheduled local boundedness to this forbidden raw bound. Hence no cofinal raw scheduled sequence is locally bounded, including iterated-log schedule. The exact counterterm successor is formal: corrections analytic on `rightHalf` and vanishing compact-open on `farHalf` preserve the Euler source and would imply `RHLadder 1` if their corrected cofinal products were locally bounded. Such a successful correction must be unbounded at `s=6/11`; every eventually bounded or pointwise-vanishing correction there is impossible. An explicit singular separator now passes these necessary tests: `c_N(s)=-D_N(6/11) exp(N(6/11-s))` is entire, vanishes compact-open on `farHalf`, and makes every corrected scheduled value exactly zero at `6/11`, while its amplitude and the counterterm family are provably unbounded there. This repairs the old witness but does not prove local boundedness; transition-layer control on all of `rightHalf` is the exact live core.
 
 ### Arithmetic source-moment Torelli
 
@@ -1443,3 +1443,147 @@ MSC is strongest assembled instance of first topology: safe-chamber order reache
 Second topology merges RG, CCM-FU/CFI, and SP-E at completed scale order; regular causal-depth trace assembly and unframed chiral spectralization are terminal, leaving source-framed projective/indefinite or varying-domain singular relative transport, marked-halfgap arithmetic, or Gaussian discrepancy. Third topology has exact Ramaré incidence, sparse mean-value and recurrence algebra, constructed Lemma-3.5 ranges, powered-prime source input, exact complete-period Kloosterman laws, family-lcm collision grouping, time-frequency Parseval, and erased-diagonal response-mass factorization. Menon's literal final range is exactly reduced to its harmonic Ramaré bilinear ladder: smooth/rough removal, geometric splitting, support error, Abel transfer, scaled prime control, reciprocal Halász--Montgomery cofactor control, and their premise-free joint insertion into each Case-I block are closed. Remaining content is source-scale summation/decay of explicit block majorants plus literal Hall/load/flux relation, or collective many-prime half-power cancellation and source-scale fourth-moment saving for exact nested-aperture response-mass defect. Fixed local arity, signed column control, literal complete factor-two histograms, complete-lcm Gamma synchronization, and monotone telescoping are terminal.
 
 HB and FZZ-P add distinct nonlinear occurrences. RHist remains strongest candidate topology but lacks literal arithmetic production of a positive nonescaping dark history. PW-B's singular energy survives only with forced ill-conditioning. HCF leaves explicit `21/100` five-center source-majorant ceiling or height-summed deterministic dyadic-prefix/Plemelj weld; its selector and transfer are closed. Exact finite Levinson and shifted-mollifier/reciprocal-log interfaces close a coefficient/sign subchain, but displaced terminal-window zeta mean square and endpoint nonvanishing remain open. Unconditional critical-line density, singleton, odd-multiplicity, and bounded-support Weil results are census/parity theorems, not RH routes. Positive Selberg ledger domination, pair-even selection, multiplicity-doubling or entire-square-root selection, direct Burnol subunit escape anchoring, nonzero finitely generated three-prime-stable integral Frobenius carriers, eventual Li negativity, and interior Möbius-convergence producers are terminal. Current frontiers remain source `ORD/COF/ORIENT`, singular `LAND/COMP`, or nonlinear `DYN`; additional receivers do not change them.
+
+## 2026-09-03 — Squarefree-half anchored-counterterm frontier update
+
+The explicit rank-one boundary anchor is now terminal, not live. Although it is entire, disappears
+compact-open in the Euler chamber, and cancels every corrected value at `s=6/11`, its first jet is
+`D_N'(6/11)+N D_N(6/11)`. Cauchy gives `|D_N'(6/11)|<=22N`, whereas the raw values have no bounded
+tail. Thus every cofinal Cayley schedule has unbounded corrected first jets, contradicting any local
+normal-family bound. The surviving squarefree-half continuation class must use a jet-distributed,
+non-rank-one singular renormalization with genuine transition-layer control; point interpolation is
+closed.
+
+## 2026-09-03 — Squarefree-half first-jet frontier update
+
+Degree-one Hermite repair is terminal. The explicit source-faithful correction cancels both value
+and first derivative at `s=6/11`, but its second jet is
+`D_N''+2N D_N'+N^2D_N`. Uniform Cauchy bounds `|D_N'|<=22N` and `|D_N''|<=968N`, together with the
+unbounded raw values, force second-jet escape for every cofinal Cayley schedule. Hence neither a
+rank-one value anchor nor fixed first-jet interpolation can supply the half-germ continuation.
+Survivors must have increasing interpolation order or distributed/nonlocal transition control.
+
+## 2026-09-03 — Squarefree-half fixed-jet class closure
+
+For every fixed `k`, the dressed arithmetic jet
+`(d/ds)^k[exp(N(s-6/11))D_N(s)]` at `s=6/11` has no bounded tail. Its leading term is
+`N^kD_N(6/11)`; every other Leibniz term is bounded by an explicit `k`-dependent constant times
+`N^k` using Cauchy. This closes the arithmetic core of every fixed-depth Hermite anchor. The live
+counterterm class is reduced to depth growing with cutoff or genuinely distributed/nonlocal
+transition regularization.
+
+## 2026-09-03 — Squarefree-half interior multi-anchor obstruction
+
+Abel continuation now proves that canonical convolution-half Dirichlet partial sums have no
+bounded tail at every real `sigma` with `1/2<sigma<1`, not only at `6/11`. At the independent
+Cayley witness `4/7`, every cofinal locally bounded corrected family therefore requires an
+unbounded counterterm; a correction tending to zero there cannot work. The live increasing-depth
+class must remain nontrivial across the full interior interval while still disappearing
+compact-open on all of `Re(s)>1`. A transition localized near one anchor is closed. Exact next
+test is the vertical-growth/source-fidelity dichotomy for moving Taylor depth.
+
+## 2026-09-03 — Valuation-one Cayley seam frontier
+
+The first arithmetic half-divisor problem now has an exact disk model. Under
+`w=(s-2)/s`, `Re(s)>1/2` is `|w+1|<2` and `Re(s)>1` is exactly `|w|<1`; the inverse is
+`s=2/(1-w)`. The fixed prime-zeta half-germ is analytic on the unit disk. Extending it as an
+analytic square root of the transported pole-cleared first-trace field to the larger disk is
+equivalent to `RHLadder 1`.
+
+This isolates one internal-circle seam but supplies no continuation mechanism. It also prevents
+relabeling a locally uniform square approximation or the linear half-ODE as progress: both are
+already exact RH-equivalent receivers. Live content must be an unconditional arithmetic theorem
+that controls continuation across the seam while retaining the fixed Euler germ. Separately,
+moving-depth Hermite renormalization still faces the unformalized vertical-growth/source-fidelity
+dichotomy; sublinear transitions are already excluded by the interior multi-anchor obstruction.
+
+Local seam passage is unconditional. Xi zero-freeness on `Re(s)>=1` implies the transported
+first-trace field is nonzero on the closed unit disk wherever it lies in the larger domain, so a
+nonvanishing analytic square-root germ exists at every finite unit-circle point. The real open
+core is coherent global continuation through `1<|w+1|<2` (equivalently `1/2<Re(s)<1`) with trivial
+`ZMod 2` monodromy, not local crossing of `|w|=1`.
+
+## 2026-09-03 — Zero-free cusp continuation
+
+Formal de la Vallee Poussin zero-freeness now constructs the fixed arithmetic half-germ beyond its
+Euler chamber on every sufficiently high convex height-one band
+`Re(s)>1-1/(10000 log(Y+1))`, `Y<Im(s)<Y+1`. The branch is globally analytic on each band and
+sign-normalized to the prime-zeta germ on its `Re(s)>1` overlap. This is the first unconditional
+source-faithful continuation through the Cayley unit seam recorded on this route.
+
+Its gain shrinks to zero with height. It cannot control any fixed interior line, much less all of
+`Re(s)>1/2`. Next producer question is whether these normalized bands can be glued into a single
+zero-free cusp branch with quantitative boundary control useful for a normal-family limit; any
+argument upgrading shrinking width to fixed width is already a zero-free theorem of RH strength.
+
+## 2026-09-03 — Coherent upper-cusp arithmetic root
+
+The normalized band branches are now replaced by one analytic branch on the entire upper classical
+zero-free cusp
+`Im(s)>T`, `Re(s)>1-1/(10000 log(Im(s)))`.
+A real shear identifies this cusp with a convex quadrant, so simple connectedness and global root
+existence are unconditional; normalization makes the root exactly the fixed Euler half-germ on
+the full Euler-side overlap.
+
+This is a genuine unbounded-domain arithmetic `g`, but not the requested `g` on `Re(s)>1/2`.
+Cusp width tends to zero. Current live edge is therefore quantitative/global enlargement of this
+coherent branch, not construction of local sheets at `Re(s)=1`. Any enlargement across a zero of
+odd order is impossible, and uniform enlargement to width `1/2` is the RH-strength endpoint.
+
+## 2026-09-03 — Symmetric cusp gluing closes normalization as an obstruction
+
+Upper and lower classical zero-free cusps now glue through the full Euler half-plane into one
+conjugation-symmetric continuation domain. A single analytic `g` squares to the pole-cleared
+first-trace field on this union and equals the fixed prime-zeta half-germ everywhere on
+`Re(s)>1`. Thus neither reflected-end compatibility nor a global sign choice blocks continuation.
+
+The new domain still reaches left of `Re(s)=1` by only `1/(10000 log |Im(s)|)`. Live edge is a
+quantitative widening theorem or an arithmetic mechanism forcing even local order when the domain
+meets a zero. Any fixed-width widening to `Re(s)>sigma`, `sigma<1`, exceeds the classical zero-free
+input; widening all the way to `sigma=1/2` remains the exact RH-equivalent endpoint.
+
+## 2026-09-03 — Moving-depth Hermite frontier advances to a positive slope
+
+The canonical degree-`K(N)` Taylor/Hermite counterterm at `6/11` is now excluded whenever
+`K(N)<=N/54`. A radius-`1/77` Cauchy estimate gives its value at `4/7` the envelope
+`N 2^(K(N)+1) exp(-N/77)`, which tends to zero under that slope bound. This violates the exact
+multi-anchor necessity that every successful locally bounded correction be unbounded at `4/7`.
+
+Thus growing depth alone is not an escape. Remaining point-Hermite class starts above a positive
+linear slope (constant unoptimized); distributed/nonlocal transitions remain a separate live
+class. Next sharp test is optimize the Cauchy radius/slope or prove any source-faithful high-slope
+schedule loses compact-open control on a vertical Euler-chamber compact.
+
+## 2026-09-03 — Far-witness Hermite slope improves to `1/15`
+
+Testing the canonical moving-depth Taylor/Hermite counterterm at `s=2/3` strengthens the closed
+linear-depth class. The Cayley coordinate `-2` permits explicit parity-uniform lower bounds for the
+finite pole-factor square-root approximants. Meanwhile a radius-`1/22` Cauchy estimate gives
+
+`|c_{N,K}(2/3)| <= N 3^(K+1) exp(-5N/66)`.
+
+Using `3<=exp(11/10)`, every schedule eventually satisfying `K(N)<=N/15` forces this counterterm
+to zero, contradicting the interior unboundedness necessity. Status:
+`[FAR-WITNESS LINEAR-DEPTH CLASS CLOSED] [NOT RH]`.
+
+Exact survivor: a point-Hermite schedule must exceed `N/15` infinitely often. Remaining search
+classes are high-slope point interpolation and distributed/nonlocal transitions; neither supplies
+the required analytic scalar root on `Re(s)>1/2`.
+
+## 2026-09-03 — High Hermite depth hits Euler cancellation
+
+An entire-function Cauchy remainder at `s=1101/1100` supplies the complementary high-depth
+obstruction. For the canonical Hermite correction,
+
+`|D_N(1101/1100)+c_{N,K}(1101/1100)|
+ <= (200/33) N exp(9N/100) (167/200)^(K+1)`.
+
+Using the rational bound `167/200<=exp(-1801/10000)`, `K(N)>=N/2` eventually makes the corrected
+source converge to zero at an Euler point, with residual exponential rate `1/20000`. This is
+incompatible with source fidelity because the canonical Dirichlet half converges there to a
+nonzero Euler product.
+
+Status: `[HIGH-DEPTH SOURCE-FIDELITY CLASS CLOSED] [NOT RH]`. The point-Hermite frontier is now
+two-sided: eventual depth at most `N/15` cannot yield local boundedness, while eventual depth at
+least `N/2` cannot preserve the Euler germ. Exact remaining class is intermediate or oscillatory
+depth, plus genuinely distributed/nonlocal transitions.

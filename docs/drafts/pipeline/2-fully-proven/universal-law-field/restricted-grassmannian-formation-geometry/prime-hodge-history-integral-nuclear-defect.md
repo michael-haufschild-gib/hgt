@@ -209,7 +209,12 @@ literal joint kernel on `ell2(Nat x Primes)`. Lean proves its exact positive his
 telescoping tail reconstruction, finite-block positivity, full-operator positivity,
 Hilbert--Schmidt and Schatten-one membership, trace `1`, trace norm `1`, and nonzero cross-prime
 entries on every history fibre. `primeHodgeHistoryIntegralNuclearDefect_closed` is the
-hypothesis-free unit-aperture capstone. The signed two-sided wall family and completed
-formation-to-horizon transport remain outside this certificate. The separate all-order analytic
-identification of `m_n` with the wall commutator energy in `ULF-DHNJ-001` also remains paper-only;
-this module certifies the joint operator and its exact `m_n` tail carrier.
+hypothesis-free unit-aperture capstone.
+
+`formal/GaloisForLFunctions/RHTower/PrimeHodgeHistoryIntegralNuclearHomotopyDefect.lean` now
+constructs the signed two-sided family as one Lean term and proves reflection oddness, oriented
+positivity, Schatten-one membership, `Tr mathsf T(t)=sign(t)`, `||mathsf T(t)||_1=|sign(t)|`,
+off-wall cross-prime mixing, recovery of the unit-aperture object, and the exact signed
+theta-flux/unsquared-prime-density diagonal. Chamberwise trace-norm continuity, completed
+formation-to-horizon transport, and the all-order analytic commutator identification in
+`ULF-DHNJ-001` remain outside this Lean certificate.
