@@ -12,8 +12,9 @@ tends to infinity, so its scheduled Cayley--Dirichlet products retain the Euler-
 local boundedness would imply `RHLadder 1`.  Its exterior growth at the sharpened `s = 6/11`
 test is only polylogarithmic: the base-five scale is eventually bounded by `N^(6/11)`.
 
-Thus this explicit schedule satisfies the strongest proved prime-jump ceiling.  No local
-boundedness assertion is made; that remains the exact analytic obligation.
+Thus this explicit schedule satisfies every fixed-point exponential-in-degree prime-jump ceiling.
+The downstream `SquarefreeConvolutionHalfCofinalScheduleNoGo` nevertheless retires it, together
+with every cofinal raw schedule, by an Abel/pole contradiction.
 -/
 
 open Complex Filter Metric Set Topology

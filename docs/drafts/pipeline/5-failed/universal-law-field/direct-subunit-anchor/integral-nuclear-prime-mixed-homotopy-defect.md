@@ -533,3 +533,11 @@ Primary parents:
   coherent zero finite defects retain trace zero.  A singular landing can retain the horizon only
   by forfeiting the contractive Hilbert--Schmidt budget.  Relative-index integrality does not
   supply the missing comparison.  Verdict: `RETIRED — BOUNDED/SINGULAR NORM DICHOTOMY`.
+- 2026-09-03 — Runpod follow-up closed three remaining variants: exact Gamma-vacuum subtraction
+  stays positive; two-step wild-saddle relocation has signed trace zero and is horizontally blind;
+  literal cubic-Green completion leaves stable positive polar surplus about `0.83948446`.  Report
+  and raw data:
+  `docs/drafts/pipeline/2-fully-proven/computations/predivisor-relative-operator-route-audit/`.
+  Route remains retired.  Only positive survivor is new producer obligation for a
+  coefficient-faithful non-scalar prime--polar--Gamma relative operator whose cancellation occurs
+  before absolute value; no such operator or norm law currently exists.

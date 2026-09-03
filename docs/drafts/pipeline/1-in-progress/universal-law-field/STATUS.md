@@ -4938,57 +4938,32 @@ RH. This is the exact surviving edge; absence of the inner factor may not be ass
 
 ## Return denominator/open-history law (`ULF-PHRD-001`)
 
-F516 — Exact first-exit mean of `T` is `sum_(n>=0)(n+1)w_n=sum_n m_n=7/4`; this follows by a
-second-difference telescope, not numerics.
-
-F517 — Any finite recurrent unitary observer with this averaged mean has `K/d=7/4`; hence `4|d`,
-`7|K`, with minimal `(d,K)=(4,7)`. Explicit coarse model has first-return function
-`diag(z,z²,z²,z²)`. This independently matches the forced four-leg Hodge rank.
-
-FAIL-85 — No finite monitored unitary realizes the full `w_n` history. Finite mean plus recurrence
-forces rational-inner return and exponential coefficient decay, while `w_(n-1)>=2/(3n⁴)`.
-
-CANNOT-238 — It cannot identify observability isometry with closed unitary recurrence, nor use the
-`7/4` moment alone: the four-dimensional degree-seven coarse model discards every higher tail.
+F516 — Exact first-exit mean: `sum_(n>=0)(n+1)w_n=sum_n m_n=7/4`, by second-difference telescope.
+F517 — Finite recurrent unitary with this mean has `K/d=7/4`, so `4|d`, `7|K`; minimal model `(d,K)=(4,7)` has return `diag(z,z²,z²,z²)`.
+FAIL-85 — No finite monitored unitary realizes full `w_n`: rational-inner recurrence decays exponentially, but `w_(n-1)>=2/(3n⁴)`.
+CANNOT-238 — `7/4` alone cannot identify open observability with recurrence; the `(4,7)` coarse model discards all higher tails.
 
 ## Prime--Hodge singular residue clock (`ULF-PHSR-001`)
 
-F518 — Elapsed source defect `D_N=I-C*^N C^N` has decreasing eigenvalues
-`1-m_(k+N)/m_k~3N/k`; hence it is measurable weak `S₁`, not `S₁`, with exact residue `3N`.
-
-F519 — Every exit current `E_j=C*^jD_1C^j=D_(j+1)-D_j` has residue `3`; all `E_j` lie in one
-affine `S₁` leaf. Marked readout is exactly `<e_0,E_j e_0>=w_j=Tr(P_jT)`.
-
-F520 — In the canonical prime-formed record basis, `T` and the residue clock are diagonal;
-`Res(D_N+T)=3N` and `FP(D_N+T)=FP(D_N)+1`. Also `FP(D_1)=-3psi(9/2)`: archimedean Gamma finite
-part is generated pre-divisor.
-
-FAIL-86 — Actual source `C-S` is `S₂\S₁`; its direct regularized determinant is zero-free. The
-degree `7` belongs only to the finite rational-inner coarse model already excluded by the tail.
-ULF-FRRD-001 is retired; MUST-160 is superseded.
-
-CANNOT-239 — Fixed theta moment hazard is compact but not weak `S₁`: its normalized logarithmic
-partial sums diverge. Trace-class completion cannot match source clock. Residue alone also cannot
-select: finite-rank off-line horizons are residue-invisible.
-
-MUST-161 — Poisson must select/transport the proved inverse-saddle theta clock and its forced
-double-log transgression, preserve odd unsquared formation, and admit no compensating `S₁`
-spectator. Then each off-line trace-one horizon shifts the remaining finite part by `+1`, forcing
-zero horizons.
+F518 — `D_N=I-C*^NC^N` has eigenvalues `1-m_(k+N)/m_k~3N/k`: measurable weak `S₁`, not `S₁`, residue `3N`.
+F519 — `E_j=C*^jD_1C^j=D_(j+1)-D_j` has residue `3`; all lie in one affine `S₁` leaf and `<e₀,E_je₀>=w_j=Tr(P_jT)`.
+F520 — In prime-formed basis, `Res(D_N+T)=3N`, `FP(D_N+T)=FP(D_N)+1`, and `FP(D_1)=-3psi(9/2)` pre-divisor.
+FAIL-86 — `C-S in S₂\S₁` and direct regularized determinant is zero-free; degree `7` is only excluded finite coarse model. ULF-FRRD-001 retired; MUST-160 superseded.
+CANNOT-239 — Fixed theta hazard is compact but not weak `S₁`; trace-class completion cannot match it. Residue cannot see finite-rank off-line horizons.
+MUST-161 — Poisson must transport inverse-saddle clock/double-log transgression, odd unsquared formation, and no compensating `S₁` spectator; then each off-line horizon adds `+1`.
 
 ## 2026-09-03 — carrier lattice theorem and Hodge-gate audit
 
-F396 — Lean: on the graded divisor carrier with the Frobenius at `p` acting by `p^ρ`, every
-finitely generated ℤ-submodule stable under three prime Frobenii is zero
-(`RHTower.DeningerCarrierNoIntegralLattice`).
+F396 — On graded divisor carrier with Frobenius `p^ρ`, every finitely generated ℤ-submodule stable under three prime Frobenii is zero (`DeningerCarrierNoIntegralLattice`).
+MUST-134 — Deninger Hodge producer is geometric positivity from Kähler leaves/transverse archimedean flow; radical identity, energy faithfulness, resolvent preservation are RH receivers.
+F521 — Inverse first-atom saddle has unique residue-matching scale `6`, residue `3`; difference from Hodge time is `3/(n log n)`, double-log residue `3`.
+F522 — Unique Stein Gramian `G=sum C^nP₀C*^n` has `Tr G=7/4`; defect sandwich `Phi` has `Tr Phi=Tr P₀=1`.
+F523 — Theta Poisson history is Gamma degree 2, prime Cauchy formation degree 3; Stein-weighted Gram channel `Q` gives `T=Q*Q`, `Tr T=1`, prime-mixed.
+CANNOT-240 — No fixed contraction carries two distinct degree-2 clocks to degree 3; completion needs clock-indexed relative creation, not scalar transport.
+F524 — Mellin creator is prime-independent `Γ(s+1)/Γ(s+1/2)`; on `Re s=1/2` clocks are unitary and metric anomaly `(t²+1/4)tanh(πt)/t` has half-order.
 
-MUST-134 — In the Deninger Hodge gate only the geometric production of positivity (Kähler
-leaves with transverse flow through the archimedean compactification) is a producer; the
-radical-identity, energy-faithfulness, and resolvent-preservation clauses are receivers
-(closure inside the strip; Hodge purity; no off-axis resonances) and cannot be proved below RH.
+## 2026-09-03 (ii) — all places are cusps
 
-F521 — Inverse first-atom saddle increments have unique residue-matching scale `6`; their clock
-has residue `3`, while its difference from Hodge time is `3/(n log n)`, with double-log residue `3`.
-
-F522 — `G=sum C^nP₀C*^n` is unique trace-class Stein Gramian, `Tr G=7/4`; its defect sandwich is
-exactly history marginal `Phi`, and `Tr Phi=Tr P₀=1`. Prime formation lifts `Phi` to full `T`.
+F397 — Nonzero flow-invariant transverse measure at real apex, finite on compacts, has infinite mass in every apex neighbourhood (`ArchimedeanTransverseMassLaw`).
+MUST-135 — Deninger archimedean compactification must be cusp: transverse `d(log x)`, forms `L²(dx/x)`; smooth stationary-point models excluded.
+- **Nugget:** `1/2` in `Theta-1/2` is leafwise Kähler weight through unique flow-invariant Mellin-critical measure `dx/x` at every place.

@@ -1361,3 +1361,42 @@ cancellation/growth, or change the regularization.
 Lean: `SquarefreeConvolutionHalfIteratedLogSchedule.lean` now also proves
 `eventually_iteratedLogarithmicCayleySchedule_fixedBaseScale_le`. Direct Lean check and targeted
 module build pass. Axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
+## 2026-09-03 — Every cofinal raw schedule fails by Abel continuation
+
+The fixed-point ceiling search was too weak because degree growth is not the decisive obstruction.
+The canonical convolution-half Dirichlet partial sums themselves cannot be eventually bounded at
+`s=6/11`. If they were, shifting their coefficients into the zero-indexed Dirichlet API and
+applying Abel summation would give convergence at `s=2/3`. Uniform Abel continuation would then
+produce a holomorphic sum `F` on `Re(s)>2/3`. On `Re(s)>1`, the Euler identity gives
+
+`F(s)^2 = zeta(s) / zeta(2s)`.
+
+Analytic uniqueness applied to
+
+`(s-1) F(s)^2 zeta(2s) - (s-1) zeta(s)`
+
+extends the pole-cleared identity across `s=1`. Its left product vanishes there, while the zeta
+residue unit has value one, contradiction.
+
+This kills every cofinal Cayley schedule at once. Cofinality eventually gives `kappa(N)>=24`, and
+the certified exterior bound
+
+`1 <= 5^(kappa(N)-24) <= |r_(kappa(N))(6/11)|`
+
+turns local boundedness of the scheduled products into forbidden eventual boundedness of the raw
+Dirichlet partial sums. Same-index, logarithmic, square-root-logarithmic, iterated-logarithmic, and
+all still slower cofinal raw schedules are therefore covered.
+
+Status: `[FAILED/RETIRED RAW SCHEDULED TRUNCATION CLASS] [LEAN-PROVED]`. Positive survivor:
+failure is not a rate problem. Any viable continuation scheme must change the arithmetic
+approximants before multiplication by the Cayley factor—through genuine smoothing, a counterterm,
+or another renormalization—and must still preserve source-faithful compact-open convergence to the
+Euler half-germ. Merely slowing the degree schedule cannot work. No Selberg--Delange asymptotic is
+needed for this closure.
+
+Lean: `SquarefreeConvolutionHalfCofinalScheduleNoGo.lean` proves raw partial sums are not
+eventually bounded at `boundaryExteriorPoint`, proves no cofinal scheduled product is locally
+bounded, and specializes this to the formerly surviving iterated-log schedule. Direct Lean check
+and targeted module build pass. Axiom audits report only `propext`, `Classical.choice`, and
+`Quot.sound`; no `sorry`, new axiom, opaque declaration, or unsafe declaration is used.

@@ -69,4 +69,17 @@ theorem apex_transverse_mass_eq_top (μ : Measure ℝ) [IsFiniteMeasureOnCompact
   haveI := isAddLeftInvariant_of_apexTransverseLogFlow_invariant μ hinv
   exact measure_Iio_eq_top_of_isAddLeftInvariant μ hμ a
 
+/-- The logarithmic transverse coordinate of the stationary germ is moved by the flow exactly as
+`apexTransverseLogFlow`. -/
+theorem log_deningerGermTransverse_flow (t : ℝ) {p : ℂ × ℝ} (hp : p.2 ≠ 0) :
+    Real.log (deningerGermTransverse (deningerGermFlow t p))
+      = apexTransverseLogFlow t (Real.log (deningerGermTransverse p)) := by
+  rw [deningerGermTransverse_flow]
+  have hx : 0 < deningerGermTransverse p := by
+    unfold deningerGermTransverse
+    positivity
+  unfold deningerReesFlow apexTransverseLogFlow
+  rw [Real.log_mul (Real.exp_pos _).ne' hx.ne', Real.log_exp]
+  ring
+
 end RHTower

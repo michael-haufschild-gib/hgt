@@ -6354,3 +6354,37 @@ The unweighted full and bilinear energies retain a diagonal of order `X^2`, so t
 polynomial `sum mu(n)n^(-1-it)` on dyadic support.  Card remains Stage 2; next gate is the exact
 harmonic Ramaré factorization and its dyadic rescaling into the existing Gallagher receiver,
 followed by the already-built growing-grid normalization.
+
+## Lean progress update (2026-09-03) — harmonic Ramaré chain and exact Case-I block
+
+The final-range reduction is now rebuilt in Menon's required harmonic normalization rather than
+the unusable unweighted normalization:
+
+- `Sieve/MenonHarmonicRamare.lean` proves the exact pointwise harmonic Ramaré decomposition on
+  `[ceil X, floor (3X)]`;
+- `Sieve/MenonHarmonicRoughMeanSquare.lean` proves that its literal final-range rough remainder,
+  multiplied by `(log X)^8`, tends to zero;
+- `Sieve/MenonHarmonicRamareBlockSplit*.lean` and
+  `Sieve/MenonHarmonicRamareLadder.lean` split the bilinear polynomial over exact geometric prime
+  blocks, retaining the single moving-cofactor support error;
+- `Sieve/MenonHarmonicCofactorError.lean`, `Sieve/MenonHarmonicReciprocalAbel.lean`, and
+  `Sieve/MenonHarmonicCofactorHM.lean` give the reciprocal Abel and support-local
+  Halász--Montgomery bounds with the required `#D/L^2` cofactor energy;
+- `Sieve/MenonHarmonicPrimeAbel.lean` and `Sieve/MenonHarmonicPrimeScaledBound.lean` transfer the
+  corpus's Route-T prime-prefix estimate to the reciprocal prime polynomial;
+- `Sieve/MenonHarmonicRamareLadderOnHM.lean` inserts the prime supremum and reciprocal cofactor
+  mean square on an arbitrary measurable frequency subset.
+
+`Sieve/MenonHarmonicCaseIBlock.lean` now combines those inputs into one exact Case-I block theorem.
+For a full geometric prime interval and an arbitrary measurable annular frequency set, it inserts
+the uniform Route-T relative majorant and the reciprocal Halász--Montgomery cofactor estimate into
+the harmonic Ramaré block while retaining the exact floor endpoints, cofactor cardinality,
+frequency-set volume, and moving-support error.  No analytic estimate is passed as a hypothesis;
+the Route-T constants are selected internally.  Direct source check and targeted leaf build pass,
+and the new theorem audits with only `[propext, Classical.choice, Quot.sound]`; leaf is
+umbrella-wired without an umbrella build.
+
+Card remains Stage 2.  Rough harmonic energy and the full non-exceptional Case-I block are closed.
+Remaining analytic work is the exact exceptional-frequency Case-II factorization/large-value
+estimate, its quantitative ladder summation, and the terminal harmonic-frequency-to-integer-start
+normalization; none is assumed.

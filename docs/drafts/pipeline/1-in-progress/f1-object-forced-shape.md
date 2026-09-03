@@ -120,3 +120,25 @@ So the gate's proof programme is correct in shape: every analytic clause is a re
 theorem it needs is the geometric one (Deninger–Singhof positivity on an arithmetic foliated
 space). MUST-134: work on the gate should go to the archimedean compactification producing the
 Kähler class, not to closure or faithfulness clauses, which cannot be proved below RH.
+
+## Addendum 2026-09-03 (ii) — all places are cusps (Lean, `RHTower.ArchimedeanTransverseMassLaw`)
+
+The Deninger–Singhof positivity integrates leafwise `L²`-norms against a flow-invariant transverse
+measure. At the real apex of the corpus's stationary germ the flow contracts the invariant
+transverse coordinate `x = r²` by `e^{−2t}` (`deningerGermTransverse_flow`), i.e. translates
+`log x` by `−2t` (`log_deningerGermTransverse_flow`). A nonzero transverse measure invariant under
+this flow and finite on compacts is, by uniqueness of Haar measure on the line, a multiple of
+Lebesgue measure in `log x`, hence gives infinite mass to every neighbourhood of the apex
+(`apex_transverse_mass_eq_top`). So in the invariant-measure geometry the archimedean place is a
+complete cusp end of infinite transverse mass, exactly as the finite primes are cusp ends of
+infinite length (`deningerCusp_length_not_integrable`). No smooth stationary-point model of the
+real place carries a finite invariant transverse measure.
+
+MUST-135: the archimedean compactification of the open Hodge gate must be cuspidal — the global
+scalar product must be built with the measure `d(log x)` near the apex, and the leafwise forms
+must decay along the cusp. Forms with finite global norm near the apex are exactly those whose
+transverse profile is `L²` for `d(log x)`, i.e. `L²((0, ε), dx/x)`: the archimedean weight is the
+Mellin-critical weight `x^{−1}dx` on the transverse coordinate. This is the invariant-measure
+origin of the `1/2` in `Θ − ½`: leafwise Kähler weight `e^{t}` against the invariant transverse
+measure gives global weight `e^{t}`, and `e^{−t/2}φ^{t*}` is unitary (corpus:
+`deningerTwistedFlow_centered`).

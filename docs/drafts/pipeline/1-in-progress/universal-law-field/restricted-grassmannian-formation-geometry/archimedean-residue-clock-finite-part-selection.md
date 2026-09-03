@@ -73,6 +73,36 @@ No checked corpus theorem selects the physical saddle aperture from Poisson self
 transports the double-log anomaly through the oriented completion, proves a cofinal finite-part
 origin, or identifies target horizon trace with displacement in the source clock leaf.
 
+### Forced category correction from ULF-PPTI-001
+
+The completion transport cannot be a fixed label-preserving contraction.  ULF-PPTI-001 proves
+that the corpus's theta Poisson history is normalized Gamma degree two, while the literal prime
+Cauchy formation is degree three in the same coherent-state ladder.  Two distinct clocks already
+forbid a contraction carrying the degree-two coherent vectors to the degree-three vectors.
+
+Hence `B_Pois` and `L_T` below must be built in the clock-indexed relative creation
+correspondence
+
+```text
+psi_t^(2) -> psi_t^(3)=sqrt(tr) psi_t^(2),
+t=log p on the literal Euler fibres.                 (ARCFP.0)
+```
+
+Mellin transform cancels `t` from the relative multiplier and gives the forced universal symbol
+
+```text
+a_infinity(s)=Gamma(s+1)/Gamma(s+1/2).               (ARCFP.0a)
+```
+
+On `Re(s)=1/2`, every prime clock is the unitary character `(log p)^(-i tau)`, while
+`|a_infinity|^2=(tau^2+1/4)tanh(pi tau)/tau` is the complete unbounded archimedean metric anomaly.
+Thus physical aperture selection may not choose another multiplier: it must show how literal
+Poisson/theta completion renormalizes this one and yields the already forced double-log clock.
+
+The source object transported by that correspondence is no longer free: it is the nuclear Gram
+`mathsf T=Q*Q` of ULF-PPTI-001.  Any construction that first forgets `p`, replaces `(ARCFP.0)` by
+one bounded scalar channel, or transports only the trace is excluded.
+
 ## 3. Exact object to construct
 
 Construct from literal integer summation and self-dual Fourier normalization, before divisor

@@ -305,6 +305,10 @@ divisor.  Every construction above is pre-divisor; the open transport must remai
   hazard, and target double-log receiver were already separately formalized.
 - `[CLASSICAL]` Inverse-function asymptotics, Lambert-W scale, and harmonic/double-harmonic sums
   are standard.
+- `[LITERATURE/BRIDGE]` Multi-level logarithmic residue filtrations are not a new field: Lesch,
+  *On the noncommutative residue for pseudodifferential operators with log-polyhomogeneous
+  symbols*, arXiv:dg-ga/9708010, already develops higher log-residue structure.  Only the exact
+  corpus-derived saddle/source identification below is potentially new.
 - `[NEW CORPUS FUSION]` Gamma-six inverse-saddle increments have residue `3`; their difference
   from prime--Hodge time has pointwise scale `3/(j log j)`, double-log residue `3`, and exact finite
   part `(GTSD.18)`.
