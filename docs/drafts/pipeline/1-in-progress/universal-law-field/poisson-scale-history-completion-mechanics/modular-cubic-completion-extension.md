@@ -6,7 +6,8 @@
 - **Parents:** ULF-MCPT-001, ULF-SFMH-001, ULF-PBFMS-001, ULF-FBG-002,
   ULF-CCEL-001, ULF-FACHD-001, ULF-RUCRI-001, ULF-CRSHC-001, ULF-PCLGF-001
 - **Status:** [CONJECTURAL ARITHMETIC REALIZATION] [GENERIC LAW LEAN-PROVED]
-  [SOURCE-FRAME HOLONOMY LEAN-PROVED] [FINITE SOURCE SUPPORT LEAN-PROVED] [NOT RH]
+  [SOURCE-FRAME HOLONOMY LEAN-PROVED] [FINITE SOURCE SUPPORT LEAN-PROVED]
+  [FINITE THETA FRAME LEAN-PROVED] [NOT RH]
 
 ## 1. Big-picture interpretation
 
@@ -117,6 +118,10 @@ The audit fixes the following.
     modular/frame naturality. Its cubic projection defect maps to the MCPT modular anomaly.
 16. Every finite matrix `H_C(U)` has determinant one. Finite phase, determinant, or ordinary `K1`
     is blind; the proposed integer is forced to be a cofinal relative boundary.
+17. ULF-SFMH-001 constructs the actual finite archimedean frame on the doubled Burnol packet:
+    primewise `[[sech(a log(p)/2),-tanh(a log(p)/2)],[tanh(a log(p)/2),sech(a log(p)/2)]]`.
+    Its inverse is grade reversal, the doubled Gram fixes the neutral projector, and both
+    holonomy and cubic defect vanish at neutral grade. No Xi/divisor data enters.
 
 These facts narrow the object to a modular refinement of the cubic completion extension, formed
 from the non-diagonal Burnol source density before theta completion.
@@ -136,7 +141,8 @@ ULF-PBFMS-001 proves every injective label packet has full support for the liter
 Burnol covariance. Thus `C_F^(-1)` is canonical; no support reduction or chosen pseudoinverse
 remains in the construction.
 
-For the theta frame `U_F(a)`, form the literal source-frame holonomy
+ULF-SFMH-001 constructs the finite theta frame `U_F(a)` on the same doubled packet and forms the
+literal source-frame holonomy
 
 ~~~text
 H_F(a)=C_F^(-1) U_F(a) C_F U_F(a)^(-1).                (MCCED.2)
@@ -230,8 +236,8 @@ P(C^(-1)(xP)C)P-xP = (bc/(ad-bc))xP.                  (MCCED.6s)
 It proves necessity of off-diagonal source coupling without promoting the quadratic coefficient
 to the sought invariant. ULF-SFMH-001 identifies the nonlinear object containing that local
 coefficient: the multiplicative commutator `H_F`. The sought invariant is the odd cubic boundary
-of its cofinal failure to trivialize. Operator-block (MCCED.6), actual theta frames, and cofinal
-compatibility remain open.
+of its cofinal failure to trivialize. Operator-block (MCCED.6), off-neutral arithmetic
+noncommutation, and cofinal compatibility remain open.
 
 ULF-MCPT-001 then turns the cubic projection associator into
 
@@ -291,8 +297,9 @@ bounded lift of A_* itself.
 2. **Completed (ULF-SFMH-001):** finite literal Burnol holonomy exists canonically; it obeys exact
    nonabelian composition and reversal, its cubic defect has exact modular transgression, and every
    finite determinant is blind.
-3. Construct actual theta/Poisson frame `U_F(a)` on the same Burnol packet and prove its source
-   commutator is nontrivial without importing Xi or divisor data.
+3. **Finite frame completed (ULF-SFMH-001):** `U_F(a)` is the literal primewise theta rotation on
+   the doubled Burnol packet. Prove its source commutator is nontrivial for `a!=0` on every packet
+   containing distinct primes, without importing Xi or divisor data.
 4. Construct the relative cofinal holonomy class and prove its failure to trivialize is not an
    ordinary `S3` limit; raw projection and Schur routes are closed.
 5. Prove cubic twisted-to-ordinary boundary identities (MCCED.3)--(MCCED.4).

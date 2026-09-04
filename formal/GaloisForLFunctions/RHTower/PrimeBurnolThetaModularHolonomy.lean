@@ -326,6 +326,38 @@ theorem IsSigmaTrace.map_primeBurnolThetaCubicDefect
   · simp
   · exact primeBurnolDoubledModularAction_neutral pe hpe kappa
 
+/-- **Exact source--archimedean fusion law.** Each matrix entry of the source/frame commutator is
+the literal Burnol covariance edge times the difference of the two local theta blocks. Thus only
+cross-source edges joining different archimedean rapidities can generate finite holonomy. -/
+theorem primeBurnolDoubledGram_thetaFrame_commutator_apply
+    {N : ℕ} (pe : Fin N → Nat.Primes × ℕ) (hpe : Function.Injective pe)
+    (kappa : Fin N → ℝ) (a : ℝ) (i j : Fin N) (r s : Fin 2) :
+    (((↑(primeBurnolDoubledGramUnit pe hpe kappa) :
+          Matrix (PrimeBurnolThetaIndex N) (PrimeBurnolThetaIndex N) ℂ) *
+        (↑(primeBurnolThetaFrameUnit pe a) :
+          Matrix (PrimeBurnolThetaIndex N) (PrimeBurnolThetaIndex N) ℂ)) -
+      ((↑(primeBurnolThetaFrameUnit pe a) :
+          Matrix (PrimeBurnolThetaIndex N) (PrimeBurnolThetaIndex N) ℂ) *
+        (↑(primeBurnolDoubledGramUnit pe hpe kappa) :
+          Matrix (PrimeBurnolThetaIndex N) (PrimeBurnolThetaIndex N) ℂ)))
+        (i, r) (j, s) =
+      primeBurnolWindowGramMatrix pe kappa i j *
+        (primeBurnolThetaBlock a (pe j).1 r s -
+          primeBurnolThetaBlock a (pe i).1 r s) := by
+  simp only [Matrix.sub_apply, Matrix.mul_apply, Fintype.sum_prod_type,
+    coe_primeBurnolDoubledGramUnit, Matrix.kronecker_apply,
+    primeBurnolThetaFrameUnit, primeBurnolThetaFrameMatrix]
+  rw [Finset.sum_eq_single j]
+  · rw [Finset.sum_eq_single i]
+    · simp [Matrix.one_apply]
+      ring
+    · intro k _ hki
+      simp [hki.symm]
+    · simp
+  · intro k _ hkj
+    simp [hkj]
+  · simp
+
 end
 
 end RHTower

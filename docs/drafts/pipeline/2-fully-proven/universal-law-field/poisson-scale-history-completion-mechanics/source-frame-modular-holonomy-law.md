@@ -6,7 +6,8 @@
 - **Parents:** ULF-MCPT-001, ULF-PBFMS-001, ULF-FBG-002
 - **Status:** [PAPER-PROVED] [LEAN-PROVED] [NOT RH]
 - **Lean:** formal/GaloisForLFunctions/HTGeometry/SourceFrameModularHolonomy.lean;
-  formal/GaloisForLFunctions/RHTower/PrimeBurnolSourceFrameCubicHolonomy.lean
+  formal/GaloisForLFunctions/RHTower/PrimeBurnolSourceFrameCubicHolonomy.lean;
+  formal/GaloisForLFunctions/RHTower/PrimeBurnolThetaModularHolonomy.lean
 
 ## 1. Big-picture meaning
 
@@ -90,7 +91,7 @@ D3(C,U;P)=0.                                             (SFMH.8)
 Therefore a central, diagonal, or prime-separable completion frame cannot be the producer. The
 first surviving datum is the odd cubic transgression of noncentral source-frame holonomy.
 
-## 4. Literal Euler specialization
+## 4. Literal Euler--theta specialization
 
 For every injectively labelled finite primitive packet `F`, ULF-PBFMS-001 proves that its complete
 Burnol Gram `C_F` is invertible. The Lean specialization defines its canonical unit directly from
@@ -103,6 +104,48 @@ H_F(U)=C_F^(-1) U C_F U^(-1).                            (SFMH.9)
 The unit coerces definitionally back to the complete literal Gram. No diagonalization,
 pseudoinverse, normalization, zero, or Xi datum enters. All laws (SFMH.2)--(SFMH.7) specialize to
 `H_F`, retaining every off-diagonal prime/depth coefficient.
+
+The completion frame is also formed explicitly. On the doubled packet `F x {+,-}`, define
+
+~~~text
+r_p(a)=a log(p)/2,
+U_(F,p)(a)=[[sech r_p(a),-tanh r_p(a)],
+            [tanh r_p(a), sech r_p(a)]],
+U_F(a)=direct-sum_(p,e in F) U_(F,p)(a).                (SFMH.9a)
+~~~
+
+The identity `sech^2+tanh^2=1` and parity give
+
+~~~text
+U_F(-a)U_F(a)=U_F(a)U_F(-a)=1,
+U_F(-a)=U_F(a)^(-1),
+U_F(0)=1.                                               (SFMH.9b)
+~~~
+
+Double source density without altering it:
+
+~~~text
+C_F^theta=C_F tensor I_2,
+P_0=I_F tensor [[1,0],[0,0]].                           (SFMH.9c)
+~~~
+
+`P_0` is idempotent, commutes with `C_F^theta`, and is fixed by its modular action. Hence the
+fully literal pre-divisor object
+
+~~~text
+H_F(a)=(C_F^theta)^(-1)U_F(a)C_F^theta U_F(a)^(-1)     (SFMH.9d)
+~~~
+
+is formed in one matrix algebra and obeys
+
+~~~text
+H_F(0)=1,
+H_F(-a)=U_F(a)^(-1)H_F(a)^(-1)U_F(a),
+D3(C_F^theta,U_F(0);P_0)=0.                             (SFMH.9e)
+~~~
+
+Its cubic defect has the exact sigma-trace transgression (SFMH.7). This completes finite source
+formation and functional-equation action; it does not yet prove nontriviality for every `a!=0`.
 
 ## 5. Finite blindness and forced cofinality
 
@@ -124,8 +167,9 @@ those results.
 
 ## 6. What remains open and how it would close RH
 
-Construct the actual theta/Poisson frames `U_F(a)` on the same literal Burnol packets and prove
-that the cofinal holonomy has a relative cubic boundary satisfying one same-representative law
+The finite theta frames are now constructed by (SFMH.9a)--(SFMH.9e). Prove that their off-neutral
+holonomy is nontrivial on packets containing distinct primes, then that the cofinal holonomy has a
+relative cubic boundary satisfying one same-representative law
 
 ~~~text
 boundary_3([H_F(U_F)])=[T_D],
@@ -138,5 +182,7 @@ unrelated objects; the third supplies the literal Euler sub-unit bound. Then the
 zero on every strict-right rectangle, reflection removes strict-left escape, and existing Xi
 support gives RH.
 
-ULF-SFMH-001 proves formation, cocycle, reversal, centralizer exclusion, source specialization,
-and finite determinant blindness. It does not prove cofinal existence or (SFMH.11).
+ULF-SFMH-001 proves formation of both source and theta frame, cocycle, reversal, neutral vanishing,
+centralizer exclusion, source specialization, cubic transgression, and finite determinant
+blindness. It does not prove off-neutral arithmetic nontriviality, cofinal existence, or
+(SFMH.11).

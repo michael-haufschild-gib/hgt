@@ -205,6 +205,42 @@ theorem traceNorm_cube_eq_schattenNorm_three_rpow
     absOp_cube_of_isSelfAdjoint S hS,
     ← ofReal_schattenNorm_three_rpow_eq_opTrace_absOp_cube S hHS]
 
+/-- Orthogonal absolute-value channels add their exact cubic Schatten energy. -/
+theorem schattenNorm_three_rpow_eq_add
+    (T A B : H →L[ℂ] H)
+    (hTHS : T.IsHilbertSchmidt)
+    (hAHS : A.IsHilbertSchmidt) (hBHS : B.IsHilbertSchmidt)
+    (henergy : star T * T = star A * A + star B * B)
+    (hAB : absOp A * absOp B = 0)
+    (hBA : absOp B * absOp A = 0) :
+    GaloisForLFunctions.HTGeometry.schattenNorm 3 T ^ (3 : ℝ) =
+      GaloisForLFunctions.HTGeometry.schattenNorm 3 A ^ (3 : ℝ) +
+        GaloisForLFunctions.HTGeometry.schattenNorm 3 B ^ (3 : ℝ) := by
+  have hAabsHS : (absOp A).IsHilbertSchmidt :=
+    (isHilbertSchmidt_absOp_iff A).2 hAHS
+  have hBabsHS : (absOp B).IsHilbertSchmidt :=
+    (isHilbertSchmidt_absOp_iff B).2 hBHS
+  have hA2 : MemSchattenClass 2 (absOp A) :=
+    (memSchattenClass_two_iff_isHilbertSchmidt (absOp A)).2 hAabsHS
+  have hB2 : MemSchattenClass 2 (absOp B) :=
+    (memSchattenClass_two_iff_isHilbertSchmidt (absOp B)).2 hBabsHS
+  have hA3 : MemSchattenClass 1 ((absOp A) ^ 3) :=
+    GaloisForLFunctions.HTGeometry.memSchattenClass_one_pow
+      (p := 2) (by norm_num) hA2 (k := 3) (by norm_num) (by norm_num)
+  have hB3 : MemSchattenClass 1 ((absOp B) ^ 3) :=
+    GaloisForLFunctions.HTGeometry.memSchattenClass_one_pow
+      (p := 2) (by norm_num) hB2 (k := 3) (by norm_num) (by norm_num)
+  have habs : absOp T = absOp A + absOp B :=
+    absOp_eq_add_of_energy_eq_add T A B henergy hAB hBA
+  have hcube : (absOp A + absOp B) ^ 3 = (absOp A) ^ 3 + (absOp B) ^ 3 := by
+    noncomm_ring [hAB, hBA]
+  apply Complex.ofReal_injective
+  rw [ofReal_schattenNorm_three_rpow_eq_opTrace_absOp_cube T hTHS,
+    habs, hcube, opTrace_add_of_memSchattenClass_one hA3 hB3,
+    Complex.ofReal_add,
+    ofReal_schattenNorm_three_rpow_eq_opTrace_absOp_cube A hAHS,
+    ofReal_schattenNorm_three_rpow_eq_opTrace_absOp_cube B hBHS]
+
 /-- Orthogonal absolute-value channels add their exact cubic Schatten masses. -/
 theorem traceNorm_cube_eq_add_schattenNorm_three_rpow
     (T A B : H →L[ℂ] H)
