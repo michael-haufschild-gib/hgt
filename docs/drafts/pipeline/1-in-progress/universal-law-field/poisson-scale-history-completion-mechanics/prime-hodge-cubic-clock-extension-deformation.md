@@ -5,7 +5,7 @@
 - **Type:** pre-divisor arithmetic realization conjecture
 - **Parents:** ULF-PCOB-001, ULF-SACWHT-001, ULF-CCEL-001, ULF-PLCIE-001, ULF-PLCCKU-001,
   ULF-PHIN-001
-- **Status:** `[CONJECTURAL REALIZATION] [ONE PRE-DIVISOR GATE] [NOT RH]`
+- **Status:** `[CONJECTURAL REALIZATION] [SOURCE GRAPH LEAN-PROVED] [ONE PRE-DIVISOR GATE] [NOT RH]`
 
 ## 1. Big-picture interpretation
 
@@ -81,6 +81,10 @@ What is already fixed:
 15. `ULF-PLCCKU-001` proves the raw critical cubic Cauchy endpoint is unbounded: prime packets
     `n<p<=n^2` have Rayleigh quotients growing like `log n`.  Hence the endpoint cannot itself be
     an element of a bounded completion extension.
+16. `ULF-PCLGF-001` now constructs the replacement in Lean: the literal unsquared finite-prime
+    Laplace synthesis has dense domain, each positive-time evaluation is a bounded source reporter,
+    its zero graph fibre is trivial, and its canonical closure is a closed extension retaining the
+    finite core. No cutoff or endpoint regularization enters.
 
 These facts leave one narrow object: the ULF-CCEL-001 lifting class of the theta quotient landing
 on the closed critical cubic Laplace graph of ULF-PCLGF-001, in the category where the clock
@@ -162,7 +166,9 @@ by the canonical closure of
 Its Gram is exactly the critical cubic Cauchy kernel; its adjoint domain is dense because every
 `L2` function supported away from zero has square-summable prime coefficients.  Thus the
 surviving carrier is the graph projection or bounded transform of `cl A_*`, with no selectable
-domain or regularization.
+domain or regularization. The existence and source-core retention of this closure are Lean-proved
+in `RHTower.PrimeLogCubicLaplaceGraphFormation`; only its relative theta boundary class remains
+conjectural.
 
 For any lift `F` of the resulting quotient jet, its representative is
 

@@ -62,6 +62,46 @@ theorem nonautonomousFiniteCascadeBranchField_mono_succ
     exact BS.mul_mem ha hb
   · exact hx
 
+/-- Finite actual branch fields are monotone at arbitrary cascade depths. -/
+theorem nonautonomousFiniteCascadeBranchField_mono
+    {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
+    {N M : ℕ} (hNM : N ≤ M) :
+    NonautonomousFiniteCascadeBranchField hfan N ≤
+      NonautonomousFiniteCascadeBranchField hfan M := by
+  induction M, hNM using Nat.le_induction with
+  | base => exact le_rfl
+  | succ M hNM ih =>
+      exact le_trans ih (nonautonomousFiniteCascadeBranchField_mono_succ hfan M)
+
+/-- Canonical inclusion between arbitrary depths of the finite actual branch tower. -/
+noncomputable def nonautonomousFiniteCascadeBranchInclusion
+    {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
+    {N M : ℕ} (hNM : N ≤ M) :
+    NonautonomousFiniteCascadeBranchField hfan N →ₐ[ℂ]
+      NonautonomousFiniteCascadeBranchField hfan M :=
+  IntermediateField.inclusion
+    (nonautonomousFiniteCascadeBranchField_mono hfan hNM)
+
+@[simp] theorem nonautonomousFiniteCascadeBranchInclusion_state
+    {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
+    {N M : ℕ} (hNM : N ≤ M) (i : Fin (N + 1)) :
+    nonautonomousFiniteCascadeBranchInclusion hfan hNM
+        (nonautonomousFiniteCascadeStateInBranchField hfan N i) =
+      nonautonomousFiniteCascadeStateInBranchField hfan M
+        ⟨i, by omega⟩ := by
+  apply Subtype.ext
+  rfl
+
+@[simp] theorem nonautonomousFiniteCascadeBranchInclusion_derivative
+    {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
+    {N M : ℕ} (hNM : N ≤ M) (i : Fin (N + 1)) :
+    nonautonomousFiniteCascadeBranchInclusion hfan hNM
+        (nonautonomousFiniteCascadeDerivativeInBranchField hfan N i) =
+      nonautonomousFiniteCascadeDerivativeInBranchField hfan M
+        ⟨i, by omega⟩ := by
+  apply Subtype.ext
+  rfl
+
 /-- Canonical inclusion of one finite actual branch field into the successor field. -/
 noncomputable def nonautonomousFiniteCascadeBranchInclusionSucc
     {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)

@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven
 - **Type:** unconditional pre-divisor source-graph formation law
 - **Parents:** ULF-PCOB-001, ULF-PLCIE-001, ULF-PLCCKU-001
-- **Status:** `[PAPER-PROVED] [LEAN-IN-PROGRESS] [NOT RH]`
+- **Status:** `[PAPER-PROVED] [LEAN-PROVED] [NOT RH]`
 
 ## 1. Big-picture interpretation
 
@@ -90,3 +90,24 @@ identity `A_*^*A_*`; all selection must occur in a later relative completion bou
 - Existing closed-unbounded syntheses show that closedness alone creates no selection.  The next
   theorem must prove a nonconstant source-framed relative graph class; if theta comparison forgets
   the prime labels or reduces to the universal shift index, retire ULF-PHCCED-001.
+
+## 5. Lean certificate
+
+`formal/GaloisForLFunctions/RHTower/PrimeLogCubicLaplaceGraphFormation.lean` proves:
+
+- `integral_primeLogCriticalLaplaceFeature_mul`: exact cubic prime-mixed Gram kernel;
+- `integral_primeLogCriticalLaplaceFeature_sq`: exact critical column mass `log(p)/p`;
+- `primeLogCriticalLaplaceMass_ae`: literal unsquared finite-prime synthesis survives in `L2`;
+- `memℓp_primeLogCriticalLaplaceFeatureC` and
+  `primeLogCriticalLaplaceMass_pointwise_eq_inner`: each positive-time observation is a bounded
+  source-Hilbert reporter;
+- `dense_primeLogCriticalLaplaceSynthesis_domain`: literal finite-prime domain is dense;
+- `LinearPMap.isClosable_of_tendsto_graph_zero`: constructive sequential closability criterion;
+- `primeLogCriticalLaplaceSynthesis_isClosable`: critical synthesis is closable without cutoff or
+  endpoint regularization;
+- `primeLogCriticalLaplaceSynthesis_closure_isClosed` and
+  `primeLogCriticalLaplaceSynthesis_le_closure`: canonical closed graph exists and retains every
+  literal core value.
+
+Direct file check and exact module build pass. Audited axioms are only `propext`,
+`Classical.choice`, and `Quot.sound`.

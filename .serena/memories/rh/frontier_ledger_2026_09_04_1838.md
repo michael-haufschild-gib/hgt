@@ -1,0 +1,13 @@
+# RH frontier ledger refresh — 2026-09-04 18:38 CEST
+
+Target: `docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md`.
+Evidence: unconditional declarations found by `scripts/formal_tools.py research` in HTGeometry/RHTower only; no cards or papers used. Snapshot HEAD `d843cf4b3` plus audited working-tree Lean declarations.
+
+Integrated:
+- Route E: exact sharp-interval finite-family Perron transfer/Cauchy, arbitrary unshifted Dirichlet cofactor, same-frequency fixed-shift Heath–Brown/Montgomery, unconditional dyadic Möbius large values, and cardinality-free separated reciprocal tails. Harmonic open core is one literal actual-height composition/integration/summation theorem yielding Menon-normalized decay.
+- Route P/CCM: restricted-projection cubic defect is first odd trace-class invariant at Hilbert–Schmidt boundary; additive trace cocycle, safe-Euler/Gamma clock, formation contour, CCM atomwise Green bridge, ideal-exit unbounded critical Rayleigh ratios. Literal critical prime-log Laplace synthesis has dense coefficient-faithful core, bounded positive-time reporters, is closable, and has canonical closed graph. Open core is completed-Xi source/horizon admission plus oriented singular/indefinite/nonabelian comparison. Ordinary trace kills admitted cubic associator; positive/passive completion remains subunit. No new route label.
+- CLG/TTF: strongest current strict assembly uses `H<0`, `2Φ≤v`, `5|G|<12Φ(-H)`. Regime I proves first two. Frozen-jet modules prove exact component remainder bounds and conditional literal-theta growth domination from jets through curvature order five, interval sup-bounds `S₄,S₅`, and one explicit numerical inequality. Open core is verifying that finite package on compact remainder; other compact projective/action/Bose fronts remain.
+- Squarefree-half: Selberg–Delange burden is only undilated `ZetaBinomialHalfKatoInversion`; fixed dilations, moving-Tannery majorant, and signed main term follow in Lean. Candidate interface only.
+- HTGeometry: finite actual branch fields form arbitrary-depth inclusions; lower branch plus new terminal state/velocity generates successor. Every layer Wiman charge embeds in deeper branches; state-coordinate derivations annihilate later charges and respond nontrivially to own charge, giving triangular charge frame. Still no literal Xi occurrence/orientation; no route label.
+
+Ledger remains 1,490 lines, below 4,000. No dated diary headings. `git diff --check` passes. No Lean build run because task is documentation-only and user explicitly rejected building.

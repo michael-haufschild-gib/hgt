@@ -4967,3 +4967,27 @@ naively into ordinary full-source `L2`.
 MUST-195 — Build theta completion as a relative Calderon/graph projection against `cl A_*` in a
 source-framed graph topology. Prove its nonconstant relative index equals Xi escape and its same
 relative representative has the primitive Euler norm `<1`; otherwise retire PHCCED.
+F630 — `ULF-PCLGF-001` is now Lean-proved: literal unsquared finite-prime Laplace synthesis has
+dense source domain; each `t>0` evaluation is an `ell2(Primes)` reporter; zero graph fibre is
+trivial; hence the critical cubic endpoint has a canonical closed graph retaining every core value.
+CANNOT-282 — Neither closability nor its bounded graph transform selects Xi: they occur before
+theta comparison and closed-unbounded source syntheses already exist without RH consequences.
+MUST-196 — Next object must be a relative theta Calderon class on this exact source graph, with
+prime labels retained in one representative whose boundary index is escape multiplicity and whose
+nuclear norm is the existing strict sub-unit Euler budget. Any separate representatives fail.
+F631 — `ULF-MCPT-001` identifies information erased by ordinary cubic trace. For any sigma-trace,
+the projection cubic associator equals an explicit five-channel modular-displacement term; it
+vanishes when all three polarizations lie in the modular centralizer. Lean proves the exact
+two-block law `P(C⁻¹(xP)C)P-xP=(bc/(ad-bc))xP`: block-separable density is blind. A prime-mixed
+`3/4<1` witness has ordinary cubic trace zero, modular cubic value `-1/8`, and defect one.
+F632 — Diagonal modularization is closed: reflected prime-depth incidence is a flat diagonal
+coboundary, so every finite characteristic polynomial, determinant, and cyclic trace moment is
+horizontally blind. `ULF-PBFMS-001` proves every injective finite non-diagonal Burnol packet has
+full support and canonical inverse; only that covariance can carry a source-faithful defect.
+CANNOT-283 — KMS positivity, modular traciality, or an abstract twisted cocycle cannot be the
+producer. They are receivers unless literal Burnol density defines the modular action before Xi
+and theta compression itself creates its cofinal nonnaturality.
+MUST-197 — Construct cofinal modular-compression class of finite full Burnol Grams, then prove one
+same-representative boundary theorem: its cubic twisted source pairing equals the ordinary
+formation-relative index and is bounded by `B_base<1`. Diagonal weights, bounded S3 limits, or a
+postulated KK/cyclic pairing fail.

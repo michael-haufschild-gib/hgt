@@ -66,12 +66,15 @@ theorem sum_normSq_vonMangoldtTwist_mul_dirPoly_le_fixedShiftPerron
   have hE : ∀ r ∈ S,
       Integrable fun y : ℝ => ‖F r y‖ ^ 2 * (1 + y ^ 2)⁻¹ := by
     intro r _hr
+    have hweightCont : Continuous fun y : ℝ => (1 + y ^ 2)⁻¹ :=
+      (continuous_const.add (continuous_id.pow 2)).inv₀ (fun y => by
+        simp only [Pi.add_apply, Pi.pow_apply, id_eq]
+        exact ne_of_gt (by positivity))
     have hmajor : Integrable fun y : ℝ =>
         (P * ‖D r‖) ^ 2 * (1 + y ^ 2)⁻¹ :=
       integrable_inv_one_add_sq.const_mul ((P * ‖D r‖) ^ 2)
     refine Integrable.mono' hmajor
-      (((hFcont r).norm.pow 2).mul
-        (continuous_const.add (continuous_id.pow 2) |>.inv₀).aestronglyMeasurable) ?_
+      (((hFcont r).norm.pow 2).mul hweightCont).aestronglyMeasurable ?_
     filter_upwards with y
     rw [Real.norm_eq_abs, abs_of_nonneg (by positivity :
       0 ≤ ‖F r y‖ ^ 2 * (1 + y ^ 2)⁻¹)]
@@ -81,7 +84,7 @@ theorem sum_normSq_vonMangoldtTwist_mul_dirPoly_le_fixedShiftPerron
     have hsq := pow_le_pow_left₀ (norm_nonneg (F r y)) hFnorm 2
     exact mul_le_mul_of_nonneg_right hsq (by positivity)
   have hbase :=
-    sum_norm_integral_menonSharpIntervalMellinKernel_sq_le S F hsigma.le hC
+    sum_norm_integral_menonSharpIntervalMellinKernel_sq_le S F (by linarith) hC
       (fun r _hr => (hFcont r).aestronglyMeasurable) hkernel hE
   have hperron : ∀ r : ℕ,
       ((2 * Real.pi : ℝ) •
@@ -91,7 +94,7 @@ theorem sum_normSq_vonMangoldtTwist_mul_dirPoly_le_fixedShiftPerron
     intro r
     rw [sum_Ioc_vonMangoldtTwist_eq_integral_windowRelevantAggregate
       L X k a b hXL hab hbX T0 t (tau r) hT0 hscale hsigma]
-    rw [MeasureTheory.integral_mul_const]
+    rw [← MeasureTheory.integral_mul_const]
     apply integral_congr_ae
     filter_upwards with y
     simp only [F, A, D, menonSharpIntervalMellinKernel]
@@ -118,7 +121,5 @@ theorem sum_normSq_vonMangoldtTwist_mul_dirPoly_le_fixedShiftPerron
   rw [hleft]
   refine hbase.trans ?_
   rw [hswap]
-  rfl
 
 end RHTower.Sieve
-

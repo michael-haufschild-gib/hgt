@@ -249,3 +249,65 @@ so `c'(0) = c'''(0) = 0` and `(R4)` is vacuous on `(0, 0.28)` where `c''' < 0`.
 condition is a family of log-derivative bounds `|g'(s)/g(s)| ≤ κ s` for the four averaged
 integrands (`κ ≈ 4/3, 4/3, c''/c ≤ 8, c⁽⁵⁾/(5c''') ≈ 0.8` in the pure model) with total budget
 `≈ 10` against `2.4c ≥ 58`; the difference structure needs `EΛ ≤ K·D` globally (weighted descent).
+
+## 2026-09-04 (night): frozen-jet growth bound in Lean; regime-I plan fixed
+
+**Lean (compiled, wired, axioms clean):** `C5FrozenJetTaylorBounds` (monotone comparison lemma
+`|h'| ≤ K s^k ⇒ |h| ≤ K s^{k+1}/(k+1)`, frozen-jet expansions of a `C⁴` chain),
+`C5FrozenJetGrowthBound` (even/odd data, closed-form auxiliaries `K₁ = t²o₁ − 5to + 8O`,
+`K₂ = 3te − 3E − t²e₁`, `Λ = to − 2O`, `Y = te − E`; identities `tM − 5N = E·K₁ + O·K₂`,
+`N = EΛ − OY`; component bounds `|K₁| ≤ (2/45)S₅t⁶`, `|K₂| ≤ (2/15)S₄t⁵`,
+`|Λ − c₃t⁴/12| ≤ S₅t⁶/180`, `|Y − c₂t³/3| ≤ S₄t⁵/30`, `|E − c₀t − c₂t³/6| ≤ S₄t⁵/120`,
+`|O − c₁t²/2 − c₃t⁴/24| ≤ S₅t⁶/720`), `ThetaCuspC5FrozenJetGate` (`H = 4N`, time jet `= 4M`,
+`G = 4(tM − 5N)`, `|Φ − c₀t² − c₂t⁴/12| ≤ S₄t⁶/360`, strict assembly
+`5|G| < 12Φ(−H) ⇒ M(1) > 0`, and `growthBound_of_frozenJets`: the growth bound follows from one
+explicit numeric inequality `hkey` in `c₀…c₃, S₄, S₅, t`).  Truncated polynomial parts of `tM`
+and `5N` cancel exactly, so no interval integrals are needed.
+
+**Numerics (pod `clg_frozen.py`, true theta jets):** with the improved `K_N = c₀S₅/180 + c₁S₄/60`
+the bound certifies `t ≤ 0.5` in regime I and `t ≤ 0.3` in the corner (margins 3–13×);
+with crude jet ranges the discharge loses the `A = 6` correlations (`clg_hkey.py`), so the
+discharge must use the exact Born–Witten jets at `u` and endpoint sup bounds.
+
+**Regime-I plan (all `t`):**
+* `t ≤ 0.3`: `growthBound_of_frozenJets` with jets `c_k(u) = BW_{k+2}(q) ∓ |J_{k+2}|` and
+  `S₄ ≤ max ends of 2A(32 + 90.2(4.5/q)²)`, `S₅ ≤ max ends of 2A(64 + 780(4.5/q)³)` (+ `J₆, J₇`),
+  chambers in `q(u)`.
+* `t ≥ 0.3`: perturbation from the corpus single-atom gate.  The corpus proves
+  `M(0) = c5SingleAtomCompensationMargin A t > 0` via
+  `base = (2A + λ/r)(4A + d/r)·shape(t) + correction`, `shape(t) = z((25+72z)e − t(140+328z)) + 20t²e`
+  (`z = cosh 2t − 1`, `e = 2 sinh 2t`, `shape ~ t⁷`), `correction > 0`, `M(0) > base`; so
+  `M(0) ≥ 2A(4A − 6)·shape(t)`.  The homotopy data splits every jet as single-atom + likelihood
+  (`a + da`, …); for `A(u−t) ≥ 6` the `d`-jets are `≤ 10⁻³` relative (`|J₂| ≤ 38A²ε` etc.), and
+  a naive bound `|M(1) − M(0)| ≤ Σ|∂M||d-jet|` (no cancellation needed for `t ≥ 0.3`) is
+  `≈ 30` against `M(0) ≥ 150` at `A(u−t) = 6, t = 0.3`, improving with `t` and `A`.
+  This also bypasses `H < 0` and `v ≥ 2Φ` for `t ≥ 0.3`.
+
+**Corner (`A(u−t) < 6`) remains:** the first-atom jets are far from the true ones at `x ≈ 0`
+(`J₃(0) = −14.4 = c₁'(0)`), so the perturbation must be from a two-atom model, for which no corpus
+gate theorem exists; `c` even gives `c'(0) = c'''(0) = 0`.
+
+## 2026-09-05: regime I for `t ≥ 1/4` reduced to one explicit numeric inequality (Lean)
+
+`ThetaCuspC5RegimeOnePerturbation` (compiled, wired, axioms clean):
+* §1 public certificate series: `c5HyperbolicGaussianBaseShape t = 2·cert(2t)`,
+  `cert x = Σ_n term_n(x)` with `term_{k+1} = (54·9^{k+1} − (160+82(k+1))4^{k+1} + 20(k+1)² + 268(k+1) + 194)·x^{2k+3}/(2k+3)!`,
+  all `≥ 0`, hence `shape(t) ≥ (6656/9)t⁷ + (615872/945)t⁹ + (50560/189)t¹¹`.
+* §2 correction jets in regime I: `|da| ≤ 12A₋ε₋`, `|db|,|dm| ≤ 76A₋²ε₋`, `|dc|,|dn| ≤ 522A₋³ε₋`,
+  `|ds| ≤ 24A₋ε₋`, `|dq| ≤ 4ε₋` (`|J₁| ≤ 6Aε`, `0 ≤ LP ≤ ε`, monotone transport `A^kε` from `u−t`).
+* §3 single-atom jets for `A ≥ 6`: `λ ≤ 6/A`, `|d| ≤ 18/A`, `1/2 < r ≤ 1`, hence
+  `|a| ≤ (2A + 12/A)z'`, `|b| ≤ 4(12/A)²z(z+2) + 4(2A+12/A)(z+1)`, `|c| ≤ z'(8(12/A)³z(z+2) + 12(12/A)²(z+1) + 4(2A+12/A))`,
+  `|s| ≤ 4Az + 36z/A`, `|m| ≤ (4A + 72/A)z'`, `|n| ≤ 4(1728/A²·z(z+2) + (4A+72/A)(z+1))`, `slope ≥ 2A`, `L ≥ 4A − 36/A`.
+* §4 generic homotopy differences: `vS(1) − vS(0) = vS₁(0) + vS₂/2`, same for `vC`;
+  `M(1) − M(0) = 5ΔvS − ΔW·vC(1) − W(0)·ΔvC`; Bose reciprocal for `q ≥ 2`, `|dq| ≤ 1`:
+  `ρ(0) ≤ 2e^{−q}`, `ρ(1) ≤ 6e^{−q}`, `|ρ(1) − ρ(0)| ≤ 24|dq|e^{−q}`; the total bound
+  `compensationDiffBound` (explicit polynomial in the thirteen bounds and `e^{−q}`).
+* §5 `M(0) ≥ 2A(4A − 36/A)·(series bound)` from the corpus factorisation.
+* §6a `c5CompletedCompensationMargin_pos_of_regimeOne_key`: for `1/4 ≤ t ≤ u`, `A(u−t) ≥ 6`,
+  `compensationDiffBound(…) < 2A(4A − 36/A)·poly(t)` ⟹ `M(1) > 0`.  No `H < 0` needed.
+
+Pod (`clg_beta3.py`): the key inequality holds with ratio `20` at `t = 1/4` (`A(u−t) = 6`), `46` at
+`0.3`, `≥ 300` for `t ≥ 0.5`, up to `t ≈ 6` with the polynomial shape bound; beyond that the
+exponential form `shape ≥ 32 sinh 2t cosh² 2t` (`t ≥ 5/4`) is needed.  Remaining for regime I:
+the numeric discharge of the key (chambers in `t` after absorbing `A(u−t) ≥ 6` by the decay
+`A^kε(A)` for `k ≤ 18`), and the small-`t` frozen-jet discharge for `t ≤ 0.3`.

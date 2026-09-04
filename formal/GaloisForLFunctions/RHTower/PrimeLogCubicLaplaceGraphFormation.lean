@@ -263,7 +263,7 @@ theorem primeLogCriticalLaplaceMass_pointwise_eq_inner
     intro p hp
     rw [RCLike.inner_apply,
       HTGeometry.ConstraintMotiveRelativity.srcEmb_apply]
-    simp only [Finsupp.not_mem_support_iff.mp hp, mul_zero]
+    simp only [Finsupp.notMem_support_iff.mp hp, zero_mul]
   rw [hsum]
   apply Finset.sum_congr rfl
   intro p hp
@@ -271,7 +271,6 @@ theorem primeLogCriticalLaplaceMass_pointwise_eq_inner
     HTGeometry.ConstraintMotiveRelativity.srcEmb_apply]
   simp [primeLogCriticalEvaluationVector,
     primeLogCriticalLaplaceFeatureC]
-  ring
 
 /-- Finite-prime synthesis as a partial operator on the completed source `ℓ²`. -/
 def primeLogCriticalLaplaceSynthesis :
@@ -302,6 +301,63 @@ theorem primeLogCriticalLaplaceSynthesis_apply
               (HTGeometry.ConstraintMotiveRelativity.srcEmb (P := Nat.Primes))) = l := by
     rw [← hval, LinearEquiv.symm_apply_apply]
   exact congrArg primeLogCriticalLaplaceMass hsymm
+
+/-- Canonical literal finite-prime representative of a vector in the graph core. -/
+def primeLogCriticalLaplaceCore
+    (x : primeLogCriticalLaplaceSynthesis.domain) : Nat.Primes →₀ ℂ :=
+  (LinearEquiv.ofInjective _ primeLogCritical_srcEmb_injective).symm x
+
+theorem srcEmb_primeLogCriticalLaplaceCore
+    (x : primeLogCriticalLaplaceSynthesis.domain) :
+    HTGeometry.ConstraintMotiveRelativity.srcEmb
+        (primeLogCriticalLaplaceCore x) =
+      (x : primeLogCriticalSourceL2) := by
+  have h := (LinearEquiv.ofInjective _
+    primeLogCritical_srcEmb_injective).apply_symm_apply x
+  exact congrArg Subtype.val h
+
+theorem primeLogCriticalLaplaceSynthesis_apply_core
+    (x : primeLogCriticalLaplaceSynthesis.domain) :
+    primeLogCriticalLaplaceSynthesis x =
+      primeLogCriticalLaplaceMass (primeLogCriticalLaplaceCore x) := by
+  rfl
+
+/-- Every graph-core vector retains its literal unsquared finite Euler representative. -/
+theorem primeLogCriticalLaplaceSynthesis_ae
+    (x : primeLogCriticalLaplaceSynthesis.domain) :
+    (primeLogCriticalLaplaceSynthesis x : ℝ → ℂ) =ᵐ[
+      volume.restrict (Ioi (0 : ℝ))]
+        fun t => ∑ p ∈ (primeLogCriticalLaplaceCore x).support,
+          primeLogCriticalLaplaceCore x p *
+            primeLogCriticalLaplaceFeatureC p t := by
+  rw [primeLogCriticalLaplaceSynthesis_apply_core]
+  exact primeLogCriticalLaplaceMass_ae _
+
+/-- Source convergence forces every positive-time literal Euler report to vanish. -/
+theorem tendsto_primeLogCriticalLaplaceCore_pointwise_zero
+    (x : ℕ → primeLogCriticalLaplaceSynthesis.domain)
+    (hx : Tendsto (fun n => (x n : primeLogCriticalSourceL2))
+      atTop (nhds 0)) (t : ℝ) (ht : 0 < t) :
+    Tendsto (fun n =>
+      ∑ p ∈ (primeLogCriticalLaplaceCore (x n)).support,
+        primeLogCriticalLaplaceCore (x n) p *
+          primeLogCriticalLaplaceFeatureC p t)
+      atTop (nhds 0) := by
+  have hinner := Filter.Tendsto.inner (𝕜 := ℂ)
+    (tendsto_const_nhds : Tendsto
+      (fun _ : ℕ => primeLogCriticalEvaluationVector t ht)
+      atTop (nhds (primeLogCriticalEvaluationVector t ht))) hx
+  have heq : (fun n =>
+      ∑ p ∈ (primeLogCriticalLaplaceCore (x n)).support,
+        primeLogCriticalLaplaceCore (x n) p *
+          primeLogCriticalLaplaceFeatureC p t) =
+      fun n => inner ℂ (primeLogCriticalEvaluationVector t ht)
+        (x n : primeLogCriticalSourceL2) := by
+    funext n
+    rw [primeLogCriticalLaplaceMass_pointwise_eq_inner,
+      srcEmb_primeLogCriticalLaplaceCore]
+  rw [heq]
+  simpa using hinner
 
 /-- Literal finite-prime core is dense in the source Hilbert chart. -/
 theorem dense_primeLogCriticalLaplaceSynthesis_domain :
@@ -358,6 +414,52 @@ theorem LinearPMap.isClosable_of_tendsto_graph_zero
     · simpa only [happ] using hwsnd
   refine ⟨G.toLinearPMap, ?_⟩
   exact (Submodule.toLinearPMap_graph_eq G hvertical).symm
+
+/-- The unregularized critical prime-log Laplace synthesis is closable. -/
+theorem primeLogCriticalLaplaceSynthesis_isClosable :
+    primeLogCriticalLaplaceSynthesis.IsClosable := by
+  apply LinearPMap.isClosable_of_tendsto_graph_zero
+  intro x y hx hy
+  obtain ⟨ns, hns, hyAE⟩ :=
+    GaloisForLFunctions.HTGeometry.exists_subseq_ae_tendsto hy
+  have hmassAE : ∀ᵐ t : ℝ ∂(volume.restrict (Ioi (0 : ℝ))),
+      ∀ i : ℕ,
+        (primeLogCriticalLaplaceSynthesis (x (ns i)) : ℝ → ℂ) t =
+          ∑ p ∈ (primeLogCriticalLaplaceCore (x (ns i))).support,
+            primeLogCriticalLaplaceCore (x (ns i)) p *
+              primeLogCriticalLaplaceFeatureC p t := by
+    rw [ae_all_iff]
+    intro i
+    exact primeLogCriticalLaplaceSynthesis_ae (x (ns i))
+  have htpos : ∀ᵐ t : ℝ ∂(volume.restrict (Ioi (0 : ℝ))), 0 < t := by
+    simpa only [mem_Ioi] using
+      (MeasureTheory.ae_restrict_mem measurableSet_Ioi :
+        ∀ᵐ t : ℝ ∂(volume.restrict (Ioi (0 : ℝ))), t ∈ Ioi 0)
+  apply MeasureTheory.Lp.ext
+  filter_upwards [hyAE, hmassAE, htpos,
+    MeasureTheory.Lp.coeFn_zero ℂ 2
+      (volume.restrict (Ioi (0 : ℝ)))] with t hyt hmass ht hzero
+  have hsource := (tendsto_primeLogCriticalLaplaceCore_pointwise_zero
+    x hx t ht).comp hns.tendsto_atTop
+  have hactual : Tendsto
+      (fun i => (primeLogCriticalLaplaceSynthesis (x (ns i)) : ℝ → ℂ) t)
+      atTop (nhds 0) := by
+    apply hsource.congr'
+    exact Filter.Eventually.of_forall fun i => (hmass i).symm
+  have hyzero : (y : ℝ → ℂ) t = 0 :=
+    tendsto_nhds_unique hyt hactual
+  exact hyzero.trans hzero.symm
+
+/-- Canonical completion graph is closed; no bounded endpoint is introduced. -/
+theorem primeLogCriticalLaplaceSynthesis_closure_isClosed :
+    primeLogCriticalLaplaceSynthesis.closure.IsClosed :=
+  primeLogCriticalLaplaceSynthesis_isClosable.closure_isClosed
+
+/-- Canonical completion graph preserves every literal finite-prime core value. -/
+theorem primeLogCriticalLaplaceSynthesis_le_closure :
+    primeLogCriticalLaplaceSynthesis ≤
+      primeLogCriticalLaplaceSynthesis.closure :=
+  LinearPMap.le_closure primeLogCriticalLaplaceSynthesis
 
 end
 
