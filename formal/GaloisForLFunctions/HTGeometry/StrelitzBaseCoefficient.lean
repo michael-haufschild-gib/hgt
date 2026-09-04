@@ -85,6 +85,44 @@ open Filter GaloisForLFunctions
 
 variable {a : ℕ → ℂ}
 
+/-- **Highest-`z` Strelitz face retaining the full maximum-circle property.**
+An assumed order-two entire-heat ADE has a fixed nonzero highest
+`z`-coefficient face in the two logarithmic jet variables, while the exact polynomial in `z`
+remains superpolynomially small along the selected Wiman sequence. -/
+theorem exists_nonzero_strelitzBaseCoefficient_of_order_two_entireHeat_isMaximumOnCircle
+    (ha : EntireCoeffs a)
+    (hheat : ∀ t z : ℂ, Summable (fun n : ℕ =>
+      a n * Complex.exp (-(4 * (Real.pi : ℂ) ^ 2) * (n : ℂ) ^ 2 * t)
+        * Complex.exp (2 * (Real.pi : ℂ) * Complex.I * (n : ℂ) * z)))
+    (htrans : ∀ M : ℕ, ∃ n, M ≤ n ∧ a n ≠ 0)
+    (hDA : DifferentiallyAlgebraicOfOrder (coeffFun a) 2) :
+    ∃ P : MvPolynomial (Fin 2) (Polynomial ℂ), P ≠ 0 ∧
+      strelitzBaseCoefficient P (polynomialMvCoeffDegree P) ≠ 0 ∧
+      ∃ (x : ℕ → ℝ) (z : ℕ → ℂ),
+        (∀ n : ℕ, (n : ℝ) ≤ x n) ∧
+        (∀ n : ℕ, ‖z n‖ = Real.exp (x n)) ∧
+        (∀ n : ℕ, maxTerm a (Real.exp (x n)) ≤ ‖coeffFun a (z n)‖) ∧
+        (∀ n : ℕ, coeffFun a (z n) ≠ 0) ∧
+        (∀ n : ℕ, ‖eulerLogDeriv (coeffFun a) (z n) -
+            (centralIndex a (Real.exp (x n)) : ℂ)‖
+          ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp (x n)) : ℝ)) ∧
+        (∀ n : ℕ, ‖eulerLogDerivSecond (coeffFun a) (z n)‖
+          ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp (x n)) : ℝ) ^ 2) ∧
+        (∀ j : ℕ, Tendsto (fun n : ℕ =>
+          ‖(strelitzBaseSpecialization P
+            ![eulerLogDeriv (coeffFun a) (z n),
+              eulerLogDerivSecond (coeffFun a) (z n)]).eval (z n)‖ *
+            (Real.exp (x n)) ^ j) atTop (nhds 0)) ∧
+        ∀ n : ℕ, ∀ w : ℂ, ‖w‖ = ‖z n‖ →
+          ‖coeffFun a w‖ ≤ ‖coeffFun a (z n)‖ := by
+  obtain ⟨P, hP, x, z, hx, hz, hfloor, hfz, hu, hv, hsmall, hmaxCircle⟩ :=
+    exists_nonzero_strelitzLogJetPolynomial_superpolynomiallySmall_of_order_two_entireHeat_isMaximumOnCircle
+      ha hheat htrans hDA
+  refine ⟨P, hP, strelitzBaseCoefficient_polynomialMvCoeffDegree_ne_zero hP,
+    x, z, hx, hz, hfloor, hfz, hu, hv, ?_, hmaxCircle⟩
+  intro j
+  simpa only [eval_strelitzBaseSpecialization] using hsmall j
+
 /-- **Highest-`z` Strelitz face.** An assumed order-two entire-heat ADE has a fixed nonzero highest
 `z`-coefficient face in the two logarithmic jet variables, while the exact polynomial in `z`
 remains superpolynomially small along the selected Wiman sequence. -/
@@ -112,13 +150,10 @@ theorem exists_nonzero_strelitzBaseCoefficient_of_order_two_entireHeat
             ![eulerLogDeriv (coeffFun a) (z n),
               eulerLogDerivSecond (coeffFun a) (z n)]).eval (z n)‖ *
             (Real.exp (x n)) ^ j) atTop (nhds 0) := by
-  obtain ⟨P, hP, x, z, hx, hz, hfloor, hfz, hu, hv, hsmall⟩ :=
-    exists_nonzero_strelitzLogJetPolynomial_superpolynomiallySmall_of_order_two_entireHeat
+  obtain ⟨P, hP, hface, x, z, hx, hz, hfloor, hfz, hu, hv, hsmall, _⟩ :=
+    exists_nonzero_strelitzBaseCoefficient_of_order_two_entireHeat_isMaximumOnCircle
       ha hheat htrans hDA
-  refine ⟨P, hP, strelitzBaseCoefficient_polynomialMvCoeffDegree_ne_zero hP,
-    x, z, hx, hz, hfloor, hfz, hu, hv, ?_⟩
-  intro j
-  simpa only [eval_strelitzBaseSpecialization] using hsmall j
+  exact ⟨P, hP, hface, x, z, hx, hz, hfloor, hfz, hu, hv, hsmall⟩
 
 end
 

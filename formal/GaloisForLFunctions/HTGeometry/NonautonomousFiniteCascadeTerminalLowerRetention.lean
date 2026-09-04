@@ -524,13 +524,10 @@ theorem exists_nonautonomousFiniteCascadeTerminalWimanLowerBranchResidueEmbeddin
     convert hyB using 1
     apply Subtype.ext
     rfl
-  obtain ⟨C, hCB, hCcomap⟩ :=
+  obtain ⟨C, hCB, hCcomap, hCmem⟩ :=
     exists_compositeValuationSubring_comap_eq A₀ B
       (nonautonomousFiniteCascadeBranchInclusionSucc hfan N) hbranch
-  refine ⟨C, hCcomap, ?_, ?_⟩
-  · intro x
-    change x ∈ C.comap (nonautonomousFiniteCascadeBranchInclusionSucc hfan N) ↔ x ∈ A₀
-    rw [hCcomap]
+  refine ⟨C, hCcomap, hCmem, ?_⟩
   intro hterminal
   exact hpole (hCB hterminal)
 

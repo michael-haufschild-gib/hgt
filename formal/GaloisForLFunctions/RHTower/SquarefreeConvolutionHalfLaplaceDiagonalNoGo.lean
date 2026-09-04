@@ -338,7 +338,7 @@ theorem norm_squarefreeHalfBoundaryLaplaceProfile_sub_le
         Real.exp (-((n : ℝ) * q))) ≤
       1 + Real.exp q * 2 ^ (1 : ℝ) * (1 / q) ^ (2 : ℝ) *
         Real.Gamma 2 := by
-    convert hmoment.2 using 1 <;> norm_num
+    simpa only [one_add_one_eq_two] using hmoment.2
   have hterm : ∀ n : ℕ,
       ‖squarefreeHalfBoundaryLaplaceCoeff n *
           Complex.exp (-(((n : ℝ) * x : ℝ) : ℂ)) -
@@ -391,6 +391,208 @@ theorem norm_squarefreeHalfBoundaryLaplaceProfile_sub_le
     _ = |x - y| *
         (1 + Real.exp q * 2 ^ (1 : ℝ) * (1 / q) ^ (2 : ℝ) *
           Real.Gamma 2) := by ring
+
+private theorem reciprocal_heat_mesh_moment_le
+    (N : ℕ) {x : ℝ}
+    (hlo : 1 / (((N + 2 : ℕ) : ℝ)) ≤ x)
+    (hi : x ≤ 1 / (((N + 1 : ℕ) : ℝ))) :
+    |x - 1 / (((N + 1 : ℕ) : ℝ))| *
+        (1 + Real.exp (1 / (((N + 2 : ℕ) : ℝ))) * 2 ^ (1 : ℝ) *
+          (1 / (1 / (((N + 2 : ℕ) : ℝ)))) ^ (2 : ℝ) * Real.Gamma 2) ≤
+      1 + 4 * Real.exp 1 := by
+  have hN1 : (0 : ℝ) < ((N + 1 : ℕ) : ℝ) := by positivity
+  have hN2 : (0 : ℝ) < ((N + 2 : ℕ) : ℝ) := by positivity
+  have hgap :
+      |x - 1 / (((N + 1 : ℕ) : ℝ))| ≤
+        1 / (((N + 1 : ℕ) : ℝ)) - 1 / (((N + 2 : ℕ) : ℝ)) := by
+    rw [abs_of_nonpos (sub_nonpos.mpr hi)]
+    linarith
+  have hqOne : 1 / (((N + 2 : ℕ) : ℝ)) ≤ 1 := by
+    apply (div_le_one hN2).2
+    exact_mod_cast (by omega : 1 ≤ N + 2)
+  have hexp : Real.exp (1 / (((N + 2 : ℕ) : ℝ))) ≤ Real.exp 1 :=
+    Real.exp_le_exp.mpr hqOne
+  have hratio :
+      (1 / (((N + 1 : ℕ) : ℝ)) - 1 / (((N + 2 : ℕ) : ℝ))) *
+        (((N + 2 : ℕ) : ℝ)) ^ 2 ≤ 2 := by
+    have heq :
+        (1 / (((N + 1 : ℕ) : ℝ)) - 1 / (((N + 2 : ℕ) : ℝ))) *
+            (((N + 2 : ℕ) : ℝ)) ^ 2 =
+          (((N + 2 : ℕ) : ℝ)) / (((N + 1 : ℕ) : ℝ)) := by
+      field_simp
+      push_cast
+      ring
+    rw [heq]
+    exact (div_le_iff₀ hN1).2 (by push_cast; nlinarith)
+  have hgapOne :
+      1 / (((N + 1 : ℕ) : ℝ)) - 1 / (((N + 2 : ℕ) : ℝ)) ≤ 1 := by
+    have hfirst : 1 / (((N + 1 : ℕ) : ℝ)) ≤ 1 :=
+      (div_le_one hN1).2 (by exact_mod_cast (by omega : 1 ≤ N + 1))
+    have hsecond : 0 ≤ 1 / (((N + 2 : ℕ) : ℝ)) := by positivity
+    linarith
+  have hdOne : |x - 1 / (((N + 1 : ℕ) : ℝ))| ≤ 1 := hgap.trans hgapOne
+  have hdscale :
+      |x - 1 / (((N + 1 : ℕ) : ℝ))| * (((N + 2 : ℕ) : ℝ)) ^ 2 ≤ 2 :=
+    (mul_le_mul_of_nonneg_right hgap (sq_nonneg _)).trans hratio
+  have hsecond :
+      |x - 1 / (((N + 1 : ℕ) : ℝ))| *
+          (Real.exp (1 / (((N + 2 : ℕ) : ℝ))) * 2 *
+            (((N + 2 : ℕ) : ℝ)) ^ 2) ≤
+        4 * Real.exp 1 := by
+    calc
+      |x - 1 / (((N + 1 : ℕ) : ℝ))| *
+          (Real.exp (1 / (((N + 2 : ℕ) : ℝ))) * 2 *
+            (((N + 2 : ℕ) : ℝ)) ^ 2) =
+          (|x - 1 / (((N + 1 : ℕ) : ℝ))| *
+            (((N + 2 : ℕ) : ℝ)) ^ 2) *
+              (2 * Real.exp (1 / (((N + 2 : ℕ) : ℝ)))) := by ring
+      _ ≤ 2 * (2 * Real.exp 1) :=
+        mul_le_mul hdscale (mul_le_mul_of_nonneg_left hexp (by norm_num))
+          (by positivity) (by positivity)
+      _ = 4 * Real.exp 1 := by ring
+  norm_num [one_div, Real.rpow_two] at *
+  calc
+    |x - (↑N + 1)⁻¹| *
+        (1 + Real.exp (↑N + 2)⁻¹ * 2 * (↑N + 2) ^ 2) =
+        |x - (↑N + 1)⁻¹| +
+          |x - (↑N + 1)⁻¹| *
+            (Real.exp (↑N + 2)⁻¹ * 2 * (↑N + 2) ^ 2) := by ring
+    _ ≤ 1 + 4 * Real.exp 1 := add_le_add hdOne hsecond
+
+private theorem exists_reciprocal_heat_mesh
+    {x : ℝ} (hx : 0 < x) (hxsmall : x ≤ 1 / 25) :
+    ∃ N : ℕ, 24 ≤ N ∧
+      1 / (((N + 2 : ℕ) : ℝ)) ≤ x ∧
+      x ≤ 1 / (((N + 1 : ℕ) : ℝ)) := by
+  let m : ℕ := ⌊1 / x⌋₊
+  have h25 : (25 : ℝ) ≤ 1 / x := by
+    rw [le_div_iff₀ hx]
+    nlinarith
+  have hm25 : 25 ≤ m := Nat.le_floor h25
+  let N : ℕ := m - 1
+  have hN : 24 ≤ N := by
+    dsimp [N]
+    omega
+  have hNm : N + 1 = m := by
+    dsimp [N]
+    omega
+  have hNm2 : N + 2 = m + 1 := by omega
+  have hmposNat : 0 < m := by omega
+  have hmpos : (0 : ℝ) < m := by exact_mod_cast hmposNat
+  have hmp1 : (0 : ℝ) < m + 1 := by positivity
+  have hfloor : (m : ℝ) ≤ 1 / x := Nat.floor_le (by positivity)
+  have hfloorNext : 1 / x < (m : ℝ) + 1 := Nat.lt_floor_add_one _
+  refine ⟨N, hN, ?_, ?_⟩
+  · rw [hNm2]
+    push_cast
+    apply (div_le_iff₀ hmp1).2
+    have hmul : 1 < ((m : ℝ) + 1) * x := (div_lt_iff₀ hx).1 hfloorNext
+    nlinarith
+  · rw [hNm]
+    apply (le_div_iff₀ hmpos).2
+    have hmul : (m : ℝ) * x ≤ 1 := (le_div_iff₀ hx).1 hfloor
+    nlinarith
+
+private theorem squarefreeHalfLaplaceScale_eq_one_div (N : ℕ) :
+    squarefreeHalfLaplaceScale N = 1 / (((N + 1 : ℕ) : ℝ)) := by
+  unfold squarefreeHalfLaplaceScale
+  rw [one_div]
+
+private theorem squarefreeHalfLaplaceScale_succ_eq_one_div (N : ℕ) :
+    squarefreeHalfLaplaceScale (N + 1) = 1 / (((N + 2 : ℕ) : ℝ)) := by
+  unfold squarefreeHalfLaplaceScale
+  rw [show N + 1 + 1 = N + 2 by omega, one_div]
+
+/-- Consecutive reciprocal heat samples control the full profile between them with one uniform
+constant. -/
+theorem norm_squarefreeHalfBoundaryLaplaceProfile_sub_scale_le
+    (N : ℕ) {x : ℝ}
+    (hlo : squarefreeHalfLaplaceScale (N + 1) ≤ x)
+    (hi : x ≤ squarefreeHalfLaplaceScale N) :
+    ‖squarefreeHalfBoundaryLaplaceProfile x -
+        squarefreeHalfBoundaryLaplaceProfile (squarefreeHalfLaplaceScale N)‖ ≤
+      1 + 4 * Real.exp 1 := by
+  have hqpos := squarefreeHalfLaplaceScale_pos (N + 1)
+  have hypos := squarefreeHalfLaplaceScale_pos N
+  have hxpos : 0 < x := hqpos.trans_le hlo
+  have hqy : squarefreeHalfLaplaceScale (N + 1) ≤
+      squarefreeHalfLaplaceScale N := by
+    unfold squarefreeHalfLaplaceScale
+    apply (inv_le_inv₀ (by positivity) (by positivity)).2
+    push_cast
+    linarith
+  have hprofile := norm_squarefreeHalfBoundaryLaplaceProfile_sub_le
+    hxpos hypos hqpos hlo hqy
+  refine hprofile.trans ?_
+  have hlo' : 1 / (((N + 2 : ℕ) : ℝ)) ≤ x := by
+    simpa only [squarefreeHalfLaplaceScale_succ_eq_one_div] using hlo
+  have hi' : x ≤ 1 / (((N + 1 : ℕ) : ℝ)) := by
+    simpa only [squarefreeHalfLaplaceScale_eq_one_div] using hi
+  have hmesh := reciprocal_heat_mesh_moment_le N
+    hlo' hi'
+  have hqeq : squarefreeHalfLaplaceScale (N + 1) =
+      1 / (((N + 2 : ℕ) : ℝ)) := squarefreeHalfLaplaceScale_succ_eq_one_div N
+  have hyeq : squarefreeHalfLaplaceScale N =
+      1 / (((N + 1 : ℕ) : ℝ)) := squarefreeHalfLaplaceScale_eq_one_div N
+  rw [hqeq, hyeq]
+  exact hmesh
+
+/-- Geometric weighted decay yields a uniform bound for all late boundary heat samples. -/
+theorem exists_uniform_bound_squarefreeHalfBoundaryLaplaceProfile_samples_of_locallyBounded
+    (hloc : PoleClearedFirstTraceLaplaceLocallyBounded) :
+    ∃ K : ℝ, 0 ≤ K ∧ ∀ N : ℕ, 24 ≤ N →
+      ‖squarefreeHalfBoundaryLaplaceProfile (squarefreeHalfLaplaceScale N)‖ ≤ K := by
+  obtain ⟨K, hK, hweighted⟩ :=
+    exists_geometric_bound_squarefreeHalfLaplaceSum_boundary_of_locallyBounded hloc
+  refine ⟨K, hK, ?_⟩
+  intro N hN
+  rw [squarefreeHalfBoundaryLaplaceProfile_scale]
+  have hpow : (1 : ℝ) ≤ (5 : ℝ) ^ (N - 24) := one_le_pow₀ (by norm_num)
+  calc
+    ‖squarefreeHalfLaplaceSum N boundaryExteriorPoint‖ =
+        1 * ‖squarefreeHalfLaplaceSum N boundaryExteriorPoint‖ := by ring
+    _ ≤ (5 : ℝ) ^ (N - 24) *
+        ‖squarefreeHalfLaplaceSum N boundaryExteriorPoint‖ :=
+      mul_le_mul_of_nonneg_right hpow (norm_nonneg _)
+    _ ≤ K := hweighted N hN
+
+/-- Diagonal local boundedness forces the entire continuous boundary heat profile to be bounded
+near zero. -/
+theorem squarefreeHalfBoundaryLaplaceBoundedAtZero_of_locallyBounded
+    (hloc : PoleClearedFirstTraceLaplaceLocallyBounded) :
+    SquarefreeHalfBoundaryLaplaceBoundedAtZero := by
+  obtain ⟨K, hK, hsamples⟩ :=
+    exists_uniform_bound_squarefreeHalfBoundaryLaplaceProfile_samples_of_locallyBounded hloc
+  refine ⟨K + (1 + 4 * Real.exp 1), 1 / 25, by positivity, by norm_num, ?_⟩
+  intro x hx hxsmall
+  obtain ⟨N, hN, hlo, hi⟩ := exists_reciprocal_heat_mesh hx hxsmall.le
+  have hloScale : squarefreeHalfLaplaceScale (N + 1) ≤ x := by
+    simpa only [squarefreeHalfLaplaceScale_succ_eq_one_div] using hlo
+  have hiScale : x ≤ squarefreeHalfLaplaceScale N := by
+    simpa only [squarefreeHalfLaplaceScale_eq_one_div] using hi
+  have hinterp := norm_squarefreeHalfBoundaryLaplaceProfile_sub_scale_le N
+    hloScale hiScale
+  have hsample := hsamples N hN
+  calc
+    ‖squarefreeHalfBoundaryLaplaceProfile x‖ =
+        ‖(squarefreeHalfBoundaryLaplaceProfile x -
+            squarefreeHalfBoundaryLaplaceProfile (squarefreeHalfLaplaceScale N)) +
+          squarefreeHalfBoundaryLaplaceProfile (squarefreeHalfLaplaceScale N)‖ := by
+      rw [sub_add_cancel]
+    _ ≤ ‖squarefreeHalfBoundaryLaplaceProfile x -
+            squarefreeHalfBoundaryLaplaceProfile (squarefreeHalfLaplaceScale N)‖ +
+          ‖squarefreeHalfBoundaryLaplaceProfile (squarefreeHalfLaplaceScale N)‖ :=
+      norm_add_le _ _
+    _ ≤ (1 + 4 * Real.exp 1) + K := add_le_add hinterp hsample
+    _ = K + (1 + 4 * Real.exp 1) := by ring
+
+/-- **Diagonal Laplace no-go.** The explicit infinite-order diagonal family from the Laplace
+criterion is not locally bounded on the right half-plane. -/
+theorem not_poleClearedFirstTraceLaplaceLocallyBounded :
+    ¬ PoleClearedFirstTraceLaplaceLocallyBounded := by
+  intro hloc
+  exact not_squarefreeHalfBoundaryLaplaceBoundedAtZero
+    (squarefreeHalfBoundaryLaplaceBoundedAtZero_of_locallyBounded hloc)
 
 end
 

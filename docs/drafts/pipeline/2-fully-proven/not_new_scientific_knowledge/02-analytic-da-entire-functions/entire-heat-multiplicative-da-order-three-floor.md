@@ -59,9 +59,51 @@ Determine how much algebraic-differential complexity is forced by entire backwar
   and every fixed curve coefficient divided by the matching power of the first-jet norm converges
   to its exact complex leading coefficient.  `HTGeometry/StrelitzJetCurveNormalizedRoot.lean`
   removes the extracted real Newton power exactly and proves that the resulting numerical root has
-  logarithmic exponent zero.  Remaining step is upgrading that subpolynomial control to a compact
-  annulus and matching the selected nonzero branch to one leading edge root, followed by the global argument
-  in both branches of this exhaustive dichotomy, namely the
+  logarithmic exponent zero.  `HTGeometry/StrelitzJetCurveNewtonFaceDominance.lean` upgrades that
+  subpolynomial control to a fixed compact annulus by proving that the extreme indices of the
+  maximal Newton face dominate any branch attempting to escape or collapse.
+  `HTGeometry/StrelitzJetCurveEdgeLimit.lean` then extracts a convergent nonzero normalized-root
+  subsequence, scales the complete exact curve equation, makes every subface term vanish, and proves
+  that the numerical limit is a root of the exact leading-edge polynomial.
+  `HTGeometry/StrelitzJetCurveMatchedDichotomy.lean` combines the whole local analysis into one
+  exhaustive theorem: either a further strict cofinal subsequence of normalized nonzero roots
+  converges to a nonzero root of its exact maximal-face polynomial, or exact zero roots recur and
+  force the observed second logarithmic jet to tend to zero.
+  `HTGeometry/StrelitzEntireHeatMatchedDichotomy.lean` now derives that exhaustive conclusion
+  directly from the card's original entire-coefficient, entire complex-time heat, infinite-support,
+  and order-two ADE assumptions while retaining all exact Wiman and selected-root data.  No local
+  Newton or convergence premise remains at the entire-heat interface.
+  `HTGeometry/StrelitzJetCurveQuadraticDecay.lean` additionally proves that every selected root is
+  `o(nu^2)` directly from the second-jet Wiman bound and absolute root proximity; this is the exact
+  scale restriction needed to bound the matched Newton slope.
+  `HTGeometry/StrelitzJetCurveSubquadraticEdge.lean` transfers this decay to the first-jet norm and
+  proves every matched nonzero Newton slope is strictly below `2`; its strengthened dichotomy still
+  treats recurrent exact-zero roots exhaustively.  `HTGeometry/StrelitzEntireHeatSubquadraticDichotomy.lean`
+  derives the strengthened result under exactly the card's original assumptions.
+  `HTGeometry/StrelitzJetCurveZeroBranch.lean` proves that recurrent exact-zero roots force the
+  constant-in-`v` coefficient of the fixed jet-curve polynomial to vanish identically, exposing an
+  exact factor by the second-jet variable for the degenerate branch.
+  `HTGeometry/StrelitzEntireHeatSubquadraticFactorDichotomy.lean` packages the strongest exhaustive
+  local conclusion under exactly the card's original assumptions: either a matched nonzero Newton
+  edge has slope strictly below `2`, or the fixed curve has the literal factor `v` and the observed
+  second jet tends to zero on a cofinal exact-zero branch.
+  `HTGeometry/StrelitzJetCurveSlopeSign.lean` refines the nonzero alternative without a new premise:
+  either `0 ≤ p < 2`, or `p < 0` and both the selected curve root and observed second jet tend to
+  zero along a further strict cofinal subsequence.  Together with the exact `v`-factor alternative,
+  this is an exhaustive positive/negative/zero branch trichotomy under the original assumptions.
+  `HTGeometry/StrelitzSublinearDerivativeObstruction.lean` closes the scalar integration endpoint
+  for the nonnegative branch: an escaping real branch whose derivative divided by a nonnegative
+  real power tends to any nonzero constant cannot be sublinear.  It proves the coefficient's sign
+  internally; no positivity premise is added.
+  `HTGeometry/StrelitzLogRadialDerivatives.lean` now supplies the exact analytic-to-real bridge:
+  on the normalized logarithmic radial path, the derivatives of `log ‖f‖`, the Euler logarithmic
+  derivative, and its real part are respectively `Re(u)`, `v`, and `Re(v)`.
+  `HTGeometry/StrelitzAngularCurvature.lean` adds the complementary maximum-circle identity and
+  proves unconditionally that every nonvanishing maximum point satisfies `Re(v) ≥ 0`.  What remains
+  is to construct the global Strelitz enlarged-set component and transfer the exact Newton
+  asymptotic to these radial identities and the scalar obstruction.
+  Remaining step is the global argument
+  in both branches, namely the
   Valiron--Zimogljad--Strelitz Newton-branch/
   connected-component argument for that relation; see `_STAGE3-LEDGER.md`.
 
@@ -207,3 +249,79 @@ The theorem does not rule out the actual de Bruijn-Newman deformation, which has
   logarithmic exponent is zero.  This closes scale normalization without assuming boundedness.
   Remaining local step is the finite-face dominance argument upgrading subpolynomial size to a
   compact annulus and identifying the resulting limit with an actual edge root.
+- 2026-09-04 — `StrelitzJetCurveNewtonFaceDominance` proves both ends of normalized-root
+  compactness.  At infinity the largest index on the maximal Newton face dominates the exact root
+  equation; at zero the smallest index does.  Constructive cofinal subsequence extraction converts
+  those contradictions into one eventual annulus with positive inner radius.
+- 2026-09-04 — `StrelitzJetCurveEdgeLimit` closes local numerical branch matching.  A convergent
+  cofinal subsequence in that annulus has nonzero limit; after exact real-power scaling, lower
+  Newton faces vanish and the surviving finite sum is literally the edge polynomial evaluated at
+  that limit.  The local Newton/Puiseux residue is closed.  Only the maximum-modulus
+  connected-component globalization, including the zero-root branch, remains.
+- 2026-09-04 — `StrelitzJetCurveMatchedDichotomy` packages the local result without an omitted
+  branch.  Eventual nonzero roots yield a rational Newton slope, exact maximal face, nonzero exact
+  edge root, and convergence of normalized numerical roots on a strict cofinal subsequence;
+  recurrent exact-zero roots force the observed second jet to zero on such a subsequence.  Direct
+  source check, targeted leaf build, and axiom audit pass; axioms are
+  `[propext, Classical.choice, Quot.sound]`.  Global maximum-modulus component continuation remains.
+- 2026-09-04 — `StrelitzEntireHeatMatchedDichotomy` composes the exact entire-heat root-selection
+  theorem with the exhaustive matched-edge dichotomy under precisely the card's original
+  assumptions.  Its conclusion retains every Wiman-point, jet-error, specialization-root, and
+  proximity assertion together with the matched-edge-or-zero alternative.  Direct source check,
+  targeted leaf build, and axiom audit pass; axioms are
+  `[propext, Classical.choice, Quot.sound]`.  Global continuation remains the only Card 8 gap.
+- 2026-09-04 — `StrelitzJetCurveQuadraticDecay` transfers the Wiman second-jet estimate through
+  selected-root proximity and proves `|root_n| / nu_n^2 -> 0`.  No rate or nonvanishing assumption
+  is added.  Direct source check, targeted leaf build, and axiom audit pass; axioms are
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-09-04 — `StrelitzJetCurveSubquadraticEdge` proves `|u_n|/nu_n -> 1`, transfers selected-root
+  decay to `|root_n|/|u_n|^2 -> 0`, and excludes Newton exponents `p >= 2` by contradiction with
+  the matched nonzero normalized-root limit.  Its exhaustive strengthened dichotomy carries
+  `p < 2` in the nonzero branch.  `StrelitzEntireHeatSubquadraticDichotomy` derives this directly
+  from the original Card 8 assumptions.  Direct source checks, targeted leaf builds, and all five
+  new-theorem axiom audits pass; axioms are `[propext, Classical.choice, Quot.sound]`.
+- 2026-09-04 — `StrelitzJetCurveZeroBranch` turns the recurrent-zero alternative into exact
+  algebra: evaluation at the specialized zero root is evaluation of the constant-in-`v`
+  coefficient, and an escaping first-jet sequence forces that fixed coefficient polynomial to be
+  identically zero; equivalently `X` divides the curve polynomial.  Direct source check, targeted
+  leaf build, and all four axiom audits pass; axioms
+  are `[propext, Classical.choice, Quot.sound]`.
+- 2026-09-04 — `StrelitzEntireHeatSubquadraticFactorDichotomy` packages the exact algebraic
+  alternative directly under the original entire-coefficient, entire complex-time heat,
+  infinite-support, and order-two ADE assumptions.  Its nonzero branch is a matched Newton edge
+  with slope `p < 2`; its zero branch has the literal factor `X` and a cofinal vanishing observed
+  second jet.  Direct source check, targeted leaf build, and new-theorem axiom audit pass; axioms
+  are `[propext, Classical.choice, Quot.sound]`.  Global maximum-locus branch continuation remains.
+- 2026-09-04 — `StrelitzJetCurveSlopeSign` splits the matched nonzero branch at the exact sign
+  boundary.  Nonnegative slopes retain `0 ≤ p < 2`; negative slopes force both selected-root norm
+  and observed second-jet norm to tend to zero on a strict cofinal subsequence; the recurrent-zero
+  branch retains the literal `v` factor.  The original entire-heat hypotheses now imply this full
+  trichotomy.  Direct source check, targeted leaf build, and all four new-theorem axiom audits pass;
+  axioms are `[propext, Classical.choice, Quot.sound]`.  Global maximum-locus continuation remains.
+- 2026-09-04 — `StrelitzSublinearDerivativeObstruction` formalizes the nonnegative-slope ODE
+  endpoint.  It integrates derivative floors and ceilings, rules out negative normalized limits on
+  escaping real branches, and proves that any nonzero limit of `K'(x)/K(x)^p` with `p ≥ 0`
+  contradicts `K(x)/x → 0`.  Direct source check, targeted leaf build, and all seven new-theorem
+  axiom audits pass; axioms are `[propext, Classical.choice, Quot.sound]`.  Card 8 still needs the
+  unconditional global maximum-locus branch supplying these exact scalar data.
+- 2026-09-04 — `StrelitzLogRadialDerivatives` proves the exact log-radius differential bridge:
+  `d(log ‖f‖)/d(log r) = Re(zf'/f)` and
+  `d Re(zf'/f)/d(log r) = Re(z(zf'/f)')`, together with the complex-valued middle identity.
+  Direct source check, targeted leaf build, and all five new-theorem axiom audits pass; axioms are
+  `[propext, Classical.choice, Quot.sound]`.  Card 8 remains stage 2 pending construction and
+  continuation of the enlarged Strelitz set component on which these identities can be integrated.
+- 2026-09-04 — `StrelitzAngularCurvature` differentiates `log ‖f‖` twice along the exact circle
+  path and proves `Re(z(zf'/f)') ≥ 0` at every nonvanishing point of the full maximum-modulus
+  locus.  Entire-function differentiability is discharged internally.  Direct source check,
+  targeted leaf build, and all four new-theorem axiom audits pass; axioms are
+  `[propext, Classical.choice, Quot.sound]`.  This constrains the phase of any branch meeting the
+  maximum locus but does not replace the remaining enlarged-set continuation.
+- 2026-09-04 — Maximum-circle witnesses are now preserved from the second-derivative
+  Wiman--Valiron selection through the entire Strelitz reduction, root-selection, matched-edge,
+  subquadratic, factor, and slope-sign APIs.  Legacy theorem signatures remain available as exact
+  wrappers.  `StrelitzMaximumPointSlopeSign` then proves that the complete slope trichotomy can be
+  realized at genuine maximum-modulus points, with `Im(zf'/f)=0` and
+  `Re(z(zf'/f)') ≥ 0` at every selected point.  Direct source checks, targeted leaf builds, and all
+  new-theorem axiom audits pass; axioms are `[propext, Classical.choice, Quot.sound]`.  Card remains
+  stage 2: the paper's enlarged open set and its unbounded connected-component continuation are
+  still required to turn these pointwise signs into the global scalar branch contradiction.

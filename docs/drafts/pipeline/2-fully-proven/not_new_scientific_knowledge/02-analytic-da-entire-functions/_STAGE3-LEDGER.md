@@ -14,7 +14,7 @@ Goal: unconditional Lean formalization of every card in this folder, then promot
 | 5 | quasianalytic-exponential-log-phase-jet-law | all steps closed | **DONE → 3-formalized** (2026-08-29) |
 | 6 | exponential-tower-exact-differential-order | both halves closed | **DONE → 3-formalized** (2026-08-29) |
 | 7 | first-order-meromorphic-compression-matching | 3-field factorization | **DONE → 3-formalized** (2026-09-02) |
-| 8 | entire-heat-multiplicative-da-order-three-floor | Valiron–Zimogljad–Strelitz | **IN PROGRESS** — orders 0/1, fixed nonzero leading log-jet curve, numerical root proximity, two-sided branch growth, and finite rational Newton-slope extraction are closed; leading-phase extraction plus connected-component theorem open |
+| 8 | entire-heat-multiplicative-da-order-three-floor | Valiron–Zimogljad–Strelitz | **IN PROGRESS** — orders 0/1, complete local order-two reduction, scalar obstruction, log-radial bridge, and maximum-circle second-jet sign are closed; global enlarged-set component continuation remains open |
 | 9 | drifting-periodic-primitive-ramification-exclusion | closed with `card_totallyRamified_le_four` | **DONE → 3-formalized** (2026-08-29) |
 | 10 | entire-composition-hypertranscendence-or-law | Steinmetz reduction / Huang–Ng Thm 3 | TODO |
 | 11 | first-order-composition-two-defect-decomposition | Clunie + trdeg observability | **DONE → 3-formalized** (2026-08-30) |
@@ -221,6 +221,85 @@ Steps 1–3 give a compact-base Schottky bound and Bohr's covering theorem — b
 beyond this card (they are the quantitative core of Picard/Montel).
 
 ## Log
+- 2026-09-04 — Card 8 maximum-circle curvature is closed in
+  `HTGeometry/StrelitzAngularCurvature`.  The angular derivative of `log ‖f‖` is `-Im(zf'/f)`;
+  its next derivative is `-Re(z(zf'/f)')`; therefore every nonvanishing point of the entire
+  maximum-modulus locus satisfies `Re(z(zf'/f)') ≥ 0`.  Direct source check, targeted leaf build,
+  and all four new-theorem axiom audits pass; axioms are
+  `[propext, Classical.choice, Quot.sound]`.  Remaining Card 8 gap is global enlarged-set branch
+  continuation; maximum-locus membership alone still need not form an unbounded component.
+- 2026-09-04 — Card 8 exact analytic-to-real radial bridge is closed in
+  `HTGeometry/StrelitzLogRadialDerivatives`.  The normalized logarithmic radial path has velocity
+  `z`; along it, `log ‖f‖` differentiates to `Re(zf'/f)`, the Euler logarithmic derivative
+  differentiates to `z(zf'/f)'`, and the real part differentiates to its real part.  Direct source
+  check, targeted leaf build, and all five new-theorem axiom audits pass; axioms are
+  `[propext, Classical.choice, Quot.sound]`.  Remaining Card 8 gap is global construction and
+  continuation of the enlarged Strelitz set component needed to integrate these identities.
+- 2026-09-04 — Card 8 nonnegative-slope integration endpoint is closed in
+  `HTGeometry/StrelitzSublinearDerivativeObstruction`.  A derivative floor/ceiling is integrated by
+  the real mean-value theorem; an escaping branch forces every nonzero normalized coefficient to be
+  positive; and `K'(x)/K(x)^p → c ≠ 0` with `p ≥ 0` contradicts `K(x)/x → 0`.  No sign premise is
+  added.  Direct source check, targeted leaf build, and all seven new-theorem axiom audits pass;
+  axioms are `[propext, Classical.choice, Quot.sound]`.  Remaining Card 8 gap is constructing and
+  transferring the global real maximum-locus branch.
+- 2026-09-04 — Card 8 local Newton alternatives now have exact sign separation in
+  `HTGeometry/StrelitzJetCurveSlopeSign`: nonnegative matched slopes satisfy `0 ≤ p < 2`; negative
+  matched slopes force both selected-root norm and observed second-jet norm to vanish on a strict
+  cofinal subsequence; the zero branch retains the literal second-jet-variable factor.  The packaged
+  theorem uses exactly Card 8's original hypotheses.  Direct source check, targeted leaf build, and
+  all four new-theorem axiom audits pass; axioms are `[propext, Classical.choice, Quot.sound]`.
+  Card remains stage 2 pending global maximum-locus continuation/integration.
+- 2026-09-04 — Card 8 strongest local dichotomy now reaches the original entire-heat interface in
+  `HTGeometry/StrelitzEntireHeatSubquadraticFactorDichotomy`: every assumed order-two ADE yields
+  exact Wiman/root data and either a matched nonzero Newton edge with slope `p < 2`, or a literal
+  factor by the second-jet variable plus a cofinal exact-zero branch on which the observed jet
+  vanishes.  Direct source check, targeted leaf build, and new-theorem axiom audit pass; axioms are
+  `[propext, Classical.choice, Quot.sound]`.  Card remains stage 2 pending global continuation.
+- 2026-09-04 — Card 8 zero branch now exposes exact algebraic descent in
+  `HTGeometry/StrelitzJetCurveZeroBranch`: recurrent exact-zero specializations over the escaping
+  first jet force the constant-in-`v` coefficient of the fixed curve polynomial to vanish
+  identically, hence the second-jet variable divides that polynomial.  Direct source check,
+  targeted leaf build, and all three new-theorem axiom audits pass;
+  axioms are `[propext, Classical.choice, Quot.sound]`.
+- 2026-09-04 — Card 8 nonzero Newton slope now satisfies the strict Wiman ceiling `p < 2`.
+  `HTGeometry/StrelitzJetCurveSubquadraticEdge` proves first-jet norm asymptotics, transfers
+  selected-root decay to the first-jet quadratic scale, and rules out `p >= 2` using the nonzero
+  matched normalized-root limit.  `HTGeometry/StrelitzEntireHeatSubquadraticDichotomy` packages the
+  sharpened exhaustive dichotomy under exactly the card's assumptions.  Direct source checks,
+  targeted leaf builds, and all five new-theorem axiom audits pass; axioms are
+  `[propext, Classical.choice, Quot.sound]`.  Global maximum-locus continuation remains.
+- 2026-09-04 — Card 8 selected-root quadratic decay closed in
+  `HTGeometry/StrelitzJetCurveQuadraticDecay`: the exact second-jet Wiman bound and absolute root
+  proximity imply `|root_n| / nu_n^2 -> 0`.  Direct source check, targeted leaf build, and
+  new-theorem axiom audit pass; axioms are `[propext, Classical.choice, Quot.sound]`.  This supplies
+  the scale restriction for the matched Newton slope without a new premise.
+- 2026-09-04 — Card 8 entire-heat interface now reaches the exhaustive local branch theorem in
+  `HTGeometry/StrelitzEntireHeatMatchedDichotomy`.  Under exactly the original entire-coefficient,
+  entire complex-time heat, infinite-support, and order-two ADE assumptions, it retains all Wiman
+  and selected-root data and concludes matched nonzero Newton edge or cofinal zero branch.  Direct
+  source check, targeted leaf build, and new-theorem axiom audit pass; axioms are
+  `[propext, Classical.choice, Quot.sound]`.  No local Newton premise remains; only global
+  maximum-modulus component continuation remains.
+- 2026-09-04 — Card 8 local branch analysis packaged exhaustively in
+  `HTGeometry/StrelitzJetCurveMatchedDichotomy`.  Eventual nonzero roots now carry the rational
+  Newton slope, exact maximal face, nonzero exact edge root, and matched normalized-root limit on
+  one strict cofinal subsequence; recurrent exact-zero roots force the observed second jet to zero
+  on a strict cofinal subsequence.  Direct source check, targeted leaf build, and new-theorem axiom
+  audit pass; axioms are `[propext, Classical.choice, Quot.sound]`.  Only global maximum-modulus
+  component continuation remains.
+- 2026-09-04 — Card 8 local numerical Newton-edge matching closed in
+  `HTGeometry/StrelitzJetCurveEdgeLimit`.  Compactness gives a convergent nonzero normalized-root
+  subsequence; exact `rpow` scaling of the complete specialized equation kills every strict
+  subface and identifies the surviving limit with evaluation of the exact edge polynomial.  Direct
+  source check, targeted leaf build, and all four new-theorem axiom audits pass; axioms are
+  `[propext, Classical.choice, Quot.sound]`.  Only global maximum-modulus component continuation,
+  including the zero-root branch, remains.
+- 2026-09-04 — Card 8 normalized-root compact annulus closed in
+  `HTGeometry/StrelitzJetCurveNewtonFaceDominance`.  The greatest maximal-face index excludes
+  escape to infinity and the least maximal-face index excludes collapse to zero; constructive
+  cofinal selection upgrades these endpoint contradictions to eventual two-sided bounds.  Direct
+  source check, targeted leaf build, and all ten new-theorem axiom audits pass; axioms are
+  `[propext, Classical.choice, Quot.sound]`.
 - 2026-09-04 — Card 8 logarithmic Newton normalization closed in
   `HTGeometry/StrelitzJetCurveNormalizedRoot`.  Dividing the selected root by the exact real power
   of the escaping first-jet norm leaves logarithmic exponent zero, proved by a literal
@@ -5028,3 +5107,22 @@ This discharges the three pairwise-intersection assertions in card 7's algebraic
 algebraic step is multiplicative separation: from `A(x,y) B(x,z) = C(y,z)` in the three relative
 algebraic closures, construct `A=a(x)c(y)`, `B=b(z)/a(x)`, `C=b(z)c(y)`.  Remaining analytic step is
 the Steinmetz state-independence reduction shared with card 10.
+
+## Entire-heat maximum-point Newton package advanced (2026-09-04)
+
+Card 8's exact Wiman witnesses now retain their full maximum-circle property through every
+downstream entire-heat package.  Strong variants were added in the radius, asymptotic, log-jet,
+leading-term, decay, base-face, root-selection, matched-edge, subquadratic, factor, and slope-sign
+modules; existing public theorem signatures remain exact compatibility wrappers.
+
+`HTGeometry/StrelitzMaximumPointSlopeSign.lean` packages the resulting unconditional endpoint:
+under precisely the card's original assumptions, the full exact Newton slope trichotomy is realized
+at maximum-modulus points, where every selected first Euler logarithmic jet is real and every
+selected second Euler logarithmic jet has nonnegative real part.  Direct source checks, targeted
+leaf builds, and new-theorem axiom audits pass with only
+`[propext, Classical.choice, Quot.sound]`.
+
+This does not close Card 8.  The remaining exact paper obligation is construction of Strelitz's
+enlarged open set, existence of its relevant unbounded connected component, and analytic
+continuation/integration of the selected Newton branch on that component.  Maximum-locus
+components themselves are not assumed unbounded.

@@ -21,11 +21,12 @@ noncomputable section
 
 variable {a : ℕ → ℂ}
 
-/-- **Entire-heat leading-coefficient package.** An assumed order-two ADE produces one fixed
+/-- **Entire-heat leading-coefficient package retaining the full maximum-circle property.**
+An assumed order-two ADE produces one fixed
 nonzero logarithmic-jet coefficient and exact Wiman roots satisfying
 `|C_D(z,u,v)| μ(r) ≤ C_Q r^K` eventually.  All constants and exponents are explicit finite data
 of the transformed relation. -/
-theorem exists_strelitzLeadingMaximumTermBound_of_order_two_entireHeat
+theorem exists_strelitzLeadingMaximumTermBound_of_order_two_entireHeat_isMaximumOnCircle
     (ha : EntireCoeffs a)
     (hheat : ∀ t z : ℂ, Summable (fun n : ℕ =>
       a n * Complex.exp (-(4 * (Real.pi : ℂ) ^ 2) * (n : ℂ) ^ 2 * t)
@@ -49,17 +50,19 @@ theorem exists_strelitzLeadingMaximumTermBound_of_order_two_entireHeat
         ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp (x n)) : ℝ)) ∧
       (∀ n : ℕ, ‖eulerLogDerivSecond (coeffFun a) (z n)‖
         ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp (x n)) : ℝ) ^ 2) ∧
-      ∀ᶠ n : ℕ in atTop,
+      (∀ᶠ n : ℕ in atTop,
         ‖MvPolynomial.eval₂ (Polynomial.evalRingHom (z n))
           ![eulerLogDeriv (coeffFun a) (z n),
             eulerLogDerivSecond (coeffFun a) (z n)]
           (strelitzValueCoeff Q D)‖ * maxTerm a (Real.exp (x n)) ≤
         strelitzCoefficientGrowthConstant Q *
-          (Real.exp (x n)) ^ strelitzCoefficientGrowthDegree Q := by
+          (Real.exp (x n)) ^ strelitzCoefficientGrowthDegree Q) ∧
+      ∀ n : ℕ, ∀ w : ℂ, ‖w‖ = ‖z n‖ →
+        ‖coeffFun a w‖ ≤ ‖coeffFun a (z n)‖ := by
   obtain ⟨n₀, -, hn₀⟩ := htrans 0
   obtain ⟨m, hmpos, hm⟩ := htrans 1
-  obtain ⟨Q, hQ, x, z, hx, hz, hfloor, hfz, hrel, hu, hv⟩ :=
-    exists_strelitzLogJetInitialData_of_order_two ha htrans hDA
+  obtain ⟨Q, hQ, x, z, hx, hz, hfloor, hfz, hmaxCircle, hrel, hu, hv⟩ :=
+    exists_strelitzLogJetInitialData_of_order_two_isMaximumOnCircle ha htrans hDA
   obtain ⟨D, hD, hCD, hmax⟩ := exists_maximal_strelitzValueCoeff hQ
   have hxTop : Tendsto x atTop atTop := by
     refine tendsto_atTop_atTop.mpr fun R => ?_
@@ -137,6 +140,47 @@ theorem exists_strelitzLeadingMaximumTermBound_of_order_two_entireHeat
             (strelitzValueCoeff Q d)‖ := hlead
       _ ≤ strelitzCoefficientGrowthConstant Q *
           r ^ strelitzCoefficientGrowthDegree Q := hlower
+  exact ⟨Q, D, x, z, hQ, hD, hCD, hmax, hx, hz, hfloor, hfz, hrel, hu, hv,
+    hbound, hmaxCircle⟩
+
+/-- **Entire-heat leading-coefficient package.** An assumed order-two ADE produces one fixed
+nonzero logarithmic-jet coefficient and exact Wiman roots satisfying
+`|C_D(z,u,v)| μ(r) ≤ C_Q r^K` eventually. -/
+theorem exists_strelitzLeadingMaximumTermBound_of_order_two_entireHeat
+    (ha : EntireCoeffs a)
+    (hheat : ∀ t z : ℂ, Summable (fun n : ℕ =>
+      a n * Complex.exp (-(4 * (Real.pi : ℂ) ^ 2) * (n : ℂ) ^ 2 * t)
+        * Complex.exp (2 * (Real.pi : ℂ) * Complex.I * (n : ℂ) * z)))
+    (htrans : ∀ M : ℕ, ∃ n, M ≤ n ∧ a n ≠ 0)
+    (hDA : DifferentiallyAlgebraicOfOrder (coeffFun a) 2) :
+    ∃ (Q : MvPolynomial (Fin 3) (Polynomial ℂ)) (D : ℕ)
+        (x : ℕ → ℝ) (z : ℕ → ℂ),
+      Q ≠ 0 ∧ D ∈ strelitzValueSupport Q ∧
+      strelitzValueCoeff Q D ≠ 0 ∧
+      (∀ d ∈ strelitzValueSupport Q, d ≤ D) ∧
+      (∀ n : ℕ, (n : ℝ) ≤ x n) ∧
+      (∀ n : ℕ, ‖z n‖ = Real.exp (x n)) ∧
+      (∀ n : ℕ, maxTerm a (Real.exp (x n)) ≤ ‖coeffFun a (z n)‖) ∧
+      (∀ n : ℕ, coeffFun a (z n) ≠ 0) ∧
+      (∀ n : ℕ, MvPolynomial.eval₂ (Polynomial.evalRingHom (z n))
+        ![coeffFun a (z n), eulerLogDeriv (coeffFun a) (z n),
+          eulerLogDerivSecond (coeffFun a) (z n)] Q = 0) ∧
+      (∀ n : ℕ, ‖eulerLogDeriv (coeffFun a) (z n) -
+          (centralIndex a (Real.exp (x n)) : ℂ)‖
+        ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp (x n)) : ℝ)) ∧
+      (∀ n : ℕ, ‖eulerLogDerivSecond (coeffFun a) (z n)‖
+        ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp (x n)) : ℝ) ^ 2) ∧
+      ∀ᶠ n : ℕ in atTop,
+        ‖MvPolynomial.eval₂ (Polynomial.evalRingHom (z n))
+          ![eulerLogDeriv (coeffFun a) (z n),
+            eulerLogDerivSecond (coeffFun a) (z n)]
+          (strelitzValueCoeff Q D)‖ * maxTerm a (Real.exp (x n)) ≤
+        strelitzCoefficientGrowthConstant Q *
+          (Real.exp (x n)) ^ strelitzCoefficientGrowthDegree Q := by
+  obtain ⟨Q, D, x, z, hQ, hD, hCD, hmax, hx, hz, hfloor, hfz, hrel, hu, hv,
+    hbound, _⟩ :=
+    exists_strelitzLeadingMaximumTermBound_of_order_two_entireHeat_isMaximumOnCircle
+      ha hheat htrans hDA
   exact ⟨Q, D, x, z, hQ, hD, hCD, hmax, hx, hz, hfloor, hfz, hrel, hu, hv, hbound⟩
 
 end

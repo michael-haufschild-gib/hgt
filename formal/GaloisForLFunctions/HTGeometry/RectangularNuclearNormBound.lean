@@ -296,4 +296,68 @@ theorem rectTraceNorm_comp_le_hsNorm_mul_hsNorm
         ← ContinuousLinearMap.hsNormSq_eq hB c]
       rfl
 
+/-- **Unrestricted sharp rectangular Schatten Hölder law.**  The same constant-one estimate
+holds without a separability instance on the intermediate Hilbert space.  The ambient Hilbert
+basis may have arbitrary universe level; the quantitative nuclear-series bound itself has no
+small-index restriction. -/
+theorem rectTraceNorm_comp_le_hsNorm_mul_hsNorm_unrestricted
+    {A : E →L[ℂ] F} {B : F →L[ℂ] G}
+    (hA : A.IsHilbertSchmidt) (hB : B.IsHilbertSchmidt) :
+    rectTraceNorm E G (B ∘L A) ≤
+      ContinuousLinearMap.hsNorm A * ContinuousLinearMap.hsNorm B := by
+  let c := ContinuousLinearMap.hsBasis ℂ F
+  let φ := fun i ↦ innerSL ℂ (adjoint A (c i))
+  let y := fun i ↦ B (c i)
+  have hf : Summable fun i ↦ ‖adjoint A (c i)‖ ^ 2 := hA.adjoint.summable c
+  have hg : Summable fun i ↦ ‖B (c i)‖ ^ 2 := hB.summable c
+  have hmass : Summable fun i ↦ ‖φ i‖ * ‖y i‖ := by
+    have heq : (fun i ↦ ‖φ i‖ * ‖y i‖) =
+        fun i ↦ ‖adjoint A (c i)‖ * ‖B (c i)‖ := by
+      funext i
+      simp [φ, y, innerSL_apply_norm]
+    rw [heq]
+    exact deningerSummable_mul_of_sq hf hg
+      (fun _ ↦ norm_nonneg _) (fun _ ↦ norm_nonneg _)
+  have hseries : HasSum (fun i ↦ (φ i).smulRight (y i)) (B ∘L A) := by
+    have hsummable : Summable fun i ↦ (φ i).smulRight (y i) := by
+      apply Summable.of_norm
+      simpa only [ContinuousLinearMap.norm_smulRight_apply] using hmass
+    obtain ⟨S, hS⟩ := hsummable
+    have hST : S = B ∘L A := by
+      ext x
+      have hpoint := (ContinuousLinearMap.apply ℂ G x).hasSum hS
+      have hrepr : HasSum (fun i ↦ (c.repr (A x)) i • c i) (A x) :=
+        c.hasSum_repr (A x)
+      have hBsum := B.hasSum hrepr
+      have heq : (fun i ↦ (ContinuousLinearMap.apply ℂ G x)
+          ((φ i).smulRight (y i))) =
+          fun i ↦ B ((c.repr (A x)) i • c i) := by
+        funext i
+        change φ i x • y i = B ((c.repr (A x)) i • c i)
+        rw [map_smul]
+        congr 1
+        show inner ℂ (adjoint A (c i)) x = (c.repr (A x)) i
+        rw [c.repr_apply_apply, ContinuousLinearMap.adjoint_inner_left]
+      rw [heq] at hpoint
+      exact hpoint.unique hBsum
+    rwa [hST] at hS
+  have hprojective := rectTraceNorm_le_of_hasSum_smulRight φ y hmass hseries
+  have hCS : ∑' i, ‖φ i‖ * ‖y i‖ ≤
+      Real.sqrt (∑' i, ‖adjoint A (c i)‖ ^ 2) *
+        Real.sqrt (∑' i, ‖B (c i)‖ ^ 2) := by
+    simpa only [φ, y, innerSL_apply_norm] using
+      tsum_mul_le_sqrt_tsum_sq_mul_sqrt_tsum_sq
+        (fun i ↦ ‖adjoint A (c i)‖) (fun i ↦ ‖B (c i)‖)
+        hf hg (fun _ ↦ norm_nonneg _) (fun _ ↦ norm_nonneg _)
+  calc
+    rectTraceNorm E G (B ∘L A) ≤ ∑' i, ‖φ i‖ * ‖y i‖ := hprojective
+    _ ≤ Real.sqrt (∑' i, ‖adjoint A (c i)‖ ^ 2) *
+        Real.sqrt (∑' i, ‖B (c i)‖ ^ 2) := hCS
+    _ = ContinuousLinearMap.hsNorm A * ContinuousLinearMap.hsNorm B := by
+      have hAadj : (adjoint A).IsHilbertSchmidt := hA.adjoint
+      rw [← ContinuousLinearMap.hsNormSq_eq hAadj c,
+        hA.hsNormSq_adjoint,
+        ← ContinuousLinearMap.hsNormSq_eq hB c]
+      rfl
+
 end RHTower

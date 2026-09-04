@@ -1,10 +1,10 @@
 # Squarefree convolution-half Laplace source criterion
 
 - **ID:** squarefree-convolution-half-laplace-source-criterion
-- **Stage:** 1-in-progress
-- **Type:** BRIDGE CANDIDATE
+- **Stage:** 5-failed
+- **Type:** FALSIFIED BRIDGE
 - **Source:** `multiplicity-parity-ladder-route.md`
-- **Status:** `[OPEN LOCAL BOUND] [LEAN-PROVED BRIDGE] [NOT RH]`
+- **Status:** `[LOCAL BOUND FALSIFIED] [LEAN-PROVED NO-GO] [NOT RH]`
 
 ## Exact surviving edge
 
@@ -55,18 +55,28 @@ import wired. No local boundedness claim is made.
 - Damping is infinite-order and source-faithful: every coefficient is retained, and weights tend
   pointwise to one in the Euler chamber.
 
-## Hostile falsification
+## Hostile falsification — closed
 
-The expected Selberg--Delange main term for the convolution-half coefficients predicts growth near
-the exterior point `s=6/11`, plausibly refuting local boundedness. Corpus currently contains no
-such asymptotic for `squarefreeConvolutionHalf`; proving or bypassing it is the first attack after
-formalizing items 1--3.
+No Selberg--Delange asymptotic is needed. At `s=6/11`, local boundedness would force diagonal heat
+samples at `t_N=1/(N+1)` to be `O(5^{-N})`. Bounded shifted coefficients and the exact exponential
+moment bound make the full heat profile uniformly bounded between adjacent reciprocal mesh points.
+Its Mellin transform is then holomorphic for `Re(z)>0`; translation by `6/11` and reciprocal-Gamma
+removal continue the canonical arithmetic half to `Re(s)>6/11`. Squaring on the Euler overlap and
+analytic uniqueness contradict `zetaResidueUnit 1 = 1`.
 
-## Falsifier
+## No-go certificate
 
-Any unconditional proof that the pole-cleared Laplace family is unbounded at one point of
-`rightHalf`, especially `boundaryExteriorPoint = 6/11`, retires L-HEAT1. A weaker pointwise
-divergence statement is insufficient unless the pole-factor/Carleman normalization is included.
+`not_poleClearedFirstTraceLaplaceLocallyBounded` in
+`formal/GaloisForLFunctions/RHTower/SquarefreeConvolutionHalfLaplaceDiagonalNoGo.lean` proves the
+exact negation of the open local-bound hypothesis. Direct check and targeted build `13034/13034`
+pass; public theorem axiom audit contains only `propext`, `Classical.choice`, `Quot.sound`. The
+route is retired, not an RH proof.
+
+Strongest positive survivor: reciprocal heat meshes have a sharp transport law. If shifted
+coefficients are bounded, adjacent-time variation costs only a universal constant because mesh
+gap `asymp N^{-2}` cancels exponential first-moment scale `asymp N^2`. A viable successor must
+decouple smoothing time from pole degree enough to break this transport, or introduce a literal
+source-derived singular/nonlinear correction.
 
 ## Log
 
@@ -76,3 +86,5 @@ divergence statement is insufficient unless the pole-factor/Carleman normalizati
   `TwinRigidity.lean` reduces it to existing diagonal analytic-unit freedom.
 - 2026-09-04 -- entire smoothing, Euler undamping, normalized pointwise limit, and exact
   Vitali-to-rung bridge formalized and axiom-audited; local boundedness remains open.
+- 2026-09-04 -- local boundedness falsified by reciprocal-mesh interpolation plus Mellin pole
+  contradiction; L-HEAT1 retired without Selberg--Delange input.

@@ -61,6 +61,45 @@ theorem wv_second_moment_le {N : ℕ} {L s K : ℝ} (hs : (100 : ℝ) ≤ s)
   linarith
 
 set_option maxHeartbeats 800000 in
+/-- **Both estimates with the free parameters tied together, retaining the full maximum-circle
+property.** -/
+theorem exists_radius_point_secondDeriv_bound_isMaximumOnCircle
+    (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {c d H s L h : ℝ}
+    (hcd : c ≤ d) (hH : 0 < H) (hs : 0 < s)
+    (hLdef : L = 2 * s / H) (hhdef : h = H / 2)
+    (hsmall : 2 * H * ((centralIndex a (Real.exp (d + 2 * H)) : ℝ)
+        - (centralIndex a (Real.exp c) : ℝ)) / s < d - c)
+    {N : ℕ} (hN2s : 2 * s ≤ (N : ℝ)) (hN4s : (N : ℝ) ≤ 4 * s) :
+    ∃ x ∈ Icc (c + H) (d + H), ∃ z : ℂ, ‖z‖ = Real.exp x ∧
+      maxTerm a (Real.exp x) ≤ ‖coeffFun a z‖ ∧
+      ‖z * deriv (coeffFun a) z / coeffFun a z - (centralIndex a (Real.exp x) : ℂ)‖
+        ≤ wvClosedBound a x N L h ∧
+      ‖z ^ 2 * deriv (deriv (coeffFun a)) z / coeffFun a z
+          - ((centralIndex a (Real.exp x) : ℂ) * ((centralIndex a (Real.exp x) : ℂ) - 1))‖
+        ≤ wvSecondMomentBound N L
+          + (2 * (centralIndex a (Real.exp x) : ℝ) + 1) * wvClosedBound a x N L h ∧
+      ∀ w : ℂ, ‖w‖ = ‖z‖ → ‖coeffFun a w‖ ≤ ‖coeffFun a z‖ := by
+  subst hLdef
+  subst hhdef
+  have hHne : H ≠ 0 := ne_of_gt hH
+  have hN0 : 0 < N := by
+    by_contra hcon
+    have hN : N = 0 := by omega
+    rw [hN] at hN2s
+    simp at hN2s
+    linarith
+  refine exists_radius_point_secondDeriv_le_closed_isMaximumOnCircle ha hn₀ (v₀ := H / 2)
+    hcd hH (by positivity) hs (by positivity) ?_ (by positivity) le_rfl (by linarith) hsmall
+    hN0 ?_ ?_
+  · have heq : 2 * s / H * (H / 2) = s := by field_simp
+    exact le_of_eq heq.symm
+  · calc 2 * (2 * s / H) * (H / 2) = 2 * s := by field_simp
+      _ ≤ (N : ℝ) := hN2s
+  · calc (N : ℝ) ≤ 4 * s := hN4s
+      _ = 2 * (2 * s / H) * H := by
+          field_simp
+          norm_num
+
 /-- **Both estimates with the free parameters tied together.** -/
 theorem exists_radius_point_secondDeriv_bound
     (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {c d H s L h : ℝ}
@@ -77,30 +116,15 @@ theorem exists_radius_point_secondDeriv_bound
           - ((centralIndex a (Real.exp x) : ℂ) * ((centralIndex a (Real.exp x) : ℂ) - 1))‖
         ≤ wvSecondMomentBound N L
           + (2 * (centralIndex a (Real.exp x) : ℝ) + 1) * wvClosedBound a x N L h := by
-  subst hLdef
-  subst hhdef
-  have hHne : H ≠ 0 := ne_of_gt hH
-  have hN0 : 0 < N := by
-    by_contra hcon
-    have hN : N = 0 := by omega
-    rw [hN] at hN2s
-    simp at hN2s
-    linarith
-  refine exists_radius_point_secondDeriv_le_closed ha hn₀ (v₀ := H / 2)
-    hcd hH (by positivity) hs (by positivity) ?_ (by positivity) le_rfl (by linarith) hsmall
-    hN0 ?_ ?_
-  · have heq : 2 * s / H * (H / 2) = s := by field_simp
-    exact le_of_eq heq.symm
-  · calc 2 * (2 * s / H) * (H / 2) = 2 * s := by field_simp
-      _ ≤ (N : ℝ) := hN2s
-  · calc (N : ℝ) ≤ 4 * s := hN4s
-      _ = 2 * (2 * s / H) * H := by
-          field_simp
-          norm_num
+  obtain ⟨x, hx, z, hz, hfloor, hone, htwo, _⟩ :=
+    exists_radius_point_secondDeriv_bound_isMaximumOnCircle ha hn₀ hcd hH hs hLdef hhdef
+      hsmall hN2s hN4s
+  exact ⟨x, hx, z, hz, hfloor, hone, htwo⟩
 
 set_option maxHeartbeats 1000000 in
-/-- **Both estimates at a logarithmic window of width `6 (log s)/s`.** -/
-theorem exists_radius_point_secondDeriv_small_window
+/-- **Both estimates at a logarithmic window of width `6 (log s)/s`, retaining the full
+maximum-circle property.** -/
+theorem exists_radius_point_secondDeriv_small_window_isMaximumOnCircle
     (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {c d s : ℝ}
     (hcd : c ≤ d) (hs : (100 : ℝ) ≤ s)
     (hsmall : 2 * (2 * (3 * Real.log s) / s)
@@ -116,7 +140,8 @@ theorem exists_radius_point_secondDeriv_small_window
         ≤ 148 * (s ^ 2 * Real.sqrt s)
           + (2 * (centralIndex a (Real.exp x) : ℝ) + 1)
             * (30 * (s * Real.sqrt s)
-              * (1 + Real.log ((centralIndex a (Real.exp x) : ℝ) + 4 * s) / Real.log s)) := by
+              * (1 + Real.log ((centralIndex a (Real.exp x) : ℝ) + 4 * s) / Real.log s)) ∧
+      ∀ w : ℂ, ‖w‖ = ‖z‖ → ‖coeffFun a w‖ ≤ ‖coeffFun a z‖ := by
   have hs0 : (0 : ℝ) < s := by linarith
   set K : ℝ := 3 * Real.log s with hKdef
   have hlogs : (4 : ℝ) ≤ Real.log s := by
@@ -140,8 +165,9 @@ theorem exists_radius_point_secondDeriv_small_window
       rw [hNdef]
       exact Nat.ceil_lt_add_one (by positivity)
     linarith
-  obtain ⟨x, hx, z, hz, hfz, hbound, h2bound⟩ :=
-    exists_radius_point_secondDeriv_bound ha hn₀ hcd hH hs0 rfl rfl hsmall hN2 hN4
+  obtain ⟨x, hx, z, hz, hfz, hbound, h2bound, hmax⟩ :=
+    exists_radius_point_secondDeriv_bound_isMaximumOnCircle ha hn₀ hcd hH hs0 rfl rfl
+      hsmall hN2 hN4
   have hL : 2 * s / H = s ^ 2 / K := by rw [hHdef]; field_simp
   have hh : H / 2 = K / s := by rw [hHdef]; field_simp
   have hone : wvClosedBound a x N (2 * s / H) (H / 2)
@@ -152,9 +178,31 @@ theorem exists_radius_point_secondDeriv_small_window
   have htwo : wvSecondMomentBound N (2 * s / H) ≤ 148 * (s ^ 2 * Real.sqrt s) :=
     wv_second_moment_le hs hKdef hL hN2 hN4
   have hνnn : (0 : ℝ) ≤ 2 * (centralIndex a (Real.exp x) : ℝ) + 1 := by positivity
-  refine ⟨x, hx, z, hz, hfz, le_trans hbound hone, le_trans h2bound ?_⟩
+  refine ⟨x, hx, z, hz, hfz, le_trans hbound hone, le_trans h2bound ?_, hmax⟩
   have hmul := mul_le_mul_of_nonneg_left hone hνnn
   linarith
+
+/-- **Both estimates at a logarithmic window of width `6 (log s)/s`.** -/
+theorem exists_radius_point_secondDeriv_small_window
+    (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {c d s : ℝ}
+    (hcd : c ≤ d) (hs : (100 : ℝ) ≤ s)
+    (hsmall : 2 * (2 * (3 * Real.log s) / s)
+        * ((centralIndex a (Real.exp (d + 2 * (2 * (3 * Real.log s) / s))) : ℝ)
+          - (centralIndex a (Real.exp c) : ℝ)) / s < d - c) :
+    ∃ x ∈ Set.Icc (c + 2 * (3 * Real.log s) / s) (d + 2 * (3 * Real.log s) / s), ∃ z : ℂ,
+      ‖z‖ = Real.exp x ∧ maxTerm a (Real.exp x) ≤ ‖coeffFun a z‖ ∧
+      ‖z * deriv (coeffFun a) z / coeffFun a z - (centralIndex a (Real.exp x) : ℂ)‖
+        ≤ 30 * (s * Real.sqrt s)
+            * (1 + Real.log ((centralIndex a (Real.exp x) : ℝ) + 4 * s) / Real.log s) ∧
+      ‖z ^ 2 * deriv (deriv (coeffFun a)) z / coeffFun a z
+          - ((centralIndex a (Real.exp x) : ℂ) * ((centralIndex a (Real.exp x) : ℂ) - 1))‖
+        ≤ 148 * (s ^ 2 * Real.sqrt s)
+          + (2 * (centralIndex a (Real.exp x) : ℝ) + 1)
+            * (30 * (s * Real.sqrt s)
+              * (1 + Real.log ((centralIndex a (Real.exp x) : ℝ) + 4 * s) / Real.log s)) := by
+  obtain ⟨x, hx, z, hz, hfloor, hone, htwo, _⟩ :=
+    exists_radius_point_secondDeriv_small_window_isMaximumOnCircle ha hn₀ hcd hs hsmall
+  exact ⟨x, hx, z, hz, hfloor, hone, htwo⟩
 
 /-- **The second-moment constant is below `ε/2` times the squared central index.** -/
 theorem wv_second_error_le {w eps nu : ℝ} (hw : (40 : ℝ) ≤ w) (heps : 0 < eps)
@@ -184,10 +232,8 @@ theorem wv_second_error_le {w eps nu : ℝ} (hw : (40 : ℝ) ≤ w) (heps : 0 < 
   nlinarith [hkey, hnu2, heps.le, h160]
 
 set_option maxHeartbeats 1000000 in
-/-- **The order-two Wiman--Valiron asymptotic.**  For a transcendental entire function, at
-arbitrarily large radii there is a point of the maximum circle at which `z f′/f` agrees with the
-central index and `z² f″/f` with its falling factorial, to any prescribed relative accuracy. -/
-theorem exists_radius_point_secondDeriv_close_centralIndex
+/-- **The order-two Wiman--Valiron asymptotic, retaining the full maximum-circle property.** -/
+theorem exists_radius_point_secondDeriv_close_centralIndex_isMaximumOnCircle
     (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0)
     (htrans : ∀ M : ℕ, ∃ n, M ≤ n ∧ a n ≠ 0)
     {eps : ℝ} (heps : 0 < eps) (R : ℝ) :
@@ -197,7 +243,8 @@ theorem exists_radius_point_secondDeriv_close_centralIndex
         ≤ eps * (centralIndex a (Real.exp x) : ℝ) ∧
       ‖z ^ 2 * deriv (deriv (coeffFun a)) z / coeffFun a z
           - ((centralIndex a (Real.exp x) : ℂ) * ((centralIndex a (Real.exp x) : ℂ) - 1))‖
-        ≤ eps * (centralIndex a (Real.exp x) : ℝ) ^ 2 := by
+        ≤ eps * (centralIndex a (Real.exp x) : ℝ) ^ 2 ∧
+      ∀ w : ℂ, ‖w‖ = ‖z‖ → ‖coeffFun a w‖ ≤ ‖coeffFun a z‖ := by
   classical
   have heps6 : (0 : ℝ) < eps / 6 := by linarith
   -- the scale threshold
@@ -336,8 +383,9 @@ theorem exists_radius_point_secondDeriv_close_centralIndex
     rw [hrw, ← hHdef]
     linarith [hstep, hkey]
   -- apply the narrow-window estimate
-  obtain ⟨y, hy, z, hz, hfz, hbound, h2bound⟩ :=
-    exists_radius_point_secondDeriv_small_window ha hn₀ (by linarith : x ≤ x + δ / 2)
+  obtain ⟨y, hy, z, hz, hfz, hbound, h2bound, hmax⟩ :=
+    exists_radius_point_secondDeriv_small_window_isMaximumOnCircle ha hn₀
+      (by linarith : x ≤ x + δ / 2)
       hs100 (by rw [hsdef] at hsmall ⊢; exact hsmall)
   rw [← hHdef] at hy
   have hy1 : x ≤ y := by
@@ -380,7 +428,7 @@ theorem exists_radius_point_secondDeriv_close_centralIndex
       ≤ eps / 2 * (centralIndex a (Real.exp y) : ℝ) ^ 2 := by
     rw [hsdef]
     exact wv_second_error_le hw40 heps hweps2 hνlow
-  refine ⟨y, le_trans hxR0 hy1, z, hz, hfz, ?_, ?_⟩
+  refine ⟨y, le_trans hxR0 hy1, z, hz, hfz, ?_, ?_, hmax⟩
   · refine le_trans hbound (le_trans herr ?_)
     nlinarith [hν1, heps]
   · refine le_trans h2bound ?_
@@ -394,5 +442,24 @@ theorem exists_radius_point_secondDeriv_close_centralIndex
         * (eps / 6 * (centralIndex a (Real.exp y) : ℝ))
         ≤ eps / 2 * (centralIndex a (Real.exp y) : ℝ) ^ 2 := by nlinarith [hprod]
     linarith [hsec, hmul, hstep]
+
+/-- **The order-two Wiman--Valiron asymptotic.**  For a transcendental entire function, at
+arbitrarily large radii there is a point of the maximum circle at which `z f′/f` agrees with the
+central index and `z² f″/f` with its falling factorial, to any prescribed relative accuracy. -/
+theorem exists_radius_point_secondDeriv_close_centralIndex
+    (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0)
+    (htrans : ∀ M : ℕ, ∃ n, M ≤ n ∧ a n ≠ 0)
+    {eps : ℝ} (heps : 0 < eps) (R : ℝ) :
+    ∃ x, R ≤ x ∧ ∃ z : ℂ, ‖z‖ = Real.exp x ∧
+      maxTerm a (Real.exp x) ≤ ‖coeffFun a z‖ ∧
+      ‖z * deriv (coeffFun a) z / coeffFun a z - (centralIndex a (Real.exp x) : ℂ)‖
+        ≤ eps * (centralIndex a (Real.exp x) : ℝ) ∧
+      ‖z ^ 2 * deriv (deriv (coeffFun a)) z / coeffFun a z
+          - ((centralIndex a (Real.exp x) : ℂ) * ((centralIndex a (Real.exp x) : ℂ) - 1))‖
+        ≤ eps * (centralIndex a (Real.exp x) : ℝ) ^ 2 := by
+  obtain ⟨x, hx, z, hz, hfloor, hone, htwo, _⟩ :=
+    exists_radius_point_secondDeriv_close_centralIndex_isMaximumOnCircle
+      ha hn₀ htrans heps R
+  exact ⟨x, hx, z, hz, hfloor, hone, htwo⟩
 
 end GaloisForLFunctions.HTGeometry

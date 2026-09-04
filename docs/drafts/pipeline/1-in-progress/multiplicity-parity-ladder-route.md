@@ -2047,3 +2047,52 @@ all-cofinal Cesaro no-go does not apply verbatim. Expected Selberg--Delange grow
 still refute it, but corpus has no such theorem and no boundedness is claimed. Lean:
 `SquarefreeConvolutionHalfLaplaceCriterion.lean`; direct check and targeted build `12847/12847`
 pass; axiom audit standard foundations only.
+
+## 2026-09-04 — Diagonal Laplace smoothing is terminal
+
+The apparent infinite-order frontier collapses without Selberg--Delange. At `6/11`, normalized
+local boundedness forces heat samples at `t_N=1/(N+1)` to decay at least geometrically because the
+pole factor grows as `5^(N-24)`. For bounded shifted coefficients, variation between adjacent
+reciprocal heat times is uniformly bounded: mesh gap is `O(N^-2)` and first exponential moment is
+`O(N^2)`. Hence complete heat profile is bounded near zero.
+
+Mellin transformation then produces a holomorphic continuation of convolution half to
+`Re(s)>6/11`. Squaring on Euler overlap and analytic uniqueness force impossible removal of zeta's
+pole at one.
+
+Status: `[DIAGONAL LAPLACE LOCAL BOUNDEDNESS FALSE] [LEAN-PROVED] [NOT RH]`. Strongest positive
+survivor is reciprocal-mesh transport invariant: any next heat smoothing must decouple heat time
+from pole degree enough that mesh-gap times exponential-moment cost is not uniformly bounded, or
+add a literal singular/nonlinear arithmetic correction. Lean:
+`SquarefreeConvolutionHalfLaplaceDiagonalNoGo.lean`; direct check and targeted build `13034/13034`
+pass.
+
+## 2026-09-04 — Weighted scheduled Laplace frontier is terminal
+
+The reciprocal clock was not essential.  At `Re(s)=6/11`, literal arithmetic coefficient decay
+improves the heat-profile first-moment singularity from `q^-2` to `q^(-16/11)`.  Every positive
+heat clock `τ_N→0` automatically supplies adjacent crossing intervals.  Therefore eventual
+boundedness of its boundary samples is incompatible with any eventual weighted gap estimate
+`|τ_N-τ_(N+1)|=O(τ_(N+1)^(16/11))`.
+
+Status: `[ALL 16/11-DENSE LAPLACE CLOCKS CLOSED] [SPARSE CLOCKS ONLY SURVIVE] [LEAN-PROVED]
+[NOT RH]`. This decouples pole degree from heat time: any pole clock that forces bounded samples
+still fails whenever heat gaps satisfy the displayed arithmetic density law.  Exact positive
+survivor is weighted mesh escape; a viable clock must have unbounded normalized gaps, or the
+construction must add a singular/nonlinear arithmetic correction.  Lean:
+`SquarefreeConvolutionHalfLaplaceScheduledNoGo.lean`; targeted build `13035/13035`; ten public
+theorems axiom-audited with standard foundations only.
+
+## 2026-09-04 — Pole/heat clock decoupling does not rescue dense Laplace smoothing
+
+The two clocks can be independent.  Once pole degree reaches `24`, local boundedness of the
+normalized family at `6/11` already bounds its literal canonical heat samples; no quantitative
+growth rate for pole degree is needed.  If positive heat times tend to zero with eventual
+`16/11`-dense gaps, the weighted mesh escape law gives a contradiction.
+
+Status: `[DENSE TWO-CLOCK LAPLACE FAMILIES CLOSED] [SPARSE HEAT CLOCKS OPEN] [LEAN-PROVED]
+[NOT RH]`. Pole scheduling is removed from active search as a rescue mechanism.  Exact remaining
+source edge is arithmetic behavior of the canonical heat profile on genuinely sparse clocks, or a
+singular/nonlinear correction that changes that profile.  Lean:
+`SquarefreeConvolutionHalfLaplaceTwoClockNoGo.lean`; targeted build `13036/13036`; axiom audit
+standard foundations only.

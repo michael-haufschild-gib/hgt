@@ -51,3 +51,137 @@ embedding; ray-coefficient translation rule; multi-bump localized limit; weighte
 
 ## (P2) route — see working log; needs Connes–Consani Thm 1 / (115) exactly.
 ## (GM) route — programme card `guth-maynard-large-values-lean-programme.md` (to be written after the exact statement is fetched).
+
+## (P2) hgtl7 round — 2026-09-04
+
+**Phase 1–2 (context).**  Corpus: Theorem C/D (Sonin transfer, continuity across the prime-2 entry),
+the log-soft entry law, the elementary recasting `poleTerm + archTerm = C(S)‖f‖² + ∫₀^S D(u)K(u)du`
+(`archimedean-weil-kernel-sign-and-aperture.md`), Hilbert/Hilbert1/Hilbert2, numerics
+`μ₀(√2) = 0.547`, archimedean-only threshold `λ_arch = 1.8145`.  Literature: Connes–Consani 2021 prove
+the √2 case by a numerical Toeplitz spectral computation (1732-term `L¹` approximation (115), top
+eigenvalue 1.0516 vs 1); Suzuki 2026 (screw function): positivity "for small λ"; Connes 2026 survey:
+nothing beyond √2.  Bombieri–Yoshida is now Lean (this card, WP-T1).
+
+**Reformulation (new).**  On the pole-vanishing subspace the polar term vanishes and the archimedean
+form is exactly
+
+    Q_S(f) = A(S)‖f‖² + ∫₀^S ½‖f − T_u f‖² K₊(u) du,   K₊(u) = 2e^{−u/2}/(1 − e^{−2u}) = 2Σ_{m≥0} e^{−(2m+½)u} > 0,
+    A(S) = −γ − log π − log(1 − e^{−2S}) − J(S)  (A(log 2) = −2.3785),
+
+i.e. the negativity is entirely in the constant `A(S)` and the positivity entirely in a positive-kernel
+translation-defect energy.  Fourier side: `Q_S(f) = (1/2π) ∫ |f̂(ξ)|² m_S(ξ) dξ`,
+`m_S(ξ) = A(S) + Λ_S(ξ)`, `Λ_S(ξ) = ∫₀^S K₊(u)(1 − cos uξ) du = 2Σ_m [(1 − e^{−α_m S})/α_m − (α_m − e^{−α_m S}(α_m cos Sξ − ξ sin Sξ))/(α_m² + ξ²)]`,
+`α_m = 2m + ½` — an explicit series, geometric at `S = log 2` (`e^{−2S} = ¼`).  `m_S` is negative on
+`|ξ| < ξ_S` (`ξ_{log 2} = 5.448`), positive beyond, with dips at `ξ ≈ 10.05 + 9.06k` (period `2π/S`):
+values at `S = log 2`: `m(6) = 0.178, m(8) = 0.416, m(10.05) = 0.369, m(12) = 0.50, m(16) ≥ 1.05`.
+
+**Numerics (pod, `constrained_multiplier.py`, `constrained_check2.py`).**  Legendre basis on `[−a, a]`,
+`N ≤ 24`: constrained minimum `0.5425` at `S = log 2` (direct x-space check `0.549`; corpus `0.547` ✓),
+`0.175` at `S = 1.0`, zero crossing at `S ≈ 1.19` (corpus `λ_arch = 1.8145 ⇔ S = 1.192` ✓).  The extremal
+function is **even**, essentially `0.87 p₂ + 0.48 p₄ + 0.06 p₆` (normalized Legendre modes).  Unconstrained
+minimum `−1.29`.  Band concentrations at `S = log 2`: unconstrained `λ₀ = 0.86, λ₁ = 0.31, λ₂ = 0.027`
+(band `|ξ| ≤ 5.45`, `c = 1.89`); on `V₀`: `0.048, 0.0037`.  (`N = 40` Gram is unreliable: high-mode
+quadrature artifact; `N ≤ 24` validated against direct evaluation.)
+
+**Phase 3 — frozen conjecture (P2-C1).**  *Constrained archimedean Weil positivity is an elementary
+two-constraint concentration inequality, certifiable without prolate theory.*  Precisely: for every
+`S ≤ S*` with `S* ≥ 1.1`, and every `f ∈ L²[−S/2, S/2]` with `∫ e^{±x/2} f = 0`,
+
+    Q_S(f) ≥ κ(S)‖f‖²,   κ(log 2) ≥ 0.5,
+
+and the proof is: (i) **Taylor localization** — for `g ⊥` polynomials of degree `< N` on `[−a, a]`,
+`|ĝ(ξ)|² ≤ τ_N(ξ)‖g‖²`, `τ_N(ξ) = 2a^{2N+1}ξ^{2N}/((N!)²(2N+1))` (Cauchy–Schwarz against the Taylor
+remainder of `e^{−iξx}`); (ii) **staircase** — `m_S ≥ m_stair := Σ_j c_j 1_{band_j}` with `c_j` band minima
+(`c₀ = A(S)` exactly, since `Λ_S ≥ 0`), so `Q_S(f) ≥ ⟨f, M_stair f⟩`; (iii) **finite block** — the
+compression of `M_stair` to `V₀ ∩ Legendre_{<N}` is an explicit matrix (band-limiting Grams of Legendre
+modes: `∫_{−2a}^{2a} R_{nk}(t) [sin(hi·t) − sin(lo·t)]/(πt) dt` with `R_{nk}` the polynomial
+autocorrelations, i.e. `Si` values at `2a·edge` and trigonometric terms); (iv) **assembly** —
+`Q_S(f) ≥ min(λ_min(M_stair|V₀∩P_{<N}) − |c|_max√M_low, c_last(1 − M_low) − |c|_max(M_low + √M_low))·‖f‖²`
+with `M_low = (1/π)∫₀^{Ξ_max} τ_N`, because the Legendre split `f = f_low + f_high` makes `f_high`
+spectrally negligible below `Ξ_max` and `M_stair` acts as `c_last(I − B_{Ξ_max})` above it.
+
+**Phase 4 — attack.**  Not circular (no zero information enters); not a rediscovery (Connes–Consani's route
+is prolate/Toeplitz numerics at one aperture; Suzuki's is screw-function positivity for small λ); not
+insignificant for the constrained-Weil programme (it certifies a range beyond √2 and, with the prime-2 term
+`−√2 log 2 ⟨f, T_{log 2} f⟩` added as an explicit operator, a range for the full form with the prime 2).
+It remains nonselective for RH (CANNOT-02), as every fixed-aperture statement.  Verdict:
+SURVIVES PRELIMINARY ATTACK.
+
+**Certificate values (pod, `certificate_bands.py`, `certificate_staircase.py`).**  At `S = log 2`:
+two-band certificate `c₈(1 − θ₈) − |A|θ₆ = 0.3693(1 − 0.2157) − 2.3785·0.0725 = 0.117 > 0`
+(`θ_B` = constrained concentration of `V₀ ∩ P_{<12}` in `|ξ| ≤ B`, `Mlow(12, 8) ≈ 10⁻⁶`); eight-band
+staircase (`N = 15`): low-mode `0.217`, high-mode `0.509`, `M_low = 6·10⁻⁹`.  Archimedean-only certificate
+positive also at `S = 0.75` (`0.110`); at `S = 0.8` the coarse staircase gives `−0.003` (true min `0.2`),
+so finer bands are needed for the extended range.  With the prime-2 operator the coarse certificate fails
+at `S = 0.75` (`−0.13`): the loss is the staircase resolution and the high-mode floor (`c_last = 0.51`
+versus the prime-term norm `√2 log 2 = 0.98`); the refinement (bands of width `0.5`, `Ξ_max = 16` where
+`m ≥ 1.05`) is running.
+
+**Phase 5 (paper proof) status.**  Lemmas (i)–(iv) are dependency-closed on paper with the explicit
+series for `A(S)`, `Λ_S`, the band Grams and the constraint vectors `⟨e^{±x/2}, p_n⟩`; the only inputs
+needing certified evaluation are `Si` at explicit arguments, `γ`, `log π`, `log 2`, `√2`.
+Next: the paper write-up with the explicit constants, then Lean (`ConstrainedWeilSqrtTwoCertificate*`):
+Taylor localization, staircase, the `V₀` Fourier identity from the corpus's recasting, and the finite
+certified block.
+
+**Refined staircase (bands of width 0.5 on `[5,16]`, last band `[16,∞)`, `N ≈ 3·a·16`; pod,
+`certificate_staircase.py`, floating point, no error bounds yet):**
+
+| `S` | `λ = e^{S/2}` | archimedean low/high | with prime 2 low/high |
+|---|---|---|---|
+| log 2 | 1.4142 | 0.430 / 1.054 | — |
+| 0.72 | 1.433 | 0.379 / 1.017 | **0.258 / 0.036** |
+| 0.75 | 1.455 | 0.320 / 0.975 | 0.134 / −0.005 |
+| 0.80 | 1.492 | 0.220 / 0.910 | −0.013 / −0.070 |
+| 0.90 | 1.568 | 0.005 / 0.846 | −0.200 / −0.135 |
+| 1.00 | 1.649 | −0.227 / 0.963 | −0.327 / −0.018 |
+
+Reading: the certificate proves the constrained archimedean form positive up to `λ ≈ 1.57` and the **full
+form with the prime 2** positive on `[√2, 1.433]` — beyond the literature's √2 — with the high-mode floor
+`c_last` needing to exceed the prime-term norm `√2 log 2 = 0.980` (take `Ξ_max ≈ 19`, where `m ≥ 1.05`).
+The remaining loss is band resolution (true constrained minimum `0.54` at √2 vs certified `0.43`).
+Next: interval-arithmetic (mpmath `iv`) evaluation of every constant to make the paper proof rigorous
+(stage 2), then Lean.
+
+## Rigorous certificate (2026-09-04) and the Lean backbone
+
+Computations: `docs/drafts/pipeline/2-fully-proven/computations/weil-constrained-prime-two-certificate/`
+(`certificate_rigorous.py`, README with the full error-control ledger).  Every analytic constant
+carries a proven tail bound; the only floating-point step is the 25-digit Gauss–Legendre band Gram
+and the 25-digit symmetric eigenvalue.
+
+| S | λ = e^{S/2} | certified constrained ground energy | finite block (exact multiplier) |
+|---|---|---|---|
+| log 2 | 1.414 | 0.5177 | 0.5223 |
+| 0.72 | 1.433 | 0.2505 | 0.2606 |
+| 0.80 | 1.492 | 0.1100 | 0.1244 |
+| 0.90 | 1.568 | 0.0173 | 0.0341 |
+| 0.95 | 1.608 | 0.0059 | 0.0127 |
+| 0.98 | 1.632 | 0.0024 (band width 0.01) | 0.0059 |
+| 1.00 | 1.649 | −0.0003 at width 0.01 (not certified; width 0.005 running) | 0.0031 |
+| 1.05 | 1.691 | not certified | 0.00007 |
+
+**Theorem (certified).**  The polar-constrained restricted Weil form is positive definite on every
+aperture `S ≤ 0.98` (`λ ≤ 1.632`), with the prime 2 inside the window for `S > log 2`.
+**Observation.**  The full constrained form loses positivity at `S* ≈ 1.05` (`λ* ≈ 1.69`), *before*
+the prime 3 enters; the threshold is decided by the interplay of the archimedean negative band
+`|ξ| < ξ_S` and the prime-2 oscillation `−√2 log 2 cos(ξ log 2)` alone.  (The earlier "threshold
+1.19" was the archimedean-only form.)
+
+Lean (both wired into `RHTower.lean`, axioms `[propext, Classical.choice, Quot.sound]`):
+* `SuzukiWeilConstrainedKernelForm.lean` — `suzukiRestrictedWeilForm_eq_constrainedKernelForm`:
+  Suzuki's literal form `= A(S) g(0) + ∫_0^S K₊(h)(g(0) − g(h)) dh + 2(∫e^{x/2}u)(∫e^{−x/2}u) + prime block`,
+  with `weilPositiveKernel = e^{h/2}/sinh h` (`= 2e^{−h/2}/(1−e^{−2h})`, `weilPositiveKernel_eq`) and
+  `weilConstrainedConstant S = −γ − log π − log(1−e^{−2S}) − ∫_0^S (e^{h/2}−e^{−h})/sinh h`; the
+  `_of_moment_eq_zero` version on `V₀`; positivity of the kernel energy.
+* `ConstrainedWeilTaylorLocalization.lean` — `norm_fourierIntegral_sq_le_taylorLocalization`:
+  `|∫_{-a}^{a} g e^{−ixξ}|² ≤ 8a^{2N+1}ξ^{2N}/((N!)²(2N+1)) ∫g²` for `g ⊥ polynomials_{<N}`,
+  `2a|ξ| ≤ N+1`.
+
+* `ConstrainedWeilFourierMultiplier.lean` — `suzukiRestrictedWeilForm_eq_integral_multiplier_of_moment_eq_zero`:
+  on `V₀`, `Q(u) = ∫ ‖𝓕u(ξ)‖² m_S(2πξ) dξ` with `weilConstrainedMultiplier S η = A(S) + Λ_S(η) −
+  2Σ_{2≤n≤e^S} Λ(n)n^{−1/2} cos(η log n)` — the certified multiplier itself; Tonelli step
+  `integral_weilPositiveKernel_mul_defect_eq_fourier`; corollary `suzukiRestrictedWeilForm_ge_of_multiplier_ge`.
+
+Remaining Lean step of the chain: (F) the staircase assembly inequality (band projections, finite
+Legendre block, the `Ω`-form); the finite block stays a documented computation.

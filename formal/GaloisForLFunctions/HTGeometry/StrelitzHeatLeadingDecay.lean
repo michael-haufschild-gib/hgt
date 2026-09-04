@@ -53,6 +53,51 @@ theorem tendsto_mul_rpow_zero_of_mul_maxTerm_le
 
 open GaloisForLFunctions
 
+/-- **Order-two entire-heat Newton input retaining the full maximum-circle property.**
+An assumed order-two ADE produces a fixed nonzero
+polynomial in the two logarithmic-jet variables whose evaluated norm, multiplied by any fixed
+radius power, tends to zero along escaping Wiman points. -/
+theorem exists_nonzero_strelitzLogJetPolynomial_superpolynomiallySmall_of_order_two_entireHeat_isMaximumOnCircle
+    (ha : EntireCoeffs a)
+    (hheat : ∀ t z : ℂ, Summable (fun n : ℕ =>
+      a n * Complex.exp (-(4 * (Real.pi : ℂ) ^ 2) * (n : ℂ) ^ 2 * t)
+        * Complex.exp (2 * (Real.pi : ℂ) * Complex.I * (n : ℂ) * z)))
+    (htrans : ∀ M : ℕ, ∃ n, M ≤ n ∧ a n ≠ 0)
+    (hDA : DifferentiallyAlgebraicOfOrder (coeffFun a) 2) :
+    ∃ P : MvPolynomial (Fin 2) (Polynomial ℂ), P ≠ 0 ∧
+      ∃ (x : ℕ → ℝ) (z : ℕ → ℂ),
+        (∀ n : ℕ, (n : ℝ) ≤ x n) ∧
+        (∀ n : ℕ, ‖z n‖ = Real.exp (x n)) ∧
+        (∀ n : ℕ, maxTerm a (Real.exp (x n)) ≤ ‖coeffFun a (z n)‖) ∧
+        (∀ n : ℕ, coeffFun a (z n) ≠ 0) ∧
+        (∀ n : ℕ, ‖eulerLogDeriv (coeffFun a) (z n) -
+            (centralIndex a (Real.exp (x n)) : ℂ)‖
+          ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp (x n)) : ℝ)) ∧
+        (∀ n : ℕ, ‖eulerLogDerivSecond (coeffFun a) (z n)‖
+          ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp (x n)) : ℝ) ^ 2) ∧
+        (∀ j : ℕ, Tendsto (fun n : ℕ =>
+          ‖MvPolynomial.eval₂ (Polynomial.evalRingHom (z n))
+            ![eulerLogDeriv (coeffFun a) (z n),
+              eulerLogDerivSecond (coeffFun a) (z n)] P‖ *
+            (Real.exp (x n)) ^ j) atTop (nhds 0)) ∧
+        ∀ n : ℕ, ∀ w : ℂ, ‖w‖ = ‖z n‖ →
+          ‖coeffFun a w‖ ≤ ‖coeffFun a (z n)‖ := by
+  obtain ⟨Q, D, x, z, hQ, hD, hP, hmax, hx, hz, hfloor, hfz, hrel, hu, hv,
+    hbound, hmaxCircle⟩ :=
+    exists_strelitzLeadingMaximumTermBound_of_order_two_entireHeat_isMaximumOnCircle
+      ha hheat htrans hDA
+  refine ⟨strelitzValueCoeff Q D, hP, x, z, hx, hz, hfloor, hfz, hu, hv, ?_, hmaxCircle⟩
+  have hxTop : Tendsto x atTop atTop := by
+    refine tendsto_atTop_atTop.mpr fun R => ?_
+    obtain ⟨N : ℕ, hNR⟩ := exists_nat_ge R
+    refine ⟨N, fun n hn => ?_⟩
+    exact le_trans hNR (le_trans (by exact_mod_cast hn) (hx n))
+  have hrTop : Tendsto (fun n : ℕ => Real.exp (x n)) atTop atTop :=
+    Real.tendsto_exp_atTop.comp hxTop
+  intro j
+  exact tendsto_mul_rpow_zero_of_mul_maxTerm_le ha htrans hrTop
+    (fun n => norm_nonneg _) hbound j
+
 /-- **Order-two entire-heat Newton input.** An assumed order-two ADE produces a fixed nonzero
 polynomial in the two logarithmic-jet variables whose evaluated norm, multiplied by any fixed
 radius power, tends to zero along escaping Wiman points. -/
@@ -79,19 +124,10 @@ theorem exists_nonzero_strelitzLogJetPolynomial_superpolynomiallySmall_of_order_
             ![eulerLogDeriv (coeffFun a) (z n),
               eulerLogDerivSecond (coeffFun a) (z n)] P‖ *
             (Real.exp (x n)) ^ j) atTop (nhds 0) := by
-  obtain ⟨Q, D, x, z, hQ, hD, hP, hmax, hx, hz, hfloor, hfz, hrel, hu, hv, hbound⟩ :=
-    exists_strelitzLeadingMaximumTermBound_of_order_two_entireHeat ha hheat htrans hDA
-  refine ⟨strelitzValueCoeff Q D, hP, x, z, hx, hz, hfloor, hfz, hu, hv, ?_⟩
-  have hxTop : Tendsto x atTop atTop := by
-    refine tendsto_atTop_atTop.mpr fun R => ?_
-    obtain ⟨N : ℕ, hNR⟩ := exists_nat_ge R
-    refine ⟨N, fun n hn => ?_⟩
-    exact le_trans hNR (le_trans (by exact_mod_cast hn) (hx n))
-  have hrTop : Tendsto (fun n : ℕ => Real.exp (x n)) atTop atTop :=
-    Real.tendsto_exp_atTop.comp hxTop
-  intro j
-  exact tendsto_mul_rpow_zero_of_mul_maxTerm_le ha htrans hrTop
-    (fun n => norm_nonneg _) hbound j
+  obtain ⟨P, hP, x, z, hx, hz, hfloor, hfz, hu, hv, hsmall, _⟩ :=
+    exists_nonzero_strelitzLogJetPolynomial_superpolynomiallySmall_of_order_two_entireHeat_isMaximumOnCircle
+      ha hheat htrans hDA
+  exact ⟨P, hP, x, z, hx, hz, hfloor, hfz, hu, hv, hsmall⟩
 
 end
 

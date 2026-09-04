@@ -10862,3 +10862,30 @@ Direct check, targeted leaf build, and all eleven public-declaration audits pass
 build.  Remaining exact core is residue-level retention of the algebraic lower derivative branch,
 iteration of the prescribed places through every layer, and transport of the nested nonzero Bell
 determinant to the literal output jets.  Card stays at Stage 2.
+
+### Exact two-level residue flag on the actual successor branch (2026-09-04)
+
+`HTGeometry/FirstOrderWimanTerminalResidue.lean` identifies the outer residue of a literal
+terminal power-series unit with its exact nonzero Wiman coefficient.  It then pulls the inner
+Laurent valuation back through this faithful coefficient realization and proves exact contraction
+under every prolongation of the outer valuation.
+
+`HTGeometry/NonautonomousFiniteCascadeTerminalResidueCoefficient.lean` applies that infrastructure
+to the actual successor branch.  Its capstone
+
+```text
+exists_nonautonomousFiniteCascadeTerminal_normalizedVelocity_residueCoefficient
+```
+
+simultaneously retains the signed Wiman slope, selected Puiseux root, exact inner Laurent
+coefficient, literal normalized terminal velocity, full lower actual branch, outer valuation, and
+inner residue valuation.  The normalized velocity residue has both its exact nonzero coefficient
+image and its literal full-branch residue image, while the terminal input residue is a genuine pole
+of the inner valuation.  Thus the construction is an actual two-level valuation flag, not only a
+state-weight flag.
+
+Direct checks and targeted leaf builds pass.  The new residue and flag declarations audit to
+exactly `[propext, Classical.choice, Quot.sound]`; both leaves are wired into `HTGeometry` without
+an umbrella build.  Remaining exact core is compatibility of this inner coefficient place with the
+chosen Wiman place on the retained lower actual branch, followed by terminal-inward iteration and
+transport of the nonzero Bell determinant to literal output jets.  Card stays at Stage 2.

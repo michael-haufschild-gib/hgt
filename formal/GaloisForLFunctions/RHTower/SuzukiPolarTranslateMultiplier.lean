@@ -310,7 +310,7 @@ theorem ccmRestrictedWeilSourceQuadratic_toCCMFormVector_eq_smoothForm
     inner_suzukiScrewZeroMeanOperator_complexSmoothDerivative_eq_smoothForm]
 
 /-- Suzuki's smooth form depends only on the underlying function. -/
-theorem suzukiScrewSmoothForm_congr {a b : ℝ} (φ : SuzukiSmoothZeroMeanTest a)
+theorem suzukiScrewSmoothForm_congr_coe {a b : ℝ} (φ : SuzukiSmoothZeroMeanTest a)
     (ψ : SuzukiSmoothZeroMeanTest b) (hfun : (φ : ℝ → ℂ) = ψ) :
     suzukiScrewSmoothForm φ φ = suzukiScrewSmoothForm ψ ψ := by
   unfold suzukiScrewSmoothForm
@@ -330,23 +330,23 @@ theorem ccmRestrictedWeilSourceQuadratic_nonneg_of_polarGroundEnergy_nonneg
 /-! ## Primitives of zero-mean tests -/
 
 /-- The primitive `x ↦ ∫_{−a−1}^x φ` of a zero-mean smooth test. -/
-def SuzukiSmoothZeroMeanTest.primitive {a : ℝ} (φ : SuzukiSmoothZeroMeanTest a) (x : ℝ) : ℂ :=
+def SuzukiSmoothZeroMeanTest.zeroMeanPrimitive {a : ℝ} (φ : SuzukiSmoothZeroMeanTest a) (x : ℝ) : ℂ :=
   ∫ t in (-a - 1)..x, (φ : ℝ → ℂ) t
 
-theorem SuzukiSmoothZeroMeanTest.hasDerivAt_primitive {a : ℝ} (φ : SuzukiSmoothZeroMeanTest a)
-    (x : ℝ) : HasDerivAt φ.primitive (φ x) x :=
+theorem SuzukiSmoothZeroMeanTest.hasDerivAt_zeroMeanPrimitive {a : ℝ} (φ : SuzukiSmoothZeroMeanTest a)
+    (x : ℝ) : HasDerivAt φ.zeroMeanPrimitive (φ x) x :=
   intervalIntegral.integral_hasDerivAt_right (φ.continuous.intervalIntegrable _ _)
     (φ.continuous.stronglyMeasurableAtFilter _ _) φ.continuous.continuousAt
 
-theorem SuzukiSmoothZeroMeanTest.deriv_primitive {a : ℝ} (φ : SuzukiSmoothZeroMeanTest a) :
-    deriv φ.primitive = φ :=
-  funext fun x => (φ.hasDerivAt_primitive x).deriv
+theorem SuzukiSmoothZeroMeanTest.deriv_zeroMeanPrimitive {a : ℝ} (φ : SuzukiSmoothZeroMeanTest a) :
+    deriv φ.zeroMeanPrimitive = φ :=
+  funext fun x => (φ.hasDerivAt_zeroMeanPrimitive x).deriv
 
-theorem SuzukiSmoothZeroMeanTest.contDiff_primitive {a : ℝ} (φ : SuzukiSmoothZeroMeanTest a) :
-    ContDiff ℝ (⊤ : ℕ∞) φ.primitive := by
+theorem SuzukiSmoothZeroMeanTest.contDiff_zeroMeanPrimitive {a : ℝ} (φ : SuzukiSmoothZeroMeanTest a) :
+    ContDiff ℝ (⊤ : ℕ∞) φ.zeroMeanPrimitive := by
   rw [contDiff_infty_iff_deriv]
-  refine ⟨fun x => (φ.hasDerivAt_primitive x).differentiableAt, ?_⟩
-  rw [φ.deriv_primitive]
+  refine ⟨fun x => (φ.hasDerivAt_zeroMeanPrimitive x).differentiableAt, ?_⟩
+  rw [φ.deriv_zeroMeanPrimitive]
   exact φ.smooth
 
 theorem SuzukiSmoothZeroMeanTest.apply_eq_zero_of_notMem {a : ℝ} (φ : SuzukiSmoothZeroMeanTest a)
@@ -354,9 +354,9 @@ theorem SuzukiSmoothZeroMeanTest.apply_eq_zero_of_notMem {a : ℝ} (φ : SuzukiS
   by_contra h
   exact ht (φ.support_subset (Function.mem_support.mpr h))
 
-theorem SuzukiSmoothZeroMeanTest.primitive_eq_zero_of_lt {a : ℝ} (φ : SuzukiSmoothZeroMeanTest a)
-    {x : ℝ} (hx : x < -a) : φ.primitive x = 0 := by
-  unfold SuzukiSmoothZeroMeanTest.primitive
+theorem SuzukiSmoothZeroMeanTest.zeroMeanPrimitive_eq_zero_of_lt {a : ℝ} (φ : SuzukiSmoothZeroMeanTest a)
+    {x : ℝ} (hx : x < -a) : φ.zeroMeanPrimitive x = 0 := by
+  unfold SuzukiSmoothZeroMeanTest.zeroMeanPrimitive
   have hzero : EqOn (φ : ℝ → ℂ) 0 (uIcc (-a - 1) x) := by
     intro t ht
     rw [uIcc, mem_Icc] at ht
@@ -369,10 +369,10 @@ theorem SuzukiSmoothZeroMeanTest.primitive_eq_zero_of_lt {a : ℝ} (φ : SuzukiS
   rw [intervalIntegral.integral_congr hzero]
   simp
 
-theorem SuzukiSmoothZeroMeanTest.primitive_eq_zero_of_gt {a : ℝ} (φ : SuzukiSmoothZeroMeanTest a)
-    {x : ℝ} (hx : a < x) : φ.primitive x = 0 := by
+theorem SuzukiSmoothZeroMeanTest.zeroMeanPrimitive_eq_zero_of_gt {a : ℝ} (φ : SuzukiSmoothZeroMeanTest a)
+    {x : ℝ} (hx : a < x) : φ.zeroMeanPrimitive x = 0 := by
   rcases le_or_gt (-a - 1) x with hle | hlt
-  · unfold SuzukiSmoothZeroMeanTest.primitive
+  · unfold SuzukiSmoothZeroMeanTest.zeroMeanPrimitive
     rw [intervalIntegral.integral_of_le hle,
       setIntegral_eq_integral_of_forall_compl_eq_zero]
     · exact φ.integral_zero
@@ -383,37 +383,37 @@ theorem SuzukiSmoothZeroMeanTest.primitive_eq_zero_of_gt {a : ℝ} (φ : SuzukiS
       apply ht
       rw [mem_Ioc]
       constructor <;> linarith
-  · exact φ.primitive_eq_zero_of_lt (by linarith)
+  · exact φ.zeroMeanPrimitive_eq_zero_of_lt (by linarith)
 
-theorem SuzukiSmoothZeroMeanTest.support_primitive_subset {a : ℝ}
-    (φ : SuzukiSmoothZeroMeanTest a) : Function.support φ.primitive ⊆ Icc (-a) a := by
+theorem SuzukiSmoothZeroMeanTest.support_zeroMeanPrimitive_subset {a : ℝ}
+    (φ : SuzukiSmoothZeroMeanTest a) : Function.support φ.zeroMeanPrimitive ⊆ Icc (-a) a := by
   intro x hx
   rw [Function.mem_support] at hx
   rw [mem_Icc]
   constructor
   · by_contra h
-    exact hx (φ.primitive_eq_zero_of_lt (by linarith))
+    exact hx (φ.zeroMeanPrimitive_eq_zero_of_lt (by linarith))
   · by_contra h
-    exact hx (φ.primitive_eq_zero_of_gt (by linarith))
+    exact hx (φ.zeroMeanPrimitive_eq_zero_of_gt (by linarith))
 
 /-- The primitive as a smooth interior source at any aperture exceeding `a`. -/
-def SuzukiSmoothZeroMeanTest.primitiveSource {a : ℝ} (φ : SuzukiSmoothZeroMeanTest a)
+def SuzukiSmoothZeroMeanTest.zeroMeanPrimitiveSource {a : ℝ} (φ : SuzukiSmoothZeroMeanTest a)
     (A : SuzukiPositiveAperture) (hA : a < A.1) : CCMComplexSmoothInteriorSource A where
-  toFun := φ.primitive
-  smooth := φ.contDiff_primitive
+  toFun := φ.zeroMeanPrimitive
+  smooth := φ.contDiff_zeroMeanPrimitive
   hasCompactSupport :=
     IsCompact.of_isClosed_subset isCompact_Icc (isClosed_tsupport _)
-      (closure_minimal φ.support_primitive_subset isClosed_Icc)
+      (closure_minimal φ.support_zeroMeanPrimitive_subset isClosed_Icc)
   tsupport_subset := by
-    refine (closure_minimal φ.support_primitive_subset isClosed_Icc).trans ?_
+    refine (closure_minimal φ.support_zeroMeanPrimitive_subset isClosed_Icc).trans ?_
     intro x hx
     rw [mem_Icc] at hx
     rw [mem_Ioo]
     constructor <;> linarith
 
-@[simp] theorem SuzukiSmoothZeroMeanTest.primitiveSource_apply {a : ℝ}
+@[simp] theorem SuzukiSmoothZeroMeanTest.zeroMeanPrimitiveSource_apply {a : ℝ}
     (φ : SuzukiSmoothZeroMeanTest a) (A : SuzukiPositiveAperture) (hA : a < A.1) (x : ℝ) :
-    φ.primitiveSource A hA x = φ.primitive x := rfl
+    φ.zeroMeanPrimitiveSource A hA x = φ.zeroMeanPrimitive x := rfl
 
 /-! ## The multiplied zero-mean test -/
 
@@ -433,15 +433,15 @@ def SuzukiSmoothZeroMeanTest.polarTranslateTest {a : ℝ} (φ : SuzukiSmoothZero
       translateCombo (polarMultiplierWeight h) (polarMultiplierShift h) φ x := rfl
 
 /-- The derivative test of the multiplied primitive is the multiplied test. -/
-theorem deriv_polarTranslate_primitiveSource {a : ℝ} (φ : SuzukiSmoothZeroMeanTest a)
+theorem deriv_polarTranslate_zeroMeanPrimitiveSource {a : ℝ} (φ : SuzukiSmoothZeroMeanTest a)
     (A : SuzukiPositiveAperture) (hA : a < A.1) {h : ℝ} (hh : 0 < h) :
-    ((φ.primitiveSource A hA).polarTranslate hh).toSuzukiSmoothCompactTest.toDerivativeZeroMean
+    ((φ.zeroMeanPrimitiveSource A hA).polarTranslate hh).toSuzukiSmoothCompactTest.toDerivativeZeroMean
       = ((φ.polarTranslateTest hh : SuzukiSmoothZeroMeanTest (a + 2 * h)) : ℝ → ℂ) := by
   rw [SuzukiSmoothCompactTest.coe_toDerivativeZeroMean]
-  show deriv (translateCombo (polarMultiplierWeight h) (polarMultiplierShift h) φ.primitive) =
+  show deriv (translateCombo (polarMultiplierWeight h) (polarMultiplierShift h) φ.zeroMeanPrimitive) =
     translateCombo (polarMultiplierWeight h) (polarMultiplierShift h) φ
-  rw [deriv_translateCombo _ _ (fun x => (φ.hasDerivAt_primitive x).differentiableAt),
-    φ.deriv_primitive]
+  rw [deriv_translateCombo _ _ (fun x => (φ.hasDerivAt_zeroMeanPrimitive x).differentiableAt),
+    φ.deriv_zeroMeanPrimitive]
 
 /-- **Constrained positivity at the enlarged aperture gives Suzuki positivity of every multiplied
 zero-mean test.** -/
@@ -451,10 +451,10 @@ theorem suzukiScrewSmoothForm_polarTranslateTest_re_nonneg_of_polarGroundEnergy_
     (hμ : 0 ≤ ccmRestrictedWeilPolarGroundEnergy (A.enlarge h hh)) :
     0 ≤ (suzukiScrewSmoothForm (φ.polarTranslateTest hh) (φ.polarTranslateTest hh)).re := by
   have hq := ccmRestrictedWeilSourceQuadratic_nonneg_of_polarGroundEnergy_nonneg hμ
-    (isPolarConstrained_polarTranslate (φ.primitiveSource A hA) hh)
+    (isPolarConstrained_polarTranslate (φ.zeroMeanPrimitiveSource A hA) hh)
   rw [ccmRestrictedWeilSourceQuadratic_toCCMFormVector_eq_smoothForm,
-    suzukiScrewSmoothForm_congr _ (φ.polarTranslateTest hh)
-      (deriv_polarTranslate_primitiveSource φ A hA hh)] at hq
+    suzukiScrewSmoothForm_congr_coe _ (φ.polarTranslateTest hh)
+      (deriv_polarTranslate_zeroMeanPrimitiveSource φ A hA hh)] at hq
   exact hq
 
 /-! ## Ray coefficients of the multiplied test -/

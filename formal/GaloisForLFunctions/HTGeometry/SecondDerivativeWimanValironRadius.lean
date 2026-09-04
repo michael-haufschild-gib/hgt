@@ -36,8 +36,9 @@ noncomputable def wvSecondMomentBound (N : ℕ) (L : ℝ) : ℝ :=
         / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ 3)
 
 set_option maxHeartbeats 800000 in
-/-- **Both Wiman--Valiron estimates at one selected radius.** -/
-theorem exists_radius_point_secondDeriv_le_closed
+/-- **Both Wiman--Valiron estimates at one selected radius, retaining the full maximum-circle
+property of the selected point.** -/
+theorem exists_radius_point_secondDeriv_le_closed_isMaximumOnCircle
     (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {c d H v₀ s L h : ℝ}
     (hcd : c ≤ d) (hH : 0 < H) (hv₀ : 0 < v₀) (hs : 0 < s) (hL : 0 < L) (hsL : s ≤ L * v₀)
     (hh : 0 < h) (hv₀h : v₀ ≤ h) (hhH : 2 * h ≤ H)
@@ -51,7 +52,8 @@ theorem exists_radius_point_secondDeriv_le_closed
       ‖z ^ 2 * deriv (deriv (coeffFun a)) z / coeffFun a z
           - ((centralIndex a (Real.exp x) : ℂ) * ((centralIndex a (Real.exp x) : ℂ) - 1))‖
         ≤ wvSecondMomentBound N L
-          + (2 * (centralIndex a (Real.exp x) : ℝ) + 1) * wvClosedBound a x N L h := by
+          + (2 * (centralIndex a (Real.exp x) : ℝ) + 1) * wvClosedBound a x N L h ∧
+      ∀ w : ℂ, ‖w‖ = ‖z‖ → ‖coeffFun a w‖ ≤ ‖coeffFun a z‖ := by
   obtain ⟨x, hx, hlipA0, hlipB0⟩ :=
     exists_radius_lipschitz_centralIndex ha hn₀ hcd hH hv₀ hs hsmall
   have hupg : ∀ v : ℝ, v₀ ≤ v → s / v₀ * v ≤ L * v := by
@@ -109,7 +111,20 @@ theorem exists_radius_point_secondDeriv_le_closed
       ≤ wvClosedBound a x N L h := by
     rw [wvClosedBound]
     linarith
-  refine ⟨x, hx, z, hz, hfz, hone, ?_⟩
+  have hmaxFull : ∀ w : ℂ, ‖w‖ = ‖z‖ → ‖coeffFun a w‖ ≤ ‖coeffFun a z‖ := by
+    intro w hw
+    let θ : ℝ := Complex.arg w
+    have hw0 : w ≠ 0 := by
+      intro hwzero
+      rw [hwzero, norm_zero, hz] at hw
+      exact (Real.exp_ne_zero x) hw.symm
+    have hwr : ‖w‖ = Real.exp x := hw.trans hz
+    have hcircle : circleMap 0 (Real.exp x) θ = w := by
+      rw [circleMap, zero_add, ← hwr]
+      simpa [θ, mul_comm] using Complex.norm_mul_exp_arg_mul_I w
+    rw [← hcircle]
+    exact hmax θ
+  refine ⟨x, hx, z, hz, hfz, hone, ?_, hmaxFull⟩
   have hG₂ : ∑' j : ℕ, ((N : ℝ) + 1 + j) ^ 2
       * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1 + j)
       ≤ 2 * ((N : ℝ) + 1) ^ 2 * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
@@ -119,5 +134,26 @@ theorem exists_radius_point_secondDeriv_le_closed
     hz hfz hmax hG₂ hone
   rw [wvSecondMomentBound]
   exact h2nd
+
+/-- **Both Wiman--Valiron estimates at one selected radius.** -/
+theorem exists_radius_point_secondDeriv_le_closed
+    (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {c d H v₀ s L h : ℝ}
+    (hcd : c ≤ d) (hH : 0 < H) (hv₀ : 0 < v₀) (hs : 0 < s) (hL : 0 < L) (hsL : s ≤ L * v₀)
+    (hh : 0 < h) (hv₀h : v₀ ≤ h) (hhH : 2 * h ≤ H)
+    (hsmall : 2 * H * ((centralIndex a (Real.exp (d + 2 * H)) : ℝ)
+        - (centralIndex a (Real.exp c) : ℝ)) / s < d - c)
+    {N : ℕ} (hN0 : 0 < N) (hNv : 2 * L * v₀ ≤ (N : ℝ)) (hNK : (N : ℝ) ≤ 2 * L * H) :
+    ∃ x ∈ Icc (c + H) (d + H), ∃ z : ℂ, ‖z‖ = Real.exp x ∧
+      maxTerm a (Real.exp x) ≤ ‖coeffFun a z‖ ∧
+      ‖z * deriv (coeffFun a) z / coeffFun a z - (centralIndex a (Real.exp x) : ℂ)‖
+        ≤ wvClosedBound a x N L h ∧
+      ‖z ^ 2 * deriv (deriv (coeffFun a)) z / coeffFun a z
+          - ((centralIndex a (Real.exp x) : ℂ) * ((centralIndex a (Real.exp x) : ℂ) - 1))‖
+        ≤ wvSecondMomentBound N L
+          + (2 * (centralIndex a (Real.exp x) : ℝ) + 1) * wvClosedBound a x N L h := by
+  obtain ⟨x, hx, z, hz, hfloor, hone, htwo, _⟩ :=
+    exists_radius_point_secondDeriv_le_closed_isMaximumOnCircle ha hn₀ hcd hH hv₀ hs hL hsL
+      hh hv₀h hhH hsmall hN0 hNv hNK
+  exact ⟨x, hx, z, hz, hfloor, hone, htwo⟩
 
 end GaloisForLFunctions.HTGeometry

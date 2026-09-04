@@ -17,11 +17,10 @@ namespace GaloisForLFunctions.HTGeometry
 
 variable {a : ℕ → ℂ}
 
-/-- **Strelitz-coordinate Wiman--Valiron asymptotic.** At arbitrarily large logarithmic radii,
-the first Euler logarithmic derivative is `ε`-close to the central index and its Euler derivative
-has norm at most `ε ν²`.  The value is explicitly nonzero, so both logarithmic coordinates are
-literal quotients rather than totalized artifacts. -/
-theorem exists_radius_point_eulerLogDerivSecond_small
+/-- **Strelitz-coordinate Wiman--Valiron asymptotic retaining the full maximum-circle property.**
+At arbitrarily large logarithmic radii, the first Euler logarithmic derivative is `ε`-close to the
+central index and its Euler derivative has norm at most `ε ν²`. -/
+theorem exists_radius_point_eulerLogDerivSecond_small_isMaximumOnCircle
     (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0)
     (htrans : ∀ M : ℕ, ∃ n, M ≤ n ∧ a n ≠ 0)
     {eps : ℝ} (heps : 0 < eps) (R : ℝ) :
@@ -30,7 +29,8 @@ theorem exists_radius_point_eulerLogDerivSecond_small
       ‖eulerLogDeriv (coeffFun a) z - (centralIndex a (Real.exp x) : ℂ)‖
         ≤ eps * (centralIndex a (Real.exp x) : ℝ) ∧
       ‖eulerLogDerivSecond (coeffFun a) z‖
-        ≤ eps * (centralIndex a (Real.exp x) : ℝ) ^ 2 := by
+        ≤ eps * (centralIndex a (Real.exp x) : ℝ) ^ 2 ∧
+      ∀ w : ℂ, ‖w‖ = ‖z‖ → ‖coeffFun a w‖ ≤ ‖coeffFun a z‖ := by
   set δ : ℝ := min 1 (eps / 5) with hδdef
   have hδpos : 0 < δ := by
     rw [hδdef]
@@ -43,8 +43,9 @@ theorem exists_radius_point_eulerLogDerivSecond_small
   have htop : Tendsto (fun x : ℝ => centralIndex a (Real.exp x)) atTop atTop :=
     (tendsto_centralIndex_atTop ha htrans).comp Real.tendsto_exp_atTop
   obtain ⟨Rν, hRν⟩ := eventually_atTop.mp (htop.eventually_ge_atTop 1)
-  obtain ⟨x, hx, z, hz, hfloor, hu, hq⟩ :=
-    exists_radius_point_secondDeriv_close_centralIndex ha hn₀ htrans hδpos (max R Rν)
+  obtain ⟨x, hx, z, hz, hfloor, hu, hq, hmax⟩ :=
+    exists_radius_point_secondDeriv_close_centralIndex_isMaximumOnCircle
+      ha hn₀ htrans hδpos (max R Rν)
   have hxR : R ≤ x := le_trans (le_max_left _ _) hx
   have hxRν : Rν ≤ x := le_trans (le_max_right _ _) hx
   set ν : ℝ := (centralIndex a (Real.exp x) : ℝ) with hνdef
@@ -118,6 +119,25 @@ theorem exists_radius_point_eulerLogDerivSecond_small
       _ ≤ 5 * δ * ν ^ 2 := by linarith
       _ ≤ eps * ν ^ 2 := mul_le_mul_of_nonneg_right hδeps hνsq
   exact ⟨x, hxR, z, hz, hfloor, hfz, by simpa [hudef, hνdef, hνcdef] using hueps,
-    by simpa [hvdef, hνdef] using hvε⟩
+    by simpa [hvdef, hνdef] using hvε, hmax⟩
+
+/-- **Strelitz-coordinate Wiman--Valiron asymptotic.** At arbitrarily large logarithmic radii,
+the first Euler logarithmic derivative is `ε`-close to the central index and its Euler derivative
+has norm at most `ε ν²`.  The value is explicitly nonzero, so both logarithmic coordinates are
+literal quotients rather than totalized artifacts. -/
+theorem exists_radius_point_eulerLogDerivSecond_small
+    (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0)
+    (htrans : ∀ M : ℕ, ∃ n, M ≤ n ∧ a n ≠ 0)
+    {eps : ℝ} (heps : 0 < eps) (R : ℝ) :
+    ∃ x, R ≤ x ∧ ∃ z : ℂ, ‖z‖ = Real.exp x ∧
+      maxTerm a (Real.exp x) ≤ ‖coeffFun a z‖ ∧ coeffFun a z ≠ 0 ∧
+      ‖eulerLogDeriv (coeffFun a) z - (centralIndex a (Real.exp x) : ℂ)‖
+        ≤ eps * (centralIndex a (Real.exp x) : ℝ) ∧
+      ‖eulerLogDerivSecond (coeffFun a) z‖
+        ≤ eps * (centralIndex a (Real.exp x) : ℝ) ^ 2 := by
+  obtain ⟨x, hx, z, hz, hfloor, hfz, hu, hv, _⟩ :=
+    exists_radius_point_eulerLogDerivSecond_small_isMaximumOnCircle
+      ha hn₀ htrans heps R
+  exact ⟨x, hx, z, hz, hfloor, hfz, hu, hv⟩
 
 end GaloisForLFunctions.HTGeometry

@@ -64,6 +64,60 @@ theorem eventually_strelitzJet_le_logRadius
 
 variable {a : ℕ → ℂ}
 
+/-- **Heat-scale Strelitz package retaining the full maximum-circle property.**
+Besides the fixed nonzero highest `z`-face and exact Wiman
+data, the selected log radii escape, the central index is `o(x)`, and both logarithmic jets have
+fixed polynomial bounds in `x`. -/
+theorem exists_nonzero_strelitzBaseCoefficient_with_logarithmicJetBounds_of_order_two_entireHeat_isMaximumOnCircle
+    (ha : EntireCoeffs a)
+    (hheat : ∀ t z : ℂ, Summable (fun n : ℕ =>
+      a n * Complex.exp (-(4 * (Real.pi : ℂ) ^ 2) * (n : ℂ) ^ 2 * t)
+        * Complex.exp (2 * (Real.pi : ℂ) * Complex.I * (n : ℂ) * z)))
+    (htrans : ∀ M : ℕ, ∃ n, M ≤ n ∧ a n ≠ 0)
+    (hDA : DifferentiallyAlgebraicOfOrder (coeffFun a) 2) :
+    ∃ P : MvPolynomial (Fin 2) (Polynomial ℂ), P ≠ 0 ∧
+      strelitzBaseCoefficient P (polynomialMvCoeffDegree P) ≠ 0 ∧
+      ∃ (x : ℕ → ℝ) (z : ℕ → ℂ),
+        (∀ n : ℕ, (n : ℝ) ≤ x n) ∧
+        (∀ n : ℕ, ‖z n‖ = Real.exp (x n)) ∧
+        (∀ n : ℕ, maxTerm a (Real.exp (x n)) ≤ ‖coeffFun a (z n)‖) ∧
+        (∀ n : ℕ, coeffFun a (z n) ≠ 0) ∧
+        (∀ n : ℕ, ‖eulerLogDeriv (coeffFun a) (z n) -
+            (centralIndex a (Real.exp (x n)) : ℂ)‖
+          ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp (x n)) : ℝ)) ∧
+        (∀ n : ℕ, ‖eulerLogDerivSecond (coeffFun a) (z n)‖
+          ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp (x n)) : ℝ) ^ 2) ∧
+        Tendsto x atTop atTop ∧
+        Tendsto (fun n => (centralIndex a (Real.exp (x n)) : ℝ) / x n)
+          atTop (nhds 0) ∧
+        (∀ᶠ n : ℕ in atTop,
+          (centralIndex a (Real.exp (x n)) : ℝ) ≤ x n ∧
+          ‖eulerLogDeriv (coeffFun a) (z n)‖ ≤ 2 * x n ∧
+          ‖eulerLogDerivSecond (coeffFun a) (z n)‖ ≤ (x n) ^ 2) ∧
+        (∀ j : ℕ, Tendsto (fun n : ℕ =>
+          ‖(strelitzBaseSpecialization P
+            ![eulerLogDeriv (coeffFun a) (z n),
+              eulerLogDerivSecond (coeffFun a) (z n)]).eval (z n)‖ *
+            (Real.exp (x n)) ^ j) atTop (nhds 0)) ∧
+        ∀ n : ℕ, ∀ w : ℂ, ‖w‖ = ‖z n‖ →
+          ‖coeffFun a w‖ ≤ ‖coeffFun a (z n)‖ := by
+  obtain ⟨P, hP, hface, x, z, hx, hz, hfloor, hfz, hu, hv, hsmall, hmaxCircle⟩ :=
+    exists_nonzero_strelitzBaseCoefficient_of_order_two_entireHeat_isMaximumOnCircle
+      ha hheat htrans hDA
+  have hxTop : Tendsto x atTop atTop := tendsto_atTop_of_natCast_le hx
+  obtain ⟨n₀, -, hn₀⟩ := htrans 0
+  have hνx : Tendsto (fun n => (centralIndex a (Real.exp (x n)) : ℝ) / x n)
+      atTop (nhds 0) := by
+    have hcomp := (tendsto_entireHeat_centralIndex_div_log_zero ha hheat hn₀).comp
+      (Real.tendsto_exp_atTop.comp hxTop)
+    change Tendsto (fun n =>
+      (centralIndex a (Real.exp (x n)) : ℝ) / Real.log (Real.exp (x n)))
+        atTop (nhds 0) at hcomp
+    simpa only [Real.log_exp] using hcomp
+  have hjets := eventually_strelitzJet_le_logRadius hxTop hνx hu hv
+  exact ⟨P, hP, hface, x, z, hx, hz, hfloor, hfz, hu, hv,
+    hxTop, hνx, hjets, hsmall, hmaxCircle⟩
+
 /-- **Heat-scale Strelitz package.** Besides the fixed nonzero highest `z`-face and exact Wiman
 data, the selected log radii escape, the central index is `o(x)`, and both logarithmic jets have
 fixed polynomial bounds in `x`. -/
@@ -98,19 +152,10 @@ theorem exists_nonzero_strelitzBaseCoefficient_with_logarithmicJetBounds_of_orde
             ![eulerLogDeriv (coeffFun a) (z n),
               eulerLogDerivSecond (coeffFun a) (z n)]).eval (z n)‖ *
             (Real.exp (x n)) ^ j) atTop (nhds 0) := by
-  obtain ⟨P, hP, hface, x, z, hx, hz, hfloor, hfz, hu, hv, hsmall⟩ :=
-    exists_nonzero_strelitzBaseCoefficient_of_order_two_entireHeat ha hheat htrans hDA
-  have hxTop : Tendsto x atTop atTop := tendsto_atTop_of_natCast_le hx
-  obtain ⟨n₀, -, hn₀⟩ := htrans 0
-  have hνx : Tendsto (fun n => (centralIndex a (Real.exp (x n)) : ℝ) / x n)
-      atTop (nhds 0) := by
-    have hcomp := (tendsto_entireHeat_centralIndex_div_log_zero ha hheat hn₀).comp
-      (Real.tendsto_exp_atTop.comp hxTop)
-    change Tendsto (fun n =>
-      (centralIndex a (Real.exp (x n)) : ℝ) / Real.log (Real.exp (x n)))
-        atTop (nhds 0) at hcomp
-    simpa only [Real.log_exp] using hcomp
-  have hjets := eventually_strelitzJet_le_logRadius hxTop hνx hu hv
+  obtain ⟨P, hP, hface, x, z, hx, hz, hfloor, hfz, hu, hv,
+    hxTop, hνx, hjets, hsmall, _⟩ :=
+    exists_nonzero_strelitzBaseCoefficient_with_logarithmicJetBounds_of_order_two_entireHeat_isMaximumOnCircle
+      ha hheat htrans hDA
   exact ⟨P, hP, hface, x, z, hx, hz, hfloor, hfz, hu, hv,
     hxTop, hνx, hjets, hsmall⟩
 

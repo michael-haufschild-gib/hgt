@@ -1586,3 +1586,42 @@ Cesaro interpolation does not decide it. Exact next gate is local boundedness or
 one-point unboundedness, preferably at `6/11`. A Selberg--Delange asymptotic is the expected
 negative mechanism but is absent from corpus. Lean certificate:
 `SquarefreeConvolutionHalfLaplaceCriterion.lean`.
+
+## 2026-09-04 — Diagonal Laplace frontier is terminal
+
+Local boundedness at `6/11` would suppress reciprocal-time heat samples geometrically. A uniform
+exponential-moment interpolation theorem transports that suppression to boundedness of whole heat
+profile near zero: reciprocal mesh gaps are order `N^-2`, exactly cancelling bounded-coefficient
+first-moment growth of order `N^2`. Mellin translation then continues canonical convolution half
+through `s=1`, and its squared Euler identity contradicts nonzero zeta residue.
+
+Status: `[DIAGONAL LAPLACE TERMINAL] [LEAN-PROVED] [NOT RH]`. Selberg--Delange is unnecessary.
+Remaining infinite-order search must break reciprocal-mesh transport through a substantially
+different heat/pole clock, or introduce source-derived singular/nonlinear renormalization. Lean
+certificate: `SquarefreeConvolutionHalfLaplaceDiagonalNoGo.lean`.
+
+## 2026-09-04 — Arithmetic-weighted schedule classification
+
+Boundary coefficient decay sharpens adjacent heat transport to exponent `16/11`.  For every
+positive clock `τ_N→0`, bounded canonical heat samples force failure of every eventual estimate
+`|τ_N-τ_(N+1)|≤C τ_(N+1)^(16/11)`.  Coverage needs no monotonicity: the first crossing of each
+small heat time supplies an adjacent interval.
+
+Status: `[16/11-DENSE HEAT CLOCKS TERMINAL] [SPARSE CLOCKS UNDECIDED] [LEAN-PROVED] [NOT RH]`.
+Pole-degree growth cannot rescue a dense heat clock once it bounds samples.  Remaining Laplace
+search class consists exactly of clocks with unbounded weighted gaps, plus constructions that
+change the canonical heat profile through a literal singular/nonlinear arithmetic term.  Lean
+certificate: `SquarefreeConvolutionHalfLaplaceScheduledNoGo.lean`.
+
+## 2026-09-04 — Two-clock dense Laplace closure
+
+Independent pole and heat clocks do not alter the weighted schedule classification.  After pole
+degree `24`, local boundedness at the arithmetic boundary forces uniformly bounded canonical heat
+samples.  Thus every positive `τ_N→0` satisfying an eventual `16/11` weighted gap bound is
+terminal, regardless of pole-clock growth.
+
+Status: `[DENSE TWO-CLOCK LAPLACE TERMINAL] [SPARSE HEAT PROFILE VALUES OPEN] [LEAN-PROVED]
+[NOT RH]`. Next legitimate arithmetic question is boundedness or forced growth of
+`squarefreeHalfBoundaryLaplaceProfile(τ_N)` on sparse clocks; corpus has no Selberg--Delange or
+equivalent Tauberian theorem resolving it.  Lean certificate:
+`SquarefreeConvolutionHalfLaplaceTwoClockNoGo.lean`.

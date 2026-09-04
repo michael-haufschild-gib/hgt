@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.PrimeHodgeHistoryIntegralNuclearDefect
+import GaloisForLFunctions.RHTower.CCMRationalAdelicPureTensorPeriodicTrace
 import GaloisForLFunctions.HTGeometry.DiagonalEllTwoIndexed
 import GaloisForLFunctions.HTGeometry.LikelihoodJuliaLift
 import GaloisForLFunctions.HTGeometry.TraceClassQuantumCorner
@@ -34,6 +35,22 @@ def primeHodgeVisibility (a : ℝ) (p : Nat.Primes) : ℝ :=
 /-- Signed theta contrast amplitude `tanh(a log(p)/2)`. -/
 def primeHodgeContrast (a : ℝ) (p : Nat.Primes) : ℝ :=
   Real.tanh (primeHodgeRapidity a p)
+
+/-- Prime-power form of the theta visibility displayed in `(PTC.1)`. -/
+theorem primeHodgeVisibility_eq_prime_rpow (a : ℝ) (p : Nat.Primes) :
+    primeHodgeVisibility a p =
+      2 / (((p : ℝ) ^ (a / 2)) + ((p : ℝ) ^ (-a / 2))) := by
+  have hp : (0 : ℝ) < (p : ℝ) := by exact_mod_cast p.property.pos
+  rw [primeHodgeVisibility, primeHodgeRapidity, Real.cosh_eq,
+    Real.rpow_def_of_pos hp, Real.rpow_def_of_pos hp]
+  rw [show -(a * Real.log (p : ℝ) / 2) =
+    Real.log (p : ℝ) * (-a / 2) by ring]
+  rw [show a * Real.log (p : ℝ) / 2 =
+    Real.log (p : ℝ) * (a / 2) by ring]
+  have hden : Real.exp (Real.log (p : ℝ) * (a / 2)) +
+      Real.exp (Real.log (p : ℝ) * (-a / 2)) ≠ 0 :=
+    (add_pos (Real.exp_pos _) (Real.exp_pos _)).ne'
+  field_simp [hden]
 
 theorem primeHodgeVisibility_pos (a : ℝ) (p : Nat.Primes) :
     0 < primeHodgeVisibility a p := by
@@ -170,7 +187,7 @@ theorem primeHodgeVisibilityOp_sq_add_contrastOp_sq (a : ℝ) :
   intro f
   apply lp.ext
   funext np
-  simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.comp_apply,
+  simp only [add_apply, ContinuousLinearMap.comp_apply,
     primeHodgeVisibilityOp_apply, primeHodgeContrastOp_apply,
     ContinuousLinearMap.id_apply, lp.coeFn_add, Pi.add_apply]
   rw [show (primeHodgeVisibility a np.2 : ℂ) *
@@ -223,11 +240,10 @@ theorem primeHodgeContrastOp_neg (a : ℝ) :
   intro f
   apply lp.ext
   funext np
-  simp only [primeHodgeContrastOp_apply, ContinuousLinearMap.neg_apply, lp.coeFn_neg,
+  simp only [primeHodgeContrastOp_apply, neg_apply, lp.coeFn_neg,
     Pi.neg_apply]
-  rw [primeHodgeContrast_neg]
-  push_cast
-  ring
+  rw [primeHodgeContrast_neg, Complex.ofReal_neg]
+  exact neg_mul _ _
 
 /-- Visible positive trace-class marginal. -/
 def primeHodgeVisibleMarginal (a : ℝ) :
@@ -357,7 +373,6 @@ theorem inner_lpBasis_primeHodgeVisibleMarginal (a : ℝ)
     inner_smul_left, inner_lpBasis_primeHodgeHistoryIntegralNuclearDefectT]
   rw [primeHodgeHistoryDefectKernel_diagonal zero_lt_one]
   simp [v]
-  push_cast
   ring
 
 /-- `(PTC.9)`: the contrast marginal has the pointwise contrast-square diagonal. -/
@@ -384,7 +399,6 @@ theorem inner_lpBasis_primeHodgeContrastMarginal (a : ℝ)
     inner_smul_left, inner_lpBasis_primeHodgeHistoryIntegralNuclearDefectT]
   rw [primeHodgeHistoryDefectKernel_diagonal zero_lt_one]
   simp [c]
-  push_cast
   ring
 
 /-- Exact visible trace-series formula in `(PTC.9)`. -/
@@ -422,7 +436,7 @@ theorem primeHodgeVisibleMarginal_ne_zero (a : ℝ) :
   let np : PrimeHodgeHistoryIndex := (0, p)
   have hdiag := inner_lpBasis_primeHodgeVisibleMarginal a np
   rw [hzero] at hdiag
-  simp only [ContinuousLinearMap.zero_apply, inner_zero_right] at hdiag
+  simp only [zero_apply, inner_zero_right] at hdiag
   have hweight : primeHodgeHistoryDiagonalWeight 1 np ≠ 0 :=
     (primeHodgeHistoryDiagonalWeight_pos zero_lt_one np).ne'
   have hvis : primeHodgeVisibility a np.2 ^ 2 ≠ 0 :=
@@ -436,7 +450,7 @@ theorem primeHodgeContrastMarginal_ne_zero {a : ℝ} (ha : a ≠ 0) :
   let np : PrimeHodgeHistoryIndex := (0, p)
   have hdiag := inner_lpBasis_primeHodgeContrastMarginal a np
   rw [hzero] at hdiag
-  simp only [ContinuousLinearMap.zero_apply, inner_zero_right] at hdiag
+  simp only [zero_apply, inner_zero_right] at hdiag
   have hweight : primeHodgeHistoryDiagonalWeight 1 np ≠ 0 :=
     (primeHodgeHistoryDiagonalWeight_pos zero_lt_one np).ne'
   have hcon : primeHodgeContrast a np.2 ^ 2 ≠ 0 :=
@@ -478,7 +492,7 @@ theorem primeHodgeVisibleCharge_lt_one {a : ℝ} (ha : a ≠ 0) :
   nlinarith [primeHodgeContrastCharge_pos ha,
     primeHodgeVisibleCharge_add_contrastCharge a]
 
-theorem primeHodgeContrastCharge_lt_one {a : ℝ} (ha : a ≠ 0) :
+theorem primeHodgeContrastCharge_lt_one (a : ℝ) :
     primeHodgeContrastCharge a < 1 := by
   nlinarith [primeHodgeVisibleCharge_pos a,
     primeHodgeVisibleCharge_add_contrastCharge a]
@@ -577,6 +591,359 @@ theorem inner_lpBasis_primeHodgeContrastMarginal_sameHistory_ne_zero
   · simpa using Complex.ofReal_ne_zero.mpr (primeHodgeContrast_ne_zero ha p)
   · exact primeHodgeHistoryDefectKernel_sameHistory_ne_zero zero_lt_one n p q
 
+/-- Indicator of histories surviving through grade `n`. -/
+def primeHodgeHistoryTailSymbol (n : ℕ) (np : PrimeHodgeHistoryIndex) : ℂ :=
+  if n ≤ np.1 then 1 else 0
+
+theorem norm_primeHodgeHistoryTailSymbol_le_one (n : ℕ) (np : PrimeHodgeHistoryIndex) :
+    ‖primeHodgeHistoryTailSymbol n np‖ ≤ 1 := by
+  rw [primeHodgeHistoryTailSymbol]
+  split_ifs <;> norm_num
+
+/-- Literal history-tail projection `Q_n` on `ell²(Nat × Primes)`. -/
+def primeHodgeHistoryTailProjection (n : ℕ) :
+    PrimeHodgeHistoryHilbert →L[ℂ] PrimeHodgeHistoryHilbert :=
+  HTGeometry.ellTwoDiagonal (primeHodgeHistoryTailSymbol n)
+    (norm_primeHodgeHistoryTailSymbol_le_one n)
+
+@[simp] theorem primeHodgeHistoryTailProjection_apply (n : ℕ)
+    (f : PrimeHodgeHistoryHilbert) (np : PrimeHodgeHistoryIndex) :
+    primeHodgeHistoryTailProjection n f np =
+      primeHodgeHistoryTailSymbol n np * f np := by
+  rw [primeHodgeHistoryTailProjection, HTGeometry.ellTwoDiagonal_apply]
+
+theorem primeHodgeHistoryTailProjection_isSelfAdjoint (n : ℕ) :
+    IsSelfAdjoint (primeHodgeHistoryTailProjection n) := by
+  change ContinuousLinearMap.adjoint (primeHodgeHistoryTailProjection n) =
+    primeHodgeHistoryTailProjection n
+  rw [primeHodgeHistoryTailProjection, HTGeometry.adjoint_ellTwoDiagonal]
+  apply ContinuousLinearMap.ext
+  intro f
+  apply lp.ext
+  funext np
+  simp [HTGeometry.ellTwoDiagonal_apply, primeHodgeHistoryTailSymbol]
+
+theorem primeHodgeHistoryTailProjection_idempotent (n : ℕ) :
+    primeHodgeHistoryTailProjection n ∘L primeHodgeHistoryTailProjection n =
+      primeHodgeHistoryTailProjection n := by
+  apply ContinuousLinearMap.ext
+  intro f
+  apply lp.ext
+  funext np
+  simp only [ContinuousLinearMap.comp_apply, primeHodgeHistoryTailProjection_apply]
+  rw [primeHodgeHistoryTailSymbol]
+  split_ifs <;> simp
+
+theorem primeHodgeHistoryTailVisible_memSchattenClass_one (a : ℝ) (n : ℕ) :
+    MemSchattenClass 1
+      (primeHodgeHistoryTailProjection n ∘L primeHodgeVisibleMarginal a) :=
+  memSchattenClass_one_comp_left
+    (primeHodgeVisibleMarginal_memSchattenClass_one a) _
+
+theorem primeHodgeHistoryTailContrast_memSchattenClass_one (a : ℝ) (n : ℕ) :
+    MemSchattenClass 1
+      (primeHodgeHistoryTailProjection n ∘L primeHodgeContrastMarginal a) :=
+  memSchattenClass_one_comp_left
+    (primeHodgeContrastMarginal_memSchattenClass_one a) _
+
+theorem inner_lpBasis_primeHodgeHistoryTailVisible (a : ℝ) (n : ℕ)
+    (np : PrimeHodgeHistoryIndex) :
+    inner ℂ (HilbertSchmidt.lpBasis PrimeHodgeHistoryIndex np)
+      ((primeHodgeHistoryTailProjection n ∘L primeHodgeVisibleMarginal a)
+        (HilbertSchmidt.lpBasis PrimeHodgeHistoryIndex np)) =
+      if n ≤ np.1 then
+        ((primeHodgeHistoryDiagonalWeight 1 np * primeHodgeVisibility a np.2 ^ 2 : ℝ) : ℂ)
+      else 0 := by
+  have hd := inner_lpBasis_primeHodgeVisibleMarginal a np
+  rw [HilbertSchmidt.lpBasis_apply, lp.inner_single_left] at hd
+  simp only [RCLike.inner_apply, map_one, mul_one] at hd
+  rw [ContinuousLinearMap.comp_apply, HilbertSchmidt.lpBasis_apply, lp.inner_single_left]
+  simp only [RCLike.inner_apply, map_one, mul_one]
+  rw [primeHodgeHistoryTailProjection_apply, primeHodgeHistoryTailSymbol]
+  split_ifs with h
+  · simpa using hd
+  · simp
+
+theorem inner_lpBasis_primeHodgeHistoryTailContrast (a : ℝ) (n : ℕ)
+    (np : PrimeHodgeHistoryIndex) :
+    inner ℂ (HilbertSchmidt.lpBasis PrimeHodgeHistoryIndex np)
+      ((primeHodgeHistoryTailProjection n ∘L primeHodgeContrastMarginal a)
+        (HilbertSchmidt.lpBasis PrimeHodgeHistoryIndex np)) =
+      if n ≤ np.1 then
+        ((primeHodgeHistoryDiagonalWeight 1 np * primeHodgeContrast a np.2 ^ 2 : ℝ) : ℂ)
+      else 0 := by
+  have hd := inner_lpBasis_primeHodgeContrastMarginal a np
+  rw [HilbertSchmidt.lpBasis_apply, lp.inner_single_left] at hd
+  simp only [RCLike.inner_apply, map_one, mul_one] at hd
+  rw [ContinuousLinearMap.comp_apply, HilbertSchmidt.lpBasis_apply, lp.inner_single_left]
+  simp only [RCLike.inner_apply, map_one, mul_one]
+  rw [primeHodgeHistoryTailProjection_apply, primeHodgeHistoryTailSymbol]
+  split_ifs with h
+  · simpa using hd
+  · simp
+
+/-- Literal visible tail trace, reindexed as the shifted history series. -/
+theorem opTrace_primeHodgeHistoryTailVisible_eq_tsum (a : ℝ) (n : ℕ) :
+    ContinuousLinearMap.opTrace
+        (primeHodgeHistoryTailProjection n ∘L primeHodgeVisibleMarginal a) =
+      ∑' kp : PrimeHodgeHistoryIndex,
+        ((primeHodgeHistoryDiagonalWeight 1 (kp.1 + n, kp.2) *
+          primeHodgeVisibility a kp.2 ^ 2 : ℝ) : ℂ) := by
+  rw [opTrace_eq_tsum_basis_of_memSchattenClass_one
+    (primeHodgeHistoryTailVisible_memSchattenClass_one a n)
+    (HilbertSchmidt.lpBasis PrimeHodgeHistoryIndex)]
+  rw [tsum_congr (inner_lpBasis_primeHodgeHistoryTailVisible a n)]
+  let F : PrimeHodgeHistoryIndex → ℂ := fun np =>
+    if n ≤ np.1 then
+      ((primeHodgeHistoryDiagonalWeight 1 np * primeHodgeVisibility a np.2 ^ 2 : ℝ) : ℂ)
+    else 0
+  let shift : PrimeHodgeHistoryIndex → PrimeHodgeHistoryIndex :=
+    fun kp => (kp.1 + n, kp.2)
+  have hinj : Function.Injective shift := by
+    intro i j hij
+    apply Prod.ext
+    · have hfst := congrArg Prod.fst hij
+      dsimp [shift] at hfst
+      omega
+    · have hsnd := congrArg Prod.snd hij
+      simpa [shift] using hsnd
+  have hsupp : Function.support F ⊆ Set.range shift := by
+    intro np hnp
+    have htail : n ≤ np.1 := by
+      by_contra h
+      simp [F, h] at hnp
+    refine ⟨(np.1 - n, np.2), ?_⟩
+    apply Prod.ext
+    · dsimp [shift]
+      omega
+    · rfl
+  change (∑' np, F np) = _
+  rw [GaloisForLFunctions.RHTower.ccmRational_tsum_reindex_of_support_subset_range
+    shift hinj F hsupp]
+  apply tsum_congr
+  intro kp
+  simp [F, shift]
+
+/-- Literal contrast tail trace, reindexed as the shifted history series. -/
+theorem opTrace_primeHodgeHistoryTailContrast_eq_tsum (a : ℝ) (n : ℕ) :
+    ContinuousLinearMap.opTrace
+        (primeHodgeHistoryTailProjection n ∘L primeHodgeContrastMarginal a) =
+      ∑' kp : PrimeHodgeHistoryIndex,
+        ((primeHodgeHistoryDiagonalWeight 1 (kp.1 + n, kp.2) *
+          primeHodgeContrast a kp.2 ^ 2 : ℝ) : ℂ) := by
+  rw [opTrace_eq_tsum_basis_of_memSchattenClass_one
+    (primeHodgeHistoryTailContrast_memSchattenClass_one a n)
+    (HilbertSchmidt.lpBasis PrimeHodgeHistoryIndex)]
+  rw [tsum_congr (inner_lpBasis_primeHodgeHistoryTailContrast a n)]
+  let F : PrimeHodgeHistoryIndex → ℂ := fun np =>
+    if n ≤ np.1 then
+      ((primeHodgeHistoryDiagonalWeight 1 np * primeHodgeContrast a np.2 ^ 2 : ℝ) : ℂ)
+    else 0
+  let shift : PrimeHodgeHistoryIndex → PrimeHodgeHistoryIndex :=
+    fun kp => (kp.1 + n, kp.2)
+  have hinj : Function.Injective shift := by
+    intro i j hij
+    apply Prod.ext
+    · have hfst := congrArg Prod.fst hij
+      dsimp [shift] at hfst
+      omega
+    · have hsnd := congrArg Prod.snd hij
+      simpa [shift] using hsnd
+  have hsupp : Function.support F ⊆ Set.range shift := by
+    intro np hnp
+    have htail : n ≤ np.1 := by
+      by_contra h
+      simp [F, h] at hnp
+    refine ⟨(np.1 - n, np.2), ?_⟩
+    apply Prod.ext
+    · dsimp [shift]
+      omega
+    · rfl
+  change (∑' np, F np) = _
+  rw [GaloisForLFunctions.RHTower.ccmRational_tsum_reindex_of_support_subset_range
+    shift hinj F hsupp]
+  apply tsum_congr
+  intro kp
+  simp [F, shift]
+
+/-- `(PTC.10)`: both literal tail projections recover the exact Kummer moment. -/
+theorem opTrace_primeHodgeHistoryTail_marginals_add (a : ℝ) (n : ℕ) :
+    ContinuousLinearMap.opTrace
+        (primeHodgeHistoryTailProjection n ∘L primeHodgeVisibleMarginal a) +
+      ContinuousLinearMap.opTrace
+        (primeHodgeHistoryTailProjection n ∘L primeHodgeContrastMarginal a) =
+      (PrimeHodgeHistory.m n : ℂ) := by
+  rw [opTrace_primeHodgeHistoryTailVisible_eq_tsum,
+    opTrace_primeHodgeHistoryTailContrast_eq_tsum]
+  let shift : PrimeHodgeHistoryIndex → PrimeHodgeHistoryIndex :=
+    fun kp => (kp.1 + n, kp.2)
+  have hinj : Function.Injective shift := by
+    intro i j hij
+    apply Prod.ext
+    · have hfst := congrArg Prod.fst hij
+      dsimp [shift] at hfst
+      omega
+    · have hsnd := congrArg Prod.snd hij
+      simpa [shift] using hsnd
+  have hbase : Summable (fun kp : PrimeHodgeHistoryIndex =>
+      primeHodgeHistoryDiagonalWeight 1 (kp.1 + n, kp.2)) := by
+    simpa [Function.comp_def, shift] using
+      (summable_primeHodgeHistoryDiagonalWeight zero_lt_one).comp_injective hinj
+  have hvisR : Summable (fun kp : PrimeHodgeHistoryIndex =>
+      primeHodgeHistoryDiagonalWeight 1 (kp.1 + n, kp.2) *
+        primeHodgeVisibility a kp.2 ^ 2) := by
+    refine Summable.of_nonneg_of_le
+      (fun kp => mul_nonneg
+        (primeHodgeHistoryDiagonalWeight_pos zero_lt_one _).le (sq_nonneg _)) ?_ hbase
+    intro kp
+    calc
+      primeHodgeHistoryDiagonalWeight 1 (kp.1 + n, kp.2) *
+          primeHodgeVisibility a kp.2 ^ 2 ≤
+        primeHodgeHistoryDiagonalWeight 1 (kp.1 + n, kp.2) * 1 := by
+          apply mul_le_mul_of_nonneg_left _
+            (primeHodgeHistoryDiagonalWeight_pos zero_lt_one _).le
+          nlinarith [primeHodgeVisibility_pos a kp.2,
+            primeHodgeVisibility_le_one a kp.2]
+      _ = primeHodgeHistoryDiagonalWeight 1 (kp.1 + n, kp.2) := mul_one _
+  have hconR : Summable (fun kp : PrimeHodgeHistoryIndex =>
+      primeHodgeHistoryDiagonalWeight 1 (kp.1 + n, kp.2) *
+        primeHodgeContrast a kp.2 ^ 2) := by
+    refine Summable.of_nonneg_of_le
+      (fun kp => mul_nonneg
+        (primeHodgeHistoryDiagonalWeight_pos zero_lt_one _).le (sq_nonneg _)) ?_ hbase
+    intro kp
+    calc
+      primeHodgeHistoryDiagonalWeight 1 (kp.1 + n, kp.2) *
+          primeHodgeContrast a kp.2 ^ 2 ≤
+        primeHodgeHistoryDiagonalWeight 1 (kp.1 + n, kp.2) * 1 := by
+          apply mul_le_mul_of_nonneg_left _
+            (primeHodgeHistoryDiagonalWeight_pos zero_lt_one _).le
+          have habs := abs_primeHodgeContrast_lt_one a kp.2
+          rw [abs_lt] at habs
+          nlinarith
+      _ = primeHodgeHistoryDiagonalWeight 1 (kp.1 + n, kp.2) := mul_one _
+  have hvisC := Complex.summable_ofReal.mpr hvisR
+  have hconC := Complex.summable_ofReal.mpr hconR
+  rw [← hvisC.tsum_add hconC]
+  have hpoint : ∀ kp : PrimeHodgeHistoryIndex,
+      ((primeHodgeHistoryDiagonalWeight 1 (kp.1 + n, kp.2) *
+          primeHodgeVisibility a kp.2 ^ 2 : ℝ) : ℂ) +
+        ((primeHodgeHistoryDiagonalWeight 1 (kp.1 + n, kp.2) *
+          primeHodgeContrast a kp.2 ^ 2 : ℝ) : ℂ) =
+        (primeHodgeHistoryDiagonalWeight 1 (kp.1 + n, kp.2) : ℂ) := by
+    intro kp
+    rw [← Complex.ofReal_add]
+    congr 1
+    rw [← mul_add, primeHodgeVisibility_sq_add_contrast_sq, mul_one]
+  rw [tsum_congr hpoint]
+  rw [← Complex.ofReal_tsum, tsum_primeHodgeHistoryDiagonalWeight_shift zero_lt_one]
+
+/-- `(PTC.11)`: adjacent literal tail differences reconstruct each first-exit weight. -/
+theorem opTrace_primeHodgeHistoryAdjacentTail_marginals_add (a : ℝ) (n : ℕ) :
+    (ContinuousLinearMap.opTrace
+        (primeHodgeHistoryTailProjection n ∘L primeHodgeVisibleMarginal a) +
+      ContinuousLinearMap.opTrace
+        (primeHodgeHistoryTailProjection n ∘L primeHodgeContrastMarginal a)) -
+    (ContinuousLinearMap.opTrace
+        (primeHodgeHistoryTailProjection (n + 1) ∘L primeHodgeVisibleMarginal a) +
+      ContinuousLinearMap.opTrace
+        (primeHodgeHistoryTailProjection (n + 1) ∘L primeHodgeContrastMarginal a)) =
+      (PrimeHodgeHistory.w n : ℂ) := by
+  rw [opTrace_primeHodgeHistoryTail_marginals_add,
+    opTrace_primeHodgeHistoryTail_marginals_add, PrimeHodgeHistory.w]
+  push_cast
+  rfl
+
+/-- Exact history shell projection `Q_n - Q_(n+1)`. -/
+def primeHodgeHistoryShellProjection (n : ℕ) :
+    PrimeHodgeHistoryHilbert →L[ℂ] PrimeHodgeHistoryHilbert :=
+  primeHodgeHistoryTailProjection n - primeHodgeHistoryTailProjection (n + 1)
+
+theorem primeHodgeHistoryShellVisible_eq_sub (a : ℝ) (n : ℕ) :
+    primeHodgeHistoryShellProjection n ∘L primeHodgeVisibleMarginal a =
+      (primeHodgeHistoryTailProjection n ∘L primeHodgeVisibleMarginal a) -
+        (primeHodgeHistoryTailProjection (n + 1) ∘L primeHodgeVisibleMarginal a) := by
+  ext f
+  simp [primeHodgeHistoryShellProjection, ContinuousLinearMap.comp_apply]
+
+theorem primeHodgeHistoryShellContrast_eq_sub (a : ℝ) (n : ℕ) :
+    primeHodgeHistoryShellProjection n ∘L primeHodgeContrastMarginal a =
+      (primeHodgeHistoryTailProjection n ∘L primeHodgeContrastMarginal a) -
+        (primeHodgeHistoryTailProjection (n + 1) ∘L primeHodgeContrastMarginal a) := by
+  ext f
+  simp [primeHodgeHistoryShellProjection, ContinuousLinearMap.comp_apply]
+
+theorem primeHodgeHistoryShellVisible_memSchattenClass_one (a : ℝ) (n : ℕ) :
+    MemSchattenClass 1
+      (primeHodgeHistoryShellProjection n ∘L primeHodgeVisibleMarginal a) :=
+  memSchattenClass_one_comp_left (primeHodgeVisibleMarginal_memSchattenClass_one a) _
+
+theorem primeHodgeHistoryShellContrast_memSchattenClass_one (a : ℝ) (n : ℕ) :
+    MemSchattenClass 1
+      (primeHodgeHistoryShellProjection n ∘L primeHodgeContrastMarginal a) :=
+  memSchattenClass_one_comp_left (primeHodgeContrastMarginal_memSchattenClass_one a) _
+
+theorem opTrace_primeHodgeHistoryShellVisible (a : ℝ) (n : ℕ) :
+    ContinuousLinearMap.opTrace
+        (primeHodgeHistoryShellProjection n ∘L primeHodgeVisibleMarginal a) =
+      ContinuousLinearMap.opTrace
+          (primeHodgeHistoryTailProjection n ∘L primeHodgeVisibleMarginal a) -
+        ContinuousLinearMap.opTrace
+          (primeHodgeHistoryTailProjection (n + 1) ∘L primeHodgeVisibleMarginal a) := by
+  rw [primeHodgeHistoryShellVisible_eq_sub,
+    opTrace_sub_of_memSchattenClass_one
+      (primeHodgeHistoryTailVisible_memSchattenClass_one a n)
+      (primeHodgeHistoryTailVisible_memSchattenClass_one a (n + 1))]
+
+theorem opTrace_primeHodgeHistoryShellContrast (a : ℝ) (n : ℕ) :
+    ContinuousLinearMap.opTrace
+        (primeHodgeHistoryShellProjection n ∘L primeHodgeContrastMarginal a) =
+      ContinuousLinearMap.opTrace
+          (primeHodgeHistoryTailProjection n ∘L primeHodgeContrastMarginal a) -
+        ContinuousLinearMap.opTrace
+          (primeHodgeHistoryTailProjection (n + 1) ∘L primeHodgeContrastMarginal a) := by
+  rw [primeHodgeHistoryShellContrast_eq_sub,
+    opTrace_sub_of_memSchattenClass_one
+      (primeHodgeHistoryTailContrast_memSchattenClass_one a n)
+      (primeHodgeHistoryTailContrast_memSchattenClass_one a (n + 1))]
+
+/-- Literal operator form of `(PTC.11)`. -/
+theorem opTrace_primeHodgeHistoryShell_marginals_add (a : ℝ) (n : ℕ) :
+    ContinuousLinearMap.opTrace
+        (primeHodgeHistoryShellProjection n ∘L primeHodgeVisibleMarginal a) +
+      ContinuousLinearMap.opTrace
+        (primeHodgeHistoryShellProjection n ∘L primeHodgeContrastMarginal a) =
+      (PrimeHodgeHistory.w n : ℂ) := by
+  rw [opTrace_primeHodgeHistoryShellVisible, opTrace_primeHodgeHistoryShellContrast]
+  have h := opTrace_primeHodgeHistoryAdjacentTail_marginals_add a n
+  linear_combination h
+
+theorem primeHodgeVisibleCharge_not_integer {a : ℝ} (ha : a ≠ 0) :
+    ¬ ∃ z : ℤ, primeHodgeVisibleCharge a = z := by
+  rintro ⟨z, hz⟩
+  have hzpos : (0 : ℝ) < z := by
+    rw [← hz]
+    exact primeHodgeVisibleCharge_pos a
+  have hzlt : (z : ℝ) < 1 := by
+    rw [← hz]
+    exact primeHodgeVisibleCharge_lt_one ha
+  have hzpos' : (0 : ℤ) < z := by exact_mod_cast hzpos
+  have hzlt' : z < (1 : ℤ) := by exact_mod_cast hzlt
+  omega
+
+theorem primeHodgeContrastCharge_not_integer {a : ℝ} (ha : a ≠ 0) :
+    ¬ ∃ z : ℤ, primeHodgeContrastCharge a = z := by
+  rintro ⟨z, hz⟩
+  have hzpos : (0 : ℝ) < z := by
+    rw [← hz]
+    exact primeHodgeContrastCharge_pos ha
+  have hzlt : (z : ℝ) < 1 := by
+    rw [← hz]
+    exact primeHodgeContrastCharge_lt_one a
+  have hzpos' : (0 : ℤ) < z := by exact_mod_cast hzpos
+  have hzlt' : z < (1 : ℤ) := by exact_mod_cast hzlt
+  omega
+
 /-- Doubled-carrier Kraus isometry `x |-> (V_a x,C_a x)`. -/
 def primeHodgeSplitDilation (a : ℝ) :
     PrimeHodgeHistoryHilbert →L[ℂ]
@@ -608,7 +975,7 @@ theorem norm_primeHodgeSplitDilation (a : ℝ) (f : PrimeHodgeHistoryHilbert) :
       (primeHodgeContrastOp a f))
   have hsum := congrArg (fun A : PrimeHodgeHistoryHilbert →L[ℂ]
       PrimeHodgeHistoryHilbert => A f) (primeHodgeVisibilityOp_sq_add_contrastOp_sq a)
-  simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.comp_apply,
+  simp only [add_apply, ContinuousLinearMap.comp_apply,
     ContinuousLinearMap.id_apply] at hsum
   have hinner : inner ℂ (primeHodgeVisibilityOp a f) (primeHodgeVisibilityOp a f) +
       inner ℂ (primeHodgeContrastOp a f) (primeHodgeContrastOp a f) = inner ℂ f f := by
@@ -642,7 +1009,7 @@ theorem adjoint_primeHodgeSplitDilation_comp_self (a : ℝ) :
   rw [h1, h2, ← inner_add_right]
   have hsum := congrArg (fun A : PrimeHodgeHistoryHilbert →L[ℂ]
       PrimeHodgeHistoryHilbert => A g) (primeHodgeVisibilityOp_sq_add_contrastOp_sq a)
-  simpa only [ContinuousLinearMap.add_apply, ContinuousLinearMap.comp_apply,
+  simpa only [add_apply, ContinuousLinearMap.comp_apply,
     ContinuousLinearMap.id_apply] using congrArg (fun x => inner ℂ f x) hsum
 
 /-- Literal two-Kraus trace-class instrument on the doubled carrier. -/
@@ -686,6 +1053,101 @@ theorem primeHodgePoissonTwoChannelIntegralSplit_closed :
     primeHodgeContrastMarginal_memSchattenClass_one a,
     opTrace_primeHodgeMarginals_add a,
     primeHodgeTwoChannelInstrument_completelyPositive a⟩
+
+/-- Hypothesis-free master certificate for every formal claim `(PTC.1)--(PTC.11)`. -/
+theorem primeHodgePoissonTwoChannelIntegralSplit_fully_closed :
+    (∀ a : ℝ,
+      (primeHodgeVisibleMarginal a).IsPositive ∧
+      MemSchattenClass 1 (primeHodgeVisibleMarginal a) ∧
+      (primeHodgeContrastMarginal a).IsPositive ∧
+      MemSchattenClass 1 (primeHodgeContrastMarginal a) ∧
+      ContinuousLinearMap.opTrace (primeHodgeVisibleMarginal a) +
+          ContinuousLinearMap.opTrace (primeHodgeContrastMarginal a) = 1 ∧
+      GaloisForLFunctions.HTGeometry.IsCompletelyPositive
+        (GaloisForLFunctions.HTGeometry.traceClassMatrixCone PrimeHodgeHistoryHilbert)
+        (GaloisForLFunctions.HTGeometry.traceClassMatrixCone
+          (WithLp 2 (PrimeHodgeHistoryHilbert × PrimeHodgeHistoryHilbert)))
+        (primeHodgeTwoChannelInstrument a)) ∧
+    (∀ a p, primeHodgeVisibility a p =
+      2 / (((p : ℝ) ^ (a / 2)) + ((p : ℝ) ^ (-a / 2)))) ∧
+    primeHodgeVisibleCharge 0 = 1 ∧
+    primeHodgeContrastCharge 0 = 0 ∧
+    (∀ a, a ≠ 0 →
+      0 < primeHodgeVisibleCharge a ∧ primeHodgeVisibleCharge a < 1 ∧
+      0 < primeHodgeContrastCharge a ∧ primeHodgeContrastCharge a < 1 ∧
+      (¬ ∃ z : ℤ, primeHodgeVisibleCharge a = z) ∧
+      (¬ ∃ z : ℤ, primeHodgeContrastCharge a = z)) ∧
+    (∀ a,
+      primeHodgeVisibilityOp (-a) = primeHodgeVisibilityOp a ∧
+      primeHodgeContrastOp (-a) = -primeHodgeContrastOp a ∧
+      primeHodgeVisibleCharge (-a) = primeHodgeVisibleCharge a ∧
+      primeHodgeContrastCharge (-a) = primeHodgeContrastCharge a) ∧
+    (∀ a,
+      ContinuousLinearMap.opTrace (primeHodgeVisibleMarginal a) =
+        ∑' np : PrimeHodgeHistoryIndex,
+          ((primeHodgeHistoryDiagonalWeight 1 np *
+            primeHodgeVisibility a np.2 ^ 2 : ℝ) : ℂ) ∧
+      ContinuousLinearMap.opTrace (primeHodgeContrastMarginal a) =
+        ∑' np : PrimeHodgeHistoryIndex,
+          ((primeHodgeHistoryDiagonalWeight 1 np *
+            primeHodgeContrast a np.2 ^ 2 : ℝ) : ℂ)) ∧
+    (∀ a n p q,
+      inner ℂ (HilbertSchmidt.lpBasis PrimeHodgeHistoryIndex (n, p))
+        (primeHodgeVisibleMarginal a
+          (HilbertSchmidt.lpBasis PrimeHodgeHistoryIndex (n, q))) ≠ 0) ∧
+    (∀ a, a ≠ 0 → ∀ n p q,
+      inner ℂ (HilbertSchmidt.lpBasis PrimeHodgeHistoryIndex (n, p))
+        (primeHodgeContrastMarginal a
+          (HilbertSchmidt.lpBasis PrimeHodgeHistoryIndex (n, q))) ≠ 0) ∧
+    (∀ n,
+      IsSelfAdjoint (primeHodgeHistoryTailProjection n) ∧
+      primeHodgeHistoryTailProjection n ∘L primeHodgeHistoryTailProjection n =
+        primeHodgeHistoryTailProjection n) ∧
+    (∀ a n,
+      ContinuousLinearMap.opTrace
+          (primeHodgeHistoryTailProjection n ∘L primeHodgeVisibleMarginal a) +
+        ContinuousLinearMap.opTrace
+          (primeHodgeHistoryTailProjection n ∘L primeHodgeContrastMarginal a) =
+        (PrimeHodgeHistory.m n : ℂ)) ∧
+    (∀ a n,
+      ContinuousLinearMap.opTrace
+          (primeHodgeHistoryShellProjection n ∘L primeHodgeVisibleMarginal a) +
+        ContinuousLinearMap.opTrace
+          (primeHodgeHistoryShellProjection n ∘L primeHodgeContrastMarginal a) =
+        (PrimeHodgeHistory.w n : ℂ)) ∧
+    (∀ a,
+      ∀ ρ, GaloisForLFunctions.HTGeometry.traceClassPositive ρ →
+        GaloisForLFunctions.HTGeometry.traceClassTrace
+            (primeHodgeTwoChannelInstrument a ρ) =
+          GaloisForLFunctions.HTGeometry.traceClassTrace ρ) := by
+  refine ⟨primeHodgePoissonTwoChannelIntegralSplit_closed,
+    fun a p => primeHodgeVisibility_eq_prime_rpow a p,
+    primeHodgeVisibleCharge_zero,
+    primeHodgeContrastCharge_zero, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · intro a ha
+    exact ⟨primeHodgeVisibleCharge_pos a,
+      primeHodgeVisibleCharge_lt_one ha,
+      primeHodgeContrastCharge_pos ha,
+      primeHodgeContrastCharge_lt_one a,
+      primeHodgeVisibleCharge_not_integer ha,
+      primeHodgeContrastCharge_not_integer ha⟩
+  · intro a
+    exact ⟨primeHodgeVisibilityOp_neg a,
+      primeHodgeContrastOp_neg a,
+      primeHodgeVisibleCharge_neg a,
+      primeHodgeContrastCharge_neg a⟩
+  · intro a
+    exact ⟨opTrace_primeHodgeVisibleMarginal_eq_tsum a,
+      opTrace_primeHodgeContrastMarginal_eq_tsum a⟩
+  · exact fun a n p q =>
+      inner_lpBasis_primeHodgeVisibleMarginal_sameHistory_ne_zero a n p q
+  · exact fun _ ha n p q =>
+      inner_lpBasis_primeHodgeContrastMarginal_sameHistory_ne_zero ha n p q
+  · exact fun n => ⟨primeHodgeHistoryTailProjection_isSelfAdjoint n,
+      primeHodgeHistoryTailProjection_idempotent n⟩
+  · exact opTrace_primeHodgeHistoryTail_marginals_add
+  · exact opTrace_primeHodgeHistoryShell_marginals_add
+  · exact primeHodgeTwoChannelInstrument_tracePreserving
 
 end
 end RHTower
