@@ -362,7 +362,7 @@ theorem tendsto_sum_singVal_div_log_of_diagonal (b : HilbertBasis ℤ ℂ H) {T 
         * Real.sqrt (K * ((MM N : ℕ) : ℝ) ^ (-1 + 4 * δ)) / Real.log (N : ℝ))
         atTop (nhds 0) := by
       have hpow : Tendsto (fun N : ℕ => (2 * K) * ((N : ℝ) ^ (-(5 * u / 8)))) atTop (nhds 0) := by
-        have hbase := (GaloisForLFunctions.HTGeometry.tendsto_rpow_neg_nhds_zero (by linarith : -(5 * u / 8) < 0)).comp
+        have hbase := (tendsto_rpow_neg_atTop (by linarith : (0:ℝ) < 5 * u / 8)).comp
           tendsto_natCast_atTop_atTop
         have := hbase.const_mul (2 * K)
         simpa using this

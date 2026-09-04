@@ -11,14 +11,13 @@ F01 — Receiver abundance. Corpus has many exact RH equivalences: positivity, f
 action, recurrence descent, formation properness, source-dagger descent, boundary absence. They
 are readouts, not independent evidence or producers.
 
-HARD LOCK P — Positivity cannot be an RH producer. This is corpus-wide, not route-local:
-all-test/Weil positivity is RH itself; finite or fixed-aperture positivity admits off-line
-countermodels; Gram squares, absolute values, CP maps, KMS passivity, and positive quotients erase
-the reflection-odd orientation; positive completed-source order is repeatedly RH-equivalent; and
-the complete positive Green--Stokes split exceeds the literal Euler budget. Positivity may be used
-only as a terminal readout after an independently derived pre-divisor signed, noncommutative,
-causal, or transgressive source law. A proposal whose new mechanism is positivity, PSD completion,
-contractivity, passivity, or Loewner order is already closed unless it first produces such a law.
+HARD LOCK P — Positivity alone does not supply the missing arithmetic inequality. All-test Weil
+positivity is RH-equivalent; generic finite Gram/CP/KMS constructions are nonselective; the stated
+positive Green--Stokes split exceeds its Euler budget. These no-gos retain their exact premises.
+An independently proved quantitative bound for the literal arithmetic source remains a possible
+producer: being positive, quadratic, or contractive is not itself a mathematical disqualification.
+In particular, Gamma--Hankel PSD supplies a lower covariance floor, not the missing upper ceiling
+(`MobiusLaplaceGammaHankelWall.finiteMobiusGammaHankelOffDiagonalCovariance_lower_floor`).
 
 F02 — Finite local exactness is nonselective. Arbitrary finite packets, jets, multiplicities,
 indices, Grams, KMS systems, homology, determinants, and recoveries coexist with off-line charge.
@@ -3747,16 +3746,13 @@ primitive collision budget. Transport and shorting are not open.
 Housekeeping — the cyclic-module no-go proved this pass duplicated
 `RHTower.SymplecticCyclicObstruction` (2026-07-11); the duplicate module was removed and the
 surviving doubling/sign theorems live in `HTGeometry.SymplecticDoublingFree`.
-## 2026-09-02 — terminal classification (card `0-backlog/terminal-classification-two-doors.md`, ULF-TERM-001)
-F388 — Every producer shape in the corpus or the literature is one of four kinds, each closed by
-a theorem: fixed functionals (pair-even, crowd), convergence inside the strip (the conclusion),
-symmetries relating `s` to `σ(s)` (blind at free orbits), two-factor presentations of ξ (root
-dressed by a unit). Motivic halves are impossible. Two doors remain: an amplified discrete
-anchor (F₁) or a direct sub-unit anchor (Ferrero–Washington).
-MUST-127 — A new idea must name an integer attached to the free-orbit divisor and a bound below
-`1`; nothing else is admissible. Prediction to check first: the theta-multiplier transfer
-operator (the one arithmetic AII† candidate, absent from the corpus) doubles by cusp pairing and
-is blind.
+## Tested producer classes (ULF-TERM-001; not an exhaustive classification)
+F388 — Scoped obstructions cover the tested fixed functionals, assumed strip convergence,
+free-orbit symmetries, and unit-dressed two-factor presentations. They do not classify every
+possible mathematical mechanism. Amplified and direct sub-unit anchors are programmes, not the
+only logically admissible alternatives.
+MUST-127 — A direct sub-unit programme must identify the integer and independently prove its
+source bound below `1`; this requirement does not apply to every possible RH proof.
 ## 2026-09-02 — direct-subunit completion-index correction
 F413 — W-H197 already constructs unique rate-changing boundary transmuter
 `((p+z)/(p+w))^2`; W-H198 gives exact rank-one `SU(1,1)` companion and Krein-charge
@@ -3941,8 +3937,7 @@ identification and source nuclear factorization.
   `log t` of crowd per zero; the line anchor equals on-line density (C1–C4, F379, F382).
 - **A cyclic module carries only symmetric invariant forms; doubling any block is a free
   symplectic realization; `{±1}`-valued skew pairings are symmetric** (F386).
-- **Four producer kinds, all closed; two doors remain**: an amplified discrete anchor (F₁ type,
-  now closed in characteristic-polynomial form) and a direct sub-unit anchor (F388, MUST-127).
+- **Producer obstructions are scoped, not exhaustive**; F388 does not prove that only two doors remain.
 - **The direct sub-unit anchor already has its integer, its lift, and its budget in the corpus**
   (`thetaKakutaniEscapeMultiplicity`, cubic Loewner landing, primitive Euler capacity); the
   open step is the same-boundary identification, whose naive form is RH (ULF-DSA-003).
@@ -3997,20 +3992,18 @@ one `T` without proving an impossible identification.
 F394 — Lean: off the line the paired Li coefficients are positive for arbitrarily large `n`;
 unconditionally they are never eventually negative (`RHTower.LiSignOscillation`, mean value on
 the torus via recurrence and the geometric sum).
-CANNOT-194 — It cannot transfer the Ferrero–Washington mechanism to ζ: the negation of RH never
-yields a universal ("for all `n`") arithmetic statement, only "infinitely often" or "positive
-density" ones, because the dominant off-line contribution to every real arithmetic datum is a
-mean-zero almost-periodic oscillation. One independent instance can never refute it.
-MUST-131 — A direct anchor would need a datum whose off-line signal is one-signed; real
-Dirichlet data with a non-real dominant singularity cannot supply it. Every integer candidate
-(counts, indices, codimensions, signatures, indicators, growth exponents, Galois integers,
-continuous invariants) fails one of the three Ferrero–Washington ingredients.
-- **Nugget:** the archimedean obstruction to a direct sub-unit anchor is oscillation, not size.
+CANNOT-194 — It cannot infer eventual negativity of the paired Li sequence from failure of RH
+(`LiSignOscillation`). That linear-reader theorem does not prohibit nonlinear one-signed data.
+MUST-131 — A direct anchor needs its own unsigned obstruction and independent bound; neither its
+existence nor its impossibility follows from sign oscillation of a different observable.
+F641 — Linear oscillation can coexist with positive integral nonlinear defects: `u₀=u₁=1`,
+`uₙ₊₂=2uₙ₊₁−2uₙ` has both signs cofinally, but `uₙ₊₁²−uₙuₙ₊₂=2ⁿ>0` for every `n`
+(`HTGeometry.OscillationHankelDefect.oscillation_all_positive_integer_defects`, Lean; standard axioms).
+Its terms are `Re((1+i)^n)`; no identification with Li coefficients or RH source bound is claimed.
 ## 2026-09-02 — stage 4: `4-publication-ready/archimedean-integrality-obstructions.md`
-The day's six certified theorems (twin rigidity, global parity wall, Frobenius torsion law, six
-exponentials with the prime corollary, off-line indicator, Li sign oscillation) and the
-classification are consolidated into a standalone manuscript. MUST-132 (one-signedness requires
-the zero's own frequency; position-independence forbids it) added to the loop card.
+The manuscript packages twin rigidity, global parity, Frobenius torsion, six exponentials,
+off-line indicators, and Li sign oscillation. Its universal classification and claimed prohibition
+of position-independent nonlinear one-signed data are not consequences of those scoped theorems.
 ## 2026-09-02 — successor object constructed: restricted prime--Gamma Toeplitz polar defect
 F438 — For each pre-divisor admissible strict-right rectangle `D`, the continued prime--Gamma
 current canonically forms one boundary unitary `u_D`. Hardy compression `A_D=P M_(u_D) P` and its
@@ -4997,3 +4990,9 @@ CANNOT-288 — It cannot be a short-interval mean-square rate: no bound of Menon
 MUST-201 — It must derive actual theta admission, not prescribe prime-only contrast: that declared two-prime relation closes to its scalar graph when `p=q` or `a=0`, and to all `H×H` otherwise (`primeOnlyBurnolContrastRelation_closure`, Lean). This classifies the stated scalar action, not the full matrix frame or actual Xi completion.
 F640 — Tail-rounding law (Lean): if a norm-summable sequence retains dense real span after every finite deletion, its integer span is dense; finite rounding error is bounded by the norm tail independently of coefficient size (`IntegralTailCompletion.dense_integer_span_of_summable_tail_dense`).
 CANNOT-289 — It cannot recover discrete prime sectors by restricting Burnol coefficients to integers: every single prime's literal unsquared Euler depth columns still have dense integer span in real `L²(0,∞)` (`PrimeBurnolIntegralDepthCompletion.dense_integer_primeBurnolRealDepthSpan`, Lean). This retires unrestricted integer-combination repair, not bounded coefficients, multiplicative formation, or source-labelled graph topology.
+F642 — The literal interacting squarefree Gibbs source already exists: prime insertion is `J_(S+p)(x)=J_S(x)−J_S(px)`, and finite-prime sections approximate `sum μ(n)e^(−nx)` with error at most `e^(−x(y+1))/(1−e^(−x))` for primes through `y` (`GibbsScaleContraction`, `GibbsInfiniteVolume`). Reconstructing this gas is not a new mechanism.
+F643 — Exact Gibbs energy balance loses only same-sign dilation coherence; dissipation vanishes exactly when normalized currents at `x,px` are opposites (`GibbsSignedCovarianceAccumulation`, `GibbsCriticalDissipationAntiscaleResonance`). Actual terminal-prime Mellin blocks have simultaneous gain at `t=π/log y`; generic insertion is not strict contraction.
+CANNOT-290 — It cannot obtain cancellation by renaming covariance accumulation: its difference from the contraction baseline is exactly the endpoint current. Scalar first-trace normalization leaves antiscale coherence unchanged (`gibbsPrimeInsertion_accumulation_bound_iff_current_bound`, `routeEScalarFirstTrace_antiscale`).
+CANNOT-291 — It cannot infer square-root cancellation from successor–dilation subdivision alone: its joint-eigenvector law holds for every completely multiplicative sequence, including logarithmic characters (`CCMFirstClockBlockSubdivisionTransfer`).
+F644 — Finite Möbius Gamma--Hankel energy is `Γ(r)sum_(m,n≤N) μ(m)μ(n)/(m+n)^r`; its diagonal has a cutoff-uniform bound for `r>1`. An off-line zero forces the off-diagonal covariance to `+∞` on every strict-right line below it (`MobiusLaplaceGammaHankelWall`, `MobiusGammaHankelTransverseEscapeCone`).
+MUST-202 — For the suggested additive/multiplicative cancellation mechanism, a sufficient exact target is bounded covariance returns at arbitrarily large `N`, on exponents `r>1` arbitrarily close to `1` (`mobiusLaplaceCofinalGammaHankelOffDiagonalFrequentlyUpperBounded_implies_riemannHypothesis`). The return bound is unproved; the terminal implication is not that bound.

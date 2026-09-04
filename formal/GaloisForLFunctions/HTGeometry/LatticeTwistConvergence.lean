@@ -36,7 +36,7 @@ theorem tendsto_twistWeight {σ : ℝ} (hσ : 0 < σ) :
     Tendsto (twistWeight σ) atTop (𝓝 0) := by
   have hbase : Tendsto (fun n : ℕ => (n : ℝ) + 1) atTop atTop :=
     tendsto_atTop_add_const_right atTop 1 tendsto_natCast_atTop_atTop
-  exact (tendsto_rpow_neg_nhds_zero (by linarith : -σ < 0)).comp hbase
+  exact (tendsto_rpow_neg_atTop hσ).comp hbase
 
 end Weight
 
