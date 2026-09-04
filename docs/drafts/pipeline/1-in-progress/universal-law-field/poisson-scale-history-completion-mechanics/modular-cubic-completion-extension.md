@@ -83,9 +83,9 @@ The audit fixes the following.
 11. ULF-MCPT-001 proves the scalar two-block compression law exactly: if
     `C=[[a,b],[c,d]]`, then compression of `C^(-1)(xP)C` differs from `xP` by
     `(bc/(ad-bc))xP`; the defect vanishes for block-separable source density.
-12. ULF-PBFMS-001 proves full finite source support. Every injective primitive Burnol packet is
-    linearly independent in the actual half-line `L2` source for arbitrary ordinate clocks; its
-    complete prime-mixed Gram has nonzero determinant and is a matrix unit.
+12. ULF-PBFMS-001 constructs full finite source support directly from literal prime powers. Every
+    injective Burnol packet is linearly independent in the half-line `L2` source for arbitrary
+    ordinate clocks; its complete prime-mixed Gram has nonzero determinant and is invertible.
 
 These facts narrow the object to a modular refinement of the cubic completion extension, formed
 from the non-diagonal Burnol source density before theta completion.
@@ -101,8 +101,9 @@ tau_F(A)=Tr(C_F A),
 sigma_F(A)=C_F^(-1) A C_F.                              (MCCED.1)
 ~~~
 
-ULF-PBFMS-001 proves every injective label packet has full support. Thus `C_F^(-1)` is canonical;
-no support reduction or chosen pseudoinverse remains in the construction.
+ULF-PBFMS-001 proves every injective label packet has full support for the literal source-native
+Burnol covariance. Thus `C_F^(-1)` is canonical; no support reduction or chosen pseudoinverse
+remains in the construction.
 
 For F contained in G, compression preserves tau but generally not sigma:
 

@@ -326,6 +326,89 @@ theorem algebraicIndependent_nonautonomousFiniteCascadeWimanChargeOutputFrame
   · intro i j
     rfl
 
+/-- The clock-anchored Wiman frame replaces the first charge by the rational clock, retains every
+strictly positive-layer charge, and ends with the literal terminal output. -/
+noncomputable def nonautonomousFiniteCascadeClockWimanOutputFrame
+    {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
+    (M : ℕ) (i : Fin (M + 1)) : NonautonomousFiniteCascadeBranchField hfan M :=
+  if hi₀ : (i : ℕ) = 0 then
+    nonautonomousFiniteCascadeStateInBranchField hfan M ⟨0, by omega⟩
+  else if hiM : (i : ℕ) = M then
+    nonautonomousFiniteCascadeStateInBranchField hfan M (Fin.last M)
+  else
+    nonautonomousFiniteCascadeWimanChargeInBranch hfan ⟨i, by omega⟩
+
+/-- The clock, every positive-layer actual Wiman charge, and the terminal output form an exact
+algebraically independent coordinate frame over the complex constants. -/
+theorem algebraicIndependent_nonautonomousFiniteCascadeClockWimanOutputFrame
+    {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
+    (hall : ∀ i : ℕ, TranscendentalEntire (f i)) (M : ℕ)
+    (h1 : ∀ k, k < M → DifferentiallyAlgebraicOfOrder (f k) 1) :
+    AlgebraicIndependent ℂ (nonautonomousFiniteCascadeClockWimanOutputFrame hfan M) := by
+  classical
+  let B := NonautonomousFiniteCascadeBranchField hfan M
+  let state : Fin (M + 1) → B :=
+    nonautonomousFiniteCascadeStateInBranchField hfan M
+  let frame : Fin (M + 1) → B :=
+    nonautonomousFiniteCascadeClockWimanOutputFrame hfan M
+  obtain ⟨P, hP⟩ :=
+    exists_nonautonomousFiniteCascadeBranchCoordinateDerivations hfan hall M
+  let J : Matrix (Fin (M + 1)) (Fin (M + 1)) B :=
+    Matrix.of fun i j => P i (frame j)
+  have htri : J.BlockTriangular (fun i : Fin (M + 1) => OrderDual.toDual i) := by
+    intro i j hij
+    have hij' : (i : ℕ) < (j : ℕ) := OrderDual.toDual_lt_toDual.mp hij
+    by_cases hj₀ : (j : ℕ) = 0
+    · omega
+    by_cases hjM : (j : ℕ) = M
+    · simp only [J, Matrix.of_apply, frame,
+        nonautonomousFiniteCascadeClockWimanOutputFrame, hj₀, hjM, dite_false, dite_true]
+      rw [hP]
+      simp
+      omega
+    · let i' : Fin M := ⟨i, by omega⟩
+      let j' : Fin M := ⟨j, by omega⟩
+      simp only [J, Matrix.of_apply, frame,
+        nonautonomousFiniteCascadeClockWimanOutputFrame, hj₀, hjM, dite_false]
+      apply nonautonomousFiniteCascadeCoordinateDerivation_laterWimanCharge_eq_zero
+        hfan hall M h1 i' j'
+      · exact hij'
+      · intro s
+        simpa [i'] using hP i s
+  have hdiag : ∀ i : Fin (M + 1), J i i ≠ 0 := by
+    intro i
+    by_cases hi₀ : (i : ℕ) = 0
+    · simp only [J, Matrix.of_apply, frame,
+        nonautonomousFiniteCascadeClockWimanOutputFrame, hi₀, dite_true]
+      rw [hP]
+      simp
+    by_cases hiM : (i : ℕ) = M
+    · simp only [J, Matrix.of_apply, frame,
+        nonautonomousFiniteCascadeClockWimanOutputFrame, hi₀, hiM, dite_false, dite_true]
+      rw [hP]
+      simp
+      exact hiM
+    · let i' : Fin M := ⟨i, by omega⟩
+      simp only [J, Matrix.of_apply, frame,
+        nonautonomousFiniteCascadeClockWimanOutputFrame, hi₀, hiM, dite_false]
+      apply nonautonomousFiniteCascadeCoordinateDerivation_WimanCharge_ne_zero
+        hfan hall M h1 i' (P i)
+      intro s
+      simpa [i'] using hP i s
+  have hdet : J.det ≠ 0 := by
+    rw [Matrix.det_of_lowerTriangular _ htri]
+    exact Finset.prod_ne_zero_iff.mpr fun i _ => hdiag i
+  refine algebraicIndependent_of_domain_jacobian (K := ℂ) frame
+    (fun i => fun x => P i x) ?_ ?_ ?_ J hdet ?_
+  · intro i a b
+    exact map_add (P i) a b
+  · intro i a b
+    simpa only [smul_eq_mul] using (P i).leibniz a b
+  · intro i c
+    exact (P i).map_algebraMap c
+  · intro i j
+    rfl
+
 /-- The finite actual branch field is algebraic over its Wiman-charge/terminal-output frame. -/
 theorem nonautonomousFiniteCascadeBranchField_isAlgebraic_WimanChargeOutputFrame
     {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)

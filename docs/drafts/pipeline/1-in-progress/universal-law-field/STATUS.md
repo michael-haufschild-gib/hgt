@@ -4982,8 +4982,8 @@ two-block law `P(C⁻¹(xP)C)P-xP=(bc/(ad-bc))xP`: block-separable density is bl
 `3/4<1` witness has ordinary cubic trace zero, modular cubic value `-1/8`, and defect one.
 F632 — Diagonal modularization is closed: reflected prime-depth incidence is a flat diagonal
 coboundary, so every finite characteristic polynomial, determinant, and cyclic trace moment is
-horizontally blind. `ULF-PBFMS-001` proves every injective finite non-diagonal Burnol packet has
-full support and canonical inverse; only that covariance can carry a source-faithful defect.
+horizontally blind. `ULF-PBFMS-001` constructs the literal non-diagonal Burnol covariance directly
+from prime powers and proves every injective finite packet has full support and canonical inverse.
 CANNOT-283 — KMS positivity, modular traciality, or an abstract twisted cocycle cannot be the
 producer. They are receivers unless literal Burnol density defines the modular action before Xi
 and theta compression itself creates its cofinal nonnaturality.

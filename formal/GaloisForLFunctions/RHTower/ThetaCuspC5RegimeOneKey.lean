@@ -379,4 +379,183 @@ theorem key_chamber_1 :
     C5LikelihoodAffineData.boseZeroBoundE C5LikelihoodAffineData.boseDiffBoundE
   norm_num
 
+/-! ## Endpoint exponential bounds and the remaining chambers -/
+
+theorem exp_sixFifths_bounds : (3.32011509919489 : ℝ) ≤ Real.exp (6/5) ∧ Real.exp (6/5) ≤ 3.32011728573721 := by
+  have h := exp_mul_bounds exp_threeFifths_bounds exp_threeFifths_bounds (by norm_num) (by norm_num)
+  rw [show (6/5 : ℝ) = 3/5 + 3/5 by norm_num]
+  constructor
+  · linarith [h.1]
+  · linarith [h.2]
+
+theorem exp_threeHalves_bounds : (4.48168860606478713 : ℝ) ≤ Real.exp (3/2) ∧ Real.exp (3/2) ≤ 4.48168915021576918 := by
+  have h := exp_mul_bounds exp_one_bounds exp_half_bounds (by norm_num) (by norm_num)
+  rw [show (3/2 : ℝ) = 1 + 1/2 by norm_num]
+  constructor
+  · linarith [h.1]
+  · linarith [h.2]
+
+theorem exp_two_bounds : (7.38905609806599068089 : ℝ) ≤ Real.exp (2) ∧ Real.exp (2) ≤ 7.38905609969695977796 := by
+  have h := exp_mul_bounds exp_one_bounds exp_one_bounds (by norm_num) (by norm_num)
+  rw [show (2 : ℝ) = 1 + 1 by norm_num]
+  constructor
+  · linarith [h.1]
+  · linarith [h.2]
+
+theorem exp_fiveHalves_bounds : (12.182492697965068027986709779 : ℝ) ≤ Real.exp (5/2) ∧ Real.exp (5/2) ≤ 12.182494178465301131165922548 := by
+  have h := exp_mul_bounds exp_two_bounds exp_half_bounds (by norm_num) (by norm_num)
+  rw [show (5/2 : ℝ) = 2 + 1/2 by norm_num]
+  constructor
+  · linarith [h.1]
+  · linarith [h.2]
+
+theorem exp_three_bounds : (20.085536919662085242100431071187 : ℝ) ≤ Real.exp (3) ∧ Real.exp (3) ≤ 20.085536926312235731093758777656 := by
+  have h := exp_mul_bounds exp_two_bounds exp_one_bounds (by norm_num) (by norm_num)
+  rw [show (3 : ℝ) = 2 + 1 by norm_num]
+  constructor
+  · linarith [h.1]
+  · linarith [h.2]
+
+theorem exp_four_bounds : (54.5981500203662032900872079044043258111921 : ℝ) ≤ Real.exp (4) ∧ Real.exp (4) ≤ 54.5981500444688475976718004881740525017616 := by
+  have h := exp_mul_bounds exp_two_bounds exp_two_bounds (by norm_num) (by norm_num)
+  rw [show (4 : ℝ) = 2 + 2 by norm_num]
+  constructor
+  · linarith [h.1]
+  · linarith [h.2]
+
+theorem exp_five_bounds : (148.41315905915872531490773076882640238847614219051643 : ℝ) ≤ Real.exp (5) ∧ Real.exp (5) ≤ 148.41315914105595036353401893364813610956092676926176 := by
+  have h := exp_mul_bounds exp_four_bounds exp_one_bounds (by norm_num) (by norm_num)
+  rw [show (5 : ℝ) = 4 + 1 by norm_num]
+  constructor
+  · linarith [h.1]
+  · linarith [h.2]
+
+theorem exp_six_bounds : (403.428793351108687708904879640089597729858414644567768261588969 : ℝ) ≤ Real.exp (6) ∧ Real.exp (6) ≤ 403.428793618252374089098087745264077492878965961459547244854336 := by
+  have h := exp_mul_bounds exp_three_bounds exp_three_bounds (by norm_num) (by norm_num)
+  rw [show (6 : ℝ) = 3 + 3 by norm_num]
+  constructor
+  · linarith [h.1]
+  · linarith [h.2]
+
+/-- Chamber `[3/10, 7/20]`. -/
+theorem key_chamber_2 :
+    keyLHS (49 / 100000000) 2.0137528 (1 / 1.8221183) ((2.0137528 + 1 / 2.0137528) / 2 - 1)
+        (2.0137528 - 1 / 2.0137528) (7/20)
+        (1 / (1 + 12 * 1.8221183 * ((1.8221183 + 1 / 1.8221183) / 2 - 1))) <
+      keyRHS 1.8221183 (3/10) := by
+  unfold keyLHS keyRHS C5LikelihoodAffineData.compensationDiffBoundE C5LikelihoodAffineData.slopeDiffBound
+    C5LikelihoodAffineData.centerZeroBound C5LikelihoodAffineData.centerDiffBound
+    C5LikelihoodAffineData.boseZeroBoundE C5LikelihoodAffineData.boseDiffBoundE
+  norm_num
+
+/-- Chamber `[7/20, 2/5]`. -/
+theorem key_chamber_3 :
+    keyLHS (49 / 100000000) 2.2255411 (1 / 2.0137511) ((2.2255411 + 1 / 2.2255411) / 2 - 1)
+        (2.2255411 - 1 / 2.2255411) (2/5)
+        (1 / (1 + 12 * 2.0137511 * ((2.0137511 + 1 / 2.0137511) / 2 - 1))) <
+      keyRHS 2.0137511 (7/20) := by
+  unfold keyLHS keyRHS C5LikelihoodAffineData.compensationDiffBoundE C5LikelihoodAffineData.slopeDiffBound
+    C5LikelihoodAffineData.centerZeroBound C5LikelihoodAffineData.centerDiffBound
+    C5LikelihoodAffineData.boseZeroBoundE C5LikelihoodAffineData.boseDiffBoundE
+  norm_num
+
+/-- Chamber `[2/5, 1/2]`. -/
+theorem key_chamber_4 :
+    keyLHS (49 / 100000000) 2.7182818286 (1 / 2.2255363) ((2.7182818286 + 1 / 2.7182818286) / 2 - 1)
+        (2.7182818286 - 1 / 2.7182818286) (1/2)
+        (1 / (1 + 12 * 2.2255363 * ((2.2255363 + 1 / 2.2255363) / 2 - 1))) <
+      keyRHS 2.2255363 (2/5) := by
+  unfold keyLHS keyRHS C5LikelihoodAffineData.compensationDiffBoundE C5LikelihoodAffineData.slopeDiffBound
+    C5LikelihoodAffineData.centerZeroBound C5LikelihoodAffineData.centerDiffBound
+    C5LikelihoodAffineData.boseZeroBoundE C5LikelihoodAffineData.boseDiffBoundE
+  norm_num
+
+/-- Chamber `[1/2, 3/5]`. -/
+theorem key_chamber_5 :
+    keyLHS (49 / 100000000) 3.32011728573721 (1 / 2.7182818283) ((3.32011728573721 + 1 / 3.32011728573721) / 2 - 1)
+        (3.32011728573721 - 1 / 3.32011728573721) (3/5)
+        (1 / (1 + 12 * 2.7182818283 * ((2.7182818283 + 1 / 2.7182818283) / 2 - 1))) <
+      keyRHS 2.7182818283 (1/2) := by
+  unfold keyLHS keyRHS C5LikelihoodAffineData.compensationDiffBoundE C5LikelihoodAffineData.slopeDiffBound
+    C5LikelihoodAffineData.centerZeroBound C5LikelihoodAffineData.centerDiffBound
+    C5LikelihoodAffineData.boseZeroBoundE C5LikelihoodAffineData.boseDiffBoundE
+  norm_num
+
+/-- Chamber `[3/5, 3/4]`. -/
+theorem key_chamber_6 :
+    keyLHS (49 / 100000000) 4.48168915021576918 (1 / 3.32011509919489) ((4.48168915021576918 + 1 / 4.48168915021576918) / 2 - 1)
+        (4.48168915021576918 - 1 / 4.48168915021576918) (3/4)
+        (1 / (1 + 12 * 3.32011509919489 * ((3.32011509919489 + 1 / 3.32011509919489) / 2 - 1))) <
+      keyRHS 3.32011509919489 (3/5) := by
+  unfold keyLHS keyRHS C5LikelihoodAffineData.compensationDiffBoundE C5LikelihoodAffineData.slopeDiffBound
+    C5LikelihoodAffineData.centerZeroBound C5LikelihoodAffineData.centerDiffBound
+    C5LikelihoodAffineData.boseZeroBoundE C5LikelihoodAffineData.boseDiffBoundE
+  norm_num
+
+/-- Chamber `[3/4, 1]`. -/
+theorem key_chamber_7 :
+    keyLHS (49 / 100000000) 7.38905609969695977796 (1 / 4.48168860606478713) ((7.38905609969695977796 + 1 / 7.38905609969695977796) / 2 - 1)
+        (7.38905609969695977796 - 1 / 7.38905609969695977796) (1)
+        (1 / (1 + 12 * 4.48168860606478713 * ((4.48168860606478713 + 1 / 4.48168860606478713) / 2 - 1))) <
+      keyRHS 4.48168860606478713 (3/4) := by
+  unfold keyLHS keyRHS C5LikelihoodAffineData.compensationDiffBoundE C5LikelihoodAffineData.slopeDiffBound
+    C5LikelihoodAffineData.centerZeroBound C5LikelihoodAffineData.centerDiffBound
+    C5LikelihoodAffineData.boseZeroBoundE C5LikelihoodAffineData.boseDiffBoundE
+  norm_num
+
+/-- Chamber `[1, 5/4]`. -/
+theorem key_chamber_8 :
+    keyLHS (49 / 100000000) 12.182494178465301131165922548 (1 / 7.38905609806599068089) ((12.182494178465301131165922548 + 1 / 12.182494178465301131165922548) / 2 - 1)
+        (12.182494178465301131165922548 - 1 / 12.182494178465301131165922548) (5/4)
+        (1 / (1 + 12 * 7.38905609806599068089 * ((7.38905609806599068089 + 1 / 7.38905609806599068089) / 2 - 1))) <
+      keyRHS 7.38905609806599068089 (1) := by
+  unfold keyLHS keyRHS C5LikelihoodAffineData.compensationDiffBoundE C5LikelihoodAffineData.slopeDiffBound
+    C5LikelihoodAffineData.centerZeroBound C5LikelihoodAffineData.centerDiffBound
+    C5LikelihoodAffineData.boseZeroBoundE C5LikelihoodAffineData.boseDiffBoundE
+  norm_num
+
+/-- Chamber `[5/4, 3/2]`. -/
+theorem key_chamber_9 :
+    keyLHS (49 / 100000000) 20.085536926312235731093758777656 (1 / 12.182492697965068027986709779) ((20.085536926312235731093758777656 + 1 / 20.085536926312235731093758777656) / 2 - 1)
+        (20.085536926312235731093758777656 - 1 / 20.085536926312235731093758777656) (3/2)
+        (1 / (1 + 12 * 12.182492697965068027986709779 * ((12.182492697965068027986709779 + 1 / 12.182492697965068027986709779) / 2 - 1))) <
+      keyRHS 12.182492697965068027986709779 (5/4) := by
+  unfold keyLHS keyRHS C5LikelihoodAffineData.compensationDiffBoundE C5LikelihoodAffineData.slopeDiffBound
+    C5LikelihoodAffineData.centerZeroBound C5LikelihoodAffineData.centerDiffBound
+    C5LikelihoodAffineData.boseZeroBoundE C5LikelihoodAffineData.boseDiffBoundE
+  norm_num
+
+/-- Chamber `[3/2, 2]`. -/
+theorem key_chamber_10 :
+    keyLHS (49 / 100000000) 54.5981500444688475976718004881740525017616 (1 / 20.085536919662085242100431071187) ((54.5981500444688475976718004881740525017616 + 1 / 54.5981500444688475976718004881740525017616) / 2 - 1)
+        (54.5981500444688475976718004881740525017616 - 1 / 54.5981500444688475976718004881740525017616) (2)
+        (1 / (1 + 12 * 20.085536919662085242100431071187 * ((20.085536919662085242100431071187 + 1 / 20.085536919662085242100431071187) / 2 - 1))) <
+      keyRHS 20.085536919662085242100431071187 (3/2) := by
+  unfold keyLHS keyRHS C5LikelihoodAffineData.compensationDiffBoundE C5LikelihoodAffineData.slopeDiffBound
+    C5LikelihoodAffineData.centerZeroBound C5LikelihoodAffineData.centerDiffBound
+    C5LikelihoodAffineData.boseZeroBoundE C5LikelihoodAffineData.boseDiffBoundE
+  norm_num
+
+/-- Chamber `[2, 5/2]`. -/
+theorem key_chamber_11 :
+    keyLHS (49 / 100000000) 148.41315914105595036353401893364813610956092676926176 (1 / 54.5981500203662032900872079044043258111921) ((148.41315914105595036353401893364813610956092676926176 + 1 / 148.41315914105595036353401893364813610956092676926176) / 2 - 1)
+        (148.41315914105595036353401893364813610956092676926176 - 1 / 148.41315914105595036353401893364813610956092676926176) (5/2)
+        (1 / (1 + 12 * 54.5981500203662032900872079044043258111921 * ((54.5981500203662032900872079044043258111921 + 1 / 54.5981500203662032900872079044043258111921) / 2 - 1))) <
+      keyRHS 54.5981500203662032900872079044043258111921 (2) := by
+  unfold keyLHS keyRHS C5LikelihoodAffineData.compensationDiffBoundE C5LikelihoodAffineData.slopeDiffBound
+    C5LikelihoodAffineData.centerZeroBound C5LikelihoodAffineData.centerDiffBound
+    C5LikelihoodAffineData.boseZeroBoundE C5LikelihoodAffineData.boseDiffBoundE
+  norm_num
+
+/-- Chamber `[5/2, 3]`. -/
+theorem key_chamber_12 :
+    keyLHS (49 / 100000000) 403.428793618252374089098087745264077492878965961459547244854336 (1 / 148.41315905915872531490773076882640238847614219051643) ((403.428793618252374089098087745264077492878965961459547244854336 + 1 / 403.428793618252374089098087745264077492878965961459547244854336) / 2 - 1)
+        (403.428793618252374089098087745264077492878965961459547244854336 - 1 / 403.428793618252374089098087745264077492878965961459547244854336) (3)
+        (1 / (1 + 12 * 148.41315905915872531490773076882640238847614219051643 * ((148.41315905915872531490773076882640238847614219051643 + 1 / 148.41315905915872531490773076882640238847614219051643) / 2 - 1))) <
+      keyRHS 148.41315905915872531490773076882640238847614219051643 (5/2) := by
+  unfold keyLHS keyRHS C5LikelihoodAffineData.compensationDiffBoundE C5LikelihoodAffineData.slopeDiffBound
+    C5LikelihoodAffineData.centerZeroBound C5LikelihoodAffineData.centerDiffBound
+    C5LikelihoodAffineData.boseZeroBoundE C5LikelihoodAffineData.boseDiffBoundE
+  norm_num
+
 end RHTower

@@ -1,15 +1,15 @@
-import GaloisForLFunctions.RHTower.RoutePPrimitiveBurnolMatrixCompleteColligation
-import GaloisForLFunctions.RHTower.XiWardCubicScalarSourceBohrSquaringWall
 import GaloisForLFunctions.HTGeometry.CompactFourierEntire
 import GaloisForLFunctions.Hurwitz.ExpIndependence
+import Mathlib.MeasureTheory.Function.L2Space
+import Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
+import Mathlib.Data.Nat.Prime.Int
 
 /-!
 # Prime Burnol finite modular support
 
-Every injective finite packet of literal primitive Burnol window columns is linearly independent,
-for arbitrary ordinate clocks.  Its complete source Gram is therefore invertible before any Xi
-divisor is supplied.  This gives canonical finite modular densities for ULF-MCCED-001 without a
-pseudoinverse or support choice.
+Literal prime powers, square-root Euler amplitudes, and arbitrary ordinate clocks define a
+source-native half-line Burnol packet. Every injectively labelled finite packet is linearly
+independent, so its complete prime-mixed Gram is invertible before any Xi divisor is supplied.
 -/
 
 open Complex Matrix Set MeasureTheory
@@ -21,71 +21,159 @@ noncomputable section
 
 open GaloisForLFunctions.HTGeometry
 
-/-- Entire exponent of a literal primitive Burnol column. -/
+/-- Literal primitive prime-power valuation. -/
+def primeBurnolValuation (pe : Nat.Primes × ℕ) : ℕ :=
+  (pe.1 : ℕ) ^ (pe.2 + 1)
+
+/-- Literal logarithmic frequency carried by a primitive prime-power cell. -/
+def primeBurnolLogFrequency (pe : Nat.Primes × ℕ) : ℝ :=
+  Real.log (primeBurnolValuation pe : ℝ)
+
+theorem primeBurnolValuation_pos (pe : Nat.Primes × ℕ) :
+    0 < primeBurnolValuation pe := by
+  exact pow_pos pe.1.property.pos _
+
+theorem primeBurnolValuation_one_lt (pe : Nat.Primes × ℕ) :
+    1 < primeBurnolValuation pe := by
+  exact one_lt_pow₀ pe.1.property.one_lt (Nat.succ_ne_zero pe.2)
+
+theorem primeBurnolLogFrequency_pos (pe : Nat.Primes × ℕ) :
+    0 < primeBurnolLogFrequency pe := by
+  rw [primeBurnolLogFrequency]
+  exact Real.log_pos (by exact_mod_cast primeBurnolValuation_one_lt pe)
+
+/-- Prime-power uniqueness makes literal logarithmic source frequencies injective. -/
+theorem primeBurnolLogFrequency_injective :
+    Function.Injective primeBurnolLogFrequency := by
+  rintro ⟨p, e⟩ ⟨q, f⟩ hlog
+  have hpVal : (0 : ℝ) < primeBurnolValuation (p, e) := by
+    exact_mod_cast primeBurnolValuation_pos (p, e)
+  have hqVal : (0 : ℝ) < primeBurnolValuation (q, f) := by
+    exact_mod_cast primeBurnolValuation_pos (q, f)
+  have hvalR :
+      (primeBurnolValuation (p, e) : ℝ) =
+        (primeBurnolValuation (q, f) : ℝ) := by
+    have hexp := congrArg Real.exp hlog
+    rw [primeBurnolLogFrequency, primeBurnolLogFrequency,
+      Real.exp_log hpVal, Real.exp_log hqVal] at hexp
+    exact hexp
+  have hpow : (p : ℕ) ^ (e + 1) = (q : ℕ) ^ (f + 1) := by
+    exact_mod_cast hvalR
+  obtain ⟨hpq, hef⟩ := Nat.Prime.pow_inj p.property q.property hpow
+  apply Prod.ext
+  · exact Subtype.ext hpq
+  · exact hef
+
+/-- Unsquared literal Euler amplitude: its square is `log p / p^(e+1)`. -/
+def primeBurnolAmplitude (pe : Nat.Primes × ℕ) : ℂ :=
+  (Real.sqrt
+    (Real.log (pe.1 : ℝ) / (primeBurnolValuation pe : ℝ)) : ℝ)
+
+theorem primeBurnolAmplitude_ne_zero (pe : Nat.Primes × ℕ) :
+    primeBurnolAmplitude pe ≠ 0 := by
+  rw [primeBurnolAmplitude]
+  norm_cast
+  apply ne_of_gt
+  apply Real.sqrt_pos.2
+  apply div_pos
+  · exact Real.log_pos (by exact_mod_cast pe.1.property.one_lt)
+  · exact_mod_cast primeBurnolValuation_pos pe
+
+/-- Entire exponent of a literal prime-power Burnol column with arbitrary ordinate clock. -/
 def primeBurnolComplexExponent
     (pe : Nat.Primes × ℕ) (kappa : ℝ) : ℂ :=
-  -(routePPrimitiveBurnolSpectralPoint pe kappa - 1 / 2)
+  -((primeBurnolLogFrequency pe : ℂ) + I * (kappa : ℂ))
 
-/-- Injective primitive labels remain distinct after arbitrary ordinate clocks are added. -/
+/-- Different primitive cells retain distinct complex exponents for arbitrary clocks. -/
 theorem primeBurnolComplexExponent_injective
     {N : ℕ} (pe : Fin N → Nat.Primes × ℕ) (kappa : Fin N → ℝ)
     (hpe : Function.Injective pe) :
     Function.Injective (fun i => primeBurnolComplexExponent (pe i) (kappa i)) := by
   intro i j hij
   apply hpe
-  apply xiGammaEulerPrimitiveLogFrequency_injective
+  apply primeBurnolLogFrequency_injective
   have hre := congrArg Complex.re hij
-  simp [primeBurnolComplexExponent,
-    routePPrimitiveBurnolSpectralPoint_re] at hre
+  simp [primeBurnolComplexExponent] at hre
   linarith
 
-/-- The source window is a nonzero Euler amplitude times one conormal-clock exponential. -/
-theorem routePPrimitiveBurnolWindowFeature_eq_complexExponent
-    (pe : Nat.Primes × ℕ) (kappa L : ℝ) :
-    routePPrimitiveBurnolWindowFeature pe kappa L =
-      finiteVonMangoldtDepthOneAmplitude (xiGammaEulerValuationNat pe) *
-        (L : ℂ) * Complex.exp (primeBurnolComplexExponent pe kappa * (L : ℂ)) := by
-  rw [routePPrimitiveBurnolWindowFeature,
-    xiWardCubicBurnolWindowConormalFeature_eq,
-    routePXiBaseConormalResidueFeature]
-  simp only [primeBurnolComplexExponent]
-  rw [show -((routePPrimitiveBurnolSpectralPoint pe kappa - 1 / 2) * (L : ℂ)) =
-      -(routePPrimitiveBurnolSpectralPoint pe kappa - 1 / 2) * (L : ℂ) by ring]
-  ring
+/-- Literal source-native Burnol column. -/
+def primeBurnolWindowFeature
+    (pe : Nat.Primes × ℕ) (kappa L : ℝ) : ℂ :=
+  primeBurnolAmplitude pe * (L : ℂ) *
+    Complex.exp (primeBurnolComplexExponent pe kappa * (L : ℂ))
 
-/-- The Hilbert column has the literal source window as its almost-everywhere representative. -/
-theorem routePPrimitiveBurnolWindowFeatureLp_coeFn
+theorem continuous_primeBurnolWindowFeature
     (pe : Nat.Primes × ℕ) (kappa : ℝ) :
-    ((routePPrimitiveBurnolWindowFeatureLp pe kappa : routePBurnolHalfLineL2) :
-        ℝ → ℂ) =ᵐ[volume.restrict (Ioi (0 : ℝ))]
-      routePPrimitiveBurnolWindowFeature pe kappa := by
-  rw [routePPrimitiveBurnolWindowFeatureLp, routePBurnolHalfLineL2Of]
-  exact (memLp_routePBurnolHalfLine
-    (continuous_routePPrimitiveBurnolWindowFeature pe kappa)
-    (integrableOn_norm_sq_routePPrimitiveBurnolWindowFeature pe kappa)).coeFn_toLp
+    Continuous (primeBurnolWindowFeature pe kappa) := by
+  unfold primeBurnolWindowFeature
+  fun_prop
 
-/-- Literal primitive Euler amplitudes never vanish. -/
-theorem finiteVonMangoldtDepthOneAmplitude_primitive_source_ne_zero
-    (pe : Nat.Primes × ℕ) :
-    finiteVonMangoldtDepthOneAmplitude (xiGammaEulerValuationNat pe) ≠ 0 := by
-  rw [finiteVonMangoldtDepthOneAmplitude]
-  norm_cast
-  apply ne_of_gt
-  apply Real.sqrt_pos.2
-  apply div_pos
-  · rw [xiGammaEulerValuationNat, vonMangoldt_prime_pow_succ_eq_log pe]
-    exact Real.log_pos (by exact_mod_cast pe.1.property.one_lt)
-  · exact_mod_cast pow_pos pe.1.property.pos (pe.2 + 1)
+theorem integrableOn_norm_sq_primeBurnolWindowFeature
+    (pe : Nat.Primes × ℕ) (kappa : ℝ) :
+    IntegrableOn
+      (fun u : ℝ => ‖primeBurnolWindowFeature pe kappa u‖ ^ 2)
+      (Ioi 0) := by
+  let A := primeBurnolAmplitude pe
+  let lambda := primeBurnolLogFrequency pe
+  have hlambda : 0 < lambda := primeBurnolLogFrequency_pos pe
+  have hbase : IntegrableOn
+      (fun u : ℝ => u ^ 2 * Real.exp (-(2 * lambda) * u)) (Ioi 0) := by
+    have h := integrableOn_rpow_mul_exp_neg_mul_rpow
+      (s := (2 : ℝ)) (p := (1 : ℝ)) (b := 2 * lambda)
+      (by norm_num) (by norm_num) (by positivity)
+    simpa [Real.rpow_two, Real.rpow_one] using h
+  have hscaled : IntegrableOn
+      (fun u : ℝ => ‖A‖ ^ 2 *
+        (u ^ 2 * Real.exp (-(2 * lambda) * u))) (Ioi 0) :=
+    hbase.const_mul (‖A‖ ^ 2)
+  refine hscaled.congr_fun ?_ measurableSet_Ioi
+  intro u hu
+  have hu0 : 0 < u := mem_Ioi.mp hu
+  have hexp : Real.exp (-(lambda * u)) ^ 2 =
+      Real.exp (-(2 * lambda) * u) := by
+    rw [pow_two, ← Real.exp_add]
+    congr 1
+    ring
+  symm
+  change ‖primeBurnolWindowFeature pe kappa u‖ ^ 2 = _
+  rw [primeBurnolWindowFeature, norm_mul, norm_mul, Complex.norm_real,
+    Real.norm_eq_abs, abs_of_pos hu0, Complex.norm_exp, mul_pow, mul_pow]
+  simp [primeBurnolComplexExponent, Complex.mul_re, lambda]
+  rw [hexp]
+  dsimp [A, lambda]
+  ring_nf
 
-/-- Finite Hilbert combinations retain their literal source representatives. -/
-theorem coeFn_finset_sum_smul_routePPrimitiveBurnolWindowFeatureLp
+abbrev primeBurnolHalfLineL2 :=
+  Lp ℂ 2 (volume.restrict (Ioi (0 : ℝ)))
+
+theorem memLp_primeBurnolWindowFeature
+    (pe : Nat.Primes × ℕ) (kappa : ℝ) :
+    MemLp (primeBurnolWindowFeature pe kappa) 2
+      (volume.restrict (Ioi (0 : ℝ))) := by
+  exact (memLp_two_iff_integrable_sq_norm
+    (continuous_primeBurnolWindowFeature pe kappa).aestronglyMeasurable.restrict).2
+      (integrableOn_norm_sq_primeBurnolWindowFeature pe kappa)
+
+def primeBurnolWindowFeatureLp
+    (pe : Nat.Primes × ℕ) (kappa : ℝ) : primeBurnolHalfLineL2 :=
+  (memLp_primeBurnolWindowFeature pe kappa).toLp
+    (primeBurnolWindowFeature pe kappa)
+
+theorem primeBurnolWindowFeatureLp_coeFn
+    (pe : Nat.Primes × ℕ) (kappa : ℝ) :
+    ((primeBurnolWindowFeatureLp pe kappa : primeBurnolHalfLineL2) : ℝ → ℂ)
+      =ᵐ[volume.restrict (Ioi (0 : ℝ))]
+        primeBurnolWindowFeature pe kappa := by
+  exact (memLp_primeBurnolWindowFeature pe kappa).coeFn_toLp
+
+theorem coeFn_finset_sum_smul_primeBurnolWindowFeatureLp
     {N : ℕ} (s : Finset (Fin N)) (c : Fin N → ℂ)
     (pe : Fin N → Nat.Primes × ℕ) (kappa : Fin N → ℝ) :
-    (((∑ i ∈ s, c i • routePPrimitiveBurnolWindowFeatureLp (pe i) (kappa i) :
-        routePBurnolHalfLineL2) : routePBurnolHalfLineL2) : ℝ → ℂ)
+    (((∑ i ∈ s, c i • primeBurnolWindowFeatureLp (pe i) (kappa i) :
+        primeBurnolHalfLineL2) : primeBurnolHalfLineL2) : ℝ → ℂ)
       =ᵐ[volume.restrict (Ioi (0 : ℝ))]
         fun L => ∑ i ∈ s,
-          c i * routePPrimitiveBurnolWindowFeature (pe i) (kappa i) L := by
+          c i * primeBurnolWindowFeature (pe i) (kappa i) L := by
   classical
   induction s using Finset.induction_on with
   | empty =>
@@ -93,41 +181,38 @@ theorem coeFn_finset_sum_smul_routePPrimitiveBurnolWindowFeatureLp
         (Filter.Eventually.of_forall fun _ => rfl)
   | @insert i s hi ih =>
       filter_upwards [Lp.coeFn_add
-          (c i • routePPrimitiveBurnolWindowFeatureLp (pe i) (kappa i))
-          (∑ j ∈ s, c j • routePPrimitiveBurnolWindowFeatureLp (pe j) (kappa j)),
+          (c i • primeBurnolWindowFeatureLp (pe i) (kappa i))
+          (∑ j ∈ s, c j • primeBurnolWindowFeatureLp (pe j) (kappa j)),
         Lp.coeFn_smul (c i)
-          (routePPrimitiveBurnolWindowFeatureLp (pe i) (kappa i)),
-        routePPrimitiveBurnolWindowFeatureLp_coeFn (pe i) (kappa i), ih] with
+          (primeBurnolWindowFeatureLp (pe i) (kappa i)),
+        primeBurnolWindowFeatureLp_coeFn (pe i) (kappa i), ih] with
           L hadd hsmul hfeature hsum
       rw [Finset.sum_insert hi, hadd, Pi.add_apply, hsmul, Pi.smul_apply,
         smul_eq_mul, hfeature, hsum, Finset.sum_insert hi]
 
-/-- **Prime Burnol finite modular support.**  Every injectively labelled finite packet is linearly
-independent in the actual half-line Hilbert source, for arbitrary ordinate clocks. -/
-theorem routePPrimitiveBurnolWindowFeatureLp_linearIndependent
+/-- Every injectively labelled finite literal Burnol packet is linearly independent. -/
+theorem primeBurnolWindowFeatureLp_linearIndependent
     {N : ℕ} (pe : Fin N → Nat.Primes × ℕ) (hpe : Function.Injective pe)
     (kappa : Fin N → ℝ) :
-    LinearIndependent ℂ
-      (fun i => routePPrimitiveBurnolWindowFeatureLp (pe i) (kappa i)) := by
+    LinearIndependent ℂ (fun i => primeBurnolWindowFeatureLp (pe i) (kappa i)) := by
   classical
   rw [Fintype.linearIndependent_iff]
   intro c hc i
   have hzeroCoe :
-      (((∑ j, c j • routePPrimitiveBurnolWindowFeatureLp (pe j) (kappa j) :
-          routePBurnolHalfLineL2) : routePBurnolHalfLineL2) : ℝ → ℂ)
+      (((∑ j, c j • primeBurnolWindowFeatureLp (pe j) (kappa j) :
+          primeBurnolHalfLineL2) : primeBurnolHalfLineL2) : ℝ → ℂ)
         =ᵐ[volume.restrict (Ioi (0 : ℝ))] fun _ => 0 := by
     rw [hc]
     exact Lp.coeFn_zero ℂ 2 (volume.restrict (Ioi (0 : ℝ)))
   have hrawAE :
       (fun L : ℝ => ∑ j,
-        c j * routePPrimitiveBurnolWindowFeature (pe j) (kappa j) L)
+        c j * primeBurnolWindowFeature (pe j) (kappa j) L)
         =ᵐ[volume.restrict (Ioi (0 : ℝ))] fun _ => 0 :=
-    (coeFn_finset_sum_smul_routePPrimitiveBurnolWindowFeatureLp
+    (coeFn_finset_sum_smul_primeBurnolWindowFeatureLp
       Finset.univ c pe kappa).symm.trans hzeroCoe
   let beta : Fin N → ℂ := fun j =>
     primeBurnolComplexExponent (pe j) (kappa j)
-  let coeff : Fin N → ℂ := fun j =>
-    c j * finiteVonMangoldtDepthOneAmplitude (xiGammaEulerValuationNat (pe j))
+  let coeff : Fin N → ℂ := fun j => c j * primeBurnolAmplitude (pe j)
   let G : ℂ → ℂ := fun z => ∑ j, coeff j * z * Complex.exp (beta j * z)
   have hGdiff : Differentiable ℂ G := by
     dsimp [G]
@@ -137,11 +222,11 @@ theorem routePPrimitiveBurnolWindowFeatureLp_linearIndependent
         =ᵐ[volume.restrict (Ioi (0 : ℝ))] fun _ => 0 := by
     filter_upwards [hrawAE] with L hL
     rw [show G (L : ℂ) =
-        ∑ j, c j * routePPrimitiveBurnolWindowFeature (pe j) (kappa j) L by
+        ∑ j, c j * primeBurnolWindowFeature (pe j) (kappa j) L by
       dsimp [G, coeff, beta]
       apply Finset.sum_congr rfl
       intro j _hj
-      rw [routePPrimitiveBurnolWindowFeature_eq_complexExponent]
+      rw [primeBurnolWindowFeature]
       ring]
     exact hL
   have hsub : Ioo (2 : ℝ) 4 ⊆ Ioi (0 : ℝ) := by
@@ -150,8 +235,7 @@ theorem routePPrimitiveBurnolWindowFeatureLp_linearIndependent
   have hGaeInterval :
       (fun L : ℝ => G (L : ℂ))
         =ᵐ[volume.restrict (Ioo (2 : ℝ) 4)] fun _ => 0 :=
-    hGaeHalf.filter_mono
-      (ae_mono (Measure.restrict_mono hsub le_rfl))
+    hGaeHalf.filter_mono (ae_mono (Measure.restrict_mono hsub le_rfl))
   have hGall : ∀ z : ℂ, G z = 0 := by
     intro z
     exact entire_eq_zero_of_ae_vanishing_on_real_interval
@@ -181,26 +265,29 @@ theorem routePPrimitiveBurnolWindowFeatureLp_linearIndependent
     exact (mul_eq_zero.mp hprod).resolve_left hz0
   have hci : coeff i = 0 := congrFun hcoeff i
   dsimp [coeff] at hci
-  exact (mul_eq_zero.mp hci).resolve_right
-    (finiteVonMangoldtDepthOneAmplitude_primitive_source_ne_zero (pe i))
+  exact (mul_eq_zero.mp hci).resolve_right (primeBurnolAmplitude_ne_zero (pe i))
 
-/-- The complete finite prime-mixed Burnol covariance has nonzero determinant. -/
-theorem det_routePPrimitiveBurnolWindowGramMatrix_ne_zero
+/-- Complete finite literal prime-mixed Burnol Gram. -/
+def primeBurnolWindowGramMatrix {N : ℕ}
+    (pe : Fin N → Nat.Primes × ℕ) (kappa : Fin N → ℝ) :
+    Matrix (Fin N) (Fin N) ℂ :=
+  Matrix.gram ℂ (fun i => primeBurnolWindowFeatureLp (pe i) (kappa i))
+
+theorem det_primeBurnolWindowGramMatrix_ne_zero
     {N : ℕ} (pe : Fin N → Nat.Primes × ℕ) (hpe : Function.Injective pe)
     (kappa : Fin N → ℝ) :
-    (routePPrimitiveBurnolWindowGramMatrix pe kappa).det ≠ 0 := by
-  rw [routePPrimitiveBurnolWindowGramMatrix_eq_gram_L2]
+    (primeBurnolWindowGramMatrix pe kappa).det ≠ 0 := by
   exact Matrix.det_gram_ne_zero_iff_linearIndependent.mpr
-    (routePPrimitiveBurnolWindowFeatureLp_linearIndependent pe hpe kappa)
+    (primeBurnolWindowFeatureLp_linearIndependent pe hpe kappa)
 
-/-- Every finite literal Burnol density is a unit, so its modular inverse is canonical. -/
-theorem routePPrimitiveBurnolWindowGramMatrix_isUnit
+/-- Every finite literal Burnol Gram is a unit; its modular inverse is canonical. -/
+theorem primeBurnolWindowGramMatrix_isUnit
     {N : ℕ} (pe : Fin N → Nat.Primes × ℕ) (hpe : Function.Injective pe)
     (kappa : Fin N → ℝ) :
-    IsUnit (routePPrimitiveBurnolWindowGramMatrix pe kappa) := by
+    IsUnit (primeBurnolWindowGramMatrix pe kappa) := by
   rw [Matrix.isUnit_iff_isUnit_det]
   exact isUnit_iff_ne_zero.mpr
-    (det_routePPrimitiveBurnolWindowGramMatrix_ne_zero pe hpe kappa)
+    (det_primeBurnolWindowGramMatrix_ne_zero pe hpe kappa)
 
 end
 

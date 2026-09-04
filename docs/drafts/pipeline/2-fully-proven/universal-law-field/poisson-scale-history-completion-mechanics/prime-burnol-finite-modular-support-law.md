@@ -10,9 +10,10 @@
 ## 1. Big-picture meaning
 
 The modular cubic mechanism cannot start from a chosen pseudoinverse. It needs a canonical inverse
-of every finite literal Euler covariance before theta completion. The existing primitive Burnol
-window columns already provide it: distinct prime-depth labels have distinct real decay rates, so
-their full complex-clock columns are linearly independent for every ordinate assignment.
+of every finite literal Euler covariance before theta completion. Define that covariance directly
+from prime powers, their unsquared square-root Euler amplitudes, and the Burnol half-line columns.
+Distinct prime-depth labels have distinct real decay rates, so their full complex-clock columns are
+linearly independent for every ordinate assignment.
 
 Thus every injective finite primitive packet has full modular support. Kernel reduction and phase
 choice are absent. This discharges source formation only; it does not construct the cofinal theta
@@ -35,9 +36,10 @@ Let `u_i`, `i< N`, be injectively labelled and let the clocks `kappa_i` be arbit
 det ( <f_(u_i),f_(u_j)> )_(i,j<N) != 0.                                  (PBFMS.2)
 ~~~
 
-The Gram in (PBFMS.2) is exactly the complete primitive Burnol base-Cauchy matrix, including its
-unsquared Euler amplitudes and every cross-prime/depth entry. Hence every finite source density
-`C_F` in ULF-MCCED-001 is invertible and defines the canonical inner modular automorphism
+The Gram in (PBFMS.2) is the complete literal prime-mixed Burnol covariance, including its
+unsquared Euler amplitudes and every cross-prime/depth entry. Its displayed columns agree with the
+P-G186 base-Cauchy realization. Hence this source-native choice of every finite density `C_F` in
+ULF-MCCED-001 is invertible and defines the canonical inner modular automorphism
 
 ~~~text
 sigma_F(A)=C_F^(-1) A C_F.                                                (PBFMS.3)
@@ -64,8 +66,8 @@ G(L)=sum_i c_i A_i L exp(beta_i L)=0.
 identically. On the nonempty open set `z!=0`, divide by `z`; distinct-exponent independence gives
 `c_i A_i=0` for every `i`. Since `A_i!=0`, all `c_i=0`. This proves (PBFMS.1).
 
-The existing exact `L2` Gram identity identifies its Gram with the primitive Burnol window matrix.
-The standard Gram determinant criterion then gives (PBFMS.2).
+Define the finite covariance to be this complete `L2` Gram. The standard Gram determinant criterion
+then gives (PBFMS.2); no Route-P completion or Xi-labelled object enters its Lean proof.
 
 ## 4. Consequence and limit
 

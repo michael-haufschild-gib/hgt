@@ -1065,4 +1065,246 @@ theorem c5CompletedCompensationMargin_pos_of_regimeOne_key {u t : ℝ}
   generalize hM0' : c5SingleAtomCompensationMargin A t = M0 at hlow hM0
   linarith only [hlow, hkey, hM0]
 
+/-! ## §5' Exponential shape bound and shape-generic assembly -/
+
+/-- `sinh x ≥ x + x³/6 + x⁵/120` for `x ≥ 0`. -/
+theorem sinh_ge_series_three (x : ℝ) (hx : 0 ≤ x) : x + x ^ 3 / 6 + x ^ 5 / 120 ≤ Real.sinh x := by
+  have h := Real.hasSum_sinh x
+  have hle := sum_le_hasSum (Finset.range 3)
+    (fun n _ => div_nonneg (pow_nonneg hx _) (by positivity)) h
+  simp [Finset.sum_range_succ, Nat.factorial] at hle
+  linarith
+
+/-- `cosh x ≥ 1 + x²/2 + x⁴/24 + x⁶/720`. -/
+theorem cosh_ge_series_four (x : ℝ) : 1 + x ^ 2 / 2 + x ^ 4 / 24 + x ^ 6 / 720 ≤ Real.cosh x := by
+  have h := Real.hasSum_cosh x
+  have hle := sum_le_hasSum (Finset.range 4)
+    (fun n _ => div_nonneg ((even_two_mul n).pow_nonneg x) (by positivity)) h
+  simp [Finset.sum_range_succ, Nat.factorial] at hle
+  linarith
+
+/-- For `x ≥ 5/2`: `cert(x) ≥ 16 sinh x cosh² x`. -/
+theorem c5HyperbolicCertificate_ge_exp {x : ℝ} (hx : 5 / 2 ≤ x) :
+    16 * Real.sinh x * Real.cosh x ^ 2 ≤ c5HyperbolicCertificate x := by
+  unfold c5HyperbolicCertificate
+  have hx0 : 0 ≤ x := by linarith
+  have hs := sinh_ge_series_three x hx0
+  have hc := cosh_ge_series_four x
+  have hc6 : 6 ≤ Real.cosh x := by
+    have : (6 : ℝ) ≤ 1 + x ^ 2 / 2 + x ^ 4 / 24 + x ^ 6 / 720 := by
+      have h2 : (5 / 2 : ℝ) ^ 2 ≤ x ^ 2 := pow_le_pow_left₀ (by norm_num) hx 2
+      have h4 : (5 / 2 : ℝ) ^ 4 ≤ x ^ 4 := pow_le_pow_left₀ (by norm_num) hx 4
+      have h6 : (5 / 2 : ℝ) ^ 6 ≤ x ^ 6 := pow_le_pow_left₀ (by norm_num) hx 6
+      norm_num at h2 h4 h6 ⊢
+      linarith
+    linarith
+  -- `36 sinh x ≥ 82 x`, i.e. `72 sinh x − 82 x ≥ 36 sinh x`
+  have hsx : 82 * x ≤ 36 * Real.sinh x := by
+    have h2 : (5 / 2 : ℝ) ^ 2 ≤ x ^ 2 := pow_le_pow_left₀ (by norm_num) hx 2
+    have h4 : (5 / 2 : ℝ) ^ 4 ≤ x ^ 4 := pow_le_pow_left₀ (by norm_num) hx 4
+    have hx3 : x ^ 3 = x * x ^ 2 := by ring
+    have hx5 : x ^ 5 = x * x ^ 4 := by ring
+    have : 82 * x ≤ 36 * (x + x ^ 3 / 6 + x ^ 5 / 120) := by
+      rw [hx3, hx5]
+      nlinarith [mul_le_mul_of_nonneg_left h2 hx0, mul_le_mul_of_nonneg_left h4 hx0]
+    linarith
+  have hsinh0 : 0 ≤ Real.sinh x := Real.sinh_nonneg_iff.mpr hx0
+  have hsinhx : x ≤ Real.sinh x := by
+    have := Real.self_le_sinh_iff.mpr hx0; exact this
+  have hcosh0 : 0 ≤ Real.cosh x := (Real.cosh_pos x).le
+  -- `cosh² (72 sinh − 82 x) ≥ 36 sinh cosh²`
+  have h1 : 36 * Real.sinh x * Real.cosh x ^ 2 ≤ Real.cosh x ^ 2 * (72 * Real.sinh x - 82 * x) := by
+    have : 36 * Real.sinh x ≤ 72 * Real.sinh x - 82 * x := by linarith
+    have := mul_le_mul_of_nonneg_left this (by positivity : 0 ≤ Real.cosh x ^ 2)
+    linarith
+  -- `cosh (129 x − 119 sinh) ≥ −119 sinh cosh`
+  have h2 : -(119 * Real.sinh x * Real.cosh x) ≤ Real.cosh x * (129 * x - 119 * Real.sinh x) := by
+    have : -(119 * Real.sinh x) ≤ 129 * x - 119 * Real.sinh x := by linarith [mul_nonneg (by norm_num : (0:ℝ) ≤ 129) hx0]
+    have := mul_le_mul_of_nonneg_left this hcosh0
+    linarith
+  -- `(47 + 5x²) sinh − 47 x ≥ 0`
+  have h3 : 0 ≤ (47 + 5 * x ^ 2) * Real.sinh x - 47 * x := by
+    have : 47 * x ≤ 47 * Real.sinh x := by linarith
+    have : 0 ≤ 5 * x ^ 2 * Real.sinh x := by positivity
+    linarith
+  -- `36 cosh − 119 ≥ 16 cosh` when `cosh ≥ 6`
+  have h4 : 16 * Real.sinh x * Real.cosh x ^ 2 ≤
+      36 * Real.sinh x * Real.cosh x ^ 2 - 119 * Real.sinh x * Real.cosh x := by
+    have : 16 * Real.cosh x ≤ 36 * Real.cosh x - 119 := by linarith
+    have := mul_le_mul_of_nonneg_left this (mul_nonneg hsinh0 hcosh0)
+    nlinarith
+  have expand : Real.sinh x * (72 * Real.cosh x ^ 2 - 119 * Real.cosh x + 47 + 5 * x ^ 2) -
+      x * (82 * Real.cosh x ^ 2 - 129 * Real.cosh x + 47) =
+      Real.cosh x ^ 2 * (72 * Real.sinh x - 82 * x) + Real.cosh x * (129 * x - 119 * Real.sinh x) +
+        ((47 + 5 * x ^ 2) * Real.sinh x - 47 * x) := by ring
+  rw [expand]
+  linarith
+
+/-- The shape for `t ≥ 5/4`: `shape(t) ≥ 32 sinh 2t cosh² 2t`. -/
+theorem c5HyperbolicGaussianBaseShape_ge_exp {t : ℝ} (ht : 5 / 4 ≤ t) :
+    32 * Real.sinh (2 * t) * Real.cosh (2 * t) ^ 2 ≤ c5HyperbolicGaussianBaseShape t := by
+  rw [c5HyperbolicGaussianBaseShape_eq]
+  have := c5HyperbolicCertificate_ge_exp (x := 2 * t) (by linarith)
+  linarith
+
+/-- Shape-generic lower bound for the single-atom margin. -/
+theorem c5SingleAtomCompensationMargin_ge_of_shape {u t sh : ℝ} (ht : 0 < t) (htu : t ≤ u)
+    (hscale : 6 ≤ thetaCuspSingleAtomReflectionScale 1 u) (hsh0 : 0 ≤ sh)
+    (hsh : sh ≤ c5HyperbolicGaussianBaseShape t) :
+    2 * thetaCuspSingleAtomReflectionScale 1 u *
+        (4 * thetaCuspSingleAtomReflectionScale 1 u - 36 / thetaCuspSingleAtomReflectionScale 1 u) * sh ≤
+    c5SingleAtomCompensationMargin (thetaCuspSingleAtomReflectionScale 1 u) t := by
+  set A := thetaCuspSingleAtomReflectionScale 1 u with hAdef
+  set z := thetaCuspSingleAtomReflectionDefect t with hzdef
+  have hz : 0 ≤ z := by
+    show 0 ≤ Real.cosh (2 * t) - 1
+    linarith [Real.one_le_cosh (2 * t)]
+  have hr : 1 / 2 < thetaCuspSingleAtomReflectionFactor A z := by
+    simpa only [A, z] using one_half_lt_thetaCuspSingleAtomReflectionFactor_of_sameHalfLine ht.le htu
+  obtain ⟨-, -, -, -, -, -, hslope, hL⟩ := singleAtom_jet_bounds (z' := 0) hscale hz le_rfl hr
+  have hA3 : (3 : ℝ) < A := by linarith
+  have hr0 : 0 < thetaCuspSingleAtomReflectionFactor A z := by linarith
+  have hH : c5SingleAtomVelocityCenterNumerator A t < 0 :=
+    c5SingleAtomVelocityCenterNumerator_neg_of_sameHalfLine ht htu hscale
+  have hfull := c5SingleAtomBaseCompensationMargin_lt_full hA3 ht hr0 hH
+  have hp : 0 < 2 * A + thetaCuspSingleAtomReflectionLambda A /
+      thetaCuspSingleAtomReflectionFactor A z := by
+    have := hslope
+    unfold thetaCuspSingleAtomReflectionSlope at this
+    linarith
+  have h36 : 36 / A ≤ 6 := by rw [div_le_iff₀ (by linarith)]; linarith
+  have hLpos : 0 < 4 * A + c5SingleAtomScaleLambdaJetOne A / thetaCuspSingleAtomReflectionFactor A z := by
+    linarith
+  have hfac := c5SingleAtomBaseCompensationMargin_eq_gaussian_add_correction
+    (show 3 / 2 < A by linarith) hr0.ne' hp.ne' hLpos.ne'
+  have hcorr := c5SingleAtomBaseRationalCorrection_pos_of_sameHalfLine ht htu hscale
+  have hpL : 2 * A * (4 * A - 36 / A) ≤
+      (2 * A + thetaCuspSingleAtomReflectionLambda A / thetaCuspSingleAtomReflectionFactor A z) *
+        (4 * A + c5SingleAtomScaleLambdaJetOne A / thetaCuspSingleAtomReflectionFactor A z) := by
+    have h2A : 2 * A ≤ 2 * A + thetaCuspSingleAtomReflectionLambda A /
+        thetaCuspSingleAtomReflectionFactor A z := by
+      have := hslope; unfold thetaCuspSingleAtomReflectionSlope at this; exact this
+    exact mul_le_mul h2A hL (by linarith) hp.le
+  calc 2 * A * (4 * A - 36 / A) * sh
+      ≤ (2 * A + thetaCuspSingleAtomReflectionLambda A / thetaCuspSingleAtomReflectionFactor A z) *
+          (4 * A + c5SingleAtomScaleLambdaJetOne A / thetaCuspSingleAtomReflectionFactor A z) *
+          c5HyperbolicGaussianBaseShape t :=
+        mul_le_mul hpL hsh hsh0 (by positivity)
+    _ ≤ c5SingleAtomBaseCompensationMargin A t := by
+        rw [hfac]; linarith
+    _ ≤ c5SingleAtomCompensationMargin A t := hfull.le
+
+/-- Shape-generic assembly. -/
+theorem c5CompletedCompensationMargin_pos_of_regimeOne_key_of_shape {u t sh : ℝ}
+    (ht : 1 / 4 ≤ t) (htu : t ≤ u)
+    (hA : 6 ≤ thetaCuspSingleAtomReflectionScale 1 (u - t))
+    (hsh0 : 0 ≤ sh) (hsh : sh ≤ c5HyperbolicGaussianBaseShape t)
+    (hkey :
+      let A := thetaCuspSingleAtomReflectionScale 1 u
+      let Am := thetaCuspSingleAtomReflectionScale 1 (u - t)
+      let ε := regimeOneLikelihoodScale (u - t)
+      let z := thetaCuspSingleAtomReflectionDefect t
+      let z' := 2 * Real.sinh (2 * t)
+      C5LikelihoodAffineData.compensationDiffBound t
+        ((2 * A + 12 / A) * z')
+        (4 * (12 / A) ^ 2 * z * (z + 2) + 4 * (2 * A + 12 / A) * (z + 1))
+        (z' * (8 * (12 / A) ^ 3 * z * (z + 2) + 12 * (12 / A) ^ 2 * (z + 1) + 4 * (2 * A + 12 / A)))
+        (4 * A * z + 36 / A * z) ((4 * A + 72 / A) * z')
+        (4 * (1728 / A ^ 2 * z * (z + 2) + (4 * A + 72 / A) * (z + 1)))
+        (12 * Am * ε) (76 * Am ^ 2 * ε) (522 * Am ^ 3 * ε) (24 * Am * ε) (76 * Am ^ 2 * ε)
+        (522 * Am ^ 3 * ε) (4 * ε) (thetaCuspSingleAtomReflectedAction A t) <
+      2 * A * (4 * A - 36 / A) * sh) :
+    0 < c5CompletedCompensationMargin u t := by
+  have ht0 : 0 < t := by linarith
+  have hu : 6 ≤ thetaCuspSingleAtomReflectionScale 1 u := by
+    refine le_trans hA ?_
+    unfold thetaCuspSingleAtomReflectionScale
+    have := Real.exp_le_exp.mpr (show 2 * (u - t) ≤ 2 * u by linarith)
+    simp only [Nat.cast_one, one_pow, mul_one]
+    exact mul_le_mul_of_nonneg_left this Real.pi_pos.le
+  set d := thetaCuspC5LikelihoodHomotopyData u t with hddef
+  obtain ⟨hdt, hdq, hddq, hda, hdda, hdb, hddb, hdc, hddc, hds, hdds, hdm, hddm, hdn, hddn⟩ :=
+    thetaCuspC5LikelihoodHomotopyData_fields u t
+  set A := thetaCuspSingleAtomReflectionScale 1 u with hAdef
+  set Am := thetaCuspSingleAtomReflectionScale 1 (u - t) with hAmdef
+  set ε := regimeOneLikelihoodScale (u - t) with hεdef
+  set z := thetaCuspSingleAtomReflectionDefect t with hzdef
+  set z' := 2 * Real.sinh (2 * t) with hz'def
+  have hz0 : 0 ≤ z := by
+    show 0 ≤ Real.cosh (2 * t) - 1
+    linarith [Real.one_le_cosh (2 * t)]
+  have hz'0 : 0 ≤ z' := by
+    show 0 ≤ 2 * Real.sinh (2 * t)
+    have := Real.sinh_nonneg_iff.mpr (by linarith : (0:ℝ) ≤ 2 * t)
+    linarith
+  have hr : 1 / 2 < thetaCuspSingleAtomReflectionFactor A z := by
+    simpa only [A, z] using one_half_lt_thetaCuspSingleAtomReflectionFactor_of_sameHalfLine ht0.le htu
+  obtain ⟨ha, hb, hc, hs, hm, hn, -, -⟩ := singleAtom_jet_bounds hu hz0 hz'0 hr
+  obtain ⟨hda', hdb', hdc', hds', hdm', hdn', hdq'⟩ := regimeOne_homotopy_correction_bounds ht0.le hA
+  have hq2 : 2 ≤ thetaCuspSingleAtomReflectedAction A t := by
+    unfold thetaCuspSingleAtomReflectedAction
+    rw [← hzdef]
+    have hr1 : thetaCuspSingleAtomReflectionFactor A z ≤ 1 := by
+      unfold thetaCuspSingleAtomReflectionFactor
+      have := mul_nonneg (thetaCuspSingleAtomReflectionLambda_pos (show (3:ℝ) < A by linarith)).le hz0
+      linarith
+    have hlog : Real.log (thetaCuspSingleAtomReflectionFactor A z) ≤ 0 :=
+      Real.log_nonpos (by linarith) hr1
+    have hzt : 2 * t ^ 2 ≤ z := by
+      have := one_add_sq_div_two_le_cosh' (2 * t)
+      show 2 * t ^ 2 ≤ Real.cosh (2 * t) - 1
+      linarith only [this]
+    have hAe : 6 * Real.exp (2 * t) ≤ A := by
+      have : A = Am * Real.exp (2 * t) := by
+        simp only [A, Am, thetaCuspSingleAtomReflectionScale]
+        rw [show (2 : ℝ) * u = 2 * (u - t) + 2 * t by ring, Real.exp_add]
+        ring
+      rw [this]
+      exact mul_le_mul_of_nonneg_right hA (Real.exp_pos _).le
+    have hAz : 1 ≤ A * z := by
+      have h1 : 9 ≤ A := by
+        have := Real.add_one_le_exp (2 * t)
+        linarith only [hAe, this, ht]
+      have ht2 : (1 / 4 : ℝ) ^ 2 ≤ t ^ 2 := pow_le_pow_left₀ (by norm_num) ht 2
+      have h2 : 1 / 8 ≤ z := by linarith only [hzt, ht2]
+      have := mul_le_mul h1 h2 (by norm_num) (by linarith)
+      linarith only [this]
+    linarith only [hlog, hAz]
+  have hdq1 : |d.dq| ≤ 1 := by
+    rw [hddq]
+    have hε := regimeOneLikelihoodScale_le_of_six_le hA
+    linarith [hdq']
+  have hdiff := d.abs_compensation_diff_le (a' := (2 * A + 12 / A) * z')
+    (b' := 4 * (12 / A) ^ 2 * z * (z + 2) + 4 * (2 * A + 12 / A) * (z + 1))
+    (c' := z' * (8 * (12 / A) ^ 3 * z * (z + 2) + 12 * (12 / A) ^ 2 * (z + 1) + 4 * (2 * A + 12 / A)))
+    (s' := 4 * A * z + 36 / A * z) (m' := (4 * A + 72 / A) * z')
+    (n' := 4 * (1728 / A ^ 2 * z * (z + 2) + (4 * A + 72 / A) * (z + 1)))
+    (da' := 12 * Am * ε) (db' := 76 * Am ^ 2 * ε) (dc' := 522 * Am ^ 3 * ε) (ds' := 24 * Am * ε)
+    (dm' := 76 * Am ^ 2 * ε) (dn' := 522 * Am ^ 3 * ε) (dq' := 4 * ε)
+    (by rw [hdt]; exact ht0.le) (by rw [hdq]; exact hq2) hdq1 (by rw [hddq]; exact hdq')
+    (by rw [hda]; exact ha) (by rw [hdb]; exact hb) (by rw [hdc]; exact hc) (by rw [hds]; exact hs)
+    (by rw [hdm]; exact hm) (by rw [hdn]; exact hn) (by rw [hdda]; exact hda')
+    (by rw [hddb]; exact hdb') (by rw [hddc]; exact hdc') (by rw [hdds]; exact hds')
+    (by rw [hddm]; exact hdm') (by rw [hddn]; exact hdn')
+  rw [hdt, hdq] at hdiff
+  have hM0 := c5SingleAtomCompensationMargin_ge_of_shape ht0 htu hu hsh0 hsh
+  have h1 : d.compensation 1 = c5CompletedCompensationMargin u t :=
+    thetaCuspC5LikelihoodHomotopyCompensation_one u t
+  have h0 : d.compensation 0 = c5SingleAtomCompensationMargin A t :=
+    thetaCuspC5LikelihoodHomotopyCompensation_zero u t
+  rw [h1, h0] at hdiff
+  have hlow := (abs_le.mp hdiff).1
+  simp only at hkey
+  generalize hBd : C5LikelihoodAffineData.compensationDiffBound t ((2 * A + 12 / A) * z')
+    (4 * (12 / A) ^ 2 * z * (z + 2) + 4 * (2 * A + 12 / A) * (z + 1))
+    (z' * (8 * (12 / A) ^ 3 * z * (z + 2) + 12 * (12 / A) ^ 2 * (z + 1) + 4 * (2 * A + 12 / A)))
+    (4 * A * z + 36 / A * z) ((4 * A + 72 / A) * z')
+    (4 * (1728 / A ^ 2 * z * (z + 2) + (4 * A + 72 / A) * (z + 1)))
+    (12 * Am * ε) (76 * Am ^ 2 * ε) (522 * Am ^ 3 * ε) (24 * Am * ε) (76 * Am ^ 2 * ε)
+    (522 * Am ^ 3 * ε) (4 * ε) (thetaCuspSingleAtomReflectedAction A t) = Bd at hlow hkey
+  generalize hMl : 2 * A * (4 * A - 36 / A) * sh = Ml at hM0 hkey
+  generalize hM1 : c5CompletedCompensationMargin u t = M1 at hlow ⊢
+  generalize hM0' : c5SingleAtomCompensationMargin A t = M0 at hlow hM0
+  linarith only [hlow, hkey, hM0]
+
 end RHTower
