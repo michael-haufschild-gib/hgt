@@ -4914,3 +4914,23 @@ the paper order-three floor is not yet a closed Lean theorem.
 CANNOT-277 — Do not count numerical certificates, conditional assembly theorems, local Newton
 branch packages, or one imported inequality as closed source laws. They constrain searches but do
 not discharge a universal-law or RH gate.
+F622 — The first viable cubic deformation is an extension-lifting class, not a cubic trace or
+operator perturbation. For a theta quotient landing `f` with `D_Q^3 f=fD_X^3`, any lift `F` has
+ideal defect `omega_3(F)=D_E^3F-FD_X^3`; changing splitting by `H` adds exactly
+`delta_3(H)=D_I^3H-HD_X^3` (`ULF-CCEL-001`).
+F623 — `[omega_3] in coker(delta_3)` is lift-independent and vanishes iff the quotient landing has
+an exactly cubic-equivariant lift. Exact transgression is
+`D_E^3F(x)=F(D_X^3x)+i omega_3(F)(x)`. This is a completion-extension law with no positivity,
+order, phase, regularization, or quadratic cross-prime premise.
+F624 — Cubic refinement is genuinely stronger than ordinary splitting: for the unipotent clock
+`D_E(v,w)=(v+w,w)` on `C^2`, every lift of the second coordinate has defect `3 id`, while cubic
+coboundaries vanish. Thus a linearly split extension can have nonzero cubic-clock class.
+CANNOT-278 — Ordinary Busby perturbation by nuclear `T`, odd projection traces, cyclic/Massey
+cocycles without arithmetic realization, and support-boundary regularizations do not answer the
+gate. They respectively vanish in the corona, recover an old index, read a supplied class, or add
+a boundary parameter without deforming theta completion.
+MUST-193 — `ULF-PHCCED-001`: construct before Xi specialization the literal theta quotient landing
+as a cubic-clock morphism; evaluate its lifting class on PCOB's unique
+`S_Lambda^3(T)=8 sign(t) Phi tensor |b_t><b_t|`; prove this ideal value is the Xi escape incidence
+and inherits the same primitive nuclear `<1` budget. Failure of any coefficientwise identification
+retires the mechanism.

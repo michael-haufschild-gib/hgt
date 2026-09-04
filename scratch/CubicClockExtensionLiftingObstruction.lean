@@ -1,4 +1,5 @@
-import Mathlib
+import Mathlib.LinearAlgebra.Quotient.Basic
+import Mathlib.Tactic.Abel
 
 /-!
 # Cubic clock extension lifting obstruction
@@ -13,7 +14,7 @@ when an ideal correction makes the lift cubic-equivariant.
 namespace GaloisForLFunctions.HTGeometry
 
 set_option maxHeartbeats 5000
-set_option trace.profiler true
+set_option Elab.async false
 
 variable {X E : Type*}
 variable [AddCommGroup X] [Module ℂ X]
@@ -145,7 +146,6 @@ def cubicCoboundary : (X →ₗ[ℂ] C.ideal) →ₗ[ℂ] (X →ₗ[ℂ] C.ideal
       linearClockCube_apply, LinearMap.smul_apply, map_smul, smul_sub]
     rfl
 
-/- TEMPORARY PREFIX CHECK
 /-- Cohomology space in which the cubic lifting obstruction lives. -/
 abbrev CubicLiftingCohomology :=
   (X →ₗ[ℂ] C.ideal) ⧸ LinearMap.range (cubicCoboundary (C := C))
@@ -238,9 +238,4 @@ end Lift
 
 end CubicClockCompletion
 
-end GaloisForLFunctions.HTGeometry
--/
-
-end Lift
-end CubicClockCompletion
 end GaloisForLFunctions.HTGeometry

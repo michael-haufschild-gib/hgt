@@ -1,5 +1,4 @@
-import GaloisForLFunctions.HTGeometry.TwoProjectionHilbertSchmidtEnergy
-import GaloisForLFunctions.HTGeometry.RectangularTraceNorm
+import GaloisForLFunctions.RHTower.RestrictedProjectionCubicTrace
 import GaloisForLFunctions.RHTower.FrankensteinCCMRoutePBaseCubicGreenSourceBridge
 import GaloisForLFunctions.RHTower.SourceHorizontalWoldBVCompleteSplitPrimitiveBudgetFirewall
 import GaloisForLFunctions.RHTower.VonMangoldtGammaJetBoundaryConvergence
@@ -32,85 +31,6 @@ open MeasureTheory Set
 open scoped BigOperators
 
 variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
-
-/-- Difference of two orthogonal polarizations. -/
-def restrictedProjectionDisplacement (R P : H →L[ℂ] H) : H →L[ℂ] H :=
-  R - P
-
-/-- First odd nuclear polynomial at the Hilbert--Schmidt boundary. -/
-def restrictedProjectionCubicDefect (R P : H →L[ℂ] H) : H →L[ℂ] H :=
-  restrictedProjectionDisplacement R P ^ 3
-
-/-- Positive channel in which `R` exits the `P` polarization. -/
-def restrictedProjectionPositiveChannel (R P : H →L[ℂ] H) : H →L[ℂ] H :=
-  R * (1 - P) * R
-
-/-- A difference of self-adjoint polarizations is self-adjoint. -/
-theorem adjoint_restrictedProjectionDisplacement
-    (R P : H →L[ℂ] H)
-    (hR : ContinuousLinearMap.adjoint R = R)
-    (hP : ContinuousLinearMap.adjoint P = P) :
-    ContinuousLinearMap.adjoint (restrictedProjectionDisplacement R P) =
-      restrictedProjectionDisplacement R P := by
-  rw [restrictedProjectionDisplacement, ContinuousLinearMap.adjoint.map_sub, hR, hP]
-
-/-- Two Hilbert--Schmidt factors make the square nuclear; the ideal law then makes the cubic
-nuclear without strengthening the displacement to Schatten one. -/
-theorem restrictedProjectionCubicDefect_memSchattenClass_one
-    (R P : H →L[ℂ] H)
-    (hDelta : (restrictedProjectionDisplacement R P).IsHilbertSchmidt) :
-    MemSchattenClass 1 (restrictedProjectionCubicDefect R P) := by
-  have hsqRect :=
-    memRectSchattenClass_one_comp_of_hilbertSchmidt_unrestricted hDelta hDelta
-  have hsq : MemSchattenClass 1
-      ((restrictedProjectionDisplacement R P) ∘L
-        restrictedProjectionDisplacement R P) :=
-    (memRectSchattenClass_iff_memSchattenClass
-      1 (restrictedProjectionDisplacement R P ∘L
-        restrictedProjectionDisplacement R P)).mp hsqRect
-  have hcube := memSchattenClass_one_comp_right hsq
-    (restrictedProjectionDisplacement R P)
-  simpa [restrictedProjectionCubicDefect, pow_succ, ContinuousLinearMap.mul_def] using hcube
-
-/-- Cubing preserves self-adjointness of the projection displacement. -/
-theorem adjoint_restrictedProjectionCubicDefect
-    (R P : H →L[ℂ] H)
-    (hR : ContinuousLinearMap.adjoint R = R)
-    (hP : ContinuousLinearMap.adjoint P = P) :
-    ContinuousLinearMap.adjoint (restrictedProjectionCubicDefect R P) =
-      restrictedProjectionCubicDefect R P := by
-  rw [restrictedProjectionCubicDefect, show (restrictedProjectionDisplacement R P) ^ 3 =
-      ((restrictedProjectionDisplacement R P) ∘L
-          restrictedProjectionDisplacement R P) ∘L
-        restrictedProjectionDisplacement R P by
-      simp [pow_succ, ContinuousLinearMap.mul_def]]
-  rw [ContinuousLinearMap.adjoint_comp, ContinuousLinearMap.adjoint_comp,
-    adjoint_restrictedProjectionDisplacement R P hR hP]
-  ext x
-  rfl
-
-omit [CompleteSpace H] in
-/-- Exact positive-channel decomposition `(R-P)^3 = R(1-P)R - P(1-R)P`. -/
-theorem restrictedProjectionCubicDefect_eq_channels
-    (R P : H →L[ℂ] H)
-    (hR : IsIdempotentElem R)
-    (hP : IsIdempotentElem P) :
-    restrictedProjectionCubicDefect R P =
-      restrictedProjectionPositiveChannel R P -
-        restrictedProjectionPositiveChannel P R := by
-  change (R - P) ^ 3 = R * (1 - P) * R - P * (1 - R) * P
-  have hRR : R * R = R := hR
-  have hPP : P * P = P := hP
-  noncomm_ring [hRR, hPP]
-
-omit [CompleteSpace H] in
-/-- Orientation reversal negates the cubic defect exactly. -/
-theorem restrictedProjectionCubicDefect_swap
-    (R P : H →L[ℂ] H) :
-    restrictedProjectionCubicDefect P R = -restrictedProjectionCubicDefect R P := by
-  rw [restrictedProjectionCubicDefect, restrictedProjectionCubicDefect,
-    restrictedProjectionDisplacement, restrictedProjectionDisplacement]
-  noncomm_ring
 
 /-- The natural-number source weight is exactly the unsquared von Mangoldt mass divided by the
 cubic logarithmic clock. -/

@@ -74,3 +74,87 @@ the small-`t` cancellation.
 - 2026-09-04 — Card opened after the numerical survival of the homotopy core.  Structure (I1),
   (I2) and the first-order criterion found and verified at 45 digits
   (`2-fully-proven/computations/clg-ttf-c5-homotopy-numerical-test/clg_structure.py`).
+
+## Kernel representations (2026-09-04, verified numerically to 8 digits)
+
+Write `c(x) = thetaCuspLogCurvature x = −ℓ''(x)` (positive, even, `c'' > 0` on `[0, 6]` numerically),
+and for fixed `u` let `e(s) = (c(u+s) + c(u−s))/2`, `o(s) = (c(u+s) − c(u−s))/2` (even/odd parts),
+`E(t) = ∫₀ᵗ e`, `O(t) = ∫₀ᵗ o`.  Then `Φ_t = 2E`, `Φ_u = 2O`, `Φ_tt = 2e`, `Φ_ut = 2o`, and
+
+```text
+H = 4 [ t e(t) ∫₀ᵗ (t−r) r o''(r) dr  −  (∫₀ᵗ s e'(s) ds)(∫₀ᵗ s o'(s) ds) ]   =: 4 (T₁ − T₂),
+G = tḢ − 5H = 4 [ O·Δ_e − E·Δ_o ],
+      Δ_e = ∫₀ᵗ r (e'(r) − r e''(r)) dr = O(t⁵),   Δ_o = 5t·o(t) − 8O − t²o'(t) = O(t⁶).
+```
+
+Both are exact and bilinear in `(e, o)`; the `t³`-cancellation of `H` and the `t⁵`-cancellation of
+`G` are built into the kernels.  For the pure exponential model `c = 4A e^{2s}`:
+`H = −16A² z (sinh 2t − 2t)`, `G/4 = A²(16t²S − 16tz² − 56tz + 20Sz)`, `T₂/T₁ = 1 + 1/(4t(t−1))`
+for large `t`.
+
+Numerical margins on the tail: `T₂/T₁ ∈ [1.10, 7.7]` (so `H < 0`, but the relative margin decays
+like `1/(4t²)` at large `t`, where the right endpoint `x = u + t` dominates and the model is exact
+to `O(e^{−4(u+t)})`); the assembly hypothesis `5|G| ≤ 6Φ(−H)` holds with ratio `≤ 1/6`.
+
+## Order data of the completed curvature (numerical, `[0, 6]`)
+
+`c' > 0`, `c'' > 0` and the projective energy `c'c'' − c·c''' > 0` hold on `(0, 6]`, but `c''' > 0`
+**fails** for `x ≲ 0.3` (`c'''(0.2)/(32A) = −0.62`).  Hence the corpus far-tail chain
+(`exists_c5CompletedVelocityCenterNumerator_neg_farTail`, private lemmas needing all four order
+facts on `[x₀, ∞)`) cannot be pushed to `x₀ = 0` as it stands; the corner `u − t ≲ 0.3` needs the
+kernel representation directly (there the margin `T₂/T₁ ≈ 7` is largest).  Near `x = 0` the
+deviation from the exponential model is large (`c(0)/4A(0) = 1.49`, `J₂(0) ≈ 0.84`), so the
+likelihood corrections are `O(1)` on `[0, 0.32]` and exponentially small beyond `A ≥ 6`.
+
+## Reduction of the three hypotheses to sign facts about `c` (2026-09-04, evening)
+
+Notation as above; `x₋ = u − t ≥ 0`, `x₊ = u + t`; `c, c', c''` evaluated at `x±`.
+
+**(b) `v ≥ 2Φ`** ⟸ `c'' ≥ 0` on `[0, ∞)`.  Proof: `v − 2Φ = 2(tE − 2∫₀ᵗE)`, and `E(s)/s` is
+nondecreasing when `e` is nondecreasing on `[0, t]`, i.e. `e'(s) = (c'(u+s) − c'(u−s))/2 ≥ 0`, i.e.
+`c'` nondecreasing on `[x₋, x₊]`.
+
+**(a) `H < 0`** ⟸ two monotone-l'Hospital descents of `ρ = O/(tE)` (`N = O, D = tE`; then
+`N₂ = o, D₂ = E + te`) reduce strict decrease of `ρ` to strict decrease of
+`r₃ = o'/(2e + te')`, i.e. to the two-point inequality
+
+```text
+(∗)  (c''₊ − c''₋)[2(c₊ + c₋) + t(c'₊ − c'₋)]  <  (c'₊ + c'₋)[3(c'₊ − c'₋) + t(c''₊ + c''₋)],
+```
+
+verified numerically on the tail with `LHS/RHS ∈ [0.13, 0.88]` (`→ 1 − 1/(2t)` at large `t`).
+Expanding, `RHS − LHS = Q(x₋, x₊) + 2t(c'₊c''₋ + c''₊c'₋)` with
+`Q(y, x) = 3(c'(x)² − c'(y)²) − 2(c''(x) − c''(y))(c(x) + c(y))`, `Q(y, y) = 0`, and
+`∂ₓQ ≥ 4(c'c'' − c c''')` where `c''' ≥ 0`, `∂ₓQ ≥ 4c'c''` where `c''' < 0`.  Hence
+
+```text
+(a) ⟸ (R1) c > 0, (R2) c' ≥ 0, (R3) c'' ≥ 0 on [0, ∞), (R4) c'c'' − c c''' ≥ 0 wherever c''' ≥ 0.
+```
+
+`(R1)` is `thetaCuspLogCurvature_pos`; `(R4)` is the corpus's projective energy
+`thetaCuspCompletedCurvatureProjectiveEnergy`, proved only cofinally so far; numerically
+`E(x) > 0` on `(0, 6]` and `E(0) = 0` with `E'(0) = c''(0)² − c(0)c⁗(0) > 0` by a 12 % margin.
+The model (`c = 4Ae^{2x}`) gives `RHS − LHS = 128A²(sinh 2t cosh 2t + 2t)`.
+
+**(c) `5|G| ≤ 6Φ(−H)`.**  With `w' = te/E`, `M := o'·tE − O·(2e + te')` (the second transport
+numerator), `t(log κ)' = 4tM/H − 2 − 2w'`, so `(c)` follows from
+
+```text
+10(w − 2) ≤ 1.6Φ      [⟸ e' ≥ 0, c''/c ≤ q_max, c(u) ≥ 4A(u) ≥ 24; numerically (w−2)/Φ ≤ 0.061]
+4t|M| ≤ (3 + 2w' + 0.88Φ)|H|   [numerically 4tM/H − 3 − 2w' = t(log κ)' − 1 ≤ 0.0042Φ; slack ≈ 200×].
+```
+
+The second inequality is the only remaining item without a local reduction; in the descent
+language `4t|M|/|H| = [tD₂'/D₂]·[(ρ − r₃)/(ρ − r₂)]` with `ρ ≥ r₂ ≥ r₃`, all three tending to
+`1` as `t → 0`.
+
+## Lean plan (ordered)
+
+1. `ThetaCuspC5CompletedGateReduction` (written; compiling): identities, Bose floor, assembly.
+2. Structural layer: `(b)` from `(R3)`; `(a)` from `(R1)–(R4)` via the two descents and `Q ≥ 0`
+   (the corpus's private `completed_strictAntiOn_div_of_strictAnti_derivRatio` in
+   `ThetaCuspCompletedVelocityCenterFarTail` is the descent lemma; re-prove publicly).
+3. Sign facts `(R2)`, `(R3)`, `(R4)` on the whole half-line: first-atom rational part explicit,
+   likelihood jets `J₂ … J₅` bounded by the moment machinery (`twelve_mul_thetaCuspLikelihoodMean…`,
+   `…TailProbability_lt_thirtyFive_mul_exp_neg_three_scale`); `(R4)` near `x = 0` is the delicate one.
+4. `(c)`: the `w − 2` bound, then `4t|M| ≤ (3 + 2w' + 0.88Φ)|H|`.
