@@ -129,8 +129,9 @@ theorem hasDerivAt_twoModeMatrix_entry (ε₂ : ℝ) (i j : Fin (n + 1)) :
   have h := ((hasDerivAt_id (0 : ℝ)).mul_const (cosineModeTangent δ₁ n i j +
     ε₂ * (cosineModeTangent (δ₁ + δ₂) n i j + cosineModeTangent (δ₁ - δ₂) n i j))).const_add
     ((1 : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ) i j + ε₂ * cosineModeTangent δ₂ n i j)
-  convert h using 1
+  refine h.congr_deriv ?_
   simp [Matrix.add_apply, Matrix.smul_apply, smul_eq_mul]
+  ring
 
 theorem hasDerivAt_det_twoModeMatrix (ε₂ : ℝ) :
     HasDerivAt (fun ε₁ => (twoModeMatrix δ₁ δ₂ n ε₁ ε₂).det)
@@ -189,8 +190,7 @@ theorem hasDerivAt_traceInvMul (T₁ T₂ T₁₂ : Matrix (Fin (n + 1)) (Fin (n
       (-(T₂ i k) * T₁ k i + (1 : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ) i k * T₁₂ k i) 0 := by
     intro i k
     have hM := hasDerivAt_inv_one_add_smul n T₂ i k
-    have := hM.mul (hN k i)
-    convert this using 1
+    refine (hM.fun_mul (hN k i)).congr_deriv ?_
     simp
   have hrow : ∀ i : Fin (n + 1), HasDerivAt (fun ε₂ : ℝ => ∑ k, (1 + ε₂ • T₂)⁻¹ i k * (T₁ + ε₂ • T₁₂) k i)
       (∑ k, (-(T₂ i k) * T₁ k i + (1 : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ) i k * T₁₂ k i)) 0 :=

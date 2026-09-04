@@ -372,3 +372,14 @@ reduction and the closed forms of `a, b`), `uniform_law_expand.py` (`k`-expansio
 twelve limit forms), `uniform_law_numeric.py` (the identity to `10⁻²⁵`; `|J − M|/|J| = 1.3·10⁻⁴` at
 `k = 3200`, `δ = log 2`; `M − Φ = −5·10⁻⁴` at `p = 4·10⁴`, `X = 1.3`).  The proven error constant is
 loose (`≈ 17|J|` at `k = 3200`): it is the `400` of the elementary Laplace–Heine proof.
+
+### 3.12 The two-prime cross term: exact bilinear structure (2026-09-04)
+
+`RHTower.CosineModeResponse.deriv_deriv_log_twoModeDeterminant`: for the two-mode weight
+`(1 + 2ε₁cos δ₁s)(1 + 2ε₂cos δ₂s)`, `∂₁∂₂ log D_n|₀ = J_{δ₁+δ₂}(n) + J_{δ₁−δ₂}(n) − tr(T(δ₁)T(δ₂))`
+(beat-mode jet + sum-mode jet − truncation defect), and `deriv_deriv_twoModeSquaredRadius` transfers
+it to the squared radii.  `bilinear_response.py` (`bilinear_response.log`): the identity against a
+finite-difference mixed derivative to `10⁻⁶`; for `(211, 421)` the defect is 17 % (n = 20) to 92 %
+(n = 150) of the beat term at the determinant level but smooth in `n`, so at the radius level the
+`ε₁ε₂` jet equals the beat-mode radius jet to 1–3 % — which is what §3.5 measured.  The rigorous
+bound on the defect's second differences is MUST-173 (large-rapidity boost-entry estimate).

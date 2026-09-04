@@ -10770,3 +10770,38 @@ and all five new-declaration audits pass with at most
 `[propext, Classical.choice, Quot.sound]`; leaf is wired into `HTGeometry` without an umbrella
 build.  Remaining core is selecting the prescribed local valuation while keeping all earlier free
 states valuation-trivial, then determinant transport.  Card stays at Stage 2.
+
+### Exact Gauss extension across a free state (2026-09-04)
+
+`HTGeometry/ValuationSubringGaussExtension.lean` constructs the missing free-variable valuation
+step from first principles.  For an arbitrary valuation subring `A ⊆ E`, it localizes `A[X]` at
+the kernel of coefficientwise reduction to the residue polynomial ring.  Krull domination then
+produces a valuation subring of `E(X)` whose contraction is exactly `A`, while both `X` and
+`X⁻¹` are integral.  Thus the new rational variable is a valuation unit, not merely an integral
+element.
+
+The arbitrary-overfield capstone
+
+```text
+exists_valuationSubring_extension_transcendental_unit
+```
+
+uses the canonical equivalence `E(X) ≃ E(x)` for every `x` transcendental over `E`, then
+prolongs to the ambient field with exact contraction.  It gives a valuation on the ambient field
+that restricts exactly to `A` and is trivial on the new free state.  The finite-family capstone
+
+```text
+exists_valuationSubring_extension_fin_algebraicIndependent_units
+```
+
+iterates this construction through every algebraically independent coordinate and retains each
+coordinate and its inverse in the final valuation ring.  Direct checking, targeted leaf build,
+and audits of all three public declarations pass with exactly
+`[propext, Classical.choice, Quot.sound]`; the leaf is wired into `HTGeometry` without an
+umbrella build.
+
+This closes every genuinely free finite state adjunction.  Remaining exact core is proving that
+the earlier actual cascade states form such a free family over the prescribed terminal Wiman
+component inside the common branch field, retaining the resulting algebraic lower branch, then
+iterating the places through all layers and transporting the nonzero nested observability
+determinant to the literal output jets.  Card stays at Stage 2.

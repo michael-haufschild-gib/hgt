@@ -1865,3 +1865,32 @@ frontier for the canonical point-Hermite construction is now
 slopes eventually at least `37/80` cannot preserve the Euler germ. Critical slope `5/11`, the
 small interval through `37/80`, oscillatory schedules, and distributed/nonlocal transitions remain.
 Lean: `SquarefreeConvolutionHalfMovingHermiteSubcriticalSlopeNoGo.lean`; direct Lean check passes.
+
+## 2026-09-04 — Every eventual Hermite slope above `5/11` is closed
+
+Let `alpha>5/11` and suppose eventually `alpha*N<=K(N)`. Choose the adaptive Euler gap
+`d=(alpha+5/11)/2`, witness `sigma=6/11+d>1`, and tilt
+`t=(alpha-d)/(2*alpha)`. Then `5/11<d<alpha`, `0<t<1`, and
+
+`exp(t)-1 <= t/(1-t)`.
+
+The exact exponential-mode decomposition expresses the corrected source at `sigma` as a sum of
+Poisson upper tails with actions `x_(N,n)=(N-log n)d` in `[0,dN]`. The Chernoff estimate gives
+
+`||S_N(sigma)+C_(N,K)(sigma)||`
+
+`<= N*exp(-t*(K+1)+d*N*t/(1-t))`.
+
+Since `d/(1-t)<alpha`, the right side is at most `N*exp(-gamma*N)` for the explicit positive rate
+
+`gamma=t*(alpha-d/(1-t))`.
+
+Thus the corrected source tends to zero. Admissibility would instead make it tend to the nonzero
+Euler value of the squarefree-half L-series, contradiction.
+
+Status: `[ALL SUPERCRITICAL LINEAR-DEPTH HERMITE SLOPES CLOSED] [LEAN-PROVED] [NOT RH]`.
+The exact monotone frontier has collapsed from an interval to the single phase boundary `5/11`,
+the distance from Hermite anchor `6/11` to Euler boundary `1`. Exact critical slope, schedules
+without eventual one-sided bounds, and distributed/nonlocal transitions remain open. Lean:
+`SquarefreeConvolutionHalfMovingHermiteSupercriticalSlopeNoGo.lean`; direct check, targeted build
+(`13306/13306`), and axiom audit pass.

@@ -2230,3 +2230,47 @@ Card remains Stage 2.  The label-to-orbit seam is closed, but this is not yet th
 Siegel covering.  Remaining geometric work must use these pseudo-basis frames in each adjacent
 Schur rank, assemble the finite flag-type family, prove strict/open connected cusp neighbourhoods,
 and connect that cover to the already proved finite-overlap theorem.
+
+### Rational special-linear cusp charts (2026-09-04)
+
+`NumberFieldArchimedeanRationalCuspChart.lean` and
+`NumberFieldArchimedeanRationalCuspAction.lean` put the nonprincipal cusp frames on the corrected
+real/Hermitian cone.  A determinant-one matrix over the number field now acts by placewise
+congruence, preserves positivity, and composes as an actual `SL_n(K)` action.  Scalar extension of
+`SL_n(𝓞_K)` agrees exactly with the existing integral action.  For the transposed rank-two cusp
+frame, the first coordinate energy is exactly the energy of the defining projective vector:
+
+```text
+numberFieldRankTwoCuspChart_energy_zero
+```
+
+This closes the action-convention and complex-conjugation seam that finite cusp reduction needs;
+nonprincipal frames are no longer external matrices lacking a cone action.  Both direct checks and
+targeted leaf builds pass.  Every declaration created in the two modules audits to exactly
+`[propext, Classical.choice, Quot.sound]`; both leaves are umbrella-wired without an umbrella
+build.
+
+Card remains Stage 2.  Rational cusp charts must still be combined with the finite projective
+representative family to prove a uniform cover, then thickened to strict open connected cusp
+neighbourhoods.  Arithmetic comparison and Moore reciprocity remain downstream.
+
+### Canonical number-ring vector lattice (2026-09-04)
+
+`HTGeometry/NumberFieldIntegerVectorLatticeBasis.lean` identifies the coordinatewise embedded
+number ring with the integer span of the canonical flattened mixed-vector basis.  Its capstone is
+
+```text
+numberFieldIntegerVectorLattice_eq_span_mixedVectorBasis
+```
+
+Every basis vector is exhibited as the mixed embedding of an explicit vector in `(𝒪_K)^n`, and
+the reverse containment reconstructs every embedded integral vector from the integer coordinates
+given by `numberFieldIntegerBasis`.  Thus a nonzero point supplied by a determinant-normalized
+Minkowski theorem can be converted back to a literal number-ring vector without retaining a basis,
+lattice equality, or coordinate-integrality hypothesis.
+
+Direct source check and targeted leaf build pass.  All four declarations audit to exactly
+`[propext, Classical.choice, Quot.sound]`; the leaf is umbrella-wired without an umbrella build.
+Card remains Stage 2.  The next geometric seam is determinant-normalized short-vector reduction in
+these coordinates followed by finite projective cusp classification; finite presentation of the
+arithmetic group and Moore reciprocity remain downstream.

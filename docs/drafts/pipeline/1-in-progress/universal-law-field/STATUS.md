@@ -1,6 +1,6 @@
 # Universal-law corpus facts
 
-Updated: 2026-09-02
+Updated: 2026-09-04
 
 Scope: compressed facts and logically forced design constraints extracted from audited positive
 theorems, negative no-gos, frontier branches, and RH endpoints. No active conjectures or work log.
@@ -3186,7 +3186,6 @@ wall object itself, replace existence by uniqueness, or hide the conclusion in s
 positivity, moderation, or properness.
 
 ## 2026-09-02 — ULF-SLC-001 (share-ledger ceiling / Kuznetsov producer): holomorphic half closed in Lean
-
 Card moved to `1-in-progress/universal-law-field/ulf-share-ledger-ceiling-kuznetsov-producer.md`.
 Lean-closed this session (all in `HTGeometry`, wired, axiom-clean): the level-one holomorphic
 Poincaré series `P_m` as cusp forms; `𝒟` as a measure-theoretic fundamental domain for `PSL₂(ℤ)`;
@@ -3196,9 +3195,7 @@ through Kloosterman sums and `J_{k−1}`; and `petersson_formula_levelOne`.
 Open and decisive for the card: the spectral (Maass/Eisenstein) Kuznetsov formula, whose
 continuous spectrum carries `|ζ(1+2it)|^{−2}` — the only place ζ's zeros enter the ledger. No
 foundation for it exists in mathlib or the corpus.
-
 ## 2026-09-02 — ULF-SLC-001 retired: the automorphic producer is a dead end for RH (paper proof)
-
 Verdict written into the card (now `5-failed/ulf-share-ledger-ceiling-kuznetsov-producer.md`):
 Petersson and Kuznetsov contain ζ only on `Re s = 1` (zero-blind); the Selberg trace formula's
 ζ-zero side is the Poisson-smoothed scattering density `Σ_ρ K_ρ` with peak `(1/2π)(1/β+1/(1−β))`
@@ -3209,180 +3206,144 @@ Kuznetsov (Huxley replaces it). Survivors: C1–C4 and the level-one Petersson f
 (`3-formalized/petersson-formula-level-one-lean.md`). The Selberg-ledger ceiling is certified in
 Lean as `RHTower/SelbergLedgerCeiling.lean`: target-file check and independent axiom audit pass;
 all seven ceiling theorems use only `propext`, `Classical.choice`, and `Quot.sound`.
-
 F370 — `GL(2)` automorphic spectral theory separates created positivity from ζ-zero data.
 Petersson contains no ζ; Kuznetsov contains only `|ζ(1+2ir)|⁻²` on zero-free `Re s=1`; Selberg
 places zeros in the non-`L²` scattering density, where nonnegative tests see each zero through a
 pair of Poisson kernels.
-
 F371 — The Selberg positive ledger has an exact crowding ceiling. A target zero has weight at most
 `(||h||₁/(2π))(1/(1-β₀)+1/β₀)`, while every zero within height two contributes at least
 `(2/(29π))||h||₁`; exclusion requires `1-β₀ < 1/((4/29)|Z|-2)`. Local zero density therefore
 restricts the method to de la Vallée Poussin width.
-
 CANNOT-176 — It cannot obtain RH by tuning a nonnegative Selberg test, widening/narrowing its
 window, adding Petersson/Kuznetsov/DI/Stadlmann estimates, or placing scattering poles in an
 `L²` Parseval space. Sign changes remove the only created positivity; the poles are not `L²`.
-
 FAIL-67 — Automorphic created positivity as a ζ-zero selector retired. Positive survivors are the
 level-one Petersson identity and exact Selberg peak/floor/width ceiling, all Lean-certified.
-
 F372 — Faithful wall torsion cannot be the universal object. Over `R=k[q,q⁻¹]`, the wall element
 `q-1` annihilates the source and two-leg incompatibility modules, whose annihilator is exactly the
 wall ideal; a faithful `R`-module cannot have that nonzero annihilator. After arithmetic pullback,
 faithfulness plus wall annihilation is equivalent to requiring every Xi fibre to lie on the wall.
-
 FAIL-68 — Global faithful-torsion survival retired. Universal form is algebraically impossible;
 divisor-fibre form is an RH-equivalent receiver. Positive survivor: selection needs a source law
 that changes the coefficient category or produces descent before wall specialization.
-
 F373 — Ordinary `K₀`/Morita quantization is also grade-blind. Morita equivalence preserves the
 integral class of the actual rank-one oblique projection, which remains idempotent at every grade.
 The corpus irrational-rotation `K₀` collision kills a supplied Chern charge, and bidirectional
 Big-Witt integrality kills a supplied Gamma grade, but constructing either supplied integral class
 on every Xi fibre is exactly the unresolved source interface/RH endpoint.
-
 CANNOT-177 — It cannot assert that the real boost `p^a` scales an integral `K₀` class. `K₀` has
 only integer scalar action, while the physical boost acts on representatives/weighted traces; an
 integral lift of that real scaling is precisely what must be proved. Morita recovery alone keeps
 the class fixed and sees no grade.
-
 FAIL-69 — `K₀`, Chern trace, or Big-Witt rapidity quantization retired as automatic producers.
 Positive survivor: any discrete selector must derive its integral structure from a source operation
 whose preservation law still retains the oriented boost, not from completion equivalence itself.
-
 F374 — Compact observation and positive energy do not control lifted history. Finite-support
 restricted histories are dense, proper, and nonclosed in the full product; every fixed finite
 observer eventually stabilizes while support cost is unbounded. Universally, any periodic observer
 history admits a positive compact-resolvent lift with graph action tending to infinity and no
 convergent subsequence.
-
 CANNOT-178 — It cannot infer source recurrence, bounded formation work, or completion properness
 from compact observer recurrence, GNS positivity, compact resolvent, or compact action sublevels.
 Those structures admit exact escaping hidden lifts independently of arithmetic grade.
-
 F375 — Perfect-complex decategorification is systematically extension-blind. Euler/`K₀`, every
 power supertrace, every power superdeterminant, and positive squared modulus all factor through
 cohomology; explicit countermodels preserve those shadows while changing polarity, extension law,
 cost, or flat holonomy. The integer-doubling tower has zero ordinary inverse limit but nonzero
 `lim¹`, so completion history can survive simultaneous shadow cancellation.
-
 CANNOT-179 — It cannot use exactness, cohomology, five-shadow agreement, or finite unitary
 recurrence to prohibit completion-born anomaly. A live invariant must retain controlled
 null-homotopies/extension data before passage to cohomology or group completion.
-
 F376 — Native observer descent is exact but constitutively neutral. Coimage/effectivity and
 serial/parallel descent hold at Set level, yet one fixed observer with positive vertical kernel
 coexists with positive-definite, degenerate, and Lorentzian forms; identical observer data can also
 carry different costs or differential-algebraic status. Positive differential observers can have
 arbitrarily large covariance rank and infinite hidden GNS dimension.
-
 CANNOT-180 — It cannot derive neutral inertia, finite hidden rank, or a unique constitutive law
 from observer effectivity, positivity on the vertical kernel, or jet covariance alone. Selection
 must constrain how hidden extension data are formed, not merely how they descend.
-
 F377 — The completed pseudodifferential valuation-lattice carrier and its standard apartment now
 exist unconditionally, but differential coefficient automorphisms fix that apartment pointwise.
 The current differential variational building records valuation coweights while forgetting the
 coefficient-side anomaly it was meant to select.
-
 CANNOT-181 — It cannot call the existing building the higher mechanism. Any useful building law
 needs a second source-generated, completion-sensitive apartment/flag and a proved relative
 displacement or intersection theorem; the canonical apartment alone is blind.
-
 F378 — The two literal rational-adelic endpoints are a covariant flag, not a preserved frame.
 Class-space action fixes `ε₀` and rescales nonunital `ε₁` by the inverse positive radial character;
 the reduced cyclic source is `ker ε₀ ∩ ker ε₁`, so both endpoint values vanish there. The Kummer
 one-cocycle retains prime logarithmic weight, but is a detector and supplies no second invariant
 splitting.
-
 FAIL-70 — Two-endpoint common-commutant selection retired. On the full source the endpoint pair
 records the dilation instead of excluding it; on the reduced source it is zero and nonseparating.
-
 MUST-117 — Surviving information type is a controlled nonsplit comparison: a formation
 null-homotopy/extension together with its support or propagation cost. Any candidate must derive
 uniform control from literal pre-divisor arithmetic operations, map its obstruction faithfully to
 the Xi completion class, and prove that off-line effective metabolic birth requires loss of that
 control. Merely postulating bounded work, a second frame, or extension splitting is an existing
 RH-equivalent receiver.
-
 F379 — Ordinary reciprocity is signed and first-order. The rational Arakelov product formula
 cancels finite logarithmic trace against the archimedean boundary, and reciprocal Gamma
 characters have determinant one at every grade. The same reflected pair has positive residual
 `2(cosh a-1)`, equivalently the square of the reciprocal-gain mismatch, with radical exactly
 `a=0`.
-
 CANNOT-182 — It cannot use an additive product formula, determinant torsor, tame-symbol sum, or
 ordinary group-valued reciprocity as selector. Group completion cancels opposite orientations at
 every grade; the RH-bearing datum is the effective nonlinear residual left after that cancellation.
-
 F380 — Functional-equation packet lifting is involutive and information-neutral only on the image
 of common-kernel formation: it applies the observer involution, discards hidden history, and
 regenerates that history. Exact countermodels keep observer and recovery kernel fixed while the
 nonzero formation charge changes sign. Thus quotient-level reversibility is compatible with a
 nontrivial lifted defect.
-
 CANNOT-183 — It cannot infer full-source reversibility, zero index, or neutral grade from
 functional-equation involutivity, KL/Jeffreys isometry, or common recovery. Those laws certify an
 observer quotient, not an inverse on unreduced history.
-
 F381 — The monoid/Hopf-envelope model identifies the quotient mechanism exactly. A unilateral
 shift represents the irreversible source monoid but cannot extend to its Laurent/Hopf group
 completion; the obstruction is one rank-one defect. Any quotient killing that defect makes the
 shift invertible and gives a unique Hopf-envelope extension. Separately, injective post-completion
 cannot erase an earlier cokernel: its dimension adds the new outer cokernel.
-
 FAIL-71 — Automatic reciprocity/Hopf-extension selection retired. It explains how completed
 observers hide an effective defect, but asserting extension before quotient is the missing
 properness/exactness theorem, not its proof.
-
 F382 — Algebraic cross-route fusion cannot create a missing rank-one differential law. A nonzero
 algebraic eigenvector over a tensor-fraction extension specializes and descends to one factor;
 three-face multiplicative identities force logarithmic derivatives into one-coordinate algebraic
 closures. Auxiliary algebraic route factors therefore add presentation, not a new producer.
-
 CANNOT-184 — It cannot seek the universal mechanism in an algebraic tensor product, finite
 extension, or multiplicative three-face weld. A live fusion must depend essentially on controlled
 completion, chronology, or nonalgebraic topology and must fail under specialization to each route
 factor.
-
 F383 — Proof exchange, Gamma completion cost, and external completion occupation are one scalar
 state in three coordinates. Gamma curvature is the odds transform of the three-slot exchange
 defect, the visibility complement is strictly positive, and all three vanish exactly at `a=0`.
 This is exact joint reconstruction, not a source law making the state vanish.
-
 F384 — Effective arithmetic anomalies propagate rather than localize. Centered all-cross
 Big-Witt formation kills ghosts one through three but leaves a quartic determinant product; a
 nonzero integral first ghost forces nonzero ghosts at every sufficiently large prime; persistent
 cofinal cyclotomic zeros in a locally uniformly convergent holomorphic family force its limit to
 vanish identically. These form a possible propagation-to-collapse chain only if one literal
 source map preserves the same nonzero class through all three steps.
-
 F385 — Signed nonlocal completion can still short the effective diagonal: the complete all-cross
 Big-Witt source has zero ghost because its off-diagonal compensator is exactly the negative of the
 physical diagonal, unconditionally. In contrast, finite and summable nonnegative cooriented Gamma
 packets cannot short any nonzero grade.
-
 MUST-118 — A viable higher law must derive, from source chronology/provenance rather than imposed
 positivity, why reverse/off-diagonal compensators are inadmissible while the diagonal anomaly
 survives. One concrete closure architecture is: actual integral anomaly -> forced infinite prime
 tail -> persistent cyclotomic formation zeros -> normalized nonzero holomorphic limit
 contradiction. Every arrow, especially integrality and persistent-zero transport, must be
 pre-divisor, coefficient-faithful, and independently proved; without them this is only a diagram.
-
 F386 — The integral propagation-to-collapse diagram fails at its first physical arrow. The
 normalized Gamma-six Big-Witt second ghost is `-1/3`, so no integral source scalar-extends to it.
 Unconditional integral Cartier sources exist, but a coefficient-faithful physical reporter exists
 exactly on the critical line; likewise the bidirectional physical Big-Witt lift exists at grade
 `t` iff `t=0`, and on every Xi divisor iff RH.
-
 CANNOT-185 — It cannot invoke integral ghost propagation, cyclotomic persistence, or integer-index
 rigidity until a new pre-divisor map makes the actual horizontal anomaly integral. Existing
 physical integrality statements already contain the critical-line conclusion.
-
 FAIL-72 — Integral-tail-to-cyclotomic-collapse retired as a producer. Its propagation and collapse
 arrows are valid positive survivors; its required physical integral landing is RH-strength.
-
 F387 — Modular geometry is an exact interpretation but not a new producer. The grade is the
 Radon--Nikodym character `p^(-2|t|)`, recovered from the signed Krein current only by the singular
 multiplier `p`, which does not preserve the fixed `ell^1` source ideal. A nonerasing equivariant
@@ -3390,55 +3351,45 @@ descent into a norm-conservative target forces `t=0`; type-III covariant traces 
 and nonzero, while normalized measured indices erase finite and density-zero off-line sectors.
 Source/Gamma naturality and modular-centralizer rigidity are already pointwise wall conditions and
 globally equivalent to RH.
-
 CANNOT-186 — It cannot obtain selection from Maharam extension, cocycle superrigidity, a finite or
 semifinite trace, KMS passivity, or centralizer language alone. Superrigidity leaves the prime-log
 homomorphism, type III removes absolute count, and supplying a nonerasing conservative descent is
 the unresolved arithmetic theorem.
-
 FAIL-73 — Modular-flow/centralizer trivialization retired as an automatic producer. Positive
 survivor: all route readers are charts of one modular completion class, and every viable selection
 law must choose its representation/completion from arithmetic rather than assume traciality.
-
 F388 — The Lorentzian reversal has an exact Bogoliubov form already in the corpus. The positive
 residual is partner occupation; all-prime Hellinger/Kakutani polarization is its square; repeating
 the beta block along the natural overtone ladder gives finite Shale mass linear in cutoff and
 infinite mass off wall. Regular/common-Fock implementability and common-Fock Cauchy convergence are
 pointwise equivalent to neutral grade and globally equivalent to RH. Finite cutoffs remain valid,
 and nonregular or incomplete-tensor sectors escape.
-
 CANNOT-187 — It cannot infer RH from Bogoliubov conservation, Shale--Stinespring, Kakutani
 singularity, finite-cutoff vacua, or orthogonality catastrophe. Those classify disjoint sectors;
 they do not prove that the arithmetic source occupies the regular sector.
-
 FAIL-74 — Fock implementability as the completion index retired as a producer. It is another exact
 gauge of the already known derived completion class.
-
 MUST-119 — The missing law is not another detector of nonzero grade. It must prove, from a literal
 pre-divisor arithmetic operation, that the physical completion belongs to a uniquely forced
 normal/regular folium or equivalent controlled history class. Any axiom of regularity, finite
 trace, conservative descent, source naturality, centralizer rigidity, or vanishing `lim^1` merely
 restates an existing RH endpoint.
-
 F389 — Today's critical-block code isolates a genuinely source-side selection mechanism. A block
 normalization containing the canonical sheet receives a continuous lift from the actual source
 chart. If that normalization is formally étale and the source contains closed histories projecting
 to both marked torus meridians, connected-cover monodromy forces its observation fibre to be a
 singleton. This is cycle-complete formation: source histories generate the observer fundamental
 group, so no nontrivial connected completion cover can remain between source and observer.
-
 CANNOT-188 — Source-chart finiteness, integrality, path connectedness, properness, or the existence
 of the lift does not supply cycle completeness. The Lean endgame still assumes formal étaleness of
 the block normalization and two closed source loops with the exact generator classes. Treating
 either premise as automatic merely renames the unramifiedness and sheet-selection gaps.
-
 MUST-120 — A topological higher law must derive, from literal pre-divisor arithmetic, both formal
 purity of the admissible completion and surjectivity of source histories onto observer cycles. To
 close RH it must additionally realize every nonzero horizontal grade as nontrivial monodromy of
 such an admissible lifted completion; cycle completeness would then force that monodromy to be
 trivial, hence `exp(a)=1`, `a=0`, and `Re rho=1/2`. Without the grade-to-cover bridge this is a
 source-model restriction, not an RH proof.
-
 F390 — Higher-rank prime dynamics separates history fluctuation from horizontal grade but does not
 select the grade. On two independent prime clocks the grade is already the homomorphism
 `(m,n) ↦ a (m log p + n log q)`. Cocycle-superrigidity conclusions reduce a cocycle to a
@@ -3446,19 +3397,15 @@ homomorphism modulo a coboundary, so this exact anomaly survives their conclusio
 rigidity for toral/solenoidal actions additionally assumes positive or high entropy and
 hyperbolicity and classifies invariant measures; it supplies no vanishing law for the surviving
 real homomorphism.
-
 CANNOT-189 — It cannot infer neutral grade from a `×p,×q` action, a natural-extension solenoid,
 higher-rank recurrence, entropy rigidity, or cocycle superrigidity. A valid selector still needs a
 literal source relation annihilating the homomorphism part; assuming compact range, finite image,
 unitarity, or zero periods is the existing descent/admission endpoint.
-
 FAIL-75 — Higher-rank dynamical rigidity retired as an automatic producer. Positive survivor:
 higher-rank formation can canonically isolate the invariant homomorphism carrying horizontal grade
 from coboundary-valued completion history, so future laws must act on that quotient rather than on
 gauge fluctuations.
-
 ## 2026-09-02 — individuation law frozen (card `0-backlog/zero-individuation-law-two-completion-producer.md`, ULF-IND-001)
-
 F379 — Every share ledger `Σ_ρ φ(ρ)` over an FE- and conjugation-stable zero set is even in the
 per-pair displacement `δ = β − ½`; first-order sensitivity exists only through half-plane cuts,
 alignment singularities, or amplification. Combined with ceilings C1–C4 and the Selberg ledger
@@ -3466,12 +3413,10 @@ theorem, every fixed-kernel positivity certificate resolves off-line zeros only 
 archimedean density `ν(t) = (1/2π) log(t/2π)`; the `log t` of every ceiling is the Γ-phase
 derivative. Zeros enter `GL(2)` spectral identities only as poles of `ξ(2s−1)/ξ(2s)`, outside
 every `L²` Parseval identity.
-
 CANNOT-182 — It cannot observe an individual nontrivial zero through any unconditional
 arithmetic identity: every identity is a functional of the pair-even smoothed zero density.
 Hence no card of the form "prove `Φ(source) ≥ 0` for one fixed functional `Φ`" can be a
 producer.
-
 MUST-118 — A producer must be nonlinear in the zero measure, oriented only through the
 archimedean phase, an identity uniform in amplification, and crowd-cancelling. The one classical
 object of that shape is the convex Littlewood mean `M_T(σ) = (1/2π)∫ log|ζ(σ+it)|dt`, whose kinks
@@ -3480,19 +3425,16 @@ multiplicative (partial Euler product) and additive (Hadamard) completions have 
 log-means differing only by the Γ-phase density on `½ < σ < 1`, with the mean provable by a
 pair-even second-moment argument and individuation supplied by convexity. Bricks B1–B5 in the
 card; B5 is not to be attacked before B1–B4 and a corpus search of RG, T1, D2.
-
 F391 — Literal archimedean-only selection is false. The Gamma/functional-equation cell is closed
 under a positive reciprocal quartic that plants an explicit nonreal off-line strip zero while
 preserving real-strip zero-freeness, integral multiplicativity, and the completed functional
 equation (`GammaCellNonrealMobility`). Gamma supplies no nontrivial divisor because it is
 nonvanishing on the relevant right half-plane.
-
 F392 — The global theta source contains irreducible diffuse information at infinity. Its positive
 archimedean measure gives zero mass to the prime-power logarithms; sampling defect equals full theta
 mass, reflection completion doubles the defect, and normalized defect remains one. On every
 sampling gap its functional cannot factor through the samples even by arbitrary nonlinear
 postprocessing (`SeamArchimedeanSamplingQuotient`, `ArchimedeanSamplingDefect`).
-
 F393 — Prime and archimedean organs have an exact load/capacity split. The archimedean form is
 uniformly definite with lower constant `4-3 log 2-pi/2`, and Weil positivity is exactly domination
 of the prime operator by this form. Actual Suzuki walls are positive atomic prime mass minus
@@ -3500,100 +3442,80 @@ positive continuous screw mass; cofinal raw-prime contours differ from full Weil
 explicit centered archimedean square (`ArchimedeanPairingDefinite`,
 `SuzukiWardAtomicContinuousLightWeld`,
 `XiPhysicalPrimeApertureThetaAbelEnergyPrimeCanonicalVanishingLimit`).
-
 CANNOT-190 — It cannot call RH a theorem of the isolated Gamma factor, functional equation, or
 archimedean positivity. Nor can it directly reconstruct the diffuse seam from prime samples or
 dominate it as a raw measure: the channels are sampling-disjoint, and Gamma/FE cells admit
 off-line mobility. Direct Hilbert--Schmidt welding is already impossible.
-
 MUST-121 — The viable archimedean reversal is global: finite places set atomic loading/vertical
 frequencies, while the full integer-theta completion supplies polarization and the horizontal
 unitary axis. A producer must derive a coefficient-faithful nonlocal atomic--diffuse admission law
 from literal integer formation, before divisor specialization, coupling additive Fourier
 self-duality to multiplicative Euler completion. Imposed domination, Weil positivity,
 self-adjointness, or completion regularity is the RH endpoint, not its source.
-
 FAIL-76 — “Gamma alone forces the critical line” retired. Positive survivor: zeros can be treated
 as resonances of failure to admit atomic Euler formation into the global archimedean theta
 polarization. The exact admission mechanism remains open; no RH gate is discharged.
-
 ## 2026-09-02 — ULF-IND-001 producer refuted; survivors formalized
-
 F380 — Lean: convergence of the Möbius Dirichlet series at one point forces `ζ ≠ 0` on the open
 half-plane to its right, so the abscissa of convergence of `∑ μ(n) n^{−s}` is at least the real
 part of every zero (`RHTower.riemannZeta_ne_zero_of_moebius_convergesAt`,
 `re_le_abscissaOfConv_moebiusShift`). Lean: every pair ledger `φ(½+δ+iγ) + φ(½−δ+iγ)` is even in
 `δ` with vanishing derivative at `0` for every `φ`; the Lagarias–Suzuki constant term never
 vanishes at a half-zero of `Λ` in `Re s < ½` (`GaloisForLFunctions.RHTower.ZeroLedgerPairParity`).
-
 CANNOT-183 — It cannot run a two-completion comparison with two unconditional sides: inside the
 strip the prime series diverges everywhere and the convergent Möbius series is already the
 zero-free statement. The mean-value level of the smooth Littlewood identity gives `N(σ,T) = o(T)`
 only; detecting one zero needs window means of `log|ζ|` to precision `1/T₀`, and pair-even
 second moments give `T₀^{−c}`.
-
 FAIL-71 — ULF-IND-001's producer (Euler-vs-Hadamard Littlewood-mean comparison) retired. The
 individuation diagnosis (parity, crowd, Landau blindness, poles-not-eigenvalues) stands and is
 now three-quarters Lean-certified. MUST-118 withdrawn.
-
 MUST-119 — Any comparison of completions must treat the multiplicative side as a regularized
 family whose regularization budget is computed explicitly; unconditional convergence of that side
 is the conclusion (F380). This is the budget branch of the regularization trilemma, so a
 surviving candidate must exhibit a budget that is *not* the divergent positive mass — otherwise
 it is W1.
-
 ## 2026-09-02 — literal Euler/theta contractivity decided (ULF-EHC-001)
-
 F394 — On additive log/Fourier half-density `L²`, the exact finite Euler operator
 `E_S = prod_(p in S)(I-p^(-1/2)tau_(-log p))` has norm
 `prod_(p in S)(1+p^(-1/2))`. Multiplicative independence of primes supplies the simultaneous
 maximally expansive phase by Kronecker; reciprocal-prime divergence makes these norms cofinally
 unbounded. No raw bounded or contractive Euler operator completion exists on this carrier.
-
 F395 — Literal formation and critical-axis selection are different laws. Finite Euler action is
 coefficient-exact on the even-Schwartz theta source; joint formation/recovery moderation is exactly
 the unitary half-density axis; absence of a completion-born arithmetic boundary is exactly RH.
 None of these makes joint admission automatic.
-
 CANNOT-191 — It cannot mean raw Euler-product contractivity on full theta half-density `L²`, nor
 can scalar norm-normalization be the selector: raw norms diverge, while normalization makes every
 finite stage contractive independently of horizontal grade.
-
 MUST-122 — Any surviving automatic-admissibility theorem must be a pre-divisor relative graph/form
 identity. It must couple forward formation, reflected recovery, and archimedean subtraction so the
 cofinal expansive prime phase becomes an exact boundary term; asserting boundedness, bilateral
 moderation, boundary freedom, or Weil domination merely states the RH endpoint.
-
 FAIL-77 — “Literal Euler completion acts contractively in theta polarization” retired in its raw
 operator meaning. Positive survivor: exact cofinal norm growth identifies the missing object as a
 relative completion index/cancellation law, not an Euler operator on one Hilbert completion.
-
 F396 — Lean closes ULF-EHC-001: literal half-density Euler cutoff norm is exactly
 `prod_(p<=N)(1+p^(-1/2))`, tends to infinity, is not uniformly bounded, and has neither strong nor
 weak bounded-operator completion (`LiteralEulerHalfDensityContractionNoGo`). Axioms are only
 `propext`, `Classical.choice`, `Quot.sound`.
-
 F397 — Euler formation is automatically isometric only after the polarization is allowed to move.
 For each prime, multiplication by the inverse local factor is a unitary from the archimedean fiber
 to the Euler-weighted semilocal fiber, and the Hardy--Titchmarsh square commutes exactly. This holds
 for every prime before any divisor and therefore explains admission but cannot select RH
 (`HardyTitchmarshSemilocalSquare`).
-
 CANNOT-192 — Replacing one fixed theta Hilbert space by the natural Euler-weighted Hilbert bundle
 does not finish the mechanism. Its finite-site log metric is additive, but even after removing the
 linear prime shell its central prime-square mode is `-1/p`, so the global absolute metric diverges.
 Neither fixed-fiber contraction nor unrenormalized moving-fiber unitarity can be the selector
 (`SoninSemilocalMetricLog`).
-
 MUST-123 — “Automatic admissibility” can now mean only canonical extension of the moving
 semilocal polarization through the all-place theta completion after a source-forced relative
 subtraction. The required theorem must derive that subtraction from literal integer/Poisson
 self-duality, preserve unsquared Euler coefficients, and prove the residual completion boundary is
 zero. By `ArithmeticFormationCompletionBoundaryFusion`, universal residual-boundary vanishing then
 forces every Xi occurrence to have neutral grade and closes RH.
-
 ## 2026-09-02 — anchor law frozen (card `0-backlog/anchor-law-inner-band.md`, ULF-ANC-001)
-
 F381 — Every unconditional zero-free statement is the reach of an anchor (an unconditional
 nonvanishing value) against the archimedean crowd: Euler product (`Re s > 1`), pole (de la Vallée
 Poussin, Vinogradov–Korobov, Littlewood's `(log log t)/log t` saturation under Lindelöf), Bochner
@@ -3602,202 +3524,155 @@ positivity of `Φ` (real axis), Maass–Selberg (Lagarias–Suzuki approximants)
 squares (central twists of GL(2)). The one anchor on the line is the on-line zero set: the first
 Laguerre inequality of `Ξ` at `t = γ` forces every off-line pair to have `δ ≥ c/log γ`
 (identity `Ξ'² − ΞΞ'' = Ξ² Σ_z (t − z)^{−2}`), the dual of the pole's band.
-
 CANNOT-184 — It cannot obtain an interior zero-free set of positive measure from growth or
 positivity: the pole's reach saturates at `(log log t)/log t` and interior multiplicative anchors
 are the conclusion (F380).
-
 MUST-120 — Any surviving mechanism must either manufacture an anchor of unbounded length
 (the mollifier route, capped at `1 − c/θ` for finite `θ`) or anchor on the line itself. The
 first line-anchored target is the unconditional first Laguerre inequality of `Ξ` at every `t`
 (inner band `c/log γ`); it fails for every de Bruijn–Newman deformation `Ξ_s`, `s < 0`, so no
 kernel-positivity proof exists and a proof must use the arithmetic at `s = 0`.
-
 ## 2026-09-02 — scalar completion retired; full scale-history law proved (ULF-PSH-001/2)
-
 F398 — Literal valuation/Poisson fusion already preserves the unsquared Euler coefficients and
 reconstructs the scalar completed current `−a ξ′(a)/ξ(a)` for `a>1`; moving head–tail transgression
 already has zero scalar trace unconditionally. Scalar subtraction/residual vanishing is therefore
 not the missing selector (`XiAperturePoissonEulerLogDerivCompletion`,
 `EulerPrimitiveCommonTestBoundaryTransgression`).
-
 CANNOT-193 — It cannot be a same-fibre scalar or bounded local metric counterterm. The orbital
 response `m log p` is nonzero modulo bounded responses, the central prime-square shell is `−1/p`,
 and positive Hilbert mass cannot cancel the positive principal shell (`SoninSemilocalMetricLog`,
 `ConnesSemilocalOrbitalSourceClass`).
-
 F399 — Full Poisson aperture history canonically normalizes every positive orbital clock:
 `ψ_t(a)=2t√a e^(−ta)`, `||ψ_t||²=1`, and
 `<ψ_t,ψ_u>=4tu/(t+u)²=sech²((log t−log u)/2)`, with equality to one iff `t=u`.
 Thus literal integer/Poisson formation forces the missing off-diagonal cross-aperture kernel
 (`PoissonScaleHistoryFrame`, ULF-PSH-001; Lean proved).
-
 F400 — For `t=m log p`, the scale-history lift absorbs the unbounded orbital clock while leaving
 the external unsquared Euler amplitude `p^(−m/2)/m` untouched. Its remaining global obstruction is
 exactly the principal `m=1` harmonic shell, consistent with the forced `6/p` diagonal gain anomaly;
 higher modes/remainder are summable.
-
 FAIL-78 — “Canonical scalar metric-anomaly subtraction plus vanishing scalar residual” retired as
 RH mechanism: both effects already occur without RH. The signed-subtraction survivor was tested
 next and also failed (FAIL-79).
-
 MUST-124 — Withdrawn: fixed principal-shell cancellation has wrong selection polarity.
-
 ## 2026-09-02 — ULF-ANC-001 inner-band target retired; survivors formalized
-
 F382 — Lean: `ΞC'² − ΞC·ΞC'' = ΞC² ∑_q (z − a_q)⁻²` off the divisor (termwise differentiation of the
 corpus's Mittag-Leffler expansion), the exact pair term `−2/δ²` at a real point, and the inner
 band as an implication (`RHTower.XiLaguerreZeroSumIdentity`). Lean: a positive, even,
 log-concave kernel whose Fourier transform violates the first Laguerre inequality
 (`HTGeometry.LaguerreKernelCounterexample`).
-
 CANNOT-185 — It cannot anchor on the line: the first Laguerre inequality of `Ξ` at `γ` is
 equivalent to a pointwise lower bound on the on-line inverse-square zero sum near `γ`, which no
 unconditional input supplies (proportions and all-zero gap bounds only). Kernel positivity,
 evenness and log-concavity do not imply the inequality (F382), so no theta-kernel argument can.
-
 FAIL-72 — ULF-ANC-001's inner-band target retired. The anchor-law diagnosis stands.
-
 MUST-121 — Any surviving anchor must be neither convergence of a multiplicative series in the
 strip (F380) nor the on-line zero configuration itself (CANNOT-185); manufactured anchors are
 capped at `1 − c/θ`. A candidate must name an unconditional nonvanishing datum of a third kind
 before any reach argument is attempted.
-
 ## 2026-09-02 — principal subtraction refuted; anomaly reclassified (ULF-PSH-002/3)
-
 F401 — In log-aperture coordinate, every Poisson clock history is a translate of one universal
 mother: `e^(x/2) ψ_t(e^x)=F(x+log t)`, `F(x)=2e^x e^(−e^x)`. Thus noncompactness is literal
 translation escape and the `sech²` kernel is stationary autocorrelation
 (`PoissonScaleHistoryFrame`; Lean proved).
-
 CANNOT-194 — It cannot subtract the fixed principal `[1/p]` class, even in a signed completion
 and even modulo arbitrary `ell¹` remainder. Exact trichotomy: coefficient `0` admits only neutral
 grade; coefficient `−1` admits only nonneutral grade; every other fixed coefficient admits none.
 The actual source counterterm `−1/p+2/p²` realizes the wrong phase
 (`HedenmalmThetaPrincipalCountertermPolarityNoGo`, `HedenmalmThetaPrincipalClassTrichotomy`).
-
 F402 — The harmonic anomaly is an oriented nonzero square-zero class modulo `ell¹`; reflection
 negates it, cofinal prime shift fixes it, and every reduced-ring receiver kills it. Neutral/tail
 limits do not commute: depth-first gives `±1`, grade-first gives `0`. It is a first-order
 completion-end class, not removable scalar error (`RouteRSummableHadamardConstitutiveCoronaEmbedding`,
 `RouteRFirstWallNeutralTailNoncommutation`).
-
 FAIL-79 — ULF-PSH-002 “theta–Poisson principal-shell subtraction” refuted. Positive survivor:
 transgress bulk harmonic density to an oriented nonreduced end class and prove source-global end
 properness without subtracting the class (ULF-PSH-003).
-
 MUST-125 — Build a pre-divisor, coefficient-faithful nonreduced translation-corona formation. It
 must retain the oriented square-zero harmonic symbol, realize its clocks by the ULF-PSH-001 mother
 orbit, split arithmetic mass into Haar bulk plus bounded-primitive discrepancy, and derive global
 end properness from theta/Poisson source laws. Reduced positivity, fixed counterterms, or bare
 functional-equation fibre identification are forbidden. Vanishing of the retained class then
 forces neutral grade and closes RH.
-
 ## 2026-09-02 — integrality anchor law frozen (card `0-backlog/integrality-anchor-law.md`, ULF-INT-001)
-
 F383 — All four retired routes bounded a real-valued quantity to force an integer (a zero count)
 to vanish, with slack of order `log t` per integer. Every theorem that locates zeros (Hadamard–de
 la Vallée Poussin, Weil, Deligne, Lee–Yang, Kaczorowski–Perelli degree `< 2`, the corpus's prime
 Ising-tree Lee–Yang) contains one integrality anchor — a discrete invariant squeezed between an
 archimedean bound and its gap `1` — and is capped exactly where that squeeze has slack `≥ 1`.
-
 CANNOT-186 — It cannot force a zero count to zero with a real-valued inequality valid on a
 continuous class containing `ζ`: such classes contain members with any off-line configuration at
 the crowd's resolution, so the slack is `≥ log t` per integer (equality for pole-anchored
 arguments; mollifiers change the constant only).
-
 MUST-122 — A producer card must name, before any inequality: a discrete invariant `I`; why one
 off-line quartet forces `I ≥ 1`; an archimedean bound `s(k)` with amplification parameter `k`;
 and `s(k) → 0`. Real-valued inequality cards without (i)–(iv) are closed by CANNOT-186.
-
 ## 2026-09-02 — ULF-INT-001 closed as a route; the law stands as constraint
-
 F384 — Lean: the Mertens sum is the Möbius sum over odd integers of `(x/2, x]`; it is the
 alternating face count of the squarefree knapsack complex `{S ⊆ primes : ∏S ≤ x}`; every such top
 window contains an odd prime; affine rescalings preserve relative displacement
 (`RHTower.MertensOddWindowKnapsack`).
-
 CANNOT-187 — It cannot amplify: no finite product of affine rescalings of `ζ` changes the
 displacement of a zero relative to its strip, convolution powers keep the abscissa, and the
 knapsack complex's Betti numbers (odd squarefree integers of the top window by `ω`) do not
 cancel — only the parity of `ω` does. Every discrete invariant surveyed (window counts,
 indices, Toeplitz indices, `ζ`-algebra, knapsack topology, Iwasawa invariants, Kloosterman
 integrality, CM averages) fails (i)–(iv) of MUST-122.
-
 FAIL-73 — ULF-INT-001's route content retired. The audit table and MUST-122 stand.
-
 MUST-123 — The only discrete structure satisfying MUST-122 is a local-eigenvalue realisation of
 the global zeros with a non-affine amplification, i.e. an F₁-point with a Deligne-type tensor
 structure. The integrality anchor law and the F₁ open core are the same requirement; no other
 producer shape remains open in the corpus.
-
 ## 2026-09-02 — formation-end tangent law proved; automatic Xi admission retired (ULF-FTG-001/2)
-
 F403 — Prime-harmonic formation has an exact logarithmic-end tangent.  For
 `mu_{a,L}=sum_{log log p>L} p^(-1-a) delta_(log log p-L)`, positive grade has vanishing total mass,
 neutral grade converges to Haar measure with uniform whole-half-line cumulative discrepancy, and
 negative grade has infinite mass in every fixed end window.  This is an unconditional consequence
 of Mertens' second theorem.
-
 F404 — The tangent lifts to the literal Poisson translation frame while retaining unsquared Euler
 amplitudes in synthesis.  At neutral grade the frame operators converge in operator norm to a
 nonzero Haar operator; at positive grade they vanish in trace norm; at negative grade local norms
 diverge.  Every prime-power depth `m>=2` is trace-class residual and vanishes at the end, so full
 Euler formation has the same tangent as its principal layer (ULF-FTG-001; paper proved, Lean open).
-
 F405 — The `log log p` clock is not a second unrelated source coordinate: it is the logarithmic
 blow-up of theta's `2 log p` translation end.  Poisson scale history therefore describes normal
 geometry at theta infinity, not the literal theta translation orbit itself.
-
 CANNOT-195 — Functional equation cannot supply bilateral tangent admission.  It swaps grades but
 does not prove source-to-Xi continuity; ordinary Hilbert graph closure is top and canonical
 half-density Xi descent is RH-equivalent.  Assuming landing would restate RH (ULF-FTG-002).
-
 FAIL-80 — “Functional equation automatically admits both reflected Euler tangents” retired.
 Positive survivor: simultaneous finite nonzero reflected tangent is classified exactly by neutral
 grade once an independent source-to-Xi landing theorem is supplied.
-
 MUST-126 — Construct a pre-divisor cofinal transition functor from finite literal theta/Euler
 transports to the nonreduced formation-tangent completion, then prove actual Xi compact-open
 completion factors through it in both orientations.  Proof may use finite-stage Poisson boundary
 annihilation and the new Haar-frame estimate, but not a zero/divisor or any RH-equivalent global
 continuity premise.  This factorization—not anomaly subtraction—is the surviving selection edge.
-
 ## 2026-09-02 — direct subunit anchor narrowed to one `J`-trace theorem (ULF-DSA-002)
-
 F406 — Direct subunit shape is realized without amplification.  Every strict-right copy has the
 unsigned integer `thetaKakutaniEscapeMultiplicity = 1`; signed reflection index cancels.
-
 F407 — Exact Lean fusion:
 `B_Euler < (115/108) * thetaKakutaniEscapeMultiplicity <= E_Loewner` for every strict-right copy
 (`DirectSubunitEscapeCapacityFusion`).
-
 F408 — Completion provenance is not open.  Literal unsquared joint-depth Euler Krein coefficient
 lands in the polar/Gamma completed Xi resolvent; positive-shift arithmetic covariance equals the
 reflection-Loewner kernel; opposite-radial signed-source residues recover the cubic residue Gram.
-
 F409 — Universal anomaly is not a guessed scalar subtraction.  Boundary translation has a
 negative two-node determinant, and the unshifted residual is exactly rank-one credit minus a
 positive Hardy debt.  Completion must remain `J`-contractive until this debt is globally shorted.
-
 F410 — Bilateral orientation compresses the Hardy debt to one shared rank-one ghost, but
 source/Gamma-natural descent of that ghost to one prime-independent scalar is already equivalent
 to neutral grade/RH.  Viable shorting must retain the prime-indexed ghost section until after the
 source/environment Schur operation.
-
 CANNOT-196 — It cannot be completed-SEM winding, Rajchman decay, finite Kakutani values `< 1`, or
 integral Laurent evaluation: each is receiver-blind, tends to the unit wall, or lacks integrality
 at physical evaluation.
-
 CANNOT-197 — It cannot be fixed scalar mixing, positive Hadamard boundary translation, or bare
 Loewner domination.  The first two are disproved; the last is RH-equivalent.
-
 CANNOT-198 — It cannot describe “source-to-completion transport” as missing.  That transport is
 proved.  Missing edge is a global pre-divisor trace inequality for its quadratic signed current.
-
 CANNOT-199 — It cannot supply the W-H212 shared ghost as anomaly counterterm before shorting;
 source-natural existence of exactly that scalar is a terminal RH receiver.
-
 MUST-127 — Keep P-G206's full prime-resolved exterior environment, sew it to P-G194's
 matrix-complete Burnol channels, and identify only its completed quotient with W-H212's rank-one
 Hardy ghost.  Before residues or prime-independent descent, prove the resulting `J`-Schur trace is
@@ -3805,158 +3680,120 @@ at most P-G175's primitive collision budget.  After residues this must yield
 `E_Loewner <= B_Euler`, closing RH against F407.  No selected zero, divisor premise, supplied shared
 ghost, target capacity, or amplification may enter.  Exact card:
 `direct-subunit-anchor/tropicalized-defect-capacity-anchor.md`.
-
 ## 2026-09-02 — arithmetic symplectic descent frozen (card `0-backlog/arithmetic-symplectic-descent.md`, ULF-SYMP-001)
-
 F385 — Audit of the discrete doors: reflection torsion, Galois dichotomy, Lee–Yang trees, Baker
 independence and pair parity are fixed-point invariants of the reflection group and are blind at
 free orbits by theorem; the multiplicity ladder is the only door whose invariant (symplectic
 self-adjointness, `even_finrank_maxGenEigenspace`) acts at every eigenvalue, which is why RH was
 localizable there to one construction: an alternating form from Euler data, self-adjoint for the
 divisor operator off the line, with line-supported anomaly.
-
 MUST-124 — The alternating form must be the Hilbert/Steinberg-symbol form on `ℚ^×/ℚ^{×2}`
 (Lagrangian by quadratic reciprocity, `μ₂` the sign at `∞`), transported to the window model over
 quadratic twists; the decisive test is self-adjointness of the divisor operator on one finite EM
 split (T2). A failure there closes the card with a finite witness.
-
 ## 2026-09-02 — ULF-SYMP-001 refuted; Kramers sharpened
-
 F386 — Lean: on a space with a cyclic vector every `K`-self-adjoint bilinear form is symmetric,
 so no symplectic self-adjoint structure exists on a cyclic space; a symplectically self-adjoint
 endomorphism has no cyclic vector (Jordan blocks double). Doubling any block with a nondegenerate
 symmetric invariant form gives a symplectic realization for free. `{±1}`-valued skew pairings
 are symmetric (`HTGeometry.CyclicNoSymplecticSelfAdjoint`).
-
 CANNOT-188 — It cannot obtain the ladder's symplectic structure from any form on the canonical
 cyclic divisor model, nor from any family pairing (twists, reflection, FE doubling) — the former
 is impossible, the latter blind — nor from quadratic symbols (symmetric); tame symbols with
 non-real characters are alternating but have no global reciprocity (`K₂(ℚ)` has none beyond `μ₂`).
-
 FAIL-74 — ULF-SYMP-001 retired. The ladder's open core is sharpened, not closed: the required
 structure is a canonical decomposition of the local divisor into two isomorphic halves from Euler
 data, i.e. a square root of the local factor.
-
 MUST-125 — Any candidate for the ladder must exhibit two isomorphic copies of the local divisor
 produced from Euler data by a non-linear (non-family) construction; linear constructions are
 blind by F386.
-
 ## 2026-09-02 — multiplicity ladder gate 7: twin rigidity
-
 F387 — Lean: every twin factorization of ξ on `Re s > ½` is `(g v, g/v)` for an analytic square
 root `g` and an analytic unit `v`; conversely every such pair is a twin
 (`RHTower.TwinRigidity`). The twin set is empty or a torsor over the diagonal twin.
-
 CANNOT-189 — It cannot gain leverage from non-diagonal twins, metaplectic even/odd channels, or
 Maass–Selberg Gram balance: each yields ξ as a product of two factors only in the dressed form
 `g v · g/v`, i.e. only after a square root exists. No motive has an L-function with half of ζ's
 divisor (`L(M ⊕ N) = L(M)L(N)` and `𝟙` is simple).
-
 MUST-126 — The ladder's open core is irreducible: an analytic half-divisor of ξ on `Re s > ½`
 constructed from arithmetic by a non-linear, non-family, non-motivic mechanism. The only
 arithmetic candidates in view, the Selberg–Delange powers `ζ^θ`, have continuation past the zero
 field equivalent to the rung.
-
 ## 2026-09-02 — direct-subunit shorting audit
-
 F411 — P-G206/P-G207 already close short-before-descent. The prime-resolved Julia environment
 forms a rank-one block `[[|c|²,c],[conj(c),1]]` with zero Schur short, and this exact block survives
 Gamma/polar completion and multiplicity-copy descent at every Xi support, including off-line
 support.
-
 F412 — Zero Schur short has no capacity content. The same rank-one block has zero short for
 arbitrarily large `c`, so neither `J`-shorting nor its completion transport can imply a bound on
 the visible positive corner.
-
 CANNOT-200 — It cannot treat global `J`-shorting as the missing producer. Shorting and descent are
 proved and nonselective; an unbounded visible corner can be hidden by a unit environment pivot.
-
 MUST-128 — Direct-subunit closure requires a pre-divisor source-factorized contractive landing
 from P-G194's conserved three-channel colligation, augmented by P-G206's prime-resolved
 environment, to W-H212's completed positive column. P-G196 proves the map must realize a
 prescribed nonzero aperture eigencharacter-gap commutator. One exact augmented conservation law
 must retain that anomaly as a positive defect channel and imply target trace at most P-G175's
 primitive collision budget. Transport and shorting are not open.
-
 Housekeeping — the cyclic-module no-go proved this pass duplicated
 `RHTower.SymplecticCyclicObstruction` (2026-07-11); the duplicate module was removed and the
 surviving doubling/sign theorems live in `HTGeometry.SymplecticDoublingFree`.
-
 ## 2026-09-02 — terminal classification (card `0-backlog/terminal-classification-two-doors.md`, ULF-TERM-001)
-
 F388 — Every producer shape in the corpus or the literature is one of four kinds, each closed by
 a theorem: fixed functionals (pair-even, crowd), convergence inside the strip (the conclusion),
 symmetries relating `s` to `σ(s)` (blind at free orbits), two-factor presentations of ξ (root
 dressed by a unit). Motivic halves are impossible. Two doors remain: an amplified discrete
 anchor (F₁) or a direct sub-unit anchor (Ferrero–Washington).
-
 MUST-127 — A new idea must name an integer attached to the free-orbit divisor and a bound below
 `1`; nothing else is admissible. Prediction to check first: the theta-multiplier transfer
 operator (the one arithmetic AII† candidate, absent from the corpus) doubles by cusp pairing and
 is blind.
-
 ## 2026-09-02 — direct-subunit completion-index correction
-
 F413 — W-H197 already constructs unique rate-changing boundary transmuter
 `((p+z)/(p+w))^2`; W-H198 gives exact rank-one `SU(1,1)` companion and Krein-charge
 conservation. Rate-changing commutator/anomaly construction is closed.
-
 F414 — W-H205 proves independent-cell assembly impossible: depth-zero companion trace is at least
 `(115/1944) sum_p 1/p`, hence non-trace-class. Prime cells must mix before transmutation.
-
 F415 — Exact paper fusion. For strict-right centered depth `a`, prime `p`, `lambda=log p`, primitive
 weight `w=(115/864)/(p lambda^2)`, companion charge `kappa=w(lambda^4/a^4-1)`, and singleton
 synchronized curvature `C=(3/8)lambda^2`,
 `kappa+w=(115/(324a^4))(C/p)`. Formation curvature is exactly companion metric anomaly plus
 primitive source charge.
-
 F416 — Canonical metric subtraction does not leave zero. It leaves summable unsquared Euler weight
 `w`; declaring residual zero deletes source provenance. Two absolute traces diverge; their
 difference is trace class.
-
 F417 — CCM one-sided Birman--Schwinger theory already gives finite-dimensional above-one dangerous
 subspace, with restricted-Weil positivity iff that subspace vanishes. This supplies an integer but
 not direct bound: ordinary positive-part `<1` is restricted-Weil positivity/RH restated.
-
 F418 — Positive trace-class domination and positive coefficient-recovering cofinal regularization
 of trace-one reflection incidence succeed exactly at neutral grade. Signed, nonlocal relative
 subtraction must precede positivity and norms.
-
 F419 — Synchronized squarefree recovery is strictly contractive on every finite nonempty support;
 fixed-support first jet and absolute Ward index survive. Diffuse support yields strict limiting
 factor `tau/(2sinh(tau/2))<1`, but literal Ward coefficient restoration costs its inverse square
 root. Scalar damping alone is not direct selection.
-
 CANNOT-201 — It cannot call completion transport, rate transmutation, companion construction, or
 short-before-descent open; all are proved.
-
 CANNOT-202 — It cannot assemble local Krein completions independently or seek a positive
 trace-class majorant; corpus proves divergence/critical-line equivalence.
-
 CANNOT-203 — It cannot require residual completion boundary to vanish after metric subtraction;
 exact residual is primitive source charge.
-
 CANNOT-204 — It cannot replace formation-strictness construction by dangerous-sector positive trace
 bound; that is the RH wall in spectral notation.
-
 F420 — Unsigned escape is a singular harmonic-density multiplicity, not ordinary Fredholm index.
 It is reflection-even and equals `0/1`; balanced signed index is always zero. Any norm-continuous
 Fredholm polarization through the neutral fibre has locally constant index and cannot realize the
 escape jump.
-
 F421 — Singular-trace normalization is also already classified. Prime-normal `log log` residue is
 exactly `0/1`, but ordinary ordered-prime Dixmier residue is zero by prime sparsity; additive
 singular traces kill the trace-class primitive Euler remainder and therefore lose its coefficient
 provenance.
-
 F422 — Exact object/current transport does not imply strict transport of exactness witnesses.
 Corpus completion laws preserve coefficients and norm limits off line while compatible finite
 null-homotopies may fail to assemble; their mismatch is the canonical completion obstruction.
-
 CANNOT-205 — It cannot use ordinary essential codimension, signed relative Fredholm index, or an
 additive Dixmier/log-residue trace as direct integer. The first two cancel or remain locally
 constant; the last forgets precisely the summable source term that must finance selection.
-
 MUST-129 — Direct-subunit frontier is pre-divisor prime-mixed formation strictness. Formation and
 completion have equal non-trace-class principal metric and trace-class primitive difference.
 Construct one coefficient-faithful coherent primitive for the finite relative cancellations, prove
@@ -3965,142 +3802,109 @@ primitive source capacity `<1`. Objectwise transport, an unmarked trace-class qu
 domination, or a post-divisor trace bound does not count.
 Exact card:
 `direct-subunit-anchor/tropicalized-defect-capacity-anchor.md`.
-
 ## 2026-09-02 — metaplectic AII† door closed (card `5-failed/metaplectic-transfer-operator-kramers.md`, ULF-META-001)
-
 F389 — Lean: `Ξ` takes both strict signs above every height, so ξ has critical-line zeros of
 odd order above every height and not every order of ξ is even (`RHTower.GlobalParityWall`).
 Copies dichotomy: for `f^e·u` with `u` nonvanishing the order is `e·ord f`; even `e` makes all
 orders even, odd `e` preserves parity; for ξ the parity of `ξ^e·u` is void or violated.
-
 CANNOT-190 — It cannot read a parity constraint on `ord_ρ ξ` off any determinant presenting the
 divisor of ζ through `e` copies (cusp count, Fricke pairs, Weil-representation components,
 mirror pairs): `e` even is void, `e` odd is globally violated. The theta-multiplier transfer
 operator has `e = 2` (two singular cusps `∞, 0` of `Γ₀(4)`, Fricke-paired).
-
 FAIL-75 — ULF-META-001: the metaplectic transfer operator as an AII† model of ξ's divisor.
-
 MUST-128 — Any Kramers-type structure must be restricted to `Re s > ½`; `s`-independent cocycles
 (multiplier systems, symbols, Weil-representation signs) cannot supply the restriction.
-
 ## 2026-09-02 — door 1 attempted and refuted (card `5-failed/f1-frobenius-integrality-torsion-law.md`, ULF-F1-002)
-
 F390 — Lean (`RHTower.FrobeniusTorsionLaw`): if every Arakelov coordinate of a zero of ξ is an
 algebraic integer and Galois conjugates of coordinates are coordinates of zeros, then RH is
 false; with contractive packets (the chamber) this is contradictory. Kronecker forces roots of
 unity, the middle totative of each order gives a conjugate zero in the closed unit disc, and
 infinitely many orders make zeros accumulate.
-
 F391 — Lean: `p^ρ` algebraic for one `p ≥ 2` and `ρ` nonreal ⇒ `ρ` and `w(ρ)` transcendental
 (Gelfond–Schneider). Paper: at most two primes have `p^ρ` algebraic (six exponentials).
-
 CANNOT-191 — It cannot carry Weil–Deligne integrality on the zeros of ξ: in the normalised
 coordinate integrality is incompatible with RH (torsion law); in the unnormalised coordinate it
 fails at three primes; the two coordinates exclude each other.
-
 CANNOT-192 — It cannot produce a positivity below RH: all-aperture Weil positivity is RH,
 finite-aperture positivity is blind (C1–C4), symmetry never sources it, the Hodge star's
 Frobenius compatibility is RH.
-
 MUST-129 — Any F₁-door construction must be integral on the test-function side (integer
 Lefschetz numbers such as `lcm(1..n)`), not on the eigenvalue side; it cannot have a
 characteristic polynomial. The remaining Lean item is the six exponentials theorem.
-
 Open Lean item (card `1-in-progress/six-exponentials-lean.md`): six exponentials theorem via
 Siegel + multipoint Schwarz + Liouville, no zero-counting; corollary: not all of `p₁^ρ, p₂^ρ,
 p₃^ρ` algebraic for nonreal `ρ`.
-
 ## 2026-09-02 — integral--nuclear homotopy defect
-
 F423 — Absolute nuclear `T` is impossible. Any endomorphism inducing identity on a nonzero
 Hausdorff escape quotient has norm at least one; faithful compact prime formation is already proved
 nonproper. The source budget can act only after relative cancellation of two non-nuclear principal
 parts.
-
 F424 — Raw completion-minus-formation heat difference is insufficient: trace class does not make
 its trace integral. Integrality requires a relative Hodge/Fedosov class (equivalently a trace-class
 difference of theta-positive graph projections).
-
 F425 — P-G186 canonically has a global prime-mixed Hilbert--Schmidt synthesis in its already-built
 Burnol `L²` carrier. Its squared HS norm is `B_base=(216/115)B_Euler<2`; normalization by
 `1/sqrt 2` makes total nuclear mass `<1`. P-G194 extends this to an exact three-channel isometry,
 retaining every off-diagonal prime/depth entry.
-
 F426 — Minimal surviving object is
 `T(s)=Pi_Mul(R_theta^+(s))-Pi_Mul(R_ar^+(s))`, the relative theta-positive projection defect of
 the multivalued horizons of the two completed pre-divisor all-prime relations. `Mul(R)` is the
 kernel of source projection from the closed relation, hence exactly completion-created loss of a
 finite null-homotopy. Relative projection trace is integral.
-
 F427 — One common vertical class and one horizontal scalar horizon already exist separately.
 `FrankensteinMeyerPrimeKoszulGammaReporter` gives one reporter cocyclic for every prime;
 `DeningerCalderonWittAllCrossPrimeIncidenceKoszul` leaves exactly one scalar packet direction.
 Their total-complex identification is missing.
-
 F428 — Gamma admission cannot provide the missing homotopy. The all-cross-prime Gamma admission
 operator is conservative on completed Green provenance, and annihilating its reflected-Gaussian
 Green vector is already RH-equivalent.
-
 CANNOT-206 — It cannot be an absolute compact reporter, raw relative heat trace, weighted sum of
 local Neumann remainders, Frobenius homotopy 2-cocycle, block-diagonal prime index, or reflected
 signed Fredholm index. It also cannot declare Gamma admission a source null-homotopy.
-
 MUST-130 — Prove one source-specific relative-horizon factorization
 `T=B*B-C*C` whose two canonical P-G194/P-G196/P-G206 defect columns have total HS mass
 `B_base/2<1`, and prove its relative index at a strict-right specialization equals the one
 common theta escape unit left by all-cross-prime incidence. This pre-divisor identity, not target
 trace domination, would close RH. Card:
 `direct-subunit-anchor/integral-nuclear-prime-mixed-homotopy-defect.md`.
-
 F429 — Provenance-continuous completion cannot create homology from eventually exact stages
 (`ExactCompletionDiagram.physical_exact`). Therefore an off-line class cannot be finite source
 cohomology transported to completion; it is failure of finite contractions to survive completion.
-
 F430 — Because off-line escape is a nonclosed-domain phenomenon, bounded harmonic projections are
 not admissible. The correct `T` projects the multivalued horizons of the two closed relations.
 Finite relations are single-valued; completion creates `Mul(R)=ker(sourceProjection)` exactly when
 finite contractions fail to survive.
-
 F431 — Trace-norm limits preserve trace (`traceTower_limit`). Hence a coherent nuclear completion
 of zero-index finite homotopy defects still has trace zero. Any off-line index-one fibre forces
 non-nuclearity or incoherence of the arithmetic/theta contractions.
-
 CANNOT-207 — It cannot insert a class at finite level, call eventual exactness alone the source
 mechanism, or assume trace-norm convergence of finite contractions. The first violates
 pre-divisor provenance; the latter two assume the missing completion theorem.
-
 MUST-131 — Construct the single graded landing
 `A_s=gradedCompletionLanding(P-G194((1/sqrt 2)A_base))` and prove
 `Pi_Mul(R_theta^+)-Pi_Mul(R_ar^+)=A_s* diag(+I,-I) A_s` on the pre-divisor total relation, retaining every
 cross-prime Gram entry and P-G196 aperture commutator. This one identity simultaneously gives
 integrality, nuclearity, and mass `<1`; strict-right index `1` then contradicts it.
-
 F432 — P-G177 collision Gram and P-G186/P-G194 base-Cauchy Gram are not interchangeable. Corpus
 proves diagonal rescaling `K_base(alpha,alpha)=(216/115)K_collision(alpha,alpha)`, not an entrywise
 inter-carrier isometry. The homotopy defect therefore uses the P-G194 base carrier and its `<2`
 quantum, normalized by `1/sqrt 2`; importing `sqrt(108/115)` into P-G194 is invalid.
-
 CANNOT-208 — It cannot use diagonal proportionality to identify full kernels or mix P-G177's
 `115/108` normalization with P-G194's three-channel colligation. Any future collision-carrier
 version needs a separately proved all-entry transgression.
-
 F433 — Off-line Meyer/theta escape lives at a nonclosed range/domain boundary. An ordinary
 bounded harmonic projection would assume a Hodge decomposition and erase the carrier. Corpus
 proves more: every closed relation retaining the off-line literal-source Xi graph is maximally
 multivalued, so no closed single-valued operator model is admissible.
-
 CANNOT-209 — It cannot define `T` through ordinary harmonic projections, a bounded Green inverse,
 or a closed single-valued theta operator. It must be formed from the multivalued horizons of closed
 relations before quotienting the completion defect away.
-
 F434 — Target integrality is already stronger than theta escape counting. The closed Meyer Xi
 relation has `Mul=0` on line and full scalar `Mul` off line; finite-packet source-projection kernel
 has dimension exactly total analytic Xi multiplicity. For one zeroth-order off-line copy the
 vertical index is unconditionally `1`. Missing work is only its pre-divisor all-prime formation
 identification and source nuclear factorization.
-
 ## Nuggets of knowledge (2026-09-02, one line each; certificates in the cards named)
-
 - **Weil–Deligne integrality is incompatible with RH itself.** If every Arakelov coordinate
   `w(ρ) = 1 − 1/ρ` of a zero is an algebraic integer and Galois conjugates of coordinates are
   coordinates, RH is false (`FrobeniusTorsionLaw`, F390).
@@ -4133,200 +3937,157 @@ identification and source nuclear factorization.
 - **The direct sub-unit anchor already has its integer, its lift, and its budget in the corpus**
   (`thetaKakutaniEscapeMultiplicity`, cubic Loewner landing, primitive Euler capacity); the
   open step is the same-boundary identification, whose naive form is RH (ULF-DSA-003).
-
 ## 2026-09-02 — six exponentials theorem in Lean (card `3-formalized/six-exponentials-lean.md`)
-
 F392 — Lean: for `x₀, x₁` rationally independent and `y₀, y₁, y₂` rationally independent, one of
 `exp(x_i y_j)` is transcendental (`SixExponentials.six_exponentials`, Siegel + multipoint
 Schwarz + Liouville, no zero-counting theorem); corollary: for nonreal `ρ` and distinct primes
 `p, q, r`, not all of `p^ρ, q^ρ, r^ρ` are algebraic (`not_all_three_prime_cpow_isAlgebraic`).
 Door 1's Theorem B is now certified; ULF-F1-002 has no open Lean item.
-
 - **Nugget:** the six exponentials theorem needs no zero-density estimate: vanishing on `M³`
   points in a disc of radius `~M` against growth `exp(O(M))` forces an exponential polynomial to
   vanish identically through the Schwarz lemma alone, and Liouville upgrades "tiny at a sample
   point" to "zero" one level at a time.
-
 ## 2026-09-02 — door 2 audited (card `3-formalized/escape-multiplicity-offline-indicator-lean.md`)
-
 F393 — Lean: the escape multiplicity of the direct sub-unit anchor is the off-line indicator,
 `= if Re q = ½ then 0 else 1`; the fusion's gap `budget < (115/108)·multiplicity` holds exactly
 off the line; its vanishing at every copy is RH (`RHTower.EscapeMultiplicityOffLineIndicator`).
-
 CANNOT-193 — It cannot read a Ferrero–Washington anchor off an integer that is the indicator of
 the conclusion's failure: the only bound below one unit for such an integer is the conclusion.
 The corpus's direct sub-unit anchor is, as it stands, a receiver; its open "prime-mixed formation
 strictness" has no formal statement and any version implying the capacity law is RH-strength.
-
 MUST-130 — A direct anchor must name an integer defined without reference to the zero's
 position, prove it positive at an off-line copy by a theorem, and bound it by an estimate that
 does not pass through the target inequality. No such integer exists in the corpus (the knapsack
 Euler characteristic, the completed-SEM contour index, and the escape multiplicity all fail one
 of the three).
-
 - **Nugget:** both doors of the terminal classification are, at the present state of the corpus,
   RH-equivalent receivers: door 1 by the torsion law and six exponentials, door 2 by the
   off-line-indicator audit. The corpus contains no non-RH-equivalent producer target.
-
 ## 2026-09-02 — integral--nuclear defect audit closed
-
 F435 — Lean: verticalization commutes with incidence totalization,
 `Mul(Tot_delta R)=Mul(R)∩ker(delta)`. A supplied strict-right Meyer fibre becomes exactly the
 full-support cross-prime line `C eta`; its projector is rank-one, Schatten-1, and has trace and
 trace norm exactly `1` (`IntegralNuclearRelationIncidenceHorizon`).
-
 F436 — Lean: all zero-clock P-G186 Burnol columns form one literal all-prime Hilbert--Schmidt
 synthesis `A_base`; `||A_base||_HS²=B_base<1`. Its covariance is Schatten-1 with
 `Re Tr(A_base A_base*)=B_base<1` (`RoutePPrimitiveBurnolBaseNuclearSynthesis`). No normalization
 or divisor enters; P-G186 retains every cross-prime Gram entry.
-
 F437 — These are two incompatible positive survivors, not one operator. Any bounded landing of
 the zero finite horizon defects is zero by dense-core continuity; any singular relation retaining
 the completion-born horizon loses the inherited Schatten bound. Thus the identity
 `Pi_theta-Pi_ar=A_s*Gamma A_s` is impossible under ULF-INHD-001's finite-core premises, not merely
 unproved. The route is retired.
-
 CANNOT-210 — It cannot transport an integral completion horizon through a bounded/contractive
 Hilbert--Schmidt landing from finite defects that all vanish. Nor can a summable diagonal topology
 select the horizon ray: summable weights admit every scalar; nonsummable weights admit only zero.
-
 MUST-132 — Any successor must change the arithmetic relation and source topology before finite
 completion, act nontrivially on finite witnesses, and derive a norm native to that topology. It
 cannot reuse `B_base` through a bounded landing or call the source covariance and horizon projector
 one `T` without proving an impossible identification.
-
 ## 2026-09-02 — MUST-130 attempted: no position-independent integer with an independent bound (card `5-failed/position-independent-integer-loop.md`)
-
 F394 — Lean: off the line the paired Li coefficients are positive for arbitrarily large `n`;
 unconditionally they are never eventually negative (`RHTower.LiSignOscillation`, mean value on
 the torus via recurrence and the geometric sum).
-
 CANNOT-194 — It cannot transfer the Ferrero–Washington mechanism to ζ: the negation of RH never
 yields a universal ("for all `n`") arithmetic statement, only "infinitely often" or "positive
 density" ones, because the dominant off-line contribution to every real arithmetic datum is a
 mean-zero almost-periodic oscillation. One independent instance can never refute it.
-
 MUST-131 — A direct anchor would need a datum whose off-line signal is one-signed; real
 Dirichlet data with a non-real dominant singularity cannot supply it. Every integer candidate
 (counts, indices, codimensions, signatures, indicators, growth exponents, Galois integers,
 continuous invariants) fails one of the three Ferrero–Washington ingredients.
-
 - **Nugget:** the archimedean obstruction to a direct sub-unit anchor is oscillation, not size.
-
 ## 2026-09-02 — stage 4: `4-publication-ready/archimedean-integrality-obstructions.md`
-
 The day's six certified theorems (twin rigidity, global parity wall, Frobenius torsion law, six
 exponentials with the prime corollary, off-line indicator, Li sign oscillation) and the
 classification are consolidated into a standalone manuscript. MUST-132 (one-signedness requires
 the zero's own frequency; position-independence forbids it) added to the loop card.
-
 ## 2026-09-02 — successor object constructed: restricted prime--Gamma Toeplitz polar defect
-
 F438 — For each pre-divisor admissible strict-right rectangle `D`, the continued prime--Gamma
 current canonically forms one boundary unitary `u_D`. Hardy compression `A_D=P M_(u_D) P` and its
 polar lift `W_D` define one graded defect
 `T_D=diag(1-W_D W_D*,1-W_D* W_D)`. It uses no supplied zero and mixes all primes before
 compression (`direct-subunit-anchor/restricted-prime-gamma-toeplitz-polar-defect.md`).
-
 F439 — Paper theorem: `T_D` is positive finite-rank/nuclear and
 `Tr T_D=|wind u_D|`; in the strict-right chamber its supertrace, ordinary trace, source contour,
 and enclosed Xi multiplicity coincide. Its two Hankel seams are native nuclear dominators, with
 `Str T_D=||H_(u_D*)||_HS^2-||H_(u_D)||_HS^2` and
 `Tr T_D<=||H_(u_D*)||_HS^2+||H_(u_D)||_HS^2`. Lean pending; no RH claim.
-
 F440 — This is not the retired bounded landing: finite local phases already have nonzero Hardy
 seams, and no vanishing finite horizon projector is transported. The integer and its candidate
 budget now live on the same compression. Naked winding remains a receiver; new leverage is the
 exact unsquared-current = relative-nuclear-energy transgression.
-
 CANNOT-211 — It cannot use arbitrary Xi inner/outer factorization as anomaly subtraction, import
 `B_base`, take an operator-norm Euler limit, compress primes separately, or subtract after taking
 norms. Each move is respectively circular, the retired impossible landing, formally blocked,
 non-mixed, or coefficient-destroying.
-
 MUST-133 (superseded by F441/MUST-134) — The first proposed lift asked for a global two-Hankel
 residual bound `<1`. Fresh audit shows the available cubic residual already exceeds one and global
 Wold/HS domination is RH-equivalent; only restricted properness or local anti-concentration
 survives.
-
 F441 — Fresh boundary audit kills the naive budget but exposes the higher mechanism. The positive
 cubic mismatch is not sub-unit: its prime-two atom is
 `(95/16)(log 2)^3>(95/16)(2/3)^3=95/54>1`. Identity-scale landing also overshoots the wall--Xi
 cubic residual by factor `>2000`. Global Wold/Gamma domination and global ordinary HS admission
 are separately exact RH receivers.
-
 CANNOT-212 — It cannot identify the scalar Euler/Wold cubic mismatch with the Toeplitz seam
 budget, use global Wold domination, or demand global physical Hilbert--Schmidt admission. It also
 cannot use a linear aperture-covariant lift: rate-change intertwining is formally impossible.
-
 MUST-134 — Recast formation in the restricted unitary group
 `U_res(P)={U | [P,U] is HS}`. Finite Euler--Gamma phases have index zero; `T_D` is the integral
 component-jump defect. Prove source counterphases make formation proper in the restricted metric,
 or prove every local `H^(1/2)` concentration atom has mass `<1`. Degree quantization then forbids
 all bubbles even though total residual energy exceeds one, forcing `T_D=0` and RH.
-
 ## 2026-09-02 — polar defect reinterpreted as completion-ionized charge
-
 F442 — Generic critical compactness is now exact. Mironescu proves every bounded
 `W^(1/2,2)(S1;S1)` degree loss is a finite list of escaping Möbius profiles; each costs the sharp
 `4*pi^2` Gagliardo quantum. Hyder--Martinazzi give the equivalent `2*pi` degree quantum in their
 half-harmonic normalization. Diffuse excess energy cannot carry a winding jump.
-
 F443 — The prime-Bohr source already forms strongly in Haar `L2` for every `Re(s)>1/2`, but the
 physical height orbit is dense Haar-null, so ambient `H2` has no canonical point restriction.
 Full `C(PrimeTorus)`-linear RFHM sewing is worse: Lean proves it erases every nonempty native prime
 support. Fixed-support prime recurrence therefore cannot produce confinement.
-
 F444 — New paper theorem on the actual two seams: with Hardy number `N e_j=j e_j`,
 `C_Theta(u)=Tr((N+1)H_u*H_u)+Tr((N+1)H_(u*)*H_(u*))`
 equals `(1/2) sum_(n!=0)|n|(|n|+1)|uHat(n)|^2`. Bounded `C_Theta` is exactly an `H1`-properness
 bound; Rellich compactness forces strong `H^(1/2)` convergence and preserves winding. For one
 Blaschke charge `b_a`, total cost is `1/(1-|a|^2)` and excess number cost is
 `|a|^2/(1-|a|^2)`, so boundary escape costs infinity.
-
 F445 — Higher interpretation: literal finite formation is a neutral chiral dipole gas; completion
 noncompactness permits ionization; `T_D` is the unbalanced integral charge left when one chirality
 escapes; `C_Theta` is its canonical separation cost. Fixed mixed inertia, rapidity, Krein negative
 directions, closed recurrence, and open lifted history are shadows of this one mechanism.
-
 CANNOT-213 — It cannot use ambient prime-torus restriction, full reversible source linearity,
 fixed finite-prime phase bounds, a scalar diffuse normalizer, or the heat-echo zero detector as the
 producer. None controls the first moment of both oriented Hardy seams; two options destroy native
 support or reuse completed Xi data.
-
 MUST-135 — Construct source-only counterphases before winding extraction and prove the uniform
 weighted-seam bound `sup_k C_Theta(v_(D,k))<infinity` for the literal prime-mixed relative phases,
 after coefficientwise universal-anomaly subtraction. Theorem RPGT-B then forces every strict-right
 contour winding to zero and closes RH. Weaker acceptable target: sub-unit energy for every escaping
 Möbius profile, not every defect-measure atom.
-
 F446 — Correction: `fieldOneFiniteStageSphericalScatteringSymbol` is a real critical-line phase,
 not a strict-right boundary formation sequence. The latter can instead start from the explicit
 pre-divisor family
 `L_x(s)=sum_(n>=2)(Lambda(n)/log n)e^(-pi*x*n^2)n^(-s)`, `E_x=exp L_x`.
 For every `x>0`, `L_x` is entire, `E_x` is zero-free, all prime-power Euler-log coefficients remain
 unsquared, and `E_x -> zeta` on `Re(s)>1`.
-
 F447 — New paper theorem RPGT-C: for zero-winding phases `u_k` weakly convergent in bounded
 `H^(1/2)`, let `kappa_+/-` be loss of positive/negative chiral Hankel energy. Then
 `wind(u)=kappa_- - kappa_+`. Hence positive completed winding implies `kappa_- >= 1`; the single
 source inequality `kappa_-<1` forces `T(u)=0`. This is strictly weaker than uniform `H1`
 properness and is the exact direct sub-unit anchor.
-
 F448 — The chiral loss is a singular ordered-limit observable. For a Blaschke escape kernel,
 `Tr((1-e^(-tau*N))|k_a><k_a|)=|a|^2(1-e^(-tau))/(1-|a|^2e^(-tau)) -> 1` as `|a|->1`, while
 taking `tau->0` first gives zero. Completion and cooling do not commute; their commutator is the
 integral charge. This evades bounded dense-core landing because finite phases already have
 nonzero seams and no bounded source-to-horizon operator is asserted.
-
 CANNOT-214 — It cannot use the critical-line scattering symbol as a strip approximation, make
 an entire Euler gauge change contour charge, or identify the independent Burnol `<1` covariance
 with chiral corona loss through a bounded factorization. Each move is formally closed.
-
 MUST-136 — Use literal integer/Poisson self-duality to form a holomorphic anomaly for the Gaussian
 Euler exponential, then prove weak boundary convergence and the native negative-chiral bound
 `kappa_-(D)<1` on the same Hankel seam. RPGT-C then forces every strict-right winding to vanish.
-
 F449 — `ULF-GECRF-001` constructs the anomaly exactly. With
 `M_x(s)=integral_1^infinity e^(-pi*x*u^2)u^(-s)du`, take the entire primitive
 `A_x'=M_x`, `A_x(2)=0`, and
@@ -4334,104 +4095,86 @@ F449 — `ULF-GECRF-001` constructs the anomaly exactly. With
 `Re(s)>0` and its current is `logDeriv(h_infinity)-J_x+M_x`. On `Re(s)>1`,
 `M_x->1/(s-1)`, `A_x->Log(s-1)`, and `Phi_x->xi` locally uniformly. This is the literal
 prime-atomic minus continuum-heat metric subtraction; no divisor or fitted normalizer enters.
-
 MUST-137 — Counterterm construction is closed. Remaining theorem is now only: prove weak
 `H^(1/2)` convergence of `Phi_x/|Phi_x|` to the completed Xi boundary phase on strict-right
 contours and prove its negative chiral corona loss `<1`. Ordinary local-uniform convergence is
 impossible exactly when a completed zero is enclosed, so the proof must be singular/ordered-limit.
-
 F450 — The reflected source charts have exact transition
 `G_x(s)=Phi_x(s)/Phi_x(1-s)` on `0<Re(s)<1`: it is zero-free,
 `G_x(1-s)=G_x(s)^(-1)`, and `|G_x|=1` on `Re(s)=1/2`. Functional-equation action therefore lifts
 through literal Gaussian Euler--continuum formation information-neutrally.
-
 CANNOT-215 — The two-chart cocycle is not selection. It constrains gluing but cannot prevent the
 common completed section from vanishing; treating reciprocal/unitary transition as RH repeats the
 corpus functional-equation countermodels and balanced-index cancellation.
-
 F451 — Safe-chart compactness is unconditional: on every closed contour in `Re(s)>1`, `Phi_x` and
 its log derivative converge uniformly to `xi` and `xi'/xi`; normalized phases converge in `C1`,
 so both chiral losses are zero. The defect is therefore not an Euler-product truncation artifact:
 it is created only at singular passage from the safe Euler chart into the completed strip.
-
 F452 — `ULF-RUCRI-001` constructs the requested single object. For a pre-divisor mixed boundary
 phase `U`, let `R=U*PU`, `Delta=R-P`, and `mathsf T=Delta^3`. At critical `H^(1/2)` regularity,
 `Delta` is Hilbert--Schmidt and `mathsf T` is one self-adjoint nuclear integral operator. Its trace
 is the integer relative index, hence the boundary winding. Its `+/-1` endpoint spectrum recovers
 the two polar kernel/cokernel multiplicities.
-
 F453 — Cubic grade is forced, not decorative. Linear displacement retains orientation but need
 not be trace class in `S2`; quadratic displacement is nuclear but reflection-even; cubic is the
 first ordinary nuclear trace that is reflection-odd and integral. This explains why linear source
 currents and quadratic positivity repeatedly fail while cubic Green/Cauchy/Loewner/Gamma-six
 readers survive.
-
 F454 — The integral kernel is explicit:
 `d_u(z,w)=(conj(u(z))*u(w)-1)K_P(z,w)` and `mathsf T` is its threefold cyclic convolution.
 For Gaussian Euler formation the exponent of `u` is one sum over all prime powers, so this kernel
 contains mixed distinct-prime monomials before compression. `mathsf T` is not a sum of local
 indices.
-
 F455 — Exact source-clock fusion:
 `B_base=(1/8) integral_0^infinity t^2[-zeta'/zeta(1+t)]dt
 =(1/4)sum_(n>=2)Lambda(n)/(n log(n)^3)<1`.
 Thus the Route-P/CCM base budget is the third inverse moment of the safe prime-log contraction
 semigroup. Burnol aperture damping diagonalizes the same clock and its three-channel colligation
 preserves full mixed matrix pairings.
-
 CANNOT-216 — The Gamma-clock scalar identity alone cannot select. Declaring it equal to a Hankel
 energy repeats the retired bounded landing; discarding Burnol cross terms loses formation. A valid
 bridge must act on the degree-three cyclic chain and may be closed-graph/mapping-cone, not a
 bounded one-particle map.
-
 MUST-138 — Construct before divisor specialization a matrix-complete degree-three cyclic
 transgression from Gaussian Euler/Burnol formation to the Hardy projection pair proving
 `0<=Tr mathsf T_D<=B_base<1`. Since `Tr mathsf T_D` is strict-right multiplicity, this single
 inequality closes RH. Exact falsifiers: wrong cyclic degree, loss of cross-prime coefficients, or
 no trace-norm control by the Gamma-clock mass.
-
 F456 — The “different source objects” gap is closed. For `t>0`,
 `J(t)=pi^(t/2)/Gamma(t/2) int x^(t/2-1)J_x(1)dx`, while the same normalized Mellin transform of
 `M_x(1)` is `1/t`. Thus the centered safe current `J(t)-1/t` is exactly the Mellin transform of
 the Gaussian atomic-minus-continuum anomaly, and
 `B_base=int K_3(x)J_x(1)dx` for an explicit positive Mellin--Gamma kernel. Gaussian formation,
 prime-log aperture, continuum subtraction, and cubic capacity are one source law.
-
 F457 — Literal integrality enters as a gap, not a slogan: continuum frequency reaches `log u=0`
 and creates the non-trace-class pole `1/t`; integer atoms start at `n=2`, giving gap `log 2` and a
 finite cubic action. The remaining selector must turn this gapped bulk action into the boundary
 cubic Chern character without a positive diagonal majorant (CANNOT-216).
-
 F458 — `B_base` is dynamic bulk action. For prime-mixed Burnol label Gram `C_B` and diagonal
 semigroup `D_c` with full eigenvalue `exp(-c*(log n+i*kappa))`, matrix-complete colligation gives positive
 `C_def(c)=C_B-D_c* C_B D_c`, retains cross-prime entries, and
 `B_base=int_0^infinity d/dc Tr C_def(c) dc`. The flux density is the complete quadratic Green
 current. Target `Tr mathsf T_D` is boundary topological charge; missing law is now a
 bulk-to-boundary action inequality between two one-sided homotopies.
-
 F459 — Correct ambient object is now explicit. The literal Hilbert--Schmidt Burnol synthesis
 `A_base` defines the holomorphic restricted-Grassmannian cap
 `Gamma_base(z)=graph(z A_base)`. With determinant-line normalization,
 `Area(Gamma_base)=Tr(K_base(1+K_base)^(-1))<=Tr K_base=B_base<1`. Paper proof is
 dependency-closed in `ULF-BGCA-001`; no RH claim.
-
 F460 — This cap is pre-divisor, nonzero, and matrix-level prime-mixed. `K_base=A_base* A_base`
 retains every cross-prime Gram entry before the determinant trace. The final area scalar is only a
 shadow; any valid completion theorem must sew the full graph/determinant line, not import its
 number as a target budget.
-
 F461 — Corpus escape laws line up as one restricted-Grassmannian mechanism: Tate node charge is
 boundary winding; FE reflection is anti-symplectic; an off-line divisor is a source-matched
 escaping bubble; critical horizon multiplicity has a Schubert-cell reader; the cubic projection
 trace is the integral boundary character. Interpretation: off-line zeros are completion bubbles,
 not primary spectral objects.
-
 CANNOT-217 — It cannot identify `pi_0` relative index with a `pi_2` bubble without a canonical
 Bott suspension; use arbitrary symplectic rather than pseudoholomorphic sewing; scalarize away
 cross-prime Gram entries; use fixed-support Quillen response, rectangular Evans Pluecker norm, or
 a divisor-defined formation map. Each move is respectively ill-typed, nonpositive, non-mixed, or
 already closed/circular.
-
 MUST-139 — Construct coefficientwise from Gaussian Euler--continuum/Burnol formation a
 Bott-suspended pseudoholomorphic sewing into `Gr_res,2` whose stable completion loss is a positive
 determinant-line Schubert bubble, with
@@ -4439,475 +4182,375 @@ determinant-line Schubert bubble, with
 `0<=Tr mathsf T_D<E_base<1` forces zero strict-right multiplicity and RH. Sharpest falsifier:
 diffuse infinite-rank energy leakage or failure of the graph rotation to suspend the actual
 completed Hardy phase.
-
 F462 — `ULF-BGAF-001` makes the source geometry dynamic. Forward Burnol aperture damping extends
 to a contraction semigroup `S_c`; for `A_c=S_c A_base`,
 `K_c=A_c* A_c` decreases in Loewner order and
 `E(c)=Tr(K_c(1+K_c)^(-1))` decreases from `E(0)<1` to zero. Interval action
 `E(c)-E(d)` is nonnegative and exactly additive.
-
 F463 — Matrix-completeness survives the nonlinear action filtration. For finite packets,
 `K_c-K_d` is exactly the sum of positive boundary and tail-cocycle defect Grams, including all
 cross-prime entries. The source now supplies a one-sided filtered continuation, not a static
 capacity scalar; backward Burnol time is singular.
-
 CANNOT-218 — It cannot use an arbitrary stable sewing that injects action, or infer target index
 from source monotonicity alone. Source graph action is closed, but no current theorem says theta
 completion is a filtration-nonincreasing canonical relation.
-
 MUST-140 — Strengthen MUST-139 to a coefficient-native filtered Floer/Maslov law: construct the
 theta correspondence so every Schubert/Maslov completion event has target action bounded by an
 exact Burnol source interval. Unit determinant-line quantization plus total source action `<1`
 then forbids index one. Exact open core remains canonical Bott suspension + infinite-rank
 tightness, now with a required monotone continuation identity.
-
 F464 — `ULF-DLLA-001` closes the observer/lift geometry. For any graph cap,
 `Hol_det(boundary)=exp(2*pi*i*E)`. Two framed fillings of the same boundary differ in lifted area
 by the integral determinant-line Chern number; a positive Schubert bubble subtracts its integer
 degree from residual action while leaving holonomy unchanged.
-
 F465 — Corpus independently predicts this quotient: Berry holonomy does not determine winding
 action; closed determinant observation can have open logarithmic lift; periodic phase quotient can
 hide nonzero integral carry; occupied strict frontiers carry integer holonomy coordinates. New
 interpretation: `mathsf T_D` is the nuclear operator representative of the hidden deck
 translation, not of determinant phase.
-
 CANNOT-219 — Common determinant holonomy, FE cocycle, or phase recurrence cannot select RH: each
 is invariant under adding an integral Schubert bubble. Unframed filling comparison is also
 meaningless because a boundary gauge winding can insert an arbitrary deck integer.
-
 MUST-141 — Construct a coefficient-native common determinant framing and prove
 `Tr mathsf T_D=q(Euler graph filling, theta residual filling)`. Then prove theta continuation
 selects the principal filtered lift, so
 `E_base=E_residual+Tr mathsf T_D` with both energies nonnegative. This is the exact mechanism by
 which `<1` kills the integer; phase equality alone is intentionally information-neutral.
-
 F466 — Naive Paley--Wiener/characteristic-function transport is closed. Corpus already has exact
 half-line-to-Hardy unitary transport, but proves no linear aperture-covariant operator—even
 unbounded and radius-nonlocal—can change a primitive Burnol decay rate into a strict-right Xi
 rate. Missing completion is necessarily nonstationary.
-
 F467 — Strongest survivor is an exact curvature law: every prescribed rate-changing landing has
 aperture-covariance defect with `c^-2` boundary jet `2*(w-z)`, retaining full complex displacement.
 Thus the polar--Gamma term must be mixed connection curvature, not a scalar correction or norm
 loss.
-
 CANNOT-220 — It cannot use a flat contraction characteristic function, stationary convolution,
 multiplier, Paley--Wiener landing, or functional calculus as completion transport. All preserve
 the wrong aperture character and are formally killed.
-
 MUST-142 — Build the Euler--theta determinant differential character over the two formation
 coordinates `(Burnol aperture c, Gaussian heat x)`: horizontal graph action is `ULF-BGAF-001`,
 vertical transport is the zero-free Euler--continuum family, mixed curvature is their forced
 noncommutation after universal metric-anomaly subtraction, and boundary transgression is
 `Tr mathsf T_D`. Prove the renormalized curvature is positive with total mass `<1`.
-
 F468 — Ordinary positive Grassmannian is only the reduced/source-edge shadow, not the ambient
 field. Actual theta Green boundaries converge to fixed rank-two mixed inertia with witnesses
 `+1/6,-1/6`; boost-invariant reflection-symmetric positivity is formally zero; Gaussian formation
 is atomic minus continuum. Pre-reduction geometry must be graded/Krein.
-
 F469 — Four legs are forced: upper, reflected upper, lower, conjugate lower. Corpus constructs the
 matrix-complete positive four-leg Hodge Gram and proves the natural two-leg diagonal flips sign
 under a quarter-turn. Collapsing fourth leg to first, or demanding raw defect nonnegativity, is
 exactly RH and cannot be assumed.
-
 F470 — `ULF-ETRS-001` freezes the higher field: a four-leg restricted Krein Grassmannian with
 Burnol aperture and Gaussian heat as formation coordinates; atomic/continuum supertrace removes
 the universal metric anomaly; mixed polar--Gamma curvature carries forced rate-change work; odd
 boundary transgression is the cubic `mathsf T`; positive Schubert quantization occurs only after
 theta reduction.
-
 CANNOT-221 — It cannot impose positivity before continuum/gauge reduction, collapse reflected
 four-leg data, or use an arbitrary indefinite metric. These respectively force zero, assume RH,
 or lose source provenance. Grading and fundamental symmetry must be derived from literal
 Euler/continuum/FE formation.
-
 MUST-143 — Construct the operator-valued Gaussian continuum leg on the same four-leg carrier as
 the Burnol connection. Prove matrix-first relative trace-class curvature and positive reduction:
 `E_Euler=E_reduced+Tr mathsf T_D`, `E_reduced>=0`. This one theorem would turn the closed `<1`
 Euler action into RH without pretending the unreduced field is positive.
-
 F471 — `ULF-FACHD-001` replaces bare-observer cubic defect by one formation-relative operator.
 For completed boundary phase `u_(D,0)` and any zero-free Gaussian Euler--continuum phase
 `u_(D,x)`, set `R_(D,x)=M_(u_(D,x))* P M_(u_(D,x))` and
 `mathsf T_(D,x)=(R_(D,0)-R_(D,x))^3`. It is self-adjoint, nuclear, prime-mixed before
 compression, and `Tr mathsf T_(D,x)=wind(u_(D,0))-wind(u_(D,x))` is integral.
-
 F472 — Every positive Gaussian anchor has winding zero and all anchors are connected through the
 restricted topology. Hence `Tr mathsf T_(D,x)` is independent of `x>0` and equals the continued
 prime--Gamma contour multiplicity. The preferred representative uses `x=1`; it measures the
 component jump from literal zero-free Euler--theta formation to singular completion, not from an
 empty observer to Xi.
-
 F473 — Relative cubic defects satisfy exact two-channel and trace-cocycle laws:
 `T(u,v)=R_u(1-R_v)R_u-R_v(1-R_u)R_v` and
 `Tr T(u,w)=Tr T(u,v)+Tr T(v,w)`. Operator additivity fails by a traceless nuclear associator;
 this associator retains matrix data erased by the integral trace.
-
 CANNOT-222 — Source ownership plus integrality is not selection. It cannot infer
 `Tr mathsf T_D<B_base` from common boundary, equal winding identities, or homotopy invariance;
 that would still import a scalar budget without a matrix-complete cyclic action map.
-
 MUST-144 — Construct the coefficient-native degree-three transgression bounding the positive
 channel of the formation-relative `mathsf T_D` by Burnol graph action. Exact closure is now on one
 boundary and one projection pair: `0<=Tr mathsf T_D<=B_base<1`.
-
 F474 — Naive Gaussian continuum synthesis on the Burnol carrier is impossible: its log-frequency
 `lambda` column has norm square `1/(4 lambda^3)`, while continuum reaches `lambda=0`. A negative
 Krein sign cannot repair an undefined infinity-minus-infinity covariance; subtraction must occur
 before norms.
-
 F475 — `ULF-CAGC-001` constructs the forced repair. Multiplying continuum and Euler columns by
 the cubic aperture-energy gauge `(1-exp(-2c lambda))^(3/2)` makes both syntheses Hilbert--Schmidt.
 Energy order `q` is integrable at zero iff `q>=3`; zero, linear, and quadratic defects diverge.
 Thus cubic is independently minimal at source continuum wall and target `S_2` index wall.
-
 F476 — Cubic-gauged Euler and continuum legs live on one carrier. Their full Gram retains
 distinct-prime and atomic--continuum blocks; their graded range covariance is nuclear, and
 conjugate doubling gives the required `(+,-,+,-)` field. Euler trace remains bounded by
 `B_base<1`; continuum trace is finite for each positive heat/aperture.
-
 CANNOT-223 — It cannot place raw continuum in a negative Hilbert leg, regularize only after trace,
 or use first/second aperture defects. These objects do not exist in the required nuclear category.
-
 MUST-145 — Build the cyclic boundary map from cubic-gauged four-leg relative covariance to
 formation-anchored `mathsf T_D`, preserving full mixed Gram, and prove theta reduction leaves a
 nonnegative residual. This is now the sole structural bridge before the sub-unit integer kill.
-
 F477 — `ULF-OCSE-001` proves the cubic-gauged continuum columns are total in the Burnol carrier:
 `closure span {r*exp(-lambda*r):lambda>0}=L2(0,infinity)`. The positive cubic multiplier is
 nonzero at every positive label, so `closure(Ran A_0)=H_B` for every `x,c>0`.
-
 F478 — Orthogonal continuum shorting is exactly zero: its range projection is `I`, hence
 `(I-P_0)A_E=0`. Ordinary Hilbert completion has already erased the distinction required for
 selection; a negative grading does not manufacture a complementary output subspace.
-
 F479 — Before completion, Euler and continuum energy measures remain mutually singular: the
 Euler measure is pure point on `{log n}`, while the Gaussian continuum measure is absolutely
 continuous. Thus source provenance lives in the label measure class and source-to-completion
 arrow, not in a closed subspace of the Burnol output.
-
 CANNOT-224 — It cannot use orthogonal range quotient, output-space Schur shorting, or any
 continuous reporter depending only on the completed Hilbert range. All annihilate or forget the
 atomic/continuum formation distinction.
-
 MUST-146 — Replace Hilbert-range reduction by a provenance-retaining mapping cone or rigged
 cyclic relation for `[A_E A_0]`. Construct its degree-three boundary character to the
 formation-relative `mathsf T_D`, then prove positive reduction before nonfaithful closure:
 `0<=Tr mathsf T_D<=Tr K_E<B_base<1`.
-
 F480 — `ULF-ZDIA-001` proves the continuum synthesis is compact, injective, dense-range, and
 nonsurjective. Its inverse on `Ran A_0` is therefore a closed densely defined unbounded operator:
 continuum completion has a canonical singular graph norm.
-
 F481 — Every nonzero finite active Euler packet lies outside `Ran A_0` although its distance to
 that range is zero. Equality with a continuum lift would equate an absolutely continuous Laplace
 measure to a nonzero finite pure-point measure, forbidden by Laplace uniqueness and mutual
 singularity.
-
 F482 — Every continuum lift approximating such an Euler packet has norm tending to infinity.
 Formation defect is therefore zero-distance/infinite-action, not a positive output residual. This
 is the first exact location for the universal completion anomaly required by the working theory.
-
 F483 — Canonical regularized lift action
 `C_epsilon=A_E*(A_0 A_0*+epsilon I)^(-1)A_E` is positive, prime-matrix-complete, and nuclear for
 every positive regulator; every active Euler diagonal diverges as the regulator vanishes. Corpus
 Wold cubic renormalization has exactly the required coefficientwise divergence-minus-counterterm
 shape, but its operator identification with this lift action is open.
-
 CANNOT-225 — It cannot treat dense continuum approximation as admissibility, use bounded inverse
 completion, or subtract an arbitrary scalar infinity. The inverse is unbounded, every finite
 Euler atom has infinite raw lift action, and prime-independent ghost subtraction is already an
 RH-equivalent receiver.
-
 MUST-147 — Derive an operator-valued Wold/Poisson counterterm for `C_epsilon` from literal
 integer/theta self-duality, prove trace-norm convergence of its finite part, and identify its cubic
 cyclic boundary with `mathsf T_D`. Positive finite-part domination would close the sub-unit gate.
-
 F484 — `ULF-MHPD-001` proves both formation legs are dense in the same Burnol carrier. Continuum
 totality is Laplace uniqueness; Euler totality already follows from the prime-two depth tower
 `{r*exp(-k log(2)r):k>=1}` by polynomial-moment uniqueness.
-
 F485 — No bounded one-channel target operator can transport source provenance grading: acting as
 `+I` on dense Euler range forces `F=I`, while acting as `-I` on dense continuum range forces
 `F=-I`. Atomic/continuum sign is a genuine completion-descent anomaly.
-
 F486 — Two channels are minimal and sufficient. Hadamard synthesis
 `B(a,b)=(A_Ea+A_0b,A_Ea-A_0b)` is Hilbert--Schmidt with dense range, transports source grading to
 target swap exactly, reconstructs both legs, and obeys the parallelogram conservation identity.
 Functional-equation/Schwarz doubling then forces the observed four-leg `(+,-,+,-)` carrier.
-
 CANNOT-226 — It cannot compress atomic/continuum provenance to one bounded completed observer.
 Nor does arbitrary Krein doubling suffice: two-channel structure and swap are fixed by exact
 Hadamard reconstruction; the conjugate pair is fixed separately by functional equation.
-
 MUST-148 — Construct theta phase quotient on the derived four-leg Hadamard carrier and prove its
 degree-three boundary is formation-relative `mathsf T_D`. Only after this exact boundary identity
 may reduced positivity be used to compare its integer trace with `B_base<1`.
-
 F487 — `ULF-CFPO-001` proves a parity no-go: any invariant `Q` fixed by an involution cannot,
 through any postprocessing, determine a nonzero charge `q` reversed by that involution. Limits,
 finite parts, functional calculus, traces, determinants, and covariance-native cyclic formulas
 remain even because they still factor through `Q`.
-
 F488 — The canonical inverse-completion family
 `C_epsilon=A_E*(A_0 A_0*+epsilon I)^(-1)A_E` is unchanged by global source sign reversal, whereas
 `Tr T(u,v)=wind(u)-wind(v)` changes sign under endpoint reversal/inversion. Therefore the proposed
 covariance-only equation `Ch_3(C_rel)=mathsf T_D` is false or imports orientation circularly.
-
 F489 — Corpus verifies this is arithmetic, not merely abstract: prime-power Koplienko Gram is
 identical for a literal Euler coefficient and its negative, while the linear semilocal current
 separates them. Theta recovers `logDeriv Xi` through an antisymmetric metric cross-current. Hence
 metric action and oriented charge are two irreducible inputs.
-
 CANNOT-227 — It cannot derive winding, horizontal sign, or `mathsf T_D` from positive covariance,
 inverse-Gram action, its counterterm, or any functorial finite part alone. Renormalization removes
 divergence; it does not create lost orientation.
-
 MUST-149 — Construct a pre-divisor bivariant transgression pairing the renormalized singular
 completion metric with the literal reflection-odd prime--Gamma/Maurer--Cartan current. Prove this
 mixed current is nuclear, has boundary `mathsf T_D`, and inherits the `<1` Euler action bound.
-
 F490 — `ULF-SSIN-001` constructs the missing source-side bivariant object explicitly. For the
 source-normalized Stokes probability `pi_d` on primes, let `psi_d(p)=sqrt(pi_d(p))` and
 `mathsf T_src(t)=sign(t)|psi_|t|><psi_|t||`. It is pre-divisor, self-adjoint rank one, nuclear,
 reflection-odd, cross-prime at every matrix entry, preserves the unsquared current on its
 diagonal, and has integral trace `sign(t)`.
-
 F491 — `mathsf T_src(t)^3=mathsf T_src(t)` and its trace norm is exactly one. It is trace-norm
 continuous separately in both horizontal chambers, but as `t->0` it converges strongly to zero
 while one-sided traces remain `+1,-1`. Every compact observer sees zero. This is a literal closed
 observer/open lifted-history law generated by the Euler source, not assumed as abstract corona
 data.
-
 F492 — The normalized scalar prime Stokes jump is half the jump of `Tr mathsf T_src`, hence one;
 the pole--Gamma counterjump is minus one and their completed charge is zero. Prime current,
 nuclear homotopy, and archimedean countercurrent obey one exact integral conservation identity.
-
 CANNOT-228 — It cannot transport the source unit to completed `mathsf T_D` by a map continuous
 only for strong/weak operator topology or through compact reporters: the source operator closes
 to zero in exactly those topologies while its nuclear trace charge remains one.
-
 MUST-150 — Construct the singular theta/Poisson relative boundary map carrying the source wall
 class `[mathsf T_src]` to the completed rectangle class `[mathsf T_D]`, then prove its positive
 target channel is paid by Euler budget `<1`. The source side now has the required orientation,
 prime mixing, nuclearity, and integral unit; only conservation through singular completion remains.
-
 F493 — `ULF-SCIN-001` upgrades the rank-one Stokes ray to the literal normalized cofinal child:
 `mathsf T(t)_(p,q)=sign(t)sqrt(pi(p)pi(q))kappa(log p,log q)`, with cubic Burnol coherence
 `kappa(a,b)=8(ab)^(3/2)/(a+b)^3`. It is pre-divisor, genuinely cross-prime, self-adjoint,
 Schatten-one, reflection-odd, and has integral trace and trace norm `1`.
-
 F494 — This full-coherence `mathsf T` is trace-norm continuous in each chamber and strongly tends
 to zero in the fixed prime chart at the wall. Its source-forced quantile isometries instead
 conjugate it to integral kernels on `L2(0,1)` converging to the unit-exponential cubic kernel.
 Thus fixed observers lose the nuclear unit while a comoving source chart retains it.
-
 F495 — Corpus `L2` quantile-kernel convergence plus positivity and exact trace conservation
 upgrades to trace-norm convergence by positive trace-tightness. Ordinary Fredholm determinants
 therefore converge locally uniformly, transporting linear Stokes charge, every cross-prime entry,
 and all compound orders in one frame. This closes normalized-child determinant landing, not Xi
 identification or the physical squared-child landing.
-
 CANNOT-229 — It cannot interpret fixed-chart strong vanishing as disappearance of formation, use
 only compact observers, or replace the missing completion map by direct aperture-wall Xi
 identification. The same source section is zero strongly and nonzero in trace norm after its
 endogenous singular frame change; direct Xi identification is already false.
-
 MUST-151 — Construct a theta/Poisson relative boundary functor from the exponential-limit cubic
 kernel plus pole--Gamma countercurrent to completed `mathsf T_D`, and prove its positive target
 energy is bounded by the primitive Euler budget `<1`. This functor must act on marked relative
 currents and their singular frames, not covariance alone.
-
 F496 — `ULF-EWHC-001`: comoving wall operator has `Tr A=1` and exact
 `Tr(A^2)=16/35`, hence `||A||<=4/sqrt(35)<1`. Reversing its Burnol Gram factorization gives
 explicit positive trace-one Hankel partner `b(r,s)=24rs/(1+r+s)^4`, with same nonzero spectrum
 and determinant. Literal prime-mixed formation is already a strict contraction before any divisor.
-
 F497 — `I-A` is source-canonically invertible by norm-convergent Neumann series;
 `det(I-zA)` is zero-free for `|z|<sqrt(35)/4`, and exact second coefficient is `19/70`. This is
 unconditional source leverage, but direct/scalar wall-to-Xi identification is formally false, so
 strict contraction must survive a divisor-changing relative boundary operation.
-
 CANNOT-230 — It cannot be monotone CDF transport from exponential wall coordinates to two theta
 half-intervals. That half-density sewing exists for every positive even density, and its
 translation covariance is definitional conjugacy; it narrows no source class and changes no
 spectral invariant. Fixed integer multiplication is also trivial in wall scale since its shift is
 `2d log n ->0`.
-
 MUST-152 — Use theta's singular Jacobian only inside an independent Poisson/functional-equation
 boundary identity that changes divisor-bearing operator while preserving unsquared prime
 formation and strict wall contraction. Coordinate sewing without such identity is gauge.
-
 F498 — `ULF-SKPM-001`: for Kummer modulation `M_tau` of exponential wall operator `A`, complete
 HS survival overlap is exactly
 `C(tau)=6 integral_0^1 v^2(1-v^2)^2/(1+tau^2v^2)dv`. It is positive, even, strictly decreasing
 in `|tau|`, starts at `16/35`, tends to zero, and satisfies `tau^2 C(tau)->16/5`. This fuses
 prime Stokes formation, Burnol coherence, Kummer phase, and recurrence overlap.
-
 F499 — Literal wall/Kummer joint chart is parabolic: `x=2d log p` forces spectral phase
 `y=2d tau`. For fixed `tau`, quantile-transported phase conjugates converge in trace norm to
 `M_tau A M_tau*`. Fixed nonzero height corresponds to infinite wall frequency; a uniform atomic
 limit there remains open.
-
 CANNOT-231 — Radial strict contraction cannot itself be recurrence clock; corpus already proves
 nonzero cofinally recurrent orbit impossible. Radial formation and reversible phase must be
 independent directions. Nor may phase conjugacy alone prove RH: it preserves spectrum and trace.
-
 MUST-153 — Derive from literal theta/Poisson self-duality that completed recovery is
 information-neutral for marked HS overlap after metric-anomaly subtraction. Then formation-born
 off-line recurrence would conflict with exact source decoherence; absent that independent law,
 recurrence descent remains an RH-equivalent receiver.
-
 F500 — Squared-frequency response has a hidden exact law:
 `C(sqrt(q))/(16/35)=E[(1+q Lambda)^-1]` for `Lambda~Beta(3/2,3)`. It is strictly completely
 monotone, with every wall jet fixed by
 `(-1)^n F^(n)(0)=48n!/((2n+3)(2n+5)(2n+7))`. Here `Lambda` is squared Cayley contrast
 `((x-y)/(x+y))^2`, so one probability law generates the full phase-response tower.
-
 F501 — `ULF-DHNJ-001`: normalized Kummer commutator energies of the prime-mixed wall satisfy
 `m_n=||ad_X^n(A)||_2^2/((2n)!||A||_2^2)=105/((2n+3)(2n+5)(2n+7))`. Exactly,
 `m_n=h(n+1)h(n+5/2)/(h(1)h(5/2))`, where `h(s)=-B(s+1/2,3/2)` is the corpus's literal
 Euler odd-Hodge response. Thus full nuclear homotopy jet is a forced double-Hellinger boundary.
-
 MUST-154 — Lift the correlated double-Hellinger state, not either scalar factor alone, through
 literal theta/Poisson completion while retaining its positive decaying coface flux. Ordinary
 closed coface quotient is impossible: it saturates off centre and recovery does not descend at
 centre. Required carrier must preserve joint provenance before closure.
-
 F502 — Normalized homotopy tails have canonical positive flux
 `w_n=m_n-m_(n+1)=630/((2n+3)(2n+5)(2n+7)(2n+9))`, with `sum w_n=1` and
 `m_n=sum_(k>=n)w_k`. Integral unit is total dissipation through open Hodge history, not constant
 charge stored at any grade.
-
 CANNOT-232 — It cannot be a closed linear one-marginal Hellinger boundary conserving nonzero
 charge along factorially vanishing grades. Corpus proves this forces a vertical `(0,charge)` in
 graph closure; ordinary adjacent-coface closed span is already diagonal at centre and top off it.
-
 F503 — `ULF-PHIN-001` constructs final pre-divisor object on `ell2(Nat) tensor ell2(Primes)`:
 `mathsf T(t)=diag(w_n) tensor mathsf T_form(t)`. It is prime-mixed in every history fibre,
 Schatten-one, reflection-odd, trace `sign(t)`, trace norm one, and its tail traces reconstruct every
 normalized Kummer commutator energy. Forced uniqueness follows from adjacent tail subtraction.
-
 F504 — Comoving history--formation wall has direct norm bound
 `||Phi tensor A||<=8/(3sqrt(35))<1` while retaining integral trace one. Fixed-chart strong limit is
 zero; comoving trace-norm limits are `+/- Phi tensor A`. Off-line corpus target instead carries
 one trace unit as multivalued prime-mixed relation horizon.
-
 MUST-155 — Prove literal integer/Poisson self-duality makes anomaly-subtracted completion positive,
 unital, trace-preserving, and grade-flux preserving on `mathsf T`, and identifies its divisor
 specialization with the relation-horizon defect. Contractivity would send source norm `<1` to
 `<1`, contradicting every strict-right target's rank-one projection norm `1`.
-
 CANNOT-233 — Normality or trace preservation alone cannot close selection: normal channels can
 concentrate diffuse trace-one densities into rank-one states. Existing fixed Möbius--Gamma/Xi
 source map is formally expansive near the critical ray. Required law is a new anomaly-subtracted
 bistochastic map on correlated history x prime provenance, not the existing scalar transport.
-
 F505 — Lean certifies `ULF-PHIN-001` as one literal kernel on `ell2(Nat x Primes)`, not a tensor
 analogy. `primeHodgeHistoryIntegralNuclearHomotopyDefect t` is the single signed pre-divisor wall
 family: `T(-t)=-T(t)`, `Tr T(t)=sign(t)`, `||T(t)||_1=|sign(t)|`, positive with chamber orientation,
 and every same-history cross-prime entry is nonzero off wall. Its diagonal is exactly signed theta
 Mellin-six flux times unsquared prime density. Unit aperture recovers the prior closed `T`.
-
 F506 — `ULF-PHSF-001`: tails `m_n` force unique positive nearest-neighbour survival ratio
 `r_n=m_(n+1)/m_n=(2n+3)/(2n+9)` and hazard `h_n=6/(2n+9)`. Weighted shift
 `C e_n=sqrt(r_n)e_(n+1)` has bounded left inverse `B`, positive exit defect `D2=I-C*C`, and exact
 duality--adjunction fracture `(B-C*)C=D2`.
-
 F507 — Conditional exit records `E_j(k)=w_(k+j)/m_k` and remainder `R_N(k)=m_(k+N)/m_k` obey the
 Lean-certified operator law `sum_(j<N)E_j+R_N=I`. Initial readout of `E_n` and full prime-fibre
 marginal of the integral nuclear `mathsf T` are the same `w_n`; this is object-level formation
 ownership, not equality only after total summation.
-
 F508 — `ker C=0`, `range C=range S`, `ind C=-1`, and Lean proves
 `-ind C=sum_n w_n=Tr Phi=Tr mathsf T=1`. Thus `mathsf T` is a prime-mixed nuclear exit record of
 one forced Fredholm history: Hodge flux, open recurrence, adjoint fracture, Toeplitz charge, and
 formation are gauges of one mechanism.
-
 FAIL-81 — Beta/Jacobi diffusion and generic minimal Wold/Stinespring dilation do not produce this
 mechanism. The Beta response fixes a measure but not a unique Dirichlet form; every contraction
 has a conservative dilation. Neither forces the rational tail, prime-fibre record, fracture, and
 index simultaneously.
-
 CANNOT-234 — It cannot close RH by trace preservation, unitality, generic dilation, scalar
 functional equation, or one-response equality. Such maps may concentrate diffuse trace-one input
 to a rank-one target or add invisible Krein spectators while preserving the advertised scalar.
-
 MUST-156 — Prove literal integer/Poisson self-duality yields an anomaly-subtracted,
 record-complete intertwiner of `(C,D2,B,mathsf T)` that exhausts the completed relation horizon.
 It would preserve zero residual source survival; every strict-right Xi copy has rank-one residual
 horizon, so exhaustion excludes it and reflection closes RH. This exact edge is open.
-
 ## 2026-09-03 — the F₁ object: shape forced by theorem (card `1-in-progress/f1-object-forced-shape.md`, ULF-F1-003)
-
 F395 — Lean: eigen-characters of endomorphisms of finite free ℤ-modules are algebraic integers;
 no finite free ℤ-module carries three Frobenii with a common eigen-functional of eigenvalues
 `p^ρ, q^ρ, r^ρ` for nonreal `ρ`; unitary integral Frobenii are torsion on every eigen-character
 (`RHTower.FrobeniusLatticeRigidity`).
-
 CANNOT-195 — It cannot realise the zeros as joint Frobenius eigen-characters on any finitely
 generated integral piece of an `𝔽₁`-cohomology (three primes suffice); the Frobenius must be the
 scaling flow on an infinite-rank object whose integrality is that of the Dirichlet ring acting.
-
 MUST-133 — The F₁ object is a cokernel of the zeta element `ζ = Σ[n]` of the Dirichlet ring on a
 Poisson-admissible module (Meyer's `M_ζ = H_−/ζH_∩`); its zeros are the characters where `μ`
 fails to act; its single missing datum is a geometrically produced positive Hodge form.
-
 - **Nugget:** the zeros of ζ are a phenomenon of the archimedean line `z_p = p^{−s}` in the
   character torus of the dilation monoid; the Euler product has no zeros on the torus, and the
   line is Baker-generic. No finite algebraic specialization can see a zero.
-
 ## Cayley-collision record defect (`ULF-CCRHD-001`)
-
 F509 — Raw squared cubic coherence has Cayley-contrast law `Beta(1/2,4)`, not the observed
 `Beta(3/2,3)`. The latter is forced by relative density `lambda/(1-lambda)`: deletion of the
 equal-prime metric part is the exact source anomaly transgression, not a fitted probability law.
-
 F510 — On the oriented transgressed prime-pair state, survival `S=delta` and exit
 `E=sqrt(1-delta²)` obey `S*S+E*E=I`; `O(f)=(E S^n f)_n` is isometric and pure. History is generated
 by signed literal prime-pair contrast, with `||S^n Omega_H||²=m_n` and
 `||E S^n Omega_H||²=w_n`.
-
 F511 — History dephasing of the coherent record gives one nonseparable positive nuclear operator
 `T=directSum_n |E S^n Omega_H><E S^n Omega_H|`, with `Tr T=||T||₁=1`, `||T||=2/3<1`, and tail
 traces `m_n`. Under prime swap, `Omega_H` and `S` are odd, `E` is even, and grade `n` has parity
 `(-1)^(n+1)`. Positive `T` is reflection-even precisely because dephasing removes the cross-grade
 coherences where orientation lives.
-
 FAIL-82 — The generic operator-weighted shift `A_n=sqrt(I-w_nK)` gives the tautological defect
 `I-C*C=directSum_n w_nK` but has nonzero infinite survival product because `sum w_n<infinity`.
 It cannot supply record exhaustion; prime-dependent history must be formed before averaging.
-
 CANNOT-235 — The abstract observability/dephasing formalism is classical and cannot select RH.
 Acting only on positive `T` discards the reflection-odd unsquared amplitude and falls under
 covariance blindness; trace preservation alone can still concentrate `T` to a rank-one horizon.
-
 MUST-157 — Derive from literal integer/Poisson self-duality a singular relative boundary functor
 on the marked colligation `(Omega_H,S,E)` plus pole--Gamma countercurrent. Record completeness must
 carry its zero residual survival to the completed relation residual; any off-line rank-one horizon
 would then be impossible. This refines `MUST-156`; the boundary functor remains open.
-
 ## Recent formation/completion laws
-
 F512–F513 — Prime and theta histories share complementary observability, but prime endpoint order
 is cubic (`n³m_n->105/8`) while every fixed theta tilt is infinitely flat. FAIL-83/CANNOT-236:
 no fixed-scale isometry, stationary recovery, or bare conservation identifies their records.
 MUST-158 — Completion needs moving history scale or independently derived singular clock.
-
 F514–F515 — Unique finite Szegő subtraction is `pi exp(2|x|)`; residual is zero-free outer with
 dense nonclosed range. FAIL-84/CANNOT-237: scalar outer completion loses odd unsquared orientation
 and no other scalar coefficient works. MUST-159 — oriented Hardy double plus pole–Gamma current.
-
 F516–F517 — Exit mean is `7/4`; finite recurrence forces `(d,K)` multiples of `(4,7)`.
 FAIL-85/CANNOT-238: no finite monitored unitary realizes polynomial tail `w_n`; `7/4` is coarse.
-
 F518–F520 — `D_N` is measurable weak `S₁` with residue `3N`; every exit `E_j` has residue `3`;
 `T` shifts canonical finite part by `+1`. FAIL-86/CANNOT-239: direct determinant and fixed theta
 hazard cannot select; residue misses finite-rank horizons. MUST-161 — inverse-saddle transport,
 odd formation, and no `S₁` spectator remain required.
-
 F396/MUST-134 — Three-prime Frobenius-stable finite ℤ-lattice is zero; Deninger producer must be
 geometric Hodge positivity, not another radical/resolvent receiver.
 F521 — Unique scale-6 inverse saddle has residue `3`; Hodge discrepancy is `3/(n log n)`.
@@ -4915,7 +4558,6 @@ F522 — Stein Gramian has trace `7/4`; exit sandwich `Phi` has trace `1`.
 F523 — Degree-2 theta history and degree-3 prime formation give `Q`, `T=Q*Q`, trace `1`, prime-mixed.
 CANNOT-240 — No fixed contraction carries two distinct clocks between degrees.
 F524 — Mellin creator is `a∞(s)=Γ(s+1)/Γ(s+1/2)` with half-order critical-axis metric anomaly.
-
 F525–F526 — Cofinite prime Gamma frames are total but nonproper; covariance whitening gives a
 canonical unitary lift preserving every prime coefficient and history tail. This is exact
 information-neutral completion, not selection.
@@ -4972,9 +4614,7 @@ MUST-168 — Any literal global completion must carry one unit graph connection 
 blocks; derive that connection from integer/Poisson formation before any Xi specialization.
 MUST-169 — Complete on the formation cover before quotienting to physical cells; subtract the
 universal unit residue, then prove only the residual relation descends properly.
-
 ## 2026-09-03 (viii–ix) — constrained Weil continuity and ground energy
-
 F403/MUST-141 — Lean: a positive constrained Weil Rayleigh floor persists on a right aperture
 neighborhood, including prime entries. The remaining quantitative input is Connes–Consani's
 pole-vanishing Sonin inequality at `√2`.
@@ -4983,80 +4623,62 @@ F404/F405 — Lean: nonzero pole-vanishing smooth interior sources exist and are
 MUST-142 — `WEIL-ENTRY-001` is Lean-closed modulo published numerical certificate
 `μ₀(√2)>0` (margin about `0.3%`); qualitative prime-2 crossing is formal, quantitative crossing is
 that one external number.
-
 ## 2026-09-03 (x) — degeneracy threshold of the pole-vanishing Weil form
-
 F406 — Lean (`RHTower.CCMRestrictedWeilPolarGroundState`): the pole-vanishing ground energy is
 attained; either it is positive at every aperture or it vanishes at a unique threshold with an
 attained normalized pole-vanishing null vector and nonnegativity on the pole-vanishing subspace.
-
 MUST-143 — Failure of Weil positivity on the pole-vanishing subspace, if it happens, is a
 degenerate threshold `a*` with an attained null vector; prime entries cannot cause it
 discontinuously; given Connes–Consani, `a* > (log 2)/2`. The remaining links to RH itself
 (RH ⇒ no threshold by zero density; no threshold ⇒ RH by the `s(s−1)` multiplier) are paper-level.
-
 ## 2026-09-03 (xi) — pole-vanishing multiplier; RH-link status
-
 F407 — Lean (`RHTower.CCMRestrictedWeilPolarMultiplier`): `∫ e^{sx} g'' = s² ∫ e^{sx} g` for smooth
 compactly supported `g`; the operator `∂² − 1/4` sends every strict-interior source to a
 pole-vanishing one (`isPolarConstrained_polarMultiplier`). The pole-vanishing smooth core is the
 image of `∂² − 1/4` (converse on paper via the Green kernel `−e^{−|x|/2}`).
-
 MUST-144 — The link `μ₀ > 0 everywhere ⇒ RH` is Bombieri–Yoshida's pole-vanishing Weil criterion;
 the corpus cannot currently formalize it (two-bump localization is not pole-vanishing; the
 explicit formula stops at the resolvent algebra). It is a known theorem, so it is recorded, not
 pursued. The archimedean form alone is indefinite on the pole-vanishing subspace at large
 apertures (Fourier mass near `|ξ| = 1/2` where `θ′ < 0`), so primes are necessary there.
-
 - **Nugget:** the pole-vanishing subspace is the range of `∂² − 1/4`, the operator with Mellin
   symbol `s(s−1)`; Weil's pole terms and the two pole constraints are the same two-dimensional
   space seen from the test side and the zero side.
-
 ## 2026-09-03 (xii) — numerical study of the pole-vanishing Weil form
-
 F408 — Computation (RunPod, report in `2-fully-proven/computations/weil-polar-ground-energy/`):
 `μ₀(√2) = 0.54704` with second eigenvalue 0.84; `μ₀(a) > 0` at every aperture tested, converged
 through `λ ≈ 2.1` and decaying super-exponentially after; archimedean-only positivity on the
 pole-vanishing subspace ends at `λ_arch = 1.81451`; each prime power becomes necessary within
 0.01–0.02 of aperture after its entry. Upper-bound numerics with convergence control, not
 interval-certified.
-
 MUST-145 — Numerically the constrained input of Theorem D holds with an order-one margin, and no
 degeneracy threshold exists below `λ ≈ 5`; the analytic wall is unchanged (a Galerkin minimum is
 an upper bound, so positivity is evidence, negativity is proof). New quantitative facts: the
 archimedean threshold `λ_arch = 1.8145` and the immediate necessity of each entering prime.
-
 F409 — Computation: the pole-vanishing ground state's Fourier zeros converge to the zeta
 ordinates (eight zeros to `10⁻³` by `a = 0.9`), like the full ground state of Connes–Consani–
 Moscovici; the spectral realization does not depend on the pole terms.
-
 ## 2026-09-03 (xiii) — Route J: the critical degree is `n ≈ p`
-
 F410 — Computation (`computations/routej-semilocal-scale/`): for the one-prime semilocal Jacobi
 matrix of Connes–Consani–Moscovici, the exact Euler deformation of the four-radius residual is
 order one at degree `n ≈ p` (`qn ≈ 1`), not at the first-jet scale `p²` nor the third-jet scale
 `p^{6/5}`; the corpus's Lean-proved jets are confirmed in their regimes and overtaken beyond.
-
 MUST-146 — Route J survivor target 2 is settled numerically: the fixed Euler orders do not share
 a scale; the natural variable of the finite-`q` semilocal Jacobi problem is `x = n/p`. Analytic
 work on the one-prime boundary layer should be organized around `qn`.
-
 F411 — Computation: Route J scaling law `D_k(q) = q^{1/2}Φ(qn) + O(q)`, universal profile `Φ`
 with zeros `0.159, 0.823, 1.586, 2.369` and extrema `−10.0, +35.4, −72.5`; odd Lean-proved jets
 are its Taylor coefficients, even jets are subleading corrections. Order-one threshold at
 `n ~ p^{6/5}` (third-jet scale), refining F410.
-
 F412 — Computation: the profile `Φ` is a modulated sinusoid, `Φ(x) ≈ −26 x^{1.45} sin(4.06x − 0.19)`
 (rms 0.4 %), so the order-one degree is `n* ≈ p^{4/3}/8.8`; for two primes the cross term is the
 linear response to the beat mode `2(p₁p₂)^{−1/2} cos(s log(p₂/p₁))` (correlation 1.0000) and
 dominates the one-prime terms by a factor `~p`.
-
 MUST-147 — The finite-`S` semilocal Jacobi problem is governed by the pairwise beat frequencies
 `log(p_i/p_j)`, not by one-prime boundary layers; Route J survivor target 3 is settled
 numerically, and the analytic target is the first-order response `H(n, δ)` of the
 Meixner–Pollaczek Jacobi matrix to `1 + 2ε cos(δ s)`. The frequency `4` of `Φ` in `n/p` is
 unexplained.
-
 F413 — Lean (`SemilocalCosineModeFirstOrderResponse.lean`): for the archimedean semilocal Jacobi
 matrix, the Gram matrix of the measure `(1 + 2ε cos(δ s)) μ` in the orthonormal basis is
 `1 + ε T_n(δ)`, the normalized Hankel determinant has jet `2 Σ_{j≤n} m_j(δ)`
@@ -5166,3 +4788,28 @@ separate modes, which first-order theory does not see.  Compute it (the second-o
 variation of the recurrence coefficients under `w ↦ w(1+2ε₁cos δ₁s)(1+2ε₂cos δ₂s)`), prove the
 structure of the ε₁ε₂ coefficient, and quantify its size against the beat-law term
 `32√(2/π)k^{3/2}σ^{3/2}τ^{5/2}`; report §3.5 suggests it is subleading.
+F557 — Paper theorem (`ULF-MPNLIH-001`): for each source prime edge `p<q`, the forced Euler/theta half-density ratio defines a bounded weighted shift on moving physical Pluecker null lines. Its self-commutator is self-adjoint Schatten-one, eventually positive outside a finite history head, and satisfies `Tr(T_pq)=1=-index(C_pq)`; finite-cutoff traces telescope exactly to the transport square `a_N`.
+F558 — `T_(2,3)` is one canonical pre-divisor prime-mixed integral--nuclear defect: no Xi/divisor enters; its zeroth physical `4x4` block has every cross-prime entry nonzero; moving null lines prevent history tensor fixed-packet separation relative to literal source coordinates.
+CANNOT-249 — Flat connection/unbounded trivialization and weighted-shift trace-index theory are generic and already occur in corpus; they cannot be field core. Only source-forced completion-before-overlap realization is new residue.
+CANNOT-250 — `T_pq` cannot be direct sub-unit anchor: `Tr(T_pq)=1` forces `||T_pq||_1>=1`; positivity is also unproved because global monotonicity of transport squares is unknown.
+MUST-172 — Next selection theorem must derive, before divisor specialization, `completed boundary = T_pq + R_pq` with source-forced theta positivity and `Tr(R_pq)=0`; defining this residual or assuming its positivity is old RH receiver, not producer.
+F559 — Lean (`SemilocalTwoModeBilinearResponse`): **the bilinear response of the semilocal Hankel
+determinants**: for the two-mode weight `(1+2ε₁cos δ₁s)(1+2ε₂cos δ₂s)`, the Gram matrix is
+`1 + ε₁T(δ₁) + ε₂T(δ₂) + ε₁ε₂(T(δ₁+δ₂) + T(δ₁−δ₂))` and `∂₁∂₂ log D_n|₀ = J_{δ₁+δ₂}(n) + J_{δ₁−δ₂}(n)
+− tr(T(δ₁)T(δ₂))` (`deriv_deriv_log_twoModeDeterminant`), an iterated `deriv` of a genuine
+two-parameter determinant family.  The product-mode first-order response cancels exactly against
+the diagonal part of the second-order term (covariance of linear statistics, `tr(Kf₁(1−K)f₂K)`).
+F560 — Lean (`SemilocalTwoModeRadiusResponse`): transfer through the Hankel quotient:
+`∂₁∂₂ a_n²|₀ = r_n²(B_{n−1} + B_{n+1} − 2B_n) + [ε₁]a_n²[ε₂]a_n²/r_n²` (`deriv_deriv_twoModeSquaredRadius`).
+Numerics (211, 421): the truncation defect `tr(T₁T₂)` is 17 % of the beat term at `n = 20` and 92 %
+at `n = 150` at the determinant level, but smooth in `n`, so at the radius level the `ε₁ε₂` jet is
+the beat-mode radius jet to 1–3 % — the mechanism of report §3.5.  MUST-171 closed (structure).
+Card: `3-formalized/semilocal-two-mode-bilinear-response-lean.md`.
+MUST-173 — The large-rapidity boost bound.  Prove `|M_{ij}(t)| ≤ (cosh t)^{-1/2} c_i c_j · K(i+j, e^{−t})`
+with explicit `K → 1` for `i + j ≪ e^{t}` (the sharp form without `K` is false at small `t`; the
+naive coefficient majorant is exponential; the route is the `tanh t = 1` factorization
+`(1−iw)^{-1/2}(1−iz)^{-1/2}` of the boost kernel and a series in `1 − tanh t`), and deduce
+`|ΔΔ tr(T(δ₁)T(δ₂))| ≤ C (cosh δ₁ cosh δ₂)^{-1/2} √n`, i.e. the two-prime cross term is the beat-mode
+radius jet up to relative `O(ε√n)`, `ε = (p₁p₂)^{-1/2}`.  Then the one-prime `ε²` self-response
+(harmonic `cos(2δs)` plus the variance term `tr(T(δ)²)`) with the same tools.
+MUST-174 — `T_pq` retains six-minor mass and moving kernel line but not full rank-three Pluecker covariance; any Xi use must prove null-line sufficiency or lift the index defect coefficient-faithfully without losing trace conservation.
