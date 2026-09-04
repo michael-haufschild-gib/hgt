@@ -242,7 +242,7 @@ theorem slopeDiffBound_scale {ρ t a' b' c' s' m' n' da' db' dc' ds' dm' dn' : �
         (da' + 3 * t * db' + t ^ 2 * dc') * s' + (a' + 3 * t * b' + t ^ 2 * c') * ds') / ρ ^ 6 +
       (da' * (t * dm' + t ^ 2 * dn') + (da' + 3 * t * db' + t ^ 2 * dc') * ds') / ρ ^ 18 := by
     field_simp
-    ring
+    try ring
   rw [e]
   have h1 : 0 ≤ da' * (t * m' + t ^ 2 * n') + a' * (t * dm' + t ^ 2 * dn') +
       (da' + 3 * t * db' + t ^ 2 * dc') * s' + (a' + 3 * t * b' + t ^ 2 * c') * ds' := by positivity
@@ -267,12 +267,12 @@ theorem centerDiffBound_scale {ρ t a' b' s' m' da' db' ds' dm' : ℝ} (hρ : 1 
       (da' * (t * m') + a' * (t * dm') + (da' + t * db') * s' + (a' + t * b') * ds') / ρ ^ 6 +
       (da' * (t * dm') + (da' + t * db') * ds') / ρ ^ 6 / ρ ^ 12 := by
     field_simp
-    ring
+    try ring
   rw [e]
-  have h2 : 0 ≤ da' * (t * dm') + (da' + t * db') * ds' := by positivity
   have h2' : 0 ≤ (da' * (t * dm') + (da' + t * db') * ds') / ρ ^ 6 := by positivity
-  have := div_le_self h2' hρ12
-  rw [add_div]
+  have hd := div_le_self h2' hρ12
+  have hsum := add_div (da' * (t * m') + a' * (t * dm') + (da' + t * db') * s' + (a' + t * b') * ds')
+    (da' * (t * dm') + (da' + t * db') * ds') (ρ ^ 6)
   linarith
 
 theorem centerZeroBound_scale (ρ t a' b' s' m' : ℝ) :
@@ -296,10 +296,11 @@ theorem boseDiffBoundE_scale {ρ t a' da' dq' eq : ℝ} (hρ : 1 ≤ ρ) (ht : 0
   have e : 10 * t * (da' / ρ ^ 9) + 48 * t * (da' / ρ ^ 9) * eq + 192 * t * (ρ ^ 3 * a') * (dq' / ρ ^ 9) * eq =
       (10 * t * da' + 48 * t * da' * eq) / ρ ^ 6 / ρ ^ 3 + 192 * t * a' * dq' * eq / ρ ^ 6 := by
     field_simp
-    ring
-  rw [e, add_div]
+    try ring
+  rw [e]
   have h1 : 0 ≤ (10 * t * da' + 48 * t * da' * eq) / ρ ^ 6 := by positivity
-  have := div_le_self h1 hρ3
+  have hd := div_le_self h1 hρ3
+  have hsum := add_div (10 * t * da' + 48 * t * da' * eq) (192 * t * a' * dq' * eq) (ρ ^ 6)
   linarith
 
 /-- **Scaling lemma.** -/
@@ -350,14 +351,14 @@ theorem compensationDiffBoundE_scale {ρ t a' b' c' s' m' n' da' db' dc' ds' dm'
     have h := mul_le_mul hWd (add_le_add_left hC (ρ ^ 6 * Zu)) (by positivity) (by positivity)
     have e : Wdu / ρ ^ 6 * (ρ ^ 6 * Zu + Cu / ρ ^ 6) = Wdu * Zu + Wdu * Cu / ρ ^ 12 := by
       field_simp
-      ring
+      try ring
     linarith
   -- third term: `W0s Cs ≤ ρ³ W0u Cu/ρ⁶ = W0u Cu / ρ³`
   have t3 : W0s * Cs ≤ W0u * Cu / ρ ^ 3 := by
     have h := mul_le_mul hW0 hC hC0 (by positivity)
     have e : ρ ^ 3 * W0u * (Cu / ρ ^ 6) = W0u * Cu / ρ ^ 3 := by
       field_simp
-      ring
+      try ring
     linarith
   have d1 : Wdu * Cu / ρ ^ 12 ≤ Wdu * Cu := div_le_self (by positivity) hρ12
   have d2 : W0u * Cu / ρ ^ 3 ≤ W0u * Cu := div_le_self (by positivity) hρ3

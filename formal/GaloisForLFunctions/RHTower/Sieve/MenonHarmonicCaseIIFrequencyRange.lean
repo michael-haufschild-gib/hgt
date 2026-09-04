@@ -41,7 +41,7 @@ private theorem caseII_core_power_eq (a : ℕ) :
     simp [menonHarmonicCaseIICoreExponent, maynardDerivativeDeficit]
   · rw [menonHarmonicCaseIICoreExponent, Real.rpow_mul (by positivity)]
 
-private theorem caseII_scalar_geometry
+theorem menonHarmonicCaseII_scalar_geometry
     {a : ℕ} (ha : 1 ≤ a) (hlog : 1 ≤ Real.log (a : ℝ)) {u : ℝ}
     (hfloor : menonHarmonicCaseIIFrequencyFloor a ≤ u)
     (hceiling : u ≤ menonHarmonicCaseIIFrequencyCeiling a) :
@@ -188,7 +188,7 @@ theorem exists_absolute_eventually_norm_menonFinalRangeActualBlock_le_logPow_of_
     exact (by
       have hlog' := Real.log_le_log (Real.exp_pos 1) (hexpThree.le.trans haThree)
       simpa using hlog')
-  have hgeometry := caseII_scalar_geometry ha1 hlog
+  have hgeometry := menonHarmonicCaseII_scalar_geometry ha1 hlog
     (u := u) (by simpa only [a, u] using hfloor) (by simpa only [a, u] using hceiling)
   rcases hgeometry with ⟨hT, hcellsT, hbandLo, hbandHi, h2T, hcross⟩
   let T : ℝ := 2 * u / 3
