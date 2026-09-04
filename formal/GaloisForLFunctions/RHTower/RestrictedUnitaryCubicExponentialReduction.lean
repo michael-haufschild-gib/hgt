@@ -170,9 +170,9 @@ theorem RestrictedSelfAdjointExponentialDatum.traceNorm_cubicDefect_le_generator
       hzero ((1 - E.restricted.projection) * E.generator * E.restricted.projection)]
     simp only [traceNorm, schattenNorm, approxNumber_zero_op,
       Real.zero_rpow (by norm_num : (3 : ℝ) ≠ 0), tsum_zero,
-      Real.zero_rpow (by norm_num : (1 / 3 : ℝ) ≠ 0), zero_pow,
-      Nat.ofNat_pos, mul_zero, le_rfl]
+      Real.zero_rpow (by norm_num : (1 / 3 : ℝ) ≠ 0), mul_zero, le_rfl]
 
 end
 
 end RHTower
+

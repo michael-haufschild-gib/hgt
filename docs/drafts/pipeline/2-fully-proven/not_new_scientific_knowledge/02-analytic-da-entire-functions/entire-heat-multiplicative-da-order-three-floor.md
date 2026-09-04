@@ -336,3 +336,14 @@ The theorem does not rule out the actual de Bruijn-Newman deformation, which has
   Direct source checks, targeted leaf builds, and all new-theorem axiom audits pass; axioms are
   `[propext, Classical.choice, Quot.sound]`.  Card remains stage 2 only because the paper's enlarged
   Strelitz set and global branch continuation have not yet been constructed in Lean.
+- 2026-09-04 — `StrelitzMaximumNorm` and `StrelitzMaximumSlope` construct the exact choice-free
+  logarithmic maximum modulus and its canonical convex right slope.  `StrelitzMaximumSlopeGrowth`
+  proves that infinite coefficient support forces this slope to diverge and that sublogarithmic
+  central index forces it to be sublinear.  `StrelitzEntireHeatMaximumSlope` derives both facts
+  directly from the card's original entire complex-time heat and infinite-support assumptions;
+  no auxiliary growth premise is exposed.  The maximum-path realization was separated into
+  `StrelitzMaximumPathSlope`, while `StrelitzLogJetDefs` removes the former import dependency on
+  the Newton chain.  Direct source checks, targeted leaf builds, and all new-theorem axiom audits
+  pass; axioms are `[propext, Classical.choice, Quot.sound]`.  Card remains stage 2: the enlarged
+  set `H`, its relevant unbounded component, and global algebraic-branch continuation are still
+  required.

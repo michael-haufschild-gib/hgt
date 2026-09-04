@@ -24,6 +24,30 @@ attribute [local instance] cascadeUnitCostDomain cascadeUnitCostRatFuncAlgebra
   cascadeUnitCostComplexAlgebra cascadeUnitCostScalarTower cascadeUnitCostDifferential
   cascadeUnitCostCharZero
 
+/-- Algebraic independence detected after reduction modulo a valuation maximal ideal already
+holds for the integral lifts in the ambient field. -/
+theorem algebraicIndependent_of_valuationSubring_residue
+    {C K ι : Type*} [Field C] [Field K] [Algebra C K]
+    (B : ValuationSubring K) [Algebra C B]
+    [Algebra C (IsLocalRing.ResidueField B)]
+    (hcB : ∀ c : C, ((algebraMap C B c : B) : K) = algebraMap C K c)
+    (hcR : ∀ c : C, IsLocalRing.residue B (algebraMap C B c) =
+      algebraMap C (IsLocalRing.ResidueField B) c)
+    (u : ι → B)
+    (hres : AlgebraicIndependent C
+      (fun i => IsLocalRing.residue B (u i))) :
+    AlgebraicIndependent C (fun i => (u i : K)) := by
+  let ρ : B →ₐ[C] IsLocalRing.ResidueField B :=
+    { IsLocalRing.residue B with
+      commutes' := hcR }
+  let inclusion : B →ₐ[C] K :=
+    { B.toSubring.subtype with
+      commutes' := hcB }
+  have hB : AlgebraicIndependent C u := by
+    apply AlgebraicIndependent.of_comp ρ
+    exact hres
+  exact hB.map' (f := inclusion) fun x y h => Subtype.ext h
+
 /-- Canonical inclusion of one adjacent-state terminal component into any branch containing it. -/
 noncomputable def nonautonomousFiniteCascadeTerminalComponentInclusion
     {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
@@ -90,6 +114,16 @@ noncomputable def nonautonomousFiniteCascadeLogarithmicRate
   nonautonomousFiniteCascadeDerivativeInBranchField hfan M i /
     nonautonomousFiniteCascadeStateInBranchField hfan M i
 
+/-- Every actual logarithmic rate is nonzero. -/
+theorem nonautonomousFiniteCascadeLogarithmicRate_ne_zero
+    {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
+    (hall : ∀ i : ℕ, TranscendentalEntire (f i)) (M : ℕ)
+    (i : Fin (M + 1)) :
+    nonautonomousFiniteCascadeLogarithmicRate hfan M i ≠ 0 :=
+  div_ne_zero
+    (nonautonomousFiniteCascadeDerivativeInBranchField_ne_zero hfan hall M i)
+    (nonautonomousFiniteCascadeStateInBranchField_ne_zero hfan hall M i)
+
 /-- The logarithmic rate of the clock is its reciprocal. -/
 theorem nonautonomousFiniteCascadeLogarithmicRate_zero
     {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
@@ -144,6 +178,23 @@ theorem nonautonomousFiniteCascadeWimanChargeInBranch_eq
     nonautonomousFiniteCascadeTerminalComponentInclusion_input,
     nonautonomousFiniteCascadeTerminalComponentInclusion_output,
     nonautonomousFiniteCascadeTerminalComponentInclusion_velocity, hv]
+
+/-- Every literal Wiman charge is nonzero on the actual analytic cascade component. -/
+theorem nonautonomousFiniteCascadeWimanChargeInBranch_ne_zero
+    {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
+    (hall : ∀ i : ℕ, TranscendentalEntire (f i)) (M : ℕ) (k : Fin M) :
+    nonautonomousFiniteCascadeWimanChargeInBranch hfan k ≠ 0 := by
+  rw [nonautonomousFiniteCascadeWimanChargeInBranch_eq]
+  exact mul_ne_zero
+    (nonautonomousFiniteCascadeStateInBranchField_ne_zero hfan hall M ⟨k, by omega⟩)
+    (div_ne_zero
+      (div_ne_zero
+        (nonautonomousFiniteCascadeDerivativeInBranchField_ne_zero hfan hall M
+          ⟨(k : ℕ) + 1, by omega⟩)
+        (nonautonomousFiniteCascadeDerivativeInBranchField_ne_zero hfan hall M
+          ⟨k, by omega⟩))
+      (nonautonomousFiniteCascadeStateInBranchField_ne_zero hfan hall M
+        ⟨(k : ℕ) + 1, by omega⟩))
 
 /-- Exact actual-branch recurrence: every layer multiplies the preceding logarithmic rate by
 its literal Wiman charge. -/
@@ -263,10 +314,22 @@ theorem nonautonomousFiniteCascadeDerivation_terminalStateSucc_eq_lowerLogarithm
     nonautonomousFiniteCascadeWimanChargeInBranch_eq]
   simp only [nonautonomousFiniteCascadeLogarithmicRate, map_div₀,
     nonautonomousFiniteCascadeBranchInclusionSucc_state,
-    nonautonomousFiniteCascadeBranchInclusionSucc_derivative]
-  rw [mul_assoc, div_mul_cancel₀]
-  exact nonautonomousFiniteCascadeStateInBranchField_ne_zero hfan hall (N + 1)
-    (Fin.last N).castSucc
+    nonautonomousFiniteCascadeBranchInclusionSucc_derivative,
+    nonautonomousFiniteCascadeTerminalStateSucc,
+    nonautonomousFiniteCascadeTerminalVelocitySucc,
+    nonautonomousFiniteCascadeVelocityInBranchField]
+  have hcast : (Fin.last N).castSucc =
+      (⟨N, by omega⟩ : Fin (N + 2)) := by
+    apply Fin.ext
+    simp
+  have hterminal : Fin.last (N + 1) =
+      (⟨N + 1, by omega⟩ : Fin (N + 2)) := by
+    apply Fin.ext
+    simp
+  simp [hcast, hterminal]
+  field_simp [nonautonomousFiniteCascadeStateInBranchField_ne_zero hfan hall (N + 1),
+    nonautonomousFiniteCascadeDerivativeInBranchField_ne_zero hfan hall (N + 1)]
+  simp
 
 /-- A state-coordinate derivation annihilates every strictly later Wiman charge. -/
 theorem nonautonomousFiniteCascadeCoordinateDerivation_laterWimanCharge_eq_zero

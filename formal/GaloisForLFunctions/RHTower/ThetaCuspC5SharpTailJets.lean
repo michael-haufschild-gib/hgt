@@ -65,7 +65,7 @@ def sharpJetMain2 (A : ℝ) : ℝ :=
   Real.exp (-3 * A) * (sharpJetMainNumerator2 A / (2 * A - 3) ^ 3)
 
 theorem sharpJet_identity_2 (A : ℝ) (hA : 3 / 2 < A) :
-    (4) * A ^ 2 * secondAtomMomentProfile 2 (A - 3 / 2) + (-4) * A ^ 1 * secondAtomMomentProfile 1 (A - 3 / 2) =
+    (4) * A ^ 2 * secondAtomMomentProfile 2 (A - 3 / 2) + (-4) * A * secondAtomMomentProfile 1 (A - 3 / 2) =
       Real.exp (-3 * A) * (sharpJetMainNumerator2 A / (2 * A - 3) ^ 3) := by
   have hne : A - 3 / 2 ≠ 0 := by intro h; linarith
   have hne2 : 2 * A - 3 ≠ 0 := by intro h; linarith
@@ -93,7 +93,8 @@ theorem hasDerivAt_sharpJetMain2 {A : ℝ} (hA : 3 / 2 < A) :
   have hden : HasDerivAt (fun q : ℝ => (2 * q - 3) ^ 3) (3 * (2 * A - 3) ^ 2 * 2) A := by
     have := (hasDerivAt_pow 3 (2 * A - 3)).comp A hlin
     simpa [Function.comp_def] using this
-  have h3 := (hasDerivAt_sharpJetMainNumerator2 A).div hden (pow_ne_zero _ hne)
+  have h3 : HasDerivAt (fun q : ℝ => sharpJetMainNumerator2 q / (2 * q - 3) ^ 3) _ A :=
+    (hasDerivAt_sharpJetMainNumerator2 A).div hden (pow_ne_zero _ hne)
   have h4 := h2.mul h3
   refine HasDerivAt.congr_deriv (f := fun q : ℝ => Real.exp (-3 * q) * (sharpJetMainNumerator2 q / (2 * q - 3) ^ 3)) h4 ?_
   unfold sharpJetMainDerivNumerator2 sharpJetMainNumerator2
@@ -175,7 +176,7 @@ def sharpJetMain3 (A : ℝ) : ℝ :=
   Real.exp (-3 * A) * (sharpJetMainNumerator3 A / (2 * A - 3) ^ 4)
 
 theorem sharpJet_identity_3 (A : ℝ) (hA : 3 / 2 < A) :
-    (-8) * A ^ 3 * secondAtomMomentProfile 3 (A - 3 / 2) + (24) * A ^ 2 * secondAtomMomentProfile 2 (A - 3 / 2) + (-8) * A ^ 1 * secondAtomMomentProfile 1 (A - 3 / 2) =
+    (-8) * A ^ 3 * secondAtomMomentProfile 3 (A - 3 / 2) + (24) * A ^ 2 * secondAtomMomentProfile 2 (A - 3 / 2) + (-8) * A * secondAtomMomentProfile 1 (A - 3 / 2) =
       Real.exp (-3 * A) * (sharpJetMainNumerator3 A / (2 * A - 3) ^ 4) := by
   have hne : A - 3 / 2 ≠ 0 := by intro h; linarith
   have hne2 : 2 * A - 3 ≠ 0 := by intro h; linarith
@@ -203,7 +204,8 @@ theorem hasDerivAt_sharpJetMain3 {A : ℝ} (hA : 3 / 2 < A) :
   have hden : HasDerivAt (fun q : ℝ => (2 * q - 3) ^ 4) (4 * (2 * A - 3) ^ 3 * 2) A := by
     have := (hasDerivAt_pow 4 (2 * A - 3)).comp A hlin
     simpa [Function.comp_def] using this
-  have h3 := (hasDerivAt_sharpJetMainNumerator3 A).div hden (pow_ne_zero _ hne)
+  have h3 : HasDerivAt (fun q : ℝ => sharpJetMainNumerator3 q / (2 * q - 3) ^ 4) _ A :=
+    (hasDerivAt_sharpJetMainNumerator3 A).div hden (pow_ne_zero _ hne)
   have h4 := h2.mul h3
   refine HasDerivAt.congr_deriv (f := fun q : ℝ => Real.exp (-3 * q) * (sharpJetMainNumerator3 q / (2 * q - 3) ^ 4)) h4 ?_
   unfold sharpJetMainDerivNumerator3 sharpJetMainNumerator3
@@ -287,7 +289,7 @@ def sharpJetMain4 (A : ℝ) : ℝ :=
   Real.exp (-3 * A) * (sharpJetMainNumerator4 A / (2 * A - 3) ^ 5)
 
 theorem sharpJet_identity_4 (A : ℝ) (hA : 3 / 2 < A) :
-    (16) * A ^ 4 * secondAtomMomentProfile 4 (A - 3 / 2) + (-96) * A ^ 3 * secondAtomMomentProfile 3 (A - 3 / 2) + (112) * A ^ 2 * secondAtomMomentProfile 2 (A - 3 / 2) + (-16) * A ^ 1 * secondAtomMomentProfile 1 (A - 3 / 2) =
+    (16) * A ^ 4 * secondAtomMomentProfile 4 (A - 3 / 2) + (-96) * A ^ 3 * secondAtomMomentProfile 3 (A - 3 / 2) + (112) * A ^ 2 * secondAtomMomentProfile 2 (A - 3 / 2) + (-16) * A * secondAtomMomentProfile 1 (A - 3 / 2) =
       Real.exp (-3 * A) * (sharpJetMainNumerator4 A / (2 * A - 3) ^ 5) := by
   have hne : A - 3 / 2 ≠ 0 := by intro h; linarith
   have hne2 : 2 * A - 3 ≠ 0 := by intro h; linarith
@@ -315,7 +317,8 @@ theorem hasDerivAt_sharpJetMain4 {A : ℝ} (hA : 3 / 2 < A) :
   have hden : HasDerivAt (fun q : ℝ => (2 * q - 3) ^ 5) (5 * (2 * A - 3) ^ 4 * 2) A := by
     have := (hasDerivAt_pow 5 (2 * A - 3)).comp A hlin
     simpa [Function.comp_def] using this
-  have h3 := (hasDerivAt_sharpJetMainNumerator4 A).div hden (pow_ne_zero _ hne)
+  have h3 : HasDerivAt (fun q : ℝ => sharpJetMainNumerator4 q / (2 * q - 3) ^ 5) _ A :=
+    (hasDerivAt_sharpJetMainNumerator4 A).div hden (pow_ne_zero _ hne)
   have h4 := h2.mul h3
   refine HasDerivAt.congr_deriv (f := fun q : ℝ => Real.exp (-3 * q) * (sharpJetMainNumerator4 q / (2 * q - 3) ^ 5)) h4 ?_
   unfold sharpJetMainDerivNumerator4 sharpJetMainNumerator4
@@ -397,7 +400,7 @@ def sharpJetMain5 (A : ℝ) : ℝ :=
   Real.exp (-3 * A) * (sharpJetMainNumerator5 A / (2 * A - 3) ^ 6)
 
 theorem sharpJet_identity_5 (A : ℝ) (hA : 3 / 2 < A) :
-    (-32) * A ^ 5 * secondAtomMomentProfile 5 (A - 3 / 2) + (320) * A ^ 4 * secondAtomMomentProfile 4 (A - 3 / 2) + (-800) * A ^ 3 * secondAtomMomentProfile 3 (A - 3 / 2) + (480) * A ^ 2 * secondAtomMomentProfile 2 (A - 3 / 2) + (-32) * A ^ 1 * secondAtomMomentProfile 1 (A - 3 / 2) =
+    (-32) * A ^ 5 * secondAtomMomentProfile 5 (A - 3 / 2) + (320) * A ^ 4 * secondAtomMomentProfile 4 (A - 3 / 2) + (-800) * A ^ 3 * secondAtomMomentProfile 3 (A - 3 / 2) + (480) * A ^ 2 * secondAtomMomentProfile 2 (A - 3 / 2) + (-32) * A * secondAtomMomentProfile 1 (A - 3 / 2) =
       Real.exp (-3 * A) * (sharpJetMainNumerator5 A / (2 * A - 3) ^ 6) := by
   have hne : A - 3 / 2 ≠ 0 := by intro h; linarith
   have hne2 : 2 * A - 3 ≠ 0 := by intro h; linarith
@@ -425,7 +428,8 @@ theorem hasDerivAt_sharpJetMain5 {A : ℝ} (hA : 3 / 2 < A) :
   have hden : HasDerivAt (fun q : ℝ => (2 * q - 3) ^ 6) (6 * (2 * A - 3) ^ 5 * 2) A := by
     have := (hasDerivAt_pow 6 (2 * A - 3)).comp A hlin
     simpa [Function.comp_def] using this
-  have h3 := (hasDerivAt_sharpJetMainNumerator5 A).div hden (pow_ne_zero _ hne)
+  have h3 : HasDerivAt (fun q : ℝ => sharpJetMainNumerator5 q / (2 * q - 3) ^ 6) _ A :=
+    (hasDerivAt_sharpJetMainNumerator5 A).div hden (pow_ne_zero _ hne)
   have h4 := h2.mul h3
   refine HasDerivAt.congr_deriv (f := fun q : ℝ => Real.exp (-3 * q) * (sharpJetMainNumerator5 q / (2 * q - 3) ^ 6)) h4 ?_
   unfold sharpJetMainDerivNumerator5 sharpJetMainNumerator5
@@ -509,7 +513,7 @@ def sharpJetMain6 (A : ℝ) : ℝ :=
   Real.exp (-3 * A) * (sharpJetMainNumerator6 A / (2 * A - 3) ^ 7)
 
 theorem sharpJet_identity_6 (A : ℝ) (hA : 3 / 2 < A) :
-    (64) * A ^ 6 * secondAtomMomentProfile 6 (A - 3 / 2) + (-960) * A ^ 5 * secondAtomMomentProfile 5 (A - 3 / 2) + (4160) * A ^ 4 * secondAtomMomentProfile 4 (A - 3 / 2) + (-5760) * A ^ 3 * secondAtomMomentProfile 3 (A - 3 / 2) + (1984) * A ^ 2 * secondAtomMomentProfile 2 (A - 3 / 2) + (-64) * A ^ 1 * secondAtomMomentProfile 1 (A - 3 / 2) =
+    (64) * A ^ 6 * secondAtomMomentProfile 6 (A - 3 / 2) + (-960) * A ^ 5 * secondAtomMomentProfile 5 (A - 3 / 2) + (4160) * A ^ 4 * secondAtomMomentProfile 4 (A - 3 / 2) + (-5760) * A ^ 3 * secondAtomMomentProfile 3 (A - 3 / 2) + (1984) * A ^ 2 * secondAtomMomentProfile 2 (A - 3 / 2) + (-64) * A * secondAtomMomentProfile 1 (A - 3 / 2) =
       Real.exp (-3 * A) * (sharpJetMainNumerator6 A / (2 * A - 3) ^ 7) := by
   have hne : A - 3 / 2 ≠ 0 := by intro h; linarith
   have hne2 : 2 * A - 3 ≠ 0 := by intro h; linarith
@@ -537,7 +541,8 @@ theorem hasDerivAt_sharpJetMain6 {A : ℝ} (hA : 3 / 2 < A) :
   have hden : HasDerivAt (fun q : ℝ => (2 * q - 3) ^ 7) (7 * (2 * A - 3) ^ 6 * 2) A := by
     have := (hasDerivAt_pow 7 (2 * A - 3)).comp A hlin
     simpa [Function.comp_def] using this
-  have h3 := (hasDerivAt_sharpJetMainNumerator6 A).div hden (pow_ne_zero _ hne)
+  have h3 : HasDerivAt (fun q : ℝ => sharpJetMainNumerator6 q / (2 * q - 3) ^ 7) _ A :=
+    (hasDerivAt_sharpJetMainNumerator6 A).div hden (pow_ne_zero _ hne)
   have h4 := h2.mul h3
   refine HasDerivAt.congr_deriv (f := fun q : ℝ => Real.exp (-3 * q) * (sharpJetMainNumerator6 q / (2 * q - 3) ^ 7)) h4 ?_
   unfold sharpJetMainDerivNumerator6 sharpJetMainNumerator6
@@ -619,7 +624,7 @@ def sharpJetMain7 (A : ℝ) : ℝ :=
   Real.exp (-3 * A) * (sharpJetMainNumerator7 A / (2 * A - 3) ^ 8)
 
 theorem sharpJet_identity_7 (A : ℝ) (hA : 3 / 2 < A) :
-    (-128) * A ^ 7 * secondAtomMomentProfile 7 (A - 3 / 2) + (2688) * A ^ 6 * secondAtomMomentProfile 6 (A - 3 / 2) + (-17920) * A ^ 5 * secondAtomMomentProfile 5 (A - 3 / 2) + (44800) * A ^ 4 * secondAtomMomentProfile 4 (A - 3 / 2) + (-38528) * A ^ 3 * secondAtomMomentProfile 3 (A - 3 / 2) + (8064) * A ^ 2 * secondAtomMomentProfile 2 (A - 3 / 2) + (-128) * A ^ 1 * secondAtomMomentProfile 1 (A - 3 / 2) =
+    (-128) * A ^ 7 * secondAtomMomentProfile 7 (A - 3 / 2) + (2688) * A ^ 6 * secondAtomMomentProfile 6 (A - 3 / 2) + (-17920) * A ^ 5 * secondAtomMomentProfile 5 (A - 3 / 2) + (44800) * A ^ 4 * secondAtomMomentProfile 4 (A - 3 / 2) + (-38528) * A ^ 3 * secondAtomMomentProfile 3 (A - 3 / 2) + (8064) * A ^ 2 * secondAtomMomentProfile 2 (A - 3 / 2) + (-128) * A * secondAtomMomentProfile 1 (A - 3 / 2) =
       Real.exp (-3 * A) * (sharpJetMainNumerator7 A / (2 * A - 3) ^ 8) := by
   have hne : A - 3 / 2 ≠ 0 := by intro h; linarith
   have hne2 : 2 * A - 3 ≠ 0 := by intro h; linarith
@@ -647,7 +652,8 @@ theorem hasDerivAt_sharpJetMain7 {A : ℝ} (hA : 3 / 2 < A) :
   have hden : HasDerivAt (fun q : ℝ => (2 * q - 3) ^ 8) (8 * (2 * A - 3) ^ 7 * 2) A := by
     have := (hasDerivAt_pow 8 (2 * A - 3)).comp A hlin
     simpa [Function.comp_def] using this
-  have h3 := (hasDerivAt_sharpJetMainNumerator7 A).div hden (pow_ne_zero _ hne)
+  have h3 : HasDerivAt (fun q : ℝ => sharpJetMainNumerator7 q / (2 * q - 3) ^ 8) _ A :=
+    (hasDerivAt_sharpJetMainNumerator7 A).div hden (pow_ne_zero _ hne)
   have h4 := h2.mul h3
   refine HasDerivAt.congr_deriv (f := fun q : ℝ => Real.exp (-3 * q) * (sharpJetMainNumerator7 q / (2 * q - 3) ^ 8)) h4 ?_
   unfold sharpJetMainDerivNumerator7 sharpJetMainNumerator7
@@ -737,7 +743,7 @@ theorem cumulant_gap_2 {μ m2 ε : ℝ} (hε0 : 0 ≤ ε) (hε1 : ε ≤ 1 / 100
     have he : (3 * ε) ^ 2 = 9 * ε ^ 2 := by ring
     linarith
   rw [abs_le]
-  constructor <;> linarith [t0.1, t0.2]
+  constructor <;> linarith only [t0.1, t0.2]
 
 theorem cumulant_gap_3 {μ m2 m3 ε : ℝ} (hε0 : 0 ≤ ε) (hε1 : ε ≤ 1 / 1000000) (hμ0 : 0 ≤ μ) (hμ : μ ≤ 3 * ε) (hm20 : 0 ≤ m2) (hm2 : m2 ≤ 9 * ε) (hm30 : 0 ≤ m3) (hm3 : m3 ≤ 27 * ε) :
     |(m3 - 3 * μ * m2 + 2 * μ ^ 3) - m3| ≤ 82 * ε ^ 2 := by
@@ -762,9 +768,11 @@ theorem cumulant_gap_3 {μ m2 m3 ε : ℝ} (hε0 : 0 ≤ ε) (hε1 : ε ≤ 1 / 
     have hb : μ ^ 3 ≤ (3 * ε) ^ 3 := (pμ 3)
     have he : (3 * ε) ^ 3 = 27 * ε ^ 3 := by ring
     have hd := hε3 3 (by norm_num)
-    nlinarith [hb, he, hd]
+    rw [he] at hb
+    calc _ ≤ _ := hb
+      _ ≤ _ := mul_le_mul_of_nonneg_left hd (by norm_num)
   rw [abs_le]
-  constructor <;> linarith [t0.1, t0.2, t1.1, t1.2]
+  constructor <;> linarith only [t0.1, t0.2, t1.1, t1.2]
 
 theorem cumulant_gap_4 {μ m2 m3 m4 ε : ℝ} (hε0 : 0 ≤ ε) (hε1 : ε ≤ 1 / 1000000) (hμ0 : 0 ≤ μ) (hμ : μ ≤ 3 * ε) (hm20 : 0 ≤ m2) (hm2 : m2 ≤ 9 * ε) (hm30 : 0 ≤ m3) (hm3 : m3 ≤ 27 * ε) (hm40 : 0 ≤ m4) (hm4 : m4 ≤ 81 * ε) :
     |(m4 - 4 * μ * m3 - 3 * m2 ^ 2 + 12 * μ ^ 2 * m2 - 6 * μ ^ 4) - m4| ≤ 568 * ε ^ 2 := by
@@ -795,15 +803,19 @@ theorem cumulant_gap_4 {μ m2 m3 m4 ε : ℝ} (hε0 : 0 ≤ ε) (hε1 : ε ≤ 1
     have hb : μ ^ 2 * m2 ≤ (3 * ε) ^ 2 * (9 * ε) := (mul_le_mul_nn (pow_nonneg hμ0 2) hm20 (pμ 2) hm2)
     have he : (3 * ε) ^ 2 * (9 * ε) = 81 * ε ^ 3 := by ring
     have hd := hε3 3 (by norm_num)
-    nlinarith [hb, he, hd]
+    rw [he] at hb
+    calc _ ≤ _ := hb
+      _ ≤ _ := mul_le_mul_of_nonneg_left hd (by norm_num)
   have t3 : 0 ≤ μ ^ 4 ∧ μ ^ 4 ≤ 81 * (ε ^ 2 * (1 / 1000000)) := by
     refine ⟨(pow_nonneg hμ0 4), ?_⟩
     have hb : μ ^ 4 ≤ (3 * ε) ^ 4 := (pμ 4)
     have he : (3 * ε) ^ 4 = 81 * ε ^ 4 := by ring
     have hd := hε3 4 (by norm_num)
-    nlinarith [hb, he, hd]
+    rw [he] at hb
+    calc _ ≤ _ := hb
+      _ ≤ _ := mul_le_mul_of_nonneg_left hd (by norm_num)
   rw [abs_le]
-  constructor <;> linarith [t0.1, t0.2, t1.1, t1.2, t2.1, t2.2, t3.1, t3.2]
+  constructor <;> linarith only [t0.1, t0.2, t1.1, t1.2, t2.1, t2.2, t3.1, t3.2]
 
 theorem cumulant_gap_5 {μ m2 m3 m4 m5 ε : ℝ} (hε0 : 0 ≤ ε) (hε1 : ε ≤ 1 / 1000000) (hμ0 : 0 ≤ μ) (hμ : μ ≤ 3 * ε) (hm20 : 0 ≤ m2) (hm2 : m2 ≤ 9 * ε) (hm30 : 0 ≤ m3) (hm3 : m3 ≤ 27 * ε) (hm40 : 0 ≤ m4) (hm4 : m4 ≤ 81 * ε) (hm50 : 0 ≤ m5) (hm5 : m5 ≤ 243 * ε) :
     |(m5 - 5 * μ * m4 - 10 * m2 * m3 + 20 * μ ^ 2 * m3 + 30 * μ * m2 ^ 2 - 60 * μ ^ 3 * m2 + 24 * μ ^ 5) - m5| ≤ 3646 * ε ^ 2 := by
@@ -835,27 +847,35 @@ theorem cumulant_gap_5 {μ m2 m3 m4 m5 ε : ℝ} (hε0 : 0 ≤ ε) (hε1 : ε �
     have hb : μ ^ 2 * m3 ≤ (3 * ε) ^ 2 * (27 * ε) := (mul_le_mul_nn (pow_nonneg hμ0 2) hm30 (pμ 2) hm3)
     have he : (3 * ε) ^ 2 * (27 * ε) = 243 * ε ^ 3 := by ring
     have hd := hε3 3 (by norm_num)
-    nlinarith [hb, he, hd]
+    rw [he] at hb
+    calc _ ≤ _ := hb
+      _ ≤ _ := mul_le_mul_of_nonneg_left hd (by norm_num)
   have t3 : 0 ≤ μ * m2 ^ 2 ∧ μ * m2 ^ 2 ≤ 243 * (ε ^ 2 * (1 / 1000000)) := by
     refine ⟨(mul_nonneg hμ0 (pow_nonneg hm20 2)), ?_⟩
     have hb : μ * m2 ^ 2 ≤ (3 * ε) * (9 * ε) ^ 2 := (mul_le_mul_nn hμ0 (pow_nonneg hm20 2) hμ (pm2 2))
     have he : (3 * ε) * (9 * ε) ^ 2 = 243 * ε ^ 3 := by ring
     have hd := hε3 3 (by norm_num)
-    nlinarith [hb, he, hd]
+    rw [he] at hb
+    calc _ ≤ _ := hb
+      _ ≤ _ := mul_le_mul_of_nonneg_left hd (by norm_num)
   have t4 : 0 ≤ μ ^ 3 * m2 ∧ μ ^ 3 * m2 ≤ 243 * (ε ^ 2 * (1 / 1000000)) := by
     refine ⟨(mul_nonneg (pow_nonneg hμ0 3) hm20), ?_⟩
     have hb : μ ^ 3 * m2 ≤ (3 * ε) ^ 3 * (9 * ε) := (mul_le_mul_nn (pow_nonneg hμ0 3) hm20 (pμ 3) hm2)
     have he : (3 * ε) ^ 3 * (9 * ε) = 243 * ε ^ 4 := by ring
     have hd := hε3 4 (by norm_num)
-    nlinarith [hb, he, hd]
+    rw [he] at hb
+    calc _ ≤ _ := hb
+      _ ≤ _ := mul_le_mul_of_nonneg_left hd (by norm_num)
   have t5 : 0 ≤ μ ^ 5 ∧ μ ^ 5 ≤ 243 * (ε ^ 2 * (1 / 1000000)) := by
     refine ⟨(pow_nonneg hμ0 5), ?_⟩
     have hb : μ ^ 5 ≤ (3 * ε) ^ 5 := (pμ 5)
     have he : (3 * ε) ^ 5 = 243 * ε ^ 5 := by ring
     have hd := hε3 5 (by norm_num)
-    nlinarith [hb, he, hd]
+    rw [he] at hb
+    calc _ ≤ _ := hb
+      _ ≤ _ := mul_le_mul_of_nonneg_left hd (by norm_num)
   rw [abs_le]
-  constructor <;> linarith [t0.1, t0.2, t1.1, t1.2, t2.1, t2.2, t3.1, t3.2, t4.1, t4.2, t5.1, t5.2]
+  constructor <;> linarith only [t0.1, t0.2, t1.1, t1.2, t2.1, t2.2, t3.1, t3.2, t4.1, t4.2, t5.1, t5.2]
 
 theorem cumulant_gap_6 {μ m2 m3 m4 m5 m6 ε : ℝ} (hε0 : 0 ≤ ε) (hε1 : ε ≤ 1 / 1000000) (hμ0 : 0 ≤ μ) (hμ : μ ≤ 3 * ε) (hm20 : 0 ≤ m2) (hm2 : m2 ≤ 9 * ε) (hm30 : 0 ≤ m3) (hm3 : m3 ≤ 27 * ε) (hm40 : 0 ≤ m4) (hm4 : m4 ≤ 81 * ε) (hm50 : 0 ≤ m5) (hm5 : m5 ≤ 243 * ε) (hm60 : 0 ≤ m6) (hm6 : m6 ≤ 729 * ε) :
     |(m6 - 6 * μ * m5 - 15 * m2 * m4 - 10 * m3 ^ 2 + 30 * μ ^ 2 * m4 + 120 * μ * m2 * m3 - 120 * μ ^ 3 * m3 + 30 * m2 ^ 3 - 270 * μ ^ 2 * m2 ^ 2 + 360 * μ ^ 4 * m2 - 120 * μ ^ 6) - m6| ≤ 22600 * ε ^ 2 := by
@@ -893,45 +913,59 @@ theorem cumulant_gap_6 {μ m2 m3 m4 m5 m6 ε : ℝ} (hε0 : 0 ≤ ε) (hε1 : ε
     have hb : μ ^ 2 * m4 ≤ (3 * ε) ^ 2 * (81 * ε) := (mul_le_mul_nn (pow_nonneg hμ0 2) hm40 (pμ 2) hm4)
     have he : (3 * ε) ^ 2 * (81 * ε) = 729 * ε ^ 3 := by ring
     have hd := hε3 3 (by norm_num)
-    nlinarith [hb, he, hd]
+    rw [he] at hb
+    calc _ ≤ _ := hb
+      _ ≤ _ := mul_le_mul_of_nonneg_left hd (by norm_num)
   have t4 : 0 ≤ μ * m2 * m3 ∧ μ * m2 * m3 ≤ 729 * (ε ^ 2 * (1 / 1000000)) := by
     refine ⟨(mul_nonneg (mul_nonneg hμ0 hm20) hm30), ?_⟩
     have hb : μ * m2 * m3 ≤ (3 * ε) * (9 * ε) * (27 * ε) := (mul_le_mul_nn (mul_nonneg hμ0 hm20) hm30 (mul_le_mul_nn hμ0 hm20 hμ hm2) hm3)
     have he : (3 * ε) * (9 * ε) * (27 * ε) = 729 * ε ^ 3 := by ring
     have hd := hε3 3 (by norm_num)
-    nlinarith [hb, he, hd]
+    rw [he] at hb
+    calc _ ≤ _ := hb
+      _ ≤ _ := mul_le_mul_of_nonneg_left hd (by norm_num)
   have t5 : 0 ≤ μ ^ 3 * m3 ∧ μ ^ 3 * m3 ≤ 729 * (ε ^ 2 * (1 / 1000000)) := by
     refine ⟨(mul_nonneg (pow_nonneg hμ0 3) hm30), ?_⟩
     have hb : μ ^ 3 * m3 ≤ (3 * ε) ^ 3 * (27 * ε) := (mul_le_mul_nn (pow_nonneg hμ0 3) hm30 (pμ 3) hm3)
     have he : (3 * ε) ^ 3 * (27 * ε) = 729 * ε ^ 4 := by ring
     have hd := hε3 4 (by norm_num)
-    nlinarith [hb, he, hd]
+    rw [he] at hb
+    calc _ ≤ _ := hb
+      _ ≤ _ := mul_le_mul_of_nonneg_left hd (by norm_num)
   have t6 : 0 ≤ m2 ^ 3 ∧ m2 ^ 3 ≤ 729 * (ε ^ 2 * (1 / 1000000)) := by
     refine ⟨(pow_nonneg hm20 3), ?_⟩
     have hb : m2 ^ 3 ≤ (9 * ε) ^ 3 := (pm2 3)
     have he : (9 * ε) ^ 3 = 729 * ε ^ 3 := by ring
     have hd := hε3 3 (by norm_num)
-    nlinarith [hb, he, hd]
+    rw [he] at hb
+    calc _ ≤ _ := hb
+      _ ≤ _ := mul_le_mul_of_nonneg_left hd (by norm_num)
   have t7 : 0 ≤ μ ^ 2 * m2 ^ 2 ∧ μ ^ 2 * m2 ^ 2 ≤ 729 * (ε ^ 2 * (1 / 1000000)) := by
     refine ⟨(mul_nonneg (pow_nonneg hμ0 2) (pow_nonneg hm20 2)), ?_⟩
     have hb : μ ^ 2 * m2 ^ 2 ≤ (3 * ε) ^ 2 * (9 * ε) ^ 2 := (mul_le_mul_nn (pow_nonneg hμ0 2) (pow_nonneg hm20 2) (pμ 2) (pm2 2))
     have he : (3 * ε) ^ 2 * (9 * ε) ^ 2 = 729 * ε ^ 4 := by ring
     have hd := hε3 4 (by norm_num)
-    nlinarith [hb, he, hd]
+    rw [he] at hb
+    calc _ ≤ _ := hb
+      _ ≤ _ := mul_le_mul_of_nonneg_left hd (by norm_num)
   have t8 : 0 ≤ μ ^ 4 * m2 ∧ μ ^ 4 * m2 ≤ 729 * (ε ^ 2 * (1 / 1000000)) := by
     refine ⟨(mul_nonneg (pow_nonneg hμ0 4) hm20), ?_⟩
     have hb : μ ^ 4 * m2 ≤ (3 * ε) ^ 4 * (9 * ε) := (mul_le_mul_nn (pow_nonneg hμ0 4) hm20 (pμ 4) hm2)
     have he : (3 * ε) ^ 4 * (9 * ε) = 729 * ε ^ 5 := by ring
     have hd := hε3 5 (by norm_num)
-    nlinarith [hb, he, hd]
+    rw [he] at hb
+    calc _ ≤ _ := hb
+      _ ≤ _ := mul_le_mul_of_nonneg_left hd (by norm_num)
   have t9 : 0 ≤ μ ^ 6 ∧ μ ^ 6 ≤ 729 * (ε ^ 2 * (1 / 1000000)) := by
     refine ⟨(pow_nonneg hμ0 6), ?_⟩
     have hb : μ ^ 6 ≤ (3 * ε) ^ 6 := (pμ 6)
     have he : (3 * ε) ^ 6 = 729 * ε ^ 6 := by ring
     have hd := hε3 6 (by norm_num)
-    nlinarith [hb, he, hd]
+    rw [he] at hb
+    calc _ ≤ _ := hb
+      _ ≤ _ := mul_le_mul_of_nonneg_left hd (by norm_num)
   rw [abs_le]
-  constructor <;> linarith [t0.1, t0.2, t1.1, t1.2, t2.1, t2.2, t3.1, t3.2, t4.1, t4.2, t5.1, t5.2, t6.1, t6.2, t7.1, t7.2, t8.1, t8.2, t9.1, t9.2]
+  constructor <;> linarith only [t0.1, t0.2, t1.1, t1.2, t2.1, t2.2, t3.1, t3.2, t4.1, t4.2, t5.1, t5.2, t6.1, t6.2, t7.1, t7.2, t8.1, t8.2, t9.1, t9.2]
 
 theorem cumulant_gap_7 {μ m2 m3 m4 m5 m6 m7 ε : ℝ} (hε0 : 0 ≤ ε) (hε1 : ε ≤ 1 / 1000000) (hμ0 : 0 ≤ μ) (hμ : μ ≤ 3 * ε) (hm20 : 0 ≤ m2) (hm2 : m2 ≤ 9 * ε) (hm30 : 0 ≤ m3) (hm3 : m3 ≤ 27 * ε) (hm40 : 0 ≤ m4) (hm4 : m4 ≤ 81 * ε) (hm50 : 0 ≤ m5) (hm5 : m5 ≤ 243 * ε) (hm60 : 0 ≤ m6) (hm6 : m6 ≤ 729 * ε) (hm70 : 0 ≤ m7) (hm7 : m7 ≤ 2187 * ε) :
     |(m7 - 7 * μ * m6 - 21 * m2 * m5 - 35 * m3 * m4 + 42 * μ ^ 2 * m5 + 210 * μ * m2 * m4 + 140 * μ * m3 ^ 2 + 210 * m2 ^ 2 * m3 - 210 * μ ^ 3 * m4 - 1260 * μ ^ 2 * m2 * m3 - 630 * μ * m2 ^ 3 + 840 * μ ^ 4 * m3 + 2520 * μ ^ 3 * m2 ^ 2 - 2520 * μ ^ 5 * m2 + 720 * μ ^ 7) - m7| ≤ 137802 * ε ^ 2 := by
@@ -970,69 +1004,91 @@ theorem cumulant_gap_7 {μ m2 m3 m4 m5 m6 m7 ε : ℝ} (hε0 : 0 ≤ ε) (hε1 :
     have hb : μ ^ 2 * m5 ≤ (3 * ε) ^ 2 * (243 * ε) := (mul_le_mul_nn (pow_nonneg hμ0 2) hm50 (pμ 2) hm5)
     have he : (3 * ε) ^ 2 * (243 * ε) = 2187 * ε ^ 3 := by ring
     have hd := hε3 3 (by norm_num)
-    nlinarith [hb, he, hd]
+    rw [he] at hb
+    calc _ ≤ _ := hb
+      _ ≤ _ := mul_le_mul_of_nonneg_left hd (by norm_num)
   have t4 : 0 ≤ μ * m2 * m4 ∧ μ * m2 * m4 ≤ 2187 * (ε ^ 2 * (1 / 1000000)) := by
     refine ⟨(mul_nonneg (mul_nonneg hμ0 hm20) hm40), ?_⟩
     have hb : μ * m2 * m4 ≤ (3 * ε) * (9 * ε) * (81 * ε) := (mul_le_mul_nn (mul_nonneg hμ0 hm20) hm40 (mul_le_mul_nn hμ0 hm20 hμ hm2) hm4)
     have he : (3 * ε) * (9 * ε) * (81 * ε) = 2187 * ε ^ 3 := by ring
     have hd := hε3 3 (by norm_num)
-    nlinarith [hb, he, hd]
+    rw [he] at hb
+    calc _ ≤ _ := hb
+      _ ≤ _ := mul_le_mul_of_nonneg_left hd (by norm_num)
   have t5 : 0 ≤ μ * m3 ^ 2 ∧ μ * m3 ^ 2 ≤ 2187 * (ε ^ 2 * (1 / 1000000)) := by
     refine ⟨(mul_nonneg hμ0 (pow_nonneg hm30 2)), ?_⟩
     have hb : μ * m3 ^ 2 ≤ (3 * ε) * (27 * ε) ^ 2 := (mul_le_mul_nn hμ0 (pow_nonneg hm30 2) hμ (pm3 2))
     have he : (3 * ε) * (27 * ε) ^ 2 = 2187 * ε ^ 3 := by ring
     have hd := hε3 3 (by norm_num)
-    nlinarith [hb, he, hd]
+    rw [he] at hb
+    calc _ ≤ _ := hb
+      _ ≤ _ := mul_le_mul_of_nonneg_left hd (by norm_num)
   have t6 : 0 ≤ m2 ^ 2 * m3 ∧ m2 ^ 2 * m3 ≤ 2187 * (ε ^ 2 * (1 / 1000000)) := by
     refine ⟨(mul_nonneg (pow_nonneg hm20 2) hm30), ?_⟩
     have hb : m2 ^ 2 * m3 ≤ (9 * ε) ^ 2 * (27 * ε) := (mul_le_mul_nn (pow_nonneg hm20 2) hm30 (pm2 2) hm3)
     have he : (9 * ε) ^ 2 * (27 * ε) = 2187 * ε ^ 3 := by ring
     have hd := hε3 3 (by norm_num)
-    nlinarith [hb, he, hd]
+    rw [he] at hb
+    calc _ ≤ _ := hb
+      _ ≤ _ := mul_le_mul_of_nonneg_left hd (by norm_num)
   have t7 : 0 ≤ μ ^ 3 * m4 ∧ μ ^ 3 * m4 ≤ 2187 * (ε ^ 2 * (1 / 1000000)) := by
     refine ⟨(mul_nonneg (pow_nonneg hμ0 3) hm40), ?_⟩
     have hb : μ ^ 3 * m4 ≤ (3 * ε) ^ 3 * (81 * ε) := (mul_le_mul_nn (pow_nonneg hμ0 3) hm40 (pμ 3) hm4)
     have he : (3 * ε) ^ 3 * (81 * ε) = 2187 * ε ^ 4 := by ring
     have hd := hε3 4 (by norm_num)
-    nlinarith [hb, he, hd]
+    rw [he] at hb
+    calc _ ≤ _ := hb
+      _ ≤ _ := mul_le_mul_of_nonneg_left hd (by norm_num)
   have t8 : 0 ≤ μ ^ 2 * m2 * m3 ∧ μ ^ 2 * m2 * m3 ≤ 2187 * (ε ^ 2 * (1 / 1000000)) := by
     refine ⟨(mul_nonneg (mul_nonneg (pow_nonneg hμ0 2) hm20) hm30), ?_⟩
     have hb : μ ^ 2 * m2 * m3 ≤ (3 * ε) ^ 2 * (9 * ε) * (27 * ε) := (mul_le_mul_nn (mul_nonneg (pow_nonneg hμ0 2) hm20) hm30 (mul_le_mul_nn (pow_nonneg hμ0 2) hm20 (pμ 2) hm2) hm3)
     have he : (3 * ε) ^ 2 * (9 * ε) * (27 * ε) = 2187 * ε ^ 4 := by ring
     have hd := hε3 4 (by norm_num)
-    nlinarith [hb, he, hd]
+    rw [he] at hb
+    calc _ ≤ _ := hb
+      _ ≤ _ := mul_le_mul_of_nonneg_left hd (by norm_num)
   have t9 : 0 ≤ μ * m2 ^ 3 ∧ μ * m2 ^ 3 ≤ 2187 * (ε ^ 2 * (1 / 1000000)) := by
     refine ⟨(mul_nonneg hμ0 (pow_nonneg hm20 3)), ?_⟩
     have hb : μ * m2 ^ 3 ≤ (3 * ε) * (9 * ε) ^ 3 := (mul_le_mul_nn hμ0 (pow_nonneg hm20 3) hμ (pm2 3))
     have he : (3 * ε) * (9 * ε) ^ 3 = 2187 * ε ^ 4 := by ring
     have hd := hε3 4 (by norm_num)
-    nlinarith [hb, he, hd]
+    rw [he] at hb
+    calc _ ≤ _ := hb
+      _ ≤ _ := mul_le_mul_of_nonneg_left hd (by norm_num)
   have t10 : 0 ≤ μ ^ 4 * m3 ∧ μ ^ 4 * m3 ≤ 2187 * (ε ^ 2 * (1 / 1000000)) := by
     refine ⟨(mul_nonneg (pow_nonneg hμ0 4) hm30), ?_⟩
     have hb : μ ^ 4 * m3 ≤ (3 * ε) ^ 4 * (27 * ε) := (mul_le_mul_nn (pow_nonneg hμ0 4) hm30 (pμ 4) hm3)
     have he : (3 * ε) ^ 4 * (27 * ε) = 2187 * ε ^ 5 := by ring
     have hd := hε3 5 (by norm_num)
-    nlinarith [hb, he, hd]
+    rw [he] at hb
+    calc _ ≤ _ := hb
+      _ ≤ _ := mul_le_mul_of_nonneg_left hd (by norm_num)
   have t11 : 0 ≤ μ ^ 3 * m2 ^ 2 ∧ μ ^ 3 * m2 ^ 2 ≤ 2187 * (ε ^ 2 * (1 / 1000000)) := by
     refine ⟨(mul_nonneg (pow_nonneg hμ0 3) (pow_nonneg hm20 2)), ?_⟩
     have hb : μ ^ 3 * m2 ^ 2 ≤ (3 * ε) ^ 3 * (9 * ε) ^ 2 := (mul_le_mul_nn (pow_nonneg hμ0 3) (pow_nonneg hm20 2) (pμ 3) (pm2 2))
     have he : (3 * ε) ^ 3 * (9 * ε) ^ 2 = 2187 * ε ^ 5 := by ring
     have hd := hε3 5 (by norm_num)
-    nlinarith [hb, he, hd]
+    rw [he] at hb
+    calc _ ≤ _ := hb
+      _ ≤ _ := mul_le_mul_of_nonneg_left hd (by norm_num)
   have t12 : 0 ≤ μ ^ 5 * m2 ∧ μ ^ 5 * m2 ≤ 2187 * (ε ^ 2 * (1 / 1000000)) := by
     refine ⟨(mul_nonneg (pow_nonneg hμ0 5) hm20), ?_⟩
     have hb : μ ^ 5 * m2 ≤ (3 * ε) ^ 5 * (9 * ε) := (mul_le_mul_nn (pow_nonneg hμ0 5) hm20 (pμ 5) hm2)
     have he : (3 * ε) ^ 5 * (9 * ε) = 2187 * ε ^ 6 := by ring
     have hd := hε3 6 (by norm_num)
-    nlinarith [hb, he, hd]
+    rw [he] at hb
+    calc _ ≤ _ := hb
+      _ ≤ _ := mul_le_mul_of_nonneg_left hd (by norm_num)
   have t13 : 0 ≤ μ ^ 7 ∧ μ ^ 7 ≤ 2187 * (ε ^ 2 * (1 / 1000000)) := by
     refine ⟨(pow_nonneg hμ0 7), ?_⟩
     have hb : μ ^ 7 ≤ (3 * ε) ^ 7 := (pμ 7)
     have he : (3 * ε) ^ 7 = 2187 * ε ^ 7 := by ring
     have hd := hε3 7 (by norm_num)
-    nlinarith [hb, he, hd]
+    rw [he] at hb
+    calc _ ≤ _ := hb
+      _ ≤ _ := mul_le_mul_of_nonneg_left hd (by norm_num)
   rw [abs_le]
-  constructor <;> linarith [t0.1, t0.2, t1.1, t1.2, t2.1, t2.2, t3.1, t3.2, t4.1, t4.2, t5.1, t5.2, t6.1, t6.2, t7.1, t7.2, t8.1, t8.2, t9.1, t9.2, t10.1, t10.2, t11.1, t11.2, t12.1, t12.2, t13.1, t13.2]
+  constructor <;> linarith only [t0.1, t0.2, t1.1, t1.2, t2.1, t2.2, t3.1, t3.2, t4.1, t4.2, t5.1, t5.2, t6.1, t6.2, t7.1, t7.2, t8.1, t8.2, t9.1, t9.2, t10.1, t10.2, t11.1, t11.2, t12.1, t12.2, t13.1, t13.2]
 
 
 /-! ## Regime-I inputs -/
@@ -1276,17 +1332,19 @@ theorem sharpJet_bound_2 {x : ℝ} (hA : 6 ≤ thetaCuspSingleAtomReflectionScal
   have hAj2 : 0 ≤ A ^ 2 := by positivity
   have u2 := mul_le_mul_of_nonneg_left (abs_le.mp hk2).2 hAj2
   have l2 := mul_le_mul_of_nonneg_left (abs_le.mp hk2).1 hAj2
-  have hAj1 : 0 ≤ A ^ 1 := by positivity
+  have hAj1 : 0 ≤ A := by positivity
   have u1 := mul_le_mul_of_nonneg_left (abs_le.mp hk1).2 hAj1
   have l1 := mul_le_mul_of_nonneg_left (abs_le.mp hk1).1 hAj1
-  have hp1 : 6 ^ 1 * A ^ 1 ≤ A ^ 2 := by
+  have hp1 : 6 ^ 1 * A ≤ A ^ 2 := by
     have := pow_le_pow_left₀ (by norm_num) hA 1
-    calc 6 ^ 1 * A ^ 1 ≤ A ^ 1 * A ^ 1 := mul_le_mul_of_nonneg_right this hAj1
+    calc 6 ^ 1 * A ≤ A * A := mul_le_mul_of_nonneg_right (by simpa using this) hAj1
       _ = A ^ 2 := by ring
   have hpe1 := mul_le_mul_of_nonneg_right hp1 hε20
   have hpE1 := mul_le_mul_of_nonneg_right hp1 hE80
+  have hnn1 : 0 ≤ A ^ 2 * ε ^ 2 := mul_nonneg hAj2 hε20
+  have hnn2 : 0 ≤ A ^ 2 * E8 := mul_nonneg hAj2 hE80
   rw [abs_le]
-  constructor <;> nlinarith [u2, l2, u1, l1, hpe1, hpE1]
+  constructor <;> linarith only [u2, l2, u1, l1, hpe1, hpE1, hnn1, hnn2]
 
 /-- **Sharp bound for the `3`-th jet** in regime I. -/
 theorem sharpJet_bound_3 {x : ℝ} (hA : 6 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
@@ -1319,21 +1377,23 @@ theorem sharpJet_bound_3 {x : ℝ} (hA : 6 ≤ thetaCuspSingleAtomReflectionScal
   have l2 := mul_le_mul_of_nonneg_left (abs_le.mp hk2).1 hAj2
   have hp2 : 6 ^ 1 * A ^ 2 ≤ A ^ 3 := by
     have := pow_le_pow_left₀ (by norm_num) hA 1
-    calc 6 ^ 1 * A ^ 2 ≤ A ^ 1 * A ^ 2 := mul_le_mul_of_nonneg_right this hAj2
+    calc 6 ^ 1 * A ^ 2 ≤ A * A ^ 2 := mul_le_mul_of_nonneg_right (by simpa using this) hAj2
       _ = A ^ 3 := by ring
   have hpe2 := mul_le_mul_of_nonneg_right hp2 hε20
   have hpE2 := mul_le_mul_of_nonneg_right hp2 hE80
-  have hAj1 : 0 ≤ A ^ 1 := by positivity
+  have hAj1 : 0 ≤ A := by positivity
   have u1 := mul_le_mul_of_nonneg_left (abs_le.mp hk1).2 hAj1
   have l1 := mul_le_mul_of_nonneg_left (abs_le.mp hk1).1 hAj1
-  have hp1 : 6 ^ 2 * A ^ 1 ≤ A ^ 3 := by
+  have hp1 : 6 ^ 2 * A ≤ A ^ 3 := by
     have := pow_le_pow_left₀ (by norm_num) hA 2
-    calc 6 ^ 2 * A ^ 1 ≤ A ^ 2 * A ^ 1 := mul_le_mul_of_nonneg_right this hAj1
+    calc 6 ^ 2 * A ≤ A ^ 2 * A := mul_le_mul_of_nonneg_right this hAj1
       _ = A ^ 3 := by ring
   have hpe1 := mul_le_mul_of_nonneg_right hp1 hε20
   have hpE1 := mul_le_mul_of_nonneg_right hp1 hE80
+  have hnn1 : 0 ≤ A ^ 3 * ε ^ 2 := mul_nonneg hAj3 hε20
+  have hnn2 : 0 ≤ A ^ 3 * E8 := mul_nonneg hAj3 hE80
   rw [abs_le]
-  constructor <;> nlinarith [u3, l3, u2, l2, u1, l1, hpe2, hpE2, hpe1, hpE1]
+  constructor <;> linarith only [u3, l3, u2, l2, u1, l1, hpe2, hpE2, hpe1, hpE1, hnn1, hnn2]
 
 /-- **Sharp bound for the `4`-th jet** in regime I. -/
 theorem sharpJet_bound_4 {x : ℝ} (hA : 6 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
@@ -1366,7 +1426,7 @@ theorem sharpJet_bound_4 {x : ℝ} (hA : 6 ≤ thetaCuspSingleAtomReflectionScal
   have l3 := mul_le_mul_of_nonneg_left (abs_le.mp hk3).1 hAj3
   have hp3 : 6 ^ 1 * A ^ 3 ≤ A ^ 4 := by
     have := pow_le_pow_left₀ (by norm_num) hA 1
-    calc 6 ^ 1 * A ^ 3 ≤ A ^ 1 * A ^ 3 := mul_le_mul_of_nonneg_right this hAj3
+    calc 6 ^ 1 * A ^ 3 ≤ A * A ^ 3 := mul_le_mul_of_nonneg_right (by simpa using this) hAj3
       _ = A ^ 4 := by ring
   have hpe3 := mul_le_mul_of_nonneg_right hp3 hε20
   have hpE3 := mul_le_mul_of_nonneg_right hp3 hE80
@@ -1379,17 +1439,19 @@ theorem sharpJet_bound_4 {x : ℝ} (hA : 6 ≤ thetaCuspSingleAtomReflectionScal
       _ = A ^ 4 := by ring
   have hpe2 := mul_le_mul_of_nonneg_right hp2 hε20
   have hpE2 := mul_le_mul_of_nonneg_right hp2 hE80
-  have hAj1 : 0 ≤ A ^ 1 := by positivity
+  have hAj1 : 0 ≤ A := by positivity
   have u1 := mul_le_mul_of_nonneg_left (abs_le.mp hk1).2 hAj1
   have l1 := mul_le_mul_of_nonneg_left (abs_le.mp hk1).1 hAj1
-  have hp1 : 6 ^ 3 * A ^ 1 ≤ A ^ 4 := by
+  have hp1 : 6 ^ 3 * A ≤ A ^ 4 := by
     have := pow_le_pow_left₀ (by norm_num) hA 3
-    calc 6 ^ 3 * A ^ 1 ≤ A ^ 3 * A ^ 1 := mul_le_mul_of_nonneg_right this hAj1
+    calc 6 ^ 3 * A ≤ A ^ 3 * A := mul_le_mul_of_nonneg_right this hAj1
       _ = A ^ 4 := by ring
   have hpe1 := mul_le_mul_of_nonneg_right hp1 hε20
   have hpE1 := mul_le_mul_of_nonneg_right hp1 hE80
+  have hnn1 : 0 ≤ A ^ 4 * ε ^ 2 := mul_nonneg hAj4 hε20
+  have hnn2 : 0 ≤ A ^ 4 * E8 := mul_nonneg hAj4 hE80
   rw [abs_le]
-  constructor <;> nlinarith [u4, l4, u3, l3, u2, l2, u1, l1, hpe3, hpE3, hpe2, hpE2, hpe1, hpE1]
+  constructor <;> linarith only [u4, l4, u3, l3, u2, l2, u1, l1, hpe3, hpE3, hpe2, hpE2, hpe1, hpE1, hnn1, hnn2]
 
 /-- **Sharp bound for the `5`-th jet** in regime I. -/
 theorem sharpJet_bound_5 {x : ℝ} (hA : 6 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
@@ -1422,7 +1484,7 @@ theorem sharpJet_bound_5 {x : ℝ} (hA : 6 ≤ thetaCuspSingleAtomReflectionScal
   have l4 := mul_le_mul_of_nonneg_left (abs_le.mp hk4).1 hAj4
   have hp4 : 6 ^ 1 * A ^ 4 ≤ A ^ 5 := by
     have := pow_le_pow_left₀ (by norm_num) hA 1
-    calc 6 ^ 1 * A ^ 4 ≤ A ^ 1 * A ^ 4 := mul_le_mul_of_nonneg_right this hAj4
+    calc 6 ^ 1 * A ^ 4 ≤ A * A ^ 4 := mul_le_mul_of_nonneg_right (by simpa using this) hAj4
       _ = A ^ 5 := by ring
   have hpe4 := mul_le_mul_of_nonneg_right hp4 hε20
   have hpE4 := mul_le_mul_of_nonneg_right hp4 hE80
@@ -1444,17 +1506,19 @@ theorem sharpJet_bound_5 {x : ℝ} (hA : 6 ≤ thetaCuspSingleAtomReflectionScal
       _ = A ^ 5 := by ring
   have hpe2 := mul_le_mul_of_nonneg_right hp2 hε20
   have hpE2 := mul_le_mul_of_nonneg_right hp2 hE80
-  have hAj1 : 0 ≤ A ^ 1 := by positivity
+  have hAj1 : 0 ≤ A := by positivity
   have u1 := mul_le_mul_of_nonneg_left (abs_le.mp hk1).2 hAj1
   have l1 := mul_le_mul_of_nonneg_left (abs_le.mp hk1).1 hAj1
-  have hp1 : 6 ^ 4 * A ^ 1 ≤ A ^ 5 := by
+  have hp1 : 6 ^ 4 * A ≤ A ^ 5 := by
     have := pow_le_pow_left₀ (by norm_num) hA 4
-    calc 6 ^ 4 * A ^ 1 ≤ A ^ 4 * A ^ 1 := mul_le_mul_of_nonneg_right this hAj1
+    calc 6 ^ 4 * A ≤ A ^ 4 * A := mul_le_mul_of_nonneg_right this hAj1
       _ = A ^ 5 := by ring
   have hpe1 := mul_le_mul_of_nonneg_right hp1 hε20
   have hpE1 := mul_le_mul_of_nonneg_right hp1 hE80
+  have hnn1 : 0 ≤ A ^ 5 * ε ^ 2 := mul_nonneg hAj5 hε20
+  have hnn2 : 0 ≤ A ^ 5 * E8 := mul_nonneg hAj5 hE80
   rw [abs_le]
-  constructor <;> nlinarith [u5, l5, u4, l4, u3, l3, u2, l2, u1, l1, hpe4, hpE4, hpe3, hpE3, hpe2, hpE2, hpe1, hpE1]
+  constructor <;> linarith only [u5, l5, u4, l4, u3, l3, u2, l2, u1, l1, hpe4, hpE4, hpe3, hpE3, hpe2, hpE2, hpe1, hpE1, hnn1, hnn2]
 
 /-- **Sharp bound for the `6`-th jet** in regime I. -/
 theorem sharpJet_bound_6 {x : ℝ} (hA : 6 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
@@ -1487,7 +1551,7 @@ theorem sharpJet_bound_6 {x : ℝ} (hA : 6 ≤ thetaCuspSingleAtomReflectionScal
   have l5 := mul_le_mul_of_nonneg_left (abs_le.mp hk5).1 hAj5
   have hp5 : 6 ^ 1 * A ^ 5 ≤ A ^ 6 := by
     have := pow_le_pow_left₀ (by norm_num) hA 1
-    calc 6 ^ 1 * A ^ 5 ≤ A ^ 1 * A ^ 5 := mul_le_mul_of_nonneg_right this hAj5
+    calc 6 ^ 1 * A ^ 5 ≤ A * A ^ 5 := mul_le_mul_of_nonneg_right (by simpa using this) hAj5
       _ = A ^ 6 := by ring
   have hpe5 := mul_le_mul_of_nonneg_right hp5 hε20
   have hpE5 := mul_le_mul_of_nonneg_right hp5 hE80
@@ -1518,17 +1582,19 @@ theorem sharpJet_bound_6 {x : ℝ} (hA : 6 ≤ thetaCuspSingleAtomReflectionScal
       _ = A ^ 6 := by ring
   have hpe2 := mul_le_mul_of_nonneg_right hp2 hε20
   have hpE2 := mul_le_mul_of_nonneg_right hp2 hE80
-  have hAj1 : 0 ≤ A ^ 1 := by positivity
+  have hAj1 : 0 ≤ A := by positivity
   have u1 := mul_le_mul_of_nonneg_left (abs_le.mp hk1).2 hAj1
   have l1 := mul_le_mul_of_nonneg_left (abs_le.mp hk1).1 hAj1
-  have hp1 : 6 ^ 5 * A ^ 1 ≤ A ^ 6 := by
+  have hp1 : 6 ^ 5 * A ≤ A ^ 6 := by
     have := pow_le_pow_left₀ (by norm_num) hA 5
-    calc 6 ^ 5 * A ^ 1 ≤ A ^ 5 * A ^ 1 := mul_le_mul_of_nonneg_right this hAj1
+    calc 6 ^ 5 * A ≤ A ^ 5 * A := mul_le_mul_of_nonneg_right this hAj1
       _ = A ^ 6 := by ring
   have hpe1 := mul_le_mul_of_nonneg_right hp1 hε20
   have hpE1 := mul_le_mul_of_nonneg_right hp1 hE80
+  have hnn1 : 0 ≤ A ^ 6 * ε ^ 2 := mul_nonneg hAj6 hε20
+  have hnn2 : 0 ≤ A ^ 6 * E8 := mul_nonneg hAj6 hE80
   rw [abs_le]
-  constructor <;> nlinarith [u6, l6, u5, l5, u4, l4, u3, l3, u2, l2, u1, l1, hpe5, hpE5, hpe4, hpE4, hpe3, hpE3, hpe2, hpE2, hpe1, hpE1]
+  constructor <;> linarith only [u6, l6, u5, l5, u4, l4, u3, l3, u2, l2, u1, l1, hpe5, hpE5, hpe4, hpE4, hpe3, hpE3, hpe2, hpE2, hpe1, hpE1, hnn1, hnn2]
 
 /-- **Sharp bound for the `7`-th jet** in regime I. -/
 theorem sharpJet_bound_7 {x : ℝ} (hA : 6 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
@@ -1561,7 +1627,7 @@ theorem sharpJet_bound_7 {x : ℝ} (hA : 6 ≤ thetaCuspSingleAtomReflectionScal
   have l6 := mul_le_mul_of_nonneg_left (abs_le.mp hk6).1 hAj6
   have hp6 : 6 ^ 1 * A ^ 6 ≤ A ^ 7 := by
     have := pow_le_pow_left₀ (by norm_num) hA 1
-    calc 6 ^ 1 * A ^ 6 ≤ A ^ 1 * A ^ 6 := mul_le_mul_of_nonneg_right this hAj6
+    calc 6 ^ 1 * A ^ 6 ≤ A * A ^ 6 := mul_le_mul_of_nonneg_right (by simpa using this) hAj6
       _ = A ^ 7 := by ring
   have hpe6 := mul_le_mul_of_nonneg_right hp6 hε20
   have hpE6 := mul_le_mul_of_nonneg_right hp6 hE80
@@ -1601,17 +1667,19 @@ theorem sharpJet_bound_7 {x : ℝ} (hA : 6 ≤ thetaCuspSingleAtomReflectionScal
       _ = A ^ 7 := by ring
   have hpe2 := mul_le_mul_of_nonneg_right hp2 hε20
   have hpE2 := mul_le_mul_of_nonneg_right hp2 hE80
-  have hAj1 : 0 ≤ A ^ 1 := by positivity
+  have hAj1 : 0 ≤ A := by positivity
   have u1 := mul_le_mul_of_nonneg_left (abs_le.mp hk1).2 hAj1
   have l1 := mul_le_mul_of_nonneg_left (abs_le.mp hk1).1 hAj1
-  have hp1 : 6 ^ 6 * A ^ 1 ≤ A ^ 7 := by
+  have hp1 : 6 ^ 6 * A ≤ A ^ 7 := by
     have := pow_le_pow_left₀ (by norm_num) hA 6
-    calc 6 ^ 6 * A ^ 1 ≤ A ^ 6 * A ^ 1 := mul_le_mul_of_nonneg_right this hAj1
+    calc 6 ^ 6 * A ≤ A ^ 6 * A := mul_le_mul_of_nonneg_right this hAj1
       _ = A ^ 7 := by ring
   have hpe1 := mul_le_mul_of_nonneg_right hp1 hε20
   have hpE1 := mul_le_mul_of_nonneg_right hp1 hE80
+  have hnn1 : 0 ≤ A ^ 7 * ε ^ 2 := mul_nonneg hAj7 hε20
+  have hnn2 : 0 ≤ A ^ 7 * E8 := mul_nonneg hAj7 hE80
   rw [abs_le]
-  constructor <;> nlinarith [u7, l7, u6, l6, u5, l5, u4, l4, u3, l3, u2, l2, u1, l1, hpe6, hpE6, hpe5, hpE5, hpe4, hpE4, hpe3, hpE3, hpe2, hpE2, hpe1, hpE1]
+  constructor <;> linarith only [u7, l7, u6, l6, u5, l5, u4, l4, u3, l3, u2, l2, u1, l1, hpe6, hpE6, hpe5, hpE5, hpe4, hpE4, hpe3, hpE3, hpe2, hpE2, hpe1, hpE1, hnn1, hnn2]
 
 end
 

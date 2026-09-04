@@ -131,13 +131,17 @@ theorem exists_two_three_positive_depth_collision {epsilon : ℝ} (hepsilon : 0 
       rw [heq, abs_neg]
       exact heps
 
+/-- Amplitude-free cubic-Cauchy capacity of one positive 2/3 prime-depth pair. -/
+def twoThreePrimeDepthCubicCauchyCapacity (m n : ℕ) : ℝ :=
+  64 * ((m : ℝ) * Real.log 2) ^ 3 * ((n : ℝ) * Real.log 3) ^ 3 /
+    ((((m : ℝ) * Real.log 2) + ((n : ℝ) * Real.log 3)) ^ 6 -
+      64 * ((m : ℝ) * Real.log 2) ^ 3 * ((n : ℝ) * Real.log 3) ^ 3)
+
 /-- Literal 2/3 prime-depth cubic-Cauchy Gram capacities exceed every prescribed bound. -/
 theorem exists_two_three_primeDepth_cubicCauchyCapacity_gt
     {M : ℝ} (hM : 0 ≤ M) :
     ∃ m n : ℕ, 0 < m ∧ 0 < n ∧
-      M < 64 * ((m : ℝ) * Real.log 2) ^ 3 * ((n : ℝ) * Real.log 3) ^ 3 /
-        ((((m : ℝ) * Real.log 2) + ((n : ℝ) * Real.log 3)) ^ 6 -
-          64 * ((m : ℝ) * Real.log 2) ^ 3 * ((n : ℝ) * Real.log 3) ^ 3) := by
+      M < twoThreePrimeDepthCubicCauchyCapacity m n := by
   let epsilon := Real.log 2 / (4 * (M + 1))
   have hM1 : 0 < M + 1 := by linarith
   have hepsilon : 0 < epsilon := by
@@ -228,26 +232,26 @@ theorem exists_primeBurnolThetaTwoThreeMismatch_entry_ne_zero
   ext r s
   exact h r s
 
+/-- Exact retained-block correction predicted by the two-site modular holonomy law. -/
+def twoThreePrimeDepthThetaModularCorrection (a : ℝ) (m n : ℕ) :
+    Matrix (Fin 2) (Fin 2) ℂ :=
+  ((twoThreePrimeDepthCubicCauchyCapacity m n : ℝ) : ℂ) •
+    primeBurnolThetaTwoThreeMismatch a
+
 /-- For every nonneutral grade, some coefficient of the exact two-site modular correction
 `capacity · (I-U₃(a)U₂(a)⁻¹)` exceeds every prescribed bound along literal positive depths. -/
 theorem exists_two_three_thetaModularEscapeCoefficient_gt
     {a M : ℝ} (ha : a ≠ 0) (hM : 0 ≤ M) :
     ∃ m n : ℕ, 0 < m ∧ 0 < n ∧
       ∃ r s : Fin 2,
-        M < ‖(((64 * ((m : ℝ) * Real.log 2) ^ 3 * ((n : ℝ) * Real.log 3) ^ 3 /
-          ((((m : ℝ) * Real.log 2) + ((n : ℝ) * Real.log 3)) ^ 6 -
-            64 * ((m : ℝ) * Real.log 2) ^ 3 * ((n : ℝ) * Real.log 3) ^ 3) : ℝ) : ℂ) •
-              primeBurnolThetaTwoThreeMismatch a) r s‖ := by
+        M < ‖twoThreePrimeDepthThetaModularCorrection a m n r s‖ := by
   obtain ⟨r, s, hrs⟩ := exists_primeBurnolThetaTwoThreeMismatch_entry_ne_zero ha
   have hnorm : 0 < ‖primeBurnolThetaTwoThreeMismatch a r s‖ := norm_pos_iff.mpr hrs
   let B := M / ‖primeBurnolThetaTwoThreeMismatch a r s‖
   have hB : 0 ≤ B := div_nonneg hM hnorm.le
   obtain ⟨m, n, hm, hn, hcap⟩ :=
     exists_two_three_primeDepth_cubicCauchyCapacity_gt hB
-  let cap : ℝ :=
-    64 * ((m : ℝ) * Real.log 2) ^ 3 * ((n : ℝ) * Real.log 3) ^ 3 /
-      ((((m : ℝ) * Real.log 2) + ((n : ℝ) * Real.log 3)) ^ 6 -
-        64 * ((m : ℝ) * Real.log 2) ^ 3 * ((n : ℝ) * Real.log 3) ^ 3)
+  let cap : ℝ := twoThreePrimeDepthCubicCauchyCapacity m n
   change B < cap at hcap
   have hcap0 : 0 < cap := lt_of_le_of_lt hB hcap
   have hmul : M < cap * ‖primeBurnolThetaTwoThreeMismatch a r s‖ := by
@@ -257,6 +261,32 @@ theorem exists_two_three_thetaModularEscapeCoefficient_gt
   change M < ‖(cap : ℂ) * primeBurnolThetaTwoThreeMismatch a r s‖
   rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hcap0]
   exact hmul
+
+/-- Uniform boundedness of the canonical two-prime modular correction, defined entirely before
+any divisor is supplied. -/
+def PrimeDepthThetaModularAdmissible (a : ℝ) : Prop :=
+  ∃ M : ℝ, ∀ m n : ℕ, 0 < m → 0 < n → ∀ r s : Fin 2,
+    ‖twoThreePrimeDepthThetaModularCorrection a m n r s‖ ≤ M
+
+/-- **Pre-divisor selection law.** Canonical prime-depth theta modular transport is uniformly
+admissible exactly at neutral grade. -/
+theorem primeDepthThetaModularAdmissible_iff (a : ℝ) :
+    PrimeDepthThetaModularAdmissible a ↔ a = 0 := by
+  constructor
+  · rintro ⟨C, hC⟩
+    by_contra ha
+    let M := max C 0
+    have hM : 0 ≤ M := le_max_right _ _
+    obtain ⟨m, n, hm, hn, r, s, hescape⟩ :=
+      exists_two_three_thetaModularEscapeCoefficient_gt ha hM
+    have hbound := hC m n hm hn r s
+    have hCM : C ≤ M := le_max_left _ _
+    linarith
+  · rintro rfl
+    refine ⟨0, fun m n hm hn r s => ?_⟩
+    simp [twoThreePrimeDepthThetaModularCorrection,
+      primeBurnolThetaTwoThreeMismatch,
+      _root_.RHTower.primeBurnolThetaBlock_zero]
 
 end
 

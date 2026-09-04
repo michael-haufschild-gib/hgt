@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven
 - **Type:** pre-divisor source/completion fusion law
 - **Parents:** ULF-SFMH-001, ULF-PBFOF-001, TwoPrimeKummerClockSeparation
-- **Status:** [FULLY PROVEN] [NOT RH]
+- **Status:** [FULLY PROVEN] [LEAN-PROVED] [NOT RH]
 
 ## Statement
 
@@ -51,6 +51,23 @@ Hence the capacity diverges when positive rates coalesce. For the pairs in (PDAM
 blocks remain the fixed distinct blocks `U_2(a),U_3(a)` for every `a!=0`; their mismatch does not
 coalesce with prime-power scale.
 
+Precisely, for every `a!=0` and `M>=0`, there are positive depths `m,n` and a theta-channel entry
+`(r,s)` for which
+
+~~~text
+M < | capacity_(m,n) (I-U_3(a)U_2(a)^(-1))_(r,s) |.   (PDAMB.5)
+~~~
+
+Define source-frame admissibility without Xi data by uniform boundedness of these corrections over
+all positive depths and both theta channels. Then
+
+~~~text
+PrimeDepthThetaModularAdmissible(a) iff a=0.            (PDAMB.6)
+~~~
+
+Indeed, (PDAMB.5) contradicts any bound when `a!=0`; at `a=0`, both theta blocks are identity and
+every correction is zero.
+
 ## Proof
 
 TwoPrimeKummerClockSeparation proves arbitrarily small nonzero values of
@@ -77,6 +94,23 @@ Multiplicative source formation identifies prime powers by archimedean decay sca
 completion identifies them by prime label. Near-collision of the first without collision of the
 second forces finite inner modular transports toward infinity. Finite determinant remains one,
 so the only possible invariant is a relative cofinal boundary.
+
+This is not the earlier reflected off-diagonal Euler holonomy. That object is the flat scalar
+coboundary `exp(a(lambda_j-lambda_i))`; its uniform boundedness is already equivalent to RH. Here
+same-prime depth motion is invisible to theta, the full cubic-Cauchy inverse Gram supplies the
+singular coefficient, and fixed cross-prime frame mismatch survives rate coalescence. No divisor
+is used in (PDAMB.1)--(PDAMB.5).
+
+## Lean certificate
+
+- `formal/GaloisForLFunctions/HTGeometry/TwoSiteModularHolonomyEscape.lean`
+  proves (PDAMB.2)--(PDAMB.4) and quantitative relative-capacity escape.
+- `formal/GaloisForLFunctions/RHTower/PrimeDepthAliasingModularEscape.lean`
+  proves positive-depth `2/3` collisions, unbounded literal cubic-Cauchy capacity, nonzero
+  two-prime theta mismatch for every `a!=0`, and (PDAMB.5)--(PDAMB.6).
+
+Direct source checks and exact target builds pass. Axiom audit reports only `propext`,
+`Classical.choice`, and `Quot.sound`.
 
 ## Non-claim
 

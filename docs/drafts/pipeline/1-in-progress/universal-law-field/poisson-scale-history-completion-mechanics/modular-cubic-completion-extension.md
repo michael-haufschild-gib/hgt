@@ -7,7 +7,7 @@
   ULF-CCEL-001, ULF-FACHD-001, ULF-RUCRI-001, ULF-CRSHC-001, ULF-PCLGF-001
 - **Status:** [CONJECTURAL ARITHMETIC REALIZATION] [GENERIC LAW LEAN-PROVED]
   [SOURCE-FRAME HOLONOMY LEAN-PROVED] [FINITE SOURCE SUPPORT LEAN-PROVED]
-  [FINITE THETA FRAME LEAN-PROVED] [NOT RH]
+  [FINITE THETA FRAME LEAN-PROVED] [PRIME-DEPTH ALIASING ESCAPE LEAN-PROVED] [NOT RH]
 
 ## 1. Big-picture interpretation
 
@@ -143,6 +143,14 @@ The audit fixes the following.
     `m log 2+n log 3`. After choosing opposite signs, positive depths of the fixed primes 2 and 3
     can have arbitrarily close Burnol decay rates. Their theta blocks remain distinct for every
     `a!=0`, because theta framing remembers prime identity rather than prime-power scale.
+21. The older reflected off-diagonal Euler holonomy is not this mechanism. It is the flat scalar
+    coboundary `exp(a(lambda_j-lambda_i))`; its uniform boundedness is already equivalent to RH and
+    therefore cannot be used as a producer. It escapes along same-prime depth separation.
+22. ULF-PDAMB-001 proves the opposite source geometry: same-prime depth is theta-blind, while
+    fixed primes 2 and 3 admit arbitrarily close positive-depth Burnol rates. The exact retained
+    modular block is `I+(g^2/(de-g^2))(I-U_3U_2^-1)`. Its Gram capacity is amplitude-free and
+    unbounded, while the theta mismatch is nonzero for every `a!=0`. Thus a matrix coefficient of
+    the pre-divisor correction exceeds every bound.
 
 These facts narrow the object to a modular refinement of the cubic completion extension, formed
 from the non-diagonal Burnol source density before theta completion.
@@ -181,6 +189,27 @@ For `a!=0`, `Q P^(-1)!=I`; hence one matrix coefficient of (MCCED.A2) is unbound
 Kummer cofinal subsequence. This is the first candidate that simultaneously uses literal
 prime-depth formation, cross-prime Burnol mixing, theta completion, functional-equation reversal,
 and cofinal noncompactness.
+
+ULF-PDAMB-001 proves this paragraph in Lean. What remains conjectural is not escape but the claim
+that completed-Xi admissibility must supply a bounded/regular representative of this exact
+source-frame modular correspondence.
+
+Equivalently, ULF-PDAMB-001 defines the pre-divisor predicate
+`PrimeDepthThetaModularAdmissible(a)` and proves unconditionally
+
+~~~text
+PrimeDepthThetaModularAdmissible(a) iff a=0.             (MCCED.A3)
+~~~
+
+The RH gate has therefore narrowed to one formation theorem, with no index or positivity premise:
+
+~~~text
+xi(rho)=0  ==>  PrimeDepthThetaModularAdmissible(2 Re(rho)-1).   (MCCED.A4)
+~~~
+
+Then (MCCED.A3) forces every divisor grade to vanish. The remaining work must derive (MCCED.A4)
+from literal integer/Poisson completion; merely defining Xi admissibility to include it would be
+circular.
 
 **Exact RH closure.** Prove that Xi-completion admissibility of a divisor copy of grade `a`
 requires the cofinal modular holonomies `H_F(a)` to define one bounded regular operator (or the

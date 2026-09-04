@@ -5146,3 +5146,22 @@ Card 8 remains in stage 2.  Its exact residue is global and geometric: construct
 Strelitz set from the paper, obtain the relevant unbounded connected component, and continue the
 selected algebraic branch far enough to supply the now-closed scalar endpoint.  No unboundedness of
 a maximum-locus component is assumed.
+
+## Entire-heat exact maximum slope closed (2026-09-04)
+
+`HTGeometry/StrelitzMaximumNorm.lean` defines the exact circle maximum and proves convexity of its
+logarithm.  `HTGeometry/StrelitzMaximumSlope.lean` defines the choice-free convex right slope.
+`HTGeometry/StrelitzMaximumSlopeGrowth.lean` proves both global scalar laws needed by the Strelitz
+argument: infinite support gives `K(x) → ∞`, while sublogarithmic central index gives `K(x)/x → 0`.
+`HTGeometry/StrelitzEntireHeatMaximumSlope.lean` supplies the exact card-level wrapper from the
+original entire complex-time heat and infinite-support assumptions, deriving a nonzero coefficient
+internally.
+
+The maximum-path bridge now lives in `HTGeometry/StrelitzMaximumPathSlope.lean`; elementary jet
+definitions live in `HTGeometry/StrelitzLogJetDefs.lean`.  This removes accidental dependency on
+the full Newton chain.  Direct source checks and targeted leaf builds pass.  Every newly created
+theorem has axiom set `[propext, Classical.choice, Quot.sound]`.
+
+Card 8 still remains in stage 2.  Exact residue: define paper's enlarged set `H`, prove a relevant
+unbounded connected component exists, and continue the selected algebraic branch on it.  Bounded
+maximum-locus components are not promoted to unbounded ones.
