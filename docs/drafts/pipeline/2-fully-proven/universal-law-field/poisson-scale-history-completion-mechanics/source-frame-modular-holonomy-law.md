@@ -3,9 +3,10 @@
 - **ID:** ULF-SFMH-001
 - **Stage:** 2-fully-proven
 - **Type:** unconditional pre-divisor nonabelian formation law
-- **Parents:** ULF-MCPT-001, ULF-PBFMS-001, ULF-FBG-002
+- **Parents:** ULF-MCPT-001, ULF-PBFMS-001, ULF-PBFOF-001, ULF-FBG-002
 - **Status:** [PAPER-PROVED] [LEAN-PROVED] [NOT RH]
 - **Lean:** formal/GaloisForLFunctions/HTGeometry/SourceFrameModularHolonomy.lean;
+  formal/GaloisForLFunctions/RHTower/PrimeBurnolFiniteOffDiagonalFaithfulness.lean;
   formal/GaloisForLFunctions/RHTower/PrimeBurnolSourceFrameCubicHolonomy.lean;
   formal/GaloisForLFunctions/RHTower/PrimeBurnolThetaModularHolonomy.lean
 
@@ -145,7 +146,25 @@ D3(C_F^theta,U_F(0);P_0)=0.                             (SFMH.9e)
 ~~~
 
 Its cubic defect has the exact sigma-trace transgression (SFMH.7). This completes finite source
-formation and functional-equation action; it does not yet prove nontriviality for every `a!=0`.
+formation and functional-equation action.
+
+The source--archimedean fusion is entrywise exact:
+
+~~~text
+[C_F tensor I_2,U_F(a)]_((i,r),(j,s))
+  =(C_F)_(ij)(U_j(a)_(rs)-U_i(a)_(rs)).                (SFMH.9f)
+~~~
+
+ULF-PBFOF-001 proves every `(C_F)_(ij)` is nonzero. At `a!=0`, strict monotonicity of `tanh` makes
+the contrast blocks of distinct primes unequal. Therefore every packet containing two distinct
+primes satisfies
+
+~~~text
+H_F(a)!=1.                                              (SFMH.9g)
+~~~
+
+This supplies a genuine pre-divisor anomaly. Same-prime depth edges alone, diagonal Euler weights,
+or a prime-independent completion frame make (SFMH.9f) vanish and cannot be producers.
 
 ## 5. Finite blindness and forced cofinality
 
@@ -167,9 +186,9 @@ those results.
 
 ## 6. What remains open and how it would close RH
 
-The finite theta frames are now constructed by (SFMH.9a)--(SFMH.9e). Prove that their off-neutral
-holonomy is nontrivial on packets containing distinct primes, then that the cofinal holonomy has a
-relative cubic boundary satisfying one same-representative law
+Finite theta frames and their off-neutral nontriviality are proved by
+(SFMH.9a)--(SFMH.9g). Prove that the cofinal holonomy has a relative cubic boundary satisfying one
+same-representative law
 
 ~~~text
 boundary_3([H_F(U_F)])=[T_D],
@@ -183,6 +202,6 @@ zero on every strict-right rectangle, reflection removes strict-left escape, and
 support gives RH.
 
 ULF-SFMH-001 proves formation of both source and theta frame, cocycle, reversal, neutral vanishing,
-centralizer exclusion, source specialization, cubic transgression, and finite determinant
-blindness. It does not prove off-neutral arithmetic nontriviality, cofinal existence, or
-(SFMH.11).
+centralizer exclusion, source specialization, cubic transgression, exact source--archimedean
+fusion, off-neutral finite nontriviality, and finite determinant blindness. It does not prove
+cofinal existence or (SFMH.11).

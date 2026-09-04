@@ -147,6 +147,71 @@ theorem RestrictedUnitaryDatum.hankelSeams_memSchattenClass_three
   · exact ((memSchattenClass_two_iff_isHilbertSchmidt D.adjointHankelSeam).2
       D.adjointHankelSeam_isHilbertSchmidt).mono (by norm_num) (by norm_num)
 
+/-- The third Schatten energy of the restricted commutator is exactly the sum of the two
+oriented Hankel-seam energies. -/
+theorem RestrictedUnitaryDatum.schattenNorm_commutator_three_rpow_eq_hankelMass
+    (D : RestrictedUnitaryDatum H) :
+    GaloisForLFunctions.HTGeometry.schattenNorm 3
+        (D.projection * D.unitary - D.unitary * D.projection) ^ (3 : ℝ) =
+      GaloisForLFunctions.HTGeometry.schattenNorm 3 D.forwardHankelSeam ^ (3 : ℝ) +
+        GaloisForLFunctions.HTGeometry.schattenNorm 3 D.adjointHankelSeam ^ (3 : ℝ) := by
+  let C := D.projection * D.unitary - D.unitary * D.projection
+  let A := D.forwardHankelSeam
+  let B := ContinuousLinearMap.adjoint D.adjointHankelSeam
+  have hPP : D.projection * D.projection = D.projection := D.projection_idempotent
+  have hC : C = B - A := by
+    simp only [C, A, B, adjoint_adjointHankelSeam D,
+      RestrictedUnitaryDatum.forwardHankelSeam]
+    noncomm_ring [hPP]
+  have henergy : star C * C = star A * A + star B * B := by
+    have hPQ : D.projection * (1 - D.projection) = 0 := by
+      noncomm_ring [hPP]
+    have hQP : (1 - D.projection) * D.projection = 0 := by
+      noncomm_ring [hPP]
+    have hBA : star B * A = 0 := by
+      change ContinuousLinearMap.adjoint B * A = 0
+      simp only [A, B, ContinuousLinearMap.adjoint_adjoint,
+        RestrictedUnitaryDatum.forwardHankelSeam,
+        RestrictedUnitaryDatum.adjointHankelSeam]
+      calc
+        ((1 - D.projection) * ContinuousLinearMap.adjoint D.unitary * D.projection) *
+            ((1 - D.projection) * D.unitary * D.projection) =
+          (1 - D.projection) * ContinuousLinearMap.adjoint D.unitary *
+            (D.projection * (1 - D.projection)) * D.unitary *
+              D.projection := by simp only [mul_assoc]
+        _ = 0 := by rw [hPQ]; simp
+    have hAB : star A * B = 0 := by
+      change ContinuousLinearMap.adjoint A * B = 0
+      simp only [A, B, adjoint_forwardHankelSeam D,
+        adjoint_adjointHankelSeam D]
+      calc
+        (D.projection * ContinuousLinearMap.adjoint D.unitary * (1 - D.projection)) *
+            (D.projection * D.unitary * (1 - D.projection)) =
+          D.projection * ContinuousLinearMap.adjoint D.unitary *
+            ((1 - D.projection) * D.projection) * D.unitary *
+              (1 - D.projection) := by simp only [mul_assoc]
+        _ = 0 := by rw [hQP]; simp
+    change ContinuousLinearMap.adjoint C * C =
+      ContinuousLinearMap.adjoint A * A + ContinuousLinearMap.adjoint B * B
+    rw [hC, ContinuousLinearMap.adjoint.map_sub]
+    have hBA' : ContinuousLinearMap.adjoint B * A = 0 := hBA
+    have hAB' : ContinuousLinearMap.adjoint A * B = 0 := hAB
+    calc
+      (ContinuousLinearMap.adjoint B - ContinuousLinearMap.adjoint A) * (B - A) =
+          ContinuousLinearMap.adjoint B * B - ContinuousLinearMap.adjoint B * A -
+            ContinuousLinearMap.adjoint A * B + ContinuousLinearMap.adjoint A * A := by
+        noncomm_ring
+      _ = _ := by rw [hBA', hAB']; abel
+  have horth := absOp_complementary_right_support A B D.projection
+    D.projection_idempotent D.projection_adjoint
+    (by simp only [A, RestrictedUnitaryDatum.forwardHankelSeam]; noncomm_ring [hPP])
+    (by simp only [B, adjoint_adjointHankelSeam D]; noncomm_ring [hPP])
+  have hmass := schattenNorm_three_rpow_eq_add C A B
+    D.commutator_isHilbertSchmidt D.forwardHankelSeam_isHilbertSchmidt
+      D.adjointHankelSeam_isHilbertSchmidt.adjoint henergy horth.1 horth.2
+  rw [schattenNorm_adjoint] at hmass
+  simpa only [C, A, B] using hmass
+
 /-- **Exact cubic Schatten mass:** the nuclear mass of the cubic displacement is the sum of the
 third Schatten masses of the two oriented Hankel seams. -/
 theorem RestrictedUnitaryDatum.traceNorm_cubicDefect_eq_hankelSchattenMass
@@ -169,6 +234,17 @@ theorem RestrictedUnitaryDatum.traceNorm_cubicDefect_eq_hankelSchattenMass
       D.hankelAbsoluteValues_orthogonal.1 D.hankelAbsoluteValues_orthogonal.2
   rw [schattenNorm_adjoint] at hmass
   simpa only [T, A, B, restrictedProjectionCubicDefect] using hmass
+
+/-- The cubic defect nuclear norm is exactly the third Schatten energy of the restricted
+commutator. -/
+theorem RestrictedUnitaryDatum.traceNorm_cubicDefect_eq_schattenNorm_commutator_three_rpow
+    (D : RestrictedUnitaryDatum H) :
+    traceNorm H (restrictedProjectionCubicDefect
+        D.conjugateProjection D.projection) =
+      GaloisForLFunctions.HTGeometry.schattenNorm 3
+        (D.projection * D.unitary - D.unitary * D.projection) ^ (3 : ℝ) :=
+  D.traceNorm_cubicDefect_eq_hankelSchattenMass.trans
+    D.schattenNorm_commutator_three_rpow_eq_hankelMass.symm
 
 /-- Absolute cubic trace is bounded by the exact two-seam Schatten mass. -/
 theorem RestrictedUnitaryDatum.abs_re_opTrace_cubicDefect_le_hankelSchattenMass

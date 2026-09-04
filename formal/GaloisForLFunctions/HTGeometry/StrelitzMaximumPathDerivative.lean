@@ -1,4 +1,5 @@
-import GaloisForLFunctions.HTGeometry.StrelitzAngularCurvature
+import GaloisForLFunctions.HTGeometry.StrelitzMaximumModulusSet
+import GaloisForLFunctions.HTGeometry.NevanlinnaCoeffFun
 import GaloisForLFunctions.RHTower.LogModulusHorizontal
 
 /-!

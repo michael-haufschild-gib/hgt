@@ -3,7 +3,7 @@
 - **ID:** ULF-MCCED-001
 - **Stage:** 1-in-progress
 - **Type:** pre-divisor modular-extension construction conjecture
-- **Parents:** ULF-MCPT-001, ULF-SFMH-001, ULF-PBFMS-001, ULF-FBG-002,
+- **Parents:** ULF-MCPT-001, ULF-SFMH-001, ULF-PBFMS-001, ULF-PBFOF-001, ULF-FBG-002,
   ULF-CCEL-001, ULF-FACHD-001, ULF-RUCRI-001, ULF-CRSHC-001, ULF-PCLGF-001
 - **Status:** [CONJECTURAL ARITHMETIC REALIZATION] [GENERIC LAW LEAN-PROVED]
   [SOURCE-FRAME HOLONOMY LEAN-PROVED] [FINITE SOURCE SUPPORT LEAN-PROVED]
@@ -68,6 +68,14 @@ scripts/formal_tools.py research "commutator holonomy odd Chern character frame"
 scripts/formal_tools.py research "nested projection quadratic variation diamond flatness"
 scripts/formal_tools.py research "Schur elimination transitive order independent"
 scripts/formal_tools.py research "prime framed nuclear loop null homotopy positive trace one"
+scripts/formal_tools.py research "routePPrimitiveBurnolBaseNuclearSource infinite rank injective dense range"
+scripts/formal_tools.py research "Burnol base nuclear source compact injective"
+scripts/formal_tools.py research "finite section inverse norm unbounded trace budget"
+scripts/formal_tools.py research "two by two matrix inverse formula det"
+scripts/formal_tools.py research "matrix two block holonomy denominator one minus r squared"
+scripts/formal_tools.py research "Cauchy Gram correlation tends one"
+scripts/formal_tools.py research "prime depth logarithm near collision floor"
+scripts/formal_tools.py research "multiples log two log three arbitrarily close relative"
 ~~~
 
 The audit fixes the following.
@@ -122,9 +130,66 @@ The audit fixes the following.
     primewise `[[sech(a log(p)/2),-tanh(a log(p)/2)],[tanh(a log(p)/2),sech(a log(p)/2)]]`.
     Its inverse is grade reversal, the doubled Gram fixes the neutral projector, and both
     holonomy and cubic defect vanish at neutral grade. No Xi/divisor data enters.
+18. The exact fusion law is
+    `[C_F tensor I,U_F(a)]_((i,r),(j,s))=(C_F)_(ij)(U_j(a)_(rs)-U_i(a)_(rs))`.
+    ULF-PBFOF-001 evaluates `(C_F)_(ij)=A_i A_j 2/c_(ij)^3` with `Re c_(ij)>0`, so every source
+    edge is nonzero. Strict monotonicity of `tanh` then makes `H_F(a)!=1` for every `a!=0` whenever
+    `F` contains two distinct primes.
+19. The corpus already proves the literal all-prime Burnol synthesis is Hilbert--Schmidt and its
+    nuclear covariance has exact trace `B_base<1`. Compact-observer theorems prove no bounded
+    inverse can exist on an infinite-dimensional source. This is forced nonproperness, not an RH
+    selector and not permission to reuse positivity as producer.
+20. TwoPrimeKummerClockSeparation proves arbitrarily small nonzero values of
+    `m log 2+n log 3`. After choosing opposite signs, positive depths of the fixed primes 2 and 3
+    can have arbitrarily close Burnol decay rates. Their theta blocks remain distinct for every
+    `a!=0`, because theta framing remembers prime identity rather than prime-power scale.
 
 These facts narrow the object to a modular refinement of the cubic completion extension, formed
 from the non-diagonal Burnol source density before theta completion.
+
+## 2a. Prime-depth aliasing conjecture
+
+**Big picture.** Multiplicative formation and archimedean completion identify different notions
+of locality. Burnol covariance becomes singular when two prime-power clocks approach the same
+real scale, while theta framing remains separated because it is indexed by the underlying prime.
+The sought completion class is the resulting *failure of equivalent source metrics*, not a new
+quadratic form: finite inner modular conjugacies escape every bounded completion and can therefore
+leave a relative odd boundary although each finite determinant is one.
+
+For the two cells `(2,m-1)` and `(3,n-1)` at zero clock, write `r_(m,n)` for their normalized
+Burnol correlation. Exact kernel evaluation gives
+
+~~~text
+r_(m,n)^2 = 64 (m log 2)^3 (n log 3)^3 /
+              (m log 2+n log 3)^6,
+
+1-r_(m,n)^2
+  = ((m log 2-n log 3)^2 Q_(m,n)) /
+      (m log 2+n log 3)^6,                         (MCCED.A1)
+~~~
+
+with `Q_(m,n)>0`. Kummer approximation makes the right side arbitrarily small. If `P=U_2(a)`
+and `Q=U_3(a)`, the normalized two-site holonomy has retained block
+
+~~~text
+(H_(m,n)(a))_11
+  = (I-r_(m,n)^2 Q P^(-1))/(1-r_(m,n)^2)
+  = I + r_(m,n)^2 (I-QP^(-1))/(1-r_(m,n)^2).       (MCCED.A2)
+~~~
+
+For `a!=0`, `Q P^(-1)!=I`; hence one matrix coefficient of (MCCED.A2) is unbounded along a
+Kummer cofinal subsequence. This is the first candidate that simultaneously uses literal
+prime-depth formation, cross-prime Burnol mixing, theta completion, functional-equation reversal,
+and cofinal noncompactness.
+
+**Exact RH closure.** Prove that Xi-completion admissibility of a divisor copy of grade `a`
+requires the cofinal modular holonomies `H_F(a)` to define one bounded regular operator (or the
+corresponding bounded graph transform) on the completed source module. Then (MCCED.A1)--(A2)
+exclude every `a!=0`; the divisor copy has neutral grade, so `Re rho=1/2`. This route does not need
+the sub-unit inequality to select grade. The existing `<1` budget remains available only to
+identify the relative cubic boundary with escape multiplicity after bounded admissibility is
+proved. If completion admissibility does not imply this bounded/regular transport, this conjecture
+is false and must be retired.
 
 ## 3. Exact RH closure if the conjecture is proved
 
@@ -297,9 +362,8 @@ bounded lift of A_* itself.
 2. **Completed (ULF-SFMH-001):** finite literal Burnol holonomy exists canonically; it obeys exact
    nonabelian composition and reversal, its cubic defect has exact modular transgression, and every
    finite determinant is blind.
-3. **Finite frame completed (ULF-SFMH-001):** `U_F(a)` is the literal primewise theta rotation on
-   the doubled Burnol packet. Prove its source commutator is nontrivial for `a!=0` on every packet
-   containing distinct primes, without importing Xi or divisor data.
+3. **Completed (ULF-SFMH-001 + ULF-PBFOF-001):** the exact entrywise fusion law and nonzero Burnol
+   Cauchy-cubic edges prove `H_F(a)!=1` off neutral grade on every packet with distinct primes.
 4. Construct the relative cofinal holonomy class and prove its failure to trivialize is not an
    ordinary `S3` limit; raw projection and Schur routes are closed.
 5. Prove cubic twisted-to-ordinary boundary identities (MCCED.3)--(MCCED.4).

@@ -55,6 +55,16 @@ noncomputable def nonautonomousFiniteCascadeTerminalComponentInclusion
   apply Subtype.ext
   rfl
 
+@[simp] theorem nonautonomousFiniteCascadeTerminalComponentInclusion_velocity
+    {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
+    {j M : ℕ} (h : j + 1 ≤ M) :
+    nonautonomousFiniteCascadeTerminalComponentInclusion hfan h
+        (nonautonomousFiniteCascadeTerminalVelocityInComponent hfan j) =
+      nonautonomousFiniteCascadeBranchInclusion hfan h
+        (nonautonomousFiniteCascadeTerminalVelocitySucc hfan j) := by
+  apply Subtype.ext
+  rfl
+
 /-- Actual Wiman charge of one layer, embedded in any branch containing that layer. -/
 noncomputable def nonautonomousFiniteCascadeWimanChargeInBranch
     {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
@@ -62,6 +72,201 @@ noncomputable def nonautonomousFiniteCascadeWimanChargeInBranch
   nonautonomousFiniteCascadeTerminalComponentInclusion hfan
       (Nat.succ_le_iff.mpr j.isLt)
     (nonautonomousFiniteCascadeTerminalChargedVelocityInComponent hfan j)
+
+/-- Every literal cascade state is nonzero in its actual finite branch field. -/
+theorem nonautonomousFiniteCascadeStateInBranchField_ne_zero
+    {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
+    (hall : ∀ i : ℕ, TranscendentalEntire (f i)) (M : ℕ)
+    (i : Fin (M + 1)) :
+    nonautonomousFiniteCascadeStateInBranchField hfan M i ≠ 0 := by
+  have hAI :=
+    algebraicIndependent_nonautonomousFiniteCascadeStateInBranchField hfan hall M
+  exact hAI.ne_zero i
+
+/-- Literal logarithmic velocity of one actual state inside the complete finite branch field. -/
+noncomputable def nonautonomousFiniteCascadeLogarithmicRate
+    {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
+    (M : ℕ) (i : Fin (M + 1)) : NonautonomousFiniteCascadeBranchField hfan M :=
+  nonautonomousFiniteCascadeDerivativeInBranchField hfan M i /
+    nonautonomousFiniteCascadeStateInBranchField hfan M i
+
+/-- The logarithmic rate of the clock is its reciprocal. -/
+theorem nonautonomousFiniteCascadeLogarithmicRate_zero
+    {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
+    (M : ℕ) :
+    nonautonomousFiniteCascadeLogarithmicRate hfan M ⟨0, by omega⟩ =
+      (nonautonomousFiniteCascadeStateInBranchField hfan M ⟨0, by omega⟩)⁻¹ := by
+  have hd : nonautonomousFiniteCascadeDerivativeInBranchField hfan M ⟨0, by omega⟩ = 1 := by
+    apply Subtype.ext
+    simpa using cascadeMeroDeriv_zero hfan
+  rw [nonautonomousFiniteCascadeLogarithmicRate, hd, one_div]
+
+/-- Exact terminal-linear law for every actual cascade state. -/
+theorem nonautonomousFiniteCascadeDerivation_state_eq_logarithmicRate_mul
+    {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
+    (hall : ∀ i : ℕ, TranscendentalEntire (f i)) {M : ℕ}
+    (h1 : ∀ k, k < M → DifferentiallyAlgebraicOfOrder (f k) 1)
+    (i : Fin (M + 1)) :
+    nonautonomousFiniteCascadeDerivation hfan hall h1
+        (nonautonomousFiniteCascadeStateInBranchField hfan M i) =
+      nonautonomousFiniteCascadeLogarithmicRate hfan M i *
+        nonautonomousFiniteCascadeStateInBranchField hfan M i := by
+  rw [nonautonomousFiniteCascadeDerivation_state]
+  simp only [nonautonomousFiniteCascadeLogarithmicRate]
+  field_simp [nonautonomousFiniteCascadeStateInBranchField_ne_zero hfan hall M i]
+
+/-- A literal Wiman charge is exactly the adjacent quotient of actual state and derivative
+ratios. -/
+theorem nonautonomousFiniteCascadeWimanChargeInBranch_eq
+    {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
+    (M : ℕ) (k : Fin M) :
+    nonautonomousFiniteCascadeWimanChargeInBranch hfan k =
+      nonautonomousFiniteCascadeStateInBranchField hfan M ⟨k, by omega⟩ *
+        (nonautonomousFiniteCascadeDerivativeInBranchField hfan M
+              ⟨(k : ℕ) + 1, by omega⟩ /
+          nonautonomousFiniteCascadeDerivativeInBranchField hfan M ⟨k, by omega⟩ /
+          nonautonomousFiniteCascadeStateInBranchField hfan M
+            ⟨(k : ℕ) + 1, by omega⟩) := by
+  have hkM : (k : ℕ) + 1 ≤ M := Nat.succ_le_iff.mpr k.isLt
+  have hv :
+      nonautonomousFiniteCascadeBranchInclusion hfan hkM
+          (nonautonomousFiniteCascadeTerminalVelocitySucc hfan k) =
+        nonautonomousFiniteCascadeDerivativeInBranchField hfan M
+              ⟨(k : ℕ) + 1, by omega⟩ /
+          nonautonomousFiniteCascadeDerivativeInBranchField hfan M ⟨k, by omega⟩ := by
+    simp only [nonautonomousFiniteCascadeTerminalVelocitySucc,
+      nonautonomousFiniteCascadeVelocityInBranchField, map_div₀,
+      nonautonomousFiniteCascadeBranchInclusion_derivative]
+    congr 2
+  rw [nonautonomousFiniteCascadeWimanChargeInBranch,
+    nonautonomousFiniteCascadeTerminalChargedVelocityInComponent,
+    map_mul, map_div₀,
+    nonautonomousFiniteCascadeTerminalComponentInclusion_input,
+    nonautonomousFiniteCascadeTerminalComponentInclusion_output,
+    nonautonomousFiniteCascadeTerminalComponentInclusion_velocity, hv]
+
+/-- Exact actual-branch recurrence: every layer multiplies the preceding logarithmic rate by
+its literal Wiman charge. -/
+theorem nonautonomousFiniteCascadeLogarithmicRate_succ
+    {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
+    (hall : ∀ i : ℕ, TranscendentalEntire (f i)) (M : ℕ)
+    (k : Fin M) :
+    nonautonomousFiniteCascadeLogarithmicRate hfan M
+        ⟨(k : ℕ) + 1, by omega⟩ =
+      nonautonomousFiniteCascadeLogarithmicRate hfan M ⟨k, by omega⟩ *
+        nonautonomousFiniteCascadeWimanChargeInBranch hfan k := by
+  rw [nonautonomousFiniteCascadeWimanChargeInBranch_eq]
+  simp only [nonautonomousFiniteCascadeLogarithmicRate]
+  field_simp [
+    nonautonomousFiniteCascadeStateInBranchField_ne_zero hfan hall M ⟨k, by omega⟩,
+    nonautonomousFiniteCascadeStateInBranchField_ne_zero hfan hall M
+      ⟨(k : ℕ) + 1, by omega⟩,
+    nonautonomousFiniteCascadeDerivativeInBranchField_ne_zero hfan hall M
+      ⟨k, by omega⟩]
+
+/-- Totalized natural-number indexing of actual Wiman charges, used only to state finite prefix
+products without dependent casts. -/
+noncomputable def nonautonomousFiniteCascadeWimanChargeAt
+    {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
+    (M k : ℕ) : NonautonomousFiniteCascadeBranchField hfan M :=
+  if hk : k < M then nonautonomousFiniteCascadeWimanChargeInBranch hfan ⟨k, hk⟩ else 1
+
+@[simp] theorem nonautonomousFiniteCascadeWimanChargeAt_of_lt
+    {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
+    (M k : ℕ) (hk : k < M) :
+    nonautonomousFiniteCascadeWimanChargeAt hfan M k =
+      nonautonomousFiniteCascadeWimanChargeInBranch hfan ⟨k, hk⟩ := by
+  simp [nonautonomousFiniteCascadeWimanChargeAt, hk]
+
+/-- Every actual logarithmic rate is the reciprocal clock times the product of preceding literal
+Wiman charges. -/
+theorem nonautonomousFiniteCascadeLogarithmicRate_prefix_product
+    {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
+    (hall : ∀ i : ℕ, TranscendentalEntire (f i)) (M n : ℕ) (hn : n ≤ M) :
+    nonautonomousFiniteCascadeLogarithmicRate hfan M ⟨n, by omega⟩ =
+      (nonautonomousFiniteCascadeStateInBranchField hfan M ⟨0, by omega⟩)⁻¹ *
+        ∏ k ∈ Finset.range n,
+          nonautonomousFiniteCascadeWimanChargeAt hfan M k := by
+  induction n with
+  | zero =>
+      simpa only [Finset.prod_range_zero, Finset.prod_empty, mul_one] using
+        nonautonomousFiniteCascadeLogarithmicRate_zero hfan M
+  | succ n ih =>
+      rw [nonautonomousFiniteCascadeLogarithmicRate_succ hfan hall M ⟨n, by omega⟩,
+        ih (by omega), Finset.prod_range_succ]
+      simp [nonautonomousFiniteCascadeWimanChargeAt, show n < M by omega]
+      ring
+
+/-- Terminal logarithmic derivative is the reciprocal clock times all actual Wiman charges. -/
+theorem nonautonomousFiniteCascadeLogarithmicRate_terminal_product
+    {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
+    (hall : ∀ i : ℕ, TranscendentalEntire (f i)) (M : ℕ) :
+    nonautonomousFiniteCascadeLogarithmicRate hfan M (Fin.last M) =
+      (nonautonomousFiniteCascadeStateInBranchField hfan M ⟨0, by omega⟩)⁻¹ *
+        ∏ k ∈ Finset.range M,
+          nonautonomousFiniteCascadeWimanChargeAt hfan M k := by
+  convert nonautonomousFiniteCascadeLogarithmicRate_prefix_product
+    hfan hall M M le_rfl using 1
+  congr 1
+
+/-- Exact terminal-state evolution in the actual branch, expressed in the complete literal Wiman
+charge frame. -/
+theorem nonautonomousFiniteCascadeDerivation_terminalState_eq_chargeProduct_mul
+    {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
+    (hall : ∀ i : ℕ, TranscendentalEntire (f i)) (M : ℕ)
+    (h1 : ∀ k, k < M → DifferentiallyAlgebraicOfOrder (f k) 1) :
+    nonautonomousFiniteCascadeDerivation hfan hall h1
+        (nonautonomousFiniteCascadeStateInBranchField hfan M (Fin.last M)) =
+      ((nonautonomousFiniteCascadeStateInBranchField hfan M ⟨0, by omega⟩)⁻¹ *
+          ∏ k ∈ Finset.range M,
+            nonautonomousFiniteCascadeWimanChargeAt hfan M k) *
+        nonautonomousFiniteCascadeStateInBranchField hfan M (Fin.last M) := by
+  rw [nonautonomousFiniteCascadeDerivation_state_eq_logarithmicRate_mul
+      hfan hall h1 (Fin.last M),
+    nonautonomousFiniteCascadeLogarithmicRate_terminal_product hfan hall M]
+
+/-- Exact terminal factorization adapted to the Wiman valuation: the derivative of the new
+terminal state is the retained lower terminal derivative times the normalized terminal velocity
+unit times the new state pole. -/
+theorem nonautonomousFiniteCascadeDerivation_terminalStateSucc_eq_lowerDerivative_mul_normalizedVelocity_mul
+    {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
+    (hall : ∀ i : ℕ, TranscendentalEntire (f i)) (N : ℕ)
+    (h1 : ∀ k, k < N + 1 → DifferentiallyAlgebraicOfOrder (f k) 1) :
+    nonautonomousFiniteCascadeDerivation hfan hall h1
+        (nonautonomousFiniteCascadeTerminalStateSucc hfan N) =
+      nonautonomousFiniteCascadeBranchInclusionSucc hfan N
+          (nonautonomousFiniteCascadeDerivativeInBranchField hfan N (Fin.last N)) *
+        (nonautonomousFiniteCascadeTerminalVelocitySucc hfan N /
+          nonautonomousFiniteCascadeTerminalStateSucc hfan N) *
+        nonautonomousFiniteCascadeTerminalStateSucc hfan N := by
+  rw [nonautonomousFiniteCascadeTerminalStateSucc,
+    nonautonomousFiniteCascadeDerivation_state,
+    ← nonautonomousFiniteCascadeTerminalDerivativeSucc hfan hall N]
+  rw [mul_assoc, div_mul_cancel₀]
+  exact nonautonomousFiniteCascadeStateInBranchField_ne_zero hfan hall (N + 1)
+    (Fin.last (N + 1))
+
+/-- Exact terminal equation in the algebraically independent Wiman-charge/output frame.  Its
+coefficient splits into the retained lower logarithmic rate and the new terminal charge. -/
+theorem nonautonomousFiniteCascadeDerivation_terminalStateSucc_eq_lowerLogarithmicRate_mul_charge_mul
+    {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
+    (hall : ∀ i : ℕ, TranscendentalEntire (f i)) (N : ℕ)
+    (h1 : ∀ k, k < N + 1 → DifferentiallyAlgebraicOfOrder (f k) 1) :
+    nonautonomousFiniteCascadeDerivation hfan hall h1
+        (nonautonomousFiniteCascadeTerminalStateSucc hfan N) =
+      nonautonomousFiniteCascadeBranchInclusionSucc hfan N
+          (nonautonomousFiniteCascadeLogarithmicRate hfan N (Fin.last N)) *
+        nonautonomousFiniteCascadeWimanChargeInBranch hfan (Fin.last N) *
+        nonautonomousFiniteCascadeTerminalStateSucc hfan N := by
+  rw [nonautonomousFiniteCascadeDerivation_terminalStateSucc_eq_lowerDerivative_mul_normalizedVelocity_mul
+      hfan hall N h1,
+    nonautonomousFiniteCascadeWimanChargeInBranch_eq]
+  simp only [nonautonomousFiniteCascadeLogarithmicRate, map_div₀,
+    nonautonomousFiniteCascadeBranchInclusionSucc_state,
+    nonautonomousFiniteCascadeBranchInclusionSucc_derivative]
+  rw [mul_assoc, div_mul_cancel₀]
+  exact nonautonomousFiniteCascadeStateInBranchField_ne_zero hfan hall (N + 1)
+    (Fin.last N).castSucc
 
 /-- A state-coordinate derivation annihilates every strictly later Wiman charge. -/
 theorem nonautonomousFiniteCascadeCoordinateDerivation_laterWimanCharge_eq_zero

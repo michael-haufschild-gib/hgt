@@ -158,6 +158,7 @@ theorem exists_absolute_eventually_norm_menonFinalRangeActualBlock_le_logPow_of_
       have := Real.log_le_sub_one_of_pos (by norm_num : (0 : ℝ) < 3)
       linarith
     rw [twoRangeLx, Real.rpow_two]
+    have hlog2nn : (0 : ℝ) ≤ Real.log 2 := Real.log_nonneg (by norm_num)
     have hsquare : Real.log x + 2 ≤ (Real.log x) ^ (2 : ℕ) := by nlinarith
     linarith
   have hq : twoRangeQ ((19 : ℝ) / 20) x ≤ Real.log (Y : ℝ) := by
@@ -203,7 +204,9 @@ theorem exists_absolute_eventually_norm_menonFinalRangeActualBlock_le_logPow_of_
     (Hmaj := (Real.log x) ^ (2 : ℝ))
     (twoRangeT₀_pos hx) hlo hhi hlogY (twoRangeQ_nonneg hx) hq
     (menonHarmonicFullFrequencyMu_nonneg hdelta.le x) hmu
-    (twoRangeXmin_pos _ _) hxmin (by simpa only [sigma] using hheight)
+    (twoRangeXmin_pos _ _) hxmin (by
+      have hsigmaPos : (0 : ℝ) < 2 * Real.pi * x := by positivity
+      simpa only [sigma, abs_of_pos hsigmaPos] using hheight)
   have hR0 : 0 ≤ R := by
     dsimp only [R]
     exact relScaledMajorant_nonneg hCtot.le (twoRangeWidth_pos hx)

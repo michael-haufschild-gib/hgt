@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.PrimeBurnolSourceFrameCubicHolonomy
+import GaloisForLFunctions.RHTower.PrimeBurnolFiniteOffDiagonalFaithfulness
 import GaloisForLFunctions.HTGeometry.TanhSubstitution
 import Mathlib.LinearAlgebra.Matrix.Kronecker
 
@@ -357,6 +358,84 @@ theorem primeBurnolDoubledGram_thetaFrame_commutator_apply
   · intro k _ hkj
     simp [hkj]
   · simp
+
+/-- Distinct primes acquire distinct theta contrasts at every nonneutral grade. -/
+theorem primeBurnolThetaContrast_ne_of_prime_ne
+    {a : ℝ} (ha : a ≠ 0) {p q : Nat.Primes} (hpq : p ≠ q) :
+    primeBurnolThetaContrast a p ≠ primeBurnolThetaContrast a q := by
+  intro hcontrast
+  have hrapid : primeBurnolThetaRapidity a p = primeBurnolThetaRapidity a q :=
+    HTGeometry.tanh_strictMono.injective hcontrast
+  have hmul : a * Real.log (p : ℝ) = a * Real.log (q : ℝ) := by
+    dsimp [primeBurnolThetaRapidity] at hrapid
+    linarith
+  have hlog : Real.log (p : ℝ) = Real.log (q : ℝ) := by
+    exact (mul_left_cancel₀ ha) hmul
+  apply hpq
+  apply Subtype.ext
+  exact_mod_cast Real.log_injOn_pos
+    (Set.mem_Ioi.mpr (by exact_mod_cast p.property.pos))
+    (Set.mem_Ioi.mpr (by exact_mod_cast q.property.pos)) hlog
+
+/-- One nonzero literal cross-prime Burnol edge forces source density and theta frame not to
+commute at every nonneutral grade. -/
+theorem primeBurnolDoubledGram_thetaFrame_ne_commute_of_offDiagonal
+    {N : ℕ} (pe : Fin N → Nat.Primes × ℕ) (hpe : Function.Injective pe)
+    (kappa : Fin N → ℝ) {a : ℝ} (ha : a ≠ 0) (i j : Fin N)
+    (hp : (pe i).1 ≠ (pe j).1)
+    (hgram : primeBurnolWindowGramMatrix pe kappa i j ≠ 0) :
+    (↑(primeBurnolDoubledGramUnit pe hpe kappa) :
+        Matrix (PrimeBurnolThetaIndex N) (PrimeBurnolThetaIndex N) ℂ) *
+        (↑(primeBurnolThetaFrameUnit pe a) :
+          Matrix (PrimeBurnolThetaIndex N) (PrimeBurnolThetaIndex N) ℂ) ≠
+      (↑(primeBurnolThetaFrameUnit pe a) :
+        Matrix (PrimeBurnolThetaIndex N) (PrimeBurnolThetaIndex N) ℂ) *
+        (↑(primeBurnolDoubledGramUnit pe hpe kappa) :
+          Matrix (PrimeBurnolThetaIndex N) (PrimeBurnolThetaIndex N) ℂ) := by
+  intro hcomm
+  have hzero :
+      ((((↑(primeBurnolDoubledGramUnit pe hpe kappa) :
+            Matrix (PrimeBurnolThetaIndex N) (PrimeBurnolThetaIndex N) ℂ) *
+          (↑(primeBurnolThetaFrameUnit pe a) :
+            Matrix (PrimeBurnolThetaIndex N) (PrimeBurnolThetaIndex N) ℂ)) -
+        ((↑(primeBurnolThetaFrameUnit pe a) :
+            Matrix (PrimeBurnolThetaIndex N) (PrimeBurnolThetaIndex N) ℂ) *
+          (↑(primeBurnolDoubledGramUnit pe hpe kappa) :
+            Matrix (PrimeBurnolThetaIndex N) (PrimeBurnolThetaIndex N) ℂ)))
+          (i, (1 : Fin 2)) (j, (0 : Fin 2))) = 0 := by
+    rw [hcomm, sub_self]
+    rfl
+  rw [primeBurnolDoubledGram_thetaFrame_commutator_apply] at hzero
+  have hcontrast :
+      (primeBurnolThetaContrast a (pe j).1 : ℂ) ≠
+        (primeBurnolThetaContrast a (pe i).1 : ℂ) := by
+    exact_mod_cast primeBurnolThetaContrast_ne_of_prime_ne ha hp.symm
+  apply (mul_ne_zero hgram (sub_ne_zero.mpr hcontrast)) hzero
+
+/-- One nonzero cross-prime Burnol edge makes the finite source--theta holonomy nontrivial at every
+nonneutral grade. -/
+theorem primeBurnolThetaModularHolonomy_ne_one_of_offDiagonal
+    {N : ℕ} (pe : Fin N → Nat.Primes × ℕ) (hpe : Function.Injective pe)
+    (kappa : Fin N → ℝ) {a : ℝ} (ha : a ≠ 0) (i j : Fin N)
+    (hp : (pe i).1 ≠ (pe j).1)
+    (hgram : primeBurnolWindowGramMatrix pe kappa i j ≠ 0) :
+    primeBurnolThetaModularHolonomy pe hpe kappa a ≠ 1 := by
+  intro hhol
+  have hunit := (GaloisForLFunctions.HTGeometry.sourceFrameModularHolonomy_eq_one_iff
+    (primeBurnolDoubledGramUnit pe hpe kappa) (primeBurnolThetaFrameUnit pe a)).1 hhol
+  have hmatrix := congrArg Units.val hunit
+  exact primeBurnolDoubledGram_thetaFrame_ne_commute_of_offDiagonal
+    pe hpe kappa ha i j hp hgram hmatrix
+
+/-- **Off-neutral finite faithfulness.** Any finite literal packet containing two distinct primes
+has nontrivial Burnol--theta holonomy at every nonneutral grade. -/
+theorem primeBurnolThetaModularHolonomy_ne_one
+    {N : ℕ} (pe : Fin N → Nat.Primes × ℕ) (hpe : Function.Injective pe)
+    (kappa : Fin N → ℝ) {a : ℝ} (ha : a ≠ 0) (i j : Fin N)
+    (hp : (pe i).1 ≠ (pe j).1) :
+    primeBurnolThetaModularHolonomy pe hpe kappa a ≠ 1 := by
+  exact primeBurnolThetaModularHolonomy_ne_one_of_offDiagonal
+    pe hpe kappa ha i j hp (primeBurnolWindowGramMatrix_apply_ne_zero pe kappa i j)
 
 end
 
