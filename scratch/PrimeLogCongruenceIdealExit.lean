@@ -27,16 +27,32 @@ theorem primeLogCongruenceWeight_eq
     gammaSewnMobiusApertureStokesOrientedFirstTracePrimeTerm,
     abs_of_pos hd, xiMassPrimeSquareEulerWeight_eq]
   have hp : (0 : ℝ) < (p : ℝ) := by exact_mod_cast p.property.pos
-  rw [← Real.rpow_add hp]
-  congr 1
-  ring
+  calc
+    (p : ℝ) ^ (2 * u) *
+          (8 * d * (Real.log (p : ℝ) * (p : ℝ) ^ (-(1 + 2 * d)))) =
+        8 * d * Real.log (p : ℝ) *
+          ((p : ℝ) ^ (2 * u) * (p : ℝ) ^ (-(1 + 2 * d))) := by ring
+    _ = 8 * d * Real.log (p : ℝ) *
+          (p : ℝ) ^ (2 * u + (-(1 + 2 * d))) := by
+      rw [Real.rpow_add hp]
+    _ = 8 * d * Real.log (p : ℝ) *
+          (p : ℝ) ^ (-(1 + 2 * (d - u))) := by
+      congr 1
+      ring
 
 theorem primeLogCongruenceWeight_nonneg
     {d u : ℝ} (hd : 0 < d) (p : Nat.Primes) :
     0 ≤ primeLogCongruenceWeight d u p := by
   rw [primeLogCongruenceWeight]
-  exact mul_nonneg (Real.rpow_nonneg (by positivity) _)
-    (routePPrimitiveGammaJuliaStokesTransportedPrimeWeight_nonneg hd p)
+  have htransport : 0 < routePPrimitiveGammaJuliaStokesTransportedPrimeWeight d p := by
+    rw [routePPrimitiveGammaJuliaStokesTransportedPrimeWeight_eq hd,
+      gammaSewnMobiusApertureStokesOrientedFirstTracePrimeTerm,
+      abs_of_pos hd, xiMassPrimeSquareEulerWeight_eq]
+    have hpR : (0 : ℝ) < (p : ℝ) := by exact_mod_cast p.property.pos
+    exact mul_pos (mul_pos (by norm_num) hd)
+      (mul_pos (Real.log_pos (by exact_mod_cast p.property.one_lt))
+        (Real.rpow_pos_of_pos hpR _))
+  exact mul_nonneg (Real.rpow_nonneg (by positivity) _) htransport.le
 
 /-- Before ideal exit, inverse heat merely changes the positive aperture and a global scalar. -/
 theorem primeLogCongruenceWeight_eq_rescaled_transport
@@ -50,7 +66,6 @@ theorem primeLogCongruenceWeight_eq_rescaled_transport
     gammaSewnMobiusApertureStokesOrientedFirstTracePrimeTerm,
     abs_of_pos hdu, xiMassPrimeSquareEulerWeight_eq]
   field_simp [hdu.ne']
-  ring
 
 theorem summable_primeLogCongruenceWeight_of_lt
     {d u : ℝ} (hu0 : 0 ≤ u) (hu : u < d) :
@@ -88,7 +103,14 @@ theorem not_summable_primeLogCongruenceWeight_of_le
     have hp2 : (2 : ℝ) ≤ (p : ℝ) := by exact_mod_cast p.property.two_le
     have hpow : (p : ℝ) ^ (2 * d) ≤ (p : ℝ) ^ (2 * u) :=
       Real.rpow_le_rpow_of_exponent_le hp1 (by linarith)
-    have htransport := routePPrimitiveGammaJuliaStokesTransportedPrimeWeight_pos hd p
+    have htransport : 0 < routePPrimitiveGammaJuliaStokesTransportedPrimeWeight d p := by
+      rw [routePPrimitiveGammaJuliaStokesTransportedPrimeWeight_eq hd,
+        gammaSewnMobiusApertureStokesOrientedFirstTracePrimeTerm,
+        abs_of_pos hd, xiMassPrimeSquareEulerWeight_eq]
+      have hpR : (0 : ℝ) < (p : ℝ) := by exact_mod_cast p.property.pos
+      exact mul_pos (mul_pos (by norm_num) hd)
+        (mul_pos (Real.log_pos (by exact_mod_cast p.property.one_lt))
+          (Real.rpow_pos_of_pos hpR _))
     have hmono : primeLogCongruenceWeight d d p ≤
         primeLogCongruenceWeight d u p := by
       rw [primeLogCongruenceWeight, primeLogCongruenceWeight]
@@ -132,3 +154,6 @@ theorem log_mul_primeLogCongruenceWeight_exit_eq
 end
 
 end RHTower
+
+#print axioms RHTower.summable_primeLogCongruenceWeight_iff
+#print axioms RHTower.log_mul_primeLogCongruenceWeight_exit_eq

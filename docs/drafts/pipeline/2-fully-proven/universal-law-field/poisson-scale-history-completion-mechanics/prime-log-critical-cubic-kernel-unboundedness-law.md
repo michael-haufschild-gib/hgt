@@ -4,7 +4,8 @@
 - **Stage:** 2-fully-proven
 - **Type:** unconditional pre-divisor endpoint no-go and positive survivor
 - **Parents:** ULF-PCOB-001, ULF-PLCIE-001
-- **Status:** `[PAPER-PROVED] [LEAN-IN-PROGRESS] [NOT RH]`
+- **Status:** `[PAPER-PROVED] [LEAN-PROVED] [NOT RH]`
+- **Lean:** `formal/GaloisForLFunctions/RHTower/PrimeLogCriticalCubicKernelUnboundedness.lean`
 
 ## 1. Big-picture meaning
 
@@ -40,7 +41,7 @@ Then, for `n>=2`,
 so `M_n` is unbounded.  Moreover
 
 ```text
-sum_(p,q in S_n) h(p)h(q)c(p,q)^3 >= (8/27) M_n^2.       (PLCCKU.4)
+sum_(p,q in S_n) h(p)h(q)c(p,q)^3 >= (1/8) M_n^2.        (PLCCKU.4)
 ```
 
 Consequently no bounded operator on `ell2(Primes)` has matrix coefficients `K(p,q)`.  Equivalently,
@@ -72,16 +73,17 @@ sum_(p in S_n) (log p)^2/p >= 3/2(log n)^2-117log n-50.
 Since `log p<=2log n` on `S_n`, this is `(PLCCKU.3)`.  The right side divided by
 `2log n` tends to infinity.
 
-For `p,q in S_n`, their positive logarithms lie in `(log n,2log n]`.  After exchanging `p,q` if
-needed, `x=log p<=y=log q<=2x`; hence
+For `p,q in S_n`, their positive logarithms `x=log p` and `y=log q` lie in
+`(log n,2log n]`.  Therefore
 
 ```text
-2sqrt(xy)/(x+y) >= 2x/(3x)=2/3.
+sqrt(xy) >= log n,       x+y <= 4log n,
+2sqrt(xy)/(x+y) >= 1/2.
 ```
 
 Cubing and summing proves `(PLCCKU.4)`.  Apply the putative operator to the finite vector with
 coordinates `sqrt(h(p))` on `S_n`.  Its squared norm is `M_n`, while its quadratic form is the
-left side of `(PLCCKU.4)`.  The Rayleigh quotient is at least `(8/27)M_n`, contradicting boundedness.
+left side of `(PLCCKU.4)`.  The Rayleigh quotient is at least `(1/8)M_n`, contradicting boundedness.
 
 ## 4. Exact consequence
 
@@ -93,4 +95,3 @@ left side of `(PLCCKU.4)`.  The Rayleigh quotient is at least `(8/27)M_n`, contr
   transform must be forced by the literal cubic Gram form.
 - Next gate is to construct that relation and prove its bounded transform has a nonconstant
   source-framed quotient class.  If its quotient is the universal cone class, retire PHCCED.
-

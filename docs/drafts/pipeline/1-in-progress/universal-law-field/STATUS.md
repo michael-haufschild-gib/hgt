@@ -4955,3 +4955,15 @@ F627 — `ULF-PLCCKU-001`: raw inverse-heat endpoint is unbounded. On prime pack
 CANNOT-280 — Raw `T_(d,d)` is not a bounded extension element; trace normalization returns the
 old nonselective aperture family. Only a source-canonical closed endpoint relation and its graph
 projection/bounded transform survive. Retire PHCCED if that transform has universal cone class.
+F628 — `ULF-PCLGF-001`: the critical cubic prime kernel is exactly the Gram of the literal
+Laplace synthesis `(A_*c)(t)=2t sum_p c_p(log p)^2p^(-t-1/2)`. Before exit its column norm square
+is `w_(d,u)(p)`, so the same operator family is Hilbert--Schmidt exactly for `u<d`.
+F629 — `A_*` is unbounded but canonically closable: compact-away-from-zero `L2` tests lie densely
+in its adjoint domain because their prime coefficients are dominated by
+`(log p)^4/p^(1+2epsilon)`. The endpoint object is `Graph(cl A_*)`, not a finite part.
+CANNOT-281 — Closed unbounded synthesis alone is nonselective, and the full-Schwartz theta-null
+Hilbert-Gram category is nonclosable. Do not call the source graph an RH mechanism or transport it
+naively into ordinary full-source `L2`.
+MUST-195 — Build theta completion as a relative Calderon/graph projection against `cl A_*` in a
+source-framed graph topology. Prove its nonconstant relative index equals Xi escape and its same
+relative representative has the primitive Euler norm `<1`; otherwise retire PHCCED.

@@ -160,7 +160,7 @@ theorem exists_nonautonomousFiniteCascadeTerminal_normalizedVelocity_residueCoef
         (hxA : x ∈ A) (hxB : g x ∈ B)
         (huA : u ∈ A) (huB : g u ∈ B)
         (C : ValuationSubring (IsLocalRing.ResidueField B))
-        (hC : C.comap (valuationSubringResidueMapOfComapEq g A B hB) =
+        (_hC : C.comap (valuationSubringResidueMapOfComapEq g A B hB) =
           firstOrderTerminalPulledInnerResidueValuationSubring phi),
         PowerSeries.constantCoeff z ≠ 0 ∧
         firstOrderTerminalCoefficientResidueEmbedding phi
@@ -385,16 +385,6 @@ theorem exists_nonautonomousFiniteCascadeTerminal_normalizedVelocity_residueCoef
               (NonautonomousFiniteCascadeTerminalPairField hfan N)
               (NonautonomousFiniteCascadeTerminalComponentField hfan N) cPair)) by rfl,
       show rho u = firstOrderTerminalBiHahnEmbedding (phi u) by rfl]
-    change firstOrderTerminalBiHahnEmbedding
-          (firstOrderTerminalOuterCoefficientMap
-            (algebraMap (LaurentSeries ℂ) FirstOrderTerminalCoefficientField
-              (HahnSeries.single (-((Nram * q : ℕ) : ℤ))
-              (((-((Nram * q : ℕ) : ℤ) : ℤ) : ℂ))))) =
-      firstOrderTerminalBiHahnEmbedding
-        (phi (algebraMap
-          (NonautonomousFiniteCascadeTerminalPairField hfan N)
-          (NonautonomousFiniteCascadeTerminalComponentField hfan N) cPair)) *
-        firstOrderTerminalBiHahnEmbedding (phi u)
     rw [show phi (algebraMap
         (NonautonomousFiniteCascadeTerminalPairField hfan N)
         (NonautonomousFiniteCascadeTerminalComponentField hfan N) cPair) =
@@ -530,6 +520,133 @@ theorem exists_nonautonomousFiniteCascadeTerminal_normalizedVelocity_residueCoef
       hfan hall (fun k hk => h1 k (by omega)) B hstate,
     huPoleB, hterminalActualBiHahnCharge,
     D, hDu', hDy', hDtransport', hDnonzero⟩
+
+/-- Terminal output state, lifted from the adjacent pair field to the terminal component. -/
+noncomputable def nonautonomousFiniteCascadeTerminalOutputInComponent
+    {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
+    (N : ℕ) : NonautonomousFiniteCascadeTerminalComponentField hfan N :=
+  algebraMap
+    (NonautonomousFiniteCascadeTerminalPairField hfan N)
+    (NonautonomousFiniteCascadeTerminalComponentField hfan N)
+    ⟨nonautonomousFiniteCascadeTerminalStatePair hfan N 1,
+      IntermediateField.subset_adjoin ℂ _ (Set.mem_range_self 1)⟩
+
+/-- Terminal constituent velocity inside its simple component field. -/
+noncomputable def nonautonomousFiniteCascadeTerminalVelocityInComponent
+    {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
+    (N : ℕ) : NonautonomousFiniteCascadeTerminalComponentField hfan N :=
+  IntermediateField.AdjoinSimple.gen
+    (NonautonomousFiniteCascadeTerminalPairField hfan N)
+    (nonautonomousFiniteCascadeTerminalVelocitySucc hfan N)
+
+/-- Literal terminal Wiman charge carrier `X_N f'_{N+1}(X_N) / X_{N+1}`. -/
+noncomputable def nonautonomousFiniteCascadeTerminalChargedVelocityInComponent
+    {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
+    (N : ℕ) : NonautonomousFiniteCascadeTerminalComponentField hfan N :=
+  terminalLeadingStateInComponent hfan N *
+    (nonautonomousFiniteCascadeTerminalVelocityInComponent hfan N /
+      nonautonomousFiniteCascadeTerminalOutputInComponent hfan N)
+
+/-- The exact terminal Wiman charge is detected by a literal Kronecker coordinate derivation on
+the complete actual successor branch field. -/
+theorem exists_nonautonomousFiniteCascadeTerminal_coordinateDerivation_response
+    {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
+    (hall : ∀ i : ℕ, TranscendentalEntire (f i)) (N : ℕ)
+    (h1 : ∀ k, k < N + 1 → DifferentiallyAlgebraicOfOrder (f k) 1) :
+    let B := NonautonomousFiniteCascadeBranchField hfan (N + 1)
+    let state : Fin (N + 2) → B :=
+      nonautonomousFiniteCascadeStateInBranchField hfan (N + 1)
+    let g := algebraMap
+      (NonautonomousFiniteCascadeTerminalComponentField hfan N) B
+    ∃ P : Derivation ℂ B B,
+      (∀ i, P (state i) = algebraMap ℂ B (if (i : ℕ) = N then 1 else 0)) ∧
+      P (g (nonautonomousFiniteCascadeTerminalChargedVelocityInComponent hfan N)) ≠ 0 := by
+  classical
+  let B := NonautonomousFiniteCascadeBranchField hfan (N + 1)
+  let state : Fin (N + 2) → B :=
+    nonautonomousFiniteCascadeStateInBranchField hfan (N + 1)
+  let g := algebraMap
+    (NonautonomousFiniteCascadeTerminalComponentField hfan N) B
+  obtain ⟨M, a, q, Nram, hNram, z₀, R, hR, z, hq, phi, Bv,
+      hslope, hz₀, hz, hcharge, hgrade, hbiGrade, hdata⟩ :=
+    exists_nonautonomousFiniteCascadeTerminal_normalizedVelocity_residueCoefficient
+      hfan hall N h1
+  rcases hdata with ⟨hBv, hstate, hxA, hxB, huA, huB, C, hC, hzNe,
+    hresU, hresX, hcoeff, hext, hlowerInj, huPole, hactualCharge,
+    D, hDu, hDy, hDtransport, hDnonzero⟩
+  have hfullAI : AlgebraicIndependent ℂ state := by
+    exact algebraicIndependent_nonautonomousFiniteCascadeStateInBranchField
+      hfan hall (N + 1)
+  let val : Fin (N + 2) → ℂ := fun i => if (i : ℕ) = N then 1 else 0
+  obtain ⟨P, hP⟩ := exists_derivation_prescribed hfullAI val
+  let u := terminalLeadingStateInComponent hfan N
+  let y := nonautonomousFiniteCascadeTerminalOutputInComponent hfan N
+  let w := nonautonomousFiniteCascadeTerminalChargedVelocityInComponent hfan N
+  let c : NonautonomousFiniteCascadeTerminalComponentField hfan N :=
+    algebraMap ℂ _ ((-((Nram * q : ℕ) : ℤ) : ℂ))
+  have hDu' : D u = c * u := by
+    simpa [u, c, terminalLeadingStateInComponent] using hDu
+  have hDy' : D y = 0 := by
+    simpa [y, nonautonomousFiniteCascadeTerminalOutputInComponent] using hDy
+  have hDnonzero' : D w ≠ 0 := by
+    simpa [w, nonautonomousFiniteCascadeTerminalChargedVelocityInComponent,
+      nonautonomousFiniteCascadeTerminalVelocityInComponent,
+      nonautonomousFiniteCascadeTerminalOutputInComponent,
+      terminalLeadingStateInComponent] using hDnonzero
+  letI : IsScalarTower ℂ
+      (NonautonomousFiniteCascadeTerminalComponentField hfan N) B :=
+    IsScalarTower.of_algebraMap_eq fun _ => rfl
+  let DL : Derivation ℂ B B := g (c * u) • P
+  let pairCoordinate : Fin 2 →
+      NonautonomousFiniteCascadeTerminalPairField hfan N := fun i =>
+    ⟨nonautonomousFiniteCascadeTerminalStatePair hfan N i,
+      IntermediateField.subset_adjoin ℂ _ (Set.mem_range_self i)⟩
+  have hpairTop : IntermediateField.adjoin ℂ (Set.range pairCoordinate) = ⊤ := by
+    simpa [pairCoordinate] using
+      (adjoin_range_lift_eq_top
+        (nonautonomousFiniteCascadeTerminalStatePair hfan N)
+        (nonautonomousFiniteCascadeTerminalStatePair hfan N) rfl)
+  letI : Algebra.IsAlgebraic
+      (NonautonomousFiniteCascadeTerminalPairField hfan N)
+      (NonautonomousFiniteCascadeTerminalComponentField hfan N) :=
+    nonautonomousFiniteCascadeTerminalComponent_isAlgebraic hfan hall N h1
+  have hgu : g u = state ⟨N, by omega⟩ := by
+    rfl
+  have hgy : g y = state ⟨N + 1, by omega⟩ := by
+    rfl
+  have hmapPair : ∀ i : Fin 2,
+      g (D (algebraMap
+        (NonautonomousFiniteCascadeTerminalPairField hfan N)
+        (NonautonomousFiniteCascadeTerminalComponentField hfan N)
+        (pairCoordinate i))) =
+      DL (g (algebraMap
+        (NonautonomousFiniteCascadeTerminalPairField hfan N)
+        (NonautonomousFiniteCascadeTerminalComponentField hfan N)
+        (pairCoordinate i))) := by
+    intro i
+    fin_cases i
+    · change g (D u) = DL (g u)
+      rw [hDu']
+      rw [hgu]
+      simp [DL, hP, val]
+    · change g (D y) = DL (g y)
+      rw [hDy', map_zero]
+      rw [hgy]
+      simp [DL, hP, val]
+  have hintertwine : ∀ a : NonautonomousFiniteCascadeTerminalComponentField hfan N,
+      g (D a) = DL (g a) :=
+    derivation_map_eq_of_isAlgebraic_tower_adjoin
+      pairCoordinate hpairTop
+      (IsScalarTower.toAlgHom ℂ
+        (NonautonomousFiniteCascadeTerminalComponentField hfan N) B)
+      D DL hmapPair
+  refine ⟨P, hP, ?_⟩
+  change P (g w) ≠ 0
+  intro hzero
+  apply hDnonzero'
+  apply g.injective
+  rw [hintertwine w]
+  simp [DL, hzero]
 
 end
 

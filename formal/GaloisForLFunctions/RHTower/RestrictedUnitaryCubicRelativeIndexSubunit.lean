@@ -27,7 +27,7 @@ theorem restrictedUnitaryCubic_sourceBudget_closed :
 /-- Closed final RUCRI certificate joining operator algebra, all analytic source identities, and
 the sharp symbolic subunit bound. -/
 theorem restrictedUnitaryCubicRelativeIndex_fully_closed :
-    restrictedUnitaryCubicRelativeIndex_algebra_closed ∧
+    RestrictedUnitaryCubicRelativeIndexAlgebraStatement ∧
       routePPrimitiveBaseCauchyCubicTraceBudget < 1 := by
   exact ⟨restrictedUnitaryCubicRelativeIndex_algebra_closed,
     routePPrimitiveBaseCauchyCubicTraceBudget_lt_one⟩

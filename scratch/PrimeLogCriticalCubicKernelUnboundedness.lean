@@ -202,7 +202,8 @@ theorem primeLogCriticalCubicRayleighNumerator_ge
           (Real.log_nonneg (by exact_mod_cast hq'.1.2.one_lt.le))
           (by exact_mod_cast hq'.1.2.pos.le)
       have hc := primeLogCriticalCubicCorrelation_ge n hn hp hq
-      exact mul_le_mul_of_nonneg_left hc (mul_nonneg hp0 hq0)
+      simpa [mul_assoc, mul_left_comm, mul_comm] using
+        (mul_le_mul_of_nonneg_left hc (mul_nonneg hp0 hq0))
 
 /-- The raw critical endpoint admits no uniform finite-compression Rayleigh bound. -/
 theorem not_exists_primeLogCriticalCubicRayleigh_bound :
@@ -220,8 +221,19 @@ theorem not_exists_primeLogCriticalCubicRayleigh_bound :
   have hlower := primeLogCriticalCubicRayleighNumerator_ge n hn2
   have hupper := hC n
   have hCle : C ≤ |C| := le_abs_self C
-  nlinarith [sq_nonneg (primeLogCriticalBlockMass n)]
+  have hMpos : 0 < primeLogCriticalBlockMass n := by
+    nlinarith [abs_nonneg C]
+  have hMC : 8 * |C| < primeLogCriticalBlockMass n := by linarith
+  have hmul : 8 * |C| * primeLogCriticalBlockMass n <
+      primeLogCriticalBlockMass n * primeLogCriticalBlockMass n :=
+    mul_lt_mul_of_pos_right hMC hMpos
+  have hCM : C * primeLogCriticalBlockMass n ≤
+      |C| * primeLogCriticalBlockMass n :=
+    mul_le_mul_of_nonneg_right hCle hMpos.le
+  nlinarith [hmul, sq_nonneg (primeLogCriticalBlockMass n)]
 
 end
 
 end RHTower
+
+#print axioms RHTower.not_exists_primeLogCriticalCubicRayleigh_bound

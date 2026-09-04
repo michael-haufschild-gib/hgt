@@ -10889,3 +10889,36 @@ exactly `[propext, Classical.choice, Quot.sound]`; both leaves are wired into `H
 an umbrella build.  Remaining exact core is compatibility of this inner coefficient place with the
 chosen Wiman place on the retained lower actual branch, followed by terminal-inward iteration and
 transport of the nonzero Bell determinant to literal output jets.  Card stays at Stage 2.
+
+### Exact terminal coordinate response and output/charge independence (2026-09-04)
+
+`HTGeometry/NonautonomousFiniteCascadeTerminalResidueCoefficient.lean` now transports the inner
+BiHahn Euler derivation back through the literal terminal component and then uniquely across the
+complete actual successor branch.  Its capstone
+
+```text
+exists_nonautonomousFiniteCascadeTerminal_coordinateDerivation_response
+```
+
+constructs a concrete Kronecker coordinate derivation on the full branch: it differentiates the
+terminal input state, kills every other actual state coordinate, and detects the literal Wiman
+charge carrier
+
+```text
+X_N * f_N'(X_N) / X_(N+1)
+```
+
+nontrivially.  No model branch or selected-component premise remains in this response statement.
+
+`HTGeometry/AlgebraicIndependentPair.lean` isolates the corpus's generic transcendental-pair law
+from its former analytic import stack.  The new leaf
+`HTGeometry/NonautonomousFiniteCascadeTerminalOutputCharge.lean` combines that law with the exact
+coordinate response to prove that the actual terminal output and its actual Wiman charge carrier
+are algebraically independent inside the complete successor branch field.
+
+Both new leaves pass direct checks and targeted builds.  The strengthened residue theorem, response
+theorem, pair infrastructure, and output/charge theorem audit exactly to
+`[propext, Classical.choice, Quot.sound]`; all leaves are wired into `HTGeometry` without an
+umbrella build.  This closes literal terminal response and the two-coordinate base of the inward
+observability induction.  Remaining exact core is simultaneous terminal-inward transport of these
+responses to the full raw output-jet determinant.  Card stays at Stage 2.

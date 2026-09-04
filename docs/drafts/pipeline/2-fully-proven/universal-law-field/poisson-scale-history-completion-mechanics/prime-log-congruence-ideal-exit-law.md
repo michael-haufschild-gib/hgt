@@ -4,7 +4,8 @@
 - **Stage:** 2-fully-proven
 - **Type:** unconditional pre-divisor source-flow/ideal-boundary law
 - **Parents:** ULF-PCOB-001, ULF-PHIN-001, ULF-SACWHT-001
-- **Status:** `[PAPER-PROVED] [LEAN-IN-PROGRESS] [NOT RH]`
+- **Status:** `[PAPER-PROVED] [LEAN-PROVED] [NOT RH]`
+- **Lean:** `formal/GaloisForLFunctions/RHTower/PrimeLogCongruenceIdealExit.lean`
 
 ## 1. Statement
 

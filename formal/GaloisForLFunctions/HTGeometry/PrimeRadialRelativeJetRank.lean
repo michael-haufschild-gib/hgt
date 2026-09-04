@@ -1,6 +1,5 @@
 import GaloisForLFunctions.HTGeometry.PrimeRadialFusionKolchinRank
-import Mathlib.RingTheory.AlgebraicIndependent.TranscendenceBasis
-import Mathlib.SetTheory.Cardinal.Finite
+import GaloisForLFunctions.HTGeometry.FiniteAlgebraicBasisExchange
 
 /-!
 # Intrinsic tail-relative rank of prime-radial differential fields
@@ -19,59 +18,6 @@ open scoped Differential
 noncomputable section
 
 set_option maxHeartbeats 2400000
-
-universe u
-
-/-! ## A reusable exact transcendence-degree lemma -/
-
-/-- An algebraically independent family is a transcendence basis of the ordinary field that it
-generates, so the transcendence degree of that field is exactly the cardinality of the family. -/
-theorem trdeg_intermediateFieldAdjoin_range_eq_cardinalMk_of_algebraicIndependent
-    {F E I : Type u} [Field F] [Field E] [Algebra F E]
-    (x : I → E) (hx : AlgebraicIndependent F x) :
-    Algebra.trdeg F (IntermediateField.adjoin F (Set.range x)) = Cardinal.mk I := by
-  let L := IntermediateField.adjoin F (Set.range x)
-  let xL : I → L := fun i =>
-    ⟨x i, IntermediateField.subset_adjoin F (Set.range x) (Set.mem_range_self i)⟩
-  have hxL : AlgebraicIndependent F xL := by
-    apply AlgebraicIndependent.of_comp (L.val : L →ₐ[F] E)
-    simpa only [Function.comp_apply, L, xL] using! hx
-  have htop : IntermediateField.adjoin F (Set.range xL) = ⊤ := by
-    let J := IntermediateField.adjoin F (Set.range xL)
-    apply top_unique
-    intro z hz
-    change z ∈ J
-    let p : ∀ y, y ∈ L → Prop := fun y hy => (⟨y, hy⟩ : L) ∈ J
-    change p (z : E) z.2
-    refine IntermediateField.adjoin_induction F (p := p) ?_ ?_ ?_ ?_ ?_ z.2
-    · rintro y ⟨i, rfl⟩
-      change xL i ∈ J
-      exact IntermediateField.subset_adjoin F (Set.range xL) (Set.mem_range_self i)
-    · intro c
-      change algebraMap F L c ∈ J
-      exact IntermediateField.algebraMap_mem J c
-    · intro a b ha hb haJ hbJ
-      simpa only [p, Subtype.coe_eta] using! J.add_mem haJ hbJ
-    · intro a ha haJ
-      simpa only [p, Subtype.coe_eta] using! J.inv_mem haJ
-    · intro a b ha hb haJ hbJ
-      simpa only [p, Subtype.coe_eta] using! J.mul_mem haJ hbJ
-  have halg : Algebra.IsAlgebraic (Algebra.adjoin F (Set.range xL)) L := by
-    apply (IntermediateField.isAlgebraic_adjoin_iff_top
-      (F := F) (s := Set.range xL) (S := L)).mp
-    constructor
-    intro a
-    let J := IntermediateField.adjoin F (Set.range xL)
-    let aJ : J := ⟨a, by
-      change a ∈ IntermediateField.adjoin F (Set.range xL)
-      rw [htop]
-      trivial⟩
-    have haJ : algebraMap J L aJ = a := rfl
-    rw [← haJ]
-    exact isAlgebraic_algebraMap (R := J) (A := L) aJ
-  have hbasis : IsTranscendenceBasis F xL :=
-    hxL.isTranscendenceBasis_iff_isAlgebraic.mpr halg
-  simpa only [L] using hbasis.cardinalMk_eq_trdeg.symm
 
 /-! ## Profile spans generate exactly their radial differential fields -/
 

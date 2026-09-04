@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.RestrictedProjectionCubicTrace
-import GaloisForLFunctions.RHTower.FrankensteinCCMRoutePBaseCubicGreenSourceBridge
+import GaloisForLFunctions.RHTower.RoutePPrimeGammaBaseCubicWeight
 import GaloisForLFunctions.RHTower.VonMangoldtGammaJetBoundaryConvergence
 import GaloisForLFunctions.RHTower.SquaredXiChebyshevWindow
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualFourierCoefficient
@@ -774,7 +774,7 @@ theorem restrictedUnitaryNaturalApertureFlux_eq_vonMangoldt
     ring
 
 theorem restrictedUnitaryNaturalApertureFlux_eq_rpow
-    {c : ℝ} (hc : 0 ≤ c) (n : ℕ) :
+    (c : ℝ) (n : ℕ) :
     restrictedUnitaryNaturalApertureFlux c n =
       ArithmeticFunction.vonMangoldt n * (n : ℝ) ^ (-(1 + 2 * c)) /
         (2 * Real.log n ^ 2) := by
@@ -849,6 +849,7 @@ theorem tsum_restrictedUnitaryNaturalApertureDefectMass_eq_primitive
       apply tsum_congr
       intro pe
       rw [Nat.Primes.coe_prodNatEquiv_apply]
+      rfl
     _ = ∑' pe : Nat.Primes × ℕ,
         routePPrimitiveBurnolApertureDefectMass c pe := by
       apply tsum_congr
@@ -878,6 +879,7 @@ theorem tsum_restrictedUnitaryNaturalApertureFlux_eq_primitive
       apply tsum_congr
       intro pe
       rw [Nat.Primes.coe_prodNatEquiv_apply]
+      rfl
     _ = ∑' pe : Nat.Primes × ℕ,
         restrictedUnitaryBurnolApertureFluxTerm c pe := by
       apply tsum_congr
@@ -898,16 +900,16 @@ theorem routePPrimitiveBurnolApertureTotalDefectMass_eq_natural
 /-- **Natural-number flux normal form `(RUCRI.15)`.**  At every nonnegative aperture, the total
 primitive flux is the literal von-Mangoldt Dirichlet current divided by the quadratic log clock. -/
 theorem restrictedUnitaryBurnolApertureTotalFlux_eq_natural
-    {c : ℝ} (hc : 0 ≤ c) :
+    (c : ℝ) :
     restrictedUnitaryBurnolApertureTotalFlux c =
       ∑' n : ℕ, ArithmeticFunction.vonMangoldt n *
         (n : ℝ) ^ (-(1 + 2 * c)) / (2 * Real.log n ^ 2) := by
   rw [← tsum_restrictedUnitaryNaturalApertureFlux_eq_primitive]
   apply tsum_congr
-  exact restrictedUnitaryNaturalApertureFlux_eq_rpow hc
+  exact restrictedUnitaryNaturalApertureFlux_eq_rpow c
 
 theorem restrictedUnitaryBurnolApertureFluxTerm_nonneg
-    {c : ℝ} (hc : 0 ≤ c) (pe : Nat.Primes × ℕ) :
+    (c : ℝ) (pe : Nat.Primes × ℕ) :
     0 ≤ restrictedUnitaryBurnolApertureFluxTerm c pe := by
   exact mul_nonneg (Real.exp_pos _).le
     (routePPrimitiveBurnolApertureDefectFlux_pos pe).le
@@ -920,16 +922,19 @@ theorem restrictedUnitaryBurnolApertureFluxTerm_le
   have hfrequency := xiGammaEulerPrimitiveLogFrequency_pos pe
   have hexp : Real.exp (-2 * c * xiGammaEulerPrimitiveLogFrequency pe) ≤ 1 := by
     rw [Real.exp_le_one_iff]
-    positivity
+    rw [show -2 * c * xiGammaEulerPrimitiveLogFrequency pe =
+        -(2 * c * xiGammaEulerPrimitiveLogFrequency pe) by ring]
+    exact neg_nonpos.mpr
+      (mul_nonneg (mul_nonneg (show (0 : ℝ) ≤ 2 by norm_num) hc) hfrequency.le)
   exact mul_le_of_le_one_left
     (routePPrimitiveBurnolApertureDefectFlux_pos pe).le
-    (Real.exp_pos _).le hexp
+    hexp
 
 theorem summable_restrictedUnitaryBurnolApertureFluxTerm
     {c : ℝ} (hc : 0 ≤ c) :
     Summable (restrictedUnitaryBurnolApertureFluxTerm c) := by
   exact Summable.of_nonneg_of_le
-    (restrictedUnitaryBurnolApertureFluxTerm_nonneg hc)
+    (restrictedUnitaryBurnolApertureFluxTerm_nonneg c)
     (restrictedUnitaryBurnolApertureFluxTerm_le hc)
     summable_routePPrimitiveBurnolApertureDefectFlux
 
@@ -945,19 +950,25 @@ theorem hasDerivAt_routePPrimitiveBurnolApertureDefectMass
       ((hasDerivAt_id (𝕜 := ℝ) c).const_mul (-2)).mul_const lambda
   have hexp : HasDerivAt (fun y : ℝ => Real.exp (-2 * y * lambda))
       (Real.exp (-2 * c * lambda) * (-2 * lambda)) c := by
-    simpa only [Function.comp_apply] using
+    simpa only [Function.comp_def] using
       (Real.hasDerivAt_exp (-2 * c * lambda)).comp c hlinear
   have hsub : HasDerivAt (fun y : ℝ => 1 - Real.exp (-2 * y * lambda))
       (2 * lambda * Real.exp (-2 * c * lambda)) c := by
-    convert (hasDerivAt_const (x := c) (c := (1 : ℝ))).sub hexp using 1 <;> ring
+    have h := (hasDerivAt_const (x := c) (c := (1 : ℝ))).sub hexp
+    change HasDerivAt (fun y : ℝ => 1 - Real.exp (-2 * y * lambda))
+      (0 - Real.exp (-2 * c * lambda) * (-2 * lambda)) c at h
+    convert h using 1
+    ring
   unfold routePPrimitiveBurnolApertureDefectMass
   change HasDerivAt (fun y : ℝ => (1 - Real.exp (-2 * y * lambda)) * w)
     (restrictedUnitaryBurnolApertureFluxTerm c pe) c
-  convert hsub.mul_const w using 1
-  rw [restrictedUnitaryBurnolApertureFluxTerm,
-    routePPrimitiveBurnolApertureDefectFlux]
-  simp only [lambda, w]
-  ring
+  have hcoeff : restrictedUnitaryBurnolApertureFluxTerm c pe =
+      (2 * lambda * Real.exp (-2 * c * lambda)) * w := by
+    simp only [restrictedUnitaryBurnolApertureFluxTerm,
+      routePPrimitiveBurnolApertureDefectFlux, lambda, w]
+    ring
+  rw [hcoeff]
+  exact hsub.mul_const w
 
 /-- **Interior aperture derivative `(RUCRI.15)`.**  At every positive time, differentiation
 commutes with the complete primitive sum. -/
@@ -970,16 +981,19 @@ theorem hasDerivAt_routePPrimitiveBurnolApertureTotalDefectMass
     (g := fun pe y => routePPrimitiveBurnolApertureDefectMass y pe)
     (g' := fun pe y => restrictedUnitaryBurnolApertureFluxTerm y pe)
     summable_routePPrimitiveBurnolApertureDefectFlux
-    isOpen_Ioi convex_Ioi.isPreconnected
+    isOpen_Ioi isPreconnected_Ioi
     (fun pe y _hy => hasDerivAt_routePPrimitiveBurnolApertureDefectMass y pe)
     (fun pe y hy => by
       rw [Real.norm_eq_abs,
-        abs_of_nonneg (restrictedUnitaryBurnolApertureFluxTerm_nonneg hy.le pe)]
+        abs_of_nonneg (restrictedUnitaryBurnolApertureFluxTerm_nonneg y pe)]
       exact restrictedUnitaryBurnolApertureFluxTerm_le hy.le pe)
     (show (1 : ℝ) ∈ Ioi 0 by norm_num)
     (summable_routePPrimitiveBurnolApertureDefectMass (by norm_num)) hc
-  simpa only [routePPrimitiveBurnolApertureTotalDefectMass,
-    restrictedUnitaryBurnolApertureTotalFlux] using h
+  change HasDerivAt
+    (fun z : ℝ => ∑' pe : Nat.Primes × ℕ,
+      routePPrimitiveBurnolApertureDefectMass z pe)
+    (∑' pe : Nat.Primes × ℕ, restrictedUnitaryBurnolApertureFluxTerm c pe) c
+  exact h
 
 /-- **Displayed interior derivative `(RUCRI.15)`.**  The derivative is the exact natural-number
 von-Mangoldt flux, not merely its primitive-label reindexing. -/
@@ -988,7 +1002,7 @@ theorem hasDerivAt_routePPrimitiveBurnolApertureTotalDefectMass_natural
     HasDerivAt routePPrimitiveBurnolApertureTotalDefectMass
       (∑' n : ℕ, ArithmeticFunction.vonMangoldt n *
         (n : ℝ) ^ (-(1 + 2 * c)) / (2 * Real.log n ^ 2)) c := by
-  rw [← restrictedUnitaryBurnolApertureTotalFlux_eq_natural hc.le]
+  rw [← restrictedUnitaryBurnolApertureTotalFlux_eq_natural c]
   exact hasDerivAt_routePPrimitiveBurnolApertureTotalDefectMass hc
 
 /-- Each positive primitive flux is integrable over the full aperture ray. -/
@@ -1000,8 +1014,7 @@ theorem integrableOn_restrictedUnitaryBurnolApertureFluxTerm
   have h := (integrableOn_pow_mul_exp_neg_mul_Ioi hrate 0).const_mul
     (routePPrimitiveBurnolApertureDefectFlux pe)
   refine h.congr (Filter.Eventually.of_forall fun c => ?_)
-  rw [restrictedUnitaryBurnolApertureFluxTerm]
-  simp only [pow_zero, one_mul]
+  simp only [restrictedUnitaryBurnolApertureFluxTerm, pow_zero, one_mul]
   ring
 
 /-- The integrated norm of one flux channel is exactly its undamped cubic base weight. -/
@@ -1011,19 +1024,19 @@ theorem integral_norm_restrictedUnitaryBurnolApertureFluxTerm
       routePPrimitiveBaseCauchyCubicWeight pe := by
   rw [MeasureTheory.setIntegral_congr_fun measurableSet_Ioi (fun c hc => by
     rw [Real.norm_eq_abs,
-      abs_of_nonneg (restrictedUnitaryBurnolApertureFluxTerm_nonneg hc.le pe)])]
+      abs_of_nonneg (restrictedUnitaryBurnolApertureFluxTerm_nonneg c pe)])]
+  have hfrequency := xiGammaEulerPrimitiveLogFrequency_pos pe
   rw [show (fun c : ℝ => restrictedUnitaryBurnolApertureFluxTerm c pe) =
       fun c : ℝ => routePPrimitiveBurnolApertureDefectFlux pe *
         (c ^ 0 * Real.exp (-(2 * xiGammaEulerPrimitiveLogFrequency pe * c))) by
     funext c
-    rw [restrictedUnitaryBurnolApertureFluxTerm]
-    simp only [pow_zero, one_mul]
+    simp only [restrictedUnitaryBurnolApertureFluxTerm, pow_zero, one_mul]
     ring]
   rw [MeasureTheory.integral_const_mul,
     integral_pow_mul_exp_neg_mul_Ioi
-      (by positivity : 0 < 2 * xiGammaEulerPrimitiveLogFrequency pe) 0]
+      (mul_pos (by norm_num) hfrequency) 0]
   rw [routePPrimitiveBurnolApertureDefectFlux]
-  have hfrequency := (xiGammaEulerPrimitiveLogFrequency_pos pe).ne'
+  have hfrequency_ne := hfrequency.ne'
   norm_num
   field_simp
 
@@ -1035,7 +1048,7 @@ theorem integral_restrictedUnitaryBurnolApertureFluxTerm
   apply integral_congr_ae
   filter_upwards [self_mem_ae_restrict measurableSet_Ioi] with c hc
   rw [Real.norm_eq_abs,
-    abs_of_nonneg (restrictedUnitaryBurnolApertureFluxTerm_nonneg hc.le pe)]
+    abs_of_nonneg (restrictedUnitaryBurnolApertureFluxTerm_nonneg c pe)]
 
 theorem summable_integral_norm_restrictedUnitaryBurnolApertureFluxTerm :
     Summable (fun pe : Nat.Primes × ℕ => ∫ c : ℝ in Ioi 0,
@@ -1056,7 +1069,9 @@ theorem integral_restrictedUnitaryBurnolApertureTotalFlux :
       (μ := volume.restrict (Ioi 0))
       integrableOn_restrictedUnitaryBurnolApertureFluxTerm
       summable_integral_norm_restrictedUnitaryBurnolApertureFluxTerm
-  rw [restrictedUnitaryBurnolApertureTotalFlux, hswap]
+  change (∫ c : ℝ in Ioi 0,
+    ∑' pe : Nat.Primes × ℕ, restrictedUnitaryBurnolApertureFluxTerm c pe) = _
+  rw [hswap]
   simp_rw [integral_restrictedUnitaryBurnolApertureFluxTerm]
   rfl
 
@@ -1070,13 +1085,13 @@ theorem integral_restrictedUnitaryBurnolApertureNaturalFlux :
   rw [← integral_restrictedUnitaryBurnolApertureTotalFlux]
   apply integral_congr_ae
   filter_upwards [self_mem_ae_restrict measurableSet_Ioi] with c hc
-  exact (restrictedUnitaryBurnolApertureTotalFlux_eq_natural hc.le).symm
+  exact (restrictedUnitaryBurnolApertureTotalFlux_eq_natural c).symm
 
 
-/-- Hypothesis-free certificate for projection algebra and literal source identities proved in
-this module.  Strict subunit arithmetic is attached in the final certificate module so direct
-checks of this analytic core do not force unrelated high-exponent shell infrastructure. -/
-theorem restrictedUnitaryCubicRelativeIndex_algebra_closed :
+/-- Closed proposition collecting projection algebra and literal source identities.  Naming the
+proposition separately lets downstream certificates reuse its exact statement without treating a
+proof term as a proposition. -/
+def RestrictedUnitaryCubicRelativeIndexAlgebraStatement : Prop :=
     (∀ (H : Type*) [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
         (R P : H →L[ℂ] H),
       IsIdempotentElem R → IsIdempotentElem P →
@@ -1093,7 +1108,13 @@ theorem restrictedUnitaryCubicRelativeIndex_algebra_closed :
     (∀ n, routePPrimeGammaBaseCubicWeight n =
       finiteVonMangoldtRealWeight n / (4 * Real.log n ^ 3)) ∧
     (∑' n : ℕ, routePPrimeGammaBaseCubicWeight n) =
-      routePPrimitiveBaseCauchyCubicTraceBudget := by
+      routePPrimitiveBaseCauchyCubicTraceBudget
+
+/-- Hypothesis-free certificate for projection algebra and literal source identities proved in
+this module.  Strict subunit arithmetic is attached in the final certificate module so direct
+checks of this analytic core do not force unrelated high-exponent shell infrastructure. -/
+theorem restrictedUnitaryCubicRelativeIndex_algebra_closed :
+    RestrictedUnitaryCubicRelativeIndexAlgebraStatement := by
   refine ⟨?_, routePPrimeGammaBaseCubicWeight_eq_vonMangoldt, ?_⟩
   · intro H _ _ _ R P hR hP hRadj hPadj hDelta
     exact ⟨adjoint_restrictedProjectionDisplacement R P hRadj hPadj,

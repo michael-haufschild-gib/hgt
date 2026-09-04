@@ -1,7 +1,6 @@
 import GaloisForLFunctions.RHTower.CCMGuinandWeilLiteralPolarPrimeSource
 import GaloisForLFunctions.RHTower.CCMCriticalMellinGrowingCumulative
-import GaloisForLFunctions.RHTower.RoutePPrimeGammaCubicCarrierIdentification
-import GaloisForLFunctions.RHTower.RoutePPrimitiveBaseCauchyCapacityReduction
+import GaloisForLFunctions.RHTower.RoutePPrimeGammaBaseCubicWeight
 
 /-!
 # CCM/Route-P cubic Green source bridge
@@ -32,38 +31,6 @@ open scoped BigOperators
 namespace RHTower
 
 noncomputable section
-
-/-- Natural-number form of the undifferenced Route-P base Cauchy mass. -/
-def routePPrimeGammaBaseCubicWeight (n : ℕ) : ℝ :=
-  (216 / 115 : ℝ) * routePPrimeGammaCubicWeight n
-
-/-- Prime-power valuation preserves the complete base mass, including prime label and depth. -/
-theorem routePPrimeGammaBaseCubicWeight_valuation
-    (pe : Nat.Primes × ℕ) :
-    routePPrimeGammaBaseCubicWeight (xiGammaEulerValuationNat pe) =
-      routePPrimitiveBaseCauchyCubicWeight pe := by
-  rw [routePPrimeGammaBaseCubicWeight,
-    routePPrimeGammaCubicWeight_valuation,
-    routePPrimitiveBaseCauchyCubicWeight]
-
-theorem summable_routePPrimeGammaBaseCubicWeight :
-    Summable routePPrimeGammaBaseCubicWeight := by
-  exact summable_routePPrimeGammaCubicWeight.mul_left (216 / 115 : ℝ)
-
-/-- The full natural-number Green mass is exactly the P-G181 primitive base budget. -/
-theorem tsum_routePPrimeGammaBaseCubicWeight_eq_budget :
-    ∑' n : ℕ, routePPrimeGammaBaseCubicWeight n =
-      routePPrimitiveBaseCauchyCubicTraceBudget := by
-  change (∑' n : ℕ, (216 / 115 : ℝ) * routePPrimeGammaCubicWeight n) = _
-  rw [tsum_mul_left]
-  rw [← routePPrimitiveCollisionCubicTraceBudget_eq_primeGamma,
-    ← routePPrimitiveBaseCauchyCubicTraceBudget_eq]
-
-/-- The common CCM/Route-P source mass retains the strict two-unit budget. -/
-theorem tsum_routePPrimeGammaBaseCubicWeight_lt_two :
-    (∑' n : ℕ, routePPrimeGammaBaseCubicWeight n) < 2 := by
-  rw [tsum_routePPrimeGammaBaseCubicWeight_eq_budget]
-  exact routePPrimitiveBaseCauchyCubicTraceBudget_lt_quantum
 
 /-- Continuous logarithmic Green profile.  The clamp changes only the prime-free interval below
 `log 2`. -/

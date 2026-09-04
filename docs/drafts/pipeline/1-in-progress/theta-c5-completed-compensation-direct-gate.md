@@ -211,3 +211,41 @@ All four sign facts then hold on `[0.3235, ∞)` with margins `≥ 10⁴`.
 The corner regime `A(u − t) < 6` (i.e. `t > u − 0.3235`) needs `J₄ < BW₄` on `[0, 0.32]` with
 `J₄(0) = 229` vs `BW₄(0) = 372`; this is a chamber-wise two-level-system computation
 (`J₄` decreasing from `229` to `0.7`, `BW₄` from `372` to `121`), to be done after regime I.
+
+## 2026-09-04 (late): structural layer and regime I are Lean theorems; the gate is one growth bound
+
+**Exact criterion (new form).**  Since `M(1) = (W − 30)(−H) + 5G` and `G = tḢ − 5H`,
+`M(1) = (W − 5)(−H) + 5tḢ`, so with `H < 0`
+
+```text
+M(1) > 0   ⟺   t·∂ₜ log(−H) < (W − 5)/5,      (W − 5)/5 ≥ 5 + 2.4Φ  (Padé floor, from v ≥ 2Φ).
+```
+
+Hence the whole gate is `H < 0` plus the growth bound `t·∂ₜ log(−H) ≤ 5 + 2.4Φ` (equivalently
+`5|G| ≤ 6Φ(−H)`).  Pod scan (`clg_cmargin.py`, 80 points, `x₀ ∈ [0, 2]`, `t ∈ [0.02, 3]`): the
+excess `t∂ₜlog(−H) − 5` is at most `5.2 %` of `2.4Φ` (tightest at `x₀ ≈ 0.32`, `t = 0.02`, ratio
+`1/19`), and at most `0.1 %` for `t ≥ 1`.  Pure-exponential model (`ℓ₀ = −A`): `H ∝ A²·h(t)`,
+`h = sinh²(2t)(t sech²t − tanh t)`, `t h'/h − 5 ≈ (16/15)t²` versus `2.4Φ ≈ 9.6A t²`.
+
+**Lean (all compiled, wired after `C5FixedActionDescentLemmas`, `lake build` clean):**
+
+| module | content |
+|---|---|
+| `ThetaCuspC5CompletedGateReduction` | excess form, Padé floor `(x−2)eˣ + x + 2 ≥ 0`, `12Φ ≤ W − 30`, assembly `c5CompletedCompensationMargin_pos_of_bounds (H<0) (2Φ≤v) (5|G| ≤ 6Φ(−H))` |
+| `ThetaCuspC5CompletedGateSigns` | even/odd curvature data, `two_mul_action_le_velocity_of_jetTwo_nonneg` (`(b)` from `c'' ≥ 0` on `[u−t, ∞)`), `local_ratio_deriv_neg` (two-point inequality `(∗)` from `Q ≥ 0` + `2s(j₊j₂₋ + j₂₊j₋) > 0`), `centerNumerator_neg_of_curvatureSigns` (`H < 0` from `(R2)–(R4)` on `[x₀, ∞)`, `x₀ ≤ u − t`, via the two monotone-l'Hospital descents and `H = 4(o·tE − O(E + te))`) |
+| `ThetaCuspC5RegimeOneCurvatureSigns` | sharp support comparison `M_m(B) ≤ 3^m e^{−3δ} M₀(B − δ)` for `δ ≥ m/3`; `NM_m ≤ 3^m ε(x)`, `ε = e^{−3(A−π)}/399`; cumulant majorants `9ε, 28ε, 82ε, 244ε`; jet majorants `|J₂| ≤ 38A²ε, |J₃| ≤ 261A³ε, |J₄| ≤ 1800A⁴ε, |J₅| ≤ 12900A⁵ε`; decompositions `c⁽ᵏ⁾ = BW_{k+2} − J_{k+2}`; identity `BW₂BW₅ − BW₃BW₄ = −(2q+3)²(1296q⁴ + 4536q³ + 4536q² + 2916q + 2916)/q⁷`; `(R2)`, `(R3)`, `(R4)` for `A ≥ 6` (chambers `[6,7]`, `[7,10]`, `[10,∞)` with `|D| ≥ 1835, 583, 5184/A` against `err ≤ 58100A⁶ε ≤ 1328, 167, 1.8/A`) |
+| `ThetaCuspC5RegimeOneGate` | `centerNumerator_neg_of_regimeOne`, `two_mul_action_le_velocity_of_regimeOne` (unconditional for `A(u−t) ≥ 6`), and `c5CompletedCompensationMargin_pos_of_regimeOne (hG : 5|G| ≤ 6Φ(−H))` |
+
+**Open (exact).**  (i) the growth bound `5|G| ≤ 6Φ(−H)` on `0 < t < u`; (ii) the corner regime
+`A(u − t) ∈ [π, 6)` for `(R2)–(R4)`: there `J₄(0) = 229` vs `BW₄(0) = 372`, so the two-atom explicit
+model `ℓ₂ = −A + log(A − 3/2 + (16A − 6)e^{−3A})` (n ≥ 3 remainder `≤ 10⁻⁷` relative at `A = π`,
+decaying like `e^{−8A}`) must be handled chamber-wise; note `c` is even (`thetaCuspLogCurvature_neg`),
+so `c'(0) = c'''(0) = 0` and `(R4)` is vacuous on `(0, 0.28)` where `c''' < 0`.
+
+**Structure of (i) found today.**  `N := H/4 = E·Λ − O·Y` with `Λ = ∫₀ᵗ (t−r) r o''(r) dr`,
+`Y = ∫₀ᵗ s e'(s) ds` (both `O(t⁴)`, `O(t³)`), `N ≈ (t⁵/12)(c c''' − 2c'c'')`.  Writing
+`D = OY − EΛ > 0`, `t D'/D = a + (a − b)·EΛ/D` with `a = to/O + t²e'/Y`, `b = te/E + tΛ'/Λ` (each
+`5 + O(t²)`), and `EΛ/D → c c'''/(2c'c'' − c c''') ≤ 1` exactly by `(R4)`.  The natural sufficient
+condition is a family of log-derivative bounds `|g'(s)/g(s)| ≤ κ s` for the four averaged
+integrands (`κ ≈ 4/3, 4/3, c''/c ≤ 8, c⁽⁵⁾/(5c''') ≈ 0.8` in the pure model) with total budget
+`≈ 10` against `2.4c ≥ 58`; the difference structure needs `EΛ ≤ K·D` globally (weighted descent).

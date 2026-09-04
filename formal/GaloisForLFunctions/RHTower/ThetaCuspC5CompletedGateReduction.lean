@@ -78,7 +78,7 @@ theorem exp_padé_floor {x : ℝ} (hx : 0 ≤ x) :
   · have hy0 : 0 ≤ x / 2 := by linarith
     have hy1 : x / 2 < 1 := by linarith
     have hart := GaloisForLFunctions.HTGeometry.self_le_artanh hy0 hy1
-    rw [Real.artanh_eq_half_log ⟨by linarith, hy1⟩] at hart
+    rw [Real.artanh_eq_half_log ⟨by linarith, hy1.le⟩] at hart
     have hpos : 0 < (1 + x / 2) / (1 - x / 2) := by
       apply div_pos <;> linarith
     have hlog : x ≤ Real.log ((1 + x / 2) / (1 - x / 2)) := by linarith

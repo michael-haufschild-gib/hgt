@@ -83,8 +83,7 @@ theorem hasDerivAt_completedDecayEvenPrimitive (u s : ℝ) :
   have hm := (hasDerivAt_thetaCuspLogDecaySlope (u - s)).comp s ((hasDerivAt_id s).const_sub u)
   have := (hp.sub hm).div_const 2
   unfold completedDecayEvenPrimitive completedCurvatureEven
-  convert this using 1
-  simp only [id_eq]; ring
+  convert this using 1 <;> first | rfl | ((try simp only [Pi.sub_apply, Pi.add_apply, Function.comp_apply, id_eq]); ring)
 
 theorem hasDerivAt_completedDecayOddPrimitive (u s : ℝ) :
     HasDerivAt (completedDecayOddPrimitive u) (completedCurvatureOdd u s) s := by
@@ -92,8 +91,7 @@ theorem hasDerivAt_completedDecayOddPrimitive (u s : ℝ) :
   have hm := (hasDerivAt_thetaCuspLogDecaySlope (u - s)).comp s ((hasDerivAt_id s).const_sub u)
   have := ((hp.add hm).sub_const (2 * thetaCuspLogDecaySlope u)).div_const 2
   unfold completedDecayOddPrimitive completedCurvatureOdd
-  convert this using 1
-  simp only [id_eq]; ring
+  convert this using 1 <;> first | rfl | ((try simp only [Pi.sub_apply, Pi.add_apply, Function.comp_apply, id_eq]); ring)
 
 theorem hasDerivAt_completedCurvatureEven (u s : ℝ) :
     HasDerivAt (completedCurvatureEven u)
@@ -102,8 +100,7 @@ theorem hasDerivAt_completedCurvatureEven (u s : ℝ) :
   have hm := (hasDerivAt_thetaCuspLogCurvature (u - s)).comp s ((hasDerivAt_id s).const_sub u)
   have := (hp.add hm).div_const 2
   unfold completedCurvatureEven
-  convert this using 1
-  simp only [id_eq]; ring
+  convert this using 1 <;> first | rfl | ((try simp only [Pi.sub_apply, Pi.add_apply, Function.comp_apply, id_eq]); ring)
 
 theorem hasDerivAt_completedCurvatureOdd (u s : ℝ) :
     HasDerivAt (completedCurvatureOdd u)
@@ -112,8 +109,7 @@ theorem hasDerivAt_completedCurvatureOdd (u s : ℝ) :
   have hm := (hasDerivAt_thetaCuspLogCurvature (u - s)).comp s ((hasDerivAt_id s).const_sub u)
   have := (hp.sub hm).div_const 2
   unfold completedCurvatureOdd
-  convert this using 1
-  simp only [id_eq]; ring
+  convert this using 1 <;> first | rfl | ((try simp only [Pi.sub_apply, Pi.add_apply, Function.comp_apply, id_eq]); ring)
 
 /-- Even part of the curvature is positive. -/
 theorem completedCurvatureEven_pos (u s : ℝ) : 0 < completedCurvatureEven u s := by
@@ -125,11 +121,11 @@ theorem completedCurvatureEven_pos (u s : ℝ) : 0 < completedCurvatureEven u s 
 /-- **Velocity floor from curvature convexity.**  If `c'' ≥ 0` on `[0, ∞)` then `2Φ ≤ v` for
 `0 < t ≤ u`. -/
 theorem two_mul_action_le_velocity_of_jetTwo_nonneg {u t : ℝ} (ht : 0 < t) (htu : t ≤ u)
-    (hR3 : ∀ x : ℝ, 0 ≤ x → 0 ≤ thetaCuspLogCurvatureJetTwo x) :
+    (hR3 : ∀ x : ℝ, u - t ≤ x → 0 ≤ thetaCuspLogCurvatureJetTwo x) :
     2 * thetaCuspReflectedLogAction u t ≤ thetaCuspReflectedActionVelocity u t := by
   -- `E` is convex on `[0, t]`: its derivative `e` is nondecreasing there
-  have hj_mono : MonotoneOn thetaCuspLogCurvatureJet (Ici 0) := by
-    refine monotoneOn_of_deriv_nonneg (convex_Ici 0) ?_ ?_ ?_
+  have hj_mono : MonotoneOn thetaCuspLogCurvatureJet (Ici (u - t)) := by
+    refine monotoneOn_of_deriv_nonneg (convex_Ici (u - t)) ?_ ?_ ?_
     · intro x _; exact (hasDerivAt_thetaCuspLogCurvatureJet x).continuousAt.continuousWithinAt
     · intro x _; exact (hasDerivAt_thetaCuspLogCurvatureJet x).differentiableAt.differentiableWithinAt
     · intro x hx; rw [interior_Ici] at hx
@@ -141,8 +137,8 @@ theorem two_mul_action_le_velocity_of_jetTwo_nonneg {u t : ℝ} (ht : 0 < t) (ht
     · intro s hs; rw [interior_Icc] at hs
       rw [(hasDerivAt_completedCurvatureEven u s).deriv]
       have h1 : u - s ≤ u + s := by linarith [hs.1]
-      have h0 : 0 ≤ u - s := by linarith [hs.2]
-      have := hj_mono (mem_Ici.2 h0) (mem_Ici.2 (by linarith : (0:ℝ) ≤ u + s)) h1
+      have h0 : u - t ≤ u - s := by linarith [hs.2]
+      have := hj_mono (mem_Ici.2 h0) (mem_Ici.2 (by linarith [hs.1] : u - t ≤ u + s)) h1
       linarith
   have hconv : ConvexOn ℝ (Icc 0 t) (completedDecayEvenPrimitive u) := by
     refine MonotoneOn.convexOn_of_deriv (convex_Icc 0 t) ?_ ?_ ?_
@@ -196,8 +192,7 @@ theorem hasDerivAt_completedCurvatureOddJet (u s : ℝ) :
   have hm := (hasDerivAt_thetaCuspLogCurvatureJet (u - s)).comp s ((hasDerivAt_id s).const_sub u)
   have := (hp.add hm).div_const 2
   unfold completedCurvatureOddJet
-  convert this using 1
-  simp only [id_eq]; ring
+  convert this using 1 <;> first | rfl | ((try simp only [Pi.sub_apply, Pi.add_apply, Function.comp_apply, id_eq]); ring)
 
 theorem hasDerivAt_completedLocalDenominator (u s : ℝ) :
     HasDerivAt (completedLocalDenominator u)
@@ -210,8 +205,7 @@ theorem hasDerivAt_completedLocalDenominator (u s : ℝ) :
   have hprod := (hasDerivAt_id s).mul hdiff
   have := he.add hprod
   unfold completedLocalDenominator
-  convert this using 1
-  simp only [id_eq]; ring
+  convert this using 1 <;> first | rfl | ((try simp only [Pi.sub_apply, Pi.add_apply, Function.comp_apply, id_eq]); ring)
 
 /-- `E(s) + s e(s)`, the first-descent denominator. -/
 def completedFirstDenominator (u s : ℝ) : ℝ :=
@@ -223,21 +217,20 @@ theorem hasDerivAt_completedFirstDenominator (u s : ℝ) :
   have h2 := (hasDerivAt_id s).mul (hasDerivAt_completedCurvatureEven u s)
   have := h1.add h2
   unfold completedFirstDenominator completedLocalDenominator
-  convert this using 1
-  simp only [id_eq]; ring
+  convert this using 1 <;> first | rfl | ((try simp only [Pi.sub_apply, Pi.add_apply, Function.comp_apply, id_eq]); ring)
 
 theorem hasDerivAt_mul_completedDecayEvenPrimitive (u s : ℝ) :
     HasDerivAt (fun s => s * completedDecayEvenPrimitive u s) (completedFirstDenominator u s) s := by
   have := (hasDerivAt_id s).mul (hasDerivAt_completedDecayEvenPrimitive u s)
   unfold completedFirstDenominator
-  convert this using 1
-  simp only [id_eq]; ring
+  convert this using 1 <;> first | rfl | ((try simp only [Pi.sub_apply, Pi.add_apply, Function.comp_apply, id_eq]); ring)
 
 /-- The two-point inequality `(∗)`: strict decrease of the local ratio `o'/(2e + se')`. -/
-theorem local_ratio_deriv_neg {u s : ℝ} (hs : 0 < s) (hsu : s ≤ u)
-    (hR2 : ∀ x : ℝ, 0 < x → 0 < thetaCuspLogCurvatureJet x)
-    (hR3 : ∀ x : ℝ, 0 ≤ x → 0 < thetaCuspLogCurvatureJetTwo x)
-    (hR4 : ∀ x : ℝ, 0 ≤ x → 0 ≤ thetaCuspLogCurvatureJetThree x →
+theorem local_ratio_deriv_neg {u s x₀ : ℝ} (hs : 0 < s) (hsu : s ≤ u)
+    (hx₀0 : 0 ≤ x₀) (hx₀ : x₀ ≤ u - s)
+    (hR2 : ∀ x : ℝ, x₀ ≤ x → 0 < x → 0 < thetaCuspLogCurvatureJet x)
+    (hR3 : ∀ x : ℝ, x₀ ≤ x → 0 < thetaCuspLogCurvatureJetTwo x)
+    (hR4 : ∀ x : ℝ, x₀ ≤ x → 0 ≤ thetaCuspLogCurvatureJetThree x →
       thetaCuspLogCurvature x * thetaCuspLogCurvatureJetThree x ≤
         thetaCuspLogCurvatureJet x * thetaCuspLogCurvatureJetTwo x) :
     ((thetaCuspLogCurvatureJetTwo (u + s) - thetaCuspLogCurvatureJetTwo (u - s)) / 2) *
@@ -260,49 +253,43 @@ theorem local_ratio_deriv_neg {u s : ℝ} (hs : 0 < s) (hsu : s ≤ u)
     (fun z hz => by
       rcases eq_or_lt_of_le hz with h | h
       · rw [← h]
-        have h1 := hR2 (y + 1) (by linarith)
-        -- `j ≥ 0` at `y` follows from monotonicity; here we only need `0 ≤ j y`
-        have hmono : MonotoneOn thetaCuspLogCurvatureJet (Ici 0) := by
-          refine monotoneOn_of_deriv_nonneg (convex_Ici 0) ?_ ?_ ?_
-          · intro w _; exact (hasDerivAt_thetaCuspLogCurvatureJet w).continuousAt.continuousWithinAt
-          · intro w _; exact (hasDerivAt_thetaCuspLogCurvatureJet w).differentiableAt.differentiableWithinAt
-          · intro w hw; rw [interior_Ici] at hw
-            rw [(hasDerivAt_thetaCuspLogCurvatureJet w).deriv]; exact (hR3 w hw.le).le
         rcases eq_or_lt_of_le hy0 with h0 | h0
         · -- `j 0 = 0` by oddness
           have hodd := thetaCuspLogCurvatureJet_neg 0
           rw [neg_zero] at hodd
           rw [← h0]; linarith
-        · exact (hR2 y (by rw [h] at h0; exact h0)).le
-      · exact (hR2 z (lt_of_le_of_lt hy0 h)).le)
-    (fun z hz => (hR3 z (le_trans hy0 hz)).le)
-    (fun z hz h3 => hR4 z (le_trans hy0 hz) h3)
+        · exact (hR2 y hx₀ h0).le
+      · exact (hR2 z (le_trans hx₀ h.le) (lt_of_le_of_lt hy0 h)).le)
+    (fun z hz => (hR3 z (le_trans hx₀ hz)).le)
+    (fun z hz h3 => hR4 z (le_trans hx₀ hz) h3)
     x hyx
   unfold twoPointCurvatureGain at hQ
   unfold completedLocalDenominator completedCurvatureOddJet completedCurvatureEven
   -- the `s`-term: `2s(j₊ j₂₋ + j₂₊ j₋) > 0`
-  have hj₊ : 0 < thetaCuspLogCurvatureJet x := hR2 x hxpos
-  have hj₂₋ : 0 < thetaCuspLogCurvatureJetTwo y := hR3 y hy0
-  have hj₋ : 0 ≤ thetaCuspLogCurvatureJet y := by
+  have hx₀x : x₀ ≤ x := by linarith
+  have hjp : 0 < thetaCuspLogCurvatureJet x := hR2 x hx₀x hxpos
+  have hj2m : 0 < thetaCuspLogCurvatureJetTwo y := hR3 y hx₀
+  have hjm : 0 ≤ thetaCuspLogCurvatureJet y := by
     rcases eq_or_lt_of_le hy0 with h0 | h0
     · have hodd := thetaCuspLogCurvatureJet_neg 0
       rw [neg_zero] at hodd
       rw [← h0]; linarith
-    · exact (hR2 y h0).le
-  have hj₂₊ : 0 < thetaCuspLogCurvatureJetTwo x := hR3 x hxpos.le
+    · exact (hR2 y hx₀ h0).le
+  have hj2p : 0 < thetaCuspLogCurvatureJetTwo x := hR3 x hx₀x
   have hgain : 0 < 2 * s * (thetaCuspLogCurvatureJet x * thetaCuspLogCurvatureJetTwo y +
       thetaCuspLogCurvatureJetTwo x * thetaCuspLogCurvatureJet y) := by
-    have : 0 < thetaCuspLogCurvatureJet x * thetaCuspLogCurvatureJetTwo y := mul_pos hj₊ hj₂₋
-    have : 0 ≤ thetaCuspLogCurvatureJetTwo x * thetaCuspLogCurvatureJet y := mul_nonneg hj₂₊.le hj₋
+    have : 0 < thetaCuspLogCurvatureJet x * thetaCuspLogCurvatureJetTwo y := mul_pos hjp hj2m
+    have : 0 ≤ thetaCuspLogCurvatureJetTwo x * thetaCuspLogCurvatureJet y := mul_nonneg hj2p.le hjm
     positivity
   -- `RHS − LHS = Q + 2s(…)`, divided by 4
   nlinarith [hQ, hgain]
 
 /-- **Centre negativity from the sign facts.**  For `0 < t ≤ u`: `H < 0`. -/
-theorem centerNumerator_neg_of_curvatureSigns {u t : ℝ} (ht : 0 < t) (htu : t ≤ u)
-    (hR2 : ∀ x : ℝ, 0 < x → 0 < thetaCuspLogCurvatureJet x)
-    (hR3 : ∀ x : ℝ, 0 ≤ x → 0 < thetaCuspLogCurvatureJetTwo x)
-    (hR4 : ∀ x : ℝ, 0 ≤ x → 0 ≤ thetaCuspLogCurvatureJetThree x →
+theorem centerNumerator_neg_of_curvatureSigns {u t x₀ : ℝ} (ht : 0 < t) (htu : t ≤ u)
+    (hx₀0 : 0 ≤ x₀) (hx₀ : x₀ ≤ u - t)
+    (hR2 : ∀ x : ℝ, x₀ ≤ x → 0 < x → 0 < thetaCuspLogCurvatureJet x)
+    (hR3 : ∀ x : ℝ, x₀ ≤ x → 0 < thetaCuspLogCurvatureJetTwo x)
+    (hR4 : ∀ x : ℝ, x₀ ≤ x → 0 ≤ thetaCuspLogCurvatureJetThree x →
       thetaCuspLogCurvature x * thetaCuspLogCurvatureJetThree x ≤
         thetaCuspLogCurvatureJet x * thetaCuspLogCurvatureJetTwo x) :
     thetaCuspReflectedActionVelocityFixedActionCenterNumerator u t < 0 := by
@@ -311,8 +298,8 @@ theorem centerNumerator_neg_of_curvatureSigns {u t : ℝ} (ht : 0 < t) (htu : t 
     intro s hs
     unfold completedLocalDenominator
     have he := completedCurvatureEven_pos u s
-    have hmono : MonotoneOn thetaCuspLogCurvatureJet (Ici 0) := by
-      refine monotoneOn_of_deriv_nonneg (convex_Ici 0) ?_ ?_ ?_
+    have hmono : MonotoneOn thetaCuspLogCurvatureJet (Ici x₀) := by
+      refine monotoneOn_of_deriv_nonneg (convex_Ici x₀) ?_ ?_ ?_
       · intro w _; exact (hasDerivAt_thetaCuspLogCurvatureJet w).continuousAt.continuousWithinAt
       · intro w _; exact (hasDerivAt_thetaCuspLogCurvatureJet w).differentiableAt.differentiableWithinAt
       · intro w hw; rw [interior_Ici] at hw
@@ -332,11 +319,12 @@ theorem centerNumerator_neg_of_curvatureSigns {u t : ℝ} (ht : 0 < t) (htu : t 
     · intro s hs
       rw [interior_Ioc] at hs
       have hs' : s ∈ Ioc 0 t := ⟨hs.1, hs.2.le⟩
-      have hd := (hasDerivAt_completedCurvatureOddJet u s).div
+      have hd : HasDerivAt (fun s => completedCurvatureOddJet u s / completedLocalDenominator u s)
+          _ s := (hasDerivAt_completedCurvatureOddJet u s).div
         (hasDerivAt_completedLocalDenominator u s) (hden_pos s hs').ne'
       rw [hd.deriv]
       apply div_neg_of_neg_of_pos _ (sq_pos_of_pos (hden_pos s hs'))
-      exact local_ratio_deriv_neg hs.1 (hs.2.le.trans htu) hR2 hR3 hR4
+      exact local_ratio_deriv_neg hs.1 (hs.2.le.trans htu) hx₀0 (by linarith [hs.2]) hR2 hR3 hR4
   -- first descent: `o/(E + se)` strictly decreasing on `(0, t]`
   have hr2 : StrictAntiOn (fun s => completedCurvatureOdd u s / completedFirstDenominator u s)
       (Ioc 0 t) := by

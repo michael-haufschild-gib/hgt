@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.CompositionJetFieldTranscendence
 import GaloisForLFunctions.HTGeometry.MeroTranscendentalConstants
 import GaloisForLFunctions.HTGeometry.AlgebraAdjoinAlgebraic
+import GaloisForLFunctions.HTGeometry.AlgebraicIndependentPair
 
 /-!
 # The inner function and its composition are algebraically independent
@@ -25,33 +26,6 @@ attribute [local instance] relativeGaugeDomain relativeGaugeDifferential
 
 set_option synthInstance.maxHeartbeats 1000000
 set_option maxHeartbeats 1000000
-
-/-! ### Generic pair independence -/
-
-theorem algebraicIndependent_pair_of_transcendental {R A : Type*} [CommRing R] [CommRing A]
-    [Algebra R A] [IsDomain A] [IsDomain R] (x y : A) (hx : Transcendental R x)
-    (hy : Transcendental ↥(Algebra.adjoin R ({x} : Set A)) y) :
-    AlgebraicIndependent R ![y, x] := by
-  have h1 : AlgebraicIndependent R (fun _ : Fin 1 => x) :=
-    algebraicIndependent_unique_type_iff.mpr hx
-  have hrange : Set.range (fun _ : Fin 1 => x) = ({x} : Set A) := by simp
-  have h2 : AlgebraicIndependent R (fun o : Option (Fin 1) => o.elim y (fun _ => x)) := by
-    rw [h1.option_iff_transcendental, hrange]
-    exact hy
-  refine (algebraicIndependent_equiv' (e := (finSuccEquiv 1))
-    (f := fun o : Option (Fin 1) => o.elim y (fun _ => x)) (g := ![y, x]) ?_).mpr h2
-  funext j
-  fin_cases j <;> rfl
-
-theorem transcendental_of_algebraicIndependent_pair {R A : Type*} [CommRing R] [CommRing A]
-    [Algebra R A] [IsDomain A] [IsDomain R] (x y : A) (h : AlgebraicIndependent R ![y, x]) :
-    Transcendental ↥(Algebra.adjoin R ({y} : Set A)) x := by
-  have h3 := h.transcendental_adjoin (s := ({0} : Set (Fin 2))) (i := 1) (by simp)
-  have himg : (![y, x] '' ({0} : Set (Fin 2))) = ({y} : Set A) := by
-    rw [Set.image_singleton]
-    rfl
-  rw [himg] at h3
-  exact h3
 
 /-! ### A polynomial relation witnesses algebraicity -/
 

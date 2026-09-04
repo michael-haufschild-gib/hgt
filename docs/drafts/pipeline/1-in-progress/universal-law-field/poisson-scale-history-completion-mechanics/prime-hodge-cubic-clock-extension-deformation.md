@@ -83,7 +83,8 @@ What is already fixed:
     an element of a bounded completion extension.
 
 These facts leave one narrow object: the ULF-CCEL-001 lifting class of the theta quotient landing
-in the category where the clock generator acts by its cube.
+on the closed critical cubic Laplace graph of ULF-PCLGF-001, in the category where the clock
+generator acts by its cube.
 
 ## 3. Exact RH closure if the conjecture is proved
 
@@ -151,9 +152,17 @@ by source ideal membership, and its first clock is the already-proved completion
 ray.  Only its primewise shape is fixed: the source coefficient `8d` is not yet identified with
 the Xi coefficient `115/(864 a^4)`.  The conjectural step is no longer to choose an extension
 family; it is to construct the cubic-clock boundary map and theta-forced normalization of this
-source-forced half-open family.  Because its raw endpoint is unbounded, the only surviving carrier
-is the graph projection or bounded transform of the closed endpoint relation.  Closability and
-source-canonical domain are part of the theorem, not selectable analytic conventions.
+source-forced half-open family.  Because its raw endpoint is unbounded, ULF-PCLGF-001 replaces it
+by the canonical closure of
+
+```text
+(A_*c)(t)=2t sum_p c_p (log p)^2 p^(-t-1/2).
+```
+
+Its Gram is exactly the critical cubic Cauchy kernel; its adjoint domain is dense because every
+`L2` function supported away from zero has square-summable prime coefficients.  Thus the
+surviving carrier is the graph projection or bounded transform of `cl A_*`, with no selectable
+domain or regularization.
 
 For any lift `F` of the resulting quotient jet, its representative is
 
