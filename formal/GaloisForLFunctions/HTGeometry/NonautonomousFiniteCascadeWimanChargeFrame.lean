@@ -1,6 +1,9 @@
 import GaloisForLFunctions.HTGeometry.NonautonomousFiniteCascadeTerminalOutputCharge
 import GaloisForLFunctions.HTGeometry.JacobianDomainCriterion
 import GaloisForLFunctions.HTGeometry.BigradedCorank
+import GaloisForLFunctions.HTGeometry.MvPolynomialTopHomogeneousComponent
+import GaloisForLFunctions.HTGeometry.MvPolynomialHomogeneousDehomogenization
+import GaloisForLFunctions.HTGeometry.DigammaRationalCarrier
 
 /-!
 # The actual Wiman-charge frame in a finite cascade branch
@@ -47,6 +50,184 @@ theorem algebraicIndependent_of_valuationSubring_residue
     apply AlgebraicIndependent.of_comp ρ
     exact hres
   exact hB.map' (f := inclusion) fun x y h => Subtype.ext h
+
+/-- A nonzero top homogeneous polynomial stays nonzero on the projective chart whose affine
+coordinates are algebraically independent. -/
+theorem topHomogeneous_eval_one_ne_zero_of_algebraicIndependent
+    {C E ι : Type*} [Field C] [Field E] [Algebra C E]
+    (u : ι → E) (hu : AlgebraicIndependent C u)
+    (P : MvPolynomial (Option ι) C) (hP : P ≠ 0) :
+    MvPolynomial.eval₂ (algebraMap C E)
+        (fun o => match o with | none => 1 | some i => u i)
+        (MvPolynomial.homogeneousComponent P.totalDegree P) ≠ 0 := by
+  let Q := MvPolynomial.homogeneousComponent P.totalDegree P
+  have hQ : Q ≠ 0 := homogeneousComponent_totalDegree_ne_zero hP
+  have hQhom : Q.IsHomogeneous P.totalDegree :=
+    MvPolynomial.homogeneousComponent_isHomogeneous P.totalDegree P
+  have hdehom : GaloisForLFunctions.optionHeadDehomogenize Q ≠ 0 :=
+    GaloisForLFunctions.optionHeadDehomogenize_ne_zero_of_isHomogeneous hQhom hQ
+  let left : MvPolynomial ι C →+* E := MvPolynomial.eval₂Hom (algebraMap C E) u
+  let right : MvPolynomial (Option ι) C →+* E :=
+    MvPolynomial.eval₂Hom (algebraMap C E)
+      (fun o => match o with | none => 1 | some i => u i)
+  have hcomp : left.comp GaloisForLFunctions.optionHeadDehomogenize = right := by
+    apply MvPolynomial.ringHom_ext
+    · intro c
+      simp [left, right, GaloisForLFunctions.optionHeadDehomogenize]
+    · intro o
+      cases o with
+      | none => simp [left, right, GaloisForLFunctions.optionHeadDehomogenize]
+      | some i => simp [left, right, GaloisForLFunctions.optionHeadDehomogenize]
+  intro hzero
+  apply hdehom
+  apply hu
+  rw [MvPolynomial.aeval_def]
+  change left (GaloisForLFunctions.optionHeadDehomogenize Q) = 0
+  rw [show left (GaloisForLFunctions.optionHeadDehomogenize Q) = right Q by
+    exact DFunLike.congr_fun hcomp Q]
+  exact hzero
+
+/-- Multiplying an evaluated polynomial by the inverse common scale separates its homogeneous
+components by the corresponding powers of that scale. -/
+theorem pow_totalDegree_mul_aeval_eq_sum_homogeneousComponent
+    {C E ι : Type*} [CommSemiring C] [CommSemiring E] [Algebra C E]
+    [Fintype ι]
+    (P : MvPolynomial ι C) (x : ι → E) (z : E) :
+    z ^ P.totalDegree * MvPolynomial.aeval x P =
+      ∑ d ∈ Finset.range (P.totalDegree + 1),
+        z ^ (P.totalDegree - d) *
+          MvPolynomial.aeval (fun i => z * x i)
+            (MvPolynomial.homogeneousComponent d P) := by
+  classical
+  let D := P.totalDegree
+  have hsum :
+      (∑ d ∈ Finset.range (D + 1), MvPolynomial.homogeneousComponent d P) = P := by
+    simpa [D] using MvPolynomial.sum_homogeneousComponent P
+  calc
+    z ^ P.totalDegree * MvPolynomial.aeval x P =
+        z ^ D * MvPolynomial.aeval x
+          (∑ d ∈ Finset.range (D + 1),
+            MvPolynomial.homogeneousComponent d P) := by rw [hsum]
+    _ = z ^ D * ∑ d ∈ Finset.range (D + 1),
+          MvPolynomial.aeval x (MvPolynomial.homogeneousComponent d P) := by rw [map_sum]
+    _ = ∑ d ∈ Finset.range (D + 1),
+          z ^ D * MvPolynomial.aeval x (MvPolynomial.homogeneousComponent d P) := by
+      rw [Finset.mul_sum]
+    _ = _ := by
+      apply Finset.sum_congr rfl
+      intro d hd
+      have hdD : d ≤ D := Nat.le_of_lt_succ (Finset.mem_range.mp hd)
+      have hscale := GaloisForLFunctions.isHomogeneous_eval₂_scale
+        (MvPolynomial.homogeneousComponent_isHomogeneous d P)
+        (algebraMap C E) x z
+      rw [MvPolynomial.aeval_def, MvPolynomial.aeval_def]
+      rw [hscale, ← mul_assoc, ← pow_add, Nat.sub_add_cancel hdD]
+
+/-- Common-pole lifting principle.  If the inverse pole has zero residue and the normalized
+affine residues are algebraically independent, then the pole together with all commonly scaled
+lifts is algebraically independent in the ambient field. -/
+theorem algebraicIndependent_commonPole_of_residue
+    {C K ι : Type*} [Field C] [Field K] [Fintype ι] [Algebra C K]
+    (B : ValuationSubring K) [Algebra C B]
+    [Algebra C (IsLocalRing.ResidueField B)]
+    (hcB : ∀ c : C, ((algebraMap C B c : B) : K) = algebraMap C K c)
+    (hcR : ∀ c : C, IsLocalRing.residue B (algebraMap C B c) =
+      algebraMap C (IsLocalRing.ResidueField B) c)
+    (t : B) (ht0 : IsLocalRing.residue B t = 0)
+    (y : K) (hty : (t : K) * y = 1)
+    (u : ι → B)
+    (hres : AlgebraicIndependent C
+      (fun i => IsLocalRing.residue B (u i))) :
+    AlgebraicIndependent C
+      (fun o : Option ι => y * match o with | none => 1 | some i => (u i : K)) := by
+  classical
+  let inclusion : B →ₐ[C] K :=
+    { B.toSubring.subtype with
+      commutes' := hcB }
+  let ρ : B →ₐ[C] IsLocalRing.ResidueField B :=
+    { IsLocalRing.residue B with
+      commutes' := hcR }
+  let unitFrameB : Option ι → B := fun o =>
+    match o with | none => 1 | some i => u i
+  let unitFrameK : Option ι → K := fun o => (unitFrameB o : K)
+  let outputFrame : Option ι → K := fun o =>
+    y * match o with | none => 1 | some i => (u i : K)
+  change AlgebraicIndependent C outputFrame
+  intro P Q hPQ
+  by_contra hne
+  let R := P - Q
+  have hR : R ≠ 0 := sub_ne_zero.mpr hne
+  have hRzero : MvPolynomial.aeval outputFrame R = 0 := by
+    change MvPolynomial.aeval outputFrame (P - Q) = 0
+    rw [map_sub, hPQ, sub_self]
+  let D := R.totalDegree
+  have hscale := pow_totalDegree_mul_aeval_eq_sum_homogeneousComponent
+    R outputFrame (inclusion t)
+  have htframe : (fun i => inclusion t * outputFrame i) = unitFrameK := by
+    funext i
+    cases i with
+    | none =>
+        change (t : K) * (y * 1) = 1
+        simpa [mul_assoc] using hty
+    | some i =>
+        change (t : K) * (y * (u i : K)) = (u i : K)
+        rw [← mul_assoc, hty, one_mul]
+  rw [hRzero, mul_zero, htframe] at hscale
+  let S : B := ∑ d ∈ Finset.range (D + 1),
+    t ^ (D - d) * MvPolynomial.aeval unitFrameB
+      (MvPolynomial.homogeneousComponent d R)
+  have hmapS : inclusion S = 0 := by
+    change inclusion (∑ d ∈ Finset.range (D + 1),
+      t ^ (D - d) * MvPolynomial.aeval unitFrameB
+        (MvPolynomial.homogeneousComponent d R)) = 0
+    rw [map_sum]
+    calc
+      (∑ d ∈ Finset.range (D + 1),
+          inclusion (t ^ (D - d) * MvPolynomial.aeval unitFrameB
+            (MvPolynomial.homogeneousComponent d R))) =
+          ∑ d ∈ Finset.range (D + 1),
+            inclusion t ^ (D - d) * MvPolynomial.aeval unitFrameK
+              (MvPolynomial.homogeneousComponent d R) := by
+        apply Finset.sum_congr rfl
+        intro d hd
+        rw [map_mul, map_pow,
+          map_mvPolynomial_aeval inclusion unitFrameB
+            (MvPolynomial.homogeneousComponent d R)]
+        rfl
+      _ = 0 := hscale.symm
+  have hS : S = 0 := by
+    apply (fun a b h => Subtype.ext h : Function.Injective inclusion)
+    simpa using hmapS
+  have hresS := congrArg ρ hS
+  change ρ S = ρ 0 at hresS
+  rw [map_zero] at hresS
+  change ρ (∑ d ∈ Finset.range (D + 1),
+    t ^ (D - d) * MvPolynomial.aeval unitFrameB
+      (MvPolynomial.homogeneousComponent d R)) = 0 at hresS
+  rw [map_sum] at hresS
+  have htop :
+      ρ (MvPolynomial.aeval unitFrameB
+        (MvPolynomial.homogeneousComponent D R)) ≠ 0 := by
+    rw [map_mvPolynomial_aeval ρ unitFrameB]
+    rw [MvPolynomial.aeval_def]
+    have hframeR : (fun i => ρ (unitFrameB i)) =
+        (fun o => match o with
+          | none => 1
+          | some i => IsLocalRing.residue B (u i)) := by
+      funext o
+      cases o <;> simp [ρ, unitFrameB]
+    rw [hframeR]
+    exact topHomogeneous_eval_one_ne_zero_of_algebraicIndependent
+      (fun i => IsLocalRing.residue B (u i)) hres R hR
+  rw [Finset.sum_eq_single D] at hresS
+  · simp only [Nat.sub_self, pow_zero, map_one, one_mul] at hresS
+    exact htop hresS
+  · intro d hd hdne
+    have hdD : d < D := lt_of_le_of_ne
+      (Nat.le_of_lt_succ (Finset.mem_range.mp hd)) hdne
+    have hρt : ρ t = 0 := ht0
+    rw [map_mul, map_pow, hρt, zero_pow (Nat.sub_pos_of_lt hdD).ne', zero_mul]
+  · simp
 
 /-- Canonical inclusion of one adjacent-state terminal component into any branch containing it. -/
 noncomputable def nonautonomousFiniteCascadeTerminalComponentInclusion
